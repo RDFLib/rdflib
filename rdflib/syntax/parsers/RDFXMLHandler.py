@@ -166,7 +166,7 @@ class RDFXMLHandler(handler.ContentHandler):
             if parent:
                 base = parent.base
             if base is None:
-                systemId = self.locator.getSystemId()
+                systemId = self.locator.getPublicId() or self.locator.getSystemId()
                 if systemId:
                     base, frag = urldefrag(systemId)
         current.base = base

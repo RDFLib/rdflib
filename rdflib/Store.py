@@ -71,8 +71,10 @@ class Store(Schema):
             uri, frag = urldefrag(uri)            
         return URIRef(uri)
     
-    def load(self, location, format="xml"):
+    def load(self, location, format="xml", publicID=None):
         source = URLInputSource(self.absolutize(location))
+        if publicID:
+            source.setPublicId(publicID)
         self.parse(source, format=format)
 
     def save(self, location, format="xml"):

@@ -63,7 +63,7 @@ class InformationStore(Store):
         if path:
             self.open(path)
         
-    def load(self, location, format="xml"):
+    def load(self, location, format="xml", publicID=None):
         location = self.absolutize(location)
         for id in self.subjects(SOURCE, location):
             context = self.get_context(id)
@@ -72,7 +72,7 @@ class InformationStore(Store):
         context = self.get_context(id)
         context.add((id, TYPE, CONTEXT))
         context.add((id, SOURCE, location))
-        context.load(location, format)
+        context.load(location, format, publicID)
         return context
 
     def get_context(self, identifier):
