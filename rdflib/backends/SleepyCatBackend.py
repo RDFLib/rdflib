@@ -87,23 +87,26 @@ class SleepyCatBackend(object):
         super(SleepyCatBackend, self).__init__()
         self.__open = 0
         
-#     def __len__(self):
-#         return len(list(self))
+    def __len__(self):
+        return len(list(self))
 
     def fromkey(self, key):
         return _fromkey(self.__i2k.get(key))
 
     def tokey(self, term):
         term = _tokey(term)
-        key = self.__k2i.get(term)
+        k2i = self.__k2i        
+        key = k2i.get(term)
         if key==None:
-            self.next += 1
-            k2i = self.__k2i
-            key = pack(">L", self.next)
+            k2i.put(term, "tmp")            
+            c = k2i.cursor()
+            num = k2i.stat()["nkeys"] + 1
+            key = pack(">L", num)
             k2i.put(term, key)
+            c.close()
             self.__i2k.put(key, term)
         return key
-    
+
     def add(self, (subject, predicate, object), context=None):
         """\
         Add a triple to the store of triples.
@@ -523,7 +526,13 @@ class SleepyCatBackend(object):
     def remove_context(self, identifier):
         tokey = self.tokey        
         c = tokey(identifier)
-        self.__contexts.delete(c)
+        for triple in self._triples(identifier):
+            self.remove(triple, identifier)
+        try:
+            self.__contexts.delete(c)
+        except db.DBNotFoundError, e:
+            pass                    
+        
 
     def sync(self):
         self.__contexts.sync()
@@ -590,10 +599,11 @@ class SleepyCatBackend(object):
 
         self.__i2k = db.DB(env)
         self.__i2k.set_flags(dbsetflags)
+        
         self.__i2k.open("i2k", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
 
         self.__k2i = db.DB(env)
-        self.__k2i.set_flags(dbsetflags)
+        self.__k2i.set_flags(dbsetflags|db.DB_RECNUM)
         self.__k2i.open("k2i", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
         self.next = self.__k2i.stat()["nkeys"]        
 
