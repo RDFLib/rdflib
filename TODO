@@ -1,3 +1,8 @@
+- intern identifiers?
+- <jeremiah>	is there a way to text-search over literals yet?
+
+
+
 
 - finish yaml & n3 serializers
 - yaml & n3 parsers; finish ntriples parser

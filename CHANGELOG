@@ -1,3 +1,10 @@
+2004/04/05
+	RELEASE 2.0.3
+
+	Added missing "from __future__ import generators" statement to
+	InformationStore. ()
+
+
 2004/03/22
 	RELEASE 2.0.2
 
@@ -7,6 +14,12 @@
 	needed to run on Python2.2.
 
 	Added alternative to shlib.move() if it isn't present.
+
+	Fixed bug that occured when specifying a backend to
+	InformationStore's constructor.
+
+	Fixed bug recently introduced into InformationStore's remove
+	method.
 
 
 2004/03/15
