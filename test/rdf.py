@@ -38,7 +38,7 @@ class RDFTestCase(unittest.TestCase):
 
     def testRDFXML(self):
         self.addDonna()
-        self.assertEquals(self.store.graphUnloader().serialize(format="pretty-xml"), rdfxml)
+        self.assertEquals(self.store.serialize(format="pretty-xml"), rdfxml)
 
 def test_suite():
     return unittest.makeSuite(RDFTestCase)
