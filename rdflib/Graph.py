@@ -73,13 +73,7 @@ class Graph(object):
             uri, frag = urldefrag(uri)            
         return URIRef(uri)
     
-    def load(self, location, format="xml", publicID=None):
-        source = URLInputSource(self.absolutize(location))
-        if publicID:
-            source.setPublicId(publicID)
-        self.parse(source, format=format)
-
-    def load(self, location, format="xml", publicID=None):
+    def tmp_load(self, location, format="xml", publicID=None):
         # TODO: remove dup, not sure which version is close to the one we want yet though
         location = self.absolutize(location)
         for id in self.subjects(SOURCE, location):
@@ -91,6 +85,13 @@ class Graph(object):
         context.add((id, SOURCE, location))
         context.load(location, format, publicID)
         return context
+
+    def load(self, location, format="xml", publicID=None):
+        source = URLInputSource(self.absolutize(location))
+        if publicID:
+            source.setPublicId(publicID)
+        self.parse(source, format=format)
+
 
     def save(self, location, format="xml"):
         try:
@@ -193,18 +194,6 @@ class Graph(object):
     def predicate_objects(self, subject=None):
         for s, p, o in self.triples((subject, None, None)):
             yield p, o
-
-    def load(self, location, format="xml", publicID=None):
-        location = self.absolutize(location)
-        for id in self.subjects(SOURCE, location):
-            context = self.get_context(id)
-            self.remove_context(id)
-        id = BNode()
-        context = self.get_context(id)
-        context.add((id, TYPE, CONTEXT))
-        context.add((id, SOURCE, location))
-        context.load(location, format, publicID)
-        return context
 
     def get_context(self, identifier):
         check_context(identifier)        

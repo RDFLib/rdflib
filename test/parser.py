@@ -1,13 +1,11 @@
 import unittest
 
-from rdflib.URIRef import URIRef
-from rdflib.Literal import Literal
-from rdflib.BNode import BNode
+from rdflib import URIRef, BNode, Literal
 from rdflib.Namespace import Namespace
 from rdflib.exceptions import ParserError
 from rdflib.constants import TYPE
 
-from rdflib.TripleStore import TripleStore
+from rdflib import Graph
 from rdflib.util import first
 
 verbose = 0
@@ -20,7 +18,7 @@ def write(msg):
     sw.write(msg+"\n")
     #sys.stdout.write(msg+"\n")
     
-class TestStore(TripleStore):
+class TestStore(Graph):
     def __init__(self, expected):
         super(TestStore, self).__init__()
         self.expected = expected
@@ -63,7 +61,7 @@ import os
 def resolve(rel):
     return "http://www.w3.org/2000/10/rdf-tests/rdfcore/" + rel
 
-manifest = TripleStore()
+manifest = Graph()
 manifest.load("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf")
 
 
@@ -72,7 +70,7 @@ def _testPositive(uri):
     result = 0 # 1=failed, 0=passed   
     inDoc = first(manifest.objects(uri, TEST["inputDocument"]))
     outDoc = first(manifest.objects(uri, TEST["outputDocument"]))
-    expected = TripleStore()
+    expected = Graph()
     if outDoc[-3:]==".nt":
         format = "nt"
     else:
@@ -123,7 +121,7 @@ def _testNegative(uri):
     if verbose: write(u"TESTING: %s" % uri)    
     result = 0 # 1=failed, 0=passed   
     inDoc = first(manifest.objects(uri, TEST["inputDocument"]))
-    store = TripleStore()
+    store = Graph()
 
     test = BNode()
     results.add((test, RESULT["test"], uri))
@@ -181,7 +179,7 @@ RESULT = Namespace("http://www.w3.org/2002/03owlt/resultsOntology#")
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 
 from rdflib.constants import RDFS_LABEL, RDFS_COMMENT
-results = TripleStore()
+results = Graph()
 
 system = BNode("system")
 results.add((system, FOAF["homepage"], URIRef("http://rdflib.net/")))

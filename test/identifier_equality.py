@@ -1,9 +1,6 @@
 import unittest
 
-from rdflib.TripleStore import TripleStore
-from rdflib.URIRef import URIRef
-from rdflib.Literal import Literal
-from rdflib.BNode import BNode
+from rdflib import URIRef, BNode, Literal
 
 from rdflib.constants import CORE_SYNTAX_TERMS
 

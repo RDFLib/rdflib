@@ -1,6 +1,6 @@
 import unittest
 
-from rdflib.TripleStore import TripleStore
+from rdflib import Graph
 from rdflib.exceptions import SubjectTypeError
 from rdflib.exceptions import PredicateTypeError
 from rdflib.exceptions import ObjectTypeError
@@ -11,7 +11,7 @@ foo = URIRef("foo")
 
 class TypeCheckCase(unittest.TestCase):
     def setUp(self):
-        self.store = TripleStore()
+        self.store = Graph()
         
     def testSubjectTypeCheck(self):
         self.assertRaises(SubjectTypeError,

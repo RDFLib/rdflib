@@ -23,7 +23,7 @@ pos[p][o][s] = 1.
         # indexed by [predicate][object][subject]
         self.__osp = {}
 
-    def add(self, (subject, predicate, object), context):
+    def add(self, (subject, predicate, object), context=None):
         """\
         Add a triple to the store of triples.
         """
@@ -64,13 +64,15 @@ pos[p][o][s] = 1.
             p = sp[subject] = {}
         p[predicate] = 1
 
-    def remove(self, (subject, predicate, object)):
+    def remove(self, (subject, predicate, object), context=None):
+        assert context is None, "InMemoryBackend does not support contexts"
+        
         for subject, predicate, object in self.triples((subject, predicate, object)):
             del self.__spo[subject][predicate][object]
             del self.__pos[predicate][object][subject]
             del self.__osp[object][subject][predicate]
 
-    def triples(self, (subject, predicate, object), context):
+    def triples(self, (subject, predicate, object), context=None):
         """A generator over all the triples matching """
         assert context is None, "InMemoryBackend does not support contexts"        
         if subject!=ANY: # subject is given
