@@ -6,6 +6,9 @@ from rdflib.Literal import Literal
 from rdflib.constants import RDFNS, TYPE
 
 from rdflib.exceptions import ParserError
+from rdflib.URLInputSource import URLInputSource
+
+from urllib import urlopen
 
 
 def uriref(v):
@@ -54,12 +57,14 @@ class NTParser(object):
         super(NTParser, self).__init__()
         self.store = store
 
-    def parse(self, location, baseURI=None):
-        location = str(location)
-        baseURI = baseURI or location
-        from urllib import urlopen
-        file = urlopen(location)
-        
+   def parse(self, source, baseURI=None):
+        if isinstance(source, URLInputSource):
+            location = str(source)
+            baseURI = baseURI or location
+            file = urlopen(location)
+        else:
+            file = source
+
         for line in iter(file.readline, ""):
             line = line.lstrip()
             if line and not line[0]=="#": 
@@ -72,7 +77,6 @@ class NTParser(object):
                 
                 if s[0]=="<":
                     def c(num):
-                        #print "777", s, unichr(int(num.groups()[0], 16))
                         return unichr(int(num.groups()[0], 16))
                     from re import sub
                     pat = re.compile(r"\\u(....)")
@@ -97,10 +101,3 @@ class NTParser(object):
             
         file.close()
 
-    def parse_nt_URI(self, location, baseURI=None):
-        location = str(location)
-        baseURI = baseURI or location
-        from urllib import urlopen
-        file = urlopen(location)
-        self.parse_nt(file, baseURI)
-        

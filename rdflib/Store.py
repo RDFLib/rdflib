@@ -89,7 +89,11 @@ class Store(Schema):
             self.serialize(format=format, stream=stream)            
             stream.close()
 
-            shutil.move(name, path)
+            if hasattr(shutil,"move"):
+                shutil.move(name, path)
+            else:
+                shutil.copy(name, path)
+                os.remove(name)
 
         finally:
             self.__save_lock.release()
