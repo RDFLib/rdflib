@@ -1,3 +1,5 @@
+from __future__ import generators
+
 from rdflib.TripleStore import TripleStore
 from rdflib.Store import Store
 from rdflib.Store import check_subject, check_predicate, check_object
