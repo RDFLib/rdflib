@@ -20,7 +20,7 @@ SOURCE = INFORMATION_STORE["source"]
 def check_context(c):
     if not (isinstance(c, URIRef) or \
        isinstance(c, BNode)):
-        raise ContextTypeError(c)
+        raise ContextTypeError("%s:%s" % (c, type(c)))
 
 class Context(object):
 
@@ -42,6 +42,14 @@ class Context(object):
         for triple in self.backend.triples(triple, context):
             yield triple
 
+    def __len__(self):
+        # TODO: backends should support len
+        i = 0
+        for triple in self.triples((None, None, None)):
+            i += 1
+        return i
+    
+
 class InformationStore(Store):
     def __init__(self, path=None, backend=None):
         backend = backend or SleepyCatBackend()
@@ -62,7 +70,7 @@ class InformationStore(Store):
 
     def get_context(self, identifier):
         check_context(identifier)        
-        return TripleStore(Context(self.backend, identifier))
+        return TripleStore(None, Context(self.backend, identifier))
 
     def remove_context(self, identifier):
         self.backend.remove_context(identifier)
@@ -75,21 +83,20 @@ class InformationStore(Store):
         self.backend.add((subject, predicate, object), context)
 
     def remove(self, (subject, predicate, object), context=None):
-        check_subject(subject)
-        check_predicate(predicate)
-        check_object(object)
-        self.backend.remove((subject, predicate, object), context)
+        for s, p, o in self.triples((subject, predicate, object), context):
+            self.backend.remove((s, p, o), context)
 
-    def triples(self, (subject, predicate, object)):
+    def triples(self, (subject, predicate, object), context=None):
         if subject:
             check_subject(subject)
         if predicate:
             check_predicate(predicate)
         if object:
             check_object(object)
-        for triple in self.backend.triples((subject, predicate, object)):
+        if context:
+            check_context(context)
+        for triple in self.backend.triples((subject, predicate, object), context):
             yield triple
-
         
     def contexts(self, triple=None):
         for context in self.backend.contexts(triple):
