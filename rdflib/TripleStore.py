@@ -5,10 +5,11 @@ from rdflib.Resource import Resource
 from rdflib.constants import FIRST, REST, NIL
 from rdflib.util import first
 
-from rdflib.store.backends.InMemoryBackend import InMemoryBackend
-from rdflib.store.Concurrent import Concurrent
+from rdflib.backends.InMemoryBackend import InMemoryBackend
+from rdflib.backends.Concurrent import Concurrent
 
 from rdflib.syntax.LoadSave import LoadSave
+from rdflib.model.schema import Schema
 
 from rdflib.URIRef import URIRef
 from rdflib.BNode import BNode
@@ -39,7 +40,29 @@ def check_context(c):
         raise ContextTypeError(c)
 
 
-class TripleStore(LoadSave):
+
+class Context(object):
+
+    def __init__(self, backend, identifier):
+        super(Context, self).__init__()
+        self.backend = backend
+        self.identifier = identifier
+
+    def add(self, (s, p, o), context=None):
+        context = context or self.identifier
+        self.backend.add((s, p, o), context)
+        
+    def remove(self, (s, p, o)):
+        context = context or self.identifier        
+        self.backend.remove((s, p, o), context)
+        
+    def triples(self, triple):
+        context = context or self.identifier        
+        for triple in self.backend.triples(triple, context):
+            yield triple
+
+
+class TripleStore(LoadSave, Schema):
     """
     TODO: Both the TypeCheck mixin and AbstractTripleStore are needed
     to describe the TripleStore interface. ... where to document
@@ -49,8 +72,22 @@ class TripleStore(LoadSave):
     def __init__(self, backend=None):
         super(TripleStore, self).__init__()
         self.backend = backend or Concurrent(InMemoryBackend())
-
+        self.__context = None
         
+    def __get_context(self):
+        if self.__context==None:            
+            self.__context = BNode()
+        return self.__context
+
+    def __set_context(self, context):
+        self.__context = context
+
+    # Declare context as a property of AbstractInformationStore
+    context = property(__get_context, __set_context)
+
+    def get_context(self, identifier):
+        return TripleStore(Context(self.backend), identifier)
+
     def add(self, (subject, predicate, object)):
         check_subject(subject)
         check_predicate(predicate)
