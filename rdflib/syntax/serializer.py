@@ -1,5 +1,4 @@
 from rdflib.exceptions import SerializerDispatchNameError, SerializerDispatchNameClashError
-import rdflib.syntax.serializers
 
 try:
     from cStringIO import StringIO
@@ -21,31 +20,31 @@ class SerializationDispatcher(object):
 
     def __init__(self, store):
         self.store = store
-        for ser in rdflib.syntax.serializers.__all__:
-            module = __import__("serializers." + ser, globals(), locals(), ["serializers"])
-            aSerializer  = getattr(module, ser)
-            short_name = getattr(aSerializer, "short_name")
-            self.add(aSerializer, name=short_name)
-                                   
-    def add(self, serializer, name=None):
-        #first, check if there's a name or a shortname, else throw exception
-        if name != None:
-            the_name = name
-        elif hasattr(serializer, "short_name"):
-            the_name = serializer.short_name
-        else:
-            msg = "You didn't set a short name for the  serializer or pass in a name to add()"
-            raise SerializerDispatchNameError(msg)
-        #check for name clash
-        if hasattr(self, the_name):
-            raise SerializerDispatchNameClashError("That name is already registered.")
-        else:
-            setattr(self, the_name, serializer(self.store))
+        self.__serializer = {}
+        self.__module_info = {}
+        self.register('xml', 'rdflib.syntax.serializers.XMLSerializer', 'XMLSerializer')
+        self.register('pretty-xml', 'rdflib.syntax.serializers.PrettyXMLSerializer', 'PrettyXMLSerializer')
+        self.register('nt', 'rdflib.syntax.serializers.NTSerializer', 'NTSerializer')
+        
+    def register(self, short_name, module_path, class_name):
+        if short_name in self.__module_info:
+            raise Exception("serializer already registered for:", short_name)
+        self.__module_info[short_name] = (module_path, class_name)
+
+    def serializer(self, format):
+        serializer = self.__serializer.get(format, None)
+        if serializer is None:
+            module_path, class_name = self.__module_info[format]
+            module = __import__(module_path, globals(), locals(), True)
+            # TODO: catch import error?
+            serializer = getattr(module, class_name)(self.store)
+            self.__serializer[format] = serializer
+        return serializer
 
     def __call__(self, format="xml", stream=None):
         if stream==None:
             stream = StringIO()
-            getattr(self, format).serialize(stream)
+            self.serializer(format).serialize(stream)
             return stream.getvalue()
         else:
-            return getattr(self, format).serialize(stream)            
+            return self.serializer(format).serialize(stream)
