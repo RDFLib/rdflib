@@ -1,0 +1,14 @@
+$Id: TODO,v 1.3 2003/10/29 15:25:24 kendall Exp $
+
+1. make a factory function or class for building triple stores
+2. finish yaml & n3 serializers
+3. load_and_convert(src, from, to) service
+4. rdflib server
+5. save() needs to be refactored to know about different serialization formats
+6. yaml & n3 parsers; finish ntriples parser
+7. write some docs for these new interfaces
+8. finish rdfnet
+9. fix len(triple store) segfaults
+10. fast-ugly xml serializer (profile, remove nesting)
+11. heuristic between fast-xml and slow-xml, the "xml" default
+12. add a "fast-xml" and "pretty-xml" separate serialize options

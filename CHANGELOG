@@ -1,0 +1,303 @@
+2003/11/08
+	RELEASE 1.3.2
+
+	Added a serialization dispatcher.
+
+	Added format arg to save method.
+
+	Store now remembers prefix/namespace bindings.
+
+
+2003/10/14
+	RELEASE 1.3.1
+
+	Fixed bug in serializer where triples where only getting
+	serialized the first time.
+
+	Added type checking for contexts.
+
+	Fixed bug that caused comparisons with a Literal to fail when
+	the right hand side was not a string.
+
+	Added DB_INIT_CDB flag to SCBacked for supporting multiple
+	reader/single writer access
+
+	Changed rdf:RDF to be optional to conform with latest spec.
+
+	Fixed handling of XMLLiterals
+
+
+2003/04/40
+	RELEASE 1.3.0
+
+	Removed bag_id support and added it to OLD_TERMS.
+
+	Added a double hash for keys in SCBacked.
+
+	Fixed _HTTPClient so that it no longer removes metadata about
+	a context right after it adds it.
+
+	Added a KDTreeStore and RedlandStore backends.
+
+	Added a StoreTester.
+
+
+2003/02/28
+	RELEASE 1.2.4
+
+	Fixed bug in SCBackend where language and datatype information
+	where being ignored.
+
+	Fixed bug in transitive_subjects.
+
+	Updated some of the test cases that where not up to date.
+
+	async_load now adds more http header and error information to
+	the InformationStore.
+
+
+2003/02/11
+	RELEASE 1.2.3
+
+	Fixed bug in load methods where relative URLs where not being
+	absolutized correctly on Windows.
+
+	Fixed serializer so that it throws an exception when trying to
+	serialize a graph with a predicate that can not be split.
+
+
+2003/02/07
+	RELEASE 1.2.2
+
+	Added an exists method to the BackwardCompatibility mixin.
+
+	Added versions of remove, remove_triples and triples methods
+	to the BackwardCompatility mixin for TripleStores that take an
+	s, p, o as opposed to an (s, p, o).
+
+
+2003/02/03
+	RELEASE 1.2.1
+
+	Added support for parsing XMLLiterals.
+
+	Added support for proper charmod checking (only works in
+	Python2.3).
+
+	Fixed remaining rdfcore test cases that where not passing.
+
+	Fixed windows bug in AbstractInformationStore's run method.
+
+
+2003/01/02
+	RELEASE 1.2.0
+
+	Added systemID, line #, and column # to error messages.
+
+	BNode prefix is now composed of ascii_letters instead of letters.
+
+	Added a bsddb backed InformationStore.
+
+	Added an asyncronous load method, methods for scheduling context
+	updates, and a run method.
+
+
+2002/12/16
+	RELEASE 1.1.5 
+
+	Introduction of InformationStore, a TripleStore with the
+	addition of context support.
+
+	Resource __getitem__ now returns object (no longer returns a
+	Resource for the object).
+
+	Fixed bug in parser that was introduced in last release
+	regaurding unqualified names.
+
+
+2002/12/10
+	RELEASE 1.1.4 
+
+	Interface realigned with last stable release.
+
+	Serializer now uses more of the abbreviated forms where
+	possible.
+
+	Parser optimized and cleaned up.
+
+	Added third index to InMemoryStore.
+
+	The load and parse methods now take a single argument.
+
+	Added a StringInputSource for to support parsing from strings.
+
+	Renamed rdflib.BTreeTripleStore.TripleStore to
+	rdflib.BTreeTripleStore.BTreeTripleStore.
+
+	Minor reorganization of mix-in classes.
+
+
+2002/12/03
+	RELEASE 1.1.3 
+
+	BNodes now created with a more unique identifier so BNodes
+	from different sessions do not collide.
+
+	Added initial support for XML Literals (for now they are
+	parsed into Literals).
+	
+	Resource is no longer a special kind of URIRef.
+
+	Resource no longer looks at range to determine default return
+	type for __getitem__. Instead there is now a get(predicate, default)
+	method.
+	
+
+2002/11/21
+	RELEASE 1.1.2 
+
+	Fixed Literal's __eq__ method so that Literal('foo')=='foo' etc.	
+	
+	Fixed Resource's __setitem__ method so that it does not raise
+	a dictionary changed size while iterating exception.
+
+
+2002/11/09
+	RELEASE 1.1.1 
+
+	Resource is now a special kind of URIRef 
+	
+	Resource's __getitem__ now looks at rdfs:range to determine
+	return type in default case.
+
+	
+
+2002/11/05
+	RELEASE 1.1.0 # A new development branch
+
+	Cleaned up interface and promoted it to SIR: Simple Interface
+	for RDF. 
+
+	Updated parser to use SAX2 interfaces instead of using expat directly.
+
+	Added BTreeTripleStore, a ZODB BTree TripleStore backend. And
+	a default pre-mixed TripleStore that uses it.
+
+	Synced with latest (Editor's draft) RDF/XML spec. 
+
+        Added datatype support.
+
+	Cleaned up interfaces for load/parse: removed generate_path
+	from loadsave andrenamed parse_URI to parse.
+
+
+2002/10/08
+        RELEASE 0.9.6 # The end of a development brant
+
+	BNode can now be created with specified value.
+
+	Literal now has a language attribute.
+
+	Parser now creates Literals with language attribute set
+	appropriately as determined by xml:lang attributes.
+
+
+	TODO: Serializer-Literals-language attribute
+
+	TODO: Change __eq__ so that Literal("foo")=="foo" etc
+
+	TripleStores now support "in" operator. 
+	For example: if (s, p, o) in store: print "Found ", s, p, o
+
+	Added APIs/object for working at level of a Resource. NOTE:
+	This functionality is still experimental
+
+	Consecutive Collections now parse correctly.
+	
+2002/08/06
+        RELEASE 0.9.5
+
+	Added support for rdf:parseType="Collection"
+
+	Added items generator for getting items in a Collection
+
+	Renamed rdflib.triple_store to rdflib.TripleStore to better follow
+	python style conventions.
+	
+	Added an Identifier Class
+	
+	Moved each node into its own Python module.
+
+	Added rdflib.util with a first and uniq function.
+
+	Added a little more to example.py
+
+	Removed generate_uri since we have BNodes now.
+
+	
+2002/07/29
+        RELEASE 0.9.4
+
+	Added support for proposed rdf:nodeID to both the parser and
+	serializer.
+
+	Reimplemented serializer which now nests things where
+	possible.
+
+	Added partial support for XML Literal parseTypes.
+
+	
+2002/07/16
+        RELEASE 0.9.3
+
+	Fixed bug where bNodes where being created for nested property
+	elements when they where not supposed to be.
+
+	Added lax mode that will convert rdf/xml files that contain bare
+	IDs etc. Also, lax mode will only report parse errors instead of
+	raising exceptions.
+
+	Added missing check for valid attribute names in the case of
+	production 5.18 of latest WD spec.
+
+	
+2002/07/05
+        RELEASE 0.9.2
+	
+	Added missing constants for SUBPROPERTYOF, ISDEFINEDBY.
+
+        Added test case for running all of the rdf/xml test cases.
+
+        Reimplemented rdf/xml parser to conform to latest WD.
+
+
+2002/06/10
+	RELEASE 0.9.1
+
+	There is now a remove and a remove_triples (no more overloaded
+	remove).
+
+	Layer 2 has been merged with layer 1 since there is no longer a
+	need for them to be separate layers.
+
+	The generate_uri method has moved to LoadSave since triple stores
+	do not have a notion of a uri. [Also, with proper bNode support on
+	its way the need for a generate_uri might not be as high.]
+
+	Fixed bug in node's n3 function: URI -> URIRef.
+
+	Replaced string based exceptions with class based exceptions.
+
+	Added PyUnit TestCase for parser.py
+
+	Added N-Triples parser.
+
+	Added __len__ and __eq__ methods to store interface.
+	
+	
+2002/06/04
+	RELEASE 0.9.0
+
+	Initial release after being split from redfootlib.
+
+

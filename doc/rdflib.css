@@ -1,0 +1,88 @@
+.sidebar {
+  border: 1px solid #00000;
+  background: #EEE;
+  padding: 5px;
+} 
+
+.announcement {
+  border: 1px solid #00000;
+  padding: 5px;
+}
+
+pre.code_sample {
+  background: #EEE;
+  padding: 5px;
+}
+
+.ednote {
+  color: #999;
+  font-style: italic;
+}
+
+.cvs_id {
+  clear: both;
+  color: #999;
+  font-size: small;
+  border-top: solid 1px #999;
+}
+
+.author {
+  font-size: larger;
+  font-style: italic;
+}
+
+var {
+  font-weight: normal;
+  font-style: italic;
+  color: #000;
+}
+
+
+
+body {
+    font-family: "verdana", "Trebuchet MS", sans-serif;
+    margin: 1.5em 5% 3em 5%;
+}
+
+h1, h2, h3, b, dt {
+  font-family: "Trebuchet MS", sans-serif;
+  color: #00000;
+}
+
+a {
+    font-weight: bold;
+    color: #000;
+    text-decoration: none
+}
+
+a:hover {
+    font-weight: bold;
+    color: #000;
+    background-color: #ddd;
+    text-decoration: none
+}
+
+div.NAV {
+  position: absolute; top: 0em;
+  color: #999;
+}
+div.NAV A {
+  color: #999;
+  text-decoration: none;
+}
+
+DIV.announcement dl {
+  margin-left: 0px;
+}
+
+
+DIV.document_versions, DIV.download {
+  float: right;
+  clear: right;
+  border: solid 1px black;
+  font-size: smaller;
+  margin: 0em 0em 1em 1em;
+  padding: 0.5em 1em 1em 1em;
+  background: #eee;
+}
+

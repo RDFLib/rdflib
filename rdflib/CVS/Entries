@@ -1,0 +1,21 @@
+/.cvsignore/1.1.1.1/Fri Jul  5 19:45:42 2002//
+/BNode.py/1.5/Wed Jan  1 17:10:31 2003//
+/Factory.py/1.1/Fri Nov 14 18:34:27 2003//
+/Identifier.py/1.4/Tue Dec 10 19:30:36 2002//
+/InMemoryTripleStore.py/1.3/Thu Dec 18 03:26:07 2003//
+/InformationStore.py/1.14/Thu Dec 18 03:26:07 2003//
+/KDTreeTripleStore.py/1.1/Mon Apr  7 20:32:50 2003//
+/Literal.py/1.15/Thu Dec 11 23:14:36 2003//
+/Namespace.py/1.4/Tue Dec 10 19:30:36 2002//
+/RedlandTripleStore.py/1.1/Fri Apr 25 19:04:45 2003//
+/Resource.py/1.2/Fri Dec 13 23:15:31 2002//
+/StringInputSource.py/1.1/Tue Dec 10 20:23:07 2002//
+/TripleStore.py/1.6/Tue Dec 10 19:07:52 2002//
+/URIRef.py/1.4/Mon Feb  3 21:11:07 2003//
+/URLInputSource.py/1.3/Wed Jan  1 17:15:38 2003//
+/ZInformationStore.py/1.3/Thu Jan  2 21:05:39 2003//
+/__init__.py/1.21/Thu May  1 15:24:26 2003//
+/constants.py/1.4/Mon Apr  7 21:02:42 2003//
+/exceptions.py/1.7/Mon Dec  8 19:42:23 2003//
+/util.py/1.6/Tue Oct 28 05:12:58 2003//
+D
