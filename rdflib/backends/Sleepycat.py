@@ -85,9 +85,9 @@ def split(contexts):
         i = end
 
         
-class SleepycatBackend(Backend):
+class Sleepycat(Backend):
     def __init__(self):
-        super(SleepycatBackend, self).__init__()
+        super(Sleepycat, self).__init__()
         self.__open = 0
         self.default_context = BNode()
         
