@@ -26,6 +26,8 @@ class RDFXMLParser(object):
         self._parser = create_parser(store)
     
     def parse(self, source):
+        content_handler = self._parser.getContentHandler()
+        content_handler.reset()
         self._parser.reset()
         self._parser.parse(source)
 
