@@ -63,17 +63,16 @@ class Store(Schema):
     def close(self):
         self.backend.close()
 
+    def absolutize(self, uri, defrag=1):
+        # TODO: make base settable
+        base = urljoin("file:", pathname2url(os.getcwd()))
+        uri = urljoin("%s/" % base, uri)
+        if defrag:
+            uri, frag = urldefrag(uri)            
+        return URIRef(uri)
+    
     def load(self, location, format="xml"):
-        cwd = urljoin("file:", pathname2url(os.getcwd()))
-        location = urljoin("%s/" % cwd, location)
-        location, frag = urldefrag(location)            
-        scheme, netloc, path, params, query, fragment = urlparse(location)
-        if netloc=="":
-            path = url2pathname(path)
-            # If local and it does not exist then create one.
-            if not os.access(path, os.F_OK): # TODO: is this equiv to os.path.exists?
-                self.save(path)
-        source = URLInputSource(location)                    
+        source = URLInputSource(self.absolutize(location))
         self.parse(source, format=format)
 
     def save(self, location, format="xml"):
