@@ -18,26 +18,7 @@ from rdflib.syntax.parser import ParserDispatcher
 from rdflib.exceptions import SubjectTypeError
 from rdflib.exceptions import PredicateTypeError
 from rdflib.exceptions import ObjectTypeError
-
-
-def check_subject(s):
-    if not (isinstance(s, URIRef) or isinstance(s, BNode)):
-        raise SubjectTypeError(s)
-
-def check_predicate(p):
-    if not isinstance(p, URIRef):
-        raise PredicateTypeError(p)
-
-def check_object(o):
-    if not (isinstance(o, URIRef) or \
-       isinstance(o, Literal) or \
-       isinstance(o, BNode)):
-        raise ObjectTypeError(o)
-
-def check_context(c):
-    if not (isinstance(c, URIRef) or \
-       isinstance(c, BNode)):
-        raise ContextTypeError("%s:%s" % (c, type(c)))
+from rdflib.exceptions import ContextTypeError
 
 
 class Graph(object):
@@ -48,8 +29,18 @@ class Graph(object):
     def __init__(self, backend=None):
         super(Graph, self).__init__()
         if backend is None:
-            from rdflib.backends.InMemoryBackend import InMemoryBackend
-            backend = InMemoryBackend()
+            if 0:
+                from rdflib.backends.InMemoryBackend import InMemoryBackend
+                backend = InMemoryBackend()
+            elif 1:
+                from rdflib.backends.IOInMemoryContextBackend import IOInMemoryContextBackend
+                backend = IOInMemoryContextBackend()
+                self.default_context = BNode()                
+            else:
+                from rdflib.backends.SleepyCatBackend import SleepyCatBackend
+                backend = SleepyCatBackend()
+                backend.open("tmp")
+                self.default_context = BNode()
         self.backend = backend
         self.ns_prefix_map = {}
         self.prefix_ns_map = {}
@@ -64,6 +55,25 @@ class Graph(object):
 
     def close(self):
         self.backend.close()
+
+    def check_subject(self, s):
+        if not (isinstance(s, URIRef) or isinstance(s, BNode)):
+            raise SubjectTypeError(s)
+
+    def check_predicate(self, p):
+        if not isinstance(p, URIRef):
+            raise PredicateTypeError(p)
+
+    def check_object(self, o):
+        if not (isinstance(o, URIRef) or \
+           isinstance(o, Literal) or \
+           isinstance(o, BNode)):
+            raise ObjectTypeError(o)
+
+    def check_context(self, c):
+        if not (isinstance(c, URIRef) or \
+           isinstance(c, BNode)):
+            raise ContextTypeError("%s:%s" % (c, type(c)))
 
     def absolutize(self, uri, defrag=1):
         # TODO: make base settable
@@ -163,12 +173,12 @@ class Graph(object):
 
     def __iadd__(self, other):
         for triple in other:
-            self.backend.add(triple)
+            self.backend.add(triple) # TODO: context
         return self
 
     def __isub__(self, other):
         for triple in other:
-            self.backend.remove(triple)
+            self.backend.remove(triple) 
         return self
 
     def subjects(self, predicate=None, object=None):
@@ -196,40 +206,41 @@ class Graph(object):
             yield p, o
 
     def get_context(self, identifier):
-        check_context(identifier)        
+        self.check_context(identifier)        
         return Context(self.backend, identifier)
 
     def remove_context(self, identifier):
         self.backend.remove_context(identifier)
         
     def add(self, (subject, predicate, object), context=None):
-        check_subject(subject)
-        check_predicate(predicate)
-        check_object(object)
+        self.check_subject(subject)
+        self.check_predicate(predicate)
+        self.check_object(object)
+        context = context or self.default_context
         if context:
-            check_context(context)
+            self.check_context(context)            
         self.backend.add((subject, predicate, object), context)
 
     def remove(self, (subject, predicate, object), context=None):
         if subject:
-            check_subject(subject)
+            self.check_subject(subject)
         if predicate:
-            check_predicate(predicate)
+            self.check_predicate(predicate)
         if object:
-            check_object(object)
+            self.check_object(object)
         if context:
-            check_context(context)
+            self.check_context(context)
         self.backend.remove((subject, predicate, object), context)
 
     def triples(self, (subject, predicate, object), context=None):
         if subject:
-            check_subject(subject)
+            self.check_subject(subject)
         if predicate:
-            check_predicate(predicate)
+            self.check_predicate(predicate)
         if object:
-            check_object(object)
+            self.check_object(object)
         if context:
-            check_context(context)
+            self.check_context(context)
         for triple in self.backend.triples((subject, predicate, object), context):
             yield triple
         

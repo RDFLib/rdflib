@@ -174,10 +174,11 @@ class IOInMemoryContextBackend(object):
             p = sp[si] = {}
         p[pi] = 1
 
+        # TODO: check that triple wasn't already in the store.
         self.count = self.count + 1
 
     def remove(self, (subject, predicate, object), context=None):
-        for subject, predicate, object in self.triples((subject, predicate, object)):
+        for subject, predicate, object in self.triples((subject, predicate, object), context):
             si, pi, oi = self.identifierToInt((subject, predicate, object))
             f = self.forward
             r = self.reverse
@@ -198,10 +199,16 @@ class IOInMemoryContextBackend(object):
     def triples(self, (subject, predicate, object), context=None):
         """A generator over all the triples matching """
 
+        if context is None:
+            # TODO: this needs to be replaced with something more efficient
+            for context in self.contexts():
+                for triple in self.triples((subject, predicate, object), context):
+                    yield triple
+
         si = pi = oi = Any
         ci = self.reverse[context]  # throws a keyerror if not context
         if subject is not Any:
-            si = self.reverse[subject]
+            si = self.reverse[subject] # throws keyerror if subject doesn't exist ;(
         if predicate is not Any:
             pi = self.reverse[predicate]
         if object is not Any:

@@ -68,7 +68,7 @@ def _tokey(term):
                 n3 = '"%s"' % value
         return n3
     else:
-        msg = "Unknown term Type for:" % term
+        msg = "Unknown term Type for: %s" % term
         raise Exception(msg)
 
 
