@@ -30,9 +30,10 @@ class TripleStoreTest(unittest.TestCase):
         #self.store.save("foaf.rdf")        
         self.store.save("/tmp/foo.rdf")
         self.store.load("foaf.rdf")
-        self.store.remove_triples((None, None, None))
+        self.store.remove((None, None, None))
         self.store.load("/tmp/foo.rdf")
         self.store.load("file:///tmp/foo.rdf")
+        self.store.remove((None, None, None))        
         print "---"
         for t in self.store:
             print t

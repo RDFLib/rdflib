@@ -60,9 +60,10 @@ pos[p][o][s] = 1.
         os.setdefault(subject, {})[predicate] = 1
 
     def remove(self, (subject, predicate, object)):
-        del self.__spo[subject][predicate][object]
-        del self.__pos[predicate][object][subject]
-        del self.__osp[object][subject][predicate]
+        for subject, predicate, object in list(self.triples((subject, predicate, object))):
+            del self.__spo[subject][predicate][object]
+            del self.__pos[predicate][object][subject]
+            del self.__osp[object][subject][predicate]
 
     def triples(self, (subject, predicate, object)):
         """A generator over all the triples matching """

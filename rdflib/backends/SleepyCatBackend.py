@@ -143,13 +143,62 @@ class SleepyCatBackend(object):
         assert self.__open, "The InformationStore must be open."
         tokey = self.tokey        
 
-        s = tokey(subject)
-        p = tokey(predicate)
-        o = tokey(object)
-        if context==None:
-            contexts = self.__spo.get("%s%s%s" % (s, p, o))
-            if contexts:
-                for c in split(contexts):
+        for subject, predicate, object in self.triples((subject, predicate, object), context):
+
+            s = tokey(subject)
+            p = tokey(predicate)
+            o = tokey(object)
+            if context==None:
+                contexts = self.__spo.get("%s%s%s" % (s, p, o))
+                if contexts:
+                    for c in split(contexts):
+                        try:
+                            self.__cspo.delete("%s%s%s%s" % (c, s, p, o))
+                        except db.DBNotFoundError, e:
+                            pass
+                        try:
+                            self.__cpos.delete("%s%s%s%s" % (c, p, o, s))
+                        except db.DBNotFoundError, e:
+                            pass
+                        try:
+                            self.__cosp.delete("%s%s%s%s" % (c, o, s, p))
+                        except db.DBNotFoundError, e:
+                            pass                        
+                    try:
+                        self.__spo.delete("%s%s%s" % (s, p, o))
+                    except db.DBNotFoundError, e:
+                        pass
+                    try:
+                        self.__pos.delete("%s%s%s" % (p, o, s))
+                    except db.DBNotFoundError, e:
+                        pass
+                    try:
+                        self.__osp.delete("%s%s%s" % (o, s, p))
+                    except db.DBNotFoundError, e:
+                        pass                    
+            else:
+                c = tokey(context)
+                contexts = self.__spo.get("%s%s%s" % (s, p, o))
+                if contexts:
+                    contexts = list(split(contexts))
+                    if c in contexts:
+                        contexts.remove(c)
+                    if not contexts:
+                        try:
+                            self.__spo.delete("%s%s%s" % (s, p, o))
+                        except db.DBNotFoundError, e:
+                            pass                    
+                        try:
+                            self.__pos.delete("%s%s%s" % (p, o, s))
+                        except db.DBNotFoundError, e:
+                            pass                    
+                        try:
+                            self.__osp.delete("%s%s%s" % (o, s, p))
+                        except db.DBNotFoundError, e:
+                            pass                    
+                    else:
+                        contexts = "".join(contexts)
+                        self.__spo.put("%s%s%s" % (s, p, o), contexts)
                     try:
                         self.__cspo.delete("%s%s%s%s" % (c, s, p, o))
                     except db.DBNotFoundError, e:
@@ -161,54 +210,7 @@ class SleepyCatBackend(object):
                     try:
                         self.__cosp.delete("%s%s%s%s" % (c, o, s, p))
                     except db.DBNotFoundError, e:
-                        pass                        
-                try:
-                    self.__spo.delete("%s%s%s" % (s, p, o))
-                except db.DBNotFoundError, e:
-                    pass
-                try:
-                    self.__pos.delete("%s%s%s" % (p, o, s))
-                except db.DBNotFoundError, e:
-                    pass
-                try:
-                    self.__osp.delete("%s%s%s" % (o, s, p))
-                except db.DBNotFoundError, e:
-                    pass                    
-        else:
-            c = tokey(context)
-            contexts = self.__spo.get("%s%s%s" % (s, p, o))
-            if contexts:
-                contexts = list(split(contexts))
-                if c in contexts:
-                    contexts.remove(c)
-                if not contexts:
-                    try:
-                        self.__spo.delete("%s%s%s" % (s, p, o))
-                    except db.DBNotFoundError, e:
-                        pass                    
-                    try:
-                        self.__pos.delete("%s%s%s" % (p, o, s))
-                    except db.DBNotFoundError, e:
-                        pass                    
-                    try:
-                        self.__osp.delete("%s%s%s" % (o, s, p))
-                    except db.DBNotFoundError, e:
-                        pass                    
-                else:
-                    contexts = "".join(contexts)
-                    self.__spo.put("%s%s%s" % (s, p, o), contexts)
-                try:
-                    self.__cspo.delete("%s%s%s%s" % (c, s, p, o))
-                except db.DBNotFoundError, e:
-                    pass
-                try:
-                    self.__cpos.delete("%s%s%s%s" % (c, p, o, s))
-                except db.DBNotFoundError, e:
-                    pass
-                try:
-                    self.__cosp.delete("%s%s%s%s" % (c, o, s, p))
-                except db.DBNotFoundError, e:
-                    pass
+                        pass
         
     def triples(self, (subject, predicate, object), context=None):
         """A generator over all the triples matching """
@@ -301,7 +303,7 @@ class SleepyCatBackend(object):
             index = self.__pos
         try:
             prefix += "%s%s" % (tokey(predicate), tokey(object))
-        except Except, e:
+        except Exception, e:
             print e, predicate, object
         cursor = index.cursor()
         try:

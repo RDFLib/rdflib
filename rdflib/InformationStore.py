@@ -89,8 +89,15 @@ class InformationStore(Store):
         self.backend.add((subject, predicate, object), context)
 
     def remove(self, (subject, predicate, object), context=None):
-        for s, p, o in self.triples((subject, predicate, object), context):
-            self.backend.remove((s, p, o), context)
+        if subject:
+            check_subject(subject)
+        if predicate:
+            check_predicate(predicate)
+        if object:
+            check_object(object)
+        if context:
+            check_context(context)
+        self.backend.remove((s, p, o), context)
 
     def triples(self, (subject, predicate, object), context=None):
         if subject:
