@@ -12,13 +12,14 @@ class NTSerializer(AbstractSerializer):
         """
         super(NTSerializer, self).__init__(store)
 
-    def _output(self, stream):
-        self._stream = stream
-	write = self.write; store = self.store
+    def serialize(self, stream):
+        encoding = self.encoding
+        write = lambda uni: stream.write(uni.encode(encoding, 'replace'))
 	#this might be faster as a map()?
-	for triple in store:
+	for triple in self.store:
             s, p, o = triple
 	    #concating seems faster than string interp in
 	    #this loop, esp since these are likely to be short
 	    #strings, commonly
-            write(s.n3() + u" " + p.n3() + u" " +  o.n3() + u".\n")
+            #write(u"%s %s %s.\n" % (s.n3(), p.n3(), o.n3()))
+            #write(s.n3() + u" " + p.n3() + u" " +  o.n3() + u".\n")

@@ -1,27 +1,20 @@
 from rdflib.exceptions import SerializerDispatchNameError, SerializerDispatchNameClashError
 import rdflib.syntax.serializers
 
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
+
 class AbstractSerializer(object):
 
     def __init__(self, store):
-        self.__short_name = ""
-        self._write = None
-        self.encoding = "UTF-8"
         self.store = store
+        self.encoding = "UTF-8"
         
-    def write(self, uni):
-        self._stream.write(uni.encode(self.encoding, 'replace'))
-
-    def serialize(self, stream=None):
-        if stream != None: return self._output(stream)
-        else:
-            try:
-                from cStringIO import StringIO
-            except ImportError:
-                from StringIO import StringIO
-            s = StringIO()
-            self._output(s)
-            return s.getvalue()
+    def serialize(self, stream):
+        """Abstract method"""
 
 
 class SerializationDispatcher(object):
@@ -50,4 +43,9 @@ class SerializationDispatcher(object):
             setattr(self, the_name, serializer(self.store))
 
     def __call__(self, format="xml", stream=None):
-        return getattr(self, format).serialize(stream)
+        if stream==None:
+            stream = StringIO()
+            getattr(self, format).serialize(stream)
+            return stream.getvalue()
+        else:
+            return getattr(self, format).serialize(stream)            
