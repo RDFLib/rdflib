@@ -182,9 +182,10 @@ class IOInMemoryContextBackend(object):
             si, pi, oi = self.identifierToInt((subject, predicate, object))
             f = self.forward
             r = self.reverse
-            del self.cspo[context][si][pi][oi]
-            del self.cpos[context][pi][oi][si]
-            del self.cosp[context][oi][si][pi]
+            ci = self.reverse[context]
+            del self.cspo[ci][si][pi][oi]
+            del self.cpos[ci][pi][oi][si]
+            del self.cosp[ci][oi][si][pi]
 
             self.count = self.count - 1
 
