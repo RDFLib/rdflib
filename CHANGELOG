@@ -12,6 +12,10 @@
 	concurrent requests. (Motivated by Concurrent's poor
 	performance on bigger TripleStores.)
 
+	Improved the speed of len(store) by making backends
+	responsible for implementing __len__.
+
+	Context objects now have a identifier property.
 
 
 2004/03/05
@@ -27,8 +31,6 @@
 
 	Added __iadd__ method to Store in support of store +=
 	another_store.
-
-	
 
 
 2004/01/04
