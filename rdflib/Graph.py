@@ -1,28 +1,19 @@
 from __future__ import generators
 
-import tempfile, shutil, os
-from threading import Lock
-
-from urlparse import urlparse, urljoin, urldefrag
-from urllib import pathname2url, url2pathname
-
-from rdflib import Triple
-from rdflib import URIRef, BNode, Literal
-from rdflib import RDF, RDFS
-
-from rdflib.URLInputSource import URLInputSource
-from rdflib.util import first
+from rdflib import Triple, URIRef, BNode, Literal, RDF, RDFS
 
 from rdflib.syntax.serializer import SerializationDispatcher
 from rdflib.syntax.parser import ParserDispatcher
 
-from rdflib.exceptions import SubjectTypeError
-from rdflib.exceptions import PredicateTypeError
-from rdflib.exceptions import ObjectTypeError
-from rdflib.exceptions import ContextTypeError
+from rdflib.URLInputSource import URLInputSource
+from rdflib.util import first
 
+
+from urlparse import urljoin, urldefrag
+from urllib import pathname2url, url2pathname
 
 Any = None
+
 
 class Graph(object):
     """
@@ -32,89 +23,84 @@ class Graph(object):
     def __init__(self, backend=None):
         super(Graph, self).__init__()
         if backend is None:
-            if 0:
-                from rdflib.backends.Memory import Memory
-                backend = Memory()
-                self.default_context = None
-            elif 1:
-                from rdflib.backends.IOMemory import IOMemory
-                backend = IOMemory()
-                self.default_context = BNode()                
-            else:
-                from rdflib.backends.SleepyCat import SleepyCat
-                backend = SleepyCat()
-                backend.open("tmp")
-                self.default_context = BNode()
-        else:
-            self.default_context = BNode()
-            
-        self.backend = backend
+            from rdflib.backends.IOMemory import IOMemory
+            backend = IOMemory()
+        self.__backend = backend
+        self.__parse_dispatcher = ParserDispatcher(self)                        
+        self.__serialization_dispatcher = SerializationDispatcher(self)
+
+        self.default_context = BNode() # TODO: have some static default context?        
+        
         self.ns_prefix_map = {}
         self.prefix_ns_map = {}
         self.prefix_mapping("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
         self.prefix_mapping("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
-        self.serialize = SerializationDispatcher(self)
-        self.parse = ParserDispatcher(self)                
-        self.__save_lock = Lock()
-        
+
+
     def open(self, path):
-        if hasattr(self.backend, "open"):
-            self.backend.open(path)
+        if hasattr(self.__backend, "open"):
+            self.__backend.open(path)
 
     def close(self):
-        if hasattr(self.backend, "close"):
-            self.backend.close()
+        if hasattr(self.__backend, "close"):
+            self.__backend.close()
 
-    def absolutize(self, uri, defrag=1):
-        # TODO: make base settable
+    def _absolutize(self, uri, defrag=1):
         base = urljoin("file:", pathname2url(os.getcwd()))
         uri = urljoin("%s/" % base, uri)
         if defrag:
             uri, frag = urldefrag(uri)            
         return URIRef(uri)
+
+    def _context_id(self, uri):
+        uri = uri.split("#", 1)[0]
+        return URIRef("%s#context" % uri)
     
-    def tmp_load(self, location, format="xml", publicID=None):
-        # TODO: remove dup, not sure which version is close to the one we want yet though
-        location = self.absolutize(location)
-        for id in self.subjects(SOURCE, location):
-            context = self.get_context(id)
-            self.remove_context(id)
-        id = BNode()
+    def load(self, location, publicID=None, format="xml"):
+        location = self._absolutize(location)
+        id = self._context_id(publicID or location)
+        self.remove_context(id)
         context = self.get_context(id)
-        context.add((id, TYPE, CONTEXT))
+        context.add((id, RDF.type, CONTEXT))
         context.add((id, SOURCE, location))
-        context.load(location, format, publicID)
+        context.parse(source=location, publicID=publicID, format=format)
         return context
 
-    def load(self, location, format="xml", publicID=None):
-        source = URLInputSource(self.absolutize(location))
-        if publicID:
-            source.setPublicId(publicID)
-        self.parse(source, format=format)
-
+    def parse(self, source, publicID=None, format="xml"):
+        return self.__parser_dispatcher(source=source, publicID=publicID, format=format)
 
     def save(self, location, format="xml"):
-        try:
-            self.__save_lock.acquire()
+        return self.serialize(destination=location, format=format)
 
-            scheme, netloc, path, params, query, fragment = urlparse(location)
-            if netloc!="":
-                print "WARNING: not saving as location is not a local file reference"
-                return
+    def serialize(self, destination=None, format="xml"):
+        return self.__serialization_dispatcher(destination=destination, format=format)            
 
-            name = tempfile.mktemp()            
-            stream = open(name, 'wb')
-            self.serialize(format=format, stream=stream)            
-            stream.close()
+    def add(self, triple, context=None):
+        if not isinstance(triple, Triple):
+            s, p, o = triple
+            triple = Triple(s, p, o)
+        triple.check_statement()
+        triple.context = context or self.default_context
+        self.__backend.add(triple)
 
-            if hasattr(shutil,"move"):
-                shutil.move(name, path)
-            else:
-                shutil.copy(name, path)
-                os.remove(name)
+    def remove(self, triple):
+        if not isinstance(triple, Triple):
+            s, p, o = triple
+            triple = Triple(s, p, o)
+        triple.check_pattern()
+        self.__backend.remove(triple)
 
-        finally:
-            self.__save_lock.release()
+    def triples(self, triple):
+        if not isinstance(triple, Triple):
+            s, p, o = triple
+            triple = Triple(s, p, o)
+        triple.check_pattern()            
+        for t in self.__backend.triples(triple):
+            yield t
+        
+    def contexts(self): # TODO: triple=None??
+        for context in self.__backend.contexts():
+            yield context
 
     def prefix_mapping(self, prefix, namespace):
         map = self.ns_prefix_map    
@@ -146,7 +132,7 @@ class Graph(object):
         return 0
 
     def __len__(self):
-        return self.backend.__len__()
+        return self.__backend.__len__()
     
     def __eq__(self, other):
         # Note: this is not a test of isomorphism, but rather exact
@@ -163,12 +149,12 @@ class Graph(object):
 
     def __iadd__(self, other):
         for triple in other:
-            self.backend.add(triple) # TODO: context
+            self.__backend.add(triple) # TODO: context
         return self
 
     def __isub__(self, other):
         for triple in other:
-            self.backend.remove(triple) 
+            self.__backend.remove(triple) 
         return self
 
     def subjects(self, predicate=None, object=None):
@@ -198,39 +184,11 @@ class Graph(object):
     def get_context(self, identifier):
         assert isinstance(identifier, URIRef) or \
                isinstance(identifier, BNode)
-        return Context(self.backend, identifier)
+        return Context(self.__backend, identifier)
 
     def remove_context(self, identifier):
-        self.backend.remove_context(identifier)
+        self.__backend.remove_context(identifier)
         
-    def add(self, triple, context=None):
-        if not isinstance(triple, Triple):
-            s, p, o = triple
-            triple = Triple(s, p, o)
-        triple.check_statement()
-        triple.context = context or self.default_context
-        self.backend.add(triple)
-
-    def remove(self, triple):
-        if not isinstance(triple, Triple):
-            s, p, o = triple
-            triple = Triple(s, p, o)
-        triple.check_pattern()
-        self.backend.remove(triple)
-
-    def triples(self, triple):
-        if not isinstance(triple, Triple):
-            s, p, o = triple
-            triple = Triple(s, p, o)
-        triple.check_pattern()            
-        for t in self.backend.triples(triple):
-            yield t
-        
-    def contexts(self): # TODO: triple=None??
-        for context in self.backend.contexts():
-            yield context
-
-
     def transitive_objects(self, subject, property, remember=None):
         if remember==None:
             remember = {}

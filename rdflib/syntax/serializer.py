@@ -1,5 +1,18 @@
 from rdflib.exceptions import SerializerDispatchNameError, SerializerDispatchNameClashError
 
+import tempfile, shutil, os
+from threading import Lock
+from urlparse import urlparse
+
+_module_info = {}
+
+def register(short_name, module_path, class_name):
+    _module_info[short_name] = (module_path, class_name)
+
+register('xml', 'rdflib.syntax.serializers.XMLSerializer', 'XMLSerializer')
+register('pretty-xml', 'rdflib.syntax.serializers.PrettyXMLSerializer', 'PrettyXMLSerializer')
+register('nt', 'rdflib.syntax.serializers.NTSerializer', 'NTSerializer')
+
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -16,22 +29,13 @@ class AbstractSerializer(object):
         """Abstract method"""
 
 
-_module_info = {}
-
-def register(short_name, module_path, class_name):
-    _module_info[short_name] = (module_path, class_name)
-
-register('xml', 'rdflib.syntax.serializers.XMLSerializer', 'XMLSerializer')
-register('pretty-xml', 'rdflib.syntax.serializers.PrettyXMLSerializer', 'PrettyXMLSerializer')
-register('nt', 'rdflib.syntax.serializers.NTSerializer', 'NTSerializer')
-
-
 class SerializationDispatcher(object):
 
     def __init__(self, store):
         self.store = store
         self.__serializer = {}
         self.__module_info = dict(_module_info)
+        self.__save_lock = Lock()
         
     def register(self, short_name, module_path, class_name):
         self.__module_info[short_name] = (module_path, class_name)        
@@ -46,10 +50,30 @@ class SerializationDispatcher(object):
             self.__serializer[format] = serializer
         return serializer
 
-    def __call__(self, format="xml", stream=None):
-        if stream==None:
+    def __call__(self, destination=None, format="xml"):
+        if destination is None:
             stream = StringIO()
             self.serializer(format).serialize(stream)
             return stream.getvalue()
+        if hasattr(destination, "write"):
+            stream = destination
+            self.serializer(format).serialize(stream)            
         else:
-            return self.serializer(format).serialize(stream)
+            location = destination
+            try:
+                self.__save_lock.acquire()
+                scheme, netloc, path, params, query, fragment = urlparse(location)
+                if netloc!="":
+                    print "WARNING: not saving as location is not a local file reference"
+                    return
+                name = tempfile.mktemp()            
+                stream = open(name, 'wb')
+                self.serializer(format).serialize(stream)
+                stream.close()
+                if hasattr(shutil,"move"):
+                    shutil.move(name, path)
+                else:
+                    shutil.copy(name, path)
+                    os.remove(name)
+            finally:
+                self.__save_lock.release()

@@ -36,6 +36,21 @@ class ParserDispatcher(object):
         else:
             setattr(self, the_name, parser(self.store))
 
-    def __call__(self, source, format="xml"):
-        return getattr(self, format).parse(source)
+    def absolutize(self, uri, defrag=1):
+        base = urljoin("file:", pathname2url(os.getcwd()))        
+        uri = urljoin("%s/" % base, uri)
+        if defrag:
+            uri, frag = urldefrag(uri)            
+        return URIRef(uri)
+
+    def __call__(self, source, publicID=None, format="xml"):
+        if isinstance(source, InputSource):
+            input_source = source
+        else:
+            # TODO: way to detect source of string vs. location?
+            input_source = URLInputSource(self.absolutize(source))
+        if publicID:
+            input_source.setPublicId(publicID)
+
+        return getattr(self, format).parse(input_source)
 
