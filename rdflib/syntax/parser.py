@@ -1,5 +1,5 @@
 from rdflib.exceptions import ParserDispatchNameError, ParserDispatchNameClashError
-import parsers
+import rdflib.syntax.parsers
 
 class AbstractParser(object):
 
@@ -15,7 +15,7 @@ class ParserDispatcher(object):
 
     def __init__(self, store):
         self.store = store
-        for ser in parsers.__all__:
+        for ser in rdflib.syntax.parsers.__all__:
             module = __import__("parsers." + ser, globals(), locals(), ["parsers"])
             aParser  = getattr(module, ser)
             short_name = getattr(aParser, "short_name")
