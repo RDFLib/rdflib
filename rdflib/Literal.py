@@ -7,7 +7,6 @@ else:
 from rdflib.Identifier import Identifier
 from rdflib.exceptions import Error
 
-import rdflib
 
 class Literal(Identifier):
     """
