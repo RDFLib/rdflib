@@ -7,15 +7,15 @@ from rdflib.constants import RDFS_DOMAIN, RDFS_SUBCLASSOF
 
 class Schema(object):
 
-    def label(self, subject, default=None):
+    def label(self, subject, default=''):
         for s, p, o in self.triples((subject, RDFS_LABEL, None)):
             return o
-        return default or subject
+        return default
 
-    def comment(self, subject, default=None):
+    def comment(self, subject, default=''):
         for s, p, o in self.triples((subject, RDFS_COMMENT, None)):
             return o
-        return default or self.label(subject)
+        return default
         
     def typeless_resources(self):
         for subject in self.subjects():
