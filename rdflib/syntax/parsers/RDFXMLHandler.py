@@ -109,6 +109,9 @@ class RDFXMLHandler(handler.ContentHandler):
 
     def __init__(self, store):
         self.store = store
+        self.reset()
+        
+    def reset(self):
         document_element = ElementHandler()
         document_element.start = self.document_element_start
         document_element.end = lambda name, qname: None
@@ -155,18 +158,18 @@ class RDFXMLHandler(handler.ContentHandler):
         current = self.current
         parent = self.parent
         base = attrs.get(BASE, None)
-        if base:
+        if base is not None:
             base, frag = urldefrag(base)
         else:
             if parent:
                 base = parent.base
-            if not base:
+            if base is None:
                 systemId = self.locator.getSystemId()
                 if systemId:
                     base, frag = urldefrag(systemId)
         current.base = base
         language = attrs.get(LANG, None)
-        if language==None:
+        if language is None:
             if parent:
                 language = parent.language
             else:
@@ -229,7 +232,7 @@ class RDFXMLHandler(handler.ContentHandler):
             name = "".join(name)
         atts = {}
         for (n, v) in attrs.items(): #attrs._attrs.iteritems(): #
-            if n[0]==None:
+            if n[0] is None:
                 att = n[1]
             else:
                 att = "".join(n)
@@ -348,7 +351,7 @@ class RDFXMLHandler(handler.ContentHandler):
             current.predicate = absolutize(name)            
 
         id = atts.get(ID, None)
-        if id:
+        if id is not None:
             if not is_ncname(id):
                 self.error("rdf:ID value is not a value NCName: %s" % id)
             current.id = absolutize("#%s" % id)
@@ -358,13 +361,13 @@ class RDFXMLHandler(handler.ContentHandler):
         resource = atts.get(RESOURCE, None)
         nodeID = atts.get(NODE_ID, None)
         parse_type = atts.get(PARSE_TYPE, None)
-        if resource and nodeID:
+        if resource is not None and nodeID is not None:
             self.error("Property element cannot have both rdf:nodeID and rdf:resource")
-        if resource:
+        if resource is not None:
             object = absolutize(resource)
             next.start = self.node_element_start
             next.end = self.node_element_end
-        elif nodeID:
+        elif nodeID is not None:
             if not is_ncname(nodeID):
                 self.error("rdf:nodeID value is not a valid NCName: %s" % nodeID)
             if nodeID in self.bnode:
@@ -376,7 +379,7 @@ class RDFXMLHandler(handler.ContentHandler):
             next.start = self.node_element_start
             next.end = self.node_element_end                
         else:
-            if parse_type:
+            if parse_type is not None:
                 for att in atts:
                     if att!=PARSE_TYPE and att!=ID:
                         self.error("Property attr '%s' now allowed here" % att)
@@ -408,7 +411,7 @@ class RDFXMLHandler(handler.ContentHandler):
 
         datatype = current.datatype = atts.get(DATATYPE, None)
         language = current.language        
-        if datatype:
+        if datatype is not None:
             # TODO: check that there are no atts other than datatype and id
             pass
         else:
@@ -427,16 +430,16 @@ class RDFXMLHandler(handler.ContentHandler):
                 else:
                     o = Literal(atts[att], language, datatype)
 
-                if object==None:
+                if object is None:
                     object = BNode()
                 self.store.add((object, predicate, o))
-        if object==None:
+        if object is None:
             object = Literal("", language, datatype)                
         current.object = object
 
     def property_element_char(self, data):
         current = self.current
-        if current.object==None:
+        if current.object is None:
             try:
                 current.object = Literal(data, current.language, current.datatype)
             except Error, e:
@@ -452,9 +455,9 @@ class RDFXMLHandler(handler.ContentHandler):
         current = self.current
         if self.next.end==self.list_node_element_end:
             self.store.add((current.list, REST, NIL))
-        if current.object!=None:
+        if current.object is not None:
             self.store.add((self.parent.subject, current.predicate, current.object))
-            if current.id:
+            if current.id is not None:
                 self.add_reified(current.id, (self.parent.subject,
                                  current.predicate, current.object))
         current.subject = None

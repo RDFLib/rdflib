@@ -26,7 +26,7 @@ class RDFXMLParser(object):
         self._parser = create_parser(store)
     
     def parse(self, source):
-        #@@ reset self._parser?
+        self._parser.reset()
         self._parser.parse(source)
 
 
