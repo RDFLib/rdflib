@@ -46,14 +46,9 @@ class Store(Schema):
     Abstract Class
     """
     
-    def __init__(self, backend, name, asserted):
+    def __init__(self, backend):
         super(Store, self).__init__()
         self.backend = backend
-        self.name = name
-        if asserted:
-            self.asserted = True
-        else:
-            self.asserted = False
         self.ns_prefix_map = {}
         self.prefix_ns_map = {}
         self.prefix_mapping("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
@@ -75,18 +70,6 @@ class Store(Schema):
         if defrag:
             uri, frag = urldefrag(uri)            
         return URIRef(uri)
-
-    def assert_graph(self):
-        self.asserted = True
-
-    def retract_graph(self):
-        self.asserted = False
-
-    def name_graph(self, name):
-        self.name = name
-
-    def anon_graph(self, name):
-        self.name = None
     
     def load(self, location, format="xml"):
         source = URLInputSource(self.absolutize(location))
