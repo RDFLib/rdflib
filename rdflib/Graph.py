@@ -218,13 +218,11 @@ class Graph(object):
     def remove_context(self, identifier):
         self.backend.remove_context(identifier)
         
-    def add(self, triple):
+    def add(self, triple, context=None):
         if not isinstance(triple, Triple):
             s, p, o = triple
-            triple = Triple(s, p, o, self.default_context)
-        else:
-            if triple.context is None:
-                triple.context = self.default_context
+            triple = Triple(s, p, o)
+        triple.context = context or self.default_context
         #self.check_subject(subject)
         #self.check_predicate(predicate)
         #self.check_object(object)
@@ -298,13 +296,16 @@ class ContextBackend(object):
         self.identifier = identifier
 
     def add(self, triple):
-        self.information_store.add(triple, self.identifier)
+        triple.context = self.identifier
+        self.information_store.add(triple)
         
     def remove(self, triple):
-        self.information_store.remove(triple, self.identifier)
+        triple.context = self.identifier        
+        self.information_store.remove(triple)
         
     def triples(self, triple):
-        return self.information_store.triples(triple, self.identifier)
+        triple.context = self.identifier        
+        return self.information_store.triples(triple)
 
     def __len__(self):
         # TODO: backends should support len
