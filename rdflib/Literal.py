@@ -6,7 +6,7 @@ else:
 
 from rdflib.Identifier import Identifier
 from rdflib.exceptions import Error
-import types
+
 
 class Literal(Identifier):
     """
@@ -48,8 +48,6 @@ class Literal(Identifier):
             else:
                 return '"%s"' % self
 
-    def yaml(self): #this is wrong, but will do for now till we refactor the datatype stuff... XXX
-        return str(self)
 
     def __eq__(self, other):
         if other==None:
@@ -68,55 +66,3 @@ class Literal(Identifier):
         else:
             return unicode(self)==other
 
-#Some Notes for Improving rdflib datatype support
-
-#the datatype="" value *must* be a URI now... If it's not we raise an
-#Exception or a DeprecationWarning; if it is, that's the value of rdf:datatype and the other
-#serializations do what? YAML...?
-
-#int, integer, long --? ... Python doesn't have an xsd:integer; not
-#sure how xsd:long maps to py:long; xsd:int and py:int on 32 bit
-#machine seem compataible
-#string
-#float
-#decimal
-#boolean
-#time,  date, dateTime, gYearMonth, gYear, gMonthDay, gDay, gMonth, 
-#anyURI ... ?
-#QName ... ?
-
-# class TypedLiteral(object): pass
-# class _IntType(TypedLiteral, types.IntType): pass
-# class _LongType(TypedLiteral, types.LongType): pass
-# class _FloatType(TypedLiteral,  types.FloatType): pass
-# class _UniStrType(TypedLiteral, types.UnicodeType): pass
-# class _StrType(TypedLiteral, types.StringType): pass
-# class _BoolType(TypedLiteral, types.BooleanType): pass
-# class _anyUriType(TypedLiteral,  URIFef): pass
-# class _QName(TypedLiteral, types.TupleType): pass #???
-
-# #not sure what to do about this one...
-# class _DatetimeType(TypedLiteral, datetime.datetime): pass
-
-# native_type_mapping = {
-#     types.StringType: _StrType,
-#     types.UnicodeType: _UniStrType,
-#     types.IntType: _IntType,
-#     types.FloatType: _FloatType,
-#     types.LongType: _LongType,
-#     #??: _DateTimeType,
-#     types.BooleanType: _BoolType}
-
-# def _type_dispatch(type_):
-#     return native_type_mapping[type_]
-
-# def literal(a, datatype=None):
-#     """
-#     I create instances of TypedLiteral.
-
-#     @datattype = instance of URIRef, overrides native type checking (type()).
-#     """
-#     return _type_dispatch(type(a))
-
-#each kind of serialization/parser that has its own type system -- for now, RDF and YAML, I guess -- has to define a mapping
-#from the _fooTypes to its own native representations... often just strings, I guess, but need some operations, too.
