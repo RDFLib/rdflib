@@ -7,7 +7,6 @@ from rdflib.Namespace import Namespace
 from rdflib.exceptions import ParserError
 from rdflib.constants import TYPE
 
-from rdflib.syntax.parser import Parser
 from rdflib.TripleStore import TripleStore
 from rdflib.util import first
 
@@ -27,10 +26,6 @@ class TestStore(TripleStore):
         self.expected = expected
         
     def add(self, (s, p, o)):
-        #from rdflib.syntax.parser import STATEMENT
-        #if o==STATEMENT:
-        #    raise Exception("?")
-
         if not isinstance(s, BNode) and not isinstance(o, BNode):
             if not (s, p, o) in self.expected:
                 m = u"Triple not in expected result: %s, %s, %s" % (s.n3(), p.n3(), o.n3())
