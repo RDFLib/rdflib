@@ -96,7 +96,7 @@ class Graph(object):
         for context in self.__backend.contexts():
             yield context
 
-    def value(self, subject, predicate, object=None, default=None, check_uniqueness=True):
+    def value(self, subject, predicate, object=None, default=None, any=False):
         """
         Get a value for a subject/predicate, predicate/object, or
         subject/object pair -- exactly one of subject, predicate,
@@ -110,9 +110,16 @@ class Graph(object):
         -----------
         subject, predicate, object  -- exactly one must be None
         default -- value to be returned if no values found
-        check_uniqueness -- wether or not a UniquenessError is raise
+        any -- if True:
+                 return any value in the case there is more than one
+               else:
+                 raise UniquenessError
         """	
         retval = default
+        if object is None:
+            assert subject is not None
+            assert predicate is not None
+            values = self.objects(predicate, object)
         if subject is None:
             assert predicate is not None
             assert object is not None
@@ -121,29 +128,27 @@ class Graph(object):
             assert subject is not None
             assert object is not None
             values = self.predicates(subject, object)
-        if object is None:
-            assert subject is not None
-            assert predicate is not None
-            values = self.objects(predicate, object)
-        for v in values:
-            if check_uniqueness and retval != None :
-                # this can happen only if the value is not unique!
-                raise exceptions.UniquenessError(s, p)
-            else:
-                retval = v
+
+        try:
+            retval = value.next()
+        except StopIteration, e:
+            retval = default
+        else:
+            if any is False:
+                try:
+                    value.next()
+                    raise exceptions.UniquenessError(s, p)
+                except StopIteration, e:
+                    pass
         return retval
 
     def label(self, subject, default=''):
         """ Queries for the RDFS.label of the subject, returns default if no label exists. """
-        for s, p, o in self.triples(Triple(subject, RDFS.label, None)):
-            return o
-        return default
+        return self.value(subject, RDFS.label, default=default, any=True)
 
     def comment(self, subject, default=''):
         """ Queries for the RDFS.comment of the subject, returns default if no comment exists. """
-        for s, p, o in self.triples(Triple(subject, RDFS.comment, None)):
-            return o
-        return default
+        return self.value(subject, RDFS.comment, default=default, any=True)
 
     def items(self, list):
         """ """
