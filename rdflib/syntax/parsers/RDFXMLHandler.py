@@ -391,6 +391,7 @@ class RDFXMLHandler(handler.ContentHandler):
                     next.start = self.property_element_start
                     next.end = self.property_element_end
                 elif parse_type=="Collection":
+                    current.char = None                    
                     next.start = self.node_element_start
                     next.end = self.list_node_element_end
                 else: #if parse_type=="Literal":
