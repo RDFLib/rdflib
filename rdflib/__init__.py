@@ -4,7 +4,7 @@ __version__ = "2.1.0"
 
 import sys
 # TODO: what version of python does rdflib require??
-assert sys.version_info >= (2,2,0), "rdflib requires python 2.2 or higher"
+assert sys.version_info >= (2,2,1), "rdflib requires python 2.2.1 or higher"
 del sys
 
 

@@ -34,6 +34,30 @@ class Literal(Identifier):
         s = super(Literal, self).__add__(val)
         return Literal(s, self.language, self.datatype)
     
+    def __eq__(self, other):
+        if other==None:
+            return False
+        elif isinstance(other, Literal):
+            result = self.__cmp__(other)==False
+            if result==True:
+		if self.datatype == None or self.datatype == '' :
+                    if not(other.datatype == None or other.datatype == '') :
+                        return False
+                else:
+                    if other.datatype == None or other.datatype == '' :
+                        return False
+                    elif self.datatype != other.datatype :
+                        return False
+                if self.language!=other.language:
+                    return False
+                return True
+            else:
+                return result
+        elif isinstance(other, Identifier):
+            return False
+        else:
+            return unicode(self)==other
+
     def n3(self):
         language = self.language
         datatype = self.datatype
@@ -49,21 +73,4 @@ class Literal(Identifier):
             else:
                 return '"%s"' % encoded
 
-
-    def __eq__(self, other):
-        if other==None:
-            return 0
-        elif isinstance(other, Literal):
-            result = self.__cmp__(other)==0
-            if result==1:
-                if self.language==other.language:
-                    return 1
-                else:
-                    return 0
-            else:
-                return result
-        elif isinstance(other, Identifier):
-            return 0
-        else:
-            return unicode(self)==other
 
