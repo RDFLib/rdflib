@@ -291,11 +291,21 @@ class Graph(object):
         else :
             return None
 
+    def absolutize(self, uri, defrag=1):
+        return self.namespace_manager.absolutize(uri, defrag)
 
+    def context_id(self, uri):
+        return self.namespace_manager.context_id(uri)
+    
+    def namespace(self, uri):        
+        return self.namespace_manager.namespace(uri)
+
+    
 class ContextBackend(Backend):
 
     def __init__(self, information_store, identifier):
         super(ContextBackend, self).__init__()
+        self.context_aware = False
         self.information_store = information_store
         self.identifier = identifier
 
@@ -314,7 +324,7 @@ class ContextBackend(Backend):
     def __len__(self):
         # TODO: backends should support len
         i = 0
-        for triple in self.triples((None, None, None)):
+        for triple in self.triples(Triple(None, None, None)):
             i += 1
         return i
     

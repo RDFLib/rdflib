@@ -297,9 +297,10 @@ class Sleepycat(Backend):
             if key.startswith(prefix):
                 if context!=None:
                     c, s, p, o = split(key)
+                    yield Triple(fromkey(s), fromkey(p), fromkey(o), fromkey(c))
                 else:
                     s, p, o = split(key)
-                yield  fromkey(s), fromkey(p), fromkey(o)
+                    yield Triple(fromkey(s), fromkey(p), fromkey(o))
             else:
                 break
                     
@@ -546,7 +547,7 @@ class Sleepycat(Backend):
         tokey = self.tokey        
         c = tokey(identifier)
         for triple in self._triples(identifier):
-            self.remove(triple, identifier)
+            self.remove(triple)
         try:
             self.__contexts.delete(c)
         except db.DBNotFoundError, e:

@@ -1,3 +1,7 @@
+- support for creation of namespace objects
+
+- add logging
+
 - NamespaceManager should defer to backend for storage of bindings
 
 - make plugin a class
