@@ -8,6 +8,14 @@ from rdflib.exceptions import ContextTypeError
 
 from rdflib.URIRef import URIRef
 from rdflib.BNode import BNode
+from rdflib.Literal import Literal
+from rdflib.Namespace import Namespace
+
+from rdflib.constants import TYPE
+
+INFORMATION_STORE = Namespace("http://rdflib.net/2002/InformationStore#")
+CONTEXT = INFORMATION_STORE["Context"]
+SOURCE = INFORMATION_STORE["source"]
 
 def check_context(c):
     if not (isinstance(c, URIRef) or \
@@ -21,18 +29,15 @@ class Context(object):
         self.backend = backend
         self.identifier = identifier
 
-    def add(self, (s, p, o)):
-        #context = context or self.identifier
+    def add(self, (subject, predicate, object)):
         context = self.identifier
-        self.backend.add((s, p, o), context)
+        self.backend.add((subject, predicate, object), context)
         
-    def remove(self, (s, p, o)):
-        #context = context or self.identifier
+    def remove(self, (subject, predicate, object)):
         context = self.identifier
-        self.backend.remove((s, p, o), context)
+        self.backend.remove((subject, predicate, object), context)
         
     def triples(self, triple):
-        #context = context or self.identifier
         context = self.identifier
         for triple in self.backend.triples(triple, context):
             yield triple
@@ -41,38 +46,39 @@ class InformationStore(Store):
     def __init__(self, path=None, backend=None):
         backend = backend or SleepyCatBackend()
         super(InformationStore, self).__init__(backend)
-        self.__context = None
         if path:
             self.open(path)
         
-    def __get_context(self):
-        if self.__context==None:            
-            self.__context = BNode()
-        return self.__context
-
-    def __set_context(self, context):
-        self.__context = context
-
-    # Declare context as a property
-    context = property(__get_context, __set_context)
+    def load(self, location, format="xml"):
+        location = self.absolutize(location)
+        for id in self.subjects(SOURCE, location):
+            context = self.get_context(id)
+            self.remove_context(id)
+        id = BNode()
+        context = self.get_context(id)
+        context.add((id, TYPE, CONTEXT))
+        context.add((id, SOURCE, location))
+        context.load(location, format)
 
     def get_context(self, identifier):
         check_context(identifier)        
         return TripleStore(Context(self.backend, identifier))
 
-    def add(self, (subject, predicate, object), context=None):
-        context = context or self.context        
+    def remove_context(self, identifier):
+        self.backend.remove_context(identifier)
+        
+    def add(self, (subject, predicate, object), context):
         check_subject(subject)
         check_predicate(predicate)
         check_object(object)
         check_context(context)
         self.backend.add((subject, predicate, object), context)
 
-    def remove(self, (subject, predicate, object)):
+    def remove(self, (subject, predicate, object), context=None):
         check_subject(subject)
         check_predicate(predicate)
         check_object(object)
-        self.backend.remove((subject, predicate, object))
+        self.backend.remove((subject, predicate, object), context)
 
     def triples(self, (subject, predicate, object)):
         if subject:
