@@ -34,7 +34,7 @@ for person in store.subjects(RDF.type, FOAF["Person"]):
         print mbox
 
 # Serialize the store as RDF/XML to the file foaf.rdf.
-store.graphUnloader().save("foaf.rdf")
+store.save("foaf.rdf")
 
 # Let's show off the serializers
 
@@ -42,11 +42,11 @@ print "RDF Serializations:"
 
 # Serialize as XML
 print "--- start: rdf-xml ---"
-print store.graphUnloader().serialize(format="pretty-xml")
+print store.serialize(format="pretty-xml")
 print "--- end: rdf-xml ---\n"
 
 # Serialize as NTriples
 print "--- start: ntriples ---"
-print store.graphUnloader().serialize(format="nt")
+print store.serialize(format="nt")
 print "--- end: ntriples ---\n"
 

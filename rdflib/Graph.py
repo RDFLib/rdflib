@@ -1,12 +1,11 @@
 from __future__ import generators
 
 from rdflib import Triple, URIRef, BNode, Literal, RDF, RDFS
-
-from rdflib.URLInputSource import URLInputSource
 from rdflib.util import first
-from rdflib.loading import GraphLoader, GraphUnloader
 
-Any = None
+from rdflib.syntax.serializer import SerializationDispatcher
+from rdflib.syntax.parser import ParserDispatcher
+
 
 class Graph(object):
     """
@@ -26,6 +25,8 @@ class Graph(object):
             from rdflib.backends.IOMemory import IOMemory
             backend = IOMemory()
         self.__backend = backend
+        self.__parser = None
+        self.__serializer = None
 
         self.__default_context = BNode() # TODO: have some static default context?        
         self.__ns_prefix_map = {}
@@ -33,6 +34,20 @@ class Graph(object):
 
         self.prefix_mapping("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
         self.prefix_mapping("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
+
+    def _get_parser(self):
+        if self.__parser is None:
+            self.__parser = ParserDispatcher(self)
+        return self.__parser
+
+    parser = property(_get_parser)
+
+    def _get_serializer(self):
+        if self.__serializer is None:
+            self.__serializer = SerializationDispatcher(self)
+        return self.__serializer
+
+    serializer = property(_get_serializer)
 
     # these three properties and their accesors are to be b/w
     # compatible while still alowing graphs to calculate their state.
@@ -235,17 +250,19 @@ class Graph(object):
                 for s in self.transitive_subjects(predicate, subject, remember):
                     yield s
 
-    def graphLoader(self):
-        """ Return a graph loader around this graph. """
-        return GraphLoader(self)
-
-    def graphUnloader(self):
-        """ Return a graph unloader around this graph. """
-        return GraphUnloader(self)
-
     def load(self, location, publicID=None, format="xml"):
         """ for b/w compat. """
-        return self.graphLoader().load(location, publicID, format)
+        return self.parser.load(location, publicID, format)
+
+    def save(self, location, format="xml"):
+        return self.serializer.serialize(destination=location, format=format) 
+
+    def parse(self, source, publicID=None, format="xml"):
+        return self.parser.parse(source=source, publicID=publicID, format=format) 
+
+    def serialize(self, destination=None, format="xml"):
+        return self.serializer.serialize(destination=destination, format=format) 
+
 
 
 class ContextBackend(object):

@@ -50,7 +50,7 @@ class SerializationDispatcher(object):
             self.__serializer[format] = serializer
         return serializer
 
-    def __call__(self, destination=None, format="xml"):
+    def serialize(self, destination=None, format="xml"):
         if destination is None:
             stream = StringIO()
             self.serializer(format).serialize(stream)
