@@ -4,11 +4,15 @@
 
 - Push down getSeq from Ivan in some form
   
-- add __slots__ to Triple (anywhere else?)
-
 - fix license on backends
 
 - write some docs for these new interfaces
+
+--
+
+- add description of all serializers
+
+- add test cases to run through all serializers
 
 - need a test for a graph that's not serializable
   - raise Error("This graph cannot be serialized in RDF/XML. Could not split predicate: '%s'" % predicate)
@@ -20,17 +24,8 @@
 - clean up arguments parse method takes 
   (eg. a string containing value to be parsed) sniff?
 
----
 
-- intern identifiers?
-- <jeremiah>	is there a way to text-search over literals yet?
 
-- finish n3 serializers
-- n3 parsers; finish ntriples parser
-
-- fast-ugly xml serializer (profile, remove nesting)
-- heuristic between fast-xml and slow-xml, the "xml" default
-- add a "fast-xml" and "pretty-xml" separate serialize options
 
 
 
