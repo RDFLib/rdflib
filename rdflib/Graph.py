@@ -62,25 +62,6 @@ class Graph(object):
         if hasattr(self.backend, "close"):
             self.backend.close()
 
-    def check_subject(self, s):
-        if not (isinstance(s, URIRef) or isinstance(s, BNode)):
-            raise SubjectTypeError(s)
-
-    def check_predicate(self, p):
-        if not isinstance(p, URIRef):
-            raise PredicateTypeError(p)
-
-    def check_object(self, o):
-        if not (isinstance(o, URIRef) or \
-           isinstance(o, Literal) or \
-           isinstance(o, BNode)):
-            raise ObjectTypeError(o)
-
-    def check_context(self, c):
-        if not (isinstance(c, URIRef) or \
-           isinstance(c, BNode)):
-            raise ContextTypeError("%s:%s" % (c, type(c)))
-
     def absolutize(self, uri, defrag=1):
         # TODO: make base settable
         base = urljoin("file:", pathname2url(os.getcwd()))
@@ -212,7 +193,8 @@ class Graph(object):
             yield p, o
 
     def get_context(self, identifier):
-        self.check_context(identifier)        
+        assert isinstance(identifier, URIRef) or \
+               isinstance(identifier, BNode)
         return Context(self.backend, identifier)
 
     def remove_context(self, identifier):
@@ -222,41 +204,20 @@ class Graph(object):
         if not isinstance(triple, Triple):
             s, p, o = triple
             triple = Triple(s, p, o)
+        assert triple.isStatement()
         triple.context = context or self.default_context
-        #self.check_subject(subject)
-        #self.check_predicate(predicate)
-        #self.check_object(object)
-#         context = context or self.default_context
-#         if context:
-#             self.check_context(context)            
         self.backend.add(triple)
 
     def remove(self, triple):
         if not isinstance(triple, Triple):
             s, p, o = triple
             triple = Triple(s, p, o)
-#         if subject:
-#             self.check_subject(subject)
-#         if predicate:
-#             self.check_predicate(predicate)
-#         if object:
-#             self.check_object(object)
-#         if context:
-#             self.check_context(context)
         self.backend.remove(triple)
 
     def triples(self, triple):
         if not isinstance(triple, Triple):
             s, p, o = triple
             triple = Triple(s, p, o)
-#         if subject:
-#             self.check_subject(subject)
-#         if predicate:
-#             self.check_predicate(predicate)
-#         if object:
-#             self.check_object(object)
-#         if context:
-#             self.check_context(context)
         for t in self.backend.triples(triple):
             yield t
         
@@ -284,8 +245,6 @@ class Graph(object):
             for subject in self.subjects(predicate, object):
                 for s in self.transitive_subjects(predicate, subject, remember):
                     yield s
-
-
 
 
 class ContextBackend(object):
@@ -319,3 +278,4 @@ class Context(Graph):
     def __init__(self, information_store, identifier):
         super(Context, self).__init__(None, ContextBackend(information_store, identifier))
         self.identifier = identifier
+
