@@ -35,13 +35,11 @@ pos[p][o][s] = 1.
             po = spo[subject]
         except:
             po = spo[subject] = {}
-        #sp = self.__spo.setdefault(subject, {})
         try:
             o = po[predicate]
         except:
             o = po[predicate] = {}
         o[object] = 1
-        #sp.setdefault(predicate, {})[object] = 1
         
         pos = self.__pos
         try:
@@ -53,11 +51,17 @@ pos[p][o][s] = 1.
         except:
             s = os[object] = {}
         s[subject] = 1
-        #po = self.__pos.setdefault(predicate, {})
-        #po.setdefault(object, {})[subject] = 1
 
-        os = self.__osp.setdefault(object, {})
-        os.setdefault(subject, {})[predicate] = 1
+        osp = self.__osp
+        try:
+            sp = osp[object]
+        except:
+            sp = osp[object] = {}
+        try:
+            s = sp[subject]
+        except:
+            s = sp[subject] = {}
+        p[predicate] = 1
 
     def remove(self, (subject, predicate, object)):
         for subject, predicate, object in self.triples((subject, predicate, object)):
