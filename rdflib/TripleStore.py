@@ -8,11 +8,11 @@ from rdflib.backends.Concurrent import Concurrent
 
 class TripleStore(Store):
 
-    def __init__(self, location=None, backend=None, name=None, asserted=False):
+    def __init__(self, location=None, backend=None):
         if backend==None:
             #backend = Concurrent(InMemoryBackend())
             backend = InMemoryBackend()
-        super(TripleStore, self).__init__(backend, name, asserted)
+        super(TripleStore, self).__init__(backend)
         if location:
             self.load(location)
 
