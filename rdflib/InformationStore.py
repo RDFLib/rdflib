@@ -22,10 +22,10 @@ def check_context(c):
        isinstance(c, BNode)):
         raise ContextTypeError("%s:%s" % (c, type(c)))
 
-class Context(object):
+class ContextBackend(object):
 
     def __init__(self, backend, identifier):
-        super(Context, self).__init__()
+        super(ContextBackend, self).__init__()
         self.backend = backend
         self.identifier = identifier
 
@@ -50,6 +50,12 @@ class Context(object):
         return i
     
 
+class Context(TripleStore):
+    def __init__(self, backend, identifier):
+        super(Context, self).__init__(None, ContextBackend(backend, identifier))
+        self.identifier = identifier
+
+
 class InformationStore(Store):
     def __init__(self, path=None, backend=None):
         backend = backend or SleepyCatBackend()
@@ -70,7 +76,7 @@ class InformationStore(Store):
 
     def get_context(self, identifier):
         check_context(identifier)        
-        return TripleStore(None, Context(self.backend, identifier))
+        return Context(self.backend, identifier)
 
     def remove_context(self, identifier):
         self.backend.remove_context(identifier)
