@@ -24,25 +24,22 @@ def check_context(c):
        isinstance(c, BNode)):
         raise ContextTypeError("%s:%s" % (c, type(c)))
 
+
 class ContextBackend(object):
 
-    def __init__(self, backend, identifier):
+    def __init__(self, information_store, identifier):
         super(ContextBackend, self).__init__()
-        self.backend = backend
+        self.information_store = information_store
         self.identifier = identifier
 
     def add(self, (subject, predicate, object)):
-        context = self.identifier
-        self.backend.add((subject, predicate, object), context)
+        self.information_store.add((subject, predicate, object), self.identifier)
         
     def remove(self, (subject, predicate, object)):
-        context = self.identifier
-        self.backend.remove((subject, predicate, object), context)
+        self.information_store.remove((subject, predicate, object), self.identifier)
         
     def triples(self, (subject, predicate, object)):
-        context = self.identifier
-        for triple in self.backend.triples((subject, predicate, object), context):
-            yield triple
+        return self.information_store.triples((subject, predicate, object), self.identifier)
 
     def __len__(self):
         # TODO: backends should support len
@@ -53,8 +50,8 @@ class ContextBackend(object):
     
 
 class Context(TripleStore):
-    def __init__(self, backend, identifier):
-        super(Context, self).__init__(None, ContextBackend(backend, identifier))
+    def __init__(self, information_store, identifier):
+        super(Context, self).__init__(None, ContextBackend(information_store, identifier))
         self.identifier = identifier
 
 
