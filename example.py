@@ -45,7 +45,7 @@ print "RDF Serializations:"
 
 # Serialize as XML
 print "--- start: rdf-xml ---"
-print store.serialize()
+print store.serialize(format="pretty-xml")
 print "--- end: rdf-xml ---\n"
 
 # Serialize as NTriples

@@ -60,3 +60,18 @@ def is_ncname(name):
     else:
         return 0
                 
+def split_uri(predicate):
+    predicate = predicate
+    length = len(predicate)
+    for i in xrange(0, length):
+        if not category(predicate[-i-1]) in NAME_CATEGORIES:
+            for j in xrange(-1-i, length):
+                if category(predicate[j]) in NAME_START_CATEGORIES:
+                    ns = predicate[:j]
+                    if not ns:
+                        break
+                    ln = predicate[j:]
+                    return (ns, ln)
+            break
+    raise Error("This graph cannot be serialized in RDF/XML. Could not split predicate: '%s'" % predicate)
+
