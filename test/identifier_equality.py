@@ -6,6 +6,7 @@ from rdflib.Literal import Literal
 from rdflib.BNode import BNode
 
 from rdflib.constants import CORE_SYNTAX_TERMS
+
 class TypeCheckCase(unittest.TestCase):
 
     def testA(self):
@@ -15,19 +16,17 @@ class TypeCheckCase(unittest.TestCase):
         python_literal = u"http://example.org/"
         python_literal_2 = u"foo"
 
-        print uriref==literal
-        print literal==uriref
+        self.assertEquals(uriref==literal, False)
+        self.assertEquals(literal==uriref, False)
         
-        print uriref==python_literal
-        print python_literal==uriref
+        self.assertEquals(uriref==python_literal, True)
+        self.assertEquals(python_literal==uriref, True)
         
-        print literal==python_literal
-        print python_literal==literal
+        self.assertEquals(literal==python_literal, True)
+        self.assertEquals(python_literal==literal, True)
 
-        print "---"
-        print "foo" in CORE_SYNTAX_TERMS
-        print "http://www.w3.org/1999/02/22-rdf-syntax-ns#RDF" in CORE_SYNTAX_TERMS
-        print "??"
+        self.assertEquals("foo" in CORE_SYNTAX_TERMS, False)
+        self.assertEquals("http://www.w3.org/1999/02/22-rdf-syntax-ns#RDF" in CORE_SYNTAX_TERMS, True) 
 
 
 if __name__ == "__main__":
