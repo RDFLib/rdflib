@@ -2,13 +2,26 @@ from rdflib import URIRef, BNode, Literal
 from rdflib.exceptions import SubjectTypeError, PredicateTypeError, ObjectTypeError
 
 
-class Triple(tuple):
-    def __new__(cls, s, p, o, c=None):
-        return tuple.__new__(cls, (s, p, o)) 
-
+class Triple(object):
+    __slots__ = ["subject", "predicate", "object", "context"]
+    
     def __init__(self, s, p, o, c=None):
+        self.subject = s
+        self.predicate = p
+        self.object = o
         self.context = c
 
+    def __iter__(self):
+        yield self.subject
+        yield self.predicate
+        yield self.object
+
+    def __getitem__(self, index):
+        # TODO: optimize
+        # index may be slice object see:
+        #   http://docs.python.org/ref/sequence-types.html
+        return (self.subject, self.predicate, self.object)[index]
+        
     def check_statement(self):
         s, p, o = self
         if not (isinstance(s, URIRef) or isinstance(s, BNode)):
