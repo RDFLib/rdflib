@@ -44,7 +44,7 @@ class NamespaceManager(object):
                 num = 1                
                 while 1:
                     new_prefix = "%s%s" % (prefix, num)
-                    if new_prefix not in prefix_ns:
+                    if new_prefix not in self.__namespace:
                         break
                     num +=1
                 self.__prefix[namespace] = new_prefix

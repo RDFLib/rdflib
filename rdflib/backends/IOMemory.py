@@ -101,6 +101,11 @@ class IOMemory(Backend):
         Add a triple to the store.
         """
 
+        for triple in self.triples(triple):
+            #triple is already in the store.            
+            return
+        self.count = self.count + 1
+
         subject, predicate, object = triple
         context = triple.context or self.default_context
         
@@ -197,8 +202,6 @@ class IOMemory(Backend):
             p = sp[si] = self.createIndex()
         p[pi] = 1
 
-        # TODO: check that triple wasn't already in the store.
-        self.count = self.count + 1
 
     def remove_context(self, context):
         self.remove(Triple(Any, Any, Any, context))

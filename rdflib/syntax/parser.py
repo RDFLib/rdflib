@@ -16,10 +16,10 @@ class Parser(object):
         self.parser = parser
 
     def _get_store(self):
-        return self.serializer.store
+        return self.parser.store
 
     def _set_store(self, store):
-        self.serializer.store = store
+        self.parser.store = store
         
     store = property(_get_store, _set_store)
 
@@ -58,11 +58,14 @@ class Parser(object):
         location (if publicID is not provided )as the context of the
         new graph.  Removes any information in the old context,
         returns the new context."""
-        location = self._absolutize(location)
-        id = self._context_id(publicID or location)
-        self.store.remove_context(id)
-        context = self.store.get_context(id)
-#        context.add((id, RDF.type, CONTEXT))
-#        context.add((id, SOURCE, location))
+        if self.store.context_aware:
+            location = self._absolutize(location)
+            id = self._context_id(publicID or location)
+            self.store.remove_context(id)
+            context = self.store.get_context(id)
+            # context.add((id, RDF.type, CONTEXT))
+            # context.add((id, SOURCE, location))
+        else:
+            context = self.store
         context.parse(source=location, publicID=publicID, format=format)
         return context

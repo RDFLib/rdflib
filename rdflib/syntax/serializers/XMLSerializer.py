@@ -19,23 +19,13 @@ class XMLSerializer(Serializer):
         super(XMLSerializer, self).__init__(store)
 
     def __update_prefix_map(self):
-        self.namespaceCount = len(self.store.ns_prefix_map)
-        ns_prefix_map = self.store.ns_prefix_map
+        nm = self.store.namespace_manager
         for predicate in uniq(self.store.predicates()): 
-            uri, localName = split_predicate(predicate)            
-            if not uri in ns_prefix_map:
-                self.namespaceCount += 1
-                prefix = "n%s" % self.namespaceCount
-                assert prefix not in ns_prefix_map
-                ns_prefix_map[uri] = prefix
-            else:
-                prefix = ns_prefix_map[uri]
-            self.__predicate_names_map[predicate] = uri, localName, prefix
+            nm.compute_qname(predicate)
             
     def serialize(self, stream):
         self.__stream = stream        
         self.__serialized = {}
-        self.__predicate_names_map = {}        
         self.__update_prefix_map()
         encoding = self.encoding
         self.write = write = lambda uni: stream.write(uni.encode(encoding, 'replace'))
@@ -44,10 +34,9 @@ class XMLSerializer(Serializer):
         write('<?xml version="1.0" encoding="%s"?>\n' % self.encoding)        
 
         # startRDF
-        namespaces = self.store.ns_prefix_map
         write('<rdf:RDF\n')
-        assert(namespaces["http://www.w3.org/1999/02/22-rdf-syntax-ns#"]=='rdf')
-        for (namespace, prefix) in namespaces.iteritems():
+        # TODO: assert(namespaces["http://www.w3.org/1999/02/22-rdf-syntax-ns#"]=='rdf')
+        for prefix, namespace in self.store.namespace_manager.namespaces():
             write('   xmlns:%s="%s"\n' % (prefix, namespace))
         write('>\n')
         
@@ -61,7 +50,6 @@ class XMLSerializer(Serializer):
         # Set to None so that the memory can get garbage collected.        
         #self.__serialized = None
         del self.__serialized
-        del self.__predicate_names_map
         
 
     def subject(self, subject, depth=1):
@@ -87,7 +75,7 @@ class XMLSerializer(Serializer):
     def predicate(self, predicate, object, depth=1):
         write = self.write
         indent = "  " * depth
-        namespace, localName, prefix = self.__predicate_names_map[predicate]
+        qname = self.store.namespace_manager.qname(predicate)
         if isinstance(object, Literal):
             attributes = ""
             if object.language:
@@ -96,14 +84,14 @@ class XMLSerializer(Serializer):
             if object.datatype:
                 attributes += ' rdf:datatype="%s"'%object.datatype
             
-            write("%s<%s:%s%s>%s</%s:%s>\n" %
-                  (indent, prefix, localName, attributes,
-                   escape(object), prefix, localName) )
+            write("%s<%s%s>%s</%s>\n" %
+                  (indent, qname, attributes,
+                   escape(object), qname) )
         else:
             if isinstance(object, BNode):
-                write('%s<%s:%s rdf:nodeID="%s"/>\n' %
-                      (indent, prefix, localName, object[2:]))
+                write('%s<%s rdf:nodeID="%s"/>\n' %
+                      (indent, qname, object[2:]))
             else:
-                write("%s<%s:%s rdf:resource=%s/>\n" %
-                      (indent, prefix, localName, quoteattr(object)))
+                write("%s<%s rdf:resource=%s/>\n" %
+                      (indent, qname, quoteattr(object)))
 

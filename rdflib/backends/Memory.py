@@ -15,7 +15,7 @@ pos[p][o][s] = 1.
     """    
     def __init__(self):
         super(Memory, self).__init__()
-        
+        self.context_aware = False
         # indexed by [subject][predicate][object]
         self.__spo = {}
 

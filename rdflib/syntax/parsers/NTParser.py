@@ -50,10 +50,9 @@ def lang_string(v):
         raise NotImplementedError()
 
 class NTParser(Parser):
-    short_name = "nt"
     
     def __init__(self, store):
-        super(NTParser, self).__init__()
+        super(NTParser, self).__init__(store)
         self.store = store
 
     def parse(self, source, baseURI=None):

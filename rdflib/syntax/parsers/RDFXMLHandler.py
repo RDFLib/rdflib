@@ -258,7 +258,7 @@ class RDFXMLHandler(handler.ContentHandler):
             self.error("Invalid node element URI: %s" % name)
 
         if RDF.ID in atts:
-            if ABOUT in atts or RDF.nodeID in atts:
+            if RDF.about in atts or RDF.nodeID in atts:
                 self.error("Can have at most one of rdf:ID, rdf:about, and rdf:nodeID")
 
             id = atts[RDF.ID]
@@ -269,7 +269,7 @@ class RDFXMLHandler(handler.ContentHandler):
                 self.error("two elements cannot use the same ID: '%s'" % subject)
             self.ids[subject] = 1 # IDs can only appear once within a document
         elif RDF.nodeID in atts:
-            if RDF.ID in atts or ABOUT in atts:
+            if RDF.ID in atts or RDF.about in atts:
                 self.error("Can have at most one of rdf:ID, rdf:about, and rdf:nodeID")
             nodeID = atts[RDF.nodeID]
             if not is_ncname(nodeID):
@@ -288,9 +288,6 @@ class RDFXMLHandler(handler.ContentHandler):
 
         if name!=RDF.Description: # S1
             self.store.add((subject, RDF.type, absolutize(name)))
-
-        if RDF.type in atts: # S2
-            self.store.add((subject, RDF.type, absolutize(atts[RDF.type])))
 
         language = current.language
         for att in atts:

@@ -35,6 +35,10 @@ class Graph(object):
         return self.__namespace_manager
     namespace_manager = property(_get_namespace_manager)
 
+    def _get_context_aware(self):
+        return self.__backend.context_aware
+    context_aware = property(_get_context_aware)
+
     def bind(self, prefix, namespace):        
         self.__namespace_manager.bind(prefix, namespace)
 
@@ -288,7 +292,7 @@ class Graph(object):
             return None
 
 
-class ContextBackend(object):
+class ContextBackend(Backend):
 
     def __init__(self, information_store, identifier):
         super(ContextBackend, self).__init__()
