@@ -14,7 +14,7 @@
 
 Any = None
 
-from rdflib import Triple
+from rdflib import Triple, BNode
 
 class IOMemory(object):
     """\
@@ -30,7 +30,7 @@ class IOMemory(object):
 
     """    
 
-    def __init__(self):
+    def __init__(self, default_context=None):
         
         # indexed by [subject][predicate][object] = 1
         self.cspo = self.createIndex()
@@ -47,7 +47,24 @@ class IOMemory(object):
         # reverse index of forward
         self.reverse = self.createReverse()
 
+        if default_context is None:
+            default_context = BNode()
+            
+        self.default_context = default_context
+
+        self.ns_prefix_map = self.createPrefixMap()
+        self.prefix_ns_map = self.createPrefixMap()
+
         self.count = 0
+
+    def getNSPrefixMap(self):
+        return self.ns_prefix_map
+
+    def getPrefixNSMap(self):
+        return self.prefix_ns_map
+
+    def defaultContext(self):
+        return self.default_context
 
     def addContext(self, context):
         """ Add context w/o adding statement. Dan you can remove this if you want """
@@ -85,6 +102,9 @@ class IOMemory(object):
         return {}
 
     def createIndex(self):
+        return {}
+
+    def createPrefixMap(self):
         return {}
 
     def add(self, triple):
@@ -191,18 +211,24 @@ class IOMemory(object):
         # TODO: check that triple wasn't already in the store.
         self.count = self.count + 1
 
+    def remove_context(self, context):
+        self.remove(Triple(Any, Any, Any, context))
+
     def remove(self, triple):
+        f = self.forward
+        r = self.reverse
         for triple in self.triples(triple):
-            f = self.forward
-            r = self.reverse
-            subject, predicate, object = triple        
-            si, pi, oi = self.identifierToInt((subject, predicate, object))
-            context = triple.context            
-            ci = r[context]
-            del self.cspo[ci][si][pi][oi]
-            del self.cpos[ci][pi][oi][si]
-            del self.cosp[ci][oi][si][pi]
-            self.count = self.count - 1
+            try:
+                subject, predicate, object = triple        
+                si, pi, oi = self.identifierToInt((subject, predicate, object))
+                context = triple.context            
+                ci = r[context]
+                del self.cspo[ci][si][pi][oi]
+                del self.cpos[ci][pi][oi][si]
+                del self.cosp[ci][oi][si][pi]
+                self.count = self.count - 1
+            except KeyError:
+                continue
 
             # grr!! hafta ref-count these before you can collect them dumbass!
 #             del f[si]
@@ -211,6 +237,8 @@ class IOMemory(object):
 #             del r[subject]
 #             del r[predicate]
 #             del r[object]
+
+
 
     def triples(self, triple):
         """A generator over all the triples matching """
@@ -224,9 +252,9 @@ class IOMemory(object):
                     yield triple
             return
 
-        si = pi = oi = Any
-        ci = self.reverse[context]  # throws a keyerror if not context
+        ci = si = pi = oi = Any
         try:
+            ci = self.reverse[context]  # throws a keyerror if not context
             if subject is not Any:
                 si = self.reverse[subject] # throws keyerror if subject doesn't exist ;(
             if predicate is not Any:

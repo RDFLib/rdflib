@@ -1,5 +1,12 @@
 from rdflib.exceptions import ParserDispatchNameError, ParserDispatchNameClashError
 import rdflib.syntax.parsers
+from rdflib.URLInputSource import URLInputSource
+from rdflib.URIRef import URIRef
+from xml.sax.xmlreader import InputSource
+
+from urlparse import urljoin, urldefrag
+from urllib import pathname2url, url2pathname
+import os
 
 class AbstractParser(object):
 

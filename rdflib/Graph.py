@@ -2,18 +2,11 @@ from __future__ import generators
 
 from rdflib import Triple, URIRef, BNode, Literal, RDF, RDFS
 
-from rdflib.syntax.serializer import SerializationDispatcher
-from rdflib.syntax.parser import ParserDispatcher
-
 from rdflib.URLInputSource import URLInputSource
 from rdflib.util import first
-
-
-from urlparse import urljoin, urldefrag
-from urllib import pathname2url, url2pathname
+from rdflib.loading import GraphLoader, GraphUnloader
 
 Any = None
-
 
 class Graph(object):
     """
@@ -33,16 +26,40 @@ class Graph(object):
             from rdflib.backends.IOMemory import IOMemory
             backend = IOMemory()
         self.__backend = backend
-        self.__parse_dispatcher = ParserDispatcher(self)                        
-        self.__serialization_dispatcher = SerializationDispatcher(self)
 
-        self.default_context = BNode() # TODO: have some static default context?        
-        
-        self.ns_prefix_map = {}
-        self.prefix_ns_map = {}
+        self.__default_context = BNode() # TODO: have some static default context?        
+        self.__ns_prefix_map = {}
+        self.__prefix_ns_map = {}
+
         self.prefix_mapping("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
         self.prefix_mapping("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
 
+    # these three properties and their accesors are to be b/w
+    # compatible while still alowing graphs to calculate their state.
+    # By defaults tries to defer all state to the backend, otherwise
+    # degenerates into the old behavior.
+
+    def defaultContext(self):
+        if hasattr(self.__backend, 'defaultContext'):
+            return self.__backend.defaultContext()
+        return self.__default_context
+
+    default_context = property(defaultContext)
+
+    def getNSPrefixMap(self):
+        if hasattr(self.__backend, 'getNSPrefixMap'):
+            return self.__backend.getNSPrefixMap()
+        return self.__ns_prefix_map
+
+    ns_prefix_map = property(getNSPrefixMap)
+
+
+    def getPrefixNSMap(self):
+        if hasattr(self.__backend, 'getPrefixNSMap'):
+            return self.__backend.getPrefixNSMap()
+        return self.__prefix_ns_map
+
+    prefix_ns_map = property(getPrefixNSMap)
 
     def open(self, path):
         """ Open the graph backend.  Might be necessary for backends
@@ -55,43 +72,6 @@ class Graph(object):
         that require closing a connection to a database or releasing some resource."""
         if hasattr(self.__backend, "close"):
             self.__backend.close()
-
-    def _absolutize(self, uri, defrag=1):
-        base = urljoin("file:", pathname2url(os.getcwd()))
-        uri = urljoin("%s/" % base, uri)
-        if defrag:
-            uri, frag = urldefrag(uri)            
-        return URIRef(uri)
-
-    def _context_id(self, uri):
-        uri = uri.split("#", 1)[0]
-        return URIRef("%s#context" % uri)
-    
-    def load(self, location, publicID=None, format="xml"):
-        """ Load a URL into the graph using either the publicID or the
-        location (if publicID is not provided )as the context of the
-        new graph.  Removes any information in the old context,
-        returns the new context."""
-        location = self._absolutize(location)
-        id = self._context_id(publicID or location)
-        self.remove_context(id)
-        context = self.get_context(id)
-        context.add((id, RDF.type, CONTEXT))
-        context.add((id, SOURCE, location))
-        context.parse(source=location, publicID=publicID, format=format)
-        return context
-
-    def parse(self, source, publicID=None, format="xml"):
-        """ Parses the given source into the graph. """
-        return self.__parser_dispatcher(source=source, publicID=publicID, format=format)
-
-    def save(self, location, format="xml"):
-        """ Serializes the store to a given location """
-        return self.serialize(destination=location, format=format)
-
-    def serialize(self, destination=None, format="xml"):
-        """ Serializes the store to a given location.  Exactly how is this different from save? ;) """        
-        return self.__serialization_dispatcher(destination=destination, format=format)            
 
     def add(self, triple, context=None):
         """ Add a triple, optionally provide a context.  A 3-tuple or
@@ -255,6 +235,18 @@ class Graph(object):
                 for s in self.transitive_subjects(predicate, subject, remember):
                     yield s
 
+    def graphLoader(self):
+        """ Return a graph loader around this graph. """
+        return GraphLoader(self)
+
+    def graphUnloader(self):
+        """ Return a graph unloader around this graph. """
+        return GraphUnloader(self)
+
+    def load(self, location, publicID=None, format="xml"):
+        """ for b/w compat. """
+        return self.graphLoader().load(location, publicID, format)
+
 
 class ContextBackend(object):
 
@@ -285,6 +277,6 @@ class ContextBackend(object):
 
 class Context(Graph):
     def __init__(self, information_store, identifier):
-        super(Context, self).__init__(None, ContextBackend(information_store, identifier))
+        super(Context, self).__init__(ContextBackend(information_store, identifier))
         self.identifier = identifier
 

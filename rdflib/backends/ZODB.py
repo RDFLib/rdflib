@@ -18,6 +18,7 @@ from rdflib.backends.IOMemory import IOMemory
 from persistent import Persistent
 from BTrees.IOBTree import IOBTree
 from BTrees.OIBTree import OIBTree
+from BTrees.OOBTree import OOBTree
 
 class ZODB(Persistent, IOMemory):
 
@@ -30,3 +31,5 @@ class ZODB(Persistent, IOMemory):
     def createIndex(self):
         return IOBTree()
 
+    def createPrefixMap(self):
+        return OOBTree()
