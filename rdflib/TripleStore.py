@@ -9,7 +9,8 @@ class TripleStore(Store):
 
     def __init__(self, location=None, backend=None):
         if backend==None:
-            backend = Concurrent(InMemoryBackend())
+            #backend = Concurrent(InMemoryBackend())
+            backend = InMemoryBackend()
         super(TripleStore, self).__init__(backend)
         if location:
             self.load(location)
@@ -27,7 +28,7 @@ class TripleStore(Store):
             check_predicate(predicate)
         if object:
             check_object(object)
-        self.backend.remove((s, p, o))        
+        self.backend.remove((subject, predicate, object))        
         
     def triples(self, (subject, predicate, object)):
         if subject:
