@@ -1,5 +1,7 @@
 from __future__ import generators
 
+from rdflib import Triple
+
 from sys import version_info
 if version_info[0:2] > (2, 2):
     # Part of Python's standard library
@@ -226,36 +228,36 @@ class SleepyCatBackend(object):
                         c = tokey(context)
                         key = "%s%s%s%s" % (c, s, p, o)
                         if self.__cspo.has_key(key):
-                            yield subject, predicate, object
+                            yield Triple(subject, predicate, object)
                     else:
                         key = "%s%s%s" % (s, p, o)
                         if self.__spo.has_key(key):
-                            yield subject, predicate, object
+                            yield Triple(subject, predicate, object)
                 else:
                     for o in self._objects(subject, predicate, context):
-                        yield subject, predicate, o
+                        yield Triple(subject, predicate, o)
             else:
                 if object!=None:
                     for p in self._predicates(subject, object, context):
-                        yield subject, p, object
+                        yield Triple(subject, p, object)
                 else:
                     for p, o in self._predicate_objects(subject, context):
-                        yield subject, p, o
+                        yield Triple(subject, p, o)
         else:
             if predicate!=None:
                 if object!=None:
                     for s in self._subjects(predicate, object, context):
-                        yield s, predicate, object
+                        yield Triple(s, predicate, object)
                 else:
                     for s, o in self._subject_objects(predicate, context):
-                        yield s, predicate, o
+                        yield Triple(s, predicate, o)
             else:
                 if object!=None:
                     for s, p in self._subject_predicates(object, context):
-                        yield s, p, object
+                        yield Triple(s, p, object)
                 else: 
                     for s, p, o in self._triples(context):
-                        yield s, p, o
+                        yield Triple(s, p, o)
 
 
     def _triples(self, context):

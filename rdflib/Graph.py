@@ -36,7 +36,7 @@ class Graph(object):
                 from rdflib.backends.InMemoryBackend import InMemoryBackend
                 backend = InMemoryBackend()
                 self.default_context = None
-            elif 1:
+            elif 0:
                 from rdflib.backends.IOInMemoryContextBackend import IOInMemoryContextBackend
                 backend = IOInMemoryContextBackend()
                 self.default_context = BNode()                
