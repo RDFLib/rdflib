@@ -33,16 +33,16 @@ class Graph(object):
         super(Graph, self).__init__()
         if backend is None:
             if 0:
-                from rdflib.backends.InMemoryBackend import InMemoryBackend
-                backend = InMemoryBackend()
+                from rdflib.backends.Memory import Memory
+                backend = Memory()
                 self.default_context = None
-            elif 0:
-                from rdflib.backends.IOInMemoryContextBackend import IOInMemoryContextBackend
-                backend = IOInMemoryContextBackend()
+            elif 1:
+                from rdflib.backends.IOMemory import IOMemory
+                backend = IOMemory()
                 self.default_context = BNode()                
             else:
-                from rdflib.backends.SleepyCatBackend import SleepyCatBackend
-                backend = SleepyCatBackend()
+                from rdflib.backends.SleepyCat import SleepyCat
+                backend = SleepyCat()
                 backend.open("tmp")
                 self.default_context = BNode()
         self.backend = backend

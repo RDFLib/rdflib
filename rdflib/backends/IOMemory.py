@@ -1,4 +1,4 @@
-##############################################################################
+#############################################################################
 #
 # Copyright (c) 2004-1005 Michel Pelletier
 # All Rights Reserved.
@@ -16,7 +16,7 @@ Any = None
 
 from rdflib import Triple
 
-class IOInMemoryContextBackend(object):
+class IOMemory(object):
     """\
     An integer-key-optimized-context-aware-in-memory backend.
 

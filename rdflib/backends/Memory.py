@@ -4,7 +4,7 @@ ANY = None
 
 from rdflib import Triple
 
-class InMemoryBackend(object):
+class Memory(object):
     """\
 An in memory implementation of a triple store.
 
@@ -13,7 +13,7 @@ triple is stored in two such indices as follows spo[s][p][o] = 1 and
 pos[p][o][s] = 1.
     """    
     def __init__(self):
-        super(InMemoryBackend, self).__init__()
+        super(Memory, self).__init__()
         
         # indexed by [subject][predicate][object]
         self.__spo = {}
