@@ -10,6 +10,15 @@ from rdflib.syntax.serializers.XMLWriter import XMLWriter
 XMLLANG = "http://www.w3.org/XML/1998/namespacelang"
 
 
+# TODO: 
+def fix(val):
+    "strip off _: from nodeIDs... as they are not valid NCNames"
+    if val.startswith("_:"):
+        return val[2:]
+    else:
+        return val
+
+    
 class PrettyXMLSerializer(Serializer):
 
     def __init__(self, store):
@@ -22,14 +31,15 @@ class PrettyXMLSerializer(Serializer):
         nm = store.namespace_manager
         self.writer = writer = XMLWriter(stream, nm)
 
-        #for prefix, namespace in store.namespaces():
-        #    nm.set_prefix(prefix, namespace)        
+        namespaces = {}
+        nm.reset()
         possible = uniq(store.predicates()) + uniq(store.objects(None, RDF.type))
-        #for predicate in possible:
-        #    nm.compute_qname(predicate)
+        for predicate in possible:
+            prefix, namespace, local = nm.compute_qname(predicate)
+            namespaces[prefix] = namespace
 
         writer.push(RDF.RDF)            
-        writer.namespaces(nm.namespaces())
+        writer.namespaces(namespaces.iteritems())
         
         # Write out subjects that can not be inline
         for subject in store.subjects():
@@ -58,8 +68,8 @@ class PrettyXMLSerializer(Serializer):
             element = type or RDF.Description
             writer.push(element)
             if isinstance(subject, BNode):
-                if more_than(store.triples((None, None, subject)), 2):
-                    writer.attribute(RDF.nodeID, subject)
+                if more_than(store.triples((None, None, subject)), 1):
+                    writer.attribute(RDF.nodeID, fix(subject))
             else:
                 writer.attribute(RDF.about, subject)
             if (subject, None, None) in store:
@@ -81,8 +91,8 @@ class PrettyXMLSerializer(Serializer):
             writer.text(object)
         elif object in self.__serialized or not (object, None, None) in store:
             if isinstance(object, BNode):
-                if more_than(store.triples((None, None, object)), 2):
-                    writer.attribute(RDF.nodeID, object)
+                if more_than(store.triples((None, None, object)), 1):
+                    writer.attribute(RDF.nodeID, fix(object))
             else:
                 writer.attribute(RDF.resource, object)
         else:

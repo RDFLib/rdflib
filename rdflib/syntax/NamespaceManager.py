@@ -15,6 +15,9 @@ class NamespaceManager(object):
         self.bind("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
         self.bind("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
 
+    def reset(self):
+        self.__cache = {}
+           
     def __get_backend(self):
         return self.graph.backend
     backend = property(__get_backend)
@@ -45,6 +48,7 @@ class NamespaceManager(object):
                 self.__cache[uri] = name
             else:
                 self.__cache[uri] = ":".join((prefix, name))
+            return prefix, namespace, name
 
     def bind(self, prefix, namespace):
         if prefix is None:
@@ -69,13 +73,8 @@ class NamespaceManager(object):
             elif bound_prefix == prefix:
                 pass # already bound
             else:
-                if bound_prefix.startswith("_"):
-                    self.backend.bind(prefix, namespace)
-                else:
-                    # leave current binding
-                    pass
-                    #raise Exception("%s %s" % (prefix, namespace))
-
+                # Always bind to new definition?
+                self.backend.bind(prefix, namespace)                
 
     def namespaces(self):
         for prefix, namespace in self.backend.namespaces():
