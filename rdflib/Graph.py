@@ -45,6 +45,9 @@ class Graph(object):
                 backend = SleepyCat()
                 backend.open("tmp")
                 self.default_context = BNode()
+        else:
+            self.default_context = BNode()
+            
         self.backend = backend
         self.ns_prefix_map = {}
         self.prefix_ns_map = {}

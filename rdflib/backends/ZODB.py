@@ -19,7 +19,7 @@ from persistent import Persistent
 from BTrees.IOBTree import IOBTree
 from BTrees.OIBTree import OIBTree
 
-class IOMemory(Persistent, IOMemory):
+class ZODB(Persistent, IOMemory):
 
     def createForward(self):
         return IOBTree()
