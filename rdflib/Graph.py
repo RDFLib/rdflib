@@ -21,6 +21,8 @@ from rdflib.exceptions import ObjectTypeError
 from rdflib.exceptions import ContextTypeError
 
 
+Any = None
+
 class Graph(object):
     """
     Abstract Class
@@ -32,6 +34,7 @@ class Graph(object):
             if 0:
                 from rdflib.backends.InMemoryBackend import InMemoryBackend
                 backend = InMemoryBackend()
+                self.default_context = None
             elif 1:
                 from rdflib.backends.IOInMemoryContextBackend import IOInMemoryContextBackend
                 backend = IOInMemoryContextBackend()
@@ -51,10 +54,12 @@ class Graph(object):
         self.__save_lock = Lock()
         
     def open(self, path):
-        self.backend.open(path)
+        if hasattr(self.backend, "open"):
+            self.backend.open(path)
 
     def close(self):
-        self.backend.close()
+        if hasattr(self.backend, "close"):
+            self.backend.close()
 
     def check_subject(self, s):
         if not (isinstance(s, URIRef) or isinstance(s, BNode)):
@@ -221,7 +226,7 @@ class Graph(object):
             self.check_context(context)            
         self.backend.add((subject, predicate, object), context)
 
-    def remove(self, (subject, predicate, object), context=None):
+    def remove(self, (subject, predicate, object), context=Any):
         if subject:
             self.check_subject(subject)
         if predicate:
@@ -232,7 +237,7 @@ class Graph(object):
             self.check_context(context)
         self.backend.remove((subject, predicate, object), context)
 
-    def triples(self, (subject, predicate, object), context=None):
+    def triples(self, (subject, predicate, object), context=Any):
         if subject:
             self.check_subject(subject)
         if predicate:
@@ -241,8 +246,8 @@ class Graph(object):
             self.check_object(object)
         if context:
             self.check_context(context)
-        for triple in self.backend.triples((subject, predicate, object), context):
-            yield triple
+        for (s, p, o), context in self.backend.triples((subject, predicate, object), context):
+            yield (s, p, o), context
         
     def contexts(self, triple=None):
         for context in self.backend.contexts(triple):

@@ -178,15 +178,14 @@ class IOInMemoryContextBackend(object):
         self.count = self.count + 1
 
     def remove(self, (subject, predicate, object), context=None):
-        for subject, predicate, object in self.triples((subject, predicate, object), context):
-            si, pi, oi = self.identifierToInt((subject, predicate, object))
+        for (subject, predicate, object), context in self.triples((subject, predicate, object), context):
             f = self.forward
             r = self.reverse
-            ci = self.reverse[context]
+            si, pi, oi = self.identifierToInt((subject, predicate, object))            
+            ci = r[context]
             del self.cspo[ci][si][pi][oi]
             del self.cpos[ci][pi][oi][si]
             del self.cosp[ci][oi][si][pi]
-
             self.count = self.count - 1
 
             # grr!! hafta ref-count these before you can collect them dumbass!
@@ -203,17 +202,20 @@ class IOInMemoryContextBackend(object):
         if context is None:
             # TODO: this needs to be replaced with something more efficient
             for context in self.contexts():
-                for triple in self.triples((subject, predicate, object), context):
-                    yield triple
+                for triple, context in self.triples((subject, predicate, object), context):
+                    yield triple, context
 
         si = pi = oi = Any
         ci = self.reverse[context]  # throws a keyerror if not context
-        if subject is not Any:
-            si = self.reverse[subject] # throws keyerror if subject doesn't exist ;(
-        if predicate is not Any:
-            pi = self.reverse[predicate]
-        if object is not Any:
-            oi = self.reverse[object]
+        try:
+            if subject is not Any:
+                si = self.reverse[subject] # throws keyerror if subject doesn't exist ;(
+            if predicate is not Any:
+                pi = self.reverse[predicate]
+            if object is not Any:
+                oi = self.reverse[object]
+        except KeyError, e:
+            return #raise StopIteration
 
         if si != Any: # subject is given
             spo = self.cspo[ci]
@@ -223,24 +225,24 @@ class IOInMemoryContextBackend(object):
                     if subjectDictionary.has_key(pi):
                         if oi!= Any: # subject+predicate+object is given
                             if subjectDictionary[pi].has_key(oi):
-                                yield self.intToIdentifier((si, pi, oi))
+                                yield self.intToIdentifier((si, pi, oi)), context
                             else: # given object not found
                                 pass
                         else: # subject+predicate is given, object unbound
                             for o in subjectDictionary[pi].keys():
-                                yield self.intToIdentifier((si, pi, o))
+                                yield self.intToIdentifier((si, pi, o)), context
                     else: # given predicate not found
                         pass
                 else: # subject given, predicate unbound
                     for p in subjectDictionary.keys():
                         if oi != Any: # object is given
                             if subjectDictionary[p].has_key(oi):
-                                yield self.intToIdentifier((si, p, oi))
+                                yield self.intToIdentifier((si, p, oi)), context
                             else: # given object not found
                                 pass
                         else: # object unbound
                             for o in subjectDictionary[p].keys():
-                                yield self.intToIdentifier((si, p, o))
+                                yield self.intToIdentifier((si, p, o)), context
             else: # given subject not found
                 pass
         elif pi != Any: # predicate is given, subject unbound
@@ -250,27 +252,27 @@ class IOInMemoryContextBackend(object):
                 if oi != Any: # predicate+object is given, subject unbound
                     if predicateDictionary.has_key(oi):
                         for s in predicateDictionary[oi].keys():
-                            yield self.intToIdentifier((s, pi, oi))
+                            yield self.intToIdentifier((s, pi, oi)), context
                     else: # given object not found
                         pass
                 else: # predicate is given, object+subject unbound
                     for o in predicateDictionary.keys():
                         for s in predicateDictionary[o].keys():
-                            yield self.intToIdentifier((s, pi, o))
+                            yield self.intToIdentifier((s, pi, o)), context
         elif oi != Any: # object is given, subject+predicate unbound
             osp = self.cosp[ci]
             if osp.has_key(oi):
                 objectDictionary = osp[oi]
                 for s in objectDictionary.keys():
                     for p in objectDictionary[s].keys():
-                        yield self.intToIdentifier((s, p, oi))
+                        yield self.intToIdentifier((s, p, oi)), context
         else: # subject+predicate+object unbound
             spo = self.cspo[ci]
             for s in spo.keys():
                 subjectDictionary = spo[s]
                 for p in subjectDictionary.keys():
                     for o in subjectDictionary[p].keys():
-                        yield self.intToIdentifier((s, p, o))
+                        yield self.intToIdentifier((s, p, o)), context
 
     def __len__(self):
         return self.count
