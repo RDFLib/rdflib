@@ -64,9 +64,8 @@ class XMLWriter(object):
 
     def text(self, text):
         self.__close_start_tag()
-        if "<" in text and ">" in text:
+        if "<" in text and ">" in text and not "]]>" in text:
             self.stream.write("<![CDATA[")
-            assert "]]>" not in text
             self.stream.write(text)
             self.stream.write("]]>")
         else:
