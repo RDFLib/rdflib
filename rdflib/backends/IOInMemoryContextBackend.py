@@ -33,19 +33,19 @@ class IOInMemoryContextBackend(object):
     def __init__(self):
         
         # indexed by [subject][predicate][object] = 1
-        self.cspo = {}
+        self.cspo = self.createIndex()
 
         # indexed by [predicate][object][subject] = 1
-        self.cpos = {}
+        self.cpos = self.createIndex()
 
         # indexed by [object][subject][predicate] = 1
-        self.cosp = {}
+        self.cosp = self.createIndex()
 
         # indexes integer keys to identifiers
-        self.forward = {}
+        self.forward = self.createForward()
 
         # reverse index of forward
-        self.reverse = {}
+        self.reverse = self.createReverse()
 
         self.count = 0
 
@@ -77,6 +77,15 @@ class IOInMemoryContextBackend(object):
     def uniqueObjects(self, context=None):
         for oi in self.cosp[context].keys():
             yield self.forward[oi]
+
+    def createForward(self):
+        return {}
+
+    def createReverse(self):
+        return {}
+
+    def createIndex(self):
+        return {}
 
     def add(self, (subject, predicate, object), context=None):
         """\
@@ -133,15 +142,15 @@ class IOInMemoryContextBackend(object):
         if self.cspo.has_key(ci):
             spo = self.cspo[ci]
         else:
-            spo = self.cspo[ci] = {}
+            spo = self.cspo[ci] = self.createIndex()
         if spo.has_key(si):
             po = spo[si]
         else:
-            po = spo[si] = {}
+            po = spo[si] = self.createIndex()
         if po.has_key(pi):
             o = po[pi]
         else:
-            o = po[pi] = {}
+            o = po[pi] = self.createIndex()
         o[oi] = 1
 
         # cpos[c][p][o][s] = 1
@@ -149,15 +158,15 @@ class IOInMemoryContextBackend(object):
         if self.cpos.has_key(ci):
             pos = self.cpos[ci]
         else:
-            pos = self.cpos[ci] = {}
+            pos = self.cpos[ci] = self.createIndex()
         if pos.has_key(pi):
             os = pos[pi]
         else:
-            os = pos[pi] = {}
+            os = pos[pi] = self.createIndex()
         if os.has_key(oi):
             s = os[oi]
         else:
-            s = os[oi] = {}
+            s = os[oi] = self.createIndex()
         s[si] = 1
 
         # cosp[c][o][s][p] = 1
@@ -165,15 +174,15 @@ class IOInMemoryContextBackend(object):
         if self.cosp.has_key(ci):
             osp = self.cosp[ci]
         else:
-            osp = self.cosp[ci] = {}
+            osp = self.cosp[ci] = self.createIndex()
         if osp.has_key(oi):
             sp = osp[oi]
         else:
-            sp = osp[oi] = {}
+            sp = osp[oi] = self.createIndex()
         if sp.has_key(si):
             p = sp[si]
         else:
-            p = sp[si] = {}
+            p = sp[si] = self.createIndex()
         p[pi] = 1
 
         # TODO: check that triple wasn't already in the store.
