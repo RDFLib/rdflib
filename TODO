@@ -1,3 +1,14 @@
+- Consider merging TripleStore/InformationStore calling it Graph?
+- add imports to rdflib/__init__.py so that all the basic things can be imported from rdflib
+- Push down getPredicateValue from Ivan in some form
+  - introduce Resource object?
+- Push down getSeq from Ivan in some form
+- clean up arguments parse method takes (eg. a string containing value to be parsed) sniff?
+- add ZODB backends
+
+
+- write some docs for these new interfaces
+
 - intern identifiers?
 - <jeremiah>	is there a way to text-search over literals yet?
 
@@ -8,7 +19,7 @@
 - heuristic between fast-xml and slow-xml, the "xml" default
 - add a "fast-xml" and "pretty-xml" separate serialize options
 
-- write some docs for these new interfaces
 
-- load_and_convert(src, from, to) service
+
+
 

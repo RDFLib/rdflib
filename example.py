@@ -1,16 +1,13 @@
-from rdflib.URIRef import URIRef
-from rdflib.Literal import Literal
-from rdflib.BNode import BNode
-from rdflib.Namespace import Namespace
-from rdflib.constants import TYPE
+from rdflib import Graph
+from rdflib import URIRef, Literal, BNode, Namespace
 
-# Import RDFLib's default TripleStore implementation.
-from rdflib.TripleStore import TripleStore
+from rdflib import RDF
+
 
 # Create a namespace object for the Friend of a friend namespace.
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 
-store = TripleStore()
+store = Graph()
 
 store.prefix_mapping("dc", "http://http://purl.org/dc/elements/1.1/")
 store.prefix_mapping("foaf", "http://xmlns.com/foaf/0.1/")
@@ -21,7 +18,7 @@ donna = BNode()
 from rdflib.constants import DATATYPE
 
 # Add triples using store's add method.
-store.add((donna, TYPE, FOAF["Person"]))
+store.add((donna, RDF.type, FOAF["Person"]))
 store.add((donna, FOAF["nick"], Literal("donna")))
 store.add((donna, FOAF["name"], Literal("Donna Fales")))
 
@@ -32,7 +29,7 @@ for s, p, o in store:
     
 # For each foaf:Person in the store print out its mbox property.
 print "--- printing mboxes ---"
-for person in store.subjects(TYPE, FOAF["Person"]):
+for person in store.subjects(RDF.type, FOAF["Person"]):
     for mbox in store.objects(person, FOAF["mbox"]):
         print mbox
 
