@@ -37,9 +37,9 @@ class ContextBackend(object):
         context = self.identifier
         self.backend.remove((subject, predicate, object), context)
         
-    def triples(self, triple):
+    def triples(self, (subject, predicate, object)):
         context = self.identifier
-        for triple in self.backend.triples(triple, context):
+        for triple in self.backend.triples((subject, predicate, object), context):
             yield triple
 
     def __len__(self):
@@ -58,7 +58,8 @@ class Context(TripleStore):
 
 class InformationStore(Store):
     def __init__(self, path=None, backend=None):
-        backend = backend or SleepyCatBackend()
+        if backend==None:
+            backend = SleepyCatBackend()
         super(InformationStore, self).__init__(backend)
         if path:
             self.open(path)
@@ -73,6 +74,7 @@ class InformationStore(Store):
         context.add((id, TYPE, CONTEXT))
         context.add((id, SOURCE, location))
         context.load(location, format)
+        return context
 
     def get_context(self, identifier):
         check_context(identifier)        
@@ -97,7 +99,7 @@ class InformationStore(Store):
             check_object(object)
         if context:
             check_context(context)
-        self.backend.remove((s, p, o), context)
+        self.backend.remove((subject, predicate, object), context)
 
     def triples(self, (subject, predicate, object), context=None):
         if subject:

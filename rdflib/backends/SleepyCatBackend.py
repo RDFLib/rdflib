@@ -108,12 +108,11 @@ class SleepyCatBackend(object):
             self.__i2k.put(key, term)
         return key
 
-    def add(self, (subject, predicate, object), context=None):
+    def add(self, (subject, predicate, object), context):
         """\
         Add a triple to the store of triples.
         """
         assert self.__open, "The InformationStore must be open."
-        context = context or self.context
 
         tokey = self.tokey
         s = tokey(subject)
