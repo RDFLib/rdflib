@@ -1,8 +1,21 @@
-2004/04/05
+2004/04/21
 	RELEASE 2.0.3
 
 	Added missing "from __future__ import generators" statement to
-	InformationStore. ()
+	InformationStore. 
+
+	Simplified RDF/XML serializer fixing a few bugs involving
+	BNodes.
+
+	Added a reset method to RDF/XML parser.
+
+	Changed 'if foo' to "if foo is not None" in a few places in
+	the RDF/XML parser.
+
+	Fully qualified imports in rdflib.syntax {parser, serializer}.
+
+	Context now goes through InformationStore (was bypassing it
+	going directly to backend).
 
 
 2004/03/22

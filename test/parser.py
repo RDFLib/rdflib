@@ -68,7 +68,6 @@ manifest.load("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf")
 
 
 def _testPositive(uri):
-    write(u"testing: %s" % uri)    
     if verbose: write(u"TESTING: %s" % uri)
     result = 0 # 1=failed, 0=passed   
     inDoc = first(manifest.objects(uri, TEST["inputDocument"]))
@@ -78,7 +77,6 @@ def _testPositive(uri):
         format = "nt"
     else:
         format = "xml"
-    print outDoc, format
     expected.load(outDoc, format=format)
     store = TestStore(expected)
     if inDoc[-3:]==".nt":
@@ -87,7 +85,6 @@ def _testPositive(uri):
         format = "xml"
 
     try:
-        print inDoc, format
         store.load(inDoc, format=format)    
     except ParserError, pe:
         write("Failed '")
@@ -123,7 +120,7 @@ def _testPositive(uri):
     return result
 
 def _testNegative(uri):
-    write(u"testing: %s" % uri)
+    if verbose: write(u"TESTING: %s" % uri)    
     result = 0 # 1=failed, 0=passed   
     inDoc = first(manifest.objects(uri, TEST["inputDocument"]))
     store = TripleStore()
@@ -205,7 +202,7 @@ if __name__ == "__main__":
         for arg in sys.argv[1:]:
             verbose = 1
             case = URIRef(arg)
-            write(u"Testing '%s':" % case)
+            write(u"Testing: %s" % case)
             if (case, TYPE, TEST["PositiveParserTest"]) in manifest:
                 result = _testPositive(case)
                 write(u"Positive test %s" % ["PASSED", "FAILED"][result])
