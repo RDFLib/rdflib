@@ -58,20 +58,20 @@ class Graph(object):
     # By default tries to defer all state to the backend, otherwise
     # degenerates into the old behavior.
 
-    def getNSPrefixMap(self):
-        if hasattr(self.__backend, 'getNSPrefixMap'):
-            return self.__backend.getNSPrefixMap()
+    def _get_ns_prefix_map(self):
+        if hasattr(self.__backend, '_get_ns_prefix_map'):
+            return self.__backend._get_ns_prefix_map()
         return self.__ns_prefix_map
 
-    ns_prefix_map = property(getNSPrefixMap)
+    ns_prefix_map = property(_get_ns_prefix_map)
 
 
-    def getPrefixNSMap(self):
-        if hasattr(self.__backend, 'getPrefixNSMap'):
-            return self.__backend.getPrefixNSMap()
+    def _get_prefix_ns_map(self):
+        if hasattr(self.__backend, '_get_prefix_ns_map'):
+            return self.__backend._get_prefix_ns_map()
         return self.__prefix_ns_map
 
-    prefix_ns_map = property(getPrefixNSMap)
+    prefix_ns_map = property(_get_prefix_ns_map)
 
     def open(self, path):
         """ Open the graph backend.  Might be necessary for backends

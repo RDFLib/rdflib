@@ -58,10 +58,10 @@ class IOMemory(Backend):
 
         self.count = 0
 
-    def getNSPrefixMap(self):
+    def _get_ns_prefix_map(self):
         return self.ns_prefix_map
 
-    def getPrefixNSMap(self):
+    def _get_prefix_ns_map(self):
         return self.prefix_ns_map
 
     def defaultContext(self):
