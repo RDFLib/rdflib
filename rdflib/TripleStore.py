@@ -1,17 +1,28 @@
 from __future__ import generators
 
+import tempfile, shutil, os
+from threading import Lock
+
+from urlparse import urlparse, urljoin, urldefrag
+from urllib import pathname2url, url2pathname
+
+from rdflib.URLInputSource import URLInputSource
+
+from rdflib.URIRef import URIRef
+from rdflib.BNode import BNode
+from rdflib.Literal import Literal
+
 from rdflib.constants import FIRST, REST, NIL
 from rdflib.util import first
 
 from rdflib.backends.InMemoryBackend import InMemoryBackend
 from rdflib.backends.Concurrent import Concurrent
 
+from rdflib.syntax.serializer import SerializationDispatcher
+from rdflib.syntax.parser import ParserDispatcher
+
 from rdflib.syntax.LoadSave import LoadSave
 from rdflib.model.schema import Schema
-
-from rdflib.URIRef import URIRef
-from rdflib.BNode import BNode
-from rdflib.Literal import Literal
 
 from rdflib.exceptions import SubjectTypeError
 from rdflib.exceptions import PredicateTypeError
@@ -70,8 +81,51 @@ class TripleStore(LoadSave, Schema):
     def __init__(self, backend=None):
         super(TripleStore, self).__init__()
         self.backend = backend or Concurrent(InMemoryBackend())
+        self.ns_prefix_map = {}
+        self.prefix_ns_map = {}
+        self.prefix_mapping("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+        self.prefix_mapping("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
+        self.serialize = SerializationDispatcher(self)
+        self.parse = ParserDispatcher(self)                
         self.__context = None
+        self.__save_lock = Lock()
         
+    def load(self, location, format="xml"):
+        cwd = urljoin("file:", pathname2url(os.getcwd()))
+        location = urljoin("%s/" % cwd, location)
+        location, frag = urldefrag(location)            
+        scheme, netloc, path, params, query, fragment = urlparse(location)
+        if netloc=="":
+            path = url2pathname(path)
+            # If local and it does not exist then create one.
+            if not os.access(path, os.F_OK): # TODO: is this equiv to os.path.exists?
+                self.save(path)
+        source = URLInputSource(location)                    
+        self.parse(source, format=format)
+
+    def save(self, location, format="xml"):
+        try:
+            self.__save_lock.acquire()
+
+            scheme, netloc, path, params, query, fragment = urlparse(location)
+            if netloc!="":
+                print "WARNING: not saving as location is not a local file reference"
+                return
+
+            name = tempfile.mktemp()            
+            stream = open(name, 'wb')
+            self.serialize(format=format, stream=stream)            
+            stream.close()
+
+            shutil.move(name, path)
+
+        finally:
+            self.__save_lock.release()
+
+    def prefix_mapping(self, prefix, namespace):
+        map = self.ns_prefix_map    
+        map[namespace] = prefix
+
     def __get_context(self):
         if self.__context==None:            
             self.__context = BNode()

@@ -75,9 +75,17 @@ def _testPositive(uri):
     inDoc = first(manifest.objects(uri, TEST["inputDocument"]))
     outDoc = first(manifest.objects(uri, TEST["outputDocument"]))
     expected = TripleStore()
-    expected.load(outDoc)
+    if outDoc[-3:]==".nt":
+        format = "nt"
+    else:
+        format = "xml"
+    expected.load(outDoc, format=format)
     store = TestStore(expected)
-    store.load(inDoc)    
+    if inDoc[-3:]==".nt":
+        format = "nt"
+    else:
+        format = "xml"
+    store.load(inDoc, format=format)    
     try:
         pass
     except ParserError, pe:
@@ -124,7 +132,11 @@ def _testNegative(uri):
     results.add((test, RESULT["system"], system))
     
     try:
-        store.load(inDoc)
+        if inDoc[-3:]==".nt":
+            format = "nt"
+        else:
+            format = "xml"
+        store.load(inDoc, format=format)
     except ParserError, pe:
         results.add((test, TYPE, RESULT["PassingRun"]))        
         #pass
