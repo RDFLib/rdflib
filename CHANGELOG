@@ -1,3 +1,18 @@
+2004/03/12
+	RELEASE 2.0.1
+
+	NOTE: still working on this release
+
+
+	Fixed a bug in the SleepyCatBackend multi threaded concurrency
+	support. (Tested fairly extensively under the following
+	conditions: multi threaded, multi process, and both).  NOTE:
+	fix involved change to database format -- so 2.0.1 will not be
+	able to open databases created with 2.0.0
+
+
+
+
 2004/03/05
 	RELEASE 2.0.0
 
