@@ -16,21 +16,26 @@ class AbstractSerializer(object):
         """Abstract method"""
 
 
+_module_info = {}
+
+def register(short_name, module_path, class_name):
+    _module_info[short_name] = (module_path, class_name)
+
+register('xml', 'rdflib.syntax.serializers.XMLSerializer', 'XMLSerializer')
+register('pretty-xml', 'rdflib.syntax.serializers.PrettyXMLSerializer', 'PrettyXMLSerializer')
+register('nt', 'rdflib.syntax.serializers.NTSerializer', 'NTSerializer')
+
+
 class SerializationDispatcher(object):
 
     def __init__(self, store):
         self.store = store
         self.__serializer = {}
-        self.__module_info = {}
-        self.register('xml', 'rdflib.syntax.serializers.XMLSerializer', 'XMLSerializer')
-        self.register('pretty-xml', 'rdflib.syntax.serializers.PrettyXMLSerializer', 'PrettyXMLSerializer')
-        self.register('nt', 'rdflib.syntax.serializers.NTSerializer', 'NTSerializer')
+        self.__module_info = dict(_module_info)
         
     def register(self, short_name, module_path, class_name):
-        if short_name in self.__module_info:
-            raise Exception("serializer already registered for:", short_name)
-        self.__module_info[short_name] = (module_path, class_name)
-
+        self.__module_info[short_name] = (module_path, class_name)        
+    
     def serializer(self, format):
         serializer = self.__serializer.get(format, None)
         if serializer is None:
