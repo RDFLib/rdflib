@@ -1,7 +1,5 @@
 from __future__ import generators
 
-from rdflib.Resource import Resource
-
 from rdflib.constants import FIRST, REST, NIL
 from rdflib.util import first
 
@@ -118,25 +116,12 @@ class TripleStore(LoadSave, Schema):
         return
     #eventually: raise NotImplementedError("Subclass must implement")
 
-    def resources(self, (subject, predicate, object)):
-        d = {}
-        for s, p, o in self.triples((subject, predicate, object)):
-            if not s in d:
-                d[s] = r = Resource(s, self)
-                for subject in r.subjects:
-                    d[subject] = r                        
-        for item in d.itervalues():
-            yield item
-
     def items(self, list):
         while list:
             item = first(self.objects(list, FIRST))
             if item:
                 yield item
             list = first(self.objects(list, REST))
-
-    def __getitem__(self, subject):
-        return Resource(subject, self)
 
     def __iter__(self):
         return self.triples((None, None, None))
@@ -147,6 +132,7 @@ class TripleStore(LoadSave, Schema):
         return 0
 
     def __len__(self):
+        # TODO: backends should support len
         return len(list(self))
     
     def __eq__(self, other):
