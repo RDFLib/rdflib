@@ -15,8 +15,9 @@
 Any = None
 
 from rdflib import Triple, BNode
+from rdflib.backends import Backend
 
-class IOMemory(object):
+class IOMemory(Backend):
     """\
     An integer-key-optimized-context-aware-in-memory backend.
 

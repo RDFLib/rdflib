@@ -3,8 +3,9 @@ from __future__ import generators
 ANY = None
 
 from rdflib import Triple
+from rdflib.backends import Backend
 
-class Memory(object):
+class Memory(Backend):
     """\
 An in memory implementation of a triple store.
 

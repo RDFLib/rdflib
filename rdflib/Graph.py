@@ -3,6 +3,9 @@ from __future__ import generators
 from rdflib import Triple, URIRef, BNode, Literal, RDF, RDFS
 from rdflib.util import first
 
+from rdflib import plugin
+
+from rdflib.backends import Backend
 from rdflib.syntax.serializer import SerializationDispatcher
 from rdflib.syntax.parser import ParserDispatcher
 
@@ -22,8 +25,10 @@ class Graph(object):
     def __init__(self, backend=None):
         super(Graph, self).__init__()
         if backend is None:
-            from rdflib.backends.IOMemory import IOMemory
-            backend = IOMemory()
+            backend = plugin.get('default', 'backend')()
+        elif not isinstance(backend, Backend):
+            # TODO: error handling
+            backend = plugin.get(backend, 'backend')()
         self.__backend = backend
         self.__parser = None
         self.__serializer = None

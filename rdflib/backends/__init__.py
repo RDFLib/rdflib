@@ -1,1 +1,4 @@
 #
+
+class Backend(object):
+    pass

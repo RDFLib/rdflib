@@ -18,6 +18,27 @@ register('xml', 'serializer',
 
 register('pretty-xml', 'serializer',
          'rdflib.syntax.serializers.PrettyXMLSerializer', 'PrettyXMLSerializer')
+
 register('nt', 'serializer',
          'rdflib.syntax.serializers.NTSerializer', 'NTSerializer')
 
+register('xml', 'parser',
+         'rdflib.syntax.parsers.RDFXMLParser', 'RDFXMLParser')
+
+register('nt', 'parser',
+         'rdflib.syntax.parsers.NTParser', 'NTParser')
+
+register('default', 'backend',
+         'rdflib.backends.IOMemory', 'IOMemory')
+
+register('IOMemory', 'backend',
+         'rdflib.backends.IOMemory', 'IOMemory')
+
+register('Memory', 'backend',
+         'rdflib.backends.Memory', 'Memory')
+
+register('Sleepycat', 'backend',
+         'rdflib.backends.SleepyCat', 'SleepyCat')
+
+register('ZODB', 'backend',
+         'rdflib.backends.ZODB', 'ZODB')

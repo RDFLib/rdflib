@@ -1,6 +1,7 @@
 from __future__ import generators
 
 from rdflib import Triple
+from rdflib.backends import Backend
 
 from sys import version_info
 if version_info[0:2] > (2, 2):
@@ -84,7 +85,7 @@ def split(contexts):
         i = end
 
         
-class SleepyCatBackend(object):
+class SleepyCatBackend(Backend):
     def __init__(self):
         super(SleepyCatBackend, self).__init__()
         self.__open = 0
