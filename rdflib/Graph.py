@@ -204,7 +204,7 @@ class Graph(object):
         if not isinstance(triple, Triple):
             s, p, o = triple
             triple = Triple(s, p, o)
-        assert triple.isStatement()
+        triple.check_statement()
         triple.context = context or self.default_context
         self.backend.add(triple)
 
@@ -212,12 +212,14 @@ class Graph(object):
         if not isinstance(triple, Triple):
             s, p, o = triple
             triple = Triple(s, p, o)
+        triple.check_pattern()
         self.backend.remove(triple)
 
     def triples(self, triple):
         if not isinstance(triple, Triple):
             s, p, o = triple
             triple = Triple(s, p, o)
+        triple.check_pattern()            
         for t in self.backend.triples(triple):
             yield t
         
