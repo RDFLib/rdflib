@@ -114,11 +114,7 @@ class Store(Schema):
         return 0
 
     def __len__(self):
-        # TODO: backends should support len
-        i = 0
-        for triple in self:
-            i += 1
-        return i
+        return self.backend.__len__()
     
     def __eq__(self, other):
         # Note: this is not a test of isomorphism, but rather exact
