@@ -7,10 +7,12 @@ from rdflib.backends.Concurrent import Concurrent
 
 class TripleStore(Store):
 
-    def __init__(self, backend=None):
-        backend = backend or Concurrent(InMemoryBackend())
+    def __init__(self, location=None, backend=None):
+        if backend==None:
+            backend = Concurrent(InMemoryBackend())
         super(TripleStore, self).__init__(backend)
-        self.__context = None
+        if location:
+            self.load(location)
 
     def add(self, (subject, predicate, object)):
         check_subject(subject)
