@@ -1,16 +1,28 @@
-2005/02/25
-	RELEASE 2.0.6
+2005/03/19
+        RELEASE 2.0.6
 
-	Fixed bug in NTParser and n3 methods where not all characters
-	where being escaped.
+        Added pretty-xml serializer (inlines BNodes where possible,
+        typed nodes, Collections).
 
+        Fixed bug in NTParser and n3 methods where not all characters
+        where being escaped.
 
+        Changed label and comment methods to return default passed in
+        when there is no label or comment. Moved methods to Store
+        Class. Store no longer inherits from Schema.
+
+        Fixed bug involving a case with rdf:about='#'
+
+        Changed InMemoryBackend to update third index in the same style it
+	does the first two.
+
+	
 2005/01/08
         RELEASE 2.0.5
 
-	Added publicID argument to Store's load method.
+        Added publicID argument to Store's load method.
 
-	Added RDF and RDFS to top level rdflib package.
+        Added RDF and RDFS to top level rdflib package.
 
 
 2004/10/14
