@@ -1,5 +1,5 @@
 from rdflib.exceptions import SerializerDispatchNameError, SerializerDispatchNameClashError
-import serializers
+import rdflib.syntax.serializers
 
 class AbstractSerializer(object):
 
@@ -28,7 +28,7 @@ class SerializationDispatcher(object):
 
     def __init__(self, store):
         self.store = store
-        for ser in serializers.__all__:
+        for ser in rdflib.syntax.serializers.__all__:
             module = __import__("serializers." + ser, globals(), locals(), ["serializers"])
             aSerializer  = getattr(module, ser)
             short_name = getattr(aSerializer, "short_name")
