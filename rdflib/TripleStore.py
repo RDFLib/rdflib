@@ -19,11 +19,9 @@ class TripleStore(Store):
         self.backend.add((subject, predicate, object))
 
     def remove(self, (subject, predicate, object)):
-        check_subject(subject)
-        check_predicate(predicate)
-        check_object(object)
-        self.backend.remove((subject, predicate, object))
-
+        for s, p, o in self.triples((subject, predicate, object)):
+            self.backend.remove((s, p, o))
+        
     def triples(self, (subject, predicate, object)):
         if subject:
             check_subject(subject)

@@ -14,9 +14,7 @@
     <h1>InformationStore</h1>
 
     <p>
-      RDFLib's InformationStore is a relational data store, or in
-other words, an RDF database. In particular, an InformationStore is a
-<a href="triple_store.html">TripleStore</a> with support
+      RDFLib's InformationStore is a <a href="triple_store.html">TripleStore</a> with support
 for contexts.
     </p>    
 
@@ -27,7 +25,7 @@ for contexts.
 interface. See the <a href="triple_store.html">TripleStore
 documentation</a> for a description of the TripleStore interface.
     <p>
-      InformationStore overrides the following three methods from
+      InformationStore overrides the following methods from
 TripleStore to allow an optional context argument:
     </p>
 
@@ -39,26 +37,16 @@ TripleStore to allow an optional context argument:
       <dt>triples(<var>pattern</var>, <var>context</var>)</dt>
       <dd>A <a href="http://www.python.org/doc/2.2.2/whatsnew/node5.html">generator</a> over all the triples in the InformationStore matching pattern. Pattern is a tuple of the form (subject, predicate, object) where each of subject, predicate and object are either specified or None to indicate any value will match.
       </dd>
-    </dl>
 
-    <dl>
       <dt>contexts(triple=None)</dt>
+      <dd>A generator over all the contexts or if triple is specified a generator over all the contexts triple is in.</dd>
 
-      <dt>__init__(dir)</dt>
-      <dt>open(file)</dt>
-      <dt>close()</dt>
-      <dt>load(source)</dt>
-      <dt>async_load</dt>
-      <dt>import_context(source)</dt>
-      <dt>reload_context(identifier)</dt>
-      <dt>remove_context(identifier)</dt>
-      <dt>get_context(identifier)</dt>
-      <dt>schedule_context(identifier)</dt>
-      <dt>schedule_seeAlso</dt>
-      <dt>run</dt>
+    <dl>  
+      <dt>__init__(self, path=None, backend=None)</dt>
+      <dt>load(self, location, format="xml")</dt>
+      <dt>get_context(self, identifier)</dt>
+      <dt>remove_context(self, identifier)</dt>
     </dl>
-
-    <p class="cvs_id">$Id: InformationStore.html,v 1.3 2003/01/02 20:18:57 eikeon Exp $</p>
 
   </body>
 </html>

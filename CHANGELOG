@@ -1,7 +1,19 @@
 2004/03/05
-	RELEASE 1.3.3
+	RELEASE 2.0.0
 
-	---
+	Fixed a few bugs in the SleepyCatBackend multi process
+	concurrency support.
+
+	Removed rdflib.Resource
+
+	Changed remove to now take a triple pattern and removed
+	remove_triples method.
+
+	Added __iadd__ method to Store in support of store +=
+	another_store.
+
+	
+
 
 2004/01/04
 	RELEASE 1.3.2

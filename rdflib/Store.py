@@ -98,13 +98,6 @@ class Store(Schema):
         map = self.ns_prefix_map    
         map[namespace] = prefix
 
-    def destroy(self):
-        for triple in self.triples((None, None, None)):
-            s, p, o = triple
-            self.remove((s, p, o))
-        return
-    #eventually: raise NotImplementedError("Subclass must implement")
-
     def items(self, list):
         while list:
             item = first(self.objects(list, FIRST))
@@ -122,7 +115,10 @@ class Store(Schema):
 
     def __len__(self):
         # TODO: backends should support len
-        return len(list(self))
+        i = 0
+        for triple in self:
+            i += 1
+        return i
     
     def __eq__(self, other):
         # Note: this is not a test of isomorphism, but rather exact
@@ -136,6 +132,16 @@ class Store(Schema):
             if not (s, p, o) in self:
                 return 0
         return 1
+
+    def __iadd__(self, other):
+        for triple in other:
+            self.backend.add(triple)
+        return self
+
+    def __isub__(self, other):
+        for triple in other:
+            self.backend.remove(triple)
+        return self
 
     def subjects(self, predicate=None, object=None):
         for s, p, o in self.triples((None, predicate, object)):
@@ -181,17 +187,3 @@ class Store(Schema):
                 for s in self.transitive_subjects(predicate, subject, remember):
                     yield s
 
-    def remove_triples(self, (subject, predicate, object)):
-        for s, p, o in self.triples((subject, predicate, object)):
-            self.remove((s, p, o))
-
-    def capabilities(self): pass
-    """
-    We want some kind of introspection mechanism for triple
-    stores. That is, each triple store hasA special (perhaps
-    optimized) triple store in which is stored assertions about the
-    capacities of the main triple store. By keeping these capabilities
-    assertions in a separate store, we can implement store.destroy()
-    easily. It also -- contexts notwithstanding -- makes it less
-    likely that we'll have assertional clashes with real users.
-    """

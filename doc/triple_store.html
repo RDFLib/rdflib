@@ -21,7 +21,7 @@ given a resource identifier by which to refer to it. These resource
 identifiers as well as literal values are used when making statements
 about a resource. The statements have the form: <b>subject predicate
 object</b> and are often called <a
-href="http://www.w3.org/TR/rdf-concepts/#xtocid103646">triples</a>.
+href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#xtocid103646">triples</a>.
     </p>    
 
     <p>
@@ -67,14 +67,8 @@ object, and in which case the object has no resource identifier.
       <dd>Removes triple, a tuple of the form (subject, predicate, object), to the TripleStore.</dd>
       <dt>triples(<var>pattern</var>)</dt>
       <dd>A <a href="http://www.python.org/doc/2.2.2/whatsnew/node5.html">generator</a> over all the triples in the TripleStore matching pattern. Pattern is a tuple of the form (subject, predicate, object) where each of subject, predicate and object are either specified or None to indicate any value will match.
-      </dd>
-    </dl>
-
-    <p>
-      RDFLib currently provides two different mix-in classes, namely, <a href="../rdflib/store/InMemoryStore.py">InMemoryStore</a> and <a href="../rdflib/store/BTreeStore.py">BTreeStore</a> that implement the core methods. Using these two mix-in classes RDFLib also provides two different pre-mixed TripleStore implementations to serve as default implementations: <a href="../rdflib/InMemoryTripleStore.py">InMemoryTripleStore</a> and <a href="../rdflib/BTreeTripleStore.py">BTreeTripleStore</a>.
-    </p>
-
-    <p>TripleStore also implements the following variations of the triples method:
+       <p>TripleStore also implements the following convience methods on top of the triples method:
+       </p>
       <dl>
         <dt>subjects(predicate=None, object=None)</dt>
         <dt>predicates(subject=None, object=None)</dt>
@@ -83,7 +77,25 @@ object, and in which case the object has no resource identifier.
         <dt>subject_objects(predicate=None)</dt>
         <dt>predicate_objects(subject=None)</dt>
       </dl>      
-    </p>
+
+      </dd>
+    </dl>
+
+    
+
+
+    <p>
+      
+      <dl>
+        <dt>load(location, format="xml")</dt>
+	<dd>@@</dd>
+        <dt>save(location, format="xml")</dt>
+	<dd>@@</dd>
+        <dt>parse(source, format="xml")</dt>
+	<dd>@@</dd>
+        <dt>serialize(format="xml", stream=None)</dt>
+	<dd>@@</dd>
+      </dl>  
 
     <p>
       TripleStore also implement the following methods:
@@ -96,6 +108,12 @@ object, and in which case the object has no resource identifier.
         <dd>Exists to support: <pre class="code_sample">len(store)</pre>
         <dt>__eq__(other)</dt>
         <dd>Supports: <pre class="code_sample">store_a==store_b</pre>
+        <dt>__iadd__(other)</dt>
+        <dd>Supports: <pre class="code_sample">store += another_store</pre>
+
+        <dt>__isub__(other)</dt>
+        <dd>Supports: <pre class="code_sample">store -= another_store</pre>
+
 <!--
         <dt>__getitem__(subject)</dt>
         <dd>Returns a <a href="./Resource.html">Resource</a> object for the given subject. Example: <pre class="code_sample">store[subject]</pre></dd>
@@ -104,7 +122,6 @@ object, and in which case the object has no resource identifier.
         <dt>items(list)</dt>
         <dt>transitive_objects(subject, property)</dt>
         <dt>transitive_subjects(predicate, object)</dt>
-        <dt>remove_triples((subject, predicate, object))</dt>
       </dl>      
 
     </p>
@@ -118,8 +135,11 @@ object, and in which case the object has no resource identifier.
 the TripleStores.
     </p>
 
-
-    <p class="cvs_id">$Id: triple_store.html,v 1.8 2002/12/11 20:09:25 eikeon Exp $</p>
+<!--
+    <p>
+      RDFLib currently provides two different mix-in classes, namely, <a href="../rdflib/store/InMemoryStore.py">InMemoryStore</a> and <a href="../rdflib/store/BTreeStore.py">BTreeStore</a> that implement the core methods. Using these two mix-in classes RDFLib also provides two different pre-mixed TripleStore implementations to serve as default implementations: <a href="../rdflib/InMemoryTripleStore.py">InMemoryTripleStore</a> and <a href="../rdflib/BTreeTripleStore.py">BTreeTripleStore</a>.
+    </p>
+-->
 
   </body>
 </html>
