@@ -13,7 +13,7 @@ else:
 
 from os import mkdir
 from os.path import exists
-from struct import pack
+from struct import pack, unpack
 
 from urllib import quote, unquote
 
@@ -88,7 +88,7 @@ class SleepyCatBackend(object):
         self.__open = 0
         
     def __len__(self):
-        return len(list(self))
+        return self.__spo.stat()["nkeys"]
 
     def fromkey(self, key):
         return _fromkey(self.__i2k.get(key))
@@ -98,12 +98,13 @@ class SleepyCatBackend(object):
         k2i = self.__k2i        
         key = k2i.get(term)
         if key==None:
-            k2i.put(term, "tmp")            
-            c = k2i.cursor()
-            num = k2i.stat()["nkeys"] + 1
+            c = k2i.cursor(flags = db.DB_WRITECURSOR)            
+            k, v = c.set("next")
+            num = int(v)
+            c.put("next", "%s" % (num+1), db.DB_CURRENT)            
+            c.close()                        
             key = pack(">L", num)
-            k2i.put(term, key)
-            c.close()
+            k2i.put(term, key)                        
             self.__i2k.put(key, term)
         return key
 
@@ -298,7 +299,10 @@ class SleepyCatBackend(object):
         else:
             prefix = ""
             index = self.__pos
-        prefix += "%s%s" % (tokey(predicate), tokey(object))
+        try:
+            prefix += "%s%s" % (tokey(predicate), tokey(object))
+        except Except, e:
+            print e, predicate, object
         cursor = index.cursor()
         try:
             current = cursor.set_range(prefix)
@@ -316,8 +320,10 @@ class SleepyCatBackend(object):
             cursor.close()
             if key.startswith(prefix):
                 if context!=None:
+                    assert(len(key)==16)
                     c, p, o, s = split(key)
                 else:
+                    assert(len(key)==12)                    
                     p, o, s = split(key)
                 s = fromkey(s)
                 yield s
@@ -547,8 +553,8 @@ class SleepyCatBackend(object):
 
     def open(self, file):
         homeDir = file        
-        envsetflags  = 0
-        envflags = db.DB_INIT_MPOOL | db.DB_INIT_CDB        
+        envsetflags  = db.DB_CDB_ALLDB
+        envflags = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD
         try:
             if not exists(homeDir):
                 mkdir(homeDir)
@@ -564,7 +570,7 @@ class SleepyCatBackend(object):
         
         dbname = None
         dbtype = db.DB_BTREE
-        dbopenflags = 0
+        dbopenflags = db.DB_THREAD
         
         dbmode = 0660
         dbsetflags   = 0
@@ -603,10 +609,12 @@ class SleepyCatBackend(object):
         self.__i2k.open("i2k", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
 
         self.__k2i = db.DB(env)
-        self.__k2i.set_flags(dbsetflags|db.DB_RECNUM)
+        self.__k2i.set_flags(dbsetflags)#|db.DB_RECNUM)
         self.__k2i.open("k2i", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
-        self.next = self.__k2i.stat()["nkeys"]        
-
+        next = self.__k2i.get("next")
+        if next==None:
+            self.__k2i.put("next", "%d" % 1)            
+        
     def close(self):
         self.__open = 0
         self.__contexts.close()
