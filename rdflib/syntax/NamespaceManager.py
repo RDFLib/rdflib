@@ -10,12 +10,14 @@ class NamespaceManager(object):
     def __init__(self, graph):
         self.graph = graph
         self.__cache = {}
-        self.__namespace = {} # mapping for prefix to namespace
-        self.__prefix = {}
         self.__log = None
         self.bind("xml", u"http://www.w3.org/XML/1998/namespace")
         self.bind("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
         self.bind("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
+
+    def __get_backend(self):
+        return self.graph.backend
+    backend = property(__get_backend)
 
     def _get_log(self):
         if self.__log is None:
@@ -35,9 +37,9 @@ class NamespaceManager(object):
     def compute_qname(self, uri):
         if not uri in self.__cache:
             namespace, name = split_uri(uri)
-            prefix = self.__prefix.get(namespace, None)
+            prefix = self.backend.prefix(namespace)
             if prefix is None:
-                prefix = "_%s" % len(self.__namespace)
+                prefix = "_%s" % len(list(self.backend.namespaces()))
                 self.bind(prefix, namespace)
             if prefix=="":
                 self.__cache[uri] = name
@@ -45,28 +47,38 @@ class NamespaceManager(object):
                 self.__cache[uri] = ":".join((prefix, name))
 
     def bind(self, prefix, namespace):
-        if prefix in self.__namespace:
-            if self.__prefix.get(namespace, None) == prefix:
-                return # already bound
-            else:
-                # prefix already in use for different namespace
-                #
-                # append number to end of prefix until we find on
-                # that's not in use.
-                num = 1                
-                while 1:
-                    new_prefix = "%s%s" % (prefix, num)
-                    if new_prefix not in self.__namespace:
-                        break
-                    num +=1
-                self.__prefix[namespace] = new_prefix
-                self.__namespace[new_prefix] = namespace
+        if prefix is None:
+            prefix = ''
+        bound_namespace = self.backend.namespace(prefix)
+        if bound_namespace and bound_namespace!=namespace:
+            # prefix already in use for different namespace
+            #
+            # append number to end of prefix until we find on
+            # that's not in use.
+            num = 1                
+            while 1:
+                new_prefix = "%s%s" % (prefix, num)
+                if not self.backend.namespace(new_prefix):
+                    break
+                num +=1
+            self.backend.bind(new_prefix, namespace)
         else:
-            self.__namespace[prefix] = namespace
-            self.__prefix[namespace] = prefix
+            bound_prefix = self.backend.prefix(namespace)
+            if bound_prefix is None:
+                self.backend.bind(prefix, namespace)            
+            elif bound_prefix == prefix:
+                pass # already bound
+            else:
+                if bound_prefix.startswith("_"):
+                    self.backend.bind(prefix, namespace)
+                else:
+                    # leave current binding
+                    pass
+                    #raise Exception("%s %s" % (prefix, namespace))
+
 
     def namespaces(self):
-        for prefix, namespace in self.__namespace.iteritems():
+        for prefix, namespace in self.backend.namespaces():
             yield prefix, namespace
 
     def absolutize(self, uri, defrag=1):
@@ -87,15 +99,15 @@ class NamespaceManager(object):
         # TODO: assume this context is loaded from its namespace location:
         uri = URIRef(uri)
         context_uri = URIRef(uri[0:-1])
-        try:
-            if not (uri, None, None) in self.graph:
-                self.log.info("loading namespace: %s" % uri)
-                context = self.graph.load(context_uri)
-            else:
-                cid = self.context_id(context_uri)
-                context = self.graph.get_context(cid)
-        except Exception, e:
-            raise Exception("While trying to load namespace %s encountered the following error:\n%s" % (uri, e))
+        #try:
+        if not (uri, None, None) in self.graph:
+            self.log.info("loading namespace: %s" % uri)
+            context = self.graph.load(context_uri)
+        else:
+            cid = self.context_id(context_uri)
+            context = self.graph.get_context(cid)
+        #except Exception, e:
+        #    raise Exception("While trying to load namespace %s encountered the following error:\n%s" % (uri, e))
 
         module_name = uri
         module = sys.modules.get(module_name, None)

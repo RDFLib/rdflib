@@ -25,6 +25,9 @@ pos[p][o][s] = 1.
         # indexed by [predicate][object][subject]
         self.__osp = {}
 
+        self.__namespace = {}
+        self.__prefix = {}
+
     def add(self, (subject, predicate, object)):
         """\
         Add a triple to the store of triples.
@@ -137,3 +140,16 @@ pos[p][o][s] = 1.
             i += 1
         return i
         
+    def bind(self, prefix, namespace):
+        self.__prefix[namespace] = prefix
+        self.__namespace[prefix] = namespace
+
+    def namespace(self, prefix):
+        return self.__namespace.get(prefix, None)
+
+    def prefix(self, namespace):
+        return self.__prefix.get(namespace, None)
+
+    def namespaces(self):
+        for prefix, namespace in self.__namespace.iteritems():
+            yield prefix, namespace

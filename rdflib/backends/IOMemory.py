@@ -42,16 +42,24 @@ class IOMemory(Backend):
             
         self.default_context = default_context
 
-        self.ns_prefix_map = self.createPrefixMap()
-        self.prefix_ns_map = self.createPrefixMap()
+        self.__namespace = self.createPrefixMap()
+        self.__prefix = self.createPrefixMap()
 
         self.count = 0
 
-    def _get_ns_prefix_map(self):
-        return self.ns_prefix_map
+    def bind(self, prefix, namespace):
+        self.__prefix[namespace] = prefix
+        self.__namespace[prefix] = namespace
 
-    def _get_prefix_ns_map(self):
-        return self.prefix_ns_map
+    def namespace(self, prefix):
+        return self.__namespace.get(prefix, None)
+
+    def prefix(self, namespace):
+        return self.__prefix.get(namespace, None)
+
+    def namespaces(self):
+        for prefix, namespace in self.__namespace.iteritems():
+            yield prefix, namespace
 
     def defaultContext(self):
         return self.default_context

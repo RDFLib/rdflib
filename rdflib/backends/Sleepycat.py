@@ -554,6 +554,33 @@ class Sleepycat(Backend):
             pass                    
         
 
+    def bind(self, prefix, namespace):
+        if namespace[-1]=="-":
+            raise Exception("??")
+        prefix = prefix.encode("utf-8")
+        namespace = namespace.encode("utf-8")
+        bound_prefix = self.__prefix.get(namespace)
+        if bound_prefix:
+            self.__namespace.delete(bound_prefix)
+        self.__prefix[namespace] = prefix
+        self.__namespace[prefix] = namespace
+
+    def namespace(self, prefix):
+        prefix = prefix.encode("utf-8")        
+        return self.__namespace.get(prefix, None)
+
+    def prefix(self, namespace):
+        namespace = namespace.encode("utf-8")                
+        return self.__prefix.get(namespace, None)
+
+    def namespaces(self):
+        cursor = self.__namespace.cursor()
+        current = cursor.first()
+        while current:
+            prefix, namespace = current
+            yield prefix, namespace
+            current = cursor.next()
+
     def sync(self):
         self.__contexts.sync()
         self.__spo.sync()
@@ -625,6 +652,16 @@ class Sleepycat(Backend):
         self.__k2i = db.DB(env)
         self.__k2i.set_flags(dbsetflags)#|db.DB_RECNUM)
         self.__k2i.open("k2i", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
+
+        self.__namespace = db.DB(env)
+        self.__namespace.set_flags(dbsetflags)
+        self.__namespace.open("namespace", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
+
+        self.__prefix = db.DB(env)
+        self.__prefix.set_flags(dbsetflags)
+        self.__prefix.open("prefix", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
+
+        
         next = self.__k2i.get("next")
         if next==None:
             self.__k2i.put("next", "%d" % 1)            
@@ -639,5 +676,7 @@ class Sleepycat(Backend):
         self.__cpos.close()
         self.__cosp.close()
         self.__k2i.close()
-        self.__i2k.close()        
+        self.__i2k.close()
+        self.__namespace.close()
+        self.__prefix.close()
         self.env.close()

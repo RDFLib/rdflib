@@ -29,25 +29,23 @@ class Graph(object):
             # TODO: error handling
             backend = plugin.get(backend, Backend)()
         self.__backend = backend
-        self.__namespace_manager = NamespaceManager(self)
+        self.__namespace_manager = None
 
+    def __get_backend(self):
+        return self.__backend
+    backend = property(__get_backend)
+    
     def _get_namespace_manager(self):
+        if self.__namespace_manager is None:
+            self.__namespace_manager = NamespaceManager(self)            
         return self.__namespace_manager
-    namespace_manager = property(_get_namespace_manager)
+    def _set_namespace_manager(self, nm):
+        self.__namespace_manager = nm
+    namespace_manager = property(_get_namespace_manager, _set_namespace_manager)
 
     def _get_context_aware(self):
         return self.__backend.context_aware
     context_aware = property(_get_context_aware)
-
-    def bind(self, prefix, namespace):        
-        self.__namespace_manager.bind(prefix, namespace)
-
-    def namespaces(self):
-        for prefix, namespace in self.__namespace_manager.namespaces():
-            yield prefix, namespace
-        
-    def prefix_mapping(self, prefix, namespace):
-        self.bind(prefix, namespace)
 
     def open(self, path):
         """ Open the graph backend.  Might be necessary for backends
@@ -234,7 +232,7 @@ class Graph(object):
         must be a URIRef or BNode."""
         assert isinstance(identifier, URIRef) or \
                isinstance(identifier, BNode)
-        return Context(self.__backend, identifier)
+        return Context(self, identifier)
 
     def remove_context(self, identifier):
         """ Removes the given context from the graph. """
@@ -300,26 +298,37 @@ class Graph(object):
     def namespace(self, uri):        
         return self.namespace_manager.namespace(uri)
 
+    def bind(self, prefix, namespace):
+        return self.namespace_manager.bind(prefix, namespace)
+
+    def namespaces(self):
+        for prefix, namespace in self.namespace_manager.namespaces():
+            yield prefix, namespace
+
+    def prefix_mapping(self, prefix, namespace):
+        self.bind(prefix, namespace)
+
     
 class ContextBackend(Backend):
 
-    def __init__(self, information_store, identifier):
+    def __init__(self, backend, identifier):
         super(ContextBackend, self).__init__()
+        assert backend.context_aware        
         self.context_aware = False
-        self.information_store = information_store
+        self.backend = backend
         self.identifier = identifier
 
     def add(self, triple):
         triple.context = self.identifier
-        self.information_store.add(triple)
+        self.backend.add(triple)
         
     def remove(self, triple):
         triple.context = self.identifier        
-        self.information_store.remove(triple)
+        self.backend.remove(triple)
         
     def triples(self, triple):
         triple.context = self.identifier        
-        return self.information_store.triples(triple)
+        return self.backend.triples(triple)
 
     def __len__(self):
         # TODO: backends should support len
@@ -327,11 +336,13 @@ class ContextBackend(Backend):
         for triple in self.triples(Triple(None, None, None)):
             i += 1
         return i
-    
+
 
 class Context(Graph):
-    def __init__(self, information_store, identifier):
-        super(Context, self).__init__(ContextBackend(information_store, identifier))
+    def __init__(self, graph, identifier):
+        backend = ContextBackend(graph.backend, identifier)
+        super(Context, self).__init__(backend=backend)
+        self.namespace_manager = graph.namespace_manager
         self.identifier = identifier
 
 
