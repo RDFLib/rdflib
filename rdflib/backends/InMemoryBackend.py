@@ -60,7 +60,7 @@ pos[p][o][s] = 1.
         os.setdefault(subject, {})[predicate] = 1
 
     def remove(self, (subject, predicate, object)):
-        for subject, predicate, object in list(self.triples((subject, predicate, object))):
+        for subject, predicate, object in self.triples((subject, predicate, object)):
             del self.__spo[subject][predicate][object]
             del self.__pos[predicate][object][subject]
             del self.__osp[object][subject][predicate]
@@ -79,19 +79,19 @@ pos[p][o][s] = 1.
                             else: # given object not found
                                 pass
                         else: # subject+predicate is given, object unbound
-                            for o in subjectDictionary[predicate]:
+                            for o in subjectDictionary[predicate].keys():
                                 yield subject, predicate, o
                     else: # given predicate not found
                         pass
                 else: # subject given, predicate unbound
-                    for p in subjectDictionary:
+                    for p in subjectDictionary.keys():
                         if object!=ANY: # object is given
                             if object in subjectDictionary[p]:
                                 yield subject, p, object
                             else: # given object not found
                                 pass
                         else: # object unbound
-                            for o in subjectDictionary[p]:
+                            for o in subjectDictionary[p].keys():
                                 yield subject, p, o
             else: # given subject not found
                 pass
@@ -101,27 +101,27 @@ pos[p][o][s] = 1.
                 predicateDictionary = pos[predicate]
                 if object!=ANY: # predicate+object is given, subject unbound
                     if object in predicateDictionary:
-                        for s in predicateDictionary[object]:
+                        for s in predicateDictionary[object].keys():
                             yield s, predicate, object
                     else: # given object not found
                         pass
                 else: # predicate is given, object+subject unbound
-                    for o in predicateDictionary:
-                        for s in predicateDictionary[o]:
+                    for o in predicateDictionary.keys():
+                        for s in predicateDictionary[o].keys():
                             yield s, predicate, o
         elif object!=ANY: # object is given, subject+predicate unbound
             osp = self.__osp
             if object in osp:
                 objectDictionary = osp[object]
-                for s in objectDictionary:
-                    for p in objectDictionary[s]:
+                for s in objectDictionary.keys():
+                    for p in objectDictionary[s].keys():
                         yield s, p, object
         else: # subject+predicate+object unbound
             spo = self.__spo
-            for s in spo:
+            for s in spo.keys():
                 subjectDictionary = spo[s]
-                for p in subjectDictionary:
-                    for o in subjectDictionary[p]:
+                for p in subjectDictionary.keys():
+                    for o in subjectDictionary[p].keys():
                         yield s, p, o
 
     def __len__(self):
