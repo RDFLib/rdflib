@@ -1,22 +1,17 @@
+# label and comment methods have been moved to Store and Store no
+# longer subclasses from Schema. If anyone is using some of these
+# methods they should be able to add this class as a mix-in to there
+# Store. Let me know if you are using any these methods... and I'll
+# add them back... else they'll go away.
+
 from __future__ import generators
 
 from rdflib.constants import TYPE
 from rdflib.constants import STATEMENT, SUBJECT, PREDICATE, OBJECT
-from rdflib.constants import RDFS_LABEL, RDFS_COMMENT
 from rdflib.constants import RDFS_DOMAIN, RDFS_SUBCLASSOF
 
 class Schema(object):
 
-    def label(self, subject, default=''):
-        for s, p, o in self.triples((subject, RDFS_LABEL, None)):
-            return o
-        return default
-
-    def comment(self, subject, default=''):
-        for s, p, o in self.triples((subject, RDFS_COMMENT, None)):
-            return o
-        return default
-        
     def typeless_resources(self):
         for subject in self.subjects():
             if not (subject, TYPE, None) in self:

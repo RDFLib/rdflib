@@ -6,19 +6,17 @@ from threading import Lock
 from urlparse import urlparse, urljoin, urldefrag
 from urllib import pathname2url, url2pathname
 
+from rdflib import RDF, RDFS
 from rdflib.URLInputSource import URLInputSource
 
 from rdflib.URIRef import URIRef
 from rdflib.BNode import BNode
 from rdflib.Literal import Literal
 
-from rdflib.constants import FIRST, REST, NIL
 from rdflib.util import first
 
 from rdflib.syntax.serializer import SerializationDispatcher
 from rdflib.syntax.parser import ParserDispatcher
-
-from rdflib.model.schema import Schema
 
 from rdflib.exceptions import SubjectTypeError
 from rdflib.exceptions import PredicateTypeError
@@ -41,7 +39,7 @@ def check_object(o):
 
 
 
-class Store(Schema):
+class Store(object):
     """
     Abstract Class
     """
@@ -104,12 +102,22 @@ class Store(Schema):
         map = self.ns_prefix_map    
         map[namespace] = prefix
 
+    def label(self, subject, default=''):
+        for s, p, o in self.triples((subject, RDFS.label, None)):
+            return o
+        return default
+
+    def comment(self, subject, default=''):
+        for s, p, o in self.triples((subject, RDFS.comment, None)):
+            return o
+        return default
+
     def items(self, list):
         while list:
-            item = first(self.objects(list, FIRST))
+            item = first(self.objects(list, RDF.first))
             if item:
                 yield item
-            list = first(self.objects(list, REST))
+            list = first(self.objects(list, RDF.rest))
 
     def __iter__(self):
         return self.triples((None, None, None))
