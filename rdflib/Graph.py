@@ -17,7 +17,14 @@ Any = None
 
 class Graph(object):
     """
-    Abstract Class
+    An RDF Graph.  The constructor accepts one argument, the 'backend'
+    that will be used to store the graph data (see the 'backends'
+    package for backends currently shipped with rdflib).
+
+    Backends can be context-aware or unaware.  Unaware backends take
+    up (some) less space in the backend but cannot support features
+    that require context, such as true merging/demerging of sub-graphs
+    and provenance.
     """
     
     def __init__(self, backend=None):
@@ -38,10 +45,14 @@ class Graph(object):
 
 
     def open(self, path):
+        """ Open the graph backend.  Might be necessary for backends
+        that require opening a connection to a database or acquiring some resource."""
         if hasattr(self.__backend, "open"):
             self.__backend.open(path)
 
     def close(self):
+        """ Close the graph backend.  Might be necessary for backends
+        that require closing a connection to a database or releasing some resource."""
         if hasattr(self.__backend, "close"):
             self.__backend.close()
 
@@ -57,6 +68,10 @@ class Graph(object):
         return URIRef("%s#context" % uri)
     
     def load(self, location, publicID=None, format="xml"):
+        """ Load a URL into the graph using either the publicID or the
+        location (if publicID is not provided )as the context of the
+        new graph.  Removes any information in the old context,
+        returns the new context."""
         location = self._absolutize(location)
         id = self._context_id(publicID or location)
         self.remove_context(id)
@@ -67,15 +82,22 @@ class Graph(object):
         return context
 
     def parse(self, source, publicID=None, format="xml"):
+        """ Parses the given source into the graph. """
         return self.__parser_dispatcher(source=source, publicID=publicID, format=format)
 
     def save(self, location, format="xml"):
+        """ Serializes the store to a given location """
         return self.serialize(destination=location, format=format)
 
     def serialize(self, destination=None, format="xml"):
+        """ Serializes the store to a given location.  Exactly how is this different from save? ;) """        
         return self.__serialization_dispatcher(destination=destination, format=format)            
 
     def add(self, triple, context=None):
+        """ Add a triple, optionally provide a context.  A 3-tuple or
+        rdflib.Triple can be provided.  Context must be a URIRef.  If
+        no context is provides, triple is added to the default
+        context."""
         if not isinstance(triple, Triple):
             s, p, o = triple
             triple = Triple(s, p, o)
@@ -84,6 +106,9 @@ class Graph(object):
         self.__backend.add(triple)
 
     def remove(self, triple):
+        """ Remove a triple from the graph.  If the triple does not
+        provide a context attribute, removes the triple from all
+        contexts."""
         if not isinstance(triple, Triple):
             s, p, o = triple
             triple = Triple(s, p, o)
@@ -91,6 +116,9 @@ class Graph(object):
         self.__backend.remove(triple)
 
     def triples(self, triple):
+        """ Generator over the triple store.  Returns triples that
+        match the given triple pattern.  If triple pattern does not
+        provide a context, all contexts will be searched."""
         if not isinstance(triple, Triple):
             s, p, o = triple
             triple = Triple(s, p, o)
@@ -99,6 +127,7 @@ class Graph(object):
             yield t
         
     def contexts(self): # TODO: triple=None??
+        """ Generator over all contexts in the graph. """
         for context in self.__backend.contexts():
             yield context
 
@@ -107,16 +136,19 @@ class Graph(object):
         map[namespace] = prefix
 
     def label(self, subject, default=''):
+        """ Queries for the RDFS.label of the subject, returns default if no label exists. """
         for s, p, o in self.triples(Triple(subject, RDFS.label, None)):
             return o
         return default
 
     def comment(self, subject, default=''):
+        """ Queries for the RDFS.comment of the subject, returns default if no comment exists. """
         for s, p, o in self.triples(Triple(subject, RDFS.comment, None)):
             return o
         return default
 
     def items(self, list):
+        """ """
         while list:
             item = first(self.objects(list, RDF.first))
             if item:
@@ -124,14 +156,17 @@ class Graph(object):
             list = first(self.objects(list, RDF.rest))
 
     def __iter__(self):
+        """ Iterates over all triples in the store. """
         return self.triples((None, None, None))
 
     def __contains__(self, triple):
+        """ Support for 'triple in graph' syntax.  Not very efficient. """
         for triple in self.triples(triple):
             return 1
         return 0
 
     def __len__(self):
+        """ Returns the number of triples in the graph. """
         return self.__backend.__len__()
     
     def __eq__(self, other):
@@ -158,38 +193,48 @@ class Graph(object):
         return self
 
     def subjects(self, predicate=None, object=None):
+        """ A generator of subjects with the given predicate and object. """
         for s, p, o in self.triples(Triple(None, predicate, object)):
             yield s
 
     def predicates(self, subject=None, object=None):
+        """ A generator of predicates with the given subject and object. """        
         for s, p, o in self.triples(Triple(subject, None, object)):
             yield p
 
     def objects(self, subject=None, predicate=None):
+        """ A generator of objects with the given subject and predicate. """                
         for s, p, o in self.triples(Triple(subject, predicate, None)):
             yield o
 
     def subject_predicates(self, object=None):
+        """ A generator of (subject, predicate) tuples for the given object """
         for s, p, o in self.triples(Triple(None, None, object)):
             yield s, p
             
     def subject_objects(self, predicate=None):
+        """ A generator of (subject, object) tuples for the given predicate """        
         for s, p, o in self.triples(Triple(None, predicate, None)):
             yield s, o
         
     def predicate_objects(self, subject=None):
+        """ A generator of (predicate, object) tuples for the given subject """                
         for s, p, o in self.triples(Triple(subject, None, None)):
             yield p, o
 
     def get_context(self, identifier):
+        """ Returns a Context graph for the given identifier, which
+        must be a URIRef or BNode."""
         assert isinstance(identifier, URIRef) or \
                isinstance(identifier, BNode)
         return Context(self.__backend, identifier)
 
     def remove_context(self, identifier):
+        """ Removes the given context from the graph. """
         self.__backend.remove_context(identifier)
         
     def transitive_objects(self, subject, property, remember=None):
+        """ """
         if remember==None:
             remember = {}
         if not subject in remember:
@@ -200,6 +245,7 @@ class Graph(object):
                     yield o
 
     def transitive_subjects(self, predicate, object, remember=None):
+        """ """
         if remember==None:
             remember = {}
         if not object in remember:
