@@ -218,16 +218,25 @@ class Graph(object):
     def remove_context(self, identifier):
         self.backend.remove_context(identifier)
         
-    def add(self, triple, context=None):
+    def add(self, triple):
+        if not isinstance(triple, Triple):
+            s, p, o = triple
+            triple = Triple(s, p, o, self.default_context)
+        else:
+            if triple.context is None:
+                triple.context = self.default_context
         #self.check_subject(subject)
         #self.check_predicate(predicate)
         #self.check_object(object)
-        context = context or self.default_context
-        if context:
-            self.check_context(context)            
-        self.backend.add(triple, context)
+#         context = context or self.default_context
+#         if context:
+#             self.check_context(context)            
+        self.backend.add(triple)
 
-    def remove(self, triple, context=Any):
+    def remove(self, triple):
+        if not isinstance(triple, Triple):
+            s, p, o = triple
+            triple = Triple(s, p, o)
 #         if subject:
 #             self.check_subject(subject)
 #         if predicate:
@@ -236,9 +245,12 @@ class Graph(object):
 #             self.check_object(object)
 #         if context:
 #             self.check_context(context)
-        self.backend.remove(triple, context)
+        self.backend.remove(triple)
 
-    def triples(self, triple, context=Any):
+    def triples(self, triple):
+        if not isinstance(triple, Triple):
+            s, p, o = triple
+            triple = Triple(s, p, o)
 #         if subject:
 #             self.check_subject(subject)
 #         if predicate:
@@ -247,10 +259,10 @@ class Graph(object):
 #             self.check_object(object)
 #         if context:
 #             self.check_context(context)
-        for triple in self.backend.triples(triple, context):
-            yield triple
+        for t in self.backend.triples(triple):
+            yield t
         
-    def contexts(self, triple=None):
+    def contexts(self):
         for context in self.backend.contexts(triple):
             yield context
 

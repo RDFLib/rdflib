@@ -87,11 +87,14 @@ class IOInMemoryContextBackend(object):
     def createIndex(self):
         return {}
 
-    def add(self, (subject, predicate, object), context=None):
+    def add(self, triple):
         """\
         Add a triple to the store.
         """
 
+        subject, predicate, object = triple
+        context = triple.context
+        
         f = self.forward
         r = self.reverse
 
@@ -188,10 +191,11 @@ class IOInMemoryContextBackend(object):
         # TODO: check that triple wasn't already in the store.
         self.count = self.count + 1
 
-    def remove(self, (subject, predicate, object), context=None):
-        for triple in self.triples((subject, predicate, object), context):
+    def remove(self, triple):
+        for triple in self.triples(triple):
             f = self.forward
             r = self.reverse
+            subject, predicate, object = triple        
             si, pi, oi = self.identifierToInt((subject, predicate, object))
             context = triple.context            
             ci = r[context]
@@ -208,13 +212,15 @@ class IOInMemoryContextBackend(object):
 #             del r[predicate]
 #             del r[object]
 
-    def triples(self, (subject, predicate, object), context=None):
+    def triples(self, triple):
         """A generator over all the triples matching """
-
+        subject, predicate, object = triple
+        context = triple.context
         if context is None:
             # TODO: this needs to be replaced with something more efficient
             for c in self.contexts():
-                for triple in self.triples((subject, predicate, object), c):
+                triple.context = c
+                for triple in self.triples(triple):
                     yield triple
             return
 
