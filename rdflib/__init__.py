@@ -7,6 +7,8 @@ import sys
 assert sys.version_info >= (2,2,0), "rdflib requires python 2.2 or higher"
 del sys
 
+from rdflib.Triple import Triple
+
 from rdflib.URIRef import URIRef
 from rdflib.BNode import BNode
 from rdflib.Literal import Literal

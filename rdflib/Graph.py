@@ -6,8 +6,9 @@ from threading import Lock
 from urlparse import urlparse, urljoin, urldefrag
 from urllib import pathname2url, url2pathname
 
-from rdflib import RDF, RDFS
+from rdflib import Triple
 from rdflib import URIRef, BNode, Literal
+from rdflib import RDF, RDFS
 
 from rdflib.URLInputSource import URLInputSource
 from rdflib.util import first
@@ -136,12 +137,12 @@ class Graph(object):
         map[namespace] = prefix
 
     def label(self, subject, default=''):
-        for s, p, o in self.triples((subject, RDFS.label, None)):
+        for s, p, o in self.triples(Triple(subject, RDFS.label, None)):
             return o
         return default
 
     def comment(self, subject, default=''):
-        for s, p, o in self.triples((subject, RDFS.comment, None)):
+        for s, p, o in self.triples(Triple(subject, RDFS.comment, None)):
             return o
         return default
 
@@ -155,8 +156,8 @@ class Graph(object):
     def __iter__(self):
         return self.triples((None, None, None))
 
-    def __contains__(self, (subject, predicate, object)):
-        for triple in self.triples((subject, predicate, object)):
+    def __contains__(self, triple):
+        for triple in self.triples(triple):
             return 1
         return 0
 
@@ -187,27 +188,27 @@ class Graph(object):
         return self
 
     def subjects(self, predicate=None, object=None):
-        for s, p, o in self.triples((None, predicate, object)):
+        for s, p, o in self.triples(Triple(None, predicate, object)):
             yield s
 
     def predicates(self, subject=None, object=None):
-        for s, p, o in self.triples((subject, None, object)):
+        for s, p, o in self.triples(Triple(subject, None, object)):
             yield p
 
     def objects(self, subject=None, predicate=None):
-        for s, p, o in self.triples((subject, predicate, None)):
+        for s, p, o in self.triples(Triple(subject, predicate, None)):
             yield o
 
     def subject_predicates(self, object=None):
-        for s, p, o in self.triples((None, None, object)):
+        for s, p, o in self.triples(Triple(None, None, object)):
             yield s, p
             
     def subject_objects(self, predicate=None):
-        for s, p, o in self.triples((None, predicate, None)):
+        for s, p, o in self.triples(Triple(None, predicate, None)):
             yield s, o
         
     def predicate_objects(self, subject=None):
-        for s, p, o in self.triples((subject, None, None)):
+        for s, p, o in self.triples(Triple(subject, None, None)):
             yield p, o
 
     def get_context(self, identifier):
@@ -217,37 +218,37 @@ class Graph(object):
     def remove_context(self, identifier):
         self.backend.remove_context(identifier)
         
-    def add(self, (subject, predicate, object), context=None):
-        self.check_subject(subject)
-        self.check_predicate(predicate)
-        self.check_object(object)
+    def add(self, triple, context=None):
+        #self.check_subject(subject)
+        #self.check_predicate(predicate)
+        #self.check_object(object)
         context = context or self.default_context
         if context:
             self.check_context(context)            
-        self.backend.add((subject, predicate, object), context)
+        self.backend.add(triple, context)
 
-    def remove(self, (subject, predicate, object), context=Any):
-        if subject:
-            self.check_subject(subject)
-        if predicate:
-            self.check_predicate(predicate)
-        if object:
-            self.check_object(object)
-        if context:
-            self.check_context(context)
-        self.backend.remove((subject, predicate, object), context)
+    def remove(self, triple, context=Any):
+#         if subject:
+#             self.check_subject(subject)
+#         if predicate:
+#             self.check_predicate(predicate)
+#         if object:
+#             self.check_object(object)
+#         if context:
+#             self.check_context(context)
+        self.backend.remove(triple, context)
 
-    def triples(self, (subject, predicate, object), context=Any):
-        if subject:
-            self.check_subject(subject)
-        if predicate:
-            self.check_predicate(predicate)
-        if object:
-            self.check_object(object)
-        if context:
-            self.check_context(context)
-        for (s, p, o), context in self.backend.triples((subject, predicate, object), context):
-            yield (s, p, o), context
+    def triples(self, triple, context=Any):
+#         if subject:
+#             self.check_subject(subject)
+#         if predicate:
+#             self.check_predicate(predicate)
+#         if object:
+#             self.check_object(object)
+#         if context:
+#             self.check_context(context)
+        for triple in self.backend.triples(triple, context):
+            yield triple
         
     def contexts(self, triple=None):
         for context in self.backend.contexts(triple):
@@ -284,14 +285,14 @@ class ContextBackend(object):
         self.information_store = information_store
         self.identifier = identifier
 
-    def add(self, (subject, predicate, object)):
-        self.information_store.add((subject, predicate, object), self.identifier)
+    def add(self, triple):
+        self.information_store.add(triple, self.identifier)
         
-    def remove(self, (subject, predicate, object)):
-        self.information_store.remove((subject, predicate, object), self.identifier)
+    def remove(self, triple):
+        self.information_store.remove(triple, self.identifier)
         
-    def triples(self, (subject, predicate, object)):
-        return self.information_store.triples((subject, predicate, object), self.identifier)
+    def triples(self, triple):
+        return self.information_store.triples(triple, self.identifier)
 
     def __len__(self):
         # TODO: backends should support len

@@ -19,7 +19,7 @@ class GraphTest(unittest.TestCase):
         self.store.remove((None, None, None))        
         
     def testTriples(self):
-        for (s, p, o),_  in self.store:
+        for s, p, o in self.store:
             pass
 
 if __name__ == "__main__":

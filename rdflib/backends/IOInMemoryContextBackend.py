@@ -14,6 +14,8 @@
 
 Any = None
 
+from rdflib import Triple
+
 class IOInMemoryContextBackend(object):
     """\
     An integer-key-optimized-context-aware-in-memory backend.
@@ -56,9 +58,9 @@ class IOInMemoryContextBackend(object):
                 ci=randid()
             self.reverse[context] = ci
 
-    def intToIdentifier(self, (si, pi, oi)):
+    def intToIdentifier(self, (si, pi, oi, ci)):
         """ Resolve an integer triple into identifers. """
-        return (self.forward[si], self.forward[pi], self.forward[oi])
+        return (self.forward[si], self.forward[pi], self.forward[oi], self.forward[ci])
 
     def identifierToInt(self, (s, p, o)):
         """ Resolve an identifier triple into integers. """
@@ -178,10 +180,11 @@ class IOInMemoryContextBackend(object):
         self.count = self.count + 1
 
     def remove(self, (subject, predicate, object), context=None):
-        for (subject, predicate, object), context in self.triples((subject, predicate, object), context):
+        for triple in self.triples((subject, predicate, object), context):
             f = self.forward
             r = self.reverse
-            si, pi, oi = self.identifierToInt((subject, predicate, object))            
+            si, pi, oi = self.identifierToInt((subject, predicate, object))
+            context = triple.context            
             ci = r[context]
             del self.cspo[ci][si][pi][oi]
             del self.cpos[ci][pi][oi][si]
@@ -201,9 +204,10 @@ class IOInMemoryContextBackend(object):
 
         if context is None:
             # TODO: this needs to be replaced with something more efficient
-            for context in self.contexts():
-                for triple, context in self.triples((subject, predicate, object), context):
-                    yield triple, context
+            for c in self.contexts():
+                for triple in self.triples((subject, predicate, object), c):
+                    yield triple
+            return
 
         si = pi = oi = Any
         ci = self.reverse[context]  # throws a keyerror if not context
@@ -225,24 +229,28 @@ class IOInMemoryContextBackend(object):
                     if subjectDictionary.has_key(pi):
                         if oi!= Any: # subject+predicate+object is given
                             if subjectDictionary[pi].has_key(oi):
-                                yield self.intToIdentifier((si, pi, oi)), context
+                                ss, pp, oo, cc = self.intToIdentifier((si, pi, oi, ci))
+                                yield Triple(ss, pp, oo, cc)
                             else: # given object not found
                                 pass
                         else: # subject+predicate is given, object unbound
                             for o in subjectDictionary[pi].keys():
-                                yield self.intToIdentifier((si, pi, o)), context
+                                ss, pp, oo, cc = self.intToIdentifier((si, pi, o, ci))
+                                yield Triple(ss, pp, oo, cc)
                     else: # given predicate not found
                         pass
                 else: # subject given, predicate unbound
                     for p in subjectDictionary.keys():
                         if oi != Any: # object is given
                             if subjectDictionary[p].has_key(oi):
-                                yield self.intToIdentifier((si, p, oi)), context
+                                ss, pp, oo, cc = self.intToIdentifier((si, p, oi, ci))
+                                yield Triple(ss, pp, oo, cc)
                             else: # given object not found
                                 pass
                         else: # object unbound
                             for o in subjectDictionary[p].keys():
-                                yield self.intToIdentifier((si, p, o)), context
+                                ss, pp, oo, cc = self.intToIdentifier((si, p, o, ci))    
+                                yield Triple(ss, pp, oo, cc)
             else: # given subject not found
                 pass
         elif pi != Any: # predicate is given, subject unbound
@@ -252,27 +260,31 @@ class IOInMemoryContextBackend(object):
                 if oi != Any: # predicate+object is given, subject unbound
                     if predicateDictionary.has_key(oi):
                         for s in predicateDictionary[oi].keys():
-                            yield self.intToIdentifier((s, pi, oi)), context
+                            ss, pp, oo, cc = self.intToIdentifier((s, pi, oi, ci))
+                            yield Triple(ss, pp, oo, cc)
                     else: # given object not found
                         pass
                 else: # predicate is given, object+subject unbound
                     for o in predicateDictionary.keys():
                         for s in predicateDictionary[o].keys():
-                            yield self.intToIdentifier((s, pi, o)), context
+                            ss, pp, oo, cc = self.intToIdentifier((s, pi, o, ci))
+                            yield Triple(ss, pp, oo, cc)
         elif oi != Any: # object is given, subject+predicate unbound
             osp = self.cosp[ci]
             if osp.has_key(oi):
                 objectDictionary = osp[oi]
                 for s in objectDictionary.keys():
                     for p in objectDictionary[s].keys():
-                        yield self.intToIdentifier((s, p, oi)), context
+                        ss, pp, oo, cc = self.intToIdentifier((s, p, oi, ci))
+                        yield Triple(ss, pp, oo, cc)
         else: # subject+predicate+object unbound
             spo = self.cspo[ci]
             for s in spo.keys():
                 subjectDictionary = spo[s]
                 for p in subjectDictionary.keys():
                     for o in subjectDictionary[p].keys():
-                        yield self.intToIdentifier((s, p, o)), context
+                        ss, pp, oo, cc = self.intToIdentifier((s, p, o, ci))
+                        yield Triple(ss, pp, oo, cc)
 
     def __len__(self):
         return self.count
