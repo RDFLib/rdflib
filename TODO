@@ -1,5 +1,3 @@
-- NamespaceManager should defer to backend for storage of bindings
-
 - write some docs for these new interfaces
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
