@@ -22,10 +22,5 @@ class BNode(Identifier):
     def n3(self):
         return str(self)
 
-    def __eq__(self, other):
-        if other==None or isinstance(other, Literal):
-            return 0
-        else:
-            return super(BNode, self).__cmp__(other)==0
     
 

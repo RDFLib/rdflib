@@ -7,6 +7,7 @@ else:
 from rdflib.Identifier import Identifier
 from rdflib.exceptions import Error
 
+import rdflib
 
 class Literal(Identifier):
     """
@@ -48,19 +49,19 @@ class Literal(Identifier):
             else:
                 return '"%s"' % self
 
-    def __eq__(self, other):
-        if other!=None:
-            if super(Literal, self).__cmp__(other)==0:                            
-                if isinstance(other, Literal):
-                    if self.language==other.language:
-                        return 1
-                    else:
-                        return 0
-                else:
-                    return 1
-            else:
-                return 0
-        else:
-            return 0
 
+    def __eq__(self, other):
+        if other==None or (isinstance(other, Identifier) and not isinstance(other, Literal)):
+            return 0
+        elif isinstance(other, Literal):
+            result = unicode(self)==other
+            if result==1:
+                if self.language==other.language:
+                    return 1
+                else:
+                    return 0
+            else:
+                return result
+        else:
+            return unicode(self)==other
 

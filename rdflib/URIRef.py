@@ -14,6 +14,7 @@ class URIRef(Identifier):
         return Identifier.__new__(cls, value)        
 
     def __init__(self, value):
+        self.value = value
         if normalize and value:
             if not isinstance(value, unicode):
                 value = unicode(value)
@@ -24,9 +25,8 @@ class URIRef(Identifier):
         return "<%s>" % self
 
     def __eq__(self, other):
-        if other==None or isinstance(other, Literal):
+        if other==None or (isinstance(other, Identifier) and not isinstance(other, URIRef)):
             return 0
         else:
-            return super(URIRef, self).__cmp__(other)==0
-
+            return unicode(self)==other
 

@@ -65,7 +65,6 @@ def resolve(rel):
 
 manifest = TripleStore()
 manifest.load("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf")
-#manifest.load("http://www.w3.org/2000/10/rdf-tests/rdfcore/datatypes/Manifest.rdf")
 
 
 def _testPositive(uri):
@@ -79,15 +78,17 @@ def _testPositive(uri):
         format = "nt"
     else:
         format = "xml"
+    print outDoc, format
     expected.load(outDoc, format=format)
     store = TestStore(expected)
     if inDoc[-3:]==".nt":
         format = "nt"
     else:
         format = "xml"
-    store.load(inDoc, format=format)    
+
     try:
-        pass
+        print inDoc, format
+        store.load(inDoc, format=format)    
     except ParserError, pe:
         write("Failed '")
         write(inDoc)
