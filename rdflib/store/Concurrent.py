@@ -23,8 +23,8 @@ class ResponsibleGenerator(object):
 
 class Concurrent(object):
 
-    def __init__(self):
-        super(Concurrent, self).__init__()
+    def __init__(self, backend):
+        self.backend = backend
         
         # number of calls to visit still in progress
         self.__visit_count = 0
@@ -39,18 +39,18 @@ class Concurrent(object):
 
     def add(self, (s, p, o)):
         if self.__visit_count==0:
-            super(Concurrent, self).add((s, p, o))
+            self.backend.add((s, p, o))
         else:
             self.__pending_adds.append((s, p, o))
 
     def remove(self, (subject, predicate, object)):
         if self.__visit_count==0:
-            super(Concurrent, self).remove((subject, predicate, object))
+            self.backend.remove((subject, predicate, object))
         else:
             self.__pending_removes.append((subject, predicate, object))
 
     def triples(self, (subject, predicate, object)):
-        g = super(Concurrent, self).triples((subject, predicate, object))
+        g = self.backend.triples((subject, predicate, object))
         pending_removes = self.__pending_removes
         self.__begin_read()
         for s, p, o in ResponsibleGenerator(g, self.__end_read):
@@ -76,14 +76,14 @@ class Concurrent(object):
             while pending_removes:
                 (s, p, o) = pending_removes.pop()
                 try:
-                    super(Concurrent, self).remove((s, p, o))
+                    self.backend.remove((s, p, o))
                 except:
                     # TODO: change to try finally?
                     print s, p, o, "Not in store to remove"
             pending_adds = self.__pending_adds                
             while pending_adds:
                 (s, p, o) = pending_adds.pop()
-                super(Concurrent, self).add((s, p, o))
+                self.backend.add((s, p, o))
         lock.release()                        
 
 

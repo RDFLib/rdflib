@@ -2,12 +2,8 @@ from __future__ import generators
 
 ANY = None
 
-from rdflib.store.AbstractTripleStore import AbstractTripleStore
-from rdflib.store.Concurrent import Concurrent
-from rdflib.store.TypeCheck import TypeCheck
 
-
-class InMemoryStore(TypeCheck, Concurrent, AbstractTripleStore):
+class InMemoryBackend(object):
     """\
 An in memory implementation of a triple store.
 
@@ -16,7 +12,7 @@ triple is stored in two such indices as follows spo[s][p][o] = 1 and
 pos[p][o][s] = 1.
     """    
     def __init__(self):
-        super(InMemoryStore, self).__init__()
+        super(InMemoryBackend, self).__init__()
         
         # indexed by [subject][predicate][object]
         self.__spo = {}
