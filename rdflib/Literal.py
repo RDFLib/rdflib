@@ -51,10 +51,10 @@ class Literal(Identifier):
 
 
     def __eq__(self, other):
-        if other==None or (isinstance(other, Identifier) and not isinstance(other, Literal)):
+        if other==None:
             return 0
         elif isinstance(other, Literal):
-            result = unicode(self)==other
+            result = self.__cmp__(other)==0
             if result==1:
                 if self.language==other.language:
                     return 1
@@ -62,6 +62,8 @@ class Literal(Identifier):
                     return 0
             else:
                 return result
+        elif isinstance(other, Identifier):
+            return 0
         else:
             return unicode(self)==other
 
