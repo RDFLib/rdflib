@@ -48,11 +48,6 @@ print "--- start: rdf-xml ---"
 print store.serialize()
 print "--- end: rdf-xml ---\n"
 
-# Serialize as N3
-print "--- start: notation 3 ---"
-print store.serialize(format="n3")
-print "--- end: notation 3 ---\n"
-
 # Serialize as NTriples
 print "--- start: ntriples ---"
 print store.serialize(format="nt")
