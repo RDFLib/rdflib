@@ -1,4 +1,15 @@
-2004/03/12
+2004/03/22
+	RELEASE 2.0.2
+
+	Improved performance of Identifier equality tests.
+
+	Added missing "from __future__ import generators" statements
+	needed to run on Python2.2.
+
+	Added alternative to shlib.move() if it isn't present.
+
+
+2004/03/15
 	RELEASE 2.0.1
 
 	Fixed a bug in the SleepyCatBackend multi threaded concurrency
@@ -18,7 +29,7 @@
 	Context objects now have a identifier property.
 
 
-2004/03/05
+2004/03/10
 	RELEASE 2.0.0
 
 	Fixed a few bugs in the SleepyCatBackend multi process
