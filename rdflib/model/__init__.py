@@ -1,1 +1,0 @@
-# RDF Query Library
