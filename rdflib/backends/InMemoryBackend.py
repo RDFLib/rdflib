@@ -58,9 +58,9 @@ pos[p][o][s] = 1.
         except:
             sp = osp[object] = {}
         try:
-            s = sp[subject]
+            p = sp[subject]
         except:
-            s = sp[subject] = {}
+            p = sp[subject] = {}
         p[predicate] = 1
 
     def remove(self, (subject, predicate, object)):
