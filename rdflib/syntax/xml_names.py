@@ -67,7 +67,10 @@ def split_uri(uri):
         return (XMLNS, uri.split(XMLNS)[1])
     length = len(uri)
     for i in xrange(0, length):
-        if not category(uri[-i-1]) in NAME_CATEGORIES:
+        c = uri[-i-1]
+        if not category(c) in NAME_CATEGORIES:
+            if c in ALLOWED_NAME_CHARS:
+                continue
             for j in xrange(-1-i, length):
                 if category(uri[j]) in NAME_START_CATEGORIES:
                     ns = uri[:j]
