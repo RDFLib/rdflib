@@ -110,11 +110,14 @@ class SleepyCatBackend(object):
             self.__i2k.put(key, term)
         return key
 
-    def add(self, (subject, predicate, object), context):
+    def add(self, triple):
         """\
         Add a triple to the store of triples.
         """
         assert self.__open, "The InformationStore must be open."
+
+        subject, predicate, object = triple
+        context = triple.context
 
         tokey = self.tokey
         s = tokey(subject)
@@ -140,11 +143,13 @@ class SleepyCatBackend(object):
 
 
 
-    def remove(self, (subject, predicate, object), context=None):
+    def remove(self, triple):
         assert self.__open, "The InformationStore must be open."
-        tokey = self.tokey        
+        subject, predicate, object = triple
+        context = triple.context
 
-        for subject, predicate, object in self.triples((subject, predicate, object), context):
+        tokey = self.tokey        
+        for subject, predicate, object in self.triples(triple):
 
             s = tokey(subject)
             p = tokey(predicate)
@@ -213,9 +218,12 @@ class SleepyCatBackend(object):
                     except db.DBNotFoundError, e:
                         pass
         
-    def triples(self, (subject, predicate, object), context=None):
+    def triples(self, triple):
         """A generator over all the triples matching """
         assert self.__open, "The InformationStore must be open."
+        subject, predicate, object = triple
+        context = triple.context
+
         tokey = self.tokey        
 
         if subject!=None:
@@ -503,7 +511,7 @@ class SleepyCatBackend(object):
             else:
                 break
 
-    def contexts(self, triple=None):
+    def contexts(self, triple=None): # TODO: have Graph support triple?
         fromkey = self.fromkey
         tokey = self.tokey        
         if triple:

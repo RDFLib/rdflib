@@ -262,8 +262,8 @@ class Graph(object):
         for t in self.backend.triples(triple):
             yield t
         
-    def contexts(self):
-        for context in self.backend.contexts(triple):
+    def contexts(self): # TODO: triple=None??
+        for context in self.backend.contexts():
             yield context
 
 
