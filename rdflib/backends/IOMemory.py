@@ -20,6 +20,7 @@ class IOMemory(Backend):
     """    
 
     def __init__(self, default_context=None):
+        super(IOMemory, self).__init__()
         
         # indexed by [subject][predicate][object] = 1
         self.cspo = self.createIndex()
