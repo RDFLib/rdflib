@@ -13,6 +13,8 @@ class Literal(Identifier):
 
     http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
     """
+
+    __slots__ = ["language", "datatype"]
     
     def __new__(cls, value, lang='', datatype=''):
         value = unicode(value)        

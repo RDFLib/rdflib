@@ -12,6 +12,7 @@ for i in xrange(0,8):
 
 node_id = 0
 class BNode(Identifier):
+    __slots__ = []
     def __new__(cls, value=None):
         if value==None:
             global node_id
