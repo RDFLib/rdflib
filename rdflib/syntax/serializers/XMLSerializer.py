@@ -1,3 +1,5 @@
+from __future__ import generators
+
 from xml.sax.saxutils import quoteattr, escape
 
 from rdflib.URIRef import URIRef
