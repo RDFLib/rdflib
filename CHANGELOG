@@ -1,5 +1,5 @@
 2005/01/08
-        RELEASE 2.0.4
+        RELEASE 2.0.5
 
 	Added publicID argument to Store's load method.
 

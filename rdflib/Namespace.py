@@ -7,6 +7,7 @@ class Namespace(URIRef):
         return URIRef(self + key)
 
 
+# TODO: how on earth did these get here?
 def check_subject(s):
     if not (isinstance(s, URIRef) or isinstance(s, BNode)):
         raise SubjectTypeError(s)
