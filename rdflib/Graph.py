@@ -1,9 +1,8 @@
 from __future__ import generators
 
 from rdflib import Triple, URIRef, BNode, Literal, RDF, RDFS
-from rdflib.util import first
 
-from rdflib import plugin
+from rdflib import plugin, exceptions
 
 from rdflib.backends import Backend
 from rdflib.syntax.serializer import Serializer
@@ -97,6 +96,43 @@ class Graph(object):
         for context in self.__backend.contexts():
             yield context
 
+    def value(self, subject, predicate, object=None, default=None, check_uniqueness=True):
+        """
+        Get a value for a subject/predicate, predicate/object, or
+        subject/object pair -- exactly one of subject, predicate,
+        object must be None. Useful if one knows that there may only
+        be one value.
+
+        It is one of those situations that occur a lot, hence this
+        'macro' like utility
+
+        Parameters:
+        -----------
+        subject, predicate, object  -- exactly one must be None
+        default -- value to be returned if no values found
+        check_uniqueness -- wether or not a UniquenessError is raise
+        """	
+        retval = default
+        if subject is None:
+            assert predicate is not None
+            assert object is not None
+            values = self.subjects(predicate, object)
+        if predicate is None:
+            assert subject is not None
+            assert object is not None
+            values = self.predicates(subject, object)
+        if object is None:
+            assert subject is not None
+            assert predicate is not None
+            values = self.objects(predicate, object)
+        for v in values:
+            if check_uniqueness and retval != None :
+                # this can happen only if the value is not unique!
+                raise exceptions.UniquenessError(s, p)
+            else:
+                retval = v
+        return retval
+
     def label(self, subject, default=''):
         """ Queries for the RDFS.label of the subject, returns default if no label exists. """
         for s, p, o in self.triples(Triple(subject, RDFS.label, None)):
@@ -112,10 +148,10 @@ class Graph(object):
     def items(self, list):
         """ """
         while list:
-            item = first(self.objects(list, RDF.first))
+            item = self.value(list, RDF.first)
             if item:
                 yield item
-            list = first(self.objects(list, RDF.rest))
+            list = self.value(list, RDF.rest)
 
     def __iter__(self):
         """ Iterates over all triples in the store. """

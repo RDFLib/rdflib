@@ -54,6 +54,13 @@ class ParserError(Error):
     def __str__(self):
         return self.msg
 
+
+class UniquenessError(Error) :
+    """A uniqueness assumption was made in the context, and that is not true"""
+    def __init__(self, n1, n2):
+        Error.__init__(self, "Uniqueness assumption is not fullfilled: %s, %s" % (n1, n2))
+
+
 class SerializerDispatchNameError(Error):
     """No name set..."""
     def __init__(self, msg):
