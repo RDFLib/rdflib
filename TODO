@@ -6,17 +6,19 @@
   
 - add __slots__ to Triple (anywhere else?)
 
-- clean up arguments parse method takes 
-  (eg. a string containing value to be parsed) sniff?
-
 - fix license on backends
 
 - write some docs for these new interfaces
 
-- do anything with Namespace?
-
 - need a test for a graph that's not serializable
   - raise Error("This graph cannot be serialized in RDF/XML. Could not split predicate: '%s'" % predicate)
+
+- need test for Graph.value
+
+- need test for Literal.__eq__ re: datatype
+
+- clean up arguments parse method takes 
+  (eg. a string containing value to be parsed) sniff?
 
 ---
 
