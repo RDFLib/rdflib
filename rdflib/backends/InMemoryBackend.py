@@ -123,3 +123,10 @@ pos[p][o][s] = 1.
                     for o in subjectDictionary[p]:
                         yield s, p, o
 
+    def __len__(self):
+        #@@ optimize
+        i = 0
+        for triple in self.triples((None, None, None)):
+            i += 1
+        return i
+        

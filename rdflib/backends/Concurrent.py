@@ -61,6 +61,9 @@ class Concurrent(object):
             if (subject==None or subject==s) and (predicate==None or predicate==p) and (object==None or object==o):
                 yield s, p, o
 
+    def __len__(self):
+        return self.backend.__len__()
+
     def __begin_read(self):
         lock = self.__lock 
         lock.acquire()                
