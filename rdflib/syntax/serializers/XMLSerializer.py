@@ -96,7 +96,7 @@ class XMLSerializer(AbstractSerializer):
             element_name = "rdf:Description"
             if isinstance(subject, BNode):
                 write( '%s<%s rdf:nodeID="%s"' %
-                   (indent, element_name, subject))
+                   (indent, element_name, subject[2:]))
             else:
                 uri = quoteattr(subject)             
                 write( "%s<%s rdf:about=%s" % (indent, element_name, uri))
@@ -126,7 +126,7 @@ class XMLSerializer(AbstractSerializer):
         else:
             if isinstance(object, BNode):
                 write('%s<%s:%s rdf:nodeID="%s"/>\n' %
-                      (indent, prefix, localName, object))
+                      (indent, prefix, localName, object[2:]))
             else:
                 write("%s<%s:%s rdf:resource=%s/>\n" %
                       (indent, prefix, localName, quoteattr(object)))
