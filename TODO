@@ -11,5 +11,4 @@
 - write some docs for these new interfaces
 
 - load_and_convert(src, from, to) service
-- rdflib server
-- finish rdfnet
+
