@@ -146,12 +146,30 @@ class SleepyCatBackend(object):
             contexts = self.__spo.get("%s%s%s" % (s, p, o))
             if contexts:
                 for c in split(contexts):
-                    self.__cspo.delete("%s%s%s%s" % (c, s, p, o))
-                    self.__cpos.delete("%s%s%s%s" % (c, p, o, s))
-                    self.__cosp.delete("%s%s%s%s" % (c, o, s, p))
-                self.__spo.delete("%s%s%s" % (s, p, o))
-                self.__pos.delete("%s%s%s" % (p, o, s))
-                self.__osp.delete("%s%s%s" % (o, s, p))
+                    try:
+                        self.__cspo.delete("%s%s%s%s" % (c, s, p, o))
+                    except db.DBNotFoundError, e:
+                        pass
+                    try:
+                        self.__cpos.delete("%s%s%s%s" % (c, p, o, s))
+                    except db.DBNotFoundError, e:
+                        pass
+                    try:
+                        self.__cosp.delete("%s%s%s%s" % (c, o, s, p))
+                    except db.DBNotFoundError, e:
+                        pass                        
+                try:
+                    self.__spo.delete("%s%s%s" % (s, p, o))
+                except db.DBNotFoundError, e:
+                    pass
+                try:
+                    self.__pos.delete("%s%s%s" % (p, o, s))
+                except db.DBNotFoundError, e:
+                    pass
+                try:
+                    self.__osp.delete("%s%s%s" % (o, s, p))
+                except db.DBNotFoundError, e:
+                    pass                    
         else:
             c = tokey(context)
             contexts = self.__spo.get("%s%s%s" % (s, p, o))
@@ -160,15 +178,33 @@ class SleepyCatBackend(object):
                 if c in contexts:
                     contexts.remove(c)
                 if not contexts:
-                    self.__spo.delete("%s%s%s" % (s, p, o))
-                    self.__pos.delete("%s%s%s" % (p, o, s))
-                    self.__osp.delete("%s%s%s" % (o, s, p))
+                    try:
+                        self.__spo.delete("%s%s%s" % (s, p, o))
+                    except db.DBNotFoundError, e:
+                        pass                    
+                    try:
+                        self.__pos.delete("%s%s%s" % (p, o, s))
+                    except db.DBNotFoundError, e:
+                        pass                    
+                    try:
+                        self.__osp.delete("%s%s%s" % (o, s, p))
+                    except db.DBNotFoundError, e:
+                        pass                    
                 else:
                     contexts = "".join(contexts)
                     self.__spo.put("%s%s%s" % (s, p, o), contexts)
-                self.__cspo.delete("%s%s%s%s" % (c, s, p, o))
-                self.__cpos.delete("%s%s%s%s" % (c, p, o, s))
-                self.__cosp.delete("%s%s%s%s" % (c, o, s, p))
+                try:
+                    self.__cspo.delete("%s%s%s%s" % (c, s, p, o))
+                except db.DBNotFoundError, e:
+                    pass
+                try:
+                    self.__cpos.delete("%s%s%s%s" % (c, p, o, s))
+                except db.DBNotFoundError, e:
+                    pass
+                try:
+                    self.__cosp.delete("%s%s%s%s" % (c, o, s, p))
+                except db.DBNotFoundError, e:
+                    pass
         
     def triples(self, (subject, predicate, object), context=None):
         """A generator over all the triples matching """
@@ -503,7 +539,7 @@ class SleepyCatBackend(object):
     def open(self, file):
         homeDir = file        
         envsetflags  = 0
-        envflags = db.DB_THREAD | db.DB_INIT_MPOOL | db.DB_INIT_CDB
+        envflags = db.DB_INIT_MPOOL | db.DB_INIT_CDB        
         try:
             if not exists(homeDir):
                 mkdir(homeDir)
@@ -519,7 +555,8 @@ class SleepyCatBackend(object):
         
         dbname = None
         dbtype = db.DB_BTREE
-        dbopenflags = db.DB_THREAD #| db.DB_AUTO_COMMIT
+        dbopenflags = 0
+        
         dbmode = 0660
         dbsetflags   = 0
 
