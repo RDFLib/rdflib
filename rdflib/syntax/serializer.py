@@ -15,7 +15,7 @@ class AbstractSerializer(object):
         
     def serialize(self, stream):
         """Abstract method"""
-        pass
+
 
 class SerializationDispatcher(object):
 
