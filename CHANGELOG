@@ -1,3 +1,10 @@
+2005/02/25
+	RELEASE 2.0.6
+
+	Fixed bug in NTParser and n3 methods where not all characters
+	where being escaped.
+
+
 2005/01/08
         RELEASE 2.0.5
 

@@ -33,10 +33,7 @@ def literal(v):
     m = _literal.match(v)
     try:
         d = m.groupdict()
-        v = d["value"]
-        v = v.replace(r"\n", "\n")
-        v = v.replace(r"\t", "\t")
-        v = v.replace(r"\"", '"')
+        v = d["value"].decode('unicode-escape')
         return Literal(v, d["lang"] or '', d["datatype"])        
     except:
         print "could not parse", v

@@ -37,16 +37,17 @@ class Literal(Identifier):
     def n3(self):
         language = self.language
         datatype = self.datatype
+        encoded = self.encode('unicode-escape')
         if language:
             if datatype:
-                return '"%s"@%s^^<%s>' % (self, language, datatype)
+                return '"%s"@%s^^<%s>' % (encoded, language, datatype)
             else:
-                return '"%s"@%s' % (self, language)
+                return '"%s"@%s' % (encoded, language)
         else:
             if datatype:
-                return '"%s"^^<%s>' % (self, datatype)
+                return '"%s"^^<%s>' % (encoded, datatype)
             else:
-                return '"%s"' % self
+                return '"%s"' % encoded
 
 
     def __eq__(self, other):
