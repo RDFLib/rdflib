@@ -6,9 +6,7 @@ class XMLWriter(object):
     def __init__(self, stream, qname_provider, encoding=None, decl=1):
         encoding = encoding or 'utf-8'
         encoder, decoder, stream_reader, stream_writer = codecs.lookup(encoding)
-        print stream_writer
         self.stream = stream = stream_writer(stream)
-        print stream
         if decl:
             stream.write('<?xml version="1.0" encoding="%s"?>' % encoding)
         self.element_stack = []
