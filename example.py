@@ -23,18 +23,6 @@ store.add((donna, TYPE, FOAF["Person"]))
 store.add((donna, FOAF["nick"], Literal("donna")))
 store.add((donna, FOAF["name"], Literal("Donna Fales")))
 
-# # Get a Resource object for the resource with the given URIRef.
-# eikeon = store[URIRef("http://eikeon.com/#eikeon")]
-
-# # Modify the resource eikeon and the store such that the follow is
-# # true.
-# eikeon[TYPE] = FOAF["Person"]
-# eikeon[FOAF["name"]] = Literal("Daniel Krech")
-# eikeon[FOAF["mbox"]] = URIRef("mailto:eikeon@eikeon.com")
-# eikeon[FOAF["knows"]] = donna
-
-# print eikeon[FOAF["name"]]
-
 # Iterate over triples in store and print them out.
 for s, p, o in store:
     print s, p, o

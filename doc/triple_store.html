@@ -96,9 +96,11 @@ object, and in which case the object has no resource identifier.
         <dd>Exists to support: <pre class="code_sample">len(store)</pre>
         <dt>__eq__(other)</dt>
         <dd>Supports: <pre class="code_sample">store_a==store_b</pre>
+<!--
         <dt>__getitem__(subject)</dt>
         <dd>Returns a <a href="./Resource.html">Resource</a> object for the given subject. Example: <pre class="code_sample">store[subject]</pre></dd>
         <dt>resources((subject, predicate, object))</dt>
+-->
         <dt>items(list)</dt>
         <dt>transitive_objects(subject, property)</dt>
         <dt>transitive_subjects(predicate, object)</dt>
@@ -107,9 +109,10 @@ object, and in which case the object has no resource identifier.
 
     </p>
 
+<!--
     <p>TODO: methods from the <a href="../rdflib/syntax/loadsave.py">LoadSave</a> and <a href="../rdflib/model/schema.py">Schema</a> mix-in classes
     </p>
-
+-->
     <p> 
       See also some <a href="./examples.html">examples</a> of using
 the TripleStores.
