@@ -28,7 +28,6 @@ class Graph(object):
         self.__parser = None
         self.__serializer = None
 
-        self.__default_context = BNode() # TODO: have some static default context?        
         self.__ns_prefix_map = {}
         self.__prefix_ns_map = {}
 
@@ -49,17 +48,10 @@ class Graph(object):
 
     serializer = property(_get_serializer)
 
-    # these three properties and their accesors are to be b/w
+    # these two properties and their accesors are to be b/w
     # compatible while still alowing graphs to calculate their state.
-    # By defaults tries to defer all state to the backend, otherwise
+    # By default tries to defer all state to the backend, otherwise
     # degenerates into the old behavior.
-
-    def defaultContext(self):
-        if hasattr(self.__backend, 'defaultContext'):
-            return self.__backend.defaultContext()
-        return self.__default_context
-
-    default_context = property(defaultContext)
 
     def getNSPrefixMap(self):
         if hasattr(self.__backend, 'getNSPrefixMap'):
@@ -97,7 +89,8 @@ class Graph(object):
             s, p, o = triple
             triple = Triple(s, p, o)
         triple.check_statement()
-        triple.context = context or self.default_context
+        if context:
+            triple.context = context
         self.__backend.add(triple)
 
     def remove(self, triple):

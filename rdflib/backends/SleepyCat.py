@@ -88,6 +88,7 @@ class SleepyCatBackend(object):
     def __init__(self):
         super(SleepyCatBackend, self).__init__()
         self.__open = 0
+        self.default_context = BNode()
         
     def __len__(self):
         return self.__spo.stat()["nkeys"]
@@ -117,7 +118,7 @@ class SleepyCatBackend(object):
         assert self.__open, "The InformationStore must be open."
 
         subject, predicate, object = triple
-        context = triple.context
+        context = triple.context or self.default_context
 
         tokey = self.tokey
         s = tokey(subject)

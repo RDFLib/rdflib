@@ -113,7 +113,7 @@ class IOMemory(object):
         """
 
         subject, predicate, object = triple
-        context = triple.context
+        context = triple.context or self.default_context
         
         f = self.forward
         r = self.reverse
