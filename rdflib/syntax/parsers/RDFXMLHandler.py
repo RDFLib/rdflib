@@ -131,23 +131,7 @@ class RDFXMLHandler(handler.ContentHandler):
     def startPrefixMapping(self, prefix, namespace):
         self._ns_contexts.append(self._current_context.copy())
         self._current_context[namespace] = prefix
-        ns_prefix = self.store.ns_prefix_map
-        prefix_ns = self.store.prefix_ns_map
-        if prefix in prefix_ns:
-            if ns_prefix.get(namespace, None) != prefix:
-                num = 1                
-                while 1:
-                    new_prefix = "%s%s" % (prefix, num)
-                    if new_prefix not in prefix_ns:
-                        break
-                    num +=1
-                ns_prefix[namespace] = new_prefix
-                prefix_ns[new_prefix] = namespace
-        elif namespace not in ns_prefix: # Only if we do not already have a
-				   # binding. So we do not clobber
-				   # things like rdf, rdfs
-            ns_prefix[namespace] = prefix
-            prefix_ns[prefix] = namespace
+        self.store.bind(prefix, namespace)
 
     def endPrefixMapping(self, prefix):
         self._current_context = self._ns_contexts[-1]
@@ -295,10 +279,10 @@ class RDFXMLHandler(handler.ContentHandler):
             else:
                 subject = BNode()
                 self.bnode[nodeID] = subject
-        elif ABOUT in atts:
-            if ID in atts or RDF.nodeID in atts:
+        elif RDF.about in atts:
+            if RDF.ID in atts or RDF.nodeID in atts:
                 self.error("Can have at most one of rdf:ID, rdf:about, and rdf:nodeID")
-            subject = absolutize(atts[ABOUT])
+            subject = absolutize(atts[RDF.about])
         else:
             subject = BNode()
 
@@ -355,7 +339,7 @@ class RDFXMLHandler(handler.ContentHandler):
         else:
             current.predicate = absolutize(name)            
 
-        id = atts.get(ID, None)
+        id = atts.get(RDF.ID, None)
         if id is not None:
             if not is_ncname(id):
                 self.error("rdf:ID value is not a value NCName: %s" % id)

@@ -47,3 +47,6 @@ class Triple(object):
                       isinstance(o, Literal) or \
                       isinstance(o, BNode)):
             raise ObjectTypeError(o)
+
+    def __repr__(self):
+        return "(%s, %s, %s) %s" % (self.subject, self.predicate, self.object, self.context)

@@ -12,16 +12,16 @@ import os
 
 class Parser(object):
 
-    def __init__(self, store):
-        self.store = store
-        self.__parser = {}        
+    def __init__(self, parser):
+        self.parser = parser
 
-    def parser(self, format):
-        parser = self.__parser.get(format, None)
-        if parser is None:
-            parser = plugin.get(format, 'parser')(self.store)
-            self.__parser[format] = parser
-        return parser
+    def _get_store(self):
+        return self.serializer.store
+
+    def _set_store(self, store):
+        self.serializer.store = store
+        
+    store = property(_get_store, _set_store)
 
     def absolutize(self, uri, defrag=1):
         base = urljoin("file:", pathname2url(os.getcwd()))        
@@ -39,7 +39,7 @@ class Parser(object):
         if publicID:
             input_source.setPublicId(publicID)
 
-        return getattr(self, format).parse(input_source)
+        return self.parser.parse(input_source)
 
 
     def _context_id(self, uri):
@@ -60,9 +60,9 @@ class Parser(object):
         returns the new context."""
         location = self._absolutize(location)
         id = self._context_id(publicID or location)
-        self.graph.remove_context(id)
-        context = self.graph.get_context(id)
+        self.store.remove_context(id)
+        context = self.store.get_context(id)
 #        context.add((id, RDF.type, CONTEXT))
 #        context.add((id, SOURCE, location))
-        context.graphLoader().parse(source=location, publicID=publicID, format=format)
+        context.parse(source=location, publicID=publicID, format=format)
         return context

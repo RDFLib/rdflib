@@ -119,7 +119,7 @@ class Graph(object):
         if object is None:
             assert subject is not None
             assert predicate is not None
-            values = self.objects(predicate, object)
+            values = self.objects(subject, predicate)
         if subject is None:
             assert predicate is not None
             assert object is not None
@@ -130,13 +130,13 @@ class Graph(object):
             values = self.predicates(subject, object)
 
         try:
-            retval = value.next()
+            retval = values.next()
         except StopIteration, e:
             retval = default
         else:
             if any is False:
                 try:
-                    value.next()
+                    values.next()
                     raise exceptions.UniquenessError(s, p)
                 except StopIteration, e:
                     pass
@@ -163,7 +163,7 @@ class Graph(object):
         return self.triples((None, None, None))
 
     def __contains__(self, triple):
-        """ Support for 'triple in graph' syntax.  Not very efficient. """
+        """ Support for 'triple in graph' syntax. """
         for triple in self.triples(triple):
             return 1
         return 0
@@ -277,6 +277,15 @@ class Graph(object):
         serializer.store = self
         return serializer.serialize(destination)
 
+    def seq(self, subject) :
+        """
+        Check if subject is an rdf:Seq. If yes, it returns a Seq
+        class instance, None otherwise.
+        """
+        if (subject, RDF.type, RDF.Seq) in self :
+            return Seq(self, subject)
+        else :
+            return None
 
 
 class ContextBackend(object):
@@ -311,3 +320,45 @@ class Context(Graph):
         super(Context, self).__init__(ContextBackend(information_store, identifier))
         self.identifier = identifier
 
+
+class Seq(object):
+	"""
+        Wrapper around an RDF Seq resource. It implements a container
+	type in Python with the order of the items returned
+	corresponding to the Seq content. It is based on the natural
+	ordering of the predicate names _1, _2, _3, etc, which is the
+	'implementation' of a sequence in RDF terms.
+	"""
+	_list  = {}
+	def __init__(self, graph, subject):
+            """
+            The graph which contains the sequence. The subject is
+            simply the subject which is supposed to be a Seq.
+		
+	    Parameters:
+            -----------
+            graph: the graph containing the Seq
+            subject: the subject of a Seq. Note that the init does not
+            check whether this is a Seq, this is done in whoever
+            creates this instance!
+            """
+            
+            _list = self._list = list()
+            LI_INDEX = RDF.RDFNS["_"]
+            for (p, o) in graph.predicate_objects(subject):
+                if p.startswith(LI_INDEX): #!= RDF.Seq: # 
+                    _list.append(("%s" % p, o))
+            # here is the trick: the predicates are _1, _2, _3, etc. Ie, 
+            # by sorting the keys we have what we want!
+            _list.sort()
+	
+	def __iter__(self):
+            for index, item in self._list:
+                yield item
+	
+	def __len__(self):
+            return len(self._list)
+	
+	def __getitem__(self, index):
+            index, item = self._list.__getitem__(index)
+            return item

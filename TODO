@@ -2,13 +2,9 @@
 
 - make plugin a class
 
-- Push down getSeq from Ivan in some form
-  
-- fix license on backends
-
 - write some docs for these new interfaces
 
---
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 
 - add description of all serializers
 
@@ -24,10 +20,4 @@
 - clean up arguments parse method takes 
   (eg. a string containing value to be parsed) sniff?
 
-
-
-
-
-
-
-
+- include rdflib's DOAP as example?
