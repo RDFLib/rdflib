@@ -32,6 +32,7 @@ class TripleStoreTest(unittest.TestCase):
         self.store.load("foaf.rdf")
         self.store.remove_triples((None, None, None))
         self.store.load("/tmp/foo.rdf")
+        self.store.load("file:///tmp/foo.rdf")
         print "---"
         for t in self.store:
             print t

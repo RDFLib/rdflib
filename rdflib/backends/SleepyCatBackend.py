@@ -17,7 +17,6 @@ from struct import pack
 
 from urllib import quote, unquote
 
-from rdflib.store.TypeCheck import check_subject, check_predicate, check_object, check_context
 from rdflib.Literal import Literal
 from rdflib.URIRef import URIRef
 from rdflib.BNode import BNode
@@ -85,11 +84,11 @@ def split(contexts):
         
 class SleepyCatBackend(object):
     def __init__(self):
-        super(SCBacked, self).__init__()
+        super(SleepyCatBackend, self).__init__()
         self.__open = 0
         
-    def __len__(self):
-        return len(list(self))
+#     def __len__(self):
+#         return len(list(self))
 
     def fromkey(self, key):
         return _fromkey(self.__i2k.get(key))
@@ -110,11 +109,7 @@ class SleepyCatBackend(object):
         Add a triple to the store of triples.
         """
         assert self.__open, "The InformationStore must be open."
-        check_subject(subject)
-        check_predicate(predicate)
-        check_object(object)
         context = context or self.context
-        check_context(context)
 
         tokey = self.tokey
         s = tokey(subject)
@@ -143,11 +138,6 @@ class SleepyCatBackend(object):
     def remove(self, (subject, predicate, object), context=None):
         assert self.__open, "The InformationStore must be open."
         tokey = self.tokey        
-        check_subject(subject)
-        check_predicate(predicate)
-        check_object(object)
-        if context is not None:
-            check_context(context)
 
         s = tokey(subject)
         p = tokey(predicate)
@@ -184,14 +174,6 @@ class SleepyCatBackend(object):
         """A generator over all the triples matching """
         assert self.__open, "The InformationStore must be open."
         tokey = self.tokey        
-        if subject:
-            check_subject(subject)
-        if predicate:
-            check_predicate(predicate)
-        if object:
-            check_object(object)
-        if context:
-            check_context(context)
 
         if subject!=None:
             if predicate!=None:
@@ -503,7 +485,6 @@ class SleepyCatBackend(object):
                 cursor.close()
     
     def remove_context(self, identifier):
-        super(SCBacked, self).remove_context(identifier)
         tokey = self.tokey        
         c = tokey(identifier)
         self.__contexts.delete(c)

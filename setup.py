@@ -28,7 +28,7 @@ setup(
 
     packages = ['rdflib',
                 'rdflib.model',
-                'rdflib.store',                
+                'rdflib.backends',                
                 'rdflib.syntax',
                 'rdflib.syntax.serializers',
                 'rdflib.syntax.parsers'],    
