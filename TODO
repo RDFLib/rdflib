@@ -1,13 +1,22 @@
-- Consider merging TripleStore/InformationStore calling it Graph?
-- add imports to rdflib/__init__.py so that all the basic things can be imported from rdflib
+- allow backend to be specified by name?
+
+- make registering of parser and serializer consistent
+
 - Push down getPredicateValue from Ivan in some form
   - introduce Resource object?
-- Push down getSeq from Ivan in some form
-- clean up arguments parse method takes (eg. a string containing value to be parsed) sniff?
-- add ZODB backends
 
+- Push down getSeq from Ivan in some form
+
+- clean up arguments parse method takes 
+  (eg. a string containing value to be parsed) sniff?
+
+- fix license on backends
 
 - write some docs for these new interfaces
+
+- do anything with Namespace?
+
+---
 
 - intern identifiers?
 - <jeremiah>	is there a way to text-search over literals yet?

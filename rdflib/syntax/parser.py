@@ -9,6 +9,15 @@ from urlparse import urljoin, urldefrag
 from urllib import pathname2url, url2pathname
 import os
 
+_module_info = {}
+
+def register(short_name, module_path, class_name):
+    _module_info[short_name] = (module_path, class_name)
+
+register('xml', 'rdflib.syntax.parsers.RDFXMLParser', 'RDFXMLParser')
+register('nt', 'rdflib.syntax.parsers.NTParser', 'NTParser')
+
+
 class AbstractParser(object):
 
     def __init__(self, store):
@@ -23,26 +32,21 @@ class ParserDispatcher(object):
 
     def __init__(self, store):
         self.store = store
-        for ser in rdflib.syntax.parsers.__all__:
-            module = __import__("parsers." + ser, globals(), locals(), ["parsers"])
-            aParser  = getattr(module, ser)
-            short_name = getattr(aParser, "short_name")
-            self.add(aParser, name=short_name)
+        self.__parser = {}        
+        self.__module_info = dict(_module_info)        
                                    
-    def add(self, parser, name=None):
-        #first, check if there's a name or a shortname, else throw exception
-        if name != None:
-            the_name = name
-        elif hasattr(parser, "short_name"):
-            the_name = parser.short_name
-        else:
-            msg = "You didn't set a short name for the parser or pass in a name to add()"
-            raise ParserDispatchNameError(msg)
-        #check for name clash
-        if hasattr(self, the_name):
-            raise ParserDispatchNameClashError("That name is already registered.")
-        else:
-            setattr(self, the_name, parser(self.store))
+    # TODO: abstract common bits from this and serializer for 
+    def register(self, short_name, module_path, class_name):
+        self.__module_info[short_name] = (module_path, class_name)        
+
+    def parser(self, format):
+        parser = self.__parser.get(format, None)
+        if parser is None:
+            module_path, class_name = self.__module_info[format]
+            module = __import__(module_path, globals(), locals(), True)
+            parser = getattr(module, class_name)(self.store)
+            self.__parser[format] = parser
+        return parser
 
     def absolutize(self, uri, defrag=1):
         base = urljoin("file:", pathname2url(os.getcwd()))        

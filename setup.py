@@ -27,7 +27,6 @@ setup(
     url = "http://rdflib.net/",
 
     packages = ['rdflib',
-                'rdflib.model',
                 'rdflib.backends',                
                 'rdflib.syntax',
                 'rdflib.syntax.serializers',
