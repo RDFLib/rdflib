@@ -57,7 +57,7 @@ class NTParser(object):
         super(NTParser, self).__init__()
         self.store = store
 
-   def parse(self, source, baseURI=None):
+    def parse(self, source, baseURI=None):
         if isinstance(source, URLInputSource):
             location = str(source)
             baseURI = baseURI or location
