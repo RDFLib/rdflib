@@ -14,12 +14,6 @@ class NTSerializer(AbstractSerializer):
 
     def serialize(self, stream):
         encoding = self.encoding
-        write = lambda uni: stream.write(uni.encode(encoding, 'replace'))
-	#this might be faster as a map()?
-	for triple in self.store:
-            s, p, o = triple
-	    #concating seems faster than string interp in
-	    #this loop, esp since these are likely to be short
-	    #strings, commonly
-            #write(u"%s %s %s.\n" % (s.n3(), p.n3(), o.n3()))
-            #write(s.n3() + u" " + p.n3() + u" " +  o.n3() + u".\n")
+        write = lambda triple: stream.write((triple[0].n3() + u" " + \
+                                             triple[1].n3() + u" " + triple[2].n3() + u".\n").encode(encoding, "replace"))
+        map(write, self.store)

@@ -23,3 +23,5 @@ class URIRef(Identifier):
     def n3(self):
         return "<%s>" % self
 
+    def yaml(self):
+        return "!^uri " + str(self)

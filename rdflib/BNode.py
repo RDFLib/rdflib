@@ -22,5 +22,6 @@ class BNode(Identifier):
     def n3(self):
         return str(self)
 
-    
+    def yaml(self):
+        return "!^bnode " + str(self)
 
