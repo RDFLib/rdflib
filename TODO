@@ -1,11 +1,8 @@
 - intern identifiers?
 - <jeremiah>	is there a way to text-search over literals yet?
 
-
-
-
-- finish yaml & n3 serializers
-- yaml & n3 parsers; finish ntriples parser
+- finish n3 serializers
+- n3 parsers; finish ntriples parser
 
 - fast-ugly xml serializer (profile, remove nesting)
 - heuristic between fast-xml and slow-xml, the "xml" default

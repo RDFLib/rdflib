@@ -1,4 +1,4 @@
-__all__ = ["N3Serializer", "NTSerializer", "XMLSerializer", "YAMLSerializer"]
+__all__ = ["N3Serializer", "NTSerializer", "XMLSerializer"]
 
 # Automagical way:
 #
