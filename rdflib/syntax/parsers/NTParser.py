@@ -1,5 +1,7 @@
 ns_separator = ""
 
+from rdflib.syntax.parsers import Parser
+
 from rdflib.URIRef import URIRef
 from rdflib.BNode import BNode
 from rdflib.Literal import Literal
@@ -47,7 +49,7 @@ def lang_string(v):
         return Literal("NYI")
         raise NotImplementedError()
 
-class NTParser(object):
+class NTParser(Parser):
     short_name = "nt"
     
     def __init__(self, store):

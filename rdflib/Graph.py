@@ -6,8 +6,10 @@ from rdflib.util import first
 from rdflib import plugin
 
 from rdflib.backends import Backend
-from rdflib.syntax.serializer import SerializationDispatcher
-from rdflib.syntax.parser import ParserDispatcher
+from rdflib.syntax.serializer import Serializer
+from rdflib.syntax.parser import Parser
+
+from rdflib.syntax.NamespaceManager import NamespaceManager
 
 
 class Graph(object):
@@ -22,56 +24,27 @@ class Graph(object):
     and provenance.
     """
     
-    def __init__(self, backend=None):
+    def __init__(self, backend='default'):
         super(Graph, self).__init__()
-        if backend is None:
-            backend = plugin.get('default', 'backend')()
-        elif not isinstance(backend, Backend):
+        if not isinstance(backend, Backend):
             # TODO: error handling
-            backend = plugin.get(backend, 'backend')()
+            backend = plugin.get(backend, Backend)()
         self.__backend = backend
-        self.__parser = None
-        self.__serializer = None
+        self.__namespace_manager = NamespaceManager(self)
 
-        self.__ns_prefix_map = {}
-        self.__prefix_ns_map = {}
+    def _get_namespace_manager(self):
+        return self.__namespace_manager
+    namespace_manager = property(_get_namespace_manager)
 
-        self.prefix_mapping("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
-        self.prefix_mapping("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
+    def bind(self, prefix, namespace):        
+        self.__namespace_manager.bind(prefix, namespace)
 
-    def _get_parser(self):
-        if self.__parser is None:
-            self.__parser = ParserDispatcher(self)
-        return self.__parser
-
-    parser = property(_get_parser)
-
-    def _get_serializer(self):
-        if self.__serializer is None:
-            self.__serializer = SerializationDispatcher(self)
-        return self.__serializer
-
-    serializer = property(_get_serializer)
-
-    # these two properties and their accesors are to be b/w
-    # compatible while still alowing graphs to calculate their state.
-    # By default tries to defer all state to the backend, otherwise
-    # degenerates into the old behavior.
-
-    def _get_ns_prefix_map(self):
-        if hasattr(self.__backend, '_get_ns_prefix_map'):
-            return self.__backend._get_ns_prefix_map()
-        return self.__ns_prefix_map
-
-    ns_prefix_map = property(_get_ns_prefix_map)
-
-
-    def _get_prefix_ns_map(self):
-        if hasattr(self.__backend, '_get_prefix_ns_map'):
-            return self.__backend._get_prefix_ns_map()
-        return self.__prefix_ns_map
-
-    prefix_ns_map = property(_get_prefix_ns_map)
+    def namespaces(self):
+        for prefix, namespace in self.__namespace_manager.namespaces():
+            yield prefix, namespace
+        
+    def prefix_mapping(self, prefix, namespace):
+        self.bind(prefix, namespace)
 
     def open(self, path):
         """ Open the graph backend.  Might be necessary for backends
@@ -123,10 +96,6 @@ class Graph(object):
         """ Generator over all contexts in the graph. """
         for context in self.__backend.contexts():
             yield context
-
-    def prefix_mapping(self, prefix, namespace):
-        map = self.ns_prefix_map    
-        map[namespace] = prefix
 
     def label(self, subject, default=''):
         """ Queries for the RDFS.label of the subject, returns default if no label exists. """
@@ -250,16 +219,22 @@ class Graph(object):
 
     def load(self, location, publicID=None, format="xml"):
         """ for b/w compat. """
-        return self.parser.load(location, publicID, format)
+        parser = plugin.get(format, Parser)(self)
+        return parser.load(location, publicID, format)
 
     def save(self, location, format="xml"):
-        return self.serializer.serialize(destination=location, format=format) 
-
+        serializer = plugin.get(format, Serializer)(self)
+        #serializer.store = self
+        return serializer.serialize(destination=location)
+        
     def parse(self, source, publicID=None, format="xml"):
-        return self.parser.parse(source=source, publicID=publicID, format=format) 
+        parser = plugin.get(format, Parser)(self)        
+        return parser.parse(source=source, publicID=publicID, format=format) 
 
     def serialize(self, destination=None, format="xml"):
-        return self.serializer.serialize(destination=destination, format=format) 
+        serializer = plugin.get(format, Serializer)(self)
+        serializer.store = self
+        return serializer.serialize(destination)
 
 
 

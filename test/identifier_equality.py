@@ -2,7 +2,7 @@ import unittest
 
 from rdflib import URIRef, BNode, Literal
 
-from rdflib.constants import CORE_SYNTAX_TERMS
+from rdflib.syntax.parsers.RDFXMLHandler import CORE_SYNTAX_TERMS
 
 class TypeCheckCase(unittest.TestCase):
 

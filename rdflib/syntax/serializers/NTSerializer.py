@@ -1,11 +1,9 @@
 #$Id: NTSerializer.py,v 1.6 2003/10/29 15:25:24 kendall Exp $
 
-from rdflib.syntax.serializer import AbstractSerializer
+from rdflib.syntax.serializers import Serializer
 
-class NTSerializer(AbstractSerializer):
+class NTSerializer(Serializer):
     
-    short_name = "nt"
-
     def __init__(self, store):
         """
         I serialize RDF graphs in NTriples format.

@@ -1,71 +1,58 @@
-from rdflib.Namespace import Namespace
+"""
+Deprecated. Use rdflib.RDF and rdflib.RDFS instead.
+"""
 
+from rdflib import RDF as _RDF
+from rdflib import RDFS as _RDFS
 
-# The RDF Namespace
-# http://ilrt.org/discovery/2001/07/rdf-syntax-grammar/#section-Namespace
-RDFNS = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+RDFNS = _RDF.RDFNS
 
 # Syntax names
-RDF = RDFNS["RDF"]
-DESCRIPTION = RDFNS["Description"]
-ID = RDFNS["ID"]
-ABOUT = RDFNS["about"]
-PARSE_TYPE = RDFNS["parseType"]
-RESOURCE = RDFNS["resource"]
-LI = RDFNS["li"]
-NODE_ID = RDFNS["nodeID"]
-DATATYPE = RDFNS["datatype"]
+RDF = _RDF.RDF
+DESCRIPTION = _RDF.Description
+ID = _RDF.ID
+ABOUT = _RDF.about
+PARSE_TYPE = _RDF.parseType
+RESOURCE = _RDF.resource
+LI = _RDF.li
+NODE_ID = _RDF.nodeID
+DATATYPE = _RDF.datatype
 
 # RDF Classes
-SEQ = RDFNS["Seq"]
-BAG = RDFNS["Bag"]
-ALT = RDFNS["Alt"]
-STATEMENT = RDFNS["Statement"]
-PROPERTY = RDFNS["Property"]
-XMLLiteral = RDFNS["XMLLiteral"]
-LIST = RDFNS["List"]
+SEQ = _RDF.Seq
+BAG = _RDF.Bag
+ALT = _RDF.Alt
+STATEMENT = _RDF.Statement
+PROPERTY = _RDF.Property
+XMLLiteral = _RDF.XMLLiteral
+LIST = _RDF.List
 
 # RDF Properties
-SUBJECT = RDFNS["subject"]
-PREDICATE = RDFNS["predicate"]
-OBJECT = RDFNS["object"]
-TYPE = RDFNS["type"]
-VALUE = RDFNS["value"]
-FIRST = RDFNS["first"]
-REST = RDFNS["rest"]
+SUBJECT = _RDF.subject
+PREDICATE = _RDF.predicate
+OBJECT = _RDF.object
+TYPE = _RDF.type
+VALUE = _RDF.value
+FIRST = _RDF.first
+REST = _RDF.rest
 # and _n where n is a non-negative integer
 
 # RDF Resources
-NIL = RDFNS["nil"]
-
-
-# http://www.w3.org/TR/rdf-syntax-grammar/#eventterm-attribute-URI
-# A mapping from unqualified terms to there qualified version.
-UNQUALIFIED = {"about" : ABOUT, "ID" : ID, 
-               "type" : TYPE, "resource": RESOURCE, "parseType": PARSE_TYPE}
-
-# http://www.w3.org/TR/rdf-syntax-grammar/#coreSyntaxTerms
-CORE_SYNTAX_TERMS = [RDF, ID, ABOUT, PARSE_TYPE, RESOURCE, NODE_ID, DATATYPE]
-
-# http://www.w3.org/TR/rdf-syntax-grammar/#syntaxTerms
-SYNTAX_TERMS = CORE_SYNTAX_TERMS + [DESCRIPTION, LI]
-
-# http://www.w3.org/TR/rdf-syntax-grammar/#oldTerms
-OLD_TERMS = [RDFNS["aboutEach"], RDFNS["aboutEachPrefix"], RDFNS["bagID"]]
+NIL = _RDF.nil
 
 
 # SCHEMA
-RDFSNS = Namespace("http://www.w3.org/2000/01/rdf-schema#")
+RDFSNS = _RDFS.RDFSNS
 
-RDFS_CLASS = RDFSNS["Class"]
-RDFS_RESOURCE = RDFSNS["Resource"]
-RDFS_SUBCLASSOF = RDFSNS["subClassOf"]
-RDFS_SUBPROPERTYOF = RDFSNS["subPropertyOf"]
-RDFS_ISDEFINEDBY = RDFSNS["isDefinedBy"]
-RDFS_LABEL = RDFSNS["label"]
-RDFS_COMMENT = RDFSNS["comment"]
-RDFS_RANGE = RDFSNS["range"]
-RDFS_DOMAIN = RDFSNS["domain"]
-RDFS_LITERAL = RDFSNS["Literal"]
-RDFS_CONTAINER = RDFSNS["Container"]
-RDFS_SEEALSO = RDFSNS["seeAlso"]
+RDFS_CLASS = _RDFS.Class
+RDFS_RESOURCE = _RDFS.Resource
+RDFS_SUBCLASSOF = _RDFS.subClassOf
+RDFS_SUBPROPERTYOF = _RDFS.subPropertyOf
+RDFS_ISDEFINEDBY = _RDFS.isDefinedBy
+RDFS_LABEL = _RDFS.label
+RDFS_COMMENT = _RDFS.comment
+RDFS_RANGE = _RDFS.range
+RDFS_DOMAIN = _RDFS.domain
+RDFS_LITERAL = _RDFS.Literal
+RDFS_CONTAINER = _RDFS.Container
+RDFS_SEEALSO = _RDFS.seeAlso

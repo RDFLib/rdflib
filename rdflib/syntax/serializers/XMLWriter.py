@@ -3,14 +3,14 @@ from xml.sax.saxutils import quoteattr, escape
 
 
 class XMLWriter(object):
-    def __init__(self, stream, qname_provider, encoding=None, decl=1):
+    def __init__(self, stream, namespace_manager, encoding=None, decl=1):
         encoding = encoding or 'utf-8'
         encoder, decoder, stream_reader, stream_writer = codecs.lookup(encoding)
         self.stream = stream = stream_writer(stream)
         if decl:
             stream.write('<?xml version="1.0" encoding="%s"?>' % encoding)
         self.element_stack = []
-        self.qp = qname_provider
+        self.nm = namespace_manager
         self.closed = True
         
     def __get_indent(self):
@@ -23,12 +23,12 @@ class XMLWriter(object):
             self.stream.write(">")
         
     def push(self, uri):
-        qp = self.qp
+        nm = self.nm
         self.__close_start_tag()        
         write = self.stream.write
         write("\n")
         write(self.indent)            
-        write("<%s" % qp.get(uri))
+        write("<%s" % nm.qname(uri))
         self.element_stack.append(uri)
         self.closed = False
         self.parent = False
@@ -45,7 +45,7 @@ class XMLWriter(object):
             if self.parent:
                 write("\n")
                 write(self.indent)
-            write("</%s>" % self.qp.get(uri))
+            write("</%s>" % self.nm.qname(uri))
         self.parent = True
 
     def namespaces(self, namespaces):
@@ -59,7 +59,7 @@ class XMLWriter(object):
 
     def attribute(self, uri, value):
         write = self.stream.write
-        write(" %s=%s" % (self.qp.get(uri), quoteattr(value)))
+        write(" %s=%s" % (self.nm.qname(uri), quoteattr(value)))
 
 
     def text(self, text):

@@ -1,3 +1,5 @@
+from rdflib.syntax.parsers import Parser
+
 from xml.sax import make_parser
 from xml.sax.saxutils import handler
 from xml.sax.handler import ErrorHandler
@@ -18,8 +20,7 @@ def create_parser(store):
     return parser
 
 
-class RDFXMLParser(object):
-    short_name = "xml"
+class RDFXMLParser(Parser):
 
     def __init__(self, store):
         self.store = store

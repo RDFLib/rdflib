@@ -2,6 +2,7 @@ from rdflib.Namespace import Namespace
 
 RDFNS = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
 
+# Syntax names
 RDF = RDFNS["RDF"]
 Description = RDFNS["Description"]
 ID = RDFNS["ID"]
@@ -16,7 +17,7 @@ datatype = RDFNS["datatype"]
 Seq = RDFNS["Seq"]
 Bag = RDFNS["Bag"]
 Alt = RDFNS["Alt"]
-statement = RDFNS["Statement"]
+Statement = RDFNS["Statement"]
 Property = RDFNS["Property"]
 XMLLiteral = RDFNS["XMLLiteral"]
 List = RDFNS["List"]

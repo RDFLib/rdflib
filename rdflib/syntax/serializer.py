@@ -1,7 +1,3 @@
-from rdflib.exceptions import SerializerDispatchNameError, SerializerDispatchNameClashError
-
-from rdflib import plugin
-
 import tempfile, shutil, os
 from threading import Lock
 from urlparse import urlparse
@@ -12,38 +8,28 @@ except ImportError:
     from StringIO import StringIO
 
 
-class AbstractSerializer(object):
+class Serializer(object):
 
-    def __init__(self, store):
-        self.store = store
-        self.encoding = "UTF-8"
-        
-    def serialize(self, stream):
-        """Abstract method"""
-
-
-class SerializationDispatcher(object):
-
-    def __init__(self, store):
-        self.store = store
-        self.__serializer = {}
+    def __init__(self, serializer):
+        self.serializer = serializer
         self.__save_lock = Lock()
         
-    def serializer(self, format):
-        serializer = self.__serializer.get(format, None)
-        if serializer is None:
-            serializer = plugin.get(format, 'serializer')(self.store)
-            self.__serializer[format] = serializer
-        return serializer
+    def _get_store(self):
+        return self.serializer.store
+
+    def _set_store(self, store):
+        self.serializer.store = store
+        
+    store = property(_get_store, _set_store)
 
     def serialize(self, destination=None, format="xml"):
         if destination is None:
             stream = StringIO()
-            self.serializer(format).serialize(stream)
+            self.serializer.serialize(stream)
             return stream.getvalue()
         if hasattr(destination, "write"):
             stream = destination
-            self.serializer(format).serialize(stream)            
+            self.serializer.serialize(stream)            
         else:
             location = destination
             try:
@@ -54,7 +40,7 @@ class SerializationDispatcher(object):
                     return
                 name = tempfile.mktemp()            
                 stream = open(name, 'wb')
-                self.serializer(format).serialize(stream)
+                self.serializer.serialize(stream)
                 stream.close()
                 if hasattr(shutil,"move"):
                     shutil.move(name, path)

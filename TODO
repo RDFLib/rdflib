@@ -1,11 +1,17 @@
-- allow backend to be specified by name?
+- NamespaceManager should defer to backend for storage of bindings
 
-- make registering of parser and serializer consistent
+- make plugin a class
 
 - Push down getPredicateValue from Ivan in some form
   - introduce Resource object?
 
 - Push down getSeq from Ivan in some form
+
+- we should implement the __eq__ Ivan provides for Literals, so that datatyped literals compare correctly
+
+- add __slots__ to Triple (anywhere else?)
+
+- remove .cvsignore / add svn equiv
 
 - clean up arguments parse method takes 
   (eg. a string containing value to be parsed) sniff?
@@ -15,6 +21,9 @@
 - write some docs for these new interfaces
 
 - do anything with Namespace?
+
+- need a test for a graph that's not serializable
+  - raise Error("This graph cannot be serialized in RDF/XML. Could not split predicate: '%s'" % predicate)
 
 ---
 

@@ -1,43 +1,19 @@
 from __future__ import generators
 
-from xml.sax.saxutils import quoteattr, escape
+from rdflib.syntax.serializers import Serializer
 
 from rdflib.URIRef import URIRef
 from rdflib.Literal import Literal
 from rdflib.BNode import BNode
 
+from rdflib.util import uniq
 from rdflib.exceptions import Error
-from rdflib.syntax.serializer import AbstractSerializer
+from rdflib.syntax.xml_names import split_uri
 
-NAMESTART = u'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_'
-NAMECHARS = NAMESTART + u'0123456789-.'
-
-def unique(sequence):
-    seen = {}
-    for item in sequence:
-        if not item in seen:
-            seen[item] = 1
-            yield item
-    
-def split_predicate(predicate):
-    predicate = predicate
-    length = len(predicate)
-    for i in xrange(0, length):
-        if not predicate[-i-1] in NAMECHARS:
-            for j in xrange(-1-i, length):
-                if predicate[j] in NAMESTART:
-                    ns = predicate[:j]
-                    if not ns:
-                        break
-                    qn = predicate[j:]
-                    return (ns, qn)
-            break
-    raise Error("This graph cannot be serialized in RDF/XML. Could not split predicate: '%s'" % predicate)
+from xml.sax.saxutils import quoteattr, escape
 
 
-class XMLSerializer(AbstractSerializer):
-
-    short_name = "xml"
+class XMLSerializer(Serializer):
 
     def __init__(self, store):
         super(XMLSerializer, self).__init__(store)
@@ -45,7 +21,7 @@ class XMLSerializer(AbstractSerializer):
     def __update_prefix_map(self):
         self.namespaceCount = len(self.store.ns_prefix_map)
         ns_prefix_map = self.store.ns_prefix_map
-        for predicate in unique(self.store.predicates()): 
+        for predicate in uniq(self.store.predicates()): 
             uri, localName = split_predicate(predicate)            
             if not uri in ns_prefix_map:
                 self.namespaceCount += 1

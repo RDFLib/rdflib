@@ -4,34 +4,32 @@ from rdflib.Literal import Literal
 from rdflib.BNode import BNode
 from rdflib.util import first, uniq, more_than
 
-from rdflib.syntax.serializer import AbstractSerializer
+from rdflib.syntax.serializers import Serializer
 from rdflib.syntax.serializers.XMLWriter import XMLWriter
-from rdflib.syntax.serializers.QNameProvider import QNameProvider, XMLLANG
 
-class PrettyXMLSerializer(AbstractSerializer):
+XMLLANG = "http://www.w3.org/XML/1998/namespacelang"
 
-    short_name = "pretty-xml"
+
+class PrettyXMLSerializer(Serializer):
 
     def __init__(self, store):
         super(PrettyXMLSerializer, self).__init__(store)
-        self.__serialized = {}
         
     def serialize(self, stream):
         self.__serialized = {}
         store = self.store
         
-        qp = QNameProvider()
-        self.writer = writer = XMLWriter(stream, qp)
+        nm = store.namespace_manager
+        self.writer = writer = XMLWriter(stream, nm)
 
-        for namespace, prefix in store.ns_prefix_map.iteritems():
-            qp.set_prefix(prefix, namespace)        
-        self.namespaceCount = len(store.ns_prefix_map)        
+        #for prefix, namespace in store.namespaces():
+        #    nm.set_prefix(prefix, namespace)        
         possible = uniq(store.predicates()) + uniq(store.objects(None, RDF.type))
-        for predicate in possible:
-            qp.compute(predicate)
+        #for predicate in possible:
+        #    nm.compute_qname(predicate)
 
         writer.push(RDF.RDF)            
-        writer.namespaces(qp.namespaces())
+        writer.namespaces(nm.namespaces())
         
         # Write out subjects that can not be inline
         for subject in store.subjects():

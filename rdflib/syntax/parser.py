@@ -10,17 +10,7 @@ from urllib import pathname2url, url2pathname
 import os
 
 
-class AbstractParser(object):
-
-    def __init__(self, store):
-        self.__short_name = ""
-        self.store = store
-        
-    def parse(self, source):
-        pass
-
-
-class ParserDispatcher(object):
+class Parser(object):
 
     def __init__(self, store):
         self.store = store
