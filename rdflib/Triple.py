@@ -3,7 +3,7 @@ from rdflib.exceptions import SubjectTypeError, PredicateTypeError, ObjectTypeEr
 
 
 class Triple(tuple):
-    def __new__(cls, s, p, o):
+    def __new__(cls, s, p, o, c=None):
         return tuple.__new__(cls, (s, p, o)) 
 
     def __init__(self, s, p, o, c=None):
