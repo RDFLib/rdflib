@@ -23,7 +23,6 @@ from rdflib.constants import DATATYPE
 # Add triples using store's add method.
 store.add((donna, TYPE, FOAF["Person"]))
 store.add((donna, FOAF["nick"], Literal("donna")))
-store.add((donna, FOAF["mbox"], Literal("donna@foo.com")))
 store.add((donna, FOAF["name"], Literal("Donna Fales")))
 
 # Iterate over triples in store and print them out.
@@ -40,13 +39,7 @@ for person in store.subjects(TYPE, FOAF["Person"]):
 # Serialize the store as RDF/XML to the file foaf.rdf.
 store.save("foaf.rdf")
 
-# Shows off the YAML serializer's support for asserted & named graphs
-store.assert_graph()
-store.name_graph("http://foobar")
-
 # Let's show off the serializers
-# Feel freek to nuke this, I was using it for testing, and I think now that these work it's
-# good to show them working, but YMMV.
 
 print "RDF Serializations:"
 
@@ -65,7 +58,3 @@ print "--- start: ntriples ---"
 print store.serialize(format="nt")
 print "--- end: ntriples ---\n"
 
-# Serialize as YAML
-print "--- start: yaml ---"
-print store.serialize(format="yaml")
-print "--- end: yaml ---\n"
