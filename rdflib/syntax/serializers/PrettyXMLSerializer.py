@@ -35,8 +35,10 @@ class PrettyXMLSerializer(Serializer):
         nm.reset()
         possible = uniq(store.predicates()) + uniq(store.objects(None, RDF.type))
         for predicate in possible:
-            prefix, namespace, local = nm.compute_qname(predicate)
-            namespaces[prefix] = namespace
+            result = nm.compute_qname(predicate)
+            if result:
+                prefix, namespace, local = result
+                namespaces[prefix] = namespace
 
         writer.push(RDF.RDF)            
         writer.namespaces(namespaces.iteritems())

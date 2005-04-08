@@ -1,4 +1,4 @@
-from rdflib import URIRef
+from rdflib import URIRef, Literal, RDFS
 from rdflib.syntax.xml_names import split_uri
 
 from urlparse import urljoin, urldefrag
@@ -24,8 +24,8 @@ class NamespaceManager(object):
 
     def _get_log(self):
         if self.__log is None:
-            self.__log = logging.getLogger("rdflib.syntax.NamespaceManager")
-            #self.__log = logging
+            #self.__log = logging.getLogger("rdflib.syntax.NamespaceManager")
+            self.__log = logging
         return self.__log
     log = property(_get_log)
         
@@ -50,7 +50,8 @@ class NamespaceManager(object):
                 self.__cache[uri] = ":".join((prefix, name))
             return prefix, namespace, name
 
-    def bind(self, prefix, namespace):
+    def bind(self, prefix, namespace, override=True):
+        # When documenting explain that override only applies in what cases
         if prefix is None:
             prefix = ''
         bound_namespace = self.backend.namespace(prefix)
@@ -73,8 +74,8 @@ class NamespaceManager(object):
             elif bound_prefix == prefix:
                 pass # already bound
             else:
-                # Always bind to new definition?
-                self.backend.bind(prefix, namespace)                
+                if override:
+                    self.backend.bind(prefix, namespace)
 
     def namespaces(self):
         for prefix, namespace in self.backend.namespaces():
@@ -93,8 +94,8 @@ class NamespaceManager(object):
         return URIRef("%s#context" % uri)
         
     def namespace(self, uri):
-        if uri[-1]=="#":
-            self.log.warning("Namespace should end in #")
+        #if uri[-1]!="#":
+        #    self.log.warning("Namespace should end in #: '%s'" % uri)
         # TODO: assume this context is loaded from its namespace location:
         uri = URIRef(uri)
         context_uri = URIRef(uri[0:-1])
@@ -102,6 +103,8 @@ class NamespaceManager(object):
         if not (uri, None, None) in self.graph:
             self.log.info("loading namespace: %s" % uri)
             context = self.graph.load(context_uri)
+            if not (uri, RDFS.label, None) in context:
+                context.add((uri, RDFS.label, Literal("-")))
         else:
             cid = self.context_id(context_uri)
             context = self.graph.get_context(cid)
@@ -123,6 +126,7 @@ class NamespaceManager(object):
 
         d = module.__dict__
         d["NS"] = uri
+        #d["__getitem__"] = module.__dict__.__getitem__
         for subject in uniq(context.subjects(None, None)):
             if subject.startswith(uri):
                 ns, qname = subject.split(uri)

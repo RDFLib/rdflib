@@ -91,8 +91,15 @@ class Sleepycat(Backend):
         self.__open = 0
         self.default_context = BNode()
         
-    def __len__(self):
-        return self.__spo.stat()["nkeys"]
+    def __len__(self, context=None):
+        if context is None:
+            return self.__spo.stat()["nkeys"]
+        else:
+            c = self.__cspo.cursor()
+            c.set_range(self.tokey(context))
+            count = c.count()
+            c.close()
+            return count
 
     def fromkey(self, key):
         return _fromkey(self.__i2k.get(key))

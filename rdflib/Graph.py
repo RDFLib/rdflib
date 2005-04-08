@@ -116,7 +116,7 @@ class Graph(object):
                  return any value in the case there is more than one
                else:
                  raise UniquenessError
-        """	
+        """     
         retval = default
         if object is None:
             assert subject is not None
@@ -298,8 +298,8 @@ class Graph(object):
     def namespace(self, uri):        
         return self.namespace_manager.namespace(uri)
 
-    def bind(self, prefix, namespace):
-        return self.namespace_manager.bind(prefix, namespace)
+    def bind(self, prefix, namespace, override=True):
+        return self.namespace_manager.bind(prefix, namespace, override=override)
 
     def namespaces(self):
         for prefix, namespace in self.namespace_manager.namespaces():
@@ -331,7 +331,8 @@ class ContextBackend(Backend):
         return self.backend.triples(triple)
 
     def __len__(self):
-        # TODO: backends should support len
+        # TODO: backends should support len        
+        #return self.backend.__len__(self.identifier)
         i = 0
         for triple in self.triples(Triple(None, None, None)):
             i += 1
@@ -347,43 +348,43 @@ class Context(Graph):
 
 
 class Seq(object):
-	"""
-        Wrapper around an RDF Seq resource. It implements a container
-	type in Python with the order of the items returned
-	corresponding to the Seq content. It is based on the natural
-	ordering of the predicate names _1, _2, _3, etc, which is the
-	'implementation' of a sequence in RDF terms.
-	"""
-	_list  = {}
-	def __init__(self, graph, subject):
-            """
-            The graph which contains the sequence. The subject is
-            simply the subject which is supposed to be a Seq.
-		
-	    Parameters:
-            -----------
-            graph: the graph containing the Seq
-            subject: the subject of a Seq. Note that the init does not
-            check whether this is a Seq, this is done in whoever
-            creates this instance!
-            """
-            
-            _list = self._list = list()
-            LI_INDEX = RDF.RDFNS["_"]
-            for (p, o) in graph.predicate_objects(subject):
-                if p.startswith(LI_INDEX): #!= RDF.Seq: # 
-                    _list.append(("%s" % p, o))
-            # here is the trick: the predicates are _1, _2, _3, etc. Ie, 
-            # by sorting the keys we have what we want!
-            _list.sort()
-	
-	def __iter__(self):
-            for index, item in self._list:
-                yield item
-	
-	def __len__(self):
-            return len(self._list)
-	
-	def __getitem__(self, index):
-            index, item = self._list.__getitem__(index)
-            return item
+    """
+    Wrapper around an RDF Seq resource. It implements a container
+    type in Python with the order of the items returned
+    corresponding to the Seq content. It is based on the natural
+    ordering of the predicate names _1, _2, _3, etc, which is the
+    'implementation' of a sequence in RDF terms.
+    """
+    _list  = {}
+    def __init__(self, graph, subject):
+        """
+        The graph which contains the sequence. The subject is
+        simply the subject which is supposed to be a Seq.
+        
+        Parameters:
+        -----------
+        graph: the graph containing the Seq
+        subject: the subject of a Seq. Note that the init does not
+        check whether this is a Seq, this is done in whoever
+        creates this instance!
+        """
+
+        _list = self._list = list()
+        LI_INDEX = RDF.RDFNS["_"]
+        for (p, o) in graph.predicate_objects(subject):
+            if p.startswith(LI_INDEX): #!= RDF.Seq: # 
+                _list.append(("%s" % p, o))
+        # here is the trick: the predicates are _1, _2, _3, etc. Ie, 
+        # by sorting the keys we have what we want!
+        _list.sort()
+
+    def __iter__(self):
+        for index, item in self._list:
+            yield item
+
+    def __len__(self):
+        return len(self._list)
+
+    def __getitem__(self, index):
+        index, item = self._list.__getitem__(index)
+        return item
