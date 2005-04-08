@@ -25,3 +25,14 @@ class URIRef(Identifier):
     def n3(self):
         return "<%s>" % self
 
+    def concrete(self):
+        if "#" in self:
+            return URIRef("/".join(self.rsplit("#", 1)))
+        else:
+            return self
+
+    def abstract(self):
+        if "#" not in self:
+            return URIRef("#".join(self.rsplit("/", 1)))
+        else:
+            return self
