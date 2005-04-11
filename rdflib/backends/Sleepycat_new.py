@@ -315,8 +315,6 @@ class Sleepycat_new(Backend):
 
     def bind(self, prefix, namespace):
         assert self.__open, "This Graph must be open first."        
-        if namespace[-1]=="-":
-            raise Exception("??")
         prefix = prefix.encode("utf-8")
         namespace = namespace.encode("utf-8")
         bound_prefix = self.__prefix.get(namespace)
