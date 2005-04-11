@@ -6,7 +6,8 @@ from rdflib.constants import RDFS_LABEL
 class GraphTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.store = Graph()
+        self.store = Graph(backend="Sleepycat_new")
+        self.store.open("store")
         self.michel = URIRef(u'michel')
         self.tarek = URIRef(u'tarek')
         self.bob = URIRef(u'bob')
@@ -69,6 +70,7 @@ class GraphTestCase(unittest.TestCase):
         Any = None
 
         self.addStuff()
+        print len(self.store)
 
         # unbound subjects
         asserte(len(list(triples(Triple(Any, likes, pizza)))), 2)

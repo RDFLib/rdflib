@@ -70,7 +70,7 @@ class Graph(object):
         triple.check_statement()
         if context:
             triple.context = context
-        self.__backend.add(triple)
+        self.__backend.add(triple, context)
 
     def remove(self, triple):
         """ Remove a triple from the graph.  If the triple does not
@@ -89,7 +89,7 @@ class Graph(object):
         if not isinstance(triple, Triple):
             s, p, o = triple
             triple = Triple(s, p, o)
-        triple.check_pattern()            
+        triple.check_pattern()
         for t in self.__backend.triples(triple):
             yield t
         
@@ -189,12 +189,12 @@ class Graph(object):
 
     def __iadd__(self, other):
         for triple in other:
-            self.__backend.add(triple) # TODO: context
+            self.__backend.add(triple, None) # TODO: context
         return self
 
     def __isub__(self, other):
         for triple in other:
-            self.__backend.remove(triple) 
+            self.__backend.remove(triple, None) 
         return self
 
     def subjects(self, predicate=None, object=None):
@@ -318,17 +318,17 @@ class ContextBackend(Backend):
         self.backend = backend
         self.identifier = identifier
 
-    def add(self, triple):
-        triple.context = self.identifier
-        self.backend.add(triple)
+    def add(self, triple, context=None):
+        assert context is None
+        self.backend.add(triple, self.identifier)
         
-    def remove(self, triple):
-        triple.context = self.identifier        
-        self.backend.remove(triple)
+    def remove(self, triple, context=None):
+        assert context is None        
+        self.backend.remove(triple, self.identifier)
         
-    def triples(self, triple):
-        triple.context = self.identifier        
-        return self.backend.triples(triple)
+    def triples(self, triple, context=None):
+        assert context is None        
+        return self.backend.triples(triple, self.identifier)
 
     def __len__(self):
         # TODO: backends should support len        

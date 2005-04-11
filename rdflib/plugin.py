@@ -59,5 +59,8 @@ register('Memory', Backend,
 register('Sleepycat', Backend,
          'rdflib.backends.Sleepycat', 'Sleepycat')
 
+register('Sleepycat_new', Backend,
+         'rdflib.backends.Sleepycat_new', 'Sleepycat_new')
+
 register('ZODB', Backend,
          'rdflib.backends.ZODB', 'ZODB')
