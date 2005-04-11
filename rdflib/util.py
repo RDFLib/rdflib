@@ -67,3 +67,23 @@ def parse_date_time(val):
     return t
 
 
+def from_n3(s):
+    if s.startswith('<'):
+        return URIRef(s[1:-1])
+    elif s.startswith('"'):
+        # TODO: would a regex be faster?
+        value, rest = s.rsplit('"', 1)
+        value = value[1:] # strip leading quote
+        if rest.startswith("@"):
+            language, rest = rest.rsplit('^^', 1)
+            language = language[1:] # strip leading at sign
+        else:
+            language = ''
+        if rest.startswith("^^"):
+            datatype = rest[2:]
+        else:
+            datatype = ''
+        value = value.decode("unicode-escape")
+        return Literal(value, language, datatype)
+    else:
+        return BNode(s)
