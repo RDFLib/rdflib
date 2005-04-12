@@ -298,7 +298,7 @@ class Sleepycat(Backend):
             if key.startswith(prefix):
                 if context!=None:
                     c, s, p, o = split(key)
-                    yield (fromkey(s), fromkey(p), fromkey(o), fromkey(c))
+                    yield (fromkey(s), fromkey(p), fromkey(o))
                 else:
                     s, p, o = split(key)
                     yield (fromkey(s), fromkey(p), fromkey(o))
