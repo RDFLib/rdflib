@@ -11,8 +11,6 @@ del sys
 from rdflib.URIRef import URIRef
 from rdflib.BNode import BNode
 from rdflib.Literal import Literal
-from rdflib.Triple import Triple
-
 
 from rdflib.Namespace import Namespace
 

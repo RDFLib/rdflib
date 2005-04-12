@@ -1,6 +1,9 @@
 from __future__ import generators
 
-from rdflib import Triple, URIRef, BNode, Literal, RDF, RDFS
+from rdflib import URIRef, BNode, Literal, RDF, RDFS
+
+from rdflib.util import check_statement, check_pattern
+from rdflib.util import check_subject, check_predicate, check_object
 
 from rdflib import plugin, exceptions
 
@@ -59,38 +62,35 @@ class Graph(object):
         if hasattr(self.__backend, "close"):
             self.__backend.close()
 
-    def add(self, triple, context=None):
+    def add(self, (s, p, o), context=None):
         """ Add a triple, optionally provide a context.  A 3-tuple or
         rdflib.Triple can be provided.  Context must be a URIRef.  If
         no context is provides, triple is added to the default
         context."""
-        if not isinstance(triple, Triple):
-            s, p, o = triple
-            triple = Triple(s, p, o)
-        triple.check_statement()
-        if context:
-            triple.context = context
-        self.__backend.add(triple, context)
 
-    def remove(self, triple):
+        check_statement((s, p, o))
+        if context:
+            check_context(c)
+        self.__backend.add((s, p, o), context)
+
+    def remove(self, (s, p, o), context=None):
         """ Remove a triple from the graph.  If the triple does not
         provide a context attribute, removes the triple from all
         contexts."""
-        if not isinstance(triple, Triple):
-            s, p, o = triple
-            triple = Triple(s, p, o)
-        triple.check_pattern()
-        self.__backend.remove(triple)
 
-    def triples(self, triple):
+        check_pattern((s, p, o))
+        if context:
+            check_context(c)
+        self.__backend.remove((s, p, o), context)
+
+    def triples(self, (s, p, o), context=None):
         """ Generator over the triple store.  Returns triples that
         match the given triple pattern.  If triple pattern does not
         provide a context, all contexts will be searched."""
-        if not isinstance(triple, Triple):
-            s, p, o = triple
-            triple = Triple(s, p, o)
-        triple.check_pattern()
-        for t in self.__backend.triples(triple):
+        check_pattern((s, p, o))
+        if context:
+            check_context(c)
+        for t in self.__backend.triples((s, p, o), context):
             yield t
         
     def contexts(self): # TODO: triple=None??
@@ -170,9 +170,9 @@ class Graph(object):
             return 1
         return 0
 
-    def __len__(self):
+    def __len__(self, context=None):
         """ Returns the number of triples in the graph. """
-        return self.__backend.__len__()
+        return self.__backend.__len__(context)
     
     def __eq__(self, other):
         # Note: this is not a test of isomorphism, but rather exact
@@ -330,13 +330,13 @@ class ContextBackend(Backend):
         assert context is None        
         return self.backend.triples(triple, self.identifier)
 
-    def __len__(self):
-        # TODO: backends should support len        
-        #return self.backend.__len__(self.identifier)
-        i = 0
-        for triple in self.triples(Triple(None, None, None)):
-            i += 1
-        return i
+    def __len__(self, context=None):
+        assert context is None
+        return self.backend.__len__(self.identifier)
+#         i = 0
+#         for triple in self.triples(Triple(None, None, None)):
+#             i += 1
+#         return i
 
 
 class Context(Graph):
