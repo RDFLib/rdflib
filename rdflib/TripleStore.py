@@ -4,7 +4,10 @@ from rdflib import Graph
 from rdflib.backends import Memory
 
 class TripleStore(Graph):
-
+    """
+    Depcrecated. Use Graph instead.
+    """
+    
     def __init__(self, location=None, backend=None):
         if backend==None:
             backend = Memory()
