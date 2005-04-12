@@ -94,10 +94,9 @@ class Sleepycat(Backend):
         if context is None:
             return self.__spo.stat()["nkeys"]
         else:
-            c = self.__cspo.cursor()
-            c.set_range(self.tokey(context))
-            count = c.count()
-            c.close()
+            count = 0
+            for triple in self.triples((None, None, None), context):
+                count += 1
             return count
 
     def fromkey(self, key):

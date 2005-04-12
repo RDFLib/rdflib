@@ -149,8 +149,8 @@ class Graph(object):
         else:
             if any is False:
                 try:
-                    values.next()
-                    raise exceptions.UniquenessError(s, p)
+                    next = values.next()
+                    raise exceptions.UniquenessError([retval, next] + list(values))
                 except StopIteration, e:
                     pass
         return retval
