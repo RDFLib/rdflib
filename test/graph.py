@@ -70,7 +70,6 @@ class GraphTestCase(unittest.TestCase):
         Any = None
 
         self.addStuff()
-        print len(self.store)
 
         # unbound subjects
         asserte(len(list(triples((Any, likes, pizza)))), 2)
