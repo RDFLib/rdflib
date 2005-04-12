@@ -232,7 +232,7 @@ class IOMemory(Backend):
     def remove_context(self, context):
         self.remove((Any, Any, Any, context))
 
-    def remove(self, (subject, predicate, object), context):
+    def remove(self, (subject, predicate, object), context=None):
         f = self.forward
         r = self.reverse
         for subject, predicate, object in self.triples((subject, predicate, object), context):
