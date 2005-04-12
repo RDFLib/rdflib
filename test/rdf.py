@@ -27,8 +27,8 @@ class RDFTestCase(unittest.TestCase):
 
     def setUp(self):
         self.store = Graph()
-        self.store.prefix_mapping("dc", "http://http://purl.org/dc/elements/1.1/")
-        self.store.prefix_mapping("foaf", "http://xmlns.com/foaf/0.1/")
+        self.store.bind("dc", "http://http://purl.org/dc/elements/1.1/")
+        self.store.bind("foaf", "http://xmlns.com/foaf/0.1/")
 
     def addDonna(self):
         self.donna = donna = BNode()
