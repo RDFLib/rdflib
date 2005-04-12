@@ -2,7 +2,6 @@ from __future__ import generators
 
 ANY = None
 
-from rdflib import Triple
 from rdflib.backends import Backend
 
 class Memory(Backend):
@@ -84,24 +83,24 @@ pos[p][o][s] = 1.
                     if predicate in subjectDictionary:
                         if object!=ANY: # subject+predicate+object is given
                             if object in subjectDictionary[predicate]:
-                                yield Triple(subject, predicate, object)
+                                yield (subject, predicate, object)
                             else: # given object not found
                                 pass
                         else: # subject+predicate is given, object unbound
                             for o in subjectDictionary[predicate].keys():
-                                yield Triple(subject, predicate, o)
+                                yield (subject, predicate, o)
                     else: # given predicate not found
                         pass
                 else: # subject given, predicate unbound
                     for p in subjectDictionary.keys():
                         if object!=ANY: # object is given
                             if object in subjectDictionary[p]:
-                                yield Triple(subject, p, object)
+                                yield (subject, p, object)
                             else: # given object not found
                                 pass
                         else: # object unbound
                             for o in subjectDictionary[p].keys():
-                                yield Triple(subject, p, o)
+                                yield (subject, p, o)
             else: # given subject not found
                 pass
         elif predicate!=ANY: # predicate is given, subject unbound
@@ -111,27 +110,27 @@ pos[p][o][s] = 1.
                 if object!=ANY: # predicate+object is given, subject unbound
                     if object in predicateDictionary:
                         for s in predicateDictionary[object].keys():
-                            yield Triple(s, predicate, object)
+                            yield (s, predicate, object)
                     else: # given object not found
                         pass
                 else: # predicate is given, object+subject unbound
                     for o in predicateDictionary.keys():
                         for s in predicateDictionary[o].keys():
-                            yield Triple(s, predicate, o)
+                            yield (s, predicate, o)
         elif object!=ANY: # object is given, subject+predicate unbound
             osp = self.__osp
             if object in osp:
                 objectDictionary = osp[object]
                 for s in objectDictionary.keys():
                     for p in objectDictionary[s].keys():
-                        yield Triple(s, p, object)
+                        yield (s, p, object)
         else: # subject+predicate+object unbound
             spo = self.__spo
             for s in spo.keys():
                 subjectDictionary = spo[s]
                 for p in subjectDictionary.keys():
                     for o in subjectDictionary[p].keys():
-                        yield Triple(s, p, o)
+                        yield (s, p, o)
 
     def __len__(self):
         #@@ optimize

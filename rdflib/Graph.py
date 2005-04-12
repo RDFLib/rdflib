@@ -67,11 +67,13 @@ class Graph(object):
         rdflib.Triple can be provided.  Context must be a URIRef.  If
         no context is provides, triple is added to the default
         context."""
-
         check_statement((s, p, o))
-        if context:
-            check_context(c)
-        self.__backend.add((s, p, o), context)
+        if self.context_aware:
+            if context:
+                check_context(c)
+            self.__backend.add((s, p, o), context)
+        else:
+            self.__backend.add((s, p, o))
 
     def remove(self, (s, p, o), context=None):
         """ Remove a triple from the graph.  If the triple does not
@@ -79,19 +81,27 @@ class Graph(object):
         contexts."""
 
         check_pattern((s, p, o))
-        if context:
-            check_context(c)
-        self.__backend.remove((s, p, o), context)
+        if self.context_aware:
+            if context:
+                check_context(c)
+            self.__backend.remove((s, p, o), context)
+        else:
+            self.__backend.remove((s, p, o))            
 
     def triples(self, (s, p, o), context=None):
         """ Generator over the triple store.  Returns triples that
         match the given triple pattern.  If triple pattern does not
         provide a context, all contexts will be searched."""
         check_pattern((s, p, o))
-        if context:
-            check_context(c)
-        for t in self.__backend.triples((s, p, o), context):
-            yield t
+        if self.context_aware:
+            if context:
+                check_context(c)
+            for t in self.__backend.triples((s, p, o), context):
+                yield t
+        else:
+            for t in self.__backend.triples((s, p, o)):
+                yield t
+            
         
     def contexts(self, triple=None): 
         """ Generator over all contexts in the graph. """
@@ -173,7 +183,10 @@ class Graph(object):
 
     def __len__(self, context=None):
         """ Returns the number of triples in the graph. """
-        return self.__backend.__len__(context)
+        if self.context_aware:
+            return self.__backend.__len__(context)
+        else:
+            return self.__backend.__len__()            
     
     def __eq__(self, other):
         # Note: this is not a test of isomorphism, but rather exact
@@ -190,12 +203,12 @@ class Graph(object):
 
     def __iadd__(self, other):
         for triple in other:
-            self.__backend.add(triple, None) # TODO: context
+            self.__backend.add(triple) # TODO: context
         return self
 
     def __isub__(self, other):
         for triple in other:
-            self.__backend.remove(triple, None) 
+            self.__backend.remove(triple) 
         return self
 
     def subjects(self, predicate=None, object=None):

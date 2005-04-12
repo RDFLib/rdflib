@@ -1,6 +1,5 @@
 from __future__ import generators
 
-from rdflib import Triple
 from rdflib.backends import Backend
 
 from sys import version_info
@@ -119,14 +118,13 @@ class Sleepycat(Backend):
             self.__i2k.put(key, term)
         return key
 
-    def add(self, triple):
+    def add(self, (subject, predicate, object), context=None):
         """\
         Add a triple to the store of triples.
         """
         assert self.__open, "The InformationStore must be open."
 
-        subject, predicate, object = triple
-        context = triple.context or self.default_context
+        context = context or self.default_context
 
         tokey = self.tokey
         s = tokey(subject)
@@ -152,13 +150,11 @@ class Sleepycat(Backend):
 
 
 
-    def remove(self, triple):
+    def remove(self, (subject, predicate, object), context):
         assert self.__open, "The InformationStore must be open."
-        subject, predicate, object = triple
-        context = triple.context
 
         tokey = self.tokey        
-        for subject, predicate, object in self.triples(triple):
+        for subject, predicate, object in self.triples((subject, predicate, object), context):
 
             s = tokey(subject)
             p = tokey(predicate)
@@ -227,11 +223,9 @@ class Sleepycat(Backend):
                     except db.DBNotFoundError, e:
                         pass
         
-    def triples(self, triple):
+    def triples(self, (subject, predicate, object), context=None):
         """A generator over all the triples matching """
         assert self.__open, "The InformationStore must be open."
-        subject, predicate, object = triple
-        context = triple.context
 
         tokey = self.tokey        
 
@@ -245,36 +239,36 @@ class Sleepycat(Backend):
                         c = tokey(context)
                         key = "%s%s%s%s" % (c, s, p, o)
                         if self.__cspo.has_key(key):
-                            yield Triple(subject, predicate, object)
+                            yield (subject, predicate, object)
                     else:
                         key = "%s%s%s" % (s, p, o)
                         if self.__spo.has_key(key):
-                            yield Triple(subject, predicate, object)
+                            yield (subject, predicate, object)
                 else:
                     for o in self._objects(subject, predicate, context):
-                        yield Triple(subject, predicate, o)
+                        yield (subject, predicate, o)
             else:
                 if object!=None:
                     for p in self._predicates(subject, object, context):
-                        yield Triple(subject, p, object)
+                        yield (subject, p, object)
                 else:
                     for p, o in self._predicate_objects(subject, context):
-                        yield Triple(subject, p, o)
+                        yield (subject, p, o)
         else:
             if predicate!=None:
                 if object!=None:
                     for s in self._subjects(predicate, object, context):
-                        yield Triple(s, predicate, object)
+                        yield (s, predicate, object)
                 else:
                     for s, o in self._subject_objects(predicate, context):
-                        yield Triple(s, predicate, o)
+                        yield (s, predicate, o)
             else:
                 if object!=None:
                     for s, p in self._subject_predicates(object, context):
-                        yield Triple(s, p, object)
+                        yield (s, p, object)
                 else: 
                     for s, p, o in self._triples(context):
-                        yield Triple(s, p, o)
+                        yield (s, p, o)
 
 
     def _triples(self, context):
@@ -304,10 +298,10 @@ class Sleepycat(Backend):
             if key.startswith(prefix):
                 if context!=None:
                     c, s, p, o = split(key)
-                    yield Triple(fromkey(s), fromkey(p), fromkey(o), fromkey(c))
+                    yield (fromkey(s), fromkey(p), fromkey(o), fromkey(c))
                 else:
                     s, p, o = split(key)
-                    yield Triple(fromkey(s), fromkey(p), fromkey(o))
+                    yield (fromkey(s), fromkey(p), fromkey(o))
             else:
                 break
                     

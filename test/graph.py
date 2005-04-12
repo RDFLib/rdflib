@@ -3,9 +3,10 @@ import unittest
 from rdflib import *
 
 class GraphTestCase(unittest.TestCase):
-
+    backend = 'default'
+    
     def setUp(self):
-        self.store = Graph()
+        self.store = Graph(backend=self.backend)
         self.store.open("store")
         self.michel = URIRef(u'michel')
         self.tarek = URIRef(u'tarek')
@@ -108,8 +109,20 @@ class GraphTestCase(unittest.TestCase):
         self.removeStuff()
         asserte(len(list(triples((Any, Any, Any)))), 0)
 
-def test_suite():
-    return unittest.makeSuite(GraphTestCase)
+class MemoryGraphTestCase(GraphTestCase):
+    backend = "Memory"
+
+class SleepycatGraphTestCase(GraphTestCase):
+    backend = "Sleepycat"
+
+try:
+    import persistent
+    # If we can import persistent then test ZODB backend
+    class ZODBGraphTestCase(GraphTestCase):
+        backend = "ZODB"
+except ImportError:
+    pass
+
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+    unittest.main()    
