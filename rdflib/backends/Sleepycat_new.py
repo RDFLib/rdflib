@@ -151,35 +151,28 @@ class Sleepycat_new(Backend):
             o = identifierToKey(o)
             c  = identifierToKey(context)
 
+            current = "^".join((s, p, o))
+
             if c:
                 print 1, s, p, o, c
                 cursor = spo.cursor(flags=db.DB_WRITECURSOR)
-                rec = cursor.get_both("^".join((s, p, o)), c)
-                if not rec:
-                    for key, value in spo.items():
-                        #print "%s: %s" % (key, value)
-                        s, p, o = key.split("^")
-                        print "%s,%s,%s: %s" % (keyToIdentifier(s), keyToIdentifier(p), keyToIdentifier(o), keyToIdentifier(value))
-                assert rec, "%s, %s, %s, %s, %s" % (keyToIdentifier(s), keyToIdentifier(p), keyToIdentifier(o), keyToIdentifier(c), c)
-                cursor.delete()
+                rec = cursor.set(current)
+                while rec:
+                    key, value = rec
+                    if value==c:
+                        cursor.delete()
+                        break
+                    rec = cursor.next_dup()
                 cursor.close()
-
-                cursor = pos.cursor(flags=db.DB_WRITECURSOR)
-                rec = cursor.get_both("^".join((p, o, s)), c)
-                print rec                
-                cursor.delete()
-                cursor.close()
-
-                cursor = osp.cursor(flags=db.DB_WRITECURSOR)
-                rec = cursor.get_both("^".join((o, s, p)), c)
-                print rec                
-                cursor.delete()
-                cursor.close()
-
+                
                 cursor = self.__context.cursor(flags=db.DB_WRITECURSOR)
-                rec = cursor.get_both(c, "^".join((s, p, o)))
-                print rec                
-                cursor.delete()
+                rec = cursor.set(c)
+                while rec:
+                    key, value = rec
+                    if value==current:
+                        cursor.delete()
+                        break
+                    rec = cursor.next_dup()
                 cursor.close()
             else:
                 print 2, s, p, o                

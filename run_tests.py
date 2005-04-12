@@ -4,7 +4,7 @@ import unittest
 #from test.identifier_equality import *
 #from test.triple_store import *
 #from test.type_check import *
-from test.graph import *
+from test.graph_new import *
 #from test.rdf import *
 #from test.parser import *
 
