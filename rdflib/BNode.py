@@ -17,7 +17,10 @@ class BNode(Identifier):
         if value==None:
             global node_id
             node_id += 1
-            value = "_:%s%s" % (prefix, node_id)
+            value = "_%s%s" % (prefix, node_id)
+        else:
+            if not value.startswith("_"):
+                value = "".join(("_", value))
         return Identifier.__new__(cls, value)
         
     def n3(self):

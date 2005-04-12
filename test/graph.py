@@ -1,7 +1,6 @@
 import unittest
 
 from rdflib import *
-from rdflib.constants import RDFS_LABEL
 
 class GraphTestCase(unittest.TestCase):
 

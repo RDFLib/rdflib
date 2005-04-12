@@ -31,7 +31,7 @@ _literal = re.compile(r'''"(?P<value>[^@&]*)"(?:@(?P<lang>[^&]*))?(?:&<(?P<datat
 def _fromkey(key):
     if key.startswith("<") and key.endswith(">"):
         return URIRef(key[1:-1].decode("UTF-8"))
-    elif key.startswith("_:"):
+    elif key.startswith("_"):
         return BNode(key.decode("UTF-8"))
     else:
         m = _literal.match(key)
