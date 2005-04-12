@@ -32,7 +32,7 @@ class IOMemory(Backend):
         self.ospc = self.create_index()
 
         # indexed by [context][subject][predicate][object]
-        self.context = self.create_index()
+        self.cspo = self.create_index()
 
         # indexes integer keys to identifiers
         self.forward = self.create_forward()
