@@ -199,32 +199,32 @@ class Graph(object):
 
     def subjects(self, predicate=None, object=None):
         """ A generator of subjects with the given predicate and object. """
-        for s, p, o in self.triples(Triple(None, predicate, object)):
+        for s, p, o in self.triples((None, predicate, object)):
             yield s
 
     def predicates(self, subject=None, object=None):
         """ A generator of predicates with the given subject and object. """        
-        for s, p, o in self.triples(Triple(subject, None, object)):
+        for s, p, o in self.triples((subject, None, object)):
             yield p
 
     def objects(self, subject=None, predicate=None):
         """ A generator of objects with the given subject and predicate. """                
-        for s, p, o in self.triples(Triple(subject, predicate, None)):
+        for s, p, o in self.triples((subject, predicate, None)):
             yield o
 
     def subject_predicates(self, object=None):
         """ A generator of (subject, predicate) tuples for the given object """
-        for s, p, o in self.triples(Triple(None, None, object)):
+        for s, p, o in self.triples((None, None, object)):
             yield s, p
             
     def subject_objects(self, predicate=None):
         """ A generator of (subject, object) tuples for the given predicate """        
-        for s, p, o in self.triples(Triple(None, predicate, None)):
+        for s, p, o in self.triples((None, predicate, None)):
             yield s, o
         
     def predicate_objects(self, subject=None):
         """ A generator of (predicate, object) tuples for the given subject """                
-        for s, p, o in self.triples(Triple(subject, None, None)):
+        for s, p, o in self.triples((subject, None, None)):
             yield p, o
 
     def get_context(self, identifier):
@@ -334,7 +334,7 @@ class ContextBackend(Backend):
         assert context is None
         return self.backend.__len__(self.identifier)
 #         i = 0
-#         for triple in self.triples(Triple(None, None, None)):
+#         for triple in self.triples((None, None, None)):
 #             i += 1
 #         return i
 

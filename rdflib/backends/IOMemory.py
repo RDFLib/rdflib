@@ -2,7 +2,7 @@
 
 Any = None
 
-from rdflib import Triple, BNode
+from rdflib import BNode
 from rdflib.backends import Backend
 
 class IOMemory(Backend):
@@ -73,9 +73,9 @@ class IOMemory(Backend):
                 ci=randid()
             self.reverse[context] = ci
 
-    def intToIdentifier(self, (si, pi, oi, ci)):
+    def intToIdentifier(self, (si, pi, oi)):
         """ Resolve an integer triple into identifers. """
-        return (self.forward[si], self.forward[pi], self.forward[oi], self.forward[ci])
+        return (self.forward[si], self.forward[pi], self.forward[oi])
 
     def identifierToInt(self, (s, p, o)):
         """ Resolve an identifier triple into integers. """
@@ -105,18 +105,18 @@ class IOMemory(Backend):
     def createPrefixMap(self):
         return {}
 
-    def add(self, triple):
+    def add(self, triple, context=None):
         """\
         Add a triple to the store.
         """
 
-        for triple in self.triples(triple):
+        for triple in self.triples(triple, context):
             #triple is already in the store.            
             return
-        self.count = self.count + 1
 
+        self.count = self.count + 1
         subject, predicate, object = triple
-        context = triple.context or self.default_context
+        context = context or self.default_context
         
         f = self.forward
         r = self.reverse
@@ -213,23 +213,25 @@ class IOMemory(Backend):
 
 
     def remove_context(self, context):
-        self.remove(Triple(Any, Any, Any, context))
+        self.remove((Any, Any, Any, context))
 
-    def remove(self, triple):
+    def remove(self, triple, context=None):
         f = self.forward
         r = self.reverse
-        for triple in self.triples(triple):
-            try:
-                subject, predicate, object = triple        
-                si, pi, oi = self.identifierToInt((subject, predicate, object))
-                context = triple.context            
-                ci = r[context]
-                del self.cspo[ci][si][pi][oi]
-                del self.cpos[ci][pi][oi][si]
-                del self.cosp[ci][oi][si][pi]
-                self.count = self.count - 1
-            except KeyError:
-                continue
+        if context is None:
+            # TODO: this needs to be replaced with something more efficient
+            for context in self.contexts():
+                for triple in self.triples(triple, context):
+                    try:
+                        subject, predicate, object = triple        
+                        si, pi, oi = self.identifierToInt((subject, predicate, object))
+                        ci = r[context]
+                        del self.cspo[ci][si][pi][oi]
+                        del self.cpos[ci][pi][oi][si]
+                        del self.cosp[ci][oi][si][pi]
+                        self.count = self.count - 1
+                    except KeyError:
+                        continue
 
             # grr!! hafta ref-count these before you can collect them dumbass!
 #             del f[si]
@@ -241,15 +243,13 @@ class IOMemory(Backend):
 
 
 
-    def triples(self, triple):
+    def triples(self, triple, context=None):
         """A generator over all the triples matching """
         subject, predicate, object = triple
-        context = triple.context
         if context is None:
             # TODO: this needs to be replaced with something more efficient
             for c in self.contexts():
-                triple.context = c
-                for triple in self.triples(triple):
+                for triple in self.triples(triple, c):
                     yield triple
             return
 
@@ -273,28 +273,28 @@ class IOMemory(Backend):
                     if subjectDictionary.has_key(pi):
                         if oi!= Any: # subject+predicate+object is given
                             if subjectDictionary[pi].has_key(oi):
-                                ss, pp, oo, cc = self.intToIdentifier((si, pi, oi, ci))
-                                yield Triple(ss, pp, oo, cc)
+                                ss, pp, oo = self.intToIdentifier((si, pi, oi))
+                                yield (ss, pp, oo)
                             else: # given object not found
                                 pass
                         else: # subject+predicate is given, object unbound
                             for o in subjectDictionary[pi].keys():
-                                ss, pp, oo, cc = self.intToIdentifier((si, pi, o, ci))
-                                yield Triple(ss, pp, oo, cc)
+                                ss, pp, oo = self.intToIdentifier((si, pi, o))
+                                yield (ss, pp, oo)
                     else: # given predicate not found
                         pass
                 else: # subject given, predicate unbound
                     for p in subjectDictionary.keys():
                         if oi != Any: # object is given
                             if subjectDictionary[p].has_key(oi):
-                                ss, pp, oo, cc = self.intToIdentifier((si, p, oi, ci))
-                                yield Triple(ss, pp, oo, cc)
+                                ss, pp, oo = self.intToIdentifier((si, p, oi))
+                                yield (ss, pp, oo)
                             else: # given object not found
                                 pass
                         else: # object unbound
                             for o in subjectDictionary[p].keys():
-                                ss, pp, oo, cc = self.intToIdentifier((si, p, o, ci))    
-                                yield Triple(ss, pp, oo, cc)
+                                ss, pp, oo = self.intToIdentifier((si, p, o))    
+                                yield (ss, pp, oo)
             else: # given subject not found
                 pass
         elif pi != Any: # predicate is given, subject unbound
@@ -304,37 +304,44 @@ class IOMemory(Backend):
                 if oi != Any: # predicate+object is given, subject unbound
                     if predicateDictionary.has_key(oi):
                         for s in predicateDictionary[oi].keys():
-                            ss, pp, oo, cc = self.intToIdentifier((s, pi, oi, ci))
-                            yield Triple(ss, pp, oo, cc)
+                            ss, pp, oo = self.intToIdentifier((s, pi, oi))
+                            yield (ss, pp, oo)
                     else: # given object not found
                         pass
                 else: # predicate is given, object+subject unbound
                     for o in predicateDictionary.keys():
                         for s in predicateDictionary[o].keys():
-                            ss, pp, oo, cc = self.intToIdentifier((s, pi, o, ci))
-                            yield Triple(ss, pp, oo, cc)
+                            ss, pp, oo = self.intToIdentifier((s, pi, o))
+                            yield (ss, pp, oo)
         elif oi != Any: # object is given, subject+predicate unbound
             osp = self.cosp[ci]
             if osp.has_key(oi):
                 objectDictionary = osp[oi]
                 for s in objectDictionary.keys():
                     for p in objectDictionary[s].keys():
-                        ss, pp, oo, cc = self.intToIdentifier((s, p, oi, ci))
-                        yield Triple(ss, pp, oo, cc)
+                        ss, pp, oo = self.intToIdentifier((s, p, oi))
+                        yield (ss, pp, oo)
         else: # subject+predicate+object unbound
             spo = self.cspo[ci]
             for s in spo.keys():
                 subjectDictionary = spo[s]
                 for p in subjectDictionary.keys():
                     for o in subjectDictionary[p].keys():
-                        ss, pp, oo, cc = self.intToIdentifier((s, p, o, ci))
-                        yield Triple(ss, pp, oo, cc)
+                        ss, pp, oo = self.intToIdentifier((s, p, o))
+                        yield (ss, pp, oo)
 
-    def __len__(self):
-        return self.count
-        #
-
+    def __len__(self, context):
+        if context is None:
+            return self.count
+        else:
+            # TODO: for eff. implementation
+            count = 0
+            for triple in self.triples((None, None, None), context):
+                count += 1
+            return count
+        
     def contexts(self, triple=None):
+        assert triple is None, "TODO: NYI"
         for ci in self.cspo.keys():
             yield self.forward[ci]
 
