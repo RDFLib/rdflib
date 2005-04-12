@@ -26,7 +26,7 @@ class Sleepycat_new(Backend):
             print e
 
         envsetflags  = 0 
-        envflags = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD        
+        envflags = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD 
 
         self.env = env = db.DBEnv()
         env.set_lg_max(1024*1024)        
@@ -126,51 +126,75 @@ class Sleepycat_new(Backend):
 
         self.__context.put(ci, "^".join((si, pi, oi)))
 
+        keyToIdentifier = self.keyToIdentifier
+        print "---"
+        for key, value in self.__spo.items():
+            #print "%s: %s" % (key, value)
+            s, p, o = key.split("^")
+            print "%s,%s,%s: %s" % (keyToIdentifier(s), keyToIdentifier(p), keyToIdentifier(o), keyToIdentifier(value))
+        
+
     def remove(self, (subject, predicate, object), context=None):
         assert self.__open, "This Graph must be open first."
-        
+
+        identifierToKey = self.identifierToKey
+        keyToIdentifier = self.keyToIdentifier
+
         spo = self.__spo
         pos = self.__pos
         osp = self.__osp
-        identifierToKey = self.identifierToKey
-        if context is None:        
-            for s, p, o in self.triples((subject, predicate, object), context):
-                s = identifierToKey(s)
-                p = identifierToKey(p)
-                o = identifierToKey(o)
+
+
+        for s, p, o in list(self.triples((subject, predicate, object), context)):
+            s = identifierToKey(s)
+            p = identifierToKey(p)
+            o = identifierToKey(o)
+            c  = identifierToKey(context)
+
+            if c:
+                print 1, s, p, o, c
+                cursor = spo.cursor(flags=db.DB_WRITECURSOR)
+                rec = cursor.get_both("^".join((s, p, o)), c)
+                if not rec:
+                    for key, value in spo.items():
+                        #print "%s: %s" % (key, value)
+                        s, p, o = key.split("^")
+                        print "%s,%s,%s: %s" % (keyToIdentifier(s), keyToIdentifier(p), keyToIdentifier(o), keyToIdentifier(value))
+                assert rec, "%s, %s, %s, %s, %s" % (keyToIdentifier(s), keyToIdentifier(p), keyToIdentifier(o), keyToIdentifier(c), c)
+                cursor.delete()
+                cursor.close()
+
+                cursor = pos.cursor(flags=db.DB_WRITECURSOR)
+                rec = cursor.get_both("^".join((p, o, s)), c)
+                print rec                
+                cursor.delete()
+                cursor.close()
+
+                cursor = osp.cursor(flags=db.DB_WRITECURSOR)
+                rec = cursor.get_both("^".join((o, s, p)), c)
+                print rec                
+                cursor.delete()
+                cursor.close()
+
+                cursor = self.__context.cursor(flags=db.DB_WRITECURSOR)
+                rec = cursor.get_both(c, "^".join((s, p, o)))
+                print rec                
+                cursor.delete()
+                cursor.close()
+            else:
+                print 2, s, p, o                
+                for context in self.contexts((subject, predicate, object)):
+                    c  = identifierToKey(context)
+                    cursor = self.__context.cursor(flags=db.DB_WRITECURSOR)
+                    rec = cursor.get_both(c, "^".join((s, p, o)))
+                    if rec:
+                        cursor.delete()
+                    cursor.close()
+                    
                 spo.delete("^".join((s, p, o)))
                 pos.delete("^".join((p, o, s)))
                 osp.delete("^".join((o, s, p)))
-        else:
-            c = self.__context
-            c.set("^".join((si, pi, oi)))
-            c.delete()
-            c.close()
-            for s, p, o in self.triples((subject, predicate, object), context):
-                s = identifierToKey(s)
-                p = identifierToKey(p)
-                o = identifierToKey(o)
-                
-                c = spo.cursor()
-                rec = c.set("^".join((s, p, o)))
-                while rec is not None:
-                    c.delete()
-                    rec = c.next_dup()
-                c.close()
 
-                c = pos.cursor()
-                rec = c.set("^".join((p, o, s)))
-                while rec is not None:
-                    c.delete()
-                    rec = c.next_dup()
-                c.close()
-                
-                c = osp.cursor()
-                rec = c.set("^".join((o, s, p)))
-                while rec is not None:
-                    c.delete()
-                    rec = c.next_dup()
-                c.close()
                 
     def triples(self, (subject, predicate, object), context=None):
         """A generator over all the triples matching """
@@ -185,25 +209,56 @@ class Sleepycat_new(Backend):
 
         # TMP TMP
 
-        spo = self.__spo
-        c_key = identifierToKey(context)                                
-        cursor = spo.cursor()
-        rec = cursor.first()
-        cursor.close()
-        while rec is not None:
-            key, value = rec
-            s, p, o = key.split("^")
-            c = value
-            if (not subject or s_key==s) and \
-               (not predicate or p_key==p) and \
-               (not object or o_key==o) and \
-               (not context or c_key==c):
-                yield keyToIdentifier(s), keyToIdentifier(p), keyToIdentifier(o)
+        if context is None:
+            spo = self.__spo
+            c_key = identifierToKey(context)                                
             cursor = spo.cursor()
-            cursor.set(key)
-            rec = cursor.next_nodup()
+            rec = cursor.first()
             cursor.close()
-        return
+            while rec is not None:
+                key, value = rec
+                s, p, o = key.split("^")
+                c = value
+                if (not subject or s_key==s) and \
+                   (not predicate or p_key==p) and \
+                   (not object or o_key==o):
+                    yield keyToIdentifier(s), keyToIdentifier(p), keyToIdentifier(o)
+                cursor = spo.cursor()
+                cursor.set(key)
+                rec = cursor.next_nodup()
+                cursor.close()
+            return
+        else:
+            spo = self.__spo
+            c_key = identifierToKey(context)                                
+            cursor = spo.cursor()
+            rec = cursor.first()
+            cursor.close()
+            while rec is not None:
+                key, c = rec
+                cursor = spo.cursor()
+                cursor.set(key)
+                recs = list()
+                while rec:
+                    recs.append(rec)
+                    rec = cursor.next_dup()
+                cursor.close()
+                for rec in recs:
+                    key, value = rec
+                    s, p, o = key.split("^")
+                    c = value
+                    if (not subject or s_key==s) and \
+                       (not predicate or p_key==p) and \
+                       (not object or o_key==o) and \
+                       (not context or c_key==c):
+                        yield keyToIdentifier(s), keyToIdentifier(p), keyToIdentifier(o)
+                cursor = spo.cursor()
+                cursor.set(key)
+                rec = cursor.next_nodup()
+                cursor.close()
+            return
+            
+
 
 
         if s_key!=Any:
@@ -307,8 +362,35 @@ class Sleepycat_new(Backend):
                     break
             
     def contexts(self, triple=None): # TODO: have Graph support triple?
-        assert self.__open, "This Graph must be open first."        
-    
+        assert self.__open, "This Graph must be open first."
+        if triple and triple!=(None, None, None):
+            s, p, o = triple
+            assert s is not None and p is not None and o is not None, "TODO: triple pattern not yet implemented"
+            identifierToKey = self.identifierToKey                        
+            s = identifierToKey(s)
+            p = identifierToKey(p)
+            o = identifierToKey(o)
+            r = []
+            cursor = self.__spo.cursor()
+            rec = cursor.set("^".join((s, p, o)))
+            while rec:
+                key, c = rec
+                r.append(c)
+                rec = cursor.next_dup()
+            cursor.close()
+        else:
+            r = []
+            cursor = self.__context.cursor()
+            rec = cursor.first()
+            while rec:
+                c, value = rec
+                r.append(c)
+                rec = cursor.next_nodup()
+            cursor.close()
+        keyToIdentifier = self.keyToIdentifier            
+        for context in r:
+            yield keyToIdentifier(context)
+                
     def remove_context(self, identifier):
         assert self.__open, "This Graph must be open first."        
         
@@ -344,11 +426,18 @@ class Sleepycat_new(Backend):
                 
     def __len__(self, context=None):
         assert self.__open, "This Graph must be open first."
-        return self.__spo.stat()["nkeys"]        
-#         if context is None:
-#             return self.__spo.stat()["nkeys"]
-#         else:
-#             raise "NYI"
+        if context is None:
+            return self.__spo.stat()["nkeys"]
+        else:
+            cursor = self.__context.cursor()
+            c = self.identifierToKey(context)
+            rec = cursor.set(c)
+            if rec:
+                count = cursor.count()
+            else:
+                count = 0
+            cursor.close()
+            return count
 
 
 from random import choice

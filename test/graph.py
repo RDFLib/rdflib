@@ -25,13 +25,13 @@ class GraphTestCase(unittest.TestCase):
         pizza = self.pizza
         cheese = self.cheese
 
-        self.store.add(Triple(tarek, likes, pizza))
-        self.store.add(Triple(tarek, likes, cheese))
-        self.store.add(Triple(michel, likes, pizza))
-        self.store.add(Triple(michel, likes, cheese))
-        self.store.add(Triple(bob, likes, cheese))
-        self.store.add(Triple(bob, hates, pizza))
-        self.store.add(Triple(bob, hates, michel)) # gasp!        
+        self.store.add((tarek, likes, pizza))
+        self.store.add((tarek, likes, cheese))
+        self.store.add((michel, likes, pizza))
+        self.store.add((michel, likes, cheese))
+        self.store.add((bob, likes, cheese))
+        self.store.add((bob, hates, pizza))
+        self.store.add((bob, hates, michel)) # gasp!        
 
     def removeStuff(self):
         tarek = self.tarek
@@ -42,13 +42,13 @@ class GraphTestCase(unittest.TestCase):
         pizza = self.pizza
         cheese = self.cheese
 
-        self.store.remove(Triple(tarek, likes, pizza))
-        self.store.remove(Triple(tarek, likes, cheese))
-        self.store.remove(Triple(michel, likes, pizza))
-        self.store.remove(Triple(michel, likes, cheese))
-        self.store.remove(Triple(bob, likes, cheese))
-        self.store.remove(Triple(bob, hates, pizza))
-        self.store.remove(Triple(bob, hates, michel)) # gasp!
+        self.store.remove((tarek, likes, pizza))
+        self.store.remove((tarek, likes, cheese))
+        self.store.remove((michel, likes, pizza))
+        self.store.remove((michel, likes, cheese))
+        self.store.remove((bob, likes, cheese))
+        self.store.remove((bob, hates, pizza))
+        self.store.remove((bob, hates, michel)) # gasp!
 
     def testAdd(self):
         self.addStuff()
@@ -73,41 +73,41 @@ class GraphTestCase(unittest.TestCase):
         print len(self.store)
 
         # unbound subjects
-        asserte(len(list(triples(Triple(Any, likes, pizza)))), 2)
-        asserte(len(list(triples(Triple(Any, hates, pizza)))), 1)
-        asserte(len(list(triples(Triple(Any, likes, cheese)))), 3)
-        asserte(len(list(triples(Triple(Any, hates, cheese)))), 0)
+        asserte(len(list(triples((Any, likes, pizza)))), 2)
+        asserte(len(list(triples((Any, hates, pizza)))), 1)
+        asserte(len(list(triples((Any, likes, cheese)))), 3)
+        asserte(len(list(triples((Any, hates, cheese)))), 0)
 
         # unbound objects
-        asserte(len(list(triples(Triple(michel, likes, Any)))), 2)
-        asserte(len(list(triples(Triple(tarek, likes, Any)))), 2)
-        asserte(len(list(triples(Triple(bob, hates, Any)))), 2)
-        asserte(len(list(triples(Triple(bob, likes, Any)))), 1)
+        asserte(len(list(triples((michel, likes, Any)))), 2)
+        asserte(len(list(triples((tarek, likes, Any)))), 2)
+        asserte(len(list(triples((bob, hates, Any)))), 2)
+        asserte(len(list(triples((bob, likes, Any)))), 1)
 
         # unbound predicates
-        asserte(len(list(triples(Triple(michel, Any, cheese)))), 1)
-        asserte(len(list(triples(Triple(tarek, Any, cheese)))), 1)
-        asserte(len(list(triples(Triple(bob, Any, pizza)))), 1)
-        asserte(len(list(triples(Triple(bob, Any, michel)))), 1)
+        asserte(len(list(triples((michel, Any, cheese)))), 1)
+        asserte(len(list(triples((tarek, Any, cheese)))), 1)
+        asserte(len(list(triples((bob, Any, pizza)))), 1)
+        asserte(len(list(triples((bob, Any, michel)))), 1)
 
         # unbound subject, objects
-        asserte(len(list(triples(Triple(Any, hates, Any)))), 2)
-        asserte(len(list(triples(Triple(Any, likes, Any)))), 5)
+        asserte(len(list(triples((Any, hates, Any)))), 2)
+        asserte(len(list(triples((Any, likes, Any)))), 5)
 
         # unbound predicates, objects
-        asserte(len(list(triples(Triple(michel, Any, Any)))), 2)
-        asserte(len(list(triples(Triple(bob, Any, Any)))), 3)
-        asserte(len(list(triples(Triple(tarek, Any, Any)))), 2)        
+        asserte(len(list(triples((michel, Any, Any)))), 2)
+        asserte(len(list(triples((bob, Any, Any)))), 3)
+        asserte(len(list(triples((tarek, Any, Any)))), 2)        
 
         # unbound subjects, predicates
-        asserte(len(list(triples(Triple(Any, Any, pizza)))), 3)
-        asserte(len(list(triples(Triple(Any, Any, cheese)))), 3)
-        asserte(len(list(triples(Triple(Any, Any, michel)))), 1)        
+        asserte(len(list(triples((Any, Any, pizza)))), 3)
+        asserte(len(list(triples((Any, Any, cheese)))), 3)
+        asserte(len(list(triples((Any, Any, michel)))), 1)        
 
         # all unbound
-        asserte(len(list(triples(Triple(Any, Any, Any)))), 7)
+        asserte(len(list(triples((Any, Any, Any)))), 7)
         self.removeStuff()
-        asserte(len(list(triples(Triple(Any, Any, Any)))), 0)
+        asserte(len(list(triples((Any, Any, Any)))), 0)
 
 def test_suite():
     return unittest.makeSuite(GraphTestCase)
