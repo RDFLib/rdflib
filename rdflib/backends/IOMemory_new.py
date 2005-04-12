@@ -23,13 +23,13 @@ class IOMemory(Backend):
         super(IOMemory, self).__init__()
         
         # indexed by [subject][predicate][object][context]
-        self.spo = self.create_index()
+        self.spoc = self.create_index()
 
         # indexed by [predicate][object][subject][context]
-        self.pos = self.create_index()
+        self.posc = self.create_index()
 
         # indexed by [object][subject][predicate][context]
-        self.osp = self.create_index()
+        self.ospc = self.create_index()
 
         # indexed by [context][subject][predicate][object]
         self.context = self.create_index()
@@ -84,16 +84,16 @@ class IOMemory(Backend):
         """ Resolve an identifier triple into integers. """
         return (self.reverse[s], self.reverse[p], self.reverse[o])
 
-    def uniqueSubjects(self, context=None):
-        for si in self.cspo[context].keys():
+    def unique_subjects(self, context=None):
+        for si in self.spoc.keys():
             yield self.forward[si]
 
-    def uniquePredicates(self, context=None):
-        for pi in self.cpos[context].keys():
+    def unique_predicates(self, context=None):
+        for pi in self.posc.keys():
             yield self.forward[pi]
 
-    def uniqueObjects(self, context=None):
-        for oi in self.cosp[context].keys():
+    def unique_objects(self, context=None):
+        for oi in self.ospc.keys():
             yield self.forward[oi]
 
     def create_forward(self):
@@ -166,7 +166,55 @@ class IOMemory(Backend):
         # cpos[c][p][o][s] = 1, and cosp[c][o][s][p] = 1, creating the
         # nested {} where they do not yet exits.
 
-        # assign cspo[c][s][p][o] = 1
+        # assign [s][p][o][c]
+
+        if self.spoc.has_key(si):
+            poc = self.spoc[si]
+        else:
+            poc = spoc[si] = self.create_index()
+        if poc.has_key(pi):
+            oc = poc[pi]
+        else:
+            oc = poc[pi] = self.create_index()
+        if oc.has_key(oi):
+            c = oc[oi]
+        else:
+            c = oc[oi] = self.create_index()
+        c[ci] = 1
+
+        # assign [p][o][s][c]
+
+        if self.posc.has_key(pi):
+            osc = self.posc[pi]
+        else:
+            osc = self.posc[pi] = self.create_index()
+        if osc.has_key(oi):
+            sc = poc[oi]
+        else:
+            sc = osc[oi] = self.create_index()
+        if sc.has_key(si):
+            c = sc[si]
+        else:
+            c = sc[ci] = self.create_index()
+        c[ci] = 1
+
+        # assign [o][s][p][c]
+
+        if self.ospc.has_key(oi):
+            spc = self.ospc[oi]
+        else:
+            spc = self.ospc[oi] = self.create_index()
+        if spc.has_key(si):
+            pc = scp[si]
+        else:
+            pc = scp[si] = self.create_index()
+        if pc.has_key(pi):
+            c = pc[pi]
+        else:
+            c = pc[pi] = self.create_index()
+        c[ci] = 1
+
+        # assign [c][s][p][o]
 
         if self.cspo.has_key(ci):
             spo = self.cspo[ci]
@@ -181,39 +229,6 @@ class IOMemory(Backend):
         else:
             o = po[pi] = self.create_index()
         o[oi] = 1
-
-        # cpos[c][p][o][s] = 1
-
-        if self.cpos.has_key(ci):
-            pos = self.cpos[ci]
-        else:
-            pos = self.cpos[ci] = self.create_index()
-        if pos.has_key(pi):
-            os = pos[pi]
-        else:
-            os = pos[pi] = self.create_index()
-        if os.has_key(oi):
-            s = os[oi]
-        else:
-            s = os[oi] = self.create_index()
-        s[si] = 1
-
-        # cosp[c][o][s][p] = 1
-
-        if self.cosp.has_key(ci):
-            osp = self.cosp[ci]
-        else:
-            osp = self.cosp[ci] = self.create_index()
-        if osp.has_key(oi):
-            sp = osp[oi]
-        else:
-            sp = osp[oi] = self.create_index()
-        if sp.has_key(si):
-            p = sp[si]
-        else:
-            p = sp[si] = self.create_index()
-        p[pi] = 1
-
 
     def remove_context(self, context):
         self.remove(Triple(Any, Any, Any, context))
