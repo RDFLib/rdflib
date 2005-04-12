@@ -6,7 +6,7 @@ from rdflib.constants import RDFS_LABEL
 class GraphTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.store = Graph(backend="Sleepycat_new")
+        self.store = Graph()
         self.store.open("store")
         self.michel = URIRef(u'michel')
         self.tarek = URIRef(u'tarek')

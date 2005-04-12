@@ -48,7 +48,7 @@ register('nt', parsers.Parser,
          'rdflib.syntax.parsers.NTParser', 'NTParser')
 
 register('default', Backend,
-         'rdflib.backends.IOMemory', 'IOMemory')
+         'rdflib.backends.IOMemory_new', 'IOMemory')
 
 register('IOMemory', Backend,
          'rdflib.backends.IOMemory', 'IOMemory')

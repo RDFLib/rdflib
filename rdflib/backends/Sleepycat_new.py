@@ -127,11 +127,11 @@ class Sleepycat_new(Backend):
         self.__context.put(ci, "^".join((si, pi, oi)))
 
         keyToIdentifier = self.keyToIdentifier
-        print "---"
-        for key, value in self.__spo.items():
-            #print "%s: %s" % (key, value)
-            s, p, o = key.split("^")
-            print "%s,%s,%s: %s" % (keyToIdentifier(s), keyToIdentifier(p), keyToIdentifier(o), keyToIdentifier(value))
+#         print "---"
+#         for key, value in self.__spo.items():
+#             #print "%s: %s" % (key, value)
+#             s, p, o = key.split("^")
+#             print "%s,%s,%s: %s" % (keyToIdentifier(s), keyToIdentifier(p), keyToIdentifier(o), keyToIdentifier(value))
         
 
     def remove(self, (subject, predicate, object), context=None):
@@ -179,9 +179,13 @@ class Sleepycat_new(Backend):
                 for context in self.contexts((subject, predicate, object)):
                     c  = identifierToKey(context)
                     cursor = self.__context.cursor(flags=db.DB_WRITECURSOR)
-                    rec = cursor.get_both(c, "^".join((s, p, o)))
-                    if rec:
-                        cursor.delete()
+                    rec = cursor.set(c)
+                    while rec:
+                        key, value = rec
+                        if (s, p, o) == value.split("^"):
+                            cursor.delete()
+                            break
+                        rec = cursor.next_dup()
                     cursor.close()
                     
                 spo.delete("^".join((s, p, o)))
