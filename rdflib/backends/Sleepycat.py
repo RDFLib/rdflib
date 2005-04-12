@@ -548,7 +548,7 @@ class Sleepycat(Backend):
         tokey = self.tokey        
         c = tokey(identifier)
         for triple in self._triples(identifier):
-            self.remove(triple)
+            self.remove(triple, identifier)
         try:
             self.__contexts.delete(c)
         except db.DBNotFoundError, e:
