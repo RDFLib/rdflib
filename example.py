@@ -9,8 +9,8 @@ FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 
 store = Graph()
 
-store.prefix_mapping("dc", "http://http://purl.org/dc/elements/1.1/")
-store.prefix_mapping("foaf", "http://xmlns.com/foaf/0.1/")
+store.bind("dc", "http://http://purl.org/dc/elements/1.1/")
+store.bind("foaf", "http://xmlns.com/foaf/0.1/")
  
 # Create an identifier to use as the subject for Donna.
 donna = BNode()

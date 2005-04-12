@@ -93,9 +93,10 @@ class Graph(object):
         for t in self.__backend.triples((s, p, o), context):
             yield t
         
-    def contexts(self): # TODO: triple=None??
+    def contexts(self, triple=None): 
         """ Generator over all contexts in the graph. """
-        for context in self.__backend.contexts():
+        assert self.context_aware, "Graph must be context aware to use this method"
+        for context in self.__backend.contexts(triple):
             yield context
 
     def value(self, subject, predicate, object=None, default=None, any=False):
@@ -305,9 +306,6 @@ class Graph(object):
         for prefix, namespace in self.namespace_manager.namespaces():
             yield prefix, namespace
 
-    def prefix_mapping(self, prefix, namespace):
-        self.bind(prefix, namespace)
-
     
 class ContextBackend(Backend):
 
@@ -333,10 +331,6 @@ class ContextBackend(Backend):
     def __len__(self, context=None):
         assert context is None
         return self.backend.__len__(self.identifier)
-#         i = 0
-#         for triple in self.triples((None, None, None)):
-#             i += 1
-#         return i
 
 
 class Context(Graph):
