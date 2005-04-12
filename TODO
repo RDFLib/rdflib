@@ -1,6 +1,7 @@
-- move prefix_mapping and other depricated methods to a Store subclass of Graph... and have TripleStore and InformationStore inherit from it
 
 - write some docs for these new interfaces
+
+- finish IOMemory backend
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 
