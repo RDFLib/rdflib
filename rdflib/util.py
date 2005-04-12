@@ -2,6 +2,9 @@ from rdflib.URIRef import URIRef
 from rdflib.BNode import BNode
 from rdflib.Literal import Literal
 
+from rdflib.exceptions import SubjectTypeError, PredicateTypeError, ObjectTypeError
+
+
 def first(seq):
     for result in seq:
         return result
@@ -87,3 +90,42 @@ def from_n3(s):
         return Literal(value, language, datatype)
     else:
         return BNode(s)
+
+
+def check_subject(s):
+    if not (isinstance(s, URIRef) or isinstance(s, BNode)):
+        raise SubjectTypeError(s)
+
+def check_predicate(p):
+    if not isinstance(p, URIRef):
+        raise PredicateTypeError(p)
+
+def check_object(o):
+    if not (isinstance(o, URIRef) or \
+            isinstance(o, Literal) or \
+            isinstance(o, BNode)):
+        raise ObjectTypeError(o)
+
+def check_statement((s, p, o)):
+    if not (isinstance(s, URIRef) or isinstance(s, BNode)):
+        raise SubjectTypeError(s)
+
+    if not isinstance(p, URIRef):
+        raise PredicateTypeError(p)
+
+    if not (isinstance(o, URIRef) or \
+            isinstance(o, Literal) or \
+            isinstance(o, BNode)):
+        raise ObjectTypeError(o)
+
+def check_pattern((s, p, o)):
+    if s and not (isinstance(s, URIRef) or isinstance(s, BNode)):
+        raise SubjectTypeError(s)
+
+    if p and not isinstance(p, URIRef):
+        raise PredicateTypeError(p)
+
+    if o and not (isinstance(o, URIRef) or \
+                  isinstance(o, Literal) or \
+                  isinstance(o, BNode)):
+        raise ObjectTypeError(o)
