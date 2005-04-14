@@ -575,11 +575,15 @@ class Sleepycat(Backend):
 
     def namespaces(self):
         cursor = self.__namespace.cursor()
+        results = []
         current = cursor.first()
         while current:
             prefix, namespace = current
-            yield prefix, namespace
+            results.append((prefix, URIRef(namespace)))
             current = cursor.next()
+        cursor.close()
+        for prefix, namespace in results:
+            yield prefix, namespace
 
     def sync(self):
         self.__contexts.sync()
@@ -592,8 +596,8 @@ class Sleepycat(Backend):
         self.__i2k.sync()
         self.__k2i.sync()
 
-    def open(self, file):
-        homeDir = file        
+    def open(self, path):
+        homeDir = path        
         envsetflags  = db.DB_CDB_ALLDB
         envflags = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD
         try:

@@ -131,7 +131,7 @@ class RDFXMLHandler(handler.ContentHandler):
     def startPrefixMapping(self, prefix, namespace):
         self._ns_contexts.append(self._current_context.copy())
         self._current_context[namespace] = prefix
-        self.store.bind(prefix, namespace, override=False)
+        self.store.bind(prefix, URIRef(namespace), override=False)
 
     def endPrefixMapping(self, prefix):
         self._current_context = self._ns_contexts[-1]

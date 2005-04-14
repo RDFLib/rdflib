@@ -320,16 +320,19 @@ class Graph(object):
             yield prefix, namespace
 
     
-class ContextBackend(Backend):
-
-    def __init__(self, backend, identifier):
-        super(ContextBackend, self).__init__()
-        assert backend.context_aware        
-        self.context_aware = False
-        self.backend = backend
+class Context(Graph):
+    def __init__(self, graph, identifier):
+        super(Context, self).__init__(backend=graph.backend)
+        self.graph = graph
+        self.namespace_manager = graph.namespace_manager
         self.identifier = identifier
 
-    def add(self, triple, context=None):
+    def _get_context_aware(self):
+        return False
+    context_aware = property(_get_context_aware)
+
+
+    def add(self, triple, context=None): # TODO: test if we need context=None arg
         assert context is None
         self.backend.add(triple, self.identifier)
         
@@ -341,17 +344,12 @@ class ContextBackend(Backend):
         assert context is None        
         return self.backend.triples(triple, self.identifier)
 
+    def bind(self, prefix, namespace, override=True):
+        return self.graph.bind(prefix, namespace, override)
+
     def __len__(self, context=None):
         assert context is None
         return self.backend.__len__(self.identifier)
-
-
-class Context(Graph):
-    def __init__(self, graph, identifier):
-        backend = ContextBackend(graph.backend, identifier)
-        super(Context, self).__init__(backend=backend)
-        self.namespace_manager = graph.namespace_manager
-        self.identifier = identifier
 
 
 class Seq(object):
