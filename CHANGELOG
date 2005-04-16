@@ -1,9 +1,23 @@
 2005/03/19
         RELEASE 2.1.0
 
-	TODO
+        Merged TripleStore and InformationStore into Graph.
 
+        Added plugin support (or at least cleaned up, made consistent the
+        plugin support that existed).
 
+        Added value and seq methods to Graph.
+        
+        Renamed prefix_mapping to bind.
+
+        Added namespaces method that is a generator over all prefix,
+        namespace bindings.
+
+        Added notion of NamespaceManager.
+
+        Added couple new backends, IOMemory and ZODB.
+        
+        
 2005/03/19
         RELEASE 2.0.6
 
@@ -20,9 +34,9 @@
         Fixed bug involving a case with rdf:about='#'
 
         Changed InMemoryBackend to update third index in the same style it
-	does the first two.
+        does the first two.
 
-	
+        
 2005/01/08
         RELEASE 2.0.5
 
