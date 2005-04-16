@@ -1,21 +1,18 @@
 from rdflib import Graph
 from rdflib import URIRef, Literal, BNode, Namespace
-
 from rdflib import RDF
-
-
-# Create a namespace object for the Friend of a friend namespace.
-FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 
 store = Graph()
 
+# Bind a few prefix, namespace pairs.
 store.bind("dc", "http://http://purl.org/dc/elements/1.1/")
 store.bind("foaf", "http://xmlns.com/foaf/0.1/")
  
+# Create a namespace object for the Friend of a friend namespace.
+FOAF = Namespace("http://xmlns.com/foaf/0.1/")
+
 # Create an identifier to use as the subject for Donna.
 donna = BNode()
-
-from rdflib.constants import DATATYPE
 
 # Add triples using store's add method.
 store.add((donna, RDF.type, FOAF["Person"]))
