@@ -110,8 +110,7 @@ class Graph(object):
             yield context
 
     def value(self, subject, predicate, object=None, default=None, any=False):
-        """
-        Get a value for a subject/predicate, predicate/object, or
+        """ Get a value for a subject/predicate, predicate/object, or
         subject/object pair -- exactly one of subject, predicate,
         object must be None. Useful if one knows that there may only
         be one value.
