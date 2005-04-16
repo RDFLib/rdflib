@@ -1,4 +1,5 @@
-# Alias for backward compat.
+"""Deprecated; use Graph."""
+
 from rdflib import Graph
 
 from rdflib.backends import Memory

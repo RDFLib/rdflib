@@ -71,6 +71,7 @@ def parse_date_time(val):
 
 
 def from_n3(s):
+    """ Creates the Identifier corresponding to the given n3 string. WARNING: untested, may contain bugs. TODO: add test cases."""
     if s.startswith('<'):
         return URIRef(s[1:-1])
     elif s.startswith('"'):
@@ -93,14 +94,17 @@ def from_n3(s):
 
 
 def check_subject(s):
+    """ Test that s is a valid subject identifier."""
     if not (isinstance(s, URIRef) or isinstance(s, BNode)):
         raise SubjectTypeError(s)
 
 def check_predicate(p):
+    """ Test that p is a valid predicate identifier."""
     if not isinstance(p, URIRef):
         raise PredicateTypeError(p)
 
 def check_object(o):
+    """ Test that o is a valid object identifier."""
     if not (isinstance(o, URIRef) or \
             isinstance(o, Literal) or \
             isinstance(o, BNode)):

@@ -1,3 +1,5 @@
+"""Deprecated; use Graph."""
+
 from rdflib import Graph
 from rdflib.Namespace import Namespace
 
