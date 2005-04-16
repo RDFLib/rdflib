@@ -104,7 +104,7 @@ class Graph(object):
             
         
     def contexts(self, triple=None): 
-        """ Generator over all contexts in the graph. """
+        """ Generator over all contexts in the graph. If triple is specified, a generator over all contexts the triple is in."""
         assert self.context_aware, "Graph must be context aware to use this method"
         for context in self.__backend.contexts(triple):
             yield context
@@ -163,7 +163,7 @@ class Graph(object):
         return self.value(subject, RDFS.comment, default=default, any=True)
 
     def items(self, list):
-        """ """
+        """Generator over all items in the resource specified by list (an RDF collection)"""
         while list:
             item = self.value(list, RDF.first)
             if item:
@@ -181,13 +181,14 @@ class Graph(object):
         return 0
 
     def __len__(self, context=None):
-        """ Returns the number of triples in the graph. """
+        """ Returns the number of triples in the graph. If context is specified then the number of triples in the context is returned instead."""
         if self.context_aware:
             return self.__backend.__len__(context)
         else:
             return self.__backend.__len__()            
     
     def __eq__(self, other):
+        """ Test if Graph is exactly equal to Graph other."""
         # Note: this is not a test of isomorphism, but rather exact
         # equality.
         if not other or len(self)!=len(other):
@@ -201,11 +202,13 @@ class Graph(object):
         return 1
 
     def __iadd__(self, other):
+        """ Add all triples in Graph other to Graph."""
         for triple in other:
             self.__backend.add(triple) # TODO: context
         return self
 
     def __isub__(self, other):
+        """ Subtract all triples in Graph other from Graph."""
         for triple in other:
             self.__backend.remove(triple) 
         return self
@@ -279,15 +282,18 @@ class Graph(object):
         return parser.load(location, publicID, format)
 
     def save(self, location, format="xml"):
+        """ Save Graph to location using format. Format defaults to xml (AKA rdf/xml)."""
         serializer = plugin.get(format, Serializer)(self)
         #serializer.store = self
         return serializer.serialize(destination=location)
         
     def parse(self, source, publicID=None, format="xml"):
+        """ Parse source into Graph. If Graph is context-aware it'll get loaded into it's own context (sub graph). Format defaults to xml (AKA rdf/xml). The publicID argument is for specifying the logical URI for the case that it's different from the physical source URI."""
         parser = plugin.get(format, Parser)(self)        
         return parser.parse(source=source, publicID=publicID, format=format) 
 
     def serialize(self, destination=None, format="xml"):
+        """ Serialize the Graph to destination. If destination is None serialize method returns the serialization as a string. Format defaults to xml (AKA rdf/xml)."""
         serializer = plugin.get(format, Serializer)(self)
         serializer.store = self
         return serializer.serialize(destination)
@@ -303,18 +309,16 @@ class Graph(object):
             return None
 
     def absolutize(self, uri, defrag=1):
+        """ Will turn uri into an absolute URI if it's not one already. """
         return self.namespace_manager.absolutize(uri, defrag)
 
-    def context_id(self, uri):
-        return self.namespace_manager.context_id(uri)
-    
-    def namespace(self, uri):        
-        return self.namespace_manager.namespace(uri)
-
     def bind(self, prefix, namespace, override=True):
+        """Bind prefix to namespace. If override is True will bind namespace to given prefix if namespace was already bound to a different prefix."""
         return self.namespace_manager.bind(prefix, namespace, override=override)
 
     def namespaces(self):
+        """Generator over all the prefix, namespace tuples.
+        """
         for prefix, namespace in self.namespace_manager.namespaces():
             yield prefix, namespace
 
@@ -383,12 +387,15 @@ class Seq(object):
         _list.sort()
 
     def __iter__(self):
+        """Generator over the index, item tuples in the Seq"""
         for index, item in self._list:
             yield item
 
     def __len__(self):
+        """ Returns the length of the Seq."""
         return len(self._list)
 
     def __getitem__(self, index):
+        """ Returns the item given by index from the Seq."""
         index, item = self._list.__getitem__(index)
         return item
