@@ -1,9 +1,10 @@
 import unittest
 
 from rdflib import *
-from rdflib.constants import RDFS_LABEL, DATATYPE
-
 from rdflib import RDF
+from rdflib.StringInputSource import StringInputSource
+
+from parser_rdfcore import isomorphic
 
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 
@@ -38,7 +39,9 @@ class RDFTestCase(unittest.TestCase):
 
     def testRDFXML(self):
         self.addDonna()
-        self.assertEquals(self.store.serialize(format="pretty-xml"), rdfxml)
+        g = Graph()
+        g.parse(StringInputSource(self.store.serialize(format="pretty-xml")))
+        self.assertEquals(isomorphic(self.store, g), True)
 
 def test_suite():
     return unittest.makeSuite(RDFTestCase)
