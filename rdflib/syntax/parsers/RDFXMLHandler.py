@@ -208,7 +208,10 @@ class RDFXMLHandler(handler.ContentHandler):
     parent = property(get_parent)
 
     def absolutize(self, uri):
-        return URIRef(urljoin(self.current.base, uri, allow_fragments=1))
+        result = urljoin(self.current.base, uri, allow_fragments=1)
+        if uri[-1]=="#" and result[-1]!="#":        
+            result = "%s#" % result
+        return URIRef(result)
 
     def convert(self, name, qname, attrs):
         if name[0] is None:

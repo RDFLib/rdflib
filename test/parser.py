@@ -1,7 +1,7 @@
 import unittest
 
 from rdflib import Graph
-from rdflib import URIRef, BNode, Literal, RDFS
+from rdflib import URIRef, BNode, Literal, RDF, RDFS
 from rdflib.StringInputSource import StringInputSource
 
 
@@ -16,14 +16,18 @@ class ParserTestCase(unittest.TestCase):
   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
 >
 
-<rdf:Description rdf:about="http://example.org#">
+<rdfs:Class rdf:about="http://example.org#">
   <rdfs:label>testing</rdfs:label>
-</rdf:Description>
+</rdfs:Class>
   
 </rdf:RDF>
-        """))
-        label = g.value(URIRef("http://example.org#"), RDFS.label)        
+"""), publicID="http://example.org")
+
+        subject = URIRef("http://example.org#")
+        label = g.value(subject, RDFS.label)        
         self.assertEquals(label, Literal("testing"))
+        type = g.value(subject, RDF.type)
+        self.assertEquals(type, RDFS.Class)
 
 
 if __name__ == "__main__":
