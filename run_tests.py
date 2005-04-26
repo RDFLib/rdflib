@@ -6,7 +6,8 @@ from test.triple_store import *
 from test.type_check import *
 from test.graph import *
 from test.rdf import *
-#from test.parser import *
+from test.parser import *
+#from test.parser_rdfcore import *
 
 if __name__ == "__main__":
     unittest.main()   
