@@ -209,7 +209,7 @@ class RDFXMLHandler(handler.ContentHandler):
 
     def absolutize(self, uri):
         result = urljoin(self.current.base, uri, allow_fragments=1)
-        if uri[-1]=="#" and result[-1]!="#":        
+        if uri and uri[-1]=="#" and result[-1]!="#":        
             result = "%s#" % result
         return URIRef(result)
 
