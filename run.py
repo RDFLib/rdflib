@@ -94,6 +94,7 @@ from rdflib import RDF, RDFS, Graph, URIRef, BNode, Namespace
 PYTHON = Namespace("http://rdflib.net/2005/python#")
 PYTHON.Loader = PYTHON["Loader"]
 PYTHON.program = PYTHON["program"]
+PYTHON.code = PYTHON["code"]
 PYTHON.LoaderDefaults = PYTHON["LoaderDefaults"]
 
 
@@ -144,16 +145,32 @@ class PythonLoader(Graph):
                 self.log.info("loading: %s" % PYTHON)
                 self.load(PYTHON)
             if len(args)>0:
-                self.program = URIRef(self.absolutize(args[0], defrag=0))
+                arg = args[0]
+                if ":" in arg and "://" not in arg:
+                    prefix, name = arg.split(":", 1)
+                    if prefix=="":
+                        program = PYTHON + arg[1:]
+                    else:
+                        namespace = dict(self.namespaces()).get(prefix, None)
+                        if namespace is None:
+                            self.log.warning("no known namespace for '%s'.")
+                            namespace = PYTHON
+                        program = namespace + name
+                self.program = URIRef(self.absolutize(program, defrag=0))
                 args = args[1:]
             program = self.program
-            if update or not (program, RDF.value, None) in self:
+            if update or not ((program, RDF.value, None) in self or (program, PYTHON.code, None) in self):
                 self.log.info("loading: %s" % program)
                 self.load(program)
 
             self.log.info("running: %s ( %s )" % (self.label(program, ''), program))
 
-            codestr = self.value(program, RDF.value)
+            code = self.value(program, PYTHON.code, default=program)
+            if update or not (code, RDF.value, None) in self:
+                self.log.info("loading: %s" % code)
+                self.load(code)
+            
+            codestr = self.value(code, RDF.value)
             assert codestr, "No codestr found for: %s" % program
             try:
                 c = compile(codestr+"\n", program, "exec")
