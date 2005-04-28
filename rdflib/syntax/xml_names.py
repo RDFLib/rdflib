@@ -63,6 +63,7 @@ def is_ncname(name):
 XMLNS = "http://www.w3.org/XML/1998/namespace"
 
 def split_uri(uri):
+    print uri
     if uri.startswith(XMLNS):
         return (XMLNS, uri.split(XMLNS)[1])
     length = len(uri)
@@ -72,7 +73,7 @@ def split_uri(uri):
             if c in ALLOWED_NAME_CHARS:
                 continue
             for j in xrange(-1-i, length):
-                if category(uri[j]) in NAME_START_CATEGORIES:
+                if category(uri[j]) in NAME_START_CATEGORIES or uri[j]=="_":
                     ns = uri[:j]
                     if not ns:
                         break
