@@ -246,6 +246,10 @@ try:
 except ImportError:
     pass
 
+try:
+    import backends.Sleepycat
+except ImportError:
+    del ContextTestCase
 
 if __name__ == '__main__':
     unittest.main()    
