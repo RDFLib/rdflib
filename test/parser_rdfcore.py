@@ -62,11 +62,7 @@ import os
 def resolve(rel):
     return "http://www.w3.org/2000/10/rdf-tests/rdfcore/" + rel
 
-manifest = Graph()
-manifest.load("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf")
-
-
-def _testPositive(uri):
+def _testPositive(uri, manifest):
     if verbose: write(u"TESTING: %s" % uri)
     result = 0 # 1=failed, 0=passed   
     inDoc = first(manifest.objects(uri, TEST["inputDocument"]))
@@ -118,7 +114,7 @@ def _testPositive(uri):
             
     return result
 
-def _testNegative(uri):
+def _testNegative(uri, manifest):
     if verbose: write(u"TESTING: %s" % uri)    
     result = 0 # 1=failed, 0=passed   
     inDoc = first(manifest.objects(uri, TEST["inputDocument"]))
@@ -145,26 +141,32 @@ def _testNegative(uri):
 
 class ParserTestCase(unittest.TestCase):        
 
+    def setUp(self):
+        self.manifest = manifest = Graph()
+        manifest.load("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf")
+
     def testNegative(self):
+        manifest = self.manifest
         num_failed = total = 0
         negs = list(manifest.subjects(TYPE, TEST["NegativeParserTest"]))
         negs.sort()
         for neg in negs:
             status = first(manifest.objects(neg, TEST["status"]))
             if status==Literal("APPROVED"):
-                result = _testNegative(neg)
+                result = _testNegative(neg, manifest)
                 total += 1
                 num_failed += result
         self.assertEquals(num_failed, 0, "Failed: %s of %s." % (num_failed, total))
 
     def testPositive(self):
+        manifest = self.manifest        
         uris = list(manifest.subjects(TYPE, TEST["PositiveParserTest"]))
         uris.sort()
         num_failed = total = 0
         for uri in uris:
             status = first(manifest.objects(uri, TEST["status"]))
             if status==Literal("APPROVED"):
-                result = _testPositive(uri)
+                result = _testPositive(uri, manifest)
                 test = BNode()
                 results.add((test, RESULT["test"], uri))
                 results.add((test, RESULT["system"], system))
@@ -189,6 +191,8 @@ results.add((system, RDFS_COMMENT, Literal("")))
 
 
 if __name__ == "__main__":
+    manifest = Graph()
+    manifest.load("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf")
     import sys, getopt
     try:
         optlist, args = getopt.getopt(sys.argv[1:], 'h:', ["help"])
@@ -203,10 +207,10 @@ if __name__ == "__main__":
             case = URIRef(arg)
             write(u"Testing: %s" % case)
             if (case, TYPE, TEST["PositiveParserTest"]) in manifest:
-                result = _testPositive(case)
+                result = _testPositive(case, manifest)
                 write(u"Positive test %s" % ["PASSED", "FAILED"][result])
             elif (case, TYPE, TEST["NegativeParserTest"]) in manifest:
-                result = _testNegative(case)
+                result = _testNegative(case, manifest)
                 write(u"Negative test %s" % ["PASSED", "FAILED"][result])
             else:
                 write(u"%s not ??" % case)

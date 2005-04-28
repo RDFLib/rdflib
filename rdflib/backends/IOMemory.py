@@ -246,19 +246,20 @@ class IOMemory(Backend):
                     #del f[si], f[pi], f[oi]
                     #del r[subject], r[predicate], r[object]
         else:
-            ci = r[context]
-            for triple in self.triples(triple, context):
-                subject, predicate, object = triple
-                si, pi, oi = self.identifierToInt((subject, predicate, object))    
-                del self.cspo[ci][si][pi][oi]
-                del self.cpos[ci][pi][oi][si]
-                del self.cosp[ci][oi][si][pi]
-                
-                self._removeNestedIndex(self.spo, si, pi, oi, ci)
-                self._removeNestedIndex(self.pos, pi, oi, si, ci)
-                self._removeNestedIndex(self.osp, oi, si, pi, ci)
-                # TODO delete references to resources in self.forward/self.reverse 
-                # that are not in use anymore...
+            ci = r.get(context, None)
+            if ci:
+                for triple in self.triples(triple, context):
+                    subject, predicate, object = triple
+                    si, pi, oi = self.identifierToInt((subject, predicate, object))    
+                    del self.cspo[ci][si][pi][oi]
+                    del self.cpos[ci][pi][oi][si]
+                    del self.cosp[ci][oi][si][pi]
+
+                    self._removeNestedIndex(self.spo, si, pi, oi, ci)
+                    self._removeNestedIndex(self.pos, pi, oi, si, ci)
+                    self._removeNestedIndex(self.osp, oi, si, pi, ci)
+                    # TODO delete references to resources in self.forward/self.reverse 
+                    # that are not in use anymore...
 
 
 
