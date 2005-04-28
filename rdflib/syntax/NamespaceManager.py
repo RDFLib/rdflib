@@ -1,9 +1,11 @@
+from __future__ import generators
+
 from rdflib import URIRef, Literal, RDFS
 from rdflib.syntax.xml_names import split_uri
 
 from urlparse import urljoin, urldefrag
 from urllib import pathname2url, url2pathname
-import os, sys, new, logging
+import os, sys, new
 
 
 class NamespaceManager(object):
@@ -22,13 +24,6 @@ class NamespaceManager(object):
         return self.graph.backend
     backend = property(__get_backend)
 
-    def _get_log(self):
-        if self.__log is None:
-            #self.__log = logging.getLogger("rdflib.syntax.NamespaceManager")
-            self.__log = logging
-        return self.__log
-    log = property(_get_log)
-        
     def qname(self, uri):
         qname = self.__cache.get(uri, None)
         if qname is None:

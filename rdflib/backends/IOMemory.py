@@ -1,4 +1,5 @@
-# Authors: Michel Pelletier, Daniel Krech
+# Authors: Michel Pelletier, Daniel Krech, Stefan Niederhauser
+from __future__ import generators
 
 Any = None
 
