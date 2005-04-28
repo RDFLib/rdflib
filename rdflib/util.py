@@ -2,7 +2,7 @@ from rdflib.URIRef import URIRef
 from rdflib.BNode import BNode
 from rdflib.Literal import Literal
 
-from rdflib.exceptions import SubjectTypeError, PredicateTypeError, ObjectTypeError
+from rdflib.exceptions import SubjectTypeError, PredicateTypeError, ObjectTypeError, ContextTypeError
 
 
 def first(seq):
@@ -92,6 +92,10 @@ def from_n3(s):
     else:
         return BNode(s)
 
+def check_context(c):
+    if not (isinstance(c, URIRef) or \
+            isinstance(c, BNode)):
+        raise ContextTypeError("%s:%s" % (c, type(c)))
 
 def check_subject(s):
     """ Test that s is a valid subject identifier."""

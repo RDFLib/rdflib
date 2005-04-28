@@ -2,7 +2,7 @@ from __future__ import generators
 
 from rdflib import URIRef, BNode, Literal, RDF, RDFS
 
-from rdflib.util import check_statement, check_pattern
+from rdflib.util import check_statement, check_pattern, check_context
 from rdflib.util import check_subject, check_predicate, check_object
 
 from rdflib import plugin, exceptions
@@ -70,7 +70,7 @@ class Graph(object):
         check_statement((s, p, o))
         if self.context_aware:
             if context:
-                check_context(c)
+                check_context(context)
             self.__backend.add((s, p, o), context)
         else:
             self.__backend.add((s, p, o))
@@ -83,7 +83,7 @@ class Graph(object):
         check_pattern((s, p, o))
         if self.context_aware:
             if context:
-                check_context(c)
+                check_context(context)
             self.__backend.remove((s, p, o), context)
         else:
             self.__backend.remove((s, p, o))            
@@ -95,7 +95,7 @@ class Graph(object):
         check_pattern((s, p, o))
         if self.context_aware:
             if context:
-                check_context(c)
+                check_context(context)
             for t in self.__backend.triples((s, p, o), context):
                 yield t
         else:
