@@ -23,14 +23,23 @@ class IOMemory(Backend):
     def __init__(self, default_context=None):
         super(IOMemory, self).__init__()
         
-        # indexed by [subject][predicate][object] = 1
+        # indexed by [context][subject][predicate][object] = 1
         self.cspo = self.createIndex()
 
-        # indexed by [predicate][object][subject] = 1
+        # indexed by [context][predicate][object][subject] = 1
         self.cpos = self.createIndex()
 
-        # indexed by [object][subject][predicate] = 1
+        # indexed by [context][object][subject][predicate] = 1
         self.cosp = self.createIndex()
+
+        # indexed by [subject][predicate][object] = [context]
+        self.spo = self.createIndex()
+  
+        # indexed by [predicate][object][subject] = [context]
+        self.pos = self.createIndex()
+
+        # indexed by [object][subject][predicate] = [context]
+        self.osp = self.createIndex()
 
         # indexes integer keys to identifiers
         self.forward = self.createForward()
