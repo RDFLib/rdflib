@@ -111,8 +111,12 @@ class GraphTestCase(unittest.TestCase):
 class MemoryGraphTestCase(GraphTestCase):
     backend = "Memory"
 
-class SleepycatGraphTestCase(GraphTestCase):
-    backend = "Sleepycat"
+ try:
+     import backends.Sleepycat
+     class SleepycatGraphTestCase(GraphTestCase):
+         backend = "Sleepycat"
+ except ImportError:
+     pass
 
 try:
     import persistent
