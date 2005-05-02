@@ -156,8 +156,10 @@ class PythonLoader(Graph):
                             self.log.warning("no known namespace for '%s'.")
                             namespace = PYTHON
                         program = namespace + name
-                self.program = URIRef(self.absolutize(program, defrag=0))
+                else:
+                    program = self.absolutize(args[0], defrag=0)
                 args = args[1:]
+                self.program = URIRef(program)
             program = self.program
             if update or not ((program, RDF.value, None) in self or (program, PYTHON.code, None) in self):
                 self.log.info("loading: %s" % program)
