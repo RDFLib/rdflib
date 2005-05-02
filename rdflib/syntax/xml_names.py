@@ -63,7 +63,6 @@ def is_ncname(name):
 XMLNS = "http://www.w3.org/XML/1998/namespace"
 
 def split_uri(uri):
-    print uri
     if uri.startswith(XMLNS):
         return (XMLNS, uri.split(XMLNS)[1])
     length = len(uri)
