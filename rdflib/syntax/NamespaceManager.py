@@ -78,7 +78,8 @@ class NamespaceManager(object):
 
     def absolutize(self, uri, defrag=1):
         base = urljoin("file:", pathname2url(os.getcwd()))        
-        uri = urljoin("%s/" % base, uri)
-        if defrag:
-            uri, frag = urldefrag(uri)            
-        return URIRef(uri)
+        result = urljoin("%s/" % base, uri, allow_fragments=not defrag)
+        if not defrag:
+            if uri and uri[-1]=="#" and result[-1]!="#":
+                result = "%s#" % result
+        return URIRef(result)

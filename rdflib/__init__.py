@@ -1,6 +1,6 @@
 # RDF Library
 
-__version__ = "2.1.01"
+__version__ = "2.1.1"
 
 import sys
 # TODO: what version of python does rdflib require??
