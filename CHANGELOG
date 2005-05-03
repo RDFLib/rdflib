@@ -1,13 +1,15 @@
 2005/05/01
         RELEASE 2.1.1
 
-	Fixed a number of bugs relating to 2.0 backward compatibility.
+        Fixed a number of bugs relating to 2.0 backward compatibility.
 
-	Fixed split_uri to handle URIs with _ in them properly.
+        Fixed split_uri to handle URIs with _ in them properly.
 
-	Fixed bug in RDF/XML handler's absolutize that would cause some URIRefs to end in ##
+        Fixed bug in RDF/XML handler's absolutize that would cause some URIRefs to end in ##
 
-	Added check_context to Graph
+        Added check_context to Graph.
+
+        Added patch the improves IOMemory implementation.
 
 
 2005/04/12
