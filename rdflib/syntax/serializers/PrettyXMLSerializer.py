@@ -39,7 +39,7 @@ class PrettyXMLSerializer(Serializer):
             if result:
                 prefix, namespace, local = result
                 namespaces[prefix] = namespace
-
+        namespaces["rdf"] = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
         writer.push(RDF.RDF)            
         writer.namespaces(namespaces.iteritems())
         
