@@ -1,3 +1,12 @@
+2005/05/13
+        RELEASE 2.1.2
+
+        Fixed bug in PrettyXMLSerializer (rdf prefix decl was missing sometimes)
+
+        Fixed bug in RDF/XML parser where empty collections where
+        causing exceptions.
+
+
 2005/05/01
         RELEASE 2.1.1
 
