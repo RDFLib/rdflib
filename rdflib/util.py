@@ -30,13 +30,14 @@ def more_than(sequence, number):
     return 0
 
 def term(str, default=None):
+    """See also from_n3"""
     if not str:
         return default
     elif str.startswith("<") and str.endswith(">"):
         return URIRef(str[1:-1])
     elif str.startswith('"') and str.endswith('"'):
         return Literal(str[1:-1])
-    elif str.startswith("_:"):
+    elif str.startswith("_"):
         return BNode(str)
     else:
         msg = "Unknown Term Syntax: '%s'" % str
@@ -70,8 +71,10 @@ def parse_date_time(val):
     return t
 
 
-def from_n3(s):
+def from_n3(s, default=None):
     """ Creates the Identifier corresponding to the given n3 string. WARNING: untested, may contain bugs. TODO: add test cases."""
+    if not s:
+        return default
     if s.startswith('<'):
         return URIRef(s[1:-1])
     elif s.startswith('"'):
