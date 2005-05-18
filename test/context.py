@@ -4,10 +4,11 @@ from rdflib import *
 
 class ContextTestCase(unittest.TestCase):
     backend = 'Sleepycat'
+    path = 'store'
 
     def setUp(self):
         self.graph = Graph(backend=self.backend)
-        self.graph.open("store")
+        self.graph.open(self.path)
         self.michel = URIRef(u'michel')
         self.tarek = URIRef(u'tarek')
         self.bob = URIRef(u'bob')
@@ -21,6 +22,9 @@ class ContextTestCase(unittest.TestCase):
 
         # delete the graph for each test!
         self.graph.remove((None, None, None))
+
+    def tearDown(self):
+        self.graph.close()
 
     def addStuff(self):
         tarek = self.tarek

@@ -10,9 +10,16 @@ foo = URIRef("foo")
 
 
 class TypeCheckCase(unittest.TestCase):
+    backend = 'default'
+    path = 'store'
+
     def setUp(self):
-        self.store = Graph()
-        
+        self.store = Graph(backend=self.backend)
+        self.store.open(self.path)
+
+    def tearDown(self):
+        self.store.close()
+
     def testSubjectTypeCheck(self):
         self.assertRaises(SubjectTypeError,
                           self.store.add, (None, foo, foo))

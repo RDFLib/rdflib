@@ -6,9 +6,18 @@ from rdflib.StringInputSource import StringInputSource
 
 
 class ParserTestCase(unittest.TestCase):        
+    backend = 'default'
+    path = 'store'
+
+    def setUp(self):
+        self.graph = Graph(backend=self.backend)
+        self.graph.open(self.path)
+
+    def tearDown(self):
+        self.graph.close()
 
     def testNoPathWithHash(self):
-        g = Graph()
+        g = self.graph
         g.parse(StringInputSource("""\
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <rdf:RDF

@@ -25,11 +25,17 @@ rdfxml = """\
 </rdf:RDF>"""
 
 class RDFTestCase(unittest.TestCase):
+    backend = 'default'
+    path = 'store'
 
     def setUp(self):
-        self.store = Graph()
+        self.store = Graph(backend=self.backend)
+        self.store.open(self.path)
         self.store.bind("dc", "http://http://purl.org/dc/elements/1.1/")
         self.store.bind("foaf", "http://xmlns.com/foaf/0.1/")
+
+    def tearDown(self):
+        self.store.close()
 
     def addDonna(self):
         self.donna = donna = BNode()

@@ -4,11 +4,17 @@ from rdflib import Graph, URIRef, BNode, Literal, RDFS
 
 
 class GraphTest(unittest.TestCase):
-
+    backend = 'default'
+    path = 'store'
+    
     def setUp(self):
-        self.store = Graph()
+        self.store = Graph(backend=self.backend)
+        self.store.open(self.path)
         self.remove_me = (BNode(), RDFS.label, Literal("remove_me"))
         self.store.add(self.remove_me)
+
+    def tearDown(self):
+        self.store.close()
 
     def testAdd(self):
         subject = BNode()

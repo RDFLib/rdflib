@@ -64,3 +64,6 @@ register('Sleepycat_new', Backend,
 
 register('ZODB', Backend,
          'rdflib.backends.ZODB', 'ZODB')
+
+register('sqlobject', Backend,
+         'rdflib.backends._sqlobject', 'SQLObject')

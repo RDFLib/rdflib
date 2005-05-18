@@ -139,11 +139,17 @@ def _testNegative(uri, manifest):
         result = 1
     return result
 
-class ParserTestCase(unittest.TestCase):        
+class ParserTestCase(unittest.TestCase):
+    backend = 'default'
+    path = 'store'
 
     def setUp(self):
-        self.manifest = manifest = Graph()
+        self.manifest = manifest = Graph(backend=self.backend)
+        manifest.open(self.path)
         manifest.load("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf")
+
+    def tearDown(self):
+        self.manifest.close()
 
     def testNegative(self):
         manifest = self.manifest

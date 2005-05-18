@@ -4,10 +4,11 @@ from rdflib import *
 
 class GraphTestCase(unittest.TestCase):
     backend = 'default'
-    
+    path = 'store'
+
     def setUp(self):
         self.store = Graph(backend=self.backend)
-        self.store.open("store")
+        self.store.open(self.path)
         self.michel = URIRef(u'michel')
         self.tarek = URIRef(u'tarek')
         self.bob = URIRef(u'bob')
@@ -15,6 +16,9 @@ class GraphTestCase(unittest.TestCase):
         self.hates = URIRef(u'hates')
         self.pizza = URIRef(u'pizza')
         self.cheese = URIRef(u'cheese')
+
+    def tearDown(self):
+        self.store.close()
 
     def addStuff(self):
         tarek = self.tarek
@@ -125,7 +129,6 @@ try:
         backend = "ZODB"
 except ImportError:
     pass
-
 
 if __name__ == '__main__':
     unittest.main()    
