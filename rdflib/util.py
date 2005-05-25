@@ -86,7 +86,7 @@ def from_n3(s, default=None):
                 language, rest = rest.rsplit('^^', 1)
                 language = language[1:] # strip leading at sign                
             else:
-                language = language[1:] # strip leading at sign
+                language = rest[1:] # strip leading at sign
                 rest = ''
         else:
             language = ''
