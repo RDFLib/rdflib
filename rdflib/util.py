@@ -82,12 +82,13 @@ def from_n3(s, default=None):
         value, rest = s.rsplit('"', 1)
         value = value[1:] # strip leading quote
         if rest.startswith("@"):
-            language, rest = rest.rsplit('^^', 1)
+            if "^^" in rest:
+                language, rest = rest.rsplit('^^', 1)
             language = language[1:] # strip leading at sign
         else:
             language = ''
         if rest.startswith("^^"):
-            datatype = rest[2:]
+            datatype = rest[3:-1]
         else:
             datatype = ''
         value = value.decode("unicode-escape")
