@@ -84,7 +84,10 @@ def from_n3(s, default=None):
         if rest.startswith("@"):
             if "^^" in rest:
                 language, rest = rest.rsplit('^^', 1)
-            language = language[1:] # strip leading at sign
+                language = language[1:] # strip leading at sign                
+            else:
+                language = language[1:] # strip leading at sign
+                rest = ''
         else:
             language = ''
         if rest.startswith("^^"):
