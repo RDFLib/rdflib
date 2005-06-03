@@ -4,6 +4,8 @@ if version_info[0:2] > (2, 2):
 else:
     normalize = None
 
+from urlparse import urlparse
+
 from rdflib.Identifier import Identifier
 from rdflib.Literal import Literal
 
@@ -33,6 +35,10 @@ class URIRef(Identifier):
 
     def abstract(self):
         if "#" not in self:
-            return URIRef("#".join(self.rsplit("/", 1)))
+	    scheme, netloc, path, params, query, fragment = urlparse(self)
+	    if path:
+		return URIRef("#".join(self.rsplit("/", 1)))
+	    else:
+		return self
         else:
             return self
