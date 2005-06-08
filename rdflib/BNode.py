@@ -24,6 +24,11 @@ class BNode(Identifier):
         return Identifier.__new__(cls, value)
         
     def n3(self):
+        if not self.startswith("_:"):
+	    if self.startswith("_"):
+		return "_:%s" % self[1:]
+	    else:
+		return "_:%s"
         return str(self)
 
 
