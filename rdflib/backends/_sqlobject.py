@@ -13,7 +13,7 @@ from rdflib.URIRef import URIRef
 from rdflib.BNode import BNode
 from rdflib.exceptions import ContextTypeError
 from rdflib.backends import Backend
-from rdflib.util import rsplit
+from rdflib.compat import rsplit
 
 import sqlobject
 from sqlobject import *

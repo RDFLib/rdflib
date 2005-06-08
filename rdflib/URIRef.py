@@ -8,7 +8,7 @@ from urlparse import urlparse
 
 from rdflib.Identifier import Identifier
 from rdflib.Literal import Literal
-from rdflib.util import rsplit
+from rdflib.compat import rsplit
 
 
 class URIRef(Identifier):
