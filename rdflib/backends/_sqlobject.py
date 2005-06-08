@@ -1,6 +1,4 @@
-"""
-$Id: __init__.py 732 2005-01-21 19:43:40Z sidnei $
-"""
+from __future__ import generators
 
 __metaclass__ = type
 
@@ -9,10 +7,13 @@ _literal = re.compile(r'''"(?P<value>[^@&]*)"(?:@(?P<lang>[^&]*))?(?:&<(?P<datat
 
 from urllib import quote, unquote
 
+from rdflib.backends import Backend
 from rdflib.Literal import Literal
 from rdflib.URIRef import URIRef
 from rdflib.BNode import BNode
 from rdflib.exceptions import ContextTypeError
+from rdflib.backends import Backend
+from rdflib.util import rsplit
 
 import sqlobject
 from sqlobject import *
@@ -83,10 +84,10 @@ def splituri(uri):
         uid = ''.join(uri.split('_'))
         return '_', uid
     if '#' in uri:
-        ns, local = uri.rsplit('#', 1)
+        ns, local = rsplit(uri, '#', 1)
         return ns + '#', local
     if '/' in uri:
-        ns, local = uri.rsplit('/', 1)
+        ns, local = rsplit(uri, '/', 1)
         return ns + '/', local
     return NO_URI, uri
 
@@ -143,7 +144,7 @@ def _tokey(term):
         msg = "Unknown term Type for: %s" % term
         raise Exception(msg)
 
-class SQLObject:
+class SQLObject(Backend):
 
     context_aware = False
     __open = False

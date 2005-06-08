@@ -8,6 +8,7 @@ from urlparse import urlparse
 
 from rdflib.Identifier import Identifier
 from rdflib.Literal import Literal
+from rdflib.util import rsplit
 
 
 class URIRef(Identifier):
@@ -29,7 +30,7 @@ class URIRef(Identifier):
 
     def concrete(self):
         if "#" in self:
-            return URIRef("/".join(self.rsplit("#", 1)))
+            return URIRef("/".join(rsplit(self, "#", 1)))
         else:
             return self
 
@@ -37,7 +38,7 @@ class URIRef(Identifier):
         if "#" not in self:
 	    scheme, netloc, path, params, query, fragment = urlparse(self)
 	    if path:
-		return URIRef("#".join(self.rsplit("/", 1)))
+		return URIRef("#".join(rsplit(self, "/", 1)))
 	    else:
 		return self
         else:

@@ -4,6 +4,18 @@ from rdflib.Literal import Literal
 
 from rdflib.exceptions import SubjectTypeError, PredicateTypeError, ObjectTypeError, ContextTypeError
 
+import sys
+
+if sys.version_info < (2, 4, 1, 'alpha', 1):
+    def rsplit(value, char=None, count=-1):
+        # rsplit is not available in Python < 2.4a1
+        if char is None:
+            char = ' '
+	parts = value.split(char)
+        return [char.join(parts[:-count])] + parts[-count:]
+else:
+    from string import rsplit
+
 
 def first(seq):
     for result in seq:
@@ -79,11 +91,11 @@ def from_n3(s, default=None):
         return URIRef(s[1:-1])
     elif s.startswith('"'):
         # TODO: would a regex be faster?
-        value, rest = s.rsplit('"', 1)
+        value, rest = rsplit(s, '"', 1)
         value = value[1:] # strip leading quote
         if rest.startswith("@"):
             if "^^" in rest:
-                language, rest = rest.rsplit('^^', 1)
+                language, rest = rsplit(rest, '^^', 1)
                 language = language[1:] # strip leading at sign                
             else:
                 language = rest[1:] # strip leading at sign
