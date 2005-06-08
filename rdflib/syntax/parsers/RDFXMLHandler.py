@@ -375,7 +375,7 @@ class RDFXMLHandler(handler.ContentHandler):
                     next.end = self.property_element_end
                 elif parse_type=="Collection":
                     current.char = None        
-                    current.list = self.parent.subject
+                    object = current.list = RDF.nil #BNode()#self.parent.subject
                     next.start = self.node_element_start
                     next.end = self.list_node_element_end
                 else: #if parse_type=="Literal":
@@ -440,7 +440,8 @@ class RDFXMLHandler(handler.ContentHandler):
     def property_element_end(self, name, qname):
         current = self.current
         if self.next.end==self.list_node_element_end:
-            self.store.add((current.list, RDF.rest, RDF.nil))
+	    if current.object!=RDF.nil:
+		self.store.add((current.list, RDF.rest, RDF.nil))
         if current.object is not None:
             self.store.add((self.parent.subject, current.predicate, current.object))
             if current.id is not None:
@@ -450,7 +451,7 @@ class RDFXMLHandler(handler.ContentHandler):
 
     def list_node_element_end(self, name, qname):
         current = self.current        
-        if not self.parent.list:
+        if self.parent.list==RDF.nil:
             list = BNode()
             # Removed between 20030123 and 20030905
             #self.store.add((list, RDF.type, LIST))
