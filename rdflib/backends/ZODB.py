@@ -6,7 +6,13 @@ from rdflib.backends.IOMemory import IOMemory
 
 # you must export your PYTHONPATH to point to a Z3 installation to get this to work!, like:
 # export PYTHONPATH="export PYTHONPATH="/home/michel/dev/Zope3Trunk/src"
-from persistent import Persistent
+
+try:
+    # Zope 3
+    from persistent import Persistent
+except ImportError:
+    # < Zope 2.8?
+    from Persistence import Persistent
 
 from BTrees.IOBTree import IOBTree
 from BTrees.OIBTree import OIBTree
