@@ -40,7 +40,8 @@ setup(
     long_description = "RDF library containing an RDF triple store and RDF/XML parser/serializer",
 
     packages = ['rdflib',
-                'rdflib.backends',                
+                'rdflib.backends',
+                'rdflib.sparql',
                 'rdflib.syntax',
                 'rdflib.syntax.serializers',
                 'rdflib.syntax.parsers'],    
