@@ -14,7 +14,16 @@ class Literal(Identifier):
     http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
     """
 
-    __slots__ = ["language", "datatype"]
+    __slots__ = ("language", "datatype")
+
+    def __getstate__(self):
+        return (None, dict(language=self.language,
+                           datatype=self.datatype))
+
+    def __setstate__(self, arg):
+        _, d = arg
+        self.language = d['language']
+        self.datatype = d['datatype']
     
     def __new__(cls, value, lang='', datatype=''):
         value = unicode(value)        

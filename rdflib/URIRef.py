@@ -13,7 +13,7 @@ from rdflib.compat import rsplit
 
 class URIRef(Identifier):
 
-    __slots__ = []
+    __slots__ = ()
 
     def __new__(cls, value):
         return Identifier.__new__(cls, value)        
