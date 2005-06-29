@@ -281,22 +281,22 @@ class Graph(object):
         parser = plugin.get(format, Parser)(self)
         return parser.load(location, publicID, format)
 
-    def save(self, location, format="xml"):
+    def save(self, location, format="xml", base=None):
         """ Save Graph to location using format. Format defaults to xml (AKA rdf/xml)."""
         serializer = plugin.get(format, Serializer)(self)
         #serializer.store = self
-        return serializer.serialize(destination=location)
+        return serializer.serialize(destination=location, base=base)
         
     def parse(self, source, publicID=None, format="xml"):
         """ Parse source into Graph. If Graph is context-aware it'll get loaded into it's own context (sub graph). Format defaults to xml (AKA rdf/xml). The publicID argument is for specifying the logical URI for the case that it's different from the physical source URI."""
         parser = plugin.get(format, Parser)(self)        
         return parser.parse(source=source, publicID=publicID, format=format) 
 
-    def serialize(self, destination=None, format="xml"):
+    def serialize(self, destination=None, format="xml", base=None):
         """ Serialize the Graph to destination. If destination is None serialize method returns the serialization as a string. Format defaults to xml (AKA rdf/xml)."""
         serializer = plugin.get(format, Serializer)(self)
         serializer.store = self
-        return serializer.serialize(destination)
+        return serializer.serialize(destination, base=base)
 
     def seq(self, subject) :
         """

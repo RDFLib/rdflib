@@ -5,6 +5,6 @@ class Serializer(object):
         self.store = store        
         self.encoding = "UTF-8"
         
-    def serialize(self, stream):
+    def serialize(self, stream, base=None):
         """Abstract method"""
 

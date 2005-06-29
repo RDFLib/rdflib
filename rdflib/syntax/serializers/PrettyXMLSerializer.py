@@ -1,7 +1,6 @@
 from rdflib import RDF
 
-from rdflib.Literal import Literal
-from rdflib.BNode import BNode
+from rdflib import URIRef, Literal, BNode
 from rdflib.util import first, uniq, more_than
 
 from rdflib.syntax.serializers import Serializer
@@ -18,15 +17,22 @@ def fix(val):
     else:
         return val
 
-    
+
 class PrettyXMLSerializer(Serializer):
 
     def __init__(self, store):
         super(PrettyXMLSerializer, self).__init__(store)
-        
-    def serialize(self, stream):
+
+    def relativize(self, uri):
+        base = self.base
+	if base and uri.startswith(base):
+	    uri = URIRef(uri.replace(base, "", 1))
+	return uri
+
+    def serialize(self, stream, base=None):
         self.__serialized = {}
         store = self.store
+        self.base = base
         
         nm = store.namespace_manager
         self.writer = writer = XMLWriter(stream, nm)
@@ -73,7 +79,7 @@ class PrettyXMLSerializer(Serializer):
                 if more_than(store.triples((None, None, subject)), 1):
                     writer.attribute(RDF.nodeID, fix(subject))
             else:
-                writer.attribute(RDF.about, subject)
+                writer.attribute(RDF.about, self.relativize(subject))
             if (subject, None, None) in store:
                 for predicate, object in store.predicate_objects(subject):
                     if not (predicate==RDF.type and object==type):
@@ -96,7 +102,7 @@ class PrettyXMLSerializer(Serializer):
                 if more_than(store.triples((None, None, object)), 1):
                     writer.attribute(RDF.nodeID, fix(object))
             else:
-                writer.attribute(RDF.resource, object)
+                writer.attribute(RDF.resource, self.relativize(object))
         else:
             if first(store.objects(object, RDF.first)): # may not have type RDF.List
                 collection = object

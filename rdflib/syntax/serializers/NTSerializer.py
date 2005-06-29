@@ -10,7 +10,9 @@ class NTSerializer(Serializer):
         """
         super(NTSerializer, self).__init__(store)
 
-    def serialize(self, stream):
+    def serialize(self, stream, base=None):
+        if base is not None:
+	    print "TODO: NTSerializer does not support base"
         encoding = self.encoding
         write = lambda triple: stream.write((triple[0].n3() + u" " + \
                                              triple[1].n3() + u" " + triple[2].n3() + u".\n").encode(encoding, "replace"))
