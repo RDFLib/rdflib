@@ -29,6 +29,14 @@ class Literal(Identifier):
         value = unicode(value)        
         return Identifier.__new__(cls, value)        
 
+    def __getstate__(self):
+	return (None, dict(language=self.language, datatype=self.datatype))
+
+    def __setstate__(self, arg):
+	_, d = arg
+	self.language = d["language"]
+	self.datatype = d["datatype"]
+
     def __init__(self, value, lang='', datatype=''):
         if normalize and value:
             if not isinstance(value, unicode):
@@ -83,5 +91,4 @@ class Literal(Identifier):
                 return '"%s"^^<%s>' % (encoded, datatype)
             else:
                 return '"%s"' % encoded
-
 
