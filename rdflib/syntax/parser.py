@@ -4,6 +4,7 @@ import rdflib.syntax.parsers
 
 from rdflib.URIRef import URIRef
 from xml.sax.xmlreader import InputSource
+from xml.sax.saxutils import prepare_input_source 
 
 
 class Parser(object):
@@ -23,8 +24,11 @@ class Parser(object):
         if isinstance(source, InputSource):
             input_source = source
         else:
-            # TODO: way to detect source of string vs. location?
-            input_source = URLInputSource(self.store.absolutize(source))
+            # TODO: way to detect source of string vs. location?            
+            if hasattr(source, "read"):
+                input_source = prepare_input_source(source)
+            else:
+                input_source = URLInputSource(self.store.absolutize(source))
         if publicID:
             input_source.setPublicId(publicID)
 
