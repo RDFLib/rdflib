@@ -2,6 +2,7 @@
 
 from rdflib import Graph
 from rdflib.Namespace import Namespace
+from rdflib.backends.Sleepycat import Sleepycat
 
 from rdflib.util import check_subject, check_predicate, check_object, check_context
 
@@ -17,7 +18,7 @@ class InformationStore(Graph):
     
     def __init__(self, path=None, backend=None):
         if backend==None:
-            backend = SleepyCatBackend()
+            backend = Sleepycat()
         super(InformationStore, self).__init__(backend=backend)
         if path:
             self.open(path)
