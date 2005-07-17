@@ -1,0 +1,125 @@
+The rdflib Primer
+
+  The rdflib Python module is used for parsing, processing, storing,
+  and querying RDF information.
+
+Feature Overview 
+
+  - Parsing RDF/XML and NT triple format supported.
+
+  - RDF information is stored in backends: In-Memory, Sleepycat, ZODB,
+    and SQLLite backends supported.  
+
+  - RDF information can be quickly queried with full SPARQL query
+    language support.
+
+  - Flexible API allows support for new kinds of data models, data
+    syntax, query agents, and storage backends.
+
+  - Limited support RDF and RDFS entailment provide ways for
+    additional RDF information to be inferred from existing data.
+
+  - Namespace management tools provide a way to map XML namespaces to
+    shorter XML qnames to clarify input, output and query code.
+
+  - Limited tests against W3C RDF and SPARQL test suites.
+
+Module Description
+
+  RDF is a way of encoding information.  RDF data takes the form of a
+  "triple" or "relation" that consists of three parts: a subject, a
+  predicate and an object.  These three parts together make an RDF
+  statement.  The rdflib module provides Python programmers with a
+  simple and powerful tool to parse, process, store, index, and query
+  RDF relations.
+
+  RDF statements are used to describe resources. A "resource" in RDF
+  can be anything, a book, a concept (like "flavor" or "title"), or
+  anything that can be uniquely identified.  For example, a statment
+  like "Bob likes pizza." can be easily encoded into RDF, the subject
+  is "Bob" the predicate is "likes" and the object is "pizza".
+
+  RDF is a W3C standard, but it is not a new idea, relational theory
+  is present in many computers system, including older ones like
+  Prolog and newer ones like relational database system.  These
+  techniques all stem from Cobb's paperon relational theory.  RDF is
+  not an invention of anything, but is a standardized way to encode
+  and exchange existing relational data.
+
+Module Overview
+
+  The rdflib module provides several classes.
+
+    rdflib.Graph
+
+      The 'rdflib.Graph' class is the main interface to rdflib.  When
+      RDF information is parsed by rdflib it is stored in a graph
+      object.  A graph's backend can be set when the graph is created,
+      so RDF information can easily kept in memory or stored
+      persistently in a backend database.
+
+      The graph object's API is described in the online API reference
+      XXX, but here is a quick overview of the most used methods:
+
+        Graph.parse()
+
+	  Parses RDF information from an input source into a graph.
+
+	Graph.load()
+
+	  Loads a URL that returns RDF information into a graph.
+
+	Graph.triples((s, p, o), c=None)
+
+	  The triples method searches a graph for statements that
+	  match a statement pattern.
+
+	Graph.add((s, p, o))
+
+	  Adds a statement to the graph.
+
+	Graph.remove((s, p, o))
+
+	  Removes a statment from a graph.
+
+    rdflib.Identifier
+
+      All RDF identifiers (URIs, Literals and Blank Nodes) are
+      represented by the following classes.  They are all subclasses
+      of rdflib.Identifier, which is a subclass of the standard Python
+      unicode type.
+
+	rdflib.URIRef
+
+	rdflib.Literal
+
+	rdflib.BNode
+
+Backends
+
+  rdflib supports pluggable backends.  A backend encapsulates all the
+  "state" or the "model" of the graph object.  
+
+Other rdflib Graphs
+
+    rdflib.sparql.sparqlGraph.SPARQLGraph
+
+      This graph wraps another graph and provides SPARQL query logic
+      for the data in the wrapped graph.  The SPARQL support allows
+      SQL-like selections to be made for statement that match simple
+      or complex statement patterns and constraints.
+
+    rdflib.RDFS.entailment.EntailmentGraph
+
+      This graph wraps another graph and provides entailment logic for
+      the data in the wrapped graph.  Newly entailed information is
+      generated on the fly and the graph is queried.  Entailed data
+      can be configured to be written to the wrapped graph immediately
+      or cached in memory and optionally flushed or written to the
+      wrapped graph.
+
+      The entailment framework is in development and is highly
+      experimental.  The goal is to be a flexible and pluggable RDF
+      and RDFS entailment engine.
+
+
