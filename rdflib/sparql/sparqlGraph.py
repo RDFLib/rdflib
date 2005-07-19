@@ -2,7 +2,7 @@
 """Some utility functions built on the top of rdflib
 """
 ##
-# This module contains the {@link #myTripleStore} class and the related Exceptions.
+# This module contains the {@link #sparqlGraph} class and the related Exceptions.
 ##
 
 ##########################################################################
@@ -53,7 +53,8 @@ class RDFSValidityError(Error) :
 ##
 # The main wrapper class around RDFLib
 class SPARQLGraph(sparql.SPARQL) :
-    """A wrapper class around the original triple store, that includes some additional utility methods"""
+    """A wrapper class around the original triple store, that includes
+    some additional utility methods"""
     def __init__(self, graph=None) :
         if graph is None:
             graph = Graph()
@@ -67,10 +68,11 @@ class SPARQLGraph(sparql.SPARQL) :
 
     def getPredicateValue(self,s,p) :
         """
-        Get a predicate value for an subject. Useful if one knows that there may only be one...
-        Returns None if no value exists.
+        Get a predicate value for an subject. Useful if one knows that
+        there may only be one...  Returns None if no value exists.
         
-        It is one of those situations that occur a lot, hence this 'macro' like utility.
+        It is one of those situations that occur a lot, hence this
+        'macro' like utility.
         
         @param s: subject 
         @param p: predicate
@@ -87,10 +89,13 @@ class SPARQLGraph(sparql.SPARQL) :
         return retval
     
     def getPredicateSubject(self,p,v) :
-        """Get a subject value for predicate and a value. Useful if one knows that there may only be one...
-        Returns None if no value exists.
+
+        """Get a subject value for predicate and a value. Useful if
+        one knows that there may only be one...  Returns None if no
+        value exists.
         
-        It is one of those situations that occur a lot, hence this 'macro' like utility.
+        It is one of those situations that occur a lot, hence this
+        'macro' like utility.
         
         @param p: predicate
         @param v: value 
@@ -107,11 +112,13 @@ class SPARQLGraph(sparql.SPARQL) :
         return retval
 
     def isTrue(self,s,p,o) :
-        """Checking the truthfulness of a triplet, ie, its existence. Returns True/False. It is just an idiom...
+        """Checking the truthfulness of a triplet, ie, its
+        existence. Returns True/False. It is just an idiom...
         
         
-        @depreciated: I realized later that using 'in' is by far the simplest thing that would not really need a separate method,
-        but I left it here for backward compatibility. 
+        @depreciated: I realized later that using 'in' is by far the
+        simplest thing that would not really need a separate method,
+        but I left it here for backward compatibility.
         
         @param s: subject 
         @param p: predicate
@@ -124,11 +131,11 @@ class SPARQLGraph(sparql.SPARQL) :
         """
         Return a list of, well, list (collection) elements in RDF.
            
-        Rdflib's store has a  method called 
-        item, which is generator over list elements. In some cases this is just 
-        enough. However, the advantage of using this method is that it 
-        returns a Python list that can be, for example, sliced, massaged, etc,
-        and that is sometimes quite useful.
+        Rdflib's store has a method called item, which is generator
+        over list elements. In some cases this is just
+        enough. However, the advantage of using this method is that it
+        returns a Python list that can be, for example, sliced,
+        massaged, etc, and that is sometimes quite useful.
            
         @param resource: and RDFLib Resource
         @rtype: list
@@ -141,9 +148,11 @@ class SPARQLGraph(sparql.SPARQL) :
         """
         Recursively build a list.
         
-        @param elements: list of Literal, BNode or URIRef instances. The first element is added to the collection, the rest is
-        handled by a recursive call to the same method
-        @param father: the resource to which the head and the tail should be attached
+        @param elements: list of Literal, BNode or URIRef
+        instances. The first element is added to the collection, the
+        rest is handled by a recursive call to the same method @param
+        father: the resource to which the head and the tail should be
+        attached
         """
         if len(elements) == 0 :
             # This should not happen, in fact...
@@ -164,7 +173,9 @@ class SPARQLGraph(sparql.SPARQL) :
         Store a (Python) list as an RDF List, ie, a collection.
         
         @param elements: list of Literal, BNode or URIRef instances
-        @param name: the nodeId of the head of the list (if None, the system sets the nodeId as for all other BNodes)
+
+        @param name: the nodeId of the head of the list (if None, the
+        system sets the nodeId as for all other BNodes)
         """
         lst = BNode(name)
         self.store.add((lst,ns_rdf["type"],ns_rdf["List"]))
@@ -173,10 +184,11 @@ class SPARQLGraph(sparql.SPARQL) :
         
     def getSeq(self,resource) :
         """
-        Check if resource is an rdf:Seq. If yes, it returns a Seq class instance, None otherwise.
+        Check if resource is an rdf:Seq. If yes, it returns a Seq
+        class instance, None otherwise.
         
         @param resource: and RDFLib Resource
-        @rtype: L{Seq<rdflibUtils.myTripleStore.Seq>}        
+        @rtype: L{Seq<rdflib.sqarql.sparqlGraph.Seq>}        
         """
         try :
             if (resource,ns_rdf['type'],ns_rdf['Seq']) in self :
@@ -188,10 +200,11 @@ class SPARQLGraph(sparql.SPARQL) :
             
     def getAlt(self,resource) :
         """
-        Check if resource is an rdf:Alt. If yes, it returns a Alt class instance, None otherwise.
+        Check if resource is an rdf:Alt. If yes, it returns a Alt
+        class instance, None otherwise.
         
         @param resource: and RDFLib Resource
-        @rtype: L{Alt<rdflibUtils.myTripleStore.Alt>}        
+        @rtype: L{Alt<rdflib.sqarql.sparqlGraph.Alt>}        
         """
         try :
             if (resource,ns_rdf['type'],ns_rdf['Alt']) in self :
@@ -203,10 +216,11 @@ class SPARQLGraph(sparql.SPARQL) :
 
     def getBag(self,resource) :
         """
-        Check if resource is an rdf:Bag. If yes, it returns a Bag class instance, None otherwise.
+        Check if resource is an rdf:Bag. If yes, it returns a Bag
+        class instance, None otherwise.
         
         @param resource: and RDFLib Resource
-        @rtype: L{Bag<rdflibUtils.myTripleStore.Bag>}        
+        @rtype: L{Bag<rdflib.sqarql.sparqlGraph.Bag>}        
         """
         try :
             if (resource,ns_rdf['type'],ns_rdf['Bag']) in self :
@@ -218,14 +232,22 @@ class SPARQLGraph(sparql.SPARQL) :
             
     def _storeContainer(self,elements,contType,name) :
         """
-        Store a container. Elements given as an array are added to the triple store. 
-        The BNode for the container is created on the fly.
+        Store a container. Elements given as an array are added to the
+        triple store.  The BNode for the container is created on the
+        fly.
         
-        @param elements: an array of RDF resources, ie, URIRefs, BNodes, or Literals
-        @param contType: name of the container (one of "Seq", "Alt", or "Bag")
+        @param elements: an array of RDF resources, ie, URIRefs,
+        BNodes, or Literals
+
+        @param contType: name of the container (one of"Seq", "Alt", or "Bag")
+
         @type contType: string
-        @param name: the nodeId of the BNode for the rdf:Seq (if None, the system sets the nodeId as for all other BNodes)
+
+        @param name: the nodeId of the BNode for the rdf:Seq (if None,
+        the system sets the nodeId as for all other BNodes)
+
         @returns: the new Seq instance
+
         @rtype: BNode
         """
         seq = BNode(name)
@@ -237,47 +259,68 @@ class SPARQLGraph(sparql.SPARQL) :
 
     def storeSeq(self,elements,name=None) :
         """
-        Store a Seq container. Elements given as an array are added to the triple store. 
-        The BNode for the container is created on the fly.
+        Store a Seq container. Elements given as an array are added to
+        the triple store.  The BNode for the container is created on
+        the fly.
         
-        @param elements: an array of RDF resources, ie, URIRefs, BNodes, or Literals
-        @param name: the nodeId of the BNode for the rdf:Seq (if None, the system sets the nodeId as for all other BNodes)
+        @param elements: an array of RDF resources, ie, URIRefs,
+        BNodes, or Literals
+
+        @param name: the nodeId of the BNode for the rdf:Seq (if None,
+        the system sets the nodeId as for all other BNodes)
+
         @returns: the new Seq instance
-        @rtype: L{Seq<rdflibUtils.myTripleStore.Seq>}
+
+        @rtype: L{Seq<rdflib.sqarql.sparqlGraph.Seq>}
         """
         return Seq(self,self._storeContainer(elements,"Seq",name))
         
     def storeBag(self,elements,name=None) :
         """
-        Store a Seq container. Elements given as an array are added to the triple store. 
-        The BNode for the container is created on the fly.
+        Store a Seq container. Elements given as an array are added to
+        the triple store.  The BNode for the container is created on
+        the fly.
         
-        @param elements: an array of RDF resources, ie, URIRefs, BNodes, or Literals
-        @param name: the nodeId of the BNode for the rdf:Seq (if None, the system sets the nodeId as for all other BNodes)
+        @param elements: an array of RDF resources, ie, URIRefs,
+        BNodes, or Literals
+
+        @param name: the nodeId of the BNode for the rdf:Seq (if None,
+        the system sets the nodeId as for all other BNodes)
+
         @returns: the new Seq instance
-        @rtype: L{Bag<rdflibUtils.myTripleStore.Bag>}
+
+        @rtype: L{Bag<rdflib.sqarql.sparqlGraph.Bag>}
         """
         return Bag(self,self._storeContainer(elements,"Bag",name))
         
     def storeAlt(self,elements,name=None) :
         """
-        Store a Seq container. Elements given as an array are added to the triple store. 
-        The BNode for the container is created on the fly.
+        Store a Seq container. Elements given as an array are added to
+        the triple store.  The BNode for the container is created on
+        the fly.
         
-        @param elements: an array of RDF resources, ie, URIRefs, BNodes, or Literals
-        @param name: the nodeId of the BNode for the rdf:Seq (if None, the system sets the nodeId as for all other BNodes)
+        @param elements: an array of RDF resources, ie, URIRefs,
+        BNodes, or Literals
+
+        @param name: the nodeId of the BNode for the rdf:Seq (if None,
+        the system sets the nodeId as for all other BNodes)
+
         @returns: the new Seq instance
-        @rtype: L{Alt<rdflibUtils.myTripleStore.Alt>}
+
+        @rtype: L{Alt<rdflib.sqarql.sparqlGraph.Alt>}
         """
         return Alt(self,self._storeContainer(elements,"Alt",name))
 
     ##############################################################################################################
     # Clustering methods
     def _clusterForward(self,seed,Cluster) :
-        """Cluster the triple store: from a seed, transitively get all properties and objects in direction of the arcs.
+        """Cluster the triple store: from a seed, transitively get all
+        properties and objects in direction of the arcs.
         
         @param seed: RDFLib Resource
-        @param Cluster: a L{myTripleStore} instance, that has to be expanded with the new arcs
+
+        @param Cluster: a L{sparqlGraph} instance, that has to be
+        expanded with the new arcs
         """
         try :        
             # get all predicate and object pairs for the seed. 
@@ -293,16 +336,20 @@ class SPARQLGraph(sparql.SPARQL) :
 
     def clusterForward(self,seed,Cluster=None) :
         """
-        Cluster the triple store: from a seed, transitively get all properties and objects in direction of the arcs.
+        Cluster the triple store: from a seed, transitively get all
+        properties and objects in direction of the arcs.
         
         @param seed: RDFLib Resource
-        @param Cluster: another myTripleStore instance; if None, a new one will be created. The subgraph will be added
-        to this store.
+
+        @param Cluster: another sparqlGraph instance; if None, a new
+        one will be created. The subgraph will be added to this store.
+
         @returns: The triple store containing the cluster
-        @rtype: L{myTripleStore}
+
+        @rtype: L{sparqlGraph}
         """
         if Cluster == None :
-            Cluster = myTripleStore()
+            Cluster = sparqlGraph()
             
         # This will raise an exception if not kosher...
         try :
@@ -317,10 +364,13 @@ class SPARQLGraph(sparql.SPARQL) :
         
         
     def _clusterBackward(self,seed,Cluster) :
-        """Cluster the triple store: from a seed, transitively get all properties and objects in backward direction of the arcs.
+        """Cluster the triple store: from a seed, transitively get all
+        properties and objects in backward direction of the arcs.
         
         @param seed: RDFLib Resource
-        @param Cluster: a L{myTripleStore} instance, that has to be expanded with the new arcs
+
+        @param Cluster: a L{sparqlGraph} instance, that has to be
+        expanded with the new arcs
         """
         try :
             for (s,p) in self.store.subject_predicates(seed) :
@@ -333,17 +383,21 @@ class SPARQLGraph(sparql.SPARQL) :
             
     def clusterBackward(self,seed,Cluster=None) :
         """
-        Cluster the triple store: from a seed, transitively get all properties and objects 'backward', ie,
-        following the link back in the graph.
+        Cluster the triple store: from a seed, transitively get all
+        properties and objects 'backward', ie, following the link back
+        in the graph.
         
         @param seed: RDFLib Resource
-        @param Cluster: another myTripleStore instance; if None, a new one will be created. The subgraph will be added
-        to this store.
+
+        @param Cluster: another sparqlGraph instance; if None, a new
+        one will be created. The subgraph will be added to this store.
+
         @returns: The triple store containing the cluster
-        @rtype: L{myTripleStore}
+
+        @rtype: L{sparqlGraph}
         """
         if Cluster == None :
-            Cluster = myTripleStore()
+            Cluster = sparqlGraph()
 
         # This will raise an exception if not kosher...
         try :
@@ -358,11 +412,14 @@ class SPARQLGraph(sparql.SPARQL) :
 
     def cluster(self,seed) :
         """
-        Cluster up and down, by summing up the forward and backward clustering
+        Cluster up and down, by summing up the forward and backward
+        clustering
         
         @param seed: RDFLib Resource
+
         @returns: The triple store containing the cluster
-        @rtype: L{myTripleStore}
+
+        @rtype: L{sparqlGraph}
         """
         return self.clusterBackward(seed) + self.clusterForward(seed)
         
@@ -374,7 +431,7 @@ class SPARQLGraph(sparql.SPARQL) :
     # @param other the other triple store
     def __add__(self,other) :
         """Set theoretical union"""
-        retval = myTripleStore()
+        retval = sparqlGraph()
         for x in self:  retval.add(x)
         for y in other: retval.add(y)
         return retval
@@ -384,7 +441,7 @@ class SPARQLGraph(sparql.SPARQL) :
     # @param other the other triple store
     def __mul__(self,other) :
         """Set theoretical intersection"""
-        retval = myTripleStore()
+        retval = sparqlGraph()
         for x in other:
             if x in self: retval.add(x)
         return retval
@@ -394,7 +451,7 @@ class SPARQLGraph(sparql.SPARQL) :
     # @param other the other triple store
     def __sub__(self,other) :
         """Set theoretical difference"""
-        retval = myTripleStore()
+        retval = sparqlGraph()
         for x in self:
             if not x in other : retval.add(x)
         return retval
@@ -404,11 +461,16 @@ class SPARQLGraph(sparql.SPARQL) :
     # Poor man's RDFS
     def _extendTypesR(self,target,res,typ) :
         """
-        Semi-reification for subClassOf. For all X such as (typ,rdf:subClassOf,X) and for all resources such as
-        (res,rdf:type,typ), the (res,rdf:type,X) is added to target, and then this is done recursively for (target,res,X).
+        Semi-reification for subClassOf. For all X such as
+        (typ,rdf:subClassOf,X) and for all resources such as
+        (res,rdf:type,typ), the (res,rdf:type,X) is added to target,
+        and then this is done recursively for (target,res,X).
         
-        @param target: L{myTripleStore}, where the new arcs will be accumulated
+        @param target: L{sparqlGraph}, where the new arcs will be
+        accumulated
+
         @param res: RDFLib Resource
+
         @param typ: RDFLib Resource    
         """
         for nTyp in self.store.objects(typ,ns_rdfs["subClassOf"]) :
@@ -419,11 +481,14 @@ class SPARQLGraph(sparql.SPARQL) :
             
     def _extendTypes(self) :
         """
-        Extend the graph by a recursively adding the new types based on rdf:subClassOf (calling L{_extendTypesR} for possible combinations).
+        Extend the graph by a recursively adding the new types based
+        on rdf:subClassOf (calling L{_extendTypesR} for possible
+        combinations).
         
-        @raise RDFSValidityError: if a triple in the triple store is invalid (o or s is a Literal for an rdf:type triplet).
+        @raise RDFSValidityError: if a triple in the triple store is
+        invalid (o or s is a Literal for an rdf:type triplet).
         """
-        target = myTripleStore()
+        target = sparqlGraph()
         for (s,o) in self.store.subject_objects(ns_rdf["type"]) :
             if isinstance(o,Literal) :
                 raise RDFSValidityError("rdfs:type",o)
@@ -434,12 +499,16 @@ class SPARQLGraph(sparql.SPARQL) :
         
     def _extendPropertiesR(self,target,s,o,prop) :
         """
-        Semi-reification for subPropertyOf: for a (s,prop,o) (s,P,o) is also added where (prop,subPropertyOf,P), and this is
-        done recursively by adding it to target.
+        Semi-reification for subPropertyOf: for a (s,prop,o) (s,P,o)
+        is also added where (prop,subPropertyOf,P), and this is done
+        recursively by adding it to target.
         
-        @param target: L{myTripleStore}, where the new arcs will be accumulated
+        @param target: L{sparqlGraph}, where the new arcs will be accumulated
+
         @param s: RDFLib Resource (for subject)
+
         @param o: RDFLib Resource (for object)
+
         @param prop: RDFLib Resource (for property)
         
         """
@@ -451,12 +520,14 @@ class SPARQLGraph(sparql.SPARQL) :
         
     def _extendProperties(self) :
         """
-        Extend the graph by a recursively adding the new triples for subproperies (calling L{_extendPropertiesR} for possible 
+        Extend the graph by a recursively adding the new triples for
+        subproperies (calling L{_extendPropertiesR} for possible
         combinations).
         
-        @raise RDFSValidityError: if a triple in the triple store is invalid (prop is not a URIRef).
+        @raise RDFSValidityError: if a triple in the triple store is
+        invalid (prop is not a URIRef).
         """
-        target = myTripleStore() 
+        target = sparqlGraph() 
         for (prop,supProp) in self.store.subject_objects(ns_rdfs["subPropertyOf"]) :
             if not isinstance(prop,URIRef) :
                 raise RDFSValidityError("rdfs:subClassOf",prop)                
@@ -466,8 +537,10 @@ class SPARQLGraph(sparql.SPARQL) :
     
     def _extendRangeDomain(self) :
         """
-        Extend the graph with the range and domains by adding new types for all predicates in the original graphs.
-        @raise RDFSValidityError: If range or domain uses anything else then URIRefs
+        Extend the graph with the range and domains by adding new
+        types for all predicates in the original graphs.  @raise
+        RDFSValidityError: If range or domain uses anything else then
+        URIRefs
         """
         for (P,C) in self.store.subject_objects(ns_rdfs["range"]) :
             if not isinstance(P,URIRef) :
@@ -490,21 +563,28 @@ class SPARQLGraph(sparql.SPARQL) :
 
     def extendRdfs(self) :
         """
-        Poor man's RDFS entailement. The method does not do a full RDFS entailement (this would 
-        greatly increase the size of the triple store, and RDFLib may not be efficient enough for that).
-        Instead:
+        Poor man's RDFS entailement. The method does not do a full
+        RDFS entailement (this would greatly increase the size of the
+        triple store, and RDFLib may not be efficient enough for
+        that).  Instead:
             
-          - extend the subproperties defined in the triple store (ie, if p is subProperty of q, then for all
-          (s p o) the (s q o) triplets are created and added to the store, and this is done recursively).
+          - extend the subproperties defined in the triple store (ie,
+          if p is subProperty of q, then for all (s p o) the (s q o)
+          triplets are created and added to the store, and this is
+          done recursively).
           
-          - expand range and domain, ie if the range (domain) are defined for a property, all object (subject)
-          resources for that property are properly typed via rdf:type
+          - expand range and domain, ie if the range (domain) are
+          defined for a property, all object (subject) resources for
+          that property are properly typed via rdf:type
           
-          - extend the subtypes defined in the triple store, similarly to subproperties.
+          - extend the subtypes defined in the triple store, similarly
+            to subproperties.
         
-        Though not a full entailement, I believe that it covers a large number of useful cases for the user.    
+        Though not a full entailement, I believe that it covers a
+        large number of useful cases for the user.
         
-        @raise RDFSValidityError: if the triple store contains incorrect triples
+        @raise RDFSValidityError: if the triple store contains
+        incorrect triples
         """
         self._extendProperties()
         self._extendRangeDomain()
@@ -520,32 +600,39 @@ class Container :
     """
     Wrapper around an RDF Container resource. 
     
-    This class is not really used by itself, rather through its subclasses: 
-    L{Seq<rdflibUtils.myTripleStore.Seq>}, L{Bag<rdflibUtils.myTripleStore.Bag>}, or
-    L{Alt<rdflibUtils.myTripleStore.Alt>}.
+    This class is not really used by itself, rather through its
+    subclasses: L{Seq<rdflib.sqarql.sparqlGraph.Seq>},
+    L{Bag<rdflib.sqarql.sparqlGraph.Bag>}, or
+    L{Alt<rdflib.sqarql.sparqlGraph.Alt>}.
     
     @ivar resource: the RDFLib resource for the Container
+
     @type resource: BNode
+
     @ivar triplets: the triple for the container instance
-    @type triplets: L{myTripleStore<rdflibUtils.myTripleStore.myTripleStore>}        
+
+    @type triplets:
+    L{sparqlGraph<rdflib.sqarql.sparqlGraph.sparqlGraph>}
     """
     _keys  = []
     _list  = {}
     _index = 0
     def __init__(self,triplets,resource) :
-        """The triplets is of type myTripleStore, the resource
-        is simply the resource which is supposed to be a Seq.
+        """The triplets is of type sparqlGraph, the resource is
+        simply the resource which is supposed to be a Seq.
         
-        The 'target' resources are initially collected in a dictionary,
-        keyed with the predicate names. The of keys is stored apart, and
-        the iteration/getitem goes through the keys set to retrieve the
-        dictionary content.
+        The 'target' resources are initially collected in a
+        dictionary, keyed with the predicate names. The of keys is
+        stored apart, and the iteration/getitem goes through the keys
+        set to retrieve the dictionary content.
         
         @param triplets: the triplets for the triple store
-        @type triplets: myTripleStore
-        @param resource: an (RDFLib) resource, ie, the Seq, Alt, or Bag. Note that the init
-        does not check whether this is a Seq, this is done by whoever creates this
-        instance!
+
+        @type triplets: sparqlGraph
+
+        @param resource: an (RDFLib) resource, ie, the Seq, Alt, or
+        Bag. Note that the init does not check whether this is a Seq,
+        this is done by whoever creates this instance!
         """
         # The array of predicate and objects is created; it is supposed
         # to filter out the one which simply states that the resource
@@ -570,7 +657,8 @@ class Container :
     def next(self):
         """Obvious iteration through the content using the sorted keys.
         
-        @raises StopIteration: when the end of the sequence has been reached
+        @raises StopIteration: when the end of the sequence has been
+        reached
         """
         if self._index == len(self._keys) :
             raise StopIteration
@@ -603,24 +691,28 @@ class Container :
 
 class Seq (Container) :
     """
-    The keys, inherited from L{Container<rdflibUtils.myTripleStore.Container>}, are sorted both when the class
-    is created and when a new item is added. That ensures the right order in getting the data, as required by the 
+    The keys, inherited from
+    L{Container<rdflib.sqarql.sparqlGraph.Container>}, are sorted both
+    when the class is created and when a new item is added. That
+    ensures the right order in getting the data, as required by the
     semantics of rdf:Seq.
     """
     def __init__(self,triplets,resource) :
-        """The triplets is of type myTripleStore, the resource
+        """The triplets is of type sparqlGraph, the resource
         is simply the resource which is supposed to be a Seq.
         
-        The 'target' resources are initially collected in a dictionary,
-        keyed with the predicate names. The sorted list of keys is stored apart, and
-        the iteration/getitem goes through the sorted key set to retrieve the
-        dictionary content.
+        The 'target' resources are initially collected in a
+        dictionary, keyed with the predicate names. The sorted list of
+        keys is stored apart, and the iteration/getitem goes through
+        the sorted key set to retrieve the dictionary content.
         
         @param triplets: the triplets for the triple store
-        @type triplets: myTripleStore
-        @param resource: an (RDFLib) resource, ie, the Seq. Note that the init
-        does not check whether this is a Seq, this is done by whoever creates this
-        instance!
+
+        @type triplets: sparqlGraph
+
+        @param resource: an (RDFLib) resource, ie, the Seq. Note that
+        the init does not check whether this is a Seq, this is done by
+        whoever creates this instance!
         """
         Container.__init__(self,triplets,resource)
         self._keys.sort()
@@ -630,11 +722,13 @@ class Seq (Container) :
         self._keys.sort()
         
 class Alt(Container) :
-    """This is just a placeholder class for naming, does not add any functionality to a Container"""
+    """This is just a placeholder class for naming, does not add any
+    functionality to a Container"""
     pass
         
 class Bag(Container) :
-    """This is just a placeholder class for naming, does not add any functionality to a Container"""
+    """This is just a placeholder class for naming, does not add any
+    functionality to a Container"""
     pass
     
         

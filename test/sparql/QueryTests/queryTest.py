@@ -11,14 +11,13 @@ import sys, os, time, datetime, imp, sys, StringIO
 
 sys.path.insert(0,"../")
 
-import rdflib.sparql
+from rdflib import sparql
 from rdflib.sparql import sparqlGraph, retrieveRDFFiles
 from testSPARQL import ns_rdf
 from testSPARQL import ns_rdfs
 from testSPARQL import ns_dc
 from testSPARQL import ns_dc0
 from testSPARQL import ns_foaf
-import rdflib.sparql.sparql
 from rdflib.FileInputSource import FileInputSource
 
 def run(modName) :
