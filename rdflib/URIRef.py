@@ -4,7 +4,7 @@ if version_info[0:2] > (2, 2):
 else:
     normalize = None
 
-from urlparse import urlparse
+from urlparse import urlparse, urljoin
 
 from rdflib.Identifier import Identifier
 from rdflib.Literal import Literal
@@ -15,11 +15,16 @@ class URIRef(Identifier):
 
     __slots__ = ()
 
-    def __new__(cls, value):
+    def __new__(cls, value, base=None):
+	if base is not None:
+	    value = urljoin(base, value, allow_fragments=1)
         return Identifier.__new__(cls, value)        
 
-    def __init__(self, value):
+    def __init__(self, value, base=None):
         if normalize and value:
+	    if base is not None:
+		value = urljoin(base, value, allow_fragments=1)
+
             if not isinstance(value, unicode):
                 value = unicode(value)
             if value != normalize("NFC", value):
