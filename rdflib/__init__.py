@@ -16,3 +16,4 @@ from rdflib.Namespace import Namespace
 
 from rdflib.Graph import Graph
 
+from FileInputSource import FileInputSource
