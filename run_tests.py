@@ -7,7 +7,8 @@ from test.type_check import *
 from test.graph import *
 from test.rdf import *
 from test.parser import *
-from test.parser_rdfcore import *
+#from test.parser_rdfcore import *
+from test.context import *
 
 if __name__ == "__main__":
     unittest.main()   

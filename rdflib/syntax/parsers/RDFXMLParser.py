@@ -22,14 +22,15 @@ def create_parser(store):
 
 class RDFXMLParser(Parser):
 
-    def __init__(self, store):
-        self.store = store
-        self._parser = create_parser(store)
+    def __init__(self):
+	pass
     
-    def parse(self, source):
+    def parse(self, source, sink):
+        self._parser = create_parser(sink)
         content_handler = self._parser.getContentHandler()
-        content_handler.reset()
-        self._parser.reset()
+	# We're only using it once now
+        #content_handler.reset()
+        #self._parser.reset()
         self._parser.parse(source)
 
 

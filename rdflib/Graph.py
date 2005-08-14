@@ -294,7 +294,17 @@ class Graph(object):
 
     def parse(self, source, publicID=None, format="xml"):
         """ Parse source into Graph. If Graph is context-aware it'll get loaded into it's own context (sub graph). Format defaults to xml (AKA rdf/xml). The publicID argument is for specifying the logical URI for the case that it's different from the physical source URI. Returns the context into which the source was parsed."""
-        parser = plugin.get(format, Parser)(self)
+        parser = plugin.get(format, Parser)()
+	source = parser.prepare_input_source(source, publicID)
+        if self.context_aware:
+            id = self.context_id(URIRef(source.getPublicId()))
+            self.remove_context(id)
+            context = self.get_context(id)
+        else:
+            context = self
+	parser.parse(context, source)
+        return context
+
         return parser.parse(source, publicID, format) 
 
     def serialize(self, destination=None, format="xml", base=None):

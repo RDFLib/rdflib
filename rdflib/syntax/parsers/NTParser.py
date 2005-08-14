@@ -51,11 +51,10 @@ def lang_string(v):
 
 class NTParser(Parser):
     
-    def __init__(self, store):
-        super(NTParser, self).__init__(store)
-        self.store = store
+    def __init__(self):
+        super(NTParser, self).__init__()
 
-    def parse(self, source, baseURI=None):
+    def parse(self, source, sink, baseURI=None):
         if isinstance(source, URLInputSource):
             location = str(source)
             baseURI = baseURI or location
@@ -95,7 +94,7 @@ class NTParser(Parser):
                     o = node_id(o)
                 else:
                     o = literal(o)
-                self.store.add((s, p, o))
+                sink.add((s, p, o))
             
         file.close()
 

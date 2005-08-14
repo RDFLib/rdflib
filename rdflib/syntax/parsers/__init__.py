@@ -2,10 +2,10 @@
 
 class Parser(object):
 
-    def __init__(self, store):
-        self.store = store
+    def __init__(self):
+	pass
         
-    def parse(self, source):
+    def parse(self, source, sink):
         pass
 
 
