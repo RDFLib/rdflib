@@ -7,6 +7,9 @@ import sys
 assert sys.version_info >= (2,2,1), "rdflib requires python 2.2.1 or higher"
 del sys
 
+import logging
+
+logging.basicConfig(level=logging.DEBUG, format='rdflib-%(levelname)s: %(message)s')
 
 from rdflib.URIRef import URIRef
 from rdflib.BNode import BNode
@@ -16,4 +19,10 @@ from rdflib.Namespace import Namespace
 
 from rdflib.Graph import Graph
 
-from FileInputSource import FileInputSource
+from rdflib.RDF import RDF
+from rdflib.RDFS import RDFS
+
+from rdflib.FileInputSource import FileInputSource
+from rdflib.URLInputSource import URLInputSource
+from rdflib.StringInputSource import StringInputSource
+
