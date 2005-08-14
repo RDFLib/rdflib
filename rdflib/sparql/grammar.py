@@ -3,104 +3,114 @@ from rdflib.lib.pyparsing import Literal, CaselessLiteral, Word, Upcase, delimit
     Combine, Group, alphas, nums, alphanums, ParseException, Forward, oneOf, \
     ZeroOrMore, restOfLine, Keyword, srange, OneOrMore, sglQuotedString, dblQuotedString, quotedString
 
-ppLiteral = Literal
+ppLiteral = Literal # name gets assigned by grammar
+
+
+def punctuation(lit):
+    return ppLiteral(lit)
+
+def keyword(lit):
+    return Keyword(lit, caseless=True)
+
+def production(lit):
+    return Forward().setResultsName(lit)
 
 class SPARQLGrammar(object):
 
     # punctuation
 
-    dot = ppLiteral(".")
-    zero = ppLiteral("0")
-    at = ppLiteral("@")
-    dash = ppLiteral("-")
-    qmark = ppLiteral("?")
-    colon = ppLiteral(":")
-    lt = ppLiteral("<")
-    gt = ppLiteral(">")
-    typ = ppLiteral("^^")
-    amp = ppLiteral("&")
-    lparen = ppLiteral("(")
-    rparen = ppLiteral(")")
-    tilde = ppLiteral("~")
-    bang = ppLiteral("!")
-    star = ppLiteral("*")
-    slash = ppLiteral("/")
-    mod = ppLiteral("%")
-    plus = ppLiteral("+")
-    minus = ppLiteral("-")
-    lte = ppLiteral("<=")
-    gte = ppLiteral(">=")
-    eqeq = ppLiteral("==")
-    noteq = ppLiteral("!=")
-    lbrack = ppLiteral("[")
-    rbrack = ppLiteral("]")
-    leq = ppLiteral('eq')
-    lne = ppLiteral('ne')
-    eqpat = ppLiteral('=~')
-    nepat = ppLiteral('!~')
+    dot = punctuation(".")
+    zero = punctuation("0")
+    at = punctuation("@")
+    dash = punctuation("-")
+    qmark = punctuation("?")
+    colon = punctuation(":")
+    lt = punctuation("<")
+    gt = punctuation(">")
+    typ = punctuation("^^")
+    amp = punctuation("&")
+    lparen = punctuation("(")
+    rparen = punctuation(")")
+    tilde = punctuation("~")
+    bang = punctuation("!")
+    star = punctuation("*")
+    slash = punctuation("/")
+    mod = punctuation("%")
+    plus = punctuation("+")
+    minus = punctuation("-")
+    lte = punctuation("<=")
+    gte = punctuation(">=")
+    eqeq = punctuation("==")
+    noteq = punctuation("!=")
+    lbrack = punctuation("[")
+    rbrack = punctuation("]")
+    leq = punctuation('eq')
+    lne = punctuation('ne')
+    eqpat = punctuation('=~')
+    nepat = punctuation('!~')
 
-    # keyword
+    # keywords
 
-    select = Keyword('select')
-    distinct = Keyword('distinct')
-    construct = Keyword('construct')
-    describe = Keyword('describe')
-    ask = Keyword('ask')
-    ffrom = Keyword('from')
-    where = Keyword('where')
-    source = Keyword('source')
-    optional = Keyword('optional')
-    aand = Keyword('and')
-    prefix = Keyword('prefix')
+    select = keyword('select')
+    distinct = keyword('distinct')
+    construct = keyword('construct')
+    describe = keyword('describe')
+    ask = keyword('ask')
+    ffrom = keyword('from')
+    where = keyword('where')
+    source = keyword('source')
+    optional = keyword('optional')
+    aand = keyword('and')
+    prefix = keyword('prefix')
 
     # productions
 
-    Query = Forward()
-    ReportFormat = Forward()
-    FromClause = Forward()
-    FromSelector = Forward()
-    WhereClause = Forward()
-    SourceGraphPattern = Forward()
-    OptionalGraphPattern = Forward()
-    GraphPattern = Forward()
-    PatternElement = Forward()
-    GraphPattern1 = Forward()
-    PatternElement1 = Forward()
-    PatternElementForms = Forward()
-    SingleTriplePatternOrGroup = Forward()
-    ExplicitGroup = Forward()
-    TriplePatternList = Forward()
-    TriplePattern = Forward()
-    VarOrURI = Forward()
-    VarOrLiteral = Forward()
-    PrefixDecl = Forward()
-    Expression = Forward()
-    ConditionalOrExpression = Forward()
-    ConditionalAndExpression = Forward()
-    ValueLogical = Forward()
-    StringEqualityExpression = Forward()
-    StringComparitor = Forward()
-    EqualityExpression = Forward()
-    RelationalComparitor = Forward()
-    RelationalExpression = Forward()
-    NumericComparitor = Forward()
-    AdditiveExpression = Forward()
-    AdditiveOperation = Forward()
-    MultiplicativeExpression = Forward()
-    MultiplicativeOperation = Forward()
-    UnaryExpression = Forward()
-    UnaryExpressionNotPlusMinus = Forward()
-    PrimaryExpression = Forward()
-    FunctionCall = Forward()
-    ArgList = Forward()
-    Literal = Forward()
-    NumericLiteral = Forward()
-    TextLiteral = Forward()
-    String = Forward()
-    URI = Forward()
-    QName = Forward()
-    QuotedURI = Forward()
-    CommaOpt = Forward() # unused
+    Query = production('Query')
+    ReportFormat = production('ReportFormat')
+    FromClause = production('FromClause')
+    FromSelector = production('FromSelector')
+    WhereClause = production('WhereClause')
+    SourceGraphPattern = production('SourceGraphPattern')
+    OptionalGraphPattern = production('OptionalGraphPattern')
+    GraphPattern = production('GraphPattern')
+    PatternElement = production('PatternElement')
+    GraphPattern1 = production('GraphPattern1')
+    PatternElement1 = production('PatternElement1')
+    PatternElementForms = production('PatternElementForms')
+    SingleTriplePatternOrGroup = production('SingleTriplePatternOrGroup')
+    ExplicitGroup = production('ExplicitGroup')
+    TriplePatternList = production('TriplePatternList')
+    TriplePattern = production('TriplePattern')
+    VarOrURI = production('VarOrURI')
+    VarOrLiteral = production('VarOrLiteral')
+    PrefixDecl = production('PrefixDecl')
+    Expression = production('Expression')
+    ConditionalOrExpression = production('ConditionalOrExpression')
+    ConditionalAndExpression = production('ConditionalAndExpression')
+    ValueLogical = production('ValueLogical')
+    StringEqualityExpression = production('StringEqualityExpression')
+    StringComparitor = production('StringComparitor')
+    EqualityExpression = production('EqualityExpression')
+    RelationalComparitor = production('RelationalComparitor')
+    RelationalExpression = production('RelationalExpression')
+    NumericComparitor = production('NumericComparitor')
+    AdditiveExpression = production('AdditiveExpression')
+    AdditiveOperation = production('AdditiveOperation')
+    MultiplicativeExpression = production('MultiplicativeExpression')
+    MultiplicativeOperation = production('MultiplicativeOperation')
+    UnaryExpression = production('UnaryExpression')
+    UnaryExpressionNotPlusMinus = production('UnaryExpressionNotPlusMinus')
+    PrimaryExpression = production('PrimaryExpression')
+    FunctionCall = production('FunctionCall')
+    ArgList = production('ArgList')
+    Literal = production('Literal')
+    NumericLiteral = production('NumericLiteral')
+    TextLiteral = production('TextLiteral')
+    String = production('String')
+    URI = production('URI')
+    QName = production('QName')
+    QuotedURI = production('QuotedURI')
+    CommaOpt = production('CommaOpt') # unused
 
     # terminals
 
@@ -133,7 +143,7 @@ class SPARQLGrammar(object):
     # | 'describe' '*'
     # | 'ask'
 
-    ReportFormat << (select + Optional(distinct) + delimitedList(_VAR_) |
+    ReportFormat << (select + Optional(distinct) + Group(delimitedList(_VAR_)) |
                      select + Optional(distinct) + star |
                      construct + TriplePatternList |
                      construct + star |
@@ -147,7 +157,8 @@ class SPARQLGrammar(object):
     
     # [4]  FromSelector  ::=  URI
 
-    FromSelector << _URI_    
+    FromSelector << URI
+    
     # [5]  WhereClause  ::=  'where' GraphPattern
 
     WhereClause << where + GraphPattern
@@ -161,7 +172,6 @@ class SPARQLGrammar(object):
     # | '[' GraphPattern ']'
 
     OptionalGraphPattern << optional + GraphPattern1 | lbrack + GraphPattern + rbrack
-
 
     # [8]  GraphPattern  ::=  PatternElement PatternElement*
 
@@ -207,7 +217,7 @@ class SPARQLGrammar(object):
 
     # [17]  VarOrURI  ::=  <VAR> | URI
 
-    VarOrURI << (_VAR_ | _URI_)
+    VarOrURI << (_VAR_ | URI)
 
     # [18]  VarOrLiteral  ::=  <VAR> | Literal
 
@@ -342,7 +352,7 @@ class SPARQLGrammar(object):
 
     # [47]   <URI>    ::=   "<" <NCCHAR1> (~[">"," "])* ">"
 
-    _URI_ << lt + _NCCHAR1_ + gt # wrong
+    _URI_ << lt.suppress() + Word(alphanums+"_-./&?:@~=#") + gt.suppress() # wrong
 
     # [48]  <QNAME>  ::=  (<NCNAME>)? ":" <NCNAME>
 
@@ -350,7 +360,8 @@ class SPARQLGrammar(object):
 
     # [49]  <VAR>  ::=  "?" <NCNAME>
 
-    _VAR_ << qmark + _NCNAME_
+    #    _VAR_ << qmark + _NCNAME_
+    _VAR_ = Word("?", alphanums+'_.-', min=2)
 
     # [50]  <LANG>  ::=  '@' <A2Z><A2Z> ("-" <A2Z><A2Z>)?
 
@@ -413,8 +424,29 @@ class SPARQLGrammar(object):
     # | ["\u3001"-"\uD7FF"]
     # | ["\uF900"-"\uFFFF"]
 
-    _NCCHAR1_ << Word(alphas+"_") # wrong
-
+    #    _NCCHAR1_ = srange('[A-Z]') + "_" + srange([a-z])
+ 
     # [62]  <NCNAME>  ::=  <NCCHAR1> (<NCCHAR1> | "." | "-" | ["0"-"9"] | "\u00B7" )*
 
-    _NCNAME_ << _NCCHAR1_ + ZeroOrMore(_NCCHAR1_ | dot | dash | nums) # wrong
+    #    _NCNAME_ << _NCCHAR1_ + Word(_NCCHAR1_, _NCCHAR1_ + dot + dash + nums + u"\u00B7") # wrong
+
+    _NCNAME_ = Word(alphas+'_', alphanums+'_.-')
+
+if __name__ == '__main__':
+
+    ts = ["SELECT *",
+          "SELECT DISTINCT *",
+          "SELECT ?title",
+          "SELECT ?title, ?name",          
+          "SELECT * FROM <a> WHERE  ( <book1> <title> ?title )",
+          ]
+
+    for t in ts:
+
+        try:
+            tokens = SPARQLGrammar.Query.parseString(t)
+            print "tokens = ",        tokens
+        except ParseException, err:
+            print t
+            print " "*err.loc + "^" + err.msg
+            print err
