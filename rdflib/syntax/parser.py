@@ -22,7 +22,7 @@ class Parser(object):
         
     store = property(_get_store, _set_store)
 
-    def prepare_input_source(self, source, publicID=None):
+    def __prepare_input_source(self, source, publicID=None):
         if isinstance(source, InputSource):
             input_source = source
         else:
@@ -41,7 +41,14 @@ class Parser(object):
 	return input_source
 
     def parse(self, source, publicID=None, format="xml"):
-	input_source = self.prepare_input_source(source, publicID)
-        return self.parser.parse(input_source)
+	source = self.__prepare_input_source(source, publicID)
+        if self.store.context_aware:
+            id = self.store.context_id(URIRef(source.getPublicId()))
+            self.store.remove_context(id)
+            context = self.store.get_context(id)
+        else:
+            context = self.store
+	self.parser.parse(source)
+        return context
 
 
