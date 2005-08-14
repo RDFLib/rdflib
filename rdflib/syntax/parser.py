@@ -6,6 +6,7 @@ from rdflib.URIRef import URIRef
 from xml.sax.xmlreader import InputSource
 from xml.sax.saxutils import prepare_input_source 
 
+import logging
 
 class Parser(object):
 
@@ -20,7 +21,7 @@ class Parser(object):
         
     store = property(_get_store, _set_store)
 
-    def parse(self, source, publicID=None, format="xml"):
+    def prepare_input_source(self, source, publicID=None):
         if isinstance(source, InputSource):
             input_source = source
         else:
@@ -28,10 +29,19 @@ class Parser(object):
             if hasattr(source, "read"):
                 input_source = prepare_input_source(source)
             else:
-                input_source = URLInputSource(self.store.absolutize(source))
+		location = self.store.absolutize(source)
+                input_source = URLInputSource(location)
+		publicID = publicID or location
         if publicID:
             input_source.setPublicId(publicID)
+	id = input_source.getPublicId()
+	if id is None:
+	    logging.info("no publicID set for source. Using '' for publicID.")
+	    input_source.setPublicId("")
+	return input_source
 
+    def parse(self, source, publicID=None, format="xml"):
+	input_source = self.prepare_input_source(source, publicID)
         return self.parser.parse(input_source)
 
 
