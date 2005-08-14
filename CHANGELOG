@@ -7,11 +7,11 @@
 
         Added a FileInputSource.
 
-	Added skeleton sparql parser and test framework
+        Added skeleton sparql parser and test framework.
 
-	Included pyparsing (pyparsing.sourceforge.net) for sparql parsing
+        Included pyparsing (pyparsing.sourceforge.net) for sparql parsing.
 
-	Added attribute support to namespaces
+        Added attribute support to namespaces.
 
 
 2005/06/28
