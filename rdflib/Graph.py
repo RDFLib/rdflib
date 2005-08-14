@@ -303,7 +303,7 @@ class Graph(object):
         else:
             context = self
 	parser.store = context
-        parser.parse(source=source, publicID=publicID, format=format) 
+        parser.parse(source, publicID, format) 
 	return context
 
     def serialize(self, destination=None, format="xml", base=None):
