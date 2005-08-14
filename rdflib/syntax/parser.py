@@ -3,6 +3,7 @@ from rdflib.URLInputSource import URLInputSource
 import rdflib.syntax.parsers
 
 from rdflib.URIRef import URIRef
+from rdflib.Namespace import Namespace
 from xml.sax.xmlreader import InputSource
 from xml.sax.saxutils import prepare_input_source 
 
