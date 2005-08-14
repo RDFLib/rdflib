@@ -1,6 +1,6 @@
 from rdflib.backends import Backend
 from rdflib.syntax import serializer, serializers
-from rdflib.syntax import parser, parsers
+from rdflib.syntax import parsers
 
 _kinds = {}
 _adaptors = {}
@@ -29,7 +29,7 @@ def register_adaptor(adaptor, adaptee):
 
 
 register_adaptor(serializer.Serializer, serializers.Serializer)
-register_adaptor(parser.Parser, parsers.Parser)
+#register_adaptor(parser.Parser, parsers.Parser)
 
 
 register('xml', serializers.Serializer,
