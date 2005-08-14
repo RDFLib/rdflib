@@ -3,6 +3,12 @@
 
         Added optional base argument to URIRef.
 
+        Fixed bug where load and parse had inconsistent behavior.
+
+        Added a FileInputSource.
+
+        ....
+
 
 2005/06/28
         RELEASE 2.1.3
