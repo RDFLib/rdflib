@@ -156,10 +156,14 @@ class Graph(object):
 
     def label(self, subject, default=''):
         """ Queries for the RDFS.label of the subject, returns default if no label exists. """
+	if subject is None:
+	    return default
         return self.value(subject, RDFS.label, default=default, any=True)
 
     def comment(self, subject, default=''):
         """ Queries for the RDFS.comment of the subject, returns default if no comment exists. """
+	if subject is None:
+	    return default
         return self.value(subject, RDFS.comment, default=default, any=True)
 
     def items(self, list):
@@ -277,25 +281,33 @@ class Graph(object):
                     yield s
 
     def load(self, location, publicID=None, format="xml"):
-        """ for b/w compat. """
-        parser = plugin.get(format, Parser)(self)
-        return parser.load(location, publicID, format)
+        """ for b/w compat. See parse."""
+	return self.parse(location, publicID, format)
 
     def save(self, location, format="xml", base=None):
-        """ Save Graph to location using format. Format defaults to xml (AKA rdf/xml)."""
-        serializer = plugin.get(format, Serializer)(self)
-        #serializer.store = self
-        return serializer.serialize(destination=location, base=base)
+        """ for b/x compat. See serialize."""
+	return self.serialize(location, format, base)
         
+    def context_id(self, uri):
+        uri = uri.split("#", 1)[0]
+        return URIRef("%s#context" % uri)
+
     def parse(self, source, publicID=None, format="xml"):
-        """ Parse source into Graph. If Graph is context-aware it'll get loaded into it's own context (sub graph). Format defaults to xml (AKA rdf/xml). The publicID argument is for specifying the logical URI for the case that it's different from the physical source URI."""
-        parser = plugin.get(format, Parser)(self)        
-        return parser.parse(source=source, publicID=publicID, format=format) 
+        """ Parse source into Graph. If Graph is context-aware it'll get loaded into it's own context (sub graph). Format defaults to xml (AKA rdf/xml). The publicID argument is for specifying the logical URI for the case that it's different from the physical source URI. Returns the context into which the source was parsed."""
+        if self.context_aware:
+            location = self.absolutize(location)
+            id = self.context_id(publicID or location)
+            self.remove_context(id)
+            context = self.get_context(id)
+        else:
+            context = self
+        parser = plugin.get(format, Parser)(context)        
+        parser.parse(source=source, publicID=publicID, format=format) 
+	return context
 
     def serialize(self, destination=None, format="xml", base=None):
         """ Serialize the Graph to destination. If destination is None serialize method returns the serialization as a string. Format defaults to xml (AKA rdf/xml)."""
         serializer = plugin.get(format, Serializer)(self)
-        serializer.store = self
         return serializer.serialize(destination, base=base)
 
     def seq(self, subject) :

@@ -35,23 +35,3 @@ class Parser(object):
         return self.parser.parse(input_source)
 
 
-    def _context_id(self, uri):
-        uri = uri.split("#", 1)[0]
-        return URIRef("%s#context" % uri)
-
-    def load(self, location, publicID=None, format="xml"):
-        """ Load a URL into the graph using either the publicID or the
-        location (if publicID is not provided )as the context of the
-        new graph.  Removes any information in the old context,
-        returns the new context."""
-        if self.store.context_aware:
-            location = self.store.absolutize(location)
-            id = self._context_id(publicID or location)
-            self.store.remove_context(id)
-            context = self.store.get_context(id)
-            # context.add((id, RDF.type, CONTEXT))
-            # context.add((id, SOURCE, location))
-        else:
-            context = self.store
-        context.parse(source=location, publicID=publicID, format=format)
-        return context
