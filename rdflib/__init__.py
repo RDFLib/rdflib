@@ -19,8 +19,8 @@ from rdflib.Namespace import Namespace
 
 from rdflib.Graph import Graph
 
-from rdflib.RDF import RDF
-from rdflib.RDFS import RDFS
+from rdflib import RDF
+from rdflib import RDFS
 
 from rdflib.FileInputSource import FileInputSource
 from rdflib.URLInputSource import URLInputSource
