@@ -25,8 +25,7 @@ class Parser(object):
         if isinstance(source, InputSource):
             input_source = source
         else:
-            # TODO: way to detect source of string vs. location?            
-            if hasattr(source, "read"):
+            if hasattr(source, "read") and not isinstance(source, Namespace): # we need to make sure it's not an instance of Namespace since Namespace instances have a read attr
                 input_source = prepare_input_source(source)
             else:
 		location = self.store.absolutize(source)
