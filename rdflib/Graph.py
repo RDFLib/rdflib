@@ -292,16 +292,35 @@ class Graph(object):
         uri = uri.split("#", 1)[0]
         return URIRef("%s#context" % uri)
 
+    def __prepare_input_source(self, source, publicID=None):
+        if isinstance(source, InputSource):
+            input_source = source
+        else:
+            if hasattr(source, "read") and not isinstance(source, Namespace): # we need to make sure it's not an instance of Namespace since Namespace instances have a read attr
+                input_source = prepare_input_source(source)
+            else:
+		location = self.absolutize(source)
+                input_source = URLInputSource(location)
+		publicID = publicID or location
+        if publicID:
+            input_source.setPublicId(publicID)
+	id = input_source.getPublicId()
+	if id is None:
+	    logging.info("no publicID set for source. Using '' for publicID.")
+	    input_source.setPublicId("")
+	return input_source
+
+
     def parse(self, source, publicID=None, format="xml"):
         """ Parse source into Graph. If Graph is context-aware it'll get loaded into it's own context (sub graph). Format defaults to xml (AKA rdf/xml). The publicID argument is for specifying the logical URI for the case that it's different from the physical source URI. Returns the context into which the source was parsed."""
-        parser = plugin.get(format, Parser)()
-	source = parser.prepare_input_source(source, publicID)
+	source = self.__prepare_input_source(source, publicID)
         if self.context_aware:
             id = self.context_id(URIRef(source.getPublicId()))
             self.remove_context(id)
             context = self.get_context(id)
         else:
             context = self
+        parser = plugin.get(format, Parser)()
 	parser.parse(context, source)
         return context
 
