@@ -1,6 +1,6 @@
 from __future__ import generators
 
-from rdflib import URIRef, BNode, Literal, RDF, RDFS
+from rdflib import URIRef, BNode, Literal, Namespace, RDF, RDFS
 
 from rdflib.util import check_statement, check_pattern, check_context
 from rdflib.util import check_subject, check_predicate, check_object
@@ -9,9 +9,15 @@ from rdflib import plugin, exceptions
 
 from rdflib.backends import Backend
 from rdflib.syntax.serializer import Serializer
-from rdflib.syntax.parser import Parser
+from rdflib.syntax.parsers import Parser
 
 from rdflib.syntax.NamespaceManager import NamespaceManager
+
+from rdflib.URLInputSource import URLInputSource
+from xml.sax.xmlreader import InputSource
+from xml.sax.saxutils import prepare_input_source 
+
+import logging
 
 
 class Graph(object):
@@ -292,7 +298,7 @@ class Graph(object):
         uri = uri.split("#", 1)[0]
         return URIRef("%s#context" % uri)
 
-    def __prepare_input_source(self, source, publicID=None):
+    def prepare_input_source(self, source, publicID=None):
         if isinstance(source, InputSource):
             input_source = source
         else:
@@ -310,10 +316,9 @@ class Graph(object):
 	    input_source.setPublicId("")
 	return input_source
 
-
     def parse(self, source, publicID=None, format="xml"):
         """ Parse source into Graph. If Graph is context-aware it'll get loaded into it's own context (sub graph). Format defaults to xml (AKA rdf/xml). The publicID argument is for specifying the logical URI for the case that it's different from the physical source URI. Returns the context into which the source was parsed."""
-	source = self.__prepare_input_source(source, publicID)
+	source = self.prepare_input_source(source, publicID)
         if self.context_aware:
             id = self.context_id(URIRef(source.getPublicId()))
             self.remove_context(id)
@@ -321,7 +326,7 @@ class Graph(object):
         else:
             context = self
         parser = plugin.get(format, Parser)()
-	parser.parse(context, source)
+	parser.parse(source, context)
         return context
 
         return parser.parse(source, publicID, format) 
