@@ -1,10 +1,9 @@
 
-from rdflib.lib.pyparsing import Literal, CaselessLiteral, Word, Upcase, delimitedList, Optional, \
+from rdflib.lib.pyparsing import CaselessLiteral, Word, Upcase, delimitedList, Optional, \
     Combine, Group, alphas, nums, alphanums, ParseException, Forward, oneOf, \
     ZeroOrMore, restOfLine, Keyword, srange, OneOrMore, sglQuotedString, dblQuotedString, quotedString
 
-ppLiteral = Literal # name gets assigned by grammar
-
+from rdflib.lib.pyparsing import Literal as ppLiteral
 
 def punctuation(lit):
     return ppLiteral(lit)
@@ -18,6 +17,17 @@ def production(lit):
 class SPARQLGrammar(object):
 
     # punctuation
+
+    # All punctioation, productions, and terminals are declared
+    # Forward().  This is primarily because the SPARQL spec defines
+    # the EBNF grammar in this way and I have stuck rigedly to the
+    # spec order.  Paul McGuire (author of pyparsing) has recommended
+    # that I reverse the grammar definitions for clarity and
+    # performance as Forward()s incur an inderection performance hit.
+    #
+    # For now I want to keep it this way because SPARQL is still in
+    # flux, but as the language stabilizes it will make sense to
+    # reverse this grammar into something more "pythonic".
 
     dot = punctuation(".")
     zero = punctuation("0")
@@ -143,7 +153,7 @@ class SPARQLGrammar(object):
     # | 'describe' '*'
     # | 'ask'
 
-    ReportFormat << (select + Optional(distinct) + Group(delimitedList(_VAR_)) |
+    ReportFormat << (select + Optional(distinct) + Group(OneOrMore(_VAR_)).setResultsName('vars') |
                      select + Optional(distinct) + star |
                      construct + TriplePatternList |
                      construct + star |
@@ -166,7 +176,7 @@ class SPARQLGrammar(object):
     # [6]  SourceGraphPattern  ::=  'source' '*' GraphPattern1
     # | 'source' VarOrURI GraphPattern1
 
-    SourceGraphPattern = source + star + GraphPattern1
+    SourceGraphPattern << source + star + GraphPattern1
 
     # [7]  OptionalGraphPattern  ::=  'optional' GraphPattern1
     # | '[' GraphPattern ']'
@@ -175,7 +185,7 @@ class SPARQLGrammar(object):
 
     # [8]  GraphPattern  ::=  PatternElement PatternElement*
 
-    GraphPattern << PatternElement + ZeroOrMore(PatternElement)
+    GraphPattern << OneOrMore(PatternElement)
 
     # [9]  PatternElement  ::=  TriplePatternList
     # | ExplicitGroup
@@ -205,15 +215,15 @@ class SPARQLGrammar(object):
 
     # [14]  ExplicitGroup  ::=  '(' GraphPattern ')'
 
-    ExplicitGroup << lparen + GraphPattern + rparen
+    ExplicitGroup << lparen.suppress() + GraphPattern + rparen.suppress()
 
     # [15]  TriplePatternList  ::=  TriplePattern TriplePattern*
 
-    TriplePatternList << TriplePattern + ZeroOrMore(TriplePattern)
+    TriplePatternList << OneOrMore(TriplePattern)
 
     # [16]  TriplePattern  ::=  '(' VarOrURI VarOrURI VarOrLiteral ')'
 
-    TriplePattern << lparen + VarOrURI + VarOrURI + VarOrLiteral + rparen
+    TriplePattern << lparen.suppress() + Group(VarOrURI + VarOrURI + VarOrLiteral) + rparen.suppress()
 
     # [17]  VarOrURI  ::=  <VAR> | URI
 
@@ -226,7 +236,7 @@ class SPARQLGrammar(object):
     # [19]  PrefixDecl  ::=  'prefix' <NCNAME> ':' QuotedURI
     # | 'prefix' ':' QuotedURI
 
-    PrefixDecl << prefix + _NCNAME_ + colon + QuotedURI
+    PrefixDecl << prefix + Group(_NCNAME_ + colon.suppress() + QuotedURI)
     
     # [20]  Expression  ::=  ConditionalOrExpression
 
@@ -332,7 +342,7 @@ class SPARQLGrammar(object):
 
     # [42]   String    ::=   <STRING_LITERAL1> | <STRING_LITERAL2>
 
-    String << _STRING_LITERAL1_ | _STRING_LITERAL2_
+    String << quotedString
     
     # [43]  URI  ::=  QuotedURI | QName
 
@@ -361,7 +371,7 @@ class SPARQLGrammar(object):
     # [49]  <VAR>  ::=  "?" <NCNAME>
 
     #    _VAR_ << qmark + _NCNAME_
-    _VAR_ = Word("?", alphanums+'_.-', min=2)
+    _VAR_ << Word("?", alphanums+'_.-', min=2)
 
     # [50]  <LANG>  ::=  '@' <A2Z><A2Z> ("-" <A2Z><A2Z>)?
 
@@ -383,7 +393,8 @@ class SPARQLGrammar(object):
 
     # [54]  <HEX_LITERAL>  ::=  "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+
 
-    _HEX_LITERAL_ << zero + oneOf("x X") + Word(nums + srange('[a-f]') + srange('[a-f]'))
+    _HEX_LITERAL_ << Combine( zero + oneOf("x X") + Word(srange('[0-9a-fA-F]')) )
+    # _HEX_LITERAL_ << zero + oneOf("x X") + Word(nums + srange('[a-f]') + srange('[a-f]'))
 
     # [55]  <FLOATING_POINT_LITERAL>  ::=  (["+","-"])? (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)?
     # | "." (["0"-"9"])+ (<EXPONENT>)?
@@ -399,11 +410,7 @@ class SPARQLGrammar(object):
 
     # [57]  <STRING_LITERAL1>  ::=  "'" ( (~["'","\\","\n","\r"]) | ("\\" ~["\n","\r"]) )* "'"
 
-    _STRING_LITERAL1_ << sglQuotedString
-
     # [58]  <STRING_LITERAL2>  ::=  "\"" ( (~["\"","\\","\n","\r"]) | ("\\" ~["\n","\r"]) )* "\""
-
-    _STRING_LITERAL2_ << dblQuotedString
 
     # [59]  <DIGITS>  ::=  (["0"-"9"])
 
@@ -430,22 +437,26 @@ class SPARQLGrammar(object):
 
     #    _NCNAME_ << _NCCHAR1_ + Word(_NCCHAR1_, _NCCHAR1_ + dot + dash + nums + u"\u00B7") # wrong
 
-    _NCNAME_ = Word(alphas+'_', alphanums+'_.-')
+    _NCNAME_ << Word(alphas+'_', alphanums+'_.-')
 
 if __name__ == '__main__':
 
     ts = ["SELECT *",
-          "SELECT DISTINCT *",
+          "select DISTINCT *",
           "SELECT ?title",
-          "SELECT ?title, ?name",          
+          "SELECT ?title ?name",
+          "SELECT distinct ?title ?name",          
           "SELECT * FROM <a> WHERE  ( <book1> <title> ?title )",
+          "prefix dc: <http://purl.org/dc/1.1/> SELECT * from <a> WHERE  ( <book1> <title> ?title )",
+          "PREFIX bob: <http://is.your.uncle/> prefix dc: <http://purl.org/dc/1.1/> select * FROM <a> where  ( <dc:book1> <title> ?title )",
           ]
 
     for t in ts:
 
         try:
             tokens = SPARQLGrammar.Query.parseString(t)
-            print "tokens = ",        tokens
+            print tokens
+            print tokens.asXML()
         except ParseException, err:
             print t
             print " "*err.loc + "^" + err.msg
