@@ -1,7 +1,8 @@
 
 from rdflib.lib.pyparsing import CaselessLiteral, Word, Upcase, delimitedList, Optional, \
     Combine, Group, alphas, nums, alphanums, ParseException, Forward, oneOf, \
-    ZeroOrMore, restOfLine, Keyword, srange, OneOrMore, sglQuotedString, dblQuotedString, quotedString
+    ZeroOrMore, restOfLine, Keyword, srange, OneOrMore, sglQuotedString, dblQuotedString, quotedString, \
+    TokenConverter, Empty, Suppress, NoMatch
 
 from rdflib.lib.pyparsing import Literal as ppLiteral
 
@@ -9,21 +10,19 @@ def punctuation(lit):
     return ppLiteral(lit)
 
 def keyword(lit):
-    return Keyword(lit, caseless=True)
+    return Keyword(lit, caseless=True).setResultsName(lit).setName(lit)
 
 def production(lit):
-    return Forward().setResultsName(lit)
+    return Forward().setResultsName(lit).setName(lit)
 
 class SPARQLGrammar(object):
 
-    # punctuation
-
-    # All punctioation, productions, and terminals are declared
-    # Forward().  This is primarily because the SPARQL spec defines
-    # the EBNF grammar in this way and I have stuck rigedly to the
-    # spec order.  Paul McGuire (author of pyparsing) has recommended
-    # that I reverse the grammar definitions for clarity and
-    # performance as Forward()s incur an inderection performance hit.
+    # All productions are declared Forward().  This is primarily
+    # because the SPARQL spec defines the EBNF grammar in this way and
+    # I have stuck rigedly to the spec order.  Paul McGuire (author of
+    # pyparsing) has recommended that I reverse the grammar
+    # definitions for clarity and performance as Forward()s incur an
+    # inderection performance hit.
     #
     # For now I want to keep it this way because SPARQL is still in
     # flux, but as the language stabilizes it will make sense to
@@ -72,6 +71,7 @@ class SPARQLGrammar(object):
     optional = keyword('optional')
     aand = keyword('and')
     prefix = keyword('prefix')
+    limit = keyword('limit')
 
     # productions
 
@@ -80,6 +80,7 @@ class SPARQLGrammar(object):
     FromClause = production('FromClause')
     FromSelector = production('FromSelector')
     WhereClause = production('WhereClause')
+    LimitClause = production('LimitClause')    
     SourceGraphPattern = production('SourceGraphPattern')
     OptionalGraphPattern = production('OptionalGraphPattern')
     GraphPattern = production('GraphPattern')
@@ -116,36 +117,41 @@ class SPARQLGrammar(object):
     Literal = production('Literal')
     NumericLiteral = production('NumericLiteral')
     TextLiteral = production('TextLiteral')
-    String = production('String')
     URI = production('URI')
-    QName = production('QName')
-    QuotedURI = production('QuotedURI')
     CommaOpt = production('CommaOpt') # unused
 
-    # terminals
+    # terminals EBNF definitions are at end of spec
 
-    _URI_ = Forward()
-    _QNAME_ = Forward() 
-    _VAR_ = Forward() 
-    _LANG_ = Forward()
-    _A2Z_ = Forward() 
-    _INTEGER_LITERAL_ = Forward() 
-    _DECIMAL_LITERAL_ = Forward() 
-    _HEX_LITERAL_ = Forward() 
-    _FLOATING_POINT_LITERAL_ = Forward() 
-    _EXPONENT_ = Forward() 
-    _STRING_LITERAL1_ = Forward() 
-    _STRING_LITERAL2_ = Forward() 
-    _DIGITS_ = Forward() 
-    _NCCHAR1_ = Forward()
-    _NCNAME_ = Forward() 
+    QuotedURI = (lt.suppress() + Word(alphanums+"_-./&?:@~=#") + gt.suppress()).setResultsName('QuotedURI')
+    
+    _NCNAME_ = Word(alphas+'_', alphanums+'_.-')
+    _DIGITS_ = Word(nums)
+    _VAR_ = Word("?", alphanums+'_.-', min=2).setResultsName('Var')
+
+    QName = Combine(Optional(_NCNAME_ + colon) + _NCNAME_).setResultsName('QName')
+    String = quotedString.setResultsName('String')
+
+    _EXPONENT_ = oneOf("e E") + Optional(oneOf("+ -")) + Word(nums)
+    _DECIMAL_LITERAL_ = _DIGITS_
+    _HEX_LITERAL_ = Combine( zero + oneOf("x X") + Word(srange('[0-9a-fA-F]')) ).setResultsName('HexLiteral')
+    _INTEGER_LITERAL_ = (Optional(oneOf("+ -")) + _DECIMAL_LITERAL_ + Optional(oneOf("l L")) ^
+                          _HEX_LITERAL_ + Optional(oneOf("l L"))).setResultsName('IntegerLiteral')
+    _FLOATING_POINT_LITERAL_ = Combine(Optional(oneOf("+ -")) + 
+                                       Word(nums) + dot + Word(nums) +
+                                       Optional(_EXPONENT_) |
+                                       dot | OneOrMore(nums) +
+                                       Optional(_EXPONENT_) |
+                                       OneOrMore(nums) + _EXPONENT_).setResultsName('FloatingPointLiteral')
+    _A2Z_ = Word(alphas)
+    _LANG_ = Combine(at.suppress() + _A2Z_ + Optional(dash + _A2Z_)).setResultsName('Lang')
+
 
     # [1]   Query    ::=   PrefixDecl* ReportFormat  PrefixDecl* FromClause? WhereClause?
 
     Query << (ZeroOrMore(PrefixDecl) + ReportFormat + ZeroOrMore(PrefixDecl) +
-              Optional(FromClause) + Optional(WhereClause))
+              Optional(FromClause) + Optional(WhereClause) + Optional(LimitClause))
     
-    # [2]  ReportFormat  ::=  'select' 'distinct'? <VAR> ( CommaOpt <VAR> )*
+    # [2]  ReportFormat  ::=  'select' 'distinct'? <VAR> ( CommaGroup(Opt <VAR> )*
     # | 'select' 'distinct'? '*'
     # | 'construct' TriplePatternList
     # | 'construct' '*'
@@ -153,12 +159,12 @@ class SPARQLGrammar(object):
     # | 'describe' '*'
     # | 'ask'
 
-    ReportFormat << (select + Optional(distinct) + Group(OneOrMore(_VAR_)).setResultsName('vars') |
-                     select + Optional(distinct) + star |
-                     construct + TriplePatternList |
-                     construct + star |
-                     describe + delimitedList(VarOrURI) |
-                     describe + star |
+    ReportFormat << (Group(select + Optional(distinct) + Group(OneOrMore(_VAR_))) |
+                     Group(select + Optional(distinct) + star) |
+                     Group(construct + TriplePatternList) |
+                     Group(construct + star) |
+                     Group(describe + delimitedList(VarOrURI)) |
+                     Group(describe + star) |
                      ask)
     
     # [3]  FromClause  ::=  'from' FromSelector ( CommaOpt FromSelector )*
@@ -172,16 +178,20 @@ class SPARQLGrammar(object):
     # [5]  WhereClause  ::=  'where' GraphPattern
 
     WhereClause << where + GraphPattern
+
+    # in spec prose but not in spec grammar, no number
+
+    LimitClause << Group(limit + _INTEGER_LITERAL_  )
     
     # [6]  SourceGraphPattern  ::=  'source' '*' GraphPattern1
     # | 'source' VarOrURI GraphPattern1
 
-    SourceGraphPattern << source + star + GraphPattern1
+    SourceGraphPattern << ((source + star + GraphPattern1) | (source + VarOrURI + GraphPattern1))
 
     # [7]  OptionalGraphPattern  ::=  'optional' GraphPattern1
     # | '[' GraphPattern ']'
 
-    OptionalGraphPattern << optional + GraphPattern1 | lbrack + GraphPattern + rbrack
+    OptionalGraphPattern << (optional + GraphPattern1 | lbrack.suppress() + GraphPattern + rbrack.suppress())
 
     # [8]  GraphPattern  ::=  PatternElement PatternElement*
 
@@ -191,7 +201,7 @@ class SPARQLGrammar(object):
     # | ExplicitGroup
     # | PatternElementForms
 
-    PatternElement << TriplePatternList | ExplicitGroup | PatternElementForms
+    PatternElement << (TriplePatternList | ExplicitGroup | PatternElementForms)
 
     # [10]  GraphPattern1  ::=  PatternElement1
 
@@ -200,18 +210,18 @@ class SPARQLGrammar(object):
     # [11]  PatternElement1  ::=  SingleTriplePatternOrGroup
     # | PatternElementForms
 
-    PatternElement1 << SingleTriplePatternOrGroup | PatternElementForms
+    PatternElement1 << (SingleTriplePatternOrGroup | PatternElementForms)
 
     # [12]  PatternElementForms  ::=  SourceGraphPattern
     # | OptionalGraphPattern
     # | 'and' Expression
 
-    PatternElementForms << SourceGraphPattern | OptionalGraphPattern | aand + Expression
+    PatternElementForms << (SourceGraphPattern | OptionalGraphPattern | aand + Expression)
 
     # [13]  SingleTriplePatternOrGroup  ::=  TriplePattern
     # | ExplicitGroup
 
-    SingleTriplePatternOrGroup << TriplePattern | ExplicitGroup
+    SingleTriplePatternOrGroup << (TriplePattern | ExplicitGroup)
 
     # [14]  ExplicitGroup  ::=  '(' GraphPattern ')'
 
@@ -272,7 +282,7 @@ class SPARQLGrammar(object):
     # [27]  RelationalComparitor  ::=  '==' RelationalExpression
     # | '!=' RelationalExpression
 
-    RelationalComparitor << (eqeq + RelationalExpression) | (noteq + RelationalExpression)
+    RelationalComparitor << ((eqeq + RelationalExpression) | (noteq + RelationalExpression))
 
     # [28]  RelationalExpression  ::=  AdditiveExpression NumericComparitor?
 
@@ -293,7 +303,7 @@ class SPARQLGrammar(object):
     # [31]  AdditiveOperation  ::=  '+' MultiplicativeExpression
     # | '-' MultiplicativeExpression
 
-    AdditiveOperation << (plus + MultiplicativeExpression) | (minus + MultiplicativeExpression)
+    AdditiveOperation << ((plus + MultiplicativeExpression) | (minus + MultiplicativeExpression))
 
     # [32]  MultiplicativeExpression  ::=  UnaryExpression MultiplicativeOperation*
 
@@ -316,105 +326,74 @@ class SPARQLGrammar(object):
 
     # [36]  PrimaryExpression ::= <VAR> | Literal | FunctionCall | '(' Expression ')'
 
-    PrimaryExpression << _VAR_ | Literal | FunctionCall | lparen + Expression + rparen
+    PrimaryExpression << (_VAR_ | Literal | FunctionCall | lparen.suppress() + Expression + rparen.suppress())
 
     # [37]  FunctionCall  ::=  '&' <QNAME> '(' ArgList? ')'
 
-    FunctionCall << amp + _QNAME_ + lparen + Optional(ArgList) + rparen
+    FunctionCall << amp.suppress() + QName + lparen.suppress() + Optional(Group(ArgList)) + rparen.suppress()
 
     # [38]  ArgList  ::=  VarOrLiteral ( ',' VarOrLiteral )*
 
-    ArgList << delimitedList(VarOrLiteral)
+    ArgList << (delimitedList(VarOrLiteral))
 
     # [39]  Literal  ::=  URI
     # | NumericLiteral
     # | TextLiteral
 
-    Literal << _URI_ | NumericLiteral | TextLiteral
+    Literal << (QuotedURI | NumericLiteral | TextLiteral)
 
     #[40] NumericLiteral  ::= <INTEGER_LITERAL> | <FLOATING_POINT_LITERAL>
 
-    NumericLiteral << _INTEGER_LITERAL_ + _FLOATING_POINT_LITERAL_
+    NumericLiteral << (_INTEGER_LITERAL_ | _FLOATING_POINT_LITERAL_)
 
     # [41]  TextLiteral    ::=   String  <LANG>? ( '^^' URI )?
 
-    TextLiteral << String + Optional(_LANG_) + Optional(typ + URI)
+    TextLiteral << String + Optional(_LANG_) + Optional(typ.suppress() + URI).setResultsName('Type')
 
     # [42]   String    ::=   <STRING_LITERAL1> | <STRING_LITERAL2>
 
-    String << quotedString
-    
     # [43]  URI  ::=  QuotedURI | QName
 
-    URI << QuotedURI | QName
+    URI << (QuotedURI | QName)
     
     # [44]  QName  ::=  <QNAME>
 
-    QName << _QNAME_
-    
     # [45]  QuotedURI  ::=  <URI>
 
-    QuotedURI << _URI_
-    
     # [46]  CommaOpt  ::=  ','?
-
-    # unused
 
     # [47]   <URI>    ::=   "<" <NCCHAR1> (~[">"," "])* ">"
 
-    _URI_ << lt.suppress() + Word(alphanums+"_-./&?:@~=#") + gt.suppress() # wrong
-
     # [48]  <QNAME>  ::=  (<NCNAME>)? ":" <NCNAME>
-
-    _QNAME_ << Optional(_NCNAME_ + colon) + _NCNAME_
 
     # [49]  <VAR>  ::=  "?" <NCNAME>
 
     #    _VAR_ << qmark + _NCNAME_
-    _VAR_ << Word("?", alphanums+'_.-', min=2)
 
     # [50]  <LANG>  ::=  '@' <A2Z><A2Z> ("-" <A2Z><A2Z>)?
 
-    _LANG_ << at + _A2Z_ + Optional(dash + _A2Z_)
-
     # [51]  <A2Z>  ::=  ["a"-"z","A"-"Z"]>
-
-    _A2Z_ << Word(alphas)
 
     # [52]  <INTEGER_LITERAL>  ::=  (["+","-"])? <DECIMAL_LITERAL> (["l","L"])?
     # | <HEX_LITERAL> (["l","L"])?
-
-    _INTEGER_LITERAL_ << (Optional(oneOf("+ -")) + _DECIMAL_LITERAL_ + Optional(oneOf("l L")) |
-                          _HEX_LITERAL_ + Optional(oneOf("l L")))
                           
     # [53]  <DECIMAL_LITERAL>  ::=  <DIGITS>
 
-    _DECIMAL_LITERAL_ << _DIGITS_
-
     # [54]  <HEX_LITERAL>  ::=  "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+
 
-    _HEX_LITERAL_ << Combine( zero + oneOf("x X") + Word(srange('[0-9a-fA-F]')) )
     # _HEX_LITERAL_ << zero + oneOf("x X") + Word(nums + srange('[a-f]') + srange('[a-f]'))
 
     # [55]  <FLOATING_POINT_LITERAL>  ::=  (["+","-"])? (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)?
     # | "." (["0"-"9"])+ (<EXPONENT>)?
     # | (["0"-"9"])+ <EXPONENT>
 
-    _FLOATING_POINT_LITERAL_ << (Optional(oneOf("+ -")) + Word(nums) + dot + Word(nums) + Optional(_EXPONENT_) |
-                                 dot | OneOrMore(nums) + Optional(_EXPONENT_) |
-                                 OneOrMore(nums) + _EXPONENT_)
-
     # [56]  <EXPONENT>  ::=  ["e","E"] (["+","-"])? (["0"-"9"])+
-
-    _EXPONENT_ << oneOf("e E") + Optional(oneOf("+ -")) + Word(nums)
 
     # [57]  <STRING_LITERAL1>  ::=  "'" ( (~["'","\\","\n","\r"]) | ("\\" ~["\n","\r"]) )* "'"
 
     # [58]  <STRING_LITERAL2>  ::=  "\"" ( (~["\"","\\","\n","\r"]) | ("\\" ~["\n","\r"]) )* "\""
 
     # [59]  <DIGITS>  ::=  (["0"-"9"])
-
-    _DIGITS_ << Word(nums)
 
     # [60]  <PATTERN_LITERAL>  ::=  [m]/pattern/[i][m][s][x]
 
@@ -437,7 +416,6 @@ class SPARQLGrammar(object):
 
     #    _NCNAME_ << _NCCHAR1_ + Word(_NCCHAR1_, _NCCHAR1_ + dot + dash + nums + u"\u00B7") # wrong
 
-    _NCNAME_ << Word(alphas+'_', alphanums+'_.-')
 
 if __name__ == '__main__':
 
@@ -448,13 +426,21 @@ if __name__ == '__main__':
           "SELECT distinct ?title ?name",          
           "SELECT * FROM <a> WHERE  ( <book1> <title> ?title )",
           "prefix dc: <http://purl.org/dc/1.1/> SELECT * from <a> WHERE  ( <book1> <title> ?title )",
-          "PREFIX bob: <http://is.your.uncle/> prefix dc: <http://purl.org/dc/1.1/> select * FROM <a> where  ( <dc:book1> <title> ?title )",
+          "PREFIX bob: <http://is.your.uncle/> prefix dc: <http://purl.org/dc/1.1/> select * FROM <a> where  ( bob:book1 dc:title ?title )",
+          'PREFIX foaf:   <http://xmlns.com/foaf/0.1/> SELECT ?mbox WHERE ( ?x foaf:name "Johnny Lee Outlaw" ) ( ?x foaf:mbox ?mbox )',
+          "PREFIX  dc:  <http://purl.org/dc/elements/1.1/> PREFIX  ns:  <http://example.org/ns#> SELECT  ?title ?price WHERE   ( ?x dc:title ?title ) ( ?x ns:price ?price ) AND ?price < 30",
+          'DESCRIBE ?x WHERE (?x ent:employeeId "1234")',
+          "PREFIX vcard:  <http://www.w3.org/2001/vcard-rdf/3.0#> CONSTRUCT * WHERE ( ?x vcard:FN ?name )",
+          "PREFIX foaf:    <http://xmlns.com/foaf/0.1/> SELECT ?name WHERE ( ?x foaf:name ?name ) LIMIT 20",
+          "PREFIX foaf:  <http://xmlns.com/foaf/0.1/> SELECT ?given ?family WHERE SOURCE ?ppd ( ?whom foaf:given ?family )",
+          "PREFIX foaf:  <http://xmlns.com/foaf/0.1/> SELECT ?given ?family WHERE SOURCE * ( ?whom foaf:given ?family )"
           ]
 
     for t in ts:
 
         try:
             tokens = SPARQLGrammar.Query.parseString(t)
+            print t
             print tokens
             print tokens.asXML()
         except ParseException, err:
