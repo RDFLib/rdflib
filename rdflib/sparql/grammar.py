@@ -4,7 +4,7 @@ from pyparsing import CaselessLiteral, Word, Upcase, delimitedList, Optional, \
      ZeroOrMore, restOfLine, Keyword, srange, OneOrMore, sglQuotedString, dblQuotedString, quotedString, \
      TokenConverter, Empty, Suppress, NoMatch
 
-from rdflib.lib.pyparsing import Literal as ppLiteral
+from pyparsing import Literal as ppLiteral
 
 def punctuation(lit):
     return ppLiteral(lit)
