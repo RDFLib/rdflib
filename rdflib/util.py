@@ -155,3 +155,4 @@ def graph_to_dot(graph, dot):
                 nodes[i] = i
     for s, p, o in graph.triples((None,None,None)):
         dot.add_edge(pydot.Edge(nodes[s], nodes[o], label=p))
+

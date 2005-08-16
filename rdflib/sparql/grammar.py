@@ -1,8 +1,8 @@
 
-from rdflib.lib.pyparsing import CaselessLiteral, Word, Upcase, delimitedList, Optional, \
-    Combine, Group, alphas, nums, alphanums, ParseException, Forward, oneOf, \
-    ZeroOrMore, restOfLine, Keyword, srange, OneOrMore, sglQuotedString, dblQuotedString, quotedString, \
-    TokenConverter, Empty, Suppress, NoMatch
+from pyparsing import CaselessLiteral, Word, Upcase, delimitedList, Optional, \
+     Combine, Group, alphas, nums, alphanums, ParseException, Forward, oneOf, \
+     ZeroOrMore, restOfLine, Keyword, srange, OneOrMore, sglQuotedString, dblQuotedString, quotedString, \
+     TokenConverter, Empty, Suppress, NoMatch
 
 from rdflib.lib.pyparsing import Literal as ppLiteral
 
