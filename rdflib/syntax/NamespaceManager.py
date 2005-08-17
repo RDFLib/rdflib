@@ -80,7 +80,7 @@ class NamespaceManager(object):
         base = urljoin("file:", pathname2url(os.getcwd()))        
         result = urljoin("%s/" % base, uri, allow_fragments=not defrag)
         if defrag:
-            result = urldefrag(result)
+            result = urldefrag(result)[0]
         if not defrag:
             if uri and uri[-1]=="#" and result[-1]!="#":
                 result = "%s#" % result
