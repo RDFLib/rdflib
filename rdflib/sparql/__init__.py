@@ -216,12 +216,6 @@ from sparqlOperators import *
 
 from types import *
 
-from parser import SPARQLParser
-
-def query(graph, source):
-    p = SPARQLParser(graph)
-    return p.query(source)
-
 ############################################################################################
 
 def retrieveRDFFiles(rdfFiles, silent = False, extendRdfs=False, graph = None) :

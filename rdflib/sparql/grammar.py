@@ -160,7 +160,7 @@ class SPARQLGrammar(object):
     # | 'ask'
 
     ReportFormat << (Group(select + Optional(distinct) + Group(OneOrMore(_VAR_))) |
-                     Group(select + Optional(distinct) + star) |
+                     Group(select + Optional(distinct) + star.setResultsName('all')) |
                      Group(construct + TriplePatternList) |
                      Group(construct + star) |
                      Group(describe + delimitedList(VarOrURI)) |
