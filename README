@@ -1,2 +1,37 @@
+http://rdflib.net/2005/08/12/rdflib-2.1.4/README#context
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+  xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+  xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
+  xmlns:doap='http://usefulinc.com/ns/doap#'
+  xmlns:blog='http://redfoot.net/2005/blog#'
+  xmlns:dcterms='http://purl.org/dc/terms/'
 
-see index.html
+>
+  <rdf:Description rdf:about="http://rdflib.net#">
+    <doap:release>
+      <doap:Version rdf:about="#">
+        <rdf:type rdf:resource="http://redfoot.net/2005/blog#Entry"/>
+        <rdfs:label>rdflib-2.1.4 release</rdfs:label>
+        <rdfs:comment>Added optional base argument to URIRef.
+
+        Fixed bug where load and parse had inconsistent behavior.
+
+        Added a FileInputSource.
+
+        Added skeleton sparql parser and test framework.
+
+        Included pyparsing (pyparsing.sourceforge.net) for sparql parsing.
+
+        Added attribute support to namespaces.
+        </rdfs:comment>
+        <doap:revision>2.1.4</doap:revision>
+        <doap:created>2005-08-12</doap:created>
+        <dcterms:created>2005-08-12</dcterms:created>
+      </doap:Version>
+    </doap:release>
+  </rdf:Description>
+  <rdf:Description rdf:about="CHANGELOG">
+    <rdfs:label>CHANGELOG</rdfs:label>
+  </rdf:Description>
+</rdf:RDF>
