@@ -34,9 +34,9 @@ setup(
     maintainer = "Daniel 'eikeon' Krech",
     maintainer_email = "eikeon@eikeon.com",
     url = "http://rdflib.net/",
-    license = "http://rdflib.net/2005/03/19/rdflib-2.0.6/LICENSE",
+    license = "http://rdflib.net/latest/LICENSE",
     platforms = ["any"],
-    classifiers = ["Programming Languages :: Python"],
+    classifiers = ["Programming Language :: Python"],
     long_description = "RDF library containing an RDF triple store and RDF/XML parser/serializer",
 
     packages = ['rdflib',
