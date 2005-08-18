@@ -55,7 +55,11 @@ def date_time(t=None):
     return s
 
 def parse_date_time(val):
-    ymd, hms = val.split("T")
+    try:
+	ymd, hms = val.split("T")
+    except:
+	ymd = val
+	hms = "00:00:00"
     year, month, day = ymd.split("-")
     hour, minute, second = hms[:-1].split(":")
     
