@@ -4,33 +4,51 @@
   xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
   xmlns:doap='http://usefulinc.com/ns/doap#'
   xmlns:blog='http://redfoot.net/2005/blog#'
+  xmlns:dc='http://purl.org/dc/elements/1.1/'
   xmlns:dcterms='http://purl.org/dc/terms/'
-
 >
+
   <rdf:Description rdf:about="http://rdflib.net#">
-    <doap:release>
-      <doap:Version rdf:about="#">
-        <rdf:type rdf:resource="http://redfoot.net/2005/blog#Entry"/>
-        <rdfs:label>rdflib-2.1.4 release</rdfs:label>
-        <rdfs:comment>Added optional base argument to URIRef.
-
-        Fixed bug where load and parse had inconsistent behavior.
-
-        Added a FileInputSource.
-
-        Added skeleton sparql parser and test framework.
-
-        Included pyparsing (pyparsing.sourceforge.net) for sparql parsing.
-
-        Added attribute support to namespaces.
-        </rdfs:comment>
-        <doap:revision>2.1.4</doap:revision>
-        <doap:created>2005-08-12</doap:created>
-        <dcterms:created>2005-08-12</dcterms:created>
-      </doap:Version>
-    </doap:release>
+    <doap:release rdf:resource="#"/>
   </rdf:Description>
+
+  <doap:Version rdf:about="#">
+    <rdfs:label>rdflib-2.1.4</rdfs:label>
+    <rdfs:comment rdf:datatype="http://www.w3.org/1999/xhtml">
+<![CDATA[
+<div>
+    <p>This release will likely conclude the 2.1.x development branch. The bits that we were refactoring have been finished and have had time to stabilize. See the <a href="../CHANGELOG">Change Log</a> for most details on what's changed.
+    </p>
+    
+    <p>
+      To install: download the release from <a href="../../rdflib-2.1.4.tgz">rdflib-2.1.4.tgz</a> or <a href="../../rdflib-2.1.4.zip">rdflib-2.1.4.zip</a>, unpack and then run: <pre>python setup.py install</pre>
+    </p>    
+
+    <p>Also browse the <a href="../html/index.html">RDF API Documentation</a>, take a look at <a href="../example.py">example.py</a>, and glance at the <a href="../LICENSE">License</a> / <a href="../credits.html">Credits</a>.
+    </p>
+
+</div>
+]]>
+    </rdfs:comment>
+    <doap:revision>2.1.4</doap:revision>
+    <doap:created>2005-08-17</doap:created>
+  </doap:Version>
+
+  <blog:Entry rdf:about="entry#">
+    <rdfs:label>rdflib-2.1.4 released</rdfs:label>
+    <rdfs:comment rdf:datatype="http://www.w3.org/1999/xhtml">
+<![CDATA[
+
+    <p>See <a href="http://rdflib.net/2005/08/12/rdflib-2.1.4/README/">rdflib-2.1.4 release</a></p>
+
+]]>
+    </rdfs:comment>
+    <dcterms:created>2005-08-17</dcterms:created>
+    <dc:creator rdf:resource="mailto:eikeon@eikeon.com"/>
+  </blog:Entry>
+
   <rdf:Description rdf:about="CHANGELOG">
     <rdfs:label>CHANGELOG</rdfs:label>
   </rdf:Description>
+
 </rdf:RDF>
