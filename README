@@ -17,14 +17,14 @@
     <rdfs:comment rdf:datatype="http://www.w3.org/1999/xhtml">
 <![CDATA[
 <div>
-    <p>This release will likely conclude the 2.1.x development branch. The bits that we were refactoring have been finished and have had time to stabilize. See the <a href="../CHANGELOG">Change Log</a> for most details on what's changed.
+    <p>This release will likely conclude the 2.1.x development branch. The bits that we were refactoring have been finished and have had time to stabilize. See the <a href="http://rdflib.net/2005/08/12/rdflib-2.1.4/CHANGELOG">Change Log</a> for most details on what's changed.
     </p>
     
     <p>
-      To install: download the release from <a href="../../rdflib-2.1.4.tgz">rdflib-2.1.4.tgz</a> or <a href="../../rdflib-2.1.4.zip">rdflib-2.1.4.zip</a>, unpack and then run: <pre>python setup.py install</pre>
+      To install: download the release from <a href="http://rdflib.net/2005/08/12/rdflib-2.1.4.tgz">rdflib-2.1.4.tgz</a> or <a href="http://rdflib.net/2005/08/12/rdflib-2.1.4.zip">rdflib-2.1.4.zip</a>, unpack and then run: <pre>python setup.py install</pre>
     </p>    
 
-    <p>Also browse the <a href="../html/index.html">RDF API Documentation</a>, take a look at <a href="../example.py">example.py</a>, and glance at the <a href="../LICENSE">License</a> / <a href="../credits.html">Credits</a>.
+    <p>Also browse the <a href="http://rdflib.net/2005/08/12/rdflib-2.1.4/html/index.html">RDF API Documentation</a>, take a look at <a href="http://rdflib.net/2005/08/12/rdflib-2.1.4/example.py">example.py</a>, and glance at the <a href="http://rdflib.net/2005/08/12/rdflib-2.1.4/LICENSE">License</a> / <a href="http://rdflib.net/2005/08/12/rdflib-2.1.4/credits.html">Credits</a>.
     </p>
 
 </div>
