@@ -59,6 +59,8 @@ class NTParser(Parser):
             location = str(source)
             baseURI = baseURI or location
             file = urlopen(location)
+        if isinstance(source, FileInputSource):
+            file = source.file
         else:
             file = source
 
