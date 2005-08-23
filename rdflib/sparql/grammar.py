@@ -2,12 +2,12 @@
 from pyparsing import CaselessLiteral, Word, Upcase, delimitedList, Optional, \
      Combine, Group, alphas, nums, alphanums, ParseException, Forward, oneOf, \
      ZeroOrMore, restOfLine, Keyword, srange, OneOrMore, sglQuotedString, dblQuotedString, quotedString, \
-     TokenConverter, Empty, Suppress, NoMatch
+     TokenConverter, Empty, Suppress, NoMatch, CharsNotIn
 
-from pyparsing import Literal as ppLiteral
+from pyparsing import Literal as ppLiteral  # name Literal assigned by grammar
 
 def punctuation(lit):
-    return ppLiteral(lit)
+    return ppLiteral(lit).setName(lit).setResultsName(lit)
 
 def keyword(lit):
     return Keyword(lit, caseless=True).setResultsName(lit).setName(lit)
@@ -29,411 +29,542 @@ class SPARQLGrammar(object):
     # reverse this grammar into something more "pythonic".
 
     dot = punctuation(".")
-    zero = punctuation("0")
     at = punctuation("@")
     dash = punctuation("-")
     qmark = punctuation("?")
+    dollar = punctuation("$")    
     colon = punctuation(":")
+    semi = punctuation(";")    
     lt = punctuation("<")
     gt = punctuation(">")
     typ = punctuation("^^")
-    amp = punctuation("&")
     lparen = punctuation("(")
     rparen = punctuation(")")
-    tilde = punctuation("~")
     bang = punctuation("!")
     star = punctuation("*")
     slash = punctuation("/")
-    mod = punctuation("%")
     plus = punctuation("+")
     minus = punctuation("-")
     lte = punctuation("<=")
     gte = punctuation(">=")
-    eqeq = punctuation("==")
+    eq = punctuation("=")
     noteq = punctuation("!=")
     lbrack = punctuation("[")
     rbrack = punctuation("]")
+    lcbrack = punctuation("{")
+    rcbrack = punctuation("}")
     leq = punctuation('eq')
     lne = punctuation('ne')
-    eqpat = punctuation('=~')
-    nepat = punctuation('!~')
+    bnode = punctuation('_:')
+    comma = punctuation(',')
 
     # keywords
 
-    select = keyword('select')
-    distinct = keyword('distinct')
-    construct = keyword('construct')
-    describe = keyword('describe')
-    ask = keyword('ask')
-    ffrom = keyword('from')
-    where = keyword('where')
-    source = keyword('source')
-    optional = keyword('optional')
-    aand = keyword('and')
-    prefix = keyword('prefix')
-    limit = keyword('limit')
+    _select = keyword('select')
+    _distinct = keyword('distinct')
+    _construct = keyword('construct')
+    _describe = keyword('describe')
+    _ask = keyword('ask')
+    _from = keyword('from')
+    _where = keyword('where')
+    _optional = keyword('optional')
+    _prefix = keyword('prefix')
+    _limit = keyword('limit')
+    _base = keyword('base')
+    _named = keyword('named')
+    _offset = keyword('offset')
+    _a = keyword('a')
+    _str = keyword('str')
+    _true = keyword('true')
+    _false = keyword('false')
+    _order = keyword('order')
+    _by = keyword('by')
+    _asc = keyword('asc')
+    _desc = keyword('desc')
+    _graph = keyword('graph')
+    _union = keyword('union')
+    _filter = keyword('filter')
+    _lang = keyword('lang')
+    _datatype = keyword('datatype')
+    _bound = keyword('bound')
+    _isuri = keyword('isuri')
+    _isblank = keyword('isblank')
+    _isliteral = keyword('isliteral')
+    _regex = keyword('regex')
 
     # productions
 
     Query = production('Query')
-    ReportFormat = production('ReportFormat')
-    FromClause = production('FromClause')
-    FromSelector = production('FromSelector')
-    WhereClause = production('WhereClause')
-    LimitClause = production('LimitClause')    
-    SourceGraphPattern = production('SourceGraphPattern')
-    OptionalGraphPattern = production('OptionalGraphPattern')
-    GraphPattern = production('GraphPattern')
-    PatternElement = production('PatternElement')
-    GraphPattern1 = production('GraphPattern1')
-    PatternElement1 = production('PatternElement1')
-    PatternElementForms = production('PatternElementForms')
-    SingleTriplePatternOrGroup = production('SingleTriplePatternOrGroup')
-    ExplicitGroup = production('ExplicitGroup')
-    TriplePatternList = production('TriplePatternList')
-    TriplePattern = production('TriplePattern')
-    VarOrURI = production('VarOrURI')
-    VarOrLiteral = production('VarOrLiteral')
+    Prolog = production('Prolog')
+    BaseDecl = production('BaseDecl')
     PrefixDecl = production('PrefixDecl')
+    SelectQuery = production('SelectQuery')
+    ConstructQuery = production('ConstructQuery')
+    DescribeQuery = production('DescribeQuery')
+    AskQuery = production('AskQuery')
+    DatasetClause = production('DatasetClause')
+    DefaultGraphClause = production('DefaultGraphClause')
+    NamedGraphClause = production('NamedGraphClause')
+    SourceSelector = production('SourceSelector')
+    WhereClause = production('WhereClause')
+    SolutionModifier = production('SolutionModifier')
+    OrderClause = production('OrderClause')
+    OrderCondition = production('OrderCondition')
+    LimitClause = production('LimitClause')
+    OffsetClause = production('OffsetClause')
+    GroupGraphPattern = production('GroupGraphPattern')
+    GraphPattern = production('GraphPattern')
+    GraphPatternNotTriples = production('GraphPatternNotTriples')
+    OptionalGraphPattern = production('OptionalGraphPattern')
+    GraphGraphPattern = production('GraphGraphPattern')
+    GroupOrUnionGraphPattern = production('GroupOrUnionGraphPattern')
+    Constraint = production('Constraint')
+    ConstructTemplate = production('ConstructTemplate')
+    Triples = production('Triples')
+    Triples1 = production('Triples1')
+    PropertyList = production('PropertyList')
+    PropertyListNotEmpty = production('PropertyListNotEmpty')
+    ObjectList = production('ObjectList')
+    Verb = production('Verb')
+    Object = production('Object')
+    TriplesNode = production('TriplesNode')
+    BlankNodePropertyList = production('BlankNodePropertyList')
+    Collection = production('BlankNodePropertyList')
+    GraphNode = production('GraphNode')
+    VarOrTerm = production('VarOrTerm')
+    VarOrIRIref = production('VarOrIRIref')
+    VarOrBlankNodeOrIRIref = production('VarOrBlankNodeOrIRIref')
+    Var = production('Var')
+    GraphTerm = production('GraphTerm')
     Expression = production('Expression')
     ConditionalOrExpression = production('ConditionalOrExpression')
     ConditionalAndExpression = production('ConditionalAndExpression')
     ValueLogical = production('ValueLogical')
-    StringEqualityExpression = production('StringEqualityExpression')
-    StringComparitor = production('StringComparitor')
-    EqualityExpression = production('EqualityExpression')
-    RelationalComparitor = production('RelationalComparitor')
     RelationalExpression = production('RelationalExpression')
-    NumericComparitor = production('NumericComparitor')
+    NumericExpression = production('NumericExpression')
     AdditiveExpression = production('AdditiveExpression')
-    AdditiveOperation = production('AdditiveOperation')
     MultiplicativeExpression = production('MultiplicativeExpression')
-    MultiplicativeOperation = production('MultiplicativeOperation')
     UnaryExpression = production('UnaryExpression')
-    UnaryExpressionNotPlusMinus = production('UnaryExpressionNotPlusMinus')
-    PrimaryExpression = production('PrimaryExpression')
+    CallExpression = production('CallExpression')
+    RegexExpression = production('RegexExpression')
     FunctionCall = production('FunctionCall')
     ArgList = production('ArgList')
-    Literal = production('Literal')
+    BrackettedExpression = production('BrackettedExpression')
+    PrimaryExpression = production('PrimaryExpression')
+    RDFTerm = production('RDFTerm')
     NumericLiteral = production('NumericLiteral')
-    TextLiteral = production('TextLiteral')
-    URI = production('URI')
-    CommaOpt = production('CommaOpt') # unused
-
-    # terminals EBNF definitions are at end of spec
-
-    QuotedURI = (lt.suppress() + Word(alphanums+"_-./&?:@~=#") + gt.suppress()).setResultsName('QuotedURI')
+    RDFLiteral = production('RDFLiteral')
+    BooleanLiteral = production('BooleanLiteral')
+    String = production('String')
+    IRIref = production('IRIref')
+    QName = production('QName')
+    BlankNode = production('BlankNode')
+    QuotedIRIref = production('QuotedIRIref')
+    QNAME_NS = production('QNAME_NS')
+    QNAME = production('QNAME')
+    BNODE_LABEL = production('BNODE_LABEL')
+    VAR1 = production('VAR1')
+    VAR2 = production('VAR2')
+    LANGTAG = production('LANGTAG')
+    INTEGER = production('INTEGER')
+    DECIMAL = production('DECIMAL')
+    FLOATING_POINT = production('FLOATING_POINT')
+    EXPONENT = production('EXPONENT')
+    STRING_LITERAL1 = production('STRING_LITERAL1')
+    STRING_LITERAL2 = production('STRING_LITERAL2')
+    STRING_LITERAL_LONG1 = production('STRING_LITERAL_LONG1')
+    STRING_LITERAL_LONG2 = production('STRING_LITERAL_LONG2')
+    NCCHAR1 = production('NCCHAR1')
+    VARNAME = production('VARNAME')
+    NCCHAR  = production('NCCHAR')
+    NCNAME_PREFIX = production('NCNAME_PREFIX')
+    NCNAME = production('NCNAME')
     
-    _NCNAME_ = Word(alphas+'_', alphanums+'_.-')
-    _DIGITS_ = Word(nums)
-    _VAR_ = Word("?", alphanums+'_.-', min=2).setResultsName('Var')
-
-    QName = Combine(Optional(_NCNAME_ + colon) + _NCNAME_).setResultsName('QName')
-    String = quotedString.setResultsName('String')
-
-    _EXPONENT_ = oneOf("e E") + Optional(oneOf("+ -")) + Word(nums)
-    _DECIMAL_LITERAL_ = _DIGITS_
-    _HEX_LITERAL_ = Combine( zero + oneOf("x X") + Word(srange('[0-9a-fA-F]')) ).setResultsName('HexLiteral')
-    _INTEGER_LITERAL_ = (Optional(oneOf("+ -")) + _DECIMAL_LITERAL_ + Optional(oneOf("l L")) ^
-                          _HEX_LITERAL_ + Optional(oneOf("l L"))).setResultsName('IntegerLiteral')
-    _FLOATING_POINT_LITERAL_ = Combine(Optional(oneOf("+ -")) + 
-                                       Word(nums) + dot + Word(nums) +
-                                       Optional(_EXPONENT_) |
-                                       dot | OneOrMore(nums) +
-                                       Optional(_EXPONENT_) |
-                                       OneOrMore(nums) + _EXPONENT_).setResultsName('FloatingPointLiteral')
-    _A2Z_ = Word(alphas)
-    _LANG_ = Combine(at.suppress() + _A2Z_ + Optional(dash + _A2Z_)).setResultsName('Lang')
-
-
-    # [1]   Query    ::=   PrefixDecl* ReportFormat  PrefixDecl* FromClause? WhereClause?
-
-    Query << (ZeroOrMore(PrefixDecl) + ReportFormat + ZeroOrMore(PrefixDecl) +
-              Optional(FromClause) + Optional(WhereClause) + Optional(LimitClause))
+    # BEGIN PRODUCTIONS
     
-    # [2]  ReportFormat  ::=  'select' 'distinct'? <VAR> ( CommaGroup(Opt <VAR> )*
-    # | 'select' 'distinct'? '*'
-    # | 'construct' TriplePatternList
-    # | 'construct' '*'
-    # | 'describe' VarOrURI ( CommaOpt VarOrURI )*
-    # | 'describe' '*'
-    # | 'ask'
+    # Query ::= Prolog
+    #      ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery )
 
-    ReportFormat << (Group(select + Optional(distinct) + Group(OneOrMore(_VAR_))) |
-                     Group(select + Optional(distinct) + star.setResultsName('all')) |
-                     Group(construct + TriplePatternList) |
-                     Group(construct + star) |
-                     Group(describe + delimitedList(VarOrURI)) |
-                     Group(describe + star) |
-                     ask)
-    
-    # [3]  FromClause  ::=  'from' FromSelector ( CommaOpt FromSelector )*
+    Query << Prolog + (SelectQuery | ConstructQuery | DescribeQuery | AskQuery)
 
-    FromClause << ffrom + delimitedList(FromSelector)
-    
-    # [4]  FromSelector  ::=  URI
+    # Prolog ::= BaseDecl? PrefixDecl*
 
-    FromSelector << URI
-    
-    # [5]  WhereClause  ::=  'where' GraphPattern
+    Prolog << Optional(BaseDecl) + ZeroOrMore(PrefixDecl)
 
-    WhereClause << where + GraphPattern
+    # BaseDecl ::= 'BASE' QuotedIRIref
 
-    # in spec prose but not in spec grammar, no number
+    BaseDecl << _base + QuotedIRIref
 
-    LimitClause << Group(limit + _INTEGER_LITERAL_  )
-    
-    # [6]  SourceGraphPattern  ::=  'source' '*' GraphPattern1
-    # | 'source' VarOrURI GraphPattern1
+    # PrefixDecl ::= 'PREFIX' QNAME_NS QuotedIRIref
 
-    SourceGraphPattern << ((source + star + GraphPattern1) | (source + VarOrURI + GraphPattern1))
+    PrefixDecl << (_prefix + QNAME_NS + QuotedIRIref)
 
-    # [7]  OptionalGraphPattern  ::=  'optional' GraphPattern1
-    # | '[' GraphPattern ']'
+    # SelectQuery ::= 'SELECT' 'DISTINCT'? ( Var+ | '*' ) DatasetClause* WhereClause SolutionModifier
 
-    OptionalGraphPattern << (optional + GraphPattern1 | lbrack.suppress() + GraphPattern + rbrack.suppress())
+    SelectQuery << (_select + Optional(_distinct) + (OneOrMore(Var) | star) +
+                    ZeroOrMore(DatasetClause) + WhereClause + SolutionModifier)
 
-    # [8]  GraphPattern  ::=  PatternElement PatternElement*
+    # ConstructQuery ::= 'CONSTRUCT' ConstructTemplate DatasetClause* WhereClause SolutionModifier
 
-    GraphPattern << OneOrMore(PatternElement)
+    ConstructQuery << _construct + ConstructTemplate + ZeroOrMore(DatasetClause) + WhereClause + SolutionModifier
 
-    # [9]  PatternElement  ::=  TriplePatternList
-    # | ExplicitGroup
-    # | PatternElementForms
+    # DescribeQuery ::= 'DESCRIBE' ( VarOrIRIref+ | '*' ) DatasetClause* WhereClause? SolutionModifier
 
-    PatternElement << (TriplePatternList | ExplicitGroup | PatternElementForms)
+    DescribeQuery << (_describe + (OneOrMore(VarOrIRIref) | star) +
+                      ZeroOrMore(DatasetClause) + Optional(WhereClause) + SolutionModifier)
 
-    # [10]  GraphPattern1  ::=  PatternElement1
+    # AskQuery ::= 'ASK' DatasetClause* WhereClause
 
-    GraphPattern1 << PatternElement1
+    AskQuery << _ask + ZeroOrMore(DatasetClause) + WhereClause
 
-    # [11]  PatternElement1  ::=  SingleTriplePatternOrGroup
-    # | PatternElementForms
+    # DatasetClause ::= 'FROM' ( DefaultGraphClause | NamedGraphClause )
 
-    PatternElement1 << (SingleTriplePatternOrGroup | PatternElementForms)
+    DatasetClause << _from + (DefaultGraphClause | NamedGraphClause)
 
-    # [12]  PatternElementForms  ::=  SourceGraphPattern
-    # | OptionalGraphPattern
-    # | 'and' Expression
+    # DefaultGraphClause ::= SourceSelector
 
-    PatternElementForms << (SourceGraphPattern | OptionalGraphPattern | aand + Expression)
+    DefaultGraphClause << SourceSelector
 
-    # [13]  SingleTriplePatternOrGroup  ::=  TriplePattern
-    # | ExplicitGroup
+    # NamedGraphClause ::= 'NAMED' SourceSelector
 
-    SingleTriplePatternOrGroup << (TriplePattern | ExplicitGroup)
+    NamedGraphClause << _named + SourceSelector
 
-    # [14]  ExplicitGroup  ::=  '(' GraphPattern ')'
+    # SourceSelector ::= IRIref
 
-    ExplicitGroup << lparen.suppress() + GraphPattern + rparen.suppress()
+    SourceSelector << IRIref
 
-    # [15]  TriplePatternList  ::=  TriplePattern TriplePattern*
+    # WhereClause ::= 'WHERE'? GroupGraphPattern
 
-    TriplePatternList << OneOrMore(TriplePattern)
+    WhereClause << (Optional(_where) + GroupGraphPattern)
 
-    # [16]  TriplePattern  ::=  '(' VarOrURI VarOrURI VarOrLiteral ')'
+    # SolutionModifier ::= OrderClause? LimitClause? OffsetClause?
 
-    TriplePattern << lparen.suppress() + Group(VarOrURI + VarOrURI + VarOrLiteral) + rparen.suppress()
+    SolutionModifier << Optional(OrderClause) + Optional(LimitClause) + Optional(OffsetClause)
 
-    # [17]  VarOrURI  ::=  <VAR> | URI
+    # OrderClause ::= 'ORDER' 'BY' OrderCondition+
 
-    VarOrURI << (_VAR_ | URI)
+    OrderClause << _order + _by + OneOrMore(OrderCondition)
 
-    # [18]  VarOrLiteral  ::=  <VAR> | Literal
+    # OrderCondition ::= ( ( 'ASC' | 'DESC' ) BrackettedExpression )
+    #      | ( FunctionCall | Var | BrackettedExpression )
 
-    VarOrLiteral << (_VAR_ | Literal)
+    OrderCondition << (((_asc | _desc) + BrackettedExpression) | (FunctionCall | Var | BrackettedExpression))
 
-    # [19]  PrefixDecl  ::=  'prefix' <NCNAME> ':' QuotedURI
-    # | 'prefix' ':' QuotedURI
+    # LimitClause ::= 'LIMIT' INTEGER
 
-    PrefixDecl << prefix + Group(_NCNAME_ + colon.suppress() + QuotedURI)
-    
-    # [20]  Expression  ::=  ConditionalOrExpression
+    LimitClause << _limit + INTEGER
+
+    # OffsetClause ::= 'OFFSET' INTEGER
+
+    OffsetClause << _offset + INTEGER
+
+    # GroupGraphPattern ::= '{' GraphPattern '}'
+
+    GroupGraphPattern << (lcbrack.suppress() + GraphPattern + rcbrack.suppress())
+
+    # GraphPattern ::= ( Triples '.'? )? ( GraphPatternNotTriples '.'? GraphPattern )?
+
+    GraphPattern << Optional(Triples + Optional(dot)) + Optional(GraphPatternNotTriples + Optional(dot) + GraphPattern)
+
+    # GraphPatternNotTriples ::= OptionalGraphPattern | GroupOrUnionGraphPattern | GraphGraphPattern | Constraint
+
+    GraphPatternNotTriples << (OptionalGraphPattern | GroupOrUnionGraphPattern | GraphGraphPattern | Constraint)
+
+    # OptionalGraphPattern ::= 'OPTIONAL' GroupGraphPattern
+
+    OptionalGraphPattern << _optional + GroupGraphPattern
+
+    # GraphGraphPattern ::= 'GRAPH' VarOrBlankNodeOrIRIref GroupGraphPattern
+
+    GraphGraphPattern << _graph + VarOrBlankNodeOrIRIref + GroupGraphPattern
+
+    # GroupOrUnionGraphPattern ::= GroupGraphPattern ( 'UNION' GroupGraphPattern )*
+
+    GroupOrUnionGraphPattern << GroupGraphPattern + ZeroOrMore(_union + GroupGraphPattern)
+
+    # Constraint ::= 'FILTER' ( BrackettedExpression | CallExpression )
+
+    Constraint << _filter + (BrackettedExpression | CallExpression)
+
+    # ConstructTemplate ::= '{' Triples? '.'? '}'
+
+    ConstructTemplate << lcbrack + Optional(Triples) + Optional(dot) + rcbrack
+
+    # Triples ::= Triples1 ( '.' Triples )?
+
+    Triples << Triples1 + Optional(dot + Triples)
+
+    # Triples1 ::= VarOrTerm PropertyListNotEmpty | TriplesNode PropertyList
+
+    Triples1 << (VarOrTerm + PropertyListNotEmpty | TriplesNode + PropertyList)
+
+    # PropertyList ::= PropertyListNotEmpty?
+
+    PropertyList << Optional(PropertyListNotEmpty)
+
+    # PropertyListNotEmpty ::= Verb ObjectList ( ';' PropertyList )?
+
+    PropertyListNotEmpty << Verb + ObjectList + Optional(semi + PropertyList)
+
+    # ObjectList ::= Object ( ',' ObjectList )?
+
+    ObjectList << Object + Optional(comma + ObjectList)
+
+    # Verb ::= VarOrBlankNodeOrIRIref | 'a'
+
+    Verb << VarOrBlankNodeOrIRIref | _a
+
+    # Object ::= VarOrTerm | TriplesNode
+
+    Object << (VarOrTerm | TriplesNode)
+
+    # TriplesNode ::= Collection | BlankNodePropertyList
+
+    TriplesNode << (Collection | BlankNodePropertyList)
+
+    # BlankNodePropertyList ::= '[' PropertyListNotEmpty ']'
+
+    BlankNodePropertyList << lbrack + PropertyListNotEmpty + rbrack
+
+    # Collection ::= '(' GraphNode+ ')'
+
+    Collection << lparen + OneOrMore(GraphNode) + rparen
+
+    # GraphNode ::= VarOrTerm | TriplesNode
+
+    GraphNode << (VarOrTerm | TriplesNode)
+
+    # VarOrTerm ::= Var | GraphTerm
+
+    VarOrTerm << (Var | GraphTerm)
+
+    # VarOrIRIref ::= Var | IRIref
+
+    VarOrIRIref << (Var | IRIref)
+
+    # VarOrBlankNodeOrIRIref ::= Var | BlankNode | IRIref
+
+    VarOrBlankNodeOrIRIref << (Var | BlankNode | IRIref)
+
+    # Var ::= VAR1 | VAR2
+
+    Var << (VAR1 | VAR2)
+
+    # GraphTerm ::= RDFTerm | '(' ')'
+
+    GraphTerm << (RDFTerm | lparen + rparen)
+
+    # Expression ::= ConditionalOrExpression
 
     Expression << ConditionalOrExpression
 
-    # [21]  ConditionalOrExpression  ::=  ConditionalAndExpression ( '||' ConditionalAndExpression )*
+    # ConditionalOrExpression ::= ConditionalAndExpression ( '||' ConditionalAndExpression )*
 
-    ConditionalOrExpression << delimitedList(ConditionalAndExpression, '||')
+    ConditionalAndExpression << ConditionalAndExpression + ZeroOrMore( '||' + ConditionalAndExpression)
 
-    # [22]  ConditionalAndExpression  ::=  ValueLogical ( '&&' ValueLogical )*
+    # ConditionalAndExpression ::= ValueLogical ( '&&' ValueLogical )*
 
-    ConditionalAndExpression << delimitedList(ValueLogical, '&&')
+    ConditionalAndExpression << ValueLogical + ZeroOrMore('&&' + ValueLogical)
 
-    # [23]  ValueLogical  ::=  StringEqualityExpression
+    # ValueLogical ::= RelationalExpression
 
-    ValueLogical << StringEqualityExpression
+    ValueLogical << RelationalExpression
 
-    # [24]  StringEqualityExpression  ::=  EqualityExpression StringComparitor*
+    # RelationalExpression ::= NumericExpression ( '=' NumericExpression | '!=' NumericExpression | '<' NumericExpression | '>' NumericExpression | '<=' NumericExpression | '>=' NumericExpression )?
 
-    StringEqualityExpression << EqualityExpression + ZeroOrMore(StringComparitor)
+    RelationalExpression << (NumericExpression +
+                             Optional(eq + NumericExpression | noteq + NumericExpression |
+                                      lt + NumericExpression | gt + NumericExpression |
+                                      lte + NumericExpression | gte + NumericExpression))
 
-    # [25]  StringComparitor  ::=  'eq' EqualityExpression
-    # | 'ne' EqualityExpression
-    # | '=~' <PATTERN_LITERAL>
-    # | '!~' <PATTERN_LITERAL>
+    # NumericExpression ::= AdditiveExpression
 
-    StringComparitor << ((leq + EqualityExpression) | lne + EqualityExpression) # TODO pat lits
+    NumericExpression << AdditiveExpression
 
-    # [26]  EqualityExpression  ::=  RelationalExpression RelationalComparitor?
+    # AdditiveExpression ::= MultiplicativeExpression ( '+' MultiplicativeExpression | '-' MultiplicativeExpression )*
 
-    EqualityExpression << RelationalExpression + Optional(RelationalComparitor)
+    AdditiveExpression << (MultiplicativeExpression + ZeroOrMore(plus + MultiplicativeExpression |
+                                                                 minus + MultiplicativeExpression))
 
-    # [27]  RelationalComparitor  ::=  '==' RelationalExpression
-    # | '!=' RelationalExpression
+    # MultiplicativeExpression ::= UnaryExpression ( '*' UnaryExpression | '/' UnaryExpression )*
 
-    RelationalComparitor << ((eqeq + RelationalExpression) | (noteq + RelationalExpression))
+    MultiplicativeExpression << UnaryExpression + ZeroOrMore(star + UnaryExpression | slash + UnaryExpression)
 
-    # [28]  RelationalExpression  ::=  AdditiveExpression NumericComparitor?
+    # UnaryExpression ::=   '!' PrimaryExpression
+    #      | '+' PrimaryExpression
+    #      | '-' PrimaryExpression
+    #      | PrimaryExpression
 
-    RelationalExpression << AdditiveExpression + Optional(NumericComparitor)
+    UnaryExpression << (bang + PrimaryExpression | plus + PrimaryExpression |
+                        minus + PrimaryExpression | PrimaryExpression)
 
-    # [29]  NumericComparitor  ::=  '<' AdditiveExpression
-    # | '>' AdditiveExpression
-    # | '<=' AdditiveExpression
-    # | '>=' AdditiveExpression
+    # CallExpression ::=   'STR' '(' Expression ')'
+    #      | 'LANG' '(' Expression ')'
+    #      | 'DATATYPE' '(' Expression ')'
+    #      | 'BOUND' '(' Var ')'
+    #      | 'isURI' '(' Expression ')'
+    #      | 'isBLANK' '(' Expression ')'
+    #      | 'isLITERAL' '(' Expression ')'
+    #      | RegexExpression
+    #      | FunctionCall
 
-    NumericComparitor << ((lt + AdditiveExpression) | (gt + AdditiveExpression) |
-                         (lte + AdditiveExpression) | (gte + AdditiveExpression))
+    CallExpression << (_str + lparen + Expression + rparen |
+                       _lang + lparen + Expression + rparen |
+                       _datatype + lparen + Expression + rparen |
+                       _bound + lparen + Var + rparen |
+                       _isuri + lparen + Expression + rparen |
+                       _isblank + lparen + Expression + rparen |
+                       _isliteral + lparen + Expression + rparen |
+                       RegexExpression |
+                       FunctionCall)
 
-    # [30]  AdditiveExpression  ::=  MultiplicativeExpression AdditiveOperation*
+    # RegexExpression ::= 'REGEX' '(' Expression ',' Expression ( ',' Expression )? ')'
 
-    AdditiveExpression << MultiplicativeExpression + ZeroOrMore(AdditiveOperation)
+    RegexExpression << _regex + lparen + Expression + comma + Expression + Optional(comma + Expression) + rparen
 
-    # [31]  AdditiveOperation  ::=  '+' MultiplicativeExpression
-    # | '-' MultiplicativeExpression
+    # FunctionCall ::= IRIref ArgList
 
-    AdditiveOperation << ((plus + MultiplicativeExpression) | (minus + MultiplicativeExpression))
+    FunctionCall << IRIref + ArgList
 
-    # [32]  MultiplicativeExpression  ::=  UnaryExpression MultiplicativeOperation*
+    # ArgList ::= ( '(' ')' | '(' Expression ( ',' Expression )* ')' )
 
-    MultiplicativeExpression << UnaryExpression + ZeroOrMore(MultiplicativeOperation)
+    ArgList << ((lparen + rparen) | rparen + Expression + ZeroOrMore(comma + Expression) + rparen)
 
-    # [33]  MultiplicativeOperation  ::=  '*' UnaryExpression
-    # | '/' UnaryExpression
-    # | '%' UnaryExpression
+    # BrackettedExpression ::= '(' Expression ')'
 
-    MultiplicativeOperation << (star + UnaryExpression) | (slash + UnaryExpression) | (mod + UnaryExpression)
+    BrackettedExpression << lparen + Expression + rparen
 
-    # [34]  UnaryExpression  ::=  UnaryExpressionNotPlusMinus
+    # PrimaryExpression ::= BrackettedExpression | CallExpression | Var | RDFTerm
 
-    UnaryExpression << UnaryExpressionNotPlusMinus
+    PrimaryExpression << (BrackettedExpression | CallExpression | Var | RDFTerm)
 
-    # [35]  UnaryExpressionNotPlusMinus  ::=  ( '~' | '!' ) UnaryExpression
-    # | PrimaryExpression
+    # RDFTerm ::= IRIref | RDFLiteral | NumericLiteral | BooleanLiteral | BlankNode
 
-    UnaryExpressionNotPlusMinus << (tilde | bang) + UnaryExpression
+    RDFLiteral << (IRIref | RDFLiteral | NumericLiteral | BooleanLiteral | BlankNode)
 
-    # [36]  PrimaryExpression ::= <VAR> | Literal | FunctionCall | '(' Expression ')'
+    # NumericLiteral ::= INTEGER | FLOATING_POINT
 
-    PrimaryExpression << (_VAR_ | Literal | FunctionCall | lparen.suppress() + Expression + rparen.suppress())
+    NumericLiteral << (INTEGER | FLOATING_POINT)
 
-    # [37]  FunctionCall  ::=  '&' <QNAME> '(' ArgList? ')'
+    # RDFLiteral ::= String ( LANGTAG | ( '^^' IRIref ) )?
 
-    FunctionCall << amp.suppress() + QName + lparen.suppress() + Optional(Group(ArgList)) + rparen.suppress()
+    RDFLiteral << String + Optional( LANGTAG | ( typ + IRIref))
 
-    # [38]  ArgList  ::=  VarOrLiteral ( ',' VarOrLiteral )*
+    # BooleanLiteral ::= 'true' | 'false'
 
-    ArgList << (delimitedList(VarOrLiteral))
+    BooleanLiteral << (_true | _false)
 
-    # [39]  Literal  ::=  URI
-    # | NumericLiteral
-    # | TextLiteral
+    # String ::= STRING_LITERAL1 | STRING_LITERAL2 | STRING_LITERAL_LONG1 | STRING_LITERAL_LONG2
 
-    Literal << (QuotedURI | NumericLiteral | TextLiteral)
+    String << (STRING_LITERAL1 | STRING_LITERAL2 | STRING_LITERAL_LONG1 | STRING_LITERAL_LONG2)
 
-    #[40] NumericLiteral  ::= <INTEGER_LITERAL> | <FLOATING_POINT_LITERAL>
+    # IRIref ::= QuotedIRIref | QName
 
-    NumericLiteral << (_INTEGER_LITERAL_ | _FLOATING_POINT_LITERAL_)
+    IRIref << (QuotedIRIref | QName)
 
-    # [41]  TextLiteral    ::=   String  <LANG>? ( '^^' URI )?
+    # QName ::= QNAME | QNAME_NS
 
-    TextLiteral << String + Optional(_LANG_) + Optional(typ.suppress() + URI).setResultsName('Type')
+    QName << (QNAME | QNAME_NS)
 
-    # [42]   String    ::=   <STRING_LITERAL1> | <STRING_LITERAL2>
+    # BlankNode ::= BNODE_LABEL | '[' ']'
 
-    # [43]  URI  ::=  QuotedURI | QName
+    BlankNode << (BNODE_LABEL | rbrack + lbrack)
 
-    URI << (QuotedURI | QName)
-    
-    # [44]  QName  ::=  <QNAME>
+    # QuotedIRIref ::= '<' ([^> ])* '>' /* An IRI reference : RFC 3987 */
 
-    # [45]  QuotedURI  ::=  <URI>
+    QuotedIRIref << lt.suppress() + ZeroOrMore(CharsNotIn('> ')) + gt.suppress()
 
-    # [46]  CommaOpt  ::=  ','?
+    # QNAME_NS ::= NCNAME_PREFIX? ':'
 
-    # [47]   <URI>    ::=   "<" <NCCHAR1> (~[">"," "])* ">"
+    QNAME_NS << Optional(NCNAME_PREFIX) + colon.suppress()
 
-    # [48]  <QNAME>  ::=  (<NCNAME>)? ":" <NCNAME>
+    # QNAME ::= NCNAME_PREFIX? ':' NCNAME?
 
-    # [49]  <VAR>  ::=  "?" <NCNAME>
+    QNAME << Optional(NCNAME_PREFIX) + colon + Optional(NCNAME_PREFIX)
 
-    #    _VAR_ << qmark + _NCNAME_
+    # BNODE_LABEL ::= '_:' NCNAME
 
-    # [50]  <LANG>  ::=  '@' <A2Z><A2Z> ("-" <A2Z><A2Z>)?
+    BNODE_LABEL << bnode + NCNAME
 
-    # [51]  <A2Z>  ::=  ["a"-"z","A"-"Z"]>
+    # VAR1 ::= '?' VARNAME
 
-    # [52]  <INTEGER_LITERAL>  ::=  (["+","-"])? <DECIMAL_LITERAL> (["l","L"])?
-    # | <HEX_LITERAL> (["l","L"])?
-                          
-    # [53]  <DECIMAL_LITERAL>  ::=  <DIGITS>
+    VAR1 << qmark.suppress() + VARNAME
 
-    # [54]  <HEX_LITERAL>  ::=  "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+
+    # VAR2 ::= '$' VARNAME
 
-    # _HEX_LITERAL_ << zero + oneOf("x X") + Word(nums + srange('[a-f]') + srange('[a-f]'))
+    VAR2 << dollar.suppress() + VARNAME
 
-    # [55]  <FLOATING_POINT_LITERAL>  ::=  (["+","-"])? (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)?
-    # | "." (["0"-"9"])+ (<EXPONENT>)?
-    # | (["0"-"9"])+ <EXPONENT>
+    # LANGTAG ::= '@' [a-zA-Z]+ ('-' [a-zA-Z0-9]+)*
 
-    # [56]  <EXPONENT>  ::=  ["e","E"] (["+","-"])? (["0"-"9"])+
+    LANGTAG << at + Word(alphas) + ZeroOrMore(dash + Word(alphas + nums))
 
-    # [57]  <STRING_LITERAL1>  ::=  "'" ( (~["'","\\","\n","\r"]) | ("\\" ~["\n","\r"]) )* "'"
+    # INTEGER ::= [0-9]+
 
-    # [58]  <STRING_LITERAL2>  ::=  "\"" ( (~["\"","\\","\n","\r"]) | ("\\" ~["\n","\r"]) )* "\""
+    INTEGER << Word(nums)
 
-    # [59]  <DIGITS>  ::=  (["0"-"9"])
+    # DECIMAL ::= [0-9]+ '.' [0-9]* | '.' [0-9]+
 
-    # [60]  <PATTERN_LITERAL>  ::=  [m]/pattern/[i][m][s][x]
+    DECIMAL << Word(nums) + dot + ZeroOrMore(nums)
 
-    # PATTERN_LITERAL # TODO
+    # FLOATING_POINT ::= [0-9]+ '.' [0-9]* EXPONENT? | '.' ([0-9])+ EXPONENT? | ([0-9])+ EXPONENT
 
-    # [61]  <NCCHAR1>  ::=  ["A"-"Z"]
-    # | "_" | ["a"-"z"]
-    # | ["\u00C0"-"\u02FF"]
-    # | ["\u0370"-"\u037D"]
-    # | ["\u037F"-"\u1FFF"]
-    # | ["\u200C"-"\u200D"]
-    # | ["\u2070"-"\u218F"]
-    # | ["\u2C00"-"\u2FEF"]
-    # | ["\u3001"-"\uD7FF"]
-    # | ["\uF900"-"\uFFFF"]
+    FLOATING_POINT << (OneOrMore(nums) + dot + ZeroOrMore(nums) + Optional(EXPONENT) |
+                       dot + OneOrMore(nums) + Optional(EXPONENT) | OneOrMore(nums) + EXPONENT)
 
-    #    _NCCHAR1_ = srange('[A-Z]') + "_" + srange([a-z])
- 
-    # [62]  <NCNAME>  ::=  <NCCHAR1> (<NCCHAR1> | "." | "-" | ["0"-"9"] | "\u00B7" )*
+    # EXPONENT ::= [eE] [+-]? [0-9]+
 
-    #    _NCNAME_ << _NCCHAR1_ + Word(_NCCHAR1_, _NCCHAR1_ + dot + dash + nums + u"\u00B7") # wrong
+    EXPONENT << oneOf('e E') + Optional(oneOf('+ -')) + OneOrMore(nums)
+
+    # STRING_LITERAL1 ::= "'" ( ([^#x27#x5C#xA#xD]) | ('\' [^#xD#xA]) )* "'"
+
+    STRING_LITERAL1 << sglQuotedString
+
+    # STRING_LITERAL2 ::= '"' ( ([^#x22#x5C#xA#xD]) | ('\' [^#xD#xA]) )* '"'
+
+    STRING_LITERAL2 << dblQuotedString
+
+    # STRING_LITERAL_LONG1 ::= "'''" ( [^'\] | ('\' [^#xD#xA]) | ("'" [^']) | ("''" [^']) )* "'''" 
+
+    # STRING_LITERAL_LONG2 ::= '"""' ( [^"\] | ('\' [^#xD#xA]) | ('"' [^"]) | ('""' [^"]) )* '"""'
+
+    # NCCHAR1 ::=   [A-Z]
+    #      | [a-z]
+    #      | [#x00C0-#x00D6]
+    #      | [#x00D8-#x00F6]
+    #      | [#x00F8-#x02FF]
+    #      | [#x0370-#x037D]
+    #      | [#x037F-#x1FFF]
+    #      | [#x200C-#x200D]
+    #      | [#x2070-#x218F]
+    #      | [#x2C00-#x2FEF]
+    #      | [#x3001-#xD7FF]
+    #      | [#xF900-#xFDCF]
+    #      | [#xFDF0-#xFFFD]
+    #      | [#x10000-#xEFFFF]
+
+    NCCHAR1 << Word(alphas)
+
+    # VARNAME ::= ( NCCHAR1 | [0-9] ) ( NCCHAR1 | "_" | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040] )*
+
+    VARNAME << Word(alphas+nums, alphas+nums+"_")
+
+    # NCCHAR ::= NCCHAR1 | '_' | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+
+    NCCHAR << (NCCHAR1 | "_" | "-" | Word(nums))
+
+    # NCNAME_PREFIX ::= NCCHAR1 ((NCCHAR|".")* NCCHAR)?
+
+    NCNAME_PREFIX << NCCHAR1 + Optional(ZeroOrMore(NCCHAR | ".") + NCCHAR)
+
+    # NCNAME ::= ( "_" | NCCHAR1 ) ((NCCHAR|".")* NCCHAR)?
+
+    NCNAME << ("_" | NCCHAR1)
 
 
 if __name__ == '__main__':
 
-    ts = ["SELECT *",
-          "select DISTINCT *",
-          "SELECT ?title",
-          "SELECT ?title ?name",
-          "SELECT distinct ?title ?name",          
-          "SELECT * FROM <a> WHERE  ( <book1> <title> ?title )",
-          "prefix dc: <http://purl.org/dc/1.1/> SELECT * from <a> WHERE  ( <book1> <title> ?title )",
-          "PREFIX bob: <http://is.your.uncle/> prefix dc: <http://purl.org/dc/1.1/> select * FROM <a> where  ( bob:book1 dc:title ?title )",
-          'PREFIX foaf:   <http://xmlns.com/foaf/0.1/> SELECT ?mbox WHERE ( ?x foaf:name "Johnny Lee Outlaw" ) ( ?x foaf:mbox ?mbox )',
-          "PREFIX  dc:  <http://purl.org/dc/elements/1.1/> PREFIX  ns:  <http://example.org/ns#> SELECT  ?title ?price WHERE   ( ?x dc:title ?title ) ( ?x ns:price ?price ) AND ?price < 30",
-          'DESCRIBE ?x WHERE (?x ent:employeeId "1234")',
-          "PREFIX vcard:  <http://www.w3.org/2001/vcard-rdf/3.0#> CONSTRUCT * WHERE ( ?x vcard:FN ?name )",
-          "PREFIX foaf:    <http://xmlns.com/foaf/0.1/> SELECT ?name WHERE ( ?x foaf:name ?name ) LIMIT 20",
-          "PREFIX foaf:  <http://xmlns.com/foaf/0.1/> SELECT ?given ?family WHERE SOURCE ?ppd ( ?whom foaf:given ?family )",
-          "PREFIX foaf:  <http://xmlns.com/foaf/0.1/> SELECT ?given ?family WHERE SOURCE * ( ?whom foaf:given ?family )"
+    ts = ["SELECT ?title ?bob WHERE { }",
+          "SELECT ?title WHERE { <http://example.org/book/book1> <http://purl.org/dc/elements/1.1/title> ?title . }"
           ]
 
     for t in ts:
