@@ -130,5 +130,14 @@ try:
 except ImportError:
     pass
 
+
+try:
+    import RDF
+    # If we can import persistent then test ZODB backend
+    class RedLandTestCase(GraphTestCase):
+        backend = "Redland"
+except ImportError:
+    pass
+
 if __name__ == '__main__':
     unittest.main()    

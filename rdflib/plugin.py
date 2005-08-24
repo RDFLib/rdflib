@@ -67,3 +67,6 @@ register('ZODB', Backend,
 
 register('sqlobject', Backend,
          'rdflib.backends._sqlobject', 'SQLObject')
+
+register('Redland', Backend,
+         'rdflib.backends.Redland', 'Redland')
