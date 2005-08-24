@@ -6,11 +6,11 @@ from rdflib.backends import Backend
 
 def _t(i):
     if isinstance(i, rdflib.URIRef):
-        return RDF.Uri(str(i))
+        return RDF.Uri(i)
     if isinstance(i, rdflib.BNode):
-        return RDF.Node(blank=str(i))
+        return RDF.Node(blank=i)
     if isinstance(i, rdflib.Literal):
-        return RDF.Node(literal=str(i))
+        return RDF.Node(literal=i)
     if i is None:
         return None
     raise TypeError, 'Cannot convert %s' % `i`
@@ -18,7 +18,7 @@ def _t(i):
 def _f(i):
     if isinstance(i, RDF.Uri):
         return rdflib.URIRef(i)
-    if isinstance(i, RDF.Node):
+    if isinstance(i, RDF1.Node):
         if i.is_blank():
             return rdflib.BNode(i)
         else:
