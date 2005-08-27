@@ -10,8 +10,8 @@
 
   <rdf:Description rdf:about="http://rdflib.net#">
     <doap:release rdf:resource="#"/>
-    <doap:maintainer rdf:resource="http://eikeon.com#">
 <!--
+    <doap:maintainer rdf:resource="http://eikeon.com#">
   TODO:
     <doap:developer rdf:resource="...">
     <p>Alford, Ron</p>
@@ -32,34 +32,34 @@
   </rdf:Description>
 
   <doap:Version rdf:about="#">
-    <rdfs:label>rdflib-2.2.0</rdfs:label>
+    <rdfs:label>rdflib-2.3.0</rdfs:label>
     <rdfs:comment rdf:datatype="http://www.w3.org/1999/xhtml">
 <![CDATA[
 <div>
-    <p>This release is the first release in a new stable branch. The bits that we were refactoring have been finished and have had time to stabilize. See the <a href="http://rdflib.net/2005/08/20/rdflib-2.2.0/CHANGELOG">Change Log</a> for more details on what's changed.
+    <p>This release is the first release in a new stable branch. The bits that we were refactoring have been finished and have had time to stabilize. See the <a href="http://rdflib.net/2005/xx/xx/rdflib-2.3.0/CHANGELOG">Change Log</a> for more details on what's changed.
     </p>
     
     <p>
-      To install: download the release from <a href="http://rdflib.net/2005/08/20/rdflib-2.2.0.tgz">rdflib-2.2.0.tgz</a> or <a href="http://rdflib.net/2005/08/20/rdflib-2.2.0.zip">rdflib-2.2.0.zip</a>, unpack and then run: <pre>python setup.py install</pre>
+      To install: download the release from <a href="http://rdflib.net/2005/xx/xx/rdflib-2.3.0.tgz">rdflib-2.3.0.tgz</a> or <a href="http://rdflib.net/2005/xx/xx/rdflib-2.3.0.zip">rdflib-2.3.0.zip</a>, unpack and then run: <pre>python setup.py install</pre>
     </p>    
 
-    <p>Also browse the <a href="http://rdflib.net/2005/08/20/rdflib-2.2.0/html/index.html">RDF API Documentation</a>, take a look at <a href="http://rdflib.net/2005/08/20/rdflib-2.2.0/example.py">example.py</a>, and glance at the <a href="http://rdflib.net/2005/08/20/rdflib-2.2.0/LICENSE">License</a>.
+    <p>Also browse the <a href="http://rdflib.net/2005/xx/xx/rdflib-2.3.0/html/index.html">RDF API Documentation</a>, take a look at <a href="http://rdflib.net/2005/xx/xx/rdflib-2.3.0/example.py">example.py</a>, and glance at the <a href="http://rdflib.net/2005/xx/xx/rdflib-2.3.0/LICENSE">License</a>.
     </p>
 
 </div>
 ]]>
     </rdfs:comment>
-    <doap:revision>2.2.0</doap:revision>
+    <doap:revision>2.3.0</doap:revision>
     <doap:created>2005-08-20</doap:created>
   </doap:Version>
 
-  <blog:Entry rdf:about="entry#">
-    <rdfs:label>rdflib-2.2.0 released</rdfs:label>
+  <blog:Entry rdf:ID="entry">
+    <rdfs:label>rdflib-2.3.0 released</rdfs:label>
     <rdfs:comment rdf:datatype="http://www.w3.org/1999/xhtml">
 <![CDATA[
 
     <p>
-      I'm pleased to announce the <a href="http://rdflib.net/2005/08/20/rdflib-2.2.0/README/">rdflib-2.2.0 release</a>, a new stable release. Projects that would like a bug fix only branch of rdflib to depend on should use this new stable branch. New development will now move to a 2.3.0 development branches.
+      <a href="http://rdflib.net/2005/xx/xx/rdflib-2.3.0/README/">rdflib-2.3.0 release</a>
     </p> 
 
 ]]>
