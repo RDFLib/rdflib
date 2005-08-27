@@ -26,7 +26,7 @@ class install(_install):
 
 setup(
     cmdclass={'install': install},
-    name = 'RDFLib',
+    name = 'rdflib',
     version = __version__,
     description = "RDF library containing an RDF triple store and RDF/XML parser/serializer",
     author = "Daniel 'eikeon' Krech",

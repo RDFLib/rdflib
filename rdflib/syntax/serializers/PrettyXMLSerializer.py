@@ -9,7 +9,7 @@ from rdflib.syntax.serializers.XMLWriter import XMLWriter
 XMLLANG = "http://www.w3.org/XML/1998/namespacelang"
 
 
-# TODO: 
+# TODO:
 def fix(val):
     "strip off _: from nodeIDs... as they are not valid NCNames"
     if val.startswith("_:"):
@@ -25,17 +25,17 @@ class PrettyXMLSerializer(Serializer):
 
     def relativize(self, uri):
         base = self.base
-	if base and uri.startswith(base):
-	    uri = URIRef(uri.replace(base, "", 1))
-	return uri
+        if base and uri.startswith(base):
+            uri = URIRef(uri.replace(base, "", 1))
+        return uri
 
-    def serialize(self, stream, base=None):
+    def serialize(self, stream, base=None, encoding=None):
         self.__serialized = {}
         store = self.store
         self.base = base
-        
+
         nm = store.namespace_manager
-        self.writer = writer = XMLWriter(stream, nm)
+        self.writer = writer = XMLWriter(stream, nm, encoding)
 
         namespaces = {}
         nm.reset()
@@ -46,9 +46,9 @@ class PrettyXMLSerializer(Serializer):
                 prefix, namespace, local = result
                 namespaces[prefix] = namespace
         namespaces["rdf"] = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-        writer.push(RDF.RDF)            
+        writer.push(RDF.RDF)
         writer.namespaces(namespaces.iteritems())
-        
+
         # Write out subjects that can not be inline
         for subject in store.subjects():
             if (None, None, subject) in store:
@@ -56,15 +56,15 @@ class PrettyXMLSerializer(Serializer):
                     self.subject(subject, 1)
             else:
                 self.subject(subject, 1)
-        
+
         # write out anything that has not yet been reached
         for subject in store.subjects():
             self.subject(subject, 1)
 
         writer.pop(RDF.RDF)
 
-        # Set to None so that the memory can get garbage collected.        
-        self.__serialized = None 
+        # Set to None so that the memory can get garbage collected.
+        self.__serialized = None
 
 
     def subject(self, subject, depth=1):
@@ -89,13 +89,13 @@ class PrettyXMLSerializer(Serializer):
     def predicate(self, predicate, object, depth=1):
         writer = self.writer
         store = self.store
-        writer.push(predicate)                    
+        writer.push(predicate)
         if isinstance(object, Literal):
             attributes = ""
             if object.language:
                 writer.attribute(XMLLANG, object.language)
             if object.datatype:
-                writer.attribute(RDF.datatype, object.datatype)                
+                writer.attribute(RDF.datatype, object.datatype)
             writer.text(object)
         elif object in self.__serialized or not (object, None, None) in store:
             if isinstance(object, BNode):
@@ -118,4 +118,4 @@ class PrettyXMLSerializer(Serializer):
                     self.__serialized[collection] = 1
             else:
                 self.subject(object, depth+1)
-        writer.pop(predicate)            
+        writer.pop(predicate)

@@ -45,6 +45,9 @@ class URIRef(Identifier):
 	    if path:
 		return URIRef("#".join(rsplit(self, "/", 1)))
 	    else:
-		return self
+		if not self.endswith("#"):
+		    return URIRef("%s#" % self)
+		else:
+		    return self
         else:
             return self

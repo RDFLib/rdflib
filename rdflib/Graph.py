@@ -15,7 +15,7 @@ from rdflib.syntax.NamespaceManager import NamespaceManager
 
 from rdflib.URLInputSource import URLInputSource
 from xml.sax.xmlreader import InputSource
-from xml.sax.saxutils import prepare_input_source 
+from xml.sax.saxutils import prepare_input_source
 
 import logging
 
@@ -31,7 +31,7 @@ class Graph(object):
     that require context, such as true merging/demerging of sub-graphs
     and provenance.
     """
-    
+
     def __init__(self, backend='default'):
         super(Graph, self).__init__()
         if not isinstance(backend, Backend):
@@ -43,10 +43,10 @@ class Graph(object):
     def __get_backend(self):
         return self.__backend
     backend = property(__get_backend)
-    
+
     def _get_namespace_manager(self):
         if self.__namespace_manager is None:
-            self.__namespace_manager = NamespaceManager(self)            
+            self.__namespace_manager = NamespaceManager(self)
         return self.__namespace_manager
     def _set_namespace_manager(self, nm):
         self.__namespace_manager = nm
@@ -92,7 +92,7 @@ class Graph(object):
                 check_context(context)
             self.__backend.remove((s, p, o), context)
         else:
-            self.__backend.remove((s, p, o))            
+            self.__backend.remove((s, p, o))
 
     def triples(self, (s, p, o), context=None):
         """ Generator over the triple store.  Returns triples that
@@ -107,9 +107,9 @@ class Graph(object):
         else:
             for t in self.__backend.triples((s, p, o)):
                 yield t
-            
-        
-    def contexts(self, triple=None): 
+
+
+    def contexts(self, triple=None):
         """ Generator over all contexts in the graph. If triple is specified, a generator over all contexts the triple is in."""
         assert self.context_aware, "Graph must be context aware to use this method"
         for context in self.__backend.contexts(triple):
@@ -132,7 +132,7 @@ class Graph(object):
                  return any value in the case there is more than one
                else:
                  raise UniquenessError
-        """     
+        """
         retval = default
         if object is None:
             assert subject is not None
@@ -162,14 +162,14 @@ class Graph(object):
 
     def label(self, subject, default=''):
         """ Queries for the RDFS.label of the subject, returns default if no label exists. """
-	if subject is None:
-	    return default
+        if subject is None:
+            return default
         return self.value(subject, RDFS.label, default=default, any=True)
 
     def comment(self, subject, default=''):
         """ Queries for the RDFS.comment of the subject, returns default if no comment exists. """
-	if subject is None:
-	    return default
+        if subject is None:
+            return default
         return self.value(subject, RDFS.comment, default=default, any=True)
 
     def items(self, list):
@@ -195,8 +195,8 @@ class Graph(object):
         if self.context_aware:
             return self.__backend.__len__(context)
         else:
-            return self.__backend.__len__()            
-    
+            return self.__backend.__len__()
+
     def __eq__(self, other):
         """ Test if Graph is exactly equal to Graph other."""
         # Note: this is not a test of isomorphism, but rather exact
@@ -220,7 +220,7 @@ class Graph(object):
     def __isub__(self, other):
         """ Subtract all triples in Graph other from Graph."""
         for triple in other:
-            self.__backend.remove(triple) 
+            self.__backend.remove(triple)
         return self
 
     def subjects(self, predicate=None, object=None):
@@ -229,12 +229,12 @@ class Graph(object):
             yield s
 
     def predicates(self, subject=None, object=None):
-        """ A generator of predicates with the given subject and object. """        
+        """ A generator of predicates with the given subject and object. """
         for s, p, o in self.triples((subject, None, object)):
             yield p
 
     def objects(self, subject=None, predicate=None):
-        """ A generator of objects with the given subject and predicate. """                
+        """ A generator of objects with the given subject and predicate. """
         for s, p, o in self.triples((subject, predicate, None)):
             yield o
 
@@ -242,14 +242,14 @@ class Graph(object):
         """ A generator of (subject, predicate) tuples for the given object """
         for s, p, o in self.triples((None, None, object)):
             yield s, p
-            
+
     def subject_objects(self, predicate=None):
-        """ A generator of (subject, object) tuples for the given predicate """        
+        """ A generator of (subject, object) tuples for the given predicate """
         for s, p, o in self.triples((None, predicate, None)):
             yield s, o
-        
+
     def predicate_objects(self, subject=None):
-        """ A generator of (predicate, object) tuples for the given subject """                
+        """ A generator of (predicate, object) tuples for the given subject """
         for s, p, o in self.triples((subject, None, None)):
             yield p, o
 
@@ -263,7 +263,7 @@ class Graph(object):
     def remove_context(self, identifier):
         """ Removes the given context from the graph. """
         self.__backend.remove_context(identifier)
-        
+
     def transitive_objects(self, subject, property, remember=None):
         """ """
         if remember==None:
@@ -288,12 +288,12 @@ class Graph(object):
 
     def load(self, location, publicID=None, format="xml"):
         """ for b/w compat. See parse."""
-	return self.parse(location, publicID, format)
+        return self.parse(location, publicID, format)
 
-    def save(self, location, format="xml", base=None):
+    def save(self, location, format="xml", base=None, encoding=None):
         """ for b/x compat. See serialize."""
-	return self.serialize(location, format, base)
-        
+        return self.serialize(location, format, base, encoding)
+
     def context_id(self, uri):
         uri = uri.split("#", 1)[0]
         return URIRef("%s#context" % uri)
@@ -305,20 +305,20 @@ class Graph(object):
             if hasattr(source, "read") and not isinstance(source, Namespace): # we need to make sure it's not an instance of Namespace since Namespace instances have a read attr
                 input_source = prepare_input_source(source)
             else:
-		location = self.absolutize(source)
+                location = self.absolutize(source)
                 input_source = URLInputSource(location)
-		publicID = publicID or location
+                publicID = publicID or location
         if publicID:
             input_source.setPublicId(publicID)
-	id = input_source.getPublicId()
-	if id is None:
-	    logging.info("no publicID set for source. Using '' for publicID.")
-	    input_source.setPublicId("")
-	return input_source
+        id = input_source.getPublicId()
+        if id is None:
+            logging.info("no publicID set for source. Using '' for publicID.")
+            input_source.setPublicId("")
+        return input_source
 
     def parse(self, source, publicID=None, format="xml"):
         """ Parse source into Graph. If Graph is context-aware it'll get loaded into it's own context (sub graph). Format defaults to xml (AKA rdf/xml). The publicID argument is for specifying the logical URI for the case that it's different from the physical source URI. Returns the context into which the source was parsed."""
-	source = self.prepare_input_source(source, publicID)
+        source = self.prepare_input_source(source, publicID)
         if self.context_aware:
             id = self.context_id(URIRef(source.getPublicId()))
             self.remove_context(id)
@@ -326,15 +326,15 @@ class Graph(object):
         else:
             context = self
         parser = plugin.get(format, Parser)()
-	parser.parse(source, context)
+        parser.parse(source, context)
         return context
 
-        return parser.parse(source, publicID, format) 
+        return parser.parse(source, publicID, format)
 
-    def serialize(self, destination=None, format="xml", base=None):
+    def serialize(self, destination=None, format="xml", base=None, encoding=None):
         """ Serialize the Graph to destination. If destination is None serialize method returns the serialization as a string. Format defaults to xml (AKA rdf/xml)."""
         serializer = plugin.get(format, Serializer)(self)
-        return serializer.serialize(destination, base=base)
+        return serializer.serialize(destination, base=base, encoding=encoding)
 
     def seq(self, subject) :
         """
@@ -360,7 +360,7 @@ class Graph(object):
         for prefix, namespace in self.namespace_manager.namespaces():
             yield prefix, namespace
 
-    
+
 class Context(Graph):
     def __init__(self, graph, identifier):
         super(Context, self).__init__(backend=graph.backend)
@@ -376,13 +376,13 @@ class Context(Graph):
     def add(self, triple, context=None): # TODO: test if we need context=None arg
         assert context is None
         self.backend.add(triple, self.identifier)
-        
+
     def remove(self, triple, context=None):
-        assert context is None        
+        assert context is None
         self.backend.remove(triple, self.identifier)
-        
+
     def triples(self, triple, context=None):
-        assert context is None        
+        assert context is None
         return self.backend.triples(triple, self.identifier)
 
     def bind(self, prefix, namespace, override=True):
@@ -406,7 +406,7 @@ class Seq(object):
         """
         The graph which contains the sequence. The subject is
         simply the subject which is supposed to be a Seq.
-        
+
         Parameters:
         -----------
         graph: the graph containing the Seq
@@ -418,9 +418,9 @@ class Seq(object):
         _list = self._list = list()
         LI_INDEX = RDF.RDFNS["_"]
         for (p, o) in graph.predicate_objects(subject):
-            if p.startswith(LI_INDEX): #!= RDF.Seq: # 
+            if p.startswith(LI_INDEX): #!= RDF.Seq: #
                 _list.append(("%s" % p, o))
-        # here is the trick: the predicates are _1, _2, _3, etc. Ie, 
+        # here is the trick: the predicates are _1, _2, _3, etc. Ie,
         # by sorting the keys we have what we want!
         _list.sort()
 
