@@ -23,7 +23,7 @@ class XMLSerializer(Serializer):
         for predicate in uniq(self.store.predicates()): 
             nm.compute_qname(predicate)
             
-    def serialize(self, stream, base=None):
+    def serialize(self, stream, base=None, encoding=None):
         if base is not None:
 	    print "TODO: NTSerializer does not support base"
         self.__stream = stream        
