@@ -17,6 +17,8 @@ from rdflib.URLInputSource import URLInputSource
 from xml.sax.xmlreader import InputSource
 from xml.sax.saxutils import prepare_input_source
 
+from rdflib.interfaces import implements, IGraph
+
 import logging
 
 
@@ -31,6 +33,8 @@ class Graph(object):
     that require context, such as true merging/demerging of sub-graphs
     and provenance.
     """
+
+    implements(IGraph)
 
     def __init__(self, backend='default'):
         super(Graph, self).__init__()
