@@ -9,6 +9,7 @@ from rdflib.constants import RDFNS, TYPE
 
 from rdflib.exceptions import ParserError
 from rdflib.URLInputSource import URLInputSource
+from rdflib.FileInputSource import FileInputSource
 
 from urllib import urlopen
 
@@ -59,7 +60,7 @@ class NTParser(Parser):
             location = str(source)
             baseURI = baseURI or location
             file = urlopen(location)
-        if isinstance(source, FileInputSource):
+        elif isinstance(source, FileInputSource):
             file = source.file
         else:
             file = source
