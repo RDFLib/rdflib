@@ -6,14 +6,22 @@ from pyparsing import CaselessLiteral, Word, Upcase, delimitedList, Optional, \
 
 from pyparsing import Literal as ppLiteral  # name Literal assigned by grammar
 
+DEBUG = 0
+
 def punctuation(lit):
-    return ppLiteral(lit).setName(lit).setResultsName(lit)
+    o =  ppLiteral(lit).setName(lit).setResultsName(lit)
+    if DEBUG: o.setDebug()
+    return o
 
 def keyword(lit):
-    return Keyword(lit, caseless=True).setResultsName(lit).setName(lit)
+    o = Keyword(lit, caseless=True).setResultsName(lit).setName(lit)
+    if DEBUG: o.setDebug()
+    return o
 
 def production(lit):
-    return Forward().setResultsName(lit).setName(lit)
+    o = Forward().setResultsName(lit).setName(lit)
+    if DEBUG: o.setDebug()
+    return o
 
 class SPARQLGrammar(object):
 
@@ -179,6 +187,8 @@ class SPARQLGrammar(object):
     NCCHAR  = production('NCCHAR')
     NCNAME_PREFIX = production('NCNAME_PREFIX')
     NCNAME = production('NCNAME')
+
+    _comment = '#' + restOfLine
     
     # BEGIN PRODUCTIONS
     
@@ -186,6 +196,7 @@ class SPARQLGrammar(object):
     #      ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery )
 
     Query << Prolog + (SelectQuery | ConstructQuery | DescribeQuery | AskQuery)
+    Query.ignore(_comment)
 
     # Prolog ::= BaseDecl? PrefixDecl*
 
@@ -264,7 +275,7 @@ class SPARQLGrammar(object):
 
     # GraphPattern ::= ( Triples '.'? )? ( GraphPatternNotTriples '.'? GraphPattern )?
 
-    GraphPattern << Optional(Triples + Optional(dot)) + Optional(GraphPatternNotTriples + Optional(dot) + GraphPattern)
+    GraphPattern << Optional(Triples + Optional(dot.suppress())) + Optional(GraphPatternNotTriples + Optional(dot.suppress()) + GraphPattern)
 
     # GraphPatternNotTriples ::= OptionalGraphPattern | GroupOrUnionGraphPattern | GraphGraphPattern | Constraint
 
@@ -288,11 +299,11 @@ class SPARQLGrammar(object):
 
     # ConstructTemplate ::= '{' Triples? '.'? '}'
 
-    ConstructTemplate << lcbrack + Optional(Triples) + Optional(dot) + rcbrack
+    ConstructTemplate << lcbrack + Optional(Triples) + Optional(dot.suppress()) + rcbrack
 
     # Triples ::= Triples1 ( '.' Triples )?
 
-    Triples << Triples1 + Optional(dot + Triples)
+    Triples << Triples1 + Optional(dot.suppress() + Triples)
 
     # Triples1 ::= VarOrTerm PropertyListNotEmpty | TriplesNode PropertyList
 
@@ -440,7 +451,7 @@ class SPARQLGrammar(object):
 
     # RDFTerm ::= IRIref | RDFLiteral | NumericLiteral | BooleanLiteral | BlankNode
 
-    RDFLiteral << (IRIref | RDFLiteral | NumericLiteral | BooleanLiteral | BlankNode)
+    RDFTerm << (IRIref | RDFLiteral | NumericLiteral | BooleanLiteral | BlankNode)
 
     # NumericLiteral ::= INTEGER | FLOATING_POINT
 
@@ -504,7 +515,7 @@ class SPARQLGrammar(object):
 
     # DECIMAL ::= [0-9]+ '.' [0-9]* | '.' [0-9]+
 
-    DECIMAL << Word(nums) + dot + ZeroOrMore(nums)
+    DECIMAL << Word(nums) + dot.suppress() + ZeroOrMore(nums)
 
     # FLOATING_POINT ::= [0-9]+ '.' [0-9]* EXPONENT? | '.' ([0-9])+ EXPONENT? | ([0-9])+ EXPONENT
 
@@ -564,7 +575,11 @@ class SPARQLGrammar(object):
 if __name__ == '__main__':
 
     ts = ["SELECT ?title ?bob WHERE { }",
-          "SELECT ?title WHERE { <http://example.org/book/book1> <http://purl.org/dc/elements/1.1/title> ?title . }"
+          "SELECT ?title WHERE { <http://example.org/book/book1> <http://purl.org/dc/elements/1.1/title> ?title . }",
+#          "PREFIX  : <http://example.org/ns#> SELECT  ?a ?c WHERE { ?a :b ?c . OPTIONAL { ?c :d ?e } . FILTER ! bound(?e) }}",
+          "",
+          "",
+
           ]
 
     for t in ts:
