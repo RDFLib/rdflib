@@ -8,19 +8,19 @@ from pyparsing import Literal as ppLiteral  # name Literal assigned by grammar
 
 DEBUG = 0
 
-def punctuation(lit):
+def punctuation(lit, d=False):
     o =  ppLiteral(lit).setName(lit).setResultsName(lit)
-    if DEBUG: o.setDebug()
+    if DEBUG or d: o.setDebug()
     return o
 
-def keyword(lit):
+def keyword(lit, d=False):
     o = Keyword(lit, caseless=True).setResultsName(lit).setName(lit)
-    if DEBUG: o.setDebug()
+    if DEBUG or d: o.setDebug()
     return o
 
-def production(lit):
+def production(lit, d=False):
     o = Forward().setResultsName(lit).setName(lit)
-    if DEBUG: o.setDebug()
+    if DEBUG or d: o.setDebug()
     return o
 
 class SPARQLGrammar(object):
@@ -65,6 +65,8 @@ class SPARQLGrammar(object):
     lne = punctuation('ne')
     bnode = punctuation('_:')
     comma = punctuation(',')
+    lor = punctuation('||')
+    land = punctuation('&&')
 
     # keywords
 
@@ -195,8 +197,8 @@ class SPARQLGrammar(object):
     # Query ::= Prolog
     #      ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery )
 
-    Query << Prolog + (SelectQuery | ConstructQuery | DescribeQuery | AskQuery)
-    Query.ignore(_comment)
+    Query << (Prolog + (SelectQuery | ConstructQuery | DescribeQuery | AskQuery)).ignore(_comment)
+
 
     # Prolog ::= BaseDecl? PrefixDecl*
 
@@ -299,7 +301,7 @@ class SPARQLGrammar(object):
 
     # ConstructTemplate ::= '{' Triples? '.'? '}'
 
-    ConstructTemplate << lcbrack + Optional(Triples) + Optional(dot.suppress()) + rcbrack
+    ConstructTemplate << lcbrack.suppress() + Optional(Triples) + Optional(dot.suppress()) + rcbrack.suppress()
 
     # Triples ::= Triples1 ( '.' Triples )?
 
@@ -335,11 +337,11 @@ class SPARQLGrammar(object):
 
     # BlankNodePropertyList ::= '[' PropertyListNotEmpty ']'
 
-    BlankNodePropertyList << lbrack + PropertyListNotEmpty + rbrack
+    BlankNodePropertyList << lbrack.suppress() + PropertyListNotEmpty + rbrack.suppress()
 
     # Collection ::= '(' GraphNode+ ')'
 
-    Collection << lparen + OneOrMore(GraphNode) + rparen
+    Collection << lparen.suppress() + OneOrMore(GraphNode) + rparen.suppress()
 
     # GraphNode ::= VarOrTerm | TriplesNode
 
@@ -363,7 +365,7 @@ class SPARQLGrammar(object):
 
     # GraphTerm ::= RDFTerm | '(' ')'
 
-    GraphTerm << (RDFTerm | lparen + rparen)
+    GraphTerm << (RDFTerm | lparen.suppress() + rparen.suppress())
 
     # Expression ::= ConditionalOrExpression
 
@@ -371,11 +373,11 @@ class SPARQLGrammar(object):
 
     # ConditionalOrExpression ::= ConditionalAndExpression ( '||' ConditionalAndExpression )*
 
-    ConditionalAndExpression << ConditionalAndExpression + ZeroOrMore( '||' + ConditionalAndExpression)
+    ConditionalOrExpression << ConditionalAndExpression + ZeroOrMore( lor.suppress() + ConditionalAndExpression)
 
     # ConditionalAndExpression ::= ValueLogical ( '&&' ValueLogical )*
 
-    ConditionalAndExpression << ValueLogical + ZeroOrMore('&&' + ValueLogical)
+    ConditionalAndExpression << ValueLogical + ZeroOrMore(land + ValueLogical)
 
     # ValueLogical ::= RelationalExpression
 
@@ -384,9 +386,12 @@ class SPARQLGrammar(object):
     # RelationalExpression ::= NumericExpression ( '=' NumericExpression | '!=' NumericExpression | '<' NumericExpression | '>' NumericExpression | '<=' NumericExpression | '>=' NumericExpression )?
 
     RelationalExpression << (NumericExpression +
-                             Optional(eq + NumericExpression | noteq + NumericExpression |
-                                      lt + NumericExpression | gt + NumericExpression |
-                                      lte + NumericExpression | gte + NumericExpression))
+                             Optional(eq.setResultsName('equals') + NumericExpression |
+                                      noteq.setResultsName('notequals') + NumericExpression |
+                                      lt.setResultsName('lessthan') + NumericExpression |
+                                      gt.setResultsName('greaterthan') + NumericExpression |
+                                      lte.setResultsName('lessthanorequal') + NumericExpression |
+                                      gte.setResultsName('greaterthanorequal') + NumericExpression))
 
     # NumericExpression ::= AdditiveExpression
 
@@ -419,19 +424,19 @@ class SPARQLGrammar(object):
     #      | RegexExpression
     #      | FunctionCall
 
-    CallExpression << (_str + lparen + Expression + rparen |
-                       _lang + lparen + Expression + rparen |
-                       _datatype + lparen + Expression + rparen |
-                       _bound + lparen + Var + rparen |
-                       _isuri + lparen + Expression + rparen |
-                       _isblank + lparen + Expression + rparen |
-                       _isliteral + lparen + Expression + rparen |
+    CallExpression << (_str + lparen.suppress() + Expression + rparen.suppress() |
+                       _lang + lparen.suppress() + Expression + rparen.suppress() |
+                       _datatype + lparen.suppress() + Expression + rparen.suppress() |
+                       _bound + lparen.suppress() + Var + rparen.suppress() |
+                       _isuri + lparen.suppress() + Expression + rparen.suppress() |
+                       _isblank + lparen.suppress() + Expression + rparen.suppress() |
+                       _isliteral + lparen.suppress() + Expression + rparen.suppress() |
                        RegexExpression |
                        FunctionCall)
 
     # RegexExpression ::= 'REGEX' '(' Expression ',' Expression ( ',' Expression )? ')'
 
-    RegexExpression << _regex + lparen + Expression + comma + Expression + Optional(comma + Expression) + rparen
+    RegexExpression << _regex + lparen.suppress() + Expression + comma + Expression + Optional(comma + Expression) + rparen.suppress()
 
     # FunctionCall ::= IRIref ArgList
 
@@ -439,11 +444,11 @@ class SPARQLGrammar(object):
 
     # ArgList ::= ( '(' ')' | '(' Expression ( ',' Expression )* ')' )
 
-    ArgList << ((lparen + rparen) | rparen + Expression + ZeroOrMore(comma + Expression) + rparen)
+    ArgList << ((lparen.suppress() + rparen.suppress()) | lparen.suppress() + Expression + ZeroOrMore(comma + Expression) + rparen.suppress())
 
     # BrackettedExpression ::= '(' Expression ')'
 
-    BrackettedExpression << lparen + Expression + rparen
+    BrackettedExpression << lparen.suppress() + Expression + rparen.suppress()
 
     # PrimaryExpression ::= BrackettedExpression | CallExpression | Var | RDFTerm
 
@@ -459,7 +464,7 @@ class SPARQLGrammar(object):
 
     # RDFLiteral ::= String ( LANGTAG | ( '^^' IRIref ) )?
 
-    RDFLiteral << String + Optional( LANGTAG | ( typ + IRIref))
+    RDFLiteral << String + Optional( LANGTAG | ( typ.suppress() + IRIref))
 
     # BooleanLiteral ::= 'true' | 'false'
 
@@ -479,7 +484,7 @@ class SPARQLGrammar(object):
 
     # BlankNode ::= BNODE_LABEL | '[' ']'
 
-    BlankNode << (BNODE_LABEL | rbrack + lbrack)
+    BlankNode << (BNODE_LABEL | rbrack.suppress() + lbrack.suppress())
 
     # QuotedIRIref ::= '<' ([^> ])* '>' /* An IRI reference : RFC 3987 */
 
@@ -491,7 +496,7 @@ class SPARQLGrammar(object):
 
     # QNAME ::= NCNAME_PREFIX? ':' NCNAME?
 
-    QNAME << Optional(NCNAME_PREFIX) + colon + Optional(NCNAME_PREFIX)
+    QNAME << Group(Optional(NCNAME_PREFIX) + colon.suppress() + Optional(NCNAME))
 
     # BNODE_LABEL ::= '_:' NCNAME
 
@@ -515,7 +520,7 @@ class SPARQLGrammar(object):
 
     # DECIMAL ::= [0-9]+ '.' [0-9]* | '.' [0-9]+
 
-    DECIMAL << Word(nums) + dot.suppress() + ZeroOrMore(nums)
+    DECIMAL << Word(nums) + dot + ZeroOrMore(nums)
 
     # FLOATING_POINT ::= [0-9]+ '.' [0-9]* EXPONENT? | '.' ([0-9])+ EXPONENT? | ([0-9])+ EXPONENT
 
@@ -575,11 +580,67 @@ class SPARQLGrammar(object):
 if __name__ == '__main__':
 
     ts = ["SELECT ?title ?bob WHERE { }",
-          "SELECT ?title WHERE { <http://example.org/book/book1> <http://purl.org/dc/elements/1.1/title> ?title . }",
-#          "PREFIX  : <http://example.org/ns#> SELECT  ?a ?c WHERE { ?a :b ?c . OPTIONAL { ?c :d ?e } . FILTER ! bound(?e) }}",
-          "",
-          "",
 
+          "SELECT ?title WHERE { <http://example.org/book/book1> <http://purl.org/dc/elements/1.1/title> ?title . }",
+
+#          "PREFIX  : <http://example.org/ns#> SELECT  ?a ?c WHERE { ?a :b ?c . OPTIONAL { ?c :d ?e } . FILTER ! bound(?e) }}",
+          """PREFIX  : <http://example.org/ns#>
+          SELECT  ?a ?c
+          WHERE { ?a :b ?c .
+            OPTIONAL { ?c :d ?e } .
+            FILTER bound(?e) }
+          }""",
+          
+          """PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+          SELECT ?name ?mbox
+          WHERE { ?person foaf:name ?name .
+            OPTIONAL { ?person foaf:mbox ?mbox}
+          }""",
+
+          """PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+          SELECT ?name ?name2
+          WHERE { ?person foaf:name ?name .
+            OPTIONAL { ?person foaf:knows ?p2 . ?p2 foaf:name   ?name2 . }
+          }""",
+
+          """PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+          #PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+          SELECT ?name ?mbox
+          WHERE
+            {
+              { ?person rdf:type foaf:Person } .
+              OPTIONAL { ?person foaf:name  ?name } .
+              OPTIONAL {?person foaf:mbox  ?mbox} .
+            }""",
+
+          """PREFIX  dc: <http://purl.org/dc/elements/1.1/>
+          PREFIX  ns: <http://example.org/ns#>
+          SELECT  ?title ?price
+          WHERE
+              { ?x dc:title ?title .
+                ?x ns:price ?price . 
+                FILTER ( ?price < 30  ) .
+              }""",
+          """PREFIX  dc: <http://purl.org/dc/elements/1.1/>
+          PREFIX  x: <http://example.org/ns#>
+          SELECT  ?title ?price
+          WHERE
+          { ?book dc:title ?title . 
+          OPTIONAL
+            { ?book x:price ?price } . 
+            FILTER ( ( ! bound(?price) ) || ( ?price < 15 ) ) .
+          }
+          """,
+          """
+          PREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>
+          PREFIX  : <http://example.org/ns#>
+          SELECT  ?a
+          WHERE
+          { ?a :p ?v . 
+            FILTER ( "false"^^xsd:boolean || ?v ) .
+          }
+          
+          """,
           ]
 
     for t in ts:
