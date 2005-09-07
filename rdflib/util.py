@@ -56,10 +56,10 @@ def date_time(t=None):
 
 def parse_date_time(val):
     try:
-	ymd, hms = val.split("T")
+        ymd, hms = val.split("T")
     except:
-	ymd = val
-	hms = "00:00:00"
+        ymd = val
+        hms = "00:00:00"
     year, month, day = ymd.split("-")
     hour, minute, second = hms[:-1].split(":")
     
@@ -101,7 +101,10 @@ def from_n3(s, default=None):
         value = value.decode("unicode-escape")
         return Literal(value, language, datatype)
     else:
-        return BNode(s)
+        if s.startswith("_:"):
+            return BNode(s[2:])
+        else:
+            return BNode(s)
 
 def check_context(c):
     if not (isinstance(c, URIRef) or \
