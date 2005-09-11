@@ -116,28 +116,28 @@ class MemoryGraphTestCase(GraphTestCase):
     backend = "Memory"
 
 try:
-    import backends.Sleepycat
+    from rdflib.backends.Sleepycat import Sleepycat
     class SleepycatGraphTestCase(GraphTestCase):
         backend = "Sleepycat"
-except ImportError:
-    pass
+except ImportError, e:
+    print "Can not test Sleepycat backend:", e
 
 try:
     import persistent
     # If we can import persistent then test ZODB backend
     class ZODBGraphTestCase(GraphTestCase):
         backend = "ZODB"
-except ImportError:
-    pass
+except ImportError, e:
+    print "Can not test ZODB backend:", e
 
 
 try:
     import RDF
-    # If we can import persistent then test ZODB backend
+    # If we can import RDF then test Redland backend
     class RedLandTestCase(GraphTestCase):
         backend = "Redland"
-except ImportError:
-    pass
+except ImportError, e:
+    print "Can not test Redland backend:", e    
 
 if __name__ == '__main__':
     unittest.main()    
