@@ -53,8 +53,10 @@ class NamespaceManager(object):
         if bound_namespace and bound_namespace!=namespace:
             # prefix already in use for different namespace
             #
-            # append number to end of prefix until we find on
+            # append number to end of prefix until we find one
             # that's not in use.
+            if not prefix:
+                prefix = "default"
             num = 1                
             while 1:
                 new_prefix = "%s%s" % (prefix, num)
