@@ -1,8 +1,24 @@
 
 
 class Store(object):
-    def __init__(self):
-        self.context_aware = True
+
+    #Properties
+    #context_aware
+    #transaction_aware
+
+    def __init__(self, identifier, configuration=None):
+        """ identifier: URIRef of the Store. Defaults to CWD
+            configuration: string containing infomation open can use to connect to datastore.
+        """
+        self.identifier = identifier
+        if configuration:
+            self.open(configuration)
+
+    def open(self, configuration):
+        """ """
+
+    def close(self):
+        """ """
 
     def add(self, (subject, predicate, object), context=None):
         """ Add a triple to the store of triples. """
@@ -31,12 +47,6 @@ class Store(object):
         """ """
 
     def namespaces(self):
-        """ """
-
-    def open(self, path):
-        """ """
-        
-    def close(self):
         """ """
 
     def sync(self):
