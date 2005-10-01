@@ -17,7 +17,7 @@ class Store(object):
     def open(self, configuration):
         """ """
 
-    def close(self):
+    def close(self, commit_pending_transaction=False):
         """ """
 
     def add(self, (subject, predicate, object), context=None):
@@ -52,4 +52,10 @@ class Store(object):
     def namespaces(self):
         """ """
 
+    # Optional Transactional methods
 
+    def commit(self):
+        """ """
+    
+    def rollback(self):
+        """ """
