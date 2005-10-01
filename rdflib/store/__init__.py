@@ -7,15 +7,20 @@ class Store(object):
     #transaction_aware
 
     def __init__(self, identifier, configuration=None):
-        """ identifier: URIRef of the Store. Defaults to CWD
-            configuration: string containing infomation open can use to connect to datastore.
+        """ 
+        identifier: URIRef of the Store. Defaults to CWD
+        configuration: string containing infomation open can use to
+        connect to datastore.
         """
         self.identifier = identifier
         if configuration:
             self.open(configuration)
 
-    def open(self, configuration):
-        """ """
+    def open(self, configuration, create=True):
+        """ 
+        Opens the store specified by the configuration string. If
+	create is True a store will be created if it does not already exist.
+        """
 
     def close(self, commit_pending_transaction=False):
         """ """
@@ -27,7 +32,13 @@ class Store(object):
         """ Remove a triple from the store """
 
     def triples(self, (subject, predicate, object), context=None):
-        """A generator over all the triples matching pattern"""
+        """ 
+        A generator over all the triples matching pattern. Pattern can
+        be any objects for comparing against nodes in the store, for
+        example, RegExLiteral, Date? DateRange?
+        """
+
+    # varients of triples will be done if / when optimization is needed
 
     def __len__(self, context=None):
         """ Number of statements in the store. """
