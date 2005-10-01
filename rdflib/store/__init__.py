@@ -30,12 +30,15 @@ class Store(object):
         """A generator over all the triples matching pattern"""
 
     def __len__(self, context=None):
-	""" Number of statements in the store. """
+        """ Number of statements in the store. """
 
     def contexts(self, triple=None):
-	""" """
+        """ """
+
     def remove_context(self, identifier):
         """ """        
+
+    # Optional Namespace methods
 
     def bind(self, prefix, namespace):
         """ """
@@ -49,6 +52,4 @@ class Store(object):
     def namespaces(self):
         """ """
 
-    def sync(self):
-        """ """
 
