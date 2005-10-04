@@ -126,7 +126,7 @@ class IOMemory(Backend):
     def createPrefixMap(self):
         return {}
 
-    def add(self, triple, context=None):
+    def add(self, triple, context=None, quoted=False):
         """\
         Add a triple to the store.
         """
@@ -186,9 +186,10 @@ class IOMemory(Backend):
         self._setNestedIndex(self.cpos, ci, pi, oi, si)
         self._setNestedIndex(self.cosp, ci, oi, si, pi)
         
-        self._setNestedIndex(self.spo, si, pi, oi, ci)
-        self._setNestedIndex(self.pos, pi, oi, si, ci)
-        self._setNestedIndex(self.osp, oi, si, pi, ci)
+        if not quoted:
+	    self._setNestedIndex(self.spo, si, pi, oi, ci)
+	    self._setNestedIndex(self.pos, pi, oi, si, ci)
+	    self._setNestedIndex(self.osp, oi, si, pi, ci)
         
     def _setNestedIndex(self, index, *keys):
         for key in keys[:-1]:

@@ -72,7 +72,7 @@ class Graph(object):
         if hasattr(self.__backend, "close"):
             self.__backend.close()
 
-    def add(self, (s, p, o), context=None):
+    def add(self, (s, p, o), context=None, quoted=False):
         """ Add a triple, optionally provide a context.  A 3-tuple or
         rdflib.Triple can be provided.  Context must be a URIRef.  If
         no context is provides, triple is added to the default
@@ -81,8 +81,9 @@ class Graph(object):
         if self.context_aware:
             if context:
                 check_context(context)
-            self.__backend.add((s, p, o), context)
+            self.__backend.add((s, p, o), context, quoted)
         else:
+            assert quoted==False
             self.__backend.add((s, p, o))
 
     def remove(self, (s, p, o), context=None):
@@ -377,9 +378,9 @@ class Context(Graph):
     context_aware = property(_get_context_aware)
 
 
-    def add(self, triple, context=None): # TODO: test if we need context=None arg
-        assert context is None
-        self.backend.add(triple, self.identifier)
+    def add(self, triple, context=None, quoted=False): # TODO: test if we need context=None arg
+        #assert context is None
+        self.backend.add(triple, self.identifier, quoted)
 
     def remove(self, triple, context=None):
         assert context is None

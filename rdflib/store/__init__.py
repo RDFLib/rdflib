@@ -77,3 +77,20 @@ class Store(object):
     
     def rollback(self):
         """ """
+    # Optional nested context / n3 bits ??
+
+    def add_existential(self, resource):
+
+    def add_universal(self, resource):
+
+    def create_clause(self, identifier=None):
+
+    def get_existentials(self, recurse=True):
+
+    def get_universals(self, recurse=True):
+
+    def get_clause(self, identifier):
+
+    def list_clauses(self):
+
+    def remove_clause(self, identifier):
