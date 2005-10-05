@@ -10,6 +10,7 @@ prefix = ""
 for i in xrange(0,8):
     prefix += choice(ascii_letters)
 
+# TODO: replace with generator
 node_id = 0
 class BNode(Identifier):
     __slots__ = ()
