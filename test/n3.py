@@ -1,6 +1,6 @@
 from rdflib import *
 
-model = """
+input = """
 #  Definitions of terms describing the n3 model
 #
 
@@ -50,7 +50,7 @@ n3:context      a rdf:Property; rdfs:domain n3:statement;
     } forall :s1
 } log:implies { :x log:implies :y } .
 
-l# I think n3:includes has to be axiomatic builtin. - unless you go to syntax description.
+# I think n3:includes has to be axiomatic builtin. - unless you go to syntax description.
 # syntax.n3?
 """
 
@@ -70,6 +70,6 @@ class N3TestCase(unittest.TestCase):
 
     def testModel(self):
 	g = Graph()
-        g.parse(StringInputSource("model.n3"), format="n3")
-        g.serialize(format="pretty-xml")
+        g.parse(StringInputSource(input, system_id="http://example.org/"), format="n3") # TODO: remove the need to pass in system_id ?
+        print g.serialize(format="pretty-xml")
 
