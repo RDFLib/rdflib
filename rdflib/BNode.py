@@ -1,35 +1,34 @@
+# TODO: where can we move _unique_id and _serial_number_generator?
 from string import ascii_letters
 from random import choice
 
+def _unique_id():
+    """Create a (hopefully) unique prefix"""
+    id = ""
+    for i in xrange(0,8):
+	id += choice(ascii_letters)
+    return id 
+
+def _serial_number_generator():
+    i = 0
+    while 1:
+	yield i
+	i = i + 1    
+
 from rdflib.Identifier import Identifier
-from rdflib.Literal import Literal
 
-# Create a (hopefully) unique prefix so that BNode values do not
-# collide with ones created with a different instance of this module.
-prefix = ""
-for i in xrange(0,8):
-    prefix += choice(ascii_letters)
 
-# TODO: replace with generator
-node_id = 0
 class BNode(Identifier):
     __slots__ = ()
-    def __new__(cls, value=None):
+    def __new__(cls, value=None, # only store implementations should pass in a value
+		_sn_gen=_serial_number_generator(), _prefix=_unique_id()):
         if value==None:
-            global node_id
-            node_id += 1
-            value = "_%s%s" % (prefix, node_id)
-        else:
-            if not value.startswith("_"):
-                value = "".join(("_", value))
+	    # so that BNode values do not
+	    # collide with ones created with a different instance of this module
+	    # at some other time.
+            node_id = _sn_gen.next()
+            value = "%s%s" % (_prefix, node_id)
         return Identifier.__new__(cls, value)
         
     def n3(self):
-        if not self.startswith("_:"):
-	    if self.startswith("_"):
-		return "_:%s" % self[1:]
-	    else:
-		return "_:%s"
-        return str(self)
-
-
+        return "_:%s" % self
