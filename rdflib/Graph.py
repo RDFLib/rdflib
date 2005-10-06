@@ -379,8 +379,8 @@ class Context(Graph):
 
 
     def add(self, triple, context=None, quoted=False): # TODO: test if we need context=None arg
-        #assert context is None
-        self.backend.add(triple, self.identifier, quoted)
+        assert context is None
+        self.graph.add(triple, self.identifier, quoted)
 
     def remove(self, triple, context=None):
         assert context is None
