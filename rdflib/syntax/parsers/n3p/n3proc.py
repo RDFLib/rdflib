@@ -323,6 +323,7 @@ class N3Processor(n3p.N3Parser):
 
       def obrace(prod, tok): 
          f = self.bnode('formula')
+         f = self.uri('#%s' % f[2:]) # TODO: can we make formula identifiers URIRefs?
          if self.paths: 
             self.paths[-1].append(f)
          elif self.mode and self.mode[-1] == 'list': 
