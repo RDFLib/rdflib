@@ -117,7 +117,7 @@ class Sleepycat(Backend):
             self.__i2k.put(key, term)
         return key
 
-    def add(self, (subject, predicate, object), context=None):
+    def add(self, (subject, predicate, object), context=None, quoted=False):
         """\
         Add a triple to the store of triples.
         """
@@ -143,10 +143,10 @@ class Sleepycat(Backend):
         else:
             contexts = c
         assert contexts!=None
-        self.__spo.put("%s%s%s" % (s, p, o), contexts)
-        self.__pos.put("%s%s%s" % (p, o, s), "")
-        self.__osp.put("%s%s%s" % (o, s, p), "")
-
+        if not quoted:
+	    self.__spo.put("%s%s%s" % (s, p, o), contexts)
+	    self.__pos.put("%s%s%s" % (p, o, s), "")
+	    self.__osp.put("%s%s%s" % (o, s, p), "")
 
 
     def remove(self, (subject, predicate, object), context):
