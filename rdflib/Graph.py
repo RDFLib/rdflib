@@ -379,7 +379,10 @@ class Context(Graph):
 
 
     def add(self, triple, context=None, quoted=False): # TODO: test if we need context=None arg
-        assert context is None
+        #assert context is None or context is self.identifier
+	#This is commented out so that the N3 parser can go through
+	#the context it's being loaded into to add triples to the
+	#other contexts
         self.graph.add(triple, self.identifier, quoted)
 
     def remove(self, triple, context=None):
