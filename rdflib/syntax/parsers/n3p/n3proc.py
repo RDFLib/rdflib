@@ -155,7 +155,7 @@ class N3Processor(n3p.N3Parser):
       else: raise Exception("Token has no parent production.")
 
    def documentStart(self, prod): 
-      formula = self.bnode('formula')
+      formula = self.formula()
       self.formulae.append(formula)
       self.sink.start(formula)
 
@@ -322,8 +322,7 @@ class N3Processor(n3p.N3Parser):
       nodedict[')'] = cparen
 
       def obrace(prod, tok): 
-         f = self.bnode('formula')
-         f = self.uri('#%s' % f[2:]) # TODO: can we make formula identifiers URIRefs?
+         f = self.formula()
          if self.paths: 
             self.paths[-1].append(f)
          elif self.mode and self.mode[-1] == 'list': 
@@ -497,6 +496,12 @@ class N3Processor(n3p.N3Parser):
          self.counter += 1
          label += str(self.counter)
       return Var(label)
+
+   def formula(self):
+      f = self.bnode('formula')
+      f = self.uri('#%s' % f[2:]) # TODO: can we make formula identifiers URIRefs?
+      return f
+
 
 class NTriplesSink(object): 
    def __init__(self, out=None): 
