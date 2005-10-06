@@ -11,21 +11,15 @@ class N3Parser(Parser):
         pass
     
     def parse(self, source, graph):
-        source = source.url
-        baseURI = source
         #sink = NTriplesSink()
         sink = Sink(graph)
         if False: 
             sink.quantify = lambda *args: True
             sink.flatten = lambda *args: True
-        #if ':' not in source: 
-        #    uri = 'file://' + os.path.join(os.getcwd(), source)
-        #if baseURI and (':' not in baseURI): 
-        #    baseURI = 'file://' + os.path.join(os.getcwd(), baseURI)
-        baseURI = source # TODO absolutize
-        p = N3Processor(source, sink, baseURI=baseURI)
+        baseURI = source.getSystemId() or "" # TODO absolutize
+        p = N3Processor("nowhere", sink, baseURI=baseURI) # pass in "nowhere" so we can set data instead
+	p.data = source.getByteStream().read() # TODO getCharacterStream?
         p.parse()
-
 
 
 def convert(t):
@@ -56,25 +50,11 @@ class Sink(object):
        s, p, o  = convert(s), convert(p), convert(o)
        f = convert(f) #self.absolutize(f)
        quoted = (f != self.root) 
+       self.sink.add((s, p, o), f, quoted=quoted)    
+
        #print " adding:", (f, RDF.type, URIRef("Formula")), self.root
        #self.sink.add((f, RDF.type, URIRef("http://example.org/Formula")), self.root)
-
-       #print " adding:", s, p, o, f, quoted
-       self.sink.add((s, p, o), f, quoted=quoted)    
 
    def quantify(self, formula, var): 
        pass
 
-    
-
-# from rdflib import *
-
-# 
-# import os
-
-# def parse(uri): 
-
-# parse("model.n3")
-# #parse("log.n3")
-# #parse("log_implies1.n3")
-# #parse("t1.n3")
