@@ -19,7 +19,10 @@ def get(name, kind):
         return getattr(module, class_name)
     else:
         Adaptor = kind # TODO: look up of adaptor, for now just use kind
-        Adaptee = get(name, _adaptors[kind])
+        try:
+            Adaptee = get(name, _adaptors[kind])
+        except Exception, e:
+            raise Exception("could not get plugin for %s, %s: %s" % (name, kind, e))
         def const(*args, **keywords):
             return Adaptor(Adaptee(*args, **keywords))
         return const
@@ -49,6 +52,9 @@ register('n3', parsers.Parser,
 
 register('nt', parsers.Parser,
          'rdflib.syntax.parsers.NTParser', 'NTParser')
+
+register('n3', parsers.Parser,
+         'rdflib.syntax.parsers.N3Parser', 'N3Parser')
 
 register('default', Backend,
          'rdflib.backends.IOMemory', 'IOMemory')
