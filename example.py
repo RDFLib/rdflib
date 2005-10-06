@@ -16,7 +16,7 @@ donna = BNode()
 
 # Add triples using store's add method.
 store.add((donna, RDF.type, FOAF["Person"]))
-store.add((donna, FOAF["nick"], Literal("donna")))
+store.add((donna, FOAF["nick"], Literal("donna", lang="foo")))
 store.add((donna, FOAF["name"], Literal("Donna Fales")))
 
 # Iterate over triples in store and print them out.
