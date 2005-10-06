@@ -4,6 +4,7 @@ class Store(object):
 
     #Properties
     #context_aware
+    #formula_aware
     #transaction_aware
 
     def __init__(self, identifier, configuration=None):
