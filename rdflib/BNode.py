@@ -28,6 +28,13 @@ class BNode(Identifier):
 	    # at some other time.
             node_id = _sn_gen.next()
             value = "%s%s" % (_prefix, node_id)
+        else:
+	    # TODO: check that value falls within acceptable bnode value range
+	    # for RDF/XML needs to be something that can be serialzed as a nodeID
+            # for N3 ??
+            # Unless we require these constraints be enforced elsewhere?
+	    pass 
+
         return Identifier.__new__(cls, value)
         
     def n3(self):

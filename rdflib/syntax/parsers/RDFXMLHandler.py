@@ -36,7 +36,7 @@ from rdflib import URIRef, BNode, Literal
 from rdflib.exceptions import ParserError, Error
 from rdflib.syntax.xml_names import is_ncname
 
-from xml.sax.saxutils import handler, quoteattr
+from xml.sax.saxutils import handler, quoteattr, escape
 from urlparse import urljoin, urldefrag
 
 RDFNS = RDF.RDFNS
@@ -499,7 +499,7 @@ class RDFXMLHandler(handler.ContentHandler):
         current.object += ">"
 
     def literal_element_char(self, data):
-        self.current.object += data
+        self.current.object += escape(data)
         
     def literal_element_end(self, name, qname):
         if name[0]:
