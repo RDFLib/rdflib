@@ -16,7 +16,7 @@ class N3Parser(Parser):
         if False: 
             sink.quantify = lambda *args: True
             sink.flatten = lambda *args: True
-        baseURI = source.getSystemId() or "" # TODO absolutize
+        baseURI = source.getSystemId() or graph.absolutize("")
         p = N3Processor("nowhere", sink, baseURI=baseURI) # pass in "nowhere" so we can set data instead
 	p.data = source.getByteStream().read() # TODO getCharacterStream?
         p.parse()
@@ -41,14 +41,14 @@ class Sink(object):
       self.counter = 0
 
    def absolutize(self, u):
-       return URIRef("%s" % unicode(u[2:]))
+       return self.sink.absolutize(u, defrag=0)
 
    def start(self, root): 
-       self.root = convert(root) #self.absolutize(root)
+       self.root = self.absolutize(convert(root))
 
    def statement(self, s, p, o, f): 
        s, p, o  = convert(s), convert(p), convert(o)
-       f = convert(f) #self.absolutize(f)
+       f = self.absolutize(convert(f))
        quoted = (f != self.root) 
        self.sink.add((s, p, o), f, quoted=quoted)    
 

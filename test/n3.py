@@ -70,6 +70,6 @@ class N3TestCase(unittest.TestCase):
 
     def testModel(self):
 	g = Graph()
-        g.parse(StringInputSource(input, system_id="http://example.org/"), format="n3") # TODO: remove the need to pass in system_id ?
+        g.parse(StringInputSource(input), format="n3") # TODO: remove the need to pass in system_id ?
         print g.serialize(format="pretty-xml")
 
