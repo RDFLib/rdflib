@@ -3,6 +3,7 @@
 n3proc - An N3 Processor using n3.n3
 Author: Sean B. Palmer, inamidst.com
 Licence: GPL 2; share and enjoy!
+License: http://www.w3.org/Consortium/Legal/copyright-software
 Documentation: http://inamidst.com/n3p/
 
 usage: 
