@@ -383,7 +383,7 @@ class Context(Graph):
 	#This is commented out so that the N3 parser can go through
 	#the context it's being loaded into to add triples to the
 	#other contexts
-        self.graph.add(triple, self.identifier, quoted)
+        self.graph.add(triple, context or self.identifier, quoted)
 
     def remove(self, triple, context=None):
         assert context is None
