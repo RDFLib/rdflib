@@ -31,7 +31,7 @@ def _fromkey(key):
     if key.startswith("<") and key.endswith(">"):
         return URIRef(key[1:-1].decode("UTF-8"))
     elif key.startswith("_"):
-        return BNode(key.decode("UTF-8"))
+        return BNode(key[1:].decode("UTF-8"))
     else:
         m = _literal.match(key)
         if m:
@@ -50,7 +50,7 @@ def _tokey(term):
     if isinstance(term, URIRef):
         return '<%s>' % term.encode("UTF-8")
     elif isinstance(term, BNode):
-        return term.encode("UTF-8")
+        return '_%s' % term.encode("UTF-8")
     elif isinstance(term, Literal):
         language = term.language
         datatype = term.datatype
