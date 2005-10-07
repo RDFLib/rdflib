@@ -69,7 +69,21 @@ class N3TestCase(unittest.TestCase):
         pass
 
     def testModel(self):
-	g = Graph()
+	g = Graph(backend="Sleepycat")
+        g.open("n3_store_test")
+	#g = Graph()
         g.parse(StringInputSource(input), format="n3") # TODO: remove the need to pass in system_id ?
+
+        self.assertEquals(len(list(g.contexts())), 13)
+
         print g.serialize(format="pretty-xml")
+
+        #print "CONTEXTS:", list(g.contexts())
+        for cid in g.contexts():
+            print cid
+            c = g.get_context(cid)
+            print c.serialize(format="pretty-xml")
+        g.close()
+            
+
 
