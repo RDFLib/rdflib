@@ -5,6 +5,8 @@ from rdflib.util import from_n3
 from rdflib.syntax.parsers import Parser
 from rdflib.syntax.parsers.n3p.n3proc import N3Processor#, NTriplesSink
 
+FormulaClass = URIRef("http://www.w3.org/2000/10/swap/log#Formula")
+
 class N3Parser(Parser):
 
     def __init__(self):
@@ -39,6 +41,7 @@ class Sink(object):
    def __init__(self, sink): 
       self.sink = sink 
       self.counter = 0
+      self.formulas = {}
 
    def absolutize(self, u):
        return self.sink.absolutize(u, defrag=0)
@@ -47,10 +50,14 @@ class Sink(object):
        self.root = self.absolutize(convert(root))
 
    def statement(self, s, p, o, f): 
-       s, p, o  = convert(s), convert(p), convert(o)
-       f = self.absolutize(convert(f))
-       quoted = (f != self.root) 
-       self.sink.add((s, p, o), f, quoted=quoted)    
+      s, p, o  = convert(s), convert(p), convert(o)
+      f = self.absolutize(convert(f))
+      quoted = (f != self.root) 
+      if quoted:
+         if f not in self.formulas:
+            self.sink.add((f, RDF.type,FormulaClass), self.root, quoted=False)      
+         self.formulas[f] = None         
+      self.sink.add((s, p, o), f, quoted=quoted)    
 
        #print " adding:", (f, RDF.type, URIRef("Formula")), self.root
        #self.sink.add((f, RDF.type, URIRef("http://example.org/Formula")), self.root)
