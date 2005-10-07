@@ -44,7 +44,8 @@ setup(
                 'rdflib.sparql',
                 'rdflib.syntax',
                 'rdflib.syntax.serializers',
-                'rdflib.syntax.parsers'],    
+                'rdflib.syntax.parsers',
+                'rdflib.syntax.parsers.n3p'],    
     )
 
 
