@@ -24,13 +24,13 @@ class TestStore(Graph):
         super(TestStore, self).__init__()
         self.expected = expected
         
-    def add(self, (s, p, o)):
+    def add(self, (s, p, o), context, quoted):
         if not isinstance(s, BNode) and not isinstance(o, BNode):
             if not (s, p, o) in self.expected:
                 m = u"Triple not in expected result: %s, %s, %s" % (s.n3(), p.n3(), o.n3())
                 if verbose: write(m)
                 #raise Exception(m)
-        super(TestStore, self).add((s, p, o))
+        super(TestStore, self).add((s, p, o), context, quoted)
         
 
 def isomorphic(a, b):

@@ -30,7 +30,9 @@ def convert(t):
     elif t.startswith("<"):
 	return URIRef(unicode(t[1:-1]))
     elif t.startswith("?"):
-	return URIRef("TODO:var/%s" % unicode(t)) # TODO: var term type
+	#return URIRef("TODO:var/%s" % unicode(t)) # TODO: var term type
+        #return URIRef("#%s" % unicode(t[1:]))
+        return URIRef("#%s" % unicode(t))
     elif t.startswith('"'):
         return from_n3(t)
     else:
@@ -63,5 +65,6 @@ class Sink(object):
        #self.sink.add((f, RDF.type, URIRef("http://example.org/Formula")), self.root)
 
    def quantify(self, formula, var): 
+       #print "quantify(%s, %s)" % (formula, var)
        pass
 
