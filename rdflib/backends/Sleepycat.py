@@ -147,6 +147,7 @@ class Sleepycat(Backend):
 	    self.__spo.put("%s%s%s" % (s, p, o), contexts)
 	    self.__pos.put("%s%s%s" % (p, o, s), "")
 	    self.__osp.put("%s%s%s" % (o, s, p), "")
+        self.sync()
 
 
     def remove(self, (subject, predicate, object), context):
@@ -221,7 +222,9 @@ class Sleepycat(Backend):
                         self.__cosp.delete("%s%s%s%s" % (c, o, s, p))
                     except db.DBNotFoundError, e:
                         pass
-        
+        self.sync()
+
+
     def triples(self, (subject, predicate, object), context=None):
         """A generator over all the triples matching """
         assert self.__open, "The InformationStore must be open."
