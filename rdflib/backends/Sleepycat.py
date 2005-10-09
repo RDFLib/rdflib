@@ -147,6 +147,9 @@ class Sleepycat(Backend):
 	    self.__spo.put("%s%s%s" % (s, p, o), contexts)
 	    self.__pos.put("%s%s%s" % (p, o, s), "")
 	    self.__osp.put("%s%s%s" % (o, s, p), "")
+
+        # We need some store tests for measuring the real world
+        # performance hit for thing like the following:
         self.sync()
 
 
@@ -598,6 +601,9 @@ class Sleepycat(Backend):
         self.__cosp.sync()
         self.__i2k.sync()
         self.__k2i.sync()
+        self.__namespace.sync()
+        self.__prefix.sync()
+
 
     def open(self, path):
         homeDir = path        
