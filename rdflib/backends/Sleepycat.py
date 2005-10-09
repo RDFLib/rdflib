@@ -591,20 +591,6 @@ class Sleepycat(Backend):
         for prefix, namespace in results:
             yield prefix, namespace
 
-    def sync(self):
-        self.__contexts.sync()
-        self.__spo.sync()
-        self.__pos.sync()
-        self.__osp.sync()
-        self.__cspo.sync()
-        self.__cpos.sync()
-        self.__cosp.sync()
-        self.__i2k.sync()
-        self.__k2i.sync()
-        self.__namespace.sync()
-        self.__prefix.sync()
-
-
     def open(self, path):
         homeDir = path        
         envsetflags  = db.DB_CDB_ALLDB
@@ -679,6 +665,19 @@ class Sleepycat(Backend):
         if next==None:
             self.__k2i.put("next", "%d" % 1)            
         
+    def sync(self):
+        self.__contexts.sync()
+        self.__spo.sync()
+        self.__pos.sync()
+        self.__osp.sync()
+        self.__cspo.sync()
+        self.__cpos.sync()
+        self.__cosp.sync()
+        self.__i2k.sync()
+        self.__k2i.sync()
+        self.__namespace.sync()
+        self.__prefix.sync()
+
     def close(self):
         self.__open = 0
         self.__contexts.close()
