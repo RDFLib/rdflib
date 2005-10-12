@@ -79,3 +79,6 @@ register('sqlobject', Backend,
 
 register('Redland', Backend,
          'rdflib.backends.Redland', 'Redland')
+
+register('MySQL', Backend,
+         'rdflib.backends.MySQL', 'MySQL')
