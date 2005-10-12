@@ -149,8 +149,10 @@ class MySQL(Backend):
 
     - Asserted non rdf:type statements
     - Asserted rdf:type statements (in a table which models Class membership)
-      The motivation for this partition is primarily query speed andx scalability as most graphs will always have more rdf:type statements than others
+    The motivation for this partition is primarily query speed and scalability as most graphs will always have more rdf:type statements than others
     - All Quoted statements
+
+    In addition it persists namespace mappings in a seperate table
     """
     context_aware = True
     def __init__(self, identifier=None, configuration=None):
@@ -460,7 +462,6 @@ class MySQL(Backend):
                       %s"""%(asserted_table,clauseString,asserted_type_table,typeClauseString)
         c.execute(q)
         c.close()
-        uniqueTripleDict={}
         for rtDict in c.fetchall():
             yield extractTriple(rtDict)
 
@@ -495,16 +496,19 @@ class MySQL(Backend):
                  from %s"""%(asserted_table,asserted_type_table)
         c.execute(q)
         rt=c.fetchall()
+        c.close()
         return len(rt)>1 and reduce(lambda x,y: x['count(*)']+y['count(*)'],rt) or int([rtDict['count(*)'] for rtDict in rt][0])
 
     def contexts(self, triple=None):
-        """ """
+        """
+        FIXME:  Add support for triple argument
+        """
         c=self._db.cursor()
         quoted_table="%s_quoted_statements"%self._internedId
         asserted_table="%s_asserted_statements"%self._internedId
         asserted_type_table="%s_type_statements"%self._internedId
         if triple:
-            pass
+            raise Exception("Not implemented")        
         else:
             q="""select
                    quoted.context
@@ -561,7 +565,62 @@ class MySQL(Backend):
         raise Exception("Not implemented")                
     def existentials(context):
         raise Exception("Not implemented")                
-    
+
+    #optimized interfaces (those needed in order to port Versa)
+    #NOTE:  These should be implemented to be able to accept a list of objects and/or a list of predicates as well
+    #In order to batch a single query instead of one for each.  see: http://rdflib.net/4rdf_rdflib_migration/
+    def subjects(self, predicate=None, object=None):
+        """
+        A generator of subjects with the given predicate and object.
+        """
+        raise Exception("Not implemented")
+
+    def objects(self, subject=None, predicate=None):
+        """
+        A generator of objects with the given subject and predicate.
+        """
+        raise Exception("Not implemented")
+
+
+    #optimized interfaces (others)
+    def predicate_objects(self, subject=None):
+        """
+        A generator of (predicate, object) tuples for the given subject
+        """
+        raise Exception("Not implemented")
+
+    def subject_objects(self, predicate=None):
+        """
+        A generator of (subject, object) tuples for the given predicate
+        """
+        raise Exception("Not implemented")
+
+    def subject_predicates(self, object=None):
+        """
+        A generator of (subject, predicate) tuples for the given object
+        """
+        raise Exception("Not implemented")
+
+    def value(self, subject, predicate=u'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', object=None, default=None, any=False):
+        """
+        Get a value for a subject/predicate, predicate/object, or
+        subject/object pair -- exactly one of subject, predicate,
+        object must be None. Useful if one knows that there may only
+        be one value.
+        
+        It is one of those situations that occur a lot, hence this
+        'macro' like utility
+
+        Parameters:
+        -----------
+        subject, predicate, object  -- exactly one must be None
+        default -- value to be returned if no values found
+        any -- if True:
+                 return any value in the case there is more than one
+               else:
+                 raise UniquenessError"""
+        raise Exception("Not implemented")
+        
     def bind(self, prefix, namespace):
         """ """        
         c=self._db.cursor()
