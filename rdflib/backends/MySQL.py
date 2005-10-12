@@ -1,0 +1,671 @@
+from __future__ import generators
+from rdflib import BNode
+from rdflib.backends import Backend
+from rdflib import RDF
+from rdflib.Literal import Literal
+from rdflib.URIRef import URIRef
+from rdflib.BNode import BNode
+from pprint import pprint
+#from rdflib.Variable import Variable
+import MySQLdb,sha,sys
+Any = None
+
+#FIXME:  This may prove to be a performance bottleneck and should perhaps be implemented in C
+def EscapeQuotes(qstr):
+    """
+    Ported from Ft.Lib.DbUtil
+    """
+    if qstr is None:
+        return ''
+    tmp = qstr.replace("\\","\\\\")
+    tmp = tmp.replace("'", "\\'")
+    return tmp
+    
+def buildClause(tableName,subject,obj,context=None,typeTable=True,predicate=None):
+    if typeTable:
+        rdf_type_memberClause   = buildTypeMemberClause(subject,tableName)
+        rdf_type_klassClause    = buildTypeClassClause(obj,tableName)
+        rdf_type_contextClause  = buildContextClause(context,tableName)
+        typeClauses = [rdf_type_memberClause,rdf_type_klassClause,rdf_type_contextClause]
+        clauseString = ' and '.join([clause for clause in typeClauses if clause])
+        clauseString = clauseString and 'where %s'%clauseString or ''
+    else:
+       subjClause        = buildSubjClause(subject,tableName)
+       predClause        = buildPredClause(predicate,tableName)
+       objClause         = buildObjClause(obj,tableName)
+       contextClause           = buildContextClause(context,tableName)
+       isLitClause       = buildIsLitClause(obj,tableName)
+       litDTypeClause    = buildLitDTypeClause(obj,tableName)
+       litLanguageClause = buildLitLanguageClause(obj,tableName)
+
+       clauses=[subjClause,predClause,objClause,contextClause,isLitClause,litDTypeClause,litLanguageClause]
+       clauseString = ' and '.join([clause for clause in clauses if clause])
+       clauseString = clauseString and 'where %s'%clauseString or ''
+    return clauseString
+
+def buildTypeSQLCommand(member,klass,context,storeId):
+    #columns: member,klass,context
+    return "INSERT INTO %s_type_statements VALUES ('%s', '%s', '%s')"%(
+        storeId,
+        member,
+        klass,
+        context)
+
+def buildTripleSQLCommand(subject,predicate,obj,context,storeId,quoted):
+    #triple columns: subject,predicate,object,context,literalObj,objLanguage,objDatatypes
+    stmt_table = quoted and "%s_quoted_statements"%storeId or "%s_asserted_statements"%storeId
+    if isinstance(obj,Literal):
+        command="INSERT INTO %s VALUES ('%s', '%s', '%s', '%s', 'true','%s','%s')"%(
+            stmt_table,
+            subject,
+            predicate,
+            EscapeQuotes(obj),
+            context,
+            obj.language,
+            obj.datatype)
+    else:
+        command="INSERT INTO %s VALUES ('%s', '%s', '%s', '%s', 'false',NULL,NULL)"%(
+            stmt_table,
+            subject,
+            predicate,
+            convertURI(obj),
+            context)
+    return command
+
+def extractTriple(rtDict):
+    if 'member' in rtDict and rtDict['member']:
+        #type triple
+        return createTerm(rtDict['member']),RDF.type,createTerm(rtDict['klass'])
+    elif 'subject' in rtDict and rtDict['subject']:
+        #regular statement
+        if rtDict['literalObj'] == 'true':
+            obj=Literal(rtDict['object'],rtDict['objLanguage'],rtDict['objDatatype'])
+        else:
+            obj=createTerm(rtDict['object'])
+        return (createTerm(rtDict['subject']),createTerm(rtDict['predicate']),obj)
+        
+def createTerm(termString):
+    if termString[:2]=='_:':
+        return BNode(termString[2:])
+    elif (termString[0],termString[-1]) == ('<','>'):
+        return URIRef(termString[1:-1])
+    #elif termString[0] == '?':
+    #    return Variable(termString[1:])
+    else:
+        raise Exception('Unknown term string returned from store: %s'%(termString))
+
+def convertURI(term):
+    if isinstance(term, URIRef):
+        return '<%s>' % term.encode("UTF-8")
+    elif isinstance(term, BNode):
+        return '_:%s' % term.encode("UTF-8")
+    #elif isinstance(term, Variable):
+    #    pass
+    else:
+        msg = "Unknown term Type for: %s" % term
+        raise Exception(msg)
+        
+#Where Clause  Functionss
+def buildSubjClause(subject,tableName):
+    return subject and "%s='%s'"%(tableName and '%s.subject'%tableName or 'subject',convertURI(subject)) or None
+def buildPredClause(predicate,tableName):
+    return predicate and "%s='%s'"%(tableName and '%s.predicate'%tableName or 'predicate',convertURI(predicate)) or None
+def buildObjClause(obj,tableName):
+    return obj and "%s='%s'"%(tableName and '%s.object'%tableName or 'object',isinstance(obj,Literal) and EscapeQuotes(obj) or convertURI(obj)) or None     
+def buildContextClause(context,tableName):
+    return context and "%s='%s'"%(tableName and '%s.context'%tableName,convertURI(context)) or None
+def buildIsLitClause(obj,tableName):
+    return isinstance(obj,Literal) and "%s.literalObj='true'"%(tableName) or (obj and "%s.literalObj='false'"%(tableName) or None)
+def buildLitDTypeClause(obj,tableName):
+    return (isinstance(obj,Literal) and obj.datatype and "%s.objDatatype='%s'"%(tableName,obj.datatype)) or None 
+def buildLitLanguageClause(obj,tableName):
+    return (isinstance(obj,Literal) and obj.datatype and "%s.objLanguage='%s'"%(tableName,obj.language)) or None
+def buildTypeMemberClause(subject,tableName):
+    return subject and "%s.member = '%s'"%(tableName,convertURI(subject))
+def buildTypeClassClause(obj,tableName):
+    return obj and not isinstance(obj,Literal) and "%s.klass = '%s'"%(tableName,convertURI(obj))
+    
+def ParseConfigurationString(config_string):
+    """
+    Parses a configuration string in the form:
+    key1=val1,key2=val2,key3=val3,...
+    The following configuration keys are expected (not all are required):
+    user
+    password
+    db
+    host
+    port (optional - defaults to 3306)
+    """
+    kvDict = dict([(part.split('=')[0],part.split('=')[-1]) for part in config_string.split(',')])
+    for requiredKey in ['user','password','db','host']:
+        assert requiredKey in kvDict
+    if 'port' not in kvDict:
+        kvDict['port']=3306
+    return kvDict
+
+class MySQL(Backend):
+    """
+    MySQL store formula-aware implementation.  It stores it's triples in the following partitions:
+
+    - Asserted non rdf:type statements
+    - Asserted rdf:type statements (in a table which models Class membership)
+      The motivation for this partition is primarily query speed andx scalability as most graphs will always have more rdf:type statements than others
+    - All Quoted statements
+    """
+    context_aware = True
+    def __init__(self, identifier=None, configuration=None):
+        """ 
+        identifier: URIRef of the Store. Defaults to CWD
+        configuration: string containing infomation open can use to
+        connect to datastore.
+        """
+        self.identifier = identifier and identifier or 'hardcoded'
+        self._internedId = sha.new(self.identifier).hexdigest()
+        if configuration:
+            self.open(configuration)
+            
+    #Database Management Methods
+
+    def open(self, configuration, create=True):
+        """ 
+        Opens the store specified by the configuration string. If
+        create is True a store will be created if it does not already
+        exist. If create is False and a store does not already exist
+        an exception is raised. An exception is also raised if a store
+        exists, but there is insufficient permissions to open the
+        store."""
+        configDict = ParseConfigurationString(configuration)
+        if create:
+            test_db = MySQLdb.connect(user=configDict['user'],
+                                      passwd=configDict['password'],
+                                      db='test',
+                                      port=configDict['port'],
+                                      host=configDict['host']
+                                      )        
+            c=test_db.cursor()
+            c.execute("""SET AUTOCOMMIT=0""")
+            c.execute("""SHOW DATABASES""")
+            if not (configDict['db'].encode('utf-8'),) in c.fetchall():
+                print "creating %s (doesn't exist)"%(configDict['db'])
+                c.execute("""CREATE DATABASE %s"""%(configDict['db'],))
+                test_db.commit()                            
+                c.close()
+                test_db.close()    
+                
+                db = MySQLdb.connect(user = configDict['user'],
+                                           passwd = configDict['password'],
+                                           db=configDict['db'],
+                                           port=configDict['port'],
+                                           host=configDict['host']
+                                          )
+                c=db.cursor()
+                c.execute("""SET AUTOCOMMIT=0""")   
+                for tblsuffix in table_name_prefixes:
+                    print "creating table: %s"%(tblsuffix%(self._internedId))
+                c.execute(CREATE_ASSERTED_STATEMENTS_TABLE%(self._internedId))
+                c.execute(CREATE_ASSERTED_TYPE_STATEMENTS_TABLE%(self._internedId))
+                c.execute(CREATE_QUOTED_STATEMENTS_TABLE%(self._internedId))
+                c.execute(CREATE_NS_BINDS_TABLE%(self._internedId))                    
+                db.commit()
+                c.close()
+                db.close()            
+            else:
+                print "database %s already exists"%configDict['db']
+                #Already exists, do nothing
+                c.close()
+                test_db.close()
+
+        self._db = MySQLdb.connect(user = configDict['user'],
+                                   passwd = configDict['password'],
+                                   db=configDict['db'],
+                                   port=configDict['port'],
+                                   host=configDict['host']
+                                  )
+        self._db.cursorclass = MySQLdb.cursors.DictCursor
+        c=self._db.cursor()
+        c.execute("""SET AUTOCOMMIT=0""")   
+        c.close()
+            
+    def close(self, commit_pending_transaction=False):
+        """ 
+        FIXME:  Add documentation!!
+        """
+        if commit_pending_transaction:
+            self._db.commit()
+        self._db.close()
+        self._db = None
+
+    def destroy(self, configuration):
+        """
+        FIXME: Add documentation
+        """        
+        configDict = ParseConfigurationString(configuration)
+        msql_db = MySQLdb.connect(user=configDict['user'],
+                                passwd=configDict['password'],
+                                db=configDict['db'],
+                                port=configDict['port'],
+                                host=configDict['host']
+                                )
+        c=msql_db.cursor()
+        c.execute("""SET AUTOCOMMIT=0""")
+        c.execute('DROP database %s'%configDict['db'])
+        print "Destroyed database (%s)"%configDict['db']
+        msql_db.commit()
+        msql_db.close()
+        
+    #Triple Methods    
+        
+    def add(self, (subject, predicate, obj), context=None, quoted=False):        
+        """ Add a triple to the store of triples. """
+        assert context
+        c=self._db.cursor()
+        if quoted or predicate != RDF.type:
+            #quoted statement or non rdf:type predicate
+            c.execute(
+                buildTripleSQLCommand(
+                    convertURI(subject),
+                    convertURI(predicate),
+                    obj,
+                    convertURI(context),
+                    self._internedId,
+                    quoted)
+            )
+        elif predicate == RDF.type:
+            #asserted rdf:type statement
+            c.execute(
+                buildTypeSQLCommand(
+                    convertURI(subject),
+                    convertURI(obj),
+                    convertURI(context),
+                    self._internedId)
+            )
+        c.close()
+
+    def remove(self, (subject, predicate, obj), context):
+        """ Remove a triple from the store """
+        c=self._db.cursor()
+        quoted_table="%s_quoted_statements"%self._internedId
+        asserted_table="%s_asserted_statements"%self._internedId
+        asserted_type_table="%s_type_statements"%self._internedId
+        if not predicate or predicate != RDF.type:            
+            #Need to remove predicates other than rdf:type
+
+            for table in [quoted_table,asserted_table]:
+                clauseString = buildClause(table,subject,obj,context,False,predicate)
+                c.execute(clauseString and "DELETE FROM %s %s"%(table,clauseString) or 'DELETE FROM %s;'%table)
+
+        if predicate == RDF.type or not predicate:
+            #Need to check rdf:type and quoted partitions
+            clauseString = buildClause(asserted_type_table,subject,obj,context)
+            c.execute(clauseString and "DELETE FROM %s %s"%(asserted_type_table,clauseString) or 'DELETE FROM %s;'%asserted_type_table)
+            clauseString = buildClause(quoted_table,subject,obj,context,False,predicate)
+            c.execute(clauseString and "DELETE FROM %s %s"%(quoted_table,clauseString) or 'DELETE FROM %s;'%quoted_table)
+            
+        c.close()
+
+    def triples(self, (subject, predicate, obj), context=None):
+        """ 
+        A generator over all the triples matching pattern. Pattern can
+        be any objects for comparing against nodes in the store, for
+        example, RegExLiteral, Date? DateRange?
+        
+        quoted table:                <id>_quoted_statements
+        asserted rdf:type table:     <id>_type_statements
+        asserted non rdf:type table: <id>_asserted_statements
+        
+        triple columns: subject,predicate,object,context,literalObj,objLanguage,objDatatype
+        class membership columns: member,klass,context
+
+        FIXME:  These union all selects *may* be further optimized by joins 
+        
+        """
+        quoted_table="%s_quoted_statements"%self._internedId
+        asserted_table="%s_asserted_statements"%self._internedId
+        asserted_type_table="%s_type_statements"%self._internedId
+        contextClause  = context and "context = '%s'"%context or None        
+        c=self._db.cursor()
+        if context:
+            #Normal context constraint against asserted/quoted tables
+            if predicate == RDF.type:
+                #select from asserted rdf:type partition and quoted table only
+                quotedClauseString = buildClause('quoted',subject,obj,context,False,predicate)
+                typeClauseString = buildClause('typeTable',subject,obj,context)
+                
+                q="""(select                     
+                        quoted.*
+                     from
+                        %s as quoted
+                     %s)
+
+                     union all
+
+                     (select
+                        typeTable.member as subject,
+                        %s as predicate,
+                        typeTable.klass as object,
+                        %s as literalObj,
+                        NULL as objLanguage,
+                        NULL as objDatatypes,
+                        typeTable.context as context
+                     from                         
+                        %s as typeTable
+                     %s)"""%(
+                    quoted_table,
+                    quotedClauseString,
+                    "'<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>'",
+                    "'false'",
+                    asserted_type_table,
+                    typeClauseString)
+                
+            elif predicate:
+                #select from asserted non rdf:type partition and quoted table only
+                clauseStrings=[]
+                quotedClauseString = buildClause('quoted',subject,obj,context,False,predicate)
+                typeClauseString = buildClause('typeTable',subject,obj,context)
+                
+                for tableAlias in ['quoted','asserted']:
+                    clauseStrings.append(buildClause(tableAlias,subject,obj,context,False,predicate))
+                    
+                q="""select                     
+                        quoted.*
+                      from                         
+                        %s as quoted
+                      %s
+
+                      union all
+
+                      select
+                        asserted.*
+                      from
+                        %s as asserted
+                      %s"""%(quoted_table,clauseStrings[0],asserted_table,clauseStrings[1])
+                
+            else:
+                #select from asserted rdf:type, asserted non rdf:type and quoted table
+                clauseStringList=[]
+                for tableAlias in ['quoted','asserted']:                    
+                    clauseStringList.append(buildClause(tableAlias,subject,obj,context,False,predicate))                    
+
+                typeClauseString = buildClause('typeTable',subject,obj,context)
+                
+                q="""select
+                        typeTable.member as subject,
+                        '<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>' as predicate,
+                        typeTable.klass as object,
+                        'false' as literalObj,
+                        NULL as objLanguage,
+                        NULL as objDatatypes,
+                        typeTable.context as context
+                     from
+                        %s as typeTable
+                     %s
+
+                     union all
+
+                     select
+                        quoted.*
+                     from
+                        %s as quoted
+                     %s
+
+                     union all
+
+                     select
+                        asserted.*
+                      from     
+                        %s as asserted
+                      %s"""%(asserted_type_table,typeClauseString,quoted_table,clauseStringList[0],asserted_table,clauseStringList[1])
+
+        else:
+            if predicate == RDF.type:
+                #select from asserted rdf:type partition only
+                clauseString = buildClause('type',subject,obj)
+                q="""select                    
+                        type.*
+                      from     
+                        %s as type
+                      %s"""%(asserted_type_table,clauseString)                
+
+            elif predicate:
+                #select from asserted non rdf:type partition only
+                clauseString = buildClause('asserted',subject,obj,context,False,predicate)
+                q="""select                                             
+                        asserted.*
+                      from                         
+                        %s as asserted
+                      %s"""%(asserted_table,clauseString)                
+
+            else:
+                #select from asserted rdf:type, asserted non rdf:type 
+                clauseString = buildClause('asserted',subject,obj,context,False,predicate)
+                typeClauseString = buildClause('typeTable',subject,obj)
+                
+                q="""select                     
+                        asserted.*
+                     from %s as asserted
+                     %s
+
+                     union all
+
+                     select
+                        typeTable.member as subject,
+                        '<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>' as predicate,
+                        typeTable.klass as object,
+                        'false' as literalObj,
+                        NULL as objLanguage,
+                        NULL as objDatatypes,
+                        typeTable.context as context
+                      from                         
+                        %s as typeTable
+                      %s"""%(asserted_table,clauseString,asserted_type_table,typeClauseString)
+        c.execute(q)
+        c.close()
+        uniqueTripleDict={}
+        for rtDict in c.fetchall():
+            yield extractTriple(rtDict)
+
+    def __len__(self, context=None):
+        """ Number of statements in the store. """
+        c=self._db.cursor()
+        quoted_table="%s_quoted_statements"%self._internedId
+        asserted_table="%s_asserted_statements"%self._internedId
+        asserted_type_table="%s_type_statements"%self._internedId
+        if context:
+            q="""select
+                   count(*)
+                 from
+                   %s,
+                   %s,
+                   %s
+                 where %s and %s and %s;"""%(
+                   quoted_table,
+                   asserted_table,
+                   asserted_type_table,
+                   buildContextClause(context,quoted_table),
+                   buildContextClause(context,asserted_table),
+                   buildContextClause(context,asserted_type_table),
+                   )
+        else:
+            q="""select count(*)
+                 from %s
+
+                 union all
+
+                 select count(*)
+                 from %s"""%(asserted_table,asserted_type_table)
+        c.execute(q)
+        rt=c.fetchall()
+        return len(rt)>1 and reduce(lambda x,y: x['count(*)']+y['count(*)'],rt) or int([rtDict['count(*)'] for rtDict in rt][0])
+
+    def contexts(self, triple=None):
+        """ """
+        c=self._db.cursor()
+        quoted_table="%s_quoted_statements"%self._internedId
+        asserted_table="%s_asserted_statements"%self._internedId
+        asserted_type_table="%s_type_statements"%self._internedId
+        if triple:
+            pass
+        else:
+            q="""select
+                   quoted.context
+                 from
+                   %s as quoted
+
+                 union
+
+                 select
+                   asserted.context
+                 from
+                   %s as asserted
+
+                 union
+
+                 select
+                   assertedType.context
+                 from
+                   %s as assertedType"""%(quoted_table,asserted_table,asserted_type_table)
+        c.execute(q)
+        rt=c.fetchall()
+        c.close()
+        for context in [rtDict['context'] for rtDict in rt]:
+            yield context
+    
+    def remove_context(self, identifier):
+        """ """
+        c=self._db.cursor()
+        quoted_table="%s_quoted_statements"%self._internedId
+        asserted_table="%s_asserted_statements"%self._internedId
+        asserted_type_table="%s_type_statements"%self._internedId
+        q= "DELETE %s,%s,%s from %s,%s,%s where %s and %s and %s;"%(
+            quoted_table,
+            asserted_table,
+            asserted_type_table,
+            quoted_table,
+            asserted_table,
+            asserted_type_table,
+            buildContextClause(identifier,quoted_table),
+            buildContextClause(identifier,asserted_table),
+            buildContextClause(identifier,asserted_type_table)
+            )
+        c.execute(q)
+        c.close()
+
+    # Optional Namespace methods
+
+    #quantifier methods
+    def markVariables(context,term):
+        raise Exception("Not implemented")        
+    def isVariable(context,term):
+        raise Exception("Not implemented")                
+    def variables(context):
+        raise Exception("Not implemented")                
+    def existentials(context):
+        raise Exception("Not implemented")                
+    
+    def bind(self, prefix, namespace):
+        """ """        
+        c=self._db.cursor()
+        c.execute("INSERT INTO %s_namespace_binds VALUES ('%s', '%s')"%(
+            self._internedId,
+            prefix,
+            namespace)
+        )
+        c.close()
+
+    def prefix(self, namespace):
+        """ """
+        c=self._db.cursor()
+        c.execute("select prefix from %s_namespace_binds where uri = '%s'"%(
+            self._internedId,
+            namespace)
+        )
+        rt = [rtDict['prefix'] for rtDict in c.fetchall()]
+        c.close()
+        return rt and rt or None
+
+    def namespace(self, prefix):
+        """ """
+        c=self._db.cursor()
+        c.execute("select uri from %s_namespace_binds where prefix = '%s'"%(
+            self._internedId,
+            prefix)
+        )
+        rt = [rtDict['uri'] for rtDict in c.fetchall()]
+        c.close()
+        return rt and rt or None
+
+    def namespaces(self):
+        """ """
+        c=self._db.cursor()
+        c.execute("select prefix, uri from %s_namespace_binds where 1;"%(
+            self._internedId
+            )
+        )
+        rt = [(rtDict['prefix'],rtDict['uri']) for rtDict in c.fetchall()]
+        c.close()
+        for prefix,uri in rt:
+            yield prefix,uri
+        
+
+
+    # Optional Transactional methods
+
+    def commit(self):
+        """ """
+        self._db.commit()
+    
+    def rollback(self):
+        """ """
+        self._db.rollback()
+        
+table_name_prefixes = [
+    '%s_asserted_statements',
+    '%s_type_statements',
+    '%s_quoted_statements',
+    '%s_namespace_binds'
+]        
+
+
+CREATE_ASSERTED_STATEMENTS_TABLE = """
+CREATE TABLE %s_asserted_statements (
+    subject       text not NULL,
+    predicate     text not NULL,
+    object        text,
+    context       text not NULL,
+    literalObj    enum('false','true') not NULL,
+    objLanguage   varchar(3),
+    objDatatype   text,
+    INDEX spoc_index (subject(100),predicate(100),object(50),context(50)),
+    INDEX poc_index (predicate(100),object(50),context(50)),
+    INDEX csp_index (context(50),subject(100),predicate(100)),
+    INDEX cp_index (context(50),predicate(100))) TYPE=InnoDB"""
+    
+CREATE_ASSERTED_TYPE_STATEMENTS_TABLE = """
+CREATE TABLE %s_type_statements (
+    member        text not NULL,
+    klass         text,
+    context       text not NULL,
+    INDEX memberC_index (member(100),klass(100),context(50)),
+    INDEX klassC_index (klass(100),context(50)),
+    INDEX c_index (context(10))) TYPE=InnoDB"""
+    
+CREATE_QUOTED_STATEMENTS_TABLE = """
+CREATE TABLE %s_quoted_statements (
+    subject       text not NULL,
+    predicate     text not NULL,
+    object        text,
+    context       text not NULL,
+    literalObj    enum('false','true') not NULL,
+    objLanguage   varchar(3),
+    objDatatype   text,
+    INDEX spoc_index (subject(100),predicate(100),object(50),context(50)),
+    INDEX poc_index (predicate(100),object(50),context(50)),
+    INDEX csp_index (context(50),subject(100),predicate(100)),
+    INDEX cp_index (context(50),predicate(100))) TYPE=InnoDB"""
+    
+CREATE_NS_BINDS_TABLE = """
+CREATE TABLE %s_namespace_binds (
+    prefix        varchar(20) UNIQUE not NULL,
+    uri           text,
+    PRIMARY KEY (prefix),
+    INDEX uri_index (uri(100))) TYPE=InnoDB"""
