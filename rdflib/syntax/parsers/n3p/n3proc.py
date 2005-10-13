@@ -155,7 +155,8 @@ class N3Processor(n3p.N3Parser):
       else: raise Exception("Token has no parent production.")
 
    def documentStart(self, prod): 
-      formula = self.formula()
+      #formula = self.formula()
+      formula = "{%s}" % self.sink.identifier.n3()
       self.formulae.append(formula)
       self.sink.start(formula)
 

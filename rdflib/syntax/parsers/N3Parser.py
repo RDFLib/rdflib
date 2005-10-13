@@ -28,6 +28,7 @@ class N3Parser(Parser):
 class Sink(object):
     def __init__(self, sink): 
         self.sink = sink 
+	self.identifier = sink.identifier
 
     def convert(self, t):
 	if t.startswith("_"):
@@ -44,16 +45,15 @@ class Sink(object):
 	    cid = from_n3(t[1:-1])
 	    return Context(self.sink.graph, cid)
 	else:
-	    raise "NYI:", t
+	    raise "NYI:", "%s %s" % (t, type(t))
 	return 
 
     def absolutize(self, u):
         return self.sink.absolutize(u, defrag=0)
 
     def start(self, root): 
-        #self.root = self.absolutize(self.convert(root))
         self.root = self.convert(root)
-        self.sink.graph.identifier = self.root
+	assert self.root.identifier == self.sink.identifier
 
     def statement(self, s, p, o, f): 
         s, p, o  = self.convert(s), self.convert(p), self.convert(o)

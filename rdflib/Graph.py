@@ -44,7 +44,7 @@ class Graph(Node):
             backend = plugin.get(backend, Backend)()
         self.__backend = backend
         self.__namespace_manager = None
-	self.__identifier = None
+	self.__identifier = identifier or BNode()
 
 
     def __get_identifier(self):
@@ -52,7 +52,10 @@ class Graph(Node):
 	    self.__identifier = self.absolutize("")
         return self.__identifier
     def __set_identifier(self, value):
-	self.__identifier = value
+	if self.__identifier is None:
+	    self.__identifier = value
+	else:
+	    raise Exception("identifier already set")
     identifier = property(__get_identifier, __set_identifier)
 
     def __get_backend(self):
@@ -83,7 +86,7 @@ class Graph(Node):
         if hasattr(self.__backend, "close"):
             self.__backend.close()
 
-    def add(self, (s, p, o), context=None, quoted=False):
+    def add(self, (s, p, o), quoted=False):
         """ Add a triple, optionally provide a context.  A 3-tuple or
         rdflib.Triple can be provided.  Context must be a URIRef.  If
         no context is provides, triple is added to the default
@@ -92,7 +95,7 @@ class Graph(Node):
         if self.context_aware:
             #if context:
             #    check_context(context)
-            self.__backend.add((s, p, o), context, quoted)
+            self.__backend.add((s, p, o), self.identifier, quoted)
         else:
             assert quoted==False
             self.__backend.add((s, p, o))
@@ -336,7 +339,8 @@ class Graph(Node):
         """ Parse source into Graph. If Graph is context-aware it'll get loaded into it's own context (sub graph). Format defaults to xml (AKA rdf/xml). The publicID argument is for specifying the logical URI for the case that it's different from the physical source URI. Returns the context into which the source was parsed."""
         source = self.prepare_input_source(source, publicID)
         if self.context_aware:
-            id = self.context_id(URIRef(source.getPublicId()))
+            id = self.context_id(self.absolutize(source.getPublicId()))
+	    print "ID:", id
             self.remove_context(id)
             context = self.get_context(id)
         else:
@@ -397,12 +401,12 @@ class Context(Graph):
     context_aware = property(_get_context_aware)
 
 
-    def add(self, triple, context=None, quoted=False): # TODO: test if we need context=None arg
+    def add(self, triple, quoted=False): # TODO: test if we need context=None arg
         #assert context is None or context is self.identifier
 	#This is commented out so that the N3 parser can go through
 	#the context it's being loaded into to add triples to the
 	#other contexts
-        self.graph.add(triple, context or self.identifier, quoted)
+        self.backend.add(triple, self.identifier, quoted)
 
     def remove(self, triple, context=None):
         assert context is None
