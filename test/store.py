@@ -44,15 +44,14 @@ class StoreTestCase(unittest.TestCase):
         print "."
 
     def _testTime(self):
-        number = 100
+        number = 10000
         store = self.store
 
         def add_random():
 	    s = random_uri()
 	    p = random_uri()
 	    o = random_uri()
-	    c = random_uri()
-            store.add((s, p, o), c)
+            store.add((s, p, o))
 
         it = itertools.repeat(None, number)
         t0 = time()

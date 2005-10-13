@@ -1,9 +1,9 @@
 import unittest
 
-#from test.nt import *
-from test.n3 import *
-#from test.rules import *
-if True:
+from test.store import *
+
+if False:
+    from test.n3 import *
     from test.seq import SeqTestCase
     from test.identifier_equality import *
     from test.triple_store import *
@@ -12,7 +12,10 @@ if True:
     from test.rdf import *
     from test.parser import *
     #from test.context import *
+    #from test.nt import *
+    #from test.rules import *
     #from test.parser_rdfcore import *
+
 
 if __name__ == "__main__":
     unittest.main()   
