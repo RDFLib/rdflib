@@ -473,6 +473,19 @@ class N3Processor(n3p.N3Parser):
             return bnode
       return u
 
+   def formula(self): 
+      tok = self.bnode('formula')
+      u = "{%s}" % urijoin(self.baseURI, tok)
+      if self.universals.has_key(u): 
+         formula, var = self.universals[u]
+         if formula in self.formulae: 
+            return var
+      if self.existentials.has_key(u): # @@ elif?
+         formula, bnode = self.existentials[u]
+         if formula in self.formulae: 
+            return bnode
+      return u
+
    def bnode(self, label, sic=False): 
       if not sic: 
          self.counter += 1
@@ -496,11 +509,6 @@ class N3Processor(n3p.N3Parser):
          self.counter += 1
          label += str(self.counter)
       return Var(label)
-
-   def formula(self):
-      f = self.bnode('formula')
-      f = self.uri('#%s' % f[2:]) # TODO: can we make formula identifiers URIRefs?
-      return f
 
 
 class NTriplesSink(object): 

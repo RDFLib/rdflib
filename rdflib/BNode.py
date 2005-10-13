@@ -17,8 +17,22 @@ def _serial_number_generator():
 
 from rdflib.Identifier import Identifier
 
-
 class BNode(Identifier):
+    """ 
+    BNodes 
+
+    "In non-persistent O-O software construction, support for object
+    identity is almost accidental: in the simplest implementation,
+    each object resides at a certain address, and a reference to the
+    object uses that address, which serves as immutable object
+    identity.
+
+    ...
+
+    Maintaining object identity in shared databases raises problems:
+    every client that needs to create objects must obtain a unique
+    identity for them; " -- Bertand Meyer
+    """ 
     __slots__ = ()
     def __new__(cls, value=None, # only store implementations should pass in a value
 		_sn_gen=_serial_number_generator(), _prefix=_unique_id()):

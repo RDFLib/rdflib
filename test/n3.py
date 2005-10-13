@@ -69,12 +69,21 @@ class N3TestCase(unittest.TestCase):
         pass
 
     def testModel(self):
-	#g = Graph(backend="Sleepycat")
-        #g.open("n3_store_test")
 	g = Graph()
-        g.parse(StringInputSource(input), format="n3") # TODO: remove the need to pass in system_id ?
+        g.parse(StringInputSource(input), format="n3")
 
-        self.assertEquals(len(list(g.contexts())), 13)
+	for s, p, o in g:
+	    print s, p, o
+	    if isinstance(s, Graph):
+		print "Found a graph!", len(s)
+		for t in s:
+		    print t
+
+	self.assertEquals(len(list(g.contexts())), 13)
+	
+	for cid in g.contexts():
+	    c = g.get_context(cid)
+	    print len(c)
 
         if False:
             print g.serialize(format="pretty-xml")
@@ -86,4 +95,5 @@ class N3TestCase(unittest.TestCase):
         g.close()
             
 
-
+if __name__ == '__main__':
+    unittest.main()    

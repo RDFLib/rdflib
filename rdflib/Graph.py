@@ -1,6 +1,7 @@
 from __future__ import generators
 
 from rdflib import URIRef, BNode, Literal, Namespace, RDF, RDFS
+from rdflib.Node import Node
 
 from rdflib.util import check_statement, check_pattern, check_context
 from rdflib.util import check_subject, check_predicate, check_object
@@ -22,7 +23,7 @@ from rdflib.interfaces import implements, IGraph
 import logging
 
 
-class Graph(object):
+class Graph(Node):
     """
     An RDF Graph.  The constructor accepts one argument, the 'backend'
     that will be used to store the graph data (see the 'backends'
@@ -36,13 +37,23 @@ class Graph(object):
 
     implements(IGraph)
 
-    def __init__(self, backend='default'):
+    def __init__(self, backend='default', identifier=None):
         super(Graph, self).__init__()
         if not isinstance(backend, Backend):
             # TODO: error handling
             backend = plugin.get(backend, Backend)()
         self.__backend = backend
         self.__namespace_manager = None
+	self.__identifier = None
+
+
+    def __get_identifier(self):
+	if self.__identifier is None:
+	    self.__identifier = self.absolutize("")
+        return self.__identifier
+    def __set_identifier(self, value):
+	self.__identifier = value
+    identifier = property(__get_identifier, __set_identifier)
 
     def __get_backend(self):
         return self.__backend
@@ -77,10 +88,10 @@ class Graph(object):
         rdflib.Triple can be provided.  Context must be a URIRef.  If
         no context is provides, triple is added to the default
         context."""
-        check_statement((s, p, o))
+        #check_statement((s, p, o))
         if self.context_aware:
-            if context:
-                check_context(context)
+            #if context:
+            #    check_context(context)
             self.__backend.add((s, p, o), context, quoted)
         else:
             assert quoted==False
@@ -91,10 +102,10 @@ class Graph(object):
         provide a context attribute, removes the triple from all
         contexts."""
 
-        check_pattern((s, p, o))
+        #check_pattern((s, p, o))
         if self.context_aware:
-            if context:
-                check_context(context)
+            #if context:
+            #    check_context(context)
             self.__backend.remove((s, p, o), context)
         else:
             self.__backend.remove((s, p, o))
@@ -103,10 +114,10 @@ class Graph(object):
         """ Generator over the triple store.  Returns triples that
         match the given triple pattern.  If triple pattern does not
         provide a context, all contexts will be searched."""
-        check_pattern((s, p, o))
+        #check_pattern((s, p, o))
         if self.context_aware:
-            if context:
-                check_context(context)
+            #if context:
+            #    check_context(context)
             for t in self.__backend.triples((s, p, o), context):
                 yield t
         else:
@@ -262,7 +273,7 @@ class Graph(object):
         """ Returns a Context graph for the given identifier, which
         must be a URIRef or BNode."""
         assert isinstance(identifier, URIRef) or \
-               isinstance(identifier, BNode)
+               isinstance(identifier, BNode), type(identifier)
         return Context(self, identifier)
 
     def remove_context(self, identifier):
@@ -371,7 +382,15 @@ class Context(Graph):
         super(Context, self).__init__(backend=graph.backend)
         self.graph = graph
         self.namespace_manager = graph.namespace_manager
-        self.identifier = identifier
+	self.__identifier = identifier
+
+    def __get_identifier(self):
+	if self.__identifier is None:
+	    self.__identifier = self.absolutize("")
+        return self.__identifier
+    def __set_identifier(self, value):
+	self.__identifier = value
+    identifier = property(__get_identifier, __set_identifier)
 
     def _get_context_aware(self):
         return False

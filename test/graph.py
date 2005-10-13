@@ -1,14 +1,19 @@
 import unittest
 
+from tempfile import mkdtemp
+
 from rdflib import *
 
 class GraphTestCase(unittest.TestCase):
     backend = 'default'
-    path = 'store'
+    path = None
 
     def setUp(self):
         self.store = Graph(backend=self.backend)
+        a_tmp_dir = mkdtemp()
+        self.path = self.path or a_tmp_dir
         self.store.open(self.path)
+
         self.michel = URIRef(u'michel')
         self.tarek = URIRef(u'tarek')
         self.bob = URIRef(u'bob')
