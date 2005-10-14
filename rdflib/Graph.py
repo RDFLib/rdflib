@@ -21,18 +21,25 @@ from rdflib.URLInputSource import URLInputSource
 from xml.sax.xmlreader import InputSource
 from xml.sax.saxutils import prepare_input_source
 
-from rdflib.interfaces import implements, IGraph
-
 import logging
 
 
-class _Graph(Node):
+class Graph(Node):
     """
-    A set of Nodes.
+    An RDF Graph.  The constructor accepts one argument, the 'backend'
+    that will be used to store the graph data (see the 'backends'
+    package for backends currently shipped with rdflib).
+
+    TODO: backends are treated as always context-aware at the moment.
+
+    Backends can be context-aware or unaware.  Unaware backends take
+    up (some) less space in the backend but cannot support features
+    that require context, such as true merging/demerging of sub-graphs
+    and provenance.
     """
 
     def __init__(self, backend='default', identifier=None):
-        super(_Graph, self).__init__()
+        super(Graph, self).__init__()
         if not isinstance(backend, Backend):
             # TODO: error handling
             backend = plugin.get(backend, Backend)()
@@ -55,6 +62,18 @@ class _Graph(Node):
     def _set_namespace_manager(self, nm):
         self.__namespace_manager = nm
     namespace_manager = property(_get_namespace_manager, _set_namespace_manager)
+
+    def open(self, path):
+        """ Open the graph backend.  Might be necessary for backends
+        that require opening a connection to a database or acquiring some resource."""
+        if hasattr(self.__backend, "open"):
+            self.__backend.open(path)
+
+    def close(self):
+        """ Close the graph backend.  Might be necessary for backends
+        that require closing a connection to a database or releasing some resource."""
+        if hasattr(self.__backend, "close"):
+            self.__backend.close()
 
     def add(self, (s, p, o)):
         """ Add a triple, optionally provide a context.  A 3-tuple or
@@ -260,83 +279,53 @@ class _Graph(Node):
             yield prefix, namespace
 
 
-class Graph(_Graph):
-    """
-    An RDF Graph.  The constructor accepts one argument, the 'backend'
-    that will be used to store the graph data (see the 'backends'
-    package for backends currently shipped with rdflib).
-
-    Backends can be context-aware or unaware.  Unaware backends take
-    up (some) less space in the backend but cannot support features
-    that require context, such as true merging/demerging of sub-graphs
-    and provenance.
-    """
-
-    implements(IGraph)
+class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
 
     def __init__(self, backend='default'):
-        super(Graph, self).__init__(backend)
+        super(ConjunctiveGraph, self).__init__(backend)
 	assert self.backend.context_aware
 	self.context_aware = True
 	self.default_context = BNode()
 
     def __get_identifier(self):
-        return self.__backend.identifier
+        return self.backend.identifier
     identifier = property(__get_identifier)
 
-    def open(self, path):
-        """ Open the graph backend.  Might be necessary for backends
-        that require opening a connection to a database or acquiring some resource."""
-        if hasattr(self.__backend, "open"):
-            self.__backend.open(path)
-
-    def close(self):
-        """ Close the graph backend.  Might be necessary for backends
-        that require closing a connection to a database or releasing some resource."""
-        if hasattr(self.__backend, "close"):
-            self.__backend.close()
-
     def add(self, (s, p, o)):
-        """ Add a triple, optionally provide a context.  A 3-tuple or
-        rdflib.Triple can be provided.  Context must be a URIRef.  If
-        no context is provides, triple is added to the default
-        context."""
-	#raise Exception("Can not add directly to ConjGraph")
-	self.__backend.add((s, p, o), context=self.default_context, quoted=False)
+	""""A conjunctive graph adds to its default context."""
+	self.backend.add((s, p, o), context=self.default_context, quoted=False)
     
-
     def remove(self, (s, p, o)):
-        """ Remove a triple from the graph.  If the triple does not
-        provide a context attribute, removes the triple from all
-        contexts."""
-        self.__backend.remove((s, p, o), context=None)
+	"""A conjunctive graph removes from all its contexts."""
+        self.backend.remove((s, p, o), context=None)
 
     def triples(self, (s, p, o)):
-        """ Generator over the triple store.  Returns triples that
-        match the given triple pattern.  If triple pattern does not
-        provide a context, all contexts will be searched."""
-	for t in self.__backend.triples((s, p, o), context=None):
+        """An iterator over all the triples in the entire conjunctive graph."""
+	for t in self.backend.triples((s, p, o), context=None):
 	    yield t
 
-    def contexts(self, triple=None):
-        """ Generator over all contexts in the graph. If triple is specified, a generator over all contexts the triple is in."""
-        for context in self.__backend.contexts(triple):
-            yield context
-
     def __len__(self):
-        """ Returns the number of triples in the graph. If context is specified then the number of triples in the context is returned instead."""
-        return self.__backend.__len__(context=None)
+        """Returns the number of triples in the entire conjunctive graph."""
+        return self.backend.__len__(context=None)
+
+    def contexts(self, triple=None):
+        """ 
+	Iterator over all contexts in the graph. If triple is
+	specified, a generator over all contexts the triple is in.
+	"""
+        for context in self.backend.contexts(triple):
+            yield context
 
     def get_context(self, identifier):
         """ Returns a Context graph for the given identifier, which
         must be a URIRef or BNode."""
         assert isinstance(identifier, URIRef) or \
                isinstance(identifier, BNode), type(identifier)
-        return SubGraph(self.backend, identifier)
+        return Graph(self.backend, identifier)
 
     def remove_context(self, identifier):
         """ Removes the given context from the graph. """
-        self.__backend.remove_context(identifier)
+        self.backend.remove_context(identifier)
 
     def load(self, location, publicID=None, format="xml"):
         """ for b/w compat. See parse."""
@@ -390,26 +379,7 @@ class Graph(_Graph):
         return serializer.serialize(destination, base=base, encoding=encoding)
 
 
-
-class SubGraph(_Graph):
-
-    def __init__(self, backend, identifier):
-        super(SubGraph, self).__init__(backend, identifier)
-
-    def add(self, triple): 
-        self.backend.add(triple, self.identifier, quoted=False)
-
-    def remove(self, triple):
-        self.backend.remove(triple, self.identifier)
-
-    def triples(self, triple):
-        return self.backend.triples(triple, self.identifier)
-
-    def __len__(self):
-        return self.backend.__len__(self.identifier)
-
-    
-class QuotedGraph(_Graph):
+class QuotedGraph(Graph):
 
     def __init__(self, backend, identifier):
         super(QuotedGraph, self).__init__(backend, identifier)
