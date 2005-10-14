@@ -1,8 +1,8 @@
 import unittest
 
-from test.rules import *
+#from test.rules import *
 
-if False:
+if True:
     from test.n3 import *
     from test.seq import SeqTestCase
     from test.identifier_equality import *

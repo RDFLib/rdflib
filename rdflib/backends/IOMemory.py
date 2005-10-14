@@ -55,6 +55,8 @@ class IOMemory(Backend):
 
         self.__namespace = self.createPrefixMap()
         self.__prefix = self.createPrefixMap()
+	
+	self.identifier = BNode()
         
     def bind(self, prefix, namespace):
         self.__prefix[namespace] = prefix

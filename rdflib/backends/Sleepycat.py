@@ -1,5 +1,7 @@
 from rdflib.backends import Backend
+
 from rdflib.util import from_n3
+from rdflib import BNode
 
 from bsddb import db
 from base64 import b64encode
@@ -13,6 +15,7 @@ class Sleepycat(Backend):
     def __init__(self):
         super(Sleepycat, self).__init__()
         self.__open = False
+	self.identifier = BNode() # TODO: move to create and persisit
         
     def open(self, path):
         homeDir = path        

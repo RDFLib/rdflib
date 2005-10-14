@@ -26,44 +26,27 @@ from rdflib.interfaces import implements, IGraph
 import logging
 
 
-class Graph(Node):
+class _Graph(Node):
     """
-    An RDF Graph.  The constructor accepts one argument, the 'backend'
-    that will be used to store the graph data (see the 'backends'
-    package for backends currently shipped with rdflib).
-
-    Backends can be context-aware or unaware.  Unaware backends take
-    up (some) less space in the backend but cannot support features
-    that require context, such as true merging/demerging of sub-graphs
-    and provenance.
+    A set of Nodes.
     """
-
-    implements(IGraph)
 
     def __init__(self, backend='default', identifier=None):
-        super(Graph, self).__init__()
+        super(_Graph, self).__init__()
         if not isinstance(backend, Backend):
             # TODO: error handling
             backend = plugin.get(backend, Backend)()
         self.__backend = backend
+        self.__identifier = identifier # TODO: Node should do this
         self.__namespace_manager = None
-	self.__identifier = identifier or BNode()
-
-
-    def __get_identifier(self):
-	if self.__identifier is None:
-	    self.__identifier = self.absolutize("")
-        return self.__identifier
-    def __set_identifier(self, value):
-	if self.__identifier is None:
-	    self.__identifier = value
-	else:
-	    raise Exception("identifier already set")
-    identifier = property(__get_identifier, __set_identifier)
 
     def __get_backend(self):
         return self.__backend
     backend = property(__get_backend)
+
+    def __get_identifier(self):
+        return self.__identifier
+    identifier = property(__get_identifier)
 
     def _get_namespace_manager(self):
         if self.__namespace_manager is None:
@@ -73,68 +56,97 @@ class Graph(Node):
         self.__namespace_manager = nm
     namespace_manager = property(_get_namespace_manager, _set_namespace_manager)
 
-    def _get_context_aware(self):
-        return self.__backend.context_aware
-    context_aware = property(_get_context_aware)
-
-    def open(self, path):
-        """ Open the graph backend.  Might be necessary for backends
-        that require opening a connection to a database or acquiring some resource."""
-        if hasattr(self.__backend, "open"):
-            self.__backend.open(path)
-
-    def close(self):
-        """ Close the graph backend.  Might be necessary for backends
-        that require closing a connection to a database or releasing some resource."""
-        if hasattr(self.__backend, "close"):
-            self.__backend.close()
-
     def add(self, (s, p, o)):
         """ Add a triple, optionally provide a context.  A 3-tuple or
         rdflib.Triple can be provided.  Context must be a URIRef.  If
         no context is provides, triple is added to the default
         context."""
-        #check_statement((s, p, o))
-        if self.context_aware:
-            #if context:
-            #    check_context(context)
-            self.__backend.add((s, p, o), self.identifier, quoted=False)
-        else:
-            self.__backend.add((s, p, o))
+        self.__backend.add((s, p, o), self.identifier, quoted=False)
 
     def remove(self, (s, p, o)):
         """ Remove a triple from the graph.  If the triple does not
         provide a context attribute, removes the triple from all
         contexts."""
 
-        #check_pattern((s, p, o))
-        if self.context_aware:
-            #if context:
-            #    check_context(context)
-            self.__backend.remove((s, p, o), context=None)
-        else:
-            self.__backend.remove((s, p, o))
+	self.__backend.remove((s, p, o), context=self.identifier)
 
     def triples(self, (s, p, o)):
         """ Generator over the triple store.  Returns triples that
         match the given triple pattern.  If triple pattern does not
         provide a context, all contexts will be searched."""
-        #check_pattern((s, p, o))
-        if self.context_aware:
-            #if context:
-            #    check_context(context)
-            for t in self.__backend.triples((s, p, o), context=None):
-                yield t
-        else:
-            for t in self.__backend.triples((s, p, o)):
-                yield t
+	for t in self.__backend.triples((s, p, o), context=self.identifier):
+	    yield t
 
 
-    def contexts(self, triple=None):
-        """ Generator over all contexts in the graph. If triple is specified, a generator over all contexts the triple is in."""
-        assert self.context_aware, "Graph must be context aware to use this method"
-        for context in self.__backend.contexts(triple):
-            yield context
+    def __len__(self):
+        """ Returns the number of triples in the graph. If context is specified then the number of triples in the context is returned instead."""
+	return self.__backend.__len__(context=self.identifier)
+
+    def __iter__(self):
+        """ Iterates over all triples in the store. """
+        return self.triples((None, None, None))
+
+    def __contains__(self, triple):
+        """ Support for 'triple in graph' syntax. """
+        for triple in self.triples(triple):
+            return 1
+        return 0
+
+    def __eq__(self, other):
+        """ Test if Graph is exactly equal to Graph other."""
+        # Note: this is not a test of isomorphism, but rather exact
+        # equality.
+        if not other or len(self)!=len(other):
+            return 0
+        for s, p, o in self:
+            if not (s, p, o) in other:
+                return 0
+        for s, p, o in other:
+            if not (s, p, o) in self:
+                return 0
+        return 1
+
+    def __iadd__(self, other):
+        """ Add all triples in Graph other to Graph."""
+        for triple in other:
+            self.__backend.add(triple) # TODO: context
+        return self
+
+    def __isub__(self, other):
+        """ Subtract all triples in Graph other from Graph."""
+        for triple in other:
+            self.__backend.remove(triple)
+        return self
+
+    def subjects(self, predicate=None, object=None):
+        """ A generator of subjects with the given predicate and object. """
+        for s, p, o in self.triples((None, predicate, object)):
+            yield s
+
+    def predicates(self, subject=None, object=None):
+        """ A generator of predicates with the given subject and object. """
+        for s, p, o in self.triples((subject, None, object)):
+            yield p
+
+    def objects(self, subject=None, predicate=None):
+        """ A generator of objects with the given subject and predicate. """
+        for s, p, o in self.triples((subject, predicate, None)):
+            yield o
+
+    def subject_predicates(self, object=None):
+        """ A generator of (subject, predicate) tuples for the given object """
+        for s, p, o in self.triples((None, None, object)):
+            yield s, p
+
+    def subject_objects(self, predicate=None):
+        """ A generator of (subject, object) tuples for the given predicate """
+        for s, p, o in self.triples((None, predicate, None)):
+            yield s, o
+
+    def predicate_objects(self, subject=None):
+        """ A generator of (predicate, object) tuples for the given subject """
+        for s, p, o in self.triples((subject, None, None)):
+            yield p, o
 
     def value(self, subject=None, predicate=RDF.value, object=None, default=None, any=False):
         """ Get a value for a subject/predicate, predicate/object, or
@@ -201,90 +213,6 @@ class Graph(Node):
                 yield item
             list = self.value(list, RDF.rest)
 
-    def __iter__(self):
-        """ Iterates over all triples in the store. """
-        return self.triples((None, None, None))
-
-    def __contains__(self, triple):
-        """ Support for 'triple in graph' syntax. """
-        for triple in self.triples(triple):
-            return 1
-        return 0
-
-    def __len__(self):
-        """ Returns the number of triples in the graph. If context is specified then the number of triples in the context is returned instead."""
-        if self.context_aware:
-            return self.__backend.__len__(context=None)
-        else:
-            return self.__backend.__len__()
-
-    def __eq__(self, other):
-        """ Test if Graph is exactly equal to Graph other."""
-        # Note: this is not a test of isomorphism, but rather exact
-        # equality.
-        if not other or len(self)!=len(other):
-            return 0
-        for s, p, o in self:
-            if not (s, p, o) in other:
-                return 0
-        for s, p, o in other:
-            if not (s, p, o) in self:
-                return 0
-        return 1
-
-    def __iadd__(self, other):
-        """ Add all triples in Graph other to Graph."""
-        for triple in other:
-            self.__backend.add(triple) # TODO: context
-        return self
-
-    def __isub__(self, other):
-        """ Subtract all triples in Graph other from Graph."""
-        for triple in other:
-            self.__backend.remove(triple)
-        return self
-
-    def subjects(self, predicate=None, object=None):
-        """ A generator of subjects with the given predicate and object. """
-        for s, p, o in self.triples((None, predicate, object)):
-            yield s
-
-    def predicates(self, subject=None, object=None):
-        """ A generator of predicates with the given subject and object. """
-        for s, p, o in self.triples((subject, None, object)):
-            yield p
-
-    def objects(self, subject=None, predicate=None):
-        """ A generator of objects with the given subject and predicate. """
-        for s, p, o in self.triples((subject, predicate, None)):
-            yield o
-
-    def subject_predicates(self, object=None):
-        """ A generator of (subject, predicate) tuples for the given object """
-        for s, p, o in self.triples((None, None, object)):
-            yield s, p
-
-    def subject_objects(self, predicate=None):
-        """ A generator of (subject, object) tuples for the given predicate """
-        for s, p, o in self.triples((None, predicate, None)):
-            yield s, o
-
-    def predicate_objects(self, subject=None):
-        """ A generator of (predicate, object) tuples for the given subject """
-        for s, p, o in self.triples((subject, None, None)):
-            yield p, o
-
-    def get_context(self, identifier):
-        """ Returns a Context graph for the given identifier, which
-        must be a URIRef or BNode."""
-        assert isinstance(identifier, URIRef) or \
-               isinstance(identifier, BNode), type(identifier)
-        return SubGraph(self.backend, identifier)
-
-    def remove_context(self, identifier):
-        """ Removes the given context from the graph. """
-        self.__backend.remove_context(identifier)
-
     def transitive_objects(self, subject, property, remember=None):
         """ """
         if remember==None:
@@ -306,6 +234,109 @@ class Graph(Node):
             for subject in self.subjects(predicate, object):
                 for s in self.transitive_subjects(predicate, subject, remember):
                     yield s
+
+    def seq(self, subject) :
+        """
+        Check if subject is an rdf:Seq. If yes, it returns a Seq
+        class instance, None otherwise.
+        """
+        if (subject, RDF.type, RDF.Seq) in self :
+            return Seq(self, subject)
+        else :
+            return None
+
+    def absolutize(self, uri, defrag=1):
+        """ Will turn uri into an absolute URI if it's not one already. """
+        return self.namespace_manager.absolutize(uri, defrag)
+
+    def bind(self, prefix, namespace, override=True):
+        """Bind prefix to namespace. If override is True will bind namespace to given prefix if namespace was already bound to a different prefix."""
+        return self.namespace_manager.bind(prefix, namespace, override=override)
+
+    def namespaces(self):
+        """Generator over all the prefix, namespace tuples.
+        """
+        for prefix, namespace in self.namespace_manager.namespaces():
+            yield prefix, namespace
+
+
+class Graph(_Graph):
+    """
+    An RDF Graph.  The constructor accepts one argument, the 'backend'
+    that will be used to store the graph data (see the 'backends'
+    package for backends currently shipped with rdflib).
+
+    Backends can be context-aware or unaware.  Unaware backends take
+    up (some) less space in the backend but cannot support features
+    that require context, such as true merging/demerging of sub-graphs
+    and provenance.
+    """
+
+    implements(IGraph)
+
+    def __init__(self, backend='default'):
+        super(Graph, self).__init__(backend)
+	assert self.backend.context_aware
+	self.context_aware = True
+	self.default_context = BNode()
+
+    def __get_identifier(self):
+        return self.__backend.identifier
+    identifier = property(__get_identifier)
+
+    def open(self, path):
+        """ Open the graph backend.  Might be necessary for backends
+        that require opening a connection to a database or acquiring some resource."""
+        if hasattr(self.__backend, "open"):
+            self.__backend.open(path)
+
+    def close(self):
+        """ Close the graph backend.  Might be necessary for backends
+        that require closing a connection to a database or releasing some resource."""
+        if hasattr(self.__backend, "close"):
+            self.__backend.close()
+
+    def add(self, (s, p, o)):
+        """ Add a triple, optionally provide a context.  A 3-tuple or
+        rdflib.Triple can be provided.  Context must be a URIRef.  If
+        no context is provides, triple is added to the default
+        context."""
+	#raise Exception("Can not add directly to ConjGraph")
+	self.__backend.add((s, p, o), context=self.default_context, quoted=False)
+    
+
+    def remove(self, (s, p, o)):
+        """ Remove a triple from the graph.  If the triple does not
+        provide a context attribute, removes the triple from all
+        contexts."""
+        self.__backend.remove((s, p, o), context=None)
+
+    def triples(self, (s, p, o)):
+        """ Generator over the triple store.  Returns triples that
+        match the given triple pattern.  If triple pattern does not
+        provide a context, all contexts will be searched."""
+	for t in self.__backend.triples((s, p, o), context=None):
+	    yield t
+
+    def contexts(self, triple=None):
+        """ Generator over all contexts in the graph. If triple is specified, a generator over all contexts the triple is in."""
+        for context in self.__backend.contexts(triple):
+            yield context
+
+    def __len__(self):
+        """ Returns the number of triples in the graph. If context is specified then the number of triples in the context is returned instead."""
+        return self.__backend.__len__(context=None)
+
+    def get_context(self, identifier):
+        """ Returns a Context graph for the given identifier, which
+        must be a URIRef or BNode."""
+        assert isinstance(identifier, URIRef) or \
+               isinstance(identifier, BNode), type(identifier)
+        return SubGraph(self.backend, identifier)
+
+    def remove_context(self, identifier):
+        """ Removes the given context from the graph. """
+        self.__backend.remove_context(identifier)
 
     def load(self, location, publicID=None, format="xml"):
         """ for b/w compat. See parse."""
@@ -358,36 +389,12 @@ class Graph(Node):
         serializer = plugin.get(format, Serializer)(self)
         return serializer.serialize(destination, base=base, encoding=encoding)
 
-    def seq(self, subject) :
-        """
-        Check if subject is an rdf:Seq. If yes, it returns a Seq
-        class instance, None otherwise.
-        """
-        if (subject, RDF.type, RDF.Seq) in self :
-            return Seq(self, subject)
-        else :
-            return None
-
-    def absolutize(self, uri, defrag=1):
-        """ Will turn uri into an absolute URI if it's not one already. """
-        return self.namespace_manager.absolutize(uri, defrag)
-
-    def bind(self, prefix, namespace, override=True):
-        """Bind prefix to namespace. If override is True will bind namespace to given prefix if namespace was already bound to a different prefix."""
-        return self.namespace_manager.bind(prefix, namespace, override=override)
-
-    def namespaces(self):
-        """Generator over all the prefix, namespace tuples.
-        """
-        for prefix, namespace in self.namespace_manager.namespaces():
-            yield prefix, namespace
 
 
-class SubGraph(Graph):
+class SubGraph(_Graph):
 
     def __init__(self, backend, identifier):
         super(SubGraph, self).__init__(backend, identifier)
-
 
     def add(self, triple): 
         self.backend.add(triple, self.identifier, quoted=False)
@@ -402,7 +409,7 @@ class SubGraph(Graph):
         return self.backend.__len__(self.identifier)
 
     
-class QuotedGraph(Graph):
+class QuotedGraph(_Graph):
 
     def __init__(self, backend, identifier):
         super(QuotedGraph, self).__init__(backend, identifier)
