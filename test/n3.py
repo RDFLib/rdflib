@@ -58,7 +58,8 @@ n3:context      a rdf:Property; rdfs:domain n3:statement;
 
 import unittest
 
-from rdflib import *
+import rdflib
+from rdflib.Graph import Graph
 
 class N3TestCase(unittest.TestCase):
 
@@ -69,7 +70,7 @@ class N3TestCase(unittest.TestCase):
         pass
 
     def testModel(self):
-	g = Graph()
+	g = rdflib.Graph()
         g.parse(StringInputSource(input), format="n3")
 
 	for s, p, o in g:

@@ -24,18 +24,17 @@ from xml.sax.saxutils import prepare_input_source
 import logging
 
 
-class GraphFactory(Node):
+def GraphFactory(backend='default', identifier=None):
+    if not isinstance(backend, Backend):
+	# TODO: error handling
+	backend = plugin.get(backend, Backend)()
+    if backend.context_aware:
+	return ConjunctiveGraph(backend)
+    else:
+	return Graph(backend, identifier)
 
-    def __new__(cls, backend='default', identifier=None):
-	if not isinstance(backend, Backend):
-	    # TODO: error handling
-	    backend = plugin.get(backend, Backend)()
-	if backend.context_aware:
-	    return Node.__new__(ConjunctiveGraph, backend)
-	else:
-	    return Node.__new__(Graph, backend)
 
-class Graph(GraphFactory):
+class Graph(Node):
     """
     An RDF Graph.  The constructor accepts one argument, the 'backend'
     that will be used to store the graph data (see the 'backends'
@@ -48,9 +47,6 @@ class Graph(GraphFactory):
     that require context, such as true merging/demerging of sub-graphs
     and provenance.
     """
-
-    def __new__(cls, backend='default', identifier=None):
-	return Node.__new__(cls, backend)
 
     def __init__(self, backend='default', identifier=None):
         super(Graph, self).__init__()
