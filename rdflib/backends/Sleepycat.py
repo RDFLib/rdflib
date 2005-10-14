@@ -1,9 +1,9 @@
 from rdflib.backends import Backend
-from rdflib.Node import from_n3
+from rdflib.util import from_n3
 
 from bsddb import db
-from base64 import standard_b64encode as b64encode
-from base64 import standard_b64decode as b64decode
+from base64 import b64encode
+from base64 import b64decode
 from os import mkdir
 from os.path import exists
 
@@ -76,11 +76,11 @@ class Sleepycat(Backend):
         self.__prefix.open("prefix", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
         
         self.__pending_sync = None
+	self.__syncing = False
 
     def _schedule_sync(self):
         from threading import Timer
         if self.__open and self.__pending_sync is None:
-            print "SCHEDULING SYNC"
             t = Timer(60.0, self.sync)
             self.__pending_sync = t
             t.setDaemon(True)
@@ -88,6 +88,7 @@ class Sleepycat(Backend):
     
     def sync(self):
         if self.__open:
+	    self.__syncing = True
             self.__spo.sync()
             self.__pos.sync()
             self.__osp.sync()
@@ -100,11 +101,12 @@ class Sleepycat(Backend):
             self.__namespace.sync()
             self.__prefix.sync()
         self.__pending_sync = None
+	self.__syncing = False
 
     def close(self):
         self.__open = False
 
-	if self.__pending_sync:
+	if self.__pending_sync and self.__syncing:
 	    self.__pending_sync.join()
 
         self.__spo.close()

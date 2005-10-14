@@ -156,7 +156,7 @@ class N3Processor(n3p.N3Parser):
 
    def documentStart(self, prod): 
       #formula = self.formula()
-      formula = "{%s}" % self.sink.identifier.n3()
+      formula = "[%s]" % self.sink.identifier.n3()
       self.formulae.append(formula)
       self.sink.start(formula)
 

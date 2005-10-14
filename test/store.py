@@ -44,7 +44,7 @@ class StoreTestCase(unittest.TestCase):
         print "."
 
     def _testTime(self):
-        number = 10000
+        number = 1000
         store = self.store
 
         def add_random():

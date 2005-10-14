@@ -1,4 +1,4 @@
-from rdflib.util import from_n3
+
 
 class Node(object):
     """

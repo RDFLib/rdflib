@@ -5,7 +5,7 @@ from rdflib.util import from_n3
 from rdflib.syntax.parsers import Parser
 from rdflib.syntax.parsers.n3p.n3proc import N3Processor
 
-from rdflib.Graph import Context
+from rdflib.Graph import QuotedGraph, SubGraph
 
 
 class N3Parser(Parser):
@@ -43,7 +43,10 @@ class Sink(object):
 	    return from_n3(t)
 	elif t.startswith('{'):
 	    cid = from_n3(t[1:-1])
-	    return Context(self.sink.graph, cid)
+	    return QuotedGraph(self.sink.backend, cid)
+	elif t.startswith('['):
+	    cid = from_n3(t[1:-1])
+	    return SubGraph(self.sink.backend, cid)
 	else:
 	    raise "NYI:", "%s %s" % (t, type(t))
 	return 
@@ -59,7 +62,7 @@ class Sink(object):
         s, p, o  = self.convert(s), self.convert(p), self.convert(o)
         c = self.convert(f)
         quoted = (c.identifier != self.root.identifier)  # TODO: should be able to do c != self.root 
-        c.add((s, p, o), quoted=quoted)    
+        c.add((s, p, o))
 
     def quantify(self, formula, var): 
         #print "quantify(%s, %s)" % (formula, var)

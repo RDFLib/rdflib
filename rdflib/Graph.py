@@ -134,7 +134,7 @@ class Graph(Node):
         for context in self.__backend.contexts(triple):
             yield context
 
-    def value(self, subject, predicate=RDF.value, object=None, default=None, any=False):
+    def value(self, subject=None, predicate=RDF.value, object=None, default=None, any=False):
         """ Get a value for a subject/predicate, predicate/object, or
         subject/object pair -- exactly one of subject, predicate,
         object must be None. Useful if one knows that there may only
@@ -277,7 +277,7 @@ class Graph(Node):
         must be a URIRef or BNode."""
         assert isinstance(identifier, URIRef) or \
                isinstance(identifier, BNode), type(identifier)
-        return Context(self, identifier)
+        return SubGraph(self.backend, identifier)
 
     def remove_context(self, identifier):
         """ Removes the given context from the graph. """
@@ -381,49 +381,43 @@ class Graph(Node):
             yield prefix, namespace
 
 
-class Context(Graph):
-    def __init__(self, graph, identifier):
-        super(Context, self).__init__(backend=graph.backend)
-        self.graph = graph
-        self.namespace_manager = graph.namespace_manager
-	self.__identifier = identifier
+class SubGraph(Graph):
 
-    def __get_identifier(self):
-	if self.__identifier is None:
-	    self.__identifier = self.absolutize("")
-        return self.__identifier
-    def __set_identifier(self, value):
-	self.__identifier = value
-    identifier = property(__get_identifier, __set_identifier)
-
-    def _get_context_aware(self):
-        return False
-    context_aware = property(_get_context_aware)
+    def __init__(self, backend, identifier):
+        super(SubGraph, self).__init__(backend, identifier)
 
 
-    def add(self, triple, quoted=False): # TODO: test if we need context=None arg
-        #assert context is None or context is self.identifier
-	#This is commented out so that the N3 parser can go through
-	#the context it's being loaded into to add triples to the
-	#other contexts
-        self.backend.add(triple, self.identifier, quoted)
+    def add(self, triple): 
+        self.backend.add(triple, self.identifier, quoted=False)
 
-    def remove(self, triple, context=None):
-        assert context is None
+    def remove(self, triple):
         self.backend.remove(triple, self.identifier)
 
-    def triples(self, triple, context=None):
-        assert context is None
+    def triples(self, triple):
         return self.backend.triples(triple, self.identifier)
 
-    def bind(self, prefix, namespace, override=True):
-        return self.graph.bind(prefix, namespace, override)
-
-    def __len__(self, context=None):
-        assert context is None
+    def __len__(self):
         return self.backend.__len__(self.identifier)
 
+    
+class QuotedGraph(Graph):
 
+    def __init__(self, backend, identifier):
+        super(QuotedGraph, self).__init__(backend, identifier)
+
+    def add(self, triple): 
+        self.backend.add(triple, self.identifier, quoted=True)
+
+    def remove(self, triple):
+        self.backend.remove(triple, self.identifier)
+
+    def triples(self, triple):
+        return self.backend.triples(triple, self.identifier)
+
+    def __len__(self):
+        return self.backend.__len__(self.identifier)
+
+    
 class Seq(object):
     """
     Wrapper around an RDF Seq resource. It implements a container
