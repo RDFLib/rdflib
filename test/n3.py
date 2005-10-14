@@ -58,8 +58,7 @@ n3:context      a rdf:Property; rdfs:domain n3:statement;
 
 import unittest
 
-import rdflib
-from rdflib.Graph import Graph
+from rdflib.Graph import Graph, ConjunctiveGraph
 
 class N3TestCase(unittest.TestCase):
 
@@ -70,7 +69,7 @@ class N3TestCase(unittest.TestCase):
         pass
 
     def testModel(self):
-	g = rdflib.Graph()
+	g = ConjunctiveGraph()
         g.parse(StringInputSource(input), format="n3")
 
 	for s, p, o in g:

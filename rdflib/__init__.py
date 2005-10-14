@@ -24,7 +24,8 @@ from rdflib.Literal import Literal
 
 from rdflib.Namespace import Namespace
 
-from rdflib.Graph import GraphFactory as Graph
+from rdflib.Graph import Graph
+from rdflib.Graph import ConjunctiveGraph
 
 from rdflib import RDF
 from rdflib import RDFS

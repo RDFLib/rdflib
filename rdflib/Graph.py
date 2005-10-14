@@ -24,16 +24,6 @@ from xml.sax.saxutils import prepare_input_source
 import logging
 
 
-def GraphFactory(backend='default', identifier=None):
-    if not isinstance(backend, Backend):
-	# TODO: error handling
-	backend = plugin.get(backend, Backend)()
-    if backend.context_aware:
-	return ConjunctiveGraph(backend)
-    else:
-	return Graph(backend, identifier)
-
-
 class Graph(Node):
     """
     An RDF Graph.  The constructor accepts one argument, the 'backend'
@@ -56,6 +46,8 @@ class Graph(Node):
         self.__backend = backend
         self.__identifier = identifier # TODO: Node should do this
         self.__namespace_manager = None
+	self.context_aware = False
+	self.formula_aware = False
 
     def __get_backend(self):
         return self.__backend

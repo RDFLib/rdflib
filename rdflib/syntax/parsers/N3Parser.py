@@ -14,6 +14,10 @@ class N3Parser(Parser):
         pass
     
     def parse(self, source, graph):
+	# we're currently being handed a Graph, not a ConjunctiveGraph
+	assert graph.backend.context_aware # is this implied by formula_aware
+	assert graph.backend.formula_aware
+
         sink = Sink(graph)
         if False: 
             sink.quantify = lambda *args: True

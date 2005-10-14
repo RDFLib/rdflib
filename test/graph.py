@@ -7,9 +7,10 @@ from rdflib import *
 class GraphTestCase(unittest.TestCase):
     backend = 'default'
     path = None
+    graph_class = ConjunctiveGraph
 
     def setUp(self):
-        self.store = Graph(backend=self.backend)
+        self.store = self.graph_class(backend=self.backend)
         a_tmp_dir = mkdtemp()
         self.path = self.path or a_tmp_dir
         self.store.open(self.path)
@@ -119,6 +120,7 @@ class GraphTestCase(unittest.TestCase):
 
 class MemoryGraphTestCase(GraphTestCase):
     backend = "Memory"
+    graph_class = Graph
 
 try:
     from rdflib.backends.Sleepycat import Sleepycat
