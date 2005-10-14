@@ -313,7 +313,8 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
 
     def __init__(self, backend='default'):
         super(ConjunctiveGraph, self).__init__(backend)
-	assert self.backend.context_aware
+	if not self.backend.context_aware:
+	    print "Warning: store not context aware"
 	self.context_aware = True
 	self.default_context = BNode()
 
