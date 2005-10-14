@@ -108,6 +108,8 @@ class Sleepycat(Backend):
 
 	if self.__pending_sync and self.__syncing:
 	    self.__pending_sync.join()
+	else:
+	    self.__pending_sync.cancel()
 
         self.__spo.close()
         self.__pos.close()
