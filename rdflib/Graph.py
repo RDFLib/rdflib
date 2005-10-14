@@ -86,7 +86,7 @@ class Graph(Node):
         if hasattr(self.__backend, "close"):
             self.__backend.close()
 
-    def add(self, (s, p, o), quoted=False):
+    def add(self, (s, p, o)):
         """ Add a triple, optionally provide a context.  A 3-tuple or
         rdflib.Triple can be provided.  Context must be a URIRef.  If
         no context is provides, triple is added to the default
@@ -95,12 +95,11 @@ class Graph(Node):
         if self.context_aware:
             #if context:
             #    check_context(context)
-            self.__backend.add((s, p, o), self.identifier, quoted)
+            self.__backend.add((s, p, o), self.identifier, quoted=False)
         else:
-            assert quoted==False
             self.__backend.add((s, p, o))
 
-    def remove(self, (s, p, o), context=None):
+    def remove(self, (s, p, o)):
         """ Remove a triple from the graph.  If the triple does not
         provide a context attribute, removes the triple from all
         contexts."""
@@ -109,11 +108,11 @@ class Graph(Node):
         if self.context_aware:
             #if context:
             #    check_context(context)
-            self.__backend.remove((s, p, o), context)
+            self.__backend.remove((s, p, o), context=None)
         else:
             self.__backend.remove((s, p, o))
 
-    def triples(self, (s, p, o), context=None):
+    def triples(self, (s, p, o)):
         """ Generator over the triple store.  Returns triples that
         match the given triple pattern.  If triple pattern does not
         provide a context, all contexts will be searched."""
@@ -121,7 +120,7 @@ class Graph(Node):
         if self.context_aware:
             #if context:
             #    check_context(context)
-            for t in self.__backend.triples((s, p, o), context):
+            for t in self.__backend.triples((s, p, o), context=None):
                 yield t
         else:
             for t in self.__backend.triples((s, p, o)):
@@ -209,10 +208,10 @@ class Graph(Node):
             return 1
         return 0
 
-    def __len__(self, context=None):
+    def __len__(self):
         """ Returns the number of triples in the graph. If context is specified then the number of triples in the context is returned instead."""
         if self.context_aware:
-            return self.__backend.__len__(context)
+            return self.__backend.__len__(context=None)
         else:
             return self.__backend.__len__()
 
