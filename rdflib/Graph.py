@@ -1,6 +1,8 @@
 from __future__ import generators
 
-from rdflib import URIRef, BNode, Literal, Namespace, RDF, RDFS
+from rdflib import URIRef, BNode, Literal
+from rdflib import RDF, RDFS
+
 from rdflib.Node import Node
 
 from rdflib.util import check_statement, check_pattern, check_context
@@ -9,12 +11,13 @@ from rdflib.util import check_subject, check_predicate, check_object
 from rdflib import plugin, exceptions
 
 from rdflib.backends import Backend
+
 from rdflib.syntax.serializer import Serializer
 from rdflib.syntax.parsers import Parser
-
 from rdflib.syntax.NamespaceManager import NamespaceManager
 
 from rdflib.URLInputSource import URLInputSource
+
 from xml.sax.xmlreader import InputSource
 from xml.sax.saxutils import prepare_input_source
 

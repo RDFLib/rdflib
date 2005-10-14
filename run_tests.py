@@ -1,6 +1,8 @@
 import unittest
 
-if True:
+from test.rules import *
+
+if False:
     from test.n3 import *
     from test.seq import SeqTestCase
     from test.identifier_equality import *
@@ -12,7 +14,7 @@ if True:
     from test.parser import *
     #from test.context import *
     #from test.nt import *
-    #from test.rules import *
+
     #from test.parser_rdfcore import *
 
 
