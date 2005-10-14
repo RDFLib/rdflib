@@ -327,14 +327,6 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
         """ Removes the given context from the graph. """
         self.backend.remove_context(identifier)
 
-    def load(self, location, publicID=None, format="xml"):
-        """ for b/w compat. See parse."""
-        return self.parse(location, publicID, format)
-
-    def save(self, location, format="xml", base=None, encoding=None):
-        """ for b/x compat. See serialize."""
-        return self.serialize(location, format, base, encoding)
-
     def context_id(self, uri):
         uri = uri.split("#", 1)[0]
         return URIRef("%s#context" % uri)
@@ -377,6 +369,14 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
         """ Serialize the Graph to destination. If destination is None serialize method returns the serialization as a string. Format defaults to xml (AKA rdf/xml)."""
         serializer = plugin.get(format, Serializer)(self)
         return serializer.serialize(destination, base=base, encoding=encoding)
+
+#     def load(self, location, publicID=None, format="xml"):
+#         """ for b/w compat. See parse."""
+#         return self.parse(location, publicID, format)
+
+#     def save(self, location, format="xml", base=None, encoding=None):
+#         """ for b/x compat. See serialize."""
+#         return self.serialize(location, format, base, encoding)
 
 
 class QuotedGraph(Graph):
