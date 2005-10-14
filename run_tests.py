@@ -1,6 +1,7 @@
 import unittest
 
 #from test.rules import *
+#from test.graph import *
 
 if True:
     from test.n3 import *

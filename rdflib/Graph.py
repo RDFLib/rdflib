@@ -24,7 +24,18 @@ from xml.sax.saxutils import prepare_input_source
 import logging
 
 
-class Graph(Node):
+class GraphFactory(Node):
+
+    def __new__(cls, backend='default', identifier=None):
+	if not isinstance(backend, Backend):
+	    # TODO: error handling
+	    backend = plugin.get(backend, Backend)()
+	if backend.context_aware:
+	    return Node.__new__(ConjunctiveGraph, backend)
+	else:
+	    return Node.__new__(Graph, backend)
+
+class Graph(GraphFactory):
     """
     An RDF Graph.  The constructor accepts one argument, the 'backend'
     that will be used to store the graph data (see the 'backends'
@@ -38,11 +49,14 @@ class Graph(Node):
     and provenance.
     """
 
+    def __new__(cls, backend='default', identifier=None):
+	return Node.__new__(cls, backend)
+
     def __init__(self, backend='default', identifier=None):
         super(Graph, self).__init__()
-        if not isinstance(backend, Backend):
-            # TODO: error handling
-            backend = plugin.get(backend, Backend)()
+	if not isinstance(backend, Backend):
+	    # TODO: error handling
+	    backend = plugin.get(backend, Backend)()
         self.__backend = backend
         self.__identifier = identifier # TODO: Node should do this
         self.__namespace_manager = None
@@ -313,8 +327,7 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
 
     def __init__(self, backend='default'):
         super(ConjunctiveGraph, self).__init__(backend)
-	if not self.backend.context_aware:
-	    print "Warning: store not context aware"
+	assert self.backend.context_aware, "ConjunctiveGraph must be backed by a context aware store."
 	self.context_aware = True
 	self.default_context = BNode()
 

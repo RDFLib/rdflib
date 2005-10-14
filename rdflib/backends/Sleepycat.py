@@ -12,6 +12,7 @@ from os.path import exists
 # TODO: tool to convert old Sleepycat DBs to this version.
 
 class Sleepycat(Backend):
+
     def __init__(self):
         super(Sleepycat, self).__init__()
         self.__open = False

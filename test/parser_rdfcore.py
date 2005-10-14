@@ -19,7 +19,9 @@ def write(msg):
     sw.write(msg+"\n")
     #sys.stdout.write(msg+"\n")
     
-class TestStore(Graph):
+from rdflib.Graph import Graph as _Graph
+
+class TestStore(_Graph):
     def __init__(self, expected):
         super(TestStore, self).__init__()
         self.expected = expected
