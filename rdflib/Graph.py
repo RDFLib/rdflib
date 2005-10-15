@@ -44,7 +44,7 @@ class Graph(Node):
 	    # TODO: error handling
 	    backend = plugin.get(backend, Backend)()
         self.__backend = backend
-        self.__identifier = identifier # TODO: Node should do this
+        self.__identifier = identifier or BNode() # TODO: Node should do this
         self.__namespace_manager = None
 	self.context_aware = False
 	self.formula_aware = False

@@ -1,9 +1,9 @@
 import unittest
 
-#from test.rules import *
+from test.rules import PychinkoTestCase
 #from test.graph import *
 
-if True:
+if False:
     from test.n3 import *
     from test.seq import SeqTestCase
     from test.identifier_equality import *

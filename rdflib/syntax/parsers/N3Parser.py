@@ -1,4 +1,4 @@
-from rdflib import URIRef, BNode, Literal, RDF
+from rdflib import URIRef, BNode, Literal, RDF, Variable
 
 from rdflib.util import from_n3
 
@@ -40,9 +40,7 @@ class Sink(object):
 	elif t.startswith("<"):
 	    return URIRef(unicode(t[1:-1]))
 	elif t.startswith("?"):
-	    #return URIRef("TODO:var/%s" % unicode(t)) # TODO: var term type
-	    #return URIRef("#%s" % unicode(t[1:]))
-	    return URIRef("#%s" % unicode(t))
+	    return Variable(unicode(t[1:]))
 	elif t.startswith('"'):
 	    return from_n3(t)
 	elif t.startswith('{'):
