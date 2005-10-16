@@ -12,6 +12,10 @@ from term_utils import *
 from rdflib.Graph import QuotedGraph
 Any = None
 
+
+#REGEXTerm can be used in any term slot and is interpreted as
+#a request to perform a REGEX match (not a string comparison) using the value
+#(pre-compiled) for checkin rdf:type matches
 class REGEXTerm(unicode):
     def __init__(self,expr):
         self.compiledExpr = re.compile(expr)
@@ -28,7 +32,9 @@ def EscapeQuotes(qstr):
     tmp = qstr.replace("\\","\\\\")
     tmp = tmp.replace("'", "\\'")
     return tmp
-    
+
+
+#Builds WHERE clauses for the supplied terms, context, and whether or not this is for a typeTable
 def buildClause(tableName,subject,obj,context=None,typeTable=True,predicate=None):
     if typeTable:
         rdf_type_memberClause   = buildTypeMemberClause(subject,tableName)
@@ -50,6 +56,7 @@ def buildClause(tableName,subject,obj,context=None,typeTable=True,predicate=None
        clauseString = clauseString and 'where %s'%clauseString or ''
     return clauseString
 
+#Builds an insert command for a type table
 def buildTypeSQLCommand(member,klass,context,storeId):
     #columns: member,klass,context
     rt= "INSERT INTO %s_type_statements VALUES ('%s', '%s', '%s',%s)"%(
@@ -60,8 +67,8 @@ def buildTypeSQLCommand(member,klass,context,storeId):
         type2TermCombination(member,klass))
     return rt
 
+#Builds an insert command for regular triple table
 def buildTripleSQLCommand(subject,predicate,obj,context,storeId,quoted):
-    #triple columns: subject,predicate,object,context,literalObj,objLanguage,objDatatypes
     stmt_table = quoted and "%s_quoted_statements"%storeId or "%s_asserted_statements"%storeId
     triplePattern = statement2TermCombination(subject,predicate,obj)
     command="INSERT INTO %s VALUES ('%s', '%s', '%s', '%s', %s,%s,%s)"%(
@@ -75,14 +82,16 @@ def buildTripleSQLCommand(subject,predicate,obj,context,storeId,quoted):
             type(obj)== Literal and "'%s'"%obj.datatype or 'NULL')
     return command
 
+#Takes a dictionary which represents an entry in a result set and
+#converts it to a tuple of terms using the termComb integer
+#to interpret how to instanciate each term
 def extractTriple(rtDict,backend,hardCodedContext=None):
-    #If context is None, should extract quads!
+    #If context is None, should extract quads??!
     termCombString=REVERSE_TERM_COMBINATIONS[rtDict['termComb']]
     #if not rtDict['context']:
     #    print hardCodedContext
     #pprint(rtDict)
     if 'member' in rtDict and rtDict['member']:
-        #type triple
         return createTerm(rtDict['member'],termCombString[SUBJECT],backend),RDF.type,createTerm(rtDict['klass'],termCombString[OBJECT],backend)
     elif 'subject' in rtDict and rtDict['subject']:
         #regular statement
@@ -94,6 +103,8 @@ def extractTriple(rtDict,backend,hardCodedContext=None):
             o=createTerm(rtDict['object'],termCombString[OBJECT],backend)
         return s,p,o
 
+#Takes a term and 'normalizes' it.
+#Literals are escaped, Quoted graphs are replaced with just their identifiers
 def normalizeTerm(term):
     if type(term)==QuotedGraph:
         return term.identifier
@@ -101,7 +112,9 @@ def normalizeTerm(term):
         return EscapeQuotes(term)
     else:
         return term
-        
+
+#Takes a term value, term type, and backend intance
+#and Creates a term object
 def createTerm(termString,termType,backend):
     if termType=='B':
         return BNode(termString)
@@ -115,13 +128,16 @@ def createTerm(termString,termType,backend):
         print termString,termType
         raise Exception('Unknown term string returned from store: %s'%(termString))
 
-#Where Clause  Functionss
+#Where Clause  utility Functions
+#The predicate and object clause builders are modified in order to optimize
+#subjects and objects utility functions which can take lists as their last argument (object,predicate - respectively)
 def buildSubjClause(subject,tableName):
     if isinstance(subject,REGEXTerm):
         return "%s REGEXP '%s'"%(tableName and '%s.subject'%tableName or 'subject',subject)
     else:
         return subject and "%s='%s'"%(tableName and '%s.subject'%tableName or 'subject',subject) or None
-    
+
+#Capable off taking a list of predicates as well (in which case sub clauses are joined with 'OR')
 def buildPredClause(predicate,tableName):
     if isinstance(predicate,REGEXTerm):
         return "%s REGEXP '%s'"%(tableName and '%s.predicate'%tableName or 'predicate',predicate)
@@ -135,7 +151,8 @@ def buildPredClause(predicate,tableName):
         return '(%s)'%' or '.join([clauseString for clauseString in clauseStrings])
     else:
         return predicate and "%s='%s'"%(tableName and '%s.predicate'%tableName or 'predicate',predicate) or None
-    
+
+#Capable off taking a list of objects as well (in which case sub clauses are joined with 'OR')    
 def buildObjClause(obj,tableName):
     if isinstance(obj,REGEXTerm):
         return "%s REGEXP '%s'"%(tableName and '%s.object'%tableName or 'object',obj)
@@ -160,6 +177,7 @@ def buildContextClause(context,tableName):
     
 def buildLitDTypeClause(obj,tableName):
     return (isinstance(obj,Literal) and obj.datatype and "%s.objDatatype='%s'"%(tableName,obj.datatype)) or None 
+
 def buildLitLanguageClause(obj,tableName):
     return (isinstance(obj,Literal) and obj.datatype and "%s.objLanguage='%s'"%(tableName,obj.language)) or None
 
@@ -732,17 +750,14 @@ class MySQL(Backend):
 
     # Optional Namespace methods
 
-    #quantifier methods
-    def isVariable(context,term):
-        raise Exception("Not implemented")                
+    #quantifier utility methods
     def variables(context):
         raise Exception("Not implemented")                
     def existentials(context):
         raise Exception("Not implemented")                
 
     #optimized interfaces (those needed in order to port Versa)
-    #NOTE:  These should be implemented to be able to accept a list of objects and/or a list of predicates as well
-    #In order to batch a single query instead of one for each.  see: http://rdflib.net/4rdf_rdflib_migration/
+    #capable of taking a list of object terms instead of a single term
     def subjects(self, predicate=None, obj=None):
         """
         A generator of subjects with the given predicate and object.
@@ -813,6 +828,8 @@ class MySQL(Backend):
             termComb=REVERSE_TERM_COMBINATIONS[termComb][SUBJECT]
             yield createTerm(subject,termComb,self)
 
+
+    #capable of taking a list of predicate terms instead of a single term
     def objects(self, subject=None, predicate=None):
         """
         A generator of objects with the given subject and predicate.
@@ -907,7 +924,10 @@ class MySQL(Backend):
                else:
                  raise UniquenessError"""
         raise Exception("Not implemented")
-        
+
+
+
+    #Namespace persistence interface implementation
     def bind(self, prefix, namespace):
         """ """        
         c=self._db.cursor()
@@ -953,9 +973,7 @@ class MySQL(Backend):
             yield prefix,uri
         
 
-
-    # Optional Transactional methods
-
+    #Transactional interfaces
     def commit(self):
         """ """
         self._db.commit()
