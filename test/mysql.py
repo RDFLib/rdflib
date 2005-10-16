@@ -50,17 +50,41 @@ def testRegex():
             
         assert len(list(g.backend.subjects(REGEXTerm('.*'),[formulaB,c])))==2
         assert len(list(g.backend.subjects(None,[formulaB,c])))==2
+        assert len(list(g.backend.subjects(None,[formulaB,c])))==2
+        assert len(list(g.backend.subjects([REGEXTerm('.*rdf-syntax.*'),d],None)))==2
 
         assert len(list(g.backend.objects(None,RDF.type)))==1        
         assert len(list(g.backend.objects(a,[d,RDF.type])))==1
         assert len(list(g.backend.objects(a,[d])))==1
         assert len(list(g.backend.objects(a,None)))==1        
         assert len(list(g.backend.objects(a,[REGEXTerm('.*')])))==1
+        assert len(list(g.backend.objects([a,c],None)))==1        
 
     except:
         g.backend.destroy(configString)
         raise
 
+def testRun():
+    testN3Store('MySQL',configString)
+    testRegex()    
+
+def profileTests():
+    from hotshot import Profile, stats
+    p = Profile('rdflib-mysql.profile')
+    p.runcall(testRun)
+    p.close()
+
+    s = stats.load('rdflib-mysql.profile')
+    s.strip_dirs()
+    s.sort_stats('time','cumulative','pcalls')
+    #s.sort_stats('time','pcalls')
+    s.print_stats(.1)
+    s.print_callers(.1)
+    s.print_callees(.1)
+    
+
 if __name__=='__main__':
     testN3Store('MySQL',configString)
     testRegex()
+    #profileTests()
+    
