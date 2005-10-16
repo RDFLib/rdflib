@@ -87,12 +87,12 @@ def buildTripleSQLCommand(subject,predicate,obj,context,storeId,quoted):
 #to interpret how to instanciate each term
 def extractTriple(rtDict,backend,hardCodedContext=None):
     #If context is None, should extract quads??!
+    context = rtDict['context'] and rtDict['context'] or hardCodedContext
     termCombString=REVERSE_TERM_COMBINATIONS[rtDict['termComb']]
-    #if not rtDict['context']:
-    #    print hardCodedContext
-    #pprint(rtDict)
     if 'member' in rtDict and rtDict['member']:
-        return createTerm(rtDict['member'],termCombString[SUBJECT],backend),RDF.type,createTerm(rtDict['klass'],termCombString[OBJECT],backend)
+        s=createTerm(rtDict['member'],termCombString[SUBJECT],backend)
+        p=RDF.type
+        o=createTerm(rtDict['klass'],termCombString[OBJECT],backend)
     elif 'subject' in rtDict and rtDict['subject']:
         #regular statement
         s=createTerm(rtDict['subject'],termCombString[SUBJECT],backend)
@@ -101,6 +101,10 @@ def extractTriple(rtDict,backend,hardCodedContext=None):
             o=Literal(rtDict['object'],rtDict['objLanguage'],rtDict['objDatatype'])
         else:
             o=createTerm(rtDict['object'],termCombString[OBJECT],backend)
+            
+    if backend.yieldConjunctiveQuads:
+        return s,p,o,context
+    else:
         return s,p,o
 
 #Takes a term and 'normalizes' it.
@@ -134,6 +138,14 @@ def createTerm(termString,termType,backend):
 def buildSubjClause(subject,tableName):
     if isinstance(subject,REGEXTerm):
         return "%s REGEXP '%s'"%(tableName and '%s.subject'%tableName or 'subject',subject)
+    elif isinstance(subject,list):
+        clauseStrings=[]
+        for s in subject:
+            if isinstance(s,REGEXTerm):
+                clauseStrings.append("%s REGEXP '%s'"%(tableName and '%s.subject'%tableName or 'subject',s))
+            else:
+                clauseStrings.append(s and "%s='%s'"%(tableName and '%s.subject'%tableName or 'subject',s) or None)
+        return '(%s)'%' or '.join([clauseString for clauseString in clauseStrings])        
     else:
         return subject and "%s='%s'"%(tableName and '%s.subject'%tableName or 'subject',subject) or None
 
@@ -184,6 +196,9 @@ def buildLitLanguageClause(obj,tableName):
 def buildTypeMemberClause(subject,tableName):
     if isinstance(subject,REGEXTerm):
         return "%s.member REGEXP '%s'"%(tableName,subject)
+    elif isinstance(subject,list):
+        subjs = [isinstance(s,QuotedGraph) and s.identifier or s for s in subject]        
+        return ' or '.join([s and "%s.member = '%s'"%(tableName,s) for s in subjs])    
     else:
         return subject and "%s.member = '%s'"%(tableName,subject)
     
@@ -235,6 +250,9 @@ class MySQL(Backend):
         """
         self.identifier = identifier and identifier or 'hardcoded'
         self._internedId = sha.new(self.identifier).hexdigest()
+
+        #determines whether or not to yield conjunctive quads
+        self.yieldConjunctiveQuads = False
         if configuration:
             self.open(configuration)
             
@@ -757,7 +775,7 @@ class MySQL(Backend):
         raise Exception("Not implemented")                
 
     #optimized interfaces (those needed in order to port Versa)
-    #capable of taking a list of object terms instead of a single term
+    #capable of taking a list of object/predicate terms instead of a single term
     def subjects(self, predicate=None, obj=None):
         """
         A generator of subjects with the given predicate and object.
@@ -775,7 +793,9 @@ class MySQL(Backend):
                  from
                  %s as typeTable
                  %s"""%(asserted_type_table,typeClauseString)            
-        elif isinstance(predicate,REGEXTerm) and predicate.compiledExpr.match(RDF.type):
+        elif isinstance(predicate,REGEXTerm) and predicate.compiledExpr.match(RDF.type) or\
+                 isinstance(predicate,list) and RDF.type in predicate or\
+                 isinstance(predicate,list) and [p for p in predicate if isinstance(p,REGEXTerm) and p.compiledExpr.match(RDF.type)]:
             clauseString = buildClause('asserted',None,obj,None,False,predicate)
             typeClauseString = buildClause('typeTable',None,obj)
             q="""
