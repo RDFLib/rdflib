@@ -1,5 +1,5 @@
 from n3_2 import testN3Store,testN3,implies
-from rdflib.Graph import SubGraph,QuotedGraph
+from rdflib.Graph import QuotedGraph
 from rdflib.backends.MySQL import REGEXTerm
 from rdflib import *
 configString="user=root,password=1618,host=localhost,db=rdflib_db"
@@ -19,13 +19,15 @@ def testRegex():
         c = URIRef('http://test/c')
         d = URIRef('http://test/d')
 
+        universe = ConjunctiveGraph(g.backend)
+
         #REGEX triple matching
-        assert len(list(g.triples((None,REGEXTerm('.*22-rdf-syntax-ns.*'),None))))==1
-        assert len(list(g.triples((None,REGEXTerm('.*'),None))))==3
-        assert len(list(g.triples((REGEXTerm('.*formula.*$'),None,None))))==1
-        assert len(list(g.triples((None,None,REGEXTerm('.*formula.*$')))))==1
-        assert len(list(g.triples((None,REGEXTerm('.*implies$'),None))))==1
-        for s,p,o in g.triples((None,REGEXTerm('.*test.*'),None)):
+        assert len(list(universe.triples((None,REGEXTerm('.*22-rdf-syntax-ns.*'),None))))==1
+        assert len(list(universe.triples((None,REGEXTerm('.*'),None))))==3
+        assert len(list(universe.triples((REGEXTerm('.*formula.*$'),None,None))))==1
+        assert len(list(universe.triples((None,None,REGEXTerm('.*formula.*$')))))==1
+        assert len(list(universe.triples((None,REGEXTerm('.*implies$'),None))))==1
+        for s,p,o in universe.triples((None,REGEXTerm('.*test.*'),None)):
             assert s==a
             assert o==c
 
@@ -33,8 +35,8 @@ def testRegex():
             assert o!=c or isinstance(o,BNode)
 
         #REGEX context matching
-        assert len(list(g.contexts((None,None,REGEXTerm('.*schema.*')))))==1
-        assert len(list(g.contexts((None,REGEXTerm('.*'),None))))==3
+        assert len(list(universe.contexts((None,None,REGEXTerm('.*schema.*')))))==1
+        assert len(list(universe.contexts((None,REGEXTerm('.*'),None))))==3
 
         #test optimized interfaces
         assert len(list(g.backend.subjects(RDF.type,[RDFS.Class,c])))==1
