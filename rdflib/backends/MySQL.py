@@ -6,10 +6,10 @@ from rdflib.Literal import Literal
 from rdflib.URIRef import URIRef
 from rdflib.BNode import BNode
 from pprint import pprint
-#from rdflib.Variable import Variable
+from rdflib.Variable import Variable
 import MySQLdb,sha,sys,re
 from term_utils import *
-from rdflib.Graph import SubGraph,QuotedGraph
+from rdflib.Graph import QuotedGraph
 Any = None
 
 class REGEXTerm(unicode):
@@ -99,8 +99,6 @@ def normalizeTerm(term):
         return term.identifier
     elif type(term)==Literal:
         return EscapeQuotes(term)
-    elif type(term)==SubGraph:
-        raise
     else:
         return term
         
@@ -109,8 +107,8 @@ def createTerm(termString,termType,backend):
         return BNode(termString)
     elif termType=='U':
         return URIRef(termString)
-    #elif termString[0] == '?':
-    #    return Variable(termString[1:])
+    elif termType == 'V':
+        return Variable(termString)
     elif termType=='F':
         return QuotedGraph(backend,termString)
     else:
@@ -210,6 +208,7 @@ class MySQL(Backend):
     In addition it persists namespace mappings in a seperate table
     """
     context_aware = True
+    formula_aware = True
     def __init__(self, identifier=None, configuration=None):
         """ 
         identifier: URIRef of the Store. Defaults to CWD
