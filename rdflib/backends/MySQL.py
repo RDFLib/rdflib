@@ -7,8 +7,16 @@ from rdflib.URIRef import URIRef
 from rdflib.BNode import BNode
 from pprint import pprint
 #from rdflib.Variable import Variable
-import MySQLdb,sha,sys
+import MySQLdb,sha,sys,re
+from term_utils import *
+from rdflib.Graph import SubGraph,QuotedGraph
 Any = None
+
+class REGEXTerm(unicode):
+    def __init__(self,expr):
+        self.compiledExpr = re.compile(expr)
+    
+#Terms: u - uri refs  v - variables  b - bnodes l - literal f - formula
 
 #FIXME:  This may prove to be a performance bottleneck and should perhaps be implemented in C
 def EscapeQuotes(qstr):
@@ -34,96 +42,122 @@ def buildClause(tableName,subject,obj,context=None,typeTable=True,predicate=None
        predClause        = buildPredClause(predicate,tableName)
        objClause         = buildObjClause(obj,tableName)
        contextClause           = buildContextClause(context,tableName)
-       isLitClause       = buildIsLitClause(obj,tableName)
        litDTypeClause    = buildLitDTypeClause(obj,tableName)
        litLanguageClause = buildLitLanguageClause(obj,tableName)
 
-       clauses=[subjClause,predClause,objClause,contextClause,isLitClause,litDTypeClause,litLanguageClause]
+       clauses=[subjClause,predClause,objClause,contextClause,litDTypeClause,litLanguageClause]
        clauseString = ' and '.join([clause for clause in clauses if clause])
        clauseString = clauseString and 'where %s'%clauseString or ''
     return clauseString
 
 def buildTypeSQLCommand(member,klass,context,storeId):
     #columns: member,klass,context
-    return "INSERT INTO %s_type_statements VALUES ('%s', '%s', '%s')"%(
+    rt= "INSERT INTO %s_type_statements VALUES ('%s', '%s', '%s',%s)"%(
         storeId,
-        member,
-        klass,
-        context)
+        normalizeTerm(member),
+        normalizeTerm(klass),
+        context,
+        type2TermCombination(member,klass))
+    return rt
 
 def buildTripleSQLCommand(subject,predicate,obj,context,storeId,quoted):
     #triple columns: subject,predicate,object,context,literalObj,objLanguage,objDatatypes
     stmt_table = quoted and "%s_quoted_statements"%storeId or "%s_asserted_statements"%storeId
-    if isinstance(obj,Literal):
-        command="INSERT INTO %s VALUES ('%s', '%s', '%s', '%s', 'true','%s','%s')"%(
+    triplePattern = statement2TermCombination(subject,predicate,obj)
+    command="INSERT INTO %s VALUES ('%s', '%s', '%s', '%s', %s,%s,%s)"%(
             stmt_table,
-            subject,
+            normalizeTerm(subject),
             predicate,
-            EscapeQuotes(obj),
+            normalizeTerm(obj),
             context,
-            obj.language,
-            obj.datatype)
-    else:
-        command="INSERT INTO %s VALUES ('%s', '%s', '%s', '%s', 'false',NULL,NULL)"%(
-            stmt_table,
-            subject,
-            predicate,
-            convertURI(obj),
-            context)
+            str(triplePattern),
+            type(obj)== Literal and  "'%s'"%obj.language or 'NULL',
+            type(obj)== Literal and "'%s'"%obj.datatype or 'NULL')
     return command
 
-def extractTriple(rtDict):
+def extractTriple(rtDict,backend,hardCodedContext=None):
+    #If context is None, should extract quads!
+    termCombString=REVERSE_TERM_COMBINATIONS[rtDict['termComb']]
+    #if not rtDict['context']:
+    #    print hardCodedContext
+    #pprint(rtDict)
     if 'member' in rtDict and rtDict['member']:
         #type triple
-        return createTerm(rtDict['member']),RDF.type,createTerm(rtDict['klass'])
+        return createTerm(rtDict['member'],termCombString[SUBJECT],backend),RDF.type,createTerm(rtDict['klass'],termCombString[OBJECT],backend)
     elif 'subject' in rtDict and rtDict['subject']:
         #regular statement
-        if rtDict['literalObj'] == 'true':
-            obj=Literal(rtDict['object'],rtDict['objLanguage'],rtDict['objDatatype'])
+        s=createTerm(rtDict['subject'],termCombString[SUBJECT],backend)
+        p=createTerm(rtDict['predicate'],termCombString[PREDICATE],backend)
+        if termCombString[OBJECT] == 'L':
+            o=Literal(rtDict['object'],rtDict['objLanguage'],rtDict['objDatatype'])
         else:
-            obj=createTerm(rtDict['object'])
-        return (createTerm(rtDict['subject']),createTerm(rtDict['predicate']),obj)
+            o=createTerm(rtDict['object'],termCombString[OBJECT],backend)
+        return s,p,o
+
+def normalizeTerm(term):
+    if type(term)==QuotedGraph:
+        return term.identifier
+    elif type(term)==Literal:
+        return EscapeQuotes(term)
+    elif type(term)==SubGraph:
+        raise
+    else:
+        return term
         
-def createTerm(termString):
-    if termString[:2]=='_:':
-        return BNode(termString[2:])
-    elif (termString[0],termString[-1]) == ('<','>'):
-        return URIRef(termString[1:-1])
+def createTerm(termString,termType,backend):
+    if termType=='B':
+        return BNode(termString)
+    elif termType=='U':
+        return URIRef(termString)
     #elif termString[0] == '?':
     #    return Variable(termString[1:])
+    elif termType=='F':
+        return QuotedGraph(backend,termString)
     else:
+        print termString,termType
         raise Exception('Unknown term string returned from store: %s'%(termString))
 
-def convertURI(term):
-    if isinstance(term, URIRef):
-        return '<%s>' % term.encode("UTF-8")
-    elif isinstance(term, BNode):
-        return '_:%s' % term.encode("UTF-8")
-    #elif isinstance(term, Variable):
-    #    pass
-    else:
-        msg = "Unknown term Type for: %s" % term
-        raise Exception(msg)
-        
 #Where Clause  Functionss
 def buildSubjClause(subject,tableName):
-    return subject and "%s='%s'"%(tableName and '%s.subject'%tableName or 'subject',convertURI(subject)) or None
+    if isinstance(subject,REGEXTerm):
+        return "%s REGEXP '%s'"%(tableName and '%s.subject'%tableName or 'subject',subject)
+    else:
+        return subject and "%s='%s'"%(tableName and '%s.subject'%tableName or 'subject',subject) or None
+    
 def buildPredClause(predicate,tableName):
-    return predicate and "%s='%s'"%(tableName and '%s.predicate'%tableName or 'predicate',convertURI(predicate)) or None
+    if isinstance(predicate,REGEXTerm):
+        return "%s REGEXP '%s'"%(tableName and '%s.predicate'%tableName or 'predicate',predicate)
+    else:
+        return predicate and "%s='%s'"%(tableName and '%s.predicate'%tableName or 'predicate',predicate) or None
+    
 def buildObjClause(obj,tableName):
-    return obj and "%s='%s'"%(tableName and '%s.object'%tableName or 'object',isinstance(obj,Literal) and EscapeQuotes(obj) or convertURI(obj)) or None     
+    if isinstance(obj,REGEXTerm):
+        return "%s REGEXP '%s'"%(tableName and '%s.object'%tableName or 'object',obj)
+    else:
+        return obj and "%s='%s'"%(tableName and '%s.object'%tableName or 'object',isinstance(obj,Literal) and EscapeQuotes(obj) or obj) or None     
+
 def buildContextClause(context,tableName):
-    return context and "%s='%s'"%(tableName and '%s.context'%tableName,convertURI(context)) or None
-def buildIsLitClause(obj,tableName):
-    return isinstance(obj,Literal) and "%s.literalObj='true'"%(tableName) or (obj and "%s.literalObj='false'"%(tableName) or None)
+    if isinstance(context,REGEXTerm):
+        return "%s REGEXP '%s'"%(tableName and '%s.context'%tableName,context)
+    else:
+        return context and "%s='%s'"%(tableName and '%s.context'%tableName,context) or None
+    
 def buildLitDTypeClause(obj,tableName):
     return (isinstance(obj,Literal) and obj.datatype and "%s.objDatatype='%s'"%(tableName,obj.datatype)) or None 
 def buildLitLanguageClause(obj,tableName):
     return (isinstance(obj,Literal) and obj.datatype and "%s.objLanguage='%s'"%(tableName,obj.language)) or None
+
 def buildTypeMemberClause(subject,tableName):
-    return subject and "%s.member = '%s'"%(tableName,convertURI(subject))
+    if isinstance(subject,REGEXTerm):
+        return "%s.member REGEXP '%s'"%(tableName,subject)
+    else:
+        return subject and "%s.member = '%s'"%(tableName,subject)
+    
 def buildTypeClassClause(obj,tableName):
-    return obj and not isinstance(obj,Literal) and "%s.klass = '%s'"%(tableName,convertURI(obj))
+    if isinstance(obj,REGEXTerm):
+        return "%s.klass REGEXP '%s'"%(tableName,obj)
+    else:
+        return obj and not isinstance(obj,Literal) and "%s.klass = '%s'"%(tableName,obj)
     
 def ParseConfigurationString(config_string):
     """
@@ -265,10 +299,10 @@ class MySQL(Backend):
             #quoted statement or non rdf:type predicate
             c.execute(
                 buildTripleSQLCommand(
-                    convertURI(subject),
-                    convertURI(predicate),
+                    subject,
+                    predicate,
                     obj,
-                    convertURI(context),
+                    context,
                     self._internedId,
                     quoted)
             )
@@ -276,9 +310,9 @@ class MySQL(Backend):
             #asserted rdf:type statement
             c.execute(
                 buildTypeSQLCommand(
-                    convertURI(subject),
-                    convertURI(obj),
-                    convertURI(context),
+                    subject,
+                    obj,
+                    context,
                     self._internedId)
             )
         c.close()
@@ -315,8 +349,8 @@ class MySQL(Backend):
         asserted rdf:type table:     <id>_type_statements
         asserted non rdf:type table: <id>_asserted_statements
         
-        triple columns: subject,predicate,object,context,literalObj,objLanguage,objDatatype
-        class membership columns: member,klass,context
+        triple columns: subject,predicate,object,context,termComb,objLanguage,objDatatype
+        class membership columns: member,klass,context termComb
 
         FIXME:  These union all selects *may* be further optimized by joins 
         
@@ -343,22 +377,57 @@ class MySQL(Backend):
 
                      (select
                         typeTable.member as subject,
-                        %s as predicate,
+                        '%s' as predicate,
                         typeTable.klass as object,
-                        %s as literalObj,
                         NULL as objLanguage,
                         NULL as objDatatypes,
-                        typeTable.context as context
+                        typeTable.context as context,
+                        typeTable.termComb as termComb
                      from                         
                         %s as typeTable
                      %s)"""%(
                     quoted_table,
                     quotedClauseString,
-                    "'<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>'",
-                    "'false'",
+                    RDF.type,
                     asserted_type_table,
                     typeClauseString)
                 
+            elif isinstance(predicate,REGEXTerm) and predicate.compiledExpr.match(RDF.type):
+                #select from asserted non rdf:type partition, asserted rdf:type (matches rdf:type) and quoted table
+                clauseStrings=[]
+                quotedClauseString = buildClause('quoted',subject,obj,context,False,predicate)
+                typeClauseString = buildClause('typeTable',subject,obj,context)
+                
+                for tableAlias in ['quoted','asserted']:
+                    clauseStrings.append(buildClause(tableAlias,subject,obj,context,False,predicate))
+                    
+                q="""select                     
+                        quoted.*
+                      from                         
+                        %s as quoted
+                      %s
+
+                      union all
+
+                      select
+                        asserted.*
+                      from
+                        %s as asserted
+                      %s
+
+                      union all
+
+                      select
+                        typeTable.member as subject,
+                        '%s' as predicate,
+                        typeTable.klass as object,
+                        typeTable.termComb as termComb,
+                        NULL as objLanguage,
+                        NULL as objDatatypes,
+                        typeTable.context as context
+                     from
+                        %s as typeTable
+                     %s"""%(quoted_table,clauseStrings[0],asserted_table,clauseStrings[1],RDF.type,asserted_type_table,typeClauseString)                
             elif predicate:
                 #select from asserted non rdf:type partition and quoted table only
                 clauseStrings=[]
@@ -381,7 +450,7 @@ class MySQL(Backend):
                       from
                         %s as asserted
                       %s"""%(quoted_table,clauseStrings[0],asserted_table,clauseStrings[1])
-                
+ 
             else:
                 #select from asserted rdf:type, asserted non rdf:type and quoted table
                 clauseStringList=[]
@@ -392,9 +461,9 @@ class MySQL(Backend):
                 
                 q="""select
                         typeTable.member as subject,
-                        '<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>' as predicate,
+                        '%s' as predicate,
                         typeTable.klass as object,
-                        'false' as literalObj,
+                        typeTable.termComb as termComb,
                         NULL as objLanguage,
                         NULL as objDatatypes,
                         typeTable.context as context
@@ -416,7 +485,7 @@ class MySQL(Backend):
                         asserted.*
                       from     
                         %s as asserted
-                      %s"""%(asserted_type_table,typeClauseString,quoted_table,clauseStringList[0],asserted_table,clauseStringList[1])
+                      %s"""%(RDF.type,asserted_type_table,typeClauseString,quoted_table,clauseStringList[0],asserted_table,clauseStringList[1])
 
         else:
             if predicate == RDF.type:
@@ -426,22 +495,46 @@ class MySQL(Backend):
                         type.*
                       from     
                         %s as type
-                      %s"""%(asserted_type_table,clauseString)                
+                      %s"""%(asserted_type_table,clauseString)
+                
+            elif isinstance(predicate,REGEXTerm) and predicate.compiledExpr.match(RDF.type):
+                #Predicate matched rdf:type (might also match other predicates)
+                assertedClauseString = buildClause('asserted',subject,obj,context,False,predicate)
+                typeClauseString = buildClause('typeTable',subject,obj,context)
+                    
+                q="""(select                     
+                        asserted.*
+                      from                         
+                        %s as asserted
+                     %s)
+
+                     union all
+
+                     (select
+                       typeTable.member as subject,
+                       '%s' as predicate,
+                       typeTable.klass as object,
+                       NULL as objLanguage,
+                       NULL as objDatatypes,
+                       typeTable.context as context,
+                       typeTable.termComb as termComb
+                      from                         
+                        %s as typeTable
+                      %s)"""%(asserted_table,assertedClauseString,RDF.type,asserted_type_table,typeClauseString)
 
             elif predicate:
                 #select from asserted non rdf:type partition only
+                
                 clauseString = buildClause('asserted',subject,obj,context,False,predicate)
                 q="""select                                             
                         asserted.*
                       from                         
                         %s as asserted
-                      %s"""%(asserted_table,clauseString)                
-
+                      %s"""%(asserted_table,clauseString)
             else:
-                #select from asserted rdf:type, asserted non rdf:type 
+                #select from asserted rdf:type, asserted non rdf:type
                 clauseString = buildClause('asserted',subject,obj,context,False,predicate)
                 typeClauseString = buildClause('typeTable',subject,obj)
-                
                 q="""select                     
                         asserted.*
                      from %s as asserted
@@ -451,19 +544,19 @@ class MySQL(Backend):
 
                      select
                         typeTable.member as subject,
-                        '<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>' as predicate,
+                        '%s' as predicate,
                         typeTable.klass as object,
-                        'false' as literalObj,
+                        typeTable.termComb as termComb,
                         NULL as objLanguage,
                         NULL as objDatatypes,
                         typeTable.context as context
                       from                         
                         %s as typeTable
-                      %s"""%(asserted_table,clauseString,asserted_type_table,typeClauseString)
+                      %s"""%(asserted_table,clauseString,RDF.type,asserted_type_table,typeClauseString)
         c.execute(q)
         c.close()
         for rtDict in c.fetchall():
-            yield extractTriple(rtDict)
+            yield extractTriple(rtDict,self,context)
 
     def __len__(self, context=None):
         """ Number of statements in the store. """
@@ -508,7 +601,70 @@ class MySQL(Backend):
         asserted_table="%s_asserted_statements"%self._internedId
         asserted_type_table="%s_type_statements"%self._internedId
         if triple:
-            raise Exception("Not implemented")        
+            s,p,o=triple
+            if p == RDF.type:
+                clauseString = buildClause('quoted',s,o,None,False,p)
+                typeClauseString = buildClause('typeTable',s,o)
+                q="""
+                     select
+                       quoted.context
+                     from
+                       %s as quoted
+                     %s
+                     
+                     union 
+            
+                     select
+                       typeTable.context
+                     from
+                       %s as typeTable
+                     %s"""%(quoted_table,clauseString,asserted_type_table,typeClauseString)
+            elif not p or isinstance(p,REGEXTerm) and p.compiledExpr.match(RDF.type):
+                clauseStringList=[]
+                for tableAlias in ['quoted','asserted']:                    
+                    clauseStringList.append(buildClause(tableAlias,s,o,None,False,p))                    
+
+                typeClauseString = buildClause('typeTable',s,o,None)                
+                q="""select
+                        typeTable.context as context
+                     from
+                        %s as typeTable
+                     %s
+
+                     union 
+
+                     select
+                        quoted.context
+                     from
+                        %s as quoted
+                     %s
+
+                     union 
+
+                     select
+                        asserted.context
+                      from     
+                        %s as asserted
+                      %s"""%(asserted_type_table,typeClauseString,quoted_table,clauseStringList[0],asserted_table,clauseStringList[1])                                
+            else:
+                clauseStringList=[]
+                for tableAlias in ['quoted','asserted']:                    
+                    clauseStringList.append(buildClause(tableAlias,s,o,None,False,p))                    
+                
+                q="""select
+                        quoted.context
+                     from
+                        %s as quoted
+                     %s
+
+                     union 
+
+                     select
+                        asserted.context
+                      from     
+                        %s as asserted
+                      %s"""%(quoted_table,clauseStringList[0],asserted_table,clauseStringList[1])                                
+
         else:
             q="""select
                    quoted.context
@@ -691,9 +847,10 @@ CREATE TABLE %s_asserted_statements (
     predicate     text not NULL,
     object        text,
     context       text not NULL,
-    literalObj    enum('false','true') not NULL,
+    termComb      tinyint unsigned not NULL,    
     objLanguage   varchar(3),
     objDatatype   text,
+    INDEX termComb_index (termComb),    
     INDEX spoc_index (subject(100),predicate(100),object(50),context(50)),
     INDEX poc_index (predicate(100),object(50),context(50)),
     INDEX csp_index (context(50),subject(100),predicate(100)),
@@ -704,6 +861,8 @@ CREATE TABLE %s_type_statements (
     member        text not NULL,
     klass         text,
     context       text not NULL,
+    termComb      tinyint unsigned not NULL,
+    INDEX termComb (termComb),
     INDEX memberC_index (member(100),klass(100),context(50)),
     INDEX klassC_index (klass(100),context(50)),
     INDEX c_index (context(10))) TYPE=InnoDB"""
@@ -714,9 +873,10 @@ CREATE TABLE %s_quoted_statements (
     predicate     text not NULL,
     object        text,
     context       text not NULL,
-    literalObj    enum('false','true') not NULL,
+    termComb      tinyint unsigned not NULL,
     objLanguage   varchar(3),
     objDatatype   text,
+    INDEX termComb_index (termComb),
     INDEX spoc_index (subject(100),predicate(100),object(50),context(50)),
     INDEX poc_index (predicate(100),object(50),context(50)),
     INDEX csp_index (context(50),subject(100),predicate(100)),
