@@ -36,6 +36,25 @@ def testRegex():
         assert len(list(g.contexts((None,None,REGEXTerm('.*schema.*')))))==1
         assert len(list(g.contexts((None,REGEXTerm('.*'),None))))==3
 
+        #test optimized interfaces
+        assert len(list(g.backend.subjects(RDF.type,[RDFS.Class,c])))==1
+        for subj in g.backend.subjects(RDF.type,[RDFS.Class,c]):
+            assert isinstance(subj,BNode)
+
+        assert len(list(g.backend.subjects(implies,[REGEXTerm('.*')])))==1
+
+        for subj in g.backend.subjects(implies,[formulaB,RDFS.Class]):
+            assert subj.identifier == formulaA.identifier
+            
+        assert len(list(g.backend.subjects(REGEXTerm('.*'),[formulaB,c])))==2
+        assert len(list(g.backend.subjects(None,[formulaB,c])))==2
+
+        assert len(list(g.backend.objects(None,RDF.type)))==1        
+        assert len(list(g.backend.objects(a,[d,RDF.type])))==1
+        assert len(list(g.backend.objects(a,[d])))==1
+        assert len(list(g.backend.objects(a,None)))==1        
+        assert len(list(g.backend.objects(a,[REGEXTerm('.*')])))==1
+
     except:
         g.backend.destroy(configString)
         raise

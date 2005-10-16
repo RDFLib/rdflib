@@ -29,11 +29,11 @@ def testN3Store(backend,configString):
         c = URIRef('http://test/c')
         d = URIRef('http://test/d')
 
+        #test formula as terms
+        assert len(list(g.triples((formulaA,implies,formulaB))))==1
+
         assert len(list(g.contexts()))==3
         
-        #triples test cases
-        #for s,p,o in g.triples((None,RDF.type,RDFS.Class)):
-        #    print s,p,o
         assert type(list(g.triples((None,RDF.type,RDFS.Class)))[0][0]) == BNode
         assert len(list(g.triples((None,implies,None))))==1
         assert len(list(g.triples((None,RDF.type,None))))==1
@@ -44,15 +44,9 @@ def testN3Store(backend,configString):
         assert len(list(formulaB.triples((None,URIRef('http://test/d'),None))))==1
         assert len(list(g.triples((None,URIRef('http://test/d'),None))))==1
 
+        #context tests
         #test contexts with triple argument
         assert len(list(g.contexts((a,d,c))))==2
-        #for c in g.contexts((None,RDF.type,None)):
-        #    print c
-        assert len(list(g.contexts((None,RDF.type,None))))==2
-        assert len(list(g.contexts((a,None,None))))==3
-        assert len(list(g.contexts((None,None,c))))==3
-
-
 
         #Remove test cases
         g.remove((None,implies,None))
@@ -67,9 +61,9 @@ def testN3Store(backend,configString):
 
         g.remove((None,RDF.type,RDFS.Class))
 
+
         #remove_context tests
         g.remove_context(formulaB.identifier)
-        #g.remove((None,None,None),formulaB)
         assert len(list(g.triples((None,RDF.type,None))))==0
         assert len(g)==1
         assert len(formulaB)==0
