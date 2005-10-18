@@ -137,12 +137,12 @@ def createTerm(termString,termType,backend):
 #subjects and objects utility functions which can take lists as their last argument (object,predicate - respectively)
 def buildSubjClause(subject,tableName):
     if isinstance(subject,REGEXTerm):
-        return "%s REGEXP '%s'"%(tableName and '%s.subject'%tableName or 'subject',subject)
+        return "%s REGEXP '%s'"%(tableName and '%s.subject'%tableName or 'subject',EscapeQuotes(subject))
     elif isinstance(subject,list):
         clauseStrings=[]
         for s in subject:
             if isinstance(s,REGEXTerm):
-                clauseStrings.append("%s REGEXP '%s'"%(tableName and '%s.subject'%tableName or 'subject',s))
+                clauseStrings.append("%s REGEXP '%s'"%(tableName and '%s.subject'%tableName or 'subject',EscapeQuotes(s)))
             else:
                 clauseStrings.append(s and "%s='%s'"%(tableName and '%s.subject'%tableName or 'subject',s) or None)
         return '(%s)'%' or '.join([clauseString for clauseString in clauseStrings])        
@@ -152,12 +152,12 @@ def buildSubjClause(subject,tableName):
 #Capable off taking a list of predicates as well (in which case sub clauses are joined with 'OR')
 def buildPredClause(predicate,tableName):
     if isinstance(predicate,REGEXTerm):
-        return "%s REGEXP '%s'"%(tableName and '%s.predicate'%tableName or 'predicate',predicate)
+        return "%s REGEXP '%s'"%(tableName and '%s.predicate'%tableName or 'predicate',EscapeQuotes(predicate))
     elif isinstance(predicate,list):
         clauseStrings=[]
         for p in predicate:
             if isinstance(p,REGEXTerm):
-                clauseStrings.append("%s REGEXP '%s'"%(tableName and '%s.predicate'%tableName or 'predicate',p))
+                clauseStrings.append("%s REGEXP '%s'"%(tableName and '%s.predicate'%tableName or 'predicate',EscapeQuotes(p)))
             else:
                 clauseStrings.append(predicate and "%s='%s'"%(tableName and '%s.predicate'%tableName or 'predicate',p) or None)
         return '(%s)'%' or '.join([clauseString for clauseString in clauseStrings])
@@ -167,12 +167,12 @@ def buildPredClause(predicate,tableName):
 #Capable off taking a list of objects as well (in which case sub clauses are joined with 'OR')    
 def buildObjClause(obj,tableName):
     if isinstance(obj,REGEXTerm):
-        return "%s REGEXP '%s'"%(tableName and '%s.object'%tableName or 'object',obj)
+        return "%s REGEXP '%s'"%(tableName and '%s.object'%tableName or 'object',EscapeQuotes(obj))
     elif isinstance(obj,list):
         clauseStrings=[]
         for o in obj:
             if isinstance(o,REGEXTerm):
-                clauseStrings.append("%s REGEXP '%s'"%(tableName and '%s.object'%tableName or 'object',o))
+                clauseStrings.append("%s REGEXP '%s'"%(tableName and '%s.object'%tableName or 'object',EscapeQuotes(o)))
             elif isinstance(o,QuotedGraph):
                 clauseStrings.append("%s='%s'"%(tableName and '%s.object'%tableName or 'object',o.identifier))
             else:
@@ -183,7 +183,7 @@ def buildObjClause(obj,tableName):
 
 def buildContextClause(context,tableName):
     if isinstance(context,REGEXTerm):
-        return "%s REGEXP '%s'"%(tableName and '%s.context'%tableName,context)
+        return "%s REGEXP '%s'"%(tableName and '%s.context'%tableName,EscapeQuotes(context))
     else:
         return context and "%s='%s'"%(tableName and '%s.context'%tableName,context) or None
     
@@ -195,7 +195,7 @@ def buildLitLanguageClause(obj,tableName):
 
 def buildTypeMemberClause(subject,tableName):
     if isinstance(subject,REGEXTerm):
-        return "%s.member REGEXP '%s'"%(tableName,subject)
+        return "%s.member REGEXP '%s'"%(tableName,EscapeQuotes(subject))
     elif isinstance(subject,list):
         subjs = [isinstance(s,QuotedGraph) and s.identifier or s for s in subject]        
         return ' or '.join([s and "%s.member = '%s'"%(tableName,s) for s in subjs])    
@@ -204,7 +204,7 @@ def buildTypeMemberClause(subject,tableName):
     
 def buildTypeClassClause(obj,tableName):
     if isinstance(obj,REGEXTerm):
-        return "%s.klass REGEXP '%s'"%(tableName,obj)
+        return "%s.klass REGEXP '%s'"%(tableName,EscapeQuotes(obj))
     elif isinstance(obj,list):
         obj = [isinstance(o,QuotedGraph) and o.identifier or o for o in obj]        
         return ' or '.join([o and not isinstance(o,Literal) and "%s.klass = '%s'"%(tableName,o) for o in obj])
@@ -436,7 +436,7 @@ class MySQL(Backend):
                         '%s' as predicate,
                         typeTable.klass as object,
                         NULL as objLanguage,
-                        NULL as objDatatypes,
+                        NULL as objDatatype,
                         typeTable.context as context,
                         typeTable.termComb as termComb
                      from                         
@@ -479,7 +479,7 @@ class MySQL(Backend):
                         typeTable.klass as object,
                         typeTable.termComb as termComb,
                         NULL as objLanguage,
-                        NULL as objDatatypes,
+                        NULL as objDatatype,
                         typeTable.context as context
                      from
                         %s as typeTable
@@ -515,34 +515,34 @@ class MySQL(Backend):
 
                 typeClauseString = buildClause('typeTable',subject,obj,context)
                 
-                q="""select
-                        typeTable.member as subject,
-                        '%s' as predicate,
-                        typeTable.klass as object,
-                        typeTable.termComb as termComb,
-                        NULL as objLanguage,
-                        NULL as objDatatypes,
-                        typeTable.context as context
-                     from
-                        %s as typeTable
-                     %s
-
-                     union all
-
-                     select
+                q="""
+                     (select
                         quoted.*
                      from
                         %s as quoted
-                     %s
+                     %s)
 
                      union all
 
-                     select
+                     (select
                         asserted.*
                       from     
                         %s as asserted
-                      %s"""%(RDF.type,asserted_type_table,typeClauseString,quoted_table,clauseStringList[0],asserted_table,clauseStringList[1])
+                      %s)
 
+                     union all
+
+                     (select
+                        typeTable.member as subject,
+                        '%s' as predicate,
+                        typeTable.klass as object,
+                        typeTable.termComb,
+                        NULL as objLanguage,
+                        NULL as objDatatype,
+                        typeTable.context as context
+                     from
+                        %s as typeTable
+                     %s)"""%(quoted_table,clauseStringList[0],asserted_table,clauseStringList[1],RDF.type,asserted_type_table,typeClauseString)
         else:
             if predicate == RDF.type:
                 #select from asserted rdf:type partition only
@@ -571,7 +571,7 @@ class MySQL(Backend):
                        '%s' as predicate,
                        typeTable.klass as object,
                        NULL as objLanguage,
-                       NULL as objDatatypes,
+                       NULL as objDatatype,
                        typeTable.context as context,
                        typeTable.termComb as termComb
                       from                         
@@ -604,11 +604,12 @@ class MySQL(Backend):
                         typeTable.klass as object,
                         typeTable.termComb as termComb,
                         NULL as objLanguage,
-                        NULL as objDatatypes,
+                        NULL as objDatatype,
                         typeTable.context as context
                       from                         
                         %s as typeTable
                       %s"""%(asserted_table,clauseString,RDF.type,asserted_type_table,typeClauseString)
+
         c.execute(q)
         c.close()
         for rtDict in c.fetchall():
@@ -681,14 +682,7 @@ class MySQL(Backend):
                     clauseStringList.append(buildClause(tableAlias,s,o,None,False,p))                    
 
                 typeClauseString = buildClause('typeTable',s,o,None)                
-                q="""select
-                        typeTable.context as context
-                     from
-                        %s as typeTable
-                     %s
-
-                     union 
-
+                q="""
                      select
                         quoted.context
                      from
@@ -701,7 +695,20 @@ class MySQL(Backend):
                         asserted.context
                       from     
                         %s as asserted
-                      %s"""%(asserted_type_table,typeClauseString,quoted_table,clauseStringList[0],asserted_table,clauseStringList[1])                                
+                      %s
+
+                     union 
+
+                     select
+                        typeTable.context as context
+                     from
+                        %s as typeTable
+                     %s
+
+                     union 
+
+
+                      """%(quoted_table,clauseStringList[0],asserted_table,clauseStringList[1],asserted_type_table,typeClauseString)                                
             else:
                 clauseStringList=[]
                 for tableAlias in ['quoted','asserted']:                    
