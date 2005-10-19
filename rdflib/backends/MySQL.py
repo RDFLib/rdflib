@@ -609,7 +609,6 @@ class MySQL(Backend):
                       from                         
                         %s as typeTable
                       %s"""%(asserted_table,clauseString,RDF.type,asserted_type_table,typeClauseString)
-
         c.execute(q)
         c.close()
         for rtDict in c.fetchall():
@@ -622,13 +621,42 @@ class MySQL(Backend):
         asserted_table="%s_asserted_statements"%self._internedId
         asserted_type_table="%s_type_statements"%self._internedId
         if context:
-            q="""select
+            q="""
+                    select
+                        count(*)
+                     from
+                        %s as quoted
+                     where %s
+
+                     union all
+
+                     select
+                        count(*)
+                      from     
+                        %s as asserted
+                      where %s
+
+                     union all
+
+                     select
+                        count(*)
+                     from
+                        %s as typeTable
+                     where %s"""%(quoted_table,
+                            buildContextClause(context,'quoted'),
+                            asserted_table,
+                            buildContextClause(context,'asserted'),                            
+                            asserted_type_table,
+                            buildContextClause(context,'typeTable'),
+                            )
+
+            q2="""select
                    count(*)
                  from
                    %s,
                    %s,
                    %s
-                 where %s and %s and %s;"""%(
+                 where %s or %s or %s;"""%(
                    quoted_table,
                    asserted_table,
                    asserted_type_table,
@@ -647,7 +675,7 @@ class MySQL(Backend):
         c.execute(q)
         rt=c.fetchall()
         c.close()
-        return len(rt)>1 and reduce(lambda x,y: x['count(*)']+y['count(*)'],rt) or int([rtDict['count(*)'] for rtDict in rt][0])
+        return reduce(lambda x,y: x+y,  [item['count(*)'] for item in rt])
 
     def contexts(self, triple=None):
         """
@@ -782,136 +810,18 @@ class MySQL(Backend):
         raise Exception("Not implemented")                
 
     #optimized interfaces (those needed in order to port Versa)
-    #capable of taking a list of object/predicate terms instead of a single term
     def subjects(self, predicate=None, obj=None):
         """
         A generator of subjects with the given predicate and object.
         """
-        quoted_table="%s_quoted_statements"%self._internedId
-        asserted_table="%s_asserted_statements"%self._internedId
-        asserted_type_table="%s_type_statements"%self._internedId
-        c=self._db.cursor()
-        if predicate == RDF.type:
-            typeClauseString = buildClause('typeTable',None,obj)
-            q="""
-                 select
-                   typeTable.member as subject,
-                   typeTable.termComb
-                 from
-                 %s as typeTable
-                 %s"""%(asserted_type_table,typeClauseString)            
-        elif isinstance(predicate,REGEXTerm) and predicate.compiledExpr.match(RDF.type) or\
-                 isinstance(predicate,list) and RDF.type in predicate or\
-                 isinstance(predicate,list) and [p for p in predicate if isinstance(p,REGEXTerm) and p.compiledExpr.match(RDF.type)]:
-            clauseString = buildClause('asserted',None,obj,None,False,predicate)
-            typeClauseString = buildClause('typeTable',None,obj)
-            q="""
-                 select
-                   typeTable.member as subject,
-                   typeTable.termComb
-                 from
-                   %s as typeTable
-                 %s
-
-                union
-                 
-                select
-                  asserted.subject,
-                  asserted.termComb
-                from
-                  %s as asserted
-                  %s"""%(asserted_type_table,typeClauseString,asserted_table,clauseString)            
-        elif predicate and predicate != RDF.type:
-            clauseString=buildClause('asserted',None,obj,None,False,predicate)
-
-            q="""select
-                   asserted.subject,
-                   asserted.termComb
-                 from     
-                   %s as asserted
-                   %s"""%(asserted_table,clauseString)                                            
-        else:
-            clauseString=buildClause('asserted',None,obj,None,False,predicate)
-            typeClauseString = buildClause('typeTable',None,obj,None)                
-            q="""select
-                   typeTable.member as subject,
-                   typeTable.termComb
-                 from
-                   %s as typeTable
-                 %s
-
-                 union 
-
-                 select
-                   asserted.subject,
-                   asserted.termComb
-                 from     
-                   %s as asserted
-                   %s"""%(asserted_type_table,typeClauseString,asserted_table,clauseString)
-        c.execute(q)
-        rt=c.fetchall()
-        c.close()
-        for subject,termComb in [(rtDict['subject'],rtDict['termComb']) for rtDict in rt]:
-            termComb=REVERSE_TERM_COMBINATIONS[termComb][SUBJECT]
-            yield createTerm(subject,termComb,self)
-
+        raise Exception("Not implemented")
 
     #capable of taking a list of predicate terms instead of a single term
     def objects(self, subject=None, predicate=None):
         """
         A generator of objects with the given subject and predicate.
         """
-        quoted_table="%s_quoted_statements"%self._internedId
-        asserted_table="%s_asserted_statements"%self._internedId
-        asserted_type_table="%s_type_statements"%self._internedId
-        c=self._db.cursor()
-        if RDF.type == predicate:
-            typeClauseString = buildClause('typeTable',subject,None)
-            q="""
-                 select
-                   typeTable.klass as object,
-                   typeTable.termComb
-                 from
-                   %s as typeTable
-                  %s"""%(asserted_type_table,typeClauseString)
-
-        elif predicate and predicate != RDF.type or isinstance(predicate,list) and RDF.type not in predicate:
-            clauseString = buildClause('asserted',subject,None,None,False,predicate)
-            q="""
-                select
-                  asserted.object,
-                  asserted.termComb
-                from
-                  %s as asserted
-                  %s"""%(asserted_table,clauseString)                                    
-            
-        else:
-            clauseString = buildClause('asserted',subject,None,None,False,predicate)
-            typeClauseString = buildClause('typeTable',subject,None)
-            q="""
-                 select
-                   typeTable.klass as object,
-                   typeTable.termComb
-                 from
-                   %s as typeTable
-                 %s
-
-                union
-                 
-                select
-                  asserted.object,
-                  asserted.termComb
-                from
-                  %s as asserted
-                  %s"""%(asserted_type_table,typeClauseString,asserted_table,clauseString)                                    
-
-        c.execute(q)
-        rt=c.fetchall()
-        c.close()
-        for obj,termComb in [(rtDict['object'],rtDict['termComb']) for rtDict in rt]:
-            termComb=REVERSE_TERM_COMBINATIONS[termComb][OBJECT]
-            yield createTerm(obj,termComb,self)
-
+        raise Exception("Not implemented")        
 
     #optimized interfaces (others)
     def predicate_objects(self, subject=None):
