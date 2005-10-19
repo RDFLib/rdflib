@@ -1,6 +1,7 @@
 from rdflib.URIRef import URIRef
 from rdflib.BNode import BNode
 from rdflib.Literal import Literal
+from rdflib.Graph import Graph, QuotedGraph
 
 from rdflib.exceptions import SubjectTypeError, PredicateTypeError, ObjectTypeError, ContextTypeError
 from rdflib.compat import rsplit
@@ -75,7 +76,7 @@ def parse_date_time(val):
     return t
 
 
-def from_n3(s, default=None):
+def from_n3(s, default=None, backend=None):
     """ Creates the Identifier corresponding to the given n3 string. WARNING: untested, may contain bugs. TODO: add test cases."""
     if not s:
         return default
@@ -100,6 +101,12 @@ def from_n3(s, default=None):
             datatype = ''
         value = value.decode("unicode-escape")
         return Literal(value, language, datatype)
+    elif s.startswith('{'):
+	identifier = from_n3(s[1:-1])
+	return QuotedGraph(backend, identifier)
+    elif s.startswith('['):
+	identifier = from_n3(s[1:-1])
+	return Graph(backend, identifier)
     else:
         if s.startswith("_:"):
             return BNode(s[2:])

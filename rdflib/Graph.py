@@ -5,9 +5,6 @@ from rdflib import RDF, RDFS
 
 from rdflib.Node import Node
 
-from rdflib.util import check_statement, check_pattern, check_context
-from rdflib.util import check_subject, check_predicate, check_object
-
 from rdflib import plugin, exceptions
 
 from rdflib.backends import Backend
@@ -310,6 +307,10 @@ class Graph(Node):
         parser.parse(source, self)
         return self
 
+    def n3(self):
+	"""return an n3 identifier for the Graph"""
+	return "[%s]" % self.identifier.n3()
+
 
 class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
 
@@ -398,7 +399,11 @@ class QuotedGraph(Graph):
     def __len__(self):
         return self.backend.__len__(self.identifier)
 
-    
+    def n3(self):
+	"""return an n3 identifier for the Graph"""
+	return "{%s}" % self.identifier.n3()
+
+
 class Seq(object):
     """
     Wrapper around an RDF Seq resource. It implements a container

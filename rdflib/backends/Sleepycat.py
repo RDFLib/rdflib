@@ -377,7 +377,7 @@ class Sleepycat(Backend):
         
 
     def _from_string(self, s):
-        return from_n3(b64decode(s))
+        return from_n3(b64decode(s), backend=self)
 
     def _to_string(self, term):
         return b64encode(term.n3())
