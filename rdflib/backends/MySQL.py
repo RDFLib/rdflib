@@ -22,7 +22,9 @@ class REGEXTerm(unicode):
     
 #Terms: u - uri refs  v - variables  b - bnodes l - literal f - formula
 
-#FIXME:  This may prove to be a performance bottleneck and should perhaps be implemented in C
+
+
+#FIXME:  This may prove to be a performance bottleneck and should perhaps be implemented in C (as it was in 4Suite RDF)
 def EscapeQuotes(qstr):
     """
     Ported from Ft.Lib.DbUtil
@@ -32,7 +34,6 @@ def EscapeQuotes(qstr):
     tmp = qstr.replace("\\","\\\\")
     tmp = tmp.replace("'", "\\'")
     return tmp
-
 
 #Builds WHERE clauses for the supplied terms, context, and whether or not this is for a typeTable
 def buildClause(tableName,subject,obj,context=None,typeTable=True,predicate=None):
@@ -86,9 +87,15 @@ def buildTripleSQLCommand(subject,predicate,obj,context,storeId,quoted):
 #converts it to a tuple of terms using the termComb integer
 #to interpret how to instanciate each term
 def extractTriple(rtDict,backend,hardCodedContext=None):
-    #If context is None, should extract quads??!
-    context = rtDict['context'] and rtDict['context'] or hardCodedContext
+    #FIXME:  This is quite odd....    
+    rdf_type_caveat = rtDict.get('predicate') == RDF.type and rtDict['context'] == '0'
+    if rdf_type_caveat:
+        context=rtDict['objDatatype']
+    else:
+        context = rtDict['context'] and rtDict['context'] or hardCodedContext
+
     termCombString=REVERSE_TERM_COMBINATIONS[rtDict['termComb']]
+
     if 'member' in rtDict and rtDict['member']:
         s=createTerm(rtDict['member'],termCombString[SUBJECT],backend)
         p=RDF.type
@@ -112,10 +119,8 @@ def extractTriple(rtDict,backend,hardCodedContext=None):
 def normalizeTerm(term):
     if type(term)==QuotedGraph:
         return term.identifier
-    elif type(term)==Literal:
-        return EscapeQuotes(term)
     else:
-        return term
+        return EscapeQuotes(term)
 
 #Takes a term value, term type, and backend intance
 #and Creates a term object
@@ -179,7 +184,7 @@ def buildObjClause(obj,tableName):
                 clauseStrings.append(o and "%s='%s'"%(tableName and '%s.object'%tableName or 'object',isinstance(o,Literal) and EscapeQuotes(o) or o) or None)
         return '(%s)'%' or '.join([clauseString for clauseString in clauseStrings])
     else:
-        return obj and "%s='%s'"%(tableName and '%s.object'%tableName or 'object',isinstance(obj,Literal) and EscapeQuotes(obj) or obj) or None     
+        return obj and "%s='%s'"%(tableName and '%s.object'%tableName or 'object',EscapeQuotes(obj)) or None
 
 def buildContextClause(context,tableName):
     if isinstance(context,REGEXTerm):
@@ -284,28 +289,27 @@ class MySQL(Backend):
                 c.close()
                 test_db.close()    
                 
-                db = MySQLdb.connect(user = configDict['user'],
-                                           passwd = configDict['password'],
-                                           db=configDict['db'],
-                                           port=configDict['port'],
-                                           host=configDict['host']
-                                          )
-                c=db.cursor()
-                c.execute("""SET AUTOCOMMIT=0""")   
-                for tblsuffix in table_name_prefixes:
-                    print "creating table: %s"%(tblsuffix%(self._internedId))
-                c.execute(CREATE_ASSERTED_STATEMENTS_TABLE%(self._internedId))
-                c.execute(CREATE_ASSERTED_TYPE_STATEMENTS_TABLE%(self._internedId))
-                c.execute(CREATE_QUOTED_STATEMENTS_TABLE%(self._internedId))
-                c.execute(CREATE_NS_BINDS_TABLE%(self._internedId))                    
-                db.commit()
-                c.close()
-                db.close()            
             else:
-                print "database %s already exists"%configDict['db']
                 #Already exists, do nothing
-                c.close()
-                test_db.close()
+                print "database %s already exists"%configDict['db']
+
+            db = MySQLdb.connect(user = configDict['user'],
+                                 passwd = configDict['password'],
+                                 db=configDict['db'],
+                                 port=configDict['port'],
+                                 host=configDict['host']
+                                 )
+            c=db.cursor()
+            c.execute("""SET AUTOCOMMIT=0""")   
+            for tblsuffix in table_name_prefixes:
+                print "creating table: %s"%(tblsuffix%(self._internedId))
+            c.execute(CREATE_ASSERTED_STATEMENTS_TABLE%(self._internedId))
+            c.execute(CREATE_ASSERTED_TYPE_STATEMENTS_TABLE%(self._internedId))
+            c.execute(CREATE_QUOTED_STATEMENTS_TABLE%(self._internedId))
+            c.execute(CREATE_NS_BINDS_TABLE%(self._internedId))                    
+            db.commit()
+            c.close()
+            db.close()            
 
         self._db = MySQLdb.connect(user = configDict['user'],
                                    passwd = configDict['password'],
@@ -314,9 +318,6 @@ class MySQL(Backend):
                                    host=configDict['host']
                                   )
         self._db.cursorclass = MySQLdb.cursors.DictCursor
-        c=self._db.cursor()
-        c.execute("""SET AUTOCOMMIT=0""")   
-        c.close()
             
     def close(self, commit_pending_transaction=False):
         """ 
@@ -340,8 +341,12 @@ class MySQL(Backend):
                                 )
         c=msql_db.cursor()
         c.execute("""SET AUTOCOMMIT=0""")
-        c.execute('DROP database %s'%configDict['db'])
-        print "Destroyed database (%s)"%configDict['db']
+        for tblsuffix in table_name_prefixes:
+            c.execute('DROP table %s'%tblsuffix%(self._internedId))
+            print "dropped table: %s"%(tblsuffix%(self._internedId))
+            
+        #Note, this only removes the associated tables for the closed world universe given by the identifier
+        print "Destroyed Close World Universe %s ( in MySQL database %s)"%(self.identifier,configDict['db'])
         msql_db.commit()
         msql_db.close()
         
@@ -351,6 +356,7 @@ class MySQL(Backend):
         """ Add a triple to the store of triples. """
         assert context
         c=self._db.cursor()
+        c.execute("""SET AUTOCOMMIT=0""")
         if quoted or predicate != RDF.type:
             #quoted statement or non rdf:type predicate
             c.execute(
@@ -376,6 +382,7 @@ class MySQL(Backend):
     def remove(self, (subject, predicate, obj), context):
         """ Remove a triple from the store """
         c=self._db.cursor()
+        c.execute("""SET AUTOCOMMIT=0""")        
         quoted_table="%s_quoted_statements"%self._internedId
         asserted_table="%s_asserted_statements"%self._internedId
         asserted_type_table="%s_type_statements"%self._internedId
@@ -522,7 +529,7 @@ class MySQL(Backend):
                         %s as quoted
                      %s)
 
-                     union all
+                     union 
 
                      (select
                         asserted.*
@@ -530,13 +537,13 @@ class MySQL(Backend):
                         %s as asserted
                       %s)
 
-                     union all
+                     union 
 
                      (select
                         typeTable.member as subject,
                         '%s' as predicate,
                         typeTable.klass as object,
-                        typeTable.termComb,
+                        typeTable.termComb as termComb,
                         NULL as objLanguage,
                         NULL as objDatatype,
                         typeTable.context as context
@@ -609,6 +616,7 @@ class MySQL(Backend):
                       from                         
                         %s as typeTable
                       %s"""%(asserted_table,clauseString,RDF.type,asserted_type_table,typeClauseString)
+
         c.execute(q)
         c.close()
         for rtDict in c.fetchall():
@@ -621,57 +629,48 @@ class MySQL(Backend):
         asserted_table="%s_asserted_statements"%self._internedId
         asserted_type_table="%s_type_statements"%self._internedId
         if context:
-            q="""
-                    select
-                        count(*)
-                     from
-                        %s as quoted
-                     where %s
-
-                     union all
-
-                     select
-                        count(*)
-                      from     
-                        %s as asserted
-                      where %s
-
-                     union all
-
-                     select
-                        count(*)
-                     from
-                        %s as typeTable
-                     where %s"""%(quoted_table,
-                            buildContextClause(context,'quoted'),
-                            asserted_table,
-                            buildContextClause(context,'asserted'),                            
-                            asserted_type_table,
-                            buildContextClause(context,'typeTable'),
-                            )
-
-            q2="""select
+            q="""select
                    count(*)
                  from
-                   %s,
-                   %s,
                    %s
-                 where %s or %s or %s;"""%(
+                 where
+                   %s
+
+                 union
+
+                 select
+                   count(*)
+                 from
+                   %s
+                 where
+                   %s
+
+                 union
+
+                 select
+                   count(*)
+                 from
+                   %s
+                 where %s"""%(
                    quoted_table,
-                   asserted_table,
-                   asserted_type_table,
                    buildContextClause(context,quoted_table),
+                   asserted_table,
                    buildContextClause(context,asserted_table),
+                   asserted_type_table,
                    buildContextClause(context,asserted_type_table),
                    )
         else:
-            q="""select count(*)
-                 from %s
+            q="""select
+                   count(*)
+                 from
+                   %s
 
-                 union all
+                 union
 
-                 select count(*)
-                 from %s"""%(asserted_table,asserted_type_table)
+                 select
+                   count(*)
+                 from
+                   %s"""%(asserted_table,asserted_type_table)
         c.execute(q)
         rt=c.fetchall()
         c.close()
@@ -784,6 +783,7 @@ class MySQL(Backend):
     def remove_context(self, identifier):
         """ """
         c=self._db.cursor()
+        c.execute("""SET AUTOCOMMIT=0""")        
         quoted_table="%s_quoted_statements"%self._internedId
         asserted_table="%s_asserted_statements"%self._internedId
         asserted_type_table="%s_type_statements"%self._internedId
@@ -945,10 +945,10 @@ CREATE TABLE %s_asserted_statements (
 CREATE_ASSERTED_TYPE_STATEMENTS_TABLE = """
 CREATE TABLE %s_type_statements (
     member        text not NULL,
-    klass         text,
+    klass         text not NULL,
     context       text not NULL,
     termComb      tinyint unsigned not NULL,
-    INDEX termComb (termComb),
+    INDEX termComb_index (termComb),
     INDEX memberC_index (member(100),klass(100),context(50)),
     INDEX klassC_index (klass(100),context(50)),
     INDEX c_index (context(10))) TYPE=InnoDB"""
