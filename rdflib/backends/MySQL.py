@@ -22,6 +22,9 @@ class REGEXTerm(unicode):
     
 #Terms: u - uri refs  v - variables  b - bnodes l - literal f - formula
 
+#Normalize a MySQL command before executing it.  Commence unicode black magic
+def _normalizeMySQLCmd(cmd):
+    return cmd.encode('utf-8')
 
 
 #FIXME:  This may prove to be a performance bottleneck and should perhaps be implemented in C (as it was in 4Suite RDF)
@@ -60,7 +63,7 @@ def buildClause(tableName,subject,obj,context=None,typeTable=True,predicate=None
 #Builds an insert command for a type table
 def buildTypeSQLCommand(member,klass,context,storeId):
     #columns: member,klass,context
-    rt= "INSERT INTO %s_type_statements VALUES ('%s', '%s', '%s',%s)"%(
+    rt= u"INSERT INTO %s_type_statements VALUES ('%s', '%s', '%s',%s)"%(
         storeId,
         normalizeTerm(member),
         normalizeTerm(klass),
@@ -72,15 +75,15 @@ def buildTypeSQLCommand(member,klass,context,storeId):
 def buildTripleSQLCommand(subject,predicate,obj,context,storeId,quoted):
     stmt_table = quoted and "%s_quoted_statements"%storeId or "%s_asserted_statements"%storeId
     triplePattern = statement2TermCombination(subject,predicate,obj)
-    command="INSERT INTO %s VALUES ('%s', '%s', '%s', '%s', %s,%s,%s)"%(
+    command=u"INSERT INTO %s VALUES ('%s', '%s', '%s', '%s', %s,%s,%s)"%(
             stmt_table,
             normalizeTerm(subject),
-            predicate,
+            normalizeTerm(predicate),
             normalizeTerm(obj),
             context,
             str(triplePattern),
-            type(obj)== Literal and  "'%s'"%obj.language or 'NULL',
-            type(obj)== Literal and "'%s'"%obj.datatype or 'NULL')
+            isinstance(obj,Literal) and  "'%s'"%obj.language or 'NULL',
+            isinstance(obj,Literal) and "'%s'"%obj.datatype or 'NULL')
     return command
 
 #Takes a dictionary which represents an entry in a result set and
@@ -117,7 +120,7 @@ def extractTriple(rtDict,backend,hardCodedContext=None):
 #Takes a term and 'normalizes' it.
 #Literals are escaped, Quoted graphs are replaced with just their identifiers
 def normalizeTerm(term):
-    if type(term)==QuotedGraph:
+    if isinstance(term,QuotedGraph):
         return term.identifier
     else:
         return EscapeQuotes(term)
@@ -228,10 +231,12 @@ def ParseConfigurationString(config_string):
     port (optional - defaults to 3306)
     """
     kvDict = dict([(part.split('=')[0],part.split('=')[-1]) for part in config_string.split(',')])
-    for requiredKey in ['user','password','db','host']:
+    for requiredKey in ['user','db','host']:
         assert requiredKey in kvDict
     if 'port' not in kvDict:
         kvDict['port']=3306
+    if 'password' not in kvDict:
+        kvDict['password']=''
     return kvDict
 
 class MySQL(Backend):
@@ -359,24 +364,11 @@ class MySQL(Backend):
         c.execute("""SET AUTOCOMMIT=0""")
         if quoted or predicate != RDF.type:
             #quoted statement or non rdf:type predicate
-            c.execute(
-                buildTripleSQLCommand(
-                    subject,
-                    predicate,
-                    obj,
-                    context,
-                    self._internedId,
-                    quoted)
-            )
+            addCmd=buildTripleSQLCommand(subject,predicate,obj,context,self._internedId,quoted)
         elif predicate == RDF.type:
             #asserted rdf:type statement
-            c.execute(
-                buildTypeSQLCommand(
-                    subject,
-                    obj,
-                    context,
-                    self._internedId)
-            )
+            addCmd=buildTypeSQLCommand(subject,obj,context,self._internedId)
+        c.execute(_normalizeMySQLCmd(addCmd))
         c.close()
 
     def remove(self, (subject, predicate, obj), context):
@@ -391,14 +383,18 @@ class MySQL(Backend):
 
             for table in [quoted_table,asserted_table]:
                 clauseString = buildClause(table,subject,obj,context,False,predicate)
-                c.execute(clauseString and "DELETE FROM %s %s"%(table,clauseString) or 'DELETE FROM %s;'%table)
+                cmd=clauseString and u"DELETE FROM %s %s"%(table,clauseString) or u'DELETE FROM %s;'%table
+                c.execute(_normalizeMySQLCmd(cmd))
 
         if predicate == RDF.type or not predicate:
             #Need to check rdf:type and quoted partitions
             clauseString = buildClause(asserted_type_table,subject,obj,context)
-            c.execute(clauseString and "DELETE FROM %s %s"%(asserted_type_table,clauseString) or 'DELETE FROM %s;'%asserted_type_table)
+            cmd=clauseString and u"DELETE FROM %s %s"%(asserted_type_table,clauseString) or u'DELETE FROM %s;'%asserted_type_table
+            c.execute(_normalizeMySQLCmd(cmd))
+
             clauseString = buildClause(quoted_table,subject,obj,context,False,predicate)
-            c.execute(clauseString and "DELETE FROM %s %s"%(quoted_table,clauseString) or 'DELETE FROM %s;'%quoted_table)
+            cmd=clauseString and "DELETE FROM %s %s"%(quoted_table,clauseString) or 'DELETE FROM %s;'%quoted_table
+            c.execute(cmd)
             
         c.close()
 
@@ -617,7 +613,7 @@ class MySQL(Backend):
                         %s as typeTable
                       %s"""%(asserted_table,clauseString,RDF.type,asserted_type_table,typeClauseString)
 
-        c.execute(q)
+        c.execute(_normalizeMySQLCmd(q))
         c.close()
         for rtDict in c.fetchall():
             yield extractTriple(rtDict,self,context)
@@ -671,7 +667,7 @@ class MySQL(Backend):
                    count(*)
                  from
                    %s"""%(asserted_table,asserted_type_table)
-        c.execute(q)
+        c.execute(_normalizeMySQLCmd(q))
         rt=c.fetchall()
         c.close()
         return reduce(lambda x,y: x+y,  [item['count(*)'] for item in rt])
@@ -774,7 +770,7 @@ class MySQL(Backend):
                    assertedType.context
                  from
                    %s as assertedType"""%(quoted_table,asserted_table,asserted_type_table)
-        c.execute(q)
+        c.execute(_normalizeMySQLCmd(q))
         rt=c.fetchall()
         c.close()
         for context in [rtDict['context'] for rtDict in rt]:
@@ -798,7 +794,7 @@ class MySQL(Backend):
             buildContextClause(identifier,asserted_table),
             buildContextClause(identifier,asserted_type_table)
             )
-        c.execute(q)
+        c.execute(_normalizeMySQLCmd(q))
         c.close()
 
     # Optional Namespace methods
