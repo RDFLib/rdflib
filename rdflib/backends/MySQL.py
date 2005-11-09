@@ -12,6 +12,27 @@ from term_utils import *
 from rdflib.Graph import QuotedGraph
 Any = None
 
+COUNT_SELECT   = 0
+CONTEXT_SELECT = 1
+TRIPLE_SELECT  = 2
+
+ASSERTED_NON_TYPE_PARTITION = 3
+ASSERTED_TYPE_PARTITION     = 4
+QUOTED_PARTITION            = 5
+ASSERTED_LITERAL_PARTITION  = 6
+
+FULL_TRIPLE_PARTITIONS = [QUOTED_PARTITION,ASSERTED_LITERAL_PARTITION]
+
+#FIXME:  This *may* prove to be a performance bottleneck and should perhaps be implemented in C (as it was in 4Suite RDF)
+def EscapeQuotes(qstr):
+    """
+    Ported from Ft.Lib.DbUtil
+    """
+    if qstr is None:
+        return u''
+    tmp = qstr.replace("\\","\\\\")
+    tmp = tmp.replace("'", "\\'")
+    return tmp
 
 #REGEXTerm can be used in any term slot and is interpreted as
 #a request to perform a REGEX match (not a string comparison) using the value
@@ -27,26 +48,51 @@ def _normalizeMySQLCmd(cmd):
     return cmd.encode('utf-8')
 
 
-#FIXME:  This may prove to be a performance bottleneck and should perhaps be implemented in C (as it was in 4Suite RDF)
-def EscapeQuotes(qstr):
-    """
-    Ported from Ft.Lib.DbUtil
-    """
-    if qstr is None:
-        return ''
-    tmp = qstr.replace("\\","\\\\")
-    tmp = tmp.replace("'", "\\'")
-    return tmp
+#Helper function for building union all select statement
+#Takes a list of:
+# - table name
+# - table alias
+# - table type (literal, type, asserted, quoted)
+# - where clause string
+def unionSELECT(selectComponents,distinct=False,selectType=TRIPLE_SELECT):
+    selects = []
+    for tableName,tableAlias,whereClause,tableType in selectComponents:
+        assert isinstance(whereClause,unicode)
 
-#Builds WHERE clauses for the supplied terms, context, and whether or not this is for a typeTable
-def buildClause(tableName,subject,obj,context=None,typeTable=True,predicate=None):
+        if selectType == COUNT_SELECT:
+            selectString = "select count(*)"
+            tableSource = u" from %s "%tableName
+        elif selectType == CONTEXT_SELECT:
+            selectString = "select %s.context"%tableAlias
+            tableSource = u" from %s as %s "%(tableName,tableAlias)
+        elif tableType in FULL_TRIPLE_PARTITIONS:
+            selectString = "select *"#%(tableAlias)
+            tableSource = u" from %s as %s "%(tableName,tableAlias)
+        elif tableType == ASSERTED_TYPE_PARTITION:
+            selectString =\
+            u"""select %s.member as subject, '%s' as predicate, %s.klass as object, %s.termComb as termComb, NULL as objLanguage, NULL as objDatatype, %s.context as context"""%(tableAlias,RDF.type,tableAlias,tableAlias,tableAlias)
+            tableSource = u" from %s as %s "%(tableName,tableAlias)
+        elif tableType == ASSERTED_NON_TYPE_PARTITION:
+            selectString =\
+            u"""select *,NULL as objLanguage, NULL as objDatatype"""
+            tableSource = u" from %s as %s "%(tableName,tableAlias)
+        
+        selects.append('('+selectString + tableSource + whereClause+')')
+
+    if distinct:
+        return u' union '.join(selects)
+    else:
+        return u' union all '.join(selects)
+
+#Builds WHERE clauses for the supplied terms and, context
+def buildClause(tableName,subject,predicate, obj,context=None,typeTable=False):
     if typeTable:
         rdf_type_memberClause   = buildTypeMemberClause(subject,tableName)
         rdf_type_klassClause    = buildTypeClassClause(obj,tableName)
         rdf_type_contextClause  = buildContextClause(context,tableName)
         typeClauses = [rdf_type_memberClause,rdf_type_klassClause,rdf_type_contextClause]
-        clauseString = ' and '.join([clause for clause in typeClauses if clause])
-        clauseString = clauseString and 'where %s'%clauseString or ''
+        clauseString = u' and '.join([clause for clause in typeClauses if clause])
+        clauseString = clauseString and u'where %s'%clauseString or u''
     else:
        subjClause        = buildSubjClause(subject,tableName)
        predClause        = buildPredClause(predicate,tableName)
@@ -56,8 +102,8 @@ def buildClause(tableName,subject,obj,context=None,typeTable=True,predicate=None
        litLanguageClause = buildLitLanguageClause(obj,tableName)
 
        clauses=[subjClause,predClause,objClause,contextClause,litDTypeClause,litLanguageClause]
-       clauseString = ' and '.join([clause for clause in clauses if clause])
-       clauseString = clauseString and 'where %s'%clauseString or ''
+       clauseString = u' and '.join([clause for clause in clauses if clause])
+       clauseString = clauseString and u'where %s'%clauseString or u''
     return clauseString
 
 #Builds an insert command for a type table
@@ -71,11 +117,27 @@ def buildTypeSQLCommand(member,klass,context,storeId):
         type2TermCombination(member,klass))
     return rt
 
+#Builds an insert command for literal triples (statements where the object is a Literal)
+def buildLiteralTripleSQLCommand(subject,predicate,obj,context,storeId):
+    triplePattern = statement2TermCombination(subject,predicate,obj)
+    literal_table = "%s_literal_statements"%storeId
+    command=u"INSERT INTO %s VALUES ('%s', '%s', '%s', '%s', %s,%s,%s)"%(
+        literal_table,
+        normalizeTerm(subject),
+        normalizeTerm(predicate),
+        normalizeTerm(obj),
+        context,
+        str(triplePattern),
+        isinstance(obj,Literal) and  "'%s'"%obj.language or 'NULL',
+        isinstance(obj,Literal) and "'%s'"%obj.datatype or 'NULL')
+    return command
+
 #Builds an insert command for regular triple table
 def buildTripleSQLCommand(subject,predicate,obj,context,storeId,quoted):
     stmt_table = quoted and "%s_quoted_statements"%storeId or "%s_asserted_statements"%storeId
     triplePattern = statement2TermCombination(subject,predicate,obj)
-    command=u"INSERT INTO %s VALUES ('%s', '%s', '%s', '%s', %s,%s,%s)"%(
+    if quoted:
+        command=u"INSERT INTO %s VALUES ('%s', '%s', '%s', '%s', %s,%s,%s)"%(
             stmt_table,
             normalizeTerm(subject),
             normalizeTerm(predicate),
@@ -84,33 +146,61 @@ def buildTripleSQLCommand(subject,predicate,obj,context,storeId,quoted):
             str(triplePattern),
             isinstance(obj,Literal) and  "'%s'"%obj.language or 'NULL',
             isinstance(obj,Literal) and "'%s'"%obj.datatype or 'NULL')
+    else:
+        command=u"INSERT INTO %s VALUES ('%s', '%s', '%s', '%s', %s)"%(
+            stmt_table,
+            normalizeTerm(subject),
+            normalizeTerm(predicate),
+            normalizeTerm(obj),
+            context,
+            str(triplePattern))
     return command
 
 #Takes a dictionary which represents an entry in a result set and
 #converts it to a tuple of terms using the termComb integer
 #to interpret how to instanciate each term
 def extractTriple(rtDict,backend,hardCodedContext=None):
-    #FIXME:  This is quite odd....    
-    rdf_type_caveat = rtDict.get('predicate') == RDF.type and rtDict['context'] == '0'
+    #FIXME:  This is quite odd....  I imagine it has to do with the use of union selects (which are sensitive to mismatched columns)
+    #Essentially, in cases where the resulting triple is taken from the rdf:type table
+    #The context is assigned the termComb and objDatatype is assigned context
+    #Luckily this is easily detectable as literals cannot be objects of rdf:type statements
+    #in which case objDatatype should never be populated if the predicate is rdf:type
+    #See: http://dev.mysql.com/doc/refman/4.1/en/union.html
+
+    rtContext   = rtDict['context']
+    termComb    = rtDict['termComb']
+    member      = rtDict.get('member')
+    predicate   = rtDict.get('predicate')
+    objDatatype = rtDict.get('objDatatype')
+    
+    rdf_type_caveat = predicate == RDF.type and objDatatype
     if rdf_type_caveat:
-        context=rtDict['objDatatype']
+        context=objDatatype
+        termComb=int(rtContext)
     else:
-        context = rtDict['context'] and rtDict['context'] or hardCodedContext
+        context = rtContext and rtContext or hardCodedContext
 
-    termCombString=REVERSE_TERM_COMBINATIONS[rtDict['termComb']]
+    termCombString=REVERSE_TERM_COMBINATIONS[termComb]
 
-    if 'member' in rtDict and rtDict['member']:
-        s=createTerm(rtDict['member'],termCombString[SUBJECT],backend)
+    subjTerm,predTerm,objTerm = termCombString
+
+    if member:
+        #s=TERM_INSTANCIATION_DICT[subjTerm](rtDict['member'])
+        s=createTerm(member,subjTerm,backend)
         p=RDF.type
-        o=createTerm(rtDict['klass'],termCombString[OBJECT],backend)
-    elif 'subject' in rtDict and rtDict['subject']:
-        #regular statement
-        s=createTerm(rtDict['subject'],termCombString[SUBJECT],backend)
-        p=createTerm(rtDict['predicate'],termCombString[PREDICATE],backend)
-        if termCombString[OBJECT] == 'L':
-            o=Literal(rtDict['object'],rtDict['objLanguage'],rtDict['objDatatype'])
-        else:
-            o=createTerm(rtDict['object'],termCombString[OBJECT],backend)
+        #o=TERM_INSTANCIATION_DICT[objTerm](rtDict['klass'])
+        o=createTerm(rtDict['klass'],objTerm,backend)
+
+    else:
+        subject = rtDict.get('subject')
+        if subject:
+            #regular statement
+            s=createTerm(subject,subjTerm,backend)
+            p=createTerm(predicate,predTerm,backend)
+            if objTerm == 'L':
+                o=backend._createTerm(Literal,rtDict['object'],rtDict['objLanguage'],objDatatype)
+            else:
+                o=createTerm(rtDict['object'],objTerm,backend)
             
     if backend.yieldConjunctiveQuads:
         return s,p,o,context
@@ -126,98 +216,97 @@ def normalizeTerm(term):
         return EscapeQuotes(term)
 
 #Takes a term value, term type, and backend intance
-#and Creates a term object
+#and Creates a term object.  QuotedGraphs are instanciated differently
 def createTerm(termString,termType,backend):
-    if termType=='B':
-        return BNode(termString)
-    elif termType=='U':
-        return URIRef(termString)
-    elif termType == 'V':
-        return Variable(termString)
-    elif termType=='F':
+    if termType=='F':
         return QuotedGraph(backend,termString)
     else:
-        print termString,termType
-        raise Exception('Unknown term string returned from store: %s'%(termString))
+        return backend._createTerm(TERM_INSTANCIATION_DICT[termType],termString)
 
 #Where Clause  utility Functions
 #The predicate and object clause builders are modified in order to optimize
 #subjects and objects utility functions which can take lists as their last argument (object,predicate - respectively)
 def buildSubjClause(subject,tableName):
     if isinstance(subject,REGEXTerm):
-        return "%s REGEXP '%s'"%(tableName and '%s.subject'%tableName or 'subject',EscapeQuotes(subject))
+        return u"%s REGEXP '%s'"%(tableName and u'%s.subject'%tableName or u'subject',EscapeQuotes(subject))
     elif isinstance(subject,list):
         clauseStrings=[]
         for s in subject:
             if isinstance(s,REGEXTerm):
-                clauseStrings.append("%s REGEXP '%s'"%(tableName and '%s.subject'%tableName or 'subject',EscapeQuotes(s)))
+                clauseStrings.append(u"%s REGEXP '%s'"%(tableName and u'%s.subject'%tableName or u'subject',EscapeQuotes(s)))
+            elif isinstance(s,QuotedGraph):
+                clauseStrings.append(u"%s='%s'"%(tableName and u'%s.subject'%tableName or u'subject',s.identifier))                
             else:
-                clauseStrings.append(s and "%s='%s'"%(tableName and '%s.subject'%tableName or 'subject',s) or None)
-        return '(%s)'%' or '.join([clauseString for clauseString in clauseStrings])        
+                clauseStrings.append(s and u"%s='%s'"%(tableName and u'%s.subject'%tableName or u'subject',s) or None)
+        return u'(%s)'%u' or '.join([clauseString for clauseString in clauseStrings])
+    elif isinstance(subject,QuotedGraph):
+        return u"%s='%s'"%(tableName and u'%s.subject'%tableName or u'subject',subject.identifier)    
     else:
-        return subject and "%s='%s'"%(tableName and '%s.subject'%tableName or 'subject',subject) or None
+        return subject and u"%s='%s'"%(tableName and u'%s.subject'%tableName or u'subject',subject) or None
 
 #Capable off taking a list of predicates as well (in which case sub clauses are joined with 'OR')
 def buildPredClause(predicate,tableName):
     if isinstance(predicate,REGEXTerm):
-        return "%s REGEXP '%s'"%(tableName and '%s.predicate'%tableName or 'predicate',EscapeQuotes(predicate))
+        return u"%s REGEXP '%s'"%(tableName and u'%s.predicate'%tableName or u'predicate',EscapeQuotes(predicate))
     elif isinstance(predicate,list):
         clauseStrings=[]
         for p in predicate:
             if isinstance(p,REGEXTerm):
-                clauseStrings.append("%s REGEXP '%s'"%(tableName and '%s.predicate'%tableName or 'predicate',EscapeQuotes(p)))
+                clauseStrings.append(u"%s REGEXP '%s'"%(tableName and u'%s.predicate'%tableName or u'predicate',EscapeQuotes(p)))
             else:
-                clauseStrings.append(predicate and "%s='%s'"%(tableName and '%s.predicate'%tableName or 'predicate',p) or None)
-        return '(%s)'%' or '.join([clauseString for clauseString in clauseStrings])
+                clauseStrings.append(predicate and u"%s='%s'"%(tableName and u'%s.predicate'%tableName or u'predicate',p) or None)
+        return u'(%s)'%u' or '.join([clauseString for clauseString in clauseStrings])
     else:
-        return predicate and "%s='%s'"%(tableName and '%s.predicate'%tableName or 'predicate',predicate) or None
+        return predicate and u"%s='%s'"%(tableName and u'%s.predicate'%tableName or u'predicate',predicate) or None
 
-#Capable off taking a list of objects as well (in which case sub clauses are joined with 'OR')    
+#Capable of taking a list of objects as well (in which case sub clauses are joined with 'OR')    
 def buildObjClause(obj,tableName):
     if isinstance(obj,REGEXTerm):
-        return "%s REGEXP '%s'"%(tableName and '%s.object'%tableName or 'object',EscapeQuotes(obj))
+        return u"%s REGEXP '%s'"%(tableName and u'%s.object'%tableName or u'object',EscapeQuotes(obj))
     elif isinstance(obj,list):
         clauseStrings=[]
         for o in obj:
             if isinstance(o,REGEXTerm):
-                clauseStrings.append("%s REGEXP '%s'"%(tableName and '%s.object'%tableName or 'object',EscapeQuotes(o)))
+                clauseStrings.append(u"%s REGEXP '%s'"%(tableName and u'%s.object'%tableName or u'object',EscapeQuotes(o)))
             elif isinstance(o,QuotedGraph):
-                clauseStrings.append("%s='%s'"%(tableName and '%s.object'%tableName or 'object',o.identifier))
+                clauseStrings.append(u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',o.identifier))
             else:
-                clauseStrings.append(o and "%s='%s'"%(tableName and '%s.object'%tableName or 'object',isinstance(o,Literal) and EscapeQuotes(o) or o) or None)
-        return '(%s)'%' or '.join([clauseString for clauseString in clauseStrings])
+                clauseStrings.append(o and u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',isinstance(o,Literal) and EscapeQuotes(o) or o) or None)
+        return u'(%s)'%u' or '.join([clauseString for clauseString in clauseStrings])
+    elif isinstance(obj,QuotedGraph):
+        return u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',obj.identifier)
     else:
-        return obj and "%s='%s'"%(tableName and '%s.object'%tableName or 'object',EscapeQuotes(obj)) or None
+        return obj and u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',EscapeQuotes(obj)) or None
 
 def buildContextClause(context,tableName):
     if isinstance(context,REGEXTerm):
-        return "%s REGEXP '%s'"%(tableName and '%s.context'%tableName,EscapeQuotes(context))
+        return u"%s REGEXP '%s'"%(tableName and u'%s.context'%tableName,EscapeQuotes(context))
     else:
-        return context and "%s='%s'"%(tableName and '%s.context'%tableName,context) or None
+        return context and u"%s='%s'"%(tableName and u'%s.context'%tableName,context) or None
     
 def buildLitDTypeClause(obj,tableName):
-    return (isinstance(obj,Literal) and obj.datatype and "%s.objDatatype='%s'"%(tableName,obj.datatype)) or None 
+    return (isinstance(obj,Literal) and obj.datatype and u"%s.objDatatype='%s'"%(tableName,obj.datatype)) or None 
 
 def buildLitLanguageClause(obj,tableName):
     return (isinstance(obj,Literal) and obj.datatype and "%s.objLanguage='%s'"%(tableName,obj.language)) or None
 
 def buildTypeMemberClause(subject,tableName):
     if isinstance(subject,REGEXTerm):
-        return "%s.member REGEXP '%s'"%(tableName,EscapeQuotes(subject))
+        return u"%s.member REGEXP '%s'"%(tableName,EscapeQuotes(subject))
     elif isinstance(subject,list):
         subjs = [isinstance(s,QuotedGraph) and s.identifier or s for s in subject]        
-        return ' or '.join([s and "%s.member = '%s'"%(tableName,s) for s in subjs])    
+        return u' or '.join([s and u"%s.member = '%s'"%(tableName,s) for s in subjs])    
     else:
-        return subject and "%s.member = '%s'"%(tableName,subject)
+        return subject and u"%s.member = '%s'"%(tableName,subject)
     
 def buildTypeClassClause(obj,tableName):
     if isinstance(obj,REGEXTerm):
-        return "%s.klass REGEXP '%s'"%(tableName,EscapeQuotes(obj))
+        return u"%s.klass REGEXP '%s'"%(tableName,EscapeQuotes(obj))
     elif isinstance(obj,list):
         obj = [isinstance(o,QuotedGraph) and o.identifier or o for o in obj]        
-        return ' or '.join([o and not isinstance(o,Literal) and "%s.klass = '%s'"%(tableName,o) for o in obj])
+        return u' or '.join([o and not isinstance(o,Literal) and u"%s.klass = '%s'"%(tableName,o) for o in obj])
     else:
-        return obj and not isinstance(obj,Literal) and "%s.klass = '%s'"%(tableName,obj)
+        return obj and not isinstance(obj,Literal) and u"%s.klass = '%s'"%(tableName,obj)
     
 def ParseConfigurationString(config_string):
     """
@@ -259,15 +348,55 @@ class MySQL(Backend):
         connect to datastore.
         """
         self.identifier = identifier and identifier or 'hardcoded'
-        self._internedId = sha.new(self.identifier).hexdigest()
+        #Use only the first 10 bytes of the digest
+        self._internedId = sha.new(self.identifier).hexdigest()[:10]
 
         #determines whether or not to yield conjunctive quads
         self.yieldConjunctiveQuads = False
+
+        #This parameter controls how exlusively the literal table is searched
+        #If true, the Literal partition is searched *exclusively* if the object term
+        #in a triple pattern is a Literal or a REGEXTerm.  Note, the latter case
+        #prevents the matching of URIRef nodes as the objects of a triple in the store.
+        #If the object term is a wildcard (None)
+        #Then the Literal paritition is searched in addition to the others
+        #If this parameter is false, the literal partition is searched regardless of what the object
+        #of the triple pattern is
+        self.STRONGLY_TYPED_TERMS = False
+
+        #Term cache to prevent redunant instanciation of terms already produced from the store
+        self.termCache = {
+            BNode.__name__    : {},
+            Literal.__name__  : {},
+            URIRef.__name__   : {RDF.type : RDF.type},
+            Variable.__name__ : {}
+        }
+
+        self.cacheMiss = 0
+        self.cacheHit = 0
+        
         if configuration:
             self.open(configuration)
+
+    #Helper function for creating terms with the given klass and value
+    #(in the case of Literals, the objLanguage and objDatatype as well)
+    #This checks the term cache to prevent redundant term instanciation
+    #- a noteworthy bottleneck
+    def _createTerm(self,termKlass,value,objLanguage=None,objDatatype=None):
+        cacheEntry = self.termCache[termKlass.__name__].get(value)
+        if cacheEntry:
+            self.cacheHit += 1
+            return cacheEntry
+        elif termKlass == Literal:
+            rt = Literal(value,objLanguage,objDatatype)
+        else:
+            rt = termKlass(value)
+
+        self.cacheMiss += 1
+        self.termCache[termKlass.__name__][value] = rt
+        return rt
             
     #Database Management Methods
-
     def open(self, configuration, create=True):
         """ 
         Opens the store specified by the configuration string. If
@@ -294,9 +423,6 @@ class MySQL(Backend):
                 c.close()
                 test_db.close()    
                 
-            else:
-                #Already exists, do nothing
-                print "database %s already exists"%configDict['db']
 
             db = MySQLdb.connect(user = configDict['user'],
                                  passwd = configDict['password'],
@@ -306,12 +432,11 @@ class MySQL(Backend):
                                  )
             c=db.cursor()
             c.execute("""SET AUTOCOMMIT=0""")   
-            for tblsuffix in table_name_prefixes:
-                print "creating table: %s"%(tblsuffix%(self._internedId))
             c.execute(CREATE_ASSERTED_STATEMENTS_TABLE%(self._internedId))
             c.execute(CREATE_ASSERTED_TYPE_STATEMENTS_TABLE%(self._internedId))
             c.execute(CREATE_QUOTED_STATEMENTS_TABLE%(self._internedId))
-            c.execute(CREATE_NS_BINDS_TABLE%(self._internedId))                    
+            c.execute(CREATE_NS_BINDS_TABLE%(self._internedId))
+            c.execute(CREATE_LITERAL_STATEMENTS_TABLE%(self._internedId))                                
             db.commit()
             c.close()
             db.close()            
@@ -347,8 +472,12 @@ class MySQL(Backend):
         c=msql_db.cursor()
         c.execute("""SET AUTOCOMMIT=0""")
         for tblsuffix in table_name_prefixes:
-            c.execute('DROP table %s'%tblsuffix%(self._internedId))
-            print "dropped table: %s"%(tblsuffix%(self._internedId))
+            try:
+                c.execute('DROP table %s'%tblsuffix%(self._internedId))
+                #print "dropped table: %s"%(tblsuffix%(self._internedId))
+            except:
+                print "unable to drop table: %s"%(tblsuffix%(self._internedId))
+            
             
         #Note, this only removes the associated tables for the closed world universe given by the identifier
         print "Destroyed Close World Universe %s ( in MySQL database %s)"%(self.identifier,configDict['db'])
@@ -364,12 +493,15 @@ class MySQL(Backend):
         c.execute("""SET AUTOCOMMIT=0""")
         if quoted or predicate != RDF.type:
             #quoted statement or non rdf:type predicate
-            addCmd=buildTripleSQLCommand(subject,predicate,obj,context,self._internedId,quoted)
+            #check if object is a literal
+            if isinstance(obj,Literal):
+                addCmd=buildLiteralTripleSQLCommand(subject,predicate,obj,context,self._internedId)
+            else:
+                addCmd=buildTripleSQLCommand(subject,predicate,obj,context,self._internedId,quoted)
         elif predicate == RDF.type:
             #asserted rdf:type statement
             addCmd=buildTypeSQLCommand(subject,obj,context,self._internedId)
         c.execute(_normalizeMySQLCmd(addCmd))
-        c.close()
 
     def remove(self, (subject, predicate, obj), context):
         """ Remove a triple from the store """
@@ -378,26 +510,35 @@ class MySQL(Backend):
         quoted_table="%s_quoted_statements"%self._internedId
         asserted_table="%s_asserted_statements"%self._internedId
         asserted_type_table="%s_type_statements"%self._internedId
+        literal_table = "%s_literal_statements"%self._internedId
         if not predicate or predicate != RDF.type:            
             #Need to remove predicates other than rdf:type
 
-            for table in [quoted_table,asserted_table]:
-                clauseString = buildClause(table,subject,obj,context,False,predicate)
-                cmd=clauseString and u"DELETE FROM %s %s"%(table,clauseString) or u'DELETE FROM %s;'%table
+            if not self.STRONGLY_TYPED_TERMS or isinstance(obj,Literal):
+                #remove literal triple
+                clauseString = buildClause(literal_table,subject,predicate, obj,context)
+                cmd=clauseString and u"DELETE FROM %s %s"%(literal_table,clauseString) or u'DELETE FROM %s;'%table
                 c.execute(_normalizeMySQLCmd(cmd))
 
+            for table in [quoted_table,asserted_table]:
+                #If asserted non rdf:type table and obj is Literal, don't do anything (already taken care of)
+                if table == asserted_table and isinstance(obj,Literal):
+                    continue
+                else:
+                    clauseString = buildClause(table,subject,predicate,obj,context)
+                    cmd=clauseString and u"DELETE FROM %s %s"%(table,clauseString) or u'DELETE FROM %s;'%table
+                    c.execute(_normalizeMySQLCmd(cmd))
+
         if predicate == RDF.type or not predicate:
-            #Need to check rdf:type and quoted partitions
-            clauseString = buildClause(asserted_type_table,subject,obj,context)
+            #Need to check rdf:type and quoted partitions (in addition perhaps)
+            clauseString = buildClause(asserted_type_table,subject,RDF.type,obj,context,True)
             cmd=clauseString and u"DELETE FROM %s %s"%(asserted_type_table,clauseString) or u'DELETE FROM %s;'%asserted_type_table
             c.execute(_normalizeMySQLCmd(cmd))
 
-            clauseString = buildClause(quoted_table,subject,obj,context,False,predicate)
-            cmd=clauseString and "DELETE FROM %s %s"%(quoted_table,clauseString) or 'DELETE FROM %s;'%quoted_table
+            clauseString = buildClause(quoted_table,subject,predicate, obj,context)
+            cmd=clauseString and u"DELETE FROM %s %s"%(quoted_table,clauseString) or 'DELETE FROM %s;'%quoted_table
             c.execute(cmd)
             
-        c.close()
-
     def triples(self, (subject, predicate, obj), context=None):
         """ 
         A generator over all the triples matching pattern. Pattern can
@@ -417,206 +558,119 @@ class MySQL(Backend):
         quoted_table="%s_quoted_statements"%self._internedId
         asserted_table="%s_asserted_statements"%self._internedId
         asserted_type_table="%s_type_statements"%self._internedId
-        contextClause  = context and "context = '%s'"%context or None        
+        literal_table = "%s_literal_statements"%self._internedId
         c=self._db.cursor()
+
+        if predicate == RDF.type:
+            #select from asserted rdf:type partition and quoted table (if a context is specified)
+            selects = [
+                (
+                  asserted_type_table,
+                  'typeTable',
+                  buildClause('typeTable',subject,RDF.type, obj,context,True),
+                  ASSERTED_TYPE_PARTITION
+                ),
+            ]
+
+        elif isinstance(predicate,REGEXTerm) and predicate.compiledExpr.match(RDF.type) or not predicate:
+            #Select from quoted partition (if context is specified), literal partition if (obj is Literal or None) and asserted non rdf:type partition (if obj is URIRef or None)
+            selects = []
+            if not self.STRONGLY_TYPED_TERMS or isinstance(obj,Literal) or not obj or (self.STRONGLY_TYPED_TERMS and isinstance(obj,REGEXTerm)):
+                selects.append((
+                  literal_table,
+                  'literal',
+                  buildClause('literal',subject,predicate,obj,context),
+                  ASSERTED_LITERAL_PARTITION
+                ))                    
+            if not isinstance(obj,Literal) and not (isinstance(obj,REGEXTerm) and self.STRONGLY_TYPED_TERMS) or not obj:
+                selects.append((
+                  asserted_table,
+                  'asserted',
+                  buildClause('asserted',subject,predicate,obj,context),
+                  ASSERTED_NON_TYPE_PARTITION
+                ))
+                
+            selects.append(
+                (
+                  asserted_type_table,
+                  'typeTable',
+                  buildClause('typeTable',subject,RDF.type,obj,context,True),
+                  ASSERTED_TYPE_PARTITION                    
+                )
+            )
+                
+
+        elif predicate:
+            #select from asserted non rdf:type partition (optionally), quoted partition (if context is speciied), and literal partition (optionally)
+            selects = []
+            if not self.STRONGLY_TYPED_TERMS or isinstance(obj,Literal) or not obj or (self.STRONGLY_TYPED_TERMS and isinstance(obj,REGEXTerm)):
+                selects.append((
+                  literal_table,
+                  'literal',
+                  buildClause('literal',subject,predicate,obj,context),
+                  ASSERTED_LITERAL_PARTITION
+                ))
+            if not isinstance(obj,Literal) and not (isinstance(obj,REGEXTerm) and self.STRONGLY_TYPED_TERMS) or not obj:                
+                selects.append((
+                  asserted_table,
+                  'asserted',
+                  buildClause('asserted',subject,predicate,obj,context),
+                  ASSERTED_NON_TYPE_PARTITION
+                ))                    
+
         if context:
-            #Normal context constraint against asserted/quoted tables
-            if predicate == RDF.type:
-                #select from asserted rdf:type partition and quoted table only
-                quotedClauseString = buildClause('quoted',subject,obj,context,False,predicate)
-                typeClauseString = buildClause('typeTable',subject,obj,context)
-                
-                q="""(select                     
-                        quoted.*
-                     from
-                        %s as quoted
-                     %s)
+            selects.append(
+                (
+                  quoted_table,
+                  'quoted',
+                  buildClause('quoted',subject,predicate, obj,context),
+                  QUOTED_PARTITION
+                )
+            )
 
-                     union all
-
-                     (select
-                        typeTable.member as subject,
-                        '%s' as predicate,
-                        typeTable.klass as object,
-                        NULL as objLanguage,
-                        NULL as objDatatype,
-                        typeTable.context as context,
-                        typeTable.termComb as termComb
-                     from                         
-                        %s as typeTable
-                     %s)"""%(
-                    quoted_table,
-                    quotedClauseString,
-                    RDF.type,
-                    asserted_type_table,
-                    typeClauseString)
-                
-            elif isinstance(predicate,REGEXTerm) and predicate.compiledExpr.match(RDF.type):
-                #select from asserted non rdf:type partition, asserted rdf:type (matches rdf:type) and quoted table
-                clauseStrings=[]
-                quotedClauseString = buildClause('quoted',subject,obj,context,False,predicate)
-                typeClauseString = buildClause('typeTable',subject,obj,context)
-                
-                for tableAlias in ['quoted','asserted']:
-                    clauseStrings.append(buildClause(tableAlias,subject,obj,context,False,predicate))
-                    
-                q="""select                     
-                        quoted.*
-                      from                         
-                        %s as quoted
-                      %s
-
-                      union all
-
-                      select
-                        asserted.*
-                      from
-                        %s as asserted
-                      %s
-
-                      union all
-
-                      select
-                        typeTable.member as subject,
-                        '%s' as predicate,
-                        typeTable.klass as object,
-                        typeTable.termComb as termComb,
-                        NULL as objLanguage,
-                        NULL as objDatatype,
-                        typeTable.context as context
-                     from
-                        %s as typeTable
-                     %s"""%(quoted_table,clauseStrings[0],asserted_table,clauseStrings[1],RDF.type,asserted_type_table,typeClauseString)                
-            elif predicate:
-                #select from asserted non rdf:type partition and quoted table only
-                clauseStrings=[]
-                quotedClauseString = buildClause('quoted',subject,obj,context,False,predicate)
-                typeClauseString = buildClause('typeTable',subject,obj,context)
-                
-                for tableAlias in ['quoted','asserted']:
-                    clauseStrings.append(buildClause(tableAlias,subject,obj,context,False,predicate))
-                    
-                q="""select                     
-                        quoted.*
-                      from                         
-                        %s as quoted
-                      %s
-
-                      union all
-
-                      select
-                        asserted.*
-                      from
-                        %s as asserted
-                      %s"""%(quoted_table,clauseStrings[0],asserted_table,clauseStrings[1])
- 
-            else:
-                #select from asserted rdf:type, asserted non rdf:type and quoted table
-                clauseStringList=[]
-                for tableAlias in ['quoted','asserted']:                    
-                    clauseStringList.append(buildClause(tableAlias,subject,obj,context,False,predicate))                    
-
-                typeClauseString = buildClause('typeTable',subject,obj,context)
-                
-                q="""
-                     (select
-                        quoted.*
-                     from
-                        %s as quoted
-                     %s)
-
-                     union 
-
-                     (select
-                        asserted.*
-                      from     
-                        %s as asserted
-                      %s)
-
-                     union 
-
-                     (select
-                        typeTable.member as subject,
-                        '%s' as predicate,
-                        typeTable.klass as object,
-                        typeTable.termComb as termComb,
-                        NULL as objLanguage,
-                        NULL as objDatatype,
-                        typeTable.context as context
-                     from
-                        %s as typeTable
-                     %s)"""%(quoted_table,clauseStringList[0],asserted_table,clauseStringList[1],RDF.type,asserted_type_table,typeClauseString)
-        else:
-            if predicate == RDF.type:
-                #select from asserted rdf:type partition only
-                clauseString = buildClause('type',subject,obj)
-                q="""select                    
-                        type.*
-                      from     
-                        %s as type
-                      %s"""%(asserted_type_table,clauseString)
-                
-            elif isinstance(predicate,REGEXTerm) and predicate.compiledExpr.match(RDF.type):
-                #Predicate matched rdf:type (might also match other predicates)
-                assertedClauseString = buildClause('asserted',subject,obj,context,False,predicate)
-                typeClauseString = buildClause('typeTable',subject,obj,context)
-                    
-                q="""(select                     
-                        asserted.*
-                      from                         
-                        %s as asserted
-                     %s)
-
-                     union all
-
-                     (select
-                       typeTable.member as subject,
-                       '%s' as predicate,
-                       typeTable.klass as object,
-                       NULL as objLanguage,
-                       NULL as objDatatype,
-                       typeTable.context as context,
-                       typeTable.termComb as termComb
-                      from                         
-                        %s as typeTable
-                      %s)"""%(asserted_table,assertedClauseString,RDF.type,asserted_type_table,typeClauseString)
-
-            elif predicate:
-                #select from asserted non rdf:type partition only
-                
-                clauseString = buildClause('asserted',subject,obj,context,False,predicate)
-                q="""select                                             
-                        asserted.*
-                      from                         
-                        %s as asserted
-                      %s"""%(asserted_table,clauseString)
-            else:
-                #select from asserted rdf:type, asserted non rdf:type
-                clauseString = buildClause('asserted',subject,obj,context,False,predicate)
-                typeClauseString = buildClause('typeTable',subject,obj)
-                q="""select                     
-                        asserted.*
-                     from %s as asserted
-                     %s
-
-                     union all
-
-                     select
-                        typeTable.member as subject,
-                        '%s' as predicate,
-                        typeTable.klass as object,
-                        typeTable.termComb as termComb,
-                        NULL as objLanguage,
-                        NULL as objDatatype,
-                        typeTable.context as context
-                      from                         
-                        %s as typeTable
-                      %s"""%(asserted_table,clauseString,RDF.type,asserted_type_table,typeClauseString)
-
+        q=unionSELECT(selects)
         c.execute(_normalizeMySQLCmd(q))
-        c.close()
         for rtDict in c.fetchall():
             yield extractTriple(rtDict,self,context)
+
+    def __repr__(self):
+        c=self._db.cursor()
+        quoted_table="%s_quoted_statements"%self._internedId
+        asserted_table="%s_asserted_statements"%self._internedId
+        asserted_type_table="%s_type_statements"%self._internedId
+        literal_table = "%s_literal_statements"%self._internedId
+        
+        selects = [
+            (
+              asserted_type_table,
+              'typeTable',
+              u'',
+              ASSERTED_TYPE_PARTITION          
+            ),
+            (
+              quoted_table,
+              'quoted',
+              u'',
+              QUOTED_PARTITION     
+            ),
+            (
+              asserted_table,
+              'asserted',
+              u'',
+              ASSERTED_NON_TYPE_PARTITION                   
+            ),
+            (
+              literal_table,
+              'literal',
+              u'',
+              ASSERTED_LITERAL_PARTITION  
+            ),                
+        ]
+        q=unionSELECT(selects,distinct=False,selectType=COUNT_SELECT)
+        c.execute(_normalizeMySQLCmd(q))
+        rt=c.fetchall()
+        typeLen,quotedLen,assertedLen,literalLen = [rtDict.values()[0] for rtDict in rt]
+        return "<Parititioned MySQL N3 Store: %s classification assertions, %s quoted statements, %s property/value assertions, and %s other assertions>"%(typeLen,quotedLen,literalLen,assertedLen)
 
     def __len__(self, context=None):
         """ Number of statements in the store. """
@@ -624,155 +678,171 @@ class MySQL(Backend):
         quoted_table="%s_quoted_statements"%self._internedId
         asserted_table="%s_asserted_statements"%self._internedId
         asserted_type_table="%s_type_statements"%self._internedId
+        literal_table = "%s_literal_statements"%self._internedId
+
+        quotedContext   = buildContextClause(context,quoted_table)
+        assertedContext = buildContextClause(context,asserted_table)
+        typeContext     = buildContextClause(context,asserted_type_table)
+        literalContext  = buildContextClause(context,literal_table)
+        
         if context:
-            q="""select
-                   count(*)
-                 from
-                   %s
-                 where
-                   %s
-
-                 union
-
-                 select
-                   count(*)
-                 from
-                   %s
-                 where
-                   %s
-
-                 union
-
-                 select
-                   count(*)
-                 from
-                   %s
-                 where %s"""%(
-                   quoted_table,
-                   buildContextClause(context,quoted_table),
-                   asserted_table,
-                   buildContextClause(context,asserted_table),
-                   asserted_type_table,
-                   buildContextClause(context,asserted_type_table),
-                   )
+            selects = [
+                (
+                  asserted_type_table,
+                  'typeTable',
+                  typeContext and u'where ' + typeContext or u'',
+                  ASSERTED_TYPE_PARTITION          
+                ),
+                (
+                  quoted_table,
+                  'quoted',
+                  quotedContext and u'where ' + quotedContext or u'',
+                  QUOTED_PARTITION     
+                ),
+                (
+                  asserted_table,
+                  'asserted',
+                  assertedContext and u'where ' + assertedContext or u'',
+                  ASSERTED_NON_TYPE_PARTITION                   
+                ),
+                (
+                  literal_table,
+                  'literal',
+                  literalContext and u'where ' + literalContext or u'',
+                  ASSERTED_LITERAL_PARTITION  
+                ),                
+            ]
+            q=unionSELECT(selects,distinct=True,selectType=COUNT_SELECT)
         else:
-            q="""select
-                   count(*)
-                 from
-                   %s
+            selects = [
+                (
+                  asserted_type_table,
+                  'typeTable',
+                  typeContext and u'where ' + typeContext or u'',
+                  ASSERTED_TYPE_PARTITION
+                ),
+                (
+                  asserted_table,
+                  'asserted',
+                  assertedContext and u'where ' + assertedContext or u'',
+                  ASSERTED_NON_TYPE_PARTITION                   
+                ),
+                (
+                  literal_table,
+                  'literal',
+                  literalContext and u'where ' + literalContext or u'',
+                  ASSERTED_LITERAL_PARTITION
+                ),                
+            ]
+            q=unionSELECT(selects,distinct=False,selectType=COUNT_SELECT)
 
-                 union
-
-                 select
-                   count(*)
-                 from
-                   %s"""%(asserted_table,asserted_type_table)
         c.execute(_normalizeMySQLCmd(q))
         rt=c.fetchall()
-        c.close()
         return reduce(lambda x,y: x+y,  [item['count(*)'] for item in rt])
 
     def contexts(self, triple=None):
-        """
-        FIXME:  Add support for triple argument
-        """
         c=self._db.cursor()
         quoted_table="%s_quoted_statements"%self._internedId
         asserted_table="%s_asserted_statements"%self._internedId
         asserted_type_table="%s_type_statements"%self._internedId
+        literal_table = "%s_literal_statements"%self._internedId
         if triple:
-            s,p,o=triple
-            if p == RDF.type:
-                clauseString = buildClause('quoted',s,o,None,False,p)
-                typeClauseString = buildClause('typeTable',s,o)
-                q="""
-                     select
-                       quoted.context
-                     from
-                       %s as quoted
-                     %s
-                     
-                     union 
-            
-                     select
-                       typeTable.context
-                     from
-                       %s as typeTable
-                     %s"""%(quoted_table,clauseString,asserted_type_table,typeClauseString)
-            elif not p or isinstance(p,REGEXTerm) and p.compiledExpr.match(RDF.type):
-                clauseStringList=[]
-                for tableAlias in ['quoted','asserted']:                    
-                    clauseStringList.append(buildClause(tableAlias,s,o,None,False,p))                    
+            subject,predicate,obj=triple
+            if predicate == RDF.type:
+                #select from asserted rdf:type partition and quoted table (if a context is specified)
+                selects = [
+                    (
+                      asserted_type_table,
+                      'typeTable',
+                      buildClause('typeTable',subject,RDF.type, obj,Any,True),
+                      ASSERTED_TYPE_PARTITION
+                    ),
+                ]
 
-                typeClauseString = buildClause('typeTable',s,o,None)                
-                q="""
-                     select
-                        quoted.context
-                     from
-                        %s as quoted
-                     %s
+            elif isinstance(predicate,REGEXTerm) and predicate.compiledExpr.match(RDF.type) or not predicate:
+                #Select from quoted partition (if context is specified), literal partition if (obj is Literal or None) and asserted non rdf:type partition (if obj is URIRef or None)
+                selects = [
+                    (
+                      asserted_type_table,
+                      'typeTable',
+                      buildClause('typeTable',subject,RDF.type,obj,Any,True),
+                      ASSERTED_TYPE_PARTITION                   
+                    ),
+                ]
 
-                     union 
+                if not self.STRONGLY_TYPED_TERMS or isinstance(obj,Literal) or not obj or (self.STRONGLY_TYPED_TERMS and isinstance(obj,REGEXTerm)):
+                    selects.append((
+                      literal_table,
+                      'literal',
+                      buildClause('literal',subject,predicate,obj),
+                      ASSERTED_LITERAL_PARTITION
+                    ))
+                if not isinstance(obj,Literal) and not (isinstance(obj,REGEXTerm) and self.STRONGLY_TYPED_TERMS) or not obj:                
+                    selects.append((
+                      asserted_table,
+                      'asserted',
+                      buildClause('asserted',subject,predicate,obj),
+                      ASSERTED_NON_TYPE_PARTITION
+                    ))                    
 
-                     select
-                        asserted.context
-                      from     
-                        %s as asserted
-                      %s
+            elif predicate:
+                #select from asserted non rdf:type partition (optionally), quoted partition (if context is speciied), and literal partition (optionally)
+                selects = []
+                if not self.STRONGLY_TYPED_TERMS or isinstance(obj,Literal) or not obj or (self.STRONGLY_TYPED_TERMS and isinstance(obj,REGEXTerm)):
+                    selects.append((
+                      literal_table,
+                      'literal',
+                      buildClause('literal',subject,predicate,obj),
+                      ASSERTED_LITERAL_PARTITION
+                    ))
+                if not isinstance(obj,Literal) and not (isinstance(obj,REGEXTerm) and self.STRONGLY_TYPED_TERMS) or not obj:                
+                    selects.append((
+                      asserted_table,
+                      'asserted',
+                      buildClause('asserted',subject,predicate,obj),
+                      ASSERTED_NON_TYPE_PARTITION
+                ))
 
-                     union 
-
-                     select
-                        typeTable.context as context
-                     from
-                        %s as typeTable
-                     %s
-
-                     union 
-
-
-                      """%(quoted_table,clauseStringList[0],asserted_table,clauseStringList[1],asserted_type_table,typeClauseString)                                
-            else:
-                clauseStringList=[]
-                for tableAlias in ['quoted','asserted']:                    
-                    clauseStringList.append(buildClause(tableAlias,s,o,None,False,p))                    
-                
-                q="""select
-                        quoted.context
-                     from
-                        %s as quoted
-                     %s
-
-                     union 
-
-                     select
-                        asserted.context
-                      from     
-                        %s as asserted
-                      %s"""%(quoted_table,clauseStringList[0],asserted_table,clauseStringList[1])                                
-
+            selects.append(
+                (
+                  quoted_table,
+                  'quoted',
+                  buildClause('quoted',subject,predicate, obj),
+                  QUOTED_PARTITION
+                )
+            )
+            q=unionSELECT(selects,distinct=True,selectType=CONTEXT_SELECT)
         else:
-            q="""select
-                   quoted.context
-                 from
-                   %s as quoted
+            selects = [
+                (
+                  asserted_type_table,
+                  'typeTable',
+                  u'',
+                  ASSERTED_TYPE_PARTITION                   
+                ),
+                (
+                  quoted_table,
+                  'quoted',
+                  u'',
+                  QUOTED_PARTITION     
+                ),
+                (
+                  asserted_table,
+                  'asserted',
+                  u'',
+                  ASSERTED_NON_TYPE_PARTITION                    
+                ),
+                (
+                  literal_table,
+                  'literal',
+                  u'',
+                  ASSERTED_LITERAL_PARTITION  
+                ),                
+            ]
+            q=unionSELECT(selects,distinct=True,selectType=CONTEXT_SELECT)
 
-                 union
-
-                 select
-                   asserted.context
-                 from
-                   %s as asserted
-
-                 union
-
-                 select
-                   assertedType.context
-                 from
-                   %s as assertedType"""%(quoted_table,asserted_table,asserted_type_table)
         c.execute(_normalizeMySQLCmd(q))
         rt=c.fetchall()
-        c.close()
         for context in [rtDict['context'] for rtDict in rt]:
             yield context
     
@@ -783,19 +853,9 @@ class MySQL(Backend):
         quoted_table="%s_quoted_statements"%self._internedId
         asserted_table="%s_asserted_statements"%self._internedId
         asserted_type_table="%s_type_statements"%self._internedId
-        q= "DELETE %s,%s,%s from %s,%s,%s where %s and %s and %s;"%(
-            quoted_table,
-            asserted_table,
-            asserted_type_table,
-            quoted_table,
-            asserted_table,
-            asserted_type_table,
-            buildContextClause(identifier,quoted_table),
-            buildContextClause(identifier,asserted_table),
-            buildContextClause(identifier,asserted_type_table)
-            )
-        c.execute(_normalizeMySQLCmd(q))
-        c.close()
+        literal_table = "%s_literal_statements"%self._internedId
+        for table in [quoted_table,asserted_table,asserted_type_table,literal_table]:
+            c.execute(_normalizeMySQLCmd("DELETE from %s where %s"%(table,buildContextClause(identifier,table))))
 
     # Optional Namespace methods
 
@@ -869,7 +929,6 @@ class MySQL(Backend):
             prefix,
             namespace)
         )
-        c.close()
 
     def prefix(self, namespace):
         """ """
@@ -879,7 +938,6 @@ class MySQL(Backend):
             namespace)
         )
         rt = [rtDict['prefix'] for rtDict in c.fetchall()]
-        c.close()
         return rt and rt or None
 
     def namespace(self, prefix):
@@ -890,7 +948,6 @@ class MySQL(Backend):
             prefix)
         )
         rt = [rtDict['uri'] for rtDict in c.fetchall()]
-        c.close()
         return rt and rt or None
 
     def namespaces(self):
@@ -901,7 +958,6 @@ class MySQL(Backend):
             )
         )
         rt = [(rtDict['prefix'],rtDict['uri']) for rtDict in c.fetchall()]
-        c.close()
         for prefix,uri in rt:
             yield prefix,uri
         
@@ -919,7 +975,8 @@ table_name_prefixes = [
     '%s_asserted_statements',
     '%s_type_statements',
     '%s_quoted_statements',
-    '%s_namespace_binds'
+    '%s_namespace_binds',
+    '%s_literal_statements'
 ]        
 
 
@@ -927,11 +984,9 @@ CREATE_ASSERTED_STATEMENTS_TABLE = """
 CREATE TABLE %s_asserted_statements (
     subject       text not NULL,
     predicate     text not NULL,
-    object        text,
+    object        text not NULL,
     context       text not NULL,
     termComb      tinyint unsigned not NULL,    
-    objLanguage   varchar(3),
-    objDatatype   text,
     INDEX termComb_index (termComb),    
     INDEX spoc_index (subject(100),predicate(100),object(50),context(50)),
     INDEX poc_index (predicate(100),object(50),context(50)),
@@ -948,6 +1003,21 @@ CREATE TABLE %s_type_statements (
     INDEX memberC_index (member(100),klass(100),context(50)),
     INDEX klassC_index (klass(100),context(50)),
     INDEX c_index (context(10))) TYPE=InnoDB"""
+
+CREATE_LITERAL_STATEMENTS_TABLE = """
+CREATE TABLE %s_literal_statements (
+    subject       text not NULL,
+    predicate     text not NULL,
+    object        text,
+    context       text not NULL,
+    termComb      tinyint unsigned not NULL,    
+    objLanguage   varchar(3),
+    objDatatype   text,
+    INDEX termComb_index (termComb),    
+    INDEX spoc_index (subject(100),predicate(100),object(50),context(50)),
+    INDEX poc_index (predicate(100),object(50),context(50)),
+    INDEX csp_index (context(50),subject(100),predicate(100)),
+    INDEX cp_index (context(50),predicate(100))) TYPE=InnoDB"""
     
 CREATE_QUOTED_STATEMENTS_TABLE = """
 CREATE TABLE %s_quoted_statements (
