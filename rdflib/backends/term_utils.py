@@ -1,16 +1,25 @@
 from rdflib import *
 from rdflib.Graph import QuotedGraph
 
+TERM_INSTANCIATION_DICT ={
+    'U':URIRef,
+    'B':BNode,
+    'V':Variable,
+}
+
+
+
+
 def term2Letter(term):
-    if type(term) == URIRef:
+    if isinstance(term,URIRef):
         return 'U'
-    elif type(term) == BNode:    
+    elif isinstance(term,BNode):    
         return 'B'
-    elif type(term) == Literal:
+    elif isinstance(term,Literal):
         return 'L'
-    elif type(term) == QuotedGraph:
+    elif isinstance(term,QuotedGraph):
         return 'F'
-    elif type(term) == Variable:
+    elif isinstance(term,Variable):
         return 'V'
     else:
         print term,type(term)
@@ -19,7 +28,7 @@ def term2Letter(term):
 def triplePattern2termCombinations((s,p,o)):
     combinations=[]
     #combinations.update(TERM_COMBINATIONS)
-    if type(o)==Literal:
+    if isinstance(o,Literal):
         for key,val in TERM_COMBINATIONS.items():
             if key[OBJECT] == 'O':
                 combinations.append(val)
