@@ -176,7 +176,10 @@ def extractTriple(rtDict,backend,hardCodedContext=None):
     rdf_type_caveat = predicate == RDF.type and objDatatype
     if rdf_type_caveat:
         context=objDatatype
-        termComb=int(rtContext)
+        try:
+            termComb=int(rtContext)
+        except:
+            termComb = 0
     else:
         context = rtContext and rtContext or hardCodedContext
 
@@ -517,7 +520,7 @@ class MySQL(Backend):
             if not self.STRONGLY_TYPED_TERMS or isinstance(obj,Literal):
                 #remove literal triple
                 clauseString = buildClause(literal_table,subject,predicate, obj,context)
-                cmd=clauseString and u"DELETE FROM %s %s"%(literal_table,clauseString) or u'DELETE FROM %s;'%table
+                cmd=clauseString and u"DELETE FROM %s %s"%(literal_table,clauseString) or u'DELETE FROM %s;'%literal_table
                 c.execute(_normalizeMySQLCmd(cmd))
 
             for table in [quoted_table,asserted_table]:
@@ -938,7 +941,7 @@ class MySQL(Backend):
             namespace)
         )
         rt = [rtDict['prefix'] for rtDict in c.fetchall()]
-        return rt and rt or None
+        return rt and rt[0] or None
 
     def namespace(self, prefix):
         """ """
@@ -948,7 +951,7 @@ class MySQL(Backend):
             prefix)
         )
         rt = [rtDict['uri'] for rtDict in c.fetchall()]
-        return rt and rt or None
+        return rt and rt[0] or None
 
     def namespaces(self):
         """ """
