@@ -18,7 +18,7 @@ class Sleepycat(Backend):
         self.__open = False
 	self.identifier = BNode() # TODO: move to create and persisit
         
-    def open(self, path):
+    def open(self, path, create=True):
         homeDir = path        
         envsetflags  = db.DB_CDB_ALLDB
         envflags = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD

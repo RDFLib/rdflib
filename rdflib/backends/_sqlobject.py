@@ -159,7 +159,7 @@ class SQLObject(Backend):
     def __init__(self):
         pass
 
-    def open(self, uri):
+    def open(self, uri, create=True):
         if self.__open:
             return
         self.__open = True

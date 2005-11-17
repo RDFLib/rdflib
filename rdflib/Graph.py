@@ -62,11 +62,11 @@ class Graph(Node):
         self.__namespace_manager = nm
     namespace_manager = property(_get_namespace_manager, _set_namespace_manager)
 
-    def open(self, path):
+    def open(self, configuration, create=True):
         """ Open the graph backend.  Might be necessary for backends
         that require opening a connection to a database or acquiring some resource."""
         if hasattr(self.__backend, "open"):
-            self.__backend.open(path)
+            self.__backend.open(configuration, create)
 
     def close(self):
         """ Close the graph backend.  Might be necessary for backends
