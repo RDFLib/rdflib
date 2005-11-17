@@ -70,7 +70,7 @@ def unionSELECT(selectComponents,distinct=False,selectType=TRIPLE_SELECT):
             tableSource = u" from %s as %s "%(tableName,tableAlias)
         elif tableType == ASSERTED_TYPE_PARTITION:
             selectString =\
-            u"""select %s.member as subject, '%s' as predicate, %s.klass as object, %s.termComb as termComb, NULL as objLanguage, NULL as objDatatype, %s.context as context"""%(tableAlias,RDF.type,tableAlias,tableAlias,tableAlias)
+            u"""select %s.member as subject, '%s' as predicate, %s.klass as object, %s.context as context, %s.termComb as termComb, NULL as objLanguage, NULL as objDatatype"""%(tableAlias,RDF.type,tableAlias,tableAlias,tableAlias)
             tableSource = u" from %s as %s "%(tableName,tableAlias)
         elif tableType == ASSERTED_NON_TYPE_PARTITION:
             selectString =\
@@ -159,51 +159,14 @@ def buildTripleSQLCommand(subject,predicate,obj,context,storeId,quoted):
 #Takes a dictionary which represents an entry in a result set and
 #converts it to a tuple of terms using the termComb integer
 #to interpret how to instanciate each term
-def extractTriple(rtDict,backend,hardCodedContext=None):
-    #FIXME:  This is quite odd....  I imagine it has to do with the use of union selects (which are sensitive to mismatched columns)
-    #Essentially, in cases where the resulting triple is taken from the rdf:type table
-    #The context is assigned the termComb and objDatatype is assigned context
-    #Luckily this is easily detectable as literals cannot be objects of rdf:type statements
-    #in which case objDatatype should never be populated if the predicate is rdf:type
-    #See: http://dev.mysql.com/doc/refman/4.1/en/union.html
-
-    rtContext   = rtDict['context']
-    termComb    = rtDict['termComb']
-    member      = rtDict.get('member')
-    predicate   = rtDict.get('predicate')
-    objDatatype = rtDict.get('objDatatype')
-    
-    rdf_type_caveat = predicate == RDF.type and objDatatype
-    if rdf_type_caveat:
-        context=objDatatype
-        try:
-            termComb=int(rtContext)
-        except:
-            termComb = 0
-    else:
-        context = rtContext and rtContext or hardCodedContext
-
+def extractTriple(tupleRt,backend,hardCodedContext=None):
+    subject,predicate,obj,rtContext,termComb,objLanguage,objDatatype = tupleRt    
+    context = rtContext and rtContext or hardCodedContext
     termCombString=REVERSE_TERM_COMBINATIONS[termComb]
-
     subjTerm,predTerm,objTerm = termCombString
-
-    if member:
-        #s=TERM_INSTANCIATION_DICT[subjTerm](rtDict['member'])
-        s=createTerm(member,subjTerm,backend)
-        p=RDF.type
-        #o=TERM_INSTANCIATION_DICT[objTerm](rtDict['klass'])
-        o=createTerm(rtDict['klass'],objTerm,backend)
-
-    else:
-        subject = rtDict.get('subject')
-        if subject:
-            #regular statement
-            s=createTerm(subject,subjTerm,backend)
-            p=createTerm(predicate,predTerm,backend)
-            if objTerm == 'L':
-                o=backend._createTerm(Literal,rtDict['object'],rtDict['objLanguage'],objDatatype)
-            else:
-                o=createTerm(rtDict['object'],objTerm,backend)
+    s=createTerm(subject,subjTerm,backend)
+    p=predicate == RDF.type and RDF.type or createTerm(predicate,predTerm,backend)            
+    o=createTerm(obj,objTerm,backend,objLanguage,objDatatype)
             
     if backend.yieldConjunctiveQuads:
         return s,p,o,context
@@ -220,11 +183,13 @@ def normalizeTerm(term):
 
 #Takes a term value, term type, and backend intance
 #and Creates a term object.  QuotedGraphs are instanciated differently
-def createTerm(termString,termType,backend):
+def createTerm(termString,termType,backend,objLanguage=None,objDatatype=None):
     if termType=='F':
         return QuotedGraph(backend,termString)
+    elif termType == 'L':
+        return Literal(termString,objLanguage,objDatatype)
     else:
-        return backend._createTerm(TERM_INSTANCIATION_DICT[termType],termString)
+        return TERM_INSTANCIATION_DICT[termType](termString)
 
 #Where Clause  utility Functions
 #The predicate and object clause builders are modified in order to optimize
@@ -366,38 +331,9 @@ class MySQL(Backend):
         #If this parameter is false, the literal partition is searched regardless of what the object
         #of the triple pattern is
         self.STRONGLY_TYPED_TERMS = False
-
-        #Term cache to prevent redunant instanciation of terms already produced from the store
-        self.termCache = {
-            BNode.__name__    : {},
-            Literal.__name__  : {},
-            URIRef.__name__   : {RDF.type : RDF.type},
-            Variable.__name__ : {}
-        }
-
-        self.cacheMiss = 0
-        self.cacheHit = 0
         
         if configuration:
             self.open(configuration)
-
-    #Helper function for creating terms with the given klass and value
-    #(in the case of Literals, the objLanguage and objDatatype as well)
-    #This checks the term cache to prevent redundant term instanciation
-    #- a noteworthy bottleneck
-    def _createTerm(self,termKlass,value,objLanguage=None,objDatatype=None):
-        cacheEntry = self.termCache[termKlass.__name__].get(value)
-        if cacheEntry:
-            self.cacheHit += 1
-            return cacheEntry
-        elif termKlass == Literal:
-            rt = Literal(value,objLanguage,objDatatype)
-        else:
-            rt = termKlass(value)
-
-        self.cacheMiss += 1
-        self.termCache[termKlass.__name__][value] = rt
-        return rt
             
     #Database Management Methods
     def open(self, configuration, create=True):
@@ -450,8 +386,7 @@ class MySQL(Backend):
                                    port=configDict['port'],
                                    host=configDict['host']
                                   )
-        self._db.cursorclass = MySQLdb.cursors.DictCursor
-            
+        
     def close(self, commit_pending_transaction=False):
         """ 
         FIXME:  Add documentation!!
@@ -633,9 +568,11 @@ class MySQL(Backend):
 
         q=unionSELECT(selects)
         c.execute(_normalizeMySQLCmd(q))
-        for rtDict in c.fetchall():
-            yield extractTriple(rtDict,self,context)
-
+        rt = c.fetchone()
+        while rt:
+            yield extractTriple(rt,self,context)
+            rt = c.fetchone()
+            
     def __repr__(self):
         c=self._db.cursor()
         quoted_table="%s_quoted_statements"%self._internedId
@@ -672,7 +609,7 @@ class MySQL(Backend):
         q=unionSELECT(selects,distinct=False,selectType=COUNT_SELECT)
         c.execute(_normalizeMySQLCmd(q))
         rt=c.fetchall()
-        typeLen,quotedLen,assertedLen,literalLen = [rtDict.values()[0] for rtDict in rt]
+        typeLen,quotedLen,assertedLen,literalLen = [rtTuple[0] for rtTuple in rt]
         return "<Parititioned MySQL N3 Store: %s classification assertions, %s quoted statements, %s property/value assertions, and %s other assertions>"%(typeLen,quotedLen,literalLen,assertedLen)
 
     def __len__(self, context=None):
@@ -741,7 +678,7 @@ class MySQL(Backend):
 
         c.execute(_normalizeMySQLCmd(q))
         rt=c.fetchall()
-        return reduce(lambda x,y: x+y,  [item['count(*)'] for item in rt])
+        return reduce(lambda x,y: x+y,  [rtTuple[0] for rtTuple in rt])
 
     def contexts(self, triple=None):
         c=self._db.cursor()
@@ -846,7 +783,7 @@ class MySQL(Backend):
 
         c.execute(_normalizeMySQLCmd(q))
         rt=c.fetchall()
-        for context in [rtDict['context'] for rtDict in rt]:
+        for context in [rtTuple[0] for rtTuple in rt]:
             yield context
     
     def remove_context(self, identifier):
@@ -940,7 +877,7 @@ class MySQL(Backend):
             self._internedId,
             namespace)
         )
-        rt = [rtDict['prefix'] for rtDict in c.fetchall()]
+        rt = [rtTuple[0] for rtTuple in c.fetchall()]
         return rt and rt[0] or None
 
     def namespace(self, prefix):
@@ -950,7 +887,7 @@ class MySQL(Backend):
             self._internedId,
             prefix)
         )
-        rt = [rtDict['uri'] for rtDict in c.fetchall()]
+        rt = [rtTuple[0] for rtTuple in c.fetchall()]
         return rt and rt[0] or None
 
     def namespaces(self):
@@ -959,9 +896,8 @@ class MySQL(Backend):
         c.execute("select prefix, uri from %s_namespace_binds where 1;"%(
             self._internedId
             )
-        )
-        rt = [(rtDict['prefix'],rtDict['uri']) for rtDict in c.fetchall()]
-        for prefix,uri in rt:
+        )        
+        for prefix,uri in c.fetchall():
             yield prefix,uri
         
 

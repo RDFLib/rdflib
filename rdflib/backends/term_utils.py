@@ -5,10 +5,8 @@ TERM_INSTANCIATION_DICT ={
     'U':URIRef,
     'B':BNode,
     'V':Variable,
+    'L':Literal
 }
-
-
-
 
 def term2Letter(term):
     if isinstance(term,URIRef):
