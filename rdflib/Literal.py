@@ -26,28 +26,24 @@ class Literal(Identifier):
         self.datatype = d['datatype']
     
     def __new__(cls, value, lang='', datatype=''):
-        value = unicode(value)        
-        return Identifier.__new__(cls, value)        
+        #if normalize and value:
+        #    if value != normalize("NFC", value):
+        #        raise Error("value must be in NFC normalized form.")
 
-    def __getstate__(self):
-	return (None, dict(language=self.language, datatype=self.datatype))
-
-    def __setstate__(self, arg):
-	_, d = arg
-	self.language = d["language"]
-	self.datatype = d["datatype"]
-
-    def __init__(self, value, lang='', datatype=''):
-        if normalize and value:
-            if not isinstance(value, unicode):
-                value = unicode(value)
-            if value != normalize("NFC", value):
-                raise Error("value must be in NFC normalized form.")
-        
+        inst = unicode.__new__(cls,value)
         if datatype:
             lang = ''
-        self.language = lang
-        self.datatype = datatype
+        inst.language = lang
+        inst.datatype = datatype
+        return inst
+
+    def __getstate__(self):
+        return (None, dict(language=self.language, datatype=self.datatype))
+
+    def __setstate__(self, arg):
+        _, d = arg
+        self.language = d["language"]
+        self.datatype = d["datatype"]
         
     def __add__(self, val):
         s = super(Literal, self).__add__(val)
@@ -59,7 +55,7 @@ class Literal(Identifier):
         elif isinstance(other, Literal):
             result = self.__cmp__(other)==False
             if result==True:
-		if self.datatype == None or self.datatype == '' :
+                if self.datatype == None or self.datatype == '' :
                     if not(other.datatype == None or other.datatype == '') :
                         return False
                 else:
