@@ -1,6 +1,6 @@
 from __future__ import generators
 
-from rdflib import URIRef, BNode, Literal
+from rdflib import URIRef, BNode, Literal, Namespace
 from rdflib import RDF, RDFS
 
 from rdflib.Node import Node
@@ -306,6 +306,9 @@ class Graph(Node):
         parser = plugin.get(format, Parser)()
         parser.parse(source, self)
         return self
+
+    def load(self, source, publicID=None, format="xml"):
+        self.parse(source, publicID, format)
 
     def n3(self):
 	"""return an n3 identifier for the Graph"""
