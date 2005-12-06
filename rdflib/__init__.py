@@ -1,22 +1,21 @@
 # RDF Library
 
 __version__ = "2.3.0"
+__date__ = "2005/12/07"
 
 import sys
 # TODO: what version of python does rdflib require??
 if sys.version_info <= (2,3,0):
-    print "This version of rdflib has not yet been testing on version prior to Python 2.3"
+    print "This version of rdflib has not yet been tested on version prior to Python 2.3"
 assert sys.version_info >= (2,2,1), "rdflib requires Python 2.2.1 or higher"
 del sys
 
 import logging
-
-try:
-    logging.basicConfig(level=logging.DEBUG, format='rdflib-%(levelname)s: %(message)s')
-except:
-    # For Python 2.3 compatibility
-    logging.basicConfig()
-
+_logger = logging.getLogger("rdflib")
+_logger.setLevel(logging.DEBUG)
+_hdlr = logging.StreamHandler()
+_hdlr.setFormatter(logging.Formatter('%(name)s %(levelname)s: %(message)s'))
+_logger.addHandler(_hdlr)
 
 from rdflib.URIRef import URIRef
 from rdflib.BNode import BNode
@@ -25,7 +24,8 @@ from rdflib.Variable import Variable
 
 from rdflib.Namespace import Namespace
 
-from rdflib.Graph import Graph
+#from rdflib.Graph import Graph
+from rdflib.Graph import ConjunctiveGraph as Graph
 from rdflib.Graph import ConjunctiveGraph
 
 from rdflib import RDF
