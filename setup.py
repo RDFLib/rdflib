@@ -1,6 +1,6 @@
 # Install rdflib
 from distutils.core import setup
-from rdflib import __version__
+from rdflib import __version__, __date__
 
 from distutils.command.install import install as _install
 
@@ -38,6 +38,7 @@ setup(
     platforms = ["any"],
     classifiers = ["Programming Language :: Python"],
     long_description = "RDF library containing an RDF triple store and RDF/XML parser/serializer",
+    dowload_url = "http://rdflib.net/%s/rdflib-%s.tar.gz" % (__date__, __version__)
 
     packages = ['rdflib',
                 'rdflib.backends',
