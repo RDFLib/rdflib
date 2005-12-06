@@ -24,7 +24,8 @@ from rdflib.Variable import Variable
 
 from rdflib.Namespace import Namespace
 
-#from rdflib.Graph import Graph
+#from rdflib.Graph import Graph # perhaps in 3.0, but for 2.x we don't
+#want to break compatibility.
 from rdflib.Graph import ConjunctiveGraph as Graph
 from rdflib.Graph import ConjunctiveGraph
 
