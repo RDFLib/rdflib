@@ -317,7 +317,7 @@ class Graph(Node):
 	return "[%s]" % self.identifier.n3()
 
     def to_bits(self):
-        return dumps((4, (unicode(self.identifier))))
+        return dumps((4, (unicode(self.identifier),)))
 
 
 class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
@@ -383,7 +383,6 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
 	"""
         source = self.prepare_input_source(source, publicID)
 	id = self.context_id(self.absolutize(source.getPublicId()))
-	print "ID:", id
 	self.remove_context(id)
 	context = self.get_context(id)
 	context.parse(source, publicID=publicID, format=format)
@@ -412,7 +411,7 @@ class QuotedGraph(Graph):
 	return "{%s}" % self.identifier.n3()
 
     def to_bits(self):
-        return dumps((5, (unicode(self.identifier))))
+        return dumps((5, (unicode(self.identifier),)))
 
 
 class Seq(object):

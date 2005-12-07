@@ -46,4 +46,4 @@ class URIRef(Identifier):
             return self
 
     def to_bits(self):
-        return dumps((1, (unicode(self))))
+        return dumps((1, (unicode(self),)))

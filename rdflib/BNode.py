@@ -58,4 +58,4 @@ class BNode(Identifier):
         return "_:%s" % self
 
     def to_bits(self):
-        return dumps((2, (unicode(self))))
+        return dumps((2, (unicode(self),)))
