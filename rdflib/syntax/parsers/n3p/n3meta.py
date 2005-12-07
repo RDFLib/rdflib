@@ -523,7 +523,7 @@ branches = {u'_:jcOJHCYs16': {u',': [u',',
 regexps = {
    u'http://www.w3.org/2000/10/swap/grammar/n3#barename': re.compile(u'[a-zA-Z_][a-zA-Z0-9_]*'), 
    u'http://www.w3.org/2000/10/swap/grammar/n3#variable': re.compile(u'\\?[a-zA-Z_][a-zA-Z0-9_]*'), 
-   u'http://www.w3.org/2000/10/swap/grammar/n3#qname': re.compile(u'(([a-zA-Z_][a-zA-Z0-9_]*)?:)?([a-zA-Z_][a-zA-Z0-9_]*)?'), 
+   u'http://www.w3.org/2000/10/swap/grammar/n3#qname': re.compile(u'(([a-zA-Z_][a-zA-Z0-9_]*)?:)?([a-zA-Z_][a-zA-Z0-9_-]*)?'), 
    u'http://www.w3.org/2000/10/swap/grammar/n3#string': re.compile(u'("""[^"\\\\]*(?:(?:\\\\.|"(?!""))[^"\\\\]*)*""")|("[^"\\\\]*(?:\\\\.[^"\\\\]*)*")'), 
    u'http://www.w3.org/2000/10/swap/grammar/n3#explicituri': re.compile(u'<[^>]*>'), 
    u'http://www.w3.org/2000/10/swap/grammar/n3#langcode': re.compile(u'[a-z]+(-[a-z0-9]+)*'), 
