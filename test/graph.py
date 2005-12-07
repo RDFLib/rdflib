@@ -3,11 +3,12 @@ import unittest
 from tempfile import mkdtemp
 
 from rdflib import *
+from rdflib.Graph import Graph
 
 class GraphTestCase(unittest.TestCase):
     backend = 'default'
     path = None
-    graph_class = ConjunctiveGraph
+    graph_class = Graph
 
     def setUp(self):
         self.store = self.graph_class(backend=self.backend)
