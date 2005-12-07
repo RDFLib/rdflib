@@ -198,7 +198,7 @@ class NTriplesParser(object):
 
    def object(self): 
       objt = self.uriref() or self.nodeid() or self.literal()
-      if not objt: 
+      if objt is False: 
          raise ParseError("Unrecognised object type")
       return objt
 
