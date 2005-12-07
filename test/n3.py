@@ -71,9 +71,7 @@ class N3TestCase(unittest.TestCase):
     def testModel(self):
 	g = ConjunctiveGraph()
         g.parse(StringInputSource(input), format="n3")
-
 	for s, p, o in g:
-	    print s, p, o
 	    if isinstance(s, Graph):
 		print "Found a graph!", len(s)
 		for t in s:
@@ -81,10 +79,6 @@ class N3TestCase(unittest.TestCase):
 
 	self.assertEquals(len(list(g.contexts())), 13)
 	
-	for cid in g.contexts():
-	    c = g.get_context(cid)
-	    print len(c)
-
         if False:
             print g.serialize(format="pretty-xml")
 	    print "CONTEXTS:", list(g.contexts())
@@ -94,6 +88,10 @@ class N3TestCase(unittest.TestCase):
 		print c.serialize(format="pretty-xml")
         g.close()
             
+
+    def testParse(self):
+        g = ConjunctiveGraph()
+        g.parse("http://groups.csail.mit.edu/dig/2005/09/rein/examples/troop42-policy.n3", format="n3")
 
 if __name__ == '__main__':
     unittest.main()    
