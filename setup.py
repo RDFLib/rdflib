@@ -1,6 +1,6 @@
 # Install rdflib
 from distutils.core import setup
-from rdflib import __version__
+from rdflib import __version__, __date__
 
 from distutils.core import Command
 
