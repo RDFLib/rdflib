@@ -332,22 +332,22 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
         return self.backend.identifier
     identifier = property(__get_identifier)
 
-    def add(self, (s, p, o)):
+    def add(self, (s, p, o), context=None):
 	""""A conjunctive graph adds to its default context."""
-	self.backend.add((s, p, o), context=self.default_context, quoted=False)
+	self.backend.add((s, p, o), context=context or self.default_context, quoted=False)
     
-    def remove(self, (s, p, o)):
+    def remove(self, (s, p, o), context=None):
 	"""A conjunctive graph removes from all its contexts."""
-        self.backend.remove((s, p, o), context=None)
+        self.backend.remove((s, p, o), context)
 
-    def triples(self, (s, p, o)):
+    def triples(self, (s, p, o), context=None):
         """An iterator over all the triples in the entire conjunctive graph."""
-	for t in self.backend.triples((s, p, o), context=None):
+	for t in self.backend.triples((s, p, o), context):
 	    yield t
 
-    def __len__(self):
+    def __len__(self, context=None):
         """Returns the number of triples in the entire conjunctive graph."""
-        return self.backend.__len__(context=None)
+        return self.backend.__len__(context)
 
     def contexts(self, triple=None):
         """ 
