@@ -1,6 +1,7 @@
 import unittest
 
-from rdflib import *
+from rdflib.Graph import Graph
+from rdflib import URIRef
 
 import gc
 import itertools
