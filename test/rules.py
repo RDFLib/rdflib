@@ -57,7 +57,7 @@ try:
 	    interp.run()
 	    print interp.inferredFacts
 
-except Exception, e:
+except ImportError, e:
     print "Could not test Pychinko:", e
 
 
