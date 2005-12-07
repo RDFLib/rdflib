@@ -38,7 +38,7 @@ setup(
     platforms = ["any"],
     classifiers = ["Programming Language :: Python"],
     long_description = "RDF library containing an RDF triple store and RDF/XML parser/serializer",
-    dowload_url = "http://rdflib.net/%s/rdflib-%s.tar.gz" % (__date__, __version__)
+    dowload_url = "http://rdflib.net/%s/rdflib-%s.tar.gz" % (__date__, __version__),
 
     packages = ['rdflib',
                 'rdflib.backends',
