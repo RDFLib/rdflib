@@ -61,14 +61,14 @@ def Var(label):
    return "?%s" % label
 
 quot = {'t': '\t', 'n': '\n', 'r': '\r', '"': '"', '\\': '\\'}
-r_safe = re.compile(ur'([\x20\x21\x23-\x5B\x5D-\x7E\u00A0-\uFFFF]+)')
+
 r_quot = re.compile(r'\\(t|n|r|"|\\)')
 r_uniquot = re.compile(r'\\u([0-9A-F]{4})|\\U([0-9A-F]{8})')
 
 class ParseError(Exception): 
    pass
 
-def unquote(s, triplequoted=False): 
+def unquote(s, triplequoted=False, r_safe = re.compile(ur'([\x20\x21\x23-\x5B\x5D-\x7E\u00A0-\uFFFF]+)')): 
    """Unquote an N-Triples string.
       Derived from: http://inamidst.com/proj/rdf/ntriples.py
    """
