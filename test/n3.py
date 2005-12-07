@@ -71,21 +71,13 @@ class N3TestCase(unittest.TestCase):
     def testModel(self):
 	g = ConjunctiveGraph()
         g.parse(StringInputSource(input), format="n3")
+        i = 0
 	for s, p, o in g:
 	    if isinstance(s, Graph):
-		print "Found a graph!", len(s)
-		for t in s:
-		    print t
-
+                i += 1
+        self.assertEquals(i, 3)
 	self.assertEquals(len(list(g.contexts())), 13)
 	
-        if False:
-            print g.serialize(format="pretty-xml")
-	    print "CONTEXTS:", list(g.contexts())
-	    for cid in g.contexts():
-		print cid
-		c = g.get_context(cid)
-		print c.serialize(format="pretty-xml")
         g.close()
             
 
