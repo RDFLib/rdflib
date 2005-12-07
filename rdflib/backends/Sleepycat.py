@@ -1,6 +1,6 @@
 from rdflib.backends import Backend
 
-from rdflib.util import from_n3
+from rdflib.util import from_bits
 from rdflib import BNode
 
 from bsddb import db
@@ -377,10 +377,10 @@ class Sleepycat(Backend):
         
 
     def _from_string(self, s):
-        return from_n3(b64decode(s), backend=self)
+        return from_bits(b64decode(s), backend=self)
 
     def _to_string(self, term):
-        return b64encode(term.n3())
+        return b64encode(term.to_bits())
 
     def _split(self, contexts):
         for part in contexts.split("^"):

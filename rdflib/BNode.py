@@ -1,6 +1,7 @@
 # TODO: where can we move _unique_id and _serial_number_generator?
 from string import ascii_letters
 from random import choice
+from cPickle import dumps
 
 def _unique_id():
     """Create a (hopefully) unique prefix"""
@@ -16,6 +17,8 @@ def _serial_number_generator():
         i = i + 1    
 
 from rdflib.Identifier import Identifier
+from rdflib.syntax.xml_names import is_ncname
+
 
 class BNode(Identifier):
     """ 
@@ -47,9 +50,12 @@ class BNode(Identifier):
             # for RDF/XML needs to be something that can be serialzed as a nodeID
             # for N3 ??
             # Unless we require these constraints be enforced elsewhere?
-            pass 
+	    pass #assert is_ncname(unicode(value)), "BNode identifiers must be valid NCNames"
 
         return Identifier.__new__(cls, value)
         
     def n3(self):
         return "_:%s" % self
+
+    def to_bits(self):
+        return dumps((2, (unicode(self))))

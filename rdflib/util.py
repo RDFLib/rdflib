@@ -5,6 +5,7 @@ from rdflib.Graph import Graph, QuotedGraph
 
 from rdflib.exceptions import SubjectTypeError, PredicateTypeError, ObjectTypeError, ContextTypeError
 from rdflib.compat import rsplit
+from cPickle import loads
 
 def first(seq):
     for result in seq:
@@ -74,6 +75,19 @@ def parse_date_time(val):
         t = t - altzone
 
     return t
+
+
+classes = {
+    1: URIRef,
+    2: BNode,
+    3: Literal,
+    4: Graph,
+    5: QuotedGraph
+}
+
+def from_bits(bits, backend=None):
+    which, r = loads(bits)
+    return classes[which](*r)
 
 
 def from_n3(s, default=None, backend=None):

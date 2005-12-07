@@ -18,6 +18,8 @@ from rdflib.URLInputSource import URLInputSource
 from xml.sax.xmlreader import InputSource
 from xml.sax.saxutils import prepare_input_source
 
+from cPickle import dumps
+
 import logging
 
 
@@ -314,6 +316,9 @@ class Graph(Node):
 	"""return an n3 identifier for the Graph"""
 	return "[%s]" % self.identifier.n3()
 
+    def to_bits(self):
+        return dumps((4, (unicode(self.identifier))))
+
 
 class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
 
@@ -405,6 +410,9 @@ class QuotedGraph(Graph):
     def n3(self):
 	"""return an n3 identifier for the Graph"""
 	return "{%s}" % self.identifier.n3()
+
+    def to_bits(self):
+        return dumps((5, (unicode(self.identifier))))
 
 
 class Seq(object):

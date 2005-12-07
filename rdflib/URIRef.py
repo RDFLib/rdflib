@@ -5,6 +5,7 @@ else:
     normalize = None
 
 from urlparse import urlparse, urljoin
+from cPickle import dumps
 
 from rdflib.Identifier import Identifier
 from rdflib.Literal import Literal
@@ -43,3 +44,6 @@ class URIRef(Identifier):
                     return self
         else:
             return self
+
+    def to_bits(self):
+        return dumps((1, (unicode(self))))

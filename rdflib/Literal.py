@@ -7,6 +7,7 @@ else:
 from rdflib.Identifier import Identifier
 from rdflib.exceptions import Error
 
+from cPickle import dumps
 
 class Literal(Identifier):
     """
@@ -88,3 +89,5 @@ class Literal(Identifier):
             else:
                 return '"%s"' % encoded
 
+    def to_bits(self):
+        return dumps((3, (unicode(self), unicode(self.language), unicode(self.datatype))))
