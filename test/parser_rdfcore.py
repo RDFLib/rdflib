@@ -21,12 +21,12 @@ def write(msg):
     
 from rdflib.Graph import Graph as _Graph
 
-class TestStore(_Graph):
+class TestStore(Graph):
     def __init__(self, expected):
         super(TestStore, self).__init__()
         self.expected = expected
         
-    def add(self, (s, p, o), context, quoted):
+    def add(self, (s, p, o)):
         if not isinstance(s, BNode) and not isinstance(o, BNode):
             if not (s, p, o) in self.expected:
                 m = u"Triple not in expected result: %s, %s, %s" % (s.n3(), p.n3(), o.n3())
