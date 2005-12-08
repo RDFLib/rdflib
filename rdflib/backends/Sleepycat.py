@@ -109,12 +109,11 @@ class Sleepycat(Backend):
 
     def close(self):
         self.__open = False
-
-	if self.__pending_sync and self.__syncing:
-	    self.__pending_sync.join()
-	else:
-	    self.__pending_sync.cancel()
-
+	if self.__pending_sync:
+            if self.__syncing:
+                self.__pending_sync.join()
+            else:
+                self.__pending_sync.cancel()
         self.__spo.close()
         self.__pos.close()
         self.__osp.close()
