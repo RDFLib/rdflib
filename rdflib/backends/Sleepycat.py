@@ -368,7 +368,7 @@ class Sleepycat(Store):
     def remove_context(self, identifier):
         _to_string = self._to_string        
         c = _to_string(identifier)
-        for triple, cg in self._triples(identifier):
+        for triple, cg in self.triples((None, None, None), identifier):
             self.remove(triple, identifier)
         try:
             self.__contexts.delete(c)
