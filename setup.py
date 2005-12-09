@@ -47,6 +47,7 @@ setup(
     download_url = "http://rdflib.net/%s/rdflib-%s.tar.gz" % (__date__, __version__),
 
     packages = ['rdflib',
+                'rdflib.store',
                 'rdflib.backends',
                 'rdflib.sparql',
                 'rdflib.syntax',
