@@ -79,10 +79,13 @@ def unionSELECT(selectComponents,distinct=False,selectType=TRIPLE_SELECT):
         
         selects.append('('+selectString + tableSource + whereClause+')')
 
+    orderStmt = ''
+    if selectType == TRIPLE_SELECT:
+        orderStmt = ' order by subject,predicate,object'
     if distinct:
-        return u' union '.join(selects)
+        return u' union '.join(selects) + orderStmt
     else:
-        return u' union all '.join(selects)
+        return u' union all '.join(selects) + orderStmt
 
 #Builds WHERE clauses for the supplied terms and, context
 def buildClause(tableName,subject,predicate, obj,context=None,typeTable=False):
@@ -168,10 +171,7 @@ def extractTriple(tupleRt,backend,hardCodedContext=None):
     p=predicate == RDF.type and RDF.type or createTerm(predicate,predTerm,backend)            
     o=createTerm(obj,objTerm,backend,objLanguage,objDatatype)
             
-    if backend.yieldConjunctiveQuads:
-        return s,p,o,context
-    else:
-        return s,p,o
+    return s,p,o,context
 
 #Takes a term and 'normalizes' it.
 #Literals are escaped, Quoted graphs are replaced with just their identifiers
@@ -318,9 +318,6 @@ class MySQL(Backend):
         self.identifier = identifier and identifier or 'hardcoded'
         #Use only the first 10 bytes of the digest
         self._internedId = sha.new(self.identifier).hexdigest()[:10]
-
-        #determines whether or not to yield conjunctive quads
-        self.yieldConjunctiveQuads = False
 
         #This parameter controls how exlusively the literal table is searched
         #If true, the Literal partition is searched *exclusively* if the object term
@@ -570,8 +567,17 @@ class MySQL(Backend):
         c.execute(_normalizeMySQLCmd(q))
         rt = c.fetchone()
         while rt:
-            yield extractTriple(rt,self,context)
-            rt = c.fetchone()
+            s,p,o,currentContext = extractTriple(rt,self,context)
+            contexts = [currentContext]
+            rt = next = c.fetchone()
+            sameTriple = next and extractTriple(next,self,context)[:3] == (s,p,o)
+            while sameTriple:
+                s2,p2,o2,c2 = extractTriple(next,self,context)
+                contexts.append(c2)
+                rt = next = c.fetchone()
+                sameTriple = next and extractTriple(next,self,context)[:3] == (s,p,o)
+                    
+            yield s,p,o,(c for c in contexts)
             
     def __repr__(self):
         c=self._db.cursor()
