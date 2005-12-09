@@ -39,11 +39,11 @@ class Graph(Node):
 
     def __init__(self, backend='default', identifier=None):
         super(Graph, self).__init__()
+        self.__identifier = identifier or BNode() 
 	if not isinstance(backend, Backend):
 	    # TODO: error handling
-	    backend = plugin.get(backend, Backend)()
+	    backend = plugin.get(backend, Backend)(self.identifier)
         self.__backend = backend
-        self.__identifier = identifier or BNode() # TODO: Node should do this
         self.__namespace_manager = None
 	self.context_aware = False
 	self.formula_aware = False
@@ -94,8 +94,8 @@ class Graph(Node):
         """ Generator over the triple store.  Returns triples that
         match the given triple pattern.  If triple pattern does not
         provide a context, all contexts will be searched."""
-	for t in self.__backend.triples((s, p, o), context=self.identifier):
-	    yield t
+	for (s, p, o), contexts in self.__backend.triples((s, p, o), context=self.identifier):
+	    yield (s, p, o)
 
 
     def __len__(self):
@@ -327,10 +327,6 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
 	assert self.backend.context_aware, "ConjunctiveGraph must be backed by a context aware store."
 	self.context_aware = True
 	self.default_context = BNode()
-
-    def __get_identifier(self):
-        return self.backend.identifier
-    identifier = property(__get_identifier)
 
     def add(self, (s, p, o), context=None):
 	""""A conjunctive graph adds to its default context."""
