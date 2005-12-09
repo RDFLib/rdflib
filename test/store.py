@@ -22,7 +22,6 @@ class StoreTestCase(unittest.TestCase):
     backend = 'default'
 
     def setUp(self):
-        print self.backend
         self.gcold = gc.isenabled()
         gc.collect()
         gc.disable()
@@ -59,7 +58,7 @@ class StoreTestCase(unittest.TestCase):
         for _i in it:
 	    add_random()
         t1 = time()
-        print "%.3g" % (t1 - t0),
+        print self.backend, "%.3g" % (t1 - t0),
 
 
 class MemoryStoreTestCase(StoreTestCase):
