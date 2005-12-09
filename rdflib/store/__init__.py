@@ -3,17 +3,16 @@
 class Store(object):
 
     #Properties
-    #context_aware
-    #formula_aware
-    #transaction_aware
+    context_aware = False
+    formula_aware = False
+    transaction_aware = False
 
-    def __init__(self, identifier, configuration=None):
+    def __init__(self, configuration=None):
         """ 
         identifier: URIRef of the Store. Defaults to CWD
         configuration: string containing infomation open can use to
         connect to datastore.
         """
-        self.identifier = identifier
         if configuration:
             self.open(configuration)
 
