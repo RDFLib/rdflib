@@ -42,7 +42,7 @@ class Graph(Node):
         self.__identifier = identifier or BNode() 
 	if not isinstance(backend, Backend):
 	    # TODO: error handling
-	    backend = plugin.get(backend, Backend)(self.identifier)
+	    backend = plugin.get(backend, Backend)()
         self.__backend = backend
         self.__namespace_manager = None
 	self.context_aware = False
