@@ -176,22 +176,20 @@ class Sleepycat(Store):
 
         cspo, cpos, cosp = self.__indicies
 
-        contexts = cspo.get("%s^%s^%s^%s^" % ("", s, p, o))
-        if contexts:
-            if not c in _split(contexts):
-                contexts += "%s^" % c
-        else:
-            contexts = "%s^" % c
-        assert contexts!=None
+        contexts_value = cspo.get("%s^%s^%s^%s^" % ("", s, p, o))
+        contexts = set(_split(contexts_value))
+        contexts.add(c)
+        contexts_value = "^".join(contexts)
+        assert contexts_value!=None
 
         #assert context!=self.identifier
-        cspo.put("%s^%s^%s^%s^" % (c, s, p, o), contexts)
-        cpos.put("%s^%s^%s^%s^" % (c, p, o, s), contexts)
-        cosp.put("%s^%s^%s^%s^" % (c, o, s, p), contexts)
+        cspo.put("%s^%s^%s^%s^" % (c, s, p, o), contexts_value)
+        cpos.put("%s^%s^%s^%s^" % (c, p, o, s), contexts_value)
+        cosp.put("%s^%s^%s^%s^" % (c, o, s, p), contexts_value)
         if not quoted:
-            cspo.put("%s^%s^%s^%s^" % ("", s, p, o), contexts)
-            cpos.put("%s^%s^%s^%s^" % ("", p, o, s), contexts)
-            cosp.put("%s^%s^%s^%s^" % ("", o, s, p), contexts)
+            cspo.put("%s^%s^%s^%s^" % ("", s, p, o), contexts_value)
+            cpos.put("%s^%s^%s^%s^" % ("", p, o, s), contexts_value)
+            cosp.put("%s^%s^%s^%s^" % ("", o, s, p), contexts_value)
 
         self._schedule_sync() 
 
@@ -282,7 +280,7 @@ class Sleepycat(Store):
             except db.DBNotFoundError:
                 current = None
             cursor.close()
-            if key.startswith(prefix):
+            if key and key.startswith(prefix):
                 parts = list(_split(key))[1:]
                 s = _from_string(parts[(3-which+0)%3])
                 p = _from_string(parts[(3-which+1)%3])
@@ -387,7 +385,7 @@ class Sleepycat(Store):
             yield _from_string(c)
 
     def _split(self, contexts):
-        for part in contexts.split("^"):
-            if part:
+        if contexts:
+            for part in contexts.split("^"):
                 yield part
 

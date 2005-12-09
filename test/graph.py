@@ -6,12 +6,12 @@ from rdflib import URIRef, BNode, Literal
 from rdflib.Graph import Graph, ConjunctiveGraph
 
 class GraphTestCase(unittest.TestCase):
-    store = 'default'
+    store_name = 'default'
     path = None
     graph_class = ConjunctiveGraph
 
     def setUp(self):
-        self.store = self.graph_class(store=self.store)
+        self.store = self.graph_class(store=self.store_name)
         a_tmp_dir = mkdtemp()
         self.path = self.path or a_tmp_dir
         self.store.open(self.path)
