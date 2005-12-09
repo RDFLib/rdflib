@@ -1,9 +1,11 @@
 import unittest
 
+quick = True
+
 from test.identifier_equality import *
 
 from test.store import *
-from test.store_performace import *
+
 from test.graph import *
 from test.triple_store import *
 from test.context import *
@@ -14,7 +16,8 @@ from test.context import *
 # # from test.type_check import * 
 
 from test.parser import *
-from test.parser_rdfcore import *
+if not quick:
+    from test.parser_rdfcore import *
 
 from test.rdf import * # how does this manage to be 9 tests?
 
@@ -23,6 +26,9 @@ from test.nt import *
 
 from test.util import *
 from test.seq import SeqTestCase
+
+if not quick:
+    from test.store_performace import *
 
 # from test.rules import *
 

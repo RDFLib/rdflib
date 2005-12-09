@@ -19,8 +19,6 @@ def write(msg):
     sw.write(msg+"\n")
     #sys.stdout.write(msg+"\n")
     
-from rdflib.Graph import Graph as _Graph
-
 class TestStore(Graph):
     def __init__(self, expected):
         super(TestStore, self).__init__()
@@ -34,29 +32,6 @@ class TestStore(Graph):
                 #raise Exception(m)
         super(TestStore, self).add((s, p, o), context, quoted)
         
-
-def isomorphic(a, b):
-    result = 1
-    if len(a)!=len(b):
-        if verbose: write( "Len: %s!=%s" % (len(a), len(b)))
-        if verbose: write("")
-        result = 0
-    for s, p, o in a:
-        if not isinstance(s, BNode) and not isinstance(o, BNode):
-            if not (s, p, o) in b:
-                message = u"%s, %s, %s. Not found in b." % (s.n3(), p.n3(), o.n3())
-                if verbose: write( message )
-                if verbose: write("")
-                result = 0
-    for s, p, o in b:
-        if not isinstance(s, BNode) and not isinstance(o, BNode):
-            if not (s, p, o) in a:
-                msg = u"%s, %s, %s. Not found in a." % (s.n3(), p.n3(), o.n3())
-                if verbose: write(msg)
-                if verbose: write("")                
-                result = 0
-    return result
-
 
 TEST = Namespace("http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#")
 
@@ -94,7 +69,7 @@ def _testPositive(uri, manifest):
             write("sorry could not dump out error.")
         result = 1
     else:
-        if not isomorphic(store,expected):
+        if not store.isomorphic(expected):
             write(u"""Failed: '%s'""" % uri)
 #             print """  In:\n"""
 #             for s, p, o in store:

@@ -2,7 +2,7 @@
 import rdflib
 import RDF
 
-from rdflib.backends import Backend
+from rdflib.store import Store
 
 def _t(i):
     if isinstance(i, rdflib.URIRef):
@@ -28,7 +28,7 @@ def _f(i):
     raise TypeError, 'Cannot convert %s' % `i`
     
 
-class Redland(Backend):
+class Redland(Store):
     def __init__(self, model=None):
         super(Redland, self).__init__()
         if model is None:

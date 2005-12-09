@@ -1,4 +1,4 @@
-from rdflib.backends import Backend
+from rdflib.store import Store
 from rdflib.syntax import serializer, serializers
 from rdflib.syntax import parsers
 
@@ -56,32 +56,29 @@ register('nt', parsers.Parser,
 register('n3', parsers.Parser,
          'rdflib.syntax.parsers.N3Parser', 'N3Parser')
 
-register('default', Backend,
-         'rdflib.backends.IOMemory', 'IOMemory')
+register('default', Store,
+         'rdflib.store.IOMemory', 'IOMemory')
 
-register('IOMemory', Backend,
-         'rdflib.backends.IOMemory', 'IOMemory')
+register('IOMemory', Store,
+         'rdflib.store.IOMemory', 'IOMemory')
 
-register('Memory', Backend,
+register('Memory', Store,
          'rdflib.store.Memory', 'Memory')
 
-register('Sleepycat', Backend,
-         'rdflib.backends.Sleepycat', 'Sleepycat')
+register('Sleepycat', Store,
+         'rdflib.store.Sleepycat', 'Sleepycat')
 
-register('MySQL', Backend,
-         'rdflib.backends.MySQL', 'MySQL')         
+register('MySQL', Store,
+         'rdflib.store.MySQL', 'MySQL')         
          
-register('Sleepycat_new', Backend,
-         'rdflib.backends.Sleepycat_new', 'Sleepycat_new')
+register('ZODB', Store,
+         'rdflib.store.ZODB', 'ZODB')
 
-register('ZODB', Backend,
-         'rdflib.backends.ZODB', 'ZODB')
+register('sqlobject', Store,
+         'rdflib.store._sqlobject', 'SQLObject')
 
-register('sqlobject', Backend,
-         'rdflib.backends._sqlobject', 'SQLObject')
+register('Redland', Store,
+         'rdflib.store.Redland', 'Redland')
 
-register('Redland', Backend,
-         'rdflib.backends.Redland', 'Redland')
-
-register('MySQL', Backend,
-         'rdflib.backends.MySQL', 'MySQL')
+register('MySQL', Store,
+         'rdflib.store.MySQL', 'MySQL')

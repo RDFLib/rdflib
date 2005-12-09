@@ -7,12 +7,12 @@ _literal = re.compile(r'''"(?P<value>[^@&]*)"(?:@(?P<lang>[^&]*))?(?:&<(?P<datat
 
 from urllib import quote, unquote
 
-from rdflib.backends import Backend
+from rdflib.store import Store
 from rdflib.Literal import Literal
 from rdflib.URIRef import URIRef
 from rdflib.BNode import BNode
 from rdflib.exceptions import ContextTypeError
-from rdflib.backends import Backend
+
 from rdflib.compat import rsplit
 
 import sqlobject
@@ -144,7 +144,7 @@ def _tokey(term):
         msg = "Unknown term Type for: %s" % term
         raise Exception(msg)
 
-class SQLObject(Backend):
+class SQLObject(Store):
 
     context_aware = False
     __open = False

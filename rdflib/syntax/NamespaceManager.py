@@ -20,9 +20,9 @@ class NamespaceManager(object):
     def reset(self):
         self.__cache = {}
            
-    def __get_backend(self):
-        return self.graph.backend
-    backend = property(__get_backend)
+    def __get_store(self):
+        return self.graph.store
+    store = property(__get_store)
 
     def qname(self, uri):
         qname = self.__cache.get(uri, None)
@@ -35,9 +35,9 @@ class NamespaceManager(object):
     def compute_qname(self, uri):
         if not uri in self.__cache:
             namespace, name = split_uri(uri)
-            prefix = self.backend.prefix(namespace)
+            prefix = self.store.prefix(namespace)
             if prefix is None:
-                prefix = "_%s" % len(list(self.backend.namespaces()))
+                prefix = "_%s" % len(list(self.store.namespaces()))
                 self.bind(prefix, namespace)
             if prefix=="":
                 self.__cache[uri] = name
@@ -49,7 +49,7 @@ class NamespaceManager(object):
         # When documenting explain that override only applies in what cases
         if prefix is None:
             prefix = ''
-        bound_namespace = self.backend.namespace(prefix)
+        bound_namespace = self.store.namespace(prefix)
         if bound_namespace and bound_namespace!=namespace:
             # prefix already in use for different namespace
             #
@@ -60,22 +60,22 @@ class NamespaceManager(object):
             num = 1                
             while 1:
                 new_prefix = "%s%s" % (prefix, num)
-                if not self.backend.namespace(new_prefix):
+                if not self.store.namespace(new_prefix):
                     break
                 num +=1
-            self.backend.bind(new_prefix, namespace)
+            self.store.bind(new_prefix, namespace)
         else:
-            bound_prefix = self.backend.prefix(namespace)
+            bound_prefix = self.store.prefix(namespace)
             if bound_prefix is None:
-                self.backend.bind(prefix, namespace)            
+                self.store.bind(prefix, namespace)            
             elif bound_prefix == prefix:
                 pass # already bound
             else:
                 if override:
-                    self.backend.bind(prefix, namespace)
+                    self.store.bind(prefix, namespace)
 
     def namespaces(self):
-        for prefix, namespace in self.backend.namespaces():
+        for prefix, namespace in self.store.namespaces():
             yield prefix, namespace
 
     def absolutize(self, uri, defrag=1):

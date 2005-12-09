@@ -4,11 +4,11 @@ from __future__ import generators
 Any = None
 
 from rdflib import BNode
-from rdflib.backends import Backend
+from rdflib.store import Store
 
-class IOMemory(Backend):
+class IOMemory(Store):
     """\
-    An integer-key-optimized-context-aware-in-memory backend.
+    An integer-key-optimized-context-aware-in-memory store.
 
     Uses nested dictionaries to store triples and context. Each triple
     is stored in six such indices as follows cspo[c][s][p][o] = 1
@@ -17,9 +17,12 @@ class IOMemory(Backend):
 
     Context information is used to track the 'source' of the triple
     data for merging, unmerging, remerging purposes.  context aware
-    store backends consume more memory size than non context backends.
+    store stores consume more memory size than non context stores.
 
     """    
+
+    context_aware = True
+    formula_aware = True
 
     def __init__(self, default_context=None):
         super(IOMemory, self).__init__()

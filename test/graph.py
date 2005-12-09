@@ -2,16 +2,16 @@ import unittest
 
 from tempfile import mkdtemp
 
-from rdflib import *
-from rdflib.Graph import Graph
+from rdflib import URIRef, BNode, Literal
+from rdflib.Graph import Graph, ConjunctiveGraph
 
 class GraphTestCase(unittest.TestCase):
-    backend = 'default'
+    store = 'default'
     path = None
-    graph_class = Graph
+    graph_class = ConjunctiveGraph
 
     def setUp(self):
-        self.store = self.graph_class(backend=self.backend)
+        self.store = self.graph_class(store=self.store)
         a_tmp_dir = mkdtemp()
         self.path = self.path or a_tmp_dir
         self.store.open(self.path)
@@ -120,32 +120,32 @@ class GraphTestCase(unittest.TestCase):
         asserte(len(list(triples((Any, Any, Any)))), 0)
 
 class MemoryGraphTestCase(GraphTestCase):
-    backend = "Memory"
+    store = "Memory"
     graph_class = Graph
 
 try:
-    from rdflib.backends.Sleepycat import Sleepycat
+    from rdflib.store.Sleepycat import Sleepycat
     class SleepycatGraphTestCase(GraphTestCase):
-        backend = "Sleepycat"
+        store = "Sleepycat"
 except ImportError, e:
-    print "Can not test Sleepycat backend:", e
+    print "Can not test Sleepycat store:", e
 
 try:
     import persistent
-    # If we can import persistent then test ZODB backend
+    # If we can import persistent then test ZODB store
     class ZODBGraphTestCase(GraphTestCase):
-        backend = "ZODB"
+        store = "ZODB"
 except ImportError, e:
-    print "Can not test ZODB backend:", e
+    print "Can not test ZODB store:", e
 
 
 try:
     import RDF
-    # If we can import RDF then test Redland backend
+    # If we can import RDF then test Redland store
     class RedLandTestCase(GraphTestCase):
-        backend = "Redland"
+        store = "Redland"
 except ImportError, e:
-    print "Can not test Redland backend:", e    
+    print "Can not test Redland store:", e    
 
 if __name__ == '__main__':
     unittest.main()    

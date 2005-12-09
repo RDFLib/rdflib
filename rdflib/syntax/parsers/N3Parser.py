@@ -15,10 +15,10 @@ class N3Parser(Parser):
     
     def parse(self, source, graph):
 	# we're currently being handed a Graph, not a ConjunctiveGraph
-	assert graph.backend.context_aware # is this implied by formula_aware
-	assert graph.backend.formula_aware
+	assert graph.store.context_aware # is this implied by formula_aware
+	assert graph.store.formula_aware
 
-        sink = Sink(graph)
+        sink = Sink(graph.store)
         if False: 
             sink.quantify = lambda *args: True
             sink.flatten = lambda *args: True
@@ -30,9 +30,9 @@ class N3Parser(Parser):
 
 
 class Sink(object):
-    def __init__(self, sink): 
-        self.sink = sink 
-	self.identifier = sink.identifier
+    def __init__(self, store): 
+        self.store = store 
+        self.identifier = BNode()
 
     def convert(self, t):
 	if t.startswith("_"):
@@ -45,20 +45,20 @@ class Sink(object):
 	    return from_n3(t)
 	elif t.startswith('{'):
 	    cid = from_n3(t[1:-1])
-	    return QuotedGraph(self.sink.backend, cid)
+	    return QuotedGraph(self.store, cid)
 	elif t.startswith('['):
 	    cid = from_n3(t[1:-1])
-	    return Graph(self.sink.backend, cid)
+	    return Graph(self.store, cid)
 	else:
 	    raise "NYI:", "%s %s" % (t, type(t))
 	return 
 
     def absolutize(self, u):
-        return self.sink.absolutize(u, defrag=0)
+        return self.store.absolutize(u, defrag=0)
 
     def start(self, root): 
         self.root = self.convert(root)
-	assert self.root.identifier == self.sink.identifier
+	assert self.root.identifier == self.identifier
 
     def statement(self, s, p, o, f): 
         s, p, o  = self.convert(s), self.convert(p), self.convert(o)

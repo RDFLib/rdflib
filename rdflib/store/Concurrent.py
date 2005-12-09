@@ -23,8 +23,8 @@ class ResponsibleGenerator(object):
 
 class Concurrent(object):
 
-    def __init__(self, backend):
-        self.backend = backend
+    def __init__(self, store):
+        self.store = store
         
         # number of calls to visit still in progress
         self.__visit_count = 0
@@ -39,18 +39,18 @@ class Concurrent(object):
 
     def add(self, (s, p, o)):
         if self.__visit_count==0:
-            self.backend.add((s, p, o))
+            self.store.add((s, p, o))
         else:
             self.__pending_adds.append((s, p, o))
 
     def remove(self, (subject, predicate, object)):
         if self.__visit_count==0:
-            self.backend.remove((subject, predicate, object))
+            self.store.remove((subject, predicate, object))
         else:
             self.__pending_removes.append((subject, predicate, object))
 
     def triples(self, (subject, predicate, object)):
-        g = self.backend.triples((subject, predicate, object))
+        g = self.store.triples((subject, predicate, object))
         pending_removes = self.__pending_removes
         self.__begin_read()
         for s, p, o in ResponsibleGenerator(g, self.__end_read):
@@ -62,7 +62,7 @@ class Concurrent(object):
                 yield s, p, o
 
     def __len__(self):
-        return self.backend.__len__()
+        return self.store.__len__()
 
     def __begin_read(self):
         lock = self.__lock 
@@ -79,14 +79,14 @@ class Concurrent(object):
             while pending_removes:
                 (s, p, o) = pending_removes.pop()
                 try:
-                    self.backend.remove((s, p, o))
+                    self.store.remove((s, p, o))
                 except:
                     # TODO: change to try finally?
                     print s, p, o, "Not in store to remove"
             pending_adds = self.__pending_adds                
             while pending_adds:
                 (s, p, o) = pending_adds.pop()
-                self.backend.add((s, p, o))
+                self.store.add((s, p, o))
         lock.release()                        
 
 

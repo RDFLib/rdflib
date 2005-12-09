@@ -2,7 +2,7 @@
 
 Any = None
 
-from rdflib.backends.IOMemory import IOMemory
+from rdflib.store.IOMemory import IOMemory
 
 # you must export your PYTHONPATH to point to a Z2.8 or Z3+ installation to get this to work!, like:
 #export PYTHONPATH="/home/michel/dev/Zope3Trunk/src"

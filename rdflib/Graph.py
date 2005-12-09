@@ -7,7 +7,7 @@ from rdflib.Node import Node
 
 from rdflib import plugin, exceptions
 
-from rdflib.backends import Backend
+from rdflib.store import Store
 
 from rdflib.syntax.serializer import Serializer
 from rdflib.syntax.parsers import Parser
@@ -25,32 +25,30 @@ import logging
 
 class Graph(Node):
     """
-    An RDF Graph.  The constructor accepts one argument, the 'backend'
-    that will be used to store the graph data (see the 'backends'
-    package for backends currently shipped with rdflib).
+    An RDF Graph.  The constructor accepts one argument, the 'store'
+    that will be used to store the graph data (see the 'store'
+    package for stores currently shipped with rdflib).
 
-    TODO: backends are treated as always context-aware at the moment.
-
-    Backends can be context-aware or unaware.  Unaware backends take
-    up (some) less space in the backend but cannot support features
-    that require context, such as true merging/demerging of sub-graphs
-    and provenance.
+    Stores can be context-aware or unaware.  Unaware stores take up
+    (some) less space but cannot support features that require
+    context, such as true merging/demerging of sub-graphs and
+    provenance.  
     """
 
-    def __init__(self, backend='default', identifier=None):
+    def __init__(self, store='default', identifier=None):
         super(Graph, self).__init__()
         self.__identifier = identifier or BNode() 
-	if not isinstance(backend, Backend):
+	if not isinstance(store, Store):
 	    # TODO: error handling
-	    backend = plugin.get(backend, Backend)()
-        self.__backend = backend
+	    store = plugin.get(store, Store)()
+        self.__store = store
         self.__namespace_manager = None
 	self.context_aware = False
 	self.formula_aware = False
 
-    def __get_backend(self):
-        return self.__backend
-    backend = property(__get_backend)
+    def __get_store(self):
+        return self.__store
+    store = property(__get_store)
 
     def __get_identifier(self):
         return self.__identifier
@@ -65,42 +63,42 @@ class Graph(Node):
     namespace_manager = property(_get_namespace_manager, _set_namespace_manager)
 
     def open(self, configuration, create=True):
-        """ Open the graph backend.  Might be necessary for backends
+        """ Open the graph store.  Might be necessary for stores
         that require opening a connection to a database or acquiring some resource."""
-        if hasattr(self.__backend, "open"):
-            self.__backend.open(configuration, create)
+        if hasattr(self.__store, "open"):
+            self.__store.open(configuration, create)
 
     def close(self):
-        """ Close the graph backend.  Might be necessary for backends
+        """ Close the graph store.  Might be necessary for stores
         that require closing a connection to a database or releasing some resource."""
-        if hasattr(self.__backend, "close"):
-            self.__backend.close()
+        if hasattr(self.__store, "close"):
+            self.__store.close()
 
     def add(self, (s, p, o)):
         """ Add a triple, optionally provide a context.  A 3-tuple or
         rdflib.Triple can be provided.  Context must be a URIRef.  If
         no context is provides, triple is added to the default
         context."""
-        self.__backend.add((s, p, o), self.identifier, quoted=False)
+        self.__store.add((s, p, o), self.identifier, quoted=False)
 
     def remove(self, (s, p, o)):
         """ Remove a triple from the graph.  If the triple does not
         provide a context attribute, removes the triple from all
         contexts."""
 
-	self.__backend.remove((s, p, o), context=self.identifier)
+	self.__store.remove((s, p, o), context=self.identifier)
 
     def triples(self, (s, p, o)):
         """ Generator over the triple store.  Returns triples that
         match the given triple pattern.  If triple pattern does not
         provide a context, all contexts will be searched."""
-	for (s, p, o), contexts in self.__backend.triples((s, p, o), context=self.identifier):
+	for (s, p, o), contexts in self.__store.triples((s, p, o), context=self.identifier):
 	    yield (s, p, o)
 
 
     def __len__(self):
         """ Returns the number of triples in the graph. If context is specified then the number of triples in the context is returned instead."""
-	return self.__backend.__len__(context=self.identifier)
+	return self.__store.__len__(context=self.identifier)
 
     def __iter__(self):
         """ Iterates over all triples in the store. """
@@ -129,13 +127,13 @@ class Graph(Node):
     def __iadd__(self, other):
         """ Add all triples in Graph other to Graph."""
         for triple in other:
-            self.__backend.add(triple) # TODO: context
+            self.__store.add(triple) # TODO: context
         return self
 
     def __isub__(self, other):
         """ Subtract all triples in Graph other from Graph."""
         for triple in other:
-            self.__backend.remove(triple)
+            self.__store.remove(triple)
         return self
 
     def subjects(self, predicate=None, object=None):
@@ -320,37 +318,52 @@ class Graph(Node):
         return dumps((4, (unicode(self.identifier),)))
 
 
+    def isomorphic(self, other):
+        # TODO: this is only an approximation.
+        if len(self)!=len(other):
+            return False
+        for s, p, o in self:
+            if not isinstance(s, BNode) and not isinstance(o, BNode):
+                if not (s, p, o) in other:
+                    return False
+        for s, p, o in other:
+            if not isinstance(s, BNode) and not isinstance(o, BNode):
+                if not (s, p, o) in self:
+                    return False
+        # TODO: very well could be a false positive at this point yet.
+        return True
+
 class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
 
-    def __init__(self, backend='default'):
-        super(ConjunctiveGraph, self).__init__(backend)
-	assert self.backend.context_aware, "ConjunctiveGraph must be backed by a context aware store."
+    def __init__(self, store='default'):
+        super(ConjunctiveGraph, self).__init__(store)
+	assert self.store.context_aware, "ConjunctiveGraph must be backed by a context aware store."
 	self.context_aware = True
 	self.default_context = BNode()
 
     def add(self, (s, p, o), context=None):
 	""""A conjunctive graph adds to its default context."""
-	self.backend.add((s, p, o), context=context or self.default_context, quoted=False)
+	self.store.add((s, p, o), context=context or self.default_context, quoted=False)
     
     def remove(self, (s, p, o), context=None):
 	"""A conjunctive graph removes from all its contexts."""
-        self.backend.remove((s, p, o), context)
+        self.store.remove((s, p, o), context)
 
     def triples(self, (s, p, o), context=None):
         """An iterator over all the triples in the entire conjunctive graph."""
-	for (s, p, o), cg in self.backend.triples((s, p, o), context):
+	for (s, p, o), cg in self.store.triples((s, p, o), context):
 	    yield (s, p, o)
 
     def __len__(self, context=None):
         """Returns the number of triples in the entire conjunctive graph."""
-        return self.backend.__len__(context)
+        return self.store.__len__(context)
 
     def contexts(self, triple=None):
         """ 
 	Iterator over all contexts in the graph. If triple is
 	specified, a generator over all contexts the triple is in.
 	"""
-        for context in self.backend.contexts(triple):
+        for context in self.store.contexts(triple):
             yield context
 
     def get_context(self, identifier):
@@ -358,11 +371,11 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
         must be a URIRef or BNode."""
         assert isinstance(identifier, URIRef) or \
                isinstance(identifier, BNode), type(identifier)
-        return Graph(self.backend, identifier)
+        return Graph(self.store, identifier)
 
     def remove_context(self, identifier):
         """ Removes the given context from the graph. """
-        self.backend.remove_context(identifier)
+        self.store.remove_context(identifier)
 
     def context_id(self, uri):
         uri = uri.split("#", 1)[0]
@@ -387,20 +400,20 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
 
 class QuotedGraph(Graph):
 
-    def __init__(self, backend, identifier):
-        super(QuotedGraph, self).__init__(backend, identifier)
+    def __init__(self, store, identifier):
+        super(QuotedGraph, self).__init__(store, identifier)
 
     def add(self, triple): 
-        self.backend.add(triple, self.identifier, quoted=True)
+        self.store.add(triple, self.identifier, quoted=True)
 
     def remove(self, triple):
-        self.backend.remove(triple, self.identifier)
+        self.store.remove(triple, self.identifier)
 
     def triples(self, triple):
-        return self.backend.triples(triple, self.identifier)
+        return self.store.triples(triple, self.identifier)
 
     def __len__(self):
-        return self.backend.__len__(self.identifier)
+        return self.store.__len__(self.identifier)
 
     def n3(self):
 	"""return an n3 identifier for the Graph"""
@@ -454,3 +467,11 @@ class Seq(object):
         """ Returns the item given by index from the Seq."""
         index, item = self._list.__getitem__(index)
         return item
+
+class BackwardCompatGraph(ConjunctiveGraph):
+    def __init__(self, backend='default'):    
+        super(BackwardCompatGraph, self).__init__(store=backend)        
+
+    def __get_backend(self):
+        return self.store
+    backend = property(__get_backend)
