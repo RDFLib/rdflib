@@ -153,5 +153,5 @@ pos[p][o][s] = 1.
             yield prefix, namespace
 
     def __contexts(self):
-        yield self.identifier
+        return (c for c in []) # TODO: best way to return empty generator 
 

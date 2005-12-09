@@ -338,8 +338,8 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
 
     def triples(self, (s, p, o), context=None):
         """An iterator over all the triples in the entire conjunctive graph."""
-	for t in self.backend.triples((s, p, o), context):
-	    yield t
+	for (s, p, o), cg in self.backend.triples((s, p, o), context):
+	    yield (s, p, o)
 
     def __len__(self, context=None):
         """Returns the number of triples in the entire conjunctive graph."""

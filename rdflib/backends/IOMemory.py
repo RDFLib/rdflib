@@ -133,7 +133,7 @@ class IOMemory(Backend):
         Add a triple to the store.
         """
 
-        for triple in self.triples(triple, context):
+        for triple, cg in self.triples(triple, context):
             #triple is already in the store.            
             return
             
@@ -232,7 +232,7 @@ class IOMemory(Backend):
         f = self.forward
         r = self.reverse
         if context is None:
-            for triple in self.triples(triple):
+            for triple, cg in self.triples(triple):
                 subject, predicate, object = triple        
                 si, pi, oi = self.identifierToInt((subject, predicate, object))
                 contexts = list(self.contexts(triple))
@@ -251,7 +251,7 @@ class IOMemory(Backend):
         else:
             ci = r.get(context, None)
             if ci:
-                for triple in self.triples(triple, context):
+                for triple, cg in self.triples(triple, context):
                     subject, predicate, object = triple
                     si, pi, oi = self.identifierToInt((subject, predicate, object))    
                     del self.cspo[ci][si][pi][oi]
@@ -301,13 +301,13 @@ class IOMemory(Backend):
                         if oi!= Any: # subject+predicate+object is given
                             if subjectDictionary[pi].has_key(oi):
                                 ss, pp, oo = self.intToIdentifier((si, pi, oi))
-                                yield (ss, pp, oo)
+                                yield (ss, pp, oo), (c for c in self.contexts((ss, pp, oo)))
                             else: # given object not found
                                 pass
                         else: # subject+predicate is given, object unbound
                             for o in subjectDictionary[pi].keys():
                                 ss, pp, oo = self.intToIdentifier((si, pi, o))
-                                yield (ss, pp, oo)
+                                yield (ss, pp, oo), (c for c in self.contexts((ss, pp, oo)))
                     else: # given predicate not found
                         pass
                 else: # subject given, predicate unbound
@@ -315,13 +315,13 @@ class IOMemory(Backend):
                         if oi != Any: # object is given
                             if subjectDictionary[p].has_key(oi):
                                 ss, pp, oo = self.intToIdentifier((si, p, oi))
-                                yield (ss, pp, oo)
+                                yield (ss, pp, oo), (c for c in self.contexts((ss, pp, oo)))
                             else: # given object not found
                                 pass
                         else: # object unbound
                             for o in subjectDictionary[p].keys():
                                 ss, pp, oo = self.intToIdentifier((si, p, o))    
-                                yield (ss, pp, oo)
+                                yield (ss, pp, oo), (c for c in self.contexts((ss, pp, oo)))
             else: # given subject not found
                 pass
         elif pi != Any: # predicate is given, subject unbound
@@ -331,33 +331,33 @@ class IOMemory(Backend):
                     if predicateDictionary.has_key(oi):
                         for s in predicateDictionary[oi].keys():
                             ss, pp, oo = self.intToIdentifier((s, pi, oi))
-                            yield (ss, pp, oo)
+                            yield (ss, pp, oo), (c for c in self.contexts((ss, pp, oo)))
                     else: # given object not found
                         pass
                 else: # predicate is given, object+subject unbound
                     for o in predicateDictionary.keys():
                         for s in predicateDictionary[o].keys():
                             ss, pp, oo = self.intToIdentifier((s, pi, o))
-                            yield (ss, pp, oo)
+                            yield (ss, pp, oo), (c for c in self.contexts((ss, pp, oo)))
         elif oi != Any: # object is given, subject+predicate unbound
             if osp.has_key(oi):
                 objectDictionary = osp[oi]
                 for s in objectDictionary.keys():
                     for p in objectDictionary[s].keys():
                         ss, pp, oo = self.intToIdentifier((s, p, oi))
-                        yield (ss, pp, oo)
+                        yield (ss, pp, oo), (c for c in self.contexts((ss, pp, oo)))
         else: # subject+predicate+object unbound
             for s in spo.keys():
                 subjectDictionary = spo[s]
                 for p in subjectDictionary.keys():
                     for o in subjectDictionary[p].keys():
                         ss, pp, oo = self.intToIdentifier((s, p, o))
-                        yield (ss, pp, oo)
+                        yield (ss, pp, oo), (c for c in self.contexts((ss, pp, oo)))
 
     def __len__(self, context):
         # TODO: for eff. implementation
         count = 0
-        for triple in self.triples((Any, Any, Any), context):
+        for triple, cg in self.triples((Any, Any, Any), context):
             count += 1
         return count
     
