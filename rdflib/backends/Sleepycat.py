@@ -1,4 +1,4 @@
-from rdflib.backends import Backend
+from rdflib.store import Store
 
 from rdflib.util import from_bits
 from rdflib import BNode
@@ -9,14 +9,33 @@ from base64 import b64decode
 from os import mkdir
 from os.path import exists
 
+
+def readable_index(i):
+    s, p, o = "?" * 3
+    if i & 1: s = "s"
+    if i & 2: p = "p"
+    if i & 4: o = "o"
+    return "%s,%s,%s" % (s, p, o)
+
+def get_key_func(i):
+    def get_key(triple, context):
+        yield context
+        yield triple[i%3]
+        yield triple[(i+1)%3]
+        yield triple[(i+2)%3]
+    return get_key
+
+
+
 # TODO: tool to convert old Sleepycat DBs to this version.
 
-class Sleepycat(Backend):
+class Sleepycat(Store):
+    context_aware = True
 
-    def __init__(self):
-        super(Sleepycat, self).__init__()
+    def __init__(self, configuration=None):
         self.__open = False
-	self.identifier = BNode() # TODO: move to create and persisit
+        super(Sleepycat, self).__init__(configuration)
+        
         
     def open(self, path, create=True):
         homeDir = path        
@@ -28,7 +47,7 @@ class Sleepycat(Backend):
         except Exception, e:
             print e
         self.env = env = db.DBEnv()
-        env.set_cachesize(0, 1024*1024*50) # TODO
+        env.set_cachesize(0, 1024*1024*5) # TODO
         #env.set_lg_max(1024*1024)
         env.set_flags(envsetflags, 1)
         env.open(homeDir, envflags | db.DB_CREATE)
@@ -43,29 +62,49 @@ class Sleepycat(Backend):
         dbsetflags   = 0
 
         # create and open the DBs
-        self.__spo = db.DB(env)
-        self.__spo.set_flags(dbsetflags)
-        self.__spo.open("spo", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
+        self.__indicies = [None,] * 3
+        for i in xrange(0, 3):
+            index_name = "".join(get_key_func(i)(("s", "p", "o"), "c"))
+            index = db.DB(env)
+            index.set_flags(dbsetflags)
+            index.open(index_name, dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
+            self.__indicies[i] = index
 
-        self.__pos = db.DB(env)
-        self.__pos.set_flags(dbsetflags)
-        self.__pos.open("pos", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
+        lookup = {}
+        for i in xrange(0, 8):
+            results = []
+            for start in xrange(0, 3):
+                score = 1
+                len = 0
+                for j in xrange(start, start+3):
+                    if i & (1<<(j%3)):
+                        score = score << 1
+                        len += 1
+                    else:
+                        break
+                tie_break = 2-start
+                results.append(((score, tie_break), start, len))
 
-        self.__osp = db.DB(env)
-        self.__osp.set_flags(dbsetflags)
-        self.__osp.open("osp", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
+            results.sort()
+            score, start, len = results[-1]
 
-        self.__cspo = db.DB(env)
-        self.__cspo.set_flags(dbsetflags)
-        self.__cspo.open("cspo", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
+            def get_prefix_func(start, end):
+                def get_prefix(triple, context):
+                    if context is None:
+                        yield ""
+                    else:
+                        yield context
+                    i = start 
+                    while i<end:
+                        yield triple[i%3]
+                        i += 1
+                    yield ""
+                return get_prefix
 
-        self.__cpos = db.DB(env)
-        self.__cpos.set_flags(dbsetflags)
-        self.__cpos.open("cpos", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
+            lookup[i] = (start, get_prefix_func(start, start + len))
 
-        self.__cosp = db.DB(env)
-        self.__cosp.set_flags(dbsetflags)
-        self.__cosp.open("cosp", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
+
+        self.__lookup_dict = lookup
 
         self.__contexts = db.DB(env)
         self.__contexts.set_flags(dbsetflags)
@@ -93,13 +132,9 @@ class Sleepycat(Backend):
     def sync(self):
         if self.__open:
 	    self.__syncing = True
-            self.__spo.sync()
-            self.__pos.sync()
-            self.__osp.sync()
 
-            self.__cspo.sync()
-            self.__cpos.sync()
-            self.__cosp.sync()
+            for i in xrange(0, 3):
+                self.__indicies[i].sync()
 
             self.__contexts.sync()
             self.__namespace.sync()
@@ -114,13 +149,9 @@ class Sleepycat(Backend):
                 self.__pending_sync.join()
             else:
                 self.__pending_sync.cancel()
-        self.__spo.close()
-        self.__pos.close()
-        self.__osp.close()
 
-        self.__cspo.close()
-        self.__cpos.close()
-        self.__cosp.close()
+        for i in xrange(0, 3):
+            self.__indicies[i].close()
 
         self.__contexts.close()
         self.__namespace.close()
@@ -142,21 +173,25 @@ class Sleepycat(Backend):
         c = _to_string(context)
         
         self.__contexts.put(c, "")        
-        self.__cspo.put("%s^%s^%s^%s" % (c, s, p, o), "")
-        self.__cpos.put("%s^%s^%s^%s" % (c, p, o, s), "")
-        self.__cosp.put("%s^%s^%s^%s" % (c, o, s, p), "")
 
-        contexts = self.__spo.get("%s^%s^%s" % (s, p, o))
+        cspo, cpos, cosp = self.__indicies
+
+        contexts = cspo.get("%s^%s^%s^%s^" % ("", s, p, o))
         if contexts:
             if not c in _split(contexts):
-                contexts += "^%s" % c
+                contexts += "%s^" % c
         else:
-            contexts = c
+            contexts = "%s^" % c
         assert contexts!=None
+
+        #assert context!=self.identifier
+        cspo.put("%s^%s^%s^%s^" % (c, s, p, o), contexts)
+        cpos.put("%s^%s^%s^%s^" % (c, p, o, s), contexts)
+        cosp.put("%s^%s^%s^%s^" % (c, o, s, p), contexts)
         if not quoted:
-            self.__spo.put("%s^%s^%s" % (s, p, o), contexts)
-            self.__pos.put("%s^%s^%s" % (p, o, s), "")
-            self.__osp.put("%s^%s^%s" % (o, s, p), "")
+            cspo.put("%s^%s^%s^%s^" % ("", s, p, o), contexts)
+            cpos.put("%s^%s^%s^%s^" % ("", p, o, s), contexts)
+            cosp.put("%s^%s^%s^%s^" % ("", o, s, p), contexts)
 
         self._schedule_sync() 
 
@@ -168,127 +203,93 @@ class Sleepycat(Backend):
     def remove(self, (subject, predicate, object), context):
         assert self.__open, "The InformationStore must be open."
 
-        _to_string = self._to_string        
-        _split = self._split
+        cspo, cpos, cosp = self.__indicies
 
-        for subject, predicate, object in self.triples((subject, predicate, object), context):
+        which, prefix = self.__lookup((subject, predicate, object), context)
+        prefix = "^".join(prefix)
+        index = self.__indicies[which]
 
-            s = _to_string(subject)
-            p = _to_string(predicate)
-            o = _to_string(object)
-            if context==None:
-                contexts = self.__spo.get("%s^%s^%s" % (s, p, o))
-                if contexts:
-                    for c in _split(contexts):
-                        try:
-                            self.__cspo.delete("%s^%s^%s^%s" % (c, s, p, o))
-                        except db.DBNotFoundError, e:
-                            pass
-                        try:
-                            self.__cpos.delete("%s^%s^%s^%s" % (c, p, o, s))
-                        except db.DBNotFoundError, e:
-                            pass
-                        try:
-                            self.__cosp.delete("%s^%s^%s^%s" % (c, o, s, p))
-                        except db.DBNotFoundError, e:
-                            pass                        
-                    try:
-                        self.__spo.delete("%s^%s^%s" % (s, p, o))
-                    except db.DBNotFoundError, e:
-                        pass
-                    try:
-                        self.__pos.delete("%s^%s^%s" % (p, o, s))
-                    except db.DBNotFoundError, e:
-                        pass
-                    try:
-                        self.__osp.delete("%s^%s^%s" % (o, s, p))
-                    except db.DBNotFoundError, e:
-                        pass                    
+        cursor = index.cursor()
+        try:
+            current = cursor.set_range(prefix)
+        except db.DBNotFoundError:
+            current = None
+        cursor.close()
+        while current:
+            key, value = current
+            cursor = index.cursor()
+            try:
+                cursor.set_range(key)
+                current = cursor.next()
+            except db.DBNotFoundError:
+                current = None
+            cursor.close()
+            if key.startswith(prefix):
+                try:
+                    # TODO: remove from all the right indices
+                    index.delete(key)
+                except db.DBNotFoundError, e:
+                    print e
             else:
-                c = _to_string(context)
-                contexts = self.__spo.get("%s^%s^%s" % (s, p, o))
-                if contexts:
-                    contexts = list(_split(contexts))
-                    if c in contexts:
-                        contexts.remove(c)
-                    if not contexts:
-                        try:
-                            self.__spo.delete("%s^%s^%s" % (s, p, o))
-                        except db.DBNotFoundError, e:
-                            pass                    
-                        try:
-                            self.__pos.delete("%s^%s^%s" % (p, o, s))
-                        except db.DBNotFoundError, e:
-                            pass                    
-                        try:
-                            self.__osp.delete("%s^%s^%s" % (o, s, p))
-                        except db.DBNotFoundError, e:
-                            pass                    
-                    else:
-                        contexts = "".join(contexts)
-                        self.__spo.put("%s^%s^%s" % (s, p, o), contexts)
-                    try:
-                        self.__cspo.delete("%s^%s^%s^%s" % (c, s, p, o))
-                    except db.DBNotFoundError, e:
-                        pass
-                    try:
-                        self.__cpos.delete("%s^%s^%s^%s" % (c, p, o, s))
-                    except db.DBNotFoundError, e:
-                        pass
-                    try:
-                        self.__cosp.delete("%s^%s^%s^%s" % (c, o, s, p))
-                    except db.DBNotFoundError, e:
-                        pass
+                break            
+
         #self.sync()
         self._schedule_sync() 
 
 
+    def __lookup(self, (subject, predicate, object), context):
+        _to_string = self._to_string        
+        if context is not None:
+            context = _to_string(context)
+        i = 0
+        if subject is not None:
+            i += 1
+            subject = _to_string(subject)
+        if predicate is not None:
+            i += 2
+            predicate = _to_string(predicate)
+        if object is not None:
+            i += 4
+            object = _to_string(object)
+        start, prefix_func = self.__lookup_dict[i]        
+        return start, prefix_func((subject, predicate, object), context)
+
+
     def triples(self, (subject, predicate, object), context=None):
         """A generator over all the triples matching """
+        _split = self._split
+        _from_string = self._from_string
+        _contexts_from_string = self._contexts_from_string
+
         assert self.__open, "The InformationStore must be open."
 
-        _to_string = self._to_string        
+        which, prefix = self.__lookup((subject, predicate, object), context)
+        prefix = "^".join(prefix)
+        index = self.__indicies[which]
 
-        if subject!=None:
-            if predicate!=None:
-                if object!=None:
-                    s = _to_string(subject)
-                    p = _to_string(predicate)
-                    o = _to_string(object)
-                    if context!=None:
-                        c = _to_string(context)
-                        key = "%s^%s^%s^%s" % (c, s, p, o)
-                        if self.__cspo.has_key(key):
-                            yield (subject, predicate, object)
-                    else:
-                        key = "%s^%s^%s" % (s, p, o)
-                        if self.__spo.has_key(key):
-                            yield (subject, predicate, object)
-                else:
-                    for o in self._objects(subject, predicate, context):
-                        yield (subject, predicate, o)
+        cursor = index.cursor()
+        try:
+            current = cursor.set_range(prefix)
+        except db.DBNotFoundError:
+            current = None
+        cursor.close()
+        while current:
+            key, value = current
+            cursor = index.cursor()
+            try:
+                cursor.set_range(key)
+                current = cursor.next()
+            except db.DBNotFoundError:
+                current = None
+            cursor.close()
+            if key.startswith(prefix):
+                parts = list(_split(key))[1:]
+                s = _from_string(parts[(3-which+0)%3])
+                p = _from_string(parts[(3-which+1)%3])
+                o = _from_string(parts[(3-which+2)%3])
+                yield (s, p, o), _contexts_from_string(value)
             else:
-                if object!=None:
-                    for p in self._predicates(subject, object, context):
-                        yield (subject, p, object)
-                else:
-                    for p, o in self._predicate_objects(subject, context):
-                        yield (subject, p, o)
-        else:
-            if predicate!=None:
-                if object!=None:
-                    for s in self._subjects(predicate, object, context):
-                        yield (s, predicate, object)
-                else:
-                    for s, o in self._subject_objects(predicate, context):
-                        yield (s, predicate, o)
-            else:
-                if object!=None:
-                    for s, p in self._subject_predicates(object, context):
-                        yield (s, p, object)
-                else: 
-                    for s, p, o in self._triples(context):
-                        yield (s, p, o)
+                break            
 
 
     def __len__(self, context=None):
@@ -343,7 +344,7 @@ class Sleepycat(Backend):
             s = _to_string(s)
             p = _to_string(p)
             o = _to_string(o)
-            contexts = self.__spo.get("%s^%s^%s" % (s, p, o))
+            contexts = self.__spo.get("%s^%s^%s^" % (s, p, o))
             if contexts:
                 for c in _split(contexts):
                     yield _from_string(c)
@@ -367,7 +368,7 @@ class Sleepycat(Backend):
     def remove_context(self, identifier):
         _to_string = self._to_string        
         c = _to_string(identifier)
-        for triple in self._triples(identifier):
+        for triple, cg in self._triples(identifier):
             self.remove(triple, identifier)
         try:
             self.__contexts.delete(c)
@@ -381,265 +382,12 @@ class Sleepycat(Backend):
     def _to_string(self, term):
         return b64encode(term.to_bits())
 
+    def _contexts_from_string(self, contexts):
+        for c in _split(contexts):
+            yield _from_string(c)
+
     def _split(self, contexts):
         for part in contexts.split("^"):
-            yield part
-
-    def _triples(self, context):
-        _from_string = self._from_string
-        _to_string = self._to_string        
-        _split = self._split
-
-        if context!=None:
-            prefix = "%s^" % _to_string(context)
-            index = self.__cspo
-        else:
-            prefix = ""
-            index = self.__spo
-        cursor = index.cursor()
-        try:
-            current = cursor.set_range(prefix)
-        except db.DBNotFoundError:
-            current = None
-        cursor.close()
-        while current:
-            key, value = current            
-            cursor = index.cursor()
-            try:
-                cursor.set_range(key)
-                current = cursor.next()
-            except db.DBNotFoundError:
-                current = None
-            cursor.close()
-            if key.startswith(prefix):
-                if context!=None:
-                    c, s, p, o = _split(key)
-                    yield (_from_string(s), _from_string(p), _from_string(o))
-                else:
-                    s, p, o = _split(key)
-                    yield (_from_string(s), _from_string(p), _from_string(o))
-            else:
-                break
-                    
-    def _subjects(self, predicate, object, context):
-        _from_string = self._from_string
-        _to_string = self._to_string        
-        _split = self._split
-
-        if context!=None:
-            prefix = "%s^" % _to_string(context)
-            index = self.__cpos
-        else:
-            prefix = ""
-            index = self.__pos
-        try:
-            prefix += "%s^%s^" % (_to_string(predicate), _to_string(object))
-        except Exception, e:
-            print e, predicate, object
-        cursor = index.cursor()
-        try:
-            current = cursor.set_range(prefix)
-        except db.DBNotFoundError:
-            current = None
-        cursor.close()
-        while current:
-            key, value = current
-            cursor = index.cursor()
-            try:
-                cursor.set_range(key)
-                current = cursor.next()
-            except db.DBNotFoundError:
-                current = None
-            cursor.close()
-            if key.startswith(prefix):
-                if context!=None:
-                    #assert(len(key)==16)
-                    c, p, o, s = _split(key)
-                else:
-                    #assert(len(key)==12)                    
-                    p, o, s = _split(key)
-                s = _from_string(s)
-                yield s
-            else:
-                break            
-
-    def _predicates(self, subject, object, context):
-        _from_string = self._from_string
-        _to_string = self._to_string        
-        _split = self._split
-
-        if context!=None:
-            prefix = "%s^" % _to_string(context)
-            index = self.__cosp
-        else:
-            prefix = ""
-            index = self.__osp
-        prefix += "%s^%s^" % (_to_string(object), _to_string(subject))
-        cursor = index.cursor()
-        try:
-            current = cursor.set_range(prefix)
-        except db.DBNotFoundError:
-            current = None            
-        cursor.close()
-        while current:
-            key, value = current
-            cursor = index.cursor()
-            try:
-                cursor.set_range(key)
-                current = cursor.next()
-            except db.DBNotFoundError:
-                current = None
-            cursor.close()
-            if key.startswith(prefix):
-                if context!=None:
-                    c, o, s, p = _split(key)
-                else:
-                    o, s, p = _split(key)
-                yield _from_string(p)
-            else:
-                break
-
-    def _objects(self, subject, predicate, context):
-        _from_string = self._from_string
-        _to_string = self._to_string   
-        _split = self._split
-     
-        if context!=None:
-            prefix = "%s^" % _to_string(context)
-            index = self.__cspo
-        else:
-            prefix = ""
-            index = self.__spo
-        prefix += "%s^%s^" % (_to_string(subject), _to_string(predicate))
-        cursor = index.cursor()
-        try:
-            current = cursor.set_range(prefix)
-        except db.DBNotFoundError:
-            current = None        
-        cursor.close()
-        while current:
-            key, value = current
-            cursor = index.cursor()
-            try:
-                cursor.set_range(key)
-                current = cursor.next()
-            except db.DBNotFoundError:
-                current = None
-            cursor.close()
-            if key.startswith(prefix):
-                if context!=None:
-                    c, s, p, o = _split(key)
-                else:
-                    s, p, o = _split(key)
-                yield _from_string(o)
-            else:
-                break
-                    
-    def _predicate_objects(self, subject, context):
-        _from_string = self._from_string
-        _to_string = self._to_string        
-        _split = self._split
-
-        if context!=None:
-            prefix = "%s^" % _to_string(context)
-            index = self.__cspo
-        else:
-            prefix = ""
-            index = self.__spo            
-        prefix += "%s^" % _to_string(subject)
-        cursor = index.cursor()
-        try:
-            current = cursor.set_range(prefix)
-        except db.DBNotFoundError:
-            current = None            
-        cursor.close()
-        while current:
-            key, value = current
-            cursor = index.cursor()
-            try:
-                cursor.set_range(key)
-                current = cursor.next()
-            except db.DBNotFoundError:
-                current = None
-            cursor.close()
-            if key.startswith(prefix):
-                if context!=None:
-                    c, s, p, o = _split(key)
-                else:
-                    s, p, o = _split(key)
-                yield _from_string(p), _from_string(o)
-            else:
-                break
-
-    def _subject_predicates(self, object, context):
-        _from_string = self._from_string
-        _to_string = self._to_string        
-        _split = self._split
-
-        if context!=None:
-            prefix = "%s^" % _to_string(context)
-            index = self.__cosp
-        else:
-            prefix = ""
-            index = self.__osp            
-        prefix += "%s^" % _to_string(object)
-        cursor = index.cursor()
-        try:
-            current = cursor.set_range(prefix)
-        except db.DBNotFoundError:
-            current = None
-        cursor.close()
-        while current:
-            key, value = current
-            cursor = index.cursor()
-            try:
-                cursor.set_range(key)
-                current = cursor.next()
-            except db.DBNotFoundError:
-                current = None
-            cursor.close()
-            if key.startswith(prefix):
-                if context!=None:
-                    c, o, s, p = _split(key)
-                else:
-                    o, s, p = _split(key)
-                yield _from_string(s), _from_string(p)
-            else:
-                break
-
-    def _subject_objects(self, predicate, context):
-        _from_string = self._from_string
-        _to_string = self._to_string        
-        _split = self._split
-
-        if context!=None:
-            prefix = "%s^" % _to_string(context)
-            index = self.__cpos
-        else:
-            prefix = ""
-            index = self.__pos            
-        prefix += "%s^" % _to_string(predicate)
-        cursor = index.cursor()
-        try:
-            current = cursor.set_range(prefix)
-        except db.DBNotFoundError:
-            current = None
-        cursor.close()
-        while current:
-            key, value = current
-            cursor = index.cursor()
-            try:
-                cursor.set_range(key)
-                current = cursor.next()
-            except db.DBNotFoundError:
-                current = None
-            cursor.close()
-            if key.startswith(prefix):
-                if context!=None:
-                    c, p, o, s = _split(key)
-                else:
-                    p, o, s = _split(key)
-                yield _from_string(s), _from_string(o)
-            else:
-                break
+            if part:
+                yield part
 
