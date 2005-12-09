@@ -63,7 +63,7 @@ register('IOMemory', Backend,
          'rdflib.backends.IOMemory', 'IOMemory')
 
 register('Memory', Backend,
-         'rdflib.backends.Memory', 'Memory')
+         'rdflib.store.Memory', 'Memory')
 
 register('Sleepycat', Backend,
          'rdflib.backends.Sleepycat', 'Sleepycat')

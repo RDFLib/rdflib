@@ -2,7 +2,7 @@ from __future__ import generators
 
 ANY = None
 
-from rdflib.stores import Store
+from rdflib.store import Store
 
 class Memory(Store):
     """\
@@ -12,8 +12,8 @@ This triple store uses nested dictionaries to store triples. Each
 triple is stored in two such indices as follows spo[s][p][o] = 1 and
 pos[p][o][s] = 1.
     """    
-    def __init__(self, identifier, configuration=None):
-        super(Memory, self).__init__(identifier, configuration)
+    def __init__(self, configuration=None):
+        super(Memory, self).__init__(configuration)
         # indexed by [subject][predicate][object]
         self.__spo = {}
 
@@ -67,7 +67,7 @@ pos[p][o][s] = 1.
         p[predicate] = 1
 
     def remove(self, (subject, predicate, object), context=None):
-        for subject, predicate, object in self.triples((subject, predicate, object)):
+        for (subject, predicate, object), c in self.triples((subject, predicate, object)):
             del self.__spo[subject][predicate][object]
             del self.__pos[predicate][object][subject]
             del self.__osp[object][subject][predicate]
