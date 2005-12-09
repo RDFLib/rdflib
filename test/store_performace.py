@@ -19,22 +19,22 @@ class StoreTestCase(unittest.TestCase):
     something other than a unit test... but for now we'll add it as a
     unit test.
     """
-    backend = 'default'
+    store = 'default'
 
     def setUp(self):
         self.gcold = gc.isenabled()
         gc.collect()
         gc.disable()
-        self.store = Graph(backend=self.backend)
+        self.graph = Graph(store=self.store)
         path = a_tmp_dir = mkdtemp()
-        self.store.open(path)
+        self.graph.open(path)
 
     def tearDown(self):
-        self.store.close()
+        self.graph.close()
         if self.gcold:
             gc.enable()
         # TODO: delete a_tmp_dir
-        del self.store
+        del self.graph
 
     def testTime(self):
         number = 3
@@ -45,7 +45,7 @@ class StoreTestCase(unittest.TestCase):
 
     def _testTime(self):
         number = 1000
-        store = self.store
+        store = self.graph
 
         def add_random():
 	    s = random_uri()
@@ -58,43 +58,43 @@ class StoreTestCase(unittest.TestCase):
         for _i in it:
 	    add_random()
         t1 = time()
-        print self.backend, "%.3g" % (t1 - t0),
+        print self.store, "%.3g" % (t1 - t0),
 
 
 class MemoryStoreTestCase(StoreTestCase):
-    backend = "Memory"
+    store = "Memory"
 
 try:
-    from rdflib.backends.Sleepycat import Sleepycat
+    from rdflib.store.Sleepycat import Sleepycat
     class SleepycatStoreTestCase(StoreTestCase):
-        backend = "Sleepycat"
+        store = "Sleepycat"
 except ImportError, e:
-    print "Can not test Sleepycat backend:", e
+    print "Can not test Sleepycat store:", e
 
 try:
     import persistent
-    # If we can import persistent then test ZODB backend
+    # If we can import persistent then test ZODB store
     class ZODBStoreTestCase(StoreTestCase):
-        backend = "ZODB"
+        store = "ZODB"
 except ImportError, e:
-    print "Can not test ZODB backend:", e
+    print "Can not test ZODB store:", e
 
 
 try:
     from Ft import Rdf
-    # If we can import RDF then test Redland backend
+    # If we can import RDF then test Redland store
     class RedLandTestCase(StoreTestCase):
-        backend = "fourthought"
+        store = "fourthought"
 except ImportError, e:
-    print "Can not test Redland backend:", e    
+    print "Can not test Redland store:", e    
 
 try:
     import MySQLdb,sha,sys
-    # If we can import RDF then test Redland backend
+    # If we can import RDF then test Redland store
     class MySQLTestCase(StoreTestCase):
-        backend = "MySQL"
+        store = "MySQL"
 except ImportError, e:
-    print "Can not test MySQL backend:", e    
+    print "Can not test MySQL store:", e    
 
 if __name__ == '__main__':
     unittest.main()    
