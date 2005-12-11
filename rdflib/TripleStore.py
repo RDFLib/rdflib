@@ -2,7 +2,7 @@
 
 from rdflib import Graph
 
-from rdflib.backends.Memory import Memory
+from rdflib.store.Memory import Memory
 
 class TripleStore(Graph):
     """
