@@ -62,6 +62,28 @@ class Graph(Node):
         self.__namespace_manager = nm
     namespace_manager = property(_get_namespace_manager, _set_namespace_manager)
 
+    def destroy(self, configuration):
+        """
+        For stores that support this functionality, it destroyes the store identified by the given configuration
+        """
+        if hasattr(self.__store, "destroy"):
+            self.__store.destroy(configuration)
+
+    #Transactional interfaces (optional)
+    def commit(self):
+        """
+        Commits active transactions
+        """
+        if hasattr(self.__store, "commit"):
+            self.__store.commit()
+    
+    def rollback(self):
+        """
+        Rollback active transactions
+        """
+        if hasattr(self.__store, "rollback"):
+            self.__store.rollback()
+
     def open(self, configuration, create=True):
         """ Open the graph store.  Might be necessary for stores
         that require opening a connection to a database or acquiring some resource."""
