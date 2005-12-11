@@ -228,7 +228,10 @@ class Graph(Node):
             if any is False:
                 try:
                     next = values.next()
-                    raise exceptions.UniquenessError([retval, next] + list(values))
+                    msg = "While trying to find a value for (%s, %s, %s) the following multiple values where found:\n" % (subject, predicate, object)
+                    for (s, p, o), cg in self.store.triples((subject, predicate, object)):
+                        msg += "(%s, %s, %s)\n (contexts: %s)\n" % (s, p, o, list(cg))
+                    raise exceptions.UniquenessError(msg)
                 except StopIteration, e:
                     pass
         return retval
