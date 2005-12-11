@@ -17,15 +17,6 @@ class Literal(Identifier):
 
     __slots__ = ("language", "datatype")
 
-    def __getstate__(self):
-        return (None, dict(language=self.language,
-                           datatype=self.datatype))
-
-    def __setstate__(self, arg):
-        _, d = arg
-        self.language = d['language']
-        self.datatype = d['datatype']
-    
     def __new__(cls, value, lang='', datatype=''):
         #if normalize and value:
         #    if value != normalize("NFC", value):
