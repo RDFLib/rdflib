@@ -28,7 +28,7 @@ class Sleepycat(Store):
         except Exception, e:
             print e
         self.env = env = db.DBEnv()
-        env.set_cachesize(0, 1024*1024*5) # TODO
+        env.set_cachesize(0, 1024*1024*50) # TODO
         #env.set_lg_max(1024*1024)
         env.set_flags(envsetflags, 1)
         env.open(homeDir, envflags | db.DB_CREATE)

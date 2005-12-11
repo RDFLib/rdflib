@@ -10,6 +10,8 @@ usage:
    %prog [options] <URI>
 """
 
+from rdflib import URIRef, BNode, Literal, Variable, Namespace
+
 import sys, os.path, re, time, urllib
 import n3p
 
@@ -18,21 +20,11 @@ except ImportError:
    print >> sys.stderr, "uripath.py not found"
    from urlparse import urljoin as urijoin
 
-def URI(uri): 
-   return "<%s>" % uri
-
-class Namespace(unicode): 
-   def __getattr__(self, attr): 
-      return URI(self + attr)
-
 RDF = Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 OWL = Namespace('http://www.w3.org/2002/07/owl#')
 LOG = Namespace('http://www.w3.org/2000/10/swap/log#')
 XSD = Namespace('http://www.w3.org/2001/XMLSchema#')
 N3R = Namespace('http://www.w3.org/2000/10/swap/reify#')
-
-def bNode(name): 
-   return "_:%s" % name
 
 r_unilower = re.compile(r'(?<=\\u)([0-9a-f]{4})|(?<=\\U)([0-9a-f]{8})')
 r_hibyte = re.compile(r'[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F-\xFF]')
@@ -49,16 +41,6 @@ def quote(s):
    s = r_unilower.sub(lambda m: (m.group(1) or m.group(2)).upper(), s)
    return str(s)
 
-def Literal(content, language=None, datatype=None): 
-   content = quote(content)
-   if language: 
-      return '"%s"@%s' % (content, language)
-   elif datatype: 
-      return '"%s"^^%s' % (content, datatype)
-   return '"%s"' % content
-
-def Var(label): 
-   return "?%s" % label
 
 quot = {'t': '\t', 'n': '\n', 'r': '\r', '"': '"', '\\': '\\'}
 
@@ -155,8 +137,7 @@ class N3Processor(n3p.N3Parser):
       else: raise Exception("Token has no parent production.")
 
    def documentStart(self, prod): 
-      #formula = self.formula()
-      formula = "[%s]" % self.sink.identifier.n3()
+      formula = self.sink.graph
       self.formulae.append(formula)
       self.sink.start(formula)
 
@@ -463,7 +444,7 @@ class N3Processor(n3p.N3Parser):
       return self.uri(self.bindings[prefix] + name)
 
    def uri(self, tok): 
-      u = URI(urijoin(self.baseURI, tok))
+      u = URIRef(urijoin(self.baseURI, tok))
       if self.universals.has_key(u): 
          formula, var = self.universals[u]
          if formula in self.formulae: 
@@ -476,16 +457,11 @@ class N3Processor(n3p.N3Parser):
 
    def formula(self): 
       tok = self.bnode('formula')
-      u = "{%s}" % urijoin(self.baseURI, tok)
-      if self.universals.has_key(u): 
-         formula, var = self.universals[u]
-         if formula in self.formulae: 
-            return var
-      if self.existentials.has_key(u): # @@ elif?
-         formula, bnode = self.existentials[u]
-         if formula in self.formulae: 
-            return bnode
-      return u
+      formula_id = URIRef(urijoin(self.baseURI, tok))
+      if formula_id == self.sink.graph.identifier:
+         return self.sink.graph
+      else:
+         return self.sink.graph.get_context(formula_id, quoted=True)
 
    def bnode(self, label, sic=False): 
       if not sic: 
@@ -497,7 +473,7 @@ class N3Processor(n3p.N3Parser):
          length = len(label)
          forelabel = label.rstrip('0123456789')
          label = forelabel + '0' + label[-(length-len(forelabel)):]
-      return bNode(label)
+      return BNode(label)
 
    def literal(self, content, language, datatype): 
       if content.startswith('"""'): 
@@ -509,7 +485,7 @@ class N3Processor(n3p.N3Parser):
       if not sic: 
          self.counter += 1
          label += str(self.counter)
-      return Var(label)
+      return Variable(label)
 
 
 class NTriplesSink(object): 
@@ -534,7 +510,7 @@ class NTriplesSink(object):
    def makeStatementID(self): 
       self.counter += 1
       t = str(int(time.time()))
-      return bNode('t' + t + 'statement' + str(self.counter))
+      return BNode('t' + t + 'statement' + str(self.counter))
 
    def flatten(self, s, p, o, f): 
       fs = self.makeStatementID()

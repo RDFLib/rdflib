@@ -218,9 +218,8 @@ class NTriplesParser(object):
    def literal(self): 
       if self.peek('"'): 
          lit, lang, dtype = self.eat(r_literal).groups()
-         lang = lang or ""
-         dtype = dtype or ""
-         assert dtype is not None
+         lang = lang or None
+         dtype = dtype or None
          if lang and dtype: 
             raise ParseError("Can't have both a language and a datatype")
          lit = unquote(lit)

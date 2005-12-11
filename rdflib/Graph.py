@@ -117,6 +117,12 @@ class Graph(Node):
 	for (s, p, o), contexts in self.__store.triples((s, p, o), context=self.identifier):
 	    yield (s, p, o)
 
+    def statements(self, (s, p, o)):
+        """ Generator over the triple store.  Returns statements that
+        match the given triple pattern.  If triple pattern does not
+        provide a context, all contexts will be searched."""
+	for (s, p, o), contexts in self.__store.triples((s, p, o), context=self.identifier):
+	    yield (s, p, o), contexts
 
     def __len__(self):
         """ Returns the number of triples in the graph. If context is specified then the number of triples in the context is returned instead."""
@@ -229,8 +235,8 @@ class Graph(Node):
                 try:
                     next = values.next()
                     msg = "While trying to find a value for (%s, %s, %s) the following multiple values where found:\n" % (subject, predicate, object)
-                    for (s, p, o), cg in self.store.triples((subject, predicate, object)):
-                        msg += "(%s, %s, %s)\n (contexts: %s)\n" % (s, p, o, list(cg))
+                    for (s, p, o), contexts in self.statements((subject, predicate, object)):
+                        msg += "(%s, %s, %s)\n (contexts: %s)\n" % (s, p, o, list(contexts))
                     raise exceptions.UniquenessError(msg)
                 except StopIteration, e:
                     pass
@@ -379,6 +385,13 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
 	for (s, p, o), cg in self.store.triples((s, p, o), context):
 	    yield (s, p, o)
 
+    def statements(self, (s, p, o), context=None):
+        """ Generator over the triple store.  Returns statements that
+        match the given triple pattern.  If triple pattern does not
+        provide a context, all contexts will be searched."""
+	for (s, p, o), contexts in self.store.triples((s, p, o), context):
+	    yield (s, p, o), contexts
+
     def __len__(self, context=None):
         """Returns the number of triples in the entire conjunctive graph."""
         return self.store.__len__(context)
@@ -391,12 +404,15 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
         for context in self.store.contexts(triple):
             yield context
 
-    def get_context(self, identifier):
+    def get_context(self, identifier, quoted=False):
         """ Returns a Context graph for the given identifier, which
         must be a URIRef or BNode."""
         assert isinstance(identifier, URIRef) or \
                isinstance(identifier, BNode), type(identifier)
-        return Graph(self.store, identifier)
+        if quoted:
+            return QuotedGraph(self.store, identifier)
+        else:
+            return Graph(self.store, identifier)
 
     def remove_context(self, identifier):
         """ Removes the given context from the graph. """
@@ -430,15 +446,6 @@ class QuotedGraph(Graph):
 
     def add(self, triple): 
         self.store.add(triple, self.identifier, quoted=True)
-
-    def remove(self, triple):
-        self.store.remove(triple, self.identifier)
-
-    def triples(self, triple):
-        return self.store.triples(triple, self.identifier)
-
-    def __len__(self):
-        return self.store.__len__(self.identifier)
 
     def n3(self):
 	"""return an n3 identifier for the Graph"""

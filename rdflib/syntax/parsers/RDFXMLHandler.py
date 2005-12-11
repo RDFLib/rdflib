@@ -95,8 +95,8 @@ class ElementHandler(object):
         self.subject = None
         self.object = None
         self.list = None
-        self.language = ""
-        self.datatype = ""
+        self.language = None
+        self.datatype = None
         self.declared = None
 
     def next_li(self):
@@ -157,8 +157,6 @@ class RDFXMLHandler(handler.ContentHandler):
         if language is None:
             if parent:
                 language = parent.language
-            else:
-                language = ''
         current.language = language
         current.start(name, qname, attrs)        
             
@@ -381,7 +379,7 @@ class RDFXMLHandler(handler.ContentHandler):
                 else: #if parse_type=="Literal":
                      # All other values are treated as Literal
                      # See: http://www.w3.org/TR/rdf-syntax-grammar/#parseTypeOtherPropertyElt
-                    object = Literal("", "", RDF.XMLLiteral)
+                    object = Literal("", None, RDF.XMLLiteral)
                     current.char = self.literal_element_char
                     current.declared = {}
                     next.start = self.literal_element_start

@@ -48,7 +48,6 @@ setup(
 
     packages = ['rdflib',
                 'rdflib.store',
-                'rdflib.backends',
                 'rdflib.sparql',
                 'rdflib.syntax',
                 'rdflib.syntax.serializers',

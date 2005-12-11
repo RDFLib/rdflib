@@ -17,14 +17,13 @@ class Literal(Identifier):
 
     __slots__ = ("language", "datatype")
 
-    def __new__(cls, value, lang='', datatype=''):
+    def __new__(cls, value, lang=None, datatype=None):
         #if normalize and value:
         #    if value != normalize("NFC", value):
         #        raise Error("value must be in NFC normalized form.")
-
         inst = unicode.__new__(cls,value)
         if datatype:
-            lang = ''
+            lang = None
         inst.language = lang
         inst.datatype = datatype
         return inst
@@ -81,4 +80,4 @@ class Literal(Identifier):
                 return '"%s"' % encoded
 
     def to_bits(self):
-        return dumps((3, (unicode(self), unicode(self.language), unicode(self.datatype))))
+        return dumps((3, (unicode(self), self.language, self.datatype)))

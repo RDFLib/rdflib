@@ -5,7 +5,7 @@ from rdflib.util import from_n3
 from rdflib.syntax.parsers import Parser
 from rdflib.syntax.parsers.n3p.n3proc import N3Processor
 
-from rdflib.Graph import Graph, QuotedGraph
+from rdflib.Graph import Graph, QuotedGraph, ConjunctiveGraph
 
 
 class N3Parser(Parser):
@@ -18,7 +18,10 @@ class N3Parser(Parser):
 	assert graph.store.context_aware # is this implied by formula_aware
 	assert graph.store.formula_aware
 
-        sink = Sink(graph.store)
+        conj_graph = ConjunctiveGraph(store=graph.store)
+        conj_graph.default_context = graph.identifier # TODO: CG __init__ should have a default_context arg
+        # TODO: update N3Processor so that it can use conj_graph as the sink
+        sink = Sink(conj_graph)
         if False: 
             sink.quantify = lambda *args: True
             sink.flatten = lambda *args: True
@@ -30,41 +33,14 @@ class N3Parser(Parser):
 
 
 class Sink(object):
-    def __init__(self, store): 
-        self.store = store 
-        self.identifier = BNode()
-
-    def convert(self, t):
-	if t.startswith("_"):
-	    return BNode(unicode(t[2:]))
-	elif t.startswith("<"):
-	    return URIRef(unicode(t[1:-1]))
-	elif t.startswith("?"):
-	    return Variable(unicode(t[1:]))
-	elif t.startswith('"'):
-	    return from_n3(t)
-	elif t.startswith('{'):
-	    cid = from_n3(t[1:-1])
-	    return QuotedGraph(self.store, cid)
-	elif t.startswith('['):
-	    cid = from_n3(t[1:-1])
-	    return Graph(self.store, cid)
-	else:
-	    raise "NYI:", "%s %s" % (t, type(t))
-	return 
-
-    def absolutize(self, u):
-        return self.store.absolutize(u, defrag=0)
+    def __init__(self, graph): 
+        self.graph = graph 
 
     def start(self, root): 
-        self.root = self.convert(root)
-	assert self.root.identifier == self.identifier
+        pass
 
     def statement(self, s, p, o, f): 
-        s, p, o  = self.convert(s), self.convert(p), self.convert(o)
-        c = self.convert(f)
-        quoted = (c.identifier != self.root.identifier)  # TODO: should be able to do c != self.root 
-        c.add((s, p, o))
+        f.add((s, p, o))
 
     def quantify(self, formula, var): 
         #print "quantify(%s, %s)" % (formula, var)
