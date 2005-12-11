@@ -81,12 +81,14 @@ except ImportError, e:
 
 
 try:
-    from Ft import Rdf
+    import RDF
     # If we can import RDF then test Redland store
     class RedLandTestCase(StoreTestCase):
         store = "fourthought"
 except ImportError, e:
     print "Can not test Redland store:", e    
+
+# TODO: add test case for 4Suite backends?  from Ft import Rdf
 
 try:
     import MySQLdb,sha,sys
