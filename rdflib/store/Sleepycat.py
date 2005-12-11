@@ -1,31 +1,13 @@
 from rdflib.store import Store
-
 from rdflib.util import from_bits
-from rdflib import BNode
 
 from bsddb import db
 from base64 import b64encode
 from base64 import b64decode
 from os import mkdir
 from os.path import exists
-
-
-def readable_index(i):
-    s, p, o = "?" * 3
-    if i & 1: s = "s"
-    if i & 2: p = "p"
-    if i & 4: o = "o"
-    return "%s,%s,%s" % (s, p, o)
-
-def get_key_func(i):
-    def get_key(triple, context):
-        yield context
-        yield triple[i%3]
-        yield triple[(i+1)%3]
-        yield triple[(i+2)%3]
-    return get_key
-
-
+from threading import Thread
+from time import sleep
 
 # TODO: tool to convert old Sleepycat DBs to this version.
 
@@ -35,7 +17,6 @@ class Sleepycat(Store):
     def __init__(self, configuration=None):
         self.__open = False
         super(Sleepycat, self).__init__(configuration)
-        
         
     def open(self, path, create=True):
         homeDir = path        
@@ -63,12 +44,14 @@ class Sleepycat(Store):
 
         # create and open the DBs
         self.__indicies = [None,] * 3
+        self.__indicies_info = [None,] * 3
         for i in xrange(0, 3):
-            index_name = "".join(get_key_func(i)(("s", "p", "o"), "c"))
+            index_name = to_key_func(i)(("s", "p", "o"), "c")
             index = db.DB(env)
             index.set_flags(dbsetflags)
             index.open(index_name, dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
             self.__indicies[i] = index
+            self.__indicies_info[i] = (index, to_key_func(i), from_key_func(i))
 
         lookup = {}
         for i in xrange(0, 8):
@@ -101,7 +84,7 @@ class Sleepycat(Store):
                     yield ""
                 return get_prefix
 
-            lookup[i] = (start, get_prefix_func(start, start + len))
+            lookup[i] = (self.__indicies[start], get_prefix_func(start, start + len), to_key_func(start), from_key_func(start))
 
 
         self.__lookup_dict = lookup
@@ -118,41 +101,38 @@ class Sleepycat(Store):
         self.__prefix.set_flags(dbsetflags)
         self.__prefix.open("prefix", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
         
-        self.__pending_sync = None
-	self.__syncing = False
+	self.__needs_sync = False
+        t = Thread(target=self.__sync_thread)
+        t.setDaemon(True)
+        t.start()
+        self.__sync_thread = t
 
-    def _schedule_sync(self):
-        from threading import Timer
-        if self.__open and self.__pending_sync is None:
-            t = Timer(60.0, self.sync)
-            self.__pending_sync = t
-            t.setDaemon(True)
-            t.start()
-    
+
+    def __sync_thread(self):
+        while self.__open:
+            if self.__needs_sync:
+                print "needs_sync"
+                sleep(10) # delay to coalesce syncs
+                self.__needs_sync = False
+                print "sync"
+                self.sync()
+            else:
+                print "no sync needed"
+                sleep(1)
+
     def sync(self):
         if self.__open:
-	    self.__syncing = True
-
-            for i in xrange(0, 3):
-                self.__indicies[i].sync()
-
+            for i in self.__indicies:
+                i.sync()
             self.__contexts.sync()
             self.__namespace.sync()
             self.__prefix.sync()
-        self.__pending_sync = None
-	self.__syncing = False
 
     def close(self):
         self.__open = False
-	if self.__pending_sync:
-            if self.__syncing:
-                self.__pending_sync.join()
-            else:
-                self.__pending_sync.cancel()
-
-        for i in xrange(0, 3):
-            self.__indicies[i].close()
-
+        self.__sync_thread.join()
+        for i in self.__indicies:
+            i.close()
         self.__contexts.close()
         self.__namespace.close()
         self.__prefix.close()
@@ -165,7 +145,6 @@ class Sleepycat(Store):
         assert self.__open, "The InformationStore must be open."
 
         _to_string = self._to_string
-        _split = self._split
 
         s = _to_string(subject)
         p = _to_string(predicate)
@@ -176,36 +155,47 @@ class Sleepycat(Store):
 
         cspo, cpos, cosp = self.__indicies
 
-        contexts_value = cspo.get("%s^%s^%s^%s^" % ("", s, p, o))
-        contexts = set(_split(contexts_value))
+        contexts_value = cspo.get("%s^%s^%s^%s^" % ("", s, p, o)) or ""
+        contexts = set(contexts_value.split("^"))
         contexts.add(c)
         contexts_value = "^".join(contexts)
         assert contexts_value!=None
 
         #assert context!=self.identifier
-        cspo.put("%s^%s^%s^%s^" % (c, s, p, o), contexts_value)
-        cpos.put("%s^%s^%s^%s^" % (c, p, o, s), contexts_value)
-        cosp.put("%s^%s^%s^%s^" % (c, o, s, p), contexts_value)
+        cspo.put("%s^%s^%s^%s^" % (c, s, p, o), "")
+        cpos.put("%s^%s^%s^%s^" % (c, p, o, s), "")
+        cosp.put("%s^%s^%s^%s^" % (c, o, s, p), "")
         if not quoted:
             cspo.put("%s^%s^%s^%s^" % ("", s, p, o), contexts_value)
             cpos.put("%s^%s^%s^%s^" % ("", p, o, s), contexts_value)
             cosp.put("%s^%s^%s^%s^" % ("", o, s, p), contexts_value)
 
-        self._schedule_sync() 
+        self.__needs_sync = True
 
-        # We need some store tests for measuring the real world
-        # performance hit for thing like the following:
-        #self.sync()
+    def __remove(self, (s, p, o), c, quoted=False):
+        cspo, cpos, cosp = self.__indicies
 
+        contexts_value = cspo.get("^".join(("", s, p, o, ""))) or ""
+        contexts = set(contexts_value.split("^"))
+        contexts.discard(c)
+        contexts_value = "^".join(contexts)
+        for i, _to_key, _from_key in self.__indicies_info:
+            i.delete(_to_key((s, p, o), c))
+        if not quoted:
+            if contexts_value:
+                for i, _to_key, _from_key in self.__indicies_info:
+                    i.put(_to_key((s, p, o), ""), contexts_value)
+            else:
+                for i, _to_key, _from_key in self.__indicies_info:
+                    i.delete(_to_key((s, p, o), ""))
 
     def remove(self, (subject, predicate, object), context):
         assert self.__open, "The InformationStore must be open."
 
+        # TODO: special case if subject and predicate and object and context:
+        # TODO: write def __remove(self, (s, p, o), c) where all are known and in string form
         cspo, cpos, cosp = self.__indicies
-
-        which, prefix = self.__lookup((subject, predicate, object), context)
-        prefix = "^".join(prefix)
-        index = self.__indicies[which]
+        index, prefix, to_key, from_key = self.__lookup((subject, predicate, object), context)
 
         cursor = index.cursor()
         try:
@@ -223,47 +213,28 @@ class Sleepycat(Store):
                 current = None
             cursor.close()
             if key.startswith(prefix):
-                try:
-                    # TODO: remove from all the right indices
-                    index.delete(key)
-                except db.DBNotFoundError, e:
-                    print e
+                c, s, p, o = from_key(key)
+                if context is None:
+                    contexts_value = index.get(key) # or ""?
+                    contexts = set(contexts_value.split("^")) # remove triple from all non quoted contexts 
+                    contexts.add("") # and from the conjunctive index
+                    for c in contexts:
+                        for i, _to_key, _ in self.__indicies_info:
+                            i.delete(_to_key((s, p, o), c))
+                else:
+                    self.__remove((s, p, o), c)
             else:
                 break            
 
-        #self.sync()
-        self._schedule_sync() 
-
-
-    def __lookup(self, (subject, predicate, object), context):
-        _to_string = self._to_string        
-        if context is not None:
-            context = _to_string(context)
-        i = 0
-        if subject is not None:
-            i += 1
-            subject = _to_string(subject)
-        if predicate is not None:
-            i += 2
-            predicate = _to_string(predicate)
-        if object is not None:
-            i += 4
-            object = _to_string(object)
-        start, prefix_func = self.__lookup_dict[i]        
-        return start, prefix_func((subject, predicate, object), context)
+        self.__needs_sync = True
 
 
     def triples(self, (subject, predicate, object), context=None):
         """A generator over all the triples matching """
-        _split = self._split
-        _from_string = self._from_string
-        _contexts_from_string = self._contexts_from_string
-
         assert self.__open, "The InformationStore must be open."
 
-        which, prefix = self.__lookup((subject, predicate, object), context)
-        prefix = "^".join(prefix)
-        index = self.__indicies[which]
+        _from_string = self._from_string
+        index, prefix, to_key, from_key = self.__lookup((subject, predicate, object), context)
 
         cursor = index.cursor()
         try:
@@ -281,24 +252,20 @@ class Sleepycat(Store):
                 current = None
             cursor.close()
             if key and key.startswith(prefix):
-                parts = list(_split(key))[1:]
-                s = _from_string(parts[(3-which+0)%3])
-                p = _from_string(parts[(3-which+1)%3])
-                o = _from_string(parts[(3-which+2)%3])
-                yield (s, p, o), _contexts_from_string(value)
+                c, s, p, o = from_key(key)
+                contexts_value = index.get(key)
+                yield (_from_string(s), _from_string(p), _from_string(o)), (_from_string(c) for c in contexts_value.split("^") if c)
             else:
                 break            
 
-
     def __len__(self, context=None):
         if context is None:
-            return self.__spo.stat()["nkeys"]
+            return self.__indicies[0].stat()["nkeys"] / 2
         else:
             count = 0
             for triple in self.triples((None, None, None), context):
                 count += 1
             return count
-
 
     def bind(self, prefix, namespace):
         if namespace[-1]=="-":
@@ -331,20 +298,18 @@ class Sleepycat(Store):
         for prefix, namespace in results:
             yield prefix, namespace
 
-
     def contexts(self, triple=None): # TODO: have Graph support triple?
         _from_string = self._from_string
         _to_string = self._to_string        
-        _split = self._split
 
         if triple:
             s, p, o = triple
             s = _to_string(s)
             p = _to_string(p)
             o = _to_string(o)
-            contexts = self.__spo.get("%s^%s^%s^" % (s, p, o))
+            contexts = self.__indicies[0].get("%s^%s^%s^%s^" % ("", s, p, o))
             if contexts:
-                for c in _split(contexts):
+                for c in contexts.split("^"):
                     yield _from_string(c)
         else:
             index = self.__contexts
@@ -364,28 +329,49 @@ class Sleepycat(Store):
                 cursor.close()
     
     def remove_context(self, identifier):
-        _to_string = self._to_string        
-        c = _to_string(identifier)
-        for triple, cg in self.triples((None, None, None), identifier):
-            self.remove(triple, identifier)
-        try:
-            self.__contexts.delete(c)
-        except db.DBNotFoundError, e:
-            pass                    
+        self.remove((None, None, None), identifier)
         
-
     def _from_string(self, s):
         return from_bits(b64decode(s), backend=self)
 
     def _to_string(self, term):
         return b64encode(term.to_bits())
 
-    def _contexts_from_string(self, contexts):
-        for c in _split(contexts):
-            yield _from_string(c)
+    def __lookup(self, (subject, predicate, object), context):
+        _to_string = self._to_string        
+        if context is not None:
+            context = _to_string(context)
+        i = 0
+        if subject is not None:
+            i += 1
+            subject = _to_string(subject)
+        if predicate is not None:
+            i += 2
+            predicate = _to_string(predicate)
+        if object is not None:
+            i += 4
+            object = _to_string(object)
+        index, prefix_func, to_key, from_key = self.__lookup_dict[i]        
+        prefix = "^".join(prefix_func((subject, predicate, object), context))
+        return index, prefix, to_key, from_key
 
-    def _split(self, contexts):
-        if contexts:
-            for part in contexts.split("^"):
-                yield part
 
+def to_key_func(i):
+    def to_key(triple, context):
+        "Takes a string; returns key"
+        return "^".join((context, triple[i%3], triple[(i+1)%3], triple[(i+2)%3], "")) # "" to tac on the trailing ^
+    return to_key
+
+def from_key_func(i):
+    def from_key(key):
+        "Takes a key; returns string"
+        parts = key.split("^")
+        return parts[0], parts[(3-i+0)%3+1], parts[(3-i+1)%3+1], parts[(3-i+2)%3+1]
+    return from_key
+
+def readable_index(i):
+    s, p, o = "?" * 3
+    if i & 1: s = "s"
+    if i & 2: p = "p"
+    if i & 4: o = "o"
+    return "%s,%s,%s" % (s, p, o)
