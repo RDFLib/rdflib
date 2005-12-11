@@ -1,6 +1,6 @@
 from __future__ import generators
 from rdflib import BNode
-from rdflib.backends import Backend
+from rdflib.store import Store
 from rdflib import RDF
 from rdflib.Literal import Literal
 from rdflib.URIRef import URIRef
@@ -8,7 +8,7 @@ from rdflib.BNode import BNode
 from pprint import pprint
 from rdflib.Variable import Variable
 import MySQLdb,sha,sys,re
-from term_utils import *
+from rdflib.term_utils import *
 from rdflib.Graph import QuotedGraph
 Any = None
 
@@ -296,7 +296,7 @@ def ParseConfigurationString(config_string):
         kvDict['password']=''
     return kvDict
 
-class MySQL(Backend):
+class MySQL(Store):
     """
     MySQL store formula-aware implementation.  It stores it's triples in the following partitions:
 
@@ -359,7 +359,6 @@ class MySQL(Backend):
                 c.close()
                 test_db.close()    
                 
-
             db = MySQLdb.connect(user = configDict['user'],
                                  passwd = configDict['password'],
                                  db=configDict['db'],
@@ -423,7 +422,7 @@ class MySQL(Backend):
         
     def add(self, (subject, predicate, obj), context=None, quoted=False):        
         """ Add a triple to the store of triples. """
-        assert context
+        assert context and context != self.identifier
         c=self._db.cursor()
         c.execute("""SET AUTOCOMMIT=0""")
         if quoted or predicate != RDF.type:
@@ -577,7 +576,7 @@ class MySQL(Backend):
                 rt = next = c.fetchone()
                 sameTriple = next and extractTriple(next,self,context)[:3] == (s,p,o)
                     
-            yield s,p,o,(c for c in contexts)
+            yield (s,p,o),(c for c in contexts)
             
     def __repr__(self):
         c=self._db.cursor()
@@ -681,7 +680,6 @@ class MySQL(Backend):
                 ),                
             ]
             q=unionSELECT(selects,distinct=False,selectType=COUNT_SELECT)
-
         c.execute(_normalizeMySQLCmd(q))
         rt=c.fetchall()
         return reduce(lambda x,y: x+y,  [rtTuple[0] for rtTuple in rt])
