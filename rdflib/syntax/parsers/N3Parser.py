@@ -25,7 +25,7 @@ class N3Parser(Parser):
         if False: 
             sink.quantify = lambda *args: True
             sink.flatten = lambda *args: True
-        baseURI = graph.absolutize(source.getSystemId() or "")
+        baseURI = graph.absolutize(source.getPublicId() or source.getSystemId() or "")
         p = N3Processor("nowhere", sink, baseURI=baseURI) # pass in "nowhere" so we can set data instead
 	p.userkeys = True # bah
 	p.data = source.getByteStream().read() # TODO getCharacterStream?
