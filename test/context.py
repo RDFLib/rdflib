@@ -243,6 +243,13 @@ class IOMemoryContextTestCase(ContextTestCase):
     backend = "IOMemory"
 
 try:
+    from rdflib.store.Sleepycat import Sleepycat
+    class SleepycatStoreTestCase(ContextTestCase):
+        backend = "Sleepycat"
+except ImportError, e:
+    print "Can not test Sleepycat store:", e
+
+try:
     import persistent
     # If we can import persistent then test ZODB backend
     class ZODBContextTestCase(ContextTestCase):

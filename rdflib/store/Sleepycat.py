@@ -323,7 +323,11 @@ class Sleepycat(Store):
             contexts = self.__indicies[0].get("%s^%s^%s^%s^" % ("", s, p, o))
             if contexts:
                 for c in contexts.split("^"):
-                    yield _from_string(c)
+                    if c:
+                        yield _from_string(c)
+                    else:
+                        yield self.identifier
+
         else:
             index = self.__contexts
             cursor = index.cursor()
@@ -342,11 +346,14 @@ class Sleepycat(Store):
                 cursor.close()
     
     def remove_context(self, identifier):
-        if context == self.identifier: 
+        if identifier == self.identifier: 
             # TODO: comment as to why this is
             context = None
-
         self.remove((None, None, None), identifier)
+        try:
+            self.__contexts.delete(self._to_string(identifier))
+        except db.DBNotFoundError, e:
+            pass                    
         
     def _from_string(self, s):
         return from_bits(b64decode(s), backend=self)
