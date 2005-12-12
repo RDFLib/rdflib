@@ -5,9 +5,11 @@ __date__ = "2005/12/08"
 
 import sys
 # TODO: what version of python does rdflib require??
-if sys.version_info <= (2,3,0):
-    print "This version of rdflib has not yet been tested on version prior to Python 2.3"
-assert sys.version_info >= (2,2,1), "rdflib requires Python 2.2.1 or higher"
+#if sys.version_info <= (2,3,0):
+#    print "This version of rdflib has not yet been tested on version prior to Python 2.3"
+
+# generator expressions require 2.4
+assert sys.version_info >= (2,4,0), "rdflib requires Python 2.4 or higher"
 del sys
 
 import logging
