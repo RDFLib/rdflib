@@ -7,7 +7,7 @@ from base64 import b64decode
 from os import mkdir
 from os.path import exists
 from threading import Thread
-from time import sleep
+from time import sleep, time
 
 # TODO: tool to convert old Sleepycat DBs to this version.
 
@@ -110,15 +110,22 @@ class Sleepycat(Store):
 
 
     def __sync_thread(self):
+        min_seconds, max_seconds = 10, 300
         while self.__open:
             if self.__needs_sync:
-                #print "needs_sync"
-                sleep(10) # delay to coalesce syncs
+                t0 = t1 = time()
                 self.__needs_sync = False
-                #print "sync"
-                self.sync()
+                while self.__open:
+                    sleep(.1) 
+                    if self.__needs_sync:
+                        t1 = time()
+                        self.__needs_sync = False
+                    if time()-t1 > min_seconds or time()-t0 > max_seconds: 
+                        self.__needs_sync = False
+                        print "sync"
+                        self.sync()
+                        break
             else:
-                #print "no sync needed"
                 sleep(1)
 
     def sync(self):
