@@ -161,6 +161,7 @@ class ContextTestCase(unittest.TestCase):
         c1 = self.c1
         asserte = self.assertEquals
         triples = self.graph.triples
+        graph = self.graph
         Any = None
 
         self.addStuff()
@@ -233,6 +234,39 @@ class ContextTestCase(unittest.TestCase):
         asserte(len(list(triples((Any, Any, Any), c1))), 7)
         # all unbound without context, same result!
         asserte(len(list(triples((Any, Any, Any)))), 7)
+
+        for c in [graph, graph.get_context(c1)]:
+            # unbound subjects
+            c = graph.get_context(c1)
+            asserte(set(c.subjects(likes, pizza)), set((michel, tarek)))
+            asserte(set(c.subjects(hates, pizza)), set((bob,)))
+            asserte(set(c.subjects(likes, cheese)), set([u'tarek', u'bob', u'michel']))
+            asserte(set(c.subjects(hates, cheese)), set())
+
+            # unbound objects
+            asserte(set(c.objects(michel, likes)), set([u'cheese', u'pizza']))
+            asserte(set(c.objects(tarek, likes)), set([u'cheese', u'pizza']))
+            asserte(set(c.objects(bob, hates)), set([u'michel', u'pizza']))
+            asserte(set(c.objects(bob, likes)), set([u'cheese']))
+
+            # unbound predicates
+            asserte(set(c.predicates(michel, cheese)), set([u'likes']))
+            asserte(set(c.predicates(tarek, cheese)), set([u'likes']))
+            asserte(set(c.predicates(bob, pizza)), set([u'hates']))
+            asserte(set(c.predicates(bob, michel)), set([u'hates']))
+
+            asserte(set(c.subject_objects(hates)), set([(u'bob', u'pizza'), (u'bob', u'michel')]))
+            asserte(set(c.subject_objects(likes)), set([(u'tarek', u'cheese'), (u'michel', u'cheese'), (u'michel', u'pizza'), (u'bob', u'cheese'), (u'tarek', u'pizza')]))
+
+            asserte(set(c.predicate_objects(michel)), set([(u'likes', u'cheese'), (u'likes', u'pizza')]))
+            asserte(set(c.predicate_objects(bob)), set([(u'likes', u'cheese'), (u'hates', u'pizza'), (u'hates', u'michel')]))
+            asserte(set(c.predicate_objects(tarek)), set([(u'likes', u'cheese'), (u'likes', u'pizza')]))
+            
+            asserte(set(c.subject_predicates(pizza)), set([(u'bob', u'hates'), (u'tarek', u'likes'), (u'michel', u'likes')]))
+            asserte(set(c.subject_predicates(cheese)), set([(u'bob', u'likes'), (u'tarek', u'likes'), (u'michel', u'likes')]))
+            asserte(set(c.subject_predicates(michel)), set([(u'bob', u'hates')]))
+
+            asserte(set(c.triples((None, None, None))), set([(u'bob', u'hates', u'michel'), (u'bob', u'likes', u'cheese'), (u'tarek', u'likes', u'pizza'), (u'michel', u'likes', u'pizza'), (u'michel', u'likes', u'cheese'), (u'bob', u'hates', u'pizza'), (u'tarek', u'likes', u'cheese')]))
 
         # remove stuff and make sure the graph is empty again
         self.removeStuff()
