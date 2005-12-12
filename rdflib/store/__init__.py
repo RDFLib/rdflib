@@ -7,7 +7,7 @@ class Store(object):
     formula_aware = False
     transaction_aware = False
 
-    def __init__(self, configuration=None):
+    def __init__(self, configuration=None, identifier=None):
         """ 
         identifier: URIRef of the Store. Defaults to CWD
         configuration: string containing infomation open can use to

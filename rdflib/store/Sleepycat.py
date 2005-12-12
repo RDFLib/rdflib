@@ -14,8 +14,9 @@ from time import sleep
 class Sleepycat(Store):
     context_aware = True
 
-    def __init__(self, configuration=None):
+    def __init__(self, configuration=None, identifier=None):
         self.__open = False
+        self.identifier = identifier
         super(Sleepycat, self).__init__(configuration)
         
     def open(self, path, create=True):
@@ -111,13 +112,13 @@ class Sleepycat(Store):
     def __sync_thread(self):
         while self.__open:
             if self.__needs_sync:
-                print "needs_sync"
+                #print "needs_sync"
                 sleep(10) # delay to coalesce syncs
                 self.__needs_sync = False
-                print "sync"
+                #print "sync"
                 self.sync()
             else:
-                print "no sync needed"
+                #print "no sync needed"
                 sleep(1)
 
     def sync(self):
@@ -192,6 +193,10 @@ class Sleepycat(Store):
     def remove(self, (subject, predicate, object), context):
         assert self.__open, "The InformationStore must be open."
 
+        if context == self.identifier: 
+            # TODO: comment as to why this is
+            context = None
+
         # TODO: special case if subject and predicate and object and context:
         # TODO: write def __remove(self, (s, p, o), c) where all are known and in string form
         cspo, cpos, cosp = self.__indicies
@@ -233,6 +238,10 @@ class Sleepycat(Store):
         """A generator over all the triples matching """
         assert self.__open, "The InformationStore must be open."
 
+        if context == self.identifier: 
+            # TODO: comment as to why this is
+            context = None
+
         _from_string = self._from_string
         index, prefix, to_key, from_key = self.__lookup((subject, predicate, object), context)
 
@@ -259,6 +268,10 @@ class Sleepycat(Store):
                 break            
 
     def __len__(self, context=None):
+        if context == self.identifier: 
+            # TODO: comment as to why this is
+            context = None
+
         if context is None:
             return self.__indicies[0].stat()["nkeys"] / 2
         else:
@@ -329,6 +342,10 @@ class Sleepycat(Store):
                 cursor.close()
     
     def remove_context(self, identifier):
+        if context == self.identifier: 
+            # TODO: comment as to why this is
+            context = None
+
         self.remove((None, None, None), identifier)
         
     def _from_string(self, s):
