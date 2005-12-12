@@ -53,7 +53,7 @@ try:
 	    f.parse("http://eikeon.com/")
 	    source = f
 	    source = self.g
-	    interp.addFacts(list(facts(source)), initialSet=True)        
+	    interp.addFacts(set(facts(source)), initialSet=True)        
 	    interp.run()
 	    print interp.inferredFacts
 
