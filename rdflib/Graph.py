@@ -418,9 +418,12 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
         """ Removes the given context from the graph. """
         self.store.remove_context(identifier)
 
-    def context_id(self, uri):
+    def context_id(self, uri, context_id=None):
+        """ URI#context """
         uri = uri.split("#", 1)[0]
-        return URIRef("%s#context" % uri)
+        if context_id is None:
+            context_id = "#context"
+        return URIRef(context_id, base=uri)
 
     def parse(self, source, publicID=None, format="xml"):
         """ 
