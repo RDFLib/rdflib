@@ -16,7 +16,8 @@ class Sleepycat(Store):
 
     def __init__(self, configuration=None, identifier=None):
         self.__open = False
-        self.identifier = identifier
+        from rdflib import BNode
+        self.identifier = identifier or BNode() # TODO: derive this from CWD, configuration or have graph pass down the logical URI of the Store.
         super(Sleepycat, self).__init__(configuration)
         
     def open(self, path, create=True):
