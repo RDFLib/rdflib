@@ -35,7 +35,13 @@ register_adaptor(serializer.Serializer, serializers.Serializer)
 #register_adaptor(parser.Parser, parsers.Parser)
 
 
+register('rdf', serializers.Serializer,
+         'rdflib.syntax.serializers.XMLSerializer', 'XMLSerializer')
+
 register('xml', serializers.Serializer,
+         'rdflib.syntax.serializers.XMLSerializer', 'XMLSerializer')
+
+register('rdf/xml', serializers.Serializer,
          'rdflib.syntax.serializers.XMLSerializer', 'XMLSerializer')
 
 register('pretty-xml', serializers.Serializer,
@@ -48,6 +54,9 @@ register('xml', parsers.Parser,
          'rdflib.syntax.parsers.RDFXMLParser', 'RDFXMLParser')
 
 register('n3', parsers.Parser,
+         'rdflib.syntax.parsers.N3Parser', 'N3Parser')
+
+register('notation3', parsers.Parser,
          'rdflib.syntax.parsers.N3Parser', 'N3Parser')
 
 register('nt', parsers.Parser,
