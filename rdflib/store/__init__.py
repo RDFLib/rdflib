@@ -32,10 +32,10 @@ class Store(object):
     def destroy(self, configuration):
         """ """        
 
-    def add(self, (subject, predicate, object), context=None, quoted=False):
+    def add(self, (subject, predicate, object), context, quoted=False):
         """ Add a triple to the store of triples. """
 
-    def remove(self, (subject, predicate, object), context):
+    def remove(self, (subject, predicate, object), context=None):
         """ Remove a triple from the store """
 
     def triples(self, (subject, predicate, object), context=None):

@@ -12,8 +12,10 @@ This triple store uses nested dictionaries to store triples. Each
 triple is stored in two such indices as follows spo[s][p][o] = 1 and
 pos[p][o][s] = 1.
     """    
-    def __init__(self, configuration=None):
+    def __init__(self, configuration=None, identifier=None):
         super(Memory, self).__init__(configuration)
+        self.identifier = identifier
+
         # indexed by [subject][predicate][object]
         self.__spo = {}
 
@@ -26,7 +28,7 @@ pos[p][o][s] = 1.
         self.__namespace = {}
         self.__prefix = {}
 
-    def add(self, (subject, predicate, object), context=None, quoted=False):
+    def add(self, (subject, predicate, object), context, quoted=False):
         """\
         Add a triple to the store of triples.
         """

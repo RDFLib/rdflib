@@ -24,7 +24,7 @@ class IOMemory(Store):
     context_aware = True
     formula_aware = True
 
-    def __init__(self, default_context=None):
+    def __init__(self, configuration=None, identifier=None):
         super(IOMemory, self).__init__()
         
         # indexed by [context][subject][predicate][object] = 1
@@ -51,16 +51,11 @@ class IOMemory(Store):
         # reverse index of forward
         self.reverse = self.createReverse()
 
-        if default_context is None:
-            default_context = BNode()
-            
-        self.default_context = default_context
+        self.identifier = identifier
 
         self.__namespace = self.createPrefixMap()
         self.__prefix = self.createPrefixMap()
 	
-	self.identifier = BNode()
-        
     def bind(self, prefix, namespace):
         self.__prefix[namespace] = prefix
         self.__namespace[prefix] = namespace
@@ -131,7 +126,7 @@ class IOMemory(Store):
     def createPrefixMap(self):
         return {}
 
-    def add(self, triple, context=None, quoted=False):
+    def add(self, triple, context, quoted=False):
         """\
         Add a triple to the store.
         """
@@ -141,7 +136,6 @@ class IOMemory(Store):
             return
             
         subject, predicate, object = triple
-        context = context or self.default_context
         
         f = self.forward
         r = self.reverse
@@ -232,6 +226,8 @@ class IOMemory(Store):
             pass
 
     def remove(self, triple, context=None):
+        if context==self.identifier:
+            context = None
         f = self.forward
         r = self.reverse
         if context is None:
@@ -271,6 +267,8 @@ class IOMemory(Store):
 
     def triples(self, triple, context=None):
         """A generator over all the triples matching """
+        if context==self.identifier:
+            context = None
         subject, predicate, object = triple
         ci = si = pi = oi = Any
         
@@ -358,6 +356,8 @@ class IOMemory(Store):
                         yield (ss, pp, oo), (c for c in self.contexts((ss, pp, oo)))
 
     def __len__(self, context):
+        if context==self.identifier:
+            context = None
         # TODO: for eff. implementation
         count = 0
         for triple, cg in self.triples((Any, Any, Any), context):
