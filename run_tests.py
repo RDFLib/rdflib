@@ -1,6 +1,6 @@
 import unittest
 
-quick = True
+quick = False
 
 from test.identifier_equality import *
 
