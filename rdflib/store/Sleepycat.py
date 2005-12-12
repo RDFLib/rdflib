@@ -103,13 +103,13 @@ class Sleepycat(Store):
         self.__prefix.open("prefix", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
         
 	self.__needs_sync = False
-        t = Thread(target=self.__sync_thread)
+        t = Thread(target=self.__sync_run)
         t.setDaemon(True)
         t.start()
         self.__sync_thread = t
 
 
-    def __sync_thread(self):
+    def __sync_run(self):
         min_seconds, max_seconds = 10, 300
         while self.__open:
             if self.__needs_sync:
