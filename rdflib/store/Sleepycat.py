@@ -281,12 +281,20 @@ class Sleepycat(Store):
             context = None
 
         if context is None:
-            return self.__indicies[0].stat()["nkeys"] / 2
+            #return self.__indicies[0].stat()["nkeys"] / 2
+            prefix = "^"
         else:
-            count = 0
-            for triple in self.triples((None, None, None), context):
-                count += 1
-            return count
+            prefix = "%s^" % self._to_string(context)
+
+        index = self.__indicies[0]
+        cursor = index.cursor()
+        current = cursor.set_range("^")
+        count = 0
+        while current:
+            count +=1
+            current = cursor.next()
+        cursor.close()
+        return count
 
     def bind(self, prefix, namespace):
         if namespace[-1]=="-":
