@@ -30,14 +30,14 @@ rdfData ="""<?xml version="1.0" encoding="UTF-8"?>
    xmlns:ns = "http://example.org/ns#"
    xmlns:book = "http://example.org/book"
 >
-	<rdf:Description rdf:ID="book2">
-		<dc0:title>SPARQL Query Language Tutorial</dc0:title>
-		<dc0:creator>Alice</dc0:creator>
-	</rdf:Description>
-	<rdf:Description rdf:ID="book1">
-		<dc:title>SPARQL Protocol Tutorial</dc:title>
-		<dc:creator>Bob</dc:creator>
-	</rdf:Description>
+        <rdf:Description rdf:ID="book2">
+                <dc0:title>SPARQL Query Language Tutorial</dc0:title>
+                <dc0:creator>Alice</dc0:creator>
+        </rdf:Description>
+        <rdf:Description rdf:ID="book1">
+                <dc:title>SPARQL Protocol Tutorial</dc:title>
+                <dc:creator>Bob</dc:creator>
+        </rdf:Description>
 </rdf:RDF>
 """
 

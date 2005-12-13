@@ -11,24 +11,24 @@ class uninstall(Command):
     user_options = [ ]
 
     def initialize_options (self):
-	pass
+        pass
 
     def finalize_options (self):
-	pass
+        pass
 
     def run (self):
-	"Look for and rename rdflib if one has already been installed."
-	from distutils.sysconfig import get_python_lib
-	from os import rename
-	from os.path import join, exists
-	from time import time
+        "Look for and rename rdflib if one has already been installed."
+        from distutils.sysconfig import get_python_lib
+        from os import rename
+        from os.path import join, exists
+        from time import time
 
-	lib_dir = get_python_lib()
-	rdflib_dir = join(lib_dir, "rdflib")
-	if exists(rdflib_dir):
-	    backup = "%s-%s" % (rdflib_dir, int(time()))    
-	    print "Renaming previously installed rdflib to: \n  %s" % backup
-	    rename(rdflib_dir, backup)
+        lib_dir = get_python_lib()
+        rdflib_dir = join(lib_dir, "rdflib")
+        if exists(rdflib_dir):
+            backup = "%s-%s" % (rdflib_dir, int(time()))    
+            print "Renaming previously installed rdflib to: \n  %s" % backup
+            rename(rdflib_dir, backup)
 
 setup(
     cmdclass={'uninstall': uninstall},

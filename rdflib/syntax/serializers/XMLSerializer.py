@@ -25,7 +25,7 @@ class XMLSerializer(Serializer):
             
     def serialize(self, stream, base=None, encoding=None):
         if base is not None:
-	    print "TODO: NTSerializer does not support base"
+            print "TODO: NTSerializer does not support base"
         self.__stream = stream        
         self.__serialized = {}
         self.__update_prefix_map()

@@ -8,15 +8,15 @@
    Datatype test. Note that this is not 100% kosher. The problem is that the Literal of rdflib does not check the 
    datatypes. In theory, if the data contains:
 
-	   x ns:p 42.
+           x ns:p 42.
    
    instead of:
-	   
+           
        x ns:p 42^^http://www.w3.org/2001/XMLSchema#integer
-	   
+           
     the query should return no results, because the first object is of datatype string. However, Literal does not
-	implement this...
-	   
+        implement this...
+           
 """
 rdfData ="""<?xml version="1.0" encoding="UTF-8"?>
 <rdf:RDF
@@ -27,12 +27,12 @@ rdfData ="""<?xml version="1.0" encoding="UTF-8"?>
    xmlns:ns   ="http://example.org/ns#"
    xmlns:dt   ="http://example.org/datatype#"
 >
-	<rdf:Description>
-		<ns:p rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">42</ns:p>
-		<ns:p rdf:datatype="http://example.org/datatype#specialDatatype">abc</ns:p>
-		<ns:p>2005-02-27</ns:p>
-		<ns:p xml:lang="en">cat</ns:p>
-	</rdf:Description>
+        <rdf:Description>
+                <ns:p rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">42</ns:p>
+                <ns:p rdf:datatype="http://example.org/datatype#specialDatatype">abc</ns:p>
+                <ns:p>2005-02-27</ns:p>
+                <ns:p xml:lang="en">cat</ns:p>
+        </rdf:Description>
 </rdf:RDF>
 """
 from testSPARQL import ns_rdf

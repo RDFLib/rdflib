@@ -29,14 +29,14 @@ rdfData = """<?xml version="1.0" encoding="UTF-8"?>
    xmlns:foaf="http://xmlns.com/foaf/0.1/"
    xmlns:ns = "http://example.org/ns#"
 >
-	<rdf:Description>
-		<foaf:givenname>Alice</foaf:givenname>
-		<foaf:family_name>Hacker</foaf:family_name>
-	</rdf:Description>
-	<rdf:Description>
-		<foaf:givenname>Bob</foaf:givenname>
-		<foaf:family_name>Hacker</foaf:family_name>
-	</rdf:Description>
+        <rdf:Description>
+                <foaf:givenname>Alice</foaf:givenname>
+                <foaf:family_name>Hacker</foaf:family_name>
+        </rdf:Description>
+        <rdf:Description>
+                <foaf:givenname>Bob</foaf:givenname>
+                <foaf:family_name>Hacker</foaf:family_name>
+        </rdf:Description>
 </rdf:RDF>
 """
 select      = []

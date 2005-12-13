@@ -22,10 +22,10 @@ rdfData ="""<?xml version="1.0" encoding="UTF-8"?>
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:foaf="http://xmlns.com/foaf/0.1/"
 >
-	<rdf:Description>
-		<foaf:name>Johny Lee Outlaw</foaf:name>	
-		<foaf:mbox rdf:resource="mailto:jlow@example.com"/>
-	</rdf:Description>
+        <rdf:Description>
+                <foaf:name>Johny Lee Outlaw</foaf:name>	
+                <foaf:mbox rdf:resource="mailto:jlow@example.com"/>
+        </rdf:Description>
 </rdf:RDF>
 """
 

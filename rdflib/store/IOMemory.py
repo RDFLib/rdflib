@@ -55,7 +55,7 @@ class IOMemory(Store):
 
         self.__namespace = self.createPrefixMap()
         self.__prefix = self.createPrefixMap()
-	
+        
     def bind(self, prefix, namespace):
         self.__prefix[namespace] = prefix
         self.__namespace[prefix] = namespace
@@ -186,9 +186,9 @@ class IOMemory(Store):
         self._setNestedIndex(self.cosp, ci, oi, si, pi)
         
         if not quoted:
-	    self._setNestedIndex(self.spo, si, pi, oi, ci)
-	    self._setNestedIndex(self.pos, pi, oi, si, ci)
-	    self._setNestedIndex(self.osp, oi, si, pi, ci)
+            self._setNestedIndex(self.spo, si, pi, oi, ci)
+            self._setNestedIndex(self.pos, pi, oi, si, ci)
+            self._setNestedIndex(self.osp, oi, si, pi, ci)
         
     def _setNestedIndex(self, index, *keys):
         for key in keys[:-1]:

@@ -38,13 +38,13 @@ class Graph(Node):
     def __init__(self, store='default', identifier=None):
         super(Graph, self).__init__()
         self.__identifier = identifier or BNode() 
-	if not isinstance(store, Store):
-	    # TODO: error handling
-	    store = plugin.get(store, Store)()
+        if not isinstance(store, Store):
+            # TODO: error handling
+            store = plugin.get(store, Store)()
         self.__store = store
         self.__namespace_manager = None
-	self.context_aware = False
-	self.formula_aware = False
+        self.context_aware = False
+        self.formula_aware = False
 
     def __get_store(self):
         return self.__store
@@ -108,25 +108,25 @@ class Graph(Node):
         provide a context attribute, removes the triple from all
         contexts."""
 
-	self.__store.remove((s, p, o), context=self.identifier)
+        self.__store.remove((s, p, o), context=self.identifier)
 
     def triples(self, (s, p, o)):
         """ Generator over the triple store.  Returns triples that
         match the given triple pattern.  If triple pattern does not
         provide a context, all contexts will be searched."""
-	for (s, p, o), contexts in self.__store.triples((s, p, o), context=self.identifier):
-	    yield (s, p, o)
+        for (s, p, o), contexts in self.__store.triples((s, p, o), context=self.identifier):
+            yield (s, p, o)
 
     def statements(self, (s, p, o)):
         """ Generator over the triple store.  Returns statements that
         match the given triple pattern.  If triple pattern does not
         provide a context, all contexts will be searched."""
-	for (s, p, o), contexts in self.__store.triples((s, p, o), context=self.identifier):
-	    yield (s, p, o), contexts
+        for (s, p, o), contexts in self.__store.triples((s, p, o), context=self.identifier):
+            yield (s, p, o), contexts
 
     def __len__(self):
         """ Returns the number of triples in the graph. If context is specified then the number of triples in the context is returned instead."""
-	return self.__store.__len__(context=self.identifier)
+        return self.__store.__len__(context=self.identifier)
 
     def __iter__(self):
         """ Iterates over all triples in the store. """
@@ -342,8 +342,8 @@ class Graph(Node):
         self.parse(source, publicID, format)
 
     def n3(self):
-	"""return an n3 identifier for the Graph"""
-	return "[%s]" % self.identifier.n3()
+        """return an n3 identifier for the Graph"""
+        return "[%s]" % self.identifier.n3()
 
     def to_bits(self):
         return dumps((4, (unicode(self.identifier),)))
@@ -368,29 +368,29 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
 
     def __init__(self, store='default'):
         super(ConjunctiveGraph, self).__init__(store)
-	assert self.store.context_aware, "ConjunctiveGraph must be backed by a context aware store."
-	self.context_aware = True
-	self.default_context = BNode()
+        assert self.store.context_aware, "ConjunctiveGraph must be backed by a context aware store."
+        self.context_aware = True
+        self.default_context = BNode()
 
     def add(self, (s, p, o), context=None):
-	""""A conjunctive graph adds to its default context."""
-	self.store.add((s, p, o), context=context or self.default_context, quoted=False)
+        """"A conjunctive graph adds to its default context."""
+        self.store.add((s, p, o), context=context or self.default_context, quoted=False)
     
     def remove(self, (s, p, o), context=None):
-	"""A conjunctive graph removes from all its contexts."""
+        """A conjunctive graph removes from all its contexts."""
         self.store.remove((s, p, o), context)
 
     def triples(self, (s, p, o), context=None):
         """An iterator over all the triples in the entire conjunctive graph."""
-	for (s, p, o), cg in self.store.triples((s, p, o), context):
-	    yield (s, p, o)
+        for (s, p, o), cg in self.store.triples((s, p, o), context):
+            yield (s, p, o)
 
     def statements(self, (s, p, o), context=None):
         """ Generator over the triple store.  Returns statements that
         match the given triple pattern.  If triple pattern does not
         provide a context, all contexts will be searched."""
-	for (s, p, o), contexts in self.store.triples((s, p, o), context):
-	    yield (s, p, o), contexts
+        for (s, p, o), contexts in self.store.triples((s, p, o), context):
+            yield (s, p, o), contexts
 
     def __len__(self, context=None):
         """Returns the number of triples in the entire conjunctive graph."""
@@ -398,9 +398,9 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
 
     def contexts(self, triple=None):
         """ 
-	Iterator over all contexts in the graph. If triple is
-	specified, a generator over all contexts the triple is in.
-	"""
+        Iterator over all contexts in the graph. If triple is
+        specified, a generator over all contexts the triple is in.
+        """
         for context in self.store.contexts(triple):
             yield context
 
@@ -427,19 +427,19 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
 
     def parse(self, source, publicID=None, format="xml"):
         """ 
-	Parse source into Graph into it's own context (sub
-	graph). Format defaults to xml (AKA rdf/xml). The publicID
-	argument is for specifying the logical URI for the case that
-	it's different from the physical source URI. Returns the
-	context into which the source was parsed. In the case of n3 it
-	returns the root context.
-	"""
+        Parse source into Graph into it's own context (sub
+        graph). Format defaults to xml (AKA rdf/xml). The publicID
+        argument is for specifying the logical URI for the case that
+        it's different from the physical source URI. Returns the
+        context into which the source was parsed. In the case of n3 it
+        returns the root context.
+        """
         source = self.prepare_input_source(source, publicID)
-	id = self.context_id(self.absolutize(source.getPublicId()))
-	self.remove_context(id)
-	context = self.get_context(id)
-	context.parse(source, publicID=publicID, format=format)
-	return context
+        id = self.context_id(self.absolutize(source.getPublicId()))
+        self.remove_context(id)
+        context = self.get_context(id)
+        context.parse(source, publicID=publicID, format=format)
+        return context
 
 
 class QuotedGraph(Graph):
@@ -451,8 +451,8 @@ class QuotedGraph(Graph):
         self.store.add(triple, self.identifier, quoted=True)
 
     def n3(self):
-	"""return an n3 identifier for the Graph"""
-	return "{%s}" % self.identifier.n3()
+        """return an n3 identifier for the Graph"""
+        return "{%s}" % self.identifier.n3()
 
     def to_bits(self):
         return dumps((5, (unicode(self.identifier),)))

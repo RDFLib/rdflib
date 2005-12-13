@@ -29,14 +29,14 @@ rdfData = """<?xml version="1.0" encoding="UTF-8"?>
    xmlns:foaf="http://xmlns.com/foaf/0.1/"
    xmlns:ns = "http://example.org/ns#"
 >
-	<rdf:Description>
-		<foaf:name>Alice</foaf:name>
-		<foaf:mbox rdf:resource="mailto:alice@example.com"/>
-	</rdf:Description>
-	<rdf:Description>
-		<foaf:name>Bob</foaf:name>
-		<foaf:mbox rdf:resource="mailto:bob@example.org"/>
-	</rdf:Description>
+        <rdf:Description>
+                <foaf:name>Alice</foaf:name>
+                <foaf:mbox rdf:resource="mailto:alice@example.com"/>
+        </rdf:Description>
+        <rdf:Description>
+                <foaf:name>Bob</foaf:name>
+                <foaf:mbox rdf:resource="mailto:bob@example.org"/>
+        </rdf:Description>
 </rdf:RDF>
 """
 

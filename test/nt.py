@@ -11,7 +11,7 @@ class NTTestCase(unittest.TestCase):
         pass
 
     def testModel(self):
-	g = Graph()
+        g = Graph()
         g.load("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test002.nt", format="nt")
 
 

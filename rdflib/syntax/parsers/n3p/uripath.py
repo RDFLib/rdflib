@@ -209,7 +209,7 @@ def refTo(base, uri):
 
     m = commonHost.match(base[:i])
     if m:
-	k=uri.find("//")
+        k=uri.find("//")
         if k<0: k=-2 # no host
         l=uri.find("/", k+2)
         if uri[l+1:l+2] != "/" and base[l+1:l+2] != "/" and uri[:l]==base[:l]:
@@ -234,15 +234,15 @@ def refTo(base, uri):
 import os
 def base():
         """The base URI for this process - the Web equiv of cwd
-	
-	Relative or abolute unix-standard filenames parsed relative to
-	this yeild the URI of the file.
-	If we had a reliable way of getting a computer name,
-	we should put it in the hostname just to prevent ambiguity
+        
+        Relative or abolute unix-standard filenames parsed relative to
+        this yeild the URI of the file.
+        If we had a reliable way of getting a computer name,
+        we should put it in the hostname just to prevent ambiguity
 
         """
 #	return "file://" + hostname + os.getcwd() + "/"
-	return "file:" + _fixslash(os.getcwd()) + "/"
+        return "file:" + _fixslash(os.getcwd()) + "/"
 
 
 def _fixslash(str):

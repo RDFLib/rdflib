@@ -39,8 +39,8 @@ class StoreTestCase(unittest.TestCase):
     def testTime(self):
         number = 3
         it = itertools.repeat(None, number)        
-	for i in it:
-	    self._testTime()
+        for i in it:
+            self._testTime()
         print "."
 
     def _testTime(self):
@@ -48,15 +48,15 @@ class StoreTestCase(unittest.TestCase):
         store = self.graph
 
         def add_random():
-	    s = random_uri()
-	    p = random_uri()
-	    o = random_uri()
+            s = random_uri()
+            p = random_uri()
+            o = random_uri()
             store.add((s, p, o))
 
         it = itertools.repeat(None, number)
         t0 = time()
         for _i in it:
-	    add_random()
+            add_random()
         t1 = time()
         print self.store, "%.3g" % (t1 - t0),
 

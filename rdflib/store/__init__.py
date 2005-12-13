@@ -19,11 +19,11 @@ class Store(object):
     def open(self, configuration, create=True):
         """ 
         Opens the store specified by the configuration string. If
-	create is True a store will be created if it does not already
-	exist. If create is False and a store does not already exist
-	an exception is raised. An exception is also raised if a store
-	exists, but there is insufficient permissions to open the
-	store.
+        create is True a store will be created if it does not already
+        exist. If create is False and a store does not already exist
+        an exception is raised. An exception is also raised if a store
+        exists, but there is insufficient permissions to open the
+        store.
         """
 
     def close(self, commit_pending_transaction=False):

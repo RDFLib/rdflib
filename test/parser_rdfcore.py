@@ -153,10 +153,10 @@ class ParserTestCase(unittest.TestCase):
                 test = BNode()
                 results.add((test, RESULT["test"], uri))
                 results.add((test, RESULT["system"], system))
-		if not result:
+                if not result:
                     results.add((test, TYPE, RESULT["PassingRun"]))
-		else:
-		   results.add((test, TYPE, RESULT["FailingRun"]))
+                else:
+                   results.add((test, TYPE, RESULT["FailingRun"]))
                 total += 1
                 num_failed += result
         self.assertEquals(num_failed, 0, "Failed: %s of %s." % (num_failed, total))

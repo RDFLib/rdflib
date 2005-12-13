@@ -28,14 +28,14 @@ rdfData ="""<?xml version="1.0" encoding="UTF-8"?>
    xmlns:ns = "http://example.org/ns#"
    xmlns:book = "http://example.org/book"
 >
-	<rdf:Description rdf:ID="book1">
-		<dc:title>SPARQL Tutorial</dc:title>
-		<ns:price rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">42</ns:price>
-	</rdf:Description>
-	<rdf:Description rdf:ID="book2">
-		<dc:title>The Semantic Web</dc:title>
-		<ns:price rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">23</ns:price>
-	</rdf:Description>
+        <rdf:Description rdf:ID="book1">
+                <dc:title>SPARQL Tutorial</dc:title>
+                <ns:price rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">42</ns:price>
+        </rdf:Description>
+        <rdf:Description rdf:ID="book2">
+                <dc:title>The Semantic Web</dc:title>
+                <ns:price rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">23</ns:price>
+        </rdf:Description>
 </rdf:RDF>
 """
 

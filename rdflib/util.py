@@ -116,11 +116,11 @@ def from_n3(s, default=None, backend=None):
         value = value.decode("unicode-escape")
         return Literal(value, language, datatype)
     elif s.startswith('{'):
-	identifier = from_n3(s[1:-1])
-	return QuotedGraph(backend, identifier)
+        identifier = from_n3(s[1:-1])
+        return QuotedGraph(backend, identifier)
     elif s.startswith('['):
-	identifier = from_n3(s[1:-1])
-	return Graph(backend, identifier)
+        identifier = from_n3(s[1:-1])
+        return Graph(backend, identifier)
     else:
         if s.startswith("_:"):
             return BNode(s[2:])

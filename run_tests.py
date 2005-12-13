@@ -30,7 +30,7 @@ from test.seq import SeqTestCase
 if not quick:
     from test.store_performace import *
 
-# from test.rules import *
+from test.rules import *
 
 
 if __name__ == "__main__":

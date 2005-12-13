@@ -14,9 +14,9 @@ class N3Parser(Parser):
         pass
     
     def parse(self, source, graph):
-	# we're currently being handed a Graph, not a ConjunctiveGraph
-	assert graph.store.context_aware # is this implied by formula_aware
-	assert graph.store.formula_aware
+        # we're currently being handed a Graph, not a ConjunctiveGraph
+        assert graph.store.context_aware # is this implied by formula_aware
+        assert graph.store.formula_aware
 
         conj_graph = ConjunctiveGraph(store=graph.store)
         conj_graph.default_context = graph.identifier # TODO: CG __init__ should have a default_context arg
@@ -27,8 +27,8 @@ class N3Parser(Parser):
             sink.flatten = lambda *args: True
         baseURI = graph.absolutize(source.getPublicId() or source.getSystemId() or "")
         p = N3Processor("nowhere", sink, baseURI=baseURI) # pass in "nowhere" so we can set data instead
-	p.userkeys = True # bah
-	p.data = source.getByteStream().read() # TODO getCharacterStream?
+        p.userkeys = True # bah
+        p.data = source.getByteStream().read() # TODO getCharacterStream?
         p.parse()
 
 

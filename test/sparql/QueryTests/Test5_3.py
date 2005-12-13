@@ -8,15 +8,15 @@
    Datatype test. Note that this is not 100% kosher. The problem is that the Literal of rdflib does not check the 
    datatypes. In theory, if the data contains:
 
-	   x ns:p 42.
+           x ns:p 42.
    
    instead of:
-	   
+           
        x ns:p 42^^http://www.w3.org/2001/XMLSchema#integer
-	   
+           
     the query should return no results, because the first object is of datatype string. However, Literal does not
-	implement this...
-	   
+        implement this...
+           
 """
 
 from testSPARQL import ns_rdf
@@ -38,14 +38,14 @@ rdfData ="""<?xml version="1.0" encoding="UTF-8"?>
    xmlns:foaf="http://xmlns.com/foaf/0.1/"
    xmlns:ns = "http://example.org/ns#"
 >
-	<foaf:Person>
-		<foaf:name>Alice</foaf:name>
-		<foaf:homepage rdf:resource="http://work.example.org"/>	
-	</foaf:Person>
-	<foaf:Person>
-		<foaf:name>Bob</foaf:name>
-		<foaf:mbox rdf:resource="mailto:bob@work.example"/>
-	</foaf:Person>
+        <foaf:Person>
+                <foaf:name>Alice</foaf:name>
+                <foaf:homepage rdf:resource="http://work.example.org"/>	
+        </foaf:Person>
+        <foaf:Person>
+                <foaf:name>Bob</foaf:name>
+                <foaf:mbox rdf:resource="mailto:bob@work.example"/>
+        </foaf:Person>
 </rdf:RDF>
 """
 
@@ -53,8 +53,8 @@ select      = ["?name", "?mbox", "?hpage"]
 pattern     = GraphPattern([("?x", ns_foaf["name"],"?name")])
 #optional    = None
 optional    = [
-	GraphPattern([("?x",ns_foaf["mbox"],"?mbox")]),
-	GraphPattern([("?x",ns_foaf["homepage"],"?hpage")])
+        GraphPattern([("?x",ns_foaf["mbox"],"?mbox")]),
+        GraphPattern([("?x",ns_foaf["homepage"],"?hpage")])
 ]
 tripleStore = None
 expected = '''

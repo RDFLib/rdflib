@@ -438,8 +438,8 @@ class RDFXMLHandler(handler.ContentHandler):
     def property_element_end(self, name, qname):
         current = self.current
         if self.next.end==self.list_node_element_end:
-	    if current.object!=RDF.nil:
-		self.store.add((current.list, RDF.rest, RDF.nil))
+            if current.object!=RDF.nil:
+                self.store.add((current.list, RDF.rest, RDF.nil))
         if current.object is not None:
             self.store.add((self.parent.subject, current.predicate, current.object))
             if current.id is not None:

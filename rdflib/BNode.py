@@ -50,7 +50,7 @@ class BNode(Identifier):
             # for RDF/XML needs to be something that can be serialzed as a nodeID
             # for N3 ??
             # Unless we require these constraints be enforced elsewhere?
-	    pass #assert is_ncname(unicode(value)), "BNode identifiers must be valid NCNames"
+            pass #assert is_ncname(unicode(value)), "BNode identifiers must be valid NCNames"
 
         return Identifier.__new__(cls, value)
         
