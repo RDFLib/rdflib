@@ -1,14 +1,14 @@
 import unittest
 
+from tempfile import mkdtemp
 from rdflib import *
 
 class ContextTestCase(unittest.TestCase):
-    backend = 'Sleepycat'
-    path = 'store'
+    backend = 'Memory'
 
     def setUp(self):
-        self.graph = Graph(backend=self.backend)
-        self.graph.open(self.path)
+        self.graph = Graph(backend=self.backend)        
+        self.graph.open(mkdtemp())
         self.michel = URIRef(u'michel')
         self.tarek = URIRef(u'tarek')
         self.bob = URIRef(u'bob')
