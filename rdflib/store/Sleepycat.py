@@ -13,6 +13,7 @@ from time import sleep, time
 
 class Sleepycat(Store):
     context_aware = True
+    formula_aware = True
 
     def __init__(self, configuration=None, identifier=None):
         self.__open = False

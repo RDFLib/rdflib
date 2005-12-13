@@ -1,7 +1,9 @@
 from rdflib.URIRef import URIRef
 from rdflib.BNode import BNode
 from rdflib.Literal import Literal
+from rdflib.Variable import Variable
 from rdflib.Graph import Graph, QuotedGraph
+from rdflib.Statement import Statement
 
 from rdflib.exceptions import SubjectTypeError, PredicateTypeError, ObjectTypeError, ContextTypeError
 from rdflib.compat import rsplit
@@ -82,13 +84,20 @@ classes = {
     2: BNode,
     3: Literal,
     4: Graph,
-    5: QuotedGraph
+    5: QuotedGraph,
+    6: Variable,
+    7: Statement
 }
 
 def from_bits(bits, backend=None):
     which, r = loads(bits)
-    return classes[which](*r)
-
+    if which==4 or which==5:
+        return classes[which](backend, from_bits(*r))
+    try:
+        return classes[which](*r)
+    except:
+        r = (backend,) + r
+        return classes[which](*r)
 
 def from_n3(s, default=None, backend=None):
     """ Creates the Identifier corresponding to the given n3 string. WARNING: untested, may contain bugs. TODO: add test cases."""

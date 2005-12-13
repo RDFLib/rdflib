@@ -1,4 +1,5 @@
 import unittest
+from tempfile import mkdtemp
 
 from rdflib import *
 
@@ -33,11 +34,11 @@ try:
                 yield terms.Fact(_convert(s), _convert(p), _convert(o))
 
     class PychinkoTestCase(unittest.TestCase):
-
+        backend = 'default'
         def setUp(self):
-            self.g = Graph()
+            self.g = Graph(backend=self.backend)
+            self.g.open(configuration=mkdtemp())
             self.g.parse("test/a.n3", format="n3") 
-            print list(self.g)
         
         def tearDown(self):
             self.g.close()
@@ -56,6 +57,9 @@ try:
             interp.addFacts(set(facts(source)), initialSet=True)        
             interp.run()
             print interp.inferredFacts
+
+    class Sleepycat(PychinkoTestCase):
+        backend = 'Sleepycat'
 
 except ImportError, e:
     print "Could not test Pychinko:", e

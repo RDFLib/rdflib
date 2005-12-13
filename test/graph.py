@@ -2,7 +2,7 @@ import unittest
 
 from tempfile import mkdtemp
 
-from rdflib import URIRef, BNode, Literal
+from rdflib import URIRef, BNode, Literal, RDF
 from rdflib.Graph import Graph, ConjunctiveGraph
 
 class GraphTestCase(unittest.TestCase):
@@ -118,6 +118,19 @@ class GraphTestCase(unittest.TestCase):
         asserte(len(list(triples((Any, Any, Any)))), 7)
         self.removeStuff()
         asserte(len(list(triples((Any, Any, Any)))), 0)
+
+
+    def testStatementNode(self):
+        store = self.store
+        
+        from rdflib.Statement import Statement
+        c = URIRef("http://example.org/foo#c")
+        r = URIRef("http://example.org/foo#r")
+        s = Statement((self.michel, self.likes, self.pizza), c)
+        store.add((s, RDF.value, r))
+        self.assertEquals(r, store.value(s, RDF.value))
+        self.assertEquals(s, store.value(predicate=RDF.value, object=r))
+
 
 class MemoryGraphTestCase(GraphTestCase):
     store = "Memory"

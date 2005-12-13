@@ -142,6 +142,10 @@ class Graph(Node):
         """ Test if Graph is exactly equal to Graph other."""
         # Note: this is not a test of isomorphism, but rather exact
         # equality.
+        if self.identifier == other.identifier:
+            return True
+        else:
+            return False
         if not other or len(self)!=len(other):
             return 0
         for s, p, o in self:
@@ -346,7 +350,7 @@ class Graph(Node):
         return "[%s]" % self.identifier.n3()
 
     def to_bits(self):
-        return dumps((4, (unicode(self.identifier),)))
+        return dumps((4, (self.identifier.to_bits(),)))
 
 
     def isomorphic(self, other):
@@ -455,7 +459,7 @@ class QuotedGraph(Graph):
         return "{%s}" % self.identifier.n3()
 
     def to_bits(self):
-        return dumps((5, (unicode(self.identifier),)))
+        return dumps((5, (self.identifier.to_bits(),)))
 
 
 class Seq(object):
