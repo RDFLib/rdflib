@@ -11,6 +11,7 @@ usage:
 """
 
 from rdflib import URIRef, BNode, Literal, Variable, Namespace
+from rdflib.Graph import QuotedGraph
 
 import sys, os.path, re, time, urllib
 import n3p
@@ -461,7 +462,8 @@ class N3Processor(n3p.N3Parser):
       if formula_id == self.sink.graph.identifier:
          return self.sink.graph
       else:
-         return self.sink.graph.get_context(formula_id, quoted=True)
+         return QuotedGraph(store=self.sink.graph.store, identifier=formula_id)
+         #return self.sink.graph.get_context(formula_id, quoted=True)
 
    def bnode(self, label, sic=False): 
       if not sic: 

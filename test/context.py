@@ -4,7 +4,8 @@ from tempfile import mkdtemp
 from rdflib import *
 
 class ContextTestCase(unittest.TestCase):
-    backend = 'Memory'
+    #backend = 'Memory'
+    backend = 'default'
 
     def setUp(self):
         self.graph = Graph(backend=self.backend)        
@@ -85,14 +86,13 @@ class ContextTestCase(unittest.TestCase):
         c1 = self.c1
         oldLen = len(self.graph)
         # make sure context is empty
-        try:
-            self.graph.remove_context(c1)
-        except:
-            pass
+
+        self.graph.remove_context(c1)
 
         for i in range(0, 10):
             self.graph.add((BNode(), self.hates, self.hates), c1)
         self.assertEquals(len(self.graph), oldLen + 10)
+        self.assertEquals(len(self.graph.get_context(c1)), oldLen + 10)
         self.graph.remove_context(c1)
         self.assertEquals(len(self.graph), oldLen)
 
@@ -139,7 +139,7 @@ class ContextTestCase(unittest.TestCase):
         c1 = self.c1
 
         self.addStuffInMultipleContexts()
-        self.assert_(self.graph.__len__(context=c1), 1)
+        self.assertEquals(self.graph.__len__(context=c1), 1)
 
         self.graph.remove_context(c1)
         self.assert_(self.c1 not in self.graph.contexts())
@@ -237,7 +237,7 @@ class ContextTestCase(unittest.TestCase):
 
         for c in [graph, graph.get_context(c1)]:
             # unbound subjects
-            c = graph.get_context(c1)
+            #c = graph.get_context(c1)
             asserte(set(c.subjects(likes, pizza)), set((michel, tarek)))
             asserte(set(c.subjects(hates, pizza)), set((bob,)))
             asserte(set(c.subjects(likes, cheese)), set([tarek, bob, michel]))
@@ -266,7 +266,7 @@ class ContextTestCase(unittest.TestCase):
             asserte(set(c.subject_predicates(cheese)), set([(bob, likes), (tarek, likes), (michel, likes)]))
             asserte(set(c.subject_predicates(michel)), set([(bob, hates)]))
 
-            asserte(set(c.triples((None, None, None))), set([(bob, hates, michel), (bob, likes, cheese), (tarek, likes, pizza), (michel, likes, pizza), (michel, likes, cheese), (bob, hates, pizza), (tarek, likes, cheese)]))
+            asserte(set(c), set([(bob, hates, michel), (bob, likes, cheese), (tarek, likes, pizza), (michel, likes, pizza), (michel, likes, cheese), (bob, hates, pizza), (tarek, likes, cheese)]))
 
         # remove stuff and make sure the graph is empty again
         self.removeStuff()

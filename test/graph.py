@@ -3,18 +3,17 @@ import unittest
 from tempfile import mkdtemp
 
 from rdflib import URIRef, BNode, Literal, RDF
-from rdflib.Graph import Graph, ConjunctiveGraph
+from rdflib.Graph import Graph
 
 class GraphTestCase(unittest.TestCase):
     store_name = 'default'
     path = None
-    graph_class = ConjunctiveGraph
 
     def setUp(self):
-        self.store = self.graph_class(store=self.store_name)
+        self.graph = Graph(store=self.store_name)
         a_tmp_dir = mkdtemp()
         self.path = self.path or a_tmp_dir
-        self.store.open(self.path)
+        self.graph.open(self.path)
 
         self.michel = URIRef(u'michel')
         self.tarek = URIRef(u'tarek')
@@ -25,7 +24,7 @@ class GraphTestCase(unittest.TestCase):
         self.cheese = URIRef(u'cheese')
 
     def tearDown(self):
-        self.store.close()
+        self.graph.close()
 
     def addStuff(self):
         tarek = self.tarek
@@ -36,13 +35,13 @@ class GraphTestCase(unittest.TestCase):
         pizza = self.pizza
         cheese = self.cheese
 
-        self.store.add((tarek, likes, pizza))
-        self.store.add((tarek, likes, cheese))
-        self.store.add((michel, likes, pizza))
-        self.store.add((michel, likes, cheese))
-        self.store.add((bob, likes, cheese))
-        self.store.add((bob, hates, pizza))
-        self.store.add((bob, hates, michel)) # gasp!        
+        self.graph.add((tarek, likes, pizza))
+        self.graph.add((tarek, likes, cheese))
+        self.graph.add((michel, likes, pizza))
+        self.graph.add((michel, likes, cheese))
+        self.graph.add((bob, likes, cheese))
+        self.graph.add((bob, hates, pizza))
+        self.graph.add((bob, hates, michel)) # gasp!        
 
     def removeStuff(self):
         tarek = self.tarek
@@ -53,13 +52,13 @@ class GraphTestCase(unittest.TestCase):
         pizza = self.pizza
         cheese = self.cheese
 
-        self.store.remove((tarek, likes, pizza))
-        self.store.remove((tarek, likes, cheese))
-        self.store.remove((michel, likes, pizza))
-        self.store.remove((michel, likes, cheese))
-        self.store.remove((bob, likes, cheese))
-        self.store.remove((bob, hates, pizza))
-        self.store.remove((bob, hates, michel)) # gasp!
+        self.graph.remove((tarek, likes, pizza))
+        self.graph.remove((tarek, likes, cheese))
+        self.graph.remove((michel, likes, pizza))
+        self.graph.remove((michel, likes, cheese))
+        self.graph.remove((bob, likes, cheese))
+        self.graph.remove((bob, hates, pizza))
+        self.graph.remove((bob, hates, michel)) # gasp!
 
     def testAdd(self):
         self.addStuff()
@@ -77,7 +76,7 @@ class GraphTestCase(unittest.TestCase):
         pizza = self.pizza
         cheese = self.cheese
         asserte = self.assertEquals
-        triples = self.store.triples
+        triples = self.graph.triples
         Any = None
 
         self.addStuff()
@@ -121,25 +120,54 @@ class GraphTestCase(unittest.TestCase):
 
 
     def testStatementNode(self):
-        store = self.store
+        graph = self.graph
         
         from rdflib.Statement import Statement
         c = URIRef("http://example.org/foo#c")
         r = URIRef("http://example.org/foo#r")
         s = Statement((self.michel, self.likes, self.pizza), c)
-        store.add((s, RDF.value, r))
-        self.assertEquals(r, store.value(s, RDF.value))
-        self.assertEquals(s, store.value(predicate=RDF.value, object=r))
+        graph.add((s, RDF.value, r))
+        self.assertEquals(r, graph.value(s, RDF.value))
+        self.assertEquals(s, graph.value(predicate=RDF.value, object=r))
 
+    def testGraphValue(self):
+        from rdflib.Graph import GraphValue
 
-class MemoryGraphTestCase(GraphTestCase):
-    store = "Memory"
-    graph_class = Graph
+        graph = self.graph
+
+        alice = URIRef("alice")
+        bob = URIRef("bob")
+        pizza = URIRef("pizza")
+        cheese = URIRef("cheese")
+
+        g1 = Graph()
+        g1.add((alice, RDF.value, pizza))
+        g1.add((bob, RDF.value, cheese))
+        g1.add((bob, RDF.value, pizza))
+
+        g2 = Graph()
+        g2.add((bob, RDF.value, pizza))
+        g2.add((bob, RDF.value, cheese))
+        g2.add((alice, RDF.value, pizza))
+
+        gv1 = GraphValue(store=graph.store, graph=g1)
+        gv2 = GraphValue(store=graph.store, graph=g2)
+        graph.add((gv1, RDF.value, gv2))
+        v = graph.value(gv1)
+        #print type(v)
+        self.assertEquals(gv2, v)
+        #print list(gv2)
+        #print gv2.identifier
+        graph.remove((gv1, RDF.value, gv2))
+
+#class MemoryGraphTestCase(GraphTestCase):
+#    store_name = "Memory"
+
 
 try:
     from rdflib.store.Sleepycat import Sleepycat
     class SleepycatGraphTestCase(GraphTestCase):
-        store = "Sleepycat"
+        store_name = "Sleepycat"
 except ImportError, e:
     print "Can not test Sleepycat store:", e
 
@@ -147,7 +175,7 @@ try:
     import persistent
     # If we can import persistent then test ZODB store
     class ZODBGraphTestCase(GraphTestCase):
-        store = "ZODB"
+        store_name = "ZODB"
 except ImportError, e:
     print "Can not test ZODB store:", e
 
@@ -156,7 +184,7 @@ try:
     import RDF
     # If we can import RDF then test Redland store
     class RedLandTestCase(GraphTestCase):
-        store = "Redland"
+        store_name = "Redland"
 except ImportError, e:
     print "Can not test Redland store:", e    
 

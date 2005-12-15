@@ -202,9 +202,9 @@ class Sleepycat(Store):
     def remove(self, (subject, predicate, object), context):
         assert self.__open, "The InformationStore must be open."
 
-        if context == self.identifier: 
-            # TODO: comment as to why this is
-            context = None
+#         if context is not None:
+#             if context == self: 
+#                 context = None
 
         # TODO: special case if subject and predicate and object and context:
         # TODO: write def __remove(self, (s, p, o), c) where all are known and in string form
@@ -240,6 +240,14 @@ class Sleepycat(Store):
             else:
                 break            
 
+        if context is not None:
+            if subject is None and predicate is None and object is None:
+                # TODO: also if context becomes empty and not just on remove((None, None, None), c)
+                try:
+                    self.__contexts.delete(self._to_string(context))
+                except db.DBNotFoundError, e:
+                    pass                    
+
         self.__needs_sync = True
 
 
@@ -247,9 +255,9 @@ class Sleepycat(Store):
         """A generator over all the triples matching """
         assert self.__open, "The InformationStore must be open."
 
-        if context == self.identifier: 
-            # TODO: comment as to why this is
-            context = None
+#         if context is not None:
+#             if context == self: 
+#                 context = None
 
         _from_string = self._from_string
         index, prefix, to_key, from_key = self.__lookup((subject, predicate, object), context)
@@ -277,9 +285,10 @@ class Sleepycat(Store):
                 break            
 
     def __len__(self, context=None):
-        if context == self.identifier: 
-            # TODO: comment as to why this is
-            context = None
+
+#         if context is not None:
+#             if context == self: 
+#                 context = None
 
         if context is None:
             #return self.__indicies[0].stat()["nkeys"] / 2
@@ -342,8 +351,8 @@ class Sleepycat(Store):
                 for c in contexts.split("^"):
                     if c:
                         yield _from_string(c)
-                    else:
-                        yield self.identifier
+                    #else:
+                    #    yield self.identifier
 
         else:
             index = self.__contexts
@@ -363,14 +372,7 @@ class Sleepycat(Store):
                 cursor.close()
     
     def remove_context(self, identifier):
-        if identifier == self.identifier: 
-            # TODO: comment as to why this is
-            context = None
         self.remove((None, None, None), identifier)
-        try:
-            self.__contexts.delete(self._to_string(identifier))
-        except db.DBNotFoundError, e:
-            pass                    
         
     def _from_string(self, s):
         return from_bits(b64decode(s), backend=self)

@@ -79,6 +79,8 @@ def parse_date_time(val):
     return t
 
 
+from rdflib.Graph import GraphValue
+
 classes = {
     1: URIRef,
     2: BNode,
@@ -86,12 +88,13 @@ classes = {
     4: Graph,
     5: QuotedGraph,
     6: Variable,
-    7: Statement
+    7: Statement,
+    8: GraphValue
 }
 
 def from_bits(bits, backend=None):
     which, r = loads(bits)
-    if which==4 or which==5:
+    if which==4 or which==5 or which==8:
         return classes[which](backend, from_bits(*r))
     try:
         return classes[which](*r)

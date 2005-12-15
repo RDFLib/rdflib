@@ -101,32 +101,25 @@ class Graph(Node):
         rdflib.Triple can be provided.  Context must be a URIRef.  If
         no context is provides, triple is added to the default
         context."""
-        self.__store.add((s, p, o), self.identifier, quoted=False)
+        self.__store.add((s, p, o), self, quoted=False)
 
     def remove(self, (s, p, o)):
         """ Remove a triple from the graph.  If the triple does not
         provide a context attribute, removes the triple from all
         contexts."""
 
-        self.__store.remove((s, p, o), context=self.identifier)
+        self.__store.remove((s, p, o), context=self)
 
     def triples(self, (s, p, o)):
         """ Generator over the triple store.  Returns triples that
         match the given triple pattern.  If triple pattern does not
         provide a context, all contexts will be searched."""
-        for (s, p, o), contexts in self.__store.triples((s, p, o), context=self.identifier):
+        for (s, p, o), cg in self.__store.triples((s, p, o), context=self):
             yield (s, p, o)
-
-    def statements(self, (s, p, o)):
-        """ Generator over the triple store.  Returns statements that
-        match the given triple pattern.  If triple pattern does not
-        provide a context, all contexts will be searched."""
-        for (s, p, o), contexts in self.__store.triples((s, p, o), context=self.identifier):
-            yield (s, p, o), contexts
 
     def __len__(self):
         """ Returns the number of triples in the graph. If context is specified then the number of triples in the context is returned instead."""
-        return self.__store.__len__(context=self.identifier)
+        return self.__store.__len__(context=self)
 
     def __iter__(self):
         """ Iterates over all triples in the store. """
@@ -138,11 +131,16 @@ class Graph(Node):
             return 1
         return 0
 
-    def __eq__(self, other):
+    def __hash__(self):
+        return hash(self.identifier)
+    def __cmp__(self, other):
+        return self.identifier.__cmp__(other.identifier)
+
+    def ____eq__(self, other):
         """ Test if Graph is exactly equal to Graph other."""
         # Note: this is not a test of isomorphism, but rather exact
         # equality.
-        if self.identifier == other.identifier:
+        if other and self.identifier == other.identifier:
             return True
         else:
             return False
@@ -159,13 +157,13 @@ class Graph(Node):
     def __iadd__(self, other):
         """ Add all triples in Graph other to Graph."""
         for triple in other:
-            self.__store.add(triple) # TODO: context
+            self.add(triple) 
         return self
 
     def __isub__(self, other):
         """ Subtract all triples in Graph other from Graph."""
         for triple in other:
-            self.__store.remove(triple)
+            self.remove(triple)
         return self
 
     def subjects(self, predicate=None, object=None):
@@ -368,13 +366,14 @@ class Graph(Node):
         # TODO: very well could be a false positive at this point yet.
         return True
 
+
 class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
 
     def __init__(self, store='default'):
         super(ConjunctiveGraph, self).__init__(store)
         assert self.store.context_aware, "ConjunctiveGraph must be backed by a context aware store."
         self.context_aware = True
-        self.default_context = BNode()
+        self.default_context = Graph(store=self.store, identifier=BNode())
 
     def add(self, (s, p, o), context=None):
         """"A conjunctive graph adds to its default context."""
@@ -387,14 +386,37 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
     def triples(self, (s, p, o), context=None):
         """An iterator over all the triples in the entire conjunctive graph."""
         for (s, p, o), cg in self.store.triples((s, p, o), context):
-            yield (s, p, o)
+            yield (s, p, o), cg
 
-    def statements(self, (s, p, o), context=None):
-        """ Generator over the triple store.  Returns statements that
-        match the given triple pattern.  If triple pattern does not
-        provide a context, all contexts will be searched."""
-        for (s, p, o), contexts in self.store.triples((s, p, o), context):
-            yield (s, p, o), contexts
+    def subjects(self, predicate=None, object=None):
+        """ A generator of subjects with the given predicate and object. """
+        for (s, p, o), cg in self.triples((None, predicate, object)):
+            yield s
+
+    def predicates(self, subject=None, object=None):
+        """ A generator of predicates with the given subject and object. """
+        for (s, p, o), cg in self.triples((subject, None, object)):
+            yield p
+
+    def objects(self, subject=None, predicate=None):
+        """ A generator of objects with the given subject and predicate. """
+        for (s, p, o), cg in self.triples((subject, predicate, None)):
+            yield o
+
+    def subject_predicates(self, object=None):
+        """ A generator of (subject, predicate) tuples for the given object """
+        for (s, p, o), cg in self.triples((None, None, object)):
+            yield s, p
+
+    def subject_objects(self, predicate=None):
+        """ A generator of (subject, object) tuples for the given predicate """
+        for (s, p, o), cg in self.triples((None, predicate, None)):
+            yield s, o
+
+    def predicate_objects(self, subject=None):
+        """ A generator of (predicate, object) tuples for the given subject """
+        for (s, p, o), cg in self.triples((subject, None, None)):
+            yield p, o
 
     def __len__(self, context=None):
         """Returns the number of triples in the entire conjunctive graph."""
@@ -408,19 +430,10 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
         for context in self.store.contexts(triple):
             yield context
 
-    def get_context(self, identifier, quoted=False):
-        """ Returns a Context graph for the given identifier, which
-        must be a URIRef or BNode."""
-        assert isinstance(identifier, URIRef) or \
-               isinstance(identifier, BNode), type(identifier)
-        if quoted:
-            return QuotedGraph(self.store, identifier)
-        else:
-            return Graph(self.store, identifier)
-
-    def remove_context(self, identifier):
+    def remove_context(self, context):
         """ Removes the given context from the graph. """
-        self.store.remove_context(identifier)
+        assert isinstance(context, Graph)
+        self.store.remove_context(context)
 
     def context_id(self, uri, context_id=None):
         """ URI#context """
@@ -440,8 +453,8 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
         """
         source = self.prepare_input_source(source, publicID)
         id = self.context_id(self.absolutize(source.getPublicId()))
-        self.remove_context(id)
-        context = self.get_context(id)
+        context = Graph(store=self.store, identifier=id)
+        context.remove((None, None, None))
         context.parse(source, publicID=publicID, format=format)
         return context
 
@@ -452,7 +465,7 @@ class QuotedGraph(Graph):
         super(QuotedGraph, self).__init__(store, identifier)
 
     def add(self, triple): 
-        self.store.add(triple, self.identifier, quoted=True)
+        self.store.add(triple, self, quoted=True)
 
     def n3(self):
         """return an n3 identifier for the Graph"""
@@ -460,6 +473,40 @@ class QuotedGraph(Graph):
 
     def to_bits(self):
         return dumps((5, (self.identifier.to_bits(),)))
+
+
+class GraphValue(QuotedGraph):
+    def __init__(self, store, identifier=None, graph=None):
+        if graph is not None:
+            assert identifier is None
+            import md5
+            identifier = md5.new()
+            s = list(graph.triples((None, None, None)))
+            s.sort()
+            for t in s:
+                identifier.update("^".join((i.to_bits() for i in t)))
+            identifier = URIRef("data:%s" % identifier.hexdigest())
+            super(GraphValue, self).__init__(store, identifier)            
+            for t in graph:
+                store.add(t, context=self)
+        else:
+            super(GraphValue, self).__init__(store, identifier)            
+
+
+    def add(self, triple):
+        raise Exception("not mutable")
+
+    def remove(self, triple):
+        raise Exception("not mutable")
+
+    def __hash__(self):
+        return hash(self.identifier)
+
+    def __cmp__(self, other):
+        return self.identifier.__cmp__(other.identifier)
+
+    def to_bits(self):
+        return dumps((8, (self.identifier.to_bits(),)))
 
 
 class Seq(object):
@@ -491,6 +538,7 @@ class Seq(object):
                 _list.append(("%s" % p, o))
         # here is the trick: the predicates are _1, _2, _3, etc. Ie,
         # by sorting the keys we have what we want!
+        # Ah... TODO: this needs to sort by integer... not string value.
         _list.sort()
 
     def __iter__(self):
@@ -514,3 +562,90 @@ class BackwardCompatGraph(ConjunctiveGraph):
     def __get_backend(self):
         return self.store
     backend = property(__get_backend)
+
+    def add(self, (s, p, o), context=None):
+        """"A conjunctive graph adds to its default context."""
+        if context is not None:
+            c = self.get_context(context)
+            assert c.identifier == context, "%s != %s" % (c.identifier, context)
+        else:
+            c = self.default_context
+        self.store.add((s, p, o), context=c, quoted=False)
+    
+    def remove(self, (s, p, o), context=None):
+        """A conjunctive graph removes from all its contexts."""
+        if context is not None:
+            context = self.get_context(context)
+        self.store.remove((s, p, o), context)
+
+    def triples(self, (s, p, o), context=None):
+        """An iterator over all the triples in the entire conjunctive graph."""
+        if context is not None:
+            c = self.get_context(context)
+            assert c.identifier == context
+        else:
+            c = None
+        for (s, p, o), cg in self.store.triples((s, p, o), c):
+            yield (s, p, o)
+
+    def __len__(self, context=None):
+        """Returns the number of triples in the entire conjunctive graph."""
+        if context is not None:
+            context = self.get_context(context)
+        return self.store.__len__(context)
+
+    def get_context(self, identifier, quoted=False):
+        """ Returns a Context graph for the given identifier, which
+        must be a URIRef or BNode."""
+        assert isinstance(identifier, URIRef) or \
+               isinstance(identifier, BNode), type(identifier)
+        if quoted:
+            assert False
+            return QuotedGraph(self.store, identifier)
+            #return QuotedGraph(self.store, Graph(store=self.store, identifier=identifier))
+        else:
+            return Graph(self.store, identifier)
+            #return Graph(self.store, Graph(store=self.store, identifier=identifier))
+
+    def remove_context(self, context):
+        """ Removes the given context from the graph. """
+        self.store.remove_context(self.get_context(context))
+
+    def contexts(self, triple=None):
+        """ 
+        Iterator over all contexts in the graph. If triple is
+        specified, a generator over all contexts the triple is in.
+        """
+        for context in self.store.contexts(triple):
+            yield context.identifier
+
+    def subjects(self, predicate=None, object=None):
+        """ A generator of subjects with the given predicate and object. """
+        for s, p, o in self.triples((None, predicate, object)):
+            yield s
+
+    def predicates(self, subject=None, object=None):
+        """ A generator of predicates with the given subject and object. """
+        for s, p, o in self.triples((subject, None, object)):
+            yield p
+
+    def objects(self, subject=None, predicate=None):
+        """ A generator of objects with the given subject and predicate. """
+        for s, p, o in self.triples((subject, predicate, None)):
+            yield o
+
+    def subject_predicates(self, object=None):
+        """ A generator of (subject, predicate) tuples for the given object """
+        for s, p, o in self.triples((None, None, object)):
+            yield s, p
+
+    def subject_objects(self, predicate=None):
+        """ A generator of (subject, object) tuples for the given predicate """
+        for s, p, o in self.triples((None, predicate, None)):
+            yield s, o
+
+    def predicate_objects(self, subject=None):
+        """ A generator of (predicate, object) tuples for the given subject """
+        for s, p, o in self.triples((subject, None, None)):
+            yield p, o
+

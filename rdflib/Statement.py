@@ -9,5 +9,5 @@ class Statement(Node, tuple):
         return tuple.__new__(cls, ((subject, predicate, object), context))
 
     def to_bits(self):
-        return dumps((6, (tuple(self))))
+        return dumps((7, (tuple(self))))
 

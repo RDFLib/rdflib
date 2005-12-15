@@ -51,7 +51,7 @@ class IOMemory(Store):
         # reverse index of forward
         self.reverse = self.createReverse()
 
-        self.identifier = identifier
+        self.identifier = identifier or BNode()
 
         self.__namespace = self.createPrefixMap()
         self.__prefix = self.createPrefixMap()
@@ -226,8 +226,11 @@ class IOMemory(Store):
             pass
 
     def remove(self, triple, context=None):
-        if context==self.identifier:
-            context = None
+
+        if context is not None:
+            if context == self: 
+                context = None
+
         f = self.forward
         r = self.reverse
         if context is None:
@@ -267,8 +270,11 @@ class IOMemory(Store):
 
     def triples(self, triple, context=None):
         """A generator over all the triples matching """
-        if context==self.identifier:
-            context = None
+
+        if context is not None:
+            if context == self: 
+                context = None
+
         subject, predicate, object = triple
         ci = si = pi = oi = Any
         
@@ -355,9 +361,12 @@ class IOMemory(Store):
                         ss, pp, oo = self.intToIdentifier((s, p, o))
                         yield (ss, pp, oo), (c for c in self.contexts((ss, pp, oo)))
 
-    def __len__(self, context):
-        if context==self.identifier:
-            context = None
+    def __len__(self, context=None):
+
+        if context is not None:
+            if context == self: 
+                context = None
+
         # TODO: for eff. implementation
         count = 0
         for triple, cg in self.triples((Any, Any, Any), context):
