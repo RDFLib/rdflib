@@ -439,6 +439,10 @@ class MySQL(Store):
 
     def remove(self, (subject, predicate, obj), context):
         """ Remove a triple from the store """
+        if context is not None:
+            if subject is None and predicate is None and object is None:
+                self._remove_context(context)
+                return
         c=self._db.cursor()
         c.execute("""SET AUTOCOMMIT=0""")        
         quoted_table="%s_quoted_statements"%self._internedId
@@ -790,7 +794,7 @@ class MySQL(Store):
         for context in [rtTuple[0] for rtTuple in rt]:
             yield context
     
-    def remove_context(self, identifier):
+    def _remove_context(self, identifier):
         """ """
         c=self._db.cursor()
         c.execute("""SET AUTOCOMMIT=0""")        

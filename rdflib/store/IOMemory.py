@@ -216,15 +216,6 @@ class IOMemory(Store):
             if len(index[key]) == 0:
                 del index[key]
         
-    def remove_context(self, context):
-        self.remove((Any, Any, Any), context)
-        try:
-            ci = self.reverse[context]
-            del self.cspo[ci], self.cpos[ci], self.cosp[ci]
-        except KeyError:
-            # TODO: no exception when removing non-existant context?
-            pass
-
     def remove(self, triple, context=None):
 
         if context is not None:
@@ -266,6 +257,15 @@ class IOMemory(Store):
                     # TODO delete references to resources in self.forward/self.reverse 
                     # that are not in use anymore...
 
+        if context is not None:
+            if subject is None and predicate is None and object is None:
+                # remove context
+                try:
+                    ci = self.reverse[context]
+                    del self.cspo[ci], self.cpos[ci], self.cosp[ci]
+                except KeyError:
+                    # TODO: no exception when removing non-existant context?
+                    pass
 
 
     def triples(self, triple, context=None):

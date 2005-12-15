@@ -371,9 +371,6 @@ class Sleepycat(Store):
                     current = None
                 cursor.close()
     
-    def remove_context(self, identifier):
-        self.remove((None, None, None), identifier)
-        
     def _from_string(self, s):
         return from_bits(b64decode(s), backend=self)
 

@@ -86,11 +86,6 @@ class Store(object):
         contexts the triple is in.
         """
 
-    def remove_context(self, identifier):
-        """
-        Removes the given context from the graph.
-        """        
-
     # Optional Namespace methods
 
     def bind(self, prefix, namespace):

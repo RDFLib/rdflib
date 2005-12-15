@@ -80,9 +80,6 @@ class AuditableStorage(Store):
     def contexts(self, triple=None):
         return self.storage.contexts(triple)
     
-    def remove_context(self, identifier):
-        self.storage.remove_context(identifier)
-    
     def bind(self, prefix, namespace):
         self.storage.bind(prefix, namespace)
     

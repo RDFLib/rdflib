@@ -63,9 +63,6 @@ class Redland(Store):
         for context in self.model.get_contexts():
             yield URIRef(context)
     
-    def remove_context(self, identifier):
-        pass
-
     def bind(self, prefix, namespace):
         pass
 
