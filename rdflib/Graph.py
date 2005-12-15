@@ -432,8 +432,7 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
 
     def remove_context(self, context):
         """ Removes the given context from the graph. """
-        assert isinstance(context, Graph)
-        self.store.remove_context(context)
+        self.store.remove((None, None, None), context)
 
     def context_id(self, uri, context_id=None):
         """ URI#context """
@@ -609,7 +608,7 @@ class BackwardCompatGraph(ConjunctiveGraph):
 
     def remove_context(self, context):
         """ Removes the given context from the graph. """
-        self.store.remove_context(self.get_context(context))
+        self.store.remove((None, None, None), self.get_context(context))
 
     def contexts(self, triple=None):
         """ 

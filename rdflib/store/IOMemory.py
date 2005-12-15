@@ -242,11 +242,11 @@ class IOMemory(Store):
                     #del f[si], f[pi], f[oi]
                     #del r[subject], r[predicate], r[object]
         else:
+            subject, predicate, object = triple
             ci = r.get(context, None)
             if ci:
                 for triple, cg in self.triples(triple, context):
-                    subject, predicate, object = triple
-                    si, pi, oi = self.identifierToInt((subject, predicate, object))    
+                    si, pi, oi = self.identifierToInt(triple)    
                     del self.cspo[ci][si][pi][oi]
                     del self.cpos[ci][pi][oi][si]
                     del self.cosp[ci][oi][si][pi]
@@ -257,7 +257,6 @@ class IOMemory(Store):
                     # TODO delete references to resources in self.forward/self.reverse 
                     # that are not in use anymore...
 
-        if context is not None:
             if subject is None and predicate is None and object is None:
                 # remove context
                 try:
