@@ -7,6 +7,8 @@ from test.identifier_equality import *
 from test.store import *
 
 from test.graph import *
+from test.graph2_2 import *
+
 from test.triple_store import *
 from test.context import *
 

@@ -62,6 +62,9 @@ class Graph(Node):
         self.__namespace_manager = nm
     namespace_manager = property(_get_namespace_manager, _set_namespace_manager)
 
+    def __repr__(self):
+        return "<Graph identifier=%s>" % self.identifier
+
     def destroy(self, configuration):
         """
         For stores that support this functionality, it destroyes the store identified by the given configuration
@@ -348,7 +351,7 @@ class Graph(Node):
         return "[%s]" % self.identifier.n3()
 
     def to_bits(self):
-        return dumps((4, (self.identifier.to_bits(),)))
+        return dumps((4, ("GET_STORE", self.identifier.to_bits(),)))
 
 
     def isomorphic(self, other):

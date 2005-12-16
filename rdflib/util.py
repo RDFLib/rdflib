@@ -94,9 +94,12 @@ classes = {
 
 def from_bits(bits, backend=None):
     which, r = loads(bits)
-    if which==4 or which==5 or which==8:
+    #if which==4 or which==5 or which==8:
+    if which==5 or which==8:
         return classes[which](backend, from_bits(*r))
     try:
+        if r[0]=="GET_STORE":
+            r[0] = backend
         return classes[which](*r)
     except:
         r = (backend,) + r
