@@ -237,7 +237,7 @@ class Graph(Node):
                 try:
                     next = values.next()
                     msg = "While trying to find a value for (%s, %s, %s) the following multiple values where found:\n" % (subject, predicate, object)
-                    for (s, p, o), contexts in self.statements((subject, predicate, object)):
+                    for (s, p, o), contexts in self.store.triples((subject, predicate, object), None):
                         msg += "(%s, %s, %s)\n (contexts: %s)\n" % (s, p, o, list(contexts))
                     raise exceptions.UniquenessError(msg)
                 except StopIteration, e:
