@@ -138,6 +138,9 @@ class Graph(Node):
         if other is not None:
             return self.identifier.__cmp__(other.identifier)
         else:
+            #Note if None is considered equivalent to owl:Nothing
+            #Then perhaps a graph with length 0 should be considered
+            #equivalent to None (if compared to it)?
             return 1
 
     def __iadd__(self, other):
