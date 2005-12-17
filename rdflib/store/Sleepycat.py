@@ -1,5 +1,5 @@
 from rdflib.store import Store
-from rdflib.util import from_bits
+from rdflib.util import NodePickler
 
 from bsddb import db
 from base64 import b64encode
@@ -11,6 +11,7 @@ from time import sleep, time
 
 # TODO: tool to convert old Sleepycat DBs to this version.
 
+
 class Sleepycat(Store):
     context_aware = True
     formula_aware = True
@@ -20,6 +21,10 @@ class Sleepycat(Store):
         from rdflib import BNode
         self.identifier = identifier or BNode() # TODO: derive this from CWD, configuration or have graph pass down the logical URI of the Store.
         super(Sleepycat, self).__init__(configuration)
+        self.configuration = configuration
+        np = NodePickler(self)
+        self._loads = np.loads
+        self._dumps = np.dumps
         
     def open(self, path, create=True):
         homeDir = path        
@@ -372,10 +377,10 @@ class Sleepycat(Store):
                 cursor.close()
     
     def _from_string(self, s):
-        return from_bits(b64decode(s), backend=self)
+        return self._loads(b64decode(s))
 
     def _to_string(self, term):
-        return b64encode(term.to_bits())
+        return b64encode(self._dumps(term))
 
     def __lookup(self, (subject, predicate, object), context):
         _to_string = self._to_string        

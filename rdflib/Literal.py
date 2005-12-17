@@ -7,7 +7,6 @@ else:
 from rdflib.Identifier import Identifier
 from rdflib.exceptions import Error
 
-from cPickle import dumps
 
 class Literal(Identifier):
     """
@@ -27,6 +26,13 @@ class Literal(Identifier):
         inst.language = lang
         inst.datatype = datatype
         return inst
+
+    def __reduce__(self):
+        return (Literal, (unicode(self), self.language, self.datatype),)
+
+#    
+#    def __getnewargs__(self):
+#        return (unicode(self), self.language, self.datatype)
 
     def __getstate__(self):
         return (None, dict(language=self.language, datatype=self.datatype))
@@ -79,5 +85,3 @@ class Literal(Identifier):
             else:
                 return '"%s"' % encoded
 
-    def to_bits(self):
-        return dumps((3, (unicode(self), self.language, self.datatype)))

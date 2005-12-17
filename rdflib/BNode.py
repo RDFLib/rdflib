@@ -1,7 +1,6 @@
 # TODO: where can we move _unique_id and _serial_number_generator?
 from string import ascii_letters
 from random import choice
-from cPickle import dumps
 
 def _unique_id():
     """Create a (hopefully) unique prefix"""
@@ -37,6 +36,7 @@ class BNode(Identifier):
     identity for them; " -- Bertand Meyer
     """ 
     __slots__ = ()
+
     def __new__(cls, value=None, # only store implementations should pass in a value
                 _sn_gen=_serial_number_generator(), _prefix=_unique_id()):
         if value==None:
@@ -57,5 +57,10 @@ class BNode(Identifier):
     def n3(self):
         return "_:%s" % self
 
-    def to_bits(self):
-        return dumps((2, (unicode(self),)))
+    def __getnewargs__(self):
+        return (unicode(self), )
+        
+    def __reduce__(self):
+        return (BNode, (unicode(self),))
+
+

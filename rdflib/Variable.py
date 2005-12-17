@@ -1,5 +1,5 @@
 from rdflib.Identifier import Identifier
-from cPickle import dumps
+
 
 class Variable(Identifier):
     """ 
@@ -11,5 +11,5 @@ class Variable(Identifier):
     def n3(self):
         return "?%s" % self
 
-    def to_bits(self):
-        return dumps((6, (unicode(self),)))
+    def __reduce__(self):
+        return (Variable, (unicode(self),))

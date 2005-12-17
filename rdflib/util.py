@@ -78,33 +78,6 @@ def parse_date_time(val):
 
     return t
 
-
-from rdflib.Graph import GraphValue
-
-classes = {
-    1: URIRef,
-    2: BNode,
-    3: Literal,
-    4: Graph,
-    5: QuotedGraph,
-    6: Variable,
-    7: Statement,
-    8: GraphValue
-}
-
-def from_bits(bits, backend=None):
-    which, r = loads(bits)
-    #if which==4 or which==5 or which==8:
-    if which==5 or which==8:
-        return classes[which](backend, from_bits(*r))
-    try:
-        if r[0]=="GET_STORE":
-            r[0] = backend
-        return classes[which](*r)
-    except:
-        r = (backend,) + r
-        return classes[which](*r)
-
 def from_n3(s, default=None, backend=None):
     """ Creates the Identifier corresponding to the given n3 string. WARNING: untested, may contain bugs. TODO: add test cases."""
     if not s:
@@ -198,4 +171,49 @@ def graph_to_dot(graph, dot):
                 nodes[i] = i
     for s, p, o in graph.triples((None,None,None)):
         dot.add_edge(pydot.Edge(nodes[s], nodes[o], label=p))
+
+
+##############
+
+from rdflib.Graph import GraphValue
+
+from cPickle import Pickler, Unpickler, UnpicklingError
+from cStringIO import StringIO
+
+
+class NodePickler(object):
+    def __init__(self, store):
+        self._objects = {}
+        self._get_object = self._objects.__getitem__
+        self._ids = {}
+        self._get_id = self._ids.get
+        self.store = store
+        self.register(store, "S")
+        self.register(URIRef, "U")
+        self.register(BNode, "B")
+        self.register(Literal, "L")
+        self.register(Graph, "G")
+        self.register(QuotedGraph, "Q")
+        self.register(Variable, "V")
+        self.register(Statement, "s")
+        self.register(GraphValue, "v")
+
+    def register(self, object, id):
+        self._objects[id] = object
+        self._ids[object] = id
+
+    def loads(self, s):
+        up = Unpickler(StringIO(s))
+        up.persistent_load = self._get_object
+        try:
+            return up.load()
+        except KeyError, e:
+            raise UnpicklingError, "Could not find Node class for %s" % e
+
+    def dumps(self, obj, protocol=None, bin=None):
+        src = StringIO()
+        p = Pickler(src)
+        p.persistent_id = self._get_id
+        p.dump(obj)
+        return src.getvalue()
 

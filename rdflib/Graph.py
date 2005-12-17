@@ -18,8 +18,6 @@ from rdflib.URLInputSource import URLInputSource
 from xml.sax.xmlreader import InputSource
 from xml.sax.saxutils import prepare_input_source
 
-from cPickle import dumps
-
 import logging
 
 
@@ -63,7 +61,7 @@ class Graph(Node):
     namespace_manager = property(_get_namespace_manager, _set_namespace_manager)
 
     def __repr__(self):
-        return "<Graph identifier=%s>" % self.identifier
+        return "<Graph identifier=%s (%s)>" % (self.identifier, type(self))
 
     def destroy(self, configuration):
         """
@@ -353,9 +351,11 @@ class Graph(Node):
         """return an n3 identifier for the Graph"""
         return "[%s]" % self.identifier.n3()
 
-    def to_bits(self):
-        return dumps((4, ("GET_STORE", self.identifier.to_bits(),)))
+    def __reduce__(self):
+        return (Graph, (self.store, self.identifier,))
 
+#     def __getstate__(self):
+#         return False
 
     def isomorphic(self, other):
         # TODO: this is only an approximation.
@@ -463,6 +463,9 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
         context.parse(source, publicID=publicID, format=format)
         return context
 
+    def __reduce__(self):
+        return (ConjunctiveGraph, (self.store, self.identifier,))
+
 
 class QuotedGraph(Graph):
 
@@ -476,20 +479,21 @@ class QuotedGraph(Graph):
         """return an n3 identifier for the Graph"""
         return "{%s}" % self.identifier.n3()
 
-    def to_bits(self):
-        return dumps((5, (self.identifier.to_bits(),)))
+    def __reduce__(self):
+        return (QuotedGraph, (self.store, self.identifier,))
 
 
 class GraphValue(QuotedGraph):
     def __init__(self, store, identifier=None, graph=None):
         if graph is not None:
             assert identifier is None
+            np = NodePickler(self.store)
             import md5
             identifier = md5.new()
             s = list(graph.triples((None, None, None)))
             s.sort()
             for t in s:
-                identifier.update("^".join((i.to_bits() for i in t)))
+                identifier.update("^".join((np.dumps(i) for i in t)))
             identifier = URIRef("data:%s" % identifier.hexdigest())
             super(GraphValue, self).__init__(store, identifier)            
             for t in graph:
@@ -510,8 +514,8 @@ class GraphValue(QuotedGraph):
     def __cmp__(self, other):
         return self.identifier.__cmp__(other.identifier)
 
-    def to_bits(self):
-        return dumps((8, (self.identifier.to_bits(),)))
+    def __reduce__(self):
+        return (GraphValue, (self.store, self.identifier,))
 
 
 class Seq(object):
@@ -654,3 +658,5 @@ class BackwardCompatGraph(ConjunctiveGraph):
         for s, p, o in self.triples((subject, None, None)):
             yield p, o
 
+    def __reduce__(self):
+        return (BackwardCompatGraph, (self.store, self.identifier,))

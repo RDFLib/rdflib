@@ -1,16 +1,17 @@
 import unittest
 
 from rdflib import *
-from rdflib.util import from_bits
+from rdflib.util import NodePickler
 
 
 class UtilTestCase(unittest.TestCase):
 
     def test_to_bits_from_bits_round_trip(self):
+        np = NodePickler(None)
 
         a = Literal(u'''A test with a \\n (backslash n), "\u00a9" , and newline \n and a second line.
 ''') 
-        b = from_bits(a.to_bits())
+        b = np.loads(np.dumps(a))
         self.assertEquals(a, b)
 
 
