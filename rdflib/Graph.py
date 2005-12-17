@@ -140,24 +140,6 @@ class Graph(Node):
         else:
             return 1
 
-    def ____eq__(self, other):
-        """ Test if Graph is exactly equal to Graph other."""
-        # Note: this is not a test of isomorphism, but rather exact
-        # equality.
-        if other and self.identifier == other.identifier:
-            return True
-        else:
-            return False
-        if not other or len(self)!=len(other):
-            return 0
-        for s, p, o in self:
-            if not (s, p, o) in other:
-                return 0
-        for s, p, o in other:
-            if not (s, p, o) in self:
-                return 0
-        return 1
-
     def __iadd__(self, other):
         """ Add all triples in Graph other to Graph."""
         for triple in other:
