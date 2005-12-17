@@ -137,7 +137,10 @@ class Graph(Node):
     def __hash__(self):
         return hash(self.identifier)
     def __cmp__(self, other):
-        return self.identifier.__cmp__(other.identifier)
+        if other is not None:
+            return self.identifier.__cmp__(other.identifier)
+        else:
+            return 1
 
     def ____eq__(self, other):
         """ Test if Graph is exactly equal to Graph other."""
