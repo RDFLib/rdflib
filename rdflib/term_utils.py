@@ -1,5 +1,13 @@
 from rdflib import *
-from rdflib.Graph import QuotedGraph
+from rdflib.Graph import QuotedGraph, Graph, ConjunctiveGraph, BackwardCompatGraph
+
+#Takes an instance of a Graph (Graph, QuotedGraph, ConjunctiveGraph, or BackwardCompatGraph)
+#and returns the Graphs identifier and 'type' ('U' for Graphs, 'F' for QuotedGraphs ).
+def normalizeGraph(graph):
+    if isinstance(graph,QuotedGraph):        
+        return graph.identifier, 'F'
+    else:
+        return graph.identifier , term2Letter(graph.identifier)    
 
 TERM_INSTANCIATION_DICT ={
     'U':URIRef,
@@ -21,7 +29,7 @@ def term2Letter(term):
         return 'V'
     else:
         print term,type(term)
-        raise
+        raise Exception("The given term is not an instance of any of the known types (URIRef,BNode,Literal,QuotedGraph, or Variable)")
 
 def triplePattern2termCombinations((s,p,o)):
     combinations=[]
