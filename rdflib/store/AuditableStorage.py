@@ -1,4 +1,5 @@
 from rdflib.store import Store
+from rdflib.Graph import Graph
 from pprint import pprint
 import threading
 
@@ -6,26 +7,6 @@ destructiveOpLocks = {
     'add':None,
     'remove':None,
 }
-        
-class RemoveQuad:
-    def __init__(self,(s,p,o,c)):
-        self.subject   = s
-        self.predicate = p
-        self.obj       = o
-        self.context   = c
-        
-    def __repr__(self):
-        return "<RemoveQuad: subject=%s, predicate=%s, object=%s,context=%s>"%(self.subject,self.predicate,self.obj,self.context)
-        
-class AddQuad:
-    def __init__(self,(s,p,o,c)):
-        self.subject   = s
-        self.predicate = p
-        self.obj       = o
-        self.context   = c
-        
-    def __repr__(self):
-        return "<AddQuad: subject=%s, predicate=%s, object=%s,context=%s>"%(self.subject,self.predicate,self.obj,self.context)
 
 class AuditableStorage(Store):
     def __init__(self, storage):
@@ -48,37 +29,44 @@ class AuditableStorage(Store):
         self.storage.destroy(configuration)
     
     def add(self, (subject, predicate, object_), context, quoted=False):
-        #print "add((%s, %s, %s), %s)"%(subject,predicate,object_,context)
         lock = destructiveOpLocks['add']
         lock = lock and lock or threading.RLock()
         lock.acquire()
-        self.reverseOps.append(RemoveQuad((subject,predicate,object_,context)))
+        self.reverseOps.append((subject,predicate,object_,context.identifier,'remove'))
+        if (subject,predicate,object_,context.identifier,'add') in self.reverseOps:
+            self.reverseOps.remove((subject,predicate,object_,context,'add'))
         self.storage.add((subject, predicate, object_), context, quoted)
         lock.release()
     
     def remove(self, (subject, predicate, object_), context=None):
-        #print "remove((%s, %s, %s), %s)"%(subject,predicate,object_,context)
         lock = destructiveOpLocks['remove']
         lock = lock and lock or threading.RLock()
         lock.acquire()
         #Need to determine which quads will be removed if any term is a wildcard
         if None in [subject,predicate,object_,context]:
             for (s,p,o),cg in self.storage.triples((subject,predicate,object_),context):
-                for ctx in cg:
-                    self.reverseOps.append(AddQuad((s,p,o,ctx)))
+                for ctx in cg:                                        
+                    if (s,p,o,ctx.identifier,'remove') in self.reverseOps:
+                        self.reverseOps.remove((s,p,o,ctx.identifier,'remove'))
+                    else:
+                        self.reverseOps.append((s,p,o,ctx.identifier,'add'))
+        elif (subject,predicate,object_,context.identifier,'add') in self.reverseOps:
+            self.reverseOps.remove((subject,predicate,object_,context.identifier,'add'))
         else:
-            self.reverseOps.append(AddQuad((subject,predicate,object_,context)))
-        self.storage.remove((subject,predicate,object_),context)
+            self.reverseOps.append((subject,predicate,object_,context.identifier,'add'))
+        self.storage.remove((subject,predicate,object_),context)        
         lock.release()
     
     def triples(self, (subject, predicate, object_), context=None):
-        return self.storage.triples((subject, predicate, object_), context)
+        for (s,p,o),cg in self.storage.triples((subject, predicate, object_), context):
+            yield (s,p,o),cg
     
     def __len__(self, context=None):
         return self.storage.__len__(context)
     
     def contexts(self, triple=None):
-        return self.storage.contexts(triple)
+        for ctx in self.storage.contexts(triple):
+            yield ctx
     
     def bind(self, prefix, namespace):
         self.storage.bind(prefix, namespace)
@@ -94,27 +82,16 @@ class AuditableStorage(Store):
     
     def commit(self):
         self.storage.commit()
+        self.reverseOps = []
     
     def rollback(self):
         #Aquire Rollback lock and apply reverse operations in the forward order
         self.rollbackLock.acquire()
-        #print "Before: "
-        #for triple in self.storage.triples((None,None,None),None):
-        #    print triple
-        #print "Rollbacks: "
-        #pprint(self.reverseOps)
-        for revOp in self.reverseOps:
-            if isinstance(revOp,AddQuad):
-                #print "Adding "
-                #print (revOp.subject,revOp.predicate,revOp.obj,revOp.context)
-                self.storage.add((revOp.subject,revOp.predicate,revOp.obj),revOp.context)
+        for subject,predicate,obj,context,op in self.reverseOps:
+            if op == 'add':
+                self.storage.add((subject,predicate,obj),context)
             else:
-                #print "Removing "
-                #print (revOp.subject,revOp.predicate,revOp.obj,revOp.context)
-                self.storage.remove((revOp.subject,revOp.predicate,revOp.obj),revOp.context)
+                self.storage.remove((subject,predicate,obj),Graph(self,context))
                 
         self.reverseOps = []
-        #print "After: "
-        #for triple in self.storage.triples((None,None,None),None):
-        #    print triple
         self.rollbackLock.release()
