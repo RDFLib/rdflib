@@ -43,6 +43,8 @@ class Graph(Node):
     @prefix : <http://rdflib.net/store/> .
     @prefix rdfg: <http://www.w3.org/2004/03/trix/rdfg-1/>.
     @prefix owl: <http://www.w3.org/2002/07/owl#>.
+    @prefix log: <http://www.w3.org/2000/10/swap/log#>.
+    @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
     
     :Store a owl:Class;
         rdfs:subClassOf <http://xmlns.com/wordnet/1.6/Electronic_database>;
@@ -70,8 +72,10 @@ class Graph(Node):
         rdfs:label "The default subgraph of a conjunctive graph".
     
     
-    :identifier a owl:ObjectProperty;
+    :identifier a owl:Datatypeproperty;
         rdfs:label "The store-associated identifier of the formula. ".
+        rdfs:domain log:Formula
+        rdfs:range xsd:anyURI;
         
     :storage a owl:ObjectProperty;
         rdfs:domain [
