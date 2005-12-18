@@ -40,11 +40,12 @@ class Graph(Node):
     
     @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-    @prefix : <http://rdflib.net/rdf_store#> .
+    @prefix : <http://rdflib.net/rdf_store/> .
     @prefix rdfg: <http://www.w3.org/2004/03/trix/rdfg-1/>.
     @prefix owl: <http://www.w3.org/2002/07/owl#>.
     
     :Store a owl:Class;
+        rdfs:subClassOf <http://xmlns.com/wordnet/1.6/Electronic_database>;
         rdfs:subClassOf
             [a owl:Restriction;
              owl:onProperty rdfs:label;
