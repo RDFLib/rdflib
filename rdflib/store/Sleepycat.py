@@ -216,14 +216,14 @@ class Sleepycat(Store):
 #             if context == self: 
 #                 context = None
 
-        if subject is None and predicate is None and object is None and context is None:
+        if subject is not None and predicate is not None and object is not None and context is not None:
             s = _to_string(subject)
             p = _to_string(predicate)
             o = _to_string(object)
             c = _to_string(context)
             value = self.__indicies[0].get("%s^%s^%s^%s^" % (c, s, p, o))            
             if value is not None:
-                self.__remove(self, (s, p, o), c)
+                self.__remove((s, p, o), c)
                 self.__needs_sync = True
         else:
             cspo, cpos, cosp = self.__indicies
