@@ -30,10 +30,11 @@ class Sleepycat(Store):
         homeDir = path        
         envsetflags  = db.DB_CDB_ALLDB
         envflags = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD
-        if not exists(homeDir) and create==True:
-            mkdir(homeDir)
-        else:
-            return -1
+        if not exists(homeDir):
+            if create==True:
+                mkdir(homeDir)
+            else:
+                return -1
         self.env = env = db.DBEnv()
         env.set_cachesize(0, 1024*1024*50) # TODO
         #env.set_lg_max(1024*1024)
@@ -220,7 +221,7 @@ class Sleepycat(Store):
             p = _to_string(predicate)
             o = _to_string(object)
             c = _to_string(context)
-            value = self.indicies[0].get("%s^%s^%s^%s^" % (c, s, p, o))            
+            value = self.__indicies[0].get("%s^%s^%s^%s^" % (c, s, p, o))            
             if value is not None:
                 self.__remove(self, (s, p, o), c)
                 self.__needs_sync = True
@@ -299,6 +300,7 @@ class Sleepycat(Store):
             if key and key.startswith(prefix):
                 c, s, p, o = from_key(key)
                 contexts_value = index.get(key)
+                # TODO: code for only converting the ones that aren't fixed.
                 yield (_from_string(s), _from_string(p), _from_string(o)), (_from_string(c) for c in contexts_value.split("^") if c)
             else:
                 break            
