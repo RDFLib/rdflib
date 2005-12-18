@@ -4,10 +4,9 @@ from xml.sax.xmlreader import InputSource
 
 from rdflib import __version__
 
-# TODO: what should value of Accept be?
+# TODO: add types for n3. text/rdf+n3 ?
 headers = {
-    #'Accept': 'text/xml, application/xml, application/rdf+xml, application/xml+rdf, text/plain, application/xhtml+xml, application/*, */*',
-    'Accept': 'application/rdf+xml' ,
+    'Accept': 'application/rdf+xml', 
     'User-agent':
     'rdflib-%s (http://rdflib.net/; eikeon@eikeon.com)' % __version__
     }
