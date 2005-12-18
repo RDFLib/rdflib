@@ -30,7 +30,11 @@ class Graph(Node):
     Stores can be context-aware or unaware.  Unaware stores take up
     (some) less space but cannot support features that require
     context, such as true merging/demerging of sub-graphs and
-    provenance.  
+    provenance.
+    
+    The Graph constructor can take an identifier which identifies the Graph
+    by name.  If none is given, the graph is assigned a BNode for it's identifier.
+    For more on named graphs, see: http://www.w3.org/2004/03/trix/
     """
 
     def __init__(self, store='default', identifier=None):
