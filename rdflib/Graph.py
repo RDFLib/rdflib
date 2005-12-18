@@ -127,7 +127,7 @@ class Graph(Node):
         if isinstance(self.identifier,URIRef):
             return "%s a rdfg:Graph;rdflib:storage [a rdflibStore [a rdflib:Store;rdfs:label '%s']]."%(self.identifier.n3(),self.store.__class__.__name__)
         else:
-            return "[a rdfg:Graph;rdflib:storage [a rdflib:Store '%s']]."%(self.store.__class__.__name__)
+            return "[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '%s']]."%(self.store.__class__.__name__)
 
     def destroy(self, configuration):
         """
