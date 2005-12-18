@@ -113,7 +113,7 @@ class REGEXMatching(Store):
         self.storage.bind(prefix, namespace)
     
     def prefix(self, namespace):
-        return self.prefix(namespace)
+        return self.storage.prefix(namespace)
     
     def namespace(self, prefix):
         return self.storage.namespace(prefix)

@@ -1,6 +1,6 @@
 """
 This wrapper intercepts calls through the store interface
-And implements thread-safe logging of destrictuve operations (adds / removes) in reverse.
+And implements thread-safe logging of destructive operations (adds / removes) in reverse.
 This is persisted on the store instance and the reverse operations are executed
 In order to return the store to the state it was when the transaction began
 Since the reverse operations are persisted on the store, the store itself acts
@@ -84,7 +84,7 @@ class AuditableStorage(Store):
         self.storage.bind(prefix, namespace)
     
     def prefix(self, namespace):
-        return self.prefix(namespace)
+        return self.storage.prefix(namespace)
     
     def namespace(self, prefix):
         return self.storage.namespace(prefix)
