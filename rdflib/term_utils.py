@@ -31,6 +31,12 @@ def term2Letter(term):
         print term,type(term)
         raise Exception("The given term is not an instance of any of the known types (URIRef,BNode,Literal,QuotedGraph, or Variable)")
 
+def constructGraph(term):
+    if term == 'F':
+        return QuotedGraph, URIRef
+    else:
+        return Graph,TERM_INSTANCIATION_DICT[term]
+
 def triplePattern2termCombinations((s,p,o)):
     combinations=[]
     #combinations.update(TERM_COMBINATIONS)
