@@ -81,10 +81,16 @@ class Graph(Node):
         rdfs:range :Store.
         
     :default_context a owl:FunctionalProperty;
+        rdfs:label "The default context for a conjunctive graph";
+        rdfs:domain :ConjunctiveGraph;
+        rdfs:range rdfg:Graph.
         
         
+    {?cg a :ConjunctiveGraph;:storage ?store}
+      => {?cg owl:sameAs ?store}.
+      
     {?subGraph rdfg:subGraphOf ?cg;a :DefaultContext}
-      => {?cg a :ConjunctiveGraph;:default_context ?subGraphOf}    
+      => {?cg a :ConjunctiveGraph;:default_context ?subGraphOf} .
     """
 
     def __init__(self, store='default', identifier=None):
