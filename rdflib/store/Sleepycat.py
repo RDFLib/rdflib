@@ -166,26 +166,30 @@ class Sleepycat(Store):
         o = _to_string(object)
         c = _to_string(context)
         
-        self.__contexts.put(c, "")        
-
         cspo, cpos, cosp = self.__indicies
 
-        contexts_value = cspo.get("%s^%s^%s^%s^" % ("", s, p, o)) or ""
-        contexts = set(contexts_value.split("^"))
-        contexts.add(c)
-        contexts_value = "^".join(contexts)
-        assert contexts_value!=None
+        value = cspo.get("%s^%s^%s^%s^" % (c, s, p, o))
+        if value is None:
+            # TODO: handle case where a triple is added as quoted and
+            # then added again as not quoted... or vice versa.
+            self.__contexts.put(c, "")        
 
-        #assert context!=self.identifier
-        cspo.put("%s^%s^%s^%s^" % (c, s, p, o), "")
-        cpos.put("%s^%s^%s^%s^" % (c, p, o, s), "")
-        cosp.put("%s^%s^%s^%s^" % (c, o, s, p), "")
-        if not quoted:
-            cspo.put("%s^%s^%s^%s^" % ("", s, p, o), contexts_value)
-            cpos.put("%s^%s^%s^%s^" % ("", p, o, s), contexts_value)
-            cosp.put("%s^%s^%s^%s^" % ("", o, s, p), contexts_value)
+            contexts_value = cspo.get("%s^%s^%s^%s^" % ("", s, p, o)) or ""
+            contexts = set(contexts_value.split("^"))
+            contexts.add(c)
+            contexts_value = "^".join(contexts)
+            assert contexts_value!=None
 
-        self.__needs_sync = True
+            #assert context!=self.identifier
+            cspo.put("%s^%s^%s^%s^" % (c, s, p, o), "")
+            cpos.put("%s^%s^%s^%s^" % (c, p, o, s), "")
+            cosp.put("%s^%s^%s^%s^" % (c, o, s, p), "")
+            if not quoted:
+                cspo.put("%s^%s^%s^%s^" % ("", s, p, o), contexts_value)
+                cpos.put("%s^%s^%s^%s^" % ("", p, o, s), contexts_value)
+                cosp.put("%s^%s^%s^%s^" % ("", o, s, p), contexts_value)
+
+            self.__needs_sync = True
 
     def __remove(self, (s, p, o), c, quoted=False):
         cspo, cpos, cosp = self.__indicies
@@ -206,54 +210,64 @@ class Sleepycat(Store):
 
     def remove(self, (subject, predicate, object), context):
         assert self.__open, "The InformationStore must be open."
-
+        _to_string = self._to_string
 #         if context is not None:
 #             if context == self: 
 #                 context = None
 
-        # TODO: special case if subject and predicate and object and context:
-        # TODO: write def __remove(self, (s, p, o), c) where all are known and in string form
-        cspo, cpos, cosp = self.__indicies
-        index, prefix, to_key, from_key = self.__lookup((subject, predicate, object), context)
+        if subject is None and predicate is None and object is None and context is None:
+            s = _to_string(subject)
+            p = _to_string(predicate)
+            o = _to_string(object)
+            c = _to_string(context)
+            value = self.indicies[0].get("%s^%s^%s^%s^" % (c, s, p, o))            
+            if value is not None:
+                self.__remove(self, (s, p, o), c)
+                self.__needs_sync = True
+        else:
+            cspo, cpos, cosp = self.__indicies
+            index, prefix, to_key, from_key = self.__lookup((subject, predicate, object), context)
 
-        cursor = index.cursor()
-        try:
-            current = cursor.set_range(prefix)
-        except db.DBNotFoundError:
-            current = None
-        cursor.close()
-        while current:
-            key, value = current
             cursor = index.cursor()
             try:
-                cursor.set_range(key)
-                current = cursor.next()
+                current = cursor.set_range(prefix)
+                needs_sync = True
             except db.DBNotFoundError:
                 current = None
+                needs_sync = False
             cursor.close()
-            if key.startswith(prefix):
-                c, s, p, o = from_key(key)
-                if context is None:
-                    contexts_value = index.get(key) # or ""?
-                    contexts = set(contexts_value.split("^")) # remove triple from all non quoted contexts 
-                    contexts.add("") # and from the conjunctive index
-                    for c in contexts:
-                        for i, _to_key, _ in self.__indicies_info:
-                            i.delete(_to_key((s, p, o), c))
-                else:
-                    self.__remove((s, p, o), c)
-            else:
-                break            
-
-        if context is not None:
-            if subject is None and predicate is None and object is None:
-                # TODO: also if context becomes empty and not just on remove((None, None, None), c)
+            while current:
+                key, value = current
+                cursor = index.cursor()
                 try:
-                    self.__contexts.delete(self._to_string(context))
-                except db.DBNotFoundError, e:
-                    pass                    
+                    cursor.set_range(key)
+                    current = cursor.next()
+                except db.DBNotFoundError:
+                    current = None
+                cursor.close()
+                if key.startswith(prefix):
+                    c, s, p, o = from_key(key)
+                    if context is None:
+                        contexts_value = index.get(key) or ""
+                        contexts = set(contexts_value.split("^")) # remove triple from all non quoted contexts 
+                        contexts.add("") # and from the conjunctive index
+                        for c in contexts:
+                            for i, _to_key, _ in self.__indicies_info:
+                                i.delete(_to_key((s, p, o), c))
+                    else:
+                        self.__remove((s, p, o), c)
+                else:
+                    break            
 
-        self.__needs_sync = True
+            if context is not None:
+                if subject is None and predicate is None and object is None:
+                    # TODO: also if context becomes empty and not just on remove((None, None, None), c)
+                    try:
+                        self.__contexts.delete(_to_string(context))
+                    except db.DBNotFoundError, e:
+                        pass                    
+
+            self.__needs_sync = needs_sync
 
 
     def triples(self, (subject, predicate, object), context=None):
