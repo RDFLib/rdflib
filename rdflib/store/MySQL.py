@@ -10,6 +10,7 @@ from rdflib.Variable import Variable
 import MySQLdb,sha,sys,re
 from rdflib.term_utils import *
 from rdflib.Graph import QuotedGraph
+from rdflib.store.REGEXMatching import REGEXTerm
 Any = None
 
 COUNT_SELECT   = 0
@@ -33,14 +34,6 @@ def EscapeQuotes(qstr):
     tmp = qstr.replace("\\","\\\\")
     tmp = tmp.replace("'", "\\'")
     return tmp
-
-#REGEXTerm can be used in any term slot and is interpreted as
-#a request to perform a REGEX match (not a string comparison) using the value
-#(pre-compiled) for checkin rdf:type matches
-class REGEXTerm(unicode):
-    def __init__(self,expr):
-        self.compiledExpr = re.compile(expr)
-    
 #Terms: u - uri refs  v - variables  b - bnodes l - literal f - formula
 
 #Normalize a MySQL command before executing it.  Commence unicode black magic
@@ -116,20 +109,20 @@ def buildTypeSQLCommand(member,klass,context,storeId):
         storeId,
         normalizeTerm(member),
         normalizeTerm(klass),
-        context,
-        type2TermCombination(member,klass))
+        context.identifier,
+        type2TermCombination(member,klass,context))
     return rt
 
 #Builds an insert command for literal triples (statements where the object is a Literal)
 def buildLiteralTripleSQLCommand(subject,predicate,obj,context,storeId):
-    triplePattern = statement2TermCombination(subject,predicate,obj)
+    triplePattern = statement2TermCombination(subject,predicate,obj,context)
     literal_table = "%s_literal_statements"%storeId
     command=u"INSERT INTO %s VALUES ('%s', '%s', '%s', '%s', %s,%s,%s)"%(
         literal_table,
         normalizeTerm(subject),
         normalizeTerm(predicate),
         normalizeTerm(obj),
-        context,
+        context.identifier,
         str(triplePattern),
         isinstance(obj,Literal) and  "'%s'"%obj.language or 'NULL',
         isinstance(obj,Literal) and "'%s'"%obj.datatype or 'NULL')
@@ -138,14 +131,14 @@ def buildLiteralTripleSQLCommand(subject,predicate,obj,context,storeId):
 #Builds an insert command for regular triple table
 def buildTripleSQLCommand(subject,predicate,obj,context,storeId,quoted):
     stmt_table = quoted and "%s_quoted_statements"%storeId or "%s_asserted_statements"%storeId
-    triplePattern = statement2TermCombination(subject,predicate,obj)
+    triplePattern = statement2TermCombination(subject,predicate,obj,context)
     if quoted:
         command=u"INSERT INTO %s VALUES ('%s', '%s', '%s', '%s', %s,%s,%s)"%(
             stmt_table,
             normalizeTerm(subject),
             normalizeTerm(predicate),
             normalizeTerm(obj),
-            context,
+            context.identifier,
             str(triplePattern),
             isinstance(obj,Literal) and  "'%s'"%obj.language or 'NULL',
             isinstance(obj,Literal) and "'%s'"%obj.datatype or 'NULL')
@@ -155,7 +148,7 @@ def buildTripleSQLCommand(subject,predicate,obj,context,storeId,quoted):
             normalizeTerm(subject),
             normalizeTerm(predicate),
             normalizeTerm(obj),
-            context,
+            context.identifier,
             str(triplePattern))
     return command
 
@@ -164,19 +157,20 @@ def buildTripleSQLCommand(subject,predicate,obj,context,storeId,quoted):
 #to interpret how to instanciate each term
 def extractTriple(tupleRt,backend,hardCodedContext=None):
     subject,predicate,obj,rtContext,termComb,objLanguage,objDatatype = tupleRt    
-    context = rtContext and rtContext or hardCodedContext
+    context = rtContext and rtContext or hardCodedContext.identifier
     termCombString=REVERSE_TERM_COMBINATIONS[termComb]
-    subjTerm,predTerm,objTerm = termCombString
+    subjTerm,predTerm,objTerm,ctxTerm = termCombString
     s=createTerm(subject,subjTerm,backend)
     p=predicate == RDF.type and RDF.type or createTerm(predicate,predTerm,backend)            
     o=createTerm(obj,objTerm,backend,objLanguage,objDatatype)
-            
-    return s,p,o,context
+    
+    graphKlass, idKlass = constructGraph(ctxTerm)
+    return s,p,o,(graphKlass,idKlass,context)
 
 #Takes a term and 'normalizes' it.
 #Literals are escaped, Quoted graphs are replaced with just their identifiers
 def normalizeTerm(term):
-    if isinstance(term,QuotedGraph):
+    if isinstance(term,(QuotedGraph,Graph)):
         return term.identifier
     else:
         return EscapeQuotes(term)
@@ -202,12 +196,12 @@ def buildSubjClause(subject,tableName):
         for s in subject:
             if isinstance(s,REGEXTerm):
                 clauseStrings.append(u"%s REGEXP '%s'"%(tableName and u'%s.subject'%tableName or u'subject',EscapeQuotes(s)))
-            elif isinstance(s,QuotedGraph):
+            elif isinstance(s,(QuotedGraph,Graph)):
                 clauseStrings.append(u"%s='%s'"%(tableName and u'%s.subject'%tableName or u'subject',s.identifier))                
             else:
                 clauseStrings.append(s and u"%s='%s'"%(tableName and u'%s.subject'%tableName or u'subject',s) or None)
         return u'(%s)'%u' or '.join([clauseString for clauseString in clauseStrings])
-    elif isinstance(subject,QuotedGraph):
+    elif isinstance(subject,(QuotedGraph,Graph)):
         return u"%s='%s'"%(tableName and u'%s.subject'%tableName or u'subject',subject.identifier)    
     else:
         return subject and u"%s='%s'"%(tableName and u'%s.subject'%tableName or u'subject',subject) or None
@@ -236,17 +230,18 @@ def buildObjClause(obj,tableName):
         for o in obj:
             if isinstance(o,REGEXTerm):
                 clauseStrings.append(u"%s REGEXP '%s'"%(tableName and u'%s.object'%tableName or u'object',EscapeQuotes(o)))
-            elif isinstance(o,QuotedGraph):
+            elif isinstance(o,(QuotedGraph,Graph)):
                 clauseStrings.append(u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',o.identifier))
             else:
                 clauseStrings.append(o and u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',isinstance(o,Literal) and EscapeQuotes(o) or o) or None)
         return u'(%s)'%u' or '.join([clauseString for clauseString in clauseStrings])
-    elif isinstance(obj,QuotedGraph):
+    elif isinstance(obj,(QuotedGraph,Graph)):
         return u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',obj.identifier)
     else:
         return obj and u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',EscapeQuotes(obj)) or None
 
 def buildContextClause(context,tableName):
+    context = context is not None and context.identifier or context
     if isinstance(context,REGEXTerm):
         return u"%s REGEXP '%s'"%(tableName and u'%s.context'%tableName,EscapeQuotes(context))
     else:
@@ -262,7 +257,7 @@ def buildTypeMemberClause(subject,tableName):
     if isinstance(subject,REGEXTerm):
         return u"%s.member REGEXP '%s'"%(tableName,EscapeQuotes(subject))
     elif isinstance(subject,list):
-        subjs = [isinstance(s,QuotedGraph) and s.identifier or s for s in subject]        
+        subjs = [isinstance(s,(QuotedGraph,Graph)) and s.identifier or s for s in subject]        
         return u' or '.join([s and u"%s.member = '%s'"%(tableName,s) for s in subjs])    
     else:
         return subject and u"%s.member = '%s'"%(tableName,subject)
@@ -271,7 +266,7 @@ def buildTypeClassClause(obj,tableName):
     if isinstance(obj,REGEXTerm):
         return u"%s.klass REGEXP '%s'"%(tableName,EscapeQuotes(obj))
     elif isinstance(obj,list):
-        obj = [isinstance(o,QuotedGraph) and o.identifier or o for o in obj]        
+        obj = [isinstance(o,(QuotedGraph,Graph)) and o.identifier or o for o in obj]        
         return u' or '.join([o and not isinstance(o,Literal) and u"%s.klass = '%s'"%(tableName,o) for o in obj])
     else:
         return obj and not isinstance(obj,Literal) and u"%s.klass = '%s'"%(tableName,obj)
@@ -309,6 +304,8 @@ class MySQL(Store):
     """
     context_aware = True
     formula_aware = True
+    transaction_aware = True
+    regex_matching = True
     def __init__(self, identifier=None, configuration=None):
         """ 
         identifier: URIRef of the Store. Defaults to CWD
@@ -329,7 +326,7 @@ class MySQL(Store):
         #of the triple pattern is
         self.STRONGLY_TYPED_TERMS = False
         
-        if configuration:
+        if configuration is not None:
             self.open(configuration)
             
     #Database Management Methods
@@ -382,7 +379,23 @@ class MySQL(Store):
                                    port=configDict['port'],
                                    host=configDict['host']
                                   )
-        
+        c=self._db.cursor()
+        c.execute("""SHOW DATABASES""")
+        rt = c.fetchall()
+
+        if (configDict['db'].encode('utf-8'),) in rt:
+            for tn in [tbl%(self._internedId) for tbl in table_name_prefixes]:
+                c.execute("""show tables like '%s'"""%(tn,))
+                rt=c.fetchall()
+                if not rt:
+                    sys.stderr.write("table %s Doesn't exist\n" % (tn));
+                    #The database exists, but one of the partitions doesn't exist
+                    return 0
+            #Everything is there (the database and the partitions)
+            return 1
+        #The database doesn't exist - nothing is there
+        return -1
+
     def close(self, commit_pending_transaction=False):
         """ 
         FIXME:  Add documentation!!
@@ -390,7 +403,6 @@ class MySQL(Store):
         if commit_pending_transaction:
             self._db.commit()
         self._db.close()
-        self._db = None
 
     def destroy(self, configuration):
         """
@@ -422,7 +434,6 @@ class MySQL(Store):
         
     def add(self, (subject, predicate, obj), context=None, quoted=False):        
         """ Add a triple to the store of triples. """
-        assert context and context != self.identifier
         c=self._db.cursor()
         c.execute("""SET AUTOCOMMIT=0""")
         if quoted or predicate != RDF.type:
@@ -556,7 +567,7 @@ class MySQL(Store):
                   ASSERTED_NON_TYPE_PARTITION
                 ))                    
 
-        if context:
+        if context is not None:
             selects.append(
                 (
                   quoted_table,
@@ -570,12 +581,14 @@ class MySQL(Store):
         c.execute(_normalizeMySQLCmd(q))
         rt = c.fetchone()
         while rt:
-            s,p,o,currentContext = extractTriple(rt,self,context)
+            s,p,o,(graphKlass,idKlass,graphId) = extractTriple(rt,self,context)
+            currentContext=graphKlass(self,idKlass(graphId))
             contexts = [currentContext]
             rt = next = c.fetchone()
             sameTriple = next and extractTriple(next,self,context)[:3] == (s,p,o)
             while sameTriple:
-                s2,p2,o2,c2 = extractTriple(next,self,context)
+                s2,p2,o2,(graphKlass,idKlass,graphId) = extractTriple(next,self,context)
+                c2 = graphKlass(self,idKlass(graphId))
                 contexts.append(c2)
                 rt = next = c.fetchone()
                 sameTriple = next and extractTriple(next,self,context)[:3] == (s,p,o)
@@ -634,7 +647,7 @@ class MySQL(Store):
         typeContext     = buildContextClause(context,asserted_type_table)
         literalContext  = buildContextClause(context,literal_table)
         
-        if context:
+        if context is not None:
             selects = [
                 (
                   asserted_type_table,
@@ -694,7 +707,7 @@ class MySQL(Store):
         asserted_table="%s_asserted_statements"%self._internedId
         asserted_type_table="%s_type_statements"%self._internedId
         literal_table = "%s_literal_statements"%self._internedId
-        if triple:
+        if triple is not None:
             subject,predicate,obj=triple
             if predicate == RDF.type:
                 #select from asserted rdf:type partition and quoted table (if a context is specified)
