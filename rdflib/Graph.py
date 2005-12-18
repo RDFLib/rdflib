@@ -59,14 +59,19 @@ class Graph(Node):
                                            "AuditableStorage"
                                            "Memory")]
             ].
+
+    :ConjunctiveGraph a owl:Class;
+        rdfs:subClassOf rdfg:Graph;
+        rdfs:label "The top-level graph within the store - the concatenation of all the contexts within."
+        rdfs:seeAlso <http://rdflib.net/rdf_store/#ConjunctiveGraph>.
             
     :DefaultContext a owl:Class;
-        rdfs:subClasOf rdfg:Graph;
+        rdfs:subClassOf rdfg:Graph;
         rdfs:label "The default subgraph of a conjunctive graph".
     
     
     :identifier a owl:ObjectProperty;
-        rdfs:label "The store-associated identifier of the formula".
+        rdfs:label "The store-associated identifier of the formula. ".
         
     :storage a owl:ObjectProperty;
         rdfs:domain [
