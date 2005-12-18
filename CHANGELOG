@@ -6,6 +6,8 @@
         All the bug fixes from 2.2.x branch TODO: expand list?
 
         Adding n3 support...
+
+        Literal and parsers now distinguish between datatype of None and datatype of "".
         
 
 2005/08/12
