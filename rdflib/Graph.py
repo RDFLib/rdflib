@@ -35,6 +35,50 @@ class Graph(Node):
     The Graph constructor can take an identifier which identifies the Graph
     by name.  If none is given, the graph is assigned a BNode for it's identifier.
     For more on named graphs, see: http://www.w3.org/2004/03/trix/
+    
+    Ontology for __str__ provenance terms:
+    
+    @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    @prefix : <http://rdflib.net/rdf_store#> .
+    @prefix rdfg: <http://www.w3.org/2004/03/trix/rdfg-1/>.
+    @prefix owl: <http://www.w3.org/2002/07/owl#>.
+    
+    :Store a owl:Class;
+        rdfs:subClassOf
+            [a owl:Restriction;
+             owl:onProperty rdfs:label;
+             owl:allValuesFrom [a owl:DataRange;
+                                owl:oneOf ("IOMemory"
+                                           "Sleepcat"
+                                           "MySQL"
+                                           "Redland"
+                                           "REGEXMatching"
+                                           "ZODB"
+                                           "AuditableStorage"
+                                           "Memory")]
+            ].
+            
+    :DefaultContext a owl:Class;
+        rdfs:subClasOf rdfg:Graph;
+        rdfs:label "The default subgraph of a conjunctive graph".
+    
+    
+    :identifier a owl:ObjectProperty;
+        rdfs:label "The store-associated identifier of the formula".
+        
+    :storage a owl:ObjectProperty;
+        rdfs:domain [
+            a owl:Class;
+            owl:unionOf (log:Formula rdfg:Graph :ConjunctiveGraph)
+        ];
+        rdfs:range :Store.
+        
+    :default_context a owl:FunctionalProperty;
+        
+        
+    {?subGraph rdfg:subGraphOf ?cg;a :DefaultContext}
+      => {?cg a :ConjunctiveGraph;:default_context ?subGraphOf}    
     """
 
     def __init__(self, store='default', identifier=None):
@@ -66,6 +110,12 @@ class Graph(Node):
 
     def __repr__(self):
         return "<Graph identifier=%s (%s)>" % (self.identifier, type(self))
+
+    def __str__(self):
+        if isinstance(self.identifier,URIRef):
+            return "%s a rdfg:Graph;rdflib:storage [a rdflibStore;rdfs:label '%s']."%(self.identifier.n3(),self.store.__class__.__name__)
+        else:
+            return "[a rdfg:Graph;rdflib:storage [a rdflib:Store '%s']]."%(self.store.__class__.__name__)
 
     def destroy(self, configuration):
         """
@@ -373,6 +423,9 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
         self.context_aware = True
         self.default_context = Graph(store=self.store, identifier=BNode())
 
+    def __str__(self):
+        return "[a rdflib:DefaultContext] rdfg:subGraphOf [a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '%s']]"%(self.store.__class__.__name__)
+
     def add(self, (s, p, o), context=None):
         """"A conjunctive graph adds to its default context."""
         self.store.add((s, p, o), context=context or self.default_context, quoted=False)
@@ -470,6 +523,12 @@ class QuotedGraph(Graph):
     def n3(self):
         """return an n3 identifier for the Graph"""
         return "{%s}" % self.identifier.n3()
+    
+    def __str__(self):
+        if isinstance(self.identifier,URIRef):
+            return "{this rdflib.identifier %s;rdflib:storage [a rdflib:Store;rdfs:label '%s']}"%(self.identifier.n3(),self.store.__class__.__name__)
+        else:
+            return "{this rdflib:identifier %s;rdflib:storage [a rdflib:Store;rdfs:label '%s']}"%(self.identifier.n3(),self.store.__class__.__name__)
 
     def __reduce__(self):
         return (QuotedGraph, (self.store, self.identifier,))
