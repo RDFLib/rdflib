@@ -2,6 +2,9 @@ from __future__ import generators
 
 __metaclass__ = type
 
+import logging
+_logger = logging.getLogger("rdflib.store._sqlobject")
+
 import re
 _literal = re.compile(r'''"(?P<value>[^@&]*)"(?:@(?P<lang>[^&]*))?(?:&<(?P<datatype>.*)>)?''')
 
@@ -169,12 +172,17 @@ class SQLObject(Store):
         for att in self.tables:
             table = getattr(self, att)
             table._connection = connection
-            table.createTable(ifNotExists=True)
+            try:
+                table.createTable(ifNotExists=create)
+            except Exception, e: # TODO: should catch more specific exception
+                _logger.warning(e)
+                return 0
 
         self.transaction = transaction = connection.transaction()
         for att in self.tables:
             table = getattr(self, att)
             table._connection = transaction
+        return 1
 
     def close(self):
         if not self.__open:

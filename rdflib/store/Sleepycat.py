@@ -30,11 +30,10 @@ class Sleepycat(Store):
         homeDir = path        
         envsetflags  = db.DB_CDB_ALLDB
         envflags = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD
-        try:
-            if not exists(homeDir):
-                mkdir(homeDir)
-        except Exception, e:
-            print e
+        if not exists(homeDir) and create==True:
+            mkdir(homeDir)
+        else:
+            return -1
         self.env = env = db.DBEnv()
         env.set_cachesize(0, 1024*1024*50) # TODO
         #env.set_lg_max(1024*1024)
@@ -114,6 +113,7 @@ class Sleepycat(Store):
         t.setDaemon(True)
         t.start()
         self.__sync_thread = t
+        return 1
 
 
     def __sync_run(self):
