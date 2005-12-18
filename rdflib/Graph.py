@@ -125,7 +125,7 @@ class Graph(Node):
 
     def __str__(self):
         if isinstance(self.identifier,URIRef):
-            return "%s a rdfg:Graph;rdflib:storage [a rdflibStore;rdfs:label '%s']."%(self.identifier.n3(),self.store.__class__.__name__)
+            return "%s a rdfg:Graph;rdflib:storage [a rdflibStore [a rdflib:Store;rdfs:label '%s']]."%(self.identifier.n3(),self.store.__class__.__name__)
         else:
             return "[a rdfg:Graph;rdflib:storage [a rdflib:Store '%s']]."%(self.store.__class__.__name__)
 
