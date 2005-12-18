@@ -4,8 +4,6 @@ quick = False
 
 from test.identifier_equality import *
 
-from test.store import *
-
 from test.graph import *
 from test.graph2_2 import *
 
