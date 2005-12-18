@@ -18,8 +18,8 @@ class REGEXTerm(unicode):
     def __init__(self,expr):
         self.compiledExpr = re.compile(expr)
 
-    def to_bits(self):
-        return unicode('')
+    def __reduce__(self):
+        return (REGEXTerm, (unicode(''),))
 
 def regexCompareQuad(quad,regexQuad):
     for index in range(4):        

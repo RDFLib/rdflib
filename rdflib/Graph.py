@@ -205,16 +205,16 @@ class Graph(Node):
     def __hash__(self):
         return hash(self.identifier)
     def __cmp__(self, other):
-        if other is not None:
+        if other is None:
+            return -1
+        elif isinstance(other, Graph):
             return self.identifier.__cmp__(other.identifier)
         else:
             #Note if None is considered equivalent to owl:Nothing
             #Then perhaps a graph with length 0 should be considered
             #equivalent to None (if compared to it)?
+            return 1
 
-            # Perhaps the right thing to do is not allow comparison to
-            # None. For now we'll play it safe and do that.
-            raise TypeError("requires y to be a 'Graph', not a '%s'" % type(other))
 
     def __iadd__(self, other):
         """ Add all triples in Graph other to Graph."""
