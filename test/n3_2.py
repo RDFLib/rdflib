@@ -16,8 +16,10 @@ _:foo a rdfs:Class.
 #Thorough test suite for formula-aware store
 def testN3Store(backend,configString):
     g = Graph(backend=backend)
-    g.open(configString)    
-    g.parse(StringInputSource(testN3), format="n3") 
+    g.destroy(configString)
+    g.open(configString)
+    g.parse(StringInputSource(testN3), format="n3")
+    print g.backend
     try:
         for s,p,o in g.triples((None,implies,None)):
             formulaA = s
@@ -30,8 +32,10 @@ def testN3Store(backend,configString):
         d = URIRef('http://test/d')
         v = Variable('y')
 
+        universe = ConjunctiveGraph(g.backend)
+
         #test formula as terms
-        assert len(list(g.triples((formulaA,implies,formulaB))))==1
+        assert len(list(universe.triples((formulaA,implies,formulaB))))==1
         
         #test variable as term and variable roundtrip
         assert len(list(formulaB.triples((None,None,v))))==1
@@ -39,13 +43,10 @@ def testN3Store(backend,configString):
             if o != c:
                 assert isinstance(o,Variable)
                 assert o == v
-
-        universe = ConjunctiveGraph(g.backend)
-        assert len(list(universe.contexts()))==3
-        
-        assert type(list(universe.triples((None,RDF.type,RDFS.Class)))[0][0]) == BNode
-        assert len(list(universe.triples((None,implies,None))))==1
-        assert len(list(universe.triples((None,RDF.type,None))))==1
+        s,p,o = list(universe.triples((None,RDF.type,RDFS.Class)))[0][0]
+        assert isinstance(s,BNode)
+        assert len(list(universe.triples((None,implies,None)))) == 1
+        assert len(list(universe.triples((None,RDF.type,None)))) ==1
         assert len(list(formulaA.triples((None,RDF.type,None))))==1
         assert len(list(formulaA.triples((None,None,None))))==2        
         assert len(list(formulaB.triples((None,None,None))))==2
@@ -72,7 +73,7 @@ def testN3Store(backend,configString):
 
 
         #remove_context tests
-        universe.remove_context(formulaB.identifier)
+        universe.remove((None,None,None),formulaB)
         assert len(list(universe.triples((None,RDF.type,None))))==0
         assert len(universe)==1
         assert len(formulaB)==0
