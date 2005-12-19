@@ -92,7 +92,7 @@ class Sleepycat(Store):
                     yield ""
                 return get_prefix
 
-            lookup[i] = (self.__indicies[start], get_prefix_func(start, start + len), to_key_func(start), from_key_func(start))
+            lookup[i] = (self.__indicies[start], get_prefix_func(start, start + len), from_key_func(start), results_from_key_func(start, self._from_string))
 
 
         self.__lookup_dict = lookup
@@ -227,7 +227,7 @@ class Sleepycat(Store):
                 self.__needs_sync = True
         else:
             cspo, cpos, cosp = self.__indicies
-            index, prefix, to_key, from_key = self.__lookup((subject, predicate, object), context)
+            index, prefix, from_key, results_from_key = self.__lookup((subject, predicate, object), context)
 
             cursor = index.cursor()
             try:
@@ -280,7 +280,7 @@ class Sleepycat(Store):
 #                 context = None
 
         _from_string = self._from_string
-        index, prefix, to_key, from_key = self.__lookup((subject, predicate, object), context)
+        index, prefix, from_key, results_from_key = self.__lookup((subject, predicate, object), context)
 
         cursor = index.cursor()
         try:
@@ -298,10 +298,8 @@ class Sleepycat(Store):
                 current = None
             cursor.close()
             if key and key.startswith(prefix):
-                c, s, p, o = from_key(key)
                 contexts_value = index.get(key)
-                # TODO: code for only converting the ones that aren't fixed.
-                yield (_from_string(s), _from_string(p), _from_string(o)), (_from_string(c) for c in contexts_value.split("^") if c)
+                yield results_from_key(key, subject, predicate, object, contexts_value)
             else:
                 break            
 
@@ -412,9 +410,9 @@ class Sleepycat(Store):
         if object is not None:
             i += 4
             object = _to_string(object)
-        index, prefix_func, to_key, from_key = self.__lookup_dict[i]        
+        index, prefix_func, from_key, results_from_key = self.__lookup_dict[i]        
         prefix = "^".join(prefix_func((subject, predicate, object), context))
-        return index, prefix, to_key, from_key
+        return index, prefix, from_key, results_from_key
 
 
 def to_key_func(i):
@@ -428,6 +426,27 @@ def from_key_func(i):
         "Takes a key; returns string"
         parts = key.split("^")
         return parts[0], parts[(3-i+0)%3+1], parts[(3-i+1)%3+1], parts[(3-i+2)%3+1]
+    return from_key
+
+def results_from_key_func(i, from_string):
+    def from_key(key, subject, predicate, object, contexts_value):
+        "Takes a key and subject, predicate, object; returns tuple for yield"
+        parts = key.split("^")
+        if subject is None:
+            # TODO: i & 1: # dis assemble and/or measure to see which is faster
+            # subject is None or i & 1
+            s = from_string(parts[(3-i+0)%3+1])
+        else:
+            s = subject
+        if predicate is None:#i & 2:
+            p = from_string(parts[(3-i+1)%3+1])
+        else:
+            p = predicate
+        if object is None:#i & 4:
+            o = from_string(parts[(3-i+2)%3+1])
+        else:
+            o = object
+        return (s, p, o), (from_string(c) for c in contexts_value.split("^") if c)
     return from_key
 
 def readable_index(i):
