@@ -91,6 +91,8 @@ except ImportError, e:
 # TODO: add test case for 4Suite backends?  from Ft import Rdf
 
 try:
+    import todo # what kind of configuration string does open need?
+
     import MySQLdb,sha,sys
     # If we can import RDF then test Redland store
     class MySQLTestCase(StoreTestCase):
