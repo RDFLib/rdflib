@@ -155,14 +155,14 @@ def buildTripleSQLCommand(subject,predicate,obj,context,storeId,quoted):
 #Takes a dictionary which represents an entry in a result set and
 #converts it to a tuple of terms using the termComb integer
 #to interpret how to instanciate each term
-def extractTriple(tupleRt,backend,hardCodedContext=None):
+def extractTriple(tupleRt,store,hardCodedContext=None):
     subject,predicate,obj,rtContext,termComb,objLanguage,objDatatype = tupleRt    
-    context = rtContext and rtContext or hardCodedContext.identifier
+    context = rtContext is not None and rtContext or hardCodedContext.identifier
     termCombString=REVERSE_TERM_COMBINATIONS[termComb]
     subjTerm,predTerm,objTerm,ctxTerm = termCombString
-    s=createTerm(subject,subjTerm,backend)
-    p=predicate == RDF.type and RDF.type or createTerm(predicate,predTerm,backend)            
-    o=createTerm(obj,objTerm,backend,objLanguage,objDatatype)
+    s=createTerm(subject,subjTerm,store)
+    p=predicate == RDF.type and RDF.type or createTerm(predicate,predTerm,store)            
+    o=createTerm(obj,objTerm,store,objLanguage,objDatatype)
     
     graphKlass, idKlass = constructGraph(ctxTerm)
     return s,p,o,(graphKlass,idKlass,context)
@@ -175,15 +175,33 @@ def normalizeTerm(term):
     else:
         return EscapeQuotes(term)
 
-#Takes a term value, term type, and backend intance
+#Takes a term value, term type, and store intance
 #and Creates a term object.  QuotedGraphs are instanciated differently
-def createTerm(termString,termType,backend,objLanguage=None,objDatatype=None):
-    if termType=='F':
-        return QuotedGraph(backend,termString)
-    elif termType == 'L':
-        return Literal(termString,objLanguage,objDatatype)
+def createTerm(termString,termType,store,objLanguage=None,objDatatype=None):    
+    if termType == 'L':
+        cache = store.termCache.get((termType,termString,objLanguage,objDatatype))
+        if cache is not None:
+            return cache
+        else:
+            rt = Literal(termString,objLanguage,objDatatype)
+            store.termCache[((termType,termString,objLanguage,objDatatype))] = rt
+            return rt
+    elif termType=='F':
+        cache = store.termCache.get((termType,termString))
+        if cache is not None:
+            return cache
+        else:
+            rt = QuotedGraph(store,termString)
+            store.termCache[(termType,termString)] = rt
+            return rt
     else:
-        return TERM_INSTANCIATION_DICT[termType](termString)
+        cache = store.termCache.get((termType,termString))
+        if cache is not None:
+            return cache
+        else:
+            rt = TERM_INSTANCIATION_DICT[termType](termString)
+            store.termCache[(termType,termString)] = rt
+            return rt
 
 #Where Clause  utility Functions
 #The predicate and object clause builders are modified in order to optimize
@@ -328,6 +346,8 @@ class MySQL(Store):
         
         if configuration is not None:
             self.open(configuration)
+            
+        self.termCache = {}
             
     #Database Management Methods
     def open(self, configuration, create=True):
@@ -632,7 +652,7 @@ class MySQL(Store):
         c.execute(_normalizeMySQLCmd(q))
         rt=c.fetchall()
         typeLen,quotedLen,assertedLen,literalLen = [rtTuple[0] for rtTuple in rt]
-        return "<Parititioned MySQL N3 Store: %s classification assertions, %s quoted statements, %s property/value assertions, and %s other assertions>"%(typeLen,quotedLen,literalLen,assertedLen)
+        return "<Parititioned MySQL N3 Store: %s contexts, %s classification assertions, %s quoted statements, %s property/value assertions, and %s other assertions>"%(len([c for c in self.contexts()]),typeLen,quotedLen,literalLen,assertedLen)
 
     def __len__(self, context=None):
         """ Number of statements in the store. """
@@ -883,13 +903,16 @@ class MySQL(Store):
 
     #Namespace persistence interface implementation
     def bind(self, prefix, namespace):
-        """ """        
+        """ """
         c=self._db.cursor()
-        c.execute("INSERT INTO %s_namespace_binds VALUES ('%s', '%s')"%(
-            self._internedId,
-            prefix,
-            namespace)
-        )
+        try:
+            c.execute("INSERT INTO %s_namespace_binds VALUES ('%s', '%s')"%(
+                self._internedId,
+                prefix,
+                namespace)
+            )
+        except:
+            pass
 
     def prefix(self, namespace):
         """ """
