@@ -25,13 +25,13 @@ class Sleepycat(Store):
         #self._loads = np.loads
         #self._dumps = np.dumps
         
-    def __get_graph(self):
-        return self.__graph
-    def __set_graph(self, graph):
-        self.__graph = graph
-        self._loads = graph.node_pickler.loads
-        self._dumps = graph.node_pickler.dumps
-    graph = property(__get_graph, __set_graph)
+    def __get_env(self):
+        return self.__env
+    def __set_env(self, env):
+        self.__env = env
+        self._loads = env.node_pickler.loads
+        self._dumps = env.node_pickler.dumps
+    env = property(__get_env, __set_env)
 
     def open(self, path, create=True):
         homeDir = path        

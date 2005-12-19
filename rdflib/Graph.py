@@ -104,7 +104,7 @@ class Graph(Node):
         if not isinstance(store, Store):
             # TODO: error handling
             self.__store = store = plugin.get(store, Store)()
-            store.graph = self # TODO: 
+            store.env = self # TODO: make part of store interface... deal with wrappers etc.
         else:
             self.__store = store
         self.__namespace_manager = None
@@ -572,7 +572,7 @@ class GraphValue(QuotedGraph):
     def __init__(self, store, identifier=None, graph=None):
         if graph is not None:
             assert identifier is None
-            np = store.graph.node_pickler
+            np = store.env.node_pickler
             import md5
             identifier = md5.new()
             s = list(graph.triples((None, None, None)))
