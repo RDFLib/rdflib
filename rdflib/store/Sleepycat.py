@@ -42,11 +42,11 @@ class Sleepycat(Store):
                 mkdir(homeDir)
             else:
                 return -1
-        self.env = env = db.DBEnv()
-        env.set_cachesize(0, 1024*1024*50) # TODO
-        #env.set_lg_max(1024*1024)
-        env.set_flags(envsetflags, 1)
-        env.open(homeDir, envflags | db.DB_CREATE)
+        self.db_env = db_env = db.DBEnv()
+        db_env.set_cachesize(0, 1024*1024*50) # TODO
+        #db_env.set_lg_max(1024*1024)
+        db_env.set_flags(envsetflags, 1)
+        db_env.open(homeDir, envflags | db.DB_CREATE)
 
         self.__open = True
         
@@ -62,7 +62,7 @@ class Sleepycat(Store):
         self.__indicies_info = [None,] * 3
         for i in xrange(0, 3):
             index_name = to_key_func(i)(("s", "p", "o"), "c")
-            index = db.DB(env)
+            index = db.DB(db_env)
             index.set_flags(dbsetflags)
             index.open(index_name, dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
             self.__indicies[i] = index
@@ -104,17 +104,21 @@ class Sleepycat(Store):
 
         self.__lookup_dict = lookup
 
-        self.__contexts = db.DB(env)
+        self.__contexts = db.DB(db_env)
         self.__contexts.set_flags(dbsetflags)
         self.__contexts.open("contexts", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
 
-        self.__namespace = db.DB(env)
+        self.__namespace = db.DB(db_env)
         self.__namespace.set_flags(dbsetflags)
         self.__namespace.open("namespace", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
 
-        self.__prefix = db.DB(env)
+        self.__prefix = db.DB(db_env)
         self.__prefix.set_flags(dbsetflags)
         self.__prefix.open("prefix", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
+        
+        self.__journal = db.DB(db_env)
+        self.__journal.set_flags(dbsetflags)
+        self.__journal.open("journal", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
         
         self.__needs_sync = False
         t = Thread(target=self.__sync_run)
@@ -150,6 +154,7 @@ class Sleepycat(Store):
             self.__contexts.sync()
             self.__namespace.sync()
             self.__prefix.sync()
+            self.__journal.sync()
 
     def close(self):
         self.__open = False
@@ -159,7 +164,8 @@ class Sleepycat(Store):
         self.__contexts.close()
         self.__namespace.close()
         self.__prefix.close()
-        self.env.close()
+        self.__journal.close()
+        self.db_env.close()
 
     def add(self, (subject, predicate, object), context, quoted=False):
         """\
@@ -178,6 +184,7 @@ class Sleepycat(Store):
 
         value = cspo.get("%s^%s^%s^%s^" % (c, s, p, o))
         if value is None:
+            self.__journal["%s" % time()] =  self._to_string((1, s, p, o, c))
             # TODO: handle case where a triple is added as quoted and
             # then added again as not quoted... or vice versa.
             self.__contexts.put(c, "")        
@@ -202,6 +209,7 @@ class Sleepycat(Store):
     def __remove(self, (s, p, o), c, quoted=False):
         cspo, cpos, cosp = self.__indicies
 
+        self.__journal["%s" % time()] = self._to_string((2, s, p, o, c))
         contexts_value = cspo.get("^".join(("", s, p, o, ""))) or ""
         contexts = set(contexts_value.split("^"))
         contexts.discard(c)
