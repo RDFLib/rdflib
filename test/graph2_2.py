@@ -5,7 +5,7 @@ from tempfile import mkdtemp
 from rdflib import URIRef, BNode, Literal, RDF
 from rdflib import Graph
 
-class GraphTestCase(unittest.TestCase):
+class Graph22TestCase(unittest.TestCase):
     backend_name = 'default'
     path = None
 
@@ -131,13 +131,13 @@ class GraphTestCase(unittest.TestCase):
         self.assertEquals(s, graph.value(predicate=RDF.value, object=r))
 
 
-#class MemoryGraphTestCase(GraphTestCase):
+#class MemoryGraph22TestCase(Graph22TestCase):
 #    backend_name = "Memory"
 
 
 try:
     from rdflib.store.Sleepycat import Sleepycat
-    class SleepycatGraphTestCase(GraphTestCase):
+    class SleepycatGraph22TestCase(Graph22TestCase):
         backend_name = "Sleepycat"
 except ImportError, e:
     print "Can not test Sleepycat backend:", e
@@ -145,7 +145,7 @@ except ImportError, e:
 try:
     import persistent
     # If we can import persistent then test ZODB backend
-    class ZODBGraphTestCase(GraphTestCase):
+    class ZODBGraph22TestCase(Graph22TestCase):
         backend_name = "ZODB"
 except ImportError, e:
     print "Can not test ZODB backend:", e
@@ -154,7 +154,7 @@ except ImportError, e:
 try:
     import RDF
     # If we can import RDF then test Redland backend
-    class RedLandTestCase(GraphTestCase):
+    class RedLandTestCase(Graph22TestCase):
         backend_name = "Redland"
 except ImportError, e:
     print "Can not test Redland backend:", e    
