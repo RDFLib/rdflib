@@ -44,8 +44,10 @@ class AuditableStorage(Store):
         lock = destructiveOpLocks['add']
         lock = lock and lock or threading.RLock()
         lock.acquire()
-        self.reverseOps.append((subject,predicate,object_,context.identifier,'remove'))
-        if (subject,predicate,object_,context.identifier,'add') in self.reverseOps:
+        context = context is not None and context.__class__(self.storage,context.identifier) or None
+        ctxId = context is not None and context.identifier or None
+        self.reverseOps.append((subject,predicate,object_,ctxId,'remove'))
+        if (subject,predicate,object_,ctxId,'add') in self.reverseOps:
             self.reverseOps.remove((subject,predicate,object_,context,'add'))
         self.storage.add((subject, predicate, object_), context, quoted)
         lock.release()
@@ -55,6 +57,8 @@ class AuditableStorage(Store):
         lock = lock and lock or threading.RLock()
         lock.acquire()
         #Need to determine which quads will be removed if any term is a wildcard
+        context = context is not None and context.__class__(self.storage,context.identifier) or None
+        ctxId = context is not None and context.identifier or None
         if None in [subject,predicate,object_,context]:
             for (s,p,o),cg in self.storage.triples((subject,predicate,object_),context):
                 for ctx in cg:                                        
@@ -62,18 +66,20 @@ class AuditableStorage(Store):
                         self.reverseOps.remove((s,p,o,ctx.identifier,'remove'))
                     else:
                         self.reverseOps.append((s,p,o,ctx.identifier,'add'))
-        elif (subject,predicate,object_,context.identifier,'add') in self.reverseOps:
-            self.reverseOps.remove((subject,predicate,object_,context.identifier,'add'))
+        elif (subject,predicate,object_,ctxId,'add') in self.reverseOps:
+            self.reverseOps.remove((subject,predicate,object_,ctxId,'add'))
         else:
-            self.reverseOps.append((subject,predicate,object_,context.identifier,'add'))
+            self.reverseOps.append((subject,predicate,object_,ctxId,'add'))
         self.storage.remove((subject,predicate,object_),context)        
         lock.release()
     
     def triples(self, (subject, predicate, object_), context=None):
+        context = context is not None and context.__class__(self.storage,context.identifier) or None
         for (s,p,o),cg in self.storage.triples((subject, predicate, object_), context):
             yield (s,p,o),cg
     
     def __len__(self, context=None):
+        context = context is not None and context.__class__(self.storage,context.identifier) or None
         return self.storage.__len__(context)
     
     def contexts(self, triple=None):
@@ -101,9 +107,9 @@ class AuditableStorage(Store):
         self.rollbackLock.acquire()
         for subject,predicate,obj,context,op in self.reverseOps:
             if op == 'add':
-                self.storage.add((subject,predicate,obj),context)
+                self.storage.add((subject,predicate,obj),Graph(self.storage,context))
             else:
-                self.storage.remove((subject,predicate,obj),Graph(self,context))
+                self.storage.remove((subject,predicate,obj),Graph(self.storage,context))
                 
         self.reverseOps = []
         self.rollbackLock.release()
