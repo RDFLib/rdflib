@@ -34,14 +34,17 @@ class PrettyXMLSerializer(Serializer):
         store = self.store
         self.base = base
 
-        nm = store.namespace_manager
+        self.nm = nm = store.namespace_manager
         self.writer = writer = XMLWriter(stream, nm, encoding)
 
         namespaces = {}
         nm.reset()
         possible = uniq(store.predicates()) + uniq(store.objects(None, RDF.type))
         for predicate in possible:
-            result = nm.compute_qname(predicate)
+            try:
+                result = nm.compute_qname(predicate)
+            except Exception, e:
+                result = None
             if result:
                 prefix, namespace, local = result
                 namespaces[prefix] = namespace
@@ -73,6 +76,10 @@ class PrettyXMLSerializer(Serializer):
         if not subject in self.__serialized:
             self.__serialized[subject] = 1
             type = first(store.objects(subject, RDF.type))
+            try:
+                self.nm.qname(type)
+            except:
+                type = None
             element = type or RDF.Description
             writer.push(element)
             if isinstance(subject, BNode):
@@ -104,6 +111,13 @@ class PrettyXMLSerializer(Serializer):
             else:
                 writer.attribute(RDF.resource, self.relativize(object))
         else:
+            items = []
+            for item in store.items(object): # add a strict option to items?
+                if isinstance(item, Literal):
+		    items = None # can not serialize list with literal values in them with rdf/xml
+		else:
+                    items.append(item)
+                 
             if first(store.objects(object, RDF.first)): # may not have type RDF.List
                 collection = object
                 self.__serialized[object] = 1

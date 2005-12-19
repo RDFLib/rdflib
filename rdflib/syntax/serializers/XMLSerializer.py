@@ -18,17 +18,32 @@ class XMLSerializer(Serializer):
     def __init__(self, store):
         super(XMLSerializer, self).__init__(store)
 
-    def __update_prefix_map(self):
-        nm = self.store.namespace_manager
-        for predicate in uniq(self.store.predicates()): 
-            nm.compute_qname(predicate)
+    def __bindings(self):
+        store = self.store
+        nm = store.namespace_manager
+        bindings = {}
+        for predicate in uniq(store.predicates()):
+            try:
+                result = nm.compute_qname(predicate)
+            except Exception, e:
+                result = None
+            if result:
+                prefix, namespace, local = result
+                bindings[prefix] = namespace
+        RDFNS = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#")                
+        if "rdf" in bindings:
+            assert bindings["rdf"]==RDFNS
+        else:
+            bindings["rdf"] = RDFNS
+        for prefix, namespace in bindings.iteritems():
+            yield prefix, namespace
+                
             
     def serialize(self, stream, base=None, encoding=None):
         if base is not None:
             print "TODO: NTSerializer does not support base"
         self.__stream = stream        
         self.__serialized = {}
-        self.__update_prefix_map()
         encoding = self.encoding
         self.write = write = lambda uni: stream.write(uni.encode(encoding, 'replace'))
         
@@ -38,8 +53,13 @@ class XMLSerializer(Serializer):
         # startRDF
         write('<rdf:RDF\n')
         # TODO: assert(namespaces["http://www.w3.org/1999/02/22-rdf-syntax-ns#"]=='rdf')
-        for prefix, namespace in self.store.namespace_manager.namespaces():
-            write('   xmlns:%s="%s"\n' % (prefix, namespace))
+        bindings = list(self.__bindings())
+        bindings.sort()
+        for prefix, namespace in bindings:
+            if prefix:
+		write('   xmlns:%s="%s"\n' % (prefix, namespace))
+	    else:
+		write('   xmlns="%s"\n' % namespace)
         write('>\n')
         
         # write out triples by subject
@@ -62,7 +82,7 @@ class XMLSerializer(Serializer):
             element_name = "rdf:Description"
             if isinstance(subject, BNode):
                 write( '%s<%s rdf:nodeID="%s"' %
-                   (indent, element_name, subject[1:]))
+                   (indent, element_name, subject))
             else:
                 uri = quoteattr(subject)             
                 write( "%s<%s rdf:about=%s" % (indent, element_name, uri))
@@ -92,7 +112,7 @@ class XMLSerializer(Serializer):
         else:
             if isinstance(object, BNode):
                 write('%s<%s rdf:nodeID="%s"/>\n' %
-                      (indent, qname, object[1:]))
+                      (indent, qname, object))
             else:
                 write("%s<%s rdf:resource=%s/>\n" %
                       (indent, qname, quoteattr(object)))
