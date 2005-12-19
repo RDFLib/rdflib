@@ -100,10 +100,13 @@ class Graph(Node):
     def __init__(self, store='default', identifier=None):
         super(Graph, self).__init__()
         self.__identifier = identifier or BNode() 
+        self.__node_pickler = None
         if not isinstance(store, Store):
             # TODO: error handling
-            store = plugin.get(store, Store)()
-        self.__store = store
+            self.__store = store = plugin.get(store, Store)()
+            store.graph = self # TODO: 
+        else:
+            self.__store = store
         self.__namespace_manager = None
         self.context_aware = False
         self.formula_aware = False
@@ -123,6 +126,21 @@ class Graph(Node):
     def _set_namespace_manager(self, nm):
         self.__namespace_manager = nm
     namespace_manager = property(_get_namespace_manager, _set_namespace_manager)
+
+    def __get_node_pickler(self):
+        if self.__node_pickler is None:
+            self.__node_pickler = np = NodePickler()
+            np.register(self.store, "S")
+            np.register(URIRef, "U")
+            np.register(BNode, "B")
+            np.register(Literal, "L")
+            np.register(Graph, "G")
+            np.register(QuotedGraph, "Q")
+            np.register(Variable, "V")
+            np.register(Statement, "s")
+            np.register(GraphValue, "v")
+        return self.__node_pickler
+    node_pickler = property(__get_node_pickler)
 
     def __repr__(self):
         return "<Graph identifier=%s (%s)>" % (self.identifier, type(self))
@@ -554,7 +572,7 @@ class GraphValue(QuotedGraph):
     def __init__(self, store, identifier=None, graph=None):
         if graph is not None:
             assert identifier is None
-            np = NodePickler(self.store)
+            np = store.graph.node_pickler
             import md5
             identifier = md5.new()
             s = list(graph.triples((None, None, None)))
@@ -574,12 +592,6 @@ class GraphValue(QuotedGraph):
 
     def remove(self, triple):
         raise Exception("not mutable")
-
-    def __hash__(self):
-        return hash(self.identifier)
-
-    def __cmp__(self, other):
-        return self.identifier.__cmp__(other.identifier)
 
     def __reduce__(self):
         return (GraphValue, (self.store, self.identifier,))
@@ -727,3 +739,40 @@ class BackwardCompatGraph(ConjunctiveGraph):
 
     def __reduce__(self):
         return (BackwardCompatGraph, (self.store, self.identifier,))
+
+
+##############
+
+from rdflib.Variable import Variable
+from rdflib.Statement import Statement
+
+from cPickle import Pickler, Unpickler, UnpicklingError
+from cStringIO import StringIO
+
+
+class NodePickler(object):
+    def __init__(self):
+        self._objects = {}
+        self._get_object = self._objects.__getitem__
+        self._ids = {}
+        self._get_id = self._ids.get
+
+    def register(self, object, id):
+        self._objects[id] = object
+        self._ids[object] = id
+
+    def loads(self, s):
+        up = Unpickler(StringIO(s))
+        up.persistent_load = self._get_object
+        try:
+            return up.load()
+        except KeyError, e:
+            raise UnpicklingError, "Could not find Node class for %s" % e
+
+    def dumps(self, obj, protocol=None, bin=None):
+        src = StringIO()
+        p = Pickler(src)
+        p.persistent_id = self._get_id
+        p.dump(obj)
+        return src.getvalue()
+

@@ -1,5 +1,4 @@
 from rdflib.store import Store
-from rdflib.util import NodePickler
 
 from bsddb import db
 from base64 import b64encode
@@ -22,10 +21,18 @@ class Sleepycat(Store):
         self.identifier = identifier or BNode() # TODO: derive this from CWD, configuration or have graph pass down the logical URI of the Store.
         super(Sleepycat, self).__init__(configuration)
         self.configuration = configuration
-        np = NodePickler(self)
-        self._loads = np.loads
-        self._dumps = np.dumps
+        #np = NodePickler(self)
+        #self._loads = np.loads
+        #self._dumps = np.dumps
         
+    def __get_graph(self):
+        return self.__graph
+    def __set_graph(self, graph):
+        self.__graph = graph
+        self._loads = graph.node_pickler.loads
+        self._dumps = graph.node_pickler.dumps
+    graph = property(__get_graph, __set_graph)
+
     def open(self, path, create=True):
         homeDir = path        
         envsetflags  = db.DB_CDB_ALLDB
