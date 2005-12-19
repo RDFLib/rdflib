@@ -7,5 +7,5 @@ class Statement(Node, tuple):
         return tuple.__new__(cls, ((subject, predicate, object), context))
 
     def __reduce__(self):
-        return (Statement, (tuple(self),))
+        return (Statement, (self[0], self[1]))
 
