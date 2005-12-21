@@ -57,9 +57,9 @@ class XMLSerializer(Serializer):
         bindings.sort()
         for prefix, namespace in bindings:
             if prefix:
-		write('   xmlns:%s="%s"\n' % (prefix, namespace))
-	    else:
-		write('   xmlns="%s"\n' % namespace)
+                write('   xmlns:%s="%s"\n' % (prefix, namespace))
+            else:
+                write('   xmlns="%s"\n' % namespace)
         write('>\n')
         
         # write out triples by subject

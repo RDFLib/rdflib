@@ -114,8 +114,8 @@ class PrettyXMLSerializer(Serializer):
             items = []
             for item in store.items(object): # add a strict option to items?
                 if isinstance(item, Literal):
-		    items = None # can not serialize list with literal values in them with rdf/xml
-		else:
+                    items = None # can not serialize list with literal values in them with rdf/xml
+                else:
                     items.append(item)
                  
             if first(store.objects(object, RDF.first)): # may not have type RDF.List
