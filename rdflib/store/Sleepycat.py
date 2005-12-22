@@ -116,9 +116,17 @@ class Sleepycat(Store):
         self.__prefix.set_flags(dbsetflags)
         self.__prefix.open("prefix", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
         
+        self.__k2i = db.DB(db_env)
+        self.__k2i.set_flags(dbsetflags)
+        self.__k2i.open("k2i", dbname, db.DB_HASH, dbopenflags|db.DB_CREATE, dbmode)
+        
+        self.__i2k = db.DB(db_env)
+        self.__i2k.set_flags(dbsetflags)
+        self.__i2k.open("i2k", dbname, db.DB_RECNO, dbopenflags|db.DB_CREATE, dbmode)
+        
         self.__journal = db.DB(db_env)
         self.__journal.set_flags(dbsetflags)
-        self.__journal.open("journal", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
+        self.__journal.open("journal", dbname, db.DB_RECNO, dbopenflags|db.DB_CREATE, dbmode)
         
         self.__needs_sync = False
         t = Thread(target=self.__sync_run)
@@ -154,6 +162,8 @@ class Sleepycat(Store):
             self.__contexts.sync()
             self.__namespace.sync()
             self.__prefix.sync()
+            self.__i2k.sync()
+            self.__k2i.sync()
             self.__journal.sync()
 
     def close(self):
@@ -164,6 +174,8 @@ class Sleepycat(Store):
         self.__contexts.close()
         self.__namespace.close()
         self.__prefix.close()
+        self.__i2k.close()
+        self.__k2i.close()
         self.__journal.close()
         self.db_env.close()
 
@@ -171,7 +183,8 @@ class Sleepycat(Store):
         """\
         Add a triple to the store of triples.
         """
-        assert self.__open, "The InformationStore must be open."
+        assert self.__open, "The Store must be open."
+        assert context!=self, "Can not add triple directly to store"
 
         _to_string = self._to_string
 
@@ -184,7 +197,7 @@ class Sleepycat(Store):
 
         value = cspo.get("%s^%s^%s^%s^" % (c, s, p, o))
         if value is None:
-            self.__journal["%s" % time()] =  self._to_string((1, s, p, o, c))
+            self.__journal.append("%s^%s^%s^%s^1^%s" % (c, s, p, o, time()))
             # TODO: handle case where a triple is added as quoted and
             # then added again as not quoted... or vice versa.
             self.__contexts.put(c, "")        
@@ -195,7 +208,6 @@ class Sleepycat(Store):
             contexts_value = "^".join(contexts)
             assert contexts_value!=None
 
-            #assert context!=self.identifier
             cspo.put("%s^%s^%s^%s^" % (c, s, p, o), "")
             cpos.put("%s^%s^%s^%s^" % (c, p, o, s), "")
             cosp.put("%s^%s^%s^%s^" % (c, o, s, p), "")
@@ -208,8 +220,7 @@ class Sleepycat(Store):
 
     def __remove(self, (s, p, o), c, quoted=False):
         cspo, cpos, cosp = self.__indicies
-
-        self.__journal["%s" % time()] = self._to_string((2, s, p, o, c))
+        self.__journal.append("%s^%s^%s^%s^2^%s" % (c, s, p, o, time()))
         contexts_value = cspo.get("^".join(("", s, p, o, ""))) or ""
         contexts = set(contexts_value.split("^"))
         contexts.discard(c)
@@ -225,11 +236,11 @@ class Sleepycat(Store):
                     i.delete(_to_key((s, p, o), ""))
 
     def remove(self, (subject, predicate, object), context):
-        assert self.__open, "The InformationStore must be open."
+        assert self.__open, "The Store must be open."
         _to_string = self._to_string
-#         if context is not None:
-#             if context == self: 
-#                 context = None
+        if context is not None:
+            if context == self: 
+                context = None
 
         if subject is not None and predicate is not None and object is not None and context is not None:
             s = _to_string(subject)
@@ -288,11 +299,11 @@ class Sleepycat(Store):
 
     def triples(self, (subject, predicate, object), context=None):
         """A generator over all the triples matching """
-        assert self.__open, "The InformationStore must be open."
+        assert self.__open, "The Store must be open."
 
-#         if context is not None:
-#             if context == self: 
-#                 context = None
+        if context is not None:
+            if context == self: 
+                context = None
 
         _from_string = self._from_string
         index, prefix, from_key, results_from_key = self.__lookup((subject, predicate, object), context)
@@ -319,24 +330,27 @@ class Sleepycat(Store):
                 break            
 
     def __len__(self, context=None):
-
-#         if context is not None:
-#             if context == self: 
-#                 context = None
+        assert self.__open, "The Store must be open."
+        if context is not None:
+            if context == self: 
+                context = None
 
         if context is None:
-            #return self.__indicies[0].stat()["nkeys"] / 2
             prefix = "^"
         else:
             prefix = "%s^" % self._to_string(context)
 
         index = self.__indicies[0]
         cursor = index.cursor()
-        current = cursor.set_range("^")
+        current = cursor.set_range(prefix)
         count = 0
         while current:
-            count +=1
-            current = cursor.next()
+            key, value = current
+            if key.startswith(prefix):
+                count +=1
+                current = cursor.next()
+            else:
+                break
         cursor.close()
         return count
 
@@ -405,11 +419,35 @@ class Sleepycat(Store):
                     current = None
                 cursor.close()
     
-    def _from_string(self, s):
-        return self._loads(b64decode(s))
+    if True:
+        def _from_string(self, i):
+            k = self.__i2k.get(int(i))
+            return self._loads(k)
 
-    def _to_string(self, term):
-        return b64encode(self._dumps(term))
+        def _to_string(self, term):
+            k = self._dumps(term)
+            i = self.__k2i.get(k)
+            if i is None:
+                i = "%s" % self.__i2k.append(k)
+                self.__k2i.put(k, i)
+            return i
+    else:
+        # TODO: remove this bit... leaving for just now.
+        def _from_string(self, i):
+            return self._loads(b64decode(k))
+    
+        def _to_string(self, term):
+            return b64encode(self._dumps(term))        
+
+    def play_journal(self, graph=None):
+        j = self.__journal
+        i = 1 # looks like recno is 1-based
+        current = j.get(i)
+        while current:
+            c, s, p, o, op, time = current.split("^")
+            yield self._from_string(c), self._from_string(s), self._from_string(p), self._from_string(o), op, time
+            i += 1
+            current = j.get(i)
 
     def __lookup(self, (subject, predicate, object), context):
         _to_string = self._to_string        
