@@ -1,14 +1,90 @@
-2005/12/08
-        RELEASE 2.3.0
+2005/12/23
+        RELEASE 2.3.0         
 
-        URLInputSource  	
+        See http://rdflib.net/2.3.0/ for most up-to-date release notes 
 
-        All the bug fixes from 2.2.x branch TODO: expand list?
+        Added N3 support to Graph and Store.
 
-        Adding n3 support...
+        Added Sean's n3p parser, and ntriples parser.
+
+        Sleepycat implementation has been revamped in the process of
+        expanding it to support the new requirements n3
+        requirements. It also now persists a journal -- more to come.
+
+        detabified source files.
 
         Literal and parsers now distinguish between datatype of None and datatype of "".
-        
+
+        Store-agnostic 'fallback' implementation of REGEX matching
+        (inefficient but provides the capability to stores that don't
+        support it natively). Implemented as a 'wrapper' around any
+        Store which replaces REGEX terms with None (before dispatching
+        to the store) and whittles out results that don't match the
+        given REGEX term expression(s).
+
+        Store-agnostic 'fallback' implementation of transactional
+        rollbacks (also inefficient but provides the capablity to
+        stores that don't support it natively). Implemented as a
+        wrapper that tracks a 'thread-safe' list of reversal
+        operations (for every add, track the remove call that reverts
+        the store, and vice versa). Upon store.rollback(), execute the
+        reverse operations. However, this doesn't guarantee
+        durability, since if the system fails before the rollbacks are
+        all executed, the store will remain in an invalid state, but
+        it provides Atomicity in the best case scenario.
+            
+
+2005/10/10 
+        RELEASE 2.2.3
+
+        Fixed Sleepycat backend to commit after an add and
+        remove. This should help just a bit with those unclean
+        shutdowns ;) 
+
+        Fixed use of logging so that it does not mess with the root
+        logger. Thank you, Arve, for pointing this one out.
+
+        Fixed Graph's value method to have default for subject in
+        addition to predicate and object. 
+
+        Fixed Fourthought backend to be consistent with interface. It
+        now supports an empty constructor and an open method that
+        takes a configuration string.
+
+
+2005/09/10 
+        RELEASE 2.2.2
+
+        Applied patch from inkel to add encoding argument to all
+        serialization related methods.
+
+        Fixed XMLSerializer bug regarding default namespace bindings.
+
+        Fixed namespace binding bug involving binding a second default
+        namespace.
+
+        Applied patch from Gunnar AAstrand Grimnes to add context
+        support to __iadd__ on Graph. (Am considering the lack of
+        context support a bug. Any users currently using __iadd__, let
+        me know if this breaks any of your code.)
+
+        Added Fourthought backend contributed by Chimezie Ogbuji.
+
+	Fixed a RDF/XML parser bug relating to XMLLiteral and
+	escaping.
+
+        Fixed setup.py so that install does not try to uninstall
+        (rename_old) before installing; there's now an uninstall
+        command if one needs to uninstall.
+
+
+2005/08/25
+        RELEASE 2.2.1
+
+        Fixed issue regarding Python2.3 compatibility.
+
+        Fixed minor issue with URIRef's absolute method.
+
 
 2005/08/12
         RELEASE 2.1.4

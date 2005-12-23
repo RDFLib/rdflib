@@ -1,75 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
-<rdf:RDF
-  xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
-  xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
-  xmlns:doap='http://usefulinc.com/ns/doap#'
-  xmlns:blog='http://redfoot.net/2005/blog#'
-  xmlns:dc='http://purl.org/dc/elements/1.1/'
-  xmlns:dcterms='http://purl.org/dc/terms/'
->
 
-  <rdf:Description rdf:about="http://rdflib.net#">
-    <doap:release rdf:resource="#"/>
-<!--
-    <doap:maintainer rdf:resource="http://eikeon.com#">
-  TODO:
-    <doap:developer rdf:resource="...">
-    <p>Alford, Ron</p>
-    <p>Clark, Kendall</p>
-    <p>da Silva, Sidnei</p>
-    <p>Dawes, Phil</p>
-    <p>Eland, Andrew</p>
-    <p>Jones, David H</p>
-    <p>Herman, Ivan</p>
-    <p>McVittie, Simon</p>
-    <p>Niederhauser, Stefan</p>
-    <p>Kuchling, Andrew</p>
-    <p>Pearson, Phillip</p>
-    <p>Pelletier, Michel</p>
-    <p>Swartz, Aaron</p>
-    <p>Torre, Lucio</p>
--->
-  </rdf:Description>
+See http://rdflib.net/2.3.0/ for the 2.3.0 release notes. Briefly,
+this is the first release in a new development series of releases --
+the API should be compatible with 2.2.x, but be warned that the bits
+may still be shifting. The 2.2.x series remains the current stable
+series.
 
-  <doap:Version rdf:about="#">
-    <rdfs:label>rdflib-2.3.0</rdfs:label>
-    <rdfs:comment rdf:datatype="http://www.w3.org/1999/xhtml">
-<![CDATA[
-<div>
-    <p>This release is the first release in a new stable branch. The bits that we were refactoring have been finished and have had time to stabilize. See the <a href="http://rdflib.net/2005/xx/xx/rdflib-2.3.0/CHANGELOG">Change Log</a> for more details on what's changed.
-    </p>
-    
-    <p>
-      To install: download the release from <a href="http://rdflib.net/2005/xx/xx/rdflib-2.3.0.tgz">rdflib-2.3.0.tgz</a> or <a href="http://rdflib.net/2005/xx/xx/rdflib-2.3.0.zip">rdflib-2.3.0.zip</a>, unpack and then run: <pre>python setup.py install</pre>
-    </p>    
+Also see http://rdflib.net/contributors/ for the list of contributors.
 
-    <p>Also browse the <a href="http://rdflib.net/2005/xx/xx/rdflib-2.3.0/html/index.html">RDF API Documentation</a>, take a look at <a href="http://rdflib.net/2005/xx/xx/rdflib-2.3.0/example.py">example.py</a>, and glance at the <a href="http://rdflib.net/2005/xx/xx/rdflib-2.3.0/LICENSE">License</a>.
-    </p>
+As part of the 2.3.x work the release process will be expanded to pull
+some of this information from rdflib.net when the release is cut -- so
+that the information will be included within the release.
 
-</div>
-]]>
-    </rdfs:comment>
-    <doap:revision>2.3.0</doap:revision>
-    <doap:created>2005-08-20</doap:created>
-  </doap:Version>
-
-  <blog:Entry rdf:ID="entry">
-    <rdfs:label>rdflib-2.3.0 released</rdfs:label>
-    <rdfs:comment rdf:datatype="http://www.w3.org/1999/xhtml">
-<![CDATA[
-
-    <p>
-      <a href="http://rdflib.net/2005/xx/xx/rdflib-2.3.0/README/">rdflib-2.3.0 release</a>
-    </p> 
-
-]]>
-    </rdfs:comment>
-    <dcterms:created>2005-08-20</dcterms:created>
-    <dc:creator rdf:resource="mailto:eikeon@eikeon.com"/>
-  </blog:Entry>
-
-  <rdf:Description rdf:about="CHANGELOG">
-    <rdfs:label>CHANGELOG</rdfs:label>
-  </rdf:Description>
-
-</rdf:RDF>
