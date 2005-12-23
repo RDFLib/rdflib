@@ -28,6 +28,8 @@ class StoreTestCase(unittest.TestCase):
         self.graph = Graph(store=self.store)
         path = a_tmp_dir = mkdtemp()
         self.graph.open(path)
+        self.input = input = Graph()
+        input.parse("http://eikeon.com")
 
     def tearDown(self):
         self.graph.close()
@@ -37,14 +39,18 @@ class StoreTestCase(unittest.TestCase):
         del self.graph
 
     def testTime(self):
-        number = 3
-        it = itertools.repeat(None, number)        
-        for i in it:
-            self._testTime()
+        number = 1
+        print self.store
+        print "input:",
+        for i in itertools.repeat(None, number):
+            self._testInput()
+        print "random:",
+        for i in itertools.repeat(None, number):
+            self._testRandom()
         print "."
 
-    def _testTime(self):
-        number = 1000
+    def _testRandom(self):
+        number = len(self.input)
         store = self.graph
 
         def add_random():
@@ -58,7 +64,22 @@ class StoreTestCase(unittest.TestCase):
         for _i in it:
             add_random()
         t1 = time()
-        print self.store, "%.3g" % (t1 - t0),
+        print "%.3g" % (t1 - t0),
+
+    def _testInput(self):
+        number = 1
+        store = self.graph
+
+        def add_from_input():
+            for t in self.input:
+                store.add(t)
+
+        it = itertools.repeat(None, number)
+        t0 = time()
+        for _i in it:
+            add_from_input()
+        t1 = time()
+        print "%.3g" % (t1 - t0),
 
 
 class MemoryStoreTestCase(StoreTestCase):
