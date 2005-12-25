@@ -143,11 +143,11 @@ def from_n3(s, default=None, backend=None):
                 language = rest[1:] # strip leading at sign
                 rest = ''
         else:
-            language = ''
+            language = None
         if rest.startswith("^^"):
             datatype = rest[3:-1]
         else:
-            datatype = ''
+            datatype = None
         value = value.decode("unicode-escape")
         return Literal(value, language, datatype)
     elif s.startswith('{'):
