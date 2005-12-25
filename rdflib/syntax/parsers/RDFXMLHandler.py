@@ -108,6 +108,7 @@ class RDFXMLHandler(handler.ContentHandler):
 
     def __init__(self, store):
         self.store = store
+        self.preserve_bnode_ids = False
         self.reset()
         
     def reset(self):
@@ -271,11 +272,14 @@ class RDFXMLHandler(handler.ContentHandler):
             nodeID = atts[RDF.nodeID]
             if not is_ncname(nodeID):
                 self.error("rdf:nodeID value is not a valid NCName: %s" % nodeID)
-            if nodeID in self.bnode:
-                subject = self.bnode[nodeID]
+            if self.preserve_bnode_ids is False:
+                if nodeID in self.bnode:
+                    subject = self.bnode[nodeID]
+                else:
+                    subject = BNode()
+                    self.bnode[nodeID] = subject
             else:
-                subject = BNode()
-                self.bnode[nodeID] = subject
+                subject = BNode(nodeID)
         elif RDF.about in atts:
             if RDF.ID in atts or RDF.nodeID in atts:
                 self.error("Can have at most one of rdf:ID, rdf:about, and rdf:nodeID")
@@ -353,12 +357,15 @@ class RDFXMLHandler(handler.ContentHandler):
         elif nodeID is not None:
             if not is_ncname(nodeID):
                 self.error("rdf:nodeID value is not a valid NCName: %s" % nodeID)
-            if nodeID in self.bnode:
-                object = self.bnode[nodeID]
+            if self.preserve_bnode_ids is False:            
+                if nodeID in self.bnode:
+                    object = self.bnode[nodeID]
+                else:
+                    subject = BNode()
+                    self.bnode[nodeID] = subject
+                    object = subject
             else:
-                subject = BNode()
-                self.bnode[nodeID] = subject
-                object = subject
+                object = subject = BNode(nodeID)
             next.start = self.node_element_start
             next.end = self.node_element_end                
         else:

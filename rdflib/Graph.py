@@ -413,11 +413,11 @@ class Graph(Node):
             input_source.setPublicId("")
         return input_source
 
-    def parse(self, source, publicID=None, format="xml"):
+    def parse(self, source, publicID=None, format="xml", **args):
         """ Parse source into Graph. If Graph is context-aware it'll get loaded into it's own context (sub graph). Format defaults to xml (AKA rdf/xml). The publicID argument is for specifying the logical URI for the case that it's different from the physical source URI. Returns the context into which the source was parsed."""
         source = self.prepare_input_source(source, publicID)
         parser = plugin.get(format, Parser)()
-        parser.parse(source, self)
+        parser.parse(source, self, **args)
         return self
 
     def load(self, source, publicID=None, format="xml"):
@@ -526,7 +526,7 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
             context_id = "#context"
         return URIRef(context_id, base=uri)
 
-    def parse(self, source, publicID=None, format="xml"):
+    def parse(self, source, publicID=None, format="xml", **args):
         """ 
         Parse source into Graph into it's own context (sub
         graph). Format defaults to xml (AKA rdf/xml). The publicID
@@ -539,7 +539,7 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
         id = self.context_id(self.absolutize(source.getPublicId()))
         context = Graph(store=self.store, identifier=id)
         context.remove((None, None, None))
-        context.parse(source, publicID=publicID, format=format)
+        context.parse(source, publicID=publicID, format=format, **args)
         return context
 
     def __reduce__(self):

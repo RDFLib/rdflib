@@ -25,9 +25,12 @@ class RDFXMLParser(Parser):
     def __init__(self):
         pass
     
-    def parse(self, source, sink):
+    def parse(self, source, sink, **args):
         self._parser = create_parser(sink)
         content_handler = self._parser.getContentHandler()
+        preserve_bnode_ids = args.get("preserve_bnode_ids", None)
+        if preserve_bnode_ids is not None:
+            content_handler.preserve_bnode_ids = preserve_bnode_ids
         # We're only using it once now
         #content_handler.reset()
         #self._parser.reset()
