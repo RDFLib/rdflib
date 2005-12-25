@@ -222,7 +222,7 @@ def graph_to_dot(graph, dot):
 
 if __name__ == "__main__":
     # try to make the tests work outside of the time zone they were written in
-    import os, time
+    #import os, time
     #os.environ['TZ'] = 'US/Pacific'
     #try:
     #    time.tzset()
@@ -231,7 +231,5 @@ if __name__ == "__main__":
         #pass
         # tzset missing! see
         # http://mail.python.org/pipermail/python-dev/2003-April/034480.html
-
-    
     import doctest
     doctest.testmod()
