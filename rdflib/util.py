@@ -49,33 +49,80 @@ def term(str, default=None):
 
 
 
-from time import mktime, time, gmtime, timezone, altzone, daylight
+from time import mktime, time, gmtime, localtime, timezone, altzone, daylight
 
-def date_time(t=None):
-    """http://www.w3.org/TR/NOTE-datetime ex: 1997-07-16T19:20:30Z"""
-    t = t or time()    
-    year, month, day, hh, mm, ss, wd, y, z = gmtime(t)
-    s = "%0004d-%02d-%02dT%02d:%02d:%02dZ" % ( year, month, day, hh, mm, ss)
+def date_time(t=None, local_time_zone=False):
+    """http://www.w3.org/TR/NOTE-datetime ex: 1997-07-16T19:20:30Z
+    
+    >>> date_time(1126482850)
+    '2005-09-11T23:54:10Z'
+
+    >>> date_time(1126482850, local_time_zone=True)
+    '2005-09-11T19:54:10-04:00'
+
+    >>> date_time(1)
+    '1970-01-01T00:00:01Z'
+
+    >>> date_time(0)
+    '1970-01-01T00:00:00Z'
+    """
+    if t is None:
+        t = time()
+        
+    if local_time_zone:
+        time_tuple = localtime(t)
+        if time_tuple[8]:
+            tz_mins = altzone // 60
+        else:
+            tz_mins = timezone // 60
+        tzd = "-%02d:%02d" % (tz_mins // 60, tz_mins % 60)
+    else:
+        time_tuple = gmtime(t)
+        tzd = "Z"
+    
+    year, month, day, hh, mm, ss, wd, y, z = time_tuple
+    s = "%0004d-%02d-%02dT%02d:%02d:%02d%s" % ( year, month, day, hh, mm, ss, tzd)
     return s
 
 def parse_date_time(val):
+    """always returns seconds in UTC
+
+    # tests are written like this to make any errors easier to understand
+    >>> parse_date_time('2005-09-11T23:54:10Z') - 1126482850.0
+    0.0
+    
+    >>> parse_date_time('2005-09-11T16:54:10-07:00') - 1126482850.0
+    0.0
+ 
+    >>> parse_date_time('1970-01-01T00:00:01Z') - 1.0
+    0.0
+
+    >>> parse_date_time('1970-01-01T00:00:00Z') - 0.0
+    0.0
+    """
+
+    if val.endswith("Z"):
+        val = val[:-1]
+        tz_offset = 0
+    else:
+        val, tz_str = val[:-6], val[-6:]
+        signed_hrs = int(tz_str[:3])
+        mins = int(tz_str[4:6])
+        secs = (cmp(signed_hrs, 0) * mins + signed_hrs * 60) * 60
+        tz_offset = -secs
+        
+
     try:
         ymd, hms = val.split("T")
     except:
         ymd = val
         hms = "00:00:00"
     year, month, day = ymd.split("-")
-    hour, minute, second = hms[:-1].split(":")
+    hour, minute, second = hms.split(":")
     
     t = mktime((int(year), int(month), int(day), int(hour),
-                        int(minute), int(second), 0, 0, -1))
-
-    # Hum...
-    if daylight:
-        t = t - timezone
-    else:
-        t = t - altzone
-
+                int(minute), int(second), 0, 0, 0))
+    t = t - timezone + tz_offset
     return t
 
 def from_n3(s, default=None, backend=None):
@@ -173,3 +220,18 @@ def graph_to_dot(graph, dot):
         dot.add_edge(pydot.Edge(nodes[s], nodes[o], label=p))
 
 
+if __name__ == "__main__":
+    # try to make the tests work outside of the time zone they were written in
+    import os, time
+    #os.environ['TZ'] = 'US/Pacific'
+    #try:
+    #    time.tzset()
+    #except AttributeError, e:
+    #    print e
+        #pass
+        # tzset missing! see
+        # http://mail.python.org/pipermail/python-dev/2003-April/034480.html
+
+    
+    import doctest
+    doctest.testmod()
