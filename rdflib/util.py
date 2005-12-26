@@ -99,21 +99,25 @@ def parse_date_time(val):
 
     >>> parse_date_time('1970-01-01T00:00:00Z') - 0.0
     0.0
+    >>> parse_date_time("2005-09-05T10:42:00") - 1125916920.0
+    0.0
     """
 
     if "T" not in val:
         val += "T00:00:00Z"
 
-    if val.endswith("Z"):
-        val = val[:-1]
+    ymd, time = val.split("T")
+    hms, tz_str = time[0:8], time[8:]
+
+    if not tz_str or tz_str=="Z":
+        time = time[:-1]
         tz_offset = 0
     else:
-        val, tz_str = val[:-6], val[-6:]
         signed_hrs = int(tz_str[:3])
         mins = int(tz_str[4:6])
         secs = (cmp(signed_hrs, 0) * mins + signed_hrs * 60) * 60
         tz_offset = -secs
-    ymd, hms = val.split("T")
+
     year, month, day = ymd.split("-")
     hour, minute, second = hms.split(":")
     
