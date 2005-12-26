@@ -97,7 +97,7 @@ class Graph(Node):
       => {?cg a :ConjunctiveGraph;:default_context ?subGraphOf} .
     """
 
-    def __init__(self, store='default', identifier=None):
+    def __init__(self, store='default', identifier=None, namespace_manager=None):
         super(Graph, self).__init__()
         self.__identifier = identifier or BNode() 
         self.__node_pickler = None
@@ -107,7 +107,7 @@ class Graph(Node):
             store.env = self # TODO: make part of store interface... deal with wrappers etc.
         else:
             self.__store = store
-        self.__namespace_manager = None
+        self.__namespace_manager = namespace_manager
         self.context_aware = False
         self.formula_aware = False
 
@@ -692,7 +692,7 @@ class BackwardCompatGraph(ConjunctiveGraph):
             return QuotedGraph(self.store, identifier)
             #return QuotedGraph(self.store, Graph(store=self.store, identifier=identifier))
         else:
-            return Graph(self.store, identifier)
+            return Graph(store=self.store, identifier=identifier, namespace_manager=self)
             #return Graph(self.store, Graph(store=self.store, identifier=identifier))
 
     def remove_context(self, context):
