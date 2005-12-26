@@ -101,6 +101,9 @@ def parse_date_time(val):
     0.0
     """
 
+    if "T" not in val:
+        val += "T00:00:00Z"
+
     if val.endswith("Z"):
         val = val[:-1]
         tz_offset = 0
@@ -110,13 +113,7 @@ def parse_date_time(val):
         mins = int(tz_str[4:6])
         secs = (cmp(signed_hrs, 0) * mins + signed_hrs * 60) * 60
         tz_offset = -secs
-        
-
-    try:
-        ymd, hms = val.split("T")
-    except:
-        ymd = val
-        hms = "00:00:00"
+    ymd, hms = val.split("T")
     year, month, day = ymd.split("-")
     hour, minute, second = hms.split(":")
     
