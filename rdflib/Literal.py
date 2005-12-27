@@ -85,3 +85,5 @@ class Literal(Identifier):
             else:
                 return '"%s"' % encoded
 
+    def __repr__(self):
+        return """<Literal language=%s datatype=%s value=%s>""" % (repr(self.language), repr(self.datatype), unicode(self))
