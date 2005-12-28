@@ -161,7 +161,7 @@ def extractTriple(tupleRt,store,hardCodedContext=None):
     termCombString=REVERSE_TERM_COMBINATIONS[termComb]
     subjTerm,predTerm,objTerm,ctxTerm = termCombString
     s=createTerm(subject,subjTerm,store)
-    p=predicate == RDF.type and RDF.type or createTerm(predicate,predTerm,store)            
+    p=predicate is RDF.type and RDF.type or createTerm(predicate,predTerm,store)            
     o=createTerm(obj,objTerm,store,objLanguage,objDatatype)
     
     graphKlass, idKlass = constructGraph(ctxTerm)
@@ -191,7 +191,7 @@ def createTerm(termString,termType,store,objLanguage=None,objDatatype=None):
         if cache is not None:
             return cache
         else:
-            rt = QuotedGraph(store,termString)
+            rt = QuotedGraph(store,URIRef(termString))
             store.termCache[(termType,termString)] = rt
             return rt
     else:
@@ -266,10 +266,16 @@ def buildContextClause(context,tableName):
         return context and u"%s='%s'"%(tableName and u'%s.context'%tableName,context) or None
     
 def buildLitDTypeClause(obj,tableName):
-    return (isinstance(obj,Literal) and obj.datatype and u"%s.objDatatype='%s'"%(tableName,obj.datatype)) or None 
+    if isinstance(obj,Literal):
+        return obj.datatype is not None and u"%s.objDatatype='%s'"%(tableName,obj.datatype) or None
+    else:
+        return None
 
 def buildLitLanguageClause(obj,tableName):
-    return (isinstance(obj,Literal) and obj.datatype and "%s.objLanguage='%s'"%(tableName,obj.language)) or None
+    if isinstance(obj,Literal):
+        return obj.language is not None and "%s.objLanguage='%s'"%(tableName,obj.language) or None
+    else:
+        return None
 
 def buildTypeMemberClause(subject,tableName):
     if isinstance(subject,REGEXTerm):
