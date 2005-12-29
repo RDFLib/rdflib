@@ -23,12 +23,6 @@ class PrettyXMLSerializer(Serializer):
     def __init__(self, store):
         super(PrettyXMLSerializer, self).__init__(store)
 
-    def relativize(self, uri):
-        base = self.base
-        if base and uri.startswith(base):
-            uri = URIRef(uri.replace(base, "", 1))
-        return uri
-
     def serialize(self, stream, base=None, encoding=None):
         self.__serialized = {}
         store = self.store
@@ -38,16 +32,10 @@ class PrettyXMLSerializer(Serializer):
         self.writer = writer = XMLWriter(stream, nm, encoding)
 
         namespaces = {}
-        nm.reset()
         possible = uniq(store.predicates()) + uniq(store.objects(None, RDF.type))
         for predicate in possible:
-            try:
-                result = nm.compute_qname(predicate)
-            except Exception, e:
-                result = None
-            if result:
-                prefix, namespace, local = result
-                namespaces[prefix] = namespace
+            prefix, namespace, local = nm.compute_qname(predicate)
+            namespaces[prefix] = namespace
         namespaces["rdf"] = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
         writer.push(RDF.RDF)
         writer.namespaces(namespaces.iteritems())

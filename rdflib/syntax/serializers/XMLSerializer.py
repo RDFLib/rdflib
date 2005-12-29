@@ -23,13 +23,8 @@ class XMLSerializer(Serializer):
         nm = store.namespace_manager
         bindings = {}
         for predicate in uniq(store.predicates()):
-            try:
-                result = nm.compute_qname(predicate)
-            except Exception, e:
-                result = None
-            if result:
-                prefix, namespace, local = result
-                bindings[prefix] = namespace
+            prefix, namespace, name = nm.compute_qname(predicate)
+            bindings[prefix] = namespace
         RDFNS = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#")                
         if "rdf" in bindings:
             assert bindings["rdf"]==RDFNS
@@ -40,8 +35,7 @@ class XMLSerializer(Serializer):
                 
             
     def serialize(self, stream, base=None, encoding=None):
-        if base is not None:
-            print "TODO: NTSerializer does not support base"
+        self.base = base
         self.__stream = stream        
         self.__serialized = {}
         encoding = self.encoding
@@ -85,7 +79,7 @@ class XMLSerializer(Serializer):
                    (indent, element_name, subject))
             else:
                 uri = quoteattr(subject)             
-                write( "%s<%s rdf:about=%s" % (indent, element_name, uri))
+                write( "%s<%s rdf:about=%s" % (indent, element_name, self.relativize(uri)))
             if (subject, None, None) in self.store:
                 write( ">\n" )                
                 for predicate, object in self.store.predicate_objects(subject):
@@ -115,5 +109,5 @@ class XMLSerializer(Serializer):
                       (indent, qname, object))
             else:
                 write("%s<%s rdf:resource=%s/>\n" %
-                      (indent, qname, quoteattr(object)))
+                      (indent, qname, quoteattr(self.relativize(object))))
 

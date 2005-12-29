@@ -25,12 +25,11 @@ class NamespaceManager(object):
     store = property(__get_store)
 
     def qname(self, uri):
-        qname = self.__cache.get(uri, None)
-        if qname is None:
-            self.compute_qname(uri)
-            return self.qname(uri)
+        prefix, namespace, name = self.compute_qname(uri)
+        if prefix=="":
+            return name
         else:
-            return qname
+            return ":".join((prefix, name))
 
     def compute_qname(self, uri):
         if not uri in self.__cache:
@@ -39,11 +38,8 @@ class NamespaceManager(object):
             if prefix is None:
                 prefix = "_%s" % len(list(self.store.namespaces()))
                 self.bind(prefix, namespace)
-            if prefix=="":
-                self.__cache[uri] = name
-            else:
-                self.__cache[uri] = ":".join((prefix, name))
-            return prefix, namespace, name
+            return self.__cache[uri] = (prefix, namespace, name)
+        return self.__cache[uri]
 
     def bind(self, prefix, namespace, override=True):
         # When documenting explain that override only applies in what cases
