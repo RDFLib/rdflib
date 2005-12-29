@@ -79,6 +79,7 @@ def split_uri(uri):
                     ln = uri[j:]
                     return (ns, ln)
             break
-    return None
+    raise Exception("Can't split '%s'" % uri)
+
 
 
