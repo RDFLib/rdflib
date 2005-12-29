@@ -376,9 +376,11 @@ class Graph(Node):
         else :
             return None
 
-    def absolutize(self, uri, defrag=1):
-        """ Will turn uri into an absolute URI if it's not one already. """
-        return self.namespace_manager.absolutize(uri, defrag)
+    def qname(self, uri): 
+        return self.namespace_manager.qname(uri)       
+
+    def compute_qname(self, uri):
+        return self.namespace_manager.compute_qname(uri)
 
     def bind(self, prefix, namespace, override=True):
         """Bind prefix to namespace. If override is True will bind namespace to given prefix if namespace was already bound to a different prefix."""
@@ -389,6 +391,10 @@ class Graph(Node):
         """
         for prefix, namespace in self.namespace_manager.namespaces():
             yield prefix, namespace
+
+    def absolutize(self, uri, defrag=1):
+        """ Will turn uri into an absolute URI if it's not one already. """
+        return self.namespace_manager.absolutize(uri, defrag)
 
     def serialize(self, destination=None, format="xml", base=None, encoding=None):
         """ Serialize the Graph to destination. If destination is None serialize method returns the serialization as a string. Format defaults to xml (AKA rdf/xml)."""
