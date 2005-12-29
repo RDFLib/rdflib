@@ -1,3 +1,4 @@
+from rdflib import URIRef
 
 class Serializer(object):
 
