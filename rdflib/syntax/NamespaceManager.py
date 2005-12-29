@@ -38,7 +38,7 @@ class NamespaceManager(object):
             if prefix is None:
                 prefix = "_%s" % len(list(self.store.namespaces()))
                 self.bind(prefix, namespace)
-            return self.__cache[uri] = (prefix, namespace, name)
+            self.__cache[uri] = (prefix, namespace, name)
         return self.__cache[uri]
 
     def bind(self, prefix, namespace, override=True):
