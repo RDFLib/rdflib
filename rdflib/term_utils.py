@@ -56,7 +56,7 @@ def type2TermCombination(member,klass,context):
         raise Exception("Unable to persist classification triple: %s %s %s"%(member,'rdf:type',klass,context))
 
 def statement2TermCombination(subject,predicate,obj,context):
-    returnTERM_COMBINATIONS['%s%s%s%s'%(term2Letter(subject),term2Letter(predicate),term2Letter(obj),normalizeGraph(context)[-1])]
+    return TERM_COMBINATIONS['%s%s%s%s'%(term2Letter(subject),term2Letter(predicate),term2Letter(obj),normalizeGraph(context)[-1])]
 
 SUBJECT = 0
 PREDICATE = 1
