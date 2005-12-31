@@ -49,13 +49,14 @@ def triplePattern2termCombinations((s,p,o)):
     return combinations
     
 def type2TermCombination(member,klass,context):
-    return TERM_COMBINATIONS['%sU%s%s'%(term2Letter(member),term2Letter(klass),normalizeGraph(context)[-1])]
+    try:
+        rt = TERM_COMBINATIONS['%sU%s%s'%(term2Letter(member),term2Letter(klass),normalizeGraph(context)[-1])]
+        return rt
+    except:
+        raise Exception("Unable to persist classification triple: %s %s %s"%(member,'rdf:type',klass,context))
 
 def statement2TermCombination(subject,predicate,obj,context):
-    #print subject,predicate,obj
-    rt=TERM_COMBINATIONS['%s%s%s%s'%(term2Letter(subject),term2Letter(predicate),term2Letter(obj),normalizeGraph(context)[-1])]
-    #print rt
-    return rt
+    returnTERM_COMBINATIONS['%s%s%s%s'%(term2Letter(subject),term2Letter(predicate),term2Letter(obj),normalizeGraph(context)[-1])]
 
 SUBJECT = 0
 PREDICATE = 1
