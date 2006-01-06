@@ -78,8 +78,8 @@ class XMLSerializer(Serializer):
                 write( '%s<%s rdf:nodeID="%s"' %
                    (indent, element_name, subject))
             else:
-                uri = quoteattr(subject)             
-                write( "%s<%s rdf:about=%s" % (indent, element_name, self.relativize(uri)))
+                uri = quoteattr(self.relativize(subject))
+                write( "%s<%s rdf:about=%s" % (indent, element_name, uri))
             if (subject, None, None) in self.store:
                 write( ">\n" )                
                 for predicate, object in self.store.predicate_objects(subject):
