@@ -30,7 +30,7 @@ class TestStore(Graph):
                 m = u"Triple not in expected result: %s, %s, %s" % (s.n3(), p.n3(), o.n3())
                 if verbose: write(m)
                 #raise Exception(m)
-        super(TestStore, self).add((s, p, o), context, quoted)
+        super(TestStore, self).add((s, p, o))
         
 
 TEST = Namespace("http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#")
