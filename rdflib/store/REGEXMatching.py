@@ -11,6 +11,11 @@ from pprint import pprint
 from rdflib.Graph import Graph, QuotedGraph, ConjunctiveGraph, BackwardCompatGraph
 import re
 
+#Store is capable of doing it's own REGEX matching 
+NATIVE_REGEX = 0
+#Store uses python's re module internally for REGEX matching (SQLite for instance)
+PYTHON_REGEX = 1
+
 #REGEXTerm can be used in any term slot and is interpreted as
 #a request to perform a REGEX match (not a string comparison) using the value
 #(pre-compiled) for checkin rdf:type matches
