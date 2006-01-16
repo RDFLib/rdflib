@@ -458,14 +458,14 @@ class N3Processor(n3p.N3Parser):
 
    def formula(self): 
       tok = self.bnode('formula')
-      formula_id = URIRef(urijoin(self.baseURI, tok))
+      formula_id = tok
       if formula_id == self.sink.graph.identifier:
          return self.sink.graph
       else:
          return QuotedGraph(store=self.sink.graph.store, identifier=formula_id)
          #return self.sink.graph.get_context(formula_id, quoted=True)
 
-   def bnode(self, label, sic=False): 
+   def bnode(self, label, sic=False):
       if not sic: 
          self.counter += 1
          label += str(self.counter)
@@ -475,7 +475,8 @@ class N3Processor(n3p.N3Parser):
          length = len(label)
          forelabel = label.rstrip('0123456789')
          label = forelabel + '0' + label[-(length-len(forelabel)):]
-      return BNode(label)
+      #return BNode(label) # huh?
+      return BNode() # use a real bnode instead
 
    def literal(self, content, language, datatype): 
       if content.startswith('"""'): 
