@@ -51,7 +51,7 @@ register('nt', serializers.Serializer,
          'rdflib.syntax.serializers.NTSerializer', 'NTSerializer')
 
 register('n3', serializers.Serializer,
-         'rdflib.syntax.serializers.N3Serialize', 'N3Serializer')
+         'rdflib.syntax.serializers.N3Serializer', 'N3Serializer')
 
 register('xml', parsers.Parser,
          'rdflib.syntax.parsers.RDFXMLParser', 'RDFXMLParser')
