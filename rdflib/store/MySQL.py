@@ -148,12 +148,12 @@ class MySQL(AbstractSQLStore,Store):
     #subjects and objects utility functions which can take lists as their last argument (object,predicate - respectively)
     def buildSubjClause(self,subject,tableName):
         if isinstance(subject,REGEXTerm):
-            return u"%s REGEXP '%s'"%(tableName and u'%s.subject'%tableName or u'subject',EscapeQuotes(subject))
+            return u"%s REGEXP '%s'"%(tableName and u'%s.subject'%tableName or u'subject',self.EscapeQuotes(subject))
         elif isinstance(subject,list):
             clauseStrings=[]
             for s in subject:
                 if isinstance(s,REGEXTerm):
-                    clauseStrings.append(u"%s REGEXP '%s'"%(tableName and u'%s.subject'%tableName or u'subject',EscapeQuotes(s)))
+                    clauseStrings.append(u"%s REGEXP '%s'"%(tableName and u'%s.subject'%tableName or u'subject',self.EscapeQuotes(s)))
                 elif isinstance(s,(QuotedGraph,Graph)):
                     clauseStrings.append(u"%s='%s'"%(tableName and u'%s.subject'%tableName or u'subject',s.identifier))                
                 else:
@@ -162,52 +162,52 @@ class MySQL(AbstractSQLStore,Store):
         elif isinstance(subject,(QuotedGraph,Graph)):
             return u"%s='%s'"%(tableName and u'%s.subject'%tableName or u'subject',subject.identifier)    
         else:
-            return subject and u"%s='%s'"%(tableName and u'%s.subject'%tableName or u'subject',subject) or None
+            return subject is not None and u"%s='%s'"%(tableName and u'%s.subject'%tableName or u'subject',subject) or None
     
     #Capable off taking a list of predicates as well (in which case sub clauses are joined with 'OR')
     def buildPredClause(self,predicate,tableName):
         if isinstance(predicate,REGEXTerm):
-            return u"%s REGEXP '%s'"%(tableName and u'%s.predicate'%tableName or u'predicate',EscapeQuotes(predicate))
+            return u"%s REGEXP '%s'"%(tableName and u'%s.predicate'%tableName or u'predicate',self.EscapeQuotes(predicate))
         elif isinstance(predicate,list):
             clauseStrings=[]
             for p in predicate:
                 if isinstance(p,REGEXTerm):
-                    clauseStrings.append(u"%s REGEXP '%s'"%(tableName and u'%s.predicate'%tableName or u'predicate',EscapeQuotes(p)))
+                    clauseStrings.append(u"%s REGEXP '%s'"%(tableName and u'%s.predicate'%tableName or u'predicate',self.EscapeQuotes(p)))
                 else:
                     clauseStrings.append(predicate and u"%s='%s'"%(tableName and u'%s.predicate'%tableName or u'predicate',p) or None)
             return u'(%s)'%u' or '.join([clauseString for clauseString in clauseStrings])
         else:
-            return predicate and u"%s='%s'"%(tableName and u'%s.predicate'%tableName or u'predicate',predicate) or None
+            return predicate is not None and u"%s='%s'"%(tableName and u'%s.predicate'%tableName or u'predicate',predicate) or None
     
     #Capable of taking a list of objects as well (in which case sub clauses are joined with 'OR')    
     def buildObjClause(self,obj,tableName):
         if isinstance(obj,REGEXTerm):
-            return u"%s REGEXP '%s'"%(tableName and u'%s.object'%tableName or u'object',EscapeQuotes(obj))
+            return u"%s REGEXP '%s'"%(tableName and u'%s.object'%tableName or u'object',self.EscapeQuotes(obj))
         elif isinstance(obj,list):
             clauseStrings=[]
             for o in obj:
                 if isinstance(o,REGEXTerm):
-                    clauseStrings.append(u"%s REGEXP '%s'"%(tableName and u'%s.object'%tableName or u'object',EscapeQuotes(o)))
+                    clauseStrings.append(u"%s REGEXP '%s'"%(tableName and u'%s.object'%tableName or u'object',self.EscapeQuotes(o)))
                 elif isinstance(o,(QuotedGraph,Graph)):
                     clauseStrings.append(u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',o.identifier))
                 else:
-                    clauseStrings.append(o and u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',isinstance(o,Literal) and EscapeQuotes(o) or o) or None)
+                    clauseStrings.append(o and u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',isinstance(o,Literal) and self.EscapeQuotes(o) or o) or None)
             return u'(%s)'%u' or '.join([clauseString for clauseString in clauseStrings])
         elif isinstance(obj,(QuotedGraph,Graph)):
             return u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',obj.identifier)
         else:
-            return obj and u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',EscapeQuotes(obj)) or None
+            return obj is not None and u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',self.EscapeQuotes(obj)) or None
     
     def buildContextClause(self,context,tableName):
         context = context is not None and context.identifier or context
         if isinstance(context,REGEXTerm):
-            return u"%s REGEXP '%s'"%(tableName and u'%s.context'%tableName,EscapeQuotes(context))
+            return u"%s REGEXP '%s'"%(tableName and u'%s.context'%tableName,self.EscapeQuotes(context))
         else:
-            return context and u"%s='%s'"%(tableName and u'%s.context'%tableName,context) or None
+            return context is not None and u"%s='%s'"%(tableName and u'%s.context'%tableName,context) or None
         
     def buildTypeMemberClause(self,subject,tableName):
         if isinstance(subject,REGEXTerm):
-            return u"%s.member REGEXP '%s'"%(tableName,EscapeQuotes(subject))
+            return u"%s.member REGEXP '%s'"%(tableName,self.EscapeQuotes(subject))
         elif isinstance(subject,list):
             subjs = [isinstance(s,(QuotedGraph,Graph)) and s.identifier or s for s in subject]        
             return u' or '.join([s and u"%s.member = '%s'"%(tableName,s) for s in subjs])    
@@ -216,7 +216,7 @@ class MySQL(AbstractSQLStore,Store):
         
     def buildTypeClassClause(self,obj,tableName):
         if isinstance(obj,REGEXTerm):
-            return u"%s.klass REGEXP '%s'"%(tableName,EscapeQuotes(obj))
+            return u"%s.klass REGEXP '%s'"%(tableName,self.EscapeQuotes(obj))
         elif isinstance(obj,list):
             obj = [isinstance(o,(QuotedGraph,Graph)) and o.identifier or o for o in obj]        
             return u' or '.join([o and not isinstance(o,Literal) and u"%s.klass = '%s'"%(tableName,o) for o in obj])
