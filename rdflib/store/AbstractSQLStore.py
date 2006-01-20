@@ -23,16 +23,6 @@ ASSERTED_LITERAL_PARTITION  = 6
 
 FULL_TRIPLE_PARTITIONS = [QUOTED_PARTITION,ASSERTED_LITERAL_PARTITION]
 
-#FIXME:  This *may* prove to be a performance bottleneck and should perhaps be implemented in C (as it was in 4Suite RDF)
-def EscapeQuotes(qstr):
-    """
-    Ported from Ft.Lib.DbUtil
-    """
-    if qstr is None:
-        return u''
-    tmp = qstr.replace("\\","\\\\")
-    tmp = tmp.replace("'", "\\'")
-    return tmp
 #Terms: u - uri refs  v - variables  b - bnodes l - literal f - formula
 
 #Helper function for building union all select statement
@@ -90,14 +80,6 @@ def extractTriple(tupleRt,store,hardCodedContext=None):
     graphKlass, idKlass = constructGraph(ctxTerm)
     return s,p,o,(graphKlass,idKlass,context)
 
-#Takes a term and 'normalizes' it.
-#Literals are escaped, Quoted graphs are replaced with just their identifiers
-def normalizeTerm(term):
-    if isinstance(term,(QuotedGraph,Graph)):
-        return term.identifier
-    else:
-        return EscapeQuotes(term)
-
 #Takes a term value, term type, and store intance
 #and Creates a term object.  QuotedGraphs are instanciated differently
 def createTerm(termString,termType,store,objLanguage=None,objDatatype=None):    
@@ -127,17 +109,36 @@ def createTerm(termString,termType,store,objLanguage=None,objDatatype=None):
             return rt
 
 class SQLGenerator:
+    #FIXME:  This *may* prove to be a performance bottleneck and should perhaps be implemented in C (as it was in 4Suite RDF)
+    def EscapeQuotes(self,qstr):
+        """
+        Ported from Ft.Lib.DbUtil
+        """
+        if qstr is None:
+            return u''
+        tmp = qstr.replace("\\","\\\\")
+        tmp = tmp.replace("'", "\\'")
+        return tmp
+
     #Normalize a SQL command before executing it.  Commence unicode black magic
     def _normalizeSQLCmd(self,cmd):
         return cmd.encode('utf-8')    
-    
+
+    #Takes a term and 'normalizes' it.
+    #Literals are escaped, Graphs are replaced with just their identifiers
+    def normalizeTerm(self,term):
+        if isinstance(term,(QuotedGraph,Graph)):
+            return term.identifier
+        else:
+            return self.EscapeQuotes(term)
+        
     #Builds an insert command for a type table
     def buildTypeSQLCommand(self,member,klass,context,storeId):
         #columns: member,klass,context
         rt= u"INSERT INTO %s_type_statements VALUES ('%s', '%s', '%s',%s)"%(
             storeId,
-            normalizeTerm(member),
-            normalizeTerm(klass),
+            self.normalizeTerm(member),
+            self.normalizeTerm(klass),
             context.identifier,
             type2TermCombination(member,klass,context))
         return rt
@@ -148,9 +149,9 @@ class SQLGenerator:
         literal_table = "%s_literal_statements"%storeId
         command=u"INSERT INTO %s VALUES ('%s', '%s', '%s', '%s', %s,%s,%s)"%(
             literal_table,
-            normalizeTerm(subject),
-            normalizeTerm(predicate),
-            normalizeTerm(obj),
+            self.normalizeTerm(subject),
+            self.normalizeTerm(predicate),
+            self.normalizeTerm(obj),
             context.identifier,
             str(triplePattern),
             isinstance(obj,Literal) and  "'%s'"%obj.language or 'NULL',
@@ -164,9 +165,9 @@ class SQLGenerator:
         if quoted:
             command=u"INSERT INTO %s VALUES ('%s', '%s', '%s', '%s', %s,%s,%s)"%(
                 stmt_table,
-                normalizeTerm(subject),
-                normalizeTerm(predicate),
-                normalizeTerm(obj),
+                self.normalizeTerm(subject),
+                self.normalizeTerm(predicate),
+                self.normalizeTerm(obj),
                 context.identifier,
                 str(triplePattern),
                 isinstance(obj,Literal) and  "'%s'"%obj.language or 'NULL',
@@ -174,9 +175,9 @@ class SQLGenerator:
         else:
             command=u"INSERT INTO %s VALUES ('%s', '%s', '%s', '%s', %s)"%(
                 stmt_table,
-                normalizeTerm(subject),
-                normalizeTerm(predicate),
-                normalizeTerm(obj),
+                self.normalizeTerm(subject),
+                self.normalizeTerm(predicate),
+                self.normalizeTerm(obj),
                 context.identifier,
                 str(triplePattern))
         return command
@@ -281,6 +282,7 @@ class AbstractSQLStore(SQLGenerator):
             #asserted rdf:type statement
             addCmd=self.buildTypeSQLCommand(subject,obj,context,self._internedId)
         c.execute(self._normalizeSQLCmd(addCmd))
+        c.close()
 
     def remove(self, (subject, predicate, obj), context):
         """ Remove a triple from the store """
@@ -322,6 +324,7 @@ class AbstractSQLStore(SQLGenerator):
             clauseString = self.buildClause(quoted_table,subject,predicate, obj,context)
             cmd=clauseString and u"DELETE FROM %s %s"%(quoted_table,clauseString) or 'DELETE FROM %s;'%quoted_table
             c.execute(cmd)
+        c.close()
             
     def triples(self, (subject, predicate, obj), context=None):
         """ 
@@ -429,6 +432,7 @@ class AbstractSQLStore(SQLGenerator):
                 sameTriple = next and extractTriple(next,self,context)[:3] == (s,p,o)
                     
             yield (s,p,o),(c for c in contexts)
+        
             
     def __repr__(self):
         c=self._db.cursor()
@@ -534,6 +538,7 @@ class AbstractSQLStore(SQLGenerator):
             q=unionSELECT(selects,distinct=False,selectType=COUNT_SELECT)
         c.execute(self._normalizeSQLCmd(q))
         rt=c.fetchall()
+        c.close()
         return reduce(lambda x,y: x+y,  [rtTuple[0] for rtTuple in rt])
 
     def contexts(self, triple=None):
@@ -641,6 +646,7 @@ class AbstractSQLStore(SQLGenerator):
         rt=c.fetchall()
         for context in [rtTuple[0] for rtTuple in rt]:
             yield context
+        c.close()
     
     def _remove_context(self, identifier):
         """ """
@@ -652,6 +658,7 @@ class AbstractSQLStore(SQLGenerator):
         literal_table = "%s_literal_statements"%self._internedId
         for table in [quoted_table,asserted_table,asserted_type_table,literal_table]:
             c.execute(self._normalizeSQLCmd("DELETE from %s where %s"%(table,self.buildContextClause(identifier,table))))
+        c.close()
 
     # Optional Namespace methods
 
@@ -728,6 +735,7 @@ class AbstractSQLStore(SQLGenerator):
             )
         except:
             pass
+        c.close()
 
     def prefix(self, namespace):
         """ """
@@ -737,6 +745,7 @@ class AbstractSQLStore(SQLGenerator):
             namespace)
         )
         rt = [rtTuple[0] for rtTuple in c.fetchall()]
+        c.close()
         return rt and rt[0] or None
 
     def namespace(self, prefix):
@@ -747,6 +756,7 @@ class AbstractSQLStore(SQLGenerator):
             prefix)
         )
         rt = [rtTuple[0] for rtTuple in c.fetchall()]
+        c.close()
         return rt and rt[0] or None
 
     def namespaces(self):
@@ -755,8 +765,10 @@ class AbstractSQLStore(SQLGenerator):
         c.execute("select prefix, uri from %s_namespace_binds where 1;"%(
             self._internedId
             )
-        )        
-        for prefix,uri in c.fetchall():
+        )
+        rt=c.fetchall()
+        c.close()
+        for prefix,uri in rt:
             yield prefix,uri
         
 
