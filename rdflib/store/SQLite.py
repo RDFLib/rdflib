@@ -32,8 +32,19 @@ class SQLite(AbstractSQLStore,Store):
     transaction_aware = True
     regex_matching = PYTHON_REGEX
     autocommit_default = False    
-    #Database Management Methods
-    def open(self, dbFile, create=True):
+
+    def EscapeQuotes(self,qstr):
+        """
+        Ported from Ft.Lib.DbUtil
+        """
+        if qstr is None:
+            return u''
+        tmp = qstr.replace("\\","\\\\")
+        tmp = tmp.replace('"', '""')
+        tmp = tmp.replace("'", "''")        
+        return tmp
+    
+    def open(self, home, create=True):
         """ 
         Opens the store specified by the configuration string. If
         create is True a store will be created if it does not already
@@ -42,7 +53,7 @@ class SQLite(AbstractSQLStore,Store):
         exists, but there is insufficient permissions to open the
         store."""
         if create:
-            db = dbapi2.connect(dbFile)
+            db = dbapi2.connect(os.path.join(home,self.identifier))
             c=db.cursor()
             c.execute(CREATE_ASSERTED_STATEMENTS_TABLE%(self._internedId))
             c.execute(CREATE_ASSERTED_TYPE_STATEMENTS_TABLE%(self._internedId))
@@ -97,17 +108,18 @@ class SQLite(AbstractSQLStore,Store):
                 )]:
                 for indexName,columns in indices:
                     c.execute("CREATE INDEX %s on %s (%s)"%(indexName%self._internedId,tblName%(self._internedId),','.join(columns)))
-            db.commit()
             c.close()
+            db.commit()
             db.close()            
 
-        self._db = dbapi2.connect(dbFile)
+        self._db = dbapi2.connect(os.path.join(home,self.identifier))
         self._db.create_function("regexp", 2, regexp)
 
-        if os.path.exists(dbFile):
+        if os.path.exists(os.path.join(home,self.identifier)):
             c = self._db.cursor()
             c.execute("SELECT * FROM sqlite_master WHERE type='table'")
             tbls = [rt[1] for rt in c.fetchall()]
+            c.close()
             for tn in [tbl%(self._internedId) for tbl in table_name_prefixes]:                
                 if tn not in tbls:
                     sys.stderr.write("table %s Doesn't exist\n" % (tn));
@@ -118,26 +130,25 @@ class SQLite(AbstractSQLStore,Store):
         #The database doesn't exist - nothing is there
         #return -1        
 
-    def destroy(self, dbFile):
+    def destroy(self, home):
         """
         FIXME: Add documentation
-        """        
-        db = dbapi2.connect(dbFile)
+        """
+        db = dbapi2.connect(os.path.join(home,self.identifier))
         c=db.cursor()
         for tblsuffix in table_name_prefixes:
             try:
                 c.execute('DROP table %s'%tblsuffix%(self._internedId))
-                #print "dropped table: %s"%(tblsuffix%(self._internedId))
             except:
                 print "unable to drop table: %s"%(tblsuffix%(self._internedId))
             
             
         #Note, this only removes the associated tables for the closed world universe given by the identifier
-        print "Destroyed Close World Universe %s ( in SQLite database %s)"%(self.identifier,dbFile)
+        print "Destroyed Close World Universe %s ( in SQLite database %s)"%(self.identifier,home)
         db.commit()
         c.close()
         db.close()
-        #os.remove(dbFile)
+        os.remove(os.path.join(home,self.identifier))
 
 
     #Builds WHERE clauses for the supplied terms and, context
@@ -167,12 +178,12 @@ class SQLite(AbstractSQLStore,Store):
     #subjects and objects utility functions which can take lists as their last argument (object,predicate - respectively)
     def buildSubjClause(self,subject,tableName):
         if isinstance(subject,REGEXTerm):
-            return u" REGEXP ('%s',%s)"%(EscapeQuotes(subject),tableName and u'%s.subject'%tableName or u'subject')
+            return u" REGEXP ('%s',%s)"%(self.EscapeQuotes(subject),tableName and u'%s.subject'%tableName or u'subject')
         elif isinstance(subject,list):
             clauseStrings=[]
             for s in subject:
                 if isinstance(s,REGEXTerm):
-                    clauseStrings.append(u"REGEXP ('%s',%s)"%(EscapeQuotes(s),tableName and u'%s.subject'%tableName or u'subject'))
+                    clauseStrings.append(u"REGEXP ('%s',%s)"%(self.EscapeQuotes(s),tableName and u'%s.subject'%tableName or u'subject'))
                 elif isinstance(s,(QuotedGraph,Graph)):
                     clauseStrings.append(u"%s='%s'"%(tableName and u'%s.subject'%tableName or u'subject',s.identifier))                
                 else:
@@ -186,12 +197,12 @@ class SQLite(AbstractSQLStore,Store):
     #Capable off taking a list of predicates as well (in which case sub clauses are joined with 'OR')
     def buildPredClause(self,predicate,tableName):
         if isinstance(predicate,REGEXTerm):
-            return u"REGEXP ('%s',%s)"%(EscapeQuotes(predicate),tableName and u'%s.predicate'%tableName or u'predicate')
+            return u"REGEXP ('%s',%s)"%(self.EscapeQuotes(predicate),tableName and u'%s.predicate'%tableName or u'predicate')
         elif isinstance(predicate,list):
             clauseStrings=[]
             for p in predicate:
                 if isinstance(p,REGEXTerm):
-                    clauseStrings.append(u"REGEXP ('%s',%s)"%(EscapeQuotes(p),tableName and u'%s.predicate'%tableName or u'predicate'))
+                    clauseStrings.append(u"REGEXP ('%s',%s)"%(self.EscapeQuotes(p),tableName and u'%s.predicate'%tableName or u'predicate'))
                 else:
                     clauseStrings.append(predicate and u"%s='%s'"%(tableName and u'%s.predicate'%tableName or u'predicate',p) or None)
             return u'(%s)'%u' or '.join([clauseString for clauseString in clauseStrings])
@@ -201,32 +212,32 @@ class SQLite(AbstractSQLStore,Store):
     #Capable of taking a list of objects as well (in which case sub clauses are joined with 'OR')    
     def buildObjClause(self,obj,tableName):
         if isinstance(obj,REGEXTerm):
-            return u"REGEXP ('%s',%s)"%(EscapeQuotes(obj),tableName and u'%s.object'%tableName or u'object')
+            return u"REGEXP ('%s',%s)"%(self.EscapeQuotes(obj),tableName and u'%s.object'%tableName or u'object')
         elif isinstance(obj,list):
             clauseStrings=[]
             for o in obj:
                 if isinstance(o,REGEXTerm):
-                    clauseStrings.append(u"REGEXP ('%s',%s)"%(EscapeQuotes(o),tableName and u'%s.object'%tableName or u'object'))
+                    clauseStrings.append(u"REGEXP ('%s',%s)"%(self.EscapeQuotes(o),tableName and u'%s.object'%tableName or u'object'))
                 elif isinstance(o,(QuotedGraph,Graph)):
                     clauseStrings.append(u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',o.identifier))
                 else:
-                    clauseStrings.append(o and u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',isinstance(o,Literal) and EscapeQuotes(o) or o) or None)
+                    clauseStrings.append(o and u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',isinstance(o,Literal) and self.EscapeQuotes(o) or o) or None)
             return u'(%s)'%u' or '.join([clauseString for clauseString in clauseStrings])
         elif isinstance(obj,(QuotedGraph,Graph)):
             return u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',obj.identifier)
         else:
-            return obj and u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',EscapeQuotes(obj)) or None
+            return obj and u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',self.EscapeQuotes(obj)) or None
     
     def buildContextClause(self,context,tableName):
         context = context is not None and context.identifier or context
         if isinstance(context,REGEXTerm):
-            return u"REGEXP ('%s',%s)"%(EscapeQuotes(context),tableName and u'%s.context'%tableName)
+            return u"REGEXP ('%s',%s)"%(self.EscapeQuotes(context),tableName and u'%s.context'%tableName)
         else:
             return context and u"%s='%s'"%(tableName and u'%s.context'%tableName,context) or None
         
     def buildTypeMemberClause(self,subject,tableName):
         if isinstance(subject,REGEXTerm):
-            return u"REGEXP ('%s',%s.member)"%(EscapeQuotes(subject),tableName)
+            return u"REGEXP ('%s',%s.member)"%(self.EscapeQuotes(subject),tableName)
         elif isinstance(subject,list):
             subjs = [isinstance(s,(QuotedGraph,Graph)) and s.identifier or s for s in subject]        
             return u' or '.join([s and u"%s.member = '%s'"%(tableName,s) for s in subjs])    
@@ -235,7 +246,7 @@ class SQLite(AbstractSQLStore,Store):
         
     def buildTypeClassClause(self,obj,tableName):
         if isinstance(obj,REGEXTerm):
-            return u"REGEXP ('%s',%s.klass)"%(EscapeQuotes(obj),tableName)
+            return u"REGEXP ('%s',%s.klass)"%(self.EscapeQuotes(obj),tableName)
         elif isinstance(obj,list):
             obj = [isinstance(o,(QuotedGraph,Graph)) and o.identifier or o for o in obj]        
             return u' or '.join([o and not isinstance(o,Literal) and u"%s.klass = '%s'"%(tableName,o) for o in obj])
@@ -336,7 +347,9 @@ class SQLite(AbstractSQLStore,Store):
         #NOTE: SQLite does not support ORDER BY terms that aren't integers, so the entire result set must be iterated
         #in order to be able to return a generator of contexts
         tripleCoverage = {}
-        for rt in c.fetchall():                
+        result = c.fetchall()
+        c.close()
+        for rt in result:                
             s,p,o,(graphKlass,idKlass,graphId) = extractTriple(rt,self,context)
             contexts = tripleCoverage.get((s,p,o),[])
             contexts.append(graphKlass(self,idKlass(graphId)))            
