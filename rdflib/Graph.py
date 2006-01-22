@@ -631,9 +631,8 @@ class Seq(object):
             if p.startswith(LI_INDEX): #!= RDF.Seq: #
                 _list.append(("%s" % p, o))
         # here is the trick: the predicates are _1, _2, _3, etc. Ie,
-        # by sorting the keys we have what we want!
-        # Ah... TODO: this needs to sort by integer... not string value.
-        _list.sort()
+        # by sorting the keys (by integer) we have what we want!
+        _list.sort(key=lambda elem: int(elem[0].replace(LI_INDEX, '')))
 
     def __iter__(self):
         """Generator over the index, item tuples in the Seq"""
