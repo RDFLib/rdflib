@@ -629,10 +629,11 @@ class Seq(object):
         LI_INDEX = RDF.RDFNS["_"]
         for (p, o) in graph.predicate_objects(subject):
             if p.startswith(LI_INDEX): #!= RDF.Seq: #
-                _list.append(("%s" % p, o))
+                i = int(p.replace(LI_INDEX, ''))
+                _list.append(("%s" % i, o))
         # here is the trick: the predicates are _1, _2, _3, etc. Ie,
         # by sorting the keys (by integer) we have what we want!
-        _list.sort(key=lambda elem: int(elem[0].replace(LI_INDEX, '')))
+        _list.sort()
 
     def __iter__(self):
         """Generator over the index, item tuples in the Seq"""
