@@ -181,7 +181,7 @@ except ImportError, e:
 
 
 try:
-    import RDF
+    import RDF as Redland # don't shadow RDF ns imported above
     # If we can import RDF then test Redland store
     class RedLandTestCase(GraphTestCase):
         store_name = "Redland"

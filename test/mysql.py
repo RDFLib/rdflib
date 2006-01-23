@@ -1,6 +1,6 @@
 from n3_2 import testN3Store,testN3,implies
 from rdflib.Graph import QuotedGraph
-from rdflib.backends.MySQL import REGEXTerm
+from rdflib.store.MySQL import REGEXTerm
 from rdflib import *
 configString="user=root,password=1618,host=localhost,db=rdflib_db"
 

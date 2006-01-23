@@ -1,6 +1,8 @@
-import unittest
+import unittest, inspect
+import rdflib
 
-quick = False
+quick = True
+verbose = False
 
 from test.identifier_equality import *
 
@@ -17,6 +19,9 @@ from test.context import *
 
 from test.parser import *
 if not quick:
+    from test import parser_rdfcore
+    if verbose:
+        parser_rdfcore.verbose = 1
     from test.parser_rdfcore import *
 
 from test.rdf import * # how does this manage to be 9 tests?
@@ -27,11 +32,21 @@ from test.nt import *
 from test.util import *
 from test.seq import SeqTestCase
 
-if not quick:
-    from test.store_performace import *
+from test.store_performace import *
 
 from test.rules import *
 
 
 if __name__ == "__main__":
-    unittest.main()   
+    if verbose:
+        ts = unittest.makeSuite
+        tests = [
+            c for c in vars().values()
+            if inspect.isclass(c)
+                and not isinstance(c, rdflib.Namespace)
+                and issubclass(c, unittest.TestCase)
+        ]
+        suite = unittest.TestSuite(map(ts, tests))
+        unittest.TextTestRunner(verbosity=2).run(suite)
+    else:
+        unittest.main()

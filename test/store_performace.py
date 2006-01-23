@@ -26,7 +26,13 @@ class StoreTestCase(unittest.TestCase):
         gc.collect()
         gc.disable()
         self.graph = Graph(store=self.store)
-        path = a_tmp_dir = mkdtemp()
+        if self.store == "MySQL":
+            from test.mysql import configString
+            from rdflib.store.MySQL import MySQL
+            path=configString
+            MySQL().destroy(path)
+        else:
+            path = a_tmp_dir = mkdtemp()
         self.graph.open(path)
         self.input = input = Graph()
         input.parse("http://eikeon.com")
@@ -105,14 +111,14 @@ try:
     import RDF
     # If we can import RDF then test Redland store
     class RedLandTestCase(StoreTestCase):
-        store = "fourthought"
+        store = "Redland"
 except ImportError, e:
     print "Can not test Redland store:", e    
 
 # TODO: add test case for 4Suite backends?  from Ft import Rdf
 
 try:
-    import todo # what kind of configuration string does open need?
+#     import todo # what kind of configuration string does open need?
 
     import MySQLdb,sha,sys
     # If we can import RDF then test Redland store
