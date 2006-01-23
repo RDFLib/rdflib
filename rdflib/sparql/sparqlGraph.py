@@ -80,7 +80,7 @@ class SPARQLGraph(sparql.SPARQL) :
         @raise UniquenessError: the triple store contains more than one value for the (s,p) pair
         """    
         retval = None
-        for v in self.store.objects(s,p) :
+        for v in self.graph.objects(s,p) :
             if retval != None :
                 # this can happen only if the value is not unique!
                 raise UniquenessError(s,p)
@@ -103,7 +103,7 @@ class SPARQLGraph(sparql.SPARQL) :
         @raise UniquenessError: the triple store contains more than one subject for the (p,v) pair
         """    
         retval = None
-        for s in self.store.subjects(p,v) :
+        for s in self.graph.subjects(p,v) :
             if retval != None :
                 # this can happen only if the value is not unique!
                 raise UniquenessError(p,v)
@@ -141,7 +141,7 @@ class SPARQLGraph(sparql.SPARQL) :
         @rtype: list
         @raise ListError: the resource is not a proper RDF collection
         """
-        return map(None,self.store.items(resource))
+        return map(None,self.graph.items(resource))
 
 
     def _buildCollection(self,elements,father) :
@@ -157,15 +157,15 @@ class SPARQLGraph(sparql.SPARQL) :
         if len(elements) == 0 :
             # This should not happen, in fact...
             return
-        self.store.add((father,ns_rdf["first"],elements[0]))
+        self.graph.add((father,ns_rdf["first"],elements[0]))
         if len(elements) == 1 :
             # Close the list
-            self.store.add((father,ns_rdf["rest"],ns_rdf["nil"]))
+            self.graph.add((father,ns_rdf["rest"],ns_rdf["nil"]))
         else :
             # Generate a new head
             next = BNode()
-            self.store.add((next,ns_rdf["type"],ns_rdf["List"]))
-            self.store.add((father,ns_rdf["rest"],next))
+            self.graph.add((next,ns_rdf["type"],ns_rdf["List"]))
+            self.graph.add((father,ns_rdf["rest"],next))
             self._buildCollection(elements[1:],next)
         
     def storeCollection(self,elements,name=None) :
@@ -178,7 +178,7 @@ class SPARQLGraph(sparql.SPARQL) :
         system sets the nodeId as for all other BNodes)
         """
         lst = BNode(name)
-        self.store.add((lst,ns_rdf["type"],ns_rdf["List"]))
+        self.graph.add((lst,ns_rdf["type"],ns_rdf["List"]))
         self._buildCollection(elements,lst)
         return lst        
         
@@ -192,7 +192,7 @@ class SPARQLGraph(sparql.SPARQL) :
         """
         try :
             if (resource,ns_rdf['type'],ns_rdf['Seq']) in self :
-                return Seq(self,resource)
+                return Seq(self.graph, resource)
             else :
                 return None
         except :
@@ -208,7 +208,7 @@ class SPARQLGraph(sparql.SPARQL) :
         """
         try :
             if (resource,ns_rdf['type'],ns_rdf['Alt']) in self :
-                return Alt(self,resource)
+                return Alt(self.graph, resource)
             else :
                 return None
         except :
@@ -224,7 +224,7 @@ class SPARQLGraph(sparql.SPARQL) :
         """
         try :
             if (resource,ns_rdf['type'],ns_rdf['Bag']) in self :
-                return Bag(self,resource)
+                return Bag(self.graph, resource)
             else :
                 return None
         except :
@@ -251,10 +251,10 @@ class SPARQLGraph(sparql.SPARQL) :
         @rtype: BNode
         """
         seq = BNode(name)
-        self.store.add((seq,ns_rdf["type"],ns_rdf[contType]))
+        self.graph.add((seq,ns_rdf["type"],ns_rdf[contType]))
         for i in range(0,len(elements)) :
             pred = ns_rdf["_%d" % (i+1)]
-            self.store.add((seq,pred,elements[i]))
+            self.graph.add((seq,pred,elements[i]))
         return seq
 
     def storeSeq(self,elements,name=None) :
@@ -325,7 +325,7 @@ class SPARQLGraph(sparql.SPARQL) :
         try :        
             # get all predicate and object pairs for the seed. 
             # *If not yet in the new cluster, then go with a recursive round with those*
-            for (p,o) in self.store.predicate_objects(seed) :
+            for (p,o) in self.graph.predicate_objects(seed) :
                 if not (seed,p,o) in Cluster :
                     Cluster.add((seed,p,o))
                     self._clusterForward(p,Cluster)
@@ -373,7 +373,7 @@ class SPARQLGraph(sparql.SPARQL) :
         expanded with the new arcs
         """
         try :
-            for (s,p) in self.store.subject_predicates(seed) :
+            for (s,p) in self.graph.subject_predicates(seed) :
                 if not (s,p,seed) in Cluster :
                     Cluster.add((s,p,seed))
                     self._clusterBackward(s,Cluster)
@@ -473,7 +473,7 @@ class SPARQLGraph(sparql.SPARQL) :
 
         @param typ: RDFLib Resource    
         """
-        for nTyp in self.store.objects(typ,ns_rdfs["subClassOf"]) :
+        for nTyp in self.graph.objects(typ,ns_rdfs["subClassOf"]) :
             if not isinstance(nTyp,URIRef) :
                 raise RDFSValidityError("rdfs:subClassOf",nTyp)                
             target.add((res,ns_rdf["type"],nTyp))
@@ -489,7 +489,7 @@ class SPARQLGraph(sparql.SPARQL) :
         invalid (o or s is a Literal for an rdf:type triplet).
         """
         target = sparqlGraph()
-        for (s,o) in self.store.subject_objects(ns_rdf["type"]) :
+        for (s,o) in self.graph.subject_objects(ns_rdf["type"]) :
             if isinstance(o,Literal) :
                 raise RDFSValidityError("rdfs:type",o)
             if isinstance(s,Literal) :
@@ -513,7 +513,7 @@ class SPARQLGraph(sparql.SPARQL) :
         
         """
         target.add((s,prop,o))
-        for neP in self.store.objects(prop,ns_rdfs["subPropertyOf"]) :
+        for neP in self.graph.objects(prop,ns_rdfs["subPropertyOf"]) :
             if not isinstance(neP,URIRef) :
                 raise RDFSValidityError("rdfs:subClassOf",neP)                
             self._extendPropertiesR(target,s,o,neP)
@@ -528,10 +528,10 @@ class SPARQLGraph(sparql.SPARQL) :
         invalid (prop is not a URIRef).
         """
         target = sparqlGraph() 
-        for (prop,supProp) in self.store.subject_objects(ns_rdfs["subPropertyOf"]) :
+        for (prop,supProp) in self.graph.subject_objects(ns_rdfs["subPropertyOf"]) :
             if not isinstance(prop,URIRef) :
                 raise RDFSValidityError("rdfs:subClassOf",prop)                
-            for (s,o) in self.store.subject_objects(prop) :
+            for (s,o) in self.graph.subject_objects(prop) :
                 self._extendPropertiesR(target,s,o,prop)
         self += target
     
@@ -542,24 +542,24 @@ class SPARQLGraph(sparql.SPARQL) :
         RDFSValidityError: If range or domain uses anything else then
         URIRefs
         """
-        for (P,C) in self.store.subject_objects(ns_rdfs["range"]) :
+        for (P,C) in self.graph.subject_objects(ns_rdfs["range"]) :
             if not isinstance(P,URIRef) :
                 raise RDFSValidityError("rdfs:range",P)                
             if not isinstance(C,URIRef) :
                 raise RDFSValidityError("rdfs:range",C)                
-            for (s,o) in self.store.subject_objects(P) :
+            for (s,o) in self.graph.subject_objects(P) :
                 if isinstance(s,Literal) :
                     raise RDFSValidityError(P,s)                
-                self.store.add((o,ns_rdf["type"],C))
-        for (P,C) in self.store.subject_objects(ns_rdfs["domain"]) :
+                self.graph.add((o,ns_rdf["type"],C))
+        for (P,C) in self.graph.subject_objects(ns_rdfs["domain"]) :
             if not isinstance(P,URIRef) :
                 raise RDFSValidityError("rdfs:domain",P)                
             if not isinstance(C,URIRef) :
                 raise RDFSValidityError("rdfs:domain",C)                
-            for (s,o) in self.store.subject_objects(P) :
+            for (s,o) in self.graph.subject_objects(P) :
                 if isinstance(s,Literal) :
                     raise RDFSValidityError(P,s)                
-                self.store.add((s,ns_rdf["type"],C))
+                self.graph.add((s,ns_rdf["type"],C))
 
     def extendRdfs(self) :
         """
