@@ -8,12 +8,16 @@ def _t(i):
     if isinstance(i, rdflib.URIRef):
         return RDF.Uri(unicode(i))
     if isinstance(i, rdflib.BNode):
-        return RDF.Node(blank=unicode(i))
+        return RDF.Node(blank=str(i))
     if isinstance(i, rdflib.Literal):
-        return RDF.Node(literal=unicode(i))
+        return RDF.Node(literal=str(i))
     if i is None:
         return None
     raise TypeError, 'Cannot convert %s' % `i`
+
+def _c(i):
+    return RDF.Node(uri=RDF.Uri(str(id(i))))
+
 
 def _f(i):
     if isinstance(i, RDF.Uri):
@@ -39,16 +43,16 @@ class Redland(Store):
         """ Return number of triples (statements in librdf). """
         return self.model.size()
 
-    def add(self, (subject, predicate, object), context=None):
+    def add(self, (subject, predicate, object), context=None, quoted=False):
         """\
         Add a triple to the store of triples.
         """
         if context is not None:
-            self.model.append(RDF.Statement(_t(subject), _t(predicate), _t(object)), _t(context))
+            self.model.append(RDF.Statement(_t(subject), _t(predicate), _t(object)), _c(context))
         else:
             self.model.append(RDF.Statement(_t(subject), _t(predicate), _t(object)))
 
-    def remove(self, (subject, predicate, object), context):
+    def remove(self, (subject, predicate, object), context, quoted=False):
         if context is not None:
             del self.model[RDF.Statement(_t(subject), _t(predicate), _t(object)), _t(context)]
         else:
