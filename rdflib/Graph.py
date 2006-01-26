@@ -754,6 +754,8 @@ class BackwardCompatGraph(ConjunctiveGraph):
     def __reduce__(self):
         return (BackwardCompatGraph, (self.store, self.identifier,))
 
+    def save(self, destination, format="xml", base=None, encoding=None):
+        self.serialize(destination=destination, format=format, base=base, encoding=encoding)
 
 ##############
 
