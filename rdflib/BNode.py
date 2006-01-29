@@ -17,7 +17,9 @@ def _serial_number_generator():
 
 from rdflib.Identifier import Identifier
 from rdflib.syntax.xml_names import is_ncname
+import threading
 
+bNodeLock = threading.RLock()
 
 class BNode(Identifier):
     """ 
@@ -43,7 +45,9 @@ class BNode(Identifier):
             # so that BNode values do not
             # collide with ones created with a different instance of this module
             # at some other time.
+            bNodeLock.acquire()
             node_id = _sn_gen.next()
+            bNodeLock.release()
             value = "%s%s" % (_prefix, node_id)
         else:
             # TODO: check that value falls within acceptable bnode value range
