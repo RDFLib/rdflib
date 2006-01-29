@@ -1,4 +1,5 @@
 from rdflib.store import Store
+from rdflib.URIRef import URIRef
 
 from bsddb import db
 from base64 import b64encode
