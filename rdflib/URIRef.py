@@ -4,7 +4,7 @@ if version_info[0:2] > (2, 2):
 else:
     normalize = None
 
-from urlparse import urlparse, urljoin
+from urlparse import urlparse, urljoin, urldefrag
 
 from rdflib.Identifier import Identifier
 from rdflib.Literal import Literal
@@ -41,6 +41,14 @@ class URIRef(Identifier):
                     return URIRef("%s#" % self)
                 else:
                     return self
+        else:
+            return self
+
+
+    def defrag(self):
+        if "#" in self:
+            url, frag = urldefrag(self)
+            return URIRef(url)
         else:
             return self
 
