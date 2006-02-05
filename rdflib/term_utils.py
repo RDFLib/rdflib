@@ -16,6 +16,12 @@ TERM_INSTANCIATION_DICT ={
     'L':Literal
 }
 
+GRAPH_TERM_DICT = {
+    'F': (QuotedGraph, URIRef),
+    'U': (Graph, URIRef),
+    'B': (Graph, BNode)
+}
+
 def term2Letter(term):
     if isinstance(term,URIRef):
         return 'U'
@@ -34,10 +40,7 @@ def term2Letter(term):
         raise Exception("The given term is not an instance of any of the known types (URIRef,BNode,Literal,QuotedGraph, or Variable)")
 
 def constructGraph(term):
-    if term == 'F':
-        return QuotedGraph, URIRef
-    else:
-        return Graph,TERM_INSTANCIATION_DICT[term]
+    return GRAPH_TERM_DICT[term]
 
 def triplePattern2termCombinations((s,p,o)):
     combinations=[]
