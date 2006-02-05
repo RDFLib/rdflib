@@ -65,7 +65,7 @@ def unionSELECT(selectComponents,distinct=False,selectType=TRIPLE_SELECT):
     else:
         return u' union all '.join(selects) + orderStmt
 
-#Takes a dictionary which represents an entry in a result set and
+#Takes a tuple which represents an entry in a result set and
 #converts it to a tuple of terms using the termComb integer
 #to interpret how to instanciate each term
 def extractTriple(tupleRt,store,hardCodedContext=None):
@@ -73,39 +73,66 @@ def extractTriple(tupleRt,store,hardCodedContext=None):
     context = rtContext is not None and rtContext or hardCodedContext.identifier
     termCombString=REVERSE_TERM_COMBINATIONS[termComb]
     subjTerm,predTerm,objTerm,ctxTerm = termCombString
+    
     s=createTerm(subject,subjTerm,store)
-    p=predicate is RDF.type and RDF.type or createTerm(predicate,predTerm,store)            
+    p=createTerm(predicate,predTerm,store)            
     o=createTerm(obj,objTerm,store,objLanguage,objDatatype)
     
     graphKlass, idKlass = constructGraph(ctxTerm)
     return s,p,o,(graphKlass,idKlass,context)
-
+#TODO: Stuff
 #Takes a term value, term type, and store intance
 #and Creates a term object.  QuotedGraphs are instanciated differently
 def createTerm(termString,termType,store,objLanguage=None,objDatatype=None):    
     if termType == 'L':
-        cache = store.termCache.get((termType,termString,objLanguage,objDatatype))
+        cache = store.literalCache.get((termString,objLanguage,objDatatype))
         if cache is not None:
+            store.cacheHits += 1
             return cache
         else:
+            store.cacheMisses += 1
             rt = Literal(termString,objLanguage,objDatatype)
-            store.termCache[((termType,termString,objLanguage,objDatatype))] = rt
+            store.literalCache[((termString,objLanguage,objDatatype))] = rt
             return rt
     elif termType=='F':
-        cache = store.termCache.get((termType,termString))
+        cache = store.otherCache.get((termType,termString))
         if cache is not None:
+            store.cacheHits += 1
             return cache
         else:
+            store.cacheMisses += 1
             rt = QuotedGraph(store,URIRef(termString))
-            store.termCache[(termType,termString)] = rt
+            store.otherCache[(termType,termString)] = rt
             return rt
-    else:
-        cache = store.termCache.get((termType,termString))
+    elif termType == 'B':
+        cache = store.bnodeCache.get((termString))
         if cache is not None:
+            store.cacheHits += 1
             return cache
         else:
+            store.cacheMisses += 1
             rt = TERM_INSTANCIATION_DICT[termType](termString)
-            store.termCache[(termType,termString)] = rt
+            store.bnodeCache[(termString)] = rt
+            return rt
+    elif termType =='U':
+        cache = store.uriCache.get((termString))
+        if cache is not None:
+            store.cacheHits += 1
+            return cache
+        else:
+            store.cacheMisses += 1
+            rt = TERM_INSTANCIATION_DICT[termType](termString)
+            store.uriCache[(termString)] = rt
+            return rt        
+    else:
+        cache = store.otherCache.get((termType,termString))
+        if cache is not None:
+            store.cacheHits += 1
+            return cache
+        else:
+            store.cacheMisses += 1
+            rt = TERM_INSTANCIATION_DICT[termType](termString)
+            store.otherCache[(termType,termString)] = rt
             return rt
 
 class SQLGenerator:
@@ -254,8 +281,14 @@ class AbstractSQLStore(SQLGenerator):
         
         if configuration is not None:
             self.open(configuration)
-            
-        self.termCache = {}
+
+        self.cacheHits = 0
+        self.cacheMisses = 0
+
+        self.literalCache = {}
+        self.uriCache = {}
+        self.bnodeCache = {}
+        self.otherCache = {}
             
     def close(self, commit_pending_transaction=False):
         """ 
@@ -433,6 +466,35 @@ class AbstractSQLStore(SQLGenerator):
                     
             yield (s,p,o),(c for c in contexts)
         
+    def triples_choices(self, (subject, predicate, object_),context=None):
+        """ 
+        A variant of triples that can take a list of terms instead of a single
+        term in any slot.  Stores can implement this to optimize the response time
+        from the import default 'fallback' implementation, which will iterate
+        over each term in the list and dispatch to tripless
+        """
+        if isinstance(object_,list):
+            assert not isinstance(subject,list), "object_ / subject are both lists"
+            assert not isinstance(predicate,list), "object_ / predicate are both lists"
+            if not object_:
+                object_ = None
+            for (s1, p1, o1), cg in self.triples((subject,predicate,object_),context):
+                yield (s1, p1, o1), cg
+
+        elif isinstance(subject,list):
+            assert not isinstance(predicate,list), "subject / predicate are both lists"
+            if not subject:
+                subject = None
+            for (s1, p1, o1), cg in self.triples((subject,predicate,object_),context):
+                yield (s1, p1, o1), cg
+
+        elif isinstance(predicate,list):
+            assert not isinstance(subject,list), "predicate / subject are both lists"
+            if not predicate:
+                predicate = None
+            for (s1, p1, o1), cg in self.triples((subject,predicate,object_),context):
+                yield (s1, p1, o1), cg
+
             
     def __repr__(self):
         c=self._db.cursor()

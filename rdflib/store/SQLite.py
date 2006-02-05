@@ -356,7 +356,7 @@ class SQLite(AbstractSQLStore,Store):
             tripleCoverage[(s,p,o)] = contexts
                   
         for (s,p,o),contexts in tripleCoverage.items(): 
-            yield (s,p,o),(c for c in contexts)
+            yield (s,p,o),(c for c in contexts)        
         
 CREATE_ASSERTED_STATEMENTS_TABLE = """
 CREATE TABLE %s_asserted_statements (

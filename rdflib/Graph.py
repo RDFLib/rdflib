@@ -284,6 +284,10 @@ class Graph(Node):
         for s, p, o in self.triples((subject, None, None)):
             yield p, o
 
+    def triples_choices(self, (subject, predicate, object_),context=None):
+        for (s, p, o), cg in self.__store.triples_choices((s, p, o), context=self):
+            yield (s, p, o)
+
     def value(self, subject=None, predicate=RDF.value, object=None, default=None, any=False):
         """ Get a value for a subject/predicate, predicate/object, or
         subject/object pair -- exactly one of subject, predicate,
@@ -486,6 +490,11 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
         """An iterator over all the triples in the entire conjunctive graph."""
         for (s, p, o), cg in self.store.triples((s, p, o), context):
             yield (s, p, o), cg
+
+    def triples_choices(self, (s, p, o), context=None):
+        """An iterator over all the triples in the entire conjunctive graph."""        
+        for (s1, p1, o1), cg in self.store.triples_choices((s, p, o), context):
+            yield (s1, p1, o1), cg
 
     def subjects(self, predicate=None, object=None):
         """ A generator of subjects with the given predicate and object. """

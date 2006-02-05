@@ -15,6 +15,9 @@
 ## query expects a context-aware store to search the entire asserted universe (the conjunctive graph).
 ## A formula-aware store is expected not to include quoted statements when matching such a query.
 
+from rdflib import RDF
+from rdflib import exceptions
+
 class Store(object):
     #Properties
     context_aware = False
@@ -62,6 +65,47 @@ class Store(object):
     def remove(self, (subject, predicate, object), context=None):
         """ Remove the set of triples matching the pattern from the store """
 
+    def triples_choices(self, (subject, predicate, object_),context=None):
+        """ 
+        A variant of triples that can take a list of terms instead of a single
+        term in any slot.  Stores can implement this to optimize the response time
+        from the import default 'fallback' implementation, which will iterate
+        over each term in the list and dispatch to tripless
+        """
+        if isinstance(object_,list):
+            print object_
+            assert not isinstance(subject,list), "object_ / subject are both lists"
+            assert not isinstance(predicate,list), "object_ / predicate are both lists"
+            if object_:
+                for obj in object_:
+                    for (s1, p1, o1), cg in self.triples((subject,predicate,obj),context):
+                        yield (s1, p1, o1), cg
+            else:
+                for (s1, p1, o1), cg in self.triples((subject,predicate,None),context):
+                        yield (s1, p1, o1), cg
+
+        elif isinstance(subject,list):
+            print subject
+            assert not isinstance(predicate,list), "subject / predicate are both lists"
+            if subject:
+                for subj in subject:
+                    for (s1, p1, o1), cg in self.triples((subj,predicate,object_),context):
+                        yield (s1, p1, o1), cg
+            else:
+                for (s1, p1, o1), cg in self.triples((None,predicate,object_),context):
+                    yield (s1, p1, o1), cg
+
+        elif isinstance(predicate,list):
+            print predicate
+            assert not isinstance(subject,list), "predicate / subject are both lists"
+            if predicate:
+                for pred in predicate:
+                    for (s1, p1, o1), cg in self.triples((subject,pred,object_),context):
+                        yield (s1, p1, o1), cg
+            else:
+                for (s1, p1, o1), cg in self.triples((subject,None,object_),context):
+                        yield (s1, p1, o1), cg
+
     def triples(self, (subject, predicate, object), context=None):
         """ 
         A generator over all the triples matching pattern. Pattern can
@@ -108,4 +152,6 @@ class Store(object):
     def rollback(self):
         """ """
 
+    #Optimized API        
+    
 
