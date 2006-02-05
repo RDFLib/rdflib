@@ -285,7 +285,7 @@ class Graph(Node):
             yield p, o
 
     def triples_choices(self, (subject, predicate, object_),context=None):
-        for (s, p, o), cg in self.__store.triples_choices((s, p, o), context=self):
+        for (s, p, o), cg in self.store.triples_choices((subject, predicate, object_), context=self):
             yield (s, p, o)
 
     def value(self, subject=None, predicate=RDF.value, object=None, default=None, any=False):
