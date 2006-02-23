@@ -35,8 +35,9 @@ def term2Letter(term):
         return 'V'
     elif isinstance(term,Graph):
         return term2Letter(term.identifier)
-    else:
-        print term,type(term)
+    elif term is None:
+        return 'L'
+    else:        
         raise Exception("The given term is not an instance of any of the known types (URIRef,BNode,Literal,QuotedGraph, or Variable)")
 
 def constructGraph(term):
