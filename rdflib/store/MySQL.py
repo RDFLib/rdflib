@@ -232,22 +232,20 @@ CREATE TABLE %s_asserted_statements (
     object        text not NULL,
     context       text not NULL,
     termComb      tinyint unsigned not NULL,    
-    INDEX termComb_index (termComb),    
-    INDEX spoc_index (subject(100),predicate(100),object(50),context(50)),
-    INDEX poc_index (predicate(100),object(50),context(50)),
-    INDEX csp_index (context(50),subject(100),predicate(100)),
-    INDEX cp_index (context(50),predicate(100))) TYPE=InnoDB"""
+    INDEX s_index (subject(100)),
+    INDEX p_index (predicate(100)),
+    INDEX o_index (object(100)),
+    INDEX c_index (context(50))) TYPE=InnoDB"""
     
 CREATE_ASSERTED_TYPE_STATEMENTS_TABLE = """
 CREATE TABLE %s_type_statements (
     member        text not NULL,
     klass         text not NULL,
     context       text not NULL,
-    termComb      tinyint unsigned not NULL,
-    INDEX termComb_index (termComb),
-    INDEX memberC_index (member(100),klass(100),context(50)),
-    INDEX klassC_index (klass(100),context(50)),
-    INDEX c_index (context(10))) TYPE=InnoDB"""
+    termComb      tinyint unsigned not NULL,    
+    INDEX member_index (member(100)),
+    INDEX klass_index (klass(100)),
+    INDEX c_index (context(50))) TYPE=InnoDB"""
 
 CREATE_LITERAL_STATEMENTS_TABLE = """
 CREATE TABLE %s_literal_statements (
@@ -258,11 +256,9 @@ CREATE TABLE %s_literal_statements (
     termComb      tinyint unsigned not NULL,    
     objLanguage   varchar(3),
     objDatatype   text,
-    INDEX termComb_index (termComb),    
-    INDEX spoc_index (subject(100),predicate(100),object(50),context(50)),
-    INDEX poc_index (predicate(100),object(50),context(50)),
-    INDEX csp_index (context(50),subject(100),predicate(100)),
-    INDEX cp_index (context(50),predicate(100))) TYPE=InnoDB"""
+    INDEX s_index (subject(100)),
+    INDEX p_index (predicate(100)),
+    INDEX c_index (context(50))) TYPE=InnoDB"""
     
 CREATE_QUOTED_STATEMENTS_TABLE = """
 CREATE TABLE %s_quoted_statements (
@@ -272,12 +268,7 @@ CREATE TABLE %s_quoted_statements (
     context       text not NULL,
     termComb      tinyint unsigned not NULL,
     objLanguage   varchar(3),
-    objDatatype   text,
-    INDEX termComb_index (termComb),
-    INDEX spoc_index (subject(100),predicate(100),object(50),context(50)),
-    INDEX poc_index (predicate(100),object(50),context(50)),
-    INDEX csp_index (context(50),subject(100),predicate(100)),
-    INDEX cp_index (context(50),predicate(100))) TYPE=InnoDB"""
+    objDatatype   text) TYPE=InnoDB"""
     
 CREATE_NS_BINDS_TABLE = """
 CREATE TABLE %s_namespace_binds (

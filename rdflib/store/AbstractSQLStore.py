@@ -23,6 +23,25 @@ ASSERTED_LITERAL_PARTITION  = 6
 
 FULL_TRIPLE_PARTITIONS = [QUOTED_PARTITION,ASSERTED_LITERAL_PARTITION]
 
+#Helper function for analyzing dispatched SQL statements - for the pupose of analyzing
+#index usage
+def queryAnalysis(query,store,cursor):
+    cursor.execute(store._normalizeSQLCmd(u'explain '+query))
+    rt=cursor.fetchall()[0]
+    table,joinType,posKeys,_key,key_len,comparedCol,rowsExamined,extra = rt
+    if not _key:
+        assert joinType == 'ALL'
+        if not hasattr(store,'queryOptMarks'):
+            store.queryOptMarks = {}
+        hits = store.queryOptMarks.get(('FULL SCAN',table),0)
+        store.queryOptMarks[('FULL SCAN',table)] = hits + 1
+        
+    if not hasattr(store,'queryOptMarks'):
+        store.queryOptMarks = {}
+    hits = store.queryOptMarks.get((_key,table),0)
+    store.queryOptMarks[(_key,table)] = hits + 1
+
+
 #Terms: u - uri refs  v - variables  b - bnodes l - literal f - formula
 
 #Helper function for building union all select statement
@@ -598,6 +617,7 @@ class AbstractSQLStore(SQLGenerator):
                 ),                
             ]
             q=unionSELECT(selects,distinct=False,selectType=COUNT_SELECT)
+
         c.execute(self._normalizeSQLCmd(q))
         rt=c.fetchall()
         c.close()
