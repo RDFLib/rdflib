@@ -71,22 +71,23 @@ class XMLSerializer(Serializer):
     def subject(self, subject, depth=1):
         if not subject in self.__serialized:
             self.__serialized[subject] = 1
-            write = self.write
-            indent = "  " * depth
-            element_name = "rdf:Description"
-            if isinstance(subject, BNode):
-                write( '%s<%s rdf:nodeID="%s"' %
-                   (indent, element_name, subject))
-            else:
-                uri = quoteattr(self.relativize(subject))
-                write( "%s<%s rdf:about=%s" % (indent, element_name, uri))
-            if (subject, None, None) in self.store:
-                write( ">\n" )                
-                for predicate, object in self.store.predicate_objects(subject):
-                    self.predicate(predicate, object, depth+1)
-                write( "%s</%s>\n" % (indent, element_name))
-            else:
-                write( "/>\n" )            
+            if isinstance(subject, (BNode,URIRef)):
+                write = self.write
+                indent = "  " * depth
+                element_name = "rdf:Description"
+                if isinstance(subject, BNode):
+                    write( '%s<%s rdf:nodeID="%s"' %
+                       (indent, element_name, subject))
+                else:
+                    uri = quoteattr(self.relativize(subject))
+                    write( "%s<%s rdf:about=%s" % (indent, element_name, uri))
+                if (subject, None, None) in self.store:
+                    write( ">\n" )                
+                    for predicate, object in self.store.predicate_objects(subject):
+                        self.predicate(predicate, object, depth+1)
+                    write( "%s</%s>\n" % (indent, element_name))
+                else:
+                    write( "/>\n" )            
 
     def predicate(self, predicate, object, depth=1):
         write = self.write
