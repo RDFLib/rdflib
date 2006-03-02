@@ -1,7 +1,7 @@
 # RDF Library
 
 __version__ = "2.3.1"
-__date__ = "2006/01/12"
+__date__ = "2006/02/27"
 
 import sys
 # TODO: what version of python does rdflib require??
