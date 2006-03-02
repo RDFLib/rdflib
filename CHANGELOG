@@ -1,3 +1,37 @@
+2006/02/27
+        RELEASE 2.3.1         
+
+        Added save method to BackwardCompatibleGraph so that
+        example.py etc work again.
+
+        Applied patch from Drew Perttula to add local_time_zone
+        argument to util's date_time method.
+
+        Fixed a relativize bug in the rdf/xml serializer.
+
+        Fixed NameError: global name 'URIRef' is not defined error in
+        Sleepycat.py by adding missing import.
+
+        Applied patch for Seq to sort list by integer, added by Drew
+        Hess.
+
+        Added a preserve_bnode_ids option to rdf/xml parser.
+
+        Applied assorted patches for tests (see
+        http://tracker.asemantics.com/rdflib/ticket/8 )
+
+        Applied redland.diff (see
+        http://tracker.asemantics.com/rdflib/ticket/9 )
+
+        Applied changes specified
+        http://tracker.asemantics.com/rdflib/ticket/7
+
+        Added a set method to Graph.
+
+        Fixed RDF/XML serializer so that it does not choke on n3 bits
+        (rather it'll just ignore them)
+
+
 2005/12/23
         RELEASE 2.3.0         
 
