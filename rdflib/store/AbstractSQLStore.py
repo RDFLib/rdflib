@@ -162,7 +162,8 @@ class SQLGenerator:
         This takes the query string and parameters and (depending on the SQL implementation) either fill in 
         the parameter in-place or pass it on to the Python DB impl (if it supports this).  
         The default (here) is to fill the parameters in-place surrounding each param with quote characters
-        """                        
+        """
+        #print qStr,params                        
         if not params:
             cursor.execute(unicode(qStr))
         else:            

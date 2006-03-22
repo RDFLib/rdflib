@@ -136,6 +136,17 @@ class SQLite(AbstractSQLStore):
         db.close()
         os.remove(os.path.join(home,self.identifier))
 
+    def EscapeQuotes(self,qstr):
+        """
+        Ported from Ft.Lib.DbUtil
+        """
+        if qstr is None:
+            return ''
+        tmp = qstr.replace("\\","\\\\")
+        tmp = tmp.replace('"', '""')
+        tmp = tmp.replace("'", "\\'")
+        return tmp
+
     #This is overridden to leave unicode terms as is
     #Instead of converting them to ascii (the default behavior)
     def normalizeTerm(self,term):
