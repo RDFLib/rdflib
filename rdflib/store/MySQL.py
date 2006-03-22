@@ -30,7 +30,7 @@ def ParseConfigurationString(config_string):
         kvDict['password']=''
     return kvDict
 
-class MySQL(AbstractSQLStore,Store):
+class MySQL(AbstractSQLStore):
     """
     MySQL store formula-aware implementation.  It stores it's triples in the following partitions:
 
@@ -46,7 +46,19 @@ class MySQL(AbstractSQLStore,Store):
     formula_aware = True
     transaction_aware = True
     regex_matching = NATIVE_REGEX
-    autocommit_default = False            
+
+    def executeSQL(self,cursor,qStr,params=None):
+        """
+        Overridded in order to pass params seperate from query for MySQLdb
+        to optimize
+        """
+        #print qStr
+        if params:
+            #print qStr,params
+            #print [(type(p),p) for p in params]
+            cursor.execute(qStr,tuple(params))
+        else:            
+            cursor.execute(qStr)
             
     #Database Management Methods
     def open(self, configuration, create=True):
@@ -63,8 +75,10 @@ class MySQL(AbstractSQLStore,Store):
                                       passwd=configDict['password'],
                                       db='test',
                                       port=configDict['port'],
-                                      host=configDict['host']
-                                      )        
+                                      host=configDict['host'],
+                                      #use_unicode=True,
+                                      #read_default_file='/etc/my-client.cnf'
+                                      )                    
             c=test_db.cursor()
             c.execute("""SET AUTOCOMMIT=0""")
             c.execute("""SHOW DATABASES""")
@@ -79,7 +93,9 @@ class MySQL(AbstractSQLStore,Store):
                                  passwd = configDict['password'],
                                  db=configDict['db'],
                                  port=configDict['port'],
-                                 host=configDict['host']
+                                 host=configDict['host'],
+                                 #use_unicode=True,
+                                 #read_default_file='/etc/my-client.cnf'
                                  )
             c=db.cursor()
             c.execute("""SET AUTOCOMMIT=0""")   
@@ -96,12 +112,15 @@ class MySQL(AbstractSQLStore,Store):
                                    passwd = configDict['password'],
                                    db=configDict['db'],
                                    port=configDict['port'],
-                                   host=configDict['host']
+                                   host=configDict['host'],
+                                   #use_unicode=True,
+                                   read_default_file='/etc/my.cnf'
                                   )
         c=self._db.cursor()
-        c.execute("""SHOW DATABASES""")
+        c.execute("""SHOW DATABASES""")        
+        #FIXME This is a character set hack.  See: http://sourceforge.net/forum/forum.php?thread_id=1448424&forum_id=70461
+        self._db.charset = 'utf8'
         rt = c.fetchall()
-
         if (configDict['db'].encode('utf-8'),) in rt:
             for tn in [tbl%(self._internedId) for tbl in table_name_prefixes]:
                 c.execute("""show tables like '%s'"""%(tn,))
@@ -132,9 +151,9 @@ class MySQL(AbstractSQLStore,Store):
             try:
                 c.execute('DROP table %s'%tblsuffix%(self._internedId))
                 #print "dropped table: %s"%(tblsuffix%(self._internedId))
-            except:
+            except Exception, e:
                 print "unable to drop table: %s"%(tblsuffix%(self._internedId))
-            
+                print e
             
         #Note, this only removes the associated tables for the closed world universe given by the identifier
         print "Destroyed Close World Universe %s ( in MySQL database %s)"%(self.identifier,configDict['db'])
@@ -148,94 +167,116 @@ class MySQL(AbstractSQLStore,Store):
     #subjects and objects utility functions which can take lists as their last argument (object,predicate - respectively)
     def buildSubjClause(self,subject,tableName):
         if isinstance(subject,REGEXTerm):
-            return u"%s REGEXP '%s'"%(tableName and u'%s.subject'%tableName or u'subject',self.EscapeQuotes(subject))
+            return "%s REGEXP "%(tableName and '%s.subject'%tableName or 'subject') + " %s",[subject]
         elif isinstance(subject,list):
             clauseStrings=[]
+            paramStrings = []
             for s in subject:
                 if isinstance(s,REGEXTerm):
-                    clauseStrings.append(u"%s REGEXP '%s'"%(tableName and u'%s.subject'%tableName or u'subject',self.EscapeQuotes(s)))
+                    clauseStrings.append("%s REGEXP"%(tableName and '%s.subject'%tableName or 'subject') + " %s")
+                    paramStrings.append(self.normalizeTerm(s))
                 elif isinstance(s,(QuotedGraph,Graph)):
-                    clauseStrings.append(u"%s='%s'"%(tableName and u'%s.subject'%tableName or u'subject',s.identifier))                
+                    clauseStrings.append("%s="%(tableName and '%s.subject'%tableName or 'subject')+"%s")
+                    paramStrings.append(self.normalizeTerm(s.identifier))
                 else:
-                    clauseStrings.append(s and u"%s='%s'"%(tableName and u'%s.subject'%tableName or u'subject',s) or None)
-            return u'(%s)'%u' or '.join([clauseString for clauseString in clauseStrings])
+                    clauseStrings.append("%s="%(tableName and '%s.subject'%tableName or 'subject')+"%s")
+                    paramStrings.append(self.normalizeTerm(s))
+            return '('+ ' or '.join(clauseStrings) + ')', paramStrings
         elif isinstance(subject,(QuotedGraph,Graph)):
-            return u"%s='%s'"%(tableName and u'%s.subject'%tableName or u'subject',subject.identifier)    
+            return "%s="%(tableName and '%s.subject'%tableName or 'subject')+"%s",[self.normalizeTerm(subject.identifier)]
         else:
-            return subject is not None and u"%s='%s'"%(tableName and u'%s.subject'%tableName or u'subject',subject) or None
+            return subject is not None and "%s="%(tableName and '%s.subject'%tableName or 'subject')+"%s",[subject] or None
     
     #Capable off taking a list of predicates as well (in which case sub clauses are joined with 'OR')
     def buildPredClause(self,predicate,tableName):
         if isinstance(predicate,REGEXTerm):
-            return u"%s REGEXP '%s'"%(tableName and u'%s.predicate'%tableName or u'predicate',self.EscapeQuotes(predicate))
+            return "%s REGEXP "%(tableName and '%s.predicate'%tableName or 'predicate')+"%s",[predicate]
         elif isinstance(predicate,list):
             clauseStrings=[]
+            paramStrings = []
             for p in predicate:
                 if isinstance(p,REGEXTerm):
-                    clauseStrings.append(u"%s REGEXP '%s'"%(tableName and u'%s.predicate'%tableName or u'predicate',self.EscapeQuotes(p)))
+                    clauseStrings.append("%s REGEXP "%(tableName and '%s.predicate'%tableName or 'predicate')+"%s")                    
                 else:
-                    clauseStrings.append(predicate and u"%s='%s'"%(tableName and u'%s.predicate'%tableName or u'predicate',p) or None)
-            return u'(%s)'%u' or '.join([clauseString for clauseString in clauseStrings])
+                    clauseStrings.append("%s="%(tableName and '%s.predicate'%tableName or 'predicate')+"%s")
+                paramStrings.append(self.normalizeTerm(p))
+            return '('+ ' or '.join(clauseStrings) + ')', paramStrings
         else:
-            return predicate is not None and u"%s='%s'"%(tableName and u'%s.predicate'%tableName or u'predicate',predicate) or None
+            return predicate is not None and "%s="%(tableName and '%s.predicate'%tableName or 'predicate')+"%s",[predicate] or None
     
     #Capable of taking a list of objects as well (in which case sub clauses are joined with 'OR')    
     def buildObjClause(self,obj,tableName):
         if isinstance(obj,REGEXTerm):
-            return u"%s REGEXP '%s'"%(tableName and u'%s.object'%tableName or u'object',self.EscapeQuotes(obj))
+            return "%s REGEXP "%(tableName and '%s.object'%tableName or 'object')+"%s",[obj]
         elif isinstance(obj,list):
             clauseStrings=[]
+            paramStrings = []
             for o in obj:
                 if isinstance(o,REGEXTerm):
-                    clauseStrings.append(u"%s REGEXP '%s'"%(tableName and u'%s.object'%tableName or u'object',self.EscapeQuotes(o)))
+                    clauseStrings.append("%s REGEXP"%(tableName and '%s.object'%tableName or 'object')+" %s")
+                    paramStrings.append(self.normalizeTerm(o))
                 elif isinstance(o,(QuotedGraph,Graph)):
-                    clauseStrings.append(u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',o.identifier))
+                    clauseStrings.append("%s="%(tableName and '%s.object'%tableName or 'object')+"%s")
+                    paramStrings.append(self.normalizeTerm(o.identifier))
                 else:
-                    clauseStrings.append(o and u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',isinstance(o,Literal) and self.EscapeQuotes(o) or o) or None)
-            return u'(%s)'%u' or '.join([clauseString for clauseString in clauseStrings])
+                    clauseStrings.append("%s="%(tableName and '%s.object'%tableName or 'object')+"%s")
+                    paramStrings.append(self.normalizeTerm(o))
+            return '('+ ' or '.join(clauseStrings) + ')', paramStrings
         elif isinstance(obj,(QuotedGraph,Graph)):
-            return u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',obj.identifier)
+            return "%s="%(tableName and '%s.object'%tableName or 'object')+"%s",[self.normalizeTerm(obj.identifier)]
         else:
-            return obj is not None and u"%s='%s'"%(tableName and u'%s.object'%tableName or u'object',self.EscapeQuotes(obj)) or None
+            return obj is not None and "%s="%(tableName and '%s.object'%tableName or 'object')+"%s",[obj] or None
     
     def buildContextClause(self,context,tableName):
-        context = context is not None and context.identifier or context
+        context = context is not None and self.normalizeTerm(context.identifier) or context
         if isinstance(context,REGEXTerm):
-            return u"%s REGEXP '%s'"%(tableName and u'%s.context'%tableName,self.EscapeQuotes(context))
+            return "%s REGEXP"%(tableName and '%s.context'%tableName)+" %s",[context]
         else:
-            return context is not None and u"%s='%s'"%(tableName and u'%s.context'%tableName,context) or None
+            return context is not None and "%s="%(tableName and '%s.context'%tableName)+"%s",[context] or None
         
     def buildTypeMemberClause(self,subject,tableName):
         if isinstance(subject,REGEXTerm):
-            return u"%s.member REGEXP '%s'"%(tableName,self.EscapeQuotes(subject))
+            return "%s.member REGEXP "%(tableName)+" %s",[subject]
         elif isinstance(subject,list):
-            subjs = [isinstance(s,(QuotedGraph,Graph)) and s.identifier or s for s in subject]        
-            return u' or '.join([s and u"%s.member = '%s'"%(tableName,s) for s in subjs])    
+            clauseStrings=[]
+            paramStrings = []
+            for s in subject:                        
+                clauseStrings.append("%s.member="%tableName+"%s")
+                if isinstance(s,(QuotedGraph,Graph)):                                        
+                    paramStrings.append(self.normalizeTerm(s.identifier))
+                else:
+                    paramStrings.append(self.normalizeTerm(s))
+            return '('+ ' or '.join(clauseStrings) + ')', paramStrings
         else:
-            return subject and u"%s.member = '%s'"%(tableName,subject)
+            return subject and u"%s.member = "%(tableName)+"%s",[subject]
         
     def buildTypeClassClause(self,obj,tableName):
         if isinstance(obj,REGEXTerm):
-            return u"%s.klass REGEXP '%s'"%(tableName,self.EscapeQuotes(obj))
+            return "%s.klass REGEXP "%(tableName)+"%s",[obj]
         elif isinstance(obj,list):
-            obj = [isinstance(o,(QuotedGraph,Graph)) and o.identifier or o for o in obj]        
-            return u' or '.join([o and not isinstance(o,Literal) and u"%s.klass = '%s'"%(tableName,o) for o in obj])
+            clauseStrings=[]
+            paramStrings = []
+            for o in obj:
+                clauseStrings.append("%s.klass="%tableName+"%s")
+                if isinstance(o,(QuotedGraph,Graph)):                    
+                    paramStrings.append(self.normalizeTerm(o.identifier))
+                else:
+                    paramStrings.append(self.normalizeTerm(o))
+            return '('+ ' or '.join(clauseStrings) + ')', paramStrings
         else:
-            return obj and not isinstance(obj,Literal) and u"%s.klass = '%s'"%(tableName,obj)
-
-
+            return obj is not None and "%s.klass = "%tableName+"%s",[obj] or None
 
 CREATE_ASSERTED_STATEMENTS_TABLE = """
 CREATE TABLE %s_asserted_statements (
     subject       text not NULL,
     predicate     text not NULL,
-    object        text not NULL,
-    context       text not NULL,
+    object        text not NULL ,
+    context       text not NULL ,
     termComb      tinyint unsigned not NULL,    
     INDEX s_index (subject(100)),
     INDEX p_index (predicate(100)),
     INDEX o_index (object(100)),
-    INDEX c_index (context(50))) TYPE=InnoDB"""
+    INDEX c_index (context(50))) TYPE=InnoDB CHARACTER SET utf8"""
     
 CREATE_ASSERTED_TYPE_STATEMENTS_TABLE = """
 CREATE TABLE %s_type_statements (
@@ -245,7 +286,7 @@ CREATE TABLE %s_type_statements (
     termComb      tinyint unsigned not NULL,    
     INDEX member_index (member(100)),
     INDEX klass_index (klass(100)),
-    INDEX c_index (context(50))) TYPE=InnoDB"""
+    INDEX c_index (context(50))) TYPE=InnoDB CHARACTER SET utf8"""
 
 CREATE_LITERAL_STATEMENTS_TABLE = """
 CREATE TABLE %s_literal_statements (
@@ -258,7 +299,7 @@ CREATE TABLE %s_literal_statements (
     objDatatype   text,
     INDEX s_index (subject(100)),
     INDEX p_index (predicate(100)),
-    INDEX c_index (context(50))) TYPE=InnoDB"""
+    INDEX c_index (context(50))) TYPE=InnoDB CHARACTER SET utf8"""
     
 CREATE_QUOTED_STATEMENTS_TABLE = """
 CREATE TABLE %s_quoted_statements (
@@ -268,11 +309,15 @@ CREATE TABLE %s_quoted_statements (
     context       text not NULL,
     termComb      tinyint unsigned not NULL,
     objLanguage   varchar(3),
-    objDatatype   text) TYPE=InnoDB"""
+    objDatatype   text,
+    INDEX s_index (subject(100)),
+    INDEX p_index (predicate(100)),
+    INDEX o_index (object(100)),
+    INDEX c_index (context(50))) TYPE=InnoDB CHARACTER SET utf8"""
     
 CREATE_NS_BINDS_TABLE = """
 CREATE TABLE %s_namespace_binds (
     prefix        varchar(20) UNIQUE not NULL,
     uri           text,
     PRIMARY KEY (prefix),
-    INDEX uri_index (uri(100))) TYPE=InnoDB"""
+    INDEX uri_index (uri(100))) TYPE=InnoDB CHARACTER SET utf8"""
