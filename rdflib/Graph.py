@@ -496,34 +496,82 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
         for (s1, p1, o1), cg in self.store.triples_choices((s, p, o), context):
             yield (s1, p1, o1), cg
 
-    def subjects(self, predicate=None, object=None):
+    def value(self, subject=None, predicate=RDF.value, object=None, default=None, any=False, context=None):
+        """ Get a value for a subject/predicate, predicate/object, or
+        subject/object pair -- exactly one of subject, predicate,
+        object must be None. Useful if one knows that there may only
+        be one value.
+
+        It is one of those situations that occur a lot, hence this
+        'macro' like utility
+
+        Parameters:
+        -----------
+        subject, predicate, object  -- exactly one must be None
+        default -- value to be returned if no values found
+        any -- if True:
+                 return any value in the case there is more than one
+               else:
+                 raise UniquenessError
+        """
+        retval = default
+        if object is None:
+            assert subject is not None
+            assert predicate is not None
+            values = self.objects(subject, predicate, context)
+        if subject is None:
+            assert predicate is not None
+            assert object is not None
+            values = self.subjects(predicate, object, context)
+        if predicate is None:
+            assert subject is not None
+            assert object is not None
+            values = self.predicates(subject, object, context)
+
+        try:
+            retval = values.next()
+        except StopIteration, e:
+            retval = default
+        else:
+            if any is False:
+                try:
+                    next = values.next()
+                    msg = "While trying to find a value for ((%s, %s, %s) %s) the following multiple values where found:\n" % (subject, predicate, object, context)
+                    for (s, p, o), contexts in self.store.triples((subject, predicate, object), context):
+                        msg += "(%s, %s, %s)\n (contexts: %s)\n" % (s, p, o, list(contexts))
+                    raise exceptions.UniquenessError(msg)
+                except StopIteration, e:
+                    pass
+        return retval
+
+    def subjects(self, predicate=None, object=None, context=None):
         """ A generator of subjects with the given predicate and object. """
-        for (s, p, o), cg in self.triples((None, predicate, object)):
+        for (s, p, o), cg in self.triples((None, predicate, object), context):
             yield s
 
-    def predicates(self, subject=None, object=None):
+    def predicates(self, subject=None, object=None, context=None):
         """ A generator of predicates with the given subject and object. """
-        for (s, p, o), cg in self.triples((subject, None, object)):
+        for (s, p, o), cg in self.triples((subject, None, object), context):
             yield p
 
-    def objects(self, subject=None, predicate=None):
+    def objects(self, subject=None, predicate=None, context=None):
         """ A generator of objects with the given subject and predicate. """
-        for (s, p, o), cg in self.triples((subject, predicate, None)):
+        for (s, p, o), cg in self.triples((subject, predicate, None), context):
             yield o
 
-    def subject_predicates(self, object=None):
+    def subject_predicates(self, object=None, context=None):
         """ A generator of (subject, predicate) tuples for the given object """
-        for (s, p, o), cg in self.triples((None, None, object)):
+        for (s, p, o), cg in self.triples((None, None, object), context):
             yield s, p
 
-    def subject_objects(self, predicate=None):
+    def subject_objects(self, predicate=None, context=None):
         """ A generator of (subject, object) tuples for the given predicate """
-        for (s, p, o), cg in self.triples((None, predicate, None)):
+        for (s, p, o), cg in self.triples((None, predicate, None), context):
             yield s, o
 
-    def predicate_objects(self, subject=None):
+    def predicate_objects(self, subject=None, contex=None):
         """ A generator of (predicate, object) tuples for the given subject """
-        for (s, p, o), cg in self.triples((subject, None, None)):
+        for (s, p, o), cg in self.triples((subject, None, None), context):
             yield p, o
 
     def __len__(self, context=None):
@@ -730,34 +778,34 @@ class BackwardCompatGraph(ConjunctiveGraph):
         for context in self.store.contexts(triple):
             yield context.identifier
 
-    def subjects(self, predicate=None, object=None):
+    def subjects(self, predicate=None, object=None, context=None):
         """ A generator of subjects with the given predicate and object. """
-        for s, p, o in self.triples((None, predicate, object)):
+        for s, p, o in self.triples((None, predicate, object), context):
             yield s
 
-    def predicates(self, subject=None, object=None):
+    def predicates(self, subject=None, object=None, context=None):
         """ A generator of predicates with the given subject and object. """
-        for s, p, o in self.triples((subject, None, object)):
+        for s, p, o in self.triples((subject, None, object), context):
             yield p
 
-    def objects(self, subject=None, predicate=None):
+    def objects(self, subject=None, predicate=None, context=None):
         """ A generator of objects with the given subject and predicate. """
-        for s, p, o in self.triples((subject, predicate, None)):
+        for s, p, o in self.triples((subject, predicate, None), context):
             yield o
 
-    def subject_predicates(self, object=None):
+    def subject_predicates(self, object=None, context=None):
         """ A generator of (subject, predicate) tuples for the given object """
-        for s, p, o in self.triples((None, None, object)):
+        for s, p, o in self.triples((None, None, object), context):
             yield s, p
 
-    def subject_objects(self, predicate=None):
+    def subject_objects(self, predicate=None, context=None):
         """ A generator of (subject, object) tuples for the given predicate """
-        for s, p, o in self.triples((None, predicate, None)):
+        for s, p, o in self.triples((None, predicate, None), context):
             yield s, o
 
-    def predicate_objects(self, subject=None):
+    def predicate_objects(self, subject=None, context=None):
         """ A generator of (predicate, object) tuples for the given subject """
-        for s, p, o in self.triples((subject, None, None)):
+        for s, p, o in self.triples((subject, None, None), context):
             yield p, o
 
     def __reduce__(self):
