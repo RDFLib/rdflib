@@ -19,6 +19,7 @@ from xml.sax.xmlreader import InputSource
 from xml.sax.saxutils import prepare_input_source
 
 import logging
+import random
 
 
 class Graph(Node):
@@ -466,6 +467,37 @@ class Graph(Node):
         # TODO: very well could be a false positive at this point yet.
         return True
 
+    def connected(self):
+        """ Check if the Graph is connected (the Graph is considered undirectional).
+        
+        Performs a search on the Graph, starting from a random node.
+        Then iteratively goes depth-first through the triplets where the node is subject and object.
+        Returns True if all nodes have been visited and False if it cannot continue and there are still unvisited nodes left.
+        """
+        all_nodes = list(self.all_nodes())
+        discovered = []
+        # Take a random one, could also always take the first one, doesn't really matter.
+        visiting = [all_nodes[random.randrange(len(all_nodes))]]
+        while visiting:
+            x = visiting.pop()
+            if x not in discovered:
+                discovered.append(x)
+            for newX in self.objects(subject=x):
+                if newX not in discovered and newX not in visiting:
+                    visiting.append(newX)
+            for newX in self.subjects(object=x):
+                if newX not in discovered and newX not in visiting:
+                    visiting.append(newX)
+        # Optimisation by only considering length, since no new objects can be introduced anywhere.
+        if len(all_nodes) == len(discovered):
+            return True
+        else:
+            return False
+
+    def all_nodes(self):
+        obj = set(self.objects())
+        allNodes = obj.union(set(self.subjects()))
+        return allNodes
 
 class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
 

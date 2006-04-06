@@ -160,6 +160,18 @@ class GraphTestCase(unittest.TestCase):
         #print gv2.identifier
         graph.remove((gv1, RDF.value, gv2))
 
+    def testConnected(self):
+        graph = self.graph
+        self.addStuff()
+        self.assertEquals(True, graph.connected())
+        
+        jeroen = URIRef("jeroen")
+        unconnected = URIRef("unconnected")
+        
+        graph.add((jeroen,self.likes,unconnected))
+        
+        self.assertEquals(False, graph.connected())
+        
 #class MemoryGraphTestCase(GraphTestCase):
 #    store_name = "Memory"
 
