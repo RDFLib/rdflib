@@ -192,6 +192,9 @@ class Graph(Node):
         no context is provides, triple is added to the default
         context."""
         self.__store.add((s, p, o), self, quoted=False)
+        
+    def addN(self, quads):        
+        self.__store.addN([(s,p,o,c) for s,p,o,c in quads if isinstance(c,Graph) and c.identifier is self.identifier])
 
     def remove(self, (s, p, o)):
         """ Remove a triple from the graph.  If the triple does not
@@ -513,7 +516,10 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
     def add(self, (s, p, o), context=None):
         """"A conjunctive graph adds to its default context."""
         self.store.add((s, p, o), context=context or self.default_context, quoted=False)
-    
+
+    def addN(self, quads):        
+        self.store.addN(quads)    
+
     def remove(self, (s, p, o), context=None):
         """A conjunctive graph removes from all its contexts."""
         self.store.remove((s, p, o), context)
@@ -656,6 +662,9 @@ class QuotedGraph(Graph):
 
     def add(self, triple): 
         self.store.add(triple, self, quoted=True)
+
+    def addN(self,quads):
+        self.store.addN([(s,p,o,c) for s,p,o,c in quads if isinstance(c,QuotedGraph) and c.identifier is self.identifier])
 
     def n3(self):
         """return an n3 identifier for the Graph"""

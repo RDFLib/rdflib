@@ -47,15 +47,15 @@ class MySQL(AbstractSQLStore):
     transaction_aware = True
     regex_matching = NATIVE_REGEX
 
-    def executeSQL(self,cursor,qStr,params=None):
+    def executeSQL(self,cursor,qStr,params=None,paramList=False):
         """
         Overridded in order to pass params seperate from query for MySQLdb
         to optimize
         """
         #print qStr
-        if params:
-            #print qStr,params
-            #print [(type(p),p) for p in params]
+        if params and paramList:
+            cursor.executemany(qStr,[tuple(item) for item in params])
+        elif not paramList:
             cursor.execute(qStr,tuple(params))
         else:            
             cursor.execute(qStr)
@@ -114,12 +114,12 @@ class MySQL(AbstractSQLStore):
                                    port=configDict['port'],
                                    host=configDict['host'],
                                    #use_unicode=True,
-                                   read_default_file='/etc/my.cnf'
+                                   #read_default_file='/etc/my.cnf'
                                   )
         c=self._db.cursor()
         c.execute("""SHOW DATABASES""")        
         #FIXME This is a character set hack.  See: http://sourceforge.net/forum/forum.php?thread_id=1448424&forum_id=70461
-        self._db.charset = 'utf8'
+        #self._db.charset = 'utf8'
         rt = c.fetchall()
         if (configDict['db'].encode('utf-8'),) in rt:
             for tn in [tbl%(self._internedId) for tbl in table_name_prefixes]:
@@ -276,7 +276,7 @@ CREATE TABLE %s_asserted_statements (
     INDEX s_index (subject(100)),
     INDEX p_index (predicate(100)),
     INDEX o_index (object(100)),
-    INDEX c_index (context(50))) TYPE=InnoDB CHARACTER SET utf8"""
+    INDEX c_index (context(50))) ENGINE=InnoDB"""
     
 CREATE_ASSERTED_TYPE_STATEMENTS_TABLE = """
 CREATE TABLE %s_type_statements (
@@ -286,7 +286,7 @@ CREATE TABLE %s_type_statements (
     termComb      tinyint unsigned not NULL,    
     INDEX member_index (member(100)),
     INDEX klass_index (klass(100)),
-    INDEX c_index (context(50))) TYPE=InnoDB CHARACTER SET utf8"""
+    INDEX c_index (context(50))) ENGINE=InnoDB"""
 
 CREATE_LITERAL_STATEMENTS_TABLE = """
 CREATE TABLE %s_literal_statements (
@@ -299,7 +299,7 @@ CREATE TABLE %s_literal_statements (
     objDatatype   text,
     INDEX s_index (subject(100)),
     INDEX p_index (predicate(100)),
-    INDEX c_index (context(50))) TYPE=InnoDB CHARACTER SET utf8"""
+    INDEX c_index (context(50))) ENGINE=InnoDB"""
     
 CREATE_QUOTED_STATEMENTS_TABLE = """
 CREATE TABLE %s_quoted_statements (
@@ -313,11 +313,11 @@ CREATE TABLE %s_quoted_statements (
     INDEX s_index (subject(100)),
     INDEX p_index (predicate(100)),
     INDEX o_index (object(100)),
-    INDEX c_index (context(50))) TYPE=InnoDB CHARACTER SET utf8"""
+    INDEX c_index (context(50))) ENGINE=InnoDB"""
     
 CREATE_NS_BINDS_TABLE = """
 CREATE TABLE %s_namespace_binds (
     prefix        varchar(20) UNIQUE not NULL,
     uri           text,
     PRIMARY KEY (prefix),
-    INDEX uri_index (uri(100))) TYPE=InnoDB CHARACTER SET utf8"""
+    INDEX uri_index (uri(100))) ENGINE=InnoDB"""

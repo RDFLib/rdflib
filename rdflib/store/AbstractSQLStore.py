@@ -157,7 +157,7 @@ def createTerm(termString,termType,store,objLanguage=None,objDatatype=None):
             return rt
 
 class SQLGenerator:
-    def executeSQL(self,cursor,qStr,params=None):
+    def executeSQL(self,cursor,qStr,params=None,paramList=False):
         """
         This takes the query string and parameters and (depending on the SQL implementation) either fill in 
         the parameter in-place or pass it on to the Python DB impl (if it supports this).  
@@ -166,6 +166,8 @@ class SQLGenerator:
         #print qStr,params                        
         if not params:
             cursor.execute(unicode(qStr))
+        elif paramList:
+            raise Exception("Not supported!")
         else:            
             params = tuple([not isinstance(item,int) and u'"%s"'%item or item for item in params])            
             cursor.execute(qStr%params)
@@ -416,6 +418,43 @@ class AbstractSQLStore(SQLGenerator,Store):
             #asserted rdf:type statement
             addCmd,params=self.buildTypeSQLCommand(subject,obj,context,self._internedId)
         self.executeSQL(c,addCmd,params)
+        c.close()
+
+    def addN(self,quads):
+        c=self._db.cursor()
+        if self.autocommit_default:
+            c.execute("""SET AUTOCOMMIT=0""")
+        literalTriples = []
+        typeTriples = []
+        otherTriples = []
+        literalTripleInsertCmd = None
+        typeTripleInsertCmd = None
+        otherTripleInsertCmd = None
+        for subject,predicate,obj,context in quads:
+            if isinstance(context,QuotedGraph) or predicate != RDF.type:
+                #quoted statement or non rdf:type predicate
+                #check if object is a literal
+                if isinstance(obj,Literal):
+                    cmd,params=self.buildLiteralTripleSQLCommand(subject,predicate,obj,context,self._internedId)
+                    literalTripleInsertCmd = literalTripleInsertCmd is not None and literalTripleInsertCmd or cmd
+                    literalTriples.append(params)
+                else:
+                    cmd,params=self.buildTripleSQLCommand(subject,predicate,obj,context,self._internedId,isinstance(context,QuotedGraph))
+                    otherTripleInsertCmd = otherTripleInsertCmd is not None and otherTripleInsertCmd or cmd
+                    otherTriples.append(params)
+            elif predicate == RDF.type:
+                #asserted rdf:type statement
+                cmd,params=self.buildTypeSQLCommand(subject,obj,context,self._internedId)
+                typeTripleInsertCmd = typeTripleInsertCmd is not None and typeTripleInsertCmd or cmd
+                typeTriples.append(params)
+
+        if literalTriples:
+            self.executeSQL(c,literalTripleInsertCmd,literalTriples,paramList=True)
+        if typeTriples:
+            self.executeSQL(c,typeTripleInsertCmd,typeTriples,paramList=True)
+        if otherTriples:
+            self.executeSQL(c,otherTripleInsertCmd,otherTriples,paramList=True)
+            
         c.close()
 
     def remove(self, (subject, predicate, obj), context):

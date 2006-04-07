@@ -62,6 +62,20 @@ class Store(object):
         It should also be an error for the quoted argument to be True when the store is not formula-aware.        
         """
 
+    def addN(self, quads):
+       """
+       Adds each item in the list of statements to a specific context. The quoted argument
+       is interpreted by formula-aware stores to indicate this statement is quoted/hypothetical.
+       Note that the default implementation is a redirect to add
+       """
+       for s,p,o,c in quads:
+           assert c is not None, "Context associated with %s %s %s is None!"%(s,p,o)
+           self.add(
+                     (s,p,o),
+                     c,
+                     isinstance(c,rdflib.QuotedGraph)
+            )
+
     def remove(self, (subject, predicate, object), context=None):
         """ Remove the set of triples matching the pattern from the store """
 
