@@ -1,6 +1,8 @@
 ## Context-aware: An RDF store capable of storing statements within contexts is considered context-aware.
 ## Essentially, such a store is able to partition the RDF model it represents into individual, named, and addressable sub-graphs.
 
+## Relevant Notation3 reference regarding formula's, quoted statements, and such: http://www.w3.org/DesignIssues/Notation3.html
+
 ## Formula-aware: An RDF store capable of distinguishing between statements that are asserted and statements
 ## that are quoted is considered formula-aware.
 
@@ -83,7 +85,7 @@ class Store(object):
         """ 
         A variant of triples that can take a list of terms instead of a single
         term in any slot.  Stores can implement this to optimize the response time
-        from the import default 'fallback' implementation, which will iterate
+        from the default 'fallback' implementation, which will iterate
         over each term in the list and dispatch to tripless
         """
         if isinstance(object_,list):
@@ -122,15 +124,15 @@ class Store(object):
 
     def triples(self, (subject, predicate, object), context=None):
         """ 
-        A generator over all the triples matching pattern. Pattern can
-        be any objects for comparing against nodes in the store, for
-        example, RegExLiteral, Date? DateRange?
+        A generator over all the triples matching the pattern. Pattern can
+        include any objects for used for comparing against nodes in the store, for
+        example, REGEXTerm, URIRef, Literal, BNode, Variable, Graph, QuotedGraph, Date? DateRange?
 
         A conjunctive query can be indicated by either providing a value of None
         for the context or the identifier associated with the Conjunctive Graph (if it's context aware).
         """
 
-    # varients of triples will be done if / when optimization is needed
+    # variants of triples will be done if / when optimization is needed
 
     def __len__(self, context=None):
         """
