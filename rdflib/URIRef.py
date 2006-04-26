@@ -20,7 +20,11 @@ class URIRef(Identifier):
             value = urljoin(base, value, allow_fragments=1)
         #if normalize and value and value != normalize("NFC", value):
         #    raise Error("value must be in NFC normalized form.")
-        return unicode.__new__(cls,value)
+        try:
+            rt = unicode.__new__(cls,value)
+        except UnicodeDecodeError:
+            rt = unicode.__new__(cls,value,'utf-8')
+        return rt
 
     def n3(self):
         return "<%s>" % self

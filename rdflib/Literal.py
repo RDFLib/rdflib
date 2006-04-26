@@ -20,7 +20,11 @@ class Literal(Identifier):
         #if normalize and value:
         #    if value != normalize("NFC", value):
         #        raise Error("value must be in NFC normalized form.")
-        inst = unicode.__new__(cls,value)
+        try:
+            inst = unicode.__new__(cls,value)
+        except UnicodeDecodeError:
+            inst = unicode.__new__(cls,value,'utf-8')
+
         if datatype:
             lang = None
         inst.language = lang
