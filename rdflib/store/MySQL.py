@@ -280,6 +280,21 @@ class MySQL(Store):
     def rollback(self):
         """ """
         self._db.rollback()        
+        
+    def gc(self):      
+        """
+        Purges unreferenced identifiers / values - expensive
+        """
+        c=self._db.cursor()
+        purgeQueries = GarbageCollectionQUERY(
+                                               self.idHash,
+                                               self.valueHash,
+                                               self.binaryRelations,
+                                               self.aboxAssertions,
+                                               self.literalProperties)
+        
+        for q in purgeQueries:
+            self.executeSQL(c,q)
 
     def add(self, (subject, predicate, obj), context=None, quoted=False):        
         """ Add a triple to the store of triples. """           
@@ -328,15 +343,6 @@ class MySQL(Store):
             whereClause,whereParameters = brp.generateWhereClause((subject,predicate,obj,context))
             self.executeSQL(c,query+whereClause,params=whereParameters)
         
-        purgeQueries = GarbageCollectionQUERY(
-                                               self.idHash,
-                                               self.valueHash,
-                                               self.binaryRelations,
-                                               self.aboxAssertions,
-                                               self.literalProperties)
-        
-        for q in purgeQueries:
-            self.executeSQL(c,q)
         c.close()
     
     def triples(self, (subject, predicate, obj), context=None):

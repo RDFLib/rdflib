@@ -35,6 +35,7 @@ class Store(object):
         if configuration:
             self.open(configuration)
 
+    #Database management methods
     def open(self, configuration, create=True):
         """ 
         Opens the store specified by the configuration string. If
@@ -54,8 +55,15 @@ class Store(object):
     def destroy(self, configuration):
         """
         This destroys the instance of the store identified by the configuration string.        
-        """        
-
+        """  
+        
+    def gc(self):      
+        """
+        Allows the store to perform any needed garbage collection
+        """
+        pass
+        
+    #RDF APIs
     def add(self, (subject, predicate, object), context, quoted=False):
         """
         Adds the given statement to a specific context or to the model. The quoted argument
@@ -74,8 +82,7 @@ class Store(object):
            assert c is not None, "Context associated with %s %s %s is None!"%(s,p,o)
            self.add(
                      (s,p,o),
-                     c,
-                     isinstance(c,rdflib.QuotedGraph)
+                     c
             )
 
     def remove(self, (subject, predicate, object), context=None):
@@ -166,8 +173,5 @@ class Store(object):
         """ """
     
     def rollback(self):
-        """ """
-
-    #Optimized API        
-    
+        """ """    
 
