@@ -57,6 +57,8 @@ def genQuadSlots(quads):
     return [QuadSlot(index,quads[index])for index in POSITION_LIST]        
 
 def normalizeValue(value):
+    if value is None:
+        value = u'http://www.w3.org/2002/07/owl#Nothing'
     return int(md5.new(isinstance(value,unicode) and value.encode('utf-8') or value).hexdigest()[:16],16)
 
 class QuadSlot:
