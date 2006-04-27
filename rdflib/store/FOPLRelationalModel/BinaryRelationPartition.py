@@ -69,11 +69,15 @@ class BinaryRelationPartition(object):
         self.identifier = identifier
         self.idHash    = idHash
         self.valueHash = valueHash
+        self._repr = self.identifier+'_'+self.nameSuffix        
         self.singularInsertionSQLCmd = self.insertRelationsSQLCMD()
         self._resetPendingInsertions()
+        self._intersectionSQL = self.generateHashIntersections()
+        self._selectFieldsLeading    = self._selectFields(True)  + ['NULL as '+SlotPrefixes[DATATYPE_INDEX],'NULL as '+SlotPrefixes[LANGUAGE_INDEX]]
+        self._selectFieldsNonLeading = self._selectFields(False) + ['NULL','NULL']        
         
     def __repr__(self):
-        return self.identifier+'_'+self.nameSuffix
+        return self._repr
       
     def foreignKeySQL(self,slot):
         """
@@ -96,7 +100,7 @@ class BinaryRelationPartition(object):
             if self.columnNames[slot]:
                 columnSQLStmts.append("\t%s\tBIGINT unsigned not NULL"%(self.columnNames[slot]))
                 if self.termEnumerations[slot]:
-                    columnSQLStmts.append("\t%s_term enum(%s)"%(self.columnNames[slot],','.join(["'%s'"%tType for tType in self.termEnumerations[slot]])))
+                    columnSQLStmts.append("\t%s_term enum(%s) not NULL"%(self.columnNames[slot],','.join(["'%s'"%tType for tType in self.termEnumerations[slot]])))
                     columnSQLStmts.append("\tINDEX (%s_term)"%(self.columnNames[slot]))
                 columnSQLStmts.extend(self.foreignKeySQL(slot))
         
@@ -197,13 +201,12 @@ class BinaryRelationPartition(object):
                     rt.append("'%s'"%self.hardCodedResultTermsTypes[idx]+termNameAlias)
         return rt
 
-    def selectFields(self,quad,first=False):
+    def selectFields(self,first=False):
         """
         Returns a list of column aliases for the SELECT SQL command used to fetch quads from
         a partition 
         """
-        nonStmtParts = first and ['NULL as '+SlotPrefixes[DATATYPE_INDEX],'NULL as '+SlotPrefixes[LANGUAGE_INDEX]] or ['NULL','NULL']
-        return self._selectFields(first) + nonStmtParts
+        return first and self._selectFieldsLeading or self._selectFieldsNonLeading
 
     def generateHashIntersections(self):
         """
@@ -348,6 +351,17 @@ class NamedLiteralProperties(BinaryRelationPartition):
            (True,False) : self.insertRelationsSQLCMD(dataType=True),
            (True,True)  : self.insertRelationsSQLCMD(dataType=True,language=True)
         }        
+        idHashLexicalCol = self.idHash.columns[-1][0]
+        self._selectFieldsLeading = self._selectFields(True) + \
+          [
+            'rt_%s.%s'%(self.columnNames[DATATYPE_INDEX][0],idHashLexicalCol) + ' as %s'%SlotPrefixes[DATATYPE_INDEX],
+            str(self)+'.'+self.columnNames[LANGUAGE_INDEX][0]+' as %s'%SlotPrefixes[LANGUAGE_INDEX],
+          ]
+        self._selectFields        = self._selectFields(False) + \
+          [
+            'rt_%s.%s'%(self.columnNames[DATATYPE_INDEX][0],idHashLexicalCol),
+            str(self)+'.'+self.columnNames[LANGUAGE_INDEX][0],
+          ]
         
     def _resetPendingInsertions(self):
         self.pendingInsertions = {
@@ -421,15 +435,9 @@ class NamedLiteralProperties(BinaryRelationPartition):
         self.idHash.updateIdentifierQueue(idTerms)
         self.valueHash.updateIdentifierQueue([objSlot.term])    
 
-    def selectFields(self,quad,first=False):
-        idHashLexicalCol = self.idHash.columns[-1][0]
-        rt = self._selectFields(first)
-        dTypeAlias = first and ' as %s'%SlotPrefixes[DATATYPE_INDEX] or ''
-        rt.append('rt_%s.%s'%(self.columnNames[DATATYPE_INDEX][0],idHashLexicalCol)+dTypeAlias)
-        langAlias = first and ' as %s'%SlotPrefixes[LANGUAGE_INDEX] or ''
-        rt.append(str(self)+'.'+self.columnNames[LANGUAGE_INDEX][0]+langAlias)
-        return rt
-
+    def selectFields(self,first=False):
+        return first and self._selectFieldsLeading or self._selectFieldsNonLeading
+    
 class NamedBinaryRelations(BinaryRelationPartition):
     """
     Partition associated with assertions where the predicate isn't rdf:type and the object isn't a literal
@@ -535,13 +543,13 @@ def PatternResolution(quad,cursor,BRPs,orderByTriple=True,fetchall=True,fetchCon
             query = "SELECT DISTINCT %s FROM %s %s WHERE "%(
                                           ','.join(brp.selectContextFields(first)),
                                           brp,
-                                          brp.generateHashIntersections()
+                                          brp._intersectionSQL
                                         )
         else:
             query = CROSS_BRP_QUERY_SQL%(
-                                          ','.join(brp.selectFields((subject,predicate,object_,context),first)),
+                                          ','.join(brp.selectFields(first)),
                                           brp,
-                                          brp.generateHashIntersections()
+                                          brp._intersectionSQL
                                         )
         whereClause,whereParameters = brp.generateWhereClause((subject,predicate,object_,context))
         unionQueries.append(query+whereClause)
