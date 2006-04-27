@@ -27,6 +27,8 @@ from rdflib.store.REGEXMatching import REGEXTerm
 from QuadSlot import POSITION_LIST, normalizeValue
 Any = None
 
+COLLISION_DETECTION = True
+
 CREATE_HASH_TABLE = """
 CREATE TABLE %s (    
     %s
@@ -183,10 +185,21 @@ class IdentifierHash(RelationalHash):
         
     def insertIdentifiers(self,db):
         c=db.cursor()
+        keyCol = self.columns[0][0]
         if self.hashUpdateQueue:
-            for md5Int,(termType,lexical) in self.hashUpdateQueue.items():
-                params = [(md5Int,termType,lexical) for md5Int,(termType,lexical) in self.hashUpdateQueue.items()]
-                c.executemany("INSERT IGNORE INTO %s"%(self)+" VALUES (%s,%s,%s)",params)
+            params = [(md5Int,termType,lexical) for md5Int,(termType,lexical) in self.hashUpdateQueue.items()]
+            c.executemany("INSERT IGNORE INTO %s"%(self)+" VALUES (%s,%s,%s)",params)
+            if COLLISION_DETECTION:
+                insertedIds = self.hashUpdateQueue.keys()
+                if len(insertedIds) > 1:
+                    c.execute("SELECT * FROM %s"%(self)+" WHERE %s"%keyCol+" in %s",(tuple(insertedIds),))
+                else:
+                    c.execute("SELECT * FROM %s"%(self)+" WHERE %s"%keyCol+" = %s",tuple(insertedIds))
+                for key,termType,lexical in c.fetchall():
+                    if self.hashUpdateQueue[key] != (termType,lexical):
+                        #Collision!!! Raise an exception (allow the app to rollback the transaction if it wants to)
+                        raise Exception("Hash Collision (in %s) on %s,%s vs %s,%s!"%(self,termType,lexical,self.hashUpdateQueue[key][0],self.hashUpdateQueue[key][1]))
+                    
             self.hashUpdateQueue = {}
         c.close()
 
@@ -213,8 +226,19 @@ class LiteralHash(RelationalHash):
         
     def insertIdentifiers(self,db):
         c=db.cursor()
+        keyCol = self.columns[0][0]
         if self.hashUpdateQueue:
             params = [(md5Int,lexical) for md5Int,lexical in self.hashUpdateQueue.items()]
             c.executemany("INSERT IGNORE INTO %s"%(self)+" VALUES (%s,%s)",params)
+            if COLLISION_DETECTION:
+                insertedIds = self.hashUpdateQueue.keys()
+                if len(insertedIds) > 1:
+                    c.execute("SELECT * FROM %s"%(self)+" WHERE %s"%keyCol+" in %s",(tuple(insertedIds),))
+                else:
+                    c.execute("SELECT * FROM %s"%(self)+" WHERE %s"%keyCol+" = %s",tuple(insertedIds))
+                for key,lexical in c.fetchall():
+                    if self.hashUpdateQueue[key] != lexical:
+                        #Collision!!! Raise an exception (allow the app to rollback the transaction if it wants to)
+                        raise Exception("Hash Collision (in %s) on %s vs %s!"%(self,lexical,self.hashUpdateQueue[key][0]))
             self.hashUpdateQueue = {}
         c.close()
