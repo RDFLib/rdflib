@@ -13,7 +13,6 @@ the efficient removal of all statements about a particular resource using cascad
 see: http://dev.mysql.com/doc/refman/5.0/en/ansi-diff-foreign-keys.html
 """
 from rdflib.URIRef import URIRef
-from __future__ import generators
 from rdflib import BNode
 from rdflib import RDF
 from rdflib.Literal import Literal
@@ -248,7 +247,6 @@ class BinaryRelationPartition(object):
         asserted = dereferenceQuad(CONTEXT,queryPattern) is None
         for idx in SlotPrefixes.keys():
             queryTerm = dereferenceQuad(idx,queryPattern)            
-            lookup = isinstance(queryTerm,Literal) and self.valueHash or self.idHash
             lookupAlias = 'rt_'+SlotPrefixes[idx]
             if idx == CONTEXT and asserted:
                 whereClauses.append("%s.%s != 'F'"%(self,self.columnNames[idx]))
@@ -261,21 +259,19 @@ class BinaryRelationPartition(object):
                 whereParameters.append(queryTerm.identifier)
             elif idx < len(POSITION_LIST) and queryTerm is not Any:
                 if self.columnNames[idx]:
-                    if idx == CONTEXT and isinstance(queryTerm,Graph):
-                        termVal = queryTerm.identifier
-                    else:
-                        termVal = queryTerm
+
                     if isinstance(queryTerm,list):
                         whereClauses.append("%s.%s"%(self,self.columnNames[idx])+" in (%s)"%','.join(['%s' for item in range(len(queryTerm))]))
-                        whereParameters.extend([normalizeValue(item) for item in queryTerm])
+                        whereParameters.extend([normalizeValue(item,term2Letter(item)) for item in queryTerm])
                     else:
                         whereClauses.append("%s.%s"%(self,self.columnNames[idx])+" = %s")
-                        whereParameters.append(normalizeValue(termVal))
+                        whereParameters.append(normalizeValue(queryTerm,term2Letter(queryTerm)))
+                        
                 if not idx in self.hardCodedResultTermsTypes and self.termEnumerations[idx] and not isinstance(queryTerm,list):
                     whereClauses.append("%s.%s_term"%(self,self.columnNames[idx])+" = %s")
                     whereParameters.append(term2Letter(queryTerm))
             elif idx >= len(POSITION_LIST) and len(self.columnNames) > len(POSITION_LIST) and queryTerm is not None:
-                compVal = idx == DATATYPE_INDEX and normalizeValue(queryTerm) or queryTerm
+                compVal = idx == DATATYPE_INDEX and normalizeValue(queryTerm,term2Letter(queryTerm)) or queryTerm
                 whereClauses.append("%s.%s"%(self,self.columnNames[idx][0])+" = %s")
                 whereParameters.append(compVal)
 
@@ -314,7 +310,11 @@ class AssociativeBox(BinaryRelationPartition):
     
     def extractIdentifiers(self,quadSlots):
         subjSlot,predSlot,objSlot,conSlot = quadSlots
-        self.idHash.updateIdentifierQueue([subjSlot.term,objSlot.term,conSlot.term])
+        self.idHash.updateIdentifierQueue([
+                                           (subjSlot.term,subjSlot.termType),
+                                           (objSlot.term,objSlot.termType),
+                                           (conSlot.term,conSlot.termType)
+                                           ])
 
 class NamedLiteralProperties(BinaryRelationPartition):
     """
@@ -412,7 +412,7 @@ class NamedLiteralProperties(BinaryRelationPartition):
 
     def compileQuadToParams(self,quadSlots):
         subjSlot,predSlot,objSlot,conSlot = quadSlots
-        dTypeParam = objSlot.term.datatype and normalizeValue(objSlot.term.datatype) or None
+        dTypeParam = objSlot.term.datatype and normalizeValue(objSlot.term.datatype,objSlot.termType) or None
         langParam  = objSlot.term.language and objSlot.term.language or None
         rtList = [
                     subjSlot.md5Int,
@@ -429,11 +429,14 @@ class NamedLiteralProperties(BinaryRelationPartition):
     
     def extractIdentifiers(self,quadSlots):
         subjSlot,predSlot,objSlot,conSlot = quadSlots
-        idTerms = [subjSlot.term,predSlot.term,conSlot.term]
+        idTerms = [
+                    (subjSlot.term,subjSlot.termType),
+                    (predSlot.term,predSlot.termType),
+                    (conSlot.term,conSlot.termType)]
         if objSlot.term.datatype:
-            idTerms.append(objSlot.term.datatype)
+            idTerms.append((objSlot.term.datatype,objSlot.termType))
         self.idHash.updateIdentifierQueue(idTerms)
-        self.valueHash.updateIdentifierQueue([objSlot.term])    
+        self.valueHash.updateIdentifierQueue([(objSlot.term,objSlot.termType)])    
 
     def selectFields(self,first=False):
         return first and self._selectFieldsLeading or self._selectFieldsNonLeading
@@ -467,7 +470,11 @@ class NamedBinaryRelations(BinaryRelationPartition):
     
     def extractIdentifiers(self,quadSlots):
         subjSlot,predSlot,objSlot,conSlot = quadSlots
-        self.idHash.updateIdentifierQueue([subjSlot.term,predSlot.term,objSlot.term,conSlot.term])    
+        self.idHash.updateIdentifierQueue([
+                                           (subjSlot.term,subjSlot.termType),
+                                           (predSlot.term,predSlot.termType),
+                                           (objSlot.term,objSlot.termType),
+                                           (conSlot.term,conSlot.termType)])    
     
 def BinaryRelationPartitionCoverage((subject,predicate,object_,context),BRPs):
     """
@@ -495,6 +502,12 @@ def BinaryRelationPartitionCoverage((subject,predicate,object_,context),BRPs):
         else:
             #Otherwise, can be treated as a REGEXTerm that *doesn't* match rdf:type
             pId = 'U_RNT'
+    elif isinstance(predicate,Variable):
+        #Predicates as variables would only exist in literal property assertions and 'other' Relations partition 
+        #(same as URIs or REGEX Terms that don't match rdf:type)
+        pId = 'U_RNT'            
+    else:
+        raise Exception("Unable to determine a parition to cover with the given predicate %s (a %s)"%(predicate,type(predicate).__name__))
     
     if isinstance(object_,list) and len(object_) == 1:
         object_ = object_[0]
@@ -513,6 +526,11 @@ def BinaryRelationPartitionCoverage((subject,predicate,object_,context),BRPs):
         elif not [o for o in object_ if isinstance(o,REGEXTerm) or isinstance(o,Literal)]:
             #There are no Literals or REGEXTerms, the list behaves as a URI (i.e., it never checks literal partition)
             oId = 'U'
+    elif isinstance(object_,Variable):
+        #Variables would only exist in the ABOX and 'other' Relations partition (same as URIs)
+        oId = 'U'
+    else:
+        raise Exception("Unable to determine a parition to cover with the given object %s (a %s)"%(object_,type(object_).__name__))
                 
     targetBRPs = [brp for brp in BRPs if isinstance(brp,BRPQueryDecisionMap[pId+oId])]
     return targetBRPs

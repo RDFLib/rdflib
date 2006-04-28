@@ -56,9 +56,11 @@ def dereferenceQuad(index,quad):
 def genQuadSlots(quads):
     return [QuadSlot(index,quads[index])for index in POSITION_LIST]        
 
-def normalizeValue(value):
+def normalizeValue(value,termType):
     if value is None:
-        value = u'http://www.w3.org/2002/07/owl#Nothing'
+        value = u'http://www.w3.org/2002/07/owl#NothingU'
+    else:
+        value = (isinstance(value,Graph) and value.identifier or value) + termType
     return int(md5.new(isinstance(value,unicode) and value.encode('utf-8') or value).hexdigest()[:16],16)
 
 class QuadSlot:
@@ -70,7 +72,7 @@ class QuadSlot:
         assert position in POSITION_LIST, "Unknown quad position: %s"%position
         self.position = position
         self.term = term
-        self.md5Int = normalizeValue(term)
+        self.md5Int = normalizeValue(term,term2Letter(term))
         self.termType = term2Letter(term)
 
     def EscapeQuotes(self,qstr):

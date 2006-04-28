@@ -20,14 +20,13 @@ from rdflib import BNode
 from rdflib import RDF
 from rdflib.Literal import Literal
 from rdflib.URIRef import URIRef
-import md5
 from rdflib.term_utils import *
 from rdflib.Graph import QuotedGraph
 from rdflib.store.REGEXMatching import REGEXTerm
 from QuadSlot import POSITION_LIST, normalizeValue
 Any = None
 
-COLLISION_DETECTION = True
+COLLISION_DETECTION = False
 
 CREATE_HASH_TABLE = """
 CREATE TABLE %s (    
@@ -45,7 +44,7 @@ def GarbageCollectionQUERY(idHash,valueHash,aBoxPart,binRelPart,litPart):
     must be performed after every removal of an assertion and so becomes a primary bottleneck
     """
     purgeQueries = ["drop temporary table if exists danglingIds"]
-    rdfTypeInt = normalizeValue(RDF.type)
+    rdfTypeInt = normalizeValue(RDF.type,'U')
     idHashKeyName = idHash.columns[0][0]
     valueHashKeyName = valueHash.columns[0][0]
     idHashJoinees    = [aBoxPart,binRelPart,litPart]
@@ -166,7 +165,7 @@ class IdentifierHash(RelationalHash):
         Since rdf:type is modeled explicitely (in the ABOX partition) it must be inserted as a 'default'
         identifier
         """
-        return 'INSERT into %s values (%s,"U","%s");'%(self,normalizeValue(RDF.type),RDF.type)
+        return 'INSERT into %s values (%s,"U","%s");'%(self,normalizeValue(RDF.type,'U'),RDF.type)
 
     def generateDict(self,db):
         c=db.cursor()
@@ -178,9 +177,8 @@ class IdentifierHash(RelationalHash):
         return rtDict
 
     def updateIdentifierQueue(self,termList):
-        for term in termList:
-            md5Int = normalizeValue(term)
-            termType = term2Letter(term)
+        for term,termType in termList:
+            md5Int = normalizeValue(term,termType)
             self.hashUpdateQueue[md5Int]=(termType,self.normalizeTerm(term))
         
     def insertIdentifiers(self,db):
@@ -220,8 +218,8 @@ class LiteralHash(RelationalHash):
         return rtDict
 
     def updateIdentifierQueue(self,termList):
-        for term in termList:
-            md5Int = normalizeValue(term)
+        for term,termType in termList:
+            md5Int = normalizeValue(term,termType)
             self.hashUpdateQueue[md5Int]=self.normalizeTerm(term)
         
     def insertIdentifiers(self,db):
