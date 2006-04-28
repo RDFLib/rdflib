@@ -297,8 +297,8 @@ class MySQL(Store):
             self.executeSQL(c,q)
 
     def add(self, (subject, predicate, obj), context=None, quoted=False):        
-        """ Add a triple to the store of triples. """           
-        qSlots = genQuadSlots([subject,predicate,obj,context.identifier])
+        """ Add a triple to the store of triples. """  
+        qSlots = genQuadSlots([subject,predicate,obj,context])
         if predicate == RDF.type:
             kb = self.aboxAssertions
         elif isinstance(obj,Literal):
@@ -316,7 +316,7 @@ class MySQL(Store):
         """
         for s,p,o,c in quads:
             assert c is not None, "Context associated with %s %s %s is None!"%(s,p,o)
-            qSlots = genQuadSlots([s,p,o,c.identifier])           
+            qSlots = genQuadSlots([s,p,o,c])           
             if p == RDF.type:
                 kb = self.aboxAssertions
             elif isinstance(o,Literal):
@@ -347,19 +347,24 @@ class MySQL(Store):
     
     def triples(self, (subject, predicate, obj), context=None):
         c=self._db.cursor()        
-        rt=PatternResolution((subject,predicate,obj,context),c,self.partitions,fetchall=False)
+        if context is None or isinstance(context.identifier,REGEXTerm):
+            rt=PatternResolution((subject,predicate,obj,context),c,self.partitions,fetchall=False)
+        else:
+            #No need to order by triple (expensive), all result sets will be in the same context
+            rt=PatternResolution((subject,predicate,obj,context),c,self.partitions,orderByTriple=False,fetchall=False)            
         while rt:
             s,p,o,(graphKlass,idKlass,graphId) = extractTriple(rt,self,context)
-            currentContext=graphKlass(self,idKlass(graphId))
+            currentContext=(context is None or isinstance(context.identifier,REGEXTerm)) and graphKlass(self,idKlass(graphId)) or context
             contexts = [currentContext]
             rt = next = c.fetchone()
-            sameTriple = next and extractTriple(next,self,context)[:3] == (s,p,o)
-            while sameTriple:
-                s2,p2,o2,(graphKlass,idKlass,graphId) = extractTriple(next,self,context)
-                c2 = graphKlass(self,idKlass(graphId))
-                contexts.append(c2)
-                rt = next = c.fetchone()
+            if context is None or isinstance(context.identifier,REGEXTerm):
                 sameTriple = next and extractTriple(next,self,context)[:3] == (s,p,o)
+                while sameTriple:
+                    s2,p2,o2,(graphKlass,idKlass,graphId) = extractTriple(next,self,context)
+                    c2 = graphKlass(self,idKlass(graphId))
+                    contexts.append(c2)
+                    rt = next = c.fetchone()
+                    sameTriple = next and extractTriple(next,self,context)[:3] == (s,p,o)
                     
             yield (s,p,o),(c for c in contexts)
     
