@@ -83,11 +83,47 @@ class BinaryRelationPartition(object):
         Generates foreign key expression relating a particular quad term with
         the identifier hash
         """
-        rt = ["\tFOREIGN KEY (%s) REFERENCES %s (%s)"%(
+        rt = ["\tCONSTRAINT %s_%s_lookup FOREIGN KEY (%s) REFERENCES %s (%s)"%(
+                    self,
+                    self.columnNames[slot],
                     self.columnNames[slot],
                     self.idHash,
                     self.idHash.columns[0][0])]
         return rt      
+    
+    def IndexManagementSQL(self,create=False):
+        idxSQLStmts = []
+        for slot in POSITION_LIST:
+            if self.columnNames[slot]:
+                if create:
+                    idxSQLStmts.append("create INDEX %s%s on %s (%s)"%(self.columnNames[slot],self.indexSuffix,self,self.columnNames[slot]))
+                    idxSQLStmts.append("ALTER TABLE %s ADD %s"%(self,self.foreignKeySQL(slot)[0]))
+                else:
+                    idxSQLStmts.append("ALTER TABLE %s DROP FOREIGN KEY %s_%s_lookup"%(self,self,self.columnNames[slot]))
+                    idxSQLStmts.append("ALTER TABLE %s DROP INDEX %s%s"%(self,self.columnNames[slot],self.indexSuffix))
+                if self.termEnumerations[slot]:
+                    if create:
+                        idxSQLStmts.append("create INDEX %s_term%s on %s (%s_term)"%(self.columnNames[slot],self.indexSuffix,self,self.columnNames[slot]))
+                    else:
+                        idxSQLStmts.append("drop index %s_term%s on %s"%(self.columnNames[slot],self.indexSuffix,self))
+        if len(self.columnNames) > 4:            
+            for otherSlot in range(4,len(self.columnNames)):
+                colMD = self.columnNames[otherSlot]
+                if isinstance(colMD,tuple):
+                    colName,colType,indexStr = colMD
+                    if create:
+                        idxSQLStmts.append("create INDEX %s%s on %s (%s)"%(colName,self.indexSuffix,self,indexStr%colName))
+                    else:
+                        idxSQLStmts.append("drop index %s%s on %s"%(colName,self.indexSuffix,self))
+                else:
+                    if create:
+                        idxSQLStmts.append("create INDEX %s%s on (%s)"%(colMD,self.indexSuffix,self,colMD))
+                        idxSQLStmts.append("ALTER TABLE %s ADD %s"%(self,self.foreignKeySQL(otherSlot)[0]))
+                    else:
+                        idxSQLStmts.append("ALTER TABLE %s DROP FOREIGN KEY %s_%s_lookup"%(self,self,colMD))
+                        idxSQLStmts.append("drop index %s%s on %s"%(colMD,self.indexSuffix,self))
+                        
+        return idxSQLStmts
               
     def createSQL(self):
         """
@@ -98,9 +134,10 @@ class BinaryRelationPartition(object):
         for slot in POSITION_LIST:
             if self.columnNames[slot]:
                 columnSQLStmts.append("\t%s\tBIGINT unsigned not NULL"%(self.columnNames[slot]))
+                columnSQLStmts.append("\tINDEX %s%s (%s)"%(self.columnNames[slot],self.indexSuffix,self.columnNames[slot]))
                 if self.termEnumerations[slot]:
                     columnSQLStmts.append("\t%s_term enum(%s) not NULL"%(self.columnNames[slot],','.join(["'%s'"%tType for tType in self.termEnumerations[slot]])))
-                    columnSQLStmts.append("\tINDEX (%s_term)"%(self.columnNames[slot]))
+                    columnSQLStmts.append("\tINDEX %s_term%s (%s_term)"%(self.columnNames[slot],self.indexSuffix,self.columnNames[slot]))
                 columnSQLStmts.extend(self.foreignKeySQL(slot))
         
         if len(self.columnNames) > 4:            
@@ -112,8 +149,9 @@ class BinaryRelationPartition(object):
                     columnSQLStmts.append("\tINDEX %s%s (%s)"%(colName,self.indexSuffix,indexStr%colName))
                 else:
                     columnSQLStmts.append("\t%s BIGINT unsigned not NULL"%colMD)
+                    columnSQLStmts.append("\tINDEX %s%s (%s)"%(colMD,self.indexSuffix,colMD))
                     columnSQLStmts.extend(self.foreignKeySQL(otherSlot))
-                
+
         return CREATE_BRP_TABLE%(
             self,
             ',\n'.join(columnSQLStmts)
@@ -337,7 +375,9 @@ class NamedLiteralProperties(BinaryRelationPartition):
 
     def foreignKeySQL(self,slot):
         hash = slot == OBJECT and self.valueHash or self.idHash
-        rt = ["\tFOREIGN KEY (%s) REFERENCES %s (%s)"%(
+        rt = ["\tCONSTRAINT %s_%s_lookup FOREIGN KEY  (%s) REFERENCES %s (%s)"%(
+                    self,
+                    self.columnNames[slot],
                     self.columnNames[slot],
                     hash,
                     hash.columns[0][0])]

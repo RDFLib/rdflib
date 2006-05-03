@@ -130,6 +130,18 @@ class RelationalHash:
     def __repr__(self):
         return "%s_%s"%(self.identifier,self.tableNameSuffix)
         
+    def IndexManagementSQL(self,create=False):        
+        idxSQLStmts = []#'ALTER TABLE %s DROP PRIMARY KEY'%self]
+        for colName,colType,indexMD in self.columns:                        
+            assert indexMD
+            indexName,indexCol = indexMD
+            if indexName:
+                if create:
+                    idxSQLStmts.append("create INDEX %s on %s (%s)"%(indexName,self,indexCol))
+                else:
+                    idxSQLStmts.append("drop INDEX %s on %s"%(indexName,self))
+        return idxSQLStmts
+        
     def createSQL(self):
         columnSQLStmts = []
         for colName,colType,indexMD in self.columns:                        
