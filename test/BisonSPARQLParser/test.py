@@ -28,12 +28,12 @@ tests2Skip = [
     'data/SyntaxFull/syntax-lit-20.rq'  , #same as above
 ]
 
-DEBUG = True
+DEBUG = False
     
 def testBasic():    
     from glob import glob     
     from sre import sub
-    for testFile in test:#glob('data/*/*.rq'):
+    for testFile in glob('data/*/*.rq'):
         if testFile in tests2Skip:
             continue
         query = open(testFile).read()        
@@ -42,12 +42,6 @@ def testBasic():
         p = Parse(query,DEBUG)
         print p.prolog        
         print p.query
-        #print p.query.solutionModifier.orderClause
-#        patterns = p.query.whereClause.parsedGraphPattern.graphPatterns
-#        patterns.reverse()        
-#        for g in patterns:
-#            print "### Graph Pattern %s ###"%(patterns.index(g)+1)
-#            g.evaluate()
         
 if __name__ == '__main__':
     testBasic()
