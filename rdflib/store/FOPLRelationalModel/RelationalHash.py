@@ -148,10 +148,7 @@ class RelationalHash:
             assert indexMD
             indexName,indexCol = indexMD
             if indexName:
-                if self.columns.index((colName,colType,indexMD)) > POSITION_LIST:
-                    columnSQLStmts.append("\t%s\t%s"%(colName,colType))
-                else:
-                    columnSQLStmts.append("\t%s\t%s not NULL"%(colName,colType))
+                columnSQLStmts.append("\t%s\t%s not NULL"%(colName,colType))
                 columnSQLStmts.append("\tINDEX %s (%s)"%(indexName,indexCol))
             else:
                 columnSQLStmts.append("\t%s\t%s not NULL PRIMARY KEY"%(colName,colType))
