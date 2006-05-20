@@ -1,7 +1,7 @@
 # Install rdflib
 from distutils.core import setup
 from rdflib import __version__, __date__
-
+from distutils.extension import Extension
 from distutils.core import Command
 
 
@@ -50,9 +50,17 @@ setup(
                 'rdflib.store',
                 'rdflib.store.FOPLRelationalModel',
                 'rdflib.sparql',
+                'rdflib.sparql.bison',
                 'rdflib.syntax',
                 'rdflib.syntax.serializers',
                 'rdflib.syntax.parsers',
                 'rdflib.syntax.parsers.n3p'],    
+     ext_modules = [
+        Extension(
+            name='rdflib.sparql.bison.SPARQLParserc',
+            sources=['src/bison/SPARQLParser.c'],
+            ),
+        ]
+                
     )
 

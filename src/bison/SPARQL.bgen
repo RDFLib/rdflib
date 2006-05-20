@@ -1,0 +1,1259 @@
+<?xml version='1.0'?>
+<!-- 
+
+    Experimental BisonGen Implementation of W3C DAWG's SPARQL Grammar
+    
+    http://www.w3.org/2005/01/yacker/uploads/SPARQL/bnf
+    
+    Author: Chimezie Ogbuji
+
+   -->
+<bisongen version='1.0' name='SPARQLParser' project='rdflib.sparql.bison'>
+    
+    <!-- Python modules to import -->
+    <modules>
+        <import from='SPARQLParser'>IRIRef</import>
+        <import from='SPARQLParser'>Bindings</import>
+        <import from='SPARQLParser'>Query</import>
+        <import from='SPARQLParser'>QName</import>
+        <import from='SPARQLParser'>GraphPattern</import>
+        <import from='SPARQLParser'>FunctionLibrary</import>
+        <import from='SPARQLParser'>Operators</import>
+        <import from='SPARQLParser'>Triples</import>
+        <import from='SPARQLParser'>Resource</import>
+        <import from='SPARQLParser'>Filter</import>
+        <import from='SPARQLParser'>Util</import>
+        <import from='SPARQLParser'>Expression</import>
+        <import from='SPARQLParser'>BooleanOperators</import>
+        <import from='SPARQLParser'>SolutionModifier</import>
+        <import>rdflib</import>
+        <import from='rdflib'>RDF</import>
+    </modules>
+
+    <!-- Token declarations -->
+    <tokens>
+        <?include SPARQLTokens.bgen.frag?>
+    </tokens>
+    
+    <!-- Parser grammer definition -->
+    <grammar start="Query">        
+        <!-- Query  	  ::=    	Prolog ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery ) -->
+        <production name="1">
+            <non-terminal>Query</non-terminal>
+            <rule>
+                <symbol>Prolog</symbol>
+                <symbol>QueryTypes</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Query, "Query", "OO", $1, $2);
+                </code>
+            </rule>
+            <rule>
+                <symbol>QueryTypes</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Query, "Query", "OO", Py_None, $1);
+                </code>
+            </rule>            
+        </production>
+        <!-- Query Types -->
+        <production name="1.5">
+            <non-terminal>QueryTypes</non-terminal>
+            <rule>
+                <symbol>SelectQuery</symbol>
+                <code language="c">
+                    $$ = $1;
+                    Py_INCREF($1);
+                </code>
+            </rule>
+            <!--rule>
+                <symbol>ConstructQuery</symbol>
+            </rule>
+            <rule>
+                <symbol>DescribeQuery</symbol>
+            </rule>
+            <rule>
+                <symbol>AsksQuery</symbol>
+            </rule-->            
+        </production>
+        
+        <!--  Prolog  	  ::=    	BaseDecl? PrefixDecl* -->
+        <production name="2">
+            <non-terminal>Prolog</non-terminal>
+            <rule>
+                <symbol>BaseDecl</symbol>
+                <symbol>OptionalPrefixDeclList</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Query, "Prolog", "OO", $1, $2);
+                </code>
+            </rule>
+            <rule>
+                <symbol>OptionalPrefixDeclList</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Query, "Prolog", "OO", Py_None, $1);
+                </code>
+            </rule>            
+        </production>  
+        
+        <production>
+            <non-terminal>OptionalPrefixDeclList</non-terminal>
+            <rule>
+                <symbol>PrefixDeclList</symbol>
+            </rule>
+            <rule>
+                <code language="python">
+                    $$ = PyList_New(0);
+                </code>
+            </rule>
+        </production>        
+        
+        <production name="2.5">
+            <non-terminal>PrefixDeclList</non-terminal>
+            <rule>
+                <symbol>PrefixDecl</symbol>
+                <code language="c">
+                    $$ = PyList_New(1);
+                    PyList_SET_ITEM($$, 0, $1);
+                    Py_INCREF($1);
+                </code>
+            </rule>
+            <rule>
+                <symbol>PrefixDeclList</symbol>
+                <symbol>PrefixDecl</symbol>
+                <code language="c">
+                    PyList_Append($1, $2);
+                    Py_INCREF($1);
+                    $$ = $1;
+                </code>
+            </rule>
+        </production>
+        
+        <!-- PrefixDecl ::= 'PREFIX' QNAME_NS Q_IRI_REF -->
+        <production name="4">
+            <non-terminal>PrefixDecl</non-terminal>
+            <rule>
+                <symbol>PREFIX</symbol>
+                <symbol>QNAME_NS</symbol>
+                <symbol>LESS_THAN</symbol>
+                <symbol>Q_IRI_CONTENT</symbol>
+                <symbol>GREATER_THAN</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Bindings, "PrefixDeclaration", "OO", $2,$4);
+                </code>
+            </rule>
+        </production>
+
+        <!-- BaseDecl  	  ::=    	'BASE' Q_IRI_REF -->
+        <production name="3">
+            <non-terminal>BaseDecl</non-terminal>
+            <rule>
+                <symbol>BASE</symbol>
+                <symbol>LESS_THAN</symbol>
+                <symbol>Q_IRI_CONTENT</symbol>
+                <symbol>GREATER_THAN</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Bindings, "BaseDeclaration", "O", $3);
+                </code>
+            </rule>
+        </production>        
+        
+        <!--  	SelectQuery  	  ::=    	'SELECT' 'DISTINCT'? ( Var+ | '*' ) DatasetClause* WhereClause SolutionModifier -->
+        <production name="5">
+            <non-terminal>SelectQuery</non-terminal>
+            <rule>
+                <symbol>SELECT</symbol>
+                <symbol>VAR_REFERENCES</symbol>
+                <symbol>WhereClause</symbol>
+                <symbol>SolutionModifier</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Query, "SelectQuery", "OOOO", $2,Py_None,$3,$4);
+                </code>
+            </rule>
+            <rule>
+                <symbol>SELECT</symbol>
+                <symbol>VAR_REFERENCES</symbol>
+                <symbol>DataSetClauseList</symbol>
+                <symbol>WhereClause</symbol>
+                <symbol>SolutionModifier</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Query, "SelectQuery", "OOOO", $2,$3,$4,$5);
+                </code>
+            </rule>            
+            <rule>
+                <symbol>SELECT</symbol>
+                <symbol>DISTINCT</symbol>
+                <symbol>VAR_REFERENCES</symbol>
+                <symbol>WhereClause</symbol>
+                <symbol>SolutionModifier</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Query, "SelectQuery", "OOOOi", $3,Py_None,$4,$5,1);
+                </code>
+            </rule>            
+            <rule>
+                <symbol>SELECT</symbol>
+                <symbol>DISTINCT</symbol>
+                <symbol>VAR_REFERENCES</symbol>
+                <symbol>DataSetClauseList</symbol>
+                <symbol>WhereClause</symbol>
+                <symbol>SolutionModifier</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Query, "SelectQuery", "OOOOi", $3,$4,$5,$6,1);
+                </code>
+            </rule>            
+        </production>        
+
+        <!--  Var+ | '*' -->
+        <production name="5.3">
+            <non-terminal>VAR_REFERENCES</non-terminal>
+            <rule>
+                <symbol>VariableReferenceList</symbol>
+            </rule>
+            <rule>
+                <symbol>ASTERISK</symbol>
+                <code language="c">
+                    $$ = Py_None;
+                </code>                
+            </rule>            
+        </production>        
+        
+        <production>
+            <non-terminal>VariableReferenceList</non-terminal>
+            <rule>
+                <symbol>Var</symbol>
+                <code language="c">
+                    $$ = PyList_New(1);
+		    PyList_SET_ITEM($$, 0, $1);
+		    Py_INCREF($1);
+                </code>
+            </rule>
+            <rule>
+                <symbol>VariableReferenceList</symbol>
+                <symbol>Var</symbol>
+                <code language="c">
+                    PyList_Append($1, $2);
+                    Py_INCREF($1);
+                    $$ = $1;
+                </code>
+            </rule>
+        </production>
+        
+        <!-- IRIref  	  ::=    	Q_IRI_REF | QName -->
+        <production name="63">
+            <non-terminal>IRIref</non-terminal>
+            <rule>
+                <symbol>LESS_THAN</symbol>
+                <symbol>Q_IRI_CONTENT</symbol>
+                <symbol>GREATER_THAN</symbol>
+                <code language="c">
+                  $$ = PyObject_CallMethod(IRIRef, "IRIRef", "O",$2);
+                </code>
+	    </rule>
+            <rule>
+                <symbol>QName</symbol>
+                    $$ = PyObject_CallMethod(QName, "QName", "O",$1);
+            </rule>
+        </production>
+        
+        <!-- [64] QName ::= QNAME | QNAME_NS -->
+        <production name="64">
+            <non-terminal>QName</non-terminal>
+            <rule>
+                <symbol>QNAME</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(QName, "QName", "O",$1);
+                </code>
+            </rule>
+            <rule>
+                <symbol>QNAME_NS</symbol>
+                <code language="c">
+                    PyObject *str = PySequence_GetSlice($1, 0, PyString_GET_SIZE($1) -1); 
+                    $$ = PyObject_CallMethod(QName, "QNamePrefix", "O",str);
+                    Py_XDECREF(str);		    
+                </code>
+            </rule>
+        </production>        
+        
+        <production>
+            <non-terminal>DataSetClauseList</non-terminal>
+            <rule>
+                <symbol>DataSetClause</symbol>
+                <code language="c">
+                    $$ = PyList_New(1);
+		    PyList_SET_ITEM($$, 0, $1);
+		    Py_INCREF($1);
+                </code>
+                <code language="python">
+                    $$ = [$1]
+                </code>
+            </rule>
+            <rule>
+                <symbol>DataSetClauseList</symbol>
+                <symbol>DataSetClause</symbol>
+                <code language="c">
+                    PyList_Append($1, $2);
+                    Py_INCREF($1);
+                    $$ = $1;
+                </code>
+                <code language="python">
+                    $1.append($2)
+                    $$ = $1
+                </code>
+            </rule>
+        </production>
+        
+        <!--   	DatasetClause   ::= 'FROM' ( DefaultGraphClause | NamedGraphClause ) -->
+        <production name="9">
+            <non-terminal>DataSetClause</non-terminal>
+            <rule>
+                <symbol>FROM</symbol>
+                <symbol>IRIref</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(IRIRef, "RemoteGraph", "O", $2);
+                </code>
+                <code language="python">
+                    $$ = IRIRef.GraphIRISource($2)
+                </code>
+            </rule>            
+            <rule>
+                <symbol>FROM</symbol>
+                <symbol>NAMED</symbol>
+                <symbol>IRIref</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(IRIRef, "NamedGraph", "O", $3);
+                </code>
+                <code language="python">
+                    $$ = IRIRef.GraphIdentifier($3)
+                </code>            
+            </rule>            
+        </production>        
+                
+        <!--  WhereClause  	  ::=    	'WHERE'? GroupGraphPattern -->
+        <production name="13">
+            <non-terminal>WhereClause</non-terminal>
+            <rule>
+                <symbol>WHERE</symbol>    
+                <symbol>GroupGraphPattern</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Query, "WhereClause", "O", $2);
+                </code>
+            </rule>
+            <rule>
+                <symbol>GroupGraphPattern</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Query, "WhereClause", "O", $1);
+                </code>
+            </rule>            
+        </production>     
+        
+        <!-- These can be done after basic select has been implemented -->
+        <!-- [14]    	SolutionModifier  ::=    	OrderClause? LimitClause? OffsetClause? -->
+        <production name="14">
+            <non-terminal>SolutionModifier</non-terminal>
+            <rule>
+                <code language="c">
+                    $$ = PyObject_CallMethod(SolutionModifier, "SolutionModifier", "");
+                </code>
+            </rule>            
+            <rule>
+                <symbol>OrderClause</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(SolutionModifier, "SolutionModifier", "O",$1);
+                </code>                
+            </rule>
+            <rule>
+                <symbol>OrderClause</symbol>
+                <symbol>LimitClause</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(SolutionModifier, "SolutionModifier", "OO",$1,$2);
+                </code>                
+            </rule>
+            <rule>
+                <symbol>OrderClause</symbol>
+                <symbol>LimitClause</symbol>
+                <symbol>OffsetClause</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(SolutionModifier, "SolutionModifier", "OOO",$1,$2,$3);
+                </code>                
+            </rule>            
+            <rule>
+                <symbol>LimitClause</symbol>
+                <symbol>OffsetClause</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(SolutionModifier, "SolutionModifier", "OOO",Py_None,$1,$2);
+                </code>                
+            </rule>           
+            <rule>
+                <symbol>OrderClause</symbol>
+                <symbol>OffsetClause</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(SolutionModifier, "SolutionModifier", "OOO",$1,Py_None,$2);
+                </code>                
+            </rule>            
+            <rule>
+                <symbol>OffsetClause</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(SolutionModifier, "SolutionModifier", "OOO",Py_None,Py_None,$1);
+                </code>                
+            </rule>            
+            <rule>
+                <symbol>LimitClause</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(SolutionModifier, "SolutionModifier", "OOO",Py_None,$1,Py_None);
+                </code>                
+            </rule>            
+        </production>        
+
+        <!-- [15]  OrderClause   ::=    	'ORDER' 'BY' OrderCondition+ -->
+        <production name="15">
+            <non-terminal>OrderClause</non-terminal>
+            <rule>
+                <symbol>ORDER</symbol>
+                <symbol>BY</symbol>
+                <symbol>OrderConditionList</symbol>
+                <code language="c">
+                    $$ = $3;
+                    Py_INCREF($3);
+                </code>                
+            </rule>
+        </production>
+
+        <production>
+            <non-terminal>OrderConditionList</non-terminal>
+            <rule>
+                <symbol>OrderCondition</symbol>
+                <code language="c">
+                    $$ = PyList_New(1);
+                    PyList_SET_ITEM($$, 0, $1);
+                    Py_INCREF($1);
+                </code>
+            </rule>
+            <rule>
+                <symbol>OrderConditionList</symbol>
+                <symbol>OrderCondition</symbol>
+                <code language="c">
+                    PyList_Append($1, $2);
+                    Py_INCREF($1);
+                    $$ = $1;
+                </code>
+            </rule>            
+        </production>
+        
+        <!-- OrderCondition  ::=   	( ( 'ASC' | 'DESC' ) BrackettedExpression ) | ( FunctionCall | Var | BrackettedExpression ) -->
+        <production name="16">
+            <non-terminal>OrderCondition</non-terminal>
+            <rule>
+                <symbol>ASC</symbol>
+                <symbol>LEFT_PAREN</symbol>
+                <symbol>ConditionalOrExpression</symbol>
+                <symbol>RIGHT_PAREN</symbol>                
+                <code language="c">
+                    PyObject *t = PyObject_GetAttrString(SolutionModifier, "ASCENDING_ORDER");
+                    $$ = PyObject_CallMethod(SolutionModifier, "ParsedOrderConditionExpression", "OO",$3,t);
+                    Py_XDECREF(t);
+                </code>                
+            </rule>
+            <rule>
+                <symbol>DESC</symbol>
+                <symbol>LEFT_PAREN</symbol>
+                <symbol>ConditionalOrExpression</symbol>
+                <symbol>RIGHT_PAREN</symbol>
+                <code language="c">
+                    PyObject *t = PyObject_GetAttrString(SolutionModifier, "DESCENDING_ORDER");
+                    $$ = PyObject_CallMethod(SolutionModifier, "ParsedOrderConditionExpression", "OO",$3,t);
+                    Py_XDECREF(t);
+                </code>                
+            </rule>
+            <rule>
+                <symbol>FunctionCall</symbol>
+            </rule>
+            <rule>
+                <symbol>LEFT_PAREN</symbol>
+                <symbol>ConditionalOrExpression</symbol>
+                <symbol>RIGHT_PAREN</symbol>
+                <code language="c">
+                    PyObject *t = PyObject_GetAttrString(SolutionModifier, "UNSPECIFIED_ORDER");
+                    $$ = PyObject_CallMethod(SolutionModifier, "ParsedOrderConditionExpression", "OO",$2,t);
+                    Py_XDECREF(t);
+                </code>                
+            </rule>
+            <rule>
+                <symbol>Var</symbol>
+            </rule>            
+        </production>
+
+        <!-- [17] LimitClause  ::=  'LIMIT' INTEGER-->
+        <production name="17">
+            <non-terminal>LimitClause</non-terminal>
+            <rule>
+                <symbol>LIMIT</symbol>
+                <symbol>NumericLiteral</symbol>
+                <code language="c">
+                    $$ = $2;
+                    Py_INCREF($2);
+                </code>                
+            </rule>
+        </production>        
+
+        <!-- [18] OffsetClause  ::=  'OFFSET' INTEGER -->
+        <production name="18">
+            <non-terminal>OffsetClause</non-terminal>
+            <rule>
+                <symbol>OFFSET</symbol>
+                <symbol>NumericLiteral</symbol>
+                <code language="c">
+                    $$ = $2;
+                    Py_INCREF($2);
+                </code>                               
+            </rule>
+        </production>        
+        
+
+        <!--  	GroupGraphPattern  	  ::=    	'{' GraphPattern '}'-->
+        <production name="19">
+            <non-terminal>GroupGraphPattern</non-terminal>
+            <rule>
+                <symbol>LEFT_CURLY</symbol>
+                <symbol>GraphPattern</symbol>
+                <symbol>RIGHT_CURLY</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(GraphPattern, "ParsedGraphPattern", "O",$2);
+                </code>
+                <code language="python">
+                    $$ = GraphPattern.ParsedGraphPattern($2)
+                </code>                
+            </rule>
+        </production>        
+                
+        <!--=        
+
+        Definition: Group Graph Pattern        
+        A group graph pattern GP is a set of graph patterns, GPi.        
+        A solution of Group Graph Pattern GP on graph G is any solution S such that, for every element GPi of GP, S is a solution of GPi.
+
+        http://www.w3.org/TR/rdf-sparql-query/#GroupPatterns
+        
+        http://www.w3.org/TR/rdf-sparql-query/#BasicGraphPattern
+        2.3 Triple Patterns
+        
+        -->
+        <!--  
+
+          [20] GraphPattern ::= FilteredBasicGraphPattern ( GraphPatternNotTriples '.'? GraphPattern )?
+        -->
+        <production name="20">
+            <non-terminal>GraphPattern</non-terminal>
+            <rule>
+                <symbol>FilteredBasicGraphPattern</symbol>
+                <code language="c">
+                    $$ = PyList_New(1);
+                    PyList_SET_ITEM($$, 0, PyObject_CallMethod(GraphPattern, "GraphPattern", "OO", $1,Py_None));
+                </code>
+            </rule>            
+            <rule>
+                <symbol>FilteredBasicGraphPattern</symbol>
+                <symbol>GraphPatternNotTriples</symbol>
+                <symbol>GraphPattern</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Util, "ListPrepend", "OO", PyObject_CallMethod(GraphPattern, "GraphPattern", "OO", $1,$2),$3);
+                </code>
+            </rule>
+            <rule>
+                <symbol>FilteredBasicGraphPattern</symbol>
+                <symbol>GraphPatternNotTriples</symbol>
+                <symbol>DOT</symbol>
+                <symbol>GraphPattern</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Util, "ListPrepend", "OO", PyObject_CallMethod(GraphPattern, "GraphPattern", "OO", $1,$2),$4);
+                </code>
+            </rule>
+        </production>        
+
+        <!-- 
+        
+        I.
+        http://www.w3.org/TR/rdf-sparql-query/#optionals
+        5 Including Optional Values
+        Optional Resolution Implementation
+        http://dev.w3.org/cvsweb/%7Echeckout%7E/2004/PythonLib-IH/Doc/sparqlDesc.html#Optional
+        
+        
+        II.
+        http://www.w3.org/TR/rdf-sparql-query/#alternatives
+        The UNION keyword is the syntax for pattern alternatives.
+        
+        Logical OR Implementation
+        http://dev.w3.org/cvsweb/%7Echeckout%7E/2004/PythonLib-IH/Doc/sparqlDesc.html#L313
+        
+        III.
+        http://www.w3.org/TR/rdf-sparql-query/#queryDataset
+        When querying a collection of graphs, the GRAPH  keyword 
+        is used to match patterns against named graphs. This is
+        by either using an IRI to select a graph or using a variable
+        to range over the IRIs naming graphs.
+        
+        An instance of http://rdflib.net/Graph
+        
+        IV.
+        http://www.w3.org/TR/rdf-sparql-query/#tests
+        SPARQL FILTERs restrict the set of solutions according to the given expression
+        http://www.w3.org/TR/rdf-sparql-query/#OperatorMapping
+        http://www.w3.org/TR/rdf-sparql-query/#FuncAndOp
+        
+        Operator Solutions:
+        http://dev.w3.org/cvsweb/%7Echeckout%7E/2004/PythonLib-IH/Doc/sparqlDesc.html#Operators
+        -->
+        <!-- 
+
+           [23] GraphPatternNotTriples ::= OptionalGraphPattern | 
+	                                   GroupOrUnionGraphPattern | 
+					   GraphGraphPattern
+        -->
+        <production name="23">
+            <non-terminal>GraphPatternNotTriples</non-terminal>
+            <rule>
+                <symbol>OPTIONAL</symbol>
+                <symbol>GroupGraphPattern</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(GraphPattern, "ParsedOptionalGraphPattern", "O", $2);
+                </code>
+            </rule>
+            <rule>
+                <symbol>GroupGraphPattern</symbol>
+                <symbol>AlternativeGroupGraphPatterns</symbol>
+                <code language="c">
+                   /*PyObject *altPatterns = PyObject_CallMethod(GraphPattern, "GraphPattern", "OO", $1,$2);*/
+                   $$ = PyObject_CallMethod(GraphPattern, "ParsedAlternativeGraphPattern", "OO", $1,$2);
+                   /*Py_XDECREF(altPatterns);*/
+                </code>
+            </rule>
+            <!--rule>
+                <symbol>GRAPH</symbol>
+                <symbol>Var</symbol>
+                <symbol>GroupGraphPattern</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(GraphPattern, "NamedGraph", "OO", $2,$3);
+                </code>
+            </rule>
+            <rule>
+                <symbol>GRAPH</symbol>
+                <symbol>BlankNode</symbol>
+                <symbol>GroupGraphPattern</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(GraphPattern, "NamedGraph", "OO", $2,$3);
+                </code>
+            </rule>
+            <rule>
+                <symbol>GRAPH</symbol>
+                <symbol>IRIref</symbol>
+                <symbol>GroupGraphPattern</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(GraphPattern, "NamedGraph", "OO", $2,$3);
+                </code>
+            </rule-->            
+        </production>                    
+        
+        
+        <!-- AlternativeGroupGraphPatterns ::= ( 'UNION' GroupGraphPattern )*-->
+        <!-- Instanciates a list of GroupGraphPattern instances -->
+        <production>
+            <non-terminal>AlternativeGroupGraphPatterns</non-terminal>
+            <rule>                
+                <symbol>UNION</symbol>
+                <symbol>GroupGraphPattern</symbol>
+                <code language="c">
+                    $$ = PyList_New(1);
+                    PyList_SET_ITEM($$, 0, $2);
+                    Py_INCREF($2);
+                </code>
+            </rule>
+            <rule>
+                <symbol>AlternativeGroupGraphPatterns</symbol>
+                <symbol>UNION</symbol>
+                <symbol>GroupGraphPattern</symbol>
+                <code language="c">
+                    PyList_Append($1, $3);
+                    Py_INCREF($1);
+                    $$ = $1;
+                </code>
+            </rule>
+        </production>        
+        
+        <!-- Expressions -->
+        <!-- 
+            
+                [56] BrackettedExpression       ::=  '(' Expression ')' 
+                [46] Expression                      ::=  ConditionalOrExpression
+                [47] ConditionalOrExpression   ::=  ConditionalAndExpression ( '||' ConditionalAndExpression )*
+                [48] ConditionalAndExpression ::=  ValueLogical ( '&&' ValueLogical )*           -->
+        <production name="47">
+            <non-terminal>ConditionalOrExpression</non-terminal>
+            <rule>
+                <symbol>ConditionalAndExpression</symbol>
+                <code language="c">
+                  $$ = PyObject_CallMethod(Expression, "ParsedConditionalAndExpressionList", "O", $1);
+                </code>
+            </rule>            
+            <rule>
+                <symbol>ConditionalAndExpression</symbol>
+                <symbol>ConditionalAndExpressionList</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Expression, "ParsedConditionalAndExpressionList", "O", PyObject_CallMethod(Util, "ListPrepend", "OO", $1,$2));
+                </code>
+            </rule>            
+        </production>        
+        
+        <!-- ( '||' ConditionalAndExpression )+ -->
+        <production>
+            <non-terminal>ConditionalAndExpressionList</non-terminal>
+            <rule>                
+                <symbol>DOUBLE_PIPE</symbol>
+                <symbol>ConditionalAndExpression</symbol>
+                <code language="c">
+                    $$ = PyList_New(1);
+                    PyList_SET_ITEM($$, 0, $2);
+                    Py_INCREF($2);
+                </code>
+            </rule>
+            <rule>
+                <symbol>ConditionalAndExpressionList</symbol>
+                <symbol>DOUBLE_PIPE</symbol>
+                <symbol>ConditionalAndExpression</symbol>
+                <code language="c">
+                    PyList_Append($1, $3);
+                    Py_INCREF($1);
+                    $$ = $1;
+                </code>
+            </rule>
+        </production>  
+        
+        <!-- [45]  ConditionalAndExpression ::=  ValueLogical ( '&&' ValueLogical )* -->
+        <production name="48">
+            <non-terminal>ConditionalAndExpression</non-terminal>
+            <rule>
+                <symbol>RelationalExpression</symbol>
+                <symbol>ValueLogicalList</symbol>
+                <code language="c">
+                    PyList_Append($2, $1);
+                    $$ = PyObject_CallMethod(Expression, "ParsedRelationalExpressionList", "O", $2);
+                </code>
+            </rule>
+            <rule>
+                <symbol>RelationalExpression</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Expression, "ParsedRelationalExpressionList", "O", $1);
+                </code>
+            </rule>            
+        </production>
+
+        <production>
+            <non-terminal>ValueLogicalList</non-terminal>
+            <rule>                
+                <symbol>DOUBLE_AMPERSAND</symbol>
+                <symbol>RelationalExpression</symbol>
+                <code language="c">
+                    $$ = PyList_New(1);
+                    PyList_SET_ITEM($$, 0, $2);
+                    Py_INCREF($2);
+                </code>
+            </rule>
+            <rule>
+                <symbol>ValueLogicalList</symbol>
+                <symbol>DOUBLE_AMPERSAND</symbol>
+                <symbol>RelationalExpression</symbol>
+                <code language="c">
+                    PyList_Append($1, $3);
+                    Py_INCREF($1);
+                    $$ = $1;
+                </code>
+            </rule>
+        </production>        
+
+        <!-- 
+            
+            [50]   	RelationalExpression 	  ::=   	NumericExpression 
+                                                        ( '=' NumericExpression | 
+                                                        '!=' NumericExpression | 
+                                                        '<' NumericExpression | 
+                                                        '>' NumericExpression | 
+                                                        '<=' NumericExpression | 
+                                                        '>=' NumericExpression )?
+            
+           -->
+        <production name="47">
+            <non-terminal>RelationalExpression</non-terminal>
+            <rule>
+                <symbol>AdditiveExpression</symbol>
+            </rule>
+            <rule>
+                <symbol>AdditiveExpression</symbol>
+                <symbol>EQUALITY_OP</symbol>
+                <symbol>AdditiveExpression</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Operators, "EqualityOperator", "OO", $1,$3);
+                </code>                
+            </rule>            
+            <rule>
+                <symbol>AdditiveExpression</symbol>
+                <symbol>NOT_EQUAL</symbol>
+                <symbol>AdditiveExpression</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Operators, "NotEqualOperator", "OO", $1,$3);
+                </code>                
+            </rule>            
+            <rule>
+                <symbol>AdditiveExpression</symbol>
+                <symbol>LESS_THAN</symbol>
+                <symbol>AdditiveExpression</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Operators, "LessThanOperator", "OO", $1,$3);
+                </code>                
+            </rule>            
+            <rule>
+                <symbol>AdditiveExpression</symbol>
+                <symbol>GREATER_THAN</symbol>
+                <symbol>AdditiveExpression</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Operators, "GreaterThanOperator", "OO", $1,$3);
+                </code>                
+            </rule>            
+            <rule>
+                <symbol>AdditiveExpression</symbol>
+                <symbol>LESS_THAN_EQUAL</symbol>
+                <symbol>AdditiveExpression</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Operators, "LessThanOrEqualOperator", "OO", $1,$3);
+                </code>                
+            </rule>            
+            <rule>
+                <symbol>AdditiveExpression</symbol>
+                <symbol>GREATER_THAN_EQUAL</symbol>
+                <symbol>AdditiveExpression</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Operators, "GreaterThanOrEqualOperator", "OO", $1,$3);
+                </code>                
+            </rule>            
+         </production>
+
+        <!--  [49] AdditiveExpression ::= MultiplicativeExpression ( '+' MultiplicativeExpression | '-' MultiplicativeExpression )* -->
+        <production name="49">
+            <non-terminal>AdditiveExpression</non-terminal>
+            <rule>
+                <symbol>MultiplicativeExpression</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Expression, "ParsedAdditiveExpressionList", "O", $1);
+                </code>                
+            </rule>            
+            <rule>
+                <symbol>MultiplicativeExpression</symbol>
+                <symbol>MultiplicativeExpressionList</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Expression, "ParsedAdditiveExpressionList", "O", PyObject_CallMethod(Util, "ListPrepend", "OO", $1,$2));
+                </code>                
+            </rule>            
+        </production>       
+        
+        <production>
+            <non-terminal>MultiplicativeExpressionList</non-terminal>
+            <rule>                
+                <symbol>PLUS</symbol>
+                <symbol>MultiplicativeExpression</symbol>
+                <code language="c">
+                    $$ = PyList_New(1);
+                    PyList_SET_ITEM($$, 0, $2);
+                    Py_INCREF($2);
+                </code>
+            </rule>
+            <rule>                
+                <symbol>MINUS</symbol>
+                <symbol>MultiplicativeExpression</symbol>
+                <code language="c">
+                    $$ = PyList_New(1);
+		    PyList_SET_ITEM($$, 0, $2);
+		    Py_INCREF($2);
+                </code>
+            </rule>            
+            <rule>
+                <symbol>MultiplicativeExpressionList</symbol>
+                <symbol>MINUS</symbol>
+                <symbol>MultiplicativeExpression</symbol>                
+                <code language="c">
+                    PyList_Append($1, $3);
+                    Py_INCREF($1);
+                    $$ = $1;
+                </code>
+            </rule>
+            <rule>
+                <symbol>MultiplicativeExpressionList</symbol>
+                <symbol>PLUS</symbol>
+                <symbol>MultiplicativeExpression</symbol>                
+                <code language="c">
+                    PyList_Append($1, $3);
+                    Py_INCREF($1);
+                    $$ = $1;
+                </code>
+            </rule>            
+        </production>        
+        
+        <!-- [50] MultiplicativeExpression ::= UnaryExpression ( '*' UnaryExpression | '/' UnaryExpression )*-->
+        <production name="50">
+            <non-terminal>MultiplicativeExpression</non-terminal>
+            <rule>
+                <symbol>UnaryExpression</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Expression, "ParsedMultiplicativeExpressionList", "O", $1);
+                </code>                
+            </rule>
+            <rule>
+                <symbol>UnaryExpression</symbol>
+                <symbol>UnaryExpressionList</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Expression, "ParsedMultiplicativeExpressionList", "O", PyObject_CallMethod(Util, "ListPrepend", "OO", $1,$2));
+                </code>                
+            </rule>            
+         </production>
+
+        <production>
+            <non-terminal>UnaryExpressionList</non-terminal>
+            <rule>                
+                <symbol>ASTERISK</symbol>
+                <symbol>UnaryExpression</symbol>
+                <code language="c">
+                    $$ = PyList_New(1);
+		    PyList_SET_ITEM($$, 0, $2);
+		    Py_INCREF($2);
+                </code>
+            </rule>
+            <rule>                
+                <symbol>FORWARDSLASH</symbol>
+                <symbol>UnaryExpression</symbol>
+                <code language="c">
+                    $$ = PyList_New(1);
+                    PyList_SET_ITEM($$, 0, $2);
+                    Py_INCREF($2);
+                </code>
+            </rule>            
+            <rule>
+                <symbol>UnaryExpressionList</symbol>
+                <symbol>ASTERISK</symbol>
+                <symbol>UnaryExpression</symbol>                
+                <code language="c">
+                    PyList_Append($1, $3);
+                    Py_INCREF($1);
+                    $$ = $1;
+                </code>
+            </rule>
+            <rule>
+                <symbol>UnaryExpressionList</symbol>
+                <symbol>FORWARDSLASH</symbol>
+                <symbol>UnaryExpression</symbol>                
+                <code language="c">
+                    PyList_Append($1, $3);
+                    Py_INCREF($1);
+                    $$ = $1;
+                </code>
+            </rule>            
+        </production>        
+        
+        <!-- [51] UnaryExpression ::=  '!' PrimaryExpression  | '+' PrimaryExpression | '-' PrimaryExpression | PrimaryExpression -->
+        <production name="51">
+            <non-terminal>UnaryExpression</non-terminal>
+            <rule>
+                <symbol>BANG</symbol>
+                <symbol>PrimaryExpression</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Operators, "LogicalNegation", "O", $1);
+                </code>                
+            </rule>
+            <rule>
+                <symbol>PLUS</symbol>
+                <symbol>PrimaryExpression</symbol>                
+                <code language="c">
+                    $$ = PyObject_CallMethod(Operators, "NumericPositive", "O", $1);
+                </code>                
+            </rule>
+            <rule>
+                <symbol>MINUS</symbol>
+                <symbol>PrimaryExpression</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Operators, "NumericNegative", "O", $1);
+                </code>                
+            </rule>
+            <rule>                
+                <symbol>PrimaryExpression</symbol>
+            </rule>            
+        </production>
+   
+        <!-- 
+
+            [52]    BuiltInCall  	  ::=    	  'STR' '(' Expression ')'
+            | 'LANG' '(' Expression ')'
+            | 'LANGMATCHES' '(' Expression ',' Expression ')'
+            | 'DATATYPE' '(' Expression ')'
+            | 'BOUND' '(' Var ')'
+            | 'isIRI' '(' Expression ')'
+            | 'isURI' '(' Expression ')'
+            | 'isBLANK' '(' Expression ')'
+            | 'isLITERAL' '(' Expression ')'
+            | RegexExpression            
+           -->
+        <production name="52">
+            <non-terminal>BuiltInCall</non-terminal>
+            <rule>
+                <symbol>STR</symbol>
+                <symbol>LEFT_PAREN</symbol>
+                <symbol>ConditionalOrExpression</symbol>
+                <symbol>RIGHT_PAREN</symbol>
+                <code language="c">
+                    PyObject *args = PyList_New(1);
+                    PyList_SET_ITEM(args, 0, $3);
+                    PyObject *funcName = PyObject_GetAttrString(FunctionLibrary, "STR");                    
+                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,args);
+                    Py_XDECREF(args);
+                    Py_XDECREF(funcName);                    
+                </code>                
+            </rule>
+            <rule>
+                <symbol>LANG</symbol>
+                <symbol>LEFT_PAREN</symbol>
+                <symbol>ConditionalOrExpression</symbol>
+                <symbol>RIGHT_PAREN</symbol>                
+                <code language="c">
+                    PyObject *args = PyList_New(1);
+                    PyList_SET_ITEM(args, 0, $3);
+                    PyObject *funcName = PyObject_GetAttrString(FunctionLibrary, "LANG");                    
+                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,args);
+                    Py_XDECREF(args);
+                    Py_XDECREF(funcName);                    
+                </code>                
+            </rule>
+            <rule>
+                <symbol>LANGMATCHES</symbol>
+                <symbol>LEFT_PAREN</symbol>
+                <symbol>ConditionalOrExpression</symbol>
+                <symbol>COMMA</symbol>
+                <symbol>ConditionalOrExpression</symbol>
+                <symbol>RIGHT_PAREN</symbol>                
+                <code language="c">
+                    PyObject *args = PyList_New(1);
+                    PyList_SET_ITEM(args, 0, $3);
+                    PyList_SET_ITEM(args, 0, $5);
+                    PyObject *funcName = PyObject_GetAttrString(FunctionLibrary, "LANGMATCHES");                    
+                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,args);
+                    Py_XDECREF(args);
+                    Py_XDECREF(funcName);                    
+                </code>                
+            </rule>
+            <rule>
+                <symbol>DATATYPE</symbol>
+                <symbol>LEFT_PAREN</symbol>
+                <symbol>ConditionalOrExpression</symbol>
+                <symbol>RIGHT_PAREN</symbol>                
+                <code language="c">
+                    PyObject *args = PyList_New(1);
+                    PyList_SET_ITEM(args, 0, $3);
+                    PyObject *funcName = PyObject_GetAttrString(FunctionLibrary, "DATATYPE");                    
+                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,args);
+                    Py_XDECREF(args);
+                    Py_XDECREF(funcName);                    
+                </code>                
+            </rule>
+            <rule>
+                <symbol>BOUND</symbol>
+                <symbol>LEFT_PAREN</symbol>
+                <symbol>Var</symbol>
+                <symbol>RIGHT_PAREN</symbol>                
+                <code language="c">
+                    PyObject *args = PyList_New(1);
+                    PyList_SET_ITEM(args, 0, $3);
+                    Py_INCREF($3);
+                    PyObject *funcName = PyObject_GetAttrString(FunctionLibrary, "BOUND");                    
+                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,args);
+                    Py_XDECREF(args);
+                    Py_XDECREF(funcName);                    
+                </code>                
+            </rule>
+            <rule>
+                <symbol>isIRI</symbol>
+                <symbol>LEFT_PAREN</symbol>
+                <symbol>ConditionalOrExpression</symbol>
+                <symbol>RIGHT_PAREN</symbol>
+                <code language="c">
+                    PyObject *args = PyList_New(1);
+                    PyList_SET_ITEM(args, 0, $3);
+                    PyObject *funcName = PyObject_GetAttrString(FunctionLibrary, "isIRI");                    
+                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,args);
+                    Py_XDECREF(args);
+                    Py_XDECREF(funcName);                    
+                </code>                
+            </rule>
+            <rule>
+                <symbol>isURI</symbol>
+                <symbol>LEFT_PAREN</symbol>
+                <symbol>ConditionalOrExpression</symbol>
+                <symbol>RIGHT_PAREN</symbol>
+                <code language="c">
+                    PyObject *args = PyList_New(1);
+                    PyList_SET_ITEM(args, 0, $3);
+                    PyObject *funcName = PyObject_GetAttrString(FunctionLibrary, "isURI");                    
+                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,args);
+                    Py_XDECREF(args);
+                    Py_XDECREF(funcName);                    
+                </code>                
+            </rule>            
+            <rule>
+                <symbol>isBLANK</symbol>
+                <symbol>LEFT_PAREN</symbol>
+                <symbol>ConditionalOrExpression</symbol>
+                <symbol>RIGHT_PAREN</symbol>
+                <code language="c">
+                    PyObject *args = PyList_New(1);
+                    PyList_SET_ITEM(args, 0, $3);
+                    PyObject *funcName = PyObject_GetAttrString(FunctionLibrary, "isBLANK");                    
+                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,args);
+                    Py_XDECREF(args);
+                    Py_XDECREF(funcName);                    
+                </code>                
+            </rule>
+            <rule>
+                <symbol>isLITERAL</symbol>
+                <symbol>LEFT_PAREN</symbol>
+                <symbol>ConditionalOrExpression</symbol>
+                <symbol>RIGHT_PAREN</symbol>
+                <code language="c">
+                    PyObject *args = PyList_New(1);
+                    PyList_SET_ITEM(args, 0, $3);
+                    PyObject *funcName = PyObject_GetAttrString(FunctionLibrary, "isLITERAL");                    
+                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,args);
+                    Py_XDECREF(args);
+                    Py_XDECREF(funcName);                    
+                </code>                
+            </rule>            
+            <rule>
+                <symbol>RegexExpression</symbol>
+            </rule>            
+         </production>
+         
+        <!-- [53]  RegexExpression  ::=  'REGEX' '(' Expression ',' Expression ( ',' Expression )? ')' -->
+        <production name="53">
+            <non-terminal>RegexExpression</non-terminal>
+            <rule>
+                <symbol>REGEX</symbol>
+                <symbol>LEFT_PAREN</symbol>
+                <symbol>ConditionalOrExpression</symbol>
+                <symbol>COMMA</symbol>
+                <symbol>ConditionalOrExpression</symbol>
+                <symbol>RIGHT_PAREN</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(FunctionLibrary, "ParsedREGEXInvocation", "OO", $3,$5);
+                </code>                
+            </rule>
+            <rule>
+                <symbol>REGEX</symbol>
+                <symbol>LEFT_PAREN</symbol>
+                <symbol>ConditionalOrExpression</symbol>
+                <symbol>COMMA</symbol>
+                <symbol>ConditionalOrExpression</symbol>
+                <symbol>COMMA</symbol>
+                <symbol>ConditionalOrExpression</symbol>
+                <symbol>RIGHT_PAREN</symbol>                
+                <code language="c">
+                    $$ = PyObject_CallMethod(FunctionLibrary, "ParsedREGEXInvocation", "OOO", $3,$5,$7);
+                </code>                
+            </rule>            
+        </production>
+        
+        <!-- [54] FunctionCall  ::= IRIref ArgList -->.
+        <production name="54">
+            <non-terminal>FunctionCall</non-terminal>
+            <rule>
+                <symbol>IRIref</symbol>
+                <symbol>LEFT_PAREN</symbol>
+                <symbol>ArgumentList</symbol>
+                <symbol>RIGHT_PAREN</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(FunctionLibrary, "FunctionCall", "OO", $1, $3);
+                </code>
+            </rule>
+        </production>
+        
+        <!-- 
+            
+            [56] ArgList  ::=  NIL | '(' Expression ( ',' Expression )* ')'
+             	
+        -->
+        
+        <production>
+            <non-terminal>ArgumentList</non-terminal>
+            <rule>
+                <symbol>NIL</symbol>
+                <code language="c">
+                    $$ = PyList_New(0);                    
+                </code>
+            </rule>
+            <rule>
+                <symbol>ConditionalOrExpression</symbol>
+                <code language="c">
+                  $$ = PyList_New(1);
+                  /* Steals a reference */
+                  PyList_SET_ITEM($$, 0, $1);
+                  Py_INCREF($1);
+                </code>
+            </rule>
+            <rule>                
+                <symbol>ConditionalOrExpression</symbol>
+                <symbol>COMMA</symbol>
+                <symbol>ArgumentList</symbol>
+                <code language="c">
+                  $$ = PyObject_CallMethod(Util, "ListPrepend", "OO", $1,$3);
+                </code>
+            </rule>
+          </production>        
+        
+        <!--             
+            [56]   	ArgList 	  ::=   	( NIL | '(' Expression ( ',' Expression )* ')'            
+            [58] PrimaryExpression  ::=  BrackettedExpression | BuiltInCall | IRIref ArgList? | RDFLiteral | NumericLiteral | BooleanLiteral | BlankNode | Var        
+           -->
+        <production name="58">
+            <non-terminal>PrimaryExpression</non-terminal>
+            <rule>
+                <symbol>LEFT_PAREN</symbol>
+                <symbol>ConditionalOrExpression</symbol>
+                <symbol>RIGHT_PAREN</symbol>
+            </rule>
+            <rule>
+                <symbol>BuiltInCall</symbol>
+            </rule>
+            <rule>
+                <symbol>IRIref</symbol>
+            </rule>            
+            <rule>
+                <symbol>FunctionCall</symbol>
+            </rule>
+            <rule>
+                <symbol>RDFLiteral</symbol>
+            </rule>
+            <rule>
+                <symbol>NumericLiteral</symbol>
+            </rule>            
+            <rule>
+                <symbol>BooleanLiteral</symbol>
+            </rule>
+            <rule>
+                <symbol>BlankNode</symbol>
+            </rule>            
+            <rule>
+                <symbol>Var</symbol>
+            </rule>            
+        </production>        
+        
+        <?include SPARQLTurtleSuperSet.bgen.frag?>
+        
+    </grammar>  
+    <!-- Lexical scanner definition -->
+    <lexer>
+        <defines>
+            <?include SPARQLLexerDefines.bgen.frag?>        
+        </defines>
+        <?include SPARQLLexerPatterns.bgen.frag?>
+        <?include SPARQLLiteralLexerPatterns.bgen.frag?>                
+    </lexer>
+    
+</bisongen>    
