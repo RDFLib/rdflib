@@ -504,11 +504,11 @@ class Graph(Node):
 
 class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
 
-    def __init__(self, store='default'):
+    def __init__(self, store='default', identifier=None):
         super(ConjunctiveGraph, self).__init__(store)
         assert self.store.context_aware, "ConjunctiveGraph must be backed by a context aware store."
         self.context_aware = True
-        self.default_context = Graph(store=self.store, identifier=BNode())
+        self.default_context = Graph(store=self.store, identifier=identifier or BNode())
 
     def __str__(self):
         return "[a rdflib:DefaultContext] rdfg:subGraphOf [a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '%s']]"%(self.store.__class__.__name__)
