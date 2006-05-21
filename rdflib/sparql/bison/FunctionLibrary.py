@@ -32,7 +32,7 @@ class FunctionCall(object):
         self.name = name
         self.arguments = arguments is None and [] or arguments
     def __repr__(self):
-        return "%s(%s)"%(FUNCTION_NAMES[self.name],','.join([i.reduce() for i in self.arguments]))
+        return "%s(%s)"%(self.name,','.join([i.reduce() for i in self.arguments]))
     
 class ParsedArgumentList(ListRedirect):
     def __init__(self,arguments):
