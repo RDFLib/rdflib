@@ -3,7 +3,6 @@ from Util import ListRedirect
 class BinaryOperator(object):
     NAME = ''
     def __init__(self,left,right):
-        #print "%s %s %s"%(left.reduce(),self.NAME,right.reduce())
         self.left = left
         self.right = right
     def __repr__(self):
@@ -36,8 +35,8 @@ class UnaryOperator(object):
         self.argument = argument
     def __repr__(self):
         return "(%s %s)"%(
-            isinstance(self.argument,ListRedirect) and self.argument.reduce() or self.argument,
-            self.NAME)
+            self.NAME,
+            isinstance(self.argument,ListRedirect) and self.argument.reduce() or self.argument)
     
 class LogicalNegation(UnaryOperator):    
     NAME = '!'

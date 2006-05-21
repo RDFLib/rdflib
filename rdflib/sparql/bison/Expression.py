@@ -30,13 +30,12 @@ class ParsedMultiplicativeExpressionList(ListRedirect):
     A list of UnaryExpressions, joined by '/' or '*' s
     """
     def __init__(self,unaryExprList):
-        print "## %s ##"%unaryExprList
         if isinstance(unaryExprList,list):            
             self._list = unaryExprList
         else:
             self._list = [unaryExprList]
     def __repr__(self):
-        return "<MultiplicativeExpressionList: %s>"%self._list
+        return "<MultiplicativeExpressionList: %s>"%self.reduce()
         
 class ParsedAdditiveExpressionList(ListRedirect):        
     """

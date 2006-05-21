@@ -18,7 +18,7 @@ class ListRedirect(object):
             else:
                 return singleItem
         else:
-            return self._list
+            return [isinstance(item,ListRedirect) and item.reduce() or item for item in self._list]
 
 #Utility function for adding items to the front of a list
 def ListPrepend(item,list):
