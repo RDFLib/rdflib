@@ -12,20 +12,20 @@
     
     <!-- Python modules to import -->
     <modules>
-        <import from='SPARQLParser'>IRIRef</import>
-        <import from='SPARQLParser'>Bindings</import>
-        <import from='SPARQLParser'>Query</import>
-        <import from='SPARQLParser'>QName</import>
-        <import from='SPARQLParser'>GraphPattern</import>
-        <import from='SPARQLParser'>FunctionLibrary</import>
-        <import from='SPARQLParser'>Operators</import>
-        <import from='SPARQLParser'>Triples</import>
-        <import from='SPARQLParser'>Resource</import>
-        <import from='SPARQLParser'>Filter</import>
-        <import from='SPARQLParser'>Util</import>
-        <import from='SPARQLParser'>Expression</import>
-        <import from='SPARQLParser'>BooleanOperators</import>
-        <import from='SPARQLParser'>SolutionModifier</import>
+        <import from='rdflib.sparql.bison'>IRIRef</import>
+        <import from='rdflib.sparql.bison'>Bindings</import>
+        <import from='rdflib.sparql.bison'>Query</import>
+        <import from='rdflib.sparql.bison'>QName</import>
+        <import from='rdflib.sparql.bison'>GraphPattern</import>
+        <import from='rdflib.sparql.bison'>FunctionLibrary</import>
+        <import from='rdflib.sparql.bison'>Operators</import>
+        <import from='rdflib.sparql.bison'>Triples</import>
+        <import from='rdflib.sparql.bison'>Resource</import>
+        <import from='rdflib.sparql.bison'>Filter</import>
+        <import from='rdflib.sparql.bison'>Util</import>
+        <import from='rdflib.sparql.bison'>Expression</import>
+        <import from='rdflib.sparql.bison'>BooleanOperators</import>
+        <import from='rdflib.sparql.bison'>SolutionModifier</import>
         <import>rdflib</import>
         <import from='rdflib'>RDF</import>
     </modules>
@@ -99,7 +99,7 @@
                 <symbol>PrefixDeclList</symbol>
             </rule>
             <rule>
-                <code language="python">
+                <code language="c">
                     $$ = PyList_New(0);
                 </code>
             </rule>
@@ -280,9 +280,6 @@
 		    PyList_SET_ITEM($$, 0, $1);
 		    Py_INCREF($1);
                 </code>
-                <code language="python">
-                    $$ = [$1]
-                </code>
             </rule>
             <rule>
                 <symbol>DataSetClauseList</symbol>
@@ -291,10 +288,6 @@
                     PyList_Append($1, $2);
                     Py_INCREF($1);
                     $$ = $1;
-                </code>
-                <code language="python">
-                    $1.append($2)
-                    $$ = $1
                 </code>
             </rule>
         </production>
@@ -308,9 +301,6 @@
                 <code language="c">
                     $$ = PyObject_CallMethod(IRIRef, "RemoteGraph", "O", $2);
                 </code>
-                <code language="python">
-                    $$ = IRIRef.GraphIRISource($2)
-                </code>
             </rule>            
             <rule>
                 <symbol>FROM</symbol>
@@ -319,9 +309,6 @@
                 <code language="c">
                     $$ = PyObject_CallMethod(IRIRef, "NamedGraph", "O", $3);
                 </code>
-                <code language="python">
-                    $$ = IRIRef.GraphIdentifier($3)
-                </code>            
             </rule>            
         </production>        
                 
@@ -516,9 +503,6 @@
                 <code language="c">
                     $$ = PyObject_CallMethod(GraphPattern, "ParsedGraphPattern", "O",$2);
                 </code>
-                <code language="python">
-                    $$ = GraphPattern.ParsedGraphPattern($2)
-                </code>                
             </rule>
         </production>        
                 
@@ -959,21 +943,21 @@
                 <symbol>BANG</symbol>
                 <symbol>PrimaryExpression</symbol>
                 <code language="c">
-                    $$ = PyObject_CallMethod(Operators, "LogicalNegation", "O", $1);
+                    $$ = PyObject_CallMethod(Operators, "LogicalNegation", "O", $2);
                 </code>                
             </rule>
             <rule>
                 <symbol>PLUS</symbol>
                 <symbol>PrimaryExpression</symbol>                
                 <code language="c">
-                    $$ = PyObject_CallMethod(Operators, "NumericPositive", "O", $1);
+                    $$ = PyObject_CallMethod(Operators, "NumericPositive", "O", $2);
                 </code>                
             </rule>
             <rule>
                 <symbol>MINUS</symbol>
                 <symbol>PrimaryExpression</symbol>
                 <code language="c">
-                    $$ = PyObject_CallMethod(Operators, "NumericNegative", "O", $1);
+                    $$ = PyObject_CallMethod(Operators, "NumericNegative", "O", $2);
                 </code>                
             </rule>
             <rule>                
@@ -1217,6 +1201,10 @@
                 <symbol>LEFT_PAREN</symbol>
                 <symbol>ConditionalOrExpression</symbol>
                 <symbol>RIGHT_PAREN</symbol>
+                <code language="c">
+                    $$ = $2;
+                    Py_INCREF($2);
+                </code>                
             </rule>
             <rule>
                 <symbol>BuiltInCall</symbol>
