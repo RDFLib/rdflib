@@ -27,6 +27,7 @@ if not quick:
 from test.rdf import * # how does this manage to be 9 tests?
 
 from test.n3 import *
+from test.n3_quoting import *
 from test.nt import *
 
 from test.util import *
