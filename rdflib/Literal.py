@@ -77,7 +77,7 @@ class Literal(Identifier):
     def n3(self):
         language = self.language
         datatype = self.datatype
-        encoded = self.encode('unicode-escape').replace('"','\\"')
+        encoded = self.encode('unicode-escape').replace('\\', '\\\\').replace('"','\\"')
         if language:
             if datatype:
                 return '"%s"@%s^^<%s>' % (encoded, language, datatype)
