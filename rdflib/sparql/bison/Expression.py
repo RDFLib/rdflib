@@ -50,5 +50,19 @@ class ParsedAdditiveExpressionList(ListRedirect):
         return "<AdditiveExpressionList: %s>"%self._list
     
 class ParsedString(unicode):
-    def __init__(self,value):
-        super(ParsedString,self).__init__(value)
+    def __init__(self,value=None):
+        val = value is None and u"" or value
+        super(ParsedString,self).__init__(val)
+
+class ParsedDatatypedLiteral(object):
+    """
+    Placeholder for Datatyped literals
+    This is neccessary (instead of instanciating Literals directly)
+    when datatypes IRIRefs are QNames (in which case the prefix needs to be resolved at some point)
+    """
+    def __init__(self,value,dType):
+        self.value = value
+        self.dataType = dType
+        
+    def __repr__(self):
+        return "'%s'^^%s"%(self.value,self.dataType)

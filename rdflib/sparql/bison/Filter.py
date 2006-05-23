@@ -10,5 +10,4 @@ class ParsedExpressionFilter(ParsedFilter):
         return "FILTER %s"%self.filter.reduce()
 
 class ParsedFunctionFilter(ParsedFilter):
-    def __repr__(self):
-        return "FILTER %s"%self.filter
+    pass

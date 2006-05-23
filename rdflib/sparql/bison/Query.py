@@ -31,7 +31,19 @@ class SelectQuery(object):
         self.distinct = distinct is not None
         
     def __repr__(self):
-        return "SELECT %s %s %s %s"%(self.distinct and 'DISTINCT' or '',self.variables and self.variables or '*',self.whereClause.parsedGraphPattern,self.solutionModifier and self.solutionModifier or '')
+        return "SELECT %s %s %s %s %s"%(self.distinct and 'DISTINCT' or '',self.variables and self.variables or '*',self.dataSets,self.whereClause.parsedGraphPattern,self.solutionModifier and self.solutionModifier or '')
+
+class AskQuery(object):
+    """
+    AskQuery ::= 'ASK' DatasetClause* WhereClause
+    See: http://www.w3.org/TR/rdf-sparql-query/#rAskQuery
+    """
+    def __init__(self,dataSetList,whereClause):    
+        self.dataSets = dataSetList and dataSetList or []
+        self.whereClause = whereClause
+        
+    def __repr__(self):
+        return "ASK %s %s"%(self.dataSets,self.whereClause.parsedGraphPattern)
     
 class Prolog(object):
     """

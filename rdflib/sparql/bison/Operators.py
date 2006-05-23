@@ -5,6 +5,7 @@ class BinaryOperator(object):
     def __init__(self,left,right):
         self.left = left
         self.right = right
+
     def __repr__(self):
         return "(%s %s %s)"%(
             isinstance(self.left,ListRedirect) and self.left.reduce() or self.left,

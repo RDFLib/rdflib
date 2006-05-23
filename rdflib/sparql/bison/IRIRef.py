@@ -15,11 +15,12 @@ class RemoteGraph(Graph):
     Currently not implemented
     """
     def __init__(self,iriRef):
-        super(RemoteGraph,self).__init__(iriRef)        
+        super(RemoteGraph,self).__init__(identifier=iriRef)              
+      
     
 class NamedGraph(Graph):
     def __init__(self,iriRef):
-        pass
+        super(NamedGraph,self).__init__(identifier=iriRef)        
     
 class IRIRef(URIRef):    
     pass

@@ -58,10 +58,14 @@ class ParsedAlternativeGraphPattern(object):
     def __repr__(self):
         return " UNION ".join(["{%s}"%g for g in [self.startPattern]+self.alternativePatterns])
     
-class NamedGraph(object):
+class ParsedGraphGraphPattern(object):
     """
     Patterns on Named Graphs, where patterns are matched against named graphs
     """
     def __init__(self,graphName,groupGraphPattern):
-        pass
+        self.name = graphName
+        self.graphPattern = groupGraphPattern
+    def __repr__(self):
+        return "GRAPH %s { %s }"%(self.name,self.graphPattern)
+        
     
