@@ -98,7 +98,7 @@ def getValue(param) :
     unBound = queryString(param)
     if not unBound :
         if isinstance(param,Literal) :
-            value = getLiteralValue(v)
+            value = getLiteralValue(param)
         else :
             value = param
     def f(bindings) :
