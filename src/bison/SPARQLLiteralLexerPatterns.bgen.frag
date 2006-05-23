@@ -1,87 +1,90 @@
 <?xml version="1.0"?>
 <fragment>
-  <pattern expression='UNION'>
+  <pattern expression='union|UNION'>
     <token>UNION</token>
   </pattern>  
   <pattern expression='\*'>
     <token>ASTERISK</token>
   </pattern>  
-  <pattern expression='BASE'>
+  <pattern expression='base|BASE'>
     <token>BASE</token>
   </pattern>
-  <pattern expression='PREFIX'>
+  <pattern expression='prefix|PREFIX'>
     <token>PREFIX</token>
   </pattern>
-  <pattern expression='SELECT'>
+  <pattern expression='select|SELECT'>
     <token>SELECT</token>
   </pattern>
-  <pattern expression='DISTINCT'>
+  <pattern expression='distinct|DISTINCT'>
     <token>DISTINCT</token>
   </pattern>
-  <pattern expression='FROM'>
+  <pattern expression='from|FROM'>
     <token>FROM</token>
   </pattern>
-  <pattern expression='NAMED'>
+  <pattern expression='named|NAMED'>
     <token>NAMED</token>
   </pattern>
-  <pattern expression='OPTIONAL'>
+  <pattern expression='optional|OPTIONAL'>
     <token>OPTIONAL</token>
   </pattern>
-  <pattern expression='FILTER'>
+  <pattern expression='filter|FILTER'>
     <token>FILTER</token>
   </pattern>
-  <pattern expression='GRAPH'>
+  <pattern expression='graph|GRAPH'>
     <token>GRAPH</token>
   </pattern>
-  <pattern expression='WHERE'>
+  <pattern expression='where|WHERE'>
     <token>WHERE</token>
   </pattern>
-  <pattern expression='ORDER'>
+  <pattern expression='order|ORDER'>
     <token>ORDER</token>
   </pattern>
-  <pattern expression='BY'>
+  <pattern expression='by|BY'>
     <token>BY</token>
   </pattern>
-  <pattern expression='ASC'>
+  <pattern expression='asc|ASC'>
     <token>ASC</token>
   </pattern>
-  <pattern expression='DESC'>
+  <pattern expression='ASK'>
+    <token>ASK</token>
+  </pattern>  
+  <pattern expression='desc|DESC'>
     <token>DESC</token>
   </pattern>
-  <pattern expression='LIMIT'>
+  <pattern expression='limit|LIMIT'>
     <token>LIMIT</token>
   </pattern>
-  <pattern expression='OFFSET'>
+  <pattern expression='offset|OFFSET'>
     <token>OFFSET</token>
   </pattern>
-  <pattern expression='STR'>
+  <pattern expression='str|STR'>
     <token>STR</token>
   </pattern>
-  <pattern expression='LANG'>
+  <pattern expression='lang|LANG'>
     <token>LANG</token>
   </pattern>
-  <pattern expression='LANGMATCHES'>
+  <pattern expression='langMatches|LANGMATCHES'>
     <token>LANGMATCHES</token>
   </pattern>
-  <pattern expression='DATATYPE'>
+  <pattern expression='datatype|DATATYPE'>
     <token>DATATYPE</token>
   </pattern>
   <pattern expression='isIRI'>
     <token>isIRI</token>
   </pattern>
-  <pattern expression='isURI'>
+  <pattern expression='isUri|isURI'>
     <token>isURI</token>
   </pattern>
-  <pattern expression='isBLANK'>
+  <pattern expression='isBlank|isBLANK'>
     <token>isBLANK</token>
   </pattern>
-  <pattern expression='isLITERAL'>
+  <pattern expression='isLiteral|isLITERAL'>
     <token>isLITERAL</token>
   </pattern>
   <pattern expression='bound|BOUND'>
     <token>BOUND</token>
   </pattern>
-  <pattern expression='REGEX'>
+  <pattern expression='regex|REGEX'>
     <token>REGEX</token>
   </pattern>
   <pattern expression='true'>
@@ -97,7 +100,7 @@
     <token>MINUS</token>
   </pattern>
   <pattern expression='\+'>
-    <token>PLUS</token>
+    <token>PLUS</token>  
   </pattern>
   <pattern expression='&amp;&amp;'>
     <token>DOUBLE_AMPERSAND</token>

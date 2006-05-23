@@ -142,9 +142,6 @@
       <code language="c">
         $$ = PyObject_CallMethod(Resource, "Resource", "OO", $1,$2);
       </code>
-      <code language="python">
-        $$ = Resource.Resource($1,$2)
-      </code>      
     </rule>            
     <rule>
       <symbol>GraphTerm</symbol>
@@ -152,9 +149,6 @@
       <code language="c">
         $$ = PyObject_CallMethod(Resource, "Resource", "OO", $1,$2);
       </code>
-      <code language="python">
-        $$ = Resource.Resource($1,$2)
-      </code>      
     </rule>    
     <rule>
       <symbol>LEFT_SQUARE</symbol>
@@ -191,7 +185,7 @@
       <symbol>PropertyListNotEmpty</symbol>
     </rule>
     <rule>
-      <code language="python">
+      <code language="c">
         $$ = PyList_New(0);
       </code>
     </rule>
@@ -210,20 +204,11 @@
       <symbol>Verb</symbol>
       <symbol>ObjectList</symbol>
       <symbol>SEMICOLON</symbol>
-      <symbol>PropertyListNotEmpty</symbol>      
+      <symbol>PropertyList</symbol>      
       <code language="c">
         $$ = PyObject_CallMethod(Util, "ListPrepend", "OO", PyObject_CallMethod(Triples, "PropertyValue", "OO", $1,$2),$4);
       </code>
     </rule>   
-    <rule>
-      <symbol>Verb</symbol>
-      <symbol>ObjectList</symbol>
-      <symbol>SEMICOLON</symbol>
-      <code language="c">
-        $$ = PyList_New(1);
-        PyList_SET_ITEM($$, 0, PyObject_CallMethod(Triples, "PropertyValue", "OO", $1,$2));
-      </code>
-    </rule>    
   </production>
   
   <!-- 
@@ -238,9 +223,6 @@
 	PyList_SET_ITEM($$, 0, $1);
 	Py_INCREF($1);
       </code>
-      <code language="python">
-        $$ = [$1]
-      </code>      
     </rule>
     <rule>
       <symbol>ObjectList</symbol>
@@ -251,10 +233,6 @@
         Py_INCREF($1);
         $$ = $1;
       </code>
-      <code language="python">
-        $3.append($1)
-        $$ = $3
-      </code>      
     </rule>    
   </production>
   
@@ -293,9 +271,6 @@
       <symbol>A</symbol>
         <code language="c">
           $$ = PyObject_GetAttrString(RDF, "type");
-        </code>
-        <code language="python">
-          $$ = RDF.type
         </code>
     </rule>    
   </production>  
@@ -400,9 +375,6 @@
         $$ = PyObject_CallMethod(rdflib, "Literal", "O", negNum);
         Py_XDECREF(negNum);
       </code>
-      <code language="python">
-        $$ = rdflib.Literal(-$2)
-      </code>      
     </rule>    
     <rule>
       <symbol>BooleanLiteral</symbol>
@@ -430,9 +402,6 @@
 	$$ = PyObject_CallMethod(rdflib, "Literal", "O", num);
         Py_XDECREF(num);
       </code>
-      <code language="python">
-        $$ = rdflib.Literal(int($1))
-      </code>      
     </rule>
     <rule>
       <symbol>DECIMAL</symbol>
@@ -442,9 +411,6 @@
 	$$ = PyObject_CallMethod(rdflib, "Literal", "O", num);
         Py_XDECREF(num);
       </code>
-      <code language="python">
-        $$ = rdflib.Literal(float($1))
-      </code>      
     </rule>
     <rule>
       <symbol>DOUBLE</symbol>
@@ -453,9 +419,6 @@
 	$$ = PyObject_CallMethod(rdflib, "Literal", "O", num);
         Py_XDECREF(num);
       </code>
-      <code language="python">
-        $$ = rdflib.Literal(float($1))
-      </code>      
     </rule>
   </production>
   
@@ -482,7 +445,7 @@
       <symbol>DOUBLE_HAT</symbol>
       <symbol>IRIref</symbol>
       <code language="c">
-        $$ = PyObject_CallMethod(rdflib, "Literal", "OOO", $1,Py_None,$3);
+        $$ = PyObject_CallMethod(Expression, "ParsedDatatypedLiteral", "OO", $1,$3);
       </code>
     </rule>    
   </production>
@@ -536,6 +499,36 @@
         $$ = PyObject_CallMethod(Expression, "ParsedString", "O", $2);
       </code>      
     </rule>    
+    <!-- Explicit Empty String Rules -->
+    <rule>
+      <symbol>STRING_LITERAL_DELIMETER_1</symbol>
+      <symbol>STRING_LITERAL_DELIMETER_1</symbol>
+      <code language="c">
+        $$ = PyObject_CallMethod(Expression, "ParsedString", "");
+      </code>
+    </rule>
+    <rule>
+      <symbol>STRING_LITERAL_DELIMETER_3</symbol>
+      <symbol>STRING_LITERAL_DELIMETER_3</symbol>
+      <code language="c">
+        $$ = PyObject_CallMethod(Expression, "ParsedString", "");
+      </code>
+    </rule>    
+    <rule>
+      <symbol>STRING_LITERAL_DELIMETER_2</symbol>
+      <symbol>STRING_LITERAL_DELIMETER_2</symbol>
+      <code language="c">
+        $$ = PyObject_CallMethod(Expression, "ParsedString", "");
+      </code>
+    </rule>
+    <rule>
+      <symbol>STRING_LITERAL_DELIMETER_4</symbol>
+      <symbol>STRING_LITERAL_DELIMETER_4</symbol>
+      <code language="c">
+        $$ = PyObject_CallMethod(Expression, "ParsedString", "");
+      </code>      
+    </rule>    
+    
   </production>
   
   <!-- [66] BlankNode ::= BLANK_NODE_LABEL | ANON -->
@@ -552,9 +545,6 @@
       <code language="c">
         $$ = PyObject_CallMethod(rdflib, "BNode", "O",$1);
       </code>
-      <code language="python">
-        $$ = rdflib.BNode($1)
-      </code>      
     </rule>
   </production>
 </fragment>

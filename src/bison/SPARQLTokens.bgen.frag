@@ -25,6 +25,7 @@
   <token>ORDER</token>
   <token>BY</token>
   <token>ASC</token>
+  <token>ASK</token>
   <token>DESC</token>
   <token>LIMIT</token>
   <token>OFFSET</token>

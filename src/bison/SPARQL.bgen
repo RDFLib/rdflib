@@ -69,10 +69,14 @@
             </rule>
             <rule>
                 <symbol>DescribeQuery</symbol>
-            </rule>
+            </rule-->
             <rule>
-                <symbol>AsksQuery</symbol>
-            </rule-->            
+                <symbol>AskQuery</symbol>
+                <code language="c">
+                    $$ = $1;
+                    Py_INCREF($1);
+                </code>                
+            </rule>            
         </production>
         
         <!--  Prolog  	  ::=    	BaseDecl? PrefixDecl* -->
@@ -154,6 +158,26 @@
                 </code>
             </rule>
         </production>        
+        
+        <!--  [8] AskQuery  ::=  'ASK' DatasetClause* WhereClause	-->
+        <production name="8">
+            <non-terminal>AskQuery</non-terminal>
+            <rule>
+                <symbol>ASK</symbol>
+                <symbol>WhereClause</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Query, "AskQuery", "OO", Py_None,$2);
+                </code>
+            </rule>
+            <rule>
+                <symbol>ASK</symbol>
+                <symbol>DataSetClauseList</symbol>
+                <symbol>WhereClause</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Query, "AskQuery", "OO", $2,$3);
+                </code>
+            </rule>            
+        </production>
         
         <!--  	SelectQuery  	  ::=    	'SELECT' 'DISTINCT'? ( Var+ | '*' ) DatasetClause* WhereClause SolutionModifier -->
         <production name="5">
@@ -608,12 +632,12 @@
                    /*Py_XDECREF(altPatterns);*/
                 </code>
             </rule>
-            <!--rule>
+            <rule>
                 <symbol>GRAPH</symbol>
                 <symbol>Var</symbol>
                 <symbol>GroupGraphPattern</symbol>
                 <code language="c">
-                    $$ = PyObject_CallMethod(GraphPattern, "NamedGraph", "OO", $2,$3);
+                    $$ = PyObject_CallMethod(GraphPattern, "ParsedGraphGraphPattern", "OO", $2,$3);
                 </code>
             </rule>
             <rule>
@@ -621,7 +645,7 @@
                 <symbol>BlankNode</symbol>
                 <symbol>GroupGraphPattern</symbol>
                 <code language="c">
-                    $$ = PyObject_CallMethod(GraphPattern, "NamedGraph", "OO", $2,$3);
+                    $$ = PyObject_CallMethod(GraphPattern, "ParsedGraphGraphPattern", "OO", $2,$3);
                 </code>
             </rule>
             <rule>
@@ -629,9 +653,9 @@
                 <symbol>IRIref</symbol>
                 <symbol>GroupGraphPattern</symbol>
                 <code language="c">
-                    $$ = PyObject_CallMethod(GraphPattern, "NamedGraph", "OO", $2,$3);
+                    $$ = PyObject_CallMethod(GraphPattern, "ParsedGraphGraphPattern", "OO", $2,$3);
                 </code>
-            </rule-->            
+            </rule>            
         </production>                    
         
         
@@ -715,8 +739,7 @@
                 <symbol>RelationalExpression</symbol>
                 <symbol>ValueLogicalList</symbol>
                 <code language="c">
-                    PyList_Append($2, $1);
-                    $$ = PyObject_CallMethod(Expression, "ParsedRelationalExpressionList", "O", $2);
+                    $$ = PyObject_CallMethod(Expression, "ParsedRelationalExpressionList", "O", PyObject_CallMethod(Util, "ListPrepend", "OO", $1,$2));
                 </code>
             </rule>
             <rule>
@@ -986,12 +1009,8 @@
                 <symbol>ConditionalOrExpression</symbol>
                 <symbol>RIGHT_PAREN</symbol>
                 <code language="c">
-                    PyObject *args = PyList_New(1);
-                    PyList_SET_ITEM(args, 0, $3);
                     PyObject *funcName = PyObject_GetAttrString(FunctionLibrary, "STR");                    
-                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,args);
-                    Py_XDECREF(args);
-                    Py_XDECREF(funcName);                    
+                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,$3);
                 </code>                
             </rule>
             <rule>
@@ -1000,12 +1019,8 @@
                 <symbol>ConditionalOrExpression</symbol>
                 <symbol>RIGHT_PAREN</symbol>                
                 <code language="c">
-                    PyObject *args = PyList_New(1);
-                    PyList_SET_ITEM(args, 0, $3);
                     PyObject *funcName = PyObject_GetAttrString(FunctionLibrary, "LANG");                    
-                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,args);
-                    Py_XDECREF(args);
-                    Py_XDECREF(funcName);                    
+                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,$3);
                 </code>                
             </rule>
             <rule>
@@ -1016,13 +1031,8 @@
                 <symbol>ConditionalOrExpression</symbol>
                 <symbol>RIGHT_PAREN</symbol>                
                 <code language="c">
-                    PyObject *args = PyList_New(1);
-                    PyList_SET_ITEM(args, 0, $3);
-                    PyList_SET_ITEM(args, 0, $5);
                     PyObject *funcName = PyObject_GetAttrString(FunctionLibrary, "LANGMATCHES");                    
-                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,args);
-                    Py_XDECREF(args);
-                    Py_XDECREF(funcName);                    
+                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OOO", funcName,$3,$5);
                 </code>                
             </rule>
             <rule>
@@ -1031,12 +1041,8 @@
                 <symbol>ConditionalOrExpression</symbol>
                 <symbol>RIGHT_PAREN</symbol>                
                 <code language="c">
-                    PyObject *args = PyList_New(1);
-                    PyList_SET_ITEM(args, 0, $3);
                     PyObject *funcName = PyObject_GetAttrString(FunctionLibrary, "DATATYPE");                    
-                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,args);
-                    Py_XDECREF(args);
-                    Py_XDECREF(funcName);                    
+                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,$3);
                 </code>                
             </rule>
             <rule>
@@ -1045,13 +1051,8 @@
                 <symbol>Var</symbol>
                 <symbol>RIGHT_PAREN</symbol>                
                 <code language="c">
-                    PyObject *args = PyList_New(1);
-                    PyList_SET_ITEM(args, 0, $3);
-                    Py_INCREF($3);
                     PyObject *funcName = PyObject_GetAttrString(FunctionLibrary, "BOUND");                    
-                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,args);
-                    Py_XDECREF(args);
-                    Py_XDECREF(funcName);                    
+                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,$3);
                 </code>                
             </rule>
             <rule>
@@ -1060,12 +1061,8 @@
                 <symbol>ConditionalOrExpression</symbol>
                 <symbol>RIGHT_PAREN</symbol>
                 <code language="c">
-                    PyObject *args = PyList_New(1);
-                    PyList_SET_ITEM(args, 0, $3);
                     PyObject *funcName = PyObject_GetAttrString(FunctionLibrary, "isIRI");                    
-                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,args);
-                    Py_XDECREF(args);
-                    Py_XDECREF(funcName);                    
+                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,$3);
                 </code>                
             </rule>
             <rule>
@@ -1074,12 +1071,8 @@
                 <symbol>ConditionalOrExpression</symbol>
                 <symbol>RIGHT_PAREN</symbol>
                 <code language="c">
-                    PyObject *args = PyList_New(1);
-                    PyList_SET_ITEM(args, 0, $3);
                     PyObject *funcName = PyObject_GetAttrString(FunctionLibrary, "isURI");                    
-                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,args);
-                    Py_XDECREF(args);
-                    Py_XDECREF(funcName);                    
+                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,$3);
                 </code>                
             </rule>            
             <rule>
@@ -1088,12 +1081,8 @@
                 <symbol>ConditionalOrExpression</symbol>
                 <symbol>RIGHT_PAREN</symbol>
                 <code language="c">
-                    PyObject *args = PyList_New(1);
-                    PyList_SET_ITEM(args, 0, $3);
                     PyObject *funcName = PyObject_GetAttrString(FunctionLibrary, "isBLANK");                    
-                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,args);
-                    Py_XDECREF(args);
-                    Py_XDECREF(funcName);                    
+                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,$3);
                 </code>                
             </rule>
             <rule>
@@ -1102,12 +1091,8 @@
                 <symbol>ConditionalOrExpression</symbol>
                 <symbol>RIGHT_PAREN</symbol>
                 <code language="c">
-                    PyObject *args = PyList_New(1);
-                    PyList_SET_ITEM(args, 0, $3);
                     PyObject *funcName = PyObject_GetAttrString(FunctionLibrary, "isLITERAL");                    
-                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,args);
-                    Py_XDECREF(args);
-                    Py_XDECREF(funcName);                    
+                    $$ = PyObject_CallMethod(FunctionLibrary, "BuiltinFunctionCall", "OO", funcName,$3);
                 </code>                
             </rule>            
             <rule>
