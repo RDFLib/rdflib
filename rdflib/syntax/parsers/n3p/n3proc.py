@@ -113,6 +113,7 @@ class N3Processor(n3p.N3Parser):
       self.pathmode = 'path'
       self.paths = []
       self.lists = []
+      self.bnodes = {}
 
    def parse(self, start=start): 
       super(N3Processor, self).parse(start)
@@ -172,7 +173,7 @@ class N3Processor(n3p.N3Parser):
 
    def existentialFinish(self):
       for term in self.forSome:
-         b = self.bnode('bnode')
+         b = BNode()
          self.existentials[term] = (self.formulae[-1], b)
          self.sink.quantify(self.formulae[-1], b)
       self.forSome = False
@@ -222,7 +223,7 @@ class N3Processor(n3p.N3Parser):
             for (i, pred) in enumerate(path): 
                if (i % 2) != 0: 
                   subj = objt
-                  objt = self.bnode('path')
+                  objt = BNode()
                   if path[i-1] == '!': 
                      self.triple(subj, pred, objt)
                   elif path[i-1] == '^': 
@@ -239,7 +240,7 @@ class N3Processor(n3p.N3Parser):
       nodedict = {}
 
       def ointerp(prod, tok): 
-         b = self.bnode('node')
+         b = BNode()
          # Record here if it's a subject node
          if self.anonsubj: 
             self.anonsubj = False
@@ -287,10 +288,10 @@ class N3Processor(n3p.N3Parser):
       def cparen(prod, tok): 
          items = self.lists.pop()
          if items: 
-            first = head = self.bnode('list')
+            first = head = BNode()
             for (i, item) in enumerate(items): 
                if i < len(items) - 1: 
-                  rest = self.bnode('list')
+                  rest = BNode()
                else: rest = RDF.nil
                self.triple(first, RDF.first, item)
                self.triple(first, RDF.rest, rest)
@@ -439,7 +440,13 @@ class N3Processor(n3p.N3Parser):
          prefix, name = '', tok
       else: raise ParseError("Set user @keywords to use barenames.")
       if (prefix == '_') and (not self.bindings.has_key('_')): 
-         return self.bnode(name, sic=True)
+         if name in self.bnodes:
+            bnode = self.bnodes[name]
+         else:
+            bnode = BNode()
+            self.bnodes[name] = bnode
+         return bnode
+
       elif not self.bindings.has_key(prefix): 
          print >> sys.stderr, "Prefix not bound: %s" % prefix
       return self.uri(self.bindings[prefix] + name)
@@ -457,26 +464,12 @@ class N3Processor(n3p.N3Parser):
       return u
 
    def formula(self): 
-      tok = self.bnode('formula')
-      formula_id = tok
+      formula_id = BNode()
       if formula_id == self.sink.graph.identifier:
          return self.sink.graph
       else:
          return QuotedGraph(store=self.sink.graph.store, identifier=formula_id)
          #return self.sink.graph.get_context(formula_id, quoted=True)
-
-   def bnode(self, label, sic=False):
-      if not sic: 
-         self.counter += 1
-         label += str(self.counter)
-      elif self.labels: 
-         label += self.labels[-1]
-      elif label[-1].isdigit(): 
-         length = len(label)
-         forelabel = label.rstrip('0123456789')
-         label = forelabel + '0' + label[-(length-len(forelabel)):]
-      #return BNode(label) # huh?
-      return BNode() # use a real bnode instead
 
    def literal(self, content, language, datatype): 
       if content.startswith('"""'): 
@@ -511,9 +504,7 @@ class NTriplesSink(object):
          self.out.write("%s %s %s .\n" % (formula, pred, var))
 
    def makeStatementID(self): 
-      self.counter += 1
-      t = str(int(time.time()))
-      return BNode('t' + t + 'statement' + str(self.counter))
+      return BNode()
 
    def flatten(self, s, p, o, f): 
       fs = self.makeStatementID()
