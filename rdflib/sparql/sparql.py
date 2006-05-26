@@ -18,9 +18,9 @@ from rdflib.Literal     import Literal
 from rdflib.BNode       import BNode
 from rdflib.URIRef      import URIRef
 from rdflib.exceptions  import Error
-from rdflib.util       import check_predicate, check_subject, check_object
+from rdflib.util        import check_predicate, check_subject, check_object
 
-from graphPattern import GraphPattern
+from graphPattern       import GraphPattern
 
 ################
 #This was used in a previous, work version of the
@@ -34,7 +34,6 @@ import sys, sets, datetime
 from types import *
 
 Debug = False
-
 
 ##########################################################################
 # XML Schema datatypes
@@ -84,7 +83,79 @@ class SPARQLError(Error) :
     def __init__(self,msg):
         Error.__init__(self, ("SPARQL Error: %s." % msg))
 
+class Unbound :
+    """A class to encapsulate a query variable. This class should be used in conjunction with L{BasicGraphPattern<graphPattern.BasicGraphPattern>}."""
+    def __init__(self,name) :
+        """
+        @param name: the name of the variable (without the '?' character)
+        @type name: unicode or string
+        """
+        from sparql import _questChar, Debug    
+        if isinstance(name,basestring) :
+            self.name     = _questChar + name
+            self.origName = name
+        else :
+            raise SPARQLError("illegal argument, variable name must be a string or unicode")
+            
+    def __repr__(self) :
+        retval  = "?%s" % self.origName
+        return retval
         
+    def __str__(self) :
+        return self.__repr__()
+
+class PatternBNode :
+    """A class to encapsulate a BNode in a Pattern. This class should be used in conjunction 
+    with L{BasicGraphPattern<graphPattern.BasicGraphPattern>}.
+    
+    Usage of this class may be necessary when the query is used for a L{graph construction<Query.construct>}.
+    """
+    def __init__(self,name) :
+        """
+        @param name: the name of the bnode (without the '_:' characters)
+        @type name: unicode or string
+        """
+        from sparql import _questChar, Debug    
+        if isinstance(name,basestring) :
+            self.name     = name
+        else :
+            raise SPARQLError("illegal argument, variable name must be a string or unicode")
+        
+    def __repr__(self) :
+        retval  = "_:%s" % self.name
+        return retval
+    
+    def __str__(self) :
+        return self.__repr__()
+
+def _variablesToArray(variables,name='') :
+    """Turn an array of Variables or query strings into an array of query strings. If the 'variables'
+    is in fact a single string or Variable, then it is also put into an array.
+    
+    @param variables: a string, a unicode, or a Variable, or an array of those (can be mixed, actually). As a special case,
+    if the value is "*", it returns None (this corresponds to the wildcard in SPARQL)
+    @param name: the string to be used in the error message
+    """
+    if isinstance(variables,basestring) :
+        if variables == "*" :
+            return None
+        else :
+            return [variables]
+    elif isinstance(variables,Unbound) :
+        return [variables.name]
+    elif type(variables) == list or type(variables) == tuple :
+        retval = []
+        for s in variables :
+            if isinstance(s,basestring) :
+                retval.append(s)
+            elif isinstance(s,Unbound) :
+                retval.append(s.name)
+            else :
+                raise SPARQLError("illegal type in '%s'; must be a string, unicode, or a Variable" % name)
+    else :
+        raise SPARQLError("'%s' argument must be a string, a Variable, or a list of those" % name)
+    return retval
+
 def _schemaType(v) :
     """Return an XML Schema type starting from a Python variable. An
     exception is raised if the variable does not corresponds to any of
@@ -198,7 +269,8 @@ def _createInitialBindings(pattern) :
     bindings = {}
     for c in pattern.unbounds :
         bindings[c] = None
-    return bindings
+    return bindings            
+            
     
 def _processResults(select,arr) :
     '''
@@ -208,12 +280,12 @@ def _processResults(select,arr) :
     the order of the original select}. This method is the last step of
     processing by processing these values to produce the right result.
     
-    
     @param select: the original selection list. If None, then the
-    binding should be taken as a whole (this corresponds to the SELECT
-    * feature of SPARQL) @param arr: the array of bindings @type arr:
-    an array of dictionaries @return: a list of tuples with the
-    selection results
+    binding should be taken as a whole (this corresponds to the SELECT * feature of SPARQL) 
+    @param arr: the array of bindings 
+    @type arr:
+    an array of dictionaries 
+    @return: a list of tuples with the selection results
     '''
     retval = []
     if select :
@@ -550,7 +622,80 @@ class Query :
         """
         return Query(None,self.triples,self,other)
         
-    def select(self,selection,distinct=True,limit=None) :
+    def _getFullBinding(self) :
+        """Retrieve the full binding, ie, an array of binding dictionaries
+        """
+        if self.parent1 != None and self.parent2 != None :
+            return self.parent1._getFullBinding() + self.parent2._getFullBinding()
+        else :
+            # remember: returnResult returns an array of dictionaries
+            return self.top.returnResult(None)
+        
+    def _orderedSelect(self,selection,orderedBy,orderDirection) :
+        """
+        The variant of the selection (as below) that also includes the sorting. Because that is much less efficient, this is 
+        separated into a distinct method that is called only if necessary. It is called from the L{select<select>} method.
+		
+        Because order can be made on variables that are not part of the final selection, this method retrieves a I{full}
+        binding from the result to be able to order it (whereas the core L{select<select>} method retrieves from the result
+        the selected bindings only). The full binding is an array of (binding) dictionaries; the sorting sorts this array
+        by comparing the bound variables in the respective dictionaries. Once this is done, the final selection is done.
+
+        @param selection: Either a single query string, or an array or tuple thereof.        
+        @param orderBy: either a function or a list of strings (corresponding to variables in the query). If None, no sorting occurs
+        on the results. If the parameter is a function, it must take two dictionary arguments (the binding dictionaries), return 
+        -1, 0, and 1, corresponding to smaller, equal, and greater, respectively.
+        @param orderDirection: if not None, then an array of integers of the same length as orderBy, with values the constants
+        ASC or DESC (defined in the module). If None, an ascending order is used.
+        @return: selection results
+        @rtype: list of tuples
+        @raise SPARQLError: invalid sorting arguments
+        """
+        fullBinding = self._getFullBinding()
+        if type(orderedBy) is FunctionType :
+            _sortBinding = orderedBy
+        else :
+            orderKeys = _variablesToArray(orderedBy,"orderBy")
+            # see the direction
+            oDir = None # this is just to fool the interpreter's error message
+            if orderDirection is None :
+                oDir = [ True for i in xrange(0,len(orderKeys)) ]
+            elif type(orderDirection) is BooleanType :
+                oDir = [ orderDirection ]
+            elif type(orderDirection) is not ListType and type(orderDirection) is not TupleType :
+                raise SPARQLError("'orderDirection' argument must be a list")
+            elif len(orderDirection) != len(orderKeys) :
+                raise SPARQLError("'orderDirection' must be of an equal length to 'orderBy'")
+            else :
+                oDir = orderDirection
+            def _sortBinding(b1,b2) :
+                """The sorting method used by the array sort, with return values as required by the python run-time
+                The to-be-compared data are dictionaries of bindings
+                """
+                for i in xrange(0,len(orderKeys)) :
+					# each key has to be compared separately. If there is a clear comparison result on that key
+					# then we are done, but when that is not the case, the next in line should be used
+                    key       = orderKeys[i]
+                    direction = oDir[i]
+                    if key in b1 and key in b2 :
+                        val1 = b1[key]
+                        val2 = b2[key]
+                        if val1 != None and val2 != None :
+                            if direction :
+                                if   val1 < val2 : return -1
+                                elif val1 > val2 : return 1
+                            else :
+                                if   val1 > val2 : return -1
+                                elif val1 < val2 : return 1
+                return 0
+        # get the full Binding sorted
+        fullBinding.sort(_sortBinding)
+        # remember: _processResult turns the expansion results (an array of dictionaries)
+        # into an array of tuples in the right, original order
+        retval = _processResults(selection,fullBinding)
+        return retval
+        
+    def select(self,selection,distinct=True,limit=None,orderBy=None,orderAscend=None,offset=0) :
         """
         Run a selection on the query.
         
@@ -559,6 +704,13 @@ class Query :
         @type distinct: Boolean
         @param limit: if set to an integer value, the first 'limit' number of results are returned; all of them otherwise
         @type limit: non negative integer
+        @param orderBy: either a function or a list of strings (corresponding to variables in the query). If None, no sorting occurs
+        on the results. If the parameter is a function, it must take two dictionary arguments (the binding dictionaries), return 
+        -1, 0, and 1, corresponding to smaller, equal, and greater, respectively.
+        @param orderAscend: if not None, then an array of booelans of the same length as orderBy, True for ascending and False
+		for descending. If None, an ascending order is used.
+        @offset the starting point of return values in the array of results. Obviously, this parameter makes real sense if
+        some sort of order is defined.
         @return: selection results
         @rtype: list of tuples
         @raise SPARQLError: invalid selection argument
@@ -572,30 +724,49 @@ class Query :
             if len(lst) <= 1 :
                 return lst
             else :
-                return list(sets.Set(lst))
+                # must be careful! Using the quick method of Sets destroy the order. Ie, if this was ordered, then
+                # a slower but more secure method should be used
+                if orderBy != None :
+                    retval = []
+                    for i in xrange(0,len(lst)) :
+                        v = lst[i]
+                        skip = False
+                        for w in retval :
+                            if w == v :
+                                skip = True
+                                break
+                        if not skip :
+                            retval.append(v)
+                    return retval
+                else :
+                    return list(sets.Set(lst))
         # Select may be a single query string, or an array/tuple thereof
-        if isinstance(selection,basestring) :
-            if selection == "*" :
-                selectionF = None
-            else :
-                selectionF = (selection,)
-        elif type(selection) == list or type(selection) == tuple :
-            selectionF = selection
-        else :
-            raise SPARQLError("'selection' argument must be a string, a list, or a tuple")
+        selectionF = _variablesToArray(selection,"selection")
+            
+        if type(offset) is not IntType or offset < 0 :
+            raise SPARQLError("'offset' argument is invalid")
+            
+        if limit != None :                
+            if type(limit) is not IntType or limit < 0 :
+                raise SPARQLError("'offset' argument is invalid")
 
-        if self.parent1 != None and self.parent2 != None :
-            results = self.parent1.select(selectionF) + self.parent2.select(selectionF)
-        else :
-            # remember: _processResult turns the expansion results (an array of dictionaries)
-            # into an array of tuples in the right, original order
-            results = _processResults(selectionF,self.top.returnResult(selectionF))
+        if orderBy != None :
+            results = self._orderedSelect(selectionF,orderBy,orderAscend)
+        else :           
+            if self.parent1 != None and self.parent2 != None :
+                results = self.parent1.select(selectionF) + self.parent2.select(selectionF)
+            else :
+                # remember: _processResult turns the expansion results (an array of dictionaries)
+                # into an array of tuples in the right, original order
+                results = _processResults(selectionF,self.top.returnResult(selectionF))
         if distinct :
             retval = _uniquefyList(results)
         else :
             retval = results
-        if limit != None and limit < len(retval) :
-            return retval[0:limit]
+        if limit != None :
+            return retval[offset:limit+offset]
+        elif offset > 0 :
+            return retval[offset:]
         else :
             return retval
             
@@ -817,8 +988,8 @@ class _SPARQLNode:
         @param select: the array of unbound variables in the original
         select that do not appear in any of the optionals. If None,
         the full binding should be considered (this is the case for
-        the SELECT * feature of SPARQL) @returns: an array of
-        dictionaries with non-None bindings.
+        the SELECT * feature of SPARQL) 
+        @returns: an array of dictionaries with non-None bindings.
         """
         if len(self.children) > 0 :
             # combine all the results of all the kids into one array

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #
-# $Date: 2005/05/19 05:33:18 $, by $Author: ivan $, $Revision: 1.12 $
+# $Date: 2005/11/04 14:06:36 $, by $Author: ivan $, $Revision: 1.1 $
 # The documentation of the module, hence the convention for the documentation of methods and classes,
 # is based on the epydoc tool.  This tool parses Python source files
 # and generates API descriptions XHTML. 
@@ -11,87 +11,10 @@
 # 
 #
 """
-Introduction
-============
-
-This package is a utility layer on the top of the excellent RDF
-Library, U{RDFLib<http://rdflib.net>}, created by Daniel Krech.  The
-documentation for the modules in the package are in:
-    
-
-  - L{myTripleStore<rdflibUtils.myTripleStore>}: some simple utilities
-    on top of the RDFLib triple store
-
-  - the core of a L{SPARQL API<rdflibUtils.sparql>} the core of a
-    implementation on top the triple store (sparql-p)
-
-  - L{Graph Patterns<rdflibUtils.graphPattern>} for the SPARQL API
-
-  - L{Operators<rdflibUtils.sparqlOperators>} for SPARQL
-
-Utilities
-=========
-
-Some of the utilities are:
-
-  -
-  L{getPredicateValue<rdflibUtils.myTripleStore.myTripleStore.getPredicateValue>}:
-  just get the predicate value for a (subject,predicate) pair. The
-  situation where one knows from the context that there is only one
-  value anyway occurs quite often, and this saves to write always the
-  same cycle/exception handling stuff to do that.
-
-  -
-    L{getPredicateSubject<rdflibUtils.myTripleStore.myTripleStore.getPredicateSubject>}:
-    the obvious counterpart of getPredicateSubject</li>
-
-  - L{getSeq<rdflibUtils.myTripleStore.myTripleStore.getSeq>}:
-  unfortunately, RDFLib does not handle Seq, it just returns an object
-  of type Seq and then one can get a bunch of _1, _2, etc, predicate
-  values. Due to the way rdflib works, a triple search would return
-  these in an arbitrary order. getSeq returns a (Python) array that
-  sorts the rdf:li-s, essentially: the user can get to the resources
-  in the order as they were defined in the original RDF.
-
-  -
-    L{unfoldCollection<rdflibUtils.myTripleStore.myTripleStore.unfoldCollection>}:
-    does what it says, ie, creates a Python list from a collection.
-  
-  -
-  L{clusterForward<rdflibUtils.myTripleStore.myTripleStore.clusterForward>}:
-  using a seed as a subject, generates a separate Triple Store with
-  the transitive closure of the seed.
-  
-  -
-  L{clusterBackward<rdflibUtils.myTripleStore.myTripleStore.clusterBackward>}:
-  using a seed as a object, generates a separate Triple Store with the
-  transitive closure of the seed.
-  
-  - L{cluster<rdflibUtils.myTripleStore.myTripleStore.cluster>}: the
-    sum of the forward and backward clusters
-            
-  - __add__, __mul__,__sub__ methods for set theoretical union,
-  intersection and substraction. Note that the original implementation
-  already has __iadd__ and __isub__, meaning that both the a = b+c and
-  a+=b type arithmetics are now in place for addition and substraction
-  (but not a *=b! This doe not really make sense...).  Note also that
-  the superclass also implements __eq__, ie, triple sets can be
-  compared.
-  
-  - L{extendRdfs<rdflibUtils.myTripleStore.myTripleStore.extendRdfs>}:
-    a subset of the full RDFS entailement rules.
-
-SPARQL
-======
 
 For a general description of the SPARQL API, see the separate, more
 complete
-U{description<http://dev.w3.org/cvsweb/%7Echeckout%7E/2004/PythonLib-IH/Doc/sparqlDesc.html>}. Note
-that the L{SPARQL<rdflibUtils.sparql.SPARQL>} class is a superclass of
-L{myTripleStore<rdflibUtils.myTripleStore.myTripleStore>}, ie, by
-referring to the latter, all SPARQL functionalities are automatically
-included. Their separation into separate classes is for a better
-maintainability only.
+U{description<http://dev.w3.org/cvsweb/%7Echeckout%7E/2004/PythonLib-IH/Doc/sparqlDesc.html>}.
 
 Variables, Imports
 ==================
@@ -102,7 +25,7 @@ following imports only::
     
     from rdflibUtils   import myTripleStore
     from rdflibUtils   import retrieveRDFFiles
-    from rdflibUtils   import UniquenessError, SPARQLError
+    from rdflibUtils   import SPARQLError
     from rdflibUtils   import GraphPattern
 
 The module imports and/or creates some frequently used Namespaces, and
@@ -110,14 +33,6 @@ these can then be imported by the user like::
     
     from rdflibUtils import ns_rdf
     
-These are:
-    
-
- - ns_rdf:  the RDF Namespace
- - ns_rdfs: the RDFS Namespace
- - ns_dc:   the Dublic Core namespace
- - ns_owl:  the OWL namespace
-
 Finally, the package also has a set of convenience string defines for
 XML Schema datatypes (ie, the URI-s of the datatypes); ie, one can
 use::
@@ -160,6 +75,11 @@ History
  C{Alt} and C{Bag} the same way as C{Seq} - added also methods to
  I{add} collections and containers to the triple store, not only
  retrieve them
+ 
+ - Version 2.1: adapted to the inclusion of the code into rdflib, thanks to Michel Pelletier
+ 
+ - Version 2.2: added the sorting possibilities; introduced the Unbound class and have a better
+ interface to patterns using this (in the BasicGraphPattern class)
     
 @author: U{Ivan Herman<http://www.ivan-herman.net>}
 
@@ -168,12 +88,12 @@ U{W3C Software License<http://www.w3.org/Consortium/Legal/2002/copyright-softwar
 
 @contact: Ivan Herman, ivan@ivan-herman.net
 
-@version: 2.02
+@version: 2.2
 
 
 """
 
-__version__ = "2.02"
+__version__ = "2.2"
 
 # import sys
 
@@ -191,11 +111,11 @@ from rdflib.exceptions  import Error
 from sparqlGraph import ns_dc, ns_owl
 
 # The 'visible' side of sparqlGraph
-from sparqlGraph import SPARQLGraph, UniquenessError
+from sparqlGraph import SPARQLGraph
 
 # The 'visible' side of sparql
-from graphPattern import GraphPattern
-from sparql import SPARQLError
+from graphPattern import GraphPattern, BasicGraphPattern
+from sparql import SPARQLError, Unbound, PatternBNode
 from sparql import Query
 # Key to be used in global SPARQL operators to access the triple store corresponding to the background graph
 from sparql import _graphKey as graphKey
@@ -216,121 +136,6 @@ from sparqlOperators import *
 
 from types import *
 
-############################################################################################
-
-def retrieveRDFFiles(rdfFiles, silent = False, extendRdfs=False, graph = None) :
-    """
-    Retrieve a list of RDF files (encoded in RDF/XML). The rdflib
-    parser may raise Parse exceptions (see rdflib documentation).
-    
-    @param rdfFiles: either a string (for one file) or a list of
-    strings
-
-    @param silent: if True, a message is printed after having loaded
-    an RDF file
-
-    @type silent: Boolean
-
-    @param extendRdfs: whether the mini-RDFS entailement should be
-    performed right after the creation of the triple store (ie,
-    whether the
-    L{extendRdfs<rdflibUtils.sparqlGraph.sparqlGraph.extendRdfs>}
-    method should be invoked or not).  The user can call that method
-    later if the triple store is built up in several steps
-
-    @type extendRdfs: Boolean
-
-    @param graph: if not None, it is considered to be an existing
-    triple store (for incremental parsing)
-
-    @rtype: L{sparqlGraph<rdflibUtils.sparqlGraph.sparqlGraph>}
-    """
-    if graph == None :
-        data = SPARQLGraph()
-    else :
-        data = graph
-    if isinstance(rdfFiles,basestring) :
-        files = [rdfFiles]
-    else :
-        files = rdfFiles
-    for fileN in files :
-        if silent == False :
-            print "Load %s..." % (fileN,)
-        data.load(fileN)
-        if silent == False :
-            print "%s loaded" % (fileN,)
-    if extendRdfs :
-        data.extendRdfs()
-    return data
-
-def retrieveRDFData(rdfDirs,rdfFiles, silent = False, extendRdfs=False, graph = None) :
-    """
-    Retrieve and parse list of RDF files (encoded in RDF/XML),
-    collecting I{all} files with an '.rdf' suffix from a set of
-    directories, plus a number of explicit RDF files.
-    
-    @param rdfDirs: either a string (for one directory) or a list of
-    directory paths. Can be set to None (in which case it will be
-    ignored). Each directory is searched for RDF/XML files to be
-    parsed and added to the triple store
-
-    @param rdfFiles: either a string (for one file) or a list of
-    strings for the paths of additional RDF files
-
-    @param silent: if True, a message is printed after having loaded
-    an RDF file
-
-    @type silent: Boolean
-
-    @param extendRdfs: whether the mini-RDFS entailement should be
-    performed right after the creation of the triple store (ie,
-    whether the
-    L{extendRdfs<rdflibUtils.myTripleStore.myTripleStore.extendRdfs>}
-    method should be invoked or not).  The user can call that method
-    later if the triple store is built up in several steps
-
-    @type extendRdfs: Boolean
-
-    @param graph: if not None, it is considered to be an existing
-    triple store (for incremental parsing)
-
-    @returns: a (store,errmessage) tuple. The store contains all
-    tuples that could be parsed in; errmessage is a list of possible
-    sys.exc_info() messages with exceptions that might have been
-    raised during parsing.
-
-    @rtype: (L{myTripleStore<rdflibUtils.myTripleStore.myTripleStore>},errmessage)
-    """
-    import os
-    files = []
-    if rdfDirs != None :
-        if type(rdfDirs) == str :
-            dirs = [rdfDirs]
-        else :
-            dirs = rdfDirs
-        for path in dirs :
-            if os.access(path,os.R_OK) == 1 :
-                for f in os.listdir(path) :
-                    # at some point, hopefully: if f.endswith(".rdf") or f.endswith(".n3")
-                    if f.endswith(".rdf") :
-                        files.append(path + "/" + f)
-    if type(rdfFiles) == str :
-        files = files + [rdfFiles]
-    else :
-        files = files + rdfFiles
-        
-    # cycle through the individual files
-    store = SPARQLGraph()
-    errorMessages = []
-    for rdffile in files :
-        try :
-            retrieveRDFFiles(rdffile,silent,False,store)
-        except :
-            errorMessages.append(sys.exc_info())
-    if extendRdfs :
-        store.extendRdfs()
-    return (store,errorMessages)
-    
 
 ############################################################################################
 #
@@ -347,7 +152,7 @@ def generateCollectionConstraint(triplets,collection,item) :
     plugged into a sparql request.
       
     @param triplets: the
-    L{myTripleStore<rdflibUtils.myTripleStore.myTripleStore>} instance
+    L{SPARQLGraph<sparqlGraph.SPARQLGraph>} instance
 
     @param collection: is either a query string (that has to be bound
     by the query) or an RDFLib Resource representing the collection
@@ -358,10 +163,10 @@ def generateCollectionConstraint(triplets,collection,item) :
 
     @rtype: a function suitable as a sparql filter
 
-    @raises rdflibUtils.sparql.SPARQLError: if the collection or the
+    @raises SPARQLError: if the collection or the
     item parameters are illegal (not valid resources for a collection
     or an object)
-    """
+    """	
     return isOnCollection(collection,item)
 
 ############################################################################################

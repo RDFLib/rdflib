@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 #
-# $Date: 2005/04/01 07:09:04 $, by $Author: ivan $, $Revision: 1.1 $
+# $Date: 2005/11/04 14:06:36 $, by $Author: ivan $, $Revision: 1.1 $
 #
 ##
 # API for the SPARQL operators. The operators (eg, 'lt') 
@@ -28,7 +28,7 @@
 
 import sys, os, time, datetime
 
-from sparql import _schemaType, _questChar, SPARQLError, JunkResource
+from sparql             import _schemaType, _questChar, SPARQLError, JunkResource, Unbound
 from rdflib.Literal     import Literal
 from rdflib.BNode       import BNode
 from rdflib.URIRef      import URIRef
@@ -74,7 +74,7 @@ _conversions = {
 ##
 # Boolean test whether this is a a query string or not
 # @param v the value to be checked
-# @return True if it is a query string
+# @return True if it is a query string 
 def queryString(v) :
     return isinstance(v,basestring) and len(v) != 0 and v[0] == _questChar
 
@@ -92,15 +92,19 @@ def getLiteralValue(v) :
 # Returns a <em>value retrieval function</em>. The return value can be plugged in a query; it would return
 # the value of param directly if param is a real value, and the run-time value if param is a query string of the type
 # "?xxx". If no binding is defined at the time of call, the return value is None
-# @param param query string or real value
+# @param param query string, Unbound instance, or real value
 # @return a function taking one parameter (the binding directory)
 def getValue(param) :
-    unBound = queryString(param)
-    if not unBound :
-        if isinstance(param,Literal) :
-            value = getLiteralValue(param)
-        else :
-            value = param
+    if isinstance(param,Unbound) :
+        param = param.name
+        unBound = True
+    else :
+        unBound = queryString(param)
+        if not unBound :
+            if isinstance(param,Literal) :
+                value = getLiteralValue(v)
+            else :
+                value = param
     def f(bindings) :
         if unBound :
             val = bindings[param]
@@ -114,7 +118,7 @@ def getValue(param) :
     
 ##
 # Operator for '&lt;'
-# # @param a value or query string
+# @param a value or query string
 # @param b value or query string
 # @return comparison method
 def lt(a,b) :
@@ -206,15 +210,28 @@ def eq(a,b) :
                 sys.excepthook(typ,val,traceback)
             return False
     return f
+
+
+def __getQueryString(v) :
+    if isinstance(v,Unbound) :
+        return v.name
+    elif queryString(v) :
+        return v
+    else :
+        return None
+
     
 ##
 # Is the variable bound
 # @param a value or query string
 # @return check method
 def bound(a) :
+    v = __getQueryString(a)
     def f(bindings) :
-        if queryString(a) and a in bindings :
-            val = bindings[a]
+        if v == None :
+            return False
+        if v in bindings :
+            val = bindings[v]
             return not (val == None or val == JunkResource)
         else :
             return False
@@ -225,9 +242,12 @@ def bound(a) :
 # @param a value or query string
 # @return check method
 def isURI(a) :
+    v = __getQueryString(a)
     def f(bindings) :
+        if v == None :
+            return False
         try :
-            val = bindings[a]
+            val = bindings[v]
             if val == None or val == JunkResource :
                 return False
             else :
@@ -237,13 +257,23 @@ def isURI(a) :
     return f
 
 ##
+# Is the variable bound to a IRIRef (this is just an alias for URIRef)
+# @param a value or query string
+# @return check method
+def isIRI(a) :
+    return isURI(a)
+    
+##
 # Is the variable bound to a Blank Node
 # @param a value or query string
 # @return check method
 def isBlank(a) :
+    v = __getQueryString(a)
     def f(bindings) :
+        if v == None :
+            return False
         try :
-            val = bindings[a]
+            val = bindings[v]
             if val == None or val == JunkResource :
                 return False
             else :
@@ -257,9 +287,12 @@ def isBlank(a) :
 # @param a value or query string
 # @return check method
 def isLiteral(a) :
+    v = __getQueryString(a)
     def f(bindings) :
+        if v == None :
+            return False
         try :
-            val = bindings[a]
+            val = bindings[v]
             if val == None or val == JunkResource :
                 return False
             else :
@@ -273,9 +306,12 @@ def isLiteral(a) :
 # @param a value or query string
 # @return check method
 def str(a) :
+    v = __getQueryString(a)
     def f(bindings) :
+        if v == None :
+            return ""
         try :
-            val = bindings[a]
+            val = bindings[v]
             if val == None or val == JunkResource :
                 return ""
             else :
@@ -289,9 +325,11 @@ def str(a) :
 # @param a value or query string
 # @return check method
 def lang(a) :
+    v = __getQueryString(a)
     def f(bindings) :
+        if v == None: return ""
         try :
-            val = bindings[a]
+            val = bindings[v]
             if val == None or val == JunkResource :
                 return ""
             else :
@@ -305,9 +343,11 @@ def lang(a) :
 # @param a value or query string
 # @return check method
 def datatype(a) :
+    v = __getQueryString(a)
     def f(bindings) :
+        if v == None : return ""
         try :
-            val = bindings[a]
+            val = bindings[v]
             if val == None or val == JunkResource :
                 return ""
             else :
@@ -336,10 +376,13 @@ def isOnCollection(collection,item) :
     then turned into a literal run-time.
     The method returns an adapted method.
     """
-    from rdflib.Store import check_predicate, check_subject, check_object
+    from rdflib.Graph import check_predicate, check_subject, check_object
     from sparql import _questChar
     collUnbound = False
-    if queryString(collection) :
+    if isinstance(collection,Unbound) :
+        collUnbound = True
+        collection  = collection.name
+    elif queryString(collection) :
         # just keep 'collection', no reason to reassign
         collUnbound = True
     else:
@@ -349,7 +392,10 @@ def isOnCollection(collection,item) :
             # if we got here, this is a valid collection resource
         except :
             raise SPARQLError("illegal parameter type, %s" % collection)
-    if queryString(item) :
+    if isinstance(item,Unbound) :
+        queryItem = item.name
+        itUnbund  = True
+    elif queryString(item) :
         queryItem = item
         itUnbound = True
     else :
@@ -368,7 +414,7 @@ def isOnCollection(collection,item) :
             else :
                 it = queryItem
             triplets = bindings[_graphKey]                
-            return it in triplets.unfoldCollection(coll)
+            return it in triplets.items(coll)
         except :
             # this means that the binding is not available. But that also means that
             # the global constraint was used, for example, with the optional triplets;

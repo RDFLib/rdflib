@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 #
-# $Date: 2005/05/19 05:33:18 $, by $Author: ivan $, $Revision: 1.2 $
+# $Date: 2005/11/04 14:06:36 $, by $Author: ivan $, $Revision: 1.1 $
 #
 """
 Graph pattern class used by the SPARQL implementation    
@@ -15,10 +15,6 @@ from rdflib.URIRef      import URIRef
 from types import *
 
 
-def _isBnode(r) :
-    if r and isinstance(r,basestring) and r[0] == "_" :
-        return True
-    return False
 
 class GraphPattern :
     """
@@ -38,6 +34,7 @@ class GraphPattern :
         elif type(patterns) == tuple :
             self.addPattern(patterns)
         else :
+            from sparql import SPARQLError        
             raise SPARQLError("illegal argument, pattern must be a tuple or a list of tuples")
     
     def _generatePattern(self,tupl) :
@@ -54,6 +51,10 @@ class GraphPattern :
         @param tupl: either a three or four element tuple
         """
         from sparql import _questChar, SPARQLError, _createResource, _isResQuest, Debug        
+        def _isBnode(r) :
+            if r and isinstance(r,basestring) and len(r) > 2 and r[0] == "_" and r[1] == ":" :
+                return True
+            return False
         if type(tupl) != tuple :
             raise SPARQLError("illegal argument, pattern must be a tuple, got %s" % type(tupl))
         if len(tupl) != 3 and len(tupl) != 4 :
@@ -70,7 +71,9 @@ class GraphPattern :
                     self.unbounds.append(c)
                 final.append(c)
             elif _isBnode(c) :
-                final.append(c)
+                if not c in self.bnodes :
+                    self.bnodes[c] = BNode()
+                final.append(self.bnodes[c])
             else :
                 final.append(_createResource(c))
         final.append(f)
@@ -197,17 +200,27 @@ class GraphPattern :
         @param bindings: dictionary
         """
         from sparql import _questChar, _isResQuest, Debug    
-        self.bnodes = {}
+        localBnodes = {}
+        for c in self.bnodes :
+            localBnodes[c] = BNode()
+        print self.bnodes
         def bind(st) :
+            print st, type(st)
             if _isResQuest(st) :
                 if st in bindings :
                     return bindings[st]
                 else :
-                    return None
-            elif _isBnode(st) :
-                if not st in self.bnodes :
-                    self.bnodes[st] = BNode()
-                return self.bnodes[st]
+					if isinstance(self,GraphPattern2) :
+						return st
+					else :
+						return None
+            elif isinstance(st,BNode) :
+                for c in self.bnodes :
+                    if self.bnodes[c] == st :
+                        # this is a BNode that was created as part of building up the pattern
+                        return localBnodes[c]
+                # if we got here, the BNode comes from somewhere else...
+                return st
             else :
                 return st
             
@@ -258,19 +271,67 @@ class GraphPattern :
         @rtype: Boolean
         """
         return len(self.patterns) == 0
-            
 
+		
+class BasicGraphPattern(GraphPattern) :
+    """One, justified, problem with the current definition of L{GraphPattern<GraphPattern>} is that it
+    makes it difficult for users to use a literal of the type "?XXX", because any string beginning
+    with "?" will be considered to be an unbound variable. The only way of doing this is that the user
+    explicitly creates a Literal object and uses that as part of the pattern.
+    
+    This class is a superclass of L{GraphPattern<GraphPattern>} which does I{not} do this, but requires the 
+    usage of a separate variable class instance"""
+
+    def __init__(self,patterns=[]) :
+        """
+        @param patterns: an initial list of graph pattern tuples
+        """
+        GraphPattern.__init__(self,patterns)	
+	
+    def _generatePattern(self,tupl) :
+        """
+        Append a tuple to the local patterns. Possible type literals
+        are converted to real literals on the fly.  Each tuple should
+        be contain either 3 elements (for an RDF Triplet pattern) or
+        four, where the fourth element is a per-pattern constraint
+        (filter). (The general constraint of SPARQL can be optimized
+        by assigning a constraint to a specific pattern; because it
+        stops the graph expansion, its usage might be much more
+        optimal than the the 'global' constraint).
+        
+        @param tupl: either a three or four element tuple
+        """
+        from sparql import SPARQLError,Unbound, PatternBNode, Debug, _createResource        
+        if type(tupl) != tuple :
+            raise SPARQLError("illegal argument, pattern must be a tuple, got %s" % type(tupl))
+        if len(tupl) != 3 and len(tupl) != 4 :
+            raise SPARQLError("illegal argument, pattern must be a tuple of 3 or 4 element, got %s" % len(tupl))
+        if len(tupl) == 3 :
+            (s,p,o)   = tupl
+            f         = None
+        else :
+            (s,p,o,f) = tupl
+        final=[]
+        for c in (s,p,o) :
+            if isinstance(c,Unbound) :
+                if not c.name in self.unbounds :
+                    self.unbounds.append(c.name)
+                final.append(c.name)
+            elif isinstance(c,PatternBNode) :
+                if c.name not in self.bnodes :
+                    self.bnodes[c.name] = BNode()
+                final.append(self.bnodes[c.name])
+            else :
+                final.append(_createResource(c))
+        final.append(f)
+        return tuple(final)
+		
 if __name__ == '__main__' :
-    g1 = GraphPattern([("a","?b",24)])
-    g2 = GraphPattern([("q","?r",24333)])
-    g3 = GraphPattern([("?r","?c",12345)])
-    print g1 + g2
-    g1 += g3
-    print g1
-    q = [("?y","?h",2222),("?b","?h",99999)]
-    g2.insertPatterns(q)
-    print g2
-            
+    from sparql import Unbound
+    v1 = Unbound("a")
+    g = BasicGraphPattern([("a","?b",24),("?r","?c",12345),(v1,"?c",3333)])
+    print g
+           
         
     
                 
