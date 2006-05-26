@@ -1,4 +1,5 @@
 import SPARQLParserc as SPARQLParser
+from SPARQLEvaluate import Evaluate, NotImplemented
 
 def CreateSPARQLParser():
     return SPARQLParser.new()    
@@ -11,3 +12,4 @@ def Parse(query,debug = False):
         except:
             p.debug = 1    
     return p.parse(unicode(query,'utf-8'))
+
