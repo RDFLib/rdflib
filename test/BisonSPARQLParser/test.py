@@ -1,4 +1,13 @@
 from rdflib.sparql.bison import Parse
+from rdflib.sparql.bison.SPARQLEvaluate import Evaluate
+from rdflib import plugin
+from rdflib.store import Store
+from rdflib.Graph import Graph, ConjunctiveGraph
+import os
+from cStringIO import StringIO
+
+STORE='MySQL'
+configString = 'user=root,password=,host=localhost,db=test'
 
 #class TestClassAndType(unittest.TestCase):
 #    
@@ -11,7 +20,7 @@ from rdflib.sparql.bison import Parse
 #    def testClass1(self):
 
 test = [
-    
+    'data/Optional/q-opt-1.rq',
 ]
 
 tests2Skip = [
@@ -67,11 +76,19 @@ tests2Skip = [
 ]
 
 DEBUG = False
-    
+#plugin.get(store, Store)()    
 def testBasic():    
     from glob import glob     
     from sre import sub
-    for testFile in glob('data/*/*.rq'):
+    for testFile in test:#glob('data/*/*.rq'):
+        prefix = testFile.split('.rq')[-1]        
+        if os.path.exists(prefix+'.ttl'):
+            source = open(prefix+'.ttl').read()
+        elif os.path.exists('/'.join(testFile.split('/')[:-1]+['data.ttl'])):
+            source = open('/'.join(testFile.split('/')[:-1]+['data.ttl'])).read()
+        else:
+            source = None
+                       
         if testFile.startswith('data/NegativeSyntax'):
             try:
                 query = open(testFile).read()        
@@ -86,9 +103,21 @@ def testBasic():
         print "### %s ###"%testFile        
         print query
         p = Parse(query,DEBUG)
-        print p.prolog        
-        print p.query
-        
+        if source:
+            print "### Source Graph: ###"
+            print source
+            store = plugin.get(STORE,Store)()
+            rt = store.open(configString,create=False)
+            if rt == -1:
+                store.open(configString)
+            else:
+                store.destroy(configString)
+                store.open(configString)
+                
+            g=ConjunctiveGraph(store)
+            g.parse(StringIO(source),format='n3')
+            print store
+            print Evaluate(store,p)
 if __name__ == '__main__':
     testBasic()
 #    suite1 = unittest.makeSuite(TestClassAndType)
