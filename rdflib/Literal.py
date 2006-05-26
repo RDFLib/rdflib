@@ -6,7 +6,59 @@ else:
 
 from rdflib.Identifier import Identifier
 from rdflib.exceptions import Error
+from datetime import date,time,datetime
+import base64
 
+XSD_NS = u'http://www.w3.org/2001/XMLSchema#'
+
+#Casts a python datatype to a tuple of the lexical value and a datatype URI (or None)
+def castPythonToLiteral(obj):
+    for pType,(castFunc,dType) in PythonToXSD.items():
+        if isinstance(obj,pType):
+            if castFunc:
+                return castFunc(obj),dType
+            elif dType:
+                return obj,dType
+            else:
+                return obj,None
+
+#Mappings from Python types to XSD datatypes and back (burrowed from sparta)
+PythonToXSD = {
+    basestring : (None,None),
+    float      : (None,XSD_NS+u'float'),
+    int        : (None,XSD_NS+u'int'),
+    long       : (None,XSD_NS+u'long'),    
+    bool       : (None,XSD_NS+u'boolean'),
+    date       : (lambda i:i.isoformat(),XSD_NS+u'date'),
+    time       : (lambda i:i.isoformat(),XSD_NS+u'time'),
+    datetime   : (lambda i:i.isoformat(),XSD_NS+u'dateTime'),
+}
+
+XSDToPython = {  
+    XSD_NS+u'string'             : (None,None),
+    XSD_NS+u'normalizedString'   : (None,None),
+    XSD_NS+u'token'              : (None,None),
+    XSD_NS+u'language'           : (None,None),
+    XSD_NS+u'boolean'            : (None, lambda i:i.lower() in ['1','true']),
+    XSD_NS+u'decimal'            : (float,None), 
+    XSD_NS+u'integer'            : (long ,None),
+    XSD_NS+u'nonPositiveInteger' : (int,None),
+    XSD_NS+u'long'               : (long,None),
+    XSD_NS+u'nonNegativeInteger' : (int, None),
+    XSD_NS+u'negativeInteger'    : (int, None),
+    XSD_NS+u'int'                : (int, None),
+    XSD_NS+u'unsignedLong'       : (long, None),
+    XSD_NS+u'positiveInteger'    : (int, None),
+    XSD_NS+u'short'              : (int, None),
+    XSD_NS+u'unsignedInt'        : (long, None),
+    XSD_NS+u'byte'               : (int, None),
+    XSD_NS+u'unsignedShort'      : (int, None),
+    XSD_NS+u'unsignedByte'       : (int, None),
+    XSD_NS+u'float'              : (float, None),
+    XSD_NS+u'double'             : (float, None),
+    XSD_NS+u'base64Binary'       : (base64.decodestring, None),
+    XSD_NS+u'anyURI'             : (None,None),
+}
 
 class Literal(Identifier):
     """
@@ -20,13 +72,17 @@ class Literal(Identifier):
         #if normalize and value:
         #    if value != normalize("NFC", value):
         #        raise Error("value must be in NFC normalized form.")
+        if datatype:
+            lang = None
+        else:
+            value,datatype = castPythonToLiteral(value)
+            if datatype:
+                lang = None
         try:
             inst = unicode.__new__(cls,value)
         except UnicodeDecodeError:
             inst = unicode.__new__(cls,value,'utf-8')
-
-        if datatype:
-            lang = None
+                
         inst.language = lang
         inst.datatype = datatype
         return inst
@@ -90,4 +146,20 @@ class Literal(Identifier):
                 return '"%s"' % encoded
 
     def __repr__(self):
-        return """<Literal language=%s datatype=%s value=%s>""" % (repr(self.language), repr(self.datatype), unicode(self))
+        klass,convFunc = XSDToPython.get(self.datatype,(None,None))
+        if klass:
+            return "%s(%s)"%(klass.__name__,str(self))
+        else:
+            return """<Literal language=%s datatype=%s value=%s>""" % (repr(self.language), repr(self.datatype), unicode(self))
+
+    def toPython(self):
+        """
+        Returns an appropriate python datatype derived from this RDF Literal
+        """
+        klass,convFunc = XSDToPython.get(self.datatype,(None,None))
+        rt = self
+        if convFunc:
+            rt = convFunc(rt)
+        if klass:
+            rt = klass(rt)
+        return rt
