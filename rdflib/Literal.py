@@ -150,7 +150,7 @@ class Literal(Identifier):
         if klass:
             return "%s(%s)"%(klass.__name__,str(self))
         else:
-            return """rdflib.Literal(%s,language=%s,datatype=%s>""" % (unicode(self),repr(self.language), repr(self.datatype))
+            return """rdflib.Literal('%s',language=%s,datatype=%s>""" % (unicode(self),repr(self.language), repr(self.datatype))
 
     def toPython(self):
         """
