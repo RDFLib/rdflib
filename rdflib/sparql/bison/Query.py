@@ -52,7 +52,9 @@ class Prolog(object):
     """
     def __init__(self,baseDeclaration,prefixDeclarations):    
         self.baseDeclaration = baseDeclaration
-        self.prefixBindings = prefixDeclarations        
+        self.prefixBindings = {}
+        for prefixBind in prefixDeclarations:
+            self.prefixBindings[prefixBind.qName] = prefixBind.base
     
     def __repr__(self):
         return repr(self.prefixBindings)

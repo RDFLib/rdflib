@@ -10,17 +10,19 @@ FROM NAMED clause can be used to specify named graphs. '
 from rdflib.Graph import Graph
 from rdflib import URIRef
 
-class RemoteGraph(Graph):
+class IRIRef(URIRef):    
+    pass
+
+class RemoteGraph(URIRef):
     """
     Currently not implemented
     """
     def __init__(self,iriRef):
-        super(RemoteGraph,self).__init__(identifier=iriRef)              
+        raise Exception("Currently not supported")
+        #super(RemoteGraph,self).__init__(identifier=iriRef)              
       
     
-class NamedGraph(Graph):
-    def __init__(self,iriRef):
-        super(NamedGraph,self).__init__(identifier=iriRef)        
-    
-class IRIRef(URIRef):    
+class NamedGraph(IRIRef):
     pass
+#    def __init__(self,iriRef):
+#        super(NamedGraph,self).__init__(identifier=iriRef)        

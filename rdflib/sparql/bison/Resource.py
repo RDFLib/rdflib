@@ -7,8 +7,8 @@ class Resource(object):
     Represents a sigle resource in a triple pattern.  It consists of an identifier 
     (URIReff or BNode) and a list of rdflib.sparql.bison.Triples.PropertyValue instances
     """
-    def __init__(self,identifier,propertyValueList=None):        
-        self.identifier = (identifier is not None and not isinstance(identifier,BNode)) and URIRef(identifier) or BNode()
+    def __init__(self,identifier=None,propertyValueList=None):        
+        self.identifier = identifier is not None and identifier or BNode()
         self.propVals = propertyValueList is not None and propertyValueList or []
                 
     def __repr__(self):

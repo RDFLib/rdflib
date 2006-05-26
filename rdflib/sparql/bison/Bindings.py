@@ -7,7 +7,7 @@ class PrefixDeclaration(object):
     """
     def __init__(self,qName,iriRef):
         self.namespaceMapping = Namespace(iriRef)
-        self.qName = qName
+        self.qName = qName[:-1]
         self.base = iriRef
         #print self.base,self.qName,self.namespaceMapping.knows
 
