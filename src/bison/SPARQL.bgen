@@ -525,7 +525,7 @@
                 <symbol>GraphPattern</symbol>
                 <symbol>RIGHT_CURLY</symbol>
                 <code language="c">
-                    $$ = PyObject_CallMethod(GraphPattern, "ParsedGraphPattern", "O",$2);
+                    $$ = PyObject_CallMethod(GraphPattern, "ParsedGroupGraphPattern", "O",$2);
                 </code>
             </rule>
         </production>        

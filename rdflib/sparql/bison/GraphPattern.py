@@ -11,7 +11,7 @@ See: http://www.w3.org/TR/rdf-sparql-query/#GraphPattern
 [27] Constraint ::= 'FILTER' ( BrackettedExpression | BuiltInCall | FunctionCall )
 """
 
-class ParsedGraphPattern(object):
+class ParsedGroupGraphPattern(object):
     def __init__(self,graphPatterns):
         self.graphPatterns = graphPatterns
     def __repr__(self):
@@ -26,7 +26,6 @@ class BlockOfTriples(object):
 class GraphPattern(object):
     def __init__(self,triples,nonTripleGraphPattern=None):
         triples = triples and triples or []
-        #print nonTripleGraphPattern,graphPattern
         self.triples = triples
         self.nonTripleGraphPattern = nonTripleGraphPattern
 
@@ -37,12 +36,12 @@ class GraphPattern(object):
                     self.triples is not None and self.triples or '',
                     self.nonTripleGraphPattern is not None and ' %s'%self.nonTripleGraphPattern or '')
         
-class ParsedOptionalGraphPattern(object):
+class ParsedOptionalGraphPattern(ParsedGroupGraphPattern):
     """
     Optional Graph patterns, where additional patterns may extend the solution
     """
-    def __init__(self,graphPatterns):    
-        self.graphPatterns = graphPatterns
+    def __init__(self,groupGraphPatterns):    
+        super(ParsedOptionalGraphPattern,self).__init__(groupGraphPatterns.graphPatterns)
         
     def __repr__(self):
         return "OPTIONAL {%s}"%self.graphPatterns
@@ -52,19 +51,19 @@ class ParsedAlternativeGraphPattern(object):
     Alternative Graph Pattern, where two or more possible patterns are tried
     """
     def __init__(self,startPattern,alternativePatterns):
-        print alternativePatterns, startPattern
         self.alternativePatterns  = alternativePatterns
         self.startPattern = startPattern
     def __repr__(self):
         return " UNION ".join(["{%s}"%g for g in [self.startPattern]+self.alternativePatterns])
     
-class ParsedGraphGraphPattern(object):
+class ParsedGraphGraphPattern(ParsedGroupGraphPattern):
     """
     Patterns on Named Graphs, where patterns are matched against named graphs
     """
     def __init__(self,graphName,groupGraphPattern):
         self.name = graphName
-        self.graphPattern = groupGraphPattern
+        super(ParsedOptionalGraphPattern,self).__init__(groupGraphPattern.graphPatterns)
+        
     def __repr__(self):
         return "GRAPH %s { %s }"%(self.name,self.graphPattern)
         

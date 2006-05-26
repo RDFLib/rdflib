@@ -543,7 +543,9 @@
     <rule>
       <symbol>BLANK_NODE_LABEL</symbol>
       <code language="c">
-        $$ = PyObject_CallMethod(rdflib, "BNode", "O",$1);
+        PyObject *lang = PySequence_GetSlice($1, 2, PyString_GET_SIZE($1));
+        $$ = PyObject_CallMethod(rdflib, "BNode", "O",lang);
+        Py_XDECREF(lang);                
       </code>
     </rule>
   </production>
