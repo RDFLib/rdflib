@@ -255,8 +255,8 @@ class Graph(Node):
     def set(self, (subject, predicate, object)):
         """Convenience method for removing any existing triples for subject,
         predicate before adding subject, predicate, object."""
-        self.remove(subject, predicate, None)
-        self.add(subject, predicate, object)
+        self.remove((subject, predicate, None))
+        self.add((subject, predicate, object))
 
     def subjects(self, predicate=None, object=None):
         """ A generator of subjects with the given predicate and object. """
