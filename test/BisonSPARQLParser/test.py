@@ -1,13 +1,16 @@
 from rdflib.sparql.bison import Parse
 from rdflib.sparql.bison.SPARQLEvaluate import Evaluate
-from rdflib import plugin
+from rdflib import plugin, Namespace,URIRef, RDF
 from rdflib.store import Store
 from rdflib.Graph import Graph, ConjunctiveGraph
 import os
 from cStringIO import StringIO
+from pprint import pprint
 
+EVALUATE = True
+DEBUG_PARSE = False
 STORE='MySQL'
-configString = 'user=root,password=,host=localhost,db=test'
+configString = ''#user=root,password=,host=localhost,db=test'
 
 #class TestClassAndType(unittest.TestCase):
 #    
@@ -20,7 +23,10 @@ configString = 'user=root,password=,host=localhost,db=test'
 #    def testClass1(self):
 
 test = [
-    'data/Optional/q-opt-1.rq',
+    #'data/TypePromotion/tP-unsignedByte-short.rq'
+    'data/examples/ex11.2.3.1_0.rq',
+    'data/ValueTesting/typePromotion-decimal-decimal-pass.rq',
+    'data/examples/ex11.2.3.2_0.rq',
 ]
 
 tests2Skip = [
@@ -75,51 +81,183 @@ tests2Skip = [
     'data/ValueTesting/extendedType-ne-pass.rq',#[27] Constraint ::= 'FILTER' BrackettedExpression <--
 ]
 
-DEBUG = False
-#plugin.get(store, Store)()    
-def testBasic():    
+
+MANIFEST_NS = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#')
+MANIFEST_QUERY_NS = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/test-query#')
+TEST_BASE = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/')
+RESULT_NS = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/result-set#')
+
+MANIFEST_QUERY = \
+"""
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#> 
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> 
+PREFIX qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> 
+
+SELECT ?source ?testName ?testComment ?result
+WHERE {
+  ?testCase mf:action    ?testAction;            
+            mf:name      ?testName;
+            mf:result    ?result.
+  ?testAction qt:query ?query;
+              qt:data  ?source.
+  
+  OPTIONAL { ?testCase rdfs:comment ?testComment }
+            
+}"""
+
+PARSED_MANIFEST_QUERY = Parse(MANIFEST_QUERY)
+
+def bootStrapStore(store):
+    rt = store.open(configString,create=False)
+    if rt == -1:
+        store.open(configString)
+    else:
+        store.destroy(configString)
+        store.open(configString)    
+        
+def trialAndErrorRTParse(graph,queryLoc,DEBUG):
+    qstr = StringIO(open(queryLoc).read())
+    try:
+        graph.parse(qstr,format='n3')                            
+        return True
+    except Exception, e:
+        if DEBUG:
+            print e
+            print "#### Parse Failure (N3) ###"
+            print qstr.getvalue()
+            print "#####"*5
+        try:
+            graph.parse(qstr)
+            assert list(graph.objects(None,RESULT_NS.resultVariable))
+            return True
+        except Exception, e:
+            if DEBUG:
+                print e
+                print "#### Parse Failure (RDF/XML) ###"
+                print qstr.getvalue()
+                print "#### ######### ###"
+            return False
+    
+def testBasic(DEBUG = False):    
     from glob import glob     
     from sre import sub
-    for testFile in test:#glob('data/*/*.rq'):
+    for testFile in glob('data/*/*.rq'):
+        store = plugin.get(STORE,Store)()
+        bootStrapStore(store)
+        store.commit()
+        
         prefix = testFile.split('.rq')[-1]        
-        if os.path.exists(prefix+'.ttl'):
-            source = open(prefix+'.ttl').read()
-        elif os.path.exists('/'.join(testFile.split('/')[:-1]+['data.ttl'])):
-            source = open('/'.join(testFile.split('/')[:-1]+['data.ttl'])).read()
-        else:
-            source = None
-                       
-        if testFile.startswith('data/NegativeSyntax'):
-            try:
-                query = open(testFile).read()        
-                p = Parse(query,DEBUG)
-            except:
+        manifestPath = '/'.join(testFile.split('/')[:-1]+['manifest.n3'])
+        manifestPath2 = '/'.join(testFile.split('/')[:-1]+['manifest.ttl'])
+        queryFileName = testFile.split('/')[-1]
+        store = plugin.get(STORE,Store)()
+        store.open(configString,create=False)
+        assert len(store) == 0
+        manifestG=ConjunctiveGraph(store).default_context        
+        if not os.path.exists(manifestPath):
+            assert os.path.exists(manifestPath2)
+            manifestPath = manifestPath2
+        manifestG.parse(open(manifestPath),publicID=TEST_BASE,format='n3')                
+        manifestData = Evaluate(store,PARSED_MANIFEST_QUERY,{'?query' : TEST_BASE[queryFileName]})
+        store.rollback()
+        store.close()
+        for source,testCaseName,testCaseComment,expectedRT in manifestData:
+            
+            if expectedRT:
+                expectedRT = '/'.join(testFile.split('/')[:-1]+[expectedRT.replace(TEST_BASE,'')])
+            if source:
+                source = '/'.join(testFile.split('/')[:-1]+[source.replace(TEST_BASE,'')])
+            
+            testCaseName = testCaseComment and testCaseComment or testCaseName
+            print "## Source: %s ##"%source
+            print "## Test: %s ##"%testCaseName
+            print "## Result: %s ##"%expectedRT
+    
+            #Expected results
+            if expectedRT:
+                store = plugin.get(STORE,Store)()
+                store.open(configString,create=False)            
+                resultG=ConjunctiveGraph(store).default_context
+                if DEBUG:
+                    print "###"*10
+                    print "parsing: ", open(expectedRT).read()
+                    print "###"*10
+                assert len(store) == 0
+                print "## Parsing (%s) ##"%(expectedRT)
+                if not trialAndErrorRTParse(resultG,expectedRT,DEBUG):
+                    if DEBUG:
+                        print "Unexpected result format (for %s), skipping"%(expectedRT)                    
+                    store.rollback()
+                    store.close()
+                    continue
+                if DEBUG:
+                    print "## Done .. ##"
+                    
+                rtVars = [rtVar for rtVar in resultG.objects(None,RESULT_NS.resultVariable)]                
+                bindings = []
+                resultSetNode = resultG.value(predicate=RESULT_NS.value,object=RESULT_NS.ResultSet)
+                for solutionNode in resultG.objects(resultSetNode,RESULT_NS.solution):         
+                    bindingDict = dict([(key,None) for key in rtVars])
+                    for bindingNode in resultG.objects(solutionNode,RESULT_NS.binding):
+                        value = resultG.value(subject=bindingNode,predicate=RESULT_NS.value)
+                        name  = resultG.value(subject=bindingNode,predicate=RESULT_NS.variable)
+                        bindingDict[name] = value
+                    bindings.append(tuple([bindingDict[vName] for vName in rtVars]))
+                if DEBUG:
+                    print "Expected bindings: ", bindings
+                    print open(expectedRT).read()
+                store.rollback()
+                store.close()
+                           
+            if testFile.startswith('data/NegativeSyntax'):
+                try:
+                    query = open(testFile).read()        
+                    p = Parse(query,DEBUG)
+                except:
+                    continue
+                else:
+                    raise Exception("Test %s should have failed!"%testFile)
+            if testFile in tests2Skip:
                 continue
-            else:
-                raise Exception("Test %s should have failed!"%testFile)
-        if testFile in tests2Skip:
-            continue
-        query = open(testFile).read()        
-        print "### %s ###"%testFile        
-        print query
-        p = Parse(query,DEBUG)
-        if source:
-            print "### Source Graph: ###"
-            print source
-            store = plugin.get(STORE,Store)()
-            rt = store.open(configString,create=False)
-            if rt == -1:
-                store.open(configString)
-            else:
-                store.destroy(configString)
-                store.open(configString)
-                
-            g=ConjunctiveGraph(store)
-            g.parse(StringIO(source),format='n3')
-            print store
-            print Evaluate(store,p)
+            query = open(testFile).read()        
+            print "### %s (%s) ###"%(testCaseName,testFile)
+            print query
+            p = Parse(query,DEBUG_PARSE)
+            if EVALUATE and source:
+                if DEBUG:
+                    print "### Source Graph: ###"
+                    print open(source).read()
+                store = plugin.get(STORE,Store)()                
+                store.open(configString,create=False)
+                g=ConjunctiveGraph(store)
+                try:                    
+                    g.parse(open(source),format='n3')
+                except:
+                    print "Unexpected data format (for %s), skipping"%(source)
+                    store.rollback()
+                    store.close()
+                    continue
+                    
+                #print store
+                rt = Evaluate(store,p,DEBUG=DEBUG)
+                if expectedRT:
+                    if rt and not isinstance(rt[0],list) and len(rt) == 1:
+                        rt = [(rt[0],)]
+                    if rt != bindings:                    
+                        print "### Expected Result (%s) ###"%expectedRT
+                        pprint(bindings)
+                        print "### Actual Results ###"
+                        pprint(rt)
+                        raise Exception("### TEST FAILED!: %s ###"%testCaseName)
+                    else:
+                        print "### TEST PASSED!: %s ###"%testCaseName
+                store.rollback()
 if __name__ == '__main__':
-    testBasic()
+    import sys
+    if len(sys.argv) > 1:
+        testBasic(bool(int(sys.argv[1])))
+    else:
+        testBasic()
 #    suite1 = unittest.makeSuite(TestClassAndType)
 #    suite2 = unittest.makeSuite(TestReason)
 #    unittest.TextTestRunner(verbosity=3).run(suite1)
