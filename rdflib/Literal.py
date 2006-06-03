@@ -7,6 +7,7 @@ else:
 from rdflib.Identifier import Identifier
 from rdflib.exceptions import Error
 from datetime import date,time,datetime
+from time import strptime
 import base64
 
 XSD_NS = u'http://www.w3.org/2001/XMLSchema#'
@@ -34,7 +35,21 @@ PythonToXSD = {
     datetime   : (lambda i:i.isoformat(),XSD_NS+u'dateTime'),
 }
 
+def _strToTime(v) :
+    return strptime(v,"%H:%M:%S")
+
+def _strToDate(v) :
+    tstr = strptime(v,"%Y-%m-%d")
+    return date(tstr.tm_year,tstr.tm_mon,tstr.tm_mday)
+
+def _strToDateTime(v) :
+    tstr = strptime(v,"%Y-%m-%dT%H:%M:%S")
+    return datetime(tstr.tm_year,tstr.tm_mon,tstr.tm_mday,tstr.tm_hour,tstr.tm_min,tstr.tm_sec)
+
 XSDToPython = {  
+    XSD_NS+u'time'               : (None,_strToTime),
+    XSD_NS+u'date'               : (None,_strToDate),
+    XSD_NS+u'dateTime'           : (None,_strToDateTime),    
     XSD_NS+u'string'             : (None,None),
     XSD_NS+u'normalizedString'   : (None,None),
     XSD_NS+u'token'              : (None,None),
