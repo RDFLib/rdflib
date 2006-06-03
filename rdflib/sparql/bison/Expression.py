@@ -25,6 +25,20 @@ class ParsedRelationalExpressionList(ListRedirect):
     def __repr__(self):
         return "<RelationalExpressionList: %s>"%self._list
 
+class ParsedPrefixedMultiplicativeExpressionList(ListRedirect):
+    """
+    A ParsedMultiplicativeExpressionList lead by a '+' or '-'
+    """
+    def __init__(self,prefix,mulExprList):
+        self.prefix = prefix
+        assert prefix != '-',"arithmetic '-' operator not supported"
+        if isinstance(mulExprList,list):            
+            self._list = mulExprList
+        else:
+            self._list = [mulExprList]
+    def __repr__(self):
+        return "%s %s"%(self.prefix,self.reduce())
+
 class ParsedMultiplicativeExpressionList(ListRedirect):   
     """
     A list of UnaryExpressions, joined by '/' or '*' s

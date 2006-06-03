@@ -494,7 +494,7 @@ class SPARQL :
     def __init__(self) :
         pass        
         
-    def query(self,selection,patterns,optionalPatterns=[]) :
+    def query(self,selection,patterns,optionalPatterns=[],initialBindings = {}) :
         """
         A shorthand for the creation of a L{Query} instance, returning
         the result of a L{Query.select} right away. Good for most of
@@ -518,7 +518,7 @@ class SPARQL :
         @return: list of query results
         @rtype: list of tuples
         """
-        result = self.queryObject(patterns,optionalPatterns)
+        result = self.queryObject(patterns,optionalPatterns,initialBindings)
         if result == None :
             # generate some proper output for the exception :-)
             msg = "Errors in the patterns, no valid query object generated; "
@@ -529,7 +529,7 @@ class SPARQL :
             raise SPARQLError(msg)
         return result.select(selection)
         
-    def queryObject(self,patterns,optionalPatterns=[]) :
+    def queryObject(self,patterns,optionalPatterns=[],initialBindings = None) :
         """
         Creation of a L{Query} instance.
         
@@ -547,7 +547,7 @@ class SPARQL :
         
         @return: Query object
         @rtype: L{Query}
-        """
+        """        
         def checkArg(arg,error) :
             if arg == None :
                 return []
@@ -565,17 +565,23 @@ class SPARQL :
         finalOptionalPatterns = checkArg(optionalPatterns,"optionalPatterns")    
 
         retval = None
+        if not initialBindings:
+            initialBinding = {}
         for pattern in finalPatterns :
             # Check whether the query strings in the optional clauses are fine. If a problem occurs,
             # an exception is raised by the function
             _checkOptionals(pattern,finalOptionalPatterns)            
             bindings = _createInitialBindings(pattern)
+            if initialBindings:
+                bindings.update(initialBindings)
             # This is the crucial point: the creation of the expansion tree and the expansion. That
             # is where the real meal is, we had only an apetizer until now :-)
             top = _SPARQLNode(None,bindings,pattern.patterns,self)
             top.expand(pattern.constraints)
             for opt in finalOptionalPatterns :
                 bindings = _createInitialBindings(opt)
+                if initialBindings:
+                    bindings.update(initialBindings)
                 top.expandOptions(bindings,opt.patterns,opt.constraints)
             r = Query(top,self)
             if retval == None :

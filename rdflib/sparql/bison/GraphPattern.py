@@ -1,5 +1,3 @@
-#from rdflib.sparql.graphPattern import GraphPattern as GraphPatternImpl
-#from rdflib.sparql.sparql import SPARQL as SPARQLImpl
 """
 See: http://www.w3.org/TR/rdf-sparql-query/#GraphPattern
 [20] GraphPattern ::=  FilteredBasicGraphPattern ( GraphPatternNotTriples '.'? GraphPattern )?
@@ -12,18 +10,51 @@ See: http://www.w3.org/TR/rdf-sparql-query/#GraphPattern
 """
 
 class ParsedGroupGraphPattern(object):
-    def __init__(self,graphPatterns):
+    """
+    See: http://www.w3.org/TR/rdf-sparql-query/#GroupPatterns
+    A group graph pattern GP is a set of graph patterns, GPi.
+    This class is defined to behave (literally) like a set of GraphPattern instances.
+    """
+    def __init__(self,graphPatterns):    
         self.graphPatterns = graphPatterns
+    def __iter__(self):
+        for g in self.graphPatterns:
+            if not g.triples and g.nonTripleGraphPattern is None:
+                continue
+            else:
+                yield g
+    def __len__(self):
+        return len([g for g in self.graphPatterns if g.triples or g.nonTripleGraphPattern is not None])
+    def __getitem__(self, k):
+        return list(self.graphPatterns)[k]
     def __repr__(self):
-        return repr(self.graphPatterns)
+        return "{ %s }"%repr(list(self))
     
 class BlockOfTriples(object):
+    """
+    A Basic Graph Pattern is a set of Triple Patterns.
+    """
     def __init__(self,statementList):
         self.statementList = statementList
+    def __getattr__(self, attr):
+        if hasattr(self.statementList, attr):
+            return getattr(self.statementList, attr)
+        raise AttributeError, '%s has no such attribute %s' % (repr(self), attr)        
     def __repr__(self):
         return "<SPARQLParser.BasicGraphPattern: %s>"%repr(self.statementList)
     
 class GraphPattern(object):
+    """
+    Complex graph patterns can be made by combining simpler graph patterns. The ways of creating graph patterns are:
+    * Basic Graph Patterns, where a set of triple patterns must match
+    * Group Graph Pattern, where a set of graph patterns must all match using the same variable substitution
+    * Value constraints, which restrict RDF terms in a solution
+    * Optional Graph patterns, where additional patterns may extend the solution
+    * Alternative Graph Pattern, where two or more possible patterns are tried
+    * Patterns on Named Graphs, where patterns are matched against named graphs    
+    
+    This class is defined as a direct analogy of Grammar rule [20]:
+s    """
     def __init__(self,triples,nonTripleGraphPattern=None):
         triples = triples and triples or []
         self.triples = triples
@@ -38,23 +69,31 @@ class GraphPattern(object):
         
 class ParsedOptionalGraphPattern(ParsedGroupGraphPattern):
     """
-    Optional Graph patterns, where additional patterns may extend the solution
+    An optional graph pattern is a combination of a pair of graph patterns.
+    The second pattern modifies pattern solutions of the first pattern but 
+    does not fail matching of the overall optional graph pattern.
     """
-    def __init__(self,groupGraphPatterns):    
-        super(ParsedOptionalGraphPattern,self).__init__(groupGraphPatterns.graphPatterns)
+    def __init__(self,groupGraphPattern):    
+        super(ParsedOptionalGraphPattern,self).__init__(groupGraphPattern.graphPatterns)
         
     def __repr__(self):
         return "OPTIONAL {%s}"%self.graphPatterns
     
 class ParsedAlternativeGraphPattern(object):
     """
-    Alternative Graph Pattern, where two or more possible patterns are tried
+    A union graph pattern is a set of group graph patterns GPi.
+    A union graph pattern matches a graph G with solution S 
+    if there is some GPi such that GPi matches G with solution S.
     """
-    def __init__(self,startPattern,alternativePatterns):
-        self.alternativePatterns  = alternativePatterns
-        self.startPattern = startPattern
+    def __init__(self,alternativePatterns):
+        self.alternativePatterns = alternativePatterns
     def __repr__(self):
-        return " UNION ".join(["{%s}"%g for g in [self.startPattern]+self.alternativePatterns])
+        return " UNION ".join(["{%s}"%g for g in self.alternativePatterns])
+    def __iter__(self):
+        for g in self.alternativePatterns:
+            yield g
+    def __len__(self):
+        return len(self.alternativePatterns)
     
 class ParsedGraphGraphPattern(ParsedGroupGraphPattern):
     """
@@ -62,9 +101,9 @@ class ParsedGraphGraphPattern(ParsedGroupGraphPattern):
     """
     def __init__(self,graphName,groupGraphPattern):
         self.name = graphName
-        super(ParsedOptionalGraphPattern,self).__init__(groupGraphPattern.graphPatterns)
+        super(ParsedGraphGraphPattern,self).__init__(groupGraphPattern.graphPatterns)
         
     def __repr__(self):
-        return "GRAPH %s { %s }"%(self.name,self.graphPattern)
+        return "GRAPH %s { %s }"%(self.name,self.graphPatterns)
         
     

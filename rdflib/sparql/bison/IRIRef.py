@@ -18,7 +18,8 @@ class RemoteGraph(URIRef):
     Currently not implemented
     """
     def __init__(self,iriRef):
-        raise Exception("Currently not supported")
+        pass
+        #raise Exception("Currently not supported")
         #super(RemoteGraph,self).__init__(identifier=iriRef)              
       
     

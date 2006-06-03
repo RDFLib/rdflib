@@ -83,6 +83,7 @@ def queryString(v) :
 # @param v the Literal to be converted
 # @return the result of the conversion.
 def getLiteralValue(v) :
+    return v.toPython()
     if v.datatype == "" or not (v.datatype in _conversions):
         return v
     else :
@@ -121,10 +122,10 @@ def getValue(param) :
 # @param a value or query string
 # @param b value or query string
 # @return comparison method
-def lt(a,b) :
+def lt(a,b) :    
     fa = getValue(a)
     fb = getValue(b)
-    def f(bindings) :
+    def f(bindings) :        
         try :
             return fa(bindings) < fb(bindings)
         except :

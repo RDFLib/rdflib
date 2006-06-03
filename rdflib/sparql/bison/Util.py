@@ -1,7 +1,7 @@
 class ListRedirect(object):
     """
     A utility class for lists of items joined by an operator.  ListRedirects with length 1
-    are a special case and are considered equivelant to the item instead of a list containing it.
+    are a special case and are considered equivalent to the item instead of a list containing it.
     The reduce function is used for normalizing ListRedirect to the single item (and calling reduce on it recursively)
     """
     reducable = True
@@ -9,6 +9,10 @@ class ListRedirect(object):
         if hasattr(self._list, attr):
             return getattr(self._list, attr)
         raise AttributeError, '%s has no such attribute %s' % (repr(self), attr)
+    
+    def __iter__(self):
+        for i in self._list:
+            yield i
     
     def reduce(self):
         if self.reducable and len(self._list) == 1:
