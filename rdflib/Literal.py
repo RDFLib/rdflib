@@ -43,7 +43,20 @@ def _strToDate(v) :
     return date(tstr.tm_year,tstr.tm_mon,tstr.tm_mday)
 
 def _strToDateTime(v) :
-    tstr = strptime(v,"%Y-%m-%dT%H:%M:%S")
+    """
+    Attempt to cast to datetime, or just return the string (otherwise)
+    """
+    try:
+        tstr = strptime(v,"%Y-%m-%dT%H:%M:%S")
+    except:
+        try:
+            tstr = strptime(v,"%Y-%m-%dT%H:%M:%SZ")
+        except:
+            try:
+                tstr = strptime(v,"%Y-%m-%dT%H:%M:%S%Z")
+            except:
+                return v
+            
     return datetime(tstr.tm_year,tstr.tm_mon,tstr.tm_mday,tstr.tm_hour,tstr.tm_min,tstr.tm_sec)
 
 XSDToPython = {  
@@ -142,6 +155,10 @@ class Literal(Identifier):
                 return result
         elif isinstance(other, Identifier):
             return False
+        elif castPythonToLiteral(other)[-1]:
+            #I know how to represent 'other' lexically in a uniform way
+            castFunc,dType = castPythonToLiteral(other)[-1]            
+            return unicode(self)==unicode(castFunc(other))
         else:
             return unicode(self)==other
 
