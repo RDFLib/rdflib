@@ -2,7 +2,6 @@
 [28] FunctionCall ::= IRIref ArgList
 http://www.w3.org/TR/rdf-sparql-query/#evaluation
 """
-
 from Util import ListRedirect
 
 STR         = 0
@@ -33,7 +32,7 @@ class FunctionCall(object):
         self.arguments = arguments is None and [] or arguments
         
     def __repr__(self):
-        return "%s(%s)"%(self.name,','.join([i.reduce() for i in self.arguments]))
+        return "%s(%s)"%(self.name,','.join([isinstance(i,ListRedirect) and i.reduce() or i for i in self.arguments]))
     
 class ParsedArgumentList(ListRedirect):
     def __init__(self,arguments):

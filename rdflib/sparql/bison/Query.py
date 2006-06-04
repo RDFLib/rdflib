@@ -1,3 +1,4 @@
+from SPARQLEvaluate import NotImplemented,CONSTRUCT_NOT_SUPPORTED
 
 class Query(object):
     """
@@ -44,6 +45,27 @@ class AskQuery(object):
         
     def __repr__(self):
         return "ASK %s %s"%(self.dataSets,self.whereClause.parsedGraphPattern)
+
+class ConstructQuery(object):
+    """
+    ConstructQuery ::= 'CONSTRUCT' ConstructTemplate DatasetClause* WhereClause SolutionModifier
+    See: http://www.w3.org/TR/rdf-sparql-query/#rConstructQuery
+    """
+    pass
+
+class DescribeQuery(object):
+    """
+    DescribeQuery ::= 'DESCRIBE' ( VarOrIRIref+ | '*' ) DatasetClause* WhereClause? SolutionModifier
+    http://www.w3.org/TR/rdf-sparql-query/#rConstructQuery
+    """
+    pass
+#    def __init__(self,dataSetList,whereClause):    
+#        self.dataSets = dataSetList and dataSetList or []
+#        self.whereClause = whereClause
+#        
+#    def __repr__(self):
+#        return "ASK %s %s"%(self.dataSets,self.whereClause.parsedGraphPattern)
+
     
 class Prolog(object):
     """
