@@ -405,3 +405,26 @@ def isOnCollection(collection,item) :
     return checkCollection
     
 
+def addOperator(args,combinationArg):
+    """
+    SPARQL numeric + operator implemented via Python
+    """
+    return ' + '.join(["getValue(%s)(%s)"%(i,combinationArg) for i in args])
+
+def XSDCast(source,target=None):
+    """
+    XSD Casting/Construction Support
+    For now (this may be an issue since Literal doesn't override comparisons) it simply creates
+    a Literal with the target datatype using the 'lexical' value of the source
+    """
+    sFunc = getValue(source)
+    def f(bindings):        
+        #print "Bindings for call to XSD cast: ", bindings        
+        rt = sFunc(bindings)
+        #print "casting ", repr(rt)
+        if isinstance(rt,Literal) and rt.datatype == target:
+            #Literal already has target datatype
+            return rt
+        else:
+            return Literal(rt,datatype=target)
+    return f
