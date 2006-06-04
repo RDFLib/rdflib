@@ -5,6 +5,7 @@ from rdflib.sparql.graphPattern import BasicGraphPattern
 from rdflib.sparql.sparql import Unbound,PatternBNode
 from rdflib.Graph import ConjunctiveGraph, Graph, BackwardCompatGraph
 from rdflib import URIRef,Variable,BNode, Literal
+from rdflib.Literal import XSDToPython
 from IRIRef import NamedGraph
 from GraphPattern import ParsedAlternativeGraphPattern,ParsedOptionalGraphPattern
 from Resource import *
@@ -76,12 +77,6 @@ def unRollTripleItems(items,queryProlog):
             for item in unRollTripleItems(additionalItem,queryProlog):
                 yield item    
 
-def add(*args):
-    """
-    SPARQL numeric '+ operator
-    """
-    return lambda(bindings): reduce(lambda x,y: getValue(x)(bindings)+getValue(y)(bindings),list(args))
-
 def mapToOperator(expr,prolog,combinationArg=None):    
     """
     Reduces certain expressions (operator expressions, function calls, terms, and combinator expressions)
@@ -103,7 +98,13 @@ def mapToOperator(expr,prolog,combinationArg=None):
     elif isinstance(expr,Literal):
         return repr(expr)
     elif isinstance(expr,ParsedAdditiveExpressionList):
-        return 'Literal(add(%s)%s)'%(','.join([mapToOperator(item,prolog,combinationArg='i') for item in expr]),combinationInvokation)
+        return 'Literal(%s)'%(addOperator([mapToOperator(item,prolog,combinationArg='i') for item in expr],combinationArg))
+    elif isinstance(expr,FunctionCall):
+        if isinstance(expr.name,QName):
+            fUri = convertTerm(expr.name,prolog)
+        if fUri in XSDToPython:
+            return "XSDCast(%s,'%s')%s"%(mapToOperator(expr.arguments[0],prolog,combinationArg='i'),fUri,combinationInvokation)
+        raise Exception("Whats do i do with %s (a %s)?"%(expr,type(expr).__name__))
     else:
         raise Exception("What do i do with %s (a %s)?"%(expr,type(expr).__name__))
 
@@ -112,8 +113,8 @@ def createSPARQLPConstraint(filter,prolog):
     Takes an instance of either ParsedExpressionFilter or ParsedFunctionFilter
     and converts it to a sparql-p operator by composing a python string of lambda functions and SPARQL operators
     This string is than evaluated to return the actual function for sparql-p
-    """
-    reducedFilter = filter.filter.reduce()
+    """    
+    reducedFilter = isinstance(filter.filter,ListRedirect) and filter.filter.reduce() or filter.filter
     if isinstance(reducedFilter,ParsedConditionalAndExpressionList):
         combinationLambda = 'lambda(i): %s'%(' or '.join(['%s'%mapToOperator(expr,prolog,combinationArg='i') for expr in reducedFilter]))
         if prolog.DEBUG:
@@ -125,7 +126,7 @@ def createSPARQLPConstraint(filter,prolog):
             print "sparql-p operator(s): %s"%combinationLambda
         return eval(combinationLambda)
     else:
-        rt=mapToOperator(reducedFilter)
+        rt=mapToOperator(reducedFilter,prolog)
         if prolog.DEBUG:
             print "sparql-p operator(s): %s"%rt
         return eval(rt)
@@ -209,11 +210,7 @@ def validateGroupGraphPattern(gGP,noNesting = False):
     Verifies (recursively) that the Group Graph Pattern is supported
     """
     firstGP = gGP[0]
-    #print "Validating ", gGP
     graphGraphPatternNo,optionalGraphPatternNo,alternativeGraphPatternNo = [len(gGPKlass) for gGPKlass in categorizeGroupGraphPattern(gGP)]
-#    for g in gGP:
-#        print g
-    #print len(gGP),len([gP for gP in gGP if gP.nonTripleGraphPattern and isinstance(gP.nonTripleGraphPattern,(ParsedGraphGraphPattern,ParsedOptionalGraphPattern))])
     if firstGP.triples and isTriplePattern(firstGP.triples) and  isinstance(firstGP.nonTripleGraphPattern,ParsedAlternativeGraphPattern):        
         raise NotImplemented(UNION_GRAPH_PATTERN_NOT_SUPPORTED,"%s"%firstGP)
     elif firstGP.triples and graphGraphPatternNo:
@@ -234,10 +231,11 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
     Takes:
         1. an rdflib.store.Store instance
         2. a SPARQL query instance (parsed using the BisonGen parser)
-        3. A dictionry of initial variable bindings (varName -> .. rdflib Term .. )
+        3. A dictionary of initial variable bindings (varName -> .. rdflib Term .. )
         4. DEBUG Flag
         
-    Currently returns a variable binding tuple per solution (this is what sparql-p returns)
+    When select variables are given, it returns a list of dictionaries mapping the selected variables to their result
+    Otherwise, it returns a list of tuples ()
     """
     if query.query.dataSets:
         tripleStore = sparqlGraph.SPARQLGraph(ReadOnlyGraphAggregate(store,query.query.dataSets))
@@ -251,7 +249,8 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
     gp = reorderGroupGraphPattern(query.query.whereClause.parsedGraphPattern)
     validateGroupGraphPattern(gp)
     
-    query.prolog.DEBUG = DEBUG
+    if query.prolog:
+        query.prolog.DEBUG = DEBUG
     
     basicPatterns,optionalPatterns = sparqlPSetup(gp,query.prolog)
     
@@ -259,6 +258,7 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
         print "## Select Variables ##\n",query.query.variables
         print "## Patterns ##\n",basicPatterns
         print "## OptionalPatterns ##\n",optionalPatterns
+        
     return tripleStore.query(query.query.variables,basicPatterns,optionalPatterns,passedBindings)
         
 class ReadOnlyGraphAggregate:
@@ -299,6 +299,7 @@ GRAPH_PATTERN_NOT_SUPPORTED               = 2
 UNION_GRAPH_PATTERN_NOT_SUPPORTED         = 3
 GRAPH_GRAPH_PATTERN_NOT_SUPPORTED         = 4
 GROUP_GRAPH_PATTERN_NESTING_NOT_SUPPORTED = 5
+CONSTRUCT_NOT_SUPPORTED                   = 6
     
 ExceptionMessages = {
     OPTIONALS_NOT_SUPPORTED                   : 'Nested OPTIONAL not currently supported',
@@ -306,6 +307,7 @@ ExceptionMessages = {
     UNION_GRAPH_PATTERN_NOT_SUPPORTED         : 'UNION Graph Pattern (currently) can only be combined with OPTIONAL Graph Patterns',
     GRAPH_GRAPH_PATTERN_NOT_SUPPORTED         : 'Graph Graph Pattern (currently) cannot only be used once by themselves or with OPTIONAL Graph Patterns',
     GROUP_GRAPH_PATTERN_NESTING_NOT_SUPPORTED : 'Nesting of Group Graph Pattern (currently) not supported',
+    CONSTRUCT_NOT_SUPPORTED                   : '"Construct" is not (currently) supported',
 }
 
 
