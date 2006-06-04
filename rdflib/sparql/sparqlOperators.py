@@ -26,8 +26,7 @@
 #
 ##
 
-import sys, os
-
+import sys, os, re
 from sparql             import _schemaType, _questChar, SPARQLError, JunkResource, Unbound
 from rdflib.Literal     import Literal
 from rdflib.BNode       import BNode
@@ -419,12 +418,48 @@ def XSDCast(source,target=None):
     """
     sFunc = getValue(source)
     def f(bindings):        
-        #print "Bindings for call to XSD cast: ", bindings        
         rt = sFunc(bindings)
-        #print "casting ", repr(rt)
         if isinstance(rt,Literal) and rt.datatype == target:
             #Literal already has target datatype
             return rt
         else:
             return Literal(rt,datatype=target)
+    return f
+
+def regex(item,pattern,flag=None):
+    """
+    Invokes the XPath fn:matches function to match text against a regular expression pattern.
+    The regular expression language is defined in XQuery 1.0 and XPath 2.0 Functions and Operators section 7.6.1 Regular Expression Syntax
+    """
+    a = getValue(item)
+    b = getValue(pattern)
+    if flag:
+        cFlag = 0
+        usedFlags = []
+        #Maps XPath REGEX flags (http://www.w3.org/TR/xpath-functions/#flags) to Python's re flags
+        for fChar,_flag in [('i',re.IGNORECASE),('s',re.DOTALL),('m',re.MULTILINE)]:
+            if fChar in flag and fChar not in usedFlags:
+                cFlag |= _flag
+                usedFlags.append(fChar)
+        def f1(bindings):
+            try:
+                return bool(re.compile(b(bindings),cFlag).search(a(bindings)))
+            except:
+                return False                
+        return f1
+    else:
+        def f2(bindings):
+            try:
+                return bool(re.compile(b(bindings)).search(a(bindings)))
+            except:
+                return False                
+        return f2
+        
+    def f(bindings):
+        try:
+            print "%s %s"%(a(bindings),b(bindings))
+            return bool(re.compile(a(bindings)).search(b(bindings)))
+        except Exception,e:
+            print e
+            return False
     return f
