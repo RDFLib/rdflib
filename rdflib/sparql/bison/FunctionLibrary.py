@@ -45,7 +45,10 @@ class ParsedREGEXInvocation(object):
         self.arg3 = arg3
         
     def __repr__(self):
-        return "REGEX(%s,%s%s)"%(self.arg1.reduce(),self.arg2.reduce(),self.arg3 and ',%s'%self.arg3.reduce() or '')
+        return "REGEX(%s,%s%s)"%(
+                                 isinstance(self.arg1,ListRedirect) and self.arg1.reduce() or self.arg1,
+                                 isinstance(self.arg2,ListRedirect) and self.arg2.reduce() or self.arg2,
+                                 isinstance(self.arg3,ListRedirect) and self.arg3.reduce() or self.arg3,)
 
 class BuiltinFunctionCall(FunctionCall):    
     def __init__(self,name,arg1,arg2=None):

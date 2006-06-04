@@ -1,6 +1,6 @@
 ### Utilities for evaluating a parsed SPARQL expression using sparql-p
 from rdflib.sparql import sparqlGraph
-from rdflib.sparql.sparqlOperators import *
+from rdflib.sparql import sparqlOperators
 from rdflib.sparql.graphPattern import BasicGraphPattern
 from rdflib.sparql.sparql import Unbound,PatternBNode
 from rdflib.Graph import ConjunctiveGraph, Graph, BackwardCompatGraph
@@ -20,17 +20,24 @@ from FunctionLibrary import *
 DEBUG = False
 
 BinaryOperatorMapping = {
-    LessThanOperator        : 'lt(%s,%s)%s',
-    EqualityOperator        : 'eq(%s,%s)%s',
-    NotEqualOperator        : 'not(eq(%s,%s)%s)',
-    LessThanOrEqualOperator : 'le(%s,%s)%s',
-    GreaterThanOperator     : 'gt(%s,%s)%s',
-    GreaterThanOrEqualOperator : 'ge(%s,%s)%s',
+    LessThanOperator           : 'sparqlOperators.lt(%s,%s)%s',
+    EqualityOperator           : 'sparqlOperators.eq(%s,%s)%s',
+    NotEqualOperator           : 'not(sparqlOperators.eq(%s,%s)%s)',
+    LessThanOrEqualOperator    : 'sparqlOperators.le(%s,%s)%s',
+    GreaterThanOperator        : 'sparqlOperators.gt(%s,%s)%s',
+    GreaterThanOrEqualOperator : 'sparqlOperators.ge(%s,%s)%s',
 }
 
 UnaryOperatorMapping = {
     LogicalNegation : 'not(%s)',
     NumericNegative : '-(%s)',
+}
+
+CAMEL_CASE_BUILTINS = {
+    'isuri':'sparqlOperators.isURI',
+    'isiri':'sparqlOperators.isIRI',
+    'isblank':'sparqlOperators.isBlank',
+    'isliteral':'sparqlOperators.isLiteral',
 }
 
 def convertTerm(term,queryProlog):
@@ -45,6 +52,8 @@ def convertTerm(term,queryProlog):
         return URIRef(queryProlog.prefixBindings[term.prefix] + term.localname)
     elif isinstance(term,QNamePrefix):
         return URIRef(queryProlog.baseDeclaration + term)    
+    elif isinstance(term,ParsedString):
+        return Literal(term)
     else:
         return term
 
@@ -80,25 +89,33 @@ def unRollTripleItems(items,queryProlog):
 def mapToOperator(expr,prolog,combinationArg=None):    
     """
     Reduces certain expressions (operator expressions, function calls, terms, and combinator expressions)
-    into strings of their Python expression equivalent
+    into strings of their Python equivalent
     """
     combinationInvokation = combinationArg and '(%s)'%combinationArg or ""
     if isinstance(expr,ListRedirect):        
         expr = expr.reduce()
     if isinstance(expr,UnaryOperator):
-        return UnaryOperatorMapping[type(expr)]%mapToOperator(expr.argument,prolog,combinationArg)
+        return UnaryOperatorMapping[type(expr)]%(mapToOperator(expr.argument,prolog,combinationArg))
     elif isinstance(expr,BinaryOperator):
         return BinaryOperatorMapping[type(expr)]%(mapToOperator(expr.left,prolog,combinationArg),mapToOperator(expr.right,prolog,combinationArg),combinationInvokation)
     elif isinstance(expr,(Variable,Unbound)):
         return '"%s"'%expr
+    elif isinstance(expr,ParsedREGEXInvocation):
+        #print expr.arg1,expr.arg2
+        return 'sparqlOperators.regex(%s,%s%s)%s'%(mapToOperator(expr.arg1,prolog,combinationArg),
+                                                 mapToOperator(expr.arg2,prolog,combinationArg),
+                                                 expr.arg3 and ','+expr.arg3 or '',
+                                                 combinationInvokation)
     elif isinstance(expr,BuiltinFunctionCall):
-        return "%s(%s)%s"%(FUNCTION_NAMES[expr.name].lower(),",".join([mapToOperator(i,prolog,combinationArg) for i in expr.arguments]),combinationInvokation)
-    elif isinstance(expr,(QName,basestring)):
-        return "'%s'"%convertTerm(expr,prolog)
+        normBuiltInName = FUNCTION_NAMES[expr.name].lower()
+        normBuiltInName = CAMEL_CASE_BUILTINS.get(normBuiltInName,'sparqlOperators.'+normBuiltInName)
+        return "%s(%s)%s"%(normBuiltInName,",".join([mapToOperator(i,prolog,combinationArg) for i in expr.arguments]),combinationInvokation)
     elif isinstance(expr,Literal):
         return repr(expr)
+    elif isinstance(expr,(QName,basestring)):
+        return "'%s'"%convertTerm(expr,prolog)
     elif isinstance(expr,ParsedAdditiveExpressionList):
-        return 'Literal(%s)'%(addOperator([mapToOperator(item,prolog,combinationArg='i') for item in expr],combinationArg))
+        return 'Literal(%s)'%(sparqlOperators.addOperator([mapToOperator(item,prolog,combinationArg='i') for item in expr],combinationArg))
     elif isinstance(expr,FunctionCall):
         if isinstance(expr.name,QName):
             fUri = convertTerm(expr.name,prolog)
@@ -112,7 +129,7 @@ def createSPARQLPConstraint(filter,prolog):
     """
     Takes an instance of either ParsedExpressionFilter or ParsedFunctionFilter
     and converts it to a sparql-p operator by composing a python string of lambda functions and SPARQL operators
-    This string is than evaluated to return the actual function for sparql-p
+    This string is then evaluated to return the actual function for sparql-p
     """    
     reducedFilter = isinstance(filter.filter,ListRedirect) and filter.filter.reduce() or filter.filter
     if isinstance(reducedFilter,ParsedConditionalAndExpressionList):
@@ -125,6 +142,16 @@ def createSPARQLPConstraint(filter,prolog):
         if prolog.DEBUG:
             print "sparql-p operator(s): %s"%combinationLambda
         return eval(combinationLambda)
+    elif isinstance(reducedFilter,BuiltinFunctionCall):
+        rt=mapToOperator(reducedFilter,prolog)
+        if prolog.DEBUG:
+            print "sparql-p operator(s): %s"%rt
+        return eval(rt)        
+    elif isinstance(reducedFilter,(ParsedAdditiveExpressionList,UnaryOperator,FunctionCall)):
+        rt='lambda(i): %s'%(mapToOperator(reducedFilter,prolog,combinationArg='i'))
+        if prolog.DEBUG:
+            print "sparql-p operator(s): %s"%rt
+        return eval(rt)        
     else:
         rt=mapToOperator(reducedFilter,prolog)
         if prolog.DEBUG:
@@ -156,6 +183,7 @@ def sparqlPSetup(groupGraphPattern,prolog):
         triples,constraints = reorderBasicGraphPattern(groupGraphPattern[0])    
         for t in unRollTripleItems(triples,prolog):            
             patternList.append(t)
+        #from pprint import pprint;pprint(patternList)
         basicGraphPattern = BasicGraphPattern(patternList)    
         for constr in constraints:
             basicGraphPattern.addConstraint(createSPARQLPConstraint(constr,prolog))
@@ -233,9 +261,8 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
         2. a SPARQL query instance (parsed using the BisonGen parser)
         3. A dictionary of initial variable bindings (varName -> .. rdflib Term .. )
         4. DEBUG Flag
-        
-    When select variables are given, it returns a list of dictionaries mapping the selected variables to their result
-    Otherwise, it returns a list of tuples ()
+
+    Returns a list of tuples - each a binding of the selected variables in query order
     """
     if query.query.dataSets:
         tripleStore = sparqlGraph.SPARQLGraph(ReadOnlyGraphAggregate(store,query.query.dataSets))
@@ -245,7 +272,7 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
     if query.query.variables:
         query.query.variables = [convertTerm(item,query.prolog) for item in query.query.variables]
     else:
-        query.query.variables = '*'
+        query.query.variables = []
     gp = reorderGroupGraphPattern(query.query.whereClause.parsedGraphPattern)
     validateGroupGraphPattern(gp)
     
