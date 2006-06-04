@@ -306,7 +306,7 @@ def _processResults(select,arr) :
     else :
         # this is the case corresponding to a SELECT * query call
         for bind in arr:
-            qresult = bind.values()
+            qresult = [val for key,val in bind.items() if key != _graphKey]
             if len(qresult) == 1 :
                 retval.append(qresult[0])
             else :
@@ -769,6 +769,7 @@ class Query :
             retval = _uniquefyList(results)
         else :
             retval = results
+
         if limit != None :
             return retval[offset:limit+offset]
         elif offset > 0 :
