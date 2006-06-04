@@ -10,7 +10,7 @@ from pprint import pprint
 EVALUATE = True
 DEBUG_PARSE = False
 STORE='MySQL'
-configString = ''#user=root,password=,host=localhost,db=test'
+configString = ''
 
 #class TestClassAndType(unittest.TestCase):
 #    
@@ -24,12 +24,16 @@ configString = ''#user=root,password=,host=localhost,db=test'
 
 test = [
     #'data/TypePromotion/tP-unsignedByte-short.rq'
-    'data/examples/ex11.2.3.1_0.rq',
-    'data/ValueTesting/typePromotion-decimal-decimal-pass.rq',
-    'data/examples/ex11.2.3.2_0.rq',
+    #'data/examples/ex11.2.3.1_0.rq',
+    #'data/ValueTesting/typePromotion-decimal-decimal-pass.rq',
+#    'data/examples/ex11.2.3.2_0.rq',
+#    'data/SyntaxFull/syntax-union-02.rq',
+    #'data/part1/dawg-query-004.rq',
+    
 ]
 
 tests2Skip = [
+    'data/examples/ex11_1.rq', #Compares with literal BNode labels!
     'data/SyntaxFull/syntax-bnodes-03.rq', #BNode as a predicate (not allowed by grammar)
     'data/SyntaxFull/syntax-qname-04.rq', #Grammar Ambiguity with ':' matching as QNAME & QNAME_NS
     'data/SyntaxFull/syntax-qname-05.rq', #Same as above
@@ -79,6 +83,7 @@ tests2Skip = [
     'data/ValueTesting/boolean-false-canonical.rq',#
     'data/ValueTesting/boolean-equiv-FALSE.rq',#
     'data/ValueTesting/extendedType-ne-pass.rq',#[27] Constraint ::= 'FILTER' BrackettedExpression <--
+    'data/examples/ex11_0.rq', #TimeZone info on xsd:dateTime
 ]
 
 
@@ -141,7 +146,7 @@ def trialAndErrorRTParse(graph,queryLoc,DEBUG):
 def testBasic(DEBUG = False):    
     from glob import glob     
     from sre import sub
-    for testFile in glob('data/*/*.rq'):
+    for testFile in glob('data/examples/*.rq'):#glob('data/*/*.rq'):
         store = plugin.get(STORE,Store)()
         bootStrapStore(store)
         store.commit()
@@ -237,12 +242,19 @@ def testBasic(DEBUG = False):
                     store.rollback()
                     store.close()
                     continue
-                    
                 #print store
                 rt = Evaluate(store,p,DEBUG=DEBUG)
                 if expectedRT:
-                    if rt and not isinstance(rt[0],list) and len(rt) == 1:
-                        rt = [(rt[0],)]
+                    nrt = []
+                    for i in rt:
+                        if not isinstance(i,(tuple,basestring)):
+                            nrt.append(tuple(i))
+                        elif isinstance(i,basestring):
+                            nrt.append((i,))
+                    rt = nrt
+#                    if rt and not isinstance(rt[0],list) and len(rt) == 1:
+#                        print rt
+#                        rt = [(rt[0],)]
                     if rt != bindings:                    
                         print "### Expected Result (%s) ###"%expectedRT
                         pprint(bindings)
