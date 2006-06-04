@@ -26,7 +26,7 @@
 #
 ##
 
-import sys, os, time, datetime
+import sys, os
 
 from sparql             import _schemaType, _questChar, SPARQLError, JunkResource, Unbound
 from rdflib.Literal     import Literal
@@ -47,30 +47,6 @@ from sparql import _graphKey, _createResource
 
 from sparql import Debug
 
-def _strToDate(v) :
-    tstr = time.strptime(v,"%Y-%m-%d")
-    return datetime.date(tstr.tm_year,tstr.tm_mon,tstr.tm_mday)
-    
-def _strToTime(v) :
-    tstr = time.strptime(v,"%H:%M:%S")
-    return datetime.time(tstr.tm_hour,tstr.tm_min,tstr.tm_sec)
-    
-def _strToDateTime(v) :
-    tstr = time.strptime(v,"%Y-%m-%dT%H:%M:%S")
-    return datetime.datetime(tstr.tm_year,tstr.tm_mon,tstr.tm_mday,tstr.tm_hour,tstr.tm_min,tstr.tm_sec)
-
-_conversions = {
-    type_string:   lambda v: v,
-    type_integer:  lambda v: int(v),
-    type_float:    lambda v: float(v),
-    type_long:     lambda v: long(v),
-    type_double:   lambda v: float(v),
-    type_decimal:  lambda v: int(v),
-    type_date:     _strToDate, 
-    type_time:     _strToTime,
-    type_dateTime: _strToDateTime,
-}
-
 ##
 # Boolean test whether this is a a query string or not
 # @param v the value to be checked
@@ -84,10 +60,6 @@ def queryString(v) :
 # @return the result of the conversion.
 def getLiteralValue(v) :
     return v.toPython()
-    if v.datatype == "" or not (v.datatype in _conversions):
-        return v
-    else :
-        return _conversions[v.datatype](v)
 
 ##
 # Returns a <em>value retrieval function</em>. The return value can be plugged in a query; it would return
@@ -103,9 +75,12 @@ def getValue(param) :
         unBound = queryString(param)
         if not unBound :
             if isinstance(param,Literal) :
-                value = getLiteralValue(v)
+                value = getLiteralValue(param)
+            elif callable(param):
+                return param
             else :
                 value = param
+            return lambda(bindings): value
     def f(bindings) :
         if unBound :
             val = bindings[param]
@@ -126,9 +101,9 @@ def lt(a,b) :
     fa = getValue(a)
     fb = getValue(b)
     def f(bindings) :        
-        try :
+        try :            
             return fa(bindings) < fb(bindings)
-        except :
+        except:
             # this is the case when the operators are incompatible
             if Debug :
                 (typ,val,traceback) = sys.exc_info()
@@ -346,7 +321,12 @@ def lang(a) :
 def datatype(a) :
     v = __getQueryString(a)
     def f(bindings) :
-        if v == None : return ""
+        if v == None:
+            if isinstance(a,Literal):
+                return a.datatype
+            else:
+                return ""
+        
         try :
             val = bindings[v]
             if val == None or val == JunkResource :
@@ -377,7 +357,6 @@ def isOnCollection(collection,item) :
     then turned into a literal run-time.
     The method returns an adapted method.
     """
-    from rdflib.Graph import check_predicate, check_subject, check_object
     from sparql import _questChar
     collUnbound = False
     if isinstance(collection,Unbound) :
@@ -388,7 +367,8 @@ def isOnCollection(collection,item) :
         collUnbound = True
     else:
         try :
-            check_subject(collection) 
+            #FIXME: check_subject is no longer defined in rdflib.Graph
+            #check_subject(collection) 
             collUnbound = False
             # if we got here, this is a valid collection resource
         except :
