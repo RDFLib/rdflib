@@ -24,7 +24,8 @@ configString = ''
 #    def testClass1(self):
 
 test = [    
-    'data/examples/ex11.2.3.2_1.rq',
+    'data/local-constr/expr-2.rq',
+    #'data/examples/ex11.2.3.2_1.rq',
     #'data/TypePromotion/tP-unsignedByte-short.rq'
     #'data/examples/ex11.2.3.1_0.rq',
     #'data/ValueTesting/typePromotion-decimal-decimal-pass.rq',
@@ -87,6 +88,7 @@ tests2Skip = [
     'data/ValueTesting/boolean-equiv-FALSE.rq',#
     'data/ValueTesting/extendedType-ne-pass.rq',#[27] Constraint ::= 'FILTER' BrackettedExpression <--
     'data/examples/ex11_0.rq', #TimeZone info on xsd:dateTime
+    'data/local-constr/expr-2.rq', #Unable to deal with external filter against variable visible only to OPTIONAL
 ]
 
 
