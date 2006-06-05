@@ -97,12 +97,14 @@ MANIFEST_QUERY_NS = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/test-q
 TEST_BASE = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/')
 RESULT_NS = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/result-set#')
 
+manifestNS = {
+    u"rdfs": Namespace("http://www.w3.org/2000/01/rdf-schema#"),
+    u"mf"  : Namespace("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"),
+    u"qt"  : Namespace("http://www.w3.org/2001/sw/DataAccess/tests/test-query#"),
+}
+
 MANIFEST_QUERY = \
 """
-PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#> 
-PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> 
-PREFIX qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> 
-
 SELECT ?source ?testName ?testComment ?result
 WHERE {
   ?testCase mf:action    ?testAction;            
@@ -163,12 +165,17 @@ def testBasic(DEBUG = False):
         store = plugin.get(STORE,Store)()
         store.open(configString,create=False)
         assert len(store) == 0
-        manifestG=ConjunctiveGraph(store).default_context        
+        manifestG=ConjunctiveGraph(store)
         if not os.path.exists(manifestPath):
             assert os.path.exists(manifestPath2)
             manifestPath = manifestPath2
-        manifestG.parse(open(manifestPath),publicID=TEST_BASE,format='n3')                
-        manifestData = Evaluate(store,PARSED_MANIFEST_QUERY,{'?query' : TEST_BASE[queryFileName]})
+        manifestG.default_context.parse(open(manifestPath),publicID=TEST_BASE,format='n3')          
+        manifestData = \
+           manifestG.sparqlQuery(
+                                  PARSED_MANIFEST_QUERY,
+                                  initBindings={'?query' : TEST_BASE[queryFileName]},
+                                  initNs=manifestNS,
+                                  DEBUG = False)
         store.rollback()
         store.close()
         for source,testCaseName,testCaseComment,expectedRT in manifestData:
@@ -251,7 +258,7 @@ def testBasic(DEBUG = False):
                     store.close()
                     continue
                 #print store
-                rt = Evaluate(store,p,DEBUG=DEBUG)
+                rt = g.sparqlQuery(p,DEBUG = DEBUG)                
                 if expectedRT:
                     nrt = []
                     for i in rt:
