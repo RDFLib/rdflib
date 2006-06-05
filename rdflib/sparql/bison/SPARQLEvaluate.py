@@ -101,7 +101,6 @@ def mapToOperator(expr,prolog,combinationArg=None):
     elif isinstance(expr,(Variable,Unbound)):
         return '"%s"'%expr
     elif isinstance(expr,ParsedREGEXInvocation):
-        #print expr.arg1,expr.arg2
         return 'sparqlOperators.regex(%s,%s%s)%s'%(mapToOperator(expr.arg1,prolog,combinationArg),
                                                  mapToOperator(expr.arg2,prolog,combinationArg),
                                                  expr.arg3 and ','+expr.arg3 or '',
@@ -167,9 +166,9 @@ def sparqlPSetup(groupGraphPattern,prolog):
     basicGraphPatterns = []
     patternList = []
     graphGraphPatterns,optionalGraphPatterns,alternativeGraphPatterns = categorizeGroupGraphPattern(groupGraphPattern)
+    globalTPs,globalConstraints = reorderBasicGraphPattern(groupGraphPattern[0])    
     #UNION alternative graph patterns
-    if alternativeGraphPatterns:        
-        globalTPs,globalConstraints = reorderBasicGraphPattern(groupGraphPattern[0])    
+    if alternativeGraphPatterns:                
         #Global constraints / optionals must be distributed within each alternative GP via:
         #((P1 UNION P2) FILTER R) ≡ ((P1 FILTER R) UNION (P2 FILTER R)).        
         for alternativeGPBlock in alternativeGraphPatterns:
@@ -183,7 +182,6 @@ def sparqlPSetup(groupGraphPattern,prolog):
         triples,constraints = reorderBasicGraphPattern(groupGraphPattern[0])    
         for t in unRollTripleItems(triples,prolog):            
             patternList.append(t)
-        #from pprint import pprint;pprint(patternList)
         basicGraphPattern = BasicGraphPattern(patternList)    
         for constr in constraints:
             basicGraphPattern.addConstraint(createSPARQLPConstraint(constr,prolog))
@@ -193,6 +191,8 @@ def sparqlPSetup(groupGraphPattern,prolog):
     rtOptionalGraphPatterns = []
     for opGGP in [g.nonTripleGraphPattern for g in optionalGraphPatterns]:
         opTriples,opConstraints = reorderBasicGraphPattern(opGGP[0])
+        #FIXME how do deal with data/local-constr/expr-2.rq?
+        #opConstraints.extend(globalConstraints)
         opPatternList = []
         for t in unRollTripleItems(opTriples,prolog):            
             opPatternList.append(t)

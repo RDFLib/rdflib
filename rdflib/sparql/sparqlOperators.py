@@ -101,7 +101,7 @@ def lt(a,b) :
     fb = getValue(b)
     def f(bindings) :        
         try :            
-            return fa(bindings) < fb(bindings)
+            return fa(bindings) < fb(bindings)            
         except:
             # this is the case when the operators are incompatible
             if Debug :
