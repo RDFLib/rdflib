@@ -17,7 +17,7 @@ from rdflib.URLInputSource import URLInputSource
 
 from xml.sax.xmlreader import InputSource
 from xml.sax.saxutils import prepare_input_source
-
+from cStringIO import StringIO
 import logging
 import random
 
@@ -651,6 +651,29 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
         context.parse(source, publicID=publicID, format=format, **args)
         return context
 
+    def sparqlQuery(self,strOrQuery,initBindings ={},initNs = {},DEBUG = False):
+        """
+        Executes a SPARQL query against this Conjunctive Graph
+        strOrQuery - Is either a string consisting of the SPARQL query or an instance of rdflib.sparql.bison.Query.Query
+        initBindings - A mapping from variable name to an RDFLib term (used for initial bindings for SPARQL query)
+        initNS - A mapping from a namespace prefix to an instance of rdflib.Namespace (used for SPARQL query)
+        DEBUG - A boolean flag passed on to the SPARQL parser and evaluation engine
+        FIXME: This should probably take as a parameter a result type (SPARQL XML,JSON,Python lists/tuples)
+        """
+        from sparql.bison.Query import Query,Prolog
+        from rdflib.sparql.bison import Parse,Evaluate        
+        assert isinstance(strOrQuery,(basestring,Query)),"%s must be a string or an rdflib.sparql.bison.Query.Query instance"%strOrQuery
+        if isinstance(strOrQuery,basestring):
+            strOrQuery = Parse(StringIO(strOrQuery),DEBUG)                 
+        if not strOrQuery.prolog:
+                strOrQuery.prolog = Prolog(None,[])
+                strOrQuery.prolog.prefixBindings.update(initNs)
+        else:
+            for prefix,nsInst in initNs.items():
+                if prefix not in strOrQuery.prolog.prefixBindings:
+                    strOrQuery.prolog.prefixBindings[prefix] = nsInst                
+        return  Evaluate(self.store,strOrQuery,initBindings,DEBUG=DEBUG)
+                
     def __reduce__(self):
         return (ConjunctiveGraph, (self.store, self.identifier,))
 
