@@ -24,7 +24,6 @@
         <import from='rdflib.sparql.bison'>Filter</import>
         <import from='rdflib.sparql.bison'>Util</import>
         <import from='rdflib.sparql.bison'>Expression</import>
-        <import from='rdflib.sparql.bison'>BooleanOperators</import>
         <import from='rdflib.sparql.bison'>SolutionModifier</import>
         <import>rdflib</import>
         <import from='rdflib'>RDF</import>
