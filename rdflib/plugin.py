@@ -1,6 +1,7 @@
 from rdflib.store import Store
 from rdflib.syntax import serializer, serializers
 from rdflib.syntax import parsers
+from rdflib import sparql
 
 _kinds = {}
 _adaptors = {}
@@ -97,3 +98,6 @@ register('Redland', Store,
 
 register('MySQL', Store,
          'rdflib.store.MySQL', 'MySQL')
+
+register("bison", sparql.Processor,
+         'rdflib.sparql.bison.Processor', 'Processor')
