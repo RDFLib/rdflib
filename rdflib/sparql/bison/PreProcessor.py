@@ -89,7 +89,7 @@ def reorderGroupGraphPattern(groupGraphPattern):
         prunedGraphPatterns.append(g)
         
     firstGraphPattern.triples.extend(reorderCandidates)
-    rt=ParsedGroupGraphPattern([firstGraphPattern]+prunedGraphPatterns)
+    rt=type(groupGraphPattern)(ParsedGroupGraphPattern([firstGraphPattern]+prunedGraphPatterns))
     #print "Reordered to ", rt
     return rt
 
