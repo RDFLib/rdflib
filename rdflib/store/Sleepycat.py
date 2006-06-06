@@ -2,8 +2,7 @@ from rdflib.store import Store
 from rdflib.URIRef import URIRef
 
 from bsddb import db
-from base64 import b64encode
-from base64 import b64decode
+
 from os import mkdir
 from os.path import exists
 from threading import Thread
@@ -356,8 +355,6 @@ class Sleepycat(Store):
         return count
 
     def bind(self, prefix, namespace):
-        if namespace[-1]=="-":
-            raise Exception("??")
         prefix = prefix.encode("utf-8")
         namespace = namespace.encode("utf-8")
         bound_prefix = self.__prefix.get(namespace)
@@ -380,7 +377,7 @@ class Sleepycat(Store):
         current = cursor.first()
         while current:
             prefix, namespace = current
-            results.append((prefix, URIRef(namespace)))
+            results.append((prefix, namespace))
             current = cursor.next()
         cursor.close()
         for prefix, namespace in results:
@@ -420,25 +417,17 @@ class Sleepycat(Store):
                     current = None
                 cursor.close()
     
-    if True:
-        def _from_string(self, i):
-            k = self.__i2k.get(int(i))
-            return self._loads(k)
+    def _from_string(self, i):
+        k = self.__i2k.get(int(i))
+        return self._loads(k)
 
-        def _to_string(self, term):
-            k = self._dumps(term)
-            i = self.__k2i.get(k)
-            if i is None:
-                i = "%s" % self.__i2k.append(k)
-                self.__k2i.put(k, i)
-            return i
-    else:
-        # TODO: remove this bit... leaving for just now.
-        def _from_string(self, i):
-            return self._loads(b64decode(k))
-    
-        def _to_string(self, term):
-            return b64encode(self._dumps(term))        
+    def _to_string(self, term):
+        k = self._dumps(term)
+        i = self.__k2i.get(k)
+        if i is None:
+            i = "%s" % self.__i2k.append(k)
+            self.__k2i.put(k, i)
+        return i
 
     def play_journal(self, graph=None):
         j = self.__journal
