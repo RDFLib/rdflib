@@ -69,6 +69,9 @@ register('nt', parsers.Parser,
 register('n3', parsers.Parser,
          'rdflib.syntax.parsers.N3Parser', 'N3Parser')
 
+register('rdfa', parsers.Parser,
+         'rdflib.syntax.parsers.RDFaParser', 'RDFaParser')
+
 register('default', Store,
          'rdflib.store.IOMemory', 'IOMemory')
 
