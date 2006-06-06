@@ -193,8 +193,6 @@ class Sleepycat(Store):
         value = cspo.get("%s^%s^%s^%s^" % (c, s, p, o))
         if value is None:
             self.__journal.append("%s^%s^%s^%s^1^%s" % (c, s, p, o, time()))
-            # TODO: handle case where a triple is added as quoted and
-            # then added again as not quoted... or vice versa.
             self.__contexts.put(c, "")        
 
             contexts_value = cspo.get("%s^%s^%s^%s^" % ("", s, p, o)) or ""
@@ -360,7 +358,7 @@ class Sleepycat(Store):
 
     def namespace(self, prefix):
         prefix = prefix.encode("utf-8")        
-        return URIRef(self.__namespace.get(prefix, None))
+        return self.__namespace.get(prefix, None)
 
     def prefix(self, namespace):
         namespace = namespace.encode("utf-8")                
