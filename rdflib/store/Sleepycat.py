@@ -4,11 +4,10 @@ from rdflib.URIRef import URIRef
 from bsddb import db
 
 from os import mkdir
-from os.path import exists
+from os.path import exists, abspath
+from urllib import pathname2url
 from threading import Thread
 from time import sleep, time
-
-# TODO: tool to convert old Sleepycat DBs to this version.
 
 
 class Sleepycat(Store):
@@ -17,21 +16,15 @@ class Sleepycat(Store):
 
     def __init__(self, configuration=None, identifier=None):
         self.__open = False
-        from rdflib import BNode
-        self.identifier = identifier or BNode() # TODO: derive this from CWD, configuration or have graph pass down the logical URI of the Store.
+        self.__identifier = identifier
         super(Sleepycat, self).__init__(configuration)
         self.configuration = configuration
-        #np = NodePickler(self)
-        #self._loads = np.loads
-        #self._dumps = np.dumps
-        
-    def __get_env(self):
-        return self.__env
-    def __set_env(self, env):
-        self.__env = env
-        self._loads = env.node_pickler.loads
-        self._dumps = env.node_pickler.dumps
-    env = property(__get_env, __set_env)
+        self._loads = self.node_pickler.loads
+        self._dumps = self.node_pickler.dumps
+
+    def __get_identifier(self):
+        return self.__identifier
+    identifier = property(__get_identifier)
 
     def open(self, path, create=True):
         homeDir = path        
@@ -42,6 +35,8 @@ class Sleepycat(Store):
                 mkdir(homeDir)
             else:
                 return -1
+        if self.__identifier is None:
+            self.__identifier = URIRef(pathname2url(abspath(homeDir)))
         self.db_env = db_env = db.DBEnv()
         db_env.set_cachesize(0, 1024*1024*50) # TODO
         #db_env.set_lg_max(1024*1024)
@@ -365,7 +360,7 @@ class Sleepycat(Store):
 
     def namespace(self, prefix):
         prefix = prefix.encode("utf-8")        
-        return self.__namespace.get(prefix, None)
+        return URIRef(self.__namespace.get(prefix, None))
 
     def prefix(self, namespace):
         namespace = namespace.encode("utf-8")                
@@ -381,9 +376,9 @@ class Sleepycat(Store):
             current = cursor.next()
         cursor.close()
         for prefix, namespace in results:
-            yield prefix, namespace
+            yield prefix, URIRef(namespace)
 
-    def contexts(self, triple=None): # TODO: have Graph support triple?
+    def contexts(self, triple=None):
         _from_string = self._from_string
         _to_string = self._to_string        
 
@@ -397,9 +392,6 @@ class Sleepycat(Store):
                 for c in contexts.split("^"):
                     if c:
                         yield _from_string(c)
-                    #else:
-                    #    yield self.identifier
-
         else:
             index = self.__contexts
             cursor = index.cursor()

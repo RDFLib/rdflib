@@ -20,6 +20,7 @@
 from rdflib import RDF
 from rdflib import exceptions
 
+
 class Store(object):
     #Properties
     context_aware = False
@@ -32,8 +33,31 @@ class Store(object):
         configuration: string containing infomation open can use to
         connect to datastore.
         """
+        self.__node_pickler = None
         if configuration:
             self.open(configuration)
+
+    def __get_node_pickler(self):
+        if self.__node_pickler is None:
+            from rdflib.store.NodePickler import NodePickler
+            from rdflib.URIRef import URIRef
+            from rdflib.BNode import BNode
+            from rdflib.Literal import Literal
+            from rdflib.Graph import Graph, QuotedGraph, GraphValue
+            from rdflib.Variable import Variable
+            from rdflib.Statement import Statement
+            self.__node_pickler = np = NodePickler()
+            np.register(self, "S")
+            np.register(URIRef, "U")
+            np.register(BNode, "B")
+            np.register(Literal, "L")
+            np.register(Graph, "G")
+            np.register(QuotedGraph, "Q")
+            np.register(Variable, "V")
+            np.register(Statement, "s")
+            np.register(GraphValue, "v")
+        return self.__node_pickler
+    node_pickler = property(__get_node_pickler)
 
     #Database management methods
     def open(self, configuration, create=True):
@@ -174,4 +198,6 @@ class Store(object):
     
     def rollback(self):
         """ """    
+
+
 
