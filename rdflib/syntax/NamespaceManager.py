@@ -67,7 +67,7 @@ class NamespaceManager(object):
             elif bound_prefix == prefix:
                 pass # already bound
             else:
-                if override:
+                if override or bound_prefix.startswith("_"): # or a generated prefix
                     self.store.bind(prefix, namespace)
 
     def namespaces(self):
