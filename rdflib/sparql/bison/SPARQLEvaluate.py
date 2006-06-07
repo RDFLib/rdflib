@@ -257,7 +257,7 @@ def validateGroupGraphPattern(gGP,noNesting = False):
 def Evaluate(store,query,passedBindings = {},DEBUG = False):
     """
     Takes:
-        1. an rdflib.store.Store instance
+        1. an rdflib.store.Store instance 
         2. a SPARQL query instance (parsed using the BisonGen parser)
         3. A dictionary of initial variable bindings (varName -> .. rdflib Term .. )
         4. DEBUG Flag
@@ -265,7 +265,8 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
     Returns a list of tuples - each a binding of the selected variables in query order
     """
     if query.query.dataSets:
-        tripleStore = sparqlGraph.SPARQLGraph(ReadOnlyGraphAggregate(store,query.query.dataSets))
+        tripleStore = sparqlGraph.SPARQLGraph(BackwardCompatGraph(store))
+        #tripleStore = sparqlGraph.SPARQLGraph(ReadOnlyGraphAggregate(store,query.query.dataSets))
     else:        
         tripleStore = sparqlGraph.SPARQLGraph(BackwardCompatGraph(store))    
         

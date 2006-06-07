@@ -6,8 +6,8 @@ from rdflib.sparql.bison import Parse, Evaluate
 
 class Processor(sparql.Processor):
 
-    def __init__(self, graph):
-        self.graph = graph
+    def __init__(self, store):
+        self.store = store
         
     def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False):
         assert isinstance(strOrQuery, (basestring, Query)), "%s must be a string or an rdflib.sparql.bison.Query.Query instance"%strOrQuery
@@ -20,4 +20,4 @@ class Processor(sparql.Processor):
             for prefix, nsInst in initNs.items():
                 if prefix not in strOrQuery.prolog.prefixBindings:
                     strOrQuery.prolog.prefixBindings[prefix] = nsInst                
-        return  Evaluate(self.graph, strOrQuery, initBindings, DEBUG=DEBUG)
+        return  Evaluate(self.store, strOrQuery, initBindings, DEBUG=DEBUG)
