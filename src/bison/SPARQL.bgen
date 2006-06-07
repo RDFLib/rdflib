@@ -94,6 +94,12 @@
                     $$ = PyObject_CallMethod(Query, "Prolog", "OO", Py_None, $1);
                 </code>
             </rule>            
+            <rule>
+                <code language="c">
+                    $$ = Py_None;
+                </code>
+            </rule>
+            
         </production>  
         
         <production>
