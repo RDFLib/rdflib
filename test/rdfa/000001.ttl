@@ -1,4 +1,3 @@
-_:head0 <stylesheet> </includes/style.css> .
 <#i> <http://xmlns.com/foaf/0.1/givenname> "Ben"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
 <#i> <http://xmlns.com/foaf/0.1/family_name> "Adida"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
 <#i> <http://xmlns.com/foaf/0.1/nick> "Ben"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .

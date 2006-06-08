@@ -20,12 +20,14 @@ CHANGE HISTORY:
                Added support for plaintext and flattening of XMLLiterals
                ... (Sections 5.1.1.2 and 5.1.2.1)
                Fixed plaintext bug where it was being resolved as CURIE
+               Added support to skip reserved @rel keywords from:
+                 http://www.w3.org/TR/REC-html40/types.html#h-6.12
 
 Copyright (c) 2006, Elias Torres <elias@torrez.us>
 
 """
 
-import sys, re, urllib, urlparse, cStringIO
+import sys, re, urllib, urlparse, cStringIO, string
 from xml.dom import pulldom
 from rdflib.syntax.parsers import Parser
 from rdflib import URIRef
@@ -36,6 +38,10 @@ from rdflib import Namespace
 __version__ = "$Id$"
 
 rdfa_attribs = ["about","property","rel","rev","href","content","role"]
+
+reserved_links = ['alternate', 'stylesheet', 'start', 'next', 'prev',
+                 'contents', 'index', 'glossary', 'copyright', 'chapter',
+                 'section', 'subsection', 'appendix', 'help', 'bookmark']
 
 xhtml = Namespace("http://www.w3.org/1999/xhtml")
 xml = Namespace("http://www.w3.org/XML/1998/namespace")
@@ -161,10 +167,12 @@ class RDFaParser(Parser):
             self.triple(subject, predicate, literal)
 
         if "rel" in found:
-          predicate = self.extractCURIEorURI(node.getAttribute("rel"))
-          if node.hasAttribute("href"):
-            object = self.extractCURIEorURI(node.getAttribute("href"))
-            self.triple(subject, predicate, object)
+          rel = node.getAttribute("rel").strip()
+          if not string.lower(rel) in reserved_links:
+            predicate = self.extractCURIEorURI(rel)
+            if node.hasAttribute("href"):
+              object = self.extractCURIEorURI(node.getAttribute("href"))
+              self.triple(subject, predicate, object)
 
         if "rev" in found:
           predicate = self.extractCURIEorURI(node.getAttribute("rev"))
