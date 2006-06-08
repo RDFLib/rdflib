@@ -408,7 +408,7 @@ def addOperator(args,combinationArg):
     """
     SPARQL numeric + operator implemented via Python
     """
-    return ' + '.join(["getValue(%s)(%s)"%(i,combinationArg) for i in args])
+    return ' + '.join(["sparqlOperators.getValue(%s)%s"%(i,combinationArg and "(%s)"%combinationArg or '') for i in args])
 
 def XSDCast(source,target=None):
     """
