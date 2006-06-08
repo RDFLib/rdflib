@@ -13,7 +13,7 @@ from rdflib.syntax.serializer import Serializer
 from rdflib.syntax.parsers import Parser
 from rdflib.syntax.NamespaceManager import NamespaceManager
 from rdflib import sparql
-
+from QueryResult import QueryResult
 from rdflib.URLInputSource import URLInputSource
 
 from xml.sax.xmlreader import InputSource
@@ -645,7 +645,7 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
         FIXME: This should probably take as a parameter a result type (SPARQL XML,JSON,Python lists/tuples)
         """
         p = plugin.get(processor, sparql.Processor)(self.store)
-        return p.query(strOrQuery, initBindings, initNs, DEBUG)
+        return plugin.get('SPARQLQueryResult',QueryResult)(p.query(strOrQuery, initBindings, initNs, DEBUG))
 
     def __reduce__(self):
         return (ConjunctiveGraph, (self.store, self.identifier,))
