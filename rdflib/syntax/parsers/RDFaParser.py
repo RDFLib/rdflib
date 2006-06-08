@@ -13,6 +13,14 @@ LICENSE:
 
   BSD
 
+CHANGE HISTORY:
+
+  2006/06/03 - Initial Version
+  2006/06/08 - Added support for role (as per primer not syntax spec)
+               Added support for plaintext and flattening of XMLLiterals
+               ... (Sections 5.1.1.2 and 5.1.2.1)
+               Fixed plaintext bug where it was being resolved as CURIE
+
 Copyright (c) 2006, Elias Torres <elias@torrez.us>
 
 """
@@ -27,7 +35,7 @@ from rdflib import Namespace
 
 __version__ = "$Id$"
 
-rdfa_attribs = ["about","property","rel","rev","href","content"]
+rdfa_attribs = ["about","property","rel","rev","href","content","role"]
 
 xhtml = Namespace("http://www.w3.org/1999/xhtml")
 xml = Namespace("http://www.w3.org/XML/1998/namespace")
@@ -123,11 +131,14 @@ class RDFaParser(Parser):
           predicate = self.extractCURIEorURI(node.getAttribute('property'))
           literal = None
           datatype = None
+          plaintext = False
 
           if node.hasAttribute('datatype'):
-            datatype = self.extractCURIEorURI(node.getAttribute('datatype'))
-            if datatype == 'plaintext':
-              datatype = None
+            sdt = node.getAttribute('datatype')
+            if sdt <> 'plaintext':
+              datatype = self.extractCURIEorURI(sdt)
+            else:
+              plaintext = True
 
           if node.hasAttribute("content"):
             literal = Literal(node.getAttribute("content"), lang=lang, datatype=datatype)
@@ -139,9 +150,12 @@ class RDFaParser(Parser):
 
             content = ""
             for child in node.childNodes:
-              content += child.toxml()
+              if datatype or plaintext:
+                  content += self._getNodeText(child)
+              else:
+                content += child.toxml()
             content = content.strip()
-            literal = Literal(content,datatype=rdf.XMLLiteral) 
+            literal = Literal(content,datatype=datatype or rdf.XMLLiteral) 
           
           if literal:
             self.triple(subject, predicate, literal)
@@ -158,10 +172,28 @@ class RDFaParser(Parser):
             object = self.extractCURIEorURI(node.getAttribute("href"))
             self.triple(object, predicate, subject)
 
+        # role is in the primer, but not in the syntax. 
+        # could be deprecated.
+        # Assumptions:
+        # - Subject resolution as always (including meta/link)
+        # - Attribute Value is a CURIE or URI
+        # - It adds another triple, besides prop, rel, rev.
+        if "role" in found:
+          type = self.extractCURIEorURI(node.getAttribute('role'))
+          self.triple(subject, rdf.type, type)
+
       if event == pulldom.END_ELEMENT:
         self._popStacks(event, node)
 
     f.close()
+
+  def _getNodeText(self, node):
+    if node.nodeType in (3,4): return node.nodeValue
+    text = ''
+    for child in node.childNodes:
+      if child.nodeType in (3,4):
+        text = text + child.nodeValue
+    return text
 
   def generateBlankNode(self, parentNode):
     name = parentNode.tagName

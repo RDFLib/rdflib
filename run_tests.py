@@ -37,8 +37,12 @@ from test.store_performace import *
 
 from test.rules import *
 
+import test.rdfa
 
 if __name__ == "__main__":
+
+    test.rdfa.main()
+
     if verbose:
         ts = unittest.makeSuite
         tests = [
@@ -51,3 +55,4 @@ if __name__ == "__main__":
         unittest.TextTestRunner(verbosity=2).run(suite)
     else:
         unittest.main()
+
