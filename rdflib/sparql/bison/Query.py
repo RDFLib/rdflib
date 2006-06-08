@@ -1,5 +1,3 @@
-from SPARQLEvaluate import NotImplemented,CONSTRUCT_NOT_SUPPORTED
-
 class Query(object):
     """
     Query ::= Prolog ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery )
