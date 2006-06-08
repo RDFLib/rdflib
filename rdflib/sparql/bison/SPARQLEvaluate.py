@@ -1,10 +1,10 @@
 ### Utilities for evaluating a parsed SPARQL expression using sparql-p
-from rdflib.sparql import sparqlGraph
-from rdflib.sparql import sparqlOperators
+from rdflib.sparql import sparqlGraph, sparqlOperators
+from rdflib.sparql.sparqlOperators import getValue
 from rdflib.sparql.graphPattern import BasicGraphPattern
-from rdflib.sparql.sparql import Unbound,PatternBNode
+from rdflib.sparql.sparql import Unbound,PatternBNode, SPARQLError
 from rdflib.Graph import ConjunctiveGraph, Graph, BackwardCompatGraph
-from rdflib import URIRef,Variable,BNode, Literal
+from rdflib import URIRef,Variable,BNode, Literal, plugin
 from rdflib.Literal import XSDToPython
 from IRIRef import NamedGraph
 from GraphPattern import ParsedAlternativeGraphPattern,ParsedOptionalGraphPattern
@@ -16,6 +16,8 @@ from Expression import *
 from Util import ListRedirect
 from Operators import *
 from FunctionLibrary import *
+from SolutionModifier import DESCENDING_ORDER
+from Query import AskQuery, SelectQuery
 
 DEBUG = False
 
@@ -119,7 +121,7 @@ def mapToOperator(expr,prolog,combinationArg=None):
         if isinstance(expr.name,QName):
             fUri = convertTerm(expr.name,prolog)
         if fUri in XSDToPython:
-            return "XSDCast(%s,'%s')%s"%(mapToOperator(expr.arguments[0],prolog,combinationArg='i'),fUri,combinationInvokation)
+            return "sparqlOperators.XSDCast(%s,'%s')%s"%(mapToOperator(expr.arguments[0],prolog,combinationArg='i'),fUri,combinationInvokation)
         raise Exception("Whats do i do with %s (a %s)?"%(expr,type(expr).__name__))
     else:
         raise Exception("What do i do with %s (a %s)?"%(expr,type(expr).__name__))
@@ -270,7 +272,7 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
     else:        
         tripleStore = sparqlGraph.SPARQLGraph(BackwardCompatGraph(store))    
         
-    if query.query.variables:
+    if isinstance(query.query,SelectQuery) and query.query.variables:
         query.query.variables = [convertTerm(item,query.prolog) for item in query.query.variables]
     else:
         query.query.variables = []
@@ -286,42 +288,39 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
         print "## Select Variables ##\n",query.query.variables
         print "## Patterns ##\n",basicPatterns
         print "## OptionalPatterns ##\n",optionalPatterns
-        
-    return tripleStore.query(query.query.variables,basicPatterns,optionalPatterns,passedBindings)
-        
-class ReadOnlyGraphAggregate:
-    """
-    Utility abstraction of Graph for read operations over the union of several named Graphs
-    This 1) should be integrated into Graph.py 2) can be *vastly* optimized by store implementations
-    """
-    def __init__(self, store, identifiers=None):
-        self.__store = store
-        self.identifiers = identifiers is None and [] or identifiers
-        
-    def __get_store(self):
-        return self.__store
-    store = property(__get_store)
 
-    def __get_identifier(self):
-        raise Exception("This is a GraphAggregate, it is associated with *multiple* identifiers")
-    identifier = property(__get_identifier)
+    result = tripleStore.queryObject(basicPatterns,optionalPatterns,passedBindings)
+    if result == None :
+        # generate some proper output for the exception :-)
+        msg = "Errors in the patterns, no valid query object generated; "
+        msg += ("pattern:\n%s\netc..." % basicPatterns[0])
+        raise SPARQLError(msg)
     
-    def triples(self, (s, p, o)):
-        for identifier in self.identifiers:
-            for (s, p, o), cg in self.__store.triples((s, p, o), context=Graph(self.__store,identifier)):
-                yield (s, p, o)
-
-    def __len__(self):
-        return reduce(lambda x,y: x+y,[self.__store.__len__(context=Graph(self.__store,identifier)) for identifier in self.identifiers])
-
-    def __iter__(self):
-        return self.triples((None, None, None))
-
-    def __contains__(self, triple):
-        for triple in self.triples(triple):
-            return 1
-        return 0
-
+    if isinstance(query.query,AskQuery):
+        return result.ask()
+    
+    elif isinstance(query.query,SelectQuery):        
+        orderBy = None
+        orderAsc = None
+        if query.query.solutionModifier.orderClause:
+            orderBy     = []
+            orderAsc    = []
+            for orderCond in query.query.solutionModifier.orderClause:
+                expr = orderCond.expression.reduce()
+                assert isinstance(expr,Variable),"Support for ORDER BY with anything other than a variable is not supported: %s"%expr
+                orderBy.append(expr)
+                orderAsc.append(orderCond.order == DESCENDING_ORDER)
+        offset = query.query.solutionModifier.offsetClause and int(query.query.solutionModifier.offsetClause) or 0
+        return result.select(query.query.variables,
+                               query.query.distinct,
+                               query.query.solutionModifier.limitClause,
+                               orderBy,
+                               orderAsc,
+                               offset
+                               )
+    else:
+        raise NotImplemented(CONSTRUCT_NOT_SUPPORTED,repr(query))
+        
 OPTIONALS_NOT_SUPPORTED                   = 1
 GRAPH_PATTERN_NOT_SUPPORTED               = 2
 UNION_GRAPH_PATTERN_NOT_SUPPORTED         = 3
