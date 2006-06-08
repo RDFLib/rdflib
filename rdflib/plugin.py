@@ -2,6 +2,7 @@ from rdflib.store import Store
 from rdflib.syntax import serializer, serializers
 from rdflib.syntax import parsers
 from rdflib import sparql
+from rdflib.QueryResult import QueryResult
 
 _kinds = {}
 _adaptors = {}
@@ -104,3 +105,7 @@ register('MySQL', Store,
 
 register("bison", sparql.Processor,
          'rdflib.sparql.bison.Processor', 'Processor')
+
+register("SPARQLQueryResult", QueryResult,
+         'rdflib.sparql.QueryResult', 'SPARQLQueryResult')
+         
