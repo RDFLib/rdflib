@@ -10,7 +10,7 @@ from pprint import pprint
 
 EVALUATE = True
 DEBUG_PARSE = False
-STORE='MySQL'
+STORE='IOMemory'
 configString = ''
 
 #class TestClassAndType(unittest.TestCase):
@@ -260,15 +260,6 @@ def testBasic(DEBUG = False):
                 #print store
                 rt = g.sparqlQuery(p,DEBUG = DEBUG)                
                 if expectedRT:
-                    nrt = []
-                    for i in rt:
-                        if not isinstance(i,(tuple,basestring)):
-                            nrt.append(tuple(i))
-                        elif isinstance(i,basestring):
-                            nrt.append((i,))
-                        else:
-                            nrt.append(i)
-                    rt = nrt
                     if rt != bindings and Set([Set(i) for i in rt]) != Set([Set(i) for i in bindings]):#unorderedComparison(rt,bindings):
                         print "### Expected Result (%s) ###"%expectedRT
                         pprint(bindings)
