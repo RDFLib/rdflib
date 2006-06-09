@@ -21,7 +21,12 @@ class SPARQLQueryResult(QueryResult.QueryResult):
         """Iterates over the result entries"""
         if isinstance(self.rt,list):
             for item in self.rt:
-                yield item        
+                if not isinstance(item,(tuple,basestring)):
+                    yield tuple(item)
+                elif isinstance(item,basestring):
+                    yield (item,)
+                else:
+                    yield item        
         else:
             yield self.rt
         
