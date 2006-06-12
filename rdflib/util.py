@@ -149,7 +149,7 @@ def from_n3(s, default=None, backend=None):
             datatype = rest[3:-1]
         else:
             datatype = None
-        value = value.decode("unicode-escape")
+        value = value.replace('\\"', '"').replace('\\\\', '\\').decode("unicode-escape")
         return Literal(value, language, datatype)
     elif s.startswith('{'):
         identifier = from_n3(s[1:-1])
