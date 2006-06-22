@@ -429,6 +429,18 @@ class Graph(Node):
     def load(self, source, publicID=None, format="xml"):
         self.parse(source, publicID, format)
 
+    def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False, processor="bison"):
+        """
+        Executes a SPARQL query against this Conjunctive Graph
+        strOrQuery - Is either a string consisting of the SPARQL query or an instance of rdflib.sparql.bison.Query.Query
+        initBindings - A mapping from variable name to an RDFLib term (used for initial bindings for SPARQL query)
+        initNS - A mapping from a namespace prefix to an instance of rdflib.Namespace (used for SPARQL query)
+        DEBUG - A boolean flag passed on to the SPARQL parser and evaluation engine
+        FIXME: This should probably take as a parameter a result type (SPARQL XML,JSON,Python lists/tuples)
+        """
+        p = plugin.get(processor, sparql.Processor)(self.store)
+        return plugin.get('SPARQLQueryResult',QueryResult)(p.query(strOrQuery, initBindings, initNs, DEBUG))
+
     def n3(self):
         """return an n3 identifier for the Graph"""
         return "[%s]" % self.identifier.n3()
@@ -634,18 +646,6 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
         context.remove((None, None, None))
         context.parse(source, publicID=publicID, format=format, **args)
         return context
-
-    def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False, processor="bison"):
-        """
-        Executes a SPARQL query against this Conjunctive Graph
-        strOrQuery - Is either a string consisting of the SPARQL query or an instance of rdflib.sparql.bison.Query.Query
-        initBindings - A mapping from variable name to an RDFLib term (used for initial bindings for SPARQL query)
-        initNS - A mapping from a namespace prefix to an instance of rdflib.Namespace (used for SPARQL query)
-        DEBUG - A boolean flag passed on to the SPARQL parser and evaluation engine
-        FIXME: This should probably take as a parameter a result type (SPARQL XML,JSON,Python lists/tuples)
-        """
-        p = plugin.get(processor, sparql.Processor)(self.store)
-        return plugin.get('SPARQLQueryResult',QueryResult)(p.query(strOrQuery, initBindings, initNs, DEBUG))
 
     def __reduce__(self):
         return (ConjunctiveGraph, (self.store, self.identifier,))
