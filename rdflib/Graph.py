@@ -13,7 +13,7 @@ from rdflib.syntax.serializer import Serializer
 from rdflib.syntax.parsers import Parser
 from rdflib.syntax.NamespaceManager import NamespaceManager
 from rdflib import sparql
-from QueryResult import QueryResult
+from rdflib.QueryResult import QueryResult
 from rdflib.URLInputSource import URLInputSource
 
 from xml.sax.xmlreader import InputSource
