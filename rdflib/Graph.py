@@ -754,6 +754,9 @@ class BackwardCompatGraph(ConjunctiveGraph):
         return self.store
     backend = property(__get_backend)
 
+    def open(self, configuration, create=True):
+        return ConjunctiveGraph(self, configuration, create)
+
     def add(self, (s, p, o), context=None):
         """"A conjunctive graph adds to its default context."""
         if context is not None:
