@@ -849,4 +849,166 @@ class BackwardCompatGraph(ConjunctiveGraph):
     def save(self, destination, format="xml", base=None, encoding=None):
         self.serialize(destination=destination, format=format, base=base, encoding=encoding)
 
+class ModificationException(Exception):
+    def __init__(self):
+        pass
+    def __str__(self):
+        return "Modifications and transactional operations not allowed on ReadOnlyGraphAggregate instances"    
 
+class UnSupportedAggregateOperation(Exception):
+    def __init__(self):
+        pass
+    def __str__(self):
+        return "This operation is not supported by ReadOnlyGraphAggregate instances"    
+
+class ReadOnlyGraphAggregate(ConjunctiveGraph):
+    """
+    An utility class for treating a set of graphs as a single graph.  Only read operations 
+    are supported (hence the name)
+    """
+    def __init__(self, graphs):
+        assert isinstance(graphs,list) and graphs and [g for g in graphs if isinstance(g,Graph)],"graphs argument must be a list of Graphs!!"
+        self.graphs = graphs
+    def __repr__(self):
+        return "<ReadOnlyGraphAggregate: %s graphs>" % len(self.graphs)
+
+    def destroy(self, configuration):
+        raise ModificationException()
+
+    #Transactional interfaces (optional)
+    def commit(self):
+        raise ModificationException()
+        
+    def rollback(self):
+        raise ModificationException()
+    
+    def open(self, configuration, create=False):
+        for graph in self.graphs:
+            graph.open(self, configuration, create)
+    
+    def close(self):
+        for graph in self.graphs:
+            graph.close()
+
+    def add(self, (s, p, o)):
+        raise ModificationException()
+            
+    def addN(self, quads):        
+        raise ModificationException()
+
+    def remove(self, (s, p, o)):
+        raise ModificationException()
+    
+    def triples(self, (s, p, o)):
+        for graph in self.graphs:
+            for s, p, o in graph.triples((s, p, o)):
+                yield (s, p, o)
+
+    def __len__(self):
+        return reduce(lambda x,y: x+y,[len(g) for g in self.graphs])
+
+    def __iter__(self):
+        return self.triples((None, None, None))
+
+    def __contains__(self, triple):
+        for triple in self.triples(triple):
+            return 1
+        return 0
+
+    def __hash__(self):
+        raise UnSupportedAggregateOperation()
+    
+    def __cmp__(self, other):
+        raise UnSupportedAggregateOperation()
+
+    def __iadd__(self, other):
+        raise ModificationException()
+    
+    def __isub__(self, other):
+        raise ModificationException()
+
+    # Conv. methods
+
+    def set(self, (subject, predicate, object)):
+        raise ModificationException()
+    
+    def triples_choices(self, (subject, predicate, object_),context=None):
+        for graph in self.graphs:
+            for (s,p,o) in graph.triples_choices((subject, predicate, object_)):
+                yield (s, p, o)
+
+    def value(self, subject=None, predicate=RDF.value, object=None, default=None, any=False):
+        raise UnSupportedAggregateOperation()
+    
+    def transitive_objects(self, subject, property, remember=None):
+        """ """
+        if remember==None:
+            remember = {}
+        if not subject in remember:
+            remember[subject] = 1
+            yield subject
+            for object in self.objects(subject, property):
+                for o in self.transitive_objects(object, property, remember):
+                    yield o
+
+    def transitive_subjects(self, predicate, object, remember=None):
+        """ """
+        if remember==None:
+            remember = {}
+        if not object in remember:
+            remember[object] = 1
+            yield object
+            for subject in self.subjects(predicate, object):
+                for s in self.transitive_subjects(predicate, subject, remember):
+                    yield s
+
+    def qname(self, uri): 
+        raise UnSupportedAggregateOperation()       
+
+    def compute_qname(self, uri):
+        raise UnSupportedAggregateOperation()
+    
+    def bind(self, prefix, namespace, override=True):
+        raise UnSupportedAggregateOperation()
+    
+    def namespaces(self):
+        for graph in self.graphs:
+            for prefix, namespace in graph.namespace_manager.namespaces():
+                yield prefix, namespace
+
+    def absolutize(self, uri, defrag=1):
+        raise UnSupportedAggregateOperation()
+
+    def serialize(self, destination=None, format="xml", base=None, encoding=None):
+        raise UnSupportedAggregateOperation()
+    
+    def prepare_input_source(self, source, publicID=None):
+        raise UnSupportedAggregateOperation()
+    
+    def parse(self, source, publicID=None, format="xml", **args):
+        raise ModificationException()
+    
+    def load(self, source, publicID=None, format="xml"):
+        raise ModificationException()
+
+    def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False, processor="bison"):
+        raise UnSupportedAggregateOperation()
+
+    def n3(self):
+        raise UnSupportedAggregateOperation()
+
+    def __reduce__(self):
+        raise UnSupportedAggregateOperation()
+
+
+    def isomorphic(self, other):
+        raise UnSupportedAggregateOperation()
+
+    def connected(self):
+        raise UnSupportedAggregateOperation()
+
+    def all_nodes(self):
+        obj = set(self.objects())
+        allNodes = obj.union(set(self.subjects()))
+        return allNodes
+    
