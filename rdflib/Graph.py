@@ -635,7 +635,7 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
         context.parse(source, publicID=publicID, format=format, **args)
         return context
 
-    def sparqlQuery(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False, processor="bison"):
+    def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False, processor="bison"):
         """
         Executes a SPARQL query against this Conjunctive Graph
         strOrQuery - Is either a string consisting of the SPARQL query or an instance of rdflib.sparql.bison.Query.Query

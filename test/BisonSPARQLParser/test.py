@@ -171,7 +171,7 @@ def testBasic(DEBUG = False):
             manifestPath = manifestPath2
         manifestG.default_context.parse(open(manifestPath),publicID=TEST_BASE,format='n3')          
         manifestData = \
-           manifestG.sparqlQuery(
+           manifestG.query(
                                   PARSED_MANIFEST_QUERY,
                                   initBindings={'?query' : TEST_BASE[queryFileName]},
                                   initNs=manifestNS,
@@ -258,7 +258,7 @@ def testBasic(DEBUG = False):
                     store.close()
                     continue
                 #print store
-                rt = g.sparqlQuery(p,DEBUG = DEBUG)                
+                rt = g.query(p,DEBUG = DEBUG)                
                 if expectedRT:
                     if rt != bindings and Set([Set(i) for i in rt]) != Set([Set(i) for i in bindings]):#unorderedComparison(rt,bindings):
                         print "### Expected Result (%s) ###"%expectedRT
