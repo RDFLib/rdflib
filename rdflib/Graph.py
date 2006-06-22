@@ -868,7 +868,8 @@ class UnSupportedAggregateOperation(Exception):
 class ReadOnlyGraphAggregate(ConjunctiveGraph):
     """
     An utility class for treating a set of graphs as a single graph.  Only read operations 
-    are supported (hence the name)
+    are supported (hence the name).  Essentially a ConjunctiveGraph over an explicit subset of the
+    entire store
     """
     def __init__(self, graphs):
         assert isinstance(graphs,list) and graphs and [g for g in graphs if isinstance(g,Graph)],"graphs argument must be a list of Graphs!!"
