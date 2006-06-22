@@ -72,7 +72,7 @@ class N3TestCase(unittest.TestCase):
         g = ConjunctiveGraph()
         g.parse(StringInputSource(input), format="n3")
         i = 0
-        for (s, p, o), cg in g:
+        for s, p, o in g:
             if isinstance(s, Graph):
                 i += 1
         self.assertEquals(i, 3)

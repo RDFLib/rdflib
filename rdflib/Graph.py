@@ -205,6 +205,7 @@ class Graph(Node):
 
     def __hash__(self):
         return hash(self.identifier)
+
     def __cmp__(self, other):
         if other is None:
             return -1
@@ -215,7 +216,6 @@ class Graph(Node):
             #Then perhaps a graph with length 0 should be considered
             #equivalent to None (if compared to it)?
             return 1
-
 
     def __iadd__(self, other):
         """ Add all triples in Graph other to Graph."""
@@ -232,8 +232,8 @@ class Graph(Node):
     # Conv. methods
 
     def set(self, (subject, predicate, object)):
-        """Convenience method for removing any existing triples for subject,
-        predicate before adding subject, predicate, object."""
+        """ Convenience method for removing any existing triples for subject,
+        predicate before adding subject, predicate, object. """
         self.remove((subject, predicate, None))
         self.add((subject, predicate, object))
 
@@ -443,9 +443,6 @@ class Graph(Node):
     def __reduce__(self):
         return (Graph, (self.store, self.identifier,))
 
-#     def __getstate__(self):
-#         return False
-
     def isomorphic(self, other):
         # TODO: this is only an approximation.
         if len(self)!=len(other):
@@ -493,7 +490,8 @@ class Graph(Node):
         allNodes = obj.union(set(self.subjects()))
         return allNodes
 
-class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
+
+class ConjunctiveGraph(Graph):
 
     def __init__(self, store='default', identifier=None):
         super(ConjunctiveGraph, self).__init__(store)
@@ -504,106 +502,28 @@ class ConjunctiveGraph(Graph): # AKA ConjunctiveGraph
     def __str__(self):
         return "[a rdflib:DefaultContext] rdfg:subGraphOf [a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '%s']]"%(self.store.__class__.__name__)
 
-    def add(self, (s, p, o), context=None):
+    def add(self, (s, p, o)):
         """"A conjunctive graph adds to its default context."""
-        self.store.add((s, p, o), context=context or self.default_context, quoted=False)
+        self.store.add((s, p, o), context=self.default_context, quoted=False)
 
     def addN(self, quads):        
         self.store.addN(quads)    
 
-    def remove(self, (s, p, o), context=None):
+    def remove(self, (s, p, o)):
         """A conjunctive graph removes from all its contexts."""
-        self.store.remove((s, p, o), context)
+        self.store.remove((s, p, o), context=None)
 
-    def triples(self, (s, p, o), context=None):
+    def triples(self, (s, p, o)):
         """An iterator over all the triples in the entire conjunctive graph."""
-        for (s, p, o), cg in self.store.triples((s, p, o), context):
-            yield (s, p, o), cg
+        for (s, p, o), cg in self.store.triples((s, p, o), context=None):
+            yield s, p, o
 
-    def triples_choices(self, (s, p, o), context=None):
+    def triples_choices(self, (s, p, o)):
         """An iterator over all the triples in the entire conjunctive graph."""        
-        for (s1, p1, o1), cg in self.store.triples_choices((s, p, o), context):
-            yield (s1, p1, o1), cg
+        for (s1, p1, o1), cg in self.store.triples_choices((s, p, o), context=None):
+            yield (s1, p1, o1)
 
-    def value(self, subject=None, predicate=RDF.value, object=None, default=None, any=False, context=None):
-        """ Get a value for a subject/predicate, predicate/object, or
-        subject/object pair -- exactly one of subject, predicate,
-        object must be None. Useful if one knows that there may only
-        be one value.
-
-        It is one of those situations that occur a lot, hence this
-        'macro' like utility
-
-        Parameters:
-        -----------
-        subject, predicate, object  -- exactly one must be None
-        default -- value to be returned if no values found
-        any -- if True:
-                 return any value in the case there is more than one
-               else:
-                 raise UniquenessError
-        """
-        retval = default
-        if object is None:
-            assert subject is not None
-            assert predicate is not None
-            values = self.objects(subject, predicate, context)
-        if subject is None:
-            assert predicate is not None
-            assert object is not None
-            values = self.subjects(predicate, object, context)
-        if predicate is None:
-            assert subject is not None
-            assert object is not None
-            values = self.predicates(subject, object, context)
-
-        try:
-            retval = values.next()
-        except StopIteration, e:
-            retval = default
-        else:
-            if any is False:
-                try:
-                    next = values.next()
-                    msg = "While trying to find a value for ((%s, %s, %s) %s) the following multiple values where found:\n" % (subject, predicate, object, context)
-                    for (s, p, o), contexts in self.store.triples((subject, predicate, object), context):
-                        msg += "(%s, %s, %s)\n (contexts: %s)\n" % (s, p, o, list(contexts))
-                    raise exceptions.UniquenessError(msg)
-                except StopIteration, e:
-                    pass
-        return retval
-
-    def subjects(self, predicate=None, object=None, context=None):
-        """ A generator of subjects with the given predicate and object. """
-        for (s, p, o), cg in self.triples((None, predicate, object), context):
-            yield s
-
-    def predicates(self, subject=None, object=None, context=None):
-        """ A generator of predicates with the given subject and object. """
-        for (s, p, o), cg in self.triples((subject, None, object), context):
-            yield p
-
-    def objects(self, subject=None, predicate=None, context=None):
-        """ A generator of objects with the given subject and predicate. """
-        for (s, p, o), cg in self.triples((subject, predicate, None), context):
-            yield o
-
-    def subject_predicates(self, object=None, context=None):
-        """ A generator of (subject, predicate) tuples for the given object """
-        for (s, p, o), cg in self.triples((None, None, object), context):
-            yield s, p
-
-    def subject_objects(self, predicate=None, context=None):
-        """ A generator of (subject, object) tuples for the given predicate """
-        for (s, p, o), cg in self.triples((None, predicate, None), context):
-            yield s, o
-
-    def predicate_objects(self, subject=None, contex=None):
-        """ A generator of (predicate, object) tuples for the given subject """
-        for (s, p, o), cg in self.triples((subject, None, None), context):
-            yield p, o
-
-    def __len__(self, context=None):
+    def __len__(self):
         """Returns the number of triples in the entire conjunctive graph."""
         return self.store.__len__(context)
 
@@ -746,6 +666,7 @@ class Seq(object):
         index, item = self._list.__getitem__(index)
         return item
 
+
 import warnings
 
 class BackwardCompatGraph(ConjunctiveGraph):
@@ -872,7 +793,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     entire store
     """
     def __init__(self, graphs):
-        assert isinstance(graphs,list) and graphs and [g for g in graphs if isinstance(g,Graph)],"graphs argument must be a list of Graphs!!"
+        assert isinstance(graphs, list) and graphs and [g for g in graphs if isinstance(g, Graph)], "graphs argument must be a list of Graphs!!"
         self.graphs = graphs
 
     def __repr__(self):
@@ -889,6 +810,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         raise ModificationException()
     
     def open(self, configuration, create=False):
+        # TODO: is there a use case for this method?
         for graph in self.graphs:
             graph.open(self, configuration, create)
     
@@ -913,14 +835,6 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def __len__(self):
         return reduce(lambda x,y: x+y,[len(g) for g in self.graphs])
 
-    def __iter__(self):
-        return self.triples((None, None, None))
-
-    def __contains__(self, triple):
-        for triple in self.triples(triple):
-            return 1
-        return 0
-
     def __hash__(self):
         raise UnSupportedAggregateOperation()
     
@@ -935,38 +849,10 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
 
     # Conv. methods
 
-    def set(self, (subject, predicate, object)):
-        raise ModificationException()
-    
     def triples_choices(self, (subject, predicate, object_),context=None):
         for graph in self.graphs:
             for (s,p,o) in graph.triples_choices((subject, predicate, object_)):
                 yield (s, p, o)
-
-    def value(self, subject=None, predicate=RDF.value, object=None, default=None, any=False):
-        raise UnSupportedAggregateOperation()
-    
-    def transitive_objects(self, subject, property, remember=None):
-        """ """
-        if remember==None:
-            remember = {}
-        if not subject in remember:
-            remember[subject] = 1
-            yield subject
-            for object in self.objects(subject, property):
-                for o in self.transitive_objects(object, property, remember):
-                    yield o
-
-    def transitive_subjects(self, predicate, object, remember=None):
-        """ """
-        if remember==None:
-            remember = {}
-        if not object in remember:
-            remember[object] = 1
-            yield object
-            for subject in self.subjects(predicate, object):
-                for s in self.transitive_subjects(predicate, subject, remember):
-                    yield s
 
     def qname(self, uri): 
         raise UnSupportedAggregateOperation()       
@@ -985,36 +871,13 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def absolutize(self, uri, defrag=1):
         raise UnSupportedAggregateOperation()
 
-    def serialize(self, destination=None, format="xml", base=None, encoding=None):
-        raise UnSupportedAggregateOperation()
-    
-    def prepare_input_source(self, source, publicID=None):
-        raise UnSupportedAggregateOperation()
-    
     def parse(self, source, publicID=None, format="xml", **args):
         raise ModificationException()
     
-    def load(self, source, publicID=None, format="xml"):
-        raise ModificationException()
-
-    def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False, processor="bison"):
-        raise UnSupportedAggregateOperation()
-
     def n3(self):
         raise UnSupportedAggregateOperation()
 
     def __reduce__(self):
         raise UnSupportedAggregateOperation()
 
-
-    def isomorphic(self, other):
-        raise UnSupportedAggregateOperation()
-
-    def connected(self):
-        raise UnSupportedAggregateOperation()
-
-    def all_nodes(self):
-        obj = set(self.objects())
-        allNodes = obj.union(set(self.subjects()))
-        return allNodes
     
