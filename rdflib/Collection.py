@@ -1,3 +1,5 @@
+from rdflib import RDF, BNode
+
 
 class Collection(object):
     """See 3.3.5 Emulating container types: http://docs.python.org/ref/sequence-types.html#l2h-232"""
@@ -55,14 +57,17 @@ class Collection(object):
         graph = self.graph
         current = self._get_container(key)
         assert current
-        next = self._get_container(key+1)
-        # TODO: delete last element in list
-        assert next
-        first = graph.value(next, RDF.first)
-        rest = graph.value(next, RDF.rest)
+        if key==len(self)-1:
+            graph.remove((current, RDF.first, None))
+            graph.remove((current, RDF.rest, None))
+        else:
+            next = self._get_container(key+1)
+            assert next
+            first = graph.value(next, RDF.first)
+            rest = graph.value(next, RDF.rest)
 
-        graph.set((current, RDF.first, first))
-        graph.set((current, RDF.rest, rest))
+            graph.set((current, RDF.first, first))
+            graph.set((current, RDF.rest, rest))
 
     def __iter__(self):
         """Iterator over items in Collections"""
@@ -85,10 +90,18 @@ class Collection(object):
                     graph.add((container, RDF.rest, node))
                     container = node
 
+    def clear(self):
+        container = self.uri
+        graph = self.graph
+        while container:
+            rest = graph.value(container, RDF.rest)
+            graph.remove((container, RDF.first, None))
+            graph.remove((container, RDF.rest, None))
+            container = rest
 
 
 if __name__=="__main__":
-    from rdflib import *
+    from rdflib import Graph, BNode
 
     g = Graph()
 
@@ -119,3 +132,8 @@ if __name__=="__main__":
         print i
 
     del c[3]
+ 
+    c.clear()
+    
+    assert len(c)==0
+
