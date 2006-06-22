@@ -17,7 +17,11 @@ class URIRef(Identifier):
 
     def __new__(cls, value, base=None):
         if base is not None:
+            ends_in_hash = value.endswith("#")
             value = urljoin(base, value, allow_fragments=1)
+            if ends_in_hash:
+                if not value.endswith("#"):
+                    value += "#"
         #if normalize and value and value != normalize("NFC", value):
         #    raise Error("value must be in NFC normalized form.")
         try:
