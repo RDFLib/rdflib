@@ -873,6 +873,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def __init__(self, graphs):
         assert isinstance(graphs,list) and graphs and [g for g in graphs if isinstance(g,Graph)],"graphs argument must be a list of Graphs!!"
         self.graphs = graphs
+
     def __repr__(self):
         return "<ReadOnlyGraphAggregate: %s graphs>" % len(self.graphs)
 
@@ -905,8 +906,8 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     
     def triples(self, (s, p, o)):
         for graph in self.graphs:
-            for s, p, o in graph.triples((s, p, o)):
-                yield (s, p, o)
+            for s1, p1, o1 in graph.triples((s, p, o)):                
+                yield (s1, p1, o1)
 
     def __len__(self):
         return reduce(lambda x,y: x+y,[len(g) for g in self.graphs])
