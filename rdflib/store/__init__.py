@@ -22,8 +22,8 @@ from rdflib import exceptions
 
 #Constants representing the state of a Store (returned by the open method)
 VALID_STORE     = 1
-CORRUPTED_STORE = 2
-NO_STORE        = 3
+CORRUPTED_STORE = 0
+NO_STORE        = -1
 UNKNOWN         = None
 
 class Store(object):
