@@ -20,6 +20,11 @@
 from rdflib import RDF
 from rdflib import exceptions
 
+#Constants representing the state of a Store (returned by the open method)
+VALID_STORE     = 1
+CORRUPTED_STORE = 2
+NO_STORE        = 3
+UNKNOWN         = None
 
 class Store(object):
     #Properties
@@ -60,15 +65,16 @@ class Store(object):
     node_pickler = property(__get_node_pickler)
 
     #Database management methods
-    def open(self, configuration, create=True):
+    def open(self, configuration, create=False):
         """ 
         Opens the store specified by the configuration string. If
         create is True a store will be created if it does not already
         exist. If create is False and a store does not already exist
         an exception is raised. An exception is also raised if a store
         exists, but there is insufficient permissions to open the
-        store.
+        store.  This should return one of VALID_STORE,CORRUPTED_STORE,or NO_STORE        
         """
+        return UNKNOWN
 
     def close(self, commit_pending_transaction=False):
         """

@@ -7,7 +7,7 @@ from rdflib.Node import Node
 
 from rdflib import plugin, exceptions
 
-from rdflib.store import Store
+from rdflib.store import Store, VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
 
 from rdflib.syntax.serializer import Serializer
 from rdflib.syntax.parsers import Parser
@@ -140,35 +140,30 @@ class Graph(Node):
         """
         For stores that support this functionality, it destroyes the store identified by the given configuration
         """
-        if hasattr(self.__store, "destroy"):
-            self.__store.destroy(configuration)
+        self.__store.destroy(configuration)
 
     #Transactional interfaces (optional)
     def commit(self):
         """
         Commits active transactions
         """
-        if hasattr(self.__store, "commit"):
-            self.__store.commit()
+        self.__store.commit()
     
     def rollback(self):
         """
         Rollback active transactions
         """
-        if hasattr(self.__store, "rollback"):
-            self.__store.rollback()
+        self.__store.rollback()
 
-    def open(self, configuration, create=True):
+    def open(self, configuration, create=False):
         """ Open the graph store.  Might be necessary for stores
         that require opening a connection to a database or acquiring some resource."""
-        if hasattr(self.__store, "open"):
-            self.__store.open(configuration, create)
+        return self.__store.open(configuration, create)
 
     def close(self):
         """ Close the graph store.  Might be necessary for stores
         that require closing a connection to a database or releasing some resource."""
-        if hasattr(self.__store, "close"):
-            self.__store.close()
+        self.__store.close()
 
     def add(self, (s, p, o)):
         """ Add a triple, optionally provide a context.  A 3-tuple or

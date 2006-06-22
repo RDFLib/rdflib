@@ -1,6 +1,6 @@
 from __future__ import generators
 from rdflib import BNode
-from rdflib.store import Store
+from rdflib.store import Store,VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
 from rdflib.Literal import Literal
 from pprint import pprint
 import MySQLdb,sys
@@ -170,7 +170,7 @@ class MySQL(Store):
             cursor.execute(qStr,tuple(params))            
             
     #Database Management Methods
-    def open(self, configuration, create=True):
+    def open(self, configuration, create=False):
         """ 
         Opens the store specified by the configuration string. If
         create is True a store will be created if it does not already
@@ -240,11 +240,11 @@ class MySQL(Store):
                 if not rt:
                     sys.stderr.write("table %s Doesn't exist\n" % (tn));
                     #The database exists, but one of the partitions doesn't exist
-                    return 0
+                    return CORRUPTED_STORE
             #Everything is there (the database and the partitions)
-            return 1
+            return VALID_STORE
         #The database doesn't exist - nothing is there
-        return -1
+        return NO_STORE
 
     def destroy(self, configuration):
         """
