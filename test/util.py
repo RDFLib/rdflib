@@ -1,7 +1,7 @@
 import unittest
 
 from rdflib import *
-from rdflib.Graph import NodePickler
+from rdflib.store.NodePickler import NodePickler
 
 
 class UtilTestCase(unittest.TestCase):
