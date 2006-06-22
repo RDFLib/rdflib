@@ -746,8 +746,12 @@ class Seq(object):
         index, item = self._list.__getitem__(index)
         return item
 
+import warnings
+
 class BackwardCompatGraph(ConjunctiveGraph):
     def __init__(self, backend='default'):    
+        warnings.warn("Use ConjunctiveGraph instead. ( from rdflib.Graph import ConjunctiveGraph )", 
+                      DeprecationWarning, stacklevel=2)
         super(BackwardCompatGraph, self).__init__(store=backend)        
 
     def __get_backend(self):
@@ -755,7 +759,7 @@ class BackwardCompatGraph(ConjunctiveGraph):
     backend = property(__get_backend)
 
     def open(self, configuration, create=True):
-        return ConjunctiveGraph(self, configuration, create)
+        return ConjunctiveGraph.open(self, configuration, create)
 
     def add(self, (s, p, o), context=None):
         """"A conjunctive graph adds to its default context."""
