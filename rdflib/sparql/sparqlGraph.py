@@ -95,7 +95,7 @@ class SPARQLGraph(sparql.SPARQL) :
         @rtype: L{sparqlGraph}
         """
         if Cluster == None :
-            Cluster = sparqlGraph()
+            Cluster = SPARQLGraph()
             
         # This will raise an exception if not kosher...
         try :
@@ -143,7 +143,7 @@ class SPARQLGraph(sparql.SPARQL) :
         @rtype: L{sparqlGraph}
         """
         if Cluster == None :
-            Cluster = sparqlGraph()
+            Cluster = SPARQLGraph()
 
         # This will raise an exception if not kosher...
         try :
@@ -177,7 +177,7 @@ class SPARQLGraph(sparql.SPARQL) :
     # @param other the other triple store
     def __add__(self,other) :
         """Set theoretical union"""
-        retval = sparqlGraph()
+        retval = SPARQLGraph()
         for x in self.graph:  retval.add(x)
         for y in other.graph: retval.add(y)
         return retval
@@ -187,7 +187,7 @@ class SPARQLGraph(sparql.SPARQL) :
     # @param other the other triple store
     def __mul__(self,other) :
         """Set theoretical intersection"""
-        retval = sparqlGraph()
+        retval = SPARQLGraph()
         for x in other.graph:
             if x in self.graph: retval.add(x)
         return retval
@@ -197,7 +197,7 @@ class SPARQLGraph(sparql.SPARQL) :
     # @param other the other triple store
     def __sub__(self,other) :
         """Set theoretical difference"""
-        retval = sparqlGraph()
+        retval = SPARQLGraph()
         for x in self.graph:
             if not x in other.graph : retval.add(x)
         return retval
