@@ -352,7 +352,7 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
         raise NotImplemented(CONSTRUCT_NOT_SUPPORTED,repr(query))
         
 OPTIONALS_NOT_SUPPORTED                   = 1
-GRAPH_PATTERN_NOT_SUPPORTED               = 2
+#GRAPH_PATTERN_NOT_SUPPORTED               = 2
 UNION_GRAPH_PATTERN_NOT_SUPPORTED         = 3
 GRAPH_GRAPH_PATTERN_NOT_SUPPORTED         = 4
 GROUP_GRAPH_PATTERN_NESTING_NOT_SUPPORTED = 5
@@ -360,7 +360,7 @@ CONSTRUCT_NOT_SUPPORTED                   = 6
     
 ExceptionMessages = {
     OPTIONALS_NOT_SUPPORTED                   : 'Nested OPTIONAL not currently supported',
-    GRAPH_PATTERN_NOT_SUPPORTED               : 'Graph Pattern not currently supported',
+    #GRAPH_PATTERN_NOT_SUPPORTED               : 'Graph Pattern not currently supported',
     UNION_GRAPH_PATTERN_NOT_SUPPORTED         : 'UNION Graph Pattern (currently) can only be combined with OPTIONAL Graph Patterns',
     GRAPH_GRAPH_PATTERN_NOT_SUPPORTED         : 'Graph Graph Pattern (currently) cannot only be used once by themselves or with OPTIONAL Graph Patterns',
     GROUP_GRAPH_PATTERN_NESTING_NOT_SUPPORTED : 'Nesting of Group Graph Pattern (currently) not supported',
