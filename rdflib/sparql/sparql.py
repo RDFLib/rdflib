@@ -637,6 +637,13 @@ class Query :
             # remember: returnResult returns an array of dictionaries
             return self.top.returnResult(None)
         
+    def _getAllVariables(self):
+       """Retrieve the list of all variables, to be returned"""
+       if self.parent1 != None and self.parent2 != None :
+           return self.parent1._getAllVariables().union(self.parent2._getAllVariables())
+       else :
+           return set(self.top.bindings.keys())        
+        
     def _orderedSelect(self,selection,orderedBy,orderDirection) :
         """
         The variant of the selection (as below) that also includes the sorting. Because that is much less efficient, this is 

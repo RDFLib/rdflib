@@ -2,7 +2,7 @@
 from rdflib.sparql import sparqlGraph, sparqlOperators
 from rdflib.sparql.sparqlOperators import getValue
 from rdflib.sparql.graphPattern import BasicGraphPattern
-from rdflib.sparql.sparql import Unbound,PatternBNode, SPARQLError
+from rdflib.sparql.sparql import Unbound,PatternBNode, SPARQLError,_variablesToArray
 from rdflib.Graph import ConjunctiveGraph, Graph, BackwardCompatGraph,ReadOnlyGraphAggregate
 from rdflib import URIRef,Variable,BNode, Literal, plugin
 from rdflib.store import Store
@@ -325,12 +325,12 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
                 orderAsc.append(orderCond.order == DESCENDING_ORDER)
         offset = query.query.solutionModifier.offsetClause and int(query.query.solutionModifier.offsetClause) or 0
         return result.select(query.query.variables,
-                               query.query.distinct,
-                               query.query.solutionModifier.limitClause,
-                               orderBy,
-                               orderAsc,
-                               offset
-                               )
+                             query.query.distinct,
+                             query.query.solutionModifier.limitClause,
+                             orderBy,
+                             orderAsc,
+                             offset
+                             ),_variablesToArray(query.query.variables,"selection"),result._getAllVariables(),orderBy,query.query.distinct
     else:
         raise NotImplemented(CONSTRUCT_NOT_SUPPORTED,repr(query))
         
