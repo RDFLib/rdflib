@@ -1,7 +1,7 @@
 from rdflib.sparql.bison import Parse
 from rdflib.sparql.bison.SPARQLEvaluate import Evaluate
 from rdflib import plugin, Namespace,URIRef, RDF
-from rdflib.store import Store
+from rdflib.store import Store, VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
 from rdflib.Graph import Graph, ConjunctiveGraph
 from sets import Set
 import os
@@ -121,11 +121,11 @@ PARSED_MANIFEST_QUERY = Parse(MANIFEST_QUERY)
 
 def bootStrapStore(store):
     rt = store.open(configString,create=False)
-    if rt == -1:
-        store.open(configString)
+    if rt == NO_STORE:
+        store.open(configString,create=True)
     else:
         store.destroy(configString)
-        store.open(configString)    
+        store.open(configString,create=True)    
         
 def trialAndErrorRTParse(graph,queryLoc,DEBUG):
     qstr = StringIO(open(queryLoc).read())
