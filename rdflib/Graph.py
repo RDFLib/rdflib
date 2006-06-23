@@ -525,7 +525,7 @@ class ConjunctiveGraph(Graph):
 
     def __len__(self):
         """Returns the number of triples in the entire conjunctive graph."""
-        return self.store.__len__(context)
+        return self.store.__len__()
 
     def contexts(self, triple=None):
         """ 
@@ -839,7 +839,14 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         raise UnSupportedAggregateOperation()
     
     def __cmp__(self, other):
-        raise UnSupportedAggregateOperation()
+        if other is None:
+            return -1
+        elif isinstance(other, Graph):
+            return -1
+        elif isinstance(other,ReadOnlyGraphAggregate):
+            return self.graphs == other.graphs                
+        else:            
+            return -1
 
     def __iadd__(self, other):
         raise ModificationException()
