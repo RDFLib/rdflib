@@ -1,7 +1,7 @@
 from rdflib import plugin,RDF,RDFS,URIRef
 from rdflib.store import Store
 from cStringIO import StringIO
-from rdflib.Graph import Graph,ReadOnlyGraphAggregate
+from rdflib.Graph import Graph,ReadOnlyGraphAggregate,ConjunctiveGraph
 import sys
 from pprint import pprint
 
@@ -33,6 +33,17 @@ testGraph3N3="""
 <> a log:N3Document.
 """
 
+sparqlQ = \
+"""
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+SELECT *
+FROM NAMED <graph1>
+FROM NAMED <graph2>
+FROM NAMED <graph3>
+FROM <http://www.w3.org/2000/01/rdf-schema#>
+
+WHERE {?sub ?pred rdfs:Class }"""
+
 def testAggregateRaw():
     memStore = plugin.get('IOMemory',Store)()
     graph1 = Graph(memStore)
@@ -61,7 +72,21 @@ def testAggregateRaw():
     assert len(list(G.triples_choices((URIRef("http://test/bar"),barPredicates,None)))) == 2    
 
 def testAggregateSPARQL():
-    pass
+    memStore = plugin.get('IOMemory',Store)()
+    graph1 = Graph(memStore,URIRef("graph1"))
+    graph2 = Graph(memStore,URIRef("graph2"))
+    graph3 = Graph(memStore,URIRef("graph3"))
+    
+    for n3Str,graph in [(testGraph1N3,graph1),
+                        (testGraph2N3,graph2),
+                        (testGraph3N3,graph3)]:
+        graph.parse(StringIO(n3Str),format='n3')
+
+    graph4 = Graph(memStore,RDFS.RDFSNS)
+    graph4.parse(RDFS.RDFSNS) 
+    G = ConjunctiveGraph(memStore) 
+    assert len(G.query(sparqlQ)) > 1
 
 if __name__ == '__main__':
-    testAggregateRaw()
+    #testAggregateRaw()
+    testAggregateSPARQL()
