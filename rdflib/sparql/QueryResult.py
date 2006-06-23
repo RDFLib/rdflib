@@ -95,7 +95,7 @@ class SPARQLQueryResult(QueryResult.QueryResult):
         
     def serialize(self,format='xml'):
         if format == 'python':
-            return self.rt
+            return self.selected
         elif format in ['json','xml']:
            retval = ""
            try :

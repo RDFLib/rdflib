@@ -169,7 +169,7 @@ def sparqlPSetup(groupGraphPattern,prolog):
     basicGraphPatterns = []
     patternList = []
     graphGraphPatterns,optionalGraphPatterns,alternativeGraphPatterns = categorizeGroupGraphPattern(groupGraphPattern)
-    globalTPs,globalConstraints = reorderBasicGraphPattern(groupGraphPattern[0])    
+    globalTPs,globalConstraints = reorderBasicGraphPattern(groupGraphPattern[0])
     #UNION alternative graph patterns
     if alternativeGraphPatterns:                
         #Global constraints / optionals must be distributed within each alternative GP via:
@@ -181,6 +181,15 @@ def sparqlPSetup(groupGraphPattern,prolog):
                 alternativeGPInst = BasicGraphPattern([t for t in unRollTripleItems(triples,prolog)])
                 alternativeGPInst.addConstraints([createSPARQLPConstraint(constr,prolog) for constr in constraints])
                 basicGraphPatterns.append(alternativeGPInst)
+    elif graphGraphPatterns:
+        triples,constraints = reorderBasicGraphPattern(graphGraphPatterns[0].nonTripleGraphPattern[0])
+        for t in unRollTripleItems(triples,prolog):            
+            patternList.append(t)
+        basicGraphPattern = BasicGraphPattern(patternList)    
+        for constr in constraints:
+            basicGraphPattern.addConstraint(createSPARQLPConstraint(constr,prolog))
+        basicGraphPatterns.append(basicGraphPattern)
+
     else:
         triples,constraints = reorderBasicGraphPattern(groupGraphPattern[0])    
         for t in unRollTripleItems(triples,prolog):            
@@ -267,11 +276,6 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
 
     Returns a list of tuples - each a binding of the selected variables in query order
     """
-    graphGraphPatterns = categorizeGroupGraphPattern(query.query.whereClause.parsedGraphPattern)[0]
-    if graphGraphPatterns:
-        graphGraphP = graphGraphPatterns[0]
-        print graphGraphP.name,type(graphGraphP.name)
-        raise  
     if query.query.dataSets:
         graphs = []
         for dtSet in query.query.dataSets:
@@ -288,7 +292,15 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
                 graphs.append(memGraph)
         tripleStore = sparqlGraph.SPARQLGraph(ReadOnlyGraphAggregate(graphs))
     else:        
-        tripleStore = sparqlGraph.SPARQLGraph(BackwardCompatGraph(store))    
+        tripleStore = sparqlGraph.SPARQLGraph(ConjunctiveGraph(store))    
+
+    #Interpret Graph Graph Patterns as Named Graphs
+    graphGraphPatterns = categorizeGroupGraphPattern(query.query.whereClause.parsedGraphPattern)[0]
+    if graphGraphPatterns:
+        graphGraphP = graphGraphPatterns[0].nonTripleGraphPattern
+        assert not isinstance(graphGraphP.name,Variable) or graphGraphP.name in passedBindings,"Graph Graph Patterns can only be used with variables bound at the top level or a URIRef or BNode term"
+        graphName =  isinstance(graphGraphP.name,Variable) and passedBindings[graphGraphP.name] or graphGraphP.name
+        tripleStore = sparqlGraph.SPARQLGraph(Graph(store,graphName))
         
     if isinstance(query.query,SelectQuery) and query.query.variables:
         query.query.variables = [convertTerm(item,query.prolog) for item in query.query.variables]
