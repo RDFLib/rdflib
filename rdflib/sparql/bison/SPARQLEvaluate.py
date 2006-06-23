@@ -3,10 +3,11 @@ from rdflib.sparql import sparqlGraph, sparqlOperators
 from rdflib.sparql.sparqlOperators import getValue
 from rdflib.sparql.graphPattern import BasicGraphPattern
 from rdflib.sparql.sparql import Unbound,PatternBNode, SPARQLError
-from rdflib.Graph import ConjunctiveGraph, Graph, BackwardCompatGraph
+from rdflib.Graph import ConjunctiveGraph, Graph, BackwardCompatGraph,ReadOnlyGraphAggregate
 from rdflib import URIRef,Variable,BNode, Literal, plugin
+from rdflib.store import Store
 from rdflib.Literal import XSDToPython
-from IRIRef import NamedGraph
+from IRIRef import NamedGraph,RemoteGraph
 from GraphPattern import ParsedAlternativeGraphPattern,ParsedOptionalGraphPattern
 from Resource import *
 from Triples import ParsedConstrainedTriples
@@ -267,8 +268,20 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
     Returns a list of tuples - each a binding of the selected variables in query order
     """
     if query.query.dataSets:
-        tripleStore = sparqlGraph.SPARQLGraph(BackwardCompatGraph(store))
-        #tripleStore = sparqlGraph.SPARQLGraph(ReadOnlyGraphAggregate(store,query.query.dataSets))
+        graphs = []
+        for dtSet in query.query.dataSets:
+            if isinstance(dtSet,NamedGraph):
+                graphs.append(Graph(store,dtSet))
+            else:
+                memStore = plugin.get('IOMemory',Store)()
+                memGraph = Graph(memStore)
+                try:
+                    memGraph.parse(dtSet,format='n3')
+                except:
+                    #Parse as RDF/XML instead
+                    memGraph.parse(dtSet)
+                graphs.append(memGraph)
+        tripleStore = sparqlGraph.SPARQLGraph(ReadOnlyGraphAggregate(graphs))
     else:        
         tripleStore = sparqlGraph.SPARQLGraph(BackwardCompatGraph(store))    
         
