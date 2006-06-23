@@ -267,6 +267,11 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
 
     Returns a list of tuples - each a binding of the selected variables in query order
     """
+    graphGraphPatterns = categorizeGroupGraphPattern(query.query.whereClause.parsedGraphPattern)[0]
+    if graphGraphPatterns:
+        graphGraphP = graphGraphPatterns[0]
+        print graphGraphP.name,type(graphGraphP.name)
+        raise  
     if query.query.dataSets:
         graphs = []
         for dtSet in query.query.dataSets:
