@@ -103,7 +103,7 @@ register('Redland', Store,
 register('MySQL', Store,
          'rdflib.store.MySQL', 'MySQL')
 
-register("bison", sparql.Processor,
+register("sparql", sparql.Processor,
          'rdflib.sparql.bison.Processor', 'Processor')
 
 register("SPARQLQueryResult", QueryResult,
