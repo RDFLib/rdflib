@@ -1,3 +1,4 @@
+from rdflib.Namespace import Namespace
 from rdflib import plugin,RDF,RDFS,URIRef
 from rdflib.store import Store
 from cStringIO import StringIO
@@ -44,6 +45,12 @@ FROM <http://www.w3.org/2000/01/rdf-schema#>
 
 WHERE {?sub ?pred rdfs:Class }"""
 
+sparqlQ2 =\
+"""
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+SELECT ?class
+WHERE { GRAPH ?graph { ?member a ?class } }"""
+
 def testAggregateRaw():
     memStore = plugin.get('IOMemory',Store)()
     graph1 = Graph(memStore)
@@ -84,8 +91,14 @@ def testAggregateSPARQL():
 
     graph4 = Graph(memStore,RDFS.RDFSNS)
     graph4.parse(RDFS.RDFSNS) 
-    G = ConjunctiveGraph(memStore) 
-    assert len(G.query(sparqlQ)) > 1
+    G = ConjunctiveGraph(memStore)
+    rt =  G.query(sparqlQ)
+    assert len(rt) > 1
+    #print rt.serialize(format='xml')
+    LOG_NS = Namespace(u'http://www.w3.org/2000/10/swap/log#')
+    rt=G.query(sparqlQ2,initBindings={u'?graph' : URIRef("graph3")})
+    #print rt.serialize(format='json')
+    assert rt.serialize('python')[0] == LOG_NS.N3Document,str(rt)
 
 if __name__ == '__main__':
     #testAggregateRaw()
