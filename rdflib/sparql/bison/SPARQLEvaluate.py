@@ -173,7 +173,7 @@ def sparqlPSetup(groupGraphPattern,prolog):
     #UNION alternative graph patterns
     if alternativeGraphPatterns:                
         #Global constraints / optionals must be distributed within each alternative GP via:
-        #((P1 UNION P2) FILTER R) ≡ ((P1 FILTER R) UNION (P2 FILTER R)).        
+        #((P1 UNION P2) FILTER R) AND ((P1 FILTER R) UNION (P2 FILTER R)).        
         for alternativeGPBlock in alternativeGraphPatterns:
             for alternativeGPs in alternativeGPBlock.nonTripleGraphPattern:
                 triples,constraints = reorderBasicGraphPattern(alternativeGPs[0])
