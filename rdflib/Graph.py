@@ -1,13 +1,13 @@
 from __future__ import generators
 
-from rdflib import URIRef, BNode, Literal, Namespace
+from rdflib import URIRef, BNode, Namespace
 from rdflib import RDF, RDFS
 
 from rdflib.Node import Node
 
 from rdflib import plugin, exceptions
 
-from rdflib.store import Store, VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
+from rdflib.store import Store
 
 from rdflib.syntax.serializer import Serializer
 from rdflib.syntax.parsers import Parser
@@ -18,7 +18,6 @@ from rdflib.URLInputSource import URLInputSource
 
 from xml.sax.xmlreader import InputSource
 from xml.sax.saxutils import prepare_input_source
-from cStringIO import StringIO
 import logging
 import random
 
@@ -99,7 +98,8 @@ class Graph(Node):
       => {?cg a :ConjunctiveGraph;:default_context ?subGraphOf} .
     """
 
-    def __init__(self, store='default', identifier=None, namespace_manager=None):
+    def __init__(self, store='default', identifier=None,
+                 namespace_manager=None):
         super(Graph, self).__init__()
         self.__identifier = identifier or BNode()
         if not isinstance(store, Store):
@@ -123,6 +123,7 @@ class Graph(Node):
         if self.__namespace_manager is None:
             self.__namespace_manager = NamespaceManager(self)
         return self.__namespace_manager
+
     def _set_namespace_manager(self, nm):
         self.__namespace_manager = nm
     namespace_manager = property(_get_namespace_manager, _set_namespace_manager)
@@ -137,68 +138,79 @@ class Graph(Node):
             return "[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '%s']]."%(self.store.__class__.__name__)
 
     def destroy(self, configuration):
-        """
-        For stores that support this functionality, it destroyes the store identified by the given configuration
-        """
+        """Destroy the store identified by `configuration` if supported"""
         self.__store.destroy(configuration)
 
     #Transactional interfaces (optional)
     def commit(self):
-        """
-        Commits active transactions
-        """
+        """Commits active transactions"""
         self.__store.commit()
 
     def rollback(self):
-        """
-        Rollback active transactions
-        """
+        """Rollback active transactions"""
         self.__store.rollback()
 
     def open(self, configuration, create=False):
-        """ Open the graph store.  Might be necessary for stores
-        that require opening a connection to a database or acquiring some resource."""
+        """Open the graph store
+
+        Might be necessary for stores that require opening a connection to a
+        database or acquiring some resource.
+        """
         return self.__store.open(configuration, create)
 
     def close(self):
-        """ Close the graph store.  Might be necessary for stores
-        that require closing a connection to a database or releasing some resource."""
+        """Close the graph store
+
+        Might be necessary for stores that require closing a connection to a
+        database or releasing some resource.
+        """
         self.__store.close()
 
     def add(self, (s, p, o)):
-        """ Add a triple, optionally provide a context.  A 3-tuple or
-        rdflib.Triple can be provided.  Context must be a URIRef.  If
-        no context is provides, triple is added to the default
-        context."""
+        """Add a triple, optionally provide a context.
+
+        A 3-tuple or rdflib. Triple can be provided. Context must be a URIRef.
+        If no context is provides, triple is added to the default context.
+        """
         self.__store.add((s, p, o), self, quoted=False)
 
     def addN(self, quads):
-        self.__store.addN([(s,p,o,c) for s,p,o,c in quads if isinstance(c,Graph) and c.identifier is self.identifier])
+        """Add a sequence of triple with context"""
+        self.__store.addN([(s, p, o, c) for s, p, o, c in quads
+                                        if isinstance(c, Graph)
+                                        and c.identifier is self.identifier])
 
     def remove(self, (s, p, o)):
-        """ Remove a triple from the graph.  If the triple does not
-        provide a context attribute, removes the triple from all
-        contexts."""
+        """Remove a triple from the graph
 
+        If the triple does not provide a context attribute, removes the triple
+        from all contexts.
+        """
         self.__store.remove((s, p, o), context=self)
 
     def triples(self, (s, p, o)):
-        """ Generator over the triple store.  Returns triples that
-        match the given triple pattern.  If triple pattern does not
-        provide a context, all contexts will be searched."""
+        """Generator over the triple store
+
+        Returns triples that match the given triple pattern. If triple pattern
+        does not provide a context, all contexts will be searched.
+        """
         for (s, p, o), cg in self.__store.triples((s, p, o), context=self):
             yield (s, p, o)
 
     def __len__(self):
-        """ Returns the number of triples in the graph. If context is specified then the number of triples in the context is returned instead."""
+        """Returns the number of triples in the graph
+
+        If context is specified then the number of triples in the context is
+        returned instead.
+        """
         return self.__store.__len__(context=self)
 
     def __iter__(self):
-        """ Iterates over all triples in the store. """
+        """Iterates over all triples in the store"""
         return self.triples((None, None, None))
 
     def __contains__(self, triple):
-        """ Support for 'triple in graph' syntax. """
+        """Support for 'triple in graph' syntax"""
         for triple in self.triples(triple):
             return 1
         return 0
@@ -218,13 +230,13 @@ class Graph(Node):
             return 1
 
     def __iadd__(self, other):
-        """ Add all triples in Graph other to Graph."""
+        """Add all triples in Graph other to Graph"""
         for triple in other:
             self.add(triple)
         return self
 
     def __isub__(self, other):
-        """ Subtract all triples in Graph other from Graph."""
+        """Subtract all triples in Graph other from Graph"""
         for triple in other:
             self.remove(triple)
         return self
@@ -232,50 +244,55 @@ class Graph(Node):
     # Conv. methods
 
     def set(self, (subject, predicate, object)):
-        """ Convenience method for removing any existing triples for subject,
-        predicate before adding subject, predicate, object. """
+        """Convenience method to update the value of object
+
+        Remove any existing triples for subject and predicate before adding
+        (subject, predicate, object).
+        """
         self.remove((subject, predicate, None))
         self.add((subject, predicate, object))
 
     def subjects(self, predicate=None, object=None):
-        """ A generator of subjects with the given predicate and object. """
+        """A generator of subjects with the given predicate and object"""
         for s, p, o in self.triples((None, predicate, object)):
             yield s
 
     def predicates(self, subject=None, object=None):
-        """ A generator of predicates with the given subject and object. """
+        """A generator of predicates with the given subject and object"""
         for s, p, o in self.triples((subject, None, object)):
             yield p
 
     def objects(self, subject=None, predicate=None):
-        """ A generator of objects with the given subject and predicate. """
+        """A generator of objects with the given subject and predicate"""
         for s, p, o in self.triples((subject, predicate, None)):
             yield o
 
     def subject_predicates(self, object=None):
-        """ A generator of (subject, predicate) tuples for the given object """
+        """A generator of (subject, predicate) tuples for the given object"""
         for s, p, o in self.triples((None, None, object)):
             yield s, p
 
     def subject_objects(self, predicate=None):
-        """ A generator of (subject, object) tuples for the given predicate """
+        """A generator of (subject, object) tuples for the given predicate"""
         for s, p, o in self.triples((None, predicate, None)):
             yield s, o
 
     def predicate_objects(self, subject=None):
-        """ A generator of (predicate, object) tuples for the given subject """
+        """A generator of (predicate, object) tuples for the given subject"""
         for s, p, o in self.triples((subject, None, None)):
             yield p, o
 
     def triples_choices(self, (subject, predicate, object_),context=None):
-        for (s, p, o), cg in self.store.triples_choices((subject, predicate, object_), context=self):
+        for (s, p, o), cg in self.store.triples_choices(
+            (subject, predicate, object_), context=self):
             yield (s, p, o)
 
-    def value(self, subject=None, predicate=RDF.value, object=None, default=None, any=False):
-        """ Get a value for a subject/predicate, predicate/object, or
-        subject/object pair -- exactly one of subject, predicate,
-        object must be None. Useful if one knows that there may only
-        be one value.
+    def value(self, subject=None, predicate=RDF.value, object=None,
+              default=None, any=False):
+        """Get a value for a pair of two criteria
+
+        Exactly one of subject, predicate, object must be None. Useful if one
+        knows that there may only be one value.
 
         It is one of those situations that occur a lot, hence this
         'macro' like utility
