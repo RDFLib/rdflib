@@ -585,7 +585,7 @@ class ConjunctiveGraph(Graph):
         pattern = ("[a rdflib:DefaultContext] rdfg:subGraphOf "
                    "[a rdfg:Graph;rdflib:storage "
                    "[a rdflib:Store;rdfs:label '%s']]")
-        return partern % self.store.__class__.__name__
+        return pattern % self.store.__class__.__name__
 
     def add(self, (s, p, o)):
         """Add the triple to the default context"""
@@ -711,25 +711,24 @@ class GraphValue(QuotedGraph):
 
 
 class Seq(object):
-    """
-    Wrapper around an RDF Seq resource. It implements a container
-    type in Python with the order of the items returned
-    corresponding to the Seq content. It is based on the natural
+    """Wrapper around an RDF Seq resource
+
+    It implements a container type in Python with the order of the items
+    returned corresponding to the Seq content. It is based on the natural
     ordering of the predicate names _1, _2, _3, etc, which is the
     'implementation' of a sequence in RDF terms.
     """
-    _list  = {}
-    def __init__(self, graph, subject):
-        """
-        The graph which contains the sequence. The subject is
-        simply the subject which is supposed to be a Seq.
 
-        Parameters:
-        -----------
-        graph: the graph containing the Seq
-        subject: the subject of a Seq. Note that the init does not
-        check whether this is a Seq, this is done in whoever
-        creates this instance!
+    def __init__(self, graph, subject):
+        """Parameters:
+
+        - graph:
+            the graph containing the Seq
+
+        - subject:
+            the subject of a Seq. Note that the init does not
+            check whether this is a Seq, this is done in whoever
+            creates this instance!
         """
 
         _list = self._list = list()
@@ -743,24 +742,25 @@ class Seq(object):
         _list.sort()
 
     def __iter__(self):
-        """Generator over the index, item tuples in the Seq"""
-        for index, item in self._list:
+        """Generator over the items in the Seq"""
+        for _, item in self._list:
             yield item
 
     def __len__(self):
-        """ Returns the length of the Seq."""
+        """Length of the Seq"""
         return len(self._list)
 
     def __getitem__(self, index):
-        """ Returns the item given by index from the Seq."""
+        """Item given by index from the Seq"""
         index, item = self._list.__getitem__(index)
         return item
 
 
-
 class BackwardCompatGraph(ConjunctiveGraph):
+
     def __init__(self, backend='default'):
-        warnings.warn("Use ConjunctiveGraph instead. ( from rdflib.Graph import ConjunctiveGraph )",
+        warnings.warn("Use ConjunctiveGraph instead. "
+                      "( from rdflib.Graph import ConjunctiveGraph )",
                       DeprecationWarning, stacklevel=2)
         super(BackwardCompatGraph, self).__init__(store=backend)
 
@@ -772,7 +772,7 @@ class BackwardCompatGraph(ConjunctiveGraph):
         return ConjunctiveGraph.open(self, configuration, create)
 
     def add(self, (s, p, o), context=None):
-        """"A conjunctive graph adds to its default context."""
+        """Add to to the given context or to the default context"""
         if context is not None:
             c = self.get_context(context)
             assert c.identifier == context, "%s != %s" % (c.identifier, context)
@@ -781,13 +781,13 @@ class BackwardCompatGraph(ConjunctiveGraph):
         self.store.add((s, p, o), context=c, quoted=False)
 
     def remove(self, (s, p, o), context=None):
-        """A conjunctive graph removes from all its contexts."""
+        """Remove from the given context or from the default context"""
         if context is not None:
             context = self.get_context(context)
         self.store.remove((s, p, o), context)
 
     def triples(self, (s, p, o), context=None):
-        """An iterator over all the triples in the entire conjunctive graph."""
+        """Iterate over all the triples in the entire graph"""
         if context is not None:
             c = self.get_context(context)
             assert c.identifier == context
@@ -797,92 +797,107 @@ class BackwardCompatGraph(ConjunctiveGraph):
             yield (s, p, o)
 
     def __len__(self, context=None):
-        """Returns the number of triples in the entire conjunctive graph."""
+        """Number of triples in the entire graph"""
         if context is not None:
             context = self.get_context(context)
         return self.store.__len__(context)
 
     def get_context(self, identifier, quoted=False):
-        """ Returns a Context graph for the given identifier, which
-        must be a URIRef or BNode."""
+        """Return a context graph for the given identifier
+
+        identifier must be a URIRef or BNode.
+        """
         assert isinstance(identifier, URIRef) or \
                isinstance(identifier, BNode), type(identifier)
         if quoted:
             assert False
             return QuotedGraph(self.store, identifier)
-            #return QuotedGraph(self.store, Graph(store=self.store, identifier=identifier))
+            #return QuotedGraph(self.store, Graph(store=self.store,
+            #                                     identifier=identifier))
         else:
-            return Graph(store=self.store, identifier=identifier, namespace_manager=self)
-            #return Graph(self.store, Graph(store=self.store, identifier=identifier))
+            return Graph(store=self.store, identifier=identifier,
+                         namespace_manager=self)
+            #return Graph(self.store, Graph(store=self.store,
+            #                               identifier=identifier))
 
     def remove_context(self, context):
-        """ Removes the given context from the graph. """
+        """Remove the given context from the graph"""
         self.store.remove((None, None, None), self.get_context(context))
 
     def contexts(self, triple=None):
-        """
-        Iterator over all contexts in the graph. If triple is
-        specified, a generator over all contexts the triple is in.
+        """Iterate over all contexts in the graph
+
+        If triple is specified, iterate over all contexts the triple is in.
         """
         for context in self.store.contexts(triple):
             yield context.identifier
 
     def subjects(self, predicate=None, object=None, context=None):
-        """ A generator of subjects with the given predicate and object. """
+        """Generate subjects with the given predicate and object"""
         for s, p, o in self.triples((None, predicate, object), context):
             yield s
 
     def predicates(self, subject=None, object=None, context=None):
-        """ A generator of predicates with the given subject and object. """
+        """Generate predicates with the given subject and object"""
         for s, p, o in self.triples((subject, None, object), context):
             yield p
 
     def objects(self, subject=None, predicate=None, context=None):
-        """ A generator of objects with the given subject and predicate. """
+        """Generate objects with the given subject and predicate"""
         for s, p, o in self.triples((subject, predicate, None), context):
             yield o
 
     def subject_predicates(self, object=None, context=None):
-        """ A generator of (subject, predicate) tuples for the given object """
+        """Generate (subject, predicate) tuples for the given object"""
         for s, p, o in self.triples((None, None, object), context):
             yield s, p
 
     def subject_objects(self, predicate=None, context=None):
-        """ A generator of (subject, object) tuples for the given predicate """
+        """Generate (subject, object) tuples for the given predicate"""
         for s, p, o in self.triples((None, predicate, None), context):
             yield s, o
 
     def predicate_objects(self, subject=None, context=None):
-        """ A generator of (predicate, object) tuples for the given subject """
+        """Generate (predicate, object) tuples for the given subject"""
         for s, p, o in self.triples((subject, None, None), context):
             yield p, o
 
     def __reduce__(self):
-        return (BackwardCompatGraph, (self.store, self.identifier,))
+        return (BackwardCompatGraph, (self.store, self.identifier))
 
     def save(self, destination, format="xml", base=None, encoding=None):
-        self.serialize(destination=destination, format=format, base=base, encoding=encoding)
+        self.serialize(destination=destination, format=format, base=base,
+                       encoding=encoding)
 
 class ModificationException(Exception):
+
     def __init__(self):
         pass
+
     def __str__(self):
-        return "Modifications and transactional operations not allowed on ReadOnlyGraphAggregate instances"
+        return ("Modifications and transactional operations not allowed on "
+                "ReadOnlyGraphAggregate instances")
 
 class UnSupportedAggregateOperation(Exception):
+
     def __init__(self):
         pass
+
     def __str__(self):
-        return "This operation is not supported by ReadOnlyGraphAggregate instances"
+        return ("This operation is not supported by ReadOnlyGraphAggregate "
+                "instances")
 
 class ReadOnlyGraphAggregate(ConjunctiveGraph):
+    """Utility class for treating a set of graphs as a single graph
+
+    Only read operations are supported (hence the name). Essentially a
+    ConjunctiveGraph over an explicit subset of the entire store.
     """
-    An utility class for treating a set of graphs as a single graph.  Only read operations
-    are supported (hence the name).  Essentially a ConjunctiveGraph over an explicit subset of the
-    entire store
-    """
+
     def __init__(self, graphs):
-        assert isinstance(graphs, list) and graphs and [g for g in graphs if isinstance(g, Graph)], "graphs argument must be a list of Graphs!!"
+        assert isinstance(graphs, list) and graphs\
+               and [g for g in graphs if isinstance(g, Graph)],\
+               "graphs argument must be a list of Graphs!!"
         self.graphs = graphs
 
     def __repr__(self):
@@ -922,7 +937,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
                 yield (s1, p1, o1)
 
     def __len__(self):
-        return reduce(lambda x,y: x+y,[len(g) for g in self.graphs])
+        return reduce(lambda x, y: x + y, [len(g) for g in self.graphs])
 
     def __hash__(self):
         raise UnSupportedAggregateOperation()
@@ -932,7 +947,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
             return -1
         elif isinstance(other, Graph):
             return -1
-        elif isinstance(other,ReadOnlyGraphAggregate):
+        elif isinstance(other, ReadOnlyGraphAggregate):
             return self.graphs == other.graphs
         else:
             return -1
@@ -945,9 +960,10 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
 
     # Conv. methods
 
-    def triples_choices(self, (subject, predicate, object_),context=None):
+    def triples_choices(self, (subject, predicate, object_), context=None):
         for graph in self.graphs:
-            for (s,p,o) in graph.triples_choices((subject, predicate, object_)):
+            choices = graph.triples_choices((subject, predicate, object_))
+            for (s, p, o) in choices:
                 yield (s, p, o)
 
     def qname(self, uri):
