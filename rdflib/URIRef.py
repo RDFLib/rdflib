@@ -66,4 +66,4 @@ class URIRef(Identifier):
     def __getnewargs__(self):
         return (unicode(self), )
 
-   
+

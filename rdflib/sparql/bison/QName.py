@@ -2,7 +2,7 @@ from rdflib import URIRef
 from rdflib.Identifier import Identifier
 
 class QName(Identifier):
-    __slots__ = ("localname", "prefix")    
+    __slots__ = ("localname", "prefix")
     def __new__(cls,value):
         try:
             inst = unicode.__new__(cls,value)
@@ -11,7 +11,7 @@ class QName(Identifier):
 
         inst.prefix,inst.localname = value.split(':')
         return inst
-        
+
 class QNamePrefix(Identifier):
     def __init__(self,prefix):
         super(QNamePrefix,self).__init__(prefix)

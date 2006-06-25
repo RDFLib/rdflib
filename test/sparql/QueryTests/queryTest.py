@@ -5,7 +5,7 @@
 # $Date: 2005/04/02 07:29:46 $, by $Author: ivan $, $Revision: 1.1 $
 #
 """
-        
+
 """
 import sys, os, time, datetime, imp, sys, StringIO
 
@@ -26,7 +26,7 @@ def run(modName) :
         (fl,realpath,descr) = imp.find_module(modName,["."])
         mod = imp.load_module(modName,fl,realpath,descr)
         defs = mod.__dict__
-        
+
         ##################################################
         # Three ways of identifying the RDF data:
         # 1. A Triple Store generated in the module
@@ -62,8 +62,8 @@ def run(modName) :
         pattern     = defs["pattern"]
         optPattern  = defs["optional"]	
         select      = defs["select"]
-        
-                        
+
+
         ###############################################		
         print "\n============= Test Module: %s =============" % modName			
         # better test modules describe their expected results...
@@ -73,7 +73,7 @@ def run(modName) :
                 print "=======\n"
         except :
                 pass
-        
+
         # Run the query and print the results						
         results = tripleStore.query(select,pattern,optPattern)
         num = len(results)
@@ -89,7 +89,7 @@ def run(modName) :
                                 val = hit[j]
                                 print "%s: %s" % (var,val)
                         print
-        
+
 if __name__ == '__main__' :
         if len(sys.argv) == 1 :
                 print "Usage: %s modname1 modname2 ..." % sys.argv[0]
@@ -99,5 +99,5 @@ if __name__ == '__main__' :
                                 run(mod[0:-3])
                         else :
                                 run(mod)
-                
-        
+
+

@@ -5,10 +5,10 @@ Author: Sean B. Palmer, inamidst.com
 Licence: GPL 2; share and enjoy!
 License: http://www.w3.org/Consortium/Legal/copyright-software
 Documentation: http://inamidst.com/n3p/
-Derived from: 
+Derived from:
    http://www.w3.org/2000/10/swap/grammar/predictiveParser.py
    - predictiveParser.py, Tim Berners-Lee, 2004
-Issues: 
+Issues:
    http://lists.w3.org/Archives/Public/public-cwm-bugs/2005Jan/0006
    http://lists.w3.org/Archives/Public/public-cwm-talk/2005JanMar/0015
 """
@@ -17,17 +17,17 @@ import sys, os, re, urllib
 import cPickle as pickle
 
 try: set()
-except NameError: 
+except NameError:
    from sets import Set as set
 
-try: 
+try:
    import n3meta
    branches = n3meta.branches
    regexps = n3meta.regexps
-except ImportError: 
-   for path in sys.path: 
+except ImportError:
+   for path in sys.path:
       fn = os.path.join(path, 'n3meta.pkl')
-      if os.path.isfile(fn): 
+      if os.path.isfile(fn):
          f = open(fn, 'rb')
          n3meta = pickle.load(f)
          f.close()
@@ -45,13 +45,13 @@ r_name = re.compile(r'([A-Za-z0-9_]*)')
 notQNameChars = singleCharacterSelectors + "@"
 notNameChars = notQNameChars + ":"
 
-def abbr(prodURI): 
+def abbr(prodURI):
    return prodURI.split('#').pop()
 
-class N3Parser(object): 
+class N3Parser(object):
    def __init__(self, uri, branches, regexps):
       if uri == 'nowhere': pass
-      elif (uri != 'file:///dev/stdin'): 
+      elif (uri != 'file:///dev/stdin'):
          u = urllib.urlopen(uri)
          self.data = u.read()
          u.close()
@@ -64,7 +64,7 @@ class N3Parser(object):
       self.productions = []
       self.memo = {}
 
-   def parse(self, prod): 
+   def parse(self, prod):
       todoStack = [[prod, None]]
       while todoStack:
          if todoStack[-1][1] is None:
@@ -76,7 +76,7 @@ class N3Parser(object):
 
             prodBranch = self.branches[todoStack[-1][0]]
             sequence = prodBranch.get(tok, None)
-            if sequence is None: 
+            if sequence is None:
                print >> sys.stderr, 'prodBranch', prodBranch
                msg = "Found %s when expecting a %s . todoStack=%r"
                args = (tok, todoStack[-1][0], todoStack)
@@ -85,26 +85,26 @@ class N3Parser(object):
                todoStack[-1][1].append(term)
          while todoStack[-1][1]:
             term = todoStack[-1][1].pop(0)
-            if isinstance(term, unicode): 
+            if isinstance(term, unicode):
                j = self.pos + len(term)
                word = self.data[self.pos:j]
-               if word == term: 
+               if word == term:
                   self.onToken(term, word)
                   self.pos = j
-               elif '@' + word[:-1] == term: 
+               elif '@' + word[:-1] == term:
                   self.onToken(term, word[:-1])
                   self.pos = j - 1
-               else: 
+               else:
                   msg = "Found %s; %s expected"
                   args = (self.data[self.pos:self.pos+10], term)
                   raise ValueError, (msg % args)
-            elif not self.regexps.has_key(term): 
+            elif not self.regexps.has_key(term):
                todoStack.append([term, None])
                continue
-            else: 
+            else:
                regexp = self.regexps[term]
                m = regexp.match(self.data, self.pos)
-               if not m: 
+               if not m:
                   msg = "Token: %r should match %s"
                   args = (self.data[self.pos:self.pos+10], regexp.pattern)
                   raise ValueError, (msg % args)
@@ -116,75 +116,75 @@ class N3Parser(object):
             todoStack.pop()
             self.onFinish()
 
-   def token(self): 
+   def token(self):
       """Memoizer for getToken."""
-      if self.memo.has_key(self.pos): 
+      if self.memo.has_key(self.pos):
          return self.memo[self.pos]
       result = self.getToken()
       pos = self.pos
       self.memo[pos] = result
       return result
 
-   def getToken(self): 
+   def getToken(self):
       self.whitespace()
-      if self.pos == len(self.data): 
+      if self.pos == len(self.data):
          return '' # EOF!
 
       ch2 = self.data[self.pos:self.pos+2]
-      for double in ('=>', '<=', '^^'): 
+      for double in ('=>', '<=', '^^'):
          if ch2 == double: return double
 
       ch = self.data[self.pos]
-      if ch == '.' and self.keywordMode: 
+      if ch == '.' and self.keywordMode:
          self.keywordMode = False
 
-      if ch in singleCharacterSelectors + '"': 
+      if ch in singleCharacterSelectors + '"':
          return ch
-      elif ch in '+-0123456789': 
+      elif ch in '+-0123456789':
          return '0'
 
-      if ch == '@': 
-         if self.pos and (self.data[self.pos-1] == '"'): 
+      if ch == '@':
+         if self.pos and (self.data[self.pos-1] == '"'):
             return '@'
          name = r_name.match(self.data, self.pos + 1).group(1)
-         if name == 'keywords': 
+         if name == 'keywords':
             self.keywords = set()
             self.keywordMode = True
          return '@' + name
 
       word = r_qname.match(self.data, self.pos).group(1)
-      if self.keywordMode: 
+      if self.keywordMode:
          self.keywords.add(word)
-      elif word in self.keywords: 
-         if word == 'keywords': 
+      elif word in self.keywords:
+         if word == 'keywords':
             self.keywords = set()
             self.keywordMode = True
          return '@' + word # implicit keyword
       return 'a'
 
-   def whitespace(self): 
-      while True: 
+   def whitespace(self):
+      while True:
          end = r_whitespace.match(self.data, self.pos).end()
          if end <= self.pos: break
          self.pos = end
 
-   def onStart(self, prod): 
+   def onStart(self, prod):
       print (' ' * len(self.productions)) + prod
       self.productions.append(prod)
 
-   def onFinish(self): 
+   def onFinish(self):
       prod = self.productions.pop()
       print (' ' * len(self.productions)) + '/' + prod
 
-   def onToken(self, prod, tok): 
+   def onToken(self, prod, tok):
       print (' ' * len(self.productions)) + prod, tok
 
-def main(argv=None): 
-   if argv is None: 
+def main(argv=None):
+   if argv is None:
       argv = sys.argv
-   if len(argv) == 2: 
+   if len(argv) == 2:
       p = N3Parser(argv[1], branches, regexps)
       p.parse(start)
 
-if __name__=="__main__": 
+if __name__=="__main__":
    main()

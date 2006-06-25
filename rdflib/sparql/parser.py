@@ -116,7 +116,7 @@ class _StackManager:
     def token(self):
         return self.current
 
-# 
+#
 # The following classes, _listTypes dictionary and _makeList() function are
 # used to test for recognized keywords and to create "typed" lists for nested
 # statements when parsing the SPARQL query's WHERE statement
@@ -339,7 +339,7 @@ OPTIONAL { ?person foaf:name  ?name } .
 OPTIONAL {?person foaf:mbox  ?mbox} .
 }"""
     ]
-    
+
     print "Content-type: text/plain\n\n"
     for query in testCases:
         print "\n-----\n"

@@ -57,15 +57,15 @@ def bindingJSON(name,val,comma) :
 class SPARQLQueryResult(QueryResult.QueryResult):
     """
     Query result class for SPARQL
-        
+
     xml   : as an XML string conforming to the SPARQL XML result format: http://www.w3.org/TR/rdf-sparql-XMLres/
     python: as Python objects
-    json  : as JSON   
+    json  : as JSON
     graph : as an RDFLib Graph - for CONSTRUCT and DESCRIBE queries
     """
     def __init__(self,qResult):
         """
-        The constructor is the result straight from sparql-p, which is uple of 1) a list of tuples 
+        The constructor is the result straight from sparql-p, which is uple of 1) a list of tuples
         (in select order, each item is the valid binding for the corresponding variable or 'None') for SELECTs
         , a SPARQLGraph for DESCRIBE/CONSTRUCT, and boolean for ASK  2) the variables selected 3) *all*
         the variables in the Graph Patterns 4) the order clause 5) the DISTINCT clause
@@ -76,10 +76,10 @@ class SPARQLQueryResult(QueryResult.QueryResult):
         self.allVariables = allVars
         self.orderBy = orderBy
         self.distinct = distinct
-        
+
     def __len__(self):
         return len([i for i in self])
-        
+
     def __iter__(self):
         """Iterates over the result entries"""
         if isinstance(self.selected,list):
@@ -89,10 +89,10 @@ class SPARQLQueryResult(QueryResult.QueryResult):
                 elif isinstance(item,basestring):
                     yield (item,)
                 else:
-                    yield item        
+                    yield item
         else:
             yield self.selected
-        
+
     def serialize(self,format='xml'):
         if format == 'python':
             return self.selected
@@ -124,7 +124,7 @@ class SPARQLQueryResult(QueryResult.QueryResult):
                    retval += '               {\n'
                    if len(self.selectionF) == 0 :
                        for j in xrange(0,len(allvarsL)) :
-                           retval += bindingJSON(allvarsL[j][1:],hit[j],j != len(allvarsL) - 1)                       
+                           retval += bindingJSON(allvarsL[j][1:],hit[j],j != len(allvarsL) - 1)
                    elif len(self.selectionF) == 1 :
                        retval += bindingJSON(self.selectionF[0][1:],hit, False)
                    else :

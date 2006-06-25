@@ -7,7 +7,7 @@ store = Graph()
 # Bind a few prefix, namespace pairs.
 store.bind("dc", "http://http://purl.org/dc/elements/1.1/")
 store.bind("foaf", "http://xmlns.com/foaf/0.1/")
- 
+
 # Create a namespace object for the Friend of a friend namespace.
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 
@@ -23,7 +23,7 @@ store.add((donna, FOAF["name"], Literal("Donna Fales")))
 print "--- printing raw triples ---"
 for s, p, o in store:
     print s, p, o
-    
+
 # For each foaf:Person in the store print out its mbox property.
 print "--- printing mboxes ---"
 for person in store.subjects(RDF.type, FOAF["Person"]):

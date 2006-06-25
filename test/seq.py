@@ -20,8 +20,8 @@ class SeqTestCase(unittest.TestCase):
         self.assertEquals(len(items), 6)
         self.assertEquals(items[-1].concrete(), URIRef("http://example.org/six"))
         self.assertEquals(items[2].concrete(), URIRef("http://example.org/three"))
-        # just make sure we can serialize 
-        self.store.serialize() 
+        # just make sure we can serialize
+        self.store.serialize()
 
 def test_suite():
     return unittest.makeSuite(SeqTestCase)
@@ -42,7 +42,7 @@ s = """\
    <rdf:li rdf:resource="http://example.org/three" />
    <rdf:li rdf:resource="http://example.org/four" />
    <rdf:li rdf:resource="http://example.org/five_five" />
-   <rdf:li rdf:resource="http://example.org/six" />   
+   <rdf:li rdf:resource="http://example.org/six" />
  </rdf:Seq>
 </rdf:RDF>
 """

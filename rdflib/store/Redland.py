@@ -30,7 +30,7 @@ def _f(i):
     if i is None:
         return None
     raise TypeError, 'Cannot convert %s' % `i`
-    
+
 
 class Redland(Store):
     def __init__(self, model=None):
@@ -38,7 +38,7 @@ class Redland(Store):
         if model is None:
             model = RDF.Model()
         self.model = model
-        
+
     def __len__(self, context=None):
         """ Return number of triples (statements in librdf). """
         return self.model.size()
@@ -57,16 +57,16 @@ class Redland(Store):
             del self.model[RDF.Statement(_t(subject), _t(predicate), _t(object)), _t(context)]
         else:
             del self.model[RDF.Statement(_t(subject), _t(predicate), _t(object))]
-        
+
     def triples(self, (subject, predicate, object), context=None):
         """A generator over all the triples matching """
         for statement in self.model.find_statements(RDF.Statement(_t(subject), _t(predicate), _t(object)), _t(context)):
             yield _f(statement.subject), _f(statement.predicate), _f(statement.object)
-            
+
     def contexts(self, triple=None): # TODO: have Graph support triple?
         for context in self.model.get_contexts():
             yield URIRef(context)
-    
+
     def bind(self, prefix, namespace):
         pass
 

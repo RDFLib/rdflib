@@ -9,16 +9,16 @@ class ParsedConditionalAndExpressionList(ListRedirect):
             self._list = conditionalAndExprList
         else:
             self._list = [conditionalAndExprList]
-            
+
     def __repr__(self):
         return "<ConditionalExpressionList: %s>"%self._list
-    
-class ParsedRelationalExpressionList(ListRedirect):   
+
+class ParsedRelationalExpressionList(ListRedirect):
     """
     A list of RelationalExpressions, joined by '&&'s
     """
     def __init__(self,relationalExprList):
-        if isinstance(relationalExprList,list):            
+        if isinstance(relationalExprList,list):
             self._list = relationalExprList
         else:
             self._list = [relationalExprList]
@@ -32,37 +32,37 @@ class ParsedPrefixedMultiplicativeExpressionList(ListRedirect):
     def __init__(self,prefix,mulExprList):
         self.prefix = prefix
         assert prefix != '-',"arithmetic '-' operator not supported"
-        if isinstance(mulExprList,list):            
+        if isinstance(mulExprList,list):
             self._list = mulExprList
         else:
             self._list = [mulExprList]
     def __repr__(self):
         return "%s %s"%(self.prefix,self.reduce())
 
-class ParsedMultiplicativeExpressionList(ListRedirect):   
+class ParsedMultiplicativeExpressionList(ListRedirect):
     """
     A list of UnaryExpressions, joined by '/' or '*' s
     """
     def __init__(self,unaryExprList):
-        if isinstance(unaryExprList,list):            
+        if isinstance(unaryExprList,list):
             self._list = unaryExprList
         else:
             self._list = [unaryExprList]
     def __repr__(self):
         return "<MultiplicativeExpressionList: %s>"%self.reduce()
-        
-class ParsedAdditiveExpressionList(ListRedirect):        
+
+class ParsedAdditiveExpressionList(ListRedirect):
     """
     A list of MultiplicativeExpressions, joined by '+' or '-' s
     """
     def __init__(self,multiplicativeExprList):
-        if isinstance(multiplicativeExprList,list):            
+        if isinstance(multiplicativeExprList,list):
             self._list = multiplicativeExprList
         else:
             self._list = [multiplicativeExprList]
     def __repr__(self):
         return "<AdditiveExpressionList: %s>"%self._list
-    
+
 class ParsedString(unicode):
     def __init__(self,value=None):
         val = value is None and u"" or value
@@ -77,6 +77,6 @@ class ParsedDatatypedLiteral(object):
     def __init__(self,value,dType):
         self.value = value
         self.dataType = dType
-        
+
     def __repr__(self):
         return "'%s'^^%s"%(self.value,self.dataType)

@@ -13,7 +13,7 @@ class SolutionModifier(object):
         self.orderClause = orderClause
         self.limitClause = limitClause
         self.offsetClause = offsetClause
-        
+
     def __repr__(self):
         if not(self.orderClause or self.limitClause or self.offsetClause):
             return ""
@@ -21,7 +21,7 @@ class SolutionModifier(object):
             self.orderClause and  ' ORDER BY %s'%self.orderClause or '',
             self.limitClause and  ' LIMIT %s'%self.limitClause or '',
             self.offsetClause and ' OFFSET %s'%self.offsetClause or '')
-    
+
 class ParsedOrderConditionExpression(object):
     """
     A list of OrderConditions
@@ -30,7 +30,7 @@ class ParsedOrderConditionExpression(object):
     def __init__(self,expression,order):
         self.expression = expression
         self.order = order
-        
+
     def __repr__(self):
         return "%s(%s)"%(ORDER_VALUE_MAPPING[self.order],self.expression.reduce())
     

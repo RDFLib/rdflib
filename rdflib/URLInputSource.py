@@ -6,7 +6,7 @@ from rdflib import __version__
 
 # TODO: add types for n3. text/rdf+n3 ?
 headers = {
-    'Accept': 'application/rdf+xml,application/xhtml+xml', 
+    'Accept': 'application/rdf+xml,application/xhtml+xml',
     'User-agent':
     'rdflib-%s (http://rdflib.net/; eikeon@eikeon.com)' % __version__
     }
@@ -20,7 +20,7 @@ class URLInputSource(InputSource, object):
         req = Request(system_id, None, headers)
         file = urlopen(req)
         self.setByteStream(file)
-        # TODO: self.setEncoding(encoding) 
+        # TODO: self.setEncoding(encoding)
 
     def __repr__(self):
         return self.url

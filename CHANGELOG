@@ -1,5 +1,5 @@
 2006/02/27
-        RELEASE 2.3.1         
+        RELEASE 2.3.1
 
         Added save method to BackwardCompatibleGraph so that
         example.py etc work again.
@@ -33,9 +33,9 @@
 
 
 2005/12/23
-        RELEASE 2.3.0         
+        RELEASE 2.3.0
 
-        See http://rdflib.net/2.3.0/ for most up-to-date release notes 
+        See http://rdflib.net/2.3.0/ for most up-to-date release notes
 
         Added N3 support to Graph and Store.
 
@@ -66,27 +66,27 @@
         durability, since if the system fails before the rollbacks are
         all executed, the store will remain in an invalid state, but
         it provides Atomicity in the best case scenario.
-            
 
-2005/10/10 
+
+2005/10/10
         RELEASE 2.2.3
 
         Fixed Sleepycat backend to commit after an add and
         remove. This should help just a bit with those unclean
-        shutdowns ;) 
+        shutdowns ;)
 
         Fixed use of logging so that it does not mess with the root
         logger. Thank you, Arve, for pointing this one out.
 
         Fixed Graph's value method to have default for subject in
-        addition to predicate and object. 
+        addition to predicate and object.
 
         Fixed Fourthought backend to be consistent with interface. It
         now supports an empty constructor and an open method that
         takes a configuration string.
 
 
-2005/09/10 
+2005/09/10
         RELEASE 2.2.2
 
         Applied patch from inkel to add encoding argument to all
@@ -144,13 +144,13 @@
         Literal is now picklable.
 
         Added optional base argument to serialize methods about which to relativize.
-        
+
         Applied patch to remove some dependencies on Python 2.4
         features.
 
         Fixed BNode's n3 serialization bug (recently introduced).
 
-        Fixed a collections related bug.                        
+        Fixed a collections related bug.
 
 
 2005/05/13
@@ -187,7 +187,7 @@
         plugin support that existed).
 
         Added value and seq methods to Graph.
-        
+
         Renamed prefix_mapping to bind.
 
         Added namespaces method that is a generator over all prefix,
@@ -196,8 +196,8 @@
         Added notion of NamespaceManager.
 
         Added couple new backends, IOMemory and ZODB.
-        
-        
+
+
 2005/03/19
         RELEASE 2.0.6
 
@@ -216,7 +216,7 @@
         Changed InMemoryBackend to update third index in the same style it
         does the first two.
 
-        
+
 2005/01/08
         RELEASE 2.0.5
 
@@ -240,7 +240,7 @@
         RELEASE 2.0.3
 
         Added missing "from __future__ import generators" statement to
-        InformationStore. 
+        InformationStore.
 
         Simplified RDF/XML serializer fixing a few bugs involving
         BNodes.
@@ -416,7 +416,7 @@
 
 
 2002/12/16
-        RELEASE 1.1.5 
+        RELEASE 1.1.5
 
         Introduction of InformationStore, a TripleStore with the
         addition of context support.
@@ -429,7 +429,7 @@
 
 
 2002/12/10
-        RELEASE 1.1.4 
+        RELEASE 1.1.4
 
         Interface realigned with last stable release.
 
@@ -451,52 +451,52 @@
 
 
 2002/12/03
-        RELEASE 1.1.3 
+        RELEASE 1.1.3
 
         BNodes now created with a more unique identifier so BNodes
         from different sessions do not collide.
 
         Added initial support for XML Literals (for now they are
         parsed into Literals).
-        
+
         Resource is no longer a special kind of URIRef.
 
         Resource no longer looks at range to determine default return
         type for __getitem__. Instead there is now a get(predicate, default)
         method.
-        
+
 
 2002/11/21
-        RELEASE 1.1.2 
+        RELEASE 1.1.2
 
-        Fixed Literal's __eq__ method so that Literal('foo')=='foo' etc.        
-        
+        Fixed Literal's __eq__ method so that Literal('foo')=='foo' etc.
+
         Fixed Resource's __setitem__ method so that it does not raise
         a dictionary changed size while iterating exception.
 
 
 2002/11/09
-        RELEASE 1.1.1 
+        RELEASE 1.1.1
 
-        Resource is now a special kind of URIRef 
-        
+        Resource is now a special kind of URIRef
+
         Resource's __getitem__ now looks at rdfs:range to determine
         return type in default case.
 
-        
+
 
 2002/11/05
         RELEASE 1.1.0 # A new development branch
 
         Cleaned up interface and promoted it to SIR: Simple Interface
-        for RDF. 
+        for RDF.
 
         Updated parser to use SAX2 interfaces instead of using expat directly.
 
         Added BTreeTripleStore, a ZODB BTree TripleStore backend. And
         a default pre-mixed TripleStore that uses it.
 
-        Synced with latest (Editor's draft) RDF/XML spec. 
+        Synced with latest (Editor's draft) RDF/XML spec.
 
         Added datatype support.
 
@@ -519,14 +519,14 @@
 
         TODO: Change __eq__ so that Literal("foo")=="foo" etc
 
-        TripleStores now support "in" operator. 
+        TripleStores now support "in" operator.
         For example: if (s, p, o) in store: print "Found ", s, p, o
 
         Added APIs/object for working at level of a Resource. NOTE:
         This functionality is still experimental
 
         Consecutive Collections now parse correctly.
-        
+
 2002/08/06
         RELEASE 0.9.5
 
@@ -536,9 +536,9 @@
 
         Renamed rdflib.triple_store to rdflib.TripleStore to better follow
         python style conventions.
-        
+
         Added an Identifier Class
-        
+
         Moved each node into its own Python module.
 
         Added rdflib.util with a first and uniq function.
@@ -547,7 +547,7 @@
 
         Removed generate_uri since we have BNodes now.
 
-        
+
 2002/07/29
         RELEASE 0.9.4
 
@@ -559,7 +559,7 @@
 
         Added partial support for XML Literal parseTypes.
 
-        
+
 2002/07/16
         RELEASE 0.9.3
 
@@ -573,10 +573,10 @@
         Added missing check for valid attribute names in the case of
         production 5.18 of latest WD spec.
 
-        
+
 2002/07/05
         RELEASE 0.9.2
-        
+
         Added missing constants for SUBPROPERTYOF, ISDEFINEDBY.
 
         Added test case for running all of the rdf/xml test cases.
@@ -606,8 +606,8 @@
         Added N-Triples parser.
 
         Added __len__ and __eq__ methods to store interface.
-        
-        
+
+
 2002/06/04
         RELEASE 0.9.0
 

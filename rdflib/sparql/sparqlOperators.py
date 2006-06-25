@@ -5,7 +5,7 @@
 # $Date: 2005/11/04 14:06:36 $, by $Author: ivan $, $Revision: 1.1 $
 #
 ##
-# API for the SPARQL operators. The operators (eg, 'lt') 
+# API for the SPARQL operators. The operators (eg, 'lt')
 # return a <em>function</em> that can be added to the AND clause of a query. The parameters are either regular values
 # or query strings. The resulting function has one parameter (the binding directory), it can be combined with others or
 # be plugged to into an array of constraints. For example:
@@ -49,7 +49,7 @@ from sparql import Debug
 ##
 # Boolean test whether this is a a query string or not
 # @param v the value to be checked
-# @return True if it is a query string 
+# @return True if it is a query string
 def queryString(v) :
     return isinstance(v,basestring) and len(v) != 0 and v[0] == _questChar
 
@@ -90,18 +90,18 @@ def getValue(param) :
         else :
             return value
     return f
-    
+
 ##
 # Operator for '&lt;'
 # @param a value or query string
 # @param b value or query string
 # @return comparison method
-def lt(a,b) :    
+def lt(a,b) :
     fa = getValue(a)
     fb = getValue(b)
-    def f(bindings) :        
-        try :            
-            return fa(bindings) < fb(bindings)            
+    def f(bindings) :
+        try :
+            return fa(bindings) < fb(bindings)
         except:
             # this is the case when the operators are incompatible
             if Debug :
@@ -109,7 +109,7 @@ def lt(a,b) :
                 sys.excepthook(typ,val,traceback)
             return False
     return f
-    
+
 ##
 # Operator for '&lt;='
 # @param a value or query string
@@ -147,7 +147,7 @@ def gt(a,b) :
                 sys.excepthook(typ,val,traceback)
             return False
     return f
-    
+
 ##
 # Operator for '&gt;='
 # @param a value or query string
@@ -166,7 +166,7 @@ def ge(a,b) :
                 sys.excepthook(typ,val,traceback)
             return False
     return f
-    
+
 ##
 # Operator for '='
 # @param a value or query string
@@ -195,7 +195,7 @@ def __getQueryString(v) :
     else :
         return None
 
-    
+
 ##
 # Is the variable bound
 # @param a value or query string
@@ -211,7 +211,7 @@ def bound(a) :
         else :
             return False
     return f
-            
+
 ##
 # Is the variable bound to a URIRef
 # @param a value or query string
@@ -237,7 +237,7 @@ def isURI(a) :
 # @return check method
 def isIRI(a) :
     return isURI(a)
-    
+
 ##
 # Is the variable bound to a Blank Node
 # @param a value or query string
@@ -256,7 +256,7 @@ def isBlank(a) :
         except :
             return False
     return f
-    
+
 ##
 # Is the variable bound to a Literal
 # @param a value or query string
@@ -275,7 +275,7 @@ def isLiteral(a) :
         except :
             return False
     return f
-    
+
 ##
 # Return the string version of a resource
 # @param a value or query string
@@ -325,7 +325,7 @@ def datatype(a) :
                 return a.datatype
             else:
                 return ""
-        
+
         try :
             val = bindings[v]
             if val == None or val == JunkResource :
@@ -335,15 +335,15 @@ def datatype(a) :
         except :
             return ""
     return f
-    
-    
+
+
 ##
 # Is a resource on a collection. The operator can be used to check whether
 #    the 'item' is an element of the 'collection' (a.k.a. list). Both collection and item can
 #    be a real resource or a query string.
-# @param collection is either a query string (that has to be bound by the query) or an RDFLib Resource 
+# @param collection is either a query string (that has to be bound by the query) or an RDFLib Resource
 # representing the collection
-# @param item is either a query string (that has to be bound by the query), an RDFLib Resource, or 
+# @param item is either a query string (that has to be bound by the query), an RDFLib Resource, or
 # a data type value that is turned into a corresponding Literal (with possible datatype)
 # that must be tested to be part of the collection
 # @defreturn a function
@@ -367,7 +367,7 @@ def isOnCollection(collection,item) :
     else:
         try :
             #FIXME: check_subject is no longer defined in rdflib.Graph
-            #check_subject(collection) 
+            #check_subject(collection)
             collUnbound = False
             # if we got here, this is a valid collection resource
         except :
@@ -393,7 +393,7 @@ def isOnCollection(collection,item) :
                 it = bindings[queryItem]
             else :
                 it = queryItem
-            triplets = bindings[_graphKey]                
+            triplets = bindings[_graphKey]
             return it in triplets.items(coll)
         except :
             # this means that the binding is not available. But that also means that
@@ -402,7 +402,7 @@ def isOnCollection(collection,item) :
             # ie, it should not become a show-stopper, hence it returns True
             return True
     return checkCollection
-    
+
 
 def addOperator(args,combinationArg):
     """
@@ -417,7 +417,7 @@ def XSDCast(source,target=None):
     a Literal with the target datatype using the 'lexical' value of the source
     """
     sFunc = getValue(source)
-    def f(bindings):        
+    def f(bindings):
         rt = sFunc(bindings)
         if isinstance(rt,Literal) and rt.datatype == target:
             #Literal already has target datatype
@@ -445,16 +445,16 @@ def regex(item,pattern,flag=None):
             try:
                 return bool(re.compile(b(bindings),cFlag).search(a(bindings)))
             except:
-                return False                
+                return False
         return f1
     else:
         def f2(bindings):
             try:
                 return bool(re.compile(b(bindings)).search(a(bindings)))
             except:
-                return False                
+                return False
         return f2
-        
+
     def f(bindings):
         try:
             print "%s %s"%(a(bindings),b(bindings))

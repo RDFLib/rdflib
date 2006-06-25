@@ -36,7 +36,7 @@ def testN3Store(backend,configString):
 
         #test formula as terms
         assert len(list(universe.triples((formulaA,implies,formulaB))))==1
-        
+
         #test variable as term and variable roundtrip
         assert len(list(formulaB.triples((None,None,v))))==1
         for s,p,o in formulaB.triples((None,d,None)):
@@ -48,7 +48,7 @@ def testN3Store(backend,configString):
         assert len(list(universe.triples((None,implies,None)))) == 1
         assert len(list(universe.triples((None,RDF.type,None)))) ==1
         assert len(list(formulaA.triples((None,RDF.type,None))))==1
-        assert len(list(formulaA.triples((None,None,None))))==2        
+        assert len(list(formulaA.triples((None,None,None))))==2
         assert len(list(formulaB.triples((None,None,None))))==2
         assert len(list(universe.triples((None,None,None))))==3
         assert len(list(formulaB.triples((None,URIRef('http://test/d'),None))))==2
@@ -77,7 +77,7 @@ def testN3Store(backend,configString):
         assert len(list(universe.triples((None,RDF.type,None))))==0
         assert len(universe)==1
         assert len(formulaB)==0
-        
+
         universe.remove((None,None,None))
         assert len(universe)==0
 
@@ -85,4 +85,4 @@ def testN3Store(backend,configString):
     except:
         g.backend.destroy(configString)
         raise
-    
+

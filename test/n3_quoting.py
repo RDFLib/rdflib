@@ -12,7 +12,7 @@ cases = ['no quotes',
          '\\"', # len 2
          '\\\\"', # len 3
          '\\"\\', # len 3
-         '<a some="typical" html="content">here</a>',     
+         '<a some="typical" html="content">here</a>',
          ]
 
 class N3Quoting(unittest.TestCase):
@@ -33,4 +33,4 @@ class N3Quoting(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()   
+    unittest.main()

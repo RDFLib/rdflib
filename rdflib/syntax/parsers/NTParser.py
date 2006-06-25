@@ -13,7 +13,7 @@ class NTSink(object):
 import codecs
 
 class NTParser(Parser):
-    
+
     def __init__(self):
         super(NTParser, self).__init__()
 
@@ -22,5 +22,5 @@ class NTParser(Parser):
         parser = NTriplesParser(NTSink(sink))
         parser.parse(f)
         f.close()
-       
+
 

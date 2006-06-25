@@ -6,7 +6,7 @@ from rdflib import Graph, URIRef, BNode, Literal, RDFS
 class GraphTest(unittest.TestCase):
     backend = 'default'
     path = 'store'
-    
+
     def setUp(self):
         self.store = Graph(backend=self.backend)
         self.store.open(self.path)
@@ -22,13 +22,13 @@ class GraphTest(unittest.TestCase):
 
     def testRemove(self):
         self.store.remove(self.remove_me)
-        self.store.remove((None, None, None))        
-        
+        self.store.remove((None, None, None))
+
     def testTriples(self):
         for s, p, o in self.store:
             pass
 
 if __name__ == "__main__":
-    unittest.main()   
+    unittest.main()
 
 

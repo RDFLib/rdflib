@@ -19,7 +19,7 @@ class NamespaceManager(object):
 
     def reset(self):
         self.__cache = {}
-           
+
     def __get_store(self):
         return self.graph.store
     store = property(__get_store)
@@ -53,7 +53,7 @@ class NamespaceManager(object):
             # that's not in use.
             if not prefix:
                 prefix = "default"
-            num = 1                
+            num = 1
             while 1:
                 new_prefix = "%s%s" % (prefix, num)
                 if not self.store.namespace(new_prefix):
@@ -63,7 +63,7 @@ class NamespaceManager(object):
         else:
             bound_prefix = self.store.prefix(namespace)
             if bound_prefix is None:
-                self.store.bind(prefix, namespace)            
+                self.store.bind(prefix, namespace)
             elif bound_prefix == prefix:
                 pass # already bound
             else:
@@ -75,7 +75,7 @@ class NamespaceManager(object):
             yield prefix, namespace
 
     def absolutize(self, uri, defrag=1):
-        base = urljoin("file:", pathname2url(os.getcwd()))        
+        base = urljoin("file:", pathname2url(os.getcwd()))
         result = urljoin("%s/" % base, uri, allow_fragments=not defrag)
         if defrag:
             result = urldefrag(result)[0]

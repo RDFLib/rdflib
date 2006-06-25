@@ -7,7 +7,7 @@ from StringIO import StringIO
 
 class StringInputSource(InputSource, object):
     def __init__(self, value, system_id=None):
-        super(StringInputSource, self).__init__(system_id)        
+        super(StringInputSource, self).__init__(system_id)
         stream = StringIO(value)
         self.setByteStream(stream)
         # TODO:

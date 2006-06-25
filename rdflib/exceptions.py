@@ -45,12 +45,12 @@ class ContextTypeError(TypeCheckError):
         TypeCheckError.__init__(self, node)
         self.msg = "Context must be instance of URIRef or BNode: %s(%s)" \
                        % (self.node, self.type)
-        
+
 class ParserError(Error):
     """RDF Parser error."""
     def __init__(self, msg):
         self.msg = msg
-        
+
     def __str__(self):
         return self.msg
 

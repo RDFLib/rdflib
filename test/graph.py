@@ -41,7 +41,7 @@ class GraphTestCase(unittest.TestCase):
         self.graph.add((michel, likes, cheese))
         self.graph.add((bob, likes, cheese))
         self.graph.add((bob, hates, pizza))
-        self.graph.add((bob, hates, michel)) # gasp!        
+        self.graph.add((bob, hates, michel)) # gasp!
 
     def removeStuff(self):
         tarek = self.tarek
@@ -106,12 +106,12 @@ class GraphTestCase(unittest.TestCase):
         # unbound predicates, objects
         asserte(len(list(triples((michel, Any, Any)))), 2)
         asserte(len(list(triples((bob, Any, Any)))), 3)
-        asserte(len(list(triples((tarek, Any, Any)))), 2)        
+        asserte(len(list(triples((tarek, Any, Any)))), 2)
 
         # unbound subjects, predicates
         asserte(len(list(triples((Any, Any, pizza)))), 3)
         asserte(len(list(triples((Any, Any, cheese)))), 3)
-        asserte(len(list(triples((Any, Any, michel)))), 1)        
+        asserte(len(list(triples((Any, Any, michel)))), 1)
 
         # all unbound
         asserte(len(list(triples((Any, Any, Any)))), 7)
@@ -121,7 +121,7 @@ class GraphTestCase(unittest.TestCase):
 
     def testStatementNode(self):
         graph = self.graph
-        
+
         from rdflib.Statement import Statement
         c = URIRef("http://example.org/foo#c")
         r = URIRef("http://example.org/foo#r")
@@ -164,14 +164,14 @@ class GraphTestCase(unittest.TestCase):
         graph = self.graph
         self.addStuff()
         self.assertEquals(True, graph.connected())
-        
+
         jeroen = URIRef("jeroen")
         unconnected = URIRef("unconnected")
-        
+
         graph.add((jeroen,self.likes,unconnected))
-        
+
         self.assertEquals(False, graph.connected())
-        
+
 #class MemoryGraphTestCase(GraphTestCase):
 #    store_name = "Memory"
 
@@ -198,7 +198,7 @@ try:
     class RedLandTestCase(GraphTestCase):
         store_name = "Redland"
 except ImportError, e:
-    print "Can not test Redland store:", e    
+    print "Can not test Redland store:", e
 
 if __name__ == '__main__':
-    unittest.main()    
+    unittest.main()

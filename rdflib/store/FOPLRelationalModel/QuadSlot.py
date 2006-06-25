@@ -1,6 +1,6 @@
 """
 Utility functions associated with RDF terms:
-    
+
 - normalizing (to 64 bit integers via half-md5-hashes)
 - escaping literal's for SQL persistence
 """
@@ -54,7 +54,7 @@ def dereferenceQuad(index,quad):
         return quad[index]
 
 def genQuadSlots(quads):
-    return [QuadSlot(index,quads[index])for index in POSITION_LIST]        
+    return [QuadSlot(index,quads[index])for index in POSITION_LIST]
 
 def normalizeValue(value,termType):
     if value is None:
@@ -66,8 +66,8 @@ def normalizeValue(value,termType):
 class QuadSlot:
     def __repr__(self):
         #NOTE: http://docs.python.org/ref/customization.html
-        return "QuadSlot(%s,%s,%s)"%(SlotPrefixes[self.position],self.term,self.md5Int)    
-    
+        return "QuadSlot(%s,%s,%s)"%(SlotPrefixes[self.position],self.term,self.md5Int)
+
     def __init__(self,position,term):
         assert position in POSITION_LIST, "Unknown quad position: %s"%position
         self.position = position

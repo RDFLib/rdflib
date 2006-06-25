@@ -86,10 +86,10 @@ register('Sleepycat', Store,
          'rdflib.store.Sleepycat', 'Sleepycat')
 
 register('MySQL', Store,
-         'rdflib.store.MySQL', 'MySQL')         
-         
+         'rdflib.store.MySQL', 'MySQL')
+
 register('SQLite', Store,
-         'rdflib.store.SQLite', 'SQLite')         
+         'rdflib.store.SQLite', 'SQLite')
 
 register('ZODB', Store,
          'rdflib.store.ZODB', 'ZODB')

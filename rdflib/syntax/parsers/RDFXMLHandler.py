@@ -44,7 +44,7 @@ RDFNS = RDF.RDFNS
 # http://www.w3.org/TR/rdf-syntax-grammar/#eventterm-attribute-URI
 # A mapping from unqualified terms to there qualified version.
 UNQUALIFIED = {"about" : RDF.about,
-               "ID" : RDF.ID, 
+               "ID" : RDF.ID,
                "type" : RDF.type,
                "resource": RDF.resource,
                "parseType": RDF.parseType}
@@ -78,7 +78,7 @@ class BagID(URIRef):
 
     def next_li(self):
         self.li += 1
-        return URIRef(RDFNS + "_%s" % self.li)        
+        return URIRef(RDFNS + "_%s" % self.li)
 
 
 class ElementHandler(object):
@@ -110,7 +110,7 @@ class RDFXMLHandler(handler.ContentHandler):
         self.store = store
         self.preserve_bnode_ids = False
         self.reset()
-        
+
     def reset(self):
         document_element = ElementHandler()
         document_element.start = self.document_element_start
@@ -159,16 +159,16 @@ class RDFXMLHandler(handler.ContentHandler):
             if parent:
                 language = parent.language
         current.language = language
-        current.start(name, qname, attrs)        
-            
+        current.start(name, qname, attrs)
+
     def endElementNS(self, name, qname):
         self.current.end(name, qname)
         self.stack.pop()
-    
+
     def characters(self, content):
         char = self.current.char
         if char:
-            char(content)        
+            char(content)
 
     def ignorableWhitespace(self, content):
         pass
@@ -187,7 +187,7 @@ class RDFXMLHandler(handler.ContentHandler):
         info = "%s:%s:%s: " % (locator.getSystemId(),
                             locator.getLineNumber(), locator.getColumnNumber())
         raise ParserError(info + message)
-    
+
     def get_current(self):
         return self.stack[-2]
     # Create a read only property called current so that self.current
@@ -208,7 +208,7 @@ class RDFXMLHandler(handler.ContentHandler):
 
     def absolutize(self, uri):
         result = urljoin(self.current.base, uri, allow_fragments=1)
-        if uri and uri[-1]=="#" and result[-1]!="#":        
+        if uri and uri[-1]=="#" and result[-1]!="#":
             result = "%s#" % result
         return URIRef(result)
 
@@ -242,7 +242,7 @@ class RDFXMLHandler(handler.ContentHandler):
             #self.current.end = self.node_element_end
             # TODO... set end to something that sets start such that
             # another element will cause error
-            
+
 
     def node_element_start(self, name, qname, attrs):
         name, atts = self.convert(name, qname, attrs)
@@ -297,7 +297,7 @@ class RDFXMLHandler(handler.ContentHandler):
                 try:
                     object = Literal(atts[att], language)
                 except Error, e:
-                    self.error(e.msg)                
+                    self.error(e.msg)
             elif att==RDF.type: #S2
                 predicate = RDF.type
                 object = absolutize(atts[RDF.type])
@@ -311,31 +311,31 @@ class RDFXMLHandler(handler.ContentHandler):
                 try:
                     object = Literal(atts[att], language)
                 except Error, e:
-                    self.error(e.msg)                    
+                    self.error(e.msg)
             self.store.add((subject, predicate, object))
 
         current.subject = subject
 
-        
+
     def node_element_end(self, name, qname):
         self.parent.object = self.current.subject
-        
+
     def property_element_start(self, name, qname, attrs):
         name, atts = self.convert(name, qname, attrs)
         current = self.current
-        absolutize = self.absolutize        
+        absolutize = self.absolutize
         next = self.next
         object = None
         current.list = None
 
         if not name.startswith(RDFNS):
-            current.predicate = absolutize(name)            
+            current.predicate = absolutize(name)
         elif name==RDF.li:
             current.predicate = current.next_li()
         elif name in PROPERTY_ELEMENT_EXCEPTIONS:
             self.error("Invalid property element URI: %s" % name)
         else:
-            current.predicate = absolutize(name)            
+            current.predicate = absolutize(name)
 
         id = atts.get(RDF.ID, None)
         if id is not None:
@@ -357,7 +357,7 @@ class RDFXMLHandler(handler.ContentHandler):
         elif nodeID is not None:
             if not is_ncname(nodeID):
                 self.error("rdf:nodeID value is not a valid NCName: %s" % nodeID)
-            if self.preserve_bnode_ids is False:            
+            if self.preserve_bnode_ids is False:
                 if nodeID in self.bnode:
                     object = self.bnode[nodeID]
                 else:
@@ -367,19 +367,19 @@ class RDFXMLHandler(handler.ContentHandler):
             else:
                 object = subject = BNode(nodeID)
             next.start = self.node_element_start
-            next.end = self.node_element_end                
+            next.end = self.node_element_end
         else:
             if parse_type is not None:
                 for att in atts:
                     if att!=RDF.parseType and att!=RDF.ID:
                         self.error("Property attr '%s' now allowed here" % att)
-                if parse_type=="Resource": 
+                if parse_type=="Resource":
                     current.subject = object = BNode()
-                    current.char = self.property_element_char                    
+                    current.char = self.property_element_char
                     next.start = self.property_element_start
                     next.end = self.property_element_end
                 elif parse_type=="Collection":
-                    current.char = None        
+                    current.char = None
                     object = current.list = RDF.nil #BNode()#self.parent.subject
                     next.start = self.node_element_start
                     next.end = self.list_node_element_end
@@ -398,23 +398,23 @@ class RDFXMLHandler(handler.ContentHandler):
                 object = None
                 current.char = self.property_element_char
                 next.start = self.node_element_start
-                next.end = self.node_element_end                
+                next.end = self.node_element_end
 
         datatype = current.datatype = atts.get(RDF.datatype, None)
-        language = current.language        
+        language = current.language
         if datatype is not None:
             # TODO: check that there are no atts other than datatype and id
             datatype = URIRef(datatype)
         else:
             for att in atts:
                 if not att.startswith(RDFNS):
-                    predicate = absolutize(att)                        
+                    predicate = absolutize(att)
                 elif att in PROPERTY_ELEMENT_ATTRIBUTES:
                     continue
                 elif att in PROPERTY_ATTRIBUTE_EXCEPTIONS:
                     self.error("""Invalid property attribute URI: %s""" % att)
                 else:
-                    predicate = absolutize(att)                    
+                    predicate = absolutize(att)
 
                 if att==RDF.type:
                     o = URIRef(atts[att])
@@ -425,7 +425,7 @@ class RDFXMLHandler(handler.ContentHandler):
                     object = BNode()
                 self.store.add((object, predicate, o))
         if object is None:
-            object = Literal("", language, datatype)                
+            object = Literal("", language, datatype)
         current.object = object
 
     def property_element_char(self, data):
@@ -434,14 +434,14 @@ class RDFXMLHandler(handler.ContentHandler):
             try:
                 current.object = Literal(data, current.language, current.datatype)
             except Error, e:
-                self.error(e.msg)                
+                self.error(e.msg)
         else:
             if isinstance(current.object, Literal):
                 try:
                     current.object += data
                 except Error, e:
                     self.error(e.msg)
-            
+
     def property_element_end(self, name, qname):
         current = self.current
         if self.next.end==self.list_node_element_end:
@@ -455,7 +455,7 @@ class RDFXMLHandler(handler.ContentHandler):
         current.subject = None
 
     def list_node_element_end(self, name, qname):
-        current = self.current        
+        current = self.current
         if self.parent.list==RDF.nil:
             list = BNode()
             # Removed between 20030123 and 20030905
@@ -463,10 +463,10 @@ class RDFXMLHandler(handler.ContentHandler):
             self.parent.list = list
             self.store.add((self.parent.list, RDF.first, current.subject))
             self.parent.object = list
-            self.parent.char = None            
+            self.parent.char = None
         else:
             list = BNode()
-            # Removed between 20030123 and 20030905            
+            # Removed between 20030123 and 20030905
             #self.store.add((list, RDF.type, LIST))
             self.store.add((self.parent.list, RDF.rest, list))
             self.store.add((list, RDF.first, current.subject))
@@ -505,7 +505,7 @@ class RDFXMLHandler(handler.ContentHandler):
 
     def literal_element_char(self, data):
         self.current.object += escape(data)
-        
+
     def literal_element_end(self, name, qname):
         if name[0]:
             prefix = self._current_context[name[0]]

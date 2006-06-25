@@ -51,21 +51,21 @@ def convertTerm(term,queryProlog):
         return Unbound(term[1:])
     elif isinstance(term,BNode):
         return PatternBNode(term)
-    elif isinstance(term,QName):        
+    elif isinstance(term,QName):
         return URIRef(queryProlog.prefixBindings[term.prefix] + term.localname)
     elif isinstance(term,QNamePrefix):
-        return URIRef(queryProlog.baseDeclaration + term)    
+        return URIRef(queryProlog.baseDeclaration + term)
     elif isinstance(term,ParsedString):
         return Literal(term)
     else:
         return term
 
-def unRollTripleItems(items,queryProlog):    
+def unRollTripleItems(items,queryProlog):
     """
     Takes a list of Triples (nested lists or ParsedConstrainedTriples)
     and (recursively) returns a generator over all the contained triple patterns
     """
-    for item in items:        
+    for item in items:
         additionalTriples = []
         if isinstance(item,(Resource,TwiceReferencedBlankNode)):
             for propVal in item.propVals:
@@ -75,27 +75,27 @@ def unRollTripleItems(items,queryProlog):
                             yield (convertTerm(item.identifier,queryProlog),
                                    convertTerm(propVal.property,queryProlog),
                                    convertTerm(colObj,queryProlog))
-                    elif isinstance(propObj,(Resource,TwiceReferencedBlankNode)):                    
+                    elif isinstance(propObj,(Resource,TwiceReferencedBlankNode)):
                         additionalTriples.append(propObj)
                         yield (convertTerm(item.identifier,queryProlog),
                                convertTerm(propVal.property,queryProlog),
                                convertTerm(propObj.identifier,queryProlog))
-                    else:                       
+                    else:
                        yield (convertTerm(item.identifier,queryProlog),
                               convertTerm(propVal.property,queryProlog),
                               convertTerm(propObj,queryProlog))
-                
+
         for additionalItem in additionalTriples:
             for item in unRollTripleItems(additionalItem,queryProlog):
-                yield item    
+                yield item
 
-def mapToOperator(expr,prolog,combinationArg=None):    
+def mapToOperator(expr,prolog,combinationArg=None):
     """
     Reduces certain expressions (operator expressions, function calls, terms, and combinator expressions)
     into strings of their Python equivalent
     """
     combinationInvokation = combinationArg and '(%s)'%combinationArg or ""
-    if isinstance(expr,ListRedirect):        
+    if isinstance(expr,ListRedirect):
         expr = expr.reduce()
     if isinstance(expr,UnaryOperator):
         return UnaryOperatorMapping[type(expr)]%(mapToOperator(expr.argument,prolog,combinationArg))
@@ -132,7 +132,7 @@ def createSPARQLPConstraint(filter,prolog):
     Takes an instance of either ParsedExpressionFilter or ParsedFunctionFilter
     and converts it to a sparql-p operator by composing a python string of lambda functions and SPARQL operators
     This string is then evaluated to return the actual function for sparql-p
-    """    
+    """
     reducedFilter = isinstance(filter.filter,ListRedirect) and filter.filter.reduce() or filter.filter
     if isinstance(reducedFilter,ParsedConditionalAndExpressionList):
         combinationLambda = 'lambda(i): %s'%(' or '.join(['%s'%mapToOperator(expr,prolog,combinationArg='i') for expr in reducedFilter]))
@@ -148,12 +148,12 @@ def createSPARQLPConstraint(filter,prolog):
         rt=mapToOperator(reducedFilter,prolog)
         if prolog.DEBUG:
             print "sparql-p operator(s): %s"%rt
-        return eval(rt)        
+        return eval(rt)
     elif isinstance(reducedFilter,(ParsedAdditiveExpressionList,UnaryOperator,FunctionCall)):
         rt='lambda(i): %s'%(mapToOperator(reducedFilter,prolog,combinationArg='i'))
         if prolog.DEBUG:
             print "sparql-p operator(s): %s"%rt
-        return eval(rt)        
+        return eval(rt)
     else:
         rt=mapToOperator(reducedFilter,prolog)
         if prolog.DEBUG:
@@ -162,7 +162,7 @@ def createSPARQLPConstraint(filter,prolog):
 
 def sparqlPSetup(groupGraphPattern,prolog):
     """
-    This core function takes Where Clause and two lists of rdflib.sparql.graphPattern.BasicGraphPatterns 
+    This core function takes Where Clause and two lists of rdflib.sparql.graphPattern.BasicGraphPatterns
     (the main patterns - connected by UNION - and an optional patterns)
     This is the core SELECT API of sparql-p
     """
@@ -171,9 +171,9 @@ def sparqlPSetup(groupGraphPattern,prolog):
     graphGraphPatterns,optionalGraphPatterns,alternativeGraphPatterns = categorizeGroupGraphPattern(groupGraphPattern)
     globalTPs,globalConstraints = reorderBasicGraphPattern(groupGraphPattern[0])
     #UNION alternative graph patterns
-    if alternativeGraphPatterns:                
+    if alternativeGraphPatterns:
         #Global constraints / optionals must be distributed within each alternative GP via:
-        #((P1 UNION P2) FILTER R) AND ((P1 FILTER R) UNION (P2 FILTER R)).        
+        #((P1 UNION P2) FILTER R) AND ((P1 FILTER R) UNION (P2 FILTER R)).
         for alternativeGPBlock in alternativeGraphPatterns:
             for alternativeGPs in alternativeGPBlock.nonTripleGraphPattern:
                 triples,constraints = reorderBasicGraphPattern(alternativeGPs[0])
@@ -183,22 +183,22 @@ def sparqlPSetup(groupGraphPattern,prolog):
                 basicGraphPatterns.append(alternativeGPInst)
     elif graphGraphPatterns:
         triples,constraints = reorderBasicGraphPattern(graphGraphPatterns[0].nonTripleGraphPattern[0])
-        for t in unRollTripleItems(triples,prolog):            
+        for t in unRollTripleItems(triples,prolog):
             patternList.append(t)
-        basicGraphPattern = BasicGraphPattern(patternList)    
+        basicGraphPattern = BasicGraphPattern(patternList)
         for constr in constraints:
             basicGraphPattern.addConstraint(createSPARQLPConstraint(constr,prolog))
         basicGraphPatterns.append(basicGraphPattern)
 
     else:
-        triples,constraints = reorderBasicGraphPattern(groupGraphPattern[0])    
-        for t in unRollTripleItems(triples,prolog):            
+        triples,constraints = reorderBasicGraphPattern(groupGraphPattern[0])
+        for t in unRollTripleItems(triples,prolog):
             patternList.append(t)
-        basicGraphPattern = BasicGraphPattern(patternList)    
+        basicGraphPattern = BasicGraphPattern(patternList)
         for constr in constraints:
             basicGraphPattern.addConstraint(createSPARQLPConstraint(constr,prolog))
         basicGraphPatterns.append(basicGraphPattern)
-        
+
     #Global optional patterns
     rtOptionalGraphPatterns = []
     for opGGP in [g.nonTripleGraphPattern for g in optionalGraphPatterns]:
@@ -206,7 +206,7 @@ def sparqlPSetup(groupGraphPattern,prolog):
         #FIXME how do deal with data/local-constr/expr-2.rq?
         #opConstraints.extend(globalConstraints)
         opPatternList = []
-        for t in unRollTripleItems(opTriples,prolog):            
+        for t in unRollTripleItems(opTriples,prolog):
             opPatternList.append(t)
         opBasicGraphPattern = BasicGraphPattern(opPatternList)
         for constr in opConstraints:# + constraints:
@@ -230,7 +230,7 @@ def isTriplePattern(nestedTriples):
         else:
             return False
     elif isinstance(nestedTriples,ParsedConstrainedTriples) and not nestedTriples.triples:
-        return isTriplePattern(nestedTriples.triples)    
+        return isTriplePattern(nestedTriples.triples)
     else:
         return True
 
@@ -244,32 +244,32 @@ def categorizeGroupGraphPattern(gGP):
     optionalGraphPatterns    = [gP for gP in gGP if gP.nonTripleGraphPattern and isinstance(gP.nonTripleGraphPattern,ParsedOptionalGraphPattern)]
     alternativeGraphPatterns = [gP for gP in gGP if gP.nonTripleGraphPattern and isinstance(gP.nonTripleGraphPattern,ParsedAlternativeGraphPattern)]
     return graphGraphPatterns,optionalGraphPatterns,alternativeGraphPatterns
-                
+
 def validateGroupGraphPattern(gGP,noNesting = False):
     """
     Verifies (recursively) that the Group Graph Pattern is supported
     """
     firstGP = gGP[0]
     graphGraphPatternNo,optionalGraphPatternNo,alternativeGraphPatternNo = [len(gGPKlass) for gGPKlass in categorizeGroupGraphPattern(gGP)]
-    if firstGP.triples and isTriplePattern(firstGP.triples) and  isinstance(firstGP.nonTripleGraphPattern,ParsedAlternativeGraphPattern):        
+    if firstGP.triples and isTriplePattern(firstGP.triples) and  isinstance(firstGP.nonTripleGraphPattern,ParsedAlternativeGraphPattern):
         raise NotImplemented(UNION_GRAPH_PATTERN_NOT_SUPPORTED,"%s"%firstGP)
     elif firstGP.triples and graphGraphPatternNo:
         raise NotImplemented(GRAPH_GRAPH_PATTERN_NOT_SUPPORTED,"%s"%gGP)
     elif graphGraphPatternNo > 1 or graphGraphPatternNo and alternativeGraphPatternNo:
         raise NotImplemented(GRAPH_GRAPH_PATTERN_NOT_SUPPORTED,"%s"%gGP)
-    for gP in gGP:        
+    for gP in gGP:
         if noNesting and isinstance(gP.nonTripleGraphPattern,(ParsedOptionalGraphPattern,ParsedGraphGraphPattern,ParsedAlternativeGraphPattern)):
             raise NotImplemented(GROUP_GRAPH_PATTERN_NESTING_NOT_SUPPORTED,"%s"%gGP)
         if isinstance(gP.nonTripleGraphPattern,ParsedAlternativeGraphPattern):
             for _gGP in gP.nonTripleGraphPattern:
                 validateGroupGraphPattern(_gGP,noNesting = True)
-        elif gP.nonTripleGraphPattern:            
+        elif gP.nonTripleGraphPattern:
             validateGroupGraphPattern(gP.nonTripleGraphPattern,noNesting = True)
 
 def Evaluate(store,query,passedBindings = {},DEBUG = False):
     """
     Takes:
-        1. an rdflib.store.Store instance 
+        1. an rdflib.store.Store instance
         2. a SPARQL query instance (parsed using the BisonGen parser)
         3. A dictionary of initial variable bindings (varName -> .. rdflib Term .. )
         4. DEBUG Flag
@@ -291,8 +291,8 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
                     memGraph.parse(dtSet)
                 graphs.append(memGraph)
         tripleStore = sparqlGraph.SPARQLGraph(ReadOnlyGraphAggregate(graphs))
-    else:        
-        tripleStore = sparqlGraph.SPARQLGraph(ConjunctiveGraph(store))    
+    else:
+        tripleStore = sparqlGraph.SPARQLGraph(ConjunctiveGraph(store))
 
     #Interpret Graph Graph Patterns as Named Graphs
     graphGraphPatterns = categorizeGroupGraphPattern(query.query.whereClause.parsedGraphPattern)[0]
@@ -301,19 +301,19 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
         assert not isinstance(graphGraphP.name,Variable) or graphGraphP.name in passedBindings,"Graph Graph Patterns can only be used with variables bound at the top level or a URIRef or BNode term"
         graphName =  isinstance(graphGraphP.name,Variable) and passedBindings[graphGraphP.name] or graphGraphP.name
         tripleStore = sparqlGraph.SPARQLGraph(Graph(store,graphName))
-        
+
     if isinstance(query.query,SelectQuery) and query.query.variables:
         query.query.variables = [convertTerm(item,query.prolog) for item in query.query.variables]
     else:
         query.query.variables = []
     gp = reorderGroupGraphPattern(query.query.whereClause.parsedGraphPattern)
     validateGroupGraphPattern(gp)
-    
+
     if query.prolog:
         query.prolog.DEBUG = DEBUG
-    
+
     basicPatterns,optionalPatterns = sparqlPSetup(gp,query.prolog)
-    
+
     if DEBUG:
         print "## Select Variables ##\n",query.query.variables
         print "## Patterns ##\n",basicPatterns
@@ -325,11 +325,11 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
         msg = "Errors in the patterns, no valid query object generated; "
         msg += ("pattern:\n%s\netc..." % basicPatterns[0])
         raise SPARQLError(msg)
-    
+
     if isinstance(query.query,AskQuery):
         return result.ask()
-    
-    elif isinstance(query.query,SelectQuery):        
+
+    elif isinstance(query.query,SelectQuery):
         orderBy = None
         orderAsc = None
         if query.query.solutionModifier.orderClause:
@@ -350,14 +350,14 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
                              ),_variablesToArray(query.query.variables,"selection"),result._getAllVariables(),orderBy,query.query.distinct
     else:
         raise NotImplemented(CONSTRUCT_NOT_SUPPORTED,repr(query))
-        
+
 OPTIONALS_NOT_SUPPORTED                   = 1
 #GRAPH_PATTERN_NOT_SUPPORTED               = 2
 UNION_GRAPH_PATTERN_NOT_SUPPORTED         = 3
 GRAPH_GRAPH_PATTERN_NOT_SUPPORTED         = 4
 GROUP_GRAPH_PATTERN_NESTING_NOT_SUPPORTED = 5
 CONSTRUCT_NOT_SUPPORTED                   = 6
-    
+
 ExceptionMessages = {
     OPTIONALS_NOT_SUPPORTED                   : 'Nested OPTIONAL not currently supported',
     #GRAPH_PATTERN_NOT_SUPPORTED               : 'Graph Pattern not currently supported',
@@ -368,7 +368,7 @@ ExceptionMessages = {
 }
 
 
-class NotImplemented(Exception):    
+class NotImplemented(Exception):
     def __init__(self,code,msg):
         self.code = code
         self.msg = msg

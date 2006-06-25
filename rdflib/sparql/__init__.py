@@ -4,11 +4,11 @@
 # $Date: 2005/11/04 14:06:36 $, by $Author: ivan $, $Revision: 1.1 $
 # The documentation of the module, hence the convention for the documentation of methods and classes,
 # is based on the epydoc tool.  This tool parses Python source files
-# and generates API descriptions XHTML. 
+# and generates API descriptions XHTML.
 # The latest release of epydoc (version 2.0) can be
 # downloaded from the <a href="http://sourceforge.net/project/showfiles.php?group_id=32455">SourceForge
 # download page</a>.
-# 
+#
 #
 """
 
@@ -22,7 +22,7 @@ Variables, Imports
 The top level (__init__.py) module of the Package imports the
 important classes. In other words, the user may choose to use the
 following imports only::
-    
+
     from rdflibUtils   import myTripleStore
     from rdflibUtils   import retrieveRDFFiles
     from rdflibUtils   import SPARQLError
@@ -30,13 +30,13 @@ following imports only::
 
 The module imports and/or creates some frequently used Namespaces, and
 these can then be imported by the user like::
-    
+
     from rdflibUtils import ns_rdf
-    
+
 Finally, the package also has a set of convenience string defines for
 XML Schema datatypes (ie, the URI-s of the datatypes); ie, one can
 use::
-    
+
     from rdflibUtils import type_string
     from rdflibUtils import type_integer
     from rdflibUtils import type_long
@@ -53,7 +53,7 @@ These are used, for example, in the sparql-p implementation.
 The three most important classes in RDFLib for the average user are
 Namespace, URIRef and Literal; these are also imported, so the user
 can also use, eg::
-    
+
     from rdflibUtils import Namespace, URIRef, Literal
 
 History
@@ -75,15 +75,15 @@ History
  C{Alt} and C{Bag} the same way as C{Seq} - added also methods to
  I{add} collections and containers to the triple store, not only
  retrieve them
- 
+
  - Version 2.1: adapted to the inclusion of the code into rdflib, thanks to Michel Pelletier
- 
+
  - Version 2.2: added the sorting possibilities; introduced the Unbound class and have a better
  interface to patterns using this (in the BasicGraphPattern class)
-    
+
 @author: U{Ivan Herman<http://www.ivan-herman.net>}
 
-@license: This software is available for use under the 
+@license: This software is available for use under the
 U{W3C Software License<http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231>}
 
 @contact: Ivan Herman, ivan@ivan-herman.net
@@ -150,7 +150,7 @@ def generateCollectionConstraint(triplets,collection,item) :
 
     The function returns an adapted filter method that can then be
     plugged into a sparql request.
-      
+
     @param triplets: the
     L{SPARQLGraph<sparqlGraph.SPARQLGraph>} instance
 
@@ -175,7 +175,7 @@ class Processor(object):
 
     def __init__(self, graph):
         pass
-        
+
     def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False):
         pass
 

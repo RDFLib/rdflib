@@ -26,31 +26,31 @@ def flattenGroupGraphPattern(groupGraphPattern):
                     Set(flattenGroupGraphPattern(g.nonTripleGraphPattern))
                 yield g
             else:
-                #It's a nested Group Graph Patter, flatten it into 
+                #It's a nested Group Graph Patter, flatten it into
                 for g in flattenGroupGraphPattern(g.nonTripleGraphPattern):
-                    yield g                           
+                    yield g
         else:
             #It's a Basic Graph Patternr
             yield g
 
 def reorderBasicGraphPattern(filteredBasicGraphPattern):
     """
-    Takes a list of Triples (nested lists or ParsedConstrainedTriples), 
+    Takes a list of Triples (nested lists or ParsedConstrainedTriples),
     collects the constraints, and returns the TriplePatterns and a list of global constraints
-    """    
+    """
     triplePatterns = []
-    constraints = [] 
-    #print "Reordering Basic Graph Pattern: ", filteredBasicGraphPattern   
-    for tripleList in filteredBasicGraphPattern.triples:        
+    constraints = []
+    #print "Reordering Basic Graph Pattern: ", filteredBasicGraphPattern
+    for tripleList in filteredBasicGraphPattern.triples:
         #print type(tripleList)
         if isinstance(tripleList,ParsedConstrainedTriples):
-            if tripleList.triples:                
+            if tripleList.triples:
                 triplePatterns.extend(tripleList.triples)
-            constraints.append(tripleList.constraint)        
+            constraints.append(tripleList.constraint)
         else:
             for item in tripleList:
                 if isinstance(item,ParsedConstrainedTriples):
-                    if item.triples:                
+                    if item.triples:
                         triplePatterns.extend(item.triples)
                     constraints.append(item.constraint)
                 else:
@@ -61,8 +61,8 @@ def reorderBasicGraphPattern(filteredBasicGraphPattern):
 def reorderGroupGraphPattern(groupGraphPattern):
     """
     Recursively reorders Group Graph Patterns by shifting BasicGraphPatterns to the front
-    
-    { basicGraphPatternA OPTIONAL { .. } basicGraphPatternB } 
+
+    { basicGraphPatternA OPTIONAL { .. } basicGraphPatternB }
       =>
     { basicGraphPatternA+B OPTIONAL { .. }}
     """
@@ -76,7 +76,7 @@ def reorderGroupGraphPattern(groupGraphPattern):
         if g.nonTripleGraphPattern:
             if isinstance(g.nonTripleGraphPattern,(ParsedGroupGraphPattern)):
                 #Group Graph Patterns should be reordered 'in=place'
-                g.nonTripleGraphPattern = reorderGroupGraphPattern(g.nonTripleGraphPattern)                
+                g.nonTripleGraphPattern = reorderGroupGraphPattern(g.nonTripleGraphPattern)
             elif isinstance(g.nonTripleGraphPattern,ParsedAlternativeGraphPattern):
                 #Each Group Graph Pattern in a Alternative graph pattern should be reordered in-place
                 g.nonTripleGraphPattern.alternativePatterns \
@@ -87,7 +87,7 @@ def reorderGroupGraphPattern(groupGraphPattern):
         g.triples = []
         #Tally up the remaining non-triple graph patterns
         prunedGraphPatterns.append(g)
-        
+
     firstGraphPattern.triples.extend(reorderCandidates)
     rt=type(groupGraphPattern)(ParsedGroupGraphPattern([firstGraphPattern]+prunedGraphPatterns))
     #print "Reordered to ", rt

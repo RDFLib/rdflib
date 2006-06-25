@@ -15,7 +15,7 @@ class ParsedGroupGraphPattern(object):
     A group graph pattern GP is a set of graph patterns, GPi.
     This class is defined to behave (literally) like a set of GraphPattern instances.
     """
-    def __init__(self,graphPatterns):    
+    def __init__(self,graphPatterns):
         self.graphPatterns = graphPatterns
     def __iter__(self):
         for g in self.graphPatterns:
@@ -29,7 +29,7 @@ class ParsedGroupGraphPattern(object):
         return list(self.graphPatterns)[k]
     def __repr__(self):
         return "{ %s }"%repr(list(self))
-    
+
 class BlockOfTriples(object):
     """
     A Basic Graph Pattern is a set of Triple Patterns.
@@ -39,10 +39,10 @@ class BlockOfTriples(object):
     def __getattr__(self, attr):
         if hasattr(self.statementList, attr):
             return getattr(self.statementList, attr)
-        raise AttributeError, '%s has no such attribute %s' % (repr(self), attr)        
+        raise AttributeError, '%s has no such attribute %s' % (repr(self), attr)
     def __repr__(self):
         return "<SPARQLParser.BasicGraphPattern: %s>"%repr(self.statementList)
-    
+
 class GraphPattern(object):
     """
     Complex graph patterns can be made by combining simpler graph patterns. The ways of creating graph patterns are:
@@ -51,8 +51,8 @@ class GraphPattern(object):
     * Value constraints, which restrict RDF terms in a solution
     * Optional Graph patterns, where additional patterns may extend the solution
     * Alternative Graph Pattern, where two or more possible patterns are tried
-    * Patterns on Named Graphs, where patterns are matched against named graphs    
-    
+    * Patterns on Named Graphs, where patterns are matched against named graphs
+
     This class is defined as a direct analogy of Grammar rule [20]:
 s    """
     def __init__(self,triples,nonTripleGraphPattern=None):
@@ -66,23 +66,23 @@ s    """
         return "<SPARQLParser.GraphPattern: %s%s>"%(
                     self.triples is not None and self.triples or '',
                     self.nonTripleGraphPattern is not None and ' %s'%self.nonTripleGraphPattern or '')
-        
+
 class ParsedOptionalGraphPattern(ParsedGroupGraphPattern):
     """
     An optional graph pattern is a combination of a pair of graph patterns.
-    The second pattern modifies pattern solutions of the first pattern but 
+    The second pattern modifies pattern solutions of the first pattern but
     does not fail matching of the overall optional graph pattern.
     """
-    def __init__(self,groupGraphPattern):    
+    def __init__(self,groupGraphPattern):
         super(ParsedOptionalGraphPattern,self).__init__(groupGraphPattern.graphPatterns)
-        
+
     def __repr__(self):
         return "OPTIONAL {%s}"%self.graphPatterns
-    
+
 class ParsedAlternativeGraphPattern(object):
     """
     A union graph pattern is a set of group graph patterns GPi.
-    A union graph pattern matches a graph G with solution S 
+    A union graph pattern matches a graph G with solution S
     if there is some GPi such that GPi matches G with solution S.
     """
     def __init__(self,alternativePatterns):
@@ -94,7 +94,7 @@ class ParsedAlternativeGraphPattern(object):
             yield g
     def __len__(self):
         return len(self.alternativePatterns)
-    
+
 class ParsedGraphGraphPattern(ParsedGroupGraphPattern):
     """
     Patterns on Named Graphs, where patterns are matched against named graphs
@@ -102,8 +102,8 @@ class ParsedGraphGraphPattern(ParsedGroupGraphPattern):
     def __init__(self,graphName,groupGraphPattern):
         self.name = graphName
         super(ParsedGraphGraphPattern,self).__init__(groupGraphPattern.graphPatterns)
-        
+
     def __repr__(self):
         return "GRAPH %s { %s }"%(self.name,self.graphPatterns)
-        
+
     

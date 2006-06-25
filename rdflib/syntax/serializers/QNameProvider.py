@@ -11,8 +11,8 @@ class QNameProvider(object):
         self.__prefix = {}
         self.set_prefix("xml", u"http://www.w3.org/XML/1998/namespace")
         # TODO: explain -- the following is needed for XMLLANG as defined above to work
-        self.__prefix[u"http://www.w3.org/XML/1998/namespace#"] = "xml" 
-        
+        self.__prefix[u"http://www.w3.org/XML/1998/namespace#"] = "xml"
+
     def get(self, uri):
         qname = self.__cache.get(uri, None)
         if qname is None:

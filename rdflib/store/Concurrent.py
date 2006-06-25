@@ -10,13 +10,13 @@ class ResponsibleGenerator(object):
     def __init__(self, gen, cleanup):
         self.cleanup = cleanup
         self.gen = gen
- 
+
     def __del__(self):
         self.cleanup()
- 
+
     def __iter__(self):
         return self
- 
+
     def next(self):
         return self.gen.next()
 
@@ -25,7 +25,7 @@ class Concurrent(object):
 
     def __init__(self, store):
         self.store = store
-        
+
         # number of calls to visit still in progress
         self.__visit_count = 0
 
@@ -65,14 +65,14 @@ class Concurrent(object):
         return self.store.__len__()
 
     def __begin_read(self):
-        lock = self.__lock 
-        lock.acquire()                
+        lock = self.__lock
+        lock.acquire()
         self.__visit_count = self.__visit_count + 1
         lock.release()
 
     def __end_read(self):
-        lock = self.__lock                
-        lock.acquire()                        
+        lock = self.__lock
+        lock.acquire()
         self.__visit_count = self.__visit_count - 1
         if self.__visit_count==0:
             pending_removes = self.__pending_removes
@@ -83,11 +83,11 @@ class Concurrent(object):
                 except:
                     # TODO: change to try finally?
                     print s, p, o, "Not in store to remove"
-            pending_adds = self.__pending_adds                
+            pending_adds = self.__pending_adds
             while pending_adds:
                 (s, p, o) = pending_adds.pop()
                 self.store.add((s, p, o))
-        lock.release()                        
+        lock.release()
 
 
-    
+

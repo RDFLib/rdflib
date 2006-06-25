@@ -9,11 +9,11 @@ class ListRedirect(object):
         if hasattr(self._list, attr):
             return getattr(self._list, attr)
         raise AttributeError, '%s has no such attribute %s' % (repr(self), attr)
-    
+
     def __iter__(self):
         for i in self._list:
             yield i
-    
+
     def reduce(self):
         if self.reducable and len(self._list) == 1:
             singleItem = self._list[0]

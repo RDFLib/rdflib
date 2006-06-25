@@ -38,8 +38,8 @@ try:
         def setUp(self):
             self.g = Graph(backend=self.backend)
             self.g.open(configuration=mkdtemp())
-            self.g.parse("test/a.n3", format="n3") 
-        
+            self.g.parse("test/a.n3", format="n3")
+
         def tearDown(self):
             self.g.close()
 
@@ -54,7 +54,7 @@ try:
             f.parse("http://eikeon.com/")
             source = f
             source = self.g
-            interp.addFacts(set(facts(source)), initialSet=True)        
+            interp.addFacts(set(facts(source)), initialSet=True)
             interp.run()
             print interp.inferredFacts
 

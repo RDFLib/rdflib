@@ -113,7 +113,7 @@ try:
     class RedLandTestCase(StoreTestCase):
         store = "Redland"
 except ImportError, e:
-    print "Can not test Redland store:", e    
+    print "Can not test Redland store:", e
 
 # TODO: add test case for 4Suite backends?  from Ft import Rdf
 
@@ -125,7 +125,7 @@ try:
     class MySQLTestCase(StoreTestCase):
         store = "MySQL"
 except ImportError, e:
-    print "Can not test MySQL store:", e    
+    print "Can not test MySQL store:", e
 
 if __name__ == '__main__':
-    unittest.main()    
+    unittest.main()

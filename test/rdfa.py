@@ -10,7 +10,7 @@ import ntriples
 
 from rdfdiff import Graph
 from rdflib import Graph as RGraph
-from rdflib import StringInputSource 
+from rdflib import StringInputSource
 from rdflib import URIRef
 from rdflib import BNode
 from rdflib import Literal
@@ -21,9 +21,9 @@ def main():
     verbose = False
 
     suite = unittest.TestSuite()
-      
-    tests = [os.path.splitext(f)[0] 
-      for f in os.listdir(testdir) 
+
+    tests = [os.path.splitext(f)[0]
+      for f in os.listdir(testdir)
       if os.path.splitext(f)[1] == ".htm" ]
     tests.sort()
     for testname in tests:
@@ -52,7 +52,7 @@ class RDFaTestStub(unittest.TestCase):
         return ntriples.URI(self.pubId)
       return ntriples.URI(str(node))
     elif isinstance(node, Literal):
-      return ntriples.Literal(str(node), lang= node.language or None, 
+      return ntriples.Literal(str(node), lang= node.language or None,
         dtype= node.datatype  or None)
 
   def runTest(self):
@@ -67,12 +67,12 @@ class RDFaTestStub(unittest.TestCase):
     for a, b, c in store1:
       pg.triples.add(tuple(map(self.nodeToString, (a,b,c))))
       #print tuple(map(self.nodeToString, (a,b,c)))
- 
+
     store2 = RGraph()
     store2.load(testfile, publicID=self.pubId, format="rdfa")
     qcontents = store2.serialize(format='nt')
     qg = Graph()
     for a, b, c in store2:
       qg.triples.add(tuple(map(self.nodeToString, (a,b,c))))
- 
+
     self.failIf(not hash(pg) == hash(qg), "results do not match.\n%s\n\n%s" % (pcontents, qcontents))

@@ -26,7 +26,7 @@ class uninstall(Command):
         lib_dir = get_python_lib()
         rdflib_dir = join(lib_dir, "rdflib")
         if exists(rdflib_dir):
-            backup = "%s-%s" % (rdflib_dir, int(time()))    
+            backup = "%s-%s" % (rdflib_dir, int(time()))
             print "Renaming previously installed rdflib to: \n  %s" % backup
             rename(rdflib_dir, backup)
 
@@ -54,13 +54,13 @@ setup(
                 'rdflib.syntax',
                 'rdflib.syntax.serializers',
                 'rdflib.syntax.parsers',
-                'rdflib.syntax.parsers.n3p'],    
+                'rdflib.syntax.parsers.n3p'],
      ext_modules = [
         Extension(
             name='rdflib.sparql.bison.SPARQLParserc',
             sources=['src/bison/SPARQLParser.c'],
             ),
         ]
-                
+
     )
 

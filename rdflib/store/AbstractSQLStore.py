@@ -38,7 +38,7 @@ def queryAnalysis(query,store,cursor):
             store.queryOptMarks = {}
         hits = store.queryOptMarks.get(('FULL SCAN',table),0)
         store.queryOptMarks[('FULL SCAN',table)] = hits + 1
-        
+
     if not hasattr(store,'queryOptMarks'):
         store.queryOptMarks = {}
     hits = store.queryOptMarks.get((_key,table),0)
@@ -55,7 +55,7 @@ def queryAnalysis(query,store,cursor):
 # - where clause string
 def unionSELECT(selectComponents,distinct=False,selectType=TRIPLE_SELECT):
     selects = []
-    for tableName,tableAlias,whereClause,tableType in selectComponents:        
+    for tableName,tableAlias,whereClause,tableType in selectComponents:
 
         if selectType == COUNT_SELECT:
             selectString = "select count(*)"
@@ -74,7 +74,7 @@ def unionSELECT(selectComponents,distinct=False,selectType=TRIPLE_SELECT):
             selectString =\
             """select *,NULL as objLanguage, NULL as objDatatype"""
             tableSource = " from %s as %s "%(tableName,tableAlias)
-        
+
         #selects.append('('+selectString + tableSource + whereClause+')')
         selects.append(selectString + tableSource + whereClause)
 
@@ -90,21 +90,21 @@ def unionSELECT(selectComponents,distinct=False,selectType=TRIPLE_SELECT):
 #converts it to a tuple of terms using the termComb integer
 #to interpret how to instanciate each term
 def extractTriple(tupleRt,store,hardCodedContext=None):
-    subject,predicate,obj,rtContext,termComb,objLanguage,objDatatype = tupleRt    
+    subject,predicate,obj,rtContext,termComb,objLanguage,objDatatype = tupleRt
     context = rtContext is not None and rtContext or hardCodedContext.identifier
     termCombString=REVERSE_TERM_COMBINATIONS[termComb]
     subjTerm,predTerm,objTerm,ctxTerm = termCombString
-    
+
     s=createTerm(subject,subjTerm,store)
-    p=createTerm(predicate,predTerm,store)            
+    p=createTerm(predicate,predTerm,store)
     o=createTerm(obj,objTerm,store,objLanguage,objDatatype)
-    
+
     graphKlass, idKlass = constructGraph(ctxTerm)
     return s,p,o,(graphKlass,idKlass,context)
 #TODO: Stuff
 #Takes a term value, term type, and store intance
 #and Creates a term object.  QuotedGraphs are instanciated differently
-def createTerm(termString,termType,store,objLanguage=None,objDatatype=None):    
+def createTerm(termString,termType,store,objLanguage=None,objDatatype=None):
     if termType == 'L':
         cache = store.literalCache.get((termString,objLanguage,objDatatype))
         if cache is not None:
@@ -117,7 +117,7 @@ def createTerm(termString,termType,store,objLanguage=None,objDatatype=None):
             return rt
     elif termType=='F':
         cache = store.otherCache.get((termType,termString))
-        if cache is not None:            
+        if cache is not None:
             #store.cacheHits += 1
             return cache
         else:
@@ -125,7 +125,7 @@ def createTerm(termString,termType,store,objLanguage=None,objDatatype=None):
             rt = QuotedGraph(store,URIRef(termString))
             store.otherCache[(termType,termString)] = rt
             return rt
-    elif termType == 'B':        
+    elif termType == 'B':
         cache = store.bnodeCache.get((termString))
         if cache is not None:
             #store.cacheHits += 1
@@ -144,7 +144,7 @@ def createTerm(termString,termType,store,objLanguage=None,objDatatype=None):
             #store.cacheMisses += 1
             rt = URIRef(termString)
             store.uriCache[(termString)] = rt
-            return rt        
+            return rt
     else:
         cache = store.otherCache.get((termType,termString))
         if cache is not None:
@@ -159,19 +159,19 @@ def createTerm(termString,termType,store,objLanguage=None,objDatatype=None):
 class SQLGenerator:
     def executeSQL(self,cursor,qStr,params=None,paramList=False):
         """
-        This takes the query string and parameters and (depending on the SQL implementation) either fill in 
-        the parameter in-place or pass it on to the Python DB impl (if it supports this).  
+        This takes the query string and parameters and (depending on the SQL implementation) either fill in
+        the parameter in-place or pass it on to the Python DB impl (if it supports this).
         The default (here) is to fill the parameters in-place surrounding each param with quote characters
         """
-        #print qStr,params                        
+        #print qStr,params
         if not params:
             cursor.execute(unicode(qStr))
         elif paramList:
             raise Exception("Not supported!")
-        else:            
-            params = tuple([not isinstance(item,int) and u'"%s"'%item or item for item in params])            
+        else:
+            params = tuple([not isinstance(item,int) and u'"%s"'%item or item for item in params])
             cursor.execute(qStr%params)
-    
+
     #FIXME:  This *may* prove to be a performance bottleneck and should perhaps be implemented in C (as it was in 4Suite RDF)
     def EscapeQuotes(self,qstr):
         """
@@ -188,7 +188,7 @@ class SQLGenerator:
         import types
         if not isinstance(cmd, types.UnicodeType):
             cmd = unicode(cmd, 'ascii')
-            
+
         return cmd.encode('utf-8')
 
     #Takes a term and 'normalizes' it.
@@ -202,7 +202,7 @@ class SQLGenerator:
             return term
         else:
             return term.encode('utf-8')
-        
+
     #Builds an insert command for a type table
     def buildTypeSQLCommand(self,member,klass,context,storeId):
         #columns: member,klass,context
@@ -212,7 +212,7 @@ class SQLGenerator:
             self.normalizeTerm(klass),
             self.normalizeTerm(context.identifier),
             int(type2TermCombination(member,klass,context))]
-    
+
     #Builds an insert command for literal triples (statements where the object is a Literal)
     def buildLiteralTripleSQLCommand(self,subject,predicate,obj,context,storeId):
         triplePattern = int(statement2TermCombination(subject,predicate,obj,context))
@@ -226,7 +226,7 @@ class SQLGenerator:
             triplePattern,
             isinstance(obj,Literal) and obj.language or 'NULL',
             isinstance(obj,Literal) and obj.datatype or 'NULL']
-    
+
     #Builds an insert command for regular triple table
     def buildTripleSQLCommand(self,subject,predicate,obj,context,storeId,quoted):
         stmt_table = quoted and "%s_quoted_statements"%storeId or "%s_asserted_statements"%storeId
@@ -250,28 +250,28 @@ class SQLGenerator:
                 self.normalizeTerm(context.identifier),
                 triplePattern]
         return command,params
-    
+
     #Builds WHERE clauses for the supplied terms and, context
     def buildClause(self,tableName,subject,predicate, obj,context=None,typeTable=False):
         parameters=[]
         if typeTable:
             rdf_type_memberClause = rdf_type_contextClause = rdf_type_contextClause = None
-            
-            clauseParts = self.buildTypeMemberClause(self.normalizeTerm(subject),tableName)            
+
+            clauseParts = self.buildTypeMemberClause(self.normalizeTerm(subject),tableName)
             if clauseParts is not None:
                 rdf_type_memberClause = clauseParts[0]
                 parameters.extend([param for param in clauseParts[-1] if param])
-                
+
             clauseParts = self.buildTypeClassClause(self.normalizeTerm(obj),tableName)
             if clauseParts is not None:
                 rdf_type_klassClause = clauseParts[0]
-                parameters.extend(clauseParts[-1])            
-                
+                parameters.extend(clauseParts[-1])
+
             clauseParts = self.buildContextClause(context,tableName)
             if clauseParts is not None:
                 rdf_type_contextClause = clauseParts[0]
                 parameters.extend([param for param in clauseParts[-1] if param])
-                
+
             typeClauses = [rdf_type_memberClause,rdf_type_klassClause,rdf_type_contextClause]
             clauseString = ' and '.join([clause for clause in typeClauses if clause])
             clauseString = clauseString and 'where '+clauseString or ''
@@ -311,7 +311,7 @@ class SQLGenerator:
             clauses=[subjClause,predClause,objClause,contextClause,litDTypeClause,litLanguageClause]
             clauseString = ' and '.join([clause for clause in clauses if clause])
             clauseString = clauseString and 'where '+clauseString or ''
-            
+
         return clauseString, [p for p in parameters if p]
 
     def buildLitDTypeClause(self,obj,tableName):
@@ -319,13 +319,13 @@ class SQLGenerator:
             return obj.datatype is not None and "%s.objDatatype="%(tableName,obj)+"%s",[obj.datatype.encode('utf-8')] or None
         else:
             return None
-    
+
     def buildLitLanguageClause(self,obj,tableName):
         if isinstance(obj,Literal):
             return obj.language is not None and "%s.objLanguage="%(tableName)+"%s",[obj.language.encode('utf-8')] or None
         else:
-            return None    
-            
+            return None
+
     #Stubs for Clause Functions that are overridden by specific implementations (MySQL vs SQLite for instance)
     def buildSubjClause(self,subject,tableName):
         pass
@@ -358,11 +358,11 @@ class AbstractSQLStore(SQLGenerator,Store):
     transaction_aware = True
     regex_matching = PYTHON_REGEX
     autocommit_default = True
-    
+
     #Stubs for overidden
-    
+
     def __init__(self, identifier=None, configuration=None):
-        """ 
+        """
         identifier: URIRef of the Store. Defaults to CWD
         configuration: string containing infomation open can use to
         connect to datastore.
@@ -380,7 +380,7 @@ class AbstractSQLStore(SQLGenerator,Store):
         #If this parameter is false, the literal partition is searched regardless of what the object
         #of the triple pattern is
         self.STRONGLY_TYPED_TERMS = False
-        
+
         if configuration is not None:
             self.open(configuration)
 
@@ -392,17 +392,17 @@ class AbstractSQLStore(SQLGenerator,Store):
         self.bnodeCache = {}
         self.otherCache = {}
         self._db = None
-            
+
     def close(self, commit_pending_transaction=False):
-        """ 
+        """
         FIXME:  Add documentation!!
         """
         if commit_pending_transaction:
             self._db.commit()
         self._db.close()
-        
-    #Triple Methods            
-    def add(self, (subject, predicate, obj), context=None, quoted=False):        
+
+    #Triple Methods
+    def add(self, (subject, predicate, obj), context=None, quoted=False):
         """ Add a triple to the store of triples. """
         c=self._db.cursor()
         if self.autocommit_default:
@@ -454,7 +454,7 @@ class AbstractSQLStore(SQLGenerator,Store):
             self.executeSQL(c,typeTripleInsertCmd,typeTriples,paramList=True)
         if otherTriples:
             self.executeSQL(c,otherTripleInsertCmd,otherTriples,paramList=True)
-            
+
         c.close()
 
     def remove(self, (subject, predicate, obj), context):
@@ -470,7 +470,7 @@ class AbstractSQLStore(SQLGenerator,Store):
         asserted_table="%s_asserted_statements"%self._internedId
         asserted_type_table="%s_type_statements"%self._internedId
         literal_table = "%s_literal_statements"%self._internedId
-        if not predicate or predicate != RDF.type:            
+        if not predicate or predicate != RDF.type:
             #Need to remove predicates other than rdf:type
 
             if not self.STRONGLY_TYPED_TERMS or isinstance(obj,Literal):
@@ -492,17 +492,17 @@ class AbstractSQLStore(SQLGenerator,Store):
                         cmd="DELETE FROM " + " ".join([table,clauseString])
                     else:
                         cmd = "DELETE FROM " + table
-                    
+
                     self.executeSQL(c,self._normalizeSQLCmd(cmd),params)
 
         if predicate == RDF.type or not predicate:
             #Need to check rdf:type and quoted partitions (in addition perhaps)
             clauseString,params = self.buildClause(asserted_type_table,subject,RDF.type,obj,context,True)
             if clauseString:
-                cmd="DELETE FROM " + " ".join([asserted_type_table,clauseString]) 
+                cmd="DELETE FROM " + " ".join([asserted_type_table,clauseString])
             else:
                 cmd='DELETE FROM '+asserted_type_table
-            
+
             self.executeSQL(c,self._normalizeSQLCmd(cmd),params)
 
             clauseString,params = self.buildClause(quoted_table,subject,predicate, obj,context)
@@ -510,25 +510,25 @@ class AbstractSQLStore(SQLGenerator,Store):
                 cmd=clauseString and "DELETE FROM " + " ".join([quoted_table,clauseString])
             else:
                 cmd = "DELETE FROM " + quoted_table
-            
+
             self.executeSQL(c,self._normalizeSQLCmd(cmd),params)
         c.close()
-            
+
     def triples(self, (subject, predicate, obj), context=None):
-        """ 
+        """
         A generator over all the triples matching pattern. Pattern can
         be any objects for comparing against nodes in the store, for
         example, RegExLiteral, Date? DateRange?
-        
+
         quoted table:                <id>_quoted_statements
         asserted rdf:type table:     <id>_type_statements
         asserted non rdf:type table: <id>_asserted_statements
-        
+
         triple columns: subject,predicate,object,context,termComb,objLanguage,objDatatype
         class membership columns: member,klass,context termComb
 
-        FIXME:  These union all selects *may* be further optimized by joins 
-        
+        FIXME:  These union all selects *may* be further optimized by joins
+
         """
         quoted_table="%s_quoted_statements"%self._internedId
         asserted_table="%s_asserted_statements"%self._internedId
@@ -537,7 +537,7 @@ class AbstractSQLStore(SQLGenerator,Store):
         c=self._db.cursor()
 
         parameters = []
-        
+
         if predicate == RDF.type:
             #select from asserted rdf:type partition and quoted table (if a context is specified)
             clauseString,params = self.buildClause('typeTable',subject,RDF.type, obj,context,True)
@@ -562,7 +562,7 @@ class AbstractSQLStore(SQLGenerator,Store):
                   'literal',
                   clauseString,
                   ASSERTED_LITERAL_PARTITION
-                ))                    
+                ))
             if not isinstance(obj,Literal) and not (isinstance(obj,REGEXTerm) and self.STRONGLY_TYPED_TERMS) or not obj:
                 clauseString,params = self.buildClause('asserted',subject,predicate,obj,context)
                 parameters.extend(params)
@@ -572,7 +572,7 @@ class AbstractSQLStore(SQLGenerator,Store):
                   clauseString,
                   ASSERTED_NON_TYPE_PARTITION
                 ))
-                
+
             clauseString,params = self.buildClause('typeTable',subject,RDF.type,obj,context,True)
             parameters.extend(params)
             selects.append(
@@ -580,10 +580,10 @@ class AbstractSQLStore(SQLGenerator,Store):
                   asserted_type_table,
                   'typeTable',
                   clauseString,
-                  ASSERTED_TYPE_PARTITION                    
+                  ASSERTED_TYPE_PARTITION
                 )
             )
-                
+
 
         elif predicate:
             #select from asserted non rdf:type partition (optionally), quoted partition (if context is speciied), and literal partition (optionally)
@@ -597,7 +597,7 @@ class AbstractSQLStore(SQLGenerator,Store):
                   clauseString,
                   ASSERTED_LITERAL_PARTITION
                 ))
-            if not isinstance(obj,Literal) and not (isinstance(obj,REGEXTerm) and self.STRONGLY_TYPED_TERMS) or not obj:                
+            if not isinstance(obj,Literal) and not (isinstance(obj,REGEXTerm) and self.STRONGLY_TYPED_TERMS) or not obj:
                 clauseString,params = self.buildClause('asserted',subject,predicate,obj,context)
                 parameters.extend(params)
                 selects.append((
@@ -605,7 +605,7 @@ class AbstractSQLStore(SQLGenerator,Store):
                   'asserted',
                   clauseString,
                   ASSERTED_NON_TYPE_PARTITION
-                ))                    
+                ))
 
         if context is not None:
             clauseString,params = self.buildClause('quoted',subject,predicate, obj,context)
@@ -618,9 +618,9 @@ class AbstractSQLStore(SQLGenerator,Store):
                   QUOTED_PARTITION
                 )
             )
-            
-        
-        q=self._normalizeSQLCmd(unionSELECT(selects))        
+
+
+        q=self._normalizeSQLCmd(unionSELECT(selects))
         self.executeSQL(c,q,parameters)
         rt = c.fetchone()
         while rt:
@@ -635,11 +635,11 @@ class AbstractSQLStore(SQLGenerator,Store):
                 contexts.append(c2)
                 rt = next = c.fetchone()
                 sameTriple = next and extractTriple(next,self,context)[:3] == (s,p,o)
-                    
+
             yield (s,p,o),(c for c in contexts)
-        
+
     def triples_choices(self, (subject, predicate, object_),context=None):
-        """ 
+        """
         A variant of triples that can take a list of terms instead of a single
         term in any slot.  Stores can implement this to optimize the response time
         from the import default 'fallback' implementation, which will iterate
@@ -667,39 +667,39 @@ class AbstractSQLStore(SQLGenerator,Store):
             for (s1, p1, o1), cg in self.triples((subject,predicate,object_),context):
                 yield (s1, p1, o1), cg
 
-            
+
     def __repr__(self):
         c=self._db.cursor()
         quoted_table="%s_quoted_statements"%self._internedId
         asserted_table="%s_asserted_statements"%self._internedId
         asserted_type_table="%s_type_statements"%self._internedId
         literal_table = "%s_literal_statements"%self._internedId
-        
+
         selects = [
             (
               asserted_type_table,
               'typeTable',
               '',
-              ASSERTED_TYPE_PARTITION          
+              ASSERTED_TYPE_PARTITION
             ),
             (
               quoted_table,
               'quoted',
               '',
-              QUOTED_PARTITION     
+              QUOTED_PARTITION
             ),
             (
               asserted_table,
               'asserted',
               '',
-              ASSERTED_NON_TYPE_PARTITION                   
+              ASSERTED_NON_TYPE_PARTITION
             ),
             (
               literal_table,
               'literal',
               '',
-              ASSERTED_LITERAL_PARTITION  
-            ),                
+              ASSERTED_LITERAL_PARTITION
+            ),
         ]
         q=unionSELECT(selects,distinct=False,selectType=COUNT_SELECT)
         self.executeSQL(c,self._normalizeSQLCmd(q))
@@ -714,56 +714,56 @@ class AbstractSQLStore(SQLGenerator,Store):
         asserted_table="%s_asserted_statements"%self._internedId
         asserted_type_table="%s_type_statements"%self._internedId
         literal_table = "%s_literal_statements"%self._internedId
-        
+
         parameters = []
         quotedContext = assertedContext = typeContext = literalContext = None
 
         clauseParts = self.buildContextClause(context,quoted_table)
         if clauseParts:
-            quotedContext,params = clauseParts    
+            quotedContext,params = clauseParts
             parameters.extend([p for p in params if p])
-            
+
         clauseParts = self.buildContextClause(context,asserted_table)
         if clauseParts:
-            assertedContext,params = clauseParts    
+            assertedContext,params = clauseParts
             parameters.extend([p for p in params if p])
-            
+
         clauseParts = self.buildContextClause(context,asserted_type_table)
         if clauseParts:
-            typeContext ,params = clauseParts    
+            typeContext ,params = clauseParts
             parameters.extend([p for p in params if p])
-            
+
         clauseParts = self.buildContextClause(context,literal_table)
         if clauseParts:
-            literalContext,params = clauseParts    
+            literalContext,params = clauseParts
             parameters.extend([p for p in params if p])
-        
+
         if context is not None:
             selects = [
                 (
                   asserted_type_table,
                   'typeTable',
                   typeContext and 'where ' + typeContext or '',
-                  ASSERTED_TYPE_PARTITION          
+                  ASSERTED_TYPE_PARTITION
                 ),
                 (
                   quoted_table,
                   'quoted',
                   quotedContext and 'where ' + quotedContext or '',
-                  QUOTED_PARTITION     
+                  QUOTED_PARTITION
                 ),
                 (
                   asserted_table,
                   'asserted',
                   assertedContext and 'where ' + assertedContext or '',
-                  ASSERTED_NON_TYPE_PARTITION                   
+                  ASSERTED_NON_TYPE_PARTITION
                 ),
                 (
                   literal_table,
                   'literal',
                   literalContext and 'where ' + literalContext or '',
-                  ASSERTED_LITERAL_PARTITION  
-                ),                
+                  ASSERTED_LITERAL_PARTITION
+                ),
             ]
             q=unionSELECT(selects,distinct=True,selectType=COUNT_SELECT)
         else:
@@ -778,14 +778,14 @@ class AbstractSQLStore(SQLGenerator,Store):
                   asserted_table,
                   'asserted',
                   assertedContext and 'where ' + assertedContext or '',
-                  ASSERTED_NON_TYPE_PARTITION                   
+                  ASSERTED_NON_TYPE_PARTITION
                 ),
                 (
                   literal_table,
                   'literal',
                   literalContext and 'where ' + literalContext or '',
                   ASSERTED_LITERAL_PARTITION
-                ),                
+                ),
             ]
             q=unionSELECT(selects,distinct=False,selectType=COUNT_SELECT)
 
@@ -800,9 +800,9 @@ class AbstractSQLStore(SQLGenerator,Store):
         asserted_table="%s_asserted_statements"%self._internedId
         asserted_type_table="%s_type_statements"%self._internedId
         literal_table = "%s_literal_statements"%self._internedId
-        
+
         parameters = []
-        
+
         if triple is not None:
             subject,predicate,obj=triple
             if predicate == RDF.type:
@@ -827,7 +827,7 @@ class AbstractSQLStore(SQLGenerator,Store):
                       asserted_type_table,
                       'typeTable',
                       clauseString,
-                      ASSERTED_TYPE_PARTITION                   
+                      ASSERTED_TYPE_PARTITION
                     ),
                 ]
 
@@ -840,7 +840,7 @@ class AbstractSQLStore(SQLGenerator,Store):
                       clauseString,
                       ASSERTED_LITERAL_PARTITION
                     ))
-                if not isinstance(obj,Literal) and not (isinstance(obj,REGEXTerm) and self.STRONGLY_TYPED_TERMS) or not obj:                
+                if not isinstance(obj,Literal) and not (isinstance(obj,REGEXTerm) and self.STRONGLY_TYPED_TERMS) or not obj:
                     clauseString,params = self.buildClause('asserted',subject,predicate,obj)
                     parameters.extend(params)
                     selects.append((
@@ -848,7 +848,7 @@ class AbstractSQLStore(SQLGenerator,Store):
                       'asserted',
                       clauseString,
                       ASSERTED_NON_TYPE_PARTITION
-                    ))                    
+                    ))
 
             elif predicate:
                 #select from asserted non rdf:type partition (optionally), quoted partition (if context is speciied), and literal partition (optionally)
@@ -862,7 +862,7 @@ class AbstractSQLStore(SQLGenerator,Store):
                       clauseString,
                       ASSERTED_LITERAL_PARTITION
                     ))
-                if not isinstance(obj,Literal) and not (isinstance(obj,REGEXTerm) and self.STRONGLY_TYPED_TERMS) or not obj:                
+                if not isinstance(obj,Literal) and not (isinstance(obj,REGEXTerm) and self.STRONGLY_TYPED_TERMS) or not obj:
                     clauseString,params = self.buildClause('asserted',subject,predicate,obj)
                     parameters.extend(params)
                     selects.append((
@@ -889,26 +889,26 @@ class AbstractSQLStore(SQLGenerator,Store):
                   asserted_type_table,
                   'typeTable',
                   '',
-                  ASSERTED_TYPE_PARTITION                   
+                  ASSERTED_TYPE_PARTITION
                 ),
                 (
                   quoted_table,
                   'quoted',
                   '',
-                  QUOTED_PARTITION     
+                  QUOTED_PARTITION
                 ),
                 (
                   asserted_table,
                   'asserted',
                   '',
-                  ASSERTED_NON_TYPE_PARTITION                    
+                  ASSERTED_NON_TYPE_PARTITION
                 ),
                 (
                   literal_table,
                   'literal',
                   '',
-                  ASSERTED_LITERAL_PARTITION  
-                ),                
+                  ASSERTED_LITERAL_PARTITION
+                ),
             ]
             q=unionSELECT(selects,distinct=True,selectType=CONTEXT_SELECT)
 
@@ -917,7 +917,7 @@ class AbstractSQLStore(SQLGenerator,Store):
         for context in [rtTuple[0] for rtTuple in rt]:
             yield context
         c.close()
-    
+
     def _remove_context(self, identifier):
         """ """
         assert identifier
@@ -929,7 +929,7 @@ class AbstractSQLStore(SQLGenerator,Store):
         asserted_type_table="%s_type_statements"%self._internedId
         literal_table = "%s_literal_statements"%self._internedId
         for table in [quoted_table,asserted_table,asserted_type_table,literal_table]:
-            clauseString,params = self.buildContextClause(identifier,table)            
+            clauseString,params = self.buildContextClause(identifier,table)
             self.executeSQL(
                 c,
                 self._normalizeSQLCmd("DELETE from %s "%table + "where %s"%clauseString),
@@ -950,7 +950,7 @@ class AbstractSQLStore(SQLGenerator,Store):
         """
         A generator of objects with the given subject and predicate.
         """
-        raise Exception("Not implemented")        
+        raise Exception("Not implemented")
 
     #optimized interfaces (others)
     def predicate_objects(self, subject=None):
@@ -977,7 +977,7 @@ class AbstractSQLStore(SQLGenerator,Store):
         subject/object pair -- exactly one of subject, predicate,
         object must be None. Useful if one knows that there may only
         be one value.
-        
+
         It is one of those situations that occur a lot, hence this
         'macro' like utility
 
@@ -1043,21 +1043,21 @@ class AbstractSQLStore(SQLGenerator,Store):
         c.close()
         for prefix,uri in rt:
             yield prefix,uri
-        
+
 
     #Transactional interfaces
     def commit(self):
         """ """
         self._db.commit()
-    
+
     def rollback(self):
         """ """
         self._db.rollback()
-        
+
 table_name_prefixes = [
     '%s_asserted_statements',
     '%s_type_statements',
     '%s_quoted_statements',
     '%s_namespace_binds',
     '%s_literal_statements'
-]        
+]

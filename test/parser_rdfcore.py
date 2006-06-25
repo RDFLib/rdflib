@@ -18,12 +18,12 @@ sw = StreamWriter(sys.stdout)
 def write(msg):
     sw.write(msg+"\n")
     #sys.stdout.write(msg+"\n")
-    
+
 class TestStore(Graph):
     def __init__(self, expected):
         super(TestStore, self).__init__()
         self.expected = expected
-        
+
     def add(self, (s, p, o)):
         if not isinstance(s, BNode) and not isinstance(o, BNode):
             if not (s, p, o) in self.expected:
@@ -31,7 +31,7 @@ class TestStore(Graph):
                 if verbose: write(m)
                 #raise Exception(m)
         super(TestStore, self).add((s, p, o))
-        
+
 
 TEST = Namespace("http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#")
 
@@ -41,7 +41,7 @@ def resolve(rel):
 
 def _testPositive(uri, manifest):
     if verbose: write(u"TESTING: %s" % uri)
-    result = 0 # 1=failed, 0=passed   
+    result = 0 # 1=failed, 0=passed
     inDoc = first(manifest.objects(uri, TEST["inputDocument"]))
     outDoc = first(manifest.objects(uri, TEST["outputDocument"]))
     expected = Graph()
@@ -57,7 +57,7 @@ def _testPositive(uri, manifest):
         format = "xml"
 
     try:
-        store.load(inDoc, format=format)    
+        store.load(inDoc, format=format)
     except ParserError, pe:
         write("Failed '")
         write(inDoc)
@@ -88,19 +88,19 @@ def _testPositive(uri, manifest):
         write("""  Out:\n""")
         for s, p, o in expected:
                 write(u"%s %s %s." % (s.n3(), p.n3(), o.n3()))
-            
+
     return result
 
 def _testNegative(uri, manifest):
-    if verbose: write(u"TESTING: %s" % uri)    
-    result = 0 # 1=failed, 0=passed   
+    if verbose: write(u"TESTING: %s" % uri)
+    result = 0 # 1=failed, 0=passed
     inDoc = first(manifest.objects(uri, TEST["inputDocument"]))
     store = Graph()
 
     test = BNode()
     results.add((test, RESULT["test"], uri))
     results.add((test, RESULT["system"], system))
-    
+
     try:
         if inDoc[-3:]==".nt":
             format = "nt"
@@ -108,11 +108,11 @@ def _testNegative(uri, manifest):
             format = "xml"
         store.load(inDoc, format=format)
     except ParserError, pe:
-        results.add((test, TYPE, RESULT["PassingRun"]))        
+        results.add((test, TYPE, RESULT["PassingRun"]))
         #pass
     else:
         write(u"""Failed: '%s'""" % uri)
-        results.add((test, TYPE, RESULT["FailingRun"]))        
+        results.add((test, TYPE, RESULT["FailingRun"]))
         result = 1
     return result
 
@@ -142,7 +142,7 @@ class ParserTestCase(unittest.TestCase):
         self.assertEquals(num_failed, 0, "Failed: %s of %s." % (num_failed, total))
 
     def testPositive(self):
-        manifest = self.manifest        
+        manifest = self.manifest
         uris = list(manifest.subjects(TYPE, TEST["PositiveParserTest"]))
         uris.sort()
         num_failed = total = 0
@@ -199,6 +199,6 @@ if __name__ == "__main__":
                 write(u"%s not ??" % case)
 
         if len(argv)<=1:
-            unittest.main()   
+            unittest.main()
     finally:
         results.save("results.rdf")

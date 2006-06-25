@@ -33,7 +33,7 @@ class Store(object):
     transaction_aware = False
 
     def __init__(self, configuration=None, identifier=None):
-        """ 
+        """
         identifier: URIRef of the Store. Defaults to CWD
         configuration: string containing infomation open can use to
         connect to datastore.
@@ -66,40 +66,40 @@ class Store(object):
 
     #Database management methods
     def open(self, configuration, create=False):
-        """ 
+        """
         Opens the store specified by the configuration string. If
         create is True a store will be created if it does not already
         exist. If create is False and a store does not already exist
         an exception is raised. An exception is also raised if a store
         exists, but there is insufficient permissions to open the
-        store.  This should return one of VALID_STORE,CORRUPTED_STORE,or NO_STORE        
+        store.  This should return one of VALID_STORE,CORRUPTED_STORE,or NO_STORE
         """
         return UNKNOWN
 
     def close(self, commit_pending_transaction=False):
         """
         This closes the database connection. The commit_pending_transaction parameter specifies whether to
-        commit all pending transactions before closing (if the store is transactional).        
+        commit all pending transactions before closing (if the store is transactional).
         """
 
     def destroy(self, configuration):
         """
-        This destroys the instance of the store identified by the configuration string.        
-        """  
-        
-    def gc(self):      
+        This destroys the instance of the store identified by the configuration string.
+        """
+
+    def gc(self):
         """
         Allows the store to perform any needed garbage collection
         """
         pass
-        
+
     #RDF APIs
     def add(self, (subject, predicate, object), context, quoted=False):
         """
         Adds the given statement to a specific context or to the model. The quoted argument
         is interpreted by formula-aware stores to indicate this statement is quoted/hypothetical
         It should be an error to not specify a context and have the quoted argument be True.
-        It should also be an error for the quoted argument to be True when the store is not formula-aware.        
+        It should also be an error for the quoted argument to be True when the store is not formula-aware.
         """
 
     def addN(self, quads):
@@ -119,7 +119,7 @@ class Store(object):
         """ Remove the set of triples matching the pattern from the store """
 
     def triples_choices(self, (subject, predicate, object_),context=None):
-        """ 
+        """
         A variant of triples that can take a list of terms instead of a single
         term in any slot.  Stores can implement this to optimize the response time
         from the default 'fallback' implementation, which will iterate
@@ -160,7 +160,7 @@ class Store(object):
                         yield (s1, p1, o1), cg
 
     def triples(self, (subject, predicate, object), context=None):
-        """ 
+        """
         A generator over all the triples matching the pattern. Pattern can
         include any objects for used for comparing against nodes in the store, for
         example, REGEXTerm, URIRef, Literal, BNode, Variable, Graph, QuotedGraph, Date? DateRange?
@@ -201,9 +201,9 @@ class Store(object):
 
     def commit(self):
         """ """
-    
+
     def rollback(self):
-        """ """    
+        """ """
 
 
 

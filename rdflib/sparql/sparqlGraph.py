@@ -26,7 +26,7 @@ import sparql
 ns_dc  = Namespace("http://purl.org/dc/elements/1.1/")
 ns_owl = Namespace("http://www.w3.org/2002/07/owl#")
 
-########################################################################## 
+##########################################################################
 import sys, warnings, sets
 from types import *
 
@@ -62,14 +62,14 @@ class SPARQLGraph(sparql.SPARQL) :
     def _clusterForward(self,seed,Cluster) :
         """Cluster the triple store: from a seed, transitively get all
         properties and objects in direction of the arcs.
-        
+
         @param seed: RDFLib Resource
 
         @param Cluster: a L{sparqlGraph} instance, that has to be
         expanded with the new arcs
         """
-        try :        
-            # get all predicate and object pairs for the seed. 
+        try :
+            # get all predicate and object pairs for the seed.
             # *If not yet in the new cluster, then go with a recursive round with those*
             for (p,o) in self.graph.predicate_objects(seed) :
                 if not (seed,p,o) in Cluster.graph :
@@ -78,13 +78,13 @@ class SPARQLGraph(sparql.SPARQL) :
                     self._clusterForward(o,Cluster)
         except :
             pass
-        
+
 
     def clusterForward(self,seed,Cluster=None) :
         """
         Cluster the triple store: from a seed, transitively get all
         properties and objects in direction of the arcs.
-        
+
         @param seed: RDFLib Resource
 
         @param Cluster: another sparqlGraph instance; if None, a new
@@ -96,7 +96,7 @@ class SPARQLGraph(sparql.SPARQL) :
         """
         if Cluster == None :
             Cluster = SPARQLGraph()
-            
+
         # This will raise an exception if not kosher...
         try :
             check_subject(seed)
@@ -104,15 +104,15 @@ class SPARQLGraph(sparql.SPARQL) :
             print "Wrong type for clustering (probably a literal): %s" % seed
             import sys
             sys.exit(0)
-            
-        self._clusterForward(seed,Cluster)                    
+
+        self._clusterForward(seed,Cluster)
         return Cluster
-        
-        
+
+
     def _clusterBackward(self,seed,Cluster) :
         """Cluster the triple store: from a seed, transitively get all
         properties and objects in backward direction of the arcs.
-        
+
         @param seed: RDFLib Resource
 
         @param Cluster: a L{sparqlGraph} instance, that has to be
@@ -126,13 +126,13 @@ class SPARQLGraph(sparql.SPARQL) :
                     self._clusterBackward(p,Cluster)
         except :
             pass
-            
+
     def clusterBackward(self,seed,Cluster=None) :
         """
         Cluster the triple store: from a seed, transitively get all
         properties and objects 'backward', ie, following the link back
         in the graph.
-        
+
         @param seed: RDFLib Resource
 
         @param Cluster: another sparqlGraph instance; if None, a new
@@ -152,15 +152,15 @@ class SPARQLGraph(sparql.SPARQL) :
             print "Wrong type for clustering: %s" % seed
             import sys
             sys.exit(0)
-            
-        self._clusterBackward(seed,Cluster) 
+
+        self._clusterBackward(seed,Cluster)
         return Cluster
 
     def cluster(self,seed) :
         """
         Cluster up and down, by summing up the forward and backward
         clustering
-        
+
         @param seed: RDFLib Resource
 
         @returns: The triple store containing the cluster
@@ -168,10 +168,10 @@ class SPARQLGraph(sparql.SPARQL) :
         @rtype: L{sparqlGraph}
         """
         return self.clusterBackward(seed) + self.clusterForward(seed)
-        
+
     #############################################################################################################
-    # Operator methods; 
-    #  
+    # Operator methods;
+    #
     ##
     # Set theoretical union, expressed as an operator
     # @param other the other triple store
@@ -182,7 +182,7 @@ class SPARQLGraph(sparql.SPARQL) :
         for y in other.graph: retval.add(y)
         return retval
 
-    ##    
+    ##
     # Set theoretical intersection, expressed as an operator
     # @param other the other triple store
     def __mul__(self,other) :
@@ -191,8 +191,8 @@ class SPARQLGraph(sparql.SPARQL) :
         for x in other.graph:
             if x in self.graph: retval.add(x)
         return retval
-        
-    ##    
+
+    ##
     # Set theoretical difference, expressed as an operator
     # @param other the other triple store
     def __sub__(self,other) :
@@ -202,7 +202,7 @@ class SPARQLGraph(sparql.SPARQL) :
             if not x in other.graph : retval.add(x)
         return retval
 
-        
-    
-        
-                
+
+
+
+

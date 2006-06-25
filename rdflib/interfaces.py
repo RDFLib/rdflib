@@ -7,7 +7,7 @@ except ImportError:
     def implements(*args): pass
 
 from rdflib import RDF
-    
+
 class IGraph(Interface):
     """\
     An rdflib.Graph indexes data expressed in the Resource Description

@@ -27,7 +27,7 @@ class Sleepycat(Store):
     identifier = property(__get_identifier)
 
     def open(self, path, create=True):
-        homeDir = path        
+        homeDir = path
         envsetflags  = db.DB_CDB_ALLDB
         envflags = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD
         if not exists(homeDir):
@@ -44,11 +44,11 @@ class Sleepycat(Store):
         db_env.open(homeDir, envflags | db.DB_CREATE)
 
         self.__open = True
-        
+
         dbname = None
         dbtype = db.DB_BTREE
         dbopenflags = db.DB_THREAD
-        
+
         dbmode = 0660
         dbsetflags   = 0
 
@@ -87,7 +87,7 @@ class Sleepycat(Store):
                         yield ""
                     else:
                         yield context
-                    i = start 
+                    i = start
                     while i<end:
                         yield triple[i%3]
                         i += 1
@@ -110,19 +110,19 @@ class Sleepycat(Store):
         self.__prefix = db.DB(db_env)
         self.__prefix.set_flags(dbsetflags)
         self.__prefix.open("prefix", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
-        
+
         self.__k2i = db.DB(db_env)
         self.__k2i.set_flags(dbsetflags)
         self.__k2i.open("k2i", dbname, db.DB_HASH, dbopenflags|db.DB_CREATE, dbmode)
-        
+
         self.__i2k = db.DB(db_env)
         self.__i2k.set_flags(dbsetflags)
         self.__i2k.open("i2k", dbname, db.DB_RECNO, dbopenflags|db.DB_CREATE, dbmode)
-        
+
         self.__journal = db.DB(db_env)
         self.__journal.set_flags(dbsetflags)
         self.__journal.open("journal", dbname, db.DB_RECNO, dbopenflags|db.DB_CREATE, dbmode)
-        
+
         self.__needs_sync = False
         t = Thread(target=self.__sync_run)
         t.setDaemon(True)
@@ -138,11 +138,11 @@ class Sleepycat(Store):
                 t0 = t1 = time()
                 self.__needs_sync = False
                 while self.__open:
-                    sleep(.1) 
+                    sleep(.1)
                     if self.__needs_sync:
                         t1 = time()
                         self.__needs_sync = False
-                    if time()-t1 > min_seconds or time()-t0 > max_seconds: 
+                    if time()-t1 > min_seconds or time()-t0 > max_seconds:
                         self.__needs_sync = False
                         print "sync"
                         self.sync()
@@ -187,13 +187,13 @@ class Sleepycat(Store):
         p = _to_string(predicate)
         o = _to_string(object)
         c = _to_string(context)
-        
+
         cspo, cpos, cosp = self.__indicies
 
         value = cspo.get("%s^%s^%s^%s^" % (c, s, p, o))
         if value is None:
             self.__journal.append("%s^%s^%s^%s^1^%s" % (c, s, p, o, time()))
-            self.__contexts.put(c, "")        
+            self.__contexts.put(c, "")
 
             contexts_value = cspo.get("%s^%s^%s^%s^" % ("", s, p, o)) or ""
             contexts = set(contexts_value.split("^"))
@@ -232,7 +232,7 @@ class Sleepycat(Store):
         assert self.__open, "The Store must be open."
         _to_string = self._to_string
         if context is not None:
-            if context == self: 
+            if context == self:
                 context = None
 
         if subject is not None and predicate is not None and object is not None and context is not None:
@@ -240,7 +240,7 @@ class Sleepycat(Store):
             p = _to_string(predicate)
             o = _to_string(object)
             c = _to_string(context)
-            value = self.__indicies[0].get("%s^%s^%s^%s^" % (c, s, p, o))            
+            value = self.__indicies[0].get("%s^%s^%s^%s^" % (c, s, p, o))
             if value is not None:
                 self.__remove((s, p, o), c)
                 self.__needs_sync = True
@@ -269,7 +269,7 @@ class Sleepycat(Store):
                     c, s, p, o = from_key(key)
                     if context is None:
                         contexts_value = index.get(key) or ""
-                        contexts = set(contexts_value.split("^")) # remove triple from all non quoted contexts 
+                        contexts = set(contexts_value.split("^")) # remove triple from all non quoted contexts
                         contexts.add("") # and from the conjunctive index
                         for c in contexts:
                             for i, _to_key, _ in self.__indicies_info:
@@ -277,7 +277,7 @@ class Sleepycat(Store):
                     else:
                         self.__remove((s, p, o), c)
                 else:
-                    break            
+                    break
 
             if context is not None:
                 if subject is None and predicate is None and object is None:
@@ -285,7 +285,7 @@ class Sleepycat(Store):
                     try:
                         self.__contexts.delete(_to_string(context))
                     except db.DBNotFoundError, e:
-                        pass                    
+                        pass
 
             self.__needs_sync = needs_sync
 
@@ -295,7 +295,7 @@ class Sleepycat(Store):
         assert self.__open, "The Store must be open."
 
         if context is not None:
-            if context == self: 
+            if context == self:
                 context = None
 
         _from_string = self._from_string
@@ -320,12 +320,12 @@ class Sleepycat(Store):
                 contexts_value = index.get(key)
                 yield results_from_key(key, subject, predicate, object, contexts_value)
             else:
-                break            
+                break
 
     def __len__(self, context=None):
         assert self.__open, "The Store must be open."
         if context is not None:
-            if context == self: 
+            if context == self:
                 context = None
 
         if context is None:
@@ -357,11 +357,11 @@ class Sleepycat(Store):
         self.__namespace[prefix] = namespace
 
     def namespace(self, prefix):
-        prefix = prefix.encode("utf-8")        
+        prefix = prefix.encode("utf-8")
         return self.__namespace.get(prefix, None)
 
     def prefix(self, namespace):
-        namespace = namespace.encode("utf-8")                
+        namespace = namespace.encode("utf-8")
         return self.__prefix.get(namespace, None)
 
     def namespaces(self):
@@ -378,7 +378,7 @@ class Sleepycat(Store):
 
     def contexts(self, triple=None):
         _from_string = self._from_string
-        _to_string = self._to_string        
+        _to_string = self._to_string
 
         if triple:
             s, p, o = triple
@@ -397,8 +397,8 @@ class Sleepycat(Store):
             cursor.close()
             while current:
                 key, value = current
-                context = _from_string(key)            
-                yield context                            
+                context = _from_string(key)
+                yield context
                 cursor = index.cursor()
                 try:
                     cursor.set_range(key)
@@ -406,7 +406,7 @@ class Sleepycat(Store):
                 except db.DBNotFoundError:
                     current = None
                 cursor.close()
-    
+
     def _from_string(self, i):
         k = self.__i2k.get(int(i))
         return self._loads(k)
@@ -430,7 +430,7 @@ class Sleepycat(Store):
             current = j.get(i)
 
     def __lookup(self, (subject, predicate, object), context):
-        _to_string = self._to_string        
+        _to_string = self._to_string
         if context is not None:
             context = _to_string(context)
         i = 0
@@ -443,7 +443,7 @@ class Sleepycat(Store):
         if object is not None:
             i += 4
             object = _to_string(object)
-        index, prefix_func, from_key, results_from_key = self.__lookup_dict[i]        
+        index, prefix_func, from_key, results_from_key = self.__lookup_dict[i]
         prefix = "^".join(prefix_func((subject, predicate, object), context))
         return index, prefix, from_key, results_from_key
 

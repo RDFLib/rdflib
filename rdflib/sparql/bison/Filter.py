@@ -3,7 +3,7 @@ from Util import ListRedirect
 class ParsedFilter(object):
     def __init__(self,filter):
         self.filter = filter
-        
+
     def __repr__(self):
         return "FILTER %s"%self.filter
 

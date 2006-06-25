@@ -3,9 +3,9 @@ The set of classes used to model the 3 'partitions' for N3 assertions.
 There is a top level class which implements operations common to all partitions as
 well as a class for each partition.  These classes are meant to allow the underlying
 SQL schema to be completely configurable as well as to automate the generation
-of SQL queries for adding,updating,removing,resolving triples from the partitions.  
-These classes work in tandem with the RelationHashes to automate all (or most) of 
-the SQL processing associated with this FOPL Relational Model 
+of SQL queries for adding,updating,removing,resolving triples from the partitions.
+These classes work in tandem with the RelationHashes to automate all (or most) of
+the SQL processing associated with this FOPL Relational Model
 
 NOTE: The use of foreign keys (which - unfortunately - bumps the minimum MySQL version to 5.0) allows for
 the efficient removal of all statements about a particular resource using cascade on delete (currently not used)
@@ -49,9 +49,9 @@ LOOKUP_UNION_SQL        = "LEFT JOIN %s %s ON (%s)"
 
 class BinaryRelationPartition(object):
     """
-    The common ancestor of the three partitions for assertions.  
+    The common ancestor of the three partitions for assertions.
     Implements behavior common to all 3.  Each subclass is expected to define the following:
-        
+
     nameSuffix - The suffix appended to the name of the table
     termEnumerations - a 4 item list (for each quad 'slot') of lists (or None) which enumerate the allowable term types
                        for each quad slot (one of 'U' - URIs,'V' - Variable,'L' - Literals,'B' - BNodes,'F' - Formulae)
@@ -68,16 +68,16 @@ class BinaryRelationPartition(object):
         self.identifier = identifier
         self.idHash    = idHash
         self.valueHash = valueHash
-        self._repr = self.identifier+'_'+self.nameSuffix        
+        self._repr = self.identifier+'_'+self.nameSuffix
         self.singularInsertionSQLCmd = self.insertRelationsSQLCMD()
         self._resetPendingInsertions()
         self._intersectionSQL = self.generateHashIntersections()
         self._selectFieldsLeading    = self._selectFields(True)  + ['NULL as '+SlotPrefixes[DATATYPE_INDEX],'NULL as '+SlotPrefixes[LANGUAGE_INDEX]]
-        self._selectFieldsNonLeading = self._selectFields(False) + ['NULL','NULL']        
-        
+        self._selectFieldsNonLeading = self._selectFields(False) + ['NULL','NULL']
+
     def __repr__(self):
         return self._repr
-      
+
     def foreignKeySQL(self,slot):
         """
         Generates foreign key expression relating a particular quad term with
@@ -89,8 +89,8 @@ class BinaryRelationPartition(object):
                     self.columnNames[slot],
                     self.idHash,
                     self.idHash.columns[0][0])]
-        return rt      
-    
+        return rt
+
     def IndexManagementSQL(self,create=False):
         idxSQLStmts = []
         for slot in POSITION_LIST:
@@ -106,7 +106,7 @@ class BinaryRelationPartition(object):
                         idxSQLStmts.append("create INDEX %s_term%s on %s (%s_term)"%(self.columnNames[slot],self.indexSuffix,self,self.columnNames[slot]))
                     else:
                         idxSQLStmts.append("drop index %s_term%s on %s"%(self.columnNames[slot],self.indexSuffix,self))
-        if len(self.columnNames) > 4:            
+        if len(self.columnNames) > 4:
             for otherSlot in range(4,len(self.columnNames)):
                 colMD = self.columnNames[otherSlot]
                 if isinstance(colMD,tuple):
@@ -122,9 +122,9 @@ class BinaryRelationPartition(object):
                     else:
                         idxSQLStmts.append("ALTER TABLE %s DROP FOREIGN KEY %s_%s_lookup"%(self,self,colMD))
                         idxSQLStmts.append("drop index %s%s on %s"%(colMD,self.indexSuffix,self))
-                        
+
         return idxSQLStmts
-              
+
     def createSQL(self):
         """
         Generates a CREATE TABLE statement which creates a SQL table used for
@@ -139,8 +139,8 @@ class BinaryRelationPartition(object):
                     columnSQLStmts.append("\t%s_term enum(%s) not NULL"%(self.columnNames[slot],','.join(["'%s'"%tType for tType in self.termEnumerations[slot]])))
                     columnSQLStmts.append("\tINDEX %s_term%s (%s_term)"%(self.columnNames[slot],self.indexSuffix,self.columnNames[slot]))
                 columnSQLStmts.extend(self.foreignKeySQL(slot))
-        
-        if len(self.columnNames) > 4:            
+
+        if len(self.columnNames) > 4:
             for otherSlot in range(4,len(self.columnNames)):
                 colMD = self.columnNames[otherSlot]
                 if isinstance(colMD,tuple):
@@ -161,7 +161,7 @@ class BinaryRelationPartition(object):
         """
         Resets the cache for pending insertions
         """
-        self.pendingInsertions = []        
+        self.pendingInsertions = []
 
     def insertRelationsSQLCMD(self):
         """
@@ -170,7 +170,7 @@ class BinaryRelationPartition(object):
         """
         vals = 0
         insertColNames = []
-        for colName in self.columnNames:            
+        for colName in self.columnNames:
             colIdx = self.columnNames.index(colName)
             if colName:
                 insertColNames.append(colName)
@@ -186,22 +186,22 @@ class BinaryRelationPartition(object):
         Takes a list of QuadSlot objects and queues the new identifiers / values to insert and
         the assertions as well (so they can be added in a batch for maximum efficiency)
         """
-        for quadSlot in quadSlots:            
-            self.extractIdentifiers(quadSlot)            
+        for quadSlot in quadSlots:
+            self.extractIdentifiers(quadSlot)
             self.pendingInsertions.append(self.compileQuadToParams(quadSlot))
-            
+
     def flushInsertions(self,db):
         """
-        Adds the pending identifiers / values and assertions (using executemany for 
+        Adds the pending identifiers / values and assertions (using executemany for
         maximum efficiency), and resets the queue.
         """
-        self.idHash.insertIdentifiers(db)  
-        self.valueHash.insertIdentifiers(db)        
+        self.idHash.insertIdentifiers(db)
+        self.valueHash.insertIdentifiers(db)
         cursor = db.cursor()
         cursor.executemany(self.singularInsertionSQLCmd,self.pendingInsertions)
         cursor.close()
-        self._resetPendingInsertions()            
-        
+        self._resetPendingInsertions()
+
     def selectContextFields(self,first):
         """
         Generates a list of column aliases for the SELECT SQL command used in order
@@ -241,7 +241,7 @@ class BinaryRelationPartition(object):
     def selectFields(self,first=False):
         """
         Returns a list of column aliases for the SELECT SQL command used to fetch quads from
-        a partition 
+        a partition
         """
         return first and self._selectFieldsLeading or self._selectFieldsNonLeading
 
@@ -266,7 +266,7 @@ class BinaryRelationPartition(object):
                 if idx < len(POSITION_LIST) and self.termEnumerations[idx]:
                     intersectionClauses.append("%s.%s_term = %s.%s"%(self,colName,lookupAlias,lookup.columns[1][0]))
                 if isId and idx < len(POSITION_LIST) and idx in self.hardCodedResultTermsTypes:
-                    intersectionClauses.append("%s.%s = '%s'"%(lookupAlias,lookup.columns[1][0],self.hardCodedResultTermsTypes[idx]))                
+                    intersectionClauses.append("%s.%s = '%s'"%(lookupAlias,lookup.columns[1][0],self.hardCodedResultTermsTypes[idx]))
             if idx == DATATYPE_INDEX and len(self.columnNames) > len(POSITION_LIST):
                 intersections.append(LOOKUP_UNION_SQL%(lookup,lookupAlias,' AND '.join(intersectionClauses)))
             else:
@@ -284,7 +284,7 @@ class BinaryRelationPartition(object):
         whereParameters = []
         asserted = dereferenceQuad(CONTEXT,queryPattern) is None
         for idx in SlotPrefixes.keys():
-            queryTerm = dereferenceQuad(idx,queryPattern)            
+            queryTerm = dereferenceQuad(idx,queryPattern)
             lookupAlias = 'rt_'+SlotPrefixes[idx]
             if idx == CONTEXT and asserted:
                 whereClauses.append("%s.%s != 'F'"%(self,self.columnNames[idx]))
@@ -304,7 +304,7 @@ class BinaryRelationPartition(object):
                     else:
                         whereClauses.append("%s.%s"%(self,self.columnNames[idx])+" = %s")
                         whereParameters.append(normalizeValue(queryTerm,term2Letter(queryTerm)))
-                        
+
                 if not idx in self.hardCodedResultTermsTypes and self.termEnumerations[idx] and not isinstance(queryTerm,list):
                     whereClauses.append("%s.%s_term"%(self,self.columnNames[idx])+" = %s")
                     whereParameters.append(term2Letter(queryTerm))
@@ -324,19 +324,19 @@ class AssociativeBox(BinaryRelationPartition):
     """
     nameSuffix = 'associativeBox'
     termEnumerations=[NON_LITERALS,None,CLASS_TERMS,CONTEXT_TERMS]
-    columnNames = ['member',None,'class','context']  
+    columnNames = ['member',None,'class','context']
     columnIntersectionList = [
                                (OBJECT,True),
                                (CONTEXT,True),
-                               (SUBJECT,True)]  
+                               (SUBJECT,True)]
 
     hardCodedResultFields = {
         PREDICATE      : RDF.type,
     }
     hardCodedResultTermsTypes = {
         PREDICATE : 'U',
-    }    
-                
+    }
+
     def compileQuadToParams(self,quadSlots):
         subjSlot,predSlot,objSlot,conSlot = quadSlots
         return (subjSlot.md5Int,
@@ -345,7 +345,7 @@ class AssociativeBox(BinaryRelationPartition):
                 term2Letter(objSlot.term),
                 conSlot.md5Int,
                 term2Letter(conSlot.term))
-    
+
     def extractIdentifiers(self,quadSlots):
         subjSlot,predSlot,objSlot,conSlot = quadSlots
         self.idHash.updateIdentifierQueue([
@@ -356,7 +356,7 @@ class AssociativeBox(BinaryRelationPartition):
 
 class NamedLiteralProperties(BinaryRelationPartition):
     """
-    The partition associated with assertions where the object is a Literal.    
+    The partition associated with assertions where the object is a Literal.
     """
     nameSuffix = 'literalProperties'
     termEnumerations=[NON_LITERALS,PREDICATE_NAMES,None,CONTEXT_TERMS]
@@ -366,12 +366,12 @@ class NamedLiteralProperties(BinaryRelationPartition):
                                (PREDICATE,True),
                                (CONTEXT,True),
                                (OBJECT,False),
-                               (SUBJECT,True)]  
-                               
+                               (SUBJECT,True)]
+
     hardCodedResultFields = {}
     hardCodedResultTermsTypes = {
         OBJECT    : 'L'
-    }                                   
+    }
 
     def foreignKeySQL(self,slot):
         hash = slot == OBJECT and self.valueHash or self.idHash
@@ -384,13 +384,13 @@ class NamedLiteralProperties(BinaryRelationPartition):
         return rt
 
     def __init__(self,identifier,idHash,valueHash):
-        super(NamedLiteralProperties,self).__init__(identifier,idHash,valueHash)        
+        super(NamedLiteralProperties,self).__init__(identifier,idHash,valueHash)
         self.insertSQLCmds = {
            (False,False): self.insertRelationsSQLCMD(),
            (False,True) : self.insertRelationsSQLCMD(language=True),
            (True,False) : self.insertRelationsSQLCMD(dataType=True),
            (True,True)  : self.insertRelationsSQLCMD(dataType=True,language=True)
-        }        
+        }
         idHashLexicalCol = self.idHash.columns[-1][0]
         self._selectFieldsLeading = self._selectFields(True) + \
           [
@@ -402,26 +402,26 @@ class NamedLiteralProperties(BinaryRelationPartition):
             'rt_%s.%s'%(self.columnNames[DATATYPE_INDEX][0],idHashLexicalCol),
             str(self)+'.'+self.columnNames[LANGUAGE_INDEX][0],
           ]
-        
+
     def _resetPendingInsertions(self):
         self.pendingInsertions = {
            (False,False): [],
            (False,True) : [],
            (True,False) : [],
            (True,True)  : [],
-        }        
-    
+        }
+
     def insertRelationsSQLCMD(self,dataType=None,language=None):
         vals = 0
         insertColNames = []
-        for colName in self.columnNames:            
+        for colName in self.columnNames:
             colIdx = self.columnNames.index(colName)
             if colName:
                 if isinstance(colName,tuple):
                     colName = colName[0]
                     for argColName,arg in [(self.columnNames[DATATYPE_INDEX][0],dataType),(self.columnNames[LANGUAGE_INDEX][0],language)]:
                         if colName == argColName and arg:
-                            insertColNames.append(colName)                        
+                            insertColNames.append(colName)
                             vals += 1
                 else:
                     insertColNames.append(colName)
@@ -429,7 +429,7 @@ class NamedLiteralProperties(BinaryRelationPartition):
             if colIdx < len(self.termEnumerations) and self.termEnumerations[colIdx]:
                 insertColNames.append(colName+'_term')
                 vals += 1
-        
+
         insertColsExpr = "(%s)"%(','.join([i for i in insertColNames]))
         return "INSERT INTO %s %s VALUES "%(self,insertColsExpr)+"(%s)"%(','.join(['%s' for i in range(vals)]))
 
@@ -439,10 +439,10 @@ class NamedLiteralProperties(BinaryRelationPartition):
             literal = quadSlot[OBJECT].term
             insertionCMDKey = (bool(literal.datatype),bool(literal.language))
             self.pendingInsertions[insertionCMDKey].append(self.compileQuadToParams(quadSlot))
-            
+
     def flushInsertions(self,db):
-        self.idHash.insertIdentifiers(db)  
-        self.valueHash.insertIdentifiers(db)        
+        self.idHash.insertIdentifiers(db)
+        self.valueHash.insertIdentifiers(db)
         cursor = db.cursor()
         for key,paramList in self.pendingInsertions.items():
             if paramList:
@@ -466,7 +466,7 @@ class NamedLiteralProperties(BinaryRelationPartition):
             if item:
                 rtList.append(item)
         return tuple(rtList)
-    
+
     def extractIdentifiers(self,quadSlots):
         subjSlot,predSlot,objSlot,conSlot = quadSlots
         idTerms = [
@@ -476,11 +476,11 @@ class NamedLiteralProperties(BinaryRelationPartition):
         if objSlot.term.datatype:
             idTerms.append((objSlot.term.datatype,objSlot.termType))
         self.idHash.updateIdentifierQueue(idTerms)
-        self.valueHash.updateIdentifierQueue([(objSlot.term,objSlot.termType)])    
+        self.valueHash.updateIdentifierQueue([(objSlot.term,objSlot.termType)])
 
     def selectFields(self,first=False):
         return first and self._selectFieldsLeading or self._selectFieldsNonLeading
-    
+
 class NamedBinaryRelations(BinaryRelationPartition):
     """
     Partition associated with assertions where the predicate isn't rdf:type and the object isn't a literal
@@ -492,10 +492,10 @@ class NamedBinaryRelations(BinaryRelationPartition):
                                (PREDICATE,True),
                                (CONTEXT,True),
                                (OBJECT,True),
-                               (SUBJECT,True)]  
-                               
+                               (SUBJECT,True)]
+
     hardCodedResultFields = {}
-    hardCodedResultTermsTypes = {}                                                                  
+    hardCodedResultTermsTypes = {}
 
     def compileQuadToParams(self,quadSlots):
         subjSlot,predSlot,objSlot,conSlot = quadSlots
@@ -507,20 +507,20 @@ class NamedBinaryRelations(BinaryRelationPartition):
                 term2Letter(objSlot.term),
                 conSlot.md5Int,
                 term2Letter(conSlot.term))
-    
+
     def extractIdentifiers(self,quadSlots):
         subjSlot,predSlot,objSlot,conSlot = quadSlots
         self.idHash.updateIdentifierQueue([
                                            (subjSlot.term,subjSlot.termType),
                                            (predSlot.term,predSlot.termType),
                                            (objSlot.term,objSlot.termType),
-                                           (conSlot.term,conSlot.termType)])    
-    
+                                           (conSlot.term,conSlot.termType)])
+
 def BinaryRelationPartitionCoverage((subject,predicate,object_,context),BRPs):
     """
     This function takes a quad pattern (where any term is one of: URIRef,BNode,Literal,None,or REGEXTerm)
     ,a list of 3 live partitions and returns a list of only those partitions that need to be searched
-    in order to resolve the pattern.  This function relies on the BRPQueryDecisionMap dictionary 
+    in order to resolve the pattern.  This function relies on the BRPQueryDecisionMap dictionary
     to determine which partitions to use.  Note that the dictionary as it is currently constituted
     requres that REGEXTerms in the object slot require that *both* the binary relation partition and
     the literal properties partitions are searched when this search could be limited to the literal
@@ -543,12 +543,12 @@ def BinaryRelationPartitionCoverage((subject,predicate,object_,context),BRPs):
             #Otherwise, can be treated as a REGEXTerm that *doesn't* match rdf:type
             pId = 'U_RNT'
     elif isinstance(predicate,Variable):
-        #Predicates as variables would only exist in literal property assertions and 'other' Relations partition 
+        #Predicates as variables would only exist in literal property assertions and 'other' Relations partition
         #(same as URIs or REGEX Terms that don't match rdf:type)
-        pId = 'U_RNT'            
+        pId = 'U_RNT'
     else:
         raise Exception("Unable to determine a parition to cover with the given predicate %s (a %s)"%(predicate,type(predicate).__name__))
-    
+
     if isinstance(object_,list) and len(object_) == 1:
         object_ = object_[0]
     if isinstance(object_,REGEXTerm):
@@ -571,11 +571,11 @@ def BinaryRelationPartitionCoverage((subject,predicate,object_,context),BRPs):
         oId = 'U'
     else:
         raise Exception("Unable to determine a parition to cover with the given object %s (a %s)"%(object_,type(object_).__name__))
-                
+
     targetBRPs = [brp for brp in BRPs if isinstance(brp,BRPQueryDecisionMap[pId+oId])]
     return targetBRPs
-    
-def PatternResolution(quad,cursor,BRPs,orderByTriple=True,fetchall=True,fetchContexts=False):  
+
+def PatternResolution(quad,cursor,BRPs,orderByTriple=True,fetchall=True,fetchContexts=False):
     """
     This function implements query pattern resolution against a list of partition objects and
     3 parameters specifying whether to sort the result set (in order to group identical triples
@@ -584,13 +584,13 @@ def PatternResolution(quad,cursor,BRPs,orderByTriple=True,fetchall=True,fetchCon
     This function uses BinaryRelationPartitionCoverage to whittle out the partitions that don't need
     to be searched, generateHashIntersections / generateWhereClause to generate the SQL query
     and the parameter fill-ins and creates a single UNION query against the relevant partitions.
-    
+
     Note the use of UNION syntax requires that the literal properties partition is first (since it
     uses the first select to determine the column types for the resulting rows from the subsequent
     SELECT queries)
-    
+
     see: http://dev.mysql.com/doc/refman/5.0/en/union.html
-    """  
+    """
     subject,predicate,object_,context = quad
     targetBRPs = BinaryRelationPartitionCoverage((subject,predicate,object_,context),BRPs)
     unionQueries = []
@@ -612,7 +612,7 @@ def PatternResolution(quad,cursor,BRPs,orderByTriple=True,fetchall=True,fetchCon
         whereClause,whereParameters = brp.generateWhereClause((subject,predicate,object_,context))
         unionQueries.append(query+whereClause)
         unionQueriesParams.extend(whereParameters)
-    
+
     orderBySuffix = orderByTriple and ' ORDER BY %s,%s,%s'%(SlotPrefixes[SUBJECT],SlotPrefixes[PREDICATE],SlotPrefixes[OBJECT]) or ''
     if len(unionQueries) == 1:
         query = unionQueries[0] + orderBySuffix
@@ -624,12 +624,12 @@ def PatternResolution(quad,cursor,BRPs,orderByTriple=True,fetchall=True,fetchCon
         print "## Query ##\n",query
         print "## Parameters ##\n",unionQueriesParams
         raise e
-    if fetchall:        
+    if fetchall:
         qRT = cursor.fetchall()
     else:
-        qRT = cursor.fetchone()    
+        qRT = cursor.fetchone()
     return qRT
-    
+
 CREATE_RESULT_TABLE = \
 """
 CREATE TEMPORARY TABLE result (
@@ -649,7 +649,7 @@ CREATE TEMPORARY TABLE result (
 CROSS_BRP_QUERY_SQL="SELECT %s FROM %s %s WHERE "
 CROSS_BRP_RESULT_QUERY_SQL="SELECT * FROM result ORDER BY context"
 DROP_RESULT_TABLE_SQL = "DROP result"
-    
+
 BRPQueryDecisionMap = {
     'WL':(NamedLiteralProperties),
     'WU':(AssociativeBox,NamedBinaryRelations),

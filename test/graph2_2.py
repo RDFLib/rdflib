@@ -41,7 +41,7 @@ class Graph22TestCase(unittest.TestCase):
         self.graph.add((michel, likes, cheese))
         self.graph.add((bob, likes, cheese))
         self.graph.add((bob, hates, pizza))
-        self.graph.add((bob, hates, michel)) # gasp!        
+        self.graph.add((bob, hates, michel)) # gasp!
 
     def removeStuff(self):
         tarek = self.tarek
@@ -106,12 +106,12 @@ class Graph22TestCase(unittest.TestCase):
         # unbound predicates, objects
         asserte(len(list(triples((michel, Any, Any)))), 2)
         asserte(len(list(triples((bob, Any, Any)))), 3)
-        asserte(len(list(triples((tarek, Any, Any)))), 2)        
+        asserte(len(list(triples((tarek, Any, Any)))), 2)
 
         # unbound subjects, predicates
         asserte(len(list(triples((Any, Any, pizza)))), 3)
         asserte(len(list(triples((Any, Any, cheese)))), 3)
-        asserte(len(list(triples((Any, Any, michel)))), 1)        
+        asserte(len(list(triples((Any, Any, michel)))), 1)
 
         # all unbound
         asserte(len(list(triples((Any, Any, Any)))), 7)
@@ -121,7 +121,7 @@ class Graph22TestCase(unittest.TestCase):
 
     def _testStatementNode(self):
         graph = self.graph
-        
+
         from rdflib.Statement import Statement
         c = URIRef("http://example.org/foo#c")
         r = URIRef("http://example.org/foo#r")
@@ -157,7 +157,7 @@ try:
     class RedLandTestCase(Graph22TestCase):
         backend_name = "Redland"
 except ImportError, e:
-    print "Can not test Redland backend:", e    
+    print "Can not test Redland backend:", e
 
 if __name__ == '__main__':
-    unittest.main()    
+    unittest.main()

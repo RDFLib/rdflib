@@ -77,13 +77,13 @@ class N3TestCase(unittest.TestCase):
                 i += 1
         self.assertEquals(i, 3)
         self.assertEquals(len(list(g.contexts())), 13)
-        
+
         g.close()
-            
+
 
     def testParse(self):
         g = ConjunctiveGraph()
         g.parse("http://groups.csail.mit.edu/dig/2005/09/rein/examples/troop42-policy.n3", format="n3")
 
 if __name__ == '__main__':
-    unittest.main()    
+    unittest.main()

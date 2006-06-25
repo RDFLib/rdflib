@@ -13,7 +13,7 @@ class PrefixDeclaration(object):
 
     def __repr__(self):
         return "%s -> %s"%(self.base,self.qName[:-1])
-    
+
 class BaseDeclaration(URIRef):
     """
     BaseDecl ::= 'BASE' Q_IRI_REF

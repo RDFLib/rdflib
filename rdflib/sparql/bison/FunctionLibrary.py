@@ -30,34 +30,34 @@ class FunctionCall(object):
     def __init__(self,name,arguments=None):
         self.name = name
         self.arguments = arguments is None and [] or arguments
-        
+
     def __repr__(self):
         return "%s(%s)"%(self.name,','.join([isinstance(i,ListRedirect) and i.reduce() or i for i in self.arguments]))
-    
+
 class ParsedArgumentList(ListRedirect):
     def __init__(self,arguments):
         self._list = arguments
-        
+
 class ParsedREGEXInvocation(object):
     def __init__(self,arg1,arg2,arg3=None):
         self.arg1 = arg1
         self.arg2 = arg2
         self.arg3 = arg3
-        
+
     def __repr__(self):
         return "REGEX(%s,%s%s)"%(
                                  isinstance(self.arg1,ListRedirect) and self.arg1.reduce() or self.arg1,
                                  isinstance(self.arg2,ListRedirect) and self.arg2.reduce() or self.arg2,
                                  isinstance(self.arg3,ListRedirect) and self.arg3.reduce() or self.arg3,)
 
-class BuiltinFunctionCall(FunctionCall):    
+class BuiltinFunctionCall(FunctionCall):
     def __init__(self,name,arg1,arg2=None):
         if arg2:
             arguments = [arg1,arg2]
         else:
             arguments = [arg1]
         super(BuiltinFunctionCall,self).__init__(name,arguments)
-    
+
     def __repr__(self):
         #print self.name
         #print [type(i) for i in self.arguments]

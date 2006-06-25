@@ -5,7 +5,7 @@ from rdflib import URIRef, BNode, Literal, RDF, RDFS
 from rdflib.StringInputSource import StringInputSource
 
 
-class ParserTestCase(unittest.TestCase):        
+class ParserTestCase(unittest.TestCase):
     backend = 'default'
     path = 'store'
 
@@ -28,16 +28,16 @@ class ParserTestCase(unittest.TestCase):
 <rdfs:Class rdf:about="http://example.org#">
   <rdfs:label>testing</rdfs:label>
 </rdfs:Class>
-  
+
 </rdf:RDF>
 """), publicID="http://example.org")
 
         subject = URIRef("http://example.org#")
-        label = g.value(subject, RDFS.label)        
+        label = g.value(subject, RDFS.label)
         self.assertEquals(label, Literal("testing"))
         type = g.value(subject, RDF.type)
         self.assertEquals(type, RDFS.Class)
 
 
 if __name__ == "__main__":
-    unittest.main()   
+    unittest.main()

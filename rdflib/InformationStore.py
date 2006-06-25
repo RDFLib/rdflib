@@ -15,14 +15,14 @@ class InformationStore(Graph):
     """
     Depcrecated. Use Graph instead.
     """
-    
+
     def __init__(self, path=None, backend=None):
         if backend==None:
             backend = Sleepycat()
         super(InformationStore, self).__init__(backend=backend)
         if path:
             self.open(path)
-        
+
     def load(self, location, format="xml", publicID=None):
         location = self.absolutize(location)
         for id in self.subjects(SOURCE, location):
@@ -35,4 +35,4 @@ class InformationStore(Graph):
         context.load(location, format, publicID)
         return context
 
-            
+

@@ -28,7 +28,7 @@ PythonToXSD = {
     basestring : (None,None),
     float      : (None,XSD_NS+u'float'),
     int        : (None,XSD_NS+u'int'),
-    long       : (None,XSD_NS+u'long'),    
+    long       : (None,XSD_NS+u'long'),
     bool       : (None,XSD_NS+u'boolean'),
     date       : (lambda i:i.isoformat(),XSD_NS+u'date'),
     time       : (lambda i:i.isoformat(),XSD_NS+u'time'),
@@ -56,19 +56,19 @@ def _strToDateTime(v) :
                 tstr = strptime(v,"%Y-%m-%dT%H:%M:%S%Z")
             except:
                 return v
-            
+
     return datetime(tstr.tm_year,tstr.tm_mon,tstr.tm_mday,tstr.tm_hour,tstr.tm_min,tstr.tm_sec)
 
-XSDToPython = {  
+XSDToPython = {
     XSD_NS+u'time'               : (None,_strToTime),
     XSD_NS+u'date'               : (None,_strToDate),
-    XSD_NS+u'dateTime'           : (None,_strToDateTime),    
+    XSD_NS+u'dateTime'           : (None,_strToDateTime),
     XSD_NS+u'string'             : (None,None),
     XSD_NS+u'normalizedString'   : (None,None),
     XSD_NS+u'token'              : (None,None),
     XSD_NS+u'language'           : (None,None),
     XSD_NS+u'boolean'            : (None, lambda i:i.lower() in ['1','true']),
-    XSD_NS+u'decimal'            : (float,None), 
+    XSD_NS+u'decimal'            : (float,None),
     XSD_NS+u'integer'            : (long ,None),
     XSD_NS+u'nonPositiveInteger' : (int,None),
     XSD_NS+u'long'               : (long,None),
@@ -110,7 +110,7 @@ class Literal(Identifier):
             inst = unicode.__new__(cls,value)
         except UnicodeDecodeError:
             inst = unicode.__new__(cls,value,'utf-8')
-                
+
         inst.language = lang
         inst.datatype = datatype
         return inst
@@ -118,7 +118,7 @@ class Literal(Identifier):
     def __reduce__(self):
         return (Literal, (unicode(self), self.language, self.datatype),)
 
-#    
+#
 #    def __getnewargs__(self):
 #        return (unicode(self), self.language, self.datatype)
 
@@ -129,11 +129,11 @@ class Literal(Identifier):
         _, d = arg
         self.language = d["language"]
         self.datatype = d["datatype"]
-        
+
     def __add__(self, val):
         s = super(Literal, self).__add__(val)
         return Literal(s, self.language, self.datatype)
-    
+
     def __eq__(self, other):
         if other==None:
             return False
@@ -157,7 +157,7 @@ class Literal(Identifier):
             return False
         elif castPythonToLiteral(other)[-1]:
             #I know how to represent 'other' lexically in a uniform way
-            castFunc,dType = castPythonToLiteral(other)[-1]            
+            castFunc,dType = castPythonToLiteral(other)[-1]
             return unicode(self)==unicode(castFunc(other))
         else:
             return unicode(self)==other

@@ -4,10 +4,10 @@ from rdflib.Graph import QuotedGraph, Graph, ConjunctiveGraph, BackwardCompatGra
 #Takes an instance of a Graph (Graph, QuotedGraph, ConjunctiveGraph, or BackwardCompatGraph)
 #and returns the Graphs identifier and 'type' ('U' for Graphs, 'F' for QuotedGraphs ).
 def normalizeGraph(graph):
-    if isinstance(graph,QuotedGraph):        
+    if isinstance(graph,QuotedGraph):
         return graph.identifier, 'F'
     else:
-        return graph.identifier , term2Letter(graph.identifier)    
+        return graph.identifier , term2Letter(graph.identifier)
 
 TERM_INSTANCIATION_DICT ={
     'U':URIRef,
@@ -25,7 +25,7 @@ GRAPH_TERM_DICT = {
 def term2Letter(term):
     if isinstance(term,URIRef):
         return 'U'
-    elif isinstance(term,BNode):    
+    elif isinstance(term,BNode):
         return 'B'
     elif isinstance(term,Literal):
         return 'L'
@@ -37,7 +37,7 @@ def term2Letter(term):
         return term2Letter(term.identifier)
     elif term is None:
         return 'L'
-    else:        
+    else:
         raise Exception("The given term (%s) is not an instance of any of the known types (URIRef,BNode,Literal,QuotedGraph, or Variable).  It is a %s"%(term,type(term)))
 
 def constructGraph(term):
@@ -51,7 +51,7 @@ def triplePattern2termCombinations((s,p,o)):
             if key[OBJECT] == 'O':
                 combinations.append(val)
     return combinations
-    
+
 def type2TermCombination(member,klass,context):
     try:
         rt = TERM_COMBINATIONS['%sU%s%s'%(term2Letter(member),term2Letter(klass),normalizeGraph(context)[-1])]
@@ -83,7 +83,7 @@ TERM_COMBINATIONS = {
     'UUFU' : 12,
     'UUFB' : 13,
     'UUFF' : 14,
-    
+
     'UVUU' : 15,
     'UVUB' : 16,
     'UVUF' : 17,
@@ -95,14 +95,14 @@ TERM_COMBINATIONS = {
     'UVBF' : 23,
     'UVLU' : 24,
     'UVLB' : 25,
-    'UVLF' : 26,    
+    'UVLF' : 26,
     'UVFU' : 27,
     'UVFB' : 28,
     'UVFF' : 29,
 
     'VUUU' : 30,
     'VUUB' : 31,
-    'VUUF' : 33,    
+    'VUUF' : 33,
     'VUVU' : 34,
     'VUVB' : 35,
     'VUVF' : 36,
@@ -118,10 +118,10 @@ TERM_COMBINATIONS = {
 
     'VVUU' : 46,
     'VVUB' : 47,
-    'VVUF' : 48,    
+    'VVUF' : 48,
     'VVVU' : 49,
     'VVVB' : 50,
-    'VVVF' : 51,    
+    'VVVF' : 51,
     'VVBU' : 52,
     'VVBB' : 53,
     'VVBF' : 54,

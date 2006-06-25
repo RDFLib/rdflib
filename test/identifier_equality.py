@@ -15,18 +15,18 @@ class TypeCheckCase(unittest.TestCase):
 
         self.assertEquals(uriref==literal, False)
         self.assertEquals(literal==uriref, False)
-        
+
         self.assertEquals(uriref==python_literal, True)
         self.assertEquals(python_literal==uriref, True)
-        
+
         self.assertEquals(literal==python_literal, True)
         self.assertEquals(python_literal==literal, True)
 
         self.assertEquals("foo" in CORE_SYNTAX_TERMS, False)
-        self.assertEquals("http://www.w3.org/1999/02/22-rdf-syntax-ns#RDF" in CORE_SYNTAX_TERMS, True) 
+        self.assertEquals("http://www.w3.org/1999/02/22-rdf-syntax-ns#RDF" in CORE_SYNTAX_TERMS, True)
 
 
 if __name__ == "__main__":
-    unittest.main()   
+    unittest.main()
 
 

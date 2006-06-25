@@ -11,25 +11,25 @@ class BinaryOperator(object):
             isinstance(self.left,ListRedirect) and self.left.reduce() or self.left,
             self.NAME,
             isinstance(self.right,ListRedirect) and self.right.reduce() or self.right)
-    
-class EqualityOperator(BinaryOperator):    
+
+class EqualityOperator(BinaryOperator):
     NAME = '='
-    
-class NotEqualOperator(BinaryOperator):    
-    NAME = '!='    
-    
-class LessThanOperator(BinaryOperator):    
+
+class NotEqualOperator(BinaryOperator):
+    NAME = '!='
+
+class LessThanOperator(BinaryOperator):
     NAME = '<'
-    
-class LessThanOrEqualOperator(BinaryOperator):    
+
+class LessThanOrEqualOperator(BinaryOperator):
     NAME = '>='
-    
-class GreaterThanOperator(BinaryOperator):    
-    NAME = '>'    
-    
-class GreaterThanOrEqualOperator(BinaryOperator):    
-    NAME = '>='        
-    
+
+class GreaterThanOperator(BinaryOperator):
+    NAME = '>'
+
+class GreaterThanOrEqualOperator(BinaryOperator):
+    NAME = '>='
+
 class UnaryOperator(object):
     NAME = ''
     def __init__(self,argument):
@@ -38,12 +38,12 @@ class UnaryOperator(object):
         return "(%s %s)"%(
             self.NAME,
             isinstance(self.argument,ListRedirect) and self.argument.reduce() or self.argument)
-    
-class LogicalNegation(UnaryOperator):    
+
+class LogicalNegation(UnaryOperator):
     NAME = '!'
-    
-class NumericPositive(UnaryOperator):    
-    NAME = '+'    
-    
-class NumericNegative(UnaryOperator):    
+
+class NumericPositive(UnaryOperator):
+    NAME = '+'
+
+class NumericNegative(UnaryOperator):
     NAME = '-'        

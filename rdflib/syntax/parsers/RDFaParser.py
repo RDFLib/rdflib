@@ -1,9 +1,9 @@
 """
-RDFa parser. 
+RDFa parser.
 
 RDFa is a set of attributes used to embed RDF in XHTML. An important goal of
 RDFa is to achieve this RDF embedding without repeating existing XHTML content
-when that content is the metadata.  
+when that content is the metadata.
 
 REFERENCES:
 
@@ -47,12 +47,12 @@ xhtml = Namespace("http://www.w3.org/1999/xhtml")
 xml = Namespace("http://www.w3.org/XML/1998/namespace")
 rdf = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
 
-class RDFaSink(object): 
-  def __init__(self, graph): 
+class RDFaSink(object):
+  def __init__(self, graph):
     self.graph = graph
-  def __str__(self): 
+  def __str__(self):
     return self.graph.serialize(format="pretty-xml")
-  def triple(self, s, p, o): 
+  def triple(self, s, p, o):
     self.graph.add((s, p, o))
 
 _urifixer = re.compile('^([A-Za-z][A-Za-z0-9+-.]*://)(/*)(.*?)')
@@ -62,7 +62,7 @@ def _urljoin(base, uri):
   return urlparse.urljoin(base, uri)
 
 class RDFaParser(Parser):
-  def __init__(self): 
+  def __init__(self):
     self.lang = None
     self.abouts = []
     self.xmlbases = []
@@ -84,7 +84,7 @@ class RDFaParser(Parser):
 
       if event == pulldom.END_DOCUMENT:
         assert len(self.elementStack) == 0
-      
+
       if event == pulldom.START_ELEMENT:
 
         # keep track of parent node
@@ -161,8 +161,8 @@ class RDFaParser(Parser):
               else:
                 content += child.toxml()
             content = content.strip()
-            literal = Literal(content,datatype=datatype or rdf.XMLLiteral) 
-          
+            literal = Literal(content,datatype=datatype or rdf.XMLLiteral)
+
           if literal:
             self.triple(subject, predicate, literal)
 
@@ -180,7 +180,7 @@ class RDFaParser(Parser):
             object = self.extractCURIEorURI(node.getAttribute("href"))
             self.triple(object, predicate, subject)
 
-        # role is in the primer, but not in the syntax. 
+        # role is in the primer, but not in the syntax.
         # could be deprecated.
         # Assumptions:
         # - Subject resolution as always (including meta/link)
@@ -208,7 +208,7 @@ class RDFaParser(Parser):
 
     if self.bnodes.has_key(parentNode):
       return self.bnodes[parentNode]
-    
+
     if self.bcounter.has_key(name):
       self.bcounter[name] = self.bcounter[name] + 1
     else:

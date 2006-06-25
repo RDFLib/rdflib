@@ -19,14 +19,14 @@ class IOMemory(Store):
     data for merging, unmerging, remerging purposes.  context aware
     store stores consume more memory size than non context stores.
 
-    """    
+    """
 
     context_aware = True
     formula_aware = True
 
     def __init__(self, configuration=None, identifier=None):
         super(IOMemory, self).__init__()
-        
+
         # indexed by [context][subject][predicate][object] = 1
         self.cspo = self.createIndex()
 
@@ -38,7 +38,7 @@ class IOMemory(Store):
 
         # indexed by [subject][predicate][object] = [context]
         self.spo = self.createIndex()
-  
+
         # indexed by [predicate][object][subject] = [context]
         self.pos = self.createIndex()
 
@@ -55,7 +55,7 @@ class IOMemory(Store):
 
         self.__namespace = self.createPrefixMap()
         self.__prefix = self.createPrefixMap()
-        
+
     def bind(self, prefix, namespace):
         self.__prefix[namespace] = prefix
         self.__namespace[prefix] = namespace
@@ -105,7 +105,7 @@ class IOMemory(Store):
             index = self.cpos[context]
         for pi in index.keys():
             yield self.forward[pi]
-        
+
     def uniqueObjects(self, context=None):
         if context is None:
             index = sel.osp
@@ -132,11 +132,11 @@ class IOMemory(Store):
         """
 
         for triple, cg in self.triples(triple, context):
-            #triple is already in the store.            
+            #triple is already in the store.
             return
-            
+
         subject, predicate, object = triple
-        
+
         f = self.forward
         r = self.reverse
 
@@ -184,49 +184,49 @@ class IOMemory(Store):
         self._setNestedIndex(self.cspo, ci, si, pi, oi)
         self._setNestedIndex(self.cpos, ci, pi, oi, si)
         self._setNestedIndex(self.cosp, ci, oi, si, pi)
-        
+
         if not quoted:
             self._setNestedIndex(self.spo, si, pi, oi, ci)
             self._setNestedIndex(self.pos, pi, oi, si, ci)
             self._setNestedIndex(self.osp, oi, si, pi, ci)
-        
+
     def _setNestedIndex(self, index, *keys):
         for key in keys[:-1]:
             if not index.has_key(key):
                 index[key] = self.createIndex()
             index = index[key]
         index[keys[-1]] = 1
-        
-    
+
+
     def _removeNestedIndex(self, index, *keys):
         """ Remove context from the list of contexts in a nested index.
-        
+
         Afterwards, recursively remove nested indexes when they became empty.
         """
         parents = []
         for key in keys[:-1]:
-            parents.append(index)    
+            parents.append(index)
             index = index[key]
         del index[keys[-1]]
-        
+
         n = len(parents)
         for i in xrange(n):
             index = parents[n-1-i]
             key = keys[n-1-i]
             if len(index[key]) == 0:
                 del index[key]
-        
+
     def remove(self, triple, context=None):
 
         if context is not None:
-            if context == self: 
+            if context == self:
                 context = None
 
         f = self.forward
         r = self.reverse
         if context is None:
             for triple, cg in self.triples(triple):
-                subject, predicate, object = triple        
+                subject, predicate, object = triple
                 si, pi, oi = self.identifierToInt((subject, predicate, object))
                 contexts = list(self.contexts(triple))
                 for context in contexts:
@@ -234,7 +234,7 @@ class IOMemory(Store):
                     del self.cspo[ci][si][pi][oi]
                     del self.cpos[ci][pi][oi][si]
                     del self.cosp[ci][oi][si][pi]
-                    
+
                     self._removeNestedIndex(self.spo, si, pi, oi, ci)
                     self._removeNestedIndex(self.pos, pi, oi, si, ci)
                     self._removeNestedIndex(self.osp, oi, si, pi, ci)
@@ -246,7 +246,7 @@ class IOMemory(Store):
             ci = r.get(context, None)
             if ci:
                 for triple, cg in self.triples(triple, context):
-                    si, pi, oi = self.identifierToInt(triple)    
+                    si, pi, oi = self.identifierToInt(triple)
                     del self.cspo[ci][si][pi][oi]
                     del self.cpos[ci][pi][oi][si]
                     del self.cosp[ci][oi][si][pi]
@@ -254,7 +254,7 @@ class IOMemory(Store):
                     self._removeNestedIndex(self.spo, si, pi, oi, ci)
                     self._removeNestedIndex(self.pos, pi, oi, si, ci)
                     self._removeNestedIndex(self.osp, oi, si, pi, ci)
-                    # TODO delete references to resources in self.forward/self.reverse 
+                    # TODO delete references to resources in self.forward/self.reverse
                     # that are not in use anymore...
 
             if subject is None and predicate is None and object is None:
@@ -271,12 +271,12 @@ class IOMemory(Store):
         """A generator over all the triples matching """
 
         if context is not None:
-            if context == self: 
+            if context == self:
                 context = None
 
         subject, predicate, object = triple
         ci = si = pi = oi = Any
-        
+
         if context is None:
             spo = self.spo
             pos = self.pos
@@ -326,7 +326,7 @@ class IOMemory(Store):
                                 pass
                         else: # object unbound
                             for o in subjectDictionary[p].keys():
-                                ss, pp, oo = self.intToIdentifier((si, p, o))    
+                                ss, pp, oo = self.intToIdentifier((si, p, o))
                                 yield (ss, pp, oo), (c for c in self.contexts((ss, pp, oo)))
             else: # given subject not found
                 pass
@@ -363,7 +363,7 @@ class IOMemory(Store):
     def __len__(self, context=None):
 
         if context is not None:
-            if context == self: 
+            if context == self:
                 context = None
 
         # TODO: for eff. implementation
@@ -371,7 +371,7 @@ class IOMemory(Store):
         for triple, cg in self.triples((Any, Any, Any), context):
             count += 1
         return count
-    
+
     def contexts(self, triple=None):
         if triple:
             si, pi, oi = self.identifierToInt(triple)

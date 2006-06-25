@@ -11,7 +11,7 @@ An in memory implementation of a triple store.
 This triple store uses nested dictionaries to store triples. Each
 triple is stored in two such indices as follows spo[s][p][o] = 1 and
 pos[p][o][s] = 1.
-    """    
+    """
     def __init__(self, configuration=None, identifier=None):
         super(Memory, self).__init__(configuration)
         self.identifier = identifier
@@ -45,7 +45,7 @@ pos[p][o][s] = 1.
         except:
             o = po[predicate] = {}
         o[object] = 1
-        
+
         pos = self.__pos
         try:
             os = pos[predicate]
@@ -139,7 +139,7 @@ pos[p][o][s] = 1.
         for triple in self.triples((None, None, None)):
             i += 1
         return i
-        
+
     def bind(self, prefix, namespace):
         self.__prefix[namespace] = prefix
         self.__namespace[prefix] = namespace
@@ -155,5 +155,5 @@ pos[p][o][s] = 1.
             yield prefix, namespace
 
     def __contexts(self):
-        return (c for c in []) # TODO: best way to return empty generator 
+        return (c for c in []) # TODO: best way to return empty generator
 

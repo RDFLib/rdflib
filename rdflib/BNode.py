@@ -7,13 +7,13 @@ def _unique_id():
     id = ""
     for i in xrange(0,8):
         id += choice(ascii_letters)
-    return id 
+    return id
 
 def _serial_number_generator():
     i = 0
     while 1:
         yield i
-        i = i + 1    
+        i = i + 1
 
 from rdflib.Identifier import Identifier
 from rdflib.syntax.xml_names import is_ncname
@@ -22,8 +22,8 @@ import threading
 bNodeLock = threading.RLock()
 
 class BNode(Identifier):
-    """ 
-    BNodes 
+    """
+    BNodes
 
     "In non-persistent O-O software construction, support for object
     identity is almost accidental: in the simplest implementation,
@@ -36,7 +36,7 @@ class BNode(Identifier):
     Maintaining object identity in shared databases raises problems:
     every client that needs to create objects must obtain a unique
     identity for them; " -- Bertand Meyer
-    """ 
+    """
     __slots__ = ()
 
     def __new__(cls, value=None, # only store implementations should pass in a value
@@ -57,13 +57,13 @@ class BNode(Identifier):
             pass #assert is_ncname(unicode(value)), "BNode identifiers must be valid NCNames"
 
         return Identifier.__new__(cls, value)
-        
+
     def n3(self):
         return "_:%s" % self
 
     def __getnewargs__(self):
         return (unicode(self), )
-        
+
     def __reduce__(self):
         return (BNode, (unicode(self),))
 

@@ -25,24 +25,24 @@ class XMLSerializer(Serializer):
         for predicate in uniq(store.predicates()):
             prefix, namespace, name = nm.compute_qname(predicate)
             bindings[prefix] = namespace
-        RDFNS = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#")                
+        RDFNS = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
         if "rdf" in bindings:
             assert bindings["rdf"]==RDFNS
         else:
             bindings["rdf"] = RDFNS
         for prefix, namespace in bindings.iteritems():
             yield prefix, namespace
-                
-            
+
+
     def serialize(self, stream, base=None, encoding=None):
         self.base = base
-        self.__stream = stream        
+        self.__stream = stream
         self.__serialized = {}
         encoding = self.encoding
         self.write = write = lambda uni: stream.write(uni.encode(encoding, 'replace'))
-        
+
         # startDocument
-        write('<?xml version="1.0" encoding="%s"?>\n' % self.encoding)        
+        write('<?xml version="1.0" encoding="%s"?>\n' % self.encoding)
 
         # startRDF
         write('<rdf:RDF\n')
@@ -55,7 +55,7 @@ class XMLSerializer(Serializer):
             else:
                 write('   xmlns="%s"\n' % namespace)
         write('>\n')
-        
+
         # write out triples by subject
         for subject in self.store.subjects():
             self.subject(subject, 1)
@@ -63,10 +63,10 @@ class XMLSerializer(Serializer):
         # endRDF
         write( "</rdf:RDF>\n" )
 
-        # Set to None so that the memory can get garbage collected.        
+        # Set to None so that the memory can get garbage collected.
         #self.__serialized = None
         del self.__serialized
-        
+
 
     def subject(self, subject, depth=1):
         if not subject in self.__serialized:
@@ -82,12 +82,12 @@ class XMLSerializer(Serializer):
                     uri = quoteattr(self.relativize(subject))
                     write( "%s<%s rdf:about=%s" % (indent, element_name, uri))
                 if (subject, None, None) in self.store:
-                    write( ">\n" )                
+                    write( ">\n" )
                     for predicate, object in self.store.predicate_objects(subject):
                         self.predicate(predicate, object, depth+1)
                     write( "%s</%s>\n" % (indent, element_name))
                 else:
-                    write( "/>\n" )            
+                    write( "/>\n" )
 
     def predicate(self, predicate, object, depth=1):
         write = self.write
@@ -100,7 +100,7 @@ class XMLSerializer(Serializer):
 
             if object.datatype:
                 attributes += ' rdf:datatype="%s"'%object.datatype
-            
+
             write("%s<%s%s>%s</%s>\n" %
                   (indent, qname, attributes,
                    escape(object), qname) )

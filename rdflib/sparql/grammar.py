@@ -80,7 +80,7 @@ class SPARQLGrammar(object):
     FromClause = production('FromClause')
     FromSelector = production('FromSelector')
     WhereClause = production('WhereClause')
-    LimitClause = production('LimitClause')    
+    LimitClause = production('LimitClause')
     SourceGraphPattern = production('SourceGraphPattern')
     OptionalGraphPattern = production('OptionalGraphPattern')
     GraphPattern = production('GraphPattern')
@@ -123,7 +123,7 @@ class SPARQLGrammar(object):
     # terminals EBNF definitions are at end of spec
 
     QuotedURI = (lt.suppress() + Word(alphanums+"_-./&?:@~=#") + gt.suppress()).setResultsName('QuotedURI')
-    
+
     _NCNAME_ = Word(alphas+'_', alphanums+'_.-')
     _DIGITS_ = Word(nums)
     _VAR_ = Word("?", alphanums+'_.-', min=2).setResultsName('Var')
@@ -136,7 +136,7 @@ class SPARQLGrammar(object):
     _HEX_LITERAL_ = Combine( zero + oneOf("x X") + Word(srange('[0-9a-fA-F]')) ).setResultsName('HexLiteral')
     _INTEGER_LITERAL_ = (Optional(oneOf("+ -")) + _DECIMAL_LITERAL_ + Optional(oneOf("l L")) ^
                           _HEX_LITERAL_ + Optional(oneOf("l L"))).setResultsName('IntegerLiteral')
-    _FLOATING_POINT_LITERAL_ = Combine(Optional(oneOf("+ -")) + 
+    _FLOATING_POINT_LITERAL_ = Combine(Optional(oneOf("+ -")) +
                                        Word(nums) + dot + Word(nums) +
                                        Optional(_EXPONENT_) |
                                        dot | OneOrMore(nums) +
@@ -150,7 +150,7 @@ class SPARQLGrammar(object):
 
     Query << (ZeroOrMore(PrefixDecl) + ReportFormat + ZeroOrMore(PrefixDecl) +
               Optional(FromClause) + Optional(WhereClause) + Optional(LimitClause))
-    
+
     # [2]  ReportFormat  ::=  'select' 'distinct'? <VAR> ( CommaGroup(Opt <VAR> )*
     # | 'select' 'distinct'? '*'
     # | 'construct' TriplePatternList
@@ -166,15 +166,15 @@ class SPARQLGrammar(object):
                      Group(describe + delimitedList(VarOrURI)) |
                      Group(describe + star) |
                      ask)
-    
+
     # [3]  FromClause  ::=  'from' FromSelector ( CommaOpt FromSelector )*
 
     FromClause << ffrom + delimitedList(FromSelector)
-    
+
     # [4]  FromSelector  ::=  URI
 
     FromSelector << URI
-    
+
     # [5]  WhereClause  ::=  'where' GraphPattern
 
     WhereClause << where + GraphPattern
@@ -182,7 +182,7 @@ class SPARQLGrammar(object):
     # in spec prose but not in spec grammar, no number
 
     LimitClause << Group(limit + _INTEGER_LITERAL_  )
-    
+
     # [6]  SourceGraphPattern  ::=  'source' '*' GraphPattern1
     # | 'source' VarOrURI GraphPattern1
 
@@ -247,7 +247,7 @@ class SPARQLGrammar(object):
     # | 'prefix' ':' QuotedURI
 
     PrefixDecl << prefix + Group(_NCNAME_ + colon.suppress() + QuotedURI)
-    
+
     # [20]  Expression  ::=  ConditionalOrExpression
 
     Expression << ConditionalOrExpression
@@ -355,7 +355,7 @@ class SPARQLGrammar(object):
     # [43]  URI  ::=  QuotedURI | QName
 
     URI << (QuotedURI | QName)
-    
+
     # [44]  QName  ::=  <QNAME>
 
     # [45]  QuotedURI  ::=  <URI>
@@ -376,7 +376,7 @@ class SPARQLGrammar(object):
 
     # [52]  <INTEGER_LITERAL>  ::=  (["+","-"])? <DECIMAL_LITERAL> (["l","L"])?
     # | <HEX_LITERAL> (["l","L"])?
-                          
+
     # [53]  <DECIMAL_LITERAL>  ::=  <DIGITS>
 
     # [54]  <HEX_LITERAL>  ::=  "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+
@@ -411,7 +411,7 @@ class SPARQLGrammar(object):
     # | ["\uF900"-"\uFFFF"]
 
     #    _NCCHAR1_ = srange('[A-Z]') + "_" + srange([a-z])
- 
+
     # [62]  <NCNAME>  ::=  <NCCHAR1> (<NCCHAR1> | "." | "-" | ["0"-"9"] | "\u00B7" )*
 
     #    _NCNAME_ << _NCCHAR1_ + Word(_NCCHAR1_, _NCCHAR1_ + dot + dash + nums + u"\u00B7") # wrong
@@ -423,7 +423,7 @@ if __name__ == '__main__':
           "select DISTINCT *",
           "SELECT ?title",
           "SELECT ?title ?name",
-          "SELECT distinct ?title ?name",          
+          "SELECT distinct ?title ?name",
           "SELECT * FROM <a> WHERE  ( <book1> <title> ?title )",
           "prefix dc: <http://purl.org/dc/1.1/> SELECT * from <a> WHERE  ( <book1> <title> ?title )",
           "PREFIX bob: <http://is.your.uncle/> prefix dc: <http://purl.org/dc/1.1/> select * FROM <a> where  ( bob:book1 dc:title ?title )",

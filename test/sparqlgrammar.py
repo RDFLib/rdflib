@@ -14,4 +14,4 @@ class SPARQLGrammarTestCase(unittest.TestCase):
         self.p.URI.parseString('<dc:title>') == ['?bob']
 
 if __name__ == '__main__':
-    unittest.main()    
+    unittest.main()

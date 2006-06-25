@@ -51,7 +51,7 @@ tripleStore = None
 expected = '''
   ?x: SPARQL Query Language Tutorial
   ?y: None
-  
+
   ?x: None
   ?y: SPARQL Protocol Tutorial
 '''

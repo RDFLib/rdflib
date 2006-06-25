@@ -53,7 +53,7 @@ from time import mktime, time, gmtime, localtime, timezone, altzone, daylight
 
 def date_time(t=None, local_time_zone=False):
     """http://www.w3.org/TR/NOTE-datetime ex: 1997-07-16T19:20:30Z
-    
+
     >>> date_time(1126482850)
     '2005-09-11T23:54:10Z'
 
@@ -68,7 +68,7 @@ def date_time(t=None, local_time_zone=False):
     """
     if t is None:
         t = time()
-        
+
     if local_time_zone:
         time_tuple = localtime(t)
         if time_tuple[8]:
@@ -79,7 +79,7 @@ def date_time(t=None, local_time_zone=False):
     else:
         time_tuple = gmtime(t)
         tzd = "Z"
-    
+
     year, month, day, hh, mm, ss, wd, y, z = time_tuple
     s = "%0004d-%02d-%02dT%02d:%02d:%02d%s" % ( year, month, day, hh, mm, ss, tzd)
     return s
@@ -90,10 +90,10 @@ def parse_date_time(val):
     # tests are written like this to make any errors easier to understand
     >>> parse_date_time('2005-09-11T23:54:10Z') - 1126482850.0
     0.0
-    
+
     >>> parse_date_time('2005-09-11T16:54:10-07:00') - 1126482850.0
     0.0
- 
+
     >>> parse_date_time('1970-01-01T00:00:01Z') - 1.0
     0.0
 
@@ -120,7 +120,7 @@ def parse_date_time(val):
 
     year, month, day = ymd.split("-")
     hour, minute, second = hms.split(":")
-    
+
     t = mktime((int(year), int(month), int(day), int(hour),
                 int(minute), int(second), 0, 0, 0))
     t = t - timezone + tz_offset
@@ -139,7 +139,7 @@ def from_n3(s, default=None, backend=None):
         if rest.startswith("@"):
             if "^^" in rest:
                 language, rest = rsplit(rest, '^^', 1)
-                language = language[1:] # strip leading at sign                
+                language = language[1:] # strip leading at sign
             else:
                 language = rest[1:] # strip leading at sign
                 rest = ''

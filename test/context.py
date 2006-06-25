@@ -8,7 +8,7 @@ class ContextTestCase(unittest.TestCase):
     backend = 'default'
 
     def setUp(self):
-        self.graph = Graph(backend=self.backend)        
+        self.graph = Graph(backend=self.backend)
         self.graph.open(mkdtemp())
         self.michel = URIRef(u'michel')
         self.tarek = URIRef(u'tarek')
@@ -43,7 +43,7 @@ class ContextTestCase(unittest.TestCase):
         self.graph.add((michel, likes, cheese), c1)
         self.graph.add((bob, likes, cheese), c1)
         self.graph.add((bob, hates, pizza), c1)
-        self.graph.add((bob, hates, michel), c1) # gasp!        
+        self.graph.add((bob, hates, michel), c1) # gasp!
 
     def removeStuff(self):
         tarek = self.tarek
@@ -213,22 +213,22 @@ class ContextTestCase(unittest.TestCase):
         # unbound predicates, objects with context
         asserte(len(list(triples((michel, Any, Any), c1))), 2)
         asserte(len(list(triples((bob, Any, Any), c1))), 3)
-        asserte(len(list(triples((tarek, Any, Any), c1))), 2)   
+        asserte(len(list(triples((tarek, Any, Any), c1))), 2)
 
         # unbound predicates, objects without context, same results!
         asserte(len(list(triples((michel, Any, Any)))), 2)
         asserte(len(list(triples((bob, Any, Any)))), 3)
-        asserte(len(list(triples((tarek, Any, Any)))), 2)      
+        asserte(len(list(triples((tarek, Any, Any)))), 2)
 
         # unbound subjects, predicates with context
         asserte(len(list(triples((Any, Any, pizza), c1))), 3)
         asserte(len(list(triples((Any, Any, cheese), c1))), 3)
-        asserte(len(list(triples((Any, Any, michel), c1))), 1)  
+        asserte(len(list(triples((Any, Any, michel), c1))), 1)
 
         # unbound subjects, predicates without context, same results!
         asserte(len(list(triples((Any, Any, pizza)))), 3)
         asserte(len(list(triples((Any, Any, cheese)))), 3)
-        asserte(len(list(triples((Any, Any, michel)))), 1)        
+        asserte(len(list(triples((Any, Any, michel)))), 1)
 
         # all unbound with context
         asserte(len(list(triples((Any, Any, Any), c1))), 7)
@@ -261,7 +261,7 @@ class ContextTestCase(unittest.TestCase):
             asserte(set(c.predicate_objects(michel)), set([(likes, cheese), (likes, pizza)]))
             asserte(set(c.predicate_objects(bob)), set([(likes, cheese), (hates, pizza), (hates, michel)]))
             asserte(set(c.predicate_objects(tarek)), set([(likes, cheese), (likes, pizza)]))
-            
+
             asserte(set(c.subject_predicates(pizza)), set([(bob, hates), (tarek, likes), (michel, likes)]))
             asserte(set(c.subject_predicates(cheese)), set([(bob, likes), (tarek, likes), (michel, likes)]))
             asserte(set(c.subject_predicates(michel)), set([(bob, hates)]))
@@ -297,4 +297,4 @@ except ImportError:
     del ContextTestCase
 
 if __name__ == '__main__':
-    unittest.main()    
+    unittest.main()

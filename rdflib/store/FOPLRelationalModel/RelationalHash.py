@@ -1,5 +1,5 @@
 """
-This module implements two hash tables for identifiers and values that 
+This module implements two hash tables for identifiers and values that
 facilitate maximal index lookups and minimal redundancy (since identifiers and values are stored once
 only and referred to by integer half-md5-hashes).  The identifier hash uses
 the half-md5-hash (converted by base conversion to an integer) to key on the identifier's full
@@ -12,7 +12,7 @@ representation (for partial matching by REGEX)
 
 These classes are meant to automate the creation, management, linking, insertion of these hashes (by SQL)
 automatically
-    
+
 see: http://en.wikipedia.org/wiki/Birthday_Paradox
 """
 
@@ -29,7 +29,7 @@ Any = None
 COLLISION_DETECTION = False
 
 CREATE_HASH_TABLE = """
-CREATE TABLE %s (    
+CREATE TABLE %s (
     %s
 ) ENGINE=InnoDB;"""
 
@@ -39,7 +39,7 @@ PURGE_KEY_SQL="DELETE %s FROM %s INNER JOIN danglingIds on danglingIds.%s = %s.%
 
 def GarbageCollectionQUERY(idHash,valueHash,aBoxPart,binRelPart,litPart):
     """
-    Performs garbage collection on interned identifiers and their references.  Joins 
+    Performs garbage collection on interned identifiers and their references.  Joins
     the given KB parititions against the identifiers and values and removes the 'danglers'.  This
     must be performed after every removal of an assertion and so becomes a primary bottleneck
     """
@@ -64,7 +64,7 @@ def GarbageCollectionQUERY(idHash,valueHash,aBoxPart,binRelPart,litPart):
                 idJoinColumnCandidates.append("%s.%s"%(part,colName))
         explicitJoins.append("left join %s on (%s)"%(part,' or '.join(partJoinClauses)))
         idJoinClauses.extend(partJoinClauses)
-                
+
     intersectionClause = " and ".join([col + " is NULL" for col in idJoinColumnCandidates])
     idGCQuery = IDENTIFIER_GARBAGE_COLLECTION_SQL%(
         idHash,
@@ -76,10 +76,10 @@ def GarbageCollectionQUERY(idHash,valueHash,aBoxPart,binRelPart,litPart):
         idHashKeyName,
         rdfTypeInt
     )
-    
-    idPurgeQuery = PURGE_KEY_SQL%(idHash,idHash,idHashKeyName,idHash,idHashKeyName)    
+
+    idPurgeQuery = PURGE_KEY_SQL%(idHash,idHash,idHashKeyName,idHash,idHashKeyName)
     purgeQueries.append(idGCQuery)
-    purgeQueries.append(idPurgeQuery)    
+    purgeQueries.append(idPurgeQuery)
 
     partJoinClauses = []
     idJoinColumnCandidates = []
@@ -95,14 +95,14 @@ def GarbageCollectionQUERY(idHash,valueHash,aBoxPart,binRelPart,litPart):
         "left join %s on (%s)"%(litPart,' or '.join(partJoinClauses)),
         intersectionClause
     )
-    
-    valuePurgeQuery = PURGE_KEY_SQL%(valueHash,valueHash,valueHashKeyName,valueHash,valueHashKeyName)    
+
+    valuePurgeQuery = PURGE_KEY_SQL%(valueHash,valueHash,valueHashKeyName,valueHash,valueHashKeyName)
     purgeQueries.append("drop temporary table if exists danglingIds")
     purgeQueries.append(valueGCQuery)
     purgeQueries.append(valuePurgeQuery)
     return purgeQueries
 
-class RelationalHash:    
+class RelationalHash:
     def __init__(self,identifier):
         self.identifier = identifier
         self.hashUpdateQueue = {}
@@ -126,13 +126,13 @@ class RelationalHash:
             return term
         else:
             return term.encode('utf-8')
-        
+
     def __repr__(self):
         return "%s_%s"%(self.identifier,self.tableNameSuffix)
-        
-    def IndexManagementSQL(self,create=False):        
+
+    def IndexManagementSQL(self,create=False):
         idxSQLStmts = []#'ALTER TABLE %s DROP PRIMARY KEY'%self]
-        for colName,colType,indexMD in self.columns:                        
+        for colName,colType,indexMD in self.columns:
             assert indexMD
             indexName,indexCol = indexMD
             if indexName:
@@ -141,10 +141,10 @@ class RelationalHash:
                 else:
                     idxSQLStmts.append("drop INDEX %s on %s"%(indexName,self))
         return idxSQLStmts
-        
+
     def createSQL(self):
         columnSQLStmts = []
-        for colName,colType,indexMD in self.columns:                        
+        for colName,colType,indexMD in self.columns:
             assert indexMD
             indexName,indexCol = indexMD
             if indexName:
@@ -152,14 +152,14 @@ class RelationalHash:
                 columnSQLStmts.append("\tINDEX %s (%s)"%(indexName,indexCol))
             else:
                 columnSQLStmts.append("\t%s\t%s not NULL PRIMARY KEY"%(colName,colType))
-        
+
         return CREATE_HASH_TABLE%(
             self,
-            ',\n'.join(columnSQLStmts)            
+            ',\n'.join(columnSQLStmts)
         )
     def dropSQL(self):
         pass
-    
+
 class IdentifierHash(RelationalHash):
     columns = [
                 ('id','BIGINT unsigned',[None,'id']),
@@ -167,7 +167,7 @@ class IdentifierHash(RelationalHash):
                 ('lexical','text',['lexical_index','lexical(100)'])
     ]
 
-    tableNameSuffix = 'identifiers'    
+    tableNameSuffix = 'identifiers'
 
     def defaultSQL(self):
         """
@@ -189,7 +189,7 @@ class IdentifierHash(RelationalHash):
         for term,termType in termList:
             md5Int = normalizeValue(term,termType)
             self.hashUpdateQueue[md5Int]=(termType,self.normalizeTerm(term))
-        
+
     def insertIdentifiers(self,db):
         c=db.cursor()
         keyCol = self.columns[0][0]
@@ -206,7 +206,7 @@ class IdentifierHash(RelationalHash):
                     if self.hashUpdateQueue[key] != (termType,lexical):
                         #Collision!!! Raise an exception (allow the app to rollback the transaction if it wants to)
                         raise Exception("Hash Collision (in %s) on %s,%s vs %s,%s!"%(self,termType,lexical,self.hashUpdateQueue[key][0],self.hashUpdateQueue[key][1]))
-                    
+
             self.hashUpdateQueue = {}
         c.close()
 
@@ -215,7 +215,7 @@ class LiteralHash(RelationalHash):
                 ('id','BIGINT unsigned',[None,'id']),
                 ('lexical','text',['lexicalIndex','lexical(100)']),
                 ]
-    tableNameSuffix = 'literals'    
+    tableNameSuffix = 'literals'
 
     def generateDict(self,db):
         c=db.cursor()
@@ -230,7 +230,7 @@ class LiteralHash(RelationalHash):
         for term,termType in termList:
             md5Int = normalizeValue(term,termType)
             self.hashUpdateQueue[md5Int]=self.normalizeTerm(term)
-        
+
     def insertIdentifiers(self,db):
         c=db.cursor()
         keyCol = self.columns[0][0]

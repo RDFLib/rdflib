@@ -521,14 +521,14 @@ branches = {u'_:jcOJHCYs16': {u',': [u',',
                                                      u'a': ['http://www.w3.org/2000/10/swap/grammar/n3#path'],
                                                      u'{': ['http://www.w3.org/2000/10/swap/grammar/n3#path']}}
 regexps = {
-   u'http://www.w3.org/2000/10/swap/grammar/n3#barename': re.compile(u'[a-zA-Z_][a-zA-Z0-9_]*'), 
-   u'http://www.w3.org/2000/10/swap/grammar/n3#variable': re.compile(u'\\?[a-zA-Z_][a-zA-Z0-9_]*'), 
-   u'http://www.w3.org/2000/10/swap/grammar/n3#qname': re.compile(u'(([a-zA-Z_][a-zA-Z0-9_]*)?:)?([a-zA-Z_][a-zA-Z0-9_-]*)?'), 
-   u'http://www.w3.org/2000/10/swap/grammar/n3#string': re.compile(u'("""[^"\\\\]*(?:(?:\\\\.|"(?!""))[^"\\\\]*)*""")|("[^"\\\\]*(?:\\\\.[^"\\\\]*)*")'), 
-   u'http://www.w3.org/2000/10/swap/grammar/n3#explicituri': re.compile(u'<[^>]*>'), 
-   u'http://www.w3.org/2000/10/swap/grammar/n3#langcode': re.compile(u'[a-z]+(-[a-z0-9]+)*'), 
-   u'http://www.w3.org/2000/10/swap/grammar/n3#numericliteral': re.compile(u'[-+]?[0-9]+(\\.[0-9]+)?(e[-+]?[0-9]+)?'), 
+   u'http://www.w3.org/2000/10/swap/grammar/n3#barename': re.compile(u'[a-zA-Z_][a-zA-Z0-9_]*'),
+   u'http://www.w3.org/2000/10/swap/grammar/n3#variable': re.compile(u'\\?[a-zA-Z_][a-zA-Z0-9_]*'),
+   u'http://www.w3.org/2000/10/swap/grammar/n3#qname': re.compile(u'(([a-zA-Z_][a-zA-Z0-9_]*)?:)?([a-zA-Z_][a-zA-Z0-9_-]*)?'),
+   u'http://www.w3.org/2000/10/swap/grammar/n3#string': re.compile(u'("""[^"\\\\]*(?:(?:\\\\.|"(?!""))[^"\\\\]*)*""")|("[^"\\\\]*(?:\\\\.[^"\\\\]*)*")'),
+   u'http://www.w3.org/2000/10/swap/grammar/n3#explicituri': re.compile(u'<[^>]*>'),
+   u'http://www.w3.org/2000/10/swap/grammar/n3#langcode': re.compile(u'[a-z]+(-[a-z0-9]+)*'),
+   u'http://www.w3.org/2000/10/swap/grammar/n3#numericliteral': re.compile(u'[-+]?[0-9]+(\\.[0-9]+)?(e[-+]?[0-9]+)?'),
 }
 
-if __name__=="__main__": 
+if __name__=="__main__":
    print __doc__

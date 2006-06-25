@@ -14,16 +14,16 @@ STORE='IOMemory'
 configString = ''
 
 #class TestClassAndType(unittest.TestCase):
-#    
+#
 #    def setUp(self):
-#        
+#
 #    def tearDown(self):
-#            
+#
 #    def testType(self):
-#    
+#
 #    def testClass1(self):
 
-test = [    
+test = [
     'data/local-constr/expr-2.rq',
     #'data/examples/ex11.2.3.2_1.rq',
     #'data/TypePromotion/tP-unsignedByte-short.rq'
@@ -32,7 +32,7 @@ test = [
 #    'data/examples/ex11.2.3.2_0.rq',
 #    'data/SyntaxFull/syntax-union-02.rq',
     #'data/part1/dawg-query-004.rq',
-    
+
 ]
 
 tests2Skip = [
@@ -54,17 +54,17 @@ tests2Skip = [
     'data/unsaid-inference/query-03.rq' , #same as above
     'data/part1/dawg-query-001.rq'      , #no space between variable name and }: .. OPTIONAL { ?person foaf:mbox ?mbox}
     'data/part1/dawg-query-003.rq'      , #Same as above
-    'data/regex/regex-query-003.rq'     , #BisonGen's Lexer is chopping up STRING_LITERAL_LONG1 tokens     
+    'data/regex/regex-query-003.rq'     , #BisonGen's Lexer is chopping up STRING_LITERAL_LONG1 tokens
     'data/regex/regex-query-004.rq'     , #Same as above
     'data/simple2/dawg-tp-01.rq'        , #WHERE without '{ }'
     'data/simple2/dawg-tp-02.rq'        , #same as above
     'data/simple2/dawg-tp-03.rq'        , #same as above
     'data/simple2/dawg-tp-04.rq'        , #same as above
     'data/SourceSimple/source-simple-01.rq', #WHERE without '{ }'
-    'data/SourceSimple/source-simple-02.rq', #Illegal syntax 
-    'data/SourceSimple/source-simple-03.rq', #Illegal syntax 
-    'data/SourceSimple/source-simple-04.rq', #Illegal syntax 
-    'data/SourceSimple/source-simple-05.rq', #Illegal syntax 
+    'data/SourceSimple/source-simple-02.rq', #Illegal syntax
+    'data/SourceSimple/source-simple-03.rq', #Illegal syntax
+    'data/SourceSimple/source-simple-04.rq', #Illegal syntax
+    'data/SourceSimple/source-simple-05.rq', #Illegal syntax
     'data/source-named/query-8.1.rq', #WHERE without '{ }'
     'data/source-named/query-8.2.rq', #same as above
     'data/source-named/query-8.3.rq', #same as above
@@ -107,14 +107,14 @@ MANIFEST_QUERY = \
 """
 SELECT ?source ?testName ?testComment ?result
 WHERE {
-  ?testCase mf:action    ?testAction;            
+  ?testCase mf:action    ?testAction;
             mf:name      ?testName;
             mf:result    ?result.
   ?testAction qt:query ?query;
               qt:data  ?source.
-  
+
   OPTIONAL { ?testCase rdfs:comment ?testComment }
-            
+
 }"""
 
 PARSED_MANIFEST_QUERY = Parse(MANIFEST_QUERY)
@@ -125,12 +125,12 @@ def bootStrapStore(store):
         store.open(configString,create=True)
     else:
         store.destroy(configString)
-        store.open(configString,create=True)    
-        
+        store.open(configString,create=True)
+
 def trialAndErrorRTParse(graph,queryLoc,DEBUG):
     qstr = StringIO(open(queryLoc).read())
     try:
-        graph.parse(qstr,format='n3')                            
+        graph.parse(qstr,format='n3')
         return True
     except Exception, e:
         if DEBUG:
@@ -149,16 +149,16 @@ def trialAndErrorRTParse(graph,queryLoc,DEBUG):
                 print qstr.getvalue()
                 print "#### ######### ###"
             return False
-    
-def testBasic(DEBUG = False):    
-    from glob import glob     
+
+def testBasic(DEBUG = False):
+    from glob import glob
     from sre import sub
     for testFile in glob('data/examples/*.rq'):#glob('data/*/*.rq'):
         store = plugin.get(STORE,Store)()
         bootStrapStore(store)
         store.commit()
-        
-        prefix = testFile.split('.rq')[-1]        
+
+        prefix = testFile.split('.rq')[-1]
         manifestPath = '/'.join(testFile.split('/')[:-1]+['manifest.n3'])
         manifestPath2 = '/'.join(testFile.split('/')[:-1]+['manifest.ttl'])
         queryFileName = testFile.split('/')[-1]
@@ -169,7 +169,7 @@ def testBasic(DEBUG = False):
         if not os.path.exists(manifestPath):
             assert os.path.exists(manifestPath2)
             manifestPath = manifestPath2
-        manifestG.default_context.parse(open(manifestPath),publicID=TEST_BASE,format='n3')          
+        manifestG.default_context.parse(open(manifestPath),publicID=TEST_BASE,format='n3')
         manifestData = \
            manifestG.query(
                                   PARSED_MANIFEST_QUERY,
@@ -179,21 +179,21 @@ def testBasic(DEBUG = False):
         store.rollback()
         store.close()
         for source,testCaseName,testCaseComment,expectedRT in manifestData:
-            
+
             if expectedRT:
                 expectedRT = '/'.join(testFile.split('/')[:-1]+[expectedRT.replace(TEST_BASE,'')])
             if source:
                 source = '/'.join(testFile.split('/')[:-1]+[source.replace(TEST_BASE,'')])
-            
+
             testCaseName = testCaseComment and testCaseComment or testCaseName
             print "## Source: %s ##"%source
             print "## Test: %s ##"%testCaseName
             print "## Result: %s ##"%expectedRT
-    
+
             #Expected results
             if expectedRT:
                 store = plugin.get(STORE,Store)()
-                store.open(configString,create=False)            
+                store.open(configString,create=False)
                 resultG=ConjunctiveGraph(store).default_context
 #                if DEBUG:
 #                    print "###"*10
@@ -203,17 +203,17 @@ def testBasic(DEBUG = False):
                 print "## Parsing (%s) ##"%(expectedRT)
                 if not trialAndErrorRTParse(resultG,expectedRT,DEBUG):
                     if DEBUG:
-                        print "Unexpected result format (for %s), skipping"%(expectedRT)                    
+                        print "Unexpected result format (for %s), skipping"%(expectedRT)
                     store.rollback()
                     store.close()
                     continue
                 if DEBUG:
                     print "## Done .. ##"
-                    
-                rtVars = [rtVar for rtVar in resultG.objects(None,RESULT_NS.resultVariable)]                
+
+                rtVars = [rtVar for rtVar in resultG.objects(None,RESULT_NS.resultVariable)]
                 bindings = []
                 resultSetNode = resultG.value(predicate=RESULT_NS.value,object=RESULT_NS.ResultSet)
-                for solutionNode in resultG.objects(resultSetNode,RESULT_NS.solution):         
+                for solutionNode in resultG.objects(resultSetNode,RESULT_NS.solution):
                     bindingDict = dict([(key,None) for key in rtVars])
                     for bindingNode in resultG.objects(solutionNode,RESULT_NS.binding):
                         value = resultG.value(subject=bindingNode,predicate=RESULT_NS.value)
@@ -225,10 +225,10 @@ def testBasic(DEBUG = False):
                     print open(expectedRT).read()
                 store.rollback()
                 store.close()
-                           
+
             if testFile.startswith('data/NegativeSyntax'):
                 try:
-                    query = open(testFile).read()        
+                    query = open(testFile).read()
                     p = Parse(query,DEBUG)
                 except:
                     continue
@@ -237,7 +237,7 @@ def testBasic(DEBUG = False):
             if testFile in tests2Skip:
                 print "Skipping test (%s)"%testCaseName
                 continue
-            query = open(testFile).read()        
+            query = open(testFile).read()
             print "### %s (%s) ###"%(testCaseName,testFile)
             print query
             p = Parse(query,DEBUG_PARSE)
@@ -247,10 +247,10 @@ def testBasic(DEBUG = False):
                 if DEBUG:
                     print "### Source Graph: ###"
                     print open(source).read()
-                store = plugin.get(STORE,Store)()                
+                store = plugin.get(STORE,Store)()
                 store.open(configString,create=False)
                 g=ConjunctiveGraph(store)
-                try:                    
+                try:
                     g.parse(open(source),format='n3')
                 except:
                     print "Unexpected data format (for %s), skipping"%(source)
@@ -258,7 +258,7 @@ def testBasic(DEBUG = False):
                     store.close()
                     continue
                 #print store
-                rt = g.query(p,DEBUG = DEBUG)                
+                rt = g.query(p,DEBUG = DEBUG)
                 if expectedRT:
                     if rt != bindings and Set([Set(i) for i in rt]) != Set([Set(i) for i in bindings]):#unorderedComparison(rt,bindings):
                         print "### Expected Result (%s) ###"%expectedRT

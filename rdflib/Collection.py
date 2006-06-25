@@ -3,7 +3,7 @@ from rdflib import RDF, BNode
 
 class Collection(object):
     """See 3.3.5 Emulating container types: http://docs.python.org/ref/sequence-types.html#l2h-232"""
-    
+
     def __init__(self, graph, uri, seq=[]):
         self.graph = graph
         self.uri = uri or BNode()
@@ -16,7 +16,7 @@ class Collection(object):
         graph = self.graph
         container = self.uri
         i = 0
-        while i<index: 
+        while i<index:
             i += 1
             container = graph.value(container, RDF.rest)
             if container is None:
@@ -49,7 +49,7 @@ class Collection(object):
             self.graph.add((c, RDF.first, value))
         else:
             raise IndexError, key
-        
+
 
     def __delitem__(self, key):
         """..."""
@@ -72,7 +72,7 @@ class Collection(object):
     def __iter__(self):
         """Iterator over items in Collections"""
         return self.graph.items(self.uri)
-        
+
     def append(self, item):
         container = self.uri
         graph = self.graph
@@ -132,8 +132,8 @@ if __name__=="__main__":
         print i
 
     del c[3]
- 
+
     c.clear()
-    
+
     assert len(c)==0
 

@@ -15,7 +15,7 @@ from test.context import *
 # # Graph no longer has the type checking at the moment. Do we want to
 # # put it back? Should we?
 # #
-# # from test.type_check import * 
+# # from test.type_check import *
 
 from test.parser import *
 if not quick:

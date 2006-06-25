@@ -30,4 +30,4 @@ class N3Serializer(Serializer):
                     stream.write(node.n3().encode(self.encoding, "replace"))
                 stream.write(' ')
             stream.write('.\n')
-         
+

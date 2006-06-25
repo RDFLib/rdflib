@@ -12,7 +12,7 @@ class N3Parser(Parser):
 
     def __init__(self):
         pass
-    
+
     def parse(self, source, graph):
         # we're currently being handed a Graph, not a ConjunctiveGraph
         assert graph.store.context_aware # is this implied by formula_aware
@@ -22,7 +22,7 @@ class N3Parser(Parser):
         conj_graph.default_context = graph # TODO: CG __init__ should have a default_context arg
         # TODO: update N3Processor so that it can use conj_graph as the sink
         sink = Sink(conj_graph)
-        if False: 
+        if False:
             sink.quantify = lambda *args: True
             sink.flatten = lambda *args: True
         baseURI = graph.absolutize(source.getPublicId() or source.getSystemId() or "")
@@ -33,16 +33,16 @@ class N3Parser(Parser):
 
 
 class Sink(object):
-    def __init__(self, graph): 
-        self.graph = graph 
+    def __init__(self, graph):
+        self.graph = graph
 
-    def start(self, root): 
+    def start(self, root):
         pass
 
-    def statement(self, s, p, o, f): 
+    def statement(self, s, p, o, f):
         f.add((s, p, o))
 
-    def quantify(self, formula, var): 
+    def quantify(self, formula, var):
         #print "quantify(%s, %s)" % (formula, var)
         pass
 

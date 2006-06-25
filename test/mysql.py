@@ -6,8 +6,8 @@ configString="user=root,password=1618,host=localhost,db=rdflib_db"
 
 def testRegex():
     g = Graph(backend='MySQL')
-    g.open(configString)    
-    g.parse(StringInputSource(testN3), format="n3") 
+    g.open(configString)
+    g.parse(StringInputSource(testN3), format="n3")
     try:
         for s,p,o in g.triples((None,implies,None)):
             formulaA = s
@@ -47,18 +47,18 @@ def testRegex():
 
         for subj in g.backend.subjects(implies,[formulaB,RDFS.Class]):
             assert subj.identifier == formulaA.identifier
-            
+
         assert len(list(g.backend.subjects(REGEXTerm('.*'),[formulaB,c])))==2
         assert len(list(g.backend.subjects(None,[formulaB,c])))==2
         assert len(list(g.backend.subjects(None,[formulaB,c])))==2
         assert len(list(g.backend.subjects([REGEXTerm('.*rdf-syntax.*'),d],None)))==2
 
-        assert len(list(g.backend.objects(None,RDF.type)))==1        
+        assert len(list(g.backend.objects(None,RDF.type)))==1
         assert len(list(g.backend.objects(a,[d,RDF.type])))==1
         assert len(list(g.backend.objects(a,[d])))==1
-        assert len(list(g.backend.objects(a,None)))==1        
+        assert len(list(g.backend.objects(a,None)))==1
         assert len(list(g.backend.objects(a,[REGEXTerm('.*')])))==1
-        assert len(list(g.backend.objects([a,c],None)))==1        
+        assert len(list(g.backend.objects([a,c],None)))==1
 
     except:
         g.backend.destroy(configString)
@@ -66,7 +66,7 @@ def testRegex():
 
 def testRun():
     testN3Store('MySQL',configString)
-    testRegex()    
+    testRegex()
 
 def profileTests():
     from hotshot import Profile, stats
@@ -81,10 +81,10 @@ def profileTests():
     s.print_stats(.1)
     s.print_callers(.1)
     s.print_callees(.1)
-    
+
 
 if __name__=='__main__':
     testN3Store('MySQL',configString)
     testRegex()
     #profileTests()
-    
+

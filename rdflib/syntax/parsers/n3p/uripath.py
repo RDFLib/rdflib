@@ -31,7 +31,7 @@ def splitFrag(uriref):
     Punctuation is thrown away.
 
     e.g.
-    
+
     >>> splitFrag("abc#def")
     ('abc', 'def')
 
@@ -48,7 +48,7 @@ def splitFragP(uriref, punct=0):
     """split a URI reference before the fragment
 
     Punctuation is kept.
-    
+
     e.g.
 
     >>> splitFragP("abc#def")
@@ -88,7 +88,7 @@ def join(here, there):
 
     >>> len(u'Andr\\xe9')
     5
-    
+
     >>> join('http://example.org/', u'#Andr\\xe9')
     u'http://example.org/#Andr\\xe9'
     """
@@ -131,7 +131,7 @@ def join(here, there):
 
     path, frag = splitFragP(there)
     if not path: return here + frag
-    
+
     while 1:
         if path[:2] == './':
             path = path[2:]
@@ -149,7 +149,7 @@ def join(here, there):
     return here[:slashr+1] + path + frag
 
 
-    
+
 import re
 import string
 commonHost = re.compile(r'^[-_a-zA-Z0-9.]+:(//[^/]*)?/[^/]*$')
@@ -163,7 +163,7 @@ def refTo(base, uri):
 
     >>> refTo('file:/ex/x/y', 'file:/ex/x/q/r#s')
     'q/r#s'
-    
+
     >>> refTo(None, 'http://ex/x/y')
     'http://ex/x/y'
 
@@ -179,7 +179,7 @@ def refTo(base, uri):
     So 'http://ex/x/q:r' is not a URI. Use 'http://ex/x/q%3ar' instead:
     >>> x='http://ex/x/y';y='http://ex/x/q%3ar';join(x, refTo(x, y)) == y
     1
-    
+
     This one checks that it uses a root-realtive one where that is
     all they share.  Now uses root-relative where no path is shared.
     This is a matter of taste but tends to give more resilience IMHO
@@ -198,7 +198,7 @@ def refTo(base, uri):
 #    assert base # don't mask bugs -danc # not a bug. -tim
     if not base: return uri
     if base == uri: return ""
-    
+
     # Find how many path segments in common
     i=0
     while i<len(uri) and i<len(base):
@@ -234,7 +234,7 @@ def refTo(base, uri):
 import os
 def base():
         """The base URI for this process - the Web equiv of cwd
-        
+
         Relative or abolute unix-standard filenames parsed relative to
         this yeild the URI of the file.
         If we had a reliable way of getting a computer name,
@@ -285,7 +285,7 @@ class Tests(unittest.TestCase):
                  ('file:/ex/x/y/', 'file:/ex/x/y/', ''),
                  ('file:/ex/x/y/pdq', 'file:/ex/x/y/pdq', ''),
                  ('file:/ex/x/y/', 'file:/ex/x/y/z/', 'z/'),
-                 ('file:/devel/WWW/2000/10/swap/test/reluri-1.n3', 
+                 ('file:/devel/WWW/2000/10/swap/test/reluri-1.n3',
                   'file://meetings.example.com/cal#m1', 'file://meetings.example.com/cal#m1'),
                  ('file:/home/connolly/w3ccvs/WWW/2000/10/swap/test/reluri-1.n3', 'file://meetings.example.com/cal#m1', 'file://meetings.example.com/cal#m1'),
                  ('file:/some/dir/foo', 'file:/some/dir/#blort', './#blort'),
@@ -348,7 +348,7 @@ class Tests(unittest.TestCase):
             (base, '../../', 'http://a/'),
             (base, '../../g', 'http://a/g')
             )
-        
+
         otherExamples = (
             (base, '', base),
             (base, '../../../g', 'http://a/g'), #@@disagree with RFC2396
@@ -359,20 +359,20 @@ class Tests(unittest.TestCase):
             (base, '.g', 'http://a/b/c/.g'),
             (base, 'g..', 'http://a/b/c/g..'),
             (base, '..g', 'http://a/b/c/..g'),
-            
+
             (base, './../g', 'http://a/b/g'),
             (base, './g/.', 'http://a/b/c/g/.'), #@@hmmm...
             (base, 'g/./h', 'http://a/b/c/g/./h'), #@@hmm...
             (base, 'g/../h', 'http://a/b/c/g/../h'),
             (base, 'g;x=1/./y', 'http://a/b/c/g;x=1/./y'), #@@hmmm...
             (base, 'g;x=1/../y', 'http://a/b/c/g;x=1/../y'),  #@@hmmm...
-            
+
             (base, 'g?y/./x', 'http://a/b/c/g?y/./x'),
             (base, 'g?y/../x', 'http://a/b/c/g?y/../x'),
             (base, 'g#s/./x', 'http://a/b/c/g#s/./x'),
             (base, 'g#s/../x', 'http://a/b/c/g#s/../x')
             )
-        
+
         for b, inp, exp in normalExamples + otherExamples:
             if exp is None:
                 self.assertRaises(ValueError, join, b, inp)

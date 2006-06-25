@@ -12,22 +12,22 @@ class XMLWriter(object):
         self.element_stack = []
         self.nm = namespace_manager
         self.closed = True
-        
+
     def __get_indent(self):
         return "  " * len(self.element_stack)
     indent = property(__get_indent)
-    
+
     def __close_start_tag(self):
         if not self.closed: # TODO:
             self.closed = True
             self.stream.write(">")
-        
+
     def push(self, uri):
         nm = self.nm
-        self.__close_start_tag()        
+        self.__close_start_tag()
         write = self.stream.write
         write("\n")
-        write(self.indent)            
+        write(self.indent)
         write("<%s" % nm.qname(uri))
         self.element_stack.append(uri)
         self.closed = False
@@ -37,7 +37,7 @@ class XMLWriter(object):
         top = self.element_stack.pop()
         if uri:
             assert uri==top
-        write = self.stream.write            
+        write = self.stream.write
         if not self.closed:
             self.closed = True
             write("/>")

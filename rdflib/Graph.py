@@ -33,13 +33,13 @@ class Graph(Node):
     (some) less space but cannot support features that require
     context, such as true merging/demerging of sub-graphs and
     provenance.
-    
+
     The Graph constructor can take an identifier which identifies the Graph
     by name.  If none is given, the graph is assigned a BNode for it's identifier.
     For more on named graphs, see: http://www.w3.org/2004/03/trix/
-    
+
     Ontology for __str__ provenance terms:
-    
+
     @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
     @prefix : <http://rdflib.net/store/> .
@@ -47,7 +47,7 @@ class Graph(Node):
     @prefix owl: <http://www.w3.org/2002/07/owl#>.
     @prefix log: <http://www.w3.org/2000/10/swap/log#>.
     @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
-    
+
     :Store a owl:Class;
         rdfs:subClassOf <http://xmlns.com/wordnet/1.6/Electronic_database>;
         rdfs:subClassOf
@@ -68,40 +68,40 @@ class Graph(Node):
         rdfs:subClassOf rdfg:Graph;
         rdfs:label "The top-level graph within the store - the concatenation of all the contexts within."
         rdfs:seeAlso <http://rdflib.net/rdf_store/#ConjunctiveGraph>.
-            
+
     :DefaultContext a owl:Class;
         rdfs:subClassOf rdfg:Graph;
         rdfs:label "The default subgraph of a conjunctive graph".
-    
-    
+
+
     :identifier a owl:Datatypeproperty;
         rdfs:label "The store-associated identifier of the formula. ".
         rdfs:domain log:Formula
         rdfs:range xsd:anyURI;
-        
+
     :storage a owl:ObjectProperty;
         rdfs:domain [
             a owl:Class;
             owl:unionOf (log:Formula rdfg:Graph :ConjunctiveGraph)
         ];
         rdfs:range :Store.
-        
+
     :default_context a owl:FunctionalProperty;
         rdfs:label "The default context for a conjunctive graph";
         rdfs:domain :ConjunctiveGraph;
         rdfs:range :DefaultContext.
-        
-        
+
+
     {?cg a :ConjunctiveGraph;:storage ?store}
       => {?cg owl:sameAs ?store}.
-      
+
     {?subGraph rdfg:subGraphOf ?cg;a :DefaultContext}
       => {?cg a :ConjunctiveGraph;:default_context ?subGraphOf} .
     """
 
     def __init__(self, store='default', identifier=None, namespace_manager=None):
         super(Graph, self).__init__()
-        self.__identifier = identifier or BNode() 
+        self.__identifier = identifier or BNode()
         if not isinstance(store, Store):
             # TODO: error handling
             self.__store = store = plugin.get(store, Store)()
@@ -148,7 +148,7 @@ class Graph(Node):
         Commits active transactions
         """
         self.__store.commit()
-    
+
     def rollback(self):
         """
         Rollback active transactions
@@ -171,8 +171,8 @@ class Graph(Node):
         no context is provides, triple is added to the default
         context."""
         self.__store.add((s, p, o), self, quoted=False)
-        
-    def addN(self, quads):        
+
+    def addN(self, quads):
         self.__store.addN([(s,p,o,c) for s,p,o,c in quads if isinstance(c,Graph) and c.identifier is self.identifier])
 
     def remove(self, (s, p, o)):
@@ -220,7 +220,7 @@ class Graph(Node):
     def __iadd__(self, other):
         """ Add all triples in Graph other to Graph."""
         for triple in other:
-            self.add(triple) 
+            self.add(triple)
         return self
 
     def __isub__(self, other):
@@ -371,8 +371,8 @@ class Graph(Node):
         else :
             return None
 
-    def qname(self, uri): 
-        return self.namespace_manager.qname(uri)       
+    def qname(self, uri):
+        return self.namespace_manager.qname(uri)
 
     def compute_qname(self, uri):
         return self.namespace_manager.compute_qname(uri)
@@ -461,7 +461,7 @@ class Graph(Node):
 
     def connected(self):
         """ Check if the Graph is connected (the Graph is considered undirectional).
-        
+
         Performs a search on the Graph, starting from a random node.
         Then iteratively goes depth-first through the triplets where the node is subject and object.
         Returns True if all nodes have been visited and False if it cannot continue and there are still unvisited nodes left.
@@ -507,8 +507,8 @@ class ConjunctiveGraph(Graph):
         """"A conjunctive graph adds to its default context."""
         self.store.add((s, p, o), context=self.default_context, quoted=False)
 
-    def addN(self, quads):        
-        self.store.addN(quads)    
+    def addN(self, quads):
+        self.store.addN(quads)
 
     def remove(self, (s, p, o)):
         """A conjunctive graph removes from all its contexts."""
@@ -520,7 +520,7 @@ class ConjunctiveGraph(Graph):
             yield s, p, o
 
     def triples_choices(self, (s, p, o)):
-        """An iterator over all the triples in the entire conjunctive graph."""        
+        """An iterator over all the triples in the entire conjunctive graph."""
         for (s1, p1, o1), cg in self.store.triples_choices((s, p, o), context=None):
             yield (s1, p1, o1)
 
@@ -529,7 +529,7 @@ class ConjunctiveGraph(Graph):
         return self.store.__len__()
 
     def contexts(self, triple=None):
-        """ 
+        """
         Iterator over all contexts in the graph. If triple is
         specified, a generator over all contexts the triple is in.
         """
@@ -548,7 +548,7 @@ class ConjunctiveGraph(Graph):
         return URIRef(context_id, base=uri)
 
     def parse(self, source, publicID=None, format="xml", **args):
-        """ 
+        """
         Parse source into Graph into it's own context (sub
         graph). Format defaults to xml (AKA rdf/xml). The publicID
         argument is for specifying the logical URI for the case that
@@ -572,7 +572,7 @@ class QuotedGraph(Graph):
     def __init__(self, store, identifier):
         super(QuotedGraph, self).__init__(store, identifier)
 
-    def add(self, triple): 
+    def add(self, triple):
         self.store.add(triple, self, quoted=True)
 
     def addN(self,quads):
@@ -581,7 +581,7 @@ class QuotedGraph(Graph):
     def n3(self):
         """return an n3 identifier for the Graph"""
         return "{%s}" % self.identifier.n3()
-    
+
     def __str__(self):
         if isinstance(self.identifier,URIRef):
             return "{this rdflib.identifier %s;rdflib:storage [a rdflib:Store;rdfs:label '%s']}"%(self.identifier.n3(),self.store.__class__.__name__)
@@ -604,11 +604,11 @@ class GraphValue(QuotedGraph):
             for t in s:
                 identifier.update("^".join((np.dumps(i) for i in t)))
             identifier = URIRef("data:%s" % identifier.hexdigest())
-            super(GraphValue, self).__init__(store, identifier)            
+            super(GraphValue, self).__init__(store, identifier)
             for t in graph:
                 store.add(t, context=self)
         else:
-            super(GraphValue, self).__init__(store, identifier)            
+            super(GraphValue, self).__init__(store, identifier)
 
 
     def add(self, triple):
@@ -671,10 +671,10 @@ class Seq(object):
 import warnings
 
 class BackwardCompatGraph(ConjunctiveGraph):
-    def __init__(self, backend='default'):    
-        warnings.warn("Use ConjunctiveGraph instead. ( from rdflib.Graph import ConjunctiveGraph )", 
+    def __init__(self, backend='default'):
+        warnings.warn("Use ConjunctiveGraph instead. ( from rdflib.Graph import ConjunctiveGraph )",
                       DeprecationWarning, stacklevel=2)
-        super(BackwardCompatGraph, self).__init__(store=backend)        
+        super(BackwardCompatGraph, self).__init__(store=backend)
 
     def __get_backend(self):
         return self.store
@@ -691,7 +691,7 @@ class BackwardCompatGraph(ConjunctiveGraph):
         else:
             c = self.default_context
         self.store.add((s, p, o), context=c, quoted=False)
-    
+
     def remove(self, (s, p, o), context=None):
         """A conjunctive graph removes from all its contexts."""
         if context is not None:
@@ -732,7 +732,7 @@ class BackwardCompatGraph(ConjunctiveGraph):
         self.store.remove((None, None, None), self.get_context(context))
 
     def contexts(self, triple=None):
-        """ 
+        """
         Iterator over all contexts in the graph. If triple is
         specified, a generator over all contexts the triple is in.
         """
@@ -779,17 +779,17 @@ class ModificationException(Exception):
     def __init__(self):
         pass
     def __str__(self):
-        return "Modifications and transactional operations not allowed on ReadOnlyGraphAggregate instances"    
+        return "Modifications and transactional operations not allowed on ReadOnlyGraphAggregate instances"
 
 class UnSupportedAggregateOperation(Exception):
     def __init__(self):
         pass
     def __str__(self):
-        return "This operation is not supported by ReadOnlyGraphAggregate instances"    
+        return "This operation is not supported by ReadOnlyGraphAggregate instances"
 
 class ReadOnlyGraphAggregate(ConjunctiveGraph):
     """
-    An utility class for treating a set of graphs as a single graph.  Only read operations 
+    An utility class for treating a set of graphs as a single graph.  Only read operations
     are supported (hence the name).  Essentially a ConjunctiveGraph over an explicit subset of the
     entire store
     """
@@ -806,31 +806,31 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     #Transactional interfaces (optional)
     def commit(self):
         raise ModificationException()
-        
+
     def rollback(self):
         raise ModificationException()
-    
+
     def open(self, configuration, create=False):
         # TODO: is there a use case for this method?
         for graph in self.graphs:
             graph.open(self, configuration, create)
-    
+
     def close(self):
         for graph in self.graphs:
             graph.close()
 
     def add(self, (s, p, o)):
         raise ModificationException()
-            
-    def addN(self, quads):        
+
+    def addN(self, quads):
         raise ModificationException()
 
     def remove(self, (s, p, o)):
         raise ModificationException()
-    
+
     def triples(self, (s, p, o)):
         for graph in self.graphs:
-            for s1, p1, o1 in graph.triples((s, p, o)):                
+            for s1, p1, o1 in graph.triples((s, p, o)):
                 yield (s1, p1, o1)
 
     def __len__(self):
@@ -838,20 +838,20 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
 
     def __hash__(self):
         raise UnSupportedAggregateOperation()
-    
+
     def __cmp__(self, other):
         if other is None:
             return -1
         elif isinstance(other, Graph):
             return -1
         elif isinstance(other,ReadOnlyGraphAggregate):
-            return self.graphs == other.graphs                
-        else:            
+            return self.graphs == other.graphs
+        else:
             return -1
 
     def __iadd__(self, other):
         raise ModificationException()
-    
+
     def __isub__(self, other):
         raise ModificationException()
 
@@ -862,15 +862,15 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
             for (s,p,o) in graph.triples_choices((subject, predicate, object_)):
                 yield (s, p, o)
 
-    def qname(self, uri): 
-        raise UnSupportedAggregateOperation()       
+    def qname(self, uri):
+        raise UnSupportedAggregateOperation()
 
     def compute_qname(self, uri):
         raise UnSupportedAggregateOperation()
-    
+
     def bind(self, prefix, namespace, override=True):
         raise UnSupportedAggregateOperation()
-    
+
     def namespaces(self):
         for graph in self.graphs:
             for prefix, namespace in graph.namespace_manager.namespaces():
@@ -881,11 +881,11 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
 
     def parse(self, source, publicID=None, format="xml", **args):
         raise ModificationException()
-    
+
     def n3(self):
         raise UnSupportedAggregateOperation()
 
     def __reduce__(self):
         raise UnSupportedAggregateOperation()
 
-    
+

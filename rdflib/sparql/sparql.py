@@ -47,8 +47,8 @@ type_dateTime = "http://www.w3.org/2001/XMLSchema#dateTime"
 type_date     = "http://www.w3.org/2001/XMLSchema#date"
 type_time     = "http://www.w3.org/2001/XMLSchema#time"
 
-# Mapping from the Python types to the corresponding XML Schema types. Note that, for internal purposes, strings 
-# are just used in a plain format, not with the XML Schema version (the XML Schema string is a default for 
+# Mapping from the Python types to the corresponding XML Schema types. Note that, for internal purposes, strings
+# are just used in a plain format, not with the XML Schema version (the XML Schema string is a default for
 # an RDF datatype, hence this here)
 _basicTypes = {
     IntType     : type_integer,
@@ -90,24 +90,24 @@ class Unbound :
         @param name: the name of the variable (without the '?' character)
         @type name: unicode or string
         """
-        from sparql import _questChar, Debug    
+        from sparql import _questChar, Debug
         if isinstance(name,basestring) :
             self.name     = _questChar + name
             self.origName = name
         else :
             raise SPARQLError("illegal argument, variable name must be a string or unicode")
-            
+
     def __repr__(self) :
         retval  = "?%s" % self.origName
         return retval
-        
+
     def __str__(self) :
         return self.__repr__()
 
 class PatternBNode :
-    """A class to encapsulate a BNode in a Pattern. This class should be used in conjunction 
+    """A class to encapsulate a BNode in a Pattern. This class should be used in conjunction
     with L{BasicGraphPattern<graphPattern.BasicGraphPattern>}.
-    
+
     Usage of this class may be necessary when the query is used for a L{graph construction<Query.construct>}.
     """
     def __init__(self,name) :
@@ -115,23 +115,23 @@ class PatternBNode :
         @param name: the name of the bnode (without the '_:' characters)
         @type name: unicode or string
         """
-        from sparql import _questChar, Debug    
+        from sparql import _questChar, Debug
         if isinstance(name,basestring) :
             self.name     = name
         else :
             raise SPARQLError("illegal argument, variable name must be a string or unicode")
-        
+
     def __repr__(self) :
         retval  = "_:%s" % self.name
         return retval
-    
+
     def __str__(self) :
         return self.__repr__()
 
 def _variablesToArray(variables,name='') :
     """Turn an array of Variables or query strings into an array of query strings. If the 'variables'
     is in fact a single string or Variable, then it is also put into an array.
-    
+
     @param variables: a string, a unicode, or a Variable, or an array of those (can be mixed, actually). As a special case,
     if the value is "*", it returns None (this corresponds to the wildcard in SPARQL)
     @param name: the string to be used in the error message
@@ -162,7 +162,7 @@ def _schemaType(v) :
     the schema types that are allowed by this implementation. A
     SPARQLError Exception is raised if the type represents a
     non-implemented type.
-    
+
     @param v: Python variable
     @return: URI for the XML Datatype
     @rtype: string
@@ -185,15 +185,15 @@ def _createResource(v) :
     resource, it simply returns the resource; otherwise the
     corresponding Literal.  A SPARQLError Exception is raised if the
     type is not implemented.
-    
+
     The Literal contains the string representation of the variable (as
     Python does it by default) with the corresponding XML Schema URI
     set.
-    
+
     @param v: Python variable
     @return: either an RDFLib Literal (if 'v' is not an RDFLib Resource), or the same variable if it is already
     an RDFLib resource (ie, Literal, BNode, or URIRef)
-    @raise SPARQLError: if the type of 'v' is not implemented    
+    @raise SPARQLError: if the type of 'v' is not implemented
     """
     if isinstance(v,Literal) or isinstance(v,BNode) or isinstance(v,URIRef) :
         # just do nothing
@@ -214,32 +214,32 @@ def _createResource(v) :
 def _isResQuest(r) :
     """
     Is 'r' a request string (ie, of the form "?XXX")?
-    
+
     @rtype: Boolean
     """
     if r and isinstance(r,basestring) and r[0] == _questChar :
         return True
     return False
 
-    
+
 def _checkOptionals(pattern,optionals) :
     """
     The following remark in the SPARQL document is important:
-        
+
     'If a new variable is mentioned in an optional block (as mbox and
     hpage are mentioned in the previous example), that variable can be
     mentioned in that block and can not be mentioned in a subsequent
     block.'
-    
+
     What this means is that the various optional blocks do not
     interefere at this level and there is no need for a check whether
     a binding in a subsequent block clashes with an earlier optional
     block.
-    
+
     This method checks whether this requirement is fulfilled. Raises a
     SPARQLError exception if it is not (the rest of the algorithm
     relies on this, so checking it is a good idea...)
-    
+
     @param pattern: graph pattern
     @type pattern: L{GraphPattern<rdflib.sparql.GraphPattern>}
     @param optionals: graph pattern
@@ -258,20 +258,20 @@ def _checkOptionals(pattern,optionals) :
                         #   - the variable is not in the main pattern (because the previous if would have taken care of it)
                         #   - the variable is in the previous optional: ie, Error!
                         raise SPARQLError("%s is an illegal query string, it appear in a previous OPTIONAL clause" % c)
-    
+
 def _createInitialBindings(pattern) :
     """Creates an initial binding directory for the Graph Pattern by putting a None as a value for each
     query variable.
-    
+
     @param pattern: graph pattern
     @type pattern: L{GraphPattern<rdflib.sparql.GraphPattern>}
     """
     bindings = {}
     for c in pattern.unbounds :
         bindings[c] = None
-    return bindings            
-            
-    
+    return bindings
+
+
 def _processResults(select,arr) :
     '''
     The result in an expansion node is in the form of an array of
@@ -279,12 +279,12 @@ def _processResults(select,arr) :
     tuples, each tuple representing the final binding (or None) I{in
     the order of the original select}. This method is the last step of
     processing by processing these values to produce the right result.
-    
+
     @param select: the original selection list. If None, then the
-    binding should be taken as a whole (this corresponds to the SELECT * feature of SPARQL) 
-    @param arr: the array of bindings 
+    binding should be taken as a whole (this corresponds to the SELECT * feature of SPARQL)
+    @param arr: the array of bindings
     @type arr:
-    an array of dictionaries 
+    an array of dictionaries
     @return: a list of tuples with the selection results
     '''
     retval = []
@@ -314,27 +314,27 @@ def _processResults(select,arr) :
     return retval
 
 
-    
+
 ##########################################################################
 # This utility is necessary to maintain the deprecated interfaces. When those disappear,
 # this utility can be deleted, too
 def _unfoldNestedLists(args) :
     """To unfold nested lists of the sort = [t,[t1,t2],tt,ttt] into
     [t,t1,tt,ttt] and [t,t2,tt,ttt]. Returns the list of lists.
-    
+
     This utility is necessary to maintain the deprecated
     interfaces. When those disappear, this utility can be deleted, too
-    
+
     @param args: list
     @return: unfolded list of lists
-    """    
+    """
     allBranches = [[]]
     for arg in args :
         if type(arg) is tuple :
             for x in allBranches :
                 x.append(arg)
         elif type(arg) is list :
-            # All lists in allBranches must be copied as many times as there are tuples in 
+            # All lists in allBranches must be copied as many times as there are tuples in
             # arg, and the elements of arg must be appended to them
             newAllBranches = []
             for x in allBranches :
@@ -358,22 +358,22 @@ class SPARQL :
     """
     ##########################################################################################################
     # Deprecated methods. Should be deleted in a next release...
-    
+
     def sparqlQuery(self,selectU,where,constraints=[],optional=[]) :
         """
         A shorthand for the creation of a L{Query} instance and
         returning the result of a selection right away. Good for most
         of the usage, when no more action (clustering, etc) is
         necessary.
-        
+
         B{This method is deprecated and may disappear from future
         releases.} Use the L{query} method.
-        
+
         @param selectU: a tuple with the selection criteria. Each
         entry is a string that begins with a"?". If not, it is ignored.
         If the selection is only one single string, then the parameter can also be a single string instead
         of a tuple.
-        
+
         @param where: an array of statement tuples. The tuples are
         either three or four elements long.  Each of the first three
         entries in the tuples is either a string or an RDFLib
@@ -387,18 +387,18 @@ class SPARQL :
         of a tuple. This is interpreted as an 'or', ie, several
         queries will be issued by replacing the list with its elements
         respectively, and the resulting bindings will be concatenated.
-        
+
         @param constraints: a list of functions. All functions will be
         invoked with a full binding if found. The input is a
         dictionary for the binding, the return value should be true or
         false.  The conditions are 'and'-d, ie, if one returns false,
         that particular binding is rejected.
-        
+
         @param optional: like the 'where' array. The subgraph is
         optional: ie, if no triple are found for these subgraph, the
         search goes on (and the corresponding select entry is set to
         None)
-        
+
         @return: list of query results
 
         @depreciated: this was an earlier implementation version and
@@ -406,16 +406,16 @@ class SPARQL :
         """
         obj = self._sparqlObject(selectU,where,constraints=constraints,optional=optional)
         return obj.select(selectU)
-    
+
     def _sparqlObject(self,select,where,constraints=[],optional=[]) :
         """
         Creation of a L{Query} instance.
-        
+
         @param select: a tuple with the selection criteria. Each entry
         is a string that begins with a"?". If not, it is ignored.
         If the selection is only one single string, then the parameter can also be a single string instead
         of a tuple.
-        
+
         @param where: an array of statement tuples. The tuples are
         either three or four elements long.  Each of the first three
         entries in the tuples is either a string or an RDFLib
@@ -429,18 +429,18 @@ class SPARQL :
         of a tuple. This is interpreted as an 'or', ie, several
         queries will be issued by replacing the list with its elements
         respectively, and the resulting bindings will be concatenated.
-        
+
         @param constraints: a list of functions. All functions will be
         invoked with a full binding if found. The input is a
         dictionary for the binding, the return value should be true or
         false.  The conditions are 'and'-d, ie, if one returns false,
         that particular binding is rejected.
-        
+
         @param optional: like the 'where' array. The subgraph is
         optional: ie, if no triple are found for these subgraph, the
         search goes on (and the corresponding select entry is set to
         None)
-        
+
         @return: a L{Query} instance
 
         @depreciated: this is used by L{sparqlQuery} only and may
@@ -465,7 +465,7 @@ class SPARQL :
             constraintsA = constraints
         else :
             raise SPARQLError("'constraints' argument must be a function, a list or a tuple")
-            
+
         if optional :
             if type(optional) == tuple :
                 optionalA = [optional]
@@ -475,7 +475,7 @@ class SPARQL :
                 raise SPARQLError("'optional' argument must be a list or a tuple" % t)
         else :
             optionalA = []
-            
+
         allWhere    = _unfoldNestedLists(whereA)
         allOptional = _unfoldNestedLists(optionalA)
         basicPatterns = []
@@ -488,33 +488,33 @@ class SPARQL :
             optPatterns.append(GraphPattern(o))
         r = self.queryObject(basicPatterns,optPatterns)
         return r
-            
-    
+
+
     ###############################################################################################
     def __init__(self) :
-        pass        
-        
+        pass
+
     def query(self,selection,patterns,optionalPatterns=[],initialBindings = {}) :
         """
         A shorthand for the creation of a L{Query} instance, returning
         the result of a L{Query.select} right away. Good for most of
         the usage, when no more action (clustering, etc) is required.
-        
+
         @param selection: a list or tuple with the selection criteria,
-        or a single string. Each entry is a string that begins with a"?". 
+        or a single string. Each entry is a string that begins with a"?".
 
         @param patterns: either a
         L{GraphPattern<rdflib.sparql.graphPattern.GraphPattern>}
         instance or a list of instances thereof. Each pattern in the
         list represent an 'OR' (or 'UNION') branch in SPARQL.
-        
+
         @param optionalPatterns: either a
         L{GraphPattern<rdflib.sparql.graphPattern.GraphPattern>}
         instance or a list of instances thereof. For each elements in
         the 'patterns' parameter is combined with each of the optional
         patterns and the results are concatenated. The list may be
         empty.
-        
+
         @return: list of query results
         @rtype: list of tuples
         """
@@ -528,26 +528,26 @@ class SPARQL :
                 msg += ("pattern:\n%s\netc..." % patterns[0])
             raise SPARQLError(msg)
         return result.select(selection)
-        
+
     def queryObject(self,patterns,optionalPatterns=[],initialBindings = None) :
         """
         Creation of a L{Query} instance.
-        
+
         @param patterns: either a
         L{GraphPattern<rdflib.sparql.graphPattern.GraphPattern>}
         instance or a list of instances thereof. Each pattern in the
         list represent an 'OR' (or 'UNION') branch in SPARQL.
-        
+
         @param optionalPatterns: either a
         L{GraphPattern<rdflib.sparql.graphPattern.GraphPattern>}
         instance or a list of instances thereof. For each elements in
         the 'patterns' parameter is combined with each of the optional
         patterns and the results are concatenated. The list may be
         empty.
-        
+
         @return: Query object
         @rtype: L{Query}
-        """        
+        """
         def checkArg(arg,error) :
             if arg == None :
                 return []
@@ -562,7 +562,7 @@ class SPARQL :
                 raise SPARQLError("'%s' argument must be a GraphPattern or a list of those" % error)
 
         finalPatterns         = checkArg(patterns,"patterns")
-        finalOptionalPatterns = checkArg(optionalPatterns,"optionalPatterns")    
+        finalOptionalPatterns = checkArg(optionalPatterns,"optionalPatterns")
 
         retval = None
         if not initialBindings:
@@ -570,7 +570,7 @@ class SPARQL :
         for pattern in finalPatterns :
             # Check whether the query strings in the optional clauses are fine. If a problem occurs,
             # an exception is raised by the function
-            _checkOptionals(pattern,finalOptionalPatterns)            
+            _checkOptionals(pattern,finalOptionalPatterns)
             bindings = _createInitialBindings(pattern)
             if initialBindings:
                 bindings.update(initialBindings)
@@ -590,14 +590,14 @@ class SPARQL :
                 # This branch is, effectively, the UNION clause of the draft
                 retval = retval + r
         return retval
-            
+
 ############################################################################################
 class Query :
     """
     Result of a SPARQL query. It stores to the top of the query tree, and allows some subsequent
     inquiries on the expanded tree. B{This class should not be
     instantiated by the user,} it is done by the L{queryObject<SPARQL.queryObject>} method.
-    
+
     """
     def __init__(self,sparqlnode,triples,parent1=None,parent2=None) :
         """
@@ -615,7 +615,7 @@ class Query :
         # if this node is the result of a sum...
         self.parent1         = parent1
         self.parent2         = parent2
-        
+
     def __add__(self,other) :
         """This may be useful when several queries are performed and
         one wants the 'union' of those.  Caveat: the triple store must
@@ -627,7 +627,7 @@ class Query :
         'other' in the new object
         """
         return Query(None,self.triples,self,other)
-        
+
     def _getFullBinding(self) :
         """Retrieve the full binding, ie, an array of binding dictionaries
         """
@@ -636,17 +636,17 @@ class Query :
         else :
             # remember: returnResult returns an array of dictionaries
             return self.top.returnResult(None)
-        
+
     def _getAllVariables(self):
        """Retrieve the list of all variables, to be returned"""
        if self.parent1 != None and self.parent2 != None :
            return self.parent1._getAllVariables().union(self.parent2._getAllVariables())
        else :
-           return set(self.top.bindings.keys())        
-        
+           return set(self.top.bindings.keys())
+
     def _orderedSelect(self,selection,orderedBy,orderDirection) :
         """
-        The variant of the selection (as below) that also includes the sorting. Because that is much less efficient, this is 
+        The variant of the selection (as below) that also includes the sorting. Because that is much less efficient, this is
         separated into a distinct method that is called only if necessary. It is called from the L{select<select>} method.
 		
         Because order can be made on variables that are not part of the final selection, this method retrieves a I{full}
@@ -654,9 +654,9 @@ class Query :
         the selected bindings only). The full binding is an array of (binding) dictionaries; the sorting sorts this array
         by comparing the bound variables in the respective dictionaries. Once this is done, the final selection is done.
 
-        @param selection: Either a single query string, or an array or tuple thereof.        
+        @param selection: Either a single query string, or an array or tuple thereof.
         @param orderBy: either a function or a list of strings (corresponding to variables in the query). If None, no sorting occurs
-        on the results. If the parameter is a function, it must take two dictionary arguments (the binding dictionaries), return 
+        on the results. If the parameter is a function, it must take two dictionary arguments (the binding dictionaries), return
         -1, 0, and 1, corresponding to smaller, equal, and greater, respectively.
         @param orderDirection: if not None, then an array of integers of the same length as orderBy, with values the constants
         ASC or DESC (defined in the module). If None, an ascending order is used.
@@ -707,18 +707,18 @@ class Query :
         # into an array of tuples in the right, original order
         retval = _processResults(selection,fullBinding)
         return retval
-        
+
     def select(self,selection,distinct=True,limit=None,orderBy=None,orderAscend=None,offset=0) :
         """
         Run a selection on the query.
-        
+
         @param selection: Either a single query string, or an array or tuple thereof.
         @param distinct: if True, identical results are filtered out
         @type distinct: Boolean
         @param limit: if set to an integer value, the first 'limit' number of results are returned; all of them otherwise
         @type limit: non negative integer
         @param orderBy: either a function or a list of strings (corresponding to variables in the query). If None, no sorting occurs
-        on the results. If the parameter is a function, it must take two dictionary arguments (the binding dictionaries), return 
+        on the results. If the parameter is a function, it must take two dictionary arguments (the binding dictionaries), return
         -1, 0, and 1, corresponding to smaller, equal, and greater, respectively.
         @param orderAscend: if not None, then an array of booelans of the same length as orderBy, True for ascending and False
 		for descending. If None, an ascending order is used.
@@ -755,17 +755,17 @@ class Query :
                     return list(sets.Set(lst))
         # Select may be a single query string, or an array/tuple thereof
         selectionF = _variablesToArray(selection,"selection")
-            
+
         if type(offset) is not IntType or offset < 0 :
             raise SPARQLError("'offset' argument is invalid")
-            
-        if limit != None :                
+
+        if limit != None :
             if type(limit) is not IntType or limit < 0 :
                 raise SPARQLError("'offset' argument is invalid")
 
         if orderBy != None :
             results = self._orderedSelect(selectionF,orderBy,orderAscend)
-        else :           
+        else :
             if self.parent1 != None and self.parent2 != None :
                 results = self.parent1.select(selectionF) + self.parent2.select(selectionF)
             else :
@@ -783,18 +783,18 @@ class Query :
             return retval[offset:]
         else :
             return retval
-            
+
     def construct(self,pattern=None) :
         """
         Expand the subgraph based on the pattern or, if None, the
         internal bindings.
-        
+
         In the former case the binding is used to instantiate the
         triplets in the patterns; in the latter, the original
         statements are used as patterns.
-        
+
         The result is a separate triple store containing the subgraph.
-        
+
         @param pattern: a L{GraphPattern<rdflib.sparql.graphPattern.GraphPattern>} instance or None
         @return: a new triple store
         @rtype: L{sparqlGraph<rdflib.sparql.sparqlGraph>}
@@ -807,30 +807,30 @@ class Query :
             subgraph = SPARQLGraph()
             self.top.expandSubgraph(subgraph,pattern)
             return subgraph
-        
+
     def ask(self) :
         """
         Whether a specific pattern has a solution or not.
         @rtype: Boolean
         """
         return len(self.select('*')) != 0
-    
+
     #########################################################################################################
     # The methods below are not really part of SPARQL, or may be used to a form of DESCRIBE. However, that latter
     # is still in a flux in the draft, so we leave it here, pending
-    
+
     def clusterForward(self,selection) :
         """
         Forward clustering, using all the results of the query as
         seeds (when appropriate). It is based on the usage of the
         L{cluster forward<rdflib.sparql.sparqlGraph.clusterForward>}
         method for triple store.
-        
+
         @param selection: a selection to define the seeds for
         clustering via the selection; the result of select used for
         the clustering seed
 
-        @return: a new triple store    
+        @return: a new triple store
         @rtype: L{sparqlGraph<rdflib.sparql.sparqlGraph>}
         """
         from sparqlGraph import SPARQLGraph
@@ -845,21 +845,21 @@ class Query :
                     self.triples.clusterForward(r,clusterF)
                 except :
                     # no real problem, this is a literal, just forget about it
-                    continue                    
+                    continue
             return clusterF
-        
+
     def clusterBackward(self,selection) :
         """
         Backward clustering, using all the results of the query as
         seeds (when appropriate). It is based on the usage of the
         L{cluster backward<rdflib.sparql.sparqlGraph.clusterBackward>}
         method for triple store.
-        
+
         @param selection: a selection to define the seeds for
         clustering via the selection; the result of select used for
         the clustering seed
 
-        @return: a new triple store    
+        @return: a new triple store
         @rtype: L{sparqlGraph<rdflib.sparql.sparqlGraph>}
         """
         from sparqlGraph import SPARQLGraph
@@ -881,7 +881,7 @@ class Query :
         of select used for the clustering seed
         """
         return self.clusterBackward(selection) + self.clusterForward(selection)
-        
+
     def describe(self,selection,forward=True,backward=True) :
         """
         The DESCRIBE Form in the SPARQL draft is still in state of
@@ -889,7 +889,7 @@ class Query :
         correspond to what the final version of describe will be (if
         it stays in the draft at all, that is).  At present, it is
         simply a wrapper around L{cluster}.
-        
+
         @param selection: a selection to define the seeds for
         clustering via the selection; the result of select used for
         the clustering seed
@@ -914,7 +914,7 @@ class _SPARQLNode:
     """
     The SPARQL implementation is based on the creation of a tree, each
     level for each statement in the 'where' clause of SPARQL.
-    
+
     Each node maintains a 'binding' dictionary, with the variable
     names and either a None if not yet bound, or the binding
     itself. The method 'expand' tries to make one more step of binding
@@ -931,20 +931,20 @@ class _SPARQLNode:
     made; this node will then be thrown away by the parent. If I{all}
     children of a node is a clash, then it is marked as a clash
     itself.
-    
+
     At the end of the process, the leaves of the tree are searched; if
     a leaf is such that:
-        
+
       - all variables are bound
       - there is no clash
-      
+
     then the bindings are returned as possible answers to the query.
-    
+
     The optional clauses are treated separately: each 'valid' leaf is
     assigned an array of expansion trees that contain the optional
     clauses (that may have some unbound variables bound at the leaf,
     though).
-    
+
     @ivar parent: parent in the tree
     @type parent: _SPARQLNode
     @ivar children: the children (in an array)
@@ -962,7 +962,7 @@ class _SPARQLNode:
     @type optionalTrees: array of _SPARQLNode instances
     """
     def __init__(self,parent,bindings,statements,tripleStore) :
-        """ 
+        """
         @param parent:     parent node
         @param bindings:   a dictionary with the bindings that are already done or with None value if no binding yet
         @param statements: array of statements from the 'where' clause. The first element is
@@ -974,16 +974,16 @@ class _SPARQLNode:
         self.tripleStore         = tripleStore
         self.bindings            = bindings
         self.bindings[_graphKey] = tripleStore
-        self.optionalTrees       = []        
+        self.optionalTrees       = []
         if None in bindings.values() :
             self.bound = False
         else :
-            self.bound = True            
+            self.bound = True
         self.clash     = False
-        
+
         self.parent    = parent
         self.children  = []
-        
+
         if len(statements) > 0 :
             self.statement = statements[0]
             self.rest      = statements[1:]
@@ -998,11 +998,11 @@ class _SPARQLNode:
         equivalent (if applicable). This action is done on the valid
         leaf nodes only, the intermediate nodes only gather the
         children's results and combine it in one array.
-        
+
         @param select: the array of unbound variables in the original
         select that do not appear in any of the optionals. If None,
         the full binding should be considered (this is the case for
-        the SELECT * feature of SPARQL) 
+        the SELECT * feature of SPARQL)
         @returns: an array of dictionaries with non-None bindings.
         """
         if len(self.children) > 0 :
@@ -1030,8 +1030,8 @@ class _SPARQLNode:
                 # because the for cycle below will not happen
                 retval = [result]
                 # The following remark in the SPARQL document is important at this point:
-                # "If a new variable is mentioned in an optional block (as mbox and hpage are mentioned 
-                #  in the previous example), that variable can be mentioned in that block and can not be 
+                # "If a new variable is mentioned in an optional block (as mbox and hpage are mentioned
+                #  in the previous example), that variable can be mentioned in that block and can not be
                 #  mentioned in a subsequent block."
                 # What this means is that the various optional blocks do not interefere at this point
                 # and there is no need for a check whether a binding in a subsequent block
@@ -1054,7 +1054,7 @@ class _SPARQLNode:
                         for res in retval :
                             for k in optResult :
                                 if optResult[k] != None :
-                                    res[k] = optResult[k]                                
+                                    res[k] = optResult[k]
                     else :
                         newRetval = []
                         for optResult in optionals :
@@ -1076,7 +1076,7 @@ class _SPARQLNode:
         """
         Method used to collect the results. There are two ways to
         invoke the method:
-            
+
           - if the pattern argument is not None, then this means the
           construction of a separate triple store with the
           results. This means taking the bindings in the node, and
@@ -1086,10 +1086,10 @@ class _SPARQLNode:
           call the same method recursively - otherwise, a leaf returns
           an array of the bindings, and intermediate methods aggregate
           those.
-          
+
         In both cases, leaf nodes may successifely expand the optional
         trees that they may have.
-        
+
         @param subTriples: the triples so far
         @type subTriples: L{sparqlGraph<rdflib.sparql.sparqlGraph.sparqlGraph>}
         @param pattern: a graph pattern used to construct a graph
@@ -1132,8 +1132,8 @@ class _SPARQLNode:
                     pattern.construct(subTriples,self.bindings)
             else :
                 return []
-                
-                
+
+
     def _bind(self,r) :
         """
         @param r: string
@@ -1145,13 +1145,13 @@ class _SPARQLNode:
             else :
                 return self.bindings[r]
         else :
-            return r                    
+            return r
 
     def expand(self,constraints) :
         """
         The expansion itself. See class comments for details.
-        
-        @param constraints: array of global constraining (filter) methods        
+
+        @param constraints: array of global constraining (filter) methods
         """
         # if there are no more statements, that means that the constraints have been fully expanded
         if self.statement :
@@ -1175,14 +1175,14 @@ class _SPARQLNode:
                 if search_s == None : new_bindings[s] = result_s
                 if search_p == None : new_bindings[p] = result_p
                 if search_o == None : new_bindings[o] = result_o
-                    
+
                 # Recursion starts here: create and expand a new child
                 child = _SPARQLNode(self,new_bindings,self.rest,self.tripleStore)
                 child.expand(constraints)
                 # if the child is a clash then no use adding it to the tree, it can be forgotten
                 if self.clash == False :
                     self.children.append(child)
-                    
+
             if len(self.children) == 0 :
                 # this means that the constraints could not be met at all with this binding!!!!
                 self.clash = True
@@ -1194,13 +1194,13 @@ class _SPARQLNode:
                     if func(self.bindings) == False :
                         self.clash = True
                         break
-                
+
     def expandOptions(self,bindings,statements,constraints) :
         """
         Managing optional statements. These affect leaf nodes only, if
         they contain 'real' results. A separate Expansion tree is
         appended to such a node, one for each optional call.
-        
+
         @param bindings: current bindings dictionary
 
         @param statements: array of statements from the 'where'
@@ -1218,7 +1218,7 @@ class _SPARQLNode:
             if key == p : p = resource
             if key == o : o = resource
             return (s,p,o,func)
-            
+
         if len(self.children) == 0  :
             # this is a leaf in the original expansion
             if self.bound == True and self.clash == False :

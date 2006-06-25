@@ -3,10 +3,10 @@ from rdflib import URIRef
 class Serializer(object):
 
     def __init__(self, store):
-        self.store = store        
+        self.store = store
         self.encoding = "UTF-8"
         self.base = None
-        
+
     def serialize(self, stream, base=None, encoding=None):
         """Abstract method"""
 

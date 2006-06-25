@@ -5,7 +5,7 @@ class FileInputSource(InputSource, object):
         super(FileInputSource, self).__init__(`file`)
         self.file = file
         self.setByteStream(file)
-        # TODO: self.setEncoding(encoding) 
+        # TODO: self.setEncoding(encoding)
 
     def __repr__(self):
         return `self.file`

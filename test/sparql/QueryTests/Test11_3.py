@@ -5,18 +5,18 @@
 # $Date: 2005/04/02 07:29:46 $, by $Author: ivan $, $Revision: 1.1 $
 #
 """
-   Datatype test. Note that this is not 100% kosher. The problem is that the Literal of rdflib does not check the 
+   Datatype test. Note that this is not 100% kosher. The problem is that the Literal of rdflib does not check the
    datatypes. In theory, if the data contains:
 
            x ns:p 42.
-   
+
    instead of:
-           
+
        x ns:p 42^^http://www.w3.org/2001/XMLSchema#integer
-           
+
     the query should return no results, because the first object is of datatype string. However, Literal does not
         implement this...
-           
+
 """
 
 rdfData ="""<?xml version="1.0" encoding="UTF-8"?>
