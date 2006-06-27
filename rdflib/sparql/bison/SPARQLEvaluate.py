@@ -266,10 +266,10 @@ def validateGroupGraphPattern(gGP,noNesting = False):
         elif gP.nonTripleGraphPattern:
             validateGroupGraphPattern(gP.nonTripleGraphPattern,noNesting = True)
 
-def Evaluate(store,query,passedBindings = {},DEBUG = False):
+def Evaluate(graph,query,passedBindings = {},DEBUG = False):
     """
     Takes:
-        1. an rdflib.store.Store instance
+        1. a rdflib.Graph.Graph instance 
         2. a SPARQL query instance (parsed using the BisonGen parser)
         3. A dictionary of initial variable bindings (varName -> .. rdflib Term .. )
         4. DEBUG Flag
@@ -280,7 +280,7 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
         graphs = []
         for dtSet in query.query.dataSets:
             if isinstance(dtSet,NamedGraph):
-                graphs.append(Graph(store,dtSet))
+                graphs.append(Graph(graph.store,dtSet))
             else:
                 memStore = plugin.get('IOMemory',Store)()
                 memGraph = Graph(memStore)
@@ -291,8 +291,8 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
                     memGraph.parse(dtSet)
                 graphs.append(memGraph)
         tripleStore = sparqlGraph.SPARQLGraph(ReadOnlyGraphAggregate(graphs))
-    else:
-        tripleStore = sparqlGraph.SPARQLGraph(ConjunctiveGraph(store))
+    else:        
+        tripleStore = sparqlGraph.SPARQLGraph(graph)    
 
     #Interpret Graph Graph Patterns as Named Graphs
     graphGraphPatterns = categorizeGroupGraphPattern(query.query.whereClause.parsedGraphPattern)[0]
@@ -300,7 +300,7 @@ def Evaluate(store,query,passedBindings = {},DEBUG = False):
         graphGraphP = graphGraphPatterns[0].nonTripleGraphPattern
         assert not isinstance(graphGraphP.name,Variable) or graphGraphP.name in passedBindings,"Graph Graph Patterns can only be used with variables bound at the top level or a URIRef or BNode term"
         graphName =  isinstance(graphGraphP.name,Variable) and passedBindings[graphGraphP.name] or graphGraphP.name
-        tripleStore = sparqlGraph.SPARQLGraph(Graph(store,graphName))
+        tripleStore = sparqlGraph.SPARQLGraph(Graph(graph.store,graphName))
 
     if isinstance(query.query,SelectQuery) and query.query.variables:
         query.query.variables = [convertTerm(item,query.prolog) for item in query.query.variables]
