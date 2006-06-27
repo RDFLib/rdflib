@@ -481,27 +481,17 @@ class Graph(Node):
 
     def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False,
               processor="sparql"):
-        """ Executes a SPARQL query against this Conjunctive Graph
-
-        (eventually will support Versa queries with same method)
-
-        strOrQuery is either a string consisting of the SPARQL query or an
-        instance of rdflib.sparql.bison.Query.Query
-
-        initBindings is a mapping from variable name to an RDFLib term (used
-        for initial bindings for SPARQL query)
-
-        initNS is a mapping from a namespace prefix to an instance of
-        rdflib.Namespace (used for SPARQL query)
-
-        DEBUG is a boolean flag passed on to the SPARQL parser and evaluation
-        engine
-
-        processor is the kind of RDF query (must be 'sparql' until Versa is
-        ported)
         """
-        assert processor == 'sparql', ("SPARQL is currently the only "
-                                       "supported RDF query language")
+        Executes a SPARQL query (eventually will support Versa queries with same method) against this Conjunctive Graph
+        strOrQuery - Is either a string consisting of the SPARQL query or an instance of rdflib.sparql.bison.Query.Query
+        initBindings - A mapping from variable name to an RDFLib term (used for initial bindings for SPARQL query)
+        initNS - A mapping from a namespace prefix to an instance of rdflib.Namespace (used for SPARQL query)
+        DEBUG - A boolean flag passed on to the SPARQL parser and evaluation engine
+        processor - The kind of RDF query (must be 'sparql' until Versa is ported)
+        """
+        assert processor == 'sparql',"SPARQL is currently the only supported RDF query language"
+        p = plugin.get(processor, sparql.Processor)(self)
+        return plugin.get('SPARQLQueryResult',QueryResult)(p.query(strOrQuery, initBindings, initNs, DEBUG))
 
         processor_plugin = plugin.get(processor, sparql.Processor)(self.store)
         qresult_plugin = plugin.get('SPARQLQueryResult', QueryResult)
