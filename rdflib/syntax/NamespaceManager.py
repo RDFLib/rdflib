@@ -1,6 +1,6 @@
 from __future__ import generators
 
-from rdflib import URIRef, Literal, RDFS
+from rdflib import URIRef, Literal, RDFS, Variable
 from rdflib.syntax.xml_names import split_uri
 
 from urlparse import urljoin, urldefrag
@@ -30,6 +30,27 @@ class NamespaceManager(object):
             return name
         else:
             return ":".join((prefix, name))
+
+    def normalizeUri(self,rdfTerm):
+        """
+        Takes an RDF Term and 'normalizes' it into a QName (using the registered prefix)
+        or (unlike compute_qname) the Notation 3 form for URIs: <...URI...> 
+        """
+        try:
+            namespace, name = split_uri(rdfTerm)
+        except:
+            if isinstance(rdfTerm,Variable):
+                return "?%s"%rdfTerm
+            else:
+                return "<%s>"%rdfTerm
+        prefix = self.store.prefix(namespace)
+        if prefix is None and isinstance(rdfTerm,Variable):
+            return "?%s"%rdfTerm
+        elif prefix is None:
+            return "<%s>"%rdfTerm
+        else:
+            qNameParts = self.compute_qname(rdfTerm)         
+            return ':'.join([qNameParts[0],qNameParts[-1]])    
 
     def compute_qname(self, uri):
         if not uri in self.__cache:
