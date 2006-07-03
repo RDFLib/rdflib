@@ -22,6 +22,7 @@ def castPythonToLiteral(obj):
                 return obj,dType
             else:
                 return obj,None
+    return obj, None # TODO: is this right for the fall through case?
 
 #Mappings from Python types to XSD datatypes and back (burrowed from sparta)
 PythonToXSD = {
