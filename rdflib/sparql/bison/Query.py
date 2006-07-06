@@ -70,7 +70,7 @@ class Prolog(object):
     Prolog ::= BaseDecl? PrefixDecl*
     See: http://www.w3.org/TR/rdf-sparql-query/#rProlog
     """
-    def __init__(self,baseDeclaration,prefixDeclarations):
+    def __init__(self,baseDeclaration,prefixDeclarations = []):
         self.baseDeclaration = baseDeclaration
         self.prefixBindings = {}
         for prefixBind in prefixDeclarations:
