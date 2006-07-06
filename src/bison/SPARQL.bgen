@@ -46,12 +46,6 @@
                     $$ = PyObject_CallMethod(Query, "Query", "OO", $1, $2);
                 </code>
             </rule>
-            <rule>
-                <symbol>QueryTypes</symbol>
-                <code language="c">
-                    $$ = PyObject_CallMethod(Query, "Query", "OO", Py_None, $1);
-                </code>
-            </rule>            
         </production>
         <!-- Query Types -->
         <production name="1.5">
@@ -83,13 +77,19 @@
             <non-terminal>Prolog</non-terminal>
             <rule>
                 <symbol>BaseDecl</symbol>
-                <symbol>OptionalPrefixDeclList</symbol>
+                <symbol>PrefixDeclList</symbol>
                 <code language="c">
                     $$ = PyObject_CallMethod(Query, "Prolog", "OO", $1, $2);
                 </code>
             </rule>
             <rule>
-                <symbol>OptionalPrefixDeclList</symbol>
+                <symbol>BaseDecl</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Query, "Prolog", "OO", $1);
+                </code>
+            </rule>            
+            <rule>
+                <symbol>PrefixDeclList</symbol>
                 <code language="c">
                     $$ = PyObject_CallMethod(Query, "Prolog", "OO", Py_None, $1);
                 </code>
@@ -101,19 +101,7 @@
             </rule>
             
         </production>  
-        
-        <production>
-            <non-terminal>OptionalPrefixDeclList</non-terminal>
-            <rule>
-                <symbol>PrefixDeclList</symbol>
-            </rule>
-            <rule>
-                <code language="c">
-                    $$ = PyList_New(0);
-                </code>
-            </rule>
-        </production>        
-        
+                
         <production name="2.5">
             <non-terminal>PrefixDeclList</non-terminal>
             <rule>
