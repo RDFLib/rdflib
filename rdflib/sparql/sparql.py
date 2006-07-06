@@ -1144,6 +1144,8 @@ class _SPARQLNode:
                 return None
             else :
                 return self.bindings[r]
+        elif isinstance(r,(BNode)):
+            return self.bindings.get(r)            
         else :
             return r
 
@@ -1178,7 +1180,7 @@ class _SPARQLNode:
 
                 # Recursion starts here: create and expand a new child
                 child = _SPARQLNode(self,new_bindings,self.rest,self.tripleStore)
-                child.expand(constraints)
+                child.expand(constraints)                
                 # if the child is a clash then no use adding it to the tree, it can be forgotten
                 if self.clash == False :
                     self.children.append(child)
