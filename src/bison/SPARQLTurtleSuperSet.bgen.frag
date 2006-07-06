@@ -167,14 +167,13 @@
       <symbol>Collection</symbol>
       <symbol>PropertyListNotEmpty</symbol>
       <code language="c">
-        $$ = PyObject_CallMethod(Resource, "Resource", "OO", $1,$2);
+        PyObject_CallMethod($1, "setPropertyValueList", "O", $2);
+        Py_INCREF($1);        
+        $$ = $1;
       </code>
     </rule>
     <rule>
       <symbol>Collection</symbol>      
-      <code language="c">
-        $$ = PyObject_CallMethod(Resource, "Resource", "O", $1);
-      </code>
     </rule>    
   </production>
   
