@@ -8,7 +8,6 @@
 Graph pattern class used by the SPARQL implementation
 """
 import sys, os, time, datetime
-
 from rdflib.Literal     import Literal
 from rdflib.BNode       import BNode
 from rdflib.URIRef      import URIRef
@@ -50,11 +49,7 @@ class GraphPattern :
 
         @param tupl: either a three or four element tuple
         """
-        from sparql import _questChar, SPARQLError, _createResource, _isResQuest, Debug
-        def _isBnode(r) :
-            if r and isinstance(r,basestring) and len(r) > 2 and r[0] == "_" and r[1] == ":" :
-                return True
-            return False
+        from sparql import _questChar, SPARQLError, _createResource, _isResQuest, Debug, PatternBNode
         if type(tupl) != tuple :
             raise SPARQLError("illegal argument, pattern must be a tuple, got %s" % type(tupl))
         if len(tupl) != 3 and len(tupl) != 4 :
@@ -70,10 +65,11 @@ class GraphPattern :
                 if not c in self.unbounds :
                     self.unbounds.append(c)
                 final.append(c)
-            elif _isBnode(c) :
-                if not c in self.bnodes :
-                    self.bnodes[c] = BNode()
-                final.append(self.bnodes[c])
+            elif isinstance(c,(BNode,PatternBNode)):
+                #Do nothing - BNode name management is handled by SPARQL parser
+#                if not c in self.bnodes :
+#                    self.bnodes[c] = BNode()
+                final.append(c)
             else :
                 final.append(_createResource(c))
         final.append(f)
@@ -203,9 +199,7 @@ class GraphPattern :
         localBnodes = {}
         for c in self.bnodes :
             localBnodes[c] = BNode()
-        print self.bnodes
         def bind(st) :
-            print st, type(st)
             if _isResQuest(st) :
                 if st in bindings :
                     return bindings[st]
@@ -317,10 +311,12 @@ class BasicGraphPattern(GraphPattern) :
                 if not c.name in self.unbounds :
                     self.unbounds.append(c.name)
                 final.append(c.name)
-            elif isinstance(c,PatternBNode) :
-                if c.name not in self.bnodes :
-                    self.bnodes[c.name] = BNode()
-                final.append(self.bnodes[c.name])
+            elif isinstance(c,PatternBNode):
+                #Do nothing - BNode name management is handled by SPARQL parser
+                final.append(c)
+            elif isinstance(c,BNode):
+                #Do nothing - BNode name management is handled by SPARQL parser
+                final.append(c)
             else :
                 final.append(_createResource(c))
         final.append(f)
