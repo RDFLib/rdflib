@@ -4,7 +4,7 @@ from rdflib.sparql.sparqlOperators import getValue
 from rdflib.sparql.graphPattern import BasicGraphPattern
 from rdflib.sparql.sparql import Unbound,PatternBNode, SPARQLError,_variablesToArray
 from rdflib.Graph import ConjunctiveGraph, Graph, BackwardCompatGraph,ReadOnlyGraphAggregate
-from rdflib import URIRef,Variable,BNode, Literal, plugin
+from rdflib import URIRef,Variable,BNode, Literal, plugin, RDF
 from rdflib.store import Store
 from rdflib.Literal import XSDToPython
 from IRIRef import NamedGraph,RemoteGraph
@@ -50,9 +50,13 @@ def convertTerm(term,queryProlog):
     if isinstance(term,Variable):
         return Unbound(term[1:])
     elif isinstance(term,BNode):
-        return PatternBNode(term)
+        return term
     elif isinstance(term,QName):
-        return URIRef(queryProlog.prefixBindings[term.prefix] + term.localname)
+        #QNames and QName prefixes are the same in the grammar
+        if not term.prefix:
+            return URIRef(queryProlog.baseDeclaration + term.localname)
+        else:
+            return URIRef(queryProlog.prefixBindings[term.prefix] + term.localname)
     elif isinstance(term,QNamePrefix):
         return URIRef(queryProlog.baseDeclaration + term)
     elif isinstance(term,ParsedString):
@@ -60,34 +64,73 @@ def convertTerm(term,queryProlog):
     else:
         return term
 
+def unRollCollection(collection,queryProlog):
+    nestedComplexTerms = []
+    listStart = convertTerm(collection.identifier,queryProlog)
+    if not collection._list:
+        yield (listStart,RDF.rest,RDF.nil)
+    elif len(collection._list) == 1:
+        singleItem = collection._list[0]
+        if isinstance(singleItem,RDFTerm):
+            nestedComplexTerms.append(singleItem)
+            yield (listStart,RDF.first,convertTerm(singleItem.identifier,queryProlog))
+        else:
+            yield (listStart,RDF.first,convertTerm(singleItem,queryProlog))
+        yield (listStart,RDF.rest,RDF.nil)
+    else:
+        yield (listStart,RDF.first,collection._list[0].identifier)
+        prevLink = listStart
+        for colObj in collection._list[1:]:
+            linkNode = convertTerm(BNode(),queryProlog)
+            if isinstance(colObj,RDFTerm):
+                nestedComplexTerms.append(colObj)
+                yield (linkNode,RDF.first,convertTerm(colObj.identifier,queryProlog))
+            else:
+                yield (linkNode,RDF.first,convertTerm(colObj,queryProlog))            
+            yield (prevLink,RDF.rest,linkNode)            
+            prevLink = linkNode                        
+        yield (prevLink,RDF.rest,RDF.nil)
+    
+    for additionalItem in nestedComplexTerms:
+        for item in unRollRDFTerm(additionalItem,queryProlog):
+            yield item    
+
+def unRollRDFTerm(item,queryProlog):
+    nestedComplexTerms = []
+    for propVal in item.propVals:
+        for propObj in propVal.objects:
+            if isinstance(propObj,RDFTerm):
+                nestedComplexTerms.append(propObj)
+                yield (convertTerm(item.identifier,queryProlog),
+                       convertTerm(propVal.property,queryProlog),
+                       convertTerm(propObj.identifier,queryProlog))
+            else:
+               yield (convertTerm(item.identifier,queryProlog),
+                      convertTerm(propVal.property,queryProlog),
+                      convertTerm(propObj,queryProlog))
+    if isinstance(item,ParsedCollection):
+        for rt in unRollCollection(item,queryProlog):
+            yield rt  
+    for additionalItem in nestedComplexTerms:
+        for item in unRollRDFTerm(additionalItem,queryProlog):
+            yield item
+
 def unRollTripleItems(items,queryProlog):
     """
     Takes a list of Triples (nested lists or ParsedConstrainedTriples)
     and (recursively) returns a generator over all the contained triple patterns
-    """
-    for item in items:
-        additionalTriples = []
-        if isinstance(item,(Resource,TwiceReferencedBlankNode)):
-            for propVal in item.propVals:
-                for propObj in propVal.objects:
-                    if isinstance(propObj,ParsedCollection):
-                        for colObj in propObj._list:
-                            yield (convertTerm(item.identifier,queryProlog),
-                                   convertTerm(propVal.property,queryProlog),
-                                   convertTerm(colObj,queryProlog))
-                    elif isinstance(propObj,(Resource,TwiceReferencedBlankNode)):
-                        additionalTriples.append(propObj)
-                        yield (convertTerm(item.identifier,queryProlog),
-                               convertTerm(propVal.property,queryProlog),
-                               convertTerm(propObj.identifier,queryProlog))
-                    else:
-                       yield (convertTerm(item.identifier,queryProlog),
-                              convertTerm(propVal.property,queryProlog),
-                              convertTerm(propObj,queryProlog))
-
-        for additionalItem in additionalTriples:
-            for item in unRollTripleItems(additionalItem,queryProlog):
-                yield item
+    """    
+    if isinstance(items,RDFTerm):
+        for item in unRollRDFTerm(items,queryProlog):
+            yield item
+    else:
+        for item in items:
+            if isinstance(item,RDFTerm):
+                for i in unRollRDFTerm(item,queryProlog):
+                    yield i
+            else:
+                for i in unRollTripleItems(item,queryProlog):
+                    yield item
 
 def mapToOperator(expr,prolog,combinationArg=None):
     """
@@ -189,7 +232,6 @@ def sparqlPSetup(groupGraphPattern,prolog):
         for constr in constraints:
             basicGraphPattern.addConstraint(createSPARQLPConstraint(constr,prolog))
         basicGraphPatterns.append(basicGraphPattern)
-
     else:
         triples,constraints = reorderBasicGraphPattern(groupGraphPattern[0])
         for t in unRollTripleItems(triples,prolog):
@@ -211,6 +253,7 @@ def sparqlPSetup(groupGraphPattern,prolog):
         opBasicGraphPattern = BasicGraphPattern(opPatternList)
         for constr in opConstraints:# + constraints:
             opBasicGraphPattern.addConstraint(createSPARQLPConstraint(constr,prolog))
+            
         rtOptionalGraphPatterns.append(opBasicGraphPattern)
     return basicGraphPatterns,rtOptionalGraphPatterns
 
