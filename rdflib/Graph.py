@@ -594,6 +594,12 @@ class ConjunctiveGraph(Graph):
         for (s, p, o), cg in self.store.triples((s, p, o), context=None):
             yield s, p, o
 
+    def quads(self,(s,p,o)):
+        """Iterate over all the quads in the entire conjunctive graph"""
+        for (s, p, o), cg in self.store.triples((s, p, o), context=None):
+            for ctx in cg:
+                yield s, p, o, ctx
+            
     def triples_choices(self, (s, p, o)):
         """Iterate over all the triples in the entire conjunctive graph"""
         for (s1, p1, o1), cg in self.store.triples_choices((s, p, o),
