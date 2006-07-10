@@ -39,6 +39,8 @@ from test.rules import *
 
 import test.rdfa
 
+from test.events import *
+
 if __name__ == "__main__":
 
     test.rdfa.main()
