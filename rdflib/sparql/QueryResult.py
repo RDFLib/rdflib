@@ -1,23 +1,101 @@
 from rdflib import QueryResult,URIRef,BNode,Literal
 from sparql import _graphKey
+from xml.sax.saxutils import XMLGenerator
+from xml.sax.xmlreader import AttributesNSImpl
+from cStringIO import StringIO
 
-def retToXML(val) :
-    if isinstance(val,URIRef) :
-        return '<uri>%s</uri>' % val
-    elif isinstance(val,BNode) :
-        return '<bnode>%s</bnode' % val
-    elif isinstance(val,Literal) :
-        attr = ""
-        if val.language != "" :
-            attr += ' xml:lang="%s" ' % val.language
-        if val.datatype != "" and val.datatype != None :
-            attr += ' datatype="%s" ' % val.datatype
-        if attr != "" :
-            return '<literal %s>%s</literal>' % (attr.strip(),val)
-        else :
-            return '<literal>%s</literal>' % val
-    else :
-        return '<literal>%s</literal>' % val
+SPARQL_XML_NAMESPACE = u'http://www.w3.org/2005/sparql-results#'
+
+class SPARQLXMLWriter:
+    def __init__(self, output, encoding='utf-8'):
+        writer = XMLGenerator(output, encoding)
+        writer.startDocument()
+        writer.startPrefixMapping(u'sparql',SPARQL_XML_NAMESPACE)
+        writer.startPrefixMapping(u'xml'   ,u'http://www.w3.org/XML/1998/namespace')
+        writer.startElementNS((SPARQL_XML_NAMESPACE, u'sparql'), u'sparql', AttributesNSImpl({}, {}))
+        self.writer = writer
+        self._output = output
+        self._encoding = encoding
+
+    def write_header(self,allvarsL):
+        self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'head'), u'head', AttributesNSImpl({}, {}))
+        for i in xrange(0,len(allvarsL)) :
+            attr_vals = {
+                (None, u'name'): unicode(allvarsL[i][1:]),
+                }
+            attr_qnames = {
+                (None, u'name'): u'name',
+                }
+            self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'variable'), 
+                                         u'variable', 
+                                         AttributesNSImpl(attr_vals, attr_qnames))                
+            self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'variable'), u'variable')
+        self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'head'), u'head')
+        
+    def write_results_header(self,orderBy,distinct):
+        attr_vals = {
+            (None, u'ordered')  : unicode(orderBy and 'true' or 'false'),
+            (None, u'distinct') : unicode(distinct and 'true' or 'false'),
+            }
+        attr_qnames = {
+            (None, u'ordered')  : u'ordered',
+            (None, u'distinct') : u'distinct'
+            }
+        self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'results'), 
+                                     u'results', 
+                                     AttributesNSImpl(attr_vals, attr_qnames))        
+
+    def write_result(self,name,val):
+        if val:
+            self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'result'), u'result', AttributesNSImpl({}, {}))
+            attr_vals = {
+                (None, u'name')  : unicode(name),
+                }
+            attr_qnames = {
+                (None, u'name')  : u'name',
+                }
+            self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'binding'), 
+                                   u'binding', 
+                                   AttributesNSImpl(attr_vals, attr_qnames))
+
+            if isinstance(val,URIRef) :
+                self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'uri'), 
+                                       u'uri', 
+                                       AttributesNSImpl(attr_vals, attr_qnames))
+                self.writer.characters(val)
+                self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'uri'),u'uri')
+            elif isinstance(val,BNode) :
+                self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'bnode'), 
+                                       u'bnode', 
+                                       AttributesNSImpl(attr_vals, attr_qnames))
+                self.writer.characters(val)
+                self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'bnode'),u'bnode')
+            elif isinstance(val,Literal) :
+                attr_vals = {}
+                attr_qnames = {}
+                if val.language :
+                    attr_vals[(u'http://www.w3.org/XML/1998/namespace',u'lang')] = val.language
+                    attr_qnames[(u'http://www.w3.org/XML/1998/namespace',u'lang')] = u"xml:lang"                    
+                elif val.datatype:
+                    attr_vals[(None,u'datatype')] = val.datatype
+                    attr_qnames[(None,u'datatype')] = u'datatype'
+
+                self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'literal'), 
+                                       u'literal', 
+                                       AttributesNSImpl(attr_vals, attr_qnames))
+                self.writer.characters(val)
+                self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'literal'),u'literal')
+                
+            else:
+                raise Exception("Unsupported RDF term: %s"%val)
+
+            self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'binding'),u'binding')        
+            self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'result'), u'result')
+
+    def close(self):
+        self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'results'), u'results')
+        self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'sparql'), u'sparql')
+        self.writer.endDocument()
 
 def retToJSON(val) :
     if isinstance(val,URIRef) :
@@ -34,14 +112,6 @@ def retToJSON(val) :
             return '"type": "literal", "value" : "%s"' % val
     else :
         return '"type": "literal", "value" : "%s"' % val
-
-def bindingXML(name,val) :
-    if val == None :
-        return ""
-    retval = '            <binding name="%s">\n' % name
-    retval += '                ' + retToXML(val) + '\n'
-    retval += '            </binding>\n'
-    return retval
 
 def bindingJSON(name,val,comma) :
     if val == None :
@@ -118,7 +188,7 @@ class SPARQLQueryResult(QueryResult.QueryResult):
                retval += '    "results" : {\n'
                retval += '          "ordered" : %s,\n' % (self.orderBy and 'true' or 'false')
                retval += '          "distinct" : %s,\n' % (self.distinct and 'true' or 'false')
-               retval += '          "bindings" : [\n'
+               retval += '          "bindings" : [\n'               
                for i in xrange(0,len(self.selected)) :
                    hit = self.selected[i]
                    retval += '               {\n'
@@ -140,27 +210,22 @@ class SPARQLQueryResult(QueryResult.QueryResult):
                retval += '}\n'
            elif format == "xml" :
                # xml output
-               retval += '<?xml version="1.0"?>\n'
-               retval += '<sparql xmlns="http://www.w3.org/2005/sparql-results#">\n'
-               retval += '    <head>\n'
-               for i in xrange(0,len(allvarsL)) :
-                   retval += '        <variable name="%s"/>\n' % allvarsL[i][1:]
-               retval += '    </head>\n'
-               retval += '    <results ordered="%s" distinct="%s">\n' % (self.orderBy and 'true' or 'false',self.distinct and 'true' or 'false')
+               out = StringIO()
+               writer = SPARQLXMLWriter(out)
+               writer.write_header(allvarsL)
+               writer.write_results_header(self.orderBy,self.distinct)
                for i in xrange(0,len(self.selected)) :
                    hit = self.selected[i]
-                   retval += '        <result>\n'
                    if len(self.selectionF) == 0 :
                        for j in xrange(0,len(allvarsL)) :
-                           retval += bindingXML(allvarsL[j][1:],hit[j])
+                           writer.write_result(allvarsL[j][1:],hit[j])
                    elif len(self.selectionF) == 1 :
-                       retval += bindingXML(self.selectionF[0][1:],hit)
-                   else :
+                       writer.write_result(self.selectionF[0][1:],hit)
+                   else:
                        for j in xrange(0,len(self.selectionF)) :
-                           retval += bindingXML(self.selectionF[j][1:],hit[j])
-                   retval += '        </result>\n'
-               retval += '    </results>\n'
-               retval += '</sparql>\n'
+                           writer.write_result(self.selectionF[j][1:],hit[j])
+               writer.close()
+               return out.getvalue()
            return retval
         else :
            raise Exception("Result format not implemented: %s"%format)
