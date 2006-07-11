@@ -126,7 +126,6 @@ class Store(object):
         over each term in the list and dispatch to tripless
         """
         if isinstance(object_,list):
-            print object_
             assert not isinstance(subject,list), "object_ / subject are both lists"
             assert not isinstance(predicate,list), "object_ / predicate are both lists"
             if object_:
@@ -138,7 +137,6 @@ class Store(object):
                         yield (s1, p1, o1), cg
 
         elif isinstance(subject,list):
-            print subject
             assert not isinstance(predicate,list), "subject / predicate are both lists"
             if subject:
                 for subj in subject:
@@ -149,7 +147,6 @@ class Store(object):
                     yield (s1, p1, o1), cg
 
         elif isinstance(predicate,list):
-            print predicate
             assert not isinstance(subject,list), "predicate / subject are both lists"
             if predicate:
                 for pred in predicate:
