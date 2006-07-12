@@ -1,6 +1,101 @@
+__doc__="""
+Instanciating Graphs with default store (IOMemory) and default identifier (a BNode):
+
+    >>> g=Graph()
+    >>> g.store.__class__
+    <class 'rdflib.store.IOMemory.IOMemory'>
+    >>> g.identifier.__class__
+    <class 'rdflib.BNode.BNode'>
+
+Instanciating Graphs with a specific kind of store (IOMemory) and a default identifier (a BNode):
+
+Other store kinds: Sleepycat, MySQL, ZODB, SQLite
+
+    >>> tore = plugin.get('IOMemory',Store)()
+    >>> store = plugin.get('IOMemory',Store)()
+    >>> store.__class__.__name__
+    'IOMemory'
+    >>> graph = Graph(store)
+    >>> graph.store.__class__
+    <class 'rdflib.store.IOMemory.IOMemory'>
+
+Instanciating Graphs with Sleepycat store and an identifier - <http://rdflib.net>:
+
+    >>> g=Graph('Sleepycat',URIRef("http://rdflib.net"))
+    >>> g.identifier
+    u'http://rdflib.net'
+    >>> str(g)
+    "<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'Sleepycat']."
+
+Creating a ConjunctiveGraph - The top level container for all named Graphs in a 'database':
+
+    >>> g=ConjunctiveGraph()
+    >>> str(g.default_context)
+    "[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory']]."
+
+Adding / removing reified triples to Graph and iterating over it directly or via triple pattern:
+    
+    >>> g=Graph('IOMemory')
+    >>> statementId = BNode()
+    >>> print len(g)
+    0
+    >>> g.add((statementId,RDF.type,RDF.Statement))
+    >>> g.add((statementId,RDF.subject,URIRef('http://rdflib.net/store/ConjunctiveGraph')))
+    >>> g.add((statementId,RDF.predicate,RDFS.label))
+    >>> g.add((statementId,RDF.object,Literal("Conjunctive Graph")))
+    >>> print len(g)
+    4
+    >>> for s,p,o in g:  print type(s)
+    ...
+    <class 'rdflib.BNode.BNode'>
+    <class 'rdflib.BNode.BNode'>
+    <class 'rdflib.BNode.BNode'>
+    <class 'rdflib.BNode.BNode'>
+    
+    >>> for s,p,o in g.triples((None,RDF.object,None)):  print o
+    ...
+    Conjunctive Graph
+    >>> g.remove((statementId,RDF.type,RDF.Statement))
+    >>> print len(g)
+    3
+
+None terms in calls to triple can be thought of as 'open variables'  
+
+Using Namespace class:
+
+    >>> RDFLib = Namespace('http://rdflib.net')
+    >>> RDFLib.ConjunctiveGraph
+    u'http://rdflib.netConjunctiveGraph'
+    >>> RDFLib['Graph']
+    u'http://rdflib.netGraph'
+
+SPARQL Queries
+
+    >>> print len(g)
+    3
+    >>> q = \'\'\'
+    ... PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?pred WHERE { ?stmt rdf:predicate ?pred. }
+    ... \'\'\'   
+    >>> for pred in g.query(q):  print pred
+    (u'http://www.w3.org/2000/01/rdf-schema#label',)
+
+SPARQL Queries with namespace bindings as argument
+
+    >>> nsMap = {u"rdf":RDF.RDFNS}
+    >>> for pred in g.query("SELECT ?pred WHERE { ?stmt rdf:predicate ?pred. }", initNs=nsMap): print pred
+    (u'http://www.w3.org/2000/01/rdf-schema#label',)
+
+Parameterized SPARQL Queries
+
+    >>> top = { Variable("?term") : RDF.predicate }
+    >>> for pred in g.query("SELECT ?pred WHERE { ?stmt ?term ?pred. }", initBindings=top): print pred
+    (u'http://www.w3.org/2000/01/rdf-schema#label',)
+
+"""
+
 from __future__ import generators
 
-from rdflib import URIRef, BNode, Namespace
+from rdflib import URIRef, BNode, Namespace, Literal, Variable
 from rdflib import RDF, RDFS
 
 from rdflib.Node import Node
@@ -68,12 +163,12 @@ class Graph(Node):
 
     :ConjunctiveGraph a owl:Class;
         rdfs:subClassOf rdfg:Graph;
-        rdfs:label "The top-level graph within the store - the concatenation of all the contexts within."
+        rdfs:label "The top-level graph within the store - the union of all the Graphs within."
         rdfs:seeAlso <http://rdflib.net/rdf_store/#ConjunctiveGraph>.
 
-    :DefaultContext a owl:Class;
+    :DefaultGraph a owl:Class;
         rdfs:subClassOf rdfg:Graph;
-        rdfs:label "The default subgraph of a conjunctive graph".
+        rdfs:label "The 'default' subgraph of a conjunctive graph".
 
 
     :identifier a owl:Datatypeproperty;
@@ -91,13 +186,13 @@ class Graph(Node):
     :default_context a owl:FunctionalProperty;
         rdfs:label "The default context for a conjunctive graph";
         rdfs:domain :ConjunctiveGraph;
-        rdfs:range :DefaultContext.
+        rdfs:range :DefaultGraph.
 
 
     {?cg a :ConjunctiveGraph;:storage ?store}
       => {?cg owl:sameAs ?store}.
 
-    {?subGraph rdfg:subGraphOf ?cg;a :DefaultContext}
+    {?subGraph rdfg:subGraphOf ?cg;a :DefaultGraph}
       => {?cg a :ConjunctiveGraph;:default_context ?subGraphOf} .
     """
 
@@ -136,7 +231,7 @@ class Graph(Node):
 
     def __str__(self):
         if isinstance(self.identifier,URIRef):
-            return "%s a rdfg:Graph;rdflib:storage [a rdflibStore [a rdflib:Store;rdfs:label '%s']]."%(self.identifier.n3(),self.store.__class__.__name__)
+            return "%s a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '%s']."%(self.identifier.n3(),self.store.__class__.__name__)
         else:
             return "[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '%s']]."%(self.store.__class__.__name__)
 
@@ -482,9 +577,9 @@ class Graph(Node):
     def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False,
               processor="sparql"):
         """
-        Executes a SPARQL query (eventually will support Versa queries with same method) against this Conjunctive Graph
+        Executes a SPARQL query (eventually will support Versa queries with same method) against this Graph
         strOrQuery - Is either a string consisting of the SPARQL query or an instance of rdflib.sparql.bison.Query.Query
-        initBindings - A mapping from variable name to an RDFLib term (used for initial bindings for SPARQL query)
+        initBindings - A mapping from a Variable to an RDFLib term (used as initial bindings for SPARQL query)
         initNS - A mapping from a namespace prefix to an instance of rdflib.Namespace (used for SPARQL query)
         DEBUG - A boolean flag passed on to the SPARQL parser and evaluation engine
         processor - The kind of RDF query (must be 'sparql' until Versa is ported)
@@ -572,8 +667,7 @@ class ConjunctiveGraph(Graph):
                                      identifier=identifier or BNode())
 
     def __str__(self):
-        pattern = ("[a rdflib:DefaultContext] rdfg:subGraphOf "
-                   "[a rdfg:Graph;rdflib:storage "
+        pattern = ("[a rdflib:ConjunctiveGraph;rdflib:storage "
                    "[a rdflib:Store;rdfs:label '%s']]")
         return pattern % self.store.__class__.__name__
 
@@ -989,3 +1083,9 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         raise UnSupportedAggregateOperation()
 
 
+def test():
+    import doctest
+    doctest.testmod()
+
+if __name__ == '__main__':
+    test()
