@@ -86,7 +86,7 @@ Graph Aggregation - ConjunctiveGraphs and ReadOnlyGraphAggregate within the same
     >>> len(list(ReadOnlyGraphAggregate([g1,g2]).subjects(RDF.type,RDF.Statement)))
     2
 
-ConjunctiveGraphs have a 'quad' method which returns quads instead of triples, where the fourth item
+ConjunctiveGraphs have a 'quads' method which returns quads instead of triples, where the fourth item
 is the Graph (or subclass thereof) instance in which the triple was asserted:
     
     >>> from sets import Set    
