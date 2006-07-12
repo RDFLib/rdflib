@@ -60,6 +60,44 @@ Adding / removing reified triples to Graph and iterating over it directly or via
 
 None terms in calls to triple can be thought of as 'open variables'  
 
+Graph Aggregation - ConjunctiveGraphs and ReadOnlyGraphAggregate within the same store:
+    
+    >>> store = plugin.get('IOMemory',Store)()
+    >>> g1 = Graph(store)
+    >>> g2 = Graph(store)
+    >>> g3 = Graph(store)
+    >>> stmt1 = BNode()
+    >>> stmt2 = BNode()
+    >>> stmt3 = BNode()
+    >>> g1.add((stmt1,RDF.type,RDF.Statement))
+    >>> g1.add((stmt1,RDF.subject,URIRef('http://rdflib.net/store/ConjunctiveGraph')))
+    >>> g1.add((stmt1,RDF.predicate,RDFS.label))
+    >>> g1.add((stmt1,RDF.object,Literal("Conjunctive Graph")))
+    >>> g2.add((stmt2,RDF.type,RDF.Statement))
+    >>> g2.add((stmt2,RDF.subject,URIRef('http://rdflib.net/store/ConjunctiveGraph')))
+    >>> g2.add((stmt2,RDF.predicate,RDF.type))
+    >>> g2.add((stmt2,RDF.object,RDFS.Class))
+    >>> g3.add((stmt3,RDF.type,RDF.Statement))
+    >>> g3.add((stmt3,RDF.subject,URIRef('http://rdflib.net/store/ConjunctiveGraph')))
+    >>> g3.add((stmt3,RDF.predicate,RDFS.comment))
+    >>> g3.add((stmt3,RDF.object,Literal("The top-level aggregate graph - The sum of all named graphs within a Store")))
+    >>> len(list(ConjunctiveGraph(store).subjects(RDF.type,RDF.Statement)))
+    3
+    >>> len(list(ReadOnlyGraphAggregate([g1,g2]).subjects(RDF.type,RDF.Statement)))
+    2
+
+ConjunctiveGraphs have a 'quad' method which returns quads instead of triples, where the fourth item
+is the Graph (or subclass thereof) instance in which the triple was asserted:
+    
+    >>> from sets import Set    
+    >>> uniqueGraphNames = Set([graph.identifier for s,p,o,graph in ConjunctiveGraph(store).quads((None,RDF.predicate,None))])
+    >>> len(uniqueGraphNames)
+    3
+    >>> unionGraph = ReadOnlyGraphAggregate([g1,g2])
+    >>> uniqueGraphNames = Set([graph.identifier for s,p,o,graph in unionGraph.quads((None,RDF.predicate,None))])
+    >>> len(uniqueGraphNames)
+    2
+     
 Parsing N3 from StringIO
 
     >>> g2=Graph()
@@ -1038,6 +1076,12 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         for graph in self.graphs:
             for s1, p1, o1 in graph.triples((s, p, o)):
                 yield (s1, p1, o1)
+
+    def quads(self,(s,p,o)):
+        """Iterate over all the quads in the entire aggregate graph"""
+        for graph in self.graphs:
+            for s1, p1, o1 in graph.triples((s, p, o)):
+                yield (s1, p1, o1, graph)
 
     def __len__(self):
         return reduce(lambda x, y: x + y, [len(g) for g in self.graphs])
