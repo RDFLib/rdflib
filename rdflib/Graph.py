@@ -11,7 +11,6 @@ Instanciating Graphs with a specific kind of store (IOMemory) and a default iden
 
 Other store kinds: Sleepycat, MySQL, ZODB, SQLite
 
-    >>> tore = plugin.get('IOMemory',Store)()
     >>> store = plugin.get('IOMemory',Store)()
     >>> store.__class__.__name__
     'IOMemory'
@@ -61,6 +60,20 @@ Adding / removing reified triples to Graph and iterating over it directly or via
 
 None terms in calls to triple can be thought of as 'open variables'  
 
+Parsing N3 from StringIO
+
+    >>> g2=Graph()
+    >>> src = \"\"\"
+    ... @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    ... @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    ... [ a rdf:Statement ;
+    ...   rdf:subject <http://rdflib.net/store/ConjunctiveGraph>;
+    ...   rdf:predicate rdfs:label;
+    ...   rdf:object "Conjunctive Graph" ] \"\"\"
+    >>> g2=g2.parse(StringIO(src),format='n3')
+    >>> print len(g2)
+    4
+
 Using Namespace class:
 
     >>> RDFLib = Namespace('http://rdflib.net')
@@ -94,7 +107,7 @@ Parameterized SPARQL Queries
 """
 
 from __future__ import generators
-
+from cStringIO import StringIO
 from rdflib import URIRef, BNode, Namespace, Literal, Variable
 from rdflib import RDF, RDFS
 
