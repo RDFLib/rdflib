@@ -226,7 +226,10 @@ class Sleepycat(Store):
                     i.put(_to_key((s, p, o), ""), contexts_value)
             else:
                 for i, _to_key, _from_key in self.__indicies_info:
-                    i.delete(_to_key((s, p, o), ""))
+                    try:
+                        i.delete(_to_key((s, p, o), ""))
+                    except db.DBNotFoundError, e: 
+                        pass # TODO: is it okay to ignore these?
 
     def remove(self, (subject, predicate, object), context):
         assert self.__open, "The Store must be open."
