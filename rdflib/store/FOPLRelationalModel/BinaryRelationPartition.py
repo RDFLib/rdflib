@@ -566,6 +566,12 @@ def BinaryRelationPartitionCoverage((subject,predicate,object_,context),BRPs):
         elif not [o for o in object_ if isinstance(o,REGEXTerm) or isinstance(o,Literal)]:
             #There are no Literals or REGEXTerms, the list behaves as a URI (i.e., it never checks literal partition)
             oId = 'U'
+        elif len([o for o in object_ if isinstance(o,Literal)]) == len(object_):
+            #They are all literals
+            oId = 'L'
+        else:
+            #Treat as a wildcard
+            oId = 'R'
     elif isinstance(object_,Variable):
         #Variables would only exist in the ABOX and 'other' Relations partition (same as URIs)
         oId = 'U'
