@@ -29,6 +29,7 @@ PythonToXSD = {
     basestring : (None,None),
     float      : (None,XSD_NS+u'float'),
     int        : (None,XSD_NS+u'int'),
+    int        : (None,XSD_NS+u'integer'),
     long       : (None,XSD_NS+u'long'),
     bool       : (None,XSD_NS+u'boolean'),
     date       : (lambda i:i.isoformat(),XSD_NS+u'date'),
@@ -71,6 +72,7 @@ XSDToPython = {
     XSD_NS+u'boolean'            : (None, lambda i:i.lower() in ['1','true']),
     XSD_NS+u'decimal'            : (float,None),
     XSD_NS+u'integer'            : (long ,None),
+    XSD_NS+u'int'            : (long ,None),
     XSD_NS+u'nonPositiveInteger' : (int,None),
     XSD_NS+u'long'               : (long,None),
     XSD_NS+u'nonNegativeInteger' : (int, None),
@@ -157,9 +159,12 @@ class Literal(Identifier):
         elif isinstance(other, Identifier):
             return False
         elif castPythonToLiteral(other)[-1]:
-            #I know how to represent 'other' lexically in a uniform way
-            castFunc,dType = castPythonToLiteral(other)[-1]
-            return unicode(self)==unicode(castFunc(other))
+            #I know how to represent 'other' lexically and in Python uniformly
+            castFunc,dType = castPythonToLiteral(other)
+            if dType == self.datatype:
+                return other == self.toPython()
+            else:
+                return unicode(self)==unicode(other)
         else:
             return unicode(self)==other
 
