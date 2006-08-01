@@ -166,6 +166,8 @@ from xml.sax.xmlreader import InputSource
 from xml.sax.saxutils import prepare_input_source
 
 import logging
+_logger = logging.getLogger("rdflib.Graph")
+
 import md5
 import random
 import warnings
@@ -604,7 +606,7 @@ class Graph(Node):
             input_source.setPublicId(publicID)
         id = input_source.getPublicId()
         if id is None:
-            logging.info("no publicID set for source. Using '' for publicID.")
+            _logger.info("no publicID set for source. Using '' for publicID.")
             input_source.setPublicId("")
         return input_source
 

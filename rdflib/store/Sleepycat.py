@@ -9,6 +9,8 @@ from urllib import pathname2url
 from threading import Thread
 from time import sleep, time
 
+import logging
+_logger = logging.getLogger("rdflib.store.Sleepycat")
 
 class Sleepycat(Store):
     context_aware = True
@@ -144,7 +146,7 @@ class Sleepycat(Store):
                         self.__needs_sync = False
                     if time()-t1 > min_seconds or time()-t0 > max_seconds:
                         self.__needs_sync = False
-                        print "sync"
+                        _logger.info("sync")
                         self.sync()
                         break
             else:
