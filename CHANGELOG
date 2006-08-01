@@ -1,3 +1,46 @@
+2006/08/01
+        RELEASE 2.3.2
+
+        Added SPARQL query support.
+
+        Added XSD to/from Python datatype support to Literals.
+
+        Fixed ConjunctiveGraph so that it is a proper subclass of Graph. 
+
+        Added Deprecation Warning when BackwardCompatGraph gets used.
+
+        Added RDFa parser.
+
+        Added Collection Class for working with RDF Collections.
+
+        Added method to Graph for testing connectedness
+
+        Fixed bug in N3 parser where identical BNodes were not being combined.
+
+        Fixed literal quoting in N3 serializer.
+
+        Fixed RDF/XML serializer to skip over N3 bits.
+
+        Changed Literal and URIRef instanciation to catch
+        UnicodeDecodeErrors - which were being thrown when the default
+        decoding method (ascii) was hitting certain characters.
+
+        Changed Graph's bind method to also override the binding in
+        the case of an existing generated bindings.
+        
+        Added FOPLRelationalModel - a set of utility classes that
+        implement a minimal Relational Model of FOPL implemented as a
+        SQL database (uses identifier/value interning and integer
+        half-md5-hashes for space and index efficiency). 
+
+        Changed MySQL store to use FOPLRelationalModel plus fixes and
+        improvements.
+
+        Added more test cases.
+
+        Cleaned up source code to follow pep8 / pep257.
+
+
 2006/02/27
         RELEASE 2.3.1
 
