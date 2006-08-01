@@ -251,9 +251,15 @@ class IOMemory(Store):
                     del self.cpos[ci][pi][oi][si]
                     del self.cosp[ci][oi][si][pi]
 
-                    self._removeNestedIndex(self.spo, si, pi, oi, ci)
-                    self._removeNestedIndex(self.pos, pi, oi, si, ci)
-                    self._removeNestedIndex(self.osp, oi, si, pi, ci)
+                    try:
+                        self._removeNestedIndex(self.spo, si, pi, oi, ci)
+                        self._removeNestedIndex(self.pos, pi, oi, si, ci)
+                        self._removeNestedIndex(self.osp, oi, si, pi, ci)
+                    except KeyError:
+                        # the context may be a quoted one in which
+                        # there will not be a triple in spo, pos or
+                        # osp. So ignore any KeyErrors
+                        pass
                     # TODO delete references to resources in self.forward/self.reverse
                     # that are not in use anymore...
 
