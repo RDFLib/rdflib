@@ -8,6 +8,10 @@ import sys
 assert sys.version_info >= (2,4,0), "rdflib requires Python 2.4 or higher"
 del sys
 
+import logging
+_logger = logging.getLogger("rdflib")
+_logger.info("version: %s" % __version__)
+
 from rdflib.URIRef import URIRef
 from rdflib.BNode import BNode
 from rdflib.Literal import Literal
