@@ -1,0 +1,7 @@
+# Language tags
+
+@prefix x: <http://host/ns#> .
+
+[ x:q1 "UK-English"@en-uk ; 
+  x:q2 "French"@fr ;
+  x:q3 "aaaa"@any ] .

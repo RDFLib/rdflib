@@ -1,0 +1,6 @@
+@prefix a: <http://foo/a#> .
+@prefix : <#> .
+
+:test :comment "Nested bNodes" .
+
+a:a a:p [ a:p2 [ a:p3 "v1" , "v2" ; a:p4 "v3" ] ; a:p5 "v4" ] .

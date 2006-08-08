@@ -1,0 +1,7 @@
+# Test names with .'s in potential qnames.
+
+@prefix foo:    <http://example.org/foo#> .
+@prefix : <#> .
+
+<http://example.org/foo#local.name>
+    <http://example.org/foo#p.local.name> :localname .

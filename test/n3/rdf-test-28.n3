@@ -1,0 +1,8 @@
+# Strange xsd:interges and xsd:doubles
+
+@prefix : <#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:x :p1 "abc"^^xsd:integer .
+:x :p2 "ab.c"^^xsd:double .

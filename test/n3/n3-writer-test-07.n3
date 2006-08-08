@@ -1,0 +1,9 @@
+@prefix a: <http://foo/a#> .
+@prefix : <#> .
+
+:test :comment "BNode but shared" .
+
+a:b1 a:twoRef _:a .
+a:b2 a:twoRef _:a .
+
+_:a :pred [ a:pp "1" ; a:qq "2" ].

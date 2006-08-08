@@ -1,0 +1,6 @@
+# Test the "is ... of" constuct
+
+@prefix : <#> .
+
+"value1" is :prop of :s .
+"value2" is :prop of :s1, :s2 .

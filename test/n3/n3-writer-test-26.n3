@@ -1,0 +1,33 @@
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix joseki: <http://joseki.org/2002/11/configuration#> .
+
+<> rdfs:comment """Taken from joseki configuration file - has long properties and nested objects.""" .
+
+## Server configuration
+
+<http://server/deck>
+    a   joseki:AttachedModel ;
+    joseki:attachedModel        <file:deck.n3> ;
+    joseki:hasQueryOperation    joseki:BindingRDQL ;
+    joseki:hasQueryOperation    joseki:BindingGET ;
+    joseki:hasQueryOperation    joseki:BindingSPO ;
+    # Allow query over POST
+    joseki:hasOperation         joseki:BindingQueryModel ;
+    joseki:hasOperation         joseki:BindingOptions ;
+    joseki:hasQueryOperation
+        [ a   joseki:QueryLanguageBinding ;
+          joseki:queryOperationName "fetch" ; 
+          joseki:queryOperation
+          [ joseki:className
+                "org.joseki.server.processors.QueryProcessorFetch" ;
+          ]
+        ] ;
+    joseki:isImmutable			"true" ;
+    rdfs:comment "Deck of cards" ;
+    .
+
+# Local Variables:
+# tab-width: 4
+# indent-tabs-mode: nil
+# End:

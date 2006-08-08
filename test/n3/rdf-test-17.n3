@@ -1,0 +1,11 @@
+# Mixed paths and paths as objects
+@prefix : <#>.
+
+:a!:b^:c :q1 "1" ; :q2 "21" , "22" .
+:x^:y!:z :q3 "3" ; :q4 "41" , "42" .
+
+<http://here/subj1> <http://here/pred/p1> :d1!:e1!:f1.
+<http://here/subj2> <http://here/pred/p2> :d2^:e2^:f2.
+
+<http://here/subj3> <http://here/pred/p3> :d3^:e3!:f3.
+<http://here/subj4> <http://here/pred/p4> :d4!:e4^:f4.

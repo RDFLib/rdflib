@@ -1,0 +1,8 @@
+# Test lang tags
+
+@prefix : <#> .
+
+[ :prop "chat"@fr ;
+  :prop "chat"@en ;
+  :prop "chat" ;
+] .

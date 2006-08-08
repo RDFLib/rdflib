@@ -1,0 +1,10 @@
+# Test datatypes.
+
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix x: <http://host/ns#> .
+@prefix : <#> .
+
+[ :prop1 "123" ;
+  :prop1 "123"^^xsd:string ;
+  :prop1 "123"^^xsd:integer ;
+] .

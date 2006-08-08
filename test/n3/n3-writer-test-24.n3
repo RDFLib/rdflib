@@ -1,0 +1,8 @@
+# XML literals
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix x: <http://host/ns#> .
+
+[ x:p1 "<foo>bar</foo>"^^rdf:XMLLiteral ;
+  x:p2 "<foo>bar</foo>" ;
+] .

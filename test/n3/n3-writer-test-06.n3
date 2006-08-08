@@ -1,0 +1,6 @@
+@prefix a: <http://foo/a#> .
+@prefix : <#> .
+
+:test :comment "BNode as single object" .
+
+a:b a:oneRef [ a:pp "1" ; a:qq "2" ].

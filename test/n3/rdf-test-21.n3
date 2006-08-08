@@ -1,0 +1,19 @@
+# Datatypes
+
+@prefix : <#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# No datatype.
+:a :p "11" .
+
+## Datatype - same property, but datatyped => new statement
+:a :p "11"^^xsd:integer .
+
+# Only one statement here:
+:a :q "12"^^<http://www.w3.org/2001/XMLSchema#integer> .
+:a :q "12"^^xsd:integer .
+
+# Two statements
+:a 
+   :q2 "99"^^xsd:integer ;
+   :q2 "99"^^xsd:string .

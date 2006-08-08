@@ -1,0 +1,4 @@
+# Mixed lists and paths
+@prefix : <#>.
+
+:a :b ( :d1!:e1 :d2!:e2 ).

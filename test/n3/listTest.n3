@@ -1,0 +1,3 @@
+@prefix :<http://example.com/>.
+
+:gunnar :name ("Gunnar" "Aastrand" "Grimnes").

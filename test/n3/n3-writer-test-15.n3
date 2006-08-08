@@ -1,0 +1,24 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix a: <http://foo/a#> .
+@prefix : <#> .
+
+:test :comment "RDF collections as lists : but with attached property so not well-formed lists" .
+
+# This is the list ("1" "2" "3" "4")
+
+_:a1 rdf:first "1" .
+_:a1 rdf:rest  _:a2 .
+
+_:a2 rdf:first "2" .
+_:a2 rdf:rest  _:a3 .
+
+_:a3 rdf:first "3" .
+_:a3 rdf:rest  _:a4 .
+
+_:a4 rdf:first "4" .
+_:a4 rdf:rest rdf:nil .
+
+# This adds a property to the middle element.
+# Tail ("3" "4") should be pretty printed.
+
+_:a2 a:prop "value" .

@@ -1,0 +1,18 @@
+# Forward paths
+@prefix : <#>.
+
+:x1!:y1 :p1 "3" .
+
+:a1!:b1!:c1 :q1 "3" ; :q2 "4" , "5" .
+
+# NB Cwm is wrong on these (it can't cope with qnames of :a etc in paths).
+@prefix a: <http://a/ns#>.
+
+:x2.a:y2 :p2 "3" .
+
+:a2.a:b2.a:c2 :q1 "3" ; :q2 "4" , "5" .
+
+# Object slot
+# cwm does not generate the right thing.
+
+:r :p :o.a:p1.a:p2 .

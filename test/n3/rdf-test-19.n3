@@ -1,0 +1,7 @@
+# Named DAML lists
+@prefix : <#>.
+
+:a :p _:a .
+:b :p _:a .
+
+_:a :p ("1" "2") .

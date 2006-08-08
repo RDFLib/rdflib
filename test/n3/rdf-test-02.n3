@@ -1,0 +1,6 @@
+# Test compounds in anon nodes
+
+@prefix ns1: <http://one.net/ns1#> .
+@prefix ns2: <http://two.net/ns2#> .
+
+[ ns1:bp1 ns1:bv1 ; ns1:bp2 ns1:bv2 ] ns2:p1 ns2:v1.

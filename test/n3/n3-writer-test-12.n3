@@ -1,0 +1,9 @@
+@prefix a: <http://foo/a#> .
+@prefix : <#> .
+
+:test :comment "RDF collections as lists".
+
+a:list3 a:p ("1" "2" "3").
+
+a:list0 a:p ().
+

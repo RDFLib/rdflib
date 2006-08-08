@@ -1,0 +1,8 @@
+@prefix a: <http://foo/a#> .
+@prefix : <#> .
+
+:test :comment "Not a bnode.  Ref once." .
+
+a:b1 a:oneRef <http://host/> .
+
+<http://host/> :p [ a:pp "1" ; a:qq "2" ].

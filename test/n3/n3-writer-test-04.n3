@@ -1,0 +1,8 @@
+@prefix a: <http://foo/a#> .
+@prefix b: <http://foo/b#> .
+@prefix : <#> .
+
+:test :comment "Multiple values" .
+
+a:b a:p1 "123" ; a:p1 "456" .
+b:b a:p2 a:v1 ; a:p3 a:v2 .

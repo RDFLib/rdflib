@@ -1,0 +1,10 @@
+# XML literals
+@prefix : <#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+# Two statements here
+# Plain string
+:a 
+    :q1 "<foo>bar</foo>" ;
+    :q1 "<foo>bar</foo>"^^rdf:XMLLiteral ;
+    .

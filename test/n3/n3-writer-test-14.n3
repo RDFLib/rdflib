@@ -1,0 +1,6 @@
+@prefix a: <http://foo/a#> .
+@prefix : <#> .
+
+:test :comment "RDF collections as lists: nil list with property".
+
+() a:prop "nilProp" .

@@ -1,0 +1,10 @@
+@prefix a: <http://foo/a#> .
+@prefix : <#> .
+
+:test :comment "Shared RDF collections as lists" .
+
+:a :p _:list .
+:b :p _:list .
+
+_:list :p ("1" "2") .
+

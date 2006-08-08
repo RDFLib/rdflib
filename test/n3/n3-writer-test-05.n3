@@ -1,0 +1,6 @@
+@prefix a: <http://foo/a#> .
+@prefix : <#> .
+
+:test :comment "BNode" .
+
+[ a:p a:v ] .

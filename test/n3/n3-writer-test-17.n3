@@ -1,0 +1,20 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix a: <http://foo/a#> .
+@prefix : <#> .
+:test :comment "Complex DAML List: duplicate properties".
+
+# This is the list ("1" "2" "3").
+
+_:a1 rdf:first "1" .
+_:a1 rdf:rest  _:a2 .
+
+_:a2 rdf:first "2" .
+_:a2 rdf:rest  _:a3 .
+
+_:a3 rdf:first "3" .
+_:a3 rdf:rest () .
+
+# This adds a property to the middle element.
+# Could pretty print the tail ("3")
+
+_:a2 rdf:first "TWO" .

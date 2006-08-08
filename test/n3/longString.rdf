@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+   xmlns:_3="http://example.com/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+>
+  <rdf:Description rdf:about="http://example.com/gunnar">
+    <_3:desc>This is a really long string, with 
+newlines in it, and " quotes'.</_3:desc>
+  </rdf:Description>
+</rdf:RDF>

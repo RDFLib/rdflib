@@ -1,5 +1,6 @@
 import unittest
-
+#import sys
+#sys.path[:0]=[".."]
 from rdflib import Graph, Literal, Namespace, StringInputSource
 
 cases = ['no quotes',

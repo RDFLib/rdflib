@@ -1,0 +1,11 @@
+# Test shared bNode
+@prefix ns: <http://one.net/ns#> .
+
+_:a ns:prop1 "anon1" .
+_:a ns:prop2 "anon2" .
+
+_:a ns:prop3 _:b .
+_:a ns:prop4 _:b .
+
+
+

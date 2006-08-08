@@ -1,0 +1,6 @@
+# Test redefining a prefix
+@prefix a: <http://host/A#>.
+a:b a:p a:v .
+
+@prefix a: <http://host/Z#>.
+a:b a:p a:v .

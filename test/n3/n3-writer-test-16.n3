@@ -1,0 +1,10 @@
+@prefix a: <http://foo/a#> .
+@prefix : <#> .
+
+:test :comment "RDF collections as lists : with compound items".
+a:a a:p ( [ a:p2 "v1" ] 
+	  <http://resource1>
+	  <http://resource2>
+	  ("inner list") ) .
+	
+<http://resource1> a:p "value" .

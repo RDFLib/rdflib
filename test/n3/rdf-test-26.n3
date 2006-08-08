@@ -1,0 +1,10 @@
+@prefix : <#> .
+
+# alpha
+:x :y1 "\u03B1" .
+
+# e-acute
+:x :y2 "\u00E9" .
+
+# Literal e-acute in text
+:x :y3 "é" .

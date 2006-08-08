@@ -1,0 +1,9 @@
+# Test defining _ as a prefix.
+
+@prefix : <#> .
+
+_:a a :p.
+
+@prefix _: <http://underscore/> .
+
+_:a a _:p.

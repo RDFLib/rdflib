@@ -1,0 +1,3 @@
+@prefix a: <http://foo/a#> .
+@prefix : <> .
+# Empty model.

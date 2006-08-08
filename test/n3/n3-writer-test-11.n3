@@ -1,0 +1,8 @@
+@prefix a: <http://foo/a#> .
+@prefix : <#> .
+
+:test :comment "RDF collections as lists: unattached lists" .
+
+("1" "2" "3").
+# This is not a statement.
+().

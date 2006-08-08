@@ -1,0 +1,12 @@
+# Numbers with errors.
+# See also rdf-test-28.n3
+
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix x: <http://host/ns#> .
+@prefix : <#> .
+
+:y :p1 "xyz"^^xsd:integer .
+:y :p2 "12xyz"^^xsd:integer .
+
+:y :p5 "xy.z"^^xsd:double .
+:y :p6 "+1.0z"^^xsd:double .

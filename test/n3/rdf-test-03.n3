@@ -1,0 +1,4 @@
+# Test anon nodes
+@prefix ns: <http://namespace.net/> .
+
+[] ns:p1 ns:v1.
