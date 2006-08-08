@@ -1,0 +1,9 @@
+# Test named anon nodes
+
+<http://host/s1> :p [ <http://host/p1> <http://host/v1>].
+
+<http://host/s2> 
+	<http://host/p2> <http://host/v2> ;
+	:p [ <http://host/p3> <http://host/v3>].
+
+<http://host/s3> :p [] <http://host/p> <http://host/v> .

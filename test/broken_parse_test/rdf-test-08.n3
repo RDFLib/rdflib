@@ -1,0 +1,44 @@
+# WARNING! This file must be checked in CVS as binary to avoid
+# newline conversion.
+
+# Literals : these are all the same statement
+## cwm does now allow '' quoted literals
+<http://h/r> <http://h/p>  '0'.
+<http://h/r> <http://h/p>  "1" .
+<http://h/r> <http://h/p>
+'2'.
+<http://h/r><http://h/p>   "12" , '12'.
+
+## cwm does not allow ''' quoted strings
+<http://h/r> <http://h/p>
+'''123''',  """123""".
+
+# Literals with a " in them
+<http://h/r> <http://h/p> 'Literal with " double quote - 1' .
+<http://h/r> <http://h/p> "Literal with \" double quote - 2" .
+
+<http://h/r> <http://h/p>
+ """Long "DoubleQuoted" String""".
+
+
+<http://h/r> <http://h/p>
+ """Long 'SingleQuoted' String""".
+
+# Newlines
+
+<http://h/r> <http://h/p-unix>
+"""Unix newline
+convention""".
+
+<http://h/r> <http://h/p-windows>
+"""Windows newline
+convention""".
+
+<http://h/r> <http://h/p-mac>
+"""Mac newlineconvention""".
+
+
+# UTF-8 chacacter
+# This fails under Java 1.3 but passes on 1.4.1
+# The string should contain octal 200.
+# <http://h/r><http://h/p> "" , 'euro'.

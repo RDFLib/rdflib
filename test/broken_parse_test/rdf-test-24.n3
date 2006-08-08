@@ -1,0 +1,24 @@
+# Language tags and datatypes
+
+@prefix : <#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# In each of these, there is exactly one statement
+
+# This parser allows lag tags and datatypes in any order
+# One statement
+:a 
+    :q0 "11"@en^^xsd:integer ;
+    :q0 "11"^^xsd:integer@en .
+
+# One statement
+:a
+    :q1 "11"@fr^^xsd:integer ;
+    :q1 "11"@not-fr^^xsd:integer ;
+    :q1 "11"^^xsd:integer ;
+    .
+
+# Two statements
+:a :q2 "<foo>bar</foo>"@en^^rdf:XMLLiteral ,
+       "<foo>bar</foo>"@en .

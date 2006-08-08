@@ -1,0 +1,13 @@
+@prefix a: <http://foo/a#> .
+@prefix : <#> .
+
+:test :comment "String tests".
+
+a:b a:p01 "123".
+a:b a:p02 "123-\"-\'-quote".
+a:b a:p03 '123-\"-\'-quote'.
+
+a:b a:p10 """Triple double-quoted string with single quotes (" ') and newline
+in it""".
+a:b a:p11 '''Triple single-quoted string with single quotes (" ') and newline 
+in it'''.

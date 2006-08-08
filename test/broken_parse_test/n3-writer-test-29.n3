@@ -1,0 +1,23 @@
+# Test qname-ization
+
+@prefix :       <http://example.org/here#> .
+@prefix ns:     <http://example.org/ns#> .
+@prefix ns2:    <http://example.org/ns/> .
+@prefix ex:     <http://example.org/> .
+
+# Ensure we don't write ns:p1/p2 (illegal URI)
+:x <http://example.org/ns/p1/p2> "1" .
+
+# Legal URI
+:x <http://example.org/ns#_1> "1" .
+
+# Numeric namespace prefix: gives a warning on reading
+# as Jena models work on XML rules.
+#@prefix 1:      <http://example.org/1#> .
+:x <http://example.org/1#1> "1" .
+
+# Numberic localname is allowed.
+:x ex:1 "2" .
+
+# As is _1
+:x ex:_1 "rdf:_1 test" .

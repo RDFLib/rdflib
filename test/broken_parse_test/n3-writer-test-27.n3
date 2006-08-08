@@ -1,0 +1,26 @@
+# Numbers
+
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix x: <http://host/ns#> .
+@prefix : <#> .
+
+# Each of these should be one statement.
+# Also tested in reader test rdf-test-25.n3
+:x :d1 -1.0 ;   :d1 "-1.0"^^xsd:double .
+
+:x :d2 +1.0 ;   :d2 "+1.0"^^xsd:double .
+
+:x :d3 1.0 ;    :d3 "1.0"^^xsd:double .
+
+:x :e1 1.0e5 ;  :e1 "1.0e5"^^xsd:double .
+:x :e2 1e6 ;    :e2 "1e6"^^xsd:double .
+:x :e3 1e+6 ;   :e3 "1e+6"^^xsd:double .
+:x :e4 1e-6 ;   :e4 "1e-6"^^xsd:double . 
+
+:x :i1 1 ;      :i1 "1"^^xsd:integer .
+:x :i2 +1 ;     :i2 "+1"^^xsd:integer . 
+:x :i3 -1 ;     :i3 "-1"^^xsd:integer .
+
+:y :p "123"^^xsd:integer .
+:y :p "123"^^xsd:double .
+

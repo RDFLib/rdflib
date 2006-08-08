@@ -1,0 +1,11 @@
+# Datatypes and language tags
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix x: <http://host/ns#> .
+
+[ x:p1 "<foo>bar</foo>"@en-us^^rdf:XMLLiteral ;
+	# Two below are same statement
+  x:p2 "<foo>bar</foo>"^^rdf:XMLLiteral@en-us ;
+  x:p2 "<foo>bar</foo>"@en-us^^rdf:XMLLiteral ;
+  x:p3 "text"@en ;
+] .

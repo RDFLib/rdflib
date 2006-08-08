@@ -1,0 +1,9 @@
+@prefix : <#> .
+@prefix x: <http://example.org/x#> .
+
+# \u in URIs not supported
+# @prefix e: <http://example.org/e-actute-\u00E9#> .
+
+#<http://example.org/alpha-\u03B1> e:alpha "alpha" .
+
+x:α x:p "alpha qname" .
