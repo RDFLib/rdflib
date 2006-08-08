@@ -52,6 +52,8 @@ register('pretty-xml', serializers.Serializer,
 register('nt', serializers.Serializer,
          'rdflib.syntax.serializers.NTSerializer', 'NTSerializer')
 
+register('turtle', serializers.Serializer,
+         'rdflib.syntax.serializers.TurtleSerializer', 'TurtleSerializeer')
 register('n3', serializers.Serializer,
          'rdflib.syntax.serializers.N3Serializer', 'N3Serializer')
 

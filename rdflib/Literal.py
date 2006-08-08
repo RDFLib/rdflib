@@ -171,17 +171,34 @@ class Literal(Identifier):
     def n3(self):
         language = self.language
         datatype = self.datatype
-        encoded = self.encode('unicode-escape').replace('\\', '\\\\').replace('"','\\"')
+        # unfortunately this doesn't work: a newline gets encoded as \\n, which is ok in sourcecode, but we want \n
+        #encoded = self.encode('unicode-escape').replace('\\', '\\\\').replace('"','\\"')
+        #encoded = self.replace.replace('\\', '\\\\').replace('"','\\"')
+
+        # TODO: We could also chose quotes based on the quotes appearing in the string, i.e. '"' and "'" ...
+
+        # which is nicer?
+        #if self.find("\"")!=-1 or self.find("'")!=-1 or self.find("\n")!=-1:
+        if self.find("\n")!=-1:
+            # Triple quote this string.
+            encoded=self.replace('\\', '\\\\')
+            if self.find('"""')!=-1: 
+                # is this ok?
+                encoded=encoded.replace('"""','\\"""')
+            if encoded.endswith('"'): encoded=encoded[:-1]+"\\\""
+            encoded='"""%s"""'%encoded
+        else: 
+            encoded='"%s"'%self.replace('\n','\\n').replace('\\', '\\\\').replace('"','\\"')
         if language:
-            if datatype:
-                return '"%s"@%s^^<%s>' % (encoded, language, datatype)
+            if datatype:    
+                return '%s@%s^^<%s>' % (encode, language, datatype)
             else:
-                return '"%s"@%s' % (encoded, language)
+                return '%s@%s' % (encoded, language)
         else:
             if datatype:
-                return '"%s"^^<%s>' % (encoded, datatype)
+                return '%s^^<%s>' % (encoded, datatype)
             else:
-                return '"%s"' % encoded
+                return '%s' % encoded
 
     def __repr__(self):
         klass,convFunc = XSDToPython.get(self.datatype,(None,None))

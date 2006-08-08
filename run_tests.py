@@ -37,6 +37,8 @@ from test.store_performace import *
 
 from test.rules import *
 
+from test.n3Test import *
+
 import test.rdfa
 
 from test.events import *
