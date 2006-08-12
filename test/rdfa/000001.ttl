@@ -14,4 +14,4 @@ _:address <http://xmlns.com/foaf/0.1/country> "USA"^^<http://www.w3.org/1999/02/
 <#i> <http://xmlns.com/foaf/0.1/knows> <http://www.w3.org/People/Berners-Lee/card#i> .
 <#i> <http://xmlns.com/foaf/0.1/knows> <http://www.w3.org/People/EM/contact#me> .
 <#i> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .
-
+<> <http://www.w3.org/1999/xhtml#stylesheet> <http://example.com/includes/style.css> .
