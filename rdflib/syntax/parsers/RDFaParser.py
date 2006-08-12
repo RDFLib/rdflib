@@ -22,6 +22,12 @@ CHANGE HISTORY:
                Fixed plaintext bug where it was being resolved as CURIE
                Added support to skip reserved @rel keywords from:
                  http://www.w3.org/TR/REC-html40/types.html#h-6.12
+  2006/08/12 - Changed reserved @rel resolution to include a '#'
+               Fixed subject resolution for LINK/META when inside HEAD
+               Fixed blank node extraction [_:address] -> [_:_:address]
+               Added support for passing prefix mappings to the Graph
+               via RDFaSink
+               Added @id support as part of subject resolution
 
 Copyright (c) 2006, Elias Torres <elias@torrez.us>
 
@@ -30,6 +36,7 @@ Copyright (c) 2006, Elias Torres <elias@torrez.us>
 import sys, re, urllib, urlparse, cStringIO, string
 from xml.dom import pulldom
 from rdflib.syntax.parsers import Parser
+from rdflib.Graph import ConjunctiveGraph
 from rdflib import URIRef
 from rdflib import BNode
 from rdflib import Literal
@@ -37,7 +44,7 @@ from rdflib import Namespace
 
 __version__ = "$Id$"
 
-rdfa_attribs = ["about","property","rel","rev","href","content","role"]
+rdfa_attribs = ["about","property","rel","rev","href","content","role","id"]
 
 reserved_links = ['alternate', 'stylesheet', 'start', 'next', 'prev',
                  'contents', 'index', 'glossary', 'copyright', 'chapter',
@@ -54,6 +61,8 @@ class RDFaSink(object):
     return self.graph.serialize(format="pretty-xml")
   def triple(self, s, p, o):
     self.graph.add((s, p, o))
+  def prefix(self, prefix, ns):
+    self.graph.bind(prefix, ns, override=False)
 
 _urifixer = re.compile('^([A-Za-z][A-Za-z0-9+-.]*://)(/*)(.*?)')
 
@@ -70,9 +79,12 @@ class RDFaParser(Parser):
     self.elementStack = [None]
     self.bcounter = {}
     self.bnodes = {}
+    self.sink = None
 
   def parse(self, source, sink, baseURI=None):
-    self.triple = RDFaSink(sink).triple
+    self.sink = RDFaSink(sink)
+    self.triple = self.sink.triple
+    self.prefix = self.sink.prefix
     self.baseuri = baseURI or source.getPublicId()
     f = source.getByteStream()
     events = pulldom.parse(f)
@@ -118,13 +130,17 @@ class RDFaParser(Parser):
 
         if "about" in found:
           self.abouts += [(self.extractCURIEorURI(node.getAttribute("about")),node)]
+        elif "id" in found:
+          self.abouts += [(self.extractCURIEorURI("#" + node.getAttribute("id")),node)]
 
         subject = self.abouts[-1][0]
 
         # meta/link subject processing
         if(node.tagName == "meta" or node.tagName == "link"):
           if not("about" in found) and parentNode:
-            if(parentNode.hasAttribute("about")):
+            if parentNode and parentNode.tagName == "head":
+              subject = URIRef("")
+            elif(parentNode.hasAttribute("about")):
               subject = self.extractCURIEorURI(parentNode.getAttribute("about"))
             elif parentNode.hasAttributeNS(xml,"id") or parentNode.hasAttribute("id"):
               # TODO: is this the right way to process xml:id by adding a '#'
@@ -168,11 +184,13 @@ class RDFaParser(Parser):
 
         if "rel" in found:
           rel = node.getAttribute("rel").strip()
-          if not string.lower(rel) in reserved_links:
-            predicate = self.extractCURIEorURI(rel)
-            if node.hasAttribute("href"):
-              object = self.extractCURIEorURI(node.getAttribute("href"))
-              self.triple(subject, predicate, object)
+          if string.lower(rel) in reserved_links:
+            rel = xhtml["#" + string.lower(rel)]
+
+          predicate = self.extractCURIEorURI(rel)
+          if node.hasAttribute("href"):
+            object = self.extractCURIEorURI(node.getAttribute("href"))
+            self.triple(subject, predicate, object)
 
         if "rev" in found:
           predicate = self.extractCURIEorURI(node.getAttribute("rev"))
@@ -192,6 +210,11 @@ class RDFaParser(Parser):
 
       if event == pulldom.END_ELEMENT:
         self._popStacks(event, node)
+     
+    # share with sink any prefix mappings
+    for nsc in self.handler._ns_contexts:
+      for ns, prefix in nsc.items():
+        self.prefix(prefix, ns)
 
     f.close()
 
@@ -205,7 +228,6 @@ class RDFaParser(Parser):
 
   def generateBlankNode(self, parentNode):
     name = parentNode.tagName
-
     if self.bnodes.has_key(parentNode):
       return self.bnodes[parentNode]
 
@@ -214,7 +236,7 @@ class RDFaParser(Parser):
     else:
       self.bcounter[name] = 0
 
-    self.bnodes[parentNode] = BNode("_:%s%d" % (name, self.bcounter[name]))
+    self.bnodes[parentNode] = BNode("%s%d" % (name, self.bcounter[name]))
 
     return self.bnodes[parentNode]
 
@@ -231,9 +253,9 @@ class RDFaParser(Parser):
           if prefix == rpre:
             resource = ns + rsuf
 
-    # is this enough to check for bnodes?
+    # TODO: is this enough to check for bnodes?
     if(len(resource) > 0 and resource[0:2] == "_:"):
-      return BNode(resource)
+      return BNode(resource[2:])
 
     return URIRef(self.resolveURI(resource))
 
@@ -261,4 +283,8 @@ class RDFaParser(Parser):
       if self.langs and self.langs[-1]:
         self.lang = self.langs[-1]
 
+if __name__ == "__main__":
+    store = ConjunctiveGraph()
+    store.load(sys.argv[1], format="rdfa") 
+    print store.serialize(format="pretty-xml")
 
