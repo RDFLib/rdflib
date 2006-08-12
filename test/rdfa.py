@@ -9,7 +9,7 @@ import unittest
 import ntriples
 
 from rdfdiff import Graph
-from rdflib import Graph as RGraph
+from rdflib import ConjunctiveGraph as RGraph
 from rdflib import StringInputSource
 from rdflib import URIRef
 from rdflib import BNode
