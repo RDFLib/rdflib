@@ -186,6 +186,16 @@ def eq(a,b) :
             return False
     return f
 
+##
+# Operator for '!='
+# @param a value or query string
+# @param b value or query string
+# @return comparison method
+def neq(a, b):
+    f = eq(a, b)
+    def ff(bindings):
+        return not f(bindings)
+    return ff
 
 def __getQueryString(v) :
     if isinstance(v,Unbound) :
