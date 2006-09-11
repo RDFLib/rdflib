@@ -25,7 +25,7 @@ DEBUG = False
 BinaryOperatorMapping = {
     LessThanOperator           : 'sparqlOperators.lt(%s,%s)%s',
     EqualityOperator           : 'sparqlOperators.eq(%s,%s)%s',
-    NotEqualOperator           : 'not(sparqlOperators.eq(%s,%s)%s)',
+    NotEqualOperator           : 'sparqlOperators.neq(%s,%s)%s',
     LessThanOrEqualOperator    : 'sparqlOperators.le(%s,%s)%s',
     GreaterThanOperator        : 'sparqlOperators.gt(%s,%s)%s',
     GreaterThanOrEqualOperator : 'sparqlOperators.ge(%s,%s)%s',
