@@ -148,7 +148,10 @@ class SPARQLQueryResult(QueryResult.QueryResult):
         self.distinct = distinct
 
     def __len__(self):
-        return len([i for i in self])
+        if isinstance(self.selected,list):
+            return len(self.selected)
+        else:
+            return 1
 
     def __iter__(self):
         """Iterates over the result entries"""
