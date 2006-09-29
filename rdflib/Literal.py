@@ -138,24 +138,56 @@ class Literal(Identifier):
         return Literal(s, self.language, self.datatype)
 
     def __eq__(self, other):
+        """        
+        >>> oneInt     = Literal(1)
+        >>> oneNoDtype = Literal('1')
+        >>> oneInt == oneNoDtype
+        False
+        >>> Literal("1",XSD_NS+u'string') == Literal("1",XSD_NS+u'string') 
+        True
+        >>> Literal("one",lang="en") == Literal("one",lang="en")
+        True
+        >>> Literal("hast",lang='en') == Literal("hast",lang='de')
+        False
+        >>> oneInt == Literal(1)
+        True
+        >>> oneFloat   = Literal(1.0)
+        >>> oneInt == oneFloat
+        True
+        >>> oneInt == 1
+        True
+        """
         if other==None:
             return False
         elif isinstance(other, Literal):
-            result = self.__cmp__(other)==False
-            if result==True:
-                if self.datatype == None or self.datatype == '' :
-                    if not(other.datatype == None or other.datatype == '') :
-                        return False
-                else:
-                    if other.datatype == None or other.datatype == '' :
-                        return False
-                    elif self.datatype != other.datatype :
-                        return False
-                if self.language!=other.language:
+            #If they are both literals, then their datatypes is the first
+            #criteria for comparison
+            if self.datatype == None or self.datatype == '' :
+                if not(other.datatype == None or other.datatype == '') :
+                    #Only one of the two has a datatype - not enough info to compare
                     return False
-                return True
+                else:
+                    #Both don't have datatypes, check their language tags..
+                    if self.language!=other.language:
+                        #Different language tags..
+                        return False                    
+                    else:
+                        #Neither has a datatype and their languages don't differ (or neither has a language tag))
+                        #compare lexically
+                        return unicode(self) == unicode(other)
             else:
-                return result
+                if other.datatype == None or other.datatype == '' :
+                    #Only one of the two has a datatype - not enough info to compare
+                    return False
+                elif other.datatype in XSDToPython and self.datatype in XSDToPython:
+                    #I know how to cast both Literals into a python scalar - so compare with python 
+                    return self.toPython() == other.toPython()
+                elif self.datatype == other.datatype :
+                    #The datatypes are the same so we can do a simple lexical comparison
+                    return unicode(self) == unicode(other)
+                elif self.datatype != other.datatype :
+                    #I have no way reliably compare both Literals 
+                    return False
         elif isinstance(other, Identifier):
             return False
         elif castPythonToLiteral(other)[-1]:
@@ -218,3 +250,10 @@ class Literal(Identifier):
         if klass:
             rt = klass(rt)
         return rt
+
+def test():
+    import doctest
+    doctest.testmod()
+
+if __name__ == '__main__':
+    test()
