@@ -185,17 +185,24 @@ def eq(a,b) :
                 sys.excepthook(typ,val,traceback)
             return False
     return f
-
 ##
 # Operator for '!='
 # @param a value or query string
 # @param b value or query string
 # @return comparison method
-def neq(a, b):
-    f = eq(a, b)
-    def ff(bindings):
-        return not f(bindings)
-    return ff
+def neq(a,b) :
+    fa = getValue(a)
+    fb = getValue(b)
+    def f(bindings) :
+        try :
+            return fa(bindings) != fb(bindings)
+        except :
+            # this is the case when the operators are incompatible
+            if Debug :
+                (typ,val,traceback) = sys.exc_info()
+                sys.excepthook(typ,val,traceback)
+            return False
+    return f
 
 def __getQueryString(v) :
     if isinstance(v,Unbound) :
