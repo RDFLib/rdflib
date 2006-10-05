@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<TriX xmlns="http://www.w3.org/2004/03/trix/trix-1/">
+
+<!--
+<http://example.org/Bob> <http://example.org/wife> <http://example.org/Mary> .
+<http://example.org/Bob> <http://example.org/name> "Bob"> .
+<http://example.org/Mary> <http://example.org/age> "32"^^<http://www.w3.org/2001/XMLSchema#integer> .
+-->
+
+<graph>
+   <triple>
+      <uri>http://example.org/Bob</uri>
+      <uri>http://example.org/wife</uri>
+      <uri>http://example.org/Mary</uri>
+   </triple>
+   <triple>
+      <uri>http://example.org/Bob</uri>
+      <uri>http://example.org/wife</uri>
+      <plainLiteral>Bob</plainLiteral>
+   </triple>
+   <triple>
+      <uri>http://example.org/Mary</uri>
+      <uri>http://example.org/age</uri>
+      <typedLiteral datatype="http://www.w3.org/2001/XMLSchema#integer">32</typedLiteral>
+   </triple>
+</graph>
+
+<!--
+<http://example.org/Widget> <http://example.org/dimensions> _:x .
+_:x <http://example.org/length> "12"^^<http://example.org/int> .
+_:x <http://example.org/width>  "46"^^<http://example.org/int> .
+-->
+
+<graph>
+   <triple>
+      <uri>http://example.org/Widget</uri>
+      <uri>http://example.org/dimensions</uri>
+      <id>x</id>
+   </triple>
+   <triple>
+      <id>x</id>
+      <uri>http://example.org/length</uri>
+      <typedLiteral datatype="http://example.org/int">12</typedLiteral>
+   </triple>
+   <triple>
+      <id>x</id>
+      <uri>http://example.org/width</uri>
+      <typedLiteral datatype="http://example.org/int">46</typedLiteral>
+   </triple>
+</graph>
+
+<!--
+<http://example.org/aBook> <http://purl.org/dc/elements/title> "&lt;ex:title&gt;A Good Book&lt;/ex:title&gt;"^^rdfs:XMLLiteral .
+<http://example.org/aBook> <http://www.w3.org/2000/01/rdf-schema#comment> "This is a really good book!"@en .
+_:binfo <http://example.org/source> <http://example.com/book-description.rdf> .
+<http://example.com/book-description.rdf> <http://example.org/authority> <http://example.org/Bob> .
+-->
+
+<graph>
+   <uri>http://example.org/binfo</uri>
+   <triple>
+      <uri>http://example.org/aBook</uri>
+      <uri>http://purl.org/dc/elements/1.1/title</uri>
+      <typedLiteral datatype="http://www.w3.org/2000/01/rdf-schema#XMLLiteral">&lt;ex:title&gt;A Good Book&lt;/ex:title&gt;</typedLiteral>
+   </triple>
+   <triple>
+      <uri>http://example.org/aBook</uri>
+      <uri>http://www.w3.org/2000/01/rdf-schema#comment</uri>
+      <plainLiteral xml:lang="en">This is a really good book!</plainLiteral>
+   </triple>
+   <triple>
+      <id>binfo</id>
+      <uri>http://example.org/source</uri>
+      <uri>http://example.org/book-description.rdf</uri>
+   </triple>
+   <triple>
+      <uri>http://example.org/book-description.rdf</uri>
+      <uri>http://example.org/authority</uri>
+      <uri>http://example.org/Bob</uri>
+   </triple>
+</graph>
+
+<!--
+RDF Test Case: language-tag-case-not-significant
+-->
+
+<graph>
+   <triple>
+      <uri>http://example.org/tests/language-tag-case-not-significant</uri>
+      <uri>http://example.org/entailmentRules</uri>
+      <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#</uri>
+   </triple>
+   <triple>
+      <uri>http://example.org/tests/language-tag-case-not-significant</uri>
+      <uri>http://example.org/premise</uri>
+      <uri>http://example.org/tests/graph1</uri>
+   </triple>
+   <triple>
+      <uri>http://example.org/tests/language-tag-case-not-significant</uri>
+      <uri>http://example.org/conclusion</uri>
+      <uri>http://example.org/tests/graph2</uri>
+   </triple>
+</graph>
+
+<graph>
+   <uri>http://example.org/tests/graph1</uri>
+   <triple>
+      <id>x</id>
+      <uri>http://example.org/property</uri>
+      <plainLiteral xml:lang="en-us">a</plainLiteral>
+   </triple>
+</graph>
+
+<graph>
+   <uri>http://example.org/tests/graph2</uri>
+   <triple>
+      <id>x</id>
+      <uri>http://example.org/property</uri>
+      <plainLiteral xml:lang="en-US">a</plainLiteral>
+   </triple>
+</graph>
+
+<!--
+RDF Closure Rule: rdf1
+-->
+
+<graph>
+   <triple>
+      <uri>http://example.org/rules/rdf1</uri>
+      <uri>http://example.org/premise</uri>
+      <uri>http://example.org/rules/rdf1/premise</uri>
+   </triple>
+   <triple>
+      <uri>http://example.org/rules/rdf1</uri>
+      <uri>http://example.org/conclusion</uri>
+      <uri>http://example.org/rules/rdf1/conclusion</uri>
+   </triple>
+</graph>
+
+<graph>
+   <uri>http://example.org/rules/rdf1/premise</uri>
+   <triple>
+      <uri>http://example.org/rules/rdf1/variables/aaa</uri>
+      <uri>http://example.org/rules/rdf1/variables/uuu</uri>
+      <uri>http://example.org/rules/rdf1/variables/yyy</uri>
+   </triple>
+</graph>
+
+<graph>
+   <uri>http://example.org/rules/rdf1/conclusion</uri>
+   <triple>
+      <uri>http://example.org/rules/rdf1/variables/aaa</uri>
+      <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
+      <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#Property</uri>
+   </triple>
+</graph>
+
+</TriX>
