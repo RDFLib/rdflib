@@ -28,10 +28,13 @@ class Sleepycat(Store):
         return self.__identifier
     identifier = property(__get_identifier)
 
-    def open(self, path, create=True):
+    def open(self, path, create=True, recover=False):
         homeDir = path
         envsetflags  = db.DB_CDB_ALLDB
         envflags = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD
+	if recover:
+	    envflags = db.DB_RECOVER | db.DB_CREATE | db.DB_INIT_TXN | db.DB_INIT_MPOOL | db.DB_THREAD #| db.DB_INIT_CDB 
+
         if not exists(homeDir):
             if create==True:
                 mkdir(homeDir)
