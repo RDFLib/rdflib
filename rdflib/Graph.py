@@ -1,3 +1,5 @@
+from __future__ import generators
+
 __doc__="""
 Instanciating Graphs with default store (IOMemory) and default identifier (a BNode):
 
@@ -144,7 +146,7 @@ Parameterized SPARQL Queries
 
 """
 
-from __future__ import generators
+
 from cStringIO import StringIO
 from rdflib import URIRef, BNode, Namespace, Literal, Variable
 from rdflib import RDF, RDFS
