@@ -7,6 +7,9 @@ class Namespace(URIRef):
         return URIRef(self + key)
 
     def __getattr__(self, name):
-        return URIRef(self + name)
+        if name.startswith("__"): # ignore any special Python names!
+            raise AttributeError
+        else:
+            return URIRef(self + name)
 
 
