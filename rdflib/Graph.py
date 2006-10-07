@@ -301,13 +301,13 @@ class Graph(Node):
         """Rollback active transactions"""
         self.__store.rollback()
 
-    def open(self, configuration, create=False, **args):
+    def open(self, configuration, create=False):
         """Open the graph store
 
         Might be necessary for stores that require opening a connection to a
         database or acquiring some resource.
         """
-        return self.__store.open(configuration, create, **args)
+        return self.__store.open(configuration, create)
 
     def close(self):
         """Close the graph store
