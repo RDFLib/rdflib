@@ -132,10 +132,6 @@ class Sleepycat(Store):
         self.__i2k.set_flags(dbsetflags)
         self.__i2k.open("i2k", dbname, db.DB_RECNO, dbopenflags|db.DB_CREATE, dbmode)
 
-        self.__journal = db.DB(db_env)
-        self.__journal.set_flags(dbsetflags)
-        self.__journal.open("journal", dbname, db.DB_RECNO, dbopenflags|db.DB_CREATE, dbmode)
-
         self.__needs_sync = False
         t = Thread(target=self.__sync_run)
         t.setDaemon(True)
@@ -172,7 +168,6 @@ class Sleepycat(Store):
             self.__prefix.sync()
             self.__i2k.sync()
             self.__k2i.sync()
-            self.__journal.sync()
             self.db_env.txn_checkpoint(0, 0)
 
     def close(self):
@@ -185,7 +180,6 @@ class Sleepycat(Store):
         self.__prefix.close()
         self.__i2k.close()
         self.__k2i.close()
-        self.__journal.close()
         self.db_env.close()
 
     def add(self, (subject, predicate, object), context, quoted=False):
@@ -206,7 +200,6 @@ class Sleepycat(Store):
 
         value = cspo.get("%s^%s^%s^%s^" % (c, s, p, o))
         if value is None:
-            self.__journal.append("%s^%s^%s^%s^1^%s" % (c, s, p, o, time()))
             self.__contexts.put(c, "")
 
             contexts_value = cspo.get("%s^%s^%s^%s^" % ("", s, p, o)) or ""
@@ -228,7 +221,6 @@ class Sleepycat(Store):
 
     def __remove(self, (s, p, o), c, quoted=False):
         cspo, cpos, cosp = self.__indicies
-        self.__journal.append("%s^%s^%s^%s^2^%s" % (c, s, p, o, time()))
         contexts_value = cspo.get("^".join(("", s, p, o, ""))) or ""
         contexts = set(contexts_value.split("^"))
         contexts.discard(c)
@@ -437,16 +429,6 @@ class Sleepycat(Store):
             i = "%s" % self.__i2k.append(k)
             self.__k2i.put(k, i)
         return i
-
-    def play_journal(self, graph=None):
-        j = self.__journal
-        i = 1 # looks like recno is 1-based
-        current = j.get(i)
-        while current:
-            c, s, p, o, op, time = current.split("^")
-            yield self._from_string(c), self._from_string(s), self._from_string(p), self._from_string(o), op, time
-            i += 1
-            current = j.get(i)
 
     def __lookup(self, (subject, predicate, object), context):
         _to_string = self._to_string
