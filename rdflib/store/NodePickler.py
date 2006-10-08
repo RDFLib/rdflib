@@ -7,11 +7,10 @@ from cStringIO import StringIO
 class NodePickler(object):
     def __init__(self):
         self._objects = {}
-        self._get_object = self._objects.__getitem__
         self._ids = {}
-        self._get_id = self._ids.get
+        self._get_object = self._objects.__getitem__
 
-    def get_ids(self, key):
+    def _get_ids(self, key):
         try:
             return self._ids.get(key)
         except TypeError, e:
@@ -32,7 +31,7 @@ class NodePickler(object):
     def dumps(self, obj, protocol=None, bin=None):
         src = StringIO()
         p = Pickler(src)
-        p.persistent_id = self.get_ids
+        p.persistent_id = self._get_ids
         p.dump(obj)
         return src.getvalue()
 
