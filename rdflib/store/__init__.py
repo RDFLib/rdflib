@@ -26,6 +26,34 @@ CORRUPTED_STORE = 0
 NO_STORE        = -1
 UNKNOWN         = None
 
+from rdflib.events import Dispatcher, Event
+
+class StoreCreatedEvent(Event):
+    """
+    This event is fired when the Store is created, it has the folloing attribute:
+    
+      - 'configuration' string that is used to create the store
+
+    """
+
+class TripleAddedEvent(Event):
+    """
+    This event is fired when a triple is added, it has the following attributes:
+
+      - 'triple' added to the graph
+      - 'context' of the triple if any
+      - 'graph' that the triple was added to
+    """
+
+class TripleRemovedEvent(Event):
+    """
+    This event is fired when a triple is removed, it has the following attributes:
+
+      - 'triple' removed from the graph
+      - 'context' of the triple if any
+      - 'graph' that the triple was removed from
+    """
+
 class Store(object):
     #Properties
     context_aware = False
@@ -39,6 +67,7 @@ class Store(object):
         connect to datastore.
         """
         self.__node_pickler = None
+        self.dispatcher = Dispatcher()
         if configuration:
             self.open(configuration)
 
@@ -65,6 +94,9 @@ class Store(object):
     node_pickler = property(__get_node_pickler)
 
     #Database management methods
+    def create(self, configuration):
+        self.dispatcher.dispatch(StoreCreatedEvent(configuration=configuration))
+        
     def open(self, configuration, create=False):
         """
         Opens the store specified by the configuration string. If
@@ -101,6 +133,7 @@ class Store(object):
         It should be an error to not specify a context and have the quoted argument be True.
         It should also be an error for the quoted argument to be True when the store is not formula-aware.
         """
+        self.dispatcher.dispatch(TripleAddedEvent(triple=(subject, predicate, object), context=context))
 
     def addN(self, quads):
        """
@@ -117,6 +150,7 @@ class Store(object):
 
     def remove(self, (subject, predicate, object), context=None):
         """ Remove the set of triples matching the pattern from the store """
+        self.dispatcher.dispatch(TripleRemovedEvent(triple=(subject, predicate, object), context=context))
 
     def triples_choices(self, (subject, predicate, object_),context=None):
         """

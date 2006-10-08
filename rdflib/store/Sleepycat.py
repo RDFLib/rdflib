@@ -44,7 +44,8 @@ class Sleepycat(Store):
 
         if not exists(homeDir):
             if create==True:
-                mkdir(homeDir)
+                mkdir(homeDir) # TODO: implement create method and refactor this to it
+                self.create(path)
             else:
                 return -1
         if self.__identifier is None:
@@ -223,6 +224,7 @@ class Sleepycat(Store):
                 cosp.put("%s^%s^%s^%s^" % ("", o, s, p), contexts_value)
 
             self.__needs_sync = True
+        Store.add(self, (subject, predicate, object), context, quoted)
 
     def __remove(self, (s, p, o), c, quoted=False):
         cspo, cpos, cosp = self.__indicies
@@ -304,6 +306,7 @@ class Sleepycat(Store):
                         pass
 
             self.__needs_sync = needs_sync
+        Store.remove(self, (subject, predicate, object), context)
 
 
     def triples(self, (subject, predicate, object), context=None):
