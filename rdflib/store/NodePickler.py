@@ -11,6 +11,12 @@ class NodePickler(object):
         self._ids = {}
         self._get_id = self._ids.get
 
+    def get_ids(self, key):
+        try:
+            return self._ids.get(key)
+        except TypeError, e:
+            return None
+
     def register(self, object, id):
         self._objects[id] = object
         self._ids[object] = id
@@ -26,7 +32,7 @@ class NodePickler(object):
     def dumps(self, obj, protocol=None, bin=None):
         src = StringIO()
         p = Pickler(src)
-        p.persistent_id = self._get_id
+        p.persistent_id = self.get_ids
         p.dump(obj)
         return src.getvalue()
 
