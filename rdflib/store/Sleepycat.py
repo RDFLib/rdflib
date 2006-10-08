@@ -28,12 +28,19 @@ class Sleepycat(Store):
         return self.__identifier
     identifier = property(__get_identifier)
 
-    def open(self, path, create=True, recover=False):
+    def open(self, path, create=True):
         homeDir = path
         envsetflags  = db.DB_CDB_ALLDB
-        envflags = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD
-	if recover:
-	    envflags = db.DB_RECOVER | db.DB_CREATE | db.DB_INIT_TXN | db.DB_INIT_MPOOL | db.DB_THREAD #| db.DB_INIT_CDB 
+        envflags = db.DB_INIT_MPOOL | db.DB_INIT_LOCK | db.DB_INIT_LOG | db.DB_INIT_TXN 
+        #envflags |= db.DB_INIT_CDB | db.DB_THREAD
+        envflags |= db.DB_THREAD
+        envflags |= db.DB_INIT_TXN
+        try:
+            db.DB_REGISTER # Python wrapper does not yet define this :(
+        except AttributeError:
+            db.REGISTER =  0x0400000 # So we'll live on the edge and hope and pray ;)
+            assert db.REGISTER == 0x0400000
+        envflags |= db.REGISTER | db.DB_RECOVER 
 
         if not exists(homeDir):
             if create==True:
@@ -165,6 +172,7 @@ class Sleepycat(Store):
             self.__i2k.sync()
             self.__k2i.sync()
             self.__journal.sync()
+            self.db_env.txn_checkpoint(0, 0)
 
     def close(self):
         self.__open = False
