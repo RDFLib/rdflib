@@ -619,7 +619,10 @@ def PatternResolution(quad,cursor,BRPs,orderByTriple=True,fetchall=True,fetchCon
         unionQueries.append(query+whereClause)
         unionQueriesParams.extend(whereParameters)
 
-    orderBySuffix = orderByTriple and ' ORDER BY %s,%s,%s'%(SlotPrefixes[SUBJECT],SlotPrefixes[PREDICATE],SlotPrefixes[OBJECT]) or ''
+    if fetchContexts:
+        orderBySuffix = ''
+    else:
+        orderBySuffix = orderByTriple and ' ORDER BY %s,%s,%s'%(SlotPrefixes[SUBJECT],SlotPrefixes[PREDICATE],SlotPrefixes[OBJECT]) or ''
     if len(unionQueries) == 1:
         query = unionQueries[0] + orderBySuffix
     else:
