@@ -1,22 +1,29 @@
 
 import rdflib
+from rdflib.Graph import Graph
+from rdflib.URIRef import URIRef
+from rdflib.Node import Node
+from rdflib.BNode import BNode
+from rdflib.Literal import Literal
 import RDF
 
 from rdflib.store import Store
 
 def _t(i):
     if isinstance(i, rdflib.URIRef):
-        return RDF.Uri(unicode(i))
+        return RDF.Node(RDF.Uri(unicode(i)))
     if isinstance(i, rdflib.BNode):
         return RDF.Node(blank=str(i))
     if isinstance(i, rdflib.Literal):
         return RDF.Node(literal=str(i))
+    if isinstance(i, Graph):
+        return _t(i.identifier)
     if i is None:
         return None
     raise TypeError, 'Cannot convert %s' % `i`
 
 def _c(i):
-    return RDF.Node(uri=RDF.Uri(str(id(i))))
+    return _t(i)
 
 
 def _f(i):
@@ -24,24 +31,31 @@ def _f(i):
         return rdflib.URIRef(i)
     if isinstance(i, RDF.Node):
         if i.is_blank():
-            return rdflib.BNode(i)
-        else:
+            return rdflib.BNode(i.blank_identifier)
+        elif i.is_literal():
             return rdflib.Literal(i)
+        else:
+            return URIRef(i.uri)
     if i is None:
         return None
     raise TypeError, 'Cannot convert %s' % `i`
 
 
 class Redland(Store):
+    context_aware = True
     def __init__(self, model=None):
         super(Redland, self).__init__()
         if model is None:
-            model = RDF.Model()
+            model = RDF.Model(RDF.MemoryStorage(options_string="contexts='yes'"))
         self.model = model
 
     def __len__(self, context=None):
         """ Return number of triples (statements in librdf). """
-        return self.model.size()
+
+        count = 0
+        for triple, cg in self.triples((None, None, None), context):
+            count += 1
+        return count
 
     def add(self, (subject, predicate, object), context=None, quoted=False):
         """\
@@ -53,19 +67,33 @@ class Redland(Store):
             self.model.append(RDF.Statement(_t(subject), _t(predicate), _t(object)))
 
     def remove(self, (subject, predicate, object), context, quoted=False):
-        if context is not None:
-            del self.model[RDF.Statement(_t(subject), _t(predicate), _t(object)), _t(context)]
+        if context is None:
+            contexts = self.contexts()
         else:
-            del self.model[RDF.Statement(_t(subject), _t(predicate), _t(object))]
+            contexts = [context]
+        for context in contexts:
+            if subject is None and predicate is None and object is None:
+                self.model.remove_statements_with_context(_c(context))
+            else:
+                del self.model[RDF.Statement(_t(subject), _t(predicate), _t(object)), _c(context)]
 
     def triples(self, (subject, predicate, object), context=None):
         """A generator over all the triples matching """
-        for statement in self.model.find_statements(RDF.Statement(_t(subject), _t(predicate), _t(object)), _t(context)):
-            yield _f(statement.subject), _f(statement.predicate), _f(statement.object)
+        cgraph = RDF.Model()
+        triple = RDF.Statement(_t(subject), _t(predicate), _t(object))
+        for statement, c in self.model.find_statements_context(triple):
+            if context is None or _f(c) == context.identifier:
+                cgraph.append(statement)
+        for statement in cgraph.find_statements(triple):
+            ret = []
+            for c in self.model.get_contexts():
+                if self.model.contains_statement_context(statement, _c(context)):
+                    ret.append(c)
+            yield (_f(statement.subject), _f(statement.predicate), _f(statement.object)), iter(ret)
 
     def contexts(self, triple=None): # TODO: have Graph support triple?
         for context in self.model.get_contexts():
-            yield URIRef(context)
+            yield Graph(self, _f(context))
 
     def bind(self, prefix, namespace):
         pass

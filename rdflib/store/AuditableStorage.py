@@ -11,7 +11,7 @@ store instances), but no durability (transactions are persisted in memory and wo
 """
 
 from rdflib.store import Store
-from rdflib.Graph import Graph
+from rdflib.Graph import Graph, ConjunctiveGraph
 from pprint import pprint
 import threading
 
@@ -60,12 +60,19 @@ class AuditableStorage(Store):
         context = context is not None and context.__class__(self.storage,context.identifier) or None
         ctxId = context is not None and context.identifier or None
         if None in [subject,predicate,object_,context]:
-            for (s,p,o),cg in self.storage.triples((subject,predicate,object_),context):
-                for ctx in cg:
+            if ctxId:                
+                for s,p,o in context.triples((subject,predicate,object_)):
+                    if (s,p,o,ctxId,'remove') in self.reverseOps:
+                        self.reverseOps.remove((s,p,o,ctxId,'remove'))
+                    else:
+                        self.reverseOps.append((s,p,o,ctxId,'add'))
+            else:
+                for s,p,o,ctx in ConjunctiveGraph(self.storage).quads((subject,predicate,object_)):
                     if (s,p,o,ctx.identifier,'remove') in self.reverseOps:
                         self.reverseOps.remove((s,p,o,ctx.identifier,'remove'))
                     else:
                         self.reverseOps.append((s,p,o,ctx.identifier,'add'))
+                
         elif (subject,predicate,object_,ctxId,'add') in self.reverseOps:
             self.reverseOps.remove((subject,predicate,object_,ctxId,'add'))
         else:

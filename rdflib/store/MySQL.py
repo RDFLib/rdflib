@@ -436,7 +436,6 @@ class MySQL(Store):
         rt=PatternResolution((subject,predicate,obj,None),
                               c,
                               self.partitions,
-                              orderByContext=False,
                               fetchall=False,
                               fetchContexts=True)
         while rt:
