@@ -3,14 +3,14 @@ import unittest
 from tempfile import mkdtemp
 
 from rdflib import URIRef, BNode, Literal, RDF
-from rdflib import Graph
+from rdflib.Graph import Graph
 
 class Graph22TestCase(unittest.TestCase):
     backend_name = 'default'
     path = None
 
     def setUp(self):
-        self.graph = Graph(backend=self.backend_name)
+        self.graph = Graph(store=self.backend_name)
         a_tmp_dir = mkdtemp()
         self.path = self.path or a_tmp_dir
         self.graph.open(self.path)
@@ -154,7 +154,7 @@ except ImportError, e:
 try:
     import RDF
     # If we can import RDF then test Redland backend
-    class RedLandTestCase(Graph22TestCase):
+    class RedlandGraph22TestCase(Graph22TestCase):
         backend_name = "Redland"
 except ImportError, e:
     print "Can not test Redland backend:", e

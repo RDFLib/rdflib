@@ -1,6 +1,7 @@
 import unittest
 
 from rdflib import *
+from rdflib.Graph import Graph
 from rdflib.StringInputSource import StringInputSource
 
 class SeqTestCase(unittest.TestCase):
@@ -8,7 +9,7 @@ class SeqTestCase(unittest.TestCase):
     path = 'store'
 
     def setUp(self):
-        store = self.store = Graph(backend=self.backend)
+        store = self.store = Graph(store=self.backend)
         store.open(self.path)
         store.parse(StringInputSource(s))
 

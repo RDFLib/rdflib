@@ -1,6 +1,7 @@
 import unittest
 
-from rdflib import Graph, URIRef, BNode, Literal, RDFS
+from rdflib import URIRef, BNode, Literal, RDFS
+from rdflib.Graph import Graph
 
 
 class GraphTest(unittest.TestCase):
@@ -8,7 +9,7 @@ class GraphTest(unittest.TestCase):
     path = 'store'
 
     def setUp(self):
-        self.store = Graph(backend=self.backend)
+        self.store = Graph(store=self.backend)
         self.store.open(self.path)
         self.remove_me = (BNode(), RDFS.label, Literal("remove_me"))
         self.store.add(self.remove_me)

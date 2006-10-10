@@ -1,6 +1,7 @@
 import unittest
 
 from rdflib import *
+from rdflib.Graph import Graph
 from rdflib import RDF
 from rdflib.StringInputSource import StringInputSource
 
@@ -27,7 +28,7 @@ class RDFTestCase(unittest.TestCase):
     path = 'store'
 
     def setUp(self):
-        self.store = Graph(backend=self.backend)
+        self.store = Graph(store=self.backend)
         self.store.open(self.path)
         self.store.bind("dc", "http://http://purl.org/dc/elements/1.1/")
         self.store.bind("foaf", "http://xmlns.com/foaf/0.1/")

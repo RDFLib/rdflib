@@ -33,7 +33,7 @@ class StoreTestCase(unittest.TestCase):
             MySQL().destroy(path)
         else:
             path = a_tmp_dir = mkdtemp()
-        self.graph.open(path)
+        self.graph.open(path, create=True)
         self.input = input = Graph()
         input.parse("http://eikeon.com")
 

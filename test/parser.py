@@ -1,6 +1,6 @@
 import unittest
 
-from rdflib import Graph
+from rdflib.Graph import Graph
 from rdflib import URIRef, BNode, Literal, RDF, RDFS
 from rdflib.StringInputSource import StringInputSource
 
@@ -10,7 +10,7 @@ class ParserTestCase(unittest.TestCase):
     path = 'store'
 
     def setUp(self):
-        self.graph = Graph(backend=self.backend)
+        self.graph = Graph(store=self.backend)
         self.graph.open(self.path)
 
     def tearDown(self):

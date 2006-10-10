@@ -2,14 +2,22 @@ import unittest
 
 from tempfile import mkdtemp
 from rdflib import *
+from rdflib.Graph import Graph
 
 class ContextTestCase(unittest.TestCase):
     #backend = 'Memory'
     backend = 'default'
 
     def setUp(self):
-        self.graph = Graph(backend=self.backend)
-        self.graph.open(mkdtemp())
+        self.graph = ConjunctiveGraph(store=self.backend)
+        if self.backend == "MySQL":
+            from mysql import configString
+            from rdflib.store.MySQL import MySQL
+            path=configString
+            MySQL().destroy(path)
+        else:
+            path = a_tmp_dir = mkdtemp()
+        self.graph.open(path, create=True)
         self.michel = URIRef(u'michel')
         self.tarek = URIRef(u'tarek')
         self.bob = URIRef(u'bob')
@@ -27,6 +35,11 @@ class ContextTestCase(unittest.TestCase):
     def tearDown(self):
         self.graph.close()
 
+    def get_context(self, identifier):
+        assert isinstance(identifier, URIRef) or \
+               isinstance(identifier, BNode), type(identifier)
+        return Graph(store=self.graph.store, identifier=identifier,
+                         namespace_manager=self)
     def addStuff(self):
         tarek = self.tarek
         michel = self.michel
@@ -36,14 +49,15 @@ class ContextTestCase(unittest.TestCase):
         pizza = self.pizza
         cheese = self.cheese
         c1 = self.c1
+        graph = Graph(self.graph.store, c1)
 
-        self.graph.add((tarek, likes, pizza), c1)
-        self.graph.add((tarek, likes, cheese), c1)
-        self.graph.add((michel, likes, pizza), c1)
-        self.graph.add((michel, likes, cheese), c1)
-        self.graph.add((bob, likes, cheese), c1)
-        self.graph.add((bob, hates, pizza), c1)
-        self.graph.add((bob, hates, michel), c1) # gasp!
+        graph.add((tarek, likes, pizza))
+        graph.add((tarek, likes, cheese))
+        graph.add((michel, likes, pizza))
+        graph.add((michel, likes, cheese))
+        graph.add((bob, likes, cheese))
+        graph.add((bob, hates, pizza))
+        graph.add((bob, hates, michel)) # gasp!
 
     def removeStuff(self):
         tarek = self.tarek
@@ -54,14 +68,15 @@ class ContextTestCase(unittest.TestCase):
         pizza = self.pizza
         cheese = self.cheese
         c1 = self.c1
+        graph = Graph(self.graph.store, c1)
 
-        self.graph.remove((tarek, likes, pizza), c1)
-        self.graph.remove((tarek, likes, cheese), c1)
-        self.graph.remove((michel, likes, pizza), c1)
-        self.graph.remove((michel, likes, cheese), c1)
-        self.graph.remove((bob, likes, cheese), c1)
-        self.graph.remove((bob, hates, pizza), c1)
-        self.graph.remove((bob, hates, michel), c1) # gasp!
+        graph.remove((tarek, likes, pizza))
+        graph.remove((tarek, likes, cheese))
+        graph.remove((michel, likes, pizza))
+        graph.remove((michel, likes, cheese))
+        graph.remove((bob, likes, cheese))
+        graph.remove((bob, hates, pizza))
+        graph.remove((bob, hates, michel)) # gasp!
 
     def addStuffInMultipleContexts(self):
         c1 = self.c1
@@ -71,9 +86,19 @@ class ContextTestCase(unittest.TestCase):
         # add to default context
         self.graph.add(triple)
         # add to context 1
-        self.graph.add(triple, c1)
+        graph = Graph(self.graph.store, c1)
+        graph.add(triple)
         # add to context 2
-        self.graph.add(triple, c2)
+        graph = Graph(self.graph.store, c2)
+        graph.add(triple)
+
+    def testConjunction(self):
+        self.addStuffInMultipleContexts()
+        triple = (self.pizza, self.likes, self.pizza)
+        # add to context 1
+        graph = Graph(self.graph.store, self.c1)
+        graph.add(triple)
+        self.assertEquals(len(self.graph), len(graph))
 
     def testAdd(self):
         self.addStuff()
@@ -84,23 +109,27 @@ class ContextTestCase(unittest.TestCase):
 
     def testLenInOneContext(self):
         c1 = self.c1
-        oldLen = len(self.graph)
         # make sure context is empty
 
-        self.graph.remove_context(c1)
+        self.graph.remove_context(self.get_context(c1))
+        graph = Graph(self.graph.store, c1)
+        oldLen = len(self.graph)
 
         for i in range(0, 10):
-            self.graph.add((BNode(), self.hates, self.hates), c1)
-        self.assertEquals(len(self.graph), oldLen + 10)
-        self.assertEquals(len(self.graph.get_context(c1)), oldLen + 10)
-        self.graph.remove_context(c1)
+            graph.add((BNode(), self.hates, self.hates))
+        self.assertEquals(len(graph), oldLen + 10)
+        self.assertEquals(len(self.get_context(c1)), oldLen + 10)
+        self.graph.remove_context(self.get_context(c1))
         self.assertEquals(len(self.graph), oldLen)
+        self.assertEquals(len(graph), 0)
 
     def testLenInMultipleContexts(self):
         oldLen = len(self.graph)
         self.addStuffInMultipleContexts()
-        # TODO: what should the length of the graph now be? 1 or 3?
-        #self.assertEquals(len(self.graph), oldLen + 1)
+
+        self.assertEquals(len(self.graph), oldLen + 3)
+        graph = Graph(self.graph.store, self.c1)
+        self.assertEquals(len(graph), oldLen + 1)
 
     def testRemoveInMultipleContexts(self):
         c1 = self.c1
@@ -111,9 +140,11 @@ class ContextTestCase(unittest.TestCase):
 
         # triple should be still in store after removing it from c1 + c2
         self.assert_(triple in self.graph)
-        self.graph.remove(triple, c1)
+        graph = Graph(self.graph.store, c1)
+        graph.remove(triple)
         self.assert_(triple in self.graph)
-        self.graph.remove(triple, c2)
+        graph = Graph(self.graph.store, c2)
+        graph.remove(triple)
         self.assert_(triple in self.graph)
         self.graph.remove(triple)
         # now gone!
@@ -128,10 +159,12 @@ class ContextTestCase(unittest.TestCase):
         triple = (self.pizza, self.hates, self.tarek) # revenge!
 
         self.addStuffInMultipleContexts()
-        self.assert_(self.c1 in self.graph.contexts())
-        self.assert_(self.c2 in self.graph.contexts())
+        def cid(c):
+            return c.identifier
+        self.assert_(self.c1 in map(cid, self.graph.contexts()))
+        self.assert_(self.c2 in map(cid, self.graph.contexts()))
 
-        contextList = list(self.graph.contexts(triple))
+        contextList = map(cid, list(self.graph.contexts(triple)))
         self.assert_(self.c1 in contextList)
         self.assert_(self.c2 in contextList)
 
@@ -139,9 +172,10 @@ class ContextTestCase(unittest.TestCase):
         c1 = self.c1
 
         self.addStuffInMultipleContexts()
-        self.assertEquals(self.graph.__len__(context=c1), 1)
+        self.assertEquals(len(Graph(self.graph.store, c1)), 1)
+        self.assertEquals(len(self.get_context(c1)), 1)
 
-        self.graph.remove_context(c1)
+        self.graph.remove_context(self.get_context(c1))
         self.assert_(self.c1 not in self.graph.contexts())
 
     def testRemoveAny(self):
@@ -162,15 +196,17 @@ class ContextTestCase(unittest.TestCase):
         asserte = self.assertEquals
         triples = self.graph.triples
         graph = self.graph
+        c1graph = Graph(self.graph.store, c1)
+        c1triples = c1graph.triples
         Any = None
 
         self.addStuff()
 
         # unbound subjects with context
-        asserte(len(list(triples((Any, likes, pizza), c1))), 2)
-        asserte(len(list(triples((Any, hates, pizza), c1))), 1)
-        asserte(len(list(triples((Any, likes, cheese), c1))), 3)
-        asserte(len(list(triples((Any, hates, cheese), c1))), 0)
+        asserte(len(list(c1triples((Any, likes, pizza)))), 2)
+        asserte(len(list(c1triples((Any, hates, pizza)))), 1)
+        asserte(len(list(c1triples((Any, likes, cheese)))), 3)
+        asserte(len(list(c1triples((Any, hates, cheese)))), 0)
 
         # unbound subjects without context, same results!
         asserte(len(list(triples((Any, likes, pizza)))), 2)
@@ -179,10 +215,10 @@ class ContextTestCase(unittest.TestCase):
         asserte(len(list(triples((Any, hates, cheese)))), 0)
 
         # unbound objects with context
-        asserte(len(list(triples((michel, likes, Any), c1))), 2)
-        asserte(len(list(triples((tarek, likes, Any), c1))), 2)
-        asserte(len(list(triples((bob, hates, Any), c1))), 2)
-        asserte(len(list(triples((bob, likes, Any), c1))), 1)
+        asserte(len(list(c1triples((michel, likes, Any)))), 2)
+        asserte(len(list(c1triples((tarek, likes, Any)))), 2)
+        asserte(len(list(c1triples((bob, hates, Any)))), 2)
+        asserte(len(list(c1triples((bob, likes, Any)))), 1)
 
         # unbound objects without context, same results!
         asserte(len(list(triples((michel, likes, Any)))), 2)
@@ -191,10 +227,10 @@ class ContextTestCase(unittest.TestCase):
         asserte(len(list(triples((bob, likes, Any)))), 1)
 
         # unbound predicates with context
-        asserte(len(list(triples((michel, Any, cheese), c1))), 1)
-        asserte(len(list(triples((tarek, Any, cheese), c1))), 1)
-        asserte(len(list(triples((bob, Any, pizza), c1))), 1)
-        asserte(len(list(triples((bob, Any, michel), c1))), 1)
+        asserte(len(list(c1triples((michel, Any, cheese)))), 1)
+        asserte(len(list(c1triples((tarek, Any, cheese)))), 1)
+        asserte(len(list(c1triples((bob, Any, pizza)))), 1)
+        asserte(len(list(c1triples((bob, Any, michel)))), 1)
 
         # unbound predicates without context, same results!
         asserte(len(list(triples((michel, Any, cheese)))), 1)
@@ -203,17 +239,17 @@ class ContextTestCase(unittest.TestCase):
         asserte(len(list(triples((bob, Any, michel)))), 1)
 
         # unbound subject, objects with context
-        asserte(len(list(triples((Any, hates, Any), c1))), 2)
-        asserte(len(list(triples((Any, likes, Any), c1))), 5)
+        asserte(len(list(c1triples((Any, hates, Any)))), 2)
+        asserte(len(list(c1triples((Any, likes, Any)))), 5)
 
         # unbound subject, objects without context, same results!
         asserte(len(list(triples((Any, hates, Any)))), 2)
         asserte(len(list(triples((Any, likes, Any)))), 5)
 
         # unbound predicates, objects with context
-        asserte(len(list(triples((michel, Any, Any), c1))), 2)
-        asserte(len(list(triples((bob, Any, Any), c1))), 3)
-        asserte(len(list(triples((tarek, Any, Any), c1))), 2)
+        asserte(len(list(c1triples((michel, Any, Any)))), 2)
+        asserte(len(list(c1triples((bob, Any, Any)))), 3)
+        asserte(len(list(c1triples((tarek, Any, Any)))), 2)
 
         # unbound predicates, objects without context, same results!
         asserte(len(list(triples((michel, Any, Any)))), 2)
@@ -221,9 +257,9 @@ class ContextTestCase(unittest.TestCase):
         asserte(len(list(triples((tarek, Any, Any)))), 2)
 
         # unbound subjects, predicates with context
-        asserte(len(list(triples((Any, Any, pizza), c1))), 3)
-        asserte(len(list(triples((Any, Any, cheese), c1))), 3)
-        asserte(len(list(triples((Any, Any, michel), c1))), 1)
+        asserte(len(list(c1triples((Any, Any, pizza)))), 3)
+        asserte(len(list(c1triples((Any, Any, cheese)))), 3)
+        asserte(len(list(c1triples((Any, Any, michel)))), 1)
 
         # unbound subjects, predicates without context, same results!
         asserte(len(list(triples((Any, Any, pizza)))), 3)
@@ -231,13 +267,12 @@ class ContextTestCase(unittest.TestCase):
         asserte(len(list(triples((Any, Any, michel)))), 1)
 
         # all unbound with context
-        asserte(len(list(triples((Any, Any, Any), c1))), 7)
+        asserte(len(list(c1triples((Any, Any, Any)))), 7)
         # all unbound without context, same result!
         asserte(len(list(triples((Any, Any, Any)))), 7)
 
-        for c in [graph, graph.get_context(c1)]:
+        for c in [graph, self.get_context(c1)]:
             # unbound subjects
-            #c = graph.get_context(c1)
             asserte(set(c.subjects(likes, pizza)), set((michel, tarek)))
             asserte(set(c.subjects(hates, pizza)), set((bob,)))
             asserte(set(c.subjects(likes, cheese)), set([tarek, bob, michel]))
@@ -270,7 +305,7 @@ class ContextTestCase(unittest.TestCase):
 
         # remove stuff and make sure the graph is empty again
         self.removeStuff()
-        asserte(len(list(triples((Any, Any, Any), c1))), 0)
+        asserte(len(list(c1triples((Any, Any, Any)))), 0)
         asserte(len(list(triples((Any, Any, Any)))), 0)
 
 class IOMemoryContextTestCase(ContextTestCase):
@@ -292,9 +327,26 @@ except ImportError:
     pass
 
 try:
+    import MySQLdb
+    # If we can import RDF then test Redland store
+    class MySQLContextTestCase(ContextTestCase):
+        backend = "MySQL"
+except ImportError, e:
+    print "Can not test MySQL store:", e
+
+try:
+    import RDF
+    # If we can import RDF then test Redland store
+    class RedlandContextTestCase(ContextTestCase):
+        backend = "Redland"
+except ImportError, e:
+    print "Can not test Redland store:", e
+
+try:
     import backends.Sleepycat
 except ImportError:
     del ContextTestCase
+
 
 if __name__ == '__main__':
     unittest.main()

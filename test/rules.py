@@ -2,6 +2,7 @@ import unittest
 from tempfile import mkdtemp
 
 from rdflib import *
+from rdflib.Graph import Graph
 
 LOG = Namespace("http://www.w3.org/2000/10/swap/log#")
 
@@ -36,7 +37,7 @@ try:
     class PychinkoTestCase(unittest.TestCase):
         backend = 'default'
         def setUp(self):
-            self.g = Graph(backend=self.backend)
+            self.g = Graph(store=self.backend)
             self.g.open(configuration=mkdtemp())
             self.g.parse("test/a.n3", format="n3")
 

@@ -1,7 +1,8 @@
 import unittest
 #import sys
 #sys.path[:0]=[".."]
-from rdflib import Graph, Literal, Namespace, StringInputSource
+from rdflib import Literal, Namespace, StringInputSource
+from rdflib.Graph import Graph
 
 cases = ['no quotes',
          "single ' quote",
