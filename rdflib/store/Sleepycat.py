@@ -31,17 +31,7 @@ class Sleepycat(Store):
     def open(self, path, create=True):
         homeDir = path
         envsetflags  = db.DB_CDB_ALLDB
-        envflags = db.DB_INIT_MPOOL | db.DB_INIT_LOCK | db.DB_INIT_LOG | db.DB_INIT_TXN 
-        #envflags |= db.DB_INIT_CDB | db.DB_THREAD
-        envflags |= db.DB_THREAD
-        envflags |= db.DB_INIT_TXN
-        try:
-            db.DB_REGISTER # Python wrapper does not yet define this :(
-        except AttributeError:
-            db.REGISTER =  0x0400000 # So we'll live on the edge and hope and pray ;)
-            assert db.REGISTER == 0x0400000
-        envflags |= db.REGISTER | db.DB_RECOVER 
-
+        envflags = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD
         if not exists(homeDir):
             if create==True:
                 mkdir(homeDir) # TODO: implement create method and refactor this to it
@@ -168,7 +158,6 @@ class Sleepycat(Store):
             self.__prefix.sync()
             self.__i2k.sync()
             self.__k2i.sync()
-            self.db_env.txn_checkpoint(0, 0)
 
     def close(self):
         self.__open = False
