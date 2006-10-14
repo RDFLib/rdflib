@@ -188,6 +188,7 @@ class Sleepycat(Store):
         """
         assert self.__open, "The Store must be open."
         assert context!=self, "Can not add triple directly to store"
+        Store.add(self, (subject, predicate, object), context, quoted)
 
         _to_string = self._to_string
 
@@ -217,9 +218,9 @@ class Sleepycat(Store):
                 cosp.put("%s^%s^%s^%s^" % ("", o, s, p), contexts_value)
 
             self.__needs_sync = True
-        Store.add(self, (subject, predicate, object), context, quoted)
 
     def __remove(self, (s, p, o), c, quoted=False):
+        Store.remove(self, (s, p, o), c)
         cspo, cpos, cosp = self.__indicies
         contexts_value = cspo.get("^".join(("", s, p, o, ""))) or ""
         contexts = set(contexts_value.split("^"))
@@ -298,8 +299,6 @@ class Sleepycat(Store):
                         pass
 
             self.__needs_sync = needs_sync
-        Store.remove(self, (subject, predicate, object), context)
-
 
     def triples(self, (subject, predicate, object), context=None):
         """A generator over all the triples matching """
