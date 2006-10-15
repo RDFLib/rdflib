@@ -1,7 +1,7 @@
 # RDF Library
 
-__version__ = "2.3.2"
-__date__ = "2006/08/01"
+__version__ = "2.3.3"
+__date__ = "2006/10/15"
 
 import sys
 # generator expressions require 2.4
