@@ -6,7 +6,7 @@ from rdflib import __version__
 
 # TODO: add types for n3. text/rdf+n3 ?
 headers = {
-    'Accept': 'application/rdf+xml,application/xhtml+xml',
+    'Accept': 'application/rdf+xml,application/xhtml+xml;q=0.5',
     'User-agent':
     'rdflib-%s (http://rdflib.net/; eikeon@eikeon.com)' % __version__
     }
