@@ -143,7 +143,7 @@ class Sleepycat(Store):
                         self.__needs_sync = False
                     if time()-t1 > min_seconds or time()-t0 > max_seconds:
                         self.__needs_sync = False
-                        _logger.info("sync")
+                        _logger.debug("sync")
                         self.sync()
                         break
             else:
