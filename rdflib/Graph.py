@@ -371,7 +371,7 @@ class Graph(Node):
         if other is None:
             return -1
         elif isinstance(other, Graph):
-            return self.identifier.__cmp__(other.identifier)
+            return cmp(self.identifier, other.identifier)
         else:
             #Note if None is considered equivalent to owl:Nothing
             #Then perhaps a graph with length 0 should be considered
@@ -1099,7 +1099,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         elif isinstance(other, Graph):
             return -1
         elif isinstance(other, ReadOnlyGraphAggregate):
-            return self.graphs == other.graphs
+            return cmp(self.graphs, other.graphs)
         else:
             return -1
 
