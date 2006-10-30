@@ -179,9 +179,12 @@ class Literal(Identifier):
                 if other.datatype == None or other.datatype == '' :
                     #Only one of the two has a datatype - not enough info to compare
                     return False
-                elif other.datatype in XSDToPython and self.datatype in XSDToPython:
-                    #I know how to cast both Literals into a python scalar - so compare with python 
-                    return self.toPython() == other.toPython()
+                #Is the following case needed? It was causing an
+                #inf. loop (in the case where self.toPython()
+                #returns self, I think)
+                #elif other.datatype in XSDToPython and self.datatype in XSDToPython:
+                #    #I know how to cast both Literals into a python scalar - so compare with python 
+                #    return self.toPython() == other.toPython()
                 elif self.datatype == other.datatype :
                     #The datatypes are the same so we can do a simple lexical comparison
                     return unicode(self) == unicode(other)
