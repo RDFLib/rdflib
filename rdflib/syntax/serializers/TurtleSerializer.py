@@ -33,7 +33,10 @@ class TurtleSerializer(RecursiveSerializer):
     
     def getQName(self, uri):
         if isinstance(uri, URIRef):
-            parts = self.store.compute_qname(uri)
+            try:
+                parts = self.store.compute_qname(uri)
+            except Exception, e:
+                parts = None
             if parts:
                 prefix, namespace, local = parts
                 self.addNamespace(prefix, namespace)
