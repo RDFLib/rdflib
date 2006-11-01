@@ -67,7 +67,7 @@ class N3Serializer(TurtleSerializer):
             super(N3Serializer, self).path(node, position)
             
     def startDocument(self):
-        ns_list= list(self.namespaces.items())
+        ns_list= list(self.store.namespaces())
         ns_list.sort()
                 
         for prefix, uri in ns_list:

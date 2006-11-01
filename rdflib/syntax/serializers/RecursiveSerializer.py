@@ -21,9 +21,6 @@ class RecursiveSerializer(AbstractSerializer):
         self.stream = None
         self.reset()
 
-    def addNamespace(self, prefix, uri):
-        self.namespaces[prefix] = uri
-        
     def checkSubject(self, subject):
         """Check to see if the subject should be serialized yet"""
         if ((self.isDone(subject))
@@ -76,7 +73,6 @@ class RecursiveSerializer(AbstractSerializer):
 
         self.depth = 0
         self.lists = {}
-        self.namespaces = {}
         self._references = {}
         self._serialized = {}
         self._subjects = {}

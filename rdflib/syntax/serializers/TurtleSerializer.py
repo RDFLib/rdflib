@@ -55,7 +55,7 @@ class TurtleSerializer(RecursiveSerializer):
 
     def startDocument(self):
         self._started = True
-        ns_list= list(self.namespaces.items())
+        ns_list= list(self.store.namespaces())
         ns_list.sort()
         if len(ns_list) == 0:
             return
