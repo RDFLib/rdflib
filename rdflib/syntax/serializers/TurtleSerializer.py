@@ -36,6 +36,7 @@ class TurtleSerializer(RecursiveSerializer):
             parts = self.store.compute_qname(uri)
             if parts:
                 prefix, namespace, local = parts
+                self.addNamespace(prefix, namespace)
                 return u"%s:%s" % (prefix, local)
         return None
 
