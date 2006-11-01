@@ -1,6 +1,7 @@
 # rdflib/syntax/serializers/N3Serializer.py
 
 from rdflib.syntax.serializers.TurtleSerializer import TurtleSerializer, SUBJECT, VERB, OBJECT
+from rdflib.Graph import Graph
 
 class N3Serializer(TurtleSerializer):
     short_name = "n3"
@@ -30,30 +31,27 @@ class N3Serializer(TurtleSerializer):
     
 
     def p_clause(self, node, ignore=SUBJECT):
-        if (not hasattr(self.store, 'get_clause') 
-            or self.store.get_clause(node) is None):
+        if isinstance(node, Graph):
+            self.subjectDone(node)
+            self.write(' {')
+            self.depth += 1
+            serializer = N3Serializer(node, parent=self)
+            serializer.serialize(self.stream)
+            self.depth -= 1
+            self.write('\n'+self.indent()+' }')
+            return True
+        else:
             return False
-        self.subjectDone(node)
-        self.write(' {')
-        self.depth += 1
-        serializer = N3Serializer(self.store.get_clause(node), parent=self)
-        serializer.serialize(self.stream)
-        self.depth -= 1
-        self.write('\n'+self.indent()+' }')
-
-        return True
-
-    
 
     def s_clause(self, subject):
-        if (not hasattr(self.store, 'get_clause')
-            or self.store.get_clause(subject) is None):
+        if isinstance(subject, Graph):
+            self.write('\n'+self.indent())
+            self.p_clause(subject, SUBJECT)
+            self.predicateList(subject)
+            self.write('. ')
+            return True
+        else:
             return False
-        self.write('\n'+self.indent())
-        self.p_clause(subject, SUBJECT)
-        self.predicateList(subject)
-        self.write('. ')
-        return True
     
     def statement(self, subject):
         self.subjectDone(subject)
