@@ -1,5 +1,4 @@
-
-import urlparse, re
+import urlparse
 from xml.sax.saxutils import escape, quoteattr
 
 from rdflib.BNode import BNode
@@ -32,59 +31,13 @@ class TurtleSerializer(RecursiveSerializer):
         self._shortNames = {}
         self._started = False
     
-    def isValidLocalName(self,name):
-        if re.search("[^_A-Za-z0-9]",name): 
-            return False
-        return True
-    
     def getQName(self, uri):
-        if not isinstance(uri, URIRef):
-            return None
-        assert(not uri.startswith('_:'))
-
-        if uri in self._shortNames:
-            return self._shortNames[uri]
-        
-        scheme = urlparse.urlparse(uri)[0]
-        if scheme in urlparse.non_hierarchical:
-            return None
-
-        if uri.startswith(u"urn"):
-            return None
-         
-        try: 
-            split = self.store.compute_qname(uri)
-        except: 
-            return None
-            
-        if split is None:
-            return None
-            
-        prefix, base, local = split
-        
-        if base=='http://':
-            return None
-        if base.endswith("~"):
-            # this is not illegal, but it's ugly
-            return None
-            
-        if not self.isValidLocalName(local):
-            return None
-
-        if base==self.base: 
-            prefix=""
-        
-        qname = prefix +':' + local
-
-        if prefix in self.namespaces and self.namespaces[prefix] != base:
-            raise Error("Store returned the same prefix for two different uris")
-        if self._started and prefix not in self.namespaces:
-            return None
-        
-        if prefix: 
-            self.addNamespace(prefix, base)
-        self._shortNames[uri] = qname
-        return qname
+        if isinstance(uri, URIRef):
+            parts = self.store.compute_qname(uri)
+            if parts:
+                prefix, namespace, local = parts
+                return u"%s:%s" % (prefix, local)
+        return None
 
     def preprocessTriple(self, triple):
         super(TurtleSerializer, self).preprocessTriple(triple)
