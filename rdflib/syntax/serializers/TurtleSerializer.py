@@ -65,7 +65,7 @@ class TurtleSerializer(RecursiveSerializer):
             return
         
         for prefix, uri in ns_list:
-            self.write('\n'+self.indent()+'@prefix %s: %s.'%(prefix, uri.n3()))
+            self.write('\n'+self.indent()+'@prefix %s: %s.'%(prefix, uri))
         self.write('\n')
 
     def endDocument(self):

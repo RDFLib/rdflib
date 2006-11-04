@@ -53,7 +53,8 @@ register('nt', serializers.Serializer,
          'rdflib.syntax.serializers.NTSerializer', 'NTSerializer')
 
 register('turtle', serializers.Serializer,
-         'rdflib.syntax.serializers.TurtleSerializer', 'TurtleSerializeer')
+         'rdflib.syntax.serializers.TurtleSerializer', 'TurtleSerializer')
+
 register('n3', serializers.Serializer,
          'rdflib.syntax.serializers.N3Serializer', 'N3Serializer')
 
