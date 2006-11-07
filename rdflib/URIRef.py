@@ -7,7 +7,6 @@ else:
 from urlparse import urlparse, urljoin, urldefrag
 
 from rdflib.Identifier import Identifier
-from rdflib.Literal import Literal
 from rdflib.compat import rsplit
 
 
@@ -67,3 +66,14 @@ class URIRef(Identifier):
         return (unicode(self), )
 
 
+    def __eq__(self, other):
+        if isinstance(other, URIRef):
+            return unicode(self)==unicode(other)
+        else:
+            return False
+
+    def __str__(self):
+        return self.encode("unicode-escape")
+
+    def __repr__(self):
+        return """rdflib.URIRef('%s')""" % str(self)

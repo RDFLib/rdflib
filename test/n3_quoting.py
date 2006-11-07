@@ -1,6 +1,5 @@
 import unittest
-#import sys
-#sys.path[:0]=[".."]
+
 from rdflib import Literal, Namespace, StringInputSource
 from rdflib.Graph import Graph
 
@@ -24,13 +23,13 @@ class N3Quoting(unittest.TestCase):
         for i, case in enumerate(cases):
             g.add((NS['subj'], NS['case%s' % i], Literal(case)))
         n3txt = g.serialize(format="n3")
-        print n3txt
+        #print n3txt
 
         g2 = Graph()
         g2.parse(StringInputSource(n3txt), format="n3")
         for i, case in enumerate(cases):
             l = g2.value(NS['subj'], NS['case%s' % i])
-            print repr(l), repr(case)
+            #print repr(l), repr(case)
             self.assertEqual(l, Literal(case))
 
 

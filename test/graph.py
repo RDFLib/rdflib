@@ -1,5 +1,9 @@
 import unittest
 
+import logging
+
+_logger = logging.getLogger(__name__)
+
 from tempfile import mkdtemp
 
 from rdflib import URIRef, BNode, Literal, RDF
@@ -181,7 +185,7 @@ try:
     class SleepycatGraphTestCase(GraphTestCase):
         store_name = "Sleepycat"
 except ImportError, e:
-    print "Can not test Sleepycat store:", e
+    _logger.warning("Can not test Sleepycat store: %s" % e)
 
 try:
     import persistent
@@ -189,7 +193,7 @@ try:
     class ZODBGraphTestCase(GraphTestCase):
         store_name = "ZODB"
 except ImportError, e:
-    print "Can not test ZODB store:", e
+    _logger.warning("Can not test ZODB store: %s" % e)
 
 
 try:
@@ -198,7 +202,7 @@ try:
     class RedLandTestCase(GraphTestCase):
         store_name = "Redland"
 except ImportError, e:
-    print "Can not test Redland store:", e
+    _logger.warning("Can not test Redland store: %s" % e)
 
 if __name__ == '__main__':
     unittest.main()

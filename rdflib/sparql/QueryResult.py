@@ -157,9 +157,7 @@ class SPARQLQueryResult(QueryResult.QueryResult):
         """Iterates over the result entries"""
         if isinstance(self.selected,list):
             for item in self.selected:
-                if not isinstance(item,(tuple,basestring)):
-                    yield tuple(item)
-                elif isinstance(item,basestring):
+                if isinstance(item,basestring):
                     yield (item,)
                 else:
                     yield item

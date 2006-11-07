@@ -68,3 +68,8 @@ class BNode(Identifier):
         return (BNode, (unicode(self),))
 
 
+    def __str__(self):
+        return self.encode("unicode-escape")
+
+    def __repr__(self):
+        return """rdflib.BNode('%s')""" % str(self)

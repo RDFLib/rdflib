@@ -214,26 +214,26 @@ class RDFXMLHandler(handler.ContentHandler):
 
     def convert(self, name, qname, attrs):
         if name[0] is None:
-            name = name[1]
+            name = URIRef(name[1])
         else:
-            name = "".join(name)
+            name = URIRef("".join(name))
         atts = {}
         for (n, v) in attrs.items(): #attrs._attrs.iteritems(): #
             if n[0] is None:
-                att = n[1]
+                att = URIRef(n[1])
             else:
-                att = "".join(n)
+                att = URIRef("".join(n))
             if att.startswith(XMLNS) or att[0:3].lower()=="xml":
                 pass
             elif att in UNQUALIFIED:
                 #if not RDFNS[att] in atts:
                 atts[RDFNS[att]] = v
             else:
-                atts[att] = v
+                atts[URIRef(att)] = v
         return name, atts
 
     def document_element_start(self, name, qname, attrs):
-        if name[0] and "".join(name) == RDF.RDF:
+        if name[0] and URIRef("".join(name)) == RDF.RDF:
             next = self.next
             next.start = self.node_element_start
             next.end = self.node_element_end

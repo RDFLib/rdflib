@@ -24,7 +24,7 @@ class XMLSerializer(Serializer):
         bindings = {}
         for predicate in uniq(store.predicates()):
             prefix, namespace, name = nm.compute_qname(predicate)
-            bindings[prefix] = namespace
+            bindings[prefix] = URIRef(namespace)
         RDFNS = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
         if "rdf" in bindings:
             assert bindings["rdf"]==RDFNS

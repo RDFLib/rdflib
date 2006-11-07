@@ -1,16 +1,18 @@
-from sys import version_info
+from sys import version_info, getdefaultencoding
 if version_info[0:2] > (2, 2):
     from unicodedata import normalize
 else:
     normalize = None
 
 from rdflib.Identifier import Identifier
+from rdflib.URIRef import URIRef
+from rdflib.Namespace import Namespace
 from rdflib.exceptions import Error
 from datetime import date,time,datetime
 from time import strptime
 import base64
 
-XSD_NS = u'http://www.w3.org/2001/XMLSchema#'
+XSD_NS = Namespace(u'http://www.w3.org/2001/XMLSchema#')
 
 #Casts a python datatype to a tuple of the lexical value and a datatype URI (or None)
 def castPythonToLiteral(obj):
@@ -27,14 +29,14 @@ def castPythonToLiteral(obj):
 #Mappings from Python types to XSD datatypes and back (burrowed from sparta)
 PythonToXSD = {
     basestring : (None,None),
-    float      : (None,XSD_NS+u'float'),
-    int        : (None,XSD_NS+u'int'),
-    int        : (None,XSD_NS+u'integer'),
-    long       : (None,XSD_NS+u'long'),
-    bool       : (None,XSD_NS+u'boolean'),
-    date       : (lambda i:i.isoformat(),XSD_NS+u'date'),
-    time       : (lambda i:i.isoformat(),XSD_NS+u'time'),
-    datetime   : (lambda i:i.isoformat(),XSD_NS+u'dateTime'),
+    float      : (None,XSD_NS[u'float']),
+    int        : (None,XSD_NS[u'int']),
+    int        : (None,XSD_NS[u'integer']),
+    long       : (None,XSD_NS[u'long']),
+    bool       : (None,XSD_NS[u'boolean']),
+    date       : (lambda i:i.isoformat(),XSD_NS[u'date']),
+    time       : (lambda i:i.isoformat(),XSD_NS[u'time']),
+    datetime   : (lambda i:i.isoformat(),XSD_NS[u'dateTime']),
 }
 
 def _strToTime(v) :
@@ -62,33 +64,33 @@ def _strToDateTime(v) :
     return datetime(tstr.tm_year,tstr.tm_mon,tstr.tm_mday,tstr.tm_hour,tstr.tm_min,tstr.tm_sec)
 
 XSDToPython = {
-    XSD_NS+u'time'               : (None,_strToTime),
-    XSD_NS+u'date'               : (None,_strToDate),
-    XSD_NS+u'dateTime'           : (None,_strToDateTime),
-    XSD_NS+u'string'             : (None,None),
-    XSD_NS+u'normalizedString'   : (None,None),
-    XSD_NS+u'token'              : (None,None),
-    XSD_NS+u'language'           : (None,None),
-    XSD_NS+u'boolean'            : (None, lambda i:i.lower() in ['1','true']),
-    XSD_NS+u'decimal'            : (float,None),
-    XSD_NS+u'integer'            : (long ,None),
-    XSD_NS+u'int'            : (long ,None),
-    XSD_NS+u'nonPositiveInteger' : (int,None),
-    XSD_NS+u'long'               : (long,None),
-    XSD_NS+u'nonNegativeInteger' : (int, None),
-    XSD_NS+u'negativeInteger'    : (int, None),
-    XSD_NS+u'int'                : (int, None),
-    XSD_NS+u'unsignedLong'       : (long, None),
-    XSD_NS+u'positiveInteger'    : (int, None),
-    XSD_NS+u'short'              : (int, None),
-    XSD_NS+u'unsignedInt'        : (long, None),
-    XSD_NS+u'byte'               : (int, None),
-    XSD_NS+u'unsignedShort'      : (int, None),
-    XSD_NS+u'unsignedByte'       : (int, None),
-    XSD_NS+u'float'              : (float, None),
-    XSD_NS+u'double'             : (float, None),
-    XSD_NS+u'base64Binary'       : (base64.decodestring, None),
-    XSD_NS+u'anyURI'             : (None,None),
+    XSD_NS[u'time']               : (None,_strToTime),
+    XSD_NS[u'date']               : (None,_strToDate),
+    XSD_NS[u'dateTime']           : (None,_strToDateTime),
+    XSD_NS[u'string']             : (None,None),
+    XSD_NS[u'normalizedString']   : (None,None),
+    XSD_NS[u'token']              : (None,None),
+    XSD_NS[u'language']           : (None,None),
+    XSD_NS[u'boolean']            : (None, lambda i:i.lower() in ['1','true']),
+    XSD_NS[u'decimal']            : (float,None),
+    XSD_NS[u'integer']            : (long ,None),
+    XSD_NS[u'int']            : (long ,None),
+    XSD_NS[u'nonPositiveInteger'] : (int,None),
+    XSD_NS[u'long']               : (long,None),
+    XSD_NS[u'nonNegativeInteger'] : (int, None),
+    XSD_NS[u'negativeInteger']    : (int, None),
+    XSD_NS[u'int']                : (int, None),
+    XSD_NS[u'unsignedLong']       : (long, None),
+    XSD_NS[u'positiveInteger']    : (int, None),
+    XSD_NS[u'short']              : (int, None),
+    XSD_NS[u'unsignedInt']        : (long, None),
+    XSD_NS[u'byte']               : (int, None),
+    XSD_NS[u'unsignedShort']      : (int, None),
+    XSD_NS[u'unsignedByte']       : (int, None),
+    XSD_NS[u'float']              : (float, None),
+    XSD_NS[u'double']             : (float, None),
+    XSD_NS[u'base64Binary']       : (base64.decodestring, None),
+    XSD_NS[u'anyURI']             : (None,None),
 }
 
 class Literal(Identifier):
@@ -109,11 +111,12 @@ class Literal(Identifier):
             value,datatype = castPythonToLiteral(value)
             if datatype:
                 lang = None
+        if datatype:
+            datatype = URIRef(datatype)
         try:
             inst = unicode.__new__(cls,value)
         except UnicodeDecodeError:
             inst = unicode.__new__(cls,value,'utf-8')
-
         inst.language = lang
         inst.datatype = datatype
         return inst
@@ -143,7 +146,7 @@ class Literal(Identifier):
         >>> oneNoDtype = Literal('1')
         >>> oneInt == oneNoDtype
         False
-        >>> Literal("1",XSD_NS+u'string') == Literal("1",XSD_NS+u'string') 
+        >>> Literal("1",XSD_NS[u'string']) == Literal("1",XSD_NS[u'string']) 
         True
         >>> Literal("one",lang="en") == Literal("one",lang="en")
         True
@@ -235,12 +238,15 @@ class Literal(Identifier):
             else:
                 return '%s' % encoded
 
+    def __str__(self):
+        return self.encode("unicode-escape")
+
     def __repr__(self):
-        klass,convFunc = XSDToPython.get(self.datatype,(None,None))
+        klass, convFunc = XSDToPython.get(self.datatype, (None, None))
         if klass:
-            return "%s(%s)"%(klass.__name__,str(self))
+            return "%s(%s)"%(klass.__name__, str(self))
         else:
-            return """rdflib.Literal('%s',language=%s,datatype=%s)""" % (unicode(self),repr(self.language), repr(self.datatype))
+            return """rdflib.Literal('%s', language=%s, datatype=%s)""" % (str(self),repr(self.language), repr(self.datatype))
 
     def toPython(self):
         """

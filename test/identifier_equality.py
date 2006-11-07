@@ -4,26 +4,47 @@ from rdflib import URIRef, BNode, Literal
 
 from rdflib.syntax.parsers.RDFXMLHandler import CORE_SYNTAX_TERMS
 
-class TypeCheckCase(unittest.TestCase):
+from rdflib.Graph import Graph
+from rdflib import RDF
+
+class IdentifierEquality(unittest.TestCase):
+
+    def setUp(self):
+        self.uriref = URIRef("http://example.org/")
+        self.bnode = BNode()
+        self.literal = Literal("http://example.org/")
+        self.python_literal = u"http://example.org/"
+        self.python_literal_2 = u"foo"
 
     def testA(self):
-        uriref = URIRef("http://example.org/")
-        bnode = BNode()
-        literal = Literal("http://example.org/")
-        python_literal = u"http://example.org/"
-        python_literal_2 = u"foo"
+        self.assertEquals(self.uriref==self.literal, False)
 
-        self.assertEquals(uriref==literal, False)
-        self.assertEquals(literal==uriref, False)
+    def testB(self):
+        self.assertEquals(self.literal==self.uriref, False)
 
-        self.assertEquals(uriref==python_literal, True)
-        self.assertEquals(python_literal==uriref, True)
+    def testC(self):
+        self.assertEquals(self.uriref==self.python_literal, False)
 
-        self.assertEquals(literal==python_literal, True)
-        self.assertEquals(python_literal==literal, True)
+    def testD(self):
+        self.assertEquals(self.python_literal==self.uriref, False)
 
+    def testE(self):
+        self.assertEquals(self.literal==self.python_literal, True)
+
+    def testF(self):
+        self.assertEquals(self.python_literal==self.literal, True)
+
+    def testG(self):
         self.assertEquals("foo" in CORE_SYNTAX_TERMS, False)
-        self.assertEquals("http://www.w3.org/1999/02/22-rdf-syntax-ns#RDF" in CORE_SYNTAX_TERMS, True)
+
+    def testH(self):
+        self.assertEquals(URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#RDF") in CORE_SYNTAX_TERMS, True)
+
+    def testI(self):
+        g = Graph()
+        g.add((self.uriref, RDF.value, self.literal))
+        g.add((self.uriref, RDF.value, self.uriref))
+        self.assertEqual(len(g), 2)
 
 
 if __name__ == "__main__":

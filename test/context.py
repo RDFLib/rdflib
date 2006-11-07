@@ -1,16 +1,20 @@
 import unittest
 
+import logging
+
+_logger = logging.getLogger("context")
+
 from tempfile import mkdtemp
 from rdflib import *
 from rdflib.Graph import Graph
 
 class ContextTestCase(unittest.TestCase):
-    #backend = 'Memory'
-    backend = 'default'
+    #store = 'Memory'
+    store = 'default'
 
     def setUp(self):
-        self.graph = ConjunctiveGraph(store=self.backend)
-        if self.backend == "MySQL":
+        self.graph = ConjunctiveGraph(store=self.store)
+        if self.store == "MySQL":
             from mysql import configString
             from rdflib.store.MySQL import MySQL
             path=configString
@@ -127,7 +131,10 @@ class ContextTestCase(unittest.TestCase):
         oldLen = len(self.graph)
         self.addStuffInMultipleContexts()
 
-        self.assertEquals(len(self.graph), oldLen + 3)
+        # addStuffInMultipleContexts is adding the same triple to
+        # three different contexts. So it's only + 1
+        self.assertEquals(len(self.graph), oldLen + 1) 
+
         graph = Graph(self.graph.store, self.c1)
         self.assertEquals(len(graph), oldLen + 1)
 
@@ -309,43 +316,41 @@ class ContextTestCase(unittest.TestCase):
         asserte(len(list(triples((Any, Any, Any)))), 0)
 
 class IOMemoryContextTestCase(ContextTestCase):
-    backend = "IOMemory"
+    store = "IOMemory"
 
 try:
     from rdflib.store.Sleepycat import Sleepycat
     class SleepycatStoreTestCase(ContextTestCase):
-        backend = "Sleepycat"
+        store = "Sleepycat"
 except ImportError, e:
-    print "Can not test Sleepycat store:", e
+    _logger.warning("Can not test Sleepycat store: %s" % e)
 
 try:
     import persistent
-    # If we can import persistent then test ZODB backend
+    # If we can import persistent then test ZODB store
     class ZODBContextTestCase(ContextTestCase):
-        backend = "ZODB"
-except ImportError:
-    pass
+        store = "ZODB"
+except ImportError, e:
+    _logger.warning("Can not test ZODB store: %s" % e)
 
 try:
     import MySQLdb
     # If we can import RDF then test Redland store
     class MySQLContextTestCase(ContextTestCase):
-        backend = "MySQL"
+        store = "MySQL"
 except ImportError, e:
-    print "Can not test MySQL store:", e
+    _logger.warning("Can not test MySQL store: %s" % e)
 
 try:
     import RDF
     # If we can import RDF then test Redland store
     class RedlandContextTestCase(ContextTestCase):
-        backend = "Redland"
+        store = "Redland"
 except ImportError, e:
-    print "Can not test Redland store:", e
+    _logger.warning("Can not test Redland store: %s" % e)
 
-try:
-    import backends.Sleepycat
-except ImportError:
-    del ContextTestCase
+
+del ContextTestCase
 
 
 if __name__ == '__main__':

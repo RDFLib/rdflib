@@ -1,13 +1,21 @@
+import logging
+
+_logger = logging.getLogger()
+_logger.setLevel(logging.ERROR)
+_formatter = logging.Formatter('%(name)s %(levelname)s %(message)s')
+_handler = logging.StreamHandler()
+_handler.setFormatter(_formatter)
+_logger.addHandler(_handler)
+
 import unittest, inspect
 import rdflib
 
 quick = True
-verbose = False
+verbose = True
 
-from test.identifier_equality import *
+from test.IdentifierEquality import IdentifierEquality
 
 from test.graph import *
-from test.graph2_2 import *
 
 from test.triple_store import *
 from test.context import *
@@ -18,6 +26,7 @@ from test.context import *
 # # from test.type_check import *
 
 from test.parser import *
+
 if not quick:
     from test import parser_rdfcore
     if verbose:
@@ -33,7 +42,7 @@ from test.nt import *
 from test.util import *
 from test.seq import SeqTestCase
 
-from test.store_performace import *
+#from test.store_performace import *
 
 from test.rules import *
 

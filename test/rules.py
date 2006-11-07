@@ -1,3 +1,7 @@
+import logging
+
+_logger = logging.getLogger(__name__)
+
 import unittest
 from tempfile import mkdtemp
 
@@ -57,12 +61,12 @@ try:
             source = self.g
             interp.addFacts(set(facts(source)), initialSet=True)
             interp.run()
-            print interp.inferredFacts
+            _logger.debug("inferred facts: %s" % interp.inferredFacts)
 
     class Sleepycat(PychinkoTestCase):
         backend = 'Sleepycat'
 
 except ImportError, e:
-    print "Could not test Pychinko:", e
+    _logger.warning("Could not test Pychinko: %s" % e)
 
 

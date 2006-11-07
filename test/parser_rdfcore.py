@@ -5,9 +5,13 @@ from rdflib.Namespace import Namespace
 from rdflib.exceptions import ParserError
 from rdflib.constants import TYPE
 
-from rdflib import Graph
+from rdflib.Graph import Graph
 from rdflib.util import first
 
+
+import logging
+
+_logger = logging.getLogger("parser_rdfcore")
 
 verbose = 0
 
@@ -16,8 +20,8 @@ from encodings.utf_8 import StreamWriter
 import sys
 sw = StreamWriter(sys.stdout)
 def write(msg):
-    sw.write(msg+"\n")
-    #sys.stdout.write(msg+"\n")
+    _logger.info(msg+"\n")
+    #sw.write(msg+"\n")
 
 class TestStore(Graph):
     def __init__(self, expected):
@@ -71,24 +75,14 @@ def _testPositive(uri, manifest):
     else:
         if not store.isomorphic(expected):
             write(u"""Failed: '%s'""" % uri)
-#             print """  In:\n"""
-#             for s, p, o in store:
-#                 print "%s %s %s." % (s.n3(), p.n3(), o.n3())
-#             print """  Out:\n"""
-#             for s, p, o in expected:
-#                 print "%s %s %s." % (s.n3(), p.n3(), o.n3())
-
+            if verbose:
+                write("""  In:\n""")
+                for s, p, o in store:
+                    write("%s %s %s." % (repr(s), repr(p), repr(o)))
+                write("""  Out:\n""")
+                for s, p, o in expected:
+                    write("%s %s %s." % (repr(s), repr(p), repr(o)))
             result += 1
-
-    if verbose:
-        write("""  In:\n""")
-        for s, p, o in store:
-            msg = u"%s %s %s." % (s.n3(), p.n3(), o.n3())
-            write(msg)
-        write("""  Out:\n""")
-        for s, p, o in expected:
-                write(u"%s %s %s." % (s.n3(), p.n3(), o.n3()))
-
     return result
 
 def _testNegative(uri, manifest):
@@ -117,11 +111,11 @@ def _testNegative(uri, manifest):
     return result
 
 class ParserTestCase(unittest.TestCase):
-    backend = 'default'
+    store = 'default'
     path = 'store'
 
     def setUp(self):
-        self.manifest = manifest = Graph(backend=self.backend)
+        self.manifest = manifest = Graph(store=self.store)
         manifest.open(self.path)
         manifest.load("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf")
 
