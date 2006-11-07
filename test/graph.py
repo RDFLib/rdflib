@@ -181,13 +181,6 @@ class GraphTestCase(unittest.TestCase):
 
 
 try:
-    from rdflib.store.Sleepycat import Sleepycat
-    class SleepycatGraphTestCase(GraphTestCase):
-        store_name = "Sleepycat"
-except ImportError, e:
-    _logger.warning("Can not test Sleepycat store: %s" % e)
-
-try:
     import persistent
     # If we can import persistent then test ZODB store
     class ZODBGraphTestCase(GraphTestCase):

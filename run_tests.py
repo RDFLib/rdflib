@@ -33,6 +33,8 @@ if not quick:
         parser_rdfcore.verbose = 1
     from test.parser_rdfcore import *
 
+    from test.Sleepycat import *
+
 from test.rdf import * # how does this manage to be 9 tests?
 
 from test.n3 import *

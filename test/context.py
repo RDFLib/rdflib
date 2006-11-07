@@ -2,7 +2,7 @@ import unittest
 
 import logging
 
-_logger = logging.getLogger("context")
+_logger = logging.getLogger(__name__)
 
 from tempfile import mkdtemp
 from rdflib import *
@@ -317,13 +317,6 @@ class ContextTestCase(unittest.TestCase):
 
 class IOMemoryContextTestCase(ContextTestCase):
     store = "IOMemory"
-
-try:
-    from rdflib.store.Sleepycat import Sleepycat
-    class SleepycatStoreTestCase(ContextTestCase):
-        store = "Sleepycat"
-except ImportError, e:
-    _logger.warning("Can not test Sleepycat store: %s" % e)
 
 try:
     import persistent

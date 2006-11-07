@@ -63,9 +63,6 @@ try:
             interp.run()
             _logger.debug("inferred facts: %s" % interp.inferredFacts)
 
-    class Sleepycat(PychinkoTestCase):
-        backend = 'Sleepycat'
-
 except ImportError, e:
     _logger.warning("Could not test Pychinko: %s" % e)
 
