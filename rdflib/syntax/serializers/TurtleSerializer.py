@@ -17,6 +17,8 @@ SUBJECT = 0
 VERB = 1
 OBJECT = 2
 
+
+
 class TurtleSerializer(RecursiveSerializer):
 
     short_name="turtle"
@@ -38,7 +40,12 @@ class TurtleSerializer(RecursiveSerializer):
             except Exception, e:
                 parts = None
             if parts:
+                
                 prefix, namespace, local = parts
+                if local.find(".")!=-1:
+                    # Local parts with . will mess up serialization
+                    return None
+                
                 self.addNamespace(prefix, namespace)
                 return u"%s:%s" % (prefix, local)
         return None
