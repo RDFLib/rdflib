@@ -315,8 +315,9 @@ class ContextTestCase(unittest.TestCase):
         asserte(len(list(c1triples((Any, Any, Any)))), 0)
         asserte(len(list(triples((Any, Any, Any)))), 0)
 
-class IOMemoryContextTestCase(ContextTestCase):
-    store = "IOMemory"
+# tested via ContextTestCase
+#class IOMemoryContextTestCase(ContextTestCase):
+#    store = "IOMemory"
 
 try:
     import persistent
@@ -341,9 +342,6 @@ try:
         store = "Redland"
 except ImportError, e:
     _logger.warning("Can not test Redland store: %s" % e)
-
-
-del ContextTestCase
 
 
 if __name__ == '__main__':
