@@ -50,6 +50,8 @@ from test.rules import *
 
 from test.n3Test import *
 
+from test.JSON import JSON
+
 import test.rdfa
 
 from test.events import *
