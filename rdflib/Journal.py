@@ -1,3 +1,7 @@
+import logging
+
+_logger = logging.getLogger(__name__)
+
 from rdflib.Graph import QuotedGraph
 from rdflib.events import Event, Dispatcher
 from rdflib.store import TripleAddedEvent, TripleRemovedEvent, StoreCreatedEvent
@@ -41,9 +45,14 @@ class JournalReader(object):
         lines = []
         for line in self.stream:
             if line=="\n":
-                event = loads("".join(lines))
-                dispatch(event)
-                lines = []
+                try:
+                    event = loads("".join(lines))
+                    dispatch(event)
+                    lines = []
+                except Exception, e:
+                    _logger.exception(e)
+                    _logger.debug("lines: '%s'" % lines)
+                    lines = []
             else:
                 lines.append(line)
 
