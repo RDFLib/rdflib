@@ -14,6 +14,7 @@ quick = True
 verbose = True
 
 from test.IdentifierEquality import IdentifierEquality
+from test.sparql.QueryTestCase import QueryTestCase
 
 from test.graph import *
 

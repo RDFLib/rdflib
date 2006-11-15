@@ -13,7 +13,9 @@ def Parse(query,debug = False):
            p.debug_mode(1)
         except:
             p.debug = 1    
-    return p.parse(unicode(query,'utf-8'))
+    if not isinstance(query, unicode):
+        query = unicode(query,'utf-8')
+    return p.parse(query)
 
 class Processor(sparql.Processor):
 
