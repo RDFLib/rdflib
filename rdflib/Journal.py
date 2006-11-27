@@ -38,7 +38,7 @@ class JournalReader(object):
         self.store = store
         dispatcher = Dispatcher()
         dispatcher.subscribe(TripleAddedEvent, self.add)
-        dispatcher.subscribe(TripleRemovedEvent, self.remove)
+        dispatcher.subscribe(TripleRemovedEvent, self._remove)
         dispatcher.subscribe(StoreCreatedEvent, self.store_created)
         loads = store.node_pickler.loads
         dispatch = dispatcher.dispatch
@@ -60,6 +60,13 @@ class JournalReader(object):
         context = event.context
         quoted = isinstance(context, QuotedGraph)
         self.store.add(event.triple, context, quoted)
+
+    def _remove(self, event):
+        s, p, o = event.triple
+        ss = self.store._from_string(s)
+        pp = self.store._from_string(p)
+        oo = self.store._from_string(o)
+        self.store.remove((ss, pp, oo), self.store._from_string(event.context))
 
     def remove(self, event):
         self.store.remove(event.triple, event.context)
