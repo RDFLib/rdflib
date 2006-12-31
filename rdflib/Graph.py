@@ -1039,7 +1039,8 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     ConjunctiveGraph over an explicit subset of the entire store.
     """
 
-    def __init__(self, graphs):
+    def __init__(self, graphs,store = None):
+        super(ReadOnlyGraphAggregate, self).__init__(store)
         assert isinstance(graphs, list) and graphs\
                and [g for g in graphs if isinstance(g, Graph)],\
                "graphs argument must be a list of Graphs!!"
