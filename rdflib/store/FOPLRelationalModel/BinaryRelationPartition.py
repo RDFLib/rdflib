@@ -23,6 +23,7 @@ from rdflib.store.REGEXMatching import REGEXTerm
 from QuadSlot import *
 Any = None
 
+CONTEXT_COLUMN = 'context'
 ANY_TERM = ['U','B','F','V','L']
 CONTEXT_TERMS   = ['U','B','F']
 IDENTIFIER_TERMS   = ['U','B']
@@ -324,7 +325,7 @@ class AssociativeBox(BinaryRelationPartition):
     """
     nameSuffix = 'associativeBox'
     termEnumerations=[NON_LITERALS,None,CLASS_TERMS,CONTEXT_TERMS]
-    columnNames = ['member',None,'class','context']
+    columnNames = ['member',None,'class',CONTEXT_COLUMN]
     columnIntersectionList = [
                                (OBJECT,True),
                                (CONTEXT,True),
@@ -360,7 +361,7 @@ class NamedLiteralProperties(BinaryRelationPartition):
     """
     nameSuffix = 'literalProperties'
     termEnumerations=[NON_LITERALS,PREDICATE_NAMES,None,CONTEXT_TERMS]
-    columnNames = ['subject','predicate','object','context',('data_type','BIGINT unsigned','%s'),('language','varchar(3)','%s(3)')]
+    columnNames = ['subject','predicate','object',CONTEXT_COLUMN,('data_type','BIGINT unsigned','%s'),('language','varchar(3)','%s(3)')]
     columnIntersectionList = [
                                (DATATYPE_INDEX,True),
                                (PREDICATE,True),
@@ -487,7 +488,7 @@ class NamedBinaryRelations(BinaryRelationPartition):
     """
     nameSuffix = 'relations'
     termEnumerations=[NON_LITERALS,PREDICATE_NAMES,NON_LITERALS,CONTEXT_TERMS]
-    columnNames = ['subject','predicate','object','context']
+    columnNames = ['subject','predicate','object',CONTEXT_COLUMN]
     columnIntersectionList = [
                                (PREDICATE,True),
                                (CONTEXT,True),

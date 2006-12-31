@@ -422,7 +422,11 @@ class MySQL(Store):
         countRows = "select count(*) from %s"
         c=self._db.cursor()
         for part in self.partitions:
-            self.executeSQL(c,countRows%part)
+            if context is not None:
+                whereClause,whereParams = part.generateWhereClause((None,None,None,context.identifier)) 
+                self.executeSQL(c,countRows%part + " where " + whereClause,whereParams)
+            else:
+                self.executeSQL(c,countRows%part)
             rowCount = c.fetchone()[0]
             rows.append(rowCount)
         return reduce(lambda x,y: x+y,rows)
