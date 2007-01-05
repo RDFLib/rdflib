@@ -92,7 +92,7 @@ class IOMemory(Store):
 
     def uniqueSubjects(self, context=None):
         if context is None:
-            index = sel.spo
+            index = self.spo
         else:
             index = self.cspo[context]
         for si in index.keys():
@@ -100,7 +100,7 @@ class IOMemory(Store):
 
     def uniquePredicates(self, context=None):
         if context is None:
-            index = sel.pos
+            index = self.pos
         else:
             index = self.cpos[context]
         for pi in index.keys():
@@ -108,7 +108,7 @@ class IOMemory(Store):
 
     def uniqueObjects(self, context=None):
         if context is None:
-            index = sel.osp
+            index = self.osp
         else:
             index = self.cosp[context]
         for oi in index.keys():
