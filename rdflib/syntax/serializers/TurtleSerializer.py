@@ -182,7 +182,7 @@ class TurtleSerializer(RecursiveSerializer):
             self.s_default(subject)
             
 
-    def serialize(self, stream, base=None, encoding=None):
+    def serialize(self, stream, base=None, encoding=None, **args):
         self.reset()
         self.stream = stream
         self.base=base

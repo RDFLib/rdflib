@@ -34,7 +34,7 @@ class XMLSerializer(Serializer):
             yield prefix, namespace
 
 
-    def serialize(self, stream, base=None, encoding=None):
+    def serialize(self, stream, base=None, encoding=None, **args):
         self.base = base
         self.__stream = stream
         self.__serialized = {}

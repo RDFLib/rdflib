@@ -20,13 +20,14 @@ def fix(val):
 
 class PrettyXMLSerializer(Serializer):
 
-    def __init__(self, store):
+    def __init__(self, store, max_depth=3):
         super(PrettyXMLSerializer, self).__init__(store)
 
-    def serialize(self, stream, base=None, encoding=None):
+    def serialize(self, stream, base=None, encoding=None, **args):
         self.__serialized = {}
         store = self.store
         self.base = base
+        self.max_depth = args.get("max_depth", 3)
 
         self.nm = nm = store.namespace_manager
         self.writer = writer = XMLWriter(stream, nm, encoding)
@@ -119,5 +120,8 @@ class PrettyXMLSerializer(Serializer):
                     collection = first(store.objects(collection, RDF.rest))
                     self.__serialized[collection] = 1
             else:
-                self.subject(object, depth+1)
+                if depth<=self.max_depth:
+                    self.subject(object, depth+1)
+                else:
+                    writer.attribute(RDF.resource, self.relativize(object))                    
         writer.pop(predicate)

@@ -7,7 +7,7 @@ class AbstractSerializer(object):
         self.encoding = "UTF-8"
         self.base = None
 
-    def serialize(self, stream, base=None, encoding=None):
+    def serialize(self, stream, base=None, encoding=None, **args):
         """Abstract method"""
 
     def relativize(self, uri):

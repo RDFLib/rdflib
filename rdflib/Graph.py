@@ -583,14 +583,14 @@ class Graph(Node):
         """Turn uri into an absolute URI if it's not one already"""
         return self.namespace_manager.absolutize(uri, defrag)
 
-    def serialize(self, destination=None, format="xml", base=None, encoding=None):
+    def serialize(self, destination=None, format="xml", base=None, encoding=None, **args):
         """Serialize the Graph to destination
 
         If destination is None serialize method returns the serialization as a
         string. Format defaults to xml (AKA rdf/xml).
         """
         serializer = plugin.get(format, Serializer)(self)
-        return serializer.serialize(destination, base=base, encoding=encoding)
+        return serializer.serialize(destination, base=base, encoding=encoding, **args)
 
     def prepare_input_source(self, source, publicID=None):
         if isinstance(source, InputSource):

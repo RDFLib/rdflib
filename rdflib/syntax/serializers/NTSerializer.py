@@ -10,7 +10,7 @@ class NTSerializer(Serializer):
         """
         super(NTSerializer, self).__init__(store)
 
-    def serialize(self, stream, base=None, encoding=None):
+    def serialize(self, stream, base=None, encoding=None, **args):
         if base is not None:
             print "TODO: NTSerializer does not support base"
         encoding = self.encoding

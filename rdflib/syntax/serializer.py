@@ -22,7 +22,7 @@ class Serializer(object):
 
     store = property(_get_store, _set_store)
 
-    def serialize(self, destination=None, format="xml", base=None, encoding=None):
+    def serialize(self, destination=None, format="xml", base=None, encoding=None, **args):
         if destination is None:
             stream = StringIO()
             self.serializer.serialize(stream, base=base, encoding=encoding)
@@ -40,7 +40,7 @@ class Serializer(object):
                     return
                 name = tempfile.mktemp()
                 stream = open(name, 'wb')
-                self.serializer.serialize(stream, base=base, encoding=encoding)
+                self.serializer.serialize(stream, base=base, encoding=encoding, **args)
                 stream.close()
                 if hasattr(shutil,"move"):
                     shutil.move(name, path)
