@@ -45,9 +45,19 @@ class SPARQLXMLWriter:
                                      u'results', 
                                      AttributesNSImpl(attr_vals, attr_qnames))        
 
-    def write_result(self,name,val):
+    def write_start_result(self):
+        self.writer.startElementNS(
+                (SPARQL_XML_NAMESPACE, u'result'), u'result', AttributesNSImpl({}, {}))
+        self._resultStarted = True
+
+    def write_end_result(self):
+        assert self._resultStarted
+        self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'result'), u'result')
+        self._resultStarted = False
+
+    def write_binding(self,name,val):
+        assert self._resultStarted
         if val:
-            self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'result'), u'result', AttributesNSImpl({}, {}))
             attr_vals = {
                 (None, u'name')  : unicode(name),
                 }
@@ -61,13 +71,13 @@ class SPARQLXMLWriter:
             if isinstance(val,URIRef) :
                 self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'uri'), 
                                        u'uri', 
-                                       AttributesNSImpl(attr_vals, attr_qnames))
+                                       AttributesNSImpl({}, {}))
                 self.writer.characters(val)
                 self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'uri'),u'uri')
             elif isinstance(val,BNode) :
                 self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'bnode'), 
                                        u'bnode', 
-                                       AttributesNSImpl(attr_vals, attr_qnames))
+                                       AttributesNSImpl({}, {}))
                 self.writer.characters(val)
                 self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'bnode'),u'bnode')
             elif isinstance(val,Literal) :
@@ -90,7 +100,6 @@ class SPARQLXMLWriter:
                 raise Exception("Unsupported RDF term: %s"%val)
 
             self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'binding'),u'binding')        
-            self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'result'), u'result')
 
     def close(self):
         self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'results'), u'results')
@@ -218,13 +227,21 @@ class SPARQLQueryResult(QueryResult.QueryResult):
                for i in xrange(0,len(self.selected)) :
                    hit = self.selected[i]
                    if len(self.selectionF) == 0 :
+                       writer.write_start_result()
+                       if len(allvarsL) == 1:
+                           hit = (hit,) # Not an iterable - a parser bug?
                        for j in xrange(0,len(allvarsL)) :
-                           writer.write_result(allvarsL[j][1:],hit[j])
+                           writer.write_binding(allvarsL[j][1:],hit[j])
+                       writer.write_end_result()
                    elif len(self.selectionF) == 1 :
-                       writer.write_result(self.selectionF[0][1:],hit)
+                       writer.write_start_result()
+                       writer.write_binding(self.selectionF[0][1:],hit)
+                       writer.write_end_result()
                    else:
+                       writer.write_start_result()
                        for j in xrange(0,len(self.selectionF)) :
-                           writer.write_result(self.selectionF[j][1:],hit[j])
+                           writer.write_binding(self.selectionF[j][1:],hit[j])
+                       writer.write_end_result()
                writer.close()
                return out.getvalue()
            return retval
