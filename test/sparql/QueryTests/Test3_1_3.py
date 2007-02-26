@@ -44,7 +44,7 @@ rdfData ="""<?xml version="1.0" encoding="UTF-8"?>
 
 from rdflib.Literal import Literal
 import datetime
-from rdflib.sparql import GraphPattern
+from rdflib.sparql.graphPattern import GraphPattern
 
 select      = ["?v"]
 pattern     = GraphPattern([("?v","?p","cat")])

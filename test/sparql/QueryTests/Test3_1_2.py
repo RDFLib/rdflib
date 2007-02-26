@@ -46,7 +46,7 @@ from testSPARQL import ns_ns
 
 from rdflib.Literal import Literal
 import datetime
-from rdflib.sparql import GraphPattern
+from rdflib.sparql.graphPattern import GraphPattern
 
 select      = ["?v"]
 #pattern     = GraphPattern([("?v","?p",Literal("abc",datatype="http://example.org/datatype#specialDatatype"))])

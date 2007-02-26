@@ -48,7 +48,7 @@ from testSPARQL import ns_ns
 from testSPARQL import ns_book
 
 from rdflib.Literal     import Literal
-from rdflib.sparql import GraphPattern
+from rdflib.sparql.graphPattern import GraphPattern
 
 from rdflib.sparql.sparqlOperators import isURI
 
