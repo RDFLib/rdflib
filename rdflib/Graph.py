@@ -456,17 +456,17 @@ class Graph(Node):
                  raise UniquenessError
         """
         retval = default
+
+        if (subject is None and predicate is None) or \
+                (subject is None and object is None) or \
+                (predicate is None and object is None):
+            return None
+        
         if object is None:
-            assert subject is not None
-            assert predicate is not None
             values = self.objects(subject, predicate)
         if subject is None:
-            assert predicate is not None
-            assert object is not None
             values = self.subjects(predicate, object)
         if predicate is None:
-            assert subject is not None
-            assert object is not None
             values = self.predicates(subject, object)
 
         try:
