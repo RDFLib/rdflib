@@ -40,7 +40,7 @@ for person in store.subjects(RDF.type, FOAF["Person"]):
         print mbox
 
 # Serialize the store as RDF/XML to the file foaf.rdf.
-store.serialize("foaf.rdf", format="pretty-xml", max_depth=0)
+store.serialize("foaf.rdf", format="pretty-xml", max_depth=3)
 
 # Let's show off the serializers
 
