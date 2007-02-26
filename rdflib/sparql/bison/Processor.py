@@ -1,7 +1,7 @@
 from rdflib import sparql
-from Query import Query, Prolog
-from SPARQLEvaluate import Evaluate        
-import SPARQLParserc as SPARQLParser
+from rdflib.sparql.bison.Query import Query, Prolog
+from rdflib.sparql.bison.SPARQLEvaluate import Evaluate        
+from rdflib.sparql.bison import SPARQLParserc as SPARQLParser
 
 def CreateSPARQLParser():
     return SPARQLParser.new()    
