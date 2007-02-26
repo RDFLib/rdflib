@@ -12,13 +12,11 @@ sys.path.insert(0,"../")
 
 from testSPARQL import ns_rdf
 from testSPARQL import ns_rdfs
-from testSPARQL import ns_dc
-from testSPARQL import ns_dc0
 from testSPARQL import ns_foaf
 from testSPARQL import ns_vcard
 from testSPARQL import ns_person
 
-from rdflib.sparql import sparqlGraph, retrieveRDFFiles
+from rdflib.sparql import sparqlGraph
 from rdflib.FileInputSource import FileInputSource
 
 tests = {
@@ -39,20 +37,14 @@ def run(modName) :
         defs = mod.__dict__
 
         ##################################################
-        # Three ways of identifying the RDF data:
+        # Two ways of identifying the RDF data:
         # 1. A Triple Store generated in the module
         graph = None
         try :
                 graph = defs["graph"]
         except :
                 pass
-        # 2. A reference to a set of RDF Files
-        fils = None
-        try :
-                fils        = defs["datafiles"]
-        except :
-                pass
-        # 3. Directly in the test module as a string
+        # 2. Directly in the test module as a string
         rdfData = None
         try :
                 rdfData     = defs["rdfData"]
@@ -61,12 +53,9 @@ def run(modName) :
 
         # Get the final of the triple store...
         if graph == None :
-                if rdfData == None :
-                        graph = retrieveRDFFiles(fils)
-                else :
-                        stream = FileInputSource(StringIO.StringIO(rdfData))
-                        graph = sparqlGraph.SPARQLGraph()
-                        graph.parse(stream,format="xml")
+                stream = FileInputSource(StringIO.StringIO(rdfData))
+                graph = sparqlGraph.SPARQLGraph()
+                graph.parse(stream,format="xml")
 
         ###############################################
         # Retrive the query data
@@ -80,7 +69,7 @@ def run(modName) :
 
         results     = graph.queryObject(pattern,optPattern)
         graph = results.construct(construct)
-        graph.save("output.rdf")
+        graph.serialize("output.rdf")
 
         print "=== generated RDF file (output.rdf):\n"
         for l in file("output.rdf") :
@@ -88,7 +77,9 @@ def run(modName) :
 
 if __name__ == '__main__' :
         if len(sys.argv) == 1 :
-                print "Usage: %s modname1 modname2 ..." % sys.argv[0]
+                #print "Usage: %s modname1 modname2 ..." % sys.argv[0]
+                for mod in tests.values():
+                        run(mod)
         else :
                 for mod in sys.argv[1:] :
                         if mod.endswith(".py") :
