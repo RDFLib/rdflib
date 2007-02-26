@@ -1011,6 +1011,8 @@ class BackwardCompatGraph(ConjunctiveGraph):
         return (BackwardCompatGraph, (self.store, self.identifier))
 
     def save(self, destination, format="xml", base=None, encoding=None):
+        warnings.warn("Use serialize method instead. ",
+                      DeprecationWarning, stacklevel=2)
         self.serialize(destination=destination, format=format, base=base,
                        encoding=encoding)
 
