@@ -881,7 +881,8 @@ class Seq(object):
         for (p, o) in graph.predicate_objects(subject):
             if p.startswith(LI_INDEX): #!= RDF.Seq: #
                 i = int(p.replace(LI_INDEX, ''))
-                _list.append(("%s" % i, o))
+                _list.append((i, o))
+
         # here is the trick: the predicates are _1, _2, _3, etc. Ie,
         # by sorting the keys (by integer) we have what we want!
         _list.sort()
