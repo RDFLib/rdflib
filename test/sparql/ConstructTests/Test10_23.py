@@ -7,7 +7,6 @@
 
 from testSPARQL import ns_rdf
 from testSPARQL import ns_rdfs
-from testSPARQL import ns_dc
 from testSPARQL import ns_dc0
 from testSPARQL import ns_foaf
 from testSPARQL import ns_ns
@@ -18,7 +17,7 @@ from testSPARQL import ns_person
 from rdflib.Literal     import Literal
 from rdflib.sparql.sparqlOperators import lt, ge
 import datetime
-from rdflib.sparql import GraphPattern
+from rdflib.sparql.graphPattern import GraphPattern
 
 thresholdDate = datetime.date(2005,01,01)
 rdfData = """<?xml version="1.0" encoding="UTF-8"?>

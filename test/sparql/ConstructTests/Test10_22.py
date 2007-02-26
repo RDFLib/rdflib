@@ -7,7 +7,6 @@
 
 from testSPARQL import ns_rdf
 from testSPARQL import ns_rdfs
-from testSPARQL import ns_dc
 from testSPARQL import ns_dc0
 from testSPARQL import ns_foaf
 from testSPARQL import ns_ns
@@ -16,9 +15,11 @@ from testSPARQL import ns_vcard
 from testSPARQL import ns_person
 
 from rdflib.Literal     import Literal
+from rdflib import BNode
+from rdflib.sparql.sparql import PatternBNode
 from rdflib.sparql.sparqlOperators import lt, ge
 import datetime
-from rdflib.sparql import GraphPattern
+from rdflib.sparql.graphPattern import GraphPattern
 
 thresholdDate = datetime.date(2005,01,01)
 rdfData = """<?xml version="1.0" encoding="UTF-8"?>
@@ -42,7 +43,8 @@ rdfData = """<?xml version="1.0" encoding="UTF-8"?>
 select      = []
 pattern     = GraphPattern([("?x",ns_foaf["givenname"],"?name"),("?x",ns_foaf["family_name"],"?fname")])
 optional    = []
-construct   = GraphPattern([("_:v1", ns_vcard["N"],"_:x"),("_:x",ns_vcard["givenName"],"?name"),("_:x",ns_vcard["familyName"],"?fname")])
+bnode = BNode("v") #PatternBNode("")
+construct   = GraphPattern([("?x", ns_vcard["N"],bnode),(bnode,ns_vcard["givenName"],"?name"),(bnode,ns_vcard["familyName"],"?fname")])
 tripleStore = None
 
 
