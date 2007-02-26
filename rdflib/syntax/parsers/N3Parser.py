@@ -30,6 +30,8 @@ class N3Parser(Parser):
         p.userkeys = True # bah
         p.data = source.getByteStream().read() # TODO getCharacterStream?
         p.parse()
+        for prefix, namespace in p.bindings.items():
+            conj_graph.bind(prefix, namespace)
 
 
 class Sink(object):
