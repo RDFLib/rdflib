@@ -60,6 +60,7 @@ import unittest
 
 from rdflib.Graph import Graph, ConjunctiveGraph
 
+
 class N3TestCase(unittest.TestCase):
 
     def setUp(self):
@@ -67,6 +68,18 @@ class N3TestCase(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    def testFileName(self):
+        input = """
+@prefix : <http://www.example.com/> .
+
+:foo.txt :p :q .
+"""
+        g = Graph()
+        g.parse(StringInputSource(input), format="n3")
+        s = g.value(predicate=URIRef("http://www.example.com/p"), object=URIRef("http://www.example.com/q"))
+        self.assertEquals(s, URIRef("http://www.example.org/foo.txt"))
+
 
     def testModel(self):
         g = ConjunctiveGraph()
