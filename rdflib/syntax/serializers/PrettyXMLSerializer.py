@@ -28,6 +28,7 @@ class PrettyXMLSerializer(Serializer):
         store = self.store
         self.base = base
         self.max_depth = args.get("max_depth", 3)
+        assert max_depth>0, "max_depth must be greater than 0"
 
         self.nm = nm = store.namespace_manager
         self.writer = writer = XMLWriter(stream, nm, encoding)
