@@ -197,6 +197,22 @@ class Literal(Identifier):
             return cmp(self.toPython(),other)
         else:
             raise TypeError("Unable to compare %s against %s"%(self,other))
+        
+    def __ne__(self, other):
+        """
+        Overriden to ensure property result for comparisons with None via !=.
+        Routes all other such != and <> comparisons to __eq__
+        
+        >>> Literal('') != None
+        True
+        >>> Literal('2') <> Literal('2')
+        False
+         
+        """
+        if other==None:
+            return True
+        else:
+            return not self.__eq__(other)
 
     def __eq__(self, other):
         """        
