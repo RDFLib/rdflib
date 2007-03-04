@@ -1226,10 +1226,18 @@ class _SPARQLNode:
             if self.bound == True and self.clash == False :
                 # see if the optional bindings can be reduced because they are already
                 # bound by this node
+                toldBNodeLookup = {}
                 for key in self.bindings :
-                    statements = [ replace(key,self.bindings[key],t) for t in statements ]
+                    normalizedStatements = []
+                    for t in statements:
+                        val = self.bindings[key]
+                        if isinstance(val,BNode) and val not in toldBNodeLookup:
+                            toldBNodeLookup[val] = val
+                        normalizedStatements.append(replace(key,self.bindings[key],t))
+                    statements = normalizedStatements
                     if key in bindings :
                         del bindings[key]
+                bindings.update(toldBNodeLookup)
                 optTree = _SPARQLNode(None,bindings,statements,self.tripleStore)
                 self.optionalTrees.append(optTree)
                 optTree.expand(constraints)
