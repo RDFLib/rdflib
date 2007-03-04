@@ -229,7 +229,7 @@ class Literal(Identifier):
             encoded='"%s"'%self.replace('\n','\\n').replace('\\', '\\\\').replace('"','\\"')
         if language:
             if datatype:    
-                return '%s@%s^^<%s>' % (encode, language, datatype)
+                return '%s@%s^^<%s>' % (encoded, language, datatype)
             else:
                 return '%s@%s' % (encoded, language)
         else:
