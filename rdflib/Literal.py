@@ -139,6 +139,64 @@ class Literal(Identifier):
     def __add__(self, val):
         s = super(Literal, self).__add__(val)
         return Literal(s, self.language, self.datatype)
+    
+    def __cmp__(self, other):
+        """
+        >>> lit2006 = Literal('2006-01-01',datatype=XSD_NS.date)
+        >>> lit2006.toPython()
+        datetime.date(2006, 1, 1)
+        >>> lit2006 < Literal('2007-01-01',datatype=XSD_NS.date)
+        True
+        >>> oneInt     = Literal(1)
+        >>> twoInt     = Literal(2)
+        >>> twoInt < oneInt
+        False
+        >>> try: 
+        ...   Literal('1') < Literal(1)
+        ... except TypeError: 
+        ...   print 'type error'
+        type error
+        >>> Literal('1') < Literal('1')
+        False
+        >>> try : Literal(1) < Literal('1')
+        ... except TypeError: print 'type error'
+        type error
+        >>> Literal(1) < Literal(2.0)
+        True
+        >>> try:  Literal(1) < URIRef('foo')  
+        ... except TypeError: print 'type error'
+        type error
+        >>> Literal(1) < 2.0
+        True
+        >>> try:  Literal(1) < object  
+        ... except TypeError: print 'type error'
+        type error
+        """
+        if other==None:
+            raise TypeError("can't compare %s to None"%type(self))            
+        elif isinstance(other, Literal):
+            #If they are both literals, then their datatypes is the first
+            #criteria for comparison
+            if self.datatype == None or self.datatype == '' :
+                if not(other.datatype == None or other.datatype == '') :
+                    #Only one of the two has a datatype - not enough info to compare
+                    raise TypeError("can't compare Literals with incompatible datatypes")
+                else:
+                    #Both don't have datatypes compare their lexical representations
+                    return unicode(self).__cmp__(unicode(other))
+            else:
+                if other.datatype == None or other.datatype == '' :
+                    #Only one of the two has a datatype - not enough info to compare
+                    raise TypeError("can't compare Literals with incompatible datatypes")
+                return cmp(self.toPython(),other.toPython())
+        elif isinstance(other, Identifier):
+            raise TypeError("can't compare Literals with other Identifiers")
+        elif castPythonToLiteral(other)[-1]:
+            #I know how to represent 'other' lexically and in Python uniformly
+            #Compare natively in python
+            return cmp(self.toPython(),other)
+        else:
+            raise TypeError("Unable to compare %s against %s"%(self,other))
 
     def __eq__(self, other):
         """        
@@ -193,7 +251,7 @@ class Literal(Identifier):
                     return unicode(self) == unicode(other)
                 elif self.datatype != other.datatype :
                     #I have no way reliably compare both Literals 
-                    return False
+                    return self.toPython() == other.toPython()
         elif isinstance(other, Identifier):
             return False
         elif castPythonToLiteral(other)[-1]:
