@@ -341,9 +341,15 @@ def Evaluate(graph,query,passedBindings = {},DEBUG = False):
     graphGraphPatterns = categorizeGroupGraphPattern(query.query.whereClause.parsedGraphPattern)[0]
     if graphGraphPatterns:
         graphGraphP = graphGraphPatterns[0].nonTripleGraphPattern
-        assert not isinstance(graphGraphP.name,Variable) or graphGraphP.name in passedBindings,"Graph Graph Patterns can only be used with variables bound at the top level or a URIRef or BNode term"
-        graphName =  isinstance(graphGraphP.name,Variable) and passedBindings[graphGraphP.name] or graphGraphP.name
-        tripleStore = sparqlGraph.SPARQLGraph(Graph(graph.store,graphName))
+        if isinstance(graphGraphP.name,Variable):
+            if graphGraphP.name in passedBindings:
+                tripleStore = sparqlGraph.SPARQLGraph(Graph(graph.store,passedBindings[graphGraphP.name]))
+            else: 
+                raise Exception("Graph Graph Patterns can only be used with variables bound at the top level or a URIRef or BNode term")
+                tripleStore = sparqlGraph.SPARQLGraph(graph,logicalPattern=True)
+        else:
+            graphName =  isinstance(graphGraphP.name,Variable) and passedBindings[graphGraphP.name] or graphGraphP.name
+            tripleStore = sparqlGraph.SPARQLGraph(Graph(graph.store,graphName))
 
     if isinstance(query.query,SelectQuery) and query.query.variables:
         query.query.variables = [convertTerm(item,query.prolog) for item in query.query.variables]
