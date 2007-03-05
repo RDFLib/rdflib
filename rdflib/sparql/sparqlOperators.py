@@ -58,7 +58,7 @@ def queryString(v) :
 # @param v the Literal to be converted
 # @return the result of the conversion.
 def getLiteralValue(v) :
-    return v.toPython()
+    return v
 
 ##
 # Returns a <em>value retrieval function</em>. The return value can be plugged in a query; it would return
