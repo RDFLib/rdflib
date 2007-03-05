@@ -4,6 +4,7 @@ class ParsedConditionalAndExpressionList(ListRedirect):
     """
     A list of ConditionalAndExpressions, joined by '||'
     """
+    pyBooleanOperator = ' or '
     def __init__(self,conditionalAndExprList):
         if isinstance(conditionalAndExprList,list):
             self._list = conditionalAndExprList
@@ -17,7 +18,8 @@ class ParsedRelationalExpressionList(ListRedirect):
     """
     A list of RelationalExpressions, joined by '&&'s
     """
-    def __init__(self,relationalExprList):
+    pyBooleanOperator = ' and '
+    def __init__(self,relationalExprList):        
         if isinstance(relationalExprList,list):
             self._list = relationalExprList
         else:

@@ -168,6 +168,10 @@ def mapToOperator(expr,prolog,combinationArg=None):
             return "sparqlOperators.XSDCast(%s,'%s')%s"%(mapToOperator(expr.arguments[0],prolog,combinationArg='i'),fUri,combinationInvokation)
         raise Exception("Whats do i do with %s (a %s)?"%(expr,type(expr).__name__))
     else:
+        if isinstance(expr,ListRedirect):
+            expr = expr.reduce()
+            if expr.pyBooleanOperator:
+                return expr.pyBooleanOperator.join([mapToOperator(i,prolog) for i in expr]) 
         raise Exception("What do i do with %s (a %s)?"%(expr,type(expr).__name__))
 
 def createSPARQLPConstraint(filter,prolog):
