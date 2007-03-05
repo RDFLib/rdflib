@@ -44,6 +44,7 @@
       <symbol>DOT</symbol>
       <symbol>FilteredBasicGraphPattern</symbol>
       <code language="c">
+        Py_INCREF(Py_None);
         $$ = PyObject_CallMethod(Util, "ListPrepend", "OO",PyObject_CallMethod(Triples, "ParsedConstrainedTriples", "OO", Py_None,$1),$3);
         /*PyList_Append($3, PyObject_CallMethod(Triples, "ParsedConstrainedTriples", "OO", Py_None,$1));
         Py_INCREF($3);
@@ -54,6 +55,7 @@
       <symbol>Constraint</symbol>
       <symbol>FilteredBasicGraphPattern</symbol>
       <code language="c">
+        Py_INCREF(Py_None);
         $$ = PyObject_CallMethod(Util, "ListPrepend", "OO",PyObject_CallMethod(Triples, "ParsedConstrainedTriples", "OO", Py_None,$1),$2);
         /*PyList_Append($2, PyObject_CallMethod(Triples, "ParsedConstrainedTriples", "OO", Py_None,$1));
         Py_INCREF($2);
@@ -293,6 +295,7 @@
       <symbol>PropertyList</symbol>
       <symbol>RIGHT_SQUARE</symbol>
       <code language="c">
+        Py_INCREF(Py_None);
         $$ = PyObject_CallMethod(Resource, "Resource", "OO", Py_None,$2);
       </code>
     </rule>
