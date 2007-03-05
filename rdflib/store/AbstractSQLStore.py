@@ -316,13 +316,13 @@ class SQLGenerator:
 
     def buildLitDTypeClause(self,obj,tableName):
         if isinstance(obj,Literal):
-            return obj.datatype is not None and "%s.objDatatype="%(tableName,obj)+"%s",[obj.datatype.encode('utf-8')] or None
+            return obj.datatype is not None and ("%s.objDatatype="%(tableName)+"%s",[obj.datatype.encode('utf-8')]) or None
         else:
             return None
 
     def buildLitLanguageClause(self,obj,tableName):
         if isinstance(obj,Literal):
-            return obj.language is not None and "%s.objLanguage="%(tableName)+"%s",[obj.language.encode('utf-8')] or None
+            return obj.language is not None and ("%s.objLanguage="%(tableName)+"%s",[obj.language.encode('utf-8')]) or None
         else:
             return None
 
