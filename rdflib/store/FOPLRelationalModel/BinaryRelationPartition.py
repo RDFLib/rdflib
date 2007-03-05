@@ -288,7 +288,7 @@ class BinaryRelationPartition(object):
             queryTerm = dereferenceQuad(idx,queryPattern)
             lookupAlias = 'rt_'+SlotPrefixes[idx]
             if idx == CONTEXT and asserted:
-                whereClauses.append("%s.%s != 'F'"%(self,self.columnNames[idx]))
+                whereClauses.append("%s.%s_term != 'F'"%(self,self.columnNames[idx]))
 
             if idx < len(POSITION_LIST) and isinstance(queryTerm,REGEXTerm):
                 whereClauses.append("%s.lexical REGEXP "%lookupAlias+"%s")
@@ -628,6 +628,7 @@ def PatternResolution(quad,cursor,BRPs,orderByTriple=True,fetchall=True,fetchCon
         query = unionQueries[0] + orderBySuffix
     else:
         query = ' union all '.join(['('+q+')' for q in unionQueries]) + orderBySuffix
+    query = query + '  # %s'%str(quad)
     try:
         cursor.execute(query,tuple(unionQueriesParams))
     except ValueError,e:
