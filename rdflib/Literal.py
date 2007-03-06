@@ -171,6 +171,8 @@ class Literal(Identifier):
         >>> try:  Literal(1) < object  
         ... except TypeError: print 'type error'
         type error
+        >>> lit2006 < "2007-01-01"
+        True
         """
         if other==None:
             raise TypeError("can't compare %s to None"%type(self))            
@@ -195,6 +197,9 @@ class Literal(Identifier):
             #I know how to represent 'other' lexically and in Python uniformly
             #Compare natively in python
             return cmp(self.toPython(),other)
+        elif isinstance(other,basestring):
+            #We should do a lexical comparison, since we are an instance of an RDF Literal
+            return cmp(unicode(self),other)
         else:
             raise TypeError("Unable to compare %s against %s"%(self,other))
         
