@@ -185,7 +185,7 @@ class Literal(Identifier):
                     raise TypeError("can't compare Literals with incompatible datatypes")
                 else:
                     #Both don't have datatypes compare their lexical representations
-                    return unicode(self).__cmp__(unicode(other))
+                    return cmp(unicode(self), unicode(other))
             else:
                 if other.datatype == None or other.datatype == '' :
                     #Only one of the two has a datatype - not enough info to compare
