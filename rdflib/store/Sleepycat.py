@@ -209,7 +209,6 @@ class Sleepycat(Store):
             self.__needs_sync = True
 
     def __remove(self, (s, p, o), c, quoted=False):
-        Store.remove(self, (s, p, o), c)
         cspo, cpos, cosp = self.__indicies
         contexts_value = cspo.get("^".join(("", s, p, o, ""))) or ""
         contexts = set(contexts_value.split("^"))
@@ -230,6 +229,7 @@ class Sleepycat(Store):
 
     def remove(self, (subject, predicate, object), context):
         assert self.__open, "The Store must be open."
+        Store.remove(self, (subject, predicate, object), context)
         _to_string = self._to_string
         if context is not None:
             if context == self:
