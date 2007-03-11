@@ -1,3 +1,4 @@
+"""
 import logging
 
 _logger = logging.getLogger()
@@ -57,8 +58,7 @@ import test.rdfa
 
 from test.events import *
 
-if __name__ == "__main__":
-
+def run():
     # TODO: Fix failed test and comment back in.
     # test.rdfa.main()
 
@@ -74,4 +74,9 @@ if __name__ == "__main__":
         unittest.TextTestRunner(verbosity=2).run(suite)
     else:
         unittest.main()
+
+"""
+if __name__ == "__main__":
+    #run()
+    print "use python setup.py test instead"
 
