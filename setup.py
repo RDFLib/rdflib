@@ -26,12 +26,16 @@ setup(
 
     packages = find_packages(),
 
-     ext_modules = [
+    ext_modules = [
         Extension(
             name='rdflib.sparql.bison.SPARQLParserc',
             sources=['src/bison/SPARQLParser.c'],
             ),
-        ]
+        ],
+
+    setup_requires = ["nose>=0.9.2"],
+
+    test_suite = 'nose.collector',
 
     )
 
