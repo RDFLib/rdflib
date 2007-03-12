@@ -437,7 +437,7 @@ class Graph(Node):
             yield (s, p, o)
 
     def value(self, subject=None, predicate=RDF.value, object=None,
-              default=None, any=False):
+              default=None, any=True):
         """Get a value for a pair of two criteria
 
         Exactly one of subject, predicate, object must be None. Useful if one
