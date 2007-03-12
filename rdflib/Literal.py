@@ -151,21 +151,16 @@ class Literal(Identifier):
         >>> twoInt     = Literal(2)
         >>> twoInt < oneInt
         False
-        >>> try: 
-        ...   Literal('1') < Literal(1)
-        ... except TypeError: 
-        ...   print 'type error'
-        type error
+        >>> Literal('1') < Literal(1)
+        False
         >>> Literal('1') < Literal('1')
         False
-        >>> try : Literal(1) < Literal('1')
-        ... except TypeError: print 'type error'
-        type error
+        >>> Literal(1) < Literal('1')
+        False
         >>> Literal(1) < Literal(2.0)
         True
-        >>> try:  Literal(1) < URIRef('foo')  
-        ... except TypeError: print 'type error'
-        type error
+        >>> Literal(1) < URIRef('foo')
+        True
         >>> Literal(1) < 2.0
         True
         >>> try:  Literal(1) < object  
