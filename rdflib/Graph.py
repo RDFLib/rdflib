@@ -24,7 +24,7 @@ Instanciating Graphs with Sleepycat store and an identifier - <http://rdflib.net
 
     >>> g=Graph('Sleepycat',URIRef("http://rdflib.net"))
     >>> g.identifier
-    u'http://rdflib.net'
+    rdflib.URIRef('http://rdflib.net')
     >>> str(g)
     "<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'Sleepycat']."
 
@@ -118,9 +118,9 @@ Using Namespace class:
 
     >>> RDFLib = Namespace('http://rdflib.net')
     >>> RDFLib.ConjunctiveGraph
-    u'http://rdflib.netConjunctiveGraph'
+    rdflib.URIRef('http://rdflib.netConjunctiveGraph')
     >>> RDFLib['Graph']
-    u'http://rdflib.netGraph'
+    rdflib.URIRef('http://rdflib.netGraph')
 
 SPARQL Queries
 
@@ -130,19 +130,19 @@ SPARQL Queries
     ... PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?pred WHERE { ?stmt rdf:predicate ?pred. }
     ... \'\'\'   
     >>> for pred in g.query(q):  print pred
-    (u'http://www.w3.org/2000/01/rdf-schema#label',)
+    (rdflib.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),)
 
 SPARQL Queries with namespace bindings as argument
 
     >>> nsMap = {u"rdf":RDF.RDFNS}
     >>> for pred in g.query("SELECT ?pred WHERE { ?stmt rdf:predicate ?pred. }", initNs=nsMap): print pred
-    (u'http://www.w3.org/2000/01/rdf-schema#label',)
+    (rdflib.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),)
 
 Parameterized SPARQL Queries
 
     >>> top = { Variable("?term") : RDF.predicate }
     >>> for pred in g.query("SELECT ?pred WHERE { ?stmt ?term ?pred. }", initBindings=top): print pred
-    (u'http://www.w3.org/2000/01/rdf-schema#label',)
+    (rdflib.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),)
 
 """
 
