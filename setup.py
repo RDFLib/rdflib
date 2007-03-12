@@ -21,8 +21,14 @@ setup(
     license = "http://rdflib.net/latest/LICENSE",
     platforms = ["any"],
     classifiers = ["Programming Language :: Python"],
-    long_description = "RDF library containing an RDF triple store and RDF/XML parser/serializer",
-    #download_url = "http://rdflib.net/rdflib-%s.tar.gz" % __version__,
+    long_description = \
+    """RDF library containing an RDF triple store and RDF/XML parser/serializer
+    
+    If you have recently reported a bug marked as fixed, or have a craving for
+    the very latest, you may want the development version instead:
+    http://svn.rdflib.net/trunk#egg=rdflib-dev
+    """,
+    download_url = "http://rdflib.net/rdflib-%s.tar.gz" % __version__,
 
     packages = find_packages(),
 
