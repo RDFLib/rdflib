@@ -11,6 +11,7 @@ from rdflib.Graph import Graph
 class ContextTestCase(unittest.TestCase):
     #store = 'Memory'
     store = 'default'
+    slowtest = True
 
     def setUp(self):
         self.graph = ConjunctiveGraph(store=self.store)
@@ -318,12 +319,14 @@ class ContextTestCase(unittest.TestCase):
 # tested via ContextTestCase
 #class IOMemoryContextTestCase(ContextTestCase):
 #    store = "IOMemory"
+#    slowtest = False
 
 try:
     import persistent
     # If we can import persistent then test ZODB store
     class ZODBContextTestCase(ContextTestCase):
         store = "ZODB"
+        slowtest = False
 except ImportError, e:
     _logger.warning("Can not test ZODB store: %s" % e)
 
@@ -332,6 +335,7 @@ try:
     # If we can import RDF then test Redland store
     class MySQLContextTestCase(ContextTestCase):
         store = "MySQL"
+        slowtest = False
 except ImportError, e:
     _logger.warning("Can not test MySQL store: %s" % e)
 
@@ -340,6 +344,7 @@ try:
     # If we can import RDF then test Redland store
     class RedlandContextTestCase(ContextTestCase):
         store = "Redland"
+        slowtest = False
 except ImportError, e:
     _logger.warning("Can not test Redland store: %s" % e)
 
