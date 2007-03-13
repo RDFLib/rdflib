@@ -404,7 +404,7 @@ class RDFXMLHandler(handler.ContentHandler):
         language = current.language
         if datatype is not None:
             # TODO: check that there are no atts other than datatype and id
-            datatype = URIRef(datatype)
+            datatype = absolutize(datatype)
         else:
             for att in atts:
                 if not att.startswith(RDFNS):

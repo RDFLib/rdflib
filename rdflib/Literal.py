@@ -31,7 +31,6 @@ PythonToXSD = {
     basestring : (None,None),
     float      : (None,XSD_NS[u'float']),
     int        : (None,XSD_NS[u'int']),
-    int        : (None,XSD_NS[u'integer']),
     long       : (None,XSD_NS[u'long']),
     bool       : (None,XSD_NS[u'boolean']),
     date       : (lambda i:i.isoformat(),XSD_NS[u'date']),
@@ -74,12 +73,11 @@ XSDToPython = {
     XSD_NS[u'boolean']            : (None, lambda i:i.lower() in ['1','true']),
     XSD_NS[u'decimal']            : (float,None),
     XSD_NS[u'integer']            : (long ,None),
-    XSD_NS[u'int']            : (long ,None),
     XSD_NS[u'nonPositiveInteger'] : (int,None),
     XSD_NS[u'long']               : (long,None),
     XSD_NS[u'nonNegativeInteger'] : (int, None),
     XSD_NS[u'negativeInteger']    : (int, None),
-    XSD_NS[u'int']                : (int, None),
+    XSD_NS[u'int']                : (long, None),
     XSD_NS[u'unsignedLong']       : (long, None),
     XSD_NS[u'positiveInteger']    : (int, None),
     XSD_NS[u'short']              : (int, None),
@@ -142,6 +140,10 @@ class Literal(Identifier):
     
     def __cmp__(self, other):
         """
+        >>> Literal(1).toPython()
+        1L
+        >>> cmp(Literal("adsf"), 1)
+        1
         >>> lit2006 = Literal('2006-01-01',datatype=XSD_NS.date)
         >>> lit2006.toPython()
         datetime.date(2006, 1, 1)
@@ -163,40 +165,20 @@ class Literal(Identifier):
         True
         >>> Literal(1) < 2.0
         True
-        >>> try:  Literal(1) < object  
-        ... except TypeError: print 'type error'
-        type error
+        >>> Literal(1) < object  
+        True
         >>> lit2006 < "2007-01-01"
         True
         """
-        if other==None:
-            raise TypeError("can't compare %s to None"%type(self))            
+        if other is None:
+            return 1
         elif isinstance(other, Literal):
-            #If they are both literals, then their datatypes is the first
-            #criteria for comparison
-            if self.datatype == None or self.datatype == '' :
-                if not(other.datatype == None or other.datatype == '') :
-                    #Only one of the two has a datatype - not enough info to compare
-                    raise TypeError("can't compare Literals with incompatible datatypes")
-                else:
-                    #Both don't have datatypes compare their lexical representations
-                    return cmp(unicode(self), unicode(other))
-            else:
-                if other.datatype == None or other.datatype == '' :
-                    #Only one of the two has a datatype - not enough info to compare
-                    raise TypeError("can't compare Literals with incompatible datatypes")
-                return cmp(self.toPython(),other.toPython())
-        elif isinstance(other, Identifier):
-            raise TypeError("can't compare Literals with other Identifiers")
-        elif castPythonToLiteral(other)[-1]:
-            #I know how to represent 'other' lexically and in Python uniformly
-            #Compare natively in python
-            return cmp(self.toPython(),other)
-        elif isinstance(other,basestring):
-            #We should do a lexical comparison, since we are an instance of an RDF Literal
-            return cmp(unicode(self),other)
+            return 0 - cmp(other.toPython(), self)
         else:
-            raise TypeError("Unable to compare %s against %s"%(self,other))
+            #We should do a lexical comparison, since we are an instance of an RDF Literal
+            return cmp(self.toPython(), other)
+        #else:
+        #    raise TypeError("Unable to compare %s against %s"%(self,other))
         
     def __ne__(self, other):
         """
@@ -209,13 +191,22 @@ class Literal(Identifier):
         False
          
         """
-        if other==None:
+        if other is None:
             return True
         else:
             return not self.__eq__(other)
 
     def __eq__(self, other):
         """        
+        >>> f = URIRef("foo")
+        >>> f is None or f == ''
+        False
+        >>> Literal("1", datatype=URIRef("foo")) == Literal("1", datatype=URIRef("foo"))
+        True
+        >>> Literal("1", datatype=URIRef("foo")) == Literal("2", datatype=URIRef("foo"))
+        False
+        >>> Literal("1", datatype=URIRef("foo")) == "asdf"
+        False
         >>> oneInt     = Literal(1)
         >>> oneNoDtype = Literal('1')
         >>> oneInt == oneNoDtype
@@ -234,51 +225,15 @@ class Literal(Identifier):
         >>> oneInt == 1
         True
         """
-        if other==None:
+        if other is None:
             return False
         elif isinstance(other, Literal):
-            #If they are both literals, then their datatypes is the first
-            #criteria for comparison
-            if self.datatype == None or self.datatype == '' :
-                if not(other.datatype == None or other.datatype == '') :
-                    #Only one of the two has a datatype - not enough info to compare
-                    return False
-                else:
-                    #Both don't have datatypes, check their language tags..
-                    if self.language!=other.language:
-                        #Different language tags..
-                        return False                    
-                    else:
-                        #Neither has a datatype and their languages don't differ (or neither has a language tag))
-                        #compare lexically
-                        return unicode(self) == unicode(other)
+            if other is self:
+                return True
             else:
-                if other.datatype == None or other.datatype == '' :
-                    #Only one of the two has a datatype - not enough info to compare
-                    return False
-                #Is the following case needed? It was causing an
-                #inf. loop (in the case where self.toPython()
-                #returns self, I think)
-                #elif other.datatype in XSDToPython and self.datatype in XSDToPython:
-                #    #I know how to cast both Literals into a python scalar - so compare with python 
-                #    return self.toPython() == other.toPython()
-                elif self.datatype == other.datatype :
-                    #The datatypes are the same so we can do a simple lexical comparison
-                    return unicode(self) == unicode(other)
-                elif self.datatype != other.datatype :
-                    #I have no way reliably compare both Literals 
-                    return self.toPython() == other.toPython()
-        elif isinstance(other, Identifier):
-            return False
-        elif castPythonToLiteral(other)[-1]:
-            #I know how to represent 'other' lexically and in Python uniformly
-            castFunc,dType = castPythonToLiteral(other)
-            if dType == self.datatype:
-                return other == self.toPython()
-            else:
-                return unicode(self)==unicode(other)
+                return self.toPython()==other.toPython()
         else:
-            return unicode(self)==other
+            return self.toPython()==other
 
     def n3(self):
         language = self.language
@@ -332,6 +287,11 @@ class Literal(Identifier):
             rt = convFunc(rt)
         if klass:
             rt = klass(rt)
+        if rt is self:
+            if self.language is None and self.datatype is None:
+                return unicode(rt) #(unicode(rt), rt.datatype, rt.language)
+            else:
+                return (unicode(rt), rt.datatype, rt.language)
         return rt
 
 def test():
