@@ -95,6 +95,35 @@ class Literal(Identifier):
     """
 
     http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
+
+    >>> Literal(1).toPython()
+    1L
+    >>> cmp(Literal("adsf"), 1)
+    1
+    >>> lit2006 = Literal('2006-01-01',datatype=XSD_NS.date)
+    >>> lit2006.toPython()
+    datetime.date(2006, 1, 1)
+    >>> lit2006 < Literal('2007-01-01',datatype=XSD_NS.date)
+    True
+    >>> oneInt     = Literal(1)
+    >>> twoInt     = Literal(2)
+    >>> twoInt < oneInt
+    False
+    >>> Literal('1') < Literal(1)
+    False
+    >>> Literal('1') < Literal('1')
+    False
+    >>> Literal(1) < Literal('1')
+    True
+    >>> Literal(1) < Literal(2.0)
+    True
+    >>> Literal(1) < URIRef('foo')
+    True
+    >>> Literal(1) < 2.0
+    True
+    >>> Literal(1) < object  
+    True
+
     """
 
     __slots__ = ("language", "datatype")
@@ -166,46 +195,6 @@ class Literal(Identifier):
         else:
             return self > other
 
-    def doc_tests(self, other):
-        """
-        >>> Literal(1).toPython()
-        1L
-        >>> cmp(Literal("adsf"), 1)
-        1
-        >>> lit2006 = Literal('2006-01-01',datatype=XSD_NS.date)
-        >>> lit2006.toPython()
-        datetime.date(2006, 1, 1)
-        >>> lit2006 < Literal('2007-01-01',datatype=XSD_NS.date)
-        True
-        >>> oneInt     = Literal(1)
-        >>> twoInt     = Literal(2)
-        >>> twoInt < oneInt
-        False
-        >>> Literal('1') < Literal(1)
-        False
-        >>> Literal('1') < Literal('1')
-        False
-        >>> Literal(1) < Literal('1')
-        True
-        >>> Literal(1) < Literal(2.0)
-        True
-        >>> Literal(1) < URIRef('foo')
-        True
-        >>> Literal(1) < 2.0
-        True
-        >>> Literal(1) < object  
-        True
-        """
-        if other is None:
-            return 1
-        elif isinstance(other, Literal):
-            return cmp(other.toPython(), self)
-        else:
-            #We should do a lexical comparison, since we are an instance of an RDF Literal
-            return 0 - cmp(self.toPython(), other)
-        #else:
-        #    raise TypeError("Unable to compare %s against %s"%(self,other))
-        
     def __ne__(self, other):
         """
         Overriden to ensure property result for comparisons with None via !=.
