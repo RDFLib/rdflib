@@ -73,7 +73,10 @@ class PrettyXMLSerializer(Serializer):
             element = type or RDF.Description
             writer.push(element)
             if isinstance(subject, BNode):
-                if more_than(store.triples((None, None, subject)), 1):
+                def subj_as_obj_more_than(ceil):
+                    return more_than(store.triples((None, None, subject)), ceil)
+                if (depth == 1 and subj_as_obj_more_than(0)
+                        ) or subj_as_obj_more_than(1):
                     writer.attribute(RDF.nodeID, fix(subject))
             else:
                 writer.attribute(RDF.about, self.relativize(subject))
@@ -96,7 +99,7 @@ class PrettyXMLSerializer(Serializer):
             writer.text(object)
         elif object in self.__serialized or not (object, None, None) in store:
             if isinstance(object, BNode):
-                if more_than(store.triples((None, None, object)), 1):
+                if more_than(store.triples((None, None, object)), 0):
                     writer.attribute(RDF.nodeID, fix(object))
             else:
                 writer.attribute(RDF.resource, self.relativize(object))
@@ -123,6 +126,9 @@ class PrettyXMLSerializer(Serializer):
             else:
                 if depth<=self.max_depth:
                     self.subject(object, depth+1)
+                elif isinstance(object, BNode):
+                    writer.attribute(RDF.nodeID, fix(object))
                 else:
-                    writer.attribute(RDF.resource, self.relativize(object))                    
+                    writer.attribute(RDF.resource, self.relativize(object))
         writer.pop(predicate)
+
