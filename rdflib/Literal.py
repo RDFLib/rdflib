@@ -197,7 +197,7 @@ class Literal(Identifier):
         return self.encode("unicode-escape")
 
     def __repr__(self):
-        klass, convFunc = XSDToPython.get(self.datatype, (None, None))
+        klass, convFunc = _XSDToPython.get(self.datatype, (None, None))
         if klass:
             return "%s(%s)"%(klass.__name__, str(self))
         else:
