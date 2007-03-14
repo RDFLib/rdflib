@@ -11,12 +11,12 @@ class Literal(Identifier):
 
     http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
 
-    >>> Literal(1)._toPython()
+    >>> Literal(1).toPython()
     1L
     >>> cmp(Literal("adsf"), 1)
     1
     >>> lit2006 = Literal('2006-01-01',datatype=_XSD_NS.date)
-    >>> lit2006._toPython()
+    >>> lit2006.toPython()
     datetime.date(2006, 1, 1)
     >>> lit2006 < Literal('2007-01-01',datatype=_XSD_NS.date)
     True
@@ -61,7 +61,7 @@ class Literal(Identifier):
             inst = unicode.__new__(cls,value,'utf-8')
         inst.language = lang
         inst.datatype = datatype
-        inst._cmp_value = inst._toPython()
+        inst._cmp_value = inst._toCompareValue()
         return inst
 
     def __reduce__(self):
@@ -76,8 +76,21 @@ class Literal(Identifier):
         self.datatype = d["datatype"]
 
     def __add__(self, val):
-        s = super(Literal, self).__add__(val)
-        return Literal(s, self.language, self.datatype)
+        """
+        >>> Literal(1) + 1
+        2L
+        >>> Literal("1") + "1"
+        rdflib.Literal('11', language=None, datatype=None)
+        """
+
+        py = self.toPython()
+        if isinstance(py, Literal):
+            s = super(Literal, self).__add__(val)            
+            return Literal(s, self.language, self.datatype)
+        else:
+            return py + val 
+
+
     
     def __lt__(self, other):
         if other is None:
@@ -199,16 +212,21 @@ class Literal(Identifier):
     def __repr__(self):
         return """rdflib.Literal('%s', language=%s, datatype=%s)""" % (str(self), repr(self.language), repr(self.datatype))
 
-    def _toPython(self):
+    def toPython(self):
         """
         Returns an appropriate python datatype derived from this RDF Literal
         """
         klass,convFunc = _XSDToPython.get(self.datatype,(None,None))
-        rt = self
         if convFunc:
-            rt = convFunc(rt)
-        if klass:
-            rt = klass(rt)
+            rt = convFunc(self)
+        elif klass:
+            rt = klass(self)
+        else:
+            rt = self
+        return rt
+
+    def _toCompareValue(self):
+        rt = self.toPython()
         if rt is self:
             if self.language is None and self.datatype is None:
                 return unicode(rt)
