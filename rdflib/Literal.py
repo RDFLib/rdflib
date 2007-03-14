@@ -122,10 +122,6 @@ class Literal(Identifier):
     def __reduce__(self):
         return (Literal, (unicode(self), self.language, self.datatype),)
 
-#
-#    def __getnewargs__(self):
-#        return (unicode(self), self.language, self.datatype)
-
     def __getstate__(self):
         return (None, dict(language=self.language, datatype=self.datatype))
 
@@ -138,7 +134,39 @@ class Literal(Identifier):
         s = super(Literal, self).__add__(val)
         return Literal(s, self.language, self.datatype)
     
-    def __cmp__(self, other):
+    def __lt__(self, other):
+        if other is None:
+            return False # Nothing is less than None
+        elif isinstance(other, Literal):
+            return other.toPython() > self.toPython()
+        else:
+            return self.toPython() < other
+
+    def __le__(self, other):
+        if other is None:
+            return False
+        if self==other:
+            return True
+        else:
+            return self < other
+
+    def __gt__(self, other):
+        if other is None:
+            return True # Everything is greater than None
+        elif isinstance(other, Literal):
+            return other.toPython() < self.toPython()
+        else:
+            return self.toPython() > other
+
+    def __ge__(self, other):
+        if other is None:
+            return False
+        if self==other:
+            return True
+        else:
+            return self > other
+
+    def doc_tests(self, other):
         """
         >>> Literal(1).toPython()
         1L
@@ -158,7 +186,7 @@ class Literal(Identifier):
         >>> Literal('1') < Literal('1')
         False
         >>> Literal(1) < Literal('1')
-        False
+        True
         >>> Literal(1) < Literal(2.0)
         True
         >>> Literal(1) < URIRef('foo')
@@ -167,16 +195,14 @@ class Literal(Identifier):
         True
         >>> Literal(1) < object  
         True
-        >>> lit2006 < "2007-01-01"
-        True
         """
         if other is None:
             return 1
         elif isinstance(other, Literal):
-            return 0 - cmp(other.toPython(), self)
+            return cmp(other.toPython(), self)
         else:
             #We should do a lexical comparison, since we are an instance of an RDF Literal
-            return cmp(self.toPython(), other)
+            return 0 - cmp(self.toPython(), other)
         #else:
         #    raise TypeError("Unable to compare %s against %s"%(self,other))
         
