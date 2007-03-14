@@ -1,9 +1,3 @@
-from sys import version_info, getdefaultencoding
-if version_info[0:2] > (2, 2):
-    from unicodedata import normalize
-else:
-    normalize = None
-
 from rdflib.Identifier import Identifier
 from rdflib.URIRef import URIRef
 from rdflib.Namespace import Namespace
@@ -12,98 +6,19 @@ from datetime import date,time,datetime
 from time import strptime
 import base64
 
-XSD_NS = Namespace(u'http://www.w3.org/2001/XMLSchema#')
-
-#Casts a python datatype to a tuple of the lexical value and a datatype URI (or None)
-def castPythonToLiteral(obj):
-    for pType,(castFunc,dType) in PythonToXSD.items():
-        if isinstance(obj,pType):
-            if castFunc:
-                return castFunc(obj),dType
-            elif dType:
-                return obj,dType
-            else:
-                return obj,None
-    return obj, None # TODO: is this right for the fall through case?
-
-#Mappings from Python types to XSD datatypes and back (burrowed from sparta)
-PythonToXSD = {
-    basestring : (None,None),
-    float      : (None,XSD_NS[u'float']),
-    int        : (None,XSD_NS[u'int']),
-    long       : (None,XSD_NS[u'long']),
-    bool       : (None,XSD_NS[u'boolean']),
-    date       : (lambda i:i.isoformat(),XSD_NS[u'date']),
-    time       : (lambda i:i.isoformat(),XSD_NS[u'time']),
-    datetime   : (lambda i:i.isoformat(),XSD_NS[u'dateTime']),
-}
-
-def _strToTime(v) :
-    return strptime(v,"%H:%M:%S")
-
-def _strToDate(v) :
-    tstr = strptime(v,"%Y-%m-%d")
-    return date(tstr.tm_year,tstr.tm_mon,tstr.tm_mday)
-
-def _strToDateTime(v) :
-    """
-    Attempt to cast to datetime, or just return the string (otherwise)
-    """
-    try:
-        tstr = strptime(v,"%Y-%m-%dT%H:%M:%S")
-    except:
-        try:
-            tstr = strptime(v,"%Y-%m-%dT%H:%M:%SZ")
-        except:
-            try:
-                tstr = strptime(v,"%Y-%m-%dT%H:%M:%S%Z")
-            except:
-                return v
-
-    return datetime(tstr.tm_year,tstr.tm_mon,tstr.tm_mday,tstr.tm_hour,tstr.tm_min,tstr.tm_sec)
-
-XSDToPython = {
-    XSD_NS[u'time']               : (None,_strToTime),
-    XSD_NS[u'date']               : (None,_strToDate),
-    XSD_NS[u'dateTime']           : (None,_strToDateTime),
-    XSD_NS[u'string']             : (None,None),
-    XSD_NS[u'normalizedString']   : (None,None),
-    XSD_NS[u'token']              : (None,None),
-    XSD_NS[u'language']           : (None,None),
-    XSD_NS[u'boolean']            : (None, lambda i:i.lower() in ['1','true']),
-    XSD_NS[u'decimal']            : (float,None),
-    XSD_NS[u'integer']            : (long ,None),
-    XSD_NS[u'nonPositiveInteger'] : (int,None),
-    XSD_NS[u'long']               : (long,None),
-    XSD_NS[u'nonNegativeInteger'] : (int, None),
-    XSD_NS[u'negativeInteger']    : (int, None),
-    XSD_NS[u'int']                : (long, None),
-    XSD_NS[u'unsignedLong']       : (long, None),
-    XSD_NS[u'positiveInteger']    : (int, None),
-    XSD_NS[u'short']              : (int, None),
-    XSD_NS[u'unsignedInt']        : (long, None),
-    XSD_NS[u'byte']               : (int, None),
-    XSD_NS[u'unsignedShort']      : (int, None),
-    XSD_NS[u'unsignedByte']       : (int, None),
-    XSD_NS[u'float']              : (float, None),
-    XSD_NS[u'double']             : (float, None),
-    XSD_NS[u'base64Binary']       : (base64.decodestring, None),
-    XSD_NS[u'anyURI']             : (None,None),
-}
-
 class Literal(Identifier):
     """
 
     http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
 
-    >>> Literal(1).toPython()
+    >>> Literal(1)._toPython()
     1L
     >>> cmp(Literal("adsf"), 1)
     1
-    >>> lit2006 = Literal('2006-01-01',datatype=XSD_NS.date)
-    >>> lit2006.toPython()
+    >>> lit2006 = Literal('2006-01-01',datatype=_XSD_NS.date)
+    >>> lit2006._toPython()
     datetime.date(2006, 1, 1)
-    >>> lit2006 < Literal('2007-01-01',datatype=XSD_NS.date)
+    >>> lit2006 < Literal('2007-01-01',datatype=_XSD_NS.date)
     True
     >>> oneInt     = Literal(1)
     >>> twoInt     = Literal(2)
@@ -123,19 +38,19 @@ class Literal(Identifier):
     True
     >>> Literal(1) < object  
     True
-
+    >>> lit2006 < "2007"
+    True
+    >>> "2005" < lit2006
+    True
     """
 
-    __slots__ = ("language", "datatype")
+    __slots__ = ("language", "datatype", "_cmp_value")
 
     def __new__(cls, value, lang=None, datatype=None):
-        #if normalize and value:
-        #    if value != normalize("NFC", value):
-        #        raise Error("value must be in NFC normalized form.")
         if datatype:
             lang = None
         else:
-            value,datatype = castPythonToLiteral(value)
+            value,datatype = _castPythonToLiteral(value)
             if datatype:
                 lang = None
         if datatype:
@@ -146,6 +61,7 @@ class Literal(Identifier):
             inst = unicode.__new__(cls,value,'utf-8')
         inst.language = lang
         inst.datatype = datatype
+        inst._cmp_value = inst._toPython()
         return inst
 
     def __reduce__(self):
@@ -166,10 +82,10 @@ class Literal(Identifier):
     def __lt__(self, other):
         if other is None:
             return False # Nothing is less than None
-        elif isinstance(other, Literal):
-            return other.toPython() > self.toPython()
-        else:
-            return self.toPython() < other
+        try:
+            return self._cmp_value < other
+        except TypeError, te:
+            return unicode(self._cmp_value) < other
 
     def __le__(self, other):
         if other is None:
@@ -182,10 +98,10 @@ class Literal(Identifier):
     def __gt__(self, other):
         if other is None:
             return True # Everything is greater than None
-        elif isinstance(other, Literal):
-            return other.toPython() < self.toPython()
-        else:
-            return self.toPython() > other
+        try:
+            return self._cmp_value > other
+        except TypeError, te:
+            return unicode(self._cmp_value) > other
 
     def __ge__(self, other):
         if other is None:
@@ -226,7 +142,7 @@ class Literal(Identifier):
         >>> oneNoDtype = Literal('1')
         >>> oneInt == oneNoDtype
         False
-        >>> Literal("1",XSD_NS[u'string']) == Literal("1",XSD_NS[u'string']) 
+        >>> Literal("1",_XSD_NS[u'string']) == Literal("1",_XSD_NS[u'string']) 
         True
         >>> Literal("one",lang="en") == Literal("one",lang="en")
         True
@@ -242,13 +158,8 @@ class Literal(Identifier):
         """
         if other is None:
             return False
-        elif isinstance(other, Literal):
-            if other is self:
-                return True
-            else:
-                return self.toPython()==other.toPython()
         else:
-            return self.toPython()==other
+            return self._cmp_value==other
 
     def n3(self):
         language = self.language
@@ -292,11 +203,11 @@ class Literal(Identifier):
         else:
             return """rdflib.Literal('%s', language=%s, datatype=%s)""" % (str(self),repr(self.language), repr(self.datatype))
 
-    def toPython(self):
+    def _toPython(self):
         """
         Returns an appropriate python datatype derived from this RDF Literal
         """
-        klass,convFunc = XSDToPython.get(self.datatype,(None,None))
+        klass,convFunc = _XSDToPython.get(self.datatype,(None,None))
         rt = self
         if convFunc:
             rt = convFunc(rt)
@@ -304,10 +215,91 @@ class Literal(Identifier):
             rt = klass(rt)
         if rt is self:
             if self.language is None and self.datatype is None:
-                return unicode(rt) #(unicode(rt), rt.datatype, rt.language)
+                return unicode(rt)
             else:
                 return (unicode(rt), rt.datatype, rt.language)
         return rt
+
+
+_XSD_NS = Namespace(u'http://www.w3.org/2001/XMLSchema#')
+
+#Casts a python datatype to a tuple of the lexical value and a datatype URI (or None)
+def _castPythonToLiteral(obj):
+    for pType,(castFunc,dType) in _PythonToXSD.items():
+        if isinstance(obj,pType):
+            if castFunc:
+                return castFunc(obj),dType
+            elif dType:
+                return obj,dType
+            else:
+                return obj,None
+    return obj, None # TODO: is this right for the fall through case?
+
+#Mappings from Python types to XSD datatypes and back (burrowed from sparta)
+_PythonToXSD = {
+    basestring : (None,None),
+    float      : (None,_XSD_NS[u'float']),
+    int        : (None,_XSD_NS[u'int']),
+    long       : (None,_XSD_NS[u'long']),
+    bool       : (None,_XSD_NS[u'boolean']),
+    date       : (lambda i:i.isoformat(),_XSD_NS[u'date']),
+    time       : (lambda i:i.isoformat(),_XSD_NS[u'time']),
+    datetime   : (lambda i:i.isoformat(),_XSD_NS[u'dateTime']),
+}
+
+def _strToTime(v) :
+    return strptime(v,"%H:%M:%S")
+
+def _strToDate(v) :
+    tstr = strptime(v,"%Y-%m-%d")
+    return date(tstr.tm_year,tstr.tm_mon,tstr.tm_mday)
+
+def _strToDateTime(v) :
+    """
+    Attempt to cast to datetime, or just return the string (otherwise)
+    """
+    try:
+        tstr = strptime(v,"%Y-%m-%dT%H:%M:%S")
+    except:
+        try:
+            tstr = strptime(v,"%Y-%m-%dT%H:%M:%SZ")
+        except:
+            try:
+                tstr = strptime(v,"%Y-%m-%dT%H:%M:%S%Z")
+            except:
+                return v
+
+    return datetime(tstr.tm_year,tstr.tm_mon,tstr.tm_mday,tstr.tm_hour,tstr.tm_min,tstr.tm_sec)
+
+_XSDToPython = {
+    _XSD_NS[u'time']               : (None,_strToTime),
+    _XSD_NS[u'date']               : (None,_strToDate),
+    _XSD_NS[u'dateTime']           : (None,_strToDateTime),
+    _XSD_NS[u'string']             : (None,None),
+    _XSD_NS[u'normalizedString']   : (None,None),
+    _XSD_NS[u'token']              : (None,None),
+    _XSD_NS[u'language']           : (None,None),
+    _XSD_NS[u'boolean']            : (None, lambda i:i.lower() in ['1','true']),
+    _XSD_NS[u'decimal']            : (float,None),
+    _XSD_NS[u'integer']            : (long ,None),
+    _XSD_NS[u'nonPositiveInteger'] : (int,None),
+    _XSD_NS[u'long']               : (long,None),
+    _XSD_NS[u'nonNegativeInteger'] : (int, None),
+    _XSD_NS[u'negativeInteger']    : (int, None),
+    _XSD_NS[u'int']                : (long, None),
+    _XSD_NS[u'unsignedLong']       : (long, None),
+    _XSD_NS[u'positiveInteger']    : (int, None),
+    _XSD_NS[u'short']              : (int, None),
+    _XSD_NS[u'unsignedInt']        : (long, None),
+    _XSD_NS[u'byte']               : (int, None),
+    _XSD_NS[u'unsignedShort']      : (int, None),
+    _XSD_NS[u'unsignedByte']       : (int, None),
+    _XSD_NS[u'float']              : (float, None),
+    _XSD_NS[u'double']             : (float, None),
+    _XSD_NS[u'base64Binary']       : (base64.decodestring, None),
+    _XSD_NS[u'anyURI']             : (None,None),
+}
+
 
 def test():
     import doctest
