@@ -197,11 +197,7 @@ class Literal(Identifier):
         return self.encode("unicode-escape")
 
     def __repr__(self):
-        klass, convFunc = _XSDToPython.get(self.datatype, (None, None))
-        if klass:
-            return "%s(%s)"%(klass.__name__, str(self))
-        else:
-            return """rdflib.Literal('%s', language=%s, datatype=%s)""" % (str(self),repr(self.language), repr(self.datatype))
+        return """rdflib.Literal('%s', language=%s, datatype=%s)""" % (str(self), repr(self.language), repr(self.datatype))
 
     def _toPython(self):
         """
