@@ -608,7 +608,7 @@ class Graph(Node):
             input_source.setPublicId(publicID)
         id = input_source.getPublicId()
         if id is None:
-            _logger.info("no publicID set for source. Using '' for publicID.")
+            _logger.warning("no publicID set for source. Using '' for publicID.")
             input_source.setPublicId("")
         return input_source
 
