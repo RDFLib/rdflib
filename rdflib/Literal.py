@@ -6,6 +6,10 @@ from datetime import date,time,datetime
 from time import strptime
 import base64
 
+import logging
+
+_logger = logging.getLogger(__name__)
+
 class Literal(Identifier):
     """
 
@@ -220,7 +224,11 @@ class Literal(Identifier):
         if convFunc:
             rt = convFunc(self)
         elif klass:
-            rt = klass(self)
+            try:
+                rt = klass(self)
+            except Exception, e:
+                _logger.warning("could not convert %s to a Python datatype" % repr(self))
+                rt = self
         else:
             rt = self
         return rt
