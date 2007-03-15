@@ -46,12 +46,25 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?node WHERE { ( [ a rdfs:Resource ] ) :childOf ?node }"""
 
+sparqlQ4 = \
+"""
+PREFIX owl:  <http://www.w3.org/2002/07/owl#> 
+
+SELECT DISTINCT ?class 
+FROM <http://www.w3.org/2002/07/owl#>
+WHERE { ?thing a ?class }"""
 
 class AdvancedTests(unittest.TestCase):
     def setUp(self):
         memStore = plugin.get('IOMemory',Store)()
         self.testGraph = Graph(memStore)
         self.testGraph.parse(StringIO(testGraph1N3),format='n3')
+        
+    def testNamedGraph(self):
+        from sets import Set
+        OWL_NS = Namespace("http://www.w3.org/2002/07/owl#")
+        rt =  self.testGraph.query(sparqlQ4)
+        self.assertEquals(Set(rt.serialize('python')),Set([OWL_NS.OntologyProperty,OWL_NS.Class,OWL_NS.Ontology,OWL_NS.AnnotationProperty,RDF.Property,RDFS.Class]))
 
     def testScopedBNodes(self):
         rt =  self.testGraph.query(sparqlQ1)
