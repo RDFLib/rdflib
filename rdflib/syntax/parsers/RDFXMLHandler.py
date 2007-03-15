@@ -435,7 +435,7 @@ class RDFXMLHandler(handler.ContentHandler):
 
     def property_element_char(self, data):
         current = self.current
-        if current.data:
+        if current.data is not None:
             current.data += data
 
     def property_element_end(self, name, qname):
