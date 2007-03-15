@@ -38,6 +38,7 @@ class NamespaceManager(object):
         """
         try:
             namespace, name = split_uri(rdfTerm)
+            namespace = URIRef(namespace)
         except:
             if isinstance(rdfTerm,Variable):
                 return "?%s"%rdfTerm
@@ -55,6 +56,7 @@ class NamespaceManager(object):
     def compute_qname(self, uri):
         if not uri in self.__cache:
             namespace, name = split_uri(uri)
+            namespace = URIRef(namespace)
             prefix = self.store.prefix(namespace)
             if prefix is None:
                 prefix = "_%s" % len(list(self.store.namespaces()))
@@ -63,6 +65,7 @@ class NamespaceManager(object):
         return self.__cache[uri]
 
     def bind(self, prefix, namespace, override=True):
+        namespace = URIRef(namespace)
         # When documenting explain that override only applies in what cases
         if prefix is None:
             prefix = ''
@@ -93,6 +96,7 @@ class NamespaceManager(object):
 
     def namespaces(self):
         for prefix, namespace in self.store.namespaces():
+            namespace = URIRef(namespace)
             yield prefix, namespace
 
     def absolutize(self, uri, defrag=1):
