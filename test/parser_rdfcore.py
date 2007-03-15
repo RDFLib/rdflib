@@ -196,4 +196,4 @@ if __name__ == "__main__":
         if len(argv)<=1:
             unittest.main()
     finally:
-        results.save("results.rdf")
+        results.serialize("results.rdf")
