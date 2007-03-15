@@ -84,7 +84,7 @@ class BagID(URIRef):
 class ElementHandler(object):
     __slots__ = ['start', 'char', 'end', 'li', 'id',
                  'base', 'subject', 'predicate', 'object',
-                 'list', 'language', 'datatype', 'declared']
+                 'list', 'language', 'datatype', 'declared', 'data']
     def __init__(self):
         self.start = None
         self.char = None
@@ -98,6 +98,7 @@ class ElementHandler(object):
         self.language = None
         self.datatype = None
         self.declared = None
+        self.data = None
 
     def next_li(self):
         self.li += 1
@@ -326,6 +327,7 @@ class RDFXMLHandler(handler.ContentHandler):
         absolutize = self.absolutize
         next = self.next
         object = None
+        current.data = None
         current.list = None
 
         if not name.startswith(RDFNS):
@@ -425,25 +427,22 @@ class RDFXMLHandler(handler.ContentHandler):
                     object = BNode()
                 self.store.add((object, predicate, o))
         if object is None:
-            object = Literal("", language, datatype)
-        current.object = object
+            current.data = ""
+            current.object = None
+        else:
+            current.data = None
+            current.object = object
 
     def property_element_char(self, data):
         current = self.current
-        if current.object is None:
-            try:
-                current.object = Literal(data, current.language, current.datatype)
-            except Error, e:
-                self.error(e.msg)
-        else:
-            if isinstance(current.object, Literal):
-                try:
-                    current.object += data
-                except Error, e:
-                    self.error(e.msg)
+        if current.data:
+            current.data += data
 
     def property_element_end(self, name, qname):
         current = self.current
+        if current.data is not None and current.object is None:
+            current.object = Literal(current.data, current.language, current.datatype)
+            current.data = None
         if self.next.end==self.list_node_element_end:
             if current.object!=RDF.nil:
                 self.store.add((current.list, RDF.rest, RDF.nil))
