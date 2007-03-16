@@ -220,21 +220,21 @@ class Literal(Identifier):
         """
         Returns an appropriate python datatype derived from this RDF Literal
         """
-        klass,convFunc = _XSDToPython.get(self.datatype,(None,None))
+        convFunc = _toPythonMapping.get(self.datatype, None)
+        
         if convFunc:
             rt = convFunc(self)
-        elif klass:
-            try:
-                rt = klass(self)
-            except Exception, e:
-                _logger.warning("could not convert %s to a Python datatype" % repr(self))
-                rt = self
         else:
             rt = self
         return rt
 
     def _toCompareValue(self):
-        rt = self.toPython()
+        try:
+            rt = self.toPython()
+        except Exception, e:
+            _logger.warning("could not convert %s to a Python datatype" % repr(self))
+            rt = self
+                
         if rt is self:
             if self.language is None and self.datatype is None:
                 return unicode(rt)
@@ -293,34 +293,44 @@ def _strToDateTime(v) :
 
     return datetime(tstr.tm_year,tstr.tm_mon,tstr.tm_mday,tstr.tm_hour,tstr.tm_min,tstr.tm_sec)
 
-_XSDToPython = {
-    _XSD_NS[u'time']               : (None,_strToTime),
-    _XSD_NS[u'date']               : (None,_strToDate),
-    _XSD_NS[u'dateTime']           : (None,_strToDateTime),
-    _XSD_NS[u'string']             : (None,None),
-    _XSD_NS[u'normalizedString']   : (None,None),
-    _XSD_NS[u'token']              : (None,None),
-    _XSD_NS[u'language']           : (None,None),
-    _XSD_NS[u'boolean']            : (None, lambda i:i.lower() in ['1','true']),
-    _XSD_NS[u'decimal']            : (float,None),
-    _XSD_NS[u'integer']            : (long ,None),
-    _XSD_NS[u'nonPositiveInteger'] : (int,None),
-    _XSD_NS[u'long']               : (long,None),
-    _XSD_NS[u'nonNegativeInteger'] : (int, None),
-    _XSD_NS[u'negativeInteger']    : (int, None),
-    _XSD_NS[u'int']                : (long, None),
-    _XSD_NS[u'unsignedLong']       : (long, None),
-    _XSD_NS[u'positiveInteger']    : (int, None),
-    _XSD_NS[u'short']              : (int, None),
-    _XSD_NS[u'unsignedInt']        : (long, None),
-    _XSD_NS[u'byte']               : (int, None),
-    _XSD_NS[u'unsignedShort']      : (int, None),
-    _XSD_NS[u'unsignedByte']       : (int, None),
-    _XSD_NS[u'float']              : (float, None),
-    _XSD_NS[u'double']             : (float, None),
-    _XSD_NS[u'base64Binary']       : (base64.decodestring, None),
-    _XSD_NS[u'anyURI']             : (None,None),
+XSDToPython = {
+    _XSD_NS[u'time']               : _strToTime,
+    _XSD_NS[u'date']               : _strToDate,
+    _XSD_NS[u'dateTime']           : _strToDateTime,
+    _XSD_NS[u'string']             : None,
+    _XSD_NS[u'normalizedString']   : None,
+    _XSD_NS[u'token']              : None,
+    _XSD_NS[u'language']           : None,
+    _XSD_NS[u'boolean']            : lambda i:i.lower() in ['1','true'],
+    _XSD_NS[u'decimal']            : float,
+    _XSD_NS[u'integer']            : long,
+    _XSD_NS[u'nonPositiveInteger'] : int,
+    _XSD_NS[u'long']               : long,
+    _XSD_NS[u'nonNegativeInteger'] : int,
+    _XSD_NS[u'negativeInteger']    : int,
+    _XSD_NS[u'int']                : long,
+    _XSD_NS[u'unsignedLong']       : long,
+    _XSD_NS[u'positiveInteger']    : int,
+    _XSD_NS[u'short']              : int,
+    _XSD_NS[u'unsignedInt']        : long,
+    _XSD_NS[u'byte']               : int,
+    _XSD_NS[u'unsignedShort']      : int,
+    _XSD_NS[u'unsignedByte']       : int,
+    _XSD_NS[u'float']              : float,
+    _XSD_NS[u'double']             : float,
+    _XSD_NS[u'base64Binary']       : base64.decodestring,
+    _XSD_NS[u'anyURI']             : None,
 }
+
+_toPythonMapping = {}
+_toPythonMapping.update(XSDToPython)
+
+def bind(datatype, conversion_function):
+    """bind a datatype to a function for converting it into a Python instance."""
+    if datatype in _toPythonMapping:
+        _logger.warning("datatype '%s' was already bound. Rebinding." % datatype)
+    _toPythonMapping[datatype] = conversion_function
+
 
 
 def test():
