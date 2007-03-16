@@ -6,7 +6,7 @@ from rdflib.sparql.sparql import Unbound,PatternBNode, SPARQLError,_variablesToA
 from rdflib.Graph import ConjunctiveGraph, Graph, BackwardCompatGraph,ReadOnlyGraphAggregate
 from rdflib import URIRef,Variable,BNode, Literal, plugin, RDF
 from rdflib.store import Store
-from rdflib.Literal import _XSDToPython
+from rdflib.Literal import XSDToPython
 from IRIRef import NamedGraph,RemoteGraph
 from GraphPattern import ParsedAlternativeGraphPattern,ParsedOptionalGraphPattern
 from Resource import *
@@ -156,7 +156,7 @@ def mapToOperator(expr,prolog,combinationArg=None):
         normBuiltInName = CAMEL_CASE_BUILTINS.get(normBuiltInName,'sparqlOperators.'+normBuiltInName)
         return "%s(%s)%s"%(normBuiltInName,",".join([mapToOperator(i,prolog,combinationArg) for i in expr.arguments]),combinationInvokation)
     elif isinstance(expr,Literal):
-        return repr(expr)
+        return str(expr)
     elif isinstance(expr,(QName,basestring)):
         return "'%s'"%convertTerm(expr,prolog)
     elif isinstance(expr,ParsedAdditiveExpressionList):
