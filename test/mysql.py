@@ -1,6 +1,9 @@
 from n3_2 import testN3Store,testN3,implies
 from rdflib.Graph import QuotedGraph
-from rdflib.store.MySQL import REGEXTerm
+try:
+    from rdflib.store.MySQL import REGEXTerm
+except ImportError, e:
+    print "Can not test REGEX bits:", e
 from rdflib import *
 configString="user=,password=,host=localhost,db=test"
 

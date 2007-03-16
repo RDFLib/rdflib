@@ -1,7 +1,3 @@
-import logging
-
-_logger = logging.getLogger(__name__)
-
 import unittest
 from tempfile import mkdtemp
 
@@ -61,9 +57,9 @@ try:
             source = self.g
             interp.addFacts(set(facts(source)), initialSet=True)
             interp.run()
-            _logger.debug("inferred facts: %s" % interp.inferredFacts)
+            #_logger.debug("inferred facts: %s" % interp.inferredFacts)
 
 except ImportError, e:
-    _logger.warning("Could not test Pychinko: %s" % e)
+    print "Could not test Pychinko: %s" % e
 
 

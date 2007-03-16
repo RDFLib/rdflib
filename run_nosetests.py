@@ -31,7 +31,7 @@ COVERAGE_EXTRA_ARGS = [
         '--cover-inclusive',
     ]
 
-DEFAULT_ATTRS = ['!slowtest', '!unstable']
+DEFAULT_ATTRS = ['!slowtest', '!unstable', '!non_standard_dep']
 
 DEFAULT_DIRS = ['test', 'rdflib']
 

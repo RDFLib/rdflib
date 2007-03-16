@@ -17,7 +17,7 @@ class Collection(object):
     >>> g.add((listItem2,RDF.first,Literal(3)))
     >>> c=Collection(g,listName)
     >>> print list(c)
-    [long(1), long(2), long(3)]
+    [rdflib.Literal('1', language=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#int')), rdflib.Literal('2', language=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#int')), rdflib.Literal('3', language=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#int'))]
     >>> 1 in c
     True
     >>> len(c)

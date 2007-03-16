@@ -1,6 +1,6 @@
 import unittest
 
-from rdflib import Graph
+from rdflib.Graph import Graph
 from rdflib.exceptions import SubjectTypeError
 from rdflib.exceptions import PredicateTypeError
 from rdflib.exceptions import ObjectTypeError
@@ -10,6 +10,7 @@ foo = URIRef("foo")
 
 
 class TypeCheckCase(unittest.TestCase):
+    unstable = True # TODO: until we decide if we want to add type checking back to rdflib
     backend = 'default'
     path = 'store'
 

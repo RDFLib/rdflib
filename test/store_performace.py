@@ -102,6 +102,7 @@ try:
     import persistent
     # If we can import persistent then test ZODB store
     class ZODBStoreTestCase(StoreTestCase):
+        non_standard_dep = True
         store = "ZODB"
 except ImportError, e:
     print "Can not test ZODB store:", e
@@ -111,6 +112,7 @@ try:
     import RDF
     # If we can import RDF then test Redland store
     class RedLandTestCase(StoreTestCase):
+        non_standard_dep = True
         store = "Redland"
 except ImportError, e:
     print "Can not test Redland store:", e
@@ -123,6 +125,7 @@ try:
     import MySQLdb,sha,sys
     # If we can import RDF then test Redland store
     class MySQLTestCase(StoreTestCase):
+        non_standard_dep = True
         store = "MySQL"
 except ImportError, e:
     print "Can not test MySQL store:", e

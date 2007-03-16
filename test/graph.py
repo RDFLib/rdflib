@@ -1,9 +1,5 @@
 import unittest
 
-import logging
-
-_logger = logging.getLogger(__name__)
-
 from tempfile import mkdtemp
 
 from rdflib import URIRef, BNode, Literal, RDF
@@ -189,7 +185,7 @@ try:
         store_name = "ZODB"
         slowtest = False
 except ImportError, e:
-    _logger.warning("Can not test ZODB store: %s" % e)
+    print "Can not test ZODB store: %s" % e
 
 
 try:
@@ -199,7 +195,7 @@ try:
         store_name = "Redland"
         slowtest = False
 except ImportError, e:
-    _logger.warning("Can not test Redland store: %s" % e)
+    print "Can not test Redland store: %s" % e
 
 if __name__ == '__main__':
     unittest.main()

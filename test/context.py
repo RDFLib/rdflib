@@ -1,9 +1,5 @@
 import unittest
 
-import logging
-
-_logger = logging.getLogger(__name__)
-
 from tempfile import mkdtemp
 from rdflib import *
 from rdflib.Graph import Graph
@@ -328,7 +324,7 @@ try:
         store = "ZODB"
         slowtest = False
 except ImportError, e:
-    _logger.warning("Can not test ZODB store: %s" % e)
+    print "Can not test ZODB store: %s" % e
 
 try:
     import MySQLdb
@@ -337,7 +333,7 @@ try:
         store = "MySQL"
         slowtest = False
 except ImportError, e:
-    _logger.warning("Can not test MySQL store: %s" % e)
+    "Can not test MySQL store: %s" % e
 
 try:
     import RDF
@@ -346,7 +342,7 @@ try:
         store = "Redland"
         slowtest = False
 except ImportError, e:
-    _logger.warning("Can not test Redland store: %s" % e)
+    print "Can not test Redland store: %s" % e
 
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 from rdflib.Namespace import Namespace
 from rdflib import plugin,RDF,RDFS,URIRef, StringInputSource, Literal
 from rdflib.Graph import Graph,ReadOnlyGraphAggregate,ConjunctiveGraph
-from rdflib.Literal import castPythonToLiteral
+
 import sys
 from pprint import pprint
 
