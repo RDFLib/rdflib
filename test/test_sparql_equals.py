@@ -31,6 +31,8 @@ class TestSparqlEquals(object):
         """) % self.PREFIXES
         res = self.graph.query(query)
         print res.selected
-        assert uri in res.selected, "Expected %s in %s" % (repr(uri), res.selected)
+        expected = [uri]
+        assert res.selected == expected, \
+                "Expected %s == %s" % (expected, res.selected)
 
 
