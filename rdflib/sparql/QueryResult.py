@@ -179,31 +179,31 @@ except:
             self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'sparql'), u'sparql')
             self.writer.endDocument()
 
-def retToJSON(val) :
-    if isinstance(val,URIRef) :
+def retToJSON(val):
+    if isinstance(val,URIRef):
         return '"type": "uri", "value" : "%s"' % val
     elif isinstance(val,BNode) :
         return '"type": "bnode", "value" : "%s"' % val
-    elif isinstance(val,Literal) :
-        if val.language != "" :
-            return '"type": "literal", "xml:lang" : "%s", "value" : "%s"' % (val.language,val)
+    elif isinstance(val,Literal):
+        if val.language != "":
+            return '"type": "literal", "xml:lang" : "%s", "value" : "%s"' % (val.language, val)
             attr += ' xml:lang="%s" ' % val.language
-        elif val.datatype != "" and val.datatype != None :
-            return '"type": "typed=literal", "datatype" : "%s", "value" : "%s"' % (val.datatype,val)
-        else :
+        elif val.datatype != "" and val.datatype != None:
+            return '"type": "typed=literal", "datatype" : "%s", "value" : "%s"' % (val.datatype, val)
+        else:
             return '"type": "literal", "value" : "%s"' % val
-    else :
+    else:
         return '"type": "literal", "value" : "%s"' % val
 
-def bindingJSON(name,val,comma) :
-    if val == None :
+def bindingJSON(name, val, first):
+    if val == None:
         return ""
-    retval = '                   "%s" : {' % name
+    retval = ''
+    if not first:
+        retval += '                   ,\n'
+    retval += '                   "%s" : {' % name
     retval += retToJSON(val)
-    if comma :
-        retval += '},\n'
-    else :
-        retval += '}\n'
+    retval += '}\n'
     return retval
 
 class SPARQLQueryResult(QueryResult.QueryResult):
@@ -257,6 +257,7 @@ class SPARQLQueryResult(QueryResult.QueryResult):
                # the element was not there, all the better...
                pass
            allvarsL = list(self.allVariables)
+
            if format == "json" :
                retval += '{\n'
                retval += '   "head" : {\n        "vars" : [\n'
@@ -271,26 +272,37 @@ class SPARQLQueryResult(QueryResult.QueryResult):
                retval += '    "results" : {\n'
                retval += '          "ordered" : %s,\n' % (self.orderBy and 'true' or 'false')
                retval += '          "distinct" : %s,\n' % (self.distinct and 'true' or 'false')
-               retval += '          "bindings" : [\n'               
-               for i in xrange(0,len(self.selected)) :
+               retval += '          "bindings" : [\n'
+               for i in xrange(0,len(self.selected)):
                    hit = self.selected[i]
                    retval += '               {\n'
-                   if len(self.selectionF) == 0 :
-                       for j in xrange(0,len(allvarsL)) :
-                           retval += bindingJSON(allvarsL[j][1:],hit[j],j != len(allvarsL) - 1)
-                   elif len(self.selectionF) == 1 :
-                       retval += bindingJSON(self.selectionF[0][1:],hit, False)
-                   else :
-                       for j in xrange(0,len(self.selectionF)) :
-                           retval += bindingJSON(self.selectionF[j][1:],hit[j],j != len(self.selectionF) - 1)
+                   if len(self.selectionF) == 0:
+                        firstJ = 0
+                        for j in xrange(0, len(allvarsL)):
+                            val = bindingJSON(allvarsL[j][1:], hit[j], j == firstJ)
+                            if not val:
+                                firstJ += 1
+                            else:
+                                retval += val
+                   elif len(self.selectionF) == 1:
+                        retval += bindingJSON(self.selectionF[0][1:],hit, True)
+                   else:
+                        firstJ = 0
+                        for j in xrange(0, len(self.selectionF)):
+                            val = bindingJSON(self.selectionF[j][1:], hit[j], j == firstJ)
+                            if not val:
+                                firstJ += 1
+                            else:
+                                retval += val
                    retval += '                }'
-                   if i != len(self.selected) -1 :
+                   if i != len(self.selected) -1:
                        retval += ',\n'
-                   else :
+                   else:
                        retval += '\n'
                retval += '           ]\n'
                retval += '    }\n'
                retval += '}\n'
+
            elif format == "xml" :
                # xml output
                out = StringIO()
@@ -317,6 +329,8 @@ class SPARQLQueryResult(QueryResult.QueryResult):
                        writer.write_end_result()
                writer.close()
                return out.getvalue()
+
            return retval
-        else :
+        else:
            raise Exception("Result format not implemented: %s"%format)
+

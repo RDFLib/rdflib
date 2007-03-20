@@ -21,7 +21,10 @@ WHERE { ?x foaf:name ?name .
 }
 """
 
-correct = """"name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"},\n                   "x" : {"type": "uri", "value" : "http://example.org/bob"}\n                }"""
+correct = """"name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"}
+                   ,
+                   "x" : {"type": "uri", "value" : "http://example.org/bob"}
+                }"""
 
 
 # See Also: http://rdflib.net/pipermail/dev/2006-November/000112.html
