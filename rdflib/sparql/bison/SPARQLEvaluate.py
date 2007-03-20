@@ -17,7 +17,7 @@ from Expression import *
 from Util import ListRedirect
 from Operators import *
 from FunctionLibrary import *
-from SolutionModifier import DESCENDING_ORDER
+from SolutionModifier import ASCENDING_ORDER
 from Query import AskQuery, SelectQuery
 
 DEBUG = False
@@ -149,7 +149,7 @@ def mapToOperator(expr,prolog,combinationArg=None):
     elif isinstance(expr,ParsedREGEXInvocation):
         return 'sparqlOperators.regex(%s,%s%s)%s'%(mapToOperator(expr.arg1,prolog,combinationArg),
                                                  mapToOperator(expr.arg2,prolog,combinationArg),
-                                                 expr.arg3 and ','+expr.arg3 or '',
+                                                 expr.arg3 and ',"'+expr.arg3 + '"' or '',
                                                  combinationInvokation)
     elif isinstance(expr,BuiltinFunctionCall):
         normBuiltInName = FUNCTION_NAMES[expr.name].lower()
@@ -389,14 +389,23 @@ def Evaluate(graph,query,passedBindings = {},DEBUG = False):
             orderBy     = []
             orderAsc    = []
             for orderCond in query.query.solutionModifier.orderClause:
-                expr = orderCond.expression.reduce()
-                assert isinstance(expr,Variable),"Support for ORDER BY with anything other than a variable is not supported: %s"%expr
-                orderBy.append(expr)
-                orderAsc.append(orderCond.order == DESCENDING_ORDER)
+                # is it a variable?
+                if isinstance(orderCond,Variable):
+                    orderBy.append(orderCond)
+                    orderAsc.append(ASCENDING_ORDER)
+                # is it another expression, only variables are supported
+                else:
+                    expr = orderCond.expression
+                    assert isinstance(expr,Variable),"Support for ORDER BY with anything other than a variable is not supported: %s"%expr
+                    orderBy.append(expr)                    
+                    orderAsc.append(orderCond.order == ASCENDING_ORDER)
+
+        limit = query.query.solutionModifier.limitClause and int(query.query.solutionModifier.limitClause) or None
+
         offset = query.query.solutionModifier.offsetClause and int(query.query.solutionModifier.offsetClause) or 0
         return result.select(query.query.variables,
                              query.query.distinct,
-                             query.query.solutionModifier.limitClause,
+                             limit,
                              orderBy,
                              orderAsc,
                              offset
