@@ -78,7 +78,7 @@ class Dispatcher(object):
         if self._dispatch_map is not None:
             lst = self._dispatch_map.get(type(event), None)
             if lst is None:
-                raise ValueError("unknown event type")
+                raise ValueError("unknown event type: %s" % type(event))
             for l in lst:
                 l(event)
 
