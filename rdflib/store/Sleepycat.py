@@ -7,10 +7,9 @@ from os import mkdir
 from os.path import exists, abspath
 from urllib import pathname2url
 from threading import Thread
-from time import sleep, time
 
 import logging
-_logger = logging.getLogger("rdflib.store.Sleepycat")
+_logger = logging.getLogger(__name__)
 
 class Sleepycat(Store):
     context_aware = True
@@ -131,23 +130,27 @@ class Sleepycat(Store):
 
 
     def __sync_run(self):
-        min_seconds, max_seconds = 10, 300
-        while self.__open:
-            if self.__needs_sync:
-                t0 = t1 = time()
-                self.__needs_sync = False
-                while self.__open:
-                    sleep(.1)
-                    if self.__needs_sync:
-                        t1 = time()
-                        self.__needs_sync = False
-                    if time()-t1 > min_seconds or time()-t0 > max_seconds:
-                        self.__needs_sync = False
-                        _logger.debug("sync")
-                        self.sync()
-                        break
-            else:
-                sleep(1)
+        from time import sleep, time
+        try:
+            min_seconds, max_seconds = 10, 300
+            while self.__open:
+                if self.__needs_sync:
+                    t0 = t1 = time()
+                    self.__needs_sync = False
+                    while self.__open:
+                        sleep(.1)
+                        if self.__needs_sync:
+                            t1 = time()
+                            self.__needs_sync = False
+                        if time()-t1 > min_seconds or time()-t0 > max_seconds:
+                            self.__needs_sync = False
+                            _logger.debug("sync")
+                            self.sync()
+                            break
+                else:
+                    sleep(1)
+        except Exception, e:
+            _logger.exception(e)
 
     def sync(self):
         if self.__open:
