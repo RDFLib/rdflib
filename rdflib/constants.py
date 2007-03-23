@@ -2,6 +2,11 @@
 Deprecated. Use rdflib.RDF and rdflib.RDFS instead.
 """
 
+import warnings 
+
+warnings.warn("Use rdflib.RDF and rdflib.RDFS instead.", DeprecationWarning, stacklevel=2)
+
+
 from rdflib import RDF as _RDF
 from rdflib import RDFS as _RDFS
 
