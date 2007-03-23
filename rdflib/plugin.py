@@ -91,6 +91,9 @@ register('Memory', Store,
 register('Sleepycat', Store,
          'rdflib.store.Sleepycat', 'Sleepycat')
 
+register('BerkeleyDB', Store,
+         'rdflib.store.BerkeleyDB', 'BerkeleyDB')
+
 register('MySQL', Store,
          'rdflib.store.MySQL', 'MySQL')
 
