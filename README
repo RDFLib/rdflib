@@ -1,14 +1,7 @@
 
-See http://rdflib.net/2.3.4/ for the 2.3.4 release notes. Briefly,
-this is the third release in a new development series of releases --
-the API should be compatible with 2.2.x, but be warned that the bits
-may still be shifting. The 2.2.x series remains the current stable
-series.
+See http://rdflib.net/2.4.0/ for the release notes. ...
 
 Also see http://rdflib.net/contributors/ for the list of contributors.
 
-As part of the 2.3.x work the release process will be expanded to pull
-some of this information from rdflib.net when the release is cut -- so
-that the information will be included within the release.
 
 
