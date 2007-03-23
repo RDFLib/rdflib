@@ -44,7 +44,7 @@ setup(
             ),
         ],
 
-    setup_requires = ["nose>=0.9.2"],
+    tests_require = ["nose>=0.9.2"],
 
     test_suite = 'nose.collector',
 
