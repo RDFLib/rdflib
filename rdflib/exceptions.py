@@ -61,26 +61,3 @@ class UniquenessError(Error) :
         Error.__init__(self, "Uniqueness assumption is not fulfilled. Multiple values are: %s" % values)
 
 
-class SerializerDispatchNameError(Error):
-    """No name set..."""
-    def __init__(self, msg):
-        Error.__init__(self)
-        self.msg = msg
-
-class SerializerDispatchNameClashError(Error):
-    """Name clash..."""
-    def __init(self, msg):
-        Error.__init__(self)
-        self.msg = msg
-
-class ParserDispatchNameError(Error):
-    """No name set..."""
-    def __init__(self, msg):
-        Error.__init__(self)
-        self.msg = msg
-
-class ParserDispatchNameClashError(Error):
-    """Name clash..."""
-    def __init(self, msg):
-        Error.__init__(self)
-        self.msg = msg
