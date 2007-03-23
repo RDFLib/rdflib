@@ -26,18 +26,33 @@ correct = """"name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"}
                    "x" : {"type": "uri", "value" : "http://example.org/bob"}
                 }"""
 
+test_header_query = """
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT ?name ?friend
+WHERE { ?x foaf:name ?name .
+        OPTIONAL { ?x foaf:knows ?friend . }
+}
+"""
 
 # See Also: http://rdflib.net/pipermail/dev/2006-November/000112.html
 
 
 class JSON(unittest.TestCase):
 
-    def testOPTIONALSimple(self):
+    def testComma(self):
         graph = ConjunctiveGraph(plugin.get('IOMemory',Store)())
         graph.parse(StringIO(test_data), format="n3")
         results = graph.query(test_query)
         result_json = results.serialize(format='json')
         self.failUnless(result_json.find(correct) > 0)
 
+    def testHeader(self):
+        graph = ConjunctiveGraph(plugin.get('IOMemory',Store)())
+        graph.parse(StringIO(test_data), format="n3")
+        results = graph.query(test_header_query)
+        result_json = results.serialize(format='json')
+        self.failUnless(result_json.find('"x",') == -1)                
+        
 if __name__ == "__main__":
     unittest.main()
