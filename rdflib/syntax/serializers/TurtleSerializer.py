@@ -8,10 +8,8 @@ from rdflib.syntax.xml_names import split_uri
 
 from rdflib.syntax.serializers.RecursiveSerializer import RecursiveSerializer
 from rdflib.exceptions import Error
-from rdflib.constants import RDFNS, RDFSNS, TYPE, FIRST, REST, NIL
 
-#TODO: move
-XSD_INTEGER=URIRef('http://www.w3.org/2001/XMLSchema#integer')
+from rdflib import RDF, RDFS
 
 SUBJECT = 0
 VERB = 1
@@ -81,22 +79,22 @@ class TurtleSerializer(RecursiveSerializer):
     def isValidList(self,l): 
         """Checks if l is a valid RDF list, i.e. no nodes have other properties."""
         try:
-            if not self.store.value(l, FIRST):
+            if not self.store.value(l, RDF.first):
                 return False
         except: 
             return False
         while l:
-            if l!=NIL and len(list(self.store.predicate_objects(l)))!=2: return False
-            l = self.store.value(l, REST)
+            if l!=RDF.nil and len(list(self.store.predicate_objects(l)))!=2: return False
+            l = self.store.value(l, RDF.rest)
         return True
         
     def doList(self,l):
         while l:
-            item = self.store.value(l, FIRST)
+            item = self.store.value(l, RDF.first)
             if item:
                 self.path(item, SUBJECT)
                 self.subjectDone(l)
-            l = self.store.value(l, REST)
+            l = self.store.value(l, RDF.rest)
             
     def p_squared(self, node, position):
         if (not isinstance(node, BNode)
@@ -132,7 +130,7 @@ class TurtleSerializer(RecursiveSerializer):
             raise Error("Cannot serialize node '%s'"%(node, ))
 
     def verb(self, node):
-        if node == TYPE:
+        if node == RDF.type:
             self.write(' a')
         else:
             self.path(node, VERB)

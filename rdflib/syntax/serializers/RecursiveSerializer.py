@@ -1,17 +1,16 @@
-
-
 from rdflib.BNode import BNode
 from rdflib.Literal import Literal
 from rdflib.URIRef import URIRef
 
 from rdflib.syntax.serializers.AbstractSerializer import AbstractSerializer
 
-from rdflib.constants import RDFS_CLASS, RDFS_LABEL, TYPE
+from rdflib import RDF, RDFS
+
 
 class RecursiveSerializer(AbstractSerializer):
 
-    topClasses = [RDFS_CLASS]
-    predicateOrder = [TYPE, RDFS_LABEL]
+    topClasses = [RDFS.Class]
+    predicateOrder = [RDF.type, RDFS.label]
     maxDepth = 10
     indentString = u"  "
     
