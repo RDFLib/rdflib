@@ -107,7 +107,7 @@ Parsing N3 from StringIO
     ... @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
     ... @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
     ... [ a rdf:Statement ;
-    ...   rdf:subject <http://rdflib.net/store/ConjunctiveGraph>;
+    ...   rdf:subject <http://rdflib.net/store#ConjunctiveGraph>;
     ...   rdf:predicate rdfs:label;
     ...   rdf:object "Conjunctive Graph" ] \"\"\"
     >>> g2=g2.parse(StringIO(src),format='n3')
@@ -194,7 +194,7 @@ class Graph(Node):
 
     @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-    @prefix : <http://rdflib.net/store/> .
+    @prefix : <http://rdflib.net/store#> .
     @prefix rdfg: <http://www.w3.org/2004/03/trix/rdfg-1/>.
     @prefix owl: <http://www.w3.org/2002/07/owl#>.
     @prefix log: <http://www.w3.org/2000/10/swap/log#>.
