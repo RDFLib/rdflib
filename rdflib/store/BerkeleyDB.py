@@ -10,7 +10,8 @@ from rdflib.term_utils import *
 import md5,sha
 
 import logging
-_logger = logging.getLogger("rdflib.store.BerkeleyDB")
+
+_logger = logging.getLogger(__name__)
 
 def integerMD5Hash(term):
     """
@@ -63,7 +64,8 @@ class BerkeleyDB(Store):
         homeDir = path
         #NOTE: The identifeir is appended to the path as the location for the db
         #This provides proper isolation for stores which have the same path but different identifiers
-        fullDir = join(homeDir,self.identifier)
+        #fullDir = join(homeDir,self.identifier)
+        fullDir = homeDir
         envsetflags  = db.DB_CDB_ALLDB
         envflags = db.DB_INIT_MPOOL | db.DB_INIT_LOCK | db.DB_THREAD | db.DB_INIT_TXN | db.DB_RECOVER
         if not exists(fullDir):
@@ -198,7 +200,7 @@ class BerkeleyDB(Store):
         Only commits if the tx handle has not already been properly aborted or commited (by a close for ex.) 
         """         
         if not self.__txHandled:
-            print "commiting"
+            _logger.debug("commiting")
             self.dbTxn.commit(0)
             self.__txHandled = True        
 
@@ -207,7 +209,7 @@ class BerkeleyDB(Store):
         Only rolls back if the tx handle has not already been properly aborted commited
         """           
         if not self.__txHandled:
-            print "rollingback"
+            _logger.debug("rollingback")
             self.dbTxn.abort()
             self.__txHandled = True
         
@@ -242,7 +244,7 @@ class BerkeleyDB(Store):
         """\
         Add a triple to the store of triples.
         """
-        print "add((%s,%s,%s),context=%s)"%(subject,predicate,object_,context)
+        #print "add((%s,%s,%s),context=%s)"%(subject,predicate,object_,context)
         assert self.__open, "The Store must be open."
         assert context!=self, "Can not add triple directly to store"
         Store.add(self, (subject, predicate, object_), context, quoted)
@@ -359,7 +361,7 @@ class BerkeleyDB(Store):
 
     def triples(self, (subject, predicate, object_), context=None):
         """A generator over all the triples matching """
-        print "triples((%s,%s,%s),context=%s)"%(subject,predicate,object_,context)
+        #print "triples((%s,%s,%s),context=%s)"%(subject,predicate,object_,context)
         assert self.__open, "The Store must be open."
 
         if context is not None:

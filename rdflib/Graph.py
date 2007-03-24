@@ -311,13 +311,13 @@ class Graph(Node):
         """
         return self.__store.open(configuration, create)
 
-    def close(self):
+    def close(self, commit_pending_transaction=False):
         """Close the graph store
 
         Might be necessary for stores that require closing a connection to a
         database or releasing some resource.
         """
-        self.__store.close()
+        self.__store.close(commit_pending_transaction=connit_pending_transaction)
 
     def add(self, (s, p, o)):
         """Add a triple with self as context"""
