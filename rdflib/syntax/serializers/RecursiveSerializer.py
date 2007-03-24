@@ -42,7 +42,7 @@ class RecursiveSerializer(AbstractSerializer):
         subjects = []
 
         for classURI in self.topClasses:
-            members = list(self.store.subjects(TYPE, classURI))
+            members = list(self.store.subjects(RDF.type, classURI))
             members.sort()
             
             for member in members:
