@@ -1,6 +1,7 @@
 import unittest
 
-from rdflib import *
+from rdflib import Literal
+
 from rdflib.store.NodePickler import NodePickler
 
 
@@ -14,9 +15,6 @@ class UtilTestCase(unittest.TestCase):
         b = np.loads(np.dumps(a))
         self.assertEquals(a, b)
 
-
-def testMe():
-    unittest.main(defaultTest='test_suite')    
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
