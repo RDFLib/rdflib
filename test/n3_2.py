@@ -1,4 +1,6 @@
-from rdflib import *
+from rdflib import URIRef, BNode, Literal, Variable
+from rdflib import RDF, RDFS
+from rdflib import StringInputSource
 from rdflib.Graph import QuotedGraph,ConjunctiveGraph
 import sys
 from pprint import pprint
@@ -14,12 +16,13 @@ _:foo a rdfs:Class.
 
 
 #Thorough test suite for formula-aware store
-def testN3Store(backend,configString):
-    g = Graph(backend=backend)
-    g.destroy(configString)
-    g.open(configString)
+def testN3Store(store="default", configString=None):
+    g = ConjunctiveGraph(store=store)
+    if configString:
+        g.destroy(configString)
+        g.open(configString)
     g.parse(StringInputSource(testN3), format="n3")
-    print g.backend
+    print g.store
     try:
         for s,p,o in g.triples((None,implies,None)):
             formulaA = s
@@ -32,7 +35,7 @@ def testN3Store(backend,configString):
         d = URIRef('http://test/d')
         v = Variable('y')
 
-        universe = ConjunctiveGraph(g.backend)
+        universe = ConjunctiveGraph(g.store)
 
         #test formula as terms
         assert len(list(universe.triples((formulaA,implies,formulaB))))==1
@@ -43,7 +46,7 @@ def testN3Store(backend,configString):
             if o != c:
                 assert isinstance(o,Variable)
                 assert o == v
-        s,p,o = list(universe.triples((None,RDF.type,RDFS.Class)))[0][0]
+        s = list(universe.subjects(RDF.type, RDFS.Class))[0]
         assert isinstance(s,BNode)
         assert len(list(universe.triples((None,implies,None)))) == 1
         assert len(list(universe.triples((None,RDF.type,None)))) ==1
@@ -56,7 +59,7 @@ def testN3Store(backend,configString):
 
         #context tests
         #test contexts with triple argument
-        assert len(list(universe.contexts((a,d,c))))==2
+        assert len(list(universe.contexts((a,d,c))))==1
 
         #Remove test cases
         universe.remove((None,implies,None))
@@ -73,7 +76,7 @@ def testN3Store(backend,configString):
 
 
         #remove_context tests
-        universe.remove((None,None,None),formulaB)
+        universe.remove_context(formulaB)
         assert len(list(universe.triples((None,RDF.type,None))))==0
         assert len(universe)==1
         assert len(formulaB)==0
@@ -81,8 +84,8 @@ def testN3Store(backend,configString):
         universe.remove((None,None,None))
         assert len(universe)==0
 
-        g.backend.destroy(configString)
+        g.store.destroy(configString)
     except:
-        g.backend.destroy(configString)
+        g.store.destroy(configString)
         raise
 
