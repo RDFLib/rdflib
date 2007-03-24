@@ -317,7 +317,7 @@ class Graph(Node):
         Might be necessary for stores that require closing a connection to a
         database or releasing some resource.
         """
-        self.__store.close(commit_pending_transaction=connit_pending_transaction)
+        self.__store.close(commit_pending_transaction=commit_pending_transaction)
 
     def add(self, (s, p, o)):
         """Add a triple with self as context"""

@@ -162,7 +162,7 @@ class Sleepycat(Store):
             self.__i2k.sync()
             self.__k2i.sync()
 
-    def close(self):
+    def close(self, commit_pending_transaction=False):
         self.__open = False
         self.__sync_thread.join()
         for i in self.__indicies:
