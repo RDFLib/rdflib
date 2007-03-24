@@ -76,9 +76,16 @@ class N3TestCase(unittest.TestCase):
 :foo.txt :p :q .
 """
         g = Graph()
-        g.parse(StringInputSource(input), format="n3")
-        s = g.value(predicate=URIRef("http://www.example.com/p"), object=URIRef("http://www.example.com/q"))
-        self.assertEquals(s, URIRef("http://www.example.org/foo.txt"))
+        try:
+            g.parse(StringInputSource(input), format="n3")
+        except:
+            pass
+            #foo.txt is not a valid qname in n3/turtle
+        else:
+            self.assertEquals(True, False) # Didn't get expected result of a parse exception
+        # This isn't the expected result based on my reading of n3 bits
+        #s = g.value(predicate=URIRef("http://www.example.com/p"), object=URIRef("http://www.example.com/q"))
+        #self.assertEquals(s, URIRef("http://www.example.org/foo.txt"))
 
 
     def testModel(self):
