@@ -6,6 +6,8 @@ from datetime import date,time,datetime
 from time import strptime
 import base64
 
+from hashlib import md5
+
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -241,6 +243,11 @@ class Literal(Identifier):
             else:
                 return (unicode(rt), rt.datatype, rt.language)
         return rt
+
+    def _md5_term_hash(self):
+        d = md5(str(self))
+        d.update("L")
+        return d.hexdigest()
 
 
 _XSD_NS = Namespace(u'http://www.w3.org/2001/XMLSchema#')

@@ -2,6 +2,8 @@
 from string import ascii_letters
 from random import choice
 
+from hashlib import md5
+
 def _unique_id():
     """Create a (hopefully) unique prefix"""
     id = ""
@@ -73,3 +75,8 @@ class BNode(Identifier):
 
     def __repr__(self):
         return """rdflib.BNode('%s')""" % str(self)
+
+    def _md5_term_hash(self):
+        d = md5(str(self))
+        d.update("B")
+        return d.hexdigest()

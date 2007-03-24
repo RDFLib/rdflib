@@ -6,24 +6,11 @@ from os.path import exists, abspath, join
 from urllib import pathname2url
 from threading import Thread
 from time import sleep, time
-from rdflib.term_utils import *
-import md5,sha
 
 import logging
 
 _logger = logging.getLogger(__name__)
 
-def integerMD5Hash(term):
-    """
-    Takes an RDFLib term and returns the base 16 encoding applied to the MD5 hash of the term concatenated to it's term type letter
-    The same mechanism is used in the MySQL store for interning terms with minimal chance of collision
-    """
-    termType = term2Letter(term)
-    if term is None:
-        term = u'http://www.w3.org/2002/07/owl#NothingU'
-    else:
-        term = (isinstance(term,Graph) and term.identifier or term) + termType
-    return int(md5.new(isinstance(term,unicode) and term.encode('utf-8') or term).hexdigest(),16)
 
 class BerkeleyDB(Store):
     """
@@ -485,13 +472,18 @@ class BerkeleyDB(Store):
 
     def _to_string(self, term):
         """
-        i2k:  hashInt -> pickledTerm
+        i2k:  hashString -> pickledTerm
         
-        i2k basically stores the reverse lookup of the base16 encoded MD5 hash of the term 
+        i2k basically stores the reverse lookup of the MD5 hash of the term 
         
         """
-        i = str(integerMD5Hash(term))
-        self.__i2k.put(i,self._dumps(term),txn=self.dbTxn)
+        # depending on what the space time trade off looks like we
+        # might still want to record k2i as well. Also recording would
+        # protect against hash algo changing.
+        i = term._md5_term_hash()
+        k = self.__i2k.get(i, txn=self.dbTxn)
+        if k is None:
+            self.__i2k.put(i,self._dumps(term),txn=self.dbTxn)
         return i
 
     def __lookup(self, (subject, predicate, object_), context):

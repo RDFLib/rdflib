@@ -170,9 +170,11 @@ from xml.sax.saxutils import prepare_input_source
 import logging
 _logger = logging.getLogger("rdflib.Graph")
 
-import md5
+#import md5
 import random
 import warnings
+
+from hashlib import md5
 
 class Graph(Node):
     """An RDF Graph
@@ -366,6 +368,11 @@ class Graph(Node):
 
     def __hash__(self):
         return hash(self.identifier)
+
+    def _md5_term_hash(self):
+        d = md5(str(self.identifier))
+        d.update("G")
+        return d.hexdigest()
 
     def __cmp__(self, other):
         if other is None:
@@ -832,7 +839,7 @@ class GraphValue(QuotedGraph):
         if graph is not None:
             assert identifier is None
             np = store.node_pickler
-            identifier = md5.new()
+            identifier = md5()
             s = list(graph.triples((None, None, None)))
             s.sort()
             for t in s:
