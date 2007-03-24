@@ -53,7 +53,6 @@ class TestSparqlJsonResults(unittest.TestCase):
     def _query_result_contains(self, query, correct):
         results = self.graph.query(query)
         result_json = results.serialize(format='json')
-        print result_json, correct
         self.failUnless(result_json.find(correct) > 0)
 
     def testOPTIONALSimple(self):
