@@ -6,8 +6,9 @@ from os.path import exists, abspath, join
 from urllib import pathname2url
 from threading import Thread
 from time import sleep, time
-
 import logging
+
+SUPPORT_MULTIPLE_STORE_ENVIRON = False
 
 _logger = logging.getLogger(__name__)
 
@@ -26,12 +27,13 @@ class BerkeleyDB(Store):
     transaction_aware = True
     def __init__(self, configuration=None, identifier=None):
         self.__open = False
-        self.__txHandled = False
         self.__identifier = identifier and identifier or 'home'
         super(BerkeleyDB, self).__init__(configuration)
         self.configuration = configuration
         self._loads = self.node_pickler.loads
         self._dumps = self.node_pickler.dumps
+        #This state is needed to handle all possible combinations of calls to tx methods (close/rollback/commit)
+        self.__txHandled = False
 
     def __get_identifier(self):
         return self.__identifier
@@ -41,9 +43,16 @@ class BerkeleyDB(Store):
         """
         Destroy the underlying bsddb persistence for this store
         """
-        fullDir = join(configuration,self.identifier)
+        if SUPPORT_MULTIPLE_STORE_ENVIRON:
+            fullDir = join(configuration,self.identifier)
+        else:
+            fullDir = configuration
         if exists(configuration):
-            self.db_env(fullDir)
+            #From bsddb docs:
+            #A DB_ENV handle that has already been used to open an environment 
+            #should not be used to call the DB_ENV->remove function; a new DB_ENV handle should be created for that purpose.
+            self.close()
+            db.DBEnv().remove(fullDir,db.DB_FORCE)
 
     def open(self, path, create=True):
         if self.__open:
@@ -51,8 +60,10 @@ class BerkeleyDB(Store):
         homeDir = path
         #NOTE: The identifeir is appended to the path as the location for the db
         #This provides proper isolation for stores which have the same path but different identifiers
-        #fullDir = join(homeDir,self.identifier)
-        fullDir = homeDir
+        if SUPPORT_MULTIPLE_STORE_ENVIRON:
+            fullDir = join(homeDir,self.identifier)
+        else:
+            fullDir = homeDir
         envsetflags  = db.DB_CDB_ALLDB
         envflags = db.DB_INIT_MPOOL | db.DB_INIT_LOCK | db.DB_THREAD | db.DB_INIT_TXN | db.DB_RECOVER
         if not exists(fullDir):
@@ -149,7 +160,6 @@ class BerkeleyDB(Store):
         t.setDaemon(True)
         t.start()
         self.__sync_thread = t
-        #print "returning valid store indication"
         return VALID_STORE
 
     def __sync_run(self):
@@ -184,21 +194,24 @@ class BerkeleyDB(Store):
     #Transactional interfaces
     def commit(self):
         """
-        Only commits if the tx handle has not already been properly aborted or commited (by a close for ex.) 
+        Bsddb tx objects cannot be reused after commit 
         """         
-        if not self.__txHandled:
-            _logger.debug("commiting")
-            self.dbTxn.commit(0)
-            self.__txHandled = True        
+        _logger.debug("commiting")
+        self.dbTxn.commit(0)
+        #Note a new transaction handle is created to support
+        #subsequent commit calls (bsddb doesn't support multiple commits by the same
+        #tx handle)
+        self.dbTxn = self.db_env.txn_begin()
 
     def rollback(self):
         """
-        Only rolls back if the tx handle has not already been properly aborted commited
+        Bsddb tx objects cannot be reused after commit
         """           
-        if not self.__txHandled:
-            _logger.debug("rollingback")
-            self.dbTxn.abort()
-            self.__txHandled = True
+        _logger.debug("rollingback")
+        self.dbTxn.abort()
+        #The txHandled state is set to true to indicate to a susequent close
+        #call that a rollback is not needed
+        self.__txHandled = True
         
     def __del__(self):
         """
@@ -211,11 +224,14 @@ class BerkeleyDB(Store):
         Properly handles transactions explicitely (with parameter) or by default
         """
         if not self.__open:
-            return        
-        if not self.__txHandled and not commit_pending_transaction:
-            self.rollback()        
-        if not self.__txHandled and commit_pending_transaction:
-            self.commit()            
+            return
+        if not self.__txHandled:        
+            #Only babysit tx if they have not been handled already by prior calls
+            #to tx methods
+            if not commit_pending_transaction:
+                self.rollback()
+            else:
+                self.commit()            
         self.__open = False
         self.__sync_thread.join()
         for i in self.__indicies:
@@ -231,7 +247,6 @@ class BerkeleyDB(Store):
         """\
         Add a triple to the store of triples.
         """
-        #print "add((%s,%s,%s),context=%s)"%(subject,predicate,object_,context)
         assert self.__open, "The Store must be open."
         assert context!=self, "Can not add triple directly to store"
         Store.add(self, (subject, predicate, object_), context, quoted)
@@ -348,7 +363,6 @@ class BerkeleyDB(Store):
 
     def triples(self, (subject, predicate, object_), context=None):
         """A generator over all the triples matching """
-        #print "triples((%s,%s,%s),context=%s)"%(subject,predicate,object_,context)
         assert self.__open, "The Store must be open."
 
         if context is not None:
@@ -477,10 +491,11 @@ class BerkeleyDB(Store):
         i2k basically stores the reverse lookup of the MD5 hash of the term 
         
         """
+        assert term is not None
         # depending on what the space time trade off looks like we
         # might still want to record k2i as well. Also recording would
         # protect against hash algo changing.
-        i = term._md5_term_hash()
+        i = term.md5_term_hash()
         k = self.__i2k.get(i, txn=self.dbTxn)
         if k is None:
             self.__i2k.put(i,self._dumps(term),txn=self.dbTxn)
