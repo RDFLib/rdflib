@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 """
 This test runner uses Nose for test discovery and running. It uses the argument
 spec of Nose, but with some options pre-set.
