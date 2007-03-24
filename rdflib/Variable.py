@@ -1,5 +1,8 @@
 from rdflib.Identifier import Identifier
-
+try:
+    from hashlib import md5
+except ImportError:
+    from md5 import md5    
 
 class Variable(Identifier):
     """
@@ -13,3 +16,8 @@ class Variable(Identifier):
 
     def __reduce__(self):
         return (Variable, (unicode(self),))
+
+    def md5_term_hash(self):
+        d = md5(str(self))
+        d.update("V")
+        return d.hexdigest()
