@@ -1,9 +1,8 @@
 import unittest
 
-from rdflib import URIRef, BNode, Literal
+from rdflib import URIRef, BNode, Literal, RDF
 from rdflib.Namespace import Namespace
 from rdflib.exceptions import ParserError
-from rdflib.constants import TYPE
 
 from rdflib.Graph import Graph
 from rdflib.util import first
@@ -102,11 +101,11 @@ def _testNegative(uri, manifest):
             format = "xml"
         store.load(inDoc, format=format)
     except ParserError, pe:
-        results.add((test, TYPE, RESULT["PassingRun"]))
+        results.add((test, RDF.type, RESULT["PassingRun"]))
         #pass
     else:
         write(u"""Failed: '%s'""" % uri)
-        results.add((test, TYPE, RESULT["FailingRun"]))
+        results.add((test, RDF.type, RESULT["FailingRun"]))
         result = 1
     return result
 
@@ -126,7 +125,7 @@ class ParserTestCase(unittest.TestCase):
     def testNegative(self):
         manifest = self.manifest
         num_failed = total = 0
-        negs = list(manifest.subjects(TYPE, TEST["NegativeParserTest"]))
+        negs = list(manifest.subjects(RDF.type, TEST["NegativeParserTest"]))
         negs.sort()
         for neg in negs:
             status = first(manifest.objects(neg, TEST["status"]))
@@ -138,7 +137,7 @@ class ParserTestCase(unittest.TestCase):
 
     def testPositive(self):
         manifest = self.manifest
-        uris = list(manifest.subjects(TYPE, TEST["PositiveParserTest"]))
+        uris = list(manifest.subjects(RDF.type, TEST["PositiveParserTest"]))
         uris.sort()
         num_failed = total = 0
         for uri in uris:
@@ -149,9 +148,9 @@ class ParserTestCase(unittest.TestCase):
                 results.add((test, RESULT["test"], uri))
                 results.add((test, RESULT["system"], system))
                 if not result:
-                    results.add((test, TYPE, RESULT["PassingRun"]))
+                    results.add((test, RDF.type, RESULT["PassingRun"]))
                 else:
-                   results.add((test, TYPE, RESULT["FailingRun"]))
+                   results.add((test, RDF.type, RESULT["FailingRun"]))
                 total += 1
                 num_failed += result
         self.assertEquals(num_failed, 0, "Failed: %s of %s." % (num_failed, total))
@@ -159,13 +158,13 @@ class ParserTestCase(unittest.TestCase):
 RESULT = Namespace("http://www.w3.org/2002/03owlt/resultsOntology#")
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 
-from rdflib.constants import RDFS_LABEL, RDFS_COMMENT
+
 results = Graph()
 
 system = BNode("system")
 results.add((system, FOAF["homepage"], URIRef("http://rdflib.net/")))
-results.add((system, RDFS_LABEL, Literal("RDFLib")))
-results.add((system, RDFS_COMMENT, Literal("")))
+results.add((system, RDFS.label, Literal("RDFLib")))
+results.add((system, RDFS.comment, Literal("")))
 
 
 if __name__ == "__main__":
@@ -184,10 +183,10 @@ if __name__ == "__main__":
             verbose = 1
             case = URIRef(arg)
             write(u"Testing: %s" % case)
-            if (case, TYPE, TEST["PositiveParserTest"]) in manifest:
+            if (case, RDF.type, TEST["PositiveParserTest"]) in manifest:
                 result = _testPositive(case, manifest)
                 write(u"Positive test %s" % ["PASSED", "FAILED"][result])
-            elif (case, TYPE, TEST["NegativeParserTest"]) in manifest:
+            elif (case, RDF.type, TEST["NegativeParserTest"]) in manifest:
                 result = _testNegative(case, manifest)
                 write(u"Negative test %s" % ["PASSED", "FAILED"][result])
             else:

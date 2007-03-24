@@ -11,9 +11,6 @@ from rdflib.Namespace   import Namespace
 from rdflib.URIRef      import URIRef
 from rdflib.Literal     import Literal
 from rdflib.BNode       import BNode
-from rdflib.constants   import RDFNS  as ns_rdf
-from rdflib.constants   import RDFSNS as ns_rdfs
-from rdflib.constants   import NIL    as nil
 from rdflib.exceptions  import Error
 
 from rdflib.util import check_predicate, check_subject, check_object
