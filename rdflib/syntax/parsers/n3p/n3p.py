@@ -77,7 +77,7 @@ class N3Parser(object):
             prodBranch = self.branches[todoStack[-1][0]]
             sequence = prodBranch.get(tok, None)
             if sequence is None:
-               print >> sys.stderr, 'prodBranch', prodBranch
+               #print >> sys.stderr, 'prodBranch', prodBranch
                msg = "Found %s when expecting a %s . todoStack=%r"
                args = (tok, todoStack[-1][0], todoStack)
                raise ValueError, (msg % args)
