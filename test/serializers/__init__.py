@@ -19,8 +19,7 @@ class SerializerTestBase(object):
         _assert_equal_graphs(self.sourceGraph, reparsedGraph)
 
     def test_multiple(self):
-        """Repeats ``test_serialize`` ``self.repeats`` times, to reduce sucess based on
-        in-memory ordering."""
+        """Repeats ``test_serialize`` ``self.repeats`` times, to reduce sucess based on in-memory ordering."""
         for i in range(self.repeats):
             self.test_serialize_and_reparse()
 
