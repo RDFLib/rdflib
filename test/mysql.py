@@ -67,9 +67,13 @@ def testRegex():
         g.backend.destroy(configString)
         raise
 
+testRegex.non_standard_dep = True
+
 def testRun():
     testN3Store('MySQL',configString)
     testRegex()
+
+testRun.non_standard_dep = True
 
 def profileTests():
     from hotshot import Profile, stats
@@ -85,6 +89,7 @@ def profileTests():
     s.print_callers(.1)
     s.print_callees(.1)
 
+profileTests.non_standard_dep = True
 
 if __name__=='__main__':
     testN3Store('MySQL',configString)
