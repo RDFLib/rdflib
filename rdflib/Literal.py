@@ -6,7 +6,10 @@ from datetime import date,time,datetime
 from time import strptime
 import base64
 
-from hashlib import md5
+try:
+    from hashlib import md5
+except ImportError:
+    from md5 import md5    
 
 import logging
 
@@ -244,7 +247,7 @@ class Literal(Identifier):
                 return (unicode(rt), rt.datatype, rt.language)
         return rt
 
-    def _md5_term_hash(self):
+    def md5_term_hash(self):
         d = md5(str(self))
         d.update("L")
         return d.hexdigest()

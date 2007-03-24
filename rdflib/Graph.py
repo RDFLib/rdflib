@@ -174,7 +174,10 @@ _logger = logging.getLogger("rdflib.Graph")
 import random
 import warnings
 
-from hashlib import md5
+try:
+    from hashlib import md5
+except ImportError:
+    from md5 import md5    
 
 class Graph(Node):
     """An RDF Graph
@@ -369,7 +372,7 @@ class Graph(Node):
     def __hash__(self):
         return hash(self.identifier)
 
-    def _md5_term_hash(self):
+    def md5_term_hash(self):
         d = md5(str(self.identifier))
         d.update("G")
         return d.hexdigest()
@@ -1049,7 +1052,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     ConjunctiveGraph over an explicit subset of the entire store.
     """
 
-    def __init__(self, graphs,store = None):
+    def __init__(self, graphs,store='default'):
         if store is not None:
             super(ReadOnlyGraphAggregate, self).__init__(store)
         assert isinstance(graphs, list) and graphs\
@@ -1139,9 +1142,13 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         raise UnSupportedAggregateOperation()
 
     def namespaces(self):
-        for graph in self.graphs:
-            for prefix, namespace in graph.namespace_manager.namespaces():
+        if hasattr(self,'namespace_manager'):
+            for prefix, namespace in self.namespace_manager.namespaces():
                 yield prefix, namespace
+        else:
+            for graph in self.graphs:
+                for prefix, namespace in graph.namespaces():
+                    yield prefix, namespace
 
     def absolutize(self, uri, defrag=1):
         raise UnSupportedAggregateOperation()

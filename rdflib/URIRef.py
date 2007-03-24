@@ -1,6 +1,9 @@
 from sys import version_info
 
-from hashlib import md5
+try:
+    from hashlib import md5
+except ImportError:
+    from md5 import md5    
 
 if version_info[0:2] > (2, 2):
     from unicodedata import normalize
@@ -81,7 +84,7 @@ class URIRef(Identifier):
     def __repr__(self):
         return """rdflib.URIRef('%s')""" % str(self)
 
-    def _md5_term_hash(self):
+    def md5_term_hash(self):
         d = md5(str(self))
         d.update("U")
         return d.hexdigest()
