@@ -33,7 +33,7 @@ class BerkeleyDB(Store):
         self._loads = self.node_pickler.loads
         self._dumps = self.node_pickler.dumps
         #This state is needed to handle all possible combinations of calls to tx methods (close/rollback/commit)
-        self.__txHandled = False
+        self.__dbTxn = None
 
     def __get_identifier(self):
         return self.__identifier
@@ -196,22 +196,28 @@ class BerkeleyDB(Store):
         """
         Bsddb tx objects cannot be reused after commit 
         """         
-        _logger.debug("commiting")
-        self.dbTxn.commit(0)
-        #Note a new transaction handle is created to support
-        #subsequent commit calls (bsddb doesn't support multiple commits by the same
-        #tx handle)
-        self.dbTxn = self.db_env.txn_begin()
+        if self.dbTxn:
+            _logger.debug("commiting")
+            self.dbTxn.commit(0)
+            #Note a new transaction handle is created to support
+            #subsequent commit calls (bsddb doesn't support multiple commits by the same
+            #tx handle)
+            self.dbTxn = self.db_env.txn_begin()
+        else:
+            _logger.warning("No transaction to commit")
 
     def rollback(self):
         """
         Bsddb tx objects cannot be reused after commit
         """           
-        _logger.debug("rollingback")
-        self.dbTxn.abort()
-        #The txHandled state is set to true to indicate to a susequent close
-        #call that a rollback is not needed
-        self.__txHandled = True
+        if self.dbTxn is not None:
+            _logger.debug("rollingback")
+            self.dbTxn.abort()
+            #The dbTxn is set to None to indicate to a susequent close
+            #call that a rollback is not needed
+            self.dbTxn = None
+        else:
+            _logger.warning("No transaction to rollback")
         
     def __del__(self):
         """
@@ -225,13 +231,12 @@ class BerkeleyDB(Store):
         """
         if not self.__open:
             return
-        if not self.__txHandled:        
-            #Only babysit tx if they have not been handled already by prior calls
-            #to tx methods
+        if self.dbTxn:
             if not commit_pending_transaction:
                 self.rollback()
             else:
                 self.commit()            
+                self.dbTxn.abort() # abort the new transaction commit just started since we're closing.
         self.__open = False
         self.__sync_thread.join()
         for i in self.__indicies:
