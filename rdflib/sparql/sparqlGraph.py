@@ -1,4 +1,3 @@
-#!/d/Bin/Python/python.exe
 """Some utility functions built on the top of rdflib
 """
 ##

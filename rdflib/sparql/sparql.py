@@ -1,4 +1,3 @@
-#!/d/Bin/Python/python.exe
 """SPARQL implementation on top of RDFLib
 
 Implementation of the <a href="http://www.w3.org/TR/rdf-sparql-query/">W3C SPARQL</a>
