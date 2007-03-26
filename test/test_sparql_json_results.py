@@ -38,12 +38,11 @@ wild_query = PROLOGUE+"""
 SELECT * WHERE { ?x foaf:name ?name . }
 """
 
-wild_correct = """"x" : {"type": "uri", "value" : "http://example.org/bob"}
+wild_correct = """"name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"}
                    ,
-                   "name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"}
+                   "x" : {"type": "uri", "value" : "http://example.org/bob"}
                 }"""
-
-
+                
 class TestSparqlJsonResults(unittest.TestCase):
 
     def setUp(self):
