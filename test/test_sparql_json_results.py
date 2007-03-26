@@ -42,7 +42,22 @@ wild_correct = """"name" : {"type": "literal", "xml:lang" : "None", "value" : "B
                    ,
                    "x" : {"type": "uri", "value" : "http://example.org/bob"}
                 }"""
-                
+
+
+union_query  = PROLOGUE+"""
+SELECT DISTINCT ?uri ?name WHERE {
+            { <http://example.org/alice> foaf:name ?name . } UNION { <http://example.org/bob> foaf:name ?name . }
+}
+"""
+
+union_correct = """{
+                   "name" : {"type": "literal", "xml:lang" : "None", "value" : "Alice"}
+                },
+               {
+                   "name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"}
+                }"""
+
+
 class TestSparqlJsonResults(unittest.TestCase):
 
     def setUp(self):
@@ -59,6 +74,9 @@ class TestSparqlJsonResults(unittest.TestCase):
 
     def testWildcard(self):
         self._query_result_contains(wild_query, wild_correct)
+
+    def testUnion(self):
+        self._query_result_contains(union_query, union_correct)
 
 
 if __name__ == "__main__":
