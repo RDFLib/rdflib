@@ -18,8 +18,7 @@ from rdflib.Literal     import Literal
 from rdflib.BNode       import BNode
 from rdflib.URIRef      import URIRef
 from rdflib.exceptions  import Error
-from rdflib.util        import check_predicate, check_subject, check_object
-
+from rdflib.util        import check_predicate, check_subject, check_object, list2set
 from graphPattern       import GraphPattern
 
 ################
@@ -642,7 +641,7 @@ class Query :
        if self.parent1 != None and self.parent2 != None :
            return self.parent1._getAllVariables().union(self.parent2._getAllVariables())
        else :
-           return set(self.top.bindings.keys())
+           return list2set(self.top.bindings.keys())
 
     def _orderedSelect(self,selection,orderedBy,orderDirection) :
         """

@@ -9,6 +9,10 @@ from rdflib.exceptions import SubjectTypeError, PredicateTypeError, ObjectTypeEr
 from rdflib.compat import rsplit
 from cPickle import loads
 
+def list2set(seq):
+    seen = set()
+    return [ x for x in seq if x not in seen and not seen.add(x)]
+
 def first(seq):
     for result in seq:
         return result

@@ -250,8 +250,7 @@ class SPARQLQueryResult(QueryResult.QueryResult):
            except :
                # the element was not there, all the better...
                pass
-           allvarsL = list(self.allVariables)
-
+           allvarsL = self.allVariables
            if format == "json" :
                retval += '{\n'
                retval += '   "head" : {\n        "vars" : [\n'
