@@ -639,8 +639,8 @@ class Query :
     def _getAllVariables(self):
        """Retrieve the list of all variables, to be returned"""
        if self.parent1 != None and self.parent2 != None :
-           return self.parent1._getAllVariables().union(self.parent2._getAllVariables())
-       else :
+           return list2set(self.parent1.top.bindings.keys() + self.parent2.top.bindings.keys())
+       else:
            return list2set(self.top.bindings.keys())
 
     def _orderedSelect(self,selection,orderedBy,orderDirection) :
