@@ -1,4 +1,5 @@
 ### Utilities for evaluating a parsed SPARQL expression using sparql-p
+import rdflib
 from rdflib.sparql import sparqlGraph, sparqlOperators
 from rdflib.sparql.sparqlOperators import getValue
 from rdflib.sparql.graphPattern import BasicGraphPattern
@@ -157,6 +158,10 @@ def mapToOperator(expr,prolog,combinationArg=None):
         return "%s(%s)%s"%(normBuiltInName,",".join([mapToOperator(i,prolog,combinationArg) for i in expr.arguments]),combinationInvokation)
     elif isinstance(expr,Literal):
         return str(expr)
+    elif isinstance(expr,URIRef):
+        import warnings
+        warnings.warn("There is the possibility of __repr__ being deprecated in python3K",DeprecationWarning,stacklevel=3)        
+        return repr(expr)    
     elif isinstance(expr,(QName,basestring)):
         return "'%s'"%convertTerm(expr,prolog)
     elif isinstance(expr,ParsedAdditiveExpressionList):
