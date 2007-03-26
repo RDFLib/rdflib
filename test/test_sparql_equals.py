@@ -1,15 +1,15 @@
 # -*- coding: UTF-8 -*-
 from rdflib import ConjunctiveGraph, URIRef
 from StringIO import StringIO
+import unittest
 
-
-class TestSparqlEquals(object):
+class TestSparqlEquals(unittest.TestCase):
 
     PREFIXES = {
         'rdfs': "http://www.w3.org/2000/01/rdf-schema#"
     }
 
-    def setup(self):
+    def setUp(self):
         testContent = """
             @prefix rdfs: <%(rdfs)s> .
             <http://example.org/doc/1> rdfs:label "Document 1"@en .
@@ -30,9 +30,8 @@ class TestSparqlEquals(object):
             }
         """) % self.PREFIXES
         res = self.graph.query(query)
-        print res.selected
         expected = [uri]
-        assert res.selected == expected, \
-                "Expected %s == %s" % (expected, res.selected)
+        self.assertEqual(res.selected,expected)
 
-
+if __name__ == "__main__":
+    unittest.main()
