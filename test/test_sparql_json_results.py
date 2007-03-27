@@ -21,41 +21,58 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 """
 
 
-opt_query = PROLOGUE+"""
-SELECT ?name ?x ?friend
-WHERE { ?x foaf:name ?name .
-        OPTIONAL { ?x foaf:knows ?friend . }
-}
-"""
+test_material = {}
 
-opt_correct = """"name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"}
+test_material['optional'] = (PROLOGUE+"""
+    SELECT ?name ?x ?friend
+    WHERE { ?x foaf:name ?name .
+            OPTIONAL { ?x foaf:knows ?friend . }
+    }
+    """,
+    """"name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"}
                    ,
                    "x" : {"type": "uri", "value" : "http://example.org/bob"}
                 }"""
+    )
 
-
-wild_query = PROLOGUE+"""
-SELECT * WHERE { ?x foaf:name ?name . }
-"""
-
-wild_correct = """"name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"}
+test_material['wildcard'] = (PROLOGUE+"""
+    SELECT * WHERE { ?x foaf:name ?name . }
+    """,
+    """"name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"}
                    ,
                    "x" : {"type": "uri", "value" : "http://example.org/bob"}
                 }"""
+    )
 
-
-union_query  = PROLOGUE+"""
-SELECT DISTINCT ?uri ?name WHERE {
-            { <http://example.org/alice> foaf:name ?name . } UNION { <http://example.org/bob> foaf:name ?name . }
-}
-"""
-
-union_correct = """{
-                   "name" : {"type": "literal", "xml:lang" : "None", "value" : "Alice"}
+test_material['union'] = (PROLOGUE+"""
+    SELECT DISTINCT ?name WHERE {
+                { <http://example.org/alice> foaf:name ?name . } UNION { <http://example.org/bob> foaf:name ?name . }
+    }
+    """,
+    """{
+                   "name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"}
                 },
                {
-                   "name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"}
+                   "name" : {"type": "literal", "xml:lang" : "None", "value" : "Alice"}
                 }"""
+    )
+
+test_material['union3'] = (PROLOGUE+"""
+    SELECT DISTINCT ?name WHERE {
+                { <http://example.org/alice> foaf:name ?name . }
+                UNION { <http://example.org/bob> foaf:name ?name . }
+                UNION { <http://example.org/nobody> foaf:name ?name . }
+    }
+            """, '"Alice"'
+    )
+
+
+def make_method(testname):
+    def test(self):
+        query, correct = test_material[testname]
+        self._query_result_contains(query, correct)
+    test.__name__ = 'test%s' % testname.title()
+    return test
 
 
 class TestSparqlJsonResults(unittest.TestCase):
@@ -67,16 +84,16 @@ class TestSparqlJsonResults(unittest.TestCase):
     def _query_result_contains(self, query, correct):
         results = self.graph.query(query)
         result_json = results.serialize(format='json')
-        self.failUnless(result_json.find(correct) > 0)
+        self.failUnless(result_json.find(correct) >= 0,
+                "Expected:\n %s \n- to contain:\n%s" % (result_json, correct))
 
-    def testOPTIONALSimple(self):
-        self._query_result_contains(opt_query, opt_correct)
+    testOptional = make_method('optional')
 
-    def testWildcard(self):
-        self._query_result_contains(wild_query, wild_correct)
+    testWildcard = make_method('wildcard')
 
-    def testUnion(self):
-        self._query_result_contains(union_query, union_correct)
+    testUnion = make_method('union')
+
+    testUnion3 = make_method('union3')
 
 
 if __name__ == "__main__":
