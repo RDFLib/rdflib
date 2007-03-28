@@ -26,40 +26,10 @@ from rdflib.util        import check_predicate, check_subject, check_object, lis
 # influence efficiency or anything else.
 JunkResource = URIRef("http://www.ivan-herman.net/SPARQLJunk")
 
-import sys, sets, datetime
+import sys, sets
 from types import *
 
 Debug = False
-
-##########################################################################
-# XML Schema datatypes
-type_string   = "http://www.w3.org/2001/XMLSchema#string"
-type_integer  = "http://www.w3.org/2001/XMLSchema#integer"
-type_long     = "http://www.w3.org/2001/XMLSchema#long"
-type_double   = "http://www.w3.org/2001/XMLSchema#double"
-type_float    = "http://www.w3.org/2001/XMLSchema#float"
-type_decimal  = "http://www.w3.org/2001/XMLSchema#decimal"
-type_dateTime = "http://www.w3.org/2001/XMLSchema#dateTime"
-type_date     = "http://www.w3.org/2001/XMLSchema#date"
-type_time     = "http://www.w3.org/2001/XMLSchema#time"
-
-# Mapping from the Python types to the corresponding XML Schema types. Note that, for internal purposes, strings
-# are just used in a plain format, not with the XML Schema version (the XML Schema string is a default for
-# an RDF datatype, hence this here)
-_basicTypes = {
-    IntType     : type_integer,
-    FloatType   : type_float,
-    StringType  : "",
-    UnicodeType : "",
-    LongType    : type_long
-}
-
-# Some extra types that are not based on the basic Pythong types but on existing library classes.
-_extraTypes = {
-    datetime.datetime  : type_dateTime,
-    datetime.date      : type_date,
-    datetime.time      : type_time,
-}
 
 ##########################################################################
 # Utilities
@@ -152,29 +122,6 @@ def _variablesToArray(variables,name='') :
         raise SPARQLError("'%s' argument must be a string, a Variable, or a list of those" % name)
     return retval
 
-def _schemaType(v) :
-    """Return an XML Schema type starting from a Python variable. An
-    exception is raised if the variable does not corresponds to any of
-    the schema types that are allowed by this implementation. A
-    SPARQLError Exception is raised if the type represents a
-    non-implemented type.
-
-    @param v: Python variable
-    @return: URI for the XML Datatype
-    @rtype: string
-    @raise SPARQLError: if the type of 'v' is not implemented
-    """
-    # First the basic Types
-    for t in _basicTypes :
-        if type(v) is t :
-            return _basicTypes[t]
-    # Then the extra types
-    for t in _extraTypes :
-        if isinstance(v,t) :
-            return _extraTypes[t]
-    # if we got here, the type is illegal...
-    raise SPARQLError("%s is not an accepted datatype" % v)
-
 def _createResource(v) :
     """Create an RDFLib Literal instance with the corresponding XML
     Schema datatype set. If the variable is already an RDFLib
@@ -195,17 +142,7 @@ def _createResource(v) :
         # just do nothing
         return v
     else :
-        xmlDatatype = _schemaType(v)
-        # note: if there was an error with the type, an exception has been raised at this point
-        # unfortunately, some of the default python data->string conversions are not the same
-        # as required by the XML Schema datatype document :-(
-        # Otherwise, relies on the fact that the init of Literal uses, essentially, the `` operator of
-        # python to store the value.
-        if xmlDatatype == type_dateTime :
-            # XML Schema requires a "T" separator, and this is not the default for the conversion...
-            return Literal(v.isoformat(sep="T"),datatype=xmlDatatype)
-        else :
-            return Literal(v,datatype=xmlDatatype)
+        return Literal(v) # Literal now does the datatype bits
 
 def _isResQuest(r) :
     """
