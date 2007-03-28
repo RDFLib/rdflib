@@ -6,21 +6,11 @@
 
 ##########################################################################
 from rdflib.Graph import Graph
-from rdflib.Namespace   import Namespace
-from rdflib.URIRef      import URIRef
-from rdflib.Literal     import Literal
-from rdflib.BNode       import BNode
 from rdflib.exceptions  import Error
 
 from rdflib.util import check_predicate, check_subject, check_object
 
 import sparql
-
-##########################################################################
-# strictly speaking this is not an RDF stuff, but comes up so often...
-
-ns_dc  = Namespace("http://purl.org/dc/elements/1.1/")
-ns_owl = Namespace("http://www.w3.org/2002/07/owl#")
 
 ##########################################################################
 import sys, warnings, sets
@@ -165,38 +155,6 @@ class SPARQLGraph(sparql.SPARQL) :
         """
         return self.clusterBackward(seed) + self.clusterForward(seed)
 
-    #############################################################################################################
-    # Operator methods;
-    #
-    ##
-    # Set theoretical union, expressed as an operator
-    # @param other the other triple store
-    def __add__(self,other) :
-        """Set theoretical union"""
-        retval = SPARQLGraph()
-        for x in self.graph:  retval.add(x)
-        for y in other.graph: retval.add(y)
-        return retval
-
-    ##
-    # Set theoretical intersection, expressed as an operator
-    # @param other the other triple store
-    def __mul__(self,other) :
-        """Set theoretical intersection"""
-        retval = SPARQLGraph()
-        for x in other.graph:
-            if x in self.graph: retval.add(x)
-        return retval
-
-    ##
-    # Set theoretical difference, expressed as an operator
-    # @param other the other triple store
-    def __sub__(self,other) :
-        """Set theoretical difference"""
-        retval = SPARQLGraph()
-        for x in self.graph:
-            if not x in other.graph : retval.add(x)
-        return retval
 
 
 

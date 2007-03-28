@@ -400,6 +400,31 @@ class Graph(Node):
             self.remove(triple)
         return self
 
+    def __add__(self,other) :
+        """Set theoretical union"""
+        retval = Graph()
+        for x in self.graph:
+            retval.add(x)
+        for y in other.graph:
+            retval.add(y)
+        return retval
+
+    def __mul__(self,other) :
+        """Set theoretical intersection"""
+        retval = Graph()
+        for x in other.graph:
+            if x in self.graph: 
+                retval.add(x)
+        return retval
+
+    def __sub__(self,other) :
+        """Set theoretical difference"""
+        retval = Graph()
+        for x in self.graph:
+            if not x in other.graph : 
+                retval.add(x)
+        return retval
+
     # Conv. methods
 
     def set(self, (subject, predicate, object)):
