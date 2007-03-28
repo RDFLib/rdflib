@@ -262,42 +262,6 @@ def _processResults(select,arr) :
     return retval
 
 
-
-##########################################################################
-# This utility is necessary to maintain the deprecated interfaces. When those disappear,
-# this utility can be deleted, too
-def _unfoldNestedLists(args) :
-    """To unfold nested lists of the sort = [t,[t1,t2],tt,ttt] into
-    [t,t1,tt,ttt] and [t,t2,tt,ttt]. Returns the list of lists.
-
-    This utility is necessary to maintain the deprecated
-    interfaces. When those disappear, this utility can be deleted, too
-
-    @param args: list
-    @return: unfolded list of lists
-    """
-    allBranches = [[]]
-    for arg in args :
-        if type(arg) is tuple :
-            for x in allBranches :
-                x.append(arg)
-        elif type(arg) is list :
-            # All lists in allBranches must be copied as many times as there are tuples in
-            # arg, and the elements of arg must be appended to them
-            newAllBranches = []
-            for x in allBranches :
-                for z in arg:
-                    xz = [ q for q in x ]
-                    if type(z) is tuple :
-                        xz.append(z)
-                    elif type(z) is list :
-                        xz = xz + z
-                    newAllBranches.append(xz)
-            allBranches = newAllBranches
-    return allBranches
-
-
-############################################################################################
 class Query :
     """
     Result of a SPARQL query. It stores to the top of the query tree, and allows some subsequent
