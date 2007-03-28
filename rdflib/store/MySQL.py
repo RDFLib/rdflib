@@ -218,11 +218,14 @@ class MySQL(Store):
             db.commit()
             c.close()
             db.close()
-
+        try:
+            port = int(configDict['port'])
+        except:
+            raise ArithmeticError('MySQL port must be a valid integer')
         self._db = MySQLdb.connect(user = configDict['user'],
                                    passwd = configDict['password'],
                                    db=configDict['db'],
-                                   port=configDict['port'],
+                                   port=port,
                                    host=configDict['host'],
                                    #use_unicode=True,
                                    #read_default_file='/etc/my.cnf'
