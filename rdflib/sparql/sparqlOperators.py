@@ -26,20 +26,10 @@
 ##
 
 import sys, os, re
-from sparql             import _schemaType, _questChar, SPARQLError, JunkResource, Unbound
+from sparql             import _questChar, SPARQLError, JunkResource, Unbound
 from rdflib.Literal     import Literal
 from rdflib.BNode       import BNode
 from rdflib.URIRef      import URIRef
-
-from sparql import type_string
-from sparql import type_integer
-from sparql import type_long
-from sparql import type_double
-from sparql import type_float
-from sparql import type_decimal
-from sparql import type_dateTime
-from sparql import type_date
-from sparql import type_time
 
 from sparql import _graphKey, _createResource
 

@@ -12,13 +12,11 @@ for the functionalities.
 """
 
 ##########################################################################
-from rdflib.Identifier  import Identifier
 from rdflib.Literal     import Literal
 from rdflib.BNode       import BNode
 from rdflib.URIRef      import URIRef
 from rdflib.exceptions  import Error
 from rdflib.util        import check_predicate, check_subject, check_object, list2set
-from graphPattern       import GraphPattern
 
 ################
 #This was used in a previous, work version of the
