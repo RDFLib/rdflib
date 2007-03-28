@@ -18,14 +18,6 @@ from rdflib.URIRef      import URIRef
 from rdflib.exceptions  import Error
 from rdflib.util        import check_predicate, check_subject, check_object, list2set
 
-################
-#This was used in a previous, work version of the
-# implementation, but it may be unnecessary. I keep it for now,
-# because the operators are also prepared to this. If it proves to be
-# really unnecessary, I can always throw it away, it does not really
-# influence efficiency or anything else.
-JunkResource = URIRef("http://www.ivan-herman.net/SPARQLJunk")
-
 import sys, sets
 from types import *
 

@@ -26,7 +26,7 @@
 ##
 
 import sys, os, re
-from sparql             import _questChar, SPARQLError, JunkResource, Unbound
+from sparql             import _questChar, SPARQLError, Unbound
 from rdflib.Literal     import Literal
 from rdflib.BNode       import BNode
 from rdflib.URIRef      import URIRef
@@ -213,7 +213,7 @@ def bound(a) :
             return False
         if v in bindings :
             val = bindings[v]
-            return not (val == None or val == JunkResource)
+            return not (val == None)
         else :
             return False
     return f
@@ -229,7 +229,7 @@ def isURI(a) :
             return False
         try :
             val = bindings[v]
-            if val == None or val == JunkResource :
+            if val == None:
                 return False
             else :
                 return isinstance(val,URIRef)
@@ -255,7 +255,7 @@ def isBlank(a) :
             return False
         try :
             val = bindings[v]
-            if val == None or val == JunkResource :
+            if val == None:
                 return False
             else :
                 return isinstance(val,BNode)
@@ -274,7 +274,7 @@ def isLiteral(a) :
             return False
         try :
             val = bindings[v]
-            if val == None or val == JunkResource :
+            if val == None:
                 return False
             else :
                 return isinstance(val,Literal)
@@ -293,7 +293,7 @@ def str(a) :
             return ""
         try :
             val = bindings[v]
-            if val == None or val == JunkResource :
+            if val == None:
                 return ""
             else :
                 return `val`
@@ -311,7 +311,7 @@ def lang(a) :
         if v == None: return ""
         try :
             val = bindings[v]
-            if val == None or val == JunkResource :
+            if val == None:
                 return ""
             else :
                 return val.lang
@@ -334,7 +334,7 @@ def datatype(a) :
 
         try :
             val = bindings[v]
-            if val == None or val == JunkResource :
+            if val == None:
                 return ""
             else :
                 return val.datatype
