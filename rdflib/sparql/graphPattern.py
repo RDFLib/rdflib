@@ -12,6 +12,38 @@ from rdflib.BNode       import BNode
 from rdflib.URIRef      import URIRef
 from types import *
 
+def _createResource(v) :
+    """Create an RDFLib Literal instance with the corresponding XML
+    Schema datatype set. If the variable is already an RDFLib
+    resource, it simply returns the resource; otherwise the
+    corresponding Literal.  A SPARQLError Exception is raised if the
+    type is not implemented.
+
+    The Literal contains the string representation of the variable (as
+    Python does it by default) with the corresponding XML Schema URI
+    set.
+
+    @param v: Python variable
+    @return: either an RDFLib Literal (if 'v' is not an RDFLib Resource), or the same variable if it is already
+    an RDFLib resource (ie, Literal, BNode, or URIRef)
+    @raise SPARQLError: if the type of 'v' is not implemented
+    """
+    if isinstance(v,Literal) or isinstance(v,BNode) or isinstance(v,URIRef) :
+        # just do nothing
+        return v
+    else :
+        return Literal(v) # Literal now does the datatype bits
+
+
+def _isResQuest(r) :
+    """
+    Is 'r' a request string (ie, of the form "?XXX")?
+
+    @rtype: Boolean
+    """
+    if r and isinstance(r,basestring) and r[0] == _questChar :
+        return True
+    return False
 
 
 class GraphPattern :
@@ -48,7 +80,7 @@ class GraphPattern :
 
         @param tupl: either a three or four element tuple
         """
-        from sparql import _questChar, SPARQLError, _createResource, _isResQuest, Debug, PatternBNode
+        from sparql import _questChar, SPARQLError, Debug, PatternBNode
         if type(tupl) != tuple :
             raise SPARQLError("illegal argument, pattern must be a tuple, got %s" % type(tupl))
         if len(tupl) != 3 and len(tupl) != 4 :
@@ -194,7 +226,7 @@ class GraphPattern :
         @param tripleStore: an (rdflib) Triple Store
         @param bindings: dictionary
         """
-        from sparql import _questChar, _isResQuest, Debug
+        from sparql import _questChar, Debug
         localBnodes = {}
         for c in self.bnodes :
             localBnodes[c] = BNode()
@@ -294,7 +326,7 @@ class BasicGraphPattern(GraphPattern) :
 
         @param tupl: either a three or four element tuple
         """
-        from sparql import SPARQLError,Unbound, PatternBNode, Debug, _createResource
+        from sparql import SPARQLError,Unbound, PatternBNode, Debug
         if type(tupl) != tuple :
             raise SPARQLError("illegal argument, pattern must be a tuple, got %s" % type(tupl))
         if len(tupl) != 3 and len(tupl) != 4 :

@@ -31,7 +31,7 @@ from rdflib.Literal     import Literal
 from rdflib.BNode       import BNode
 from rdflib.URIRef      import URIRef
 
-from sparql import _createResource
+from rdflib.sparql.graphPattern import _createResource
 
 from sparql import Debug
 
