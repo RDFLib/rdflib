@@ -16,9 +16,6 @@ for the functionalities.
 from rdflib.exceptions  import Error
 from rdflib.sparql import _questChar
 
-Debug = False
-
-
 
 ##
 # SPARQL Error Exception (subclass of the RDFLib Exceptions)
@@ -34,7 +31,6 @@ class Unbound :
         @param name: the name of the variable (without the '?' character)
         @type name: unicode or string
         """
-        from sparql import _questChar, Debug
         if isinstance(name,basestring) :
             self.name     = _questChar + name
             self.origName = name

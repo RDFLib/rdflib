@@ -12,7 +12,7 @@ from rdflib.BNode       import BNode
 from rdflib.URIRef      import URIRef
 from types import *
 
-from rdflib.sparql import _questChar
+from rdflib.sparql import _questChar, Debug
 
 def _createResource(v) :
     """Create an RDFLib Literal instance with the corresponding XML
@@ -82,7 +82,7 @@ class GraphPattern :
 
         @param tupl: either a three or four element tuple
         """
-        from sparql import _questChar, SPARQLError, Debug
+        from sparql import _questChar, SPARQLError
         if type(tupl) != tuple :
             raise SPARQLError("illegal argument, pattern must be a tuple, got %s" % type(tupl))
         if len(tupl) != 3 and len(tupl) != 4 :
@@ -228,7 +228,6 @@ class GraphPattern :
         @param tripleStore: an (rdflib) Triple Store
         @param bindings: dictionary
         """
-        from sparql import _questChar, Debug
         localBnodes = {}
         for c in self.bnodes :
             localBnodes[c] = BNode()
@@ -328,7 +327,7 @@ class BasicGraphPattern(GraphPattern) :
 
         @param tupl: either a three or four element tuple
         """
-        from sparql import SPARQLError,Unbound, Debug
+        from sparql import SPARQLError,Unbound
         if type(tupl) != tuple :
             raise SPARQLError("illegal argument, pattern must be a tuple, got %s" % type(tupl))
         if len(tupl) != 3 and len(tupl) != 4 :

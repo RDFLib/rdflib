@@ -32,9 +32,7 @@ from rdflib.BNode       import BNode
 from rdflib.URIRef      import URIRef
 
 from rdflib.sparql.graphPattern import _createResource
-from rdflib.sparql import _questChar
-
-from sparql import Debug
+from rdflib.sparql import _questChar, Debug
 
 ##
 # Boolean test whether this is a a query string or not
