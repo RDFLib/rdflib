@@ -188,15 +188,13 @@ def retToJSON(val):
     else:
         return '"type": "literal", "value" : "%s"' % val
 
-def bindingJSON(name, val, first):
+def bindingJSON(name, val):
     if val == None:
         return ""
     retval = ''
-    if not first:
-        retval += '                   ,\n'
     retval += '                   "%s" : {' % name
     retval += retToJSON(val)
-    retval += '}\n'
+#    retval += '}\n'
     return retval
 
 class SPARQLQueryResult(QueryResult.QueryResult):
@@ -246,16 +244,6 @@ class SPARQLQueryResult(QueryResult.QueryResult):
            retval = ""
            allvarsL = self.allVariables
            if format == "json" :
-               retval += '{\n'
-               retval += '   "head" : {\n        "vars" : [\n'
-               for i in xrange(0,len(allvarsL)) :
-                   retval += '             "%s"' % allvarsL[i][1:]
-                   if i == len(allvarsL) - 1 :
-                       retval += '\n'
-                   else :
-                       retval += ',\n'
-               retval += '         ]\n'
-               retval += '    },\n'
                retval += '    "results" : {\n'
                retval += '          "ordered" : %s,\n' % (self.orderBy and 'true' or 'false')
                retval += '          "distinct" : %s,\n' % (self.distinct and 'true' or 'false')
@@ -263,24 +251,22 @@ class SPARQLQueryResult(QueryResult.QueryResult):
                for i in xrange(0,len(self.selected)):
                    hit = self.selected[i]
                    retval += '               {\n'
+                   bindings = []
                    if len(self.selectionF) == 0:
-                        firstJ = 0
                         for j in xrange(0, len(allvarsL)):
-                            val = bindingJSON(allvarsL[j][1:], hit[j], j == firstJ)
-                            if not val:
-                                firstJ += 1
-                            else:
-                                retval += val
+                            b = bindingJSON(allvarsL[j][1:],hit[j])
+                            if b != "":
+                                bindings.append(b)
                    elif len(self.selectionF) == 1:
-                        retval += bindingJSON(self.selectionF[0][1:],hit, True)
+                       bindings.append(bindingJSON(self.selectionF[0][1:],hit))
                    else:
-                        firstJ = 0
                         for j in xrange(0, len(self.selectionF)):
-                            val = bindingJSON(self.selectionF[j][1:], hit[j], j == firstJ)
-                            if not val:
-                                firstJ += 1
-                            else:
-                                retval += val
+                            b = bindingJSON(self.selectionF[j][1:],hit[j])
+                            if b != "":
+                                bindings.append(b)
+                           
+                   retval += "},\n".join(bindings)
+                   retval += "}\n"
                    retval += '                }'
                    if i != len(self.selected) -1:
                        retval += ',\n'
@@ -289,7 +275,26 @@ class SPARQLQueryResult(QueryResult.QueryResult):
                retval += '           ]\n'
                retval += '    }\n'
                retval += '}\n'
-
+               
+               selected_vars = self.selectionF
+               
+               if len(selected_vars) == 0:
+                   selected_vars = allvarsL
+                   
+               header = ""
+               header += '{\n'
+               header += '   "head" : {\n        "vars" : [\n'
+               for i in xrange(0,len(selected_vars)) :
+                   header += '             "%s"' % selected_vars[i][1:]
+                   if i == len(selected_vars) - 1 :
+                       header += '\n'
+                   else :
+                       header += ',\n'
+               header += '         ]\n'
+               header += '    },\n'
+               
+               retval = header + retval
+               
            elif format == "xml" :
                # xml output
                out = StringIO()

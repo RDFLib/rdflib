@@ -29,19 +29,37 @@ test_material['optional'] = (PROLOGUE+"""
             OPTIONAL { ?x foaf:knows ?friend . }
     }
     """,
-    """"name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"}
-                   ,
+    """"name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"},
                    "x" : {"type": "uri", "value" : "http://example.org/bob"}
                 }"""
+    )
+
+test_material['select_vars'] = (PROLOGUE+"""
+    SELECT ?name ?friend
+    WHERE { ?x foaf:name ?name .
+            OPTIONAL { ?x foaf:knows ?friend . }
+    }""",
+    """"vars" : [
+             "name",
+             "friend"
+         ]"""
     )
 
 test_material['wildcard'] = (PROLOGUE+"""
     SELECT * WHERE { ?x foaf:name ?name . }
     """,
-    """"name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"}
-                   ,
+    """"name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"},
                    "x" : {"type": "uri", "value" : "http://example.org/bob"}
                 }"""
+    )
+
+test_material['wildcard_vars'] = (PROLOGUE+"""
+    SELECT * WHERE { ?x foaf:name ?name . }
+    """,
+    """"vars" : [
+             "name",
+             "x"
+         ]"""
     )
 
 test_material['union'] = (PROLOGUE+"""
@@ -95,7 +113,10 @@ class TestSparqlJsonResults(unittest.TestCase):
 
     testUnion3 = make_method('union3')
 
-
+    testSelectVars = make_method('select_vars')
+    
+    testWildcardVars = make_method('wildcard_vars')
+    
 if __name__ == "__main__":
     unittest.main()
 
