@@ -3,7 +3,7 @@ import rdflib
 from rdflib.sparql import sparqlGraph, sparqlOperators
 from rdflib.sparql.sparqlOperators import getValue
 from rdflib.sparql.graphPattern import BasicGraphPattern
-from rdflib.sparql.sparql import Unbound,PatternBNode, SPARQLError,_variablesToArray
+from rdflib.sparql.sparql import Unbound, SPARQLError,_variablesToArray
 from rdflib.Graph import ConjunctiveGraph, Graph, BackwardCompatGraph,ReadOnlyGraphAggregate
 from rdflib import URIRef,Variable,BNode, Literal, plugin, RDF
 from rdflib.store import Store
@@ -46,7 +46,7 @@ CAMEL_CASE_BUILTINS = {
 
 def convertTerm(term,queryProlog):
     """
-    Utility function  for converting parsed Triple components into Unbound / PatternBNode
+    Utility function  for converting parsed Triple components into Unbound 
     """
     if isinstance(term,Variable):
         return Unbound(term[1:])

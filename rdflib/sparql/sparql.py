@@ -59,29 +59,6 @@ class Unbound :
     def __str__(self) :
         return self.__repr__()
 
-class PatternBNode :
-    """A class to encapsulate a BNode in a Pattern. This class should be used in conjunction
-    with L{BasicGraphPattern<graphPattern.BasicGraphPattern>}.
-
-    Usage of this class may be necessary when the query is used for a L{graph construction<Query.construct>}.
-    """
-    def __init__(self,name) :
-        """
-        @param name: the name of the bnode (without the '_:' characters)
-        @type name: unicode or string
-        """
-        from sparql import _questChar, Debug
-        if isinstance(name,basestring) :
-            self.name     = name
-        else :
-            raise SPARQLError("illegal argument, variable name must be a string or unicode")
-
-    def __repr__(self) :
-        retval  = "_:%s" % self.name
-        return retval
-
-    def __str__(self) :
-        return self.__repr__()
 
 def _variablesToArray(variables,name='') :
     """Turn an array of Variables or query strings into an array of query strings. If the 'variables'

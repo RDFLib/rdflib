@@ -80,7 +80,7 @@ class GraphPattern :
 
         @param tupl: either a three or four element tuple
         """
-        from sparql import _questChar, SPARQLError, Debug, PatternBNode
+        from sparql import _questChar, SPARQLError, Debug
         if type(tupl) != tuple :
             raise SPARQLError("illegal argument, pattern must be a tuple, got %s" % type(tupl))
         if len(tupl) != 3 and len(tupl) != 4 :
@@ -96,7 +96,7 @@ class GraphPattern :
                 if not c in self.unbounds :
                     self.unbounds.append(c)
                 final.append(c)
-            elif isinstance(c,(BNode,PatternBNode)):
+            elif isinstance(c, BNode):
                 #Do nothing - BNode name management is handled by SPARQL parser
 #                if not c in self.bnodes :
 #                    self.bnodes[c] = BNode()
@@ -326,7 +326,7 @@ class BasicGraphPattern(GraphPattern) :
 
         @param tupl: either a three or four element tuple
         """
-        from sparql import SPARQLError,Unbound, PatternBNode, Debug
+        from sparql import SPARQLError,Unbound, Debug
         if type(tupl) != tuple :
             raise SPARQLError("illegal argument, pattern must be a tuple, got %s" % type(tupl))
         if len(tupl) != 3 and len(tupl) != 4 :
@@ -342,10 +342,7 @@ class BasicGraphPattern(GraphPattern) :
                 if not c.name in self.unbounds :
                     self.unbounds.append(c.name)
                 final.append(c.name)
-            elif isinstance(c,PatternBNode):
-                #Do nothing - BNode name management is handled by SPARQL parser
-                final.append(c)
-            elif isinstance(c,BNode):
+            elif isinstance(c, BNode):
                 #Do nothing - BNode name management is handled by SPARQL parser
                 final.append(c)
             else :
