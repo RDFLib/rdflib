@@ -95,6 +95,12 @@ U{W3C Software License<http://www.w3.org/Consortium/Legal/2002/copyright-softwar
 
 __version__ = "2.2"
 
+# Note that the SPARQL draft allows the usage of a different query character, but I decided not to be that
+# generous, and keep to one only. I put it into a separate variable to avoid problems if the group decides
+# to change the syntax on that detail...
+_questChar  = "?"
+
+
 def generateCollectionConstraint(triplets,collection,item) :
     """
 

@@ -12,6 +12,8 @@ from rdflib.BNode       import BNode
 from rdflib.URIRef      import URIRef
 from types import *
 
+from rdflib.sparql import _questChar
+
 def _createResource(v) :
     """Create an RDFLib Literal instance with the corresponding XML
     Schema datatype set. If the variable is already an RDFLib

@@ -12,24 +12,13 @@ for the functionalities.
 """
 
 ##########################################################################
-from rdflib.Literal     import Literal
-from rdflib.BNode       import BNode
-from rdflib.URIRef      import URIRef
-from rdflib.exceptions  import Error
-from rdflib.util        import check_predicate, check_subject, check_object, list2set
 
-import sys, sets
-from types import *
+from rdflib.exceptions  import Error
+from rdflib.sparql import _questChar
 
 Debug = False
 
-##########################################################################
-# Utilities
 
-# Note that the SPARQL draft allows the usage of a different query character, but I decided not to be that
-# generous, and keep to one only. I put it into a separate variable to avoid problems if the group decides
-# to change the syntax on that detail...
-_questChar  = "?"
 
 ##
 # SPARQL Error Exception (subclass of the RDFLib Exceptions)
