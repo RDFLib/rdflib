@@ -4,7 +4,7 @@ from rdflib.sparql import sparqlGraph, sparqlOperators, SPARQLError
 from rdflib.sparql.sparqlOperators import getValue
 from rdflib.sparql.graphPattern import BasicGraphPattern
 from rdflib.sparql.Unbound import Unbound
-from rdflib.sparql.Query import _variablesToArray
+from rdflib.sparql.Query import _variablesToArray, queryObject
 from rdflib.Graph import ConjunctiveGraph, Graph, BackwardCompatGraph,ReadOnlyGraphAggregate
 from rdflib import URIRef,Variable,BNode, Literal, plugin, RDF
 from rdflib.store import Store
@@ -378,7 +378,7 @@ def Evaluate(graph,query,passedBindings = {},DEBUG = False):
         print "## Patterns ##\n",basicPatterns
         print "## OptionalPatterns ##\n",optionalPatterns
 
-    result = tripleStore.queryObject(basicPatterns,optionalPatterns,passedBindings)
+    result = queryObject(tripleStore, basicPatterns,optionalPatterns,passedBindings)
     if result == None :
         # generate some proper output for the exception :-)
         msg = "Errors in the patterns, no valid query object generated; "

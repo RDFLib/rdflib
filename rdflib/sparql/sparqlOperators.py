@@ -361,7 +361,6 @@ def isOnCollection(collection,item, triplets) :
     The method returns an adapted method.
     """
     #check_subject(collection)
-    from sparql import _questChar
     collUnbound = False
     if isinstance(collection,Unbound) :
         collUnbound = True
