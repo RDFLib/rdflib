@@ -48,5 +48,11 @@ setup(
 
     test_suite = 'nose.collector',
 
+    entry_points = {        
+        'nose.plugins': [
+            'EARLPlugin = rdflib.EARLPlugin:EARLPlugin',
+            ],
+        },
+
     )
 
