@@ -45,6 +45,7 @@ NOSE_ARGS = [
         '--with-doctest',
         '--doctest-extension=.doctest',
         '--doctest-tests',
+        '--with-EARL',
     ]
 
 COVERAGE_EXTRA_ARGS = [

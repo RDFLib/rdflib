@@ -16,6 +16,7 @@ from rdflib import URIRef, BNode, Literal
 from rdflib import RDF, RDFS
 from rdflib.Graph import Graph
 from rdflib.Namespace import NamespaceDict as Namespace
+from rdflib.util import date_time
 
 log = logging.getLogger(__name__)
 
@@ -37,7 +38,9 @@ class EARLPlugin(Plugin):
         self.graph.bind("earl", EARL.uri)
 
     def finalize(self, result):
-        self.graph.serialize("results.rdf")
+        # TODO: add plugin options for specifying where to send
+        # output.
+        self.graph.serialize("file:results-%s.rdf" % date_time(), format="pretty-xml")
 
     def addDeprecated(self, test):
         print "Deprecated: %s" % test
