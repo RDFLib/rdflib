@@ -39,7 +39,7 @@ def make_cases():
 def all_tests():
     for test in make_cases():
         yield test.runTest,
-
+all_tests.unstable = True
 
 class RDFaTestStub(unittest.TestCase):
 
@@ -64,6 +64,8 @@ class RDFaTestStub(unittest.TestCase):
         elif isinstance(node, Literal):
             return ntriples.Literal(str(node), lang= node.language or None,
                     dtype= node.datatype  or None)
+        else:
+            raise Exception("unexpected node value")
 
     def runTest(self):
         testfile = self.testbase + ".htm"
