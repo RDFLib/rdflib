@@ -1,8 +1,38 @@
 import types, sets
 
 from rdflib.util import check_subject, list2set
-from rdflib.sparql.sparql import _variablesToArray
 
+from rdflib.sparql import SPARQLError
+from rdflib.sparql.Unbound import Unbound
+
+
+def _variablesToArray(variables,name='') :
+    """Turn an array of Variables or query strings into an array of query strings. If the 'variables'
+    is in fact a single string or Variable, then it is also put into an array.
+
+    @param variables: a string, a unicode, or a Variable, or an array of those (can be mixed, actually). As a special case,
+    if the value is "*", it returns None (this corresponds to the wildcard in SPARQL)
+    @param name: the string to be used in the error message
+    """
+    if isinstance(variables,basestring) :
+        if variables == "*" :
+            return None
+        else :
+            return [variables]
+    elif isinstance(variables,Unbound) :
+        return [variables.name]
+    elif type(variables) == list or type(variables) == tuple :
+        retval = []
+        for s in variables :
+            if isinstance(s,basestring) :
+                retval.append(s)
+            elif isinstance(s,Unbound) :
+                retval.append(s.name)
+            else :
+                raise SPARQLError("illegal type in '%s'; must be a string, unicode, or a Variable" % name)
+    else :
+        raise SPARQLError("'%s' argument must be a string, a Variable, or a list of those" % name)
+    return retval
 
 def _processResults(select,arr) :
     '''

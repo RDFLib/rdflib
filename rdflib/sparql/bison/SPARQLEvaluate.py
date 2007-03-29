@@ -1,9 +1,10 @@
 ### Utilities for evaluating a parsed SPARQL expression using sparql-p
 import rdflib
-from rdflib.sparql import sparqlGraph, sparqlOperators
+from rdflib.sparql import sparqlGraph, sparqlOperators, SPARQLError
 from rdflib.sparql.sparqlOperators import getValue
 from rdflib.sparql.graphPattern import BasicGraphPattern
-from rdflib.sparql.sparql import Unbound, SPARQLError,_variablesToArray
+from rdflib.sparql.Unbound import Unbound
+from rdflib.sparql.Query import _variablesToArray
 from rdflib.Graph import ConjunctiveGraph, Graph, BackwardCompatGraph,ReadOnlyGraphAggregate
 from rdflib import URIRef,Variable,BNode, Literal, plugin, RDF
 from rdflib.store import Store

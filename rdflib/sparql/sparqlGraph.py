@@ -2,8 +2,8 @@ from rdflib import URIRef, BNode, Literal
 from rdflib.Identifier import Identifier
 from rdflib.Graph import Graph
 
+from rdflib.sparql import SPARQLError
 from rdflib.sparql.Query import Query
-from rdflib.sparql.sparql import SPARQLError
 from rdflib.sparql.graphPattern import GraphPattern
 
 

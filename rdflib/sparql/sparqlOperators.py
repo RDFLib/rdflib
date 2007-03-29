@@ -26,13 +26,14 @@
 ##
 
 import sys, os, re
-from sparql             import _questChar, Unbound
+
 from rdflib.Literal     import Literal
 from rdflib.BNode       import BNode
 from rdflib.URIRef      import URIRef
 
 from rdflib.sparql.graphPattern import _createResource
 from rdflib.sparql import _questChar, Debug
+from rdflib.sparql.Unbound import Unbound
 
 ##
 # Boolean test whether this is a a query string or not

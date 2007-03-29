@@ -11,6 +11,19 @@
 #
 #
 """
+TODO: merge this first bit from sparql.sparql.py into rest of doc... updating all along the way.
+
+SPARQL implementation on top of RDFLib
+
+Implementation of the <a href="http://www.w3.org/TR/rdf-sparql-query/">W3C SPARQL</a>
+language (version April 2005). The basic class here is
+supposed to be a superclass of L{rdflib.sparql.sparqlGraph}; it has
+been separated only for a better maintainability.
+
+There is a separate
+U{description<http://dev.w3.org/cvsweb/%7Echeckout%7E/2004/PythonLib-IH/Doc/sparqlDesc.html>}
+for the functionalities.
+
 
 For a general description of the SPARQL API, see the separate, more
 complete
@@ -143,7 +156,11 @@ class Processor(object):
     def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False):
         pass
 
+from rdflib.exceptions  import Error
 
-
-
-
+##
+# SPARQL Error Exception (subclass of the RDFLib Exceptions)
+class SPARQLError(Error) :
+    """Am SPARQL error has been detected"""
+    def __init__(self,msg):
+        Error.__init__(self, ("SPARQL Error: %s." % msg))

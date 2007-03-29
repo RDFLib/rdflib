@@ -12,7 +12,8 @@ from rdflib.BNode       import BNode
 from rdflib.URIRef      import URIRef
 from types import *
 
-from rdflib.sparql import _questChar, Debug
+from rdflib.sparql import _questChar, Debug, SPARQLError
+from rdflib.sparql.Unbound import Unbound
 
 def _createResource(v) :
     """Create an RDFLib Literal instance with the corresponding XML
@@ -66,7 +67,6 @@ class GraphPattern :
         elif type(patterns) == tuple :
             self.addPattern(patterns)
         else :
-            from sparql import SPARQLError
             raise SPARQLError("illegal argument, pattern must be a tuple or a list of tuples")
 
     def _generatePattern(self,tupl) :
@@ -82,7 +82,6 @@ class GraphPattern :
 
         @param tupl: either a three or four element tuple
         """
-        from sparql import _questChar, SPARQLError
         if type(tupl) != tuple :
             raise SPARQLError("illegal argument, pattern must be a tuple, got %s" % type(tupl))
         if len(tupl) != 3 and len(tupl) != 4 :
@@ -198,7 +197,6 @@ class GraphPattern :
 
         @param func: filter function
         """
-        from sparql import SPARQLError
         if type(func) == FunctionType :
             self.constraints.append(func)
         else :
@@ -327,7 +325,6 @@ class BasicGraphPattern(GraphPattern) :
 
         @param tupl: either a three or four element tuple
         """
-        from sparql import SPARQLError,Unbound
         if type(tupl) != tuple :
             raise SPARQLError("illegal argument, pattern must be a tuple, got %s" % type(tupl))
         if len(tupl) != 3 and len(tupl) != 4 :
@@ -352,7 +349,6 @@ class BasicGraphPattern(GraphPattern) :
         return tuple(final)
 		
 if __name__ == '__main__' :
-    from sparql import Unbound
     v1 = Unbound("a")
     g = BasicGraphPattern([("a","?b",24),("?r","?c",12345),(v1,"?c",3333)])
     print g
