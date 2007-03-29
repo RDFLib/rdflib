@@ -1,5 +1,4 @@
 from rdflib import QueryResult,URIRef,BNode,Literal, Namespace
-from rdflib.sparql.sparql import _graphKey
 from xml.dom import XML_NAMESPACE
 from xml.sax.saxutils import XMLGenerator
 from xml.sax.xmlreader import AttributesNSImpl
@@ -245,11 +244,6 @@ class SPARQLQueryResult(QueryResult.QueryResult):
             return self.selected
         elif format in ['json','xml']:
            retval = ""
-           try :
-               self.allVariables.remove(_graphKey)
-           except :
-               # the element was not there, all the better...
-               pass
            allvarsL = self.allVariables
            if format == "json" :
                retval += '{\n'

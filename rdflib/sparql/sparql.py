@@ -31,9 +31,6 @@ Debug = False
 # to change the syntax on that detail...
 _questChar  = "?"
 
-# Key (in the final bindings) for the background graph for the specific query
-_graphKey = "$$GRAPH$$"
-
 ##
 # SPARQL Error Exception (subclass of the RDFLib Exceptions)
 class SPARQLError(Error) :
@@ -181,7 +178,7 @@ def _processResults(select,arr) :
     else :
         # this is the case corresponding to a SELECT * query call
         for bind in arr:
-            qresult = [val for key,val in bind.items() if key != _graphKey]
+            qresult = [val for key,val in bind.items()]
             if len(qresult) == 1 :
                 retval.append(qresult[0])
             else :

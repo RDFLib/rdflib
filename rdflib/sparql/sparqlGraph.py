@@ -5,8 +5,6 @@ from rdflib.Graph import Graph
 from rdflib.sparql.sparql import Query, SPARQLError
 from rdflib.sparql.graphPattern import GraphPattern
 
-from rdflib.sparql.sparql import _graphKey
-
 
 def _createInitialBindings(pattern) :
     """Creates an initial binding directory for the Graph Pattern by putting a None as a value for each
@@ -122,7 +120,6 @@ class _SPARQLNode:
         """
         self.tripleStore         = tripleStore
         self.bindings            = bindings
-        self.bindings[_graphKey] = tripleStore
         self.optionalTrees       = []
         if None in bindings.values() :
             self.bound = False
@@ -340,7 +337,6 @@ class _SPARQLNode:
         else :
             # this is if all bindings are done; the conditions (ie, global constraints) are still to be checked
             if self.bound == True and self.clash == False :
-                self.bindings[_graphKey] = self.tripleStore
                 for func in constraints :
                     if func(self.bindings) == False :
                         self.clash = True

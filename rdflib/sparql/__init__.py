@@ -95,50 +95,6 @@ U{W3C Software License<http://www.w3.org/Consortium/Legal/2002/copyright-softwar
 
 __version__ = "2.2"
 
-# # import sys
-
-# # These are just useful imports from rdflib; for a user it is nicer if everything
-# # can be imported from one place...
-# from rdflib.Graph import Graph
-# from rdflib.Namespace   import Namespace
-# from rdflib.URIRef      import URIRef
-# from rdflib.Literal     import Literal
-# from rdflib.constants   import RDFNS  as ns_rdf
-# from rdflib.constants   import RDFSNS as ns_rdfs
-# from rdflib.constants   import NIL    as nil
-# from rdflib.exceptions  import Error
-
-# from sparqlGraph import ns_dc, ns_owl
-
-# # The 'visible' side of sparqlGraph
-# from sparqlGraph import SPARQLGraph
-
-# # The 'visible' side of sparql
-# from graphPattern import GraphPattern, BasicGraphPattern
-# from sparql import SPARQLError, Unbound, PatternBNode
-# from sparql import Query
-# # Key to be used in global SPARQL operators to access the triple store corresponding to the background graph
-# from sparql import _graphKey as graphKey
-
-# # The datatypes
-# from sparql import type_string
-# from sparql import type_integer
-# from sparql import type_long
-# from sparql import type_double
-# from sparql import type_float
-# from sparql import type_decimal
-# from sparql import type_dateTime
-# from sparql import type_date
-# from sparql import type_time
-
-# # The sparql operators
-# from sparqlOperators import *
-
-# from types import *
-
-
-############################################################################################
-#
 def generateCollectionConstraint(triplets,collection,item) :
     """
 
@@ -167,7 +123,7 @@ def generateCollectionConstraint(triplets,collection,item) :
     item parameters are illegal (not valid resources for a collection
     or an object)
     """	
-    return isOnCollection(collection,item)
+    return isOnCollection(collection,item, triples)
 
 ############################################################################################
 

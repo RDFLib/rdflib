@@ -26,12 +26,12 @@
 ##
 
 import sys, os, re
-from sparql             import _questChar, SPARQLError, Unbound
+from sparql             import _questChar, Unbound
 from rdflib.Literal     import Literal
 from rdflib.BNode       import BNode
 from rdflib.URIRef      import URIRef
 
-from sparql import _graphKey, _createResource
+from sparql import _createResource
 
 from sparql import Debug
 
@@ -353,15 +353,14 @@ def datatype(a) :
 # a data type value that is turned into a corresponding Literal (with possible datatype)
 # that must be tested to be part of the collection
 # @defreturn a function
-# @exception SPARQLError if the collection or the item parameters are illegal (not valid resources for
-# a collection or an object
-def isOnCollection(collection,item) :
+def isOnCollection(collection,item, triplets) :
     """Generate a method that can be used as a global constaint in sparql to check whether
     the 'item' is an element of the 'collection' (a.k.a. list). Both collection and item can
     be a real resource or a query string. Furthermore, item might be a plain string, that is
     then turned into a literal run-time.
     The method returns an adapted method.
     """
+    #check_subject(collection)
     from sparql import _questChar
     collUnbound = False
     if isinstance(collection,Unbound) :
@@ -371,13 +370,8 @@ def isOnCollection(collection,item) :
         # just keep 'collection', no reason to reassign
         collUnbound = True
     else:
-        try :
-            #FIXME: check_subject is no longer defined in rdflib.Graph
-            #check_subject(collection)
-            collUnbound = False
-            # if we got here, this is a valid collection resource
-        except :
-            raise SPARQLError("illegal parameter type, %s" % collection)
+        collUnbound = False
+        # if we got here, this is a valid collection resource
     if isinstance(item,Unbound) :
         queryItem = item.name
         itUnbund  = True
@@ -399,7 +393,6 @@ def isOnCollection(collection,item) :
                 it = bindings[queryItem]
             else :
                 it = queryItem
-            triplets = bindings[_graphKey]
             return it in triplets.items(coll)
         except :
             # this means that the binding is not available. But that also means that
