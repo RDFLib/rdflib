@@ -107,12 +107,13 @@ class RDFaParser(Parser):
         found = filter(lambda x:x in node.attributes.keys(),rdfa_attribs)
 
         # keep track of xml:lang xml:base
-        baseuri = node.getAttributeNS(xml,"base") or node.getAttribute("base") or self.baseuri
+        baseuri = node.getAttributeNS(xml,"base") or node.getAttribute("xml:base") or self.baseuri
         self.baseuri = _urljoin(self.baseuri, baseuri)
         self.xmlbases.append(self.baseuri)
 
-        if node.hasAttributeNS(xml,"lang") or node.hasAttribute("lang"):
-          lang = node.getAttributeNS(xml, 'lang') or node.getAttribute('lang')
+        if node.hasAttributeNS(xml,"lang") or node.hasAttribute("xml:lang"):
+          lang = node.getAttributeNS(xml, 'lang') or node.getAttribute('xml:lang')
+
           if lang == '':
             # xml:lang could be explicitly set to '', we need to capture that
             lang = None
