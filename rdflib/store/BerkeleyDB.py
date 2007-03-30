@@ -1,3 +1,6 @@
+import warnings
+warnings.warn("This Store implementation is still being debugged. It is currently running out of db lockers after adding around 2k triples.")
+
 from rdflib.store import Store, VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
 from rdflib.URIRef import URIRef
 from bsddb import db
