@@ -4,7 +4,7 @@ from rdflib.sparql import sparqlGraph, sparqlOperators, SPARQLError
 from rdflib.sparql.sparqlOperators import getValue
 from rdflib.sparql.graphPattern import BasicGraphPattern
 from rdflib.sparql.Unbound import Unbound
-from rdflib.sparql.Query import _variablesToArray, queryObject
+from rdflib.sparql.Query import _variablesToArray, queryObject, SessionBNode
 from rdflib.Graph import ConjunctiveGraph, Graph, BackwardCompatGraph,ReadOnlyGraphAggregate
 from rdflib import URIRef,Variable,BNode, Literal, plugin, RDF
 from rdflib.store import Store
@@ -57,6 +57,11 @@ def convertTerm(term,queryProlog):
         #QNames and QName prefixes are the same in the grammar
         if not term.prefix:
             return URIRef(queryProlog.baseDeclaration + term.localname)
+        elif term.prefix == '_':
+            #Told BNode See: http://www.w3.org/2001/sw/DataAccess/issues#bnodeRef
+            import warnings
+            warnings.warn("The verbatim interpretation of explicit bnode identifiers is contrary to (current) DAWG stance",SyntaxWarning)
+            return SessionBNode(term.localname)        
         else:
             return URIRef(queryProlog.prefixBindings[term.prefix] + term.localname)
     elif isinstance(term,QNamePrefix):

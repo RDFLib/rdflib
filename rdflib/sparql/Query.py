@@ -10,6 +10,12 @@ from rdflib.sparql.Unbound import Unbound
 from rdflib.sparql.sparqlGraph import SPARQLGraph
 from rdflib.sparql.graphPattern import GraphPattern
 
+class SessionBNode(BNode):
+    """
+    Special 'session' BNodes.  I.e., BNodes at the query side which refer to 
+    BNodes in persistence
+    """
+    pass        
 
 def _checkOptionals(pattern,optionals) :
     """
@@ -323,6 +329,8 @@ class _SPARQLNode:
                 return None
             else :
                 return self.bindings[r]
+        elif isinstance(r,(SessionBNode)):
+            return r            
         elif isinstance(r,(BNode)):
             return self.bindings.get(r)            
         else :
