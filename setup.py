@@ -49,6 +49,9 @@ setup(
     test_suite = 'nose.collector',
 
     entry_points = {        
+        'console_scripts': [
+            'rdfpipe = rdflib_tools.RDFPipe:main',
+        ],
         'nose.plugins': [
             'EARLPlugin = rdflib_tools.EARLPlugin:EARLPlugin',
             ],
