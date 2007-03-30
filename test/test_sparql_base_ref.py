@@ -14,8 +14,7 @@ test_data = """
 test_query = """
 BASE <http://xmlns.com/foaf/0.1/>
 SELECT ?name
-WHERE { [ a :Person; :name ?name ]. }
-}"""
+WHERE { [ a :Person ; :name ?name ] }"""
 
 class TestSparqlJsonResults(unittest.TestCase):
 

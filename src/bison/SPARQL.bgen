@@ -85,7 +85,8 @@
             <rule>
                 <symbol>BaseDecl</symbol>
                 <code language="c">
-                    $$ = PyObject_CallMethod(Query, "Prolog", "OO", $1);
+                    Py_INCREF(Py_None);
+                    $$ = PyObject_CallMethod(Query, "Prolog", "OO", $1, Py_None);
                 </code>
             </rule>            
             <rule>

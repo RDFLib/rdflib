@@ -55,7 +55,7 @@ def convertTerm(term,queryProlog):
         return term
     elif isinstance(term,QName):
         #QNames and QName prefixes are the same in the grammar
-        if term.prefix == None:
+        if not term.prefix:
             return URIRef(queryProlog.baseDeclaration + term.localname)
         else:
             return URIRef(queryProlog.prefixBindings[term.prefix] + term.localname)
