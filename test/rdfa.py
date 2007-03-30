@@ -39,7 +39,7 @@ def make_cases():
 def all_tests():
     for test in make_cases():
         yield test.runTest,
-all_tests.unstable = True
+all_tests.unstable = False
 
 class RDFaTestStub(unittest.TestCase):
 
