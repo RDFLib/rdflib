@@ -1,12 +1,834 @@
 2007/04/??
         RELEASE 2.4.0
 
+        Fixed several RDFaParser bugs.
+
+        Added initial EARLPluging
+
+        Added support for session bnodes re: sparql
+
+        Added BerkeleyDB store implementation.
+
+        Fixed <BASE> support in SPARQL queries.
+
+------------------------------------------------------------------------
+r1063 | eikeon | 2007-03-29 18:25:45 -0400 (Thu, 29 Mar 2007) | 1 line
+
+added --with-EARL to run_tests; added date-time stamp to results output filename
+------------------------------------------------------------------------
+r1062 | eikeon | 2007-03-29 18:05:06 -0400 (Thu, 29 Mar 2007) | 1 line
+
+added the begining of an EARL Nose Pluging
+------------------------------------------------------------------------
+r1061 | eikeon | 2007-03-29 13:55:07 -0400 (Thu, 29 Mar 2007) | 1 line
+
+marked rdfa unstable re: tests until we hear back from EliasT
+------------------------------------------------------------------------
+r1060 | mikael | 2007-03-29 03:59:39 -0400 (Thu, 29 Mar 2007) | 1 line
+
+fixed the selected variables and use list comprehension for the bindings, added two test-cases
+------------------------------------------------------------------------
+r1059 | eikeon | 2007-03-28 23:59:25 -0400 (Wed, 28 Mar 2007) | 1 line
+
+removed imports within function bodies; fixed resulting circular import issue
+------------------------------------------------------------------------
+r1058 | eikeon | 2007-03-28 23:28:52 -0400 (Wed, 28 Mar 2007) | 1 line
+
+killed off the rest of sparql/sparql.py
+------------------------------------------------------------------------
+r1057 | eikeon | 2007-03-28 23:28:44 -0400 (Wed, 28 Mar 2007) | 1 line
+
+killed off the rest of sparql/sparql.py
+------------------------------------------------------------------------
+r1056 | eikeon | 2007-03-28 23:10:49 -0400 (Wed, 28 Mar 2007) | 1 line
+
+moved Dbug to sparql/__init__.py
+------------------------------------------------------------------------
+r1055 | eikeon | 2007-03-28 23:07:44 -0400 (Wed, 28 Mar 2007) | 1 line
+
+moved _questChat to sparql/__init__.py
+------------------------------------------------------------------------
+r1054 | eikeon | 2007-03-28 22:58:33 -0400 (Wed, 28 Mar 2007) | 1 line
+
+killed off PatternBNode (was not being used)
+------------------------------------------------------------------------
+r1053 | eikeon | 2007-03-28 22:31:38 -0400 (Wed, 28 Mar 2007) | 1 line
+
+more shifting sparqly bits
+------------------------------------------------------------------------
+r1052 | eikeon | 2007-03-28 20:35:14 -0400 (Wed, 28 Mar 2007) | 1 line
+
+got rid of a few more crufty bits, notably, _graphKey
+------------------------------------------------------------------------
+r1051 | eikeon | 2007-03-28 19:54:03 -0400 (Wed, 28 Mar 2007) | 1 line
+
+removed 'JunkResource' bits
+------------------------------------------------------------------------
+r1050 | eikeon | 2007-03-28 14:47:35 -0400 (Wed, 28 Mar 2007) | 1 line
+
+removed datatype bits from sparql that Literal is now handling
+------------------------------------------------------------------------
+r1049 | eikeon | 2007-03-28 14:41:29 -0400 (Wed, 28 Mar 2007) | 1 line
+
+minor import etc cleanup
+------------------------------------------------------------------------
+r1048 | chimezie | 2007-03-28 14:39:25 -0400 (Wed, 28 Mar 2007) | 1 line
+
+proper conversion of (exiplicit) MySQL ports to integers before connecting
+------------------------------------------------------------------------
+r1046 | eikeon | 2007-03-28 14:25:06 -0400 (Wed, 28 Mar 2007) | 1 line
+
+removed dead code
+------------------------------------------------------------------------
+r1045 | eikeon | 2007-03-28 14:16:12 -0400 (Wed, 28 Mar 2007) | 1 line
+
+more shifting sparql bits in the name of cleanup
+------------------------------------------------------------------------
+r1044 | eikeon | 2007-03-28 12:55:54 -0400 (Wed, 28 Mar 2007) | 1 line
+
+small sparql refactors... moved some of the sparqlGraph bits to Graph
+------------------------------------------------------------------------
+r1040 | lindstream | 2007-03-27 05:17:22 -0400 (Tue, 27 Mar 2007) | 1 line
+
+Fixed bug in _getAllVariables causing failure when parent.top is None (e.g. when using multiple unions and queries are nested more than one level(?))
+------------------------------------------------------------------------
+r1039 | lindstream | 2007-03-27 05:13:42 -0400 (Tue, 27 Mar 2007) | 1 line
+
+smoke test for multiple unions; made test more "DRY"
+------------------------------------------------------------------------
+r1038 | chimezie | 2007-03-26 15:20:08 -0400 (Mon, 26 Mar 2007) | 1 line
+
+fix for test_sparql_equals.py.  Added check for URIRef instances in mapToOperator cascade and a deprecation warning about __repr__ for python 3000
+------------------------------------------------------------------------
+r1037 | chimezie | 2007-03-26 14:48:23 -0400 (Mon, 26 Mar 2007) | 1 line
+
+turned into a proper unittest
+------------------------------------------------------------------------
+r1036 | lindstream | 2007-03-26 14:21:30 -0400 (Mon, 26 Mar 2007) | 1 line
+
+removed python.exe bang
+------------------------------------------------------------------------
+r1035 | lindstream | 2007-03-26 09:03:07 -0400 (Mon, 26 Mar 2007) | 1 line
+
+added test for UNION query
+------------------------------------------------------------------------
+r1034 | chimezie | 2007-03-26 08:58:42 -0400 (Mon, 26 Mar 2007) | 1 line
+
+Completed port to use list2set for managing SPARQL variable binding results
+------------------------------------------------------------------------
+r1033 | chimezie | 2007-03-25 22:25:51 -0400 (Sun, 25 Mar 2007) | 1 line
+
+fixed broken test
+------------------------------------------------------------------------
+r1032 | chimezie | 2007-03-25 22:15:08 -0400 (Sun, 25 Mar 2007) | 1 line
+
+Fix for test_sparql_json_results.py (SELECT * variables out of order)
+------------------------------------------------------------------------
+r1031 | eikeon | 2007-03-24 23:27:22 -0400 (Sat, 24 Mar 2007) | 1 line
+
+refactored a bit to key off of presence of dbTxn instead of txHandled; the out of available lockers seemed to go away too, but can't tell if that's related to this change or not
+------------------------------------------------------------------------
+r1030 | lindstream | 2007-03-24 20:54:41 -0400 (Sat, 24 Mar 2007) | 1 line
+
+Fixed values for geo:* (do become XMLLiterals unless given in @content).
+------------------------------------------------------------------------
+r1029 | lindstream | 2007-03-24 20:52:51 -0400 (Sat, 24 Mar 2007) | 1 line
+
+Exposed generated test cases for nose to find.
+------------------------------------------------------------------------
+r1028 | eikeon | 2007-03-24 14:44:04 -0400 (Sat, 24 Mar 2007) | 1 line
+
+updated expected result... test still failing
+------------------------------------------------------------------------
+r1027 | eikeon | 2007-03-24 14:23:17 -0400 (Sat, 24 Mar 2007) | 1 line
+
+removed testMe that was causing problems... not sure why it was there?
+------------------------------------------------------------------------
+r1026 | eikeon | 2007-03-24 14:22:56 -0400 (Sat, 24 Mar 2007) | 1 line
+
+added missing import
+------------------------------------------------------------------------
+r1025 | eikeon | 2007-03-24 13:56:55 -0400 (Sat, 24 Mar 2007) | 1 line
+
+brought back to life
+------------------------------------------------------------------------
+r1024 | lindstream | 2007-03-24 13:44:11 -0400 (Sat, 24 Mar 2007) | 1 line
+
+moved example.py to examples/
+------------------------------------------------------------------------
+r1023 | lindstream | 2007-03-24 13:43:17 -0400 (Sat, 24 Mar 2007) | 1 line
+
+new dir for examples
+------------------------------------------------------------------------
+r1022 | lindstream | 2007-03-24 13:39:24 -0400 (Sat, 24 Mar 2007) | 1 line
+
+minor additions (passing)
+------------------------------------------------------------------------
+r1021 | lindstream | 2007-03-24 13:37:59 -0400 (Sat, 24 Mar 2007) | 1 line
+
+removed print - wasn't informative enough
+------------------------------------------------------------------------
+r1020 | eikeon | 2007-03-24 13:35:24 -0400 (Sat, 24 Mar 2007) | 1 line
+
+removed usage of deprecated bits
+------------------------------------------------------------------------
+r1019 | eikeon | 2007-03-24 13:25:13 -0400 (Sat, 24 Mar 2007) | 1 line
+
+commented out debug print
+------------------------------------------------------------------------
+r1018 | eikeon | 2007-03-24 13:23:46 -0400 (Sat, 24 Mar 2007) | 1 line
+
+removed old bits
+------------------------------------------------------------------------
+r1017 | chimezie | 2007-03-24 13:15:42 -0400 (Sat, 24 Mar 2007) | 1 line
+
+Added md5_term_hash support to Variables
+------------------------------------------------------------------------
+r1016 | chimezie | 2007-03-24 13:13:05 -0400 (Sat, 24 Mar 2007) | 1 line
+
+made md5 hashing backward compatible to py2.4.  md5_term_hash is now a public interface
+------------------------------------------------------------------------
+r1015 | lindstream | 2007-03-24 13:00:54 -0400 (Sat, 24 Mar 2007) | 1 line
+
+slight improvement of docstring
+------------------------------------------------------------------------
+r1014 | lindstream | 2007-03-24 12:57:00 -0400 (Sat, 24 Mar 2007) | 1 line
+
+an auxiliary json test - currently detects a variable mixup issue in the sparql result as well
+------------------------------------------------------------------------
+r1013 | chimezie | 2007-03-24 12:53:37 -0400 (Sat, 24 Mar 2007) | 1 line
+
+Fixed babysitting of bsddb tx's.  Added top level SUPPORT_MULTIPLE_STORE_ENVIRON flag (False by default)
+------------------------------------------------------------------------
+r1012 | lindstream | 2007-03-24 12:44:13 -0400 (Sat, 24 Mar 2007) | 1 line
+
+marked test functions as non_standard_dep
+------------------------------------------------------------------------
+r1011 | eikeon | 2007-03-24 12:21:30 -0400 (Sat, 24 Mar 2007) | 1 line
+
+changed UTF-8 -> utf-8
+------------------------------------------------------------------------
+r1010 | eikeon | 2007-03-24 12:19:39 -0400 (Sat, 24 Mar 2007) | 1 line
+
+go away
+------------------------------------------------------------------------
+r1009 | eikeon | 2007-03-24 12:19:21 -0400 (Sat, 24 Mar 2007) | 1 line
+
+moved old bits from run_tests here
+------------------------------------------------------------------------
+r1008 | eikeon | 2007-03-24 12:18:54 -0400 (Sat, 24 Mar 2007) | 1 line
+
+moved content to run_nose_tests
+------------------------------------------------------------------------
+r1007 | lindstream | 2007-03-24 09:06:11 -0400 (Sat, 24 Mar 2007) | 1 line
+
+remaining TYPE replaced with RDF.type
+------------------------------------------------------------------------
+r1006 | eikeon | 2007-03-23 23:21:37 -0400 (Fri, 23 Mar 2007) | 1 line
+
+streamlined some of the _to_string bits
+------------------------------------------------------------------------
+r1005 | eikeon | 2007-03-23 21:40:16 -0400 (Fri, 23 Mar 2007) | 1 line
+
+fixed typo
+------------------------------------------------------------------------
+r1004 | eikeon | 2007-03-23 20:42:43 -0400 (Fri, 23 Mar 2007) | 1 line
+
+added commit_pending_transaction argument to Graph's close method; commented out fullDir bit in BerkeleyDB for now; changed print debug statements to _logger.debug
+------------------------------------------------------------------------
+r1003 | eikeon | 2007-03-23 19:28:08 -0400 (Fri, 23 Mar 2007) | 1 line
+
+removed unused exceptions
+------------------------------------------------------------------------
+r1002 | eikeon | 2007-03-23 19:23:32 -0400 (Fri, 23 Mar 2007) | 1 line
+
+Added DeprecationWarning to rdflib.constants
+------------------------------------------------------------------------
+r1001 | eikeon | 2007-03-23 19:14:53 -0400 (Fri, 23 Mar 2007) | 1 line
+
+removed use of rdflib.constants
+------------------------------------------------------------------------
+r1000 | eikeon | 2007-03-23 19:14:26 -0400 (Fri, 23 Mar 2007) | 1 line
+
+changed namespace from / to # style
+------------------------------------------------------------------------
+r999 | mikael | 2007-03-23 17:10:22 -0400 (Fri, 23 Mar 2007) | 1 line
+
+Added a test case for the variables in the JSON header
+------------------------------------------------------------------------
+r998 | chimezie | 2007-03-23 14:19:37 -0400 (Fri, 23 Mar 2007) | 1 line
+
+A transaction-capable bsddb Store module.  
+------------------------------------------------------------------------
+r997 | eikeon | 2007-03-23 10:38:44 -0400 (Fri, 23 Mar 2007) | 1 line
+
+bumped version number to 2.4.0
+------------------------------------------------------------------------
+r996 | mikael | 2007-03-23 09:33:41 -0400 (Fri, 23 Mar 2007) | 1 line
+
+Test and fix for sparql queries with an empty namespace prefix
+------------------------------------------------------------------------
+r995 | eikeon | 2007-03-22 21:04:09 -0400 (Thu, 22 Mar 2007) | 1 line
+
+nose is only required to run tests
+------------------------------------------------------------------------
+r994 | lindstream | 2007-03-21 09:34:16 -0400 (Wed, 21 Mar 2007) | 1 line
+
+Added test for sparql xml result serialization; fixed related bug (with attrs for Literal in result).
+------------------------------------------------------------------------
+r993 | eikeon | 2007-03-20 14:46:11 -0400 (Tue, 20 Mar 2007) | 1 line
+
+added a NamespaceDict class for those who want to avoid the Namespace as subclass of URIRef issues
+------------------------------------------------------------------------
+r992 | eikeon | 2007-03-20 14:45:32 -0400 (Tue, 20 Mar 2007) | 1 line
+
+improved ValueError message
+------------------------------------------------------------------------
+r991 | eikeon | 2007-03-20 14:45:14 -0400 (Tue, 20 Mar 2007) | 1 line
+
+added exception handling to __sync_run
+------------------------------------------------------------------------
+r990 | lindstream | 2007-03-20 07:40:50 -0400 (Tue, 20 Mar 2007) | 1 line
+
+small fix for sparql json result comma errors
+------------------------------------------------------------------------
+r989 | mikael | 2007-03-20 04:49:48 -0400 (Tue, 20 Mar 2007) | 1 line
+
+tests for problems with sparql regex, limit and order by + fixes
+------------------------------------------------------------------------
+r988 | lindstream | 2007-03-19 14:36:47 -0400 (Mon, 19 Mar 2007) | 1 line
+
+less lenient test
+------------------------------------------------------------------------
+r987 | lindstream | 2007-03-19 14:25:49 -0400 (Mon, 19 Mar 2007) | 1 line
+
+new, initial sparql equality test
+------------------------------------------------------------------------
+r986 | eikeon | 2007-03-16 18:15:39 -0400 (Fri, 16 Mar 2007) | 1 line
+
+cleaning up test cases so we can tell what's passing
+------------------------------------------------------------------------
+r985 | eikeon | 2007-03-16 18:14:17 -0400 (Fri, 16 Mar 2007) | 1 line
+
+added bind function
+------------------------------------------------------------------------
+r984 | eikeon | 2007-03-16 16:39:51 -0400 (Fri, 16 Mar 2007) | 1 line
+
+ran into similar issue with KID... else this would have been a bit harder to track down ;)
+------------------------------------------------------------------------
+r983 | eikeon | 2007-03-15 12:44:14 -0400 (Thu, 15 Mar 2007) | 1 line
+
+fixed type of Namespace re: URIRef vs. unicode
+------------------------------------------------------------------------
+r982 | eikeon | 2007-03-15 02:28:37 -0400 (Thu, 15 Mar 2007) | 1 line
+
+fixed check for data
+------------------------------------------------------------------------
+r981 | eikeon | 2007-03-15 02:13:09 -0400 (Thu, 15 Mar 2007) | 1 line
+
+fixed issue introduced by improved Literal support; No longer creating an 'empty' Literal and adding to it as data comes in (as this was causing a problem in the case of datatype of XSD.int etc -- adding a string to an XSD.int of '' doesn't work so great)
+------------------------------------------------------------------------
+r980 | eikeon | 2007-03-15 02:10:00 -0400 (Thu, 15 Mar 2007) | 1 line
+
+changed reference to old method name
+------------------------------------------------------------------------
+r979 | eikeon | 2007-03-15 02:09:33 -0400 (Thu, 15 Mar 2007) | 1 line
+
+Literal now logs a warning if you create a Literal of a datatype, say, XSD.int with a value of 'flargh', but creates a generic Literal from it
+------------------------------------------------------------------------
+r978 | eikeon | 2007-03-15 02:07:40 -0400 (Thu, 15 Mar 2007) | 1 line
+
+changed no publicID message to warning instead of info
+------------------------------------------------------------------------
+r977 | eikeon | 2007-03-15 02:07:16 -0400 (Thu, 15 Mar 2007) | 1 line
+
+added a few classifiers
+------------------------------------------------------------------------
+r976 | chimezie | 2007-03-15 00:28:18 -0400 (Thu, 15 Mar 2007) | 1 line
+
+Added a test for FROM <...>
+------------------------------------------------------------------------
+r975 | chimezie | 2007-03-15 00:27:00 -0400 (Thu, 15 Mar 2007) | 1 line
+
+Fixed XSDToPython import
+------------------------------------------------------------------------
+r974 | lindstream | 2007-03-14 19:02:45 -0400 (Wed, 14 Mar 2007) | 1 line
+
+Added initial serializer tests and fixed PrettyXMLSerializer accordingly.
+------------------------------------------------------------------------
+r973 | eikeon | 2007-03-14 11:13:03 -0400 (Wed, 14 Mar 2007) | 1 line
+
+changed _toPython back to toPython; __add__ now working
+------------------------------------------------------------------------
+r972 | eikeon | 2007-03-14 10:44:01 -0400 (Wed, 14 Mar 2007) | 1 line
+
+changed __repr__ to always reflect that it's an rdf.Literal -- as this is the case even though we now have it acting like the corresponding type in some casses
+------------------------------------------------------------------------
+r971 | eikeon | 2007-03-14 10:34:26 -0400 (Wed, 14 Mar 2007) | 1 line
+
+missed one XSDToPython -> _XSDToPython rename
+------------------------------------------------------------------------
+r970 | eikeon | 2007-03-14 10:30:47 -0400 (Wed, 14 Mar 2007) | 1 line
+
+Literal('2006-01-01',datatype=_XSD_NS.date) < '2007' case now working as well; more cleanup
+------------------------------------------------------------------------
+r969 | eikeon | 2007-03-14 00:08:18 -0400 (Wed, 14 Mar 2007) | 1 line
+
+moved doctest to Literal class doc
+------------------------------------------------------------------------
+r968 | eikeon | 2007-03-14 00:04:45 -0400 (Wed, 14 Mar 2007) | 1 line
+
+fixed Literal comparison. Wasn't working across Python2.4 and Python2.5 amoung other things
+------------------------------------------------------------------------
+r967 | eikeon | 2007-03-13 14:29:45 -0400 (Tue, 13 Mar 2007) | 1 line
+
+cleaned up fixed up Literal == and cmp
+------------------------------------------------------------------------
+r966 | lindstream | 2007-03-12 21:03:16 -0400 (Mon, 12 Mar 2007) | 1 line
+
+Added run_nosetests.py and prepped some tests to be filtered using the attr-mechanism of nose.
+------------------------------------------------------------------------
+r965 | eikeon | 2007-03-12 18:03:25 -0400 (Mon, 12 Mar 2007) | 1 line
+
+updated version number
+------------------------------------------------------------------------
+r964 | eikeon | 2007-03-12 13:54:47 -0400 (Mon, 12 Mar 2007) | 1 line
+
+change value method's any argument to default to True
+------------------------------------------------------------------------
+r963 | eikeon | 2007-03-12 11:47:57 -0400 (Mon, 12 Mar 2007) | 1 line
+
+added link to long_descriptin for easy_install -U rdflib==dev to work; added download_url back
+------------------------------------------------------------------------
+r962 | eikeon | 2007-03-12 11:02:12 -0400 (Mon, 12 Mar 2007) | 1 line
+
+removed old sparql bits (anyone?)
+------------------------------------------------------------------------
+r961 | eikeon | 2007-03-12 11:01:39 -0400 (Mon, 12 Mar 2007) | 1 line
+
+removed old broken module
+------------------------------------------------------------------------
+r960 | eikeon | 2007-03-12 11:01:11 -0400 (Mon, 12 Mar 2007) | 1 line
+
+figure out how to exclude rdflib.store for now; not sure why it's not ignoring test.mysql
+------------------------------------------------------------------------
+r959 | eikeon | 2007-03-12 10:22:20 -0400 (Mon, 12 Mar 2007) | 1 line
+
+aligned doc tests with repr changes
+------------------------------------------------------------------------
+r958 | eikeon | 2007-03-12 10:18:22 -0400 (Mon, 12 Mar 2007) | 1 line
+
+fixed up doc tests
+------------------------------------------------------------------------
+r957 | eikeon | 2007-03-12 10:09:24 -0400 (Mon, 12 Mar 2007) | 1 line
+
+added bit to configure 'setup.py nosetests' to run doc tests
+------------------------------------------------------------------------
+r956 | chimezie | 2007-03-12 07:46:59 -0400 (Mon, 12 Mar 2007) | 1 line
+
+Added a 4Suite-based SPARQL XML Writer implementation.  If 4Suite is not installed, the fallback python saxutils is used instead		
+------------------------------------------------------------------------
+r955 | eikeon | 2007-03-11 19:46:47 -0400 (Sun, 11 Mar 2007) | 1 line
+
+removed #egg=rdflib
+------------------------------------------------------------------------
+r954 | eikeon | 2007-03-11 19:12:56 -0400 (Sun, 11 Mar 2007) | 1 line
+
+adding ez_setup bits
+------------------------------------------------------------------------
+r953 | eikeon | 2007-03-11 19:02:04 -0400 (Sun, 11 Mar 2007) | 1 line
+
+added continuous-releases-using-subversion bit
+------------------------------------------------------------------------
+r952 | eikeon | 2007-03-11 19:01:10 -0400 (Sun, 11 Mar 2007) | 1 line
+
+added raw input for why identifier equality is the way it is
+------------------------------------------------------------------------
+r951 | eikeon | 2007-03-11 18:19:19 -0400 (Sun, 11 Mar 2007) | 1 line
+
+fixed Journal; anyone using broken version?
+------------------------------------------------------------------------
+r950 | eikeon | 2007-03-11 17:45:55 -0400 (Sun, 11 Mar 2007) | 1 line
+
+change run_tests to print message indicating to use: python setup.py test
+------------------------------------------------------------------------
+r949 | eikeon | 2007-03-11 16:55:09 -0400 (Sun, 11 Mar 2007) | 1 line
+
+added svn bit to ignore .pyc
+------------------------------------------------------------------------
+r948 | eikeon | 2007-03-11 16:54:53 -0400 (Sun, 11 Mar 2007) | 1 line
+
+added nose test bits
+------------------------------------------------------------------------
+r947 | eikeon | 2007-03-11 15:31:20 -0400 (Sun, 11 Mar 2007) | 1 line
+
+upgrading to use ez_setup and setuptools
+------------------------------------------------------------------------
+r946 | eikeon | 2007-03-11 15:30:21 -0400 (Sun, 11 Mar 2007) | 1 line
+
+incremented version number
+------------------------------------------------------------------------
+r945 | lindstream | 2007-03-10 11:49:53 -0500 (Sat, 10 Mar 2007) | 1 line
+
+unicode has no __cmp__, using cmp instead.
+------------------------------------------------------------------------
+r944 | lindstream | 2007-03-09 14:56:13 -0500 (Fri, 09 Mar 2007) | 1 line
+
+added sub-package for serializer tests
+------------------------------------------------------------------------
+r943 | chimezie | 2007-03-09 14:00:02 -0500 (Fri, 09 Mar 2007) | 1 line
+
+A DISTINCT was added to the SELECT clause to ensure duplicate triples are not returned (an RDF graph is a set of triples) - which can happen for certain join expressions.
+------------------------------------------------------------------------
+r942 | chimezie | 2007-03-06 13:15:39 -0500 (Tue, 06 Mar 2007) | 1 line
+
+__cmp__ no longer fails when a Literal is compared with a basestring (or derivative).  It will instead cast itself to a unicode and call cmp.  Doctest added for this case
+------------------------------------------------------------------------
+r941 | chimezie | 2007-03-05 08:33:18 -0500 (Mon, 05 Mar 2007) | 1 line
+
+Support for ConditionalAndExpressionList and RelationalExpressionList (|| and && operators in FILTER)
+------------------------------------------------------------------------
+r940 | chimezie | 2007-03-04 23:06:15 -0500 (Sun, 04 Mar 2007) | 1 line
+
+Fixed context column comparison.  The hash integer was being compared with 'F' causing a warning:Warning: Truncated incorrect DOUBLE value: 'F'   
+------------------------------------------------------------------------
+r939 | eikeon | 2007-03-04 22:42:55 -0500 (Sun, 04 Mar 2007) | 1 line
+
+applied patch in http://rdflib.net/issues/2006/12/13/typos_in_abstractsqlstore.py/issue
+------------------------------------------------------------------------
+r938 | chimezie | 2007-03-04 20:13:37 -0500 (Sun, 04 Mar 2007) | 1 line
+
+Fixed prolog reduce/reduce conflict.  Added Py_None IncRefs where they were being passed into Python method invokations (per drewp's patch)
+------------------------------------------------------------------------
+r937 | chimezie | 2007-03-04 20:12:03 -0500 (Sun, 04 Mar 2007) | 1 line
+
+Fixed prolog reduce/reduce conflict.  Added Py_None IncRefs where they were being passed into Python method invokations (per drewp's patch)
+------------------------------------------------------------------------
+r936 | chimezie | 2007-03-04 19:28:59 -0500 (Sun, 04 Mar 2007) | 2 lines
+
+getLiteralValue now returns the Literal object instead of the result of toPython().  Now that Literals override a good coverage of comparison
+operators, they should be passed around as first class objects in the SPARQL evaluation engine.
+------------------------------------------------------------------------
+r935 | chimezie | 2007-03-04 17:54:48 -0500 (Sun, 04 Mar 2007) | 1 line
+
+added overide for __neq__ to ensure proper != comparison against None.  Redirects to __eq__ otherwise.  Doc types added
+------------------------------------------------------------------------
+r934 | chimezie | 2007-03-04 17:05:26 -0500 (Sun, 04 Mar 2007) | 1 line
+
+Added __cmp__ for support of > and < operators.  Follows __eq__ structure closely.  Includes doc tests for every code path.
+------------------------------------------------------------------------
+r933 | eikeon | 2007-03-04 16:20:10 -0500 (Sun, 04 Mar 2007) | 1 line
+
+fixed typo (encode vs. encoded)
+------------------------------------------------------------------------
+r932 | chimezie | 2007-03-04 14:27:35 -0500 (Sun, 04 Mar 2007) | 1 line
+
+The restriction on GRAPH patterns with variables has been relieved a bit to allow such usage when the variable is provided as an initial binding
+------------------------------------------------------------------------
+r931 | chimezie | 2007-03-04 13:55:05 -0500 (Sun, 04 Mar 2007) | 1 line
+
+Fix for OPTIONAL patterns.  P1 OPT P2, where P1 and P2 shared variables which were bound to BNodes were not unifying on these BNode variable efficiently / correctly.  The fix was to add bindings for 'stored' BNodes so they aren't confused for wildcards
+------------------------------------------------------------------------
+r930 | chimezie | 2007-03-02 16:37:28 -0500 (Fri, 02 Mar 2007) | 1 line
+
+This (poorly formed) SPARQL query causes a seg fault.. 
+------------------------------------------------------------------------
+r929 | eikeon | 2007-02-25 22:58:53 -0500 (Sun, 25 Feb 2007) | 1 line
+
+applied patch from http://rdflib.net/issues/2007/02/23/bugs_in_rdflib.sparql.queryresult/issue
+------------------------------------------------------------------------
+r928 | eikeon | 2007-02-25 22:47:41 -0500 (Sun, 25 Feb 2007) | 1 line
+
+applied patch from http://rdflib.net/issues/2007/02/22/n3parser_does_not_retain_namespace_bindings/issue
+------------------------------------------------------------------------
+r927 | eikeon | 2007-02-25 22:28:32 -0500 (Sun, 25 Feb 2007) | 1 line
+
+fix for http://rdflib.net/issues/2006/12/07/problems_with_graph.seq()_when_sequences_contain_more_than_9_items./issue
+------------------------------------------------------------------------
+r926 | eikeon | 2007-02-25 22:14:05 -0500 (Sun, 25 Feb 2007) | 1 line
+
+added test for http://rdflib.net/issues/2006/11/23/n3_parser:_trying_to_get_filename+extension_in_path/issue
+------------------------------------------------------------------------
+r925 | eikeon | 2007-02-25 22:13:41 -0500 (Sun, 25 Feb 2007) | 1 line
+
+fixed typo
+------------------------------------------------------------------------
+r924 | eikeon | 2007-02-25 22:13:21 -0500 (Sun, 25 Feb 2007) | 1 line
+
+fully qualified imports
+------------------------------------------------------------------------
+r923 | gjh | 2007-02-25 21:53:09 -0500 (Sun, 25 Feb 2007) | 1 line
+
+refactoring of GraphPattern
+------------------------------------------------------------------------
+r922 | gjh | 2007-02-25 21:51:38 -0500 (Sun, 25 Feb 2007) | 1 line
+
+refactoring, removal of redundant imports (courtesy Stefano Debenedetti)
+------------------------------------------------------------------------
+r921 | gjh | 2007-02-25 21:43:11 -0500 (Sun, 25 Feb 2007) | 1 line
+
+removed redundant imports (courtesy Stefano Debenedetti)
+------------------------------------------------------------------------
+r920 | gjh | 2007-02-25 21:34:17 -0500 (Sun, 25 Feb 2007) | 1 line
+
+removed redundant imports (courtesy Stefano Debenedetti)
+------------------------------------------------------------------------
+r919 | eikeon | 2007-02-25 20:40:47 -0500 (Sun, 25 Feb 2007) | 1 line
+
+changed to return None instead of raising an AssertionError
+------------------------------------------------------------------------
+r918 | eikeon | 2007-02-25 19:03:07 -0500 (Sun, 25 Feb 2007) | 1 line
+
+switched max_depth to 3
+------------------------------------------------------------------------
+r917 | eikeon | 2007-02-25 19:02:30 -0500 (Sun, 25 Feb 2007) | 1 line
+
+switched to using serialize method
+------------------------------------------------------------------------
+r916 | eikeon | 2007-02-25 19:02:06 -0500 (Sun, 25 Feb 2007) | 1 line
+
+added assertion for max_depth greather than 0
+------------------------------------------------------------------------
+r915 | eikeon | 2007-02-25 19:01:41 -0500 (Sun, 25 Feb 2007) | 1 line
+
+added DeprecationWarning for save method
+------------------------------------------------------------------------
+r914 | eikeon | 2007-02-25 18:57:55 -0500 (Sun, 25 Feb 2007) | 1 line
+
+serialize now takes additional serializer specific arguments; PrettyXMLSerializer now takes a max_depth argument defaulting to 3
+------------------------------------------------------------------------
+r913 | eikeon | 2007-01-05 13:10:24 -0500 (Fri, 05 Jan 2007) | 1 line
+
+fixed typo
+------------------------------------------------------------------------
+r912 | chimezie | 2007-01-04 23:11:17 -0500 (Thu, 04 Jan 2007) | 1 line
+
+fixed check for store passed on
+------------------------------------------------------------------------
+r911 | chimezie | 2006-12-30 21:26:14 -0500 (Sat, 30 Dec 2006) | 1 line
+
+fixed MySQL store so it properly calculates __len__ of individual Graphs
+------------------------------------------------------------------------
+r910 | chimezie | 2006-12-30 21:24:32 -0500 (Sat, 30 Dec 2006) | 1 line
+
+ReadOnlyGraphAggregate uses Graph constructor properly to setup (optionally) a common store
+------------------------------------------------------------------------
+r909 | eikeon | 2006-11-27 16:47:52 -0500 (Mon, 27 Nov 2006) | 1 line
+
+Aligned with how Sleepycat is generating events (remove events are expressed in terms of interned strings)
+------------------------------------------------------------------------
+r908 | eikeon | 2006-11-14 22:15:24 -0500 (Tue, 14 Nov 2006) | 1 line
+
+Added test case for unicode string query issue; fixed issue
+------------------------------------------------------------------------
+r907 | eikeon | 2006-11-11 10:08:42 -0500 (Sat, 11 Nov 2006) | 1 line
+
+Added code to catch unpickling related exceptions
+------------------------------------------------------------------------
+r906 | eikeon | 2006-11-08 11:22:09 -0500 (Wed, 08 Nov 2006) | 1 line
+
+added JSON test
+------------------------------------------------------------------------
+r905 | eikeon | 2006-11-07 17:39:15 -0500 (Tue, 07 Nov 2006) | 1 line
+
+Split out Sleepycat tests; made them part of 'not quick'
+------------------------------------------------------------------------
+r904 | eikeon | 2006-11-07 17:33:15 -0500 (Tue, 07 Nov 2006) | 1 line
+
+Split out Sleepycat tests; made them part of 'not quick'
+------------------------------------------------------------------------
+r903 | eikeon | 2006-11-07 16:59:42 -0500 (Tue, 07 Nov 2006) | 1 line
+
+cleaned up tests; changed URIRef("foo")!=u"foo"; added/fixed the identifier __repr__s (renamed identifier_equality / removed graph2_2)
+------------------------------------------------------------------------
+r902 | eikeon | 2006-11-07 16:57:06 -0500 (Tue, 07 Nov 2006) | 1 line
+
+cleaned up tests; changed URIRef("foo")!=u"foo"; added/fixed the identifier __repr__s
+------------------------------------------------------------------------
+r901 | gromgull | 2006-11-07 12:30:51 -0500 (Tue, 07 Nov 2006) | 1 line
+
+fixed bug with . (fullstop) in localname parts
+------------------------------------------------------------------------
+r900 | eikeon | 2006-11-04 15:54:24 -0500 (Sat, 04 Nov 2006) | 1 line
+
+Added patches in http://rdflib.net/blog/2006/11/01/Bug/typo_in_plugin.py_wrt_TurtleSerializer/
+------------------------------------------------------------------------
+r899 | eikeon | 2006-11-04 15:54:03 -0500 (Sat, 04 Nov 2006) | 1 line
+
+switched to importing new Graph instead of Backward Compat. version
+------------------------------------------------------------------------
+r898 | eikeon | 2006-10-31 23:52:11 -0500 (Tue, 31 Oct 2006) | 1 line
+
+Rehackified for now (rdflib itself is depending on Namespace being a subclass of URIRef... or at least unicode)
+------------------------------------------------------------------------
+r897 | eikeon | 2006-10-31 23:45:12 -0500 (Tue, 31 Oct 2006) | 1 line
+
+Unhackified by making it not be a subclass of URIRef (anyone have code that depends on Namespace being a subclass of URIRef?)
+------------------------------------------------------------------------
+r896 | eikeon | 2006-10-31 23:22:31 -0500 (Tue, 31 Oct 2006) | 1 line
+
+more N3Serializer cleanup bits
+------------------------------------------------------------------------
+r895 | eikeon | 2006-10-31 22:06:36 -0500 (Tue, 31 Oct 2006) | 1 line
+
+more N3Serializer cleanup bits
+------------------------------------------------------------------------
+r894 | eikeon | 2006-10-31 22:01:36 -0500 (Tue, 31 Oct 2006) | 1 line
+
+more N3Serializer cleanup bits
+------------------------------------------------------------------------
+r893 | eikeon | 2006-10-31 21:49:25 -0500 (Tue, 31 Oct 2006) | 1 line
+
+fixed for bogus get_clause bits
+------------------------------------------------------------------------
+r892 | eikeon | 2006-10-31 21:41:10 -0500 (Tue, 31 Oct 2006) | 1 line
+
+fixed qname madness
+------------------------------------------------------------------------
+r891 | eikeon | 2006-10-30 00:28:41 -0500 (Mon, 30 Oct 2006) | 1 line
+
+fixed inf. loop in __eq__
+------------------------------------------------------------------------
+r889 | eikeon | 2006-10-22 11:18:26 -0400 (Sun, 22 Oct 2006) | 1 line
+
+changed sync message to debug level
+------------------------------------------------------------------------
+r888 | eikeon | 2006-10-22 02:22:43 -0400 (Sun, 22 Oct 2006) | 1 line
+
+fixed AttributeError: 'URIRef' object has no attribute '__cmp__' brought on by Python2.5
+------------------------------------------------------------------------
+r887 | eikeon | 2006-10-20 02:01:04 -0400 (Fri, 20 Oct 2006) | 1 line
+
+changed quality so rdf+xml is the preferred
+------------------------------------------------------------------------
         TODO
 
 2006/10/15
         RELEASE 2.3.3
 
-        TODO
+r885 | eikeon | 2006-10-14 18:09:46 -0400 (Sat, 14 Oct 2006) | 1 line
+
+reverted to stable db env options (new ones where not working but on OS X besides)
+------------------------------------------------------------------------
+r884 | eikeon | 2006-10-14 17:59:43 -0400 (Sat, 14 Oct 2006) | 1 line
+
+more Journal related changes
+------------------------------------------------------------------------
+r883 | chimezie | 2006-10-09 20:54:04 -0400 (Mon, 09 Oct 2006) | 1 line
+
+redland patches from http://rdflib.net/pipermail/dev/2006-September/000069.html
+------------------------------------------------------------------------
+r882 | chimezie | 2006-10-09 20:53:09 -0400 (Mon, 09 Oct 2006) | 1 line
+
+various patches for the testsuite - http://rdflib.net/pipermail/dev/2006-September/000069.html
+------------------------------------------------------------------------
+r881 | chimezie | 2006-10-09 17:43:11 -0400 (Mon, 09 Oct 2006) | 1 line
+
+fixed PatternResolution for patterns that return contexts only
+------------------------------------------------------------------------
+r880 | eikeon | 2006-10-08 04:17:13 -0400 (Sun, 08 Oct 2006) | 1 line
+
+removed Sleepycat level journaling
+------------------------------------------------------------------------
+r879 | eikeon | 2006-10-08 04:14:56 -0400 (Sun, 08 Oct 2006) | 1 line
+
+minor cleanup
+------------------------------------------------------------------------
+r878 | eikeon | 2006-10-08 04:10:48 -0400 (Sun, 08 Oct 2006) | 1 line
+
+initial checkin -- code to wrap a store with that'll write a jourmal of picked events
+------------------------------------------------------------------------
+r877 | eikeon | 2006-10-08 04:09:28 -0400 (Sun, 08 Oct 2006) | 1 line
+
+added events to store interface (currently for StoreCreated TripleAdded and TripleRemoved) -- and have only added to Sleepycat implementation for now
+------------------------------------------------------------------------
+r876 | eikeon | 2006-10-08 04:07:33 -0400 (Sun, 08 Oct 2006) | 1 line
+
+fixed NodePickler not to choke on unhashable objects
+------------------------------------------------------------------------
+r875 | eikeon | 2006-10-08 01:15:59 -0400 (Sun, 08 Oct 2006) | 1 line
+
+added DB_REGISTER (which does DB_RECOVER bits if needed); changed which subsystems we're using; added txn_checkpoint on sync (this really should go in commit or somesuch but just for now it'll live here)
+------------------------------------------------------------------------
+r874 | eikeon | 2006-10-07 19:33:59 -0400 (Sat, 07 Oct 2006) | 1 line
+
+Changed __getattr__ hack to not mess with names starting with __
+------------------------------------------------------------------------
+r873 | eikeon | 2006-10-07 18:18:24 -0400 (Sat, 07 Oct 2006) | 1 line
+
+fixing a bug Python2.5 uncovers
+------------------------------------------------------------------------
+r872 | eikeon | 2006-10-07 14:35:38 -0400 (Sat, 07 Oct 2006) | 1 line
+
+added recover option to Sleepycat's open method
+------------------------------------------------------------------------
+r871 | eikeon | 2006-10-07 14:19:23 -0400 (Sat, 07 Oct 2006) | 1 line
+
+added recover option to Sleepycat's open method
+------------------------------------------------------------------------
+r869 | gromgull | 2006-10-05 04:37:43 -0400 (Thu, 05 Oct 2006) | 1 line
+
+Added TriXParser and some very simple tests
+------------------------------------------------------------------------
+r868 | chimezie | 2006-09-29 11:34:22 -0400 (Fri, 29 Sep 2006) | 1 line
+
+Rounded out Literal comparison and fixed some corner scenarios that weren't being compared proplerly.  Added doc tests
+------------------------------------------------------------------------
+r867 | chimezie | 2006-09-29 10:53:03 -0400 (Fri, 29 Sep 2006) | 1 line
+
+merged conflict with != SPARQL operator
+------------------------------------------------------------------------
+r866 | eikeon | 2006-09-11 13:51:52 -0400 (Mon, 11 Sep 2006) | 1 line
+
+added neq operator
+------------------------------------------------------------------------
+r865 | chimezie | 2006-09-11 13:32:54 -0400 (Mon, 11 Sep 2006) | 1 line
+
+added fix for (and accompanying test) != operator
+------------------------------------------------------------------------
+r864 | chimezie | 2006-09-11 13:32:13 -0400 (Mon, 11 Sep 2006) | 1 line
+
+fixed query result __len__ (more efficient)
+------------------------------------------------------------------------
+r863 | eliast | 2006-08-12 12:29:26 -0400 (Sat, 12 Aug 2006) | 8 lines
+
+- Changed reserved @rel resolution to include a '#'
+- Fixed subject resolution for LINK/META when inside HEAD
+- Fixed blank node extraction [_:address] -> [_:_:address]
+- Added support for passing prefix mappings to the Graph via RDFaSink
+- Added @id support as part of subject resolution
+- Added a main function to RDFaParser that takes a URL and extracts/prints the RDF statements
+
+
+------------------------------------------------------------------------
+r862 | eliast | 2006-08-12 12:27:49 -0400 (Sat, 12 Aug 2006) | 4 lines
+
+- Fixed Test:000001 to include xhtml:stylesheet triple
+- Removed Transitional DTD declaration from tests as suggested by DanC
+
+
+------------------------------------------------------------------------
+r861 | eliast | 2006-08-12 12:26:18 -0400 (Sat, 12 Aug 2006) | 3 lines
+
+- updated import to use ConjunctiveGraph to avoid DeprecatedWarning.
+
+
+------------------------------------------------------------------------
+r860 | gromgull | 2006-08-08 18:48:38 -0400 (Tue, 08 Aug 2006) | 1 line
+
+Added new N3Serializer, TurtleSerializer, and Abstract super classes. Made N3Writer tests run as part of run_tests.py. Literal.py changed to support triple quoted long literals.
+------------------------------------------------------------------------
+r859 | gromgull | 2006-08-08 15:43:30 -0400 (Tue, 08 Aug 2006) | 1 line
+
+tests from jena that didn't parse with rdflib
+------------------------------------------------------------------------
+r858 | gromgull | 2006-08-08 15:40:31 -0400 (Tue, 08 Aug 2006) | 1 line
+
+Added n3 writing tests
+------------------------------------------------------------------------
+r857 | eikeon | 2006-08-01 23:19:37 -0400 (Tue, 01 Aug 2006) | 1 line
+
+removing old 'documentation'
 
 
 2006/08/01
