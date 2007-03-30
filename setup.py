@@ -50,7 +50,7 @@ setup(
 
     entry_points = {        
         'nose.plugins': [
-            'EARLPlugin = rdflib.EARLPlugin:EARLPlugin',
+            'EARLPlugin = rdflib_tools.EARLPlugin:EARLPlugin',
             ],
         },
 

@@ -20,9 +20,6 @@ from rdflib.util import date_time
 
 log = logging.getLogger(__name__)
 
-log.info("HELLO")
-
-
 EARL = Namespace("http://www.w3.org/ns/earl#")
 
 
