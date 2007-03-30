@@ -56,8 +56,8 @@ class EARLPlugin(Plugin):
 
     def addSuccess(self, test, capt):
         result = BNode() # TODO: coin URIRef
-        print repr(test)
         self.graph.add((result, RDFS.label, Literal(test)))
+        self.graph.add((result, RDFS.comment, Literal(type(test))))
         self.graph.add((result, RDF.type, EARL.TestResult))
         self.graph.add((result, EARL.outcome, EARL["pass"]))
         # etc
