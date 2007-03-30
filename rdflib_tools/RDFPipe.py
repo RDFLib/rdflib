@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 from pprint import pprint
-from sets import Set
 from rdflib.Namespace import Namespace
-from rdflib import plugin,RDF,RDFS,URIRef,URIRef,Literal,Variable
+from rdflib import plugin,RDF,RDFS,URIRef
 from rdflib.store import Store
-from cStringIO import StringIO
-from rdflib.Graph import Graph,ReadOnlyGraphAggregate,ConjunctiveGraph
+from rdflib.Graph import Graph
 from rdflib.syntax.NamespaceManager import NamespaceManager
-import unittest
 
 RDFLIB_CONNECTION=''
 RDFLIB_STORE='IOMemory'
@@ -60,7 +57,6 @@ def main():
             stdIn = True
         elif o == '--output':
             outMode = a
-            assert a in ['xml','n3']
         elif o == '--ns':            
             pref,nsUri = a.split('=')
             nsBinds[pref]=nsUri
