@@ -130,7 +130,7 @@ class IOMemory(Store):
         """\
         Add a triple to the store.
         """
-
+        Store.add(self, triple, context, quoted)
         for triple, cg in self.triples(triple, context):
             #triple is already in the store.
             return
@@ -217,7 +217,7 @@ class IOMemory(Store):
                 del index[key]
 
     def remove(self, triple, context=None):
-
+        Store.remove(self, triple, context)
         if context is not None:
             if context == self:
                 context = None
