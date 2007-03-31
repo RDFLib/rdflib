@@ -29,12 +29,19 @@ def stopper(s):
     return [w.lower() for w in s if not has_stop(w)]
 
 
+try:
+    from hashlib import md5
+except ImportError:
+    from md5 import md5    
+
 from rdflib.store.IOMemory import IOMemory
-from rdflib import URIRef, Literal, RDF, BNode, Namespace
+from rdflib import URIRef, Literal, RDF, BNode
+from rdflib.Namespace import NamespaceDict as Namespace
 from rdflib.Graph import ConjunctiveGraph
 from rdflib.store import TripleAddedEvent, TripleRemovedEvent
 
-class TextIndexGraph(ConjunctiveGraph):
+
+class TextIndex(ConjunctiveGraph):
     """
     An rdflib graph event handler than indexes text literals that are
     added to a another graph.
@@ -56,7 +63,7 @@ class TextIndexGraph(ConjunctiveGraph):
     index to the event graph:
 
       >>> e = ConjunctiveGraph()
-      >>> t = TextIndexGraph()
+      >>> t = TextIndex()
       >>> t.subscribe_to(e)
 
     When triples are added to the event graph (e) events will be fired
@@ -189,11 +196,12 @@ class TextIndexGraph(ConjunctiveGraph):
 
     linked_data = None
 
-    term = Namespace('http://rdflib.net/something#').term
-    termin = Namespace('http://rdflib.net/something#').termin
+    text_index = Namespace('http://rdflib.net/text_index#')
+    term = Namespace('http://rdflib.net/text_index#')["term"]
+    termin = Namespace('http://rdflib.net/text_index#')["termin"]
 
     def __init__(self, store='default'):
-        super(TextIndexGraph, self).__init__(store)
+        super(TextIndex, self).__init__(store)
 
     def add_handler(self, event):
         if type(event.triple[2]) is Literal:
@@ -213,7 +221,7 @@ class TextIndexGraph(ConjunctiveGraph):
                 # if that word already exists in the statement
                 # loop over each context the term occurs in
                 if self.value(predicate=self.term, object=word, any=True): 
-                    for t in self.triples((None, self.term, word)):
+                    for t in set(self.triples((None, self.term, word))):
                         t = t[0]
                         # if the graph does not contain an occurance of the term in the statement's subject
                         # then add it
@@ -225,7 +233,9 @@ class TextIndexGraph(ConjunctiveGraph):
                             self.add((p, t, s))
 
                 else: # if the term does not exist in the graph, add it, and the references to the statement.
-                    t = BNode()
+                    # t gets used as a predicate, create identifier accordingly (AKA can't be a BNode)
+                    h = md5(word); h.update(s); h.update(p)
+                    t = self.text_index["term_%s" % h.hexdigest()]
                     self.add((t, self.term, word))
                     self.add((t, self.termin, s))
                     self.add((p, t, s))
