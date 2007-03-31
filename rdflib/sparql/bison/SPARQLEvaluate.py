@@ -126,7 +126,7 @@ def unRollTripleItems(items,queryProlog):
     """
     Takes a list of Triples (nested lists or ParsedConstrainedTriples)
     and (recursively) returns a generator over all the contained triple patterns
-    """    
+    """ 
     if isinstance(items,RDFTerm):
         for item in unRollRDFTerm(items,queryProlog):
             yield item
@@ -311,8 +311,6 @@ def validateGroupGraphPattern(gGP,noNesting = False):
     graphGraphPatternNo,optionalGraphPatternNo,alternativeGraphPatternNo = [len(gGPKlass) for gGPKlass in categorizeGroupGraphPattern(gGP)]
     if firstGP.triples and isTriplePattern(firstGP.triples) and  isinstance(firstGP.nonTripleGraphPattern,ParsedAlternativeGraphPattern):
         raise NotImplemented(UNION_GRAPH_PATTERN_NOT_SUPPORTED,"%s"%firstGP)
-    elif firstGP.triples and graphGraphPatternNo:
-        raise NotImplemented(GRAPH_GRAPH_PATTERN_NOT_SUPPORTED,"%s"%gGP)
     elif graphGraphPatternNo > 1 or graphGraphPatternNo and alternativeGraphPatternNo:
         raise NotImplemented(GRAPH_GRAPH_PATTERN_NOT_SUPPORTED,"%s"%gGP)
     for gP in gGP:
@@ -334,6 +332,8 @@ def Evaluate(graph,query,passedBindings = {},DEBUG = False):
 
     Returns a list of tuples - each a binding of the selected variables in query order
     """
+    if query.prolog:
+        query.prolog.DEBUG = DEBUG    
     if query.query.dataSets:
         graphs = []
         for dtSet in query.query.dataSets:
@@ -352,30 +352,37 @@ def Evaluate(graph,query,passedBindings = {},DEBUG = False):
     else:        
         tripleStore = sparqlGraph.SPARQLGraph(graph)    
 
+    if isinstance(query.query,SelectQuery) and query.query.variables:
+        query.query.variables = [convertTerm(item,query.prolog) for item in query.query.variables]
+    else:
+        query.query.variables = []
+
     #Interpret Graph Graph Patterns as Named Graphs
     graphGraphPatterns = categorizeGroupGraphPattern(query.query.whereClause.parsedGraphPattern)[0]
+#    rt = categorizeGroupGraphPattern(query.query.whereClause.parsedGraphPattern)[0]
+#    print rt[0], rt[1]
     if graphGraphPatterns:
         graphGraphP = graphGraphPatterns[0].nonTripleGraphPattern
         if isinstance(graphGraphP.name,Variable):
             if graphGraphP.name in passedBindings:
                 tripleStore = sparqlGraph.SPARQLGraph(Graph(graph.store,passedBindings[graphGraphP.name]))
             else: 
-                raise Exception("Graph Graph Patterns can only be used with variables bound at the top level or a URIRef or BNode term")
-                tripleStore = sparqlGraph.SPARQLGraph(graph,logicalPattern=True)
+                #print graphGraphP 
+                #raise Exception("Graph Graph Patterns can only be used with variables bound at the top level or a URIRef or BNode term")
+                tripleStore = sparqlGraph.SPARQLGraph(graph,graphVariable = graphGraphP.name)
         else:
             graphName =  isinstance(graphGraphP.name,Variable) and passedBindings[graphGraphP.name] or graphGraphP.name
-            tripleStore = sparqlGraph.SPARQLGraph(Graph(graph.store,graphName))
+            graphName  = convertTerm(graphName,query.prolog)
+            if isinstance(graph,ReadOnlyGraphAggregate) and not graph.store:
+                targetGraph = [g for g in graph.graphs if g.identifier == graphName]
+                assert len(targetGraph) == 1
+                targetGraph = targetGraph[0]
+            else:
+                targetGraph = Graph(graph.store,graphName)
+            tripleStore = sparqlGraph.SPARQLGraph(targetGraph)
 
-    if isinstance(query.query,SelectQuery) and query.query.variables:
-        query.query.variables = [convertTerm(item,query.prolog) for item in query.query.variables]
-    else:
-        query.query.variables = []
     gp = reorderGroupGraphPattern(query.query.whereClause.parsedGraphPattern)
     validateGroupGraphPattern(gp)
-
-    if query.prolog:
-        query.prolog.DEBUG = DEBUG
-
     basicPatterns,optionalPatterns = sparqlPSetup(gp,query.prolog)
 
     if DEBUG:

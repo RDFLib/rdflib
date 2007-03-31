@@ -354,7 +354,19 @@ class _SPARQLNode:
             # put the bindings we have so far into the statement; this may add None values,
             # but that is exactly what RDFLib uses in its own search methods!
             (search_s,search_p,search_o) = (self._bind(s),self._bind(p),self._bind(o))
-            for (result_s,result_p,result_o) in self.tripleStore.graph.triples((search_s,search_p,search_o)) :
+            if self.tripleStore.graphVariable:
+                assert hasattr(self.tripleStore.graph,'quads'),\
+                  "Graph graph patterns can only be used with Graph instances with a quad method"
+                
+                searchRT = self.tripleStore.graph.quads((search_s,search_p,search_o))
+            else:
+                searchRT = self.tripleStore.graph.triples((search_s,search_p,search_o))
+            for tripleOrQuad in searchRT:
+            #for (result_s,result_p,result_o) in self.tripleStore.graph.triples((search_s,search_p,search_o)) :
+                if self.tripleStore.graphVariable:
+                    (result_s,result_p,result_o,parentGraph) = tripleOrQuad
+                else:
+                    (result_s,result_p,result_o) = tripleOrQuad
                 # if a user defined constraint has been added, it should be checked now
                 if func != None and func(result_s,result_p,result_o) == False :
                     # Oops, this result is not acceptable, jump over it!
@@ -364,6 +376,8 @@ class _SPARQLNode:
                 if search_s == None : new_bindings[s] = result_s
                 if search_p == None : new_bindings[p] = result_p
                 if search_o == None : new_bindings[o] = result_o
+                if self.tripleStore.graphVariable:
+                    new_bindings[self.tripleStore.graphVariable] = parentGraph.identifier
 
                 # Recursion starts here: create and expand a new child
                 child = _SPARQLNode(self,new_bindings,self.rest,self.tripleStore)

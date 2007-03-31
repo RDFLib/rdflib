@@ -5,7 +5,8 @@ class SPARQLGraph(Graph):
     """
     A subclass of Graph with a few extra SPARQL bits.
     """
-    def __init__(self, graph):
+    def __init__(self, graph, graphVariable = None):
+        self.graphVariable = graphVariable
         self.graph = graph # TODO
         store = graph.store
         identifier = graph.identifier
