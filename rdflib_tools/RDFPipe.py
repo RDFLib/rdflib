@@ -75,7 +75,7 @@ def main():
     factGraph.namespace_manager = namespace_manager
     if factGraphs:
         for fileN in factGraphs:
-            factGraph.parse(open(fileN),format=factFormat)
+            factGraph.parse(fileN,format=factFormat)
     if stdIn:
         factGraph.parse(sys.stdin,format=factFormat)
     print factGraph.serialize(destination=None, format=outMode, base=None)
