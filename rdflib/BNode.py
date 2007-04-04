@@ -28,7 +28,7 @@ bNodeLock = threading.RLock()
 
 class BNode(Identifier):
     """
-    BNodes
+    Blank Node: http://www.w3.org/TR/rdf-concepts/#section-blank-nodes
 
     "In non-persistent O-O software construction, support for object
     identity is almost accidental: in the simplest implementation,
@@ -83,3 +83,4 @@ class BNode(Identifier):
         d = md5(str(self))
         d.update("B")
         return d.hexdigest()
+

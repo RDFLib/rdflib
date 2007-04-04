@@ -17,8 +17,7 @@ _logger = logging.getLogger(__name__)
 
 class Literal(Identifier):
     """
-
-    http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
+    RDF Literal: http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
 
     >>> Literal(1).toPython()
     1L

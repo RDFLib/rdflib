@@ -17,6 +17,9 @@ from rdflib.compat import rsplit
 
 
 class URIRef(Identifier):
+    """
+    RDF URI Reference: http://www.w3.org/TR/rdf-concepts/#section-Graph-URIref
+    """
 
     __slots__ = ()
 
