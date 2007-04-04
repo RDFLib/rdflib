@@ -628,7 +628,6 @@ def PatternResolution(quad,cursor,BRPs,orderByTriple=True,fetchall=True,fetchCon
         query = unionQueries[0] + orderBySuffix
     else:
         query = ' union all '.join(['('+q+')' for q in unionQueries]) + orderBySuffix
-    query = query + '  # %s'%str(quad)
     try:
         cursor.execute(query,tuple(unionQueriesParams))
     except ValueError,e:
