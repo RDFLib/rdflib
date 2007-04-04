@@ -3,37 +3,18 @@
 
         Improved Literal comparison / equality
 
-        Literal('2006-01-01',datatype=_XSD_NS.date) < '2007' case now
-        working as well; more cleanup
-
-        Literal __add__ now working
-
-        fixed Literal comparison. Wasn't working across Python2.4 and
-        Python2.5 amoung other things
-
-        cleaned up fixed up Literal == and cmp
-
-        added overide for __neq__ to ensure proper != comparison
-        against None.  Redirects to __eq__ otherwise.  Doc types added
-
-        Added __cmp__ for support of > and < operators.  Follows
-        __eq__ structure closely.  
-
-        unicode has no __cmp__, using cmp instead.
-
-        __cmp__ no longer fails when a Literal is compared with a
-        basestring (or derivative).  It will instead cast itself to a
-        unicode and call cmp. 
+        Sparql cleanup.
 
         getLiteralValue now returns the Literal object instead of the
         result of toPython().  Now that Literals override a good
         coverage of comparison operators, they should be passed around
         as first class objects in the SPARQL evaluation engine.
 
-
-        Sparql cleanup.
-
         Added support for session bnodes re: sparql
+
+        Fixed prolog reduce/reduce conflict.  Added Py_None IncRefs
+        where they were being passed into Python method invokations
+        (per drewp's patch)
 
         Fixed sparql queries involving empty namespace prefix.
 
@@ -70,6 +51,8 @@
         wildcards
 
 
+
+
         Added support to n3 parser for retaining namespace bindings.
 
         Fixed several RDFaParser bugs.
@@ -85,7 +68,7 @@
 
 
 
-        adding ez_setup bits
+        Added support easy_install
 
         added link to long_descriptin for easy_install -U rdflib==dev
         to work; added download_url back
@@ -109,11 +92,6 @@
 
 
 
-        Fixed values for geo:* (do become XMLLiterals unless given in
-        @content).
-
-
-
         Added md5_term_hash method to terms.
 
         Added commit_pending_transaction argument to Graph's close
@@ -124,24 +102,17 @@
         Added a NamespaceDict class for those who want to avoid the
         Namespace as subclass of URIRef issues
 
-        Improved ValueError message
-
         Added bind function
 
         Fixed type of Namespace re: URIRef vs. unicode
 
+        Improved ValueError message
 
-        moved doctest to Literal class doc
-
-        change value method's any argument to default to True
+        Changed value method's any argument to default to True
 
         Changed __repr__ to always reflect that it's an rdf.Literal --
         as this is the case even though we now have it acting like the
         corresponding type in some casses
-
-        fixed up doc tests
-
-
 
         A DISTINCT was added to the SELECT clause to ensure duplicate
         triples are not returned (an RDF graph is a set of triples) -
@@ -156,10 +127,6 @@
 
         applied patch in
         http://rdflib.net/issues/2006/12/13/typos_in_abstractsqlstore.py/issue
-
-        Fixed prolog reduce/reduce conflict.  Added Py_None IncRefs
-        where they were being passed into Python method invokations
-        (per drewp's patch)
 
         fix for
         http://rdflib.net/issues/2006/12/07/problems_with_graph.seq()_when_sequences_contain_more_than_9_items./issue
@@ -182,17 +149,11 @@
         ReadOnlyGraphAggregate uses Graph constructor properly to
         setup (optionally) a common store
 
-        Added code to catch unpickling related exceptions
-
-
-
 
         Fixed bug with . (fullstop) in localname parts.
 
         Changed Graph's value method to return None instead of raising
         an AssertionError.
-
-        Added BerkeleyDB store implementation.
 
         Fixed conversion of (exiplicit) MySQL ports to integers.
 
@@ -202,7 +163,11 @@
         Aligned with how Sleepycat is generating events (remove events
         are expressed in terms of interned strings)
 
+        Added code to catch unpickling related exceptions
 
+        Added BerkeleyDB store implementation.
+
+        Merged TextIndex from michel-events branch.
 
 
 2006/10/15
