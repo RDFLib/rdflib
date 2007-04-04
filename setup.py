@@ -12,7 +12,7 @@ from rdflib import __version__, __date__
 setup(
     name = 'rdflib',
     version = __version__,
-    description = "RDF library containing an RDF triple store and RDF/XML parser/serializer",
+    description = "RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information.",
     author = "Daniel 'eikeon' Krech",
     author_email = "eikeon@eikeon.com",
     maintainer = "Daniel 'eikeon' Krech",
@@ -27,7 +27,13 @@ setup(
                    "Natural Language :: English",
                    ],
     long_description = \
-    """RDF library containing an RDF triple store and RDF/XML parser/serializer
+    """RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information.
+
+    The library contains parsers and serializers for RDF/XML, N3,
+    NTriples, Turtle, TriX and RDFa . The library presents a Graph
+    interface which can be backed by any one of a number of Store
+    implementations, including, Memory, MySQL, Redland, SQLite,
+    Sleepycat, ZODB and SQLObject.
     
     If you have recently reported a bug marked as fixed, or have a craving for
     the very latest, you may want the development version instead:
