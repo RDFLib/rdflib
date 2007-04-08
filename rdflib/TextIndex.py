@@ -234,7 +234,7 @@ class TextIndex(ConjunctiveGraph):
 
                 else: # if the term does not exist in the graph, add it, and the references to the statement.
                     # t gets used as a predicate, create identifier accordingly (AKA can't be a BNode)
-                    h = md5(word); h.update(s); h.update(p)
+                    h = md5(word.encode('utf-8')); h.update(s.encode('utf-8')); h.update(p.encode('utf-8'))
                     t = self.text_index["term_%s" % h.hexdigest()]
                     self.add((t, self.term, word))
                     self.add((t, self.termin, s))
