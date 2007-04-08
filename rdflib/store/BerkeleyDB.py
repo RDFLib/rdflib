@@ -102,7 +102,7 @@ class BerkeleyDB(Sleepycat):
             self.close()
             db.DBEnv().remove(fullDir,db.DB_FORCE)
 
-    def _init_db_environment(self, homeDir):
+    def _init_db_environment(self, homeDir, create=True):
         #NOTE: The identifeir is appended to the path as the location for the db
         #This provides proper isolation for stores which have the same path but different identifiers
         

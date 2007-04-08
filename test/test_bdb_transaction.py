@@ -24,7 +24,7 @@ def worker_add(performed_ops, graph, num_ops, input=[]):
             #print "could not perform op", e
             raise e
             
-    print "op time: %.4f, thread: %s" % ((time.time() - t1), currentThread().getName())
+    print "add time: %.4f, thread: %s" % ((time.time() - t1), currentThread().getName())
 
 def worker_remove(performed_ops, graph, num_ops, input=[]):
     t1 = time.time()
@@ -45,7 +45,7 @@ def worker_remove(performed_ops, graph, num_ops, input=[]):
             raise e
             #print "could not perform op", e
             
-    print "op time: %.4f, thread: %s" % ((time.time() - t1), currentThread().getName())
+    print "remove time: %.4f, thread: %s" % ((time.time() - t1), currentThread().getName())
 
 class TestBDBGraph(GraphTestCase):
     store_name = "BerkeleyDB"
@@ -83,8 +83,8 @@ class TestBDBTransactions(unittest.TestCase):
         return all_ops
     
     def testAddManyManyThreads(self):
-        w = 1
-        t = 1
+        w = 4
+        t = 1000
         self.__manyOpsManyThreads(worker_add, workers=w, triples=t)
         #print "graph size after finish: ", len(self.graph)
         self.failUnless(len(self.graph) == w*t)
