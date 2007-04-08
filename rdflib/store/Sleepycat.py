@@ -1,4 +1,4 @@
-from rdflib.store import Store
+from rdflib.store import Store, VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
 from rdflib.URIRef import URIRef
 
 from bsddb import db
@@ -14,6 +14,7 @@ _logger = logging.getLogger(__name__)
 class Sleepycat(Store):
     context_aware = True
     formula_aware = True
+    transaction_aware = False
 
     def __init__(self, configuration=None, identifier=None):
         self.__open = False
@@ -22,34 +23,43 @@ class Sleepycat(Store):
         self.configuration = configuration
         self._loads = self.node_pickler.loads
         self._dumps = self.node_pickler.dumps
+        self.db_env = None
 
     def __get_identifier(self):
         return self.__identifier
     identifier = property(__get_identifier)
 
-    def open(self, path, create=True):
-        homeDir = path
+    def _init_db_environment(self, homeDir):
         envsetflags  = db.DB_CDB_ALLDB
         envflags = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD
         if not exists(homeDir):
             if create==True:
                 mkdir(homeDir) # TODO: implement create method and refactor this to it
-                self.create(path)
+                self.create(homeDir)
             else:
                 return -1
-        if self.__identifier is None:
-            self.__identifier = URIRef(pathname2url(abspath(homeDir)))
-        self.db_env = db_env = db.DBEnv()
+        db_env = db.DBEnv()
         db_env.set_cachesize(0, 1024*1024*50) # TODO
         #db_env.set_lg_max(1024*1024)
         db_env.set_flags(envsetflags, 1)
         db_env.open(homeDir, envflags | db.DB_CREATE)
+        return db_env
+        
+    def open(self, path, create=True):
+        homeDir = path
 
+        if self.__identifier is None:
+            self.__identifier = URIRef(pathname2url(abspath(homeDir)))
+
+        self.db_env = db_env = self._init_db_environment(homeDir)        
         self.__open = True
 
         dbname = None
         dbtype = db.DB_BTREE
-        dbopenflags = db.DB_THREAD
+        # auto-commit ensures that the open-call commits when transactions are enabled
+        dbopenflags = db.DB_THREAD 
+        if self.transaction_aware == True:
+            dbopenflags |= db.DB_AUTO_COMMIT
 
         dbmode = 0660
         dbsetflags   = 0
@@ -126,7 +136,7 @@ class Sleepycat(Store):
         t.setDaemon(True)
         t.start()
         self.__sync_thread = t
-        return 1
+        return VALID_STORE
 
 
     def __sync_run(self):
@@ -174,7 +184,7 @@ class Sleepycat(Store):
         self.__k2i.close()
         self.db_env.close()
 
-    def add(self, (subject, predicate, object), context, quoted=False):
+    def add(self, (subject, predicate, object), context, quoted=False, txn=None):
         """\
         Add a triple to the store of triples.
         """
@@ -184,74 +194,75 @@ class Sleepycat(Store):
 
         _to_string = self._to_string
 
-        s = _to_string(subject)
-        p = _to_string(predicate)
-        o = _to_string(object)
-        c = _to_string(context)
-
+        s = _to_string(subject, txn=txn)
+        p = _to_string(predicate, txn=txn)
+        o = _to_string(object, txn=txn)
+        c = _to_string(context, txn=txn)
+        
         cspo, cpos, cosp = self.__indicies
 
-        value = cspo.get("%s^%s^%s^%s^" % (c, s, p, o))
+        value = cspo.get("%s^%s^%s^%s^" % (c, s, p, o), txn=txn)
         if value is None:
-            self.__contexts.put(c, "")
+            self.__contexts.put(c, "", txn=txn)
 
-            contexts_value = cspo.get("%s^%s^%s^%s^" % ("", s, p, o)) or ""
+            contexts_value = cspo.get("%s^%s^%s^%s^" % ("", s, p, o), txn=txn) or ""
             contexts = set(contexts_value.split("^"))
             contexts.add(c)
             contexts_value = "^".join(contexts)
             assert contexts_value!=None
 
-            cspo.put("%s^%s^%s^%s^" % (c, s, p, o), "")
-            cpos.put("%s^%s^%s^%s^" % (c, p, o, s), "")
-            cosp.put("%s^%s^%s^%s^" % (c, o, s, p), "")
+            cspo.put("%s^%s^%s^%s^" % (c, s, p, o), "", txn=txn)
+            cpos.put("%s^%s^%s^%s^" % (c, p, o, s), "", txn=txn)
+            cosp.put("%s^%s^%s^%s^" % (c, o, s, p), "", txn=txn)
             if not quoted:
-                cspo.put("%s^%s^%s^%s^" % ("", s, p, o), contexts_value)
-                cpos.put("%s^%s^%s^%s^" % ("", p, o, s), contexts_value)
-                cosp.put("%s^%s^%s^%s^" % ("", o, s, p), contexts_value)
+                cspo.put("%s^%s^%s^%s^" % ("", s, p, o), contexts_value, txn=txn)
+                cpos.put("%s^%s^%s^%s^" % ("", p, o, s), contexts_value, txn=txn)
+                cosp.put("%s^%s^%s^%s^" % ("", o, s, p), contexts_value, txn=txn)
 
             self.__needs_sync = True
 
-    def __remove(self, (s, p, o), c, quoted=False):
+    def __remove(self, (s, p, o), c, quoted=False, txn=None):
         cspo, cpos, cosp = self.__indicies
-        contexts_value = cspo.get("^".join(("", s, p, o, ""))) or ""
+        contexts_value = cspo.get("^".join(("", s, p, o, "")), txn=txn) or ""
         contexts = set(contexts_value.split("^"))
         contexts.discard(c)
         contexts_value = "^".join(contexts)
         for i, _to_key, _from_key in self.__indicies_info:
-            i.delete(_to_key((s, p, o), c))
+            i.delete(_to_key((s, p, o), c), txn=txn)
         if not quoted:
             if contexts_value:
                 for i, _to_key, _from_key in self.__indicies_info:
-                    i.put(_to_key((s, p, o), ""), contexts_value)
+                    i.put(_to_key((s, p, o), ""), contexts_value, txn=txn)
             else:
                 for i, _to_key, _from_key in self.__indicies_info:
                     try:
-                        i.delete(_to_key((s, p, o), ""))
+                        i.delete(_to_key((s, p, o), ""), txn=txn)
                     except db.DBNotFoundError, e: 
                         pass # TODO: is it okay to ignore these?
 
-    def remove(self, (subject, predicate, object), context):
+    def remove(self, (subject, predicate, object), context, txn=None):
         assert self.__open, "The Store must be open."
         Store.remove(self, (subject, predicate, object), context)
         _to_string = self._to_string
+        
         if context is not None:
             if context == self:
                 context = None
 
         if subject is not None and predicate is not None and object is not None and context is not None:
-            s = _to_string(subject)
-            p = _to_string(predicate)
-            o = _to_string(object)
-            c = _to_string(context)
-            value = self.__indicies[0].get("%s^%s^%s^%s^" % (c, s, p, o))
+            s = _to_string(subject, txn=txn)
+            p = _to_string(predicate, txn=txn)
+            o = _to_string(object, txn=txn)
+            c = _to_string(context, txn=txn)
+            value = self.__indicies[0].get("%s^%s^%s^%s^" % (c, s, p, o), txn=txn)
             if value is not None:
-                self.__remove((s, p, o), c)
+                self.__remove((s, p, o), c, txn=txn)
                 self.__needs_sync = True
         else:
             cspo, cpos, cosp = self.__indicies
-            index, prefix, from_key, results_from_key = self.__lookup((subject, predicate, object), context)
+            index, prefix, from_key, results_from_key = self.__lookup((subject, predicate, object), context, txn=txn)
 
-            cursor = index.cursor()
+            cursor = index.cursor(txn=txn)
             try:
                 current = cursor.set_range(prefix)
                 needs_sync = True
@@ -261,7 +272,7 @@ class Sleepycat(Store):
             cursor.close()
             while current:
                 key, value = current
-                cursor = index.cursor()
+                cursor = index.cursor(txn=txn)
                 try:
                     cursor.set_range(key)
                     current = cursor.next()
@@ -271,14 +282,14 @@ class Sleepycat(Store):
                 if key.startswith(prefix):
                     c, s, p, o = from_key(key)
                     if context is None:
-                        contexts_value = index.get(key) or ""
+                        contexts_value = index.get(key, txn=txn) or ""
                         contexts = set(contexts_value.split("^")) # remove triple from all non quoted contexts
                         contexts.add("") # and from the conjunctive index
                         for c in contexts:
                             for i, _to_key, _ in self.__indicies_info:
-                                i.delete(_to_key((s, p, o), c))
+                                i.delete(_to_key((s, p, o), c), txn=txn)
                     else:
-                        self.__remove((s, p, o), c)
+                        self.__remove((s, p, o), c, txn=txn)
                 else:
                     break
 
@@ -286,13 +297,13 @@ class Sleepycat(Store):
                 if subject is None and predicate is None and object is None:
                     # TODO: also if context becomes empty and not just on remove((None, None, None), c)
                     try:
-                        self.__contexts.delete(_to_string(context))
+                        self.__contexts.delete(_to_string(context, txn=txn), txn=txn)
                     except db.DBNotFoundError, e:
                         pass
 
             self.__needs_sync = needs_sync
 
-    def triples(self, (subject, predicate, object), context=None):
+    def triples(self, (subject, predicate, object), context=None, txn=None):
         """A generator over all the triples matching """
         assert self.__open, "The Store must be open."
 
@@ -301,9 +312,9 @@ class Sleepycat(Store):
                 context = None
 
         _from_string = self._from_string
-        index, prefix, from_key, results_from_key = self.__lookup((subject, predicate, object), context)
+        index, prefix, from_key, results_from_key = self.__lookup((subject, predicate, object), context, txn=txn)
 
-        cursor = index.cursor()
+        cursor = index.cursor(txn=txn)
         try:
             current = cursor.set_range(prefix)
         except db.DBNotFoundError:
@@ -311,7 +322,7 @@ class Sleepycat(Store):
         cursor.close()
         while current:
             key, value = current
-            cursor = index.cursor()
+            cursor = index.cursor(txn=txn)
             try:
                 cursor.set_range(key)
                 current = cursor.next()
@@ -319,7 +330,7 @@ class Sleepycat(Store):
                 current = None
             cursor.close()
             if key and key.startswith(prefix):
-                contexts_value = index.get(key)
+                contexts_value = index.get(key, txn=txn)
                 yield results_from_key(key, subject, predicate, object, contexts_value)
             else:
                 break
@@ -413,28 +424,34 @@ class Sleepycat(Store):
         k = self.__i2k.get(int(i))
         return self._loads(k)
 
-    def _to_string(self, term):
+    def _to_string(self, term, txn=None):
         k = self._dumps(term)
-        i = self.__k2i.get(k)
+        i = self.__k2i.get(k, txn=txn)
         if i is None:
-            i = "%s" % self.__i2k.append(k)
-            self.__k2i.put(k, i)
+            # weird behavoir from bsddb not taking a txn as a keyword argument 
+            # for append
+            if self.transaction_aware:
+                i = "%s" % self.__i2k.append(k, txn)
+            else:
+                i = "%s" % self.__i2k.append(k)
+
+            self.__k2i.put(k, i, txn=txn)
         return i
 
-    def __lookup(self, (subject, predicate, object), context):
+    def __lookup(self, (subject, predicate, object), context, txn=None):
         _to_string = self._to_string
         if context is not None:
-            context = _to_string(context)
+            context = _to_string(context, txn=txn)
         i = 0
         if subject is not None:
             i += 1
-            subject = _to_string(subject)
+            subject = _to_string(subject, txn=txn)
         if predicate is not None:
             i += 2
-            predicate = _to_string(predicate)
+            predicate = _to_string(predicate, txn=txn)
         if object is not None:
             i += 4
-            object = _to_string(object)
+            object = _to_string(object, txn=txn)
         index, prefix_func, from_key, results_from_key = self.__lookup_dict[i]
         prefix = "^".join(prefix_func((subject, predicate, object), context))
         return index, prefix, from_key, results_from_key
