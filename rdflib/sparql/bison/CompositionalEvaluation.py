@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 This module implements (with sparql-p) compositional forms and semantics as outlined in
 the pair of Jorge P´erez et. al papers:
@@ -10,6 +11,10 @@ It also implements rewrite rules expressed in the SPARQL Algebra:
 - http://www.w3.org/TR/rdf-sparql-query/#sparqlAlgebra
 
 Compositional Semantics (Jorge P. et. al syntax)
+
+== Definition 3.5 (Compatible Mappings) == 
+Two mappings μ1 : V → T and μ2 : V → T are compatibles if for every ?X ∈ dom(μ1) ∩ dom(μ2) it is the case
+that μ1(?X) = μ2(?X), i.e. when μ1 ∪ μ2 is also a mapping.
 
 == Definition 3.7 (Set of Mappings and Operations) ==
 
@@ -103,19 +108,11 @@ NOTE: sprarql-p SPARQL.query API is geared for evaluation of SPARQL patterns alr
  - http://dev.w3.org/cvsweb/~checkout~/2004/PythonLib-IH/Doc/Attic/pythondoc-sparql.html?rev=1.5&content-type=text/html;%20charset=iso-8859-1#sparql.SPARQL.query-method
 
 """
-
-def ReduceToDNF(ggp,prolog):
-    """
-    From: Semantics of SPARQL
-    
-    [[{t1, t2, . . . , tn}]]D = [[({t1} AND {t2} AND · · · AND {tn})]]D
-    
-    Proposition 3.13
-    
-    The above proposition implies that it is equivalent to consider basic
-    graph patterns or triple patterns as the base case when defining SPARQL general graph patterns.    
-    """
-    pass
-
-def CompositionalEvaluate(tripleStore,ggp,prolog,passedBindings):
-    pass
+from GraphPattern import ParsedAlternativeGraphPattern,ParsedOptionalGraphPattern, ParsedGroupGraphPattern, ParsedGraphGraphPattern
+from PreProcessor import *
+from Resource import *
+from rdflib import URIRef,Variable,BNode, Literal, plugin, RDF
+from rdflib.sparql.Unbound import Unbound
+from QName import *
+from Expression import *
+from rdflib.sparql.graphPattern import BasicGraphPattern
