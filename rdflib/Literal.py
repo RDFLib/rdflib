@@ -101,6 +101,13 @@ class Literal(Identifier):
 
     
     def __lt__(self, other):
+        """
+        >>> "\xfe" < Literal(u"foo")
+        False
+        >>> u"\xfe" < Literal(u"foo")
+        False
+        """
+
         if other is None:
             return False # Nothing is less than None
         try:
@@ -241,9 +248,17 @@ class Literal(Identifier):
                 
         if rt is self:
             if self.language is None and self.datatype is None:
-                return unicode(rt)
+                return rt.encode("utf-8")
             else:
-                return (unicode(rt), rt.datatype, rt.language)
+                if rt.datatype is not None:
+                    datatype = rt.datatype.encode("utf-8")
+                else:
+                    datatype = None
+                if rt.language is not None:
+                    language = rt.language.encode("utf-8")
+                else:
+                    language = None
+                return (rt.encode("utf-8"), datatype, language)
         return rt
 
     def md5_term_hash(self):
