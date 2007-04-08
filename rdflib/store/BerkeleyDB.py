@@ -137,7 +137,7 @@ class BerkeleyDB(Sleepycat):
         return db_env
 
     #Transactional interfaces
-    def begin_txn(self, nested=False):
+    def begin_txn(self):
         """
         Start a bsddb transaction. 
         """
@@ -170,7 +170,7 @@ class BerkeleyDB(Sleepycat):
             try:
                 txn = self.dbTxn[thread.get_ident()].pop()
                 _logger.debug("committing")
-                before = self.db_env.lock_stat()['nlocks']
+                #before = self.db_env.lock_stat()['nlocks']
                 txn.commit(0)
                 #print "committing a transaction", self.dbTxn[thread.get_ident()], txn, before, self.db_env.lock_stat()['nlocks']
                 if len(self.dbTxn[thread.get_ident()]) == 0:
@@ -194,7 +194,7 @@ class BerkeleyDB(Sleepycat):
             _logger.debug("rollingback")
             try:
                 txn = self.dbTxn[thread.get_ident()].pop()
-                before = self.db_env.lock_stat()['nlocks']
+                #before = self.db_env.lock_stat()['nlocks']
                 # print "rolling back a transaction", self.dbTxn[thread.get_ident()], txn, before, self.db_env.lock_stat()['nlocks']
                 txn.abort()
                 
