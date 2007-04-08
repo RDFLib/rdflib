@@ -29,7 +29,7 @@ class Sleepycat(Store):
         return self.__identifier
     identifier = property(__get_identifier)
 
-    def _init_db_environment(self, homeDir):
+    def _init_db_environment(self, homeDir, create=True):
         envsetflags  = db.DB_CDB_ALLDB
         envflags = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD
         if not exists(homeDir):
@@ -51,7 +51,7 @@ class Sleepycat(Store):
         if self.__identifier is None:
             self.__identifier = URIRef(pathname2url(abspath(homeDir)))
 
-        self.db_env = db_env = self._init_db_environment(homeDir)        
+        self.db_env = db_env = self._init_db_environment(homeDir, create)        
         self.__open = True
 
         dbname = None
