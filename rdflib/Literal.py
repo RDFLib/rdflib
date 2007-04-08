@@ -102,9 +102,11 @@ class Literal(Identifier):
     
     def __lt__(self, other):
         """
-        >>> "\xfe" < Literal(u"foo")
-        False
+        >>> Literal("YXNkZg==", datatype=_XSD_NS[u'base64Binary']) < "foo"
+        True
         >>> u"\xfe" < Literal(u"foo")
+        False
+        >>> Literal(base64.encodestring(u"\xfe".encode("utf-8")), datatype=URIRef("http://www.w3.org/2001/XMLSchema#base64Binary")) < u"foo"
         False
         """
 
@@ -114,6 +116,11 @@ class Literal(Identifier):
             return self._cmp_value < other
         except TypeError, te:
             return unicode(self._cmp_value) < other
+        except UnicodeDecodeError, ue:
+            if isinstance(self._cmp_value, str):
+                return self._cmp_value < other.encode("utf-8")
+            else:
+                raise ue
 
     def __le__(self, other):
         if other is None:
@@ -130,6 +137,11 @@ class Literal(Identifier):
             return self._cmp_value > other
         except TypeError, te:
             return unicode(self._cmp_value) > other
+        except UnicodeDecodeError, ue:
+            if isinstance(self._cmp_value, str):
+                return self._cmp_value > other.encode("utf-8")
+            else:
+                raise ue
 
     def __ge__(self, other):
         if other is None:
@@ -248,17 +260,9 @@ class Literal(Identifier):
                 
         if rt is self:
             if self.language is None and self.datatype is None:
-                return rt.encode("utf-8")
+                return unicode(rt)
             else:
-                if rt.datatype is not None:
-                    datatype = rt.datatype.encode("utf-8")
-                else:
-                    datatype = None
-                if rt.language is not None:
-                    language = rt.language.encode("utf-8")
-                else:
-                    language = None
-                return (rt.encode("utf-8"), datatype, language)
+                return (unicode(rt), rt.datatype, rt.language)
         return rt
 
     def md5_term_hash(self):
