@@ -1,6 +1,11 @@
 
         RELEASE 2.4.1
 
+        Fixed Literal comparison case involving Literal's with
+        datatypes of XSD.base64Binary.
+
+        Fixed case where XSD.date was matching before XSD.dateTime for
+        datetime instances.
 
 
 2007/04/04

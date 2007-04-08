@@ -28,6 +28,8 @@ class Literal(Identifier):
     datetime.date(2006, 1, 1)
     >>> lit2006 < Literal('2007-01-01',datatype=_XSD_NS.date)
     True
+    >>> Literal(datetime.utcnow()).datatype
+    rdflib.URIRef('http://www.w3.org/2001/XMLSchema#dateTime')
     >>> oneInt     = Literal(1)
     >>> twoInt     = Literal(2)
     >>> twoInt < oneInt
@@ -275,7 +277,7 @@ _XSD_NS = Namespace(u'http://www.w3.org/2001/XMLSchema#')
 
 #Casts a python datatype to a tuple of the lexical value and a datatype URI (or None)
 def _castPythonToLiteral(obj):
-    for pType,(castFunc,dType) in _PythonToXSD.items():
+    for pType,(castFunc,dType) in _PythonToXSD:
         if isinstance(obj,pType):
             if castFunc:
                 return castFunc(obj),dType
@@ -285,17 +287,18 @@ def _castPythonToLiteral(obj):
                 return obj,None
     return obj, None # TODO: is this right for the fall through case?
 
-#Mappings from Python types to XSD datatypes and back (burrowed from sparta)
-_PythonToXSD = {
-    basestring : (None,None),
-    float      : (None,_XSD_NS[u'float']),
-    int        : (None,_XSD_NS[u'int']),
-    long       : (None,_XSD_NS[u'long']),
-    bool       : (None,_XSD_NS[u'boolean']),
-    date       : (lambda i:i.isoformat(),_XSD_NS[u'date']),
-    time       : (lambda i:i.isoformat(),_XSD_NS[u'time']),
-    datetime   : (lambda i:i.isoformat(),_XSD_NS[u'dateTime']),
-}
+# Mappings from Python types to XSD datatypes and back (burrowed from sparta)
+# datetime instances are also instances of date... so we need to order these.
+_PythonToXSD = [
+    (basestring, (None,None)),
+    (float     , (None,_XSD_NS[u'float'])),
+    (int       , (None,_XSD_NS[u'int'])),
+    (long      , (None,_XSD_NS[u'long'])),
+    (bool      , (None,_XSD_NS[u'boolean'])),
+    (datetime  , (lambda i:i.isoformat(),_XSD_NS[u'dateTime'])),
+    (date      , (lambda i:i.isoformat(),_XSD_NS[u'date'])),
+    (time      , (lambda i:i.isoformat(),_XSD_NS[u'time'])),
+]
 
 def _strToTime(v) :
     return strptime(v,"%H:%M:%S")
