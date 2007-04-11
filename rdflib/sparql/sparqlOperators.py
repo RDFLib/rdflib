@@ -314,7 +314,7 @@ def lang(a) :
             if val == None:
                 return ""
             else :
-                return val.lang
+                return val.language
         except :
             return ""
     return f
