@@ -7,7 +7,7 @@ from random import random
 from tempfile import mkdtemp
 
 def random_uri():
-    return URIRef("%s" % random())
+    return URIRef(str(random()))
 
 def worker_add(performed_ops, graph, num_ops, input=[]):
     t1 = time.time()
@@ -21,10 +21,10 @@ def worker_add(performed_ops, graph, num_ops, input=[]):
             graph.add((s,p,o))
             performed_ops.append((s,p,o))
         except Exception, e:
-            #print "could not perform op", e
+            print "could not perform op", e
             raise e
             
-    print "add time: %.4f, thread: %s" % ((time.time() - t1), currentThread().getName())
+    print "%s triples, add time: %.4f, thread: %s" % (num_ops, (time.time() - t1), currentThread().getName())
 
 def worker_remove(performed_ops, graph, num_ops, input=[]):
     t1 = time.time()
@@ -52,12 +52,12 @@ class TestBDBGraph(GraphTestCase):
 
 class TestBDBContext(ContextTestCase):
     store = "BerkeleyDB"
-            
+
 class TestBDBTransactions(unittest.TestCase):
     def setUp(self):
         self.graph = ConjunctiveGraph(store="BerkeleyDB")
-        path = mkdtemp()
-        self.graph.open(path, create=True)
+        self.path = mkdtemp()
+        self.graph.open(self.path, create=True)
                     
     def tearDown(self):
         self.graph.close()
@@ -83,6 +83,7 @@ class TestBDBTransactions(unittest.TestCase):
         return all_ops
     
     def testAddManyManyThreads(self):
+        # TODO: sometimes this test leads to TypeError exceptions?
         w = 4
         t = 1000
         self.__manyOpsManyThreads(worker_add, workers=w, triples=t)
@@ -137,7 +138,7 @@ class TestBDBTransactions(unittest.TestCase):
                     self.graph.store.commit()
                     success = True
                 
-            print "add time: %.4f, thread: %s" % ((time.time() - t1), currentThread().getName())
+            print "%s triples add time: %.4f, thread: %s" % (triples, (time.time() - t1), currentThread().getName())
 
         pool = []
         for i in range(0, workers):
@@ -150,34 +151,73 @@ class TestBDBTransactions(unittest.TestCase):
 
 #        print "graph size after finish: ", len(self.graph)
         self.failUnless(len(self.graph) == workers*triples)
+
+    def testCloseCommit(self):
+        triples = 1000
+        
+        def _worker_transaction():
+            self.graph.store.begin_txn()
+            try:
+                worker_add([], self.graph, triples)
+                self.graph.store.commit()
+            except Exception, e:
+                print "got exc: ", e
+                self.graph.store.rollback()
+            
+        def _close():
+            self.graph.store.close(commit_pending_transaction=True)
+            
+        add_t = Thread(target=_worker_transaction)
+        close_t = Thread(target=_close)
+        
+        add_t.start()
+        time.sleep(0.5)
+        
+        close_t.start()
+        
+        add_t.join()
+        print "add finished"
+        close_t.join()
+        print "close finished"
+        #self.graph.open(self.path, create=False)
+        #print "store length: ", len(self.graph)
+        
+        #self.failUnless()
+        
+    def testCloseOpen(self):
+        # setUp opened
+        self.graph.store.close()
+        self.graph.store.open(self.path, create=False)
         
 if __name__ == "__main__":
     bdb_suite = unittest.TestSuite()
-    bdb_suite.addTest(TestBDBTransactions('testAddManyManyThreads'))
-    bdb_suite.addTest(TestBDBTransactions('testAddUserTransaction'))
-    bdb_suite.addTest(TestBDBTransactions('testRemove'))
-    bdb_suite.addTest(TestBDBTransactions('testRemoveAll'))
+#    bdb_suite.addTest(TestBDBTransactions('testAddManyManyThreads'))
+#    bdb_suite.addTest(TestBDBTransactions('testAddUserTransaction'))
+#    bdb_suite.addTest(TestBDBTransactions('testRemove'))
+#    bdb_suite.addTest(TestBDBTransactions('testRemoveAll'))
+    bdb_suite.addTest(TestBDBTransactions('testCloseCommit'))
+    bdb_suite.addTest(TestBDBTransactions('testCloseOpen'))
 
     context_suite = unittest.TestSuite()    
-    context_suite.addTest(TestBDBContext('testAdd'))
-    context_suite.addTest(TestBDBContext('testRemove'))
-    context_suite.addTest(TestBDBContext('testLenInOneContext'))
-    context_suite.addTest(TestBDBContext('testLenInMultipleContexts'))
-    context_suite.addTest(TestBDBContext('testConjunction'))
-    context_suite.addTest(TestBDBContext('testRemoveInMultipleContexts'))
-    context_suite.addTest(TestBDBContext('testContexts'))
-    context_suite.addTest(TestBDBContext('testRemoveContext'))
-    context_suite.addTest(TestBDBContext('testRemoveAny'))
-    context_suite.addTest(TestBDBContext('testTriples'))
-    context_suite.addTest(TestBDBContext('testContexts'))        
+#    context_suite.addTest(TestBDBContext('testAdd'))
+#    context_suite.addTest(TestBDBContext('testRemove'))
+#    context_suite.addTest(TestBDBContext('testLenInOneContext'))
+#    context_suite.addTest(TestBDBContext('testLenInMultipleContexts'))
+#    context_suite.addTest(TestBDBContext('testConjunction'))
+#    context_suite.addTest(TestBDBContext('testRemoveInMultipleContexts'))
+#    context_suite.addTest(TestBDBContext('testContexts'))
+#    context_suite.addTest(TestBDBContext('testRemoveContext'))
+#    context_suite.addTest(TestBDBContext('testRemoveAny'))
+#    context_suite.addTest(TestBDBContext('testTriples'))
+#    context_suite.addTest(TestBDBContext('testContexts'))        
 
     graph_suite = unittest.TestSuite()
-    graph_suite.addTest(TestBDBGraph('testAdd'))
-    graph_suite.addTest(TestBDBGraph('testRemove'))
-    graph_suite.addTest(TestBDBGraph('testTriples'))
-    graph_suite.addTest(TestBDBGraph('testStatementNode'))
-    graph_suite.addTest(TestBDBGraph('testGraphValue'))
-    graph_suite.addTest(TestBDBGraph('testConnected'))
+#    graph_suite.addTest(TestBDBGraph('testAdd'))
+#    graph_suite.addTest(TestBDBGraph('testRemove'))
+#    graph_suite.addTest(TestBDBGraph('testTriples'))
+#    graph_suite.addTest(TestBDBGraph('testStatementNode'))
+#    graph_suite.addTest(TestBDBGraph('testGraphValue'))
+#    graph_suite.addTest(TestBDBGraph('testConnected'))
         
     unittest.TextTestRunner(verbosity=2).run(graph_suite)
     unittest.TextTestRunner(verbosity=2).run(context_suite)

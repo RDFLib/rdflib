@@ -44,7 +44,10 @@ class Sleepycat(Store):
         db_env.set_flags(envsetflags, 1)
         db_env.open(homeDir, envflags | db.DB_CREATE)
         return db_env
-        
+
+    def is_open(self):
+        return self.__open
+    
     def open(self, path, create=True):
         homeDir = path
 

@@ -11,6 +11,9 @@ from threading import Thread
 from time import sleep, time
 import logging
 
+if db.version() < (4,3,29):
+    warnings.warn("Your BDB library may not be supported.")
+    
 SUPPORT_MULTIPLE_STORE_ENVIRON = False
 
 _logger = logging.getLogger(__name__)
@@ -48,7 +51,7 @@ def transaction(f, name=None, **kwds):
             except Exception, e:
                 # print "Got exception in add:", sys.exc_info()[0], e, bdb.dbTxn[thread.get_ident()], bdb.db_env.lock_stat()['nlocks'], retries
                 bdb.rollback()
-                #print "After rollback", e, add_txn, self.dbTxn[thread.get_ident()], thread.get_ident()
+                #print "After rollback", e, add_txn, self.__dbTxn[thread.get_ident()], thread.get_ident()
                 retries -= 1
                 
         #print "Retries failed!", bdb.db_env.lock_stat()['nlocks']
@@ -81,11 +84,14 @@ class BerkeleyDB(Sleepycat):
         super(BerkeleyDB, self).__init__(configuration, identifier)
 
         # number of locks, lockers and objects
-        self.locks = 5000
+        self.__locks = 5000
 
-        # Each thread is responsible for a single transaction, indexed by the 
-        # thread id
-        self.dbTxn = {}
+        # when closing is True, no new transactions are allowed
+        self.__closing = False
+        
+        # Each thread is responsible for a single transaction (included nested
+        # ones) indexed by the thread id
+        self.__dbTxn = {}
 
     def destroy(self, configuration):
         """
@@ -103,7 +109,7 @@ class BerkeleyDB(Sleepycat):
             db.DBEnv().remove(fullDir,db.DB_FORCE)
 
     def _init_db_environment(self, homeDir, create=True):
-        #NOTE: The identifeir is appended to the path as the location for the db
+        #NOTE: The identifier is appended to the path as the location for the db
         #This provides proper isolation for stores which have the same path but different identifiers
         
         if SUPPORT_MULTIPLE_STORE_ENVIRON:
@@ -126,10 +132,10 @@ class BerkeleyDB(Sleepycat):
         db_env.set_lk_detect(db.DB_LOCK_MAXLOCKS)
         
         # increase the number of locks, this is correlated to the size (num triples) that 
-        # can be added/removed with a single operation
-        db_env.set_lk_max_locks(self.locks)
-        db_env.set_lk_max_lockers(self.locks)
-        db_env.set_lk_max_objects(self.locks)
+        # can be added/removed with a single transaction
+        db_env.set_lk_max_locks(self.__locks)
+        db_env.set_lk_max_lockers(self.__locks)
+        db_env.set_lk_max_objects(self.__locks)
         
         #db_env.set_lg_max(1024*1024)
         #db_env.set_flags(envsetflags, 1)
@@ -139,7 +145,11 @@ class BerkeleyDB(Sleepycat):
     #Transactional interfaces
     def begin_txn(self):
         """
-        Start a bsddb transaction. 
+        Start a bsddb transaction. If the current thread already has a running
+        transaction, a nested transaction with the first transaction for this
+        thread as parent is started. See:
+        http://pybsddb.sourceforge.net/ref/transapp/nested.html for more on
+        nested transactions in BDB.
         """
         # A user should be able to wrap several operations in a transaction.
         # For example, two or more adds when adding a graph.
@@ -149,93 +159,116 @@ class BerkeleyDB(Sleepycat):
         # not fail the user transaction. Here, nested transactions are used
         # which have this property.
         
-        if not thread.get_ident() in self.dbTxn:
-            self.dbTxn[thread.get_ident()] = []
-            # add the new transaction to the list of transactions
-            txn = self.db_env.txn_begin()
-            self.dbTxn[thread.get_ident()].append(txn)
-        else:
-            # add a nested transaction with the top one as parent
-            txn = self.db_env.txn_begin(self.dbTxn[thread.get_ident()][0])
-            self.dbTxn[thread.get_ident()].append(txn)
+        txn = None
 
+        try:
+            if not thread.get_ident() in self.__dbTxn and self.is_open() and not self.__closing:
+                self.__dbTxn[thread.get_ident()] = []
+                # add the new transaction to the list of transactions
+                txn = self.db_env.txn_begin()
+                self.__dbTxn[thread.get_ident()].append(txn)
+            else:
+                # add a nested transaction with the top one as parent
+                txn = self.db_env.txn_begin(self.__dbTxn[thread.get_ident()][0])
+                self.__dbTxn[thread.get_ident()].append(txn)
+        except Exception, e:
+            print "begin_txn: ", e
+            if txn != None:
+                txn.abort()
+                
         # return the transaction handle
         return txn
         
-    def commit(self):
+    def commit(self, commit_root=False):
         """
-        Bsddb tx objects cannot be reused after commit 
+        Bsddb tx objects cannot be reused after commit. Set rollback_root to 
+        true to commit all active transactions for the current thread.
         """
-        if thread.get_ident() in self.dbTxn:
+        if thread.get_ident() in self.__dbTxn and self.is_open():
             try:
-                txn = self.dbTxn[thread.get_ident()].pop()
-                _logger.debug("committing")
-                #before = self.db_env.lock_stat()['nlocks']
-                txn.commit(0)
-                #print "committing a transaction", self.dbTxn[thread.get_ident()], txn, before, self.db_env.lock_stat()['nlocks']
-                if len(self.dbTxn[thread.get_ident()]) == 0:
-                    del self.dbTxn[thread.get_ident()]
+                # when the root commits, all childs commit as well
+                if commit_root == True:
+                    self.__dbTxn[thread.get_ident()][0].commit(0)
+                    # no more transactions, clean up
+                    del self.__dbTxn[thread.get_ident()]
+                else:
+                    txn = self.__dbTxn[thread.get_ident()].pop()
+                    _logger.debug("committing")
+                    #before = self.db_env.lock_stat()['nlocks']
+                    txn.commit(0)
+                    #print "committing a transaction", self.__dbTxn[thread.get_ident()], txn, before, self.db_env.lock_stat()['nlocks']
+                    if len(self.__dbTxn[thread.get_ident()]) == 0:
+                        del self.__dbTxn[thread.get_ident()]
             except IndexError, e:
                 #The dbTxn for the current thread is removed to indicate that 
                 #there are no active transactions for the current thread.
-                del self.dbTxn[thread.get_ident()]
+                del self.__dbTxn[thread.get_ident()]
             except Exception, e:
                 # print "Got exception in commit", e
                 raise e
         else:
             _logger.warning("No transaction to commit")
 
-    def rollback(self):
+    def rollback(self, rollback_root=False):
         """
-        Bsddb tx objects cannot be reused after commit
+        Bsddb tx objects cannot be reused after commit. Set rollback_root to 
+        true to abort all active transactions for the current thread.
         """
         
-        if thread.get_ident() in self.dbTxn:
+        if thread.get_ident() in self.__dbTxn and self.is_open():
             _logger.debug("rollingback")
             try:
-                txn = self.dbTxn[thread.get_ident()].pop()
-                #before = self.db_env.lock_stat()['nlocks']
-                # print "rolling back a transaction", self.dbTxn[thread.get_ident()], txn, before, self.db_env.lock_stat()['nlocks']
-                txn.abort()
-                
-                if len(self.dbTxn[thread.get_ident()]) == 0:
-                    del self.dbTxn[thread.get_ident()]
+                if rollback_root == True:
+                    # same as commit, when root aborts, all childs abort
+                    self.__dbTxn[thread.get_ident()][0].abort()
+                    del self.__dbTxn[thread.get_ident()]
+                else:
+                    txn = self.__dbTxn[thread.get_ident()].pop()
+                    #before = self.db_env.lock_stat()['nlocks']
+                    # print "rolling back a transaction", self.__dbTxn[thread.get_ident()], txn, before, self.db_env.lock_stat()['nlocks']
+                    txn.abort()
+                    
+                    if len(self.__dbTxn[thread.get_ident()]) == 0:
+                        del self.__dbTxn[thread.get_ident()]
             except IndexError, e:
                 #The dbTxn for the current thread is removed to indicate that 
                 #there are no active transactions for the current thread.
-                del self.dbTxn[thread.get_ident()]
+                del self.__dbTxn[thread.get_ident()]
             except Exception, e:
                 # print "Got exception in rollback", e
                 raise e
         else:
             _logger.warning("No transaction to rollback")
     
-#    def close(self, commit_pending_transaction=True):
-#        """
-#        Properly handles transactions explicitely (with parameter) or by default
-#        """
-#        if not self.__open:
-#            return
-        # this should close all existing transactions, not only by this thread
-#        if self.dbTxn:
-#            if not commit_pending_transaction:
-#                for t in self.dbTxn.keys():
-#                    self.rollback()
-#            else:
-#                for t in self.dbTxn.keys():
-#                    for ti in self.dbTxn[t]:
-#                        self.commit() 
-#        self.__open = False
-#        self.__sync_thread.join()
-#        for i in self.__indicies:
-#            i.close()
-#        self.__contexts.close()
-#        self.__namespace.close()
-#        self.__prefix.close()
-#        self.__i2k.close()
-        #self.__k2i.close()      
-#        self.db_env.close()
+    def close(self, commit_pending_transaction=True):
+        """
+        Properly handles transactions explicitely (with parameter) or by default
+        """
+        # when closing, no new transactions are allowed
+        # problem is that a thread can already have passed the test and is
+        # half-way through begin_txn when close is called...
+        self.__closing = True
+        
+        if not self.is_open():
+            return
+        # this should close all existing transactions, not only by this thread, 
+        # uses the number of active transactions to sync on.
+        if self.__dbTxn:
+            # this will block for a while, depending on how long it takes 
+            # before the active transactions are committed/aborted
+            while self.db_env.txn_stat()['nactive'] > 0:
+                active_threads = self.__dbTxn.keys()
+                for t in active_threads:                    
+                    if not commit_pending_transaction:    
+                        self.rollback(rollback_root=True)
+                    else:
+                        self.commit(commit_root=True)
+                
+                sleep(0.1)
 
+        # there may still be open transactions
+        super(BerkeleyDB, self).close()
+        
     def add(self, (subject, predicate, object_), context, quoted=False):
 
         @transaction
