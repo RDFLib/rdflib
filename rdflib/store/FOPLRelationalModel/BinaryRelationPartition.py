@@ -23,6 +23,8 @@ from rdflib.store.REGEXMatching import REGEXTerm
 from QuadSlot import *
 Any = None
 
+EXPLAIN_INFO = False
+
 CONTEXT_COLUMN = 'context'
 ANY_TERM = ['U','B','F','V','L']
 CONTEXT_TERMS   = ['U','B','F']
@@ -92,15 +94,17 @@ class BinaryRelationPartition(object):
                     self.idHash.columns[0][0])]
         return rt
 
-    def IndexManagementSQL(self,create=False):
+    def IndexManagementSQL(self,ignoreFK=False,create=False):
         idxSQLStmts = []
         for slot in POSITION_LIST:
             if self.columnNames[slot]:
                 if create:
                     idxSQLStmts.append("create INDEX %s%s on %s (%s)"%(self.columnNames[slot],self.indexSuffix,self,self.columnNames[slot]))
-                    idxSQLStmts.append("ALTER TABLE %s ADD %s"%(self,self.foreignKeySQL(slot)[0]))
+                    if not ignoreFK:
+                        idxSQLStmts.append("ALTER TABLE %s ADD %s"%(self,self.foreignKeySQL(slot)[0]))
                 else:
-                    idxSQLStmts.append("ALTER TABLE %s DROP FOREIGN KEY %s_%s_lookup"%(self,self,self.columnNames[slot]))
+                    if not ignoreFK:
+                        idxSQLStmts.append("ALTER TABLE %s DROP FOREIGN KEY %s_%s_lookup"%(self,self,self.columnNames[slot]))
                     idxSQLStmts.append("ALTER TABLE %s DROP INDEX %s%s"%(self,self.columnNames[slot],self.indexSuffix))
                 if self.termEnumerations[slot]:
                     if create:
@@ -119,9 +123,11 @@ class BinaryRelationPartition(object):
                 else:
                     if create:
                         idxSQLStmts.append("create INDEX %s%s on (%s)"%(colMD,self.indexSuffix,self,colMD))
-                        idxSQLStmts.append("ALTER TABLE %s ADD %s"%(self,self.foreignKeySQL(otherSlot)[0]))
+                        if not ignoreFK:
+                            idxSQLStmts.append("ALTER TABLE %s ADD %s"%(self,self.foreignKeySQL(otherSlot)[0]))
                     else:
-                        idxSQLStmts.append("ALTER TABLE %s DROP FOREIGN KEY %s_%s_lookup"%(self,self,colMD))
+                        if not ignoreFK:
+                            idxSQLStmts.append("ALTER TABLE %s DROP FOREIGN KEY %s_%s_lookup"%(self,self,colMD))
                         idxSQLStmts.append("drop index %s%s on %s"%(colMD,self.indexSuffix,self))
 
         return idxSQLStmts
@@ -629,6 +635,10 @@ def PatternResolution(quad,cursor,BRPs,orderByTriple=True,fetchall=True,fetchCon
     else:
         query = ' union all '.join(['('+q+')' for q in unionQueries]) + orderBySuffix
     try:
+        if EXPLAIN_INFO:
+            cursor.execute("EXPLAIN "+query,tuple(unionQueriesParams))
+            print query
+            from pprint import pprint;pprint(cursor.fetchall())
         cursor.execute(query,tuple(unionQueriesParams))
     except ValueError,e:
         print "## Query ##\n",query
@@ -656,7 +666,7 @@ CREATE TEMPORARY TABLE result (
     INDEX USING BTREE (context(50))
 )
 """
-CROSS_BRP_QUERY_SQL="SELECT DISTINCT %s FROM %s %s WHERE "
+CROSS_BRP_QUERY_SQL="SELECT STRAIGHT_JOIN %s FROM %s %s WHERE "
 CROSS_BRP_RESULT_QUERY_SQL="SELECT * FROM result ORDER BY context"
 DROP_RESULT_TABLE_SQL = "DROP result"
 
