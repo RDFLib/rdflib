@@ -357,7 +357,10 @@ class MySQL(Store):
             rt=PatternResolution((subject,predicate,obj,context),c,self.partitions,orderByTriple=False,fetchall=False)
         while rt:
             s,p,o,(graphKlass,idKlass,graphId) = extractTriple(rt,self,context)
-            currentContext=(context is None or isinstance(context.identifier,REGEXTerm)) and graphKlass(self,idKlass(graphId)) or context
+            if context is None or isinstance(context.identifier,REGEXTerm):
+                currentContext = graphKlass(self,idKlass(graphId))
+            else:
+                currentContext = context
             contexts = [currentContext]
             rt = next = c.fetchone()
             if context is None or isinstance(context.identifier,REGEXTerm):
