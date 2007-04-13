@@ -27,7 +27,7 @@ from QuadSlot import POSITION_LIST, normalizeValue
 Any = None
 
 COLLISION_DETECTION = False
-
+REGEX_IDX = False
 CREATE_HASH_TABLE = """
 CREATE TABLE %s (
     %s
@@ -133,25 +133,27 @@ class RelationalHash:
     def IndexManagementSQL(self,create=False):
         idxSQLStmts = []#'ALTER TABLE %s DROP PRIMARY KEY'%self]
         for colName,colType,indexMD in self.columns:
-            assert indexMD
-            indexName,indexCol = indexMD
-            if indexName:
-                if create:
-                    idxSQLStmts.append("create INDEX %s on %s (%s)"%(indexName,self,indexCol))
-                else:
-                    idxSQLStmts.append("drop INDEX %s on %s"%(indexName,self))
+            if indexMD:
+                indexName,indexCol = indexMD
+                if indexName:
+                    if create:
+                        idxSQLStmts.append("create INDEX %s on %s (%s)"%(indexName,self,indexCol))
+                    else:
+                        idxSQLStmts.append("drop INDEX %s on %s"%(indexName,self))
         return idxSQLStmts
 
     def createSQL(self):
         columnSQLStmts = []
         for colName,colType,indexMD in self.columns:
-            assert indexMD
-            indexName,indexCol = indexMD
-            if indexName:
-                columnSQLStmts.append("\t%s\t%s not NULL"%(colName,colType))
-                columnSQLStmts.append("\tINDEX %s (%s)"%(indexName,indexCol))
+            if indexMD:
+                indexName,indexCol = indexMD
+                if indexName:
+                    columnSQLStmts.append("\t%s\t%s not NULL"%(colName,colType))
+                    columnSQLStmts.append("\tINDEX %s (%s)"%(indexName,indexCol))
+                else:
+                    columnSQLStmts.append("\t%s\t%s not NULL PRIMARY KEY"%(colName,colType))
             else:
-                columnSQLStmts.append("\t%s\t%s not NULL PRIMARY KEY"%(colName,colType))
+                columnSQLStmts.append("\t%s\t%s not NULL"%(colName,colType))
 
         return CREATE_HASH_TABLE%(
             self,
@@ -164,8 +166,7 @@ class IdentifierHash(RelationalHash):
     columns = [
                 ('id','BIGINT unsigned',[None,'id']),
                 ('term_type',"enum('U','B','F','V','L')",['termTypeIndex','term_type']),
-                ('lexical','text',['lexical_index','lexical(100)'])
-    ]
+              ]
 
     tableNameSuffix = 'identifiers'
 
@@ -211,10 +212,7 @@ class IdentifierHash(RelationalHash):
         c.close()
 
 class LiteralHash(RelationalHash):
-    columns = [
-                ('id','BIGINT unsigned',[None,'id']),
-                ('lexical','text',['lexicalIndex','lexical(100)']),
-                ]
+    columns = [('id','BIGINT unsigned',[None,'id']),]
     tableNameSuffix = 'literals'
 
     def generateDict(self,db):
@@ -249,3 +247,10 @@ class LiteralHash(RelationalHash):
                         raise Exception("Hash Collision (in %s) on %s vs %s!"%(self,lexical,self.hashUpdateQueue[key][0]))
             self.hashUpdateQueue = {}
         c.close()
+
+if REGEX_IDX:
+    LiteralHash.columns.append(('lexical','text',['lexicalIndex','lexical(100)']),)
+    IdentifierHash.columns.append(('lexical','text',['lexical_index','lexical(100)']))
+else:    
+    LiteralHash.columns.append(('lexical','text',None))
+    IdentifierHash.columns.append(('lexical','text',None))
