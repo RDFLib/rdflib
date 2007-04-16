@@ -164,10 +164,7 @@ class Literal(Identifier):
         False
          
         """
-        if other is None:
-            return True
-        else:
-            return not self.__eq__(other)
+        return not self.__eq__(other)
 
     def __eq__(self, other):
         """        

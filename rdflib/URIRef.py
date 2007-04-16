@@ -75,6 +75,9 @@ class URIRef(Identifier):
         return (unicode(self), )
 
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __eq__(self, other):
         if isinstance(other, URIRef):
             return unicode(self)==unicode(other)

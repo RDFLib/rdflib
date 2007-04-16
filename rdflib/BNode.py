@@ -72,6 +72,28 @@ class BNode(Identifier):
     def __reduce__(self):
         return (BNode, (unicode(self),))
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __eq__(self, other):
+        """
+        >>> from rdflib import URIRef
+        >>> BNode("foo")==None
+        False
+        >>> BNode("foo")==URIRef("foo")
+        False
+        >>> URIRef("foo")==BNode("foo")
+        False
+        >>> BNode("foo")!=URIRef("foo")
+        True
+        >>> URIRef("foo")!=BNode("foo")
+        True
+        """
+        if isinstance(other, BNode):
+            #return unicode(self)==unicode(other)
+            return Identifier.__eq__(self, other)
+        else:
+            return False
 
     def __str__(self):
         return self.encode("unicode-escape")
