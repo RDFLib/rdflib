@@ -1,0 +1,163 @@
+#!/usr/bin/python
+"""
+This is not an automated test program-- it generates a viewable graph
+that shows the clusters of equal objects.
+
+"""
+
+import os, datetime
+from rdflib import Literal, URIRef, BNode, Namespace
+import yapgvb
+import rdflib
+XSD = Namespace("http://www.w3.org/2001/XMLSchema#")
+EX = Namespace("http://example.com/")
+
+pyValues = '''\
+u"foo"
+"foo"
+Literal("foo")
+Literal("foo", datatype=XSD['string'])
+Literal("foo", datatype=EX['bar'])
+Literal("foo", "fr")
+URIRef("foo")
+BNode("foo")
+Literal("5")
+Literal("5", datatype=XSD['decimal'])
+Literal("5", datatype=XSD['string'])
+5
+5.0
+"5"
+4.99999999999999999
+Literal("4.99999999999999999")
+Literal("4.99999999999999999", datatype=XSD['decimal'])
+False
+"False"
+"false"
+Literal("False")
+Literal("false", datatype=XSD['boolean'])
+Literal(False)
+Literal(False, datatype=XSD['boolean'])
+Literal(0, datatype=XSD['boolean'])
+Literal("http://example.com/foo/")
+URIRef("http://example.com/foo/")
+URIRef("http://example.com/foo%2F")
+"2006-04-15"
+Literal("2006-04-15")
+Literal("2006-04-15", datatype=XSD['date'])
+Literal("2006-04-15Z", datatype=XSD['date'])
+Literal("2006-04-15-00:00", datatype=XSD['date'])
+datetime.date(2006, 4, 15)
+'''.strip().splitlines()
+
+# http://www.w3.org/TR/xmlschema-2/#date says these are the same
+pyValues.extend([
+    'Literal("2002-10-10+13:00", datatype=XSD["date"])', 
+    'Literal("2002-10-09-11:00", datatype=XSD["date"])'
+    ])
+
+# see also http://www.w3.org/2001/sw/DataAccess/tests/#date-1
+
+import cgitb
+cgitb.enable(format='txt')
+
+gv = yapgvb.Graph('rdflib comparisons', strict=True)
+#gv.defaultdist = 100
+#gv.mindist = 500
+#gv.nodesep = 2
+#gv.size = [8, 8]
+#gv.pack = "false"
+
+gv.sep = .5
+#gv.overlap = "false"
+
+gv.add_node("using rdflib version %s" % rdflib.__version__, color="green")
+
+nodes = [(py, eval(py)) for py in pyValues]
+
+gvNode = {}
+for py, val in nodes:
+    label = py
+    label = label.replace('99999999999999999', '99...')
+    label = label.replace('datatype=', 'dt=')
+    n = gvNode[py] = gv.add_node(label)
+    n.shape = 'box'
+    n.fontsize = 10
+    n.margin = .0005, .00002
+
+for i, (yPy, yVal) in enumerate(nodes):
+    for j, (xPy, xVal) in enumerate(nodes):
+        true = xVal == yVal
+
+        if not true and not (xVal != yVal):
+            # neither equal nor nonequal!
+            edge = gv.add_edge(gvNode[xPy], gvNode[yPy])
+            edge.label = "__ne__ failed"
+            edge.color = "red"
+
+        if true:
+            edge = gv.add_edge(gvNode[xPy], gvNode[yPy])
+            edge.label = "="
+            edge.style = "bold"
+            edge.len = 2.5
+
+            if xPy == yPy:
+                # try to shorten the self-loops
+                edge.headport = 'w'
+                edge.tailport = 'w'
+                edge.weight = .2
+                edge.len = .2
+
+gv.layout(yapgvb.engines.circo)
+out = "/tmp/comparison_graph.png"
+gv.render(out)
+print "wrote: %s" % out
+
+raise SystemExit
+
+# this part makes an html table, but the graph is much prettier
+from nevow import flat, tags as T
+
+rows = [T.tr[T.th, [T.th[i] for i in range(len(nodes))]]]
+
+for i, (yPy, yVal) in enumerate(nodes):
+    cols = [T.th["%s) " % i, yPy]]
+    for j, (xPy, xVal) in enumerate(nodes):
+        true = xVal == yVal
+
+        symbol = T.xml("&#8800;")
+        if true:
+            symbol = "="
+        cols.append(T.td(class_=str(true))[symbol])
+    rows.append(T.tr[cols])
+    
+print flat.flatten(
+    T.html[
+    T.head[
+    T.style['''
+    table {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+    td, th {
+      border: 1px solid black;
+    }
+    td {
+      width: 1em;
+      text-align: center;
+    }
+    th {
+      text-align: left;
+    }
+    .True {
+      background: #92E892;
+    }
+    .False {
+      color: gray;
+    }
+    ''']
+    ],
+    T.body[
+
+    T.h1["Comparisons using rdflib %s" % rdflib.__version__],
+
+    T.table[rows]]])
