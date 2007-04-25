@@ -21,7 +21,19 @@ test_data = """
     </rdf:Description>
 </rdf:RDF>"""
 
-baseUri = URIRef('http://example.com/')
+test_data2 = """
+<rdf:RDF 
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xml:base="../">
+    <rdf:Description rdf:about="baz">
+      <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Document"/>
+    </rdf:Description>
+</rdf:RDF>"""
+
+
+baseUri  = URIRef('http://example.com/')
+baseUri2 = URIRef('http://example.com/foo/bar')
 
 class TestEmptyBase(unittest.TestCase):
     def setUp(self):
@@ -31,6 +43,16 @@ class TestEmptyBase(unittest.TestCase):
     def test_base_ref(self):        
         self.failUnless(len(self.graph) == 1,"There should be at least one statement in the graph")
         self.failUnless((baseUri,RDF.type,FOAF.Document) in self.graph,"There should be a triple with %s as the subject" % baseUri)
+
+class TestRelativeBase(unittest.TestCase):
+    def setUp(self):
+        self.graph = ConjunctiveGraph()
+        self.graph.parse(StringIO(test_data2),publicID=baseUri2)
+
+    def test_base_ref(self):        
+        self.failUnless(len(self.graph) == 1,"There should be at least one statement in the graph")
+        resolvedBase = URIRef('http://example.com/baz')
+        self.failUnless((resolvedBase,RDF.type,FOAF.Document) in self.graph,"There should be a triple with %s as the subject" % resolvedBase)
 
 if __name__ == "__main__":
     unittest.main()
