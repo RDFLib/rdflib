@@ -442,7 +442,7 @@
       <symbol>LANGTAG</symbol>
       <code language="c">
         PyObject *lang = PySequence_GetSlice($2, 1, PyString_GET_SIZE($2));
-        $$ = PyObject_CallMethod(rdflib, "Literal", "O", $1,lang);
+        $$ = PyObject_CallMethod(rdflib, "Literal", "OO", $1, lang);
         Py_XDECREF(lang);
       </code>
     </rule>
