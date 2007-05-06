@@ -52,6 +52,16 @@ class N3Serializer(TurtleSerializer):
             return True
         else:
             return False
+
+    def preprocessTriple(self, triple):
+        super(N3Serializer, self).preprocessTriple(triple)
+        if isinstance(triple[0], Graph):
+            for t in triple[0]:
+                self.preprocessTriple(t)
+        if isinstance(triple[2], Graph):
+            for t in triple[2]:
+                self.preprocessTriple(t)
+            
     
     def statement(self, subject):
         self.subjectDone(subject)
@@ -69,7 +79,7 @@ class N3Serializer(TurtleSerializer):
     def startDocument(self):
         ns_list= list(self.namespaces.items())
         ns_list.sort()
-                
+        
         for prefix, uri in ns_list:
             self.write('\n'+self.indent()+'@prefix %s: <%s>.'%(prefix, uri))
 
