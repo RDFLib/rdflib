@@ -177,11 +177,15 @@ class Literal(Identifier):
         False
         >>> Literal("1", datatype=URIRef("foo")) == "asdf"
         False
+        >>> Literal('2007-01-01', datatype=_XSD_NS.date) == Literal('2007-01-01', datatype=_XSD_NS.date)
+        True
+        >>> Literal('2007-01-01', datatype=_XSD_NS.date) == date(2007, 1, 1)
+        True
         >>> oneInt     = Literal(1)
         >>> oneNoDtype = Literal('1')
         >>> oneInt == oneNoDtype
         False
-        >>> Literal("1",_XSD_NS[u'string']) == Literal("1",_XSD_NS[u'string']) 
+        >>> Literal("1",_XSD_NS[u'string']) == Literal("1",_XSD_NS[u'string'])
         True
         >>> Literal("one",lang="en") == Literal("one",lang="en")
         True
@@ -197,8 +201,10 @@ class Literal(Identifier):
         """
         if other is None:
             return False
+        if isinstance(other, Literal):
+            return self._cmp_value == other._cmp_value
         else:
-            return self._cmp_value==other
+            return self._cmp_value == other
 
     def n3(self):
         language = self.language
