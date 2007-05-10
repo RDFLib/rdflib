@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 #
 #
 # $Date: 2005/11/04 14:06:36 $, by $Author: ivan $, $Revision: 1.1 $
@@ -282,6 +282,7 @@ class GraphPattern :
         return self
 
     def __repr__(self) :
+        return "BGP(%s)"%(self.patterns)
         retval  = "   Patterns:    %s\n" % self.patterns
         retval += "   Constraints: %s\n" % self.constraints
         retval += "   Unbounds:    %s\n" % self.unbounds
@@ -310,7 +311,7 @@ class BasicGraphPattern(GraphPattern) :
         """
         @param patterns: an initial list of graph pattern tuples
         """
-        GraphPattern.__init__(self,patterns)	
+        GraphPattern.__init__(self,patterns)
 	
     def _generatePattern(self,tupl) :
         """
