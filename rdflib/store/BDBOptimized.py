@@ -1,3 +1,4 @@
+import warnings
 from bsddb import db
 from urllib import pathname2url
 from os import mkdir
@@ -18,6 +19,69 @@ _logger = logging.getLogger(__name__)
 
 # TODO: performance testing?
 
+class NamespaceIndex:
+    
+    def __init__(self, db_env):
+        self.__db_env = db_env
+        self.__namespace = db.DB(db_env)
+        self.__namespace.open('namespace.db', None, db.DB_BTREE, db.DB_CREATE | db.DB_AUTO_COMMIT)
+
+        self.__prefix = db.DB(db_env)
+        self.__prefix.open("prefix.db", None, db.DB_BTREE, db.DB_CREATE | db.DB_AUTO_COMMIT)
+
+    def bind(self, prefix, namespace):
+        prefix = prefix.encode("utf-8")
+        namespace = namespace.encode("utf-8")
+        
+        t = self.__db_env.txn_begin()
+        try:
+            bound_prefix = self.__prefix.get(namespace, txn=t)
+            if bound_prefix:
+                self.__namespace.delete(bound_prefix, txn=t)
+            self.__prefix.put(namespace, prefix, txn=t)
+            self.__namespace.put(prefix, namespace, txn=t)
+            t.commit(0)
+        except Exception, e:
+            t.abort()
+            
+    def namespaces(self):
+        cursor = self.__namespace.cursor()
+        results = []
+        current = cursor.first()
+        while current:
+            prefix, namespace = current
+            results.append((prefix, namespace))
+            current = cursor.next()
+        cursor.close()
+        for prefix, namespace in results:
+            yield prefix, URIRef(namespace)
+        
+    def prefix(self, namespace):
+        namespace = namespace.encode("utf-8")
+        t = self.__db_env.txn_begin()
+        try:
+            r = self.__prefix.get(namespace, None)
+            t.commit(0)
+            return r
+        except Exception, e:
+            t.abort()
+            raise e
+
+    def namespace(self, prefix):
+        prefix = prefix.encode("utf-8")
+        t = self.__db_env.txn_begin()
+        try:
+            r = self.__namespace.get(prefix, None)
+            t.commit(0)
+            return r
+        except Exception, e:
+            t.abort()
+            raise e
+
+    def close(self):
+        self.__namespace.close()
+        self.__prefix.close()
+                            
 class IDMap:
     def __init__(self, db_env, node_pickler):
         self.__db_env = db_env
@@ -350,12 +414,14 @@ class BDBOptimized(Store):
     def __init__(self, configuration=None, identifier=None):
         self.__open = False
         self.__identifier = identifier
-        super(BDBOptimized, self).__init__(configuration)
         self.configuration = configuration
+        self.__locks = 5000        
         self.__db_env = None
         self.__id_mapper = None
         self.__quad_index = None
-        self.__locks = 5000
+        self.__namespace_index = None
+        # Store.__init__ calls open if there is a configuration
+        super(BDBOptimized, self).__init__(configuration)    
         
     def __get_identifier(self):
         return self.__identifier
@@ -409,6 +475,7 @@ class BDBOptimized(Store):
 
         self.__id_mapper = IDMap(self.__db_env, self.node_pickler)
         self.__quad_index = QuadIndex(self.__db_env, self.__id_mapper)
+        self.__namespace_index = NamespaceIndex(self.__db_env)
 
     def triples(self, (subject, predicate, object), context=None):
         for result in self.__quad_index.triples((subject, predicate, object, context)):
@@ -437,6 +504,19 @@ class BDBOptimized(Store):
         
         self.__quad_index.remove((subject, predicate, object, context))
 
+    def bind(self, prefix, namespace):
+        return self.__namespace_index.bind(prefix, namespace)
+        
+    def namespace(self, prefix):
+        return self.__namespace_index.namespace(prefix)
+
+    def prefix(self, namespace):
+        return self.__namespace_index.prefix(namespace)
+        
+    def namespaces(self):
+        for r in self.__namespace_index.namespaces():
+            yield r
+            
     def __len__(self, context=None):
         return self.__quad_index.__len__(context)
     
@@ -444,3 +524,6 @@ class BDBOptimized(Store):
         self.__open = False
         self.__id_mapper.close()
         self.__quad_index.close()
+        self.__namespace_index.close()
+        self.__db_env.close()
+        
