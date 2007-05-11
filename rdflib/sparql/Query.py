@@ -95,7 +95,6 @@ def _createInitialBindings(pattern) :
         bindings[c] = None
     return bindings
 
-
 class _SPARQLNode:
     """
     The SPARQL implementation is based on the creation of a tree, each
@@ -355,10 +354,11 @@ class _SPARQLNode:
             # but that is exactly what RDFLib uses in its own search methods!
             (search_s,search_p,search_o) = (self._bind(s),self._bind(p),self._bind(o))
             if self.tripleStore.graphVariable:
-                assert hasattr(self.tripleStore.graph,'quads'),\
-                  "Graph graph patterns can only be used with Graph instances with a quad method"
-                
-                searchRT = self.tripleStore.graph.quads((search_s,search_p,search_o))
+                if hasattr(self.tripleStore.graph,'quads'):
+                    searchRT = self.tripleStore.graph.quads((search_s,search_p,search_o))
+                else:
+                    searchRT = [(s,p,o,self.tripleStore.graph.identifiers) 
+                                  for s,p,o in self.tripleStore.graph.triples((search_s,search_p,search_o))]
             else:
                 searchRT = self.tripleStore.graph.triples((search_s,search_p,search_o))
             for tripleOrQuad in searchRT:
