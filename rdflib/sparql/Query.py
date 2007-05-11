@@ -357,7 +357,7 @@ class _SPARQLNode:
                 if hasattr(self.tripleStore.graph,'quads'):
                     searchRT = self.tripleStore.graph.quads((search_s,search_p,search_o))
                 else:
-                    searchRT = [(s,p,o,self.tripleStore.graph.identifiers) 
+                    searchRT = [(s,p,o,self.tripleStore.graph.identifier) 
                                   for s,p,o in self.tripleStore.graph.triples((search_s,search_p,search_o))]
             else:
                 searchRT = self.tripleStore.graph.triples((search_s,search_p,search_o))
