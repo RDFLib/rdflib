@@ -1,5 +1,4 @@
 from rdflib.sparql.bison import Parse
-from rdflib.sparql.bison.SPARQLEvaluate import Evaluate
 from rdflib import plugin, Namespace,URIRef, RDF
 from rdflib.store import Store, VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
 from rdflib.Graph import Graph, ConjunctiveGraph
