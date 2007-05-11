@@ -239,7 +239,7 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False):
             print "## Full SPARQL Algebra expression ##"
             print expr
             print "###################################"
-        result = expr.evaluate(tripleStore,passedBindings,query.prolog,DEBUG)
+        result = expr.evaluate(tripleStore,passedBindings,query.prolog)
     #result = queryObject(tripleStore, basicPatterns,optionalPatterns,passedBindings)
     if result == None :
         # generate some proper output for the exception :-)
@@ -291,7 +291,7 @@ class AlgebraExpression(object):
     def __repr__(self):
         return "%s(%s,%s)"%(self.__class__.__name__,self.left,self.right)
 
-    def evaluate(self,tripleStore,initialBindings,prolog,DEBUG=False):
+    def evaluate(self,tripleStore,initialBindings,prolog):
         """
         12.5 Evaluation Semantics
         
@@ -318,15 +318,24 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
         if isinstance(expression,GraphExpression):
             #If a Graph pattern evaluate it passing on the leaf bindings
             #(possibly as solutions to graph names
-            expression = expression.evaluate(tripleStore,node.bindings.copy(),prolog)           
-        assert isinstance(expression,BasicGraphPattern)
-        exprBindings = Query._createInitialBindings(expression)
-        exprBindings.update(node.bindings) 
-        child = Query._SPARQLNode(optionalTree and None or node,
-                                  exprBindings,
-                                  expression.patterns,
-                                  hasattr(expression,'tripleStore') and expression.tripleStore or node.tripleStore)
-        child.expand(expression.constraints)                
+            if prolog.DEBUG:
+                print "passing on bindings to GRAPH: ", node.bindings.copy()
+            expression = expression.evaluate(tripleStore,node.bindings.copy(),prolog)
+        if isinstance(expression,BasicGraphPattern):
+            if prolog.DEBUG:
+                print "Evaluated left node and traversed to leaf, expanding with ", expression 
+            exprBindings = Query._createInitialBindings(expression)
+            exprBindings.update(node.bindings)
+            child = Query._SPARQLNode(optionalTree and None or node,
+                                      exprBindings,
+                                      expression.patterns,
+                                      hasattr(expression,'tripleStore') and expression.tripleStore or node.tripleStore)
+            child.expand(expression.constraints)        
+        else:
+            assert isinstance(expression,Query.Query) and expression.top            
+            #Already been evaluated (non UNION), just attach the SPARQLNode
+            child = expression.top
+            
         # if the child is a clash then no use adding it to the tree, it can be forgotten
         if node.clash == False :
             node.children.append(child)
@@ -356,15 +365,23 @@ class Join(AlgebraExpression):
         self.left  = BGP1
         self.right = BGP2
             
-    def evaluate(self,tripleStore,initialBindings,prolog,DEBUG=False):
+    def evaluate(self,tripleStore,initialBindings,prolog):
+        if prolog.DEBUG:
+            print "eval(%s,%s)"%(self,tripleStore.graph)
         if isinstance(self.left,AlgebraExpression):
-            self.left = self.left.evaluate(tripleStore,initialBindings,prolog,DEBUG)
+            self.left = self.left.evaluate(tripleStore,initialBindings,prolog)
         if isinstance(self.left,BasicGraphPattern):        
             retval = None
             bindings = Query._createInitialBindings(self.left)
             if initialBindings:
                 bindings.update(initialBindings)
-            top = Query._SPARQLNode(None,bindings,self.left.patterns, tripleStore)
+            if hasattr(self.left,'tripleStore'):
+                #Use the prepared tripleStore
+                tripleStore = self.left.tripleStore
+            top = Query._SPARQLNode(None,
+                                    bindings,
+                                    self.left.patterns,
+                                    tripleStore)
             top.expand(self.left.constraints)
             _ExpandJoin(top,self.right,tripleStore,prolog)
             return Query.Query(top, tripleStore)
@@ -427,18 +444,20 @@ class LeftJoin(AlgebraExpression):
         self.left  = BGP1
         self.right = BGP2
 
-    def evaluate(self,tripleStore,initialBindings,prolog,DEBUG=False):
+    def evaluate(self,tripleStore,initialBindings,prolog):
         if isinstance(self.left,AlgebraExpression):
-            self.left = self.left.evaluate(tripleStore,initialBindings,prolog,DEBUG)
+            self.left = self.left.evaluate(tripleStore,initialBindings,prolog)
         if isinstance(self.left,BasicGraphPattern):        
             retval = None
             bindings = Query._createInitialBindings(self.left)
             if initialBindings:
                 bindings.update(initialBindings)
+            if hasattr(self.left,'tripleStore'):
+                #Use the prepared tripleStore
+                tripleStore = self.left.tripleStore
             top = Query._SPARQLNode(None,bindings,self.left.patterns, tripleStore)
             top.expand(self.left.constraints)
             _ExpandLeftJoin(top,self.right,tripleStore,prolog)
-            
             return Query.Query(top, tripleStore)
         else:
             assert isinstance(self.left,Query.Query), repr(self.left)
@@ -456,9 +475,9 @@ class Union(AlgebraExpression):
         self.left  = BGP1
         self.right = BGP2
 
-    def evaluate(self,tripleStore,initialBindings,prolog,DEBUG=False):
+    def evaluate(self,tripleStore,initialBindings,prolog):
         if isinstance(self.left,AlgebraExpression):
-            self.left = self.left.evaluate(tripleStore,initialBindings,prolog,DEBUG)
+            self.left = self.left.evaluate(tripleStore,initialBindings,prolog)
         if isinstance(self.left,BasicGraphPattern):        
             #The left expression has not been evaluated
             retval = None
@@ -475,7 +494,7 @@ class Union(AlgebraExpression):
         #Now we evaluate the right expression (independently)
         if isinstance(self.right,GraphExpression):
             #If it is a GraphExpression, 'reduce' it
-            self.right = self.right.evaluate(tripleStore,initialBindings,prolog,DEBUG)           
+            self.right = self.right.evaluate(tripleStore,initialBindings,prolog)           
         assert isinstance(self.right,BasicGraphPattern)
 
         rightBindings = Query._createInitialBindings(self.right)
@@ -498,17 +517,24 @@ class GraphExpression(AlgebraExpression):
     def __repr__(self):
         return "Graph(%s,%s)"%(self.iriOrVar,self.GGP)
 
-    def evaluate(self,tripleStore,initialBindings,prolog,DEBUG=False):
+    def evaluate(self,tripleStore,initialBindings,prolog):
         """
         .. The GRAPH keyword is used to make the active graph one of all of the 
            named graphs in the dataset for part of the query ...
         """
+        if prolog.DEBUG:
+            print "eval(%s,%s,%s)"%(self,initialBindings,tripleStore.graph)
         if isinstance(self.iriOrVar,Variable):
             #A variable: 
             if self.iriOrVar in initialBindings:
+                assert initialBindings[self.iriOrVar], "Empty binding for GRAPH variable!"
+                if prolog.DEBUG:
+                    print "Passing on unified graph name: ", initialBindings[self.iriOrVar]
                 tripleStore = sparqlGraph.SPARQLGraph(Graph(tripleStore.store,initialBindings[self.iriOrVar]))
             else: 
-                tripleStore = sparqlGraph.SPARQLGraph(tripleStore,graphVariable = self.iriOrVar)
+                if prolog.DEBUG:
+                    print "Setting up BGP to return additional bindings for %s"%self.iriOrVar
+                tripleStore = sparqlGraph.SPARQLGraph(tripleStore.graph,graphVariable = self.iriOrVar)
         else:
             graphName =  self.iriOrVar
             graphName  = convertTerm(graphName,prolog)
@@ -520,9 +546,11 @@ class GraphExpression(AlgebraExpression):
                 targetGraph = Graph(tripleStore.store,graphName)
             tripleStore = sparqlGraph.SPARQLGraph(targetGraph)
         if isinstance(self.GGP,AlgebraExpression):
-            return self.GGP.evaluate(tripleStore,initialBindings,prolog,DEBUG)
+            #Dont evaluate
+            return self.GGP.evaluate(tripleStore,initialBindings,prolog)
         else:
             assert isinstance(self.GGP,BasicGraphPattern),repr(self.GGP)
+            #Attach the prepared triple store to the BGP
             self.GGP.tripleStore = tripleStore
             return self.GGP
 
