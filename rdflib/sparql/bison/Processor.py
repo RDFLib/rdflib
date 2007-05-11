@@ -1,6 +1,6 @@
 from rdflib import sparql
 from rdflib.sparql.bison.Query import Query, Prolog
-from rdflib.sparql.bison.SPARQLEvaluate import Evaluate        
+from rdflib.sparql.Algebra import TopEvaluate
 from rdflib.sparql.bison import SPARQLParserc as SPARQLParser
 
 def CreateSPARQLParser():
@@ -33,4 +33,8 @@ class Processor(sparql.Processor):
             for prefix, nsInst in initNs.items():
                 if prefix not in strOrQuery.prolog.prefixBindings:
                     strOrQuery.prolog.prefixBindings[prefix] = nsInst
-        return  Evaluate(self.graph, strOrQuery, initBindings, DEBUG=DEBUG)
+                    
+        global prolog            
+        prolog = strOrQuery.prolog
+        return TopEvaluate(strOrQuery,self.graph,initBindings,DEBUG=DEBUG)
+        #return  Evaluate(self.graph, strOrQuery, initBindings, DEBUG=DEBUG)

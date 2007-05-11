@@ -10,11 +10,10 @@ from rdflib import URIRef,Variable,BNode, Literal, plugin, RDF
 from rdflib.store import Store
 from rdflib.Literal import XSDToPython
 from IRIRef import NamedGraph,RemoteGraph
-from GraphPattern import ParsedAlternativeGraphPattern,ParsedOptionalGraphPattern
+from GraphPattern import *
 from Resource import *
 from Triples import ParsedConstrainedTriples
 from QName import *
-from PreProcessor import *
 from Expression import *
 from Util import ListRedirect
 from Operators import *
@@ -56,7 +55,10 @@ def convertTerm(term,queryProlog):
     elif isinstance(term,QName):
         #QNames and QName prefixes are the same in the grammar
         if not term.prefix:
-            return URIRef(queryProlog.baseDeclaration + term.localname)
+            if queryProlog is None:
+                return URIRef(term.localname)
+            else:
+                return URIRef(queryProlog.baseDeclaration + term.localname)
         elif term.prefix == '_':
             #Told BNode See: http://www.w3.org/2001/sw/DataAccess/issues#bnodeRef
             import warnings
@@ -65,7 +67,10 @@ def convertTerm(term,queryProlog):
         else:
             return URIRef(queryProlog.prefixBindings[term.prefix] + term.localname)
     elif isinstance(term,QNamePrefix):
-        return URIRef(queryProlog.baseDeclaration + term)
+        if queryProlog is None:
+            return URIRef(term)
+        else:
+            return URIRef(queryProlog.baseDeclaration + term)
     elif isinstance(term,ParsedString):
         return Literal(term)
     else:
@@ -130,6 +135,15 @@ def unRollTripleItems(items,queryProlog):
     if isinstance(items,RDFTerm):
         for item in unRollRDFTerm(items,queryProlog):
             yield item
+    elif isinstance(items,ParsedConstrainedTriples):
+        assert isinstance(items.triples,list)
+        for item in items.triples:
+            if isinstance(item,RDFTerm):
+                for i in unRollRDFTerm(item,queryProlog):
+                    yield i
+            else:
+                for i in unRollTripleItems(item,queryProlog):
+                    yield item
     else:
         for item in items:
             if isinstance(item,RDFTerm):
@@ -218,60 +232,6 @@ def createSPARQLPConstraint(filter,prolog):
             print "sparql-p operator(s): %s"%rt
         return eval(rt)
 
-def sparqlPSetup(groupGraphPattern,prolog):
-    """
-    This core function takes Where Clause and two lists of rdflib.sparql.graphPattern.BasicGraphPatterns
-    (the main patterns - connected by UNION - and an optional patterns)
-    This is the core SELECT API of sparql-p
-    """
-    basicGraphPatterns = []
-    patternList = []
-    graphGraphPatterns,optionalGraphPatterns,alternativeGraphPatterns = categorizeGroupGraphPattern(groupGraphPattern)
-    globalTPs,globalConstraints = reorderBasicGraphPattern(groupGraphPattern[0])
-    #UNION alternative graph patterns
-    if alternativeGraphPatterns:
-        #Global constraints / optionals must be distributed within each alternative GP via:
-        #((P1 UNION P2) FILTER R) AND ((P1 FILTER R) UNION (P2 FILTER R)).
-        for alternativeGPBlock in alternativeGraphPatterns:
-            for alternativeGPs in alternativeGPBlock.nonTripleGraphPattern:
-                triples,constraints = reorderBasicGraphPattern(alternativeGPs[0])
-                constraints.extend(globalConstraints)
-                alternativeGPInst = BasicGraphPattern([t for t in unRollTripleItems(triples,prolog)])
-                alternativeGPInst.addConstraints([createSPARQLPConstraint(constr,prolog) for constr in constraints])
-                basicGraphPatterns.append(alternativeGPInst)
-    elif graphGraphPatterns:
-        triples,constraints = reorderBasicGraphPattern(graphGraphPatterns[0].nonTripleGraphPattern[0])
-        for t in unRollTripleItems(triples,prolog):
-            patternList.append(t)
-        basicGraphPattern = BasicGraphPattern(patternList)
-        for constr in constraints:
-            basicGraphPattern.addConstraint(createSPARQLPConstraint(constr,prolog))
-        basicGraphPatterns.append(basicGraphPattern)
-    else:
-        triples,constraints = reorderBasicGraphPattern(groupGraphPattern[0])
-        for t in unRollTripleItems(triples,prolog):
-            patternList.append(t)
-        basicGraphPattern = BasicGraphPattern(patternList)
-        for constr in constraints:
-            basicGraphPattern.addConstraint(createSPARQLPConstraint(constr,prolog))
-        basicGraphPatterns.append(basicGraphPattern)
-
-    #Global optional patterns
-    rtOptionalGraphPatterns = []
-    for opGGP in [g.nonTripleGraphPattern for g in optionalGraphPatterns]:
-        opTriples,opConstraints = reorderBasicGraphPattern(opGGP[0])
-        #FIXME how do deal with data/local-constr/expr-2.rq?
-        #opConstraints.extend(globalConstraints)
-        opPatternList = []
-        for t in unRollTripleItems(opTriples,prolog):
-            opPatternList.append(t)
-        opBasicGraphPattern = BasicGraphPattern(opPatternList)
-        for constr in opConstraints:# + constraints:
-            opBasicGraphPattern.addConstraint(createSPARQLPConstraint(constr,prolog))
-            
-        rtOptionalGraphPatterns.append(opBasicGraphPattern)
-    return basicGraphPatterns,rtOptionalGraphPatterns
-
 def isTriplePattern(nestedTriples):
     """
     Determines (recursively) if the BasicGraphPattern contains any Triple Patterns
@@ -292,161 +252,11 @@ def isTriplePattern(nestedTriples):
     else:
         return True
 
-def categorizeGroupGraphPattern(gGP):
-    """
-    Breaks down a ParsedGroupGraphPattern into mutually exclusive sets of
-    ParsedGraphGraphPattern, ParsedOptionalGraphPattern, and ParsedAlternativeGraphPattern units
-    """
-    assert isinstance(gGP,ParsedGroupGraphPattern), "%s is not a ParsedGroupGraphPattern"%gGP
-    graphGraphPatterns       = [gP for gP in gGP if gP.nonTripleGraphPattern and isinstance(gP.nonTripleGraphPattern,ParsedGraphGraphPattern)]
-    optionalGraphPatterns    = [gP for gP in gGP if gP.nonTripleGraphPattern and isinstance(gP.nonTripleGraphPattern,ParsedOptionalGraphPattern)]
-    alternativeGraphPatterns = [gP for gP in gGP if gP.nonTripleGraphPattern and isinstance(gP.nonTripleGraphPattern,ParsedAlternativeGraphPattern)]
-    return graphGraphPatterns,optionalGraphPatterns,alternativeGraphPatterns
-
-def validateGroupGraphPattern(gGP,noNesting = False):
-    """
-    Verifies (recursively) that the Group Graph Pattern is supported
-    """
-    firstGP = gGP[0]
-    graphGraphPatternNo,optionalGraphPatternNo,alternativeGraphPatternNo = [len(gGPKlass) for gGPKlass in categorizeGroupGraphPattern(gGP)]
-    if firstGP.triples and isTriplePattern(firstGP.triples) and  isinstance(firstGP.nonTripleGraphPattern,ParsedAlternativeGraphPattern):
-        raise NotImplemented(UNION_GRAPH_PATTERN_NOT_SUPPORTED,"%s"%firstGP)
-    elif graphGraphPatternNo > 1 or graphGraphPatternNo and alternativeGraphPatternNo:
-        raise NotImplemented(GRAPH_GRAPH_PATTERN_NOT_SUPPORTED,"%s"%gGP)
-    for gP in gGP:
-        if noNesting and isinstance(gP.nonTripleGraphPattern,(ParsedOptionalGraphPattern,ParsedGraphGraphPattern,ParsedAlternativeGraphPattern)):
-            raise NotImplemented(GROUP_GRAPH_PATTERN_NESTING_NOT_SUPPORTED,"%s"%gGP)
-        if isinstance(gP.nonTripleGraphPattern,ParsedAlternativeGraphPattern):
-            for _gGP in gP.nonTripleGraphPattern:
-                validateGroupGraphPattern(_gGP,noNesting = True)
-        elif gP.nonTripleGraphPattern:
-            validateGroupGraphPattern(gP.nonTripleGraphPattern,noNesting = True)
-
-def Evaluate(graph,query,passedBindings = {},DEBUG = False):
-    """
-    Takes:
-        1. a rdflib.Graph.Graph instance 
-        2. a SPARQL query instance (parsed using the BisonGen parser)
-        3. A dictionary of initial variable bindings (varName -> .. rdflib Term .. )
-        4. DEBUG Flag
-
-    Returns a list of tuples - each a binding of the selected variables in query order
-    """
-    if query.prolog:
-        query.prolog.DEBUG = DEBUG    
-    if query.query.dataSets:
-        graphs = []
-        for dtSet in query.query.dataSets:
-            if isinstance(dtSet,NamedGraph):
-                graphs.append(Graph(graph.store,dtSet))
-            else:
-                memStore = plugin.get('IOMemory',Store)()
-                memGraph = Graph(memStore)
-                try:
-                    memGraph.parse(dtSet,format='n3')
-                except:
-                    #Parse as RDF/XML instead
-                    memGraph.parse(dtSet)
-                graphs.append(memGraph)
-        tripleStore = sparqlGraph.SPARQLGraph(ReadOnlyGraphAggregate(graphs))
-    else:        
-        tripleStore = sparqlGraph.SPARQLGraph(graph)    
-
-    if isinstance(query.query,SelectQuery) and query.query.variables:
-        query.query.variables = [convertTerm(item,query.prolog) for item in query.query.variables]
-    else:
-        query.query.variables = []
-
-    #Interpret Graph Graph Patterns as Named Graphs
-    graphGraphPatterns = categorizeGroupGraphPattern(query.query.whereClause.parsedGraphPattern)[0]
-#    rt = categorizeGroupGraphPattern(query.query.whereClause.parsedGraphPattern)[0]
-#    print rt[0], rt[1]
-    if graphGraphPatterns:
-        graphGraphP = graphGraphPatterns[0].nonTripleGraphPattern
-        if isinstance(graphGraphP.name,Variable):
-            if graphGraphP.name in passedBindings:
-                tripleStore = sparqlGraph.SPARQLGraph(Graph(graph.store,passedBindings[graphGraphP.name]))
-            else: 
-                #print graphGraphP 
-                #raise Exception("Graph Graph Patterns can only be used with variables bound at the top level or a URIRef or BNode term")
-                tripleStore = sparqlGraph.SPARQLGraph(graph,graphVariable = graphGraphP.name)
-        else:
-            graphName =  isinstance(graphGraphP.name,Variable) and passedBindings[graphGraphP.name] or graphGraphP.name
-            graphName  = convertTerm(graphName,query.prolog)
-            if isinstance(graph,ReadOnlyGraphAggregate) and not graph.store:
-                targetGraph = [g for g in graph.graphs if g.identifier == graphName]
-                assert len(targetGraph) == 1
-                targetGraph = targetGraph[0]
-            else:
-                targetGraph = Graph(graph.store,graphName)
-            tripleStore = sparqlGraph.SPARQLGraph(targetGraph)
-
-    gp = reorderGroupGraphPattern(query.query.whereClause.parsedGraphPattern)
-    validateGroupGraphPattern(gp)
-    basicPatterns,optionalPatterns = sparqlPSetup(gp,query.prolog)
-
-    if DEBUG:
-        print "## Select Variables ##\n",query.query.variables
-        print "## Patterns ##\n",basicPatterns
-        print "## OptionalPatterns ##\n",optionalPatterns
-
-    result = queryObject(tripleStore, basicPatterns,optionalPatterns,passedBindings)
-    if result == None :
-        # generate some proper output for the exception :-)
-        msg = "Errors in the patterns, no valid query object generated; "
-        msg += ("pattern:\n%s\netc..." % basicPatterns[0])
-        raise SPARQLError(msg)
-
-    if isinstance(query.query,AskQuery):
-        return result.ask()
-
-    elif isinstance(query.query,SelectQuery):
-        orderBy = None
-        orderAsc = None
-        if query.query.solutionModifier.orderClause:
-            orderBy     = []
-            orderAsc    = []
-            for orderCond in query.query.solutionModifier.orderClause:
-                # is it a variable?
-                if isinstance(orderCond,Variable):
-                    orderBy.append(orderCond)
-                    orderAsc.append(ASCENDING_ORDER)
-                # is it another expression, only variables are supported
-                else:
-                    expr = orderCond.expression
-                    assert isinstance(expr,Variable),"Support for ORDER BY with anything other than a variable is not supported: %s"%expr
-                    orderBy.append(expr)                    
-                    orderAsc.append(orderCond.order == ASCENDING_ORDER)
-
-        limit = query.query.solutionModifier.limitClause and int(query.query.solutionModifier.limitClause) or None
-
-        offset = query.query.solutionModifier.offsetClause and int(query.query.solutionModifier.offsetClause) or 0
-        return result.select(query.query.variables,
-                             query.query.distinct,
-                             limit,
-                             orderBy,
-                             orderAsc,
-                             offset
-                             ),_variablesToArray(query.query.variables,"selection"),result._getAllVariables(),orderBy,query.query.distinct
-    else:
-        raise NotImplemented(CONSTRUCT_NOT_SUPPORTED,repr(query))
-
-OPTIONALS_NOT_SUPPORTED                   = 1
-#GRAPH_PATTERN_NOT_SUPPORTED               = 2
-UNION_GRAPH_PATTERN_NOT_SUPPORTED         = 3
-GRAPH_GRAPH_PATTERN_NOT_SUPPORTED         = 4
-GROUP_GRAPH_PATTERN_NESTING_NOT_SUPPORTED = 5
-CONSTRUCT_NOT_SUPPORTED                   = 6
+CONSTRUCT_NOT_SUPPORTED                   = 1
 
 ExceptionMessages = {
-    OPTIONALS_NOT_SUPPORTED                   : 'Nested OPTIONAL not currently supported',
-    #GRAPH_PATTERN_NOT_SUPPORTED               : 'Graph Pattern not currently supported',
-    UNION_GRAPH_PATTERN_NOT_SUPPORTED         : 'UNION Graph Pattern (currently) can only be combined with OPTIONAL Graph Patterns',
-    GRAPH_GRAPH_PATTERN_NOT_SUPPORTED         : 'Graph Graph Pattern (currently) cannot only be used once by themselves or with OPTIONAL Graph Patterns',
-    GROUP_GRAPH_PATTERN_NESTING_NOT_SUPPORTED : 'Nesting of Group Graph Pattern (currently) not supported',
     CONSTRUCT_NOT_SUPPORTED                   : '"Construct" is not (currently) supported',
 }
-
 
 class NotImplemented(Exception):
     def __init__(self,code,msg):
