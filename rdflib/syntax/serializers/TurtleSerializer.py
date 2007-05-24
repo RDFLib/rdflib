@@ -33,6 +33,9 @@ class TurtleSerializer(RecursiveSerializer):
     
     def getQName(self, uri):
         if isinstance(uri, URIRef):
+            if self.base and uri.startswith(self.base):
+                # this feels too simple, but I dont see why I wont work :) -Gunnar
+                return "<%s>"%uri[len(self.base):]
             try:
                 parts = self.store.compute_qname(uri)
             except Exception, e:
@@ -70,7 +73,7 @@ class TurtleSerializer(RecursiveSerializer):
             return
         
         for prefix, uri in ns_list:
-            self.write('\n'+self.indent()+'@prefix %s: %s.'%(prefix, uri))
+            self.write('\n'+self.indent()+'@prefix %s: <%s>.'%(prefix, uri))
         self.write('\n')
 
     def endDocument(self):
