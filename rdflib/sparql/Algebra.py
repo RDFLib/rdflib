@@ -315,24 +315,32 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
     """
     if len(node.children) == 0  :
         # this is a leaf in the original expansion
-        if isinstance(expression,GraphExpression):
-            #If a Graph pattern evaluate it passing on the leaf bindings
-            #(possibly as solutions to graph names
+        if isinstance(expression,AlgebraExpression):
+            #If an algebra expression evaluate it passing on the leaf bindings
             if prolog.DEBUG:
-                print "passing on bindings to GRAPH: ", node.bindings.copy()
+                print "passing on bindings to %s\n:%s"%(expression,node.bindings.copy())
             expression = expression.evaluate(tripleStore,node.bindings.copy(),prolog)
         if isinstance(expression,BasicGraphPattern):
             if prolog.DEBUG:
-                print "Evaluated left node and traversed to leaf, expanding with ", expression 
+                print "Evaluated left node and traversed to leaf, expanding with ", expression
+                print "has tripleStore? ", hasattr(expression,'tripleStore')
+                print node.tripleStore.graph
+                tmp = Query._createInitialBindings(expression)
+                tmp.update(node.bindings)
+                print tmp
             exprBindings = Query._createInitialBindings(expression)
             exprBindings.update(node.bindings)
-            child = Query._SPARQLNode(optionalTree and None or node,
+            if not optionalTree:
+                top = node
+            else:
+                top = None
+            child = Query._SPARQLNode(top,
                                       exprBindings,
                                       expression.patterns,
                                       hasattr(expression,'tripleStore') and expression.tripleStore or node.tripleStore)
             child.expand(expression.constraints)        
         else:
-            assert isinstance(expression,Query.Query) and expression.top            
+            assert isinstance(expression,Query.Query) and expression.top, repr(expression)            
             #Already been evaluated (non UNION), just attach the SPARQLNode
             child = expression.top
             
@@ -367,7 +375,7 @@ class Join(AlgebraExpression):
             
     def evaluate(self,tripleStore,initialBindings,prolog):
         if prolog.DEBUG:
-            print "eval(%s,%s)"%(self,tripleStore.graph)
+            print "eval(%s,%s,%s)"%(self,initialBindings,tripleStore.graph)
         if isinstance(self.left,AlgebraExpression):
             self.left = self.left.evaluate(tripleStore,initialBindings,prolog)
         if isinstance(self.left,BasicGraphPattern):        
@@ -668,6 +676,21 @@ _:z  foaf:nick     "Robert" .
 
 <http://example.org/foaf/bobFoaf>
      rdf:type      foaf:PersonalProfileDocument ."""     
+     
+scopingQuery=\
+"""
+PREFIX  data:  <http://example.org/foaf/>
+PREFIX  foaf:  <http://xmlns.com/foaf/0.1/>
+PREFIX  rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?ppd
+FROM NAMED <http://example.org/foaf/aliceFoaf>
+FROM NAMED <http://example.org/foaf/bobFoaf>
+WHERE
+{
+  GRAPH ?ppd { ?b foaf:name "Bob" . } .
+  GRAPH ?ppd { ?doc a foaf:PersonalProfileDocument . }
+}"""     
 
 class TestSPARQLAlgebra(unittest.TestCase):
     def setUp(self):
@@ -677,7 +700,22 @@ class TestSPARQLAlgebra(unittest.TestCase):
         self.graph2 = Graph(self.store,identifier=URIRef('http://example.org/foaf/bobFoaf'))
         self.graph2.parse(StringIO(test_graph_b), format="n3")
         self.unionGraph = ReadOnlyGraphAggregate(graphs=[self.graph1,self.graph2],store=self.store)
-
+        
+    def testScoping(self):
+        from rdflib.sparql.bison.Processor import Parse
+        from rdflib.sparql.QueryResult import SPARQLQueryResult
+        from rdflib.sparql.bison.Query import Prolog  
+        p = Parse(scopingQuery)
+        prolog = p.prolog
+        if prolog is None:
+            prolog = Prolog(u'',[])
+            prolog.DEBUG = True
+        rt = TopEvaluate(p,self.unionGraph,passedBindings = {},DEBUG=False)
+        rt = SPARQLQueryResult(rt).serialize(format='python')
+        self.failUnless(len(rt) == 1,"Expected 1 item solution set")
+        for ppd in rt:
+            self.failUnless(ppd == URIRef('http://example.org/foaf/aliceFoaf'),
+                            "Unexpected ?mbox binding :\n %s" % ppd)
     def testExpressions(self):
         from rdflib.sparql.bison.Processor import Parse
         global prolog
@@ -690,6 +728,19 @@ class TestSPARQLAlgebra(unittest.TestCase):
                 prolog = Prolog(u'',[])
                 prolog.DEBUG = True
             self.assertEquals(repr(reduce(ReduceToAlgebra,p,None)),outExpr)
+
+    def testSimpleGraphPattern(self):
+        from rdflib.sparql.bison.Processor import Parse
+        global prolog
+        p = Parse("SELECT ?ptrec WHERE { GRAPH ?ptrec { ?data :foo 'bar'. } }")
+        prolog = p.prolog
+        p = p.query.whereClause.parsedGraphPattern.graphPatterns
+        if prolog is None:
+            from rdflib.sparql.bison.Query import Prolog  
+            prolog = Prolog(u'',[])
+            prolog.DEBUG = True
+        assert isinstance(reduce(ReduceToAlgebra,p,None),GraphExpression)
+        print reduce(ReduceToAlgebra,p,None)
 
     def testGraphEvaluation(self):
         from rdflib.sparql.bison.Processor import Parse
