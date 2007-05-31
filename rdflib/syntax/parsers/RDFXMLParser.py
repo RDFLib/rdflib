@@ -7,13 +7,14 @@ from xml.sax.handler import ErrorHandler
 from rdflib.syntax.parsers.RDFXMLHandler import RDFXMLHandler
 
 
-def create_parser(store):
+def create_parser(target, store):
     parser = make_parser()
     # Workaround for bug in expatreader.py. Needed when
     # expatreader is trying to guess a prefix.
     parser.start_namespace_decl("xml", "http://www.w3.org/XML/1998/namespace")
     parser.setFeature(handler.feature_namespaces, 1)
     rdfxml = RDFXMLHandler(store)
+    rdfxml.setDocumentLocator(target)
     #rdfxml.setDocumentLocator(_Locator(self.url, self.parser))
     parser.setContentHandler(rdfxml)
     parser.setErrorHandler(ErrorHandler())
@@ -26,7 +27,7 @@ class RDFXMLParser(Parser):
         pass
 
     def parse(self, source, sink, **args):
-        self._parser = create_parser(sink)
+        self._parser = create_parser(source, sink)
         content_handler = self._parser.getContentHandler()
         preserve_bnode_ids = args.get("preserve_bnode_ids", None)
         if preserve_bnode_ids is not None:

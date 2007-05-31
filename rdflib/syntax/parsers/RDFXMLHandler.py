@@ -147,6 +147,12 @@ class RDFXMLHandler(handler.ContentHandler):
         base = attrs.get(BASE, None)
         if base is not None:
             base, frag = urldefrag(base)
+            if parent and parent.base:
+                base = urljoin(parent.base, base)
+            else:
+                systemId = self.locator.getPublicId() or self.locator.getSystemId()
+                if systemId:
+                    base = urljoin(systemId, base)
         else:
             if parent:
                 base = parent.base
