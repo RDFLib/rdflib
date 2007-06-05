@@ -177,7 +177,7 @@ def mapToOperator(expr,prolog,combinationArg=None):
         normBuiltInName = CAMEL_CASE_BUILTINS.get(normBuiltInName,'sparqlOperators.'+normBuiltInName)
         return "%s(%s)%s"%(normBuiltInName,",".join([mapToOperator(i,prolog,combinationArg) for i in expr.arguments]),combinationInvokation)
     elif isinstance(expr,Literal):
-        return str(expr)
+        return repr(expr)
     elif isinstance(expr,URIRef):
         import warnings
         warnings.warn("There is the possibility of __repr__ being deprecated in python3K",DeprecationWarning,stacklevel=3)        
