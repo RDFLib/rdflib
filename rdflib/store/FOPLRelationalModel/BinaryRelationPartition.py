@@ -475,13 +475,31 @@ class NamedLiteralProperties(BinaryRelationPartition):
         return tuple(rtList)
 
     def extractIdentifiers(self,quadSlots):
+        """
+        Test literal data type extraction
+        >>> from rdflib import RDF
+        >>> class DummyClass:
+        ...   def __init__(self,test=False):
+        ...     self.test = test
+        ...   def updateIdentifierQueue(self,stuff): 
+        ...     if self.test: 
+        ...       term,termType = stuff[-1]
+        ...       assert termType == 'U',"Datatype's are URIs!" 
+        >>> class Tester(NamedLiteralProperties):
+        ...   def __init__(self): 
+        ...     self.idHash    = DummyClass(True)
+        ...     self.valueHash = DummyClass()
+        >>> c = Tester()
+        >>> slots = genQuadSlots([BNode(),RDF.first,Literal(1),BNode()])
+        >>> c.extractIdentifiers(slots)
+        """
         subjSlot,predSlot,objSlot,conSlot = quadSlots
         idTerms = [
                     (subjSlot.term,subjSlot.termType),
                     (predSlot.term,predSlot.termType),
                     (conSlot.term,conSlot.termType)]
         if objSlot.term.datatype:
-            idTerms.append((objSlot.term.datatype,objSlot.termType))
+            idTerms.append((objSlot.term.datatype,term2Letter(objSlot.term.datatype)))
         self.idHash.updateIdentifierQueue(idTerms)
         self.valueHash.updateIdentifierQueue([(objSlot.term,objSlot.termType)])
 
@@ -687,3 +705,9 @@ BRPQueryDecisionMap = {
     'U_RNTR':(NamedLiteralProperties,NamedBinaryRelations), #Could be optimized to not include NamedBinaryRelations
 }
 
+def test():
+    import doctest
+    doctest.testmod()
+
+if __name__ == '__main__':
+    test()
