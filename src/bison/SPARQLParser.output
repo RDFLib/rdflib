@@ -1,0 +1,5678 @@
+Terminals which are not used
+
+   WHITESPACE
+   QUESTION_MARK
+   DOLLAR
+
+
+Grammar
+
+  1    Query: Prolog QueryTypes
+
+  2    QueryTypes: SelectQuery
+  3              | AskQuery
+
+  4    Prolog: BaseDecl PrefixDeclList
+  5          | BaseDecl
+  6          | PrefixDeclList
+  7          | /* empty */
+
+  8    PrefixDeclList: PrefixDecl
+  9                  | PrefixDeclList PrefixDecl
+
+  10   PrefixDecl: PREFIX QNAME_NS LESS_THAN Q_IRI_CONTENT GREATER_THAN
+
+  11   BaseDecl: BASE LESS_THAN Q_IRI_CONTENT GREATER_THAN
+
+  12   AskQuery: ASK WhereClause
+  13           | ASK DataSetClauseList WhereClause
+
+  14   SelectQuery: SELECT VAR_REFERENCES WhereClause SolutionModifier
+  15              | SELECT VAR_REFERENCES DataSetClauseList WhereClause SolutionModifier
+  16              | SELECT DISTINCT VAR_REFERENCES WhereClause SolutionModifier
+  17              | SELECT DISTINCT VAR_REFERENCES DataSetClauseList WhereClause SolutionModifier
+
+  18   VAR_REFERENCES: VariableReferenceList
+  19                 | ASTERISK
+
+  20   VariableReferenceList: Var
+  21                        | VariableReferenceList Var
+
+  22   IRIref: LESS_THAN Q_IRI_CONTENT GREATER_THAN
+  23         | QName
+
+  24   QName: QNAME
+  25        | QNAME_NS
+
+  26   DataSetClauseList: DataSetClause
+  27                    | DataSetClauseList DataSetClause
+
+  28   DataSetClause: FROM IRIref
+  29                | FROM NAMED IRIref
+
+  30   WhereClause: WHERE GroupGraphPattern
+  31              | GroupGraphPattern
+
+  32   SolutionModifier: /* empty */
+  33                   | OrderClause
+  34                   | OrderClause LimitClause
+  35                   | OrderClause LimitClause OffsetClause
+  36                   | LimitClause OffsetClause
+  37                   | OrderClause OffsetClause
+  38                   | OffsetClause
+  39                   | LimitClause
+
+  40   OrderClause: ORDER BY OrderConditionList
+
+  41   OrderConditionList: OrderCondition
+  42                     | OrderConditionList OrderCondition
+
+  43   OrderCondition: ASC LEFT_PAREN ConditionalOrExpression RIGHT_PAREN
+  44                 | DESC LEFT_PAREN ConditionalOrExpression RIGHT_PAREN
+  45                 | FunctionCall
+  46                 | LEFT_PAREN ConditionalOrExpression RIGHT_PAREN
+  47                 | Var
+
+  48   LimitClause: LIMIT NumericLiteral
+
+  49   OffsetClause: OFFSET NumericLiteral
+
+  50   GroupGraphPattern: LEFT_CURLY GraphPattern RIGHT_CURLY
+
+  51   GraphPattern: FilteredBasicGraphPattern
+  52               | FilteredBasicGraphPattern GraphPatternNotTriples GraphPattern
+  53               | FilteredBasicGraphPattern GraphPatternNotTriples DOT GraphPattern
+
+  54   GraphPatternNotTriples: OPTIONAL GroupGraphPattern
+  55                         | GroupGraphPattern
+  56                         | GroupGraphPattern AlternativeGroupGraphPatterns
+  57                         | GRAPH Var GroupGraphPattern
+  58                         | GRAPH BlankNode GroupGraphPattern
+  59                         | GRAPH IRIref GroupGraphPattern
+
+  60   AlternativeGroupGraphPatterns: UNION GroupGraphPattern
+  61                                | AlternativeGroupGraphPatterns UNION GroupGraphPattern
+
+  62   ConditionalOrExpression: ConditionalAndExpression
+  63                          | ConditionalAndExpression ConditionalAndExpressionList
+
+  64   ConditionalAndExpressionList: DOUBLE_PIPE ConditionalAndExpression
+  65                               | ConditionalAndExpressionList DOUBLE_PIPE ConditionalAndExpression
+
+  66   ConditionalAndExpression: RelationalExpression ValueLogicalList
+  67                           | RelationalExpression
+
+  68   ValueLogicalList: DOUBLE_AMPERSAND RelationalExpression
+  69                   | ValueLogicalList DOUBLE_AMPERSAND RelationalExpression
+
+  70   RelationalExpression: AdditiveExpression
+  71                       | AdditiveExpression EQUALITY_OP AdditiveExpression
+  72                       | AdditiveExpression NOT_EQUAL AdditiveExpression
+  73                       | AdditiveExpression LESS_THAN AdditiveExpression
+  74                       | AdditiveExpression GREATER_THAN AdditiveExpression
+  75                       | AdditiveExpression LESS_THAN_EQUAL AdditiveExpression
+  76                       | AdditiveExpression GREATER_THAN_EQUAL AdditiveExpression
+
+  77   AdditiveExpression: MultiplicativeExpression
+  78                     | MultiplicativeExpression MultiplicativeExpressionList
+
+  79   MultiplicativeExpressionList: PLUS MultiplicativeExpression
+  80                               | MINUS MultiplicativeExpression
+  81                               | MultiplicativeExpressionList MINUS MultiplicativeExpression
+  82                               | MultiplicativeExpressionList PLUS MultiplicativeExpression
+
+  83   MultiplicativeExpression: UnaryExpression
+  84                           | UnaryExpression UnaryExpressionList
+
+  85   UnaryExpressionList: ASTERISK UnaryExpression
+  86                      | FORWARDSLASH UnaryExpression
+  87                      | UnaryExpressionList ASTERISK UnaryExpression
+  88                      | UnaryExpressionList FORWARDSLASH UnaryExpression
+
+  89   UnaryExpression: BANG PrimaryExpression
+  90                  | PLUS PrimaryExpression
+  91                  | MINUS PrimaryExpression
+  92                  | PrimaryExpression
+
+  93   BuiltInCall: STR LEFT_PAREN ConditionalOrExpression RIGHT_PAREN
+  94              | LANG LEFT_PAREN ConditionalOrExpression RIGHT_PAREN
+  95              | LANGMATCHES LEFT_PAREN ConditionalOrExpression COMMA ConditionalOrExpression RIGHT_PAREN
+  96              | DATATYPE LEFT_PAREN ConditionalOrExpression RIGHT_PAREN
+  97              | BOUND LEFT_PAREN Var RIGHT_PAREN
+  98              | isIRI LEFT_PAREN ConditionalOrExpression RIGHT_PAREN
+  99              | isURI LEFT_PAREN ConditionalOrExpression RIGHT_PAREN
+  100             | isBLANK LEFT_PAREN ConditionalOrExpression RIGHT_PAREN
+  101             | isLITERAL LEFT_PAREN ConditionalOrExpression RIGHT_PAREN
+  102             | RegexExpression
+
+  103  RegexExpression: REGEX LEFT_PAREN ConditionalOrExpression COMMA ConditionalOrExpression RIGHT_PAREN
+  104                 | REGEX LEFT_PAREN ConditionalOrExpression COMMA ConditionalOrExpression COMMA ConditionalOrExpression RIGHT_PAREN
+
+  105  FunctionCall: IRIref LEFT_PAREN ArgumentList RIGHT_PAREN
+
+  106  ArgumentList: NIL
+  107              | ConditionalOrExpression
+  108              | ConditionalOrExpression COMMA ArgumentList
+
+  109  PrimaryExpression: LEFT_PAREN ConditionalOrExpression RIGHT_PAREN
+  110                   | BuiltInCall
+  111                   | IRIref
+  112                   | FunctionCall
+  113                   | RDFLiteral
+  114                   | NumericLiteral
+  115                   | BooleanLiteral
+  116                   | BlankNode
+  117                   | Var
+
+  118  FilteredBasicGraphPattern: /* empty */
+  119                           | Triples
+  120                           | Triples Constraint DOT FilteredBasicGraphPattern
+  121                           | Triples Constraint FilteredBasicGraphPattern
+  122                           | Constraint DOT FilteredBasicGraphPattern
+  123                           | Constraint FilteredBasicGraphPattern
+
+  124  Constraint: FILTER LEFT_PAREN ConditionalOrExpression RIGHT_PAREN
+  125            | FILTER BuiltInCall
+  126            | FILTER FunctionCall
+
+  127  Triples: Triples DOT TriplesSameSubject
+  128         | Triples DOT
+  129         | TriplesSameSubject
+
+  130  TriplesSameSubject: Var PropertyListNotEmpty
+  131                    | GraphTerm PropertyListNotEmpty
+  132                    | LEFT_SQUARE PropertyListNotEmpty RIGHT_SQUARE PropertyList
+  133                    | Collection PropertyListNotEmpty
+  134                    | Collection
+
+  135  PropertyList: PropertyListNotEmpty
+  136              | /* empty */
+
+  137  PropertyListNotEmpty: Verb ObjectList
+  138                      | Verb ObjectList SEMICOLON PropertyList
+
+  139  ObjectList: GraphNode
+  140            | ObjectList COMMA GraphNode
+
+  141  GraphNode: Var
+  142           | TriplesNode
+  143           | GraphTerm
+
+  144  Verb: Var
+  145      | IRIref
+  146      | A
+
+  147  TriplesNode: Collection
+  148             | LEFT_SQUARE PropertyList RIGHT_SQUARE
+
+  149  Collection: LEFT_PAREN GraphNodeList RIGHT_PAREN
+
+  150  GraphNodeList: GraphNode
+  151               | GraphNodeList GraphNode
+
+  152  Var: VARNAME
+
+  153  GraphTerm: IRIref
+  154           | RDFLiteral
+  155           | NumericLiteral
+  156           | PLUS NumericLiteral
+  157           | MINUS NumericLiteral
+  158           | BooleanLiteral
+  159           | BlankNode
+  160           | NIL
+
+  161  NumericLiteral: INTEGER
+  162                | DECIMAL
+  163                | DOUBLE
+
+  164  RDFLiteral: String
+  165            | String LANGTAG
+  166            | String DOUBLE_HAT IRIref
+
+  167  BooleanLiteral: TRUE
+  168                | FALSE
+
+  169  String: STRING_LITERAL_DELIMETER_1 STRING_LITERAL1 STRING_LITERAL_DELIMETER_1
+  170        | STRING_LITERAL_DELIMETER_3 STRING_LITERAL2 STRING_LITERAL_DELIMETER_3
+  171        | STRING_LITERAL_DELIMETER_2 STRING_LITERAL_LONG1 STRING_LITERAL_DELIMETER_2
+  172        | STRING_LITERAL_DELIMETER_4 STRING_LITERAL_LONG2 STRING_LITERAL_DELIMETER_4
+  173        | STRING_LITERAL_DELIMETER_1 STRING_LITERAL_DELIMETER_1
+  174        | STRING_LITERAL_DELIMETER_3 STRING_LITERAL_DELIMETER_3
+  175        | STRING_LITERAL_DELIMETER_2 STRING_LITERAL_DELIMETER_2
+  176        | STRING_LITERAL_DELIMETER_4 STRING_LITERAL_DELIMETER_4
+
+  177  BlankNode: ANON
+  178           | BLANK_NODE_LABEL
+
+
+Terminals, with rules where they appear
+
+<EOF> (-1)
+error (256)
+WHITESPACE (257)
+UNION (258) 60 61
+QNAME (259) 24
+QNAME_NS (260) 10 25
+Q_IRI_CONTENT (261) 10 11 22
+BLANK_NODE_LABEL (262) 178
+VARNAME (263) 152
+PREFIX (264) 10
+ASTERISK (265) 19 85 87
+DOT (266) 53 120 122 127 128
+QUESTION_MARK (267)
+DOLLAR (268)
+BASE (269) 11
+SELECT (270) 14 15 16 17
+DISTINCT (271) 16 17
+FROM (272) 28 29
+NAMED (273) 29
+OPTIONAL (274) 54
+FILTER (275) 124 125 126
+GRAPH (276) 57 58 59
+WHERE (277) 30
+ORDER (278) 40
+BY (279) 40
+ASC (280) 43
+ASK (281) 12 13
+DESC (282) 44
+LIMIT (283) 48
+OFFSET (284) 49
+STR (285) 93
+LANG (286) 94
+LANGMATCHES (287) 95
+DATATYPE (288) 96
+isIRI (289) 98
+isURI (290) 99
+isLITERAL (291) 101
+isBLANK (292) 100
+BOUND (293) 97
+REGEX (294) 103 104
+A (295) 146
+TRUE (296) 167
+FALSE (297) 168
+DOUBLE_AMPERSAND (298) 68 69
+DOUBLE_PIPE (299) 64 65
+BANG (300) 89
+DOUBLE_HAT (301) 166
+COMMA (302) 95 103 104 108 140
+FORWARDSLASH (303) 86 88
+LEFT_PAREN (304) 43 44 46 93 94 95 96 97 98 99 100 101 103 104 105
+    109 124 149
+RIGHT_PAREN (305) 43 44 46 93 94 95 96 97 98 99 100 101 103 104 105
+    109 124 149
+LEFT_SQUARE (306) 132 148
+RIGHT_SQUARE (307) 132 148
+SEMICOLON (308) 138
+INTEGER (309) 161
+DECIMAL (310) 162
+DOUBLE (311) 163
+STRING_LITERAL_DELIMETER_1 (312) 169 173
+STRING_LITERAL_DELIMETER_2 (313) 171 175
+STRING_LITERAL_DELIMETER_3 (314) 170 174
+STRING_LITERAL_DELIMETER_4 (315) 172 176
+STRING_LITERAL1 (316) 169
+STRING_LITERAL2 (317) 170
+STRING_LITERAL_LONG1 (318) 171
+STRING_LITERAL_LONG2 (319) 172
+NIL (320) 106 160
+ANON (321) 177
+LANGTAG (322) 165
+LEFT_CURLY (323) 50
+RIGHT_CURLY (324) 50
+PLUS (325) 79 82 90 156
+MINUS (326) 80 81 91 157
+EQUALITY_OP (327) 71
+NOT_EQUAL (328) 72
+LESS_THAN (329) 10 11 22 73
+GREATER_THAN (330) 10 11 22 74
+LESS_THAN_EQUAL (331) 75
+GREATER_THAN_EQUAL (332) 76
+
+
+Nonterminals, with rules where they appear
+
+Query (79)
+    on left: 1
+QueryTypes (80)
+    on left: 2 3, on right: 1
+Prolog (81)
+    on left: 4 5 6 7, on right: 1
+PrefixDeclList (82)
+    on left: 8 9, on right: 4 6 9
+PrefixDecl (83)
+    on left: 10, on right: 8 9
+BaseDecl (84)
+    on left: 11, on right: 4 5
+AskQuery (85)
+    on left: 12 13, on right: 3
+SelectQuery (86)
+    on left: 14 15 16 17, on right: 2
+VAR_REFERENCES (87)
+    on left: 18 19, on right: 14 15 16 17
+VariableReferenceList (88)
+    on left: 20 21, on right: 18 21
+IRIref (89)
+    on left: 22 23, on right: 28 29 59 105 111 145 153 166
+QName (90)
+    on left: 24 25, on right: 23
+DataSetClauseList (91)
+    on left: 26 27, on right: 13 15 17 27
+DataSetClause (92)
+    on left: 28 29, on right: 26 27
+WhereClause (93)
+    on left: 30 31, on right: 12 13 14 15 16 17
+SolutionModifier (94)
+    on left: 32 33 34 35 36 37 38 39, on right: 14 15 16 17
+OrderClause (95)
+    on left: 40, on right: 33 34 35 37
+OrderConditionList (96)
+    on left: 41 42, on right: 40 42
+OrderCondition (97)
+    on left: 43 44 45 46 47, on right: 41 42
+LimitClause (98)
+    on left: 48, on right: 34 35 36 39
+OffsetClause (99)
+    on left: 49, on right: 35 36 37 38
+GroupGraphPattern (100)
+    on left: 50, on right: 30 31 54 55 56 57 58 59 60 61
+GraphPattern (101)
+    on left: 51 52 53, on right: 50 52 53
+GraphPatternNotTriples (102)
+    on left: 54 55 56 57 58 59, on right: 52 53
+AlternativeGroupGraphPatterns (103)
+    on left: 60 61, on right: 56 61
+ConditionalOrExpression (104)
+    on left: 62 63, on right: 43 44 46 93 94 95 96 98 99 100 101 103
+    104 107 108 109 124
+ConditionalAndExpressionList (105)
+    on left: 64 65, on right: 63 65
+ConditionalAndExpression (106)
+    on left: 66 67, on right: 62 63 64 65
+ValueLogicalList (107)
+    on left: 68 69, on right: 66 69
+RelationalExpression (108)
+    on left: 70 71 72 73 74 75 76, on right: 66 67 68 69
+AdditiveExpression (109)
+    on left: 77 78, on right: 70 71 72 73 74 75 76
+MultiplicativeExpressionList (110)
+    on left: 79 80 81 82, on right: 78 81 82
+MultiplicativeExpression (111)
+    on left: 83 84, on right: 77 78 79 80 81 82
+UnaryExpressionList (112)
+    on left: 85 86 87 88, on right: 84 87 88
+UnaryExpression (113)
+    on left: 89 90 91 92, on right: 83 84 85 86 87 88
+BuiltInCall (114)
+    on left: 93 94 95 96 97 98 99 100 101 102, on right: 110 125
+RegexExpression (115)
+    on left: 103 104, on right: 102
+FunctionCall (116)
+    on left: 105, on right: 45 112 126
+ArgumentList (117)
+    on left: 106 107 108, on right: 105 108
+PrimaryExpression (118)
+    on left: 109 110 111 112 113 114 115 116 117, on right: 89 90 91
+    92
+FilteredBasicGraphPattern (119)
+    on left: 118 119 120 121 122 123, on right: 51 52 53 120 121 122
+    123
+Constraint (120)
+    on left: 124 125 126, on right: 120 121 122 123
+Triples (121)
+    on left: 127 128 129, on right: 119 120 121 127 128
+TriplesSameSubject (122)
+    on left: 130 131 132 133 134, on right: 127 129
+PropertyList (123)
+    on left: 135 136, on right: 132 138 148
+PropertyListNotEmpty (124)
+    on left: 137 138, on right: 130 131 132 133 135
+ObjectList (125)
+    on left: 139 140, on right: 137 138 140
+GraphNode (126)
+    on left: 141 142 143, on right: 139 140 150 151
+Verb (127)
+    on left: 144 145 146, on right: 137 138
+TriplesNode (128)
+    on left: 147 148, on right: 142
+Collection (129)
+    on left: 149, on right: 133 134 147
+GraphNodeList (130)
+    on left: 150 151, on right: 149 151
+Var (131)
+    on left: 152, on right: 20 21 47 57 97 117 130 141 144
+GraphTerm (132)
+    on left: 153 154 155 156 157 158 159 160, on right: 131 143
+NumericLiteral (133)
+    on left: 161 162 163, on right: 48 49 114 155 156 157
+RDFLiteral (134)
+    on left: 164 165 166, on right: 113 154
+BooleanLiteral (135)
+    on left: 167 168, on right: 115 158
+String (136)
+    on left: 169 170 171 172 173 174 175 176, on right: 164 165 166
+BlankNode (137)
+    on left: 177 178, on right: 58 116 159
+
+
+state 0
+
+    PREFIX	shift, and go to state 1
+    BASE	shift, and go to state 2
+
+    $default	reduce using rule 7 (Prolog)
+
+    Query	go to state 316
+    Prolog	go to state 3
+    PrefixDeclList	go to state 4
+    PrefixDecl	go to state 5
+    BaseDecl	go to state 6
+
+
+
+state 1
+
+    PrefixDecl  ->  PREFIX . QNAME_NS LESS_THAN Q_IRI_CONTENT GREATER_THAN   (rule 10)
+
+    QNAME_NS	shift, and go to state 7
+
+
+
+state 2
+
+    BaseDecl  ->  BASE . LESS_THAN Q_IRI_CONTENT GREATER_THAN   (rule 11)
+
+    LESS_THAN	shift, and go to state 8
+
+
+
+state 3
+
+    Query  ->  Prolog . QueryTypes   (rule 1)
+
+    SELECT	shift, and go to state 9
+    ASK 	shift, and go to state 10
+
+    QueryTypes	go to state 11
+    AskQuery	go to state 12
+    SelectQuery	go to state 13
+
+
+
+state 4
+
+    Prolog  ->  PrefixDeclList .   (rule 6)
+    PrefixDeclList  ->  PrefixDeclList . PrefixDecl   (rule 9)
+
+    PREFIX	shift, and go to state 1
+
+    $default	reduce using rule 6 (Prolog)
+
+    PrefixDecl	go to state 14
+
+
+
+state 5
+
+    PrefixDeclList  ->  PrefixDecl .   (rule 8)
+
+    $default	reduce using rule 8 (PrefixDeclList)
+
+
+
+state 6
+
+    Prolog  ->  BaseDecl . PrefixDeclList   (rule 4)
+    Prolog  ->  BaseDecl .   (rule 5)
+
+    PREFIX	shift, and go to state 1
+
+    $default	reduce using rule 5 (Prolog)
+
+    PrefixDeclList	go to state 15
+    PrefixDecl	go to state 5
+
+
+
+state 7
+
+    PrefixDecl  ->  PREFIX QNAME_NS . LESS_THAN Q_IRI_CONTENT GREATER_THAN   (rule 10)
+
+    LESS_THAN	shift, and go to state 16
+
+
+
+state 8
+
+    BaseDecl  ->  BASE LESS_THAN . Q_IRI_CONTENT GREATER_THAN   (rule 11)
+
+    Q_IRI_CONTENT	shift, and go to state 17
+
+
+
+state 9
+
+    SelectQuery  ->  SELECT . VAR_REFERENCES WhereClause SolutionModifier   (rule 14)
+    SelectQuery  ->  SELECT . VAR_REFERENCES DataSetClauseList WhereClause SolutionModifier   (rule 15)
+    SelectQuery  ->  SELECT . DISTINCT VAR_REFERENCES WhereClause SolutionModifier   (rule 16)
+    SelectQuery  ->  SELECT . DISTINCT VAR_REFERENCES DataSetClauseList WhereClause SolutionModifier   (rule 17)
+
+    VARNAME	shift, and go to state 18
+    ASTERISK	shift, and go to state 19
+    DISTINCT	shift, and go to state 20
+
+    VAR_REFERENCES	go to state 21
+    VariableReferenceList	go to state 22
+    Var 	go to state 23
+
+
+
+state 10
+
+    AskQuery  ->  ASK . WhereClause   (rule 12)
+    AskQuery  ->  ASK . DataSetClauseList WhereClause   (rule 13)
+
+    FROM	shift, and go to state 24
+    WHERE	shift, and go to state 25
+    LEFT_CURLY	shift, and go to state 26
+
+    DataSetClauseList	go to state 27
+    DataSetClause	go to state 28
+    WhereClause	go to state 29
+    GroupGraphPattern	go to state 30
+
+
+
+state 11
+
+    Query  ->  Prolog QueryTypes .   (rule 1)
+
+    $default	reduce using rule 1 (Query)
+
+
+
+state 12
+
+    QueryTypes  ->  AskQuery .   (rule 3)
+
+    $default	reduce using rule 3 (QueryTypes)
+
+
+
+state 13
+
+    QueryTypes  ->  SelectQuery .   (rule 2)
+
+    $default	reduce using rule 2 (QueryTypes)
+
+
+
+state 14
+
+    PrefixDeclList  ->  PrefixDeclList PrefixDecl .   (rule 9)
+
+    $default	reduce using rule 9 (PrefixDeclList)
+
+
+
+state 15
+
+    Prolog  ->  BaseDecl PrefixDeclList .   (rule 4)
+    PrefixDeclList  ->  PrefixDeclList . PrefixDecl   (rule 9)
+
+    PREFIX	shift, and go to state 1
+
+    $default	reduce using rule 4 (Prolog)
+
+    PrefixDecl	go to state 14
+
+
+
+state 16
+
+    PrefixDecl  ->  PREFIX QNAME_NS LESS_THAN . Q_IRI_CONTENT GREATER_THAN   (rule 10)
+
+    Q_IRI_CONTENT	shift, and go to state 31
+
+
+
+state 17
+
+    BaseDecl  ->  BASE LESS_THAN Q_IRI_CONTENT . GREATER_THAN   (rule 11)
+
+    GREATER_THAN	shift, and go to state 32
+
+
+
+state 18
+
+    Var  ->  VARNAME .   (rule 152)
+
+    $default	reduce using rule 152 (Var)
+
+
+
+state 19
+
+    VAR_REFERENCES  ->  ASTERISK .   (rule 19)
+
+    $default	reduce using rule 19 (VAR_REFERENCES)
+
+
+
+state 20
+
+    SelectQuery  ->  SELECT DISTINCT . VAR_REFERENCES WhereClause SolutionModifier   (rule 16)
+    SelectQuery  ->  SELECT DISTINCT . VAR_REFERENCES DataSetClauseList WhereClause SolutionModifier   (rule 17)
+
+    VARNAME	shift, and go to state 18
+    ASTERISK	shift, and go to state 19
+
+    VAR_REFERENCES	go to state 33
+    VariableReferenceList	go to state 22
+    Var 	go to state 23
+
+
+
+state 21
+
+    SelectQuery  ->  SELECT VAR_REFERENCES . WhereClause SolutionModifier   (rule 14)
+    SelectQuery  ->  SELECT VAR_REFERENCES . DataSetClauseList WhereClause SolutionModifier   (rule 15)
+
+    FROM	shift, and go to state 24
+    WHERE	shift, and go to state 25
+    LEFT_CURLY	shift, and go to state 26
+
+    DataSetClauseList	go to state 34
+    DataSetClause	go to state 28
+    WhereClause	go to state 35
+    GroupGraphPattern	go to state 30
+
+
+
+state 22
+
+    VAR_REFERENCES  ->  VariableReferenceList .   (rule 18)
+    VariableReferenceList  ->  VariableReferenceList . Var   (rule 21)
+
+    VARNAME	shift, and go to state 18
+
+    $default	reduce using rule 18 (VAR_REFERENCES)
+
+    Var 	go to state 36
+
+
+
+state 23
+
+    VariableReferenceList  ->  Var .   (rule 20)
+
+    $default	reduce using rule 20 (VariableReferenceList)
+
+
+
+state 24
+
+    DataSetClause  ->  FROM . IRIref   (rule 28)
+    DataSetClause  ->  FROM . NAMED IRIref   (rule 29)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    NAMED	shift, and go to state 39
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 41
+    QName	go to state 42
+
+
+
+state 25
+
+    WhereClause  ->  WHERE . GroupGraphPattern   (rule 30)
+
+    LEFT_CURLY	shift, and go to state 26
+
+    GroupGraphPattern	go to state 43
+
+
+
+state 26
+
+    GroupGraphPattern  ->  LEFT_CURLY . GraphPattern RIGHT_CURLY   (rule 50)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    FILTER	shift, and go to state 45
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    LEFT_PAREN	shift, and go to state 48
+    LEFT_SQUARE	shift, and go to state 49
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    NIL 	shift, and go to state 57
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 59
+    MINUS	shift, and go to state 60
+    LESS_THAN	shift, and go to state 40
+
+    $default	reduce using rule 118 (FilteredBasicGraphPattern)
+
+    IRIref	go to state 61
+    QName	go to state 42
+    GraphPattern	go to state 62
+    FilteredBasicGraphPattern	go to state 63
+    Constraint	go to state 64
+    Triples	go to state 65
+    TriplesSameSubject	go to state 66
+    Collection	go to state 67
+    Var 	go to state 68
+    GraphTerm	go to state 69
+    NumericLiteral	go to state 70
+    RDFLiteral	go to state 71
+    BooleanLiteral	go to state 72
+    String	go to state 73
+    BlankNode	go to state 74
+
+
+
+state 27
+
+    AskQuery  ->  ASK DataSetClauseList . WhereClause   (rule 13)
+    DataSetClauseList  ->  DataSetClauseList . DataSetClause   (rule 27)
+
+    FROM	shift, and go to state 24
+    WHERE	shift, and go to state 25
+    LEFT_CURLY	shift, and go to state 26
+
+    DataSetClause	go to state 75
+    WhereClause	go to state 76
+    GroupGraphPattern	go to state 30
+
+
+
+state 28
+
+    DataSetClauseList  ->  DataSetClause .   (rule 26)
+
+    $default	reduce using rule 26 (DataSetClauseList)
+
+
+
+state 29
+
+    AskQuery  ->  ASK WhereClause .   (rule 12)
+
+    $default	reduce using rule 12 (AskQuery)
+
+
+
+state 30
+
+    WhereClause  ->  GroupGraphPattern .   (rule 31)
+
+    $default	reduce using rule 31 (WhereClause)
+
+
+
+state 31
+
+    PrefixDecl  ->  PREFIX QNAME_NS LESS_THAN Q_IRI_CONTENT . GREATER_THAN   (rule 10)
+
+    GREATER_THAN	shift, and go to state 77
+
+
+
+state 32
+
+    BaseDecl  ->  BASE LESS_THAN Q_IRI_CONTENT GREATER_THAN .   (rule 11)
+
+    $default	reduce using rule 11 (BaseDecl)
+
+
+
+state 33
+
+    SelectQuery  ->  SELECT DISTINCT VAR_REFERENCES . WhereClause SolutionModifier   (rule 16)
+    SelectQuery  ->  SELECT DISTINCT VAR_REFERENCES . DataSetClauseList WhereClause SolutionModifier   (rule 17)
+
+    FROM	shift, and go to state 24
+    WHERE	shift, and go to state 25
+    LEFT_CURLY	shift, and go to state 26
+
+    DataSetClauseList	go to state 78
+    DataSetClause	go to state 28
+    WhereClause	go to state 79
+    GroupGraphPattern	go to state 30
+
+
+
+state 34
+
+    SelectQuery  ->  SELECT VAR_REFERENCES DataSetClauseList . WhereClause SolutionModifier   (rule 15)
+    DataSetClauseList  ->  DataSetClauseList . DataSetClause   (rule 27)
+
+    FROM	shift, and go to state 24
+    WHERE	shift, and go to state 25
+    LEFT_CURLY	shift, and go to state 26
+
+    DataSetClause	go to state 75
+    WhereClause	go to state 80
+    GroupGraphPattern	go to state 30
+
+
+
+state 35
+
+    SelectQuery  ->  SELECT VAR_REFERENCES WhereClause . SolutionModifier   (rule 14)
+
+    ORDER	shift, and go to state 81
+    LIMIT	shift, and go to state 82
+    OFFSET	shift, and go to state 83
+
+    $default	reduce using rule 32 (SolutionModifier)
+
+    SolutionModifier	go to state 84
+    OrderClause	go to state 85
+    LimitClause	go to state 86
+    OffsetClause	go to state 87
+
+
+
+state 36
+
+    VariableReferenceList  ->  VariableReferenceList Var .   (rule 21)
+
+    $default	reduce using rule 21 (VariableReferenceList)
+
+
+
+state 37
+
+    QName  ->  QNAME .   (rule 24)
+
+    $default	reduce using rule 24 (QName)
+
+
+
+state 38
+
+    QName  ->  QNAME_NS .   (rule 25)
+
+    $default	reduce using rule 25 (QName)
+
+
+
+state 39
+
+    DataSetClause  ->  FROM NAMED . IRIref   (rule 29)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 88
+    QName	go to state 42
+
+
+
+state 40
+
+    IRIref  ->  LESS_THAN . Q_IRI_CONTENT GREATER_THAN   (rule 22)
+
+    Q_IRI_CONTENT	shift, and go to state 89
+
+
+
+state 41
+
+    DataSetClause  ->  FROM IRIref .   (rule 28)
+
+    $default	reduce using rule 28 (DataSetClause)
+
+
+
+state 42
+
+    IRIref  ->  QName .   (rule 23)
+
+    $default	reduce using rule 23 (IRIref)
+
+
+
+state 43
+
+    WhereClause  ->  WHERE GroupGraphPattern .   (rule 30)
+
+    $default	reduce using rule 30 (WhereClause)
+
+
+
+state 44
+
+    BlankNode  ->  BLANK_NODE_LABEL .   (rule 178)
+
+    $default	reduce using rule 178 (BlankNode)
+
+
+
+state 45
+
+    Constraint  ->  FILTER . LEFT_PAREN ConditionalOrExpression RIGHT_PAREN   (rule 124)
+    Constraint  ->  FILTER . BuiltInCall   (rule 125)
+    Constraint  ->  FILTER . FunctionCall   (rule 126)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    LEFT_PAREN	shift, and go to state 100
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 101
+    QName	go to state 42
+    BuiltInCall	go to state 102
+    RegexExpression	go to state 103
+    FunctionCall	go to state 104
+
+
+
+state 46
+
+    BooleanLiteral  ->  TRUE .   (rule 167)
+
+    $default	reduce using rule 167 (BooleanLiteral)
+
+
+
+state 47
+
+    BooleanLiteral  ->  FALSE .   (rule 168)
+
+    $default	reduce using rule 168 (BooleanLiteral)
+
+
+
+state 48
+
+    Collection  ->  LEFT_PAREN . GraphNodeList RIGHT_PAREN   (rule 149)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    LEFT_PAREN	shift, and go to state 48
+    LEFT_SQUARE	shift, and go to state 105
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    NIL 	shift, and go to state 57
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 59
+    MINUS	shift, and go to state 60
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 61
+    QName	go to state 42
+    GraphNode	go to state 106
+    TriplesNode	go to state 107
+    Collection	go to state 108
+    GraphNodeList	go to state 109
+    Var 	go to state 110
+    GraphTerm	go to state 111
+    NumericLiteral	go to state 70
+    RDFLiteral	go to state 71
+    BooleanLiteral	go to state 72
+    String	go to state 73
+    BlankNode	go to state 74
+
+
+
+state 49
+
+    TriplesSameSubject  ->  LEFT_SQUARE . PropertyListNotEmpty RIGHT_SQUARE PropertyList   (rule 132)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    VARNAME	shift, and go to state 18
+    A   	shift, and go to state 112
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 113
+    QName	go to state 42
+    PropertyListNotEmpty	go to state 114
+    Verb	go to state 115
+    Var 	go to state 116
+
+
+
+state 50
+
+    NumericLiteral  ->  INTEGER .   (rule 161)
+
+    $default	reduce using rule 161 (NumericLiteral)
+
+
+
+state 51
+
+    NumericLiteral  ->  DECIMAL .   (rule 162)
+
+    $default	reduce using rule 162 (NumericLiteral)
+
+
+
+state 52
+
+    NumericLiteral  ->  DOUBLE .   (rule 163)
+
+    $default	reduce using rule 163 (NumericLiteral)
+
+
+
+state 53
+
+    String  ->  STRING_LITERAL_DELIMETER_1 . STRING_LITERAL1 STRING_LITERAL_DELIMETER_1   (rule 169)
+    String  ->  STRING_LITERAL_DELIMETER_1 . STRING_LITERAL_DELIMETER_1   (rule 173)
+
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 117
+    STRING_LITERAL1	shift, and go to state 118
+
+
+
+state 54
+
+    String  ->  STRING_LITERAL_DELIMETER_2 . STRING_LITERAL_LONG1 STRING_LITERAL_DELIMETER_2   (rule 171)
+    String  ->  STRING_LITERAL_DELIMETER_2 . STRING_LITERAL_DELIMETER_2   (rule 175)
+
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 119
+    STRING_LITERAL_LONG1	shift, and go to state 120
+
+
+
+state 55
+
+    String  ->  STRING_LITERAL_DELIMETER_3 . STRING_LITERAL2 STRING_LITERAL_DELIMETER_3   (rule 170)
+    String  ->  STRING_LITERAL_DELIMETER_3 . STRING_LITERAL_DELIMETER_3   (rule 174)
+
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 121
+    STRING_LITERAL2	shift, and go to state 122
+
+
+
+state 56
+
+    String  ->  STRING_LITERAL_DELIMETER_4 . STRING_LITERAL_LONG2 STRING_LITERAL_DELIMETER_4   (rule 172)
+    String  ->  STRING_LITERAL_DELIMETER_4 . STRING_LITERAL_DELIMETER_4   (rule 176)
+
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 123
+    STRING_LITERAL_LONG2	shift, and go to state 124
+
+
+
+state 57
+
+    GraphTerm  ->  NIL .   (rule 160)
+
+    $default	reduce using rule 160 (GraphTerm)
+
+
+
+state 58
+
+    BlankNode  ->  ANON .   (rule 177)
+
+    $default	reduce using rule 177 (BlankNode)
+
+
+
+state 59
+
+    GraphTerm  ->  PLUS . NumericLiteral   (rule 156)
+
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+
+    NumericLiteral	go to state 125
+
+
+
+state 60
+
+    GraphTerm  ->  MINUS . NumericLiteral   (rule 157)
+
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+
+    NumericLiteral	go to state 126
+
+
+
+state 61
+
+    GraphTerm  ->  IRIref .   (rule 153)
+
+    $default	reduce using rule 153 (GraphTerm)
+
+
+
+state 62
+
+    GroupGraphPattern  ->  LEFT_CURLY GraphPattern . RIGHT_CURLY   (rule 50)
+
+    RIGHT_CURLY	shift, and go to state 127
+
+
+
+state 63
+
+    GraphPattern  ->  FilteredBasicGraphPattern .   (rule 51)
+    GraphPattern  ->  FilteredBasicGraphPattern . GraphPatternNotTriples GraphPattern   (rule 52)
+    GraphPattern  ->  FilteredBasicGraphPattern . GraphPatternNotTriples DOT GraphPattern   (rule 53)
+
+    OPTIONAL	shift, and go to state 128
+    GRAPH	shift, and go to state 129
+    LEFT_CURLY	shift, and go to state 26
+
+    $default	reduce using rule 51 (GraphPattern)
+
+    GroupGraphPattern	go to state 130
+    GraphPatternNotTriples	go to state 131
+
+
+
+state 64
+
+    FilteredBasicGraphPattern  ->  Constraint . DOT FilteredBasicGraphPattern   (rule 122)
+    FilteredBasicGraphPattern  ->  Constraint . FilteredBasicGraphPattern   (rule 123)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    DOT 	shift, and go to state 132
+    FILTER	shift, and go to state 45
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    LEFT_PAREN	shift, and go to state 48
+    LEFT_SQUARE	shift, and go to state 49
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    NIL 	shift, and go to state 57
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 59
+    MINUS	shift, and go to state 60
+    LESS_THAN	shift, and go to state 40
+
+    $default	reduce using rule 118 (FilteredBasicGraphPattern)
+
+    IRIref	go to state 61
+    QName	go to state 42
+    FilteredBasicGraphPattern	go to state 133
+    Constraint	go to state 64
+    Triples	go to state 65
+    TriplesSameSubject	go to state 66
+    Collection	go to state 67
+    Var 	go to state 68
+    GraphTerm	go to state 69
+    NumericLiteral	go to state 70
+    RDFLiteral	go to state 71
+    BooleanLiteral	go to state 72
+    String	go to state 73
+    BlankNode	go to state 74
+
+
+
+state 65
+
+    FilteredBasicGraphPattern  ->  Triples .   (rule 119)
+    FilteredBasicGraphPattern  ->  Triples . Constraint DOT FilteredBasicGraphPattern   (rule 120)
+    FilteredBasicGraphPattern  ->  Triples . Constraint FilteredBasicGraphPattern   (rule 121)
+    Triples  ->  Triples . DOT TriplesSameSubject   (rule 127)
+    Triples  ->  Triples . DOT   (rule 128)
+
+    DOT 	shift, and go to state 134
+    FILTER	shift, and go to state 45
+
+    $default	reduce using rule 119 (FilteredBasicGraphPattern)
+
+    Constraint	go to state 135
+
+
+
+state 66
+
+    Triples  ->  TriplesSameSubject .   (rule 129)
+
+    $default	reduce using rule 129 (Triples)
+
+
+
+state 67
+
+    TriplesSameSubject  ->  Collection . PropertyListNotEmpty   (rule 133)
+    TriplesSameSubject  ->  Collection .   (rule 134)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    VARNAME	shift, and go to state 18
+    A   	shift, and go to state 112
+    LESS_THAN	shift, and go to state 40
+
+    $default	reduce using rule 134 (TriplesSameSubject)
+
+    IRIref	go to state 113
+    QName	go to state 42
+    PropertyListNotEmpty	go to state 136
+    Verb	go to state 115
+    Var 	go to state 116
+
+
+
+state 68
+
+    TriplesSameSubject  ->  Var . PropertyListNotEmpty   (rule 130)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    VARNAME	shift, and go to state 18
+    A   	shift, and go to state 112
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 113
+    QName	go to state 42
+    PropertyListNotEmpty	go to state 137
+    Verb	go to state 115
+    Var 	go to state 116
+
+
+
+state 69
+
+    TriplesSameSubject  ->  GraphTerm . PropertyListNotEmpty   (rule 131)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    VARNAME	shift, and go to state 18
+    A   	shift, and go to state 112
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 113
+    QName	go to state 42
+    PropertyListNotEmpty	go to state 138
+    Verb	go to state 115
+    Var 	go to state 116
+
+
+
+state 70
+
+    GraphTerm  ->  NumericLiteral .   (rule 155)
+
+    $default	reduce using rule 155 (GraphTerm)
+
+
+
+state 71
+
+    GraphTerm  ->  RDFLiteral .   (rule 154)
+
+    $default	reduce using rule 154 (GraphTerm)
+
+
+
+state 72
+
+    GraphTerm  ->  BooleanLiteral .   (rule 158)
+
+    $default	reduce using rule 158 (GraphTerm)
+
+
+
+state 73
+
+    RDFLiteral  ->  String .   (rule 164)
+    RDFLiteral  ->  String . LANGTAG   (rule 165)
+    RDFLiteral  ->  String . DOUBLE_HAT IRIref   (rule 166)
+
+    DOUBLE_HAT	shift, and go to state 139
+    LANGTAG	shift, and go to state 140
+
+    $default	reduce using rule 164 (RDFLiteral)
+
+
+
+state 74
+
+    GraphTerm  ->  BlankNode .   (rule 159)
+
+    $default	reduce using rule 159 (GraphTerm)
+
+
+
+state 75
+
+    DataSetClauseList  ->  DataSetClauseList DataSetClause .   (rule 27)
+
+    $default	reduce using rule 27 (DataSetClauseList)
+
+
+
+state 76
+
+    AskQuery  ->  ASK DataSetClauseList WhereClause .   (rule 13)
+
+    $default	reduce using rule 13 (AskQuery)
+
+
+
+state 77
+
+    PrefixDecl  ->  PREFIX QNAME_NS LESS_THAN Q_IRI_CONTENT GREATER_THAN .   (rule 10)
+
+    $default	reduce using rule 10 (PrefixDecl)
+
+
+
+state 78
+
+    SelectQuery  ->  SELECT DISTINCT VAR_REFERENCES DataSetClauseList . WhereClause SolutionModifier   (rule 17)
+    DataSetClauseList  ->  DataSetClauseList . DataSetClause   (rule 27)
+
+    FROM	shift, and go to state 24
+    WHERE	shift, and go to state 25
+    LEFT_CURLY	shift, and go to state 26
+
+    DataSetClause	go to state 75
+    WhereClause	go to state 141
+    GroupGraphPattern	go to state 30
+
+
+
+state 79
+
+    SelectQuery  ->  SELECT DISTINCT VAR_REFERENCES WhereClause . SolutionModifier   (rule 16)
+
+    ORDER	shift, and go to state 81
+    LIMIT	shift, and go to state 82
+    OFFSET	shift, and go to state 83
+
+    $default	reduce using rule 32 (SolutionModifier)
+
+    SolutionModifier	go to state 142
+    OrderClause	go to state 85
+    LimitClause	go to state 86
+    OffsetClause	go to state 87
+
+
+
+state 80
+
+    SelectQuery  ->  SELECT VAR_REFERENCES DataSetClauseList WhereClause . SolutionModifier   (rule 15)
+
+    ORDER	shift, and go to state 81
+    LIMIT	shift, and go to state 82
+    OFFSET	shift, and go to state 83
+
+    $default	reduce using rule 32 (SolutionModifier)
+
+    SolutionModifier	go to state 143
+    OrderClause	go to state 85
+    LimitClause	go to state 86
+    OffsetClause	go to state 87
+
+
+
+state 81
+
+    OrderClause  ->  ORDER . BY OrderConditionList   (rule 40)
+
+    BY  	shift, and go to state 144
+
+
+
+state 82
+
+    LimitClause  ->  LIMIT . NumericLiteral   (rule 48)
+
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+
+    NumericLiteral	go to state 145
+
+
+
+state 83
+
+    OffsetClause  ->  OFFSET . NumericLiteral   (rule 49)
+
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+
+    NumericLiteral	go to state 146
+
+
+
+state 84
+
+    SelectQuery  ->  SELECT VAR_REFERENCES WhereClause SolutionModifier .   (rule 14)
+
+    $default	reduce using rule 14 (SelectQuery)
+
+
+
+state 85
+
+    SolutionModifier  ->  OrderClause .   (rule 33)
+    SolutionModifier  ->  OrderClause . LimitClause   (rule 34)
+    SolutionModifier  ->  OrderClause . LimitClause OffsetClause   (rule 35)
+    SolutionModifier  ->  OrderClause . OffsetClause   (rule 37)
+
+    LIMIT	shift, and go to state 82
+    OFFSET	shift, and go to state 83
+
+    $default	reduce using rule 33 (SolutionModifier)
+
+    LimitClause	go to state 147
+    OffsetClause	go to state 148
+
+
+
+state 86
+
+    SolutionModifier  ->  LimitClause . OffsetClause   (rule 36)
+    SolutionModifier  ->  LimitClause .   (rule 39)
+
+    OFFSET	shift, and go to state 83
+
+    $default	reduce using rule 39 (SolutionModifier)
+
+    OffsetClause	go to state 149
+
+
+
+state 87
+
+    SolutionModifier  ->  OffsetClause .   (rule 38)
+
+    $default	reduce using rule 38 (SolutionModifier)
+
+
+
+state 88
+
+    DataSetClause  ->  FROM NAMED IRIref .   (rule 29)
+
+    $default	reduce using rule 29 (DataSetClause)
+
+
+
+state 89
+
+    IRIref  ->  LESS_THAN Q_IRI_CONTENT . GREATER_THAN   (rule 22)
+
+    GREATER_THAN	shift, and go to state 150
+
+
+
+state 90
+
+    BuiltInCall  ->  STR . LEFT_PAREN ConditionalOrExpression RIGHT_PAREN   (rule 93)
+
+    LEFT_PAREN	shift, and go to state 151
+
+
+
+state 91
+
+    BuiltInCall  ->  LANG . LEFT_PAREN ConditionalOrExpression RIGHT_PAREN   (rule 94)
+
+    LEFT_PAREN	shift, and go to state 152
+
+
+
+state 92
+
+    BuiltInCall  ->  LANGMATCHES . LEFT_PAREN ConditionalOrExpression COMMA ConditionalOrExpression RIGHT_PAREN   (rule 95)
+
+    LEFT_PAREN	shift, and go to state 153
+
+
+
+state 93
+
+    BuiltInCall  ->  DATATYPE . LEFT_PAREN ConditionalOrExpression RIGHT_PAREN   (rule 96)
+
+    LEFT_PAREN	shift, and go to state 154
+
+
+
+state 94
+
+    BuiltInCall  ->  isIRI . LEFT_PAREN ConditionalOrExpression RIGHT_PAREN   (rule 98)
+
+    LEFT_PAREN	shift, and go to state 155
+
+
+
+state 95
+
+    BuiltInCall  ->  isURI . LEFT_PAREN ConditionalOrExpression RIGHT_PAREN   (rule 99)
+
+    LEFT_PAREN	shift, and go to state 156
+
+
+
+state 96
+
+    BuiltInCall  ->  isLITERAL . LEFT_PAREN ConditionalOrExpression RIGHT_PAREN   (rule 101)
+
+    LEFT_PAREN	shift, and go to state 157
+
+
+
+state 97
+
+    BuiltInCall  ->  isBLANK . LEFT_PAREN ConditionalOrExpression RIGHT_PAREN   (rule 100)
+
+    LEFT_PAREN	shift, and go to state 158
+
+
+
+state 98
+
+    BuiltInCall  ->  BOUND . LEFT_PAREN Var RIGHT_PAREN   (rule 97)
+
+    LEFT_PAREN	shift, and go to state 159
+
+
+
+state 99
+
+    RegexExpression  ->  REGEX . LEFT_PAREN ConditionalOrExpression COMMA ConditionalOrExpression RIGHT_PAREN   (rule 103)
+    RegexExpression  ->  REGEX . LEFT_PAREN ConditionalOrExpression COMMA ConditionalOrExpression COMMA ConditionalOrExpression RIGHT_PAREN   (rule 104)
+
+    LEFT_PAREN	shift, and go to state 160
+
+
+
+state 100
+
+    Constraint  ->  FILTER LEFT_PAREN . ConditionalOrExpression RIGHT_PAREN   (rule 124)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalOrExpression	go to state 166
+    ConditionalAndExpression	go to state 167
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 101
+
+    FunctionCall  ->  IRIref . LEFT_PAREN ArgumentList RIGHT_PAREN   (rule 105)
+
+    LEFT_PAREN	shift, and go to state 180
+
+
+
+state 102
+
+    Constraint  ->  FILTER BuiltInCall .   (rule 125)
+
+    $default	reduce using rule 125 (Constraint)
+
+
+
+state 103
+
+    BuiltInCall  ->  RegexExpression .   (rule 102)
+
+    $default	reduce using rule 102 (BuiltInCall)
+
+
+
+state 104
+
+    Constraint  ->  FILTER FunctionCall .   (rule 126)
+
+    $default	reduce using rule 126 (Constraint)
+
+
+
+state 105
+
+    TriplesNode  ->  LEFT_SQUARE . PropertyList RIGHT_SQUARE   (rule 148)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    VARNAME	shift, and go to state 18
+    A   	shift, and go to state 112
+    LESS_THAN	shift, and go to state 40
+
+    $default	reduce using rule 136 (PropertyList)
+
+    IRIref	go to state 113
+    QName	go to state 42
+    PropertyList	go to state 181
+    PropertyListNotEmpty	go to state 182
+    Verb	go to state 115
+    Var 	go to state 116
+
+
+
+state 106
+
+    GraphNodeList  ->  GraphNode .   (rule 150)
+
+    $default	reduce using rule 150 (GraphNodeList)
+
+
+
+state 107
+
+    GraphNode  ->  TriplesNode .   (rule 142)
+
+    $default	reduce using rule 142 (GraphNode)
+
+
+
+state 108
+
+    TriplesNode  ->  Collection .   (rule 147)
+
+    $default	reduce using rule 147 (TriplesNode)
+
+
+
+state 109
+
+    Collection  ->  LEFT_PAREN GraphNodeList . RIGHT_PAREN   (rule 149)
+    GraphNodeList  ->  GraphNodeList . GraphNode   (rule 151)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    LEFT_PAREN	shift, and go to state 48
+    RIGHT_PAREN	shift, and go to state 183
+    LEFT_SQUARE	shift, and go to state 105
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    NIL 	shift, and go to state 57
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 59
+    MINUS	shift, and go to state 60
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 61
+    QName	go to state 42
+    GraphNode	go to state 184
+    TriplesNode	go to state 107
+    Collection	go to state 108
+    Var 	go to state 110
+    GraphTerm	go to state 111
+    NumericLiteral	go to state 70
+    RDFLiteral	go to state 71
+    BooleanLiteral	go to state 72
+    String	go to state 73
+    BlankNode	go to state 74
+
+
+
+state 110
+
+    GraphNode  ->  Var .   (rule 141)
+
+    $default	reduce using rule 141 (GraphNode)
+
+
+
+state 111
+
+    GraphNode  ->  GraphTerm .   (rule 143)
+
+    $default	reduce using rule 143 (GraphNode)
+
+
+
+state 112
+
+    Verb  ->  A .   (rule 146)
+
+    $default	reduce using rule 146 (Verb)
+
+
+
+state 113
+
+    Verb  ->  IRIref .   (rule 145)
+
+    $default	reduce using rule 145 (Verb)
+
+
+
+state 114
+
+    TriplesSameSubject  ->  LEFT_SQUARE PropertyListNotEmpty . RIGHT_SQUARE PropertyList   (rule 132)
+
+    RIGHT_SQUARE	shift, and go to state 185
+
+
+
+state 115
+
+    PropertyListNotEmpty  ->  Verb . ObjectList   (rule 137)
+    PropertyListNotEmpty  ->  Verb . ObjectList SEMICOLON PropertyList   (rule 138)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    LEFT_PAREN	shift, and go to state 48
+    LEFT_SQUARE	shift, and go to state 105
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    NIL 	shift, and go to state 57
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 59
+    MINUS	shift, and go to state 60
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 61
+    QName	go to state 42
+    ObjectList	go to state 186
+    GraphNode	go to state 187
+    TriplesNode	go to state 107
+    Collection	go to state 108
+    Var 	go to state 110
+    GraphTerm	go to state 111
+    NumericLiteral	go to state 70
+    RDFLiteral	go to state 71
+    BooleanLiteral	go to state 72
+    String	go to state 73
+    BlankNode	go to state 74
+
+
+
+state 116
+
+    Verb  ->  Var .   (rule 144)
+
+    $default	reduce using rule 144 (Verb)
+
+
+
+state 117
+
+    String  ->  STRING_LITERAL_DELIMETER_1 STRING_LITERAL_DELIMETER_1 .   (rule 173)
+
+    $default	reduce using rule 173 (String)
+
+
+
+state 118
+
+    String  ->  STRING_LITERAL_DELIMETER_1 STRING_LITERAL1 . STRING_LITERAL_DELIMETER_1   (rule 169)
+
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 188
+
+
+
+state 119
+
+    String  ->  STRING_LITERAL_DELIMETER_2 STRING_LITERAL_DELIMETER_2 .   (rule 175)
+
+    $default	reduce using rule 175 (String)
+
+
+
+state 120
+
+    String  ->  STRING_LITERAL_DELIMETER_2 STRING_LITERAL_LONG1 . STRING_LITERAL_DELIMETER_2   (rule 171)
+
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 189
+
+
+
+state 121
+
+    String  ->  STRING_LITERAL_DELIMETER_3 STRING_LITERAL_DELIMETER_3 .   (rule 174)
+
+    $default	reduce using rule 174 (String)
+
+
+
+state 122
+
+    String  ->  STRING_LITERAL_DELIMETER_3 STRING_LITERAL2 . STRING_LITERAL_DELIMETER_3   (rule 170)
+
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 190
+
+
+
+state 123
+
+    String  ->  STRING_LITERAL_DELIMETER_4 STRING_LITERAL_DELIMETER_4 .   (rule 176)
+
+    $default	reduce using rule 176 (String)
+
+
+
+state 124
+
+    String  ->  STRING_LITERAL_DELIMETER_4 STRING_LITERAL_LONG2 . STRING_LITERAL_DELIMETER_4   (rule 172)
+
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 191
+
+
+
+state 125
+
+    GraphTerm  ->  PLUS NumericLiteral .   (rule 156)
+
+    $default	reduce using rule 156 (GraphTerm)
+
+
+
+state 126
+
+    GraphTerm  ->  MINUS NumericLiteral .   (rule 157)
+
+    $default	reduce using rule 157 (GraphTerm)
+
+
+
+state 127
+
+    GroupGraphPattern  ->  LEFT_CURLY GraphPattern RIGHT_CURLY .   (rule 50)
+
+    $default	reduce using rule 50 (GroupGraphPattern)
+
+
+
+state 128
+
+    GraphPatternNotTriples  ->  OPTIONAL . GroupGraphPattern   (rule 54)
+
+    LEFT_CURLY	shift, and go to state 26
+
+    GroupGraphPattern	go to state 192
+
+
+
+state 129
+
+    GraphPatternNotTriples  ->  GRAPH . Var GroupGraphPattern   (rule 57)
+    GraphPatternNotTriples  ->  GRAPH . BlankNode GroupGraphPattern   (rule 58)
+    GraphPatternNotTriples  ->  GRAPH . IRIref GroupGraphPattern   (rule 59)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    ANON	shift, and go to state 58
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 193
+    QName	go to state 42
+    Var 	go to state 194
+    BlankNode	go to state 195
+
+
+
+state 130
+
+    GraphPatternNotTriples  ->  GroupGraphPattern .   (rule 55)
+    GraphPatternNotTriples  ->  GroupGraphPattern . AlternativeGroupGraphPatterns   (rule 56)
+
+    UNION	shift, and go to state 196
+
+    $default	reduce using rule 55 (GraphPatternNotTriples)
+
+    AlternativeGroupGraphPatterns	go to state 197
+
+
+
+state 131
+
+    GraphPattern  ->  FilteredBasicGraphPattern GraphPatternNotTriples . GraphPattern   (rule 52)
+    GraphPattern  ->  FilteredBasicGraphPattern GraphPatternNotTriples . DOT GraphPattern   (rule 53)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    DOT 	shift, and go to state 198
+    FILTER	shift, and go to state 45
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    LEFT_PAREN	shift, and go to state 48
+    LEFT_SQUARE	shift, and go to state 49
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    NIL 	shift, and go to state 57
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 59
+    MINUS	shift, and go to state 60
+    LESS_THAN	shift, and go to state 40
+
+    $default	reduce using rule 118 (FilteredBasicGraphPattern)
+
+    IRIref	go to state 61
+    QName	go to state 42
+    GraphPattern	go to state 199
+    FilteredBasicGraphPattern	go to state 63
+    Constraint	go to state 64
+    Triples	go to state 65
+    TriplesSameSubject	go to state 66
+    Collection	go to state 67
+    Var 	go to state 68
+    GraphTerm	go to state 69
+    NumericLiteral	go to state 70
+    RDFLiteral	go to state 71
+    BooleanLiteral	go to state 72
+    String	go to state 73
+    BlankNode	go to state 74
+
+
+
+state 132
+
+    FilteredBasicGraphPattern  ->  Constraint DOT . FilteredBasicGraphPattern   (rule 122)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    FILTER	shift, and go to state 45
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    LEFT_PAREN	shift, and go to state 48
+    LEFT_SQUARE	shift, and go to state 49
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    NIL 	shift, and go to state 57
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 59
+    MINUS	shift, and go to state 60
+    LESS_THAN	shift, and go to state 40
+
+    $default	reduce using rule 118 (FilteredBasicGraphPattern)
+
+    IRIref	go to state 61
+    QName	go to state 42
+    FilteredBasicGraphPattern	go to state 200
+    Constraint	go to state 64
+    Triples	go to state 65
+    TriplesSameSubject	go to state 66
+    Collection	go to state 67
+    Var 	go to state 68
+    GraphTerm	go to state 69
+    NumericLiteral	go to state 70
+    RDFLiteral	go to state 71
+    BooleanLiteral	go to state 72
+    String	go to state 73
+    BlankNode	go to state 74
+
+
+
+state 133
+
+    FilteredBasicGraphPattern  ->  Constraint FilteredBasicGraphPattern .   (rule 123)
+
+    $default	reduce using rule 123 (FilteredBasicGraphPattern)
+
+
+
+state 134
+
+    Triples  ->  Triples DOT . TriplesSameSubject   (rule 127)
+    Triples  ->  Triples DOT .   (rule 128)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    LEFT_PAREN	shift, and go to state 48
+    LEFT_SQUARE	shift, and go to state 49
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    NIL 	shift, and go to state 57
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 59
+    MINUS	shift, and go to state 60
+    LESS_THAN	shift, and go to state 40
+
+    $default	reduce using rule 128 (Triples)
+
+    IRIref	go to state 61
+    QName	go to state 42
+    TriplesSameSubject	go to state 201
+    Collection	go to state 67
+    Var 	go to state 68
+    GraphTerm	go to state 69
+    NumericLiteral	go to state 70
+    RDFLiteral	go to state 71
+    BooleanLiteral	go to state 72
+    String	go to state 73
+    BlankNode	go to state 74
+
+
+
+state 135
+
+    FilteredBasicGraphPattern  ->  Triples Constraint . DOT FilteredBasicGraphPattern   (rule 120)
+    FilteredBasicGraphPattern  ->  Triples Constraint . FilteredBasicGraphPattern   (rule 121)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    DOT 	shift, and go to state 202
+    FILTER	shift, and go to state 45
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    LEFT_PAREN	shift, and go to state 48
+    LEFT_SQUARE	shift, and go to state 49
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    NIL 	shift, and go to state 57
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 59
+    MINUS	shift, and go to state 60
+    LESS_THAN	shift, and go to state 40
+
+    $default	reduce using rule 118 (FilteredBasicGraphPattern)
+
+    IRIref	go to state 61
+    QName	go to state 42
+    FilteredBasicGraphPattern	go to state 203
+    Constraint	go to state 64
+    Triples	go to state 65
+    TriplesSameSubject	go to state 66
+    Collection	go to state 67
+    Var 	go to state 68
+    GraphTerm	go to state 69
+    NumericLiteral	go to state 70
+    RDFLiteral	go to state 71
+    BooleanLiteral	go to state 72
+    String	go to state 73
+    BlankNode	go to state 74
+
+
+
+state 136
+
+    TriplesSameSubject  ->  Collection PropertyListNotEmpty .   (rule 133)
+
+    $default	reduce using rule 133 (TriplesSameSubject)
+
+
+
+state 137
+
+    TriplesSameSubject  ->  Var PropertyListNotEmpty .   (rule 130)
+
+    $default	reduce using rule 130 (TriplesSameSubject)
+
+
+
+state 138
+
+    TriplesSameSubject  ->  GraphTerm PropertyListNotEmpty .   (rule 131)
+
+    $default	reduce using rule 131 (TriplesSameSubject)
+
+
+
+state 139
+
+    RDFLiteral  ->  String DOUBLE_HAT . IRIref   (rule 166)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 204
+    QName	go to state 42
+
+
+
+state 140
+
+    RDFLiteral  ->  String LANGTAG .   (rule 165)
+
+    $default	reduce using rule 165 (RDFLiteral)
+
+
+
+state 141
+
+    SelectQuery  ->  SELECT DISTINCT VAR_REFERENCES DataSetClauseList WhereClause . SolutionModifier   (rule 17)
+
+    ORDER	shift, and go to state 81
+    LIMIT	shift, and go to state 82
+    OFFSET	shift, and go to state 83
+
+    $default	reduce using rule 32 (SolutionModifier)
+
+    SolutionModifier	go to state 205
+    OrderClause	go to state 85
+    LimitClause	go to state 86
+    OffsetClause	go to state 87
+
+
+
+state 142
+
+    SelectQuery  ->  SELECT DISTINCT VAR_REFERENCES WhereClause SolutionModifier .   (rule 16)
+
+    $default	reduce using rule 16 (SelectQuery)
+
+
+
+state 143
+
+    SelectQuery  ->  SELECT VAR_REFERENCES DataSetClauseList WhereClause SolutionModifier .   (rule 15)
+
+    $default	reduce using rule 15 (SelectQuery)
+
+
+
+state 144
+
+    OrderClause  ->  ORDER BY . OrderConditionList   (rule 40)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    VARNAME	shift, and go to state 18
+    ASC 	shift, and go to state 206
+    DESC	shift, and go to state 207
+    LEFT_PAREN	shift, and go to state 208
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 101
+    QName	go to state 42
+    OrderConditionList	go to state 209
+    OrderCondition	go to state 210
+    FunctionCall	go to state 211
+    Var 	go to state 212
+
+
+
+state 145
+
+    LimitClause  ->  LIMIT NumericLiteral .   (rule 48)
+
+    $default	reduce using rule 48 (LimitClause)
+
+
+
+state 146
+
+    OffsetClause  ->  OFFSET NumericLiteral .   (rule 49)
+
+    $default	reduce using rule 49 (OffsetClause)
+
+
+
+state 147
+
+    SolutionModifier  ->  OrderClause LimitClause .   (rule 34)
+    SolutionModifier  ->  OrderClause LimitClause . OffsetClause   (rule 35)
+
+    OFFSET	shift, and go to state 83
+
+    $default	reduce using rule 34 (SolutionModifier)
+
+    OffsetClause	go to state 213
+
+
+
+state 148
+
+    SolutionModifier  ->  OrderClause OffsetClause .   (rule 37)
+
+    $default	reduce using rule 37 (SolutionModifier)
+
+
+
+state 149
+
+    SolutionModifier  ->  LimitClause OffsetClause .   (rule 36)
+
+    $default	reduce using rule 36 (SolutionModifier)
+
+
+
+state 150
+
+    IRIref  ->  LESS_THAN Q_IRI_CONTENT GREATER_THAN .   (rule 22)
+
+    $default	reduce using rule 22 (IRIref)
+
+
+
+state 151
+
+    BuiltInCall  ->  STR LEFT_PAREN . ConditionalOrExpression RIGHT_PAREN   (rule 93)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalOrExpression	go to state 214
+    ConditionalAndExpression	go to state 167
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 152
+
+    BuiltInCall  ->  LANG LEFT_PAREN . ConditionalOrExpression RIGHT_PAREN   (rule 94)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalOrExpression	go to state 215
+    ConditionalAndExpression	go to state 167
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 153
+
+    BuiltInCall  ->  LANGMATCHES LEFT_PAREN . ConditionalOrExpression COMMA ConditionalOrExpression RIGHT_PAREN   (rule 95)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalOrExpression	go to state 216
+    ConditionalAndExpression	go to state 167
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 154
+
+    BuiltInCall  ->  DATATYPE LEFT_PAREN . ConditionalOrExpression RIGHT_PAREN   (rule 96)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalOrExpression	go to state 217
+    ConditionalAndExpression	go to state 167
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 155
+
+    BuiltInCall  ->  isIRI LEFT_PAREN . ConditionalOrExpression RIGHT_PAREN   (rule 98)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalOrExpression	go to state 218
+    ConditionalAndExpression	go to state 167
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 156
+
+    BuiltInCall  ->  isURI LEFT_PAREN . ConditionalOrExpression RIGHT_PAREN   (rule 99)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalOrExpression	go to state 219
+    ConditionalAndExpression	go to state 167
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 157
+
+    BuiltInCall  ->  isLITERAL LEFT_PAREN . ConditionalOrExpression RIGHT_PAREN   (rule 101)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalOrExpression	go to state 220
+    ConditionalAndExpression	go to state 167
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 158
+
+    BuiltInCall  ->  isBLANK LEFT_PAREN . ConditionalOrExpression RIGHT_PAREN   (rule 100)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalOrExpression	go to state 221
+    ConditionalAndExpression	go to state 167
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 159
+
+    BuiltInCall  ->  BOUND LEFT_PAREN . Var RIGHT_PAREN   (rule 97)
+
+    VARNAME	shift, and go to state 18
+
+    Var 	go to state 222
+
+
+
+state 160
+
+    RegexExpression  ->  REGEX LEFT_PAREN . ConditionalOrExpression COMMA ConditionalOrExpression RIGHT_PAREN   (rule 103)
+    RegexExpression  ->  REGEX LEFT_PAREN . ConditionalOrExpression COMMA ConditionalOrExpression COMMA ConditionalOrExpression RIGHT_PAREN   (rule 104)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalOrExpression	go to state 223
+    ConditionalAndExpression	go to state 167
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 161
+
+    UnaryExpression  ->  BANG . PrimaryExpression   (rule 89)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 224
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 162
+
+    PrimaryExpression  ->  LEFT_PAREN . ConditionalOrExpression RIGHT_PAREN   (rule 109)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalOrExpression	go to state 225
+    ConditionalAndExpression	go to state 167
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 163
+
+    UnaryExpression  ->  PLUS . PrimaryExpression   (rule 90)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 226
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 164
+
+    UnaryExpression  ->  MINUS . PrimaryExpression   (rule 91)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 227
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 165
+
+    FunctionCall  ->  IRIref . LEFT_PAREN ArgumentList RIGHT_PAREN   (rule 105)
+    PrimaryExpression  ->  IRIref .   (rule 111)
+
+    LEFT_PAREN	shift, and go to state 180
+
+    $default	reduce using rule 111 (PrimaryExpression)
+
+
+
+state 166
+
+    Constraint  ->  FILTER LEFT_PAREN ConditionalOrExpression . RIGHT_PAREN   (rule 124)
+
+    RIGHT_PAREN	shift, and go to state 228
+
+
+
+state 167
+
+    ConditionalOrExpression  ->  ConditionalAndExpression .   (rule 62)
+    ConditionalOrExpression  ->  ConditionalAndExpression . ConditionalAndExpressionList   (rule 63)
+
+    DOUBLE_PIPE	shift, and go to state 229
+
+    $default	reduce using rule 62 (ConditionalOrExpression)
+
+    ConditionalAndExpressionList	go to state 230
+
+
+
+state 168
+
+    ConditionalAndExpression  ->  RelationalExpression . ValueLogicalList   (rule 66)
+    ConditionalAndExpression  ->  RelationalExpression .   (rule 67)
+
+    DOUBLE_AMPERSAND	shift, and go to state 231
+
+    $default	reduce using rule 67 (ConditionalAndExpression)
+
+    ValueLogicalList	go to state 232
+
+
+
+state 169
+
+    RelationalExpression  ->  AdditiveExpression .   (rule 70)
+    RelationalExpression  ->  AdditiveExpression . EQUALITY_OP AdditiveExpression   (rule 71)
+    RelationalExpression  ->  AdditiveExpression . NOT_EQUAL AdditiveExpression   (rule 72)
+    RelationalExpression  ->  AdditiveExpression . LESS_THAN AdditiveExpression   (rule 73)
+    RelationalExpression  ->  AdditiveExpression . GREATER_THAN AdditiveExpression   (rule 74)
+    RelationalExpression  ->  AdditiveExpression . LESS_THAN_EQUAL AdditiveExpression   (rule 75)
+    RelationalExpression  ->  AdditiveExpression . GREATER_THAN_EQUAL AdditiveExpression   (rule 76)
+
+    EQUALITY_OP	shift, and go to state 233
+    NOT_EQUAL	shift, and go to state 234
+    LESS_THAN	shift, and go to state 235
+    GREATER_THAN	shift, and go to state 236
+    LESS_THAN_EQUAL	shift, and go to state 237
+    GREATER_THAN_EQUAL	shift, and go to state 238
+
+    $default	reduce using rule 70 (RelationalExpression)
+
+
+
+state 170
+
+    AdditiveExpression  ->  MultiplicativeExpression .   (rule 77)
+    AdditiveExpression  ->  MultiplicativeExpression . MultiplicativeExpressionList   (rule 78)
+
+    PLUS	shift, and go to state 239
+    MINUS	shift, and go to state 240
+
+    $default	reduce using rule 77 (AdditiveExpression)
+
+    MultiplicativeExpressionList	go to state 241
+
+
+
+state 171
+
+    MultiplicativeExpression  ->  UnaryExpression .   (rule 83)
+    MultiplicativeExpression  ->  UnaryExpression . UnaryExpressionList   (rule 84)
+
+    ASTERISK	shift, and go to state 242
+    FORWARDSLASH	shift, and go to state 243
+
+    $default	reduce using rule 83 (MultiplicativeExpression)
+
+    UnaryExpressionList	go to state 244
+
+
+
+state 172
+
+    PrimaryExpression  ->  BuiltInCall .   (rule 110)
+
+    $default	reduce using rule 110 (PrimaryExpression)
+
+
+
+state 173
+
+    PrimaryExpression  ->  FunctionCall .   (rule 112)
+
+    $default	reduce using rule 112 (PrimaryExpression)
+
+
+
+state 174
+
+    UnaryExpression  ->  PrimaryExpression .   (rule 92)
+
+    $default	reduce using rule 92 (UnaryExpression)
+
+
+
+state 175
+
+    PrimaryExpression  ->  Var .   (rule 117)
+
+    $default	reduce using rule 117 (PrimaryExpression)
+
+
+
+state 176
+
+    PrimaryExpression  ->  NumericLiteral .   (rule 114)
+
+    $default	reduce using rule 114 (PrimaryExpression)
+
+
+
+state 177
+
+    PrimaryExpression  ->  RDFLiteral .   (rule 113)
+
+    $default	reduce using rule 113 (PrimaryExpression)
+
+
+
+state 178
+
+    PrimaryExpression  ->  BooleanLiteral .   (rule 115)
+
+    $default	reduce using rule 115 (PrimaryExpression)
+
+
+
+state 179
+
+    PrimaryExpression  ->  BlankNode .   (rule 116)
+
+    $default	reduce using rule 116 (PrimaryExpression)
+
+
+
+state 180
+
+    FunctionCall  ->  IRIref LEFT_PAREN . ArgumentList RIGHT_PAREN   (rule 105)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    NIL 	shift, and go to state 245
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalOrExpression	go to state 246
+    ConditionalAndExpression	go to state 167
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    ArgumentList	go to state 247
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 181
+
+    TriplesNode  ->  LEFT_SQUARE PropertyList . RIGHT_SQUARE   (rule 148)
+
+    RIGHT_SQUARE	shift, and go to state 248
+
+
+
+state 182
+
+    PropertyList  ->  PropertyListNotEmpty .   (rule 135)
+
+    $default	reduce using rule 135 (PropertyList)
+
+
+
+state 183
+
+    Collection  ->  LEFT_PAREN GraphNodeList RIGHT_PAREN .   (rule 149)
+
+    $default	reduce using rule 149 (Collection)
+
+
+
+state 184
+
+    GraphNodeList  ->  GraphNodeList GraphNode .   (rule 151)
+
+    $default	reduce using rule 151 (GraphNodeList)
+
+
+
+state 185
+
+    TriplesSameSubject  ->  LEFT_SQUARE PropertyListNotEmpty RIGHT_SQUARE . PropertyList   (rule 132)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    VARNAME	shift, and go to state 18
+    A   	shift, and go to state 112
+    LESS_THAN	shift, and go to state 40
+
+    $default	reduce using rule 136 (PropertyList)
+
+    IRIref	go to state 113
+    QName	go to state 42
+    PropertyList	go to state 249
+    PropertyListNotEmpty	go to state 182
+    Verb	go to state 115
+    Var 	go to state 116
+
+
+
+state 186
+
+    PropertyListNotEmpty  ->  Verb ObjectList .   (rule 137)
+    PropertyListNotEmpty  ->  Verb ObjectList . SEMICOLON PropertyList   (rule 138)
+    ObjectList  ->  ObjectList . COMMA GraphNode   (rule 140)
+
+    COMMA	shift, and go to state 250
+    SEMICOLON	shift, and go to state 251
+
+    $default	reduce using rule 137 (PropertyListNotEmpty)
+
+
+
+state 187
+
+    ObjectList  ->  GraphNode .   (rule 139)
+
+    $default	reduce using rule 139 (ObjectList)
+
+
+
+state 188
+
+    String  ->  STRING_LITERAL_DELIMETER_1 STRING_LITERAL1 STRING_LITERAL_DELIMETER_1 .   (rule 169)
+
+    $default	reduce using rule 169 (String)
+
+
+
+state 189
+
+    String  ->  STRING_LITERAL_DELIMETER_2 STRING_LITERAL_LONG1 STRING_LITERAL_DELIMETER_2 .   (rule 171)
+
+    $default	reduce using rule 171 (String)
+
+
+
+state 190
+
+    String  ->  STRING_LITERAL_DELIMETER_3 STRING_LITERAL2 STRING_LITERAL_DELIMETER_3 .   (rule 170)
+
+    $default	reduce using rule 170 (String)
+
+
+
+state 191
+
+    String  ->  STRING_LITERAL_DELIMETER_4 STRING_LITERAL_LONG2 STRING_LITERAL_DELIMETER_4 .   (rule 172)
+
+    $default	reduce using rule 172 (String)
+
+
+
+state 192
+
+    GraphPatternNotTriples  ->  OPTIONAL GroupGraphPattern .   (rule 54)
+
+    $default	reduce using rule 54 (GraphPatternNotTriples)
+
+
+
+state 193
+
+    GraphPatternNotTriples  ->  GRAPH IRIref . GroupGraphPattern   (rule 59)
+
+    LEFT_CURLY	shift, and go to state 26
+
+    GroupGraphPattern	go to state 252
+
+
+
+state 194
+
+    GraphPatternNotTriples  ->  GRAPH Var . GroupGraphPattern   (rule 57)
+
+    LEFT_CURLY	shift, and go to state 26
+
+    GroupGraphPattern	go to state 253
+
+
+
+state 195
+
+    GraphPatternNotTriples  ->  GRAPH BlankNode . GroupGraphPattern   (rule 58)
+
+    LEFT_CURLY	shift, and go to state 26
+
+    GroupGraphPattern	go to state 254
+
+
+
+state 196
+
+    AlternativeGroupGraphPatterns  ->  UNION . GroupGraphPattern   (rule 60)
+
+    LEFT_CURLY	shift, and go to state 26
+
+    GroupGraphPattern	go to state 255
+
+
+
+state 197
+
+    GraphPatternNotTriples  ->  GroupGraphPattern AlternativeGroupGraphPatterns .   (rule 56)
+    AlternativeGroupGraphPatterns  ->  AlternativeGroupGraphPatterns . UNION GroupGraphPattern   (rule 61)
+
+    UNION	shift, and go to state 256
+
+    $default	reduce using rule 56 (GraphPatternNotTriples)
+
+
+
+state 198
+
+    GraphPattern  ->  FilteredBasicGraphPattern GraphPatternNotTriples DOT . GraphPattern   (rule 53)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    FILTER	shift, and go to state 45
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    LEFT_PAREN	shift, and go to state 48
+    LEFT_SQUARE	shift, and go to state 49
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    NIL 	shift, and go to state 57
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 59
+    MINUS	shift, and go to state 60
+    LESS_THAN	shift, and go to state 40
+
+    $default	reduce using rule 118 (FilteredBasicGraphPattern)
+
+    IRIref	go to state 61
+    QName	go to state 42
+    GraphPattern	go to state 257
+    FilteredBasicGraphPattern	go to state 63
+    Constraint	go to state 64
+    Triples	go to state 65
+    TriplesSameSubject	go to state 66
+    Collection	go to state 67
+    Var 	go to state 68
+    GraphTerm	go to state 69
+    NumericLiteral	go to state 70
+    RDFLiteral	go to state 71
+    BooleanLiteral	go to state 72
+    String	go to state 73
+    BlankNode	go to state 74
+
+
+
+state 199
+
+    GraphPattern  ->  FilteredBasicGraphPattern GraphPatternNotTriples GraphPattern .   (rule 52)
+
+    $default	reduce using rule 52 (GraphPattern)
+
+
+
+state 200
+
+    FilteredBasicGraphPattern  ->  Constraint DOT FilteredBasicGraphPattern .   (rule 122)
+
+    $default	reduce using rule 122 (FilteredBasicGraphPattern)
+
+
+
+state 201
+
+    Triples  ->  Triples DOT TriplesSameSubject .   (rule 127)
+
+    $default	reduce using rule 127 (Triples)
+
+
+
+state 202
+
+    FilteredBasicGraphPattern  ->  Triples Constraint DOT . FilteredBasicGraphPattern   (rule 120)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    FILTER	shift, and go to state 45
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    LEFT_PAREN	shift, and go to state 48
+    LEFT_SQUARE	shift, and go to state 49
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    NIL 	shift, and go to state 57
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 59
+    MINUS	shift, and go to state 60
+    LESS_THAN	shift, and go to state 40
+
+    $default	reduce using rule 118 (FilteredBasicGraphPattern)
+
+    IRIref	go to state 61
+    QName	go to state 42
+    FilteredBasicGraphPattern	go to state 258
+    Constraint	go to state 64
+    Triples	go to state 65
+    TriplesSameSubject	go to state 66
+    Collection	go to state 67
+    Var 	go to state 68
+    GraphTerm	go to state 69
+    NumericLiteral	go to state 70
+    RDFLiteral	go to state 71
+    BooleanLiteral	go to state 72
+    String	go to state 73
+    BlankNode	go to state 74
+
+
+
+state 203
+
+    FilteredBasicGraphPattern  ->  Triples Constraint FilteredBasicGraphPattern .   (rule 121)
+
+    $default	reduce using rule 121 (FilteredBasicGraphPattern)
+
+
+
+state 204
+
+    RDFLiteral  ->  String DOUBLE_HAT IRIref .   (rule 166)
+
+    $default	reduce using rule 166 (RDFLiteral)
+
+
+
+state 205
+
+    SelectQuery  ->  SELECT DISTINCT VAR_REFERENCES DataSetClauseList WhereClause SolutionModifier .   (rule 17)
+
+    $default	reduce using rule 17 (SelectQuery)
+
+
+
+state 206
+
+    OrderCondition  ->  ASC . LEFT_PAREN ConditionalOrExpression RIGHT_PAREN   (rule 43)
+
+    LEFT_PAREN	shift, and go to state 259
+
+
+
+state 207
+
+    OrderCondition  ->  DESC . LEFT_PAREN ConditionalOrExpression RIGHT_PAREN   (rule 44)
+
+    LEFT_PAREN	shift, and go to state 260
+
+
+
+state 208
+
+    OrderCondition  ->  LEFT_PAREN . ConditionalOrExpression RIGHT_PAREN   (rule 46)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalOrExpression	go to state 261
+    ConditionalAndExpression	go to state 167
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 209
+
+    OrderClause  ->  ORDER BY OrderConditionList .   (rule 40)
+    OrderConditionList  ->  OrderConditionList . OrderCondition   (rule 42)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    VARNAME	shift, and go to state 18
+    ASC 	shift, and go to state 206
+    DESC	shift, and go to state 207
+    LEFT_PAREN	shift, and go to state 208
+    LESS_THAN	shift, and go to state 40
+
+    $default	reduce using rule 40 (OrderClause)
+
+    IRIref	go to state 101
+    QName	go to state 42
+    OrderCondition	go to state 262
+    FunctionCall	go to state 211
+    Var 	go to state 212
+
+
+
+state 210
+
+    OrderConditionList  ->  OrderCondition .   (rule 41)
+
+    $default	reduce using rule 41 (OrderConditionList)
+
+
+
+state 211
+
+    OrderCondition  ->  FunctionCall .   (rule 45)
+
+    $default	reduce using rule 45 (OrderCondition)
+
+
+
+state 212
+
+    OrderCondition  ->  Var .   (rule 47)
+
+    $default	reduce using rule 47 (OrderCondition)
+
+
+
+state 213
+
+    SolutionModifier  ->  OrderClause LimitClause OffsetClause .   (rule 35)
+
+    $default	reduce using rule 35 (SolutionModifier)
+
+
+
+state 214
+
+    BuiltInCall  ->  STR LEFT_PAREN ConditionalOrExpression . RIGHT_PAREN   (rule 93)
+
+    RIGHT_PAREN	shift, and go to state 263
+
+
+
+state 215
+
+    BuiltInCall  ->  LANG LEFT_PAREN ConditionalOrExpression . RIGHT_PAREN   (rule 94)
+
+    RIGHT_PAREN	shift, and go to state 264
+
+
+
+state 216
+
+    BuiltInCall  ->  LANGMATCHES LEFT_PAREN ConditionalOrExpression . COMMA ConditionalOrExpression RIGHT_PAREN   (rule 95)
+
+    COMMA	shift, and go to state 265
+
+
+
+state 217
+
+    BuiltInCall  ->  DATATYPE LEFT_PAREN ConditionalOrExpression . RIGHT_PAREN   (rule 96)
+
+    RIGHT_PAREN	shift, and go to state 266
+
+
+
+state 218
+
+    BuiltInCall  ->  isIRI LEFT_PAREN ConditionalOrExpression . RIGHT_PAREN   (rule 98)
+
+    RIGHT_PAREN	shift, and go to state 267
+
+
+
+state 219
+
+    BuiltInCall  ->  isURI LEFT_PAREN ConditionalOrExpression . RIGHT_PAREN   (rule 99)
+
+    RIGHT_PAREN	shift, and go to state 268
+
+
+
+state 220
+
+    BuiltInCall  ->  isLITERAL LEFT_PAREN ConditionalOrExpression . RIGHT_PAREN   (rule 101)
+
+    RIGHT_PAREN	shift, and go to state 269
+
+
+
+state 221
+
+    BuiltInCall  ->  isBLANK LEFT_PAREN ConditionalOrExpression . RIGHT_PAREN   (rule 100)
+
+    RIGHT_PAREN	shift, and go to state 270
+
+
+
+state 222
+
+    BuiltInCall  ->  BOUND LEFT_PAREN Var . RIGHT_PAREN   (rule 97)
+
+    RIGHT_PAREN	shift, and go to state 271
+
+
+
+state 223
+
+    RegexExpression  ->  REGEX LEFT_PAREN ConditionalOrExpression . COMMA ConditionalOrExpression RIGHT_PAREN   (rule 103)
+    RegexExpression  ->  REGEX LEFT_PAREN ConditionalOrExpression . COMMA ConditionalOrExpression COMMA ConditionalOrExpression RIGHT_PAREN   (rule 104)
+
+    COMMA	shift, and go to state 272
+
+
+
+state 224
+
+    UnaryExpression  ->  BANG PrimaryExpression .   (rule 89)
+
+    $default	reduce using rule 89 (UnaryExpression)
+
+
+
+state 225
+
+    PrimaryExpression  ->  LEFT_PAREN ConditionalOrExpression . RIGHT_PAREN   (rule 109)
+
+    RIGHT_PAREN	shift, and go to state 273
+
+
+
+state 226
+
+    UnaryExpression  ->  PLUS PrimaryExpression .   (rule 90)
+
+    $default	reduce using rule 90 (UnaryExpression)
+
+
+
+state 227
+
+    UnaryExpression  ->  MINUS PrimaryExpression .   (rule 91)
+
+    $default	reduce using rule 91 (UnaryExpression)
+
+
+
+state 228
+
+    Constraint  ->  FILTER LEFT_PAREN ConditionalOrExpression RIGHT_PAREN .   (rule 124)
+
+    $default	reduce using rule 124 (Constraint)
+
+
+
+state 229
+
+    ConditionalAndExpressionList  ->  DOUBLE_PIPE . ConditionalAndExpression   (rule 64)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalAndExpression	go to state 274
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 230
+
+    ConditionalOrExpression  ->  ConditionalAndExpression ConditionalAndExpressionList .   (rule 63)
+    ConditionalAndExpressionList  ->  ConditionalAndExpressionList . DOUBLE_PIPE ConditionalAndExpression   (rule 65)
+
+    DOUBLE_PIPE	shift, and go to state 275
+
+    $default	reduce using rule 63 (ConditionalOrExpression)
+
+
+
+state 231
+
+    ValueLogicalList  ->  DOUBLE_AMPERSAND . RelationalExpression   (rule 68)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    RelationalExpression	go to state 276
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 232
+
+    ConditionalAndExpression  ->  RelationalExpression ValueLogicalList .   (rule 66)
+    ValueLogicalList  ->  ValueLogicalList . DOUBLE_AMPERSAND RelationalExpression   (rule 69)
+
+    DOUBLE_AMPERSAND	shift, and go to state 277
+
+    $default	reduce using rule 66 (ConditionalAndExpression)
+
+
+
+state 233
+
+    RelationalExpression  ->  AdditiveExpression EQUALITY_OP . AdditiveExpression   (rule 71)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    AdditiveExpression	go to state 278
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 234
+
+    RelationalExpression  ->  AdditiveExpression NOT_EQUAL . AdditiveExpression   (rule 72)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    AdditiveExpression	go to state 279
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 235
+
+    RelationalExpression  ->  AdditiveExpression LESS_THAN . AdditiveExpression   (rule 73)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    AdditiveExpression	go to state 280
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 236
+
+    RelationalExpression  ->  AdditiveExpression GREATER_THAN . AdditiveExpression   (rule 74)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    AdditiveExpression	go to state 281
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 237
+
+    RelationalExpression  ->  AdditiveExpression LESS_THAN_EQUAL . AdditiveExpression   (rule 75)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    AdditiveExpression	go to state 282
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 238
+
+    RelationalExpression  ->  AdditiveExpression GREATER_THAN_EQUAL . AdditiveExpression   (rule 76)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    AdditiveExpression	go to state 283
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 239
+
+    MultiplicativeExpressionList  ->  PLUS . MultiplicativeExpression   (rule 79)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    MultiplicativeExpression	go to state 284
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 240
+
+    MultiplicativeExpressionList  ->  MINUS . MultiplicativeExpression   (rule 80)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    MultiplicativeExpression	go to state 285
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 241
+
+    AdditiveExpression  ->  MultiplicativeExpression MultiplicativeExpressionList .   (rule 78)
+    MultiplicativeExpressionList  ->  MultiplicativeExpressionList . MINUS MultiplicativeExpression   (rule 81)
+    MultiplicativeExpressionList  ->  MultiplicativeExpressionList . PLUS MultiplicativeExpression   (rule 82)
+
+    PLUS	shift, and go to state 286
+    MINUS	shift, and go to state 287
+
+    $default	reduce using rule 78 (AdditiveExpression)
+
+
+
+state 242
+
+    UnaryExpressionList  ->  ASTERISK . UnaryExpression   (rule 85)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    UnaryExpression	go to state 288
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 243
+
+    UnaryExpressionList  ->  FORWARDSLASH . UnaryExpression   (rule 86)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    UnaryExpression	go to state 289
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 244
+
+    MultiplicativeExpression  ->  UnaryExpression UnaryExpressionList .   (rule 84)
+    UnaryExpressionList  ->  UnaryExpressionList . ASTERISK UnaryExpression   (rule 87)
+    UnaryExpressionList  ->  UnaryExpressionList . FORWARDSLASH UnaryExpression   (rule 88)
+
+    ASTERISK	shift, and go to state 290
+    FORWARDSLASH	shift, and go to state 291
+
+    $default	reduce using rule 84 (MultiplicativeExpression)
+
+
+
+state 245
+
+    ArgumentList  ->  NIL .   (rule 106)
+
+    $default	reduce using rule 106 (ArgumentList)
+
+
+
+state 246
+
+    ArgumentList  ->  ConditionalOrExpression .   (rule 107)
+    ArgumentList  ->  ConditionalOrExpression . COMMA ArgumentList   (rule 108)
+
+    COMMA	shift, and go to state 292
+
+    $default	reduce using rule 107 (ArgumentList)
+
+
+
+state 247
+
+    FunctionCall  ->  IRIref LEFT_PAREN ArgumentList . RIGHT_PAREN   (rule 105)
+
+    RIGHT_PAREN	shift, and go to state 293
+
+
+
+state 248
+
+    TriplesNode  ->  LEFT_SQUARE PropertyList RIGHT_SQUARE .   (rule 148)
+
+    $default	reduce using rule 148 (TriplesNode)
+
+
+
+state 249
+
+    TriplesSameSubject  ->  LEFT_SQUARE PropertyListNotEmpty RIGHT_SQUARE PropertyList .   (rule 132)
+
+    $default	reduce using rule 132 (TriplesSameSubject)
+
+
+
+state 250
+
+    ObjectList  ->  ObjectList COMMA . GraphNode   (rule 140)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    LEFT_PAREN	shift, and go to state 48
+    LEFT_SQUARE	shift, and go to state 105
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    NIL 	shift, and go to state 57
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 59
+    MINUS	shift, and go to state 60
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 61
+    QName	go to state 42
+    GraphNode	go to state 294
+    TriplesNode	go to state 107
+    Collection	go to state 108
+    Var 	go to state 110
+    GraphTerm	go to state 111
+    NumericLiteral	go to state 70
+    RDFLiteral	go to state 71
+    BooleanLiteral	go to state 72
+    String	go to state 73
+    BlankNode	go to state 74
+
+
+
+state 251
+
+    PropertyListNotEmpty  ->  Verb ObjectList SEMICOLON . PropertyList   (rule 138)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    VARNAME	shift, and go to state 18
+    A   	shift, and go to state 112
+    LESS_THAN	shift, and go to state 40
+
+    $default	reduce using rule 136 (PropertyList)
+
+    IRIref	go to state 113
+    QName	go to state 42
+    PropertyList	go to state 295
+    PropertyListNotEmpty	go to state 182
+    Verb	go to state 115
+    Var 	go to state 116
+
+
+
+state 252
+
+    GraphPatternNotTriples  ->  GRAPH IRIref GroupGraphPattern .   (rule 59)
+
+    $default	reduce using rule 59 (GraphPatternNotTriples)
+
+
+
+state 253
+
+    GraphPatternNotTriples  ->  GRAPH Var GroupGraphPattern .   (rule 57)
+
+    $default	reduce using rule 57 (GraphPatternNotTriples)
+
+
+
+state 254
+
+    GraphPatternNotTriples  ->  GRAPH BlankNode GroupGraphPattern .   (rule 58)
+
+    $default	reduce using rule 58 (GraphPatternNotTriples)
+
+
+
+state 255
+
+    AlternativeGroupGraphPatterns  ->  UNION GroupGraphPattern .   (rule 60)
+
+    $default	reduce using rule 60 (AlternativeGroupGraphPatterns)
+
+
+
+state 256
+
+    AlternativeGroupGraphPatterns  ->  AlternativeGroupGraphPatterns UNION . GroupGraphPattern   (rule 61)
+
+    LEFT_CURLY	shift, and go to state 26
+
+    GroupGraphPattern	go to state 296
+
+
+
+state 257
+
+    GraphPattern  ->  FilteredBasicGraphPattern GraphPatternNotTriples DOT GraphPattern .   (rule 53)
+
+    $default	reduce using rule 53 (GraphPattern)
+
+
+
+state 258
+
+    FilteredBasicGraphPattern  ->  Triples Constraint DOT FilteredBasicGraphPattern .   (rule 120)
+
+    $default	reduce using rule 120 (FilteredBasicGraphPattern)
+
+
+
+state 259
+
+    OrderCondition  ->  ASC LEFT_PAREN . ConditionalOrExpression RIGHT_PAREN   (rule 43)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalOrExpression	go to state 297
+    ConditionalAndExpression	go to state 167
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 260
+
+    OrderCondition  ->  DESC LEFT_PAREN . ConditionalOrExpression RIGHT_PAREN   (rule 44)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalOrExpression	go to state 298
+    ConditionalAndExpression	go to state 167
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 261
+
+    OrderCondition  ->  LEFT_PAREN ConditionalOrExpression . RIGHT_PAREN   (rule 46)
+
+    RIGHT_PAREN	shift, and go to state 299
+
+
+
+state 262
+
+    OrderConditionList  ->  OrderConditionList OrderCondition .   (rule 42)
+
+    $default	reduce using rule 42 (OrderConditionList)
+
+
+
+state 263
+
+    BuiltInCall  ->  STR LEFT_PAREN ConditionalOrExpression RIGHT_PAREN .   (rule 93)
+
+    $default	reduce using rule 93 (BuiltInCall)
+
+
+
+state 264
+
+    BuiltInCall  ->  LANG LEFT_PAREN ConditionalOrExpression RIGHT_PAREN .   (rule 94)
+
+    $default	reduce using rule 94 (BuiltInCall)
+
+
+
+state 265
+
+    BuiltInCall  ->  LANGMATCHES LEFT_PAREN ConditionalOrExpression COMMA . ConditionalOrExpression RIGHT_PAREN   (rule 95)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalOrExpression	go to state 300
+    ConditionalAndExpression	go to state 167
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 266
+
+    BuiltInCall  ->  DATATYPE LEFT_PAREN ConditionalOrExpression RIGHT_PAREN .   (rule 96)
+
+    $default	reduce using rule 96 (BuiltInCall)
+
+
+
+state 267
+
+    BuiltInCall  ->  isIRI LEFT_PAREN ConditionalOrExpression RIGHT_PAREN .   (rule 98)
+
+    $default	reduce using rule 98 (BuiltInCall)
+
+
+
+state 268
+
+    BuiltInCall  ->  isURI LEFT_PAREN ConditionalOrExpression RIGHT_PAREN .   (rule 99)
+
+    $default	reduce using rule 99 (BuiltInCall)
+
+
+
+state 269
+
+    BuiltInCall  ->  isLITERAL LEFT_PAREN ConditionalOrExpression RIGHT_PAREN .   (rule 101)
+
+    $default	reduce using rule 101 (BuiltInCall)
+
+
+
+state 270
+
+    BuiltInCall  ->  isBLANK LEFT_PAREN ConditionalOrExpression RIGHT_PAREN .   (rule 100)
+
+    $default	reduce using rule 100 (BuiltInCall)
+
+
+
+state 271
+
+    BuiltInCall  ->  BOUND LEFT_PAREN Var RIGHT_PAREN .   (rule 97)
+
+    $default	reduce using rule 97 (BuiltInCall)
+
+
+
+state 272
+
+    RegexExpression  ->  REGEX LEFT_PAREN ConditionalOrExpression COMMA . ConditionalOrExpression RIGHT_PAREN   (rule 103)
+    RegexExpression  ->  REGEX LEFT_PAREN ConditionalOrExpression COMMA . ConditionalOrExpression COMMA ConditionalOrExpression RIGHT_PAREN   (rule 104)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalOrExpression	go to state 301
+    ConditionalAndExpression	go to state 167
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 273
+
+    PrimaryExpression  ->  LEFT_PAREN ConditionalOrExpression RIGHT_PAREN .   (rule 109)
+
+    $default	reduce using rule 109 (PrimaryExpression)
+
+
+
+state 274
+
+    ConditionalAndExpressionList  ->  DOUBLE_PIPE ConditionalAndExpression .   (rule 64)
+
+    $default	reduce using rule 64 (ConditionalAndExpressionList)
+
+
+
+state 275
+
+    ConditionalAndExpressionList  ->  ConditionalAndExpressionList DOUBLE_PIPE . ConditionalAndExpression   (rule 65)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalAndExpression	go to state 302
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 276
+
+    ValueLogicalList  ->  DOUBLE_AMPERSAND RelationalExpression .   (rule 68)
+
+    $default	reduce using rule 68 (ValueLogicalList)
+
+
+
+state 277
+
+    ValueLogicalList  ->  ValueLogicalList DOUBLE_AMPERSAND . RelationalExpression   (rule 69)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    RelationalExpression	go to state 303
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 278
+
+    RelationalExpression  ->  AdditiveExpression EQUALITY_OP AdditiveExpression .   (rule 71)
+
+    $default	reduce using rule 71 (RelationalExpression)
+
+
+
+state 279
+
+    RelationalExpression  ->  AdditiveExpression NOT_EQUAL AdditiveExpression .   (rule 72)
+
+    $default	reduce using rule 72 (RelationalExpression)
+
+
+
+state 280
+
+    RelationalExpression  ->  AdditiveExpression LESS_THAN AdditiveExpression .   (rule 73)
+
+    $default	reduce using rule 73 (RelationalExpression)
+
+
+
+state 281
+
+    RelationalExpression  ->  AdditiveExpression GREATER_THAN AdditiveExpression .   (rule 74)
+
+    $default	reduce using rule 74 (RelationalExpression)
+
+
+
+state 282
+
+    RelationalExpression  ->  AdditiveExpression LESS_THAN_EQUAL AdditiveExpression .   (rule 75)
+
+    $default	reduce using rule 75 (RelationalExpression)
+
+
+
+state 283
+
+    RelationalExpression  ->  AdditiveExpression GREATER_THAN_EQUAL AdditiveExpression .   (rule 76)
+
+    $default	reduce using rule 76 (RelationalExpression)
+
+
+
+state 284
+
+    MultiplicativeExpressionList  ->  PLUS MultiplicativeExpression .   (rule 79)
+
+    $default	reduce using rule 79 (MultiplicativeExpressionList)
+
+
+
+state 285
+
+    MultiplicativeExpressionList  ->  MINUS MultiplicativeExpression .   (rule 80)
+
+    $default	reduce using rule 80 (MultiplicativeExpressionList)
+
+
+
+state 286
+
+    MultiplicativeExpressionList  ->  MultiplicativeExpressionList PLUS . MultiplicativeExpression   (rule 82)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    MultiplicativeExpression	go to state 304
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 287
+
+    MultiplicativeExpressionList  ->  MultiplicativeExpressionList MINUS . MultiplicativeExpression   (rule 81)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    MultiplicativeExpression	go to state 305
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 288
+
+    UnaryExpressionList  ->  ASTERISK UnaryExpression .   (rule 85)
+
+    $default	reduce using rule 85 (UnaryExpressionList)
+
+
+
+state 289
+
+    UnaryExpressionList  ->  FORWARDSLASH UnaryExpression .   (rule 86)
+
+    $default	reduce using rule 86 (UnaryExpressionList)
+
+
+
+state 290
+
+    UnaryExpressionList  ->  UnaryExpressionList ASTERISK . UnaryExpression   (rule 87)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    UnaryExpression	go to state 306
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 291
+
+    UnaryExpressionList  ->  UnaryExpressionList FORWARDSLASH . UnaryExpression   (rule 88)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    UnaryExpression	go to state 307
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 292
+
+    ArgumentList  ->  ConditionalOrExpression COMMA . ArgumentList   (rule 108)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    NIL 	shift, and go to state 245
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalOrExpression	go to state 246
+    ConditionalAndExpression	go to state 167
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    ArgumentList	go to state 308
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 293
+
+    FunctionCall  ->  IRIref LEFT_PAREN ArgumentList RIGHT_PAREN .   (rule 105)
+
+    $default	reduce using rule 105 (FunctionCall)
+
+
+
+state 294
+
+    ObjectList  ->  ObjectList COMMA GraphNode .   (rule 140)
+
+    $default	reduce using rule 140 (ObjectList)
+
+
+
+state 295
+
+    PropertyListNotEmpty  ->  Verb ObjectList SEMICOLON PropertyList .   (rule 138)
+
+    $default	reduce using rule 138 (PropertyListNotEmpty)
+
+
+
+state 296
+
+    AlternativeGroupGraphPatterns  ->  AlternativeGroupGraphPatterns UNION GroupGraphPattern .   (rule 61)
+
+    $default	reduce using rule 61 (AlternativeGroupGraphPatterns)
+
+
+
+state 297
+
+    OrderCondition  ->  ASC LEFT_PAREN ConditionalOrExpression . RIGHT_PAREN   (rule 43)
+
+    RIGHT_PAREN	shift, and go to state 309
+
+
+
+state 298
+
+    OrderCondition  ->  DESC LEFT_PAREN ConditionalOrExpression . RIGHT_PAREN   (rule 44)
+
+    RIGHT_PAREN	shift, and go to state 310
+
+
+
+state 299
+
+    OrderCondition  ->  LEFT_PAREN ConditionalOrExpression RIGHT_PAREN .   (rule 46)
+
+    $default	reduce using rule 46 (OrderCondition)
+
+
+
+state 300
+
+    BuiltInCall  ->  LANGMATCHES LEFT_PAREN ConditionalOrExpression COMMA ConditionalOrExpression . RIGHT_PAREN   (rule 95)
+
+    RIGHT_PAREN	shift, and go to state 311
+
+
+
+state 301
+
+    RegexExpression  ->  REGEX LEFT_PAREN ConditionalOrExpression COMMA ConditionalOrExpression . RIGHT_PAREN   (rule 103)
+    RegexExpression  ->  REGEX LEFT_PAREN ConditionalOrExpression COMMA ConditionalOrExpression . COMMA ConditionalOrExpression RIGHT_PAREN   (rule 104)
+
+    COMMA	shift, and go to state 312
+    RIGHT_PAREN	shift, and go to state 313
+
+
+
+state 302
+
+    ConditionalAndExpressionList  ->  ConditionalAndExpressionList DOUBLE_PIPE ConditionalAndExpression .   (rule 65)
+
+    $default	reduce using rule 65 (ConditionalAndExpressionList)
+
+
+
+state 303
+
+    ValueLogicalList  ->  ValueLogicalList DOUBLE_AMPERSAND RelationalExpression .   (rule 69)
+
+    $default	reduce using rule 69 (ValueLogicalList)
+
+
+
+state 304
+
+    MultiplicativeExpressionList  ->  MultiplicativeExpressionList PLUS MultiplicativeExpression .   (rule 82)
+
+    $default	reduce using rule 82 (MultiplicativeExpressionList)
+
+
+
+state 305
+
+    MultiplicativeExpressionList  ->  MultiplicativeExpressionList MINUS MultiplicativeExpression .   (rule 81)
+
+    $default	reduce using rule 81 (MultiplicativeExpressionList)
+
+
+
+state 306
+
+    UnaryExpressionList  ->  UnaryExpressionList ASTERISK UnaryExpression .   (rule 87)
+
+    $default	reduce using rule 87 (UnaryExpressionList)
+
+
+
+state 307
+
+    UnaryExpressionList  ->  UnaryExpressionList FORWARDSLASH UnaryExpression .   (rule 88)
+
+    $default	reduce using rule 88 (UnaryExpressionList)
+
+
+
+state 308
+
+    ArgumentList  ->  ConditionalOrExpression COMMA ArgumentList .   (rule 108)
+
+    $default	reduce using rule 108 (ArgumentList)
+
+
+
+state 309
+
+    OrderCondition  ->  ASC LEFT_PAREN ConditionalOrExpression RIGHT_PAREN .   (rule 43)
+
+    $default	reduce using rule 43 (OrderCondition)
+
+
+
+state 310
+
+    OrderCondition  ->  DESC LEFT_PAREN ConditionalOrExpression RIGHT_PAREN .   (rule 44)
+
+    $default	reduce using rule 44 (OrderCondition)
+
+
+
+state 311
+
+    BuiltInCall  ->  LANGMATCHES LEFT_PAREN ConditionalOrExpression COMMA ConditionalOrExpression RIGHT_PAREN .   (rule 95)
+
+    $default	reduce using rule 95 (BuiltInCall)
+
+
+
+state 312
+
+    RegexExpression  ->  REGEX LEFT_PAREN ConditionalOrExpression COMMA ConditionalOrExpression COMMA . ConditionalOrExpression RIGHT_PAREN   (rule 104)
+
+    QNAME	shift, and go to state 37
+    QNAME_NS	shift, and go to state 38
+    BLANK_NODE_LABEL	shift, and go to state 44
+    VARNAME	shift, and go to state 18
+    STR 	shift, and go to state 90
+    LANG	shift, and go to state 91
+    LANGMATCHES	shift, and go to state 92
+    DATATYPE	shift, and go to state 93
+    isIRI	shift, and go to state 94
+    isURI	shift, and go to state 95
+    isLITERAL	shift, and go to state 96
+    isBLANK	shift, and go to state 97
+    BOUND	shift, and go to state 98
+    REGEX	shift, and go to state 99
+    TRUE	shift, and go to state 46
+    FALSE	shift, and go to state 47
+    BANG	shift, and go to state 161
+    LEFT_PAREN	shift, and go to state 162
+    INTEGER	shift, and go to state 50
+    DECIMAL	shift, and go to state 51
+    DOUBLE	shift, and go to state 52
+    STRING_LITERAL_DELIMETER_1	shift, and go to state 53
+    STRING_LITERAL_DELIMETER_2	shift, and go to state 54
+    STRING_LITERAL_DELIMETER_3	shift, and go to state 55
+    STRING_LITERAL_DELIMETER_4	shift, and go to state 56
+    ANON	shift, and go to state 58
+    PLUS	shift, and go to state 163
+    MINUS	shift, and go to state 164
+    LESS_THAN	shift, and go to state 40
+
+    IRIref	go to state 165
+    QName	go to state 42
+    ConditionalOrExpression	go to state 314
+    ConditionalAndExpression	go to state 167
+    RelationalExpression	go to state 168
+    AdditiveExpression	go to state 169
+    MultiplicativeExpression	go to state 170
+    UnaryExpression	go to state 171
+    BuiltInCall	go to state 172
+    RegexExpression	go to state 103
+    FunctionCall	go to state 173
+    PrimaryExpression	go to state 174
+    Var 	go to state 175
+    NumericLiteral	go to state 176
+    RDFLiteral	go to state 177
+    BooleanLiteral	go to state 178
+    String	go to state 73
+    BlankNode	go to state 179
+
+
+
+state 313
+
+    RegexExpression  ->  REGEX LEFT_PAREN ConditionalOrExpression COMMA ConditionalOrExpression RIGHT_PAREN .   (rule 103)
+
+    $default	reduce using rule 103 (RegexExpression)
+
+
+
+state 314
+
+    RegexExpression  ->  REGEX LEFT_PAREN ConditionalOrExpression COMMA ConditionalOrExpression COMMA ConditionalOrExpression . RIGHT_PAREN   (rule 104)
+
+    RIGHT_PAREN	shift, and go to state 315
+
+
+
+state 315
+
+    RegexExpression  ->  REGEX LEFT_PAREN ConditionalOrExpression COMMA ConditionalOrExpression COMMA ConditionalOrExpression RIGHT_PAREN .   (rule 104)
+
+    $default	reduce using rule 104 (RegexExpression)
+
+
+
+state 316
+
+    $   	go to state 317
+
+
+
+state 317
+
+    $   	go to state 318
+
+
+
+state 318
+
+    $default	accept
