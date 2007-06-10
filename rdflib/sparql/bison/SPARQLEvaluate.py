@@ -73,6 +73,11 @@ def convertTerm(term,queryProlog):
             return URIRef(queryProlog.baseDeclaration + term)
     elif isinstance(term,ParsedString):
         return Literal(term)
+    elif isinstance(term,ParsedDatatypedLiteral):
+        dT = term.dataType
+        if isinstance(dT,QName):
+            dT = convertTerm(dT,queryProlog)
+        return Literal(term.value,datatype=dT)
     else:
         return term
 
@@ -176,6 +181,8 @@ def mapToOperator(expr,prolog,combinationArg=None):
         normBuiltInName = FUNCTION_NAMES[expr.name].lower()
         normBuiltInName = CAMEL_CASE_BUILTINS.get(normBuiltInName,'sparqlOperators.'+normBuiltInName)
         return "%s(%s)%s"%(normBuiltInName,",".join([mapToOperator(i,prolog,combinationArg) for i in expr.arguments]),combinationInvokation)
+    elif isinstance(expr,ParsedDatatypedLiteral):
+        return repr(Literal(expr.value,datatype=convertTerm(expr.dataType,prolog)))
     elif isinstance(expr,Literal):
         return repr(expr)
     elif isinstance(expr,URIRef):
