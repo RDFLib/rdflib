@@ -433,10 +433,10 @@
     <non-terminal>RDFLiteral</non-terminal>
     <rule>
       <symbol>String</symbol>
+      <code language="c">
+        $$ = PyObject_CallMethod(rdflib, "Literal", "O", $1);
+      </code>    
     </rule>
-    <code language="c">
-      $$ = PyObject_CallMethod(rdflib, "Literal", "O", $1);
-    </code>    
     <rule>
       <symbol>String</symbol>
       <symbol>LANGTAG</symbol>
