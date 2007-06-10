@@ -240,6 +240,15 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False):
             print expr
             print "###################################"
         result = expr.evaluate(tripleStore,passedBindings,query.prolog)
+        if isinstance(result,BasicGraphPattern):
+            retval = None
+            bindings = Query._createInitialBindings(result)
+            if passedBindings:
+                bindings.update(passedBindings)
+            top = Query._SPARQLNode(None,bindings,result.patterns, result.tripleStore)
+            top.expand(result.constraints)
+            result = Query.Query(top, tripleStore)
+        assert isinstance(result,Query.Query),repr(result)
     #result = queryObject(tripleStore, basicPatterns,optionalPatterns,passedBindings)
     if result == None :
         # generate some proper output for the exception :-)
@@ -308,6 +317,19 @@ def replace(key,resource,tupl) :
     if key == o : o = resource
     return (s,p,o,func)
 
+def _fetchBoundLeaves(node):
+    """
+    Takes a SPARQLNode and returns a generator
+    over its bound leaves
+    """
+    if len(node.children) == 0 :
+        if node.bound and not node.clash:
+            yield node
+    else :
+        for c in node.children :
+            for proxy in _fetchBoundLeaves(c):
+                yield proxy
+
 def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
     """
     Traverses to the leaves of expansion trees to implement the Join
@@ -330,27 +352,37 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
                 print tmp
             exprBindings = Query._createInitialBindings(expression)
             exprBindings.update(node.bindings)
-            if not optionalTree:
+            #An indicator for whether this node has any descendant optional expansions
+            #we should consider instead
+            #in Join(LeftJoin(A,B),X), if the inner LeftJoin is successful, then X is joined
+            #against the cumulative bindings ( instead of just A )
+            descendantOptionals = node.optionalTrees and \
+                [o for o in node.optionalTrees if list(_fetchBoundLeaves(o))] 
+            if not descendantOptionals:
                 top = node
             else:
                 top = None
-            child = Query._SPARQLNode(top,
-                                      exprBindings,
-                                      expression.patterns,
-                                      hasattr(expression,'tripleStore') and expression.tripleStore or node.tripleStore)
-            child.expand(expression.constraints)        
+            child = None            
+            if not node.clash and not descendantOptionals:
+                #It has compatible bindings and either no optional expansions
+                #or no *valid* optional expansions
+                child = Query._SPARQLNode(top,
+                                          exprBindings,
+                                          expression.patterns,
+                                          hasattr(expression,'tripleStore') and \
+                                            expression.tripleStore or node.tripleStore)
+                child.expand(expression.constraints)
         else:
             assert isinstance(expression,Query.Query) and expression.top, repr(expression)            
             #Already been evaluated (non UNION), just attach the SPARQLNode
             child = expression.top
             
-        # if the child is a clash then no use adding it to the tree, it can be forgotten
-        if node.clash == False :
+        if node.clash == False and child is not None:
             node.children.append(child)
         for optTree in node.optionalTrees:
-            #Join the optional paths as well
-            #Is this valid?
-            _ExpandJoin(optTree,expression,tripleStore,prolog,optionalTree=True)
+            #Join the optional paths as well - those that are bound and valid
+            for validLeaf in _fetchBoundLeaves(optTree):
+                _ExpandJoin(validLeaf,expression,tripleStore,prolog,optionalTree=True)
     else :
         for c in node.children :
             _ExpandJoin(c,expression,tripleStore,prolog)
@@ -417,6 +449,7 @@ def _ExpandLeftJoin(node,expression,tripleStore,prolog,optionalTree=False):
         assert isinstance(expression,BasicGraphPattern)
         
         rightBindings = Query._createInitialBindings(expression)
+        rightBindings.update(node.bindings)
         #@attention: What does this do again?
 #        toldBNodeLookup = {}
 #        for key in node.bindings :
@@ -431,9 +464,12 @@ def _ExpandLeftJoin(node,expression,tripleStore,prolog,optionalTree=False):
 #                del rightBindings[key]
 #        rightBindings.update(toldBNodeLookup)
         optTree = Query._SPARQLNode(None,rightBindings,expression.patterns,tripleStore)
+        optTree.proxy = False
         node.optionalTrees.append(optTree)
-        optTree.expand(expression.constraints)        
-        
+        optTree.expand(expression.constraints)
+        for proxy in _fetchBoundLeaves(optTree):
+            proxy.proxy = True
+            break
     else :
         for c in node.children :
             _ExpandLeftJoin(c,expression,tripleStore,prolog)
@@ -453,6 +489,8 @@ class LeftJoin(AlgebraExpression):
         self.right = BGP2
 
     def evaluate(self,tripleStore,initialBindings,prolog):
+        if prolog.DEBUG:
+            print "eval(%s,%s,%s)"%(self,initialBindings,tripleStore.graph)
         if isinstance(self.left,AlgebraExpression):
             self.left = self.left.evaluate(tripleStore,initialBindings,prolog)
         if isinstance(self.left,BasicGraphPattern):        

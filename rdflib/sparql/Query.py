@@ -175,6 +175,14 @@ class _SPARQLNode:
             self.statement = None
             self.rest      = None
 
+
+    def __repr__(self):
+        return "<SPARQLNode %s. %s children, %s OPTs.  clash: %s. bound: %s>"%(id(self),
+                                                                             len(self.children),
+                                                                             len(self.optionalTrees),
+                                                                             self.clash,
+                                                                             self.bindings.keys())
+
     def returnResult(self,select) :
         """
         Collect the result by search the leaves of the the tree. The
@@ -201,18 +209,44 @@ class _SPARQLNode:
         else :
             retval = []
             if self.bound == True and self.clash == False :
-                # This node should be able to contribute to the final results:
+                # This node should be able to contribute to the final results
+                # if it doesn't have any OPTIONAL proxies:
                 result = {}
+                #Retrieve optional bindings up front
+                optResultMap = {}
+                for optTree in self.optionalTrees :
+                    optResultMap[optTree] = optTree.returnResult(select)
+                    
+                #An OPTIONAL proxy is an expansion descendant which was 
+                #bound and valid (compatible) at a prior point and thus
+                #serves as the cumulative context for all subsequent operations
+                def _fetchProxies(node):
+                    if hasattr(node,'proxy') and node.proxy:
+                        yield node
+                    if len(node.children) > 0 :
+                        for c in node.children :
+                            for gc in _fetchProxies(c):
+                                yield c
+                #Determine if this node has an OPTIONAL 'proxy'
+                proxies = []
+                if self.optionalTrees:
+                    proxies = reduce(lambda x,y: x+y,[list(_fetchProxies(o)) for o in self.optionalTrees])                  
                 # This where the essential happens: the binding values are used to construct the selection result
-                if select :
-                    for a in select :
-                        if a in self.bindings :
-                            result[a] = self.bindings[a]
-                else :
-                    result = self.bindings.copy()
-                # Initial return block. If there is no optional processing, that is the result, in fact,
-                # because the for cycle below will not happen
-                retval = [result]
+                # sparql-p fix: A node with valid optional expansion trees should not
+                # contribute to bindings (the OPTIONAL expansion trees already account 
+                # for it's bindings)
+                # see: http://chatlogs.planetrdf.com/swig/2007-06-07.html#T19-28-43
+                if not proxies:
+                    if select :
+                        for a in select :
+                            if a in self.bindings :
+                                result[a] = self.bindings[a]
+                    else :
+                        result = self.bindings.copy()
+                    # Initial return block. If there is no optional processing, that is the result, in fact,
+                    # because the for cycle below will not happen
+                    retval = [result]
+
                 # The following remark in the SPARQL document is important at this point:
                 # "If a new variable is mentioned in an optional block (as mbox and hpage are mentioned
                 #  in the previous example), that variable can be mentioned in that block and can not be
@@ -226,7 +260,9 @@ class _SPARQLNode:
                 # alternatives returned by the optionals!
                 for optTree in self.optionalTrees :
                     # get the results from the optional Tree...
-                    optionals = optTree.returnResult(select)
+                    optionals = optResultMap[optTree]
+                    #print "attempting to collect OPTIONAL bindings: "
+                    #print optTree, optionals
                     # ... and extend the results accumulated so far with the new bindings
                     # It is worth separating the case when there is only one optional block; it avoids
                     # unnecessary copying
