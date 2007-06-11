@@ -165,11 +165,9 @@ def ReduceToAlgebra(left,right):
                                                None))
                     else:
                         # LeftJoin({},right)
-                        #Undefined?: see - http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0046.html
+                        #see - http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0046.html
                         raise
-                        return reduce(ReduceToAlgebra,
-                                      right.nonTripleGraphPattern.graphPatterns,
-                                      None)
+                        #return EmptyGraphPatternExpression()
                 elif isinstance(right.nonTripleGraphPattern,ParsedAlternativeGraphPattern):
                     #right = Union(..)
                     unionList =\
@@ -310,12 +308,20 @@ class AlgebraExpression(object):
         """        
         raise Exception(repr(self))
 
-def replace(key,resource,tupl) :
-    s,p,o,func = tupl
-    if key == s : s = resource
-    if key == p : p = resource
-    if key == o : o = resource
-    return (s,p,o,func)
+class EmptyGraphPatternExpression(AlgebraExpression):
+    """
+    A placeholder for evaluating empty graph patterns - which
+    should result in an empty multiset of solution bindings
+    """
+    def __repr__(self):
+        return "EmptyGraphPatternExpression(..)"
+    def evaluate(self,tripleStore,initialBindings,prolog):
+        raise NotImplementedError("Empty Graph Pattern expressions, not supported")
+        if prolog.DEBUG:
+            print "eval(%s,%s,%s)"%(self,initialBindings,tripleStore.graph)
+        empty = Query._SPARQLNode(None,{},[],tripleStore)
+        empty.bound = False
+        return Query.Query(empty, tripleStore)
 
 def _fetchBoundLeaves(node):
     """
@@ -450,19 +456,6 @@ def _ExpandLeftJoin(node,expression,tripleStore,prolog,optionalTree=False):
         
         rightBindings = Query._createInitialBindings(expression)
         rightBindings.update(node.bindings)
-        #@attention: What does this do again?
-#        toldBNodeLookup = {}
-#        for key in node.bindings :
-#            normalizedStatements = []
-#            for t in expression.patterns:
-#                val = node.bindings[key]
-#                if isinstance(val,BNode) and val not in toldBNodeLookup:
-#                    toldBNodeLookup[val] = val
-#                normalizedStatements.append(replace(key,node.bindings[key],t))
-#            leftStmts = normalizedStatements
-#            if key in rightBindings:
-#                del rightBindings[key]
-#        rightBindings.update(toldBNodeLookup)
         optTree = Query._SPARQLNode(None,rightBindings,expression.patterns,tripleStore)
         optTree.proxy = False
         node.optionalTrees.append(optTree)
