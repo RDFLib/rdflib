@@ -58,7 +58,9 @@ def convertTerm(term,queryProlog):
             if queryProlog is None:
                 return URIRef(term.localname)
             else:
-                return URIRef(queryProlog.baseDeclaration + term.localname)
+                base = queryProlog.baseDeclaration and queryProlog.baseDeclaration or\
+                       queryProlog.prefixBindings[u'']
+                return URIRef(base + term.localname)
         elif term.prefix == '_':
             #Told BNode See: http://www.w3.org/2001/sw/DataAccess/issues#bnodeRef
             import warnings
