@@ -212,11 +212,6 @@ class _SPARQLNode:
                 # This node should be able to contribute to the final results
                 # if it doesn't have any OPTIONAL proxies:
                 result = {}
-                #Retrieve optional bindings up front
-                optResultMap = {}
-                for optTree in self.optionalTrees :
-                    optResultMap[optTree] = optTree.returnResult(select)
-                    
                 #An OPTIONAL proxy is an expansion descendant which was 
                 #bound and valid (compatible) at a prior point and thus
                 #serves as the cumulative context for all subsequent operations
@@ -246,52 +241,10 @@ class _SPARQLNode:
                     # Initial return block. If there is no optional processing, that is the result, in fact,
                     # because the for cycle below will not happen
                     retval = [result]
-
-                # The following remark in the SPARQL document is important at this point:
-                # "If a new variable is mentioned in an optional block (as mbox and hpage are mentioned
-                #  in the previous example), that variable can be mentioned in that block and can not be
-                #  mentioned in a subsequent block."
-                # What this means is that the various optional blocks do not interefere at this point
-                # and there is no need for a check whether a binding in a subsequent block
-                # clashes with an earlier optional block.
-                # The API checks this at the start.
-                # What happens here is that the result of the optional expantion is added to what is already
-                # there. Note that this may lead to a duplication of the result so far, if there are several
-                # alternatives returned by the optionals!
-                for optTree in self.optionalTrees :
-                    # get the results from the optional Tree...
-                    optionals = optResultMap[optTree]
-                    #print "attempting to collect OPTIONAL bindings: "
-                    #print optTree, optionals
-                    # ... and extend the results accumulated so far with the new bindings
-                    # It is worth separating the case when there is only one optional block; it avoids
-                    # unnecessary copying
-                    if len(optionals) == 0 :
-                        # no contribution at all :-(
-                        continue
-                    elif len(optionals) == 1 :
-                        optResult = optionals[0]
-                        for res in retval :
-                            for k in optResult :
-                                if optResult[k] != None :
-                                    res[k] = optResult[k]
-                    else :
-                        newRetval = []
-                        for optResult in optionals :
-                            # Each binding dictionary we have so far should be copied with the new values
-                            for res in retval :
-                                dct = {}
-                                # copy the content of the exisiting bindings ...
-                                dct = res.copy()
-                                # ... and extend it with the optional results
-                                for k in optResult :
-                                    if optResult[k] != None :
-                                        dct[k] = optResult[k]
-                                newRetval.append(dct)
-                        retval = newRetval
+                else:
+                    retval = reduce(lambda x,y: x+y,[o.returnResult(select) for o in proxies])
             return retval
-
-
+                
     def expandSubgraph(self,subTriples,pattern) :
         """
         Method used to collect the results. There are two ways to
