@@ -378,6 +378,9 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
                                           hasattr(expression,'tripleStore') and \
                                             expression.tripleStore or node.tripleStore)
                 child.expand(expression.constraints)
+                if prolog.DEBUG:
+                    print "Has compatible bindings and no valid optional expansions"
+                    print "Newly bound descendants: ", list(_fetchBoundLeaves(child))
         else:
             assert isinstance(expression,Query.Query) and expression.top, repr(expression)            
             #Already been evaluated (non UNION), just attach the SPARQLNode
@@ -385,6 +388,8 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
             
         if node.clash == False and child is not None:
             node.children.append(child)
+            if prolog.DEBUG:
+                print "Adding %s to %s"%(child,node)
         for optTree in node.optionalTrees:
             #Join the optional paths as well - those that are bound and valid
             for validLeaf in _fetchBoundLeaves(optTree):
@@ -448,21 +453,33 @@ def _ExpandLeftJoin(node,expression,tripleStore,prolog,optionalTree=False):
     """
     if len(node.children) == 0  :
         # this is a leaf in the original expansion
-        if isinstance(expression,GraphExpression):
+        if isinstance(expression,AlgebraExpression):
             #If a Graph pattern evaluate it passing on the leaf bindings
             #(possibly as solutions to graph names
-            expression = expression.evaluate(tripleStore,node.bindings.copy(),prolog)           
-        assert isinstance(expression,BasicGraphPattern)
-        
-        rightBindings = Query._createInitialBindings(expression)
-        rightBindings.update(node.bindings)
-        optTree = Query._SPARQLNode(None,rightBindings,expression.patterns,tripleStore)
-        optTree.proxy = False
-        node.optionalTrees.append(optTree)
-        optTree.expand(expression.constraints)
+            if prolog.DEBUG:
+                print "evaluating B in LeftJoin(A,B)"
+                print "passing on bindings to %s\n:%s"%(expression,node.bindings.copy())
+            expression = expression.evaluate(tripleStore,node.bindings.copy(),prolog)
+        if isinstance(expression,BasicGraphPattern):
+            if prolog.DEBUG:
+                print "evaluating B in LeftJoin(A,B) - a BGP"
+            rightBindings = Query._createInitialBindings(expression)
+            rightBindings.update(node.bindings)
+            optTree = Query._SPARQLNode(None,rightBindings,expression.patterns,tripleStore)
+            optTree.proxy = False
+            optTree.expand(expression.constraints)
+        else:
+            if prolog.DEBUG:
+                print "Attaching previously evaluated node: ", expression.top
+            assert isinstance(expression,Query.Query) and expression.top, repr(expression)            
+            #Already been evaluated (non UNION), just attach the SPARQLNode
+            optTree = expression.top
         for proxy in _fetchBoundLeaves(optTree):
+            if prolog.DEBUG:
+                print "Marking proxy: ", proxy
             proxy.proxy = True
             break
+        node.optionalTrees.append(optTree)            
     else :
         for c in node.children :
             _ExpandLeftJoin(c,expression,tripleStore,prolog)
@@ -500,7 +517,7 @@ class LeftJoin(AlgebraExpression):
             return Query.Query(top, tripleStore)
         else:
             assert isinstance(self.left,Query.Query), repr(self.left)
-            _ExpandJoin(self.left.top,self.right,tripleStore,prolog)
+            _ExpandLeftJoin(self.left.top,self.right,tripleStore,prolog)
             return self.left
 
 class Union(AlgebraExpression):
