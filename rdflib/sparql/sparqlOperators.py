@@ -455,7 +455,6 @@ def regex(item,pattern,flag=None):
 
     def f(bindings):
         try:
-            print "%s %s"%(a(bindings),b(bindings))
             return bool(re.compile(a(bindings)).search(b(bindings)))
         except Exception,e:
             print e
