@@ -90,7 +90,7 @@ class Literal(Identifier):
         >>> Literal(1) + 1
         2L
         >>> Literal("1") + "1"
-        rdflib.Literal('11', language=None, datatype=None)
+        rdflib.Literal('11', lang=None, datatype=None)
         """
 
         py = self.toPython()
@@ -249,7 +249,7 @@ class Literal(Identifier):
         Returns an appropriate python datatype derived from this RDF Literal
         """
         convFunc = _toPythonMapping.get(self.datatype, None)
-        
+
         if convFunc:
             rt = convFunc(self)
         else:
