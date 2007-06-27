@@ -1,16 +1,19 @@
-﻿#!/usr/local/bin/python
+#!/usr/local/bin/python
 # -*- coding: utf-8 -*-
 """
-An implementation of the W3C SPARQL Algebra on top of sparql-p's expansion trees
+An implementation of the W3C SPARQL Algebra on top of sparql-p's
+expansion trees
 
 See: http://www.w3.org/TR/rdf-sparql-query/#sparqlAlgebra
 
-For each symbol in a SPARQL abstract query, we define an operator for evaluation. 
-The SPARQL algebra operators of the same name are used to evaluate SPARQL abstract 
-query nodes as described in the section "Evaluation Semantics".
+For each symbol in a SPARQL abstract query, we define an operator for
+evaluation.  The SPARQL algebra operators of the same name are used to
+evaluate SPARQL abstract query nodes as described in the section
+"Evaluation Semantics".
 
-We define eval(D(G), graph pattern) as the evaluation of a graph pattern with respect 
-to a dataset D having active graph G. The active graph is initially the default graph.
+We define eval(D(G), graph pattern) as the evaluation of a graph
+pattern with respect to a dataset D having active graph G. The active
+graph is initially the default graph.
 """
 import unittest
 from StringIO import StringIO
