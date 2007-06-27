@@ -24,7 +24,6 @@ from rdflib.sparql import sparqlGraph, sparqlOperators, SPARQLError, Query
 from rdflib.sparql.bison.SPARQLEvaluate import unRollTripleItems, _variablesToArray
 from rdflib.sparql.bison.GraphPattern import *
 from rdflib.sparql.graphPattern import BasicGraphPattern
-from rdflib.sparql.bison.PreProcessor import reorderBasicGraphPattern
 from rdflib.sparql.bison.Triples import ParsedConstrainedTriples
 from rdflib.sparql.bison.SPARQLEvaluate import createSPARQLPConstraint, CONSTRUCT_NOT_SUPPORTED, convertTerm
 
