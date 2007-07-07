@@ -26,14 +26,12 @@
 ##
 
 import sys, os, re
-
-from rdflib.Literal     import Literal
+from rdflib.Literal     import Literal, _XSD_NS
 from rdflib.BNode       import BNode
 from rdflib.URIRef      import URIRef
-
+from rdflib             import Variable
 from rdflib.sparql.graphPattern import _createResource
 from rdflib.sparql import _questChar, Debug
-from rdflib.sparql.Unbound import Unbound
 
 ##
 # Boolean test whether this is a a query string or not
@@ -56,8 +54,8 @@ def getLiteralValue(v) :
 # @param param query string, Unbound instance, or real value
 # @return a function taking one parameter (the binding directory)
 def getValue(param) :
-    if isinstance(param,Unbound) :
-        param = param.name
+    if isinstance(param,Variable) :
+        param = param
         unBound = True
     else :
         unBound = queryString(param)
@@ -194,8 +192,8 @@ def neq(a,b) :
     return f
 
 def __getQueryString(v) :
-    if isinstance(v,Unbound) :
-        return v.name
+    if isinstance(v,Variable) :
+        return v
     elif queryString(v) :
         return v
     else :
@@ -296,7 +294,8 @@ def str(a) :
             if val == None:
                 return ""
             else :
-                return `val`
+                from __builtin__ import str as _str
+                return _str(val)
         except :
             return ""
     return f
@@ -362,17 +361,17 @@ def isOnCollection(collection,item, triplets) :
     """
     #check_subject(collection)
     collUnbound = False
-    if isinstance(collection,Unbound) :
+    if isinstance(collection,Variable) :
         collUnbound = True
-        collection  = collection.name
+        collection  = collection
     elif queryString(collection) :
         # just keep 'collection', no reason to reassign
         collUnbound = True
     else:
         collUnbound = False
         # if we got here, this is a valid collection resource
-    if isinstance(item,Unbound) :
-        queryItem = item.name
+    if isinstance(item,Variable) :
+        queryItem = item
         itUnbund  = True
     elif queryString(item) :
         queryItem = item
@@ -458,5 +457,45 @@ def regex(item,pattern,flag=None):
             return bool(re.compile(a(bindings)).search(b(bindings)))
         except Exception,e:
             print e
+            return False
+    return f
+
+def EBV(a):
+    """
+    *  If the argument is a typed literal with a datatype of xsd:boolean, 
+       the EBV is the value of that argument.
+    * If the argument is a plain literal or a typed literal with a 
+      datatype of xsd:string, the EBV is false if the operand value 
+      has zero length; otherwise the EBV is true.
+    * If the argument is a numeric type or a typed literal with a datatype 
+     derived from a numeric type, the EBV is false if the operand value is 
+     NaN or is numerically equal to zero; otherwise the EBV is true.
+    * All other arguments, including unbound arguments, produce a type error.    
+    """
+    fa = getValue(a)
+    def f(bindings) :
+        try :
+            rt = fa(bindings)
+            if isinstance(rt,Literal):
+                if rt.datatype == _XSD_NS.boolean:
+                    ebv = rt.toPython()
+                elif rt.datatype == _XSD_NS.string or rt.datatype is None:
+                    ebv = len(rt) > 0
+                else:
+                    pyRT = rt.toPython()
+                    if isinstance(pyRT,Literal):
+                        raise TypeError("See: http://www.w3.org/TR/rdf-sparql-query/#ebv")
+                    else:
+                        ebv = pyRT != 0
+                return ebv
+            else:
+                print rt, type(rt)
+                raise
+        except :
+            # this is the case when the operators are incompatible
+            raise
+            if Debug :
+                (typ,val,traceback) = sys.exc_info()
+                sys.excepthook(typ,val,traceback)
             return False
     return f
