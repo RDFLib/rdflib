@@ -1,19 +1,16 @@
-#!/usr/local/bin/python
+﻿#!/usr/local/bin/python
 # -*- coding: utf-8 -*-
 """
-An implementation of the W3C SPARQL Algebra on top of sparql-p's
-expansion trees
+An implementation of the W3C SPARQL Algebra on top of sparql-p's expansion trees
 
 See: http://www.w3.org/TR/rdf-sparql-query/#sparqlAlgebra
 
-For each symbol in a SPARQL abstract query, we define an operator for
-evaluation.  The SPARQL algebra operators of the same name are used to
-evaluate SPARQL abstract query nodes as described in the section
-"Evaluation Semantics".
+For each symbol in a SPARQL abstract query, we define an operator for evaluation. 
+The SPARQL algebra operators of the same name are used to evaluate SPARQL abstract 
+query nodes as described in the section "Evaluation Semantics".
 
-We define eval(D(G), graph pattern) as the evaluation of a graph
-pattern with respect to a dataset D having active graph G. The active
-graph is initially the default graph.
+We define eval(D(G), graph pattern) as the evaluation of a graph pattern with respect 
+to a dataset D having active graph G. The active graph is initially the default graph.
 """
 import unittest
 from StringIO import StringIO
@@ -27,8 +24,16 @@ from rdflib.sparql import sparqlGraph, sparqlOperators, SPARQLError, Query
 from rdflib.sparql.bison.SPARQLEvaluate import unRollTripleItems, _variablesToArray
 from rdflib.sparql.bison.GraphPattern import *
 from rdflib.sparql.graphPattern import BasicGraphPattern
+from rdflib.sparql.bison.PreProcessor import reorderBasicGraphPattern
 from rdflib.sparql.bison.Triples import ParsedConstrainedTriples
 from rdflib.sparql.bison.SPARQLEvaluate import createSPARQLPConstraint, CONSTRUCT_NOT_SUPPORTED, convertTerm
+
+#A variable to determine whether we obey SPARQL definition of RDF dataset
+#which does not allow matching of default graphs (or any graph with a BNode for a name)
+#"An RDF Dataset comprises one graph, 
+# the default graph, which does not have a name" - 
+#  http://www.w3.org/TR/rdf-sparql-query/#namedAndDefaultGraph
+DAWG_DATASET_COMPLIANCE = False
 
 def ReduceGraphPattern(graphPattern,prolog):
     """
@@ -124,13 +129,15 @@ def ReduceToAlgebra(left,right):
         assert isinstance(right,GraphPattern),type(right)
         #Parsed Graph Pattern
         if right.triples:
-            if right.nonTripleGraphPattern: 
+            if right.nonTripleGraphPattern:
                 #left is None, just return right (a GraphPatternNotTriples)
                 if isinstance(right.nonTripleGraphPattern,ParsedGraphGraphPattern):
-                    right = GraphExpression(right.nonTripleGraphPattern.name,
-                                            reduce(ReduceToAlgebra,
-                                                   right.nonTripleGraphPattern.graphPatterns,
-                                                   None))
+                    right = Join(ReduceGraphPattern(right,prolog),
+                                 GraphExpression(
+                                    right.nonTripleGraphPattern.name,
+                                    reduce(ReduceToAlgebra,
+                                           right.nonTripleGraphPattern.graphPatterns,
+                                           None)))
                 elif isinstance(right.nonTripleGraphPattern,ParsedOptionalGraphPattern):
                     # LeftJoin(..triples..,{..})
                     rightTriples = ReduceGraphPattern(right,prolog)
@@ -181,7 +188,7 @@ def ReduceToAlgebra(left,right):
     else:
         return Join(left,right)
 
-def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False):
+def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False):
     """
     The outcome of executing a SPARQL is defined by a series of steps, starting 
     from the SPARQL query as a string, turning that string into an abstract 
@@ -249,7 +256,13 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False):
             top.expand(result.constraints)
             result = Query.Query(top, tripleStore)
         assert isinstance(result,Query.Query),repr(result)
-    #result = queryObject(tripleStore, basicPatterns,optionalPatterns,passedBindings)
+    if exportTree:
+        from rdflib.sparql.Visualization import ExportExpansionNode
+        if result.top:
+            ExportExpansionNode(result.top,fname='out.svg',verbose=True)
+        else:
+            ExportExpansionNode(result.parent1.top,fname='out1.svg',verbose=True)
+            ExportExpansionNode(result.parent2.top,fname='out2.svg',verbose=True)
     if result == None :
         # generate some proper output for the exception :-)
         msg = "Errors in the patterns, no valid query object generated; "
@@ -280,13 +293,25 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False):
         limit = query.query.solutionModifier.limitClause and int(query.query.solutionModifier.limitClause) or None
 
         offset = query.query.solutionModifier.offsetClause and int(query.query.solutionModifier.offsetClause) or 0
+        topUnionBindings=[]
+        if result.parent1 != None and result.parent2 != None :
+            selectionF = Query._variablesToArray(query.query.variables,"selection")            
+            fullBindings = result.parent1.select(selectionF) + result.parent2.select(selectionF)
+            topUnionBindings = result.parent1.top.returnResult(selectionF)+\
+                                result.parent2.top.returnResult(selectionF)
+        else:
+            topUnionBindings = result.top.returnResult(None)
         return result.select(query.query.variables,
                              query.query.distinct,
                              limit,
                              orderBy,
                              orderAsc,
                              offset
-                             ),_variablesToArray(query.query.variables,"selection"),result._getAllVariables(),orderBy,query.query.distinct
+                             ),\
+                             _variablesToArray(query.query.variables,"selection"),\
+                             result._getAllVariables(),\
+                             orderBy,query.query.distinct,\
+                             topUnionBindings
     else:
         raise NotImplemented(CONSTRUCT_NOT_SUPPORTED,repr(query))
                     
@@ -345,19 +370,23 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
     """
     if len(node.children) == 0  :
         # this is a leaf in the original expansion
+        if prolog.DEBUG:
+            print "Performing Join(%s,..)"%node
         if isinstance(expression,AlgebraExpression):
             #If an algebra expression evaluate it passing on the leaf bindings
             if prolog.DEBUG:
                 print "passing on bindings to %s\n:%s"%(expression,node.bindings.copy())
             expression = expression.evaluate(tripleStore,node.bindings.copy(),prolog)
         if isinstance(expression,BasicGraphPattern):
+            tS = tripleStore
             if prolog.DEBUG:
                 print "Evaluated left node and traversed to leaf, expanding with ", expression
-                print "has tripleStore? ", hasattr(expression,'tripleStore')
+                if hasattr(expression,'tripleStore'):                    
+                    print "has tripleStore: ",expression.tripleStore
+                    tS = expression.tripleStore
                 print node.tripleStore.graph
-                tmp = Query._createInitialBindings(expression)
-                tmp.update(node.bindings)
-                print tmp
+                print "expressions bindings: ", Query._createInitialBindings(expression)
+                print "node bindings: ", node.bindings
             exprBindings = Query._createInitialBindings(expression)
             exprBindings.update(node.bindings)
             #An indicator for whether this node has any descendant optional expansions
@@ -369,6 +398,8 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
             if not descendantOptionals:
                 top = node
             else:
+                if prolog.DEBUG:
+                    print "descendant optionals: ", descendantOptionals
                 top = None
             child = None            
             if not node.clash and not descendantOptionals:
@@ -377,17 +408,18 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
                 child = Query._SPARQLNode(top,
                                           exprBindings,
                                           expression.patterns,
-                                          hasattr(expression,'tripleStore') and \
-                                            expression.tripleStore or node.tripleStore)
+                                          tS)
                 child.expand(expression.constraints)
                 if prolog.DEBUG:
                     print "Has compatible bindings and no valid optional expansions"
-                    print "Newly bound descendants: ", list(_fetchBoundLeaves(child))
+                    print "Newly bound descendants: "
+                    for c in _fetchBoundLeaves(child):
+                        print "\t",c, c.bound                        
+                        print child.bindings
         else:
             assert isinstance(expression,Query.Query) and expression.top, repr(expression)            
             #Already been evaluated (non UNION), just attach the SPARQLNode
             child = expression.top
-            
         if node.clash == False and child is not None:
             node.children.append(child)
             if prolog.DEBUG:
@@ -430,11 +462,13 @@ class Join(AlgebraExpression):
                 bindings.update(initialBindings)
             if hasattr(self.left,'tripleStore'):
                 #Use the prepared tripleStore
-                tripleStore = self.left.tripleStore
+                lTS = self.left.tripleStore
+            else:
+                lTS = tripleStore
             top = Query._SPARQLNode(None,
                                     bindings,
                                     self.left.patterns,
-                                    tripleStore)
+                                    lTS)
             top.expand(self.left.constraints)
             _ExpandJoin(top,self.right,tripleStore,prolog)
             return Query.Query(top, tripleStore)
@@ -456,7 +490,7 @@ def _ExpandLeftJoin(node,expression,tripleStore,prolog,optionalTree=False):
     if len(node.children) == 0  :
         # this is a leaf in the original expansion
         if prolog.DEBUG:
-            print "Performing a left join on ", node
+            print "Performing LeftJoin(%s,..)"%node
         if node.clash:
             if prolog.DEBUG:
                 print "Bypassing clashed node"
@@ -490,8 +524,6 @@ def _ExpandLeftJoin(node,expression,tripleStore,prolog,optionalTree=False):
             if prolog.DEBUG:
                 print "Marking proxy: ", proxy
             proxy.proxy = True
-            assert len(list(_fetchBoundLeaves(optTree))) == 1,optTree
-            break
         if proxy is None:
             if prolog.DEBUG:
                 print "No OPT proxy"            
@@ -548,6 +580,8 @@ class Union(AlgebraExpression):
         self.right = BGP2
 
     def evaluate(self,tripleStore,initialBindings,prolog):
+        if prolog.DEBUG:
+            print "eval(%s,%s,%s)"%(self,initialBindings,tripleStore.graph)
         if isinstance(self.left,AlgebraExpression):
             self.left = self.left.evaluate(tripleStore,initialBindings,prolog)
         if isinstance(self.left,BasicGraphPattern):        
@@ -564,13 +598,15 @@ class Union(AlgebraExpression):
             assert isinstance(self.left,Query.Query), repr(self.left)
             top = self.left
         #Now we evaluate the right expression (independently)
-        if isinstance(self.right,GraphExpression):
+        if isinstance(self.right,AlgebraExpression):
             #If it is a GraphExpression, 'reduce' it
             self.right = self.right.evaluate(tripleStore,initialBindings,prolog)           
         assert isinstance(self.right,BasicGraphPattern)
-
+        tS = tripleStore
+        if hasattr(self.right,'tripleStore'):            
+            tS = self.right.tripleStore
         rightBindings = Query._createInitialBindings(self.right)
-        rightNode = Query._SPARQLNode(None,rightBindings,self.right.patterns,tripleStore)
+        rightNode = Query._SPARQLNode(None,rightBindings,self.right.patterns,tS)
         rightNode.expand(self.right.constraints)
         #The UNION semantics are implemented by the overidden __add__ method                
         return top + Query.Query(rightNode, tripleStore)
@@ -606,7 +642,9 @@ class GraphExpression(AlgebraExpression):
             else: 
                 if prolog.DEBUG:
                     print "Setting up BGP to return additional bindings for %s"%self.iriOrVar
-                tripleStore = sparqlGraph.SPARQLGraph(tripleStore.graph,graphVariable = self.iriOrVar)
+                tripleStore = sparqlGraph.SPARQLGraph(tripleStore.graph,
+                                                      graphVariable = self.iriOrVar,
+                                                      dSCompliance=DAWG_DATASET_COMPLIANCE)
         else:
             graphName =  self.iriOrVar
             graphName  = convertTerm(graphName,prolog)
