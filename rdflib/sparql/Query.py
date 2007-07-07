@@ -1,12 +1,10 @@
 import types, sets
-
-from rdflib import URIRef, BNode, Literal
+from pprint import pprint
+from rdflib import URIRef, BNode, Literal, Variable
+from rdflib.Graph import Graph
 from rdflib.Identifier import Identifier
-
 from rdflib.util import check_subject, list2set
-
 from rdflib.sparql import SPARQLError
-from rdflib.sparql.Unbound import Unbound
 from rdflib.sparql.sparqlGraph import SPARQLGraph
 from rdflib.sparql.graphPattern import GraphPattern
 
@@ -68,15 +66,15 @@ def _variablesToArray(variables,name='') :
             return None
         else :
             return [variables]
-    elif isinstance(variables,Unbound) :
-        return [variables.name]
+    elif isinstance(variables,Variable) :
+        return [variables]
     elif type(variables) == list or type(variables) == tuple :
         retval = []
         for s in variables :
             if isinstance(s,basestring) :
                 retval.append(s)
-            elif isinstance(s,Unbound) :
-                retval.append(s.name)
+            elif isinstance(s,Variable) :
+                retval.append(s)
             else :
                 raise SPARQLError("illegal type in '%s'; must be a string, unicode, or a Variable" % name)
     else :
@@ -94,6 +92,35 @@ def _createInitialBindings(pattern) :
     for c in pattern.unbounds :
         bindings[c] = None
     return bindings
+
+#An OPTIONAL proxy is an expansion descendant which was 
+#bound and valid (compatible) at a prior point and thus
+#serves as the cumulative context for all subsequent operations
+def _fetchProxies(node):
+    if hasattr(node,'proxy') and node.proxy:
+        yield node
+    if len(node.children) > 0 :
+        for c in node.children :
+            for gc in _fetchProxies(c):
+                yield c
+
+def _fetchBoundLeaves(node):
+    """
+    Takes a SPARQLNode and returns a generator
+    over its bound leaves (including OPTIONAL proxies)
+    """
+    if len(node.children) == 0 :
+        if node.bound and not node.clash:
+            proxies = reduce(lambda x,y: x+y,[list(_fetchProxies(o)) for o in node.optionalTrees],[])                        
+            if proxies:
+                for p in proxies:
+                    yield p 
+            else:                  
+                yield node
+    else :
+        for c in node.children :
+            for proxy in _fetchBoundLeaves(c):
+                yield proxy
 
 class _SPARQLNode:
     """
@@ -212,16 +239,6 @@ class _SPARQLNode:
                 # This node should be able to contribute to the final results
                 # if it doesn't have any OPTIONAL proxies:
                 result = {}
-                #An OPTIONAL proxy is an expansion descendant which was 
-                #bound and valid (compatible) at a prior point and thus
-                #serves as the cumulative context for all subsequent operations
-                def _fetchProxies(node):
-                    if hasattr(node,'proxy') and node.proxy:
-                        yield node
-                    if len(node.children) > 0 :
-                        for c in node.children :
-                            for gc in _fetchProxies(c):
-                                yield c
                 #Determine if this node has an OPTIONAL 'proxy'
                 proxies = []
                 if self.optionalTrees:
@@ -312,7 +329,8 @@ class _SPARQLNode:
         @param r: string
         @return: returns None if no bindings occured yet, the binding otherwise
         """
-        if isinstance(r,basestring) and not isinstance(r,Identifier)  :
+        if isinstance(r,basestring) and not isinstance(r,Identifier) or \
+           isinstance(r,Variable) :
             if self.bindings[r] == None :
                 return None
             else :
@@ -342,18 +360,40 @@ class _SPARQLNode:
             # put the bindings we have so far into the statement; this may add None values,
             # but that is exactly what RDFLib uses in its own search methods!
             (search_s,search_p,search_o) = (self._bind(s),self._bind(p),self._bind(o))
+            #We need to keep track of the original Graph associated with the tripleStore
+            #so we can switch back to it after changing the active graph (if we do)
+            #otherwise we will effect later evaluations which use the same tripleStore instance
+            originalGraph = None
             if self.tripleStore.graphVariable:
                 if hasattr(self.tripleStore.graph,'quads'):
-                    searchRT = self.tripleStore.graph.quads((search_s,search_p,search_o))
+                    if self.tripleStore.graphVariable not in self.bindings:
+                        searchRT = self.tripleStore.graph.quads((search_s,search_p,search_o))
+                    else:
+                        graphName = self.bindings[self.tripleStore.graphVariable]
+                        unifiedGraph = Graph(self.tripleStore.graph.store,
+                                             identifier=graphName)
+                        #print "Changing the active graph to ", graphName
+                        originalGraph = self.tripleStore.graph
+                        self.tripleStore.graph = unifiedGraph
+                        searchRT = [(_s,_p,_o,unifiedGraph) 
+                                     for _s,_p,_o in \
+                                       unifiedGraph.triples((search_s,search_p,search_o))]
                 else:
-                    searchRT = [(s,p,o,self.tripleStore.graph.identifier) 
-                                  for s,p,o in self.tripleStore.graph.triples((search_s,search_p,search_o))]
+                    searchRT = [(_s,_p,_o,self.tripleStore.graph) 
+                                  for _s,_p,_o in self.tripleStore.graph.triples((search_s,search_p,search_o))]
             else:
                 searchRT = self.tripleStore.graph.triples((search_s,search_p,search_o))
+            if originalGraph:
+                self.tripleStore.graph = originalGraph 
             for tripleOrQuad in searchRT:
-            #for (result_s,result_p,result_o) in self.tripleStore.graph.triples((search_s,search_p,search_o)) :
                 if self.tripleStore.graphVariable:
                     (result_s,result_p,result_o,parentGraph) = tripleOrQuad
+                    if self.tripleStore.DAWG_DATASET_COMPLIANCE and \
+                        isinstance(parentGraph.identifier,BNode):
+                        #We have a Graph with a Blank Node for an identifier (illegal
+                        #in SPARQL) and we are in strict DAWG data set mode, so ignore
+                        #the result
+                        continue
                 else:
                     (result_s,result_p,result_o) = tripleOrQuad
                 # if a user defined constraint has been added, it should be checked now
@@ -362,15 +402,33 @@ class _SPARQLNode:
                     continue
                 # create a copy of the current bindings, by also adding the new ones from result of the search
                 new_bindings = self.bindings.copy()
-                if search_s == None : new_bindings[s] = result_s
-                if search_p == None : new_bindings[p] = result_p
-                if search_o == None : new_bindings[o] = result_o
+                queryTerms = [s,p,o] 
+                preClash = False
+                for searchSlot,searchTerm,result in [(search_s,s,result_s),
+                                                     (search_p,p,result_p),
+                                                     (search_o,o,result_o)]:
+                    #searchSlot is what we searched with (variables become none)
+                    #searchTerm is the term in the triple pattern
+                    #result is the unified term from the dataset
+                    if searchSlot == None :
+                        #An unknown
+                        currBound = new_bindings.get(searchTerm)
+                        if currBound is not None:
+                            if currBound != result:
+                                preClash = True
+                        else:
+                            new_bindings[searchTerm] = result
+#                if search_s == None : new_bindings[s] = result_s
+#                if search_p == None : new_bindings[p] = result_p
+#                if search_o == None : new_bindings[o] = result_o
                 if self.tripleStore.graphVariable:
                     new_bindings[self.tripleStore.graphVariable] = parentGraph.identifier
-
                 # Recursion starts here: create and expand a new child
                 child = _SPARQLNode(self,new_bindings,self.rest,self.tripleStore)
-                child.expand(constraints)                
+                if not preClash:
+                    child.expand(constraints)
+                else:
+                    child.clash = True                
                 # if the child is a clash then no use adding it to the tree, it can be forgotten
                 if self.clash == False :
                     self.children.append(child)
@@ -621,11 +679,17 @@ class Query :
             return self.top.returnResult(None)
 
     def _getAllVariables(self):
-       """Retrieve the list of all variables, to be returned"""
-       if self.parent1 and self.parent2:
-           return list2set(self.parent1._getAllVariables() + self.parent2._getAllVariables())
-       else:
-           return list2set(self.top.bindings.keys())
+        """Retrieve the list of all variables, to be returned"""
+        if self.parent1 and self.parent2:
+            return list2set(self.parent1._getAllVariables() + self.parent2._getAllVariables())
+        else:
+            maxKeys = []
+            for bound in _fetchBoundLeaves(self.top):
+                if maxKeys:
+                    assert maxKeys == bound.bindings.keys()
+                else:
+                    maxKeys = bound.bindings.keys()
+            return list2set(maxKeys)
 
     def _orderedSelect(self,selection,orderedBy,orderDirection) :
         """
