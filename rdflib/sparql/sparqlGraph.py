@@ -5,8 +5,10 @@ class SPARQLGraph(Graph):
     """
     A subclass of Graph with a few extra SPARQL bits.
     """
-    def __init__(self, graph, graphVariable = None):
+    def __init__(self, graph, graphVariable = None, dSCompliance = False):
+        assert not graphVariable or graphVariable[0]!='?',repr(graphVariable)
         self.graphVariable = graphVariable
+        self.DAWG_DATASET_COMPLIANCE = dSCompliance
         self.graph = graph # TODO
         store = graph.store
         identifier = graph.identifier
