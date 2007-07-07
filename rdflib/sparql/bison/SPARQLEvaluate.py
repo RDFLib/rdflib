@@ -49,7 +49,7 @@ def convertTerm(term,queryProlog):
     Utility function  for converting parsed Triple components into Unbound 
     """
     if isinstance(term,Variable):
-        return Unbound(term[1:])
+        return term
     elif isinstance(term,BNode):
         return term
     elif isinstance(term,QName):
@@ -160,31 +160,46 @@ def unRollTripleItems(items,queryProlog):
                 for i in unRollTripleItems(item,queryProlog):
                     yield item
 
-def mapToOperator(expr,prolog,combinationArg=None):
+def mapToOperator(expr,prolog,combinationArg=None,constraint=False):
     """
     Reduces certain expressions (operator expressions, function calls, terms, and combinator expressions)
     into strings of their Python equivalent
     """
+    #print expr, type(expr), constraint
     combinationInvokation = combinationArg and '(%s)'%combinationArg or ""
     if isinstance(expr,ListRedirect):
         expr = expr.reduce()
     if isinstance(expr,UnaryOperator):
-        return UnaryOperatorMapping[type(expr)]%(mapToOperator(expr.argument,prolog,combinationArg))
+        return UnaryOperatorMapping[type(expr)]%(
+            mapToOperator(expr.argument,prolog,combinationArg,constraint=constraint))
     elif isinstance(expr,BinaryOperator):
-        return BinaryOperatorMapping[type(expr)]%(mapToOperator(expr.left,prolog,combinationArg),mapToOperator(expr.right,prolog,combinationArg),combinationInvokation)
+        return BinaryOperatorMapping[type(expr)]%(
+                mapToOperator(expr.left,prolog,combinationArg,constraint=constraint),
+                mapToOperator(expr.right,prolog,combinationArg,constraint=constraint),
+                combinationInvokation)
     elif isinstance(expr,(Variable,Unbound)):
-        return '"%s"'%expr
+        if constraint:
+            return """sparqlOperators.EBV("%s")%s"""%(expr,combinationInvokation)
+        else:
+            return '"%s"'%expr
     elif isinstance(expr,ParsedREGEXInvocation):
-        return 'sparqlOperators.regex(%s,%s%s)%s'%(mapToOperator(expr.arg1,prolog,combinationArg),
-                                                 mapToOperator(expr.arg2,prolog,combinationArg),
-                                                 expr.arg3 and ',"'+expr.arg3 + '"' or '',
-                                                 combinationInvokation)
+        return 'sparqlOperators.regex(%s,%s%s)%s'%(
+                 mapToOperator(expr.arg1,prolog,combinationArg,constraint=constraint),
+                 mapToOperator(expr.arg2,prolog,combinationArg,constraint=constraint),
+                 expr.arg3 and ',"'+expr.arg3 + '"' or '',
+                 combinationInvokation)
     elif isinstance(expr,BuiltinFunctionCall):
         normBuiltInName = FUNCTION_NAMES[expr.name].lower()
         normBuiltInName = CAMEL_CASE_BUILTINS.get(normBuiltInName,'sparqlOperators.'+normBuiltInName)
-        return "%s(%s)%s"%(normBuiltInName,",".join([mapToOperator(i,prolog,combinationArg) for i in expr.arguments]),combinationInvokation)
+        return "%s(%s)%s"%(normBuiltInName,",".join(
+                    [mapToOperator(i,prolog,combinationArg,constraint=constraint) \
+                         for i in expr.arguments]),combinationInvokation)
     elif isinstance(expr,ParsedDatatypedLiteral):
-        return repr(Literal(expr.value,datatype=convertTerm(expr.dataType,prolog)))
+        lit = Literal(expr.value,datatype=convertTerm(expr.dataType,prolog))
+        if constraint:
+            return """sparqlOperators.EBV(%r)%s"""%(lit,combinationInvokation)
+        else:
+            return repr(lit)
     elif isinstance(expr,Literal):
         return repr(expr)
     elif isinstance(expr,URIRef):
@@ -194,18 +209,24 @@ def mapToOperator(expr,prolog,combinationArg=None):
     elif isinstance(expr,(QName,basestring)):
         return "'%s'"%convertTerm(expr,prolog)
     elif isinstance(expr,ParsedAdditiveExpressionList):
-        return 'Literal(%s)'%(sparqlOperators.addOperator([mapToOperator(item,prolog,combinationArg='i') for item in expr],combinationArg))
+        return 'Literal(%s)'%(sparqlOperators.addOperator(
+                  [mapToOperator(item,prolog,combinationArg='i',constraint=constraint) \
+                           for item in expr],combinationArg))
     elif isinstance(expr,FunctionCall):
         if isinstance(expr.name,QName):
             fUri = convertTerm(expr.name,prolog)
         if fUri in XSDToPython:
-            return "sparqlOperators.XSDCast(%s,'%s')%s"%(mapToOperator(expr.arguments[0],prolog,combinationArg='i'),fUri,combinationInvokation)
+            return "sparqlOperators.XSDCast(%s,'%s')%s"%(
+             mapToOperator(expr.arguments[0],prolog,combinationArg='i',constraint=constraint),
+             fUri,
+             combinationInvokation)
         raise Exception("Whats do i do with %s (a %s)?"%(expr,type(expr).__name__))
     else:
         if isinstance(expr,ListRedirect):
             expr = expr.reduce()
             if expr.pyBooleanOperator:
-                return expr.pyBooleanOperator.join([mapToOperator(i,prolog) for i in expr]) 
+                return expr.pyBooleanOperator.join(
+                       [mapToOperator(i,prolog,constraint=constraint) for i in expr]) 
         raise Exception("What do i do with %s (a %s)?"%(expr,type(expr).__name__))
 
 def createSPARQLPConstraint(filter,prolog):
@@ -215,28 +236,62 @@ def createSPARQLPConstraint(filter,prolog):
     This string is then evaluated to return the actual function for sparql-p
     """
     reducedFilter = isinstance(filter.filter,ListRedirect) and filter.filter.reduce() or filter.filter
+    print reducedFilter,type(reducedFilter)
+    if isinstance(reducedFilter,(ListRedirect,
+                                 BinaryOperator,
+                                 UnaryOperator,
+                                 BuiltinFunctionCall,
+                                 ParsedREGEXInvocation)):
+        if isinstance(reducedFilter,UnaryOperator) and\
+                      isinstance(reducedFilter.argument,Variable):
+            const = True
+#        elif isinstance(reducedFilter,ParsedRelationalExpressionList) and\
+#            False:
+#            pass
+        else:
+            const = False
+    else:
+        const = True
     if isinstance(reducedFilter,ParsedConditionalAndExpressionList):
-        combinationLambda = 'lambda(i): %s'%(' or '.join(['%s'%mapToOperator(expr,prolog,combinationArg='i') for expr in reducedFilter]))
+        combinationLambda = 'lambda(i): %s'%(' or '.join(
+            ['%s'%mapToOperator(expr,prolog,combinationArg='i',constraint=const) \
+                        for expr in reducedFilter]))
         if prolog.DEBUG:
             print "sparql-p operator(s): %s"%combinationLambda
         return eval(combinationLambda)
     elif isinstance(reducedFilter,ParsedRelationalExpressionList):
-        combinationLambda = 'lambda(i): %s'%(' and '.join(['%s'%mapToOperator(expr,prolog,combinationArg='i') for expr in reducedFilter]))
+        combinationLambda = 'lambda(i): %s'%(' and '.join(
+            ['%s'%mapToOperator(expr,prolog,combinationArg='i',constraint=const) \
+                         for expr in reducedFilter]))
         if prolog.DEBUG:
             print "sparql-p operator(s): %s"%combinationLambda
         return eval(combinationLambda)
     elif isinstance(reducedFilter,BuiltinFunctionCall):
-        rt=mapToOperator(reducedFilter,prolog)
+        rt=mapToOperator(reducedFilter,prolog,constraint=const)
         if prolog.DEBUG:
             print "sparql-p operator(s): %s"%rt
         return eval(rt)
     elif isinstance(reducedFilter,(ParsedAdditiveExpressionList,UnaryOperator,FunctionCall)):
-        rt='lambda(i): %s'%(mapToOperator(reducedFilter,prolog,combinationArg='i'))
+        rt='lambda(i): %s'%(
+            mapToOperator(reducedFilter,prolog,combinationArg='i',constraint=const))
         if prolog.DEBUG:
             print "sparql-p operator(s): %s"%rt
         return eval(rt)
+    elif isinstance(reducedFilter,Variable):
+        rt = """sparqlOperators.EBV("%s")"""%reducedFilter
+        if prolog.DEBUG:
+            print "sparql-p operator(s): %s"%rt        
+        return eval(rt)
+#        
+#        reducedFilter = BuiltinFunctionCall(BOUND,reducedFilter)
+#        rt=mapToOperator(reducedFilter,prolog)
+#        if prolog.DEBUG:
+#            print "sparql-p operator(s): %s"%rt
+#        return eval(rt)
     else:
-        rt=mapToOperator(reducedFilter,prolog)
+        rt=mapToOperator(reducedFilter,
+                         prolog,
+                         constraint=const)
         if prolog.DEBUG:
             print "sparql-p operator(s): %s"%rt
         return eval(rt)
