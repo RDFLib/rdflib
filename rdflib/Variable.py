@@ -9,7 +9,12 @@ class Variable(Identifier):
     """
     __slots__ = ()
     def __new__(cls, value):
-        return Identifier.__new__(cls, value)
+        if value[0]=='?':
+            value=value[1:]
+        return unicode.__new__(cls, value)
+
+    def __repr__(self):
+        return self.n3()
 
     def n3(self):
         return "?%s" % self
