@@ -10,10 +10,10 @@ import sys, os, time, datetime
 from rdflib.Literal     import Literal
 from rdflib.BNode       import BNode
 from rdflib.URIRef      import URIRef
+from rdflib import Variable
 from types import *
 
 from rdflib.sparql import _questChar, Debug, SPARQLError
-from rdflib.sparql.Unbound import Unbound
 
 def _createResource(v) :
     """Create an RDFLib Literal instance with the corresponding XML
@@ -337,10 +337,10 @@ class BasicGraphPattern(GraphPattern) :
             (s,p,o,f) = tupl
         final=[]
         for c in (s,p,o) :
-            if isinstance(c,Unbound) :
-                if not c.name in self.unbounds :
-                    self.unbounds.append(c.name)
-                final.append(c.name)
+            if isinstance(c,Variable) :
+                if not c in self.unbounds :
+                    self.unbounds.append(c)
+                final.append(c)
             elif isinstance(c, BNode):
                 #Do nothing - BNode name management is handled by SPARQL parser
                 final.append(c)
@@ -350,7 +350,7 @@ class BasicGraphPattern(GraphPattern) :
         return tuple(final)
 		
 if __name__ == '__main__' :
-    v1 = Unbound("a")
+    v1 = Variable("a")
     g = BasicGraphPattern([("a","?b",24),("?r","?c",12345),(v1,"?c",3333)])
     print g
 
