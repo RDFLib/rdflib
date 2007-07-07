@@ -20,7 +20,7 @@ try:
         def write_header(self,allvarsL):
             self.writer.startElement(u'head', namespace=SPARQL_XML_NAMESPACE)
             for i in xrange(0,len(allvarsL)) :
-                self.writer.startElement(u'variable',namespace=SPARQL_XML_NAMESPACE,attributes={u'name':unicode(allvarsL[i][1:])})
+                self.writer.startElement(u'variable',namespace=SPARQL_XML_NAMESPACE,attributes={u'name':unicode(allvarsL[i])})
                 self.writer.endElement(u'variable')
             self.writer.endElement( u'head')
 
@@ -87,7 +87,7 @@ except:
             self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'head'), u'head', AttributesNSImpl({}, {}))
             for i in xrange(0,len(allvarsL)) :
                 attr_vals = {
-                    (None, u'name'): unicode(allvarsL[i][1:]),
+                    (None, u'name'): unicode(allvarsL[i]),
                     }
                 attr_qnames = {
                     (None, u'name'): u'name',
@@ -213,7 +213,8 @@ class SPARQLQueryResult(QueryResult.QueryResult):
         , a SPARQLGraph for DESCRIBE/CONSTRUCT, and boolean for ASK  2) the variables selected 3) *all*
         the variables in the Graph Patterns 4) the order clause 5) the DISTINCT clause
         """
-        result,selectionF,allVars,orderBy,distinct = qResult
+        result,selectionF,allVars,orderBy,distinct,topUnion = qResult
+        self.topUnion = topUnion
         self.selected = result
         self.selectionF = selectionF
         self.allVariables = allVars
@@ -254,7 +255,7 @@ class SPARQLQueryResult(QueryResult.QueryResult):
                    bindings = []
                    if len(self.selectionF) == 0:
                         for j in xrange(0, len(allvarsL)):
-                            b = bindingJSON(allvarsL[j][1:],hit[j])
+                            b = bindingJSON(allvarsL[j],hit[j])
                             if b != "":
                                 bindings.append(b)
                    elif len(self.selectionF) == 1:
@@ -301,24 +302,35 @@ class SPARQLQueryResult(QueryResult.QueryResult):
                writer = SPARQLXMLWriter(out)
                writer.write_header(allvarsL)
                writer.write_results_header(self.orderBy,self.distinct)
-               for i in xrange(0,len(self.selected)) :
-                   hit = self.selected[i]
-                   if len(self.selectionF) == 0 :
+               if self.topUnion:
+                   for binding in self.topUnion:
                        writer.write_start_result()
-                       if len(allvarsL) == 1:
-                           hit = (hit,) # Not an iterable - a parser bug?
-                       for j in xrange(0,len(allvarsL)) :
-                           writer.write_binding(allvarsL[j][1:],hit[j])
+                       for key,val in binding.items():
+                           writer.write_binding(key,val)
                        writer.write_end_result()
-                   elif len(self.selectionF) == 1 :
-                       writer.write_start_result()
-                       writer.write_binding(self.selectionF[0][1:],hit)
-                       writer.write_end_result()
-                   else:
-                       writer.write_start_result()
-                       for j in xrange(0,len(self.selectionF)) :
-                           writer.write_binding(self.selectionF[j][1:],hit[j])
-                       writer.write_end_result()
+               else:
+                   for i in xrange(0,len(self.selected)) :
+                       hit = self.selected[i]
+                       if len(self.selectionF) == 0 :
+                           if topUnion:
+                               print topUnion
+                               #raise
+                           writer.write_start_result()
+                           if len(allvarsL) == 1:
+                               hit = (hit,) # Not an iterable - a parser bug?   
+                           for j in xrange(0,len(allvarsL)) :
+                               if not len(hit) < j+1:
+                                   writer.write_binding(allvarsL[j],hit[j])
+                           writer.write_end_result()
+                       elif len(self.selectionF) == 1 :
+                           writer.write_start_result()
+                           writer.write_binding(self.selectionF[0][1:],hit)
+                           writer.write_end_result()
+                       else:
+                           writer.write_start_result()
+                           for j in xrange(0,len(self.selectionF)) :
+                               writer.write_binding(self.selectionF[j][1:],hit[j])
+                           writer.write_end_result()
                writer.close()
                return out.getvalue()
 
