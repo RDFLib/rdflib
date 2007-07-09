@@ -61,4 +61,4 @@ class BuiltinFunctionCall(FunctionCall):
     def __repr__(self):
         #print self.name
         #print [type(i) for i in self.arguments]
-        return "%s(%s)"%(FUNCTION_NAMES[self.name],','.join([isinstance(i,ListRedirect) and str(i.reduce()) or i for i in self.arguments]))
+        return "%s(%s)"%(FUNCTION_NAMES[self.name],','.join([isinstance(i,ListRedirect) and str(i.reduce()) or repr(i) for i in self.arguments]))
