@@ -565,8 +565,8 @@
                 <symbol>FilteredBasicGraphPattern</symbol>
                 <code language="c">
                     $$ = PyList_New(1);
-                    Py_INCREF(Py_None);
                     PyList_SET_ITEM($$, 0, PyObject_CallMethod(GraphPattern, "GraphPattern", "OO", $1,Py_None));
+                    Py_INCREF(Py_None);
                 </code>
             </rule>            
             <rule>
