@@ -1,7 +1,7 @@
 import types, sets
 from pprint import pprint
 from rdflib import URIRef, BNode, Literal, Variable
-from rdflib.Graph import Graph
+from rdflib.Graph import Graph, ConjunctiveGraph
 from rdflib.Identifier import Identifier
 from rdflib.util import check_subject, list2set
 from rdflib.sparql import SPARQLError
@@ -367,20 +367,34 @@ class _SPARQLNode:
             if self.tripleStore.graphVariable:
                 if hasattr(self.tripleStore.graph,'quads'):
                     if self.tripleStore.graphVariable not in self.bindings:
-                        searchRT = self.tripleStore.graph.quads((search_s,search_p,search_o))
-                    else:
+                        searchRT = self.tripleStore.graph.quads((search_s,
+                                                                 search_p,
+                                                                 search_o))
+                    else:                    
                         graphName = self.bindings[self.tripleStore.graphVariable]
+                        assert not self.tripleStore.DAWG_DATASET_COMPLIANCE or\
+                           isinstance(graphName,URIRef),\
+                           "Cannot formally return graph name solutions for the default graph"                        
                         unifiedGraph = Graph(self.tripleStore.graph.store,
                                              identifier=graphName)
-                        #print "Changing the active graph to ", graphName
                         originalGraph = self.tripleStore.graph
                         self.tripleStore.graph = unifiedGraph
                         searchRT = [(_s,_p,_o,unifiedGraph) 
                                      for _s,_p,_o in \
                                        unifiedGraph.triples((search_s,search_p,search_o))]
                 else:
+                    assert not self.tripleStore.DAWG_DATASET_COMPLIANCE or\
+                       isinstance(self.tripleStore.graph.identifier,URIRef),\
+                       "Cannot formally return graph name solutions for the default graph"
                     searchRT = [(_s,_p,_o,self.tripleStore.graph) 
                                   for _s,_p,_o in self.tripleStore.graph.triples((search_s,search_p,search_o))]
+            elif self.tripleStore.DAWG_DATASET_COMPLIANCE and \
+                 isinstance(self.tripleStore.graph,ConjunctiveGraph):
+                #match against the default graph
+                searchRT = self.tripleStore.graph.default_context.triples(
+                                   (search_s,
+                                    search_p,
+                                    search_o))
             else:
                 searchRT = self.tripleStore.graph.triples((search_s,search_p,search_o))
             if originalGraph:
