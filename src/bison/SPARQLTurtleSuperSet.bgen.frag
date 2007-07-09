@@ -343,7 +343,9 @@
     <rule>
       <symbol>VARNAME</symbol>
       <code language="c">
-        $$ = PyObject_CallMethod(rdflib, "Variable", "O", $1);
+        PyObject *varName = PySequence_GetSlice($1, 1, PyString_GET_SIZE($1));        
+        $$ = PyObject_CallMethod(rdflib, "Variable", "O", varName);
+        Py_XDECREF(varName);
       </code>
     </rule>
   </production>
