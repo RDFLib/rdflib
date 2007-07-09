@@ -222,9 +222,12 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
                         #RDFa?
                         memGraph.parse(dtSet,format='rdfa')
                 graphs.append(memGraph)
-        tripleStore = sparqlGraph.SPARQLGraph(ReadOnlyGraphAggregate(graphs,store=dataset.store))
+        tripleStore = sparqlGraph.SPARQLGraph(ReadOnlyGraphAggregate(graphs,
+                                                                     store=dataset.store),
+                                              dSCompliance=DAWG_DATASET_COMPLIANCE)
     else:        
-        tripleStore = sparqlGraph.SPARQLGraph(dataset)    
+        tripleStore = sparqlGraph.SPARQLGraph(dataset,
+                                              dSCompliance=DAWG_DATASET_COMPLIANCE)    
     if isinstance(query.query,SelectQuery) and query.query.variables:
         query.query.variables = [convertTerm(item,query.prolog) for item in query.query.variables]
     else:
@@ -379,11 +382,12 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
             expression = expression.evaluate(tripleStore,node.bindings.copy(),prolog)
         if isinstance(expression,BasicGraphPattern):
             tS = tripleStore
+            if hasattr(expression,'tripleStore'):
+                if prolog.DEBUG:                    
+                    print "has tripleStore: ",expression.tripleStore
+                tS = expression.tripleStore
             if prolog.DEBUG:
                 print "Evaluated left node and traversed to leaf, expanding with ", expression
-                if hasattr(expression,'tripleStore'):                    
-                    print "has tripleStore: ",expression.tripleStore
-                    tS = expression.tripleStore
                 print node.tripleStore.graph
                 print "expressions bindings: ", Query._createInitialBindings(expression)
                 print "node bindings: ", node.bindings
@@ -638,7 +642,10 @@ class GraphExpression(AlgebraExpression):
                 assert initialBindings[self.iriOrVar], "Empty binding for GRAPH variable!"
                 if prolog.DEBUG:
                     print "Passing on unified graph name: ", initialBindings[self.iriOrVar]
-                tripleStore = sparqlGraph.SPARQLGraph(Graph(tripleStore.store,initialBindings[self.iriOrVar]))
+                tripleStore = sparqlGraph.SPARQLGraph(
+                                            Graph(tripleStore.store,
+                                                  initialBindings[self.iriOrVar])
+                                            ,dSCompliance=DAWG_DATASET_COMPLIANCE)
             else: 
                 if prolog.DEBUG:
                     print "Setting up BGP to return additional bindings for %s"%self.iriOrVar
@@ -654,7 +661,8 @@ class GraphExpression(AlgebraExpression):
                 targetGraph = targetGraph[0]
             else:
                 targetGraph = Graph(tripleStore.store,graphName)
-            tripleStore = sparqlGraph.SPARQLGraph(targetGraph)
+            tripleStore = sparqlGraph.SPARQLGraph(targetGraph,
+                                                  dSCompliance=DAWG_DATASET_COMPLIANCE)
         if isinstance(self.GGP,AlgebraExpression):
             #Dont evaluate
             return self.GGP.evaluate(tripleStore,initialBindings,prolog)
