@@ -61,8 +61,9 @@ def date_time(t=None, local_time_zone=False):
     >>> date_time(1126482850)
     '2005-09-11T23:54:10Z'
 
-    >>> date_time(1126482850, local_time_zone=True)
-    '2005-09-11T19:54:10-04:00'
+    @@ this will change depending on where it is run
+    #>>> date_time(1126482850, local_time_zone=True)
+    #'2005-09-11T19:54:10-04:00'
 
     >>> date_time(1)
     '1970-01-01T00:00:01Z'
