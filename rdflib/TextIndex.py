@@ -1,7 +1,19 @@
+try:
+    from hashlib import md5
+except ImportError:
+    from md5 import md5
+    
+from rdflib.BNode import BNode
+from rdflib.Graph import ConjunctiveGraph
+from rdflib.Literal import Literal
+from rdflib.Namespace import NamespaceDict as Namespace
+from rdflib.URIRef import URIRef
+from rdflib.store import TripleAddedEvent, TripleRemovedEvent
+from rdflib.store.IOMemory import IOMemory
 import logging
-_logger = logging.getLogger(__name__)
-
 import re #, stopdict
+
+_logger = logging.getLogger(__name__)
 
 def get_stopdict():
     """Return a dictionary of stopwords."""
@@ -28,17 +40,6 @@ def splitter(s):
 def stopper(s):
     return [w.lower() for w in s if not has_stop(w)]
 
-
-try:
-    from hashlib import md5
-except ImportError:
-    from md5 import md5    
-
-from rdflib.store.IOMemory import IOMemory
-from rdflib import URIRef, Literal, RDF, BNode
-from rdflib.Namespace import NamespaceDict as Namespace
-from rdflib.Graph import ConjunctiveGraph
-from rdflib.store import TripleAddedEvent, TripleRemovedEvent
 
 
 class TextIndex(ConjunctiveGraph):
