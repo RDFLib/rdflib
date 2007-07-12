@@ -4,7 +4,10 @@ from rdflib.Graph import Graph
 class Collection(object):
     """
     See 3.3.5 Emulating container types: http://docs.python.org/ref/sequence-types.html#l2h-232
-    
+
+    >>> from rdflib.BNode import BNode
+    >>> from rdflib.Literal import Literal
+    >>> from rdflib.Graph import Graph    
     >>> listName = BNode()
     >>> g = Graph('IOMemory')
     >>> listItem1 = BNode()
@@ -17,7 +20,7 @@ class Collection(object):
     >>> g.add((listItem2,RDF.first,Literal(3)))
     >>> c=Collection(g,listName)
     >>> print list(c)
-    [rdflib.Literal('1', language=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#int')), rdflib.Literal('2', language=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#int')), rdflib.Literal('3', language=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#int'))]
+    [rdflib.Literal('1', lang=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#int')), rdflib.Literal('2', lang=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#int')), rdflib.Literal('3', lang=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#int'))]
     >>> 1 in c
     True
     >>> len(c)
