@@ -5,6 +5,8 @@ from pprint import pprint
 try:
     from pysqlite2 import dbapi2
 except ImportError:
+    import warnings
+    warnings.warn("pysqlite2 is not installed")
     __test__=False
 import sha,sys,re,os
 from rdflib.term_utils import *
