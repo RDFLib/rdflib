@@ -5,7 +5,12 @@ from rdflib.URIRef import URIRef
 from rdflib.Node import Node
 from rdflib.BNode import BNode
 from rdflib.Literal import Literal
-from rdflib import RDF
+try:
+    import RDF
+except ImportError:
+    import warnings
+    warnings.warn("Redlands not installed")
+    __test__=False
 
 from rdflib.store import Store
 
