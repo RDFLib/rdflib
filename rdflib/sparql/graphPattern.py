@@ -282,7 +282,7 @@ class GraphPattern :
         return self
 
     def __repr__(self) :
-        return "BGP(%s)"%(self.patterns)
+        return "BGP(%s)"%(','.join([repr(p[:3]) for p in self.patterns]))
         retval  = "   Patterns:    %s\n" % self.patterns
         retval += "   Constraints: %s\n" % self.constraints
         retval += "   Unbounds:    %s\n" % self.unbounds
