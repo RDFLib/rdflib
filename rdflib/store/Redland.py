@@ -5,7 +5,7 @@ from rdflib.URIRef import URIRef
 from rdflib.Node import Node
 from rdflib.BNode import BNode
 from rdflib.Literal import Literal
-import RDF
+from rdflib import RDF
 
 from rdflib.store import Store
 
