@@ -3,7 +3,11 @@ from rdflib import BNode
 from rdflib.store import Store,VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
 from rdflib.Literal import Literal
 from pprint import pprint
-import MySQLdb,sys
+import sys
+try:
+    import MySQLdb
+except ImportError:
+    __test__=False
 from rdflib.term_utils import *
 from rdflib.Graph import QuotedGraph
 from rdflib.store.REGEXMatching import REGEXTerm, NATIVE_REGEX, PYTHON_REGEX

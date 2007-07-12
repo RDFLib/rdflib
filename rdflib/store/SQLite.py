@@ -2,7 +2,10 @@ from __future__ import generators
 from rdflib import BNode
 from rdflib.Literal import Literal
 from pprint import pprint
-from pysqlite2 import dbapi2
+try:
+    from pysqlite2 import dbapi2
+except ImportError:
+    __test__=False
 import sha,sys,re,os
 from rdflib.term_utils import *
 from rdflib.Graph import QuotedGraph
