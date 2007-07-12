@@ -77,7 +77,8 @@ class BNode(Identifier):
 
     def __eq__(self, other):
         """
-        >>> from rdflib import URIRef
+        >>> from rdflib.URIRef import URIRef
+        >>> from rdflib.BNode import BNode
         >>> BNode("foo")==None
         False
         >>> BNode("foo")==URIRef("foo")
