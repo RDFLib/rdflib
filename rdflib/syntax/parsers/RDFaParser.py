@@ -37,10 +37,10 @@ import sys, re, urllib, urlparse, cStringIO, string
 from xml.dom import pulldom
 from rdflib.syntax.parsers import Parser
 from rdflib.Graph import ConjunctiveGraph
-from rdflib import URIRef
-from rdflib import BNode
-from rdflib import Literal
-from rdflib import Namespace
+from rdflib.URIRef import URIRef
+from rdflib.BNode import BNode
+from rdflib.Literal import Literal
+from rdflib.Namespace import Namespace
 
 __version__ = "$Id$"
 
