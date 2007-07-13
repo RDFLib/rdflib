@@ -32,7 +32,7 @@ from rdflib.sparql.bison.SPARQLEvaluate import createSPARQLPConstraint, CONSTRUC
 #"An RDF Dataset comprises one graph, 
 # the default graph, which does not have a name" - 
 #  http://www.w3.org/TR/rdf-sparql-query/#namedAndDefaultGraph
-DAWG_DATASET_COMPLIANCE = False
+DAWG_DATASET_COMPLIANCE = True
 
 def ReduceGraphPattern(graphPattern,prolog):
     """
@@ -102,6 +102,9 @@ def ReduceToAlgebra(left,right):
                           [ reduce(ReduceToAlgebra,i.graphPatterns,None) for i in 
                               left.nonTripleGraphPattern.alternativePatterns ]
                         left = Join(ReduceGraphPattern(left,prolog),reduce(Union,unionList))
+                    else:
+                        assert left.nonTripleGraphPattern is None
+                        left = ReduceGraphPattern(left,prolog)                        
                 else:
                     assert left.nonTripleGraphPattern
                     if isinstance(left.nonTripleGraphPattern,ParsedGraphGraphPattern):
@@ -150,6 +153,9 @@ def ReduceToAlgebra(left,right):
                       [ reduce(ReduceToAlgebra,i.graphPatterns,None) for i in 
                           right.nonTripleGraphPattern.alternativePatterns ]                        
                     right = Join(ReduceGraphPattern(right,prolog),reduce(Union,unionList))
+                else:
+                    assert isinstance(right.nonTripleGraphPattern,GraphPattern)
+                    right = ReduceGraphPattern(right,prolog)
             else:
                 #BGP({}...)
                 right = ReduceGraphPattern(right,prolog)
@@ -182,10 +188,19 @@ def ReduceToAlgebra(left,right):
                       map(lambda i: reduce(ReduceToAlgebra,i.graphPatterns,None),
                           right.nonTripleGraphPattern.alternativePatterns)
                     right = reduce(Union,unionList)
+                else:
+                    raise
     if not left:
         return right
     else:
         return Join(left,right)
+
+def RenderSPARQLAlgebra(parsedSPARQL):
+    global prolog
+    prolog = parsedSPARQL.prolog
+    prolog.DEBUG = False
+    return reduce(ReduceToAlgebra,
+                  parsedSPARQL.query.whereClause.parsedGraphPattern.graphPatterns,None)
 
 def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False):
     """
@@ -372,6 +387,10 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
     """
     if len(node.children) == 0  :
         # this is a leaf in the original expansion
+        if node.clash:
+            if prolog.DEBUG:
+                print "Bypassing clashed node"
+            return
         if prolog.DEBUG:
             print "Performing Join(%s,..)"%node
         if isinstance(expression,AlgebraExpression):
@@ -418,7 +437,7 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
                     print "Newly bound descendants: "
                     for c in _fetchBoundLeaves(child):
                         print "\t",c, c.bound                        
-                        print child.bindings
+                        print c.bindings
         else:
             assert isinstance(expression,Query.Query) and expression.top, repr(expression)            
             #Already been evaluated (non UNION), just attach the SPARQLNode
@@ -432,8 +451,11 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
             for validLeaf in _fetchBoundLeaves(optTree):
                 _ExpandJoin(validLeaf,expression,tripleStore,prolog,optionalTree=True)
     else :
+        processedChildren = []
         for c in node.children :
-            _ExpandJoin(c,expression,tripleStore,prolog)
+            if c not in processedChildren:
+                _ExpandJoin(c,expression,tripleStore,prolog)
+                processedChildren.append(c)
 
 class Join(AlgebraExpression):
     """
@@ -457,33 +479,36 @@ class Join(AlgebraExpression):
         if prolog.DEBUG:
             print "eval(%s,%s,%s)"%(self,initialBindings,tripleStore.graph)
         if isinstance(self.left,AlgebraExpression):
-            self.left = self.left.evaluate(tripleStore,initialBindings,prolog)
-        if isinstance(self.left,BasicGraphPattern):        
+            left = self.left.evaluate(tripleStore,initialBindings,prolog)
+        else:
+            left = self.left
+        if isinstance(left,BasicGraphPattern):        
             retval = None
-            bindings = Query._createInitialBindings(self.left)
+            bindings = Query._createInitialBindings(left)
             if initialBindings:
                 bindings.update(initialBindings)
-            if hasattr(self.left,'tripleStore'):
+            if hasattr(left,'tripleStore'):
                 #Use the prepared tripleStore
-                lTS = self.left.tripleStore
+                lTS = left.tripleStore
             else:
                 lTS = tripleStore
             top = Query._SPARQLNode(None,
                                     bindings,
-                                    self.left.patterns,
+                                    left.patterns,
                                     lTS)
-            top.expand(self.left.constraints)
+            top.expand(left.constraints)
             _ExpandJoin(top,self.right,tripleStore,prolog)
             return Query.Query(top, tripleStore)
         else:
-            assert isinstance(self.left,Query.Query), repr(self.left)
-            if self.left.parent1 and self.left.parent2:
+            assert isinstance(left,Query.Query), repr(left)
+            if left.parent1 and left.parent2:
                 #union branch.  We need to unroll both operands
-                _ExpandJoin(self.left.parent1.top,self.right,tripleStore,prolog)
-                _ExpandJoin(self.left.parent2.top,self.right,tripleStore,prolog)
+                _ExpandJoin(left.parent1.top,self.right,tripleStore,prolog)
+                _ExpandJoin(left.parent2.top,self.right,tripleStore,prolog)
             else:
-                _ExpandJoin(self.left.top,self.right,tripleStore,prolog)
-            return self.left
+                for b in _fetchBoundLeaves(left.top):
+                    _ExpandJoin(b,self.right,tripleStore,prolog)
+            return left
 
 def _ExpandLeftJoin(node,expression,tripleStore,prolog,optionalTree=False):
     """
@@ -553,23 +578,25 @@ class LeftJoin(AlgebraExpression):
         if prolog.DEBUG:
             print "eval(%s,%s,%s)"%(self,initialBindings,tripleStore.graph)
         if isinstance(self.left,AlgebraExpression):
-            self.left = self.left.evaluate(tripleStore,initialBindings,prolog)
-        if isinstance(self.left,BasicGraphPattern):        
+            left = self.left.evaluate(tripleStore,initialBindings,prolog)
+        else:
+            left = self.left
+        if isinstance(left,BasicGraphPattern):        
             retval = None
-            bindings = Query._createInitialBindings(self.left)
+            bindings = Query._createInitialBindings(left)
             if initialBindings:
                 bindings.update(initialBindings)
-            if hasattr(self.left,'tripleStore'):
+            if hasattr(left,'tripleStore'):
                 #Use the prepared tripleStore
-                tripleStore = self.left.tripleStore
-            top = Query._SPARQLNode(None,bindings,self.left.patterns, tripleStore)
-            top.expand(self.left.constraints)
+                tripleStore = left.tripleStore
+            top = Query._SPARQLNode(None,bindings,left.patterns, tripleStore)
+            top.expand(left.constraints)
             _ExpandLeftJoin(top,self.right,tripleStore,prolog)
             return Query.Query(top, tripleStore)
         else:
-            assert isinstance(self.left,Query.Query), repr(self.left)
-            _ExpandLeftJoin(self.left.top,self.right,tripleStore,prolog)
-            return self.left
+            assert isinstance(left,Query.Query), repr(left)
+            _ExpandLeftJoin(left.top,self.right,tripleStore,prolog)
+            return left
 
 class Union(AlgebraExpression):
     """
@@ -586,31 +613,35 @@ class Union(AlgebraExpression):
         if prolog.DEBUG:
             print "eval(%s,%s,%s)"%(self,initialBindings,tripleStore.graph)
         if isinstance(self.left,AlgebraExpression):
-            self.left = self.left.evaluate(tripleStore,initialBindings,prolog)
-        if isinstance(self.left,BasicGraphPattern):        
+            left = self.left.evaluate(tripleStore,initialBindings,prolog)
+        else:
+            left = self.left
+        if isinstance(left,BasicGraphPattern):        
             #The left expression has not been evaluated
             retval = None
-            bindings = Query._createInitialBindings(self.left)
+            bindings = Query._createInitialBindings(left)
             if initialBindings:
                 bindings.update(initialBindings)
-            top = Query._SPARQLNode(None,bindings,self.left.patterns, tripleStore)
-            top.expand(self.left.constraints)
+            top = Query._SPARQLNode(None,bindings,left.patterns, tripleStore)
+            top.expand(left.constraints)
             top = Query.Query(top, tripleStore)
         else:
             #The left expression has already been evaluated 
-            assert isinstance(self.left,Query.Query), repr(self.left)
-            top = self.left
+            assert isinstance(left,Query.Query), repr(left)
+            top = left
         #Now we evaluate the right expression (independently)
         if isinstance(self.right,AlgebraExpression):
             #If it is a GraphExpression, 'reduce' it
-            self.right = self.right.evaluate(tripleStore,initialBindings,prolog)           
-        assert isinstance(self.right,BasicGraphPattern)
+            right = self.right.evaluate(tripleStore,initialBindings,prolog)
+        else:
+            right = self.right           
+        assert isinstance(right,BasicGraphPattern)
         tS = tripleStore
-        if hasattr(self.right,'tripleStore'):            
-            tS = self.right.tripleStore
-        rightBindings = Query._createInitialBindings(self.right)
-        rightNode = Query._SPARQLNode(None,rightBindings,self.right.patterns,tS)
-        rightNode.expand(self.right.constraints)
+        if hasattr(right,'tripleStore'):            
+            tS = right.tripleStore
+        rightBindings = Query._createInitialBindings(right)
+        rightNode = Query._SPARQLNode(None,rightBindings,right.patterns,tS)
+        rightNode.expand(right.constraints)
         #The UNION semantics are implemented by the overidden __add__ method                
         return top + Query.Query(rightNode, tripleStore)
 
