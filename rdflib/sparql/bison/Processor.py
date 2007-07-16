@@ -22,7 +22,7 @@ class Processor(sparql.Processor):
     def __init__(self, graph):
         self.graph = graph
 
-    def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False):
+    def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False,dataSetBase=None):
         assert isinstance(strOrQuery, (basestring, Query)), "%s must be a string or an rdflib.sparql.bison.Query.Query instance"%strOrQuery
         if isinstance(strOrQuery, basestring):
             strOrQuery = Parse(strOrQuery, DEBUG)
@@ -36,5 +36,5 @@ class Processor(sparql.Processor):
                     
         global prolog            
         prolog = strOrQuery.prolog
-        return TopEvaluate(strOrQuery,self.graph,initBindings,DEBUG=DEBUG)
+        return TopEvaluate(strOrQuery,self.graph,initBindings,DEBUG=DEBUG,dataSetBase=dataSetBase)
         #return  Evaluate(self.graph, strOrQuery, initBindings, DEBUG=DEBUG)
