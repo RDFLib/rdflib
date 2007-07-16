@@ -12,7 +12,7 @@ query nodes as described in the section "Evaluation Semantics".
 We define eval(D(G), graph pattern) as the evaluation of a graph pattern with respect 
 to a dataset D having active graph G. The active graph is initially the default graph.
 """
-import unittest
+import unittest, os
 from StringIO import StringIO
 from rdflib.Graph import Graph, ReadOnlyGraphAggregate
 from rdflib import URIRef, Variable, plugin, BNode, Literal
@@ -26,7 +26,7 @@ from rdflib.sparql.bison.GraphPattern import *
 from rdflib.sparql.graphPattern import BasicGraphPattern
 from rdflib.sparql.bison.Triples import ParsedConstrainedTriples
 from rdflib.sparql.bison.SPARQLEvaluate import createSPARQLPConstraint, CONSTRUCT_NOT_SUPPORTED, convertTerm
-
+from rdflib.sparql.Visualization import ExportExpansionNode
 #A variable to determine whether we obey SPARQL definition of RDF dataset
 #which does not allow matching of default graphs (or any graph with a BNode for a name)
 #"An RDF Dataset comprises one graph, 
@@ -202,7 +202,8 @@ def RenderSPARQLAlgebra(parsedSPARQL):
     return reduce(ReduceToAlgebra,
                   parsedSPARQL.query.whereClause.parsedGraphPattern.graphPatterns,None)
 
-def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False):
+def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False,
+                dataSetBase=None):
     """
     The outcome of executing a SPARQL is defined by a series of steps, starting 
     from the SPARQL query as a string, turning that string into an abstract 
@@ -222,9 +223,19 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
             if isinstance(dtSet,NamedGraph):
                 graphs.append(Graph(dataset.store,dtSet))
             else:
+                if DAWG_DATASET_COMPLIANCE:
+                    #@@ this should indicate a merge into the 'default' graph
+                    # per http://www.w3.org/TR/rdf-sparql-query/#unnamedGraph
+                    # (8.2.1 Specifying the Default Graph)
+                    pass
                 #GRDDL hook here...
                 memStore = plugin.get('IOMemory',Store)()
                 memGraph = Graph(memStore)
+                if not os.path.exists(dtSet):
+                    assert dataSetBase,"No base given for relative FROM expressions"
+                    resURI = os.path.join(dataSetBase,dtSet)
+                    assert os.path.exists(resURI),"Resolved URI %s does not exist!"%resURI
+                    dtSet = resURI 
                 try:
                     #Try as RDF/XML first
                     memGraph.parse(dtSet)
@@ -367,19 +378,6 @@ class EmptyGraphPatternExpression(AlgebraExpression):
         empty.bound = False
         return Query.Query(empty, tripleStore)
 
-def _fetchBoundLeaves(node):
-    """
-    Takes a SPARQLNode and returns a generator
-    over its bound leaves
-    """
-    if len(node.children) == 0 :
-        if node.bound and not node.clash:
-            yield node
-    else :
-        for c in node.children :
-            for proxy in _fetchBoundLeaves(c):
-                yield proxy
-
 def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
     """
     Traverses to the leaves of expansion trees to implement the Join
@@ -416,7 +414,7 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
             #in Join(LeftJoin(A,B),X), if the inner LeftJoin is successful, then X is joined
             #against the cumulative bindings ( instead of just A )
             descendantOptionals = node.optionalTrees and \
-                [o for o in node.optionalTrees if list(_fetchBoundLeaves(o))] 
+                [o for o in node.optionalTrees if list(Query._fetchBoundLeaves(o))] 
             if not descendantOptionals:
                 top = node
             else:
@@ -435,7 +433,7 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
                 if prolog.DEBUG:
                     print "Has compatible bindings and no valid optional expansions"
                     print "Newly bound descendants: "
-                    for c in _fetchBoundLeaves(child):
+                    for c in Query._fetchBoundLeaves(child):
                         print "\t",c, c.bound                        
                         print c.bindings
         else:
@@ -448,7 +446,7 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
                 print "Adding %s to %s"%(child,node)
         for optTree in node.optionalTrees:
             #Join the optional paths as well - those that are bound and valid
-            for validLeaf in _fetchBoundLeaves(optTree):
+            for validLeaf in Query._fetchBoundLeaves(optTree):
                 _ExpandJoin(validLeaf,expression,tripleStore,prolog,optionalTree=True)
     else :
         processedChildren = []
@@ -506,7 +504,7 @@ class Join(AlgebraExpression):
                 _ExpandJoin(left.parent1.top,self.right,tripleStore,prolog)
                 _ExpandJoin(left.parent2.top,self.right,tripleStore,prolog)
             else:
-                for b in _fetchBoundLeaves(left.top):
+                for b in Query._fetchBoundLeaves(left.top):
                     _ExpandJoin(b,self.right,tripleStore,prolog)
             return left
 
@@ -548,7 +546,7 @@ def _ExpandLeftJoin(node,expression,tripleStore,prolog,optionalTree=False):
         if prolog.DEBUG:
             print "Optional tree: ", optTree
         proxy = None
-        for proxy in _fetchBoundLeaves(optTree):
+        for proxy in Query._fetchBoundLeaves(optTree):
             if prolog.DEBUG:
                 print "Marking proxy: ", proxy
             proxy.proxy = True
@@ -591,11 +589,15 @@ class LeftJoin(AlgebraExpression):
                 tripleStore = left.tripleStore
             top = Query._SPARQLNode(None,bindings,left.patterns, tripleStore)
             top.expand(left.constraints)
-            _ExpandLeftJoin(top,self.right,tripleStore,prolog)
+            for b in Query._fetchBoundLeaves(top):
+                _ExpandLeftJoin(b,self.right,tripleStore,prolog)            
+            #_ExpandLeftJoin(top,self.right,tripleStore,prolog)
             return Query.Query(top, tripleStore)
         else:
             assert isinstance(left,Query.Query), repr(left)
-            _ExpandLeftJoin(left.top,self.right,tripleStore,prolog)
+            for b in Query._fetchBoundLeaves(left.top):
+                _ExpandLeftJoin(b,self.right,tripleStore,prolog)                        
+            #_ExpandLeftJoin(left.top,self.right,tripleStore,prolog)
             return left
 
 class Union(AlgebraExpression):
@@ -635,15 +637,18 @@ class Union(AlgebraExpression):
             right = self.right.evaluate(tripleStore,initialBindings,prolog)
         else:
             right = self.right           
-        assert isinstance(right,BasicGraphPattern)
         tS = tripleStore
-        if hasattr(right,'tripleStore'):            
-            tS = right.tripleStore
-        rightBindings = Query._createInitialBindings(right)
-        rightNode = Query._SPARQLNode(None,rightBindings,right.patterns,tS)
-        rightNode.expand(right.constraints)
+        if isinstance(right,BasicGraphPattern):
+            if hasattr(right,'tripleStore'):            
+                tS = right.tripleStore
+            rightBindings = Query._createInitialBindings(right)
+            rightNode = Query._SPARQLNode(None,rightBindings,right.patterns,tS)
+            rightNode.expand(right.constraints)
+        else:
+            assert isinstance(right,Query.Query), repr(right)
+            rightNode = right.top
         #The UNION semantics are implemented by the overidden __add__ method                
-        return top + Query.Query(rightNode, tripleStore)
+        return top + Query.Query(rightNode, tS)
 
 class GraphExpression(AlgebraExpression):
     """
