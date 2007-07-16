@@ -665,6 +665,7 @@ class Graph(Node):
         self.parse(source, publicID, format)
 
     def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False,
+              dataSetBase=None,
               processor="sparql"):
         """
         Executes a SPARQL query (eventually will support Versa queries with same method) against this Graph
@@ -676,7 +677,7 @@ class Graph(Node):
         """
         assert processor == 'sparql',"SPARQL is currently the only supported RDF query language"
         p = plugin.get(processor, sparql.Processor)(self)
-        return plugin.get('SPARQLQueryResult',QueryResult)(p.query(strOrQuery, initBindings, initNs, DEBUG))
+        return plugin.get('SPARQLQueryResult',QueryResult)(p.query(strOrQuery, initBindings, initNs, DEBUG, dataSetBase))
 
         processor_plugin = plugin.get(processor, sparql.Processor)(self.store)
         qresult_plugin = plugin.get('SPARQLQueryResult', QueryResult)
