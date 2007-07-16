@@ -699,10 +699,7 @@ class Query :
         else:
             maxKeys = []
             for bound in _fetchBoundLeaves(self.top):
-                if maxKeys:
-                    assert maxKeys == bound.bindings.keys()
-                else:
-                    maxKeys = bound.bindings.keys()
+                maxKeys.extend(bound.bindings.keys())
             return list2set(maxKeys)
 
     def _orderedSelect(self,selection,orderedBy,orderDirection) :
