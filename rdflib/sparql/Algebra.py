@@ -26,7 +26,6 @@ from rdflib.sparql.bison.GraphPattern import *
 from rdflib.sparql.graphPattern import BasicGraphPattern
 from rdflib.sparql.bison.Triples import ParsedConstrainedTriples
 from rdflib.sparql.bison.SPARQLEvaluate import createSPARQLPConstraint, CONSTRUCT_NOT_SUPPORTED, convertTerm
-from rdflib.sparql.Visualization import ExportExpansionNode
 #A variable to determine whether we obey SPARQL definition of RDF dataset
 #which does not allow matching of default graphs (or any graph with a BNode for a name)
 #"An RDF Dataset comprises one graph, 
