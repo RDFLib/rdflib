@@ -306,7 +306,9 @@ class SPARQLQueryResult(QueryResult.QueryResult):
                    for binding in self.topUnion:
                        writer.write_start_result()
                        for key,val in binding.items():
-                           writer.write_binding(key,val)
+                           if not self.selectionF or \
+                              key in self.selectionF:                               
+                               writer.write_binding(key,val)
                        writer.write_end_result()
                else:
                    for i in xrange(0,len(self.selected)) :
