@@ -1,6 +1,4 @@
 from rdflib import sparql
-from rdflib.sparql.bison.Query import Query, Prolog
-from rdflib.sparql.Algebra import TopEvaluate
 import SPARQLParserc as SPARQLParser
 
 def CreateSPARQLParser():
@@ -23,6 +21,8 @@ class Processor(sparql.Processor):
         self.graph = graph
 
     def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False,dataSetBase=None):
+        from rdflib.sparql.bison.Query import Query, Prolog
+        from rdflib.sparql.Algebra import TopEvaluate
         assert isinstance(strOrQuery, (basestring, Query)), "%s must be a string or an rdflib.sparql.bison.Query.Query instance"%strOrQuery
         if isinstance(strOrQuery, basestring):
             strOrQuery = Parse(strOrQuery, DEBUG)
