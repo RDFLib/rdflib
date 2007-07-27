@@ -181,7 +181,7 @@ def mapToOperator(expr,prolog,combinationArg=None,constraint=False):
         if constraint:
             return """sparqlOperators.EBV("%s")%s"""%(expr,combinationInvokation)
         else:
-            return '"%s"'%expr
+            return '"?%s"'%expr
     elif isinstance(expr,ParsedREGEXInvocation):
         return 'sparqlOperators.regex(%s,%s%s)%s'%(
                  mapToOperator(expr.arg1,prolog,combinationArg,constraint=constraint),

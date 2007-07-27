@@ -55,7 +55,6 @@ def getLiteralValue(v) :
 # @return a function taking one parameter (the binding directory)
 def getValue(param) :
     if isinstance(param,Variable) :
-        param = param
         unBound = True
     else :
         unBound = queryString(param)
@@ -69,7 +68,10 @@ def getValue(param) :
             return lambda(bindings): value
     def f(bindings) :
         if unBound :
-            val = bindings[param]
+            #@@note, param must be reassigned to avoid tricky issues of scope
+            #see: http://docs.python.org/ref/naming.html
+            _param = isinstance(param,Variable) and param or Variable(param[1:]) 
+            val = bindings[_param]
             if isinstance(val,Literal) :
                 return getLiteralValue(val)
             else :
@@ -90,6 +92,7 @@ def lt(a,b) :
         try :
             return fa(bindings) < fb(bindings)
         except:
+            raise
             # this is the case when the operators are incompatible
             if Debug :
                 (typ,val,traceback) = sys.exc_info()
