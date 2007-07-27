@@ -197,7 +197,8 @@ def ReduceToAlgebra(left,right):
 def RenderSPARQLAlgebra(parsedSPARQL):
     global prolog
     prolog = parsedSPARQL.prolog
-    prolog.DEBUG = False
+    if prolog is not None:
+        prolog.DEBUG = False
     return reduce(ReduceToAlgebra,
                   parsedSPARQL.query.whereClause.parsedGraphPattern.graphPatterns,None)
 
