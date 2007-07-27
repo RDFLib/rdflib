@@ -231,13 +231,20 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
                 #GRDDL hook here...
                 memStore = plugin.get('IOMemory',Store)()
                 memGraph = Graph(memStore)
-                if not os.path.exists(dtSet):
-                    assert dataSetBase,"No base given for relative FROM expressions"
-                    resURI = os.path.join(dataSetBase,dtSet)
-                    assert os.path.exists(resURI),"Resolved URI %s does not exist!"%resURI
-                    dtSet = resURI 
+                
+                #Need a hook to bypass urllib's inability
+                #to implement URI RFC verbatim - problematic for descendent 
+                #specifications
                 try:
-                    #Try as RDF/XML first
+                    from Ft.Lib.Uri import UriResolverBase as Resolver
+                except:
+                    class Resolver:
+                        def normalize(self, uriRef, baseUri):
+                            return uriRef 
+                if dataSetBase is not None:
+                    dtSet=Resolver().normalize(dtSet, dataSetBase)
+                try:
+                    #Try as RDF/XML first (without resolving)
                     memGraph.parse(dtSet)
                 except:
                     try:
