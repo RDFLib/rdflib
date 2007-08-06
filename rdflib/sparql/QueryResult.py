@@ -259,13 +259,13 @@ class SPARQLQueryResult(QueryResult.QueryResult):
                             if b != "":
                                 bindings.append(b)
                    elif len(self.selectionF) == 1:
-                       bindings.append(bindingJSON(self.selectionF[0][1:],hit))
+                       bindings.append(bindingJSON(self.selectionF[0],hit))
                    else:
                         for j in xrange(0, len(self.selectionF)):
-                            b = bindingJSON(self.selectionF[j][1:],hit[j])
+                            b = bindingJSON(self.selectionF[j],hit[j])
                             if b != "":
                                 bindings.append(b)
-                           
+
                    retval += "},\n".join(bindings)
                    retval += "}\n"
                    retval += '                }'
@@ -276,26 +276,26 @@ class SPARQLQueryResult(QueryResult.QueryResult):
                retval += '           ]\n'
                retval += '    }\n'
                retval += '}\n'
-               
+
                selected_vars = self.selectionF
-               
+
                if len(selected_vars) == 0:
                    selected_vars = allvarsL
-                   
+
                header = ""
                header += '{\n'
                header += '   "head" : {\n        "vars" : [\n'
                for i in xrange(0,len(selected_vars)) :
-                   header += '             "%s"' % selected_vars[i][1:]
+                   header += '             "%s"' % selected_vars[i]
                    if i == len(selected_vars) - 1 :
                        header += '\n'
                    else :
                        header += ',\n'
                header += '         ]\n'
                header += '    },\n'
-               
+
                retval = header + retval
-               
+
            elif format == "xml" :
                # xml output
                out = StringIO()
@@ -307,7 +307,7 @@ class SPARQLQueryResult(QueryResult.QueryResult):
                        writer.write_start_result()
                        for key,val in binding.items():
                            if not self.selectionF or \
-                              key in self.selectionF:                               
+                              key in self.selectionF:
                                writer.write_binding(key,val)
                        writer.write_end_result()
                else:
@@ -319,19 +319,19 @@ class SPARQLQueryResult(QueryResult.QueryResult):
                                #raise
                            writer.write_start_result()
                            if len(allvarsL) == 1:
-                               hit = (hit,) # Not an iterable - a parser bug?   
+                               hit = (hit,) # Not an iterable - a parser bug?
                            for j in xrange(0,len(allvarsL)) :
                                if not len(hit) < j+1:
                                    writer.write_binding(allvarsL[j],hit[j])
                            writer.write_end_result()
                        elif len(self.selectionF) == 1 :
                            writer.write_start_result()
-                           writer.write_binding(self.selectionF[0][1:],hit)
+                           writer.write_binding(self.selectionF[0],hit)
                            writer.write_end_result()
                        else:
                            writer.write_start_result()
                            for j in xrange(0,len(self.selectionF)) :
-                               writer.write_binding(self.selectionF[j][1:],hit[j])
+                               writer.write_binding(self.selectionF[j],hit[j])
                            writer.write_end_result()
                writer.close()
                return out.getvalue()
