@@ -54,6 +54,9 @@ class TestBDBContext(ContextTestCase):
     store = "BerkeleyDB"
 
 class TestBDBTransactions(unittest.TestCase):
+
+    slowtest = True
+
     def setUp(self):
         self.graph = ConjunctiveGraph(store="BerkeleyDB")
         self.path = mkdtemp()
@@ -139,7 +142,7 @@ class TestBDBTransactions(unittest.TestCase):
         
         add_t.join()
         read_t.join()
-        
+
     def testAddUserTransaction(self):
         workers = 2
         triples = 2000
