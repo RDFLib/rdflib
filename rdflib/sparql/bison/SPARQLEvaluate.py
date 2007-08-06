@@ -236,7 +236,8 @@ def createSPARQLPConstraint(filter,prolog):
     This string is then evaluated to return the actual function for sparql-p
     """
     reducedFilter = isinstance(filter.filter,ListRedirect) and filter.filter.reduce() or filter.filter
-    print reducedFilter,type(reducedFilter)
+    if prolog.DEBUG:
+        print reducedFilter,type(reducedFilter)
     if isinstance(reducedFilter,(ListRedirect,
                                  BinaryOperator,
                                  UnaryOperator,
