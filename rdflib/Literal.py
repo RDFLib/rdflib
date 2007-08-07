@@ -273,7 +273,10 @@ class Literal(Identifier):
         return self.encode("unicode-escape")
 
     def __repr__(self):
-        return """rdflib.Literal('%s', lang=%s, datatype=%s)""" % (str(self), repr(self.language), repr(self.datatype))
+        return """rdflib.Literal(%s, lang=%s, datatype=%s)""" % (
+                super(Literal, self).__repr__(),
+                repr(self.language),
+                repr(self.datatype))
 
     def toPython(self):
         """
