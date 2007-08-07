@@ -194,12 +194,12 @@ def neq(a,b) :
             return False
     return f
 
-def __getQueryString(v) :
-    if isinstance(v,Variable) :
+def __getVariableName(v):
+    if isinstance(v, Variable):
         return v
-    elif queryString(v) :
-        return v
-    else :
+    elif queryString(v):
+        return v[1:]
+    else:
         return None
 
 
@@ -208,7 +208,7 @@ def __getQueryString(v) :
 # @param a value or query string
 # @return check method
 def bound(a) :
-    v = __getQueryString(a)
+    v = __getVariableName(a)
     def f(bindings) :
         if v == None :
             return False
@@ -224,7 +224,7 @@ def bound(a) :
 # @param a value or query string
 # @return check method
 def isURI(a) :
-    v = __getQueryString(a)
+    v = __getVariableName(a)
     def f(bindings) :
         if v == None :
             return False
@@ -250,7 +250,7 @@ def isIRI(a) :
 # @param a value or query string
 # @return check method
 def isBlank(a) :
-    v = __getQueryString(a)
+    v = __getVariableName(a)
     def f(bindings) :
         if v == None :
             return False
@@ -269,7 +269,7 @@ def isBlank(a) :
 # @param a value or query string
 # @return check method
 def isLiteral(a) :
-    v = __getQueryString(a)
+    v = __getVariableName(a)
     def f(bindings) :
         if v == None :
             return False
@@ -288,7 +288,7 @@ def isLiteral(a) :
 # @param a value or query string
 # @return check method
 def str(a) :
-    v = __getQueryString(a)
+    v = __getVariableName(a)
     def f(bindings) :
         if v == None :
             return ""
@@ -308,7 +308,7 @@ def str(a) :
 # @param a value or query string
 # @return check method
 def lang(a) :
-    v = __getQueryString(a)
+    v = __getVariableName(a)
     def f(bindings) :
         if v == None: return ""
         try :
@@ -326,7 +326,7 @@ def lang(a) :
 # @param a value or query string
 # @return check method
 def datatype(a) :
-    v = __getQueryString(a)
+    v = __getVariableName(a)
     def f(bindings) :
         if v == None:
             if isinstance(a,Literal):

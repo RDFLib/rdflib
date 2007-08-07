@@ -8,7 +8,7 @@ from datetime import date
 
 testRdf = """
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-        @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+    @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
     @prefix : <tag://example.org,2007/literals-test#> .
 
     <http://example.org/thing>
@@ -17,8 +17,7 @@ testRdf = """
         :float 1.1;
         :string "string"^^xsd:string;
         :date "2007-04-28"^^xsd:date;
-        rdfs:label "Thing"@en, "Sak"@sv;
-    .
+        rdfs:label "Thing"@en, "Sak"@sv .
 """
 graph = ConjunctiveGraph()
 graph.load(StringIO(testRdf), format='n3')
