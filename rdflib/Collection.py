@@ -20,7 +20,7 @@ class Collection(object):
     >>> g.add((listItem2,RDF.first,Literal(3)))
     >>> c=Collection(g,listName)
     >>> print list(c)
-    [rdflib.Literal('1', lang=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#int')), rdflib.Literal('2', lang=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#int')), rdflib.Literal('3', lang=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#int'))]
+    [rdflib.Literal(u'1', lang=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#int')), rdflib.Literal(u'2', lang=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#int')), rdflib.Literal(u'3', lang=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#int'))]
     >>> 1 in c
     True
     >>> len(c)
@@ -52,7 +52,10 @@ class Collection(object):
     def __len__(self):
         """length of items in collection."""
         count = 0
+        links=set()
         for item in self.graph.items(self.uri):
+            assert item not in links,"There is a loop in the RDF list!"
+            links.add(item)
             count += 1
         return count
 
@@ -120,21 +123,35 @@ class Collection(object):
         return self.graph.items(self.uri)
 
     def append(self, item):
+        """
+        >>> from rdflib.Graph import Graph    
+        >>> listName = BNode()
+        >>> g = Graph()
+        >>> c=Collection(g,listName,[Literal(1),Literal(2)])
+        >>> links = [list(g.subjects(object=i,predicate=RDF.first))[0] for i in c]
+        >>> len([i for i in links if (i,RDF.rest,RDF.nil) in g])
+        1
+        
+        """
         container = self.uri
         graph = self.graph
-        while True:
-            first = graph.value(container, RDF.first)
-            if first is None:
-                graph.add((container, RDF.first, item))
-                return
+        #iterate to the end of the linked list
+        rest = graph.value(container, RDF.rest)
+        while rest:
+            if rest == RDF.nil:
+                #the end, append to the end of the linked list
+                node = BNode()
+                graph.set((container, RDF.rest, node))
+                container=node                
+                break
             else:
-                rest = graph.value(container, RDF.rest)
-                if rest:
-                    container = rest
-                else:
-                    node = BNode()
-                    graph.add((container, RDF.rest, node))
-                    container = node
+                #move down one link
+                if container != self.uri:
+                    rest = graph.value(rest, RDF.rest)
+                if not rest == RDF.nil:
+                    container=rest
+        graph.add((container, RDF.first, item))
+        graph.add((container, RDF.rest, RDF.nil))
 
     def clear(self):
         container = self.uri
