@@ -1,7 +1,7 @@
 import types, sets
 from pprint import pprint
 from rdflib import URIRef, BNode, Literal, Variable
-from rdflib.Graph import Graph, ConjunctiveGraph
+from rdflib.Graph import Graph, ConjunctiveGraph, ReadOnlyGraphAggregate
 from rdflib.Identifier import Identifier
 from rdflib.util import check_subject, list2set
 from rdflib.sparql import SPARQLError
@@ -103,7 +103,7 @@ def _fetchProxies(node):
         for c in node.children :
             for gc in _fetchProxies(c):
                 yield c
-
+                        
 def _fetchBoundLeaves(node):
     """
     Takes a SPARQLNode and returns a generator
@@ -374,7 +374,7 @@ class _SPARQLNode:
                         graphName = self.bindings[self.tripleStore.graphVariable]
                         assert not self.tripleStore.DAWG_DATASET_COMPLIANCE or\
                            isinstance(graphName,URIRef),\
-                           "Cannot formally return graph name solutions for the default graph"                        
+                           "Cannot formally return graph name solutions for the default graph!"                        
                         unifiedGraph = Graph(self.tripleStore.graph.store,
                                              identifier=graphName)
                         originalGraph = self.tripleStore.graph
@@ -390,11 +390,20 @@ class _SPARQLNode:
                                   for _s,_p,_o in self.tripleStore.graph.triples((search_s,search_p,search_o))]
             elif self.tripleStore.DAWG_DATASET_COMPLIANCE and \
                  isinstance(self.tripleStore.graph,ConjunctiveGraph):
-                #match against the default graph
-                searchRT = self.tripleStore.graph.default_context.triples(
-                                   (search_s,
-                                    search_p,
-                                    search_o))
+                #For query-constructed datasets, match against the 'default graph' - 
+                #the first Graph with a non-URIRef identifier (or an empty, default graph) 
+                if isinstance(self.tripleStore.graph,ReadOnlyGraphAggregate):
+                        for g in self.tripleStore.graph.graphs:
+                            searchRT = []
+                            if isinstance(g.identifier,BNode):
+                                searchRT = g.triples((search_s,search_p,search_o))               
+                                break
+                else:
+                    #match against the default graph
+                    searchRT = self.tripleStore.graph.default_context.triples(
+                                       (search_s,
+                                        search_p,
+                                        search_o))
             else:
                 searchRT = self.tripleStore.graph.triples((search_s,search_p,search_o))
             if originalGraph:
@@ -402,12 +411,10 @@ class _SPARQLNode:
             for tripleOrQuad in searchRT:
                 if self.tripleStore.graphVariable:
                     (result_s,result_p,result_o,parentGraph) = tripleOrQuad
-                    if self.tripleStore.DAWG_DATASET_COMPLIANCE and \
-                        isinstance(parentGraph.identifier,BNode):
-                        #We have a Graph with a Blank Node for an identifier (illegal
-                        #in SPARQL) and we are in strict DAWG data set mode, so ignore
-                        #the result
+                    if isinstance(self.tripleStore.graph,ConjunctiveGraph) and \
+                       self.tripleStore.DAWG_DATASET_COMPLIANCE and isinstance(parentGraph.identifier,BNode):
                         continue
+                    assert isinstance(parentGraph.identifier,URIRef)
                 else:
                     (result_s,result_p,result_o) = tripleOrQuad
                 # if a user defined constraint has been added, it should be checked now

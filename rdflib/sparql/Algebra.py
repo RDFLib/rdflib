@@ -14,7 +14,7 @@ to a dataset D having active graph G. The active graph is initially the default 
 """
 import unittest, os
 from StringIO import StringIO
-from rdflib.Graph import Graph, ReadOnlyGraphAggregate
+from rdflib.Graph import Graph, ReadOnlyGraphAggregate, ConjunctiveGraph
 from rdflib import URIRef, Variable, plugin, BNode, Literal
 from rdflib.store import Store 
 from rdflib.sparql.bison.Query import AskQuery, SelectQuery
@@ -202,6 +202,45 @@ def RenderSPARQLAlgebra(parsedSPARQL):
     return reduce(ReduceToAlgebra,
                   parsedSPARQL.query.whereClause.parsedGraphPattern.graphPatterns,None)
 
+def LoadGraph(dtSet,dataSetBase,graph):
+    #An RDF URI dereference, following TAG best practices
+    #Need a hook (4Suite) to bypass urllib's inability
+    #to implement URI RFC verbatim - problematic for descendent 
+    #specifications
+    try:
+        from Ft.Lib.Uri import UriResolverBase as Resolver
+        from Ft.Lib.Uri import GetScheme, OsPathToUri
+    except:
+        def OsPathToUri(path):
+            return path
+        def GetScheme(uri):
+            return None
+        class Resolver:
+            supportedSchemas=[None]
+            def resolve(self, uriRef, baseUri):
+                return uriRef 
+    if dataSetBase is not None:
+        res = Resolver()
+        scheme = GetScheme(dtSet) or GetScheme(dataSetBase)
+        if scheme not in res.supportedSchemes:
+            dataSetBase = OsPathToUri(dataSetBase) 
+        source=Resolver().resolve(str(dtSet), dataSetBase)
+    else:
+        source = dtSet
+    #GRDDL hook here!
+    try:
+        #Try as RDF/XML first (without resolving)
+        graph.parse(source)
+    except:
+        try:
+            #Parse as Notation 3 instead
+            source=Resolver().resolve(str(dtSet), dataSetBase)
+            graph.parse(source,format='n3')
+        except:
+            raise
+            #RDFa?
+            graph.parse(dtSet,format='rdfa')
+
 def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False,
                 dataSetBase=None):
     """
@@ -221,39 +260,25 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
         graphs = []
         for dtSet in query.query.dataSets:
             if isinstance(dtSet,NamedGraph):
-                graphs.append(Graph(dataset.store,dtSet))
+                newGraph = Graph(dataset.store,dtSet)
+                LoadGraph(dtSet,dataSetBase,newGraph)
+                graphs.append(newGraph)
             else:
+                #"Each FROM clause contains an IRI that indicates a graph to be 
+                # used to form the default graph. This does not put the graph 
+                # in as a named graph." -- 8.2.1 Specifying the Default Graph
                 if DAWG_DATASET_COMPLIANCE:
                     #@@ this should indicate a merge into the 'default' graph
                     # per http://www.w3.org/TR/rdf-sparql-query/#unnamedGraph
                     # (8.2.1 Specifying the Default Graph)
-                    pass
-                #GRDDL hook here...
-                memStore = plugin.get('IOMemory',Store)()
-                memGraph = Graph(memStore)
-                
-                #Need a hook to bypass urllib's inability
-                #to implement URI RFC verbatim - problematic for descendent 
-                #specifications
-                try:
-                    from Ft.Lib.Uri import UriResolverBase as Resolver
-                except:
-                    class Resolver:
-                        def normalize(self, uriRef, baseUri):
-                            return uriRef 
-                if dataSetBase is not None:
-                    dtSet=Resolver().normalize(dtSet, dataSetBase)
-                try:
-                    #Try as RDF/XML first (without resolving)
-                    memGraph.parse(dtSet)
-                except:
-                    try:
-                        #Parse as Notation 3 instead
-                        memGraph.parse(dtSet,format='n3')
-                    except:
-                        #RDFa?
-                        memGraph.parse(dtSet,format='rdfa')
-                graphs.append(memGraph)
+                    assert isinstance(dataset,ConjunctiveGraph)
+                    memGraph = dataset.default_context
+                else:
+                    memStore = plugin.get('IOMemory',Store)()
+                    memGraph = Graph(memStore)
+                LoadGraph(dtSet,dataSetBase,memGraph)
+                if memGraph.identifier not in [g.identifier for g in graphs]:
+                    graphs.append(memGraph)
         tripleStore = sparqlGraph.SPARQLGraph(ReadOnlyGraphAggregate(graphs,
                                                                      store=dataset.store),
                                               dSCompliance=DAWG_DATASET_COMPLIANCE)
@@ -681,7 +706,7 @@ class GraphExpression(AlgebraExpression):
         if isinstance(self.iriOrVar,Variable):
             #A variable: 
             if self.iriOrVar in initialBindings:
-                assert initialBindings[self.iriOrVar], "Empty binding for GRAPH variable!"
+                #assert initialBindings[self.iriOrVar], "Empty binding for GRAPH variable!"
                 if prolog.DEBUG:
                     print "Passing on unified graph name: ", initialBindings[self.iriOrVar]
                 tripleStore = sparqlGraph.SPARQLGraph(
@@ -699,7 +724,7 @@ class GraphExpression(AlgebraExpression):
             graphName  = convertTerm(graphName,prolog)
             if isinstance(tripleStore.graph,ReadOnlyGraphAggregate):
                 targetGraph = [g for g in tripleStore.graph.graphs if g.identifier == graphName]
-                assert len(targetGraph) == 1
+                #assert len(targetGraph) == 1
                 targetGraph = targetGraph[0]
             else:
                 targetGraph = Graph(tripleStore.store,graphName)
