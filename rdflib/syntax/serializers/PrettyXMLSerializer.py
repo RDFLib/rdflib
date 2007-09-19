@@ -2,7 +2,7 @@ from rdflib import RDF
 
 from rdflib import URIRef, Literal, BNode
 from rdflib.util import first, uniq, more_than
-
+from rdflib.Collection import Collection
 from rdflib.syntax.serializers import Serializer
 from rdflib.syntax.serializers.XMLWriter import XMLWriter
 
@@ -22,6 +22,7 @@ class PrettyXMLSerializer(Serializer):
 
     def __init__(self, store, max_depth=3):
         super(PrettyXMLSerializer, self).__init__(store)
+        self.forceRDFAbout=set()
 
     def serialize(self, stream, base=None, encoding=None, **args):
         self.__serialized = {}
@@ -85,6 +86,11 @@ class PrettyXMLSerializer(Serializer):
                     if not (predicate==RDF.type and object==type):
                         self.predicate(predicate, object, depth+1)
             writer.pop(element)
+        elif subject in self.forceRDFAbout:
+            writer.push(RDF.Description)
+            writer.attribute(RDF.about, self.relativize(subject))
+            writer.pop(RDF.Description)
+            self.forceRDFAbout.remove(subject)
 
     def predicate(self, predicate, object, depth=1):
         writer = self.writer
@@ -117,12 +123,11 @@ class PrettyXMLSerializer(Serializer):
                 # TODO: warn that any assertions on object other than
                 # RDF.first and RDF.rest are ignored... including RDF.List
                 writer.attribute(RDF.parseType, "Collection")
-                while collection:
-                    item = first(store.objects(collection, RDF.first))
-                    if item:
-                        self.subject(item)
-                    collection = first(store.objects(collection, RDF.rest))
-                    self.__serialized[collection] = 1
+                col=Collection(store,object)
+                for item in col:
+                    self.forceRDFAbout.add(item)
+                    self.__serialized[item] = 1
+                    self.subject(item)
             else:
                 if depth<=self.max_depth:
                     self.subject(object, depth+1)
