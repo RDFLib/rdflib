@@ -36,6 +36,27 @@ class Collection(object):
         for item in seq:
             self.append(item)
 
+    def n3(self):
+        """
+        >>> from rdflib.BNode import BNode
+        >>> from rdflib.Literal import Literal
+        >>> from rdflib.Graph import Graph    
+        >>> listName = BNode()
+        >>> g = Graph('IOMemory')
+        >>> listItem1 = BNode()
+        >>> listItem2 = BNode()
+        >>> g.add((listName,RDF.first,Literal(1)))
+        >>> g.add((listName,RDF.rest,listItem1))
+        >>> g.add((listItem1,RDF.first,Literal(2)))
+        >>> g.add((listItem1,RDF.rest,listItem2))
+        >>> g.add((listItem2,RDF.rest,RDF.nil))
+        >>> g.add((listItem2,RDF.first,Literal(3)))
+        >>> c=Collection(g,listName)
+        >>> print c.n3()
+        ( "1"^^<http://www.w3.org/2001/XMLSchema#int> "2"^^<http://www.w3.org/2001/XMLSchema#int> "3"^^<http://www.w3.org/2001/XMLSchema#int> )
+        """
+        return "( %s )"%(' '.join([i.n3() for i in self]))
+
     def _get_container(self, index):
         """Gets the first, rest holding node at index."""
         assert isinstance(index, int)
