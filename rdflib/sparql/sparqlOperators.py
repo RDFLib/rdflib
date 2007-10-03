@@ -92,7 +92,7 @@ def lt(a,b) :
         try :
             return fa(bindings) < fb(bindings)
         except:
-            raise
+#            raise
             # this is the case when the operators are incompatible
             if Debug :
                 (typ,val,traceback) = sys.exc_info()
