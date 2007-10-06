@@ -1,99 +1,34 @@
 <?xml version='1.0'?>
 <fragment>  
-  <!-- [21]    	FilteredBasicGraphPattern ::= BlockOfTriples? ( Constraint '.'? FilteredBasicGraphPattern )? -->
-  <production name='21'>
-    <non-terminal>FilteredBasicGraphPattern</non-terminal>
-    <rule>
-      <code language="c">
-        $$ = PyList_New(0);
-      </code>      
-    </rule>
-    <rule>
-      <symbol>Triples</symbol>
-      <code language="c">
-        $$ = PyList_New(1);
-        PyList_SET_ITEM($$, 0, $1);
-        Py_INCREF($1);
-      </code>      
-    </rule>            
-    <rule>
-      <symbol>Triples</symbol>
-      <symbol>Constraint</symbol>
-      <symbol>DOT</symbol>
-      <symbol>FilteredBasicGraphPattern</symbol>
-      <code language="c">
-        $$ = PyObject_CallMethod(Util, "ListPrepend", "OO",PyObject_CallMethod(Triples, "ParsedConstrainedTriples", "OO", $1,$2),$4);
-        /*PyList_Append($4, PyObject_CallMethod(Triples, "ParsedConstrainedTriples", "OO", $1,$2));
-        Py_INCREF($4);
-        $$ = $4;*/
-      </code>      
-    </rule>            
-    <rule>
-      <symbol>Triples</symbol>
-      <symbol>Constraint</symbol>
-      <symbol>FilteredBasicGraphPattern</symbol>
-      <code language="c">
-        $$ = PyObject_CallMethod(Util, "ListPrepend", "OO",PyObject_CallMethod(Triples, "ParsedConstrainedTriples", "OO", $1,$2),$3);
-        /*PyList_Append($3, PyObject_CallMethod(Triples, "ParsedConstrainedTriples", "OO", $1,$2));
-        Py_INCREF($3);
-        $$ = $3;*/
-      </code>      
-    </rule>            
-    <rule>
-      <symbol>Constraint</symbol>
-      <symbol>DOT</symbol>
-      <symbol>FilteredBasicGraphPattern</symbol>
-      <code language="c">
-        Py_INCREF(Py_None);
-        $$ = PyObject_CallMethod(Util, "ListPrepend", "OO",PyObject_CallMethod(Triples, "ParsedConstrainedTriples", "OO", Py_None,$1),$3);
-        /*PyList_Append($3, PyObject_CallMethod(Triples, "ParsedConstrainedTriples", "OO", Py_None,$1));
-        Py_INCREF($3);
-        $$ = $3;*/
-      </code>      
-    </rule>            
-    <rule>
-      <symbol>Constraint</symbol>
-      <symbol>FilteredBasicGraphPattern</symbol>
-      <code language="c">
-        Py_INCREF(Py_None);
-        $$ = PyObject_CallMethod(Util, "ListPrepend", "OO",PyObject_CallMethod(Triples, "ParsedConstrainedTriples", "OO", Py_None,$1),$2);
-        /*PyList_Append($2, PyObject_CallMethod(Triples, "ParsedConstrainedTriples", "OO", Py_None,$1));
-        Py_INCREF($2);
-        $$ = $2;*/
-      </code>      
-    </rule>            
-  </production>
 
-  <!-- 
-       [27] Constraint ::= 'FILTER' ( BrackettedExpression | BuiltInCall | FunctionCall )
-  -->
-  <production name='27'>
-    <non-terminal>Constraint</non-terminal>
-    <rule>
-      <symbol>FILTER</symbol>
-      <symbol>LEFT_PAREN</symbol>
-      <symbol>ConditionalOrExpression</symbol>
-      <symbol>RIGHT_PAREN</symbol>
-      <code language="c">
-        $$ = PyObject_CallMethod(Filter, "ParsedExpressionFilter", "O", $3);
-      </code>      
-    </rule>
-    <rule>
-      <symbol>FILTER</symbol>
-      <symbol>BuiltInCall</symbol>
-      <code language="c">
-        $$ = PyObject_CallMethod(Filter, "ParsedFunctionFilter", "O", $2);
-      </code>      
-    </rule>
-    <rule>
-      <symbol>FILTER</symbol>
-      <symbol>FunctionCall</symbol>
-      <code language="c">
-        $$ = PyObject_CallMethod(Filter, "ParsedFunctionFilter", "O", $2);
-      </code>      
-    </rule>
-  </production>
-
+    <!--  [26] Filter ::= 'FILTER' Constraint -->
+    <!--  [27] Constraint ::= BrackettedExpression | BuiltInCall | FunctionCall -->    
+    <production name='27'>
+        <non-terminal>Filter</non-terminal>
+        <rule>
+            <symbol>FILTER</symbol>
+            <symbol>LEFT_PAREN</symbol>
+            <symbol>ConditionalOrExpression</symbol>
+            <symbol>RIGHT_PAREN</symbol>
+            <code language="c">
+                $$ = PyObject_CallMethod(Filter, "ParsedExpressionFilter", "O", $3);
+            </code>      
+        </rule>
+        <rule>
+            <symbol>FILTER</symbol>
+            <symbol>BuiltInCall</symbol>
+            <code language="c">
+                $$ = PyObject_CallMethod(Filter, "ParsedFunctionFilter", "O", $2);
+            </code>      
+        </rule>
+        <rule>
+            <symbol>FILTER</symbol>
+            <symbol>FunctionCall</symbol>
+            <code language="c">
+                $$ = PyObject_CallMethod(Filter, "ParsedFunctionFilter", "O", $2);
+            </code>      
+        </rule>
+    </production>
 
   <!--
     
@@ -379,7 +314,7 @@
       <symbol>NumericLiteral</symbol>
       <!-- Turn it into a number -->
       <code language="c">
-        PyObject *negNum = PyNumber_Negative($2);
+        PyObject *negNum = PyNumber_Negative(PyObject_CallMethod($2,"toPython",NULL));
         $$ = PyObject_CallMethod(rdflib, "Literal", "O", negNum);
         Py_XDECREF(negNum);
       </code>
@@ -407,7 +342,7 @@
       <!-- Turn it into an integer -->
       <code language="c">
         PyObject *num = PyNumber_Int($1);
-	$$ = PyObject_CallMethod(rdflib, "Literal", "O", num);
+	    $$ = PyObject_CallMethod(rdflib, "Literal", "O", num);
         Py_XDECREF(num);
       </code>
     </rule>
@@ -416,7 +351,7 @@
       <!-- Turn it into a decimal -->
       <code language="c">
         PyObject *num = PyNumber_Float($1);
-	$$ = PyObject_CallMethod(rdflib, "Literal", "O", num);
+	    $$ = PyObject_CallMethod(rdflib, "Literal", "O", num);
         Py_XDECREF(num);
       </code>
     </rule>
@@ -424,7 +359,7 @@
       <symbol>DOUBLE</symbol>
       <code language="c">
         PyObject *num = PyNumber_Float($1);
-	$$ = PyObject_CallMethod(rdflib, "Literal", "O", num);
+	    $$ = PyObject_CallMethod(rdflib, "Literal", "O", num);
         Py_XDECREF(num);
       </code>
     </rule>

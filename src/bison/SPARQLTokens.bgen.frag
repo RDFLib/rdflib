@@ -2,9 +2,11 @@
 <fragment>
   <token>WHITESPACE</token>
   <token>UNION</token>  
-  <token>QNAME</token>
-  <token>QNAME_NS</token>
+  <token>COLON</token>
   <token>Q_IRI_CONTENT</token>
+  <token>PNAME_NS</token>
+  <token>CONSTRUCT</token>
+  <token>PNAME_LN</token>
   <token>BLANK_NODE_LABEL</token>
   <token>VARNAME</token>
   <token>PREFIX</token>

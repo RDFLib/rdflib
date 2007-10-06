@@ -57,10 +57,10 @@
                     Py_INCREF($1);
                 </code>
             </rule>
-            <!--rule>
+            <rule>
                 <symbol>ConstructQuery</symbol>
             </rule>
-            <rule>
+            <!--rule>
                 <symbol>DescribeQuery</symbol>
             </rule-->
             <rule>
@@ -71,6 +71,59 @@
                 </code>                
             </rule>            
         </production>
+
+        <!--    ConstructQuery ::= 'CONSTRUCT' ConstructTemplate DatasetClause* WhereClause SolutionModifier -->
+        <production>
+            <non-terminal>ConstructQuery</non-terminal>
+            <rule>
+                <symbol>CONSTRUCT</symbol>
+                <symbol>ConstructTemplate</symbol>
+                <symbol>DataSetClauseList</symbol>
+                <symbol>WhereClause</symbol>
+                <symbol>SolutionModifier</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Query, "ConstructQuery", "OOOO", $2,$3,$4,$5);
+                </code>
+            </rule>            
+            <rule>
+                <symbol>CONSTRUCT</symbol>
+                <symbol>ConstructTemplate</symbol>
+                <symbol>WhereClause</symbol>
+                <symbol>SolutionModifier</symbol>
+                <code language="c">
+                    Py_INCREF(Py_None);
+                    $$ = PyObject_CallMethod(Query, "ConstructQuery", "OOOO", $2,Py_None,$3,$4);
+                </code>
+            </rule>                        
+        </production>                
+
+        <!--    ConstructTemplate ::= '{' ConstructTriples? '}' -->
+        <production>
+            <non-terminal>ConstructTemplate</non-terminal>
+            <rule>
+                <symbol>LEFT_CURLY</symbol> 
+                <symbol>ConstructTriples</symbol>               
+                <symbol>RIGHT_CURLY</symbol>
+                <code language="c">
+                    $$ = $2;
+                </code>                
+            </rule>
+            <rule>
+                <symbol>LEFT_CURLY</symbol> 
+                <symbol>RIGHT_CURLY</symbol>
+                <code language="c">
+                    $$ = PyList_New(0);
+                </code>                
+            </rule>            
+        </production>                
+
+        <!--    ConstructTriples ::= TriplesSameSubject ( '.' ConstructTriples? )? -->
+        <production>
+            <non-terminal>ConstructTriples</non-terminal>
+            <rule>
+                <symbol>Triples</symbol>
+            </rule>
+        </production>    
         
         <!--  Prolog  	  ::=    	BaseDecl? PrefixDecl* -->
         <production name="2">
@@ -134,12 +187,14 @@
             </rule>
         </production>
         
-        <!-- PrefixDecl ::= 'PREFIX' QNAME_NS Q_IRI_REF -->
+        <!-- 
+            [4] PrefixDecl ::= 'PREFIX' PNAME_NS IRI_REF 
+        -->
         <production name="4">
             <non-terminal>PrefixDecl</non-terminal>
             <rule>
                 <symbol>PREFIX</symbol>
-                <symbol>QNAME_NS</symbol>
+                <symbol>PNAME_NS</symbol>
                 <symbol>LESS_THAN</symbol>
                 <symbol>Q_IRI_CONTENT</symbol>
                 <symbol>GREATER_THAN</symbol>
@@ -147,6 +202,17 @@
                     $$ = PyObject_CallMethod(Bindings, "PrefixDeclaration", "OO", $2,$4);
                 </code>
             </rule>
+            <rule>
+                <symbol>PREFIX</symbol>
+                <symbol>PNAME_NS</symbol>
+                <symbol>LESS_THAN</symbol>
+                <symbol>GREATER_THAN</symbol>
+                <code language="c">
+                    PyObject *t = PyObject_GetAttrString(Bindings, "EMPTY_STRING");
+                    $$ = PyObject_CallMethod(Bindings, "PrefixDeclaration", "OO", $2,t);
+                    Py_XDECREF(t);                                        
+                </code>
+            </rule>            
         </production>
 
         <!-- BaseDecl  	  ::=    	'BASE' Q_IRI_REF -->
@@ -251,8 +317,8 @@
                 <symbol>Var</symbol>
                 <code language="c">
                     $$ = PyList_New(1);
-		    PyList_SET_ITEM($$, 0, $1);
-		    Py_INCREF($1);
+		            PyList_SET_ITEM($$, 0, $1);
+		            Py_INCREF($1);
                 </code>
             </rule>
             <rule>
@@ -266,7 +332,9 @@
             </rule>
         </production>
         
-        <!-- IRIref  	  ::=    	Q_IRI_REF | QName -->
+        <!-- 
+            [67] IRIref ::= IRI_REF | PrefixedName
+        -->
         <production name="63">
             <non-terminal>IRIref</non-terminal>
             <rule>
@@ -276,30 +344,34 @@
                 <code language="c">
                   $$ = PyObject_CallMethod(IRIRef, "IRIRef", "O",$2);
                 </code>
-	    </rule>
+	        </rule>
             <rule>
-                <symbol>QName</symbol>
+                <symbol>PrefixedName</symbol>
                     $$ = PyObject_CallMethod(QName, "QName", "O",$1);
             </rule>
         </production>
         
-        <!-- [64] QName ::= QNAME | QNAME_NS -->
+        <!-- 
+            [68] PrefixedName ::= PNAME_LN | PNAME_NS
+                 PrefixedName ::= PN_PREFIX? ':' PN_LOCAL | PN_PREFIX? ':'
+            [99]  PN_PREFIX ::= PN_CHARS_BASE ((PN_CHARS|'.')* PN_CHARS)?
+            [100] PN_LOCAL ::= ( PN_CHARS_U | [0-9] ) ((PN_CHARS|'.')* PN_CHARS)? 
+        -->
+        
         <production name="64">
-            <non-terminal>QName</non-terminal>
+            <non-terminal>PrefixedName</non-terminal>
             <rule>
-                <symbol>QNAME</symbol>
+                <symbol>PNAME_NS</symbol>
                 <code language="c">
                     $$ = PyObject_CallMethod(QName, "QName", "O",$1);
                 </code>
             </rule>
             <rule>
-                <symbol>QNAME_NS</symbol>
+                <symbol>PNAME_LN</symbol>
                 <code language="c">
-                    PyObject *str = PySequence_GetSlice($1, 0, PyString_GET_SIZE($1) -1); 
-                    $$ = PyObject_CallMethod(QName, "QNamePrefix", "O",str);
-                    Py_XDECREF(str);		    
+                    $$ = PyObject_CallMethod(QName, "QName", "O",$1);
                 </code>
-            </rule>
+            </rule>            
         </production>        
         
         <production>
@@ -392,6 +464,14 @@
                 </code>                
             </rule>            
             <rule>
+                <symbol>OrderClause</symbol>
+                <symbol>OffsetClause</symbol>
+                <symbol>LimitClause</symbol>                
+                <code language="c">
+                    $$ = PyObject_CallMethod(SolutionModifier, "SolutionModifier", "OOO",$1,$2,$3);
+                </code>                
+            </rule>                        
+            <rule>
                 <symbol>LimitClause</symbol>
                 <symbol>OffsetClause</symbol>
                 <code language="c">
@@ -460,7 +540,9 @@
             </rule>            
         </production>
         
-        <!-- OrderCondition  ::=   	( ( 'ASC' | 'DESC' ) BrackettedExpression ) | ( FunctionCall | Var | BrackettedExpression ) -->
+        <!--  
+            [17] OrderCondition ::= ( ( 'ASC' | 'DESC' ) BrackettedExpression ) | BrackettedExpression | BuiltInCall | FunctionCall | Var 
+        -->
         <production name="16">
             <non-terminal>OrderCondition</non-terminal>
             <rule>
@@ -487,6 +569,9 @@
             </rule>
             <rule>
                 <symbol>FunctionCall</symbol>
+            </rule>
+            <rule>
+                <symbol>BuiltInCall</symbol>
             </rule>
             <rule>
                 <symbol>LEFT_PAREN</symbol>
@@ -530,62 +615,170 @@
         </production>        
         
 
-        <!--  	GroupGraphPattern  	  ::=    	'{' GraphPattern '}'-->
+        <!-- GroupGraphPattern ::= '{' GraphPattern '}'
+        Synched with http://www.w3.org/TR/2007/CR-rdf-sparql-query-20070614/
+        GroupGraphPattern ::= '{' TriplesBlock? GraphPattern* '}'
+          -->
         <production name="19">
             <non-terminal>GroupGraphPattern</non-terminal>
             <rule>
-                <symbol>LEFT_CURLY</symbol>
-                <symbol>GraphPattern</symbol>
+                <symbol>LEFT_CURLY</symbol>                
                 <symbol>RIGHT_CURLY</symbol>
                 <code language="c">
-                    $$ = PyObject_CallMethod(GraphPattern, "ParsedGroupGraphPattern", "O",$2);
+                    $$ = PyObject_CallMethod(GraphPattern, "ParsedGroupGraphPattern", "OO",Py_None,Py_None);
+                    Py_INCREF(Py_None);
                 </code>
             </rule>
+            <rule>
+                <symbol>LEFT_CURLY</symbol>                
+                <symbol>Triples</symbol>
+                <symbol>GraphPatternList</symbol>
+                <symbol>RIGHT_CURLY</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(GraphPattern, "ParsedGroupGraphPattern", "OO",$2,$3);
+                </code>
+            </rule>
+            <rule>
+                <symbol>LEFT_CURLY</symbol>
+                <symbol>Triples</symbol>
+                <symbol>RIGHT_CURLY</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(GraphPattern, "ParsedGroupGraphPattern", "OO",$2,Py_None);
+                    Py_INCREF(Py_None);
+                </code>
+            </rule>            
+            <rule>
+                <symbol>LEFT_CURLY</symbol>
+                <symbol>GraphPatternList</symbol>
+                <symbol>RIGHT_CURLY</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(GraphPattern, "ParsedGroupGraphPattern", "OO",Py_None,$2);
+                    Py_INCREF(Py_None);
+                </code>
+            </rule>            
         </production>        
-                
+
+        <production>
+            <non-terminal>GraphPatternList</non-terminal>
+            <rule>
+                <symbol>GraphPattern</symbol>
+                <code language="c">
+                    $$ = PyList_New(1);
+                    PyList_SET_ITEM($$, 0, $1);
+                    Py_INCREF($1);
+                </code>
+            </rule>
+            <rule>
+                <symbol>GraphPatternList</symbol>
+                <symbol>GraphPattern</symbol>
+                <code language="c">
+                    PyList_Append($1, $2);
+                    Py_INCREF($1);
+                    $$ = $1;
+                </code>
+            </rule>            
+        </production>                    
+                                                
         <!--=        
 
         Definition: Group Graph Pattern        
         A group graph pattern GP is a set of graph patterns, GPi.        
         A solution of Group Graph Pattern GP on graph G is any solution S such that, for every element GPi of GP, S is a solution of GPi.
 
-        http://www.w3.org/TR/rdf-sparql-query/#GroupPatterns
-        
-        http://www.w3.org/TR/rdf-sparql-query/#BasicGraphPattern
-        2.3 Triple Patterns
-        
-        -->
-        <!--  
+        In a SPARQL query string, a group graph pattern is delimited with braces: {}. 
+        Basic graph patterns are sets of triple patterns. SPARQL graph pattern 
+        matching is defined in terms of combining the results from matching basic 
+        graph patterns.
 
-          [20] GraphPattern ::= FilteredBasicGraphPattern ( GraphPatternNotTriples '.'? GraphPattern )?
+        http://www.w3.org/TR/rdf-sparql-query/#GraphPattern
+        
+        [20] GroupGraphPattern ::= '{' TriplesBlock? ( ( GraphPatternNotTriples | Filter ) '.'? TriplesBlock? )* '}'
+        [22] GraphPatternNotTriples ::= OptionalGraphPattern | GroupOrUnionGraphPattern | GraphGraphPattern
+        [26] Filter ::= 'FILTER' Constraint
+        [27] Constraint ::= BrackettedExpression | BuiltInCall | FunctionCall
+        [56] BrackettedExpression  ::= '(' ConditionalOrExpression ')'
+                
+        
+        ( GraphPatternNotTriples | Filter ) '.'? TriplesBlock?
+        
+        8 Permutations of Filter, Triples, and GraphPatternNotTriples
+        
+        Filter Triples 
+        Filter '.' Triple
+        Filter  
+        Filter '.' 
+        GraphPatternNotTriples Triples
+        GraphPatternNotTriples '.'` Triples
+        GraphPatternNotTriples 
+        GraphPatternNotTriples '.'` 
+        
         -->
         <production name="20">
             <non-terminal>GraphPattern</non-terminal>
             <rule>
-                <symbol>FilteredBasicGraphPattern</symbol>
+                <symbol>Filter</symbol>
+                <symbol>Triples</symbol>
                 <code language="c">
-                    $$ = PyList_New(1);
-                    PyList_SET_ITEM($$, 0, PyObject_CallMethod(GraphPattern, "GraphPattern", "OO", $1,Py_None));
+                    $$ = PyObject_CallMethod(GraphPattern, "GraphPattern", "OOO",Py_None,$1,$2);
                     Py_INCREF(Py_None);
                 </code>
             </rule>            
             <rule>
-                <symbol>FilteredBasicGraphPattern</symbol>
-                <symbol>GraphPatternNotTriples</symbol>
-                <symbol>GraphPattern</symbol>
+                <symbol>Filter</symbol>
+                <symbol>DOT</symbol>
+                <symbol>Triples</symbol>
                 <code language="c">
-                    $$ = PyObject_CallMethod(Util, "ListPrepend", "OO", PyObject_CallMethod(GraphPattern, "GraphPattern", "OO", $1,$2),$3);
+                    $$ = PyObject_CallMethod(GraphPattern, "GraphPattern", "OOO",Py_None,$1,$3);
+                    Py_INCREF(Py_None);
                 </code>
-            </rule>
+            </rule>            
             <rule>
-                <symbol>FilteredBasicGraphPattern</symbol>
+                <symbol>Filter</symbol>
+                <symbol>DOT</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(GraphPattern, "GraphPattern", "OOO",Py_None,$1,Py_None);
+                    Py_INCREF(Py_None);
+                </code>
+            </rule>                        
+            <rule>
+                <symbol>Filter</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(GraphPattern, "GraphPattern", "OOO",Py_None,$1,Py_None);
+                    Py_INCREF(Py_None);
+                </code>
+            </rule>                                    
+            <rule>
+                <symbol>GraphPatternNotTriples</symbol>
+                <symbol>Triples</symbol>                
+                <code language="c">
+                    $$ = PyObject_CallMethod(GraphPattern, "GraphPattern", "OOO",$1,Py_None,$2);
+                    Py_INCREF(Py_None);
+                </code>
+            </rule>            
+            <rule>
+                <symbol>GraphPatternNotTriples</symbol>
+                <symbol>DOT</symbol>                
+                <symbol>Triples</symbol>                
+                <code language="c">
+                    $$ = PyObject_CallMethod(GraphPattern, "GraphPattern", "OOO",$1,Py_None,$3);
+                    Py_INCREF(Py_None);
+                </code>
+            </rule>            
+            <rule>
+                <symbol>GraphPatternNotTriples</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(GraphPattern, "GraphPattern", "OOO",$1,Py_None,Py_None);
+                    Py_INCREF(Py_None);
+                </code>
+            </rule>            
+            <rule>
                 <symbol>GraphPatternNotTriples</symbol>
                 <symbol>DOT</symbol>
-                <symbol>GraphPattern</symbol>
                 <code language="c">
-                    $$ = PyObject_CallMethod(Util, "ListPrepend", "OO", PyObject_CallMethod(GraphPattern, "GraphPattern", "OO", $1,$2),$4);
+                    $$ = PyObject_CallMethod(GraphPattern, "GraphPattern", "OOO",$1,Py_None,Py_None);
+                    Py_INCREF(Py_None);
                 </code>
-            </rule>
+            </rule>            
         </production>        
 
         <!-- 
@@ -1162,6 +1355,13 @@
                     $$ = PyObject_CallMethod(FunctionLibrary, "FunctionCall", "OO", $1, $3);
                 </code>
             </rule>
+            <rule>
+                <symbol>IRIref</symbol>
+                <symbol>NIL</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(FunctionLibrary, "FunctionCall", "OO", $1, PyList_New(0));
+                </code>
+            </rule>            
         </production>
         
         <!-- 
@@ -1172,12 +1372,6 @@
         
         <production>
             <non-terminal>ArgumentList</non-terminal>
-            <rule>
-                <symbol>NIL</symbol>
-                <code language="c">
-                    $$ = PyList_New(0);                    
-                </code>
-            </rule>
             <rule>
                 <symbol>ConditionalOrExpression</symbol>
                 <code language="c">

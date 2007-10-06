@@ -30,7 +30,7 @@
     <begin>IRI_MODE</begin>
     <token>LESS_THAN</token>
   </pattern>  
-  
+      
   <pattern expression='{Langtag}'>
     <token>LANGTAG</token>
   </pattern>
@@ -40,16 +40,17 @@
   <pattern expression='{Anon}'>
     <token>ANON</token>
   </pattern>  
-  <pattern expression="{NCName}?:{NCName}">
-    <token>QNAME</token>
+  <pattern expression="{PName_LN}">
+    <token>PNAME_LN</token>
   </pattern>
-  <pattern expression="{NCName}?:">
-    <token>QNAME_NS</token>
-  </pattern>
+  <pattern expression="{PName_NS}">
+    <token>PNAME_NS</token>
+  </pattern>    
   <pattern expression="{BlankNodeLabel}">
     <token>BLANK_NODE_LABEL </token>
-  </pattern>  
-  <pattern expression="[?$]({NCChar1}|{Digit})({NCChar1}|{Digit}|\u00B7|[\u0300-\u036F]|[\u0203F-\u2040])*">
+  </pattern>
+  <pattern expression="[?$]({NCChar1}|{Digit})({NCChar1}|{Digit}|\u00B7|[\u0300-\u036F])*">
+  <!--pattern expression="[?$]{VarName}"-->      
     <token>VARNAME</token>
   </pattern>  
   <pattern expression='{Langtag}'>
@@ -66,13 +67,13 @@
   </pattern>
 
   <scope state='IRI_MODE'>
-    <pattern expression="([^&lt;>'{}|^`\u0000-\u0020])+">
-      <token>Q_IRI_CONTENT</token>
-    </pattern>
     <pattern expression='&gt;'>
       <begin>INITIAL</begin>
       <token>GREATER_THAN</token>
     </pattern>    
+    <pattern expression="([^&lt;>'{}|^`\u0000-\u0020])*">
+      <token>Q_IRI_CONTENT</token>
+    </pattern>      
     <pattern expression='=|{S}'>
       <begin>INITIAL</begin>
     </pattern>    

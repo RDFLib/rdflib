@@ -15,6 +15,7 @@
     <define name='Letter'>{BaseChar}|{Ideographic}</define>
     <!-- from http://www.w3.org/TR/REC-xml-names/#NT-NCName -->
     <define name='NCName'>({Letter}|_){NCNameChar}*</define>
+    <define name='NCName_with_digits'>({Letter}|_|{Digit}){NCNameChar}*</define>
     <!-- from http://www.w3.org/TR/REC-xml-names#NT-QName -->
     <define name='QName'>({NCName}:)?{NCName}</define>
     
@@ -31,8 +32,39 @@
     <define name='Ws'>\u0020|\u0009|\u000D|\u000A</define>
     <define name='Anon'>\[{Ws}*\]</define>
     <define name='Q_IRI_Ref'>&lt;([^&lt;>'{}|^`\u0000-\u0020])*></define>
-    <define name='QName_Pattern'>{NCName_Prefix}:{NCName}</define>
-    <define name='QName_NS_Pattern'>{NCName_Prefix}:|:</define>
+    <!--define name='QName_Pattern'>{NCName_Prefix}:{NCName}</define>
+    <define name='QName_NS_Pattern'>{NCName_Prefix}:|:</define-->
+    <!-- SPARQL 'Prefixed Names'-->
+    <!--
+        [A-Z] | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | 
+        [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | 
+        [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | 
+        [#x10000-#xEFFFF] 
+         -->
+    <define name='PN_Chars_Base'>[A-z]|[a-z]|[\u00C0-\u00D6]|[\u00D8-\u00F6]|[\u00F8-\u02FF]|[\u0370-\u037D]|[\u037F-\u1FFF]|[\u200C-\u200D]|[\u2070-\u218F]|[\u2C00-\u2FEF]|[\u3001-\uD7FF]|[\uF900-\uFDCF]|[\uFDF0-\uFFFD]|[\u10000-\uEFFFF]</define>
+    <!--define name='PN_Chars_Base'>[A-z]|[a-z]|[\u00C0-\u00D6]|[\u00D8-\u00F6]|[\u00F8-\u02FF]|[\u0370-\u037D]|[\u037F-\u1FFF]|[\u200C-\u200D]|[\u2070-\u218F]|[\u2C00-\u2FEF]|[\u3001-\uD7FF]|[\uF900-\uFFFD]</define-->
+    <!-- 
+        PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+        -->
+    <define name='PN_Chars'>{PN_Chars_U}|-|{Digit}|\u00B7|[\u0300-\u036F]|[\u0203F-\u2040]</define>
+    <!--
+        PN_CHARS_BASE | '_' 
+         -->
+    <define name='PN_Chars_U'>{PN_Chars_Base}|_</define>
+    
+    <define name="PN_Local">({PN_Chars_U}|{Digit})(({PN_Chars} | \.)* {PN_Chars})?</define>
+    
+    
+    <!-- 
+        PNAME_LN      ::=       PNAME_NS PN_LOCAL
+        PNAME_NS      ::=       PN_PREFIX? ':'
+        PN_PREFIX     ::=       PN_CHARS_BASE ((PN_CHARS|'.')* PN_CHARS)?
+        -->
+    <!--define name="PName_LN">{PName_NS}{PN_Local}</define>
+    <define name="PName_NS">({PN_Chars_Base}(({PN_Chars}|\.)*{PN_Chars}))?:</define-->
+    <define name="PName_LN">{PName_NS}{NCName_with_digits}</define>
+    <define name="PName_NS">({NCName})?:</define>
+    
     <define name='BlankNodeLabel'>_:{NCName}</define>
     <!--define name='NCName'>{NCChar1}(({NCChar}|\.)*{NCChar})?</define-->
     <define name="NCChar">{NCChar1}|-|{Digit}|\u00B7|[\u0300-\u036F] | [\u0203F-\u2040]</define>
@@ -40,5 +72,5 @@
     <define name='NCChar1p'>[A-z]|[a-z]|[\u00C0-\u00D6]|[\u00D8-\u00F6]|[\u00F8-\u02FF]|[\u0370-\u037D]|[\u037F-\u1FFF]|[\u200C-\u200D]|[\u2070-\u218F]|[\u2C00-\u2FEF]|[\u3001-\uD7FF]|[\uF900-\uFFFD]</define>
     <define name='NCName_Prefix'>{NCChar1p}|{NCChar1p}({NCChar}|\.)*{NCChar}</define>
     <define name='S'>[\t\n\r ]+</define>
-    <define name='VarName'>({NCChar1}|{Digit})({NCChar1}|{Digit}|\u00B7|[\u0300-\u036F]|[\u0203F-\u2040])*</define>
+    <define name='VarName'>({PN_Chars_U}|{Digit})(PN_Chars_U}|{Digit}|\u00B7|[\u0300-\u036F]|[\u0203F-\u2040])*</define>
 </fragment>

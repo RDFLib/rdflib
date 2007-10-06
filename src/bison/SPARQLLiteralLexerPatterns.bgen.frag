@@ -48,6 +48,9 @@
   <pattern expression='ASK'>
     <token>ASK</token>
   </pattern>  
+  <pattern expression='CONSTRUCT'>
+    <token>CONSTRUCT</token>
+  </pattern>      
   <pattern expression='desc|DESC'>
     <token>DESC</token>
   </pattern>
@@ -117,6 +120,9 @@
   <pattern expression=','>
     <token>COMMA</token>
   </pattern>  
+  <pattern expression='\:'>
+    <token>COLON</token>
+  </pattern>      
   <pattern expression= '\?'>
     <token>QUESTION_MARK</token>
   </pattern>  
