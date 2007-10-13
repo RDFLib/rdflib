@@ -1,18 +1,54 @@
-from rdflib.Graph import Graph
+from rdflib.Graph import Graph, ConjunctiveGraph
 
-
-class SPARQLGraph(Graph):
+class SPARQLGraph(object):
     """
     A subclass of Graph with a few extra SPARQL bits.
     """
+    SPARQL_DATASET=0
+    NAMED_GRAPH=1
+    __slots__ = ("graphVariable","DAWG_DATASET_COMPLIANCE","identifier","graphKind","graph")
     def __init__(self, graph, graphVariable = None, dSCompliance = False):
         assert not graphVariable or graphVariable[0]!='?',repr(graphVariable)
         self.graphVariable = graphVariable
         self.DAWG_DATASET_COMPLIANCE = dSCompliance
-        self.graph = graph # TODO
-        store = graph.store
-        identifier = graph.identifier
-        super(SPARQLGraph, self).__init__(store, identifier)
+        self.graphKind=None
+        if graph is not None:
+            self.graph = graph # TODO
+            #self.store = graph.store
+            if isinstance(graph,ConjunctiveGraph):
+                self.graphKind = self.SPARQL_DATASET
+                self.identifier = graph.default_context.identifier
+            else:
+                assert isinstance(graph,Graph)
+                self.graphKind = self.NAMED_GRAPH
+                self.identifier = graph.identifier
+        #super(SPARQLGraph, self).__init__(store, identifier)
+
+    def setupGraph(self,store,graphKind=None):
+        gKind = graphKind and graphKind or self.graphKind
+        self.graph = gKind(store,self.identifier)
+
+    def __reduce__(self):
+        return (SPARQLGraph,
+                (None,
+                 self.graphVariable,
+                 self.DAWG_DATASET_COMPLIANCE),
+                self.__getstate__())
+        
+    def __getstate__(self):
+        return (self.graphVariable,
+                self.DAWG_DATASET_COMPLIANCE,
+                self.identifier)#,
+                #self.graphKind)
+
+    def __setstate__(self, arg):
+        #gVar,flag,identifier,gKind=arg
+        gVar,flag,identifier=arg
+        self.graphVariable=gVar
+        self.DAWG_DATASET_COMPLIANCE=flag
+        self.identifier=identifier
+        #self.graphKind=gKind
+        #self.graph=Graph(store,identifier)
 
     ##############################################################################################################
     # Clustering methods

@@ -332,16 +332,18 @@ def datatype(a) :
             if isinstance(a,Literal):
                 return a.datatype
             else:
-                return ""
+                raise TypeError(a)
 
         try :
             val = bindings[v]
             if val == None:
-                return ""
-            else :
+                return TypeError(v)
+            elif isinstance(val,Literal) and not val.language:
                 return val.datatype
+            else:
+                raise TypeError(val)
         except :
-            return ""
+            raise TypeError(v)
     return f
 
 
@@ -487,14 +489,18 @@ def EBV(a):
                 else:
                     pyRT = rt.toPython()
                     if isinstance(pyRT,Literal):
-                        raise TypeError("See: http://www.w3.org/TR/rdf-sparql-query/#ebv")
+                        #Type error, see: http://www.w3.org/TR/rdf-sparql-query/#ebv
+                        raise TypeError("http://www.w3.org/TR/rdf-sparql-query/#ebv")
                     else:
                         ebv = pyRT != 0
                 return ebv
             else:
                 print rt, type(rt)
                 raise
-        except :
+        except Exception,e:
+            if isinstance(e,KeyError):
+                #see: http://www.w3.org/TR/rdf-sparql-query/#ebv
+                raise TypeError("http://www.w3.org/TR/rdf-sparql-query/#ebv")
             # this is the case when the operators are incompatible
             raise
             if Debug :

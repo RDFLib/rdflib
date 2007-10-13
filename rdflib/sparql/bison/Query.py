@@ -49,7 +49,11 @@ class ConstructQuery(object):
     ConstructQuery ::= 'CONSTRUCT' ConstructTemplate DatasetClause* WhereClause SolutionModifier
     See: http://www.w3.org/TR/rdf-sparql-query/#rConstructQuery
     """
-    pass
+    def __init__(self,triples,dataSetList,whereClause,solutionModifier):
+        self.triples = triples
+        self.dataSets = dataSetList and dataSetList or []
+        self.whereClause = whereClause
+        self.solutionModifier = solutionModifier
 
 class DescribeQuery(object):
     """
@@ -72,10 +76,12 @@ class Prolog(object):
     """
     def __init__(self,baseDeclaration,prefixDeclarations):
         self.baseDeclaration = baseDeclaration
+        self.extensionFunctions={}
         self.prefixBindings = {}
         if prefixDeclarations:
             for prefixBind in prefixDeclarations:
-                self.prefixBindings[prefixBind.qName] = prefixBind.base
+                if hasattr(prefixBind,'base'):
+                    self.prefixBindings[prefixBind.qName] = prefixBind.base 
 
     def __repr__(self):
         return repr(self.prefixBindings)

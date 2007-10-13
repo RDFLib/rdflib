@@ -1,5 +1,7 @@
 from rdflib import URIRef, Namespace
 
+EMPTY_STRING=""
+
 class PrefixDeclaration(object):
     """
     PrefixDecl ::= 'PREFIX' QNAME_NS Q_IRI_REF

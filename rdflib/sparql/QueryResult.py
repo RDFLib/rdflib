@@ -16,12 +16,14 @@ try:
             self.writer = MarkupWriter(output, indent=u"yes")
             self.writer.startDocument()
             self.writer.startElement(u'sparql',namespace=SPARQL_XML_NAMESPACE)
+            self.askResult=False
 
         def write_header(self,allvarsL):
             self.writer.startElement(u'head', namespace=SPARQL_XML_NAMESPACE)
-            for i in xrange(0,len(allvarsL)) :
-                self.writer.startElement(u'variable',namespace=SPARQL_XML_NAMESPACE,attributes={u'name':unicode(allvarsL[i])})
-                self.writer.endElement(u'variable')
+            if allvarsL:
+                for i in xrange(0,len(allvarsL)) :
+                    self.writer.startElement(u'variable',namespace=SPARQL_XML_NAMESPACE,attributes={u'name':unicode(allvarsL[i])})
+                    self.writer.endElement(u'variable')
             self.writer.endElement( u'head')
 
         def write_results_header(self,orderBy,distinct):
@@ -36,6 +38,12 @@ try:
             assert self._resultStarted
             self.writer.endElement(u'result',namespace=SPARQL_XML_NAMESPACE)
             self._resultStarted = False
+
+        def write_ask(self,val):
+            self.writer.startElement(u'boolean', namespace=SPARQL_XML_NAMESPACE)
+            self.writer.text((val and u't' or u'f')+unicode(val)[1:])
+            self.writer.endElement(u'boolean')
+            self.askResult=True
 
         def write_binding(self,name,val):
             assert self._resultStarted
@@ -66,7 +74,8 @@ try:
                 self.writer.endElement(u'binding')
 
         def close(self):
-            self.writer.endElement(u'results')
+            if not self.askResult:
+                self.writer.endElement(u'results')
             self.writer.endElement(u'sparql')
 except:
     class SPARQLXMLWriter:
@@ -82,6 +91,7 @@ except:
             self.writer = writer
             self._output = output
             self._encoding = encoding
+            self.askResult=False
 
         def write_header(self,allvarsL):
             self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'head'), u'head', AttributesNSImpl({}, {}))
@@ -97,6 +107,9 @@ except:
                                              AttributesNSImpl(attr_vals, attr_qnames))
                 self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'variable'), u'variable')
             self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'head'), u'head')
+            
+        def write_ask(self,val):
+            raise
 
         def write_results_header(self,orderBy,distinct):
             attr_vals = {
@@ -213,13 +226,24 @@ class SPARQLQueryResult(QueryResult.QueryResult):
         , a SPARQLGraph for DESCRIBE/CONSTRUCT, and boolean for ASK  2) the variables selected 3) *all*
         the variables in the Graph Patterns 4) the order clause 5) the DISTINCT clause
         """
-        result,selectionF,allVars,orderBy,distinct,topUnion = qResult
+        if isinstance(qResult,bool):
+            self.askAnswer = [qResult]
+            result=None
+            selectionF=None
+            allVars=None
+            orderBy=None
+            distinct=None
+            topUnion = None
+        else:
+            self.askAnswer = []
+            result,selectionF,allVars,orderBy,distinct,topUnion = qResult
         self.topUnion = topUnion
         self.selected = result
         self.selectionF = selectionF
         self.allVariables = allVars
         self.orderBy = orderBy
         self.distinct = distinct
+        
 
     def __len__(self):
         if isinstance(self.selected,list):
@@ -300,39 +324,47 @@ class SPARQLQueryResult(QueryResult.QueryResult):
                # xml output
                out = StringIO()
                writer = SPARQLXMLWriter(out)
-               writer.write_header(allvarsL)
-               writer.write_results_header(self.orderBy,self.distinct)
-               if self.topUnion:
-                   for binding in self.topUnion:
-                       writer.write_start_result()
-                       for key,val in binding.items():
-                           if not self.selectionF or \
-                              key in self.selectionF:
-                               writer.write_binding(key,val)
-                       writer.write_end_result()
+               if self.askAnswer:
+                   writer.write_header(allvarsL)
+                   writer.write_ask(self.askAnswer[0])
                else:
-                   for i in xrange(0,len(self.selected)) :
-                       hit = self.selected[i]
-                       if len(self.selectionF) == 0 :
-                           if topUnion:
-                               print topUnion
-                               #raise
+                   writer.write_header(allvarsL)
+                   writer.write_results_header(self.orderBy,self.distinct)
+                   if self.topUnion:
+                       for binding in self.topUnion:
                            writer.write_start_result()
-                           if len(allvarsL) == 1:
-                               hit = (hit,) # Not an iterable - a parser bug?
-                           for j in xrange(0,len(allvarsL)) :
-                               if not len(hit) < j+1:
-                                   writer.write_binding(allvarsL[j],hit[j])
+                           if isinstance(binding,dict):
+                               for key,val in binding.items():
+                                   if not self.selectionF or \
+                                      key in self.selectionF:
+                                       writer.write_binding(key,val)
+                           else:
+                               print self.selectionF,binding
+                               raise
                            writer.write_end_result()
-                       elif len(self.selectionF) == 1 :
-                           writer.write_start_result()
-                           writer.write_binding(self.selectionF[0],hit)
-                           writer.write_end_result()
-                       else:
-                           writer.write_start_result()
-                           for j in xrange(0,len(self.selectionF)) :
-                               writer.write_binding(self.selectionF[j],hit[j])
-                           writer.write_end_result()
+                   else:
+                       for i in xrange(0,len(self.selected)) :
+                           hit = self.selected[i]
+                           if len(self.selectionF) == 0 :
+                               if self.topUnion:
+                                   print topUnion
+                                   raise
+                               writer.write_start_result()
+                               if len(allvarsL) == 1:
+                                   hit = (hit,) # Not an iterable - a parser bug?
+                               for j in xrange(0,len(allvarsL)) :
+                                   if not len(hit) < j+1:
+                                       writer.write_binding(allvarsL[j],hit[j])
+                               writer.write_end_result()
+                           elif len(self.selectionF) == 1 :
+                               writer.write_start_result()
+                               writer.write_binding(self.selectionF[0],hit)
+                               writer.write_end_result()
+                           else:
+                               writer.write_start_result()
+                               for j in xrange(0,len(self.selectionF)) :
+                                   writer.write_binding(self.selectionF[j],hit[j])
+                               writer.write_end_result()
                writer.close()
                return out.getvalue()
 

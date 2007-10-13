@@ -12,6 +12,8 @@ from rdflib.BNode       import BNode
 from rdflib.URIRef      import URIRef
 from rdflib import Variable
 from types import *
+from rdflib.syntax.NamespaceManager import NamespaceManager
+from rdflib.Graph import Graph
 
 from rdflib.sparql import _questChar, Debug, SPARQLError
 
@@ -281,13 +283,6 @@ class GraphPattern :
                 self.bnodes[c] = other.bnodes[c]
         return self
 
-    def __repr__(self) :
-        return "BGP(%s)"%(','.join([repr(p[:3]) for p in self.patterns]))
-        retval  = "   Patterns:    %s\n" % self.patterns
-        retval += "   Constraints: %s\n" % self.constraints
-        retval += "   Unbounds:    %s\n" % self.unbounds
-        return retval
-
     def __str__(self) :
         return self.__repr__()
 
@@ -307,12 +302,56 @@ class BasicGraphPattern(GraphPattern) :
     This class is a superclass of L{GraphPattern<GraphPattern>} which does I{not} do this, but requires the
     usage of a separate variable class instance"""
 
-    def __init__(self,patterns=[]) :
+    def __init__(self,patterns=[],prolog=None) :
         """
         @param patterns: an initial list of graph pattern tuples
         """
         GraphPattern.__init__(self,patterns)
+        self.prolog = prolog
 	
+    def canonicalTerm(self,term):
+        if isinstance(term,URIRef):
+            if self.prolog is not None:
+                namespace_manager = NamespaceManager(Graph())
+                for prefix,uri in self.prolog.prefixBindings.items():
+                    namespace_manager.bind(prefix, uri, override=False)
+                try:    
+                    prefix,uri,localName=namespace_manager.compute_qname(term)
+                except:
+                    return term
+                if prefix not in self.prolog.prefixBindings:
+                    return term
+                else:
+                    return u':'.join([prefix,localName])
+            else:
+                return term
+        elif isinstance(term,Literal):
+            return term.n3()
+        elif isinstance(term,BNode):
+            return term.n3()
+        else:
+            assert isinstance(term,Variable)
+            return term.n3()
+
+    def __repr__(self):
+#        from pprint import pformat
+        if self.constraints:
+            #return "Filter(.. a filter ..,BGP(%s))"%(','.join([pformat(p[:3]) for p in self.patterns]))
+            return "Filter(.. a filter ..,BGP(%s))"%(','.join([','.join([self.canonicalTerm(pat[0]),
+                                                                         self.canonicalTerm(pat[1]),
+                                                                         self.canonicalTerm(pat[2])]) 
+                                                                               for pat in self.patterns]))
+        else:
+            #return "BGP(%s)"%(','.join([repr(p[:3]) for p in self.patterns]))
+            return "BGP(%s)"%(','.join(['('+','.join([self.canonicalTerm(s),
+                                                  self.canonicalTerm(p),
+                                                  self.canonicalTerm(o)])+')' 
+                                                        for s,p,o,f in self.patterns]))
+        retval  = "   Patterns:    %s\n" % self.patterns
+        retval += "   Constraints: %s\n" % self.constraints
+        retval += "   Unbounds:    %s\n" % self.unbounds
+        return retval
+    
     def _generatePattern(self,tupl) :
         """
         Append a tuple to the local patterns. Possible type literals

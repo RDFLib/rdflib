@@ -1,12 +1,13 @@
 """
 See: http://www.w3.org/TR/rdf-sparql-query/#GraphPattern
-[20] GraphPattern ::=  FilteredBasicGraphPattern ( GraphPatternNotTriples '.'? GraphPattern )?
-[21] FilteredBasicGraphPattern ::= BlockOfTriples? ( Constraint '.'? FilteredBasicGraphPattern )?
-[23] GraphPatternNotTriples  ::=  OptionalGraphPattern | GroupOrUnionGraphPattern | GraphGraphPattern
+[20] GroupGraphPattern ::= '{' TriplesBlock? ( ( GraphPatternNotTriples | Filter ) '.'? TriplesBlock? )* '}'
+[22] GraphPatternNotTriples ::= OptionalGraphPattern | GroupOrUnionGraphPattern | GraphGraphPattern
+[26] Filter ::= 'FILTER' Constraint
+[27] Constraint ::= BrackettedExpression | BuiltInCall | FunctionCall
+[56] BrackettedExpression  ::= '(' ConditionalOrExpression ')'
 [24] OptionalGraphPattern  ::=  'OPTIONAL' GroupGraphPattern
 [25] GraphGraphPattern  ::=  'GRAPH' VarOrBlankNodeOrIRIref GroupGraphPattern
 [26] GroupOrUnionGraphPattern ::=  GroupGraphPattern ( 'UNION' GroupGraphPattern )*
-[27] Constraint ::= 'FILTER' ( BrackettedExpression | BuiltInCall | FunctionCall )
 """
 
 class ParsedGroupGraphPattern(object):
@@ -15,16 +16,29 @@ class ParsedGroupGraphPattern(object):
     A group graph pattern GP is a set of graph patterns, GPi.
     This class is defined to behave (literally) like a set of GraphPattern instances.
     """
-    def __init__(self,graphPatterns):
-        self.graphPatterns = graphPatterns
+    def __init__(self,triples,graphPatterns):
+        self.triples=triples
+        self._graphPatterns = graphPatterns
+        _g=[]
+        if triples:
+            _g=[GraphPattern(triples=triples)]
+        if graphPatterns:
+            _g.extend(graphPatterns)
+        self.graphPatterns = _g
+        
     def __iter__(self):
         for g in self.graphPatterns:
-            if not g.triples and g.nonTripleGraphPattern is None:
-                continue
+            if isinstance(g,GraphPattern):
+                if not g.triples and g.nonTripleGraphPattern is None:
+                    continue
+                else:
+                    yield g
             else:
-                yield g
+                yield GraphPattern(triples=self.triples)
+
     def __len__(self):
-        return len([g for g in self.graphPatterns if g.triples or g.nonTripleGraphPattern is not None])
+        return len([g for g in self.graphPatterns 
+                    if isinstance(g,GraphPattern) and (g.triples or g.nonTripleGraphPattern) is not None])
     def __getitem__(self, k):
         return list(self.graphPatterns)[k]
     def __repr__(self):
@@ -53,19 +67,27 @@ class GraphPattern(object):
     * Alternative Graph Pattern, where two or more possible patterns are tried
     * Patterns on Named Graphs, where patterns are matched against named graphs
 
-    This class is defined as a direct analogy of Grammar rule [20]:
-s    """
-    def __init__(self,triples,nonTripleGraphPattern=None):
+    ( GraphPatternNotTriples | Filter ) '.'? TriplesBlock?
+    """
+    def __init__(self,nonTripleGraphPattern=None,filter=None,triples=None):
+        #print "GraphPattern(..)",triples,filter,nonTripleGraphPattern
         triples = triples and triples or []
+        self.filter=filter
         self.triples = triples
         self.nonTripleGraphPattern = nonTripleGraphPattern
 
     def __repr__(self):
         if not self.triples and self.nonTripleGraphPattern is None:
             return "<SPARQLParser.EmptyGraphPattern>"
-        return "<SPARQLParser.GraphPattern: %s%s>"%(
-                    self.triples is not None and self.triples or '',
-                    self.nonTripleGraphPattern is not None and ' %s'%self.nonTripleGraphPattern or '')
+        elif self.triples and not self.nonTripleGraphPattern and not self.filter:
+            return repr(self.triples)
+        return "( %s '.'? %s )"%(
+                    self.filter is not None and self.filter or self.nonTripleGraphPattern,
+                    self.triples is not None and self.triples or '')        
+        
+#        return "<SPARQLParser.GraphPattern: %s%s>"%(
+#                    self.triples is not None and self.triples or '',
+#                    self.nonTripleGraphPattern is not None and ' %s'%self.nonTripleGraphPattern or '')
 
 class ParsedOptionalGraphPattern(ParsedGroupGraphPattern):
     """
@@ -74,10 +96,16 @@ class ParsedOptionalGraphPattern(ParsedGroupGraphPattern):
     does not fail matching of the overall optional graph pattern.
     """
     def __init__(self,groupGraphPattern):
-        super(ParsedOptionalGraphPattern,self).__init__(groupGraphPattern.graphPatterns)
+        self.triples=groupGraphPattern.triples
+        self.graphPatterns = groupGraphPattern.graphPatterns
+#        
+#        super(ParsedOptionalGraphPattern,self).__init__(triples,graphPatterns)
 
     def __repr__(self):
-        return "OPTIONAL {%s}"%self.graphPatterns
+        if self.graphPatterns is not None:
+            return "OPTIONAL {%s %s}"%(self.triples,self.graphPatterns)
+        else:
+            return "OPTIONAL {%s}"%self.triples
 
 class ParsedAlternativeGraphPattern(object):
     """
@@ -101,7 +129,8 @@ class ParsedGraphGraphPattern(ParsedGroupGraphPattern):
     """
     def __init__(self,graphName,groupGraphPattern):
         self.name = graphName
-        super(ParsedGraphGraphPattern,self).__init__(groupGraphPattern.graphPatterns)
+        self.triples=groupGraphPattern.triples
+        self.graphPatterns = groupGraphPattern.graphPatterns
 
     def __repr__(self):
         return "GRAPH %s { %s }"%(self.name,self.graphPatterns)

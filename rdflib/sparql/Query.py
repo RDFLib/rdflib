@@ -92,37 +92,42 @@ def _createInitialBindings(pattern) :
     for c in pattern.unbounds :
         bindings[c] = None
     return bindings
-
-#An OPTIONAL proxy is an expansion descendant which was 
-#bound and valid (compatible) at a prior point and thus
-#serves as the cumulative context for all subsequent operations
-def _fetchProxies(node):
-    if hasattr(node,'proxy') and node.proxy:
+                       
+def _ancestorTraversal(node,selected=False):
+    if selected:
         yield node
-    if len(node.children) > 0 :
-        for c in node.children :
-            for gc in _fetchProxies(c):
-                yield c
+    if node.parent:
+        for i in _ancestorTraversal(node.parent,selected=True):
+            yield i
                         
-def _fetchBoundLeaves(node):
+def _fetchBoundLeaves(node,previousBind=False,proxyTree=False):
     """
     Takes a SPARQLNode and returns a generator
     over its bound leaves (including OPTIONAL proxies)
     """
+    isaProxyTree = proxyTree or node.priorLeftJoin
     if len(node.children) == 0 :
         if node.bound and not node.clash:
-            proxies = reduce(lambda x,y: x+y,[list(_fetchProxies(o)) for o in node.optionalTrees],[])                        
-            if proxies:
-                for p in proxies:
-                    yield p 
-            else:                  
+            #An OPTIONAL proxy is an expansion descendant which was 
+            #bound and valid (compatible) at a prior point and thus
+            #serves as the cumulative context for all subsequent operations
+            proxy=False
+            for optChild in reduce(lambda x,y: x+y,[list(_fetchBoundLeaves(o,previousBind,isaProxyTree))
+                                                for o in node.optionalTrees],[]):
+                proxy=True
+                yield optChild
+            if not proxy:
                 yield node
+        elif node.clash and previousBind and isaProxyTree:
+            #prior evaluation of LeftJoin was successful but later became
+            #excluded.  Note, this should not provide any bindings
+            yield node
     else :
         for c in node.children :
-            for proxy in _fetchBoundLeaves(c):
+            for proxy in _fetchBoundLeaves(c,previousBind,isaProxyTree):
                 yield proxy
 
-class _SPARQLNode:
+class _SPARQLNode(object):
     """
     The SPARQL implementation is based on the creation of a tree, each
     level for each statement in the 'where' clause of SPARQL.
@@ -173,7 +178,21 @@ class _SPARQLNode:
     @ivar optionalTrees: expansion trees for optional statements
     @type optionalTrees: array of _SPARQLNode instances
     """
-    def __init__(self,parent,bindings,statements,tripleStore) :
+    
+    __slots__ = ("expr",
+                 "tripleStore",
+                 "bindings",
+                 "optionalTrees",
+                 "bound",
+                 "clash",
+                 "priorLeftJoin",
+                 "dontSpawn",
+                 "children",
+                 "parent",
+                 "statement",
+                 "rest")
+    
+    def __init__(self,parent,bindings,statements,tripleStore,expr=None) :
         """
         @param parent:     parent node
         @param bindings:   a dictionary with the bindings that are already done or with None value if no binding yet
@@ -183,9 +202,12 @@ class _SPARQLNode:
         @param tripleStore: the 'owner' triple store
         @type tripleStore: L{sparqlGraph<rdflib.sparql.sparqlGraph.sparqlGraph>}
         """
+        self.priorLeftJoin       = False
+        self.expr = expr
         self.tripleStore         = tripleStore
         self.bindings            = bindings
         self.optionalTrees       = []
+        self.dontSpawn           = False
         if None in bindings.values() :
             self.bound = False
         else :
@@ -202,13 +224,66 @@ class _SPARQLNode:
             self.statement = None
             self.rest      = None
 
+    def __reduce__(self):
+        if self.statement:
+            statements = [self.statement]+ self.rest
+        else:
+            statements=[]
+        return (_SPARQLNode,
+                (self.parent,
+                 self.bindings,
+                 statements,
+                 self.tripleStore,
+                 self.expr),
+                 self.__getstate__())
+
+    def __getstate__(self):
+        if self.statement:
+            statements = [self.statement]+ self.rest
+        else:
+            statements=[]        
+        return (self.clash,
+                self.optionalTrees,
+                self.children,
+                self.parent,
+                self.bindings,
+                statements,
+                self.tripleStore,
+                self.expr,
+                self.bound,
+                self.priorLeftJoin,
+                self.dontSpawn)
+
+    def __setstate__(self, arg):
+        clash,optionals,children,parent,bindings,statements,tripleStore,expr,bound,plj,spawn = arg
+        #clash,optionals,children,proxy,spawn = arg
+        self.priorLeftJoin = plj
+        self.dontSpawn=spawn
+        self.bound=bound
+        self.clash=clash
+        self.optionalTrees=optionals
+        self.children=children
+        self.parent=parent
+        self.bindings=bindings
+        if len(statements) > 0 :
+            self.statement = statements[0]
+            self.rest      = statements[1:]
+        else :
+            self.statement = None
+            self.rest      = None
+        self.tripleStore=tripleStore
+        self.expr=expr        
 
     def __repr__(self):
         return "<SPARQLNode %s. %s children, %s OPTs.  clash: %s. bound: %s>"%(id(self),
                                                                              len(self.children),
                                                                              len(self.optionalTrees),
                                                                              self.clash,
-                                                                             self.bindings.keys())
+                                                                             [k for k in self.bindings.keys()
+                                                                                 if self.bindings[k] is not None])
+        
+    def setupGraph(self,store):
+        self.tripleStore.setupGraph(store)
 
     def returnResult(self,select) :
         """
@@ -242,14 +317,23 @@ class _SPARQLNode:
                 #Determine if this node has an OPTIONAL 'proxy'
                 proxies = []
                 if self.optionalTrees:
-                    proxies = reduce(lambda x,y: x+y,[list(_fetchProxies(o)) for o in self.optionalTrees])                  
+                    proxies = reduce(lambda x,y: x+y,[list(_fetchBoundLeaves(o))
+                                                for o in self.optionalTrees],[])
                 # This where the essential happens: the binding values are used to construct the selection result
                 # sparql-p fix: A node with valid optional expansion trees should not
                 # contribute to bindings (the OPTIONAL expansion trees already account 
                 # for it's bindings)
                 # see: http://chatlogs.planetrdf.com/swig/2007-06-07.html#T19-28-43
                 if not proxies:
-                    if select :
+                    prevBound=reduce(lambda x,y: x+y,
+                               [list(_fetchBoundLeaves(o,previousBind=True))
+                                                for o in self.optionalTrees],[])
+                    if self.optionalTrees and \
+                        reduce(lambda x,y: x+y,
+                               [list(_fetchBoundLeaves(o,previousBind=True))
+                                                for o in self.optionalTrees],[]):
+                        pass
+                    elif select :
                         for a in select :
                             if a in self.bindings :
                                 result[a] = self.bindings[a]
@@ -405,9 +489,10 @@ class _SPARQLNode:
                                         search_p,
                                         search_o))
             else:
+                #otherwise, the default graph is the graph queried
                 searchRT = self.tripleStore.graph.triples((search_s,search_p,search_o))
             if originalGraph:
-                self.tripleStore.graph = originalGraph 
+                self.tripleStore.graph = originalGraph
             for tripleOrQuad in searchRT:
                 if self.tripleStore.graphVariable:
                     (result_s,result_p,result_o,parentGraph) = tripleOrQuad
@@ -439,21 +524,17 @@ class _SPARQLNode:
                                 preClash = True
                         else:
                             new_bindings[searchTerm] = result
-#                if search_s == None : new_bindings[s] = result_s
-#                if search_p == None : new_bindings[p] = result_p
-#                if search_o == None : new_bindings[o] = result_o
                 if self.tripleStore.graphVariable:
                     new_bindings[self.tripleStore.graphVariable] = parentGraph.identifier
                 # Recursion starts here: create and expand a new child
-                child = _SPARQLNode(self,new_bindings,self.rest,self.tripleStore)
-                if not preClash:
-                    child.expand(constraints)
+                child = _SPARQLNode(self,new_bindings,self.rest,self.tripleStore,expr=self.expr)
+                if preClash:
+                    child.clash = True
                 else:
-                    child.clash = True                
+                    child.expand(constraints)
                 # if the child is a clash then no use adding it to the tree, it can be forgotten
                 if self.clash == False :
                     self.children.append(child)
-
             if len(self.children) == 0 :
                 # this means that the constraints could not be met at all with this binding!!!!
                 self.clash = True
@@ -461,9 +542,12 @@ class _SPARQLNode:
             # this is if all bindings are done; the conditions (ie, global constraints) are still to be checked
             if self.bound == True and self.clash == False :
                 for func in constraints :
-                    if func(self.bindings) == False :
-                        self.clash = True
-                        break
+                    try:
+                        if func(self.bindings) == False :
+                            self.clash = True
+                            break
+                    except TypeError:
+                        self.clash=True
 
     def expandOptions(self,bindings,statements,constraints) :
         """
@@ -506,13 +590,12 @@ class _SPARQLNode:
                     if key in bindings :
                         del bindings[key]
                 bindings.update(toldBNodeLookup)
-                optTree = _SPARQLNode(None,bindings,statements,self.tripleStore)
+                optTree = _SPARQLNode(None,bindings,statements,self.tripleStore,expr=self.expr)
                 self.optionalTrees.append(optTree)
                 optTree.expand(constraints)
         else :
             for c in self.children :
                 c.expandOptions(bindings,statements,constraints)
-
 
 def _processResults(select,arr) :
     '''
@@ -694,6 +777,14 @@ class Query :
         """Retrieve the full binding, ie, an array of binding dictionaries
         """
         if self.parent1 != None and self.parent2 != None :
+            results = self.parent1.select(None) + self.parent2.select(None)
+        else :
+            # remember: _processResult turns the expansion results (an array of dictionaries)
+            # into an array of tuples in the right, original order
+            results = self.top.returnResult(None)
+        return results
+        
+        if self.parent1 != None and self.parent2 != None :
             return self.parent1._getFullBinding() + self.parent2._getFullBinding()
         else :
             # remember: returnResult returns an array of dictionaries
@@ -768,6 +859,7 @@ class Query :
                 return 0
         # get the full Binding sorted
         fullBinding.sort(_sortBinding)
+        
         # remember: _processResult turns the expansion results (an array of dictionaries)
         # into an array of tuples in the right, original order
         retval = _processResults(selection,fullBinding)
@@ -843,6 +935,8 @@ class Query :
             retval = results
 
         if limit != None :
+            if limit == 0:
+                return []
             return retval[offset:limit+offset]
         elif offset > 0 :
             return retval[offset:]

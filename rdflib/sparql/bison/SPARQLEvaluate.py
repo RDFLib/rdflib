@@ -8,6 +8,7 @@ from rdflib.sparql.Query import _variablesToArray, queryObject, SessionBNode
 from rdflib.Graph import ConjunctiveGraph, Graph, BackwardCompatGraph,ReadOnlyGraphAggregate
 from rdflib import URIRef,Variable,BNode, Literal, plugin, RDF
 from rdflib.store import Store
+from rdflib.Identifier import Identifier
 from rdflib.Literal import XSDToPython
 from IRIRef import NamedGraph,RemoteGraph
 from GraphPattern import *
@@ -72,6 +73,8 @@ def convertTerm(term,queryProlog):
         if queryProlog is None:
             return URIRef(term)
         else:
+            if queryProlog.baseDeclaration is None:
+                return URIRef(term)
             return URIRef(queryProlog.baseDeclaration + term)
     elif isinstance(term,ParsedString):
         return Literal(term)
@@ -97,7 +100,12 @@ def unRollCollection(collection,queryProlog):
             yield (listStart,RDF.first,convertTerm(singleItem,queryProlog))
         yield (listStart,RDF.rest,RDF.nil)
     else:
-        yield (listStart,RDF.first,collection._list[0].identifier)
+        singleItem = collection._list[0]
+        if isinstance(singleItem,Identifier):
+            singleItem=singleItem
+        else:
+            singleItem=singleItem.identifier
+        yield (listStart,RDF.first,convertTerm(singleItem,queryProlog))
         prevLink = listStart
         for colObj in collection._list[1:]:
             linkNode = convertTerm(BNode(),queryProlog)
@@ -179,7 +187,7 @@ def mapToOperator(expr,prolog,combinationArg=None,constraint=False):
                 combinationInvokation)
     elif isinstance(expr,(Variable,Unbound)):
         if constraint:
-            return """sparqlOperators.EBV("%s")%s"""%(expr,combinationInvokation)
+            return """sparqlOperators.EBV(rdflib.Variable("%s"))%s"""%(expr.n3(),combinationInvokation)
         else:
             return '"?%s"'%expr
     elif isinstance(expr,ParsedREGEXInvocation):
@@ -220,7 +228,11 @@ def mapToOperator(expr,prolog,combinationArg=None,constraint=False):
              mapToOperator(expr.arguments[0],prolog,combinationArg='i',constraint=constraint),
              fUri,
              combinationInvokation)
-        raise Exception("Whats do i do with %s (a %s)?"%(expr,type(expr).__name__))
+        #@@FIXME The hook for extension functions goes here
+        if fUri not in prolog.extensionFunctions:
+            import warnings
+            warnings.warn("Use of unregistered extension function: %s"%(fUri),UserWarning,1)
+        #raise Exception("Whats do i do with %s (a %s)?"%(expr,type(expr).__name__))
     else:
         if isinstance(expr,ListRedirect):
             expr = expr.reduce()
@@ -279,7 +291,7 @@ def createSPARQLPConstraint(filter,prolog):
             print "sparql-p operator(s): %s"%rt
         return eval(rt)
     elif isinstance(reducedFilter,Variable):
-        rt = """sparqlOperators.EBV("%s")"""%reducedFilter
+        rt = """sparqlOperators.EBV(rdflib.Variable("%s"))"""%reducedFilter.n3()
         if prolog.DEBUG:
             print "sparql-p operator(s): %s"%rt        
         return eval(rt)
@@ -290,6 +302,12 @@ def createSPARQLPConstraint(filter,prolog):
 #            print "sparql-p operator(s): %s"%rt
 #        return eval(rt)
     else:
+        if reducedFilter == u'true' or reducedFilter == u'false':
+            def trueFn(arg):
+                return True
+            def falseFn(arg):
+                return False
+            return reducedFilter == u'true' and trueFn or falseFn        
         rt=mapToOperator(reducedFilter,
                          prolog,
                          constraint=const)
