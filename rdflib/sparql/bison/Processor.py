@@ -29,8 +29,7 @@ class Processor(sparql.Processor):
               extensionFunctions={}):
         from rdflib.sparql.bison.Query import Query, Prolog
         from rdflib.sparql.Algebra import TopEvaluate
-        assert isinstance(strOrQuery, (basestring, Query)), 
-            "%s must be a string or an rdflib.sparql.bison.Query.Query instance"%strOrQuery
+        assert isinstance(strOrQuery, (basestring, Query)),"%s must be a string or an rdflib.sparql.bison.Query.Query instance"%strOrQuery
         if isinstance(strOrQuery, basestring):
             strOrQuery = Parse(strOrQuery, DEBUG)
         if not strOrQuery.prolog:
