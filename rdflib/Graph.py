@@ -666,7 +666,8 @@ class Graph(Node):
 
     def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False,
               dataSetBase=None,
-              processor="sparql"):
+              processor="sparql",
+              extensionFunctions={}):
         """
         Executes a SPARQL query (eventually will support Versa queries with same method) against this Graph
         strOrQuery - Is either a string consisting of the SPARQL query or an instance of rdflib.sparql.bison.Query.Query
@@ -682,7 +683,11 @@ class Graph(Node):
         processor_plugin = plugin.get(processor, sparql.Processor)(self.store)
         qresult_plugin = plugin.get('SPARQLQueryResult', QueryResult)
 
-        res = processor_plugin.query(strOrQuery, initBindings, initNs, DEBUG)
+        res = processor_plugin.query(strOrQuery, 
+                                     initBindings, 
+                                     initNs, 
+                                     DEBUG, 
+                                     extensionFunctions=extensionFunctions)
         return qresult_plugin(res)
 
     def n3(self):
