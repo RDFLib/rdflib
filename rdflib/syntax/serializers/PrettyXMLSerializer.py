@@ -126,8 +126,8 @@ class PrettyXMLSerializer(Serializer):
                 col=Collection(store,object)
                 for item in col:
                     self.forceRDFAbout.add(item)
-                    self.__serialized[item] = 1
                     self.subject(item)
+                    self.__serialized[item] = 1
             else:
                 if depth<=self.max_depth:
                     self.subject(object, depth+1)
