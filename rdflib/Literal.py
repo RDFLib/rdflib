@@ -329,7 +329,7 @@ def _castPythonToLiteral(obj):
 _PythonToXSD = [
     (basestring, (None,None)),
     (float     , (None,_XSD_NS[u'float'])),
-    (int       , (None,_XSD_NS[u'int'])),
+    (int       , (None,_XSD_NS[u'integer'])),
     (long      , (None,_XSD_NS[u'long'])),
     (bool      , (None,_XSD_NS[u'boolean'])),
     (datetime  , (lambda i:i.isoformat(),_XSD_NS[u'dateTime'])),
