@@ -117,7 +117,7 @@ class MySQL(Store):
         self.identifier = identifier and identifier or 'hardcoded'
         #Use only the first 10 bytes of the digest
         self._internedId = INTERNED_PREFIX + sha.new(self.identifier).hexdigest()[:10]
-
+        
         #Setup FOPL RelationalModel objects
         self.idHash = IdentifierHash(self._internedId)
         self.valueHash = LiteralHash(self._internedId)
@@ -151,8 +151,10 @@ class MySQL(Store):
         #of the triple pattern is
         self.STRONGLY_TYPED_TERMS = False
         self._db = None
+        self.configuration = None
         if configuration is not None:
             self.open(configuration)
+
 
         self.cacheHits = 0
         self.cacheMisses = 0
@@ -185,6 +187,7 @@ class MySQL(Store):
         exists, but there is insufficient permissions to open the
         store.
         """
+        self.configuration = configuration
         configDict = ParseConfigurationString(configuration)
         if create:
             test_db = MySQLdb.connect(user=configDict['user'],
@@ -378,7 +381,8 @@ class MySQL(Store):
                     rt = next = c.fetchone()
                     sameTriple = next and extractTriple(next,self,context)[:3] == (s,p,o)
 
-            yield (s,p,o),(c for c in contexts)
+            yield (s,p,o),(con for con in contexts)
+        c.close()
 
     def triples_choices(self, (subject, predicate, object_),context=None):
         """
