@@ -58,8 +58,13 @@ def ReduceGraphPattern(graphPattern,prolog):
         constraints=reduce(lambda x,y:x+y,constraints,[])
         if graphPattern.filter:
             constraints.append(createSPARQLPConstraint(graphPattern.filter, prolog))
-        bgp=BasicGraphPattern(reduce(lambda left,right: left.patterns+right.patterns,
-                                     items),prolog)
+        def mergeBGPs(left,right):
+            if isinstance(left,BasicGraphPattern):
+                left = left.patterns
+            if isinstance(right,BasicGraphPattern):
+                right = right.patterns
+            return left+right
+        bgp=BasicGraphPattern(reduce(mergeBGPs,items),prolog)
         bgp.addConstraints(constraints)
         return bgp
     else:
@@ -353,11 +358,14 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
                     orderBy.append(expr)                    
                     orderAsc.append(orderCond.order == ASCENDING_ORDER)
 
-        limit = query.query.solutionModifier.limitClause and \
-             int(query.query.solutionModifier.limitClause) or None
-
-        offset = query.query.solutionModifier.offsetClause and \
-             int(query.query.solutionModifier.offsetClause) or 0
+        if query.query.solutionModifier.limitClause is not None:
+            limit = int(query.query.solutionModifier.limitClause)
+        else:
+            limit = None
+        if query.query.solutionModifier.offsetClause is not None:
+            offset = int(query.query.solutionModifier.offsetClause)
+        else:
+            offset = 0
         topUnionBindings=[]
         selection=result.select(query.query.variables,
              query.query.distinct,
