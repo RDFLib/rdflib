@@ -50,14 +50,10 @@ def ReduceGraphPattern(graphPattern,prolog):
     if len(items) == 1:
         assert isinstance(items[0],BasicGraphPattern), repr(items)
         bgp=items[0]
-        if graphPattern.filter:
-            bgp.addConstraint(createSPARQLPConstraint(graphPattern.filter, prolog))
         return bgp
     elif len(items) > 1:
         constraints=[b.constraints for b in items if b.constraints]
         constraints=reduce(lambda x,y:x+y,constraints,[])
-        if graphPattern.filter:
-            constraints.append(createSPARQLPConstraint(graphPattern.filter, prolog))
         def mergeBGPs(left,right):
             if isinstance(left,BasicGraphPattern):
                 left = left.patterns
@@ -90,6 +86,7 @@ def ReduceToAlgebra(left,right):
             
     
     ( GraphPatternNotTriples | Filter ) '.'? TriplesBlock?
+      nonTripleGraphPattern     filter         triples
     """
     if not isinstance(right,AlgebraExpression):
         if isinstance(right,ParsedGroupGraphPattern):
@@ -135,18 +132,35 @@ def ReduceToAlgebra(left,right):
                     raise Exception(right)
             else:
                 if isinstance(left,BasicGraphPattern) and left.constraints:
+                    if right.filter:
+                        if not left.patterns:
+                            #{ } FILTER E1 FILTER E2 BGP(..)
+                            filter2=createSPARQLPConstraint(right.filter,prolog)
+                            right = ReduceGraphPattern(right,prolog)
+                            right.addConstraints(left.constraints)
+                            right.addConstraint(filter2)
+                            return right
+                        else:
+                            #BGP(..) FILTER E1 FILTER E2 BGP(..)
+                            left.addConstraint(createSPARQLPConstraint(right.filter,
+                                                                   prolog))
                     right = ReduceGraphPattern(right,prolog)
-                    #filter BGP(..)
-                    right.addConstraints(left.constraints)
-                    return right                
                 else:
+                    if right.filter:
+                        #FILTER ...
+                        filter=createSPARQLPConstraint(right.filter,prolog)
+                        right = ReduceGraphPattern(right,prolog)
+                        right.addConstraint(filter)
+                    else:
                     #BGP(..)
-                    right = ReduceGraphPattern(right,prolog)
+                        right = ReduceGraphPattern(right,prolog)
+                    
         else:
             #right.triples is None
             if right.nonTripleGraphPattern is None:
                 if right.filter:
                     if isinstance(left,BasicGraphPattern):
+                        #BGP(...) FILTER
                         left.addConstraint(createSPARQLPConstraint(right.filter, 
                                                                    prolog))
                         return left
@@ -192,7 +206,8 @@ def ReduceToAlgebra(left,right):
     else:
         return Join(left,right)
 
-def RenderSPARQLAlgebra(parsedSPARQL):
+def RenderSPARQLAlgebra(parsedSPARQL,nsMappings=None):
+    nsMappings = nsMappings and nsMappings or {} 
     global prolog
     prolog = parsedSPARQL.prolog
     if prolog is not None:
@@ -540,7 +555,8 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
     #for node in BF_leaf_traversal(node):
     currExpr = expression
     for node in walktree(node):
-        assert not node.clash
+        if node.clash:
+            continue
         assert len(node.children) == 0 
         if prolog.DEBUG:
             print "Performing Join(%s,..)"%node
@@ -693,7 +709,8 @@ def _ExpandLeftJoin(node,expression,tripleStore,prolog,optionalTree=False):
         print "---------------------"
         print node.bindings
     for node in walktree(node,optProxies=True):
-        assert not node.clash
+        if node.clash:
+            continue
         assert len(node.children) == 0 
         # this is a leaf in the original expansion
         if prolog.DEBUG:
