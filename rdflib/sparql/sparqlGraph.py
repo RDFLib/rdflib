@@ -19,7 +19,6 @@ class SPARQLGraph(object):
                 self.graphKind = self.SPARQL_DATASET
                 self.identifier = graph.default_context.identifier
             else:
-                assert isinstance(graph,Graph)
                 self.graphKind = self.NAMED_GRAPH
                 self.identifier = graph.identifier
         #super(SPARQLGraph, self).__init__(store, identifier)
