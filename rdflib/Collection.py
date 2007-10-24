@@ -20,7 +20,7 @@ class Collection(object):
     >>> g.add((listItem2,RDF.first,Literal(3)))
     >>> c=Collection(g,listName)
     >>> print list(c)
-    [rdflib.Literal(u'1', lang=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#int')), rdflib.Literal(u'2', lang=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#int')), rdflib.Literal(u'3', lang=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#int'))]
+    [rdflib.Literal(u'1', lang=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#integer')), rdflib.Literal(u'2', lang=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#integer')), rdflib.Literal(u'3', lang=None, datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#integer'))]
     >>> 1 in c
     True
     >>> len(c)
@@ -53,7 +53,7 @@ class Collection(object):
         >>> g.add((listItem2,RDF.first,Literal(3)))
         >>> c=Collection(g,listName)
         >>> print c.n3()
-        ( "1"^^<http://www.w3.org/2001/XMLSchema#int> "2"^^<http://www.w3.org/2001/XMLSchema#int> "3"^^<http://www.w3.org/2001/XMLSchema#int> )
+        ( "1"^^<http://www.w3.org/2001/XMLSchema#integer> "2"^^<http://www.w3.org/2001/XMLSchema#integer> "3"^^<http://www.w3.org/2001/XMLSchema#integer> )
         """
         return "( %s )"%(' '.join([i.n3() for i in self]))
 
@@ -75,7 +75,7 @@ class Collection(object):
         count = 0
         links=set()
         for item in self.graph.items(self.uri):
-            assert item not in links,"There is a loop in the RDF list!"
+            assert item not in links,"There is a loop in the RDF list! (%s has been processed before)"%item
             links.add(item)
             count += 1
         return count
@@ -122,22 +122,57 @@ class Collection(object):
 
 
     def __delitem__(self, key):
-        """..."""
+        """
+        >>> from rdflib import RDF, RDFS
+        >>> from pprint import pformat
+        >>> g=Graph()
+        >>> a=BNode('foo')
+        >>> b=BNode('bar')
+        >>> c=BNode('baz')
+        >>> g.add((a,RDF.first,RDF.type))
+        >>> g.add((a,RDF.rest,b))
+        >>> g.add((b,RDF.first,RDFS.label))
+        >>> g.add((b,RDF.rest,c))
+        >>> g.add((c,RDF.first,RDFS.comment))
+        >>> g.add((c,RDF.rest,RDF.nil))
+        >>> len(g)
+        6
+        >>> def listAncestry(node,graph):
+        ...   for i in graph.subjects(RDF.rest,node): 
+        ...     yield i
+        >>> [str(node.n3()) for node in g.transitiveClosure(listAncestry,RDF.nil)]
+        ['_:baz', '_:bar', '_:foo']
+        >>> lst=Collection(g,a)
+        >>> len(lst)
+        3
+        >>> b==lst._get_container(1)
+        True
+        >>> c==lst._get_container(2)
+        True
+        >>> del lst[1]
+        >>> len(lst)
+        2
+        >>> len(g)
+        4
+        
+        """
         self[key] # to raise any potential key exceptions
         graph = self.graph
         current = self._get_container(key)
         assert current
-        if key==len(self)-1:
-            graph.remove((current, RDF.first, None))
-            graph.remove((current, RDF.rest, None))
+        if len(self)==1 and key>0:
+            pass
+        elif key==len(self)-1:
+            #the tail
+            priorLink = self._get_container(key-1)
+            self.graph.set((priorLink,RDF.rest,RDF.nil))
+            graph.remove((current, None, None))
         else:
             next = self._get_container(key+1)
-            assert next
-            first = graph.value(next, RDF.first)
-            rest = graph.value(next, RDF.rest)
-
-            graph.set((current, RDF.first, first))
-            graph.set((current, RDF.rest, rest))
+            prior = self._get_container(key-1)
+            assert next and prior
+            graph.remove((current, None, None))
+            graph.set((prior, RDF.rest, next))
 
     def __iter__(self):
         """Iterator over items in Collections"""

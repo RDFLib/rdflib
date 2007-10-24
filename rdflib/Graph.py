@@ -553,6 +553,46 @@ class Graph(Node):
                 yield item
             list = self.value(list, RDF.rest)
 
+    def transitiveClosure(self,func,arg):
+        """
+        Generates transitive closure of a user-defined 
+        function against the graph
+        
+        >>> from rdflib.Collection import Collection
+        >>> g=Graph()
+        >>> a=BNode('foo')
+        >>> b=BNode('bar')
+        >>> c=BNode('baz')
+        >>> g.add((a,RDF.first,RDF.type))
+        >>> g.add((a,RDF.rest,b))
+        >>> g.add((b,RDF.first,RDFS.label))
+        >>> g.add((b,RDF.rest,c))
+        >>> g.add((c,RDF.first,RDFS.comment))
+        >>> g.add((c,RDF.rest,RDF.nil))
+        >>> def topList(node,g):
+        ...    for s in g.subjects(RDF.rest,node):
+        ...       yield s
+        >>> def reverseList(node,g):
+        ...    for f in g.objects(node,RDF.first):
+        ...       print f
+        ...    for s in g.subjects(RDF.rest,node):
+        ...       yield s
+        
+        >>> [rt for rt in g.transitiveClosure(topList,RDF.nil)]
+        [rdflib.BNode('baz'), rdflib.BNode('bar'), rdflib.BNode('foo')]
+        
+        >>> [rt for rt in g.transitiveClosure(reverseList,RDF.nil)]
+        http://www.w3.org/2000/01/rdf-schema#comment
+        http://www.w3.org/2000/01/rdf-schema#label
+        http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+        [rdflib.BNode('baz'), rdflib.BNode('bar'), rdflib.BNode('foo')]
+        
+        """
+        for rt in func(arg,self):
+            yield rt
+            for rt_2 in self.transitiveClosure(func,rt):
+                yield rt_2
+
     def transitive_objects(self, subject, property, remember=None):
         """Transitively generate objects for the `property` relationship
 
@@ -750,7 +790,6 @@ class Graph(Node):
         obj = set(self.objects())
         allNodes = obj.union(set(self.subjects()))
         return allNodes
-
 
 class ConjunctiveGraph(Graph):
 
