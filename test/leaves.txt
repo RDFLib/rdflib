@@ -29,7 +29,8 @@
        filter (?a != ?b) .
     }...
 
-    >>> graph = Graph()
+    >>> from rdflib import RDF
+    >>> graph = Graph(identifier=RDF.RDFNS)
     >>> graph.parse(StringIO(data), format='n3')
     <Graph identifier=... (<class 'rdflib.Graph.Graph'>)>
 
@@ -55,8 +56,7 @@
     }...
 
     >>> from rdflib.URIRef import URIRef
-    >>> graph = Graph(identifier=URIRef('http://bobby'))
-    >>> graph.parse(StringIO(data), format='n3')
+    >>> graph = Graph(identifier=URIRef('http://bobby')).parse(StringIO(data), format='n3')
     >>> print graph.query(query).serialize('json')
     {
        "head" : {
