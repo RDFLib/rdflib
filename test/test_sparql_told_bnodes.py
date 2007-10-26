@@ -1,5 +1,5 @@
 from rdflib.Namespace import Namespace
-from rdflib import plugin,RDF,RDFS,URIRef, StringInputSource, Literal, BNode
+from rdflib import plugin,RDF,RDFS,URIRef, StringInputSource, Literal, BNode, Variable
 from rdflib.Graph import Graph,ReadOnlyGraphAggregate,ConjunctiveGraph
 import unittest,sys
 from pprint import pprint
@@ -21,6 +21,10 @@ class TestSPARQLToldBNodes(unittest.TestCase):
         print query
         rt = self.graph.query(query)
         self.failUnless(len(rt) == 1,"BGP should only match the 'told' BNode by name (result set size: %s)"%len(rt))
+        bindings = {Variable('?subj'):s}
+        query = """SELECT ?obj WHERE { ?subj ?prop ?obj }"""
+        rt = self.graph.query(query,initBindings=bindings)
+        self.failUnless(len(rt) == 1,"BGP should only match the 'told' BNode by name (result set size: %s, BNode: %s)"%(len(rt),s.n3()))        
 
 if __name__ == '__main__':
     unittest.main()
