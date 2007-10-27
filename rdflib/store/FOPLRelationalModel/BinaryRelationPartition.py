@@ -67,6 +67,8 @@ class BinaryRelationPartition(object):
     """
     assertedColumnName = 'asserted'
     indexSuffix = 'Index'
+    literalTable = False
+    objectPropertyTable = False
     def __init__(self,identifier,idHash,valueHash):
         self.identifier = identifier
         self.idHash    = idHash
@@ -208,6 +210,42 @@ class BinaryRelationPartition(object):
         cursor.executemany(self.singularInsertionSQLCmd,self.pendingInsertions)
         cursor.close()
         self._resetPendingInsertions()
+        
+    def viewUnionSelectExpression(self,relations_only=False):
+        """
+        Return a SQL statement which creates a view of all the RDF statements
+        from all the contributing partitions
+        """
+        rt=[]
+        if relations_only and self.objectPropertyTable:
+            return "select * from %s"%repr(self)
+        for idx in range(len(POSITION_LIST)):
+            rdfTermLabel=SlotPrefixes[idx]
+            if idx < len(self.columnNames) and self.columnNames[idx]:
+                #there is a matching column
+                rt.append(self.columnNames[idx]+' as %s'%rdfTermLabel)
+                if self.termEnumerations[idx]:
+                    #there is a corresponding term enumeration
+                    rt.append(self.columnNames[idx]+'_term as %s_term'%rdfTermLabel)
+                else:
+                    #no corresponding term enumeration (hardcoded)
+                    rt.append("'%s' as %s_term"%(self.hardCodedResultTermsTypes[idx],
+                                                 rdfTermLabel))
+            else:
+                assert self.hardCodedResultFields[idx] == RDF.type
+                rt.append("'%s' as %s"%(normalizeValue(self.hardCodedResultFields[idx],'U'),
+                                        rdfTermLabel))
+                if self.hardCodedResultTermsTypes[idx]:
+                    rt.append("'%s' as %s_term"%(self.hardCodedResultTermsTypes[idx],
+                                                 rdfTermLabel))
+        if not relations_only:
+            if self.literalTable:
+                for i in self.columnNames[-2:]:
+                    rt.append(i[0])
+            else:
+                rt.append('NULL as data_type')
+                rt.append('NULL as language')
+        return "select %s from %s"%(', '.join(rt),repr(self))        
 
     def selectContextFields(self,first):
         """
@@ -379,7 +417,7 @@ class NamedLiteralProperties(BinaryRelationPartition):
     hardCodedResultTermsTypes = {
         OBJECT    : 'L'
     }
-
+    literalTable = False
     def foreignKeySQL(self,slot):
         hash = slot == OBJECT and self.valueHash or self.idHash
         rt = ["\tCONSTRAINT %s_%s_lookup FOREIGN KEY  (%s) REFERENCES %s (%s)"%(
@@ -459,7 +497,7 @@ class NamedLiteralProperties(BinaryRelationPartition):
 
     def compileQuadToParams(self,quadSlots):
         subjSlot,predSlot,objSlot,conSlot = quadSlots
-        dTypeParam = objSlot.term.datatype and normalizeValue(objSlot.term.datatype,objSlot.termType) or None
+        dTypeParam = objSlot.term.datatype and normalizeValue(objSlot.term.datatype,'U') or None
         langParam  = objSlot.term.language and objSlot.term.language or None
         rtList = [
                     subjSlot.md5Int,
@@ -521,7 +559,7 @@ class NamedBinaryRelations(BinaryRelationPartition):
 
     hardCodedResultFields = {}
     hardCodedResultTermsTypes = {}
-
+    objectPropertyTable = True
     def compileQuadToParams(self,quadSlots):
         subjSlot,predSlot,objSlot,conSlot = quadSlots
         return (subjSlot.md5Int,

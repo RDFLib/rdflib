@@ -170,6 +170,9 @@ class IdentifierHash(RelationalHash):
 
     tableNameSuffix = 'identifiers'
 
+    def viewUnionSelectExpression(self,relations_only=False):
+        return "select * from %s"%(repr(self))
+
     def defaultSQL(self):
         """
         Since rdf:type is modeled explicitely (in the ABOX partition) it must be inserted as a 'default'
@@ -214,6 +217,9 @@ class IdentifierHash(RelationalHash):
 class LiteralHash(RelationalHash):
     columns = [('id','BIGINT unsigned',[None,'id']),]
     tableNameSuffix = 'literals'
+
+    def viewUnionSelectExpression(self,relations_only=False):
+        return "select %s, 'L' as term_type, lexical from %s"%(self.columns[0][0],repr(self))
 
     def generateDict(self,db):
         c=db.cursor()
