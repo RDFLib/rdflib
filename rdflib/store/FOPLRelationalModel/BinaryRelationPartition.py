@@ -417,7 +417,7 @@ class NamedLiteralProperties(BinaryRelationPartition):
     hardCodedResultTermsTypes = {
         OBJECT    : 'L'
     }
-    literalTable = False
+    literalTable = True
     def foreignKeySQL(self,slot):
         hash = slot == OBJECT and self.valueHash or self.idHash
         rt = ["\tCONSTRAINT %s_%s_lookup FOREIGN KEY  (%s) REFERENCES %s (%s)"%(
