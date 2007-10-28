@@ -1,0 +1,78 @@
+================================================================
+Advanced SPARQL: CONSTRUCT, user-defined DESCRIBE and extensions
+================================================================
+
+I. CONSTRUCT support
+
+CONSTRUCT queries are supported and differ from SELECT/ASK queries
+primarily in that the rdflib.sparql.SPARQLQueryResultQueryResult object returned
+will forward the format argument to the serialize method of the 'constructed'
+graph.  The 'result' attribute will be set to an instance of this constructured
+(in-memory) Graph.
+
+    >>> testGraph.query(
+    ...   "CONSTRUCT { ex:Alice vcard:FN ?name }\
+    ...    WHERE     { ?x foaf:name ?name }",
+    ...   initNs=namespaces,
+    ...   ).serialize(format='nt')
+    '<http://example.org/person#Alice> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Alice".\n'
+    
+The result of a CONSTRUCT can be parsed into a graph    
+    
+    >>> rt=testGraph.query(
+    ...   "CONSTRUCT { ex:Alice vcard:FN ?name }\
+    ...    WHERE     { ?x foaf:name ?name }",
+    ...   initNs=namespaces,
+    ...   ).serialize(format='xml')
+    >>> [ (s.n3(),
+    ...    p.n3(),
+    ...    o.n3()) for s,p,o in Graph().parse(StringIO(rt))]
+    [(u'<http://example.org/person#Alice>', u'<http://www.w3.org/2001/vcard-rdf/3.0#FN>', u'"Alice"')]
+
+II. User-defined DESCRIBE
+
+Describe support is implemented by allowing the user to pass in a method which takes
+as arguments: the terms listed in the DESCRIBE expression, a solution binding,
+and the underlying dataset Graph (a ConjunctiveGraph/Graph) and returns an description 
+graph (a Graph instance).  The default describe method will simply return all 
+incoming and outgoing statements as the resulting graph:
+
+===============================================================================
+def describe(terms,bindings,graph):
+    """ 
+    Default DESCRIBE returns all incomming and outgoing statements about the 
+    given terms 
+    """
+    from rdflib.sparql.sparqlOperators import getValue
+    g=Graph()
+    terms=[getValue(i)(bindings) for i in terms]
+    for s,p,o in graph.triples_choices((terms,None,None)):
+        g.add((s,p,o))
+    for s,p,o in graph.triples_choices((None,None,terms)):
+        g.add((s,p,o))
+    return g
+===============================================================================
+
+    >>> rt=testGraph.query(
+    ...   "DESCRIBE  ?x WHERE  { ?x foaf:name ?name }",
+    ...   initNs=namespaces
+    ...   ).result
+    >>> len(rt)
+    2
+        
+A user-defined method is specified by passing it in as an extension function bound to
+<http://www.w3.org/TR/rdf-sparql-query/#describe>
+
+    >>> rt=testGraph.query(
+    ...   "DESCRIBE  ?x WHERE  { ?x foaf:name ?name }",
+    ...   initNs=namespaces,
+    ...   extensionFunctions={DESCRIBE:describeOverride}
+    ...   ).result
+    >>> list(rt)
+    [(rdflib.BNode('.........'), rdflib.URIRef('http://xmlns.com/foaf/0.1/mbox'), rdflib.URIRef('mailto:alice@example.org'))]
+    >>> [ (s.n3(),
+    ...    p.n3(),
+    ...    o.n3()) for s,p,o in rt]
+    [(u'_:.........', u'<http://xmlns.com/foaf/0.1/mbox>', u'<mailto:alice@example.org>')]
+    
+    
