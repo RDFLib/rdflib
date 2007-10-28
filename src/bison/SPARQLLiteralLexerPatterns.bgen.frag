@@ -51,6 +51,9 @@
   <pattern expression='CONSTRUCT'>
     <token>CONSTRUCT</token>
   </pattern>      
+  <pattern expression='DESCRIBE'>
+    <token>DESCRIBE</token>
+  </pattern>          
   <pattern expression='desc|DESC'>
     <token>DESC</token>
   </pattern>

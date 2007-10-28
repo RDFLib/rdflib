@@ -6,6 +6,7 @@
   <token>Q_IRI_CONTENT</token>
   <token>PNAME_NS</token>
   <token>CONSTRUCT</token>
+  <token>DESCRIBE</token>
   <token>PNAME_LN</token>
   <token>BLANK_NODE_LABEL</token>
   <token>VARNAME</token>

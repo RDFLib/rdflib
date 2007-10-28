@@ -60,9 +60,9 @@
             <rule>
                 <symbol>ConstructQuery</symbol>
             </rule>
-            <!--rule>
+            <rule>
                 <symbol>DescribeQuery</symbol>
-            </rule-->
+            </rule>
             <rule>
                 <symbol>AskQuery</symbol>
                 <code language="c">
@@ -72,58 +72,80 @@
             </rule>            
         </production>
 
+        <!-- DescribeQuery ::= 'DESCRIBE' ( VarOrIRIref+ | '*' )
+                               DatasetClause* WhereClause? SolutionModifier -->
+        <production>
+            <non-terminal>DescribeQuery</non-terminal>
+            <rule>
+                <symbol>DESCRIBE</symbol>
+                <symbol>VAR_REFERENCES</symbol>
+                <symbol>DataSetClauseList</symbol>
+                <symbol>WhereClause</symbol>
+                <symbol>SolutionModifier</symbol>
+                <code language="c">
+                    $$ = PyObject_CallMethod(Query, "DescribeQuery", "OOOO", $2,$3,$4,$5);
+                </code>
+            </rule>                        
+            <rule>
+                <symbol>DESCRIBE</symbol>
+                <symbol>VAR_REFERENCES</symbol>
+                <symbol>SolutionModifier</symbol>
+                <code language="c">
+                    Py_INCREF(Py_None);
+                    Py_INCREF(Py_None);
+                    $$ = PyObject_CallMethod(Query, "DescribeQuery", "OOOO", $2,Py_None,Py_None,$3);
+                </code>
+            </rule>                        
+            <rule>
+                <symbol>DESCRIBE</symbol>
+                <symbol>VAR_REFERENCES</symbol>
+                <symbol>DataSetClauseList</symbol>
+                <symbol>SolutionModifier</symbol>
+                <code language="c">
+                    Py_INCREF(Py_None);                    
+                    $$ = PyObject_CallMethod(Query, "DescribeQuery", "OOOO", $2,$3,Py_None,$5);
+                </code>
+            </rule>                        
+            <rule>
+                <symbol>DESCRIBE</symbol>
+                <symbol>VAR_REFERENCES</symbol>
+                <symbol>WhereClause</symbol>
+                <symbol>SolutionModifier</symbol>
+                <code language="c">
+                    Py_INCREF(Py_None);                    
+                    $$ = PyObject_CallMethod(Query, "DescribeQuery", "OOOO", $2,Py_None,$3,$4);
+                </code>
+            </rule>                                    
+        </production>            
+
         <!--    ConstructQuery ::= 'CONSTRUCT' ConstructTemplate DatasetClause* WhereClause SolutionModifier -->
         <production>
             <non-terminal>ConstructQuery</non-terminal>
             <rule>
                 <symbol>CONSTRUCT</symbol>
-                <symbol>ConstructTemplate</symbol>
+                <symbol>LEFT_CURLY</symbol> 
+                <symbol>Triples</symbol>
+                <symbol>RIGHT_CURLY</symbol>
                 <symbol>DataSetClauseList</symbol>
                 <symbol>WhereClause</symbol>
                 <symbol>SolutionModifier</symbol>
                 <code language="c">
-                    $$ = PyObject_CallMethod(Query, "ConstructQuery", "OOOO", $2,$3,$4,$5);
+                    $$ = PyObject_CallMethod(Query, "ConstructQuery", "OOOO", $3,$5,$6,$7);
                 </code>
             </rule>            
             <rule>
                 <symbol>CONSTRUCT</symbol>
-                <symbol>ConstructTemplate</symbol>
+                <symbol>LEFT_CURLY</symbol> 
+                <symbol>Triples</symbol>
+                <symbol>RIGHT_CURLY</symbol>
                 <symbol>WhereClause</symbol>
                 <symbol>SolutionModifier</symbol>
                 <code language="c">
                     Py_INCREF(Py_None);
-                    $$ = PyObject_CallMethod(Query, "ConstructQuery", "OOOO", $2,Py_None,$3,$4);
+                    $$ = PyObject_CallMethod(Query, "ConstructQuery", "OOOO", $3,Py_None,$5,$6);
                 </code>
             </rule>                        
         </production>                
-
-        <!--    ConstructTemplate ::= '{' ConstructTriples? '}' -->
-        <production>
-            <non-terminal>ConstructTemplate</non-terminal>
-            <rule>
-                <symbol>LEFT_CURLY</symbol> 
-                <symbol>ConstructTriples</symbol>               
-                <symbol>RIGHT_CURLY</symbol>
-                <code language="c">
-                    $$ = $2;
-                </code>                
-            </rule>
-            <rule>
-                <symbol>LEFT_CURLY</symbol> 
-                <symbol>RIGHT_CURLY</symbol>
-                <code language="c">
-                    $$ = PyList_New(0);
-                </code>                
-            </rule>            
-        </production>                
-
-        <!--    ConstructTriples ::= TriplesSameSubject ( '.' ConstructTriples? )? -->
-        <production>
-            <non-terminal>ConstructTriples</non-terminal>
-            <rule>
-                <symbol>Triples</symbol>
-            </rule>
-        </production>    
         
         <!--  Prolog  	  ::=    	BaseDecl? PrefixDecl* -->
         <production name="2">
