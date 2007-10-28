@@ -18,10 +18,10 @@ from rdflib.Graph import Graph, ReadOnlyGraphAggregate, ConjunctiveGraph
 from rdflib import URIRef, Variable, plugin, BNode, Literal
 from rdflib.util import first
 from rdflib.store import Store 
-from rdflib.sparql.bison.Query import AskQuery, SelectQuery, Query, Prolog
+from rdflib.sparql.bison.Query import AskQuery, SelectQuery, DescribeQuery, Query, Prolog
 from rdflib.sparql.bison.IRIRef import NamedGraph,RemoteGraph
 from rdflib.sparql.bison.SolutionModifier import ASCENDING_ORDER
-from rdflib.sparql import sparqlGraph, sparqlOperators, SPARQLError, Query
+from rdflib.sparql import sparqlGraph, sparqlOperators, SPARQLError, Query, DESCRIBE
 from rdflib.sparql.bison.SPARQLEvaluate import unRollTripleItems, _variablesToArray
 from rdflib.sparql.bison.GraphPattern import *
 from rdflib.sparql.graphPattern import BasicGraphPattern
@@ -353,7 +353,6 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
 
     if isinstance(query.query,AskQuery):
         return result.ask()
-
     elif isinstance(query.query,SelectQuery):
         orderBy = None
         orderAsc = None
@@ -405,8 +404,63 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
                  result._getAllVariables(),\
                  orderBy,query.query.distinct,\
                  topUnionBindings
+    elif isinstance(query.query,DescribeQuery):
+        if query.query.solutionModifier.limitClause is not None:
+            limit = int(query.query.solutionModifier.limitClause)
+        else:
+            limit = None
+        if query.query.solutionModifier.offsetClause is not None:
+            offset = int(query.query.solutionModifier.offsetClause)
+        else:
+            offset = 0
+        if result.parent1 != None and result.parent2 != None :
+            rt=(r for r in reduce(lambda x,y:x+y,
+                            [root.returnResult(selectionF) \
+                              for root in fetchUnionBranchesRoots(result)]))
+        elif limit is not None or offset != 0:
+            raise NotImplemented("Solution modifiers cannot be used with DESCRIBE")
+        else:
+            rt=result.top.returnResult(None)
+        rtGraph=Graph()
+        for binding in rt:        
+            g=extensionFunctions[DESCRIBE](query.query.describeVars,
+                                               binding,
+                                               tripleStore.graph)
+            return g
     else:
-        raise NotImplemented(CONSTRUCT_NOT_SUPPORTED,repr(query))
+#        10.2 CONSTRUCT
+#        The CONSTRUCT query form returns a single RDF graph specified by a graph 
+#        template. The result is an RDF graph formed by taking each query solution 
+#        in the solution sequence, substituting for the variables in the graph 
+#        template, and combining the triples into a single RDF graph by set union.
+        if query.query.solutionModifier.limitClause is not None:
+            limit = int(query.query.solutionModifier.limitClause)
+        else:
+            limit = None
+        if query.query.solutionModifier.offsetClause is not None:
+            offset = int(query.query.solutionModifier.offsetClause)
+        else:
+            offset = 0
+        if result.parent1 != None and result.parent2 != None :
+            rt=(r for r in reduce(lambda x,y:x+y,
+                            [root.returnResult(selectionF) \
+                              for root in fetchUnionBranchesRoots(result)]))
+        elif limit is not None or offset != 0:
+            raise NotImplemented("Solution modifiers cannot be used with CONSTRUCT")
+        else:
+            rt=result.top.returnResult(None)
+        rtGraph=Graph()
+        for binding in rt:        
+            for s,p,o,func in ReduceGraphPattern(query.query.triples,prolog).patterns:
+                s,p,o=map(lambda x:isinstance(x,Variable) and binding.get(x) or
+                                 x,[s,p,o])
+                #If any such instantiation produces a triple containing an unbound
+                #variable or an illegal RDF construct, such as a literal in subject 
+                #or predicate position, then that triple is not included in the 
+                #output RDF graph.
+                if not [i for i in [s,p,o] if isinstance(i,Variable)]:
+                    rtGraph.add((s,p,o))
+        return rtGraph
                     
 class AlgebraExpression(object):
     """

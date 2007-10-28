@@ -163,7 +163,6 @@ from rdflib.syntax.NamespaceManager import NamespaceManager
 from rdflib import sparql
 from rdflib.QueryResult import QueryResult
 from rdflib.URLInputSource import URLInputSource
-
 from xml.sax.xmlreader import InputSource
 from xml.sax.saxutils import prepare_input_source
 
@@ -178,6 +177,19 @@ try:
     from hashlib import md5
 except ImportError:
     from md5 import md5    
+
+def describe(terms,bindings,graph):
+    """ 
+    Default DESCRIBE returns all incomming and outgoing statements about the given terms 
+    """
+    from rdflib.sparql.sparqlOperators import getValue
+    g=Graph()
+    terms=[getValue(i)(bindings) for i in terms]
+    for s,p,o in graph.triples_choices((terms,None,None)):
+        g.add((s,p,o))
+    for s,p,o in graph.triples_choices((None,None,terms)):
+        g.add((s,p,o))
+    return g
 
 class Graph(Node):
     """An RDF Graph
@@ -707,7 +719,7 @@ class Graph(Node):
     def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False,
               dataSetBase=None,
               processor="sparql",
-              extensionFunctions={}):
+              extensionFunctions={sparql.DESCRIBE:describe}):
         """
         Executes a SPARQL query (eventually will support Versa queries with same method) against this Graph
         strOrQuery - Is either a string consisting of the SPARQL query or an instance of rdflib.sparql.bison.Query.Query
@@ -718,7 +730,12 @@ class Graph(Node):
         """
         assert processor == 'sparql',"SPARQL is currently the only supported RDF query language"
         p = plugin.get(processor, sparql.Processor)(self)
-        return plugin.get('SPARQLQueryResult',QueryResult)(p.query(strOrQuery, initBindings, initNs, DEBUG, dataSetBase))
+        return plugin.get('SPARQLQueryResult',QueryResult)(p.query(strOrQuery,
+                                                                   initBindings,
+                                                                   initNs, 
+                                                                   DEBUG, 
+                                                                   dataSetBase,
+                                                                   extensionFunctions))
 
         processor_plugin = plugin.get(processor, sparql.Processor)(self.store)
         qresult_plugin = plugin.get('SPARQLQueryResult', QueryResult)

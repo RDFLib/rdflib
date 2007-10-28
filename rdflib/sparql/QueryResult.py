@@ -1,4 +1,5 @@
 from rdflib import QueryResult,URIRef,BNode,Literal, Namespace
+from rdflib.Graph import Graph
 from xml.dom import XML_NAMESPACE
 from xml.sax.saxutils import XMLGenerator
 from xml.sax.xmlreader import AttributesNSImpl
@@ -226,6 +227,7 @@ class SPARQLQueryResult(QueryResult.QueryResult):
         , a SPARQLGraph for DESCRIBE/CONSTRUCT, and boolean for ASK  2) the variables selected 3) *all*
         the variables in the Graph Patterns 4) the order clause 5) the DISTINCT clause
         """
+        self.construct=False
         if isinstance(qResult,bool):
             self.askAnswer = [qResult]
             result=None
@@ -234,9 +236,19 @@ class SPARQLQueryResult(QueryResult.QueryResult):
             orderBy=None
             distinct=None
             topUnion = None
+        elif isinstance(qResult,Graph):
+            self.askAnswer = []
+            result=qResult
+            self.construct=True
+            selectionF=None
+            allVars=None
+            orderBy=None
+            distinct=None
+            topUnion = None            
         else:
             self.askAnswer = []
             result,selectionF,allVars,orderBy,distinct,topUnion = qResult
+        self.result = result
         self.topUnion = topUnion
         self.selected = result
         self.selectionF = selectionF
@@ -263,7 +275,9 @@ class SPARQLQueryResult(QueryResult.QueryResult):
             yield self.selected
 
     def serialize(self,format='xml'):
-        if format == 'python':
+        if isinstance(self.result,Graph):
+            return self.result.serialize(format=format)
+        elif format == 'python':
             return self.selected
         elif format in ['json','xml']:
            retval = ""

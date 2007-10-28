@@ -103,8 +103,10 @@ U{W3C Software License<http://www.w3.org/Consortium/Legal/2002/copyright-softwar
 
 @version: 2.2
 
-
 """
+from rdflib import URIRef
+
+DESCRIBE=URIRef('http://www.w3.org/TR/rdf-sparql-query/#describe')
 
 __version__ = "2.2"
 

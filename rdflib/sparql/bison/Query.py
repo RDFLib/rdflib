@@ -1,3 +1,5 @@
+from rdflib.sparql.bison.GraphPattern import GraphPattern
+
 class Query(object):
     """
     Query ::= Prolog ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery )
@@ -50,7 +52,7 @@ class ConstructQuery(object):
     See: http://www.w3.org/TR/rdf-sparql-query/#rConstructQuery
     """
     def __init__(self,triples,dataSetList,whereClause,solutionModifier):
-        self.triples = triples
+        self.triples = GraphPattern(triples=triples)
         self.dataSets = dataSetList and dataSetList or []
         self.whereClause = whereClause
         self.solutionModifier = solutionModifier
@@ -60,13 +62,18 @@ class DescribeQuery(object):
     DescribeQuery ::= 'DESCRIBE' ( VarOrIRIref+ | '*' ) DatasetClause* WhereClause? SolutionModifier
     http://www.w3.org/TR/rdf-sparql-query/#rConstructQuery
     """
-    pass
-#    def __init__(self,dataSetList,whereClause):
-#        self.dataSets = dataSetList and dataSetList or []
-#        self.whereClause = whereClause
-#
-#    def __repr__(self):
-#        return "ASK %s %s"%(self.dataSets,self.whereClause.parsedGraphPattern)
+    def __init__(self,variables,dataSetList,whereClause,solutionModifier):
+        self.describeVars = variables is not None and variables or []
+        self.dataSets = dataSetList and dataSetList or []
+        self.whereClause = whereClause
+        self.solutionModifier = solutionModifier
+
+    def __repr__(self):
+        return "DESCRIBE %s %s %s %s"%(
+                       self.describeVars,
+                       self.dataSets,
+                       self.whereClause.parsedGraphPattern,
+                       self.solutionModifier)
 
 
 class Prolog(object):

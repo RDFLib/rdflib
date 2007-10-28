@@ -232,6 +232,8 @@ def mapToOperator(expr,prolog,combinationArg=None,constraint=False):
         if fUri not in prolog.extensionFunctions:
             import warnings
             warnings.warn("Use of unregistered extension function: %s"%(fUri),UserWarning,1)
+        else:
+            raise NotImplemented("Extension Mechanism hook not yet completely hooked up..")
         #raise Exception("Whats do i do with %s (a %s)?"%(expr,type(expr).__name__))
     else:
         if isinstance(expr,ListRedirect):
