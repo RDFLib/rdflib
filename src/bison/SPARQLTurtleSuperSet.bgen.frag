@@ -478,12 +478,20 @@
   <production name="66">
     <non-terminal>BlankNode</non-terminal>
     <rule>
+        <!-- 
+            Proper SPARQL Blank Nodes:
+            "Blank nodes in graph patterns act as non-distinguished variables, not
+             as references to specific blank nodes in the data being queried."
+        -->
       <symbol>ANON</symbol>
       <code language="c">
-        $$ = PyObject_CallMethod(rdflib, "BNode","");
+        $$ = PyObject_CallMethod(rdflib, "Variable", "O", PyObject_CallMethod(rdflib, "BNode",""));
       </code>
     </rule>
     <rule>
+        <!--
+            A told bnode 
+        -->
       <symbol>BLANK_NODE_LABEL</symbol>
       <code language="c">
         PyObject *lang = PySequence_GetSlice($1, 2, PyString_GET_SIZE($1));
