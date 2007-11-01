@@ -465,7 +465,8 @@ class MySQL(Store):
     transaction_aware = True
     regex_matching = NATIVE_REGEX
     batch_unification = True
-    def __init__(self, identifier=None, configuration=None):
+    def __init__(self, identifier=None, configuration=None,debug=False):
+        self.debug = debug
         self.identifier = identifier and identifier or 'hardcoded'
         #Use only the first 10 bytes of the digest
         self._internedId = INTERNED_PREFIX + sha.new(self.identifier).hexdigest()[:10]
@@ -577,7 +578,8 @@ class MySQL(Store):
                                             suffix,
             ' union all '.join([t.viewUnionSelectExpression(relations_only) 
                                 for t in tables]))
-            print >> sys.stderr, "## Creating View ##\n",query
+            if self.debug:
+                print >> sys.stderr, "## Creating View ##\n",query
             cursor.execute(query)
 
     #Database Management Methods
@@ -788,7 +790,8 @@ class MySQL(Store):
         query = "select straight_join\n%s\nfrom\n%s%s\n" % (
           columns_fragment, from_fragment, where_fragment)
 
-        print >> sys.stderr, query, substitutions
+        if self.debug:
+            print >> sys.stderr, query, substitutions
 
         cursor = self._db.cursor()
         cursor.execute(query, substitutions)
@@ -847,7 +850,8 @@ class MySQL(Store):
           query = ('select\n%s\nfrom\n%s\nwhere\n%s\n' %
             (', '.join(columns), ',\n'.join(from_fragments),
              ' and '.join(where_fragments)))
-          print >> sys.stderr, query, substitutions
+          if self.debug:
+            print >> sys.stderr, query, substitutions
           preparation_cursor.execute(query, substitutions)
           prepared_map = dict(zip(
             [description[0] for description in preparation_cursor.description],
