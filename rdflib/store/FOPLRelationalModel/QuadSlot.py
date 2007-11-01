@@ -4,7 +4,7 @@ Utility functions associated with RDF terms:
 - normalizing (to 64 bit integers via half-md5-hashes)
 - escaping literal's for SQL persistence
 """
-from rdflib import BNode
+from rdflib.BNode import BNode
 from rdflib import RDF
 from rdflib.Literal import Literal
 from rdflib.URIRef import URIRef
@@ -62,6 +62,9 @@ def normalizeValue(value,termType):
     else:
         value = (isinstance(value,Graph) and value.identifier or str(value)) + termType
     return int(md5.new(isinstance(value,unicode) and value.encode('utf-8') or value).hexdigest()[:16],16)
+
+def normalizeNode(node):
+    return normalizeValue(node, term2Letter(node))
 
 class QuadSlot:
     def __repr__(self):

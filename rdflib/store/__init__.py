@@ -59,7 +59,7 @@ class Store(object):
     context_aware = False
     formula_aware = False
     transaction_aware = False
-
+    batch_unification = False
     def __init__(self, configuration=None, identifier=None):
         """
         identifier: URIRef of the Store. Defaults to CWD
