@@ -1,6 +1,6 @@
 import types, sets
 from pprint import pprint
-from rdflib import URIRef, BNode, Literal, Variable
+from rdflib import URIRef, BNode, Literal, Variable, RDF
 from rdflib.Graph import Graph, ConjunctiveGraph, ReadOnlyGraphAggregate
 from rdflib.Identifier import Identifier
 from rdflib.util import check_subject, list2set
@@ -126,6 +126,12 @@ def _fetchBoundLeaves(node,previousBind=False,proxyTree=False):
         for c in node.children :
             for proxy in _fetchBoundLeaves(c,previousBind,isaProxyTree):
                 yield proxy
+
+def isGroundQuad(quad):
+    for term in quad:
+        if isinstance(term,Variable):
+            return False
+    return True
 
 class _SPARQLNode(object):
     """
@@ -426,7 +432,92 @@ class _SPARQLNode(object):
         else :
             return r
 
-    def expand(self,constraints) :
+    def expand(self,constraints):
+        if self.tripleStore.graph.store.batch_unification:
+            patterns=[]
+            if self.statement:
+                for statement in [self.statement]+self.rest: 
+                    (s,p,o,func) = statement
+                    searchTerms=[self._bind(term) is not None and \
+                                 self._bind(term) or term
+                                    for term in [s,p,o]]
+                    (search_s,search_p,search_o) = searchTerms#(self._bind(s),self._bind(p),self._bind(o))
+                    if self.tripleStore.graphVariable:
+                        graphName=self.bindings.get(self.tripleStore.graphVariable,
+                                                    self.tripleStore.graphVariable)
+                    elif self.tripleStore.DAWG_DATASET_COMPLIANCE and \
+                         isinstance(self.tripleStore.graph,ConjunctiveGraph):
+                        #For query-constructed datasets, match against the 'default graph' - 
+                        #the first Graph with a non-URIRef identifier (or an empty, default graph) 
+                        if isinstance(self.tripleStore.graph,ReadOnlyGraphAggregate):
+                            graphName=None
+                            for g in self.tripleStore.graph.graphs:
+                                searchRT = []
+                                if isinstance(g.identifier,BNode):
+                                    graphName=g.identifier
+                                    break
+                            if graphName is None:
+                                #No default graph was created and the active greaph 
+                                #is supposed to be the default graph
+                                #so we should have no answers
+                                continue
+                        else:
+                            #match against the default graph
+                            graphName=self.tripleStore.graph.default_context.identifier
+                    elif isinstance(self.tripleStore.graph,ConjunctiveGraph):
+                        #match all graphs
+                        graphName = Variable(BNode())
+                    else:
+                        #otherwise, the default graph is the graph queried
+                        graphName = self.tripleStore.graph.identifier
+                    patterns.append((search_s,search_p,search_o,graphName))
+                #expand at server, accumulating results
+                rt=[]
+                nonGroundPatterns=[pattern for pattern in patterns 
+                                       if not isGroundQuad(pattern)]
+                if nonGroundPatterns:
+                    #Only evaluate at the server if not all the terms are ground
+                    for rtDict in self.tripleStore.graph.store.batch_unify(patterns):
+                        if self.tripleStore.graphVariable:
+                            if self.tripleStore.DAWG_DATASET_COMPLIANCE and \
+                               isinstance(rtDict[self.tripleStore.graphVariable],BNode):
+                                #We can't match the default graph when the active
+                                #graph is set via the GRAPH expression
+                                continue
+                        rt.append(rtDict)
+                        # create a copy of the current bindings, by also adding the new ones from result of the search
+                        new_bindings = self.bindings.copy()
+                        new_bindings.update(rtDict)
+                        child = _SPARQLNode(self,new_bindings,[],self.tripleStore,expr=self.expr)
+                        self.children.append(child)
+                        assert not child.clash and child.bindings
+                        for func in constraints :
+                            try:
+                                if func(new_bindings) == False :
+                                    child.clash = True
+                                    break
+                            except TypeError:
+                                child.clash=True
+                else:
+                    #If all the patterns are ground, there is no need
+                    #to invoke server-side unification (no variables to batch unify)
+                    self.expandAtClient(constraints)
+                    return
+            if self.statement:
+                if nonGroundPatterns and len(self.children) == 0:
+                    self.clash = True
+            else:
+                for func in constraints :
+                    try:
+                        if func(self.bindings) == False :
+                            self.clash = True
+                            break
+                    except TypeError:
+                        self.clash=True
+        else:
+            self.expandAtClient(constraints)
+
+    def expandAtClient(self,constraints) :
         """
         The expansion itself. See class comments for details.
 
