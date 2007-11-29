@@ -3,7 +3,7 @@ from __future__ import generators
 
 Any = None
 
-from rdflib import BNode
+from rdflib.BNode import BNode
 from rdflib.store import Store
 
 class IOMemory(Store):
