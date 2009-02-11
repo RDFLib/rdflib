@@ -90,7 +90,7 @@ class Literal(Identifier):
         >>> Literal(1) + 1
         2L
         >>> Literal("1") + "1"
-        rdflib.Literal('11', lang=None, datatype=None)
+        rdflib.Literal(u'11', lang=None, datatype=None)
         """
 
         py = self.toPython()
