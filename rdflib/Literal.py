@@ -90,7 +90,7 @@ class Literal(Identifier):
         >>> Literal(1) + 1
         2L
         >>> Literal("1") + "1"
-        rdflib.Literal(u'11', lang=None, datatype=None)
+        rdflib.Literal(u'11')
         """
 
         py = self.toPython()
@@ -273,10 +273,12 @@ class Literal(Identifier):
         return self.encode("unicode-escape")
 
     def __repr__(self):
-        return """rdflib.Literal(%s, lang=%s, datatype=%s)""" % (
-                super(Literal, self).__repr__(),
-                repr(self.language),
-                repr(self.datatype))
+        args = [super(Literal, self).__repr__()]
+        if self.language is not None:
+            args.append("lang=%s" % repr(self.language))
+        if self.datatype is not None:
+            args.append("datatype=%s" % repr(self.datatype))
+        return """rdflib.Literal(%s)""" % ", ".join(args)
 
     def toPython(self):
         """
