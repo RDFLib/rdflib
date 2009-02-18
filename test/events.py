@@ -58,4 +58,4 @@ class EventTestCase(unittest.TestCase):
         assert c2.has_key('bob') == False
 
 if __name__ == "__main__":
-    unitest.main()
+    unittest.main()
