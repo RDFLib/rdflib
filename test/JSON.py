@@ -21,8 +21,7 @@ WHERE { ?x foaf:name ?name .
 }
 """
 
-correct = """"name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"}
-                   ,
+correct = """"name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"},
                    "x" : {"type": "uri", "value" : "http://example.org/bob"}
                 }"""
 
@@ -40,19 +39,26 @@ WHERE { ?x foaf:name ?name .
 
 class JSON(unittest.TestCase):
 
+    def setUp(self):
+        self.graph = ConjunctiveGraph(plugin.get('IOMemory',Store)())
+        self.graph.parse(StringIO(test_data), format="n3")
+        
     def testComma(self):
-        graph = ConjunctiveGraph(plugin.get('IOMemory',Store)())
-        graph.parse(StringIO(test_data), format="n3")
-        results = graph.query(test_query)
+        """
+        Verify the serialisation of the data as json contains an exact
+        substring, with the comma in the correct place.
+        """
+        results = self.graph.query(test_query)
         result_json = results.serialize(format='json')
         self.failUnless(result_json.find(correct) > 0)
 
     def testHeader(self):
-        graph = ConjunctiveGraph(plugin.get('IOMemory',Store)())
-        graph.parse(StringIO(test_data), format="n3")
-        results = graph.query(test_header_query)
+        """
+        Verify that the "x", substring is omitted from the serialised output.
+        """
+        results = self.graph.query(test_header_query)
         result_json = results.serialize(format='json')
-        self.failUnless(result_json.find('"x",') == -1)                
+        self.failUnless(result_json.find('"x",') == -1)
         
 if __name__ == "__main__":
     unittest.main()
