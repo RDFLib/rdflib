@@ -33,7 +33,7 @@ from rdflib.sparql.bison.SPARQLEvaluate import createSPARQLPConstraint,\
 #"An RDF Dataset comprises one graph, 
 # the default graph, which does not have a name" - 
 #  http://www.w3.org/TR/rdf-sparql-query/#namedAndDefaultGraph
-DAWG_DATASET_COMPLIANCE = True
+DAWG_DATASET_COMPLIANCE = False
 
 def ReduceGraphPattern(graphPattern,prolog):
     """
