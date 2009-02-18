@@ -3,9 +3,11 @@ import unittest
 from rdflib.Graph import ConjunctiveGraph as Graph
 from rdflib.Namespace import Namespace as NS
 
+from rdflib.sparql import Algebra
+
 from StringIO import StringIO
 
-class TestCase(unittest.TestCase):
+class TestSparqlASK(unittest.TestCase):
     def setUp(self):
         self.graph = Graph()
 
@@ -21,6 +23,10 @@ class TestCase(unittest.TestCase):
         
         self.graph.load(io, format='n3')
 
+        self.compliance_setting, Algebra.DAWG_DATASET_COMPLIANCE = Algebra.DAWG_DATASET_COMPLIANCE, False
+
+    def tearDown(self):
+        Algebra.DAWG_DATASET_COMPLIANCE = self.compliance_setting
 
     def test_ask_true(self):
         """
@@ -35,6 +41,11 @@ class TestCase(unittest.TestCase):
         """
         res = self.graph.query('ASK { <http://goonmill.org/2007/skill.n3#baz> a <http://goonmill.org/2007/skill.n3#Foo> } ')
         self.assertEquals(res.askAnswer, [False], "The answer should have been that the triple was not found")
+
+class TestSparqlASKWithCompliance(TestSparqlASK):
+    def setUp(self):
+        TestSparqlASK.setUp(self)
+        Algebra.DAWG_DATASET_COMPLIANCE = True
 
 if __name__ == "__main__":
     unittest.main()
