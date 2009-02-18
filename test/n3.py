@@ -70,19 +70,19 @@ class N3TestCase(unittest.TestCase):
         pass
 
     def testFileName(self):
+        """
+        Test that the n3 parser throws an Exception when using the identifier
+        ":foo.txt", as this is not valid as per the rdf spec.
+        """
+
         input = """
 @prefix : <http://www.example.com/> .
 
 :foo.txt :p :q .
 """
         g = Graph()
-        try:
-            g.parse(StringInputSource(input), format="n3")
-        except:
-            pass
-            #foo.txt is not a valid qname in n3/turtle
-        else:
-            self.assertEquals(True, False) # Didn't get expected result of a parse exception
+        self.assertRaises(Exception, g.parse, StringInputSource(input), format="n3")
+
         # This isn't the expected result based on my reading of n3 bits
         #s = g.value(predicate=URIRef("http://www.example.com/p"), object=URIRef("http://www.example.com/q"))
         #self.assertEquals(s, URIRef("http://www.example.org/foo.txt"))
