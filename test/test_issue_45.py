@@ -21,9 +21,20 @@ class TestCase(unittest.TestCase):
         
         self.graph.load(io, format='n3')
 
-    def test_issue(self):
+
+    def test_ask_true(self):
+        """
+        Ask for a triple that exists, assert that the response is True.
+        """
         res = self.graph.query('ASK { <http://goonmill.org/2007/skill.n3#bar> a <http://goonmill.org/2007/skill.n3#Foo> } ')
-        self.assertEquals(res.askAnswer, [True])
+        self.assertEquals(res.askAnswer, [True], "The answer should have been that the triple was found")
+ 
+    def test_ask_false(self):
+        """
+        Ask for a triple that does not exist, assert that the response is False.
+        """
+        res = self.graph.query('ASK { <http://goonmill.org/2007/skill.n3#baz> a <http://goonmill.org/2007/skill.n3#Foo> } ')
+        self.assertEquals(res.askAnswer, [False], "The answer should have been that the triple was not found")
 
 if __name__ == "__main__":
     unittest.main()
