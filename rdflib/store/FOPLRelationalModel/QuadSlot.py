@@ -4,10 +4,10 @@ Utility functions associated with RDF terms:
 - normalizing (to 64 bit integers via half-md5-hashes)
 - escaping literal's for SQL persistence
 """
-from rdflib.BNode import BNode
+from rdflib.term import BNode
 from rdflib import RDF
-from rdflib.Literal import Literal
-from rdflib.URIRef import URIRef
+from rdflib.term import Literal
+from rdflib.term import URIRef
 import md5
 from rdflib.term_utils import *
 from rdflib.Graph import QuotedGraph

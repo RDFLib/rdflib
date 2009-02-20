@@ -1,4 +1,4 @@
-from rdflib.Namespace import Namespace
+from rdflib.term import Namespace
 
 RDFNS = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
 

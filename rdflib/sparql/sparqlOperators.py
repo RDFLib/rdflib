@@ -26,10 +26,10 @@
 ##
 
 import sys, os, re
-from rdflib.Literal     import Literal, _XSD_NS
-from rdflib.BNode       import BNode
-from rdflib.URIRef      import URIRef
-from rdflib             import Variable
+from rdflib.term     import Literal, _XSD_NS
+from rdflib.term       import BNode
+from rdflib.term      import URIRef
+from rdflib.term             import Variable
 from rdflib.sparql.graphPattern import _createResource
 from rdflib.sparql import _questChar, Debug
 

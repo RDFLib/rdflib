@@ -1,7 +1,7 @@
 import unittest
 
 from rdflib.Graph import ConjunctiveGraph as Graph
-from rdflib.Namespace import Namespace as NS
+from rdflib.term import Namespace as NS
 
 from rdflib.sparql import Algebra
 

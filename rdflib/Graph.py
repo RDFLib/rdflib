@@ -7,7 +7,7 @@ Instanciating Graphs with default store (IOMemory) and default identifier (a BNo
     >>> g.store.__class__
     <class 'rdflib.store.IOMemory.IOMemory'>
     >>> g.identifier.__class__
-    <class 'rdflib.BNode.BNode'>
+    <class 'rdflib.term.BNode'>
 
 Instanciating Graphs with a specific kind of store (IOMemory) and a default identifier (a BNode):
 
@@ -22,11 +22,11 @@ Other store kinds: Sleepycat, MySQL, ZODB, SQLite
 
 Instanciating Graphs with Sleepycat store and an identifier - <http://rdflib.net>:
 
-    >>> g=Graph('Sleepycat',URIRef("http://rdflib.net"))
+    >>> g=Graph('IOMemory',URIRef("http://rdflib.net"))
     >>> g.identifier
     rdflib.URIRef('http://rdflib.net')
     >>> str(g)
-    "<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'Sleepycat']."
+    "<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory']."
 
 Creating a ConjunctiveGraph - The top level container for all named Graphs in a 'database':
 
@@ -48,10 +48,10 @@ Adding / removing reified triples to Graph and iterating over it directly or via
     4
     >>> for s,p,o in g:  print type(s)
     ...
-    <class 'rdflib.BNode.BNode'>
-    <class 'rdflib.BNode.BNode'>
-    <class 'rdflib.BNode.BNode'>
-    <class 'rdflib.BNode.BNode'>
+    <class 'rdflib.term.BNode'>
+    <class 'rdflib.term.BNode'>
+    <class 'rdflib.term.BNode'>
+    <class 'rdflib.term.BNode'>
     
     >>> for s,p,o in g.triples((None,RDF.object,None)):  print o
     ...
@@ -151,7 +151,7 @@ from cStringIO import StringIO
 from rdflib import URIRef, BNode, Namespace, Literal, Variable
 from rdflib import RDF, RDFS
 
-from rdflib.Node import Node
+from rdflib.term import Node
 
 from rdflib import plugin, exceptions
 

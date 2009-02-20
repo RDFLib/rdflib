@@ -2,9 +2,9 @@ from __future__ import generators
 
 from rdflib.syntax.serializers import Serializer
 
-from rdflib.URIRef import URIRef
-from rdflib.Literal import Literal
-from rdflib.BNode import BNode
+from rdflib.term import URIRef
+from rdflib.term import Literal
+from rdflib.term import BNode
 
 from rdflib.util import uniq
 from rdflib.exceptions import Error

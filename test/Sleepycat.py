@@ -1,3 +1,7 @@
+import logging
+
+_logger = logging.getLogger(__name__)
+
 from test.graph import GraphTestCase
 
 try:

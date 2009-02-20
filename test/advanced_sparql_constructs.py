@@ -1,5 +1,5 @@
 import unittest
-from rdflib.Namespace import Namespace
+from rdflib.term import Namespace
 from rdflib import plugin,RDF,RDFS,URIRef
 from rdflib.store import Store
 from cStringIO import StringIO

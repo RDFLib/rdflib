@@ -1,6 +1,6 @@
 # RDF Library
 
-__version__ = "2.4.1"
+__version__ = "2.5.0"
 __date__ = "not/yet/released"
 
 import sys
@@ -12,20 +12,19 @@ import logging
 _logger = logging.getLogger("rdflib")
 _logger.info("version: %s" % __version__)
 
-from rdflib.URIRef import URIRef
-from rdflib.BNode import BNode
-from rdflib.Literal import Literal
-from rdflib.Variable import Variable
-
-from rdflib.Namespace import Namespace
+from rdflib.term import URIRef
+from rdflib.term import BNode
+from rdflib.term import Literal
+from rdflib.term import Variable
+from rdflib.term import Namespace
 
 # from rdflib.Graph import Graph # perhaps in 3.0, but for 2.x we
 # don't want to break compatibility.
 from rdflib.Graph import BackwardCompatGraph as Graph
 from rdflib.Graph import ConjunctiveGraph
 
-from rdflib import RDF
-from rdflib import RDFS
+#from rdflib import RDF
+#from rdflib import RDFS
 
 from rdflib.FileInputSource import FileInputSource
 from rdflib.URLInputSource import URLInputSource

@@ -12,10 +12,10 @@ import sys
 from nose.plugins import Plugin
 from nose.suite import TestModule
 
-from rdflib import URIRef, BNode, Literal
+from rdflib.term import URIRef, BNode, Literal
 from rdflib import RDF, RDFS
 from rdflib.Graph import Graph
-from rdflib.Namespace import NamespaceDict as Namespace
+from rdflib.term import NamespaceDict as Namespace
 from rdflib.util import date_time
 
 log = logging.getLogger(__name__)

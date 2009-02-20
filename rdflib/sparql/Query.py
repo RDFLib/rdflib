@@ -2,7 +2,7 @@ import types, sets
 from pprint import pprint
 from rdflib import URIRef, BNode, Literal, Variable, RDF
 from rdflib.Graph import Graph, ConjunctiveGraph, ReadOnlyGraphAggregate
-from rdflib.Identifier import Identifier
+from rdflib.term import Identifier
 from rdflib.util import check_subject, list2set
 from rdflib.sparql import SPARQLError
 from rdflib.sparql.sparqlGraph import SPARQLGraph

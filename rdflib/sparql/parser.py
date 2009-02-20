@@ -31,7 +31,7 @@ USAGE:
 
 import base64
 import re
-from rdflib.URIRef import URIRef
+from rdflib.term import URIRef
 from rdflib.sparql.graphPattern import GraphPattern
 
 def _escape(text): return base64.encodestring(text).replace("\n", "")

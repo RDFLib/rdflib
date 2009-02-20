@@ -1,5 +1,5 @@
 from rdflib.store import Store, VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
-from rdflib.URIRef import URIRef
+from rdflib.term import URIRef
 
 from bsddb import db
 

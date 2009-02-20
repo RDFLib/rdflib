@@ -5,8 +5,6 @@ class Collection(object):
     """
     See 3.3.5 Emulating container types: http://docs.python.org/ref/sequence-types.html#l2h-232
 
-    >>> from rdflib.BNode import BNode
-    >>> from rdflib.Literal import Literal
     >>> from rdflib.Graph import Graph    
     >>> listName = BNode()
     >>> g = Graph('IOMemory')
@@ -38,8 +36,6 @@ class Collection(object):
 
     def n3(self):
         """
-        >>> from rdflib.BNode import BNode
-        >>> from rdflib.Literal import Literal
         >>> from rdflib.Graph import Graph    
         >>> listName = BNode()
         >>> g = Graph('IOMemory')

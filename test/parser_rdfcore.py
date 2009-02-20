@@ -1,7 +1,7 @@
 import unittest
 
 from rdflib import URIRef, BNode, Literal, RDF, RDFS
-from rdflib.Namespace import Namespace
+from rdflib.term import Namespace
 from rdflib.exceptions import ParserError
 
 from rdflib.Graph import Graph

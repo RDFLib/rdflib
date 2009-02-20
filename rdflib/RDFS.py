@@ -1,4 +1,4 @@
-from rdflib.Namespace import Namespace
+from rdflib.term import Namespace
 
 RDFSNS = Namespace("http://www.w3.org/2000/01/rdf-schema#")
 

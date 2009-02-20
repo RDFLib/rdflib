@@ -7,10 +7,10 @@
 Graph pattern class used by the SPARQL implementation
 """
 import sys, os, time, datetime
-from rdflib.Literal     import Literal
-from rdflib.BNode       import BNode
-from rdflib.URIRef      import URIRef
-from rdflib import Variable
+from rdflib.term     import Literal
+from rdflib.term       import BNode
+from rdflib.term      import URIRef
+from rdflib.term import Variable
 from types import *
 from rdflib.syntax.NamespaceManager import NamespaceManager
 from rdflib.Graph import Graph

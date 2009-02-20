@@ -1,8 +1,8 @@
 # -*- coding: UTF-8 -*-
 import unittest
 from pprint import pprint
-from rdflib import ConjunctiveGraph, URIRef, Literal, RDFS, Namespace
-from rdflib.Literal import _XSD_NS
+from rdflib import ConjunctiveGraph, RDFS
+from rdflib.term import URIRef, Literal, Namespace, _XSD_NS
 from StringIO import StringIO
 from sets import Set
 

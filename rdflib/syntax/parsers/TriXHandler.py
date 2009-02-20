@@ -42,7 +42,7 @@ from urlparse import urljoin, urldefrag
 
 RDFNS = RDF.RDFNS
 
-TRIXNS=Namespace.Namespace("http://www.w3.org/2004/03/trix/trix-1/")
+TRIXNS=Namespace("http://www.w3.org/2004/03/trix/trix-1/")
 
 
 class TriXHandler(handler.ContentHandler):

@@ -1,6 +1,238 @@
-from rdflib.Identifier import Identifier
-from rdflib.URIRef import URIRef
-from rdflib.Namespace import Namespace
+"""
+This module defines the different types of terms...
+
+"""
+
+import logging
+
+_logger = logging.getLogger(__name__)
+
+
+class Node(object):
+    """
+    A Node in the Graph.
+    """
+
+    __slots__ = ()
+
+
+class Identifier(Node, unicode): # we allow Identifiers to be Nodes in our Graph
+    """
+    See http://www.w3.org/2002/07/rdf-identifer-terminology/
+    regarding choice of terminology.
+    """
+
+    __slots__ = ()
+
+    def __new__(cls, value):
+        return unicode.__new__(cls,value)
+
+
+from sys import version_info
+
+try:
+    from hashlib import md5
+except ImportError:
+    from md5 import md5    
+
+if version_info[0:2] > (2, 2):
+    from unicodedata import normalize
+else:
+    normalize = None
+
+from urlparse import urlparse, urljoin, urldefrag
+
+from rdflib.compat import rsplit
+
+
+class URIRef(Identifier):
+    """
+    RDF URI Reference: http://www.w3.org/TR/rdf-concepts/#section-Graph-URIref
+    """
+
+    __slots__ = ()
+
+    def __new__(cls, value, base=None):
+        if base is not None:
+            ends_in_hash = value.endswith("#")
+            value = urljoin(base, value, allow_fragments=1)
+            if ends_in_hash:
+                if not value.endswith("#"):
+                    value += "#"
+        #if normalize and value and value != normalize("NFC", value):
+        #    raise Error("value must be in NFC normalized form.")
+        try:
+            rt = unicode.__new__(cls,value)
+        except UnicodeDecodeError:
+            rt = unicode.__new__(cls,value,'utf-8')
+        return rt
+
+    def n3(self):
+        return "<%s>" % self
+
+    def concrete(self):
+        if "#" in self:
+            return URIRef("/".join(rsplit(self, "#", 1)))
+        else:
+            return self
+
+    def abstract(self):
+        if "#" not in self:
+            scheme, netloc, path, params, query, fragment = urlparse(self)
+            if path:
+                return URIRef("#".join(rsplit(self, "/", 1)))
+            else:
+                if not self.endswith("#"):
+                    return URIRef("%s#" % self)
+                else:
+                    return self
+        else:
+            return self
+
+
+    def defrag(self):
+        if "#" in self:
+            url, frag = urldefrag(self)
+            return URIRef(url)
+        else:
+            return self
+
+    def __reduce__(self):
+        return (URIRef, (unicode(self),))
+
+    def __getnewargs__(self):
+        return (unicode(self), )
+
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __eq__(self, other):
+        if isinstance(other, URIRef):
+            return unicode(self)==unicode(other)
+        else:
+            return False
+
+    def __str__(self):
+        return self.encode("unicode-escape")
+
+    def __repr__(self):
+        return """rdflib.URIRef('%s')""" % str(self)
+
+    def md5_term_hash(self):
+        d = md5(str(self))
+        d.update("U")
+        return d.hexdigest()
+
+
+
+# TODO: where can we move _unique_id and _serial_number_generator?
+from string import ascii_letters
+from random import choice
+
+try:
+    from hashlib import md5
+except ImportError:
+    from md5 import md5    
+
+def _unique_id():
+    """Create a (hopefully) unique prefix"""
+    id = ""
+    for i in xrange(0,8):
+        id += choice(ascii_letters)
+    return id
+
+def _serial_number_generator():
+    i = 0
+    while 1:
+        yield i
+        i = i + 1
+
+from rdflib.syntax.xml_names import is_ncname
+import threading
+
+bNodeLock = threading.RLock()
+
+class BNode(Identifier):
+    """
+    Blank Node: http://www.w3.org/TR/rdf-concepts/#section-blank-nodes
+
+    "In non-persistent O-O software construction, support for object
+    identity is almost accidental: in the simplest implementation,
+    each object resides at a certain address, and a reference to the
+    object uses that address, which serves as immutable object
+    identity.
+
+    ...
+
+    Maintaining object identity in shared databases raises problems:
+    every client that needs to create objects must obtain a unique
+    identity for them; " -- Bertand Meyer
+    """
+    __slots__ = ()
+
+    def __new__(cls, value=None, # only store implementations should pass in a value
+                _sn_gen=_serial_number_generator(), _prefix=_unique_id()):
+        if value==None:
+            # so that BNode values do not
+            # collide with ones created with a different instance of this module
+            # at some other time.
+            bNodeLock.acquire()
+            node_id = _sn_gen.next()
+            bNodeLock.release()
+            value = "%s%s" % (_prefix, node_id)
+        else:
+            # TODO: check that value falls within acceptable bnode value range
+            # for RDF/XML needs to be something that can be serialzed as a nodeID
+            # for N3 ??
+            # Unless we require these constraints be enforced elsewhere?
+            pass #assert is_ncname(unicode(value)), "BNode identifiers must be valid NCNames"
+
+        return Identifier.__new__(cls, value)
+
+    def n3(self):
+        return "_:%s" % self
+
+    def __getnewargs__(self):
+        return (unicode(self), )
+
+    def __reduce__(self):
+        return (BNode, (unicode(self),))
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __eq__(self, other):
+        """
+        >>> BNode("foo")==None
+        False
+        >>> BNode("foo")==URIRef("foo")
+        False
+        >>> URIRef("foo")==BNode("foo")
+        False
+        >>> BNode("foo")!=URIRef("foo")
+        True
+        >>> URIRef("foo")!=BNode("foo")
+        True
+        """
+        if isinstance(other, BNode):
+            return unicode(self)==unicode(other)
+        else:
+            return False
+
+    def __str__(self):
+        return self.encode("unicode-escape")
+
+    def __repr__(self):
+        return """rdflib.BNode('%s')""" % str(self)
+
+    def md5_term_hash(self):
+        d = md5(str(self))
+        d.update("B")
+        return d.hexdigest()
+
+
+
 from rdflib.exceptions import Error
 from datetime import date,time,datetime
 from time import strptime
@@ -11,9 +243,22 @@ try:
 except ImportError:
     from md5 import md5    
 
-import logging
 
-_logger = logging.getLogger(__name__)
+
+class Namespace(URIRef):
+
+    def term(self, name):
+        return URIRef(self + name)
+
+    def __getitem__(self, key, default=None):
+        return self.term(key)
+
+    def __getattr__(self, name):
+        if name.startswith("__"): # ignore any special Python names!
+            raise AttributeError
+        else:
+            return self.term(name)
+
 
 class Literal(Identifier):
     """
@@ -403,9 +648,78 @@ def bind(datatype, conversion_function):
 
 
 
+class Variable(Identifier):
+    """
+    """
+    __slots__ = ()
+    def __new__(cls, value):
+        if value[0]=='?':
+            value=value[1:]
+        return unicode.__new__(cls, value)
+
+    def __repr__(self):
+        return self.n3()
+
+    def n3(self):
+        return "?%s" % self
+
+    def __reduce__(self):
+        return (Variable, (unicode(self),))
+
+    def md5_term_hash(self):
+        d = md5(str(self))
+        d.update("V")
+        return d.hexdigest()
+
+
+class Statement(Node, tuple):
+
+    def __new__(cls, (subject, predicate, object), context):
+        return tuple.__new__(cls, ((subject, predicate, object), context))
+
+    def __reduce__(self):
+        return (Statement, (self[0], self[1]))
+
+
+class NamespaceDict(dict):
+
+    def __new__(cls, uri=None, context=None):
+        inst = dict.__new__(cls)
+        inst.uri = uri # TODO: do we need to set these both here and in __init__ ??
+        inst.__context = context
+        return inst
+
+    def __init__(self, uri, context=None):
+        self.uri = uri
+        self.__context = context
+
+    def term(self, name):
+        uri = self.get(name)
+        if uri is None:
+            uri = URIRef(self.uri + name)
+            if self.__context and (uri, None, None) not in self.__context:
+                _logger.warning("%s not defined" % uri)
+            self[name] = uri
+        return uri 
+
+    def __getattr__(self, name):
+        return self.term(name)
+
+    def __getitem__(self, key, default=None):
+        return self.term(key) or default
+
+    def __str__(self):
+        return self.uri
+
+    def __repr__(self):
+        return """rdflib.NamespaceDict('%s')""" % str(self.uri)
+
+
 def test():
     import doctest
     doctest.testmod()
 
 if __name__ == '__main__':
     test()
+
+

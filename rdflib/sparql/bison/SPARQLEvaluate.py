@@ -8,8 +8,8 @@ from rdflib.sparql.Query import _variablesToArray, queryObject, SessionBNode
 from rdflib.Graph import ConjunctiveGraph, Graph, BackwardCompatGraph,ReadOnlyGraphAggregate
 from rdflib import URIRef,Variable,BNode, Literal, plugin, RDF
 from rdflib.store import Store
-from rdflib.Identifier import Identifier
-from rdflib.Literal import XSDToPython
+from rdflib.term import Identifier
+from rdflib.term import XSDToPython
 from IRIRef import NamedGraph,RemoteGraph
 from GraphPattern import *
 from Resource import *
