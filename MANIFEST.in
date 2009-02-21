@@ -1,5 +1,6 @@
 include CHANGELOG
 include LICENSE
-include example.py
+include examples/example.py
+include examples/swap_primer.py
 include run_tests.py
 graft test
