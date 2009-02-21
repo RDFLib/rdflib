@@ -41,7 +41,7 @@ setup(
     """,
     download_url = "http://rdflib.net/rdflib-%s.tar.gz" % __version__,
 
-    packages = find_packages(),
+    packages = find_packages(exclude=["test"]),
 
     ext_modules = [
         Extension(
