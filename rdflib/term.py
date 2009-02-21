@@ -247,6 +247,10 @@ except ImportError:
 
 class Namespace(URIRef):
 
+    @property
+    def title(self):
+        return URIRef(self + 'title')
+
     def term(self, name):
         return URIRef(self + name)
 
