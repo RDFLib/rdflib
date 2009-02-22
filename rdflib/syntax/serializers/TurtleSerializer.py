@@ -77,7 +77,7 @@ class TurtleSerializer(RecursiveSerializer):
         self.write('\n')
 
     def endDocument(self):
-        pass
+        self.write('\n')
 
     def isValidList(self,l): 
         """Checks if l is a valid RDF list, i.e. no nodes have other properties."""

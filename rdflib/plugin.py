@@ -113,5 +113,7 @@ def plugins(name=None, kind=None):
 register('default', Store, 'rdflib.store.IOMemory', 'IOMemory')
 register('IOMemory', Store, 'rdflib.store.IOMemory', 'IOMemory')
 register('BerkeleyDB', Store, 'rdflib.store.BerkeleyDB', 'BerkeleyDB')
+register('n3', Serializer, 'rdflib.syntax.serializers.N3Serializer', 
+         'N3Serializer')
 register('xml', Parser, 'rdflib.syntax.parsers.RDFXMLParser', 'RDFXMLParser')
 register('n3', Parser, 'rdflib.syntax.parsers.N3Parser', 'N3Parser')

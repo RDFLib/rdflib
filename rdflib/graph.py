@@ -135,8 +135,10 @@ try:
 except ImportError:
     from md5 import md5    
 
-
-from cStringIO import StringIO
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
 from xml.sax.xmlreader import InputSource
 from xml.sax.saxutils import prepare_input_source
 
@@ -149,10 +151,13 @@ from rdflib.term import BNode
 from rdflib.term import Literal
 from rdflib.term import Namespace
 from rdflib.store import Store
-from rdflib.syntax.serializer import Serializer
+from rdflib.syntax.serializers import Serializer
 from rdflib.syntax.parsers import Parser
 from rdflib.syntax.NamespaceManager import NamespaceManager
 from rdflib.URLInputSource import URLInputSource
+
+import tempfile, shutil, os
+from urlparse import urlparse
 
 
 class Graph(Node):
@@ -641,7 +646,28 @@ class Graph(Node):
         string. Format defaults to xml (AKA rdf/xml).
         """
         serializer = plugin.get(format, Serializer)(self)
-        return serializer.serialize(destination, base=base, encoding=encoding, **args)
+        if destination is None:
+            stream = StringIO()
+            serializer.serialize(stream, base=base, encoding=encoding, **args)
+            return stream.getvalue()
+        if hasattr(destination, "write"):
+            stream = destination
+            serializer.serialize(stream, base=base, encoding=encoding, **args)
+        else:
+            location = destination
+            scheme, netloc, path, params, query, fragment = urlparse(location)
+            if netloc!="":
+                print "WARNING: not saving as location is not a local file reference"
+                return
+            name = tempfile.mktemp()
+            stream = open(name, 'wb')
+            serializer.serialize(stream, base=base, encoding=encoding, **args)
+            stream.close()
+            if hasattr(shutil,"move"):
+                shutil.move(name, path)
+            else:
+                shutil.copy(name, path)
+                os.remove(name)
 
     def prepare_input_source(self, source, publicID=None):
         if isinstance(source, InputSource):

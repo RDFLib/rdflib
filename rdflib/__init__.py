@@ -1,4 +1,33 @@
-# RDF Library
+"""\
+A pure Python package providing the core RDF constructs.
+
+The packages is intended to provide the core RDF types and interfaces
+for working with RDF. The package defines a plugin interface for
+parsers, stores, and serializers that other packages can use to
+implement parsers, stores, and serializers that will plug into the
+rdflib package.
+
+The primary interface `rdflib` exposes to work with RDF is
+`rdflib.graph.Graph`.
+
+A tiny example:
+
+    >>> from rdflib.graph import Graph
+
+    >>> g = Graph()
+    >>> result = g.parse("http://eikeon.com/foaf.rdf")
+
+    >>> print "graph has %s statements." % len(g)
+    graph has 34 statements.
+    >>>
+    >>> for s, p, o in g:
+    ...     if (s, p, o) not in g:
+    ...         raise Exception("It better be!")
+
+    >>> s = g.serialize(format='n3')
+
+"""
+__docformat__ = "restructuredtext en"
 
 __version__ = "2.5.0"
 __date__ = "not/yet/released"
@@ -11,4 +40,7 @@ del sys
 import logging
 _logger = logging.getLogger("rdflib")
 _logger.info("version: %s" % __version__)
+
+
+
 
