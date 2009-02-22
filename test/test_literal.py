@@ -1,7 +1,7 @@
 import unittest
 
-import rdflib
-from rdflib import URIRef, Literal
+import rdflib # needed for eval(repr(...)) below
+from rdflib import Literal
 
 
 class TestRelativeBase(unittest.TestCase):

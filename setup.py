@@ -3,10 +3,8 @@ use_setuptools()
 
 from setuptools import setup, find_packages
 
-from distutils.extension import Extension
-
 # Install rdflib
-from rdflib import __version__, __date__
+from rdflib import __version__
 
 
 setup(
@@ -42,13 +40,6 @@ setup(
     download_url = "http://rdflib.net/rdflib-%s.tar.gz" % __version__,
 
     packages = find_packages(exclude=["test"]),
-
-    ext_modules = [
-        Extension(
-            name='rdflib.sparql.bison.SPARQLParserc',
-            sources=['src/bison/SPARQLParser.c'],
-            ),
-        ],
 
     tests_require = ["nose>=0.9.2"],
 

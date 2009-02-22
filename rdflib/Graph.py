@@ -91,12 +91,11 @@ Graph Aggregation - ConjunctiveGraphs and ReadOnlyGraphAggregate within the same
 ConjunctiveGraphs have a 'quads' method which returns quads instead of triples, where the fourth item
 is the Graph (or subclass thereof) instance in which the triple was asserted:
     
-    >>> from sets import Set    
-    >>> uniqueGraphNames = Set([graph.identifier for s,p,o,graph in ConjunctiveGraph(store).quads((None,RDF.predicate,None))])
+    >>> uniqueGraphNames = set([graph.identifier for s,p,o,graph in ConjunctiveGraph(store).quads((None,RDF.predicate,None))])
     >>> len(uniqueGraphNames)
     3
     >>> unionGraph = ReadOnlyGraphAggregate([g1,g2])
-    >>> uniqueGraphNames = Set([graph.identifier for s,p,o,graph in unionGraph.quads((None,RDF.predicate,None))])
+    >>> uniqueGraphNames = set([graph.identifier for s,p,o,graph in unionGraph.quads((None,RDF.predicate,None))])
     >>> len(uniqueGraphNames)
     2
      
@@ -122,28 +121,6 @@ Using Namespace class:
     >>> RDFLib['Graph']
     rdflib.URIRef('http://rdflib.netGraph')
 
-SPARQL Queries
-
-    >>> print len(g)
-    3
-    >>> q = \'\'\'
-    ... PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?pred WHERE { ?stmt rdf:predicate ?pred. }
-    ... \'\'\'   
-    >>> for pred in g.query(q):  print pred
-    (rdflib.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),)
-
-SPARQL Queries with namespace bindings as argument
-
-    >>> nsMap = {u"rdf":RDF.RDFNS}
-    >>> for pred in g.query("SELECT ?pred WHERE { ?stmt rdf:predicate ?pred. }", initNs=nsMap): print pred
-    (rdflib.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),)
-
-Parameterized SPARQL Queries
-
-    >>> top = { Variable("?term") : RDF.predicate }
-    >>> for pred in g.query("SELECT ?pred WHERE { ?stmt ?term ?pred. }", initBindings=top): print pred
-    (rdflib.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),)
-
 """
 
 
@@ -160,7 +137,6 @@ from rdflib.store import Store
 from rdflib.syntax.serializer import Serializer
 from rdflib.syntax.parsers import Parser
 from rdflib.syntax.NamespaceManager import NamespaceManager
-from rdflib import sparql
 from rdflib.QueryResult import QueryResult
 from rdflib.URLInputSource import URLInputSource
 from xml.sax.xmlreader import InputSource
@@ -178,18 +154,6 @@ try:
 except ImportError:
     from md5 import md5    
 
-def describe(terms,bindings,graph):
-    """ 
-    Default DESCRIBE returns all incomming and outgoing statements about the given terms 
-    """
-    from rdflib.sparql.sparqlOperators import getValue
-    g=Graph()
-    terms=[getValue(i)(bindings) for i in terms]
-    for s,p,o in graph.triples_choices((terms,None,None)):
-        g.add((s,p,o))
-    for s,p,o in graph.triples_choices((None,None,terms)):
-        g.add((s,p,o))
-    return g
 
 class Graph(Node):
     """An RDF Graph
@@ -715,37 +679,6 @@ class Graph(Node):
 
     def load(self, source, publicID=None, format="xml"):
         self.parse(source, publicID, format)
-
-    def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False,
-              dataSetBase=None,
-              processor="sparql",
-              extensionFunctions={sparql.DESCRIBE:describe}):
-        """
-        Executes a SPARQL query (eventually will support Versa queries with same method) against this Graph
-        strOrQuery - Is either a string consisting of the SPARQL query or an instance of rdflib.sparql.bison.Query.Query
-        initBindings - A mapping from a Variable to an RDFLib term (used as initial bindings for SPARQL query)
-        initNS - A mapping from a namespace prefix to an instance of rdflib.Namespace (used for SPARQL query)
-        DEBUG - A boolean flag passed on to the SPARQL parser and evaluation engine
-        processor - The kind of RDF query (must be 'sparql' until Versa is ported)
-        """
-        assert processor == 'sparql',"SPARQL is currently the only supported RDF query language"
-        p = plugin.get(processor, sparql.Processor)(self)
-        return plugin.get('SPARQLQueryResult',QueryResult)(p.query(strOrQuery,
-                                                                   initBindings,
-                                                                   initNs, 
-                                                                   DEBUG, 
-                                                                   dataSetBase,
-                                                                   extensionFunctions))
-
-        processor_plugin = plugin.get(processor, sparql.Processor)(self.store)
-        qresult_plugin = plugin.get('SPARQLQueryResult', QueryResult)
-
-        res = processor_plugin.query(strOrQuery, 
-                                     initBindings, 
-                                     initNs, 
-                                     DEBUG, 
-                                     extensionFunctions=extensionFunctions)
-        return qresult_plugin(res)
 
     def n3(self):
         """return an n3 identifier for the Graph"""

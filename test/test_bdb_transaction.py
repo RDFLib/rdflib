@@ -1,8 +1,9 @@
 import unittest, time
 from context import ContextTestCase
 from graph import GraphTestCase
-from rdflib import URIRef, Literal, ConjunctiveGraph
-from threading import Thread, currentThread
+from rdflib.term import URIRef
+from rdflib.Graph import ConjunctiveGraph
+from threading import Thread
 from random import random
 from tempfile import mkdtemp
 
@@ -24,7 +25,7 @@ def worker_add(performed_ops, graph, num_ops, input=[]):
             print "could not perform op", e
             raise e
             
-    print "%s triples, add time: %.4f, thread: %s" % (num_ops, (time.time() - t1), currentThread().getName())
+    #print "%s triples, add time: %.4f, thread: %s" % (num_ops, (time.time() - t1), currentThread().getName())
 
 def worker_remove(performed_ops, graph, num_ops, input=[]):
     t1 = time.time()
@@ -45,7 +46,7 @@ def worker_remove(performed_ops, graph, num_ops, input=[]):
             raise e
             #print "could not perform op", e
             
-    print "remove time: %.4f, thread: %s" % ((time.time() - t1), currentThread().getName())
+    #print "remove time: %.4f, thread: %s" % ((time.time() - t1), currentThread().getName())
 
 class TestBDBGraph(GraphTestCase):
     store_name = "BerkeleyDB"
@@ -173,7 +174,7 @@ class TestBDBTransactions(unittest.TestCase):
                     self.graph.store.commit()
                     success = True
                 
-            print "%s triples add time: %.4f, thread: %s" % (triples, (time.time() - t1), currentThread().getName())
+            #print "%s triples add time: %.4f, thread: %s" % (triples, (time.time() - t1), currentThread().getName())
 
         pool = []
         for i in range(0, workers):

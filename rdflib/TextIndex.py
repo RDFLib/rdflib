@@ -1,19 +1,20 @@
+import logging
+import re #, stopdict
+
+_logger = logging.getLogger(__name__)
+
+
 try:
     from hashlib import md5
 except ImportError:
     from md5 import md5
     
-from rdflib.term import BNode
 from rdflib.Graph import ConjunctiveGraph
 from rdflib.term import Literal
 from rdflib.term import NamespaceDict as Namespace
 from rdflib.term import URIRef
 from rdflib.store import TripleAddedEvent, TripleRemovedEvent
-from rdflib.store.IOMemory import IOMemory
-import logging
-import re #, stopdict
 
-_logger = logging.getLogger(__name__)
 
 def get_stopdict():
     """Return a dictionary of stopwords."""
@@ -87,8 +88,8 @@ class TextIndex(ConjunctiveGraph):
     search for 'one' which occurs in only one of the literals
     provided, 'a'.  This can be queried for:
 
-      >>> t.search('one')
-      set([(rdflib.URIRef('a'), rdflib.URIRef('title'), None)])
+      >>> t.search('one')==set([(URIRef('a'), URIRef('title'), None)])
+      True
 
     'one' and 'five' only occur in one statement each, 'two' and
     'four' occur in two, and 'three' occurs in three statements:
@@ -117,30 +118,30 @@ class TextIndex(ConjunctiveGraph):
 
     And 'two' occurs in three statements, here they are:
 
-      >>> t.search('two')
-      set([(rdflib.URIRef('d'), rdflib.URIRef('creator'), None), (rdflib.URIRef('a'), rdflib.URIRef('title'), None), (rdflib.URIRef('b'), rdflib.URIRef('title'), None)])
+      >>> t.search('two')==set([(URIRef('d'), URIRef('creator'), None), (URIRef('a'), URIRef('title'), None), (URIRef('b'), URIRef('title'), None)])
+      True
 
     The predicates that are searched can be restricted by provding an
     argument to 'search()':
 
-      >>> t.search('two', URIRef('creator'))
-      set([(rdflib.URIRef('d'), rdflib.URIRef('creator'), None)])
+      >>> t.search('two', URIRef('creator'))==set([(URIRef('d'), URIRef('creator'), None)])
+      True
 
-      >>> t.search('two', URIRef(u'title'))
-      set([(rdflib.URIRef('a'), rdflib.URIRef('title'), None), (rdflib.URIRef('b'), rdflib.URIRef('title'), None)])
+      >>> t.search('two', URIRef(u'title'))==set([(URIRef('a'), URIRef('title'), None), (URIRef('b'), URIRef('title'), None)])
+      True
 
     You can search for more than one term by simply including it in
     the query:
     
-      >>> t.search('two three', URIRef(u'title'))
-      set([(rdflib.URIRef('c'), rdflib.URIRef('title'), None), (rdflib.URIRef('a'), rdflib.URIRef('title'), None), (rdflib.URIRef('b'), rdflib.URIRef('title'), None)])
+      >>> t.search('two three', URIRef(u'title'))==set([(URIRef('c'), URIRef('title'), None), (URIRef('a'), URIRef('title'), None), (URIRef('b'), URIRef('title'), None)])
+      True
 
     The above query returns all the statements that contain 'two' OR
     'three'.  For the documents that contain 'two' AND 'three', do an
     intersection of two queries:
 
-      >>> t.search('two', URIRef(u'title')).intersection(t.search(u'three', URIRef(u'title')))
-      set([(rdflib.URIRef('a'), rdflib.URIRef('title'), None), (rdflib.URIRef('b'), rdflib.URIRef('title'), None)])
+      >>> t.search('two', URIRef(u'title')).intersection(t.search(u'three', URIRef(u'title')))==set([(URIRef('a'), URIRef('title'), None), (URIRef('b'), URIRef('title'), None)])
+      True
 
     Intersection two queries like this is probably not the most
     efficient way to do it, but for reasonable data sets this isn't a
@@ -181,8 +182,8 @@ class TextIndex(ConjunctiveGraph):
 
     And 'two' only occurs in two statements, here they are:
 
-      >>> t.search('two')
-      set([(rdflib.URIRef('a'), rdflib.URIRef('title'), None), (rdflib.URIRef('b'), rdflib.URIRef('title'), None)])
+      >>> t.search('two')==set([(URIRef('a'), URIRef('title'), None), (URIRef('b'), URIRef('title'), None)])
+      True
 
     The predicates that are searched can be restricted by provding an
     argument to 'search()':
@@ -190,8 +191,8 @@ class TextIndex(ConjunctiveGraph):
       >>> t.search('two', URIRef(u'creator'))
       set([])
 
-      >>> t.search('two', URIRef(u'title'))
-      set([(rdflib.URIRef('a'), rdflib.URIRef('title'), None), (rdflib.URIRef('b'), rdflib.URIRef('title'), None)])
+      >>> t.search('two', URIRef(u'title'))==set([(URIRef('a'), URIRef('title'), None), (URIRef('b'), URIRef('title'), None)])
+      True
 
     """
 

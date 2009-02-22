@@ -1,123 +1,117 @@
-from rdflib.store import Store
-from rdflib.syntax import serializer, serializers
-from rdflib.syntax import parsers
-from rdflib import sparql
-from rdflib.QueryResult import QueryResult
+"""
+Plugin support for rdf.
 
-_kinds = {}
-_adaptors = {}
+There are a number of plugin points for rdf: parser, serializer,
+store, query processor, and query result. Plugins can be registered
+either through setuptools entry_points or by calling
+rdf.plugin.register directly.
+
+If you have a package that uses a setuptools based setup.py you can add the following to your setup::
+
+    entry_points = {        
+        'rdf.plugins.parser': [
+            'nt =     rdf.plugins.parsers.NTParser:NTParser',
+            ],
+        'rdf.plugins.serializer': [
+            'nt =     rdf.plugins.serializers.NTSerializer:NTSerializer',
+            ],
+        }
+
+See the `setuptools dynamic discovery of services and plugins <http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins> for more information.
+
+"""
+
+from rdflib.store import Store
+from rdflib.syntax.serializers import Serializer
+from rdflib.syntax.parsers import Parser
+from rdflib.exceptions import Error
+
+
+entry_points = {'rdf.plugins.store': Store,
+                'rdf.plugins.serializer': Serializer,
+                'rdf.plugins.parser': Parser}
+
+_plugins = {}
+
+
+class PluginException(Error):
+    pass
+
+
+class Plugin(object):
+
+    def __init__(self, name, kind, module_path, class_name):
+        self.name = name
+        self.kind = kind
+        self.module_path = module_path
+        self.class_name = class_name
+        self._class = None
+
+    def getClass(self):
+        if self._class is None:
+            module = __import__(self.module_path, globals(), locals(), True)
+            self._class = getattr(module, self.class_name)
+        return self._class
+
+
+class PKGPlugin(Plugin):
+
+    def __init__(self, name, kind, ep):
+        self.name = name
+        self.kind = kind
+        self.ep = ep
+        self._class = None
+
+    def getClass(self):
+        if self._class is None:
+            self._class = self.ep.load()
+        return self._class
+
 
 def register(name, kind, module_path, class_name):
-    _module_info = _kinds.get(kind, None)
-    if _module_info is None:
-        _module_info = _kinds[kind] = {}
-    _module_info[name] = (module_path, class_name)
+    """
+    Register the plugin for (name, kind). The module_path and
+    class_name should be the path to a plugin class.
+    """
+    p = Plugin(name, kind, module_path, class_name)
+    _plugins[(name, kind)] = p
+
 
 def get(name, kind):
-    _module_info = _kinds.get(kind)
-    if _module_info and name in _module_info:
-        module_path, class_name = _module_info[name]
-        module = __import__(module_path, globals(), locals(), True)
-        return getattr(module, class_name)
-    else:
-        Adaptor = kind # TODO: look up of adaptor, for now just use kind
-        try:
-            Adaptee = get(name, _adaptors[kind])
-        except Exception, e:
-            raise Exception("could not get plugin for %s, %s: %s" % (name, kind, e))
-        def const(*args, **keywords):
-            return Adaptor(Adaptee(*args, **keywords))
-        return const
-
-def register_adaptor(adaptor, adaptee):
-    _adaptors[adaptor] = adaptee
+    """
+    Return the class for the specified (name, kind). Raises a
+    PluginException if unable to do so.
+    """
+    try:
+        p = _plugins[(name, kind)]
+    except KeyError, e:
+        raise PluginException("No plugin registered for (%s, %s)" % (name, kind))        
+    return p.getClass()
 
 
-register_adaptor(serializer.Serializer, serializers.Serializer)
-#register_adaptor(parser.Parser, parsers.Parser)
+try:
+    from pkg_resources import iter_entry_points
+except ImportError:
+    pass # TODO: log a message
+else:
+    # add the plugins specified via pkg_resources' EntryPoints.
+    for entry_point, kind in entry_points.iteritems():
+        for ep in iter_entry_points(entry_point):
+            _plugins[(ep.name, kind)] = PKGPlugin(ep.name, kind, ep)
 
 
-register('rdf', serializers.Serializer,
-         'rdflib.syntax.serializers.XMLSerializer', 'XMLSerializer')
+def plugins(name=None, kind=None):
+    """
+    A generator of the plugins. 
 
-register('xml', serializers.Serializer,
-         'rdflib.syntax.serializers.XMLSerializer', 'XMLSerializer')
+    Pass in name and kind to filter... else leave None to match all.
+    """
+    for p in _plugins.values():
+        if (name is None or name==p.name) and (kind is None or kind==p.kind):
+            yield p
 
-register('rdf/xml', serializers.Serializer,
-         'rdflib.syntax.serializers.XMLSerializer', 'XMLSerializer')
-
-register('pretty-xml', serializers.Serializer,
-         'rdflib.syntax.serializers.PrettyXMLSerializer', 'PrettyXMLSerializer')
-
-register('nt', serializers.Serializer,
-         'rdflib.syntax.serializers.NTSerializer', 'NTSerializer')
-
-register('turtle', serializers.Serializer,
-         'rdflib.syntax.serializers.TurtleSerializer', 'TurtleSerializer')
-
-register('n3', serializers.Serializer,
-         'rdflib.syntax.serializers.N3Serializer', 'N3Serializer')
-
-register('xml', parsers.Parser,
-         'rdflib.syntax.parsers.RDFXMLParser', 'RDFXMLParser')
-
-register('trix', parsers.Parser,
-         'rdflib.syntax.parsers.TriXParser', 'TriXParser')
-
-register('n3', parsers.Parser,
-         'rdflib.syntax.parsers.N3Parser', 'N3Parser')
-
-register('notation3', parsers.Parser,
-         'rdflib.syntax.parsers.N3Parser', 'N3Parser')
-
-register('nt', parsers.Parser,
-         'rdflib.syntax.parsers.NTParser', 'NTParser')
-
-register('n3', parsers.Parser,
-         'rdflib.syntax.parsers.N3Parser', 'N3Parser')
-
-register('rdfa', parsers.Parser,
-         'rdflib.syntax.parsers.RDFaParser', 'RDFaParser')
-
-register('default', Store,
-         'rdflib.store.IOMemory', 'IOMemory')
-
-register('IOMemory', Store,
-         'rdflib.store.IOMemory', 'IOMemory')
-
-register('Memory', Store,
-         'rdflib.store.Memory', 'Memory')
-
-register('Sleepycat', Store,
-         'rdflib.store.Sleepycat', 'Sleepycat')
-
-register('BerkeleyDB', Store,
-         'rdflib.store.BerkeleyDB', 'BerkeleyDB')
-
-register('BDBOptimized', Store,
-         'rdflib.store.BDBOptimized', 'BDBOptimized')
-
-register('MySQL', Store,
-         'rdflib.store.MySQL', 'MySQL')
-
-register('SQLite', Store,
-         'rdflib.store.SQLite', 'SQLite')
-
-register('ZODB', Store,
-         'rdflib.store.ZODB', 'ZODB')
-
-register('sqlobject', Store,
-         'rdflib.store._sqlobject', 'SQLObject')
-
-register('Redland', Store,
-         'rdflib.store.Redland', 'Redland')
-
-register('MySQL', Store,
-         'rdflib.store.MySQL', 'MySQL')
-
-register("sparql", sparql.Processor,
-         'rdflib.sparql.bison.Processor', 'Processor')
-
-register("SPARQLQueryResult", QueryResult,
-         'rdflib.sparql.QueryResult', 'SPARQLQueryResult')
-         
+register('default', Store, 'rdflib.store.IOMemory', 'IOMemory')
+register('IOMemory', Store, 'rdflib.store.IOMemory', 'IOMemory')
+register('BerkeleyDB', Store, 'rdflib.store.BerkeleyDB', 'BerkeleyDB')
+register('xml', Parser, 'rdflib.syntax.parsers.RDFXMLParser', 'RDFXMLParser')
+register('n3', Parser, 'rdflib.syntax.parsers.N3Parser', 'N3Parser')
