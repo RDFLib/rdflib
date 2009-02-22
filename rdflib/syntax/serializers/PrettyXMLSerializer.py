@@ -1,6 +1,7 @@
 from rdflib import RDF
 
-from rdflib import URIRef, Literal, BNode
+from rdflib.term import BNode
+from rdflib.term import Literal
 from rdflib.util import first, uniq, more_than
 from rdflib.Collection import Collection
 from rdflib.syntax.serializers import Serializer

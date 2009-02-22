@@ -1,6 +1,7 @@
 import unittest
 
-from rdflib import URIRef, Literal
+from rdflib.term import URIRef
+from rdflib.term import Literal
 
 
 class TestRelativeBase(unittest.TestCase):

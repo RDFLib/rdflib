@@ -38,9 +38,9 @@ class Node(unicode): pass
 #       n = str(lang) + ' ' + str(dtype) + ' ' + lit
 #       return unicode.__new__(cls, n)
 
-from rdflib import URIRef as URI
-from rdflib import BNode as bNode
-from rdflib import Literal
+from rdflib.term import URIRef as URI
+from rdflib.term import BNode as bNode
+from rdflib.term import Literal
 
 class Sink(object):
    def __init__(self):

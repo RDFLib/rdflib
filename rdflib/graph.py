@@ -24,7 +24,7 @@ Instanciating Graphs with Sleepycat store and an identifier - <http://rdflib.net
 
     >>> g=Graph('IOMemory',URIRef("http://rdflib.net"))
     >>> g.identifier
-    rdflib.URIRef('http://rdflib.net')
+    rdflib.term.URIRef('http://rdflib.net')
     >>> str(g)
     "<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory']."
 
@@ -117,33 +117,14 @@ Using Namespace class:
 
     >>> RDFLib = Namespace('http://rdflib.net')
     >>> RDFLib.ConjunctiveGraph
-    rdflib.URIRef('http://rdflib.netConjunctiveGraph')
+    rdflib.term.URIRef('http://rdflib.netConjunctiveGraph')
     >>> RDFLib['Graph']
-    rdflib.URIRef('http://rdflib.netGraph')
+    rdflib.term.URIRef('http://rdflib.netGraph')
 
 """
 
-
-from cStringIO import StringIO
-from rdflib import URIRef, BNode, Namespace, Literal, Variable
-from rdflib import RDF, RDFS
-
-from rdflib.term import Node
-
-from rdflib import plugin, exceptions
-
-from rdflib.store import Store
-
-from rdflib.syntax.serializer import Serializer
-from rdflib.syntax.parsers import Parser
-from rdflib.syntax.NamespaceManager import NamespaceManager
-from rdflib.QueryResult import QueryResult
-from rdflib.URLInputSource import URLInputSource
-from xml.sax.xmlreader import InputSource
-from xml.sax.saxutils import prepare_input_source
-
 import logging
-_logger = logging.getLogger("rdflib.graph")
+_logger = logging.getLogger(__name__)
 
 #import md5
 import random
@@ -153,6 +134,25 @@ try:
     from hashlib import md5
 except ImportError:
     from md5 import md5    
+
+
+from cStringIO import StringIO
+from xml.sax.xmlreader import InputSource
+from xml.sax.saxutils import prepare_input_source
+
+from rdflib import RDF, RDFS
+from rdflib import plugin, exceptions
+
+from rdflib.term import Node
+from rdflib.term import URIRef
+from rdflib.term import BNode
+from rdflib.term import Literal
+from rdflib.term import Namespace
+from rdflib.store import Store
+from rdflib.syntax.serializer import Serializer
+from rdflib.syntax.parsers import Parser
+from rdflib.syntax.NamespaceManager import NamespaceManager
+from rdflib.URLInputSource import URLInputSource
 
 
 class Graph(Node):
@@ -555,13 +555,13 @@ class Graph(Node):
         ...       yield s
         
         >>> [rt for rt in g.transitiveClosure(topList,RDF.nil)]
-        [rdflib.BNode('baz'), rdflib.BNode('bar'), rdflib.BNode('foo')]
+        [rdflib.term.BNode('baz'), rdflib.term.BNode('bar'), rdflib.term.BNode('foo')]
         
         >>> [rt for rt in g.transitiveClosure(reverseList,RDF.nil)]
         http://www.w3.org/2000/01/rdf-schema#comment
         http://www.w3.org/2000/01/rdf-schema#label
         http://www.w3.org/1999/02/22-rdf-syntax-ns#type
-        [rdflib.BNode('baz'), rdflib.BNode('bar'), rdflib.BNode('foo')]
+        [rdflib.term.BNode('baz'), rdflib.term.BNode('bar'), rdflib.term.BNode('foo')]
         
         """
         for rt in func(arg,self):

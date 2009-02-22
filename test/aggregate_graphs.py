@@ -1,11 +1,14 @@
-import sys
 import unittest
 from rdflib.term import Namespace
-from rdflib import plugin,RDF,RDFS,URIRef
+from rdflib import plugin
+from rdflib import RDF
+from rdflib import RDFS
+from rdflib.term import URIRef
 from rdflib.store import Store
 from cStringIO import StringIO
-from rdflib.graph import Graph,ReadOnlyGraphAggregate,ConjunctiveGraph
-from pprint import pprint
+from rdflib.graph import Graph
+from rdflib.graph import ReadOnlyGraphAggregate
+from rdflib.graph import ConjunctiveGraph
 
 testGraph1N3="""
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .

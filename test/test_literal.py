@@ -1,7 +1,7 @@
 import unittest
 
 import rdflib # needed for eval(repr(...)) below
-from rdflib import Literal
+from rdflib.term import Literal
 
 
 class TestRelativeBase(unittest.TestCase):

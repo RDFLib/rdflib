@@ -1,7 +1,12 @@
-from rdflib import Literal, ConjunctiveGraph, Namespace, BNode, URIRef, Literal, plugin
-from rdflib.store import Store, VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
-from rdflib.graph import Graph, ConjunctiveGraph
-from rdflib.store.FOPLRelationalModel.QuadSlot import *
+from rdflib import plugin
+
+from rdflib.term import URIRef
+from rdflib.term import BNode
+from rdflib.term import Literal
+
+from rdflib.store import Store
+from rdflib.graph import Graph
+#from rdflib.store.FOPLRelationalModel.QuadSlot import *
 
 def test_dType_encoding():
     correct=normalizeValue('http://www.w3.org/2001/XMLSchema#integer', 'U')

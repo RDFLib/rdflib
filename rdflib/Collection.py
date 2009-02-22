@@ -1,4 +1,6 @@
-from rdflib import RDF, BNode, Literal
+from rdflib import RDF
+from rdflib.term import BNode
+from rdflib.term import Literal
 from rdflib.graph import Graph
 
 class Collection(object):
@@ -18,7 +20,7 @@ class Collection(object):
     >>> g.add((listItem2,RDF.first,Literal(3)))
     >>> c=Collection(g,listName)
     >>> print list(c)
-    [rdflib.Literal(u'1', datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#integer')), rdflib.Literal(u'2', datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#integer')), rdflib.Literal(u'3', datatype=rdflib.URIRef('http://www.w3.org/2001/XMLSchema#integer'))]
+    [rdflib.term.Literal(u'1', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer')), rdflib.term.Literal(u'2', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer')), rdflib.term.Literal(u'3', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer'))]
     >>> 1 in c
     True
     >>> len(c)

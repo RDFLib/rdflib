@@ -117,7 +117,7 @@ class URIRef(Identifier):
         return self.encode("unicode-escape")
 
     def __repr__(self):
-        return """rdflib.URIRef('%s')""" % str(self)
+        return """rdflib.term.URIRef('%s')""" % str(self)
 
     def md5_term_hash(self):
         d = md5(str(self))
@@ -224,7 +224,7 @@ class BNode(Identifier):
         return self.encode("unicode-escape")
 
     def __repr__(self):
-        return """rdflib.BNode('%s')""" % str(self)
+        return """rdflib.term.BNode('%s')""" % str(self)
 
     def md5_term_hash(self):
         d = md5(str(self))
@@ -278,7 +278,7 @@ class Literal(Identifier):
     >>> lit2006 < Literal('2007-01-01',datatype=_XSD_NS.date)
     True
     >>> Literal(datetime.utcnow()).datatype
-    rdflib.URIRef('http://www.w3.org/2001/XMLSchema#dateTime')
+    rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#dateTime')
     >>> oneInt     = Literal(1)
     >>> twoInt     = Literal(2)
     >>> twoInt < oneInt
@@ -339,7 +339,7 @@ class Literal(Identifier):
         >>> Literal(1) + 1
         2L
         >>> Literal("1") + "1"
-        rdflib.Literal(u'11')
+        rdflib.term.Literal(u'11')
         """
 
         py = self.toPython()
@@ -527,7 +527,7 @@ class Literal(Identifier):
             args.append("lang=%s" % repr(self.language))
         if self.datatype is not None:
             args.append("datatype=%s" % repr(self.datatype))
-        return """rdflib.Literal(%s)""" % ", ".join(args)
+        return """rdflib.term.Literal(%s)""" % ", ".join(args)
 
     def toPython(self):
         """
@@ -716,7 +716,7 @@ class NamespaceDict(dict):
         return self.uri
 
     def __repr__(self):
-        return """rdflib.NamespaceDict('%s')""" % str(self.uri)
+        return """rdflib.term.NamespaceDict('%s')""" % str(self.uri)
 
 
 def test():

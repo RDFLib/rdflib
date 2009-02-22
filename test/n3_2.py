@@ -1,9 +1,12 @@
-from rdflib import URIRef, BNode, Literal, Variable
-from rdflib import RDF, RDFS
+from rdflib import RDF
+from rdflib import RDFS
 from rdflib import StringInputSource
+
+from rdflib.term import URIRef
+from rdflib.term import BNode
+from rdflib.term import Variable
+
 from rdflib.graph import QuotedGraph,ConjunctiveGraph
-import sys
-from pprint import pprint
 
 implies = URIRef("http://www.w3.org/2000/10/swap/log#implies")
 testN3="""

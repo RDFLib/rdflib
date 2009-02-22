@@ -1,11 +1,6 @@
-from rdflib import URIRef, BNode, Literal, RDF, Variable
-
-from rdflib.util import from_n3
-
+from rdflib.graph import ConjunctiveGraph
 from rdflib.syntax.parsers import Parser
 from rdflib.syntax.parsers.n3p.n3proc import N3Processor
-
-from rdflib.graph import Graph, QuotedGraph, ConjunctiveGraph
 
 
 class N3Parser(Parser):

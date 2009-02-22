@@ -1,6 +1,6 @@
 import unittest
 
-from rdflib import Literal
+from rdflib.term import Literal
 
 from rdflib.store.NodePickler import NodePickler
 

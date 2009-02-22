@@ -1,4 +1,5 @@
-from rdflib import ConjunctiveGraph, plugin
+from rdflib.graph import ConjunctiveGraph
+from rdflib import plugin
 from rdflib.store import Store
 from StringIO import StringIO
 import unittest

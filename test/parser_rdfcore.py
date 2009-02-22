@@ -1,9 +1,12 @@
 import unittest
 
-from rdflib import URIRef, BNode, Literal, RDF, RDFS
+from rdflib import RDF
+from rdflib import RDFS
+from rdflib.term import URIRef
+from rdflib.term import BNode
+from rdflib.term import Literal
 from rdflib.term import Namespace
 from rdflib.exceptions import ParserError
-
 from rdflib.graph import Graph
 from rdflib.util import first
 
@@ -38,7 +41,7 @@ class TestStore(Graph):
 
 TEST = Namespace("http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#")
 
-import os
+
 def resolve(rel):
     return "http://www.w3.org/2000/10/rdf-tests/rdfcore/" + rel
 

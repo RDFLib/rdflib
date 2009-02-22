@@ -1,4 +1,4 @@
-from rdflib import URIRef
+from rdflib.term import URIRef
 
 class AbstractSerializer(object):
 

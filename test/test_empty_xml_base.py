@@ -5,7 +5,10 @@ xml:base='' should resolve to the given publicID per XML Base specification
 and RDF/XML dependence on it
 """
 
-from rdflib import ConjunctiveGraph, Literal, URIRef, Namespace, RDF
+from rdflib.graph import ConjunctiveGraph
+from rdflib.term import URIRef
+from rdflib.term import Namespace
+from rdflib import RDF
 from StringIO import StringIO
 import unittest
 

@@ -31,8 +31,10 @@
 
 """
 """
-from rdflib import RDF, RDFS
-from rdflib import URIRef, BNode, Literal
+from rdflib import RDF
+from rdflib.term import URIRef
+from rdflib.term import BNode
+from rdflib.term import Literal
 from rdflib.exceptions import ParserError, Error
 from rdflib.syntax.xml_names import is_ncname
 

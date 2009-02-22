@@ -31,14 +31,15 @@
 
 """
 """
-from rdflib import RDF, RDFS, Namespace
-from rdflib import URIRef, BNode, Literal
+from rdflib import RDF
+from rdflib.term import Namespace
+from rdflib.term import URIRef
+from rdflib.term import BNode
+from rdflib.term import Literal
 from rdflib.graph import Graph
-from rdflib.exceptions import ParserError, Error
-from rdflib.syntax.xml_names import is_ncname
+from rdflib.exceptions import ParserError
 
-from xml.sax.saxutils import handler, quoteattr, escape
-from urlparse import urljoin, urldefrag
+from xml.sax.saxutils import handler
 
 RDFNS = RDF.RDFNS
 

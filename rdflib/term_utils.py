@@ -1,5 +1,10 @@
-from rdflib import *
-from rdflib.graph import QuotedGraph, Graph, ConjunctiveGraph, BackwardCompatGraph
+from rdflib.term import URIRef
+from rdflib.term import BNode
+from rdflib.term import Literal
+from rdflib.term import Variable
+
+from rdflib.graph import QuotedGraph
+from rdflib.graph import Graph
 
 #Takes an instance of a Graph (Graph, QuotedGraph, ConjunctiveGraph, or BackwardCompatGraph)
 #and returns the Graphs identifier and 'type' ('U' for Graphs, 'F' for QuotedGraphs ).
