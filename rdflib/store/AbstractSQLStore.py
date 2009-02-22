@@ -7,7 +7,7 @@ from rdflib.BNode import BNode
 from pprint import pprint
 import sha,sys, weakref
 from rdflib.term_utils import *
-from rdflib.Graph import QuotedGraph
+from rdflib.graph import QuotedGraph
 from rdflib.store.REGEXMatching import REGEXTerm, PYTHON_REGEX
 from rdflib.store import Store
 Any = None

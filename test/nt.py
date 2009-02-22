@@ -1,7 +1,7 @@
 import unittest
 
 from rdflib import *
-from rdflib.Graph import Graph
+from rdflib.graph import Graph
 
 class NTTestCase(unittest.TestCase):
 

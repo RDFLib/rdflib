@@ -1,7 +1,7 @@
 from rdflib import URIRef, BNode, Literal, Variable
 from rdflib import RDF, RDFS
 from rdflib import StringInputSource
-from rdflib.Graph import QuotedGraph,ConjunctiveGraph
+from rdflib.graph import QuotedGraph,ConjunctiveGraph
 import sys
 from pprint import pprint
 

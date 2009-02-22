@@ -21,7 +21,7 @@ from rdflib import RDF
 from rdflib.Literal import Literal
 from rdflib.URIRef import URIRef
 from rdflib.term_utils import *
-from rdflib.Graph import QuotedGraph
+from rdflib.graph import QuotedGraph
 from rdflib.store.REGEXMatching import REGEXTerm
 from QuadSlot import POSITION_LIST, normalizeValue
 Any = None

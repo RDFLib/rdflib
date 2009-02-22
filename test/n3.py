@@ -58,7 +58,7 @@ n3:context      a rdf:Property; rdfs:domain n3:statement;
 
 import unittest
 
-from rdflib.Graph import Graph, ConjunctiveGraph
+from rdflib.graph import Graph, ConjunctiveGraph
 
 
 class N3TestCase(unittest.TestCase):

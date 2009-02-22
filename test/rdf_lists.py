@@ -2,7 +2,7 @@
 import os, sys, string
 import unittest
 from cStringIO import StringIO
-from rdflib.Graph import ConjunctiveGraph, Graph
+from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib import StringInputSource
 from rdflib import URIRef, Literal, BNode
 from rdflib.Collection import Collection

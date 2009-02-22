@@ -1,5 +1,5 @@
 import unittest
-from rdflib.Graph import ConjunctiveGraph
+from rdflib.graph import ConjunctiveGraph
 from context import ContextTestCase
 from graph import GraphTestCase
 from tempfile import mkdtemp

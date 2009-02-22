@@ -2,7 +2,7 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-from rdflib.Graph import QuotedGraph
+from rdflib.graph import QuotedGraph
 from rdflib.events import Event, Dispatcher
 from rdflib.store import TripleAddedEvent, TripleRemovedEvent, StoreCreatedEvent
 

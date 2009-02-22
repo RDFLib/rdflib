@@ -1,5 +1,5 @@
 from rdflib import *
-from rdflib.Graph import QuotedGraph, Graph, ConjunctiveGraph, BackwardCompatGraph
+from rdflib.graph import QuotedGraph, Graph, ConjunctiveGraph, BackwardCompatGraph
 
 #Takes an instance of a Graph (Graph, QuotedGraph, ConjunctiveGraph, or BackwardCompatGraph)
 #and returns the Graphs identifier and 'type' ('U' for Graphs, 'F' for QuotedGraphs ).

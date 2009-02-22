@@ -1,6 +1,6 @@
 import unittest
 
-from rdflib.Graph import Graph
+from rdflib.graph import Graph
 from rdflib.exceptions import SubjectTypeError
 from rdflib.exceptions import PredicateTypeError
 from rdflib.exceptions import ObjectTypeError

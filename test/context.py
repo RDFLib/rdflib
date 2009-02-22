@@ -2,7 +2,7 @@ import unittest
 
 from tempfile import mkdtemp
 from rdflib import *
-from rdflib.Graph import Graph
+from rdflib.graph import Graph
 
 class ContextTestCase(unittest.TestCase):
     #store = 'Memory'

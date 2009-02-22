@@ -10,7 +10,7 @@ from rdflib import RDF
 
 class IGraph(Interface):
     """\
-    An rdflib.Graph indexes data expressed in the Resource Description
+    An rdflib.graph indexes data expressed in the Resource Description
     Framework (RDF).  Any kind of content, whether inside Zope or from
     some outside source, can be cataloged if it can describe itself
     using the RDF standard.  Any kind of RDF vocabulary like RSS, OWL,

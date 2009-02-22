@@ -18,10 +18,10 @@ from rdflib.term import Literal
 from rdflib.term import Variable
 from rdflib.term import Namespace
 
-# from rdflib.Graph import Graph # perhaps in 3.0, but for 2.x we
+# from rdflib.graph import Graph # perhaps in 3.0, but for 2.x we
 # don't want to break compatibility.
-from rdflib.Graph import BackwardCompatGraph as Graph
-from rdflib.Graph import ConjunctiveGraph
+from rdflib.graph import BackwardCompatGraph as Graph
+from rdflib.graph import ConjunctiveGraph
 
 #from rdflib import RDF
 #from rdflib import RDFS

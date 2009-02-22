@@ -5,7 +5,7 @@ from rdflib.util import from_n3
 from rdflib.syntax.parsers import Parser
 from rdflib.syntax.parsers.n3p.n3proc import N3Processor
 
-from rdflib.Graph import Graph, QuotedGraph, ConjunctiveGraph
+from rdflib.graph import Graph, QuotedGraph, ConjunctiveGraph
 
 
 class N3Parser(Parser):

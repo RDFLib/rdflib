@@ -143,7 +143,7 @@ from xml.sax.xmlreader import InputSource
 from xml.sax.saxutils import prepare_input_source
 
 import logging
-_logger = logging.getLogger("rdflib.Graph")
+_logger = logging.getLogger("rdflib.graph")
 
 #import md5
 import random
@@ -936,7 +936,7 @@ class BackwardCompatGraph(ConjunctiveGraph):
 
     def __init__(self, backend='default'):
         warnings.warn("Use ConjunctiveGraph instead. "
-                      "( from rdflib.Graph import ConjunctiveGraph )",
+                      "( from rdflib.graph import ConjunctiveGraph )",
                       DeprecationWarning, stacklevel=2)
         super(BackwardCompatGraph, self).__init__(store=backend)
 

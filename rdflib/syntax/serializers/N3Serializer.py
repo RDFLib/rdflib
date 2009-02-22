@@ -1,7 +1,7 @@
 # rdflib/syntax/serializers/N3Serializer.py
 
 from rdflib.syntax.serializers.TurtleSerializer import TurtleSerializer, SUBJECT, VERB, OBJECT
-from rdflib.Graph import Graph
+from rdflib.graph import Graph
 
 class N3Serializer(TurtleSerializer):
     short_name = "n3"

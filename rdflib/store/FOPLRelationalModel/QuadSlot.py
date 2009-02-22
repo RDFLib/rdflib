@@ -10,7 +10,7 @@ from rdflib.term import Literal
 from rdflib.term import URIRef
 from hashlib import md5
 from rdflib.term_utils import *
-from rdflib.Graph import QuotedGraph
+from rdflib.graph import QuotedGraph
 from rdflib.store.REGEXMatching import REGEXTerm
 
 Any = None

@@ -14,7 +14,7 @@ from nose.suite import TestModule
 
 from rdflib.term import URIRef, BNode, Literal
 from rdflib import RDF, RDFS
-from rdflib.Graph import Graph
+from rdflib.graph import Graph
 from rdflib.term import NamespaceDict as Namespace
 from rdflib.util import date_time
 

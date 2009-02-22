@@ -1,6 +1,6 @@
 """Deprecated; use Graph."""
 
-from rdflib.Graph import Graph
+from rdflib.graph import Graph
 
 from rdflib.store.Memory import Memory
 

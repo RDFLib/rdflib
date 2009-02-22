@@ -3,7 +3,7 @@ from rdflib.term import BNode
 from rdflib.term import Literal
 from rdflib.term import Variable
 from rdflib.term import Statement
-from rdflib.Graph import Graph, QuotedGraph
+from rdflib.graph import Graph, QuotedGraph
 
 from rdflib.exceptions import SubjectTypeError, PredicateTypeError, ObjectTypeError, ContextTypeError
 from rdflib.compat import rsplit

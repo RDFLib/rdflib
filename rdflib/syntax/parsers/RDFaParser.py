@@ -36,7 +36,7 @@ Copyright (c) 2006, Elias Torres <elias@torrez.us>
 import sys, re, urllib, urlparse, cStringIO, string
 from xml.dom import pulldom
 from rdflib.syntax.parsers import Parser
-from rdflib.Graph import ConjunctiveGraph
+from rdflib.graph import ConjunctiveGraph
 from rdflib.term import URIRef
 from rdflib.term import BNode
 from rdflib.term import Literal

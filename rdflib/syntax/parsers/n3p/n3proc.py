@@ -11,15 +11,12 @@ usage:
 """
 
 from rdflib import URIRef, BNode, Literal, Variable, Namespace
-from rdflib.Graph import QuotedGraph
+from rdflib.graph import QuotedGraph
 
-import sys, os.path, re, time, urllib
+import sys, os.path, re
 import n3p
 
-try: from uripath import join as urijoin
-except ImportError:
-   print >> sys.stderr, "uripath.py not found"
-   from urlparse import urljoin as urijoin
+from urlparse import urljoin as urijoin
 
 RDF = Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 OWL = Namespace('http://www.w3.org/2002/07/owl#')

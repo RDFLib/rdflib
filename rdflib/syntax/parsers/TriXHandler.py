@@ -33,7 +33,7 @@
 """
 from rdflib import RDF, RDFS, Namespace
 from rdflib import URIRef, BNode, Literal
-from rdflib.Graph import Graph
+from rdflib.graph import Graph
 from rdflib.exceptions import ParserError, Error
 from rdflib.syntax.xml_names import is_ncname
 

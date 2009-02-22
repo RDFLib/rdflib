@@ -1,6 +1,6 @@
 
 import rdflib
-from rdflib.Graph import Graph
+from rdflib.graph import Graph
 from rdflib.URIRef import URIRef
 from rdflib.Node import Node
 from rdflib.BNode import BNode

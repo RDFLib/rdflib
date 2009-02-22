@@ -11,7 +11,7 @@ store instances), but no durability (transactions are persisted in memory and wo
 """
 
 from rdflib.store import Store
-from rdflib.Graph import Graph, ConjunctiveGraph
+from rdflib.graph import Graph, ConjunctiveGraph
 from pprint import pprint
 import threading
 

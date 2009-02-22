@@ -4,7 +4,7 @@ from tempfile import mkdtemp
 
 from rdflib.term import URIRef, BNode, Literal
 from rdflib import RDF
-from rdflib.Graph import Graph
+from rdflib.graph import Graph
 
 class GraphTestCase(unittest.TestCase):
     store_name = 'default'
@@ -133,7 +133,7 @@ class GraphTestCase(unittest.TestCase):
         self.assertEquals(s, graph.value(predicate=RDF.value, object=r))
 
     def testGraphValue(self):
-        from rdflib.Graph import GraphValue
+        from rdflib.graph import GraphValue
 
         graph = self.graph
 

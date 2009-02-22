@@ -18,7 +18,7 @@ class TriXTestCase(unittest.TestCase):
 
     def testAperture(self): 
 
-        g=rdflib.Graph()
+        g=rdflib.graph()
 
         g.parse("trix/aperture.trix",format="trix")
 
@@ -34,7 +34,7 @@ class TriXTestCase(unittest.TestCase):
 
     def testSpec(self): 
 
-        g=rdflib.Graph()
+        g=rdflib.graph()
         
         g.parse("trix/nokia_example.trix",format="trix")
         

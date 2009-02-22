@@ -1,5 +1,5 @@
 from rdflib.syntax.parsers import Parser
-from rdflib.Graph import ConjunctiveGraph
+from rdflib.graph import ConjunctiveGraph
 
 from xml.sax import make_parser
 from xml.sax.saxutils import handler

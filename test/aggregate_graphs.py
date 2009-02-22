@@ -4,7 +4,7 @@ from rdflib.term import Namespace
 from rdflib import plugin,RDF,RDFS,URIRef
 from rdflib.store import Store
 from cStringIO import StringIO
-from rdflib.Graph import Graph,ReadOnlyGraphAggregate,ConjunctiveGraph
+from rdflib.graph import Graph,ReadOnlyGraphAggregate,ConjunctiveGraph
 from pprint import pprint
 
 testGraph1N3="""

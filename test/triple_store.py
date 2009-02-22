@@ -1,7 +1,8 @@
 import unittest
 
-from rdflib import URIRef, BNode, Literal, RDFS
-from rdflib.Graph import Graph
+from rdflib.term import BNode, Literal
+from rdflib import RDFS
+from rdflib.graph import Graph
 
 
 class GraphTest(unittest.TestCase):

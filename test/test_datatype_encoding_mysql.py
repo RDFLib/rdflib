@@ -1,6 +1,6 @@
 from rdflib import Literal, ConjunctiveGraph, Namespace, BNode, URIRef, Literal, plugin
 from rdflib.store import Store, VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
-from rdflib.Graph import Graph, ConjunctiveGraph
+from rdflib.graph import Graph, ConjunctiveGraph
 from rdflib.store.FOPLRelationalModel.QuadSlot import *
 
 def test_dType_encoding():

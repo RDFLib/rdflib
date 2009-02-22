@@ -2,7 +2,7 @@ import unittest
 from tempfile import mkdtemp
 
 from rdflib import *
-from rdflib.Graph import Graph
+from rdflib.graph import Graph
 
 LOG = Namespace("http://www.w3.org/2000/10/swap/log#")
 

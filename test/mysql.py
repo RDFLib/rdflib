@@ -1,5 +1,5 @@
 from n3_2 import testN3Store,testN3,implies
-from rdflib.Graph import QuotedGraph
+from rdflib.graph import QuotedGraph
 try:
     from rdflib.store.MySQL import REGEXTerm
 except ImportError, e:

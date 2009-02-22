@@ -4,7 +4,7 @@ from rdflib import URIRef, BNode, Literal
 
 from rdflib.syntax.parsers.RDFXMLHandler import CORE_SYNTAX_TERMS
 
-from rdflib.Graph import Graph
+from rdflib.graph import Graph
 from rdflib import RDF
 
 """

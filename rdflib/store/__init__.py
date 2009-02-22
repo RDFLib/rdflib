@@ -77,7 +77,7 @@ class Store(object):
             from rdflib.term import URIRef
             from rdflib.term import BNode
             from rdflib.term import Literal
-            from rdflib.Graph import Graph, QuotedGraph, GraphValue
+            from rdflib.graph import Graph, QuotedGraph, GraphValue
             from rdflib.term import Variable
             from rdflib.term import Statement
             self.__node_pickler = np = NodePickler()

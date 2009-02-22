@@ -9,7 +9,7 @@ try:
 except ImportError:
     from md5 import md5
     
-from rdflib.Graph import ConjunctiveGraph
+from rdflib.graph import ConjunctiveGraph
 from rdflib.term import Literal
 from rdflib.term import NamespaceDict as Namespace
 from rdflib.term import URIRef

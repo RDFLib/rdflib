@@ -1,7 +1,7 @@
 import unittest
 
 from rdflib import *
-from rdflib.Graph import Graph
+from rdflib.graph import Graph
 from rdflib import RDF
 from rdflib.StringInputSource import StringInputSource
 
