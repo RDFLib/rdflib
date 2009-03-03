@@ -4,7 +4,8 @@ import sys
 sys.path[0:0]+=[".."]
 
 
-import rdflib
+
+from rdflib.graph import ConjunctiveGraph
 import unittest
 
 
@@ -18,7 +19,7 @@ class TriXTestCase(unittest.TestCase):
 
     def testAperture(self): 
 
-        g=rdflib.graph()
+        g=ConjunctiveGraph()
 
         g.parse("trix/aperture.trix",format="trix")
 
@@ -34,7 +35,7 @@ class TriXTestCase(unittest.TestCase):
 
     def testSpec(self): 
 
-        g=rdflib.graph()
+        g=ConjunctiveGraph()
         
         g.parse("trix/nokia_example.trix",format="trix")
         

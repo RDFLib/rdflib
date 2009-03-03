@@ -2,7 +2,7 @@ import unittest, time
 from context import ContextTestCase
 from graph import GraphTestCase
 from rdflib.term import URIRef
-from rdflib.Graph import ConjunctiveGraph
+from rdflib.graph import ConjunctiveGraph
 from threading import Thread
 from random import random
 from tempfile import mkdtemp

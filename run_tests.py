@@ -138,6 +138,8 @@ from test.n3 import *
 from test.n3_quoting import *
 from test.nt import *
 
+from test.trix import * 
+
 from test.util import *
 from test.seq import SeqTestCase
 

@@ -78,8 +78,8 @@ class TriXHandler(handler.ContentHandler):
 
     def startElementNS(self, name, qname, attrs):
     
-        if name[0]!=TRIXNS:
-            self.error("Only elements in the TriX namespace are allowed.")
+        if name[0]!=str(TRIXNS):
+            self.error("Only elements in the TriX namespace are allowed. %s!=%s"%(name[0],TRIXNS))
 
         if name[1]=="TriX":
             if self.state==0:
@@ -161,8 +161,8 @@ class TriXHandler(handler.ContentHandler):
 
     
     def endElementNS(self, name, qname):
-        if name[0]!=TRIXNS:
-            self.error("Only elements in the TriX namespace are allowed.")
+        if name[0]!=str(TRIXNS):
+            self.error("Only elements in the TriX namespace are allowed. %s!=%s"%(name[0], TRIXNS))
 
         if name[1]=="uri":
             if self.state==3:
