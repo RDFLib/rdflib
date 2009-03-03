@@ -44,7 +44,7 @@ from xml.sax.saxutils import handler
 RDFNS = RDF.RDFNS
 
 TRIXNS=Namespace("http://www.w3.org/2004/03/trix/trix-1/")
-
+XMLNS=Namespace("http://www.w3.org/XML/1998/namespace")
 
 class TriXHandler(handler.ContentHandler):
     """An Sax Handler for TriX. See http://swdev.nokia.com/trix/TriX.html"""
@@ -105,6 +105,9 @@ class TriXHandler(handler.ContentHandler):
 
         elif name[1]=="triple":
             if self.state==2:
+                if self.graph==None: 
+                    # anonymous graph, create one with random bnode id
+                    self.graph=Graph(store=self.store.store)
                 # start of a triple
                 self.triple=[]
                 self.state=4
@@ -118,12 +121,12 @@ class TriXHandler(handler.ContentHandler):
                 self.datatype=None
 
                 try:
-                    self.lang=attrs.getValueByQName("lang")
+                    self.lang=attrs.getValue((unicode(XMLNS), u"lang"))
                 except:
                     # language not required - ignore
                     pass
                 try: 
-                    self.datatype=attrs.getValueByQName("datatype")
+                    self.datatype=attrs.getValueByQName(u"datatype")
                 except KeyError:
                     self.error("No required attribute 'datatype'")
             else:
@@ -135,7 +138,7 @@ class TriXHandler(handler.ContentHandler):
                 self.lang=None
                 self.datatype=None
                 try:
-                    self.lang=attrs.getValueByQName("lang")
+                    self.lang=attrs.getValue((unicode(XMLNS), u"lang"))
                 except:
                     # language not required - ignore
                     pass
@@ -173,7 +176,7 @@ class TriXHandler(handler.ContentHandler):
             else:
                 self.error("Illegal internal self.state - This should never happen if the SAX parser ensures XML syntax correctness")
 
-        if name[1]=="id":
+        elif name[1]=="id":
             if self.state==3:
                 self.graph=Graph(self.store.store,identifier=self.get_bnode(self.chars.strip()))
                 self.state=2
@@ -182,13 +185,13 @@ class TriXHandler(handler.ContentHandler):
             else:
                 self.error("Illegal internal self.state - This should never happen if the SAX parser ensures XML syntax correctness")
 
-        if name[1]=="plainLiteral" or name[1]=="typedLiteral":
+        elif name[1]=="plainLiteral" or name[1]=="typedLiteral":
             if self.state==4:
                 self.triple+=[Literal(self.chars, lang=self.lang, datatype=self.datatype)]
             else:
                 self.error("This should never happen if the SAX parser ensures XML syntax correctness")
 
-        if name[1]=="triple":
+        elif name[1]=="triple":
             if self.state==4:
                 if len(self.triple)!=3:
                     self.error("Triple has wrong length, got %d elements: %s"%(len(self.triple),self.triple))
@@ -199,12 +202,16 @@ class TriXHandler(handler.ContentHandler):
                 self.state=2
             else:
                 self.error("This should never happen if the SAX parser ensures XML syntax correctness")
-
-        if name[1]=="graph":
+                
+        elif name[1]=="graph":
+            self.graph=None
             self.state=1
 
-        if name[1]=="TriX":
+        elif name[1]=="TriX":
             self.state=0
+        
+        else: 
+            self.error("Unexpected close element")
 
 
     def get_bnode(self,label):

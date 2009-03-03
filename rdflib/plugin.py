@@ -117,4 +117,6 @@ register('n3', Serializer, 'rdflib.syntax.serializers.N3Serializer',
          'N3Serializer')
 register('xml',  Parser, 'rdflib.syntax.parsers.RDFXMLParser', 'RDFXMLParser')
 register('n3',   Parser, 'rdflib.syntax.parsers.N3Parser', 'N3Parser')
+
 register('trix', Parser, 'rdflib.syntax.parsers.TriXParser', 'TriXParser')
+register('trix', Serializer, 'rdflib.syntax.serializers.TriXSerializer', 'TriXSerializer')

@@ -36,7 +36,7 @@ class XMLWriter(object):
     def pop(self, uri=None):
         top = self.element_stack.pop()
         if uri:
-            assert uri==top
+            assert uri==top        
         write = self.stream.write
         if not self.closed:
             self.closed = True
@@ -45,10 +45,21 @@ class XMLWriter(object):
             if self.parent:
                 write("\n")
                 write(self.indent)
-            write("</%s>" % self.nm.qname(uri))
+            write("</%s>" % self.nm.qname(top))
         self.parent = True
 
-    def namespaces(self, namespaces):
+    def element(self, uri, content, attributes={}): 
+        """Utility method for adding a complete simple element"""
+        self.push(uri)
+        for k, v in attributes.iteritems(): 
+            self.attribute(k,v)
+        self.text(content)
+        self.pop()
+        
+    def namespaces(self, namespaces=None):
+        if not namespaces: 
+            namespaces=self.nm.namespaces()
+
         write = self.stream.write
         write("\n")
         for prefix, namespace in namespaces:
