@@ -1,8 +1,8 @@
 import unittest
 
 from tempfile import mkdtemp
-from rdflib import *
-from rdflib.graph import Graph
+from rdflib.graph import Graph, ConjunctiveGraph
+from rdflib.term import URIRef, BNode
 
 class ContextTestCase(unittest.TestCase):
     #store = 'Memory'
