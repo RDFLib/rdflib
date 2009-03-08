@@ -10,8 +10,6 @@ class NTSink(object):
         self.graph.add((s, p, o))
 
 
-import codecs
-
 class NTParser(Parser):
 
     def __init__(self):

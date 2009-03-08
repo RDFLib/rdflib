@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-
-import sys
-sys.path[0:0]+=[".."]
-
-
-
 from rdflib.graph import ConjunctiveGraph
 import unittest
 
@@ -21,7 +14,7 @@ class TriXTestCase(unittest.TestCase):
 
         g=ConjunctiveGraph()
 
-        g.parse("trix/aperture.trix",format="trix")
+        g.parse("test/trix/aperture.trix",format="trix")
 
         c=list(g.contexts())
 
@@ -37,12 +30,10 @@ class TriXTestCase(unittest.TestCase):
 
         g=ConjunctiveGraph()
         
-        g.parse("trix/nokia_example.trix",format="trix")
+        g.parse("test/trix/nokia_example.trix",format="trix")
         
         #print "Parsed %d triples"%len(g)
         
-
-
 
 if __name__=='__main__':
     unittest.main()

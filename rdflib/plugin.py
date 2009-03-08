@@ -115,9 +115,15 @@ register('IOMemory', Store, 'rdflib.store.IOMemory', 'IOMemory')
 register('BerkeleyDB', Store, 'rdflib.store.BerkeleyDB', 'BerkeleyDB')
 register('n3', Serializer, 'rdflib.syntax.serializers.N3Serializer', 
          'N3Serializer')
+register('nt', Serializer, 'rdflib.syntax.serializers.NTSerializer', 
+         'NTSerializer')
+register('pretty-xml', Serializer, 'rdflib.syntax.serializers.PrettyXMLSerializer', 
+         'PrettyXMLSerializer')
 register('application/rdf+xml',  Parser, 'rdflib.syntax.parsers.RDFXMLParser', 'RDFXMLParser')
 register('xml',  Parser, 'rdflib.syntax.parsers.RDFXMLParser', 'RDFXMLParser')
 register('n3',   Parser, 'rdflib.syntax.parsers.N3Parser', 'N3Parser')
+register('nt',   Parser, 'rdflib.syntax.parsers.NTParser', 'NTParser')
+register('rdfa',   Parser, 'rdflib.syntax.parsers.RDFaParser', 'RDFaParser')
 
 register('trix', Parser, 'rdflib.syntax.parsers.TriXParser', 'TriXParser')
 register('trix', Serializer, 'rdflib.syntax.serializers.TriXSerializer', 'TriXSerializer')

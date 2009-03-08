@@ -1,7 +1,7 @@
 import unittest
 from rdflib.graph import ConjunctiveGraph
-from context import ContextTestCase
-from graph import GraphTestCase
+from test_context import ContextTestCase
+from test_graph import GraphTestCase
 from tempfile import mkdtemp
 
 class TestBDBGraph(GraphTestCase):

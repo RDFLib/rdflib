@@ -856,6 +856,13 @@ class ConjunctiveGraph(Graph):
         for context in self.store.contexts(triple):
             yield context
 
+    def get_context(self, identifier, quoted=False):
+        """Return a context graph for the given identifier
+
+        identifier must be a URIRef or BNode.
+        """
+        return Graph(store=self.store, identifier=identifier, namespace_manager=self)
+
     def remove_context(self, context):
         """Removes the given context from the graph"""
         self.store.remove((None, None, None), context)
