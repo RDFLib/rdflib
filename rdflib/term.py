@@ -7,6 +7,31 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
+import base64
+import threading
+from urlparse import urlparse, urljoin, urldefrag
+from string import ascii_letters
+from random import choice
+from datetime import date,time,datetime
+from time import strptime
+
+# try:
+#     from hashlib import md5
+# except ImportError:
+#     from md5 import md5    
+
+# from sys import version_info
+
+# if version_info[0:2] > (2, 2):
+#     from unicodedata import normalize
+# else:
+#     normalize = None
+#
+#from rdflib.syntax.xml_names import is_ncname
+#from rdflib.exceptions import Error
+
+from rdflib.compat import rsplit
+
 
 class Node(object):
     """
@@ -26,23 +51,6 @@ class Identifier(Node, unicode): # we allow Identifiers to be Nodes in our Graph
 
     def __new__(cls, value):
         return unicode.__new__(cls,value)
-
-
-from sys import version_info
-
-try:
-    from hashlib import md5
-except ImportError:
-    from md5 import md5    
-
-if version_info[0:2] > (2, 2):
-    from unicodedata import normalize
-else:
-    normalize = None
-
-from urlparse import urlparse, urljoin, urldefrag
-
-from rdflib.compat import rsplit
 
 
 class URIRef(Identifier):
@@ -126,15 +134,6 @@ class URIRef(Identifier):
 
 
 
-# TODO: where can we move _unique_id and _serial_number_generator?
-from string import ascii_letters
-from random import choice
-
-try:
-    from hashlib import md5
-except ImportError:
-    from md5 import md5    
-
 def _unique_id():
     """Create a (hopefully) unique prefix"""
     id = ""
@@ -147,9 +146,6 @@ def _serial_number_generator():
     while 1:
         yield i
         i = i + 1
-
-from rdflib.syntax.xml_names import is_ncname
-import threading
 
 bNodeLock = threading.RLock()
 
@@ -230,19 +226,6 @@ class BNode(Identifier):
         d = md5(str(self))
         d.update("B")
         return d.hexdigest()
-
-
-
-from rdflib.exceptions import Error
-from datetime import date,time,datetime
-from time import strptime
-import base64
-
-try:
-    from hashlib import md5
-except ImportError:
-    from md5 import md5    
-
 
 
 class Namespace(URIRef):
