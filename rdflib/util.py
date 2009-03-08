@@ -1,10 +1,12 @@
+from string import rsplit
+
 from rdflib.term import URIRef
 from rdflib.term import BNode
 from rdflib.term import Literal
 from rdflib.graph import Graph, QuotedGraph
 
 from rdflib.exceptions import SubjectTypeError, PredicateTypeError, ObjectTypeError, ContextTypeError
-from rdflib.compat import rsplit
+
 
 def list2set(seq):
     seen = set()

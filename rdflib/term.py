@@ -10,7 +10,7 @@ _logger = logging.getLogger(__name__)
 import base64
 import threading
 from urlparse import urlparse, urljoin, urldefrag
-from string import ascii_letters
+from string import ascii_letters, rsplit
 from random import choice
 from datetime import date,time,datetime
 from time import strptime
@@ -29,8 +29,6 @@ from time import strptime
 #
 #from rdflib.syntax.xml_names import is_ncname
 #from rdflib.exceptions import Error
-
-from rdflib.compat import rsplit
 
 
 class Node(object):
