@@ -115,6 +115,7 @@ register('IOMemory', Store, 'rdflib.store.IOMemory', 'IOMemory')
 register('BerkeleyDB', Store, 'rdflib.store.BerkeleyDB', 'BerkeleyDB')
 register('n3', Serializer, 'rdflib.syntax.serializers.N3Serializer', 
          'N3Serializer')
+register('application/rdf+xml',  Parser, 'rdflib.syntax.parsers.RDFXMLParser', 'RDFXMLParser')
 register('xml',  Parser, 'rdflib.syntax.parsers.RDFXMLParser', 'RDFXMLParser')
 register('n3',   Parser, 'rdflib.syntax.parsers.N3Parser', 'N3Parser')
 

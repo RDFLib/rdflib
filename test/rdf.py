@@ -5,7 +5,6 @@ from rdflib.term import Literal
 from rdflib.term import Namespace
 from rdflib.graph import Graph
 from rdflib import RDF
-from rdflib.StringInputSource import StringInputSource
 
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 
@@ -47,7 +46,7 @@ class RDFTestCase(unittest.TestCase):
     def testRDFXML(self):
         self.addDonna()
         g = Graph()
-        g.parse(StringInputSource(self.store.serialize(format="pretty-xml")))
+        g.parse(data=self.store.serialize(format="pretty-xml"))
         self.assertEquals(self.store.isomorphic(g), True)
 
 def test_suite():

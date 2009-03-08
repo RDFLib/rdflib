@@ -81,7 +81,7 @@ class N3TestCase(unittest.TestCase):
 :foo.txt :p :q .
 """
         g = Graph()
-        self.assertRaises(Exception, g.parse, StringInputSource(input), format="n3")
+        self.assertRaises(Exception, g.parse, data=input, format="n3")
 
         # This isn't the expected result based on my reading of n3 bits
         #s = g.value(predicate=URIRef("http://www.example.com/p"), object=URIRef("http://www.example.com/q"))
@@ -90,7 +90,7 @@ class N3TestCase(unittest.TestCase):
 
     def testModel(self):
         g = ConjunctiveGraph()
-        g.parse(StringInputSource(input), format="n3")
+        g.parse(data=input, format="n3")
         i = 0
         for s, p, o in g:
             if isinstance(s, Graph):

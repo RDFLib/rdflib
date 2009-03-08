@@ -41,9 +41,8 @@ class TriXTestCase(unittest.TestCase):
       
       r = g.serialize(format='trix')
       g3 = ConjunctiveGraph()
-      from rdflib.StringInputSource import StringInputSource
 
-      g3.parse(StringInputSource(r, None), format='trix')
+      g3.parse(data=r, format='trix')
 
       for q in g3.quads((None,None,None)):
         # TODO: Fix once getGraph/getContext is in conjunctive graph

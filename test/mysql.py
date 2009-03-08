@@ -10,7 +10,7 @@ configString="user=,password=,host=localhost,db=test"
 def testRegex():
     g = Graph(backend='MySQL')
     g.open(configString)
-    g.parse(StringInputSource(testN3), format="n3")
+    g.parse(data=testN3, format="n3")
     try:
         for s,p,o in g.triples((None,implies,None)):
             formulaA = s

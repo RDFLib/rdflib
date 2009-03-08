@@ -38,7 +38,7 @@ def test(f, prt=False):
     if prt: 
         print s
     g2=rdflib.ConjunctiveGraph()
-    g2.parse(rdflib.StringInputSource(s),format='n3')
+    g2.parse(data=s, format='n3')
     if prt: 
         print g2.serialize()
 

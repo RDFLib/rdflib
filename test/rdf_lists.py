@@ -3,8 +3,7 @@ import os, sys, string
 import unittest
 from cStringIO import StringIO
 from rdflib.graph import ConjunctiveGraph, Graph
-from rdflib import StringInputSource
-from rdflib import URIRef, Literal, BNode
+from rdflib.term import URIRef, Literal, BNode
 from rdflib.Collection import Collection
 
 DATA=\

@@ -139,8 +139,6 @@ try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
-from xml.sax.xmlreader import InputSource
-from xml.sax.saxutils import prepare_input_source
 
 from rdflib import RDF, RDFS
 from rdflib import plugin, exceptions
@@ -153,8 +151,9 @@ from rdflib.term import Namespace
 from rdflib.store import Store
 from rdflib.syntax.serializers import Serializer
 from rdflib.syntax.parsers import Parser
+#from rdflib.parser import Parser
+from rdflib.parser import create_input_source
 from rdflib.syntax.NamespaceManager import NamespaceManager
-from rdflib.URLInputSource import URLInputSource
 
 import tempfile, shutil, os
 from urlparse import urlparse
@@ -669,36 +668,70 @@ class Graph(Node):
                 shutil.copy(name, path)
                 os.remove(name)
 
-    def prepare_input_source(self, source, publicID=None):
-        if isinstance(source, InputSource):
-            input_source = source
-        else:
-            if hasattr(source, "read") and not isinstance(source, Namespace):
-                # we need to make sure it's not an instance of Namespace since
-                # Namespace instances have a read attr
-                input_source = prepare_input_source(source)
-            else:
-                location = self.absolutize(source)
-                input_source = URLInputSource(location)
-                publicID = publicID or location
-        if publicID:
-            input_source.setPublicId(publicID)
-        id = input_source.getPublicId()
-        if id is None:
-            #_logger.warning("no publicID set for source. Using '' for publicID.")
-            input_source.setPublicId("")
-        return input_source
-
-    def parse(self, source, publicID=None, format="xml", **args):
-        """ Parse source into Graph
-
-        If Graph is context-aware it'll get loaded into it's own context
-        (sub graph). Format defaults to xml (AKA rdf/xml). The publicID
-        argument is for specifying the logical URI for the case that it's
-        different from the physical source URI. Returns the context into which
-        the source was parsed.
+    def parse(self, source=None, publicID=None, format=None,
+              location=None, file=None, data=None, **args):
         """
-        source = self.prepare_input_source(source, publicID)
+        Parse source adding the resulting triples to the Graph.
+
+        The source is specified using one of source, location, file or
+        data.
+
+        :Parameters: - `source`: An InputSource, file-like object, or string. In the case of a string the string is the location of the source.
+                     - `location`: A string indicating the relative or absolute URL of the source. Graph's absolutize method is used if a relative location is specified.
+                     - `file`: A file-like object.
+                     - `data`: A string containing the data to be parsed.
+                     - `format`: Used if format can not be determined from source. Defaults to rdf/xml.
+                     - `publicID`: the logical URI to use as the document base. If None specified the document location is used (at least in the case where there is a document location).
+
+        :Returns:
+
+        self, the graph instance.
+
+        Examples:
+
+        >>> my_data = '''
+        ... <rdf:RDF
+        ...   xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+        ...   xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
+        ... >
+        ...   <rdf:Description>
+        ...     <rdfs:label>Example</rdfs:label>
+        ...     <rdfs:comment>This is really just an example.</rdfs:comment>
+        ...   </rdf:Description>
+        ... </rdf:RDF>
+        ... '''
+        >>> import tempfile
+        >>> file_name = tempfile.mktemp()
+        >>> f = file(file_name, "w")
+        >>> f.write(my_data)
+        >>> f.close()
+
+        >>> g = Graph()
+        >>> result = g.parse(data=my_data, format="application/rdf+xml")
+        >>> len(g)
+        2
+
+        >>> g = Graph()
+        >>> result = g.parse(location=file_name, format="application/rdf+xml")
+        >>> len(g)
+        2
+
+        >>> g = Graph()
+        >>> result = g.parse(file=file(file_name, "r"), format="application/rdf+xml")
+        >>> len(g)
+        2
+
+        """
+
+        if format=="xml":
+            # warn... backward compat.
+            format = "application/rdf+xml"
+        source = create_input_source(source=source, publicID=publicID, location=location, file=file, data=data)
+        if format is None:
+            format = source.content_type
+        if format is None:
+            #raise Exception("Could not determin format for %r. You can expicitly specify one with the format argument." % source)
+            format = "application/rdf+xml"
         parser = plugin.get(format, Parser)()
         parser.parse(source, self, **args)
         return self
@@ -834,19 +867,27 @@ class ConjunctiveGraph(Graph):
             context_id = "#context"
         return URIRef(context_id, base=uri)
 
-    def parse(self, source, publicID=None, format="xml", **args):
-        """Parse source into Graph into it's own context (sub graph)
-
-        Format defaults to xml (AKA rdf/xml). The publicID argument is for
-        specifying the logical URI for the case that it's different from the
-        physical source URI. Returns the context into which the source was
-        parsed. In the case of n3 it returns the root context.
+    def parse(self, source=None, publicID=None, format="xml",
+              location=None, file=None, data=None, **args):
         """
-        source = self.prepare_input_source(source, publicID)
+        Parse source adding the resulting triples to it's own context
+        (sub graph of this graph).
+
+        See `rdflib.graph.Graph.parse` for documentation on arguments.
+
+        :Returns:
+
+        The graph into which the source was parsed. In the case of n3
+        it returns the root context.
+        """
+
+        source = create_input_source(source=source, publicID=publicID, location=location, file=file, data=data)
+
         id = self.context_id(self.absolutize(source.getPublicId()))
         context = Graph(store=self.store, identifier=id)
         context.remove((None, None, None))
-        context.parse(source, publicID=publicID, format=format, **args)
+        context.parse(source, publicID=publicID, format=format,
+                      location=location, file=file, data=data, **args)
         return context
 
     def __reduce__(self):

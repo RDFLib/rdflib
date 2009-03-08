@@ -1,6 +1,5 @@
 from rdflib import RDF
 from rdflib import RDFS
-from rdflib import StringInputSource
 
 from rdflib.term import URIRef
 from rdflib.term import BNode
@@ -24,7 +23,7 @@ def testN3Store(store="default", configString=None):
     if configString:
         g.destroy(configString)
         g.open(configString)
-    g.parse(StringInputSource(testN3), format="n3")
+    g.parse(data=testN3, format="n3")
     print g.store
     try:
         for s,p,o in g.triples((None,implies,None)):
