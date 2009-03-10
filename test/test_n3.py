@@ -1,6 +1,7 @@
 from rdflib.term import Literal
 from rdflib.term import Namespace
 
+__test__ = False
 
 input = """
 #  Definitions of terms describing the n3 model
@@ -76,7 +77,6 @@ class N3TestCase(unittest.TestCase):
         Test that the n3 parser throws an Exception when using the identifier
         ":foo.txt", as this is not valid as per the rdf spec.
         """
-
         input = """
 @prefix : <http://www.example.com/> .
 

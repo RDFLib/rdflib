@@ -1,12 +1,12 @@
-
 import unittest
-from rdflib.Graph import Graph
-from rdflib.StringInputSource import StringInputSource
-import rdflib
+
+from rdflib import term
+from rdflib.graph import Graph
+
 
 class FakeBlankNode(object):
     def __cmp__(self, other):
-        if other.__class__ == rdflib.BNode:
+        if other.__class__ == term.BNode:
             return True
         return False
 
@@ -15,16 +15,18 @@ blank_node = FakeBlankNode()
 def create_graph(n3data):
     '''
     @param n3data: data to create the graph from.
-    @return: rdflib.Graph.Graph instance containing parsed graph.
+    @return: rdflib.graph.Graph instance containing parsed graph.
     '''
     g = Graph()
-    g.parse(StringInputSource(n3data), format='n3')
+    g.parse(data=n3data, format='n3')
     return g
 
 class TestSimpleQueries(unittest.TestCase):
     """
     http://www.w3.org/TR/rdf-sparql-query/#basicpatterns
     """
+
+    known_issue = True
 
     def test_simple_query(self):
         '''
@@ -44,7 +46,7 @@ class TestSimpleQueries(unittest.TestCase):
         self.assertEqual(len(result_data), 1)
         self.assertEqual(len(result_data[0]), 1)
         self.assertEqual(result_data[0][0], 'SPARQL Tutorial')
-        self.assertEqual(result_data[0][0].__class__, rdflib.Literal)
+        self.assertEqual(result_data[0][0].__class__, term.Literal)
 
     def test_multiple_matches(self):
         '''
@@ -67,7 +69,7 @@ class TestSimpleQueries(unittest.TestCase):
             ?x foaf:mbox ?mbox }
         """))
         expected_results = [
-            (rdflib.Literal(name), rdflib.URIRef(mbox)) for name, mbox in 
+            (term.Literal(name), term.URIRef(mbox)) for name, mbox in 
             [("Johnny Lee Outlaw", "mailto:jlow@example.com"),
              ("Peter Goodguy", "mailto:peter@example.org")]]
         results.sort()
@@ -94,12 +96,12 @@ class TestSimpleQueries(unittest.TestCase):
         col2 = sorted(col2)
 
         expected_results = sorted([
-            rdflib.Literal("Alice"),
-            rdflib.Literal("Bob"),
+            term.Literal("Alice"),
+            term.Literal("Bob"),
         ])
         self.assertEqual(col2, expected_results)
         self.assertNotEqual(col1[0], col1[1])
-        self.assertEqual(col1[0].__class__, rdflib.BNode)
+        self.assertEqual(col1[0].__class__, term.BNode)
 
     def test_construct(self):
         """
@@ -138,6 +140,8 @@ class TestRDFLiterals(unittest.TestCase):
     http://www.w3.org/TR/rdf-sparql-query/#matchingRDFLiterals
     """
 
+    known_issue = True
+
     data = """
         @prefix dt:   <http://example.org/datatype#> .
         @prefix ns:   <http://example.org/ns#> .
@@ -165,7 +169,7 @@ class TestRDFLiterals(unittest.TestCase):
         results = list(g.query("""
         SELECT ?v WHERE { ?v ?p 42 }
         """))
-        expected_results = [(rdflib.URIRef('http://example.org/ns#y'),)]
+        expected_results = [(term.URIRef('http://example.org/ns#y'),)]
         self.assertEqual(results, expected_results)
 
     def test_match_literal_arbitary_type(self):
@@ -173,10 +177,13 @@ class TestRDFLiterals(unittest.TestCase):
         results = list(g.query("""
         SELECT ?v WHERE { ?v ?p "abc"^^<http://example.org/datatype#specialDatatype> }
         """))
-        expected_results = [(rdflib.URIRef('http://example.org/ns#z'),)]
+        expected_results = [(term.URIRef('http://example.org/ns#z'),)]
         self.assertEqual(results, expected_results)
 
 class TestTermConstraints(unittest.TestCase):
+
+    known_issue = True
+
     data = """
     @prefix dc:   <http://purl.org/dc/elements/1.1/> .
     @prefix :     <http://example.org/book/> .
@@ -197,7 +204,7 @@ class TestTermConstraints(unittest.TestCase):
                   FILTER regex(?title, "^SPARQL") 
                 }
         """))
-        expected_results = [(rdflib.Literal("SPARQL Tutorial"),)]
+        expected_results = [(term.Literal("SPARQL Tutorial"),)]
         self.assertEqual(results, expected_results)
 
     def test_case_insentitive(self):
@@ -211,7 +218,7 @@ class TestTermConstraints(unittest.TestCase):
                   FILTER regex(?title, "web", "i" ) 
                 }
         """))
-        expected_results = [(rdflib.Literal("The Semantic Web"),)]
+        expected_results = [(term.Literal("The Semantic Web"),)]
         self.assertEqual(results, expected_results)
 
     def test_numeric_values(self):
@@ -226,7 +233,7 @@ class TestTermConstraints(unittest.TestCase):
                   FILTER (?price < 30.5)
                   ?x dc:title ?title . }
         """))
-        expected_results = [(rdflib.Literal("The Semantic Web"), rdflib.Literal(23))]
+        expected_results = [(term.Literal("The Semantic Web"), term.Literal(23))]
         self.assertEqual(results, expected_results)
 
 

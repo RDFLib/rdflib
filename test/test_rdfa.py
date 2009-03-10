@@ -3,6 +3,13 @@
 # test.py - RDFa Test Suite
 #
 
+__test__ = False  # we need to update this test module so that it
+# play's nicely with python setup.py nosetests. One bit of note from
+# unittest module documentation: It is important that subclasses
+# should not change the signature of their __init__ method, since
+# instances of the classes are instantiated automatically by parts of
+# the framework in order to be run.
+
 import os
 import unittest
 import ntriples

@@ -1,6 +1,6 @@
 import unittest, time
-from context import ContextTestCase
-from graph import GraphTestCase
+from test_context import ContextTestCase
+from test_graph import GraphTestCase
 from rdflib.term import URIRef
 from rdflib.graph import ConjunctiveGraph
 from threading import Thread
