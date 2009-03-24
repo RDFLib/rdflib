@@ -331,6 +331,9 @@ class Graph(Node):
         for (s, p, o), cg in self.__store.triples((s, p, o), context=self):
             yield (s, p, o)
 
+    def query(self, s):
+        raise Exception("Not Implemented")
+
     def __len__(self):
         """Returns the number of triples in the graph
 
