@@ -49,7 +49,7 @@ class Plugin(object):
 
     def getClass(self):
         if self._class is None:
-            module = __import__(self.module_path, globals(), locals(), True)
+            module = __import__(self.module_path, globals(), locals(), [""])
             self._class = getattr(module, self.class_name)
         return self._class
 

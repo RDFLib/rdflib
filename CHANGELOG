@@ -7,6 +7,8 @@
         Fixed case where XSD.date was matching before XSD.dateTime for
         datetime instances.
 
+        Fixed jython interoperability issue (issue #53).
+
 
 2007/04/04
         RELEASE 2.4.0
