@@ -1,6 +1,6 @@
 import unittest, time
-from test_context import ContextTestCase
-from test_graph import GraphTestCase
+from test import test_context
+from test import test_graph
 from rdflib.term import URIRef
 from rdflib.graph import ConjunctiveGraph
 from threading import Thread
@@ -48,11 +48,16 @@ def worker_remove(performed_ops, graph, num_ops, input=[]):
             
     #print "remove time: %.4f, thread: %s" % ((time.time() - t1), currentThread().getName())
 
-class TestBDBGraph(GraphTestCase):
-    store_name = "BerkeleyDB"
 
-class TestBDBContext(ContextTestCase):
+class TestBDBGraph(test_graph.GraphTestCase):
+    store_name = "BerkeleyDB"
+    slowtest = True
+
+
+class TestBDBContext(test_context.ContextTestCase):
     store = "BerkeleyDB"
+    slowtest = True
+
 
 class TestBDBTransactions(unittest.TestCase):
 

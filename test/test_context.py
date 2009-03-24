@@ -312,38 +312,6 @@ class ContextTestCase(unittest.TestCase):
         asserte(len(list(c1triples((Any, Any, Any)))), 0)
         asserte(len(list(triples((Any, Any, Any)))), 0)
 
-# tested via ContextTestCase
-#class IOMemoryContextTestCase(ContextTestCase):
-#    store = "IOMemory"
-#    slowtest = False
-
-try:
-    import persistent
-    # If we can import persistent then test ZODB store
-    class ZODBContextTestCase(ContextTestCase):
-        store = "ZODB"
-        slowtest = False
-except ImportError, e:
-    print "Can not test ZODB store: %s" % e
-
-try:
-    import MySQLdb
-    # If we can import RDF then test Redland store
-    class MySQLContextTestCase(ContextTestCase):
-        store = "MySQL"
-        slowtest = False
-except ImportError, e:
-    "Can not test MySQL store: %s" % e
-
-try:
-    import RDF
-    # If we can import RDF then test Redland store
-    class RedlandContextTestCase(ContextTestCase):
-        store = "Redland"
-        slowtest = False
-except ImportError, e:
-    print "Can not test Redland store: %s" % e
-
 
 if __name__ == '__main__':
     unittest.main()

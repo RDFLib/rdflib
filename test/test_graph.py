@@ -9,7 +9,6 @@ from rdflib.graph import Graph
 class GraphTestCase(unittest.TestCase):
     store_name = 'default'
     path = None
-    slowtest = True
 
     def setUp(self):
         self.graph = Graph(store=self.store_name)
@@ -178,25 +177,6 @@ class GraphTestCase(unittest.TestCase):
 #    store_name = "Memory"
 #    slowtest = False
 
-
-try:
-    import persistent
-    # If we can import persistent then test ZODB store
-    class ZODBGraphTestCase(GraphTestCase):
-        store_name = "ZODB"
-        slowtest = False
-except ImportError, e:
-    print "Can not test ZODB store: %s" % e
-
-
-try:
-    import RDF as Redland # don't shadow RDF ns imported above
-    # If we can import RDF then test Redland store
-    class RedLandTestCase(GraphTestCase):
-        store_name = "Redland"
-        slowtest = False
-except ImportError, e:
-    print "Can not test Redland store: %s" % e
 
 if __name__ == '__main__':
     unittest.main()
