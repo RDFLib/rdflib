@@ -9,6 +9,8 @@
 
         Fixed jython interoperability issue (issue #53).
 
+        Fixed Literal repr to handle apostrophes correctly (issue #28).
+
 
 2007/04/04
         RELEASE 2.4.0
