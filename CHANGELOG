@@ -11,6 +11,8 @@
 
         Fixed Literal repr to handle apostrophes correctly (issue #28).
 
+        Fixed Literal's repr to be consistent with its __init__ (issue #33).
+
 
 2007/04/04
         RELEASE 2.4.0
