@@ -786,8 +786,8 @@ class Graph(Node):
         DEBUG - A boolean flag passed on to the SPARQL parser and evaluation engine
         processor - The kind of RDF query (must be 'sparql' until Versa is ported)
         """
-        assert (processor == 'sparql',
-                'SPARQL is currently the only supported RDF query language')
+        assert processor == 'sparql', \
+            'SPARQL is currently the only supported RDF query language'
         p = plugin.get(processor, sparql.Processor)(self)
         return plugin.get('SPARQLQueryResult', query.result.QueryResult)(
           p.query(strOrQuery, initBindings, initNs, DEBUG, dataSetBase,
