@@ -1,0 +1,20 @@
+There are two classes of tests (for now): query and construct, each in its own directory. The structure is identical.
+
+Each test is in a different python file (usually Test***.py, where *** refer to the chapter
+in the SPARQL document). The test is run by the queryTest (resp. constructTest) script.
+This script does a run-time import of the test file, getting the variables in the Test files,
+construct and runs the sparql query and displays the result.
+
+Each test file has an identical structure: it is a bunch of (python) declaration:
+
+- the rdf data itself ("rdfData")
+	it is also possible to refer to an array of external files using the 
+	variable "datafiles", but the rdfData takes precedence. If files are used,
+	either set rdfData to None, or do not set it at all
+- the 'where' and 'optional' clauses, set as GraphPatterns
+- the 'select' tuple (if applicable)
+- the 'construct' pattern (if applicable)
+- for the query case, the expected result should be added in the form of a string
+
+Looking at the current examples, the structure is pretty straightforward.
+

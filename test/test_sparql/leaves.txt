@@ -1,0 +1,79 @@
+===========================================
+ Test named graph selects and leaf selects
+===========================================
+
+    >>> from rdflib import ConjunctiveGraph as CG, Namespace
+    >>> from rdflib.Graph import Graph
+
+    >>> print data
+    <BLANKLINE>
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    @prefix : <tag:example.org,2007;stuff/> .
+    <BLANKLINE>
+    :a foaf:knows :b .
+    :a foaf:knows :c .
+    :a foaf:knows :d .
+    <BLANKLINE>
+    :b foaf:knows :a .
+    :b foaf:knows :c .
+    <BLANKLINE>
+    :c foaf:knows :a ...
+
+    >>> print query
+    <BLANKLINE>
+    PREFIX foaf: <http://xmlns.com/foaf/0.1/>...
+    select distinct ?person
+    where {
+        ?person foaf:knows ?a .
+        ?person foaf:knows ?b .
+       filter (?a != ?b) .
+    }...
+
+    >>> from rdflib import RDF
+    >>> graph = Graph(identifier=RDF.RDFNS)
+    >>> graph.parse(StringIO(data), format='n3')
+    <Graph identifier=... (<class 'rdflib.Graph.Graph'>)>
+
+    >>> print graph.query(query).serialize('json')
+    {
+       "head" : {
+            "vars" : [
+                 "person"
+             ]
+        },
+        "results" : {
+              "ordered" : false,
+              "distinct" : true,
+              "bindings" : [
+                   {
+                       "person" : {"type": "uri", "value" : "tag:example.org,2007;stuff/b"}
+                    },
+                   {
+                       "person" : {"type": "uri", "value" : "tag:example.org,2007;stuff/a"}
+                    }
+               ]
+        }
+    }...
+
+    >>> from rdflib.URIRef import URIRef
+    >>> graph = Graph(identifier=URIRef('http://bobby')).parse(StringIO(data), format='n3')
+    >>> print graph.query(query).serialize('json')
+    {
+       "head" : {
+            "vars" : [
+                 "person"
+             ]
+        },
+        "results" : {
+              "ordered" : false,
+              "distinct" : true,
+              "bindings" : [
+                   {
+                       "person" : {"type": "uri", "value" : "tag:example.org,2007;stuff/b"}
+                    },
+                   {
+                       "person" : {"type": "uri", "value" : "tag:example.org,2007;stuff/a"}
+                    }
+               ]
+        }
+    }...
