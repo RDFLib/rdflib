@@ -1,6 +1,6 @@
 import unittest
 
-from rdflib import *
+from rdflib.term import URIRef
 from rdflib.graph import Graph
 
 class SeqTestCase(unittest.TestCase):

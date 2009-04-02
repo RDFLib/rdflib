@@ -1,8 +1,6 @@
-#!/usr/bin/env python2.4 
-
-import os, traceback, sys, unittest
-
-#sys.path[:0]=[".."]
+import os
+import sys
+import unittest
 
 from rdflib import term
 from rdflib.graph import ConjunctiveGraph

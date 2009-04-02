@@ -1,4 +1,4 @@
-from n3_2 import testN3Store,testN3,implies
+from test_n3_2 import testN3Store,testN3,implies
 from rdflib.graph import QuotedGraph
 try:
     from rdflib.store.MySQL import REGEXTerm
@@ -67,13 +67,15 @@ def testRegex():
         g.backend.destroy(configString)
         raise
 
-testRegex.non_standard_dep = True
+testRegex.non_core = True
+
 
 def testRun():
     testN3Store('MySQL',configString)
     testRegex()
 
-testRun.non_standard_dep = True
+testRun.non_core = True
+
 
 def profileTests():
     from hotshot import Profile, stats

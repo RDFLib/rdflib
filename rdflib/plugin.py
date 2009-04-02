@@ -114,7 +114,11 @@ register('default', Store, 'rdflib.store.IOMemory', 'IOMemory')
 register('IOMemory', Store, 'rdflib.store.IOMemory', 'IOMemory')
 register('BerkeleyDB', Store, 'rdflib.store.BerkeleyDB', 'BerkeleyDB')
 register('Sleepycat', Store, 'rdflib.store.Sleepycat', 'Sleepycat')
+register('BDBOptimized', Store, 'rdflib.store.BDBOptimized', 'BDBOptimized')
+register('MySQL', Store, 'rdflib.store.MySQL', 'MySQL')
 
+register('xml', Serializer, 'rdflib.syntax.serializers.XMLSerializer', 
+         'XMLSerializer')
 register('n3', Serializer, 'rdflib.syntax.serializers.N3Serializer', 
          'N3Serializer')
 register('nt', Serializer, 'rdflib.syntax.serializers.NTSerializer', 

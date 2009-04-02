@@ -40,6 +40,8 @@ WHERE { ?x foaf:name ?name .
 
 class JSON(unittest.TestCase):
 
+    known_issue = True
+
     def setUp(self):
         self.graph = ConjunctiveGraph(plugin.get('IOMemory',Store)())
         self.graph.parse(StringIO(test_data), format="n3")

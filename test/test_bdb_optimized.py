@@ -6,11 +6,20 @@ from tempfile import mkdtemp
 
 class TestBDBGraph(GraphTestCase):
     store_name = "BDBOptimized"
+    non_core = True
+    bsddb = True
+
 
 class TestBDBContext(ContextTestCase):
     store = "BDBOptimized"
+    non_core = True
+    bsddb = True
+
 
 class TestBDBOptimized:
+    non_core = True
+    bsddb = True
+
     def setUp(self):
         self.graph = ConjunctiveGraph(store="BDBOptimized")
         self.path = mkdtemp()

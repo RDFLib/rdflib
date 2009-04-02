@@ -1,7 +1,6 @@
 from __future__ import generators
-from rdflib import BNode
+from rdflib.term import URIRef, BNode, Literal
 from rdflib.store import Store,VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
-from rdflib.Literal import Literal
 from pprint import pprint
 import sys
 try:

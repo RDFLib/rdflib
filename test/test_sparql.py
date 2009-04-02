@@ -26,6 +26,7 @@ class TestSimpleQueries(unittest.TestCase):
     """
 
     known_issue = True
+    sparql = True
 
     def test_simple_query(self):
         '''
@@ -140,6 +141,7 @@ class TestRDFLiterals(unittest.TestCase):
     """
 
     known_issue = True
+    sparql = True
 
     data = """
         @prefix dt:   <http://example.org/datatype#> .
@@ -182,6 +184,7 @@ class TestRDFLiterals(unittest.TestCase):
 class TestTermConstraints(unittest.TestCase):
 
     known_issue = True
+    sparql = True
 
     data = """
     @prefix dc:   <http://purl.org/dc/elements/1.1/> .
