@@ -1,6 +1,3 @@
-from ez_setup import use_setuptools
-use_setuptools()
-
 from setuptools import setup, find_packages
 
 # Install rdflib
@@ -41,7 +38,7 @@ setup(
 
     packages = find_packages(exclude=["test"]),
 
-    tests_require = ["nose>=0.9.2"],
+    tests_require = ["nose>=0.10.4"],
 
     test_suite = 'nose.collector',
 
