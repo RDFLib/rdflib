@@ -16,7 +16,7 @@ class Processor(sparql.Processor):
               extensionFunctions={},
               USE_PYPARSING=False):
         from rdflib.namespace import RDFS, RDF, OWL
-        initNs.update({u'rdfs':RDFS, u'owl':OWL, u'rdf':RDF}) 
+        initNs.update({u'rdfs':RDFS.uri, u'owl':OWL.uri, u'rdf':RDF.uri}) 
         from rdflib.sparql.bison.Query import Query, Prolog
         assert isinstance(strOrQuery, (basestring, Query)),"%s must be a string or an rdflib.sparql.bison.Query.Query instance"%strOrQuery
         if isinstance(strOrQuery, basestring):

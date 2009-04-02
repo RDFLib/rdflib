@@ -64,15 +64,15 @@ class ClosedNamespace(object):
     """
 
     def __init__(self, uri, terms):
-        self._uri = uri
+        self.uri = uri
         self.__uris = {}
         for t in terms:
-            self.__uris[t] = URIRef(self._uri + t)
+            self.__uris[t] = URIRef(self.uri + t)
 
     def term(self, name):
         uri = self.__uris.get(name)
         if uri is None:
-            raise Exception("term '%s' not in namespace '%s'" % (name, self._uri))
+            raise Exception("term '%s' not in namespace '%s'" % (name, self.uri))
         else:
             return uri
 
@@ -86,10 +86,10 @@ class ClosedNamespace(object):
             return self.term(name)
 
     def __str__(self):
-        return self._uri
+        return self.uri
 
     def __repr__(self):
-        return """rdf.namespace.ClosedNamespace('%s')""" % str(self._uri)
+        return """rdf.namespace.ClosedNamespace('%s')""" % str(self.uri)
 
 
 class _RDFNamespace(ClosedNamespace):
@@ -114,7 +114,7 @@ class _RDFNamespace(ClosedNamespace):
     def term(self, name):
         try:
             i = int(name)
-            return URIRef("%s_%s" % (self._uri, i))
+            return URIRef("%s_%s" % (self.uri, i))
         except ValueError, e:
             return super(_RDFNamespace, self).term(name)
         
