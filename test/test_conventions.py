@@ -5,7 +5,8 @@ import rdflib
 
 
 class A(unittest.TestCase):
-    #known_issue = True
+
+    known_issue = True
 
     def test_module_names(self):        
         for name, value in inspect.getmembers(rdflib, inspect.ismodule):

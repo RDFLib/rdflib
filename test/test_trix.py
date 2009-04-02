@@ -4,6 +4,8 @@ import unittest
 
 class TriXTestCase(unittest.TestCase):
 
+    known_issue = True
+
     def setUp(self):
         pass
 

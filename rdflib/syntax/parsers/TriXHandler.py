@@ -32,7 +32,7 @@
 """
 """
 from rdflib import RDF
-from rdflib.term import Namespace
+from rdflib.namespace import Namespace
 from rdflib.term import URIRef
 from rdflib.term import BNode
 from rdflib.term import Literal

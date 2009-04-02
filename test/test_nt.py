@@ -5,6 +5,9 @@ from rdflib.graph import Graph
 
 class NTTestCase(unittest.TestCase):
 
+    slow = True # since it's hitting the network (and was at least
+                # slow just now)
+
     def setUp(self):
         pass
 

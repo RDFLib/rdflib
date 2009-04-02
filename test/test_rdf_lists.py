@@ -1,10 +1,9 @@
-#!/usr/bin/python
-import os, sys, string
+# import os, sys, string
 import unittest
-from cStringIO import StringIO
-from rdflib.graph import ConjunctiveGraph, Graph
-from rdflib.term import URIRef, Literal, BNode
-from rdflib.Collection import Collection
+
+from rdflib.graph import Graph
+from rdflib.term import URIRef
+
 
 DATA=\
 """<http://example.com#C> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class>.
@@ -27,11 +26,9 @@ def main():
 class OWLCollectionTest(unittest.TestCase):
 
     def testCollectionRDFXML(self):
-        g=Graph().parse(StringIO(DATA),format='nt')
+        g=Graph().parse(data=DATA, format='nt')
         g.namespace_manager.bind('owl',URIRef('http://www.w3.org/2002/07/owl#'))
         print g.serialize(format='pretty-xml')
 
 if __name__ == '__main__':
     main()
-
-

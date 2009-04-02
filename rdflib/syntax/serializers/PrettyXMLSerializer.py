@@ -3,7 +3,7 @@ from rdflib import RDF
 from rdflib.term import BNode
 from rdflib.term import Literal
 from rdflib.util import first, uniq, more_than
-from rdflib.Collection import Collection
+from rdflib.collection import Collection
 from rdflib.syntax.serializers import Serializer
 from rdflib.syntax.serializers.XMLWriter import XMLWriter
 
