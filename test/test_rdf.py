@@ -4,7 +4,7 @@ from rdflib.term import BNode
 from rdflib.term import Literal
 from rdflib.namespace import Namespace
 from rdflib.graph import Graph
-from rdflib import RDF
+from rdflib.namespace import RDF
 
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 

@@ -31,7 +31,7 @@
 
 """
 """
-from rdflib import RDF
+from rdflib.namespace import RDF
 from rdflib.term import URIRef
 from rdflib.term import BNode
 from rdflib.term import Literal
@@ -41,7 +41,7 @@ from rdflib.syntax.xml_names import is_ncname
 from xml.sax.saxutils import handler, quoteattr, escape
 from urlparse import urljoin, urldefrag
 
-RDFNS = RDF.RDFNS
+RDFNS = RDF
 
 # http://www.w3.org/TR/rdf-syntax-grammar/#eventterm-attribute-URI
 # A mapping from unqualified terms to there qualified version.
@@ -58,7 +58,10 @@ CORE_SYNTAX_TERMS = [RDF.RDF, RDF.ID, RDF.about, RDF.parseType, RDF.resource, RD
 SYNTAX_TERMS = CORE_SYNTAX_TERMS + [RDF.Description, RDF.li]
 
 # http://www.w3.org/TR/rdf-syntax-grammar/#oldTerms
-OLD_TERMS = [RDFNS["aboutEach"], RDFNS["aboutEachPrefix"], RDFNS["bagID"]]
+OLD_TERMS = [
+    URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#aboutEach"), 
+    URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#aboutEachPrefix"), 
+    URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#bagID")]
 
 NODE_ELEMENT_EXCEPTIONS = CORE_SYNTAX_TERMS + [RDF.li,] + OLD_TERMS
 NODE_ELEMENT_ATTRIBUTES = [RDF.ID, RDF.nodeID, RDF.about]
@@ -80,7 +83,7 @@ class BagID(URIRef):
 
     def next_li(self):
         self.li += 1
-        return URIRef(RDFNS + "_%s" % self.li)
+        return RDFNS[self.li]
 
 
 class ElementHandler(object):
@@ -104,7 +107,7 @@ class ElementHandler(object):
 
     def next_li(self):
         self.li += 1
-        return URIRef(RDFNS + "_%s" % self.li)
+        return RDFNS[self.li]
 
 
 class RDFXMLHandler(handler.ContentHandler):
@@ -301,7 +304,7 @@ class RDFXMLHandler(handler.ContentHandler):
 
         language = current.language
         for att in atts:
-            if not att.startswith(RDFNS):
+            if not att.startswith(str(RDFNS)):
                 predicate = absolutize(att)
                 try:
                     object = Literal(atts[att], language)
@@ -338,7 +341,7 @@ class RDFXMLHandler(handler.ContentHandler):
         current.data = None
         current.list = None
 
-        if not name.startswith(RDFNS):
+        if not name.startswith(str(RDFNS)):
             current.predicate = absolutize(name)
         elif name==RDF.li:
             current.predicate = current.next_li()
@@ -417,7 +420,7 @@ class RDFXMLHandler(handler.ContentHandler):
             datatype = absolutize(datatype)
         else:
             for att in atts:
-                if not att.startswith(RDFNS):
+                if not att.startswith(str(RDFNS)):
                     predicate = absolutize(att)
                 elif att in PROPERTY_ELEMENT_ATTRIBUTES:
                     continue

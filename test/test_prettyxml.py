@@ -1,10 +1,9 @@
 from rdflib.term import  URIRef, BNode
-from rdflib import RDFS
+from rdflib.namespace import RDFS
 
 from rdflib.syntax.serializers.PrettyXMLSerializer import PrettyXMLSerializer
 
 from rdflib.graph import ConjunctiveGraph
-from rdflib.term import BNode
 from StringIO import StringIO
 
 
@@ -14,7 +13,7 @@ class SerializerTestBase(object):
 
     def setup(self):
         graph = ConjunctiveGraph()
-        graph.load(StringIO(self.testContent), format=self.testContentFormat)
+        graph.parse(data=self.testContent, format=self.testContentFormat)
         self.sourceGraph = graph
 
     def test_serialize_and_reparse(self):

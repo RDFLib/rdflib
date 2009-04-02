@@ -58,3 +58,72 @@ class NamespaceDict(dict):
         return """rdflib.namespace.NamespaceDict('%s')""" % str(self.uri)
 
 
+class ClosedNamespace(object):
+    """
+    
+    """
+
+    def __init__(self, uri, terms):
+        self._uri = uri
+        self.__uris = {}
+        for t in terms:
+            self.__uris[t] = URIRef(self._uri + t)
+
+    def term(self, name):
+        uri = self.__uris.get(name)
+        if uri is None:
+            raise Exception("term '%s' not in namespace '%s'" % (name, self._uri))
+        else:
+            return uri
+
+    def __getitem__(self, key, default=None):
+        return self.term(key)
+
+    def __getattr__(self, name):
+        if name.startswith("__"): # ignore any special Python names!
+            raise AttributeError
+        else:
+            return self.term(name)
+
+    def __str__(self):
+        return self._uri
+
+    def __repr__(self):
+        return """rdf.namespace.ClosedNamespace('%s')""" % str(self._uri)
+
+
+class _RDFNamespace(ClosedNamespace):
+    def __init__(self):
+        super(_RDFNamespace, self).__init__(
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#"), 
+            terms=[
+        # Syntax Names
+        "RDF", "Description", "ID", "about", "parseType", "resource", "li", "nodeID", "datatype", 
+        
+        # RDF Classes
+        "Seq", "Bag", "Alt", "Statement", "Property", "XMLLiteral", "List", 
+        
+        # RDF Properties
+        "subject", "predicate", "object", "type", "value", "first", "rest", 
+        # and _n where n is a non-negative integer
+        
+        # RDF Resources          
+        "nil"]
+            )
+
+    def term(self, name):
+        try:
+            i = int(name)
+            return URIRef("%s_%s" % (self._uri, i))
+        except ValueError, e:
+            return super(_RDFNamespace, self).term(name)
+        
+RDF = _RDFNamespace()
+
+RDFS = ClosedNamespace(
+    uri = URIRef("http://www.w3.org/2000/01/rdf-schema#"), 
+    terms = [
+        "Resource", "Class", "subClassOf", "subPropertyOf", "comment", "label", 
+        "domain", "range", "seeAlso", "isDefinedBy", "Literal", "Container", 
+        "ContainerMembershipProperty", "member", "Datatype"]
+    )

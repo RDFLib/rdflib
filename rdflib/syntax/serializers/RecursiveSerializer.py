@@ -4,7 +4,7 @@ from rdflib.term import URIRef
 
 from rdflib.syntax.serializers.AbstractSerializer import AbstractSerializer
 
-from rdflib import RDF, RDFS
+from rdflib.namespace import RDF, RDFS
 
 
 class RecursiveSerializer(AbstractSerializer):

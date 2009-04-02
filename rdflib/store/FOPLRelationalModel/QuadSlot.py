@@ -5,7 +5,7 @@ Utility functions associated with RDF terms:
 - escaping literal's for SQL persistence
 """
 from rdflib.term import BNode
-from rdflib import RDF
+from rdflib.namespace import RDF
 from rdflib.term import Literal
 from rdflib.term import URIRef
 from hashlib import md5

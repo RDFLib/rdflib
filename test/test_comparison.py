@@ -1,6 +1,6 @@
 import unittest
 
-from rdflib import RDF
+from rdflib.namespace import RDF
 
 from rdflib.term import URIRef
 from rdflib.term import BNode

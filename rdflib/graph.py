@@ -140,7 +140,8 @@ try:
 except ImportError:
     from StringIO import StringIO
 
-from rdflib import RDF, RDFS
+from rdflib.namespace import RDF, RDFS
+
 from rdflib import plugin, exceptions
 
 from rdflib.term import Node
@@ -984,7 +985,7 @@ class Seq(object):
         """
 
         _list = self._list = list()
-        LI_INDEX = RDF.RDFNS["_"]
+        LI_INDEX = URIRef(str(RDF) + "_")
         for (p, o) in graph.predicate_objects(subject):
             if p.startswith(LI_INDEX): #!= RDF.Seq: #
                 i = int(p.replace(LI_INDEX, ''))

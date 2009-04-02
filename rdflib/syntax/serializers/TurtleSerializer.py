@@ -9,7 +9,8 @@ from rdflib.syntax.xml_names import split_uri
 from rdflib.syntax.serializers.RecursiveSerializer import RecursiveSerializer
 from rdflib.exceptions import Error
 
-from rdflib import RDF, RDFS
+from rdflib.namespace import RDF, RDFS
+
 
 SUBJECT = 0
 VERB = 1

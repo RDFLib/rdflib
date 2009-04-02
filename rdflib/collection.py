@@ -1,4 +1,4 @@
-from rdflib import RDF
+from rdflib.namespace import RDF
 from rdflib.term import BNode
 from rdflib.term import Literal
 from rdflib.graph import Graph

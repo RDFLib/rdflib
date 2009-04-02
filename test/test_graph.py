@@ -3,7 +3,7 @@ import unittest
 from tempfile import mkdtemp
 
 from rdflib.term import URIRef, BNode, Literal
-from rdflib import RDF
+from rdflib.namespace import RDF
 from rdflib.graph import Graph
 
 class GraphTestCase(unittest.TestCase):

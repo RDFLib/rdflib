@@ -8,7 +8,7 @@ and RDF/XML dependence on it
 from rdflib.graph import ConjunctiveGraph
 from rdflib.term import URIRef
 from rdflib.namespace import Namespace
-from rdflib import RDF
+from rdflib.namespace import RDF
 from StringIO import StringIO
 import unittest
 
