@@ -1,5 +1,5 @@
 import unittest
-from rdflib.term import Namespace
+from rdflib.namespace import Namespace
 from rdflib import plugin
 from rdflib import RDF
 from rdflib import RDFS

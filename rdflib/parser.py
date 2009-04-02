@@ -24,7 +24,8 @@ except AttributeError:
     _StringTypes = (types.StringType,)
 
 from rdflib import __version__
-from rdflib.term import URIRef, Namespace
+from rdflib.term import URIRef
+from rdflib.namespace import Namespace
 
 
 class Parser(object):

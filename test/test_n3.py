@@ -1,5 +1,5 @@
 from rdflib.term import Literal
-from rdflib.term import Namespace
+from rdflib.namespace import Namespace
 
 __test__ = False
 

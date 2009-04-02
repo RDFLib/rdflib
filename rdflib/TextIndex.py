@@ -11,7 +11,7 @@ except ImportError:
     
 from rdflib.graph import ConjunctiveGraph
 from rdflib.term import Literal
-from rdflib.term import NamespaceDict as Namespace
+from rdflib.namespace import NamespaceDict as Namespace
 from rdflib.term import URIRef
 from rdflib.store import TripleAddedEvent, TripleRemovedEvent
 

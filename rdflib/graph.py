@@ -147,7 +147,7 @@ from rdflib.term import Node
 from rdflib.term import URIRef
 from rdflib.term import BNode
 from rdflib.term import Literal
-from rdflib.term import Namespace
+from rdflib.namespace import Namespace
 from rdflib.store import Store
 from rdflib.syntax.serializers import Serializer
 from rdflib.syntax.parsers import Parser

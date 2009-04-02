@@ -2,7 +2,7 @@ import unittest
 
 from rdflib.term import BNode
 from rdflib.term import Literal
-from rdflib.term import Namespace
+from rdflib.namespace import Namespace
 from rdflib.graph import Graph
 from rdflib import RDF
 

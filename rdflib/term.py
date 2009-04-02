@@ -226,25 +226,6 @@ class BNode(Identifier):
         return d.hexdigest()
 
 
-class Namespace(URIRef):
-
-    @property
-    def title(self):
-        return URIRef(self + 'title')
-
-    def term(self, name):
-        return URIRef(self + name)
-
-    def __getitem__(self, key, default=None):
-        return self.term(key)
-
-    def __getattr__(self, name):
-        if name.startswith("__"): # ignore any special Python names!
-            raise AttributeError
-        else:
-            return self.term(name)
-
-
 class Literal(Identifier):
     """
     RDF Literal: http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
@@ -542,7 +523,6 @@ class Literal(Identifier):
         return d.hexdigest()
 
 
-_XSD_NS = Namespace(u'http://www.w3.org/2001/XMLSchema#')
 
 #Casts a python datatype to a tuple of the lexical value and a datatype URI (or None)
 def _castPythonToLiteral(obj):
@@ -560,13 +540,13 @@ def _castPythonToLiteral(obj):
 # datetime instances are also instances of date... so we need to order these.
 _PythonToXSD = [
     (basestring, (None,None)),
-    (float     , (None,_XSD_NS[u'float'])),
-    (int       , (None,_XSD_NS[u'integer'])),
-    (long      , (None,_XSD_NS[u'long'])),
-    (bool      , (None,_XSD_NS[u'boolean'])),
-    (datetime  , (lambda i:i.isoformat(),_XSD_NS[u'dateTime'])),
-    (date      , (lambda i:i.isoformat(),_XSD_NS[u'date'])),
-    (time      , (lambda i:i.isoformat(),_XSD_NS[u'time'])),
+    (float     , (None,URIRef('http://www.w3.org/2001/XMLSchema#float'))),
+    (int       , (None,URIRef('http://www.w3.org/2001/XMLSchema#integer'))),
+    (long      , (None,URIRef('http://www.w3.org/2001/XMLSchema#long'))),
+    (bool      , (None,URIRef('http://www.w3.org/2001/XMLSchema#boolean'))),
+    (datetime  , (lambda i:i.isoformat(),URIRef('http://www.w3.org/2001/XMLSchema#dateTime'))),
+    (date      , (lambda i:i.isoformat(),URIRef('http://www.w3.org/2001/XMLSchema#date'))),
+    (time      , (lambda i:i.isoformat(),URIRef('http://www.w3.org/2001/XMLSchema#time'))),
 ]
 
 def _strToTime(v) :
@@ -594,32 +574,32 @@ def _strToDateTime(v) :
     return datetime(tstr.tm_year,tstr.tm_mon,tstr.tm_mday,tstr.tm_hour,tstr.tm_min,tstr.tm_sec)
 
 XSDToPython = {
-    _XSD_NS[u'time']               : _strToTime,
-    _XSD_NS[u'date']               : _strToDate,
-    _XSD_NS[u'dateTime']           : _strToDateTime,
-    _XSD_NS[u'string']             : None,
-    _XSD_NS[u'normalizedString']   : None,
-    _XSD_NS[u'token']              : None,
-    _XSD_NS[u'language']           : None,
-    _XSD_NS[u'boolean']            : lambda i:i.lower() in ['1','true'],
-    _XSD_NS[u'decimal']            : float,
-    _XSD_NS[u'integer']            : long,
-    _XSD_NS[u'nonPositiveInteger'] : int,
-    _XSD_NS[u'long']               : long,
-    _XSD_NS[u'nonNegativeInteger'] : int,
-    _XSD_NS[u'negativeInteger']    : int,
-    _XSD_NS[u'int']                : long,
-    _XSD_NS[u'unsignedLong']       : long,
-    _XSD_NS[u'positiveInteger']    : int,
-    _XSD_NS[u'short']              : int,
-    _XSD_NS[u'unsignedInt']        : long,
-    _XSD_NS[u'byte']               : int,
-    _XSD_NS[u'unsignedShort']      : int,
-    _XSD_NS[u'unsignedByte']       : int,
-    _XSD_NS[u'float']              : float,
-    _XSD_NS[u'double']             : float,
-    _XSD_NS[u'base64Binary']       : base64.decodestring,
-    _XSD_NS[u'anyURI']             : None,
+    URIRef('http://www.w3.org/2001/XMLSchema#time')               : _strToTime,
+    URIRef('http://www.w3.org/2001/XMLSchema#date')               : _strToDate,
+    URIRef('http://www.w3.org/2001/XMLSchema#dateTime')           : _strToDateTime,
+    URIRef('http://www.w3.org/2001/XMLSchema#string')             : None,
+    URIRef('http://www.w3.org/2001/XMLSchema#normalizedString')   : None,
+    URIRef('http://www.w3.org/2001/XMLSchema#token')              : None,
+    URIRef('http://www.w3.org/2001/XMLSchema#language')           : None,
+    URIRef('http://www.w3.org/2001/XMLSchema#boolean')            : lambda i:i.lower() in ['1','true'],
+    URIRef('http://www.w3.org/2001/XMLSchema#decimal')            : float,
+    URIRef('http://www.w3.org/2001/XMLSchema#integer')            : long,
+    URIRef('http://www.w3.org/2001/XMLSchema#nonPositiveInteger') : int,
+    URIRef('http://www.w3.org/2001/XMLSchema#long')               : long,
+    URIRef('http://www.w3.org/2001/XMLSchema#nonNegativeInteger') : int,
+    URIRef('http://www.w3.org/2001/XMLSchema#negativeInteger')    : int,
+    URIRef('http://www.w3.org/2001/XMLSchema#int')                : long,
+    URIRef('http://www.w3.org/2001/XMLSchema#unsignedLong')       : long,
+    URIRef('http://www.w3.org/2001/XMLSchema#positiveInteger')    : int,
+    URIRef('http://www.w3.org/2001/XMLSchema#short')              : int,
+    URIRef('http://www.w3.org/2001/XMLSchema#unsignedInt')        : long,
+    URIRef('http://www.w3.org/2001/XMLSchema#byte')               : int,
+    URIRef('http://www.w3.org/2001/XMLSchema#unsignedShort')      : int,
+    URIRef('http://www.w3.org/2001/XMLSchema#unsignedByte')       : int,
+    URIRef('http://www.w3.org/2001/XMLSchema#float')              : float,
+    URIRef('http://www.w3.org/2001/XMLSchema#double')             : float,
+    URIRef('http://www.w3.org/2001/XMLSchema#base64Binary')       : base64.decodestring,
+    URIRef('http://www.w3.org/2001/XMLSchema#anyURI')             : None,
 }
 
 _toPythonMapping = {}
@@ -664,40 +644,6 @@ class Statement(Node, tuple):
 
     def __reduce__(self):
         return (Statement, (self[0], self[1]))
-
-
-class NamespaceDict(dict):
-
-    def __new__(cls, uri=None, context=None):
-        inst = dict.__new__(cls)
-        inst.uri = uri # TODO: do we need to set these both here and in __init__ ??
-        inst.__context = context
-        return inst
-
-    def __init__(self, uri, context=None):
-        self.uri = uri
-        self.__context = context
-
-    def term(self, name):
-        uri = self.get(name)
-        if uri is None:
-            uri = URIRef(self.uri + name)
-            if self.__context and (uri, None, None) not in self.__context:
-                _logger.warning("%s not defined" % uri)
-            self[name] = uri
-        return uri 
-
-    def __getattr__(self, name):
-        return self.term(name)
-
-    def __getitem__(self, key, default=None):
-        return self.term(key) or default
-
-    def __str__(self):
-        return self.uri
-
-    def __repr__(self):
-        return """rdflib.term.NamespaceDict('%s')""" % str(self.uri)
 
 
 def test():
