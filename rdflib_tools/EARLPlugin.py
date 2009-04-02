@@ -11,7 +11,7 @@ import logging
 from nose.plugins import Plugin
 
 from rdflib.term import URIRef, BNode, Literal
-from rdflib import RDF, RDFS
+from rdflib.namespace import RDF, RDFS
 from rdflib.graph import Graph
 from rdflib.namespace import NamespaceDict as Namespace
 from rdflib.util import date_time
