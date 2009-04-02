@@ -1,8 +1,8 @@
 import sys
 
-from rdflib_sparql import parser, bison as components
+from rdflib.sparql import parser, bison as components
 from rdflib.term import Literal, URIRef, Variable, BNode
-from rdflib.RDF import RDFNS
+from rdflib.namespace import RDF
 
 from nose import tools
 
@@ -60,7 +60,7 @@ match_definitions = [
         ('?foo', Variable('foo')),
         ('<s:ex>', URIRef('s:ex')),
         ('pre:local', components.QName.QName('pre:local')),
-        ('a', RDFNS.type),
+        ('a', RDF.type),
       ]),
     (parser.GraphNode,
       [
@@ -77,7 +77,7 @@ match_definitions = [
          [components.Triples.PropertyValue(
             components.QName.QName('foaf:nick'),
             [Literal('Alice', lang='en-US'), Literal('Alice_')]),
-          components.Triples.PropertyValue(RDFNS.type,
+          components.Triples.PropertyValue(RDF.type,
             [components.QName.QName('foaf:Person'), URIRef('s:ex:Object')])
          ]),
       ]),
@@ -89,7 +89,7 @@ match_definitions = [
            [components.Triples.PropertyValue(
               components.QName.QName('foaf:nick'),
               [Literal('Alice', lang='en-US'), Literal('Alice_')]),
-            components.Triples.PropertyValue(RDFNS.type,
+            components.Triples.PropertyValue(RDF.type,
               [components.QName.QName('foaf:Person'), URIRef('s:ex:Object')])
            ])),
       ]),
@@ -113,12 +113,15 @@ def strict_Literal_eq(l0, l1):
         return False
 Literal.__eq__ = strict_Literal_eq
 
-class test_parser(object):
-  def should_match(self, component, before, after):
-    result = component.parseString(before).asList()[0]
-    tools.assert_equal(after, result)
+def should_match(component, before, after):
+  result = component.parseString(before).asList()[0]
+  tools.assert_equal(after, result)
 
-  def test_components_should_match(self):
-    for component, tests in match_definitions:
-      for before, after in tests:
-        yield self.should_match, component, before, after
+def test_components_should_match():
+  for def_index, definition in enumerate(match_definitions):
+    component, tests = definition
+    for test_index, test in enumerate(tests):
+      before, after = test
+      should_match.description = (
+        should_match.__name__ + '.%d.%d' % (def_index, test_index))
+      yield should_match, component, before, after

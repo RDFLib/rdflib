@@ -1,8 +1,9 @@
 import unittest
 from StringIO import StringIO
 
-from rdflib import ConjunctiveGraph
-from rdflib.term import Literal, Namespace, _XSD_NS
+from rdflib.graph import ConjunctiveGraph
+from rdflib.term import Literal
+from rdflib.namespace import Namespace
 
 testContent = """
 @prefix    :        <http://example.org/things#> .
@@ -11,6 +12,7 @@ testContent = """
 :xd3 :p  "1"^^xsd:double .
 """
     
+_XSD_NS = Namespace(u'http://www.w3.org/2001/XMLSchema#')
 exNS = Namespace("http://example.org/things#")
 
 double1 = Literal('1', datatype=_XSD_NS.double)

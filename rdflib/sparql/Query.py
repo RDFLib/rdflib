@@ -1,8 +1,8 @@
 import types, sets
 from pprint import pprint
-from rdflib import URIRef, BNode, Literal, Variable, RDF
-from rdflib.Graph import Graph, ConjunctiveGraph, ReadOnlyGraphAggregate
-from rdflib.term import Identifier
+from rdflib.term import URIRef, BNode, Literal, Variable, Identifier
+from rdflib.namespace import RDF
+from rdflib.graph import Graph, ConjunctiveGraph, ReadOnlyGraphAggregate
 from rdflib.util import check_subject, list2set
 from rdflib.sparql import SPARQLError
 from rdflib.sparql.sparqlGraph import SPARQLGraph

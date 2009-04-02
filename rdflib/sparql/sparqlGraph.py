@@ -1,4 +1,4 @@
-from rdflib.Graph import Graph, ConjunctiveGraph
+from rdflib.graph import Graph, ConjunctiveGraph
 
 class SPARQLGraph(object):
     """

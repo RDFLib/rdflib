@@ -25,6 +25,8 @@ from rdflib.store import Store
 from rdflib.syntax.serializers import Serializer
 from rdflib.syntax.parsers import Parser
 from rdflib.exceptions import Error
+from rdflib import sparql
+from rdflib.query.result import QueryResult
 
 
 entry_points = {'rdf.plugins.store': Store,
@@ -135,3 +137,7 @@ register('rdfa',   Parser, 'rdflib.syntax.parsers.RDFaParser', 'RDFaParser')
 
 register('trix', Parser, 'rdflib.syntax.parsers.TriXParser', 'TriXParser')
 register('trix', Serializer, 'rdflib.syntax.serializers.TriXSerializer', 'TriXSerializer')
+register('sparql', sparql.Processor,
+         'rdflib.sparql.bison.Processor', 'Processor')
+register('SPARQLQueryResult', QueryResult,
+         'rdflib.sparql.QueryResult', 'SPARQLQueryResult')

@@ -12,11 +12,8 @@ the efficient removal of all statements about a particular resource using cascad
 
 see: http://dev.mysql.com/doc/refman/5.0/en/ansi-diff-foreign-keys.html
 """
-from rdflib.URIRef import URIRef
-from rdflib import BNode
-from rdflib import RDF
-from rdflib.Literal import Literal
-from rdflib.URIRef import URIRef
+from rdflib.term import BNode, URIRef, Literal
+from rdflib.namespace import RDF
 from pprint import pprint
 from rdflib.term_utils import *
 from rdflib.store.REGEXMatching import REGEXTerm

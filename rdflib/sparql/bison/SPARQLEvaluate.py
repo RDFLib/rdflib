@@ -5,10 +5,11 @@ from rdflib.sparql.sparqlOperators import getValue
 from rdflib.sparql.graphPattern import BasicGraphPattern
 from rdflib.sparql.Unbound import Unbound
 from rdflib.sparql.Query import _variablesToArray, queryObject, SessionBNode
-from rdflib.Graph import ConjunctiveGraph, Graph, BackwardCompatGraph,ReadOnlyGraphAggregate
-from rdflib import URIRef,Variable,BNode, Literal, plugin, RDF
+from rdflib.graph import ConjunctiveGraph, Graph, BackwardCompatGraph,ReadOnlyGraphAggregate
+from rdflib import plugin
+from rdflib.namespace import RDF
 from rdflib.store import Store
-from rdflib.term import Identifier
+from rdflib.term import URIRef, Variable, BNode, Literal, Identifier
 from rdflib.term import XSDToPython
 from IRIRef import NamedGraph, RemoteGraph, IRIRef
 from GraphPattern import *

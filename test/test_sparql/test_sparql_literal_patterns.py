@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 #=======================================================================
-from rdflib import ConjunctiveGraph, URIRef, Literal
+from rdflib.graph import ConjunctiveGraph
+from rdflib.term import URIRef, Literal
 from StringIO import StringIO
 from datetime import date
 #=======================================================================

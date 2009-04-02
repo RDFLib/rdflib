@@ -16,10 +16,8 @@ automatically
 see: http://en.wikipedia.org/wiki/Birthday_Paradox
 """
 
-from rdflib import BNode
-from rdflib import RDF
-from rdflib.Literal import Literal
-from rdflib.URIRef import URIRef
+from rdflib.term import BNode, Literal, URIRef
+from rdflib.namespace import RDF
 from rdflib.term_utils import *
 from rdflib.graph import QuotedGraph
 from rdflib.store.REGEXMatching import REGEXTerm

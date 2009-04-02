@@ -1,4 +1,4 @@
-from rdflib_sparql.bison.GraphPattern import GraphPattern
+from rdflib.sparql.bison.GraphPattern import GraphPattern
 
 class Query(object):
     """

@@ -127,3 +127,5 @@ RDFS = ClosedNamespace(
         "domain", "range", "seeAlso", "isDefinedBy", "Literal", "Container", 
         "ContainerMembershipProperty", "member", "Datatype"]
     )
+
+OWL = Namespace('http://www.w3.org/2002/07/owl#')

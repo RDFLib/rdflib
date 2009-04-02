@@ -1,6 +1,8 @@
-from rdflib.term import URIRef, BNode, Literal, Namespace, Variable
-from rdflib import plugin, RDF, RDFS, StringInputSource
-from rdflib.Graph import Graph,ReadOnlyGraphAggregate,ConjunctiveGraph
+from rdflib.term import URIRef, BNode, Literal, Variable
+from rdflib.namespace import Namespace, RDF, RDFS
+from rdflib import plugin
+from rdflib.parser import StringInputSource
+from rdflib.graph import Graph, ReadOnlyGraphAggregate, ConjunctiveGraph
 import unittest,sys
 from pprint import pprint
 
@@ -13,7 +15,7 @@ class TestSPARQLToldBNodes(unittest.TestCase):
            @prefix rdf: <%s> .
            @prefix rdfs: <%s> .
            [ :prop :val ].
-           [ a rdfs:Class ]."""%(RDF.RDFNS,RDFS.RDFSNS)), format="n3")
+           [ a rdfs:Class ]."""%(RDF, RDFS)), format="n3")
     def testToldBNode(self):
         for s,p,o in self.graph.triples((None,RDF.type,None)):
             pass

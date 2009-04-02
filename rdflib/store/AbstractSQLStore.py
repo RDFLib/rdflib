@@ -1,9 +1,6 @@
 from __future__ import generators
-from rdflib import BNode
-from rdflib import RDF
-from rdflib.Literal import Literal
-from rdflib.URIRef import URIRef
-from rdflib.BNode import BNode
+from rdflib.term import BNode, URIRef, Literal
+from rdflib.namespace import RDF
 from pprint import pprint
 import sha,sys, weakref
 from rdflib.term_utils import *

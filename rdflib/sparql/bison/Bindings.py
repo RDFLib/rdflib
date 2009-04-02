@@ -1,4 +1,5 @@
-from rdflib.term import URIRef, Namespace
+from rdflib.term import URIRef
+from rdflib.namespace import Namespace
 
 EMPTY_STRING=""
 

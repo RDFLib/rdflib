@@ -1,5 +1,7 @@
 # -*- coding: UTF-8 -*-
-from rdflib import ConjunctiveGraph, URIRef, Literal, RDFS
+from rdflib.graph import ConjunctiveGraph
+from rdflib.term import URIRef, Literal
+from rdflib.namespace import RDFS
 from StringIO import StringIO
 import unittest
 

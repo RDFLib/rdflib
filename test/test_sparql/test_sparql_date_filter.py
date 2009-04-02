@@ -1,8 +1,8 @@
 # -*- coding: UTF-8 -*-
-from rdflib import ConjunctiveGraph, URIRef, Literal, RDFS
+from rdflib.graph import ConjunctiveGraph
+from rdflib.term import URIRef, Literal
+from rdflib.namespace import RDFS
 from rdflib.sparql.Algebra import RenderSPARQLAlgebra
-from rdflib.sparql.bison import Parse
-from rdflib import URIRef
 from StringIO import StringIO
 import unittest
 
@@ -62,9 +62,9 @@ class DateFilterTest(unittest.TestCase):
     def test_DATE_FILTER1(self):
         for query in [QUERY1,QUERY2,QUERY3]:
             print query
-            pQuery = Parse(query)
+            #pQuery = Parse(query)
             #print RenderSPARQLAlgebra(pQuery)
-            results = self.graph.query(pQuery,
+            results = self.graph.query(query,
                                        DEBUG=False).serialize(format='python')
             results = list(results)
             self.failUnless(

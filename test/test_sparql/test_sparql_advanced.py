@@ -1,9 +1,9 @@
 import unittest
 import doctest
-from rdflib import RDF,RDFS, Namespace
-from rdflib import Variable
+from rdflib.namespace import RDF, RDFS, Namespace
+from rdflib.term import Variable
 from rdflib.sparql import DESCRIBE
-from rdflib.Graph import Graph
+from rdflib.graph import Graph
 from cStringIO import StringIO
 
 testData="""
@@ -43,8 +43,8 @@ def describeOverride(terms,bindings,graph):
             g.add((s,p,o))
     return g
 
-namespaces={u'rdfs' : RDF.RDFNS,
-            u'rdf'  : RDFS.RDFSNS,
+namespaces={u'rdfs' : RDF,
+            u'rdf'  : RDFS,
             u'foaf' : FOAF,
             u'vcard': VCARD,
             u'ex' : Namespace('http://example.org/person#') }

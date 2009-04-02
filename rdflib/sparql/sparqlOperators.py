@@ -26,12 +26,12 @@
 ##
 
 import sys, os, re
-from rdflib.term     import Literal, _XSD_NS
-from rdflib.term       import BNode
-from rdflib.term      import URIRef
-from rdflib.term             import Variable
+from rdflib.term import Literal, BNode, URIRef, Variable
+from rdflib.namespace import Namespace
 from rdflib.sparql.graphPattern import _createResource
 from rdflib.sparql import _questChar, Debug
+
+_XSD_NS = Namespace('http://www.w3.org/2001/XMLSchema#')
 
 ##
 # Boolean test whether this is a a query string or not

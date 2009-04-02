@@ -1,5 +1,7 @@
-from rdflib import QueryResult,URIRef,BNode,Literal, Namespace
-from rdflib.Graph import Graph
+from rdflib.term import URIRef, BNode, Literal
+from rdflib.namespace import Namespace
+from rdflib.query.result import QueryResult
+from rdflib.graph import Graph
 from xml.dom import XML_NAMESPACE
 from xml.sax.saxutils import XMLGenerator
 from xml.sax.xmlreader import AttributesNSImpl
@@ -211,7 +213,7 @@ def bindingJSON(name, val):
 #    retval += '}\n'
     return retval
 
-class SPARQLQueryResult(QueryResult.QueryResult):
+class SPARQLQueryResult(QueryResult):
     """
     Query result class for SPARQL
 

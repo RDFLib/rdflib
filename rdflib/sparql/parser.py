@@ -10,9 +10,9 @@ from pyparsing import (Regex, Suppress, Combine, Optional, CaselessKeyword,
 
 import rdflib
 from rdflib.term import URIRef
-from rdflib_sparql import bison as components
+from rdflib.sparql import bison as components
 
-XSD_NS = rdflib.term.Namespace(u'http://www.w3.org/2001/XMLSchema#')
+XSD_NS = rdflib.namespace.Namespace(u'http://www.w3.org/2001/XMLSchema#')
 
 # Debug utilities:
 
@@ -392,7 +392,7 @@ if DEBUG:
 
 # Verb:
 Verb = (VarOrIRIref | Keyword('a').setParseAction(
-  refer_component(getattr, [rdflib.RDF, 'type'], [0, 1])))
+  refer_component(getattr, [rdflib.namespace.RDF, 'type'], [0, 1])))
 if DEBUG:
     Verb.setName('Verb')
 
