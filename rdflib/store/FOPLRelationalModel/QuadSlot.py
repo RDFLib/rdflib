@@ -61,7 +61,7 @@ def normalizeValue(value,termType):
         value = u'http://www.w3.org/2002/07/owl#NothingU'
     else:
         value = (isinstance(value,Graph) and value.identifier or str(value)) + termType
-    return int(md5.new(isinstance(value,unicode) and value.encode('utf-8') or value).hexdigest()[:16],16)
+    return int(md5(isinstance(value,unicode) and value.encode('utf-8') or value).hexdigest()[:16],16)
 
 def normalizeNode(node):
     return normalizeValue(node, term2Letter(node))

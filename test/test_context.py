@@ -7,7 +7,7 @@ from rdflib.term import URIRef, BNode
 class ContextTestCase(unittest.TestCase):
     #store = 'Memory'
     store = 'default'
-    slowtest = True
+    slow = True
 
     def setUp(self):
         self.graph = ConjunctiveGraph(store=self.store)

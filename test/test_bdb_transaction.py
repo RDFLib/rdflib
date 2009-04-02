@@ -51,17 +51,16 @@ def worker_remove(performed_ops, graph, num_ops, input=[]):
 
 class TestBDBGraph(test_graph.GraphTestCase):
     store_name = "BerkeleyDB"
-    slowtest = True
+    non_core = True
 
 
 class TestBDBContext(test_context.ContextTestCase):
     store = "BerkeleyDB"
-    slowtest = True
+    non_core = True
 
 
 class TestBDBTransactions(unittest.TestCase):
-
-    slowtest = True
+    non_core = True
 
     def setUp(self):
         self.graph = ConjunctiveGraph(store="BerkeleyDB")

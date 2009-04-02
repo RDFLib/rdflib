@@ -3,7 +3,6 @@ import unittest
 from rdflib import term
 from rdflib.graph import Graph
 
-
 class FakeBlankNode(object):
     def __cmp__(self, other):
         if other.__class__ == term.BNode:

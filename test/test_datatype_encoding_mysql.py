@@ -6,7 +6,7 @@ from rdflib.term import Literal
 
 from rdflib.store import Store
 from rdflib.graph import Graph
-#from rdflib.store.FOPLRelationalModel.QuadSlot import *
+from rdflib.store.FOPLRelationalModel.QuadSlot import normalizeValue
 
 def test_dType_encoding():
     correct=normalizeValue('http://www.w3.org/2001/XMLSchema#integer', 'U')
@@ -32,6 +32,10 @@ def test_dType_encoding():
     
     store.rollback()    
     store.close()
+
+test_dType_encoding.non_core = True
+test_dType_encoding.mysql = True
+
 
 if __name__ == '__main__':
     test_dType_encoding()

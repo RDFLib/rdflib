@@ -115,7 +115,7 @@ def _testNegative(uri, manifest):
 class ParserTestCase(unittest.TestCase):
     store = 'default'
     path = 'store'
-    slowtest = True
+    slow = True
 
     def setUp(self):
         self.manifest = manifest = Graph(store=self.store)

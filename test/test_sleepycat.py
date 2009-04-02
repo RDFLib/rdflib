@@ -8,9 +8,10 @@ from test import test_context
 
 class SleepycatGraphTestCase(test_graph.GraphTestCase):
     store_name = "Sleepycat"
-    slowtest = True
-
+    non_core = True
+    bsddb = True
 
 class SleepycatStoreTestCase(test_context.ContextTestCase):
     store = "Sleepycat"
-    slowtest = True
+    non_core = True
+    bsddb = True

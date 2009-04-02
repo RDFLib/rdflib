@@ -173,10 +173,6 @@ class GraphTestCase(unittest.TestCase):
 
         self.assertEquals(False, graph.connected())
 
-#class MemoryGraphTestCase(GraphTestCase):
-#    store_name = "Memory"
-#    slowtest = False
-
 
 if __name__ == '__main__':
     unittest.main()
