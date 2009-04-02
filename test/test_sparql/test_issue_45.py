@@ -8,6 +8,9 @@ from rdflib.sparql import Algebra
 from StringIO import StringIO
 
 class TestSparqlASK(unittest.TestCase):
+
+    known_issue = True
+
     def setUp(self):
         self.graph = Graph()
 
