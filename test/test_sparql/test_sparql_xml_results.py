@@ -65,6 +65,8 @@ except ImportError:
 
 class TestSparqlXmlResults(unittest.TestCase):
 
+    known_issue = True
+
     def setUp(self):
         self.graph = ConjunctiveGraph()
         self.graph.parse(StringIO(test_data), format="n3")

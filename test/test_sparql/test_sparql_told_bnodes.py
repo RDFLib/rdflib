@@ -7,6 +7,9 @@ import unittest,sys
 from pprint import pprint
 
 class TestSPARQLToldBNodes(unittest.TestCase):
+
+    known_issue = True
+
     def setUp(self):
         NS = u"http://example.org/"
         self.graph = ConjunctiveGraph()

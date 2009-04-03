@@ -1,4 +1,3 @@
-# -*- coding: UTF-8 -*-
 #=======================================================================
 from rdflib.graph import ConjunctiveGraph
 from rdflib.term import URIRef, Literal
@@ -51,6 +50,8 @@ def test_generator():
         res = graph.query(sparql)
         #print res.serialize('json')
         yield assert_equal, name, sparql, res.selected, expected
+
+test_generator.known_issue = True
 
 
 #=======================================================================

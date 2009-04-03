@@ -19,6 +19,8 @@ WHERE { [ a :Person ; :name ?name ] }"""
 
 class TestSparqlJsonResults(unittest.TestCase):
 
+    known_issue = True
+
     def setUp(self):
         self.graph = ConjunctiveGraph()
         self.graph.parse(StringIO(test_data), format="n3")

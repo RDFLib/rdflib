@@ -1,4 +1,3 @@
-# -*- coding: UTF-8 -*-
 from rdflib.graph import ConjunctiveGraph
 from rdflib.term import URIRef, Literal
 from rdflib.namespace import RDFS
@@ -28,6 +27,9 @@ WHERE {
     FILTER (!bound(?OP)) }"""
 
 class TestSparqlOPT_FILTER2(unittest.TestCase):
+
+    known_issue = True
+
     def setUp(self):
         self.graph = ConjunctiveGraph()
         self.graph.load(StringIO(testContent), format='n3')

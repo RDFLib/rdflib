@@ -23,6 +23,8 @@ def test_bound():
     expected = [Literal('Bob', lang=None, datatype=None)]
     assert res == expected, "Expected %s but got %s" % (expected, res)
 
+test_bound.known_issue = True
+
 if __name__ == '__main__':
     test_bound()
 

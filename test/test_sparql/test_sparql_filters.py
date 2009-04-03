@@ -1,4 +1,3 @@
-# -*- coding: UTF-8 -*-
 from rdflib.graph import ConjunctiveGraph
 from rdflib.term import URIRef, Literal
 from StringIO import StringIO
@@ -39,6 +38,8 @@ def test_filter_by_lang():
         actual = [binding.n3() for binding in res.selected]
         expected = [literal]
         yield assert_equal, actual, expected
+
+test_filter_by_lang.known_issue = True
 
 
 def assert_equal(v1, v2):

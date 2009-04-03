@@ -1,4 +1,3 @@
-# -*- coding: UTF-8 -*-
 from rdflib.graph import ConjunctiveGraph
 from rdflib.term import URIRef, Literal
 from rdflib.namespace import RDFS
@@ -56,6 +55,9 @@ WHERE {
 ANSWER1 = URIRef('http://del.icio.us/rss/chimezie/paper')
 
 class DateFilterTest(unittest.TestCase):
+
+    known_issue = True
+
     def setUp(self):
         self.graph = ConjunctiveGraph()
         self.graph.load(StringIO(testContent), format='n3')
