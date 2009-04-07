@@ -699,17 +699,46 @@ SelectQuery = (SELECT + DISTINCT +
                     projection=[1, 2, 3, 4, 0]))
 if DEBUG:
     SelectQuery.setName('SelectQuery')
-#ConstructQuery = NoMatch
-#DescribeQuery = NoMatch
-#AskQuery = NoMatch
-Query = (Prologue + SelectQuery).setParseAction(
+
+# ConstructQuery:
+CONSTRUCT = Suppress(CaselessKeyword('CONSTRUCT'))
+
+ConstructTemplate = LC + Optional(Group(TriplesBlock), []) + RC
+
+ConstructQuery = (CONSTRUCT + ConstructTemplate +
+  Group(ZeroOrMore(DatasetClause)) + WhereClause +
+  SolutionModifier).setParseAction(
+    refer_component(components.Query.ConstructQuery))
+if DEBUG:
+    ConstructQuery.setName('ConstructQuery')
+
+# DescribeQuery:
+DESCRIBE = Suppress(CaselessKeyword('DESCRIBE'))
+
+DescribeQuery = (DESCRIBE + 
+  (Group(OneOrMore(Var)) | Literal('*').setParseAction(as_empty)) +
+  Group(ZeroOrMore(DatasetClause)) + Optional(WhereClause, None) +
+  SolutionModifier).setParseAction(
+    refer_component(components.Query.DescribeQuery))
+if DEBUG:
+    DescribeQuery.setName('DescribeQuery')
+
+# AskQuery:
+ASK = Suppress(CaselessKeyword('ASK'))
+
+AskQuery = (ASK + Group(ZeroOrMore(DatasetClause)) +
+            WhereClause).setParseAction(
+              refer_component(components.Query.AskQuery))
+if DEBUG:
+    AskQuery.setName('AskQuery')
+
+# Query:
+Query = (Prologue + (SelectQuery | ConstructQuery |
+                     DescribeQuery | AskQuery)).setParseAction(
   refer_component(components.Query.Query))
 Query.ignore('#' + restOfLine)
 if DEBUG:
     Query.setName('Query')
-#Query.setDebug(True)
-#Query = Prolog + (SelectQuery | ConstructQuery | DescribeQuery |
-#                  AskQuery)
 
 def parse(stuff):
     if DEBUG:
