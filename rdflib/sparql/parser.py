@@ -194,11 +194,13 @@ def refer_component(component, initial_args=None, projection=None, **kwargs):
     if initial_args is None and projection is None:
         def apply(results):
             if DEBUG:
+                print >> sys.stderr, component
                 debug(results)
             return component(*results.asList(), **kwargs)
     else:
         def apply(results):
             if DEBUG:
+                print >> sys.stderr, component
                 debug(results)
             if initial_args is not None:
                 results = initial_args + results.asList()
@@ -248,7 +250,8 @@ PN_PREFIX = Regex(PN_PREFIX_re)
 PNAME_NS = Combine(Optional(PN_PREFIX, '') + COLON)
 PN_LOCAL = Regex(regex_group(PN_CHARS_U_re + '|[0-9]') +
              regex_group(
-               regex_group(PN_CHARS_re + '|\\.') + '*' + PN_CHARS_re) + '?')
+               regex_group(PN_CHARS_re + '|\\.') + '*' +
+               regex_group(PN_CHARS_re)) + '?')
 PNAME_LN = Combine(PNAME_NS + PN_LOCAL)
 
 WS_re = r'[ \t\r\n]*'
@@ -470,17 +473,17 @@ if DEBUG:
 BrackettedExpression = LP + Expression + RP
 if DEBUG:
     BrackettedExpression.setName('BrackettedExpression')
-PrimaryExpression = (BrackettedExpression | BuiltInCall | IRIref |
-                     FunctionCall | RDFLiteral | NumericLiteral |
+PrimaryExpression = (BrackettedExpression | BuiltInCall | FunctionCall |
+                     IRIref | RDFLiteral | NumericLiteral |
                      BooleanLiteral | Var)
 if DEBUG:
     PrimaryExpression.setName('PrimaryExpression')
 UnaryExpression = (
-  (Literal('!') + PrimaryExpression).setParseAction(
+  (Suppress('!') + PrimaryExpression).setParseAction(
     refer_component(components.Operators.LogicalNegation)) |
-  (Literal('+') + PrimaryExpression).setParseAction(
+  (Suppress('+') + PrimaryExpression).setParseAction(
     refer_component(components.Operators.NumericPositive)) |
-  (Literal('-') + PrimaryExpression).setParseAction(
+  (Suppress('-') + PrimaryExpression).setParseAction(
     refer_component(components.Operators.NumericNegative)) |
   PrimaryExpression)
 if DEBUG:
@@ -586,7 +589,7 @@ GraphNode << (VarOrTerm | TriplesNode)
 TriplesSameSubject = ((VarOrTerm + PropertyListNotEmpty).setParseAction(
     refer_component(components.Resource.Resource)) |
   (LB + PropertyListNotEmpty + RB +
-   Optional(PropertyListNotEmpty)).setParseAction(
+   Optional(PropertyListNotEmpty, [])).setParseAction(
     refer_component(components.Resource.TwiceReferencedBlankNode)) |
   (Collection + Optional(PropertyListNotEmpty, [])).setParseAction(
     setPropertyValueList))

@@ -31,7 +31,6 @@
 
 """
 """
-from rdflib import RDF
 from rdflib.namespace import Namespace
 from rdflib.term import URIRef
 from rdflib.term import BNode
@@ -40,8 +39,6 @@ from rdflib.graph import Graph
 from rdflib.exceptions import ParserError
 
 from xml.sax.saxutils import handler
-
-RDFNS = RDF.RDFNS
 
 TRIXNS=Namespace("http://www.w3.org/2004/03/trix/trix-1/")
 XMLNS=Namespace("http://www.w3.org/XML/1998/namespace")

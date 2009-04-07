@@ -1,7 +1,6 @@
 import unittest
-from rdflib.namespace import Namespace
+from rdflib.namespace import Namespace, RDF, RDFS
 from rdflib import plugin
-from rdflib.namespace import RDF, RDFS
 from rdflib.term import URIRef
 from rdflib.store import Store
 from cStringIO import StringIO
@@ -109,8 +108,8 @@ class GraphAggregates2(unittest.TestCase):
                             (testGraph3N3,self.graph3)]:
             graph.parse(StringIO(n3Str),format='n3')
     
-        self.graph4 = Graph(memStore,RDFS.RDFSNS)
-        self.graph4.parse(RDFS.RDFSNS)
+        self.graph4 = Graph(memStore,RDFS)
+        self.graph4.parse(RDFS)
         self.G = ConjunctiveGraph(memStore)
 
     def testAggregateSPARQL(self):    
