@@ -128,17 +128,17 @@ class _variable_cluster(object):
     Parameters:
 
     - `component_name`: A name prefix used to construct the SQL phrases
-    	produced by this instance.  This prefix must be unique to the set of
-    	`_variable_cluster` instances corresponding to a complete SPARQL
-    	query.  These prefixes might be of the form "component_N" for some N,
-    	and are used to identify which SQL columns correspond to which
-    	SPARQL variable.
+       produced by this instance.  This prefix must be unique to the set of
+       `_variable_cluster` instances corresponding to a complete SPARQL
+       query.  These prefixes might be of the form "component_N" for some N,
+       and are used to identify which SQL columns correspond to which
+       SPARQL variable.
     - `db_prefix`: A name prefix used to fully qualify SQL table references
-    	in the current DB.
+       in the current DB.
     - `subject`, `predicate`, `object_`, `context`: The subject, predicate,
-    	object, and the name of the graph for the current triple pattern,
-    	respectively.  Each of these will be RDFLib `node` objects, and at
-    	least one should be an RDFLib `variable`.
+       object, and the name of the graph for the current triple pattern,
+       respectively.  Each of these will be RDFLib `node` objects, and at
+       least one should be an RDFLib `variable`.
     '''
 
     self.component_name = component_name
@@ -290,8 +290,8 @@ class _variable_cluster(object):
     - `variable`: The variable to manage.
     - `variable_bindings`: A map of previously existing variables.
     - `role`: String indicating the role that this variable plays in the
-    	managed triple pattern.  This should be one of 'subject', 'predicate',
-    	or 'context'.
+       managed triple pattern.  This should be one of 'subject', 'predicate',
+       or 'context'.
 
     Returns a list containing the new variable name and manager tuple, or an
     empty list if this is a previously seen variable.
@@ -357,10 +357,10 @@ class _variable_cluster(object):
 
     :Parameters:
     - `variable_bindings`: Map of existing variable bindings.  It is crucial
-    	that the caller updates this map after each triple pattern is
-    	processed.
+       that the caller updates this map after each triple pattern is
+       processed.
     - `variable_clusters`: List of existing `_variable_cluster` objects that
-    	manage variables.
+       manage variables.
 
     Returns a list of 2-tuples consisting of newly managed variables and a
     reference to this object (which may be empty if there are no new
@@ -481,6 +481,9 @@ class SQL(Store):
         self.findViewsCommand = "SHOW TABLES LIKE '%s'"
         self.defaultDB = 'mysql'
         self.select_modifier = 'straight_join'
+
+        self.INDEX_NS_BINDS_TABLE = \
+          'CREATE INDEX uri_index on %s_namespace_binds (uri(100))'
 
         #Setup FOPL RelationalModel objects
         self.useSignedInts = useSignedInts
@@ -635,7 +638,7 @@ class SQL(Store):
         c.execute('COMMIT')
         c.execute('START TRANSACTION')
         c.execute(CREATE_NS_BINDS_TABLE % (self._internedId, self.engine))
-        c.execute(INDEX_NS_BINDS_TABLE % (self._internedId,))
+        c.execute(self.INDEX_NS_BINDS_TABLE % (self._internedId,))
         for kb in self.createTables:
             for statement in kb.createStatements():
                 print statement
@@ -801,7 +804,7 @@ class SQL(Store):
 
         :Parameters:
         - `patterns`: a list of 4-item tuples where any of the items can be
-        	one of: Variable, URIRef, BNode, or Literal.
+           one of: Variable, URIRef, BNode, or Literal.
         
         Returns a generator over dictionaries of solutions to the list of
         triple patterns.  Each dictionary binds the variables in the triple
@@ -904,7 +907,7 @@ class SQL(Store):
 
           :Parameters:
           - `row`: The return value of `fetchone()` on an DBAPI cursor
-          	object after executing the SPARQL solving SQL query.
+             object after executing the SPARQL solving SQL query.
 
           Returns a dictionary from SPARQL variable names to one set of
           correct values for the original list of SPARQL triple patterns.
@@ -1236,7 +1239,8 @@ class MySQL(SQL):
     try:
         import MySQLdb
         def connect(self, user, passwd, db, port, host):
-            return MySQL.MySQLdb.connect(user, passwd, db, port, host)
+            return MySQL.MySQLdb.connect(user=user, passwd=passwd, db=db,
+                                         port=port, host=host)
     except ImportError:
         def connect(self, user=user, passwd=passwd, db=db, port=port,
                     host=host):
@@ -1259,6 +1263,9 @@ class PostgreSQL(SQL):
                                     viewname = lower('%s')"""
         self.defaultDB = 'template1'
         self.select_modifier = ''
+
+        self.INDEX_NS_BINDS_TABLE = \
+          'CREATE INDEX uri_index on %s_namespace_binds (uri)'
 
     try:
         import pgdb
@@ -1284,5 +1291,3 @@ CREATE TABLE %s_namespace_binds (
     prefix        varchar(20) UNIQUE not NULL,
     uri           text,
     PRIMARY KEY (prefix)) %s"""        
-
-INDEX_NS_BINDS_TABLE = 'CREATE INDEX uri_index on %s_namespace_binds (uri)'
