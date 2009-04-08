@@ -349,7 +349,8 @@ class _variable_cluster(object):
       self.variable_columns.append((variable_name, column_name, False, self))
       return [(variable_name, self)]
 
-  def make_SQL_components(self, variable_bindings, variable_clusters):
+  def make_SQL_components(self, variable_bindings, variable_clusters,
+                          useSignedInts):
     '''
     Process all the terms from the managed RDF triple pattern in the
     appropriate context.
@@ -383,7 +384,7 @@ class _variable_cluster(object):
     elif not isinstance(self.subject, Literal):
       self.where_fragments.append('%s_statements.%s = %%s' %
         (self.component_name, self.subject_name,))
-      self.substitutions.append(normalizeNode(self.subject))
+      self.substitutions.append(normalizeNode(self.subject, useSignedInts))
     else:
       raise ValueError('The subject of a triple pattern cannot be a literal.')
 
@@ -393,7 +394,7 @@ class _variable_cluster(object):
     elif RDF.type != self.predicate:
       self.where_fragments.append('%s_statements.predicate = %%s' %
         (self.component_name,))
-      self.substitutions.append(normalizeNode(self.predicate))
+      self.substitutions.append(normalizeNode(self.predicate, useSignedInts))
 
     if isinstance(self.context, Variable):
       local_binding_list.extend(
@@ -401,7 +402,7 @@ class _variable_cluster(object):
     elif isinstance(self.context, URIRef) or isinstance(self.context, BNode):
       self.where_fragments.append('%s_statements.context = %%s' %
         (self.component_name,))
-      self.substitutions.append(normalizeNode(self.context))
+      self.substitutions.append(normalizeNode(self.context, useSignedInts))
 
     # Process the object of the triple pattern manually, as it could be a
     # literal and so requires special handling to query properly.
@@ -451,7 +452,7 @@ class _variable_cluster(object):
     else:
       self.where_fragments.append('%s_statements.%s = %%s' %
         (self.component_name, self.object_name,))
-      self.substitutions.append(normalizeNode(self.object_))
+      self.substitutions.append(normalizeNode(self.object_, useSignedInts))
 
     return local_binding_list
 
@@ -479,6 +480,7 @@ class SQL(Store):
         self.findTablesCommand = "SHOW TABLES LIKE '%s'"
         self.findViewsCommand = "SHOW TABLES LIKE '%s'"
         self.defaultDB = 'mysql'
+        self.select_modifier = 'straight_join'
 
         #Setup FOPL RelationalModel objects
         self.useSignedInts = useSignedInts
@@ -643,7 +645,7 @@ class SQL(Store):
                 for statement in kb.defaultStatements():
                     c.execute(statement)
         self._createViews(c)
-        db.commit()
+        c.execute('COMMIT')
         c.close()
         self._db = db
 
@@ -729,8 +731,8 @@ class SQL(Store):
                                       db=configDict['db'],
                                       port=configDict['port'],
                                       host=configDict['host'])
-                    db.commit()
                     c=db.cursor()
+                    c.execute('COMMIT')
                     c.execute('START TRANSACTION')
                     self._createViews(c)
                     db.commit()
@@ -762,17 +764,10 @@ class SQL(Store):
                           db=configDict['db'],
                           port=configDict['port'],
                           host=configDict['host'])
-        db.commit()
         #db.autocommit(False)
         c=db.cursor()
+        c.execute('COMMIT')
         c.execute('START TRANSACTION')
-        for tbl in self.tables + ["%s_namespace_binds"%self._internedId]:
-            try:
-                c.execute('DROP table %s'%tbl)
-                #print "dropped table: %s"%(tblsuffix%(self._internedId))
-            except Exception, e:
-                print >> sys.stderr, "unable to drop table: %s"%(tbl)
-                print >> sys.stderr, e
 
         for suffix in self.viewCreationDict:
             view = self._internedId+suffix
@@ -782,9 +777,17 @@ class SQL(Store):
                 print >> sys.stderr, "unable to drop table: %s"%(view)
                 print >> sys.stderr, e
 
+        for tbl in self.tables + ["%s_namespace_binds"%self._internedId]:
+            try:
+                c.execute('DROP table %s'%tbl)
+                #print "dropped table: %s"%(tblsuffix%(self._internedId))
+            except Exception, e:
+                print >> sys.stderr, "unable to drop table: %s"%(tbl)
+                print >> sys.stderr, e
+
         #Note, this only removes the associated tables for the closed world universe given by the identifier
         print >> sys.stderr, "Destroyed Close World Universe %s ( in SQL database %s)"%(self.identifier,configDict['db'])
-        db.commit()
+        c.execute('COMMIT')
         db.close()
 
     def batch_unify(self, patterns):
@@ -832,7 +835,7 @@ class SQL(Store):
             subject, predicate, object_, context)
           cluster.determine_initial_subset(self)
           bindings = cluster.make_SQL_components(
-            variable_bindings, variable_clusters)
+            variable_bindings, variable_clusters, self.useSignedInts)
           variable_bindings.update(bindings)
           variable_clusters.append(cluster)
 
@@ -880,8 +883,9 @@ class SQL(Store):
         if len(where_fragment) > 0:
           where_fragment = '\nwhere\n' + where_fragment
 
-        query = "select straight_join\n%s\nfrom\n%s%s\n" % (
-          columns_fragment, from_fragment, where_fragment)
+        query = "select %s\n%s\nfrom\n%s%s\n" % (
+          self.select_modifier, columns_fragment, from_fragment,
+          where_fragment)
 
         if self.debug:
             print >> sys.stderr, query, substitutions
@@ -890,6 +894,8 @@ class SQL(Store):
         cursor.execute(query, substitutions)
 
         preparation_cursor = self._db.cursor()
+
+        #print "JLC; Description:", cursor.description
 
         def prepare_row(row):
           '''
@@ -943,8 +949,8 @@ class SQL(Store):
           query = ('select\n%s\nfrom\n%s\nwhere\n%s\n' %
             (', '.join(columns), ',\n'.join(from_fragments),
              ' and '.join(where_fragments)))
-          #if self.debug:
-          #  print >> sys.stderr, query, substitutions
+          if self.debug:
+            print >> sys.stderr, query, substitutions
           preparation_cursor.execute(query, substitutions)
           prepared_map = dict(zip(
             [description[0] for description in preparation_cursor.description],
@@ -983,6 +989,7 @@ class SQL(Store):
         row = cursor.fetchone()
         while row:
           new_row = prepare_row(row)
+          #print row, new_row
           yield new_row
 
           row = cursor.fetchone()
@@ -1251,6 +1258,7 @@ class PostgreSQL(SQL):
         self.findViewsCommand = """SELECT viewname FROM pg_views WHERE
                                     viewname = lower('%s')"""
         self.defaultDB = 'template1'
+        self.select_modifier = ''
 
     try:
         import pgdb

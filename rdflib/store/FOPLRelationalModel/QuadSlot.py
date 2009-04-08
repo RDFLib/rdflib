@@ -96,6 +96,7 @@ class QuadSlot(object):
         self.position = position
         self.term = term
         self.termType = term2Letter(term)
+        self.useSignedInts = useSignedInts
         self.md5Int = normalizeValue(term, term2Letter(term), useSignedInts)
 
     def EscapeQuotes(self,qstr):
@@ -128,7 +129,10 @@ class QuadSlot(object):
          """
          parts=[self.md5Int,self.normalizeTerm(),self.termType]
          if self.termType == 'L':
-             dtypeQSlot = self.term.datatype and self.__class__(SUBJECT, self.term.datatype) or None
+             dtypeQSlot = (self.term.datatype and
+                             self.__class__(SUBJECT, self.term.datatype,
+                                            self.useSignedInts)
+                             or None)
              parts += [dtypeQSlot and dtypeQSlot.md5Int or None,
                        dtypeQSlot and dtypeQSlot.normalizeTerm() or None,
                        self.term.language]
