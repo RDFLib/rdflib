@@ -42,6 +42,7 @@ def EscapeQuotes(qstr):
         return ''
     tmp = qstr.replace("\\","\\\\")
     tmp = tmp.replace("'", "\\'")
+    tmp = tmp.replace('"', '\\"')
     return tmp
 
 def dereferenceQuad(index,quad):
@@ -53,30 +54,49 @@ def dereferenceQuad(index,quad):
     else:
         return quad[index]
 
-def genQuadSlots(quads):
-    return [QuadSlot(index,quads[index])for index in POSITION_LIST]
+def genQuadSlots(quads, useSignedInts=False):
+    return [QuadSlot(index, quads[index], useSignedInts)
+            for index in POSITION_LIST]
 
-def normalizeValue(value,termType):
+def normalizeValue(value, termType, useSignedInts=False):
     if value is None:
         value = u'http://www.w3.org/2002/07/owl#NothingU'
     else:
         value = (isinstance(value,Graph) and value.identifier or str(value)) + termType
-    return int(md5(isinstance(value,unicode) and value.encode('utf-8') or value).hexdigest()[:16],16)
+    unsigned_hash = int(md5.new(
+                      isinstance(value, unicode) and value.encode('utf-8')
+                                                 or value)
+                    .hexdigest()[:16], 16)
+
+    if useSignedInts:
+        return makeSigned(unsigned_hash)
+    else:
+        return unsigned_hash
 
 def normalizeNode(node):
     return normalizeValue(node, term2Letter(node))
 
-class QuadSlot:
+bigint_signed_max = 2**63
+def makeSigned(bigint):
+  if bigint > bigint_signed_max:
+    return bigint_signed_max - bigint
+  else:
+    return bigint
+
+def normalizeNode(node, useSignedInts=False):
+    return normalizeValue(node, term2Letter(node), useSignedInts)
+
+class QuadSlot(object):
     def __repr__(self):
         #NOTE: http://docs.python.org/ref/customization.html
         return "QuadSlot(%s,%s,%s)"%(SlotPrefixes[self.position],self.term,self.md5Int)
 
-    def __init__(self,position,term):
+    def __init__(self, position, term, useSignedInts=False):
         assert position in POSITION_LIST, "Unknown quad position: %s"%position
         self.position = position
         self.term = term
-        self.md5Int = normalizeValue(term,term2Letter(term))
         self.termType = term2Letter(term)
+        self.md5Int = normalizeValue(term, term2Letter(term), useSignedInts)
 
     def EscapeQuotes(self,qstr):
         """
@@ -86,6 +106,7 @@ class QuadSlot:
             return ''
         tmp = qstr.replace("\\","\\\\")
         tmp = tmp.replace("'", "\\'")
+        tmp = tmp.replace('"', '\\"')
         return tmp
 
     def normalizeTerm(self):
@@ -107,7 +128,7 @@ class QuadSlot:
          """
          parts=[self.md5Int,self.normalizeTerm(),self.termType]
          if self.termType == 'L':
-             dtypeQSlot = self.term.datatype and QuadSlot(SUBJECT,self.term.datatype) or None
+             dtypeQSlot = self.term.datatype and self.__class__(SUBJECT, self.term.datatype) or None
              parts += [dtypeQSlot and dtypeQSlot.md5Int or None,
                        dtypeQSlot and dtypeQSlot.normalizeTerm() or None,
                        self.term.language]

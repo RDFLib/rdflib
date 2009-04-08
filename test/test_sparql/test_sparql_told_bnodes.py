@@ -23,13 +23,19 @@ class TestSPARQLToldBNodes(unittest.TestCase):
         for s,p,o in self.graph.triples((None,RDF.type,None)):
             pass
         query = """SELECT ?obj WHERE { %s ?prop ?obj }"""%s.n3()
-        print query
         rt = self.graph.query(query)
         self.failUnless(len(rt) == 1,"BGP should only match the 'told' BNode by name (result set size: %s)"%len(rt))
         bindings = {Variable('?subj'):s}
         query = """SELECT ?obj WHERE { ?subj ?prop ?obj }"""
         rt = self.graph.query(query,initBindings=bindings)
         self.failUnless(len(rt) == 1,"BGP should only match the 'told' BNode by name (result set size: %s, BNode: %s)"%(len(rt),s.n3()))        
+
+    def testFilterBNode(self):
+        for s,p,o in self.graph.triples((None,RDF.type,None)):
+            pass        
+        query2 = """SELECT ?subj WHERE { ?subj ?prop ?obj FILTER( ?subj != %s ) }"""%s.n3()
+        rt = self.graph.query(query2)
+        self.failUnless(len(rt) == 1,"FILTER should exclude 'told' BNodes by name (result set size: %s, BNode excluded: %s)"%(len(rt),s.n3()))                
 
 if __name__ == '__main__':
     unittest.main()

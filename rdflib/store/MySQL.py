@@ -202,14 +202,14 @@ class _variable_cluster(object):
     '''
     Determine the most specific RDF statement subset that this triple
     pattern can use, based on the types of the parts of the statement and
-    the information provided about properties provided by the MySQL store
-    (in the `store` parameter).  This is crucial to optimization, because
+    the information provided about properties provided by the SQL store (in
+    the `store` parameter).  This is crucial to optimization, because
     specific subsets (SQL tables such as the 'relations' table) are very
     efficient but general subsets (SQL views such as the
     'URI_or_literal_objects' view) are very inefficient.
 
     :Parameters:
-    - `store`: RDFLib MySQL store containing the target data.
+    - `store`: RDFLib SQL store containing the target data.
     '''
 
     if isinstance(self.subject, Literal):
@@ -455,27 +455,48 @@ class _variable_cluster(object):
 
     return local_binding_list
 
-class MySQL(Store):
+class SQL(Store):
     """
-    MySQL implementation of FOPL Relational Model as an rdflib Store
+    Abstract SQL implementation of the FOPL Relational Model as an rdflib
+    Store.
     """
     context_aware = True
     formula_aware = True
     transaction_aware = True
     regex_matching = NATIVE_REGEX
     batch_unification = True
-    def __init__(self, identifier=None, configuration=None,debug=False):
+    def __init__(self, identifier=None, configuration=None,
+                 debug=False, engine="ENGINE=InnoDB",
+                 useSignedInts=False, hashFieldType='BIGINT unsigned',
+                 declareEnums=False):
         self.debug = debug
         self.identifier = identifier and identifier or 'hardcoded'
         #Use only the first 10 bytes of the digest
         self._internedId = INTERNED_PREFIX + sha.new(self.identifier).hexdigest()[:10]
-        
+
+        self.engine = engine
+        self.showDBsCommand = 'SHOW DATABASES'
+        self.findTablesCommand = "SHOW TABLES LIKE '%s'"
+        self.findViewsCommand = "SHOW TABLES LIKE '%s'"
+        self.defaultDB = 'mysql'
+
         #Setup FOPL RelationalModel objects
-        self.idHash = IdentifierHash(self._internedId)
-        self.valueHash = LiteralHash(self._internedId)
-        self.binaryRelations = NamedBinaryRelations(self._internedId,self.idHash,self.valueHash)
-        self.literalProperties = NamedLiteralProperties(self._internedId,self.idHash,self.valueHash)
-        self.aboxAssertions = AssociativeBox(self._internedId,self.idHash,self.valueHash)
+        self.useSignedInts = useSignedInts
+        # TODO: derive this from `self.useSignedInts`?
+        self.hashFieldType = hashFieldType
+        self.idHash = IdentifierHash(self._internedId,
+          self.useSignedInts, self.hashFieldType, self.engine, declareEnums)
+        self.valueHash = LiteralHash(self._internedId,
+          self.useSignedInts, self.hashFieldType, self.engine, declareEnums)
+        self.binaryRelations = NamedBinaryRelations(
+          self._internedId, self.idHash, self.valueHash,
+          self.useSignedInts, self.hashFieldType, self.engine, declareEnums)
+        self.literalProperties = NamedLiteralProperties(
+          self._internedId, self.idHash, self.valueHash,
+          self.useSignedInts, self.hashFieldType, self.engine, declareEnums)
+        self.aboxAssertions = AssociativeBox(
+          self._internedId, self.idHash, self.valueHash,
+          self.useSignedInts, self.hashFieldType, self.engine, declareEnums)
                 
         self.tables = [
                        self.binaryRelations,
@@ -538,8 +559,8 @@ class MySQL(Store):
 
     def executeSQL(self,cursor,qStr,params=None,paramList=False):
         """
-        Overridded in order to pass params seperate from query for MySQLdb
-        to optimize
+        Overridden in order to pass params seperate from query for the
+        database to optimize.
         """
         #self._db.autocommit(False)
         if params is None:
@@ -551,13 +572,13 @@ class MySQL(Store):
             
     def _dbState(self,db,configDict):
         c=db.cursor()
-        c.execute("""SHOW DATABASES""")
+        c.execute(self.showDBsCommand)
         #FIXME This is a character set hack.  See: http://sourceforge.net/forum/forum.php?thread_id=1448424&forum_id=70461
         #self._db.charset = 'utf8'
-        rt = c.fetchall()
-        if (configDict['db'].encode('utf-8'),) in rt:
+        if (configDict['db'].encode('utf-8'),) in [
+              tuple(item) for item in c.fetchall()]:
             for tn in self.tables:
-                c.execute("""show tables like '%s'"""%(tn,))
+                c.execute(self.findTablesCommand % (tn,))
                 rt=c.fetchall()
                 if not rt:
                     sys.stderr.write("table %s Doesn't exist\n" % (tn));
@@ -581,7 +602,83 @@ class MySQL(Store):
                 print >> sys.stderr, "## Creating View ##\n",query
             cursor.execute(query)
 
+    def connect(user, passwd, db, port, host):
+        raise NotImplementedError('SQL is an abstract base class.')
+
     #Database Management Methods
+    def create(self, configuration, populate=True):
+        self.configuration = configuration
+        configDict = ParseConfigurationString(configuration)
+        test_db = self.connect(user=configDict['user'],
+                               passwd=configDict['password'],
+                               db=self.defaultDB,
+                               port=configDict['port'],
+                               host=configDict['host'])
+        c=test_db.cursor()
+        c.execute('COMMIT')
+        c.execute(self.showDBsCommand)
+        if not (configDict['db'].encode('utf-8'),) in [
+                tuple(item) for item in c.fetchall()]:
+            print >> sys.stderr, "creating %s (doesn't exist)"%(configDict['db'])
+            c.execute("""CREATE DATABASE %s"""%(configDict['db'],))
+        c.close()
+        test_db.close()
+
+        db = self.connect(user=configDict['user'],
+                          passwd=configDict['password'],
+                          db=configDict['db'],
+                          port=configDict['port'],
+                          host=configDict['host'])
+        c=db.cursor()
+        c.execute('COMMIT')
+        c.execute('START TRANSACTION')
+        c.execute(CREATE_NS_BINDS_TABLE % (self._internedId, self.engine))
+        c.execute(INDEX_NS_BINDS_TABLE % (self._internedId,))
+        for kb in self.createTables:
+            for statement in kb.createStatements():
+                print statement
+                c.execute(statement)
+
+            if populate:
+                for statement in kb.defaultStatements():
+                    c.execute(statement)
+        self._createViews(c)
+        db.commit()
+        c.close()
+        self._db = db
+
+    def applyIndices(self):
+        c = self._db.cursor()
+        c.execute('START TRANSACTION')
+        for kb in self.createTables:
+            for statement in kb.indexingStatements():
+                c.execute(statement)
+        c.execute('COMMIT')
+
+    def removeIndices(self):
+        c = self._db.cursor()
+        c.execute('START TRANSACTION')
+        for kb in self.createTables:
+            for statement in kb.removeIndexingStatements():
+                c.execute(statement)
+        c.execute('COMMIT')
+
+    def applyForeignKeys(self):
+        c = self._db.cursor()
+        c.execute('START TRANSACTION')
+        for kb in self.createTables:
+            for statement in kb.foreignKeyStatements():
+                c.execute(statement)
+        c.execute('COMMIT')
+
+    def removeForeignKeys(self):
+        c = self._db.cursor()
+        c.execute('START TRANSACTION')
+        for kb in self.createTables:
+            for statement in kb.removeForeignKeyStatements():
+                c.execute(statement)
+        c.execute('COMMIT')
+
     def open(self, configuration, create=False):
         """
         Opens the store specified by the configuration string. If
@@ -591,64 +688,33 @@ class MySQL(Store):
         exists, but there is insufficient permissions to open the
         store.
         """
+        if self._db is not None:
+            self._db.close()
         self.configuration = configuration
         configDict = ParseConfigurationString(configuration)
         if create:
-            test_db = MySQLdb.connect(user=configDict['user'],
-                                      passwd=configDict['password'],
-                                      db='test',
-                                      port=configDict['port'],
-                                      host=configDict['host'],
-                                      #use_unicode=True,
-                                      #read_default_file='/etc/my-client.cnf'
-                                      )
-            c=test_db.cursor()
-            c.execute("""SET AUTOCOMMIT=0""")
-            c.execute("""SHOW DATABASES""")
-            if not (configDict['db'].encode('utf-8'),) in c.fetchall():
-                print >> sys.stderr, "creating %s (doesn't exist)"%(configDict['db'])
-                c.execute("""CREATE DATABASE %s"""%(configDict['db'],))
-                test_db.commit()
-                c.close()
-                test_db.close()
-
-            db = MySQLdb.connect(user = configDict['user'],
-                                 passwd = configDict['password'],
-                                 db=configDict['db'],
-                                 port=configDict['port'],
-                                 host=configDict['host'],
-                                 #use_unicode=True,
-                                 #read_default_file='/etc/my-client.cnf'
-                                 )
-            c=db.cursor()
-            c.execute("""SET AUTOCOMMIT=0""")
-            c.execute(CREATE_NS_BINDS_TABLE%(self._internedId))
-            for kb in self.createTables:
-                c.execute(kb.createSQL())
-                if isinstance(kb,RelationalHash) and kb.defaultSQL():
-                    c.execute(kb.defaultSQL())
-            self._createViews(c)
-            db.commit()
-            c.close()
-            db.close()
+            self.create(configuration)
+            self.applyIndices()
+            self.applyForeignKeys()
         else:
             #This branch is needed for backward compatibility
             #which didn't use SQL views
-            _db=MySQLdb.connect(user = configDict['user'],
-                                passwd = configDict['password'],
-                                db=configDict['db'],
-                                port=configDict['port'],
-                                host=configDict['host'])
+            _db=self.connect(user=configDict['user'],
+                             passwd=configDict['password'],
+                             db=configDict['db'],
+                             port=configDict['port'],
+                             host=configDict['host'])
             if self._dbState(_db,configDict) == VALID_STORE:
                 c=_db.cursor()
-                c.execute("""SET AUTOCOMMIT=0""")
+                c.execute('COMMIT')
+                c.execute('START TRANSACTION')
                 existingViews=[]
                 #check which views already exist
                 views=[]
                 for suffix in self.viewCreationDict:
                     view = self._internedId+suffix
                     views.append(view)
-                    c.execute("""show tables like '%s'"""%(view,))
+                    c.execute(self.findViewsCommand % (view,))
                     rt=c.fetchall()
                     if rt:
                         existingViews.append(view)
@@ -658,47 +724,48 @@ class MySQL(Store):
                     #None of the views have been defined - so this is
                     #an old (but valid) store
                     #we need to create the missing views 
-                    db = MySQLdb.connect(user = configDict['user'],
-                                         passwd = configDict['password'],
-                                         db=configDict['db'],
-                                         port=configDict['port'],
-                                         host=configDict['host'])
+                    db = self.connect(user = configDict['user'],
+                                      passwd = configDict['password'],
+                                      db=configDict['db'],
+                                      port=configDict['port'],
+                                      host=configDict['host'])
+                    db.commit()
                     c=db.cursor()
-                    c.execute("""SET AUTOCOMMIT=0""")
+                    c.execute('START TRANSACTION')
                     self._createViews(c)
                     db.commit()
                     c.close()
                 elif len(existingViews)!=len(views):
-                    #Not all the view have been setup
+                    #Not all the views have been setup
                     return CORRUPTED_STORE                        
         try:
             port = int(configDict['port'])
         except:
-            raise ArithmeticError('MySQL port must be a valid integer')
-        self._db = MySQLdb.connect(user = configDict['user'],
-                                   passwd = configDict['password'],
-                                   db=configDict['db'],
-                                   port=port,
-                                   host=configDict['host'],
-                                   #use_unicode=True,
-                                   #read_default_file='/etc/my.cnf'
-                                  )
-        self._db.autocommit(False)
-        return self._dbState(self._db,configDict)
+            raise ArithmeticError('server port must be a valid integer')
+        self._db = self.connect(user=configDict['user'],
+                                passwd=configDict['password'],
+                                db=configDict['db'],
+                                port=port,
+                                host=configDict['host'])
+        c = self._db.cursor()
+        c.execute('COMMIT')
+        #self._db.autocommit(False)
+        return self._dbState(self._db, configDict)
 
     def destroy(self, configuration):
         """
         FIXME: Add documentation
         """
         configDict = ParseConfigurationString(configuration)
-        msql_db = MySQLdb.connect(user=configDict['user'],
-                                passwd=configDict['password'],
-                                db=configDict['db'],
-                                port=configDict['port'],
-                                host=configDict['host']
-                                )
-        msql_db.autocommit(False)
-        c=msql_db.cursor()
+        db = self.connect(user=configDict['user'],
+                          passwd=configDict['password'],
+                          db=configDict['db'],
+                          port=configDict['port'],
+                          host=configDict['host'])
+        db.commit()
+        #db.autocommit(False)
+        c=db.cursor()
+        c.execute('START TRANSACTION')
         for tbl in self.tables + ["%s_namespace_binds"%self._internedId]:
             try:
                 c.execute('DROP table %s'%tbl)
@@ -716,15 +783,15 @@ class MySQL(Store):
                 print >> sys.stderr, e
 
         #Note, this only removes the associated tables for the closed world universe given by the identifier
-        print >> sys.stderr, "Destroyed Close World Universe %s ( in MySQL database %s)"%(self.identifier,configDict['db'])
-        msql_db.commit()
-        msql_db.close()
+        print >> sys.stderr, "Destroyed Close World Universe %s ( in SQL database %s)"%(self.identifier,configDict['db'])
+        db.commit()
+        db.close()
 
     def batch_unify(self, patterns):
         """
         Perform RDF triple store-level unification of a list of triple
         patterns (4-item tuples which correspond to a SPARQL triple pattern
-        with an additional constraint for the graph name).  For the MySQL
+        with an additional constraint for the graph name).  For the SQL
         backend, this method compiles the list of triple patterns into SQL
         statements that obtain bindings for all the variables in the list of
         triples patterns.
@@ -744,11 +811,19 @@ class MySQL(Store):
         variable_bindings = {}
         variable_clusters = []
 
+        filterNS = 'tag:info@semanticdb.ccf.org,2008:FilterTerms#'
+        filter_patterns = []
+
         # Unpack each triple pattern, and for each pattern, create a
         # variable cluster for managing the variables in that triple
         # pattern.
         index = 0
         for subject, predicate, object_, context in patterns:
+          if (URIRef(filterNS + 'dateAfter') == predicate or
+              URIRef(filterNS + 'dateBefore') == predicate):
+            filter_patterns.append((subject, predicate, object_, context))
+            continue
+
           component_name = "component_" + str(index)
           index = index + 1
 
@@ -760,6 +835,8 @@ class MySQL(Store):
             variable_bindings, variable_clusters)
           variable_bindings.update(bindings)
           variable_clusters.append(cluster)
+
+        print >> sys.stderr, filter_patterns
 
         from_fragments = []
         where_fragments = []
@@ -778,6 +855,23 @@ class MySQL(Store):
 
         if len(variable_columns) < 1:
           return
+
+        index = 0
+        for subject, predicate, object_, context in filter_patterns:
+          table_alias = 'filter_literals_' + str(index)
+          index = index + 1
+          from_fragments.append(
+            self._internedId + '_literals as ' + table_alias)
+          cluster = variable_bindings[str(subject)]
+          column_name = cluster.definitions[str(subject)]
+
+          where_fragments.append(table_alias + '.id = ' + column_name)
+          if URIRef(filterNS + 'dateAfter') == predicate:
+            where_fragments.append(
+              table_alias + '.lexical > "' + EscapeQuotes(str(object_)) + '"')
+          elif URIRef(filterNS + 'dateBefore') == predicate:
+            where_fragments.append(
+              table_alias + '.lexical < "' + EscapeQuotes(str(object_)) + '"')
 
         # Construct and execute the SQL query.
         columns_fragment = ', '.join(columns)
@@ -803,7 +897,7 @@ class MySQL(Store):
           query to a map from query variables to lexical values.
 
           :Parameters:
-          - `row`: The return value of `fetchone()` on an MySQLdb cursor
+          - `row`: The return value of `fetchone()` on an DBAPI cursor
           	object after executing the SPARQL solving SQL query.
 
           Returns a dictionary from SPARQL variable names to one set of
@@ -849,8 +943,8 @@ class MySQL(Store):
           query = ('select\n%s\nfrom\n%s\nwhere\n%s\n' %
             (', '.join(columns), ',\n'.join(from_fragments),
              ' and '.join(where_fragments)))
-          if self.debug:
-            print >> sys.stderr, query, substitutions
+          #if self.debug:
+          #  print >> sys.stderr, query, substitutions
           preparation_cursor.execute(query, substitutions)
           prepared_map = dict(zip(
             [description[0] for description in preparation_cursor.description],
@@ -919,7 +1013,8 @@ class MySQL(Store):
 
     def add(self, (subject, predicate, obj), context=None, quoted=False):
         """ Add a triple to the store of triples. """
-        qSlots = genQuadSlots([subject,predicate,obj,context])
+        qSlots = genQuadSlots([subject, predicate, obj, context],
+                              self.useSignedInts)
         if predicate == RDF.type:
             kb = self.aboxAssertions
         elif isinstance(obj,Literal):
@@ -937,7 +1032,8 @@ class MySQL(Store):
         """
         for s,p,o,c in quads:
             assert c is not None, "Context associated with %s %s %s is None!"%(s,p,o)
-            qSlots = genQuadSlots([s,p,o,c])
+            qSlots = genQuadSlots([s, p, o, c],
+                                  self.useSignedInts)
             if p == RDF.type:
                 kb = self.aboxAssertions
             elif isinstance(o,Literal):
@@ -956,10 +1052,9 @@ class MySQL(Store):
         targetBRPs = BinaryRelationPartitionCoverage((subject,predicate,obj,context),self.partitions)
         c=self._db.cursor()
         for brp in targetBRPs:
-            query = "DELETE %s from %s %s WHERE "%(
+            query = "DELETE from %s WHERE "%(
                                           brp,
-                                          brp,
-                                          brp.generateHashIntersections()
+                                          #brp.generateHashIntersections()
                                         )
             whereClause,whereParameters = brp.generateWhereClause((subject,predicate,obj,context))
             self.executeSQL(c,query+whereClause,params=whereParameters)
@@ -1035,7 +1130,7 @@ class MySQL(Store):
             self.executeSQL(c,countRows%part)
             rowCount = c.fetchone()[0]
             rtDict[str(part)]=rowCount
-        return "<Parititioned MySQL N3 Store: %s context(s), %s classification(s), %s property/value assertion(s), and %s other relation(s)>"%(
+        return "<Parititioned SQL N3 Store: %s context(s), %s classification(s), %s property/value assertion(s), and %s other relation(s)>"%(
             ctxCount,
             rtDict[str(self.aboxAssertions)],
             rtDict[str(self.literalProperties)],
@@ -1127,9 +1222,59 @@ class MySQL(Store):
             yield prefix,uri
 
 
+class MySQL(SQL):
+    """
+    MySQL implementation of FOPL Relational Model as an rdflib Store
+    """
+    try:
+        import MySQLdb
+        def connect(self, user, passwd, db, port, host):
+            return MySQL.MySQLdb.connect(user, passwd, db, port, host)
+    except ImportError:
+        def connect(self, user=user, passwd=passwd, db=db, port=port,
+                    host=host):
+            raise NotImplementedError(
+              'We need the MySQLdb module to connect to MySQL databases.')
+
+# TODO: break this out into a separate module, which will allow us to do
+# away with the import chicanery.
+class PostgreSQL(SQL):
+    def __init__(self, identifier=None, configuration=None,
+                 debug=False):
+        super(PostgreSQL, self).__init__(identifier=identifier,
+          configuration=None, debug=False, engine="", useSignedInts=True,
+          hashFieldType='BIGINT', declareEnums=True)
+
+        self.showDBsCommand = 'SELECT datname FROM pg_database'
+        self.findTablesCommand = """SELECT tablename FROM pg_tables WHERE
+                                    tablename = lower('%s')"""
+        self.findViewsCommand = """SELECT viewname FROM pg_views WHERE
+                                    viewname = lower('%s')"""
+        self.defaultDB = 'template1'
+
+    try:
+        import pgdb
+        def connect(self, user, passwd, db, port, host):
+            return PostgreSQL.pgdb.connect(
+                     user=user, password=passwd, database=db,
+                     host=host + ':' + str(port))
+    except ImportError:
+        def connect(self, user, passwd, db, port, host):
+            raise NotImplementedError(
+              'We need the PyGreSQL module to connect to PostgreSQL databases.')
+
+if False:
+  class InnoDB(MySQL):
+    pass
+
+  class MyISAM(MySQL):
+    pass
+
+
 CREATE_NS_BINDS_TABLE = """
 CREATE TABLE %s_namespace_binds (
     prefix        varchar(20) UNIQUE not NULL,
     uri           text,
-    PRIMARY KEY (prefix),
-    INDEX uri_index (uri(100))) ENGINE=InnoDB"""        
+    PRIMARY KEY (prefix)) %s"""        
+
+INDEX_NS_BINDS_TABLE = 'CREATE INDEX uri_index on %s_namespace_binds (uri)'
