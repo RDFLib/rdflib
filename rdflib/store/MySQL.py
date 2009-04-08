@@ -1168,7 +1168,7 @@ class SQL(Store):
             qSlots = genQuadSlots([s, p, o, c],
                                   self.useSignedInts)
 
-            kb = get_table((s, p, o))
+            kb = self.get_table((s, p, o))
             kb.insertRelations([qSlots])
 
         for kb in self.partitions:
