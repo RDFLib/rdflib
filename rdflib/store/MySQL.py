@@ -570,6 +570,8 @@ class SQL(Store):
         '''set of URIRefs of those RDF properties which are known to range
         over resources.'''
 
+        self.length = None
+
     def resetPerfLog(self, clearCache=False): #BE: for performance logging
         self.mainQueryCount = 0
         self.mainQueryTime = 0
@@ -639,7 +641,14 @@ class SQL(Store):
             cursor.executemany(qStr,[tuple(item) for item in params])
         else:
             cursor.execute(qStr,tuple(params))
-            
+
+    def note_modified(self):
+        """Indicate that the triples in this store have been modified.  This
+        should be called after any operation that could add or remove
+        triples in the store."""
+
+        self.length = None
+
     def _dbState(self,db,configDict):
         c=db.cursor()
         c.execute(self.showDBsCommand)
@@ -857,6 +866,7 @@ class SQL(Store):
         print >> sys.stderr, "Destroyed Close World Universe %s ( in SQL database %s)"%(self.identifier,configDict['db'])
         c.execute('COMMIT')
         db.close()
+        self.note_modified()
 
     def batch_unify(self, patterns):
         """
@@ -1117,6 +1127,7 @@ class SQL(Store):
             kb = self.binaryRelations
         kb.insertRelations([qSlots])
         kb.flushInsertions(self._db)
+        self.note_modified()
 
     def addN(self, quads):
         """
@@ -1140,6 +1151,7 @@ class SQL(Store):
         for kb in self.partitions:
             if kb.pendingInsertions:
                 kb.flushInsertions(self._db)
+        self.note_modified()
 
     def remove(self, (subject, predicate, obj), context):
         """ Remove a triple from the store """
@@ -1154,6 +1166,7 @@ class SQL(Store):
             self.executeSQL(c,query+whereClause,params=whereParameters)
 
         c.close()
+        self.note_modified()
 
     def triples(self, (subject, predicate, obj), context=None):
         c=self._db.cursor()
@@ -1211,7 +1224,7 @@ class SQL(Store):
             for (s1, p1, o1), cg in self.triples((subject,predicate,object_),context):
                 yield (s1, p1, o1), cg
 
-    def __repr__(self):
+    def get_summary(self):
         c=self._db.cursor()
 
         rtDict = {}
@@ -1232,6 +1245,9 @@ class SQL(Store):
         )
 
     def __len__(self, context=None):
+        if self.length is not None:
+          return self.length
+
         rows = []
         countRows = "select count(*) from %s"
         c=self._db.cursor()
@@ -1243,7 +1259,8 @@ class SQL(Store):
                 self.executeSQL(c,countRows%part)
             rowCount = c.fetchone()[0]
             rows.append(rowCount)
-        return reduce(lambda x,y: x+y,rows)
+        self.length = reduce(lambda x,y: x+y,rows)
+        return self.length
 
     def contexts(self, triple=None):
         c=self._db.cursor()
