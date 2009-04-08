@@ -292,8 +292,7 @@ class SPARQLQueryResult(QueryResult):
             if self.askAnswer:
                 return self.askAnswer[0]
             else:
-                for i in self:
-                    return i
+                return self
         elif format in ['json','xml']:
            retval = ""
            allvarsL = self.allVariables

@@ -961,6 +961,8 @@ class RdfSqlBuilder(SqlBuilder):
                     (self.UseOptimization(OPT_C2_SKIP_COALESCE) and 
                      not self.IsCoalesceVariable(vname))):
                 # this var not shared
+                if len(availableVars) > 1:
+                    availableVars.sort(key=lambda x:x.tableTuple)
                 v = availableVars[0]
                 if outputVar:
                     #self.AddOutputAs("%s.%s"%(v.tableTuple,vname), vname)
