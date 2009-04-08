@@ -381,8 +381,8 @@ class Graph(Node):
     def __contains__(self, triple):
         """Support for 'triple in graph' syntax"""
         for triple in self.triples(triple):
-            return 1
-        return 0
+            return True
+        return False
 
     def __hash__(self):
         return hash(self.identifier)
@@ -870,21 +870,30 @@ class ConjunctiveGraph(Graph):
                    "[a rdflib:Store;rdfs:label '%s']]")
         return pattern % self.store.__class__.__name__
 
+    def __contains__(self, triple_or_quad):
+        """Support for 'triple/quad in graph' syntax"""
+        context = None
+        if len(triple_or_quad) == 4:
+            context = triple_or_quad[3]
+        for t in self.triples(triple_or_quad[:3], context=context):
+            return True
+        return False
+
     def add(self, (s, p, o)):
         """Add the triple to the default context"""
         self.store.add((s, p, o), context=self.default_context, quoted=False)
 
     def addN(self, quads):
-        """Add a sequence of triple with context"""
-        self.store.addN(quads)
+        """Add a sequence of triples with context"""
+        self.store.addN([quad for quad in quads if quad not in self])
 
     def remove(self, (s, p, o)):
         """Removes from all its contexts"""
         self.store.remove((s, p, o), context=None)
 
-    def triples(self, (s, p, o)):
+    def triples(self, (s, p, o), context=None):
         """Iterate over all the triples in the entire conjunctive graph"""
-        for (s, p, o), cg in self.store.triples((s, p, o), context=None):
+        for (s, p, o), cg in self.store.triples((s, p, o), context=context):
             yield s, p, o
 
     def quads(self,(s,p,o)):
