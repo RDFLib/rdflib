@@ -1,14 +1,13 @@
-from rdflib.namespace import RDF
+from rdflib.namespace import Namespace, RDF, RDFS
 
-from rdflib.term import BNode
-from rdflib.term import Literal
+from rdflib.term import URIRef, Literal, BNode
 from rdflib.util import first, uniq, more_than
 from rdflib.collection import Collection
 from rdflib.syntax.serializers import Serializer
 from rdflib.syntax.serializers.XMLWriter import XMLWriter
 
 XMLLANG = "http://www.w3.org/XML/1998/namespacelang"
-
+OWL_NS = Namespace('http://www.w3.org/2002/07/owl#')
 
 # TODO:
 def fix(val):
@@ -53,9 +52,17 @@ class PrettyXMLSerializer(Serializer):
                 self.subject(subject, 1)
 
         # write out anything that has not yet been reached
+        # write out BNodes last (to ensure they can be inlined where possible)
+        bnodes=set()
         for subject in store.subjects():
+            if isinstance(subject,BNode):
+                bnodes.add(subject)
+                continue
             self.subject(subject, 1)
-
+        #now serialize only those BNodes that have not been serialized yet
+        for bnode in bnodes:
+            if bnode not in self.__serialized:
+                self.subject(subject, 1)
         writer.pop(RDF.RDF)
 
         # Set to None so that the memory can get garbage collected.
@@ -65,7 +72,12 @@ class PrettyXMLSerializer(Serializer):
     def subject(self, subject, depth=1):
         store = self.store
         writer = self.writer
-        if not subject in self.__serialized:
+        if subject in self.forceRDFAbout:
+            writer.push(RDF.Description)
+            writer.attribute(RDF.about, self.relativize(subject))
+            writer.pop(RDF.Description)
+            self.forceRDFAbout.remove(subject)        
+        elif not subject in self.__serialized:
             self.__serialized[subject] = 1
             type = first(store.objects(subject, RDF.type))
             try:
@@ -77,8 +89,9 @@ class PrettyXMLSerializer(Serializer):
             if isinstance(subject, BNode):
                 def subj_as_obj_more_than(ceil):
                     return more_than(store.triples((None, None, subject)), ceil)
-                if (depth == 1 and subj_as_obj_more_than(0)
-                        ) or subj_as_obj_more_than(1):
+                #here we only include BNode labels if they are referenced
+                #more than once (this reduces the use of redundant BNode identifiers)
+                if subj_as_obj_more_than(1):
                     writer.attribute(RDF.nodeID, fix(subject))
             else:
                 writer.attribute(RDF.about, self.relativize(subject))
@@ -111,13 +124,6 @@ class PrettyXMLSerializer(Serializer):
             else:
                 writer.attribute(RDF.resource, self.relativize(object))
         else:
-            items = []
-            for item in store.items(object): # add a strict option to items?
-                if isinstance(item, Literal):
-                    items = None # can not serialize list with literal values in them with rdf/xml
-                else:
-                    items.append(item)
-
             if first(store.objects(object, RDF.first)): # may not have type RDF.List
                 collection = object
                 self.__serialized[object] = 1
@@ -126,14 +132,28 @@ class PrettyXMLSerializer(Serializer):
                 writer.attribute(RDF.parseType, "Collection")
                 col=Collection(store,object)
                 for item in col:
-                    self.forceRDFAbout.add(item)
+                    if isinstance(item,URIRef):
+                        self.forceRDFAbout.add(item)
                     self.subject(item)
-                    self.__serialized[item] = 1
+                    if not isinstance(item,URIRef):
+                        self.__serialized[item] = 1
             else:
-                if depth<=self.max_depth:
+                if first(store.triples_choices((object,
+                                                RDF.type,
+                                                [OWL_NS.Class,RDFS.Class]))) and\
+                    isinstance(object, URIRef):
+                     writer.attribute(RDF.resource, self.relativize(object))
+                elif depth<=self.max_depth:
                     self.subject(object, depth+1)
                 elif isinstance(object, BNode):
-                    writer.attribute(RDF.nodeID, fix(object))
+                    if not object in self.__serialized and \
+                       (object, None, None) in store and \
+                       len(list(store.subjects(object=object)))==1:
+                        #inline blank nodes if they haven't been serialized yet and are
+                        #only referenced once (regardless of depth)
+                        self.subject(object, depth+1)
+                    else:
+                        writer.attribute(RDF.nodeID, fix(object))
                 else:
                     writer.attribute(RDF.resource, self.relativize(object))
         writer.pop(predicate)
