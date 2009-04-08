@@ -274,7 +274,7 @@ class BinaryRelationPartition(Table):
                                                  rdfTermLabel))
             else:
                 assert self.hardCodedResultFields[idx] == RDF.type
-                rt.append("'%s' as %s" % (normalizeValue(
+                rt.append("CONVERT('%s',UNSIGNED INTEGER) as %s" % (normalizeValue(
                   self.hardCodedResultFields[idx], 'U', self.useSignedInts),
                                           rdfTermLabel))
                 if self.hardCodedResultTermsTypes[idx]:
