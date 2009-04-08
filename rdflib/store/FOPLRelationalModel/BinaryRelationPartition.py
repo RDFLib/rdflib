@@ -86,7 +86,12 @@ class BinaryRelationPartition(Table):
 
         self._cacheStatements()
 
+        self.delimited_file = None
+
     def __repr__(self):
+        return self._repr
+
+    def get_name(self):
         return self._repr
 
     def foreignKeySQL(self, slot):
@@ -118,6 +123,10 @@ class BinaryRelationPartition(Table):
     def removeForeignKeyStatements(self):
         return [pair[1] for pair in self._foreign]
 
+    def order_column_names(self, positions):
+        return [self.columnNames[position] for
+          position in positions if self.columnNames[position] is not None]
+
     def _cacheStatements(self):
         self._indexing = []
         self._foreign = []
@@ -125,20 +134,22 @@ class BinaryRelationPartition(Table):
             if self.columnNames[slot]:
                 self._indexing.append(
                     ("CREATE INDEX %s_%s%s ON %s (%s)" %
-                       (self, self.columnNames[slot], self.indexSuffix,
-                        self, self.columnNames[slot]),
+                       (self.get_name(), self.columnNames[slot],
+                        self.indexSuffix, self.get_name(),
+                        self.columnNames[slot]),
                      "DROP INDEX %s_%s%s ON %s" %
-                       (self, self.columnNames[slot], self.indexSuffix,
-                        self)))
+                       (self.get_name(), self.columnNames[slot],
+                        self.indexSuffix, self.get_name())))
 
                 if self.termEnumerations[slot]:
                     self._indexing.append(
                         ("CREATE INDEX %s_%s_term%s ON %s (%s_term)" %
-                           (self, self.columnNames[slot], self.indexSuffix,
-                            self, self.columnNames[slot]),
+                           (self.get_name(), self.columnNames[slot],
+                            self.indexSuffix, self.get_name(),
+                            self.columnNames[slot]),
                          "DROP INDEX %s_%s_term%s ON %s" %
-                           (self, self.columnNames[slot], self.indexSuffix,
-                            self)))
+                           (self.get_name(), self.columnNames[slot],
+                            self.indexSuffix, self.get_name())))
 
                 self.foreignKeySQL(slot)
 
@@ -149,17 +160,28 @@ class BinaryRelationPartition(Table):
                     colName, colType, indexStr = colMD
                     self._indexing.append(
                         ("CREATE INDEX %s_%s%s ON %s (%s)" %
-                           (self, colName, self.indexSuffix,
-                            self, indexStr % colName),
+                           (self.get_name(), colName, self.indexSuffix,
+                            self.get_name(), indexStr % colName),
                          "DROP INDEX %s_%s%s ON %s" %
-                           (self, colName, self.indexSuffix, self)))
+                           (self.get_name(), colName, self.indexSuffix,
+                            self.get_name())))
                 else:
                     self._indexing.append(
                         ("CREATE INDEX %s_%s%s ON %s (%s)" %
-                           (self, colMD, self.indexSuffix, self, colMD),
+                           (self.get_name(), colMD, self.indexSuffix,
+                            self.get_name(), colMD),
                          "DROP INDEX %s_%s%s ON %s" %
-                           (self, colMD, self.indexSuffix, self)))
+                           (self.get_name(), colMD, self.indexSuffix,
+                            self.get_name())))
                     self.foreignKeySQL(otherSlot)
+
+        self._indexing.append(
+          ('CREATE UNIQUE INDEX %s_posc%s ON %s (%s)' %
+             (self.get_name(), self.indexSuffix, self.get_name(),
+              ', '.join(self.order_column_names(
+                (PREDICATE, OBJECT, SUBJECT, CONTEXT)))),
+           'DROP INDEX %s_posc%s ON %s' %
+             (self.get_name(), self.indexSuffix, self.get_name())))
 
     def createStatements(self):
         """
@@ -409,6 +431,11 @@ class BinaryRelationPartition(Table):
 
         return ' AND '.join(whereClauses),whereParameters# + "#{%s}\n"%(str(queryPattern)),whereParameters
 
+    def listIdentifiers(self, quadSlots):
+        return []
+
+    def listLiterals(self, quadSlots):
+        return []
 
 class AssociativeBox(BinaryRelationPartition):
     """
@@ -439,6 +466,19 @@ class AssociativeBox(BinaryRelationPartition):
                 term2Letter(objSlot.term),
                 conSlot.md5Int,
                 term2Letter(conSlot.term))
+
+    def makeRowComponents(self, quadSlots):
+        subjSlot, predSlot, objSlot, conSlot = quadSlots
+        return (subjSlot.md5Int, subjSlot.termType,
+                objSlot.md5Int, objSlot.termType,
+                conSlot.md5Int, conSlot.termType)
+
+    def listIdentifiers(self, quadSlots):
+        subjSlot, predSlot, objSlot, conSlot = quadSlots
+
+        return [(subjSlot.md5Int, subjSlot.termType, subjSlot.term),
+                (objSlot.md5Int, objSlot.termType, objSlot.term),
+                (conSlot.md5Int, conSlot.termType, conSlot.term)]
 
     def extractIdentifiers(self,quadSlots):
         subjSlot,predSlot,objSlot,conSlot = quadSlots
@@ -568,6 +608,17 @@ class NamedLiteralProperties(BinaryRelationPartition):
                 rtList.append(item)
         return tuple(rtList)
 
+    def makeRowComponents(self, quadSlots):
+        subjSlot, predSlot, objSlot, conSlot = quadSlots
+        dTypeParam = objSlot.term.datatype and normalizeValue(
+          objSlot.term.datatype, 'U', self.useSignedInts) or None
+        langParam  = objSlot.term.language and objSlot.term.language or None
+        return (subjSlot.md5Int, subjSlot.termType,
+                predSlot.md5Int, predSlot.termType,
+                objSlot.md5Int,
+                conSlot.md5Int, conSlot.termType,
+                dTypeParam, langParam)
+
     def extractIdentifiers(self,quadSlots):
         """
         Test literal data type extraction
@@ -596,6 +647,22 @@ class NamedLiteralProperties(BinaryRelationPartition):
             idTerms.append((objSlot.term.datatype,term2Letter(objSlot.term.datatype)))
         self.idHash.updateIdentifierQueue(idTerms)
         self.valueHash.updateIdentifierQueue([(objSlot.term,objSlot.termType)])
+
+    def listIdentifiers(self, quadSlots):
+        subjSlot, predSlot, objSlot, conSlot = quadSlots
+
+        idTerms = [(subjSlot.md5Int, subjSlot.termType, subjSlot.term),
+                   (predSlot.md5Int, predSlot.termType, predSlot.term),
+                   (conSlot.md5Int, conSlot.termType, conSlot.term)]
+        if objSlot.term.datatype:
+            dt = objSlot.getDatatypeQuadSlot()
+            idTerms.append((dt.md5Int, dt.termType, dt.term))
+        return idTerms
+
+    def listLiterals(self, quadSlots):
+        subjSlot, predSlot, objSlot, conSlot = quadSlots
+
+        return [(objSlot.md5Int, objSlot.term)]
 
     def selectFields(self,first=False):
         return first and self._selectFieldsLeading or self._selectFieldsNonLeading
@@ -626,6 +693,21 @@ class NamedBinaryRelations(BinaryRelationPartition):
                 term2Letter(objSlot.term),
                 conSlot.md5Int,
                 term2Letter(conSlot.term))
+
+    def makeRowComponents(self, quadSlots):
+        subjSlot, predSlot, objSlot, conSlot = quadSlots
+        return (subjSlot.md5Int, subjSlot.termType,
+                predSlot.md5Int, predSlot.termType,
+                objSlot.md5Int, objSlot.termType,
+                conSlot.md5Int, conSlot.termType)
+
+    def listIdentifiers(self, quadSlots):
+        subjSlot, predSlot, objSlot, conSlot = quadSlots
+
+        return [(subjSlot.md5Int, subjSlot.termType, subjSlot.term),
+                (predSlot.md5Int, predSlot.termType, predSlot.term),
+                (objSlot.md5Int, objSlot.termType, objSlot.term),
+                (conSlot.md5Int, conSlot.termType, conSlot.term)]
 
     def extractIdentifiers(self,quadSlots):
         subjSlot,predSlot,objSlot,conSlot = quadSlots

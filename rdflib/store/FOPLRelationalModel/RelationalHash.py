@@ -42,7 +42,7 @@ PURGE_KEY_SQL="DELETE %s FROM %s INNER JOIN danglingIds on danglingIds.%s = %s.%
 def GarbageCollectionQUERY(idHash,valueHash,aBoxPart,binRelPart,litPart):
     """
     Performs garbage collection on interned identifiers and their references.  Joins
-    the given KB parititions against the identifiers and values and removes the 'danglers'.  This
+    the given KB partitions against the identifiers and values and removes the 'danglers'.  This
     must be performed after every removal of an assertion and so becomes a primary bottleneck
     """
     purgeQueries = ["drop temporary table if exists danglingIds"]
@@ -105,6 +105,12 @@ def GarbageCollectionQUERY(idHash,valueHash,aBoxPart,binRelPart,litPart):
     return purgeQueries
 
 class Table(object):
+  def get_name(self):
+    '''
+    Returns the name of this table in the backing SQL database.
+    '''
+    raise NotImplementedError('`Table` is an abstract base class.')
+    
   def createStatements(self):
     '''
     Returns a list of SQL statements that, when executed, will create this
@@ -176,6 +182,9 @@ class RelationalHash(Table):
             return term.encode('utf-8')
 
     def __repr__(self):
+        return "%s_%s"%(self.identifier,self.tableNameSuffix)
+
+    def get_name(self):
         return "%s_%s"%(self.identifier,self.tableNameSuffix)
 
     def indexingStatements(self):

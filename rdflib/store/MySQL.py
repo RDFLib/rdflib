@@ -16,9 +16,23 @@ from rdflib.store.AbstractSQLStore import *
 from FOPLRelationalModel.RelationalHash import IdentifierHash, LiteralHash, RelationalHash, GarbageCollectionQUERY
 from FOPLRelationalModel.BinaryRelationPartition import *
 from FOPLRelationalModel.QuadSlot import *
-import time #BE: for performance logging
+import time, datetime #BE: for performance logging
 
 Any = None
+
+class TimeStamp(object):
+  def __init__(self):
+    self.start = datetime.datetime.now()
+    self.checkpoint = self.start
+
+  def delta(self):
+    print >> sys.stderr, 'LAST DELTA:', datetime.datetime.now() - self.checkpoint
+    self.checkpoint = datetime.datetime.now()
+
+  def elapsed(self):
+    print >> sys.stderr, 'ELAPSED:', datetime.datetime.now() - self.start
+    self.start = datetime.datetime.now()
+    self.checkpoint = self.start
 
 def ParseConfigurationString(config_string):
     """
@@ -472,6 +486,8 @@ class SQL(Store):
                  useSignedInts=False, hashFieldType='BIGINT unsigned',
                  declareEnums=False, perfLog=False):
         self.debug = debug
+        if debug:
+          self.timestamp = TimeStamp()
                                 
         #BE: performance logging
         self.perfLog = perfLog
@@ -582,7 +598,7 @@ class SQL(Store):
         # RESET QUERY CACHE -- see http://dev.mysql.com/doc/refman/5.0/en/reset.html
         if clearCache:
             c=self._db.cursor()
-            c.execute("RESET QUERY CACHE;")
+            self.executeSQL(c, "RESET QUERY CACHE")
        
     def getPerfLog(self): #BE: for performance logging
         if self.perfLog:
@@ -629,12 +645,24 @@ class SQL(Store):
         #c.execute("SELECT COUNT(*) FROM %s%s  
         #return
 
+    def log_statement(self, statement):
+        if self.debug:
+            self.timestamp.delta()
+            print >> sys.stderr, statement
+
+            try:
+                self.statement_log.write(statement + "\n")
+            except Exception:
+                pass
+
     def executeSQL(self,cursor,qStr,params=None,paramList=False):
         """
         Overridden in order to pass params seperate from query for the
         database to optimize.
         """
         #self._db.autocommit(False)
+        self.log_statement(qStr)
+        #return # XXX: Temporary!
         if params is None:
             cursor.execute(qStr)
         elif paramList:
@@ -651,13 +679,16 @@ class SQL(Store):
 
     def _dbState(self,db,configDict):
         c=db.cursor()
-        c.execute(self.showDBsCommand)
+        self.log_statement(self.showDBsCommand)
+        self.executeSQL(c, self.showDBsCommand)
         #FIXME This is a character set hack.  See: http://sourceforge.net/forum/forum.php?thread_id=1448424&forum_id=70461
         #self._db.charset = 'utf8'
         if (configDict['db'].encode('utf-8'),) in [
               tuple(item) for item in c.fetchall()]:
             for tn in self.tables:
-                c.execute(self.findTablesCommand % (tn,))
+                statement = self.findTablesCommand % (tn,) 
+                self.log_statement(statement)
+                self.executeSQL(c, statement)
                 rt=c.fetchall()
                 if not rt:
                     sys.stderr.write("table %s Doesn't exist\n" % (tn));
@@ -679,7 +710,7 @@ class SQL(Store):
                                 for t in tables]))
             if self.debug:
                 print >> sys.stderr, "## Creating View ##\n",query
-            cursor.execute(query)
+            self.executeSQL(cursor, query)
 
     def connect(user, passwd, db, port, host):
         raise NotImplementedError('SQL is an abstract base class.')
@@ -694,12 +725,12 @@ class SQL(Store):
                                port=configDict['port'],
                                host=configDict['host'])
         c=test_db.cursor()
-        c.execute('COMMIT')
-        c.execute(self.showDBsCommand)
+        self.executeSQL(c, 'COMMIT')
+        self.executeSQL(c, self.showDBsCommand)
         if not (configDict['db'].encode('utf-8'),) in [
                 tuple(item) for item in c.fetchall()]:
             print >> sys.stderr, "creating %s (doesn't exist)"%(configDict['db'])
-            c.execute("""CREATE DATABASE %s"""%(configDict['db'],))
+            self.executeSQL(c, "CREATE DATABASE %s" % (configDict['db'],))
         c.close()
         test_db.close()
 
@@ -709,54 +740,46 @@ class SQL(Store):
                           port=configDict['port'],
                           host=configDict['host'])
         c=db.cursor()
-        c.execute('COMMIT')
-        c.execute('START TRANSACTION')
-        c.execute(CREATE_NS_BINDS_TABLE % (self._internedId, self.engine))
-        c.execute(self.INDEX_NS_BINDS_TABLE % (self._internedId,))
+        self.executeSQL(c, 'COMMIT')
+        self.executeSQL(c, 'START TRANSACTION')
+        self.executeSQL(c, CREATE_NS_BINDS_TABLE %
+                             (self._internedId, self.engine))
+        self.executeSQL(c, self.INDEX_NS_BINDS_TABLE % (self._internedId,))
         for kb in self.createTables:
             for statement in kb.createStatements():
-                print statement
-                c.execute(statement)
+                self.executeSQL(c, statement)
 
             if populate:
                 for statement in kb.defaultStatements():
-                    c.execute(statement)
+                    self.executeSQL(c, statement)
         self._createViews(c)
-        c.execute('COMMIT')
+        self.executeSQL(c, 'COMMIT')
         c.close()
         self._db = db
 
     def applyIndices(self):
         c = self._db.cursor()
-        c.execute('START TRANSACTION')
         for kb in self.createTables:
             for statement in kb.indexingStatements():
-                c.execute(statement)
-        c.execute('COMMIT')
+                self.executeSQL(c, statement)
 
     def removeIndices(self):
         c = self._db.cursor()
-        c.execute('START TRANSACTION')
         for kb in self.createTables:
             for statement in kb.removeIndexingStatements():
-                c.execute(statement)
-        c.execute('COMMIT')
+                self.executeSQL(c, statement)
 
     def applyForeignKeys(self):
         c = self._db.cursor()
-        c.execute('START TRANSACTION')
         for kb in self.createTables:
             for statement in kb.foreignKeyStatements():
-                c.execute(statement)
-        c.execute('COMMIT')
+                self.executeSQL(c, statement)
 
     def removeForeignKeys(self):
         c = self._db.cursor()
-        c.execute('START TRANSACTION')
         for kb in self.createTables:
             for statement in kb.removeForeignKeyStatements():
-                c.execute(statement)
-        c.execute('COMMIT')
+                self.executeSQL(c, statement)
 
     def open(self, configuration, create=False):
         """
@@ -785,15 +808,15 @@ class SQL(Store):
                              host=configDict['host'])
             if self._dbState(_db,configDict) == VALID_STORE:
                 c=_db.cursor()
-                c.execute('COMMIT')
-                c.execute('START TRANSACTION')
+                self.executeSQL(c, 'COMMIT')
+                self.executeSQL(c, 'START TRANSACTION')
                 existingViews=[]
                 #check which views already exist
                 views=[]
                 for suffix in self.viewCreationDict:
                     view = self._internedId+suffix
                     views.append(view)
-                    c.execute(self.findViewsCommand % (view,))
+                    self.executeSQL(c, self.findViewsCommand % (view,))
                     rt=c.fetchall()
                     if rt:
                         existingViews.append(view)
@@ -809,8 +832,8 @@ class SQL(Store):
                                       port=configDict['port'],
                                       host=configDict['host'])
                     c=db.cursor()
-                    c.execute('COMMIT')
-                    c.execute('START TRANSACTION')
+                    self.executeSQL(c, 'COMMIT')
+                    self.executeSQL(c, 'START TRANSACTION')
                     self._createViews(c)
                     db.commit()
                     c.close()
@@ -827,7 +850,7 @@ class SQL(Store):
                                 port=port,
                                 host=configDict['host'])
         c = self._db.cursor()
-        c.execute('COMMIT')
+        self.executeSQL(c, 'COMMIT')
         #self._db.autocommit(False)
         return self._dbState(self._db, configDict)
 
@@ -843,20 +866,20 @@ class SQL(Store):
                           host=configDict['host'])
         #db.autocommit(False)
         c=db.cursor()
-        c.execute('COMMIT')
-        c.execute('START TRANSACTION')
+        self.executeSQL(c, 'COMMIT')
+        self.executeSQL(c, 'START TRANSACTION')
 
         for suffix in self.viewCreationDict:
             view = self._internedId+suffix
             try:
-                c.execute('DROP view %s'%view)
+                self.executeSQL(c, 'DROP view %s' % (view,))
             except Exception, e:
                 print >> sys.stderr, "unable to drop table: %s"%(view)
                 print >> sys.stderr, e
 
         for tbl in self.tables + ["%s_namespace_binds"%self._internedId]:
             try:
-                c.execute('DROP table %s'%tbl)
+                self.executeSQL(c, 'DROP table %s' % (tbl,))
                 #print "dropped table: %s"%(tblsuffix%(self._internedId))
             except Exception, e:
                 print >> sys.stderr, "unable to drop table: %s"%(tbl)
@@ -864,7 +887,7 @@ class SQL(Store):
 
         #Note, this only removes the associated tables for the closed world universe given by the identifier
         print >> sys.stderr, "Destroyed Close World Universe %s ( in SQL database %s)"%(self.identifier,configDict['db'])
-        c.execute('COMMIT')
+        self.executeSQL(c, 'COMMIT')
         db.close()
         self.note_modified()
 
@@ -1115,16 +1138,21 @@ class SQL(Store):
         for q in purgeQueries:
             self.executeSQL(c,q)
 
+    def get_table(self, triple):
+        subject, predicate, obj = triple
+        if predicate == RDF.type:
+            kb = self.aboxAssertions
+        elif isinstance(obj, Literal):
+            kb = self.literalProperties
+        else:
+            kb = self.binaryRelations
+        return kb
+
     def add(self, (subject, predicate, obj), context=None, quoted=False):
         """ Add a triple to the store of triples. """
         qSlots = genQuadSlots([subject, predicate, obj, context],
                               self.useSignedInts)
-        if predicate == RDF.type:
-            kb = self.aboxAssertions
-        elif isinstance(obj,Literal):
-            kb = self.literalProperties
-        else:
-            kb = self.binaryRelations
+        kb = self.get_table((subject, predicate, obj))
         kb.insertRelations([qSlots])
         kb.flushInsertions(self._db)
         self.note_modified()
@@ -1139,13 +1167,8 @@ class SQL(Store):
             assert c is not None, "Context associated with %s %s %s is None!"%(s,p,o)
             qSlots = genQuadSlots([s, p, o, c],
                                   self.useSignedInts)
-            if p == RDF.type:
-                kb = self.aboxAssertions
-            elif isinstance(o,Literal):
-                kb = self.literalProperties
-            else:
-                kb = self.binaryRelations
 
+            kb = get_table((s, p, o))
             kb.insertRelations([qSlots])
 
         for kb in self.partitions:
