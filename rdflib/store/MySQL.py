@@ -1411,8 +1411,7 @@ class MySQL(SQL):
             return MySQL.MySQLdb.connect(user=user, passwd=passwd, db=db,
                                          port=port, host=host)
     except ImportError:
-        def connect(self, user=user, passwd=passwd, db=db, port=port,
-                    host=host):
+        def connect(self, user, passwd, db, port, host):
             raise NotImplementedError(
               'We need the MySQLdb module to connect to MySQL databases.')
     
