@@ -61,7 +61,7 @@ class TestLimit(unittest.TestCase):
            graph = ConjunctiveGraph(plugin.get('IOMemory',Store)())
            graph.parse(StringIO(test_data2), format="n3")
            results = list(graph.query(test_query2,DEBUG=True))
-           print results
+           print graph.query(test_query2).serialize(format='xml')
            self.failUnless(len(results) == 1)
            for title,price in results:    
                self.failUnless(title in [Literal("Java Tutorial"),
