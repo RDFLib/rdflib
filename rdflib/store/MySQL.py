@@ -1373,6 +1373,16 @@ class MySQL(SQL):
                     host=host):
             raise NotImplementedError(
               'We need the MySQLdb module to connect to MySQL databases.')
+    
+    def _createViews(self,cursor):
+      for suffix, (relations_only, tables) in self.viewCreationDict.items():
+        query = ('CREATE SQL SECURITY INVOKER VIEW %s%s AS %s' %
+                  (self._internedId, suffix, ' UNION ALL '.join(
+                     [t.viewUnionSelectExpression(relations_only)
+                      for t in tables])))
+        if self.debug:
+          print >> sys.stderr, "## Creating View ##\n",query
+        self.executeSQL(cursor, query)
 
 # TODO: break this out into a separate module, which will allow us to do
 # away with the import chicanery.
