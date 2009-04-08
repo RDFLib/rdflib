@@ -14,7 +14,7 @@ from rdflib.graph import QuotedGraph
 from rdflib.store.REGEXMatching import REGEXTerm, NATIVE_REGEX, PYTHON_REGEX
 from rdflib.store.AbstractSQLStore import *
 from rdflib.sparql.sql.RdfSqlBuilder import DEFAULT_OPT_FLAGS
-from rdflib.sparql.sql.DatabaseStats import GetCachedStats, LoadCachedStats
+from rdflib.sparql.sql.DatabaseStats import LoadCachedStats, GetDatabaseStats
 from rdflib.namespace import OWL, RDF, RDFS
 from FOPLRelationalModel.RelationalHash import IdentifierHash, LiteralHash, RelationalHash, GarbageCollectionQUERY
 from FOPLRelationalModel.BinaryRelationPartition import *
