@@ -1,5 +1,5 @@
 import urlparse
-feels tfrom xml.sax.saxutils import escape, quoteattr
+from xml.sax.saxutils import escape, quoteattr
 
 from rdflib.term import BNode
 from rdflib.term import Literal
@@ -34,6 +34,9 @@ class TurtleSerializer(RecursiveSerializer):
     
     def getQName(self, uri):
         if isinstance(uri, URIRef):
+#            if self.base and uri.startswith(self.base):
+#                # this feels too simple, but I dont see why I wont work :) -Gunnar
+#                return "<%s>"%uri[len(self.base):]
             try:
                 parts = self.store.compute_qname(uri)
             except Exception, e:
