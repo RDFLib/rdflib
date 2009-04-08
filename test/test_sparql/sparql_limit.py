@@ -26,7 +26,8 @@ class TestLimit(unittest.TestCase):
     def testLimit(self):
         graph = ConjunctiveGraph(plugin.get('IOMemory',Store)())
         graph.parse(StringIO(test_data), format="n3")
-        results = graph.query(test_query)
+        results = graph.query(test_query,DEBUG=True)
+        print len(results)
         self.failUnless(len(results) == 2)
 
 if __name__ == "__main__":

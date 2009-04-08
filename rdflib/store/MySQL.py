@@ -893,8 +893,6 @@ class MySQL(Store):
 
           row = cursor.fetchone()
 
-        return
-
     #Transactional interfaces
     def commit(self):
         """ """
