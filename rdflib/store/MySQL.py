@@ -1,5 +1,5 @@
 from __future__ import generators
-from rdflib.term import URIRef, BNode, Literal
+from rdflib.term import URIRef, BNode, Literal, XSDToPython
 from rdflib.store import Store,VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
 from pprint import pprint
 import sys
@@ -13,10 +13,13 @@ from rdflib.term_utils import *
 from rdflib.graph import QuotedGraph
 from rdflib.store.REGEXMatching import REGEXTerm, NATIVE_REGEX, PYTHON_REGEX
 from rdflib.store.AbstractSQLStore import *
+from rdflib.sparql.sql.RdfSqlBuilder import DEFAULT_OPT_FLAGS
+from rdflib.sparql.sql.DatabaseStats import GetCachedStats, LoadCachedStats
+from rdflib.namespace import OWL, RDF, RDFS
 from FOPLRelationalModel.RelationalHash import IdentifierHash, LiteralHash, RelationalHash, GarbageCollectionQUERY
 from FOPLRelationalModel.BinaryRelationPartition import *
 from FOPLRelationalModel.QuadSlot import *
-import time, datetime #BE: for performance logging
+import cPickle, time, datetime #BE: for performance logging
 
 Any = None
 
@@ -484,7 +487,12 @@ class SQL(Store):
     def __init__(self, identifier=None, configuration=None,
                  debug=False, engine="ENGINE=InnoDB",
                  useSignedInts=False, hashFieldType='BIGINT unsigned',
-                 declareEnums=False, perfLog=False):
+                 declareEnums=False, perfLog=False,
+                 optimizations=DEFAULT_OPT_FLAGS,
+                 scanForDatatypes=False):
+        self.dataTypes={}
+        self.scanForDatatypes=scanForDatatypes
+        self.optimizations=optimizations
         self.debug = debug
         if debug:
           self.timestamp = TimeStamp()
@@ -585,9 +593,49 @@ class SQL(Store):
         self.resource_properties = set()
         '''set of URIRefs of those RDF properties which are known to range
         over resources.'''
+        
+        #update the two sets above with defaults
+        if False: # TODO: Update this to reflect the new namespace layout
+          self.literal_properties.update( OWL.literalProperties)
+          self.literal_properties.update( RDF.literalProperties)
+          self.literal_properties.update( RDFS.literalProperties)
+          self.resource_properties.update(OWL.resourceProperties)
+          self.resource_properties.update(RDF.resourceProperties)
+          self.resource_properties.update(RDFS.resourceProperties)
 
         self.length = None
 
+    def scanProperties(self):
+        """
+        Via introspection, update the set of literal and resource properties
+        using the assertions in the store
+        """
+        litTable   = self.literalProperties
+        relTable   = self.binaryRelations
+        idObjTable = self.idHash
+        
+        #@todo: perhaps these column names should not be hard-coded?
+        idField = "id"
+        lexField = "lexical"
+        
+        cursor = self._db.cursor()
+        
+        litProps = set()
+        cursor.execute(""" 
+            SELECT DISTINCT i.%s AS pred
+            FROM %s t INNER JOIN %s i ON t.%s = i.%s;""" % 
+            (lexField, litTable, idObjTable, litTable.columnNames[PREDICATE], idField))
+        for (pred,) in cursor.fetchall():
+            self.literal_properties.add(pred)
+        
+        resProps = set()
+        cursor.execute(""" 
+            SELECT DISTINCT i.%s AS pred
+            FROM %s t INNER JOIN %s i ON t.%s = i.%s;""" % 
+            (lexField, relTable, idObjTable, relTable.columnNames[PREDICATE], idField))
+        for (pred,) in cursor.fetchall():
+            self.resource_properties.add(pred)
+            
     def resetPerfLog(self, clearCache=False): #BE: for performance logging
         self.mainQueryCount = 0
         self.mainQueryTime = 0
@@ -608,42 +656,6 @@ class SQL(Store):
                         rowPrepQueryTime=self.rowPrepQueryTime,
                         sqlQueries=self.mainQueries)
         return dict();
-
-    #def getRDFStats(self):
-        # Num. of Properties (All, 
-        # Num. of Classes
-        # Num. of URIs (All, Subjects, Objects)
-        # Num. of Literals (by type?)
-        # Total Num. of Triples
-        # For each triple pattern
-        #    Num. of Triples
-        # For each Property
-        #    XX  Num. of Triples
-        #    Num. of Distinct Subjects (All, Type, Lit, Rel)
-        #    Num. of Distinct Object Values (All, Type, Lit, Rel) 
-        # For each Class
-        #    Num. of Unique Predicates
-        #    Num. of Resources
-        #    Num. of Triples
-        # Distinct Subjects
-        #    All
-        #    Type
-        #    Literal
-        #    Relations
-        # Distinct Predicates
-        #    All
-        #    Type => Num. of Properties
-        #    Literal => Num. of Properties that can be Literals 
-        #    Relations => Num. of Properties that can be Relations
-        # Distinct Objects
-        #    All
-        #    Type => Num. of Classes
-        #    Literal
-        #    Relations
-        
-        #c=self._db.cursor()
-        #c.execute("SELECT COUNT(*) FROM %s%s  
-        #return
 
     def log_statement(self, statement):
         if self.debug:
@@ -821,6 +833,22 @@ class SQL(Store):
                     if rt:
                         existingViews.append(view)
                 c.close()
+                
+                if self.scanForDatatypes:
+                    cursor=_db.cursor()
+                    cursor.execute(""" 
+                        SELECT DISTINCT i.id, i.lexical
+                        FROM %s lp INNER JOIN 
+                            %s i ON lp.data_type = i.id;""" %(self.literalProperties, 
+                                                              self.idHash))
+                    for (id,text) in cursor.fetchall():
+                        self.dataTypes[id] = text
+                    cursor.close()
+                else:
+                    self.dataTypes=dict([(normalizeNode(dType, 
+                                                        self.useSignedInts),dType) 
+                                                for dType in XSDToPython.keys()])
+                    self.scanForDatatypes={}
                 _db.close()
                 if not existingViews:
                     #None of the views have been defined - so this is
@@ -852,6 +880,20 @@ class SQL(Store):
         c = self._db.cursor()
         self.executeSQL(c, 'COMMIT')
         #self._db.autocommit(False)
+        
+        #Manage triple pattern statistics
+        self.stats = None
+        statsFName = configDict.get('sparqlStatsFile')
+        if statsFName:
+            self.stats = LoadCachedStats(statsFName)
+            if not self.stats:
+                #Need to generate DB statistics for SPARQL
+                self.stats = GetDatabaseStats(self)
+                f = open(statsFName, 'w')
+                cPickle.dump(version, f)
+                cPickle.dump(self.stats, f)
+                f.close()
+        
         return self._dbState(self._db, configDict)
 
     def destroy(self, configuration):
@@ -1411,9 +1453,16 @@ class PostgreSQL(SQL):
                      user=user, password=passwd, database=db,
                      host=host + ':' + str(port))
     except ImportError:
-        def connect(self, user, passwd, db, port, host):
-            raise NotImplementedError(
-              'We need the PyGreSQL module to connect to PostgreSQL databases.')
+        try:
+            from postgresql.interface.proboscis import dbapi2
+            def connect(self, user, passwd, db, port, host):
+                return PostgreSQL.dbapi2.connect(
+                         user=user, password=passwd, database=db,
+                         host=host, port=port)
+        except ImportError:
+            def connect(self, user, passwd, db, port, host):
+                raise NotImplementedError(
+                  'We need the PyGreSQL module to connect to PostgreSQL databases.')
 
 if False:
   class InnoDB(MySQL):

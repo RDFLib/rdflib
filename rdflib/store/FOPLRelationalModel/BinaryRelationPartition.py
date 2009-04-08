@@ -296,7 +296,11 @@ class BinaryRelationPartition(Table):
                                                  rdfTermLabel))
             else:
                 assert self.hardCodedResultFields[idx] == RDF.type
-                rt.append("CONVERT('%s',UNSIGNED INTEGER) as %s" % (normalizeValue(
+                rt.append("'%s' as %s" % (normalizeValue(
+                # reverted Brendan's fix: b4e8646d61a2 (Fixed bug in View 
+                #creation for MySQL store that was causing the View to have 
+                #the predicate column as VARCHAR(20) instead of BIGINT)
+                #rt.append("CONVERT('%s',UNSIGNED INTEGER) as %s" % (normalizeValue(
                   self.hardCodedResultFields[idx], 'U', self.useSignedInts),
                                           rdfTermLabel))
                 if self.hardCodedResultTermsTypes[idx]:

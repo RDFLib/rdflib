@@ -311,6 +311,7 @@ class IdentifierHash(RelationalHash):
                         in self.hashUpdateQueue.items()
                         if len(self.getRowsByHash(db, md5Int)) == 0]
             if len(params) > 0:
+                print params
                 c.executemany(
                   "INSERT INTO %s" % (self,) + " VALUES (%s,%s,%s)", params)
 
