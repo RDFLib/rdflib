@@ -336,6 +336,10 @@ class Literal(Identifier):
                 raise ue
 
     def __le__(self, other):
+        """
+        >>> Literal('2007-01-01T10:00:00', datatype=_XSD_NS.dateTime) <= Literal('2007-01-01T10:00:00', datatype=_XSD_NS.dateTime)
+        True
+        """
         if other is None:
             return False
         if self==other:

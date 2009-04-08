@@ -1204,6 +1204,9 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def __init__(self, graphs,store='default'):
         if store is not None:
             super(ReadOnlyGraphAggregate, self).__init__(store)
+            Graph.__init__(self, store)
+            self.__namespace_manager = None
+
         assert isinstance(graphs, list) and graphs\
                and [g for g in graphs if isinstance(g, Graph)],\
                "graphs argument must be a list of Graphs!!"

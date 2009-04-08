@@ -16,6 +16,7 @@ class N3Parser(Parser):
         conj_graph = ConjunctiveGraph(store=graph.store)
         conj_graph.default_context = graph # TODO: CG __init__ should have a default_context arg
         # TODO: update N3Processor so that it can use conj_graph as the sink
+        conj_graph.namespace_manager = graph.namespace_manager
         sink = Sink(conj_graph)
         if False:
             sink.quantify = lambda *args: True
