@@ -1256,10 +1256,13 @@ class SQL(Store):
                               self.partitions,
                               fetchall=False,
                               fetchContexts=True)
+        fetchedGraphNames=[]
         while rt:
             contextId,cTerm = rt
-            graphKlass, idKlass = constructGraph(cTerm)
-            yield graphKlass(self,idKlass(contextId))
+            if contextId not in fetchedGraphNames:
+                graphKlass, idKlass = constructGraph(cTerm)
+                yield graphKlass(self,idKlass(contextId))
+                fetchedGraphNames.append(contextId)
             rt = c.fetchone()
 
     #Namespace persistence interface implementation
