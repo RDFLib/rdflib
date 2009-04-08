@@ -1257,6 +1257,16 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         for graph in self.graphs:
             for s1, p1, o1 in graph.triples((s, p, o)):
                 yield (s1, p1, o1)
+                
+    def __contains__(self, triple_or_quad):
+        context = None
+        if len(triple_or_quad) == 4:
+            context = triple_or_quad[3]
+        for graph in self.graphs:
+            if context is None or graph.identifier == context.identifier:
+                if triple_or_quad[:3] in graph:
+                    return True
+        return False
 
     def quads(self,(s,p,o)):
         """Iterate over all the quads in the entire aggregate graph"""
@@ -1295,9 +1305,13 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
                 yield (s, p, o)
 
     def qname(self, uri):
+        if hasattr(self,'namespace_manager') and self.namespace_manager:
+            return self.namespace_manager.qname(uri)
         raise UnSupportedAggregateOperation()
 
     def compute_qname(self, uri):
+        if hasattr(self,'namespace_manager') and self.namespace_manager:
+            return self.namespace_manager.compute_qname(uri)
         raise UnSupportedAggregateOperation()
 
     def bind(self, prefix, namespace, override=True):
