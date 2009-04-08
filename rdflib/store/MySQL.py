@@ -488,7 +488,7 @@ class SQL(Store):
                  debug=False, engine="ENGINE=InnoDB",
                  useSignedInts=False, hashFieldType='BIGINT unsigned',
                  declareEnums=False, perfLog=False,
-                 optimizations=DEFAULT_OPT_FLAGS,
+                 optimizations=None,
                  scanForDatatypes=False):
         self.dataTypes={}
         self.scanForDatatypes=scanForDatatypes
