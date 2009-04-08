@@ -547,9 +547,9 @@ def _castPythonToLiteral(obj):
 _PythonToXSD = [
     (basestring, (None,None)),
     (float     , (None,URIRef('http://www.w3.org/2001/XMLSchema#float'))),
+    (bool      , (None,URIRef('http://www.w3.org/2001/XMLSchema#boolean'))),
     (int       , (None,URIRef('http://www.w3.org/2001/XMLSchema#integer'))),
     (long      , (None,URIRef('http://www.w3.org/2001/XMLSchema#long'))),
-    (bool      , (None,URIRef('http://www.w3.org/2001/XMLSchema#boolean'))),
     (datetime  , (lambda i:i.isoformat(),URIRef('http://www.w3.org/2001/XMLSchema#dateTime'))),
     (date      , (lambda i:i.isoformat(),URIRef('http://www.w3.org/2001/XMLSchema#date'))),
     (time      , (lambda i:i.isoformat(),URIRef('http://www.w3.org/2001/XMLSchema#time'))),
