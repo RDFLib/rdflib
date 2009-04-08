@@ -449,6 +449,8 @@ class Literal(Identifier):
             return False
         if isinstance(other, Literal):
             return self._cmp_value == other._cmp_value
+        elif isinstance(other,basestring):
+            return unicode(self) == other
         else:
             return self._cmp_value == other
 
