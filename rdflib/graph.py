@@ -775,6 +775,7 @@ class Graph(Node):
         self.parse(source, publicID, format)
 
     def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False,
+              PARSE_DEBUG=False,
               dataSetBase=None,
               processor="sparql",
               extensionFunctions={sparql.DESCRIBE:describe}):
@@ -790,8 +791,8 @@ class Graph(Node):
             'SPARQL is currently the only supported RDF query language'
         p = plugin.get(processor, sparql.Processor)(self)
         return plugin.get('SPARQLQueryResult', query.result.QueryResult)(
-          p.query(strOrQuery, initBindings, initNs, DEBUG, dataSetBase,
-                  extensionFunctions))
+          p.query(strOrQuery, initBindings, initNs, DEBUG, PARSE_DEBUG,
+                  dataSetBase, extensionFunctions))
 
     def n3(self):
         """return an n3 identifier for the Graph"""
