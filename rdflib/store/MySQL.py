@@ -16,6 +16,7 @@ from rdflib.store.AbstractSQLStore import *
 from FOPLRelationalModel.RelationalHash import IdentifierHash, LiteralHash, RelationalHash, GarbageCollectionQUERY
 from FOPLRelationalModel.BinaryRelationPartition import *
 from FOPLRelationalModel.QuadSlot import *
+import time #BE: for performance logging
 
 Any = None
 
@@ -469,9 +470,16 @@ class SQL(Store):
     def __init__(self, identifier=None, configuration=None,
                  debug=False, engine="ENGINE=InnoDB",
                  useSignedInts=False, hashFieldType='BIGINT unsigned',
-                 declareEnums=False):
+                 declareEnums=False, perfLog=False):
         self.debug = debug
+                                
+        #BE: performance logging
+        self.perfLog = perfLog
+        if self.perfLog:
+            self.resetPerfLog()    
+
         self.identifier = identifier and identifier or 'hardcoded'
+        
         #Use only the first 10 bytes of the digest
         self._internedId = INTERNED_PREFIX + sha.new(self.identifier).hexdigest()[:10]
 
@@ -480,7 +488,7 @@ class SQL(Store):
         self.findTablesCommand = "SHOW TABLES LIKE '%s'"
         self.findViewsCommand = "SHOW TABLES LIKE '%s'"
         self.defaultDB = 'mysql'
-        self.select_modifier = 'straight_join'
+        self.select_modifier = 'straight_join' #BE: note this is MySQL specific syntax
 
         self.INDEX_NS_BINDS_TABLE = \
           'CREATE INDEX uri_index on %s_namespace_binds (uri(100))'
@@ -561,6 +569,63 @@ class SQL(Store):
         self.resource_properties = set()
         '''set of URIRefs of those RDF properties which are known to range
         over resources.'''
+
+    def resetPerfLog(self, clearCache=False): #BE: for performance logging
+        self.mainQueryCount = 0
+        self.mainQueryTime = 0
+        self.rowPrepQueryCount = 0
+        self.rowPrepQueryTime = 0
+        self.mainQueries = []
+        #TODO: clear the MySQL query cache to get more consistent results
+        # RESET QUERY CACHE -- see http://dev.mysql.com/doc/refman/5.0/en/reset.html
+        if clearCache:
+            c=self._db.cursor()
+            c.execute("RESET QUERY CACHE;")
+       
+    def getPerfLog(self): #BE: for performance logging
+        if self.perfLog:
+            return dict(mainQueryCount=self.mainQueryCount,
+                        mainQueryTime=self.mainQueryTime,
+                        rowPrepQueryCount=self.rowPrepQueryCount,
+                        rowPrepQueryTime=self.rowPrepQueryTime,
+                        sqlQueries=self.mainQueries)
+        return dict();
+
+    #def getRDFStats(self):
+        # Num. of Properties (All, 
+        # Num. of Classes
+        # Num. of URIs (All, Subjects, Objects)
+        # Num. of Literals (by type?)
+        # Total Num. of Triples
+        # For each triple pattern
+        #    Num. of Triples
+        # For each Property
+        #    XX  Num. of Triples
+        #    Num. of Distinct Subjects (All, Type, Lit, Rel)
+        #    Num. of Distinct Object Values (All, Type, Lit, Rel) 
+        # For each Class
+        #    Num. of Unique Predicates
+        #    Num. of Resources
+        #    Num. of Triples
+        # Distinct Subjects
+        #    All
+        #    Type
+        #    Literal
+        #    Relations
+        # Distinct Predicates
+        #    All
+        #    Type => Num. of Properties
+        #    Literal => Num. of Properties that can be Literals 
+        #    Relations => Num. of Properties that can be Relations
+        # Distinct Objects
+        #    All
+        #    Type => Num. of Classes
+        #    Literal
+        #    Relations
+        
+        #c=self._db.cursor()
+        #c.execute("SELECT COUNT(*) FROM %s%s  
+        #return
 
     def executeSQL(self,cursor,qStr,params=None,paramList=False):
         """
@@ -817,6 +882,7 @@ class SQL(Store):
         variable_bindings = {}
         variable_clusters = []
 
+        #BE: this appears to be project-specific and shouldn't be hardcoded here
         filterNS = 'tag:info@semanticdb.ccf.org,2008:FilterTerms#'
         filter_patterns = []
 
@@ -842,7 +908,8 @@ class SQL(Store):
           variable_bindings.update(bindings)
           variable_clusters.append(cluster)
 
-        print >> sys.stderr, filter_patterns
+        #BE: disabled this debug printing
+        #print >> sys.stderr, filter_patterns
 
         from_fragments = []
         where_fragments = []
@@ -892,9 +959,17 @@ class SQL(Store):
 
         if self.debug:
             print >> sys.stderr, query, substitutions
+            
+        if self.perfLog: #BE: performance logging
+            self.mainQueryCount += 1
+            self.mainQueries.append(query % tuple(substitutions))
+            startTime = time.time()
 
         cursor = self._db.cursor()
         cursor.execute(query, substitutions)
+
+        if self.perfLog: #BE: performance logging
+            self.mainQueryTime += time.time()-startTime
 
         preparation_cursor = self._db.cursor()
 
@@ -954,7 +1029,16 @@ class SQL(Store):
              ' and '.join(where_fragments)))
           if self.debug:
             print >> sys.stderr, query, substitutions
+            
+          if self.perfLog: #BE: performance logging
+            self.rowPrepQueryCount += 1
+            startTime = time.time()
+
           preparation_cursor.execute(query, substitutions)
+          
+          if self.perfLog: #BE: performance logging
+            self.rowPrepQueryTime += time.time()-startTime
+
           prepared_map = dict(zip(
             [description[0] for description in preparation_cursor.description],
             preparation_cursor.fetchone()))
