@@ -12,7 +12,7 @@ import os
 import __builtin__
 import warnings
 from urllib import pathname2url, url2pathname
-from urllib2 import urlopen, Request
+from urllib2 import urlopen, Request, HTTPError
 from urlparse import urljoin
 from StringIO import StringIO
 from xml.sax import xmlreader
@@ -77,8 +77,11 @@ class URLInputSource(InputSource, object):
         self.url = system_id
         # So that we send the headers we want to...
         req = Request(system_id, None, headers)
-        
-        file = urlopen(req)
+        try:
+            file = urlopen(req)
+        except HTTPError, e:
+            # TODO:
+            raise Exception('"%s" while trying to open "%s"' % (e, self.url))
         self.content_type = file.info().get('content-type')
         self.content_type = self.content_type.split(";", 1)[0]
         self.setByteStream(file)
