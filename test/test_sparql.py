@@ -25,7 +25,6 @@ class TestSimpleQueries(unittest.TestCase):
     http://www.w3.org/TR/rdf-sparql-query/#basicpatterns
     """
 
-    known_issue = True
     sparql = True
 
     def test_simple_query(self):
@@ -126,7 +125,8 @@ class TestSimpleQueries(unittest.TestCase):
         WHERE  { ?x org:employeeName ?name }
         """)
 
-        expected_results = g.create_graph("""
+        expected_results = create_graph("""
+        @prefix foaf: <http://xmlns.com/foaf/0.1/> .
         @prefix org: <http://example.com/ns#> .
               
         _:x foaf:name "Alice" .
@@ -140,7 +140,6 @@ class TestRDFLiterals(unittest.TestCase):
     http://www.w3.org/TR/rdf-sparql-query/#matchingRDFLiterals
     """
 
-    known_issue = True
     sparql = True
 
     data = """
@@ -183,7 +182,6 @@ class TestRDFLiterals(unittest.TestCase):
 
 class TestTermConstraints(unittest.TestCase):
 
-    known_issue = True
     sparql = True
 
     data = """

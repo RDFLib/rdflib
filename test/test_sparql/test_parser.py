@@ -4,7 +4,7 @@ from rdflib.sparql import parser, bison as components
 from rdflib.term import Literal, URIRef, Variable, BNode
 from rdflib.namespace import RDF
 
-from nose import tools
+from nose import tools, with_setup
 
 import pyparsing
 
@@ -112,15 +112,19 @@ def strict_Literal_eq(l0, l1):
     except:
         return False
 
-# TODO: this hack breaks the following test:
-#     testE (test.test_comparison.IdentifierEquality) ... FAIL
-#
-# Literal.__eq__ = strict_Literal_eq
+original_Literal_eq = Literal.__eq__
+
+def set_strict_Literal_eq():
+  Literal.__eq__ = strict_Literal_eq
+
+def set_original_Literal_eq():
+  Literal.__eq__ = original_Literal_eq
 
 def should_match(component, before, after):
   result = component.parseString(before).asList()[0]
   tools.assert_equal(after, result)
 
+@with_setup(set_strict_Literal_eq, set_original_Literal_eq)
 def test_components_should_match():
   for def_index, definition in enumerate(match_definitions):
     component, tests = definition
@@ -129,4 +133,3 @@ def test_components_should_match():
       should_match.description = (
         should_match.__name__ + '.%d.%d' % (def_index, test_index))
       yield should_match, component, before, after
-test_components_should_match.known_issue = True

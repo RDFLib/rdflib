@@ -4,8 +4,6 @@ import unittest
 
 class TriXTestCase(unittest.TestCase):
 
-    known_issue = True
-
     def setUp(self):
         pass
 
@@ -27,6 +25,8 @@ class TriXTestCase(unittest.TestCase):
         self.assertEquals(len(c),4)
         
         #print "Parsed %d triples"%t
+
+    testAperture.known_issue = True
 
     def testSpec(self): 
 

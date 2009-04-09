@@ -39,8 +39,6 @@ def test_filter_by_lang():
         expected = [literal]
         yield assert_equal, actual, expected
 
-test_filter_by_lang.known_issue = True
-
 
 def assert_equal(v1, v2):
     assert v1 == v2, "Expected %r == %s" % (v1, v2)

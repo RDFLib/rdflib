@@ -51,8 +51,6 @@ def test_generator():
         #print res.serialize('json')
         yield assert_equal, name, sparql, res.selected, expected
 
-test_generator.known_issue = True
-
 
 #=======================================================================
 

@@ -120,20 +120,20 @@ class QuadSlot(object):
         else:
             return self.term.encode('utf-8')
          
-     def denormalizeTerm(self):
-         """
-         Denormalizes a term by returning a list of columns in a 'collapsed'
-         table (created by merging the binary relation tables and 
-         consolidating the lexical value, term type, and md5 integer for each
-         corresponding term)
-         """
-         parts=[self.md5Int,self.normalizeTerm(),self.termType]
-         if self.termType == 'L':
-             dtypeQSlot = (self.term.datatype and
-                             self.__class__(SUBJECT, self.term.datatype,
-                                            self.useSignedInts)
-                             or None)
-             parts += [dtypeQSlot and dtypeQSlot.md5Int or None,
-                       dtypeQSlot and dtypeQSlot.normalizeTerm() or None,
-                       self.term.language]
-         return parts 
+    def denormalizeTerm(self):
+        """
+        Denormalizes a term by returning a list of columns in a 'collapsed'
+        table (created by merging the binary relation tables and 
+        consolidating the lexical value, term type, and md5 integer for each
+        corresponding term)
+        """
+        parts=[self.md5Int,self.normalizeTerm(),self.termType]
+        if self.termType == 'L':
+            dtypeQSlot = (self.term.datatype and
+                            self.__class__(SUBJECT, self.term.datatype,
+                                           self.useSignedInts)
+                            or None)
+            parts += [dtypeQSlot and dtypeQSlot.md5Int or None,
+                      dtypeQSlot and dtypeQSlot.normalizeTerm() or None,
+                      self.term.language]
+        return parts 

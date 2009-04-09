@@ -94,9 +94,6 @@ class GraphAggregates1(unittest.TestCase):
         assert len(list(self.G.triples_choices((URIRef("http://test/bar"),barPredicates,None)))) == 2
     
 class GraphAggregates2(unittest.TestCase):
-
-    known_issue = True
-
     def setUp(self):
         memStore = plugin.get('IOMemory',Store)()
         self.graph1 = Graph(memStore,URIRef("http://example.com/graph1"))
@@ -124,9 +121,6 @@ class GraphAggregates2(unittest.TestCase):
 
 
 class GraphAggregates3(unittest.TestCase):
-
-    known_issue = True
-
     def setUp(self):
         memStore = plugin.get('IOMemory',Store)()
         self.graph1 = Graph(memStore,URIRef("graph1"))

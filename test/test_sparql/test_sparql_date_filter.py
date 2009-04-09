@@ -55,9 +55,6 @@ WHERE {
 ANSWER1 = URIRef('http://del.icio.us/rss/chimezie/paper')
 
 class DateFilterTest(unittest.TestCase):
-
-    known_issue = True
-
     def setUp(self):
         self.graph = ConjunctiveGraph()
         self.graph.load(StringIO(testContent), format='n3')

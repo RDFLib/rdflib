@@ -1,7 +1,9 @@
-from rdflib.Namespace import Namespace
+from rdflib.namespace import Namespace, RDF, RDFS
 from rdflib.store import Store, VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
-from rdflib import plugin,RDF,RDFS,URIRef, StringInputSource, Literal, BNode, Variable
-from rdflib.Graph import Graph,ReadOnlyGraphAggregate,ConjunctiveGraph
+from rdflib import plugin
+from rdflib.term import URIRef, Literal, BNode, Variable
+from rdflib.parser import StringInputSource
+from rdflib.graph import Graph, ReadOnlyGraphAggregate, ConjunctiveGraph
 import unittest,sys
 from pprint import pprint
 
@@ -27,6 +29,9 @@ WHERE {
 """
 
 class TestSPARQLAbbreviations(unittest.TestCase):
+
+    manual = True
+
     def setUp(self):
         NS = u"http://example.org/"
         self.graph = Graph(store)

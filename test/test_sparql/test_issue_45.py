@@ -8,9 +8,6 @@ from rdflib.sparql import Algebra
 from StringIO import StringIO
 
 class TestSparqlASK(unittest.TestCase):
-
-    known_issue = True
-
     def setUp(self):
         self.graph = Graph()
 
@@ -37,7 +34,9 @@ class TestSparqlASK(unittest.TestCase):
         """
         res = self.graph.query('ASK { <http://goonmill.org/2007/skill.n3#bar> a <http://goonmill.org/2007/skill.n3#Foo> } ')
         self.assertEquals(res.askAnswer, [True], "The answer should have been that the triple was found")
- 
+
+    test_ask_true.known_issue = True
+
     def test_ask_false(self):
         """
         Ask for a triple that does not exist, assert that the response is False.

@@ -1,8 +1,11 @@
-from rdflib import ConjunctiveGraph, Namespace, BNode, RDF
-from rdflib.Literal import Literal, _XSD_NS
+from rdflib.graph import ConjunctiveGraph
+from rdflib.namespace import Namespace, RDF
+from rdflib.term import BNode, Literal
 
 DC = Namespace(u"http://purl.org/dc/elements/1.1/")
 FUNC = Namespace(u"http://example.org/functions#")
+
+_XSD_NS = Namespace('http://www.w3.org/2001/XMLSchema#')
 
 graph = ConjunctiveGraph()
 graph.add((BNode(), RDF.value, Literal(0)))
@@ -10,7 +13,7 @@ graph.add((BNode(), RDF.value, Literal(1)))
 graph.add((BNode(), RDF.value, Literal(2)))
 graph.add((BNode(), RDF.value, Literal(3)))
 
-from rdflib.Literal import _toPythonMapping
+from rdflib.term import _toPythonMapping
 NUMERIC_TYPES = [type_uri for type_uri in _toPythonMapping if \
                  _toPythonMapping[type_uri] in (int, float, long)]
 
@@ -36,6 +39,11 @@ def test_even_extension():
     res.sort()
     expected = [Literal(0), Literal(2)]
     assert res == expected, "Expected %s but got %s" % (expected, res)
+
+test_even_extension.known_issue = True # Extension functions are not
+                                       # implemented!  See the
+                                       # `mapToOperator` function in
+                                       # SPARQLEvaluate.py for details.
 
 if __name__ == '__main__':
     test_even_extension()

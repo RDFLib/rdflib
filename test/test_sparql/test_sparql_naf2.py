@@ -27,9 +27,6 @@ WHERE {
     FILTER (!bound(?OP)) }"""
 
 class TestSparqlOPT_FILTER2(unittest.TestCase):
-
-    known_issue = True
-
     def setUp(self):
         self.graph = ConjunctiveGraph()
         self.graph.load(StringIO(testContent), format='n3')

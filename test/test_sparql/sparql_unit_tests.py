@@ -1,7 +1,9 @@
 # -*- coding: UTF-8 -*-
 from cStringIO import StringIO
-from rdflib import URIRef, Literal, RDFS, plugin
-from rdflib.Graph import Graph, ConjunctiveGraph
+from rdflib import plugin
+from rdflib.term import URIRef, Literal
+from rdflib.namespace import RDFS
+from rdflib.graph import Graph, ConjunctiveGraph
 from optparse import OptionParser
 from xml.sax import  SAXParseException
 from rdflib.store import Store, VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
@@ -19,6 +21,9 @@ class AbstractSPARQLUnitTestCase(unittest.TestCase):
     Note, an RDF graph is not required for tests that only exercise
     syntax alone (like the TestOPTVariableCorrelationTest below)
     """
+
+    manual = True
+
     TEST_FACT = None
     TEST_FACT_FORMAT = 'xml'
     def setUp(self):        
