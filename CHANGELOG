@@ -1,3 +1,4 @@
+        (#58) Removed a stderr print inside the SQLite store implementation.
 
         RELEASE 2.4.1
 
