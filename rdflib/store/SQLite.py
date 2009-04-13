@@ -8,7 +8,7 @@ except ImportError:
     import warnings
     warnings.warn("pysqlite2 is not installed")
     __test__=False
-import sha,sys,re,os
+import sha,re,os
 from rdflib.term_utils import *
 from rdflib.graph import QuotedGraph
 from rdflib.store.REGEXMatching import REGEXTerm, NATIVE_REGEX, PYTHON_REGEX
@@ -114,7 +114,6 @@ class SQLite(AbstractSQLStore):
             c.close()
             for tn in [tbl%(self._internedId) for tbl in table_name_prefixes]:
                 if tn not in tbls:
-                    sys.stderr.write("table %s Doesn't exist\n" % (tn));
                     #The database exists, but one of the partitions doesn't exist
                     return 0
             #Everything is there (the database and the partitions)
