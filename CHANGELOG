@@ -1,5 +1,18 @@
-        (#58) Removed a stderr print inside the SQLite store implementation.
+Not/Yet/Released
+        RELEASE 2.5.0
 
+        (Issue #43) Updated Package and Module Names for follow
+        conventions outlined in
+        http://www.python.org/dev/peps/pep-0008/
+
+        (Issue #58) Removed a stderr print inside the SQLite store
+        implementation.
+
+        (Issue #8) Replaced C based SPARQL parser with a pure Python
+        one.
+
+
+2009/03/30
         RELEASE 2.4.1
 
         Fixed Literal comparison case involving Literal's with
