@@ -37,26 +37,6 @@ class TimeStamp(object):
     self.start = datetime.datetime.now()
     self.checkpoint = self.start
 
-def ParseConfigurationString(config_string):
-    """
-    Parses a configuration string in the form:
-    key1=val1,key2=val2,key3=val3,...
-    The following configuration keys are expected (not all are required):
-    user
-    password
-    db
-    host
-    port (optional - defaults to 3306)
-    """
-    kvDict = dict([(part.split('=')[0],part.split('=')[-1]) for part in config_string.split(',')])
-    for requiredKey in ['user','db','host']:
-        assert requiredKey in kvDict
-    if 'port' not in kvDict:
-        kvDict['port']=3306
-    if 'password' not in kvDict:
-        kvDict['password']=''
-    return kvDict
-
 def createTerm(termString,termType,store,objLanguage=None,objDatatype=None):
     if termType == 'L':
         cache = store.literalCache.get((termString,objLanguage,objDatatype))
@@ -174,6 +154,11 @@ class _variable_cluster(object):
       self.subject_name = 'member'
       self.object_name = 'class'
 
+    self.table_subset = set(['associativeBox', 'literalProperties',
+                             'relations'])
+    '''Set of triple tables to query to satisfy this pattern.  This starts
+    with all of them; options can be eliminated as more information is
+    learned.'''
     self.subset_name = None
     '''String indicating the base name of the table or view containing RDF
     statements that this triple pattern will reference.'''
@@ -195,6 +180,11 @@ class _variable_cluster(object):
     self.object_columns = []
     '''SQL column phrases that are relevant to the object of the triple
     pattern that this object represents.'''
+    self.join_fragment_template = (
+      '%s_%%s as %s_statements' % (self.db_prefix, self.component_name,))
+    '''Template for the SQL phrase that defines a table to use for the
+    triple pattern that this object represents in the "from" clause of the
+    full SQL query.'''
     self.join_fragment = None
     '''SQL phrase that defines the table to use for the triple pattern that
     this object represents in the "from" clause of the full SQL query.'''
@@ -241,23 +231,31 @@ class _variable_cluster(object):
       if RDF.type == self.predicate:
         # TODO: find a constant for these somewhere
         self.subset_name = "associativeBox"
+        self.table_subset = set([self.subset_name])
       elif isinstance(self.object_, Literal):
         self.subset_name = "literalProperties"
+        self.table_subset = set([self.subset_name])
       elif isinstance(self.object_, Variable):
         if self.predicate in store.literal_properties:
           self.subset_name = "literalProperties"
+          self.table_subset = set([self.subset_name])
         elif self.predicate in store.resource_properties:
           self.subset_name = "relations"
+          self.table_subset = set([self.subset_name])
         else:
           self.subset_name = "URI_or_literal_object"
+          self.table_subset.remove('associativeBox')
       else:
         self.subset_name = "relations"
+        self.table_subset = set([self.subset_name])
 
     elif isinstance(self.predicate, Variable):
       if isinstance(self.object_, Literal):
         self.subset_name = "literalProperties"
+        self.table_subset = set([self.subset_name])
       elif not isinstance(self.object_, Variable):
         self.subset_name = "relation_or_associativeBox"
+        self.table_subset.remove('literalProperties')
       else:
         self.subset_name = "all"
       
@@ -287,6 +285,7 @@ class _variable_cluster(object):
 
       if 'URI_or_literal_object' == self.subset_name:
         self.subset_name = 'relations'
+        self.table_subset = set([self.subset_name])
         self.join_fragment = (self.db_prefix + '_' + self.subset_name +
           ' as %s_statements' % (self.component_name,))
 
@@ -511,8 +510,12 @@ class SQL(Store):
         self.showDBsCommand = 'SHOW DATABASES'
         self.findTablesCommand = "SHOW TABLES LIKE '%s'"
         self.findViewsCommand = "SHOW TABLES LIKE '%s'"
+        # TODO: Note, the following three members are MySQL-specific, and
+        # must be overridden for other databases.
         self.defaultDB = 'mysql'
-        self.select_modifier = 'straight_join' #BE: note this is MySQL specific syntax
+        self.default_port = 3306
+        self.select_modifier = 'straight_join'
+        self.can_cast_bigint = False
 
         self.INDEX_NS_BINDS_TABLE = \
           'CREATE INDEX uri_index on %s_namespace_binds (uri(100))'
@@ -526,13 +529,13 @@ class SQL(Store):
         self.valueHash = LiteralHash(self._internedId,
           self.useSignedInts, self.hashFieldType, self.engine, declareEnums)
         self.binaryRelations = NamedBinaryRelations(
-          self._internedId, self.idHash, self.valueHash,
+          self._internedId, self.idHash, self.valueHash, self,
           self.useSignedInts, self.hashFieldType, self.engine, declareEnums)
         self.literalProperties = NamedLiteralProperties(
-          self._internedId, self.idHash, self.valueHash,
+          self._internedId, self.idHash, self.valueHash, self,
           self.useSignedInts, self.hashFieldType, self.engine, declareEnums)
         self.aboxAssertions = AssociativeBox(
-          self._internedId, self.idHash, self.valueHash,
+          self._internedId, self.idHash, self.valueHash, self,
           self.useSignedInts, self.hashFieldType, self.engine, declareEnums)
                 
         self.tables = [
@@ -574,9 +577,9 @@ class SQL(Store):
         #of the triple pattern is
         self.STRONGLY_TYPED_TERMS = False
         self._db = None
-        self.configuration = None
         if configuration is not None:
-            self.open(configuration)
+            #self.open(configuration)
+            self._set_connection_parameters(configuration=configuration)
 
 
         self.cacheHits = 0
@@ -689,13 +692,13 @@ class SQL(Store):
 
         self.length = None
 
-    def _dbState(self,db,configDict):
+    def _dbState(self, db):
         c=db.cursor()
         self.log_statement(self.showDBsCommand)
         self.executeSQL(c, self.showDBsCommand)
         #FIXME This is a character set hack.  See: http://sourceforge.net/forum/forum.php?thread_id=1448424&forum_id=70461
         #self._db.charset = 'utf8'
-        if (configDict['db'].encode('utf-8'),) in [
+        if (self.config['db'].encode('utf-8'),) in [
               tuple(item) for item in c.fetchall()]:
             for tn in self.tables:
                 statement = self.findTablesCommand % (tn,) 
@@ -724,33 +727,60 @@ class SQL(Store):
                 print >> sys.stderr, "## Creating View ##\n",query
             self.executeSQL(cursor, query)
 
-    def connect(user, passwd, db, port, host):
+    def _parse_configuration_string(self, config_string):
+        """
+        Parses a configuration string in the form:
+        key1=val1,key2=val2,key3=val3,...
+        The following configuration keys are expected (not all are required):
+        user
+        password
+        db
+        host
+        port (optional - defaults to 3306)
+        """
+        kvDict = {}
+        for part in config_string.split(','):
+            assignment = part.split('=')
+            kvDict[assignment[0]] = assignment[-1]
+
+        for requiredKey in ['user', 'db', 'host']:
+            assert requiredKey in kvDict
+        if 'port' not in kvDict:
+            kvDict['port'] = self.default_port
+        if 'password' not in kvDict:
+            kvDict['password'] = ''
+        return kvDict
+
+    def _set_connection_parameters(self, db=None, user=None, passwd=None,
+                                   port=None, host=None, configuration=None):
+        if configuration is not None:
+            self.config = self._parse_configuration_string(configuration)
+        else:
+            self.config = dict(user=user, db=db, host=host, port=port,
+                               password=passwd)
+
+    def _connect(self, db=None):
         raise NotImplementedError('SQL is an abstract base class.')
 
+    def _set_db(self, db):
+        self._db = db
+
     #Database Management Methods
-    def create(self, configuration, populate=True):
-        self.configuration = configuration
-        configDict = ParseConfigurationString(configuration)
-        test_db = self.connect(user=configDict['user'],
-                               passwd=configDict['password'],
-                               db=self.defaultDB,
-                               port=configDict['port'],
-                               host=configDict['host'])
+    def create(self, configuration=None, populate=True):
+        if configuration is not None:
+            self._set_connection_parameters(configuration=configuration)
+        test_db = self._connect(self.defaultDB)
         c=test_db.cursor()
         self.executeSQL(c, 'COMMIT')
         self.executeSQL(c, self.showDBsCommand)
-        if not (configDict['db'].encode('utf-8'),) in [
+        if not (self.config['db'].encode('utf-8'),) in [
                 tuple(item) for item in c.fetchall()]:
-            print >> sys.stderr, "creating %s (doesn't exist)"%(configDict['db'])
-            self.executeSQL(c, "CREATE DATABASE %s" % (configDict['db'],))
+            print >> sys.stderr, "creating %s (doesn't exist)"%(self.config['db'])
+            self.executeSQL(c, "CREATE DATABASE %s" % (self.config['db'],))
         c.close()
         test_db.close()
 
-        db = self.connect(user=configDict['user'],
-                          passwd=configDict['password'],
-                          db=configDict['db'],
-                          port=configDict['port'],
-                          host=configDict['host'])
+        db = self._connect()
         c=db.cursor()
         self.executeSQL(c, 'COMMIT')
         self.executeSQL(c, 'START TRANSACTION')
@@ -767,7 +797,7 @@ class SQL(Store):
         self._createViews(c)
         self.executeSQL(c, 'COMMIT')
         c.close()
-        self._db = db
+        self._set_db(db)
 
     def applyIndices(self):
         c = self._db.cursor()
@@ -793,7 +823,7 @@ class SQL(Store):
             for statement in kb.removeForeignKeyStatements():
                 self.executeSQL(c, statement)
 
-    def open(self, configuration, create=False):
+    def open(self, configuration=None, create=False):
         """
         Opens the store specified by the configuration string. If
         create is True a store will be created if it does not already
@@ -804,21 +834,17 @@ class SQL(Store):
         """
         if self._db is not None:
             self._db.close()
-        self.configuration = configuration
-        configDict = ParseConfigurationString(configuration)
+        if configuration is not None:
+            self._set_connection_parameters(configuration=configuration)
         if create:
-            self.create(configuration)
+            self.create()
             self.applyIndices()
             self.applyForeignKeys()
         else:
             #This branch is needed for backward compatibility
             #which didn't use SQL views
-            _db=self.connect(user=configDict['user'],
-                             passwd=configDict['password'],
-                             db=configDict['db'],
-                             port=configDict['port'],
-                             host=configDict['host'])
-            if self._dbState(_db,configDict) == VALID_STORE:
+            _db=self._connect()
+            if self._dbState(_db) == VALID_STORE:
                 c=_db.cursor()
                 self.executeSQL(c, 'COMMIT')
                 self.executeSQL(c, 'START TRANSACTION')
@@ -854,11 +880,7 @@ class SQL(Store):
                     #None of the views have been defined - so this is
                     #an old (but valid) store
                     #we need to create the missing views 
-                    db = self.connect(user = configDict['user'],
-                                      passwd = configDict['password'],
-                                      db=configDict['db'],
-                                      port=configDict['port'],
-                                      host=configDict['host'])
+                    db = self._connect()
                     c=db.cursor()
                     self.executeSQL(c, 'COMMIT')
                     self.executeSQL(c, 'START TRANSACTION')
@@ -868,22 +890,14 @@ class SQL(Store):
                 elif len(existingViews)!=len(views):
                     #Not all the views have been setup
                     return CORRUPTED_STORE                        
-        try:
-            port = int(configDict['port'])
-        except:
-            raise ArithmeticError('server port must be a valid integer')
-        self._db = self.connect(user=configDict['user'],
-                                passwd=configDict['password'],
-                                db=configDict['db'],
-                                port=port,
-                                host=configDict['host'])
+        self._set_db(self._connect())
         c = self._db.cursor()
         self.executeSQL(c, 'COMMIT')
         #self._db.autocommit(False)
         
         #Manage triple pattern statistics
         self.stats = None
-        statsFName = configDict.get('sparqlStatsFile')
+        statsFName = self.config.get('sparqlStatsFile')
         if statsFName:
             self.stats = LoadCachedStats(statsFName)
             if not self.stats:
@@ -894,18 +908,15 @@ class SQL(Store):
                 cPickle.dump(self.stats, f)
                 f.close()
         
-        return self._dbState(self._db, configDict)
+        return self._dbState(self._db)
 
-    def destroy(self, configuration):
+    def destroy(self, configuration=None):
         """
         FIXME: Add documentation
         """
-        configDict = ParseConfigurationString(configuration)
-        db = self.connect(user=configDict['user'],
-                          passwd=configDict['password'],
-                          db=configDict['db'],
-                          port=configDict['port'],
-                          host=configDict['host'])
+        if configuration is not None:
+            self._set_connection_parameters(configuration=configuration)
+        db = self._connect()
         #db.autocommit(False)
         c=db.cursor()
         self.executeSQL(c, 'COMMIT')
@@ -928,7 +939,7 @@ class SQL(Store):
                 print >> sys.stderr, e
 
         #Note, this only removes the associated tables for the closed world universe given by the identifier
-        print >> sys.stderr, "Destroyed Close World Universe %s ( in SQL database %s)"%(self.identifier,configDict['db'])
+        print >> sys.stderr, "Destroyed Close World Universe %s ( in SQL database %s)"%(self.identifier,self.config['db'])
         self.executeSQL(c, 'COMMIT')
         db.close()
         self.note_modified()
@@ -1023,7 +1034,7 @@ class SQL(Store):
 
         # Construct and execute the SQL query.
         columns_fragment = ', '.join(columns)
-        from_fragment = ',\n '.join(from_fragments)
+        from_fragment = '\ncross join\n '.join(from_fragments)
         where_fragment = ' and '.join(where_fragments)
         if len(where_fragment) > 0:
           where_fragment = '\nwhere\n' + where_fragment
@@ -1407,11 +1418,15 @@ class MySQL(SQL):
     """
     try:
         import MySQLdb
-        def connect(self, user, passwd, db, port, host):
-            return MySQL.MySQLdb.connect(user=user, passwd=passwd, db=db,
-                                         port=port, host=host)
+        def _connect(self, db=None):
+            if db is None:
+                db = self.config['db']
+            return MySQL.MySQLdb.connect(
+                     user=self.config['user'],
+                     passwd=self.config['password'], db=db,
+                     port=self.config['port'], host=self.config['host'])
     except ImportError:
-        def connect(self, user, passwd, db, port, host):
+        def _connect(self, db=None):
             raise NotImplementedError(
               'We need the MySQLdb module to connect to MySQL databases.')
     
@@ -1431,8 +1446,8 @@ class PostgreSQL(SQL):
     def __init__(self, identifier=None, configuration=None,
                  debug=False):
         super(PostgreSQL, self).__init__(identifier=identifier,
-          configuration=None, debug=False, engine="", useSignedInts=True,
-          hashFieldType='BIGINT', declareEnums=True)
+          configuration=None, debug=debug, engine="",
+          useSignedInts=True, hashFieldType='BIGINT', declareEnums=True)
 
         self.showDBsCommand = 'SELECT datname FROM pg_database'
         self.findTablesCommand = """SELECT tablename FROM pg_tables WHERE
@@ -1440,26 +1455,42 @@ class PostgreSQL(SQL):
         self.findViewsCommand = """SELECT viewname FROM pg_views WHERE
                                     viewname = lower('%s')"""
         self.defaultDB = 'template1'
+        self.default_port = 5432
+        self.can_cast_bigint = True
+        if configuration is not None:
+            self._set_connection_parameters(configuration=configuration)
         self.select_modifier = ''
 
         self.INDEX_NS_BINDS_TABLE = \
           'CREATE INDEX uri_index on %s_namespace_binds (uri)'
 
+    def _set_db(self, db):
+        self._db = db
+        #cursor = db.cursor()
+        #self.executeSQL(cursor, 'SET join_collapse_limit = 1')
+
     try:
         import pgdb
-        def connect(self, user, passwd, db, port, host):
+        def _connect(self, db=None):
+            if db is None:
+                db = self.config['db']
             return PostgreSQL.pgdb.connect(
-                     user=user, password=passwd, database=db,
-                     host=host + ':' + str(port))
+                     user=self.config['user'],
+                     password=self.config['password'], database=db,
+                     host=self.config['host'] + ':' +
+                          str(self.config['port']))
     except ImportError:
         try:
             from postgresql.interface.proboscis import dbapi2
-            def connect(self, user, passwd, db, port, host):
+            def _connect(self, db=None):
+                if db is None:
+                    db = self.config['db']
                 return PostgreSQL.dbapi2.connect(
-                         user=user, password=passwd, database=db,
-                         host=host, port=port)
+                         user=self.config['user'],
+                         password=self.config['password'], database=db,
+                         host=self.config['host'], port=self.config['port'])
         except ImportError:
-            def connect(self, user, passwd, db, port, host):
+            def _connect(self, db=None):
                 raise NotImplementedError(
                   'We need the PyGreSQL module to connect to PostgreSQL databases.')
 

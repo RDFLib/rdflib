@@ -63,7 +63,7 @@ def normalizeValue(value, termType, useSignedInts=False):
         value = u'http://www.w3.org/2002/07/owl#NothingU'
     else:
         value = (isinstance(value,Graph) and value.identifier or str(value)) + termType
-    unsigned_hash = int(md5.new(
+    unsigned_hash = int(md5(
                       isinstance(value, unicode) and value.encode('utf-8')
                                                  or value)
                     .hexdigest()[:16], 16)
@@ -72,9 +72,6 @@ def normalizeValue(value, termType, useSignedInts=False):
         return makeSigned(unsigned_hash)
     else:
         return unsigned_hash
-
-def normalizeNode(node):
-    return normalizeValue(node, term2Letter(node))
 
 bigint_signed_max = 2**63
 def makeSigned(bigint):
@@ -119,21 +116,10 @@ class QuadSlot(object):
             return self.term
         else:
             return self.term.encode('utf-8')
-         
-    def denormalizeTerm(self):
-        """
-        Denormalizes a term by returning a list of columns in a 'collapsed'
-        table (created by merging the binary relation tables and 
-        consolidating the lexical value, term type, and md5 integer for each
-        corresponding term)
-        """
-        parts=[self.md5Int,self.normalizeTerm(),self.termType]
-        if self.termType == 'L':
-            dtypeQSlot = (self.term.datatype and
-                            self.__class__(SUBJECT, self.term.datatype,
-                                           self.useSignedInts)
-                            or None)
-            parts += [dtypeQSlot and dtypeQSlot.md5Int or None,
-                      dtypeQSlot and dtypeQSlot.normalizeTerm() or None,
-                      self.term.language]
-        return parts 
+        
+    def getDatatypeQuadSlot(self):
+        if self.termType == 'L' and self.term.datatype:
+            return self.__class__(SUBJECT, self.term.datatype,
+                                  self.useSignedInts)
+        return None
+

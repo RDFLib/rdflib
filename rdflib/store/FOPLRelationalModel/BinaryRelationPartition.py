@@ -67,9 +67,10 @@ class BinaryRelationPartition(Table):
     indexSuffix = 'Index'
     literalTable = False
     objectPropertyTable = False
-    def __init__(self, identifier, idHash, valueHash,
+    def __init__(self, identifier, idHash, valueHash, store,
                  useSignedInts=False, hashFieldType='BIGINT unsigned',
                  engine='ENGINE=InnoDB', declareEnums=False):
+        self.store = store
         self.identifier = identifier
         self.idHash    = idHash
         self.valueHash = valueHash
@@ -124,8 +125,20 @@ class BinaryRelationPartition(Table):
         return [pair[1] for pair in self._foreign]
 
     def order_column_names(self, positions):
-        return [self.columnNames[position] for
-          position in positions if self.columnNames[position] is not None]
+        ordering = []
+        for index in positions:
+            if index < len(self.columnNames):
+                namespec = self.columnNames[index]
+                if isinstance(namespec, tuple):
+                    namespec = namespec[0]
+
+                if namespec is not None:
+                    ordering.append(namespec)
+
+        return ordering
+
+        #return [self.columnNames[position] for
+        #  position in positions if self.columnNames[position] is not None]
 
     def _cacheStatements(self):
         self._indexing = []
@@ -179,7 +192,8 @@ class BinaryRelationPartition(Table):
           ('CREATE UNIQUE INDEX %s_posc%s ON %s (%s)' %
              (self.get_name(), self.indexSuffix, self.get_name(),
               ', '.join(self.order_column_names(
-                (PREDICATE, OBJECT, SUBJECT, CONTEXT)))),
+                (PREDICATE, OBJECT, SUBJECT, CONTEXT, DATATYPE_INDEX,
+                 LANGUAGE_INDEX)))),
            'DROP INDEX %s_posc%s ON %s' %
              (self.get_name(), self.indexSuffix, self.get_name())))
 
@@ -282,6 +296,12 @@ class BinaryRelationPartition(Table):
         rt=[]
         if relations_only and self.objectPropertyTable:
             return "select * from %s"%repr(self)
+
+        if self.useSignedInts:
+            int_cast = 'BIGINT'
+        else:
+            int_cast = 'UNSIGNED BIGINT'
+
         for idx in range(len(POSITION_LIST)):
             rdfTermLabel=SlotPrefixes[idx]
             if idx < len(self.columnNames) and self.columnNames[idx]:
@@ -289,30 +309,37 @@ class BinaryRelationPartition(Table):
                 rt.append(self.columnNames[idx]+' as %s'%rdfTermLabel)
                 if self.termEnumerations[idx]:
                     #there is a corresponding term enumeration
-                    rt.append(self.columnNames[idx]+'_term as %s_term'%rdfTermLabel)
+                    rt.append(self.columnNames[idx] +
+                              '_term as %s_term' % (rdfTermLabel,))
                 else:
                     #no corresponding term enumeration (hardcoded)
-                    rt.append("'%s' as %s_term"%(self.hardCodedResultTermsTypes[idx],
-                                                 rdfTermLabel))
+                    rt.append("CAST('%s' as CHAR) as %s_term" %
+                                (self.hardCodedResultTermsTypes[idx],
+                                 rdfTermLabel))
             else:
                 assert self.hardCodedResultFields[idx] == RDF.type
-                rt.append("'%s' as %s" % (normalizeValue(
-                # reverted Brendan's fix: b4e8646d61a2 (Fixed bug in View 
-                #creation for MySQL store that was causing the View to have 
-                #the predicate column as VARCHAR(20) instead of BIGINT)
-                #rt.append("CONVERT('%s',UNSIGNED INTEGER) as %s" % (normalizeValue(
-                  self.hardCodedResultFields[idx], 'U', self.useSignedInts),
-                                          rdfTermLabel))
+                if not self.store.can_cast_bigint:
+                    rt.append("%s as %s" % (normalizeValue(
+                      self.hardCodedResultFields[idx], 'U',
+                      self.useSignedInts), rdfTermLabel))
+                else:
+                    rt.append("CAST('%s' as %s) as %s" % (normalizeValue(
+                      self.hardCodedResultFields[idx], 'U',
+                      self.useSignedInts), int_cast, rdfTermLabel))
                 if self.hardCodedResultTermsTypes[idx]:
-                    rt.append("'%s' as %s_term"%(self.hardCodedResultTermsTypes[idx],
-                                                 rdfTermLabel))
+                    rt.append("CAST('%s' as CHAR) as %s_term" %
+                                (self.hardCodedResultTermsTypes[idx],
+                                 rdfTermLabel))
         if not relations_only:
             if self.literalTable:
                 for i in self.columnNames[-2:]:
                     rt.append(i[0])
             else:
-                rt.append('NULL as data_type')
-                rt.append('NULL as language')
+                if not self.store.can_cast_bigint:
+                    rt.append('NULL as data_type')
+                else:
+                    rt.append('CAST(NULL as %s) as data_type' % (int_cast,))
+                rt.append('CAST(NULL as char(3)) as language')
         return "select %s from %s"%(', '.join(rt),repr(self))        
 
     def selectContextFields(self,first):
@@ -480,9 +507,10 @@ class AssociativeBox(BinaryRelationPartition):
     def listIdentifiers(self, quadSlots):
         subjSlot, predSlot, objSlot, conSlot = quadSlots
 
-        return [(subjSlot.md5Int, subjSlot.termType, subjSlot.term),
-                (objSlot.md5Int, objSlot.termType, objSlot.term),
-                (conSlot.md5Int, conSlot.termType, conSlot.term)]
+        return [(subjSlot.md5Int, subjSlot.termType,
+                 subjSlot.normalizeTerm()),
+                (objSlot.md5Int, objSlot.termType, objSlot.normalizeTerm()),
+                (conSlot.md5Int, conSlot.termType, conSlot.normalizeTerm())]
 
     def extractIdentifiers(self,quadSlots):
         subjSlot,predSlot,objSlot,conSlot = quadSlots
@@ -520,15 +548,15 @@ class NamedLiteralProperties(BinaryRelationPartition):
                     hash.columns[0][0])]
         return rt
 
-    def __init__(self, identifier, idHash, valueHash,
+    def __init__(self, identifier, idHash, valueHash, store,
                  useSignedInts=False, hashFieldType='BIGINT unsigned',
                  engine='ENGINE=InnoDB', declareEnums=False):
         self.columnNames = ['subject', 'predicate', 'object', CONTEXT_COLUMN,
                             ('data_type', hashFieldType, '%s'),
                             ('language', 'varchar(3)', '%s')]
         super(NamedLiteralProperties, self).__init__(
-          identifier, idHash, valueHash, useSignedInts, hashFieldType,
-          engine, declareEnums)
+          identifier, idHash, valueHash, store, useSignedInts,
+          hashFieldType, engine, declareEnums)
         self.insertSQLCmds = {
            (False,False): self.insertRelationsSQLCMD(),
            (False,True) : self.insertRelationsSQLCMD(language=True),
@@ -655,18 +683,21 @@ class NamedLiteralProperties(BinaryRelationPartition):
     def listIdentifiers(self, quadSlots):
         subjSlot, predSlot, objSlot, conSlot = quadSlots
 
-        idTerms = [(subjSlot.md5Int, subjSlot.termType, subjSlot.term),
-                   (predSlot.md5Int, predSlot.termType, predSlot.term),
-                   (conSlot.md5Int, conSlot.termType, conSlot.term)]
+        idTerms = [(subjSlot.md5Int, subjSlot.termType,
+                    subjSlot.normalizeTerm()),
+                   (predSlot.md5Int, predSlot.termType,
+                    predSlot.normalizeTerm()),
+                   (conSlot.md5Int, conSlot.termType,
+                    conSlot.normalizeTerm())]
         if objSlot.term.datatype:
             dt = objSlot.getDatatypeQuadSlot()
-            idTerms.append((dt.md5Int, dt.termType, dt.term))
+            idTerms.append((dt.md5Int, dt.termType, dt.normalizeTerm()))
         return idTerms
 
     def listLiterals(self, quadSlots):
         subjSlot, predSlot, objSlot, conSlot = quadSlots
 
-        return [(objSlot.md5Int, objSlot.term)]
+        return [(objSlot.md5Int, objSlot.normalizeTerm())]
 
     def selectFields(self,first=False):
         return first and self._selectFieldsLeading or self._selectFieldsNonLeading
@@ -708,10 +739,12 @@ class NamedBinaryRelations(BinaryRelationPartition):
     def listIdentifiers(self, quadSlots):
         subjSlot, predSlot, objSlot, conSlot = quadSlots
 
-        return [(subjSlot.md5Int, subjSlot.termType, subjSlot.term),
-                (predSlot.md5Int, predSlot.termType, predSlot.term),
-                (objSlot.md5Int, objSlot.termType, objSlot.term),
-                (conSlot.md5Int, conSlot.termType, conSlot.term)]
+        return [(subjSlot.md5Int, subjSlot.termType,
+                 subjSlot.normalizeTerm()),
+                (predSlot.md5Int, predSlot.termType,
+                 predSlot.normalizeTerm()),
+                (objSlot.md5Int, objSlot.termType, objSlot.normalizeTerm()),
+                (conSlot.md5Int, conSlot.termType, conSlot.normalizeTerm())]
 
     def extractIdentifiers(self,quadSlots):
         subjSlot,predSlot,objSlot,conSlot = quadSlots

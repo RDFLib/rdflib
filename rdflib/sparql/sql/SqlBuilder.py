@@ -118,7 +118,7 @@ class SqlBuilder(object):
             sqlAlias = self.MakeSqlVarAlias(alias)
         else:
             sqlAlias = alias
-        self.selectClause.append("%s AS '%s'"%(expr,sqlAlias))
+        self.selectClause.append("%s AS %s"%(expr,sqlAlias))
         self.selectAlias.append(sqlAlias)
         self.outputFields.add(sqlAlias)
         return sqlAlias
@@ -129,7 +129,7 @@ class SqlBuilder(object):
                 sqlAlias = self.MakeSqlVarAlias(alias)
             else:
                 sqlAlias = alias
-            self.selectClause.append("%s.%s AS '%s'"%(tupleName, field, sqlAlias))
+            self.selectClause.append("%s.%s AS %s"%(tupleName, field, sqlAlias))
             self.selectAlias.append(sqlAlias)
             self.outputFields.add(sqlAlias)
             return sqlAlias

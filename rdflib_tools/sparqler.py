@@ -20,10 +20,12 @@ one from <http://www.gnu.org/licenses/>.
 
 import sys
 from rdflib.sparql.bison.Query import Prolog
-from rdflib import plugin, Namespace, URIRef, RDF, BNode, Variable, Literal, RDFS, util
+from rdflib import plugin, util
+from rdflib.namespace import Namespace, RDF, RDFS
+from rdflib.term import URIRef, BNode, Variable, Literal
 from rdflib.store import Store
-from rdflib.sparql.bison import Parse
-from rdflib.Graph import ConjunctiveGraph, Graph
+from rdflib.sparql.parser import parse
+from rdflib.graph import ConjunctiveGraph, Graph
 from rdflib.sparql.sql.RelationalAlgebra import RdfSqlBuilder, ParseQuery, DEFAULT_OPT_FLAGS
 from rdflib.sparql.sql.RdfSqlBuilder import *
 
@@ -61,7 +63,7 @@ def print_set(intro, aSet, stream=sys.stderr):
     print >> stream, ' ', el
 
 def prepQuery(queryString,ontGraph):
-    query=Parse(queryString)
+    query=parse(queryString)
     if ontGraph:
         if not query.prolog:
             query.prolog = Prolog(None, [])
@@ -137,6 +139,9 @@ def main():
                 store.literal_properties.add(litProp)
             if resProp: 
                 store.resource_properties.add(resProp)
+        if options.debug:
+            print "literalProperties: ", litProp
+            print "resourceProperties: ", resProp
     if options.storeKind == 'MySQL' and options.rdfs:
         for litProp,resProp in ontGraph.query(RDFS_PROPERTIES_QUERY,
                                               initNs={u'owl':OWL_NS}):
@@ -144,9 +149,9 @@ def main():
                 store.literal_properties.add(litProp)
             if resProp: 
                 store.resource_properties.add(resProp)
-    if options.debug:
-        print "literalProperties: ", litProp
-        print "resourceProperties: ", resProp
+        if options.debug:
+            print "literalProperties: ", litProp
+            print "resourceProperties: ", resProp
     rt = store.open(connection, create=False)
     dataset = ConjunctiveGraph(store)
     if options.inMemorySQL:

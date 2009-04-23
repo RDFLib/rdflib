@@ -1,6 +1,5 @@
-from rdflib.Graph import Graph, ReadOnlyGraphAggregate, ConjunctiveGraph
+from rdflib.graph import Graph, ReadOnlyGraphAggregate, ConjunctiveGraph
 import rdflib, time, math
-from rdflib.sparql.bison import Parse
 from rdflib.sparql.bison.Query import *
 from rdflib.sparql.bison.GraphPattern import *
 from rdflib.sparql.bison.Operators import *
@@ -10,9 +9,7 @@ from rdflib.sparql.bison.Expression import *
 from rdflib.sparql.bison.Resource import Resource
 from rdflib.sparql.bison.QName import *
 from rdflib.sparql.bison.IRIRef import NamedGraph,RemoteGraph
-from rdflib.Variable import Variable
-from rdflib.Literal import Literal
-from rdflib import BNode
+from rdflib.term import URIRef, Variable, Literal, BNode
 from rdflib.sparql.bison.SolutionModifier import ASCENDING_ORDER
 from rdflib.sparql.bison.SPARQLEvaluate import unRollTripleItems
 from rdflib import plugin, exceptions
@@ -1468,7 +1465,7 @@ class RelFilter(RelationalOperator):
         return s | self.pattern.GetUsedVariables(sqlBuilder,includeBNodes)
         
 def ParseFilterExp(filter,prolog):
-    if filter == None:
+    if filter is None:
         return None
     if isinstance(filter, Variable) or type(filter) is BNode:
         return RelVariableExp(filter, type(filter) is BNode)

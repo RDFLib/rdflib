@@ -1,5 +1,5 @@
 import rdflib
-from rdflib.sparql.bison import Parse
+from rdflib.sparql.parser import parse
 from rdflib.sparql.bison.Query import *
 from rdflib.sparql.bison.QName import *
 from rdflib.sparql.bison.GraphPattern import *
@@ -7,8 +7,7 @@ from rdflib.sparql.bison.Operators import *
 from rdflib.sparql.bison.FunctionLibrary import *
 from rdflib.sparql.bison.Util import ListRedirect
 from rdflib.sparql.bison.Expression import *
-from rdflib.Variable import Variable
-from rdflib.Literal import Literal
+from rdflib.term import Variable, Literal
 
 printDepth = 0
 depthPrintEnabled = False
@@ -46,7 +45,7 @@ def QueryStats(queryString, log, depthPrint = False):
     
     # use the SPARQL parser
     try:
-        q = Parse(queryString)
+        q = parse(queryString)
         log['ParseError'] = 0
     except Exception, e:
         print 'PARSE ERROR: %s' % e

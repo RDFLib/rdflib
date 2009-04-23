@@ -308,7 +308,8 @@ class RdfSqlBuilder(SqlBuilder):
             self.UseOptimization(OPT_JOIN_STOCKER08) or
             self.UseOptimization(OPT_JOIN_RANDOM)):
             # force join order
-            self.SetFlag(FLAG_STRAIGHT_JOIN, True)
+            if self.graph.store.select_modifier:
+                self.SetFlag(FLAG_STRAIGHT_JOIN, True)
         
         return SqlBuilder.Sql(self)        
 
@@ -729,13 +730,13 @@ class RdfSqlBuilder(SqlBuilder):
         return vterm
         
     def GetUriHash(self, uri):
-        return normalizeValue(uri, 'U')
+        return normalizeValue(uri, 'U', self.graph.store.useSignedInts)
     
     def GetLiteralHash(self, lit):
-        return normalizeValue(lit, 'L')
+        return normalizeValue(lit, 'L', self.graph.store.useSignedInts)
     
     def GetBNodeHash(self, bnode):
-        return normalizeValue(bnode, 'B')
+        return normalizeValue(bnode, 'B', self.graph.store.useSignedInts)
     
     def AddWarning(self, message):
         #TODO: display warning on console as well
@@ -826,7 +827,7 @@ class RdfSqlBuilder(SqlBuilder):
             if self.UseEvalOption(EVAL_OPTION_STRICT_DATATYPE) and \
                isinstance(tp.obj,Literal) and tp.obj.datatype:
                 cond.append("%s = '%s' /*%s*/"%(self.TripleColumn(tableTuple, table,DATATYPE_INDEX)[0], 
-                                                self.AddLiteralParam(normalizeValue(tp.obj.datatype,'U')), 
+                                                self.AddLiteralParam(normalizeValue(tp.obj.datatype, 'U', self.graph.store.useSignedInts)), 
                                                 tp.obj.datatype))
             else:
                 pass

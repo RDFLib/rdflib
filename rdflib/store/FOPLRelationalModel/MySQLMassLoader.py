@@ -1,9 +1,8 @@
-from rdflib import BNode
+from rdflib.term import BNode, Literal
 from rdflib.store import Store
-from rdflib.Literal import Literal
 import sys, re, os
 from rdflib.term_utils import *
-from rdflib.Graph import QuotedGraph
+from rdflib.graph import QuotedGraph, ConjunctiveGraph
 from rdflib.store.MySQL import SQL, MySQL, PostgreSQL
 from rdflib.store import Store
 from rdflib.store.FOPLRelationalModel.QuadSlot import *
@@ -22,8 +21,8 @@ DENORMALIZED_INDEX_TARGETS = [
   'object', 'object_term', 'context', 'context_term']
 
 def make_delimited(_list):
-  return COL_DELIMITER.join(
-    [i is None and 'NULL' or '"%s"' % i for i in _list])
+    return COL_DELIMITER.join(
+      [i is None and 'NULL' or '"%s"' % i for i in _list])
 
 class LoadError(Exception):
   pass
@@ -143,9 +142,21 @@ class Loader(SQL):
     def __init__(self, #triplesFileName=None, lexicalFileName=None,
                  delimited_directory='delimited_dumps',
                  reuseExistingFiles=False):
-      mode = 'a'
+      self.init_storage(delimited_directory, reuseExistingFiles)
+
+      for table in self.tables:
+        table.delimited_file = open(
+          self.delimited_filename(table.get_name()), self.mode)
+
+      self.recent = RecentSet(100000)
+      self.recent_hits = 0
+      self.recent_misses = 0
+
+    def init_storage(self, delimited_directory, reuseExistingFiles):
+      self.log_statement('init_storage')
+      self.mode = 'a'
       if not reuseExistingFiles:
-        mode = 'w'
+        self.mode = 'w'
         try:
           os.mkdir(delimited_directory)
         except OSError:
@@ -153,20 +164,11 @@ class Loader(SQL):
                           '\': it already exists.')
 
       self.delimited_directory = delimited_directory
-        
-      for table in self.tables:
-        table.delimited_file = file(self.delimited_filename(table), mode)
 
-      self.recent = RecentSet(100000)
-      self.recent_hits = 0
-      self.recent_misses = 0
-
-    def delimited_filename(self, table, extension='.csv'):
-      return os.path.join(self.delimited_directory,
-                          table.get_name() + extension)
+    def delimited_filename(self, name, extension='.csv'):
+        return os.path.join(self.delimited_directory, name + extension)
 
     def open(self, configuration=None, create=False):
-      if configuration:
         super(Loader, self).open(configuration, create)
 
     def add(self, (subject, predicate, obj), context=None, quoted=False):
@@ -192,36 +194,8 @@ class Loader(SQL):
                 self.recent_hits += 1
 
             for row in table.listLiterals(qSlots):
-              self.valueHash.delimited_file.write(make_delimited(
-                row) + ROW_DELIMITER)
-
-            if False:
-                #print 'Writing data...', qSlots
-                # Add to the denormalized delimited file: 
-                beginning = True
-                for item in qSlots:
-                    parts = [item.md5Int, item.termType]
-                    self.lexicalFile.write(make_delimited(
-                      parts + [item.normalizeTerm()]) + ROW_DELIMITER)
-                    if item.position == OBJECT:
-                      dqs = item.getDatatypeQuadSlot()
-                      if dqs is not None:
-                        parts.append(dqs.md5Int)
-                        self.lexicalFile.write(make_delimited(
-                          [dqs.md5Int, 'U', dqs.normalizeTerm()]) +
-                          ROW_DELIMITER)
-                      else:
-                        parts.append(None)
-
-                      if item.termType == 'L':
-                        parts.append(item.term.language)
-                      else:
-                        parts.append(None)
-                    if not beginning:
-                        self.triplesFile.write(COL_DELIMITER)
-                    beginning = False    
-                    self.triplesFile.write(make_delimited(parts))
-                self.triplesFile.write(ROW_DELIMITER)
+              self.valueHash.delimited_file.write(
+                make_delimited(row) + ROW_DELIMITER)
 
     def dumpRDF(self, suffix):
       for table in self.tables:
@@ -232,11 +206,15 @@ class Loader(SQL):
     def makeLoadStatement(self, fileName, tableName):
       return self.loadStatement % (fileName, tableName)
 
-    def initDenormalizedTables(self, cursor):
-      raise NotImplementedError(
-        'This method has been deprecated.  See `load_temporary_tables` instead.')
+    def init_workspace(self):
+      pass
+
+    def close_workspace(self):
+      pass
 
     def load_temporary_tables(self, cursor):
+      pass
+      self.log_statement('load_temporary_tables')
       if self.triplesFileName is None or self.lexicalFileName is None:
         return
 
@@ -253,6 +231,7 @@ class Loader(SQL):
       cursor.execute(self.makeLoadStatement(self.lexicalFileName, 'lexical'))
 
     def indexTriplesTable(self, cursor, columns=[]):
+      self.log_statement('indexTriplesTable')
       for column in columns:
         cursor.execute('CREATE INDEX triples_%s ON triples (%s)' %
                        ((column,) * 2))
@@ -260,10 +239,12 @@ class Loader(SQL):
                      (', '.join(columns),))
 
     def indexLexicalTable(self, cursor):
+      self.log_statement('indexLexicalTable')
       cursor.execute('CREATE INDEX lexical_id ON lexical (id)')
       cursor.execute('CREATE INDEX lexical_term_type ON lexical (term_type)')
 
     def loadAssociativeBox(self, indexFirst=False):
+      self.log_statement('loadAssociativeBox')
       cursor = self._db.cursor()
       cursor.execute("""
         insert into %s
@@ -275,6 +256,7 @@ class Loader(SQL):
            str(normalizeNode(RDF.type, self.useSignedInts))))
 
     def loadLiteralProperties(self, indexFirst=False):
+      self.log_statement('loadLiteralProperties')
       cursor = self._db.cursor()
       cursor.execute("""
         insert into %s
@@ -285,6 +267,7 @@ class Loader(SQL):
           (self.literalProperties,))
 
     def loadRelations(self, indexFirst=False):
+      self.log_statement('loadRelations')
       cursor = self._db.cursor()
       cursor.execute("""
         insert into %s
@@ -295,12 +278,14 @@ class Loader(SQL):
            str(normalizeNode(RDF.type, self.useSignedInts))))
 
     def loadLiterals(self, indexFirst=False):
+      self.log_statement('loadLiterals')
       cursor = self._db.cursor()
       cursor.execute("""
         insert into %s select distinct id, lexical from lexical where
         term_type = 'L'""" % (self.valueHash,))
 
     def loadIdentifiers(self, indexFirst=False):
+      self.log_statement('loadIdentifiers')
       cursor = self._db.cursor()
       cursor.execute("""
         insert into %s select distinct id, term_type,
@@ -342,8 +327,11 @@ class MySQLLoader(Loader, MySQL):
                        engine="ENGINE=MyISAM")
         Loader.__init__(self, delimited_directory, reuseExistingFiles)
 
-    def delimited_filename(self, table):
-      return Loader.delimited_filename(self, table, '.csv.mysql')
+    def delimited_filename(self, name):
+      return Loader.delimited_filename(self, name, '.csv.mysql')
+
+    def init_workspace(self):
+      self.applyIndices()
 
     def _loadTable(self, table, indexFirst=False):
       cursor = self._db.cursor()
@@ -353,7 +341,7 @@ class MySQLLoader(Loader, MySQL):
       cursor.execute(sql)
 
       sql = self.makeLoadStatement(
-        self.delimited_filename(table), table.get_name())
+        self.delimited_filename(table.get_name()), table.get_name())
       self.log_statement(sql)
       cursor.execute(sql)
 
@@ -439,7 +427,7 @@ class MySQLLoader(Loader, MySQL):
 class PostgreSQLLoader(Loader, PostgreSQL):
 
     TRIPLES_SQL_TEMPLATE = '''
-      create table denormalized (
+      create table triples (
         subject bigint,
         subject_term char,
         predicate bigint,
@@ -459,20 +447,129 @@ class PostgreSQLLoader(Loader, PostgreSQL):
         lexical text
       )'''
 
-    loadStatement = """COPY %s FROM '%s' WITH DELIMITER '|'
+    loadStatement = """COPY %s FROM STDIN WITH DELIMITER '|'
                        NULL AS 'NULL' CSV ESCAPE E'\\\\'"""
 
     def __init__(self, identifier=None, configuration=None,
                  delimited_directory='delimited_dumps',
                  reuseExistingFiles=False):
         PostgreSQL.__init__(self, identifier, configuration, debug=True)
-        Loader.__init__(self, delimited_directory, reuseExistingFiles)
+        self.init_storage(delimited_directory, reuseExistingFiles)
 
-    def delimited_filename(self, table):
-      return Loader.delimited_filename(self, table, '.csv.postgresql')
+        self.triplesFileName = self.delimited_filename('triples')
+        self.triplesFile = open(self.triplesFileName, self.mode)
+        self.lexicalFileName = self.delimited_filename('lexical')
+        self.lexicalFile = open(self.lexicalFileName, self.mode)
 
-    def makeLoadStatement(fileName, tableName):
-      return self.loadStatement % (tableName, fileName)
+        self.recent = RecentSet(100000)
+        self.recent_hits = 0
+        self.recent_misses = 0
+
+    def delimited_filename(self, name):
+      return Loader.delimited_filename(self, name, '.csv.postgresql')
+
+    def makeLoadStatement(self, fileName, tableName):
+      return self.loadStatement % (tableName,)
+
+    try:
+        import pg
+        def _copy_from_file(self, table, filename):
+            f = open(filename, 'r')
+            conn = self.pg.connect(
+              dbname=self.config['db'], host=self.config['host'],
+              port=int(self.config['port']), user=self.config['user'],
+              passwd=self.config['password'])
+            conn.query(self.makeLoadStatement(filename, table))
+            for _line in f:
+                conn.putline(_line)
+            conn.putline('\\.\n')
+            conn.endcopy()
+            f.close()
+    except ImportError:
+        def _copy_from_file(self, table, filename):
+            raise NotImplementedError(
+              'We need the PyGreSQL module to bulk load into PostgreSQL databases.')
+
+    def load_temporary_tables(self, cursor):
+      self.log_statement('load_temporary_tables')
+      if self.triplesFileName is None or self.lexicalFileName is None:
+        return
+
+      if self.triplesFile and not self.triplesFile.closed:
+        self.triplesFile.close()
+
+      cursor.execute(self.TRIPLES_SQL_TEMPLATE)
+      cursor.execute('COMMIT')
+      self._copy_from_file('triples', self.triplesFileName)
+
+      if self.lexicalFile and not self.lexicalFile.closed:
+        self.lexicalFile.close()
+
+      cursor.execute(self.LEXICAL_SQL_TEMPLATE)
+      cursor.execute('COMMIT')
+      self._copy_from_file('lexical', self.lexicalFileName)
+
+    def init_workspace(self):
+      cursor = self._db.cursor()
+      self.load_temporary_tables(cursor)
+      self.indexTriplesTable(cursor, ['subject', 'predicate', 'object',
+                                      'context'])
+      self.indexLexicalTable(cursor)
+
+    def close_workspace(self):
+      cursor = self._db.cursor()
+      cursor.execute('DROP TABLE triples')
+      cursor.execute('DROP TABLE lexical')
+      self.applyIndices()
+
+    def addN(self, quads):
+        for s,p,o,c in quads:
+            assert c is not None, \
+              "Context associated with %s %s %s is None!" % (s, p, o)
+            qSlots = genQuadSlots([s, p, o, c.identifier],
+                                  self.useSignedInts)
+
+            #print 'Writing data...', qSlots
+            # Add to the denormalized delimited file: 
+            beginning = True
+            for item in qSlots:
+                parts = [item.md5Int, item.termType]
+                if not self.recent.check((item.termType, item.term)):
+                  self.lexicalFile.write(make_delimited(
+                    parts + [item.normalizeTerm()]) + ROW_DELIMITER)
+                  self.recent_misses += 1
+                else:
+                  self.recent_hits += 1
+
+                if item.position == OBJECT:
+                  dqs = item.getDatatypeQuadSlot()
+                  if dqs is not None:
+                    parts.append(dqs.md5Int)
+                    if not self.recent.check((dqs.termType, dqs.term)):
+                      self.lexicalFile.write(make_delimited(
+                        [dqs.md5Int, 'U', dqs.normalizeTerm()]) +
+                        ROW_DELIMITER)
+                      self.recent_misses += 1
+                    else:
+                      self.recent_hits += 1
+                  else:
+                    parts.append(None)
+
+                  if item.termType == 'L':
+                    parts.append(item.term.language)
+                  else:
+                    parts.append(None)
+                if not beginning:
+                    self.triplesFile.write(COL_DELIMITER)
+                beginning = False    
+                self.triplesFile.write(make_delimited(parts))
+            self.triplesFile.write(ROW_DELIMITER)
+
+    def dumpRDF(self, suffix):
+      self.triplesFile.close()
+      self.lexicalFile.close()
+      print >> sys.stderr, 'Recent hits:', self.recent_hits
+      print >> sys.stderr, 'Recent misses:', self.recent_misses
 
 def timing(config, tableid, dumpfile):
   plugins = ['MySQL', 'PostgreSQL']
@@ -562,12 +659,10 @@ def main():
   op = OptionParser(usage=usage)
   op.add_option('-c', '--connection', help='Database connection string')
   op.add_option('-i', '--id', help='Database table set identifier')
-  op.add_option('--triples',
-    help = 'Name of SQL dump file for triples')
-  op.add_option('--lexical',
-    help = 'Name of SQL dump file for lexical values')
+  op.add_option('--delimited',
+    help = 'Directory in which to store delimited files')
   op.add_option('-r', '--reuse', action='store_true',
-    help = 'Reuse existing denormalized files instead of creating new ones')
+    help = 'Reuse existing delimited files instead of creating new ones')
 
   op.add_option('-d', '--delete', action='store_true',
     help = 'Delete old repository before starting')
@@ -598,24 +693,28 @@ def main():
   op.add_option('--timing', action='store_true',
     help = 'Run timing tests')
 
-  op.set_defaults(connection=None, reuse=False, id=None,
+  op.set_defaults(connection=None, delimited='delimited_dumps',
+                  reuse=False, id=None,
                   xml=[], trix=[], n3=[], nt=[], rdfa=[],
                   graphName=BNode())
   (options, args) = op.parse_args()
 
-  if options.triples is not None:
-    options.triples = os.path.abspath(options.triples)
-  if options.lexical is not None:
-    options.lexical = os.path.abspath(options.lexical)
+  if options.delimited is not None:
+    options.delimited = os.path.abspath(options.delimited)
+
+  if not options.id:
+    op.error('You need to provide a table set identifier')
 
   try:
     store = PLUGIN_MAP[args[0]](identifier=options.id,
-      triplesFileName=options.triples, lexicalFileName=options.lexical,
+      configuration=options.connection,
+      delimited_directory=options.delimited,
       reuseExistingFiles=options.reuse)
-  except Exception:
+  except Exception, e:
+    raise
     op.error('You need to provide a database type (MySQL or PostgreSQL).')
 
-  store.open(options.connection)
+  store.open()
   
   factGraph = ConjunctiveGraph(store, identifier=options.graphName)
   if not options.reuse:
@@ -648,30 +747,17 @@ def main():
   store.close()
 
   if options.connection:
-    if not options.id:
-      op.error('You need to provide a table set identifier')
-
     if options.timing:
       timing(config, tableid, dumpfile)
     else:
       if options.delete:
-        store.open(options.connection)
+        print store.open()
         cursor = store._db.cursor()
-        cursor.execute('DROP TABLE triples')
-        cursor.execute('DROP TABLE lexical')
-        store.destroy(options.connection)
+        store.destroy()
         store.close()
 
-      #store = rdflib.plugin.get('MySQL', Store)(tableid)
-
-      store.create(options.connection, False)
-      store.applyIndices()
-      store.applyForeignKeys()
-
-      cursor = store._db.cursor()
-
-      hashFieldType = store.hashFieldType
-      store.load_temporary_tables(cursor)
+      store.create(populate=False)
+      store.init_workspace()
 
       store.loadLiterals()
       store.loadIdentifiers()
@@ -679,7 +765,8 @@ def main():
       store.loadLiteralProperties()
       store.loadRelations()
 
-      #cursor.execute('DROP TABLE denormalized')
+      store.close_workspace()
+      #store.applyForeignKeys()
 
 if __name__ == '__main__':
   main()

@@ -31,8 +31,8 @@ class Processor(sparql.Processor):
                     
         global prolog            
         prolog = strOrQuery.prolog
-        #from rdflib.store.MySQL import SQL
-        if False and isinstance(self.graph.store,SQL) and not \
+        from rdflib.store.MySQL import SQL
+        if isinstance(self.graph.store,SQL) and not \
             (hasattr(self.graph.store,'originalInMemorySQL') and self.graph.store.originalInMemorySQL):
             from rdflib.sparql.sql.RelationalAlgebra import TopEvaluate
             from rdflib.sparql.sql.RdfSqlBuilder import DEFAULT_OPT_FLAGS
