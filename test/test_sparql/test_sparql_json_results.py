@@ -1,3 +1,5 @@
+import json
+
 from rdflib.graph import ConjunctiveGraph
 from StringIO import StringIO
 import unittest
@@ -29,9 +31,7 @@ test_material['optional'] = (PROLOGUE+"""
             OPTIONAL { ?x foaf:knows ?friend . }
     }
     """,
-    """"name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"},
-                   "x" : {"type": "uri", "value" : "http://example.org/bob"}
-                }"""
+    {u'head': {u'vars': [u'name', u'x', u'friend']}, u'results': {u'distinct': False, u'bindings': [{u'x': {u'type': u'uri', u'value': u'http://example.org/alice'}, u'name': {u'xml:lang': u'None', u'type': u'literal', u'value': u'Alice'}, u'friend': {u'type': u'uri', u'value': u'http://example.org/bob'}}, {u'x': {u'type': u'uri', u'value': u'http://example.org/bob'}, u'name': {u'xml:lang': u'None', u'type': u'literal', u'value': u'Bob'}}], u'ordered': False}} 
     )
 
 test_material['select_vars'] = (PROLOGUE+"""
@@ -39,27 +39,19 @@ test_material['select_vars'] = (PROLOGUE+"""
     WHERE { ?x foaf:name ?name .
             OPTIONAL { ?x foaf:knows ?friend . }
     }""",
-    """"vars" : [
-             "name",
-             "friend"
-         ]"""
+    {u'head': {u'vars': [u'name', u'friend']}, u'results': {u'distinct': False, u'bindings': [{u'name': {u'xml:lang': u'None', u'type': u'literal', u'value': u'Bob'}}, {u'name': {u'xml:lang': u'None', u'type': u'literal', u'value': u'Alice'}, u'friend': {u'type': u'uri', u'value': u'http://example.org/bob'}}], u'ordered': False}} 
     )
 
 test_material['wildcard'] = (PROLOGUE+"""
     SELECT * WHERE { ?x foaf:name ?name . }
     """,
-    """"name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"},
-                   "x" : {"type": "uri", "value" : "http://example.org/bob"}
-                }"""
+    {u'head': {u'vars': [u'x', u'name']}, u'results': {u'distinct': False, u'bindings': [{u'x': {u'type': u'uri', u'value': u'http://example.org/bob'}, u'name': {u'xml:lang': u'None', u'type': u'literal', u'value': u'Bob'}}, {u'x': {u'type': u'uri', u'value': u'http://example.org/alice'}, u'name': {u'xml:lang': u'None', u'type': u'literal', u'value': u'Alice'}}], u'ordered': False}} 
     )
 
 test_material['wildcard_vars'] = (PROLOGUE+"""
     SELECT * WHERE { ?x foaf:name ?name . }
     """,
-    """"vars" : [
-             "name",
-             "x"
-         ]"""
+    {u'head': {u'vars': [u'x', u'name']}, u'results': {u'distinct': False, u'bindings': [{u'x': {u'type': u'uri', u'value': u'http://example.org/alice'}, u'name': {u'xml:lang': u'None', u'type': u'literal', u'value': u'Alice'}}, {u'x': {u'type': u'uri', u'value': u'http://example.org/bob'}, u'name': {u'xml:lang': u'None', u'type': u'literal', u'value': u'Bob'}}], u'ordered': False}} 
     )
 
 test_material['union'] = (PROLOGUE+"""
@@ -67,12 +59,7 @@ test_material['union'] = (PROLOGUE+"""
                 { <http://example.org/alice> foaf:name ?name . } UNION { <http://example.org/bob> foaf:name ?name . }
     }
     """,
-    """{
-                   "name" : {"type": "literal", "xml:lang" : "None", "value" : "Bob"}
-                },
-               {
-                   "name" : {"type": "literal", "xml:lang" : "None", "value" : "Alice"}
-                }"""
+    {u'head': {u'vars': [u'name']}, u'results': {u'distinct': True, u'bindings': [{u'name': {u'xml:lang': u'None', u'type': u'literal', u'value': u'Bob'}}, {u'name': {u'xml:lang': u'None', u'type': u'literal', u'value': u'Alice'}}], u'ordered': False}} 
     )
 
 test_material['union3'] = (PROLOGUE+"""
@@ -81,7 +68,8 @@ test_material['union3'] = (PROLOGUE+"""
                 UNION { <http://example.org/bob> foaf:name ?name . }
                 UNION { <http://example.org/nobody> foaf:name ?name . }
     }
-            """, '"Alice"'
+            """, 
+    {u'head': {u'vars': [u'name']}, u'results': {u'distinct': True, u'bindings': [{u'name': {u'xml:lang': u'None', u'type': u'literal', u'value': u'Bob'}}, {u'name': {u'xml:lang': u'None', u'type': u'literal', u'value': u'Alice'}}], u'ordered': False}}
     )
 
 
@@ -95,17 +83,21 @@ def make_method(testname):
 
 class TestSparqlJsonResults(unittest.TestCase):
 
-    known_issue = True
-
     def setUp(self):
         self.graph = ConjunctiveGraph()
         self.graph.parse(StringIO(test_data), format="n3")
 
     def _query_result_contains(self, query, correct):
         results = self.graph.query(query)
-        result_json = results.serialize(format='json')
-        self.failUnless(result_json.find(correct) >= 0,
-                "Expected:\n %s \n- to contain:\n%s" % (result_json, correct))
+        result_json = json.loads(results.serialize(format='json'))
+
+        msg = "Expected:\n %s \n- to contain:\n%s" % (result_json, correct)
+        self.failUnless(result_json["head"]==correct["head"], msg)
+
+        result_bindings = sorted(result_json["results"]["bindings"])
+        correct_bindings = sorted(correct["results"]["bindings"])
+        msg = "Expected:\n %s \n- to contain:\n%s" % (result_bindings, correct_bindings)
+        self.failUnless(result_bindings==correct_bindings, msg)
 
     testOptional = make_method('optional')
 
