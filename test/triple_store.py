@@ -1,7 +1,7 @@
 import unittest
 
 from rdflib.term import BNode, Literal
-from rdflib import RDFS
+from rdflib.namespace import RDFS
 from rdflib.graph import Graph
 
 

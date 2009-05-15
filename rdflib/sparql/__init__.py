@@ -11,23 +11,23 @@
 #
 #
 """
-TODO: merge this first bit from sparql.sparql.py into rest of doc... updating all along the way.
+TODO: merge this first bit from sparql.sparql.py into rest of doc... 
+updating all along the way.
 
 SPARQL implementation on top of RDFLib
 
-Implementation of the <a href="http://www.w3.org/TR/rdf-sparql-query/">W3C SPARQL</a>
-language (version April 2005). The basic class here is
-supposed to be a superclass of L{rdflib.sparql.sparqlGraph}; it has
-been separated only for a better maintainability.
+Implementation of the `W3C SPARQL <http://www.w3.org/TR/rdf-sparql-query/>`_ 
+language (version April 2005). The basic class here is supposed to be a 
+superclass of rdflib.sparql.sparqlGraph; it has been separated only for 
+a better maintainability.
 
 There is a separate
-U{description<http://dev.w3.org/cvsweb/%7Echeckout%7E/2004/PythonLib-IH/Doc/sparqlDesc.html>}
+`description <http://dev.w3.org/cvsweb/%7Echeckout%7E/2004/PythonLib-IH/Doc/sparqlDesc.html>`_
 for the functionalities.
 
 
-For a general description of the SPARQL API, see the separate, more
-complete
-U{description<http://dev.w3.org/cvsweb/%7Echeckout%7E/2004/PythonLib-IH/Doc/sparqlDesc.html>}.
+For a general description of the SPARQL API, see the separate, more complete
+`description <http://dev.w3.org/cvsweb/%7Echeckout%7E/2004/PythonLib-IH/Doc/sparqlDesc.html>`_.
 
 Variables, Imports
 ==================
@@ -72,32 +72,31 @@ can also use, eg::
 History
 =======
 
- - Version 1.0: based on an earlier version of the SPARQL, first
-   released implementation
+ - Version 1.0: based on an earlier version of the SPARQL, first released implementation
 
- - Version 2.0: version based on the March 2005 SPARQL document, also
-   a major change of the core code (introduction of the separate
-   L{GraphPattern<rdflibUtils.graphPattern.GraphPattern>} class, etc).
+ - Version 2.0: version based on the March 2005 SPARQL document, 
+   also a major change of the core code (introduction of the separate 
+   ``GraphPattern`` :class:`rdflibUtils.graphPattern.GraphPattern` class, etc).
 
- - Version 2.01: minor changes only: - switch to epydoc as a
- documentation tool, it gives a much better overview of the classes -
- addition of the SELECT * feature to sparql-p
+ - Version 2.01: minor changes only: - switch to epydoc as a documentation tool, 
+   it gives a much better overview of the classes - addition of the 
+   SELECT * feature to sparql-p
 
  - Version 2.02: - added some methods to
- L{myTripleStore<rdflibUtils.myTripleStore.myTripleStore>} to handle
- C{Alt} and C{Bag} the same way as C{Seq} - added also methods to
- I{add} collections and containers to the triple store, not only
- retrieve them
+   ``myTripleStore`` :class:`rdflibUtils.myTripleStore.myTripleStore` to handle
+   ``Alt`` and ``Bag`` the same way as ``Seq`` - added also methods to
+   :meth:`add` collections and containers to the triple store, not only
+   retrieve them
 
  - Version 2.1: adapted to the inclusion of the code into rdflib, thanks to Michel Pelletier
 
  - Version 2.2: added the sorting possibilities; introduced the Unbound class and have a better
- interface to patterns using this (in the BasicGraphPattern class)
+   interface to patterns using this (in the BasicGraphPattern class)
 
-@author: U{Ivan Herman<http://www.ivan-herman.net>}
+@author: `Ivan Herman <http://www.ivan-herman.net>`_
 
 @license: This software is available for use under the
-U{W3C Software License<http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231>}
+`W3C Software License <http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231>`_
 
 @contact: Ivan Herman, ivan@ivan-herman.net
 

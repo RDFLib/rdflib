@@ -1,4 +1,4 @@
-"""
+__doc__="""
 RDFa parser.
 
 RDFa is a set of attributes used to embed RDF in XHTML. An important goal of
@@ -40,7 +40,7 @@ from rdflib.graph import ConjunctiveGraph
 from rdflib.term import URIRef
 from rdflib.term import BNode
 from rdflib.term import Literal
-from rdflib.term import Namespace
+from rdflib.namespace import Namespace
 
 __version__ = "$Id$"
 

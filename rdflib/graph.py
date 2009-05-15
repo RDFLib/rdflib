@@ -1,7 +1,7 @@
 from __future__ import generators
 
 __doc__="""
-Instanciating Graphs with default store (IOMemory) and default identifier (a BNode):
+Instantiating Graphs with default store (IOMemory) and default identifier (a BNode):
 
     >>> g=Graph()
     >>> g.store.__class__
@@ -9,7 +9,7 @@ Instanciating Graphs with default store (IOMemory) and default identifier (a BNo
     >>> g.identifier.__class__
     <class 'rdflib.term.BNode'>
 
-Instanciating Graphs with a specific kind of store (IOMemory) and a default identifier (a BNode):
+Instantiating Graphs with a specific kind of store (IOMemory) and a default identifier (a BNode):
 
 Other store kinds: Sleepycat, MySQL, ZODB, SQLite
 
@@ -20,7 +20,7 @@ Other store kinds: Sleepycat, MySQL, ZODB, SQLite
     >>> graph.store.__class__
     <class 'rdflib.store.IOMemory.IOMemory'>
 
-Instanciating Graphs with Sleepycat store and an identifier - <http://rdflib.net>:
+Instantiating Graphs with Sleepycat store and an identifier - <http://rdflib.net>:
 
     >>> g=Graph('IOMemory',URIRef("http://rdflib.net"))
     >>> g.identifier
@@ -207,68 +207,69 @@ class Graph(Node):
     provenance.
 
     The Graph constructor can take an identifier which identifies the Graph
-    by name.  If none is given, the graph is assigned a BNode for it's identifier.
+    by name.  If none is given, the graph is assigned a BNode for its identifier.
     For more on named graphs, see: http://www.w3.org/2004/03/trix/
 
-    Ontology for __str__ provenance terms:
+    Ontology for __str__ provenance terms::
 
-    @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-    @prefix : <http://rdflib.net/store#> .
-    @prefix rdfg: <http://www.w3.org/2004/03/trix/rdfg-1/>.
-    @prefix owl: <http://www.w3.org/2002/07/owl#>.
-    @prefix log: <http://www.w3.org/2000/10/swap/log#>.
-    @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+        @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        @prefix : <http://rdflib.net/store#> .
+        @prefix rdfg: <http://www.w3.org/2004/03/trix/rdfg-1/>.
+        @prefix owl: <http://www.w3.org/2002/07/owl#>.
+        @prefix log: <http://www.w3.org/2000/10/swap/log#>.
+        @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 
-    :Store a owl:Class;
-        rdfs:subClassOf <http://xmlns.com/wordnet/1.6/Electronic_database>;
-        rdfs:subClassOf
-            [a owl:Restriction;
-             owl:onProperty rdfs:label;
-             owl:allValuesFrom [a owl:DataRange;
-                                owl:oneOf ("IOMemory"
-                                           "Sleepcat"
-                                           "MySQL"
-                                           "Redland"
-                                           "REGEXMatching"
-                                           "ZODB"
-                                           "AuditableStorage"
-                                           "Memory")]
-            ].
+        :Store a owl:Class;
+            rdfs:subClassOf <http://xmlns.com/wordnet/1.6/Electronic_database>;
+            rdfs:subClassOf
+                [a owl:Restriction;
+                 owl:onProperty rdfs:label;
+                 owl:allValuesFrom [a owl:DataRange;
+                                    owl:oneOf ("IOMemory"
+                                               "Sleepcat"
+                                               "MySQL"
+                                               "Redland"
+                                               "REGEXMatching"
+                                               "ZODB"
+                                               "AuditableStorage"
+                                               "Memory")]
+                ].
 
-    :ConjunctiveGraph a owl:Class;
-        rdfs:subClassOf rdfg:Graph;
-        rdfs:label "The top-level graph within the store - the union of all the Graphs within."
-        rdfs:seeAlso <http://rdflib.net/rdf_store/#ConjunctiveGraph>.
+        :ConjunctiveGraph a owl:Class;
+            rdfs:subClassOf rdfg:Graph;
+            rdfs:label "The top-level graph within the store - the union of all the Graphs within."
+            rdfs:seeAlso <http://rdflib.net/rdf_store/#ConjunctiveGraph>.
 
-    :DefaultGraph a owl:Class;
-        rdfs:subClassOf rdfg:Graph;
-        rdfs:label "The 'default' subgraph of a conjunctive graph".
-
-
-    :identifier a owl:Datatypeproperty;
-        rdfs:label "The store-associated identifier of the formula. ".
-        rdfs:domain log:Formula
-        rdfs:range xsd:anyURI;
-
-    :storage a owl:ObjectProperty;
-        rdfs:domain [
-            a owl:Class;
-            owl:unionOf (log:Formula rdfg:Graph :ConjunctiveGraph)
-        ];
-        rdfs:range :Store.
-
-    :default_context a owl:FunctionalProperty;
-        rdfs:label "The default context for a conjunctive graph";
-        rdfs:domain :ConjunctiveGraph;
-        rdfs:range :DefaultGraph.
+        :DefaultGraph a owl:Class;
+            rdfs:subClassOf rdfg:Graph;
+            rdfs:label "The 'default' subgraph of a conjunctive graph".
 
 
-    {?cg a :ConjunctiveGraph;:storage ?store}
-      => {?cg owl:sameAs ?store}.
+        :identifier a owl:Datatypeproperty;
+            rdfs:label "The store-associated identifier of the formula. ".
+            rdfs:domain log:Formula
+            rdfs:range xsd:anyURI;
 
-    {?subGraph rdfg:subGraphOf ?cg;a :DefaultGraph}
-      => {?cg a :ConjunctiveGraph;:default_context ?subGraphOf} .
+        :storage a owl:ObjectProperty;
+            rdfs:domain [
+                a owl:Class;
+                owl:unionOf (log:Formula rdfg:Graph :ConjunctiveGraph)
+            ];
+            rdfs:range :Store.
+
+        :default_context a owl:FunctionalProperty;
+            rdfs:label "The default context for a conjunctive graph";
+            rdfs:domain :ConjunctiveGraph;
+            rdfs:range :DefaultGraph.
+
+
+        {?cg a :ConjunctiveGraph;:storage ?store}
+          => {?cg owl:sameAs ?store}.
+
+        {?subGraph rdfg:subGraphOf ?cg;a :DefaultGraph}
+          => {?cg a :ConjunctiveGraph;:default_context ?subGraphOf} .
+        
     """
 
     def __init__(self, store='default', identifier=None,
@@ -496,14 +497,12 @@ class Graph(Node):
         It is one of those situations that occur a lot, hence this
         'macro' like utility
 
-        Parameters:
-        -----------
+        :Parameters:
+
         subject, predicate, object  -- exactly one must be None
         default -- value to be returned if no values found
-        any -- if True:
-                 return any value in the case there is more than one
-               else:
-                 raise UniquenessError
+        any -- if True: return any value in the case there is more than one
+               else: raise UniquenessError
         """
         retval = default
 
@@ -573,7 +572,7 @@ class Graph(Node):
         Generates transitive closure of a user-defined 
         function against the graph
         
-        >>> from rdflib.Collection import Collection
+        >>> from rdflib.collection import Collection
         >>> g=Graph()
         >>> a=BNode('foo')
         >>> b=BNode('bar')

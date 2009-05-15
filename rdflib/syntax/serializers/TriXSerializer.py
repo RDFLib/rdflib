@@ -1,7 +1,8 @@
 from rdflib.syntax.serializers import Serializer
 from rdflib.syntax.serializers.XMLWriter import XMLWriter
 
-from rdflib.term import URIRef, Literal, BNode, Namespace
+from rdflib.term import URIRef, Literal, BNode
+from rdflib.namespace import Namespace
 
 from rdflib.graph import Graph, ConjunctiveGraph
 

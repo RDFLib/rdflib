@@ -121,7 +121,7 @@ class Collection(object):
 
     def __delitem__(self, key):
         """
-        >>> from rdflib import RDF, RDFS
+        >>> from rdflib.namespace import RDF, RDFS
         >>> from pprint import pformat
         >>> g=Graph()
         >>> a=BNode('foo')

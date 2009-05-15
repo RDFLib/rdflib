@@ -1,14 +1,15 @@
 #!/usr/bin/env python
-"""
+__doc__="""
 N-Triples Parser
 License: GPL 2, W3C, BSD, or MIT
 Author: Sean B. Palmer, inamidst.com
-Documentation:
-   http://inamidst.com/proj/rdf/ntriples-doc
+Documentation: http://inamidst.com/proj/rdf/ntriples-doc
 
-Command line usage:
-   ./ntriples.py <URI>    - parses URI as N-Triples
-   ./ntriples.py --help   - prints out this help message
+Command line usage::
+
+    ./ntriples.py <URI>    - parses URI as N-Triples
+    ./ntriples.py --help   - prints out this help message
+
 # @@ fully empty document?
 """
 
@@ -100,9 +101,11 @@ if not validate:
 
 class NTriplesParser(object):
    """An N-Triples Parser.
-      Usage:
-         p = NTriplesParser(sink=MySink())
-         sink = p.parse(f) # file; use parsestring for a string
+   
+   Usage::
+
+        p = NTriplesParser(sink=MySink())
+        sink = p.parse(f) # file; use parsestring for a string
    """
 
    def __init__(self, sink=None):
