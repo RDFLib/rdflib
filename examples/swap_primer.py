@@ -8,6 +8,10 @@
 # Load up RDFLib
 
 from rdflib import *
+from rdflib.graph import ConjunctiveGraph
+from rdflib.namespace import Namespace
+from rdflib.term import URIRef
+from rdflib.parser import StringInputSource
 
 # Firstly, it doesn't have to be so complex.
 # Here we create a "Graph" of our work.

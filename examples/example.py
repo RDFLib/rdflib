@@ -8,8 +8,8 @@ _hdlr.setFormatter(logging.Formatter('%(name)s %(levelname)s: %(message)s'))
 _logger.addHandler(_hdlr)
 
 from rdflib.graph import Graph
-from rdflib import URIRef, Literal, BNode, Namespace
-from rdflib import RDF
+from rdflib.term import URIRef, Literal, BNode
+from rdflib.namespace import Namespace, RDF
 
 store = Graph()
 
