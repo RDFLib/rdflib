@@ -123,7 +123,7 @@ except ImportError, e:
 try:
 #     import todo # what kind of configuration string does open need?
 
-    import MySQLdb,sha,sys
+    import MySQLdb,sys
     # If we can import RDF then test Redland store
     class MySQLTestCase(StoreTestCase):
         non_standard_dep = True

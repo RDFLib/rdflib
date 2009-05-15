@@ -1,9 +1,10 @@
 import unittest
-from rdflib.term import Namespace
-from rdflib import plugin,RDF,RDFS,URIRef
+from rdflib import plugin
+from rdflib.namespace import Namespace,RDF,RDFS
+from rdflib.term import URIRef
 from rdflib.store import Store
 from cStringIO import StringIO
-from rdflib.Graph import Graph,ReadOnlyGraphAggregate,ConjunctiveGraph
+from rdflib.graph import Graph,ReadOnlyGraphAggregate,ConjunctiveGraph
 import sys
 from pprint import pprint
 
