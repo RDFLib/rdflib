@@ -1,0 +1,562 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>rdflib.Graph.Graph – Graph class definition &mdash; rdflib v2.5.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.5.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="rdflib v2.5.0 documentation" href="../../index.html" />
+    <link rel="up" title="Graphs" href="index.html" />
+    <link rel="next" title="rdflib.Graph.ConjunctiveGraph – ConjunctiveGraph class definition" href="conjunctive_graph.html" />
+    <link rel="prev" title="Graphs" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="conjunctive_graph.html" title="rdflib.Graph.ConjunctiveGraph – ConjunctiveGraph class definition"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Graphs"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">rdflib v2.5.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Modules</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Graphs</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="rdflib-graph-graph-graph-class-definition">
+<h1><tt class="xref docutils literal"><span class="pre">rdflib.Graph.Graph</span></tt> &#8211; Graph class definition<a class="headerlink" href="#rdflib-graph-graph-graph-class-definition" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="graph">
+<h2>Graph<a class="headerlink" href="#graph" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-contents">
+<h3>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="rdflib.graph.Graph">
+<!--[rdflib.graph.Graph]-->class <tt class="descclassname">rdflib.graph.</tt><tt class="descname">Graph</tt><big>(</big><em>store='default'</em>, <em>identifier=None</em>, <em>namespace_manager=None</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>An RDF Graph</p>
+<p>The constructor accepts one argument, the &#8216;store&#8217;
+that will be used to store the graph data (see the &#8216;store&#8217;
+package for stores currently shipped with rdflib).</p>
+<p>Stores can be context-aware or unaware.  Unaware stores take up
+(some) less space but cannot support features that require
+context, such as true merging/demerging of sub-graphs and
+provenance.</p>
+<p>The Graph constructor can take an identifier which identifies the Graph
+by name.  If none is given, the graph is assigned a BNode for its identifier.
+For more on named graphs, see: <a class="reference external" href="http://www.w3.org/2004/03/trix/">http://www.w3.org/2004/03/trix/</a></p>
+<p>Ontology for __str__ provenance terms:</p>
+<div class="highlight-python"><pre>@prefix rdf:  &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix : &lt;http://rdflib.net/store#&gt; .
+@prefix rdfg: &lt;http://www.w3.org/2004/03/trix/rdfg-1/&gt;.
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt;.
+@prefix log: &lt;http://www.w3.org/2000/10/swap/log#&gt;.
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;.
+
+:Store a owl:Class;
+    rdfs:subClassOf &lt;http://xmlns.com/wordnet/1.6/Electronic_database&gt;;
+    rdfs:subClassOf
+        [a owl:Restriction;
+         owl:onProperty rdfs:label;
+         owl:allValuesFrom [a owl:DataRange;
+                            owl:oneOf ("IOMemory"
+                                       "Sleepcat"
+                                       "MySQL"
+                                       "Redland"
+                                       "REGEXMatching"
+                                       "ZODB"
+                                       "AuditableStorage"
+                                       "Memory")]
+        ].
+
+:ConjunctiveGraph a owl:Class;
+    rdfs:subClassOf rdfg:Graph;
+    rdfs:label "The top-level graph within the store - the union of all the Graphs within."
+    rdfs:seeAlso &lt;http://rdflib.net/rdf_store/#ConjunctiveGraph&gt;.
+
+:DefaultGraph a owl:Class;
+    rdfs:subClassOf rdfg:Graph;
+    rdfs:label "The 'default' subgraph of a conjunctive graph".
+
+
+:identifier a owl:Datatypeproperty;
+    rdfs:label "The store-associated identifier of the formula. ".
+    rdfs:domain log:Formula
+    rdfs:range xsd:anyURI;
+
+:storage a owl:ObjectProperty;
+    rdfs:domain [
+        a owl:Class;
+        owl:unionOf (log:Formula rdfg:Graph :ConjunctiveGraph)
+    ];
+    rdfs:range :Store.
+
+:default_context a owl:FunctionalProperty;
+    rdfs:label "The default context for a conjunctive graph";
+    rdfs:domain :ConjunctiveGraph;
+    rdfs:range :DefaultGraph.
+
+
+{?cg a :ConjunctiveGraph;:storage ?store}
+  =&gt; {?cg owl:sameAs ?store}.
+
+{?subGraph rdfg:subGraphOf ?cg;a :DefaultGraph}
+  =&gt; {?cg a :ConjunctiveGraph;:default_context ?subGraphOf} .</pre>
+</div>
+<dl class="method">
+<dt id="rdflib.graph.Graph.absolutize">
+<!--[rdflib.graph.Graph.absolutize]--><tt class="descname">absolutize</tt><big>(</big><em>uri</em>, <em>defrag=1</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.absolutize" title="Permalink to this definition">¶</a></dt>
+<dd>Turn uri into an absolute URI if it&#8217;s not one already</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.add">
+<!--[rdflib.graph.Graph.add]--><tt class="descname">add</tt><big>(</big><em>(s</em>, <em>p</em>, <em>o)</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.add" title="Permalink to this definition">¶</a></dt>
+<dd>Add a triple with self as context</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.addN">
+<!--[rdflib.graph.Graph.addN]--><tt class="descname">addN</tt><big>(</big><em>quads</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.addN" title="Permalink to this definition">¶</a></dt>
+<dd>Add a sequence of triple with context</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.bind">
+<!--[rdflib.graph.Graph.bind]--><tt class="descname">bind</tt><big>(</big><em>prefix</em>, <em>namespace</em>, <em>override=True</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.bind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bind prefix to namespace</p>
+<p>If override is True will bind namespace to given prefix if namespace
+was already bound to a different prefix.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.close">
+<!--[rdflib.graph.Graph.close]--><tt class="descname">close</tt><big>(</big><em>commit_pending_transaction=False</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the graph store</p>
+<p>Might be necessary for stores that require closing a connection to a
+database or releasing some resource.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.comment">
+<!--[rdflib.graph.Graph.comment]--><tt class="descname">comment</tt><big>(</big><em>subject</em>, <em>default=''</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.comment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query for the RDFS.comment of the subject</p>
+<p>Return default if no comment exists</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.commit">
+<!--[rdflib.graph.Graph.commit]--><tt class="descname">commit</tt><big>(</big><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.commit" title="Permalink to this definition">¶</a></dt>
+<dd>Commits active transactions</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.connected">
+<!--[rdflib.graph.Graph.connected]--><tt class="descname">connected</tt><big>(</big><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.connected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the Graph is connected</p>
+<p>The Graph is considered undirectional.</p>
+<p>Performs a search on the Graph, starting from a random node. Then
+iteratively goes depth-first through the triplets where the node is
+subject and object. Return True if all nodes have been visited and
+False if it cannot continue and there are still unvisited nodes left.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.destroy">
+<!--[rdflib.graph.Graph.destroy]--><tt class="descname">destroy</tt><big>(</big><em>configuration</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.destroy" title="Permalink to this definition">¶</a></dt>
+<dd>Destroy the store identified by <cite>configuration</cite> if supported</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.items">
+<!--[rdflib.graph.Graph.items]--><tt class="descname">items</tt><big>(</big><em>list</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator over all items in the resource specified by list</p>
+<p>list is an RDF collection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.label">
+<!--[rdflib.graph.Graph.label]--><tt class="descname">label</tt><big>(</big><em>subject</em>, <em>default=''</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query for the RDFS.label of the subject</p>
+<p>Return default if no label exists</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.n3">
+<!--[rdflib.graph.Graph.n3]--><tt class="descname">n3</tt><big>(</big><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.n3" title="Permalink to this definition">¶</a></dt>
+<dd>return an n3 identifier for the Graph</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.namespaces">
+<!--[rdflib.graph.Graph.namespaces]--><tt class="descname">namespaces</tt><big>(</big><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.namespaces" title="Permalink to this definition">¶</a></dt>
+<dd>Generator over all the prefix, namespace tuples</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.objects">
+<!--[rdflib.graph.Graph.objects]--><tt class="descname">objects</tt><big>(</big><em>subject=None</em>, <em>predicate=None</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.objects" title="Permalink to this definition">¶</a></dt>
+<dd>A generator of objects with the given subject and predicate</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.open">
+<!--[rdflib.graph.Graph.open]--><tt class="descname">open</tt><big>(</big><em>configuration</em>, <em>create=False</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open the graph store</p>
+<p>Might be necessary for stores that require opening a connection to a
+database or acquiring some resource.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.parse">
+<!--[rdflib.graph.Graph.parse]--><tt class="descname">parse</tt><big>(</big><em>source=None</em>, <em>publicID=None</em>, <em>format=None</em>, <em>location=None</em>, <em>file=None</em>, <em>data=None</em>, <em>**args</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse source adding the resulting triples to the Graph.</p>
+<p>The source is specified using one of source, location, file or
+data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><cite>source</cite>: An InputSource, file-like object, or string. In the case of a string the string is the location of the source.</li>
+<li><cite>location</cite>: A string indicating the relative or absolute URL of the source. Graph&#8217;s absolutize method is used if a relative location is specified.</li>
+<li><cite>file</cite>: A file-like object.</li>
+<li><cite>data</cite>: A string containing the data to be parsed.</li>
+<li><cite>format</cite>: Used if format can not be determined from source. Defaults to rdf/xml.</li>
+<li><cite>publicID</cite>: the logical URI to use as the document base. If None specified the document location is used (at least in the case where there is a document location).</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>self, the graph instance.</p>
+<p>Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">my_data</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s">&lt;rdf:RDF</span>
+<span class="gp">... </span><span class="s">  xmlns:rdf=&#39;http://www.w3.org/1999/02/22-rdf-syntax-ns#&#39;</span>
+<span class="gp">... </span><span class="s">  xmlns:rdfs=&#39;http://www.w3.org/2000/01/rdf-schema#&#39;</span>
+<span class="gp">... </span><span class="s">&gt;</span>
+<span class="gp">... </span><span class="s">  &lt;rdf:Description&gt;</span>
+<span class="gp">... </span><span class="s">    &lt;rdfs:label&gt;Example&lt;/rdfs:label&gt;</span>
+<span class="gp">... </span><span class="s">    &lt;rdfs:comment&gt;This is really just an example.&lt;/rdfs:comment&gt;</span>
+<span class="gp">... </span><span class="s">  &lt;/rdf:Description&gt;</span>
+<span class="gp">... </span><span class="s">&lt;/rdf:RDF&gt;</span>
+<span class="gp">... </span><span class="s">&#39;&#39;&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_name</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mktemp</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="nb">file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">my_data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">my_data</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;application/rdf+xml&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="n">file_name</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;application/rdf+xml&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="nb">file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">),</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;application/rdf+xml&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.predicate_objects">
+<!--[rdflib.graph.Graph.predicate_objects]--><tt class="descname">predicate_objects</tt><big>(</big><em>subject=None</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.predicate_objects" title="Permalink to this definition">¶</a></dt>
+<dd>A generator of (predicate, object) tuples for the given subject</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.predicates">
+<!--[rdflib.graph.Graph.predicates]--><tt class="descname">predicates</tt><big>(</big><em>subject=None</em>, <em>object=None</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.predicates" title="Permalink to this definition">¶</a></dt>
+<dd>A generator of predicates with the given subject and object</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.query">
+<!--[rdflib.graph.Graph.query]--><tt class="descname">query</tt><big>(</big><em>strOrQuery</em>, <em>initBindings={}</em>, <em>initNs={}</em>, <em>DEBUG=False</em>, <em>PARSE_DEBUG=False</em>, <em>dataSetBase=None</em>, <em>processor='sparql'</em>, <em>extensionFunctions={rdflib.term.URIRef('http://www.w3.org/TR/rdf-sparql-query/#describe'): &lt;function describe at 0x15ab130&gt;}</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes a SPARQL query (eventually will support Versa queries with
+same method) against this Graph.</p>
+<blockquote>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>strOrQuery</cite>: Either a string consisting of the SPARQL query or</dt>
+<dd><p class="first last">an instance of rdflib.sparql.bison.Query.Query</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>initBindings</cite>: A mapping from a Variable to an RDFLib term (used</dt>
+<dd><p class="first last">as initial bindings for SPARQL query)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>initNS</cite>: A mapping from a namespace prefix to an instance of</dt>
+<dd><p class="first last">rdflib.Namespace (used for SPARQL query)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>DEBUG</cite>: A boolean flag passed on to the SPARQL parser and</dt>
+<dd><p class="first last">evaluation engine</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>processor</cite>: The kind of RDF query (must be &#8216;sparql&#8217; until Versa</dt>
+<dd><p class="first last">is ported)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>USE_PYPARSING</cite>: A flag indicating whether to use the</dt>
+<dd><p class="first last">experimental pyparsing parser for SPARQL</p>
+</dd>
+</dl>
+</li>
+</ul>
+</blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.remove">
+<!--[rdflib.graph.Graph.remove]--><tt class="descname">remove</tt><big>(</big><em>(s</em>, <em>p</em>, <em>o)</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a triple from the graph</p>
+<p>If the triple does not provide a context attribute, removes the triple
+from all contexts.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.rollback">
+<!--[rdflib.graph.Graph.rollback]--><tt class="descname">rollback</tt><big>(</big><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.rollback" title="Permalink to this definition">¶</a></dt>
+<dd>Rollback active transactions</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.seq">
+<!--[rdflib.graph.Graph.seq]--><tt class="descname">seq</tt><big>(</big><em>subject</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.seq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if subject is an rdf:Seq</p>
+<p>If yes, it returns a Seq class instance, None otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.serialize">
+<!--[rdflib.graph.Graph.serialize]--><tt class="descname">serialize</tt><big>(</big><em>destination=None</em>, <em>format='xml'</em>, <em>base=None</em>, <em>encoding=None</em>, <em>**args</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.serialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serialize the Graph to destination</p>
+<p>If destination is None serialize method returns the serialization as a
+string. Format defaults to xml (AKA rdf/xml).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.set">
+<!--[rdflib.graph.Graph.set]--><tt class="descname">set</tt><big>(</big><em>(subject</em>, <em>predicate</em>, <em>object)</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience method to update the value of object</p>
+<p>Remove any existing triples for subject and predicate before adding
+(subject, predicate, object).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.subject_objects">
+<!--[rdflib.graph.Graph.subject_objects]--><tt class="descname">subject_objects</tt><big>(</big><em>predicate=None</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.subject_objects" title="Permalink to this definition">¶</a></dt>
+<dd>A generator of (subject, object) tuples for the given predicate</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.subject_predicates">
+<!--[rdflib.graph.Graph.subject_predicates]--><tt class="descname">subject_predicates</tt><big>(</big><em>object=None</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.subject_predicates" title="Permalink to this definition">¶</a></dt>
+<dd>A generator of (subject, predicate) tuples for the given object</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.subjects">
+<!--[rdflib.graph.Graph.subjects]--><tt class="descname">subjects</tt><big>(</big><em>predicate=None</em>, <em>object=None</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.subjects" title="Permalink to this definition">¶</a></dt>
+<dd>A generator of subjects with the given predicate and object</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.transitiveClosure">
+<!--[rdflib.graph.Graph.transitiveClosure]--><tt class="descname">transitiveClosure</tt><big>(</big><em>func</em>, <em>arg</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.transitiveClosure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates transitive closure of a user-defined 
+function against the graph</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdflib.collection</span> <span class="kn">import</span> <span class="n">Collection</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">=</span><span class="n">Graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">BNode</span><span class="p">(</span><span class="s">&#39;foo&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">=</span><span class="n">BNode</span><span class="p">(</span><span class="s">&#39;bar&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">=</span><span class="n">BNode</span><span class="p">(</span><span class="s">&#39;baz&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">a</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">first</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">type</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">a</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">rest</span><span class="p">,</span><span class="n">b</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">b</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">first</span><span class="p">,</span><span class="n">RDFS</span><span class="o">.</span><span class="n">label</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">b</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">rest</span><span class="p">,</span><span class="n">c</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">c</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">first</span><span class="p">,</span><span class="n">RDFS</span><span class="o">.</span><span class="n">comment</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">c</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">rest</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">nil</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">topList</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">g</span><span class="p">):</span>
+<span class="gp">... </span>   <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">subjects</span><span class="p">(</span><span class="n">RDF</span><span class="o">.</span><span class="n">rest</span><span class="p">,</span><span class="n">node</span><span class="p">):</span>
+<span class="gp">... </span>      <span class="k">yield</span> <span class="n">s</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">reverseList</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">g</span><span class="p">):</span>
+<span class="gp">... </span>   <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">first</span><span class="p">):</span>
+<span class="gp">... </span>      <span class="k">print</span> <span class="n">f</span>
+<span class="gp">... </span>   <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">subjects</span><span class="p">(</span><span class="n">RDF</span><span class="o">.</span><span class="n">rest</span><span class="p">,</span><span class="n">node</span><span class="p">):</span>
+<span class="gp">... </span>      <span class="k">yield</span> <span class="n">s</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">rt</span> <span class="k">for</span> <span class="n">rt</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">transitiveClosure</span><span class="p">(</span><span class="n">topList</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">nil</span><span class="p">)]</span>
+<span class="go">[rdflib.term.BNode(&#39;baz&#39;), rdflib.term.BNode(&#39;bar&#39;), rdflib.term.BNode(&#39;foo&#39;)]</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">rt</span> <span class="k">for</span> <span class="n">rt</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">transitiveClosure</span><span class="p">(</span><span class="n">reverseList</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">nil</span><span class="p">)]</span>
+<span class="go">http://www.w3.org/2000/01/rdf-schema#comment</span>
+<span class="go">http://www.w3.org/2000/01/rdf-schema#label</span>
+<span class="go">http://www.w3.org/1999/02/22-rdf-syntax-ns#type</span>
+<span class="go">[rdflib.term.BNode(&#39;baz&#39;), rdflib.term.BNode(&#39;bar&#39;), rdflib.term.BNode(&#39;foo&#39;)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.transitive_objects">
+<!--[rdflib.graph.Graph.transitive_objects]--><tt class="descname">transitive_objects</tt><big>(</big><em>subject</em>, <em>property</em>, <em>remember=None</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.transitive_objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transitively generate objects for the <cite>property</cite> relationship</p>
+<p>Generated objects belong to the depth first transitive closure of the
+<cite>property</cite> relationship starting at <cite>subject</cite>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.transitive_subjects">
+<!--[rdflib.graph.Graph.transitive_subjects]--><tt class="descname">transitive_subjects</tt><big>(</big><em>predicate</em>, <em>object</em>, <em>remember=None</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.transitive_subjects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transitively generate objects for the <cite>property</cite> relationship</p>
+<p>Generated objects belong to the depth first transitive closure of the
+<cite>property</cite> relationship starting at <cite>subject</cite>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.triples">
+<!--[rdflib.graph.Graph.triples]--><tt class="descname">triples</tt><big>(</big><em>(s</em>, <em>p</em>, <em>o)</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.triples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator over the triple store</p>
+<p>Returns triples that match the given triple pattern. If triple pattern
+does not provide a context, all contexts will be searched.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.graph.Graph.value">
+<!--[rdflib.graph.Graph.value]--><tt class="descname">value</tt><big>(</big><em>subject=None</em>, <em>predicate=rdflib.term.URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#value')</em>, <em>object=None</em>, <em>default=None</em>, <em>any=True</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a value for a pair of two criteria</p>
+<p>Exactly one of subject, predicate, object must be None. Useful if one
+knows that there may only be one value.</p>
+<p>It is one of those situations that occur a lot, hence this
+&#8216;macro&#8217; like utility</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>subject, predicate, object  &#8211; exactly one must be None
+default &#8211; value to be returned if no values found
+any &#8211; if True: return any value in the case there is more than one</p>
+<blockquote>
+else: raise UniquenessError</blockquote>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href=""><tt class="docutils literal"><span class="pre">rdflib.Graph.Graph</span></tt> &#8211; Graph class definition</a><ul>
+<li><a class="reference external" href="#graph">Graph</a><ul>
+<li><a class="reference external" href="#module-contents">Module Contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="index.html"
+                                  title="previous chapter">Graphs</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="conjunctive_graph.html"
+                                  title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">rdflib.Graph.ConjunctiveGraph</span></tt> &#8211; ConjunctiveGraph class definition</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../../_sources/modules/graphs/graph.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+	  <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+	      <p style="font-size: 90%">Enter search terms or a module, class or function name.</p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="conjunctive_graph.html" title="rdflib.Graph.ConjunctiveGraph – ConjunctiveGraph class definition"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Graphs"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">rdflib v2.5.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Modules</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Graphs</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, Daniel Krech.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.
+    </div>
+  </body>
+</html>

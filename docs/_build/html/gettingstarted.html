@@ -1,0 +1,461 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting started with rdflib &mdash; rdflib v2.5.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '2.5.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="rdflib v2.5.0 documentation" href="index.html" />
+    <link rel="next" title="A Universal RDF Store Interface" href="univrdfstore.html" />
+    <link rel="prev" title="rdflib 2.5" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="univrdfstore.html" title="A Universal RDF Store Interface"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="rdflib 2.5"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">rdflib v2.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="getting-started-with-rdflib">
+<span id="gettingstarted"></span><h1>Getting started with rdflib<a class="headerlink" href="#getting-started-with-rdflib" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction-to-parsing-rdf-into-rdflib-graphs">
+<h2>Introduction to parsing RDF into rdflib graphs<a class="headerlink" href="#introduction-to-parsing-rdf-into-rdflib-graphs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="reading-an-nt-file">
+<h3>Reading an NT file<a class="headerlink" href="#reading-an-nt-file" title="Permalink to this headline">¶</a></h3>
+<p>RDF data has various syntaxes (<tt class="docutils literal"><span class="pre">xml</span></tt>, <tt class="docutils literal"><span class="pre">n3</span></tt>, <tt class="docutils literal"><span class="pre">ntriples</span></tt>, <tt class="docutils literal"><span class="pre">trix</span></tt>, etc) that you might want to read. The simplest format is <tt class="docutils literal"><span class="pre">ntriples</span></tt>. Create the file <tt class="docutils literal"><span class="pre">demo.nt</span></tt> in the current directory with these two lines:</p>
+<div class="highlight-n3"><pre>&lt;http://bigasterisk.com/foaf.rdf#drewp&gt; \
+&lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; \
+&lt;http://xmlns.com/foaf/0.1/Person&gt; .
+&lt;http://bigasterisk.com/foaf.rdf#drewp&gt; \
+&lt;http://example.com/says&gt; \
+"Hello world" .</pre>
+</div>
+<p>In an interactive python interpreter, try this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdflib.graph</span> <span class="kn">import</span> <span class="n">Graph</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&quot;demo.nt&quot;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;nt&quot;</span><span class="p">)</span>
+<span class="go">&lt;Graph identifier=HCbubHJy0 (&lt;class &#39;rdflib.graph.Graph&#39;&gt;)&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">stmt</span> <span class="ow">in</span> <span class="n">g</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">(rdflib.term.URIRef(&#39;http://bigasterisk.com/foaf.rdf#drewp&#39;),</span>
+<span class="go"> rdflib.term.URIRef(&#39;http://example.com/says&#39;),</span>
+<span class="go"> rdflib.term.Literal(u&#39;Hello world&#39;))</span>
+<span class="go">(rdflib.term.URIRef(&#39;http://bigasterisk.com/foaf.rdf#drewp&#39;),</span>
+<span class="go"> rdflib.term.URIRef(&#39;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&#39;),</span>
+<span class="go"> rdflib.term.URIRef(&#39;http://xmlns.com/foaf/0.1/Person&#39;))</span>
+</pre></div>
+</div>
+<p>The final lines show how rdflib represents the two statements in the file. The statements themselves are just length-3 tuples; and the subjects, predicates, and objects are all rdflib types.</p>
+</div>
+<div class="section" id="reading-remote-graphs">
+<h3>Reading remote graphs<a class="headerlink" href="#reading-remote-graphs" title="Permalink to this headline">¶</a></h3>
+<p>Reading graphs from the net is just as easy:</p>
+<div class="highlight-pycon"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&quot;http://bigasterisk.com/foaf.rdf&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="go">42</span>
+</pre></div>
+</div>
+<p>The format defaults to <tt class="docutils literal"><span class="pre">xml</span></tt>, which is the common format for .rdf files you&#8217;ll find on the net.</p>
+<p>See also</p>
+<dl class="method">
+<dt id="rdflib.graph.Graph.parse">
+<!--[rdflib.graph.Graph.parse]--><tt class="descclassname">Graph.</tt><tt class="descname">parse</tt><big>(</big><em>source=None</em>, <em>publicID=None</em>, <em>format=None</em>, <em>location=None</em>, <em>file=None</em>, <em>data=None</em>, <em>**args</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse source adding the resulting triples to the Graph.</p>
+<p>The source is specified using one of source, location, file or
+data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><cite>source</cite>: An InputSource, file-like object, or string. In the case of a string the string is the location of the source.</li>
+<li><cite>location</cite>: A string indicating the relative or absolute URL of the source. Graph&#8217;s absolutize method is used if a relative location is specified.</li>
+<li><cite>file</cite>: A file-like object.</li>
+<li><cite>data</cite>: A string containing the data to be parsed.</li>
+<li><cite>format</cite>: Used if format can not be determined from source. Defaults to rdf/xml.</li>
+<li><cite>publicID</cite>: the logical URI to use as the document base. If None specified the document location is used (at least in the case where there is a document location).</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>self, the graph instance.</p>
+<p>Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">my_data</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s">&lt;rdf:RDF</span>
+<span class="gp">... </span><span class="s">  xmlns:rdf=&#39;http://www.w3.org/1999/02/22-rdf-syntax-ns#&#39;</span>
+<span class="gp">... </span><span class="s">  xmlns:rdfs=&#39;http://www.w3.org/2000/01/rdf-schema#&#39;</span>
+<span class="gp">... </span><span class="s">&gt;</span>
+<span class="gp">... </span><span class="s">  &lt;rdf:Description&gt;</span>
+<span class="gp">... </span><span class="s">    &lt;rdfs:label&gt;Example&lt;/rdfs:label&gt;</span>
+<span class="gp">... </span><span class="s">    &lt;rdfs:comment&gt;This is really just an example.&lt;/rdfs:comment&gt;</span>
+<span class="gp">... </span><span class="s">  &lt;/rdf:Description&gt;</span>
+<span class="gp">... </span><span class="s">&lt;/rdf:RDF&gt;</span>
+<span class="gp">... </span><span class="s">&#39;&#39;&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_name</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mktemp</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="nb">file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">my_data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">my_data</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;application/rdf+xml&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="n">file_name</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;application/rdf+xml&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="nb">file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">),</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;application/rdf+xml&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-rdflib.syntax.parsers.TriXParser">
+<h2>Other parsers supported by rdflib<a class="headerlink" href="#module-rdflib.syntax.parsers.TriXParser" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="rdflib.syntax.parsers.N3Parser.N3Parser">
+<!--[rdflib.syntax.parsers.N3Parser.N3Parser]-->class <tt class="descclassname">rdflib.syntax.parsers.N3Parser.</tt><tt class="descname">N3Parser</tt><a class="headerlink" href="#rdflib.syntax.parsers.N3Parser.N3Parser" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="rdflib.syntax.parsers.NTParser.NTParser">
+<!--[rdflib.syntax.parsers.NTParser.NTParser]-->class <tt class="descclassname">rdflib.syntax.parsers.NTParser.</tt><tt class="descname">NTParser</tt><a class="headerlink" href="#rdflib.syntax.parsers.NTParser.NTParser" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>N-Triples Parser
+License: GPL 2, W3C, BSD, or MIT
+Author: Sean B. Palmer, inamidst.com
+Documentation: <a class="reference external" href="http://inamidst.com/proj/rdf/ntriples-doc">http://inamidst.com/proj/rdf/ntriples-doc</a></p>
+<p>Command line usage:</p>
+<div class="highlight-python"><pre>./ntriples.py &lt;URI&gt;    - parses URI as N-Triples
+./ntriples.py --help   - prints out this help message</pre>
+</div>
+<p># &#64;&#64; fully empty document?</p>
+<dl class="class">
+<dt id="rdflib.syntax.parsers.ntriples.NTriplesParser">
+<!--[rdflib.syntax.parsers.ntriples.NTriplesParser]-->class <tt class="descclassname">rdflib.syntax.parsers.ntriples.</tt><tt class="descname">NTriplesParser</tt><big>(</big><em>sink=None</em><big>)</big><a class="headerlink" href="#rdflib.syntax.parsers.ntriples.NTriplesParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>An N-Triples Parser.</p>
+<p>Usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p</span> <span class="o">=</span> <span class="n">NTriplesParser</span><span class="p">(</span><span class="n">sink</span><span class="o">=</span><span class="n">MySink</span><span class="p">())</span>
+<span class="n">sink</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="c"># file; use parsestring for a string</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="rdflib.syntax.parsers.ntriples.NTriplesParser.parse">
+<!--[rdflib.syntax.parsers.ntriples.NTriplesParser.parse]--><tt class="descname">parse</tt><big>(</big><em>f</em><big>)</big><a class="headerlink" href="#rdflib.syntax.parsers.ntriples.NTriplesParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd>Parse f as an N-Triples file.</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.syntax.parsers.ntriples.NTriplesParser.parsestring">
+<!--[rdflib.syntax.parsers.ntriples.NTriplesParser.parsestring]--><tt class="descname">parsestring</tt><big>(</big><em>s</em><big>)</big><a class="headerlink" href="#rdflib.syntax.parsers.ntriples.NTriplesParser.parsestring" title="Permalink to this definition">¶</a></dt>
+<dd>Parse s as an N-Triples string.</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.syntax.parsers.ntriples.NTriplesParser.readline">
+<!--[rdflib.syntax.parsers.ntriples.NTriplesParser.readline]--><tt class="descname">readline</tt><big>(</big><big>)</big><a class="headerlink" href="#rdflib.syntax.parsers.ntriples.NTriplesParser.readline" title="Permalink to this definition">¶</a></dt>
+<dd>Read an N-Triples line from buffered input.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="rdflib.syntax.parsers.RDFXMLParser.RDFXMLParser">
+<!--[rdflib.syntax.parsers.RDFXMLParser.RDFXMLParser]-->class <tt class="descclassname">rdflib.syntax.parsers.RDFXMLParser.</tt><tt class="descname">RDFXMLParser</tt><a class="headerlink" href="#rdflib.syntax.parsers.RDFXMLParser.RDFXMLParser" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="rdflib.syntax.parsers.TriXParser.TriXParser">
+<!--[rdflib.syntax.parsers.TriXParser.TriXParser]-->class <tt class="descclassname">rdflib.syntax.parsers.TriXParser.</tt><tt class="descname">TriXParser</tt><a class="headerlink" href="#rdflib.syntax.parsers.TriXParser.TriXParser" title="Permalink to this definition">¶</a></dt>
+<dd>A parser for TriX. See <a class="reference external" href="http://swdev.nokia.com/trix/TriX.html">http://swdev.nokia.com/trix/TriX.html</a></dd></dl>
+
+</div>
+<div class="section" id="introduction-to-using-sparql-to-query-an-rdflib-graph">
+<h2>Introduction to using SPARQL to query an rdflib graph<a class="headerlink" href="#introduction-to-using-sparql-to-query-an-rdflib-graph" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="create-an-rdflib-graph">
+<h3>Create an Rdflib Graph<a class="headerlink" href="#create-an-rdflib-graph" title="Permalink to this headline">¶</a></h3>
+<p>You might parse some files into a new graph (<span class="target" id="id1">Introduction to parsing RDF into rdflib graphs</span>) or open an on-disk rdflib store.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">rdflib.graph</span> <span class="kn">import</span> <span class="n">Graph</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+<span class="n">g</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&quot;http://bigasterisk.com/foaf.rdf&quot;</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&quot;http://www.w3.org/People/Berners-Lee/card.rdf&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>LiveJournal produces FOAF data for their users, but they seem to use <tt class="docutils literal"><span class="pre">foaf:member_name</span></tt> for a person&#8217;s full name. For this demo, I made <tt class="docutils literal"><span class="pre">foaf:name</span></tt> act as a synonym for <tt class="docutils literal"><span class="pre">foaf:member_name</span></tt> (a poor man&#8217;s one-way <tt class="docutils literal"><span class="pre">owl:equivalentProperty</span></tt>):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">rdflib.namespace</span> <span class="kn">import</span> <span class="n">Namespace</span>
+<span class="n">FOAF</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">(</span><span class="s">&quot;http://xmlns.com/foaf/0.1/&quot;</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&quot;http://danbri.livejournal.com/data/foaf&quot;</span><span class="p">)</span>
+<span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">s</span><span class="p">,</span> <span class="n">FOAF</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span> <span class="n">n</span><span class="p">))</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">n</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">triples</span><span class="p">((</span><span class="bp">None</span><span class="p">,</span> <span class="n">FOAF</span><span class="p">[</span><span class="s">&#39;member_name&#39;</span><span class="p">],</span> <span class="bp">None</span><span class="p">))]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="run-a-query">
+<h3>Run a Query<a class="headerlink" href="#run-a-query" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+        <span class="sd">&quot;&quot;&quot;SELECT ?aname ?bname</span>
+<span class="sd">           WHERE {</span>
+<span class="sd">              ?a foaf:knows ?b .</span>
+<span class="sd">              ?a foaf:name ?aname .</span>
+<span class="sd">              ?b foaf:name ?bname .</span>
+<span class="sd">           }&quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="n">initNs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">foaf</span><span class="o">=</span><span class="n">Namespace</span><span class="p">(</span><span class="s">&quot;http://xmlns.com/foaf/0.1/&quot;</span><span class="p">))):</span>
+    <span class="k">print</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s"> knows </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">row</span>
+</pre></div>
+</div>
+<p>The results are tuples of values in the same order as your SELECT arguments.</p>
+<div class="highlight-text"><div class="highlight"><pre>Timothy Berners-Lee knows Edd Dumbill
+Timothy Berners-Lee knows Jennifer Golbeck
+Timothy Berners-Lee knows Nicholas Gibbins
+Timothy Berners-Lee knows Nigel Shadbolt
+Dan Brickley knows binzac
+Timothy Berners-Lee knows Eric Miller
+Drew Perttula knows David McClosky
+Timothy Berners-Lee knows Dan Connolly
+...
+</pre></div>
+</div>
+</div>
+<div class="section" id="namespaces">
+<h3>Namespaces<a class="headerlink" href="#namespaces" title="Permalink to this headline">¶</a></h3>
+<p>The <tt class="xref docutils literal"><span class="pre">Graph.parse()</span></tt> <tt class="xref docutils literal"><span class="pre">initNs</span></tt> argument is a dictionary of namespaces to be expanded in the query string. In a large program, it&#8217;s common to use the same dict for every single query. You might even hack your graph instance so that the <tt class="docutils literal"><span class="pre">initNs</span></tt> arg is already filled in.</p>
+<p>If someone knows how to use the empty prefix (e.g. &#8220;?a :knows ?b&#8221;), please write about it here and in the <tt class="xref docutils literal"><span class="pre">Graph.query()</span></tt> docs.</p>
+<p><em>ewan klein provides the answer, use BASE to set a default namespace ...</em></p>
+<div class="highlight-sparql"><div class="highlight"><pre><span class="k">BASE </span><span class="nn">&lt;http://xmlns.com/foaf/0.1/&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="bindings">
+<h3>Bindings<a class="headerlink" href="#bindings" title="Permalink to this headline">¶</a></h3>
+<p>Just like with SQL queries, it&#8217;s common to run the same query many times with only a few terms changing. rdflib calls this <tt class="docutils literal"><span class="pre">initBindings</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">FOAF</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">(</span><span class="s">&quot;http://xmlns.com/foaf/0.1/&quot;</span><span class="p">)</span>
+<span class="n">ns</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">foaf</span><span class="o">=</span><span class="n">FOAF</span><span class="p">)</span>
+<span class="n">drew</span> <span class="o">=</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;http://bigasterisk.com/foaf.rdf#drewp&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;&quot;&quot;SELECT ?name</span>
+<span class="s">                      WHERE { ?p foaf:name ?name }&quot;&quot;&quot;</span><span class="p">,</span>
+                   <span class="n">initNs</span><span class="o">=</span><span class="n">ns</span><span class="p">,</span> <span class="n">initBindings</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;?p&#39;</span> <span class="p">:</span> <span class="n">drew</span><span class="p">}):</span>
+    <span class="k">print</span> <span class="n">row</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">rdflib</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s">&#39;Drew Perttula&#39;</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="bp">None</span><span class="p">),)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="rdflib.graph.Graph.query">
+<!--[rdflib.graph.Graph.query]--><tt class="descclassname">Graph.</tt><tt class="descname">query</tt><big>(</big><em>strOrQuery</em>, <em>initBindings={}</em>, <em>initNs={}</em>, <em>DEBUG=False</em>, <em>PARSE_DEBUG=False</em>, <em>dataSetBase=None</em>, <em>processor='sparql'</em>, <em>extensionFunctions={rdflib.term.URIRef('http://www.w3.org/TR/rdf-sparql-query/#describe'): &lt;function describe at 0x15ab130&gt;}</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes a SPARQL query (eventually will support Versa queries with
+same method) against this Graph.</p>
+<blockquote>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>strOrQuery</cite>: Either a string consisting of the SPARQL query or</dt>
+<dd><p class="first last">an instance of rdflib.sparql.bison.Query.Query</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>initBindings</cite>: A mapping from a Variable to an RDFLib term (used</dt>
+<dd><p class="first last">as initial bindings for SPARQL query)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>initNS</cite>: A mapping from a namespace prefix to an instance of</dt>
+<dd><p class="first last">rdflib.Namespace (used for SPARQL query)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>DEBUG</cite>: A boolean flag passed on to the SPARQL parser and</dt>
+<dd><p class="first last">evaluation engine</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>processor</cite>: The kind of RDF query (must be &#8216;sparql&#8217; until Versa</dt>
+<dd><p class="first last">is ported)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>USE_PYPARSING</cite>: A flag indicating whether to use the</dt>
+<dd><p class="first last">experimental pyparsing parser for SPARQL</p>
+</dd>
+</dl>
+</li>
+</ul>
+</blockquote>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="store-operations">
+<h2>Store operations<a class="headerlink" href="#store-operations" title="Permalink to this headline">¶</a></h2>
+<p>Example code to create a MySQL triple store, add some triples, and serialize the resulting graph.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">rdflib</span>
+<span class="kn">from</span> <span class="nn">rdflib.graph</span> <span class="kn">import</span> <span class="n">ConjunctiveGraph</span> <span class="k">as</span> <span class="n">Graph</span>
+<span class="kn">from</span> <span class="nn">rdflib</span> <span class="kn">import</span> <span class="n">plugin</span>
+<span class="kn">from</span> <span class="nn">rdflib.store</span> <span class="kn">import</span> <span class="n">Store</span><span class="p">,</span> <span class="n">NO_STORE</span><span class="p">,</span> <span class="n">VALID_STORE</span>
+<span class="kn">from</span> <span class="nn">rdflib.namespace</span> <span class="kn">import</span> <span class="n">Namespace</span>
+<span class="kn">from</span> <span class="nn">rdflib.term</span> <span class="kn">import</span> <span class="n">Literal</span>
+<span class="kn">from</span> <span class="nn">rdflib.term</span> <span class="kn">import</span> <span class="n">URIRef</span>
+
+<span class="n">default_graph_uri</span> <span class="o">=</span> <span class="s">&quot;http://rdflib.net/rdfstore&quot;</span>
+<span class="n">configString</span> <span class="o">=</span> <span class="s">&quot;host=localhost,user=username,password=password,db=rdfstore&quot;</span>
+
+<span class="c"># Get the mysql plugin. You may have to install the python mysql libraries</span>
+<span class="n">store</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;MySQL&#39;</span><span class="p">,</span> <span class="n">Store</span><span class="p">)(</span><span class="s">&#39;rdfstore&#39;</span><span class="p">)</span>
+
+<span class="c"># Open previously created store, or create it if it doesn&#39;t exist yet</span>
+<span class="n">rt</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">configString</span><span class="p">,</span><span class="n">create</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">rt</span> <span class="o">==</span> <span class="n">NO_STORE</span><span class="p">:</span>
+    <span class="c"># There is no underlying MySQL infrastructure, create it</span>
+    <span class="n">store</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">configString</span><span class="p">,</span><span class="n">create</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">assert</span> <span class="n">rt</span> <span class="o">==</span> <span class="n">VALID_STORE</span><span class="p">,</span><span class="s">&quot;There underlying store is corrupted&quot;</span>
+
+<span class="c"># There is a store, use it</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">identifier</span> <span class="o">=</span> <span class="n">URIRef</span><span class="p">(</span><span class="n">default_graph_uri</span><span class="p">))</span>
+
+<span class="k">print</span> <span class="s">&quot;Triples in graph before add: &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+
+<span class="c"># Now we&#39;ll add some triples to the graph &amp; commit the changes</span>
+<span class="n">rdflib</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">(</span><span class="s">&#39;http://rdflib.net/test/&#39;</span><span class="p">)</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">rdflib</span><span class="p">[</span><span class="s">&#39;pic:1&#39;</span><span class="p">],</span> <span class="n">rdflib</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&#39;Jane &amp; Bob&#39;</span><span class="p">)))</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">rdflib</span><span class="p">[</span><span class="s">&#39;pic:2&#39;</span><span class="p">],</span> <span class="n">rdflib</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&#39;Squirrel in Tree&#39;</span><span class="p">)))</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+<span class="k">print</span> <span class="s">&quot;Triples in graph after add: &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+
+<span class="c"># display the graph in RDF/XML</span>
+<span class="k">print</span> <span class="n">graph</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">Getting started with rdflib</a><ul>
+<li><a class="reference external" href="#introduction-to-parsing-rdf-into-rdflib-graphs">Introduction to parsing RDF into rdflib graphs</a><ul>
+<li><a class="reference external" href="#reading-an-nt-file">Reading an NT file</a></li>
+<li><a class="reference external" href="#reading-remote-graphs">Reading remote graphs</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#module-rdflib.syntax.parsers.TriXParser">Other parsers supported by rdflib</a></li>
+<li><a class="reference external" href="#introduction-to-using-sparql-to-query-an-rdflib-graph">Introduction to using SPARQL to query an rdflib graph</a><ul>
+<li><a class="reference external" href="#create-an-rdflib-graph">Create an Rdflib Graph</a></li>
+<li><a class="reference external" href="#run-a-query">Run a Query</a></li>
+<li><a class="reference external" href="#namespaces">Namespaces</a></li>
+<li><a class="reference external" href="#bindings">Bindings</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#store-operations">Store operations</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="index.html"
+                                  title="previous chapter">rdflib 2.5</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="univrdfstore.html"
+                                  title="next chapter">A Universal RDF Store Interface</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/gettingstarted.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+	  <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+	      <p style="font-size: 90%">Enter search terms or a module, class or function name.</p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="univrdfstore.html" title="A Universal RDF Store Interface"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="rdflib 2.5"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">rdflib v2.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, Daniel Krech.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.
+    </div>
+  </body>
+</html>

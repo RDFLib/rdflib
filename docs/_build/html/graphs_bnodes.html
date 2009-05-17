@@ -1,0 +1,526 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Graphs, Named Graphs and Blank Nodes &mdash; rdflib v2.5.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '2.5.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="rdflib v2.5.0 documentation" href="index.html" />
+    <link rel="next" title="Assorted examples" href="assorted_examples.html" />
+    <link rel="prev" title="Merging graphs" href="graph_merging.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="assorted_examples.html" title="Assorted examples"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="graph_merging.html" title="Merging graphs"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">rdflib v2.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="graphs-named-graphs-and-blank-nodes">
+<span id="graphs-bnodes"></span><h1>Graphs, Named Graphs and Blank Nodes<a class="headerlink" href="#graphs-named-graphs-and-blank-nodes" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="vin-s-question">
+<h2>Vin&#8217;s question<a class="headerlink" href="#vin-s-question" title="Permalink to this headline">¶</a></h2>
+<p>Clarifying the query more precisely:</p>
+<div class="highlight-pycon"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdflib.Graph</span> <span class="kn">import</span> <span class="n">Graph</span><span class="p">,</span> <span class="n">ConjunctiveGraph</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdflib</span> <span class="kn">import</span> <span class="n">URIRef</span>
+</pre></div>
+</div>
+<p>[1]</p>
+<div class="highlight-pycon"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="s">&#39;MySQL&#39;</span><span class="p">,</span> <span class="n">identifier</span> <span class="o">=</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;http://www.example.com&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">identifier</span>
+<span class="go">rdflib.URIRef(&#39;http://www.example.com&#39;)</span>
+</pre></div>
+</div>
+<p>[2]</p>
+<div class="highlight-pycon"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">graph1</span> <span class="o">=</span> <span class="n">ConjunctiveGraph</span><span class="p">(</span><span class="s">&#39;MySQL&#39;</span><span class="p">,</span> <span class="n">identifier</span> <span class="o">=</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;http://www.example.com&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">graph1</span><span class="o">.</span><span class="n">identifier</span>
+<span class="go">rdflib.BNode(&#39;VLjQILCh3&#39;)</span>
+</pre></div>
+</div>
+<p>[3]</p>
+<div class="highlight-pycon"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">graph1</span> <span class="o">=</span> <span class="n">ConjunctiveGraph</span><span class="p">(</span><span class="s">&#39;MySQL&#39;</span><span class="p">,</span> <span class="n">identifier</span> <span class="o">=</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;http://www.example.com&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">graph1</span><span class="o">.</span><span class="n">identifier</span>
+<span class="go">rdflib.BNode(&#39;VLjQILCh4&#39;)</span>
+</pre></div>
+</div>
+<p>In [1] when I mention the Graph identifier the return is a persistent
+URIRef (i.e. it can be used out of the current model as well) which
+gives me a unique name for the graph and now I am free to use it in
+other model as well - may be it can be used for merging graphs. Where
+as in [2] and [3] when I mention Graph identifier the return is a
+BNode which changes values every time we invoke it (and hence BNodes
+have local scope and are not good for using outside the model). My
+query was simply to know why the Model &#8220;identifier&#8221; is giving BNode in
+[2] comparing to a persistent URI in case [1]?  In ConjunctiveGraph,
+identifier is inherited from the Graph class.</p>
+</div>
+<div class="section" id="the-discourse">
+<h2>The discourse<a class="headerlink" href="#the-discourse" title="Permalink to this headline">¶</a></h2>
+<p>This sparql-dev discussion airs some of the issues ...</p>
+<div class="section" id="nuutti-kotivuori">
+<h3>0016: Nuutti Kotivuori<a class="headerlink" href="#nuutti-kotivuori" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="http://lists.w3.org/Archives/Public/public-sparql-dev/2006JulSep/0016.html">http://lists.w3.org/Archives/Public/public-sparql-dev/2006JulSep/0016.html</a></p>
+<p>This isn&#8217;t exactly a SPARQL question, but it is very closely
+related. I will first outline the question context.</p>
+<p>Assume an RDF statement store, which has a mechanism for tracking
+statement origin (scope, context, graph, source whatever). Many of the
+statements have a distinct origin, or source graph, they were imported
+from. But there are also those which either seemingly have no origin,
+or the origin is not known. The origin of these statements have to be
+handled somehow. We&#8217;ll come to the specific choices later on.</p>
+<p>This statement store offers a SPARQL query interface into it. The
+facilities for querying named graphs in SPARQL would obviously be used
+to query the different origins in the store. But there are two things
+to decide. First, how should statements without an origin be accessed
+in SPARQL? There are several choices on this, which I will outline
+below. And related to the first one, second, what should the default
+graph be for the queries if none is given explicitly.</p>
+<p>I will list a few possibilities and mention the problems and benefits
+that seem to result from them as a basis for discussion.</p>
+<blockquote>
+<ol class="arabic">
+<li><p class="first">Unknown origin is a distinct node, but separate from all uris,
+blank nodes or literals. The default graph for the query is the
+graph of the unknown origin nodes.</p>
+<ul>
+<li><p class="first">Separation of identifier spaces, no fear of any overlap. The
+graph of statements with unknown origin is separate from any
+named graph.</p>
+</li>
+<li><p class="first">Since there is no way to represent the unknown origin in SPARQL
+syntax, the default graph is the only way to access the nodes in
+that graph.</p>
+</li>
+<li><p class="first">The nodes in the unknown origin graph are not matched by any
+graph query, since the name of the graph could not be returned
+reasonably. That is:</p>
+<div class="highlight-sparql"><pre>SELECT ?g ?s ?o ?p
+WHERE { GRAPH ?g { ?s ?p ?o } }</pre>
+</div>
+<p>cannot return ?g for the unknown origin graph.</p>
+</li>
+</ul>
+</li>
+<li><p class="first">Unknown origin is a distinct node, as above. The default graph is
+the RDF merge of all graphs in the store, including the statements
+with an unknown origin.</p>
+<ul class="simple">
+<li>The problems above.</li>
+<li>In addition, there is no way to select nodes that explicitly
+have an unknown origin. (Or is there? Could one match all the
+statements for which there is no graph with the same statement?
+In any case, this would be quite contorted.)</li>
+</ul>
+</li>
+<li><p class="first">Unknown origin is represented by a distinct blank node; that is,
+every statement has it&#8217;s own blank node as the graph name, which
+is not shared with any of the other statements. The default graph
+is the RDF merge of all graphs in the store, including the
+statements with an unknown origin.</p>
+<ul class="simple">
+<li>This is probably closest to accurate modelling of the
+situation. We know every statement has an origin, we just don&#8217;t
+know what it is - a situation commonly modelled with a blank
+node. Also, we don&#8217;t know which statements might share an
+origin, so until we know better, we make them all distinct.</li>
+<li>The origin of the statements is nicely queryable with SPARQL
+queries and every statement has an origin, even if unknown.</li>
+<li>Queries which specify several statements from a single graph
+will not match the statements with unknown origins as it cannot
+be confirmed that they would be from the same graph.</li>
+<li>There is no way to match the origin of a single statement as
+there is no way to match a certain blank node explicitly. The
+current SPARQL treats it as an open variable(?).</li>
+<li>There is no way to explicitly match statements that have an
+unknown origin, since the origins are just distinct blank nodes.</li>
+<li>Possibly hard to implement, because of the number of distinct
+blank nodes.</li>
+</ul>
+</li>
+<li><p class="first">Unknown origin is represented by a singleton blank node; that is,
+every statement with an unknown origin shares one single blank
+node as the graph name. The default graph is the RDF merge of all
+graphs in the store.</p>
+<ul>
+<li><p class="first">Lumps all statements with an unknown origin under a single named
+graph. Queries which match several statements from a single
+graph will match statement sets from unknown origin as well.</p>
+</li>
+<li><p class="first">The origin of the statements is nicely queryable with SPARQL
+queries and every statement has an origin, even if unknown.</p>
+</li>
+<li><p class="first">There is no way to explicitly match statements that have an
+unknown origin, since the origin is a single blank node. If the
+application provided a magic type for this blank node (_:x a
+rdfx:UnknownOrigin), this could be matched with:</p>
+<div class="highlight-sparql"><pre>SELECT ?s ?o ?p
+WHERE { ?g a rdfx:UnknownOrigin .
+        GRAPH ?g { ?s ?o ?p } }</pre>
+</div>
+<p>But this again is quite contorted. (The same could be applied to
+the third case as well, but the implementation of that would be
+really tricky to be effecient.)</p>
+</li>
+</ul>
+</li>
+<li><p class="first">Unknown origin is represented by a singleton blank node as
+above. The default graph is the singleton blank node of unknown
+origin.</p>
+<ul class="simple">
+<li>Mostly as above, but in the common case, explictly matching
+statements that have an unknown origin would be easy in just
+matching the statements from the default graph.</li>
+</ul>
+</li>
+<li><p class="first">Unknown origin is represented by a well known URI that is shared
+universally. The default graph is the RDF merge of all graphs in
+the store.</p>
+<ul class="simple">
+<li>Somewhat incorrectly asserts that the statements have a certain
+origin, even though we don&#8217;t know the origin.</li>
+<li>The origin of the statements is nicely queryable with SPARQL.</li>
+<li>Statements with an unknown origin can be easily explicitly
+matched by comparing them against the well known URI.</li>
+<li>Assigns a special meaning to an URI.</li>
+<li>Hard to coordinate with a number of people implementing similar
+solutions if not standardized.</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<p>Some other variants of the above were omitted, since their problems
+and benefits are easily reasoned.</p>
+<p>On irc, &#8216;chimenzie&#8217; outlined the problem as such:</p>
+<dl class="docutils">
+<dt>17:35 chimezie:#swig =&gt; Hmm.. well, seems like what is missing is a good</dt>
+<dd>definition of a &#8216;name for nodes that don&#8217;t have an explicit context&#8217;</dd>
+<dt>17:36 chimezie:#swig =&gt; or rather &#8216;a name for the context of nodes that aren&#8217;t</dt>
+<dd>assigned to a context explicitely&#8217;</dd>
+</dl>
+<p>So, I&#8217;m out for some input on what might be the sanest route to
+through this.</p>
+<p>TIA,
+&#8211; Naked</p>
+</div>
+<div class="section" id="richard-cyganiak">
+<h3>0018: Richard Cyganiak<a class="headerlink" href="#richard-cyganiak" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="http://lists.w3.org/Archives/Public/public-sparql-dev/2006JulSep/0018.html">http://lists.w3.org/Archives/Public/public-sparql-dev/2006JulSep/0018.html</a></p>
+<p>Hi Nuutti,</p>
+<p>Without having thought through all the consequences ...</p>
+<p>Some of your options are not really possible with named graphs
+because graphs need to be <em>named</em>, that is, the name <em>must</em> be a URI
+and not a blank node. Blank nodes are always scoped to a single
+graph, and using blank nodes as graph labels would make it impossible
+to refer to a named graph from the outside world. This excludes #3
+and #4.</p>
+<p>In SPARQL, the default graph is structurally and syntactically
+handled so differently from the other graphs that I wouldn&#8217;t consider
+using it for the same kind of data. That is, I tend to reserve the
+default graph for metadata or the merge of all named graphs. This
+excludes #1 and #5.</p>
+<p>#6 has the problem of re-using a single URI for many different things
+&#8211; the statements of unknown origin in Alice&#8217;s store, <em>and</em> the
+statements of unknown origin in Bob&#8217;s store. While workable, this is
+not an elegant solution.</p>
+<p>I would suggest that Alice and Bob each mint a new URI for the graph
+containing the statements of unknown origin <em>in their own store</em>. Or
+mint a new URI to hold each individual statement, or anything in
+between. Since the owner of a URI gets to say what the meaning of the
+URI is, they can declare that this chunk of URI space is reserved for
+this purpose (assuming Alice and Bob each own a chunk of URI space).</p>
+<p>I wonder why you discounted this solution?</p>
+<p>I also question the existence of &#8220;statements without a known origin&#8221;.
+They surely didn&#8217;t just pop up magically inside your triple store,
+eh? I guess it&#8217;s more like &#8220;statements whose origin I don&#8217;t want to
+model&#8221;.</p>
+</div>
+<div class="section" id="chimezie-ogbuji">
+<h3>0020: Chimezie Ogbuji<a class="headerlink" href="#chimezie-ogbuji" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="http://lists.w3.org/Archives/Public/public-sparql-dev/2006JulSep/0020.html">http://lists.w3.org/Archives/Public/public-sparql-dev/2006JulSep/0020.html</a></p>
+<p>On Wed, 13 Sep 2006, Richard Cyganiak wrote:</p>
+<div class="highlight-text"><div class="highlight"><pre>&gt; Hi Nuutti,
+&gt;
+&gt; Without having thought through all the consequences ...
+&gt;
+&gt; Some of your options are not really possible with named graphs because graphs
+&gt; need to be *named*, that is, the name *must* be a URI and not a blank node.
+</pre></div>
+</div>
+<p>I don&#8217;t agree.  What&#8217;s the source of this assertion? I think the core
+issue here is that there is <em>no</em> concensus formalism for named graphs WRT RDF, yet SPARQL is dependent
+on an RDF model that supports named graphs.  If there is one, please
+point me to it, because I ran across the same problem when constructing
+programming APIs for named graphs.  The only formalism I know of is Graham Kyle, John McCarthy&#8217;s work [1].</p>
+<div class="highlight-text"><div class="highlight"><pre>&gt; Blank nodes are always scoped to a single graph, and using blank nodes as
+&gt; graph labels would make it impossible to refer to a named graph from the
+&gt; outside world. This excludes #3 and #4.
+</pre></div>
+</div>
+<p>Well, Blank nodes used within a graph can&#8217;t be referred to
+directly but they can still be matched by SPARQL - doesn&#8217;t make them any
+less useful.  The problem isn&#8217;t the use of Blank nodes for graph names but
+a the lack of a mechanism [2] to match the graph name(s) associated with a
+node.  Given how closely coupled SPARQL is with (admittedly informal)
+named graph semantics, I would expect to be able to answer questions such as:</p>
+<p>&#8220;What are the graph names in which all the statements about &lt;someIRI&gt; are
+asserted?&#8221;</p>
+<p>Assuming I could answer this question, then graph labels that are blank
+nodes become as accessible as blank nodes asserted <em>within</em> a graph and it
+becomes a question of what is the appropriate use for a bnode as a graph
+label?</p>
+<p>If BNodes are used for existential assertions about nodes, why wouldn&#8217;t
+they be used as existential assertions about graphs? And if there is
+some semantic consequence, it furthers the argument that the formalisms
+for named graphs should be well articulated before they are tightly integrated into a query language.</p>
+<div class="highlight-text"><div class="highlight"><pre>&gt; I would suggest that Alice and Bob each mint a new URI for the graph
+&gt; containing the statements of unknown origin *in their own store*. Or mint a
+&gt; new URI to hold each individual statement, or anything in between. Since the
+&gt; owner of a URI gets to say what the meaning of the URI is, they can declare
+&gt; that this chunk of URI space is reserved for this purpose (assuming Alice and
+&gt; Bob each own a chunk of URI space).
+&gt;
+&gt; I wonder why you discounted this solution?
+</pre></div>
+</div>
+<p>I don&#8217;t think it&#8217;s an elegant solution when we already have the means
+(within &#8216;vanilla&#8217; RDF Model Theory) to express
+existential assertions - which is exactly the scenario here.</p>
+<p>If a graph label is nothing but a name associated with a set of graphs,
+why should it not behave the same as the name associated with a node
+within a graph?</p>
+<div class="highlight-text"><div class="highlight"><pre>&gt; I also question the existence of &quot;statements without a known origin&quot;. They
+&gt; surely didn&#39;t just pop up magically inside your triple store, eh? I guess
+&gt; it&#39;s more like &quot;statements whose origin I don&#39;t want to model&quot;.
+</pre></div>
+</div>
+<p>How different is this from &#8220;nodes whose names I don&#8217;t care to maintain /
+model?&#8221;</p>
+<p>[1] <a class="reference external" href="http://ninebynine.org/RDFNotes/UsingContextsWithRDF.html#xtocid-6303976">http://ninebynine.org/RDFNotes/UsingContextsWithRDF.html#xtocid-6303976</a></p>
+<p>[2] <a class="reference external" href="http://copia.ogbuji.net/blog/2006-07-14/querying-named-rdf-graph-aggregate">http://copia.ogbuji.net/blog/2006-07-14/querying-named-rdf-graph-aggregate</a></p>
+</div>
+<div class="section" id="id1">
+<h3>0023: Nuutti Kotivuori<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="http://lists.w3.org/Archives/Public/public-sparql-dev/2006JulSep/0023.html">http://lists.w3.org/Archives/Public/public-sparql-dev/2006JulSep/0023.html</a></p>
+<p>Chimezie Ogbuji wrote:</p>
+<div class="highlight-text"><div class="highlight"><pre>&gt; I don&#39;t agree.  What&#39;s the source of this assertion? I think the
+&gt; core issue here is that there is *no* concensus formalism for named
+&gt; graphs WRT RDF, yet SPARQL is dependent on an RDF model that
+&gt; supports named graphs.  If there is one, please point me to it,
+&gt; because I ran across the same problem when constructing programming
+&gt; APIs for named graphs.  The only formalism I know of is Graham Kyle,
+&gt; John McCarthy&#39;s work [1].
+</pre></div>
+</div>
+<p>Well, one thing which would help me in this is a survey of the
+approaches other people have taken when doing these things.</p>
+<p>I think I know the situation with Redland librdf, when I read the code
+last, but I&#8217;m not sure if I&#8217;m correct.</p>
+<p>I think that in librdf, there are statements explicitly without a
+context. In SPARQL queries, the default graph is the merge of all
+statements in the store, with or without a context. Queries which
+explicitly match the graph in a variable never match statements
+without a context. And so there is no easy way to match all the
+statements without a context only.</p>
+<p>I&#8217;d like to know atleast how rdflib and Jena (with whatever extensions
+that this requires) solve this issue.</p>
+<p>&#8211; Naked</p>
+</div>
+<div class="section" id="id2">
+<h3>0027: Chimezie Ogbuji<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="http://lists.w3.org/Archives/Public/public-sparql-dev/2006JulSep/0027.html">http://lists.w3.org/Archives/Public/public-sparql-dev/2006JulSep/0027.html</a></p>
+<p>RDFLib has two API&#8217;s: a Store API and a Graph API.  Every Graph (there
+are several kinds: QuotedGraphs, ConjunctiveGraphs, Named Graphs,
+AggregateGraphs, ..) is associated with a Store instance and an
+identifier. The identifiers are either a Blank Node or a URI.</p>
+<p>All the Store API&#8217;s take a fourth parameter which is the containing Graph
+(even the <tt class="xref docutils literal"><span class="pre">__len__()</span></tt> method). So, theoretically the Store can choose to
+persist RDF triples in a flat space (i.e., vanilla RDF model) and disregard the fourth parameter or use
+the identifier of the containing graph to partition its persistence space
+accordingly - it can even choose to partition formulae seperately (to
+support N3 persistence) from the kind of Graph passed down to it (it will
+receive QuotedGraph instances as the fourth parameter in this case).</p>
+<p>The <tt class="xref docutils literal"><span class="pre">Store.triples()</span></tt> method returns a generator of (s,p,o), graphInst so each
+Store implementation is expected to be able to associate each triple with
+a containing graph (or None if the Store chooses to persist triples in a
+flat space).</p>
+<p>The Graph API&#8217;s do most of the leg work of named graph aggregation.
+<tt class="xref docutils literal"><span class="pre">ConjunctiveGraph</span></tt> is an (unamed) aggregation of all the named graphs within
+the Store.  It has a &#8216;default&#8217; graph, whose name is associated with the
+ConjunctiveGraph throughout its life.  All methods work against this
+default graph.  Its constructor can take an identifier to use as the name
+of this &#8216;default&#8217; graph or it will assign a BNode.  In practice (at least
+how *I* use RDFLib), I instantiate a ConjunctiveGraph if I want to add
+triples to the Store but don&#8217;t care to mint a URI for the graph (the
+scenario which triggered this thread).  These triples can still be
+addressed.</p>
+<p><tt class="xref docutils literal"><span class="pre">ReadOnlyGraphAggregate</span></tt> is a subset of the <tt class="xref docutils literal"><span class="pre">ConjunctiveGraph</span></tt> where the names
+of the graphs it provides an aggregate view for are passed on in the
+constructor - this is how a SPARQL query with multiple FROM NAMED is
+supported.</p>
+<p><tt class="xref docutils literal"><span class="pre">QuotedGraphs</span></tt> are meant to implement Notation 3 formulae.  They are
+associated with a required identifier that the N3 parser must provide in
+order to maintain consistent formulae identification for scenarios such as
+implication and such.</p>
+<p>The default dataset for SPARQL queries is equivalent to the Graph instance
+on which the query is dispatched.  If the <tt class="xref docutils literal"><span class="pre">query()</span></tt> method is called on a
+<tt class="xref docutils literal"><span class="pre">ConjunctiveGraph</span></tt>, the default dataset is the entire Store, if it&#8217;s a named
+graph it&#8217;s the named graph.</p>
+<p>This setup supports:</p>
+<ul class="simple">
+<li>Flat space of triples</li>
+<li>Named Graph partitioning</li>
+<li>Notation 3 persistence</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h3>0028: Nuutti Kotivuori<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="http://lists.w3.org/Archives/Public/public-sparql-dev/2006JulSep/0028.html">http://lists.w3.org/Archives/Public/public-sparql-dev/2006JulSep/0028.html</a></p>
+<p>Chimezie Ogbuji wrote:</p>
+<div class="highlight-text"><div class="highlight"><pre>&gt; The Graph API&#39;s do most of the leg work of named graph
+&gt; aggregation. ConjunctiveGraph is an (unamed) aggregation of all the
+&gt; named graphs within the Store.  It has a &#39;default&#39; graph, whose name
+&gt; is associated with the ConjunctiveGraph throughout it&#39;s life.  All
+&gt; methods work against this default graph.  Its constructor can take an
+&gt; identifier to use as the name of this &#39;default&#39; graph or it will
+&gt; assign a BNode.  In practice (at least how *I* use RDFLib), I
+&gt; instanciate a ConjunctiveGraph if I want to add triples to the Store
+&gt; but don&#39;t care to mint a URI for the graph (the scenario which
+&gt; triggered this thread).  These triples can still be addressed.
+</pre></div>
+</div>
+<p>Okay, in the context of this discussion, what RDFLib does is that
+every time a ConjunctiveGraph is instantiated, it creates a new blank
+node and uses that throughout the life of the ConjunctiveGraph
+object. And the default graph is the merge of all graphs in the store.</p>
+<p>So triples without an origin will be associated with a blank node,
+which is shared between added triples, but distinct between different
+ConjunctiveGraph objects. This probably coincides rather nicely with
+most usages of the API. Single &#8220;sessions&#8221; of manipulating nodes will
+have the blank node origin shared.</p>
+<p>And the possible problems are mostly what was already mentioned
+earlier about an approach like this. The blank node identities might
+not coincide with the actual separateness of the sources graphs -
+making a query which matches several statements out of a single graph
+might not be too meaningful for these blank nodes. It is difficult to
+query only nodes which have no specific origin. And since the graph
+name is a blank node, there is no way to explicitly specify the graph
+name to be specific blank node, as the SPARQL syntax doesn&#8217;t allow
+this.</p>
+<p>&#8211; Naked</p>
+</div>
+<div class="section" id="references">
+<h3>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h3>
+<p>Two posts by Pat Hayes, recommended by Andy Seaborne.</p>
+<p><a class="reference external" href="http://www.ihmc.us/users/phayes/RDFGraphSyntax.html">http://www.ihmc.us/users/phayes/RDFGraphSyntax.html</a></p>
+<p><a class="reference external" href="http://lists.w3.org/Archives/Public/public-rdf-dawg/2006JulSep/0153.html">http://lists.w3.org/Archives/Public/public-rdf-dawg/2006JulSep/0153.html</a></p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">Graphs, Named Graphs and Blank Nodes</a><ul>
+<li><a class="reference external" href="#vin-s-question">Vin&#8217;s question</a></li>
+<li><a class="reference external" href="#the-discourse">The discourse</a><ul>
+<li><a class="reference external" href="#nuutti-kotivuori">0016: Nuutti Kotivuori</a></li>
+<li><a class="reference external" href="#richard-cyganiak">0018: Richard Cyganiak</a></li>
+<li><a class="reference external" href="#chimezie-ogbuji">0020: Chimezie Ogbuji</a></li>
+<li><a class="reference external" href="#id1">0023: Nuutti Kotivuori</a></li>
+<li><a class="reference external" href="#id2">0027: Chimezie Ogbuji</a></li>
+<li><a class="reference external" href="#id3">0028: Nuutti Kotivuori</a></li>
+<li><a class="reference external" href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="graph_merging.html"
+                                  title="previous chapter">Merging graphs</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="assorted_examples.html"
+                                  title="next chapter">Assorted examples</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/graphs_bnodes.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+	  <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+	      <p style="font-size: 90%">Enter search terms or a module, class or function name.</p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="assorted_examples.html" title="Assorted examples"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="graph_merging.html" title="Merging graphs"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">rdflib v2.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, Daniel Krech.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.
+    </div>
+  </body>
+</html>

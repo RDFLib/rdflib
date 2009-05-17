@@ -1,0 +1,548 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Other modules &mdash; rdflib v2.5.0 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.5.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="rdflib v2.5.0 documentation" href="../index.html" />
+    <link rel="up" title="Modules" href="index.html" />
+    <link rel="prev" title="rdflib.graph.QuotedGraph – Quoted graphs" href="nodes/quoted_graph.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="nodes/quoted_graph.html" title="rdflib.graph.QuotedGraph – Quoted graphs"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">rdflib v2.5.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="other-modules">
+<h1>Other modules<a class="headerlink" href="#other-modules" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-rdflib.collection">
+<h2>Collection<a class="headerlink" href="#module-rdflib.collection" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="rdflib.collection.Collection">
+<!--[rdflib.collection.Collection]-->class <tt class="descclassname">rdflib.collection.</tt><tt class="descname">Collection</tt><big>(</big><em>graph</em>, <em>uri</em>, <em>seq=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#rdflib.collection.Collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>See 3.3.5 Emulating container types: <a class="reference external" href="http://docs.python.org/ref/sequence-types.html#l2h-232">http://docs.python.org/ref/sequence-types.html#l2h-232</a></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdflib.graph</span> <span class="kn">import</span> <span class="n">Graph</span>    
+<span class="gp">&gt;&gt;&gt; </span><span class="n">listName</span> <span class="o">=</span> <span class="n">BNode</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="s">&#39;IOMemory&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">listItem1</span> <span class="o">=</span> <span class="n">BNode</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">listItem2</span> <span class="o">=</span> <span class="n">BNode</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">listName</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">first</span><span class="p">,</span><span class="n">Literal</span><span class="p">(</span><span class="mf">1</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">listName</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">rest</span><span class="p">,</span><span class="n">listItem1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">listItem1</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">first</span><span class="p">,</span><span class="n">Literal</span><span class="p">(</span><span class="mf">2</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">listItem1</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">rest</span><span class="p">,</span><span class="n">listItem2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">listItem2</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">rest</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">nil</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">listItem2</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">first</span><span class="p">,</span><span class="n">Literal</span><span class="p">(</span><span class="mf">3</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">=</span><span class="n">Collection</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="n">listName</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="nb">list</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="go">[rdflib.term.Literal(u&#39;1&#39;, datatype=rdflib.term.URIRef(&#39;http://www.w3.org/2001/XMLSchema#integer&#39;)), rdflib.term.Literal(u&#39;2&#39;, datatype=rdflib.term.URIRef(&#39;http://www.w3.org/2001/XMLSchema#integer&#39;)), rdflib.term.Literal(u&#39;3&#39;, datatype=rdflib.term.URIRef(&#39;http://www.w3.org/2001/XMLSchema#integer&#39;))]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">1</span> <span class="ow">in</span> <span class="n">c</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">_get_container</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">listItem1</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">Literal</span><span class="p">(</span><span class="mf">2</span><span class="p">))</span> <span class="o">==</span> <span class="mf">1</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="rdflib.collection.Collection.append">
+<!--[rdflib.collection.Collection.append]--><tt class="descname">append</tt><big>(</big><em>item</em><big>)</big><a class="headerlink" href="#rdflib.collection.Collection.append" title="Permalink to this definition">¶</a></dt>
+<dd><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdflib.graph</span> <span class="kn">import</span> <span class="n">Graph</span>    
+<span class="gp">&gt;&gt;&gt; </span><span class="n">listName</span> <span class="o">=</span> <span class="n">BNode</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">=</span><span class="n">Collection</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="n">listName</span><span class="p">,[</span><span class="n">Literal</span><span class="p">(</span><span class="mf">1</span><span class="p">),</span><span class="n">Literal</span><span class="p">(</span><span class="mf">2</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">links</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">subjects</span><span class="p">(</span><span class="nb">object</span><span class="o">=</span><span class="n">i</span><span class="p">,</span><span class="n">predicate</span><span class="o">=</span><span class="n">RDF</span><span class="o">.</span><span class="n">first</span><span class="p">))[</span><span class="mf">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">c</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">links</span> <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">rest</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">nil</span><span class="p">)</span> <span class="ow">in</span> <span class="n">g</span><span class="p">])</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.collection.Collection.index">
+<!--[rdflib.collection.Collection.index]--><tt class="descname">index</tt><big>(</big><em>item</em><big>)</big><a class="headerlink" href="#rdflib.collection.Collection.index" title="Permalink to this definition">¶</a></dt>
+<dd>Returns the 0-based numerical index of the item in the list</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.collection.Collection.n3">
+<!--[rdflib.collection.Collection.n3]--><tt class="descname">n3</tt><big>(</big><big>)</big><a class="headerlink" href="#rdflib.collection.Collection.n3" title="Permalink to this definition">¶</a></dt>
+<dd><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdflib.graph</span> <span class="kn">import</span> <span class="n">Graph</span>    
+<span class="gp">&gt;&gt;&gt; </span><span class="n">listName</span> <span class="o">=</span> <span class="n">BNode</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="s">&#39;IOMemory&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">listItem1</span> <span class="o">=</span> <span class="n">BNode</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">listItem2</span> <span class="o">=</span> <span class="n">BNode</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">listName</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">first</span><span class="p">,</span><span class="n">Literal</span><span class="p">(</span><span class="mf">1</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">listName</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">rest</span><span class="p">,</span><span class="n">listItem1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">listItem1</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">first</span><span class="p">,</span><span class="n">Literal</span><span class="p">(</span><span class="mf">2</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">listItem1</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">rest</span><span class="p">,</span><span class="n">listItem2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">listItem2</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">rest</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">nil</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">listItem2</span><span class="p">,</span><span class="n">RDF</span><span class="o">.</span><span class="n">first</span><span class="p">,</span><span class="n">Literal</span><span class="p">(</span><span class="mf">3</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">=</span><span class="n">Collection</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="n">listName</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">c</span><span class="o">.</span><span class="n">n3</span><span class="p">()</span>
+<span class="go">( &quot;1&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt; &quot;2&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt; &quot;3&quot;^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt; )</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-rdflib.journal">
+<h2>Journal<a class="headerlink" href="#module-rdflib.journal" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="rdflib.journal.JournalWriter">
+<!--[rdflib.journal.JournalWriter]-->class <tt class="descclassname">rdflib.journal.</tt><tt class="descname">JournalWriter</tt><big>(</big><em>store</em>, <em>stream=None</em>, <em>filename=None</em><big>)</big><a class="headerlink" href="#rdflib.journal.JournalWriter" title="Permalink to this definition">¶</a></dt>
+<dd>Writes a journal of the store events.</dd></dl>
+
+<dl class="class">
+<dt id="rdflib.journal.JournalReader">
+<!--[rdflib.journal.JournalReader]-->class <tt class="descclassname">rdflib.journal.</tt><tt class="descname">JournalReader</tt><big>(</big><em>store</em>, <em>filename</em><big>)</big><a class="headerlink" href="#rdflib.journal.JournalReader" title="Permalink to this definition">¶</a></dt>
+<dd>Reads a journal of store events into a store.</dd></dl>
+
+</div>
+<div class="section" id="module-rdflib.query.result">
+<h2>QueryResult<a class="headerlink" href="#module-rdflib.query.result" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="rdflib.query.result.QueryResult">
+<!--[rdflib.query.result.QueryResult]-->class <tt class="descclassname">rdflib.query.result.</tt><tt class="descname">QueryResult</tt><big>(</big><em>pythonResult</em><big>)</big><a class="headerlink" href="#rdflib.query.result.QueryResult" title="Permalink to this definition">¶</a></dt>
+<dd><p>A common class for representing query result in a variety of formats, namely:</p>
+<p>xml   : as an XML string using the XML result format of the query language
+python: as Python objects
+json  : as JSON</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-rdflib.term">
+<h2>Statement<a class="headerlink" href="#module-rdflib.term" title="Permalink to this headline">¶</a></h2>
+<p>This module defines the different types of terms...</p>
+<dl class="class">
+<dt id="rdflib.term.Statement">
+<!--[rdflib.term.Statement]-->class <tt class="descclassname">rdflib.term.</tt><tt class="descname">Statement</tt><a class="headerlink" href="#rdflib.term.Statement" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="rdflib.term.Statement.__new__">
+<!--[rdflib.term.Statement.__new__]--><em class="property">
+static </em><tt class="descclassname">Statement.</tt><tt class="descname">__new__</tt><big>(</big><em>(subject</em>, <em>predicate</em>, <em>object)</em>, <em>context</em><big>)</big><a class="headerlink" href="#rdflib.term.Statement.__new__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rdflib.term.Statement.__reduce__">
+<!--[rdflib.term.Statement.__reduce__]--><tt class="descclassname">Statement.</tt><tt class="descname">__reduce__</tt><big>(</big><big>)</big><a class="headerlink" href="#rdflib.term.Statement.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-rdflib.parser">
+<h2>StringInputSource<a class="headerlink" href="#module-rdflib.parser" title="Permalink to this headline">¶</a></h2>
+<p>This module defines the parser plugin interface and contains other
+related parser support code.</p>
+<p>The module is mainly useful for those wanting to write a parser that
+can plugin to rdflib. If you are wanting to invoke a parser you likely
+want to do so through the Graph class parse method.</p>
+<dl class="class">
+<dt id="rdflib.parser.StringInputSource">
+<!--[rdflib.parser.StringInputSource]-->class <tt class="descclassname">rdflib.parser.</tt><tt class="descname">StringInputSource</tt><big>(</big><em>value</em>, <em>system_id=None</em><big>)</big><a class="headerlink" href="#rdflib.parser.StringInputSource" title="Permalink to this definition">¶</a></dt>
+<dd>TODO:</dd></dl>
+
+</div>
+<div class="section" id="module-rdflib.textindex">
+<h2>TextIndex<a class="headerlink" href="#module-rdflib.textindex" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="rdflib.textindex.TextIndex">
+<!--[rdflib.textindex.TextIndex]-->class <tt class="descclassname">rdflib.textindex.</tt><tt class="descname">TextIndex</tt><big>(</big><em>store='default'</em><big>)</big><a class="headerlink" href="#rdflib.textindex.TextIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>An rdflib graph event handler than indexes text literals that are
+added to a another graph.</p>
+<p>This class lets you &#8216;search&#8217; the text literals in an RDF graph.
+Typically in RDF to search for a substring in an RDF graph you
+would have to &#8216;brute force&#8217; search every literal string looking
+for your substring.</p>
+<p>Instead, this index stores the words in literals into another
+graph whose structure makes searching for terms much less
+expensive.  It does this by chopping up the literals into words,
+removing very common words (currently only in English) and then
+adding each of those words into an RDF graph that describes the
+statements in the original graph that the word came from.</p>
+<p>First, let&#8217;s create a graph that will transmit events and a text
+index that will receive those events, and then subscribe the text
+index to the event graph:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">ConjunctiveGraph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">TextIndex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">subscribe_to</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When triples are added to the event graph (e) events will be fired
+that trigger event handlers in subscribers.  In this case our only
+subscriber is a text index and its action is to index triples that
+contain literal RDF objects.  Here are 3 such triples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">),</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&#39;one two three&#39;</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;b&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">),</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&#39;two three four&#39;</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">),</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&#39;three four five&#39;</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>Of the three literal objects that were added, they all contain
+five unique terms.  These terms can be queried directly from the
+text index:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">term_strings</span><span class="p">()</span> <span class="o">==</span>  <span class="n">set</span><span class="p">([</span><span class="s">&#39;four&#39;</span><span class="p">,</span> <span class="s">&#39;five&#39;</span><span class="p">,</span> <span class="s">&#39;three&#39;</span><span class="p">,</span> <span class="s">&#39;two&#39;</span><span class="p">,</span> <span class="s">&#39;one&#39;</span><span class="p">])</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Now we can search for statement that contain certain terms.  Let&#8217;s
+search for &#8216;one&#8217; which occurs in only one of the literals
+provided, &#8216;a&#8217;.  This can be queried for:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;one&#39;</span><span class="p">)</span><span class="o">==</span><span class="n">set</span><span class="p">([(</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">),</span> <span class="bp">None</span><span class="p">)])</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>&#8216;one&#8217; and &#8216;five&#8217; only occur in one statement each, &#8216;two&#8217; and
+&#8216;four&#8217; occur in two, and &#8216;three&#8217; occurs in three statements:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;one&#39;</span><span class="p">)))</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;two&#39;</span><span class="p">)))</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;three&#39;</span><span class="p">)))</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;four&#39;</span><span class="p">)))</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;five&#39;</span><span class="p">)))</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+<p>Lets add some more statements with different predicates.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;creator&#39;</span><span class="p">),</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&#39;michel&#39;</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;b&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;creator&#39;</span><span class="p">),</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&#39;Atilla the one Hun&#39;</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;creator&#39;</span><span class="p">),</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&#39;michel&#39;</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;d&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;creator&#39;</span><span class="p">),</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&#39;Hun Mung two&#39;</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>Now &#8216;one&#8217; occurs in two statements:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;one&#39;</span><span class="p">)))</span> <span class="o">==</span> <span class="mf">2</span>
+</pre></div>
+</div>
+<p>And &#8216;two&#8217; occurs in three statements, here they are:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;two&#39;</span><span class="p">)</span><span class="o">==</span><span class="n">set</span><span class="p">([(</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;d&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;creator&#39;</span><span class="p">),</span> <span class="bp">None</span><span class="p">),</span> <span class="p">(</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">),</span> <span class="bp">None</span><span class="p">),</span> <span class="p">(</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;b&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">),</span> <span class="bp">None</span><span class="p">)])</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>The predicates that are searched can be restricted by provding an
+argument to &#8216;search()&#8217;:</p>
+<blockquote>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;two&#39;</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;creator&#39;</span><span class="p">))</span><span class="o">==</span><span class="n">set</span><span class="p">([(</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;d&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;creator&#39;</span><span class="p">),</span> <span class="bp">None</span><span class="p">)])</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;two&#39;</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">u&#39;title&#39;</span><span class="p">))</span><span class="o">==</span><span class="n">set</span><span class="p">([(</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">),</span> <span class="bp">None</span><span class="p">),</span> <span class="p">(</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;b&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">),</span> <span class="bp">None</span><span class="p">)])</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</blockquote>
+<p>You can search for more than one term by simply including it in
+the query:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;two three&#39;</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">u&#39;title&#39;</span><span class="p">))</span><span class="o">==</span><span class="n">set</span><span class="p">([(</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">),</span> <span class="bp">None</span><span class="p">),</span> <span class="p">(</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">),</span> <span class="bp">None</span><span class="p">),</span> <span class="p">(</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;b&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">),</span> <span class="bp">None</span><span class="p">)])</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>The above query returns all the statements that contain &#8216;two&#8217; OR
+&#8216;three&#8217;.  For the documents that contain &#8216;two&#8217; AND &#8216;three&#8217;, do an
+intersection of two queries:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;two&#39;</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">u&#39;title&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">u&#39;three&#39;</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">u&#39;title&#39;</span><span class="p">)))</span><span class="o">==</span><span class="n">set</span><span class="p">([(</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">),</span> <span class="bp">None</span><span class="p">),</span> <span class="p">(</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;b&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">),</span> <span class="bp">None</span><span class="p">)])</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Intersection two queries like this is probably not the most
+efficient way to do it, but for reasonable data sets this isn&#8217;t a
+problem.  Larger data sets will want to query the graph with
+sparql or something else more efficient.</p>
+<p>In all the above queries, the object of each statement was always
+&#8216;None&#8217;.  This is because the index graph does not store the object
+data, that would make it very large, and besides the data is
+available in the original data graph.  For convenience, a method
+is provides to &#8216;link&#8217; an index graph to a data graph.  This allows
+the index to also provide object data in query results.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">link_to</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">set</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mf">2</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;two&#39;</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">u&#39;title&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">u&#39;three&#39;</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">u&#39;title&#39;</span><span class="p">)))])</span> <span class="o">==</span>  <span class="n">set</span><span class="p">([</span><span class="s">&#39;two three four&#39;</span><span class="p">,</span> <span class="s">&#39;one two three&#39;</span><span class="p">])</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>You can remove the link by assigning None:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">link_to</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Unindexing means to remove statments from the index graph that
+corespond to a statement in the data graph.  Note that while it is
+possible to remove the index information of the occurances of
+terms in statements, it is not possible to remove the terms
+themselves, terms are &#8216;absolute&#8217; and are never removed from the
+index graph.  This is not a problem since languages have finite
+terms:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">remove</span><span class="p">((</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;creator&#39;</span><span class="p">),</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&#39;michel&#39;</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">remove</span><span class="p">((</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;b&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;creator&#39;</span><span class="p">),</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&#39;Atilla the one Hun&#39;</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">remove</span><span class="p">((</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;creator&#39;</span><span class="p">),</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&#39;michel&#39;</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">remove</span><span class="p">((</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;d&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;creator&#39;</span><span class="p">),</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&#39;Hun Mung two&#39;</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>Now &#8216;one&#8217; only occurs in one statement:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;one&#39;</span><span class="p">)))</span> <span class="o">==</span> <span class="mf">1</span>
+</pre></div>
+</div>
+<p>And &#8216;two&#8217; only occurs in two statements, here they are:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;two&#39;</span><span class="p">)</span><span class="o">==</span><span class="n">set</span><span class="p">([(</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">),</span> <span class="bp">None</span><span class="p">),</span> <span class="p">(</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;b&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">),</span> <span class="bp">None</span><span class="p">)])</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>The predicates that are searched can be restricted by provding an
+argument to &#8216;search()&#8217;:</p>
+<blockquote>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;two&#39;</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">u&#39;creator&#39;</span><span class="p">))</span>
+<span class="go">set([])</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">&#39;two&#39;</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">u&#39;title&#39;</span><span class="p">))</span><span class="o">==</span><span class="n">set</span><span class="p">([(</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">),</span> <span class="bp">None</span><span class="p">),</span> <span class="p">(</span><span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;b&#39;</span><span class="p">),</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">),</span> <span class="bp">None</span><span class="p">)])</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</blockquote>
+<dl class="method">
+<dt id="rdflib.textindex.TextIndex.index_graph">
+<!--[rdflib.textindex.TextIndex.index_graph]--><tt class="descname">index_graph</tt><big>(</big><em>graph</em><big>)</big><a class="headerlink" href="#rdflib.textindex.TextIndex.index_graph" title="Permalink to this definition">¶</a></dt>
+<dd>Index a whole graph.  Must be a conjunctive graph.</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.textindex.TextIndex.link_to">
+<!--[rdflib.textindex.TextIndex.link_to]--><tt class="descname">link_to</tt><big>(</big><em>graph</em><big>)</big><a class="headerlink" href="#rdflib.textindex.TextIndex.link_to" title="Permalink to this definition">¶</a></dt>
+<dd>Link to a graph</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.textindex.TextIndex.search">
+<!--[rdflib.textindex.TextIndex.search]--><tt class="descname">search</tt><big>(</big><em>terms</em>, <em>predicate=None</em><big>)</big><a class="headerlink" href="#rdflib.textindex.TextIndex.search" title="Permalink to this definition">¶</a></dt>
+<dd>Returns a set of all the statements the term occurs in.</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.textindex.TextIndex.subscribe_to">
+<!--[rdflib.textindex.TextIndex.subscribe_to]--><tt class="descname">subscribe_to</tt><big>(</big><em>graph</em><big>)</big><a class="headerlink" href="#rdflib.textindex.TextIndex.subscribe_to" title="Permalink to this definition">¶</a></dt>
+<dd>Subscribe this index to a graph.</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.textindex.TextIndex.term_strings">
+<!--[rdflib.textindex.TextIndex.term_strings]--><tt class="descname">term_strings</tt><big>(</big><big>)</big><a class="headerlink" href="#rdflib.textindex.TextIndex.term_strings" title="Permalink to this definition">¶</a></dt>
+<dd>Return a list of term strings.</dd></dl>
+
+<dl class="method">
+<dt id="rdflib.textindex.TextIndex.terms">
+<!--[rdflib.textindex.TextIndex.terms]--><tt class="descname">terms</tt><big>(</big><big>)</big><a class="headerlink" href="#rdflib.textindex.TextIndex.terms" title="Permalink to this definition">¶</a></dt>
+<dd>Returns a generator that yields all of the term literals in the graph.</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="triplestore">
+<h2>TripleStore<a class="headerlink" href="#triplestore" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="urlinputsource">
+<h2>URLInputSource<a class="headerlink" href="#urlinputsource" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="rdflib.parser.URLInputSource">
+<!--[rdflib.parser.URLInputSource]-->class <tt class="descclassname">rdflib.parser.</tt><tt class="descname">URLInputSource</tt><big>(</big><em>system_id=None</em><big>)</big><a class="headerlink" href="#rdflib.parser.URLInputSource" title="Permalink to this definition">¶</a></dt>
+<dd>TODO:</dd></dl>
+
+</div>
+<div class="section" id="module-rdflib.query">
+<h2>query<a class="headerlink" href="#module-rdflib.query" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-rdflib.store">
+<h2>store<a class="headerlink" href="#module-rdflib.store" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-rdflib.sparql">
+<h2>sparql<a class="headerlink" href="#module-rdflib.sparql" title="Permalink to this headline">¶</a></h2>
+<p>TODO: merge this first bit from sparql.sparql.py into rest of doc... 
+updating all along the way.</p>
+<p>SPARQL implementation on top of RDFLib</p>
+<p>Implementation of the <a class="reference external" href="http://www.w3.org/TR/rdf-sparql-query/">W3C SPARQL</a> 
+language (version April 2005). The basic class here is supposed to be a 
+superclass of rdflib.sparql.sparqlGraph; it has been separated only for 
+a better maintainability.</p>
+<p>There is a separate
+<a class="reference external" href="http://dev.w3.org/cvsweb/%7Echeckout%7E/2004/PythonLib-IH/Doc/sparqlDesc.html">description</a>
+for the functionalities.</p>
+<p>For a general description of the SPARQL API, see the separate, more complete
+<a class="reference external" href="http://dev.w3.org/cvsweb/%7Echeckout%7E/2004/PythonLib-IH/Doc/sparqlDesc.html">description</a>.</p>
+<div class="section" id="variables-imports">
+<h3>Variables, Imports<a class="headerlink" href="#variables-imports" title="Permalink to this headline">¶</a></h3>
+<p>The top level (__init__.py) module of the Package imports the
+important classes. In other words, the user may choose to use the
+following imports only:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">rdflibUtils</span>   <span class="kn">import</span> <span class="n">myTripleStore</span>
+<span class="kn">from</span> <span class="nn">rdflibUtils</span>   <span class="kn">import</span> <span class="n">retrieveRDFFiles</span>
+<span class="kn">from</span> <span class="nn">rdflibUtils</span>   <span class="kn">import</span> <span class="n">SPARQLError</span>
+<span class="kn">from</span> <span class="nn">rdflibUtils</span>   <span class="kn">import</span> <span class="n">GraphPattern</span>
+</pre></div>
+</div>
+<p>The module imports and/or creates some frequently used Namespaces, and
+these can then be imported by the user like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">rdflibUtils</span> <span class="kn">import</span> <span class="n">ns_rdf</span>
+</pre></div>
+</div>
+<p>Finally, the package also has a set of convenience string defines for
+XML Schema datatypes (ie, the URI-s of the datatypes); ie, one can
+use:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">rdflibUtils</span> <span class="kn">import</span> <span class="n">type_string</span>
+<span class="kn">from</span> <span class="nn">rdflibUtils</span> <span class="kn">import</span> <span class="n">type_integer</span>
+<span class="kn">from</span> <span class="nn">rdflibUtils</span> <span class="kn">import</span> <span class="n">type_long</span>
+<span class="kn">from</span> <span class="nn">rdflibUtils</span> <span class="kn">import</span> <span class="n">type_double</span>
+<span class="kn">from</span> <span class="nn">rdflibUtils</span> <span class="kn">import</span> <span class="n">type_float</span>
+<span class="kn">from</span> <span class="nn">rdflibUtils</span> <span class="kn">import</span> <span class="n">type_decimal</span>
+<span class="kn">from</span> <span class="nn">rdflibUtils</span> <span class="kn">import</span> <span class="n">type_dateTime</span>
+<span class="kn">from</span> <span class="nn">rdflibUtils</span> <span class="kn">import</span> <span class="n">type_date</span>
+<span class="kn">from</span> <span class="nn">rdflibUtils</span> <span class="kn">import</span> <span class="n">type_time</span>
+<span class="kn">from</span> <span class="nn">rdflibUtils</span> <span class="kn">import</span> <span class="n">type_duration</span>
+</pre></div>
+</div>
+<p>These are used, for example, in the sparql-p implementation.</p>
+<p>The three most important classes in RDFLib for the average user are
+Namespace, URIRef and Literal; these are also imported, so the user
+can also use, eg:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">rdflibUtils</span> <span class="kn">import</span> <span class="n">Namespace</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">,</span> <span class="n">Literal</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="history">
+<h3>History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<ul class="simple">
+<li>Version 1.0: based on an earlier version of the SPARQL, first released implementation</li>
+<li>Version 2.0: version based on the March 2005 SPARQL document, 
+also a major change of the core code (introduction of the separate 
+<tt class="docutils literal"><span class="pre">GraphPattern</span></tt> <tt class="xref docutils literal"><span class="pre">rdflibUtils.graphPattern.GraphPattern</span></tt> class, etc).</li>
+<li>Version 2.01: minor changes only: - switch to epydoc as a documentation tool, 
+it gives a much better overview of the classes - addition of the 
+SELECT * feature to sparql-p</li>
+<li>Version 2.02: - added some methods to
+<tt class="docutils literal"><span class="pre">myTripleStore</span></tt> <tt class="xref docutils literal"><span class="pre">rdflibUtils.myTripleStore.myTripleStore</span></tt> to handle
+<tt class="docutils literal"><span class="pre">Alt</span></tt> and <tt class="docutils literal"><span class="pre">Bag</span></tt> the same way as <tt class="docutils literal"><span class="pre">Seq</span></tt> - added also methods to
+<tt class="xref docutils literal"><span class="pre">add()</span></tt> collections and containers to the triple store, not only
+retrieve them</li>
+<li>Version 2.1: adapted to the inclusion of the code into rdflib, thanks to Michel Pelletier</li>
+<li>Version 2.2: added the sorting possibilities; introduced the Unbound class and have a better
+interface to patterns using this (in the BasicGraphPattern class)</li>
+</ul>
+</blockquote>
+<p>&#64;author: <a class="reference external" href="http://www.ivan-herman.net">Ivan Herman</a></p>
+<p>&#64;license: This software is available for use under the
+<a class="reference external" href="http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231">W3C Software License</a></p>
+<p>&#64;contact: Ivan Herman, <a class="reference external" href="mailto:ivan&#37;&#52;&#48;ivan-herman&#46;net">ivan<span>&#64;</span>ivan-herman<span>&#46;</span>net</a></p>
+<p>&#64;version: 2.2</p>
+</div>
+</div>
+<div class="section" id="module-rdflib.syntax">
+<h2>syntax<a class="headerlink" href="#module-rdflib.syntax" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">Other modules</a><ul>
+<li><a class="reference external" href="#module-rdflib.collection">Collection</a></li>
+<li><a class="reference external" href="#module-rdflib.journal">Journal</a></li>
+<li><a class="reference external" href="#module-rdflib.query.result">QueryResult</a></li>
+<li><a class="reference external" href="#module-rdflib.term">Statement</a></li>
+<li><a class="reference external" href="#module-rdflib.parser">StringInputSource</a></li>
+<li><a class="reference external" href="#module-rdflib.textindex">TextIndex</a></li>
+<li><a class="reference external" href="#triplestore">TripleStore</a></li>
+<li><a class="reference external" href="#urlinputsource">URLInputSource</a></li>
+<li><a class="reference external" href="#module-rdflib.query">query</a></li>
+<li><a class="reference external" href="#module-rdflib.store">store</a></li>
+<li><a class="reference external" href="#module-rdflib.sparql">sparql</a><ul>
+<li><a class="reference external" href="#variables-imports">Variables, Imports</a></li>
+<li><a class="reference external" href="#history">History</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#module-rdflib.syntax">syntax</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="nodes/quoted_graph.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">rdflib.graph.QuotedGraph</span></tt> &#8211; Quoted graphs</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/modules/others.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+	  <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+	      <p style="font-size: 90%">Enter search terms or a module, class or function name.</p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="nodes/quoted_graph.html" title="rdflib.graph.QuotedGraph – Quoted graphs"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">rdflib v2.5.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, Daniel Krech.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.
+    </div>
+  </body>
+</html>

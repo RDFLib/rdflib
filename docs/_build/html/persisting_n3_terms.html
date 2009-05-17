@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Persisting Notation 3 Terms &mdash; rdflib v2.5.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '2.5.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="rdflib v2.5.0 documentation" href="index.html" />
+    <link rel="next" title="Merging graphs" href="graph_merging.html" />
+    <link rel="prev" title="Persistence" href="persistence.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="graph_merging.html" title="Merging graphs"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="persistence.html" title="Persistence"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">rdflib v2.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="persisting-notation-3-terms">
+<span id="persisting-n3-terms"></span><h1>Persisting Notation 3 Terms<a class="headerlink" href="#persisting-notation-3-terms" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="using-n3-syntax-for-persistence">
+<h2>Using N3 Syntax for Persistence<a class="headerlink" href="#using-n3-syntax-for-persistence" title="Permalink to this headline">¶</a></h2>
+<p>Blank Nodes, Literals, URI References, and Variables can be distinguished in persistence by relying on Notation 3 syntax convention.</p>
+<p>All URI References can be expanded and persisted as:</p>
+<div class="highlight-text"><div class="highlight"><pre>&lt;..URI..&gt;
+</pre></div>
+</div>
+<p>All Literals can be expanded and persisted as:</p>
+<div class="highlight-text"><div class="highlight"><pre>&quot;..value..&quot;@lang or &quot;..value..&quot;^^dtype_uri
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><tt class="docutils literal"><span class="pre">&#64;lang</span></tt> is a language tag and <tt class="docutils literal"><span class="pre">^^dtype_uri</span></tt> is the URI of a data type associated with the Literal</p>
+</div>
+<p>Blank Nodes can be expanded and persisted as:</p>
+<div class="highlight-text"><div class="highlight"><pre>_:Id
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">where Id is an identifier as determined by skolemization. Skolemization is a syntactic transformation routinely used in automatic inference systems in which existential variables are replaced by &#8216;new&#8217; functions - function names not used elsewhere - applied to any enclosing universal variables. In RDF, Skolemization amounts to replacing every blank node in a graph by a &#8216;new&#8217; name, i.e. a URI reference which is guaranteed to not occur anywhere else. In effect, it gives &#8216;arbitrary&#8217; names to the anonymous entities whose existence was asserted by the use of blank nodes: the arbitrariness of the names ensures that nothing can be inferred that would not follow from the bare assertion of existence represented by the blank node. (Using a literal would not do. Literals are never &#8216;new&#8217; in the required sense.)</p>
+</div>
+<p>Variables can be persisted as they appear in their serialization <tt class="docutils literal"><span class="pre">(?varName)</span></tt> - since they only need be unique within their scope (the context of their associated statements)</p>
+<p>These syntactic conventions can facilitate term round-tripping.</p>
+</div>
+<div class="section" id="variables-by-scope">
+<h2>Variables by Scope<a class="headerlink" href="#variables-by-scope" title="Permalink to this headline">¶</a></h2>
+<p>Would an interface be needed in order to facilitate a quick way to aggregate all the variables in a scope (given by a formula identifier)? An interface such as:</p>
+<div class="highlight-python"><pre>def variables(formula_identifier)</pre>
+</div>
+</div>
+<div class="section" id="the-need-to-skolemize-formula-identifiers">
+<h2>The Need to Skolemize Formula Identifiers<a class="headerlink" href="#the-need-to-skolemize-formula-identifiers" title="Permalink to this headline">¶</a></h2>
+<p>It would seem reasonable to assume that a formula-aware store would assign Blank Node identifiers as names of formulae that appear in a N3 serialization. So for instance, the following bit of N3:</p>
+<div class="highlight-n3"><pre>{?x a :N3Programmer} =&gt; {?x :has :Migrane}</pre>
+</div>
+<p>Could be interpreted as the assertion of the following statement:</p>
+<div class="highlight-n3"><div class="highlight"><pre><span class="nc">_:a </span><span class="o">log:implies </span><span class="na">_:b</span>
+</pre></div>
+</div>
+<p>However, how are <tt class="docutils literal"><span class="pre">_:a</span></tt> and <tt class="docutils literal"><span class="pre">_:b</span></tt> distinguished from other Blank Nodes? A formula-aware store would be expected to persist the first set of statements as quoted statements in a formula named <tt class="docutils literal"><span class="pre">_:a</span></tt> and the second set as quoted statements in a formula named <tt class="docutils literal"><span class="pre">_:b</span></tt>, but it would not be cost-effective for a serializer to have to query the store for all statements in a context named <tt class="docutils literal"><span class="pre">_:a</span></tt> in order to determine if <tt class="docutils literal"><span class="pre">_:a</span></tt> was associated with a formula (so that it could be serialized properly).</p>
+</div>
+<div class="section" id="relying-on-log-formula-membership">
+<h2>Relying on <tt class="docutils literal"><span class="pre">log:Formula</span></tt> Membership<a class="headerlink" href="#relying-on-log-formula-membership" title="Permalink to this headline">¶</a></h2>
+<p>The store could rely on explicit <tt class="docutils literal"><span class="pre">log:Formula</span></tt> membership (via <tt class="docutils literal"><span class="pre">rdf:type</span></tt> statements) to model the distinction of Blank Nodes associated with formulae. However, would these statements be expected from an N3 parser or known implicitly by the store? i.e., would all such Blank Nodes match the following pattern:</p>
+<div class="highlight-text"><div class="highlight"><pre>?formula rdf:type log:Formula
+</pre></div>
+</div>
+</div>
+<div class="section" id="relying-on-an-explicit-interface">
+<h2>Relying on an Explicit Interface<a class="headerlink" href="#relying-on-an-explicit-interface" title="Permalink to this headline">¶</a></h2>
+<p>A formula-aware store could also support the persistence of this distinction by implementing a method that returns an iterator over all the formulae in the store:</p>
+<div class="highlight-python"><pre>def formulae(triple=None)</pre>
+</div>
+<p>This function would return all the Blank Node identifiers assigned to formulae or just those that contain statements matching the given triple pattern and would be the way a serializer determines if a term refers to a formula (in order to properly serializer it).</p>
+<p>How much would such an interface reduce the need to model formulae terms as first class objects (perhaps to be returned by the <tt class="xref docutils literal"><span class="pre">triple()</span></tt> function)? Would it be more useful for the <tt class="xref docutils literal"><span class="pre">Graph</span></tt> (or the store itself) to return a Context object in place of a formula term (using the formulae interface to make this determination)?</p>
+<p>Conversely, would these interfaces (variables and formulae) be considered optimizations only since you have the distinction by the kinds of terms triples returns (which would be expanded to include variables and formulae)?</p>
+</div>
+<div class="section" id="persisting-formula-identifiers">
+<h2>Persisting Formula Identifiers<a class="headerlink" href="#persisting-formula-identifiers" title="Permalink to this headline">¶</a></h2>
+<p>This is the most straight forward way to maintain this distinction - without relying on extra interfaces. Formula identifiers could be persisted distinctly from other terms by using the following notation:</p>
+<div class="highlight-n3"><pre>{_:bnode} or {&lt;.. URI ..&gt;}</pre>
+</div>
+<p>This would facilitate their persistence round-trip - same as the other terms that rely on N3 syntax to distinguish between each other.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">Persisting Notation 3 Terms</a><ul>
+<li><a class="reference external" href="#using-n3-syntax-for-persistence">Using N3 Syntax for Persistence</a></li>
+<li><a class="reference external" href="#variables-by-scope">Variables by Scope</a></li>
+<li><a class="reference external" href="#the-need-to-skolemize-formula-identifiers">The Need to Skolemize Formula Identifiers</a></li>
+<li><a class="reference external" href="#relying-on-log-formula-membership">Relying on <tt class="docutils literal"><span class="pre">log:Formula</span></tt> Membership</a></li>
+<li><a class="reference external" href="#relying-on-an-explicit-interface">Relying on an Explicit Interface</a></li>
+<li><a class="reference external" href="#persisting-formula-identifiers">Persisting Formula Identifiers</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="persistence.html"
+                                  title="previous chapter">Persistence</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="graph_merging.html"
+                                  title="next chapter">Merging graphs</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/persisting_n3_terms.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+	  <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+	      <p style="font-size: 90%">Enter search terms or a module, class or function name.</p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="graph_merging.html" title="Merging graphs"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="persistence.html" title="Persistence"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">rdflib v2.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, Daniel Krech.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.
+    </div>
+  </body>
+</html>

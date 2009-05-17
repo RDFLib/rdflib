@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>rdflib 2.5 &mdash; rdflib v2.5.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '2.5.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="rdflib v2.5.0 documentation" href="" />
+    <link rel="next" title="Getting started with rdflib" href="gettingstarted.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="gettingstarted.html" title="Getting started with rdflib"
+             accesskey="N">next</a> |</li>
+        <li><a href="">rdflib v2.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="rdflib-2-5">
+<h1>rdflib 2.5<a class="headerlink" href="#rdflib-2-5" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information. The library contains an RDF/XML parser/serializer that conforms to the RDF/XML Syntax Specification (Revised) . The library also contains both in-memory and persistent Graph backends. It is being developed by a number of contributors and was created by Daniel Krech who continues to maintain it.</p>
+<p>RDFLib&#8217;s use of various Python idioms makes them an appropriate way to introduce it to a Python programmer who hasn&#8217;t used it before.</p>
+<p>RDFLib graphs redefine certain built-in Python methods in order to behave in a predictable way.  RDFLib graphs emulate container types and are best thought of as a set of 3-item triples</p>
+<div class="highlight-text"><div class="highlight"><pre>[
+    (subject,  predicate,  object),
+    (subject1, predicate1, object1),
+    ...
+    (subjectN, predicateN, objectN)
+ ]
+</pre></div>
+</div>
+<p>RDFLib graphs are not sorted containers; they have ordinary set operations (e.g. <tt class="xref docutils literal"><span class="pre">add()</span></tt> to add a triple) plus methods that search triples and return them in arbitrary order.</p>
+</div>
+<div class="section" id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="gettingstarted.html">Getting started with rdflib</a><ul>
+<li class="toctree-l2"><a class="reference external" href="gettingstarted.html#introduction-to-parsing-rdf-into-rdflib-graphs">Introduction to parsing RDF into rdflib graphs</a></li>
+<li class="toctree-l2"><a class="reference external" href="gettingstarted.html#module-rdflib.syntax.parsers.TriXParser">Other parsers supported by rdflib</a></li>
+<li class="toctree-l2"><a class="reference external" href="gettingstarted.html#introduction-to-using-sparql-to-query-an-rdflib-graph">Introduction to using SPARQL to query an rdflib graph</a></li>
+<li class="toctree-l2"><a class="reference external" href="gettingstarted.html#store-operations">Store operations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="univrdfstore.html">A Universal RDF Store Interface</a><ul>
+<li class="toctree-l2"><a class="reference external" href="univrdfstore.html#terminology">Terminology</a></li>
+<li class="toctree-l2"><a class="reference external" href="univrdfstore.html#interpreting-syntax">Interpreting Syntax</a></li>
+<li class="toctree-l2"><a class="reference external" href="univrdfstore.html#formulae-and-variables-as-terms">Formulae and Variables as Terms</a></li>
+<li class="toctree-l2"><a class="reference external" href="univrdfstore.html#database-management">Database Management</a></li>
+<li class="toctree-l2"><a class="reference external" href="univrdfstore.html#triple-interfaces">Triple Interfaces</a></li>
+<li class="toctree-l2"><a class="reference external" href="univrdfstore.html#formula-context-interfaces">Formula / Context Interfaces</a></li>
+<li class="toctree-l2"><a class="reference external" href="univrdfstore.html#interface-test-cases">Interface Test Cases</a></li>
+<li class="toctree-l2"><a class="reference external" href="univrdfstore.html#additional-terms-to-model">Additional Terms to Model</a></li>
+<li class="toctree-l2"><a class="reference external" href="univrdfstore.html#namespace-management-interfaces">Namespace Management Interfaces</a></li>
+<li class="toctree-l2"><a class="reference external" href="univrdfstore.html#open-issues">Open issues</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="graphterms.html">RDF Graph Terms</a></li>
+<li class="toctree-l1"><a class="reference external" href="namespace_utilities.html">Namespace Utilities</a><ul>
+<li class="toctree-l2"><a class="reference external" href="namespace_utilities.html#contents">Contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="graph_utilities.html">Graph utilities</a><ul>
+<li class="toctree-l2"><a class="reference external" href="graph_utilities.html#graphs-as-iterators">Graphs as Iterators</a></li>
+<li class="toctree-l2"><a class="reference external" href="graph_utilities.html#set-operations-on-rdflib-graphs">Set Operations on RDFLib Graphs</a></li>
+<li class="toctree-l2"><a class="reference external" href="graph_utilities.html#basic-triple-matching">Basic Triple Matching</a></li>
+<li class="toctree-l2"><a class="reference external" href="graph_utilities.html#managing-triples">Managing Triples</a></li>
+<li class="toctree-l2"><a class="reference external" href="graph_utilities.html#rdf-literal-support">RDF Literal Support</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="persistence.html">Persistence</a></li>
+<li class="toctree-l1"><a class="reference external" href="persisting_n3_terms.html">Persisting Notation 3 Terms</a><ul>
+<li class="toctree-l2"><a class="reference external" href="persisting_n3_terms.html#using-n3-syntax-for-persistence">Using N3 Syntax for Persistence</a></li>
+<li class="toctree-l2"><a class="reference external" href="persisting_n3_terms.html#variables-by-scope">Variables by Scope</a></li>
+<li class="toctree-l2"><a class="reference external" href="persisting_n3_terms.html#the-need-to-skolemize-formula-identifiers">The Need to Skolemize Formula Identifiers</a></li>
+<li class="toctree-l2"><a class="reference external" href="persisting_n3_terms.html#relying-on-log-formula-membership">Relying on <tt class="docutils literal"><span class="pre">log:Formula</span></tt> Membership</a></li>
+<li class="toctree-l2"><a class="reference external" href="persisting_n3_terms.html#relying-on-an-explicit-interface">Relying on an Explicit Interface</a></li>
+<li class="toctree-l2"><a class="reference external" href="persisting_n3_terms.html#persisting-formula-identifiers">Persisting Formula Identifiers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="graph_merging.html">Merging graphs</a><ul>
+<li class="toctree-l2"><a class="reference external" href="graph_merging.html#example-1">Example 1</a></li>
+<li class="toctree-l2"><a class="reference external" href="graph_merging.html#example-2">Example 2</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="graphs_bnodes.html">Graphs, Named Graphs and Blank Nodes</a><ul>
+<li class="toctree-l2"><a class="reference external" href="graphs_bnodes.html#vin-s-question">Vin&#8217;s question</a></li>
+<li class="toctree-l2"><a class="reference external" href="graphs_bnodes.html#the-discourse">The discourse</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="assorted_examples.html">Assorted examples</a><ul>
+<li class="toctree-l2"><a class="reference external" href="assorted_examples.html#conjunctive-graphs">Conjunctive Graphs</a></li>
+<li class="toctree-l2"><a class="reference external" href="assorted_examples.html#two-finger-exercises">Two-finger exercises</a></li>
+<li class="toctree-l2"><a class="reference external" href="assorted_examples.html#update-namespace">Update namespace</a></li>
+<li class="toctree-l2"><a class="reference external" href="assorted_examples.html#sparql-query">SPARQL query</a></li>
+<li class="toctree-l2"><a class="reference external" href="assorted_examples.html#data-reading-exercise">Data reading exercise</a></li>
+<li class="toctree-l2"><a class="reference external" href="assorted_examples.html#example-foaf-smushing">Example Foaf Smushing</a></li>
+<li class="toctree-l2"><a class="reference external" href="assorted_examples.html#transitive-traversal">Transitive traversal</a></li>
+<li class="toctree-l2"><a class="reference external" href="assorted_examples.html#film-py">film.py</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="addons.html">Additions</a><ul>
+<li class="toctree-l2"><a class="reference external" href="addons.html#trixserializer">TriXSerializer</a></li>
+<li class="toctree-l2"><a class="reference external" href="addons.html#sparql-xml-serializer">SPARQL-XML Serializer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="modules/index.html">Modules</a><ul>
+<li class="toctree-l2"><a class="reference external" href="modules/index.html#contents">Contents:</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference external" href="modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference external" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">rdflib 2.5</a><ul>
+<li><a class="reference external" href="#introduction">Introduction</a></li>
+<li><a class="reference external" href="#contents">Contents</a><ul>
+</ul>
+</li>
+<li><a class="reference external" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Next topic</h4>
+            <p class="topless"><a href="gettingstarted.html"
+                                  title="next chapter">Getting started with rdflib</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/index.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+	  <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+	      <p style="font-size: 90%">Enter search terms or a module, class or function name.</p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="gettingstarted.html" title="Getting started with rdflib"
+             accesskey="N">next</a> |</li>
+        <li><a href="">rdflib v2.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, Daniel Krech.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.
+    </div>
+  </body>
+</html>

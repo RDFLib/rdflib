@@ -1,0 +1,474 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Additions &mdash; rdflib v2.5.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '2.5.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="rdflib v2.5.0 documentation" href="index.html" />
+    <link rel="next" title="Modules" href="modules/index.html" />
+    <link rel="prev" title="Assorted examples" href="assorted_examples.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="modules/index.html" title="Modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="assorted_examples.html" title="Assorted examples"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">rdflib v2.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="additions">
+<h1>Additions<a class="headerlink" href="#additions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="trixserializer">
+<h2>TriXSerializer<a class="headerlink" href="#trixserializer" title="Permalink to this headline">¶</a></h2>
+<p>John L. Clark jlc6 at po.cwru.edu</p>
+<p>Tue Aug 7 01:55:07 EDT 2007</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Devs,</p>
+<p>I&#8217;ve taken a first pass at implementing a simple TriX serializer.  I
+should have attached the new file (which goes in
+<cite>.../rdflib/syntax/serializers/TriXSerializer.py</cite>) to this email,
+along with a crazy little test script.  The test script exercises
+round tripping, but it turned out parsing was broken, so I fixed it;
+the patch for that (and adding the new serializer to the plugin list)
+should be attached as well.  Finally, does anyone mind if I clean up
+the TriX parser a bit?</p>
+<p>Take care,</p>
+<blockquote class="last">
+John L. Clark</blockquote>
+</div>
+<div class="section" id="trixserializer-py">
+<h3>TriXSerializer.py<a class="headerlink" href="#trixserializer-py" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">rdflib.syntax.serializers</span> <span class="kn">import</span> <span class="n">Serializer</span>
+
+<span class="kn">from</span> <span class="nn">rdflib.URIRef</span> <span class="kn">import</span> <span class="n">URIRef</span>
+<span class="kn">from</span> <span class="nn">rdflib.Literal</span> <span class="kn">import</span> <span class="n">Literal</span>
+<span class="kn">from</span> <span class="nn">rdflib.BNode</span> <span class="kn">import</span> <span class="n">BNode</span>
+
+<span class="kn">from</span> <span class="nn">rdflib.Graph</span> <span class="kn">import</span> <span class="n">Graph</span><span class="p">,</span> <span class="n">ConjunctiveGraph</span>
+
+<span class="kn">from</span> <span class="nn">Ft.Xml</span> <span class="kn">import</span> <span class="n">MarkupWriter</span><span class="p">,</span> <span class="n">XML_NAMESPACE</span>
+
+<span class="n">TRIX_NS</span> <span class="o">=</span> <span class="s">u&quot;http://www.w3.org/2004/03/trix/trix-1/&quot;</span>
+
+<span class="k">class</span> <span class="nc">TriXSerializer</span><span class="p">(</span><span class="n">Serializer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">store</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TriXSerializer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">store</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span> <span class="o">=</span> <span class="n">MarkupWriter</span><span class="p">(</span><span class="n">stream</span><span class="o">=</span><span class="n">stream</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span>
+                                    <span class="n">indent</span><span class="o">=</span><span class="s">&quot;yes&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">startDocument</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">startElement</span><span class="p">(</span><span class="s">u&quot;TriX&quot;</span><span class="p">,</span> <span class="n">TRIX_NS</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">,</span> <span class="n">ConjunctiveGraph</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">subgraph</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="n">contexts</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_writeGraph</span><span class="p">(</span><span class="n">subgraph</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">,</span> <span class="n">Graph</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_writeGraph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">endElement</span><span class="p">(</span><span class="s">u&quot;TriX&quot;</span><span class="p">,</span> <span class="n">TRIX_NS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">endDocument</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_writeGraph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">startElement</span><span class="p">(</span><span class="s">u&quot;graph&quot;</span><span class="p">,</span> <span class="n">TRIX_NS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">simpleElement</span><span class="p">(</span><span class="s">u&quot;uri&quot;</span><span class="p">,</span> <span class="n">TRIX_NS</span><span class="p">,</span>
+                                        <span class="n">content</span><span class="o">=</span><span class="nb">unicode</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">identifier</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">triple</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">triples</span><span class="p">((</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_writeTriple</span><span class="p">(</span><span class="n">triple</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">endElement</span><span class="p">(</span><span class="s">u&quot;graph&quot;</span><span class="p">,</span> <span class="n">TRIX_NS</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_writeTriple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">triple</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">startElement</span><span class="p">(</span><span class="s">u&quot;triple&quot;</span><span class="p">,</span> <span class="n">TRIX_NS</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">triple</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">simpleElement</span><span class="p">(</span><span class="s">u&quot;uri&quot;</span><span class="p">,</span> <span class="n">TRIX_NS</span><span class="p">,</span>
+                                        <span class="n">content</span><span class="o">=</span><span class="nb">unicode</span><span class="p">(</span><span class="n">component</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="n">BNode</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">simpleElement</span><span class="p">(</span><span class="s">u&quot;id&quot;</span><span class="p">,</span> <span class="n">TRIX_NS</span><span class="p">,</span>
+                                        <span class="n">content</span><span class="o">=</span><span class="nb">unicode</span><span class="p">(</span><span class="n">component</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="n">Literal</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">datatype</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">simpleElement</span><span class="p">(</span><span class="s">u&quot;typedLiteral&quot;</span><span class="p">,</span> <span class="n">TRIX_NS</span><span class="p">,</span>
+                        <span class="n">content</span><span class="o">=</span><span class="nb">unicode</span><span class="p">(</span><span class="n">component</span><span class="p">),</span>
+                        <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s">u&quot;datatype&quot;</span><span class="p">:</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">datatype</span><span class="p">)})</span>
+                <span class="k">elif</span> <span class="n">component</span><span class="o">.</span><span class="n">language</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">simpleElement</span><span class="p">(</span><span class="s">u&quot;plainLiteral&quot;</span><span class="p">,</span> <span class="n">TRIX_NS</span><span class="p">,</span>
+                        <span class="n">content</span><span class="o">=</span><span class="nb">unicode</span><span class="p">(</span><span class="n">component</span><span class="p">),</span>
+                        <span class="n">attributes</span><span class="o">=</span><span class="p">{</span>
+                            <span class="p">(</span><span class="s">u&quot;xml:lang&quot;</span><span class="p">,</span> <span class="n">XML_NAMESPACE</span><span class="p">):</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">language</span><span class="p">)})</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">simpleElement</span><span class="p">(</span><span class="s">u&quot;plainLiteral&quot;</span><span class="p">,</span> <span class="n">TRIX_NS</span><span class="p">,</span>
+                        <span class="n">content</span><span class="o">=</span><span class="nb">unicode</span><span class="p">(</span><span class="n">component</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">endElement</span><span class="p">(</span><span class="s">u&quot;triple&quot;</span><span class="p">,</span> <span class="n">TRIX_NS</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="trixserializer-diff">
+<h3>trixserializer.diff<a class="headerlink" href="#trixserializer-diff" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-text"><div class="highlight"><pre>Index: rdflib/plugin.py
+===================================================================
+--- rdflib/plugin.py        (revision 1239)
++++ rdflib/plugin.py        (working copy)
+@@ -49,6 +49,9 @@
+ register(&#39;pretty-xml&#39;, serializers.Serializer,
+          &#39;rdflib.syntax.serializers.PrettyXMLSerializer&#39;, &#39;PrettyXMLSerializer&#39;)
+
++register(&#39;TriX&#39;, serializers.Serializer,
++         &#39;rdflib.syntax.serializers.TriXSerializer&#39;, &#39;TriXSerializer&#39;)
++
+ register(&#39;nt&#39;, serializers.Serializer,
+          &#39;rdflib.syntax.serializers.NTSerializer&#39;, &#39;NTSerializer&#39;)
+
+Index: rdflib/syntax/parsers/TriXHandler.py
+===================================================================
+--- rdflib/syntax/parsers/TriXHandler.py    (revision 1239)
++++ rdflib/syntax/parsers/TriXHandler.py    (working copy)
+@@ -33,6 +33,7 @@
+ &quot;&quot;&quot;
+ from rdflib import RDF, RDFS, Namespace
+ from rdflib import URIRef, BNode, Literal
++from rdflib.Namespace import Namespace
+ from rdflib.Graph import Graph
+ from rdflib.exceptions import ParserError, Error
+ from rdflib.syntax.xml_names import is_ncname
+@@ -42,7 +43,7 @@
+
+ RDFNS = RDF.RDFNS
+
+-TRIXNS=Namespace.Namespace(&quot;http://www.w3.org/2004/03/trix/trix-1/&quot;)
++TRIXNS=u&quot;http://www.w3.org/2004/03/trix/trix-1/&quot;
+
+
+ class TriXHandler(handler.ContentHandler):
+@@ -200,6 +201,7 @@
+                 self.error(&quot;This should never happen if the SAX parser ensures XML syntax correctness&quot;)
+
+         if name[1]==&quot;graph&quot;:
++            self.graph = Graph(store = self.store.store)
+             self.state=1
+
+         if name[1]==&quot;TriX&quot;:
+</pre></div>
+</div>
+</div>
+<div class="section" id="test-trixserializer-py">
+<h3>test_trixserializer.py<a class="headerlink" href="#test-trixserializer-py" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">rdflib.Graph</span> <span class="kn">import</span> <span class="n">ConjunctiveGraph</span>
+<span class="kn">from</span> <span class="nn">rdflib</span> <span class="kn">import</span> <span class="n">URIRef</span><span class="p">,</span> <span class="n">Literal</span>
+<span class="kn">from</span> <span class="nn">rdflib.Graph</span> <span class="kn">import</span> <span class="n">Graph</span>
+
+<span class="n">s1</span> <span class="o">=</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;store:1&#39;</span><span class="p">)</span>
+<span class="n">r1</span> <span class="o">=</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;resource:1&#39;</span><span class="p">)</span>
+<span class="n">r2</span> <span class="o">=</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;resource:2&#39;</span><span class="p">)</span>
+
+<span class="n">label</span> <span class="o">=</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;predicate:label&#39;</span><span class="p">)</span>
+
+<span class="n">g1</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">s1</span><span class="p">)</span>
+<span class="n">g1</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">r1</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&quot;label 1&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s">&quot;en&quot;</span><span class="p">)))</span>
+<span class="n">g1</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">r1</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&quot;label 2&quot;</span><span class="p">)))</span>
+
+<span class="n">s2</span> <span class="o">=</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;store:2&#39;</span><span class="p">)</span>
+<span class="n">g2</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">s2</span><span class="p">)</span>
+<span class="n">g2</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">r2</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&quot;label 3&quot;</span><span class="p">)))</span>
+
+<span class="n">g</span> <span class="o">=</span> <span class="n">ConjunctiveGraph</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">s</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">o</span> <span class="ow">in</span> <span class="n">g1</span><span class="o">.</span><span class="n">triples</span><span class="p">((</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">)):</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">addN</span><span class="p">([(</span><span class="n">s</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">o</span><span class="p">,</span><span class="n">g1</span><span class="p">)])</span>
+
+<span class="k">for</span> <span class="n">s</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">o</span> <span class="ow">in</span> <span class="n">g2</span><span class="o">.</span><span class="n">triples</span><span class="p">((</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">)):</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">addN</span><span class="p">([(</span><span class="n">s</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">o</span><span class="p">,</span><span class="n">g2</span><span class="p">)])</span>
+
+<span class="n">r3</span> <span class="o">=</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;resource:3&#39;</span><span class="p">)</span>
+
+<span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">r3</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">Literal</span><span class="p">(</span><span class="mf">4</span><span class="p">)))</span>
+<span class="c">#g.addN([(r1, label, Literal(&quot;label 1&quot;), s1),</span>
+<span class="c">#        (r1, label, Literal(&quot;label 2&quot;), s1),</span>
+<span class="c">#        (r2, label, Literal(&quot;label 3&quot;), s2)])</span>
+
+<span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">contexts</span><span class="p">():</span>
+    <span class="k">pass</span>
+    <span class="c">#s = Graph(g.store, identifier=c)</span>
+    <span class="c">#print c, c.identifier.__class__, c.identifier, len(c)</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="n">format</span><span class="o">=</span><span class="s">&#39;TriX&#39;</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">r</span>
+
+<span class="n">g3</span> <span class="o">=</span> <span class="n">ConjunctiveGraph</span><span class="p">()</span>
+<span class="kn">from</span> <span class="nn">rdflib.StringInputSource</span> <span class="kn">import</span> <span class="n">StringInputSource</span>
+<span class="n">g3</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">StringInputSource</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;trix&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">g3</span><span class="o">.</span><span class="n">contexts</span><span class="p">():</span>
+    <span class="k">print</span> <span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">identifier</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="test-output">
+<h3>test output<a class="headerlink" href="#test-output" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-xml"><div class="highlight"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;TriX</span> <span class="na">xmlns=</span><span class="s">&quot;http://www.w3.org/2004/03/trix/trix-1/&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;graph&gt;</span>
+    <span class="nt">&lt;uri&gt;</span>store:2<span class="nt">&lt;/uri&gt;</span>
+    <span class="nt">&lt;triple&gt;</span>
+      <span class="nt">&lt;uri&gt;</span>resource:2<span class="nt">&lt;/uri&gt;</span>
+      <span class="nt">&lt;uri&gt;</span>predicate:label<span class="nt">&lt;/uri&gt;</span>
+      <span class="nt">&lt;plainLiteral&gt;</span>label 3<span class="nt">&lt;/plainLiteral&gt;</span>
+    <span class="nt">&lt;/triple&gt;</span>
+  <span class="nt">&lt;/graph&gt;</span>
+  <span class="nt">&lt;graph&gt;</span>
+    <span class="nt">&lt;uri&gt;</span>store:1<span class="nt">&lt;/uri&gt;</span>
+    <span class="nt">&lt;triple&gt;</span>
+      <span class="nt">&lt;uri&gt;</span>resource:1<span class="nt">&lt;/uri&gt;</span>
+      <span class="nt">&lt;uri&gt;</span>predicate:label<span class="nt">&lt;/uri&gt;</span>
+      <span class="nt">&lt;plainLiteral&gt;</span>label 2<span class="nt">&lt;/plainLiteral&gt;</span>
+    <span class="nt">&lt;/triple&gt;</span>
+    <span class="nt">&lt;triple&gt;</span>
+      <span class="nt">&lt;uri&gt;</span>resource:1<span class="nt">&lt;/uri&gt;</span>
+      <span class="nt">&lt;uri&gt;</span>predicate:label<span class="nt">&lt;/uri&gt;</span>
+      <span class="nt">&lt;plainLiteral</span> <span class="na">xml:lang=</span><span class="s">&quot;en&quot;</span><span class="nt">&gt;</span>label 1<span class="nt">&lt;/plainLiteral&gt;</span>
+    <span class="nt">&lt;/triple&gt;</span>
+  <span class="nt">&lt;/graph&gt;</span>
+  <span class="nt">&lt;graph&gt;</span>
+    <span class="nt">&lt;triple&gt;</span>
+      <span class="nt">&lt;uri&gt;</span>resource:3<span class="nt">&lt;/uri&gt;</span>
+      <span class="nt">&lt;uri&gt;</span>predicate:label<span class="nt">&lt;/uri&gt;</span>
+      <span class="nt">&lt;typedLiteral</span> <span class="na">datatype=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema#integer&quot;</span><span class="nt">&gt;</span>4<span class="nt">&lt;/typedLiteral&gt;</span>
+    <span class="nt">&lt;/triple&gt;</span>
+  <span class="nt">&lt;/graph&gt;</span>
+<span class="nt">&lt;/TriX&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-n3"><pre>[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory']].
+&lt;class 'rdflib.BNode.BNode'&gt; QeDIviuA11 1
+&lt;store:2&gt; a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory'].
+&lt;class 'rdflib.URIRef.URIRef'&gt; store:2 1
+&lt;store:1&gt; a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory'].
+&lt;class 'rdflib.URIRef.URIRef'&gt; store:1 2</pre>
+</div>
+</div>
+</div>
+<div class="section" id="sparql-xml-serializer">
+<h2>SPARQL-XML Serializer<a class="headerlink" href="#sparql-xml-serializer" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># -*- coding: iso-8859-15 -*-</span>
+<span class="c"># (c) Mikael Högqvist, ZIB, AstroGrid-D</span>
+<span class="c"># This software is licensed under the software license specified at</span>
+<span class="c"># http://www.gac-grid.org/</span>
+
+<span class="c"># this is a work-around of the SPARQL XML-serialization in rdflib which does</span>
+<span class="c"># not work on all installation due to a bug in the python sax-parser</span>
+<span class="c"># We rely on ElementTree which is only available in Python 2.5</span>
+
+<span class="kn">from</span> <span class="nn">cStringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">xml.etree.cElementTree</span> <span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">SubElement</span><span class="p">,</span> <span class="n">ElementTree</span><span class="p">,</span> <span class="n">ProcessingInstruction</span>
+    <span class="kn">import</span> <span class="nn">xml.etree.cElementTree</span> <span class="kn">as</span> <span class="nn">ET</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">cElementTree</span> <span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">SubElement</span><span class="p">,</span> <span class="n">ElementTree</span>
+    <span class="kn">import</span> <span class="nn">cElementTree</span> <span class="kn">as</span> <span class="nn">ET</span>
+
+<span class="kn">from</span> <span class="nn">rdflib</span> <span class="kn">import</span> <span class="n">URIRef</span><span class="p">,</span> <span class="n">BNode</span><span class="p">,</span> <span class="n">Literal</span>
+
+<span class="n">SPARQL_XML_NAMESPACE</span> <span class="o">=</span> <span class="s">u&#39;http://www.w3.org/2005/sparql-results#&#39;</span>
+<span class="n">XML_NAMESPACE</span> <span class="o">=</span> <span class="s">&quot;http://www.w3.org/2001/XMLSchema#&quot;</span>
+
+<span class="n">name</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">elem</span><span class="p">:</span> <span class="s">u&#39;{</span><span class="si">%s</span><span class="s">}</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">SPARQL_XML_NAMESPACE</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span>
+<span class="n">xml_name</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">elem</span><span class="p">:</span> <span class="s">u&#39;{</span><span class="si">%s</span><span class="s">}</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">XML_NAMESPACE</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">variables</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+    <span class="c"># don&#39;t include any variables which are not part of the</span>
+    <span class="c"># result set</span>
+    <span class="c">#res_vars = set(results.selectionF).intersection(set(results.allVariables))</span>
+
+
+    <span class="c"># this means select *, use all variables from the result-set</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">selectionF</span><span class="p">)</span> <span class="o">==</span> <span class="mf">0</span><span class="p">:</span>
+        <span class="n">res_vars</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">allVariables</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">res_vars</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">selectionF</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">allVariables</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">res_vars</span>
+
+<span class="k">def</span> <span class="nf">header</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="n">SubElement</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">name</span><span class="p">(</span><span class="s">u&#39;head&#39;</span><span class="p">))</span>
+
+    <span class="n">res_vars</span> <span class="o">=</span> <span class="n">variables</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">res_vars</span><span class="p">:</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">SubElement</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">name</span><span class="p">(</span><span class="s">u&#39;variable&#39;</span><span class="p">))</span>
+        <span class="c"># remove the ?</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">u&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span><span class="p">[</span><span class="mf">1</span><span class="p">:]</span>
+
+
+<span class="k">def</span> <span class="nf">binding</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">elem</span><span class="p">):</span>
+    <span class="n">bindingElem</span> <span class="o">=</span> <span class="n">SubElement</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">name</span><span class="p">(</span><span class="s">u&#39;binding&#39;</span><span class="p">))</span>
+    <span class="n">bindingElem</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">u&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span><span class="n">URIRef</span><span class="p">):</span>
+        <span class="n">varElem</span> <span class="o">=</span> <span class="n">SubElement</span><span class="p">(</span><span class="n">bindingElem</span><span class="p">,</span> <span class="n">name</span><span class="p">(</span><span class="s">u&#39;uri&#39;</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span><span class="n">BNode</span><span class="p">)</span> <span class="p">:</span>
+        <span class="n">varElem</span> <span class="o">=</span> <span class="n">SubElement</span><span class="p">(</span><span class="n">bindingElem</span><span class="p">,</span> <span class="n">name</span><span class="p">(</span><span class="s">u&#39;bnode&#39;</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span><span class="n">Literal</span><span class="p">):</span>
+        <span class="n">varElem</span> <span class="o">=</span> <span class="n">SubElement</span><span class="p">(</span><span class="n">bindingElem</span><span class="p">,</span> <span class="n">name</span><span class="p">(</span><span class="s">u&#39;literal&#39;</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">val</span><span class="o">.</span><span class="n">language</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span> <span class="ow">and</span> <span class="n">val</span><span class="o">.</span><span class="n">language</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">varElem</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="n">xml_name</span><span class="p">(</span><span class="s">u&#39;lang&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">language</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">val</span><span class="o">.</span><span class="n">datatype</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span> <span class="ow">and</span> <span class="n">val</span><span class="o">.</span><span class="n">datatype</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">varElem</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="n">name</span><span class="p">(</span><span class="s">u&#39;datatype&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">datatype</span><span class="p">)</span>
+
+    <span class="n">varElem</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">res_iter</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+    <span class="n">res_vars</span> <span class="o">=</span> <span class="n">variables</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">selected</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">res_vars</span><span class="p">)</span> <span class="o">==</span> <span class="mf">1</span><span class="p">:</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="p">)</span>
+
+        <span class="k">yield</span> <span class="nb">zip</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">res_vars</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">result_list</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+    <span class="n">resultsElem</span> <span class="o">=</span> <span class="n">SubElement</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">name</span><span class="p">(</span><span class="s">u&#39;results&#39;</span><span class="p">))</span>
+
+    <span class="n">ordered</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">orderBy</span>
+
+    <span class="k">if</span> <span class="n">ordered</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">ordered</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="c"># removed according to the new working draft (2007-06-14)</span>
+    <span class="c"># resultsElem.attrib[u&#39;ordered&#39;] = str(ordered)</span>
+    <span class="c"># resultsElem.attrib[u&#39;distinct&#39;] = str(results.distinct)</span>
+
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">res_iter</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+        <span class="n">resultElem</span> <span class="o">=</span> <span class="n">SubElement</span><span class="p">(</span><span class="n">resultsElem</span><span class="p">,</span> <span class="n">name</span><span class="p">(</span><span class="s">u&#39;result&#39;</span><span class="p">))</span>
+        <span class="c"># remove the ? from the variable name</span>
+        <span class="p">[</span><span class="n">binding</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">var</span><span class="p">[</span><span class="mf">1</span><span class="p">:],</span> <span class="n">resultElem</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">serializeXML</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">Element</span><span class="p">(</span><span class="n">name</span><span class="p">(</span><span class="s">u&#39;sparql&#39;</span><span class="p">))</span>
+
+    <span class="n">header</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+    <span class="n">result_list</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+    <span class="n">tree</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+    <span class="c"># xml declaration must be written by hand</span>
+    <span class="c"># http://www.nabble.com/Writing-XML-files-with-ElementTree-t3433325.html</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&#39;</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;/static/sparql-xml-to-html.xsl&quot;?&gt;&#39;</span><span class="p">)</span>
+    <span class="n">tree</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">Additions</a><ul>
+<li><a class="reference external" href="#trixserializer">TriXSerializer</a><ul>
+<li><a class="reference external" href="#trixserializer-py">TriXSerializer.py</a></li>
+<li><a class="reference external" href="#trixserializer-diff">trixserializer.diff</a></li>
+<li><a class="reference external" href="#test-trixserializer-py">test_trixserializer.py</a></li>
+<li><a class="reference external" href="#test-output">test output</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#sparql-xml-serializer">SPARQL-XML Serializer</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="assorted_examples.html"
+                                  title="previous chapter">Assorted examples</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="modules/index.html"
+                                  title="next chapter">Modules</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/addons.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+	  <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+	      <p style="font-size: 90%">Enter search terms or a module, class or function name.</p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="modules/index.html" title="Modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="assorted_examples.html" title="Assorted examples"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">rdflib v2.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, Daniel Krech.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.
+    </div>
+  </body>
+</html>

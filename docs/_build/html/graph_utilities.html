@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Graph utilities &mdash; rdflib v2.5.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '2.5.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="rdflib v2.5.0 documentation" href="index.html" />
+    <link rel="next" title="Persistence" href="persistence.html" />
+    <link rel="prev" title="Namespace Utilities" href="namespace_utilities.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="persistence.html" title="Persistence"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="namespace_utilities.html" title="Namespace Utilities"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">rdflib v2.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="id1">
+<span id="graph-utilities"></span><h1>Graph utilities<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="graphs-as-iterators">
+<h2>Graphs as Iterators<a class="headerlink" href="#graphs-as-iterators" title="Permalink to this headline">¶</a></h2>
+<p>RDFLib graphs also override <tt class="xref docutils literal"><span class="pre">__iter__()</span></tt> in order to support iteration over the contained triples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">subject</span><span class="p">,</span><span class="n">predicate</span><span class="p">,</span><span class="n">obj_</span> <span class="ow">in</span> <span class="n">someGraph</span><span class="p">:</span>
+   <span class="k">assert</span> <span class="p">(</span><span class="n">subject</span><span class="p">,</span><span class="n">predicate</span><span class="p">,</span><span class="n">obj_</span><span class="p">)</span> <span class="ow">in</span> <span class="n">someGraph</span><span class="p">,</span> <span class="s">&quot;Iterator / Container Protocols are Broken!!&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="set-operations-on-rdflib-graphs">
+<h2>Set Operations on RDFLib Graphs<a class="headerlink" href="#set-operations-on-rdflib-graphs" title="Permalink to this headline">¶</a></h2>
+<p><tt class="xref docutils literal"><span class="pre">__iadd__()</span></tt> and <tt class="xref docutils literal"><span class="pre">__isub__()</span></tt> are overridden to support adding and subtracting Graphs to/from each other (in place):</p>
+<ul class="simple">
+<li>G1 += G1</li>
+<li>G2 -= G2</li>
+</ul>
+</div>
+<div class="section" id="basic-triple-matching">
+<h2>Basic Triple Matching<a class="headerlink" href="#basic-triple-matching" title="Permalink to this headline">¶</a></h2>
+<p>RDFLib graphs support basic triple pattern matching with a <tt class="xref docutils literal"><span class="pre">triples()</span></tt> function.</p>
+<dl class="method">
+<dt id="rdflib.graph.Graph.triples">
+<!--[rdflib.graph.Graph.triples]--><tt class="descclassname">Graph.</tt><tt class="descname">triples</tt><big>(</big><em>(s</em>, <em>p</em>, <em>o)</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.triples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator over the triple store</p>
+<p>Returns triples that match the given triple pattern. If triple pattern
+does not provide a context, all contexts will be searched.</p>
+</dd></dl>
+
+<p>This function is a generator of triples that match the pattern given by the arguments.  The arguments of these are RDF terms that restrict the triples that are returned.  Terms that are <tt class="xref xref docutils literal"><span class="pre">None</span></tt> are treated as a wildcard.</p>
+</div>
+<div class="section" id="managing-triples">
+<h2>Managing Triples<a class="headerlink" href="#managing-triples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="adding-triples">
+<h3>Adding Triples<a class="headerlink" href="#adding-triples" title="Permalink to this headline">¶</a></h3>
+<p>Triples can be added in two ways:</p>
+<ul>
+<li><p class="first">They may be added with with the <tt class="xref docutils literal"><span class="pre">parse()</span></tt> function.</p>
+<blockquote>
+<dl class="method">
+<dt id="rdflib.graph.Graph.parse">
+<!--[rdflib.graph.Graph.parse]--><tt class="descclassname">Graph.</tt><tt class="descname">parse</tt><big>(</big><em>source=None</em>, <em>publicID=None</em>, <em>format=None</em>, <em>location=None</em>, <em>file=None</em>, <em>data=None</em>, <em>**args</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse source adding the resulting triples to the Graph.</p>
+<p>The source is specified using one of source, location, file or
+data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><cite>source</cite>: An InputSource, file-like object, or string. In the case of a string the string is the location of the source.</li>
+<li><cite>location</cite>: A string indicating the relative or absolute URL of the source. Graph&#8217;s absolutize method is used if a relative location is specified.</li>
+<li><cite>file</cite>: A file-like object.</li>
+<li><cite>data</cite>: A string containing the data to be parsed.</li>
+<li><cite>format</cite>: Used if format can not be determined from source. Defaults to rdf/xml.</li>
+<li><cite>publicID</cite>: the logical URI to use as the document base. If None specified the document location is used (at least in the case where there is a document location).</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>self, the graph instance.</p>
+<p>Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">my_data</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s">&lt;rdf:RDF</span>
+<span class="gp">... </span><span class="s">  xmlns:rdf=&#39;http://www.w3.org/1999/02/22-rdf-syntax-ns#&#39;</span>
+<span class="gp">... </span><span class="s">  xmlns:rdfs=&#39;http://www.w3.org/2000/01/rdf-schema#&#39;</span>
+<span class="gp">... </span><span class="s">&gt;</span>
+<span class="gp">... </span><span class="s">  &lt;rdf:Description&gt;</span>
+<span class="gp">... </span><span class="s">    &lt;rdfs:label&gt;Example&lt;/rdfs:label&gt;</span>
+<span class="gp">... </span><span class="s">    &lt;rdfs:comment&gt;This is really just an example.&lt;/rdfs:comment&gt;</span>
+<span class="gp">... </span><span class="s">  &lt;/rdf:Description&gt;</span>
+<span class="gp">... </span><span class="s">&lt;/rdf:RDF&gt;</span>
+<span class="gp">... </span><span class="s">&#39;&#39;&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">file_name</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mktemp</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="nb">file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">my_data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">my_data</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;application/rdf+xml&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="n">file_name</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;application/rdf+xml&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="nb">file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">),</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;application/rdf+xml&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p>The first argument can be a <em>source</em> of many kinds, but the most common is the serialization (in various formats: RDF/XML, Notation 3, NTriples of an RDF graph as a string.  The <tt class="xref docutils literal"><span class="pre">format</span></tt> parameter is one of <tt class="docutils literal"><span class="pre">n3</span></tt>, <tt class="docutils literal"><span class="pre">xml</span></tt>, or <tt class="docutils literal"><span class="pre">ntriples</span></tt>.  <tt class="xref docutils literal"><span class="pre">publicID</span></tt> is the name of the graph into which the RDF serialization will be parsed.</p>
+</blockquote>
+</li>
+<li><p class="first">Triples can also be added with the <tt class="xref docutils literal"><span class="pre">add()</span></tt> function:</p>
+<blockquote>
+<dl class="method">
+<dt id="rdflib.graph.Graph.add">
+<!--[rdflib.graph.Graph.add]--><tt class="descclassname">Graph.</tt><tt class="descname">add</tt><big>(</big><em>(s</em>, <em>p</em>, <em>o)</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a triple with self as context</p>
+</dd></dl>
+
+</blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="removing-triples">
+<h3>Removing Triples<a class="headerlink" href="#removing-triples" title="Permalink to this headline">¶</a></h3>
+<p>Similarly, triples can be removed by a call to <tt class="xref docutils literal"><span class="pre">remove()</span></tt>:</p>
+<dl class="method">
+<dt id="rdflib.graph.Graph.remove">
+<!--[rdflib.graph.Graph.remove]--><tt class="descclassname">Graph.</tt><tt class="descname">remove</tt><big>(</big><em>(s</em>, <em>p</em>, <em>o)</em><big>)</big><a class="headerlink" href="#rdflib.graph.Graph.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a triple from the graph</p>
+<p>If the triple does not provide a context attribute, removes the triple
+from all contexts.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="rdf-literal-support">
+<h2>RDF Literal Support<a class="headerlink" href="#rdf-literal-support" title="Permalink to this headline">¶</a></h2>
+<p>RDFLib Literals essentially behave like unicode characters with an XML Schema datatype or language attribute.  The class provides a mechanism to both convert Python literals (and their built-ins such as time/date/datetime) into equivalent RDF Literals and (conversely) convert Literals to their Python equivalent.  There is some support of considering datatypes in comparing Literal instances, implemented as an override to <tt class="xref docutils literal"><span class="pre">__eq__()</span></tt>.  This mapping to and from Python literals is achieved with the following dictionaries:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">PythonToXSD</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nb">basestring</span> <span class="p">:</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">),</span>
+    <span class="nb">float</span>      <span class="p">:</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;float&#39;</span><span class="p">),</span>
+    <span class="nb">int</span>        <span class="p">:</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;int&#39;</span><span class="p">),</span>
+    <span class="nb">long</span>       <span class="p">:</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;long&#39;</span><span class="p">),</span>
+    <span class="nb">bool</span>       <span class="p">:</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;boolean&#39;</span><span class="p">),</span>
+    <span class="n">date</span>       <span class="p">:</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span><span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;date&#39;</span><span class="p">),</span>
+    <span class="n">time</span>       <span class="p">:</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span><span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;time&#39;</span><span class="p">),</span>
+    <span class="n">datetime</span>   <span class="p">:</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span><span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;dateTime&#39;</span><span class="p">),</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Maps Python instances to WXS datatyped Literals</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">XSDToPython</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;time&#39;</span>               <span class="p">:</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="n">_strToTime</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;date&#39;</span>               <span class="p">:</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="n">_strToDate</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;dateTime&#39;</span>           <span class="p">:</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="n">_strToDateTime</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;string&#39;</span>             <span class="p">:</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;normalizedString&#39;</span>   <span class="p">:</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;token&#39;</span>              <span class="p">:</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;language&#39;</span>           <span class="p">:</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;boolean&#39;</span>            <span class="p">:</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;1&#39;</span><span class="p">,</span><span class="s">&#39;true&#39;</span><span class="p">]),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;decimal&#39;</span>            <span class="p">:</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span><span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;integer&#39;</span>            <span class="p">:</span> <span class="p">(</span><span class="nb">long</span> <span class="p">,</span><span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;nonPositiveInteger&#39;</span> <span class="p">:</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span><span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;long&#39;</span>               <span class="p">:</span> <span class="p">(</span><span class="nb">long</span><span class="p">,</span><span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;nonNegativeInteger&#39;</span> <span class="p">:</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;negativeInteger&#39;</span>    <span class="p">:</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;int&#39;</span>                <span class="p">:</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;unsignedLong&#39;</span>       <span class="p">:</span> <span class="p">(</span><span class="nb">long</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;positiveInteger&#39;</span>    <span class="p">:</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;short&#39;</span>              <span class="p">:</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;unsignedInt&#39;</span>        <span class="p">:</span> <span class="p">(</span><span class="nb">long</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;byte&#39;</span>               <span class="p">:</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;unsignedShort&#39;</span>      <span class="p">:</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;unsignedByte&#39;</span>       <span class="p">:</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;float&#39;</span>              <span class="p">:</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;double&#39;</span>             <span class="p">:</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;base64Binary&#39;</span>       <span class="p">:</span> <span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">decodestring</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+    <span class="n">XSD_NS</span><span class="o">+</span><span class="s">u&#39;anyURI&#39;</span>             <span class="p">:</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">),</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Maps WXS datatyped Literals to Python.  This mapping is used by the <tt class="xref docutils literal"><span class="pre">toPython()</span></tt> method defined on all Literal instances.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="">Graph utilities</a><ul>
+<li><a class="reference external" href="#graphs-as-iterators">Graphs as Iterators</a></li>
+<li><a class="reference external" href="#set-operations-on-rdflib-graphs">Set Operations on RDFLib Graphs</a></li>
+<li><a class="reference external" href="#basic-triple-matching">Basic Triple Matching</a></li>
+<li><a class="reference external" href="#managing-triples">Managing Triples</a><ul>
+<li><a class="reference external" href="#adding-triples">Adding Triples</a></li>
+<li><a class="reference external" href="#removing-triples">Removing Triples</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#rdf-literal-support">RDF Literal Support</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="namespace_utilities.html"
+                                  title="previous chapter">Namespace Utilities</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="persistence.html"
+                                  title="next chapter">Persistence</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/graph_utilities.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+	  <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+	      <p style="font-size: 90%">Enter search terms or a module, class or function name.</p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="persistence.html" title="Persistence"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="namespace_utilities.html" title="Namespace Utilities"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">rdflib v2.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, Daniel Krech.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.
+    </div>
+  </body>
+</html>

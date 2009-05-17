@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>rdflib.term.Literal – Literal class definition &mdash; rdflib v2.5.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.5.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="rdflib v2.5.0 documentation" href="../../index.html" />
+    <link rel="up" title="Nodes" href="index.html" />
+    <link rel="next" title="rdflib.term.Variable – Variable class definition" href="variable.html" />
+    <link rel="prev" title="rdflib.term.URIRef – URIRef class definition" href="uriref.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="variable.html" title="rdflib.term.Variable – Variable class definition"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="uriref.html" title="rdflib.term.URIRef – URIRef class definition"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">rdflib v2.5.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Modules</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Nodes</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-rdflib.term">
+<h1><tt class="xref docutils literal"><span class="pre">rdflib.term.Literal</span></tt> &#8211; Literal class definition<a class="headerlink" href="#module-rdflib.term" title="Permalink to this headline">¶</a></h1>
+<p>This module defines the different types of terms...</p>
+<div class="section" id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="rdflib.term.Literal">
+<!--[rdflib.term.Literal]-->class <tt class="descclassname">rdflib.term.</tt><tt class="descname">Literal</tt><a class="headerlink" href="#rdflib.term.Literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>RDF Literal: <a class="reference external" href="http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal">http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal</a></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Literal</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span><span class="o">.</span><span class="n">toPython</span><span class="p">()</span>
+<span class="go">1L</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">cmp</span><span class="p">(</span><span class="n">Literal</span><span class="p">(</span><span class="s">&quot;adsf&quot;</span><span class="p">),</span> <span class="mf">1</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdflib.namespace</span> <span class="kn">import</span> <span class="n">_XSD_NS</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lit2006</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&#39;2006-01-01&#39;</span><span class="p">,</span><span class="n">datatype</span><span class="o">=</span><span class="n">_XSD_NS</span><span class="o">.</span><span class="n">date</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lit2006</span><span class="o">.</span><span class="n">toPython</span><span class="p">()</span>
+<span class="go">datetime.date(2006, 1, 1)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lit2006</span> <span class="o">&lt;</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&#39;2007-01-01&#39;</span><span class="p">,</span><span class="n">datatype</span><span class="o">=</span><span class="n">_XSD_NS</span><span class="o">.</span><span class="n">date</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Literal</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">())</span><span class="o">.</span><span class="n">datatype</span>
+<span class="go">rdflib.term.URIRef(&#39;http://www.w3.org/2001/XMLSchema#dateTime&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">oneInt</span>     <span class="o">=</span> <span class="n">Literal</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">twoInt</span>     <span class="o">=</span> <span class="n">Literal</span><span class="p">(</span><span class="mf">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">twoInt</span> <span class="o">&lt;</span> <span class="n">oneInt</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Literal</span><span class="p">(</span><span class="s">&#39;1&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">Literal</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Literal</span><span class="p">(</span><span class="s">&#39;1&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&#39;1&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Literal</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">Literal</span><span class="p">(</span><span class="s">&#39;1&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Literal</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">Literal</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Literal</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">URIRef</span><span class="p">(</span><span class="s">&#39;foo&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Literal</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">2.0</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Literal</span><span class="p">(</span><span class="mf">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">object</span>  
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lit2006</span> <span class="o">&lt;</span> <span class="s">&quot;2007&quot;</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s">&quot;2005&quot;</span> <span class="o">&lt;</span> <span class="n">lit2006</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="rdflib.term.Literal.toPython">
+<!--[rdflib.term.Literal.toPython]--><tt class="descname">toPython</tt><big>(</big><big>)</big><a class="headerlink" href="#rdflib.term.Literal.toPython" title="Permalink to this definition">¶</a></dt>
+<dd>Returns an appropriate python datatype derived from this RDF Literal</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href=""><tt class="docutils literal"><span class="pre">rdflib.term.Literal</span></tt> &#8211; Literal class definition</a><ul>
+<li><a class="reference external" href="#module-contents">Module Contents</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="uriref.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">rdflib.term.URIRef</span></tt> &#8211; URIRef class definition</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="variable.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">rdflib.term.Variable</span></tt> &#8211; Variable class definition</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../../_sources/modules/nodes/literal.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+	  <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+	      <p style="font-size: 90%">Enter search terms or a module, class or function name.</p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="variable.html" title="rdflib.term.Variable – Variable class definition"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="uriref.html" title="rdflib.term.URIRef – URIRef class definition"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">rdflib v2.5.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Modules</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Nodes</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, Daniel Krech.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.
+    </div>
+  </body>
+</html>
