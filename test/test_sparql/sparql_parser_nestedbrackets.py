@@ -1,4 +1,4 @@
-from rdflib.sparql.bison import Parse
+from rdflib.sparql.parser import parse
 
 # second query from here:
 # http://www.w3.org/TR/rdf-sparql-query/#GroupPatterns
@@ -14,7 +14,7 @@ WHERE  { { ?x foaf:name ?name . }
 correct = """{ [<SPARQLParser.GraphPattern: [[?x [foaf:name([u'?name'])], ?x [foaf:mbox([u'?mbox'])]]]>] }"""
 
 if __name__ == "__main__":
-    p = Parse(query)
+    p = parse(query)
     tmp = p.query.whereClause.parsedGraphPattern
     if str(tmp) == correct:
         print "PASSED"

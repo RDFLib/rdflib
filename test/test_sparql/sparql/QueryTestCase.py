@@ -1,6 +1,6 @@
 import unittest
 
-from rdflib.Graph import Graph
+from rdflib.graph import Graph
 
 class QueryTestCase(unittest.TestCase):
 
@@ -11,7 +11,7 @@ class QueryTestCase(unittest.TestCase):
         pass
 
     def testUnicodeString(self):
-        from rdflib.sparql.bison import Parse
+        from rdflib.sparql.parser import parse
         from cStringIO import StringIO
 
         q = \
@@ -21,7 +21,7 @@ class QueryTestCase(unittest.TestCase):
           WHERE { rdf:foobar rdf:predicate ?pred. }
           """ 
 
-        p = Parse(q)
+        p = parse(q)
 
 if __name__ == '__main__':
     unittest.main()
