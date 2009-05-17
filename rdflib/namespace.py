@@ -129,3 +129,5 @@ RDFS = ClosedNamespace(
     )
 
 OWL = Namespace('http://www.w3.org/2002/07/owl#')
+
+_XSD_NS = Namespace('http://www.w3.org/2001/XMLSchema#')

@@ -129,19 +129,20 @@ SPARQL Queries
     ... PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?pred WHERE { ?stmt rdf:predicate ?pred. }
     ... \'\'\'   
     >>> for pred in g.query(q):  print pred
-    (rdflib.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),)
+    (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),)
 
 SPARQL Queries with namespace bindings as argument
 
     >>> nsMap = {u"rdf":RDF.RDFNS}
     >>> for pred in g.query("SELECT ?pred WHERE { ?stmt rdf:predicate ?pred. }", initNs=nsMap): print pred
-    (rdflib.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),)
+    (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),)
 
 Parameterized SPARQL Queries
 
+    >>> from rdflib.term import Variable
     >>> top = { Variable("?term") : RDF.predicate }
     >>> for pred in g.query("SELECT ?pred WHERE { ?stmt ?term ?pred. }", initBindings=top): print pred
-    (rdflib.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),)
+    (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),)
 
 """
 

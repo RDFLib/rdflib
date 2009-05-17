@@ -234,6 +234,7 @@ class Literal(Identifier):
     1L
     >>> cmp(Literal("adsf"), 1)
     1
+    >>> from rdflib.namespace import _XSD_NS
     >>> lit2006 = Literal('2006-01-01',datatype=_XSD_NS.date)
     >>> lit2006.toPython()
     datetime.date(2006, 1, 1)
@@ -315,6 +316,7 @@ class Literal(Identifier):
     
     def __lt__(self, other):
         """
+        >>> from rdflib.namespace import _XSD_NS
         >>> Literal("YXNkZg==", datatype=_XSD_NS[u'base64Binary']) < "foo"
         True
         >>> u"\xfe" < Literal(u"foo")
@@ -337,6 +339,7 @@ class Literal(Identifier):
 
     def __le__(self, other):
         """
+        >>> from rdflib.namespace import _XSD_NS
         >>> Literal('2007-01-01T10:00:00', datatype=_XSD_NS.dateTime) <= Literal('2007-01-01T10:00:00', datatype=_XSD_NS.dateTime)
         True
         """
@@ -383,6 +386,7 @@ class Literal(Identifier):
 
     def __hash__(self):
         """
+        >>> from rdflib.namespace import _XSD_NS
         >>> a = {Literal('1',datatype=_XSD_NS.integer):'one'}
         >>> Literal('1',datatype=_XSD_NS.double) in a
         False
@@ -423,6 +427,7 @@ class Literal(Identifier):
         False
         >>> Literal("1", datatype=URIRef("foo")) == "asdf"
         False
+        >>> from rdflib.namespace import _XSD_NS
         >>> Literal('2007-01-01', datatype=_XSD_NS.date) == Literal('2007-01-01', datatype=_XSD_NS.date)
         True
         >>> Literal('2007-01-01', datatype=_XSD_NS.date) == date(2007, 1, 1)

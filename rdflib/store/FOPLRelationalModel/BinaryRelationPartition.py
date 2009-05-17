@@ -654,7 +654,7 @@ class NamedLiteralProperties(BinaryRelationPartition):
     def extractIdentifiers(self,quadSlots):
         """
         Test literal data type extraction
-        >>> from rdflib import RDF
+        >>> from rdflib.namespace import RDF
         >>> class DummyClass:
         ...   def __init__(self,test=False):
         ...     self.test = test

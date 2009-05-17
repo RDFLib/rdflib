@@ -1,10 +1,7 @@
 
 import rdflib
 from rdflib.graph import Graph
-from rdflib.URIRef import URIRef
-from rdflib.Node import Node
-from rdflib.BNode import BNode
-from rdflib.Literal import Literal
+from rdflib.term import URIRef, Node, BNode, Literal
 try:
     import RDF
 except ImportError:
@@ -15,11 +12,11 @@ except ImportError:
 from rdflib.store import Store
 
 def _t(i):
-    if isinstance(i, rdflib.URIRef):
+    if isinstance(i, rdflib.term.URIRef):
         return RDF.Node(RDF.Uri(unicode(i)))
-    if isinstance(i, rdflib.BNode):
+    if isinstance(i, rdflib.term.BNode):
         return RDF.Node(blank=str(i))
-    if isinstance(i, rdflib.Literal):
+    if isinstance(i, rdflib.term.Literal):
         return RDF.Node(literal=str(i))
     if isinstance(i, Graph):
         return _t(i.identifier)
@@ -33,12 +30,12 @@ def _c(i):
 
 def _f(i):
     if isinstance(i, RDF.Uri):
-        return rdflib.URIRef(i)
+        return rdflib.term.URIRef(i)
     if isinstance(i, RDF.Node):
         if i.is_blank():
-            return rdflib.BNode(i.blank_identifier)
+            return rdflib.term.BNode(i.blank_identifier)
         elif i.is_literal():
-            return rdflib.Literal(i)
+            return rdflib.term.Literal(i)
         else:
             return URIRef(i.uri)
     if i is None:
