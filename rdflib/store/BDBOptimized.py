@@ -4,7 +4,7 @@ from urllib import pathname2url
 from os import mkdir
 from os.path import exists, abspath
 
-from rdflib import URIRef
+from rdflib.term import URIRef
 from rdflib.store import Store, VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
 
 SUPPORT_MULTIPLE_STORE_ENVIRON = False
