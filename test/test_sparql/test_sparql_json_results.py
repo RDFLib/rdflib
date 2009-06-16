@@ -1,9 +1,16 @@
-import json
-
 from rdflib.graph import ConjunctiveGraph
 from StringIO import StringIO
 import unittest
 
+# json is only available as of python2.6, but simplejson is available 
+# via PyPI for older pythons
+try:
+    import json
+except ImportError: 
+    try:
+        import simplejson as json
+    except ImportError:
+        raise ImportError("unable to find json or simplejson modules")
 
 test_data = """
 @prefix foaf:       <http://xmlns.com/foaf/0.1/> .
