@@ -38,6 +38,8 @@ setup(
 
     packages = find_packages(exclude=["test"]),
 
+    #install_requires = ['pyparsing'],
+
     tests_require = ["nose>=0.10.4"],
 
     test_suite = 'nose.collector',
