@@ -580,7 +580,11 @@ def _strToDateTime(v) :
             try:
                 tstr = strptime(v,"%Y-%m-%dT%H:%M:%S%Z")
             except:
-                return v
+                try:
+                    # %f only works in python 2.6
+                    return datetime.strptime(v,"%Y-%m-%dT%H:%M:%S.%f")
+                except:
+                    return v
 
     return datetime(tstr.tm_year,tstr.tm_mon,tstr.tm_mday,tstr.tm_hour,tstr.tm_min,tstr.tm_sec)
 
