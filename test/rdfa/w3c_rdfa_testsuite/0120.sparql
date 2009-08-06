@@ -1,0 +1,5 @@
+ASK WHERE {
+<http://www.w3.org/1999/xhtml/vocab#>
+   <http://purl.org/dc/elements/1.1/title>
+      "The XHTML Vocabulary Document" .
+}

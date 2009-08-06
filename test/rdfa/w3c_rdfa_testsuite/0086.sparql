@@ -1,0 +1,4 @@
+# This test should result in a 'NO', i.e. no triples should be generated from the XHTML+RDFa input document.
+ASK WHERE {
+	<http://www.example.org/#somebody> ?undefprop <mailto:ivan@w3.org> .
+}

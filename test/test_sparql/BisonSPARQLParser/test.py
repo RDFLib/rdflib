@@ -1,19 +1,26 @@
 import os
-from Ft.Lib import Uri
 from glob import glob
-from rdflib.sparql.QueryResult import SPARQL_XML_NAMESPACE
-from rdflib.sparql.bison import Parse, Query
-from rdflib.sparql.graphPattern import BasicGraphPattern as BGP
-from rdflib.sparql.Algebra import ReduceToAlgebra, RenderSPARQLAlgebra, AlgebraExpression
-from rdflib.Collection import Collection
-from rdflib import plugin, Namespace,URIRef, RDF, BNode, Variable,Literal, RDFS, util
-from rdflib.util import *
-from rdflib.store import Store, VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
-from rdflib.Graph import Graph, ConjunctiveGraph
-from rdflib.syntax.NamespaceManager import NamespaceManager
-from sets import Set
 from cStringIO import StringIO
 from pprint import pprint
+
+from Ft.Lib import Uri
+
+from rdflib.sparql.QueryResult import SPARQL_XML_NAMESPACE
+from rdflib.sparql.parser import parse as Parse # TODO: is this the one?
+from rdflib.sparql.bison import Query
+from rdflib.sparql.graphPattern import BasicGraphPattern as BGP
+from rdflib.sparql.Algebra import ReduceToAlgebra, RenderSPARQLAlgebra, AlgebraExpression
+from rdflib.collection import Collection
+from rdflib.term import BNode, Literal, URIRef, Variable
+from rdflib import plugin, util
+from rdflib.namespace import Namespace, RDF, RDFS
+from rdflib.util import *
+from rdflib.graphutils import IsomorphicGraph
+from rdflib.store import Store, VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
+from rdflib.graph import Graph, ConjunctiveGraph
+from rdflib.syntax.NamespaceManager import NamespaceManager
+
+
 WRITE_EARL=False
 MAIN_MANIFEST=[#'extended-manifest-evaluation.ttl',
                'manifest-evaluation.ttl',
@@ -26,7 +33,7 @@ RESULT_NS     = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/result-set
 EARL          = Namespace('http://www.w3.org/ns/earl#')
 FOAF          = Namespace("http://xmlns.com/foaf/0.1/")
 CHIMEZIE_FOAF = "http://purl.org/net/chimezie/foaf"
-DOAP          = Namespace('http://usefulinc.com/ns/doap#') 
+DOAP          = Namespace('http://usefulinc.com/ns/doap#')
 
 REPORT_NS = {
     u"earl":EARL,
@@ -36,9 +43,9 @@ REPORT_NS = {
 
 manifestNS = {
     u"extra" : Namespace('http://jena.hpl.hp.com/2005/05/test-manifest-extra#'),
-    u"rdfs"  : RDFS.RDFSNS,
-    u"rdf"   : RDF.RDFNS, 
-    u"alg"  : Namespace("http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#"), 
+    u"rdfs"  : RDFS,
+    u"rdf"   : RDF,
+    u"alg"  : Namespace("http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#"),
     u"mf"    : Namespace("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"),
     u"dawgt" : Namespace("http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#"),
     u"qt"    : Namespace("http://www.w3.org/2001/sw/DataAccess/tests/test-query#"),
@@ -57,7 +64,7 @@ RDFLIB_DOAP_DATA=\
   a         :Project;
   :name     "RDFLib";
   :release _:a .
-  
+
 _:a a :Version ;
     :name "2.4.1.dev-r1252" ;
     :created "2007-10-11"^^xsd:date """
@@ -69,7 +76,7 @@ WHERE {
     { ?test a mf:QueryEvaluationTest }
       UNION
     { ?test a <http://jena.hpl.hp.com/2005/05/test-manifest-extra#TestQuery> }
-      UNION 
+      UNION
     { ?test a mf:PositiveSyntaxTest }
     ?test mf:name   ?testName.
     OPTIONAL { ?test rdfs:comment ?testComment }
@@ -111,7 +118,7 @@ def trialAndErrorRTParse(graph,queryLoc,DEBUG,gName=None):
 #                print qstr.getvalue()
 #                print "#### ######### ###"
             return False
-        
+
 
 def setupReportingRDF(g,foafURI=CHIMEZIE_FOAF):
     g.parse(StringIO(RDFLIB_DOAP_DATA),format="n3")
@@ -157,7 +164,7 @@ def generateTestAlgebra(subDirs=[]):
             print query
             print algebraExpr
             print "######"+"#"*len(testName)+'\n'
-        
+
 skipTests = [
     #('dataset','dataset-08'),# is Join(A,{{}}) = {{}} or A?
     #('dataset','dataset-09'),#same as above
@@ -173,9 +180,9 @@ skipTests = [
     ('syntax-sparql2','syntax-esc-05.rq'), #problems with escape characters in prefixed names
     ('syntax-sparql2','syntax-esc-04.rq'), #    "      "     "        "     "     "       "
     ('optional-filter','dawg-optional-filter-005-simplified'),       #Nesting triggering core dump :(
-    ('optional-filter','dawg-optional-filter-005-not-simplified'),       #Nesting triggering core dump :(    
+    ('optional-filter','dawg-optional-filter-005-not-simplified'),       #Nesting triggering core dump :(
     ('basic','Basic - Quotes 3'),
-    ('basic','Basic - Quotes 1'),    
+    ('basic','Basic - Quotes 1'),
     ('open-world',"open-eq-11"),
     ('open-world',"open-eq-12"),
     ('open-world',"open-eq-10"),
@@ -220,7 +227,7 @@ skipTests = [
     ('expr-builtin',"lang-case-insensitive-ne"),
     ('expr-builtin',"sameTerm-simple"),
     ('expr-builtin',"lang-case-insensitive-eq"),
-    ('expr-builtin',"LangMatches-basic"),    
+    ('expr-builtin',"LangMatches-basic"),
     ('expr-builtin',"LangMatches-4"),
     ('expr-builtin',"LangMatches-3"),
     ('expr-builtin',"LangMatches-2"),
@@ -255,7 +262,7 @@ skipTests = [
     ('sort','Builtin sort'),
     ('sort','Function sort'),
     ('sort','Expression sort'),
-]        
+]
 
 def castToTerm(node):
     if node.localName == 'bnode':
@@ -267,7 +274,7 @@ def castToTerm(node):
             dT = URIRef(node.xpath('string(@datatype)'))
             if False:#not node.xpath('*'):
                 return Literal('',datatype=dT)
-            else:                
+            else:
                 return Literal(node.firstChild.nodeValue,
                                datatype=dT)
         else:
@@ -276,13 +283,13 @@ def castToTerm(node):
             else:
                 return Literal(node.firstChild.nodeValue)
     else:
-        raise                        
+        raise
 
 def parseResults(sparqlRT):
     actualRT = []
     from Ft.Xml.Domlette import NonvalidatingReader
     doc = NonvalidatingReader.parseString(sparqlRT)
-    vars = [Variable(v.nodeValue) for v in 
+    vars = [Variable(v.nodeValue) for v in
              doc.xpath('/sparql:sparql/sparql:head//@name',
              explicitNss=sparqlNsBindings)]
     askAnswer=doc.xpath('string(/sparql:sparql/sparql:boolean)',explicitNss=sparqlNsBindings)
@@ -301,25 +308,25 @@ def parseResults(sparqlRT):
             if currBind:
                 actualRT.append(currBind)
     return actualRT,vars
-        
+
 def testSuite(options,skip=None,mainManifest=MAIN_MANIFEST):
     #Extract options
     singleTest=options.singleTest
     skip = skip or []
     SUBDIR=options.testSuite
     cnt = 0
-    
+
     if mainManifest and options.all:
         testManifests=[]
         for mfst in mainManifest:
             manifestG=Graph()
             assert os.path.exists('data-r2/%s'%mfst)
             manifestG.parse(open('data-r2/%s'%mfst),publicID=TEST_BASE,format='n3')
-            #print manifestG.serialize(format='n3')         
+            #print manifestG.serialize(format='n3')
             testManifests.extend(['data-r2/'+manifest.split(TEST_BASE)[-1] for \
                 manifest in Collection(manifestG,
                                        first(manifestG.objects(predicate=manifestNS['mf'].include)))])
-    else:    
+    else:
         testManifests = ['data-r2/%s/manifest.ttl'%SUBDIR]
     reportGraph = Graph()
     setupReportingRDF(reportGraph)
@@ -345,13 +352,13 @@ def testSuite(options,skip=None,mainManifest=MAIN_MANIFEST):
             print test,testName, query, result, testAction
             #print test.replace(TEST_BASE+'data-r2/','').split('/')[-1]
             if mainManifest:
-                SUBDIR=test.replace(TEST_BASE+'data-r2/','').split('/')[0]            
+                SUBDIR=test.replace(TEST_BASE+'data-r2/','').split('/')[0]
             if singleTest and testName != singleTest or\
                testName in skip or\
                (SUBDIR,testName) in skipTests or (SUBDIR,'*') in skipTests:
                 outcome = EARL.fail
                 report(outcome,test,reportGraph)
-                print "Skipping ", test                
+                print "Skipping ", test
                 continue
             if not query:
                 assert testAction
@@ -363,7 +370,7 @@ def testSuite(options,skip=None,mainManifest=MAIN_MANIFEST):
                 parsedSPARQL = Parse(query)
             except:
                 parsedSPARQL = Parse(query,True)
-                
+
             algebraExpr=RenderSPARQLAlgebra(parsedSPARQL)
             if isinstance(parsedSPARQL.query,Query.SelectQuery):
                 print "SELECT variables: ", parsedSPARQL.query.variables
@@ -408,11 +415,11 @@ def testSuite(options,skip=None,mainManifest=MAIN_MANIFEST):
                 if options.verbose:
                     print "### Source Graph(s): ###"
                     if defaultSource:
-                        print "#### Default Graph ####"              
+                        print "#### Default Graph ####"
                         print open(defaultSource.replace(TEST_BASE,'')).read()
                     for source in namedSources:
-                        if source:          
-                            print "#### Named Graph: %s ####"%source              
+                        if source:
+                            print "#### Named Graph: %s ####"%source
                             print open(source.replace(TEST_BASE,'')).read()
                     print "########################"
                 store = plugin.get(options.storeKind,Store)()
@@ -429,7 +436,6 @@ def testSuite(options,skip=None,mainManifest=MAIN_MANIFEST):
                               open(namedSource.replace(TEST_BASE,'')),
                               format='n3'
                           )
-                from Ft.Lib import  Uri
                 currDir = Uri.OsPathToUri(os.getcwd())
                 currDir = currDir[-1]=='/' and currDir or currDir+'/'
                 base = Uri.Absolutize('.', Uri.Absolutize(testManifest,currDir))
@@ -438,10 +444,10 @@ def testSuite(options,skip=None,mainManifest=MAIN_MANIFEST):
                                   dataSetBase = Uri.UriToOsPath(base))
                 if result and isinstance(parsedSPARQL.query,
                                          Query.ConstructQuery):
-                    rtCheckableGraph = IsomorphicTestableGraph(
+                    rtCheckableGraph = IsomorphicGraph(
                                             store=queryRT.result.store,
                                             identifier=queryRT.result.identifier)
-                    expectedCheckableGraph=IsomorphicTestableGraph(
+                    expectedCheckableGraph=IsomorphicGraph(
                                                    store=resultG.store,
                                                    identifier=resultG.identifier
                                                    )
@@ -473,8 +479,8 @@ def testSuite(options,skip=None,mainManifest=MAIN_MANIFEST):
     out=StringIO()
     namespace_manager = NamespaceManager(Graph())
     for prefix,uri in REPORT_NS.items():
-        namespace_manager.bind(prefix, uri, override=False)        
-    reportGraph.namespace_manager = namespace_manager    
+        namespace_manager.bind(prefix, uri, override=False)
+    reportGraph.namespace_manager = namespace_manager
     if WRITE_EARL:
         reportGraph.serialize(destination=out,format='pretty-xml')
         print out.getvalue()
@@ -501,13 +507,15 @@ def normalizeTerm(term):
         return None
     else:
         return term
+
 def normalizeResult(result):
     return [isinstance(i,tuple) and tuple([normalizeTerm(f) for f in i])\
                 or normalizeTerm(i) for i in result]
+
 def extractResultG(SUBDIR,rt,allVars,graph,base=None):
     rSetBNode = BNode()
     graph.add((rSetBNode,RDF.type,RESULT_NS.ResultSet))
-    for var in allVars:                            
+    for var in allVars:
         graph.add((rSetBNode,RESULT_NS.resultVariable,Literal(var)))
     for d in rt:
         sol = BNode()
@@ -520,6 +528,7 @@ def extractResultG(SUBDIR,rt,allVars,graph,base=None):
             graph.add((sol,RESULT_NS.binding,binding))
             graph.add((binding,RESULT_NS.variable,Literal(k)))
             graph.add((binding,RESULT_NS.value,v))
+
 def extractExpectedBindings(resultG,base=None):
     bindings = []
     resultSetNode = resultG.value(predicate=RESULT_NS.value,object=RESULT_NS.ResultSet)
@@ -531,9 +540,9 @@ def extractExpectedBindings(resultG,base=None):
             bindingDict[Variable(name)] = base and Uri.Absolutize(value,base) or value
         bindings.append(bindingDict)
     return bindings
-    
+
 def openSelectCompare(SUBDIR,sparqlRT,resultG,testName,exitOnFailure,base=None):
-    actualRT,vars = parseResults(sparqlRT)                                
+    actualRT,vars = parseResults(sparqlRT)
     if isinstance(resultG,Graph):
         expectedRT = extractExpectedBindings(resultG)
     else:
@@ -543,7 +552,7 @@ def openSelectCompare(SUBDIR,sparqlRT,resultG,testName,exitOnFailure,base=None):
         if actualRT == expectedRT:
             print "### TEST PASSED!: %s ###"%testName
             return EARL['pass']
-        else: 
+        else:
             print "### Expected Result: %s ###"%expectedRT
             print "### Actual Result: %s ###"%actualRT
             print "### TEST FAILED!: %s ###"%testName
@@ -553,15 +562,15 @@ def openSelectCompare(SUBDIR,sparqlRT,resultG,testName,exitOnFailure,base=None):
         b=[ImmutableDict([(k,v) for k,v in d.items()]) for d in expectedRT]
         a.sort(key=lambda d:hash(d))
         b.sort(key=lambda d:hash(d))
-    
-        aGraph = IsomorphicTestableGraph()
-        eGraph = IsomorphicTestableGraph()
+
+        aGraph = IsomorphicGraph()
+        eGraph = IsomorphicGraph()
         if isinstance(resultG,Graph):
             eGraph+= resultG
         else:
-            extractResultG(SUBDIR,expectedRT,vars,eGraph,base)                         
-        extractResultG(SUBDIR,actualRT,vars,aGraph,base)   
-        
+            extractResultG(SUBDIR,expectedRT,vars,eGraph,base)
+        extractResultG(SUBDIR,actualRT,vars,aGraph,base)
+
         if actualRT == expectedRT or set(a) == set(b):# or aGraph == eGraph:
             print "### TEST PASSED!: %s ###"%testName
             return EARL['pass']
@@ -569,7 +578,7 @@ def openSelectCompare(SUBDIR,sparqlRT,resultG,testName,exitOnFailure,base=None):
             if aGraph == eGraph:
                 print "### TEST PASSED!: %s (via isomorphic check) ###"%testName
                 return EARL['pass']
-            else: 
+            else:
                 print "### Expected Result (%s items) ###"%len(expectedRT)
                 pprint(expectedRT)
                 print "### Actual Results (%s items) ###"%len(actualRT)
@@ -579,62 +588,17 @@ def openSelectCompare(SUBDIR,sparqlRT,resultG,testName,exitOnFailure,base=None):
                     raise
                 return EARL.fail
 
-class IsomorphicTestableGraph(Graph):
-    """
-    Ported from http://www.w3.org/2001/sw/DataAccess/proto-tests/tools/rdfdiff.py
-     (Sean B Palmer's RDF Graph Isomorphism Tester)
-    """
-    def __init__(self, **kargs): 
-        super(IsomorphicTestableGraph,self).__init__(**kargs)
-        self.hash = None
-        
-    def internal_hash(self):
-        """
-        This is defined instead of __hash__ to avoid a circular recursion scenario with the Memory
-        store for rdflib which requires a hash lookup in order to return a generator of triples
-        """ 
-        return hash(tuple(sorted(self.hashtriples())))
-
-    def hashtriples(self): 
-        for triple in self: 
-            g = ((isinstance(t,BNode) and self.vhash(t)) or t for t in triple)
-            yield hash(tuple(g))
-
-    def vhash(self, term, done=False): 
-        return tuple(sorted(self.vhashtriples(term, done)))
-
-    def vhashtriples(self, term, done): 
-        for t in self: 
-            if term in t: yield tuple(self.vhashtriple(t, term, done))
-
-    def vhashtriple(self, triple, term, done): 
-        for p in xrange(3): 
-            if not isinstance(triple[p], BNode): yield triple[p]
-            elif done or (triple[p] == term): yield p
-            else: yield self.vhash(triple[p], done=True)
-      
-    def __eq__(self, G): 
-        """Graph isomorphism testing."""
-        if not isinstance(G, IsomorphicTestableGraph): return False
-        elif len(self) != len(G): return False
-        elif list.__eq__(list(self),list(G)): return True # @@
-        return self.internal_hash() == G.internal_hash()
-
-    def __ne__(self, G): 
-       """Negative graph isomorphism testing."""
-       return not self.__eq__(G)
-
 class ImmutableDict(dict):
     '''
     A hashable dict.
-    
+
     >>> a=[ImmutableDict([('one',1),('three',3)]),ImmutableDict([('two',2),('four' ,4)])]
     >>> b=[ImmutableDict([('two',2),('four' ,4)]),ImmutableDict([('one',1),('three',3)])]
     >>> a.sort(key=lambda d:hash(d))
     >>> b.sort(key=lambda d:hash(d))
     >>> a == b
     True
-    
+
     '''
     def __init__(self,*args,**kwds):
         dict.__init__(self,*args,**kwds)
@@ -655,7 +619,7 @@ class ImmutableDict(dict):
         raise NotImplementedError, "dict is immutable"
     def __hash__(self):
         return hash(self._items)
-                                
+
 if __name__ == '__main__':
     import doctest, sys
     from optparse import OptionParser
@@ -675,7 +639,7 @@ if __name__ == '__main__':
 
     op.add_option('-c','--config',default='',
       help="Configuration string to use for connecting to persistence store")
-    
+
     op.add_option('-t','--testSuite',default='optional',
       help="The name of the test sub-directory to run ")
 
@@ -694,4 +658,5 @@ if __name__ == '__main__':
                      #'graph-02',#There should be 2 triples from the named graph matching ?s ?p ?o
                                 #different interpretation of 'default dataset'?
                      #'graph-11',#see proof
-                     ])    
+                     ])
+

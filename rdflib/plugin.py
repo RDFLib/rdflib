@@ -8,7 +8,7 @@ rdf.plugin.register directly.
 
 If you have a package that uses a setuptools based setup.py you can add the following to your setup::
 
-    entry_points = {        
+    entry_points = {
         'rdf.plugins.parser': [
             'nt =     rdf.plugins.parsers.NTParser:NTParser',
             ],
@@ -87,7 +87,7 @@ def get(name, kind):
     try:
         p = _plugins[(name, kind)]
     except KeyError, e:
-        raise PluginException("No plugin registered for (%s, %s)" % (name, kind))        
+        raise PluginException("No plugin registered for (%s, %s)" % (name, kind))
     return p.getClass()
 
 
@@ -104,7 +104,7 @@ else:
 
 def plugins(name=None, kind=None):
     """
-    A generator of the plugins. 
+    A generator of the plugins.
 
     Pass in name and kind to filter... else leave None to match all.
     """
@@ -120,25 +120,27 @@ register('BDBOptimized', Store, 'rdflib.store.BDBOptimized', 'BDBOptimized')
 register('MySQL', Store, 'rdflib.store.MySQL', 'MySQL')
 register('PostgreSQL', Store, 'rdflib.store.MySQL', 'PostgreSQL')
 
-register('xml', Serializer, 'rdflib.syntax.serializers.XMLSerializer', 
+register('xml', Serializer, 'rdflib.syntax.serializers.XMLSerializer',
          'XMLSerializer')
-register('n3', Serializer, 'rdflib.syntax.serializers.N3Serializer', 
+register('n3', Serializer, 'rdflib.syntax.serializers.N3Serializer',
          'N3Serializer')
-register('nt', Serializer, 'rdflib.syntax.serializers.NTSerializer', 
+register('nt', Serializer, 'rdflib.syntax.serializers.NTSerializer',
          'NTSerializer')
-register('pretty-xml', Serializer, 'rdflib.syntax.serializers.PrettyXMLSerializer', 
-         'PrettyXMLSerializer')
+register('pretty-xml', Serializer,
+        'rdflib.syntax.serializers.PrettyXMLSerializer', 'PrettyXMLSerializer')
+register('trix', Serializer,
+        'rdflib.syntax.serializers.TriXSerializer', 'TriXSerializer')
 
-register('application/rdf+xml',  Parser, 'rdflib.syntax.parsers.RDFXMLParser', 'RDFXMLParser')
-register('xml',  Parser, 'rdflib.syntax.parsers.RDFXMLParser', 'RDFXMLParser')
-register('n3',   Parser, 'rdflib.syntax.parsers.N3Parser', 'N3Parser')
-register('nt',   Parser, 'rdflib.syntax.parsers.NTParser', 'NTParser')
-register('rdfa',   Parser, 'rdflib.syntax.parsers.RDFaParser', 'RDFaParser')
-
-
+register('application/rdf+xml', Parser,
+        'rdflib.syntax.parsers.RDFXMLParser', 'RDFXMLParser')
+register('xml', Parser, 'rdflib.syntax.parsers.RDFXMLParser', 'RDFXMLParser')
+register('n3', Parser, 'rdflib.syntax.parsers.N3Parser', 'N3Parser')
+register('nt', Parser, 'rdflib.syntax.parsers.NTParser', 'NTParser')
 register('trix', Parser, 'rdflib.syntax.parsers.TriXParser', 'TriXParser')
-register('trix', Serializer, 'rdflib.syntax.serializers.TriXSerializer', 'TriXSerializer')
+register('rdfa', Parser, 'rdflib.syntax.parsers.rdfa', 'RDFaParser')
+
 register('sparql', sparql.Processor,
          'rdflib.sparql.bison.Processor', 'Processor')
 register('SPARQLQueryResult', QueryResult,
          'rdflib.sparql.QueryResult', 'SPARQLQueryResult')
+

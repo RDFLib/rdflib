@@ -1,0 +1,4 @@
+ASK WHERE {
+ <http://example.org/> <http://purl.org/dc/elements/1.1/title> "Test Case 0121" .
+ <http://example.org/> <http://purl.org/dc/elements/1.1/contributor> "Shane McCarron" .
+}

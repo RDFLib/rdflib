@@ -1,0 +1,4 @@
+ASK WHERE {
+<http://www.example.org/tc117.xhtml> <http://purl.org/dc/elements/1.1/title> "Test 0117" .
+<http://www.example.org/tc117.xhtml> <http://purl.org/dc/elements/1.1/contributor> "Mark Birbeck" .
+}

@@ -1,0 +1,6 @@
+ASK WHERE {
+	?x <http://xmlns.com/foaf/0.1/name> "Manu Sporny" .
+	?x <http://xmlns.com/foaf/0.1/knows> ?y .
+	?y <http://xmlns.com/foaf/0.1/name> "Ralph Swick" .
+    FILTER (ISBLANK(?x) && ISBLANK(?y))
+}

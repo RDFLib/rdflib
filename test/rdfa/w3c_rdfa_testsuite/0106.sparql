@@ -1,0 +1,7 @@
+ASK WHERE {
+ <http://www.w3.org/2006/07/SWD/RDFa/testsuite/xhtml1-testcases/0106.xhtml> <http://purl.org/dc/elements/1.1/creator>  ?a .
+ OPTIONAL {
+   ?x ?y <http://www.w3.org/2006/07/SWD/RDFa/testsuite/xhtml1-testcases/manu.html> .
+ }
+ FILTER (ISBLANK(?a) && !BOUND(?x) && !BOUND(?y))
+}

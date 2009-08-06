@@ -1,0 +1,6 @@
+ASK WHERE {
+ ?a <http://www.w3.org/1999/xhtml/vocab#definition> "a bi-pedal primate" .
+ ?a <http://www.w3.org/1999/xhtml/vocab#note> "confused animal" .
+ ?a <http://www.w3.org/1999/xhtml/vocab#foo> "Milky Way" .
+ FILTER isBlank(?a)
+}

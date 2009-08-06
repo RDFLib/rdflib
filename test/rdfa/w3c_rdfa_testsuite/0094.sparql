@@ -1,0 +1,16 @@
+# Some parsers may generate XML Literals that differ from the ones
+# shown below. The only requirement for XML Literal tests is that
+# the RDF graph that is generated is equivalent to the one expressed
+# in the XHTML (preservation of whitespace and namespaces that are
+# utilized in the XML Literal).
+
+ASK WHERE {
+ <http://www.w3.org/2006/07/SWD/RDFa/testsuite/xhtml1-testcases/0094.xhtml> <http://purl.org/dc/elements/1.1/creator> "Albert Einstein" . 
+ {
+  <http://www.w3.org/2006/07/SWD/RDFa/testsuite/xhtml1-testcases/0094.xhtml> <http://purl.org/dc/elements/1.1/title> "E = mc<sup xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:bla=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">2</sup>: The Most Urgent Problem of Our Time"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+ }
+ UNION
+ {
+  <http://www.w3.org/2006/07/SWD/RDFa/testsuite/xhtml1-testcases/0094.xhtml> <http://purl.org/dc/elements/1.1/title> "E = mc<sup xmlns=\"http://www.w3.org/1999/xhtml\">2</sup>: The Most Urgent Problem of Our Time"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> . 
+ }
+}

@@ -1,0 +1,9 @@
+ASK WHERE {    
+	<http://www.example.org/#somebody> <http://xmlns.com/foaf/0.1/knows> ?a .
+	<http://www.example.org/#somebody> <http://xmlns.com/foaf/0.1/knows> <http://danbri.org/foaf.rdf#danbri> .
+	?a <http://xmlns.com/foaf/0.1/name> "Ivan Herman" .
+   	?a <http://xmlns.com/foaf/0.1/mailbox> <mailto:ivan@w3.org> .
+	<http://danbri.org/foaf.rdf#danbri> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .
+	<http://danbri.org/foaf.rdf#danbri> <http://xmlns.com/foaf/0.1/name> "Dan Brickley" .		
+	FILTER isBlank(?a)
+}

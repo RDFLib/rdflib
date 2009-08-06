@@ -1,0 +1,6 @@
+ASK WHERE {
+	?a <http://xmlns.com/foaf/0.1/mbox> <mailto:manu.sporny@digitalbazaar.com> .
+	?b <http://xmlns.com/foaf/0.1/mbox> <mailto:michael.hausenblas@joanneum.at> .
+	?a <http://xmlns.com/foaf/0.1/knows> ?b .
+	FILTER ( isBlank(?a) && isBlank(?b) )
+}
