@@ -1,85 +1,113 @@
 #!/usr/bin/env python
-from pprint import pprint
-from rdflib.Namespace import Namespace
-from rdflib import plugin,RDF,RDFS,URIRef
+# -*- coding: UTF-8 -*-
+"""
+RDFPipe is a commandline tool for parsing RDF in different formats from files
+(or stdin) and serializing the resulting graph in a chosen format.
+"""
+
+from rdflib import plugin
 from rdflib.store import Store
 from rdflib.graph import Graph
-from rdflib.syntax.NamespaceManager import NamespaceManager
+from rdflib.namespace import Namespace, RDF, RDFS, OWL, _XSD_NS
+from rdflib.syntax.parsers import Parser
+from rdflib.syntax.serializers import Serializer
 
-RDFLIB_CONNECTION=''
-RDFLIB_STORE='IOMemory'
+from rdflib_tools.pathutils import guess_format
 
-import getopt, sys
+import sys
+from optparse import OptionParser
 
-def usage():
-    print """USAGE: RDFPipe.py [options]
-    
-    Options:
-    
-      --stdin                     Parse RDF from STDIN (useful for piping)
-      --help                      
-      --input-format              Format of the input document(s).  One of:
-                                  'xml','trix','n3','nt','rdfa'
-      --output                    Format of the final serialized RDF graph.  One of:
-                                  'n3','xml','pretty-xml','turtle',or 'nt'
-      --ns=prefix=namespaceUri    Register a namespace binding (QName prefix to a 
-                                  base URI).  This can be used more than once"""
+
+RDFLIB_CONNECTION = ''
+RDFLIB_STORE = 'IOMemory'
+
+DEFAULT_INPUT_FORMAT = 'xml'
+DEFAULT_OUTPUT_FORMAT = 'n3'
+
+NS_BINDINGS = {
+    'rdf':  RDF,
+    'rdfs': RDFS,
+    'owl':  OWL,
+    'xsd':  _XSD_NS,
+    'dc':   "http://purl.org/dc/elements/1.1/",
+    'dct':  "http://purl.org/dc/terms/",
+    'foaf': "http://xmlns.com/foaf/0.1/",
+    'wot':  "http://xmlns.com/wot/0.1/"
+}
+
+
+def read_and_serialize(input_files, input_format, output_format, guess, ns_bindings):
+    store = plugin.get(RDFLIB_STORE, Store)()
+    store.open(RDFLIB_CONNECTION)
+    graph = Graph(store)
+
+    for prefix, uri in ns_bindings.items():
+        graph.namespace_manager.bind(prefix, uri, override=False)
+
+    for fpath in input_files:
+        use_format = input_format
+        if fpath == '-':
+            fpath = sys.stdin
+        elif not input_format and guess:
+            use_format = guess_format(fpath) or DEFAULT_INPUT_FORMAT
+        # TODO: get extra kwargs to serializer (by parsing output_format key)?
+        graph.parse(fpath, format=use_format)
+
+    out = graph.serialize(destination=None, format=output_format, base=None)
+    store.rollback()
+    return out
+
+
+_get_plugin_names = lambda kind: ", ".join(repr(p.name) for p in plugin.plugins(kind=kind))
+
+def make_option_parser():
+    parser_names = _get_plugin_names(Parser)
+    serializer_names = _get_plugin_names(Serializer)
+
+    oparser = OptionParser(
+            "%prog [-h] [-i INPUT_FORMAT] [-o OUTPUT_FORMAT] [--ns=PFX=NS ...] [-] [FILE ...]")
+
+    oparser.add_option('-i', '--input-format',
+            type=str, #default=DEFAULT_INPUT_FORMAT,
+            help="Format of the input document(s). One of: %s." % parser_names,
+            metavar="INPUT_FORMAT")
+
+    oparser.add_option('-o', '--output-format',
+            type=str, default=DEFAULT_OUTPUT_FORMAT,
+            help="Format of the final serialized RDF graph. One of: %s." % serializer_names,
+            metavar="OUTPUT_FORMAT")
+
+    oparser.add_option("--ns",
+            action="append", type=str,
+            help="Register a namespace binding (QName prefix to a base URI). "
+                    "This can be used more than once.",
+            metavar="PREFIX=NAMESPACE")
+
+    oparser.add_option("--no-guess", dest='guess',
+            action='store_false', default=True,
+            help="Don't guess format based on file suffix.")
+
+    return oparser
+
 
 def main():
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], "", ["output=","ns=","input=","stdin","help","input-format="])
-    except getopt.GetoptError, e:
-        # print help information and exit:
-        print e
-        usage()
-        sys.exit(2)
+    oparser = make_option_parser()
+    opts, args = oparser.parse_args()
+    if len(args) < 1:
+        oparser.print_usage()
+        oparser.exit()
 
-    factGraphs = []
-    factFormat = 'xml'
-    useRuleFacts = False
-    nsBinds = {
-        'rdf' : RDF.RDFNS,
-        'rdfs': RDFS.RDFSNS,
-        'owl' : "http://www.w3.org/2002/07/owl#",       
-        'dc'  : "http://purl.org/dc/elements/1.1/",
-        'foaf': "http://xmlns.com/foaf/0.1/",
-        'wot' : "http://xmlns.com/wot/0.1/"        
-    }
-    outMode = 'n3'
-    stdIn = False
-    if not opts:
-        usage()
-        sys.exit()        
-    for o, a in opts:
-        if o == '--input-format':
-            factFormat = a
-        elif o == '--stdin':
-            stdIn = True
-        elif o == '--output':
-            outMode = a
-        elif o == '--ns':            
-            pref,nsUri = a.split('=')
-            nsBinds[pref]=nsUri
-        elif o == "--input":
-            factGraphs = a.split(',')
-        elif o == "--help":
-            usage()
-            sys.exit()
-        
-    store = plugin.get(RDFLIB_STORE,Store)()        
-    store.open(RDFLIB_CONNECTION)
-    namespace_manager = NamespaceManager(Graph())
-    for prefix,uri in nsBinds.items():
-        namespace_manager.bind(prefix, uri, override=False)    
-    factGraph = Graph(store) 
-    factGraph.namespace_manager = namespace_manager
-    if factGraphs:
-        for fileN in factGraphs:
-            factGraph.parse(fileN,format=factFormat)
-    if stdIn:
-        factGraph.parse(sys.stdin,format=factFormat)
-    print factGraph.serialize(destination=None, format=outMode, base=None)
-    store.rollback()
+    ns_bindings = dict(NS_BINDINGS)
+    if opts.ns:
+        for ns_kw in opts.ns:
+            pfx, uri = ns_kw.split('=')
+            ns_bindings[pfx] = uri
+
+    print read_and_serialize(args,
+            opts.input_format, opts.output_format, opts.guess,
+            ns_bindings)
+
 
 if __name__ == "__main__":
     main()
+
