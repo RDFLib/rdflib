@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 """
-RDFPipe is a commandline tool for parsing RDF in different formats from files
-(or stdin) and serializing the resulting graph in a chosen format.
+A commandline tool for parsing RDF in different formats and serializing the
+resulting graph to a chosen format.
 """
 
+import rdflib
 from rdflib import plugin
 from rdflib.store import Store
 from rdflib.graph import Graph
@@ -18,8 +19,8 @@ import sys
 from optparse import OptionParser
 
 
-RDFLIB_CONNECTION = ''
-RDFLIB_STORE = 'IOMemory'
+STORE_CONNECTION = ''
+STORE_TYPE = 'IOMemory'
 
 DEFAULT_INPUT_FORMAT = 'xml'
 DEFAULT_OUTPUT_FORMAT = 'n3'
@@ -36,9 +37,12 @@ NS_BINDINGS = {
 }
 
 
-def read_and_serialize(input_files, input_format, output_format, guess, ns_bindings):
-    store = plugin.get(RDFLIB_STORE, Store)()
-    store.open(RDFLIB_CONNECTION)
+def parse_and_serialize(input_files, input_format, guess,
+        outfile, output_format, ns_bindings,
+        store_conn=STORE_CONNECTION, store_type=STORE_TYPE):
+
+    store = plugin.get(store_type, Store)()
+    store.open(store_conn)
     graph = Graph(store)
 
     for prefix, uri in ns_bindings.items():
@@ -53,9 +57,8 @@ def read_and_serialize(input_files, input_format, output_format, guess, ns_bindi
         # TODO: get extra kwargs to serializer (by parsing output_format key)?
         graph.parse(fpath, format=use_format)
 
-    out = graph.serialize(destination=None, format=output_format, base=None)
+    graph.serialize(destination=outfile, format=output_format, base=None)
     store.rollback()
-    return out
 
 
 _get_plugin_names = lambda kind: ", ".join(repr(p.name) for p in plugin.plugins(kind=kind))
@@ -65,7 +68,11 @@ def make_option_parser():
     serializer_names = _get_plugin_names(Serializer)
 
     oparser = OptionParser(
-            "%prog [-h] [-i INPUT_FORMAT] [-o OUTPUT_FORMAT] [--ns=PFX=NS ...] [-] [FILE ...]")
+            "%prog [-h] [-i INPUT_FORMAT] [-o OUTPUT_FORMAT] [--ns=PFX=NS ...] [-] [FILE ...]",
+            description=__doc__.strip() + (
+                " Reads file system paths, URLs or from stdin if '-' is supplied."
+                " The result is serialized to stdout."),
+            version="%prog " + "(using rdflib %s)" % rdflib.__version__)
 
     oparser.add_option('-i', '--input-format',
             type=str, #default=DEFAULT_INPUT_FORMAT,
@@ -74,7 +81,8 @@ def make_option_parser():
 
     oparser.add_option('-o', '--output-format',
             type=str, default=DEFAULT_OUTPUT_FORMAT,
-            help="Format of the final serialized RDF graph. One of: %s." % serializer_names,
+            help="Format of the final serialized RDF graph. One of: %s." % serializer_names
+                + " Default is '%default'.",
             metavar="OUTPUT_FORMAT")
 
     oparser.add_option("--ns",
@@ -103,9 +111,8 @@ def main():
             pfx, uri = ns_kw.split('=')
             ns_bindings[pfx] = uri
 
-    print read_and_serialize(args,
-            opts.input_format, opts.output_format, opts.guess,
-            ns_bindings)
+    parse_and_serialize(args, opts.input_format, opts.guess,
+            sys.stdout, opts.output_format, ns_bindings)
 
 
 if __name__ == "__main__":
