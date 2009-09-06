@@ -54,10 +54,11 @@ def parse_and_serialize(input_files, input_format, guess,
             fpath = sys.stdin
         elif not input_format and guess:
             use_format = guess_format(fpath) or DEFAULT_INPUT_FORMAT
-        # TODO: get extra kwargs to serializer (by parsing output_format key)?
         graph.parse(fpath, format=use_format)
 
-    graph.serialize(destination=outfile, format=output_format, base=None)
+    # TODO: get extra kwargs to serializer (by parsing output_format key)?
+    if outfile:
+        graph.serialize(destination=outfile, format=output_format, base=None)
     store.rollback()
 
 
@@ -95,6 +96,10 @@ def make_option_parser():
             action='store_false', default=True,
             help="Don't guess format based on file suffix.")
 
+    oparser.add_option("--no-out",
+            action='store_true', default=False,
+            help="Don't output the resulting graph (useful for checking validity of input).")
+
     return oparser
 
 
@@ -111,8 +116,12 @@ def main():
             pfx, uri = ns_kw.split('=')
             ns_bindings[pfx] = uri
 
+    outfile = sys.stdout
+    if opts.no_out:
+        outfile = None
+
     parse_and_serialize(args, opts.input_format, opts.guess,
-            sys.stdout, opts.output_format, ns_bindings)
+            outfile, opts.output_format, ns_bindings)
 
 
 if __name__ == "__main__":
