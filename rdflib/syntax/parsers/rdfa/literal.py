@@ -135,10 +135,7 @@ def generate_literal(node, graph, subject, state):
         if dt != "":
             datatype = state.get_resource(dt)
 
-    if state.lang != None:
-        lang = state.lang
-    else:
-        lang = ''
+    lang = state.lang
 
     # The simple case: separate @content attribute
     if node.hasAttribute("content"):
