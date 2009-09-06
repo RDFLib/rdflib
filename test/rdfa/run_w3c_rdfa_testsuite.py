@@ -64,6 +64,7 @@ def run_tc(tc):
     ok = verify_ask(sparql, graph, tc.expected)
     return ok, sparql, graph
 
+
 def verify_ask(sparql, graph, expected):
     try:
         result = graph.query(sparql.decode('utf-8'))
@@ -72,12 +73,16 @@ def verify_ask(sparql, graph, expected):
         ok = False
     if ok:
         return ok
-
     # TODO: sparql bugs cause a bunch to fail (at least bnodes and xmlliterals)
     # .. extract N3 from ASK and compare graphs instead:
-    from rdflib.graphutils import IsomorphicGraph
-    iso = lambda g: IsomorphicGraph(store=g.store)
-    are_iso = lambda g1, g2: len(g1) == len(g2) and iso(g1) == iso(g2)
+    from rdflib.graphutils import isomorphic
+    for ask_graph in _sparql_to_graphs(sparql):
+        if isomorphic(graph, ask_graph) == expected:
+            return True
+        #else: print ask_graph.serialize(format='nt')
+    return False
+
+def _sparql_to_graphs(sparql):
     # turn sparql into n3
     # try to turn bnode sparql into bnode n3
     # NOTE: this requires *all* FILTER tests to use isBlank!
@@ -90,10 +95,7 @@ def verify_ask(sparql, graph, expected):
     n3chunks = [re.sub(r'(?s)\s*{(.*)}\s*', r'\1', block)
                 for block in n3.split('UNION')]
     for chunk in n3chunks:
-        ask_graph = Graph().parse(data=chunk, format='n3')
-        if expected == are_iso(graph, ask_graph):
-            return True
-    return False
+        yield Graph().parse(data=chunk, format='n3')
 
 
 CACHE_DIR = os.path.join(os.path.dirname(__file__), "w3c_rdfa_testsuite")
@@ -120,7 +122,7 @@ def all_tests():
         def do_test():
             ok, sparql, graph = run_tc(tc)
             if not ok:
-                n3 = graph.serialize(format='n3')
+                n3 = graph.serialize(format='nt')
                 raise AssertionError(
                         "The SPARQL:\n%(sparql)s\nDid not match:\n%(n3)s"%vars())
         do_test.description = label
