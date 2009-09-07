@@ -1,17 +1,18 @@
 # -*- coding: UTF-8 -*-
 """
-A Describer is a stateful utility to semi-declaratively create RDF statements.
-It has methods for creating literal values, rel and rev resource relations
-(somewhat resembling RDFa).
+A Describer is a stateful utility for creating RDF statements in a
+semi-declarative manner. It has methods for creating literal values, rel and
+rev resource relations (somewhat resembling RDFa).
 
 The `rel` and ``rev`` methods return a context manager which sets the current
 about to the referenced resource for the context scope (for use with the
 ``with`` statement).
 
-Full example::
+Full example in the ``to_rdf`` method below::
 
     >>> import datetime
-    >>> from rdflib import Graph, Namespace, RDFS
+    >>> from rdflib.graph import Graph
+    >>> from rdflib.namespace import Namespace, RDFS
     >>>
     >>> ORG_URI = "http://example.org/"
     >>>
@@ -163,9 +164,8 @@ class Describer(object):
 
             >>> d = Describer(about="/", base="http://example.org/")
             >>> _ctxt = d.rel(RDFS.seeAlso, "/about")
-            >>> (URIRef('http://example.org/'), RDFS.seeAlso,
-            ...         URIRef('http://example.org/about')) in d.graph
-            True
+            >>> d.graph.value(URIRef('http://example.org/'), RDFS.seeAlso)
+            rdflib.term.URIRef('http://example.org/about')
 
             >>> with d.rel(RDFS.seeAlso, "/more"):
             ...     d.value(RDFS.label, "More")
