@@ -1,0 +1,31 @@
+# Example: miscellaneous odd expressions
+# Should: output "()", not "rdf:nil" (among other things..)
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ex: <http://example.org/ns#> .
+
+
+<http://example.org/stranger_kinds> a ex:Example;
+    ex:abstract "true"^^xsd:boolean; # parser can't read literal booleans
+    ex:foo "bar"^^<http://example.net/other#baz>;
+    ex:list1 (1 2.0 3.4);
+    ex:list1 (5 6.9 7.8);
+    ex:list2 (
+            <http://example.org/1>
+            <http://example.org/2>
+            ex:three
+        );
+    ex:list3 (
+            [ rdfs:label "0" ]
+            [ rdfs:label "1"; rdfs:comment "1" ]
+            [ rdfs:label "2"; rdfs:comment "2" ]
+        );
+    ex:list4 ();
+    ex:list5 rdf:nil .
+
+_:a1 rdfs:seeAlso _:a2 .
+_:a2 rdfs:seeAlso _:a1 .
+
+ex:Widget = ex:Gadget .
+

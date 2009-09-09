@@ -1,0 +1,34 @@
+# Example: an ontology
+# SHOULD:
+#   - show repeated mixed uri and bnode objects
+#   - use prefixes as objects
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix : <http://example.org/ns/publ#> .
+
+
+: a owl:Ontology;
+    owl:imports dct:, foaf: .
+
+:Issue a owl:Class;
+    rdfs:label "Issue"@en, "Utgåva"@sv;
+    rdfs:comment "A published issue."@en;
+    rdfs:subClassOf foaf:Document,
+        [ a owl:Restriction;
+            owl:onProperty dct:title;
+            owl:allValuesFrom rdfs:Literal;
+            owl:minCardinality 1
+        ],
+        [ a owl:Restriction;
+            owl:onProperty dct:issued;
+            owl:cardinality 1;
+        ],
+        [ a owl:Restriction;
+            owl:onProperty dct:publisher;
+            owl:allValuesFrom foaf:Agent;
+            owl:maxCardinality 1;
+        ];
+    rdfs:isDefinedBy : .
+

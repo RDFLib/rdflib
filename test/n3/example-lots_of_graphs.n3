@@ -1,0 +1,26 @@
+# Example: lots of graphs
+@prefix : <http://example.org/ns#> .
+
+{
+    <http://example.org/thing> :label "thing";
+        :comment "a thing";
+        :page [ a :Document ];
+        :items (1 2 3) .
+} a :Graph .
+
+{ :a = :b . } => { :b = :a . } .
+
+[] = { :C = :D . } .
+[] = { [] = { :E = :F . } . } .
+:named1 = { :named2 = { :G = :H . } . } .
+
+:named3 = {
+    { :a = :b . } => { :b = :a . } .
+} .
+
+{ :ISSUE :label "graphs not as subjects not serialized" . } .
+
+{
+    { :ISSUE :label "sub graphs not as subjects not serialized" . } .
+}.
+

@@ -12,16 +12,15 @@ import threading
 from urlparse import urlparse, urljoin, urldefrag
 from string import ascii_letters, rsplit
 from random import choice
-from datetime import date,time,datetime
+from datetime import date, time, datetime
 from time import strptime
 
 # try:
 #     from hashlib import md5
 # except ImportError:
-#     from md5 import md5    
+#     from md5 import md5
 
 # from sys import version_info
-
 # if version_info[0:2] > (2, 2):
 #     from unicodedata import normalize
 # else:
@@ -258,7 +257,7 @@ class Literal(Identifier):
     True
     >>> Literal(1) < 2.0
     True
-    >>> Literal(1) < object  
+    >>> Literal(1) < object
     True
     >>> lit2006 < "2007"
     True
@@ -307,13 +306,11 @@ class Literal(Identifier):
 
         py = self.toPython()
         if isinstance(py, Literal):
-            s = super(Literal, self).__add__(val)            
+            s = super(Literal, self).__add__(val)
             return Literal(s, self.language, self.datatype)
         else:
-            return py + val 
+            return py + val
 
-
-    
     def __lt__(self, other):
         """
         >>> from rdflib.namespace import _XSD_NS
@@ -375,12 +372,12 @@ class Literal(Identifier):
         """
         Overriden to ensure property result for comparisons with None via !=.
         Routes all other such != and <> comparisons to __eq__
-        
+
         >>> Literal('') != None
         True
         >>> Literal('2') <> Literal('2')
         False
-         
+
         """
         return not self.__eq__(other)
 
@@ -390,7 +387,7 @@ class Literal(Identifier):
         >>> a = {Literal('1',datatype=_XSD_NS.integer):'one'}
         >>> Literal('1',datatype=_XSD_NS.double) in a
         False
-        
+
         [[
         Called for the key object for dictionary operations, 
         and by the built-in function hash(). Should return 
@@ -403,7 +400,6 @@ class Literal(Identifier):
         comparison of objects. 
         ]] -- 3.4.1 Basic customization (Python)
 
-    
         [[
         Two literals are equal if and only if all of the following hold:
         * The strings of the two lexical forms compare equal, character by character.
@@ -412,12 +408,12 @@ class Literal(Identifier):
         * Either both or neither have datatype URIs.
         * The two datatype URIs, if any, compare equal, character by character.
         ]] -- 6.5.1 Literal Equality (RDF: Concepts and Abstract Syntax)
-        
+
         """
-        return hash(str(self)) ^ hash(self.language) ^ hash(self.datatype) 
+        return hash(str(self)) ^ hash(self.language) ^ hash(self.datatype)
 
     def __eq__(self, other):
-        """        
+        """
         >>> f = URIRef("foo")
         >>> f is None or f == ''
         False
@@ -460,36 +456,132 @@ class Literal(Identifier):
             return self._cmp_value == other
 
     def n3(self):
-        language = self.language
+        r'''
+        Returns a representation in the N3 format.
+
+        Examples::
+
+            >>> Literal("foo").n3()
+            u'"foo"'
+
+        Strings with newlines or triple-quotes::
+
+            >>> Literal("foo\nbar").n3()
+            u'"""foo\nbar"""'
+
+            >>> Literal("''\'").n3()
+            u'"\'\'\'"'
+
+            >>> Literal('"""').n3()
+            u'"\\"\\"\\""'
+
+        Language::
+
+            >>> Literal("hello", lang="en").n3()
+            u'"hello"@en'
+
+        Datatypes::
+
+            >>> Literal(1).n3()
+            u'"1"^^<http://www.w3.org/2001/XMLSchema#integer>'
+
+            >>> Literal(1, lang="en").n3()
+            u'"1"^^<http://www.w3.org/2001/XMLSchema#integer>'
+
+            >>> Literal(1.0).n3()
+            u'"1.0"^^<http://www.w3.org/2001/XMLSchema#float>'
+
+        Datatype and language isn't allowed (datatype takes precedence)::
+
+            >>> Literal(True).n3()
+            u'"true"^^<http://www.w3.org/2001/XMLSchema#boolean>'
+
+        Custom datatype::
+
+            >>> footype = URIRef("http://example.org/ns#foo")
+            >>> Literal("1", datatype=footype).n3()
+            u'"1"^^<http://example.org/ns#foo>'
+
+        '''
+        return self._literal_n3()
+
+    def _literal_n3(self, use_plain=False, qname_callback=None):
+        '''
+        Using plain literal (shorthand) output::
+
+            >>> Literal(1)._literal_n3(use_plain=True)
+            u'1'
+
+            >>> Literal(1.0)._literal_n3(use_plain=True)
+            u'1.0'
+
+            >>> from rdflib.namespace import _XSD_NS
+            >>> Literal("foo", datatype=_XSD_NS.string)._literal_n3(
+            ...         use_plain=True)
+            u'"foo"^^<http://www.w3.org/2001/XMLSchema#string>'
+
+            >>> Literal(True)._literal_n3(use_plain=True)
+            u'"true"^^<http://www.w3.org/2001/XMLSchema#boolean>'
+
+        Using callback for datatype QNames::
+
+            >>> Literal(1)._literal_n3(
+            ...         qname_callback=lambda uri: u"xsd:integer")
+            u'"1"^^xsd:integer'
+
+        '''
+        if use_plain and self.datatype in _PLAIN_LITERAL_TYPES:
+            try:
+                self.toPython() # check validity
+                return '%s' % self
+            except ValueError:
+                pass # if it's in, we let it out?
+
+        encoded = self._quote_encode()
+
         datatype = self.datatype
-        # unfortunately this doesn't work: a newline gets encoded as \\n, which is ok in sourcecode, but we want \n
-        #encoded = self.encode('unicode-escape').replace('\\', '\\\\').replace('"','\\"')
+        quoted_dt = None
+        if datatype:
+            if qname_callback:
+                quoted_dt = qname_callback(datatype)
+            if not quoted_dt:
+                quoted_dt = "<%s>" % datatype
+
+        language = self.language
+        if language:
+            if datatype:
+                # TODO: this isn't valid RDF (it's datatype XOR language)
+                return '%s@%s^^%s' % (encoded, language, quoted_dt)
+            return '%s@%s' % (encoded, language)
+        elif datatype:
+            return '%s^^%s' % (encoded, quoted_dt)
+        else:
+            return '%s' % encoded
+
+    def _quote_encode(self):
+        # This simpler encoding doesn't work; a newline gets encoded as "\\n",
+        # which is ok in sourcecode, but we want "\n".
+        #encoded = self.encode('unicode-escape').replace(
+        #        '\\', '\\\\').replace('"','\\"')
         #encoded = self.replace.replace('\\', '\\\\').replace('"','\\"')
 
-        # TODO: We could also chose quotes based on the quotes appearing in the string, i.e. '"' and "'" ...
+        # NOTE: Could in theory chose quotes based on quotes appearing in the
+        # string, i.e. '"' and "'", but N3/turtle doesn't allow "'"(?).
 
         # which is nicer?
-        #if self.find("\"")!=-1 or self.find("'")!=-1 or self.find("\n")!=-1:
-        if self.find("\n")!=-1:
+        # if self.find("\"")!=-1 or self.find("'")!=-1 or self.find("\n")!=-1:
+        if "\n" in self:
             # Triple quote this string.
-            encoded=self.replace('\\', '\\\\')
-            if self.find('"""')!=-1: 
+            encoded = self.replace('\\', '\\\\')
+            if '"""' in self:
                 # is this ok?
-                encoded=encoded.replace('"""','\\"""')
-            if encoded.endswith('"'): encoded=encoded[:-1]+"\\\""
-            encoded='"""%s"""'%encoded
-        else: 
-            encoded='"%s"'%self.replace('\n','\\n').replace('\\', '\\\\').replace('"','\\"')
-        if language:
-            if datatype:    
-                return '%s@%s^^<%s>' % (encoded, language, datatype)
-            else:
-                return '%s@%s' % (encoded, language)
+                encoded = encoded.replace('"""','\\"""')
+            if encoded.endswith('"'):
+                encoded = encoded[:-1] + "\\\""
+            return '"""%s"""' % encoded
         else:
-            if datatype:
-                return '%s^^<%s>' % (encoded, datatype)
-            else:
-                return '%s' % encoded
+            return '"%s"' % self.replace('\n','\\n').replace('\\', '\\\\'
+                            ).replace('"', '\\"')
 
     def __str__(self):
         return self.encode("unicode-escape")
@@ -520,7 +612,7 @@ class Literal(Identifier):
         except Exception, e:
             _logger.warning("could not convert %s to a Python datatype" % repr(self))
             rt = self
-                
+
         if rt is self:
             if self.language is None and self.datatype is None:
                 return unicode(rt)
@@ -533,6 +625,17 @@ class Literal(Identifier):
         d.update("L")
         return d.hexdigest()
 
+
+
+_XSD_PFX = 'http://www.w3.org/2001/XMLSchema#'
+
+_PLAIN_LITERAL_TYPES = (
+    URIRef(_XSD_PFX+'integer'),
+    URIRef(_XSD_PFX+'float'),
+    #_XSD_NS.decimal, _XSD_NS.double, # "subsumed" by float...
+    # TODO: n3 parser doesn't yet support boolean!
+    #URIRef(_XSD_PFX+'boolean'),
+)
 
 
 #Casts a python datatype to a tuple of the lexical value and a datatype URI (or None)
@@ -551,13 +654,13 @@ def _castPythonToLiteral(obj):
 # datetime instances are also instances of date... so we need to order these.
 _PythonToXSD = [
     (basestring, (None,None)),
-    (float     , (None,URIRef('http://www.w3.org/2001/XMLSchema#float'))),
-    (bool      , (None,URIRef('http://www.w3.org/2001/XMLSchema#boolean'))),
-    (int       , (None,URIRef('http://www.w3.org/2001/XMLSchema#integer'))),
-    (long      , (None,URIRef('http://www.w3.org/2001/XMLSchema#long'))),
-    (datetime  , (lambda i:i.isoformat(),URIRef('http://www.w3.org/2001/XMLSchema#dateTime'))),
-    (date      , (lambda i:i.isoformat(),URIRef('http://www.w3.org/2001/XMLSchema#date'))),
-    (time      , (lambda i:i.isoformat(),URIRef('http://www.w3.org/2001/XMLSchema#time'))),
+    (float     , (None,URIRef(_XSD_PFX+'float'))),
+    (bool      , (lambda i:str(i).lower(),URIRef(_XSD_PFX+'boolean'))),
+    (int       , (None,URIRef(_XSD_PFX+'integer'))),
+    (long      , (None,URIRef(_XSD_PFX+'long'))),
+    (datetime  , (lambda i:i.isoformat(),URIRef(_XSD_PFX+'dateTime'))),
+    (date      , (lambda i:i.isoformat(),URIRef(_XSD_PFX+'date'))),
+    (time      , (lambda i:i.isoformat(),URIRef(_XSD_PFX+'time'))),
 ]
 
 def _strToTime(v) :
@@ -589,32 +692,32 @@ def _strToDateTime(v) :
     return datetime(tstr.tm_year,tstr.tm_mon,tstr.tm_mday,tstr.tm_hour,tstr.tm_min,tstr.tm_sec)
 
 XSDToPython = {
-    URIRef('http://www.w3.org/2001/XMLSchema#time')               : _strToTime,
-    URIRef('http://www.w3.org/2001/XMLSchema#date')               : _strToDate,
-    URIRef('http://www.w3.org/2001/XMLSchema#dateTime')           : _strToDateTime,
-    URIRef('http://www.w3.org/2001/XMLSchema#string')             : None,
-    URIRef('http://www.w3.org/2001/XMLSchema#normalizedString')   : None,
-    URIRef('http://www.w3.org/2001/XMLSchema#token')              : None,
-    URIRef('http://www.w3.org/2001/XMLSchema#language')           : None,
-    URIRef('http://www.w3.org/2001/XMLSchema#boolean')            : lambda i:i.lower() in ['1','true'],
-    URIRef('http://www.w3.org/2001/XMLSchema#decimal')            : float,
-    URIRef('http://www.w3.org/2001/XMLSchema#integer')            : long,
-    URIRef('http://www.w3.org/2001/XMLSchema#nonPositiveInteger') : int,
-    URIRef('http://www.w3.org/2001/XMLSchema#long')               : long,
-    URIRef('http://www.w3.org/2001/XMLSchema#nonNegativeInteger') : int,
-    URIRef('http://www.w3.org/2001/XMLSchema#negativeInteger')    : int,
-    URIRef('http://www.w3.org/2001/XMLSchema#int')                : long,
-    URIRef('http://www.w3.org/2001/XMLSchema#unsignedLong')       : long,
-    URIRef('http://www.w3.org/2001/XMLSchema#positiveInteger')    : int,
-    URIRef('http://www.w3.org/2001/XMLSchema#short')              : int,
-    URIRef('http://www.w3.org/2001/XMLSchema#unsignedInt')        : long,
-    URIRef('http://www.w3.org/2001/XMLSchema#byte')               : int,
-    URIRef('http://www.w3.org/2001/XMLSchema#unsignedShort')      : int,
-    URIRef('http://www.w3.org/2001/XMLSchema#unsignedByte')       : int,
-    URIRef('http://www.w3.org/2001/XMLSchema#float')              : float,
-    URIRef('http://www.w3.org/2001/XMLSchema#double')             : float,
-    URIRef('http://www.w3.org/2001/XMLSchema#base64Binary')       : base64.decodestring,
-    URIRef('http://www.w3.org/2001/XMLSchema#anyURI')             : None,
+    URIRef(_XSD_PFX+'time')               : _strToTime,
+    URIRef(_XSD_PFX+'date')               : _strToDate,
+    URIRef(_XSD_PFX+'dateTime')           : _strToDateTime,
+    URIRef(_XSD_PFX+'string')             : None,
+    URIRef(_XSD_PFX+'normalizedString')   : None,
+    URIRef(_XSD_PFX+'token')              : None,
+    URIRef(_XSD_PFX+'language')           : None,
+    URIRef(_XSD_PFX+'boolean')            : lambda i:i.lower() in ['1','true'],
+    URIRef(_XSD_PFX+'decimal')            : float,
+    URIRef(_XSD_PFX+'integer')            : long,
+    URIRef(_XSD_PFX+'nonPositiveInteger') : int,
+    URIRef(_XSD_PFX+'long')               : long,
+    URIRef(_XSD_PFX+'nonNegativeInteger') : int,
+    URIRef(_XSD_PFX+'negativeInteger')    : int,
+    URIRef(_XSD_PFX+'int')                : long,
+    URIRef(_XSD_PFX+'unsignedLong')       : long,
+    URIRef(_XSD_PFX+'positiveInteger')    : int,
+    URIRef(_XSD_PFX+'short')              : int,
+    URIRef(_XSD_PFX+'unsignedInt')        : long,
+    URIRef(_XSD_PFX+'byte')               : int,
+    URIRef(_XSD_PFX+'unsignedShort')      : int,
+    URIRef(_XSD_PFX+'unsignedByte')       : int,
+    URIRef(_XSD_PFX+'float')              : float,
+    URIRef(_XSD_PFX+'double')             : float,
+    URIRef(_XSD_PFX+'base64Binary')       : base64.decodestring,
+    URIRef(_XSD_PFX+'anyURI')             : None,
 }
 
 _toPythonMapping = {}
@@ -661,11 +764,8 @@ class Statement(Node, tuple):
         return (Statement, (self[0], self[1]))
 
 
-def test():
+if __name__ == '__main__':
     import doctest
     doctest.testmod()
-
-if __name__ == '__main__':
-    test()
 
 

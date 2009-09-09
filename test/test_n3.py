@@ -1,9 +1,9 @@
-from rdflib.term import Literal
+from rdflib.term import Literal, URIRef
 from rdflib.namespace import Namespace
 
 __test__ = False
 
-input = """
+test_data = """
 #  Definitions of terms describing the n3 model
 #
 
@@ -77,22 +77,25 @@ class N3TestCase(unittest.TestCase):
         Test that the n3 parser throws an Exception when using the identifier
         ":foo.txt", as this is not valid as per the rdf spec.
         """
-        input = """
+        test_data = """
 @prefix : <http://www.example.com/> .
 
 :foo.txt :p :q .
 """
         g = Graph()
-        self.assertRaises(Exception, g.parse, data=input, format="n3")
-
+        # TODO: determine what's correct here, either:
+        # seeAlso <http://www.w3.org/TeamSubmission/turtle/#name>
+        self.assertRaises(Exception, g.parse, data=test_data, format="n3")
+        # or.. (challenging comment below):
         # This isn't the expected result based on my reading of n3 bits
+        #g.parse(data=test_data, format="n3")
         #s = g.value(predicate=URIRef("http://www.example.com/p"), object=URIRef("http://www.example.com/q"))
         #self.assertEquals(s, URIRef("http://www.example.org/foo.txt"))
 
 
     def testModel(self):
         g = ConjunctiveGraph()
-        g.parse(data=input, format="n3")
+        g.parse(data=test_data, format="n3")
         i = 0
         for s, p, o in g:
             if isinstance(s, Graph):

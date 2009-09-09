@@ -1,0 +1,6 @@
+# Example: just a class
+# SHOULD: keep "a"; not define "rdf:" prefix
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+rdfs:Resource a rdfs:Class .
+
