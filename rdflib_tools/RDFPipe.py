@@ -17,6 +17,7 @@ from rdflib_tools.pathutils import guess_format
 
 import sys
 from optparse import OptionParser
+import logging
 
 
 STORE_CONNECTION = ''
@@ -86,19 +87,23 @@ def make_option_parser():
                 + " Default is '%default'.",
             metavar="OUTPUT_FORMAT")
 
-    oparser.add_option("--ns",
+    oparser.add_option('--ns',
             action="append", type=str,
             help="Register a namespace binding (QName prefix to a base URI). "
                     "This can be used more than once.",
             metavar="PREFIX=NAMESPACE")
 
-    oparser.add_option("--no-guess", dest='guess',
+    oparser.add_option('--no-guess', dest='guess',
             action='store_false', default=True,
             help="Don't guess format based on file suffix.")
 
-    oparser.add_option("--no-out",
+    oparser.add_option('--no-out',
             action='store_true', default=False,
             help="Don't output the resulting graph (useful for checking validity of input).")
+
+    oparser.add_option('-w', '--warn',
+            action='store_true', default=False,
+            help="Output warnings to stderr (by default only critical errors).")
 
     return oparser
 
@@ -109,6 +114,12 @@ def main():
     if len(args) < 1:
         oparser.print_usage()
         oparser.exit()
+
+    if opts.warn:
+        loglevel = logging.WARNING
+    else:
+        loglevel = logging.CRITICAL
+    logging.basicConfig(level=loglevel)
 
     ns_bindings = dict(NS_BINDINGS)
     if opts.ns:
