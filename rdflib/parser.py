@@ -37,17 +37,17 @@ class Parser(object):
         pass
 
 
-class InputSource(xmlreader.InputSource):
+class InputSource(xmlreader.InputSource, object):
     """
     TODO:
     """
 
-    def __init__(self, system_id = None):
+    def __init__(self, system_id=None):
         xmlreader.InputSource.__init__(self, system_id=system_id)
         self.content_type = None
-        
 
-class StringInputSource(InputSource, object):
+
+class StringInputSource(InputSource):
     """
     TODO:
     """
@@ -67,7 +67,7 @@ headers = {
     }
 
 
-class URLInputSource(InputSource, object):
+class URLInputSource(InputSource):
     """
     TODO:
     """
@@ -91,7 +91,7 @@ class URLInputSource(InputSource, object):
         return self.url
 
 
-class FileInputSource(InputSource, object):
+class FileInputSource(InputSource):
     """
     TODO:
     """
@@ -108,7 +108,7 @@ class FileInputSource(InputSource, object):
         return `self.file`
 
 
-def create_input_source(source=None, publicID=None, 
+def create_input_source(source=None, publicID=None,
                         location=None, file=None, data=None):
     """
     Return an appropriate InputSource instance for the given
@@ -162,5 +162,5 @@ def create_input_source(source=None, publicID=None,
         if id is None:
             input_source.setPublicId("")
         return input_source
-        
+
 
