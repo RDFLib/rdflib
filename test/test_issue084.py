@@ -39,6 +39,8 @@ def test_b():
 
 def test_c():
     g = Graph()
+    assert isinstance(rdf_reader.read(1), str)
+    rdf_reader.seek(0)
     g.parse(source=rdf_reader, format='n3')
     v = g.value(subject=URIRef("http://www.test.org/#CI"), predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"))
     assert v==u"C\u00f4te d'Ivoire"
