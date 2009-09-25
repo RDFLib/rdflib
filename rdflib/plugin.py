@@ -119,6 +119,7 @@ register('Sleepycat', Store, 'rdflib.store.Sleepycat', 'Sleepycat')
 register('BDBOptimized', Store, 'rdflib.store.BDBOptimized', 'BDBOptimized')
 register('MySQL', Store, 'rdflib.store.MySQL', 'MySQL')
 register('PostgreSQL', Store, 'rdflib.store.MySQL', 'PostgreSQL')
+register('SQLite', Store, 'rdflib.store.SQLite', 'SQLite')
 
 register('xml', Serializer, 'rdflib.syntax.serializers.XMLSerializer',
          'XMLSerializer')
