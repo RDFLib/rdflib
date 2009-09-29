@@ -1,115 +1,122 @@
-from __future__ import generators
+"""Instantiating Graphs with default store (IOMemory) and default identifier 
+(a BNode):
 
-__doc__="""
-Instantiating Graphs with default store (IOMemory) and default identifier (a BNode):
-
-    >>> g=Graph()
+    >>> g = Graph()
     >>> g.store.__class__
     <class 'rdflib.store.IOMemory.IOMemory'>
     >>> g.identifier.__class__
     <class 'rdflib.term.BNode'>
 
-Instantiating Graphs with a specific kind of store (IOMemory) and a default identifier (a BNode):
+Instantiating Graphs with a specific kind of store (IOMemory) and a default 
+identifier (a BNode):
 
 Other store kinds: Sleepycat, MySQL, ZODB, SQLite
 
-    >>> store = plugin.get('IOMemory',Store)()
+    >>> store = plugin.get('IOMemory', Store)()
     >>> store.__class__.__name__
     'IOMemory'
     >>> graph = Graph(store)
     >>> graph.store.__class__
     <class 'rdflib.store.IOMemory.IOMemory'>
 
-Instantiating Graphs with Sleepycat store and an identifier - <http://rdflib.net>:
+Instantiating Graphs with Sleepycat store and an identifier - 
+<http://rdflib.net>:
 
-    >>> g=Graph('IOMemory',URIRef("http://rdflib.net"))
+    >>> g = Graph('IOMemory', URIRef("http://rdflib.net"))
     >>> g.identifier
     rdflib.term.URIRef('http://rdflib.net')
     >>> str(g)
     "<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory']."
 
-Creating a ConjunctiveGraph - The top level container for all named Graphs in a 'database':
+Creating a ConjunctiveGraph - The top level container for all named Graphs 
+in a 'database':
 
-    >>> g=ConjunctiveGraph()
+    >>> g = ConjunctiveGraph()
     >>> str(g.default_context)
     "[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory']]."
 
-Adding / removing reified triples to Graph and iterating over it directly or via triple pattern:
+Adding / removing reified triples to Graph and iterating over it directly or 
+via triple pattern:
     
-    >>> g=Graph('IOMemory')
+    >>> g = Graph('IOMemory')
     >>> statementId = BNode()
     >>> print len(g)
     0
-    >>> g.add((statementId,RDF.type,RDF.Statement))
-    >>> g.add((statementId,RDF.subject,URIRef('http://rdflib.net/store/ConjunctiveGraph')))
-    >>> g.add((statementId,RDF.predicate,RDFS.label))
-    >>> g.add((statementId,RDF.object,Literal("Conjunctive Graph")))
+    >>> g.add((statementId, RDF.type, RDF.Statement))
+    >>> g.add((statementId, RDF.subject, URIRef('http://rdflib.net/store/ConjunctiveGraph')))
+    >>> g.add((statementId, RDF.predicate, RDFS.label))
+    >>> g.add((statementId, RDF.object, Literal("Conjunctive Graph")))
     >>> print len(g)
     4
-    >>> for s,p,o in g:  print type(s)
+    >>> for s, p, o in g:
+    ...     print type(s)
     ...
     <class 'rdflib.term.BNode'>
     <class 'rdflib.term.BNode'>
     <class 'rdflib.term.BNode'>
     <class 'rdflib.term.BNode'>
     
-    >>> for s,p,o in g.triples((None,RDF.object,None)):  print o
+    >>> for s, p, o in g.triples((None, RDF.object, None)):
+    ...     print o
     ...
     Conjunctive Graph
-    >>> g.remove((statementId,RDF.type,RDF.Statement))
+    >>> g.remove((statementId, RDF.type, RDF.Statement))
     >>> print len(g)
     3
 
-None terms in calls to triple can be thought of as 'open variables'  
+None terms in calls to triple can be thought of as "open variables".
 
-Graph Aggregation - ConjunctiveGraphs and ReadOnlyGraphAggregate within the same store:
+Graph Aggregation - ConjunctiveGraphs and ReadOnlyGraphAggregate within 
+the same store:
     
-    >>> store = plugin.get('IOMemory',Store)()
+    >>> store = plugin.get('IOMemory', Store)()
     >>> g1 = Graph(store)
     >>> g2 = Graph(store)
     >>> g3 = Graph(store)
     >>> stmt1 = BNode()
     >>> stmt2 = BNode()
     >>> stmt3 = BNode()
-    >>> g1.add((stmt1,RDF.type,RDF.Statement))
-    >>> g1.add((stmt1,RDF.subject,URIRef('http://rdflib.net/store/ConjunctiveGraph')))
-    >>> g1.add((stmt1,RDF.predicate,RDFS.label))
-    >>> g1.add((stmt1,RDF.object,Literal("Conjunctive Graph")))
-    >>> g2.add((stmt2,RDF.type,RDF.Statement))
-    >>> g2.add((stmt2,RDF.subject,URIRef('http://rdflib.net/store/ConjunctiveGraph')))
-    >>> g2.add((stmt2,RDF.predicate,RDF.type))
-    >>> g2.add((stmt2,RDF.object,RDFS.Class))
-    >>> g3.add((stmt3,RDF.type,RDF.Statement))
-    >>> g3.add((stmt3,RDF.subject,URIRef('http://rdflib.net/store/ConjunctiveGraph')))
-    >>> g3.add((stmt3,RDF.predicate,RDFS.comment))
-    >>> g3.add((stmt3,RDF.object,Literal("The top-level aggregate graph - The sum of all named graphs within a Store")))
-    >>> len(list(ConjunctiveGraph(store).subjects(RDF.type,RDF.Statement)))
+    >>> g1.add((stmt1, RDF.type, RDF.Statement))
+    >>> g1.add((stmt1, RDF.subject, URIRef('http://rdflib.net/store/ConjunctiveGraph')))
+    >>> g1.add((stmt1, RDF.predicate, RDFS.label))
+    >>> g1.add((stmt1, RDF.object, Literal("Conjunctive Graph")))
+    >>> g2.add((stmt2, RDF.type, RDF.Statement))
+    >>> g2.add((stmt2, RDF.subject, URIRef('http://rdflib.net/store/ConjunctiveGraph')))
+    >>> g2.add((stmt2, RDF.predicate, RDF.type))
+    >>> g2.add((stmt2, RDF.object, RDFS.Class))
+    >>> g3.add((stmt3, RDF.type, RDF.Statement))
+    >>> g3.add((stmt3, RDF.subject, URIRef('http://rdflib.net/store/ConjunctiveGraph')))
+    >>> g3.add((stmt3, RDF.predicate, RDFS.comment))
+    >>> g3.add((stmt3, RDF.object, Literal("The top-level aggregate graph - The sum of all named graphs within a Store")))
+    >>> len(list(ConjunctiveGraph(store).subjects(RDF.type, RDF.Statement)))
     3
-    >>> len(list(ReadOnlyGraphAggregate([g1,g2]).subjects(RDF.type,RDF.Statement)))
+    >>> len(list(ReadOnlyGraphAggregate([g1,g2]).subjects(RDF.type, RDF.Statement)))
     2
 
-ConjunctiveGraphs have a 'quads' method which returns quads instead of triples, where the fourth item
-is the Graph (or subclass thereof) instance in which the triple was asserted:
+ConjunctiveGraphs have a 'quads' method which returns quads instead of 
+triples, where the fourth item is the Graph (or subclass thereof) instance 
+in which the triple was asserted:
     
-    >>> uniqueGraphNames = set([graph.identifier for s,p,o,graph in ConjunctiveGraph(store).quads((None,RDF.predicate,None))])
+    >>> uniqueGraphNames = set([graph.identifier for s, p, o, graph in ConjunctiveGraph(store).quads((None, RDF.predicate, None))])
     >>> len(uniqueGraphNames)
     3
-    >>> unionGraph = ReadOnlyGraphAggregate([g1,g2])
-    >>> uniqueGraphNames = set([graph.identifier for s,p,o,graph in unionGraph.quads((None,RDF.predicate,None))])
+    >>> unionGraph = ReadOnlyGraphAggregate([g1, g2])
+    >>> uniqueGraphNames = set([graph.identifier for s, p, o, graph in unionGraph.quads((None, RDF.predicate, None))])
     >>> len(uniqueGraphNames)
     2
      
 Parsing N3 from StringIO
 
-    >>> g2=Graph()
-    >>> src = \"\"\"
+    >>> g2 = Graph()
+    >>> src = '''
     ... @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
     ... @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
     ... [ a rdf:Statement ;
     ...   rdf:subject <http://rdflib.net/store#ConjunctiveGraph>;
     ...   rdf:predicate rdfs:label;
-    ...   rdf:object "Conjunctive Graph" ] \"\"\"
-    >>> g2=g2.parse(StringIO(src),format='n3')
+    ...   rdf:object "Conjunctive Graph" ]
+    ... '''
+    >>> g2 = g2.parse(StringIO(src), format='n3')
     >>> print len(g2)
     4
 
@@ -125,26 +132,33 @@ SPARQL Queries
 
     >>> print len(g)
     3
-    >>> q = \'\'\'
+    >>> q = '''
     ... PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?pred WHERE { ?stmt rdf:predicate ?pred. }
-    ... \'\'\'   
-    >>> for pred in g.query(q):  print pred
+    ... '''
+    >>> for pred in g.query(q):
+    ...     print pred
+    ...
     (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),)
 
 SPARQL Queries with namespace bindings as argument
 
     >>> nsMap = {u"rdf":RDF.RDFNS}
-    >>> for pred in g.query("SELECT ?pred WHERE { ?stmt rdf:predicate ?pred. }", initNs=nsMap): print pred
+    >>> for pred in g.query("SELECT ?pred WHERE { ?stmt rdf:predicate ?pred. }", initNs=nsMap):
+    ...     print pred
+    ...
     (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),)
 
 Parameterized SPARQL Queries
 
     >>> from rdflib.term import Variable
     >>> top = { Variable("?term") : RDF.predicate }
-    >>> for pred in g.query("SELECT ?pred WHERE { ?stmt ?term ?pred. }", initBindings=top): print pred
+    >>> for pred in g.query("SELECT ?pred WHERE { ?stmt ?term ?pred. }", initBindings=top): 
+    ...     print pred
+    ...
     (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),)
-
 """
+
+from __future__ import generators
 
 import logging
 _logger = logging.getLogger(__name__)
