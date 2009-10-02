@@ -3,11 +3,14 @@ from rdflib.term import BNode
 from rdflib.term import Literal
 from pprint import pprint
 try:
-    from pysqlite2 import dbapi2
+    from sqlite3 import dbapi2
 except ImportError:
-    import warnings
-    warnings.warn("pysqlite2 is not installed")
-    __test__=False
+    try:
+        from pysqlite2 import dbapi2
+    except ImportError:
+        import warnings
+        warnings.warn("pysqlite2 is not installed")
+        __test__=False
 import re,os
 from rdflib.term_utils import *
 from rdflib.graph import QuotedGraph
