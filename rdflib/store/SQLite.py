@@ -52,76 +52,89 @@ class SQLite(AbstractSQLStore):
         if create:
             db = dbapi2.connect(db_path)
             c = db.cursor()
-            c.execute(CREATE_ASSERTED_STATEMENTS_TABLE%(self._internedId))
-            c.execute(CREATE_ASSERTED_TYPE_STATEMENTS_TABLE%(self._internedId))
-            c.execute(CREATE_QUOTED_STATEMENTS_TABLE%(self._internedId))
-            c.execute(CREATE_NS_BINDS_TABLE%(self._internedId))
-            c.execute(CREATE_LITERAL_STATEMENTS_TABLE%(self._internedId))
-            for tblName,indices in [
-                (
-                    "%s_asserted_statements",
-                    [
-                        ("%s_A_termComb_index",('termComb',)),
-                        ("%s_A_s_index",('subject',)),
-                        ("%s_A_p_index",('predicate',)),
-                        ("%s_A_o_index",('object',)),
-                        ("%s_A_c_index",('context',)),
-                    ],
-                ),
-                (
-                    "%s_type_statements",
-                    [
-                        ("%s_T_termComb_index",('termComb',)),
-                        ("%s_member_index",('member',)),
-                        ("%s_klass_index",('klass',)),
-                        ("%s_c_index",('context',)),
-                    ],
-                ),
-                (
-                    "%s_literal_statements",
-                    [
-                        ("%s_L_termComb_index",('termComb',)),
-                        ("%s_L_s_index",('subject',)),
-                        ("%s_L_p_index",('predicate',)),
-                        ("%s_L_c_index",('context',)),
-                    ],
-                ),
-                (
-                    "%s_quoted_statements",
-                    [
-                        ("%s_Q_termComb_index",('termComb',)),
-                        ("%s_Q_s_index",('subject',)),
-                        ("%s_Q_p_index",('predicate',)),
-                        ("%s_Q_o_index",('object',)),
-                        ("%s_Q_c_index",('context',)),
-                    ],
-                ),
-                (
-                    "%s_namespace_binds",
-                    [
-                        ("%s_uri_index",('uri',)),
-                    ],
-                )]:
-                for indexName,columns in indices:
-                    c.execute("CREATE INDEX %s on %s (%s)"%(indexName%self._internedId,tblName%(self._internedId),','.join(columns)))
-            c.close()
-            db.commit()
-            db.close()
+            # Only create tables if they don't already exist.  If the first
+            # exists, assume they all do.
+            try:
+                c.execute(CREATE_ASSERTED_STATEMENTS_TABLE % self._internedId)
+            except dbapi2.OperationalError, e:
+                # Raise any error aside from existing table.
+                if (str(e) != 'table %s_asserted_statements already exists' %
+                        self._internedId):
+                    raise dbapi2.OperationalError, e
+            else:
+                c.execute(CREATE_ASSERTED_TYPE_STATEMENTS_TABLE % 
+                        self._internedId)
+                c.execute(CREATE_QUOTED_STATEMENTS_TABLE % self._internedId)
+                c.execute(CREATE_NS_BINDS_TABLE % self._internedId)
+                c.execute(CREATE_LITERAL_STATEMENTS_TABLE % self._internedId)
+                for tblName, indices in [
+                    (
+                        "%s_asserted_statements",
+                        [
+                            ("%s_A_termComb_index",('termComb',)),
+                            ("%s_A_s_index",('subject',)),
+                            ("%s_A_p_index",('predicate',)),
+                            ("%s_A_o_index",('object',)),
+                            ("%s_A_c_index",('context',)),
+                        ],
+                    ),
+                    (
+                        "%s_type_statements",
+                        [
+                            ("%s_T_termComb_index",('termComb',)),
+                            ("%s_member_index",('member',)),
+                            ("%s_klass_index",('klass',)),
+                            ("%s_c_index",('context',)),
+                        ],
+                    ),
+                    (
+                        "%s_literal_statements",
+                        [
+                            ("%s_L_termComb_index",('termComb',)),
+                            ("%s_L_s_index",('subject',)),
+                            ("%s_L_p_index",('predicate',)),
+                            ("%s_L_c_index",('context',)),
+                        ],
+                    ),
+                    (
+                        "%s_quoted_statements",
+                        [
+                            ("%s_Q_termComb_index",('termComb',)),
+                            ("%s_Q_s_index",('subject',)),
+                            ("%s_Q_p_index",('predicate',)),
+                            ("%s_Q_o_index",('object',)),
+                            ("%s_Q_c_index",('context',)),
+                        ],
+                    ),
+                    (
+                        "%s_namespace_binds",
+                        [
+                            ("%s_uri_index",('uri',)),
+                        ],
+                    )]:
+                    for indexName, columns in indices:
+                        c.execute("CREATE INDEX %s on %s (%s)" % 
+                                (indexName % self._internedId, 
+                                tblName % self._internedId, 
+                                ','.join(columns)))
+                c.close()
+                db.commit()
+                db.close()
 
         self._db = dbapi2.connect(db_path)
         self._db.create_function("regexp", 2, regexp)
 
-        if os.path.exists(db_path):
-            c = self._db.cursor()
-            c.execute("SELECT * FROM sqlite_master WHERE type='table'")
-            tbls = [rt[1] for rt in c.fetchall()]
-            c.close()
-            for tn in [tbl%(self._internedId) for tbl in table_name_prefixes]:
-                if tn not in tbls:
-                    #The database exists, but one of the partitions doesn't exist
-                    return 0
-            #Everything is there (the database and the partitions)
-            return 1
+        #if os.path.exists(db_path):
+        #    c = self._db.cursor()
+        #    c.execute("SELECT * FROM sqlite_master WHERE type='table'")
+        #    tbls = [rt[1] for rt in c.fetchall()]
+        #    c.close()
+        #    for tn in [tbl%(self._internedId) for tbl in table_name_prefixes]:
+        #        if tn not in tbls:
+        #            #The database exists, but one of the partitions doesn't exist
+        #            return 0
+        #    #Everything is there (the database and the partitions)
+        #    return 1
         #The database doesn't exist - nothing is there
         #return -1
 
