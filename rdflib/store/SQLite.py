@@ -40,17 +40,18 @@ class SQLite(AbstractSQLStore):
     regex_matching = PYTHON_REGEX
     autocommit_default = False
 
-    def open(self, home, create=True):
+    def open(self, db_path, create=True):
         """
         Opens the store specified by the configuration string. If
         create is True a store will be created if it does not already
         exist. If create is False and a store does not already exist
         an exception is raised. An exception is also raised if a store
         exists, but there is insufficient permissions to open the
-        store."""
+        store.
+        """
         if create:
-            db = dbapi2.connect(os.path.join(home,self.identifier))
-            c=db.cursor()
+            db = dbapi2.connect(db_path)
+            c = db.cursor()
             c.execute(CREATE_ASSERTED_STATEMENTS_TABLE%(self._internedId))
             c.execute(CREATE_ASSERTED_TYPE_STATEMENTS_TABLE%(self._internedId))
             c.execute(CREATE_QUOTED_STATEMENTS_TABLE%(self._internedId))
@@ -107,10 +108,10 @@ class SQLite(AbstractSQLStore):
             db.commit()
             db.close()
 
-        self._db = dbapi2.connect(os.path.join(home,self.identifier))
+        self._db = dbapi2.connect(db_path)
         self._db.create_function("regexp", 2, regexp)
 
-        if os.path.exists(os.path.join(home,self.identifier)):
+        if os.path.exists(db_path):
             c = self._db.cursor()
             c.execute("SELECT * FROM sqlite_master WHERE type='table'")
             tbls = [rt[1] for rt in c.fetchall()]
@@ -124,11 +125,11 @@ class SQLite(AbstractSQLStore):
         #The database doesn't exist - nothing is there
         #return -1
 
-    def destroy(self, home):
+    def destroy(self, db_path):
         """
         FIXME: Add documentation
         """
-        db = dbapi2.connect(os.path.join(home,self.identifier))
+        db = dbapi2.connect(db_path)
         c=db.cursor()
         for tblsuffix in table_name_prefixes:
             try:
@@ -137,11 +138,11 @@ class SQLite(AbstractSQLStore):
                 print "unable to drop table: %s"%(tblsuffix%(self._internedId))
 
         #Note, this only removes the associated tables for the closed world universe given by the identifier
-        print "Destroyed Close World Universe %s ( in SQLite database %s)"%(self.identifier,home)
+        print "Destroyed Close World Universe %s ( in SQLite database %s)"%(self.identifier,db_path)
         db.commit()
         c.close()
         db.close()
-        os.remove(os.path.join(home,self.identifier))
+        os.remove(db_path)
 
     def EscapeQuotes(self,qstr):
         """
