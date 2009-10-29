@@ -12,9 +12,10 @@ For details on RDFa, the reader should consult the `RDFa syntax document
 
 From a Python file, expecting an RDF/XML pretty printed output::
 
-    >>> from rdflib.graph import Graph
-    >>> graph.parse('filename.html', format='rdfa')
-    >>> print graph.serialize(format='pretty-xml')
+    import rdflib.graph as g
+    graph = g.Graph()
+    graph.parse('filename.html', format='rdfa')
+    print graph.serialize(format='pretty-xml')
 
 Options
 =======
@@ -34,8 +35,8 @@ Options are collected in an instance of the :obj:`Options` class and passed to
 the processing functions as an extra argument. Eg, if extra warnings are
 required, the code may be::
 
-    >>> graph.parse('filename.html', format='rdfa', warnings=True)
-    >>> print graph.serialize(format='pretty-xml')
+    graph.parse('filename.html', format='rdfa', warnings=True)
+    print graph.serialize(format='pretty-xml')
 
 Transformers
 ============
@@ -50,10 +51,10 @@ an the ``transformers`` option. The caller of the package may also add his/her
 transformer modules. Here is a possible usage with the 'openid' transformer
 added to the call::
 
-    >>> from pyRdfa.transform.OpenID import OpenID_transform
-    >>> graph.parse('filename.html', format='rdfa',
-    ...     transformers=[OpenID_transform])
-    >>> print graph.serialize(format='pretty-xml')
+    from pyRdfa.transform.OpenID import OpenID_transform
+    graph.parse('filename.html', format='rdfa',
+            transformers=[OpenID_transform])
+    print graph.serialize(format='pretty-xml')
 
 Note that the current option instance is passed to all transformers as extra
 parameters. Extensions of the package may make use of that to control the
@@ -97,7 +98,7 @@ are not implemented. However, if parse is given ``xhtml=False``, distiller
 considers that the underlying host language is pure XML, and these two
 additional features are also implemented. An example would be::
 
-    >>> graph.parse('filename.svg', format='rdfa', xhtml=False)
+    graph.parse('filename.svg', format='rdfa', xhtml=False)
 
 Attribution
 ===========================================
