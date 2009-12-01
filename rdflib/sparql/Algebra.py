@@ -365,23 +365,23 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
                                     result.tripleStore,expr=result)
             top.topLevelExpand(result.constraints, query.prolog)
             result = Query.Query(top, tripleStore)
-        if query.query.recurseClause is not None:
-            recurse_pattern = query.query.recurseClause.parsedGraphPattern
-            if recurse_pattern is None:
-                recurse_expr = expr
+        if query.query.recurClause is not None:
+            recursive_pattern = query.query.recurClause.parsedGraphPattern
+            if recursive_pattern is None:
+                recursive_expr = expr
             else:
-                recurse_expr = reduce(ReduceToAlgebra,
-                                      recurse_pattern.graphPatterns, None)
+                recursive_expr = reduce(
+                  ReduceToAlgebra, recursive_pattern.graphPatterns, None)
 
-            def get_recurse_results(recurse_bindings_update, select):
-                recurse_bindings = passedBindings.copy()
-                recurse_bindings.update(recurse_bindings_update)
-                recurse_result = recurse_expr.evaluate(
-                  tripleStore, recurse_bindings, query.prolog)
-                return recurse_result.top.returnResult(select)
+            def get_recursive_results(recursive_bindings_update, select):
+                recursive_bindings = passedBindings.copy()
+                recursive_bindings.update(recursive_bindings_update)
+                recursive_result = recursive_expr.evaluate(
+                  tripleStore, recursive_bindings, query.prolog)
+                return recursive_result.top.returnResult(select)
 
-            recurse_maps = query.query.recurseClause.maps
-            result.set_recursive(get_recurse_results, recurse_maps)
+            recursive_maps = query.query.recurClause.maps
+            result.set_recursive(get_recursive_results, recursive_maps)
         assert isinstance(result,Query.Query),repr(result)
     if exportTree:
         from rdflib.sparql.Visualization import ExportExpansionNode
@@ -446,7 +446,7 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
                 topUnionBindings=result.top.returnResult(selectionF)
         if result.get_recursive_results is not None:
             topUnionBindings.extend(
-              result._recurse(topUnionBindings, selectionF))
+              result._recur(topUnionBindings, selectionF))
             selectionF.pop()
         return   selection,\
                  _variablesToArray(query.query.variables,"selection"),\

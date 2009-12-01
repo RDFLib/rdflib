@@ -648,13 +648,13 @@ if DEBUG:
     WhereClause.setName('WhereClause')
 
 # RecurseClause:
-RECURSE = Suppress(CaselessKeyword('RECURSE'))
+RECUR = Suppress(CaselessKeyword('RECUR'))
 TO = Suppress(CaselessKeyword('TO'))
-RecurseClause = (RECURSE + Group(OneOrMore(Group(Var + TO + Var))) + 
-                 Optional(GroupGraphPattern, None)).setParseAction(
-  refer_component(components.Query.RecurseClause))
+RecurClause = (RECUR + Group(OneOrMore(Group(Var + TO + Var))) + 
+               Optional(GroupGraphPattern, None)).setParseAction(
+  refer_component(components.Query.RecurClause))
 if DEBUG:
-    RecurseClause.setName('RecurseClause')
+    RecurClause.setName('RecurClause')
 
 # SolutionModifier:
 ASC = Suppress(Optional(CaselessKeyword('ASC')))
@@ -703,7 +703,7 @@ DISTINCT = Optional(CaselessKeyword('DISTINCT'), None)
 SelectQuery = (SELECT + DISTINCT + 
   (Group(OneOrMore(Var)) | Literal('*').setParseAction(as_empty)) +
   Group(ZeroOrMore(DatasetClause)) + 
-  WhereClause + Optional(RecurseClause, None) +
+  WhereClause + Optional(RecurClause, None) +
   SolutionModifier).setParseAction(
     refer_component(components.Query.SelectQuery,
                     projection=[1, 2, 3, 4, 5, 0]))

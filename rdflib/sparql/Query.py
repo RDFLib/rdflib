@@ -1065,7 +1065,7 @@ class Query :
                 node_results = self.top.returnResult(selectionF)
                 if self.get_recursive_results is not None:
                     node_results.extend(
-                      self._recurse(node_results, selectionF))
+                      self._recur(node_results, selectionF))
                     selectionF.pop()
                 results = _processResults(selectionF, node_results)
         if distinct :
@@ -1082,8 +1082,8 @@ class Query :
         else :
             return retval
 
-    def _recurse(self, previous_results, select, last_history=None,
-                 first_result=None):
+    def _recur(self, previous_results, select, last_history=None,
+               first_result=None):
         results = []
         for result in previous_results:
             new_val = result[self.map_from]
@@ -1103,8 +1103,8 @@ class Query :
                     self.map_to: result[self.map_from]}
                 new_results = self.get_recursive_results(
                   recursive_initial_binding, select)
-                results.extend(self._recurse(new_results, select,
-                                             history, base_result))
+                results.extend(self._recur(new_results, select,
+                                           history, base_result))
                 for new_result in new_results:
                     new_result[self.map_to] = base_result[self.map_to]
                     results.append(new_result)

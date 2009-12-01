@@ -36,7 +36,7 @@ SELECT ?x ?name
   ?x foaf:knows ?y .
   OPTIONAL { ?y foaf:name ?name }
 }
-RECURSE ?y TO ?x
+RECUR ?y TO ?x
 '''
 
 SUBCLASS_DATA = '''
@@ -52,7 +52,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT ?x ?t 
 { ?x rdf:type ?t }
-RECURSE ?t TO ?x
+RECUR ?t TO ?x
 { ?x rdfs:subClassOf ?t }
 '''
 
