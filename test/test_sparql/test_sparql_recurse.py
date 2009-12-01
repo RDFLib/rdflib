@@ -58,11 +58,12 @@ RECUR ?t TO ?x
 
 ANSWER1 = URIRef('http://del.icio.us/rss/chimezie/paper')
 
-class DateFilterTest(unittest.TestCase):
+class RecursionTests(unittest.TestCase):
     def setUp(self):
         self.graph = ConjunctiveGraph()
         self.graph.load(StringIO(testContent), format='n3')
-    def test_simple_recurse(self):
+
+    def test_simple_recursion(self):
         graph = ConjunctiveGraph()
         graph.load(StringIO(BASIC_KNOWS_DATA), format='n3')
         results = graph.query(KNOWS_QUERY,
@@ -74,6 +75,20 @@ class DateFilterTest(unittest.TestCase):
           results,
           set([(person1, None), (person1, Literal('person 3')),
                (person2, Literal('person 3'))]))
+
+    def test_secondary_recursion(self):
+        graph = ConjunctiveGraph()
+        graph.load(StringIO(SUBCLASS_DATA), format='n3')
+        results = graph.query(SUBCLASS_QUERY,
+                              DEBUG=False).serialize(format='python')
+        results = set([tuple(result) for result in results])
+        ob = URIRef('ex:ob')
+        class1 = URIRef('ex:class.1')
+        class2 = URIRef('ex:class.2')
+        class3 = URIRef('ex:class.3')
+        nose.tools.assert_equal(
+          results,
+          set([(ob, class1), (ob, class2), (ob, class3)]))
 
 if __name__ == "__main__":
     unittest.main()

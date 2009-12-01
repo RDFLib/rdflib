@@ -365,24 +365,8 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
                                     result.tripleStore,expr=result)
             top.topLevelExpand(result.constraints, query.prolog)
             result = Query.Query(top, tripleStore)
-        if query.query.recurClause is not None:
-            recursive_pattern = query.query.recurClause.parsedGraphPattern
-            if recursive_pattern is None:
-                recursive_expr = expr
-            else:
-                recursive_expr = reduce(
-                  ReduceToAlgebra, recursive_pattern.graphPatterns, None)
-
-            def get_recursive_results(recursive_bindings_update, select):
-                recursive_bindings = passedBindings.copy()
-                recursive_bindings.update(recursive_bindings_update)
-                recursive_result = recursive_expr.evaluate(
-                  tripleStore, recursive_bindings, query.prolog)
-                return recursive_result.top.returnResult(select)
-
-            recursive_maps = query.query.recurClause.maps
-            result.set_recursive(get_recursive_results, recursive_maps)
         assert isinstance(result,Query.Query),repr(result)
+
     if exportTree:
         from rdflib.sparql.Visualization import ExportExpansionNode
         if result.top:
@@ -416,6 +400,35 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
                     "Support for ORDER BY with anything other than a variable is not supported: %s"%order_expr
                     orderBy.append(order_expr)                    
                     orderAsc.append(orderCond.order == ASCENDING_ORDER)
+
+        if query.query.recurClause is not None:
+            recursive_pattern = query.query.recurClause.parsedGraphPattern
+            if recursive_pattern is None:
+                recursive_expr = expr
+            else:
+                recursive_expr = reduce(
+                  ReduceToAlgebra, recursive_pattern.graphPatterns, None)
+
+            initial_recursive_bindings = result.top.bindings.copy()
+
+            def get_recursive_results(recursive_bindings_update, select):
+                recursive_bindings = result.top.bindings.copy()
+                recursive_bindings.update(recursive_bindings_update)
+                if isinstance(recursive_expr, BasicGraphPattern):
+                    recursive_top = Query._SPARQLNode(
+                      None, recursive_bindings, recursive_expr.patterns,
+                      tripleStore, expr=recursive_expr)
+                    recursive_top.topLevelExpand(recursive_expr.constraints,
+                                                 query.prolog)
+                    recursive_result = Query.Query(recursive_top,
+                                                   tripleStore)
+                else: # recursive_expr should be an AlgebraExpression
+                    recursive_result = recursive_expr.evaluate(
+                      tripleStore, recursive_bindings, query.prolog)
+                return recursive_result.top.returnResult(select)
+
+            recursive_maps = query.query.recurClause.maps
+            result.set_recursive(get_recursive_results, recursive_maps)
 
         topUnionBindings=[]
         selection=result.select(query.query.variables,
