@@ -115,11 +115,11 @@ if DEBUG:
         if text is None:
             text = ''
         print >> sys.stderr, 'DEBUG (parse success):', text
-        pprint(struct_data(results.asList(), 3, True))
+        pprint(struct_data(results.asList(), 3, True), sys.stderr)
 
     def debug2(s, loc, toks):
         print >> sys.stderr, 'DEBUG (parse success): parse string =', s
-        pprint(struct_data(toks.asList(), 3, True))
+        pprint(struct_data(toks.asList(), 3, True), sys.stderr)
 
     def debug_fail(s, loc, expr, err):
         print >> sys.stderr, 'DEBUG (parse fail): expr =', expr
@@ -647,6 +647,15 @@ WhereClause = (WHERE + GroupGraphPattern).setParseAction(
 if DEBUG:
     WhereClause.setName('WhereClause')
 
+# RecurseClause:
+RECURSE = Suppress(CaselessKeyword('RECURSE'))
+TO = Suppress(CaselessKeyword('TO'))
+RecurseClause = (RECURSE + Group(OneOrMore(Group(Var + TO + Var))) + 
+                 Optional(GroupGraphPattern, None)).setParseAction(
+  refer_component(components.Query.RecurseClause))
+if DEBUG:
+    RecurseClause.setName('RecurseClause')
+
 # SolutionModifier:
 ASC = Suppress(Optional(CaselessKeyword('ASC')))
 DESC = Suppress(Optional(CaselessKeyword('DESC')))
@@ -694,9 +703,10 @@ DISTINCT = Optional(CaselessKeyword('DISTINCT'), None)
 SelectQuery = (SELECT + DISTINCT + 
   (Group(OneOrMore(Var)) | Literal('*').setParseAction(as_empty)) +
   Group(ZeroOrMore(DatasetClause)) + 
-  WhereClause + SolutionModifier).setParseAction(
+  WhereClause + Optional(RecurseClause, None) +
+  SolutionModifier).setParseAction(
     refer_component(components.Query.SelectQuery,
-                    projection=[1, 2, 3, 4, 0]))
+                    projection=[1, 2, 3, 4, 5, 0]))
 if DEBUG:
     SelectQuery.setName('SelectQuery')
 

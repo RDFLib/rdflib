@@ -19,17 +19,24 @@ class WhereClause(object):
     def __init__(self,parsedGraphPattern):
         self.parsedGraphPattern = parsedGraphPattern
 
+class RecurseClause(object):
+    def __init__(self, maps, parsedGraphPattern):
+        self.maps = maps
+        self.parsedGraphPattern = parsedGraphPattern
+
 class SelectQuery(object):
     """
-    SelectQuery ::= 'SELECT' 'DISTINCT'? ( Var+ | '*' ) DatasetClause* WhereClause SolutionModifier
+    SelectQuery ::= 'SELECT' 'DISTINCT'? ( Var+ | '*' ) DatasetClause* WhereClause RecurseClause? SolutionModifier
     See: http://www.w3.org/TR/rdf-sparql-query/#rSelectQuery
     """
-    def __init__(self,variables,dataSetList,whereClause,solutionModifier,distinct=None):
+    def __init__(self, variables, dataSetList, whereClause,
+                 recurseClause, solutionModifier, distinct=None):
         self.variables = variables is not None and variables or []
         self.dataSets = dataSetList and dataSetList or []
         self.whereClause = whereClause
         self.solutionModifier = solutionModifier
         self.distinct = distinct is not None
+        self.recurseClause = recurseClause
 
     def __repr__(self):
         return "SELECT %s %s %s %s %s"%(self.distinct and 'DISTINCT' or '',self.variables and self.variables or '*',self.dataSets,self.whereClause.parsedGraphPattern,self.solutionModifier and self.solutionModifier or '')

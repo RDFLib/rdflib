@@ -12,7 +12,7 @@ query nodes as described in the section "Evaluation Semantics".
 We define eval(D(G), graph pattern) as the evaluation of a graph pattern with respect 
 to a dataset D having active graph G. The active graph is initially the default graph.
 """
-import unittest, os
+import unittest, os, sys
 from StringIO import StringIO
 from rdflib.graph import Graph, ReadOnlyGraphAggregate, ConjunctiveGraph
 from rdflib import plugin
@@ -365,6 +365,23 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
                                     result.tripleStore,expr=result)
             top.topLevelExpand(result.constraints, query.prolog)
             result = Query.Query(top, tripleStore)
+        if query.query.recurseClause is not None:
+            recurse_pattern = query.query.recurseClause.parsedGraphPattern
+            if recurse_pattern is None:
+                recurse_expr = expr
+            else:
+                recurse_expr = reduce(ReduceToAlgebra,
+                                      recurse_pattern.graphPatterns, None)
+
+            def get_recurse_results(recurse_bindings_update, select):
+                recurse_bindings = passedBindings.copy()
+                recurse_bindings.update(recurse_bindings_update)
+                recurse_result = recurse_expr.evaluate(
+                  tripleStore, recurse_bindings, query.prolog)
+                return recurse_result.top.returnResult(select)
+
+            recurse_maps = query.query.recurseClause.maps
+            result.set_recursive(get_recurse_results, recurse_maps)
         assert isinstance(result,Query.Query),repr(result)
     if exportTree:
         from rdflib.sparql.Visualization import ExportExpansionNode
@@ -394,10 +411,10 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
                     orderAsc.append(ASCENDING_ORDER)
                 # is it another expression, only variables are supported
                 else:
-                    expr = orderCond.expression
-                    assert isinstance(expr,Variable),\
-                    "Support for ORDER BY with anything other than a variable is not supported: %s"%expr
-                    orderBy.append(expr)                    
+                    order_expr = orderCond.expression
+                    assert isinstance(order_expr,Variable),\
+                    "Support for ORDER BY with anything other than a variable is not supported: %s"%order_expr
+                    orderBy.append(order_expr)                    
                     orderAsc.append(orderCond.order == ASCENDING_ORDER)
 
         topUnionBindings=[]
@@ -409,6 +426,8 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
              offset
              )
         selectionF = Query._variablesToArray(query.query.variables,"selection")
+        if result.get_recursive_results is not None:
+            selectionF.append(result.map_from)
         vars = result._getAllVariables()
         if result.parent1 != None and result.parent2 != None :
             topUnionBindings=reduce(lambda x,y:x+y,
@@ -425,6 +444,10 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
                 
             else:    
                 topUnionBindings=result.top.returnResult(selectionF)
+        if result.get_recursive_results is not None:
+            topUnionBindings.extend(
+              result._recurse(topUnionBindings, selectionF))
+            selectionF.pop()
         return   selection,\
                  _variablesToArray(query.query.variables,"selection"),\
                  vars,\

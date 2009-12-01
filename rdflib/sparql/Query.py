@@ -1,4 +1,4 @@
-import types, sets
+import types, sets, sys
 from pprint import pprint
 from rdflib.term import URIRef, BNode, Literal, Variable, Identifier
 from rdflib.namespace import RDF
@@ -891,6 +891,8 @@ class Query :
         self.parent1         = parent1
         self.parent2         = parent2
 
+        self.get_recursive_results = None
+
     def __add__(self,other) :
         """This may be useful when several queries are performed and
         one wants the 'union' of those.  Caveat: the triple store must
@@ -1058,7 +1060,14 @@ class Query :
             else :
                 # remember: _processResult turns the expansion results (an array of dictionaries)
                 # into an array of tuples in the right, original order
-                results = _processResults(selectionF,self.top.returnResult(selectionF))
+                if self.get_recursive_results is not None:
+                    selectionF.append(self.map_from)
+                node_results = self.top.returnResult(selectionF)
+                if self.get_recursive_results is not None:
+                    node_results.extend(
+                      self._recurse(node_results, selectionF))
+                    selectionF.pop()
+                results = _processResults(selectionF, node_results)
         if distinct :
             retval = _uniquefyList(results)
         else :
@@ -1072,6 +1081,40 @@ class Query :
             return retval[offset:]
         else :
             return retval
+
+    def _recurse(self, previous_results, select, last_history=None,
+                 first_result=None):
+        results = []
+        for result in previous_results:
+            new_val = result[self.map_from]
+
+            base_result = first_result
+            if base_result is None:
+                base_result = result
+
+            if last_history is None:
+                history = set()
+            else:
+                history = last_history.copy()
+
+            if new_val not in history:
+                history.add(new_val)
+                recursive_initial_binding = {
+                    self.map_to: result[self.map_from]}
+                new_results = self.get_recursive_results(
+                  recursive_initial_binding, select)
+                results.extend(self._recurse(new_results, select,
+                                             history, base_result))
+                for new_result in new_results:
+                    new_result[self.map_to] = base_result[self.map_to]
+                    results.append(new_result)
+        return results
+
+    def set_recursive(self, get_recursive_results, variable_maps):
+        self.get_recursive_results = get_recursive_results
+        # We only currently use the first mapping.  Remember, this is all
+        # experimental.  ;-)
+        self.map_from, self.map_to = variable_maps[0]
 
     def construct(self,pattern=None) :
         """
