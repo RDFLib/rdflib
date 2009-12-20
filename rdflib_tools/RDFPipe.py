@@ -50,41 +50,76 @@ def parse_and_serialize(input_files, input_format, guess,
         graph.namespace_manager.bind(prefix, uri, override=False)
 
     for fpath in input_files:
-        use_format = input_format
+        use_format, kws = _format_and_kws(input_format)
         if fpath == '-':
             fpath = sys.stdin
         elif not input_format and guess:
             use_format = guess_format(fpath) or DEFAULT_INPUT_FORMAT
-        graph.parse(fpath, format=use_format)
+        graph.parse(fpath, format=use_format, **kws)
 
-    # TODO: get extra kwargs to serializer (by parsing output_format key)?
     if outfile:
-        graph.serialize(destination=outfile, format=output_format, base=None)
+        output_format, kws = _format_and_kws(output_format)
+        graph.serialize(destination=outfile, format=output_format, base=None, **kws)
     store.rollback()
 
+def _format_and_kws(fmt):
+    """
+    >>> _format_and_kws("fmt")
+    ('fmt', {})
+    >>> _format_and_kws("fmt:+a")
+    ('fmt', {'a': True})
+    >>> _format_and_kws("fmt:a")
+    ('fmt', {'a': True})
+    >>> _format_and_kws("fmt:+a,-b")
+    ('fmt', {'a': True, 'b': False})
+    >>> _format_and_kws("fmt:c=d")
+    ('fmt', {'c': 'd'})
+    """
+    fmt, kws = fmt, {}
+    if ':' in fmt:
+        fmt, kwrepr = fmt.split(':')
+        for kw in kwrepr.split(','):
+            if '=' in kw:
+                k, v = kw.split('=')
+                kws[k] = v
+            elif kw.startswith('-'):
+                kws[kw[1:]] = False
+            elif kw.startswith('+'):
+                kws[kw[1:]] = True
+            else: # same as "+"
+                kws[kw] = True
+    return fmt, kws
 
-_get_plugin_names = lambda kind: ", ".join(repr(p.name) for p in plugin.plugins(kind=kind))
 
 def make_option_parser():
     parser_names = _get_plugin_names(Parser)
     serializer_names = _get_plugin_names(Serializer)
+    kw_example = "FORMAT:(+)KW1,-KW2,KW3=VALUE"
 
     oparser = OptionParser(
             "%prog [-h] [-i INPUT_FORMAT] [-o OUTPUT_FORMAT] [--ns=PFX=NS ...] [-] [FILE ...]",
             description=__doc__.strip() + (
-                " Reads file system paths, URLs or from stdin if '-' is supplied."
+                " Reads file system paths, URLs or from stdin if '-' is given."
                 " The result is serialized to stdout."),
             version="%prog " + "(using rdflib %s)" % rdflib.__version__)
 
     oparser.add_option('-i', '--input-format',
             type=str, #default=DEFAULT_INPUT_FORMAT,
-            help="Format of the input document(s). One of: %s." % parser_names,
+            help="Format of the input document(s)."
+                " Available input formats are: %s." % parser_names +
+                " If no format is given, it will be guessed from the file name extension."
+                " Keywords to parser can be given after format like: %s." % kw_example
+                ,
             metavar="INPUT_FORMAT")
 
     oparser.add_option('-o', '--output-format',
             type=str, default=DEFAULT_OUTPUT_FORMAT,
-            help="Format of the final serialized RDF graph. One of: %s." % serializer_names
-                + " Default is '%default'.",
+            help="Format of the graph serialization."
+                " Available output formats are: %s."
+                % serializer_names +
+                " Default format is: '%default'." +
+                " Keywords to serializer can be given after format like: %s." % kw_example
+                ,
             metavar="OUTPUT_FORMAT")
 
     oparser.add_option('--ns',
@@ -106,6 +141,8 @@ def make_option_parser():
             help="Output warnings to stderr (by default only critical errors).")
 
     return oparser
+
+_get_plugin_names = lambda kind: ", ".join(p.name for p in plugin.plugins(kind=kind))
 
 
 def main():
