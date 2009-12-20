@@ -118,16 +118,13 @@ This package is a part of and falls under the licence of RDFLib.
 """
 
 import sys
-from xml.dom import minidom
+import urllib
+import xml.dom.minidom
 
 from rdflib.graph import Graph
 from rdflib.namespace import Namespace
 from rdflib.term import BNode, URIRef
-
 from rdflib.syntax.parsers import Parser
-
-import xml.dom.minidom
-
 from rdflib.syntax.parsers.rdfa.state import ExecutionContext
 from rdflib.syntax.parsers.rdfa.parse import parse_one_node
 from rdflib.syntax.parsers.rdfa.options import (Options, _add_to_comment_graph,
@@ -211,7 +208,7 @@ def _try_process_source(stream, options):
 
     Returns a DOM tree.
     """
-    parse = minidom.parse
+    parse = xml.dom.minidom.parse
     try:
         dom = parse(stream)
         # Try to second-guess the input type
@@ -234,6 +231,10 @@ def _try_process_source(stream, options):
         if options != None and options.warnings:
             options.comment_graph.add_warning(msg)
 
+        # in Ivan's original code he reopened the stream if it was from urllib 
+        if isinstance(stream, urllib.addinfourl):
+            stream = urllib.urlopen(stream.url)
+
         # Now try to see if and HTML5 parser is an alternative...
         try:
             from html5lib import HTMLParser, treebuilders
@@ -242,7 +243,7 @@ def _try_process_source(stream, options):
             msg2 = 'XHTML Parsing error in input file: %s. Though parsing is lax, HTML5 parser not available' % value
             raise RDFaError(msg2)
 
-        parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder("dom"))
+        parser = HTMLParser(tree=treebuilders.getTreeBuilder("dom"))
         parse = parser.parse
         try:
             dom = parse(stream)
