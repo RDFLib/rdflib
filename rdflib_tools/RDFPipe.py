@@ -76,7 +76,7 @@ def _format_and_kws(fmt):
     ('fmt', {'c': 'd'})
     """
     fmt, kws = fmt, {}
-    if ':' in fmt:
+    if fmt and ':' in fmt:
         fmt, kwrepr = fmt.split(':')
         for kw in kwrepr.split(','):
             if '=' in kw:
