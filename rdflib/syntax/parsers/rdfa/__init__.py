@@ -240,7 +240,7 @@ def _try_process_source(stream, options):
             from html5lib import HTMLParser, treebuilders
         except ImportError:
             # no alternative to the XHTML error, because HTML5 parser not available...
-            msg2 = 'XHTML Parsing error in input file: %s. Though parsing is lax, HTML5 parser not available' % value
+            msg2 = 'XHTML Parsing error in input file: %s. Though parsing is lax, HTML5 parser not available. Try installing html5lib <http://code.google.com/p/html5lib>' % value
             raise RDFaError(msg2)
 
         parser = HTMLParser(tree=treebuilders.getTreeBuilder("dom"))
