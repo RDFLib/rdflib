@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+
+import sys
+sys.path[0:0]+=[".."]
+
+
+
 from rdflib.graph import ConjunctiveGraph
 import unittest
 
@@ -15,18 +22,15 @@ class TriXTestCase(unittest.TestCase):
         g=ConjunctiveGraph()
 
         g.parse("test/trix/aperture.trix",format="trix")
-
         c=list(g.contexts())
 
         #print list(g.contexts())
-        t=sum(map(lambda x: len(g.get_context(x)),g.contexts()))
+        t=sum(map(len, g.contexts()))
 
         self.assertEquals(t,24)
         self.assertEquals(len(c),4)
         
         #print "Parsed %d triples"%t
-
-    testAperture.known_issue = True
 
     def testSpec(self): 
 
@@ -36,6 +40,8 @@ class TriXTestCase(unittest.TestCase):
         
         #print "Parsed %d triples"%len(g)
         
+
+
 
 if __name__=='__main__':
     unittest.main()

@@ -16,6 +16,7 @@ class TriXTestCase(unittest.TestCase):
         pass
 
     def testSerialize(self):
+
       s1 = URIRef('store:1')
       r1 = URIRef('resource:1')
       r2 = URIRef('resource:2')
@@ -41,8 +42,9 @@ class TriXTestCase(unittest.TestCase):
       
       r = g.serialize(format='trix')
       g3 = ConjunctiveGraph()
+      from StringIO import StringIO
 
-      g3.parse(data=r, format='trix')
+      g3.parse(StringIO(r), format='trix')
 
       for q in g3.quads((None,None,None)):
         # TODO: Fix once getGraph/getContext is in conjunctive graph
