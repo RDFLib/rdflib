@@ -92,6 +92,46 @@ class N3TestCase(unittest.TestCase):
         #s = g.value(predicate=URIRef("http://www.example.com/p"), object=URIRef("http://www.example.com/q"))
         #self.assertEquals(s, URIRef("http://www.example.org/foo.txt"))
 
+    def testBase(self):
+        """
+        Test that the n3 parser supports base declarations
+        This is issue #22
+        """
+
+        input = """
+@prefix : <http://example.com> . 
+# default base
+<foo> :name "Foo" .
+# change it 
+@base <http://example.com/doc/> .
+<bar> :name "Bar" .
+# and change it more - they are cummalative
+@base <doc2/> .
+<bing> :name "Bing" .
+"""
+        g = Graph()
+        g.parse(data=input, format="n3")
+
+    def testIssue23(self): 
+        input="""<http://example.com/article1> <http://example.com/title> "this word is in \u201Cquotes\u201D"."""
+        
+        g = Graph()
+        g.parse(data=input, format="n3")
+
+        # Note difference in case of hex code, cwm allows lower-case
+        input="""<http://example.com/article1> <http://example.com/title> "this word is in \u201cquotes\u201d"."""
+               
+        g.parse(data=input, format="n3")
+
+    def testIssue29(self): 
+        input="""@prefix foo-bar: <http://example.org/> .
+
+foo-bar:Ex foo-bar:name "Test" . """
+        
+        g = Graph()
+        g.parse(data=input, format="n3")
+        
+                
 
     def testModel(self):
         g = ConjunctiveGraph()
