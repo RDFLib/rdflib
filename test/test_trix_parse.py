@@ -1,15 +1,10 @@
 #!/usr/bin/env python
 
-import sys
-sys.path[0:0]+=[".."]
-
-
 
 from rdflib.graph import ConjunctiveGraph
 import unittest
 
-
-class TriXTestCase(unittest.TestCase):
+class TestTrixParse(unittest.TestCase):
 
     def setUp(self):
         pass

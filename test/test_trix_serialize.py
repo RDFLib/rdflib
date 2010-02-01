@@ -7,7 +7,7 @@ from rdflib.term import URIRef, Literal
 from rdflib.graph import Graph
 
 
-class TriXTestCase(unittest.TestCase):
+class TestTrixSerialize(unittest.TestCase):
 
     def setUp(self):
         pass

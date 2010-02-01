@@ -138,15 +138,15 @@ SPARQL Queries
     >>> for pred in g.query(q):
     ...     print pred
     ...
-    (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),)
+    http://www.w3.org/2000/01/rdf-schema#label
 
 SPARQL Queries with namespace bindings as argument
 
-    >>> nsMap = {u"rdf":RDF.RDFNS}
+    >>> nsMap = {u"rdf": RDF.uri}
     >>> for pred in g.query("SELECT ?pred WHERE { ?stmt rdf:predicate ?pred. }", initNs=nsMap):
     ...     print pred
     ...
-    (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),)
+    http://www.w3.org/2000/01/rdf-schema#label
 
 Parameterized SPARQL Queries
 
@@ -155,7 +155,7 @@ Parameterized SPARQL Queries
     >>> for pred in g.query("SELECT ?pred WHERE { ?stmt ?term ?pred. }", initBindings=top): 
     ...     print pred
     ...
-    (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),)
+    http://www.w3.org/2000/01/rdf-schema#label
 """
 
 from __future__ import generators
