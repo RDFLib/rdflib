@@ -8,7 +8,7 @@ try:
 except ImportError:
     import warnings
     warnings.warn("MySQLdb is not installed")
-    __test__=False
+    #__test__=False
 from rdflib.term_utils import *
 from rdflib.graph import QuotedGraph
 from rdflib.store.REGEXMatching import REGEXTerm, NATIVE_REGEX, PYTHON_REGEX

@@ -7,7 +7,7 @@ try:
 except ImportError:
     import warnings
     warnings.warn("Redlands not installed")
-    __test__=False
+    #__test__=False
 
 from rdflib.store import Store
 

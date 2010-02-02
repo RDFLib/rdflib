@@ -27,6 +27,22 @@ class TestLiteral(unittest.TestCase):
         b = eval(repr(a))
         self.assertEquals(a, b)
 
+    def test_backslash(self):
+        d = r"""
+<rdf:RDF 
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:foo="http://example.org/foo#">
+    <rdf:Description>
+      <foo:bar>a\b</foo:bar>	
+    </rdf:Description>
+</rdf:RDF>
+"""
+        g = rdflib.Graph()
+        g.parse(data=d)
+        a = rdflib.Literal('a\\b')
+        b = list(g.objects())[0]
+        self.assertEquals(a, b)
+
     def test_literal_from_bool(self):
         l = rdflib.Literal(True)
         XSD_NS = rdflib.Namespace(u'http://www.w3.org/2001/XMLSchema#')

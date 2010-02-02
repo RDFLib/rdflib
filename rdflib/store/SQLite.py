@@ -10,7 +10,7 @@ except ImportError:
     except ImportError:
         import warnings
         warnings.warn("pysqlite2 is not installed")
-        __test__=False
+        #__test__=False
 import re,os
 from rdflib.term_utils import *
 from rdflib.graph import QuotedGraph
