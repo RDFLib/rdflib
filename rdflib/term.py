@@ -8,7 +8,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 import base64
-from md5 import md5
+
 import threading
 from urlparse import urlparse, urljoin, urldefrag
 from string import ascii_letters, rsplit
@@ -16,10 +16,10 @@ from random import choice
 from datetime import date, time, datetime
 from time import strptime
 
-# try:
-#     from hashlib import md5
-# except ImportError:
-#     from md5 import md5
+try:
+    from hashlib import md5
+except ImportError:
+    from md5 import md5
 
 # from sys import version_info
 # if version_info[0:2] > (2, 2):

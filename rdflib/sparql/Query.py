@@ -1,4 +1,10 @@
-import types, sets, sys
+
+try:
+   set
+except NameError:
+   from sets import Set as set
+
+import types, sys
 from pprint import pprint
 from rdflib.term import URIRef, BNode, Literal, Variable, Identifier
 from rdflib.namespace import RDF
@@ -1041,7 +1047,7 @@ class Query :
                             retval.append(v)
                     return retval
                 else :
-                    return list(sets.Set(lst))
+                    return list(set(lst))
         # Select may be a single query string, or an array/tuple thereof
         selectionF = _variablesToArray(selection,"selection")
 
