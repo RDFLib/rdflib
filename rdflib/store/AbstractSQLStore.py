@@ -2,7 +2,12 @@ from __future__ import generators
 from rdflib.term import BNode, URIRef, Literal
 from rdflib.namespace import RDF
 from pprint import pprint
-import sha,sys, weakref
+try: 
+    from hashlib import sha1 
+except ImportError:
+    from sha import new as sha1
+
+import sys, weakref
 from rdflib.term_utils import *
 from rdflib.graph import QuotedGraph
 from rdflib.store.REGEXMatching import REGEXTerm, PYTHON_REGEX
@@ -366,7 +371,7 @@ class AbstractSQLStore(SQLGenerator,Store):
         """
         self.identifier = identifier and identifier or 'hardcoded'
         #Use only the first 10 bytes of the digest
-        self._internedId = INTERNED_PREFIX + sha.new(self.identifier).hexdigest()[:10]
+        self._internedId = INTERNED_PREFIX + sha1(self.identifier).hexdigest()[:10]
 
         #This parameter controls how exlusively the literal table is searched
         #If true, the Literal partition is searched *exclusively* if the object term

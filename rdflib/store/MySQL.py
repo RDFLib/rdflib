@@ -9,6 +9,13 @@ except ImportError:
     import warnings
     warnings.warn("MySQLdb is not installed")
     #__test__=False
+
+try: 
+    from hashlib import sha1 
+except ImportError:
+    from sha import new as sha1
+
+
 from rdflib.term_utils import *
 from rdflib.graph import QuotedGraph
 from rdflib.store.REGEXMatching import REGEXTerm, NATIVE_REGEX, PYTHON_REGEX
@@ -504,7 +511,7 @@ class SQL(Store):
         self.identifier = identifier and identifier or 'hardcoded'
         
         #Use only the first 10 bytes of the digest
-        self._internedId = INTERNED_PREFIX + sha.new(self.identifier).hexdigest()[:10]
+        self._internedId = INTERNED_PREFIX + sha1(self.identifier).hexdigest()[:10]
 
         self.engine = engine
         self.showDBsCommand = 'SHOW DATABASES'
