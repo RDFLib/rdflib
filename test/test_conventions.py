@@ -20,7 +20,6 @@ class A(unittest.TestCase):
             if ispkg:
                 self.test_module_names(path=os.path.join(path, name))
             else:
-                print "checking:", name
                 self.assert_(name==name.lower(), "module name '%s' is not lower case" % name)
 
 
