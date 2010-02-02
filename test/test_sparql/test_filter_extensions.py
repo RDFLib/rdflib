@@ -40,6 +40,7 @@ def test_even_extension():
     expected = [Literal(0), Literal(2)]
     assert res == expected, "Expected %s but got %s" % (expected, res)
 
+test_even_extension.sparql = True
 test_even_extension.known_issue = True # Extension functions are not
                                        # implemented!  See the
                                        # `mapToOperator` function in

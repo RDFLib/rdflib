@@ -20,6 +20,7 @@ WHERE { [ a :Person ; :name ?name ] }"""
 class TestSparqlJsonResults(unittest.TestCase):
 
     known_issue = True
+    sparql = True
 
     def setUp(self):
         self.graph = ConjunctiveGraph()
