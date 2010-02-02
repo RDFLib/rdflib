@@ -28,7 +28,7 @@ setup(
     NTriples, Turtle, TriX and RDFa . The library presents a Graph
     interface which can be backed by any one of a number of Store
     implementations, including, Memory, MySQL, Redland, SQLite,
-    Sleepycat, ZODB and SQLObject.
+    Sleepycat and SQLObject.
     
     If you have recently reported a bug marked as fixed, or have a craving for
     the very latest, you may want the development version instead:

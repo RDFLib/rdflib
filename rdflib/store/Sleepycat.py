@@ -1,7 +1,10 @@
 from rdflib.store import Store, VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
 from rdflib.term import URIRef
 
-from bsddb import db
+try:
+    from bsddb import db
+except ImportError:
+    from bsddb3 import db
 
 from os import mkdir
 from os.path import exists, abspath

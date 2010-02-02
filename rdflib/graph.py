@@ -10,7 +10,7 @@
 Instantiating Graphs with a specific kind of store (IOMemory) and a default 
 identifier (a BNode):
 
-Other store kinds: Sleepycat, MySQL, ZODB, SQLite
+Other store kinds: Sleepycat, MySQL, SQLite
 
     >>> store = plugin.get('IOMemory', Store)()
     >>> store.__class__.__name__

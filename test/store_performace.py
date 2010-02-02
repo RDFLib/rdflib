@@ -92,44 +92,6 @@ class StoreTestCase(unittest.TestCase):
 class MemoryStoreTestCase(StoreTestCase):
     store = "Memory"
 
-try:
-    from rdflib.store.Sleepycat import Sleepycat
-    class SleepycatStoreTestCase(StoreTestCase):
-        store = "Sleepycat"
-except ImportError, e:
-    print "Can not test Sleepycat store:", e
-
-try:
-    import persistent
-    # If we can import persistent then test ZODB store
-    class ZODBStoreTestCase(StoreTestCase):
-        non_standard_dep = True
-        store = "ZODB"
-except ImportError, e:
-    print "Can not test ZODB store:", e
-
-
-try:
-    import RDF
-    # If we can import RDF then test Redland store
-    class RedLandTestCase(StoreTestCase):
-        non_standard_dep = True
-        store = "Redland"
-except ImportError, e:
-    print "Can not test Redland store:", e
-
-# TODO: add test case for 4Suite backends?  from Ft import Rdf
-
-try:
-#     import todo # what kind of configuration string does open need?
-
-    import MySQLdb,sys
-    # If we can import RDF then test Redland store
-    class MySQLTestCase(StoreTestCase):
-        non_standard_dep = True
-        store = "MySQL"
-except ImportError, e:
-    print "Can not test MySQL store:", e
 
 if __name__ == '__main__':
     unittest.main()

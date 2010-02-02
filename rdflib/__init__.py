@@ -12,9 +12,9 @@ The primary interface `rdflib` exposes to work with RDF is
 
 A tiny example:
 
-    >>> from rdflib.graph import Graph
+    >>> import rdflib
 
-    >>> g = Graph()
+    >>> g = rdflib.Graph()
     >>> result = g.parse("http://eikeon.com/foaf.rdf")
 
     >>> print "graph has %s statements." % len(g)
@@ -46,3 +46,4 @@ from rdflib.term import URIRef, BNode, Literal
 
 from rdflib.graph import Graph, ConjunctiveGraph
 
+from rdflib.namespace import Namespace
