@@ -114,7 +114,7 @@ Parsing N3 from StringIO
     ... [ a rdf:Statement ;
     ...   rdf:subject <http://rdflib.net/store#ConjunctiveGraph>;
     ...   rdf:predicate rdfs:label;
-    ...   rdf:object "Conjunctive Graph" ]
+    ...   rdf:object "Conjunctive Graph" ] .
     ... '''
     >>> g2 = g2.parse(StringIO(src), format='n3')
     >>> print len(g2)
@@ -434,25 +434,25 @@ class Graph(Node):
     def __add__(self,other) :
         """Set theoretical union"""
         retval = Graph()
-        for x in self.graph:
+        for x in self:
             retval.add(x)
-        for y in other.graph:
+        for y in other:
             retval.add(y)
         return retval
 
     def __mul__(self,other) :
         """Set theoretical intersection"""
         retval = Graph()
-        for x in other.graph:
-            if x in self.graph: 
+        for x in other:
+            if x in self: 
                 retval.add(x)
         return retval
 
     def __sub__(self,other) :
         """Set theoretical difference"""
         retval = Graph()
-        for x in self.graph:
-            if not x in other.graph : 
+        for x in self:
+            if not x in other : 
                 retval.add(x)
         return retval
 

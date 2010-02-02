@@ -7,7 +7,11 @@ from rdflib.store.MySQL import SQL, MySQL, PostgreSQL
 from rdflib.store import Store
 from rdflib.store.FOPLRelationalModel.QuadSlot import *
 
-from Ft.Lib import Uri
+try:
+    from Ft.Lib import Uri
+except: 
+    raise Exception("You do not have 4suite Ft.lib installed.")
+
 Any = None    
 
 VALUES_EXPR     = re.compile('.*VALUES (\(.*\))')

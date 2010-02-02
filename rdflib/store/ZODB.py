@@ -12,7 +12,10 @@ try:
     from persistent import Persistent
 except ImportError:
     # < Zope 2.8?
-    from Persistence import Persistent
+    try: 
+        from Persistence import Persistent
+    except: 
+        raise Exception("You do not appear to have Zope installed")
 
 from BTrees.IOBTree import IOBTree
 from BTrees.OIBTree import OIBTree
