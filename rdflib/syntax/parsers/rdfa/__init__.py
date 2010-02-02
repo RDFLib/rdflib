@@ -1,15 +1,4 @@
-# -*- coding: utf-8 -*-
 """
-##########################################
-RDFa Parser for RDFLib
-##########################################
-
-For details on RDFa, the reader should consult the `RDFa syntax document
-<http://www.w3.org/TR/rdfa-syntax>`_.
-
-(Simple) Usage
-==============
-
 From a Python file, expecting an RDF/XML pretty printed output::
 
     import rdflib.graph as g
@@ -17,104 +6,11 @@ From a Python file, expecting an RDF/XML pretty printed output::
     graph.parse('filename.html', format='rdfa')
     print graph.serialize(format='pretty-xml')
 
-Options
-=======
-
-The parser also implements some optional features that are not fully part of
-the RDFa syntax. At the moment these are:
-
-- extra warnings and information (eg, missing ``@profile, @version`` attribute
-  or DTD, possibly erroneous CURIE:s) are added to the output graph
-- possibility that plain literals are normalized in terms of white spaces.
-  Default: false. (The RDFa specification requires keeping the white spaces and
-  leave applications to normalize them, if needed)
-- extra, built-in transformers are executed on the DOM tree prior to RDFa
-  processing (see below)
-
-Options are collected in an instance of the :obj:`Options` class and passed to
-the processing functions as an extra argument. Eg, if extra warnings are
-required, the code may be::
-
-    graph.parse('filename.html', format='rdfa', warnings=True)
-    print graph.serialize(format='pretty-xml')
-
-Transformers
-============
-
-The package uses the concept of 'transformers': the parsed DOM tree is possibly
-transformed before performing the real RDFa processing. This transformer
-structure makes it possible to add additional 'services' without distoring the
-core code of RDFa processing. (Ben Adida referred to these as "hGRDDL"...)
-
-The user of the package may refer to such and pass them to the parse method via
-an the ``transformers`` option. The caller of the package may also add his/her
-transformer modules. Here is a possible usage with the 'openid' transformer
-added to the call::
-
-    from pyRdfa.transform.OpenID import OpenID_transform
-    graph.parse('filename.html', format='rdfa',
-            transformers=[OpenID_transform])
-    print graph.serialize(format='pretty-xml')
-
-Note that the current option instance is passed to all transformers as extra
-parameters. Extensions of the package may make use of that to control the
-transformers, if necessary.
-
-HTML5
-=====
-
-The `RDFa syntax <http://www.w3.org/TR/rdfa-syntax>`_ is defined in terms of
-XHTML. However, in future, `HTML5 <http://www.w3.org/TR/html5/>`_ may also be
-considered as a carrier language for RDFa. Therefore, the distiller can be
-started up in two different modes: - in a "strict" XML mode the input is parsed
-by an XML parser (Python's xml minidom), and an exception is raised if the
-parser experiences problems - in a "lax" mode, meaning that if the XML parser
-has problems, then there is a fallback on an `HTML5 parser
-<http://code.google.com/p/html5lib/>`_ to parse the input. This also covers
-HTML4 "tag soup" files.
-
-Requires: `html5lib <http://code.google.com/p/html5lib/>`_ for the HTML5
-parsing. Note possible dependecies on Python's version on the project's web
-site.
-
-SVG 1.2 (and XML host languages in general)
-===========================================
-
-The `SVG 1.2 Tiny <http://www.w3.org/TR/SVGMobile12/>`_ specification has also
-adopted RDFa as a means to add metadata to SVG content. This means that RDFa
-attributes can also be used to express metadata. There are, however, two subtle
-differences when using RDFa with XHTML or with SVG, namely:
-
-- SVG also has a more "traditional" way of adding RDF metadata to a file,
-  namely by directly including RDF/XML into SVG (as a child of a ``metadata``
-  element. According to the specification of SVG, the graphs extracted from an
-  SVG file and originating from such embedded contents and the graph extracted
-  via RDFa attributes should be merged to yield the output RDF graph.
-- XHTML1 does *not* use the ``xml:base`` functionality, whereas SVG
-  (and generic XML applications) do.
-
-By default, the distiller runs in XHTML 'mode', ie, these two extra features
-are not implemented. However, if parse is given ``xhtml=False``, distiller
-considers that the underlying host language is pure XML, and these two
-additional features are also implemented. An example would be::
-
-    graph.parse('filename.svg', format='rdfa', xhtml=False)
-
-Attribution
-===========================================
+For details on RDFa, the reader should consult the `RDFa syntax document
+<http://www.w3.org/TR/rdfa-syntax>`_.
 
 This is an adapted version of pyRdfa (`W3C RDFa Distiller page
 <http://www.w3.org/2007/08/pyRdfa/>`_) by Ivan Herman
-(<http://www.w3.org/People/Ivan/>). It replaces the previous RDFa parser by
-Elias Torres (<elias@torrez.us>).
-
-The pyRdfa package has the following relevant info:
-
-Author: `Ivan Herman <a href="http://www.w3.org/People/Ivan/">`_.
-License: This software is available for use under the `W3C® SOFTWARE NOTICE AND
-LICENSE <http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231>.
-
-This package is a part of and falls under the licence of RDFLib.
 """
 
 import sys

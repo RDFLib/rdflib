@@ -38,7 +38,7 @@ setup(
 
     packages = find_packages(exclude=["test"]),
 
-    #install_requires = ['pyparsing'],
+    install_requires = ['pyparsing', 'html5lib'],
 
     tests_require = ["nose>=0.10.4"],
 
