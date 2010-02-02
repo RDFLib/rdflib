@@ -1,6 +1,8 @@
 from rdflib.graph import ConjunctiveGraph
 from rdflib.syntax.parsers import Parser
-from rdflib.syntax.parsers.n3p.n3proc import N3Processor
+#from rdflib.syntax.parsers.n3p.n3proc import N3Processor
+
+from rdflib.syntax.parsers.notation3 import SinkParser, RDFSink
 
 
 class N3Parser(Parser):
@@ -17,30 +19,15 @@ class N3Parser(Parser):
         conj_graph.default_context = graph # TODO: CG __init__ should have a default_context arg
         # TODO: update N3Processor so that it can use conj_graph as the sink
         conj_graph.namespace_manager = graph.namespace_manager
-        sink = Sink(conj_graph)
-        if False:
-            sink.quantify = lambda *args: True
-            sink.flatten = lambda *args: True
+        sink = RDFSink(conj_graph)
+
         baseURI = graph.absolutize(source.getPublicId() or source.getSystemId() or "")
-        p = N3Processor("nowhere", sink, baseURI=baseURI) # pass in "nowhere" so we can set data instead
-        p.userkeys = True # bah
-        p.data = source.getByteStream().read() # TODO getCharacterStream?
-        p.parse()
-        for prefix, namespace in p.bindings.items():
-            conj_graph.bind(prefix, namespace)
+        p = SinkParser(sink, baseURI=baseURI) 
+        
+        p.loadStream(source.getByteStream())
+
+        for prefix, namespace in p._bindings.items():
+             conj_graph.bind(prefix, namespace)
 
 
-class Sink(object):
-    def __init__(self, graph):
-        self.graph = graph
-
-    def start(self, root):
-        pass
-
-    def statement(self, s, p, o, f):
-        f.add((s, p, o))
-
-    def quantify(self, formula, var):
-        #print "quantify(%s, %s)" % (formula, var)
-        pass
 
