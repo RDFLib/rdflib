@@ -41,4 +41,8 @@ import logging
 _logger = logging.getLogger("rdflib")
 _logger.info("version: %s" % __version__)
 
+
 from rdflib.term import URIRef, BNode, Literal
+
+from rdflib.graph import Graph, ConjunctiveGraph
+
