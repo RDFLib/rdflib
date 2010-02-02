@@ -64,7 +64,7 @@ import unittest
 from rdflib.graph import Graph, ConjunctiveGraph
 
 
-class N3TestCase(unittest.TestCase):
+class TestN3Case(unittest.TestCase):
 
     def setUp(self):
         pass
@@ -163,7 +163,7 @@ cases = ['no quotes',
          '<a some="typical" html="content">here</a>',
          ]
 
-class N3Quoting(unittest.TestCase):
+class TestN3Quoting(unittest.TestCase):
     def test(self):
         g = Graph()
         NS = Namespace("http://quoting.test/")
