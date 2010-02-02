@@ -64,9 +64,11 @@ class PrettyXMLSerializer(Serializer):
             if bnode not in self.__serialized:
                 self.subject(subject, 1)
         writer.pop(RDF.RDF)
+        stream.write("\n")
 
         # Set to None so that the memory can get garbage collected.
         self.__serialized = None
+
 
 
     def subject(self, subject, depth=1):

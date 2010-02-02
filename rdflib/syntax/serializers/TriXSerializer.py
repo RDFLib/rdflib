@@ -35,6 +35,7 @@ class TriXSerializer(Serializer):
             pass
 
         self.writer.pop()
+        stream.write("\n")
         
 
     def _writeGraph(self, graph):

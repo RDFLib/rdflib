@@ -17,7 +17,7 @@ class NTSerializer(Serializer):
         write = lambda triple: stream.write((triple[0].n3() + u" " + \
                                              triple[1].n3() + u" " + _xmlcharref_encode(triple[2].n3()) + u".\n").encode(encoding, "replace"))
         map(write, self.store)
-
+        stream.write("\n")
 
 # from http://code.activestate.com/recipes/303668/
 

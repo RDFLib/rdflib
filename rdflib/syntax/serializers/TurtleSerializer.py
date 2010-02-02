@@ -63,6 +63,7 @@ class TurtleSerializer(RecursiveSerializer):
                 self.write('\n')
 
         self.endDocument()
+        stream.write("\n")
 
     def preprocessTriple(self, triple):
         super(TurtleSerializer, self).preprocessTriple(triple)
