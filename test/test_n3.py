@@ -64,7 +64,7 @@ import unittest
 from rdflib.graph import Graph, ConjunctiveGraph
 
 
-class TestN3Case(object):
+class TestN3Case(unittest.TestCase):
 
     def setUp(self):
         pass
@@ -131,7 +131,12 @@ foo-bar:Ex foo-bar:name "Test" . """
         g = Graph()
         g.parse(data=input, format="n3")
         
-                
+
+    def testIssue68(self): 
+        input="""@prefix : <http://some.url/pome#>.\n\n:Brecon a :Place;\n\t:hasLord\n\t\t:Bernard_of_Neufmarch\xc3\xa9 .\n """
+        
+        g = Graph()
+        g.parse(data=input, format="n3")
 
     def testModel(self):
         g = ConjunctiveGraph()
