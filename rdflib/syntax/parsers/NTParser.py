@@ -11,6 +11,9 @@ class NTSink(object):
 
 
 class NTParser(Parser):
+    """parser for the ntriples format, often stored with the .nt extension
+
+    See http://www.w3.org/TR/rdf-testcases/#ntriples"""
 
     def __init__(self):
         super(NTParser, self).__init__()
