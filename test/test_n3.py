@@ -1,7 +1,7 @@
 from rdflib.term import Literal, URIRef
 from rdflib.namespace import Namespace
 
-__test__ = False
+
 
 test_data = """
 #  Definitions of terms describing the n3 model
@@ -64,7 +64,7 @@ import unittest
 from rdflib.graph import Graph, ConjunctiveGraph
 
 
-class TestN3Case(unittest.TestCase):
+class TestN3Case(object):
 
     def setUp(self):
         pass
@@ -164,7 +164,7 @@ cases = ['no quotes',
          ]
 
 class TestN3Quoting(unittest.TestCase):
-    def test(self):
+    def test_quoting(self):
         g = Graph()
         NS = Namespace("http://quoting.test/")
         for i, case in enumerate(cases):
