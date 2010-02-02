@@ -173,6 +173,110 @@ class GraphTestCase(unittest.TestCase):
 
         self.assertEquals(False, graph.connected())
 
+    def testSub(self):
+        g1=Graph()
+        g2=Graph()
+
+        tarek = self.tarek
+        michel = self.michel
+        bob = self.bob
+        likes = self.likes
+        hates = self.hates
+        pizza = self.pizza
+        cheese = self.cheese
+        
+        g1.add((tarek, likes, pizza))
+        g1.add((bob, likes, cheese))
+
+        g2.add((bob, likes, cheese))
+
+        g3=g1-g2
+
+        self.assertEquals(len(g3), 1)
+        self.assertEquals((tarek, likes, pizza) in g3, True)
+        self.assertEquals((tarek, likes, cheese) in g3, False)
+
+        self.assertEquals((bob, likes, cheese) in g3, False)
+
+        g1-=g2
+
+        self.assertEquals(len(g1), 1)
+        self.assertEquals((tarek, likes, pizza) in g1, True)
+        self.assertEquals((tarek, likes, cheese) in g1, False)
+
+        self.assertEquals((bob, likes, cheese) in g1, False)
+
+    def testGraphAdd(self):
+        g1=Graph()
+        g2=Graph()
+
+        tarek = self.tarek
+        michel = self.michel
+        bob = self.bob
+        likes = self.likes
+        hates = self.hates
+        pizza = self.pizza
+        cheese = self.cheese
+        
+        g1.add((tarek, likes, pizza))
+
+        g2.add((bob, likes, cheese))
+
+        g3=g1+g2
+
+        self.assertEquals(len(g3), 2)
+        self.assertEquals((tarek, likes, pizza) in g3, True)
+        self.assertEquals((tarek, likes, cheese) in g3, False)
+
+        self.assertEquals((bob, likes, cheese) in g3, True)
+
+        g1+=g2
+
+        self.assertEquals(len(g1), 2)
+        self.assertEquals((tarek, likes, pizza) in g1, True)
+        self.assertEquals((tarek, likes, cheese) in g1, False)
+
+        self.assertEquals((bob, likes, cheese) in g1, True)
+
+    def testGraphIntersection(self):
+        g1=Graph()
+        g2=Graph()
+
+        tarek = self.tarek
+        michel = self.michel
+        bob = self.bob
+        likes = self.likes
+        hates = self.hates
+        pizza = self.pizza
+        cheese = self.cheese
+        
+        g1.add((tarek, likes, pizza))
+        g1.add((michel, likes, cheese))
+
+        g2.add((bob, likes, cheese))
+        g2.add((michel, likes, cheese))
+
+        g3=g1*g2
+
+        self.assertEquals(len(g3), 1)
+        self.assertEquals((tarek, likes, pizza) in g3, False)
+        self.assertEquals((tarek, likes, cheese) in g3, False)
+
+        self.assertEquals((bob, likes, cheese) in g3, False)
+
+        self.assertEquals((michel, likes, cheese) in g3, True)
+
+        g1*=g2
+
+        self.assertEquals(len(g1), 1)
+
+        self.assertEquals((tarek, likes, pizza) in g1, False)
+        self.assertEquals((tarek, likes, cheese) in g1, False)
+
+        self.assertEquals((bob, likes, cheese) in g1, False)
+
+        self.assertEquals((michel, likes, cheese) in g1, True)
+
 
 if __name__ == '__main__':
     unittest.main()
