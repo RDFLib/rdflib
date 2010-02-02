@@ -1,0 +1,38 @@
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id$
+-->
+
+<!--
+
+ Assumed base URI:
+
+http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test015.rdf
+
+ Description:
+
+ Test of the last alternative for production [6.12],
+ interpreted according to RDFMS paragraphs 229-234:
+http://lists.w3.org/Archives/Public/www-archive/2001Jun/att-0021/00-part#229
+ Here we have an explicit closing tag. This does not match any
+ of the productions in the original document, but is indistinguishable
+ from test014 as far as XML is concerned.
+
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:random="http://random.ioctl.org/#">
+ 
+<rdf:Description rdf:about="http://random.ioctl.org/#bar">
+  <random:someProperty random:prop2="baz"></random:someProperty>
+</rdf:Description>
+</rdf:RDF>
+ 

@@ -15,7 +15,7 @@ class NTSerializer(Serializer):
             print "TODO: NTSerializer does not support base"
         encoding = self.encoding
         write = lambda triple: stream.write((triple[0].n3() + u" " + \
-                                             triple[1].n3() + u" " + _xmlcharref_encode(triple[2].n3()) + u".\n").encode(encoding, "replace"))
+                                             triple[1].n3() + u" " + _xmlcharref_encode(triple[2].n3()) + u" .\n").encode(encoding, "replace"))
         map(write, self.store)
         stream.write("\n")
 
@@ -25,6 +25,11 @@ class NTSerializer(Serializer):
 def _xmlcharref_encode(unicode_data, encoding="ascii"):
     """Emulate Python 2.3's 'xmlcharrefreplace' encoding error handler."""
     chars = []
+
+    # nothing to do about xmlchars, but replace newlines with escapes: 
+    unicode_data=unicode_data.replace("\n","\\n")
+    if unicode_data.startswith('"""'): unicode_data=unicode_data[2:-2]
+
     # Step through the unicode_data string one character at a time in
     # order to catch unencodable characters:
     for char in unicode_data:

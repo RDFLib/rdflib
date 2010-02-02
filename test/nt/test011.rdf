@@ -1,0 +1,30 @@
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id$
+-->
+<!--
+
+ Assumed base URI:
+
+http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test011.rdf
+
+ Description:
+
+ As test005.rdf; this uses an explicit closing tag.
+
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:random="http://random.ioctl.org/#">
+ 
+ <rdf:Description rdf:about="http://random.ioctl.org/#bar">
+   <random:someProperty rdf:ID="foo"></random:someProperty>
+ </rdf:Description>
+</rdf:RDF>
