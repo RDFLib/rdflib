@@ -8,6 +8,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 import base64
+from md5 import md5
 import threading
 from urlparse import urlparse, urljoin, urldefrag
 from string import ascii_letters, rsplit
@@ -125,6 +126,12 @@ class URIRef(Identifier):
         return """rdflib.term.URIRef('%s')""" % str(self)
 
     def md5_term_hash(self):
+        """a string of hex that will be the same for two URIRefs that
+        are the same. It is not a suitable unique id.
+
+        Supported for backwards compatibility; new code should
+        probably just use __hash__
+        """
         d = md5(str(self))
         d.update("U")
         return d.hexdigest()
@@ -220,6 +227,12 @@ class BNode(Identifier):
         return """rdflib.term.BNode('%s')""" % str(self)
 
     def md5_term_hash(self):
+        """a string of hex that will be the same for two BNodes that
+        are the same. It is not a suitable unique id.
+
+        Supported for backwards compatibility; new code should
+        probably just use __hash__
+        """
         d = md5(str(self))
         d.update("B")
         return d.hexdigest()
@@ -621,6 +634,12 @@ class Literal(Identifier):
         return rt
 
     def md5_term_hash(self):
+        """a string of hex that will be the same for two Literals that
+        are the same. It is not a suitable unique id.
+
+        Supported for backwards compatibility; new code should
+        probably just use __hash__
+        """
         d = md5(str(self))
         d.update("L")
         return d.hexdigest()
@@ -750,6 +769,12 @@ class Variable(Identifier):
         return (Variable, (unicode(self),))
 
     def md5_term_hash(self):
+        """a string of hex that will be the same for two Variables that
+        are the same. It is not a suitable unique id.
+
+        Supported for backwards compatibility; new code should
+        probably just use __hash__
+        """
         d = md5(str(self))
         d.update("V")
         return d.hexdigest()
