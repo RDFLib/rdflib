@@ -226,6 +226,8 @@ class Store(object):
 
     def namespaces(self):
         """ """
+        if False:
+            yield
 
     # Optional Transactional methods
 
