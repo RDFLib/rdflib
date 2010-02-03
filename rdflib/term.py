@@ -534,7 +534,10 @@ class Literal(Identifier):
             u'"foo"^^<http://www.w3.org/2001/XMLSchema#string>'
 
             >>> Literal(True)._literal_n3(use_plain=True)
-            u'"true"^^<http://www.w3.org/2001/XMLSchema#boolean>'
+            u'true'
+
+            >>> Literal(False)._literal_n3(use_plain=True)
+            u'false'
 
         Using callback for datatype QNames::
 
@@ -651,9 +654,8 @@ _XSD_PFX = 'http://www.w3.org/2001/XMLSchema#'
 _PLAIN_LITERAL_TYPES = (
     URIRef(_XSD_PFX+'integer'),
     URIRef(_XSD_PFX+'float'),
-    #_XSD_NS.decimal, _XSD_NS.double, # "subsumed" by float...
-    # TODO: n3 parser doesn't yet support boolean!
-    #URIRef(_XSD_PFX+'boolean'),
+    #_XSD_NS.decimal, _XSD_NS.double, # TODO: "subsumed" by float...
+    URIRef(_XSD_PFX+'boolean'),
 )
 
 
