@@ -45,7 +45,6 @@ NOSE_ARGS = [
         '--with-doctest',
         '--doctest-extension=.doctest',
         '--doctest-tests',
-        '--with-xunit',
 #        '--with-EARL',
     ]
 
