@@ -62,7 +62,6 @@ class StringInputSource(InputSource):
 
 
 headers = {
-    'Accept': 'application/rdf+xml,text/rdf+n3;q=0.9,application/xhtml+xml;q=0.5',
     'User-agent': 'rdflib-%s (http://rdflib.net/; eikeon@eikeon.com)' % __version__
     }
 
@@ -72,11 +71,22 @@ class URLInputSource(InputSource):
     TODO:
     """
 
-    def __init__(self, system_id=None):
+    def __init__(self, system_id=None, format=None):
         super(URLInputSource, self).__init__(system_id)
         self.url = system_id
-        # So that we send the headers we want to...
-        req = Request(system_id, None, headers)
+
+        # copy headers to change
+        myheaders=dict(headers)
+        if format=='application/rdf+xml':                 
+            myheaders['Accept']='application/rdf+xml, */*;q=0.1'
+        elif format=='n3':
+            myheaders['Accept']='text/n3, */*;q=0.1'
+        elif format=='nt':
+            myheaders['Accept']='text/plain, */*;q=0.1'
+        else: 
+            myheaders['Accept']='application/rdf+xml,text/rdf+n3;q=0.9,application/xhtml+xml;q=0.5, */*;q=0.1'
+        
+        req = Request(system_id, None, myheaders)
         try:
             file = urlopen(req)
         except HTTPError, e:
@@ -109,7 +119,7 @@ class FileInputSource(InputSource):
 
 
 def create_input_source(source=None, publicID=None,
-                        location=None, file=None, data=None):
+                        location=None, file=None, data=None, format=None):
     """
     Return an appropriate InputSource instance for the given
     parameters.
@@ -142,7 +152,7 @@ def create_input_source(source=None, publicID=None,
             filename = url2pathname(absolute_location.replace("file:///", "/"))
             file = __builtin__.file(filename, "rb")
         else:
-            input_source = URLInputSource(absolute_location)
+            input_source = URLInputSource(absolute_location, format)
         publicID = publicID or absolute_location
 
     if file is not None:

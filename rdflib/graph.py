@@ -775,7 +775,7 @@ class Graph(Node):
         if format=="xml":
             # warn... backward compat.
             format = "application/rdf+xml"
-        source = create_input_source(source=source, publicID=publicID, location=location, file=file, data=data)
+        source = create_input_source(source=source, publicID=publicID, location=location, file=file, data=data, format=format)
         if format is None:
             format = source.content_type
         if format is None:
@@ -975,7 +975,7 @@ class ConjunctiveGraph(Graph):
         it returns the root context.
         """
 
-        source = create_input_source(source=source, publicID=publicID, location=location, file=file, data=data)
+        source = create_input_source(source=source, publicID=publicID, location=location, file=file, data=data, format=format)
 
         #id = self.context_id(self.absolutize(source.getPublicId()))
         context = Graph(store=self.store, identifier=
