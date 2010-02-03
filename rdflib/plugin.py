@@ -135,8 +135,8 @@ register('trix', Serializer,
         'rdflib.syntax.serializers.TriXSerializer', 'TriXSerializer')
 
 register('application/rdf+xml', Parser,
-        'rdflib.syntax.parsers.RDFXMLParser', 'RDFXMLParser')
-register('xml', Parser, 'rdflib.syntax.parsers.RDFXMLParser', 'RDFXMLParser')
+        'rdflib.syntax.parsers.rdfxml', 'RDFXMLParser')
+register('xml', Parser, 'rdflib.syntax.parsers.rdfxml', 'RDFXMLParser')
 register('n3', Parser, 'rdflib.syntax.parsers.notation3', 'N3Parser')
 register('nt', Parser, 'rdflib.syntax.parsers.NTParser', 'NTParser')
 register('trix', Parser, 'rdflib.syntax.parsers.TriXParser', 'TriXParser')

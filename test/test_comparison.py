@@ -8,7 +8,7 @@ from rdflib.term import Literal
 
 from rdflib.graph import Graph
 
-from rdflib.syntax.parsers.RDFXMLHandler import CORE_SYNTAX_TERMS
+from rdflib.syntax.parsers.rdfxml import CORE_SYNTAX_TERMS
 
 
 """
