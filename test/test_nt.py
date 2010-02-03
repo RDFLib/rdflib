@@ -1,6 +1,6 @@
 import unittest
 
-import rdflib
+from rdflib import Graph, Literal, URIRef
 
 
 class NTTestCase(unittest.TestCase):
@@ -14,9 +14,14 @@ class NTTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testModel(self):
-        g = rdflib.Graph()
-        g.load("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test002.nt", format="nt")
+    def testIssue78(self):
+        g = Graph()
+        g.add((URIRef("foo"), URIRef("foo"), Literal(u"R\u00E4ksm\u00F6rg\u00E5s")))
+        s=g.serialize(format='nt')
+        self.assertEquals(type(s), str)
+        self.assertTrue(r"R\u00E4ksm\u00F6rg\u00E5s" in s)
+
+
 
 
 if __name__ == "__main__":
