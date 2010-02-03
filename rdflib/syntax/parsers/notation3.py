@@ -43,6 +43,8 @@ from decimal import Decimal
 from rdflib.term import URIRef, BNode, Literal, Variable
 from rdflib.graph import QuotedGraph
 
+import rdflib
+
 # Incestuous.. would be nice to separate N3 and XML
 # from sax2rdf import XMLtoDOM
 def XMLtoDOM(*args, **kargs): 
@@ -2228,6 +2230,34 @@ def dummy():
                 res = res + ch
         return delim + res + delim
 
+
+class N3Parser(rdflib.Parser):
+
+    def __init__(self):
+        pass
+
+    def parse(self, source, graph):
+        # we're currently being handed a Graph, not a ConjunctiveGraph
+        assert graph.store.context_aware # is this implied by formula_aware
+        assert graph.store.formula_aware
+
+        conj_graph = rdflib.ConjunctiveGraph(store=graph.store)
+        conj_graph.default_context = graph # TODO: CG __init__ should have a default_context arg
+        # TODO: update N3Processor so that it can use conj_graph as the sink
+        conj_graph.namespace_manager = graph.namespace_manager
+        sink = RDFSink(conj_graph)
+
+        baseURI = graph.absolutize(source.getPublicId() or source.getSystemId() or "")
+        p = SinkParser(sink, baseURI=baseURI) 
+        
+        p.loadStream(source.getByteStream())
+
+        for prefix, namespace in p._bindings.items():
+             conj_graph.bind(prefix, namespace)
+
+
+
+
 def _test():
     import doctest
     doctest.testmod()
@@ -2237,8 +2267,7 @@ def _test():
 #     _test()
 
 def main(): 
-   import rdflib.graph
-   g=rdflib.graph.ConjunctiveGraph()
+   g=rdflib.ConjunctiveGraph()
 
    sink = RDFSink(g)
    base = 'file://' + os.path.join(os.getcwd(), sys.argv[1])

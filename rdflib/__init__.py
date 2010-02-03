@@ -47,3 +47,5 @@ from rdflib.term import URIRef, BNode, Literal
 from rdflib.graph import Graph, ConjunctiveGraph
 
 from rdflib.namespace import Namespace
+
+from rdflib.syntax.parsers import Parser
