@@ -135,4 +135,3 @@ class ParsedGraphGraphPattern(ParsedGroupGraphPattern):
     def __repr__(self):
         return "GRAPH %s { %s }"%(self.name,self.graphPatterns)
 
-    

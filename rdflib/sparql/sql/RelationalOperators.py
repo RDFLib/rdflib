@@ -111,4 +111,3 @@ class RelationalTerminalExpOperator(object):
 
     def GetTermExp(self,sqlBuilder):
         raise Exception("GetTermExp must be overridden in child classes.")
-   

@@ -56,4 +56,3 @@ def WriteAllResults(filename, columns, list):
     w.Open(columns, filename)    
     w.Write(list)            
     w.Close()
-    

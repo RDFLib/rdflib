@@ -380,5 +380,5 @@ def Stats2CSV(stats, cacheFolder):
                 
     print ' done in %s s' % (time.time()-startTime)
                 
-#GetDatabaseStats(OpenGraph('MySQL', defaultConfigString, defaultGraphUri, 'rdfstore'))
-#GetDatabaseStats(OpenGraph('MySQL', defaultConfigString + "1", defaultGraphUri, 'rdfstore'))
+# GetDatabaseStats(OpenGraph('MySQL', defaultConfigString, defaultGraphUri, 'rdfstore'))
+# GetDatabaseStats(OpenGraph('MySQL', defaultConfigString + "1", defaultGraphUri, 'rdfstore'))

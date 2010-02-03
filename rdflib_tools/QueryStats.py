@@ -216,4 +216,3 @@ def GetQueryStats(queryEntries):
     
     cols.sort()
     return (cols, entries)
-        

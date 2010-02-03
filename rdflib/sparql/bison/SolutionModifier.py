@@ -33,4 +33,3 @@ class ParsedOrderConditionExpression(object):
 
     def __repr__(self):
         return "%s(%s)"%(ORDER_VALUE_MAPPING[self.order],self.expression.reduce())
-    
