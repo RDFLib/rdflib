@@ -1,0 +1,17 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# $Id: test003.nt,v 1.2 2003/07/24 15:51:06 jcarroll Exp $
+# 
+#####################################################################
+_:j0A <http://example.org/property1> "value" .
+
+
+

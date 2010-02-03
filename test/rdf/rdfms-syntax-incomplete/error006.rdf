@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+-->
+<!--
+
+  Cannot have rdf:nodeID and rdf:resource.
+  $Id: error006.rdf,v 1.1 2002/08/03 05:32:31 jcarroll Exp $
+
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/">
+
+ <rdf:Description>
+   <eg:prop rdf:nodeID="a" rdf:resource="http://www.example.org/" />
+ </rdf:Description>
+
+</rdf:RDF>

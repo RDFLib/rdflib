@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Issue: rdf-charmod-literals
+
+  Description: Legal NFC character sequence in the literal.
+
+    White test case from
+     http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Apr/0016.html
+
+  $Id: test001.rdf,v 1.1 2002/04/29 10:35:03 jgrant Exp $
+
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/">
+   <!-- Dürst registers himself as a creator of the Charmod WD. -->
+
+   <rdf:Description rdf:about="http://www.w3.org/TR/2002/WD-charmod-20020220">
+
+   <!-- The ü below is a single character #xFC in NFC
+        (encoded as two UTF-8 octets #xC3 #xBC)  -->
+      <eg:Creator eg:named="Dürst"/>
+
+   </rdf:Description>
+</rdf:RDF>

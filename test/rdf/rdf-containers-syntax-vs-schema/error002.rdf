@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!-- 	Issue: rdf-containers-syntax-vs-schema
+        Test:  error002
+        $Header: /w3ccvs/WWW/2000/10/rdf-tests/rdfcore/rdf-containers-syntax-vs-schema/error002.rdf,v 1.4 2001/12/20 22:10:28 bmcbride Exp $
+
+        rdf:li elements as typed nodes - a bizarre case
+As specified in
+
+  http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2001Nov/0651.html
+
+is now an error.
+-->
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: error002.rdf,v 1.4 2001/12/20 22:10:28 bmcbride Exp $
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:foo="http://foo/">
+  <rdf:li/>
+</rdf:RDF>
+
+
+
+

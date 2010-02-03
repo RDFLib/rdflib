@@ -1,0 +1,14 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# $Id: test006.nt,v 1.2 2002/12/13 11:32:46 jgrant Exp $
+# 
+#####################################################################
+<http://example.org/node> <http://example.org/property> "chat"@fr .

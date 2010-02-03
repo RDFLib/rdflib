@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Description: the rdf:RDF element is no longer mandatory.
+
+  $Id: test001.rdf,v 1.1 2003/10/08 13:00:58 jgrant Exp $
+
+-->
+
+<Book xmlns="http://example.org/terms#">
+  <title>Dogs in Hats</title>
+</Book>

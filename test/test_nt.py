@@ -1,7 +1,7 @@
 import unittest
 
-from rdflib import *
-from rdflib.graph import Graph
+import rdflib
+
 
 class NTTestCase(unittest.TestCase):
 
@@ -15,7 +15,7 @@ class NTTestCase(unittest.TestCase):
         pass
 
     def testModel(self):
-        g = Graph()
+        g = rdflib.Graph()
         g.load("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test002.nt", format="nt")
 
 

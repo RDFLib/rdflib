@@ -1,0 +1,15 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+# 
+# $Id: test014.nt,v 1.2 2002/11/15 11:45:42 jgrant Exp $
+#
+#####################################################################
+<http://example.org/dir/file#frag> <http://example.org/value> "v" .
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test014.rdf#frag> <http://example.org/value> "v" .

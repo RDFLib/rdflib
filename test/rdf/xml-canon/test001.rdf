@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Description: Demonstrating XML Literal canonicalisation
+
+  $Id: test001.rdf,v 1.1 2003/08/18 10:09:29 jgrant Exp $
+
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/">
+
+
+  <rdf:Description rdf:about="http://www.example.org/a">
+    <eg:prop rdf:parseType="Literal"><br /></eg:prop>
+  </rdf:Description>
+
+</rdf:RDF>
+

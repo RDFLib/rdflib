@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+-->
+<!--
+
+  On a property element rdf:nodeID behaves
+  similarly to rdf:resource.
+  $Id: test004.rdf,v 1.1 2002/07/30 09:46:05 jcarroll Exp $
+
+-->
+
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/">
+
+ <!-- The rdf:nodeID allows two references to the same node
+      as an object of triples in the graph. -->
+ <rdf:Description >
+   <eg:property1 rdf:ID="reify" rdf:nodeID="a" />
+ </rdf:Description>
+
+ <rdf:Description>
+   <eg:property2 rdf:nodeID="a"/>
+ </rdf:Description>
+
+</rdf:RDF>

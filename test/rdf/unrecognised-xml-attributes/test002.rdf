@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Description: Test case for the proposal:
+    Unrecognized attributes in the xml namespace should be ignored.
+
+  in http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Jan/0152.html
+
+  Although here it is not testing something in the xml namespace; but
+  showing that an attribute that XML reserves is ignored.
+
+  Related issue:
+
+    NONE
+
+  $Id: test002.rdf,v 1.1 2002/04/13 13:30:00 jgrant Exp $
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:ex="http://example.org/schema#">
+  <rdf:Description rdf:about="http://example.org/thing">
+    <ex:prop1 xmlnewthing="anything">stuff</ex:prop1>
+  </rdf:Description>
+</rdf:RDF>
+

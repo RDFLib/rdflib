@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Issue: http://www.w3.org/2000/03/rdf-tracking/#rdfms-xmllang
+  Test:  2
+  Author: Dave Beckett
+
+    In-scope xml:lang does not apply to rdf:parseType="Literal"
+    element content values
+
+  $Id: test002.rdf,v 1.3 2003/07/24 19:56:32 dbeckett2 Exp $
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/">
+
+  <rdf:Description rdf:about="http://example.org/node">
+     <eg:property xml:lang="fr" rdf:parseType="Literal">chat</eg:property>
+  </rdf:Description>
+</rdf:RDF>

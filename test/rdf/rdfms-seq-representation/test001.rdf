@@ -1,0 +1,33 @@
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Description: rdf:parseType="Collection" is parsed like the
+             nonstandard daml:collection.
+  Author: Jos De Roo (test case), Jeremy Carroll (comment)
+
+  $Id: test001.rdf,v 1.1 2002/09/17 19:03:20 jcarroll Exp $
+
+-->
+
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:eg="http://example.org/eg#">
+
+    <rdf:Description rdf:about="http://example.org/eg#eric">
+        <rdf:type rdf:parseType="Resource">
+            <eg:intersectionOf rdf:parseType="Collection">
+                <rdf:Description rdf:about="http://example.org/eg#Person"/>
+                <rdf:Description rdf:about="http://example.org/eg#Male"/>
+            </eg:intersectionOf>
+        </rdf:type>
+    </rdf:Description>
+</rdf:RDF>
+

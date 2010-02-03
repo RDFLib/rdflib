@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Description: a RDF Property may have more than one domain property
+
+  Related issue:
+
+    http://www.w3.org/2000/03/rdf-tracking/#rdfs-domain-and-range
+
+  $Id$
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+
+  <rdf:Property rdf:about="http://example.org/bar">
+    <rdfs:domain rdf:resource="http://example.org/Domain1"/>
+    <rdfs:domain rdf:resource="http://example.org/Domain2"/>
+  </rdf:Property>
+
+</rdf:RDF>

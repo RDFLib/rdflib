@@ -1,0 +1,15 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# $Id: test001.nt,v 1.1 2002/04/29 10:35:03 jgrant Exp $
+# 
+#####################################################################
+_:a <http://example.org/named> "D\u00FCrst" .
+<http://www.w3.org/TR/2002/WD-charmod-20020220> <http://example.org/Creator> _:a .

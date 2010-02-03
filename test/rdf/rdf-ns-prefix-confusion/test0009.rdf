@@ -1,0 +1,32 @@
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: test0009.rdf,v 1.2 2001/09/06 21:23:35 barstow Exp $
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/">
+
+ <!-- 
+  Test case for
+  Issue http://www.w3.org/2000/03/rdf-tracking/#rdf-ns-prefix-confusion
+
+  Namespace qualification MUST be used for all property attributes.
+
+  Dave Beckett - http://purl.org/net/dajobe/
+
+ -->
+
+  <!-- Test namespace-qualified property attribute - expect 1 triple -->
+
+  <!-- 6.3 description, part 1; 6.10 propAttr; 6.14 propName; 6.19 Qname -->
+
+  <rdf:Description rdf:about="http://example.org/resource/" eg:property="bar" />
+
+</rdf:RDF>

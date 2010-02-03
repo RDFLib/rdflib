@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+-->
+<!--
+
+  On an rdf:Description or typed node rdf:nodeID behaves
+  similarly to an rdf:about.
+  $Id: test003.rdf,v 1.2 2003/07/24 15:51:06 jcarroll Exp $
+
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/">
+
+ <!-- In this example the rdf:nodeID is redundant. -->
+ <rdf:Description rdf:nodeID="a" eg:property1="value" />
+
+</rdf:RDF>

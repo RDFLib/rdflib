@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Issue: http://www.w3.org/2000/03/rdf-tracking/#rdfms-abouteach
+  Test:  1 (error)
+  Author: Dave Beckett
+
+    aboutEach removed from the RDF specifications.
+    See URI above for further details.
+
+
+  $Id: error001.rdf,v 1.1 2002/04/05 23:01:15 dajobe Exp $
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/">
+
+  <rdf:Bag rdf:ID="node">
+    <rdf:li rdf:resource="http://example.org/node2"/>
+  </rdf:Bag>
+
+  <rdf:Description rdf:aboutEach="#node">
+    <dc:rights xmlns:dc="http://purl.org/dc/elements/1.1/">me</dc:rights>
+  </rdf:Description>
+
+</rdf:RDF>

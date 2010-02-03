@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Description: two identical rdf:ID's are allowed, as long as they
+               refer to different resources.
+  Author: Jeremy Carroll (jjc@hpl.hp.com)
+
+  $Id: test014.rdf,v 1.1 2002/03/08 12:21:41 dajobe Exp $
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/"
+         >
+
+ <rdf:Description xml:base="http://example.org/dir/file"
+                rdf:ID="frag" eg:value="v" />
+ <rdf:Description rdf:ID="frag" eg:value="v" />
+
+</rdf:RDF>

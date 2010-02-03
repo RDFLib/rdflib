@@ -1,5 +1,10 @@
 import unittest
 
+import os
+import os.path
+from urllib import url2pathname
+from urllib2 import urlopen
+
 from rdflib.namespace import RDF, RDFS
 from rdflib.term import URIRef
 from rdflib.term import BNode
@@ -40,9 +45,33 @@ class TestStore(Graph):
 
 TEST = Namespace("http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#")
 
+CACHE_DIR=os.path.join(os.path.dirname(__file__), "rdf")
+
+def cached_file(url):
+    fname = url2pathname(relative(url))
+
+    fpath = os.path.join(CACHE_DIR, fname)
+    if not os.path.exists(fpath):
+        print "%s does not exist, fetching from %s"%(fpath,url)
+        folder=os.path.dirname(fpath)
+        if not os.path.exists(folder): 
+            os.makedirs(folder)
+        f = open(fpath, 'w')
+        try:
+            f.write(urlopen(url).read())
+        finally:
+            f.close()
+    return fpath
+
+
+
+RDFCOREBASE="http://www.w3.org/2000/10/rdf-tests/rdfcore/"
+
+def relative(url): 
+    return url[len(RDFCOREBASE):]
 
 def resolve(rel):
-    return "http://www.w3.org/2000/10/rdf-tests/rdfcore/" + rel
+    return RDFCOREBASE + rel
 
 def _testPositive(uri, manifest):
     if verbose: write(u"TESTING: %s" % uri)
@@ -54,7 +83,7 @@ def _testPositive(uri, manifest):
         format = "nt"
     else:
         format = "xml"
-    expected.load(outDoc, format=format)
+    expected.parse(cached_file(outDoc), publicID=outDoc, format=format)
     store = TestStore(expected)
     if inDoc[-3:]==".nt":
         format = "nt"
@@ -62,7 +91,7 @@ def _testPositive(uri, manifest):
         format = "xml"
 
     try:
-        store.load(inDoc, format=format)
+        store.parse(cached_file(inDoc), publicID=inDoc, format=format)
     except ParserError, pe:
         write("Failed '")
         write(inDoc)
@@ -101,7 +130,7 @@ def _testNegative(uri, manifest):
             format = "nt"
         else:
             format = "xml"
-        store.load(inDoc, format=format)
+        store.parse(cached_file(inDoc), publicID=inDoc, format=format)
     except ParserError, pe:
         results.add((test, RDF.type, RESULT["PassingRun"]))
         #pass
@@ -119,7 +148,7 @@ class ParserTestCase(unittest.TestCase):
     def setUp(self):
         self.manifest = manifest = Graph(store=self.store)
         manifest.open(self.path)
-        manifest.load("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf")
+        manifest.load(cached_file("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf"))
 
     def tearDown(self):
         self.manifest.close()
@@ -171,13 +200,13 @@ results.add((system, RDFS.comment, Literal("")))
 
 if __name__ == "__main__":
     manifest = Graph()
-    manifest.load("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf")
+    manifest.load(cached_file("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf"))
     import sys, getopt
     try:
         optlist, args = getopt.getopt(sys.argv[1:], 'h:', ["help"])
     except getopt.GetoptError, msg:
         write(msg)
-        usage()
+        #usage()
 
     try:
         argv = sys.argv

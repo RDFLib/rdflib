@@ -1,0 +1,38 @@
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: test0010.rdf,v 1.2 2001/09/06 21:23:35 barstow Exp $
+-->
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:eg="http://example.org/">
+
+ <!-- 
+  Test case for
+  Issue http://www.w3.org/2000/03/rdf-tracking/#rdf-ns-prefix-confusion
+
+  Non-prefixed RDF elements (NOT attributes) are allowed when a
+  default XML element namespace is defined with an
+  xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" attribute.
+
+  Dave Beckett - http://purl.org/net/dajobe/
+
+ -->
+
+  <!-- Testing outer bare RDF element (using default namespace) -->
+
+  <!-- Testing bare Description element (using default namespace) 
+       - expect 1 triple -->
+
+  <!-- 6.3 description, part 1; 6.10 propAttr; 6.14 propName; 6.19 Qname -->
+
+  <Description rdf:about="http://example.org/resource/" eg:property="bar" />
+
+</RDF>

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Issue http://www.w3.org/2000/03/rdf-tracking/#rdfms-rdf-names-use
+    Illegal or unusual use of names from the RDF namespace
+
+  Description: 
+    about is forbidden as a node element name.
+
+  $Id: error-003.rdf,v 1.2 2002/08/07 13:17:48 dbeckett2 Exp $
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:about/>
+</rdf:RDF>

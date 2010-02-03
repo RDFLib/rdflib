@@ -1,0 +1,20 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# $Id$
+# 
+#####################################################################
+_:d1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#_1> _:d2 .
+
+_:d2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#_1> "1" .
+_:d2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#_2> "2" .
+
+_:d1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#_2> "2" .
+

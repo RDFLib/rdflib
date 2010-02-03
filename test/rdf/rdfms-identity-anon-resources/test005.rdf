@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Description: a RDF container (in this case a Seq) without an ID 
+   attribute describes an un-named resource, aka a bNode.
+
+  Related issue:  
+
+   http://www.w3.org/2000/03/rdf-tracking/#rdfms-identity-anon-resources
+
+  Author: Art Barstow (barstow@w3.org)
+
+  $Id: test005.rdf,v 1.1 2001/10/10 13:07:07 barstow Exp $
+
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/">
+
+ <rdf:Seq/>
+
+</rdf:RDF>

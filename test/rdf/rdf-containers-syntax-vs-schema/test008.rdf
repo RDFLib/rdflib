@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!-- 	Issue: rdf-containers-syntax-vs-schema
+        Test:  08
+        $Header: /w3ccvs/WWW/2000/10/rdf-tests/rdfcore/rdf-containers-syntax-vs-schema/test008.rdf,v 1.2 2001/09/06 21:23:35 barstow Exp $
+
+        rdf:li processing is per element, not per resource.
+-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+
+  <rdf:Description rdf:about="http://desc"> 
+    <rdf:li>1</rdf:li>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://desc"> 
+    <rdf:li>1-again</rdf:li>
+  </rdf:Description>
+</rdf:RDF>

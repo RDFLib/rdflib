@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+-->
+<!--
+
+  The value of rdf:ID must match the XML Name production,
+  (as modified by XML Namespaces). 
+  $Id: error003.rdf,v 1.1 2002/07/30 09:45:51 jcarroll Exp $
+
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/">
+
+ <rdf:Description>
+   <eg:prop rdf:ID="q:name" />
+ </rdf:Description>
+
+</rdf:RDF>

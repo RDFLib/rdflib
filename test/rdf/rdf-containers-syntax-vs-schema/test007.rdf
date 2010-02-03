@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!-- 	Issue: rdf-containers-syntax-vs-schema
+        Test:  test07
+        $Header: /w3ccvs/WWW/2000/10/rdf-tests/rdfcore/rdf-containers-syntax-vs-schema/test007.rdf,v 1.5 2001/09/06 21:23:35 barstow Exp $
+
+        rdf:li processing within each element is independent
+-->
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:foo="http://foo/">
+
+  <rdf:Description>
+    <rdf:li>
+      <rdf:Description>
+        <rdf:li>1</rdf:li>
+        <rdf:li>2</rdf:li>
+      </rdf:Description>
+    </rdf:li>
+    <rdf:li>2</rdf:li>
+  </rdf:Description>
+</rdf:RDF>

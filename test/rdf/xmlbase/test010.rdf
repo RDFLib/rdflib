@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Description: Example of relative uri with net path resolution.
+  Author: Jeremy Carroll (jjc@hpl.hp.com)
+
+  $Id: test010.rdf,v 1.1 2002/03/08 12:21:41 dajobe Exp $
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/"
+         xml:base="http://example.org/dir/file">
+
+ <eg:type rdf:about="//another.example.org/absfile" />
+
+</rdf:RDF>
+

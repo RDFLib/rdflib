@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Description: Visibly used namespaces must be included in XML
+         Literal values. Treatment of namespaces that are not 
+         visibly used (e.g. rdf: in this example) is implementation
+         dependent. Example from Model & Syntax.
+
+
+  $Id: test002.rdf,v 1.2 2002/11/22 13:59:59 jcarroll Exp $
+
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         >
+
+<rdf:Description
+  xmlns:dc="http://purl.org/metadata/dublin_core#"
+  xmlns="http://www.w3.org/TR/REC-mathml"
+  rdf:about="http://mycorp.example.com/papers/NobelPaper1">
+
+  <dc:Title rdf:parseType="Literal">
+    Ramifications of
+       <apply>
+      <power/>
+      <apply>
+	<plus/>
+	<ci>a</ci>
+	<ci>b</ci>
+      </apply>
+      <cn>2</cn>
+    </apply>
+    to World Peace
+  </dc:Title>
+  <dc:Creator>David Hume</dc:Creator>
+</rdf:Description>
+
+
+</rdf:RDF>
