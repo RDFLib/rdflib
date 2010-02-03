@@ -89,7 +89,7 @@ if __name__ == '__main__':
 
     finalArgs = argv + NOSE_ARGS
     print "Running nose with:", " ".join(finalArgs[1:])
-    nose.run(argv=finalArgs)
+    nose.run_exit(argv=finalArgs)
 
 
 # TODO: anything from the following we've left behind?
