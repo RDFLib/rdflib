@@ -154,8 +154,10 @@ class NTriplesParser(object):
             return m.group(1)
          else:
             buffer = self.file.read(bufsiz)
-            if not buffer:
+            if not buffer and not self.buffer.isspace():
                raise ParseError("EOF in line")
+            elif not buffer:
+               return None
             self.buffer += buffer
 
    def parseline(self):
