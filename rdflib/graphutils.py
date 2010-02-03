@@ -41,23 +41,27 @@ Create canonical graphs (where bnodes have deterministic values)::
     >>> cg1 = iso1.canonical_graph()
     >>> cg2 = iso2.canonical_graph()
 
-Present in both graph::
+Present in both graphs::
 
-    >>> print triples_to_n3(cg1*cg2)
+    >>> def dump_nt_sorted(g):
+    ...     for l in sorted(g.serialize(format='nt').splitlines()):
+    ...         if l: print l
+
+    >>> dump_nt_sorted(cg1*cg2)
     <http://example.org> <http://example.org/ns#rel> <http://example.org/same> .
     <http://example.org> <http://example.org/ns#rel> _:cb-388320322 .
     _:cb-388320322 <http://example.org/ns#label> "Same" .
 
 Only in first::
 
-    >>> print triples_to_n3(cg1-cg2)
+    >>> dump_nt_sorted(cg1-cg2)
     <http://example.org> <http://example.org/ns#rel> <http://example.org/a> .
     <http://example.org> <http://example.org/ns#rel> _:cb-1103370052 .
     _:cb-1103370052 <http://example.org/ns#label> "A" .
 
 Only in second::
 
-    >>> print triples_to_n3(cg2-cg1)
+    >>> dump_nt_sorted(cg2-cg1)
     <http://example.org> <http://example.org/ns#rel> <http://example.org/b> .
     <http://example.org> <http://example.org/ns#rel> _:cb1634787881 .
     _:cb1634787881 <http://example.org/ns#label> "B" .
@@ -68,6 +72,9 @@ Only in second::
 # - Doesn't handle quads yet.
 # - Warning and/or safety mechanism before working on large graphs?
 # - Redesign: create a read-only CanonicalGraph too/instead?
+# - use this in existing Graph.isomorphic?
+
+# Suggestions:
 # - Create a proposed official canonicalization of bnode id:s (e.g. by
 #   using md5 instead of (I assume) python's internal hash algorithm).
 
@@ -178,29 +185,18 @@ def isomorphic(graph1, graph2):
     return to_isomorphic(graph1) == to_isomorphic(graph2)
 
 
-# TODO: improve (and possibly relocate) these..
-
-def triples_to_n3(triples):
-    return "\n".join(sorted(map(triple_to_n3, triples)))
-
-def triple_to_n3(triple):
-    return u" ".join([node.n3() for node in triple]) + u" ."
-
-
-# TODO: see existing Graph.isomorphic
-# Useful? A much cheaper but bnode-squashing comparison mechanism:
+# TODO: Useful? A much cheaper but bnode-squashing comparison mechanism:
 #def similar_graphs(g1, g2):
-#    return all(t1 == t2 for (t1, t2) in similar_graphs_triples(g1, g2))
+#    return all(t1 == t2 for (t1, t2) in _similar_graphs_triples(g1, g2))
 #
-#def similar_graphs_triples(g1, g2):
+#def _similar_graphs_triples(g1, g2):
 #    for (t1, t2) in zip(sorted(_squash_graph(g1)), sorted(_squash_graph(g2))):
 #        yield t1, t2
 #
 #def _squash_graph(graph):
 #    return (_squash_bnodes(triple) for triple in graph)
 #
-#_BAD_NODE = BNode()
+#_MOCK_BNODE = BNode()
 #def _squash_bnodes(triple):
-#    return tuple((isinstance(t, BNode) and _BAD_NODE) or t for t in triple)
-
+#    return tuple((isinstance(t, BNode) and _MOCK_BNODE) or t for t in triple)
 
