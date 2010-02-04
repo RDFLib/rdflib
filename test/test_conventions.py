@@ -6,7 +6,7 @@ import rdflib
 
 
 class A(unittest.TestCase):
-
+    known_issue = True
 
     def test_module_names(self, path=None):
         if path is None:
