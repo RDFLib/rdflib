@@ -2,12 +2,12 @@ from rdflib.term import BNode
 from rdflib.term import Literal
 from rdflib.term import URIRef
 
-from rdflib.syntax.serializers.AbstractSerializer import AbstractSerializer
+from rdflib.syntax.serializers import Serializer
 
 from rdflib.namespace import RDF, RDFS
 
 
-class RecursiveSerializer(AbstractSerializer):
+class RecursiveSerializer(Serializer):
 
     topClasses = [RDFS.Class]
     predicateOrder = [RDF.type, RDFS.label]
