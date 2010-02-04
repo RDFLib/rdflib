@@ -404,7 +404,7 @@ class RDFXMLHandler(handler.ContentHandler):
                 else: #if parse_type=="Literal":
                      # All other values are treated as Literal
                      # See: http://www.w3.org/TR/rdf-syntax-grammar/#parseTypeOtherPropertyElt
-                    object = Literal("", None, RDF.XMLLiteral)
+                    object = Literal("", datatype=RDF.XMLLiteral)
                     current.char = self.literal_element_char
                     current.declared = {}
                     next.start = self.literal_element_start
@@ -437,6 +437,8 @@ class RDFXMLHandler(handler.ContentHandler):
                 if att==RDF.type:
                     o = URIRef(atts[att])
                 else:
+                    if datatype is not None:
+                        language = None
                     o = Literal(atts[att], language, datatype)
 
                 if object is None:
@@ -457,7 +459,10 @@ class RDFXMLHandler(handler.ContentHandler):
     def property_element_end(self, name, qname):
         current = self.current
         if current.data is not None and current.object is None:
-            current.object = Literal(current.data, current.language, current.datatype)
+            literalLang = current.language
+            if current.datatype is not None:
+                literalLang = None
+            current.object = Literal(current.data, literalLang, current.datatype)
             current.data = None
         if self.next.end==self.list_node_element_end:
             if current.object!=RDF.nil:
