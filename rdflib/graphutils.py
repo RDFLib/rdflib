@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 """
 A collection of utilities for canonicalizing and inspecting graphs.
 
@@ -49,22 +49,22 @@ Present in both graphs::
 
     >>> dump_nt_sorted(cg1*cg2)
     <http://example.org> <http://example.org/ns#rel> <http://example.org/same> .
-    <http://example.org> <http://example.org/ns#rel> _:cb-388320322 .
-    _:cb-388320322 <http://example.org/ns#label> "Same" .
+    <http://example.org> <http://example.org/ns#rel> _:cb1373e1895e37293a13204e8048bdcdc7 .
+    _:cb1373e1895e37293a13204e8048bdcdc7 <http://example.org/ns#label> "Same" .
 
 Only in first::
 
     >>> dump_nt_sorted(cg1-cg2)
     <http://example.org> <http://example.org/ns#rel> <http://example.org/a> .
-    <http://example.org> <http://example.org/ns#rel> _:cb-1103370052 .
-    _:cb-1103370052 <http://example.org/ns#label> "A" .
+    <http://example.org> <http://example.org/ns#rel> _:cb12f880a18a57364752aaeb157f2e66bb .
+    _:cb12f880a18a57364752aaeb157f2e66bb <http://example.org/ns#label> "A" .
 
 Only in second::
 
     >>> dump_nt_sorted(cg2-cg1)
     <http://example.org> <http://example.org/ns#rel> <http://example.org/b> .
-    <http://example.org> <http://example.org/ns#rel> _:cb1634787881 .
-    _:cb1634787881 <http://example.org/ns#label> "B" .
+    <http://example.org> <http://example.org/ns#rel> _:cb0a343fb77929ad37cf00a0317f06b801 .
+    _:cb0a343fb77929ad37cf00a0317f06b801 <http://example.org/ns#label> "B" .
 
 """
 
@@ -80,6 +80,17 @@ Only in second::
 
 from rdflib.graph import Graph, ConjunctiveGraph
 from rdflib.term import BNode
+
+import hashlib
+def _hash(t):
+    h = hashlib.md5()
+    for i in t:
+        if isinstance(i, tuple):
+            h.update(_hash(i))
+        else:
+            h.update("%s" % i)
+    return h.hexdigest()
+
 
 
 class IsomorphicGraph(ConjunctiveGraph):
@@ -113,8 +124,8 @@ class IsomorphicGraph(ConjunctiveGraph):
         scenario with the Memory store for rdflib which requires a hash lookup
         in order to return a generator of triples.
         """
-        return hash(tuple(sorted(
-                map(hash, self.canonical_triples()) )))
+        return _hash(tuple(sorted(
+                map(_hash, self.canonical_triples()) )))
 
     def canonical_triples(self):
         for triple in self:
@@ -123,12 +134,12 @@ class IsomorphicGraph(ConjunctiveGraph):
     def _canonicalize_bnodes(self, triple):
         for term in triple:
             if isinstance(term, BNode):
-                yield BNode(value="cb%i"%self._canonicalize(term))
+                yield BNode(value="cb%s"%self._canonicalize(term))
             else:
                 yield term
 
     def _canonicalize(self, term, done=False):
-        return hash(tuple(sorted(self._vhashtriples(term, done))))
+        return _hash(tuple(sorted(self._vhashtriples(term, done))))
 
     def _vhashtriples(self, term, done):
         for triple in self:
