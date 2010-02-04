@@ -3,7 +3,7 @@ import unittest
 import rdflib
 from rdflib.term import Literal
 
-from rdflib.store.NodePickler import NodePickler
+from rdflib.store import NodePickler
 
 
 class UtilTestCase(unittest.TestCase):
