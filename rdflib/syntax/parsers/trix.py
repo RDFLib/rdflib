@@ -35,10 +35,14 @@ from rdflib.namespace import Namespace
 from rdflib.term import URIRef
 from rdflib.term import BNode
 from rdflib.term import Literal
-from rdflib.graph import Graph
+from rdflib.graph import Graph, ConjunctiveGraph
 from rdflib.exceptions import ParserError
+from rdflib.syntax.parsers import Parser
 
 from xml.sax.saxutils import handler
+from xml.sax import make_parser
+from xml.sax.handler import ErrorHandler
+
 
 TRIXNS=Namespace("http://www.w3.org/2004/03/trix/trix-1/")
 XMLNS=Namespace("http://www.w3.org/XML/1998/namespace")
@@ -239,16 +243,6 @@ class TriXHandler(handler.ContentHandler):
         info = "%s:%s:%s: " % (locator.getSystemId(),
                             locator.getLineNumber(), locator.getColumnNumber())
         raise ParserError(info + message)
-
-
-from rdflib.syntax.parsers import Parser
-from rdflib.graph import ConjunctiveGraph
-
-from xml.sax import make_parser
-from xml.sax.saxutils import handler
-from xml.sax.handler import ErrorHandler
-
-from rdflib.syntax.parsers.TriXHandler import TriXHandler
 
 
 def create_parser(store):

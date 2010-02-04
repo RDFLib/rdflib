@@ -125,21 +125,21 @@ register('xml', Serializer, 'rdflib.syntax.serializers.XMLSerializer',
          'XMLSerializer')
 register('n3', Serializer, 'rdflib.syntax.serializers.N3Serializer',
          'N3Serializer')
-register('turtle', Serializer, 'rdflib.syntax.serializers.TurtleSerializer',
+register('turtle', Serializer, 'rdflib.syntax.serializers.turtle',
          'TurtleSerializer')
 register('nt', Serializer, 'rdflib.syntax.serializers.NTSerializer',
          'NTSerializer')
 register('pretty-xml', Serializer,
         'rdflib.syntax.serializers.PrettyXMLSerializer', 'PrettyXMLSerializer')
 register('trix', Serializer,
-        'rdflib.syntax.serializers.TriXSerializer', 'TriXSerializer')
+        'rdflib.syntax.serializers.trix', 'TriXSerializer')
 
 register('application/rdf+xml', Parser,
         'rdflib.syntax.parsers.rdfxml', 'RDFXMLParser')
 register('xml', Parser, 'rdflib.syntax.parsers.rdfxml', 'RDFXMLParser')
 register('n3', Parser, 'rdflib.syntax.parsers.notation3', 'N3Parser')
 register('nt', Parser, 'rdflib.syntax.parsers.NTParser', 'NTParser')
-register('trix', Parser, 'rdflib.syntax.parsers.TriXParser', 'TriXParser')
+register('trix', Parser, 'rdflib.syntax.parsers.trix', 'TriXParser')
 register('rdfa', Parser, 'rdflib.syntax.parsers.rdfa', 'RDFaParser')
 
 register('sparql', sparql.Processor,
