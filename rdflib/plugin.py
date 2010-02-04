@@ -112,8 +112,8 @@ def plugins(name=None, kind=None):
         if (name is None or name==p.name) and (kind is None or kind==p.kind):
             yield p
 
-register('default', Store, 'rdflib.store.IOMemory', 'IOMemory')
-register('IOMemory', Store, 'rdflib.store.IOMemory', 'IOMemory')
+register('default', Store, 'rdflib.store.memory', 'IOMemory')
+register('IOMemory', Store, 'rdflib.store.memory', 'IOMemory')
 register('BerkeleyDB', Store, 'rdflib.store.BerkeleyDB', 'BerkeleyDB')
 register('Sleepycat', Store, 'rdflib.store.Sleepycat', 'Sleepycat')
 register('BDBOptimized', Store, 'rdflib.store.BDBOptimized', 'BDBOptimized')
