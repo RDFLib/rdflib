@@ -3,7 +3,7 @@
 
     >>> g = Graph()
     >>> g.store.__class__
-    <class 'rdflib.store.IOMemory.IOMemory'>
+    <class 'rdflib.store.memory.IOMemory'>
     >>> g.identifier.__class__
     <class 'rdflib.term.BNode'>
 
@@ -17,7 +17,7 @@ Other store kinds: Sleepycat, MySQL, SQLite
     'IOMemory'
     >>> graph = Graph(store)
     >>> graph.store.__class__
-    <class 'rdflib.store.IOMemory.IOMemory'>
+    <class 'rdflib.store.memory.IOMemory'>
 
 Instantiating Graphs with Sleepycat store and an identifier - 
 <http://rdflib.net>:
