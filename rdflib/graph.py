@@ -203,7 +203,7 @@ from rdflib.syntax.serializers import Serializer
 from rdflib.syntax.parsers import Parser
 #from rdflib.parser import Parser
 from rdflib.parser import create_input_source
-from rdflib.syntax.NamespaceManager import NamespaceManager
+from rdflib.namespace import NamespaceManager
 
 import tempfile, shutil, os
 from urlparse import urlparse

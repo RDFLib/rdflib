@@ -9,7 +9,7 @@ Graph pattern class used by the SPARQL implementation
 import sys, os, time, datetime
 from rdflib.term import Literal, BNode, URIRef, Variable
 from types import *
-from rdflib.syntax.NamespaceManager import NamespaceManager
+from rdflib.namespace import NamespaceManager
 from rdflib.graph import Graph
 
 from rdflib.sparql import _questChar, Debug, SPARQLError
