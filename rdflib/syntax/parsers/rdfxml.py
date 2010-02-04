@@ -32,7 +32,6 @@
 """
 """
 from xml.sax import make_parser
-from xml.sax.saxutils import handler
 from xml.sax.handler import ErrorHandler
 from xml.sax.saxutils import handler, quoteattr, escape
 from urlparse import urljoin, urldefrag
