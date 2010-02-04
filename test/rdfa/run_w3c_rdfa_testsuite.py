@@ -32,7 +32,6 @@ TEST = Namespace("http://www.w3.org/2006/03/test-description#")
 XHTML_RDFA_TEST_MANIFEST_URL = ("http://www.w3.org/2006/07/SWD/RDFa/"
         "testsuite/xhtml1-testcases/rdfa-xhtml1-test-manifest.rdf")
 
-__test__ = False # known issue
 
 class TestCase(object):
     def __init__(self, graph, tc_uri):
@@ -113,7 +112,10 @@ def cached_file(url):
     return fpath
 
 
-def all_tests():
+KNOWN_ISSUES = set([11, 92, 94, 100, 101, 102, 103, 114, 117])
+#KNOWN_ISSUES |= set([12, 13, 108])
+
+def all_tests(skip_known_issues=True):
     """
     Generator used to expose test functions. The Nose test runner use this.
     """
@@ -126,6 +128,10 @@ def all_tests():
                 n3 = graph.serialize(format='nt')
                 raise AssertionError(
                         "The SPARQL:\n%(sparql)s\nDid not match:\n%(n3)s"%vars())
+        if skip_known_issues and tc.number in KNOWN_ISSUES:
+            # NOTE: nose doesn't support attr-filtering on generated test funcs..
+            #do_test.known_issue = True
+            continue
         do_test.description = label
         do_test._source_urls = urls
         yield do_test,
@@ -133,7 +139,7 @@ def all_tests():
 
 def manual_run():
     errors, failed, count = 0, 0, 0
-    for test, in all_tests():
+    for test, in all_tests(skip_known_issues=False):
         count += 1; print test.description,
         try:
             test(); print "PASSED"
