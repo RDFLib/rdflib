@@ -231,7 +231,7 @@ class BNode(Identifier):
         return self.encode("unicode-escape")
 
     def __repr__(self):
-        if self.__class__ is URIRef:
+        if self.__class__ is BNode:
             clsName = "rdflib.term.BNode"
         else:
             clsName = self.__class__.__name__
