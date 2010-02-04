@@ -54,11 +54,14 @@ class Resolver:
     def normalize(self, uriRef, baseUri):
         return baseUri+uriRef
             
+class BNodeRef(BNode):
+    pass
+
 def convertTerm(term,queryProlog):
     """
     Utility function  for converting parsed Triple components into Unbound 
     """
-    from rdflib.sparql.sql.RdfSqlBuilder import BNodeRef
+    #from rdflib.sparql.sql.RdfSqlBuilder import BNodeRef
     if isinstance(term,Variable):
         if hasattr(queryProlog,'variableBindings') and term in queryProlog.variableBindings:
             #Resolve pre-bound variables at SQL generation time for SPARQL-to-SQL invokations
@@ -69,7 +72,7 @@ def convertTerm(term,queryProlog):
     elif isinstance(term,BNodeRef):
         return term
     elif isinstance(term,BNode):
-        from rdflib.sparql.sql.RdfSqlBuilder import RdfSqlBuilder 
+        #from rdflib.sparql.sql.RdfSqlBuilder import RdfSqlBuilder 
         if isinstance(queryProlog,RdfSqlBuilder):
             return BNode(term + '_bnode') # ensure namespace doesn't overlap with variables
         return term
@@ -89,7 +92,7 @@ def convertTerm(term,queryProlog):
                 return URIRef(Resolver().normalize(term.localname,base))
         elif term.prefix == '_':
             #Told BNode See: http://www.w3.org/2001/sw/DataAccess/issues#bnodeRef
-            from rdflib.sparql.sql.RdfSqlBuilder import RdfSqlBuilder, EVAL_OPTION_ALLOW_BNODE_REF, BNodeRef 
+            #from rdflib.sparql.sql.RdfSqlBuilder import RdfSqlBuilder, EVAL_OPTION_ALLOW_BNODE_REF, BNodeRef 
             if isinstance(queryProlog,RdfSqlBuilder):
                 if queryProlog.UseEvalOption(EVAL_OPTION_ALLOW_BNODE_REF):
                     # this is a 'told' BNode referencing a BNode in the data set (i.e. previously returned by a query)
