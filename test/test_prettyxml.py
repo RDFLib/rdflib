@@ -1,7 +1,7 @@
 from rdflib.term import  URIRef, BNode
 from rdflib.namespace import RDFS
 
-from rdflib.syntax.serializers.PrettyXMLSerializer import PrettyXMLSerializer
+from rdflib.syntax.serializers.rdfxml import PrettyXMLSerializer
 
 from rdflib.graph import ConjunctiveGraph
 from StringIO import StringIO

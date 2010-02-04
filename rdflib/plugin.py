@@ -10,7 +10,7 @@ If you have a package that uses a setuptools based setup.py you can add the foll
 
     entry_points = {
         'rdf.plugins.parser': [
-            'nt =     rdf.plugins.parsers.NTParser:NTParser',
+            'nt =     rdf.plugins.parsers.nt:NTParser',
             ],
         'rdf.plugins.serializer': [
             'nt =     rdf.plugins.serializers.NTSerializer:NTSerializer',
@@ -121,16 +121,16 @@ register('MySQL', Store, 'rdflib.store.MySQL', 'MySQL')
 register('PostgreSQL', Store, 'rdflib.store.MySQL', 'PostgreSQL')
 register('SQLite', Store, 'rdflib.store.SQLite', 'SQLite')
 
-register('xml', Serializer, 'rdflib.syntax.serializers.XMLSerializer',
+register('xml', Serializer, 'rdflib.syntax.serializers.rdfxml',
          'XMLSerializer')
-register('n3', Serializer, 'rdflib.syntax.serializers.N3Serializer',
+register('n3', Serializer, 'rdflib.syntax.serializers.n3',
          'N3Serializer')
 register('turtle', Serializer, 'rdflib.syntax.serializers.turtle',
          'TurtleSerializer')
-register('nt', Serializer, 'rdflib.syntax.serializers.NTSerializer',
+register('nt', Serializer, 'rdflib.syntax.serializers.nt',
          'NTSerializer')
 register('pretty-xml', Serializer,
-        'rdflib.syntax.serializers.PrettyXMLSerializer', 'PrettyXMLSerializer')
+        'rdflib.syntax.serializers.rdfxml', 'PrettyXMLSerializer')
 register('trix', Serializer,
         'rdflib.syntax.serializers.trix', 'TriXSerializer')
 
@@ -138,7 +138,7 @@ register('application/rdf+xml', Parser,
         'rdflib.syntax.parsers.rdfxml', 'RDFXMLParser')
 register('xml', Parser, 'rdflib.syntax.parsers.rdfxml', 'RDFXMLParser')
 register('n3', Parser, 'rdflib.syntax.parsers.notation3', 'N3Parser')
-register('nt', Parser, 'rdflib.syntax.parsers.NTParser', 'NTParser')
+register('nt', Parser, 'rdflib.syntax.parsers.nt', 'NTParser')
 register('trix', Parser, 'rdflib.syntax.parsers.trix', 'TriXParser')
 register('rdfa', Parser, 'rdflib.syntax.parsers.rdfa', 'RDFaParser')
 
