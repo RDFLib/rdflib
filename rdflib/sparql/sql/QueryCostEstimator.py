@@ -10,7 +10,7 @@ from rdflib.namespace import Namespace
 from rdflib.term import Literal, URIRef
 from types import TupleType
 import time
-from rdflib.store.FOPLRelationalModel.QuadSlot import *
+#from rdflib.store.FOPLRelationalModel.QuadSlot import *
 
 from DatabaseStats import *
 import sys

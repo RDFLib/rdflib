@@ -2,7 +2,7 @@
 
 import rdflib
 from rdflib.graph import ConjunctiveGraph
-from rdflib.store.FOPLRelationalModel.QuadSlot import *
+#from rdflib.store.FOPLRelationalModel.QuadSlot import *
 from rdflib.term import Literal, URIRef, Variable, BNode
 from rdflib.namespace import Namespace
 from rdflib.sparql.bison.QName import *

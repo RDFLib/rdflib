@@ -6,7 +6,9 @@ from rdflib.term import Literal
 
 from rdflib.store import Store
 from rdflib.graph import Graph
-from rdflib.store.FOPLRelationalModel.QuadSlot import normalizeValue
+#from rdflib.store.FOPLRelationalModel.QuadSlot import normalizeValue
+
+__test__ = False
 
 def test_dType_encoding():
     correct=normalizeValue('http://www.w3.org/2001/XMLSchema#integer', 'U')
