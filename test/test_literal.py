@@ -1,6 +1,7 @@
 import unittest
 
 import rdflib # needed for eval(repr(...)) below
+from rdflib.term import Literal, URIRef
 
 
 # these are actually meant for test_term.py, which is not yet merged into trunk
@@ -47,6 +48,42 @@ class TestLiteral(unittest.TestCase):
         l = rdflib.Literal(True)
         XSD_NS = rdflib.Namespace(u'http://www.w3.org/2001/XMLSchema#')
         self.assertEquals(l.datatype, XSD_NS["boolean"])
+
+class TestNew(unittest.TestCase):
+    def testCantPassLangAndDatatype(self):
+        self.assertRaises(TypeError,
+           Literal, 'foo', lang='en', datatype=URIRef("http://example.com/"))
+
+    def testDatatypeGetsAutoURIRefConversion(self):
+        # drewp disapproves of this behavior, but it should be
+        # represented in the tests
+        x = Literal("foo", datatype="http://example.com/")
+        self.assert_(isinstance(x.datatype, URIRef))
+
+        x = Literal("foo", datatype=Literal("pennies"))
+        self.assertEqual(x.datatype, URIRef("pennies"))
+
+
+
+class TestRepr(unittest.TestCase):
+    def testOmitsMissingDatatypeAndLang(self):
+        self.assertEqual(repr(Literal("foo")), "rdflib.term.Literal(u'foo')")
+
+    def testOmitsMissingDatatype(self):
+        self.assertEqual(repr(Literal("foo", lang='en')),
+                         "rdflib.term.Literal(u'foo', lang='en')")
+
+    def testOmitsMissingLang(self):
+        self.assertEqual(
+            repr(Literal("foo", datatype=URIRef('http://example.com/'))),
+            "rdflib.term.Literal(u'foo', datatype=rdflib.term.URIRef('http://example.com/'))")
+
+    def testSubclassNameAppearsInRepr(self):
+        class MyLiteral(Literal):
+            pass
+        x = MyLiteral(u"foo")
+        self.assertEqual(repr(x), "MyLiteral(u'foo')")
+        
 
 if __name__ == "__main__":
     unittest.main()

@@ -123,7 +123,14 @@ class URIRef(Identifier):
         return self.encode("unicode-escape")
 
     def __repr__(self):
-        return """rdflib.term.URIRef('%s')""" % str(self)
+        if self.__class__ is URIRef:
+            clsName = "rdflib.term.URIRef"
+        else:
+            clsName = self.__class__.__name__
+
+        # quoting risk? drewp is not sure why this doesn't use %r
+        return """%s('%s')""" % (clsName, str(self))
+        
 
     def md5_term_hash(self):
         """a string of hex that will be the same for two URIRefs that
@@ -224,7 +231,11 @@ class BNode(Identifier):
         return self.encode("unicode-escape")
 
     def __repr__(self):
-        return """rdflib.term.BNode('%s')""" % str(self)
+        if self.__class__ is URIRef:
+            clsName = "rdflib.term.BNode"
+        else:
+            clsName = self.__class__.__name__
+        return """%s('%s')""" % (clsName, str(self))
 
     def md5_term_hash(self):
         """a string of hex that will be the same for two BNodes that
@@ -281,6 +292,10 @@ class Literal(Identifier):
     __slots__ = ("language", "datatype", "_cmp_value")
 
     def __new__(cls, value, lang=None, datatype=None):
+        if lang is not None and datatype is not None:
+            raise TypeError("A Literal can only have one of lang or datatype, "
+               "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal")
+
         if datatype:
             lang = None
         else:
@@ -608,7 +623,11 @@ class Literal(Identifier):
             args.append("lang=%s" % repr(self.language))
         if self.datatype is not None:
             args.append("datatype=%s" % repr(self.datatype))
-        return """rdflib.term.Literal(%s)""" % ", ".join(args)
+        if self.__class__ == Literal:
+            clsName = "rdflib.term.Literal"
+        else:
+            clsName = self.__class__.__name__
+        return """%s(%s)""" % (clsName, ", ".join(args))
 
     def toPython(self):
         """
