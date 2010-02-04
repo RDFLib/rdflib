@@ -159,6 +159,8 @@ def create_input_source(source=None, publicID=None,
         input_source = FileInputSource(file)
 
     if data is not None:
+        if isinstance(data, unicode):
+            data = data.encode('utf-8')
         input_source = StringInputSource(data)
 
     if input_source is None:
