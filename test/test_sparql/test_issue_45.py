@@ -44,10 +44,10 @@ class TestSparqlASK(unittest.TestCase):
         res = self.graph.query('ASK { <http://goonmill.org/2007/skill.n3#baz> a <http://goonmill.org/2007/skill.n3#Foo> } ')
         self.assertEquals(res.askAnswer, [False], "The answer should have been that the triple was not found")
 
-class TestSparqlASKWithCompliance(TestSparqlASK):
-    def setUp(self):
-        TestSparqlASK.setUp(self)
-        Algebra.DAWG_DATASET_COMPLIANCE = True
+# class TestSparqlASKWithCompliance(TestSparqlASK):
+#     def setUp(self):
+#         TestSparqlASK.setUp(self)
+#         Algebra.DAWG_DATASET_COMPLIANCE = True
 
 if __name__ == "__main__":
     unittest.main()
