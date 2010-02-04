@@ -1,5 +1,8 @@
 import warnings, thread
-from bsddb import db
+try:
+    from bsddb import db
+except ImportError:
+    from bsddb3 import db
 from os import makedirs
 from os.path import exists, join
 from time import sleep

@@ -1,5 +1,8 @@
 import warnings
-from bsddb import db
+try:
+    from bsddb import db
+except ImportError:
+    from bsddb3 import db
 from urllib import pathname2url
 from os import mkdir
 from os.path import exists, abspath
