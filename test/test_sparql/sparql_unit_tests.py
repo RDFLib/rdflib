@@ -22,7 +22,7 @@ class AbstractSPARQLUnitTestCase(unittest.TestCase):
     syntax alone (like the TestOPTVariableCorrelationTest below)
     """
 
-    manual = True
+    sparql = True
 
     TEST_FACT = None
     TEST_FACT_FORMAT = 'xml'

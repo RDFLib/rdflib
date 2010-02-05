@@ -30,7 +30,7 @@ WHERE {
 
 class TestSPARQLAbbreviations(unittest.TestCase):
 
-    manual = True
+    sparql = True
 
     def setUp(self):
         NS = u"http://example.org/"

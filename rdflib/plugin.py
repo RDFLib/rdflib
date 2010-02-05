@@ -114,12 +114,7 @@ def plugins(name=None, kind=None):
 
 register('default', Store, 'rdflib.store.memory', 'IOMemory')
 register('IOMemory', Store, 'rdflib.store.memory', 'IOMemory')
-register('BerkeleyDB', Store, 'rdflib.store.BerkeleyDB', 'BerkeleyDB')
-register('Sleepycat', Store, 'rdflib.store.Sleepycat', 'Sleepycat')
-register('BDBOptimized', Store, 'rdflib.store.BDBOptimized', 'BDBOptimized')
-register('MySQL', Store, 'rdflib.store.MySQL', 'MySQL')
-register('PostgreSQL', Store, 'rdflib.store.MySQL', 'PostgreSQL')
-register('SQLite', Store, 'rdflib.store.SQLite', 'SQLite')
+register('Sleepycat', Store, 'rdflib.store.sleepycat', 'Sleepycat')
 
 register('xml', Serializer, 'rdflib.syntax.serializers.rdfxml',
          'XMLSerializer')

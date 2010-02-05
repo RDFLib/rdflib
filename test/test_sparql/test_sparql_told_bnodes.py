@@ -9,7 +9,7 @@ from pprint import pprint
 
 class TestSPARQLToldBNodes(unittest.TestCase):
 
-    manual = True
+    sparql = True
 
     def setUp(self):
         NS = u"http://example.org/"
