@@ -143,9 +143,11 @@ class ParsedAdditiveExpressionList(ListRedirect):
         return self._list == other._list
 
 class ParsedString(unicode):
-    def __init__(self,value=None):
-        val = value is None and u"" or value
-        super(ParsedString,self).__init__(val)
+
+    def __new__(cls, value=None):
+        value = value is None and u"" or value
+        return unicode.__new__(cls,value)
+
 
 class ParsedDatatypedLiteral(object):
     """
