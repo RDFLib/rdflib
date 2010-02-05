@@ -22,7 +22,8 @@ from rdflib.store import Store
 from rdflib.sparql.components import AskQuery, SelectQuery, DescribeQuery, Query, Prolog
 from rdflib.sparql.components import NamedGraph,RemoteGraph
 from rdflib.sparql.components import ASCENDING_ORDER
-from rdflib.sparql import graph, operators, SPARQLError, Query, DESCRIBE
+from rdflib.sparql import graph, operators, SPARQLError, DESCRIBE
+from rdflib.sparql import query as sparql_query
 from rdflib.sparql.evaluate import unRollTripleItems, _variablesToArray
 from rdflib.sparql.components import ParsedGroupGraphPattern, BlockOfTriples, GraphPattern, ParsedOptionalGraphPattern, ParsedAlternativeGraphPattern, ParsedGraphGraphPattern
 
@@ -340,16 +341,16 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
 
     if isinstance(expr,BasicGraphPattern):
         retval = None
-        bindings = Query._createInitialBindings(expr)
+        bindings = sparql_query._createInitialBindings(expr)
         if passedBindings:
             bindings.update(passedBindings)
-        top = Query._SPARQLNode(None,bindings,expr.patterns, tripleStore,expr=expr)
+        top = sparql_query._SPARQLNode(None,bindings,expr.patterns, tripleStore,expr=expr)
         top.topLevelExpand(expr.constraints, query.prolog)
             
-#        for tree in Query._fetchBoundLeaves(top):
+#        for tree in sparql_query._fetchBoundLeaves(top):
 #            print_tree(tree)
 #        print "---------------"
-        result = Query.Query(top, tripleStore)
+        result = sparql_query.Query(top, tripleStore)
     else:
         assert isinstance(expr,AlgebraExpression), repr(expr)
         if DEBUG:
@@ -359,14 +360,14 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
         result = expr.evaluate(tripleStore,passedBindings,query.prolog)
         if isinstance(result,BasicGraphPattern):
             retval = None
-            bindings = Query._createInitialBindings(result)
+            bindings = sparql_query._createInitialBindings(result)
             if passedBindings:
                 bindings.update(passedBindings)
-            top = Query._SPARQLNode(None,bindings,result.patterns, 
+            top = sparql_query._SPARQLNode(None,bindings,result.patterns, 
                                     result.tripleStore,expr=result)
             top.topLevelExpand(result.constraints, query.prolog)
-            result = Query.Query(top, tripleStore)
-        assert isinstance(result,Query.Query),repr(result)
+            result = sparql_query.Query(top, tripleStore)
+        assert isinstance(result,sparql_query.Query),repr(result)
 
     if exportTree:
         from rdflib.sparql.Visualization import ExportExpansionNode
@@ -416,12 +417,12 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
                 recursive_bindings = result.top.bindings.copy()
                 recursive_bindings.update(recursive_bindings_update)
                 if isinstance(recursive_expr, BasicGraphPattern):
-                    recursive_top = Query._SPARQLNode(
+                    recursive_top = sparql_query._SPARQLNode(
                       None, recursive_bindings, recursive_expr.patterns,
                       tripleStore, expr=recursive_expr)
                     recursive_top.topLevelExpand(recursive_expr.constraints,
                                                  query.prolog)
-                    recursive_result = Query.Query(recursive_top,
+                    recursive_result = sparql_query.Query(recursive_top,
                                                    tripleStore)
                 else: # recursive_expr should be an AlgebraExpression
                     recursive_result = recursive_expr.evaluate(
@@ -439,7 +440,7 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
              orderAsc,
              offset
              )
-        selectionF = Query._variablesToArray(query.query.variables,"selection")
+        selectionF = sparql_query._variablesToArray(query.query.variables,"selection")
         if result.get_recursive_results is not None:
             selectionF.append(result.map_from)
         vars = result._getAllVariables()
@@ -556,9 +557,9 @@ class EmptyGraphPatternExpression(AlgebraExpression):
         #raise NotImplementedError("Empty Graph Pattern expressions, not supported")
         if prolog.DEBUG:
             print "eval(%s,%s,%s)"%(self,initialBindings,tripleStore.graph)
-        empty = Query._SPARQLNode(None,{},[],tripleStore)
+        empty = sparql_query._SPARQLNode(None,{},[],tripleStore)
         empty.bound = False
-        return Query.Query(empty, tripleStore)
+        return sparql_query.Query(empty, tripleStore)
 
 def fetchUnionBranchesRoots(node):
     for parent in [node.parent1,node.parent2]:
@@ -569,9 +570,9 @@ def fetchUnionBranchesRoots(node):
             yield parent.top
 
 def fetchChildren(node):
-    if isinstance(node,Query._SPARQLNode):
+    if isinstance(node,sparql_query._SPARQLNode):
         yield [c for c in node.children]
-    elif isinstance(node,Query.Query):
+    elif isinstance(node,sparql_query.Query):
         if node.parent1 is None:
             for c in fetchChildren(node.top):
                 yield c
@@ -582,18 +583,18 @@ def fetchChildren(node):
 
 def walktree(top, depthfirst = True, leavesOnly = True, optProxies=False):
     #assert top.parent1 is None
-    if isinstance(top,Query._SPARQLNode) and top.clash:
+    if isinstance(top,sparql_query._SPARQLNode) and top.clash:
         return
     if not depthfirst and (not leavesOnly or not top.children):
         proxies=False
-        for optChild in reduce(lambda x,y: x+y,[list(Query._fetchBoundLeaves(o))
+        for optChild in reduce(lambda x,y: x+y,[list(sparql_query._fetchBoundLeaves(o))
                                         for o in top.optionalTrees],[]):
             proxies=True        
             yield optChild
         if not proxies:
             yield top
     children=reduce(lambda x,y:x+y,list(fetchChildren(top)))
-#    if isinstance(top,Query._SPARQLNode) or isinstance(top,Query.Query) and \
+#    if isinstance(top,sparql_query._SPARQLNode) or isinstance(top,sparql_query.Query) and \
 #        top.parent1 is None:
 #        children = top.children
 #    else:
@@ -604,7 +605,7 @@ def walktree(top, depthfirst = True, leavesOnly = True, optProxies=False):
                 yield newtop
         else:
             proxies=False
-            for optChild in reduce(lambda x,y: x+y,[list(Query._fetchBoundLeaves(o))
+            for optChild in reduce(lambda x,y: x+y,[list(sparql_query._fetchBoundLeaves(o))
                                             for o in child.optionalTrees],[]):
                 proxies=True        
                 yield optChild
@@ -613,7 +614,7 @@ def walktree(top, depthfirst = True, leavesOnly = True, optProxies=False):
 
     if depthfirst and (not leavesOnly or not children):
         proxies=False
-        for optChild in reduce(lambda x,y: x+y,[list(Query._fetchBoundLeaves(o))
+        for optChild in reduce(lambda x,y: x+y,[list(sparql_query._fetchBoundLeaves(o))
                                         for o in top.optionalTrees],[]):
             proxies=True        
             yield optChild
@@ -695,9 +696,9 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
                 expression
                 print node.tripleStore.graph
                 print "expressions bindings: ", 
-                Query._createInitialBindings(expression)
+                sparql_query._createInitialBindings(expression)
                 print "node bindings: ", node.bindings
-            exprBindings = Query._createInitialBindings(expression)
+            exprBindings = sparql_query._createInitialBindings(expression)
             exprBindings.update(node.bindings)
             #An indicator for whether this node has any descendant optional expansions
             #we should consider instead
@@ -705,7 +706,7 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
             #then X is joined
             #against the cumulative bindings ( instead of just A )
             descendantOptionals = node.optionalTrees and \
-                [o for o in node.optionalTrees if list(Query._fetchBoundLeaves(o))] 
+                [o for o in node.optionalTrees if list(sparql_query._fetchBoundLeaves(o))] 
             if not descendantOptionals:
                 top = node
             else:
@@ -716,7 +717,7 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
             if not node.clash and not descendantOptionals:
                 #It has compatible bindings and either no optional expansions
                 #or no *valid* optional expansions
-                child = Query._SPARQLNode(top,
+                child = sparql_query._SPARQLNode(top,
                                           exprBindings,
                                           expression.patterns,
                                           tS,
@@ -725,18 +726,18 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
                 if prolog.DEBUG:
                     print "Has compatible bindings and no valid optional expansions"
                     print "Newly bound descendants: "
-                    for c in Query._fetchBoundLeaves(child):
+                    for c in sparql_query._fetchBoundLeaves(child):
                         print "\t",c, c.bound                        
                         print c.bindings
         else:
-            assert isinstance(expression,Query.Query)
+            assert isinstance(expression,sparql_query.Query)
             if not expression.top:
                 #already evaluated a UNION - fetch UNION branches
                 child = list(fetchUnionBranchesRoots(expression))
             else:
                 #Already been evaluated (non UNION), just attach the SPARQLNode
                 child = expression.top
-        if isinstance(child,Query._SPARQLNode):
+        if isinstance(child,sparql_query._SPARQLNode):
             if node.clash == False and child is not None:
                 node.children.append(child)
                 if prolog.DEBUG:
@@ -753,7 +754,7 @@ def _ExpandJoin(node,expression,tripleStore,prolog,optionalTree=False):
             print "-------------------" 
         for optTree in node.optionalTrees:
             #Join the optional paths as well - those that are bound and valid
-            for validLeaf in Query._fetchBoundLeaves(optTree):
+            for validLeaf in sparql_query._fetchBoundLeaves(optTree):
                 _ExpandJoin(validLeaf,
                             expression,
                             tripleStore,
@@ -795,7 +796,7 @@ class Join(NonSymmetricBinaryOperator):
             left = self.left
         if isinstance(left,BasicGraphPattern):        
             retval = None
-            bindings = Query._createInitialBindings(left)
+            bindings = sparql_query._createInitialBindings(left)
             if initialBindings:
                 bindings.update(initialBindings)
             if hasattr(left,'tripleStore'):
@@ -803,22 +804,22 @@ class Join(NonSymmetricBinaryOperator):
                 lTS = left.tripleStore
             else:
                 lTS = tripleStore
-            top = Query._SPARQLNode(None,
+            top = sparql_query._SPARQLNode(None,
                                     bindings,
                                     left.patterns,
                                     lTS,
                                     expr=left)
             top.topLevelExpand(left.constraints, prolog)
             _ExpandJoin(top,self.right,tripleStore,prolog)
-            return Query.Query(top, tripleStore)
+            return sparql_query.Query(top, tripleStore)
         else:
-            assert isinstance(left,Query.Query), repr(left)
+            assert isinstance(left,sparql_query.Query), repr(left)
             if left.parent1 and left.parent2:
                 #union branch.  We need to unroll all operands (recursively)
                 for union_root in fetchUnionBranchesRoots(left):
                     _ExpandJoin(union_root,self.right,tripleStore,prolog)
             else:
-                for b in Query._fetchBoundLeaves(left.top):
+                for b in sparql_query._fetchBoundLeaves(left.top):
                     _ExpandJoin(b,self.right,tripleStore,prolog)
             return left
 
@@ -852,9 +853,9 @@ def _ExpandLeftJoin(node,expression,tripleStore,prolog,optionalTree=False):
         else:
             expression = currExpr
         if isinstance(expression,BasicGraphPattern):
-            rightBindings = Query._createInitialBindings(expression)
+            rightBindings = sparql_query._createInitialBindings(expression)
             rightBindings.update(node.bindings)
-            optTree = Query._SPARQLNode(None,
+            optTree = sparql_query._SPARQLNode(None,
                                         rightBindings,
                                         expression.patterns,
                                         tripleStore,
@@ -863,14 +864,14 @@ def _ExpandLeftJoin(node,expression,tripleStore,prolog,optionalTree=False):
                 print "evaluating B in LeftJoin(A,B) - a BGP: ", expression
                 print "Passing on bindings ",rightBindings
             optTree.topLevelExpand(expression.constraints, prolog)
-            for proxy in Query._fetchBoundLeaves(optTree):
+            for proxy in sparql_query._fetchBoundLeaves(optTree):
                 #Mark a successful evaluation of LeftJoin (new bindings were added)
                 #these become proxies for later expressions 
                 proxy.priorLeftJoin=True
         else:
             if prolog.DEBUG:
                 print "Attaching previously evaluated node: ", expression.top
-            assert isinstance(expression,Query.Query)
+            assert isinstance(expression,sparql_query.Query)
             if not expression.top:
                 #already evaluated a UNION - fetch UNION branches
                 optTree = list(fetchUnionBranchesRoots(expression))
@@ -879,7 +880,7 @@ def _ExpandLeftJoin(node,expression,tripleStore,prolog,optionalTree=False):
                 optTree = expression.top
         if prolog.DEBUG:
             print "Optional tree: ", optTree
-        if isinstance(optTree,Query._SPARQLNode):
+        if isinstance(optTree,sparql_query._SPARQLNode):
             if optTree.clash == False and optTree is not None:
                 node.optionalTrees.append(optTree)
                 if prolog.DEBUG:
@@ -931,29 +932,29 @@ class LeftJoin(NonSymmetricBinaryOperator):
         if isinstance(left,BasicGraphPattern):        
             #print "expanding A in LeftJoin(A,B) - a BGP: ", left
             retval = None
-            bindings = Query._createInitialBindings(left)
+            bindings = sparql_query._createInitialBindings(left)
             if initialBindings:
                 bindings.update(initialBindings)
             if hasattr(left,'tripleStore'):
                 #Use the prepared tripleStore
                 tripleStore = left.tripleStore
-            top = Query._SPARQLNode(None,
+            top = sparql_query._SPARQLNode(None,
                                     bindings,
                                     left.patterns,
                                     tripleStore,
                                     expr=left)
             top.topLevelExpand(left.constraints, prolog)
-            for b in Query._fetchBoundLeaves(top):
+            for b in sparql_query._fetchBoundLeaves(top):
                 _ExpandLeftJoin(b,self.right,tripleStore,prolog)            
             #_ExpandLeftJoin(top,self.right,tripleStore,prolog)
-            return Query.Query(top, tripleStore)
+            return sparql_query.Query(top, tripleStore)
         else:
-            assert isinstance(left,Query.Query), repr(left)
+            assert isinstance(left,sparql_query.Query), repr(left)
             if left.parent1 and left.parent2:
                 for union_root in fetchUnionBranchesRoots(left):
                     _ExpandLeftJoin(union_root,self.right,tripleStore,prolog)
             else:
-                for b in Query._fetchBoundLeaves(left.top):
+                for b in sparql_query._fetchBoundLeaves(left.top):
                     _ExpandLeftJoin(b,self.right,tripleStore,prolog)                        
             #_ExpandLeftJoin(left.top,self.right,tripleStore,prolog)
             return left
@@ -987,19 +988,19 @@ class Union(AlgebraExpression):
         if isinstance(left,BasicGraphPattern):        
             #The left expression has not been evaluated
             retval = None
-            bindings = Query._createInitialBindings(left)
+            bindings = sparql_query._createInitialBindings(left)
             if initialBindings:
                 bindings.update(initialBindings)
-            top = Query._SPARQLNode(None,
+            top = sparql_query._SPARQLNode(None,
                                     bindings,
                                     left.patterns, 
                                     tripleStore,
                                     expr=left)
             top.topLevelExpand(left.constraints, prolog)
-            top = Query.Query(top, tripleStore)
+            top = sparql_query.Query(top, tripleStore)
         else:
             #The left expression has already been evaluated 
-            assert isinstance(left,Query.Query), repr(left)
+            assert isinstance(left,sparql_query.Query), repr(left)
             top = left
         #Now we evaluate the right expression (independently)
         if isinstance(self.right,AlgebraExpression):
@@ -1011,17 +1012,17 @@ class Union(AlgebraExpression):
         if isinstance(right,BasicGraphPattern):
             if hasattr(right,'tripleStore'):            
                 tS = right.tripleStore
-            rightBindings = Query._createInitialBindings(right)
+            rightBindings = sparql_query._createInitialBindings(right)
             if initialBindings:
                 rightBindings.update(initialBindings)            
-            rightNode = Query._SPARQLNode(None,
+            rightNode = sparql_query._SPARQLNode(None,
                                           rightBindings,
                                           right.patterns,
                                           tS,
                                           expr=right)
             rightNode.topLevelExpand(right.constraints, prolog)
         else:
-            assert isinstance(right,Query.Query), repr(right)
+            assert isinstance(right,sparql_query.Query), repr(right)
             rightNode = right.top
 #        if prolog.DEBUG:
 #            print "### Two UNION trees ###"
@@ -1032,7 +1033,7 @@ class Union(AlgebraExpression):
 #            print "#######################"
             
         #The UNION semantics are implemented by the overidden __add__ method                
-        return top + Query.Query(rightNode, tS)
+        return top + sparql_query.Query(rightNode, tS)
 
 class GraphExpression(AlgebraExpression):
     """
