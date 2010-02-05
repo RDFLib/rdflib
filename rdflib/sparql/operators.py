@@ -28,7 +28,7 @@
 import sys, os, re
 from rdflib.term import Literal, BNode, URIRef, Variable
 from rdflib.namespace import Namespace
-from rdflib.sparql.graphPattern import _createResource
+from rdflib.sparql.graph import _createResource
 from rdflib.sparql import _questChar, Debug
 
 _XSD_NS = Namespace('http://www.w3.org/2001/XMLSchema#')

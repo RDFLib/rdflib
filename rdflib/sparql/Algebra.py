@@ -22,11 +22,11 @@ from rdflib.store import Store
 from rdflib.sparql.components import AskQuery, SelectQuery, DescribeQuery, Query, Prolog
 from rdflib.sparql.components import NamedGraph,RemoteGraph
 from rdflib.sparql.components import ASCENDING_ORDER
-from rdflib.sparql import sparqlGraph, operators, SPARQLError, Query, DESCRIBE
+from rdflib.sparql import graph, operators, SPARQLError, Query, DESCRIBE
 from rdflib.sparql.evaluate import unRollTripleItems, _variablesToArray
 from rdflib.sparql.components import ParsedGroupGraphPattern, BlockOfTriples, GraphPattern, ParsedOptionalGraphPattern, ParsedAlternativeGraphPattern, ParsedGraphGraphPattern
 
-from rdflib.sparql.graphPattern import BasicGraphPattern
+from rdflib.sparql.graph import BasicGraphPattern
 from rdflib.sparql.components import ParsedConstrainedTriples
 from rdflib.sparql.evaluate import createSPARQLPConstraint,\
      CONSTRUCT_NOT_SUPPORTED,convertTerm
@@ -303,11 +303,11 @@ def TopEvaluate(query,dataset,passedBindings = None,DEBUG=False,exportTree=False
                 LoadGraph(dtSet,dataSetBase,memGraph)
                 if memGraph.identifier not in [g.identifier for g in graphs]:
                     graphs.append(memGraph)
-        tripleStore = sparqlGraph.SPARQLGraph(ReadOnlyGraphAggregate(graphs,
+        tripleStore = graph.SPARQLGraph(ReadOnlyGraphAggregate(graphs,
                                                                      store=dataset.store),
                                               dSCompliance=DAWG_DATASET_COMPLIANCE)
     else:        
-        tripleStore = sparqlGraph.SPARQLGraph(dataset,
+        tripleStore = graph.SPARQLGraph(dataset,
                                               dSCompliance=DAWG_DATASET_COMPLIANCE)    
     if isinstance(query.query,SelectQuery) and query.query.variables:
         query.query.variables = [convertTerm(item,query.prolog) 
@@ -1069,14 +1069,14 @@ class GraphExpression(AlgebraExpression):
                 if prolog.DEBUG:
                     print "Passing on unified graph name: ", 
                     initialBindings[self.iriOrVar]
-                tripleStore = sparqlGraph.SPARQLGraph(
+                tripleStore = graph.SPARQLGraph(
                                             Graph(tripleStore.store,
                                                   initialBindings[self.iriOrVar])
                                             ,dSCompliance=DAWG_DATASET_COMPLIANCE)
             else: 
                 if prolog.DEBUG:
                     print "Setting up BGP to return additional bindings for %s"%self.iriOrVar
-                tripleStore = sparqlGraph.SPARQLGraph(tripleStore.graph,
+                tripleStore = graph.SPARQLGraph(tripleStore.graph,
                                                       graphVariable = self.iriOrVar,
                                                       dSCompliance=DAWG_DATASET_COMPLIANCE)
         else:
@@ -1089,7 +1089,7 @@ class GraphExpression(AlgebraExpression):
                 targetGraph = targetGraph[0]
             else:
                 targetGraph = Graph(tripleStore.store,graphName)
-            tripleStore = sparqlGraph.SPARQLGraph(targetGraph,
+            tripleStore = graph.SPARQLGraph(targetGraph,
                                                   dSCompliance=\
                                                   DAWG_DATASET_COMPLIANCE)
         if isinstance(self.GGP,AlgebraExpression):

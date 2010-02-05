@@ -18,7 +18,7 @@ SPARQL implementation on top of RDFLib
 
 Implementation of the `W3C SPARQL <http://www.w3.org/TR/rdf-sparql-query/>`_ 
 language (version April 2005). The basic class here is supposed to be a 
-superclass of rdflib.sparql.sparqlGraph; it has been separated only for 
+superclass of rdflib.sparql.graph; it has been separated only for 
 a better maintainability.
 
 There is a separate
@@ -76,7 +76,7 @@ History
 
  - Version 2.0: version based on the March 2005 SPARQL document, 
    also a major change of the core code (introduction of the separate 
-   ``GraphPattern`` :class:`rdflibUtils.graphPattern.GraphPattern` class, etc).
+   ``GraphPattern`` :class:`rdflibUtils.graph.GraphPattern` class, etc).
 
  - Version 2.01: minor changes only: - switch to epydoc as a documentation tool, 
    it gives a much better overview of the classes - addition of the 
@@ -130,7 +130,7 @@ def generateCollectionConstraint(triplets,collection,item) :
     plugged into a sparql request.
 
     @param triplets: the
-    L{SPARQLGraph<sparqlGraph.SPARQLGraph>} instance
+    L{SPARQLGraph<graph.SPARQLGraph>} instance
 
     @param collection: is either a query string (that has to be bound
     by the query) or an RDFLib Resource representing the collection
