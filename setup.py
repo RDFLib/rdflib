@@ -1,4 +1,6 @@
-from setuptools import setup, find_packages
+#!/usr/bin/env python
+
+from distutils.core import setup
 
 # Install rdflib
 from rdflib import __version__
@@ -36,22 +38,7 @@ setup(
     """,
     download_url = "http://rdflib.net/rdflib-%s.tar.gz" % __version__,
 
-    packages = find_packages(exclude=["test"]),
-
-    install_requires = ['pyparsing', 'html5lib'],
-
-    tests_require = ["nose>=0.10.4"],
-
-    test_suite = 'nose.collector',
-
-    entry_points = {        
-        'console_scripts': [
-            'rdfpipe = rdflib_tools.RDFPipe:main',
-        ],
-        'nose.plugins': [
-            'EARLPlugin = rdflib_tools.EARLPlugin:EARLPlugin',
-            ],
-        },
+    packages = ['rdflib'],
 
     )
 
