@@ -113,7 +113,7 @@ def cached_file(url):
 
 
 KNOWN_ISSUES = set([11, 92, 94, 100, 101, 102, 103, 114, 117])
-KNOWN_ISSUES |= set([12, 13, 108])
+
 
 def all_tests(skip_known_issues=True):
     """

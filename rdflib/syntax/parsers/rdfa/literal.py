@@ -127,7 +127,7 @@ def generate_literal(node, graph, subject, state):
     props = state.get_resources(node.getAttribute("property"), prop=True)
 
     # Get, if exists, the value of @datatype
-    datatype = ''
+    datatype = None
     dtset    = False
     if node.hasAttribute("datatype"):
         dtset = True
