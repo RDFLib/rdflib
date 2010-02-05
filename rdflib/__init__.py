@@ -42,10 +42,11 @@ _logger = logging.getLogger("rdflib")
 _logger.info("version: %s" % __version__)
 
 
-from rdflib.term import URIRef, BNode, Literal
-
-from rdflib.graph import Graph, ConjunctiveGraph
+from rdflib.term import URIRef, BNode, Literal, Variable
 
 from rdflib.namespace import Namespace
 
-from rdflib.syntax.parsers import Parser
+from rdflib.graph import Graph, ConjunctiveGraph
+
+from rdflib.namespace import RDF, RDFS
+

@@ -41,9 +41,9 @@ from string import find, rfind
 from decimal import Decimal
 
 from rdflib.term import URIRef, BNode, Literal, Variable
-from rdflib.graph import QuotedGraph
+from rdflib.graph import QuotedGraph, ConjunctiveGraph
 
-import rdflib
+from rdflib.syntax.parsers import Parser
 
 # Incestuous.. would be nice to separate N3 and XML
 # from sax2rdf import XMLtoDOM
@@ -2231,7 +2231,7 @@ def dummy():
         return delim + res + delim
 
 
-class N3Parser(rdflib.Parser):
+class N3Parser(Parser):
 
     def __init__(self):
         pass
@@ -2241,7 +2241,7 @@ class N3Parser(rdflib.Parser):
         assert graph.store.context_aware # is this implied by formula_aware
         assert graph.store.formula_aware
 
-        conj_graph = rdflib.ConjunctiveGraph(store=graph.store)
+        conj_graph = ConjunctiveGraph(store=graph.store)
         conj_graph.default_context = graph # TODO: CG __init__ should have a default_context arg
         # TODO: update N3Processor so that it can use conj_graph as the sink
         conj_graph.namespace_manager = graph.namespace_manager
@@ -2267,7 +2267,7 @@ def _test():
 #     _test()
 
 def main(): 
-   g=rdflib.ConjunctiveGraph()
+   g=ConjunctiveGraph()
 
    sink = RDFSink(g)
    base = 'file://' + os.path.join(os.getcwd(), sys.argv[1])
