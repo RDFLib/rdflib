@@ -1,8 +1,8 @@
 
 try:
-   set
+    set
 except NameError:
-   from sets import Set as set
+    from sets import Set as set
 
 import types, sys
 from pprint import pprint
@@ -1253,111 +1253,111 @@ from cStringIO import StringIO
 SPARQL_XML_NAMESPACE = u'http://www.w3.org/2005/sparql-results#'
 
 class SPARQLXMLWriter:
-   """
-   Python saxutils-based SPARQL XML Writer
-   """
-   def __init__(self, output, encoding='utf-8'):
-      writer = XMLGenerator(output, encoding)
-      writer.startDocument()
-      writer.startPrefixMapping(u'sparql',SPARQL_XML_NAMESPACE)
-      writer.startPrefixMapping(u'xml', XML_NAMESPACE)
-      writer.startElementNS((SPARQL_XML_NAMESPACE, u'sparql'), u'sparql', AttributesNSImpl({}, {}))
-      self.writer = writer
-      self._output = output
-      self._encoding = encoding
-      self.askResult=False
+    """
+    Python saxutils-based SPARQL XML Writer
+    """
+    def __init__(self, output, encoding='utf-8'):
+        writer = XMLGenerator(output, encoding)
+        writer.startDocument()
+        writer.startPrefixMapping(u'sparql',SPARQL_XML_NAMESPACE)
+        writer.startPrefixMapping(u'xml', XML_NAMESPACE)
+        writer.startElementNS((SPARQL_XML_NAMESPACE, u'sparql'), u'sparql', AttributesNSImpl({}, {}))
+        self.writer = writer
+        self._output = output
+        self._encoding = encoding
+        self.askResult=False
 
-      def write_header(self,allvarsL):
-         self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'head'), u'head', AttributesNSImpl({}, {}))
-         for i in xrange(0,len(allvarsL)) :
+    def write_header(self,allvarsL):
+        self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'head'), u'head', AttributesNSImpl({}, {}))
+        for i in xrange(0,len(allvarsL)) :
             attr_vals = {
-               (None, u'name'): unicode(allvarsL[i]),
-               }
+                (None, u'name'): unicode(allvarsL[i]),
+                }
             attr_qnames = {
-               (None, u'name'): u'name',
-               }
+                (None, u'name'): u'name',
+                }
             self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'variable'),
-                                       u'variable',
-                                       AttributesNSImpl(attr_vals, attr_qnames))
+                                     u'variable',
+                                     AttributesNSImpl(attr_vals, attr_qnames))
             self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'variable'), u'variable')
-         self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'head'), u'head')
+        self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'head'), u'head')
 
-      def write_ask(self,val):
-         raise
+    def write_ask(self,val):
+        raise
 
-      def write_results_header(self,orderBy,distinct):
-         attr_vals = {
+    def write_results_header(self,orderBy,distinct):
+        attr_vals = {
             (None, u'ordered')  : unicode(orderBy and 'true' or 'false'),
             (None, u'distinct') : unicode(distinct and 'true' or 'false'),
             }
-         attr_qnames = {
+        attr_qnames = {
             (None, u'ordered')  : u'ordered',
             (None, u'distinct') : u'distinct'
             }
-         self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'results'),
-                                    u'results',
-                                    AttributesNSImpl(attr_vals, attr_qnames))
+        self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'results'),
+                                 u'results',
+                                 AttributesNSImpl(attr_vals, attr_qnames))
 
-      def write_start_result(self):
-         self.writer.startElementNS(
+    def write_start_result(self):
+        self.writer.startElementNS(
             (SPARQL_XML_NAMESPACE, u'result'), u'result', AttributesNSImpl({}, {}))
-         self._resultStarted = True
+        self._resultStarted = True
 
-      def write_end_result(self):
-         assert self._resultStarted
-         self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'result'), u'result')
-         self._resultStarted = False
+    def write_end_result(self):
+        assert self._resultStarted
+        self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'result'), u'result')
+        self._resultStarted = False
 
-      def write_binding(self,name,val):
-         assert self._resultStarted
-         if val:
+    def write_binding(self,name,val):
+        assert self._resultStarted
+        if val:
             attr_vals = {
-               (None, u'name')  : unicode(name),
-               }
+                (None, u'name')  : unicode(name),
+                }
             attr_qnames = {
-               (None, u'name')  : u'name',
-               }
+                (None, u'name')  : u'name',
+                }
             self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'binding'),
                                        u'binding',
                                        AttributesNSImpl(attr_vals, attr_qnames))
 
-            if isinstance(val,URIRef) :
-               self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'uri'),
-                                          u'uri',
-                                          AttributesNSImpl({}, {}))
-               self.writer.characters(val)
-               self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'uri'),u'uri')
-            elif isinstance(val,BNode) :
-               self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'bnode'),
-                                          u'bnode',
-                                          AttributesNSImpl({}, {}))
-               self.writer.characters(val)
-               self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'bnode'),u'bnode')
-            elif isinstance(val,Literal) :
-               attr_vals = {}
-               attr_qnames = {}
-               if val.language :
-                  attr_vals[(XML_NAMESPACE, u'lang')] = val.language
-                  attr_qnames[(XML_NAMESPACE, u'lang')] = u"xml:lang"
-               elif val.datatype:
-                  attr_vals[(None,u'datatype')] = val.datatype
-                  attr_qnames[(None,u'datatype')] = u'datatype'
+        if isinstance(val,URIRef) :
+            self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'uri'),
+                                       u'uri',
+                                       AttributesNSImpl({}, {}))
+            self.writer.characters(val)
+            self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'uri'),u'uri')
+        elif isinstance(val,BNode) :
+            self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'bnode'),
+                                       u'bnode',
+                                       AttributesNSImpl({}, {}))
+            self.writer.characters(val)
+            self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'bnode'),u'bnode')
+        elif isinstance(val,Literal) :
+            attr_vals = {}
+            attr_qnames = {}
+            if val.language :
+                attr_vals[(XML_NAMESPACE, u'lang')] = val.language
+                attr_qnames[(XML_NAMESPACE, u'lang')] = u"xml:lang"
+            elif val.datatype:
+                attr_vals[(None,u'datatype')] = val.datatype
+                attr_qnames[(None,u'datatype')] = u'datatype'
 
-               self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'literal'),
-                                          u'literal',
-                                          AttributesNSImpl(attr_vals, attr_qnames))
-               self.writer.characters(val)
-               self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'literal'),u'literal')
+            self.writer.startElementNS((SPARQL_XML_NAMESPACE, u'literal'),
+                                       u'literal',
+                                       AttributesNSImpl(attr_vals, attr_qnames))
+            self.writer.characters(val)
+            self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'literal'),u'literal')
 
-            else:
-               raise Exception("Unsupported RDF term: %s"%val)
+        else:
+            raise Exception("Unsupported RDF term: %s"%val)
 
-            self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'binding'),u'binding')
+        self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'binding'),u'binding')
 
-      def close(self):
-         self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'results'), u'results')
-         self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'sparql'), u'sparql')
-         self.writer.endDocument()
+    def close(self):
+        self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'results'), u'results')
+        self.writer.endElementNS((SPARQL_XML_NAMESPACE, u'sparql'), u'sparql')
+        self.writer.endDocument()
 
 def retToJSON(val):
     if isinstance(val,URIRef):
