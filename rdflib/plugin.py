@@ -145,5 +145,5 @@ register('rdfa', Parser, 'rdflib.syntax.parsers.rdfa', 'RDFaParser')
 register('sparql', sparql.Processor,
          'rdflib.sparql.processor', 'Processor')
 register('SPARQLQueryResult', QueryResult,
-         'rdflib.sparql.QueryResult', 'SPARQLQueryResult')
+         'rdflib.sparql.query', 'SPARQLQueryResult')
 
