@@ -1,6 +1,6 @@
 from rdflib import sparql
 import rdflib.sparql.parser
-from rdflib.sparql.Algebra import TopEvaluate
+from rdflib.sparql.algebra import TopEvaluate
 from rdflib.namespace import RDFS, RDF, OWL
 from rdflib.sparql.components import Query, Prolog
 
