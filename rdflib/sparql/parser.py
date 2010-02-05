@@ -10,7 +10,7 @@ from pyparsing import (Regex, Suppress, Combine, Optional, CaselessKeyword,
 
 import rdflib
 from rdflib.term import URIRef
-from rdflib.sparql import bison as components
+from rdflib.sparql import components
 
 XSD_NS = rdflib.namespace.Namespace(u'http://www.w3.org/2001/XMLSchema#')
 
@@ -262,7 +262,7 @@ NIL = Group(Suppress(Regex(r'\(' + WS_re + r'\)')))
 BASE = Suppress(CaselessKeyword('BASE'))
 
 BaseDecl = (BASE + IRI_REF).setParseAction(
-  refer_component(components.Bindings.BaseDeclaration))
+  refer_component(components.BaseDeclaration))
 if DEBUG:
     BaseDecl.setName('BaseDecl')
 
@@ -270,14 +270,14 @@ if DEBUG:
 PREFIX = Suppress(CaselessKeyword('PREFIX'))
 
 PrefixDecl = (PREFIX + PNAME_NS + IRI_REF).setParseAction(
-  refer_component(components.Bindings.PrefixDeclaration))
+  refer_component(components.PrefixDeclaration))
 if DEBUG:
     PrefixDecl.setName('PrefixDecl')
 
 # Prologue:
 Prologue = (Optional(BaseDecl, None) +
             Group(ZeroOrMore(PrefixDecl))).setParseAction(
-  refer_component(components.Query.Prolog))
+  refer_component(components.Prolog))
 if DEBUG:
     Prologue.setName('Prologue')
 
@@ -298,8 +298,8 @@ if DEBUG:
     PrefixedName.setName('PrefixedName')
 
 # IRIref:
-IRIref = (IRI_REF.setParseAction(refer_component(components.IRIRef.IRIRef)) |
-  PrefixedName.setParseAction(refer_component(components.QName.QName)))
+IRIref = (IRI_REF.setParseAction(refer_component(components.IRIRef)) |
+  PrefixedName.setParseAction(refer_component(components.QName)))
 if DEBUG:
     IRIref.setName('IRIref')
 
@@ -314,9 +314,9 @@ NAMED = Suppress(CaselessKeyword('NAMED'))
 # IRIref will be a URIRef, but it could also be a QName.
 DatasetClause = (FROM + (
   IRIref.copy().setParseAction(
-    refer_component(components.IRIRef.RemoteGraph)) |
+    refer_component(components.RemoteGraph)) |
   NAMED + IRIref.copy().setParseAction(
-    refer_component(components.IRIRef.NamedGraph))))
+    refer_component(components.NamedGraph))))
 if DEBUG:
     DatasetClause.setName('DatasetClause')
 
@@ -326,7 +326,7 @@ if DEBUG:
 # investigate a possible bug with Expression.ParsedString; it
 # doesn't look like it is properly expanding escaped characters.
 String = quotedString.setParseAction(composition2(
-  [removeQuotes, components.Expression.ParsedString]))
+  [removeQuotes, components.ParsedString]))
 if DEBUG:
     String.setName('String')
 
@@ -337,7 +337,7 @@ LANGTAG = AT + Regex(PN_CHARS_BASE_re + '+' +
 
 DOUBLE_HAT = Suppress('^^')
 RDFLiteral = ((String + DOUBLE_HAT + IRIref).setParseAction(
-    refer_component(components.Expression.ParsedDatatypedLiteral)) |
+    refer_component(components.ParsedDatatypedLiteral)) |
   (String + Optional(LANGTAG, None)).setParseAction(
     refer_component(rdflib.term.Literal)))
 if DEBUG:
@@ -421,41 +421,41 @@ sameTerm = Suppress(CaselessKeyword('sameTERM'))
 REGEX = Suppress(CaselessKeyword('REGEX'))
 RegexExpression = (REGEX + LP + Expression + COMMA + Expression +
                    Optional(COMMA + Expression) + RP).setParseAction(
-  refer_component(components.FunctionLibrary.ParsedREGEXInvocation))
+  refer_component(components.ParsedREGEXInvocation))
 if DEBUG:
     RegexExpression.setName('RegexExpression')
 
 BuiltInCall = (
   (STR + LP + Expression + RP).setParseAction(
-    refer_component(components.FunctionLibrary.BuiltinFunctionCall,
-                    [components.FunctionLibrary.STR])) |
+    refer_component(components.BuiltinFunctionCall,
+                    [components.STR])) |
   (LANG + LP + Expression + RP).setParseAction(
-    refer_component(components.FunctionLibrary.BuiltinFunctionCall,
-                    [components.FunctionLibrary.LANG])) |
+    refer_component(components.BuiltinFunctionCall,
+                    [components.LANG])) |
   (LANGMATCHES + LP + Expression + COMMA + Expression + RP).setParseAction(
-    refer_component(components.FunctionLibrary.BuiltinFunctionCall,
-                    [components.FunctionLibrary.LANGMATCHES])) |
+    refer_component(components.BuiltinFunctionCall,
+                    [components.LANGMATCHES])) |
   (DATATYPE + LP + Expression + RP).setParseAction(
-    refer_component(components.FunctionLibrary.BuiltinFunctionCall,
-                    [components.FunctionLibrary.DATATYPE])) |
+    refer_component(components.BuiltinFunctionCall,
+                    [components.DATATYPE])) |
   (BOUND + LP + Var + RP).setParseAction(
-    refer_component(components.FunctionLibrary.BuiltinFunctionCall,
-                    [components.FunctionLibrary.BOUND])) |
+    refer_component(components.BuiltinFunctionCall,
+                    [components.BOUND])) |
   (sameTerm + LP + Expression + COMMA + Expression + RP).setParseAction(
-    refer_component(components.FunctionLibrary.BuiltinFunctionCall,
-                    [components.FunctionLibrary.sameTERM])) |
+    refer_component(components.BuiltinFunctionCall,
+                    [components.sameTERM])) |
   (isIRI + LP + Expression + RP).setParseAction(
-    refer_component(components.FunctionLibrary.BuiltinFunctionCall,
-                    [components.FunctionLibrary.isIRI])) |
+    refer_component(components.BuiltinFunctionCall,
+                    [components.isIRI])) |
   (isURI + LP + Expression + RP).setParseAction(
-    refer_component(components.FunctionLibrary.BuiltinFunctionCall,
-                    [components.FunctionLibrary.isURI])) |
+    refer_component(components.BuiltinFunctionCall,
+                    [components.isURI])) |
   (isBLANK + LP + Expression + RP).setParseAction(
-    refer_component(components.FunctionLibrary.BuiltinFunctionCall,
-                    [components.FunctionLibrary.isBLANK])) |
+    refer_component(components.BuiltinFunctionCall,
+                    [components.isBLANK])) |
   (isLITERAL + LP + Expression + RP).setParseAction(
-    refer_component(components.FunctionLibrary.BuiltinFunctionCall,
-                    [components.FunctionLibrary.isLITERAL])) |
+    refer_component(components.BuiltinFunctionCall,
+                    [components.isLITERAL])) |
   RegexExpression)
 if DEBUG:
     BuiltInCall.setName('BuiltInCall')
@@ -466,7 +466,7 @@ if DEBUG:
 
 # FunctionCall:
 FunctionCall = (IRIref + ArgList).setParseAction(
-  refer_component(components.FunctionLibrary.FunctionCall))
+  refer_component(components.FunctionCall))
 if DEBUG:
     FunctionCall.setName('FunctionCall')
 
@@ -480,66 +480,66 @@ if DEBUG:
     PrimaryExpression.setName('PrimaryExpression')
 UnaryExpression = (
   (Suppress('!') + PrimaryExpression).setParseAction(
-    refer_component(components.Operators.LogicalNegation)) |
+    refer_component(components.LogicalNegation)) |
   (Suppress('+') + PrimaryExpression).setParseAction(
-    refer_component(components.Operators.NumericPositive)) |
+    refer_component(components.NumericPositive)) |
   (Suppress('-') + PrimaryExpression).setParseAction(
-    refer_component(components.Operators.NumericNegative)) |
+    refer_component(components.NumericNegative)) |
   PrimaryExpression)
 if DEBUG:
     UnaryExpression.setName('UnaryExpression')
 MultiplicativeExpression = Group(UnaryExpression + ZeroOrMore(
   (Literal('*') | Literal('/')) + UnaryExpression)).setParseAction(
-    refer_component(components.Expression.ParsedMultiplicativeExpressionList))
+    refer_component(components.ParsedMultiplicativeExpressionList))
 if DEBUG:
     MultiplicativeExpression.setName('MultiplicativeExpression')
 AdditiveExpression = Group(MultiplicativeExpression + ZeroOrMore(
   (Literal('+') | Literal('-')) + MultiplicativeExpression)).setParseAction(
-    refer_component(components.Expression.ParsedAdditiveExpressionList))
+    refer_component(components.ParsedAdditiveExpressionList))
 if DEBUG:
     AdditiveExpression.setName('AdditiveExpression')
 NumericExpression = AdditiveExpression
 RelationalExpression = (
   (NumericExpression + Suppress('=') +
    NumericExpression).setParseAction(
-    refer_component(components.Operators.EqualityOperator)) |
+    refer_component(components.EqualityOperator)) |
   (NumericExpression + Suppress('!=') +
    NumericExpression).setParseAction(
-    refer_component(components.Operators.NotEqualOperator)) |
+    refer_component(components.NotEqualOperator)) |
   (NumericExpression + Suppress('<') +
    NumericExpression).setParseAction(
-    refer_component(components.Operators.LessThanOperator)) |
+    refer_component(components.LessThanOperator)) |
   (NumericExpression + Suppress('>') +
    NumericExpression).setParseAction(
-    refer_component(components.Operators.GreaterThanOperator)) |
+    refer_component(components.GreaterThanOperator)) |
   (NumericExpression + Suppress('<=') +
    NumericExpression).setParseAction(
-    refer_component(components.Operators.LessThanOrEqualOperator)) |
+    refer_component(components.LessThanOrEqualOperator)) |
   (NumericExpression + Suppress('>=') +
    NumericExpression).setParseAction(
-    refer_component(components.Operators.GreaterThanOrEqualOperator)) |
+    refer_component(components.GreaterThanOrEqualOperator)) |
   NumericExpression)
 if DEBUG:
     RelationalExpression.setName('RelationalExpression')
 ValueLogical = RelationalExpression
 ConditionalAndExpression = Group(ValueLogical +
   ZeroOrMore(Suppress('&&') + ValueLogical)).setParseAction(
-    refer_component(components.Expression.ParsedRelationalExpressionList))
+    refer_component(components.ParsedRelationalExpressionList))
 if DEBUG:
     ConditionalAndExpression.setName('ConditionalAndExpression')
 ConditionalOrExpression = Group(ConditionalAndExpression +
   ZeroOrMore(Suppress('||') +
   ConditionalAndExpression)).setParseAction(
-    refer_component(components.Expression.ParsedConditionalAndExpressionList))
+    refer_component(components.ParsedConditionalAndExpressionList))
 if DEBUG:
     ConditionalOrExpression.setName('ConditionalOrExpression')
 Expression << ConditionalOrExpression
 
 # Constraint (used only in Filter):
 Constraint = ((BrackettedExpression).setParseAction(
-    refer_component(components.Filter.ParsedExpressionFilter)) |
+    refer_component(components.ParsedExpressionFilter)) |
   (BuiltInCall | FunctionCall).setParseAction(
-    refer_component(components.Filter.ParsedFunctionFilter)))
+    refer_component(components.ParsedFunctionFilter)))
 if DEBUG:
     Constraint.setName('Constraint')
 
@@ -556,7 +556,7 @@ if DEBUG:
 
 # Collection:
 Collection = (LP + Group(OneOrMore(GraphNode)) + RP).setParseAction(
-  refer_component(components.Resource.ParsedCollection))
+  refer_component(components.ParsedCollection))
 if DEBUG:
     Collection.setName('Collection')
 
@@ -567,7 +567,7 @@ if DEBUG:
 
 # PropertyListNotEmpty:
 PropertyListItem = (Verb + ObjectList).setParseAction(
-  refer_component(components.Triples.PropertyValue))
+  refer_component(components.PropertyValue))
 if DEBUG:
     PropertyListItem.setName('PropertyListItem')
 PropertyListNotEmpty = Group(PropertyListItem + ZeroOrMore(
@@ -577,7 +577,7 @@ if DEBUG:
 
 # TriplesNode:
 TriplesNode = Collection | (LB + PropertyListNotEmpty + RB).setParseAction(
-  refer_component(components.Resource.Resource, [None]))
+  refer_component(components.Resource, [None]))
 if DEBUG:
     TriplesNode.setName('TriplesNode')
 
@@ -587,10 +587,10 @@ GraphNode << (VarOrTerm | TriplesNode)
 
 # TriplesBlock:
 TriplesSameSubject = ((VarOrTerm + PropertyListNotEmpty).setParseAction(
-    refer_component(components.Resource.Resource)) |
+    refer_component(components.Resource)) |
   (LB + PropertyListNotEmpty + RB +
    Optional(PropertyListNotEmpty, [])).setParseAction(
-    refer_component(components.Resource.TwiceReferencedBlankNode)) |
+    refer_component(components.TwiceReferencedBlankNode)) |
   (Collection + Optional(PropertyListNotEmpty, [])).setParseAction(
     setPropertyValueList))
 if DEBUG:
@@ -606,18 +606,18 @@ if DEBUG:
 GroupGraphPattern = Forward()
 OPTIONAL = Suppress(CaselessKeyword('OPTIONAL'))
 OptionalGraphPattern = (OPTIONAL + GroupGraphPattern).setParseAction(
-  refer_component(components.GraphPattern.ParsedOptionalGraphPattern))
+  refer_component(components.ParsedOptionalGraphPattern))
 if DEBUG:
     OptionalGraphPattern.setName('OptionalGraphPattern')
 UNION = Suppress(CaselessKeyword('UNION'))
 UnionGraphPattern = Group(GroupGraphPattern + OneOrMore(
   UNION + GroupGraphPattern)).setParseAction(
-    refer_component(components.GraphPattern.ParsedAlternativeGraphPattern))
+    refer_component(components.ParsedAlternativeGraphPattern))
 if DEBUG:
     UnionGraphPattern.setName('UnionGraphPattern')
 GRAPH = Suppress(CaselessKeyword('GRAPH'))
 GraphGraphPattern = (GRAPH + VarOrIRIref + GroupGraphPattern).setParseAction(
-  refer_component(components.GraphPattern.ParsedGraphGraphPattern))
+  refer_component(components.ParsedGraphGraphPattern))
 if DEBUG:
     GraphGraphPattern.setName('GraphGraphPattern')
 GraphPatternNotTriples = (OptionalGraphPattern | UnionGraphPattern |
@@ -627,23 +627,23 @@ if DEBUG:
 
 GraphPattern = ((Filter + Optional(PERIOD) +
                 Optional(Group(TriplesBlock))).setParseAction(
-    refer_component(components.GraphPattern.GraphPattern, [None])) |
+    refer_component(components.GraphPattern, [None])) |
   (GraphPatternNotTriples + Optional(PERIOD) +
    Optional(Group(TriplesBlock), None)).setParseAction(
-    refer_component(components.GraphPattern.GraphPattern, [None], [1, 0, 2])))
+    refer_component(components.GraphPattern, [None], [1, 0, 2])))
 if DEBUG:
     GraphPattern.setName('GraphPattern')
 
 GroupGraphPattern << (LC + Optional(Group(TriplesBlock), None) +
                       Group(ZeroOrMore(GraphPattern)) + RC).setParseAction(
-  refer_component(components.GraphPattern.ParsedGroupGraphPattern))
+  refer_component(components.ParsedGroupGraphPattern))
 if DEBUG:
     GroupGraphPattern.setName('GroupGraphPattern')
 
 # WhereClause:
 WHERE = Suppress(Optional(CaselessKeyword('WHERE')))
 WhereClause = (WHERE + GroupGraphPattern).setParseAction(
-  refer_component(components.Query.WhereClause))
+  refer_component(components.WhereClause))
 if DEBUG:
     WhereClause.setName('WhereClause')
 
@@ -652,7 +652,7 @@ RECUR = Suppress(CaselessKeyword('RECUR'))
 TO = Suppress(CaselessKeyword('TO'))
 RecurClause = (RECUR + Group(OneOrMore(Group(Var + TO + Var))) + 
                Optional(GroupGraphPattern, None)).setParseAction(
-  refer_component(components.Query.RecurClause))
+  refer_component(components.RecurClause))
 if DEBUG:
     RecurClause.setName('RecurClause')
 
@@ -661,14 +661,14 @@ ASC = Suppress(Optional(CaselessKeyword('ASC')))
 DESC = Suppress(Optional(CaselessKeyword('DESC')))
 OrderCondition = (
   (ASC + BrackettedExpression).setParseAction(
-    refer_component(components.SolutionModifier.ParsedOrderConditionExpression,
-                    [components.SolutionModifier.ASCENDING_ORDER], [1, 0])) |
+    refer_component(components.ParsedOrderConditionExpression,
+                    [components.ASCENDING_ORDER], [1, 0])) |
   (DESC + BrackettedExpression).setParseAction(
-    refer_component(components.SolutionModifier.ParsedOrderConditionExpression,
-                    [components.SolutionModifier.DESCENDING_ORDER], [1, 0])) |
+    refer_component(components.ParsedOrderConditionExpression,
+                    [components.DESCENDING_ORDER], [1, 0])) |
   BrackettedExpression.copy().setParseAction(
-    refer_component(components.SolutionModifier.ParsedOrderConditionExpression,
-                    [components.SolutionModifier.UNSPECIFIED_ORDER], [1, 0])) |
+    refer_component(components.ParsedOrderConditionExpression,
+                    [components.UNSPECIFIED_ORDER], [1, 0])) |
   BuiltInCall | FunctionCall | Var)
 if DEBUG:
     OrderCondition.setName('OrderCondition')
@@ -688,10 +688,10 @@ if DEBUG:
 SolutionModifier = (
   (Optional(OrderClause, None) + Optional(LimitClause, None) +
    Optional(OffsetClause, None)).setParseAction(
-    refer_component(components.SolutionModifier.SolutionModifier)) |
+    refer_component(components.SolutionModifier)) |
   (Optional(OrderClause, None) + Optional(OffsetClause, None) +
    Optional(LimitClause, None)).setParseAction(
-    refer_component(components.SolutionModifier.SolutionModifier,
+    refer_component(components.SolutionModifier,
                     projection=[0, 2, 1])))
 if DEBUG:
     SolutionModifier.setName('SolutionModifier')
@@ -705,7 +705,7 @@ SelectQuery = (SELECT + DISTINCT +
   Group(ZeroOrMore(DatasetClause)) + 
   WhereClause + Optional(RecurClause, None) +
   SolutionModifier).setParseAction(
-    refer_component(components.Query.SelectQuery,
+    refer_component(components.SelectQuery,
                     projection=[1, 2, 3, 4, 5, 0]))
 if DEBUG:
     SelectQuery.setName('SelectQuery')
@@ -718,7 +718,7 @@ ConstructTemplate = LC + Optional(Group(TriplesBlock), []) + RC
 ConstructQuery = (CONSTRUCT + ConstructTemplate +
   Group(ZeroOrMore(DatasetClause)) + WhereClause +
   SolutionModifier).setParseAction(
-    refer_component(components.Query.ConstructQuery))
+    refer_component(components.ConstructQuery))
 if DEBUG:
     ConstructQuery.setName('ConstructQuery')
 
@@ -729,7 +729,7 @@ DescribeQuery = (DESCRIBE +
   (Group(OneOrMore(Var)) | Literal('*').setParseAction(as_empty)) +
   Group(ZeroOrMore(DatasetClause)) + Optional(WhereClause, None) +
   SolutionModifier).setParseAction(
-    refer_component(components.Query.DescribeQuery))
+    refer_component(components.DescribeQuery))
 if DEBUG:
     DescribeQuery.setName('DescribeQuery')
 
@@ -738,14 +738,14 @@ ASK = Suppress(CaselessKeyword('ASK'))
 
 AskQuery = (ASK + Group(ZeroOrMore(DatasetClause)) +
             WhereClause).setParseAction(
-              refer_component(components.Query.AskQuery))
+              refer_component(components.AskQuery))
 if DEBUG:
     AskQuery.setName('AskQuery')
 
 # Query:
 Query = (Prologue + (SelectQuery | ConstructQuery |
                      DescribeQuery | AskQuery)).setParseAction(
-  refer_component(components.Query.Query))
+  refer_component(components.Query))
 Query.ignore('#' + restOfLine)
 if DEBUG:
     Query.setName('Query')

@@ -19,14 +19,15 @@ from rdflib import plugin
 from rdflib.term import URIRef, Variable, BNode, Literal
 from rdflib.util import first
 from rdflib.store import Store 
-from rdflib.sparql.bison.Query import AskQuery, SelectQuery, DescribeQuery, Query, Prolog
-from rdflib.sparql.bison.IRIRef import NamedGraph,RemoteGraph
-from rdflib.sparql.bison.SolutionModifier import ASCENDING_ORDER
+from rdflib.sparql.components import AskQuery, SelectQuery, DescribeQuery, Query, Prolog
+from rdflib.sparql.components import NamedGraph,RemoteGraph
+from rdflib.sparql.components import ASCENDING_ORDER
 from rdflib.sparql import sparqlGraph, sparqlOperators, SPARQLError, Query, DESCRIBE
 from rdflib.sparql.bison.SPARQLEvaluate import unRollTripleItems, _variablesToArray
-from rdflib.sparql.bison.GraphPattern import *
+from rdflib.sparql.components import ParsedGroupGraphPattern, BlockOfTriples, GraphPattern, ParsedOptionalGraphPattern, ParsedAlternativeGraphPattern, ParsedGraphGraphPattern
+
 from rdflib.sparql.graphPattern import BasicGraphPattern
-from rdflib.sparql.bison.Triples import ParsedConstrainedTriples
+from rdflib.sparql.components import ParsedConstrainedTriples
 from rdflib.sparql.bison.SPARQLEvaluate import createSPARQLPConstraint,\
      CONSTRUCT_NOT_SUPPORTED,convertTerm
 #A variable to determine whether we obey SPARQL definition of RDF dataset
@@ -1258,7 +1259,7 @@ class TestSPARQLAlgebra(unittest.TestCase):
 #    def testScoping(self):
 #        from rdflib.sparql.bison.Processor import Parse
 #        from rdflib.sparql.QueryResult import SPARQLQueryResult
-#        from rdflib.sparql.bison.Query import Prolog  
+#        from rdflib.sparql.components import Prolog  
 #        p = Parse(scopingQuery)
 #        prolog = p.prolog
 #        if prolog is None:
@@ -1279,7 +1280,7 @@ class TestSPARQLAlgebra(unittest.TestCase):
             prolog = p.prolog
             p = p.query.whereClause.parsedGraphPattern.graphPatterns
             if prolog is None:
-                from rdflib.sparql.bison.Query import Prolog  
+                from rdflib.sparql.components import Prolog  
                 prolog = Prolog(u'',[])
             if not hasattr(prolog,'DEBUG'):                
                 prolog.DEBUG = False
@@ -1292,7 +1293,7 @@ class TestSPARQLAlgebra(unittest.TestCase):
         prolog = p.prolog
         p = p.query.whereClause.parsedGraphPattern.graphPatterns
         if prolog is None:
-            from rdflib.sparql.bison.Query import Prolog  
+            from rdflib.sparql.components import Prolog  
             prolog = Prolog(u'',[])
             prolog.DEBUG = True
         assert isinstance(reduce(ReduceToAlgebra,p,None),GraphExpression)

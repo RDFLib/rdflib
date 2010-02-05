@@ -11,17 +11,18 @@ from rdflib.namespace import RDF
 from rdflib.store import Store
 from rdflib.term import URIRef, Variable, BNode, Literal, Identifier
 from rdflib.term import XSDToPython
-from IRIRef import NamedGraph, RemoteGraph, IRIRef
-from GraphPattern import *
-from Resource import *
-from Triples import ParsedConstrainedTriples
-from QName import *
-from Expression import *
-from Util import ListRedirect
-from Operators import *
-from FunctionLibrary import *
-from SolutionModifier import ASCENDING_ORDER
-from Query import AskQuery, SelectQuery
+from rdflib.sparql.components import NamedGraph, RemoteGraph, IRIRef
+from rdflib.sparql.components import *
+#from GraphPattern import *
+#from Resource import *
+#from Triples import ParsedConstrainedTriples
+#from QName import *
+#from Expression import *
+#from Util import ListRedirect
+#from Operators import *
+#from FunctionLibrary import *
+#from SolutionModifier import ASCENDING_ORDER
+#from Query import AskQuery, SelectQuery
 
 DEBUG = False
 

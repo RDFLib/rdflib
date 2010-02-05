@@ -1,6 +1,6 @@
 import sys
 
-from rdflib.sparql import parser, bison as components
+from rdflib.sparql import parser, components
 from rdflib.term import Literal, URIRef, Variable, BNode
 from rdflib.namespace import RDF
 
@@ -16,7 +16,7 @@ match_definitions = [
       ]),
     (parser.PrefixDecl,
       [
-        ('PREFIX s: <s:ex>', components.Bindings.PrefixDeclaration(
+        ('PREFIX s: <s:ex>', components.PrefixDeclaration(
                                's:', 's:ex')),
       ]),
     (parser.Var,
@@ -26,16 +26,16 @@ match_definitions = [
       ]),
     (parser.IRIref,
       [
-        ('pre:local', components.QName.QName('pre:local')),
+        ('pre:local', components.QName('pre:local')),
         ('<s:ex>', URIRef('s:ex')),
       ]),
     (parser.RDFLiteral,
       [
         ('"foo"', Literal("foo")),
         ('"foo"@en-US', Literal("foo", lang='en-US')),
-        ("'bar'^^pre:type", components.Expression.ParsedDatatypedLiteral(
-          "bar", components.QName.QName('pre:type'))),
-        ("'bar'^^<s:type>", components.Expression.ParsedDatatypedLiteral(
+        ("'bar'^^pre:type", components.ParsedDatatypedLiteral(
+          "bar", components.QName('pre:type'))),
+        ("'bar'^^<s:type>", components.ParsedDatatypedLiteral(
           "bar", URIRef('s:type'))),
       ]),
     (parser.NumericLiteral,
@@ -59,47 +59,47 @@ match_definitions = [
       [
         ('?foo', Variable('foo')),
         ('<s:ex>', URIRef('s:ex')),
-        ('pre:local', components.QName.QName('pre:local')),
+        ('pre:local', components.QName('pre:local')),
         ('a', RDF.type),
       ]),
     (parser.GraphNode,
       [
-        ('foaf:Person', components.QName.QName('foaf:Person')),
+        ('foaf:Person', components.QName('foaf:Person')),
       ]),
     (parser.ObjectList,
       [
-        ('foaf:Person', [components.QName.QName('foaf:Person')]),
+        ('foaf:Person', [components.QName('foaf:Person')]),
       ]),
     (parser.PropertyListNotEmpty,
       [
         ('''foaf:nick "Alice"@en-US, "Alice_" ;
             a foaf:Person, <s:ex:Object>''',
-         [components.Triples.PropertyValue(
-            components.QName.QName('foaf:nick'),
+         [components.PropertyValue(
+            components.QName('foaf:nick'),
             [Literal('Alice', lang='en-US'), Literal('Alice_')]),
-          components.Triples.PropertyValue(RDF.type,
-            [components.QName.QName('foaf:Person'), URIRef('s:ex:Object')])
+          components.PropertyValue(RDF.type,
+            [components.QName('foaf:Person'), URIRef('s:ex:Object')])
          ]),
       ]),
     (parser.TriplesSameSubject,
       [
         ('''<s:ex:Subject> foaf:nick "Alice"@en-US, "Alice_" ;
                            a foaf:Person, <s:ex:Object>''',
-         components.Resource.Resource(URIRef('s:ex:Subject'),
-           [components.Triples.PropertyValue(
-              components.QName.QName('foaf:nick'),
+         components.Resource(URIRef('s:ex:Subject'),
+           [components.PropertyValue(
+              components.QName('foaf:nick'),
               [Literal('Alice', lang='en-US'), Literal('Alice_')]),
-            components.Triples.PropertyValue(RDF.type,
-              [components.QName.QName('foaf:Person'), URIRef('s:ex:Object')])
+            components.PropertyValue(RDF.type,
+              [components.QName('foaf:Person'), URIRef('s:ex:Object')])
            ])),
       ]),
     (parser.NumericExpression,
       [
         ('1 / 2 + 3 * 4 / 5',
-         components.Expression.ParsedAdditiveExpressionList(
-          [components.Expression.ParsedMultiplicativeExpressionList(
+         components.ParsedAdditiveExpressionList(
+          [components.ParsedMultiplicativeExpressionList(
             [Literal(1), '/', Literal(2)]), '+',
-           components.Expression.ParsedMultiplicativeExpressionList(
+           components.ParsedMultiplicativeExpressionList(
             [Literal(3), '*', Literal(4), '/', Literal(5)])])),
       ]),
   ]
