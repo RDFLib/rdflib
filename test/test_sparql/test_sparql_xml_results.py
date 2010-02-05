@@ -24,38 +24,19 @@ query = PROLOGUE+"""
 SELECT ?s ?o WHERE { ?s ?p ?o . }
 """
 
-try:
-    from Ft.Xml import MarkupWriter
+expected_fragments = [
+    #u"""<sparql:sparql xmlns="http://www.w3.org/2005/sparql-results#"><sparql:head>""",
 
-    expected_fragments = [
-        u"""<sparql xmlns="http://www.w3.org/2005/sparql-results#"> <head>""",
+    u"""</sparql:head><sparql:results distinct="false" ordered="false">""",
 
-        u"""</head> <results distinct="false" ordered="false">""",
+    u"""<sparql:binding name="s"><sparql:uri>http://example.org/word</sparql:uri></sparql:binding>""",
 
-        u"""<binding name="s"> <uri>http://example.org/word</uri> </binding>""",
+    u"""<sparql:binding name="o"><sparql:bnode>""",
 
-        u"""<binding name="o"> <bnode>""",
+    u"""<sparql:binding name="o"><sparql:literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</sparql:literal></sparql:binding>""",
 
-        u"""<binding name="o"> <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal> </binding>""",
-
-        (u"""<result> <binding name="s"> <uri>http://example.org/word</uri> </binding>"""
-        """ <binding name="o"> <literal xml:lang="en">Word</literal> </binding> </result>""")
-    ]
-
-except ImportError:
-    expected_fragments = [
-        #u"""<sparql:sparql xmlns="http://www.w3.org/2005/sparql-results#"><sparql:head>""",
-
-        u"""</sparql:head><sparql:results distinct="false" ordered="false">""",
-
-        u"""<sparql:binding name="s"><sparql:uri>http://example.org/word</sparql:uri></sparql:binding>""",
-
-        u"""<sparql:binding name="o"><sparql:bnode>""",
-
-        u"""<sparql:binding name="o"><sparql:literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</sparql:literal></sparql:binding>""",
-
-        u"""<sparql:result><sparql:binding name="s"><sparql:uri>http://example.org/word</sparql:uri></sparql:binding><sparql:binding name="o"><sparql:literal xml:lang="en">Word</sparql:literal></sparql:binding></sparql:result>"""
-    ]
+    u"""<sparql:result><sparql:binding name="s"><sparql:uri>http://example.org/word</sparql:uri></sparql:binding><sparql:binding name="o"><sparql:literal xml:lang="en">Word</sparql:literal></sparql:binding></sparql:result>"""
+]
 
 
 # TODO:
@@ -65,7 +46,7 @@ except ImportError:
 
 class TestSparqlXmlResults(unittest.TestCase):
 
-    known_issue = True
+    sparql = True
 
     def setUp(self):
         self.graph = ConjunctiveGraph()
