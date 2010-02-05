@@ -1,7 +1,7 @@
 from rdflib.graph import ConjunctiveGraph
 from rdflib.term import URIRef, Literal
 from rdflib.namespace import RDFS
-from rdflib.sparql.Algebra import RenderSPARQLAlgebra
+from rdflib.sparql.algebra import RenderSPARQLAlgebra
 from StringIO import StringIO
 import unittest, sys
 import nose

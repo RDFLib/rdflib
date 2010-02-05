@@ -3,7 +3,7 @@ import unittest
 from rdflib.graph import ConjunctiveGraph as Graph
 from rdflib.namespace import Namespace as NS
 
-from rdflib.sparql import Algebra
+from rdflib.sparql import algebra
 
 from StringIO import StringIO
 
@@ -23,10 +23,10 @@ class TestSparqlASK(unittest.TestCase):
         
         self.graph.load(io, format='n3')
 
-        self.compliance_setting, Algebra.DAWG_DATASET_COMPLIANCE = Algebra.DAWG_DATASET_COMPLIANCE, False
+        self.compliance_setting, algebra.DAWG_DATASET_COMPLIANCE = algebra.DAWG_DATASET_COMPLIANCE, False
 
     def tearDown(self):
-        Algebra.DAWG_DATASET_COMPLIANCE = self.compliance_setting
+        algebra.DAWG_DATASET_COMPLIANCE = self.compliance_setting
 
     def test_ask_true(self):
         """
@@ -47,7 +47,7 @@ class TestSparqlASK(unittest.TestCase):
 # class TestSparqlASKWithCompliance(TestSparqlASK):
 #     def setUp(self):
 #         TestSparqlASK.setUp(self)
-#         Algebra.DAWG_DATASET_COMPLIANCE = True
+#         algebra.DAWG_DATASET_COMPLIANCE = True
 
 if __name__ == "__main__":
     unittest.main()
