@@ -22,13 +22,13 @@ from rdflib.store import Store
 from rdflib.sparql.components import AskQuery, SelectQuery, DescribeQuery, Query, Prolog
 from rdflib.sparql.components import NamedGraph,RemoteGraph
 from rdflib.sparql.components import ASCENDING_ORDER
-from rdflib.sparql import sparqlGraph, sparqlOperators, SPARQLError, Query, DESCRIBE
-from rdflib.sparql.bison.SPARQLEvaluate import unRollTripleItems, _variablesToArray
+from rdflib.sparql import sparqlGraph, operators, SPARQLError, Query, DESCRIBE
+from rdflib.sparql.evaluate import unRollTripleItems, _variablesToArray
 from rdflib.sparql.components import ParsedGroupGraphPattern, BlockOfTriples, GraphPattern, ParsedOptionalGraphPattern, ParsedAlternativeGraphPattern, ParsedGraphGraphPattern
 
 from rdflib.sparql.graphPattern import BasicGraphPattern
 from rdflib.sparql.components import ParsedConstrainedTriples
-from rdflib.sparql.bison.SPARQLEvaluate import createSPARQLPConstraint,\
+from rdflib.sparql.evaluate import createSPARQLPConstraint,\
      CONSTRUCT_NOT_SUPPORTED,convertTerm
 #A variable to determine whether we obey SPARQL definition of RDF dataset
 #which does not allow matching of default graphs (or any graph with a BNode for a name)
@@ -1257,7 +1257,7 @@ class TestSPARQLAlgebra(unittest.TestCase):
         self.unionGraph = ReadOnlyGraphAggregate(graphs=[self.graph1,self.graph2],store=self.store)
         
 #    def testScoping(self):
-#        from rdflib.sparql.bison.Processor import Parse
+#        from rdflib.sparql.processor import Parse
 #        from rdflib.sparql.QueryResult import SPARQLQueryResult
 #        from rdflib.sparql.components import Prolog  
 #        p = Parse(scopingQuery)
@@ -1273,7 +1273,7 @@ class TestSPARQLAlgebra(unittest.TestCase):
 #                            "Unexpected ?mbox binding :\n %s" % ppd)
 
     def testExpressions(self):
-        from rdflib.sparql.bison.Processor import Parse
+        from rdflib.sparql.processor import Parse
         global prolog
         for inExpr,outExpr in ExprTests:
             p = Parse(inExpr)
@@ -1287,7 +1287,7 @@ class TestSPARQLAlgebra(unittest.TestCase):
             self.assertEquals(repr(reduce(ReduceToAlgebra,p,None)),outExpr)
 
     def testSimpleGraphPattern(self):
-        from rdflib.sparql.bison.Processor import Parse
+        from rdflib.sparql.processor import Parse
         global prolog
         p = Parse("BASE <http://example.com/> SELECT ?ptrec WHERE { GRAPH ?ptrec { ?data :foo 'bar'. } }")
         prolog = p.prolog
@@ -1299,7 +1299,7 @@ class TestSPARQLAlgebra(unittest.TestCase):
         assert isinstance(reduce(ReduceToAlgebra,p,None),GraphExpression)
 
 #    def testGraphEvaluation(self):
-#        from rdflib.sparql.bison.Processor import Parse
+#        from rdflib.sparql.processor import Parse
 #        p = Parse(TEST10)
 #        print TEST10
 #        rt = TopEvaluate(p,self.unionGraph,passedBindings = {})

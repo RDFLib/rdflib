@@ -703,3 +703,4 @@ class ParsedConstrainedTriples(object):
 
     def __repr__(self):
         return "%s%s"%(self.triples,self.constraint and ' %s'%self.constraint or '')
+

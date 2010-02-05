@@ -143,7 +143,7 @@ register('trix', Parser, 'rdflib.syntax.parsers.trix', 'TriXParser')
 register('rdfa', Parser, 'rdflib.syntax.parsers.rdfa', 'RDFaParser')
 
 register('sparql', sparql.Processor,
-         'rdflib.sparql.bison.Processor', 'Processor')
+         'rdflib.sparql.processor', 'Processor')
 register('SPARQLQueryResult', QueryResult,
          'rdflib.sparql.QueryResult', 'SPARQLQueryResult')
 

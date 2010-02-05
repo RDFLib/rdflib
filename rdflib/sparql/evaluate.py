@@ -1,9 +1,9 @@
 ### Utilities for evaluating a parsed SPARQL expression using sparql-p
 import rdflib
-from rdflib.sparql import sparqlGraph, sparqlOperators, SPARQLError
-from rdflib.sparql.sparqlOperators import getValue
+from rdflib.sparql import sparqlGraph, operators, SPARQLError
+from rdflib.sparql.operators import getValue
 from rdflib.sparql.graphPattern import BasicGraphPattern
-from rdflib.sparql.Unbound import Unbound
+#from rdflib.sparql.Unbound import Unbound
 from rdflib.sparql.Query import _variablesToArray, queryObject, SessionBNode
 from rdflib.graph import ConjunctiveGraph, Graph, BackwardCompatGraph,ReadOnlyGraphAggregate
 from rdflib import plugin
@@ -24,15 +24,39 @@ from rdflib.sparql.components import *
 #from SolutionModifier import ASCENDING_ORDER
 #from Query import AskQuery, SelectQuery
 
+from rdflib.sparql import _questChar
+
+
+class Unbound :
+    """A class to encapsulate a query variable. This class should be used in conjunction with L{BasicGraphPattern<graphPattern.BasicGraphPattern>}."""
+    def __init__(self,name) :
+        """
+        @param name: the name of the variable (without the '?' character)
+        @type name: unicode or string
+        """
+        if isinstance(name,basestring) :
+            self.name     = _questChar + name
+            self.origName = name
+        else :
+            raise SPARQLError("illegal argument, variable name must be a string or unicode")
+
+    def __repr__(self) :
+        retval  = "?%s" % self.origName
+        return retval
+
+    def __str__(self) :
+        return self.__repr__()
+
+
 DEBUG = False
 
 BinaryOperatorMapping = {
-    LessThanOperator           : 'sparqlOperators.lt(%s,%s)%s',
-    EqualityOperator           : 'sparqlOperators.eq(%s,%s)%s',
-    NotEqualOperator           : 'sparqlOperators.neq(%s,%s)%s',
-    LessThanOrEqualOperator    : 'sparqlOperators.le(%s,%s)%s',
-    GreaterThanOperator        : 'sparqlOperators.gt(%s,%s)%s',
-    GreaterThanOrEqualOperator : 'sparqlOperators.ge(%s,%s)%s',
+    LessThanOperator           : 'operators.lt(%s,%s)%s',
+    EqualityOperator           : 'operators.eq(%s,%s)%s',
+    NotEqualOperator           : 'operators.neq(%s,%s)%s',
+    LessThanOrEqualOperator    : 'operators.le(%s,%s)%s',
+    GreaterThanOperator        : 'operators.gt(%s,%s)%s',
+    GreaterThanOrEqualOperator : 'operators.ge(%s,%s)%s',
 }
 
 UnaryOperatorMapping = {
@@ -41,10 +65,10 @@ UnaryOperatorMapping = {
 }
 
 CAMEL_CASE_BUILTINS = {
-    'isuri':'sparqlOperators.isURI',
-    'isiri':'sparqlOperators.isIRI',
-    'isblank':'sparqlOperators.isBlank',
-    'isliteral':'sparqlOperators.isLiteral',
+    'isuri':'operators.isURI',
+    'isiri':'operators.isIRI',
+    'isblank':'operators.isBlank',
+    'isliteral':'operators.isLiteral',
 }
 
 #try:
@@ -229,25 +253,25 @@ def mapToOperator(expr,prolog,combinationArg=None,constraint=False):
                 combinationInvokation)
     elif isinstance(expr,(Variable,Unbound)):
         if constraint:
-            return """sparqlOperators.EBV(rdflib.Variable("%s"))%s"""%(expr.n3(),combinationInvokation)
+            return """operators.EBV(rdflib.Variable("%s"))%s"""%(expr.n3(),combinationInvokation)
         else:
             return '"?%s"'%expr
     elif isinstance(expr,ParsedREGEXInvocation):
-        return 'sparqlOperators.regex(%s,%s%s)%s'%(
+        return 'operators.regex(%s,%s%s)%s'%(
                  mapToOperator(expr.arg1,prolog,combinationArg,constraint=constraint),
                  mapToOperator(expr.arg2,prolog,combinationArg,constraint=constraint),
                  expr.arg3 and ',"'+expr.arg3 + '"' or '',
                  combinationInvokation)
     elif isinstance(expr,BuiltinFunctionCall):
         normBuiltInName = FUNCTION_NAMES[expr.name].lower()
-        normBuiltInName = CAMEL_CASE_BUILTINS.get(normBuiltInName,'sparqlOperators.'+normBuiltInName)
+        normBuiltInName = CAMEL_CASE_BUILTINS.get(normBuiltInName,'operators.'+normBuiltInName)
         return "%s(%s)%s"%(normBuiltInName,",".join(
                     [mapToOperator(i,prolog,combinationArg,constraint=constraint) \
                          for i in expr.arguments]),combinationInvokation)
     elif isinstance(expr,ParsedDatatypedLiteral):
         lit = Literal(expr.value,datatype=convertTerm(expr.dataType,prolog))
         if constraint:
-            return """sparqlOperators.EBV(%r)%s"""%(lit,combinationInvokation)
+            return """operators.EBV(%r)%s"""%(lit,combinationInvokation)
         else:
             return repr(lit)
     elif isinstance(expr,Literal):
@@ -264,14 +288,14 @@ def mapToOperator(expr,prolog,combinationArg=None,constraint=False):
     elif isinstance(expr,basestring):
         return "'%s'"%convertTerm(expr,prolog)        
     elif isinstance(expr,ParsedAdditiveExpressionList):
-        return 'Literal(%s)'%(sparqlOperators.addOperator(
+        return 'Literal(%s)'%(operators.addOperator(
                   [mapToOperator(item,prolog,combinationArg='i',constraint=constraint) \
                            for item in expr],combinationArg))
     elif isinstance(expr,FunctionCall):
         if isinstance(expr.name,QName):
             fUri = convertTerm(expr.name,prolog)
         if fUri in XSDToPython:
-            return "sparqlOperators.XSDCast(%s,'%s')%s"%(
+            return "operators.XSDCast(%s,'%s')%s"%(
              mapToOperator(expr.arguments[0],prolog,combinationArg='i',constraint=constraint),
              fUri,
              combinationInvokation)
@@ -340,7 +364,7 @@ def createSPARQLPConstraint(filter,prolog):
             print "sparql-p operator(s): %s"%rt
         return eval(rt)
     elif isinstance(reducedFilter,Variable):
-        rt = """sparqlOperators.EBV(rdflib.Variable("%s"))"""%reducedFilter.n3()
+        rt = """operators.EBV(rdflib.Variable("%s"))"""%reducedFilter.n3()
         if prolog.DEBUG:
             print "sparql-p operator(s): %s"%rt        
         return eval(rt)
