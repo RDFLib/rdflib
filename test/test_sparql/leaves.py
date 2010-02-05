@@ -32,11 +32,13 @@ from StringIO import StringIO
 #g.parse(StringIO(data), format='n3')
 #print g.query(q).serialize('json')
 
+from test import test_sparql
+
 def test_leaves():
-    return DocFileSuite("leaves.txt",
-                        package="rdflib",
-                        optionflags = doctest.ELLIPSIS,
-                        globs=locals())
+    return doctest.DocFileSuite("../test/test_sparql/leaves.txt",
+                                package="rdflib",
+                                optionflags = doctest.ELLIPSIS,
+                                globs=locals())
 
 
 if __name__ == "__main__":
