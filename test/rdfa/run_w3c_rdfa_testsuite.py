@@ -75,7 +75,7 @@ def verify_ask(sparql, graph, expected):
         return ok
     # TODO: sparql bugs cause a bunch to fail (at least bnodes and xmlliterals)
     # .. extract N3 from ASK and compare graphs instead:
-    from rdflib.graphutils import isomorphic
+    from rdflib.compare import isomorphic
     for ask_graph in _sparql_to_graphs(sparql):
         if isomorphic(graph, ask_graph) == expected:
             return True

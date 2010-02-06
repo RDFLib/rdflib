@@ -15,7 +15,7 @@ from rdflib.term import BNode, Literal, URIRef, Variable
 from rdflib import plugin, util
 from rdflib.namespace import Namespace, RDF, RDFS
 from rdflib.util import *
-from rdflib.graphutils import IsomorphicGraph
+from rdflib.compare import IsomorphicGraph
 from rdflib.store import Store, VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
 from rdflib.graph import Graph, ConjunctiveGraph
 from rdflib.syntax.NamespaceManager import NamespaceManager
