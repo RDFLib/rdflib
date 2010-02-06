@@ -1,11 +1,11 @@
 from rdflib.graph import ConjunctiveGraph
-from rdflib.namespace import Namespace, RDF
+from rdflib.namespace import Namespace, RDF, XSD
 from rdflib.term import BNode, Literal
+
 
 DC = Namespace(u"http://purl.org/dc/elements/1.1/")
 FUNC = Namespace(u"http://example.org/functions#")
 
-_XSD_NS = Namespace('http://www.w3.org/2001/XMLSchema#')
 
 graph = ConjunctiveGraph()
 graph.add((BNode(), RDF.value, Literal(0)))
@@ -23,7 +23,7 @@ def func_even(a):
     value = getValue(a)
 
     if isinstance(value, Literal) and value.datatype in NUMERIC_TYPES:
-        return Literal(int(value.toPython() % 2 == 0), datatype=_XSD_NS.boolean)
+        return Literal(int(value.toPython() % 2 == 0), datatype=XSD.boolean)
     else:
         raise TypeError(a)
 

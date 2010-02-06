@@ -46,8 +46,7 @@ class TestLiteral(unittest.TestCase):
 
     def test_literal_from_bool(self):
         l = rdflib.Literal(True)
-        XSD_NS = rdflib.Namespace(u'http://www.w3.org/2001/XMLSchema#')
-        self.assertEquals(l.datatype, XSD_NS["boolean"])
+        self.assertEquals(l.datatype, rdflib.XSD["boolean"])
 
 class TestNew(unittest.TestCase):
     def testCantPassLangAndDatatype(self):

@@ -5,7 +5,7 @@ from datetime import datetime
 
 from rdflib.term import URIRef
 from rdflib.term import Literal
-from rdflib.namespace import _XSD_NS as XSD
+from rdflib.namespace import XSD
 
 
 class TestRelativeBase(unittest.TestCase):

@@ -10,9 +10,9 @@ from pyparsing import (Regex, Suppress, Combine, Optional, CaselessKeyword,
 
 import rdflib
 from rdflib.term import URIRef
+from rdflib.namespace import XSD
 from rdflib.sparql import components
 
-XSD_NS = rdflib.namespace.Namespace(u'http://www.w3.org/2001/XMLSchema#')
 
 # Debug utilities:
 
@@ -364,7 +364,7 @@ if DEBUG:
 
 # BooleanLiteral:
 BooleanLiteral = (Keyword('true') | Keyword('false')).setParseAction(
-  refer_component(rdflib.term.Literal, datatype=XSD_NS.boolean))
+  refer_component(rdflib.term.Literal, datatype=XSD.boolean))
 if DEBUG:
     BooleanLiteral.setName('BooleanLiteral')
 

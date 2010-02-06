@@ -9,9 +9,7 @@ import os
 from urlparse import urljoin, urldefrag
 from urllib import pathname2url
 
-from rdflib.term import URIRef
-from rdflib.term import Variable
-
+from rdflib.term import URIRef, Variable, _XSD_PFX
 from rdflib.syntax.xml_names import split_uri
 
 
@@ -140,7 +138,7 @@ RDFS = ClosedNamespace(
 
 OWL = Namespace('http://www.w3.org/2002/07/owl#')
 
-_XSD_NS = Namespace('http://www.w3.org/2001/XMLSchema#')
+XSD = Namespace(_XSD_PFX)
 
 
 class NamespaceManager(object):

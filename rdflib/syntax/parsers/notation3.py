@@ -40,7 +40,7 @@ import StringIO
 from string import find, rfind
 from decimal import Decimal
 
-from rdflib.term import URIRef, BNode, Literal, Variable
+from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX
 from rdflib.graph import QuotedGraph, ConjunctiveGraph
 
 from rdflib.syntax.parsers import Parser
@@ -778,10 +778,11 @@ DAML_sameAs = ( SYMBOL, DAML_sameAs_URI )
 
 LOG_implies_URI = "http://www.w3.org/2000/10/swap/log#implies"
 
-INTEGER_DATATYPE = "http://www.w3.org/2001/XMLSchema#integer"
-FLOAT_DATATYPE = "http://www.w3.org/2001/XMLSchema#double"
-DECIMAL_DATATYPE = "http://www.w3.org/2001/XMLSchema#decimal"
-BOOLEAN_DATATYPE = "http://www.w3.org/2001/XMLSchema#boolean"
+BOOLEAN_DATATYPE = _XSD_PFX + "boolean"
+DECIMAL_DATATYPE = _XSD_PFX + "decimal"
+DOUBLE_DATATYPE = _XSD_PFX + "double"
+FLOAT_DATATYPE = _XSD_PFX + "float"
+INTEGER_DATATYPE = _XSD_PFX + "integer"
 
 option_noregen = 0   # If set, do not regenerate genids on output
 
@@ -2061,26 +2062,22 @@ class RDFSink(object):
       #    return name
 
       if isinstance(n, bool): 
-         boolean = 'http://www.w3.org/2001/XMLSchema#boolean'
-         s = Literal(str(n).lower(), datatype=boolean)
+         s = Literal(str(n).lower(), datatype=BOOLEAN_DATATYPE)
          return s
 
       if isinstance(n, int) or isinstance(n, long): 
-         integer = URIRef(u'http://www.w3.org/2001/XMLSchema#integer')
-         s = Literal(unicode(n), datatype=integer)
+         s = Literal(unicode(n), datatype=INTEGER_DATATYPE)
          return s
 
       if isinstance(n, Decimal): 
-         decimal = 'http://www.w3.org/2001/XMLSchema#decimal'
          value = str(n.normalize())
          if value == '-0': 
             value = '0'
-         s = Literal(value, datatype=decimal)
+         s = Literal(value, datatype=DECIMAL_DATATYPE )
          return s
 
       if isinstance(n, float): 
-         double = 'http://www.w3.org/2001/XMLSchema#double'
-         s = Literal(str(n), datatype=double)
+         s = Literal(str(n), datatype=DOUBLE_DATATYPE )
          return s
 
       if f.existentials.has_key(n): 

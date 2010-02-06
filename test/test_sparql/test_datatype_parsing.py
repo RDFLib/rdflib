@@ -3,7 +3,7 @@ from StringIO import StringIO
 
 from rdflib.graph import ConjunctiveGraph
 from rdflib.term import Literal
-from rdflib.namespace import Namespace
+from rdflib.namespace import Namespace, XSD
 
 testContent = """
 @prefix    :        <http://example.org/things#> .
@@ -12,10 +12,9 @@ testContent = """
 :xd3 :p  "1"^^xsd:double .
 """
     
-_XSD_NS = Namespace(u'http://www.w3.org/2001/XMLSchema#')
 exNS = Namespace("http://example.org/things#")
 
-double1 = Literal('1', datatype=_XSD_NS.double)
+double1 = Literal('1', datatype=XSD.double)
 
 class TestSparqlOPT_FILTER(unittest.TestCase):
     def setUp(self):
@@ -24,7 +23,7 @@ class TestSparqlOPT_FILTER(unittest.TestCase):
     def test_OPT_FILTER(self):
         xd3Objs = [o for o in self.graph.objects(subject=exNS.xd3, 
                                                  predicate=exNS.p)]
-        self.failUnless(xd3Objs[0].datatype == _XSD_NS.double,
+        self.failUnless(xd3Objs[0].datatype == XSD.double,
                 "Expecting %r, got instead : %r"%(double1, xd3Objs[0]))
 
 if __name__ == "__main__":

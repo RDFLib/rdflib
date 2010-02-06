@@ -257,11 +257,11 @@ class Literal(Identifier):
     1L
     >>> cmp(Literal("adsf"), 1)
     1
-    >>> from rdflib.namespace import _XSD_NS
-    >>> lit2006 = Literal('2006-01-01',datatype=_XSD_NS.date)
+    >>> from rdflib.namespace import XSD
+    >>> lit2006 = Literal('2006-01-01',datatype=XSD.date)
     >>> lit2006.toPython()
     datetime.date(2006, 1, 1)
-    >>> lit2006 < Literal('2007-01-01',datatype=_XSD_NS.date)
+    >>> lit2006 < Literal('2007-01-01',datatype=XSD.date)
     True
     >>> Literal(datetime.utcnow()).datatype
     rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#dateTime')
@@ -341,8 +341,8 @@ class Literal(Identifier):
 
     def __lt__(self, other):
         """
-        >>> from rdflib.namespace import _XSD_NS
-        >>> Literal("YXNkZg==", datatype=_XSD_NS[u'base64Binary']) < "foo"
+        >>> from rdflib.namespace import XSD
+        >>> Literal("YXNkZg==", datatype=XSD[u'base64Binary']) < "foo"
         True
         >>> u"\xfe" < Literal(u"foo")
         False
@@ -364,8 +364,8 @@ class Literal(Identifier):
 
     def __le__(self, other):
         """
-        >>> from rdflib.namespace import _XSD_NS
-        >>> Literal('2007-01-01T10:00:00', datatype=_XSD_NS.dateTime) <= Literal('2007-01-01T10:00:00', datatype=_XSD_NS.dateTime)
+        >>> from rdflib.namespace import XSD
+        >>> Literal('2007-01-01T10:00:00', datatype=XSD.dateTime) <= Literal('2007-01-01T10:00:00', datatype=XSD.dateTime)
         True
         """
         if other is None:
@@ -411,9 +411,9 @@ class Literal(Identifier):
 
     def __hash__(self):
         """
-        >>> from rdflib.namespace import _XSD_NS
-        >>> a = {Literal('1',datatype=_XSD_NS.integer):'one'}
-        >>> Literal('1',datatype=_XSD_NS.double) in a
+        >>> from rdflib.namespace import XSD
+        >>> a = {Literal('1',datatype=XSD.integer):'one'}
+        >>> Literal('1',datatype=XSD.double) in a
         False
 
         [[
@@ -451,16 +451,16 @@ class Literal(Identifier):
         False
         >>> Literal("1", datatype=URIRef("foo")) == "asdf"
         False
-        >>> from rdflib.namespace import _XSD_NS
-        >>> Literal('2007-01-01', datatype=_XSD_NS.date) == Literal('2007-01-01', datatype=_XSD_NS.date)
+        >>> from rdflib.namespace import XSD
+        >>> Literal('2007-01-01', datatype=XSD.date) == Literal('2007-01-01', datatype=XSD.date)
         True
-        >>> Literal('2007-01-01', datatype=_XSD_NS.date) == date(2007, 1, 1)
+        >>> Literal('2007-01-01', datatype=XSD.date) == date(2007, 1, 1)
         True
         >>> oneInt     = Literal(1)
         >>> oneNoDtype = Literal('1')
         >>> oneInt == oneNoDtype
         False
-        >>> Literal("1",_XSD_NS[u'string']) == Literal("1",_XSD_NS[u'string'])
+        >>> Literal("1",XSD[u'string']) == Literal("1",XSD[u'string'])
         True
         >>> Literal("one",lang="en") == Literal("one",lang="en")
         True
@@ -543,8 +543,8 @@ class Literal(Identifier):
             >>> Literal(1.0)._literal_n3(use_plain=True)
             u'1.0'
 
-            >>> from rdflib.namespace import _XSD_NS
-            >>> Literal("foo", datatype=_XSD_NS.string)._literal_n3(
+            >>> from rdflib.namespace import XSD
+            >>> Literal("foo", datatype=XSD.string)._literal_n3(
             ...         use_plain=True)
             u'"foo"^^<http://www.w3.org/2001/XMLSchema#string>'
 
@@ -673,7 +673,7 @@ _XSD_PFX = 'http://www.w3.org/2001/XMLSchema#'
 _PLAIN_LITERAL_TYPES = (
     URIRef(_XSD_PFX+'integer'),
     URIRef(_XSD_PFX+'float'),
-    #_XSD_NS.decimal, _XSD_NS.double, # TODO: "subsumed" by float...
+    #XSD.decimal, XSD.double, # TODO: "subsumed" by float...
     URIRef(_XSD_PFX+'boolean'),
 )
 

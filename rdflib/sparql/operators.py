@@ -27,11 +27,10 @@
 
 import sys, os, re
 from rdflib.term import Literal, BNode, URIRef, Variable
-from rdflib.namespace import Namespace
+from rdflib.namespace import Namespace, XSD
 from rdflib.sparql.graph import _createResource
 from rdflib.sparql import _questChar, Debug
 
-_XSD_NS = Namespace('http://www.w3.org/2001/XMLSchema#')
 
 ##
 # Boolean test whether this is a a query string or not
@@ -482,9 +481,9 @@ def EBV(a):
         try :
             rt = fa(bindings)
             if isinstance(rt,Literal):
-                if rt.datatype == _XSD_NS.boolean:
+                if rt.datatype == XSD.boolean:
                     ebv = rt.toPython()
-                elif rt.datatype == _XSD_NS.string or rt.datatype is None:
+                elif rt.datatype == XSD.string or rt.datatype is None:
                     ebv = len(rt) > 0
                 else:
                     pyRT = rt.toPython()

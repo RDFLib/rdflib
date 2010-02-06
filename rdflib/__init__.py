@@ -48,5 +48,5 @@ from rdflib.namespace import Namespace
 
 from rdflib.graph import Graph, ConjunctiveGraph
 
-from rdflib.namespace import RDF, RDFS
+from rdflib.namespace import RDF, RDFS, OWL, XSD
 
