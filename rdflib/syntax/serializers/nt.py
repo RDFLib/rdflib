@@ -1,27 +1,34 @@
-#$Id: NTSerializer.py,v 1.6 2003/10/29 15:25:24 kendall Exp $
-
+"""
+N-Triples RDF graph serializer for RDFLib.
+See <http://www.w3.org/TR/rdf-testcases/#ntriples> for details about the
+format.
+"""
 from rdflib.syntax.serializers import Serializer
+import warnings
+
 
 class NTSerializer(Serializer):
-
-    def __init__(self, store):
-        """
-        I serialize RDF graphs in NTriples format.
-        """
-        super(NTSerializer, self).__init__(store)
+    """
+    Serializes RDF graphs to NTriples format.
+    """
 
     def serialize(self, stream, base=None, encoding=None, **args):
         if base is not None:
-            print "TODO: NTSerializer does not support base"
+            warnings.warn("NTSerializer does not support base.")
+        if encoding is not None:
+            warnings.warn("NTSerializer does not use custom encoding.")
         encoding = self.encoding
-        write = lambda triple: stream.write((triple[0].n3() + u" " + \
-                                             triple[1].n3() + u" " + _xmlcharref_encode(triple[2].n3()) + u" .\n").encode(encoding, "replace"))
-        map(write, self.store)
+        for triple in self.store:
+            stream.write(_nt_row(triple).encode(encoding, "replace"))
         stream.write("\n")
 
-# from http://code.activestate.com/recipes/303668/
 
+def _nt_row(triple):
+    return u"%s %s %s .\n" % (triple[0].n3(),
+            triple[1].n3(),
+            _xmlcharref_encode(triple[2].n3()))
 
+# from <http://code.activestate.com/recipes/303668/>
 def _xmlcharref_encode(unicode_data, encoding="ascii"):
     """Emulate Python 2.3's 'xmlcharrefreplace' encoding error handler."""
     chars = []
