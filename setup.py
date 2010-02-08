@@ -38,7 +38,17 @@ setup(
     """,
     download_url = "http://rdflib.net/rdflib-%s.tar.gz" % __version__,
 
-    packages = ['rdflib'],
+    packages = ['rdflib',
+                'rdflib/query',
+                'rdflib/sparql',
+                'rdflib/sparql/bison',
+                'rdflib/store',
+                'rdflib/syntax',
+                'rdflib/syntax/parsers',
+                'rdflib/syntax/parsers/rdfa',
+                'rdflib/syntax/parsers/rdfa/transform',
+                'rdflib/syntax/serializers',
+                ],
 
     )
 
