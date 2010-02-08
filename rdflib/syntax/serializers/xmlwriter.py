@@ -3,7 +3,7 @@ from xml.sax.saxutils import quoteattr, escape
 
 
 class XMLWriter(object):
-    def __init__(self, stream, namespace_manager, encoding=None, decl=1):
+    def __init__(self, stream, namespace_manager, encoding=None, decl=1, extra_ns={}):
         encoding = encoding or 'utf-8'
         encoder, decoder, stream_reader, stream_writer = codecs.lookup(encoding)
         self.stream = stream = stream_writer(stream)
@@ -11,6 +11,7 @@ class XMLWriter(object):
             stream.write('<?xml version="1.0" encoding="%s"?>' % encoding)
         self.element_stack = []
         self.nm = namespace_manager
+        self.extra_ns=extra_ns
         self.closed = True
 
     def __get_indent(self):
@@ -23,12 +24,11 @@ class XMLWriter(object):
             self.stream.write(">")
 
     def push(self, uri):
-        nm = self.nm
         self.__close_start_tag()
         write = self.stream.write
         write("\n")
         write(self.indent)
-        write("<%s" % nm.qname(uri))
+        write("<%s" % self.qname(uri))
         self.element_stack.append(uri)
         self.closed = False
         self.parent = False
@@ -45,7 +45,7 @@ class XMLWriter(object):
             if self.parent:
                 write("\n")
                 write(self.indent)
-            write("</%s>" % self.nm.qname(top))
+            write("</%s>" % self.qname(top))
         self.parent = True
 
     def element(self, uri, content, attributes={}):
@@ -68,9 +68,16 @@ class XMLWriter(object):
             else:
                 write('  xmlns="%s"\n' % namespace)
 
+        for prefix, namespace in self.extra_ns.items():
+            if prefix:
+                write('  xmlns:%s="%s"\n' % (prefix, namespace))
+            else:
+                write('  xmlns="%s"\n' % namespace)
+
+
     def attribute(self, uri, value):
         write = self.stream.write
-        write(" %s=%s" % (self.nm.qname(uri), quoteattr(value)))
+        write(" %s=%s" % (self.qname(uri), quoteattr(value)))
 
     def text(self, text):
         self.__close_start_tag()
@@ -81,3 +88,15 @@ class XMLWriter(object):
         else:
             self.stream.write(escape(text))
 
+    def qname(self,uri): 
+        """Compute qname for a uri using our extra namespaces,
+        or the given namespace manager"""
+
+        for pre,ns in self.extra_ns.items(): 
+            if uri.startswith(ns): 
+                if pre!="": 
+                    return ":".join(pre,uri[len(ns):])
+                else: 
+                    return uri[len(ns):]
+
+        return self.nm.qname(uri)

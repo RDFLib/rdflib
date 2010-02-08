@@ -17,11 +17,9 @@ class TriXSerializer(Serializer):
 
     def serialize(self, stream, base=None, encoding=None, **args):
 
-        # alas, we must iterator twice, once for computing namespaces
         nm=self.store.namespace_manager 
-        nm.bind(None, TRIXNS)
 
-        self.writer=XMLWriter(stream, nm, encoding)
+        self.writer=XMLWriter(stream, nm, encoding, extra_ns={"": TRIXNS})
 
         self.writer.push(TRIXNS[u"TriX"])
         self.writer.namespaces()
@@ -32,7 +30,7 @@ class TriXSerializer(Serializer):
         elif isinstance(self.store, Graph):
             self._writeGraph(self.store)
         else:
-            pass
+            raise Exception("Unknown graph type: "+type(self.store))
 
         self.writer.pop()
         stream.write("\n")
