@@ -128,34 +128,6 @@ Using Namespace class:
     >>> RDFLib['Graph']
     rdflib.term.URIRef('http://rdflib.netGraph')
 
-SPARQL Queries
-
-    >>> print len(g)
-    3
-    >>> q = '''
-    ... PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?pred WHERE { ?stmt rdf:predicate ?pred. }
-    ... '''
-    >>> for pred in g.query(q):
-    ...     print pred
-    ...
-    http://www.w3.org/2000/01/rdf-schema#label
-
-SPARQL Queries with namespace bindings as argument
-
-    >>> nsMap = {u"rdf": RDF.uri}
-    >>> for pred in g.query("SELECT ?pred WHERE { ?stmt rdf:predicate ?pred. }", initNs=nsMap):
-    ...     print pred
-    ...
-    http://www.w3.org/2000/01/rdf-schema#label
-
-Parameterized SPARQL Queries
-
-    >>> from rdflib.term import Variable
-    >>> top = { Variable("?term") : RDF.predicate }
-    >>> for pred in g.query("SELECT ?pred WHERE { ?stmt ?term ?pred. }", initBindings=top): 
-    ...     print pred
-    ...
-    http://www.w3.org/2000/01/rdf-schema#label
 """
 
 from __future__ import generators
@@ -191,7 +163,8 @@ def describe(terms,bindings,graph):
 
 from rdflib.namespace import RDF, RDFS
 
-from rdflib import plugin, exceptions, query, sparql
+from rdflib import plugin, exceptions, query
+#, sparql
 
 from rdflib.term import Node
 from rdflib.term import URIRef
@@ -788,11 +761,8 @@ class Graph(Node):
     def load(self, source, publicID=None, format="xml"):
         self.parse(source, publicID, format)
 
-    def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False,
-              PARSE_DEBUG=False,
-              dataSetBase=None,
-              processor="sparql",
-              extensionFunctions={sparql.DESCRIBE:describe}):
+    def query(self, **args):
+        raise Exception("Not implemented")
         """
         Executes a SPARQL query (eventually will support Versa queries with
         same method) against this Graph.

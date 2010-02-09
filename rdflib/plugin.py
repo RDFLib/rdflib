@@ -25,7 +25,7 @@ from rdflib.store import Store
 from rdflib.syntax.serializers import Serializer
 from rdflib.syntax.parsers import Parser
 from rdflib.exceptions import Error
-from rdflib import sparql
+#from rdflib import sparql
 from rdflib.query.result import QueryResult
 
 
@@ -137,8 +137,8 @@ register('nt', Parser, 'rdflib.syntax.parsers.nt', 'NTParser')
 register('trix', Parser, 'rdflib.syntax.parsers.trix', 'TriXParser')
 register('rdfa', Parser, 'rdflib.syntax.parsers.rdfa', 'RDFaParser')
 
-register('sparql', sparql.Processor,
-         'rdflib.sparql.processor', 'Processor')
-register('SPARQLQueryResult', QueryResult,
-         'rdflib.sparql.query', 'SPARQLQueryResult')
+# register('sparql', sparql.Processor,
+#          'rdflib.sparql.processor', 'Processor')
+# register('SPARQLQueryResult', QueryResult,
+#          'rdflib.sparql.query', 'SPARQLQueryResult')
 

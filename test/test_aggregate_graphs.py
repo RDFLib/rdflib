@@ -113,35 +113,5 @@ class GraphAggregates2(unittest.TestCase):
         self.graph4.parse(RDFS.uri)
         self.G = ConjunctiveGraph(memStore)
 
-    def testAggregateSPARQL(self):    
-        print sparqlQ
-        rt =  self.G.query(sparqlQ)
-        assert len(rt) > 1
-        #print rt.serialize(format='xml')
-        LOG_NS = Namespace(u'http://www.w3.org/2000/10/swap/log#')
-        rt=self.G.query(sparqlQ2,initBindings={u'?graph' : URIRef("http://example.com/graph3")})
-        #print rt.serialize(format='json')
-        assert rt.serialize('python')[0] == LOG_NS.N3Document,repr(list(rt.serialize('python')))
-
-
-class GraphAggregates3(unittest.TestCase):
-
-    def setUp(self):
-        memStore = plugin.get('IOMemory',Store)()
-        self.graph1 = Graph(memStore,URIRef("graph1"))
-        self.graph2 = Graph(memStore,URIRef("graph2"))
-        self.graph3 = Graph(memStore,URIRef("graph3"))
-        
-        for n3Str,graph in [(testGraph1N3,self.graph1),
-                            (testGraph2N3,self.graph2),
-                            (testGraph3N3,self.graph3)]:
-            graph.parse(StringIO(n3Str),format='n3')
-        self.G = ConjunctiveGraph(memStore)
-
-    def testDefaultGraph(self):    
-        #test that CG includes triples from all 3
-        assert self.G.query(sparqlQ3),"CG as default graph should *all* triples"
-        assert not self.graph2.query(sparqlQ3),"Graph as default graph should *not* include triples from other graphs"
-
 if __name__ == '__main__':
     unittest.main()
