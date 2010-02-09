@@ -126,16 +126,16 @@ def generate_literal(node, graph, subject, state):
     # Get the Property URI-s
     props = state.get_resources(node.getAttribute("property"), prop=True)
 
-    # Get, if exists, the value of @datatype
+    # Get, if exists, the value of @datatype, and figure out the language
     datatype = None
     dtset    = False
+    lang     = state.lang
     if node.hasAttribute("datatype"):
         dtset = True
         dt = node.getAttribute("datatype")
         if dt != "":
             datatype = state.get_resource(dt)
-
-    lang = state.lang
+            lang = None
 
     # The simple case: separate @content attribute
     if node.hasAttribute("content"):
