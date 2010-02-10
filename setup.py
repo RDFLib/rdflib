@@ -40,8 +40,6 @@ setup(
 
     packages = ['rdflib',
                 'rdflib/query',
-                'rdflib/sparql',
-                'rdflib/sparql/bison',
                 'rdflib/store',
                 'rdflib/syntax',
                 'rdflib/syntax/parsers',
