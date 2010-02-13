@@ -23,7 +23,7 @@ from urllib import url2pathname
 from rdflib.graph import Graph
 from rdflib.namespace import Namespace, RDF
 from rdflib.parser import create_input_source
-from rdflib.syntax.parsers.rdfa import RDFaParser
+from rdflib.plugins.parsers.rdfa import RDFaParser
 
 
 DC = Namespace("http://purl.org/dc/elements/1.1/")

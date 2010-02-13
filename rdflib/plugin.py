@@ -115,26 +115,26 @@ register('default', Store, 'rdflib.plugins.memory', 'IOMemory')
 register('IOMemory', Store, 'rdflib.plugins.memory', 'IOMemory')
 register('Sleepycat', Store, 'rdflib.plugins.sleepycat', 'Sleepycat')
 
-register('xml', Serializer, 'rdflib.syntax.serializers.rdfxml',
+register('xml', Serializer, 'rdflib.plugins.serializers.rdfxml',
          'XMLSerializer')
-register('n3', Serializer, 'rdflib.syntax.serializers.n3',
+register('n3', Serializer, 'rdflib.plugins.serializers.n3',
          'N3Serializer')
-register('turtle', Serializer, 'rdflib.syntax.serializers.turtle',
+register('turtle', Serializer, 'rdflib.plugins.serializers.turtle',
          'TurtleSerializer')
-register('nt', Serializer, 'rdflib.syntax.serializers.nt',
+register('nt', Serializer, 'rdflib.plugins.serializers.nt',
          'NTSerializer')
 register('pretty-xml', Serializer,
-        'rdflib.syntax.serializers.rdfxml', 'PrettyXMLSerializer')
+        'rdflib.plugins.serializers.rdfxml', 'PrettyXMLSerializer')
 register('trix', Serializer,
-        'rdflib.syntax.serializers.trix', 'TriXSerializer')
+        'rdflib.plugins.serializers.trix', 'TriXSerializer')
 
 register('application/rdf+xml', Parser,
-        'rdflib.syntax.parsers.rdfxml', 'RDFXMLParser')
-register('xml', Parser, 'rdflib.syntax.parsers.rdfxml', 'RDFXMLParser')
-register('n3', Parser, 'rdflib.syntax.parsers.notation3', 'N3Parser')
-register('nt', Parser, 'rdflib.syntax.parsers.nt', 'NTParser')
-register('trix', Parser, 'rdflib.syntax.parsers.trix', 'TriXParser')
-register('rdfa', Parser, 'rdflib.syntax.parsers.rdfa', 'RDFaParser')
+        'rdflib.plugins.parsers.rdfxml', 'RDFXMLParser')
+register('xml', Parser, 'rdflib.plugins.parsers.rdfxml', 'RDFXMLParser')
+register('n3', Parser, 'rdflib.plugins.parsers.notation3', 'N3Parser')
+register('nt', Parser, 'rdflib.plugins.parsers.nt', 'NTParser')
+register('trix', Parser, 'rdflib.plugins.parsers.trix', 'TriXParser')
+register('rdfa', Parser, 'rdflib.plugins.parsers.rdfa', 'RDFaParser')
 
 # register('sparql', sparql.Processor,
 #          'rdflib.sparql.processor', 'Processor')
