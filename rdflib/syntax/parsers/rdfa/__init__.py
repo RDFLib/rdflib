@@ -20,7 +20,7 @@ import xml.dom.minidom
 from rdflib.graph import Graph
 from rdflib.namespace import Namespace
 from rdflib.term import BNode, URIRef
-from rdflib.syntax.parsers import Parser
+from rdflib.parser import Parser
 from rdflib.syntax.parsers.rdfa.state import ExecutionContext
 from rdflib.syntax.parsers.rdfa.parse import parse_one_node
 from rdflib.syntax.parsers.rdfa.options import (Options, _add_to_comment_graph,

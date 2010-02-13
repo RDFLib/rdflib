@@ -37,7 +37,7 @@ from rdflib.term import BNode
 from rdflib.term import Literal
 from rdflib.graph import Graph, ConjunctiveGraph
 from rdflib.exceptions import ParserError
-from rdflib.syntax.parsers import Parser
+from rdflib.parser import Parser
 
 from xml.sax.saxutils import handler
 from xml.sax import make_parser

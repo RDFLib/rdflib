@@ -1,4 +1,4 @@
-from rdflib.syntax.parsers import Parser
+from rdflib.parser import Parser
 from rdflib.syntax.parsers.ntriples import NTriplesParser
 
 

@@ -3,6 +3,18 @@ This module defines the different types of terms...
 
 """
 
+__all__ = [
+    'Node',
+    'Identifier',
+
+    'URIRef',
+    'BNode',
+    'Literal',
+
+    'Variable',
+    'Statement',
+    ]
+
 import logging
 
 _logger = logging.getLogger(__name__)

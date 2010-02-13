@@ -43,7 +43,7 @@ from decimal import Decimal
 from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX
 from rdflib.graph import QuotedGraph, ConjunctiveGraph
 
-from rdflib.syntax.parsers import Parser
+from rdflib.parser import Parser
 
 # Incestuous.. would be nice to separate N3 and XML
 # from sax2rdf import XMLtoDOM

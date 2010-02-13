@@ -36,13 +36,12 @@ from xml.sax.handler import ErrorHandler
 from xml.sax.saxutils import handler, quoteattr, escape
 from urlparse import urljoin, urldefrag
 
-from rdflib.namespace import RDF
+from rdflib.namespace import RDF, is_ncname
 from rdflib.term import URIRef
 from rdflib.term import BNode
 from rdflib.term import Literal
 from rdflib.exceptions import ParserError, Error
-from rdflib.syntax.xml_names import is_ncname
-from rdflib.syntax.parsers import Parser
+from rdflib.parser import Parser
 
 
 RDFNS = RDF

@@ -1,4 +1,6 @@
 """
+Parser plugin interface.
+
 This module defines the parser plugin interface and contains other
 related parser support code.
 

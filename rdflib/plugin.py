@@ -22,11 +22,10 @@ See the `setuptools dynamic discovery of services and plugins <http://peak.telec
 """
 
 from rdflib.store import Store
-from rdflib.syntax.serializers import Serializer
-from rdflib.syntax.parsers import Parser
+from rdflib.parser import Parser
+from rdflib.serializer import Serializer
+from rdflib import query
 from rdflib.exceptions import Error
-#from rdflib import sparql
-from rdflib.query.result import QueryResult
 
 
 entry_points = {'rdf.plugins.store': Store,
@@ -112,9 +111,9 @@ def plugins(name=None, kind=None):
         if (name is None or name==p.name) and (kind is None or kind==p.kind):
             yield p
 
-register('default', Store, 'rdflib.store.memory', 'IOMemory')
-register('IOMemory', Store, 'rdflib.store.memory', 'IOMemory')
-register('Sleepycat', Store, 'rdflib.store.sleepycat', 'Sleepycat')
+register('default', Store, 'rdflib.plugins.memory', 'IOMemory')
+register('IOMemory', Store, 'rdflib.plugins.memory', 'IOMemory')
+register('Sleepycat', Store, 'rdflib.plugins.sleepycat', 'Sleepycat')
 
 register('xml', Serializer, 'rdflib.syntax.serializers.rdfxml',
          'XMLSerializer')
@@ -139,6 +138,6 @@ register('rdfa', Parser, 'rdflib.syntax.parsers.rdfa', 'RDFaParser')
 
 # register('sparql', sparql.Processor,
 #          'rdflib.sparql.processor', 'Processor')
-# register('SPARQLQueryResult', QueryResult,
+# register('SPARQLQueryResult', query.Result,
 #          'rdflib.sparql.query', 'SPARQLQueryResult')
 

@@ -1,4 +1,4 @@
-from rdflib.syntax.serializers import Serializer
+from rdflib.serializer import Serializer
 from rdflib.syntax.serializers.xmlwriter import XMLWriter
 
 from rdflib.term import URIRef, Literal, BNode

@@ -1,3 +1,10 @@
+"""
+Some utility functions.
+
+TODO...
+
+"""
+
 from string import rsplit
 
 from rdflib.term import URIRef

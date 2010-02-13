@@ -6,7 +6,7 @@ from rdflib.term import BNode, Literal, URIRef
 
 from rdflib.exceptions import Error
 
-from rdflib.syntax.serializers import Serializer
+from rdflib.serializer import Serializer
 
 from rdflib.namespace import RDF, RDFS
 

@@ -3,7 +3,7 @@ N-Triples RDF graph serializer for RDFLib.
 See <http://www.w3.org/TR/rdf-testcases/#ntriples> for details about the
 format.
 """
-from rdflib.syntax.serializers import Serializer
+from rdflib.serializer import Serializer
 import warnings
 
 

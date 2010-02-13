@@ -29,8 +29,27 @@ A tiny example:
 """
 __docformat__ = "restructuredtext en"
 
-__version__ = "2.5.0"
+__version__ = "3.0"
 __date__ = "not/yet/released"
+
+__all__ = [
+    'URIRef',
+    'BNode',
+    'Literal',
+    'Variable',
+
+    'Namespace',
+
+    'Graph',
+    'ConjunctiveGraph',
+
+    'RDF',
+    'RDFS',
+    'OWL',
+    'XSD',
+    
+    'util',
+    ]
 
 import sys
 # generator expressions require 2.4
@@ -50,3 +69,4 @@ from rdflib.graph import Graph, ConjunctiveGraph
 
 from rdflib.namespace import RDF, RDFS, OWL, XSD
 
+import util

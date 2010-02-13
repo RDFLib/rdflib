@@ -3,7 +3,7 @@
 
     >>> g = Graph()
     >>> g.store.__class__
-    <class 'rdflib.store.memory.IOMemory'>
+    <class 'rdflib.plugins.memory.IOMemory'>
     >>> g.identifier.__class__
     <class 'rdflib.term.BNode'>
 
@@ -17,7 +17,7 @@ Other store kinds: Sleepycat, MySQL, SQLite
     'IOMemory'
     >>> graph = Graph(store)
     >>> graph.store.__class__
-    <class 'rdflib.store.memory.IOMemory'>
+    <class 'rdflib.plugins.memory.IOMemory'>
 
 Instantiating Graphs with Sleepycat store and an identifier - 
 <http://rdflib.net>:
@@ -172,9 +172,8 @@ from rdflib.term import BNode
 from rdflib.term import Literal
 from rdflib.namespace import Namespace
 from rdflib.store import Store
-from rdflib.syntax.serializers import Serializer
-from rdflib.syntax.parsers import Parser
-#from rdflib.parser import Parser
+from rdflib.serializer import Serializer
+from rdflib.parser import Parser
 from rdflib.parser import create_input_source
 from rdflib.namespace import NamespaceManager
 
@@ -782,8 +781,8 @@ class Graph(Node):
         """
         assert processor == 'sparql', \
             'SPARQL is currently the only supported RDF query language'
-        p = plugin.get(processor, sparql.Processor)(self)
-        return plugin.get('SPARQLQueryResult', query.result.QueryResult)(
+        p = plugin.get(processor, query.Processor)(self)
+        return plugin.get('SPARQLQueryResult', query.Result)(
           p.query(strOrQuery, initBindings, initNs, DEBUG, PARSE_DEBUG,
                   dataSetBase, extensionFunctions))
 
