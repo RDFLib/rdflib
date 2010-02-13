@@ -40,11 +40,11 @@ setup(
 
     packages = ['rdflib',
                 'rdflib/plugins',
-                'rdflib/syntax',
-                'rdflib/syntax/parsers',
-                'rdflib/syntax/parsers/rdfa',
-                'rdflib/syntax/parsers/rdfa/transform',
-                'rdflib/syntax/serializers',
+                'rdflib/plugins',
+                'rdflib/plugins/parsers',
+                'rdflib/plugins/parsers/rdfa',
+                'rdflib/plugins/parsers/rdfa/transform',
+                'rdflib/plugins/serializers',
                 ],
 
     )
