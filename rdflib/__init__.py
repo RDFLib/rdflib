@@ -69,4 +69,8 @@ from rdflib.graph import Graph, ConjunctiveGraph
 
 from rdflib.namespace import RDF, RDFS, OWL, XSD
 
+from rdflib import plugin
+from rdflib import query
+
 import util
+

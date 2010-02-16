@@ -760,31 +760,15 @@ class Graph(Node):
     def load(self, source, publicID=None, format="xml"):
         self.parse(source, publicID, format)
 
-    def query(self, **args):
-        raise Exception("Not implemented")
+    def query(self, query_object, processor='sparql', result='sparql'):
         """
-        Executes a SPARQL query (eventually will support Versa queries with
-        same method) against this Graph.
+        """
+        if not isinstance(processor, query.Processor):
+            processor = plugin.get(processor, query.Processor)(self)
+        if not isinstance(result, query.Result):
+            result = plugin.get(result, query.Result)
+        return result(processor.query(query_object))
 
-         - `strOrQuery`: Either a string consisting of the SPARQL query or
-         	 an instance of rdflib.sparql.bison.Query.Query
-         - `initBindings`: A mapping from a Variable to an RDFLib term (used
-         	 as initial bindings for SPARQL query)
-         - `initNS`: A mapping from a namespace prefix to an instance of
-         	 rdflib.Namespace (used for SPARQL query)
-         - `DEBUG`: A boolean flag passed on to the SPARQL parser and
-         	 evaluation engine
-         - `processor`: The kind of RDF query (must be 'sparql' until Versa
-         	 is ported)
-         - `USE_PYPARSING`: A flag indicating whether to use the
-         	 experimental pyparsing parser for SPARQL
-        """
-        assert processor == 'sparql', \
-            'SPARQL is currently the only supported RDF query language'
-        p = plugin.get(processor, query.Processor)(self)
-        return plugin.get('SPARQLQueryResult', query.Result)(
-          p.query(strOrQuery, initBindings, initNs, DEBUG, PARSE_DEBUG,
-                  dataSetBase, extensionFunctions))
 
     def n3(self):
         """return an n3 identifier for the Graph"""

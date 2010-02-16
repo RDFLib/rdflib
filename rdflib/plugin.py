@@ -136,8 +136,3 @@ register('nt', Parser, 'rdflib.plugins.parsers.nt', 'NTParser')
 register('trix', Parser, 'rdflib.plugins.parsers.trix', 'TriXParser')
 register('rdfa', Parser, 'rdflib.plugins.parsers.rdfa', 'RDFaParser')
 
-# register('sparql', sparql.Processor,
-#          'rdflib.sparql.processor', 'Processor')
-# register('SPARQLQueryResult', query.Result,
-#          'rdflib.sparql.query', 'SPARQLQueryResult')
-
