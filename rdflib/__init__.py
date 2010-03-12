@@ -53,12 +53,12 @@ __all__ = [
 
 import sys
 # generator expressions require 2.4
-assert sys.version_info >= (2,4,0), "rdflib requires Python 2.4 or higher"
+assert sys.version_info >= (2, 4, 0), "rdflib requires Python 2.4 or higher"
 del sys
 
 import logging
-_logger = logging.getLogger("rdflib")
-_logger.info("version: %s" % __version__)
+_LOGGER = logging.getLogger("rdflib")
+_LOGGER.info("version: %s" % __version__)
 
 
 from rdflib.term import URIRef, BNode, Literal, Variable
@@ -72,5 +72,5 @@ from rdflib.namespace import RDF, RDFS, OWL, XSD
 from rdflib import plugin
 from rdflib import query
 
-import util
+from rdflib import util
 

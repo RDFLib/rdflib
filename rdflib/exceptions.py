@@ -1,3 +1,6 @@
+"""
+TODO:
+"""
 
 class Error(Exception):
     """Base class for rdflib exceptions."""
@@ -36,7 +39,8 @@ class ObjectTypeError(TypeCheckError):
     or BNode."""
     def __init__(self, node):
         TypeCheckError.__init__(self, node)
-        self.msg = "Object must be instance of URIRef, Literal, or BNode: %s(%s)" % \
+        self.msg = "\
+Object must be instance of URIRef, Literal, or BNode: %s(%s)" % \
                        (self.node, self.type)
 
 class ContextTypeError(TypeCheckError):
@@ -49,6 +53,7 @@ class ContextTypeError(TypeCheckError):
 class ParserError(Error):
     """RDF Parser error."""
     def __init__(self, msg):
+        Error.__init__(self, msg)
         self.msg = msg
 
     def __str__(self):
@@ -58,6 +63,7 @@ class ParserError(Error):
 class UniquenessError(Error) :
     """A uniqueness assumption was made in the context, and that is not true"""
     def __init__(self, values):
-        Error.__init__(self, "Uniqueness assumption is not fulfilled. Multiple values are: %s" % values)
+        Error.__init__(self, "\
+Uniqueness assumption is not fulfilled. Multiple values are: %s" % values)
 
 

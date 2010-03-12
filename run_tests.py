@@ -53,7 +53,7 @@ COVERAGE_EXTRA_ARGS = [
         '--cover-inclusive',
     ]
 
-DEFAULT_ATTRS = ['!known_issue', '!sparql']
+DEFAULT_ATTRS = [] # ['!known_issue', '!sparql']
 
 DEFAULT_DIRS = ['test', 'rdflib']
 
