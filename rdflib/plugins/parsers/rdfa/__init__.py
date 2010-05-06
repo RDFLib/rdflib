@@ -54,7 +54,7 @@ class RDFaParser(Parser):
 
     def parse(self, source, sink,
             warnings=False, space_preserve=True,
-            transformers=None, xhtml=True, lax=False):
+            transformers=None, xhtml=True, lax=True):
         if transformers is None:
             transformers = []
         options = Options(warnings, space_preserve, transformers, xhtml, lax)
@@ -153,4 +153,3 @@ def _try_process_source(stream, options):
             raise RDFaError, msg3
 
     return dom
-
