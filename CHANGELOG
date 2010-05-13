@@ -1,16 +1,43 @@
-Not/Yet/Released
-        RELEASE 2.5.0
+2010/05/13
+        RELEASE 3.0.0
 
-        (Issue #43) Updated Package and Module Names for follow
+        Working test suite with all tests passing.
+
+        Removed dependency on setuptools.
+
+        (Issue #43) Updated Package and Module Names to follow
         conventions outlined in
         http://www.python.org/dev/peps/pep-0008/
 
-        (Issue #58) Removed a stderr print inside the SQLite store
-        implementation.
+        Removed SPARQL bits and non core plugins. They are mostly
+        moving to http://code.google.com/p/rdfextras/ at least until
+        they are stable.
 
-        (Issue #8) Replaced C based SPARQL parser with a pure Python
-        one.
+        Fixed datatype for Literal(True).        
+        
+        Fixed Literal to enforce contraint of having either a language
+        or datatype but not both.
 
+        Fixed Literal's repr.
+
+        Fixed to Graph Add/Sub/Mul opterators.
+
+        Upgraded RDFa parser to pyRdfa.
+
+        Upgraded N3 parser to the one from CWM.
+
+        Fixed unicode encoding issue involving N3Parser.
+
+        N3 serializer improvments.
+
+        Fixed HTTP content-negotiation
+
+        Fixed Store.namespaces method (which caused a few issues
+        depending on Store implementation being used.)
+
+        Fixed interoperability issue with plugin module.
+
+        Fixed use of Deprecated functionality.
 
 2009/03/30
         RELEASE 2.4.1
