@@ -17,7 +17,7 @@ __all__ = [
 
 import logging
 
-_logger = logging.getLogger(__name__)
+_LOGGER = logging.getLogger(__name__)
 
 import base64
 
@@ -25,6 +25,7 @@ import threading
 from urlparse import urlparse, urljoin, urldefrag
 from string import ascii_letters, rsplit
 from random import choice
+from itertools import islice
 from datetime import date, time, datetime
 from time import strptime
 
@@ -60,7 +61,7 @@ class Identifier(Node, unicode): # we allow Identifiers to be Nodes in our Graph
     __slots__ = ()
 
     def __new__(cls, value):
-        return unicode.__new__(cls,value)
+        return unicode.__new__(cls, value)
 
 
 class URIRef(Identifier):
@@ -80,9 +81,9 @@ class URIRef(Identifier):
         #if normalize and value and value != normalize("NFC", value):
         #    raise Error("value must be in NFC normalized form.")
         try:
-            rt = unicode.__new__(cls,value)
+            rt = unicode.__new__(cls, value)
         except UnicodeDecodeError:
-            rt = unicode.__new__(cls,value,'utf-8')
+            rt = unicode.__new__(cls, value, 'utf-8')
         return rt
 
     def n3(self):
@@ -157,12 +158,14 @@ class URIRef(Identifier):
 
 
 
+def _letter():
+    while True:
+        yield choice(ascii_letters)
+
 def _unique_id():
     """Create a (hopefully) unique prefix"""
-    id = ""
-    for i in xrange(0,8):
-        id += choice(ascii_letters)
-    return id
+    uid = "".join(islice(_letter(), 0, 8))
+    return uid
 
 def _serial_number_generator():
     i = 0
@@ -174,24 +177,17 @@ bNodeLock = threading.RLock()
 
 class BNode(Identifier):
     """
-    Blank Node: http://www.w3.org/TR/rdf-concepts/#section-blank-nodes
+    Blank Node: http://www.w3.org/TR/rdf-concepts/#section-blank-nodes    
 
-    "In non-persistent O-O software construction, support for object
-    identity is almost accidental: in the simplest implementation,
-    each object resides at a certain address, and a reference to the
-    object uses that address, which serves as immutable object
-    identity.
-
-    ...
-
-    Maintaining object identity in shared databases raises problems:
-    every client that needs to create objects must obtain a unique
-    identity for them; " -- Bertand Meyer
     """
     __slots__ = ()
 
-    def __new__(cls, value=None, # only store implementations should pass in a value
+
+    def __new__(cls, value=None, 
                 _sn_gen=_serial_number_generator(), _prefix=_unique_id()):
+        """
+        # only store implementations should pass in a value
+        """
         if value==None:
             # so that BNode values do not
             # collide with ones created with a different instance of this module
@@ -202,10 +198,11 @@ class BNode(Identifier):
             value = "%s%s" % (_prefix, node_id)
         else:
             # TODO: check that value falls within acceptable bnode value range
-            # for RDF/XML needs to be something that can be serialzed as a nodeID
-            # for N3 ??
-            # Unless we require these constraints be enforced elsewhere?
-            pass #assert is_ncname(unicode(value)), "BNode identifiers must be valid NCNames"
+            # for RDF/XML needs to be something that can be serialzed
+            # as a nodeID for N3 ??  Unless we require these
+            # constraints be enforced elsewhere?
+            pass #assert is_ncname(unicode(value)), "BNode identifiers
+                 #must be valid NCNames"
 
         return Identifier.__new__(cls, value)
 
@@ -311,15 +308,15 @@ class Literal(Identifier):
         if datatype:
             lang = None
         else:
-            value,datatype = _castPythonToLiteral(value)
+            value, datatype = _castPythonToLiteral(value)
             if datatype:
                 lang = None
         if datatype:
             datatype = URIRef(datatype)
         try:
-            inst = unicode.__new__(cls,value)
+            inst = unicode.__new__(cls, value)
         except UnicodeDecodeError:
-            inst = unicode.__new__(cls,value,'utf-8')
+            inst = unicode.__new__(cls, value, 'utf-8')
         inst.language = lang
         inst.datatype = datatype
         inst._cmp_value = inst._toCompareValue()
@@ -424,8 +421,8 @@ class Literal(Identifier):
     def __hash__(self):
         """
         >>> from rdflib.namespace import XSD
-        >>> a = {Literal('1',datatype=XSD.integer):'one'}
-        >>> Literal('1',datatype=XSD.double) in a
+        >>> a = {Literal('1', datatype=XSD.integer):'one'}
+        >>> Literal('1', datatype=XSD.double) in a
         False
 
         [[
@@ -472,11 +469,11 @@ class Literal(Identifier):
         >>> oneNoDtype = Literal('1')
         >>> oneInt == oneNoDtype
         False
-        >>> Literal("1",XSD[u'string']) == Literal("1",XSD[u'string'])
+        >>> Literal("1", XSD[u'string']) == Literal("1", XSD[u'string'])
         True
-        >>> Literal("one",lang="en") == Literal("one",lang="en")
+        >>> Literal("one", lang="en") == Literal("one", lang="en")
         True
-        >>> Literal("hast",lang='en') == Literal("hast",lang='de')
+        >>> Literal("hast", lang='en') == Literal("hast", lang='de')
         False
         >>> oneInt == Literal(1)
         True
@@ -490,7 +487,7 @@ class Literal(Identifier):
             return False
         if isinstance(other, Literal):
             return self._cmp_value == other._cmp_value
-        elif isinstance(other,basestring):
+        elif isinstance(other, basestring):
             return unicode(self) == other
         else:
             return self._cmp_value == other
@@ -657,7 +654,8 @@ class Literal(Identifier):
         try:
             rt = self.toPython()
         except Exception, e:
-            _logger.warning("could not convert %s to a Python datatype" % repr(self))
+            _LOGGER.warning("could not convert %s to a Python datatype" % 
+                            repr(self))
             rt = self
 
         if rt is self:
@@ -690,58 +688,62 @@ _PLAIN_LITERAL_TYPES = (
 )
 
 
-#Casts a python datatype to a tuple of the lexical value and a datatype URI (or None)
 def _castPythonToLiteral(obj):
+    """
+    Casts a python datatype to a tuple of the lexical value and a
+    datatype URI (or None)
+    """
     for pType,(castFunc,dType) in _PythonToXSD:
-        if isinstance(obj,pType):
+        if isinstance(obj, pType):
             if castFunc:
-                return castFunc(obj),dType
+                return castFunc(obj), dType
             elif dType:
-                return obj,dType
+                return obj, dType
             else:
-                return obj,None
+                return obj, None
     return obj, None # TODO: is this right for the fall through case?
 
 # Mappings from Python types to XSD datatypes and back (burrowed from sparta)
 # datetime instances are also instances of date... so we need to order these.
 _PythonToXSD = [
-    (basestring, (None,None)),
-    (float     , (None,URIRef(_XSD_PFX+'float'))),
-    (bool      , (lambda i:str(i).lower(),URIRef(_XSD_PFX+'boolean'))),
-    (int       , (None,URIRef(_XSD_PFX+'integer'))),
-    (long      , (None,URIRef(_XSD_PFX+'long'))),
-    (datetime  , (lambda i:i.isoformat(),URIRef(_XSD_PFX+'dateTime'))),
-    (date      , (lambda i:i.isoformat(),URIRef(_XSD_PFX+'date'))),
-    (time      , (lambda i:i.isoformat(),URIRef(_XSD_PFX+'time'))),
+    (basestring, (None, None)),
+    (float     , (None, URIRef(_XSD_PFX+'float'))),
+    (bool      , (lambda i:str(i).lower(), URIRef(_XSD_PFX+'boolean'))),
+    (int       , (None, URIRef(_XSD_PFX+'integer'))),
+    (long      , (None, URIRef(_XSD_PFX+'long'))),
+    (datetime  , (lambda i:i.isoformat(), URIRef(_XSD_PFX+'dateTime'))),
+    (date      , (lambda i:i.isoformat(), URIRef(_XSD_PFX+'date'))),
+    (time      , (lambda i:i.isoformat(), URIRef(_XSD_PFX+'time'))),
 ]
 
 def _strToTime(v) :
-    return strptime(v,"%H:%M:%S")
+    return strptime(v, "%H:%M:%S")
 
 def _strToDate(v) :
-    tstr = strptime(v,"%Y-%m-%d")
-    return date(tstr.tm_year,tstr.tm_mon,tstr.tm_mday)
+    tstr = strptime(v, "%Y-%m-%d")
+    return date(tstr.tm_year, tstr.tm_mon, tstr.tm_mday)
 
 def _strToDateTime(v) :
     """
     Attempt to cast to datetime, or just return the string (otherwise)
     """
     try:
-        tstr = strptime(v,"%Y-%m-%dT%H:%M:%S")
+        tstr = strptime(v, "%Y-%m-%dT%H:%M:%S")
     except:
         try:
-            tstr = strptime(v,"%Y-%m-%dT%H:%M:%SZ")
+            tstr = strptime(v, "%Y-%m-%dT%H:%M:%SZ")
         except:
             try:
-                tstr = strptime(v,"%Y-%m-%dT%H:%M:%S%Z")
+                tstr = strptime(v, "%Y-%m-%dT%H:%M:%S%Z")
             except:
                 try:
                     # %f only works in python 2.6
-                    return datetime.strptime(v,"%Y-%m-%dT%H:%M:%S.%f")
+                    return datetime.strptime(v, "%Y-%m-%dT%H:%M:%S.%f")
                 except:
                     return v
 
-    return datetime(tstr.tm_year,tstr.tm_mon,tstr.tm_mday,tstr.tm_hour,tstr.tm_min,tstr.tm_sec)
+    return datetime(tstr.tm_year, tstr.tm_mon, tstr.tm_mday,
+                    tstr.tm_hour, tstr.tm_min, tstr.tm_sec)
 
 XSDToPython = {
     URIRef(_XSD_PFX+'time')               : _strToTime,
@@ -776,9 +778,13 @@ _toPythonMapping = {}
 _toPythonMapping.update(XSDToPython)
 
 def bind(datatype, conversion_function):
-    """bind a datatype to a function for converting it into a Python instance."""
+    """
+    bind a datatype to a function for converting it into a Python
+    instance.
+    """
     if datatype in _toPythonMapping:
-        _logger.warning("datatype '%s' was already bound. Rebinding." % datatype)
+        _LOGGER.warning("datatype '%s' was already bound. Rebinding." % 
+                        datatype)
     _toPythonMapping[datatype] = conversion_function
 
 
