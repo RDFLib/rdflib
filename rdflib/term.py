@@ -133,7 +133,7 @@ class URIRef(Identifier):
             return False
 
     def __str__(self):
-        return self.encode("unicode-escape")
+        return self.encode()
 
     def __repr__(self):
         if self.__class__ is URIRef:
@@ -237,7 +237,7 @@ class BNode(Identifier):
             return False
 
     def __str__(self):
-        return self.encode("unicode-escape")
+        return self.encode()
 
     def __repr__(self):
         if self.__class__ is BNode:
@@ -447,7 +447,8 @@ class Literal(Identifier):
         ]] -- 6.5.1 Literal Equality (RDF: Concepts and Abstract Syntax)
 
         """
-        return hash(str(self)) ^ hash(self.language) ^ hash(self.datatype)
+        
+        return Identifier.__hash__(self) ^ hash(self.language) ^ hash(self.datatype)
 
     def __eq__(self, other):
         """
@@ -624,7 +625,7 @@ class Literal(Identifier):
                             ).replace('"', '\\"')
 
     def __str__(self):
-        return self.encode("unicode-escape")
+        return self.encode()
 
     def __repr__(self):
         args = [super(Literal, self).__repr__()]
