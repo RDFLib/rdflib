@@ -5,7 +5,7 @@ RDFLib graphs support an additional extension of RDF semantics for formulae. For
 
 .. __: http://ninebynine.org/RDFNotes/UsingContextsWithRDF.html#xtocid-6303976
 
-Formulae are represented formally by the :class:`rdflib.Graph.QuotedGraph` class and are disjoint from regular RDF graphs in that their statements are quoted.
+Formulae are represented formally by the :class:`~rdflib.graph.QuotedGraph` class and are disjoint from regular RDF graphs in that their statements are quoted.
 
 Module Contents
 ---------------

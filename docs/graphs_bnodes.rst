@@ -11,7 +11,7 @@ Clarifying the query more precisely:
 
 .. code-block:: pycon
 
-    >>> from rdflib.Graph import Graph, ConjunctiveGraph
+    >>> from rdflib.graph import Graph, ConjunctiveGraph
     >>> from rdflib import URIRef
 
 [1]
@@ -38,14 +38,16 @@ Clarifying the query more precisely:
     >>> graph1.identifier
     rdflib.BNode('VLjQILCh4')
 
-In [1] when I mention the Graph identifier the return is a persistent
+In [1] when I mention the Graph identifier, the return is a persistent
 URIRef (i.e. it can be used out of the current model as well) which
 gives me a unique name for the graph and now I am free to use it in
-other model as well - may be it can be used for merging graphs. Where
-as in [2] and [3] when I mention Graph identifier the return is a
-BNode which changes values every time we invoke it (and hence BNodes
-have local scope and are not good for using outside the model). My
-query was simply to know why the Model "identifier" is giving BNode in
+other model as well - maybe it can be used for merging graphs. 
+
+Whereas in [2] and [3], when I mention Graph identifier the return is a
+BNode which changes value every time we invoke it (and hence BNodes
+have local scope and are not good for using outside the model). 
+
+My query was simply to know why the Model "identifier" is giving BNode in
 [2] comparing to a persistent URI in case [1]?  In ConjunctiveGraph,
 identifier is inherited from the Graph class.
 

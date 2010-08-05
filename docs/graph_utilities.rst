@@ -29,6 +29,7 @@ Basic Triple Matching
 RDFLib graphs support basic triple pattern matching with a :meth:`triples` function.
 
 .. automethod:: rdflib.graph.Graph.triples
+    :noindex:
 
 This function is a generator of triples that match the pattern given by the arguments.  The arguments of these are RDF terms that restrict the triples that are returned.  Terms that are :data:`None` are treated as a wildcard.
 
@@ -42,11 +43,13 @@ Triples can be added in two ways:
 * They may be added with with the :meth:`parse` function.
 
     .. automethod:: rdflib.graph.Graph.parse
+                  :noindex:
 
     The first argument can be a *source* of many kinds, but the most common is the serialization (in various formats: RDF/XML, Notation 3, NTriples of an RDF graph as a string.  The :keyword:`format` parameter is one of ``n3``, ``xml``, or ``ntriples``.  :keyword:`publicID` is the name of the graph into which the RDF serialization will be parsed.
 * Triples can also be added with the :meth:`add` function: 
 
     .. automethod:: rdflib.graph.Graph.add
+                  :noindex:
 
 Removing Triples
 ^^^^^^^^^^^^^^^^
@@ -54,6 +57,7 @@ Removing Triples
 Similarly, triples can be removed by a call to :meth:`remove`:
 
 .. automethod:: rdflib.graph.Graph.remove
+              :noindex:
 
 
 RDF Literal Support

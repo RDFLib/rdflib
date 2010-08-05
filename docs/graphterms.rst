@@ -12,13 +12,16 @@ The RDFLib classes listed below model RDF `terms`__ in a graph and inherit from 
 
 .. _QuotedGraph:
 .. autoclass:: rdflib.graph.QuotedGraph
+    :noindex:
 
 .. _ReadOnlyGraphAggregate:
 .. autoclass:: rdflib.graph.ReadOnlyGraphAggregate
+    :noindex:
 
 .. _Variable:
 .. automodule:: rdflib.term
-.. autoclass:: rdflib.term.Variable
+    :members:
+    :noindex:
 
 
 .. __: univrdfstore.html#Terms

@@ -102,7 +102,7 @@ TriXSerializer.py
 trixserializer.diff
 -------------------
 
-.. code-block:: text
+.. code-block:: diff
 
     Index: rdflib/plugin.py
     ===================================================================
@@ -264,7 +264,8 @@ SPARQL-XML Serializer
     from cStringIO import StringIO
 
     try:
-        from xml.etree.cElementTree import Element, SubElement, ElementTree, ProcessingInstruction
+        from xml.etree.cElementTree import Element, SubElement, \
+                                    ElementTree, ProcessingInstruction
         import xml.etree.cElementTree as ET
     except ImportError:
         from cElementTree import Element, SubElement, ElementTree
@@ -281,14 +282,16 @@ SPARQL-XML Serializer
     def variables(results):
         # don't include any variables which are not part of the
         # result set
-        #res_vars = set(results.selectionF).intersection(set(results.allVariables))
+        #res_vars = set(results.selectionF).intersection(
+        #                               set(results.allVariables))
     
     
         # this means select *, use all variables from the result-set
         if len(results.selectionF) == 0:
             res_vars = results.allVariables
         else:
-            res_vars = [v for v in results.selectionF if v in results.allVariables]
+            res_vars = [v for v in results.selectionF 
+                                if v in results.allVariables]
         
         return res_vars
     
@@ -358,7 +361,8 @@ SPARQL-XML Serializer
         # xml declaration must be written by hand
         # http://www.nabble.com/Writing-XML-files-with-ElementTree-t3433325.html
         out.write('<?xml version="1.0" encoding="utf-8"?>')
-        out.write('<?xml-stylesheet type="text/xsl" href="/static/sparql-xml-to-html.xsl"?>')
+        out.write('<?xml-stylesheet type="text/xsl" ' + \
+                  'href="/static/sparql-xml-to-html.xsl"?>')
         tree.write(out, encoding='utf-8')
     
         return out.getvalue()

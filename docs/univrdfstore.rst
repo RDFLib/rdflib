@@ -17,7 +17,7 @@ Terminology
 
 .. topic:: **Context**
 
-    A named, unordered set of statements (that could also be called a sub-graph). The :term:`named graph` `literature`__ and `ontology`__ are relevant to this concept. The term :term:`context` could be thought of as either the sub-graph itself or the relationship between an RDF triple and a sub-graph in which it is found (this latter is how the term context is used in the `Notation 3 Design Issues page`_).
+    A named, unordered set of statements (that could also be called a sub-graph). The ``named graph`` `literature`__ and `ontology`__ are relevant to this concept. The term ``context`` could be thought of as either the sub-graph itself or the relationship between an RDF triple and a sub-graph in which it is found (this latter is how the term context is used in the `Notation 3 Design Issues page`_).
 
     It is worth noting that the concept of logically grouping `triples`__ within an addressable 'set' or 'subgraph' is just barely beyond the scope of the RDF model. The RDF model defines a graph to be an arbitrary collection of triples and the semantics of these triples --- but doesn't give guidance on how to address such arbitrary collections in a consistent manner. Although a collection of triples can be thought of as a resource itself, the association between a triple and the collection (of which it is a part) is not covered. `Public RDF`_ is an example of an attempt to formally model this relationship - and includes one other unrelated extension: Articulated Text
 
@@ -118,7 +118,7 @@ Terminology
 
     Such a store is responsible for maintaining this separation and ensuring that queries against the entire model (the aggregation of all the contexts - specified by not limiting a 'query' to a specifically name context) do not include quoted statements. Also, it is responsible for distinguishing universal quantifiers (variables).
 
-    .. note:: These 2 additional concepts (formulae and variables) must be thought of as core extensions and distinguishable from the other terms of a triple (for the sake of the persistence rountrip - at the very least). It's worth noting that the 'scope' of universal quantifiers (variables) and existential quantifiers (BNodes) is the formula (or context - to be specific) in which their statements reside. Beyond this, a Formula-aware store behaves the same as a Context-aware store.
+    .. note:: These 2 additional concepts (formulae and variables) must be thought of as core extensions and distinguishable from the other terms of a triple (for the sake of the persistence round trip - at the very least). It's worth noting that the 'scope' of universal quantifiers (variables) and existential quantifiers (BNodes) is the formula (or context - to be specific) in which their statements reside. Beyond this, a Formula-aware store behaves the same as a Context-aware store.
 
 .. topic:: **Conjunctive Query**
 
@@ -135,11 +135,11 @@ Terminology
 Interpreting Syntax
 ===================
 
-The following Notation 3 `document`__:
+The following `Notation 3 document`__:
 
 .. code-block:: n3
 
-    {?x a :N3Programmer} => {?x :has [a :Migrane]}
+    { ?x a :N3Programmer } => { ?x :has [a :Migraine] }
 
 Could cause the following statements to be asserted in the store:
 
@@ -153,13 +153,13 @@ This statement would be asserted in the partition associated with quoted stateme
 
     ?x rdf:type :N3Programmer
 
-Finally, these statements would be asserted in the same partition (in a formula named _:b)
+Finally, these statements would be asserted in the same partition (in a formula named ``_:b``)
 
 .. code-block:: n3
 
     ?x :has _:c
 
-    _:c rdf:type :Migrane
+    _:c rdf:type :Migraine
 
 ..  __: http://metacognition.info/Triclops/?xslt=Triclops.xslt&query=log:N3Document&queryType=Triple&remoteGraph=http://www.w3.org/2000/10/swap/log#
 
@@ -180,30 +180,40 @@ Database Management
 
 An RDF store should provide standard interfaces for the management of database connections. Such interfaces are standard to most database management systems (Oracle, MySQL, Berkeley DB, Postgres, etc..)
 
-The following methods are defined to provide this capability (see below for description of the :term:`configuration` string):
+The following methods are defined to provide this capability (see below for description of the *configuration* string):
 
 .. automethod:: rdflib.store.Store.open
+                :noindex:
 
 .. automethod:: rdflib.store.Store.close
+                :noindex:
 
 .. automethod:: rdflib.store.Store.destroy
+                :noindex:
 
-The *configuration* string is understood by the store implementation and represents all the parameters needed to locate an individual instance of a store. This could be similar to an ODBC string or in fact be an ODBC string, if the connection protocol to the underlying database is ODBC. The :meth:`open` function needs to fail intelligently in order to clearly express that a store (identified by the given configuration string) already exists or that there is no store (at the location specified by the configuration string) depending on the value of :keyword:`create`.
+The *configuration* string is understood by the store implementation and represents all the parameters needed to locate an individual instance of a store. This could be similar to an ODBC string or in fact be an ODBC string, if the connection protocol to the underlying database is ODBC.
+
+The :meth:`~rdflib.graph.Graph.open` function needs to fail intelligently in order to clearly express that a store (identified by the given configuration string) already exists or that there is no store (at the location specified by the configuration string) depending on the value of :keyword:`create`.
 
 Triple Interfaces
 =================
 An RDF store could provide a standard set of interfaces for the manipulation, management, and/or retrieval of its contained triples (asserted or quoted):
 
+.. module:: rdflib.store
+
 .. automethod:: rdflib.store.Store.add
+    :noindex:
 
 .. automethod:: rdflib.store.Store.remove
+    :noindex:
 
-.. automethod:: rdflib.store.Store.triples
+.. automethod:: rdflib.store.Store.triples 
+    :noindex:
 
-    .. note:: The :meth:`triples` method can be thought of as the primary mechanism for producing triples with nodes that match the corresponding terms in the *(s, p, o)* term pattern provided. The term pattern ``(None, None, None)`` matches all nodes.
+    .. note:: The :meth:`~rdflib.store.Store.triples` method can be thought of as the primary mechanism for producing triples with nodes that match the corresponding terms in the ``(s, p, o)`` term pattern provided. The term pattern ``(None, None, None)`` matches *all* nodes.
 
 .. automethod:: rdflib.store.Store.__len__
-
+                :noindex:
 
 Formula / Context Interfaces
 ============================
@@ -211,8 +221,10 @@ Formula / Context Interfaces
 These interfaces work on contexts and formulae (for stores that are formula-aware) interchangeably.
 
 .. automethod:: rdflib.graph.ConjunctiveGraph.contexts
+                :noindex:
 
 .. automethod:: rdflib.graph.ConjunctiveGraph.remove_context
+                :noindex:
 
 Interface Test Cases
 ====================
@@ -232,7 +244,7 @@ Source Graph
     @prefix : <http://test/> . 
     {:a :b :c; a :foo} => {:a :d :c} . 
     _:foo a rdfs:Class . 
-    :a :d :c. 
+    :a :d :c .
 
 Test code
 ^^^^^^^^^
@@ -296,7 +308,7 @@ Source Graph
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> . 
     @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> . 
     @prefix : <http://test/> . 
-    {?x a rdfs:Class} => {?x a :Klass}. 
+    {?x a rdfs:Class} => {?x a :Klass} .
 
 Test Code
 ^^^^^^^^^
@@ -331,15 +343,19 @@ These are a list of additional kinds of RDF terms (all of which are special Lite
 Namespace Management Interfaces
 ===============================
 
-The following namespace management interfaces (defined in Graph) could be implemented in the RDF store. Currently, they exist as stub methods of :class:`~rdflib.store.Store` and are defined in the store subclasses (e.g. :class:`~rdflib.store.IOMemory`, :class:`~rdflib.store.AbstractSQLStore`):
+The following namespace management interfaces (defined in Graph) could be implemented in the RDF store. Currently, they exist as stub methods of :class:`~rdflib.store.Store` and are defined in the store subclasses (e.g. :class:`~rdflib.store.IOMemory`):
 
 .. automethod:: rdflib.store.Store.bind
+                :noindex:
 
 .. automethod:: rdflib.store.Store.prefix
+                :noindex:
 
 .. automethod:: rdflib.store.Store.namespace
+                :noindex:
 
 .. automethod:: rdflib.store.Store.namespaces
+                :noindex:
 
 Open issues
 ===========
@@ -349,15 +365,16 @@ The Store implementation needs a mechanism to distinguish between triples (quote
 
 .. image:: _static/ContextHierarchy.png
 
-An identifier of ``None`` can be used to indicate the store (aka `all contexts`) in methods such as :meth:`triples`, :meth:`__len__`, etc. This works as long as we're only dealing with one Conjunctive Graph at a time -- which may not always be the case.
+An identifier of ``None`` can be used to indicate the store (aka `all contexts`) in methods such as :meth:`~rdflib.store.Store.triples`, :meth:`~rdflib.store.Store.__len__`, etc. This works as long as we're only dealing with one Conjunctive Graph at a time -- which may not always be the case.
 
-Is there any value in persisting terms that lie outside N3 (RegExLiteral,Date,etc..)?
+Is there any value in persisting terms that lie outside N3 (RegExLiteral, Date, etc..)?
 
 Potentially, not sure yet.
 
 Should a conjunctive query always return quads instead of triples? It would seem so, since knowing the context that produced a triple match is an essential aspect of query construction / optimization. Or if having the triples function yield/produce different length tuples is problematic, could an additional - and slightly redundant - interface be introduced?:
 
 .. automethod:: rdflib.graph.ConjunctiveGraph.quads
+                :noindex:
 
 Stores that weren't context-aware could simply return ``None`` as the 4th item in the produced/yielded tuples or simply not support this interface.
 

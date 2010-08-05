@@ -1,4 +1,4 @@
-:mod:`rdflib.Graph.Graph` -- Graph class definition
+:mod:`rdflib.graph.Graph` -- Graph class definition
 ===================================================
 
 =====

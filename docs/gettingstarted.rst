@@ -23,7 +23,7 @@ RDF data has various syntaxes (``xml``, ``n3``, ``ntriples``, ``trix``, etc) tha
 
 In an interactive python interpreter, try this:
 
-.. code-block:: python
+.. code-block:: pycon
 
     >>> from rdflib.graph import Graph
     >>> g = Graph()
@@ -42,7 +42,7 @@ In an interactive python interpreter, try this:
      rdflib.term.URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
      rdflib.term.URIRef('http://xmlns.com/foaf/0.1/Person'))
 
-The final lines show how rdflib represents the two statements in the file. The statements themselves are just length-3 tuples; and the subjects, predicates, and objects are all rdflib types.
+The final lines show how ``rdflib`` represents the two statements in the file. The statements themselves are just length-3 tuples; and the subjects, predicates, and objects are all rdflib types.
 
 Reading remote graphs
 ^^^^^^^^^^^^^^^^^^^^^
@@ -59,46 +59,29 @@ The format defaults to ``xml``, which is the common format for .rdf files you'll
 
 See also
 
+.. module rdflib.graph
 .. automethod:: rdflib.graph.Graph.parse
+    :noindex:
 
-Other parsers supported by rdflib
----------------------------------
+Plugin parsers for rdflib
+-------------------------
 
-.. automodule:: rdflib.syntax.parsers
+.. autoclass::  rdflib.plugins.parsers.rdfxml.RDFXMLParser
 
-.. automodule:: rdflib.syntax.parsers.n3p
+.. module:: rdflib.plugins.parsers.rdfa
+.. autoclass::  rdflib.plugins.parsers.rdfa.RDFaParser
 
-.. automodule:: rdflib.syntax.parsers.N3Parser
+.. module:: rdflib.plugins.parsers.rdfxml
+.. autoclass::  rdflib.plugins.parsers.rdfxml.RDFXMLParser
 
-.. autoclass:: rdflib.syntax.parsers.N3Parser.N3Parser
-    :members:
+.. module:: rdflib.plugins.parsers.notation3
+.. autoclass::  rdflib.plugins.parsers.notation3.N3Parser
 
-.. automodule:: rdflib.syntax.parsers.NTParser
+.. module:: rdflib.plugins.parsers.nt
+.. autoclass::  rdflib.plugins.parsers.nt.NTParser
 
-.. autoclass:: rdflib.syntax.parsers.NTParser.NTParser
-    :members:
-
-.. automodule:: rdflib.syntax.parsers.ntriples
-
-.. autoclass:: rdflib.syntax.parsers.ntriples.NTriplesParser
-    :members:
-
-.. automodule:: rdflib.syntax.parsers.RDFXMLParser
-
-.. autoclass:: rdflib.syntax.parsers.RDFXMLParser.RDFXMLParser
-    :members:
-
-.. automodule:: rdflib.syntax.parsers.TriXParser
-
-.. autoclass:: rdflib.syntax.parsers.TriXParser.TriXParser
-    :members:
-
-.. .. automodule:: rdflib.syntax.parsers.RDFaParser
-..     :members:
-.. 
-.. .. autoclass:: rdflib.syntax.parsers.RDFaParser.RDFaParser
-..     :members:
-.. 
+.. module:: rdflib.plugins.parsers.trix
+.. autoclass::  rdflib.plugins.parsers.trix.TriXParser
 
 Introduction to using SPARQL to query an rdflib graph
 -----------------------------------------------------
@@ -127,16 +110,41 @@ LiveJournal produces FOAF data for their users, but they seem to use ``foaf:memb
 Run a Query
 ^^^^^^^^^^^
 
+The ``rdflib`` package concentrates on providing the core RDF types and interfaces for working with RDF. As indicated in the introduction, the package defines a plugin interface (for parsers, stores, and serializers) that other packages can use to implement parsers, stores, and serializers that will plug into the ``rdflib`` package.
+
+In order to perform SPARQL queries, you need to install the companion ``rdfextras`` package which includes a SPARQL plugin implementation:
+
+.. code-block:: bash
+    
+    $ easy_install rdfextras
+
+In order to use the SPARQL plugin in your code, the plugin must first be registered. This binds the the imported SPARQL query processor implementation to the :meth:`rdflib.graph.Graph.query` method, which can then be passed a SPARQL query (a string). When called, the :meth:`~rdflib.graph.Graph.query` method returns a SPARQLQuery object whose ``result`` attribute is a list of results.
+
+Continuing the example...
+
 .. code-block:: python
 
-    for row in g.query(
-            """SELECT ?aname ?bname 
-               WHERE { 
-                  ?a foaf:knows ?b . 
-                  ?a foaf:name ?aname . 
-                  ?b foaf:name ?bname . 
-               }""", 
-            initNs=dict(foaf=Namespace("http://xmlns.com/foaf/0.1/"))):
+    import rdflib
+    from rdflib import plugin
+
+    plugin.register(
+        'sparql', rdflib.query.Processor,
+        'rdfextras.sparql.processor', 'Processor')
+    plugin.register(
+        'sparql', rdflib.query.Result,
+        'rdfextras.sparql.query', 'SPARQLQueryResult')
+
+    qres = g.query(
+        """SELECT DISTINCT ?aname ?bname
+           WHERE {
+              ?a foaf:knows ?b .
+              ?a foaf:name ?aname .
+              ?b foaf:name ?bname .
+           }""",
+        initNs=dict(
+            foaf=Namespace("http://xmlns.com/foaf/0.1/")))
+    
+    for row in qres.result:
         print "%s knows %s" % row
 
 The results are tuples of values in the same order as your SELECT arguments.
@@ -155,11 +163,10 @@ The results are tuples of values in the same order as your SELECT arguments.
 
 Namespaces
 ^^^^^^^^^^
-The :meth:`Graph.parse` :keyword:`initNs` argument is a dictionary of namespaces to be expanded in the query string. In a large program, it's common to use the same dict for every single query. You might even hack your graph instance so that the ``initNs`` arg is already filled in.
+The :meth:`~rdflib.graph.Graph.parse` :keyword:`initNs` argument is a dictionary of namespaces to be expanded in the query string. In a large program, it is common to use the same ``dict`` for every single query. You might even hack your graph instance so that the ``initNs`` arg is already filled in.
 
-If someone knows how to use the empty prefix (e.g. "?a :knows ?b"), please write about it here and in the :meth:`Graph.query` docs.
 
-*ewan klein provides the answer, use BASE to set a default namespace ...*
+In order to use an empty prefix (e.g. ``?a :knows ?b``), use a ``BASE`` directive in the SPARQL query to set a default namespace:
 
 .. code-block:: sparql
 
@@ -168,7 +175,7 @@ If someone knows how to use the empty prefix (e.g. "?a :knows ?b"), please write
 Bindings
 ^^^^^^^^
 
-Just like with SQL queries, it's common to run the same query many times with only a few terms changing. rdflib calls this ``initBindings``:
+As with SQL queries, it is common to run the same SPARQL query many times with only a few terms changing each time. rdflib calls this ``initBindings``:
 
 .. code-block:: python
 
@@ -177,7 +184,7 @@ Just like with SQL queries, it's common to run the same query many times with on
     drew = URIRef('http://bigasterisk.com/foaf.rdf#drewp')
     for row in g.query("""SELECT ?name 
                           WHERE { ?p foaf:name ?name }""", 
-                       initNs=ns, initBindings={'?p' : drew}):
+                       initNs=ns, initBindings={'p' : drew}):
         print row
 
 Output:
@@ -186,12 +193,12 @@ Output:
 
     (rdflib.Literal('Drew Perttula', language=None, datatype=None),)
 
-.. automethod:: rdflib.graph.Graph.query
 
 Store operations
 ----------------
 
-Example code to create a MySQL triple store, add some triples, and serialize the resulting graph.
+Example code to create a Sleepycat (``bsddb`` or ``bsddb3``) triple store, add some triples, and serialize the resulting graph. Finally, close the graph and
+remove the database files that were created.
 
 .. code-block:: python
 
@@ -202,28 +209,31 @@ Example code to create a MySQL triple store, add some triples, and serialize the
     from rdflib.namespace import Namespace
     from rdflib.term import Literal
     from rdflib.term import URIRef
+    from tempfile import mkdtemp
 
     default_graph_uri = "http://rdflib.net/rdfstore"
-    configString = "host=localhost,user=username,password=password,db=rdfstore"
+    configString = "/var/tmp/rdfstore"
 
-    # Get the mysql plugin. You may have to install the python mysql libraries
-    store = plugin.get('MySQL', Store)('rdfstore')
-
-    # Open previously created store, or create it if it doesn't exist yet
-    rt = store.open(configString,create=False)
-    if rt == NO_STORE:
-        # There is no underlying MySQL infrastructure, create it
-        store.open(configString,create=True)
-    else:
-        assert rt == VALID_STORE,"There underlying store is corrupted"
+    # Get the Sleepycat plugin. 
+    store = plugin.get('Sleepycat', Store)('rdfstore')
     
-    # There is a store, use it
-    graph = Graph(store, identifier = URIRef(default_graph_uri))
+    # Open previously created store, or create it if it doesn't exist yet
+    graph = Graph(store="Sleepycat", 
+                  identifier = URIRef(default_graph_uri))
+    path = mkdtemp()
+    rt = graph.open(path, create=False)
+    if rt == NO_STORE:
+        # There is no underlying Sleepycat infrastructure, create it
+        graph.open(path, create=True)
+    else:
+        assert rt == VALID_STORE, "The underlying store is corrupt"
 
     print "Triples in graph before add: ", len(graph)
 
     # Now we'll add some triples to the graph & commit the changes
     rdflib = Namespace('http://rdflib.net/test/')
+    graph.bind("test", "http://rdflib.net/test/")
+    
     graph.add((rdflib['pic:1'], rdflib['name'], Literal('Jane & Bob')))
     graph.add((rdflib['pic:2'], rdflib['name'], Literal('Squirrel in Tree')))
     graph.commit()
@@ -232,3 +242,30 @@ Example code to create a MySQL triple store, add some triples, and serialize the
 
     # display the graph in RDF/XML
     print graph.serialize()
+    
+    graph.close()
+    
+    # Clean up the mkdtemp spoor to remove the Sleepycat database files...
+    import os
+    for f in os.listdir(path): 
+        os.unlink(path+'/'+f)
+    os.rmdir(path)
+
+The output will appear as follows:
+
+.. code-block:: text
+
+    Triples in graph before add:  0
+    Triples in graph after add:  2
+    <?xml version="1.0" encoding="UTF-8"?>
+    <rdf:RDF
+       xmlns="http://rdflib.net/test/"
+       xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    >
+      <rdf:Description rdf:about="http://rdflib.net/test/pic:1">
+        <name>Jane &amp; Bob</name>
+      </rdf:Description>
+      <rdf:Description rdf:about="http://rdflib.net/test/pic:2">
+        <name>Squirrel in Tree</name>
+      </rdf:Description>
+    </rdf:RDF>

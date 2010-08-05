@@ -10,43 +10,42 @@ Conjunctive Graphs
 .. code-block:: python
 
     from rdflib import Namespace, BNode, Literal, URIRef
-    from rdflib.Graph import Graph, ConjunctiveGraph
-    from rdflib.store.IOMemory import IOMemory
- 
+    from rdflib.graph import Graph, ConjunctiveGraph
+    from rdflib.plugins.memory import IOMemory
+
     ns = Namespace("http://love.com#")
- 
+
     mary = URIRef("http://love.com/lovers/mary#")
     john = URIRef("http://love.com/lovers/john#")
- 
+
     cmary=URIRef("http://love.com/lovers/mary#")
     cjohn=URIRef("http://love.com/lovers/john#")
- 
+
     store = IOMemory()
- 
+
     g = ConjunctiveGraph(store=store)
     g.bind("love",ns)
- 
+
     gmary = Graph(store=store, identifier=cmary)
- 
+
     gmary.add((mary, ns['hasName'], Literal("Mary")))
     gmary.add((mary, ns['loves'], john))
- 
+
     gjohn = Graph(store=store, identifier=cjohn)
     gjohn.add((john, ns['hasName'], Literal("John")))
- 
+
     #enumerate contexts
     for c in g.contexts():
         print "-- %s " % c
- 
+
     #separate graphs
     print gjohn.serialize(format='n3')
     print "==================="
     print gmary.serialize(format='n3')
     print "==================="
- 
+
     #full graph
     print g.serialize(format='n3')
-
 
 Two-finger exercises
 ====================
@@ -62,7 +61,7 @@ Two-finger exercises
     _hdlr.setFormatter(logging.Formatter('%(name)s %(levelname)s: %(message)s'))
     _logger.addHandler(_hdlr)
 
-    from rdflib.Graph import Graph
+    from rdflib.graph import Graph
     from rdflib import URIRef, Literal, BNode, Namespace
     from rdflib import RDF
 
@@ -124,21 +123,21 @@ Update namespace
     OLD = "http://localhost/"
     NEW = "http://profilesinterror.mindswap.org/"
 
-    redfoot.bind("terror", "http://counterterror.mindswap.org/2005/terrorism.owl#")
-    redfoot.bind("terror_old", "http://www.mindswap.org/2004/terrorOnt.owl#")
-    redfoot.bind("tech", "http://www.mindswap.org/~glapizco/technical.owl#")
-    redfoot.bind("wang-desk", "http://wang-desktop/TerrorOrgInstances#")
-    redfoot.bind("foaf", 'http://xmlns.com/foaf/0.1/')
-    redfoot.bind("dc", 'http://purl.org/dc/elements/1.1/')
+    graph.bind("terror", "http://counterterror.mindswap.org/2005/terrorism.owl#")
+    graph.bind("terror_old", "http://www.mindswap.org/2004/terrorOnt.owl#")
+    graph.bind("tech", "http://www.mindswap.org/~glapizco/technical.owl#")
+    graph.bind("wang-desk", "http://wang-desktop/TerrorOrgInstances#")
+    graph.bind("foaf", 'http://xmlns.com/foaf/0.1/')
+    graph.bind("dc", 'http://purl.org/dc/elements/1.1/')
 
 
-    REDFOOT = redfoot.namespace("http://redfoot.net/2005/redfoot#")
+    REDFOOT = graph.namespace("http://redfoot.net/2005/redfoot#")
 
-    for cid, _, source in redfoot.triples((None, REDFOOT.source, None)):
+    for cid, _, source in graph.triples((None, REDFOOT.source, None)):
         if source:
             print "updating %s" % source
             try:
-                context = redfoot.get_context(cid)
+                context = graph.get_context(cid)
 
                 for s, p, o in context:
                     context.remove((s, p, o))
@@ -162,8 +161,18 @@ SPARQL query
 
     from rdflib import Literal, ConjunctiveGraph, Namespace, BNode, URIRef
 
-    DC = Namespace(u"http://purl.org/dc/elements/1.1/";)
-    FOAF = Namespace(u"http://xmlns.com/foaf/0.1/";)
+    import rdflib
+    from rdflib import plugin
+
+    plugin.register(
+        'sparql', rdflib.query.Processor,
+        'rdfextras.sparql.processor', 'Processor')
+    plugin.register(
+        'sparql', rdflib.query.Result,
+        'rdfextras.sparql.query', 'SPARQLQueryResult')
+
+    DC = Namespace(u"http://purl.org/dc/elements/1.1/")
+    FOAF = Namespace(u"http://xmlns.com/foaf/0.1/")
 
     graph = ConjunctiveGraph()
     s = BNode()
@@ -223,9 +232,9 @@ Data reading exercise
         import rdflib
     except ImportError:
         raise ImportError("Module rdflib is not available. It can be downloaded from http://rdflib.net/\n")
-    if distutils.version.StrictVersion(rdflib.__version__) < "2.0.9":
+    if distutils.version.StrictVersion(rdflib.__version__) < "3.0.0":
         raise ImportError("The installed version of rdflib, %s, is too old. 2.1 or higher is required" % rdflib.__version__)
-    from rdflib.Graph import Graph
+    from rdflib.graph import Graph
     from rdflib.sparql.sparqlGraph  import SPARQLGraph
     from rdflib.sparql.graphPattern import GraphPattern
     if distutils.version.StrictVersion(rdflib.__version__) > "2.3.2":
@@ -377,18 +386,18 @@ demo.n3
 
     @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
-    # from one document
+    ## from one document
     :p0 a foaf:Person;
       foaf:mbox_sha1sum "65b983bb397fb71849da910996741752ace8369b";
       foaf:nick "mortenf";
-      foaf:weblog  <http://www.wasab.dk/morten/blog/archives/author/mortenf/> .
+      foaf:weblog <http://www.wasab.dk/morten/blog/archives/author/mortenf/> .
 
-    # from another document
+    ## from another document
     :p1 a foaf:Person;
         foaf:mbox_sha1sum "65b983bb397fb71849da910996741752ace8369b";
         foaf:nick "mortenf";
         foaf:homepage <http://www.wasab.dk/morten/>;
-        foaf:interest <http://en.wikipedia.org/wiki/Atom_(standard)>,
+        foaf:interest <http://en.wikipedia.org/wiki/Atom_(standard)> .
 
 Now I'll use rdflib to transform all the incoming FOAF data to new data that lies about the subjects. It might be easier to do some queries on this resulting graph, although you wouldn't want to actually publish the result anywhere since it loses some information about FOAF people who really had a meaningful URI.
 
@@ -402,7 +411,7 @@ fold_sha1.py
     might be easier to do some operations on.
     """
 
-    from rdflib.Graph import Graph
+    from rdflib.graph import Graph
     from rdflib import Namespace
 
     FOAF = Namespace("http://xmlns.com/foaf/0.1/")
@@ -452,11 +461,11 @@ How to use the `transitive_objects` and `transitive_subjects` graph methods
 
 Formal definition
 -----------------
-The :meth:`transitive_objects` method finds all nodes such that there is a path from subject to one of those nodes using only the predicate property in the triples. The :meth:`transitive_subjects` method is similar; it finds all nodes such that there is a path from the node to the object using only the predicate property.
+The :meth:`~rdflib.graph.Graph.transitive_objects` method finds all nodes such that there is a path from subject to one of those nodes using only the predicate property in the triples. The :meth:`~rdflib.graph.Graph.transitive_subjects` method is similar; it finds all nodes such that there is a path from the node to the object using only the predicate property.
 
 Informal description, with an example
 -------------------------------------
-In brief, :meth:`transitive_objects` walks forward in a graph using a particular property, and :meth:`transitive_subjects` walks backward. A good example uses a property ``ex:parent``, the semantics of which are biological parentage. The :meth:`transitive_objects` method would get all the ancestors of a particular person (all nodes such that there is a parent path between the person and the object). The :meth:`transitive_subjects` method would get all the descendants of a particular person (all nodes such that there is a parent path between the node and the person). So, say that your URI is ``ex:person``. 
+In brief, :meth:`~rdflib.graph.Graph.transitive_objects` walks forward in a graph using a particular property, and :meth:`~rdflib.graph.Graph.transitive_subjects` walks backward. A good example uses a property ``ex:parent``, the semantics of which are biological parentage. The :meth:`~rdflib.graph.Graph.transitive_objects` method would get all the ancestors of a particular person (all nodes such that there is a parent path between the person and the object). The :meth:`~rdflib.graph.Graph.transitive_subjects` method would get all the descendants of a particular person (all nodes such that there is a parent path between the node and the person). So, say that your URI is ``ex:person``. 
 
 The following code would get all of your (known) ancestors, and then get all the (known) descendants of your maternal grandmother:
 
