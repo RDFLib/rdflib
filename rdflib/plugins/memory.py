@@ -87,13 +87,13 @@ class Memory(Store):
                     if predicate in subjectDictionary:
                         if object!=ANY: # subject+predicate+object is given
                             if object in subjectDictionary[predicate]:
-                                yield (subject, predicate, object), 
+                                yield (subject, predicate, object), \
                                                             self.__contexts()
                             else: # given object not found
                                 pass
                         else: # subject+predicate is given, object unbound
                             for o in subjectDictionary[predicate].keys():
-                                yield (subject, predicate, o), 
+                                yield (subject, predicate, o), \
                                                             self.__contexts()
                     else: # given predicate not found
                         pass
