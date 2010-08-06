@@ -1,21 +1,32 @@
-## Context-aware: An RDF store capable of storing statements within contexts is considered context-aware.
-## Essentially, such a store is able to partition the RDF model it represents into individual, named, and addressable sub-graphs.
+"""
+============
+rdflib.store
+============
 
-## Relevant Notation3 reference regarding formula's, quoted statements, and such: http://www.w3.org/DesignIssues/Notation3.html
+``Context-aware``: An RDF store capable of storing statements within contexts 
+is considered context-aware. Essentially, such a store is able to partition 
+the RDF model it represents into individual, named, and addressable 
+sub-graphs.
 
-## Formula-aware: An RDF store capable of distinguishing between statements that are asserted and statements
-## that are quoted is considered formula-aware.
+Relevant Notation3 reference regarding formulae, quoted statements, and such: 
+http://www.w3.org/DesignIssues/Notation3.html
 
-## Conjunctive Graph: This refers to the 'top-level' Graph. It is the aggregation of all the contexts
-## within it and is also the appropriate, absolute boundary for closed world assumptions / models.
+``Formula-aware``: An RDF store capable of distinguishing between statements 
+that are asserted and statements that are quoted is considered formula-aware.
 
-## For the sake of persistence, Conjunctive Graphs must be distinguished by identifiers (that may not
-## neccessarily be RDF identifiers or may be an RDF identifier normalized - SHA1/MD5 perhaps - for database
-## naming purposes ).
+``Conjunctive Graph``: This refers to the 'top-level' Graph. It is the 
+aggregation of all the contexts within it and is also the appropriate, 
+absolute boundary for closed world assumptions / models.
 
-## Conjunctive Query: Any query that doesn't limit the store to search within a named context only. Such a
-## query expects a context-aware store to search the entire asserted universe (the conjunctive graph).
-## A formula-aware store is expected not to include quoted statements when matching such a query.
+For the sake of persistence, Conjunctive Graphs must be distinguished by 
+identifiers (that may not necessarily be RDF identifiers or may be an RDF 
+identifier normalized - SHA1/MD5 perhaps - for database naming purposes ).
+
+``Conjunctive Query``: Any query that doesn't limit the store to search 
+within a named context only. Such a query expects a context-aware store to 
+search the entire asserted universe (the conjunctive graph). A formula-aware 
+store is expected not to include quoted statements when matching such a query.
+"""
 
 #Constants representing the state of a Store (returned by the open method)
 VALID_STORE     = 1

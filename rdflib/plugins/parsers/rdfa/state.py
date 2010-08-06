@@ -388,14 +388,16 @@ class ExecutionContext(object):
 
     def get_Curie_ref(self, val):
         """Create a URI RDFLib resource for a CURIE.
-        The input argument is a CURIE. This means that it is
-          - either of the form [a:b] where a:b should be resolved as an 'unprotected' CURIE, or
-          - it is a traditional URI (relative or absolute)
+        The input argument is a CURIE. This means that it is:
+        - either of the form [a:b] where a:b should be resolved as an 
+        'unprotected' CURIE, or
+        - it is a traditional URI (relative or absolute)
 
-        If the second case the URI value is also compared to 'usual' URI protocols ('http', 'https', 'ftp', etc)
-        (see L{usual_protocols}).
-        If there is no match, a warning is generated (indeed, a frequent mistake in authoring RDFa is to forget
-        the '[' and ']' characters to "protect" CURIE-s.)
+        If the second case the URI value is also compared to 'usual' URI 
+        protocols ('http', 'https', 'ftp', etc) (see L{usual_protocols}).
+        If there is no match, a warning is generated (indeed, a frequent 
+        mistake in authoring RDFa is to forget the '[' and ']' characters to 
+        "protect" CURIE-s.)
 
         @param val: CURIE string
         @return: an RDFLib URIRef instance

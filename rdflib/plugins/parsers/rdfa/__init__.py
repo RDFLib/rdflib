@@ -6,12 +6,15 @@ From a Python file, expecting an RDF/XML pretty printed output::
     graph.parse('filename.html', format='rdfa')
     print graph.serialize(format='pretty-xml')
 
-For details on RDFa, the reader should consult the `RDFa syntax document
-<http://www.w3.org/TR/rdfa-syntax>`_.
+For details on RDFa, the reader should consult the `RDFa syntax document`__.
 
-This is an adapted version of pyRdfa (`W3C RDFa Distiller page
-<http://www.w3.org/2007/08/pyRdfa/>`_) by Ivan Herman
+This is an adapted version of pyRdfa (`W3C RDFa Distiller page`__) by Ivan Herman
+
+.. __: http://www.w3.org/TR/rdfa-syntax
+.. __: http://www.w3.org/2007/08/pyRdfa/
+
 """
+
 
 import sys
 import urllib
@@ -70,12 +73,16 @@ def _process_DOM(dom, base, graph, options=None):
     tree, the state is initialized, and the "real" RDFa parsing is done.
     The result is put into the provided Graph.
 
-    The real work is done in the parser function :obj:`parse_one_node`.
+    The real work is done in the parser function ``parse_one_node()``.
 
-    :param dom: XML DOM Tree node (for the top level)
-    :param base: URI for the default "base" value (usually the URI of the file to be processed)
-    :param options: :obj:`Options` for the distiller
-    :raise RDFaError: when called via CGI, this encapsulates the possible exceptions raised by the RDFLib serializer or the processing itself
+    Params:
+    dom -- XML DOM Tree node (for the top level)
+    base -- URI for the default "base" value (usually the URI of the file to be processed)
+    
+    Options: 
+    obj -- `Options` for the distiller
+    raise RDFaError -- when called via CGI, this encapsulates the possible 
+    exceptions raised by the RDFLib serializer or the processing itself
     """
     html = dom.documentElement
     # Perform the built-in and external transformations on the HTML tree. This is,

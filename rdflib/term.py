@@ -425,8 +425,8 @@ class Literal(Identifier):
         >>> Literal('1', datatype=XSD.double) in a
         False
 
-        [[
-        Called for the key object for dictionary operations, 
+        
+        "Called for the key object for dictionary operations, 
         and by the built-in function hash(). Should return 
         a 32-bit integer usable as a hash value for 
         dictionary operations. The only required property 
@@ -434,17 +434,15 @@ class Literal(Identifier):
         hash value; it is advised to somehow mix together 
         (e.g., using exclusive or) the hash values for the 
         components of the object that also play a part in 
-        comparison of objects. 
-        ]] -- 3.4.1 Basic customization (Python)
+        comparison of objects." -- 3.4.1 Basic customization (Python)
 
-        [[
-        Two literals are equal if and only if all of the following hold:
+        "Two literals are equal if and only if all of the following hold:
         * The strings of the two lexical forms compare equal, character by character.
         * Either both or neither have language tags.
         * The language tags, if any, compare equal.
         * Either both or neither have datatype URIs.
-        * The two datatype URIs, if any, compare equal, character by character.
-        ]] -- 6.5.1 Literal Equality (RDF: Concepts and Abstract Syntax)
+        * The two datatype URIs, if any, compare equal, character by character."
+        -- 6.5.1 Literal Equality (RDF: Concepts and Abstract Syntax)
 
         """
         

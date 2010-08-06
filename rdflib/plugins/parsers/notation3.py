@@ -305,8 +305,9 @@ def canonical(str_in):
     - Converfting unicode IRI to utf-8
     - Escaping all non-ASCII
     - De-escaping, if escaped, ALPHA (%41-%5A and %61-%7A), DIGIT (%30-%39),
-      hyphen (%2D), period (%2E), underscore (%5F), or tilde (%7E) (Sect 2.4) 
+    hyphen (%2D), period (%2E), underscore (%5F), or tilde (%7E) (Sect 2.4) 
     - Making all escapes uppercase hexadecimal
+    
     Not done:
     - Making URI scheme lowercase
     - changing /./ or  /foo/../ to / with care not to change host part
@@ -738,13 +739,12 @@ def Canonicalize(node, output=None, **kw):
     Return the text; if output is specified then output.write will
     be called to output the text and None will be returned
     Keyword parameters:
-        nsdict: a dictionary of prefix:uri namespace entries
-                assumed to exist in the surrounding context
-        comments: keep comments if non-zero (default is 0)
-        subset: Canonical XML subsetting resulting from XPath
-                (default is [])
-        unsuppressedPrefixes: do exclusive C14N, and this specifies the
-                prefixes that should be inherited.
+    nsdict -- a dictionary of prefix:uri namespace entries
+    assumed to exist in the surrounding context
+    comments -- keep comments if non-zero (default is 0)
+    subset -- Canonical XML subsetting resulting from XPath (default is [])
+    unsuppressedPrefixes -- do exclusive C14N, and this specifies the
+    prefixes that should be inherited.
     '''
     if output:
         apply(_implementation, (node, output.write), kw)

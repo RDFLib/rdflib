@@ -17,7 +17,9 @@ If you have a package that uses a setuptools based setup.py you can add the foll
             ],
         }
 
-See the `setuptools dynamic discovery of services and plugins <http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins> for more information.
+See the `setuptools dynamic discovery of services and plugins`__ for more information.
+
+.. __: http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
 
 """
 
@@ -111,28 +113,38 @@ def plugins(name=None, kind=None):
         if (name is None or name==p.name) and (kind is None or kind==p.kind):
             yield p
 
-register('default', Store, 'rdflib.plugins.memory', 'IOMemory')
-register('IOMemory', Store, 'rdflib.plugins.memory', 'IOMemory')
-register('Sleepycat', Store, 'rdflib.plugins.sleepycat', 'Sleepycat')
+register('default', Store, 
+                'rdflib.plugins.memory', 'IOMemory')
+register('IOMemory', Store, 
+                'rdflib.plugins.memory', 'IOMemory')
+register('Sleepycat', Store, 
+                'rdflib.plugins.sleepycat', 'Sleepycat')
 
-register('xml', Serializer, 'rdflib.plugins.serializers.rdfxml',
-         'XMLSerializer')
-register('n3', Serializer, 'rdflib.plugins.serializers.n3',
-         'N3Serializer')
-register('turtle', Serializer, 'rdflib.plugins.serializers.turtle',
-         'TurtleSerializer')
-register('nt', Serializer, 'rdflib.plugins.serializers.nt',
-         'NTSerializer')
+register('xml', Serializer, 
+                'rdflib.plugins.serializers.rdfxml', 'XMLSerializer')
+register('n3', Serializer, 
+                'rdflib.plugins.serializers.n3','N3Serializer')
+register('turtle', Serializer, 
+                'rdflib.plugins.serializers.turtle', 'TurtleSerializer')
+register('nt', Serializer, 
+                'rdflib.plugins.serializers.nt', 'NTSerializer')
 register('pretty-xml', Serializer,
-        'rdflib.plugins.serializers.rdfxml', 'PrettyXMLSerializer')
+                'rdflib.plugins.serializers.rdfxml', 'PrettyXMLSerializer')
 register('trix', Serializer,
-        'rdflib.plugins.serializers.trix', 'TriXSerializer')
+                'rdflib.plugins.serializers.trix', 'TriXSerializer')
 
 register('application/rdf+xml', Parser,
-        'rdflib.plugins.parsers.rdfxml', 'RDFXMLParser')
-register('xml', Parser, 'rdflib.plugins.parsers.rdfxml', 'RDFXMLParser')
-register('n3', Parser, 'rdflib.plugins.parsers.notation3', 'N3Parser')
-register('nt', Parser, 'rdflib.plugins.parsers.nt', 'NTParser')
-register('trix', Parser, 'rdflib.plugins.parsers.trix', 'TriXParser')
-register('rdfa', Parser, 'rdflib.plugins.parsers.rdfa', 'RDFaParser')
+                'rdflib.plugins.parsers.rdfxml', 'RDFXMLParser')
+register('text/html', Parser,
+                'rdflib.plugins.parsers.rdfa', 'RDFaParser')
+register('xml', Parser, 
+                'rdflib.plugins.parsers.rdfxml', 'RDFXMLParser')
+register('n3', Parser, 
+                'rdflib.plugins.parsers.notation3', 'N3Parser')
+register('nt', Parser, 
+                'rdflib.plugins.parsers.nt', 'NTParser')
+register('trix', Parser, 
+                'rdflib.plugins.parsers.trix', 'TriXParser')
+register('rdfa', Parser, 
+                'rdflib.plugins.parsers.rdfa', 'RDFaParser')
 

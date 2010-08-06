@@ -194,7 +194,8 @@ class Graph(Node):
     provenance.
 
     The Graph constructor can take an identifier which identifies the Graph
-    by name.  If none is given, the graph is assigned a BNode for its identifier.
+    by name.  If none is given, the graph is assigned a BNode for its 
+    identifier.
     For more on named graphs, see: http://www.w3.org/2004/03/trix/
 
     Ontology for __str__ provenance terms::
@@ -484,12 +485,11 @@ class Graph(Node):
         It is one of those situations that occur a lot, hence this
         'macro' like utility
 
-        :Parameters:
-
+        Parameters:
         subject, predicate, object  -- exactly one must be None
         default -- value to be returned if no values found
-        any -- if True: return any value in the case there is more than one
-               else: raise UniquenessError
+        any -- if True, return any value in the case there is more than one, 
+        else, raise UniquenessError
         """
         retval = default
 
@@ -513,10 +513,11 @@ class Graph(Node):
             if any is False:
                 try:
                     next = values.next()
-                    msg = ("While trying to find a value for (%s, %s, %s) the "
-                           "following multiple values where found:\n" %
+                    msg = ("While trying to find a value for (%s, %s, %s) the"
+                           " following multiple values where found:\n" %
                            (subject, predicate, object))
-                    triples = self.store.triples((subject, predicate, object), None)
+                    triples = self.store.triples(
+                                        (subject, predicate, object), None)
                     for (s, p, o), contexts in triples:
                         msg += "(%s, %s, %s)\n (contexts: %s)\n" % (
                             s, p, o, list(contexts))
@@ -595,10 +596,10 @@ class Graph(Node):
                 yield rt_2
 
     def transitive_objects(self, subject, property, remember=None):
-        """Transitively generate objects for the `property` relationship
+        """Transitively generate objects for the ``property`` relationship
 
         Generated objects belong to the depth first transitive closure of the
-        `property` relationship starting at `subject`.
+        ``property`` relationship starting at ``subject``.
         """
         if remember is None:
             remember = {}
@@ -611,10 +612,10 @@ class Graph(Node):
                 yield o
 
     def transitive_subjects(self, predicate, object, remember=None):
-        """Transitively generate objects for the `property` relationship
+        """Transitively generate objects for the ``property`` relationship
 
         Generated objects belong to the depth first transitive closure of the
-        `property` relationship starting at `subject`.
+        ``property`` relationship starting at ``subject``.
         """
         if remember is None:
             remember = {}
@@ -648,7 +649,8 @@ class Graph(Node):
         If override is True will bind namespace to given prefix if namespace
         was already bound to a different prefix.
         """
-        return self.namespace_manager.bind(prefix, namespace, override=override)
+        return self.namespace_manager.bind(
+                            prefix, namespace, override=override)
 
     def namespaces(self):
         """Generator over all the prefix, namespace tuples"""
@@ -659,7 +661,9 @@ class Graph(Node):
         """Turn uri into an absolute URI if it's not one already"""
         return self.namespace_manager.absolutize(uri, defrag)
 
-    def serialize(self, destination=None, format="xml", base=None, encoding=None, **args):
+    def serialize(
+                self, destination=None, format="xml", 
+                base=None, encoding=None, **args):
         """Serialize the Graph to destination
 
         If destination is None serialize method returns the serialization as a
@@ -677,7 +681,8 @@ class Graph(Node):
             location = destination
             scheme, netloc, path, params, query, fragment = urlparse(location)
             if netloc!="":
-                print "WARNING: not saving as location is not a local file reference"
+                print("WARNING: not saving as location" + \
+                      "is not a local file reference")
                 return
             name = tempfile.mktemp()
             stream = open(name, 'wb')
@@ -697,16 +702,24 @@ class Graph(Node):
         The source is specified using one of source, location, file or
         data.
 
-        :Parameters: - `source`: An InputSource, file-like object, or string. In the case of a string the string is the location of the source.
-                     - `location`: A string indicating the relative or absolute URL of the source. Graph's absolutize method is used if a relative location is specified.
-                     - `file`: A file-like object.
-                     - `data`: A string containing the data to be parsed.
-                     - `format`: Used if format can not be determined from source. Defaults to rdf/xml.
-                     - `publicID`: the logical URI to use as the document base. If None specified the document location is used (at least in the case where there is a document location).
+        :Parameters: 
+        
+          - `source`: An InputSource, file-like object, or string. In the case 
+            of a string the string is the location of the source.
+          - `location`: A string indicating the relative or absolute URL of the 
+            source. Graph's absolutize method is used if a relative location 
+            is specified.
+          - `file`: A file-like object.
+          - `data`: A string containing the data to be parsed.
+          - `format`: Used if format can not be determined from source. 
+            Defaults to rdf/xml.
+          - `publicID`: the logical URI to use as the document base. If None 
+            specified the document location is used (at least in the case where 
+            there is a document location).
 
         :Returns:
 
-        self, the graph instance.
+          - self, the graph instance.
 
         Examples:
 
@@ -747,11 +760,14 @@ class Graph(Node):
         if format=="xml":
             # warn... backward compat.
             format = "application/rdf+xml"
-        source = create_input_source(source=source, publicID=publicID, location=location, file=file, data=data, format=format)
+        source = create_input_source(source=source, publicID=publicID, 
+                                     location=location, file=file, 
+                                     data=data, format=format)
         if format is None:
             format = source.content_type
         if format is None:
-            #raise Exception("Could not determin format for %r. You can expicitly specify one with the format argument." % source)
+            #raise Exception("Could not determine format for %r. You can" + \ 
+            # "expicitly specify one with the format argument." % source)
             format = "application/rdf+xml"
         parser = plugin.get(format, Parser)()
         parser.parse(source, self, **args)
@@ -832,7 +848,18 @@ class Graph(Node):
         return allNodes
 
 class ConjunctiveGraph(Graph):
-
+    """
+    A ConjunctiveGraph is an (unamed) aggregation of all the named graphs 
+    within the Store. It has a ``default`` graph, whose name is associated 
+    with the ConjunctiveGraph throughout its life. All methods work against 
+    this default graph. Its constructor can take an identifier to use as the 
+    name of this default graph or it will assign a BNode. 
+    
+    In practice, it is typical to instantiate a ConjunctiveGraph if you want 
+    to add triples to the Store but don't care to mint a URI for the graph. 
+    Any triples in the graph can still be addressed.
+    """
+    
     def __init__(self, store='default', identifier=None):
         super(ConjunctiveGraph, self).__init__(store)
         assert self.store.context_aware, ("ConjunctiveGraph must be backed by"
@@ -901,7 +928,8 @@ class ConjunctiveGraph(Graph):
 
         identifier must be a URIRef or BNode.
         """
-        return Graph(store=self.store, identifier=identifier, namespace_manager=self)
+        return Graph(store=self.store, identifier=identifier, 
+                    namespace_manager=self)
 
     def remove_context(self, context):
         """Removes the given context from the graph"""
@@ -917,7 +945,7 @@ class ConjunctiveGraph(Graph):
     def parse(self, source=None, publicID=None, format="xml",
               location=None, file=None, data=None, **args):
         """
-        Parse source adding the resulting triples to it's own context
+        Parse source adding the resulting triples to its own context
         (sub graph of this graph).
 
         See `rdflib.graph.Graph.parse` for documentation on arguments.
@@ -928,7 +956,8 @@ class ConjunctiveGraph(Graph):
         it returns the root context.
         """
 
-        source = create_input_source(source=source, publicID=publicID, location=location, file=file, data=data, format=format)
+        source = create_input_source(source=source, publicID=publicID, 
+                    location=location, file=file, data=data, format=format)
 
         #id = self.context_id(self.absolutize(source.getPublicId()))
         context = Graph(store=self.store, identifier=
@@ -943,7 +972,12 @@ class ConjunctiveGraph(Graph):
 
 
 class QuotedGraph(Graph):
-
+    """
+    Quoted Graphs are intended to implement Notation 3 formulae. They are 
+    associated with a required identifier that the N3 parser *must* provide 
+    in order to maintain consistent formulae identification for scenarios 
+    such as implication and other such processing.
+    """
     def __init__(self, store, identifier):
         super(QuotedGraph, self).__init__(store, identifier)
 
@@ -1066,7 +1100,8 @@ class BackwardCompatGraph(ConjunctiveGraph):
         """Add to to the given context or to the default context"""
         if context is not None:
             c = self.get_context(context)
-            assert c.identifier == context, "%s != %s" % (c.identifier, context)
+            assert c.identifier == context, "%s != %s" % \
+                                            (c.identifier, context)
         else:
             c = self.default_context
         self.store.add((s, p, o), context=c, quoted=False)

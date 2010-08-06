@@ -1,16 +1,18 @@
 from __future__ import generators
-
-ANY = None
-
+from rdflib.term import BNode
 from rdflib.store import Store
+
+ANY = Any = None
 
 class Memory(Store):
     """\
-An in memory implementation of a triple store.
-
-This triple store uses nested dictionaries to store triples. Each
-triple is stored in two such indices as follows spo[s][p][o] = 1 and
-pos[p][o][s] = 1.
+    An in memory implementation of a triple store.
+    
+    This triple store uses nested dictionaries to store triples. Each
+    triple is stored in two such indices as follows spo[s][p][o] = 1 and
+    pos[p][o][s] = 1.
+    
+    Authors: Michel Pelletier, Daniel Krech, Stefan Niederhauser
     """
     def __init__(self, configuration=None, identifier=None):
         super(Memory, self).__init__(configuration)
@@ -69,7 +71,8 @@ pos[p][o][s] = 1.
         p[predicate] = 1
 
     def remove(self, (subject, predicate, object), context=None):
-        for (subject, predicate, object), c in self.triples((subject, predicate, object)):
+        for (subject, predicate, object), c in self.triples(
+                                            (subject, predicate, object)):
             del self.__spo[subject][predicate][object]
             del self.__pos[predicate][object][subject]
             del self.__osp[object][subject][predicate]
@@ -84,12 +87,14 @@ pos[p][o][s] = 1.
                     if predicate in subjectDictionary:
                         if object!=ANY: # subject+predicate+object is given
                             if object in subjectDictionary[predicate]:
-                                yield (subject, predicate, object), self.__contexts()
+                                yield (subject, predicate, object), 
+                                                            self.__contexts()
                             else: # given object not found
                                 pass
                         else: # subject+predicate is given, object unbound
                             for o in subjectDictionary[predicate].keys():
-                                yield (subject, predicate, o), self.__contexts()
+                                yield (subject, predicate, o), 
+                                                            self.__contexts()
                     else: # given predicate not found
                         pass
                 else: # subject given, predicate unbound
@@ -156,13 +161,6 @@ pos[p][o][s] = 1.
 
     def __contexts(self):
         return (c for c in []) # TODO: best way to return empty generator
-
-# Authors: Michel Pelletier, Daniel Krech, Stefan Niederhauser
-
-Any = None
-
-from rdflib.term import BNode
-from rdflib.store import Store
 
 class IOMemory(Store):
     """\
