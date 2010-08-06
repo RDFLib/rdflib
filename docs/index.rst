@@ -52,6 +52,12 @@ The package uses various Python idioms that makes them an appropriate way to int
 
 ``rdflib`` graphs are not sorted containers; they have ordinary set operations (e.g. :meth:`~rdflib.Graph.add` to add a triple) plus methods that search triples and return them in arbitrary order.
 
+API Documentation
+=================
+
+    rdflib has epydoc-generated `API Documentation`__
+
+.. __: ./apidocs/index.html
 
 Contents
 ========
@@ -71,6 +77,7 @@ Contents
    assorted_examples
    addons
    Modules <modules/index>
+   Documentation notes <apidocs>
 
 Indices and tables
 ==================
