@@ -97,7 +97,7 @@ that seem to result from them as a basis for discussion.
       graph query, since the name of the graph could not be returned
       reasonably. That is:
 
-      .. code-block:: sparql
+      .. code-block:: text
       
           SELECT ?g ?s ?o ?p
           WHERE { GRAPH ?g { ?s ?p ?o } }
@@ -161,7 +161,7 @@ that seem to result from them as a basis for discussion.
       application provided a magic type for this blank node (_:x a
       rdfx:UnknownOrigin), this could be matched with:
 
-      .. code-block:: sparql
+      .. code-block:: text
 
           SELECT ?s ?o ?p
           WHERE { ?g a rdfx:UnknownOrigin .

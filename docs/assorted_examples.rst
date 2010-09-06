@@ -382,7 +382,7 @@ Suppose I got two FOAF documents each talking about the same person (according t
 demo.n3
 -------
 
-.. code-block:: n3
+.. code-block:: text
 
     @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
@@ -439,7 +439,7 @@ Output
 ------
 note how all of the data has come together under one subject:
 
-.. code-block:: n3
+.. code-block:: text
 
     @prefix _5: <http://example.com/person/mbox_sha1sum/65>.
     @prefix foaf: <http://xmlns.com/foaf/0.1/>.

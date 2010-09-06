@@ -12,7 +12,7 @@ Reading an NT file
 
 RDF data has various syntaxes (``xml``, ``n3``, ``ntriples``, ``trix``, etc) that you might want to read. The simplest format is ``ntriples``. Create the file :file:`demo.nt` in the current directory with these two lines:
 
-.. code-block:: n3
+.. code-block:: text
 
     <http://bigasterisk.com/foaf.rdf#drewp> \
     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> \
@@ -168,7 +168,7 @@ The :meth:`~rdflib.graph.Graph.parse` :keyword:`initNs` argument is a dictionary
 
 In order to use an empty prefix (e.g. ``?a :knows ?b``), use a ``BASE`` directive in the SPARQL query to set a default namespace:
 
-.. code-block:: sparql
+.. code-block:: text
 
     BASE <http://xmlns.com/foaf/0.1/>
 

@@ -238,7 +238,7 @@ test output
       </graph>
     </TriX>
 
-.. code-block:: n3
+.. code-block:: text
 
     [a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory']]. 
     <class 'rdflib.BNode.BNode'> QeDIviuA11 1

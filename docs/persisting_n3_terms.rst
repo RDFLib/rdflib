@@ -46,13 +46,13 @@ The Need to Skolemize Formula Identifiers
 -----------------------------------------
 It would seem reasonable to assume that a formula-aware store would assign Blank Node identifiers as names of formulae that appear in a N3 serialization. So for instance, the following bit of N3:
 
-.. code-block:: n3
+.. code-block:: text
 
     {?x a :N3Programmer} => {?x :has :Migrane}
 
 Could be interpreted as the assertion of the following statement:
 
-.. code-block:: n3
+.. code-block:: text
 
     _:a log:implies _:b
 
@@ -85,7 +85,7 @@ Persisting Formula Identifiers
 ------------------------------
 This is the most straight forward way to maintain this distinction - without relying on extra interfaces. Formula identifiers could be persisted distinctly from other terms by using the following notation:
 
-.. code-block:: n3
+.. code-block:: text
 
     {_:bnode} or {<.. URI ..>}
 
