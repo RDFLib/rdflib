@@ -137,6 +137,8 @@ register('application/rdf+xml', Parser,
                 'rdflib.plugins.parsers.rdfxml', 'RDFXMLParser')
 register('text/html', Parser,
                 'rdflib.plugins.parsers.rdfa', 'RDFaParser')
+register('application/xhtml+xml', Parser,
+                'rdflib.plugins.parsers.rdfa', 'RDFaParser')
 register('xml', Parser, 
                 'rdflib.plugins.parsers.rdfxml', 'RDFXMLParser')
 register('n3', Parser, 
