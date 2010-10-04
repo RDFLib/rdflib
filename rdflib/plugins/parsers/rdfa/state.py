@@ -196,6 +196,10 @@ class ExecutionContext(object):
                                 self.options.comment_graph.add_info("None of the RDFa DOCTYPE, RDFa profile, or RFDa version has been set (for a correct identification of RDFa). This is not a requirement for RDFa, but it is advised to use one of those nevertheless.")
 
         #-----------------------------------------------------------------
+        # Stripping the fragment ID from the base URI, as demanded by RFC 3986
+        self.base = urlparse.urldefrag(self.base)[0]
+        
+        #-----------------------------------------------------------------
         # Settling the language tags
         # check first the lang or xml:lang attribute
         # RDFa does not allow the lang attribute. HTML5 relies :-( on @lang;

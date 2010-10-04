@@ -112,7 +112,7 @@ def cached_file(url):
     return fpath
 
 
-KNOWN_ISSUES = set([11, 92, 94, 100, 101, 102, 103, 114, 117])
+KNOWN_ISSUES = set([11, 92, 94, 100, 101, 102, 103, 114])
 KNOWN_ISSUES |= set([105, 106])
 
 
