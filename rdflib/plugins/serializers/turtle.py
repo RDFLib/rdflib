@@ -199,18 +199,20 @@ class TurtleSerializer(RecursiveSerializer):
     def getQName(self, uri, gen_prefix=True):
         if not isinstance(uri, URIRef):
             return None
+
+        pfx = self.store.store.prefix(uri)
+        # in no case try to make a prefix if gen_prefix==False
+        if not gen_prefix and pfx is None:
+            return None
         try:
             parts = self.store.compute_qname(uri)
         except Exception, e:
-            pfx = self.store.store.prefix(uri)
             if pfx is not None:
                 parts = (pfx, uri, '')
             else:
                 parts = None
         if parts:
             prefix, namespace, local = parts
-            if not gen_prefix and prefix.startswith('_'):
-                return None
             # Local parts with '.' will mess up serialization
             if '.' in local:
                 return None
