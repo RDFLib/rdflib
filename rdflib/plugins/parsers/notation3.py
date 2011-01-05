@@ -36,6 +36,7 @@ import string
 import re
 import time
 import StringIO
+import codecs
 
 from string import find, rfind
 from decimal import Decimal
@@ -909,6 +910,9 @@ class SinkParser:
 
         if not isinstance(octets, unicode):        
            str = octets.decode('utf-8')
+           # NB already decoded, so \ufeff
+           if len(str) > 0 and str[0] == codecs.BOM_UTF8.decode('utf-8'):
+               str = str[1:]
         else: 
            str=octets
 

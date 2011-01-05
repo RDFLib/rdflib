@@ -138,6 +138,13 @@ foo-bar:Ex foo-bar:name "Test" . """
         g = Graph()
         g.parse(data=input, format="n3")
 
+    def testIssue156(self):
+        """
+        Make sure n3 parser does not choke on UTF-8 BOM
+        """
+        g = Graph()
+        g.parse("test/n3/issue156.n3", format="n3")
+
     def testModel(self):
         g = ConjunctiveGraph()
         g.parse(data=test_data, format="n3")
