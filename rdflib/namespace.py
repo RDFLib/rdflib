@@ -93,7 +93,7 @@ class ClosedNamespace(object):
             return self.term(name)
 
     def __str__(self):
-        return self.uri
+        return str(self.uri)
 
     def __repr__(self):
         return """rdf.namespace.ClosedNamespace('%s')""" % str(self.uri)
