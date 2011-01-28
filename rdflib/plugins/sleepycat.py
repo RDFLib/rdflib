@@ -40,7 +40,7 @@ class Sleepycat(Store):
                 mkdir(homeDir) # TODO: implement create method and refactor this to it
                 self.create(homeDir)
             else:
-                return -1
+                return NO_STORE
         db_env = db.DBEnv()
         db_env.set_cachesize(0, 1024*1024*50) # TODO
         #db_env.set_lg_max(1024*1024)
@@ -57,7 +57,10 @@ class Sleepycat(Store):
         if self.__identifier is None:
             self.__identifier = URIRef(pathname2url(abspath(homeDir)))
 
-        self.db_env = db_env = self._init_db_environment(homeDir, create)        
+        db_env = self._init_db_environment(homeDir, create)
+        if db_env == NO_STORE:
+            return NO_STORE
+        self.db_env = db_env
         self.__open = True
 
         dbname = None
