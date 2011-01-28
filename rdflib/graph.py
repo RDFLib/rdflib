@@ -429,6 +429,13 @@ class Graph(Node):
                 retval.add(x)
         return retval
 
+    def __xor__(self,other):
+        """Set theoretical XOR"""
+        return (self - other) + (other - self)
+    
+    __or__ = __add__
+    __and__ = __mul__
+
     # Conv. methods
 
     def set(self, (subject, predicate, object)):
