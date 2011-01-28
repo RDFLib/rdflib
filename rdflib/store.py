@@ -271,7 +271,7 @@ class Store(object):
     def namespaces(self):
         """ """
         if False:
-            yield
+            yield None
 
     # Optional Transactional methods
 
