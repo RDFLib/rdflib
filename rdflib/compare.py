@@ -216,7 +216,7 @@ def _md5_hash(t):
         if isinstance(i, tuple):
             h.update(_md5_hash(i))
         else:
-            h.update("%s" % i)
+            h.update(unicode(i).encode("utf8"))
     return h.hexdigest()
 
 
