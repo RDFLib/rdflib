@@ -20,13 +20,14 @@ import logging
 _LOGGER = logging.getLogger(__name__)
 
 import base64
+import re
 
 import threading
 from urlparse import urlparse, urljoin, urldefrag
 from string import ascii_letters, rsplit
 from random import choice
 from itertools import islice
-from datetime import date, time, datetime
+from datetime import date, time, datetime, timedelta
 from time import strptime
 
 try:
@@ -745,7 +746,21 @@ def _strToDateTime(v) :
                         # %f only works in python 2.6
                         return datetime.strptime(v, "%Y-%m-%dT%H:%M:%S.%fZ")
                     except:
-                        return v
+                        try:
+                            # %f only works in python 2.6
+                            # HACK split off the timezone offset
+                            #  works for "2011-01-16T19:39:18.239743+01:00"
+                            m = re.match(r'(.*)([-+])(\d{2}):(\d{2})$',
+                                         v).groups()
+                            d = datetime.strptime(m[0], "%Y-%m-%dT%H:%M:%S.%f")
+                            t = timedelta(hours=int(m[2]), seconds=int(m[3]))
+                            if m[1] == '+':
+                                d += t
+                            else:
+                                d -= t
+                            return d
+                        except:
+                            return v
 
     return datetime(tstr.tm_year, tstr.tm_mon, tstr.tm_mday,
                     tstr.tm_hour, tstr.tm_min, tstr.tm_sec)
