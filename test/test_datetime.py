@@ -38,6 +38,13 @@ class TestRelativeBase(unittest.TestCase):
             l2 = Literal('2009-06-15T23:37:06.522630', datatype=XSD.dateTime)
             self.assertTrue(l2, l.toPython())
 
+    def test_timezone(self):
+        if sys.version_info >= (2,6,0):
+            l = Literal("2008-12-01T18:02:00.522630Z",
+                        datatype=URIRef('http://www.w3.org/2001/XMLSchema#dateTime'))
+
+            self.assert_(isinstance(l.toPython(), datetime))
+
 
 if __name__ == "__main__":
     unittest.main()
