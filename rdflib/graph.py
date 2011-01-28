@@ -776,14 +776,14 @@ class Graph(Node):
     def load(self, source, publicID=None, format="xml"):
         self.parse(source, publicID, format)
 
-    def query(self, query_object, processor='sparql', result='sparql', initNs={}, initBindings={}):
+    def query(self, query_object, processor='sparql', result='sparql', initNs={}, initBindings={}, **kwargs):
         """
         """
         if not isinstance(processor, query.Processor):
             processor = plugin.get(processor, query.Processor)(self)
         if not isinstance(result, query.Result):
             result = plugin.get(result, query.Result)
-        return result(processor.query(query_object, initBindings, initNs))
+        return result(processor.query(query_object, initBindings, initNs, **kwargs))
 
 
     def n3(self):
