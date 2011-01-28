@@ -823,6 +823,9 @@ class Graph(Node):
 
         # take a random one, could also always take the first one, doesn't
         # really matter.
+        if not all_nodes: 
+            return False
+
         visiting = [all_nodes[random.randrange(len(all_nodes))]]
         while visiting:
             x = visiting.pop()
