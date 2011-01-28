@@ -44,6 +44,7 @@ def _xmlcharref_encode(unicode_data, encoding="ascii"):
         try:
             chars.append(char.encode(encoding, 'strict'))
         except UnicodeError:
-            chars.append('\u%04X' % ord(char))
+            chars.append('\u%04X' % ord(char) if ord(char) <= 0xFFFF else '\U%08X' % ord(char)) 
+
     return ''.join(chars)
 
