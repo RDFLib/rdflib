@@ -1,6 +1,6 @@
 from __future__ import generators
 from rdflib.term import BNode
-from rdflib.store import Store
+from rdflib.store import Store, NO_STORE, VALID_STORE
 
 ANY = Any = None
 
@@ -211,6 +211,13 @@ class IOMemory(Store):
 
         self.__namespace = self.createPrefixMap()
         self.__prefix = self.createPrefixMap()
+
+    def open(self, configuration, create=False):
+        if not create:
+            # An IOMemory Store never exists.
+            return NO_STORE
+        else:
+            return VALID_STORE
 
     def bind(self, prefix, namespace):
         self.__prefix[namespace] = prefix
