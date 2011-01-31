@@ -783,13 +783,20 @@ class Graph(Node):
     def load(self, source, publicID=None, format="xml"):
         self.parse(source, publicID, format)
 
-    def query(self, query_object, processor='sparql', result='sparql', initNs={}, initBindings={}, **kwargs):
+    def query(self, query_object, processor='sparql', result='sparql', initNs={}, initBindings={}, use_store_provided=True, **kwargs):
         """
         """
-        if not isinstance(processor, query.Processor):
-            processor = plugin.get(processor, query.Processor)(self)
+
+        
+
+        if hasattr(self.store, "query") and use_store_provided:
+            return self.store.query(self,query_object, initNs, initBindings, **kwargs)
+
         if not isinstance(result, query.Result):
             result = plugin.get(result, query.Result)
+        if not isinstance(processor, query.Processor):
+            processor = plugin.get(processor, query.Processor)(self)
+
         return result(processor.query(query_object, initBindings, initNs, **kwargs))
 
 
