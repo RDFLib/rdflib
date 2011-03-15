@@ -2237,10 +2237,13 @@ class N3Parser(Parser):
     def __init__(self):
         pass
 
-    def parse(self, source, graph):
+    def parse(self, source, graph, encoding="utf-8"):
         # we're currently being handed a Graph, not a ConjunctiveGraph
         assert graph.store.context_aware # is this implied by formula_aware
         assert graph.store.formula_aware
+
+        if encoding not in [None, "utf-8"]:
+           raise Exception("N3 files are always utf-8 encoded, I was passed: %s"%encoding)
 
         conj_graph = ConjunctiveGraph(store=graph.store)
         conj_graph.default_context = graph # TODO: CG __init__ should have a default_context arg
