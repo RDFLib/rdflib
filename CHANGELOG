@@ -1,3 +1,48 @@
+2011/03/17
+        RELEASE 3.1.0
+
+        Fixed a range of minor issues:
+          * http://code.google.com/p/rdflib/issues/detail?id=128 
+          	Literal.__str__ does not behave like unicode     
+          * http://code.google.com/p/rdflib/issues/detail?id=141
+            (RDFa Parser) Does not handle application/xhtml+xml
+          * http://code.google.com/p/rdflib/issues/detail?id=142
+            RDFa TC #117: Fragment identifiers stripped from BASE
+          * http://code.google.com/p/rdflib/issues/detail?id=146
+            Malformed literals produced when rdfa contains newlines
+          * http://code.google.com/p/rdflib/issues/detail?id=152
+            Namespaces beginning with _ are invalid
+          * http://code.google.com/p/rdflib/issues/detail?id=156
+            Turtle Files with a UTF-8 BOM fail to parse
+          * http://code.google.com/p/rdflib/issues/detail?id=154
+            ClosedNamespace.__str__ returns URIRef not str
+          * http://code.google.com/p/rdflib/issues/detail?id=150
+            IOMemory does not override open
+          * http://code.google.com/p/rdflib/issues/detail?id=153
+            Timestamps with microseconds *and* "Z" timezone are not parsed
+          * http://code.google.com/p/rdflib/issues/detail?id=118
+            DateTime literals with offsets fail to convert to Python
+          * http://code.google.com/p/rdflib/issues/detail?id=157
+            Timestamps with timezone information are not parsed 
+          * http://code.google.com/p/rdflib/issues/detail?id=151
+          	problem with unicode literals in rdflib.compare.graph_diff      
+          * http://code.google.com/p/rdflib/issues/detail?id=149
+            Sleepycat Store broken with create=False
+          * http://code.google.com/p/rdflib/issues/detail?id=134
+            Would be useful if Graph.query could propagate kwargs to a 
+            plugin processor 
+          * http://code.google.com/p/rdflib/issues/detail?id=133
+            Graph.connected exception when passed empty graph 
+          * http://code.google.com/p/rdflib/issues/detail?id=129
+            Not compatible with Python 2.4 
+          * http://code.google.com/p/rdflib/issues/detail?id=119
+            Support Python's set operations on Graph 
+          * http://code.google.com/p/rdflib/issues/detail?id=130
+            NT output encoding to utf-8 broken as it goes through 
+            _xmlcharrefreplace 
+          * http://code.google.com/p/rdflib/issues/detail?id=121#c1
+            Store SPARQL Support 
+
 2010/05/13
         RELEASE 3.0.0
 

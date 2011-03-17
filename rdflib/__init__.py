@@ -29,8 +29,8 @@ A tiny example:
 """
 __docformat__ = "restructuredtext en"
 
-__version__ = "3.0.0"
-__date__ = "2010/05/13"
+__version__ = "3.1.0"
+__date__ = "2011/03/17"
 
 __all__ = [
     'URIRef',
