@@ -185,12 +185,14 @@ class NamespaceManager(object):
             qNameParts = self.compute_qname(rdfTerm)
             return ':'.join([qNameParts[0],qNameParts[-1]])
 
-    def compute_qname(self, uri):
+    def compute_qname(self, uri, generate=True):
         if not uri in self.__cache:
             namespace, name = split_uri(uri)
             namespace = URIRef(namespace)
             prefix = self.store.prefix(namespace)
             if prefix is None:
+                if not generate: 
+                    raise Exception("No known prefix for %s and generate=False")
                 num = 1
                 while 1:
                     prefix = "ns%s" % num

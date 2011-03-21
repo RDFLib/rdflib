@@ -647,8 +647,8 @@ class Graph(Node):
     def qname(self, uri):
         return self.namespace_manager.qname(uri)
 
-    def compute_qname(self, uri):
-        return self.namespace_manager.compute_qname(uri)
+    def compute_qname(self, uri, generate=True):
+        return self.namespace_manager.compute_qname(uri, generate)
 
     def bind(self, prefix, namespace, override=True):
         """Bind prefix to namespace
@@ -1337,9 +1337,9 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
             return self.namespace_manager.qname(uri)
         raise UnSupportedAggregateOperation()
 
-    def compute_qname(self, uri):
+    def compute_qname(self, uri, generate=True):
         if hasattr(self,'namespace_manager') and self.namespace_manager:
-            return self.namespace_manager.compute_qname(uri)
+            return self.namespace_manager.compute_qname(uri, generate)
         raise UnSupportedAggregateOperation()
 
     def bind(self, prefix, namespace, override=True):

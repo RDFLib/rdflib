@@ -189,7 +189,7 @@ class TurtleSerializer(RecursiveSerializer):
             if node in self.keywords:
                 continue
             # Don't use generated prefixes for subjects and objects
-            self.getQName(node, gen_prefix=(i==1))
+            self.getQName(node, gen_prefix=(i==VERB))
             if isinstance(node, Literal) and node.datatype:
                 self.getQName(node.datatype, gen_prefix=_GEN_QNAME_FOR_DT)
         p = triple[1]
@@ -200,29 +200,27 @@ class TurtleSerializer(RecursiveSerializer):
         if not isinstance(uri, URIRef):
             return None
 
-        pfx = self.store.store.prefix(uri)
-        # in no case try to make a prefix if gen_prefix==False
-        if not gen_prefix and pfx is None:
-            return None
-        try:
-            parts = self.store.compute_qname(uri)
-        except Exception, e:
+        parts=None
+        
+        try: 
+            parts = self.store.compute_qname(uri, generate=gen_prefix)
+        except: 
+
+            # is the uri a namespace in itself?
+            pfx = self.store.store.prefix(uri)
+        
             if pfx is not None:
                 parts = (pfx, uri, '')
-            else:
-                parts = None
-        if parts:
-            prefix, namespace, local = parts
-            # Local parts with '.' will mess up serialization
-            if '.' in local:
+            else: 
+                # nothing worked
                 return None
-            self.addNamespace(prefix, namespace)
-            return u'%s:%s' % (prefix, local)
-        else:
+
+        prefix, namespace, local = parts
+        # Local parts with '.' will mess up serialization
+        if '.' in local:
             return None
-        #if self.base and uri.startswith(self.base):
-        #    # this feels too simple, should it work?
-        #    return '<%s>'%uri[len(self.base):]
+        self.addNamespace(prefix, namespace)
+        return u'%s:%s' % (prefix, local)
 
     def startDocument(self):
         self._started = True
