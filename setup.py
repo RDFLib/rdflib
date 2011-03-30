@@ -34,7 +34,7 @@ setup(
     
     If you have recently reported a bug marked as fixed, or have a craving for
     the very latest, you may want the development version instead:
-    http://rdflib.googlecode.com/svn/trunk#egg=rdflib-dev
+    http://rdflib.googlecode.com/hg#egg=rdflib-dev
     """,
     download_url = "http://rdflib.net/rdflib-%s.tar.gz" % __version__,
 
