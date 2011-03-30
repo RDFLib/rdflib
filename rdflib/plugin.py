@@ -26,13 +26,16 @@ See the `setuptools dynamic discovery of services and plugins`__ for more inform
 from rdflib.store import Store
 from rdflib.parser import Parser
 from rdflib.serializer import Serializer
-from rdflib import query
+from rdflib.query import ResultParser, ResultSerializer
 from rdflib.exceptions import Error
 
 
 entry_points = {'rdf.plugins.store': Store,
                 'rdf.plugins.serializer': Serializer,
-                'rdf.plugins.parser': Parser}
+                'rdf.plugins.parser': Parser,
+                'rdf.plugins.resultparser': ResultParser,
+                'rdf.plugins.resultserializer': ResultSerializer,
+                }
 
 _plugins = {}
 
