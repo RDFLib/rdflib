@@ -184,7 +184,8 @@ And the sequence of Stuff::
 That's it!
 """
 
-from rdflib import RDF, BNode, URIRef
+from rdflib.term import BNode, URIRef
+from rdflib.namespace import RDF
 
 
 class Description(object):
