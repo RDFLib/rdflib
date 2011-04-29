@@ -225,7 +225,7 @@ class Description(object):
                 self.graph.predicate_objects(self.subject))
 
     def value(self, predicate=RDF.value, object=None, default=None, any=True):
-        return self._desc(
+        return self._cast(
             self.graph.value(self.subject, predicate, object, default, any))
 
     def label(self):
@@ -253,14 +253,17 @@ class Description(object):
 
     def _description_pairs(self, pairs):
         for s1, s2 in pairs:
-            yield self._desc(s1), self._desc(s2)
+            yield self._cast(s1), self._cast(s2)
 
     def _descriptions(self, nodes):
         for node in nodes:
-            yield self._desc(node)
+            yield self._cast(node)
 
-    def _desc(self, node):
-        return _is_ref(node) and type(self)(self.graph, node) or node
+    def _cast(self, node):
+        return _is_ref(node) and self._new(node) or node
+
+    def _new(self, subject):
+        return type(self)(self.graph, subject)
 
 
 def _is_ref(node):
