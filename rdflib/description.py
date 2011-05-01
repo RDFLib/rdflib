@@ -55,7 +55,7 @@ Create a Description::
 
 Retrieve some basic facts::
 
-    >>> person.subject
+    >>> person.identifier
     rdflib.term.URIRef('http://example.org/person/some1#self')
 
     >>> person.value(FOAF.name)
@@ -78,11 +78,11 @@ Or for the predicates of a resource::
 Follow relations and get more data from their Descriptions as well::
 
     >>> for pic in person.objects(FOAF.depiction):
-    ...     print pic.subject
+    ...     print pic.identifier
     ...     print pic.value(RDF.type).qname()
     ...     print pic.label()
     ...     print pic.comment()
-    ...     print pic.value(FOAF.thumbnail).subject
+    ...     print pic.value(FOAF.thumbnail).identifier
     http://example.org/images/person/some1.jpg
     foaf:Image
     some 1
@@ -91,7 +91,7 @@ Follow relations and get more data from their Descriptions as well::
 
     >>> for cv in person.subjects(CV.aboutPerson):
     ...     work = list(cv.objects(CV.hasWorkHistory))[0]
-    ...     print work.value(CV.employedIn).subject
+    ...     print work.value(CV.employedIn).identifier
     ...     print work.value(CV.startDate)
     http://example.org/#company
     2009-09-04
@@ -181,6 +181,22 @@ And the sequence of Stuff::
     >>> [it.qname() for it in stuff.seq()]
     [u'v:One', u'v:Other']
 
+Equality is based on the identifier::
+
+    >>> t1 = Description(Graph(), URIRef("http://example.org/thing"))
+    >>> t2 = Description(Graph(), URIRef("http://example.org/thing"))
+    >>> t3 = Description(Graph(), URIRef("http://example.org/other"))
+    >>> t1 is t2
+    False
+    >>> t1 == t2
+    True
+    >>> t1 != t2
+    False
+    >>> t1 == t3
+    False
+    >>> t1 != t3
+    True
+
 That's it!
 """
 
@@ -192,64 +208,70 @@ class Description(object):
 
     def __init__(self, graph, subject):
         self.graph = graph
-        self.subject = subject
+        self.identifier = subject
+
+    def __eq__(self, other):
+        return self.identifier == other.identifier
+
+    def __ne__(self, other):
+        return not self == other
 
     def add(self, p, o):
-        self.graph.add((self.subject, p, o))
+        self.graph.add((self.identifier, p, o))
 
     def remove(self, p, o=None):
-        self.graph.remove((self.subject, p, o))
+        self.graph.remove((self.identifier, p, o))
 
     def set(self, predicate, object):
-        self.graph.set((self.subject, predicate, object))
+        self.graph.set((self.identifier, predicate, object))
 
     def subjects(self, predicate=None): # rev
-        return self._descriptions(self.graph.subjects(predicate, self.subject))
+        return self._descriptions(self.graph.subjects(predicate, self.identifier))
 
     def predicates(self, object=None):
-        return self._descriptions(self.graph.predicates(self.subject, object))
+        return self._descriptions(self.graph.predicates(self.identifier, object))
 
     def objects(self, predicate=None):
-        return self._descriptions(self.graph.objects(self.subject, predicate))
+        return self._descriptions(self.graph.objects(self.identifier, predicate))
 
     def subject_predicates(self):
         return self._description_pairs(
-                self.graph.subject_predicates(self.subject))
+                self.graph.subject_predicates(self.identifier))
 
     def subject_objects(self):
         return self._description_pairs(
-                self.graph.subject_objects(self.subject))
+                self.graph.subject_objects(self.identifier))
 
     def predicate_objects(self):
         return self._description_pairs(
-                self.graph.predicate_objects(self.subject))
+                self.graph.predicate_objects(self.identifier))
 
     def value(self, predicate=RDF.value, object=None, default=None, any=True):
         return self._cast(
-            self.graph.value(self.subject, predicate, object, default, any))
+            self.graph.value(self.identifier, predicate, object, default, any))
 
     def label(self):
-        return self.graph.label(self.subject)
+        return self.graph.label(self.identifier)
 
     def comment(self):
-        return self.graph.comment(self.subject)
+        return self.graph.comment(self.identifier)
 
     def items(self):
-        return self._descriptions(self.graph.items(self.subject))
+        return self._descriptions(self.graph.items(self.identifier))
 
     def transitive_objects(self, property, remember=None):
         return self._descriptions(self.graph.transitive_objects(
-            self.subject, property, remember))
+            self.identifier, property, remember))
 
     def transitive_subjects(self, predicate, remember=None):
         return self._descriptions(self.graph.transitive_subjects(
-            predicate, self.subject, remember))
+            predicate, self.identifier, remember))
 
     def seq(self):
-        return self._descriptions(self.graph.seq(self.subject))
+        return self._descriptions(self.graph.seq(self.identifier))
 
     def qname(self):
-        return self.graph.qname(self.subject)
+        return self.graph.qname(self.identifier)
 
     def _description_pairs(self, pairs):
         for s1, s2 in pairs:
