@@ -877,12 +877,9 @@ class Graph(Node):
             >>> graph = Graph()
             >>> uri = URIRef("http://example.org/resource")
             >>> resource = graph.resource(uri)
-            >>> type(resource)
-            <class 'rdflib.resource.Resource'>
-            >>> resource.identifier is uri
-            True
-            >>> resource.graph is graph
-            True
+            >>> assert isinstance(resource, Resource)
+            >>> assert resource.identifier is uri
+            >>> assert resource.graph is graph
 
         """
         return Resource(self, identifier)
