@@ -1,17 +1,19 @@
 # -*- coding: UTF-8 -*-
 """
-The ``Description`` class wraps a ``Graph`` and a resource reference (i.e. an
+The ``Resource`` class wraps a ``Graph`` and a resource reference (i.e. an
 ``URIRef`` or ``BNode``), to support a resource oriented way of working with a
 graph.
 
 It contains methods directly corresponding to those methods of the Graph
 interface that relate to reading and writing data. The difference is that a
-Description also binds a current subject, making it possible to work without
-tracking both the graph and a current subject. This makes Description "resource
-oriented", as compared to the triple orientation of the Graph API.
+Resource also binds a resource identifier, making it possible to work without
+tracking both the graph and a current subject. This makes for a "resource
+oriented" style, as compared to the triple orientation of the Graph API.
 
-Resulting generators are also wrapped so that any resource reference values are
-in turn wrapped in Descriptions.
+Resulting generators are also wrapped so that any resource reference values
+(``URIRef``s and ``BNode``s) are in turn wrapped in Resources. (Note that this
+deviates a little from the corresponding methods in Graph, were no such
+conversion takes place.)
 
 Here are some examples. Start by importing things we need and defining some
 namespaces::
@@ -49,9 +51,9 @@ Load some RDF data::
     ...             cv:startDate "2009-09-04"^^xsd:date ] .
     ... ''')
 
-Create a Description::
+Create a Resource::
 
-    >>> person = Description(graph, URIRef("http://example.org/person/some1#self"))
+    >>> person = Resource(graph, URIRef("http://example.org/person/some1#self"))
 
 Retrieve some basic facts::
 
@@ -64,7 +66,7 @@ Retrieve some basic facts::
     >>> person.value(RDFS.comment)
     rdflib.term.Literal(u'Just a Python & RDF hacker.', lang=u'en')
 
-Resource references are also Descriptions, so you can easily get e.g. a qname
+Resource references are also Resources, so you can easily get e.g. a qname
 for the type of a resource, like::
 
     >>> person.value(RDF.type).qname()
@@ -75,7 +77,7 @@ Or for the predicates of a resource::
     >>> sorted(p.qname() for p in person.predicates())
     [u'foaf:depiction', u'foaf:homepage', u'foaf:name', u'rdf:type', u'rdfs:comment']
 
-Follow relations and get more data from their Descriptions as well::
+Follow relations and get more data from their Resources as well::
 
     >>> for pic in person.objects(FOAF.depiction):
     ...     print pic.identifier
@@ -112,7 +114,7 @@ It's just as easy to work with the predicates of a resource::
 This is useful for e.g. inspection::
 
     >>> thumb_ref = URIRef("http://example.org/images/person/some1-thumb.jpg")
-    >>> thumb = Description(graph, thumb_ref)
+    >>> thumb = Resource(graph, thumb_ref)
     >>> for p, o in thumb.predicate_objects():
     ...     print p.qname()
     ...     print o.qname()
@@ -156,7 +158,7 @@ With this artificial schema data::
 
 From this class::
 
-    >>> artifact = Description(graph2, URIRef("http://example.org/def/v#Artifact"))
+    >>> artifact = Resource(graph2, URIRef("http://example.org/def/v#Artifact"))
 
 we can get at subclasses::
 
@@ -171,21 +173,21 @@ and superclasses from the last subclass::
 
 Get items from the Choice::
 
-    >>> choice = Description(graph2, URIRef("http://example.org/def/v#Choice"))
+    >>> choice = Resource(graph2, URIRef("http://example.org/def/v#Choice"))
     >>> [it.qname() for it in choice.value(OWL.oneOf).items()]
     [u'v:One', u'v:Other']
 
 And the sequence of Stuff::
 
-    >>> stuff = Description(graph2, URIRef("http://example.org/def/v#Stuff"))
+    >>> stuff = Resource(graph2, URIRef("http://example.org/def/v#Stuff"))
     >>> [it.qname() for it in stuff.seq()]
     [u'v:One', u'v:Other']
 
 Equality is based on the identifier::
 
-    >>> t1 = Description(Graph(), URIRef("http://example.org/thing"))
-    >>> t2 = Description(Graph(), URIRef("http://example.org/thing"))
-    >>> t3 = Description(Graph(), URIRef("http://example.org/other"))
+    >>> t1 = Resource(Graph(), URIRef("http://example.org/thing"))
+    >>> t2 = Resource(Graph(), URIRef("http://example.org/thing"))
+    >>> t3 = Resource(Graph(), URIRef("http://example.org/other"))
     >>> t1 is t2
     False
     >>> t1 == t2
@@ -204,7 +206,7 @@ from rdflib.term import BNode, URIRef
 from rdflib.namespace import RDF
 
 
-class Description(object):
+class Resource(object):
 
     def __init__(self, graph, subject):
         self.graph = graph
