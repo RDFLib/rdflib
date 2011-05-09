@@ -675,6 +675,9 @@ class Graph(Node):
 
         If destination is None serialize method returns the serialization as a
         string. Format defaults to xml (AKA rdf/xml).
+
+        Format support can be extended with plugins, 
+        but 'xml', 'n3', 'turtle', 'nt', 'pretty-xml', trix' are built in.
         """
         serializer = plugin.get(format, Serializer)(self)
         if destination is None:
@@ -719,7 +722,8 @@ class Graph(Node):
           - `file`: A file-like object.
           - `data`: A string containing the data to be parsed.
           - `format`: Used if format can not be determined from source. 
-            Defaults to rdf/xml.
+            Defaults to rdf/xml. Format support can be extended with plugins, 
+            but 'xml', 'n3', 'nt', 'trix', 'rdfa' are built in.
           - `publicID`: the logical URI to use as the document base. If None 
             specified the document location is used (at least in the case where 
             there is a document location).
