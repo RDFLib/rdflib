@@ -228,24 +228,24 @@ class Resource(object):
         self.graph.set((self.identifier, predicate, object))
 
     def subjects(self, predicate=None): # rev
-        return self._descriptions(self.graph.subjects(predicate, self.identifier))
+        return self._resources(self.graph.subjects(predicate, self.identifier))
 
     def predicates(self, object=None):
-        return self._descriptions(self.graph.predicates(self.identifier, object))
+        return self._resources(self.graph.predicates(self.identifier, object))
 
     def objects(self, predicate=None):
-        return self._descriptions(self.graph.objects(self.identifier, predicate))
+        return self._resources(self.graph.objects(self.identifier, predicate))
 
     def subject_predicates(self):
-        return self._description_pairs(
+        return self._resource_pairs(
                 self.graph.subject_predicates(self.identifier))
 
     def subject_objects(self):
-        return self._description_pairs(
+        return self._resource_pairs(
                 self.graph.subject_objects(self.identifier))
 
     def predicate_objects(self):
-        return self._description_pairs(
+        return self._resource_pairs(
                 self.graph.predicate_objects(self.identifier))
 
     def value(self, predicate=RDF.value, object=None, default=None, any=True):
@@ -259,27 +259,27 @@ class Resource(object):
         return self.graph.comment(self.identifier)
 
     def items(self):
-        return self._descriptions(self.graph.items(self.identifier))
+        return self._resources(self.graph.items(self.identifier))
 
     def transitive_objects(self, property, remember=None):
-        return self._descriptions(self.graph.transitive_objects(
+        return self._resources(self.graph.transitive_objects(
             self.identifier, property, remember))
 
     def transitive_subjects(self, predicate, remember=None):
-        return self._descriptions(self.graph.transitive_subjects(
+        return self._resources(self.graph.transitive_subjects(
             predicate, self.identifier, remember))
 
     def seq(self):
-        return self._descriptions(self.graph.seq(self.identifier))
+        return self._resources(self.graph.seq(self.identifier))
 
     def qname(self):
         return self.graph.qname(self.identifier)
 
-    def _description_pairs(self, pairs):
+    def _resource_pairs(self, pairs):
         for s1, s2 in pairs:
             yield self._cast(s1), self._cast(s2)
 
-    def _descriptions(self, nodes):
+    def _resources(self, nodes):
         for node in nodes:
             yield self._cast(node)
 
