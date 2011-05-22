@@ -209,71 +209,75 @@ from rdflib.namespace import RDF
 class Resource(object):
 
     def __init__(self, graph, subject):
-        self.graph = graph
-        self.identifier = subject
+        self._graph = graph
+        self._identifier = subject
+
+    graph = property(lambda self: self._graph)
+
+    identifier = property(lambda self: self._identifier)
 
     def __eq__(self, other):
-        return self.identifier == other.identifier
+        return self._identifier == other._identifier
 
     def __ne__(self, other):
         return not self == other
 
     def add(self, p, o):
-        self.graph.add((self.identifier, p, o))
+        self._graph.add((self._identifier, p, o))
 
     def remove(self, p, o=None):
-        self.graph.remove((self.identifier, p, o))
+        self._graph.remove((self._identifier, p, o))
 
     def set(self, predicate, object):
-        self.graph.set((self.identifier, predicate, object))
+        self._graph.set((self._identifier, predicate, object))
 
     def subjects(self, predicate=None): # rev
-        return self._resources(self.graph.subjects(predicate, self.identifier))
+        return self._resources(self._graph.subjects(predicate, self._identifier))
 
     def predicates(self, object=None):
-        return self._resources(self.graph.predicates(self.identifier, object))
+        return self._resources(self._graph.predicates(self._identifier, object))
 
     def objects(self, predicate=None):
-        return self._resources(self.graph.objects(self.identifier, predicate))
+        return self._resources(self._graph.objects(self._identifier, predicate))
 
     def subject_predicates(self):
         return self._resource_pairs(
-                self.graph.subject_predicates(self.identifier))
+                self._graph.subject_predicates(self._identifier))
 
     def subject_objects(self):
         return self._resource_pairs(
-                self.graph.subject_objects(self.identifier))
+                self._graph.subject_objects(self._identifier))
 
     def predicate_objects(self):
         return self._resource_pairs(
-                self.graph.predicate_objects(self.identifier))
+                self._graph.predicate_objects(self._identifier))
 
     def value(self, predicate=RDF.value, object=None, default=None, any=True):
         return self._cast(
-            self.graph.value(self.identifier, predicate, object, default, any))
+            self._graph.value(self._identifier, predicate, object, default, any))
 
     def label(self):
-        return self.graph.label(self.identifier)
+        return self._graph.label(self._identifier)
 
     def comment(self):
-        return self.graph.comment(self.identifier)
+        return self._graph.comment(self._identifier)
 
     def items(self):
-        return self._resources(self.graph.items(self.identifier))
+        return self._resources(self._graph.items(self._identifier))
 
-    def transitive_objects(self, property, remember=None):
-        return self._resources(self.graph.transitive_objects(
-            self.identifier, property, remember))
+    def transitive_objects(self, predicate, remember=None):
+        return self._resources(self._graph.transitive_objects(
+            self._identifier, predicate, remember))
 
     def transitive_subjects(self, predicate, remember=None):
-        return self._resources(self.graph.transitive_subjects(
-            predicate, self.identifier, remember))
+        return self._resources(self._graph.transitive_subjects(
+            predicate, self._identifier, remember))
 
     def seq(self):
-        return self._resources(self.graph.seq(self.identifier))
+        return self._resources(self._graph.seq(self._identifier))
 
     def qname(self):
-        return self.graph.qname(self.identifier)
+        return self._graph.qname(self._identifier)
 
     def _resource_pairs(self, pairs):
         for s1, s2 in pairs:
@@ -287,7 +291,7 @@ class Resource(object):
         return _is_ref(node) and self._new(node) or node
 
     def _new(self, subject):
-        return type(self)(self.graph, subject)
+        return type(self)(self._graph, subject)
 
 
 def _is_ref(node):
