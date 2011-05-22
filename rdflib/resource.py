@@ -66,6 +66,11 @@ Retrieve some basic facts::
     >>> person.value(RDFS.comment)
     rdflib.term.Literal(u'Just a Python & RDF hacker.', lang=u'en')
 
+Resources as unicode are represented by their identifiers as unicode::
+
+    >>> unicode(person)
+    u'http://example.org/person/some1#self'
+
 Resource references are also Resources, so you can easily get e.g. a qname
 for the type of a resource, like::
 
@@ -221,6 +226,9 @@ class Resource(object):
 
     def __ne__(self, other):
         return not self == other
+
+    def __unicode__(self):
+        return unicode(self._identifier)
 
     def add(self, p, o):
         self._graph.add((self._identifier, p, o))
