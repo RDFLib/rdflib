@@ -57,13 +57,16 @@ class RDFaParser(Parser):
 
     def parse(self, source, sink,
             warnings=False, space_preserve=True,
-            transformers=None, xhtml=True, lax=True):
+            transformers=None, xhtml=True, lax=True, html5=False):
         if transformers is None:
             transformers = []
         options = Options(warnings, space_preserve, transformers, xhtml, lax)
         baseURI = source.getPublicId()
         stream = source.getByteStream()
-        dom = _try_process_source(stream, options)
+        if html5:
+            dom = _process_html5_source(stream, options)
+        else:
+            dom = _try_process_source(stream, options)
         _process_DOM(dom, baseURI, sink, options)
 
 
@@ -137,26 +140,30 @@ def _try_process_source(stream, options):
         # in Ivan's original code he reopened the stream if it was from urllib 
         if isinstance(stream, urllib.addinfourl):
             stream = urllib.urlopen(stream.url)
+            
+        return _process_html5_source(stream, options)
 
-        # Now try to see if and HTML5 parser is an alternative...
-        try:
-            from html5lib import HTMLParser, treebuilders
-        except ImportError:
-            # no alternative to the XHTML error, because HTML5 parser not available...
-            msg2 = 'XHTML Parsing error in input file: %s. Though parsing is lax, HTML5 parser not available. Try installing html5lib <http://code.google.com/p/html5lib>' % value
-            raise RDFaError(msg2)
 
-        parser = HTMLParser(tree=treebuilders.getTreeBuilder("dom"))
-        parse = parser.parse
-        try:
-            dom = parse(stream)
-            # The host language has changed
-            options.host_language = HTML5_RDFA
-        except:
-            # Well, even the HTML5 parser could not do anything with this...
-            (type, value, traceback) = sys.exc_info()
-            msg2 = 'Parsing error in input file as HTML5: "%s"' % value
-            msg3 = msg + '\n' + msg2
-            raise RDFaError, msg3
+def _process_html5_source(stream, options):
+    # Now try to see if and HTML5 parser is an alternative...
+    try:
+        from html5lib import HTMLParser, treebuilders
+    except ImportError:
+        # no alternative to the XHTML error, because HTML5 parser not available...
+        msg2 = 'XHTML Parsing error in input file: %s. Though parsing is lax, HTML5 parser not available. Try installing html5lib <http://code.google.com/p/html5lib>' % value
+        raise RDFaError(msg2)
+
+    parser = HTMLParser(tree=treebuilders.getTreeBuilder("dom"))
+    parse = parser.parse
+    try:
+        dom = parse(stream)
+        # The host language has changed
+        options.host_language = HTML5_RDFA
+    except:
+        # Well, even the HTML5 parser could not do anything with this...
+        (type, value, traceback) = sys.exc_info()
+        msg2 = 'Parsing error in input file as HTML5: "%s"' % value
+        msg3 = msg + '\n' + msg2
+        raise RDFaError, msg3
 
     return dom
