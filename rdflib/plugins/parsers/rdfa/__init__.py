@@ -126,6 +126,7 @@ def _try_process_source(stream, options):
             key = (top.getAttribute("xmlns"), top.nodeName)
             if key in _HOST_LANG:
                 options.host_language = _HOST_LANG[key]
+        return dom
     except:
         # XML Parsing error in the input
         type, value, traceback = sys.exc_info()
