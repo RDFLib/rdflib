@@ -35,8 +35,9 @@ def _xmlcharref_encode(unicode_data, encoding="ascii"):
 
     # nothing to do about xmlchars, but replace newlines with escapes: 
     unicode_data=unicode_data.replace("\n","\\n")
-    if unicode_data.startswith('"""'):
-        unicode_data = unicode_data.replace('"""', '"')
+    if unicode_data.startswith('"""'): # triple quoted strings are not allowed in nt
+        unicode_data='"'+unicode_data[3:-3].replace('\\"""', '"""').replace('"', '\\"')+'"'
+        #unicode_data = unicode_data.replace('"""', '"')
 
     # Step through the unicode_data string one character at a time in
     # order to catch unencodable characters:
