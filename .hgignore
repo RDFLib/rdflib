@@ -1,0 +1,3 @@
+syntax: glob
+build
+*.pyc
