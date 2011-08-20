@@ -30,5 +30,28 @@ class NQuadsParserTest(unittest.TestCase):
         FOAF = Namespace("http://xmlns.com/foaf/0.1/")
         self.assertEqual(g.value(s, FOAF.name), "Arco Publications")
 
+    def test_serialize(self):
+        g=ConjunctiveGraph()
+        uri1=URIRef("http://example.org/mygraph1")
+        uri2=URIRef("http://example.org/mygraph2")
+
+        bob = URIRef(u'urn:bob')
+        likes = URIRef(u'urn:likes')
+        pizza = URIRef(u'urn:pizza')
+
+        g.get_context(uri1).add((bob, likes, pizza))
+        g.get_context(uri2).add((bob, likes, pizza))
+
+        s=g.serialize(format='nquads')
+        self.assertEqual(len([x for x in s.split("\n") if x.strip()!=""]), 2)
+        
+        g2=ConjunctiveGraph()
+        g2.parse(data=s, format='nquads')
+
+        self.assertEqual(len(g), len(g2))
+        self.assertEqual(sorted(x.identifier for x in g.contexts()), sorted(x.identifier for x in g2.contexts()))
+    
+        
+
 if __name__ == "__main__":
     unittest.main()

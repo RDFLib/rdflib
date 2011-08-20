@@ -942,7 +942,10 @@ class ConjunctiveGraph(Graph):
         If triple is specified, iterate over all contexts the triple is in.
         """
         for context in self.store.contexts(triple):
-            yield context
+            if isinstance(context, Graph):
+                yield context
+            else: 
+                yield self.get_context(context)
 
     def get_context(self, identifier, quoted=False):
         """Return a context graph for the given identifier

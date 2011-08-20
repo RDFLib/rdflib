@@ -135,6 +135,7 @@ register('pretty-xml', Serializer,
                 'rdflib.plugins.serializers.rdfxml', 'PrettyXMLSerializer')
 register('trix', Serializer,
                 'rdflib.plugins.serializers.trix', 'TriXSerializer')
+register("nquads", Serializer, "rdflib.plugins.serializers.nquads", "NQuadsSerializer")
 
 register('application/rdf+xml', Parser,
                 'rdflib.plugins.parsers.rdfxml', 'RDFXMLParser')
