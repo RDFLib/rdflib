@@ -153,3 +153,4 @@ register('trix', Parser,
 register('rdfa', Parser, 
                 'rdflib.plugins.parsers.rdfa', 'RDFaParser')
 
+register("nquads", Parser, "rdflib.plugins.parsers.nquads", "NQuadsParser")
