@@ -122,6 +122,9 @@ register('IOMemory', Store,
                 'rdflib.plugins.memory', 'IOMemory')
 register('Sleepycat', Store, 
                 'rdflib.plugins.sleepycat', 'Sleepycat')
+register('BDBOptimized', Store, 
+                'rdflib.plugins.bdboptimized', 'BDBOptimized')
+
 
 register('xml', Serializer, 
                 'rdflib.plugins.serializers.rdfxml', 'XMLSerializer')
