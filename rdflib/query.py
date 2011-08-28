@@ -4,7 +4,12 @@ import shutil
 import tempfile
 
 from urlparse import urlparse
-from io import BytesIO
+try:
+    from io import BytesIO
+except:
+    from StringIO import StringIO as BytesIO
+
+
 
 
 

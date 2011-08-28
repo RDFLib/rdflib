@@ -41,7 +41,7 @@ import codecs
 from string import find, rfind
 from decimal import Decimal
 
-from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX
+from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX, _unique_id
 from rdflib.graph import QuotedGraph, ConjunctiveGraph
 
 from rdflib.parser import Parser
@@ -412,13 +412,7 @@ def runNamespace():
     # @@@ include hostname (privacy?) (hash it?)
     global runNamespaceValue
     if runNamespaceValue == None:
-        try:
-            runNamespaceValue = os.environ["CWM_RUN_NS"]
-        except KeyError:
-            runNamespaceValue = join(
-                base(), ".run-" + `time.time()` + "p"+ `os.getpid()` +"#")
-                                # was uripath.join, and uripath.base
-        runNamespaceValue = join(base(), runNamespaceValue) # absolutize
+       runNamespaceValue=join(base(), _unique_id())
     return runNamespaceValue
 
 nextu = 0
