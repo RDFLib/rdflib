@@ -11,8 +11,8 @@ tracking both the graph and a current subject. This makes for a "resource
 oriented" style, as compared to the triple orientation of the Graph API.
 
 Resulting generators are also wrapped so that any resource reference values
-(``URIRef``s and ``BNode``s) are in turn wrapped in Resources. (Note that this
-deviates a little from the corresponding methods in Graph, were no such
+(``URIRef``s and ``BNode``s) are in turn wrapped as Resources. (Note that this
+behaviour differs from the corresponding methods in Graph, were no such
 conversion takes place.)
 
 Here are some examples. Start by importing things we need and defining some
@@ -204,7 +204,35 @@ Equality is based on the identifier::
     >>> t1 != t3
     True
 
-That's it!
+The Resource class is suitable as a base class for mapper toolkits. For
+example, consider this utility for accessing RDF properties via qname-like
+attributes::
+
+    >>> class Item(Resource):
+    ...
+    ...     def __getattr__(self, p):
+    ...         return list(self.objects(self._to_ref(*p.split('_', 1))))
+    ...
+    ...     def _to_ref(self, pfx, name):
+    ...         return URIRef(self._graph.store.namespace(pfx) + name)
+
+It works as follows::
+
+    >>> person = Item(graph, person.identifier)
+
+    >>> print person.foaf_name[0]
+    Some Body
+
+The mechanism for wrapping references as resources cooperates with subclasses.
+Therefore, accessing referenced resources automatically creates new ``Item``
+objects::
+
+    >>> isinstance(person.foaf_depiction[0], Item)
+    True
+
+    >>> print person.foaf_depiction[0].rdfs_comment[0]
+    Just an image
+
 """
 
 from rdflib.term import BNode, URIRef
