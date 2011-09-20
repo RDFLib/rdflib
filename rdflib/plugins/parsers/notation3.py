@@ -412,7 +412,7 @@ def runNamespace():
     # @@@ include hostname (privacy?) (hash it?)
     global runNamespaceValue
     if runNamespaceValue == None:
-       runNamespaceValue=join(base(), _unique_id())
+       runNamespaceValue = join(base(), _unique_id()) + '#'
     return runNamespaceValue
 
 nextu = 0
