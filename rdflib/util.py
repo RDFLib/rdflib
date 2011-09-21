@@ -60,6 +60,7 @@ def term(str, default=None):
 
 
 from time import mktime, time, gmtime, localtime, timezone, altzone, daylight
+from calendar import timegm
 
 def date_time(t=None, local_time_zone=False):
     """http://www.w3.org/TR/NOTE-datetime ex: 1997-07-16T19:20:30Z
@@ -135,6 +136,10 @@ def parse_date_time(val):
     t = mktime((int(year), int(month), int(day), int(hour),
                 int(minute), int(second), 0, 0, 0))
     t = t - timezone + tz_offset
+    # Alternative handles case when local time is DST
+    t = timegm((int(year), int(month), int(day), int(hour),
+                int(minute), int(second), 0, 0, 0))
+    t = t + tz_offset
     return t
 
 def from_n3(s, default=None, backend=None):
