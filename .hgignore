@@ -1,4 +1,7 @@
 syntax: glob
-
+build
+dist
 *.pyc
+*~
+docs/_build
 
