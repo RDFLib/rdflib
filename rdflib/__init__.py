@@ -18,7 +18,7 @@ A tiny example:
     >>> result = g.parse("http://www.w3.org/People/Berners-Lee/card")
 
     >>> print "graph has %s statements." % len(g)
-    graph has 78 statements.
+    graph has 79 statements.
     >>>
     >>> for s, p, o in g:
     ...     if (s, p, o) not in g:
