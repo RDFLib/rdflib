@@ -176,6 +176,7 @@ from rdflib.serializer import Serializer
 from rdflib.parser import Parser
 from rdflib.parser import create_input_source
 from rdflib.namespace import NamespaceManager
+from rdflib.resource import Resource
 
 import tempfile, shutil, os
 from urlparse import urlparse
@@ -867,6 +868,26 @@ class Graph(Node):
         obj = set(self.objects())
         allNodes = obj.union(set(self.subjects()))
         return allNodes
+
+    def resource(self, identifier):
+        """Create a new ``Resource`` instance.
+
+        Parameters:
+
+        - ``identifier``: a URIRef or BNode instance.
+
+        Example::
+
+            >>> graph = Graph()
+            >>> uri = URIRef("http://example.org/resource")
+            >>> resource = graph.resource(uri)
+            >>> assert isinstance(resource, Resource)
+            >>> assert resource.identifier is uri
+            >>> assert resource.graph is graph
+
+        """
+        return Resource(self, identifier)
+
 
 class ConjunctiveGraph(Graph):
     """
