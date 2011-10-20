@@ -406,7 +406,7 @@ class Graph(Node):
         return self
 
     def __add__(self,other) :
-        """Set theoretical union"""
+        """Set-theoretic union"""
         retval = Graph()
         for x in self:
             retval.add(x)
@@ -415,7 +415,7 @@ class Graph(Node):
         return retval
 
     def __mul__(self,other) :
-        """Set theoretical intersection"""
+        """Set-theoretic intersection"""
         retval = Graph()
         for x in other:
             if x in self: 
@@ -423,7 +423,7 @@ class Graph(Node):
         return retval
 
     def __sub__(self,other) :
-        """Set theoretical difference"""
+        """Set-theoretic difference"""
         retval = Graph()
         for x in self:
             if not x in other : 
@@ -431,7 +431,7 @@ class Graph(Node):
         return retval
 
     def __xor__(self,other):
-        """Set theoretical XOR"""
+        """Set-theoretic XOR"""
         return (self - other) + (other - self)
     
     __or__ = __add__
