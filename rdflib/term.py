@@ -366,10 +366,10 @@ class Literal(Identifier):
         >>> (+ Literal(1))
         1L
         >>> (+ Literal(-1))
-        1L
+        -1L
         >>> from rdflib.namespace import XSD
         >>> (+ Literal("-1", datatype=XSD[u'integer']))
-        1L
+        -1L
         >>> (+ Literal("1"))
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
@@ -404,10 +404,10 @@ class Literal(Identifier):
     def __invert__(self):
         """
         >>> ~(Literal(-1))
-        -2L
+        0L
         >>> from rdflib.namespace import XSD
         >>> ~( Literal("-1", datatype=XSD[u'integer']))
-        -2L
+        0L
         >>> ~(Literal("1"))
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
