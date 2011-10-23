@@ -148,20 +148,24 @@ try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
-def describe(terms,bindings,graph):
-    """ 
-    Default DESCRIBE returns all incomming and outgoing statements about the given terms 
-    """
-    from rdflib.sparql.sparqlOperators import getValue
-    g=Graph()
-    terms=[getValue(i)(bindings) for i in terms]
-    for s,p,o in graph.triples_choices((terms,None,None)):
-        g.add((s,p,o))
-    for s,p,o in graph.triples_choices((None,None,terms)):
-        g.add((s,p,o))
-    return g
 
-from rdflib.namespace import RDF, RDFS
+# # Can't use this approach any longer, this function will raise an ImportError
+# # because the sparql module has been moved to the RDFExtras package.
+
+# def describe(terms,bindings,graph):
+#     """ 
+#     Default DESCRIBE returns all incomming and outgoing statements about the given terms 
+#     """
+#     from rdflib.sparql.sparqlOperators import getValue
+#     g=Graph()
+#     terms=[getValue(i)(bindings) for i in terms]
+#     for s,p,o in graph.triples_choices((terms,None,None)):
+#         g.add((s,p,o))
+#     for s,p,o in graph.triples_choices((None,None,terms)):
+#         g.add((s,p,o))
+#     return g
+
+from rdflib.namespace import RDF, RDFS, SKOS
 
 from rdflib import plugin, exceptions, query
 #, sparql
@@ -169,8 +173,8 @@ from rdflib import plugin, exceptions, query
 from rdflib.term import Node
 from rdflib.term import URIRef
 from rdflib.term import BNode
-from rdflib.term import Literal
-from rdflib.namespace import Namespace
+from rdflib.term import Literal # required for doctests
+from rdflib.namespace import Namespace # required for doctests
 from rdflib.store import Store
 from rdflib.serializer import Serializer
 from rdflib.parser import Parser
