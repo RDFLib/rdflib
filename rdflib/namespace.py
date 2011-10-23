@@ -139,6 +139,7 @@ OWL = Namespace('http://www.w3.org/2002/07/owl#')
 
 XSD = Namespace(_XSD_PFX)
 
+SKOS = Namespace('http://www.w3.org/2004/02/skos/core#')
 
 class NamespaceManager(object):
     def __init__(self, graph):

@@ -547,6 +547,62 @@ class Graph(Node):
             return default
         return self.value(subject, RDFS.label, default=default, any=True)
 
+    def preferredLabel(self, subject, lang=None, default=[],
+                       labelProperties=(SKOS.prefLabel, RDFS.label)):
+        """ Find the preferred label for subject.
+        
+        By default prefers skos:prefLabels over rdfs:labels. In case at least 
+        one prefLabel is found returns those, else returns labels. In case a
+        language string (e.g., 'en', 'de' or even '' for no lang-tagged
+        literals) is given, only such labels will be considered.
+        
+        Return a list of (labelProp, label) pairs, where labelProp is either
+        skos:prefLabel or rdfs:label.
+        
+        >>> g = ConjunctiveGraph()
+        >>> u = URIRef('http://example.com/foo')
+        >>> g.add([u, RDFS.label, Literal('foo')])
+        >>> g.add([u, RDFS.label, Literal('bar')])
+        >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
+        [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
+          rdflib.term.Literal(u'bar')),
+         (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
+          rdflib.term.Literal(u'foo'))]
+        >>> g.add([u, SKOS.prefLabel, Literal('bla')])
+        >>> g.preferredLabel(u) #doctest: +NORMALIZE_WHITESPACE
+        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'bla'))]
+        >>> g.add([u, SKOS.prefLabel, Literal('blubb', lang='en')])
+        >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
+        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'blubb', lang='en')),
+         (rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'bla'))]
+        >>> g.preferredLabel(u, lang='') #doctest: +NORMALIZE_WHITESPACE
+        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'bla'))]
+        >>> g.preferredLabel(u, lang='en') #doctest: +NORMALIZE_WHITESPACE
+        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'blubb', lang='en'))]
+        """
+        
+        # setup the language filtering
+        if lang != None:
+            if lang == '': # we only want not language-tagged literals
+                langfilter = lambda l: l.language == None
+            else:
+                langfilter = lambda l: l.language == lang
+        else: # we don't care about language tags
+            langfilter = lambda l: True
+        
+        for labelProp in labelProperties:
+            labels = filter(langfilter, self.objects(subject, labelProp))
+            if len(labels) == 0:
+                continue
+            else:
+                return [(labelProp, l) for l in labels]
+        return default
+
     def comment(self, subject, default=''):
         """Query for the RDFS.comment of the subject
 
