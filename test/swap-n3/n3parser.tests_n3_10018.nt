@@ -1,0 +1,9 @@
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3#b>     <http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3#c> <http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3#d> .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3#e>     <http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3#f> _:L9C5 .
+    
+    _:L9C5     <http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3#g> <http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3#h> .
+    
+    _:L9C5     <http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3#i> <http://www.w3.org/2000/10/swap/test/syntax/trailing-semicolon.n3#j> .
+    

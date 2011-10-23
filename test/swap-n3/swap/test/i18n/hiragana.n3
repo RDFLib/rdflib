@@ -1,0 +1,22 @@
+# 
+# TEST  of unicode invariou splaces.
+#  Note:  D<C3><BC>rst is the utf-8 encodeing
+#
+#   Base was: file:/devel/WWW/2000/10/swap/test/i18n/umlaut.rdf
+     @prefix s: <http://www.w3.org/2000/01/rdf-schema#> .
+     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+     @prefix : <#>.
+
+      [ s:label "Martin J D\u00fcrst" ; :script "ひらがな" ].
+
+ []  s:label "A test with a non-ascii qname"; :related :ひらがな.
+ []  s:label "A test with a non-ascii fragid"; :related <#Dürst>.
+    
+
+ [] s:label "A test with a percent-encoded unicode char in an IRI";
+	:related  <#D%C3%BCrst>.
+
+
+<#D%C3%BCrst>  a  "URI percent ^encoded as C3, BC".
+<#Dürst>       a  "URI straight in UTF8".
+#ENDS
