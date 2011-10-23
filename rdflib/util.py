@@ -1,19 +1,59 @@
 """
 Some utility functions.
 
-TODO...
+Miscellaneous utilities
+
+* list2set
+* first
+* uniq
+* more_than
+
+Term characterisation and generation
+
+* to_term
+* from_n3
+
+Date/time utilities
+
+* date_time
+* parse_date_time
+
+Statement and component type checkers
+
+* check_context
+* check_subject
+* check_predicate
+* check_object
+* check_statement
+* check_pattern
 
 """
 
+from calendar import timegm
 from string import rsplit
+from time import altzone
+#from time import daylight
+from time import gmtime
+from time import localtime
+from time import mktime
+from time import time
+from time import timezone
 
-from rdflib.term import URIRef
+from rdflib.exceptions import ContextTypeError
+from rdflib.exceptions import ObjectTypeError
+from rdflib.exceptions import PredicateTypeError
+from rdflib.exceptions import SubjectTypeError
+from rdflib.graph import Graph
+from rdflib.graph import QuotedGraph
 from rdflib.term import BNode
 from rdflib.term import Literal
-from rdflib.graph import Graph, QuotedGraph
+from rdflib.term import URIRef
 
-from rdflib.exceptions import SubjectTypeError, PredicateTypeError, ObjectTypeError, ContextTypeError
-
+__all__ = [
+    'list2set', 'first', 'uniq', 'more_than', 'to_term', 'from_n3',
+    'date_time', 'parse_date_time', 'check_context', 'check_subject', 
+    'check_predicate', 'check_object', 'check_statement', 'check_pattern'
+    ]
 
 def list2set(seq):
     seen = set()
@@ -43,24 +83,118 @@ def more_than(sequence, number):
             return 1
     return 0
 
-def term(str, default=None):
-    """See also from_n3"""
-    if not str:
+def to_term(s, default=None):
+    """
+    Creates and returns an Identifier of type corresponding 
+    to the pattern of the given positional argument string ``s``:
+
+    '' returns the ``default`` keyword argument value or ``None``
+
+    '<s>' returns ``URIRef(s)`` (i.e. without angle brackets)
+
+    '"s"' returns ``Literal(s)`` (i.e. without doublequotes)
+
+    '_s' returns ``BNode(s)`` (i.e. without leading underscore)
+
+    """
+    if not s:
         return default
-    elif str.startswith("<") and str.endswith(">"):
-        return URIRef(str[1:-1])
-    elif str.startswith('"') and str.endswith('"'):
-        return Literal(str[1:-1])
-    elif str.startswith("_"):
-        return BNode(str)
+    elif s.startswith("<") and s.endswith(">"):
+        return URIRef(s[1:-1])
+    elif s.startswith('"') and s.endswith('"'):
+        return Literal(s[1:-1])
+    elif s.startswith("_"):
+        return BNode(s)
     else:
-        msg = "Unknown Term Syntax: '%s'" % str
+        msg = "Unrecognised term syntax: '%s'" % s
         raise Exception(msg)
 
+def from_n3(s, default=None, backend=None):
+    """
+    Creates the Identifier corresponding to the given n3 string. 
+    """
+    if not s:
+        return default
+    if s.startswith('<'):
+        return URIRef(s[1:-1])
+    elif s.startswith('"'):
+        # TODO: would a regex be faster?
+        value, rest = rsplit(s, '"', 1)
+        value = value[1:] # strip leading quote
+        if rest.startswith("@"):
+            if "^^" in rest:
+                language, rest = rsplit(rest, '^^', 1)
+                language = language[1:] # strip leading at sign
+            else:
+                language = rest[1:] # strip leading at sign
+                rest = ''
+        else:
+            language = None
+        if rest.startswith("^^"):
+            datatype = rest[3:-1]
+        else:
+            datatype = None
+        value = value.replace('\\"', '"').replace('\\\\', '\\').decode("unicode-escape")
+        return Literal(value, language, datatype)
+    elif s.startswith('{'):
+        identifier = from_n3(s[1:-1])
+        return QuotedGraph(backend, identifier)
+    elif s.startswith('['):
+        identifier = from_n3(s[1:-1])
+        return Graph(backend, identifier)
+    else:
+        if s.startswith("_:"):
+            return BNode(s[2:])
+        else:
+            return BNode(s)
 
+def check_context(c):
+    if not (isinstance(c, URIRef) or \
+            isinstance(c, BNode)):
+        raise ContextTypeError("%s:%s" % (c, type(c)))
 
-from time import mktime, time, gmtime, localtime, timezone, altzone, daylight
-from calendar import timegm
+def check_subject(s):
+    """ Test that s is a valid subject identifier."""
+    if not (isinstance(s, URIRef) or isinstance(s, BNode)):
+        raise SubjectTypeError(s)
+
+def check_predicate(p):
+    """ Test that p is a valid predicate identifier."""
+    if not isinstance(p, URIRef):
+        raise PredicateTypeError(p)
+
+def check_object(o):
+    """ Test that o is a valid object identifier."""
+    if not (isinstance(o, URIRef) or \
+            isinstance(o, Literal) or \
+            isinstance(o, BNode)):
+        raise ObjectTypeError(o)
+
+def check_statement(triple):
+    (s, p, o) = triple
+    if not (isinstance(s, URIRef) or isinstance(s, BNode)):
+        raise SubjectTypeError(s)
+
+    if not isinstance(p, URIRef):
+        raise PredicateTypeError(p)
+
+    if not (isinstance(o, URIRef) or \
+            isinstance(o, Literal) or \
+            isinstance(o, BNode)):
+        raise ObjectTypeError(o)
+
+def check_pattern(triple):
+    (s, p, o) = triple
+    if s and not (isinstance(s, URIRef) or isinstance(s, BNode)):
+        raise SubjectTypeError(s)
+
+    if p and not isinstance(p, URIRef):
+        raise PredicateTypeError(p)
+
+    if o and not (isinstance(o, URIRef) or \
+                  isinstance(o, Literal) or \
+                  isinstance(o, BNode)):
+        raise ObjectTypeError(o)
 
 def date_time(t=None, local_time_zone=False):
     """http://www.w3.org/TR/NOTE-datetime ex: 1997-07-16T19:20:30Z
@@ -142,100 +276,9 @@ def parse_date_time(val):
     t = t + tz_offset
     return t
 
-def from_n3(s, default=None, backend=None):
-    """ Creates the Identifier corresponding to the given n3 string. WARNING: untested, may contain bugs. TODO: add test cases."""
-    if not s:
-        return default
-    if s.startswith('<'):
-        return URIRef(s[1:-1])
-    elif s.startswith('"'):
-        # TODO: would a regex be faster?
-        value, rest = rsplit(s, '"', 1)
-        value = value[1:] # strip leading quote
-        if rest.startswith("@"):
-            if "^^" in rest:
-                language, rest = rsplit(rest, '^^', 1)
-                language = language[1:] # strip leading at sign
-            else:
-                language = rest[1:] # strip leading at sign
-                rest = ''
-        else:
-            language = None
-        if rest.startswith("^^"):
-            datatype = rest[3:-1]
-        else:
-            datatype = None
-        value = value.replace('\\"', '"').replace('\\\\', '\\').decode("unicode-escape")
-        return Literal(value, language, datatype)
-    elif s.startswith('{'):
-        identifier = from_n3(s[1:-1])
-        return QuotedGraph(backend, identifier)
-    elif s.startswith('['):
-        identifier = from_n3(s[1:-1])
-        return Graph(backend, identifier)
-    else:
-        if s.startswith("_:"):
-            return BNode(s[2:])
-        else:
-            return BNode(s)
-
-def check_context(c):
-    if not (isinstance(c, URIRef) or \
-            isinstance(c, BNode)):
-        raise ContextTypeError("%s:%s" % (c, type(c)))
-
-def check_subject(s):
-    """ Test that s is a valid subject identifier."""
-    if not (isinstance(s, URIRef) or isinstance(s, BNode)):
-        raise SubjectTypeError(s)
-
-def check_predicate(p):
-    """ Test that p is a valid predicate identifier."""
-    if not isinstance(p, URIRef):
-        raise PredicateTypeError(p)
-
-def check_object(o):
-    """ Test that o is a valid object identifier."""
-    if not (isinstance(o, URIRef) or \
-            isinstance(o, Literal) or \
-            isinstance(o, BNode)):
-        raise ObjectTypeError(o)
-
-def check_statement((s, p, o)):
-    if not (isinstance(s, URIRef) or isinstance(s, BNode)):
-        raise SubjectTypeError(s)
-
-    if not isinstance(p, URIRef):
-        raise PredicateTypeError(p)
-
-    if not (isinstance(o, URIRef) or \
-            isinstance(o, Literal) or \
-            isinstance(o, BNode)):
-        raise ObjectTypeError(o)
-
-def check_pattern((s, p, o)):
-    if s and not (isinstance(s, URIRef) or isinstance(s, BNode)):
-        raise SubjectTypeError(s)
-
-    if p and not isinstance(p, URIRef):
-        raise PredicateTypeError(p)
-
-    if o and not (isinstance(o, URIRef) or \
-                  isinstance(o, Literal) or \
-                  isinstance(o, BNode)):
-        raise ObjectTypeError(o)
-
-def graph_to_dot(graph, dot):
-    """ Turns graph into dot (graphviz graph drawing format) using pydot. """
-    import pydot
-    nodes = {}
-    for s, o in graph.subject_objects():
-        for i in s,o:
-            if i not in nodes.keys():
-                nodes[i] = i
-    for s, p, o in graph.triples((None,None,None)):
-        dot.add_edge(pydot.Edge(nodes[s], nodes[o], label=p))
-
+def test():
+    import doctest
+    doctest.testmod()
 
 if __name__ == "__main__":
     # try to make the tests work outside of the time zone they were written in
@@ -248,5 +291,4 @@ if __name__ == "__main__":
         #pass
         # tzset missing! see
         # http://mail.python.org/pipermail/python-dev/2003-April/034480.html
-    import doctest
-    doctest.testmod()
+    test()  # pragma: no cover
