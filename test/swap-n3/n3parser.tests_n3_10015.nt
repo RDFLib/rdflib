@@ -1,0 +1,103 @@
+    
+    _:g39     <http://www.w3.org/2002/07/owl#oneOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+    
+    _:g40     <http://www.w3.org/2002/07/owl#oneOf> _:li2 .
+    
+    _:li2     <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "file:/home/syosi/CVS-local/WWW/2000/10/swap/test/syntax/qvars2.n3#b" .
+    
+    _:li2     <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:li1 .
+    
+    _:li1     <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "file:/home/syosi/CVS-local/WWW/2000/10/swap/test/syntax/qvars2.n3#c" .
+    
+    _:li1     <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+    
+    _:g41     <http://www.w3.org/2002/07/owl#oneOf> _:li3 .
+    
+    _:li3     <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "file:/home/syosi/CVS-local/WWW/2000/10/swap/test/syntax/qvars2.n3#_g_L16C3" .
+    
+    _:li3     <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+    
+    _:g42     <http://www.w3.org/2002/07/owl#oneOf> _:li5 .
+    
+    _:li5     <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:g15 .
+    
+    _:li5     <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:li4 .
+    
+    _:li4     <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:g19 .
+    
+    _:li4     <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+    
+    _:g43     <http://www.w3.org/2002/07/owl#oneOf> _:li6 .
+    
+    _:li6     <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:g27 .
+    
+    _:li6     <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+    
+    _:g44     <http://www.w3.org/2002/07/owl#oneOf> _:li7 .
+    
+    _:li7     <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:g11 .
+    
+    _:li7     <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+    
+    _:g8     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/10/swap/log#Truth> .
+    
+    _:g8     <http://www.w3.org/2004/06/rei#existentials> _:g39 .
+    
+    _:g8     <http://www.w3.org/2004/06/rei#statements> _:g44 .
+    
+    _:g8     <http://www.w3.org/2004/06/rei#universals> _:g40 .
+    
+    _:g11     <http://www.w3.org/2004/06/rei#object> _:g24 .
+    
+    _:g11     <http://www.w3.org/2004/06/rei#predicate> _:g23 .
+    
+    _:g11     <http://www.w3.org/2004/06/rei#subject> _:g12 .
+    
+    _:g12     <http://www.w3.org/2004/06/rei#existentials> _:g41 .
+    
+    _:g12     <http://www.w3.org/2004/06/rei#statements> _:g42 .
+    
+    _:g12     <http://www.w3.org/2004/06/rei#universals> _:g39 .
+    
+    _:g15     <http://www.w3.org/2004/06/rei#object> _:g18 .
+    
+    _:g15     <http://www.w3.org/2004/06/rei#predicate> _:g17 .
+    
+    _:g15     <http://www.w3.org/2004/06/rei#subject> _:g16 .
+    
+    _:g16     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/06/rei#BlankNode> .
+    
+    _:g17     <http://www.w3.org/2004/06/rei#uri> "file:/home/syosi/CVS-local/WWW/2000/10/swap/test/syntax/qvars2.n3#parent" .
+    
+    _:g18     <http://www.w3.org/2004/06/rei#uri> "file:/home/syosi/CVS-local/WWW/2000/10/swap/test/syntax/qvars2.n3#b" .
+    
+    _:g19     <http://www.w3.org/2004/06/rei#object> _:g21 .
+    
+    _:g19     <http://www.w3.org/2004/06/rei#predicate> _:g20 .
+    
+    _:g19     <http://www.w3.org/2004/06/rei#subject> _:g16 .
+    
+    _:g20     <http://www.w3.org/2004/06/rei#uri> "file:/home/syosi/CVS-local/WWW/2000/10/swap/test/syntax/qvars2.n3#sister" .
+    
+    _:g21     <http://www.w3.org/2004/06/rei#uri> "file:/home/syosi/CVS-local/WWW/2000/10/swap/test/syntax/qvars2.n3#c" .
+    
+    _:g23     <http://www.w3.org/2004/06/rei#uri> "http://www.w3.org/2000/10/swap/log#implies" .
+    
+    _:g24     <http://www.w3.org/2004/06/rei#existentials> _:g39 .
+    
+    _:g24     <http://www.w3.org/2004/06/rei#statements> _:g43 .
+    
+    _:g24     <http://www.w3.org/2004/06/rei#universals> _:g39 .
+    
+    _:g27     <http://www.w3.org/2004/06/rei#object> _:g30 .
+    
+    _:g27     <http://www.w3.org/2004/06/rei#predicate> _:g29 .
+    
+    _:g27     <http://www.w3.org/2004/06/rei#subject> _:g28 .
+    
+    _:g28     <http://www.w3.org/2004/06/rei#uri> "file:/home/syosi/CVS-local/WWW/2000/10/swap/test/syntax/qvars2.n3#b" .
+    
+    _:g29     <http://www.w3.org/2004/06/rei#uri> "file:/home/syosi/CVS-local/WWW/2000/10/swap/test/syntax/qvars2.n3#aunt" .
+    
+    _:g30     <http://www.w3.org/2004/06/rei#uri> "file:/home/syosi/CVS-local/WWW/2000/10/swap/test/syntax/qvars2.n3#c" .
+    

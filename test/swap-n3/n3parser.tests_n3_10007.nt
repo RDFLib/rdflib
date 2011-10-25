@@ -1,0 +1,79 @@
+    
+    _:g35     <http://www.w3.org/2002/07/owl#oneOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+    
+    _:g36     <http://www.w3.org/2002/07/owl#oneOf> _:li2 .
+    
+    _:li2     <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:g11 .
+    
+    _:li2     <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:li1 .
+    
+    _:li1     <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:g15 .
+    
+    _:li1     <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+    
+    _:g37     <http://www.w3.org/2002/07/owl#oneOf> _:li3 .
+    
+    _:li3     <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:g23 .
+    
+    _:li3     <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+    
+    <http://www.w3.org/2000/10/swap/test/contexts.n3#assumption>     <http://www.w3.org/2002/07/owl#sameAs> _:g8 .
+    
+    <http://www.w3.org/2000/10/swap/test/contexts.n3#conclusion>     <http://www.w3.org/2002/07/owl#sameAs> _:g20 .
+    
+    <http://www.w3.org/2000/10/swap/test/contexts.n3#trivialTruth>     <http://www.w3.org/2002/07/owl#sameAs> _:g28 .
+    
+    _:g8     <http://www.w3.org/2004/06/rei#existentials> _:g35 .
+    
+    _:g8     <http://www.w3.org/2004/06/rei#statements> _:g36 .
+    
+    _:g8     <http://www.w3.org/2004/06/rei#universals> _:g35 .
+    
+    _:g11     <http://www.w3.org/2004/06/rei#object> _:g14 .
+    
+    _:g11     <http://www.w3.org/2004/06/rei#predicate> _:g13 .
+    
+    _:g11     <http://www.w3.org/2004/06/rei#subject> _:g12 .
+    
+    _:g12     <http://www.w3.org/2004/06/rei#uri> "http://www.w3.org/2000/10/swap/test/contexts.n3#fred" .
+    
+    _:g13     <http://www.w3.org/2004/06/rei#uri> "http://www.example.org/utilities#knows" .
+    
+    _:g14     <http://www.w3.org/2004/06/rei#uri> "http://www.w3.org/2000/10/swap/test/contexts.n3#john" .
+    
+    _:g15     <http://www.w3.org/2004/06/rei#object> _:g18 .
+    
+    _:g15     <http://www.w3.org/2004/06/rei#predicate> _:g17 .
+    
+    _:g15     <http://www.w3.org/2004/06/rei#subject> _:g16 .
+    
+    _:g16     <http://www.w3.org/2004/06/rei#uri> "http://www.w3.org/2000/10/swap/test/contexts.n3#john" .
+    
+    _:g17     <http://www.w3.org/2004/06/rei#uri> "http://www.example.org/utilities#knows" .
+    
+    _:g18     <http://www.w3.org/2004/06/rei#uri> "http://www.w3.org/2000/10/swap/test/contexts.n3#mary" .
+    
+    _:g20     <http://www.w3.org/2004/06/rei#existentials> _:g35 .
+    
+    _:g20     <http://www.w3.org/2004/06/rei#statements> _:g37 .
+    
+    _:g20     <http://www.w3.org/2004/06/rei#universals> _:g35 .
+    
+    _:g23     <http://www.w3.org/2004/06/rei#object> _:g26 .
+    
+    _:g23     <http://www.w3.org/2004/06/rei#predicate> _:g25 .
+    
+    _:g23     <http://www.w3.org/2004/06/rei#subject> _:g24 .
+    
+    _:g24     <http://www.w3.org/2004/06/rei#uri> "http://www.w3.org/2000/10/swap/test/contexts.n3#fred" .
+    
+    _:g25     <http://www.w3.org/2004/06/rei#uri> "http://www.example.org/utilities#knows" .
+    
+    _:g26     <http://www.w3.org/2004/06/rei#uri> "http://www.w3.org/2000/10/swap/test/contexts.n3#mary" .
+    
+    _:g28     <http://www.w3.org/2004/06/rei#existentials> _:g35 .
+    
+    _:g28     <http://www.w3.org/2004/06/rei#statements> _:g35 .
+    
+    _:g28     <http://www.w3.org/2004/06/rei#universals> _:g35 .
+    

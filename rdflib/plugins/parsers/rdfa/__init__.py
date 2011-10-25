@@ -20,9 +20,7 @@ import sys
 import urllib
 import xml.dom.minidom
 
-from rdflib.graph import Graph
-from rdflib.namespace import Namespace
-from rdflib.term import BNode, URIRef
+from rdflib.term import URIRef
 from rdflib.parser import Parser
 from rdflib.plugins.parsers.rdfa.state import ExecutionContext
 from rdflib.plugins.parsers.rdfa.parse import parse_one_node
@@ -66,7 +64,7 @@ class RDFaParser(Parser):
         if html5:
             dom = _process_html5_source(stream, options, encoding)
         else:
-            dom = _try_process_source(stream, options)
+            dom = _try_process_source(stream, options, encoding)
         _process_DOM(dom, baseURI, sink, options)
 
 
@@ -107,7 +105,7 @@ def _process_DOM(dom, base, graph, options=None):
         for t in options.comment_graph.graph:
             graph.add(t)
 
-def _try_process_source(stream, options):
+def _try_process_source(stream, options, encoding):
     """
     Tries to parse input as xhtml, xml (e.g. svg) or html(5), modifying options
     while figuring out input..
@@ -142,7 +140,7 @@ def _try_process_source(stream, options):
         if isinstance(stream, urllib.addinfourl):
             stream = urllib.urlopen(stream.url)
             
-        return _process_html5_source(stream, options)
+        return _process_html5_source(stream, options, encoding)
 
 
 def _process_html5_source(stream, options, encoding):
@@ -151,7 +149,7 @@ def _process_html5_source(stream, options, encoding):
         from html5lib import HTMLParser, treebuilders
     except ImportError:
         # no alternative to the XHTML error, because HTML5 parser not available...
-        msg2 = 'XHTML Parsing error in input file: %s. Though parsing is lax, HTML5 parser not available. Try installing html5lib <http://code.google.com/p/html5lib>' % value
+        msg2 = 'XHTML Parsing error in input file: %s. Though parsing is lax, HTML5 parser not available. Try installing html5lib <http://code.google.com/p/html5lib>' 
         raise RDFaError(msg2)
 
     parser = HTMLParser(tree=treebuilders.getTreeBuilder("dom"))

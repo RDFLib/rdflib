@@ -35,16 +35,6 @@ try:
 except ImportError:
     from md5 import md5
 
-# from sys import version_info
-# if version_info[0:2] > (2, 2):
-#     from unicodedata import normalize
-# else:
-#     normalize = None
-#
-#from rdflib.syntax.xml_names import is_ncname
-#from rdflib.exceptions import Error
-
-
 class Node(object):
     """
     A Node in the Graph.
@@ -349,6 +339,87 @@ class Literal(Identifier):
         else:
             return py + val
 
+    def __neg__(self):
+        """
+        >>> (- Literal(1))
+        -1L
+        >>> (- Literal(10.5))
+        -10.5
+        >>> from rdflib.namespace import XSD
+        >>> (- Literal("1", datatype=XSD[u'integer']))
+        -1L
+        >>> (- Literal("1"))
+        Traceback (most recent call last):
+          File "<stdin>", line 1, in <module>
+        TypeError: Not a number; rdflib.term.Literal(u'1')
+        >>> 
+        """
+
+        py = self.toPython()
+        try:
+            return py.__neg__()
+        except Exception, e:
+            raise TypeError("Not a number; %s" % repr(self))
+
+    def __pos__(self):
+        """
+        >>> (+ Literal(1))
+        1L
+        >>> (+ Literal(-1))
+        -1L
+        >>> from rdflib.namespace import XSD
+        >>> (+ Literal("-1", datatype=XSD[u'integer']))
+        -1L
+        >>> (+ Literal("1"))
+        Traceback (most recent call last):
+          File "<stdin>", line 1, in <module>
+        TypeError: Not a number; rdflib.term.Literal(u'1')
+        >>> 
+        """
+        py = self.toPython()
+        try:
+            return py.__pos__()
+        except Exception, e:
+            raise TypeError("Not a number; %s" % repr(self))
+
+    def __abs__(self):
+        """
+        >>> abs(Literal(-1))
+        1L
+        >>> from rdflib.namespace import XSD
+        >>> abs( Literal("-1", datatype=XSD[u'integer']))
+        1L
+        >>> abs(Literal("1"))
+        Traceback (most recent call last):
+          File "<stdin>", line 1, in <module>
+        TypeError: Not a number; rdflib.term.Literal(u'1')
+        >>> 
+        """
+        py = self.toPython()
+        try:
+            return py.__abs__()
+        except Exception, e:
+            raise TypeError("Not a number; %s" % repr(self))
+
+    def __invert__(self):
+        """
+        >>> ~(Literal(-1))
+        0L
+        >>> from rdflib.namespace import XSD
+        >>> ~( Literal("-1", datatype=XSD[u'integer']))
+        0L
+        >>> ~(Literal("1"))
+        Traceback (most recent call last):
+          File "<stdin>", line 1, in <module>
+        TypeError: Not a number; rdflib.term.Literal(u'1')
+        >>> 
+        """
+        py = self.toPython()
+        try:
+            return py.__invert__()
+        except Exception:
+            raise TypeError("Not a number; %s" % repr(self))
+
     def __lt__(self, other):
         """
         >>> from rdflib.namespace import XSD
@@ -615,7 +686,7 @@ class Literal(Identifier):
             encoded = self.replace('\\', '\\\\')
             if '"""' in self:
                 # is this ok?
-                encoded = encoded.replace('"""','\\"""')
+                encoded = encoded.replace('"""','\\"\\"\\"')
             if encoded.endswith('"'):
                 encoded = encoded[:-1] + "\\\""
             return '"""%s"""' % encoded

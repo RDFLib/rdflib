@@ -3,4 +3,8 @@ build
 dist
 *.pyc
 *~
-
+docs/_build
+.tox
+.coverage
+coverage
+nosetests.xml

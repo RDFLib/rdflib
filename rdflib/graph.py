@@ -148,20 +148,24 @@ try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
-def describe(terms,bindings,graph):
-    """ 
-    Default DESCRIBE returns all incomming and outgoing statements about the given terms 
-    """
-    from rdflib.sparql.sparqlOperators import getValue
-    g=Graph()
-    terms=[getValue(i)(bindings) for i in terms]
-    for s,p,o in graph.triples_choices((terms,None,None)):
-        g.add((s,p,o))
-    for s,p,o in graph.triples_choices((None,None,terms)):
-        g.add((s,p,o))
-    return g
 
-from rdflib.namespace import RDF, RDFS
+# # Can't use this approach any longer, this function will raise an ImportError
+# # because the sparql module has been moved to the RDFExtras package.
+
+# def describe(terms,bindings,graph):
+#     """ 
+#     Default DESCRIBE returns all incomming and outgoing statements about the given terms 
+#     """
+#     from rdflib.sparql.sparqlOperators import getValue
+#     g=Graph()
+#     terms=[getValue(i)(bindings) for i in terms]
+#     for s,p,o in graph.triples_choices((terms,None,None)):
+#         g.add((s,p,o))
+#     for s,p,o in graph.triples_choices((None,None,terms)):
+#         g.add((s,p,o))
+#     return g
+
+from rdflib.namespace import RDF, RDFS, SKOS
 
 from rdflib import plugin, exceptions, query
 #, sparql
@@ -169,13 +173,14 @@ from rdflib import plugin, exceptions, query
 from rdflib.term import Node
 from rdflib.term import URIRef
 from rdflib.term import BNode
-from rdflib.term import Literal
-from rdflib.namespace import Namespace
+from rdflib.term import Literal # required for doctests
+from rdflib.namespace import Namespace # required for doctests
 from rdflib.store import Store
 from rdflib.serializer import Serializer
 from rdflib.parser import Parser
 from rdflib.parser import create_input_source
 from rdflib.namespace import NamespaceManager
+from rdflib.resource import Resource
 
 import tempfile, shutil, os
 from urlparse import urlparse
@@ -405,7 +410,7 @@ class Graph(Node):
         return self
 
     def __add__(self,other) :
-        """Set theoretical union"""
+        """Set-theoretic union"""
         retval = Graph()
         for x in self:
             retval.add(x)
@@ -414,7 +419,7 @@ class Graph(Node):
         return retval
 
     def __mul__(self,other) :
-        """Set theoretical intersection"""
+        """Set-theoretic intersection"""
         retval = Graph()
         for x in other:
             if x in self: 
@@ -422,7 +427,7 @@ class Graph(Node):
         return retval
 
     def __sub__(self,other) :
-        """Set theoretical difference"""
+        """Set-theoretic difference"""
         retval = Graph()
         for x in self:
             if not x in other : 
@@ -430,7 +435,7 @@ class Graph(Node):
         return retval
 
     def __xor__(self,other):
-        """Set theoretical XOR"""
+        """Set-theoretic XOR"""
         return (self - other) + (other - self)
     
     __or__ = __add__
@@ -541,6 +546,62 @@ class Graph(Node):
         if subject is None:
             return default
         return self.value(subject, RDFS.label, default=default, any=True)
+
+    def preferredLabel(self, subject, lang=None, default=[],
+                       labelProperties=(SKOS.prefLabel, RDFS.label)):
+        """ Find the preferred label for subject.
+        
+        By default prefers skos:prefLabels over rdfs:labels. In case at least 
+        one prefLabel is found returns those, else returns labels. In case a
+        language string (e.g., 'en', 'de' or even '' for no lang-tagged
+        literals) is given, only such labels will be considered.
+        
+        Return a list of (labelProp, label) pairs, where labelProp is either
+        skos:prefLabel or rdfs:label.
+        
+        >>> g = ConjunctiveGraph()
+        >>> u = URIRef('http://example.com/foo')
+        >>> g.add([u, RDFS.label, Literal('foo')])
+        >>> g.add([u, RDFS.label, Literal('bar')])
+        >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
+        [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
+          rdflib.term.Literal(u'bar')),
+         (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
+          rdflib.term.Literal(u'foo'))]
+        >>> g.add([u, SKOS.prefLabel, Literal('bla')])
+        >>> g.preferredLabel(u) #doctest: +NORMALIZE_WHITESPACE
+        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'bla'))]
+        >>> g.add([u, SKOS.prefLabel, Literal('blubb', lang='en')])
+        >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
+        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'blubb', lang='en')),
+         (rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'bla'))]
+        >>> g.preferredLabel(u, lang='') #doctest: +NORMALIZE_WHITESPACE
+        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'bla'))]
+        >>> g.preferredLabel(u, lang='en') #doctest: +NORMALIZE_WHITESPACE
+        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'blubb', lang='en'))]
+        """
+        
+        # setup the language filtering
+        if lang != None:
+            if lang == '': # we only want not language-tagged literals
+                langfilter = lambda l: l.language == None
+            else:
+                langfilter = lambda l: l.language == lang
+        else: # we don't care about language tags
+            langfilter = lambda l: True
+        
+        for labelProp in labelProperties:
+            labels = filter(langfilter, self.objects(subject, labelProp))
+            if len(labels) == 0:
+                continue
+            else:
+                return [(labelProp, l) for l in labels]
+        return default
 
     def comment(self, subject, default=''):
         """Query for the RDFS.comment of the subject
@@ -867,6 +928,26 @@ class Graph(Node):
         obj = set(self.objects())
         allNodes = obj.union(set(self.subjects()))
         return allNodes
+
+    def resource(self, identifier):
+        """Create a new ``Resource`` instance.
+
+        Parameters:
+
+        - ``identifier``: a URIRef or BNode instance.
+
+        Example::
+
+            >>> graph = Graph()
+            >>> uri = URIRef("http://example.org/resource")
+            >>> resource = graph.resource(uri)
+            >>> assert isinstance(resource, Resource)
+            >>> assert resource.identifier is uri
+            >>> assert resource.graph is graph
+
+        """
+        return Resource(self, identifier)
+
 
 class ConjunctiveGraph(Graph):
     """

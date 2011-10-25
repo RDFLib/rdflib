@@ -4,7 +4,12 @@ import shutil
 import tempfile
 
 from urlparse import urlparse
-from io import BytesIO
+try:
+    from io import BytesIO
+except:
+    from StringIO import StringIO as BytesIO
+
+
 
 
 
@@ -78,7 +83,7 @@ class Result(object):
         return parser.parse(source)
 
 
-    def serialize(self, destination=None, encoding="utf8", format='xml', **args):
+    def serialize(self, destination=None, encoding="utf-8", format='xml', **args):
 
         if self.type in ('CONSTRUCT', 'DESCRIBE'): 
             return self.graph.serialize(destination, encoding=encoding, format=format, **args)
