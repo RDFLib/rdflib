@@ -1,0 +1,2 @@
+_:Subject <http://example.org/#prop> <http://example.org/#ObjtP> .
+<http://example.org/path#Subject> <http://example.org/#prop> <http://example.org/#ObjtQ> .

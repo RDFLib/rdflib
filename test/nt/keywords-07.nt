@@ -1,0 +1,2 @@
+<http://example.org/#subj> <http://example.org/#a> <http://example.org/#objt> .
+<http://example.org/#something> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/#thing> .

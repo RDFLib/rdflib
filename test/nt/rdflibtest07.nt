@@ -1,0 +1,23 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Test file with a variety of legal N-Triples
+#
+# Dave Beckett - http://purl.org/net/dajobe/
+# 
+# $Id: test.nt,v 1.7 2003/10/06 15:52:19 dbeckett2 Exp $
+# 
+#####################################################################
+
+# \u and \U escapes
+# latin small letter e with acute symbol \u00E9 - 3 UTF-8 bytes #xC3 #A9
+<http://example.org/resource16> <http://example.org/property> "\u00E9" .
+# Euro symbol \u20ac  - 3 UTF-8 bytes #xE2 #x82 #xAC
+<http://example.org/resource17> <http://example.org/property> "\u20AC" .

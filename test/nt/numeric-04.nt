@@ -1,0 +1,5 @@
+"-0.0"^^<http://www.w3.org/2001/XMLSchema#double> <http://example.org/#description> "float(0.0), as -0.0" .
+"-1.0"^^<http://www.w3.org/2001/XMLSchema#double> <http://example.org/#description> "float(-1.0)" .
+"-1.0"^^<http://www.w3.org/2001/XMLSchema#double> <http://example.org/#description> "float(-1.0), with three trailing 0s" .
+"-1.0"^^<http://www.w3.org/2001/XMLSchema#double> <http://example.org/#description> "float(-1.0), from 001.000" .
+"-54321.12345"^^<http://www.w3.org/2001/XMLSchema#double> <http://example.org/#description> "float(-54321.12345)" .

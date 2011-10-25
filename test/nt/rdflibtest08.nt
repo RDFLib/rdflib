@@ -1,0 +1,22 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Test file with a variety of legal N-Triples
+#
+# Dave Beckett - http://purl.org/net/dajobe/
+# 
+# $Id: test.nt,v 1.7 2003/10/06 15:52:19 dbeckett2 Exp $
+# 
+#####################################################################
+
+# Plain literals with languages
+<http://example.org/resource30> <http://example.org/property> "chat"@fr .
+<http://example.org/resource31> <http://example.org/property> "chat"@en .
+

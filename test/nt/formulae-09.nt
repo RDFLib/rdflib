@@ -1,0 +1,6 @@
+_:formula2 <http://www.w3.org/2000/10/swap/reify#statement> _:t1102987046statement1 .
+_:t1102987046statement1 <http://www.w3.org/2000/10/swap/reify#subject> <http://example.org/#p> .
+_:t1102987046statement1 <http://www.w3.org/2000/10/swap/reify#predicate> <http://example.org/#q> .
+_:t1102987046statement1 <http://www.w3.org/2000/10/swap/reify#object> <http://example.org/#r> .
+_:formula2 <http://example.org/#s> _:path3 .
+_:path3 <http://example.org/#t> <http://example.org/#u> .

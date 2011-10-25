@@ -1,0 +1,3 @@
+<http://example.org/#Jim> <http://example.org/#mother> _:path1 .
+_:path2 <http://example.org/#mother> _:path1 .
+_:path2 <http://example.org/#is> "Someone's whose mother is Jim's mother" .

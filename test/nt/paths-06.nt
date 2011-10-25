@@ -1,0 +1,5 @@
+<http://example.org/#q> <http://example.org/#r> _:path3 .
+_:node2 _:path3 <http://example.org/#s> .
+<http://example.org/#p> _:node2 _:path4 .
+_:path4 <http://example.org/#t> _:path5 .
+_:path5 <http://example.org/#u> <http://example.org/#v> .

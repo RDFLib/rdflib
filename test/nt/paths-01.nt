@@ -1,0 +1,2 @@
+<http://example.org/path> <http://www.w3.org/2000/10/swap/log#semantics> _:path1 .
+_:path1 <http://example.org/#semanticsOf> "http://example.org/path" .

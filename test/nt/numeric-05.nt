@@ -1,0 +1,2 @@
+"1000.0"^^<http://www.w3.org/2001/XMLSchema#double> <http://example.org/#description> "1.0e3" .
+"-1000.0"^^<http://www.w3.org/2001/XMLSchema#double> <http://example.org/#description> "-1.0e3" .

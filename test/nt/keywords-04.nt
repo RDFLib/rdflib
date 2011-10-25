@@ -1,0 +1,5 @@
+_:formula1 <http://www.w3.org/2000/10/swap/reify#statement> _:t1102821920statement1 .
+_:t1102821920statement1 <http://www.w3.org/2000/10/swap/reify#subject> _:formula1 .
+_:t1102821920statement1 <http://www.w3.org/2000/10/swap/reify#predicate> <http://example.org/#description> .
+_:t1102821920statement1 <http://www.w3.org/2000/10/swap/reify#object> "a formula" .
+_:formula1 <http://example.org/#p> <http://example.org/#q> .

@@ -1,0 +1,4 @@
+_:node1 <http://example.org/#q> <http://example.org/#r> .
+_:list2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:node1 .
+_:list2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+<http://example.org/#Subject> <http://example.org/#predicate> _:list2 .

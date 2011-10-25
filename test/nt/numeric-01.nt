@@ -1,0 +1,5 @@
+"0"^^<http://www.w3.org/2001/XMLSchema#integer> <http://example.org/#description> "int(0)" .
+"1"^^<http://www.w3.org/2001/XMLSchema#integer> <http://example.org/#description> "int(1)" .
+"10"^^<http://www.w3.org/2001/XMLSchema#integer> <http://example.org/#description> "int(10)" .
+"1"^^<http://www.w3.org/2001/XMLSchema#integer> <http://example.org/#description> "int(1), with two leading 0s" .
+"54321"^^<http://www.w3.org/2001/XMLSchema#integer> <http://example.org/#description> "int(54321)" .
