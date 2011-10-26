@@ -18,7 +18,5 @@ nor does pythonwin on TimBL's laptop).
 string with newlines in it.""" .
     
     :z     :prop """string with " escaped quote marks""" .
-    
-    :zz     :escapes "\\\"\a\b\f\r\t\v" .
-    
-    :zzz    :prop """abc\ndef\"\"\"\"\"""" .
+
+   :zz     :escapes "\\\"\a\b\f\r\t\v" .
