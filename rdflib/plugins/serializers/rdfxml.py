@@ -205,7 +205,9 @@ class PrettyXMLSerializer(Serializer):
             writer.push(element)
             if isinstance(subject, BNode):
                 def subj_as_obj_more_than(ceil):
-                    return more_than(store.triples((None, None, subject)), ceil)
+                    return True 
+                    # more_than(store.triples((None, None, subject)), ceil)
+                
                 #here we only include BNode labels if they are referenced
                 #more than once (this reduces the use of redundant BNode identifiers)
                 if subj_as_obj_more_than(1):
