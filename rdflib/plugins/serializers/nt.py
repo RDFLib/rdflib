@@ -36,10 +36,29 @@ def _xmlcharref_encode(unicode_data, encoding="ascii"):
     # nothing to do about xmlchars, but replace newlines with escapes: 
     unicode_data=unicode_data.replace("\n","\\n")
     if unicode_data.startswith('"""'):
-        unicode_data = unicode_data.replace('"""', '"')
+        # Updated with Bernhard Schandl's patch...
+        # unicode_data = unicode_data.replace('"""', '"')   # original
+
+        last_triplequote_pos = unicode_data.rfind('"""')
+        payload = unicode_data[3:last_triplequote_pos]
+        trail = unicode_data[last_triplequote_pos+3:]
+
+        # fix three-quotes encoding
+        payload = payload.replace('\\"""', '"""')
+
+        # corner case: if string ends with " it is already encoded.
+        # so we need to de-escape it before it will be re-escaped in the next step.
+        if payload.endswith('\\"'):
+            payload = payload.replace('\\"', '"')
+
+        # escape quotes in payload
+        payload = payload.replace('"', '\\"')
+
+        # reconstruct result using single quotes
+        unicode_data = '"%s"%s' % (payload, trail)
 
     # Step through the unicode_data string one character at a time in
-    # order to catch unencodable characters:
+    # order to catch unencodable characters:                          
     for char in unicode_data:
         try:
             chars.append(char.encode(encoding, 'strict'))
