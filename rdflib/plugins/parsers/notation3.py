@@ -1762,14 +1762,28 @@ class SinkParser:
         ustr = u""   # Empty unicode string
         startline = self.lines # Remember where for error messages
         while j<len(str):
-            i = j + len(delim)
-            if str[j:i] == delim: # done.
-                return i, ustr
-
             if str[j] == '"':
-                ustr = ustr + '"'
-                j = j + 1
-                continue
+                if delim == '"': # done when delim is "
+                    i = j + 1
+                    return i, ustr
+                if delim == '"""': # done when delim is """ and ...
+                    if str[j:j+5] == '"""""': # ... we have "" before
+                        i = j + 5
+                        ustr = ustr + '""'
+                        return i, ustr
+                    if str[j:j+4] == '""""': # ... we have " before
+                        i = j + 4
+                        ustr = ustr + '"'
+                        return i, ustr
+                    if str[j:j+3] == '"""': # ... current " is part of delim
+                        i = j + 3
+                        return i, ustr
+                
+                    # we are inside of the string and current char is "
+                    j = j + 1
+                    ustr = ustr + '"'
+                    continue
+            
             m = interesting.search(str, j)  # was str[j:].
             # Note for pos param to work, MUST be compiled  ... re bug?
             assert m , "Quote expected in string at ^ in %s^%s" %(
