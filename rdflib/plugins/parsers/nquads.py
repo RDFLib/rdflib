@@ -1,70 +1,29 @@
 """
-This is a rdflib plugin for parsing NQuad files into (Conjunctive) graphs that can be used and
-queried. The store that backs the graph *must* be able to handle contexts.
+This is a rdflib plugin for parsing NQuad files into Conjunctive 
+graphs that can be used and queried. The store that backs the graph 
+*must* be able to handle contexts.
 
-```python
->>> import rdflib
->>> import rdflib_nquads
->>> g = rdflib.ConjunctiveGraph()
->>> g.parse("https://raw.github.com/benosteen/master/example.nquads", format="nquads")
->>> for ctx in g.contexts():
-... print ctx
-...
-http://bibliographica.org/entry/BB2682260
-http://bibliographica.org/entity/E10003
-http://bibliographica.org/entity/E10009
-http://bibliographica.org/entity/E10007
-http://bibliographica.org/entry/BB2682253
-http://bibliographica.org/entity/E10006
-http://bibliographica.org/entity/E10002
-http://bibliographica.org/entity/E10008
-http://bibliographica.org/entity/E10004
-http://bibliographica.org/entity/E10001
-http://bibliographica.org/entity/E10005
-http://bibliographica.org/entry/BB2682251
-http://bibliographica.org/entity/E10000
-http://bibliographica.org/entry/BB2682246
-http://bibliographica.org/entry/BB2682258
-http://bibliographica.org/entry/BB2682255
-
-# Use the context of the last one in the list
->>> for s,p,o in g.triples((None, None, None), context = ctx):
-... print s,p,o
-...
-jEOnxGKk47 http://www.w3.org/2004/02/skos/core#prefLabel South African fiction (English)
-jEOnxGKk47 http://www.w3.org/2004/02/skos/core#inScheme http://id.loc.gov/authorities#conceptScheme
-jEOnxGKk47 http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2004/02/skos/core#Concept
-http://bibliographica.org/entity/E10007 http://www.w3.org/2004/02/skos/core#prefLabel Penguin
-http://bibliographica.org/entity/E10007 http://xmlns.com/foaf/0.1/name Penguin
-http://bibliographica.org/entity/E10007 http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://xmlns.com/foaf/0.1/Agent
-jEOnxGKk44 http://www.w3.org/2000/01/rdf-schema#label London
-http://bibliographica.org/entity/E10006 http://www.w3.org/2004/02/skos/core#prefLabel Burgess, Yvonne.
-http://bibliographica.org/entity/E10006 http://xmlns.com/foaf/0.1/name Burgess, Yvonne.
-http://bibliographica.org/entity/E10006 http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://xmlns.com/foaf/0.1/Agent
-http://bibliographica.org/entry/BB2682255.ttl http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://xmlns.com/foaf/0.1/Document
-http://bibliographica.org/entry/BB2682255.ttl http://xmlns.com/foaf/0.1/primaryTopic http://bibliographica.org/entry/BB2682255
-http://bibliographica.org/entry/BB2682255.rdf http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://xmlns.com/foaf/0.1/Document
-http://bibliographica.org/entry/BB2682255.rdf http://xmlns.com/foaf/0.1/primaryTopic http://bibliographica.org/entry/BB2682255
-jEOnxGKk46 http://www.w3.org/2000/01/rdf-schema#label 197 p
-http://bibliographica.org/entry/BB2682255.n3 http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://xmlns.com/foaf/0.1/Document
-http://bibliographica.org/entry/BB2682255.n3 http://xmlns.com/foaf/0.1/primaryTopic http://bibliographica.org/entry/BB2682255
-http://bibliographica.org/entry/BB2682255.html http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://xmlns.com/foaf/0.1/Document
-http://bibliographica.org/entry/BB2682255.html http://xmlns.com/foaf/0.1/primaryTopic http://bibliographica.org/entry/BB2682255
-http://bibliographica.org/entry/BB2682255.nt http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://xmlns.com/foaf/0.1/Document
-http://bibliographica.org/entry/BB2682255.nt http://xmlns.com/foaf/0.1/primaryTopic http://bibliographica.org/entry/BB2682255
-jEOnxGKk45 http://www.w3.org/1999/02/22-rdf-syntax-ns#value eng
-jEOnxGKk48 http://www.w3.org/2004/02/skos/core#inScheme http://dewey.info/scheme/e22
-
-...
-
-etc
-
-```
+>>> from rdflib import ConjunctiveGraph, URIRef, Namespace
+>>> g = ConjunctiveGraph()
+>>> with open("test/example.nquads", "r") as examples:
+...    sink = g.parse(examples, format="nquads")
+>>> assert len(g.store) == 449
+>>> # There should be 16 separate contexts
+>>> assert len([x for x in g.store.contexts()]) == 16
+>>> # is the name of entity E10009 "Arco Publications"? (in graph http://bibliographica.org/entity/E10009)
+>>> # Looking for:
+>>> # <http://bibliographica.org/entity/E10009> <http://xmlns.com/foaf/0.1/name> "Arco Publications" <http://bibliographica.org/entity/E10009>
+>>> s = URIRef("http://bibliographica.org/entity/E10009")
+>>> FOAF = Namespace("http://xmlns.com/foaf/0.1/")
+>>> assert(g.value(s, FOAF.name) == "Arco Publications")
 """
 
-
 # Build up from the NTriples parser:
-from rdflib.plugins.parsers.ntriples import NTriplesParser, ParseError, r_wspaces, r_wspace, r_tail
+from rdflib.plugins.parsers.ntriples import NTriplesParser
+from rdflib.plugins.parsers.ntriples import ParseError
+from rdflib.plugins.parsers.ntriples import r_tail
+from rdflib.plugins.parsers.ntriples import r_wspace
+from rdflib.plugins.parsers.ntriples import r_wspaces
 
 class QuadSink(object):
     def __init__(self):
