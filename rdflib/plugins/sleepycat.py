@@ -1,5 +1,6 @@
 from rdflib.store import Store, VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
 from rdflib.term import URIRef
+from rdflib.py3compat import b
 
 try:
     from bsddb import db
@@ -77,7 +78,7 @@ class Sleepycat(Store):
         self.__indicies = [None,] * 3
         self.__indicies_info = [None,] * 3
         for i in xrange(0, 3):
-            index_name = to_key_func(i)(("s", "p", "o"), "c")
+            index_name = to_key_func(i)((b("s"), b("p"), b("o")), b("c")).decode()
             index = db.DB(db_env)
             index.set_flags(dbsetflags)
             index.open(index_name, dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
@@ -210,42 +211,42 @@ class Sleepycat(Store):
         
         cspo, cpos, cosp = self.__indicies
 
-        value = cspo.get("%s^%s^%s^%s^" % (c, s, p, o), txn=txn)
+        value = cspo.get(b("%s^%s^%s^%s^" % (c, s, p, o)), txn=txn)
         if value is None:
-            self.__contexts.put(c, "", txn=txn)
+            self.__contexts.put(b(c), "", txn=txn)
 
-            contexts_value = cspo.get("%s^%s^%s^%s^" % ("", s, p, o), txn=txn) or ""
-            contexts = set(contexts_value.split("^"))
-            contexts.add(c)
-            contexts_value = "^".join(contexts)
+            contexts_value = cspo.get(b("%s^%s^%s^%s^" % ("", s, p, o)), txn=txn) or b("")
+            contexts = set(contexts_value.split(b("^")))
+            contexts.add(b(c))
+            contexts_value = b("^").join(contexts)
             assert contexts_value!=None
 
-            cspo.put("%s^%s^%s^%s^" % (c, s, p, o), "", txn=txn)
-            cpos.put("%s^%s^%s^%s^" % (c, p, o, s), "", txn=txn)
-            cosp.put("%s^%s^%s^%s^" % (c, o, s, p), "", txn=txn)
+            cspo.put(b("%s^%s^%s^%s^" % (c, s, p, o)), "", txn=txn)
+            cpos.put(b("%s^%s^%s^%s^" % (c, p, o, s)), "", txn=txn)
+            cosp.put(b("%s^%s^%s^%s^" % (c, o, s, p)), "", txn=txn)
             if not quoted:
-                cspo.put("%s^%s^%s^%s^" % ("", s, p, o), contexts_value, txn=txn)
-                cpos.put("%s^%s^%s^%s^" % ("", p, o, s), contexts_value, txn=txn)
-                cosp.put("%s^%s^%s^%s^" % ("", o, s, p), contexts_value, txn=txn)
+                cspo.put(b("%s^%s^%s^%s^" % ("", s, p, o)), contexts_value, txn=txn)
+                cpos.put(b("%s^%s^%s^%s^" % ("", p, o, s)), contexts_value, txn=txn)
+                cosp.put(b("%s^%s^%s^%s^" % ("", o, s, p)), contexts_value, txn=txn)
 
             self.__needs_sync = True
 
     def __remove(self, (s, p, o), c, quoted=False, txn=None):
         cspo, cpos, cosp = self.__indicies
-        contexts_value = cspo.get("^".join(("", s, p, o, "")), txn=txn) or ""
-        contexts = set(contexts_value.split("^"))
+        contexts_value = cspo.get(b("^").join([b(""), s, p, o, b("")]), txn=txn) or b("")
+        contexts = set(contexts_value.split(b("^")))
         contexts.discard(c)
-        contexts_value = "^".join(contexts)
+        contexts_value = b("^").join(contexts)
         for i, _to_key, _from_key in self.__indicies_info:
             i.delete(_to_key((s, p, o), c), txn=txn)
         if not quoted:
             if contexts_value:
                 for i, _to_key, _from_key in self.__indicies_info:
-                    i.put(_to_key((s, p, o), ""), contexts_value, txn=txn)
+                    i.put(_to_key((s, p, o), b("")), contexts_value, txn=txn)
             else:
                 for i, _to_key, _from_key in self.__indicies_info:
                     try:
-                        i.delete(_to_key((s, p, o), ""), txn=txn)
+                        i.delete(_to_key((s, p, o), b("")), txn=txn)
                     except db.DBNotFoundError, e: 
                         pass # TODO: is it okay to ignore these?
 
@@ -263,9 +264,9 @@ class Sleepycat(Store):
             p = _to_string(predicate, txn=txn)
             o = _to_string(object, txn=txn)
             c = _to_string(context, txn=txn)
-            value = self.__indicies[0].get("%s^%s^%s^%s^" % (c, s, p, o), txn=txn)
+            value = self.__indicies[0].get(b("%s^%s^%s^%s^" % (c, s, p, o)), txn=txn)
             if value is not None:
-                self.__remove((s, p, o), c, txn=txn)
+                self.__remove((b(s), b(p), b(o)), b(c), txn=txn)
                 self.__needs_sync = True
         else:
             cspo, cpos, cosp = self.__indicies
@@ -284,16 +285,17 @@ class Sleepycat(Store):
                 cursor = index.cursor(txn=txn)
                 try:
                     cursor.set_range(key)
-                    current = cursor.next()
+                    # Hack to stop 2to3 converting this to next(cursor)
+                    current = getattr(cursor, 'next')()
                 except db.DBNotFoundError:
                     current = None
                 cursor.close()
                 if key.startswith(prefix):
                     c, s, p, o = from_key(key)
                     if context is None:
-                        contexts_value = index.get(key, txn=txn) or ""
-                        contexts = set(contexts_value.split("^")) # remove triple from all non quoted contexts
-                        contexts.add("") # and from the conjunctive index
+                        contexts_value = index.get(key, txn=txn) or b("")
+                        contexts = set(contexts_value.split(b("^"))) # remove triple from all non quoted contexts
+                        contexts.add(b("")) # and from the conjunctive index
                         for c in contexts:
                             for i, _to_key, _ in self.__indicies_info:
                                 i.delete(_to_key((s, p, o), c), txn=txn)
@@ -306,7 +308,7 @@ class Sleepycat(Store):
                 if subject is None and predicate is None and object is None:
                     # TODO: also if context becomes empty and not just on remove((None, None, None), c)
                     try:
-                        self.__contexts.delete(_to_string(context, txn=txn), txn=txn)
+                        self.__contexts.delete(b(_to_string(context, txn=txn)), txn=txn)
                     except db.DBNotFoundError, e:
                         pass
 
@@ -334,7 +336,8 @@ class Sleepycat(Store):
             cursor = index.cursor(txn=txn)
             try:
                 cursor.set_range(key)
-                current = cursor.next()
+                # Cheap hack so 2to3 doesn't convert to next(cursor)
+                current = getattr(cursor, 'next')()
             except db.DBNotFoundError:
                 current = None
             cursor.close()
@@ -351,9 +354,9 @@ class Sleepycat(Store):
                 context = None
 
         if context is None:
-            prefix = "^"
+            prefix = b("^")
         else:
-            prefix = "%s^" % self._to_string(context)
+            prefix = b("%s^" % self._to_string(context))
 
         index = self.__indicies[0]
         cursor = index.cursor()
@@ -363,7 +366,8 @@ class Sleepycat(Store):
             key, value = current
             if key.startswith(prefix):
                 count +=1
-                current = cursor.next()
+                # Hack to stop 2to3 converting this to next(cursor)
+                current = getattr(cursor, 'next')()
             else:
                 break
         cursor.close()
@@ -393,7 +397,8 @@ class Sleepycat(Store):
         while current:
             prefix, namespace = current
             results.append((prefix, namespace))
-            current = cursor.next()
+            # Hack to stop 2to3 converting this to next(cursor)
+            current = getattr(cursor, 'next')()
         cursor.close()
         for prefix, namespace in results:
             yield prefix, URIRef(namespace)
@@ -407,9 +412,9 @@ class Sleepycat(Store):
             s = _to_string(s)
             p = _to_string(p)
             o = _to_string(o)
-            contexts = self.__indicies[0].get("%s^%s^%s^%s^" % ("", s, p, o))
+            contexts = self.__indicies[0].get(b("%s^%s^%s^%s^" % ("", s, p, o)))
             if contexts:
-                for c in contexts.split("^"):
+                for c in contexts.split(b("^")):
                     if c:
                         yield _from_string(c)
         else:
@@ -424,7 +429,8 @@ class Sleepycat(Store):
                 cursor = index.cursor()
                 try:
                     cursor.set_range(key)
-                    current = cursor.next()
+                    # Hack to stop 2to3 converting this to next(cursor)
+                    current = getattr(cursor, 'next')()
                 except db.DBNotFoundError:
                     current = None
                 cursor.close()
@@ -445,6 +451,8 @@ class Sleepycat(Store):
                 i = "%s" % self.__i2k.append(k)
 
             self.__k2i.put(k, i, txn=txn)
+        else:
+            i = i.decode()
         return i
 
     def __lookup(self, (subject, predicate, object), context, txn=None):
@@ -462,27 +470,28 @@ class Sleepycat(Store):
             i += 4
             object = _to_string(object, txn=txn)
         index, prefix_func, from_key, results_from_key = self.__lookup_dict[i]
-        prefix = "^".join(prefix_func((subject, predicate, object), context))
+        #print (subject, predicate, object), context, prefix_func, index #DEBUG
+        prefix = b("^".join(prefix_func((subject, predicate, object), context)))
         return index, prefix, from_key, results_from_key
 
 
 def to_key_func(i):
     def to_key(triple, context):
         "Takes a string; returns key"
-        return "^".join((context, triple[i%3], triple[(i+1)%3], triple[(i+2)%3], "")) # "" to tac on the trailing ^
+        return b("^").join((context, triple[i%3], triple[(i+1)%3], triple[(i+2)%3], b(""))) # "" to tac on the trailing ^
     return to_key
 
 def from_key_func(i):
     def from_key(key):
         "Takes a key; returns string"
-        parts = key.split("^")
+        parts = key.split(b("^"))
         return parts[0], parts[(3-i+0)%3+1], parts[(3-i+1)%3+1], parts[(3-i+2)%3+1]
     return from_key
 
 def results_from_key_func(i, from_string):
     def from_key(key, subject, predicate, object, contexts_value):
         "Takes a key and subject, predicate, object; returns tuple for yield"
-        parts = key.split("^")
+        parts = key.split(b("^"))
         if subject is None:
             # TODO: i & 1: # dis assemble and/or measure to see which is faster
             # subject is None or i & 1
@@ -497,7 +506,7 @@ def results_from_key_func(i, from_string):
             o = from_string(parts[(3-i+2)%3+1])
         else:
             o = object
-        return (s, p, o), (from_string(c) for c in contexts_value.split("^") if c)
+        return (s, p, o), (from_string(c) for c in contexts_value.split(b("^")) if c)
     return from_key
 
 def readable_index(i):

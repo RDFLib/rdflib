@@ -184,6 +184,7 @@ from rdflib.parser import Parser
 from rdflib.parser import create_input_source
 from rdflib.namespace import NamespaceManager
 from rdflib.resource import Resource
+from rdflib.py3compat import b
 
 import tempfile, shutil, os
 from urlparse import urlparse
@@ -1123,7 +1124,7 @@ class GraphValue(QuotedGraph):
             s = list(graph.triples((None, None, None)))
             s.sort()
             for t in s:
-                identifier.update("^".join((np.dumps(i) for i in t)))
+                identifier.update(b("^").join((np.dumps(i) for i in t)))
             identifier = URIRef("data:%s" % identifier.hexdigest())
             super(GraphValue, self).__init__(store, identifier)
             for t in graph:
