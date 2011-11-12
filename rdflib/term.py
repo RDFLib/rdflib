@@ -24,7 +24,7 @@ import re
 
 import threading
 from urlparse import urlparse, urljoin, urldefrag
-from string import ascii_letters, rsplit
+from string import ascii_letters
 from random import choice
 from itertools import islice
 from datetime import date, time, datetime, timedelta
@@ -34,6 +34,8 @@ try:
     from hashlib import md5
 except ImportError:
     from md5 import md5
+
+import py3compat
 
 class Node(object):
     """
@@ -82,7 +84,7 @@ class URIRef(Identifier):
 
     def concrete(self):
         if "#" in self:
-            return URIRef("/".join(rsplit(self, "#", 1)))
+            return URIRef("/".join(self.rsplit("#", 1)))
         else:
             return self
 
@@ -90,7 +92,7 @@ class URIRef(Identifier):
         if "#" not in self:
             scheme, netloc, path, params, query, fragment = urlparse(self)
             if path:
-                return URIRef("#".join(rsplit(self, "/", 1)))
+                return URIRef("#".join(self.rsplit("/", 1)))
             else:
                 if not self.endswith("#"):
                     return URIRef("%s#" % self)
@@ -122,9 +124,13 @@ class URIRef(Identifier):
             return unicode(self)==unicode(other)
         else:
             return False
+    
+    def __hash__(self):
+        return hash(URIRef) ^ hash(unicode(self))
 
-    def __str__(self):
-        return self.encode()
+    if not py3compat.PY3:
+        def __str__(self):
+            return self.encode()
 
     def __repr__(self):
         if self.__class__ is URIRef:
@@ -226,9 +232,13 @@ class BNode(Identifier):
             return unicode(self)==unicode(other)
         else:
             return False
+    
+    def __hash__(self):
+        return hash(BNode) ^ hash(unicode(self))
 
-    def __str__(self):
-        return self.encode()
+    if not py3compat.PY3:
+        def __str__(self):
+            return self.encode()
 
     def __repr__(self):
         if self.__class__ is BNode:
@@ -694,8 +704,9 @@ class Literal(Identifier):
             return '"%s"' % self.replace('\n','\\n').replace('\\', '\\\\'
                             ).replace('"', '\\"')
 
-    def __str__(self):
-        return self.encode()
+    if not py3compat.PY3:
+        def __str__(self):
+            return self.encode()
 
     def __repr__(self):
         args = [super(Literal, self).__repr__()]

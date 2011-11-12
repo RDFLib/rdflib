@@ -233,7 +233,7 @@ class Store(object):
                 for (s1, p1, o1), cg in self.triples((subject,None,object_),context):
                         yield (s1, p1, o1), cg
 
-    def triples(self, (subject, predicate, object), context=None):
+    def triples(self, triple_pattern, context=None):
         """
         A generator over all the triples matching the pattern. Pattern can
         include any objects for used for comparing against nodes in the store, for
@@ -242,6 +242,7 @@ class Store(object):
         A conjunctive query can be indicated by either providing a value of None
         for the context or the identifier associated with the Conjunctive Graph (if it's context aware).
         """
+        subject, predicate, object = triple_pattern
 
     # variants of triples will be done if / when optimization is needed
 

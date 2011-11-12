@@ -30,7 +30,6 @@ Statement and component type checkers
 """
 
 from calendar import timegm
-from string import rsplit
 from time import altzone
 #from time import daylight
 from time import gmtime
@@ -119,11 +118,11 @@ def from_n3(s, default=None, backend=None):
         return URIRef(s[1:-1])
     elif s.startswith('"'):
         # TODO: would a regex be faster?
-        value, rest = rsplit(s, '"', 1)
+        value, rest = s.rsplit('"', 1)
         value = value[1:] # strip leading quote
         if rest.startswith("@"):
             if "^^" in rest:
-                language, rest = rsplit(rest, '^^', 1)
+                language, rest = rest.rsplit('^^', 1)
                 language = language[1:] # strip leading at sign
             else:
                 language = rest[1:] # strip leading at sign
