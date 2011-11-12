@@ -8,6 +8,7 @@ from tempfile import mkdtemp
 from rdflib.term import URIRef
 from rdflib.namespace import RDF
 from rdflib.graph import Graph
+from rdflib.py3compat import b
 
 import rdflib.plugin
 
@@ -290,8 +291,8 @@ class GraphTestCase(unittest.TestCase):
         for p in rdflib.plugin.plugins(None, rdflib.plugin.Serializer):
             if p.name is not 'nquads':
                 v = self.graph.serialize(format=p.name)
-                lines = v.split("\n")
-                if "\n" not in v or (lines[-1]!=''):
+                lines = v.split(b("\n"))
+                if b("\n") not in v or (lines[-1]!=b('')):
                     failed.add(p.name)
         self.assertEqual(len(failed), 0, "No final newline for formats: '%s'" % failed)
 

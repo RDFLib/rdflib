@@ -130,7 +130,8 @@ class _TripleCanonicalizer(object):
                 yield term
 
     def _canonicalize(self, term, done=False):
-        return self.hashfunc(tuple(sorted(self._vhashtriples(term, done))))
+        return self.hashfunc(tuple(sorted(self._vhashtriples(term, done),
+                                                    key=_hetero_tuple_key)))
 
     def _vhashtriples(self, term, done):
         for triple in self.graph:
@@ -145,6 +146,10 @@ class _TripleCanonicalizer(object):
                 yield i
             else:
                 yield self._canonicalize(term, done=True)
+                
+def _hetero_tuple_key(x):
+    "Sort like Python 2 - by name of type, then by value. Expects tuples."
+    return tuple((type(a).__name__, a) for a in x)
 
 
 def to_isomorphic(graph):

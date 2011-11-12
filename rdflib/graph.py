@@ -400,6 +400,19 @@ class Graph(Node):
             #Then perhaps a graph with length 0 should be considered
             #equivalent to None (if compared to it)?
             return 1
+    
+    def __eq__(self, other):
+        return isinstance(other, Graph) and self.identifier == other.identifier
+    
+    def __lt__(self, other):
+        return (other is None) or (isinstance(other, Graph) and \
+                                            self.identifier < other.identifier)
+    def __le__(self, other): return self < other or self == other
+    
+    def __gt__(self, other):
+        return (isinstance(other, Graph) and self.identifier > other.identifier) \
+                    or (other is not None)
+    def __ge__(self, other): return self > other or self == other
 
     def __iadd__(self, other):
         """Add all triples in Graph other to Graph"""

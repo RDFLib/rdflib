@@ -11,6 +11,11 @@ except ImportError:
         def dec(newf): return newf
         return dec
 
+def cast_bytes(s, enc='utf-8'):
+    if isinstance(s, unicode):
+        return s.encode(enc)
+    return s
+
 PY3 = (sys.version_info[0] >= 3)
 
 def _modify_str_or_docstring(str_change_func):
@@ -37,6 +42,8 @@ if PY3:
     def b(s):
         return s.encode('ascii')
     
+    bytestype = bytes
+    
     # Abstract u'abc' syntax:
     @_modify_str_or_docstring
     def u_format(s):
@@ -50,6 +57,8 @@ else:
     # --------
     def b(s):
         return s
+    
+    bytestype = str
     
     # Abstract u'abc' syntax:
     @_modify_str_or_docstring

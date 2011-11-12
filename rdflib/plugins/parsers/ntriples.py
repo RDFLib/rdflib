@@ -10,7 +10,7 @@ from rdflib.term import URIRef as URI
 from rdflib.term import BNode as bNode
 from rdflib.term import Literal
 
-from rdflib.py3compat import b
+from rdflib.py3compat import b, cast_bytes
 
 uriref = b(r'<([^:]+:[^\s"<>]+)>')
 literal = b(r'"([^"\\]*(?:\\.[^"\\]*)*)"')
@@ -118,9 +118,12 @@ class NTriplesParser(object):
         """Parse s as an N-Triples string."""
         if not isinstance(s, basestring):
             raise ParseError("Item to parse must be a string instance.")
-        from cStringIO import StringIO
-        f = StringIO()
-        f.write(s)
+        try:
+            from io import BytesIO
+        except ImportError:
+            from cStringIO import StringIO as BytesIO
+        f = BytesIO()
+        f.write(cast_bytes(s))
         f.seek(0)
         self.parse(f)
 

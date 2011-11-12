@@ -36,6 +36,7 @@ except ImportError:
     from md5 import md5
 
 import py3compat
+b = py3compat.b
 
 class Node(object):
     """
@@ -149,8 +150,8 @@ class URIRef(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
-        d = md5(str(self))
-        d.update("U")
+        d = md5(self.encode())
+        d.update(b("U"))
         return d.hexdigest()
 
 
@@ -254,8 +255,8 @@ class BNode(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
-        d = md5(str(self))
-        d.update("B")
+        d = md5(self.encode())
+        d.update(b("B"))
         return d.hexdigest()
 
 
@@ -573,6 +574,7 @@ class Literal(Identifier):
         else:
             return self._cmp_value == other
 
+    @py3compat.u_format
     def n3(self):
         r'''
         Returns a representation in the N3 format.
@@ -580,75 +582,76 @@ class Literal(Identifier):
         Examples::
 
             >>> Literal("foo").n3()
-            u'"foo"'
+            %(u)s'"foo"'
 
         Strings with newlines or triple-quotes::
 
             >>> Literal("foo\nbar").n3()
-            u'"""foo\nbar"""'
+            %(u)s'"""foo\nbar"""'
 
             >>> Literal("''\'").n3()
-            u'"\'\'\'"'
+            %(u)s'"\'\'\'"'
 
             >>> Literal('"""').n3()
-            u'"\\"\\"\\""'
+            %(u)s'"\\"\\"\\""'
 
         Language::
 
             >>> Literal("hello", lang="en").n3()
-            u'"hello"@en'
+            %(u)s'"hello"@en'
 
         Datatypes::
 
             >>> Literal(1).n3()
-            u'"1"^^<http://www.w3.org/2001/XMLSchema#integer>'
+            %(u)s'"1"^^<http://www.w3.org/2001/XMLSchema#integer>'
 
             >>> Literal(1, lang="en").n3()
-            u'"1"^^<http://www.w3.org/2001/XMLSchema#integer>'
+            %(u)s'"1"^^<http://www.w3.org/2001/XMLSchema#integer>'
 
             >>> Literal(1.0).n3()
-            u'"1.0"^^<http://www.w3.org/2001/XMLSchema#float>'
+            %(u)s'"1.0"^^<http://www.w3.org/2001/XMLSchema#float>'
 
         Datatype and language isn't allowed (datatype takes precedence)::
 
             >>> Literal(True).n3()
-            u'"true"^^<http://www.w3.org/2001/XMLSchema#boolean>'
+            %(u)s'"true"^^<http://www.w3.org/2001/XMLSchema#boolean>'
 
         Custom datatype::
 
             >>> footype = URIRef("http://example.org/ns#foo")
             >>> Literal("1", datatype=footype).n3()
-            u'"1"^^<http://example.org/ns#foo>'
+            %(u)s'"1"^^<http://example.org/ns#foo>'
 
         '''
         return self._literal_n3()
 
+    @py3compat.u_format
     def _literal_n3(self, use_plain=False, qname_callback=None):
         '''
         Using plain literal (shorthand) output::
 
             >>> Literal(1)._literal_n3(use_plain=True)
-            u'1'
+            %(u)s'1'
 
             >>> Literal(1.0)._literal_n3(use_plain=True)
-            u'1.0'
+            %(u)s'1.0'
 
             >>> from rdflib.namespace import XSD
             >>> Literal("foo", datatype=XSD.string)._literal_n3(
             ...         use_plain=True)
-            u'"foo"^^<http://www.w3.org/2001/XMLSchema#string>'
+            %(u)s'"foo"^^<http://www.w3.org/2001/XMLSchema#string>'
 
             >>> Literal(True)._literal_n3(use_plain=True)
-            u'true'
+            %(u)s'true'
 
             >>> Literal(False)._literal_n3(use_plain=True)
-            u'false'
+            %(u)s'false'
 
         Using callback for datatype QNames::
 
             >>> Literal(1)._literal_n3(
-            ...         qname_callback=lambda uri: u"xsd:integer")
-            u'"1"^^xsd:integer'
+            ...         qname_callback=lambda uri: %(u)s"xsd:integer")
+            %(u)s'"1"^^xsd:integer'
 
         '''
         if use_plain and self.datatype in _PLAIN_LITERAL_TYPES:
@@ -754,8 +757,8 @@ class Literal(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
-        d = md5(str(self))
-        d.update("L")
+        d = md5(self.encode())
+        d.update(b("L"))
         return d.hexdigest()
 
 
@@ -916,8 +919,8 @@ class Variable(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
-        d = md5(str(self))
-        d.update("V")
+        d = md5(self.encode())
+        d.update(b("V"))
         return d.hexdigest()
 
 

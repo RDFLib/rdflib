@@ -1,5 +1,9 @@
 from codecs import getreader
-from StringIO import StringIO
+try:
+    from io import BytesIO, StringIO
+except ImportError:
+    from StringIO import StringIO
+    BytesIO = StringIO
 
 from rdflib.term import URIRef
 from rdflib.graph import Graph
@@ -22,7 +26,7 @@ rdf = u"""@prefix skos:
 
 rdf_utf8 = rdf.encode('utf-8')
 
-rdf_reader = getreader('utf-8')(StringIO(rdf.encode('utf-8')))
+rdf_reader = getreader('utf-8')(BytesIO(rdf.encode('utf-8')))
 
 
 
@@ -57,9 +61,9 @@ def test_d():
     assert v==u"C\u00f4te d'Ivoire"
 
 def test_e():
-    """Test reading N3 from a StringIO over the string object"""
+    """Test reading N3 from a BytesIO over the string object"""
     g = Graph()
-    g.parse(source=StringIO(rdf_utf8), format='n3')
+    g.parse(source=BytesIO(rdf_utf8), format='n3')
     v = g.value(subject=URIRef("http://www.test.org/#CI"), predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"))
     assert v==u"C\u00f4te d'Ivoire"
 
@@ -81,7 +85,7 @@ rdfxml=u"""<?xml version="1.0" encoding="UTF-8"?>
 # this is a str
 rdfxml_utf8 = rdfxml.encode('utf-8')
 
-rdfxml_reader = getreader('utf-8')(StringIO(rdfxml.encode('utf-8')))
+rdfxml_reader = getreader('utf-8')(BytesIO(rdfxml.encode('utf-8')))
 
         
 def test_xml_a():
@@ -107,15 +111,15 @@ def test_xml_b():
 #     assert v==u"C\u00f4te d'Ivoire"
 
 # def test_xml_d():
-#     """Test reading XML from a StringIO created from unicode object"""
+#     """Test reading XML from a BytesIO created from unicode object"""
 #     g = Graph()
-#     g.parse(source=StringIO(rdfxml), format='xml')
+#     g.parse(source=BytesIO(rdfxml), format='xml')
 #     v = g.value(subject=URIRef("http://www.test.org/#CI"), predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"))
 #     assert v==u"C\u00f4te d'Ivoire"
 
 def test_xml_e():
-    """Test reading XML from a StringIO created from utf8 encoded string"""
+    """Test reading XML from a BytesIO created from utf8 encoded string"""
     g = Graph()
-    g.parse(source=StringIO(rdfxml_utf8), format='xml')
+    g.parse(source=BytesIO(rdfxml_utf8), format='xml')
     v = g.value(subject=URIRef("http://www.test.org/#CI"), predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"))
     assert v==u"C\u00f4te d'Ivoire"
