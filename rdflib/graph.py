@@ -145,9 +145,12 @@ except ImportError:
     from md5 import md5    
 
 try:
-    from cStringIO import StringIO
+    from io import BytesIO
 except ImportError:
-    from StringIO import StringIO
+    try:
+        from cStringIO import StringIO as BytesIO
+    except ImportError:
+        from StringIO import StringIO as BytesIO
 
 # # Can't use this approach any longer, this function will raise an ImportError
 # # because the sparql module has been moved to the RDFExtras package.
@@ -742,7 +745,7 @@ class Graph(Node):
         """
         serializer = plugin.get(format, Serializer)(self)
         if destination is None:
-            stream = StringIO()
+            stream = BytesIO()
             serializer.serialize(stream, base=base, encoding=encoding, **args)
             return stream.getvalue()
         if hasattr(destination, "write"):

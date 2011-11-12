@@ -902,22 +902,22 @@ class SinkParser:
         parser, it should be straightforward to recover."""
 
         if not isinstance(octets, unicode):        
-           str = octets.decode('utf-8')
+           s = octets.decode('utf-8')
            # NB already decoded, so \ufeff
-           if len(str) > 0 and str[0] == codecs.BOM_UTF8.decode('utf-8'):
-               str = str[1:]
+           if len(s) > 0 and s[0] == codecs.BOM_UTF8.decode('utf-8'):
+               s = s[1:]
         else: 
-           str=octets
+           s=octets
 
         i = 0
         while i >= 0:
-            j = self.skipSpace(str, i)
+            j = self.skipSpace(s, i)
             if j<0: return
 
-            i = self.directiveOrStatement(str,j)
+            i = self.directiveOrStatement(s,j)
             if i<0:
-                print "# next char: ", `str[j]` 
-                raise BadSyntax(self._thisDoc, self.lines, str, j,
+                print "# next char: ", `s[j]` 
+                raise BadSyntax(self._thisDoc, self.lines, s, j,
                                     "expected directive or statement")
 
     def directiveOrStatement(self, str,h):

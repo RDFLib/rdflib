@@ -350,7 +350,7 @@ class TestHTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
         self.send_header("Content-type",rct)
         self.end_headers()
-        self.wfile.write(content)
+        self.wfile.write(content.encode('utf-8'))
 
     def log_message(self, *args): 
         pass

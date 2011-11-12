@@ -249,7 +249,8 @@ class RDFXMLHandler(handler.ContentHandler):
 
     def document_element_start(self, name, qname, attrs):
         if name[0] and URIRef("".join(name)) == RDF.RDF:
-            next = self.next
+            # Cheap hack so 2to3 doesn't turn it into __next__
+            next = getattr(self, 'next')
             next.start = self.node_element_start
             next.end = self.node_element_end
         else:
@@ -263,7 +264,9 @@ class RDFXMLHandler(handler.ContentHandler):
         name, atts = self.convert(name, qname, attrs)
         current = self.current
         absolutize = self.absolutize
-        next = self.next
+        
+        # Cheap hack so 2to3 doesn't turn it into __next__
+        next = getattr(self, 'next')
         next.start = self.property_element_start
         next.end = self.property_element_end
 
@@ -339,7 +342,9 @@ class RDFXMLHandler(handler.ContentHandler):
         name, atts = self.convert(name, qname, attrs)
         current = self.current
         absolutize = self.absolutize
-        next = self.next
+        
+        # Cheap hack so 2to3 doesn't turn it into __next__
+        next = getattr(self, 'next')
         object = None
         current.data = None
         current.list = None
