@@ -38,6 +38,16 @@ from time import mktime
 from time import time
 from time import timezone
 
+try:
+    cmp
+except NameError:
+    def sign(n):
+        if n < 0: return -1
+        if n > 0: return 1
+        return 0
+else:
+    def sign(n): return cmp(n, 0)
+
 from rdflib.exceptions import ContextTypeError
 from rdflib.exceptions import ObjectTypeError
 from rdflib.exceptions import PredicateTypeError
@@ -260,7 +270,7 @@ def parse_date_time(val):
     else:
         signed_hrs = int(tz_str[:3])
         mins = int(tz_str[4:6])
-        secs = (cmp(signed_hrs, 0) * mins + signed_hrs * 60) * 60
+        secs = (sign(signed_hrs) * mins + signed_hrs * 60) * 60
         tz_offset = -secs
 
     year, month, day = ymd.split("-")

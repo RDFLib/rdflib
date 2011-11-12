@@ -16,7 +16,10 @@ import warnings
 from urllib import pathname2url, url2pathname
 from urllib2 import urlopen, Request, HTTPError
 from urlparse import urljoin
-from StringIO import StringIO
+try:
+    from io import BytesIO
+except:
+    from StringIO import StringIO as BytesIO
 from xml.sax import xmlreader
 from xml.sax.saxutils import prepare_input_source
 import types
@@ -56,7 +59,7 @@ class StringInputSource(InputSource):
 
     def __init__(self, value, system_id=None):
         super(StringInputSource, self).__init__(system_id)
-        stream = StringIO(value)
+        stream = BytesIO(value)
         self.setByteStream(stream)
         # TODO:
         #   encoding = value.encoding

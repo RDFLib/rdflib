@@ -38,7 +38,6 @@ import time
 import StringIO
 import codecs
 
-from string import find, rfind
 from decimal import Decimal
 
 from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX, _unique_id
@@ -81,7 +80,7 @@ def splitFrag(uriref):
 
     """
 
-    i = rfind(uriref, "#")
+    i = uriref.rfind("#")
     if i>= 0: return uriref[:i], uriref[i+1:]
     else: return uriref, None
 
@@ -100,7 +99,7 @@ def splitFragP(uriref, punct=0):
 
     """
 
-    i = rfind(uriref, "#")
+    i = uriref.rfind("#")
     if i>= 0: return uriref[:i], uriref[i:]
     else: return uriref, ''
 
@@ -139,16 +138,16 @@ def join(here, there):
     u'http://example.org/#Andr\\xe9'
     """
 
-    assert(find(here, "#") < 0), "Base may not contain hash: '%s'"% here # caller must splitFrag (why?)
+    assert(here.find("#") < 0), "Base may not contain hash: '%s'"% here # caller must splitFrag (why?)
 
-    slashl = find(there, '/')
-    colonl = find(there, ':')
+    slashl = there.find('/')
+    colonl = there.find(':')
 
     # join(base, 'foo:/') -- absolute
     if colonl >= 0 and (slashl < 0 or colonl < slashl):
         return there
 
-    bcolonl = find(here, ':')
+    bcolonl = here.find(':')
     assert(bcolonl >= 0), "Base uri '%s' is not absolute" % here # else it's not absolute
 
     path, frag = splitFragP(there)
@@ -159,7 +158,7 @@ def join(here, there):
         raise ValueError ("Base <%s> has no slash after colon - with relative '%s'." %(here, there))
 
     if here[bcolonl+1:bcolonl+3] == '//':
-        bpath = find(here, '/', bcolonl+3)
+        bpath = here.find('/', bcolonl+3)
     else:
         bpath = bcolonl+1
 
@@ -176,7 +175,7 @@ def join(here, there):
     if there[:1] == '/':
         return here[:bpath] + there
 
-    slashr = rfind(here, '/')
+    slashr = here.rfind('/')
 
     while 1:
         if path[:2] == './':
@@ -185,7 +184,7 @@ def join(here, there):
             path = ''
         elif path[:3] == '../' or path == '..':
             path = path[3:]
-            i = rfind(here, '/', bpath, slashr)
+            i = here.rfind('/', bpath, slashr)
             if i >= 0:
                 here = here[:i+1]
                 slashr = i
@@ -261,10 +260,10 @@ def refTo(base, uri):
     while i>0 and uri[i-1] != '/' : i=i-1  # scan for slash
 
     if i < 3: return uri  # No way.
-    if string.find(base, "//", i-2)>0 \
-       or string.find(uri, "//", i-2)>0: return uri # An unshared "//"
-    if string.find(base, ":", i)>0: return uri  # An unshared ":"
-    n = string.count(base, "/", i)
+    if base.find("//", i-2)>0 \
+       or uri.find("//", i-2)>0: return uri # An unshared "//"
+    if base.find(":", i)>0: return uri  # An unshared ":"
+    n = base.count("/", i)
     if n == 0 and i<len(uri) and uri[i] == '#':
         return "./" + uri[i:]
     elif n == 0 and i == len(uri):
@@ -568,10 +567,10 @@ class _implementation:
         Process a text or CDATA node.  Render various special characters
         as their C14N entity representations.'''
         if not _in_subset(self.subset, node): return
-        s = string.replace(node.data, "&", "&amp;")
-        s = string.replace(s, "<", "&lt;")
-        s = string.replace(s, ">", "&gt;")
-        s = string.replace(s, "\015", "&#xD;")
+        s = node.data.replace("&", "&amp;")
+        s = s.replace("<", "&lt;")
+        s = s.replace(">", "&gt;")
+        s = s.replace("\015", "&#xD;")
         if s: self.write(s)
     handlers[Node.TEXT_NODE] = _do_text
     handlers[Node.CDATA_SECTION_NODE] = _do_text
@@ -622,12 +621,12 @@ class _implementation:
         W(' ')
         W(n)
         W('="')
-        s = string.replace(value, "&", "&amp;")
-        s = string.replace(s, "<", "&lt;")
-        s = string.replace(s, '"', '&quot;')
-        s = string.replace(s, '\011', '&#x9')
-        s = string.replace(s, '\012', '&#xA')
-        s = string.replace(s, '\015', '&#xD')
+        s = value.replace(value, "&", "&amp;")
+        s = s.replace("<", "&lt;")
+        s = s.replace('"', '&quot;')
+        s = s.replace('\011', '&#x9')
+        s = s.replace('\012', '&#xA')
+        s = s.replace('\015', '&#xD')
         W(s)
         W('"')
 
@@ -1501,7 +1500,7 @@ class SinkParser:
                 res.append(self._variables[symb])
             else:
                 res.append(symb) # @@@ "#" CONVENTION
-            if not string.find(ns, "#"):progress(
+            if not ns.find("#"):progress(
                         "Warning: no # on namespace %s," % ns)
             return j
 
@@ -1825,7 +1824,7 @@ class SinkParser:
                 if not ch:
                     raise BadSyntax(self._thisDoc, startline, str, i,
                                     "unterminated string literal (2)")
-                k = string.find('abfrtvn\\"', ch)
+                k = 'abfrtvn\\"'.find(ch)
                 if k >= 0:
                     uch = '\a\b\f\r\t\v\n\\"'[k]
                     ustr = ustr + uch
@@ -1855,7 +1854,7 @@ class SinkParser:
             if ch == "":
                 raise BadSyntax(self._thisDoc, startline, str, i,
                                 "unterminated string literal(3)")
-            k = string.find("0123456789abcdef", ch)
+            k = "0123456789abcdef".find(ch)
             if k < 0:
                 raise BadSyntax(self._thisDoc, startline, str, i,
                                 "bad string literal hex escape")
@@ -1876,7 +1875,7 @@ class SinkParser:
             if ch == "":
                 raise BadSyntax(self._thisDoc, startline, str, i,
                                 "unterminated string literal(3)")
-            k = string.find("0123456789abcdef", ch)
+            k = "0123456789abcdef".find(ch)
             if k < 0:
                 raise BadSyntax(self._thisDoc, startline, str, i,
                                 "bad string literal hex escape")
@@ -2139,8 +2138,8 @@ def stringToN3(str, singleLine=0, flags=""):
     if (len(str) > 20 and
         str[-1] <> '"' and
         not singleLine and
-        (string.find(str, "\n") >=0 
-         or string.find(str, '"') >=0)):
+        (str.find("\n") >=0 
+         or str.find('"') >=0)):
         delim= '"""'
         forbidden = forbidden1   # (allow tabs too now)
     else:
@@ -2160,7 +2159,7 @@ def stringToN3(str, singleLine=0, flags=""):
         if ch == '"' and delim == '"""' and str[j:j+3] != '"""':  #"
             res = res + ch
         else:
-            k = string.find('\a\b\f\r\t\v\n\\"', ch)
+            k = '\a\b\f\r\t\v\n\\"'.find(ch)
             if k >= 0: res = res + "\\" + 'abfrtvn\\"'[k]
             else:
                 if 'e' in flags:
@@ -2220,8 +2219,8 @@ def hexify(ustr):
     
 def dummy():
         res = ""
-        if len(str) > 20 and (string.find(str, "\n") >=0 
-                                or string.find(str, '"') >=0):
+        if len(str) > 20 and (str.find("\n") >=0 
+                                or str.find('"') >=0):
                 delim= '"""'
                 forbidden = "\\\"\a\b\f\r\v"    # (allow tabs too now)
         else:
@@ -2229,7 +2228,7 @@ def dummy():
                 forbidden = "\\\"\a\b\f\r\v\t\n"
         for i in range(len(str)):
                 ch = str[i]
-                j = string.find(forbidden, ch)
+                j = forbidden.find(ch)
                 if ch == '"' and delim == '"""' \
                                 and i+1 < len(str) and str[i+1] != '"':
                     j=-1   # Single quotes don't need escaping in long format
