@@ -75,13 +75,10 @@ def first(seq):
 
 def uniq(sequence, strip=0):
     """removes duplicate strings from the sequence."""
-    set = {}
     if strip:
-        map(lambda val, default: set.__setitem__(val.strip(), default),
-            sequence, [])
+        return set(s.strip() for s in sequence)
     else:
-        map(set.__setitem__, sequence, [])
-    return set.keys()
+        return set(sequence)
 
 def more_than(sequence, number):
     "Returns 1 if sequence has more items than number and 0 if not."

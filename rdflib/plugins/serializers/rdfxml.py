@@ -5,7 +5,7 @@ from rdflib.plugins.serializers.xmlwriter import XMLWriter
 from rdflib.namespace import Namespace, RDF, RDFS, split_uri
 
 from rdflib.term import URIRef, Literal, BNode
-from rdflib.util import first, uniq, more_than
+from rdflib.util import first, more_than
 from rdflib.collection import Collection
 from rdflib.serializer import Serializer
 
@@ -25,7 +25,7 @@ class XMLSerializer(Serializer):
         store = self.store
         nm = store.namespace_manager
         bindings = {}
-        for predicate in uniq(store.predicates()):
+        for predicate in set(store.predicates()):
             prefix, namespace, name = nm.compute_qname(predicate)
             bindings[prefix] = URIRef(namespace)
         RDFNS = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
@@ -150,7 +150,7 @@ class PrettyXMLSerializer(Serializer):
         self.writer = writer = XMLWriter(stream, nm, encoding)
 
         namespaces = {}
-        possible = uniq(store.predicates()) + uniq(store.objects(None, RDF.type))
+        possible = set(store.predicates()).union(store.objects(None, RDF.type))
         for predicate in possible:
             prefix, namespace, local = nm.compute_qname(predicate)
             namespaces[prefix] = namespace
