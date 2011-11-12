@@ -42,9 +42,9 @@ class NTTestCase(unittest.TestCase):
 
     def test_validating_unquote_raises(self):
         ntriples.validate = True
-        uniquot = b("""<http://www.w3.org/People/Berners-Lee/card#cm> <http://xmlns.com/foaf/0.1/name> "R\u00E4ksm\u00F6rg\u00E5s" <http://www.w3.org/People/Berners-Lee/card> .""")
+        uniquot = b("""<http://www.w3.org/People/Berners-Lee/card#cm> <http://xmlns.com/foaf/0.1/name> "R\\u00E4ksm\\u00F6rg\\u00E5s" <http://www.w3.org/People/Berners-Lee/card> .""")
         self.assertRaises(ntriples.ParseError, ntriples.unquote, uniquot)
-        uniquot = b("""<http://www.w3.org/People/Berners-Lee/card#cm> <http://xmlns.com/foaf/0.1/name> "R\\u00E4ksm\u00F6rg\u00E5s" <http://www.w3.org/People/Berners-Lee/card> .""")
+        uniquot = b("""<http://www.w3.org/People/Berners-Lee/card#cm> <http://xmlns.com/foaf/0.1/name> "R\\\\u00E4ksm\\u00F6rg\\u00E5s" <http://www.w3.org/People/Berners-Lee/card> .""")
         self.assertRaises(ntriples.ParseError, ntriples.unquote, uniquot)
 
     def test_nonvalidating_uriquote(self):

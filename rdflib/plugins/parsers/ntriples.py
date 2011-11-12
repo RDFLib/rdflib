@@ -71,7 +71,7 @@ def unquote(s):
                 if codepoint > 0x10FFFF:
                     raise ParseError("Disallowed codepoint: %08X" % codepoint)
                 result.append(unichr(codepoint))
-            elif s.startswith('\\'):
+            elif s.startswith(b('\\')):
                 raise ParseError("Illegal escape at: %s..." % s[:10])
             else: raise ParseError("Illegal literal character: %r" % s[0])
         return u''.join(result)
