@@ -11,6 +11,8 @@ from rdflib.serializer import Serializer
 
 from rdflib.exceptions import Error
 
+from rdflib.py3compat import b
+
 from xml.sax.saxutils import quoteattr, escape
 
 
@@ -179,7 +181,7 @@ class PrettyXMLSerializer(Serializer):
             if bnode not in self.__serialized:
                 self.subject(subject, 1)
         writer.pop(RDF.RDF)
-        stream.write("\n")
+        stream.write(b("\n"))
 
         # Set to None so that the memory can get garbage collected.
         self.__serialized = None

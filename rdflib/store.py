@@ -63,7 +63,10 @@ class TripleRemovedEvent(Event):
     """
 
 from cPickle import Pickler, Unpickler, UnpicklingError
-from cStringIO import StringIO
+try:
+    from io import BytesIO
+except ImportError:
+    from cStringIO import StringIO as BytesIO
 
 
 class NodePickler(object):
@@ -83,7 +86,7 @@ class NodePickler(object):
         self._ids[object] = id
 
     def loads(self, s):
-        up = Unpickler(StringIO(s))
+        up = Unpickler(BytesIO(s))
         up.persistent_load = self._get_object
         try:
             return up.load()
@@ -91,7 +94,7 @@ class NodePickler(object):
             raise UnpicklingError, "Could not find Node class for %s" % e
 
     def dumps(self, obj, protocol=None, bin=None):
-        src = StringIO()
+        src = BytesIO()
         p = Pickler(src)
         p.persistent_id = self._get_ids
         p.dump(obj)
