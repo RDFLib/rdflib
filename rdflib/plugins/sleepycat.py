@@ -1,6 +1,7 @@
 from rdflib.store import Store, VALID_STORE, CORRUPTED_STORE, NO_STORE, UNKNOWN
 from rdflib.term import URIRef
 from rdflib.py3compat import b
+def bb(u): return u.encode('utf-8')
 
 try:
     from bsddb import db
@@ -211,23 +212,23 @@ class Sleepycat(Store):
         
         cspo, cpos, cosp = self.__indicies
 
-        value = cspo.get(b("%s^%s^%s^%s^" % (c, s, p, o)), txn=txn)
+        value = cspo.get(bb("%s^%s^%s^%s^" % (c, s, p, o)), txn=txn)
         if value is None:
-            self.__contexts.put(b(c), "", txn=txn)
+            self.__contexts.put(bb(c), "", txn=txn)
 
-            contexts_value = cspo.get(b("%s^%s^%s^%s^" % ("", s, p, o)), txn=txn) or b("")
+            contexts_value = cspo.get(bb("%s^%s^%s^%s^" % ("", s, p, o)), txn=txn) or b("")
             contexts = set(contexts_value.split(b("^")))
-            contexts.add(b(c))
+            contexts.add(bb(c))
             contexts_value = b("^").join(contexts)
             assert contexts_value!=None
 
-            cspo.put(b("%s^%s^%s^%s^" % (c, s, p, o)), "", txn=txn)
-            cpos.put(b("%s^%s^%s^%s^" % (c, p, o, s)), "", txn=txn)
-            cosp.put(b("%s^%s^%s^%s^" % (c, o, s, p)), "", txn=txn)
+            cspo.put(bb("%s^%s^%s^%s^" % (c, s, p, o)), "", txn=txn)
+            cpos.put(bb("%s^%s^%s^%s^" % (c, p, o, s)), "", txn=txn)
+            cosp.put(bb("%s^%s^%s^%s^" % (c, o, s, p)), "", txn=txn)
             if not quoted:
-                cspo.put(b("%s^%s^%s^%s^" % ("", s, p, o)), contexts_value, txn=txn)
-                cpos.put(b("%s^%s^%s^%s^" % ("", p, o, s)), contexts_value, txn=txn)
-                cosp.put(b("%s^%s^%s^%s^" % ("", o, s, p)), contexts_value, txn=txn)
+                cspo.put(bb("%s^%s^%s^%s^" % ("", s, p, o)), contexts_value, txn=txn)
+                cpos.put(bb("%s^%s^%s^%s^" % ("", p, o, s)), contexts_value, txn=txn)
+                cosp.put(bb("%s^%s^%s^%s^" % ("", o, s, p)), contexts_value, txn=txn)
 
             self.__needs_sync = True
 
@@ -264,9 +265,9 @@ class Sleepycat(Store):
             p = _to_string(predicate, txn=txn)
             o = _to_string(object, txn=txn)
             c = _to_string(context, txn=txn)
-            value = self.__indicies[0].get(b("%s^%s^%s^%s^" % (c, s, p, o)), txn=txn)
+            value = self.__indicies[0].get(bb("%s^%s^%s^%s^" % (c, s, p, o)), txn=txn)
             if value is not None:
-                self.__remove((b(s), b(p), b(o)), b(c), txn=txn)
+                self.__remove((bb(s), bb(p), bb(o)), bb(c), txn=txn)
                 self.__needs_sync = True
         else:
             cspo, cpos, cosp = self.__indicies
@@ -308,7 +309,7 @@ class Sleepycat(Store):
                 if subject is None and predicate is None and object is None:
                     # TODO: also if context becomes empty and not just on remove((None, None, None), c)
                     try:
-                        self.__contexts.delete(b(_to_string(context, txn=txn)), txn=txn)
+                        self.__contexts.delete(bb(_to_string(context, txn=txn)), txn=txn)
                     except db.DBNotFoundError, e:
                         pass
 
@@ -356,7 +357,7 @@ class Sleepycat(Store):
         if context is None:
             prefix = b("^")
         else:
-            prefix = b("%s^" % self._to_string(context))
+            prefix = bb("%s^" % self._to_string(context))
 
         index = self.__indicies[0]
         cursor = index.cursor()
@@ -412,7 +413,7 @@ class Sleepycat(Store):
             s = _to_string(s)
             p = _to_string(p)
             o = _to_string(o)
-            contexts = self.__indicies[0].get(b("%s^%s^%s^%s^" % ("", s, p, o)))
+            contexts = self.__indicies[0].get(bb("%s^%s^%s^%s^" % ("", s, p, o)))
             if contexts:
                 for c in contexts.split(b("^")):
                     if c:
@@ -471,7 +472,7 @@ class Sleepycat(Store):
             object = _to_string(object, txn=txn)
         index, prefix_func, from_key, results_from_key = self.__lookup_dict[i]
         #print (subject, predicate, object), context, prefix_func, index #DEBUG
-        prefix = b("^".join(prefix_func((subject, predicate, object), context)))
+        prefix = bb("^".join(prefix_func((subject, predicate, object), context)))
         return index, prefix, from_key, results_from_key
 
 
