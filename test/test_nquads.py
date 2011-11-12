@@ -7,7 +7,7 @@ class NQuadsParserTest(unittest.TestCase):
 
     def _load_example(self):
         g = ConjunctiveGraph()
-        with open("test/example.nquads", "r") as examples:
+        with open("test/example.nquads", "rb") as examples:
             g.parse(examples, format="nquads")
         return g
       

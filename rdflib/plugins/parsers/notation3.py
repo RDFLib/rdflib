@@ -42,6 +42,8 @@ from decimal import Decimal
 
 from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX, _unique_id
 from rdflib.graph import QuotedGraph, ConjunctiveGraph
+from rdflib import py3compat
+b = py3compat.b
 
 from rdflib.parser import Parser
 
@@ -345,7 +347,10 @@ def canonical(str_in):
     s = ''
     i = 0
     while i < len(s8):
-        ch = s8[i]; n = ord(ch)
+        if py3compat.PY3:
+            n = s8[i]; ch = chr(n)
+        else:
+            ch = s8[i]; n = ord(ch)
         if (n > 126) or (n < 33) :   # %-encode controls, SP, DEL, and utf-8
             s += "%%%02X" % ord(ch)
         elif ch == '%' and i+2 < len(s8):
@@ -2187,7 +2192,7 @@ def backslashUify(ustr):
         to the given unicode"""
 #    progress("String is "+`ustr`)
 #    s1=ustr.encode('utf-8')
-    str  = ""
+    s  = ""
     for ch in ustr:  # .encode('utf-8'):
         if ord(ch) > 65535:
             ch = "\\U%08X" % ord(ch)       
@@ -2195,8 +2200,8 @@ def backslashUify(ustr):
             ch = "\\u%04X" % ord(ch)
         else:
             ch = "%c" % ord(ch)
-        str = str + ch
-    return str
+        s = s + ch
+    return b(s)
 
 def hexify(ustr):
     """Use URL encoding to return an ASCII string
@@ -2208,14 +2213,14 @@ def hexify(ustr):
     """   #"
 #    progress("String is "+`ustr`)
 #    s1=ustr.encode('utf-8')
-    str  = ""
+    s  = ""
     for ch in ustr:  # .encode('utf-8'):
         if ord(ch) > 126 or ord(ch) < 33 :
             ch = "%%%02X" % ord(ch)
         else:
             ch = "%c" % ord(ch)
-        str = str + ch
-    return str
+        s = s + ch
+    return b(s)
     
 def dummy():
         res = ""

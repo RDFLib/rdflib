@@ -10,16 +10,18 @@ from rdflib.term import URIRef as URI
 from rdflib.term import BNode as bNode
 from rdflib.term import Literal
 
-uriref = r'<([^:]+:[^\s"<>]+)>'
-literal = r'"([^"\\]*(?:\\.[^"\\]*)*)"'
-litinfo = r'(?:@([a-z]+(?:-[a-z0-9]+)*)|\^\^' + uriref + r')?'
+from rdflib.py3compat import b
 
-r_line = re.compile(r'([^\r\n]*)(?:\r\n|\r|\n)')
-r_wspace = re.compile(r'[ \t]*')
-r_wspaces = re.compile(r'[ \t]+')
-r_tail = re.compile(r'[ \t]*\.[ \t]*')
+uriref = b(r'<([^:]+:[^\s"<>]+)>')
+literal = b(r'"([^"\\]*(?:\\.[^"\\]*)*)"')
+litinfo = b(r'(?:@([a-z]+(?:-[a-z0-9]+)*)|\^\^') + uriref + b(r')?')
+
+r_line = re.compile(b(r'([^\r\n]*)(?:\r\n|\r|\n)'))
+r_wspace = re.compile(b(r'[ \t]*'))
+r_wspaces = re.compile(b(r'[ \t]+'))
+r_tail = re.compile(b(r'[ \t]*\.[ \t]*'))
 r_uriref = re.compile(uriref)
-r_nodeid = re.compile(r'_:([A-Za-z][A-Za-z0-9]*)')
+r_nodeid = re.compile(b(r'_:([A-Za-z][A-Za-z0-9]*)'))
 r_literal = re.compile(literal + litinfo)
 
 bufsiz = 2048
@@ -37,10 +39,10 @@ class Sink(object):
         self.length += 1
         print (s, p, o)
 
-quot = {'t': '\t', 'n': '\n', 'r': '\r', '"': '"', '\\': '\\'}
-r_safe = re.compile(r'([\x20\x21\x23-\x5B\x5D-\x7E]+)')
-r_quot = re.compile(r'\\(t|n|r|"|\\)')
-r_uniquot = re.compile(r'\\u([0-9A-F]{4})|\\U([0-9A-F]{8})')
+quot = {b('t'): u'\t', b('n'): u'\n', b('r'): u'\r', b('"'): u'"', b('\\'): u'\\'}
+r_safe = re.compile(b(r'([\x20\x21\x23-\x5B\x5D-\x7E]+)'))
+r_quot = re.compile(b(r'\\(t|n|r|"|\\)'))
+r_uniquot = re.compile(b(r'\\u([0-9A-F]{4})|\\U([0-9A-F]{8})'))
 
 def unquote(s):
     """Unquote an N-Triples string."""
@@ -52,7 +54,7 @@ def unquote(s):
             m = r_safe.match(s)
             if m:
                 s = s[m.end():]
-                result.append(m.group(1))
+                result.append(m.group(1).decode('ascii'))
                 continue
 
             m = r_quot.match(s)
@@ -72,9 +74,9 @@ def unquote(s):
             elif s.startswith('\\'):
                 raise ParseError("Illegal escape at: %s..." % s[:10])
             else: raise ParseError("Illegal literal character: %r" % s[0])
-        return unicode(''.join(result))
+        return u''.join(result)
 
-r_hibyte = re.compile(r'([\x80-\xFF])')
+r_hibyte = re.compile(ur'([\x80-\xFF])')
 
 def uriquote(uri):
     if not validate:
@@ -146,7 +148,7 @@ class NTriplesParser(object):
 
     def parseline(self):
         self.eat(r_wspace)
-        if (not self.line) or self.line.startswith('#'):
+        if (not self.line) or self.line.startswith(b('#')):
             return # The line is empty or a comment
 
         subject = self.subject()
@@ -169,6 +171,7 @@ class NTriplesParser(object):
         m = pattern.match(self.line)
         if not m: # @@ Why can't we get the original pattern?
             print(dir(pattern))
+            print repr(self.line), type(self.line)
             raise ParseError("Failed to eat %s" % pattern)
         self.line = self.line[m.end():]
         return m
@@ -193,7 +196,7 @@ class NTriplesParser(object):
         return objt
 
     def uriref(self):
-        if self.peek('<'):
+        if self.peek(b('<')):
             uri = self.eat(r_uriref).group(1)
             uri = unquote(uri)
             uri = uriquote(uri)
@@ -201,15 +204,15 @@ class NTriplesParser(object):
         return False
 
     def nodeid(self):
-        if self.peek('_'):
-            return bNode(self.eat(r_nodeid).group(1))
+        if self.peek(b('_')):
+            return bNode(self.eat(r_nodeid).group(1).decode())
         return False
 
     def literal(self):
-        if self.peek('"'):
+        if self.peek(b('"')):
             lit, lang, dtype = self.eat(r_literal).groups()
-            lang = lang or None
-            dtype = dtype or None
+            lang = lang.decode() if lang else None
+            dtype = dtype.decode() if dtype else None
             if lang and dtype:
                 raise ParseError("Can't have both a language and a datatype")
             lit = unquote(lit)

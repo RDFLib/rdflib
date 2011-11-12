@@ -23,10 +23,6 @@ except:
 from xml.sax import xmlreader
 from xml.sax.saxutils import prepare_input_source
 import types
-try:
-    _StringTypes = (types.StringType, types.UnicodeType)
-except AttributeError:
-    _StringTypes = (types.StringType,)
 
 from rdflib import __version__
 from rdflib.term import URIRef
@@ -139,7 +135,7 @@ def create_input_source(source=None, publicID=None,
         if isinstance(source, InputSource):
             input_source = source
         else:
-            if isinstance(source, _StringTypes):
+            if isinstance(source, basestring):
                 location = source
             elif hasattr(source, "read") and not isinstance(source, Namespace):
                 f = source
@@ -155,7 +151,7 @@ def create_input_source(source=None, publicID=None,
         absolute_location = URIRef(location, base=base).defrag()
         if absolute_location.startswith("file:///"):
             filename = url2pathname(absolute_location.replace("file:///", "/"))
-            file = __builtin__.file(filename, "rb")
+            file = open(filename, "rb")
         else:
             input_source = URLInputSource(absolute_location, format)
         publicID = publicID or absolute_location

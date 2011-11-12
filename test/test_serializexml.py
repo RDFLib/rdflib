@@ -4,7 +4,10 @@ from rdflib.namespace import RDFS
 from rdflib.plugins.serializers.rdfxml import XMLSerializer
 
 from rdflib.graph import ConjunctiveGraph
-from StringIO import StringIO
+try:
+    from io import BytesIO
+except ImportError:
+    from StringIO import StringIO as BytesIO
 
 
 class SerializerTestBase(object):
@@ -53,7 +56,7 @@ def _mangled_copy(g):
 
 def serialize(sourceGraph, makeSerializer, getValue=True, extra_args={}):
     serializer = makeSerializer(sourceGraph)
-    stream = StringIO()
+    stream = BytesIO()
     serializer.serialize(stream, **extra_args)
     return getValue and stream.getvalue() or stream
 

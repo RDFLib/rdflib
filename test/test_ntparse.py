@@ -108,7 +108,7 @@ class NTTestCase(unittest.TestCase):
         # self.assertRaises(ntriples.ParseError, p.literal)
 
 def check_nt_parse(fpath, fmt):
-    fp = open(fpath, 'r')
+    fp = open(fpath, 'rb')
     p = ntriples.NTriplesParser(sink=ntriples.Sink()) 
     sink = p.parse(fp) # file; use parsestring for a string
     fp.close() 

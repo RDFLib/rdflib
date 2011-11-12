@@ -5,7 +5,7 @@ graphs that can be used and queried. The store that backs the graph
 
 >>> from rdflib import ConjunctiveGraph, URIRef, Namespace
 >>> g = ConjunctiveGraph()
->>> with open("test/example.nquads", "r") as examples:
+>>> with open("test/example.nquads", "rb") as examples:
 ...    sink = g.parse(examples, format="nquads")
 >>> assert len(g.store) == 449
 >>> # There should be 16 separate contexts
@@ -17,6 +17,8 @@ graphs that can be used and queried. The store that backs the graph
 >>> FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 >>> assert(g.value(s, FOAF.name) == "Arco Publications")
 """
+
+from rdflib.py3compat import b
 
 # Build up from the NTriples parser:
 from rdflib.plugins.parsers.ntriples import NTriplesParser
@@ -79,7 +81,7 @@ class NQuadsParser(NTriplesParser):
   
     def parseline(self):
         self.eat(r_wspace)
-        if (not self.line) or self.line.startswith('#'):
+        if (not self.line) or self.line.startswith(b('#')):
             return # The line is empty or a comment
 
         subject = self.subject()

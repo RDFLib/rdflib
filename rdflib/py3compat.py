@@ -34,6 +34,8 @@ def _modify_str_or_docstring(str_change_func):
 if PY3:
     # Python 3:
     # ---------
+    def b(s):
+        return s.encode('ascii')
     
     # Abstract u'abc' syntax:
     @_modify_str_or_docstring
@@ -46,6 +48,8 @@ if PY3:
 else:
     # Python 2
     # --------
+    def b(s):
+        return s
     
     # Abstract u'abc' syntax:
     @_modify_str_or_docstring

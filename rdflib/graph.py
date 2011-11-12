@@ -527,7 +527,7 @@ class Graph(Node):
         else:
             if any is False:
                 try:
-                    next = values.next()
+                    values.next()
                     msg = ("While trying to find a value for (%s, %s, %s) the"
                            " following multiple values where found:\n" %
                            (subject, predicate, object))
@@ -811,7 +811,7 @@ class Graph(Node):
         ... '''
         >>> import tempfile
         >>> file_name = tempfile.mktemp()
-        >>> f = file(file_name, "w")
+        >>> f = open(file_name, "w")
         >>> f.write(my_data)
         >>> f.close()
 
@@ -826,7 +826,7 @@ class Graph(Node):
         2
 
         >>> g = Graph()
-        >>> result = g.parse(file=file(file_name, "r"), format="application/rdf+xml")
+        >>> result = g.parse(file=open(file_name, "r"), format="application/rdf+xml")
         >>> len(g)
         2
 
