@@ -124,7 +124,7 @@ class Result(object):
             return len(self.graph)
     
     def __iter__(self): 
-        if type in ("CONSTRUCT", "DESCRIBE"): 
+        if self.type in ("CONSTRUCT", "DESCRIBE"): 
             for t in self.graph: yield t
         elif self.type=='ASK': 
             yield self.askAnswer
@@ -136,7 +136,7 @@ class Result(object):
             
         
     def __getattr__(self,name): 
-        if type in ("CONSTRUCT", "DESCRIBE") and self.graph!=None: 
+        if self.type in ("CONSTRUCT", "DESCRIBE") and self.graph!=None: 
             return self.graph.__getattr__(self,name)
         else: 
             raise AttributeError("'%s' object has not attribute '%s'"%(self,name))
