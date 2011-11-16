@@ -38,6 +38,7 @@ import time
 import StringIO
 import codecs
 
+from binascii import a2b_hex
 from decimal import Decimal
 
 from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX, _unique_id
@@ -295,9 +296,10 @@ def _fixslash(str):
     if s[0] != "/" and s[1] == ":": s = s[2:]  # @@@ Hack when drive letter present
     return s
 
-URI_unreserved = "ABCDEFGHIJJLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
+URI_unreserved = b("ABCDEFGHIJJLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~")
     # unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
-    
+
+@py3compat.format_doctest_out
 def canonical(str_in):
     """Convert equivalent URIs (or parts) to the same string
     
@@ -306,8 +308,8 @@ def canonical(str_in):
     Done:
     - Converfting unicode IRI to utf-8
     - Escaping all non-ASCII
-    - De-escaping, if escaped, ALPHA (%41-%5A and %61-%7A), DIGIT (%30-%39),
-    hyphen (%2D), period (%2E), underscore (%5F), or tilde (%7E) (Sect 2.4) 
+    - De-escaping, if escaped, ALPHA (%%41-%%5A and %%61-%%7A), DIGIT (%%30-%%39),
+    hyphen (%%2D), period (%%2E), underscore (%%5F), or tilde (%%7E) (Sect 2.4) 
     - Making all escapes uppercase hexadecimal
     
     Not done:
@@ -316,47 +318,47 @@ def canonical(str_in):
     
     
     >>> canonical("foo bar")
-    'foo%20bar'
+    %(b)s'foo%%20bar'
     
     >>> canonical(u'http:')
-    'http:'
+    %(b)s'http:'
     
-    >>> canonical('fran%c3%83%c2%a7ois')
-    'fran%C3%83%C2%A7ois'
+    >>> canonical('fran%%c3%%83%%c2%%a7ois')
+    %(b)s'fran%%C3%%83%%C2%%A7ois'
     
     >>> canonical('a')
-    'a'
+    %(b)s'a'
     
-    >>> canonical('%4e')
-    'N'
+    >>> canonical('%%4e')
+    %(b)s'N'
 
-    >>> canonical('%9d')
-    '%9D'
+    >>> canonical('%%9d')
+    %(b)s'%%9D'
     
-    >>> canonical('%2f')
-    '%2F'
+    >>> canonical('%%2f')
+    %(b)s'%%2F'
 
-    >>> canonical('%2F')
-    '%2F'
+    >>> canonical('%%2F')
+    %(b)s'%%2F'
 
     """
     if type(str_in) == type(u''):
         s8 = str_in.encode('utf-8')
     else:
         s8 = str_in
-    s = ''
+    s = b('')
     i = 0
     while i < len(s8):
         if py3compat.PY3:
-            n = s8[i]; ch = chr(n)
+            n = s8[i]; ch = bytes([n])
         else:
             ch = s8[i]; n = ord(ch)
         if (n > 126) or (n < 33) :   # %-encode controls, SP, DEL, and utf-8
-            s += "%%%02X" % ord(ch)
-        elif ch == '%' and i+2 < len(s8):
-            ch2 = s8[i+1:i+3].decode('hex')
+            s += b("%%%02X" % ord(ch))
+        elif ch == b('%') and i+2 < len(s8):
+            ch2 = a2b_hex(s8[i+1:i+3])
             if ch2 in URI_unreserved: s += ch2
-            else: s += "%%%02X" % ord(ch2)
+            else: s += b("%%%02X" % ord(ch2))
             i = i+3
             continue
         else:
