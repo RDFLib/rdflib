@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
-"""
+from rdflib import py3compat
+__doc__ = py3compat.format_doctest_out("""
 The ``Resource`` class wraps a ``Graph`` and a resource reference (i.e. an
 ``URIRef`` or ``BNode``), to support a resource oriented way of working with a
 graph.
@@ -61,26 +62,26 @@ Retrieve some basic facts::
     rdflib.term.URIRef('http://example.org/person/some1#self')
 
     >>> person.value(FOAF.name)
-    rdflib.term.Literal(u'Some Body')
+    rdflib.term.Literal(%(u)s'Some Body')
 
     >>> person.value(RDFS.comment)
-    rdflib.term.Literal(u'Just a Python & RDF hacker.', lang=u'en')
+    rdflib.term.Literal(%(u)s'Just a Python & RDF hacker.', lang=%(u)s'en')
 
 Resources as unicode are represented by their identifiers as unicode::
 
     >>> unicode(person)
-    u'http://example.org/person/some1#self'
+    %(u)s'http://example.org/person/some1#self'
 
 Resource references are also Resources, so you can easily get e.g. a qname
 for the type of a resource, like::
 
     >>> person.value(RDF.type).qname()
-    u'foaf:Person'
+    %(u)s'foaf:Person'
 
 Or for the predicates of a resource::
 
     >>> sorted(p.qname() for p in person.predicates())
-    [u'foaf:depiction', u'foaf:homepage', u'foaf:name', u'rdf:type', u'rdfs:comment']
+    [%(u)s'foaf:depiction', %(u)s'foaf:homepage', %(u)s'foaf:name', %(u)s'rdf:type', %(u)s'rdfs:comment']
 
 Follow relations and get more data from their Resources as well::
 
@@ -169,24 +170,24 @@ we can get at subclasses::
 
     >>> subclasses = list(artifact.transitive_subjects(RDFS.subClassOf))
     >>> [c.qname() for c in subclasses]
-    [u'v:Artifact', u'v:Document', u'v:Paper']
+    [%(u)s'v:Artifact', %(u)s'v:Document', %(u)s'v:Paper']
 
 and superclasses from the last subclass::
 
     >>> [c.qname() for c in subclasses[-1].transitive_objects(RDFS.subClassOf)]
-    [u'v:Paper', u'v:Document', u'v:Artifact']
+    [%(u)s'v:Paper', %(u)s'v:Document', %(u)s'v:Artifact']
 
 Get items from the Choice::
 
     >>> choice = Resource(graph2, URIRef("http://example.org/def/v#Choice"))
     >>> [it.qname() for it in choice.value(OWL.oneOf).items()]
-    [u'v:One', u'v:Other']
+    [%(u)s'v:One', %(u)s'v:Other']
 
 And the sequence of Stuff::
 
     >>> stuff = Resource(graph2, URIRef("http://example.org/def/v#Stuff"))
     >>> [it.qname() for it in stuff.seq()]
-    [u'v:One', u'v:Other']
+    [%(u)s'v:One', %(u)s'v:Other']
 
 Equality is based on the identifier::
 
@@ -233,7 +234,7 @@ objects::
     >>> print person.foaf_depiction[0].rdfs_comment[0]
     Just an image
 
-"""
+""")
 
 from rdflib.term import BNode, URIRef
 from rdflib.namespace import RDF
@@ -257,6 +258,9 @@ class Resource(object):
 
     def __unicode__(self):
         return unicode(self._identifier)
+    
+    if py3compat.PY3:
+        __str__ = __unicode__
 
     def add(self, p, o):
         self._graph.add((self._identifier, p, o))

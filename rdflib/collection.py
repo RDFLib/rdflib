@@ -2,9 +2,10 @@ from rdflib.namespace import RDF
 from rdflib.term import BNode
 from rdflib.term import Literal
 from rdflib.graph import Graph
+from rdflib.py3compat import format_doctest_out
 
 class Collection(object):
-    """
+    __doc__ = format_doctest_out("""
     See 3.3.5 Emulating container types: http://docs.python.org/ref/sequence-types.html#l2h-232
 
     >>> from rdflib.graph import Graph    
@@ -20,7 +21,7 @@ class Collection(object):
     >>> g.add((listItem2,RDF.first,Literal(3)))
     >>> c=Collection(g,listName)
     >>> print list(c)
-    [rdflib.term.Literal(u'1', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer')), rdflib.term.Literal(u'2', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer')), rdflib.term.Literal(u'3', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer'))]
+    [rdflib.term.Literal(%(u)s'1', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer')), rdflib.term.Literal(%(u)s'2', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer')), rdflib.term.Literal(%(u)s'3', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer'))]
     >>> 1 in c
     True
     >>> len(c)
@@ -29,7 +30,7 @@ class Collection(object):
     True
     >>> c.index(Literal(2)) == 1
     True
-    """
+    """)
     def __init__(self, graph, uri, seq=[]):
         self.graph = graph
         self.uri = uri or BNode()

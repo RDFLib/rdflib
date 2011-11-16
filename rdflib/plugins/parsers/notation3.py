@@ -2203,12 +2203,13 @@ def backslashUify(ustr):
         s = s + ch
     return b(s)
 
+@py3compat.format_doctest_out
 def hexify(ustr):
     """Use URL encoding to return an ASCII string
     corresponding to the given UTF8 string
 
     >>> hexify("http://example/a b")
-    'http://example/a%20b'
+    %(b)s'http://example/a%%20b'
     
     """   #"
 #    progress("String is "+`ustr`)

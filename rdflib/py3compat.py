@@ -46,11 +46,14 @@ if PY3:
     
     # Abstract u'abc' syntax:
     @_modify_str_or_docstring
-    def u_format(s):
-        """"%(u)s'abc'" --> "'abc'" (Python 3)
+    def format_doctest_out(s):
+        """Python 2 version
+        "%(u)s'abc'" --> "'abc'"
+        "%(b)s'abc'" --> "b'abc'"
+        "55%(L)s"    --> "55"
         
         Accepts a string or a function, so it can be used as a decorator."""
-        return s % {'u':''}
+        return s % {'u':'', 'b':'b', 'L':''}
 
 else:
     # Python 2
@@ -62,8 +65,11 @@ else:
     
     # Abstract u'abc' syntax:
     @_modify_str_or_docstring
-    def u_format(s):
-        """"%(u)s'abc'" --> "u'abc'" (Python 2)
+    def format_doctest_out(s):
+        """Python 2 version
+        "%(u)s'abc'" --> "u'abc'"
+        "%(b)s'abc'" --> "'abc'"
+        "55%(L)s"    --> "55L"
         
         Accepts a string or a function, so it can be used as a decorator."""
-        return s % {'u':'u'}
+        return s % {'u':'u', 'b':'', 'L':'L'}

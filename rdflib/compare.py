@@ -43,7 +43,7 @@ Present in both::
 
     >>> def dump_nt_sorted(g):
     ...     for l in sorted(g.serialize(format='nt').splitlines()):
-    ...         if l: print l
+    ...         if l: print l.decode('ascii')
 
     >>> dump_nt_sorted(in_both)
     <http://example.org> <http://example.org/ns#rel> <http://example.org/same> .
