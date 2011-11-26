@@ -54,6 +54,17 @@ if PY3:
         
         Accepts a string or a function, so it can be used as a decorator."""
         return s % {'u':'', 'b':'b', 'L':''}
+    
+    def type_cmp(a, b):
+        """Python 2 style comparison based on type"""
+        ta, tb = type(a).__name__, type(b).__name__
+        # Ugly hack: some tests rely on tuple sorting before unicode, and I
+        # don't know if that's important. Better retain it for now.
+        if ta == 'str':
+            ta = 'unicode'
+        if tb == 'str':
+            tb = 'unicode'
+        return 1 if ta > tb else -1 if ta < tb else 0
 
 else:
     # Python 2
@@ -73,3 +84,6 @@ else:
         
         Accepts a string or a function, so it can be used as a decorator."""
         return s % {'u':'u', 'b':'', 'L':'L'}
+    
+    def type_cmp(a, b):
+        return 1 if a > b else -1 if a < b else 0

@@ -458,13 +458,17 @@ class Literal(Identifier):
             return False # Nothing is less than None
         try:
             return self._cmp_value < other
-        except TypeError, te:
-            return unicode(self._cmp_value) < other
         except UnicodeDecodeError, ue:
-            if isinstance(self._cmp_value, str):
+            if isinstance(self._cmp_value, py3compat.bytestype):
                 return self._cmp_value < other.encode("utf-8")
             else:
                 raise ue
+        except TypeError:
+            try:
+                return unicode(self._cmp_value) < other
+            except TypeError:
+                # Treat different types like Python 2 for now.
+                return py3compat.type_cmp(self._cmp_value, other) == -1
 
     def __le__(self, other):
         """
@@ -484,13 +488,17 @@ class Literal(Identifier):
             return True # Everything is greater than None
         try:
             return self._cmp_value > other
-        except TypeError, te:
-            return unicode(self._cmp_value) > other
         except UnicodeDecodeError, ue:
-            if isinstance(self._cmp_value, str):
+            if isinstance(self._cmp_value, py3compat.bytestype):
                 return self._cmp_value > other.encode("utf-8")
             else:
                 raise ue
+        except TypeError:
+            try:
+                return unicode(self._cmp_value) > other
+            except TypeError:
+                # Treat different types like Python 2 for now.
+                return py3compat.type_cmp(self._cmp_value, other) == 1
 
     def __ge__(self, other):
         if other is None:
