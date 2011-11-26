@@ -140,7 +140,10 @@ def from_n3(s, default=None, backend=None):
             datatype = rest[3:-1]
         else:
             datatype = None
-        value = value.replace('\\"', '"').replace('\\\\', '\\').decode("unicode-escape")
+        value = value.replace('\\"', '"').replace('\\\\', '\\')
+        # Hack: this should correctly handle strings with either native unicode
+        # characters, or \u1234 unicode escapes.
+        value = value.encode("raw-unicode-escape").decode("unicode-escape")
         return Literal(value, language, datatype)
     elif s.startswith('{'):
         identifier = from_n3(s[1:-1])
