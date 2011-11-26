@@ -55,9 +55,9 @@ class NTTestCase(unittest.TestCase):
 
     def test_validating_uriquote(self):
         ntriples.validate = True
-        uniquot = """<http://www.w3.org/People/Berners-Lee/card#cm> <http://xmlns.com/foaf/0.1/name> "R\u00E4ksm\u00F6rg\u00E5s" <http://www.w3.org/People/Berners-Lee/card> ."""
+        uniquot = """<http://www.w3.org/People/Berners-Lee/card#cm> <http://xmlns.com/foaf/0.1/name> "R\\u00E4ksm\\u00F6rg\\u00E5s" <http://www.w3.org/People/Berners-Lee/card> ."""
         res = ntriples.uriquote(uniquot)
-        self.assert_(res == uniquot, res)
+        self.assertEqual(res, uniquot)
 
     def test_NTriplesParser_fpath(self):
         fpath = "test/nt/"+os.listdir('test/nt')[0]
