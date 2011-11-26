@@ -316,6 +316,8 @@ class Literal(Identifier):
                 lang = None
         if datatype:
             datatype = URIRef(datatype)
+        if py3compat.PY3 and isinstance(value, bytes):
+            value = value.decode('utf-8')
         try:
             inst = unicode.__new__(cls, value)
         except UnicodeDecodeError:
@@ -465,8 +467,11 @@ class Literal(Identifier):
                 raise ue
         except TypeError:
             try:
+                # On Python 3, comparing bytes/str is a TypeError, not a UnicodeError
+                if isinstance(self._cmp_value, py3compat.bytestype):
+                    return self._cmp_value < other.encode("utf-8")
                 return unicode(self._cmp_value) < other
-            except TypeError:
+            except (TypeError, AttributeError):
                 # Treat different types like Python 2 for now.
                 return py3compat.type_cmp(self._cmp_value, other) == -1
 
@@ -495,8 +500,11 @@ class Literal(Identifier):
                 raise ue
         except TypeError:
             try:
+                # On Python 3, comparing bytes/str is a TypeError, not a UnicodeError
+                if isinstance(self._cmp_value, py3compat.bytestype):
+                    return self._cmp_value > other.encode("utf-8")
                 return unicode(self._cmp_value) > other
-            except TypeError:
+            except (TypeError, AttributeError):
                 # Treat different types like Python 2 for now.
                 return py3compat.type_cmp(self._cmp_value, other) == 1
 
@@ -895,7 +903,7 @@ XSDToPython = {
     URIRef(_XSD_PFX+'unsignedByte')       : int,
     URIRef(_XSD_PFX+'float')              : float,
     URIRef(_XSD_PFX+'double')             : float,
-    URIRef(_XSD_PFX+'base64Binary')       : base64.decodestring,
+    URIRef(_XSD_PFX+'base64Binary')       : lambda s: base64.b64decode(py3compat.b(s)),
     URIRef(_XSD_PFX+'anyURI')             : None,
 }
 
