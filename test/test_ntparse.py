@@ -68,7 +68,9 @@ class NTTestCase(unittest.TestCase):
         p = ntriples.NTriplesParser()
         data = 3
         self.assertRaises(ntriples.ParseError, p.parsestring, data)
-        data = open("test/nt/"+os.listdir('test/nt')[0], 'r').read()
+        fname = "test/nt/lists-02.nt"
+        print fname
+        data = open(fname, 'r').read()
         p = ntriples.NTriplesParser()
         res = p.parsestring(data)
         self.assert_(res == None)
