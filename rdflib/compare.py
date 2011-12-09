@@ -43,26 +43,26 @@ Present in both::
 
     >>> def dump_nt_sorted(g):
     ...     for l in sorted(g.serialize(format='nt').splitlines()):
-    ...         if l: print l
+    ...         if l: print l.decode('ascii')
 
     >>> dump_nt_sorted(in_both)
     <http://example.org> <http://example.org/ns#rel> <http://example.org/same> .
-    <http://example.org> <http://example.org/ns#rel> _:cb1373e1895e37293a13204e8048bdcdc7 .
-    _:cb1373e1895e37293a13204e8048bdcdc7 <http://example.org/ns#label> "Same" .
+    <http://example.org> <http://example.org/ns#rel> _:cbcaabaaba17fecbc304a64f8edee4335e .
+    _:cbcaabaaba17fecbc304a64f8edee4335e <http://example.org/ns#label> "Same" .
 
 Only in first::
 
     >>> dump_nt_sorted(in_first)
     <http://example.org> <http://example.org/ns#rel> <http://example.org/a> .
-    <http://example.org> <http://example.org/ns#rel> _:cb12f880a18a57364752aaeb157f2e66bb .
-    _:cb12f880a18a57364752aaeb157f2e66bb <http://example.org/ns#label> "A" .
+    <http://example.org> <http://example.org/ns#rel> _:cb124e4c6da0579f810c0ffe4eff485bd9 .
+    _:cb124e4c6da0579f810c0ffe4eff485bd9 <http://example.org/ns#label> "A" .
 
 Only in second::
 
     >>> dump_nt_sorted(in_second)
     <http://example.org> <http://example.org/ns#rel> <http://example.org/b> .
-    <http://example.org> <http://example.org/ns#rel> _:cb0a343fb77929ad37cf00a0317f06b801 .
-    _:cb0a343fb77929ad37cf00a0317f06b801 <http://example.org/ns#label> "B" .
+    <http://example.org> <http://example.org/ns#rel> _:cb558f30e21ddfc05ca53108348338ade8 .
+    _:cb558f30e21ddfc05ca53108348338ade8 <http://example.org/ns#label> "B" .
 """
 
 # TODO:
@@ -130,7 +130,8 @@ class _TripleCanonicalizer(object):
                 yield term
 
     def _canonicalize(self, term, done=False):
-        return self.hashfunc(tuple(sorted(self._vhashtriples(term, done))))
+        return self.hashfunc(tuple(sorted(self._vhashtriples(term, done),
+                                                    key=_hetero_tuple_key)))
 
     def _vhashtriples(self, term, done):
         for triple in self.graph:
@@ -145,6 +146,10 @@ class _TripleCanonicalizer(object):
                 yield i
             else:
                 yield self._canonicalize(term, done=True)
+                
+def _hetero_tuple_key(x):
+    "Sort like Python 2 - by name of type, then by value. Expects tuples."
+    return tuple((type(a).__name__, a) for a in x)
 
 
 def to_isomorphic(graph):
@@ -214,7 +219,7 @@ def _md5_hash(t):
     h = hashlib.md5()
     for i in t:
         if isinstance(i, tuple):
-            h.update(_md5_hash(i))
+            h.update(_md5_hash(i).encode('ascii'))
         else:
             h.update(unicode(i).encode("utf8"))
     return h.hexdigest()

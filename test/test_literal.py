@@ -2,7 +2,7 @@ import unittest
 
 import rdflib # needed for eval(repr(...)) below
 from rdflib.term import Literal, URIRef
-
+from rdflib.py3compat import format_doctest_out as uformat
 
 # these are actually meant for test_term.py, which is not yet merged into trunk
 
@@ -66,22 +66,23 @@ class TestNew(unittest.TestCase):
 
 class TestRepr(unittest.TestCase):
     def testOmitsMissingDatatypeAndLang(self):
-        self.assertEqual(repr(Literal("foo")), "rdflib.term.Literal(u'foo')")
+        self.assertEqual(repr(Literal("foo")),
+                         uformat("rdflib.term.Literal(%(u)s'foo')"))
 
     def testOmitsMissingDatatype(self):
         self.assertEqual(repr(Literal("foo", lang='en')),
-                         "rdflib.term.Literal(u'foo', lang='en')")
+                         uformat("rdflib.term.Literal(%(u)s'foo', lang='en')"))
 
     def testOmitsMissingLang(self):
         self.assertEqual(
             repr(Literal("foo", datatype=URIRef('http://example.com/'))),
-            "rdflib.term.Literal(u'foo', datatype=rdflib.term.URIRef('http://example.com/'))")
+            uformat("rdflib.term.Literal(%(u)s'foo', datatype=rdflib.term.URIRef('http://example.com/'))"))
 
     def testSubclassNameAppearsInRepr(self):
         class MyLiteral(Literal):
             pass
         x = MyLiteral(u"foo")
-        self.assertEqual(repr(x), "MyLiteral(u'foo')")
+        self.assertEqual(repr(x), uformat("MyLiteral(%(u)s'foo')"))
         
 
 if __name__ == "__main__":

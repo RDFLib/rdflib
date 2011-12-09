@@ -30,7 +30,6 @@ Statement and component type checkers
 """
 
 from calendar import timegm
-from string import rsplit
 from time import altzone
 #from time import daylight
 from time import gmtime
@@ -38,6 +37,16 @@ from time import localtime
 from time import mktime
 from time import time
 from time import timezone
+
+try:
+    cmp
+except NameError:
+    def sign(n):
+        if n < 0: return -1
+        if n > 0: return 1
+        return 0
+else:
+    def sign(n): return cmp(n, 0)
 
 from rdflib.exceptions import ContextTypeError
 from rdflib.exceptions import ObjectTypeError
@@ -66,13 +75,10 @@ def first(seq):
 
 def uniq(sequence, strip=0):
     """removes duplicate strings from the sequence."""
-    set = {}
     if strip:
-        map(lambda val, default: set.__setitem__(val.strip(), default),
-            sequence, [])
+        return set(s.strip() for s in sequence)
     else:
-        map(set.__setitem__, sequence, [])
-    return set.keys()
+        return set(sequence)
 
 def more_than(sequence, number):
     "Returns 1 if sequence has more items than number and 0 if not."
@@ -119,11 +125,11 @@ def from_n3(s, default=None, backend=None):
         return URIRef(s[1:-1])
     elif s.startswith('"'):
         # TODO: would a regex be faster?
-        value, rest = rsplit(s, '"', 1)
+        value, rest = s.rsplit('"', 1)
         value = value[1:] # strip leading quote
         if rest.startswith("@"):
             if "^^" in rest:
-                language, rest = rsplit(rest, '^^', 1)
+                language, rest = rest.rsplit('^^', 1)
                 language = language[1:] # strip leading at sign
             else:
                 language = rest[1:] # strip leading at sign
@@ -134,7 +140,10 @@ def from_n3(s, default=None, backend=None):
             datatype = rest[3:-1]
         else:
             datatype = None
-        value = value.replace('\\"', '"').replace('\\\\', '\\').decode("unicode-escape")
+        value = value.replace('\\"', '"').replace('\\\\', '\\')
+        # Hack: this should correctly handle strings with either native unicode
+        # characters, or \u1234 unicode escapes.
+        value = value.encode("raw-unicode-escape").decode("unicode-escape")
         return Literal(value, language, datatype)
     elif s.startswith('{'):
         identifier = from_n3(s[1:-1])
@@ -261,7 +270,7 @@ def parse_date_time(val):
     else:
         signed_hrs = int(tz_str[:3])
         mins = int(tz_str[4:6])
-        secs = (cmp(signed_hrs, 0) * mins + signed_hrs * 60) * 60
+        secs = (sign(signed_hrs) * mins + signed_hrs * 60) * 60
         tz_offset = -secs
 
     year, month, day = ymd.split("-")

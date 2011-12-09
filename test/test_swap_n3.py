@@ -1,6 +1,9 @@
 import os
 import unittest
-from string import maketrans
+try:
+    maketrans = str.maketrans
+except AttributeError:
+    from string import maketrans
 import rdflib
 
 """

@@ -1,6 +1,7 @@
 import warnings
 
 from rdflib.serializer import Serializer
+from rdflib.py3compat import b
 
 from rdflib.plugins.serializers.nt import _xmlcharref_encode
 
@@ -21,7 +22,7 @@ class NQuadsSerializer(Serializer):
         for context in self.store.contexts():
             for triple in context:
                 stream.write(_nq_row(triple, context.identifier).encode(encoding, "replace"))
-        stream.write("\n")
+        stream.write(b("\n"))
 
 def _nq_row(triple,context):
     return u"%s %s %s %s .\n" % (triple[0].n3(),

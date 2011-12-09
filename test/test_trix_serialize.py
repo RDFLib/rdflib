@@ -6,6 +6,11 @@ from rdflib.graph import ConjunctiveGraph
 from rdflib.term import URIRef, Literal
 from rdflib.graph import Graph
 
+try:
+    from io import BytesIO
+except ImportError:
+    from StringIO import StringIO as BytesIO
+
 
 class TestTrixSerialize(unittest.TestCase):
 
@@ -42,9 +47,8 @@ class TestTrixSerialize(unittest.TestCase):
       
       r = g.serialize(format='trix')
       g3 = ConjunctiveGraph()
-      from StringIO import StringIO
 
-      g3.parse(StringIO(r), format='trix')
+      g3.parse(BytesIO(r), format='trix')
 
       for q in g3.quads((None,None,None)):
         # TODO: Fix once getGraph/getContext is in conjunctive graph

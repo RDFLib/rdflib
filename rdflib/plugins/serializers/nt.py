@@ -4,6 +4,7 @@ See <http://www.w3.org/TR/rdf-testcases/#ntriples> for details about the
 format.
 """
 from rdflib.serializer import Serializer
+from rdflib.py3compat import b
 import warnings
 
 
@@ -20,7 +21,7 @@ class NTSerializer(Serializer):
         encoding = self.encoding
         for triple in self.store:
             stream.write(_nt_row(triple).encode(encoding, "replace"))
-        stream.write("\n")
+        stream.write(b("\n"))
 
 
 def _nt_row(triple):
@@ -61,12 +62,14 @@ def _xmlcharref_encode(unicode_data, encoding="ascii"):
     # order to catch unencodable characters:                          
     for char in unicode_data:
         try:
-            chars.append(char.encode(encoding, 'strict'))
+            char.encode(encoding, 'strict')
         except UnicodeError:
             if ord(char) <= 0xFFFF:
-                chars.append('\u%04X' % ord(char))
+                chars.append('\\u%04X' % ord(char))
             else:
-                chars.append('\U%08X' % ord(char))
+                chars.append('\\U%08X' % ord(char))
+        else:
+            chars.append(char)
 
     return ''.join(chars)
 

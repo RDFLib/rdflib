@@ -1,13 +1,14 @@
 import unittest 
 
 from rdflib import ConjunctiveGraph, URIRef, Namespace, RDF, BNode
+from rdflib.py3compat import b
 
 
 class NQuadsParserTest(unittest.TestCase):
 
     def _load_example(self):
         g = ConjunctiveGraph()
-        data = open("test/example.nquads", "r")
+        data = open("test/example.nquads", "rb")
         g.parse(data, format="nquads")
         return g
       
@@ -43,7 +44,7 @@ class NQuadsParserTest(unittest.TestCase):
         g.get_context(uri2).add((bob, likes, pizza))
 
         s=g.serialize(format='nquads')
-        self.assertEqual(len([x for x in s.split("\n") if x.strip()!=""]), 2)
+        self.assertEqual(len([x for x in s.split(b("\n")) if x.strip()]), 2)
         
         g2=ConjunctiveGraph()
         g2.parse(data=s, format='nquads')

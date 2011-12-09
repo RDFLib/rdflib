@@ -38,11 +38,13 @@ import time
 import StringIO
 import codecs
 
-from string import find, rfind
+from binascii import a2b_hex
 from decimal import Decimal
 
 from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX, _unique_id
 from rdflib.graph import QuotedGraph, ConjunctiveGraph
+from rdflib import py3compat
+b = py3compat.b
 
 from rdflib.parser import Parser
 
@@ -81,7 +83,7 @@ def splitFrag(uriref):
 
     """
 
-    i = rfind(uriref, "#")
+    i = uriref.rfind("#")
     if i>= 0: return uriref[:i], uriref[i+1:]
     else: return uriref, None
 
@@ -100,7 +102,7 @@ def splitFragP(uriref, punct=0):
 
     """
 
-    i = rfind(uriref, "#")
+    i = uriref.rfind("#")
     if i>= 0: return uriref[:i], uriref[i:]
     else: return uriref, ''
 
@@ -139,16 +141,16 @@ def join(here, there):
     u'http://example.org/#Andr\\xe9'
     """
 
-    assert(find(here, "#") < 0), "Base may not contain hash: '%s'"% here # caller must splitFrag (why?)
+    assert(here.find("#") < 0), "Base may not contain hash: '%s'"% here # caller must splitFrag (why?)
 
-    slashl = find(there, '/')
-    colonl = find(there, ':')
+    slashl = there.find('/')
+    colonl = there.find(':')
 
     # join(base, 'foo:/') -- absolute
     if colonl >= 0 and (slashl < 0 or colonl < slashl):
         return there
 
-    bcolonl = find(here, ':')
+    bcolonl = here.find(':')
     assert(bcolonl >= 0), "Base uri '%s' is not absolute" % here # else it's not absolute
 
     path, frag = splitFragP(there)
@@ -159,7 +161,7 @@ def join(here, there):
         raise ValueError ("Base <%s> has no slash after colon - with relative '%s'." %(here, there))
 
     if here[bcolonl+1:bcolonl+3] == '//':
-        bpath = find(here, '/', bcolonl+3)
+        bpath = here.find('/', bcolonl+3)
     else:
         bpath = bcolonl+1
 
@@ -176,7 +178,7 @@ def join(here, there):
     if there[:1] == '/':
         return here[:bpath] + there
 
-    slashr = rfind(here, '/')
+    slashr = here.rfind('/')
 
     while 1:
         if path[:2] == './':
@@ -185,7 +187,7 @@ def join(here, there):
             path = ''
         elif path[:3] == '../' or path == '..':
             path = path[3:]
-            i = rfind(here, '/', bpath, slashr)
+            i = here.rfind('/', bpath, slashr)
             if i >= 0:
                 here = here[:i+1]
                 slashr = i
@@ -261,10 +263,10 @@ def refTo(base, uri):
     while i>0 and uri[i-1] != '/' : i=i-1  # scan for slash
 
     if i < 3: return uri  # No way.
-    if string.find(base, "//", i-2)>0 \
-       or string.find(uri, "//", i-2)>0: return uri # An unshared "//"
-    if string.find(base, ":", i)>0: return uri  # An unshared ":"
-    n = string.count(base, "/", i)
+    if base.find("//", i-2)>0 \
+       or uri.find("//", i-2)>0: return uri # An unshared "//"
+    if base.find(":", i)>0: return uri  # An unshared ":"
+    n = base.count("/", i)
     if n == 0 and i<len(uri) and uri[i] == '#':
         return "./" + uri[i:]
     elif n == 0 and i == len(uri):
@@ -294,9 +296,10 @@ def _fixslash(str):
     if s[0] != "/" and s[1] == ":": s = s[2:]  # @@@ Hack when drive letter present
     return s
 
-URI_unreserved = "ABCDEFGHIJJLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
+URI_unreserved = b("ABCDEFGHIJJLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~")
     # unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
-    
+
+@py3compat.format_doctest_out
 def canonical(str_in):
     """Convert equivalent URIs (or parts) to the same string
     
@@ -305,8 +308,8 @@ def canonical(str_in):
     Done:
     - Converfting unicode IRI to utf-8
     - Escaping all non-ASCII
-    - De-escaping, if escaped, ALPHA (%41-%5A and %61-%7A), DIGIT (%30-%39),
-    hyphen (%2D), period (%2E), underscore (%5F), or tilde (%7E) (Sect 2.4) 
+    - De-escaping, if escaped, ALPHA (%%41-%%5A and %%61-%%7A), DIGIT (%%30-%%39),
+    hyphen (%%2D), period (%%2E), underscore (%%5F), or tilde (%%7E) (Sect 2.4) 
     - Making all escapes uppercase hexadecimal
     
     Not done:
@@ -315,44 +318,47 @@ def canonical(str_in):
     
     
     >>> canonical("foo bar")
-    'foo%20bar'
+    %(b)s'foo%%20bar'
     
     >>> canonical(u'http:')
-    'http:'
+    %(b)s'http:'
     
-    >>> canonical('fran%c3%83%c2%a7ois')
-    'fran%C3%83%C2%A7ois'
+    >>> canonical('fran%%c3%%83%%c2%%a7ois')
+    %(b)s'fran%%C3%%83%%C2%%A7ois'
     
     >>> canonical('a')
-    'a'
+    %(b)s'a'
     
-    >>> canonical('%4e')
-    'N'
+    >>> canonical('%%4e')
+    %(b)s'N'
 
-    >>> canonical('%9d')
-    '%9D'
+    >>> canonical('%%9d')
+    %(b)s'%%9D'
     
-    >>> canonical('%2f')
-    '%2F'
+    >>> canonical('%%2f')
+    %(b)s'%%2F'
 
-    >>> canonical('%2F')
-    '%2F'
+    >>> canonical('%%2F')
+    %(b)s'%%2F'
 
     """
     if type(str_in) == type(u''):
         s8 = str_in.encode('utf-8')
     else:
         s8 = str_in
-    s = ''
+    s = b('')
     i = 0
     while i < len(s8):
-        ch = s8[i]; n = ord(ch)
+        if py3compat.PY3:
+            n = s8[i]; ch = bytes([n])
+        else:
+            ch = s8[i]; n = ord(ch)
         if (n > 126) or (n < 33) :   # %-encode controls, SP, DEL, and utf-8
-            s += "%%%02X" % ord(ch)
-        elif ch == '%' and i+2 < len(s8):
-            ch2 = s8[i+1:i+3].decode('hex')
+            s += b("%%%02X" % ord(ch))
+        elif ch == b('%') and i+2 < len(s8):
+            ch2 = a2b_hex(s8[i+1:i+3])
             if ch2 in URI_unreserved: s += ch2
-            else: s += "%%%02X" % ord(ch2)
+            else: s += b("%%%02X" % ord(ch2))
             i = i+3
             continue
         else:
@@ -568,10 +574,10 @@ class _implementation:
         Process a text or CDATA node.  Render various special characters
         as their C14N entity representations.'''
         if not _in_subset(self.subset, node): return
-        s = string.replace(node.data, "&", "&amp;")
-        s = string.replace(s, "<", "&lt;")
-        s = string.replace(s, ">", "&gt;")
-        s = string.replace(s, "\015", "&#xD;")
+        s = node.data.replace("&", "&amp;")
+        s = s.replace("<", "&lt;")
+        s = s.replace(">", "&gt;")
+        s = s.replace("\015", "&#xD;")
         if s: self.write(s)
     handlers[Node.TEXT_NODE] = _do_text
     handlers[Node.CDATA_SECTION_NODE] = _do_text
@@ -622,12 +628,12 @@ class _implementation:
         W(' ')
         W(n)
         W('="')
-        s = string.replace(value, "&", "&amp;")
-        s = string.replace(s, "<", "&lt;")
-        s = string.replace(s, '"', '&quot;')
-        s = string.replace(s, '\011', '&#x9')
-        s = string.replace(s, '\012', '&#xA')
-        s = string.replace(s, '\015', '&#xD')
+        s = value.replace(value, "&", "&amp;")
+        s = s.replace("<", "&lt;")
+        s = s.replace('"', '&quot;')
+        s = s.replace('\011', '&#x9')
+        s = s.replace('\012', '&#xA')
+        s = s.replace('\015', '&#xD')
         W(s)
         W('"')
 
@@ -903,22 +909,22 @@ class SinkParser:
         parser, it should be straightforward to recover."""
 
         if not isinstance(octets, unicode):        
-           str = octets.decode('utf-8')
+           s = octets.decode('utf-8')
            # NB already decoded, so \ufeff
-           if len(str) > 0 and str[0] == codecs.BOM_UTF8.decode('utf-8'):
-               str = str[1:]
+           if len(s) > 0 and s[0] == codecs.BOM_UTF8.decode('utf-8'):
+               s = s[1:]
         else: 
-           str=octets
+           s=octets
 
         i = 0
         while i >= 0:
-            j = self.skipSpace(str, i)
+            j = self.skipSpace(s, i)
             if j<0: return
 
-            i = self.directiveOrStatement(str,j)
+            i = self.directiveOrStatement(s,j)
             if i<0:
-                print "# next char: ", `str[j]` 
-                raise BadSyntax(self._thisDoc, self.lines, str, j,
+                print "# next char: ", `s[j]` 
+                raise BadSyntax(self._thisDoc, self.lines, s, j,
                                     "expected directive or statement")
 
     def directiveOrStatement(self, str,h):
@@ -1501,7 +1507,7 @@ class SinkParser:
                 res.append(self._variables[symb])
             else:
                 res.append(symb) # @@@ "#" CONVENTION
-            if not string.find(ns, "#"):progress(
+            if not ns.find("#"):progress(
                         "Warning: no # on namespace %s," % ns)
             return j
 
@@ -1825,7 +1831,7 @@ class SinkParser:
                 if not ch:
                     raise BadSyntax(self._thisDoc, startline, str, i,
                                     "unterminated string literal (2)")
-                k = string.find('abfrtvn\\"', ch)
+                k = 'abfrtvn\\"'.find(ch)
                 if k >= 0:
                     uch = '\a\b\f\r\t\v\n\\"'[k]
                     ustr = ustr + uch
@@ -1855,7 +1861,7 @@ class SinkParser:
             if ch == "":
                 raise BadSyntax(self._thisDoc, startline, str, i,
                                 "unterminated string literal(3)")
-            k = string.find("0123456789abcdef", ch)
+            k = "0123456789abcdef".find(ch)
             if k < 0:
                 raise BadSyntax(self._thisDoc, startline, str, i,
                                 "bad string literal hex escape")
@@ -1876,7 +1882,7 @@ class SinkParser:
             if ch == "":
                 raise BadSyntax(self._thisDoc, startline, str, i,
                                 "unterminated string literal(3)")
-            k = string.find("0123456789abcdef", ch)
+            k = "0123456789abcdef".find(ch)
             if k < 0:
                 raise BadSyntax(self._thisDoc, startline, str, i,
                                 "bad string literal hex escape")
@@ -2139,8 +2145,8 @@ def stringToN3(str, singleLine=0, flags=""):
     if (len(str) > 20 and
         str[-1] <> '"' and
         not singleLine and
-        (string.find(str, "\n") >=0 
-         or string.find(str, '"') >=0)):
+        (str.find("\n") >=0 
+         or str.find('"') >=0)):
         delim= '"""'
         forbidden = forbidden1   # (allow tabs too now)
     else:
@@ -2160,7 +2166,7 @@ def stringToN3(str, singleLine=0, flags=""):
         if ch == '"' and delim == '"""' and str[j:j+3] != '"""':  #"
             res = res + ch
         else:
-            k = string.find('\a\b\f\r\t\v\n\\"', ch)
+            k = '\a\b\f\r\t\v\n\\"'.find(ch)
             if k >= 0: res = res + "\\" + 'abfrtvn\\"'[k]
             else:
                 if 'e' in flags:
@@ -2188,7 +2194,7 @@ def backslashUify(ustr):
         to the given unicode"""
 #    progress("String is "+`ustr`)
 #    s1=ustr.encode('utf-8')
-    str  = ""
+    s  = ""
     for ch in ustr:  # .encode('utf-8'):
         if ord(ch) > 65535:
             ch = "\\U%08X" % ord(ch)       
@@ -2196,32 +2202,33 @@ def backslashUify(ustr):
             ch = "\\u%04X" % ord(ch)
         else:
             ch = "%c" % ord(ch)
-        str = str + ch
-    return str
+        s = s + ch
+    return b(s)
 
+@py3compat.format_doctest_out
 def hexify(ustr):
     """Use URL encoding to return an ASCII string
     corresponding to the given UTF8 string
 
     >>> hexify("http://example/a b")
-    'http://example/a%20b'
+    %(b)s'http://example/a%%20b'
     
     """   #"
 #    progress("String is "+`ustr`)
 #    s1=ustr.encode('utf-8')
-    str  = ""
+    s  = ""
     for ch in ustr:  # .encode('utf-8'):
         if ord(ch) > 126 or ord(ch) < 33 :
             ch = "%%%02X" % ord(ch)
         else:
             ch = "%c" % ord(ch)
-        str = str + ch
-    return str
+        s = s + ch
+    return b(s)
     
 def dummy():
         res = ""
-        if len(str) > 20 and (string.find(str, "\n") >=0 
-                                or string.find(str, '"') >=0):
+        if len(str) > 20 and (str.find("\n") >=0 
+                                or str.find('"') >=0):
                 delim= '"""'
                 forbidden = "\\\"\a\b\f\r\v"    # (allow tabs too now)
         else:
@@ -2229,7 +2236,7 @@ def dummy():
                 forbidden = "\\\"\a\b\f\r\v\t\n"
         for i in range(len(str)):
                 ch = str[i]
-                j = string.find(forbidden, ch)
+                j = forbidden.find(ch)
                 if ch == '"' and delim == '"""' \
                                 and i+1 < len(str) and str[i+1] != '"':
                     j=-1   # Single quotes don't need escaping in long format

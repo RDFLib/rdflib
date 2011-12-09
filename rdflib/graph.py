@@ -107,6 +107,7 @@ in which the triple was asserted:
      
 Parsing N3 from StringIO
 
+    >>> from StringIO import StringIO
     >>> g2 = Graph()
     >>> src = '''
     ... @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -145,9 +146,12 @@ except ImportError:
     from md5 import md5    
 
 try:
-    from cStringIO import StringIO
+    from io import BytesIO
 except ImportError:
-    from StringIO import StringIO
+    try:
+        from cStringIO import StringIO as BytesIO
+    except ImportError:
+        from StringIO import StringIO as BytesIO
 
 # # Can't use this approach any longer, this function will raise an ImportError
 # # because the sparql module has been moved to the RDFExtras package.
@@ -181,6 +185,8 @@ from rdflib.parser import Parser
 from rdflib.parser import create_input_source
 from rdflib.namespace import NamespaceManager
 from rdflib.resource import Resource
+from rdflib import py3compat
+b = py3compat.b
 
 import tempfile, shutil, os
 from urlparse import urlparse
@@ -396,6 +402,19 @@ class Graph(Node):
             #Then perhaps a graph with length 0 should be considered
             #equivalent to None (if compared to it)?
             return 1
+    
+    def __eq__(self, other):
+        return isinstance(other, Graph) and self.identifier == other.identifier
+    
+    def __lt__(self, other):
+        return (other is None) or (isinstance(other, Graph) and \
+                                            self.identifier < other.identifier)
+    def __le__(self, other): return self < other or self == other
+    
+    def __gt__(self, other):
+        return (isinstance(other, Graph) and self.identifier > other.identifier) \
+                    or (other is not None)
+    def __ge__(self, other): return self > other or self == other
 
     def __iadd__(self, other):
         """Add all triples in Graph other to Graph"""
@@ -524,7 +543,7 @@ class Graph(Node):
         else:
             if any is False:
                 try:
-                    next = values.next()
+                    values.next()
                     msg = ("While trying to find a value for (%s, %s, %s) the"
                            " following multiple values where found:\n" %
                            (subject, predicate, object))
@@ -547,6 +566,7 @@ class Graph(Node):
             return default
         return self.value(subject, RDFS.label, default=default, any=True)
 
+    @py3compat.format_doctest_out
     def preferredLabel(self, subject, lang=None, default=[],
                        labelProperties=(SKOS.prefLabel, RDFS.label)):
         """ Find the preferred label for subject.
@@ -565,25 +585,25 @@ class Graph(Node):
         >>> g.add([u, RDFS.label, Literal('bar')])
         >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
         [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
-          rdflib.term.Literal(u'bar')),
+          rdflib.term.Literal(%(u)s'bar')),
          (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
-          rdflib.term.Literal(u'foo'))]
+          rdflib.term.Literal(%(u)s'foo'))]
         >>> g.add([u, SKOS.prefLabel, Literal('bla')])
         >>> g.preferredLabel(u) #doctest: +NORMALIZE_WHITESPACE
         [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(u'bla'))]
+          rdflib.term.Literal(%(u)s'bla'))]
         >>> g.add([u, SKOS.prefLabel, Literal('blubb', lang='en')])
         >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
         [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(u'blubb', lang='en')),
+          rdflib.term.Literal(%(u)s'blubb', lang='en')),
          (rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(u'bla'))]
+          rdflib.term.Literal(%(u)s'bla'))]
         >>> g.preferredLabel(u, lang='') #doctest: +NORMALIZE_WHITESPACE
         [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(u'bla'))]
+          rdflib.term.Literal(%(u)s'bla'))]
         >>> g.preferredLabel(u, lang='en') #doctest: +NORMALIZE_WHITESPACE
         [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(u'blubb', lang='en'))]
+          rdflib.term.Literal(%(u)s'blubb', lang='en'))]
         """
         
         # setup the language filtering
@@ -742,7 +762,7 @@ class Graph(Node):
         """
         serializer = plugin.get(format, Serializer)(self)
         if destination is None:
-            stream = StringIO()
+            stream = BytesIO()
             serializer.serialize(stream, base=base, encoding=encoding, **args)
             return stream.getvalue()
         if hasattr(destination, "write"):
@@ -808,8 +828,8 @@ class Graph(Node):
         ... '''
         >>> import tempfile
         >>> file_name = tempfile.mktemp()
-        >>> f = file(file_name, "w")
-        >>> f.write(my_data)
+        >>> f = open(file_name, "w")
+        >>> dummy = f.write(my_data)  # Returns num bytes written on py3
         >>> f.close()
 
         >>> g = Graph()
@@ -823,7 +843,7 @@ class Graph(Node):
         2
 
         >>> g = Graph()
-        >>> result = g.parse(file=file(file_name, "r"), format="application/rdf+xml")
+        >>> result = g.parse(file=open(file_name, "r"), format="application/rdf+xml")
         >>> len(g)
         2
 
@@ -1120,7 +1140,7 @@ class GraphValue(QuotedGraph):
             s = list(graph.triples((None, None, None)))
             s.sort()
             for t in s:
-                identifier.update("^".join((np.dumps(i) for i in t)))
+                identifier.update(b("^").join((np.dumps(i) for i in t)))
             identifier = URIRef("data:%s" % identifier.hexdigest())
             super(GraphValue, self).__init__(store, identifier)
             for t in graph:
