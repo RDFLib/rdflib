@@ -189,7 +189,7 @@ And the sequence of Stuff::
     >>> [it.qname() for it in stuff.seq()]
     [%(u)s'v:One', %(u)s'v:Other']
 
-Equality is based on the identifier::
+Comparison is based on the identifier::
 
     >>> t1 = Resource(Graph(), URIRef("http://example.org/thing"))
     >>> t2 = Resource(Graph(), URIRef("http://example.org/thing"))
@@ -204,6 +204,16 @@ Equality is based on the identifier::
     False
     >>> t1 != t3
     True
+
+Hash is computed from graph and identifier::
+
+    >>> g1 = Graph()
+    >>> r1 = Resource(g1, URIRef("http://example.org/thing"))
+    >>> r2 = Resource(g1, URIRef("http://example.org/thing"))
+    >>> hash(r1) == hash(r2)
+    True
+    >>> hash(r1) == hash(Resource(Graph(), URIRef("http://example.org/thing")))
+    False
 
 The Resource class is suitable as a base class for mapper toolkits. For
 example, consider this utility for accessing RDF properties via qname-like
@@ -250,11 +260,11 @@ class Resource(object):
 
     identifier = property(lambda self: self._identifier)
 
-    def __eq__(self, other):
-        return self._identifier == other._identifier
+    def __cmp__(self, other):
+        return cmp(self._identifier, other._identifier)
 
-    def __ne__(self, other):
-        return not self == other
+    def __hash__(self):
+        return hash(self._graph) ^ hash(self._identifier)
 
     def __unicode__(self):
         return unicode(self._identifier)
