@@ -8,6 +8,7 @@ kwargs = {}
 if sys.version_info[0] >= 3:
     from setuptools import setup
     kwargs['use_2to3'] = True
+    kwargs['requires'] = ['bsddb3']
 
 # Find version. We have to do this because we can't import it in Python 3 until
 # its been automatically converted in the setup process.
