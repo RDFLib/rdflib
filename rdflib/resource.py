@@ -262,6 +262,12 @@ class Resource(object):
 
     def __cmp__(self, other):
         return cmp(self._identifier, other._identifier)
+    
+    def __eq__(self, other):
+        return self._identifier == other._identifier
+    
+    def __ne__(self, other):
+        return not self == other
 
     def __hash__(self):
         return hash(self._graph) ^ hash(self._identifier)
