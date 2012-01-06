@@ -16,8 +16,11 @@ Resulting generators are also wrapped so that any resource reference values
 behaviour differs from the corresponding methods in Graph, were no such
 conversion takes place.)
 
-Here are some examples. Start by importing things we need and defining some
-namespaces::
+
+Basic Usage Scenario
+--------------------
+
+Start by importing things we need and define some namespaces::
 
     >>> from rdflib import *
     >>> FOAF = Namespace("http://xmlns.com/foaf/0.1/")
@@ -140,9 +143,12 @@ Similarly, adding, setting and removing data is easy::
     []
 
 
+Schema Example
+--------------
+
 With this artificial schema data::
 
-    >>> graph2 = Graph().parse(format='n3', data='''
+    >>> graph = Graph().parse(format='n3', data='''
     ... @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
     ... @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
     ... @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -164,7 +170,7 @@ With this artificial schema data::
 
 From this class::
 
-    >>> artifact = Resource(graph2, URIRef("http://example.org/def/v#Artifact"))
+    >>> artifact = Resource(graph, URIRef("http://example.org/def/v#Artifact"))
 
 we can get at subclasses::
 
@@ -179,40 +185,65 @@ and superclasses from the last subclass::
 
 Get items from the Choice::
 
-    >>> choice = Resource(graph2, URIRef("http://example.org/def/v#Choice"))
+    >>> choice = Resource(graph, URIRef("http://example.org/def/v#Choice"))
     >>> [it.qname() for it in choice.value(OWL.oneOf).items()]
     [%(u)s'v:One', %(u)s'v:Other']
 
 And the sequence of Stuff::
 
-    >>> stuff = Resource(graph2, URIRef("http://example.org/def/v#Stuff"))
+    >>> stuff = Resource(graph, URIRef("http://example.org/def/v#Stuff"))
     >>> [it.qname() for it in stuff.seq()]
     [%(u)s'v:One', %(u)s'v:Other']
 
-Comparison is based on the identifier::
 
-    >>> t1 = Resource(Graph(), URIRef("http://example.org/thing"))
-    >>> t2 = Resource(Graph(), URIRef("http://example.org/thing"))
-    >>> t3 = Resource(Graph(), URIRef("http://example.org/other"))
+Technical Details
+-----------------
+
+Comparison is based on graph and identifier::
+
+    >>> g1 = Graph()
+    >>> t1 = Resource(g1, URIRef("http://example.org/thing"))
+    >>> t2 = Resource(g1, URIRef("http://example.org/thing"))
+    >>> t3 = Resource(g1, URIRef("http://example.org/other"))
+    >>> t4 = Resource(Graph(), URIRef("http://example.org/other"))
+
     >>> t1 is t2
     False
+
     >>> t1 == t2
     True
     >>> t1 != t2
     False
+
     >>> t1 == t3
     False
     >>> t1 != t3
     True
 
+    >>> t3 != t4
+    True
+
+    >>> t3 < t1 and t1 > t3
+    True
+    >>> t1 >= t1 and t1 >= t3
+    True
+    >>> t1 <= t1 and t3 <= t1
+    True
+
+    >>> t1 < t1 or t1 < t3 or t3 > t1 or t3 > t3
+    False
+
 Hash is computed from graph and identifier::
 
     >>> g1 = Graph()
-    >>> r1 = Resource(g1, URIRef("http://example.org/thing"))
-    >>> r2 = Resource(g1, URIRef("http://example.org/thing"))
-    >>> hash(r1) == hash(r2)
+    >>> t1 = Resource(g1, URIRef("http://example.org/thing"))
+
+    >>> hash(t1) == hash(Resource(g1, URIRef("http://example.org/thing")))
     True
-    >>> hash(r1) == hash(Resource(Graph(), URIRef("http://example.org/thing")))
+
+    >>> hash(t1) == hash(Resource(Graph(), t1.identifier))
+    False
+    >>> hash(t1) == hash(Resource(Graph(), URIRef("http://example.org/thing")))
     False
 
 The Resource class is suitable as a base class for mapper toolkits. For
@@ -229,7 +260,18 @@ attributes::
 
 It works as follows::
 
-    >>> person = Item(graph, person.identifier)
+    >>> graph = Graph().parse(format='n3', data='''
+    ... @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+    ... @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    ...
+    ... @base <http://example.org/> .
+    ... </person/some1#self>
+    ...     foaf:name "Some Body";
+    ...     foaf:depiction </images/person/some1.jpg> .
+    ... </images/person/some1.jpg> rdfs:comment "Just an image"@en .
+    ... ''')
+
+    >>> person = Item(graph, URIRef("http://example.org/person/some1#self"))
 
     >>> print person.foaf_name[0]
     Some Body
@@ -260,21 +302,29 @@ class Resource(object):
 
     identifier = property(lambda self: self._identifier)
 
-    def __cmp__(self, other):
-        return cmp(self._identifier, other._identifier)
-    
-    def __eq__(self, other):
-        return self._identifier == other._identifier
-    
-    def __ne__(self, other):
-        return not self == other
-
     def __hash__(self):
-        return hash(self._graph) ^ hash(self._identifier)
+        return hash(Resource) ^ hash(self._graph) ^ hash(self._identifier)
+
+    def __eq__(self, other):
+        return (isinstance(other, Resource) and
+                self._graph == other._graph and
+                self._identifier == other._identifier)
+
+    __ne__ = lambda self, other: not self == other
+
+    def __lt__(self, other):
+        if isinstance(other, Resource):
+            return self._identifier < other._identifier
+        else:
+            return False
+
+    __gt__ = lambda self, other: not (self < other or self == other)
+    __le__ = lambda self, other: self < other or self == other
+    __ge__ = lambda self, other: not self < other
 
     def __unicode__(self):
         return unicode(self._identifier)
-    
+
     if py3compat.PY3:
         __str__ = __unicode__
 
