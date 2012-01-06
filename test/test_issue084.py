@@ -90,6 +90,10 @@ rdfxml_reader = getreader('utf-8')(BytesIO(rdfxml.encode('utf-8')))
         
 def test_xml_a():
     """Test reading XML from a unicode object as data"""
+    import platform
+    if platform.system() == 'Java':
+        from nose import SkipTest
+        raise SkipTest('unicode issue for Jython2.5')
     g = Graph()
     g.parse(data=rdfxml, format='xml')
     v = g.value(subject=URIRef("http://www.test.org/#CI"), predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"))
@@ -97,6 +101,10 @@ def test_xml_a():
 
 def test_xml_b():
     """Test reading XML from a utf8 encoded string object as data"""
+    import platform
+    if platform.system() == 'Java':
+        from nose import SkipTest
+        raise SkipTest('unicode issue for Jython2.5')
     g = Graph()
     g.parse(data=rdfxml_utf8, format='xml')
     v = g.value(subject=URIRef("http://www.test.org/#CI"), predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"))
@@ -119,6 +127,10 @@ def test_xml_b():
 
 def test_xml_e():
     """Test reading XML from a BytesIO created from utf8 encoded string"""
+    import platform
+    if platform.system() == 'Java':
+        from nose import SkipTest
+        raise SkipTest('unicode issue for Jython2.5')
     g = Graph()
     g.parse(source=BytesIO(rdfxml_utf8), format='xml')
     v = g.value(subject=URIRef("http://www.test.org/#CI"), predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"))
