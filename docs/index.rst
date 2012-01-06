@@ -4,9 +4,6 @@
 rdflib 3.0
 ==========
 
-.. warning:: In preparation. This documentation for rdflib 3.0.0 has not yet been reviewed. Some of the code (esp. the "assorted examples") has not been updated to reflect the changes and refactoring introduced in rdflib 3.0.0.
-
-
 Introduction
 ============
 
@@ -28,7 +25,7 @@ A tiny example:
     >>> g = rdflib.Graph()
     >>> result = g.parse("http://eikeon.com/foaf.rdf")
 
-    >>> print "graph has %s statements." % len(g)
+    >>> print("graph has %s statements." % len(g))
     graph has 34 statements.
     >>>
     >>> for s, p, o in g:
@@ -37,7 +34,7 @@ A tiny example:
 
     >>> s = g.serialize(format='n3')
 
-The package uses various Python idioms that makes them an appropriate way to introduce it to a Python programmer who hasn't used it before.
+The package uses various Python idioms that offers an appropriate way to introduce RDF to a Python programmer who hasn't used it before.
 
 ``rdflib`` graphs redefine certain built-in Python methods in order to behave in a predictable way; they emulate container types and are best thought of as a set of 3-item triples:
 
