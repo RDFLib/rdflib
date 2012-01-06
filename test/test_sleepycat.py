@@ -19,7 +19,12 @@ class SleepycatStoreTestCase(test_context.ContextTestCase):
     bsddb = True
 
 if sys.version_info >= (3,):
-	try:
-		import bsddb3
-	except ImportError:
-		raise SkipTest('bsddb3 not installed')
+    try:
+        import bsddb3
+    except ImportError:
+        raise SkipTest('bsddb3 not installed')
+else:
+    try:
+        import bsddb
+    except ImportError:
+        raise SkipTest('bsddb not installed')

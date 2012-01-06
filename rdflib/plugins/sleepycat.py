@@ -385,11 +385,17 @@ class Sleepycat(Store):
 
     def namespace(self, prefix):
         prefix = prefix.encode("utf-8")
-        return self.__namespace.get(prefix, None)
+        ns = self.__namespace.get(prefix, None)
+        if ns is not None:
+            return ns.decode('utf-8')
+        return None
 
     def prefix(self, namespace):
         namespace = namespace.encode("utf-8")
-        return self.__prefix.get(namespace, None)
+        prefix = self.__prefix.get(namespace, None)
+        if prefix is not None:
+            return prefix.decode('utf-8')
+        return None
 
     def namespaces(self):
         cursor = self.__namespace.cursor()
@@ -397,7 +403,7 @@ class Sleepycat(Store):
         current = cursor.first()
         while current:
             prefix, namespace = current
-            results.append((prefix, namespace))
+            results.append((prefix.decode('utf-8'), namespace.decode('utf-8')))
             # Hack to stop 2to3 converting this to next(cursor)
             current = getattr(cursor, 'next')()
         cursor.close()
