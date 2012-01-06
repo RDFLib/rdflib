@@ -394,13 +394,12 @@ class Resource(object):
             yield self._cast(node)
 
     def _cast(self, node):
-        return _is_ref(node) and self._new(node) or node
+        if isinstance(node, (BNode, URIRef)):
+            return self._new(node)
+        else:
+            return node
 
     def _new(self, subject):
         return type(self)(self._graph, subject)
-
-
-def _is_ref(node):
-    return isinstance(node, (BNode, URIRef))
 
 
