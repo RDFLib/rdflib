@@ -106,8 +106,8 @@ class Result(object):
                 print("WARNING: not saving as location" + \
                       "is not a local file reference")
                 return
-            name = tempfile.mktemp()
-            stream = open(name, 'wb')
+            fd, name = tempfile.mkstemp()
+            stream = os.fdopen(fd, 'wb')
             serializer.serialize(stream, encoding=encoding, **args)
             stream.close()
             if hasattr(shutil,"move"):

@@ -775,8 +775,8 @@ class Graph(Node):
                 print("WARNING: not saving as location" + \
                       "is not a local file reference")
                 return
-            name = tempfile.mktemp()
-            stream = open(name, 'wb')
+            fd, name = tempfile.mkstemp()
+            stream = os.fdopen(fd)
             serializer.serialize(stream, base=base, encoding=encoding, **args)
             stream.close()
             if hasattr(shutil,"move"):
@@ -827,8 +827,8 @@ class Graph(Node):
         ... </rdf:RDF>
         ... '''
         >>> import tempfile
-        >>> file_name = tempfile.mktemp()
-        >>> f = open(file_name, "w")
+        >>> fd, file_name = tempfile.mkstemp()
+        >>> f = os.fdopen(fd, 'w')
         >>> dummy = f.write(my_data)  # Returns num bytes written on py3
         >>> f.close()
 
@@ -846,6 +846,8 @@ class Graph(Node):
         >>> result = g.parse(file=open(file_name, "r"), format="application/rdf+xml")
         >>> len(g)
         2
+
+        >>> os.remove(file_name)
 
         """
 

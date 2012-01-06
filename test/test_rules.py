@@ -1,5 +1,6 @@
 import unittest
 from tempfile import mkdtemp
+import shutil
 
 from rdflib.term import URIRef
 from rdflib.term import BNode
@@ -40,13 +41,16 @@ try:
 
     class PychinkoTestCase(unittest.TestCase):
         backend = 'default'
+        tmppath = None
         def setUp(self):
             self.g = Graph(store=self.backend)
-            self.g.open(configuration=mkdtemp())
+            self.tmppath = mkdtemp()
+            self.g.open(configuration=self.tmppath)
             self.g.parse("test/a.n3", format="n3")
 
         def tearDown(self):
             self.g.close()
+            shutil.rmtree(tmppath)
 
         def testPychinko(self):
             rules = []

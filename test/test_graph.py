@@ -4,6 +4,7 @@ import time
 import BaseHTTPServer
 
 from tempfile import mkdtemp
+import shutil
 
 from rdflib.term import URIRef
 from rdflib.namespace import RDF
@@ -14,13 +15,12 @@ import rdflib.plugin
 
 class GraphTestCase(unittest.TestCase):
     store_name = 'default'
-    path = None
+    tmppath = None
 
     def setUp(self):
         self.graph = Graph(store=self.store_name)
-        a_tmp_dir = mkdtemp()
-        self.path = self.path or a_tmp_dir
-        self.graph.open(self.path)
+        self.tmppath = mkdtemp()
+        self.graph.open(self.tmppath)
 
         self.michel = URIRef(u'michel')
         self.tarek = URIRef(u'tarek')
@@ -32,6 +32,7 @@ class GraphTestCase(unittest.TestCase):
 
     def tearDown(self):
         self.graph.close()
+        shutil.rmtree(self.tmppath)
 
     def addStuff(self):
         tarek = self.tarek
