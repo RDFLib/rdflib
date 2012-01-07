@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TriX xmlns="http://www.w3.org/2004/03/trix/trix-1/">
+  <graph>
+    <uri>http://example.org/exampleGraph2</uri>
+    <triple>
+      <uri>http://example.org/exampleGraph2</uri>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/assertedBy</uri>
+      <uri>urn:sha1:5c1791085d1a27a3daea9f647a3893dc3d8ae224</uri>
+    </triple>
+    <triple>
+      <uri>http://example.org/graphToAssert2</uri>
+      <uri>http://purl.org/dc/elements/1.1/description</uri>
+      <plainLiteral>Yet another really cool description</plainLiteral>
+    </triple>
+    <triple>
+      <uri>http://example.org/graphToAssert2</uri>
+      <uri>http://purl.org/dc/elements/1.1/title</uri>
+      <plainLiteral>Yet Another title</plainLiteral>
+    </triple>
+    <triple>
+      <uri>http://example.org/graphToAssert2</uri>
+      <uri>http://purl.org/dc/elements/1.1/date</uri>
+      <plainLiteral>2004-11-24</plainLiteral>
+    </triple>
+    <triple>
+      <uri>http://example.org/graphToAssert2</uri>
+      <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
+      <uri>http://xmlns.com/foaf/0.1/Document</uri>
+    </triple>
+  </graph>
+  <graph>
+    <uri>http://example.org/exampleGraph</uri>
+    <triple>
+      <uri>http://example.org/graphToAssert</uri>
+      <uri>http://purl.org/dc/elements/1.1/title</uri>
+      <plainLiteral>A title</plainLiteral>
+    </triple>
+    <triple>
+      <uri>http://example.org/graphToAssert</uri>
+      <uri>http://purl.org/dc/elements/1.1/date</uri>
+      <plainLiteral>2004-11-24</plainLiteral>
+    </triple>
+    <triple>
+      <uri>http://example.org/graphToAssert</uri>
+      <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
+      <uri>http://xmlns.com/foaf/0.1/Document</uri>
+    </triple>
+    <triple>
+      <uri>http://example.org/graphToAssert</uri>
+      <uri>http://purl.org/dc/elements/1.1/description</uri>
+      <plainLiteral>A really cool description</plainLiteral>
+    </triple>
+    <triple>
+      <uri>http://example.org/exampleGraph</uri>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/assertedBy</uri>
+      <uri>urn:sha1:b769e36fb479bc2401787b43b6dd51100d4d25c2</uri>
+    </triple>
+  </graph>
+  <graph>
+    <uri>urn:sha1:5c1791085d1a27a3daea9f647a3893dc3d8ae224</uri>
+    <triple>
+      <id>f47396:10076d4a0f9:-7fff</id>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/caCertificate</uri>
+      <plainLiteral>MIIDvTCCAyagAwIBAgIBADANBgkqhkiG9w0BAQQFADCBoTELMAkGA1UEBhMCVUsxEjAQBgNVBAgT
+CUhhbXBzaGlyZTEUMBIGA1UEBxMLU291dGhhbXB0b24xIjAgBgNVBAoTGVVuaXZlcnNpdHkgb2Yg
+U291dGhhbXB0b24xDTALBgNVBAsTBERTU0UxDjAMBgNVBAMTBURQIENBMSUwIwYJKoZIhvcNAQkB
+FhZlcncwMXJAZWNzLnNvdG9uLmFjLnVrMB4XDTA0MDYwNzE2MDgzN1oXDTA3MDYwNzE2MDgzN1ow
+gaExCzAJBgNVBAYTAlVLMRIwEAYDVQQIEwlIYW1wc2hpcmUxFDASBgNVBAcTC1NvdXRoYW1wdG9u
+MSIwIAYDVQQKExlVbml2ZXJzaXR5IG9mIFNvdXRoYW1wdG9uMQ0wCwYDVQQLEwREU1NFMQ4wDAYD
+VQQDEwVEUCBDQTElMCMGCSqGSIb3DQEJARYWZXJ3MDFyQGVjcy5zb3Rvbi5hYy51azCBnzANBgkq
+hkiG9w0BAQEFAAOBjQAwgYkCgYEAyfD+oqNBCoXIruGbS7JL29flnMBrDwCbLrQYKJKrx5yVZoqW
+unWf77UnkFjYWUqpxpnlMKreBbktoO0SiIUDYSdYpNFgydO80/g1GaClbZFBh0m0JRjCffdXDJt/
+NcPs2Vd1gSitYB6C3rGPuU+Y1BnCFg3vyEksuEHUSzMMeykCAwEAAaOCAQEwgf4wHQYDVR0OBBYE
+FNgZSnEq4PTOTCkBF9U+r15KDHD1MIHOBgNVHSMEgcYwgcOAFNgZSnEq4PTOTCkBF9U+r15KDHD1
+oYGnpIGkMIGhMQswCQYDVQQGEwJVSzESMBAGA1UECBMJSGFtcHNoaXJlMRQwEgYDVQQHEwtTb3V0
+aGFtcHRvbjEiMCAGA1UEChMZVW5pdmVyc2l0eSBvZiBTb3V0aGFtcHRvbjENMAsGA1UECxMERFNT
+RTEOMAwGA1UEAxMFRFAgQ0ExJTAjBgkqhkiG9w0BCQEWFmVydzAxckBlY3Muc290b24uYWMudWuC
+AQAwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQQFAAOBgQAKKPHTBHuJUNSBcz/2RHzCvYZk2RS4
+4nsQg+jO8CIfKkAVlgEIQXWgouEjztFmj5smIgOfG1ZQQALnAehx8TvNBk5FzvkIyfQ1n1qmuXi7
+0ZR/ZhET31jHabkXUbgIrVMB/4vb3GOI5OCkmdKeUEB58Ver7FrYKZBq7tkLiWfwaw==</plainLiteral>
+    </triple>
+    <triple>
+      <id>f47396:10076d4a0f9:-7fff</id>
+      <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/CertificationAuthority</uri>
+    </triple>
+    <triple>
+      <id>f47396:10076d4a0f9:-7ffe</id>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/authority</uri>
+      <plainLiteral>f47396:10076d4a0f9:-8000</plainLiteral>
+    </triple>
+    <triple>
+      <id>f47396:10076d4a0f9:-7ffe</id>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/signature</uri>
+      <plainLiteral>AZ8QWEJ05HaDsh4iHYmsJfMDVlVSfTqvvPjNApK4D5Kb4kMS+6GqQuayr04XJ0vTJ4txDbYOf2AN
+2zV09kb2M8CDDxoghSScSmCjMiSzr4CqgP90Gz2R6YPjQIHNzbNidfs/AJzkWDI9cnfwK7ieyQBv
+HqBV574gqx26KvDfoR8=
+</plainLiteral>
+    </triple>
+    <triple>
+      <id>f47396:10076d4a0f9:-7ffe</id>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/signatureMethod</uri>
+      <plainLiteral>SHA1WithRSA</plainLiteral>
+    </triple>
+    <triple>
+      <id>f47396:10076d4a0f9:-7ffe</id>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/certificationAuthority</uri>
+      <plainLiteral>f47396:10076d4a0f9:-7fff</plainLiteral>
+    </triple>
+    <triple>
+      <id>f47396:10076d4a0f9:-7ffe</id>
+      <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/Warrant</uri>
+    </triple>
+    <triple>
+      <id>f47396:10076d4a0f9:-8000</id>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/certificate</uri>
+      <plainLiteral>MIID8zCCA1ygAwIBAgIBAzANBgkqhkiG9w0BAQQFADCBoTELMAkGA1UEBhMCVUsxEjAQBgNVBAgT
+CUhhbXBzaGlyZTEUMBIGA1UEBxMLU291dGhhbXB0b24xIjAgBgNVBAoTGVVuaXZlcnNpdHkgb2Yg
+U291dGhhbXB0b24xDTALBgNVBAsTBERTU0UxDjAMBgNVBAMTBURQIENBMSUwIwYJKoZIhvcNAQkB
+FhZlcncwMXJAZWNzLnNvdG9uLmFjLnVrMB4XDTA0MDYwNzIxMDIzM1oXDTA1MDYwNzIxMDIzM1ow
+gasxCzAJBgNVBAYTAlVLMRIwEAYDVQQIEwlIYW1wc2hpcmUxFDASBgNVBAcTC1NvdXRoYW1wdG9u
+MSIwIAYDVQQKExlVbml2ZXJzaXR5IG9mIFNvdXRoYW1wdG9uMQ0wCwYDVQQLEwREU1NFMRgwFgYD
+VQQDEw9Sb3dsYW5kIFdhdGtpbnMxJTAjBgkqhkiG9w0BCQEWFmVydzAxckBlY3Muc290b24uYWMu
+dWswgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAMlBcaqp10bBhIjCdnHg30/LYWQe4hdoHIm0
+4b+REqJWELOJTp23io/+YEmrP+Oym5/HOuWfDPx7j+mS6R/GK7SyafV8qP1fiA8nsOsakj1eR0t8
+ypnufUhlVY5G40FIYmTmtgH/gnNXWf0VWCasUjTSmaUWa4+VinhVr2d8P4FjAgMBAAGjggEtMIIB
+KTAJBgNVHRMEAjAAMCwGCWCGSAGG+EIBDQQfFh1PcGVuU1NMIEdlbmVyYXRlZCBDZXJ0aWZpY2F0
+ZTAdBgNVHQ4EFgQUjrkjaHUEtMqzJBV7MvCkywLpql4wgc4GA1UdIwSBxjCBw4AU2BlKcSrg9M5M
+KQEX1T6vXkoMcPWhgaekgaQwgaExCzAJBgNVBAYTAlVLMRIwEAYDVQQIEwlIYW1wc2hpcmUxFDAS
+BgNVBAcTC1NvdXRoYW1wdG9uMSIwIAYDVQQKExlVbml2ZXJzaXR5IG9mIFNvdXRoYW1wdG9uMQ0w
+CwYDVQQLEwREU1NFMQ4wDAYDVQQDEwVEUCBDQTElMCMGCSqGSIb3DQEJARYWZXJ3MDFyQGVjcy5z
+b3Rvbi5hYy51a4IBADANBgkqhkiG9w0BAQQFAAOBgQB1cOuBoxtpLfBnh7FMZNDgnTDSofvvRoCR
+2aUMnvCDo84rkwbz/jXboP4VDRmmgqAgtjtgqR0PO/ua6pgF46Nax2hx+B+JHtvYuNDB2gUuRqpI
+EJFdIZtF5zZawEkphFL+5N2fZhz6h/JWsqtkWmU7cflRI2luqUC3lmfpsI1zYw==</plainLiteral>
+    </triple>
+    <triple>
+      <id>f47396:10076d4a0f9:-8000</id>
+      <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/Authority</uri>
+    </triple>
+  </graph>
+  <graph>
+    <uri>urn:sha1:b769e36fb479bc2401787b43b6dd51100d4d25c2</uri>
+    <triple>
+      <id>f47396:10076d4a0f9:-7ffc</id>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/caCertificate</uri>
+      <plainLiteral>MIIDvTCCAyagAwIBAgIBADANBgkqhkiG9w0BAQQFADCBoTELMAkGA1UEBhMCVUsxEjAQBgNVBAgT
+CUhhbXBzaGlyZTEUMBIGA1UEBxMLU291dGhhbXB0b24xIjAgBgNVBAoTGVVuaXZlcnNpdHkgb2Yg
+U291dGhhbXB0b24xDTALBgNVBAsTBERTU0UxDjAMBgNVBAMTBURQIENBMSUwIwYJKoZIhvcNAQkB
+FhZlcncwMXJAZWNzLnNvdG9uLmFjLnVrMB4XDTA0MDYwNzE2MDgzN1oXDTA3MDYwNzE2MDgzN1ow
+gaExCzAJBgNVBAYTAlVLMRIwEAYDVQQIEwlIYW1wc2hpcmUxFDASBgNVBAcTC1NvdXRoYW1wdG9u
+MSIwIAYDVQQKExlVbml2ZXJzaXR5IG9mIFNvdXRoYW1wdG9uMQ0wCwYDVQQLEwREU1NFMQ4wDAYD
+VQQDEwVEUCBDQTElMCMGCSqGSIb3DQEJARYWZXJ3MDFyQGVjcy5zb3Rvbi5hYy51azCBnzANBgkq
+hkiG9w0BAQEFAAOBjQAwgYkCgYEAyfD+oqNBCoXIruGbS7JL29flnMBrDwCbLrQYKJKrx5yVZoqW
+unWf77UnkFjYWUqpxpnlMKreBbktoO0SiIUDYSdYpNFgydO80/g1GaClbZFBh0m0JRjCffdXDJt/
+NcPs2Vd1gSitYB6C3rGPuU+Y1BnCFg3vyEksuEHUSzMMeykCAwEAAaOCAQEwgf4wHQYDVR0OBBYE
+FNgZSnEq4PTOTCkBF9U+r15KDHD1MIHOBgNVHSMEgcYwgcOAFNgZSnEq4PTOTCkBF9U+r15KDHD1
+oYGnpIGkMIGhMQswCQYDVQQGEwJVSzESMBAGA1UECBMJSGFtcHNoaXJlMRQwEgYDVQQHEwtTb3V0
+aGFtcHRvbjEiMCAGA1UEChMZVW5pdmVyc2l0eSBvZiBTb3V0aGFtcHRvbjENMAsGA1UECxMERFNT
+RTEOMAwGA1UEAxMFRFAgQ0ExJTAjBgkqhkiG9w0BCQEWFmVydzAxckBlY3Muc290b24uYWMudWuC
+AQAwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQQFAAOBgQAKKPHTBHuJUNSBcz/2RHzCvYZk2RS4
+4nsQg+jO8CIfKkAVlgEIQXWgouEjztFmj5smIgOfG1ZQQALnAehx8TvNBk5FzvkIyfQ1n1qmuXi7
+0ZR/ZhET31jHabkXUbgIrVMB/4vb3GOI5OCkmdKeUEB58Ver7FrYKZBq7tkLiWfwaw==</plainLiteral>
+    </triple>
+    <triple>
+      <id>f47396:10076d4a0f9:-7ffc</id>
+      <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/CertificationAuthority</uri>
+    </triple>
+    <triple>
+      <id>f47396:10076d4a0f9:-7ffd</id>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/certificate</uri>
+      <plainLiteral>MIID8zCCA1ygAwIBAgIBAzANBgkqhkiG9w0BAQQFADCBoTELMAkGA1UEBhMCVUsxEjAQBgNVBAgT
+CUhhbXBzaGlyZTEUMBIGA1UEBxMLU291dGhhbXB0b24xIjAgBgNVBAoTGVVuaXZlcnNpdHkgb2Yg
+U291dGhhbXB0b24xDTALBgNVBAsTBERTU0UxDjAMBgNVBAMTBURQIENBMSUwIwYJKoZIhvcNAQkB
+FhZlcncwMXJAZWNzLnNvdG9uLmFjLnVrMB4XDTA0MDYwNzIxMDIzM1oXDTA1MDYwNzIxMDIzM1ow
+gasxCzAJBgNVBAYTAlVLMRIwEAYDVQQIEwlIYW1wc2hpcmUxFDASBgNVBAcTC1NvdXRoYW1wdG9u
+MSIwIAYDVQQKExlVbml2ZXJzaXR5IG9mIFNvdXRoYW1wdG9uMQ0wCwYDVQQLEwREU1NFMRgwFgYD
+VQQDEw9Sb3dsYW5kIFdhdGtpbnMxJTAjBgkqhkiG9w0BCQEWFmVydzAxckBlY3Muc290b24uYWMu
+dWswgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAMlBcaqp10bBhIjCdnHg30/LYWQe4hdoHIm0
+4b+REqJWELOJTp23io/+YEmrP+Oym5/HOuWfDPx7j+mS6R/GK7SyafV8qP1fiA8nsOsakj1eR0t8
+ypnufUhlVY5G40FIYmTmtgH/gnNXWf0VWCasUjTSmaUWa4+VinhVr2d8P4FjAgMBAAGjggEtMIIB
+KTAJBgNVHRMEAjAAMCwGCWCGSAGG+EIBDQQfFh1PcGVuU1NMIEdlbmVyYXRlZCBDZXJ0aWZpY2F0
+ZTAdBgNVHQ4EFgQUjrkjaHUEtMqzJBV7MvCkywLpql4wgc4GA1UdIwSBxjCBw4AU2BlKcSrg9M5M
+KQEX1T6vXkoMcPWhgaekgaQwgaExCzAJBgNVBAYTAlVLMRIwEAYDVQQIEwlIYW1wc2hpcmUxFDAS
+BgNVBAcTC1NvdXRoYW1wdG9uMSIwIAYDVQQKExlVbml2ZXJzaXR5IG9mIFNvdXRoYW1wdG9uMQ0w
+CwYDVQQLEwREU1NFMQ4wDAYDVQQDEwVEUCBDQTElMCMGCSqGSIb3DQEJARYWZXJ3MDFyQGVjcy5z
+b3Rvbi5hYy51a4IBADANBgkqhkiG9w0BAQQFAAOBgQB1cOuBoxtpLfBnh7FMZNDgnTDSofvvRoCR
+2aUMnvCDo84rkwbz/jXboP4VDRmmgqAgtjtgqR0PO/ua6pgF46Nax2hx+B+JHtvYuNDB2gUuRqpI
+EJFdIZtF5zZawEkphFL+5N2fZhz6h/JWsqtkWmU7cflRI2luqUC3lmfpsI1zYw==</plainLiteral>
+    </triple>
+    <triple>
+      <id>f47396:10076d4a0f9:-7ffd</id>
+      <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/Authority</uri>
+    </triple>
+    <triple>
+      <id>f47396:10076d4a0f9:-7ffb</id>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/certificationAuthority</uri>
+      <plainLiteral>f47396:10076d4a0f9:-7ffc</plainLiteral>
+    </triple>
+    <triple>
+      <id>f47396:10076d4a0f9:-7ffb</id>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/signatureMethod</uri>
+      <plainLiteral>SHA1WithRSA</plainLiteral>
+    </triple>
+    <triple>
+      <id>f47396:10076d4a0f9:-7ffb</id>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/signature</uri>
+      <plainLiteral>UJLwR5Sm9fIqORVnB4OvEXmvX46JTWsZQ7I6Tj1zcL/EbvQV9TqIqJjvPJ4+JH7Fmz2LdLaQARVt
+qRfvUgal1ZhH/8T3wJZ1LpVLwLhYqBecYG4kTQITbzTzTXYcIp0BlMcPL7DxUavPsPilEB7fnQj8
+ccVh6uu18JVbTDOCEgM=
+</plainLiteral>
+    </triple>
+    <triple>
+      <id>f47396:10076d4a0f9:-7ffb</id>
+      <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</uri>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/Warrant</uri>
+    </triple>
+    <triple>
+      <id>f47396:10076d4a0f9:-7ffb</id>
+      <uri>http://www.w3.org/2004/03/trix/swp-1/authority</uri>
+      <plainLiteral>f47396:10076d4a0f9:-7ffd</plainLiteral>
+    </triple>
+  </graph>
+</TriX>
