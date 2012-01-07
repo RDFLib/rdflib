@@ -5,9 +5,13 @@ def bb(u): return u.encode('utf-8')
 
 try:
     from bsddb import db
+    has_bsddb = True
 except ImportError:
-    from bsddb3 import db
-
+    try:
+        from bsddb3 import db
+        has_bsddb = True
+    except ImportError:
+        has_bsddb = False
 from os import mkdir
 from os.path import exists, abspath
 from urllib import pathname2url
@@ -22,6 +26,7 @@ class Sleepycat(Store):
     transaction_aware = False
 
     def __init__(self, configuration=None, identifier=None):
+        if not has_bsddb: raise Exception("No local BerkeleyDB found.")
         self.__open = False
         self.__identifier = identifier
         super(Sleepycat, self).__init__(configuration)
@@ -54,6 +59,7 @@ class Sleepycat(Store):
         return self.__open
     
     def open(self, path, create=True):
+        if not has_bsddb: return NO_STORE
         homeDir = path
 
         if self.__identifier is None:
