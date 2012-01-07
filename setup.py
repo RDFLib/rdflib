@@ -33,7 +33,7 @@ kwargs = {}
 if sys.version_info[0] >= 3:
     from setuptools import setup
     kwargs['use_2to3'] = True
-    kwargs['requires'] = ['bsddb3']
+    # kwargs['requires'] = ['bsddb3']
     kwargs['src_root'] = setup_python3()
 else:
     try:
@@ -73,6 +73,8 @@ setup(
                    "Programming Language :: Python :: 2.6",
                    "Programming Language :: Python :: 2.7",
                    "Programming Language :: Python :: 3.2",
+                   "Programming Language :: Python :: Implementation :: Jython",
+                   "Programming Language :: Python :: Implementation :: PyPy",
                    "License :: OSI Approved :: BSD License",
                    "Topic :: Software Development :: Libraries :: Python Modules",
                    "Operating System :: OS Independent",
