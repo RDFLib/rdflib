@@ -4,6 +4,40 @@
 Getting started with rdflib
 ===========================
 
+rdflib graphs
+-------------
+
+The primary interface that ``rdflib`` exposes for working with RDF is
+:class:`rdflib.graph.Graph`.
+
+A tiny example:
+
+    >>> import rdflib
+    >>> g = rdflib.Graph()
+    >>> result = g.parse("http://www.w3.org/People/Berners-Lee/card")
+    >>> print("graph has %s statements." % len(g))
+    graph has 79 statements.
+    >>> for subj, pred, obj in g:
+    ...     if (subj, pred, obj) not in g:
+    ...         raise Exception("It better be!")
+    >>> s = g.serialize(format='n3')
+
+The package uses various Python idioms that offer an appropriate way to introduce RDF to a Python programmer who hasn't used it before.
+
+``rdflib`` graphs redefine certain built-in Python methods in order to behave in a predictable way; they emulate container types and are best thought of as a set of 3-item triples:
+
+.. code-block:: text
+
+    [
+        (subject,  predicate,  object),
+        (subject1, predicate1, object1),
+        ... 
+        (subjectN, predicateN, objectN)
+     ]
+
+``rdflib`` graphs are not sorted containers; they have ordinary set operations (e.g. :meth:`~rdflib.Graph.add` to add a triple) plus methods that search triples and return them in arbitrary order.
+
+
 Introduction to parsing RDF into rdflib graphs
 ----------------------------------------------
 
@@ -12,14 +46,10 @@ Reading an NT file
 
 RDF data has various syntaxes (``xml``, ``n3``, ``ntriples``, ``trix``, etc) that you might want to read. The simplest format is ``ntriples``. Create the file :file:`demo.nt` in the current directory with these two lines:
 
-.. code-block:: text
+.. code-block:: n3
 
-    <http://bigasterisk.com/foaf.rdf#drewp> \
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> \
-    <http://xmlns.com/foaf/0.1/Person> .
-    <http://bigasterisk.com/foaf.rdf#drewp> \
-    <http://example.com/says> \
-    "Hello world" .
+    <http://bigasterisk.com/foaf.rdf#drewp> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .
+    <http://bigasterisk.com/foaf.rdf#drewp> <http://example.com/says> "Hello world" .
 
 In an interactive python interpreter, try this:
 
@@ -83,6 +113,7 @@ Plugin parsers for rdflib
 .. module:: rdflib.plugins.parsers.trix
 .. autoclass::  rdflib.plugins.parsers.trix.TriXParser
 
+
 Introduction to using SPARQL to query an rdflib graph
 -----------------------------------------------------
 
@@ -105,7 +136,8 @@ LiveJournal produces FOAF data for their users, but they seem to use ``foaf:memb
     from rdflib.namespace import Namespace
     FOAF = Namespace("http://xmlns.com/foaf/0.1/")
     g.parse("http://danbri.livejournal.com/data/foaf") 
-    [g.add((s, FOAF['name'], n)) for s,_,n in g.triples((None, FOAF['member_name'], None))]
+    [g.add((s, FOAF['name'], n)) 
+        for s,_,n in g.triples((None, FOAF['member_name'], None))]
 
 Run a Query
 ^^^^^^^^^^^
@@ -145,7 +177,7 @@ Continuing the example...
             foaf=Namespace("http://xmlns.com/foaf/0.1/")))
     
     for row in qres.result:
-        print "%s knows %s" % row
+        print("%s knows %s" % row)
 
 The results are tuples of values in the same order as your SELECT arguments.
 
@@ -192,6 +224,41 @@ Output:
 .. code-block:: python
 
     (rdflib.Literal('Drew Perttula', language=None, datatype=None),)
+
+
+Persistence
+-----------
+
+``rdflib`` provides an abstracted Store API for persistence of RDF and Notation 3. The :class:`~rdflib.graph.Graph` class works with instances of this API (as the first argument to its constructor) for triple-based management of an RDF store including: garbage collection, transaction management, update, pattern matching, removal, length, and database management (:meth:`~rdflib.graph.Graph.open` / :meth:`~rdflib.graph.Graph.close` / :meth:`~rdflib.graph.Graph.destroy`).  
+
+Additional persistence mechanisms can be supported by implementing this API for a different store.
+
+Currently supported stores
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Random access memory
+* Sleepycat (via Python's ``bsddb`` or ``bsddb3`` packages)
+
+Usage
+^^^^^
+
+Store instances can be created with the :meth:`plugin` function:
+
+.. code-block:: python
+
+    from rdflib import plugin
+    from rdflib.store import Store
+    plugin.get('.. one of the supported Stores ..',Store)(identifier=.. id of conjunctive graph ..)
+
+
+Additional store plugins in ``rdfextras``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Berkeley DB
+* MySQL
+* PostgreSQL
+* SQLite
+* Zope Object Database (ZODB3)
 
 
 Store operations
@@ -269,3 +336,23 @@ The output will appear as follows:
         <name>Squirrel in Tree</name>
       </rdf:Description>
     </rdf:RDF>
+
+Modules
+-------
+
+.. automodule:: rdflib.store
+
+.. autoclass:: rdflib.store.Store
+    :members:
+
+Store Events
+------------
+.. autoclass:: rdflib.store.StoreCreatedEvent
+    :members:
+
+.. autoclass:: rdflib.store.TripleAddedEvent
+    :members:
+
+.. autoclass:: rdflib.store.TripleRemovedEvent
+    :members:
+

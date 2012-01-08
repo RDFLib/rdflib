@@ -6,7 +6,7 @@ API documentation
 
 Epydoc-generated `API documentation`__ for the rdflib package.
 
-.. __: ./apidocs/index.html
+.. __: ./_static/api/index.html
 
 General notes
 -------------

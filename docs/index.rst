@@ -1,8 +1,8 @@
 .. rdflib documentation documentation master file
    
-==========
-rdflib 3.0
-==========
+============
+rdflib 3.1.0
+============
 
 Introduction
 ============
@@ -15,66 +15,35 @@ parsers, stores, and serializers that other packages can use to
 implement parsers, stores, and serializers that will plug into the
 ``rdflib`` package.
 
-The primary interface that ``rdflib`` exposes for working with RDF is
-:class:`~rdflib.graph.Graph`.
+.. toctree::
+   :maxdepth: 2
 
-A tiny example:
-
-    >>> import rdflib
-
-    >>> g = rdflib.Graph()
-    >>> result = g.parse("http://eikeon.com/foaf.rdf")
-
-    >>> print("graph has %s statements." % len(g))
-    graph has 34 statements.
-    >>>
-    >>> for s, p, o in g:
-    ...     if (s, p, o) not in g:
-    ...         raise Exception("It better be!")
-
-    >>> s = g.serialize(format='n3')
-
-The package uses various Python idioms that offers an appropriate way to introduce RDF to a Python programmer who hasn't used it before.
-
-``rdflib`` graphs redefine certain built-in Python methods in order to behave in a predictable way; they emulate container types and are best thought of as a set of 3-item triples:
-
-.. code-block:: text
-
-    [
-        (subject,  predicate,  object),
-        (subject1, predicate1, object1),
-        ... 
-        (subjectN, predicateN, objectN)
-     ]
-
-``rdflib`` graphs are not sorted containers; they have ordinary set operations (e.g. :meth:`~rdflib.Graph.add` to add a triple) plus methods that search triples and return them in arbitrary order.
+   gettingstarted
+   graph_utilities
+   namespace_utilities
+   graphterms
+   assorted_examples
+   Modules <modules/index>
 
 API Documentation
 =================
 
     rdflib has epydoc-generated `API Documentation`__
 
-.. __: ./apidocs/index.html
+.. __: ./_static/api/index.html
 
-Contents
-========
+
+Additional discussions / notes
+==============================
+
 .. toctree::
    :maxdepth: 2
 
-   gettingstarted
    univrdfstore
-   graph_utilities
-   graphterms
-   graph_merging
    graphs_bnodes
-   namespace_utilities
-   store
-   persistence
-   persisting_n3_terms
-   assorted_examples
-   addons
-   Modules <modules/index>
    Documentation notes <apidocs>
+
+
 
 Indices and tables
 ==================
