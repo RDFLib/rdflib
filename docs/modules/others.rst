@@ -12,6 +12,15 @@ Collection
 .. autoclass:: rdflib.collection.Collection
     :members:
 
+Events
+------
+.. automodule:: rdflib.events
+.. :noindex:
+.. autoclass:: rdflib.events.Event
+    :members:
+.. autoclass:: rdflib.events.Dispatcher
+    :members:
+
 Result
 ------
 .. automodule:: rdflib.query

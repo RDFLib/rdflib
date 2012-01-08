@@ -106,7 +106,7 @@ def splitFragP(uriref, punct=0):
     if i>= 0: return uriref[:i], uriref[i:]
     else: return uriref, ''
 
-
+@py3compat.format_doctest_out
 def join(here, there):
     """join an absolute URI and URI reference
     (non-ascii characters are supported/doctested;
@@ -138,7 +138,7 @@ def join(here, there):
     5
     
     >>> join('http://example.org/', u'#Andr\\xe9')
-    u'http://example.org/#Andr\\xe9'
+    %(u)s'http://example.org/#Andr\\xe9'
     """
 
     assert(here.find("#") < 0), "Base may not contain hash: '%s'"% here # caller must splitFrag (why?)

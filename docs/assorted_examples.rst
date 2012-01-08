@@ -190,187 +190,6 @@ SPARQL query
                       FILTER ( bound(?date) ) }""").serialize('python')
 
 
-Data reading exercise
-=====================
-
-.. code-block:: python
-
-    #!/usr/bin/env python
-    # -*- coding: utf-8 -*-
-
-    """Demo script to show the different ways to read information 
-    from an RDF file using rdflib, as found at http://rdflib.net/.
-
-    The tree main methods are:
-    1. Simple lookup in a list of triplets (SimpleLookup),
-    2. SPARQL query, created with rdflib.sparql.* objects (CustomSparql),
-    3. SPARQL query, created with bison (BisonSparql).
-
-    The main function reads a file, xfn-example.rdf, and displays all resource 
-    pairs with a symmetrical "xfn:met" relation (e.g. A met B and B met A)
-    Uses the rdfs:label of the resources to display the name.
-
-    This demo file has been tested with the following versions of RDFlib:
-      rdflib 2.0.6 -- unsupported (since it has no "Graph" modules)
-      rdflib 2.1.3 -- methods 1, and 2 work fine
-      rdflib 2.1.4 -- methods 1, and 2 work fine
-      rdflib 2.2.3 -- methods 1, and 2 work fine
-      rdflib 2.3.0 -- methods 1, and 2 work fine
-      rdflib 2.3.1 -- methods 1, and 2 work fine
-      rdflib 2.3.2 -- methods 1, and 2 work fine
-      rdflib 2.3.3 -- methods 1, 2, and 3 work fine
-      rdflib 2.4.0 -- methods 1, 2, and 3 work fine (but function call for method 2 was changed)
-    """
-
-    __copyright__ = "rdflibdemo written by Freek Dijkstra, Universiteit van Amsterdam, april 2007, contributed to the public domain (feel free to attribute me, but it's not needed)."
-
-    import os
-    import sys
-    import distutils.version
-    # semi-standard modules
-    try:
-        import rdflib
-    except ImportError:
-        raise ImportError("Module rdflib is not available. It can be downloaded from http://rdflib.net/\n")
-    if distutils.version.StrictVersion(rdflib.__version__) < "3.0.0":
-        raise ImportError("The installed version of rdflib, %s, is too old. 2.1 or higher is required" % rdflib.__version__)
-    from rdflib.graph import Graph
-    from rdflib.sparql.sparqlGraph  import SPARQLGraph
-    from rdflib.sparql.graphPattern import GraphPattern
-    if distutils.version.StrictVersion(rdflib.__version__) > "2.3.2":
-        from rdflib.sparql.bison import Parse   # available in 2.3.3 and up
-    if distutils.version.StrictVersion(rdflib.__version__) > "2.3.9":
-        from rdflib.sparql import Query         # available in 2.4.0 and up
-
-
-
-
-    def SimpleLookup(graph):
-        """
-        Extracts information form a rdflib Graph object 
-        using a simple list lookup. E.g.:
-        result = list(graph.subject_objects(self.xfn["met"])):
-        """
-        assert(isinstance(graph, Graph))
-        xfn  = rdflib.Namespace("http://gmpg.org/xfn/1#")
-        rdf  = rdflib.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
-        rdfs = rdflib.Namespace("http://www.w3.org/2000/01/rdf-schema#")
-        meetings = []
-        # Get a list of (subject, object) tuples in the graph with the xfn:met predicate
-        relations = list(graph.subject_objects(xfn["met"]))
-        for (person, peer) in relations:
-            if not (peer, person) in relations:
-                # person says he/she has met peer, but peer doesn't say he/she has met person. Skip.
-                continue
-            # since we're processing (person, peer), we can skip (peer, person) later
-            relations.remove((peer, person))
-            personname = list(graph.objects(person, rdfs["label"]))
-            if len(personname) == 0:
-                continue    # skip persons with no name
-            peername = list(graph.objects(peer, rdfs["label"]))
-            if len(peername) == 0:
-                continue    # skip peers with no name
-            personname = list(graph.objects(person, rdfs["label"]))
-            # Add the name of the person and peer to list of people who've met.
-            meetings.append((personname[0], peername[0]))
-    
-        # Print the results
-        print "Simple Lookup (%d meetings found)" % len(meetings)
-        print 40*"-"
-        for (person, peer) in meetings:
-            print "%s and %s have met" % (person, peer)
-        print
-
-
-    def CustomSparql(graph):
-        """
-        Extracts information form a rdflib Graph object 
-        using a SPARQL query, put together using GraphPattern objects. E.g.:
-        select = ("?ifA","?ifB")
-        where = GraphPattern([("?ifA", xfn["met"], "?ifB")])
-        result = graph.query(select,where)
-        See http://dev.w3.org/cvsweb/~checkout~/2004/PythonLib-IH/Doc/sparqlDesc.html for more information.
-        """
-        assert(isinstance(graph, Graph))
-        xfn  = rdflib.Namespace("http://gmpg.org/xfn/1#")
-        rdf  = rdflib.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
-        rdfs = rdflib.Namespace("http://www.w3.org/2000/01/rdf-schema#")
-        select = ("?personname","?peername")
-        where = GraphPattern([
-                ("?person", xfn["met"],    "?peer"),
-                ("?peer",   xfn["met"],    "?person"),
-                ("?person", rdfs["label"], "?personname"),
-                ("?peer",   rdfs["label"], "?peername"),
-                ])
-        # Create a SPARQLGraph wrapper object out of the normal Graph
-        sparqlGrph = SPARQLGraph(graph)
-        # Make the query
-        if distutils.version.StrictVersion(rdflib.__version__) <= "2.3.9":
-            relations = sparqlGrph.query(select, where)
-        else:
-            # graph.query() function was changed in RDFlib 2.4.0
-            bindings = { u"xfn": xfn, u"rdf": rdf, u"rdfs": rdfs }
-            relations = Query.query(sparqlGrph, select, where, initialBindings=bindings)
-    
-        for (person, peer) in relations:
-            # since we're processing (person, peer), we can skip (peer, person) later
-            relations.remove((peer, person))
-    
-        # Print the results
-        print "Manual formatted SPARQL query (%d meetings found)" % len(relations)
-        print 40*"-"
-        for (person, peer) in relations:
-            print "%s and %s have met" % (person, peer)
-        print
-
-
-    def BisonSparql(graph):
-        """
-        Extracts information form a rdflib Graph object 
-        using a SPARQL query, parsed by the bison parser in RDFlib.
-        graphpattern = Parse('SELECT ?ifA ?ifB WHERE { ?ifA xfn:met ?ifB . ?ifB xfn:met ?ifA }')
-        result = graph.query(graphpattern, initNs=bindings)
-        """
-        assert(isinstance(graph, Graph))
-        if distutils.version.StrictVersion(rdflib.__version__) <= "2.3.2":
-            print "Skipping Bison SPARQL query (requires RDFlib 2.3.3 or higher; version %s detected)" % (rdflib.__version__)
-            print
-            return
-        xfn  = rdflib.Namespace("http://gmpg.org/xfn/1#")
-        rdf  = rdflib.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
-        rdfs = rdflib.Namespace("http://www.w3.org/2000/01/rdf-schema#")
-        bindings = { u"xfn": xfn, u"rdf": rdf, u"rdfs": rdfs }
-        query = Parse('SELECT ?personname ?peername WHERE \
-            { ?person xfn:met ?peer . ?peer xfn:met ?person . \
-            ?person rdfs:label ?personname . ?peer rdfs:label ?peername }')
-        # Make the query, and serialize the result as python objects (as opposed to for example XML)
-        relations = graph.query(query, initNs=bindings).serialize('python')
-        for (person, peer) in relations:
-            # since we're processing (person, peer), we can skip (peer, person) later
-            relations.remove((peer, person))
-    
-        # Print the results
-        print "Bison SPARQL query (%d meetings found)" % len(relations)
-        print 40*"-"
-        for (person, peer) in relations:
-            print "%s and %s have met" % (person, peer)
-        print
-
-    def ReadFile(filename="xfn-example.rdf"):
-        """Read a RDF and returns the objects in a rdflib Graph object"""
-        graph = Graph()
-        print "Read RDF data from %s" % filename
-        print
-        graph.parse(filename)
-        return graph
-
-    if __name__=="__main__":
-        print "RDFlib version %s detected" % rdflib.__version__
-        print
-        graph = ReadFile()
-        SimpleLookup(graph)
-        CustomSparql(graph)
-        BisonSparql(graph)
 
 Example Foaf Smushing  
 =====================
@@ -382,7 +201,7 @@ Suppose I got two FOAF documents each talking about the same person (according t
 demo.n3
 -------
 
-.. code-block:: text
+.. code-block:: n3
 
     @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
@@ -439,7 +258,7 @@ Output
 ------
 note how all of the data has come together under one subject:
 
-.. code-block:: text
+.. code-block:: n3
 
     @prefix _5: <http://example.com/person/mbox_sha1sum/65>.
     @prefix foaf: <http://xmlns.com/foaf/0.1/>.
@@ -501,8 +320,8 @@ The following code would get all of your (known) ancestors, and then get all the
       
 .. warning:: The :meth:`transitive_objects` method has the start node as the *first* argument, but the :meth:`transitive_subjects` method has the start node as the *second* argument.
 
-film.py
-=======
+Film Review example (film.py)
+=============================
 
 .. code-block:: python
 

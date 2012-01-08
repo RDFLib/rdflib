@@ -58,7 +58,7 @@ Terminology
 
     Which can be written (in N3) as:
 
-    .. code-block:: text
+    .. code-block:: n3
 
         :chimezie :said {:higherOrderStatements rdf:type :complicated}
 
@@ -149,13 +149,13 @@ Could cause the following statements to be asserted in the store:
 
 This statement would be asserted in the partition associated with quoted statements (in a formula named ``_:a``)
 
-.. code-block:: text
+.. code-block:: n3
 
     ?x rdf:type :N3Programmer
 
 Finally, these statements would be asserted in the same partition (in a formula named ``_:b``)
 
-.. code-block:: text
+.. code-block:: n3
 
     ?x :has _:c
 
@@ -237,7 +237,7 @@ Tests parsing, triple patterns, triple pattern removes, size, contextual removes
 Source Graph
 ^^^^^^^^^^^^^
 
-.. code-block:: text
+.. code-block:: n3
 
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> . 
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> . 
@@ -303,7 +303,7 @@ Formula and Variables Test
 Source Graph
 ^^^^^^^^^^^^
 
-.. code-block:: text
+.. code-block:: n3
 
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> . 
     @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> . 

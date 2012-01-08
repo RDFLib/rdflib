@@ -5,9 +5,13 @@ def bb(u): return u.encode('utf-8')
 
 try:
     from bsddb import db
+    has_bsddb = True
 except ImportError:
-    from bsddb3 import db
-
+    try:
+        from bsddb3 import db
+        has_bsddb = True
+    except ImportError:
+        has_bsddb = False
 from os import mkdir
 from os.path import exists, abspath
 from urllib import pathname2url
@@ -22,6 +26,7 @@ class Sleepycat(Store):
     transaction_aware = False
 
     def __init__(self, configuration=None, identifier=None):
+        if not has_bsddb: raise Exception("Unable to import bsddb/bsddb3, store is unusable.")
         self.__open = False
         self.__identifier = identifier
         super(Sleepycat, self).__init__(configuration)
@@ -54,6 +59,7 @@ class Sleepycat(Store):
         return self.__open
     
     def open(self, path, create=True):
+        if not has_bsddb: return NO_STORE
         homeDir = path
 
         if self.__identifier is None:
@@ -385,11 +391,17 @@ class Sleepycat(Store):
 
     def namespace(self, prefix):
         prefix = prefix.encode("utf-8")
-        return self.__namespace.get(prefix, None)
+        ns = self.__namespace.get(prefix, None)
+        if ns is not None:
+            return ns.decode('utf-8')
+        return None
 
     def prefix(self, namespace):
         namespace = namespace.encode("utf-8")
-        return self.__prefix.get(namespace, None)
+        prefix = self.__prefix.get(namespace, None)
+        if prefix is not None:
+            return prefix.decode('utf-8')
+        return None
 
     def namespaces(self):
         cursor = self.__namespace.cursor()
@@ -397,7 +409,7 @@ class Sleepycat(Store):
         current = cursor.first()
         while current:
             prefix, namespace = current
-            results.append((prefix, namespace))
+            results.append((prefix.decode('utf-8'), namespace.decode('utf-8')))
             # Hack to stop 2to3 converting this to next(cursor)
             current = getattr(cursor, 'next')()
         cursor.close()

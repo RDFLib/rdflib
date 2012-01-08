@@ -17,6 +17,10 @@ class TestRelativeBase(unittest.TestCase):
         self.assertEquals(self.x == self.x, True)
 
     def test_microseconds(self):
+        import platform
+        if platform.system() == 'Java' or (platform.system() != 'Java' and sys.version_info[:2] == (2, 5)):
+            from nose import SkipTest
+            raise SkipTest('datetime microseconds unsupported in Python2.5 and Jython')
         dt1 = datetime(2009, 6, 15, 23, 37, 6, 522630)
         l = Literal(dt1)
 

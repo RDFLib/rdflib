@@ -19,6 +19,12 @@ The RDFLib classes listed below model RDF `terms`__ in a graph and inherit from 
     :noindex:
 
 .. _Variable:
+.. autoclass:: rdflib.term.Variable
+    :noindex:
+
+rdflib.term module
+------------------
+
 .. automodule:: rdflib.term
     :members:
     :noindex:

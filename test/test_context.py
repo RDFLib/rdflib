@@ -1,6 +1,7 @@
 import unittest
 
 from tempfile import mkdtemp
+import shutil
 from rdflib.graph import Graph, ConjunctiveGraph
 from rdflib.term import URIRef, BNode
 
@@ -8,6 +9,7 @@ class ContextTestCase(unittest.TestCase):
     #store = 'Memory'
     store = 'default'
     slow = True
+    tmppath = None
 
     def setUp(self):
         self.graph = ConjunctiveGraph(store=self.store)
@@ -17,8 +19,8 @@ class ContextTestCase(unittest.TestCase):
             path=configString
             MySQL().destroy(path)
         else:
-            path = a_tmp_dir = mkdtemp()
-        self.graph.open(path, create=True)
+            self.tmppath = mkdtemp()
+        self.graph.open(self.tmppath, create=True)
         self.michel = URIRef(u'michel')
         self.tarek = URIRef(u'tarek')
         self.bob = URIRef(u'bob')
@@ -35,6 +37,7 @@ class ContextTestCase(unittest.TestCase):
 
     def tearDown(self):
         self.graph.close()
+        shutil.rmtree(self.tmppath)
 
     def get_context(self, identifier):
         assert isinstance(identifier, URIRef) or \

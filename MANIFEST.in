@@ -1,7 +1,7 @@
 include CHANGELOG
 include LICENSE
 include ez_setup.py
-include examples/example.py
-include examples/swap_primer.py
+recursive-include rdflib *.py
+recursive-include examples *.py
 include run_tests.py
 graft test

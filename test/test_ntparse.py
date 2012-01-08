@@ -38,6 +38,8 @@ class NTTestCase(unittest.TestCase):
         quot = b("""<http://example.org/alice/foaf.rdf#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://example.org/alice/foaf1.rdf> .""")
         ntriples.validate = True
         res = ntriples.unquote(quot)
+        # revert to default
+        ntriples.validate = False
         log.debug("restype %s" % type(res))
 
     def test_validating_unquote_raises(self):
@@ -46,6 +48,8 @@ class NTTestCase(unittest.TestCase):
         self.assertRaises(ntriples.ParseError, ntriples.unquote, uniquot)
         uniquot = b("""<http://www.w3.org/People/Berners-Lee/card#cm> <http://xmlns.com/foaf/0.1/name> "R\\\\u00E4ksm\\u00F6rg\\u00E5s" <http://www.w3.org/People/Berners-Lee/card> .""")
         self.assertRaises(ntriples.ParseError, ntriples.unquote, uniquot)
+        # revert to default
+        ntriples.validate = False
 
     def test_nonvalidating_uriquote(self):
         ntriples.validate = False
@@ -57,6 +61,8 @@ class NTTestCase(unittest.TestCase):
         ntriples.validate = True
         uniquot = """<http://www.w3.org/People/Berners-Lee/card#cm> <http://xmlns.com/foaf/0.1/name> "R\\u00E4ksm\\u00F6rg\\u00E5s" <http://www.w3.org/People/Berners-Lee/card> ."""
         res = ntriples.uriquote(uniquot)
+        # revert to default
+        ntriples.validate = False
         self.assertEqual(res, uniquot)
 
     def test_NTriplesParser_fpath(self):

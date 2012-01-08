@@ -48,7 +48,7 @@ TRIXNS=Namespace("http://www.w3.org/2004/03/trix/trix-1/")
 XMLNS=Namespace("http://www.w3.org/XML/1998/namespace")
 
 class TriXHandler(handler.ContentHandler):
-    """An Sax Handler for TriX. See http://swdev.nokia.com/trix/TriX.html"""
+    """An Sax Handler for TriX. See http://sw.nokia.com/trix/"""
 
     def __init__(self, store):
         self.store = store
@@ -258,7 +258,7 @@ def create_parser(store):
 
 
 class TriXParser(Parser):
-    """A parser for TriX. See http://swdev.nokia.com/trix/TriX.html"""
+    """A parser for TriX. See http://sw.nokia.com/trix/"""
 
     def __init__(self):
         pass
