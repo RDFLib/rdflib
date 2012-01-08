@@ -258,7 +258,7 @@ def create_parser(store):
 
 
 class TriXParser(Parser):
-    """A parser for TriX. See http://swdev.nokia.com/trix/TriX.html"""
+    """A parser for TriX. See http://sw.nokia.com/trix/"""
 
     def __init__(self):
         pass
