@@ -38,7 +38,6 @@ if sys.version_info[0] >= 3:
 else:
     try:
         from setuptools import setup
-        kwargs['src_root'] = "."
         kwargs['test_suite'] = "nose.collector"
     except ImportError:
         from distutils.core import setup
