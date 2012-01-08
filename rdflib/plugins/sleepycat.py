@@ -26,7 +26,7 @@ class Sleepycat(Store):
     transaction_aware = False
 
     def __init__(self, configuration=None, identifier=None):
-        if not has_bsddb: raise Exception("No local BerkeleyDB found.")
+        if not has_bsddb: raise Exception("Unable to import bsddb/bsddb3, store is unusable.")
         self.__open = False
         self.__identifier = identifier
         super(Sleepycat, self).__init__(configuration)
