@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 from rdflib import py3compat
 __doc__ = py3compat.format_doctest_out("""
 The ``Resource`` class wraps a ``Graph`` and a resource reference (i.e. an
