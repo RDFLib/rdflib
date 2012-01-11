@@ -93,9 +93,8 @@ See also
 .. automethod:: rdflib.graph.Graph.parse
     :noindex:
 
-Plugin parsers for rdflib
--------------------------
-
+Plugin parsers
+--------------
 
 .. module:: rdflib.plugins.parsers.notation3
 .. autoclass::  rdflib.plugins.parsers.notation3.N3Parser
@@ -121,8 +120,8 @@ Plugin parsers for rdflib
     :members:
 
 
-Plugin serializers for rdflib
------------------------------
+Plugin serializers
+------------------
 
 .. module:: rdflib.plugins.serializers.n3
 .. autoclass::  rdflib.plugins.serializers.n3.N3Serializer
@@ -141,7 +140,7 @@ Plugin serializers for rdflib
     :members:
 
 .. module:: rdflib.plugins.serializers.trix
-.. autoclass::  rdflib.plugins.serializers.trix.TrixSerializer
+.. autoclass::  rdflib.plugins.serializers.trix.TriXSerializer
     :members:
 
 .. module:: rdflib.plugins.serializers.turtle
