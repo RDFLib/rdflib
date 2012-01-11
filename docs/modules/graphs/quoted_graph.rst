@@ -1,5 +1,5 @@
-:mod:`rdflib.graph.QuotedGraph` -- Quoted graphs
-================================================
+:mod:`rdflib.graph.QuotedGraph` -- Quoted graph
+===============================================
 
 RDFLib graphs support an additional extension of RDF semantics for formulae. For the academically inclined, Graham Kyles `formal extension`__ is probably a good read.
 
@@ -7,7 +7,5 @@ RDFLib graphs support an additional extension of RDF semantics for formulae. For
 
 Formulae are represented formally by the :class:`~rdflib.graph.QuotedGraph` class and are disjoint from regular RDF graphs in that their statements are quoted.
 
-Module Contents
----------------
-
 .. autoclass:: rdflib.graph.QuotedGraph
+    :members:

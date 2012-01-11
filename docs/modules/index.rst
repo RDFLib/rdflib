@@ -4,12 +4,19 @@
 Modules
 =======
 
-Contents:
-=========
-
 .. toctree::
     :maxdepth: 3
 
-    nodes/index
+    collection
+    events
     graphs/index
-    others
+    namespace
+    node
+    parser
+    resource
+    result
+    serializer
+    statement
+    store
+    term
+    util

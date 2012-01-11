@@ -20,8 +20,6 @@ implement parsers, stores, and serializers that will plug into the
 
    gettingstarted
    graph_utilities
-   namespace_utilities
-   graphterms
    assorted_examples
    Modules <modules/index>
 

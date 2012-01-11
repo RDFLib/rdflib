@@ -96,22 +96,61 @@ See also
 Plugin parsers for rdflib
 -------------------------
 
-.. autoclass::  rdflib.plugins.parsers.rdfxml.RDFXMLParser
-
-.. module:: rdflib.plugins.parsers.rdfa
-.. autoclass::  rdflib.plugins.parsers.rdfa.RDFaParser
-
-.. module:: rdflib.plugins.parsers.rdfxml
-.. autoclass::  rdflib.plugins.parsers.rdfxml.RDFXMLParser
 
 .. module:: rdflib.plugins.parsers.notation3
 .. autoclass::  rdflib.plugins.parsers.notation3.N3Parser
+    :members:
+
+.. module:: rdflib.plugins.parsers.nquads
+.. autoclass::  rdflib.plugins.parsers.nquads.NQuadsParser
+    :members:
 
 .. module:: rdflib.plugins.parsers.nt
 .. autoclass::  rdflib.plugins.parsers.nt.NTParser
+    :members:
+
+.. module:: rdflib.plugins.parsers.rdfa
+.. autoclass::  rdflib.plugins.parsers.rdfa.RDFaParser
+    :members:
+
+.. autoclass::  rdflib.plugins.parsers.rdfxml.RDFXMLParser
+    :members:
 
 .. module:: rdflib.plugins.parsers.trix
 .. autoclass::  rdflib.plugins.parsers.trix.TriXParser
+    :members:
+
+
+Plugin serializers for rdflib
+-----------------------------
+
+.. module:: rdflib.plugins.serializers.n3
+.. autoclass::  rdflib.plugins.serializers.n3.N3Serializer
+    :members:
+
+.. module:: rdflib.plugins.serializers.nquads
+.. autoclass::  rdflib.plugins.serializers.nquads.NQuadsSerializer
+    :members:
+
+.. module:: rdflib.plugins.serializers.nt
+.. autoclass::  rdflib.plugins.serializers.nt.NTSerializer
+    :members:
+
+.. module:: rdflib.plugins.serializers.rdfxml
+.. autoclass::  rdflib.plugins.serializers.rdfxml.XMLSerializer
+    :members:
+
+.. module:: rdflib.plugins.serializers.trix
+.. autoclass::  rdflib.plugins.serializers.trix.TrixSerializer
+    :members:
+
+.. module:: rdflib.plugins.serializers.turtle
+.. autoclass::  rdflib.plugins.serializers.turtle.TurtleSerializer
+    :members:
+
+.. module:: rdflib.plugins.serializers.xmlwriter
+.. autoclass::  rdflib.plugins.serializers.xmlwriter.XMLWriter
+    :members:
 
 
 Introduction to using SPARQL to query an rdflib graph
@@ -197,6 +236,7 @@ Namespaces
 ^^^^^^^^^^
 The :meth:`~rdflib.graph.Graph.parse` :keyword:`initNs` argument is a dictionary of namespaces to be expanded in the query string. In a large program, it is common to use the same ``dict`` for every single query. You might even hack your graph instance so that the ``initNs`` arg is already filled in.
 
+.. warning:: rdfextras.store.SPARQL.query does not support `initNs`. 
 
 In order to use an empty prefix (e.g. ``?a :knows ?b``), use a ``BASE`` directive in the SPARQL query to set a default namespace:
 
@@ -208,6 +248,8 @@ Bindings
 ^^^^^^^^
 
 As with SQL queries, it is common to run the same SPARQL query many times with only a few terms changing each time. rdflib calls this ``initBindings``:
+
+.. warning:: rdfextras.store.SPARQL.query does not support `initBindings`. 
 
 .. code-block:: python
 
@@ -233,8 +275,8 @@ Persistence
 
 Additional persistence mechanisms can be supported by implementing this API for a different store.
 
-Currently supported stores
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Stores currently supported in rdflib
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Random access memory
 * Sleepycat (via Python's ``bsddb`` or ``bsddb3`` packages)
@@ -337,22 +379,4 @@ The output will appear as follows:
       </rdf:Description>
     </rdf:RDF>
 
-Modules
--------
-
-.. automodule:: rdflib.store
-
-.. autoclass:: rdflib.store.Store
-    :members:
-
-Store Events
-------------
-.. autoclass:: rdflib.store.StoreCreatedEvent
-    :members:
-
-.. autoclass:: rdflib.store.TripleAddedEvent
-    :members:
-
-.. autoclass:: rdflib.store.TripleRemovedEvent
-    :members:
 
