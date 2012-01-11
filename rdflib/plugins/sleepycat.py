@@ -24,16 +24,15 @@ class Sleepycat(Store):
     context_aware = True
     formula_aware = True
     transaction_aware = False
+    db_env = None
 
     def __init__(self, configuration=None, identifier=None):
         if not has_bsddb: raise Exception("Unable to import bsddb/bsddb3, store is unusable.")
         self.__open = False
         self.__identifier = identifier
         super(Sleepycat, self).__init__(configuration)
-        self.configuration = configuration
         self._loads = self.node_pickler.loads
         self._dumps = self.node_pickler.dumps
-        self.db_env = None
 
     def __get_identifier(self):
         return self.__identifier
