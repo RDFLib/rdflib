@@ -1,5 +1,22 @@
 """
-This module defines the different types of terms...
+This module defines the different types of terms. Terms are the kinds of 
+objects that can appear in a quoted/asserted triple. This includes those 
+that are core to RDF:
+
+* Blank Nodes
+* URI References
+* Literals (which consist of a literal value,datatype and language tag)
+
+Those that extend the RDF model into N3:
+
+* Formulae
+* Universal Quantifications (Variables)
+
+And those that are primarily for matching against 'Nodes' in the underlying Graph:
+
+* REGEX Expressions
+* Date Ranges
+* Numerical Ranges
 
 """
 
@@ -29,6 +46,7 @@ from random import choice
 from itertools import islice
 from datetime import date, time, datetime, timedelta
 from time import strptime
+
 
 try:
     from hashlib import md5
@@ -362,7 +380,7 @@ class Literal(Identifier):
         >>> (- Literal(10.5))
         -10.5
         >>> from rdflib.namespace import XSD
-        >>> (- Literal("1", datatype=XSD[u'integer']))
+        >>> (- Literal("1", datatype=XSD['integer']))
         -1%(L)s
         
         Not working:
@@ -387,7 +405,7 @@ class Literal(Identifier):
         >>> (+ Literal(-1))
         -1%(L)s
         >>> from rdflib.namespace import XSD
-        >>> (+ Literal("-1", datatype=XSD[u'integer']))
+        >>> (+ Literal("-1", datatype=XSD['integer']))
         -1%(L)s
         
         Not working in Python 3:
@@ -408,7 +426,7 @@ class Literal(Identifier):
         >>> abs(Literal(-1))
         1%(L)s
         >>> from rdflib.namespace import XSD
-        >>> abs( Literal("-1", datatype=XSD[u'integer']))
+        >>> abs( Literal("-1", datatype=XSD['integer']))
         1%(L)s
         
         Not working in Python 3:
@@ -429,7 +447,7 @@ class Literal(Identifier):
         >>> ~(Literal(-1))
         0%(L)s
         >>> from rdflib.namespace import XSD
-        >>> ~( Literal("-1", datatype=XSD[u'integer']))
+        >>> ~( Literal("-1", datatype=XSD['integer']))
         0%(L)s
         
         Not working:
@@ -445,10 +463,11 @@ class Literal(Identifier):
         except Exception:
             raise TypeError("Not a number; %s" % repr(self))
 
+    @py3compat.format_doctest_out
     def __lt__(self, other):
         """
         >>> from rdflib.namespace import XSD
-        >>> Literal("YXNkZg==", datatype=XSD[u'base64Binary']) < "foo"
+        >>> Literal("YXNkZg==", datatype=XSD['base64Binary']) < "foo"
         True
         >>> u"\xfe" < Literal(u"foo")
         False
@@ -523,7 +542,7 @@ class Literal(Identifier):
 
         >>> Literal('') != None
         True
-        >>> Literal('2') <> Literal('2')
+        >>> Literal('2') != Literal('2')
         False
 
         """
@@ -559,6 +578,7 @@ class Literal(Identifier):
         
         return Identifier.__hash__(self) ^ hash(self.language) ^ hash(self.datatype)
 
+    @py3compat.format_doctest_out
     def __eq__(self, other):
         """
         >>> f = URIRef("foo")
@@ -579,7 +599,7 @@ class Literal(Identifier):
         >>> oneNoDtype = Literal('1')
         >>> oneInt == oneNoDtype
         False
-        >>> Literal("1", XSD[u'string']) == Literal("1", XSD[u'string'])
+        >>> Literal("1", XSD['string']) == Literal("1", XSD['string'])
         True
         >>> Literal("one", lang="en") == Literal("one", lang="en")
         True
