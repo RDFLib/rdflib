@@ -64,7 +64,7 @@ via triple pattern:
     >>> print len(g)
     3
 
-None terms in calls to triple can be thought of as "open variables".
+``None`` terms in calls to :meth:`~rdflib.graph.Graph.triples` can be thought of as "open variables".
 
 Graph Aggregation - ConjunctiveGraphs and ReadOnlyGraphAggregate within 
 the same store:
@@ -93,7 +93,7 @@ the same store:
     >>> len(list(ReadOnlyGraphAggregate([g1,g2]).subjects(RDF.type, RDF.Statement)))
     2
 
-ConjunctiveGraphs have a 'quads' method which returns quads instead of 
+ConjunctiveGraphs have a :meth:`~rdflib.graph.ConjunctiveGraph.quads` method which returns quads instead of 
 triples, where the fourth item is the Graph (or subclass thereof) instance 
 in which the triple was asserted:
     
@@ -1075,7 +1075,7 @@ class ConjunctiveGraph(Graph):
         Parse source adding the resulting triples to its own context
         (sub graph of this graph).
 
-        See `rdflib.graph.Graph.parse` for documentation on arguments.
+        See :meth:`rdflib.graph.Graph.parse` for documentation on arguments.
 
         :Returns:
 
