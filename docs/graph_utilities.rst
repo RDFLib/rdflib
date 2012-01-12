@@ -79,37 +79,39 @@ RDFLib Literals essentially behave like unicode characters with an XML Schema da
         datetime   : (lambda i:i.isoformat(),XSD_NS+u'dateTime'),
     }
 
-Maps Python instances to WXS datatyped Literals
+Maps Python instances to WXS datatyped Literals (the parse_time, _date and _datetime
+functions are imports from the `isodate <http://pypi.python.org/pypi/isodate/>`_ 
+package).
 
 .. code-block:: python
 
-    XSDToPython = {  
-        XSD_NS+u'time'               : (None,_strToTime),
-        XSD_NS+u'date'               : (None,_strToDate),
-        XSD_NS+u'dateTime'           : (None,_strToDateTime),    
-        XSD_NS+u'string'             : (None,None),
-        XSD_NS+u'normalizedString'   : (None,None),
-        XSD_NS+u'token'              : (None,None),
-        XSD_NS+u'language'           : (None,None),
-        XSD_NS+u'boolean'            : (None, lambda i:i.lower() in ['1','true']),
-        XSD_NS+u'decimal'            : (float,None), 
-        XSD_NS+u'integer'            : (long ,None),
-        XSD_NS+u'nonPositiveInteger' : (int,None),
-        XSD_NS+u'long'               : (long,None),
-        XSD_NS+u'nonNegativeInteger' : (int, None),
-        XSD_NS+u'negativeInteger'    : (int, None),
-        XSD_NS+u'int'                : (int, None),
-        XSD_NS+u'unsignedLong'       : (long, None),
-        XSD_NS+u'positiveInteger'    : (int, None),
-        XSD_NS+u'short'              : (int, None),
-        XSD_NS+u'unsignedInt'        : (long, None),
-        XSD_NS+u'byte'               : (int, None),
-        XSD_NS+u'unsignedShort'      : (int, None),
-        XSD_NS+u'unsignedByte'       : (int, None),
-        XSD_NS+u'float'              : (float, None),
-        XSD_NS+u'double'             : (float, None),
-        XSD_NS+u'base64Binary'       : (base64.decodestring, None),
-        XSD_NS+u'anyURI'             : (None,None),
+     XSDToPython = {
+        URIRef(_XSD_PFX+'time')               : parse_time,
+        URIRef(_XSD_PFX+'date')               : parse_date,
+        URIRef(_XSD_PFX+'dateTime')           : parse_datetime,
+        URIRef(_XSD_PFX+'string')             : None,
+        URIRef(_XSD_PFX+'normalizedString')   : None,
+        URIRef(_XSD_PFX+'token')              : None,
+        URIRef(_XSD_PFX+'language')           : None,
+        URIRef(_XSD_PFX+'boolean')            : lambda i:i.lower() in ['1','true'],
+        URIRef(_XSD_PFX+'decimal')            : float,
+        URIRef(_XSD_PFX+'integer')            : long,
+        URIRef(_XSD_PFX+'nonPositiveInteger') : int,
+        URIRef(_XSD_PFX+'long')               : long,
+        URIRef(_XSD_PFX+'nonNegativeInteger') : int,
+        URIRef(_XSD_PFX+'negativeInteger')    : int,
+        URIRef(_XSD_PFX+'int')                : long,
+        URIRef(_XSD_PFX+'unsignedLong')       : long,
+        URIRef(_XSD_PFX+'positiveInteger')    : int,
+        URIRef(_XSD_PFX+'short')              : int,
+        URIRef(_XSD_PFX+'unsignedInt')        : long,
+        URIRef(_XSD_PFX+'byte')               : int,
+        URIRef(_XSD_PFX+'unsignedShort')      : int,
+        URIRef(_XSD_PFX+'unsignedByte')       : int,
+        URIRef(_XSD_PFX+'float')              : float,
+        URIRef(_XSD_PFX+'double')             : float,
+        URIRef(_XSD_PFX+'base64Binary')       : lambda s: base64.b64decode(py3compat.b(s)),
+        URIRef(_XSD_PFX+'anyURI')             : None,
     }
 
 Maps WXS datatyped Literals to Python.  This mapping is used by the :meth:`toPython` method defined on all Literal instances.

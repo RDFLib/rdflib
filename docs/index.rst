@@ -39,6 +39,7 @@ Additional discussions / notes
 
    univrdfstore
    graphs_bnodes
+   persisting_n3_terms
    Documentation notes <apidocs>
 
 
