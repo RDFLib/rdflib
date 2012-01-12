@@ -33,12 +33,15 @@ kwargs = {}
 if sys.version_info[0] >= 3:
     from setuptools import setup
     kwargs['use_2to3'] = True
-    # kwargs['requires'] = ['bsddb3']
+    kwargs['install_requires'] = ['isodate']
+    kwargs['requires'] = ['isodate']
     kwargs['src_root'] = setup_python3()
 else:
     try:
         from setuptools import setup
         kwargs['test_suite'] = "nose.collector"
+        kwargs['install_requires'] = ['isodate']
+        kwargs['requires'] = ['isodate']
     except ImportError:
         from distutils.core import setup
 
