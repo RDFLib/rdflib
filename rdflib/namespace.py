@@ -1,4 +1,66 @@
 from __future__ import generators
+from rdflib.py3compat import format_doctest_out
+
+__doc__ = format_doctest_out("""
+===================
+Namespace Utilities
+===================
+
+RDFLib provides mechanisms for managing Namespaces.
+
+In particular, there is a :class:`~rdflib.namespace.Namespace` class that takes as its argument the base URI of the namespace.
+
+.. code-block:: pycon
+
+    >>> from rdflib.namespace import Namespace
+    >>> fuxi = Namespace('http://metacognition.info/ontologies/FuXi.n3#')
+
+Fully qualified URIs in the namespace can be constructed either by attribute or by dictionary access on Namespace instances:
+
+.. code-block:: pycon
+
+    >>> fuxi.ruleBase
+    rdflib.term.URIRef('http://metacognition.info/ontologies/FuXi.n3#ruleBase')
+    >>> fuxi['ruleBase']
+    rdflib.term.URIRef('http://metacognition.info/ontologies/FuXi.n3#ruleBase')
+
+Automatic handling of unknown predicates
+-----------------------------------------
+
+As a programming convenience, a namespace binding is automatically created when :class:`rdflib.term.URIRef` predicates are added to the graph:
+
+.. code-block:: pycon
+
+    >>> from rdflib import Graph, URIRef
+    >>> g = Graph()
+    >>> g.add((URIRef("http://example0.com/foo"),
+    ...        URIRef("http://example1.com/bar"),
+    ...        URIRef("http://example2.com/baz")))
+    >>> print(g.serialize(format="n3"))
+    @prefix ns1: <http://example1.com/> .
+    <BLANKLINE>
+    <http://example0.com/foo> ns1:bar <http://example2.com/baz> .
+    <BLANKLINE>
+    <BLANKLINE>
+    >>> 
+
+Importable namespaces
+-----------------------
+
+The following namespaces are available by directly importing from rdflib:
+
+* RDF
+* RDFS
+* OWL
+* XSD
+
+.. code-block:: pycon
+
+    >>> from rdflib import OWL
+    >>> OWL.seeAlso
+    rdflib.term.URIRef('http://www.w3.org/2002/07/owl#seeAlso')
+
+""")
 
 import logging
 
