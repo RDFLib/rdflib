@@ -37,16 +37,14 @@ import logging
 _LOGGER = logging.getLogger(__name__)
 
 import base64
-import re
 
 import threading
 from urlparse import urlparse, urljoin, urldefrag
 from string import ascii_letters
 from random import choice
 from itertools import islice
-from datetime import date, time, datetime, timedelta
-from time import strptime
-
+from datetime import date, time, datetime
+from isodate import parse_time, parse_date, parse_datetime
 
 try:
     from hashlib import md5
@@ -849,59 +847,11 @@ _PythonToXSD = [
     (time      , (lambda i:i.isoformat(), URIRef(_XSD_PFX+'time'))),
 ]
 
-def _strToTime(v) :
-    return strptime(v, "%H:%M:%S")
-
-def _strToDate(v) :
-    tstr = strptime(v, "%Y-%m-%d")
-    return date(tstr.tm_year, tstr.tm_mon, tstr.tm_mday)
-
-def _strToDateTime(v) :
-    """
-    Attempt to cast to datetime, or just return the string (otherwise)
-    """
-    try:
-        tstr = strptime(v, "%Y-%m-%dT%H:%M:%S")
-    except:
-        try:
-            tstr = strptime(v, "%Y-%m-%dT%H:%M:%SZ")
-        except:
-            try:
-                tstr = strptime(v, "%Y-%m-%dT%H:%M:%S%Z")
-            except:
-                try:
-                    # %f only works in python 2.6
-                    # in 2.5 a ValueError will be raised, and we still return 
-                    # just the string
-                    return datetime.strptime(v, "%Y-%m-%dT%H:%M:%S.%f")
-                except:
-                    try:
-                        # %f only works in python 2.6
-                        return datetime.strptime(v, "%Y-%m-%dT%H:%M:%S.%fZ")
-                    except:
-                        try:
-                            # %f only works in python 2.6
-                            # HACK split off the timezone offset
-                            #  works for "2011-01-16T19:39:18.239743+01:00"
-                            m = re.match(r'(.*)([-+])(\d{2}):(\d{2})$',
-                                         v).groups()
-                            d = datetime.strptime(m[0], "%Y-%m-%dT%H:%M:%S.%f")
-                            t = timedelta(hours=int(m[2]), seconds=int(m[3]))
-                            if m[1] == '+':
-                                d += t
-                            else:
-                                d -= t
-                            return d
-                        except:
-                            return v
-
-    return datetime(tstr.tm_year, tstr.tm_mon, tstr.tm_mday,
-                    tstr.tm_hour, tstr.tm_min, tstr.tm_sec)
 
 XSDToPython = {
-    URIRef(_XSD_PFX+'time')               : _strToTime,
-    URIRef(_XSD_PFX+'date')               : _strToDate,
-    URIRef(_XSD_PFX+'dateTime')           : _strToDateTime,
+    URIRef(_XSD_PFX+'time')               : parse_time,
+    URIRef(_XSD_PFX+'date')               : parse_date,
+    URIRef(_XSD_PFX+'dateTime')           : parse_datetime,
     URIRef(_XSD_PFX+'string')             : None,
     URIRef(_XSD_PFX+'normalizedString')   : None,
     URIRef(_XSD_PFX+'token')              : None,
