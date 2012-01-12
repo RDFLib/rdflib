@@ -1,7 +1,35 @@
 
-See http://rdflib.net/2.5.0/ for the release notes. ...
 
-Also see http://rdflib.net/contributors/ for the list of contributors.
+RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information.
 
+The library contains parsers and serializers for RDF/XML, N3,
+NTriples, Turtle, TriX and RDFa . The library presents a Graph
+interface which can be backed by any one of a number of Store
+implementations. 
 
+This core rdflib package includes store implementations for 
+in memory storage and persistent storage on top of the Berkeley DB. 
+
+More information is avaiable on the project webpage: 
+
+http://code.google.com/p/rdflib
+
+The rdfextras project offers several additional stores as well as a 
+SPARQL engine for use with rdflib: 
+
+http://code.google.com/p/rdfextras/
+
+The documentation can be built by doing: 
+
+python setup.py build_sphinx
+
+And is also available from ReadTheDocs: 
+
+http://readthedocs.org/docs/rdflib/
+
+Support is available through the rdflib-dev group: 
+
+http://groups.google.com/group/rdflib-dev
+
+and on the IRC channel #redfoot on the freenode.net server
 

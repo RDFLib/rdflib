@@ -88,9 +88,12 @@ setup(
     The library contains parsers and serializers for RDF/XML, N3,
     NTriples, Turtle, TriX and RDFa . The library presents a Graph
     interface which can be backed by any one of a number of Store
-    implementations, including, Memory, MySQL, Redland, SQLite,
-    Sleepycat and SQLObject.
-    
+    implementations. The core rdflib includes store implementations for 
+    in memory storage and persistent storage on top of the Berkeley DB. 
+
+    The rdfextras project offers several additional stores as well as a 
+    SPARQL engine for use with rdflib: http://code.google.com/p/rdfextras/
+
     If you have recently reported a bug marked as fixed, or have a craving for
     the very latest, you may want the development version instead:
     http://rdflib.googlecode.com/hg#egg=rdflib-dev

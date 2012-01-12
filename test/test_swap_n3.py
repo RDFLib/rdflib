@@ -87,7 +87,7 @@ def test_cases():
     for tfile in set(tfiles):
         gname = tfile.split('/swap-n3/swap/test/')[1][:-3].translate(maketrans('-/','__'))
         e = Envelope(gname, tfile)
-        e.skip = True if gname in skiptests else False
+        e.skip = (gname in skiptests)
         # e.skip = True
         gt = deepcopy(generictest)
         gt.__doc__ = tfile
