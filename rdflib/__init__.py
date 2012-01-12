@@ -17,7 +17,7 @@ A tiny example:
     >>> g = rdflib.Graph()
     >>> result = g.parse("http://www.w3.org/People/Berners-Lee/card")
 
-    >>> print "graph has %s statements." % len(g)
+    >>> print("graph has %s statements." % len(g))
     graph has 79 statements.
     >>>
     >>> for s, p, o in g:

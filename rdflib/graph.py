@@ -40,16 +40,16 @@ via triple pattern:
     
     >>> g = Graph('IOMemory')
     >>> statementId = BNode()
-    >>> print len(g)
+    >>> print(len(g))
     0
     >>> g.add((statementId, RDF.type, RDF.Statement))
     >>> g.add((statementId, RDF.subject, URIRef('http://rdflib.net/store/ConjunctiveGraph')))
     >>> g.add((statementId, RDF.predicate, RDFS.label))
     >>> g.add((statementId, RDF.object, Literal("Conjunctive Graph")))
-    >>> print len(g)
+    >>> print(len(g))
     4
     >>> for s, p, o in g:
-    ...     print type(s)
+    ...     print(type(s))
     ...
     <class 'rdflib.term.BNode'>
     <class 'rdflib.term.BNode'>
@@ -57,11 +57,11 @@ via triple pattern:
     <class 'rdflib.term.BNode'>
     
     >>> for s, p, o in g.triples((None, RDF.object, None)):
-    ...     print o
+    ...     print(o)
     ...
     Conjunctive Graph
     >>> g.remove((statementId, RDF.type, RDF.Statement))
-    >>> print len(g)
+    >>> print(len(g))
     3
 
 ``None`` terms in calls to :meth:`~rdflib.graph.Graph.triples` can be thought of as "open variables".
@@ -118,7 +118,7 @@ Parsing N3 from StringIO
     ...   rdf:object "Conjunctive Graph" ] .
     ... '''
     >>> g2 = g2.parse(StringIO(src), format='n3')
-    >>> print len(g2)
+    >>> print(len(g2))
     4
 
 Using Namespace class:
@@ -664,7 +664,7 @@ class Graph(Node):
         ...       yield s
         >>> def reverseList(node,g):
         ...    for f in g.objects(node,RDF.first):
-        ...       print f
+        ...       print(f)
         ...    for s in g.subjects(RDF.rest,node):
         ...       yield s
         

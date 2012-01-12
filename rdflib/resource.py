@@ -89,11 +89,11 @@ Or for the predicates of a resource::
 Follow relations and get more data from their Resources as well::
 
     >>> for pic in person.objects(FOAF.depiction):
-    ...     print pic.identifier
-    ...     print pic.value(RDF.type).qname()
-    ...     print pic.label()
-    ...     print pic.comment()
-    ...     print pic.value(FOAF.thumbnail).identifier
+    ...     print(pic.identifier)
+    ...     print(pic.value(RDF.type).qname())
+    ...     print(pic.label())
+    ...     print(pic.comment())
+    ...     print(pic.value(FOAF.thumbnail).identifier)
     http://example.org/images/person/some1.jpg
     foaf:Image
     some 1
@@ -102,19 +102,19 @@ Follow relations and get more data from their Resources as well::
 
     >>> for cv in person.subjects(CV.aboutPerson):
     ...     work = list(cv.objects(CV.hasWorkHistory))[0]
-    ...     print work.value(CV.employedIn).identifier
-    ...     print work.value(CV.startDate)
+    ...     print(work.value(CV.employedIn).identifier)
+    ...     print(work.value(CV.startDate))
     http://example.org/#company
     2009-09-04
 
 It's just as easy to work with the predicates of a resource::
 
     >>> for s, p in person.subject_predicates():
-    ...     print s.value(RDF.type).qname()
-    ...     print p.qname()
+    ...     print(s.value(RDF.type).qname())
+    ...     print(p.qname())
     ...     for s, o in p.subject_objects():
-    ...         print s.value(RDF.type).qname()
-    ...         print o.value(RDF.type).qname()
+    ...         print(s.value(RDF.type).qname())
+    ...         print(o.value(RDF.type).qname())
     cv:CV
     cv:aboutPerson
     cv:CV
@@ -125,18 +125,18 @@ This is useful for e.g. inspection::
     >>> thumb_ref = URIRef("http://example.org/images/person/some1-thumb.jpg")
     >>> thumb = Resource(graph, thumb_ref)
     >>> for p, o in thumb.predicate_objects():
-    ...     print p.qname()
-    ...     print o.qname()
+    ...     print(p.qname())
+    ...     print(o.qname())
     rdf:type
     foaf:Image
 
 Similarly, adding, setting and removing data is easy::
 
     >>> thumb.add(RDFS.label, Literal("thumb"))
-    >>> print thumb.label()
+    >>> print(thumb.label())
     thumb
     >>> thumb.set(RDFS.label, Literal("thumbnail"))
-    >>> print thumb.label()
+    >>> print(thumb.label())
     thumbnail
     >>> thumb.remove(RDFS.label)
     >>> list(thumb.objects(RDFS.label))
@@ -273,7 +273,7 @@ It works as follows::
 
     >>> person = Item(graph, URIRef("http://example.org/person/some1#self"))
 
-    >>> print person.foaf_name[0]
+    >>> print(person.foaf_name[0])
     Some Body
 
 The mechanism for wrapping references as resources cooperates with subclasses.
@@ -283,7 +283,7 @@ objects::
     >>> isinstance(person.foaf_depiction[0], Item)
     True
 
-    >>> print person.foaf_depiction[0].rdfs_comment[0]
+    >>> print(person.foaf_depiction[0].rdfs_comment[0])
     Just an image
 
 """)
