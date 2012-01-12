@@ -64,7 +64,13 @@ if PY3:
             ta = 'unicode'
         if tb == 'str':
             tb = 'unicode'
-        return 1 if ta > tb else -1 if ta < tb else 0
+        # return 1 if ta > tb else -1 if ta < tb else 0
+        if ta > tb:
+            return 1
+        elif ta < tb:
+            return -1
+        else:
+            return 0
 
 else:
     # Python 2
@@ -86,4 +92,11 @@ else:
         return s % {'u':'u', 'b':'', 'L':'L'}
     
     def type_cmp(a, b):
-        return 1 if a > b else -1 if a < b else 0
+        # return 1 if a > b else -1 if a < b else 0
+        if a > b:
+            return 1
+        elif a < b:
+            return -1
+        else:
+            return 0
+
