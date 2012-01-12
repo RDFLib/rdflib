@@ -5,3 +5,4 @@ recursive-include rdflib *.py
 recursive-include examples *.py
 include run_tests.py
 graft test
+graft docs
