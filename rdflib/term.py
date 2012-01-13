@@ -897,6 +897,7 @@ class Variable(Identifier):
     """
     __slots__ = ()
     def __new__(cls, value):
+        if len(value)==0: raise Exception("Attempted to create variable with empty string as name!")
         if value[0]=='?':
             value=value[1:]
         return unicode.__new__(cls, value)
