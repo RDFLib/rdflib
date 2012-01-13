@@ -33,12 +33,15 @@ kwargs = {}
 if sys.version_info[0] >= 3:
     from setuptools import setup
     kwargs['use_2to3'] = True
-    # kwargs['requires'] = ['bsddb3']
+    kwargs['install_requires'] = ['isodate']
+    kwargs['requires'] = ['isodate']
     kwargs['src_root'] = setup_python3()
 else:
     try:
         from setuptools import setup
         kwargs['test_suite'] = "nose.collector"
+        kwargs['install_requires'] = ['isodate']
+        kwargs['requires'] = ['isodate']
     except ImportError:
         from distutils.core import setup
 
@@ -72,8 +75,6 @@ setup(
                    "Programming Language :: Python :: 2.6",
                    "Programming Language :: Python :: 2.7",
                    "Programming Language :: Python :: 3.2",
-                   "Programming Language :: Python :: Implementation :: Jython",
-                   "Programming Language :: Python :: Implementation :: PyPy",
                    "License :: OSI Approved :: BSD License",
                    "Topic :: Software Development :: Libraries :: Python Modules",
                    "Operating System :: OS Independent",
@@ -85,9 +86,12 @@ setup(
     The library contains parsers and serializers for RDF/XML, N3,
     NTriples, Turtle, TriX and RDFa . The library presents a Graph
     interface which can be backed by any one of a number of Store
-    implementations, including, Memory, MySQL, Redland, SQLite,
-    Sleepycat and SQLObject.
-    
+    implementations. The core rdflib includes store implementations for 
+    in memory storage and persistent storage on top of the Berkeley DB. 
+
+    The rdfextras project offers several additional stores as well as a 
+    SPARQL engine for use with rdflib: http://code.google.com/p/rdfextras/
+
     If you have recently reported a bug marked as fixed, or have a craving for
     the very latest, you may want the development version instead:
     http://rdflib.googlecode.com/hg#egg=rdflib-dev

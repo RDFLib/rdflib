@@ -43,7 +43,7 @@ Present in both::
 
     >>> def dump_nt_sorted(g):
     ...     for l in sorted(g.serialize(format='nt').splitlines()):
-    ...         if l: print l.decode('ascii')
+    ...         if l: print(l.decode('ascii'))
 
     >>> dump_nt_sorted(in_both)
     <http://example.org> <http://example.org/ns#rel> <http://example.org/same> .
@@ -73,8 +73,13 @@ Only in second::
 
 from rdflib.graph import Graph, ConjunctiveGraph, ReadOnlyGraphAggregate
 from rdflib.term import BNode
-import hashlib
-
+try:
+    import hashlib
+    md = hashlib.md5()
+except ImportError:
+    # for Python << 2.5
+    import md5
+    md = md5.new()
 
 class IsomorphicGraph(ConjunctiveGraph):
     """
@@ -216,7 +221,7 @@ def graph_diff(g1, g2):
 
 
 def _md5_hash(t):
-    h = hashlib.md5()
+    h = md
     for i in t:
         if isinstance(i, tuple):
             h.update(_md5_hash(i).encode('ascii'))

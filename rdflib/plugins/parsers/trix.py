@@ -247,9 +247,12 @@ class TriXHandler(handler.ContentHandler):
 
 def create_parser(store):
     parser = make_parser()
-    # Workaround for bug in expatreader.py. Needed when
-    # expatreader is trying to guess a prefix.
-    parser.start_namespace_decl("xml", "http://www.w3.org/XML/1998/namespace")
+    try:
+        # Workaround for bug in expatreader.py. Needed when
+        # expatreader is trying to guess a prefix.
+        parser.start_namespace_decl("xml", "http://www.w3.org/XML/1998/namespace")
+    except AttributeError:
+        pass # Not present in Jython (at least)
     parser.setFeature(handler.feature_namespaces, 1)
     trix = TriXHandler(store)
     parser.setContentHandler(trix)

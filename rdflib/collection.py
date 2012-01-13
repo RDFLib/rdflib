@@ -20,7 +20,7 @@ class Collection(object):
     >>> g.add((listItem2,RDF.rest,RDF.nil))
     >>> g.add((listItem2,RDF.first,Literal(3)))
     >>> c=Collection(g,listName)
-    >>> print list(c)
+    >>> print(list(c))
     [rdflib.term.Literal(%(u)s'1', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer')), rdflib.term.Literal(%(u)s'2', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer')), rdflib.term.Literal(%(u)s'3', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer'))]
     >>> 1 in c
     True
@@ -51,7 +51,7 @@ class Collection(object):
         >>> g.add((listItem2,RDF.rest,RDF.nil))
         >>> g.add((listItem2,RDF.first,Literal(3)))
         >>> c=Collection(g,listName)
-        >>> print c.n3()
+        >>> print(c.n3())
         ( "1"^^<http://www.w3.org/2001/XMLSchema#integer> "2"^^<http://www.w3.org/2001/XMLSchema#integer> "3"^^<http://www.w3.org/2001/XMLSchema#integer> )
         """
         return "( %s )"%(' '.join([i.n3() for i in self]))
@@ -247,10 +247,10 @@ if __name__=="__main__":
 
     c.append(Literal("5"))
 
-    print list(c)
+    print(list(c))
 
     for i in c:
-        print i
+        print(i)
 
     del c[3]
 

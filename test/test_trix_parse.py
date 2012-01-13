@@ -43,11 +43,6 @@ class TestTrixParse(unittest.TestCase):
         
         #print "Parsed %d triples"%len(g)
 
-import platform
-if platform.system() == 'Java':
-    from nose import SkipTest
-    raise SkipTest('Jython issues - "JavaSAXParser" object has no attribute "start_namespace_decl"')
-
 if __name__=='__main__':
     unittest.main()
                           

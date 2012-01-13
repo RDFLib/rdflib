@@ -40,16 +40,16 @@ via triple pattern:
     
     >>> g = Graph('IOMemory')
     >>> statementId = BNode()
-    >>> print len(g)
+    >>> print(len(g))
     0
     >>> g.add((statementId, RDF.type, RDF.Statement))
     >>> g.add((statementId, RDF.subject, URIRef('http://rdflib.net/store/ConjunctiveGraph')))
     >>> g.add((statementId, RDF.predicate, RDFS.label))
     >>> g.add((statementId, RDF.object, Literal("Conjunctive Graph")))
-    >>> print len(g)
+    >>> print(len(g))
     4
     >>> for s, p, o in g:
-    ...     print type(s)
+    ...     print(type(s))
     ...
     <class 'rdflib.term.BNode'>
     <class 'rdflib.term.BNode'>
@@ -57,14 +57,14 @@ via triple pattern:
     <class 'rdflib.term.BNode'>
     
     >>> for s, p, o in g.triples((None, RDF.object, None)):
-    ...     print o
+    ...     print(o)
     ...
     Conjunctive Graph
     >>> g.remove((statementId, RDF.type, RDF.Statement))
-    >>> print len(g)
+    >>> print(len(g))
     3
 
-None terms in calls to triple can be thought of as "open variables".
+``None`` terms in calls to :meth:`~rdflib.graph.Graph.triples` can be thought of as "open variables".
 
 Graph Aggregation - ConjunctiveGraphs and ReadOnlyGraphAggregate within 
 the same store:
@@ -93,7 +93,7 @@ the same store:
     >>> len(list(ReadOnlyGraphAggregate([g1,g2]).subjects(RDF.type, RDF.Statement)))
     2
 
-ConjunctiveGraphs have a 'quads' method which returns quads instead of 
+ConjunctiveGraphs have a :meth:`~rdflib.graph.ConjunctiveGraph.quads` method which returns quads instead of 
 triples, where the fourth item is the Graph (or subclass thereof) instance 
 in which the triple was asserted:
     
@@ -118,7 +118,7 @@ Parsing N3 from StringIO
     ...   rdf:object "Conjunctive Graph" ] .
     ... '''
     >>> g2 = g2.parse(StringIO(src), format='n3')
-    >>> print len(g2)
+    >>> print(len(g2))
     4
 
 Using Namespace class:
@@ -664,7 +664,7 @@ class Graph(Node):
         ...       yield s
         >>> def reverseList(node,g):
         ...    for f in g.objects(node,RDF.first):
-        ...       print f
+        ...       print(f)
         ...    for s in g.subjects(RDF.rest,node):
         ...       yield s
         
@@ -1075,7 +1075,7 @@ class ConjunctiveGraph(Graph):
         Parse source adding the resulting triples to its own context
         (sub graph of this graph).
 
-        See `rdflib.graph.Graph.parse` for documentation on arguments.
+        See :meth:`rdflib.graph.Graph.parse` for documentation on arguments.
 
         :Returns:
 

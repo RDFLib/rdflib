@@ -17,7 +17,7 @@ A tiny example:
     >>> g = rdflib.Graph()
     >>> result = g.parse("http://www.w3.org/People/Berners-Lee/card")
 
-    >>> print "graph has %s statements." % len(g)
+    >>> print("graph has %s statements." % len(g))
     graph has 79 statements.
     >>>
     >>> for s, p, o in g:
@@ -30,8 +30,8 @@ A tiny example:
 __docformat__ = "restructuredtext en"
 
 # The format of the __version__ line is matched by a regex in setup.py
-__version__ = "3.2.0-dev"
-__date__ = "2011/03/17"
+__version__ = "3.2.0-RC"
+__date__ = "2012/01/11"
 
 __all__ = [
     'URIRef',

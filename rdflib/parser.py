@@ -88,11 +88,7 @@ class URLInputSource(InputSource):
             myheaders['Accept']='application/rdf+xml,text/rdf+n3;q=0.9,application/xhtml+xml;q=0.5, */*;q=0.1'
         
         req = Request(system_id, None, myheaders)
-        try:
-            file = urlopen(req)
-        except HTTPError, e:
-            # TODO:
-            raise Exception('"%s" while trying to open "%s"' % (e, self.url))
+        file = urlopen(req)
         self.content_type = file.info().get('content-type')
         self.content_type = self.content_type.split(";", 1)[0]
         self.setByteStream(file)

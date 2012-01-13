@@ -62,10 +62,6 @@ class TestTrixSerialize(unittest.TestCase):
           tg=g.default_context
         self.assertTrue(q[0:3] in tg)
 
-import platform
-if platform.system() == 'Java':
-    from nose import SkipTest
-    raise SkipTest('Jython issues - "JavaSAXParser" object has no attribute "start_namespace_decl"')
 
 if __name__=='__main__':
     unittest.main()

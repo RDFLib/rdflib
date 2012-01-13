@@ -32,6 +32,12 @@ class A(unittest.TestCase):
         names = self.module_names()
         self.assert_(names==set(), "module names '%s' are not lower case" % names)
 
+try:
+    getattr(pkgutil, 'iter_modules')
+except AttributeError:
+    from nose import SkipTest
+    raise SkipTest('pkgutil.iter_modules not available in Python 2.4')
+
 
 if __name__ == "__main__":
     unittest.main()
