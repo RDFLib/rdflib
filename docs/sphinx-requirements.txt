@@ -1,2 +1,2 @@
--e git://github.com/gjhiggins/n3_pygments_lexer.git@60c48e0d60300ae2c05d9a850322341af4173ff8#egg=Notation3_Pygments_Lexer-dev
--e git://github.com/gjhiggins/sparql_pygments_lexer.git@2d441e1361b77b8c02adb1f6043c35d9a34fb452#egg=SPARQL_Pygments_Lexer-dev
+-e git+git://github.com/gjhiggins/n3_pygments_lexer.git#egg=Notation3_Pygments_Lexer
+-e git+git://github.com/gjhiggins/sparql_pygments_lexer.git#egg=SPARQL_Pygments_Lexer

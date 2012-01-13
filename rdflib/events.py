@@ -13,7 +13,7 @@ Now create a handler for the event and subscribe it to the dispatcher
 to handle Event events.  A handler is a simple function or method that
 accepts the event as an argument:
 
-  >>> def handler1(event): print `event`
+  >>> def handler1(event): print(repr(event))
   >>> d.subscribe(Event, handler1)
 
 Now dispatch a new event into the dispatcher, and see handler1 get

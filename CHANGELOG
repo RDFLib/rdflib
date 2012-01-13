@@ -1,9 +1,34 @@
+2012/01/X
+        RELEASE 3.2.0
+
+	Major changes:
+	  * Thanks to Thomas Kluyver, rdflib now works under python3,
+	    the setup.py script automatically runs 2to3.
+
+	  * Unit tests were updated and cleaned up. Now all tests should pass.
+	  * Documentation was updated and cleaned up.
+
+	  * A new resource oriented API was added:
+	    http://code.google.com/p/rdflib/issues/detail?id=166
+
+        Fixed many minor issues:
+          * http://code.google.com/p/rdflib/issues/detail?id=177
+	    http://code.google.com/p/rdflib/issues/detail?id=129
+            Restored compatability with Python 2.4
+          * http://code.google.com/p/rdflib/issues/detail?id=158
+	    Reworking of Query result handling
+          * http://code.google.com/p/rdflib/issues/detail?id=193
+	    generating xml:base attribute in RDF/XML output
+	  * http://code.google.com/p/rdflib/issues/detail?id=180
+            serialize(format="pretty-xml") fails on cyclic links
+	
+
 2011/03/17
         RELEASE 3.1.0
 
         Fixed a range of minor issues:
-          * http://code.google.com/p/rdflib/issues/detail?id=128 
-          	Literal.__str__ does not behave like unicode     
+          * http://code.google.com/p/rdflib/issues/detail?id=128
+                  Literal.__str__ does not behave like unicode
           * http://code.google.com/p/rdflib/issues/detail?id=141
             (RDFa Parser) Does not handle application/xhtml+xml
           * http://code.google.com/p/rdflib/issues/detail?id=142
@@ -23,25 +48,25 @@
           * http://code.google.com/p/rdflib/issues/detail?id=118
             DateTime literals with offsets fail to convert to Python
           * http://code.google.com/p/rdflib/issues/detail?id=157
-            Timestamps with timezone information are not parsed 
+            Timestamps with timezone information are not parsed
           * http://code.google.com/p/rdflib/issues/detail?id=151
-          	problem with unicode literals in rdflib.compare.graph_diff      
+                  problem with unicode literals in rdflib.compare.graph_diff
           * http://code.google.com/p/rdflib/issues/detail?id=149
             Sleepycat Store broken with create=False
           * http://code.google.com/p/rdflib/issues/detail?id=134
-            Would be useful if Graph.query could propagate kwargs to a 
-            plugin processor 
+            Would be useful if Graph.query could propagate kwargs to a
+            plugin processor
           * http://code.google.com/p/rdflib/issues/detail?id=133
-            Graph.connected exception when passed empty graph 
+            Graph.connected exception when passed empty graph
           * http://code.google.com/p/rdflib/issues/detail?id=129
-            Not compatible with Python 2.4 
+            Not compatible with Python 2.4
           * http://code.google.com/p/rdflib/issues/detail?id=119
-            Support Python's set operations on Graph 
+            Support Python's set operations on Graph
           * http://code.google.com/p/rdflib/issues/detail?id=130
-            NT output encoding to utf-8 broken as it goes through 
-            _xmlcharrefreplace 
+            NT output encoding to utf-8 broken as it goes through
+            _xmlcharrefreplace
           * http://code.google.com/p/rdflib/issues/detail?id=121#c1
-            Store SPARQL Support 
+            Store SPARQL Support
 
 2010/05/13
         RELEASE 3.0.0
@@ -58,8 +83,8 @@
         moving to http://code.google.com/p/rdfextras/ at least until
         they are stable.
 
-        Fixed datatype for Literal(True).        
-        
+        Fixed datatype for Literal(True).
+
         Fixed Literal to enforce contraint of having either a language
         or datatype but not both.
 
@@ -315,7 +340,7 @@
 
         Added XSD to/from Python datatype support to Literals.
 
-        Fixed ConjunctiveGraph so that it is a proper subclass of Graph. 
+        Fixed ConjunctiveGraph so that it is a proper subclass of Graph.
 
         Added Deprecation Warning when BackwardCompatGraph gets used.
 
@@ -337,11 +362,11 @@
 
         Changed Graph's bind method to also override the binding in
         the case of an existing generated bindings.
-        
+
         Added FOPLRelationalModel - a set of utility classes that
         implement a minimal Relational Model of FOPL implemented as a
         SQL database (uses identifier/value interning and integer
-        half-md5-hashes for space and index efficiency). 
+        half-md5-hashes for space and index efficiency).
 
         Changed MySQL store to use FOPLRelationalModel plus fixes and
         improvements.
@@ -457,8 +482,8 @@
 
         Added Fourthought backend contributed by Chimezie Ogbuji.
 
-	Fixed a RDF/XML parser bug relating to XMLLiteral and
-	escaping.
+        Fixed a RDF/XML parser bug relating to XMLLiteral and
+        escaping.
 
         Fixed setup.py so that install does not try to uninstall
         (rename_old) before installing; there's now an uninstall
