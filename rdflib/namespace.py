@@ -204,6 +204,29 @@ XSD = Namespace(_XSD_PFX)
 SKOS = Namespace('http://www.w3.org/2004/02/skos/core#')
 
 class NamespaceManager(object):
+    """
+
+    Sample usage from FuXi ...
+    
+    .. code-block:: python
+
+        ruleStore = N3RuleStore(additionalBuiltins=additionalBuiltins)
+        nsMgr = NamespaceManager(Graph(ruleStore))
+        ruleGraph = Graph(ruleStore,namespace_manager=nsMgr)            
+
+
+    and ...
+
+    .. code-block:: pycon
+
+        >>> exNs = Namespace('http://example.com/')        
+        >>> namespace_manager = NamespaceManager(Graph())
+        >>> namespace_manager.bind('ex', exNs, override=False)
+        >>> namespace_manager.bind('owl', OWL_NS, override=False)
+        >>> g = Graph()    
+        >>> g.namespace_manager = namespace_manager
+
+    """
     def __init__(self, graph):
         self.graph = graph
         self.__cache = {}
