@@ -2,6 +2,8 @@
 TODO:
 """
 
+# __all__ = ['Error', 'TypeCheckError', 'SubjectTypeError', 'PredicateTypeError', 'ObjectTypeError', 'ContextTypeError', 'ParserError']
+
 class Error(Exception):
     """Base class for rdflib exceptions."""
     def __init__(self, msg=None):

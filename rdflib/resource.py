@@ -291,6 +291,7 @@ objects::
 from rdflib.term import BNode, URIRef
 from rdflib.namespace import RDF
 
+# __all__ = ['Resource']
 
 class Resource(object):
 

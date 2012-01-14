@@ -11,6 +11,8 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 
 from StringIO   import StringIO
 
+# __all__ = ['handle_embeddedRDF']
+
 def handle_embeddedRDF(node, graph, state):
     """
     Check if the node is the top level rdf element for RDF/XML. If so, the content is parsed and added to the target graph. Note that if an separate

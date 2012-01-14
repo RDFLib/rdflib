@@ -1,6 +1,7 @@
 import codecs
 from xml.sax.saxutils import quoteattr, escape
 
+# __all__ = ['XMLWriter']
 
 class XMLWriter(object):
     def __init__(self, stream, namespace_manager, encoding=None, decl=1, extra_ns={}):

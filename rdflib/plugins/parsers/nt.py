@@ -1,6 +1,7 @@
 from rdflib.parser import Parser
 from rdflib.plugins.parsers.ntriples import NTriplesParser
 
+# __all__ = ['NTSink', 'NTParser']
 
 class NTSink(object):
     def __init__(self, graph):

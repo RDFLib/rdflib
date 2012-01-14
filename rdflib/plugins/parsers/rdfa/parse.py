@@ -19,6 +19,7 @@ from rdflib.plugins.parsers.rdfa.literal import generate_literal
 from rdflib.plugins.parsers.rdfa.embeddedrdf import handle_embeddedRDF
 from rdflib.plugins.parsers.rdfa.options import GENERIC_XML, XHTML_RDFA, HTML5_RDFA
 
+# __all__ = ['parse_one_node']
 
 def parse_one_node(node, graph, parent_object, incoming_state, parent_incomplete_triples):
     """The (recursive) step of handling a single node. See the

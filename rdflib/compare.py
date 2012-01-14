@@ -70,7 +70,8 @@ Only in second::
 # - Add warning and/or safety mechanism before working on large graphs?
 # - use this in existing Graph.isomorphic?
 
-
+# __all__ = ['IsomorphicGraph', 'to_isomorphic', 'isomorphic', 'to_canonical_graph', 'graph_diff', 'similar']
+ 
 from rdflib.graph import Graph, ConjunctiveGraph, ReadOnlyGraphAggregate
 from rdflib.term import BNode
 try:

@@ -29,6 +29,7 @@ from rdflib.plugins.parsers.rdfa.options import (Options, _add_to_comment_graph,
 
 from rdflib.plugins.parsers.rdfa.transform.headabout import head_about_transform
 
+# __all__ = ['RDFaParser']
 
 # These are part of the RDFa spec.
 BUILT_IN_TRANSFORMERS = [

@@ -3,8 +3,10 @@ build
 dist
 *.pyc
 *~
+*.class
 docs/_build
 .tox
 .coverage
 coverage
 nosetests.xml
+*.egg-info

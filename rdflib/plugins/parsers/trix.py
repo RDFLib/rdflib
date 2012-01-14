@@ -43,6 +43,8 @@ from xml.sax.saxutils import handler
 from xml.sax import make_parser
 from xml.sax.handler import ErrorHandler
 
+# __all__ = ['create_parser', 'TriXHandler', 'TriXParser']
+
 
 TRIXNS=Namespace("http://www.w3.org/2004/03/trix/trix-1/")
 XMLNS=Namespace("http://www.w3.org/XML/1998/namespace")

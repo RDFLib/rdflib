@@ -20,6 +20,8 @@ from threading import Thread
 import logging
 _logger = logging.getLogger(__name__)
 
+# __all__ = ['Sleepycat']
+
 class Sleepycat(Store):
     context_aware = True
     formula_aware = True

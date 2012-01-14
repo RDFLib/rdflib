@@ -15,6 +15,8 @@ import re
 from rdflib.namespace import RDF
 from rdflib.term import Literal
 
+# __all__ = ['generate_literal']
+
 XMLLiteral = RDF.XMLLiteral
 
 

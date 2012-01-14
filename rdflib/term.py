@@ -21,6 +21,8 @@ And those that are primarily for matching against 'Nodes' in the underlying Grap
 """
 
 __all__ = [
+    'bind',
+    
     'Node',
     'Identifier',
 
@@ -834,6 +836,8 @@ def _castPythonToLiteral(obj):
                 return obj, None
     return obj, None # TODO: is this right for the fall through case?
 
+from decimal import Decimal
+
 # Mappings from Python types to XSD datatypes and back (burrowed from sparta)
 # datetime instances are also instances of date... so we need to order these.
 _PythonToXSD = [
@@ -842,11 +846,11 @@ _PythonToXSD = [
     (bool      , (lambda i:str(i).lower(), URIRef(_XSD_PFX+'boolean'))),
     (int       , (None, URIRef(_XSD_PFX+'integer'))),
     (long      , (None, URIRef(_XSD_PFX+'long'))),
+    (Decimal   , (None, URIRef(_XSD_PFX+'decimal'))),
     (datetime  , (lambda i:i.isoformat(), URIRef(_XSD_PFX+'dateTime'))),
     (date      , (lambda i:i.isoformat(), URIRef(_XSD_PFX+'date'))),
     (time      , (lambda i:i.isoformat(), URIRef(_XSD_PFX+'time'))),
 ]
-
 
 XSDToPython = {
     URIRef(_XSD_PFX+'time')               : parse_time,
@@ -857,7 +861,7 @@ XSDToPython = {
     URIRef(_XSD_PFX+'token')              : None,
     URIRef(_XSD_PFX+'language')           : None,
     URIRef(_XSD_PFX+'boolean')            : lambda i:i.lower() in ['1','true'],
-    URIRef(_XSD_PFX+'decimal')            : float,
+    URIRef(_XSD_PFX+'decimal')            : Decimal,
     URIRef(_XSD_PFX+'integer')            : long,
     URIRef(_XSD_PFX+'nonPositiveInteger') : int,
     URIRef(_XSD_PFX+'long')               : long,

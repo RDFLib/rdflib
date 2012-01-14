@@ -5,6 +5,8 @@ from rdflib.py3compat import b
 
 from rdflib.plugins.serializers.nt import _xmlcharref_encode
 
+# __all__ = ['NQuadsSerializer']
+
 class NQuadsSerializer(Serializer):
 
     def __init__(self, store):

@@ -4,6 +4,8 @@ from rdflib.term import Literal
 from rdflib.graph import Graph
 from rdflib.py3compat import format_doctest_out
 
+# __all__ = ['Collection']
+
 class Collection(object):
     __doc__ = format_doctest_out("""
     See 3.3.5 Emulating container types: http://docs.python.org/ref/sequence-types.html#l2h-232

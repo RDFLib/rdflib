@@ -28,6 +28,8 @@ from rdflib.plugins.parsers.ntriples import r_tail
 from rdflib.plugins.parsers.ntriples import r_wspace
 from rdflib.plugins.parsers.ntriples import r_wspaces
 
+# __all__ = ['QuadSink', 'NQuadsParser']
+
 class QuadSink(object):
     def __init__(self):
         class FakeStore(object):

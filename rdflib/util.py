@@ -58,11 +58,7 @@ from rdflib.term import BNode
 from rdflib.term import Literal
 from rdflib.term import URIRef
 
-__all__ = [
-    'list2set', 'first', 'uniq', 'more_than', 'to_term', 'from_n3',
-    'date_time', 'parse_date_time', 'check_context', 'check_subject', 
-    'check_predicate', 'check_object', 'check_statement', 'check_pattern'
-    ]
+# __all__ = ['list2set', 'first', 'uniq', 'more_than', 'to_term', 'from_n3','date_time', 'parse_date_time', 'check_context', 'check_subject', 'check_predicate', 'check_object', 'check_statement', 'check_pattern']
 
 def list2set(seq):
     seen = set()

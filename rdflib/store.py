@@ -36,6 +36,8 @@ UNKNOWN         = None
 
 from rdflib.events import Dispatcher, Event
 
+# __all__ = ['StoreCreatedEvent', 'TripleAddedEvent', 'TripleRemovedEvent', 'NodePickler', 'Store']
+
 class StoreCreatedEvent(Event):
     """
     This event is fired when the Store is created, it has the folloing attribute:

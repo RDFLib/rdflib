@@ -23,6 +23,8 @@ fired:
   <rdflib.events.Event ['data', 'foo', 'used_by']>
 """
 
+# __all__ = ['Event', 'Dispatcher']
+
 class Event(object):
     """
     An event is a container for attributes.  The source of an event
