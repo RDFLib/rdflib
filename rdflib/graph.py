@@ -367,6 +367,39 @@ class Graph(Node):
         for (s, p, o), cg in self.__store.triples((s, p, o), context=self):
             yield (s, p, o)
 
+    def __getitem__(self, item, subject=None): 
+
+        if isinstance(item, tuple) and len(item)==1:
+            item=item[0]
+
+        if isinstance(item, slice): 
+
+            s,p,o=item.start,item.stop,item.step
+            if not isinstance(s,tuple): s=(s,)
+            if not isinstance(p,tuple): p=(p,)
+            if not isinstance(o,tuple): o=(o,)
+
+            if subject: s=(subject,)
+
+            for _s in s: 
+                for _p in p:
+                    for _o in o:
+                        for t in self.triples((_s,_p,_o)):
+                            yield t
+
+        elif isinstance(item, Node):
+
+            if subject: item=subject
+            for t in self.triples((item,None,None)): yield t
+            
+        elif isinstance(item, tuple): 
+            # carry out the first one, recurse while constraining subject
+            for x in self.__getitem__(item[0],subject):
+                for y in self.__getitem__(item[1:], x[2]):
+                    yield y
+        else: 
+            raise TypeError("You can only index a graph by a single rdflib term, tuples or a slice of rdflib terms.")
+
     def __len__(self):
         """Returns the number of triples in the graph
 
