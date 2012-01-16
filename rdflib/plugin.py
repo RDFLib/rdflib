@@ -29,7 +29,7 @@ from rdflib.serializer import Serializer
 from rdflib.query import ResultParser, ResultSerializer
 from rdflib.exceptions import Error
 
-# __all__ = ['register', 'get', 'plugins', 'PluginException', 'Plugin', 'PKGPlugin']
+__all__ = ['register', 'get', 'plugins', 'PluginException', 'Plugin', 'PKGPlugin']
 
 entry_points = {'rdf.plugins.store': Store,
                 'rdf.plugins.serializer': Serializer,

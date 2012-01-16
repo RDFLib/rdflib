@@ -36,7 +36,7 @@ UNKNOWN         = None
 
 from rdflib.events import Dispatcher, Event
 
-# __all__ = ['StoreCreatedEvent', 'TripleAddedEvent', 'TripleRemovedEvent', 'NodePickler', 'Store']
+__all__ = ['StoreCreatedEvent', 'TripleAddedEvent', 'TripleRemovedEvent', 'NodePickler', 'Store']
 
 class StoreCreatedEvent(Event):
     """

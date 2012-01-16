@@ -20,7 +20,7 @@ from rdflib.graph import Graph
 from rdflib.term import BNode, Literal, URIRef
 from rdflib.namespace import Namespace
 
-# __all__ = ['CommentGraph', 'Options']
+__all__ = ['CommentGraph', 'Options']
 
 DIST_URI = "http://www.w3.org/2007/08/pyRdfa/distiller"
 DIST_NS  = DIST_URI + '#'

@@ -2,7 +2,7 @@ from __future__ import generators
 from rdflib.term import BNode
 from rdflib.store import Store, NO_STORE, VALID_STORE
 
-# __all__ = ['Memory', 'IOMemory']
+__all__ = ['Memory', 'IOMemory']
 
 ANY = Any = None
 

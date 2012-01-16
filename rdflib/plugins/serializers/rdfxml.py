@@ -15,7 +15,7 @@ from rdflib.py3compat import b
 
 from xml.sax.saxutils import quoteattr, escape
 
-# __all__ = ['fix', 'XMLSerializer', 'PrettyXMLSerializer']
+__all__ = ['fix', 'XMLSerializer', 'PrettyXMLSerializer']
 
 class XMLSerializer(Serializer):
 

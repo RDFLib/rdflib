@@ -7,7 +7,7 @@ from rdflib.serializer import Serializer
 from rdflib.py3compat import b
 import warnings
 
-# __all__ = ['NTSerializer']
+__all__ = ['NTSerializer']
 
 class NTSerializer(Serializer):
     """

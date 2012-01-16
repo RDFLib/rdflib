@@ -23,7 +23,7 @@ fired:
   <rdflib.events.Event ['data', 'foo', 'used_by']>
 """
 
-# __all__ = ['Event', 'Dispatcher']
+__all__ = ['Event', 'Dispatcher']
 
 class Event(object):
     """

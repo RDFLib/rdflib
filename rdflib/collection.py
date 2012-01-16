@@ -4,7 +4,7 @@ from rdflib.term import Literal
 from rdflib.graph import Graph
 from rdflib.py3compat import format_doctest_out
 
-# __all__ = ['Collection']
+__all__ = ['Collection']
 
 class Collection(object):
     __doc__ = format_doctest_out("""

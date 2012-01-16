@@ -28,7 +28,7 @@ from rdflib import __version__
 from rdflib.term import URIRef
 from rdflib.namespace import Namespace
 
-# __all__ = ['Parser', 'InputSource', 'StringInputSource', 'URLInputSource', 'FileInputSource']
+__all__ = ['Parser', 'InputSource', 'StringInputSource', 'URLInputSource', 'FileInputSource']
 
 class Parser(object):
 

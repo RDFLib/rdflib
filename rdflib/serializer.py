@@ -11,7 +11,7 @@ TODO: info for how to write a serializer that can plugin to rdflib. See also rdf
 
 from rdflib.term import URIRef
 
-# __all__ = ['Serializer']
+__all__ = ['Serializer']
 
 class Serializer(object):
 

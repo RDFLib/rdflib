@@ -46,7 +46,7 @@ from rdflib.graph import QuotedGraph, ConjunctiveGraph
 from rdflib import py3compat
 b = py3compat.b
 
-# __all__ = ['URISyntaxError', 'BadSyntax', 'N3Parser', "verbosity", "setVerbosity", "progress", "splitFrag", "splitFragP", "join", "refTo", "base", "canonical", "runNamespace", "uniqueURI", "Canonicalize", "stripCR", "dummyWrite", "toBool", "stringToN3", "backslashUify", "hexify", "dummy"] 
+__all__ = ['URISyntaxError', 'BadSyntax', 'N3Parser', "verbosity", "setVerbosity", "progress", "splitFrag", "splitFragP", "join", "refTo", "base", "canonical", "runNamespace", "uniqueURI", "Canonicalize", "stripCR", "dummyWrite", "toBool", "stringToN3", "backslashUify", "hexify", "dummy"] 
 
 from rdflib.parser import Parser
 

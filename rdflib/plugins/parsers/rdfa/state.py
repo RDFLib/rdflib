@@ -35,7 +35,7 @@ import re
 import random
 import urlparse
 
-# __all__ = ['ExecutionContext']
+__all__ = ['ExecutionContext']
 
 RDFa_PROFILE    = "http://www.w3.org/1999/xhtml/vocab"
 RDFa_VERSION    = "XHTML+RDFa 1.0"
