@@ -1,5 +1,3 @@
-
-
 RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information.
 
 The library contains parsers and serializers for RDF/XML, N3,
