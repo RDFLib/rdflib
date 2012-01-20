@@ -1,8 +1,8 @@
 .. rdflib documentation documentation master file
    
-==============
-rdflib 3.2.0rc
-==============
+============
+rdflib 3.2.0
+============
 
 Introduction
 ============
