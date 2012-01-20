@@ -96,7 +96,7 @@ setup(
     the very latest, you may want the development version instead:
     http://rdflib.googlecode.com/hg#egg=rdflib-dev
     """,
-    download_url = "http://rdflib.net/rdflib-%s.tar.gz" % version,
+    download_url = "http://rdflib.googlecode.com/files/rdflib-%s.tar.gz" % version,
     packages = ['rdflib',
                 'rdflib/plugins',
                 'rdflib/plugins',
