@@ -62,7 +62,7 @@ Create a Resource::
 Retrieve some basic facts::
 
     >>> person.identifier
-    rdflib.term.URIRef('http://example.org/person/some1#self')
+    rdflib.term.URIRef(u'http://example.org/person/some1#self')
 
     >>> person.value(FOAF.name)
     rdflib.term.Literal(%(u)s'Some Body')

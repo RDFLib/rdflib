@@ -157,8 +157,7 @@ class URIRef(Identifier):
         else:
             clsName = self.__class__.__name__
 
-        # quoting risk? drewp is not sure why this doesn't use %r
-        return """%s('%s')""" % (clsName, str(self))
+        return """%s(%s)""" % (clsName, super(URIRef,self).__repr__())
         
 
     def md5_term_hash(self):
@@ -293,7 +292,7 @@ class Literal(Identifier):
     >>> lit2006 < Literal('2007-01-01',datatype=XSD.date)
     True
     >>> Literal(datetime.utcnow()).datatype
-    rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#dateTime')
+    rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#dateTime')
     >>> oneInt     = Literal(1)
     >>> twoInt     = Literal(2)
     >>> twoInt < oneInt

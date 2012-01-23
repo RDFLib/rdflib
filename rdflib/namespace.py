@@ -20,9 +20,9 @@ Fully qualified URIs in the namespace can be constructed either by attribute or 
 .. code-block:: pycon
 
     >>> fuxi.ruleBase
-    rdflib.term.URIRef('http://metacognition.info/ontologies/FuXi.n3#ruleBase')
+    rdflib.term.URIRef(u'http://metacognition.info/ontologies/FuXi.n3#ruleBase')
     >>> fuxi['ruleBase']
-    rdflib.term.URIRef('http://metacognition.info/ontologies/FuXi.n3#ruleBase')
+    rdflib.term.URIRef(u'http://metacognition.info/ontologies/FuXi.n3#ruleBase')
 
 Automatic handling of unknown predicates
 -----------------------------------------
@@ -58,7 +58,7 @@ The following namespaces are available by directly importing from rdflib:
 
     >>> from rdflib import OWL
     >>> OWL.seeAlso
-    rdflib.term.URIRef('http://www.w3.org/2002/07/owl#seeAlso')
+    rdflib.term.URIRef(u'http://www.w3.org/2002/07/owl#seeAlso')
 
 """)
 
@@ -219,11 +219,11 @@ class NamespaceManager(object):
     and ...
 
     .. code-block:: pycon
-
+        >>> from rdflib import Graph, OWL
         >>> exNs = Namespace('http://example.com/')        
         >>> namespace_manager = NamespaceManager(Graph())
         >>> namespace_manager.bind('ex', exNs, override=False)
-        >>> namespace_manager.bind('owl', OWL_NS, override=False)
+        >>> namespace_manager.bind('owl', OWL, override=False)
         >>> g = Graph()    
         >>> g.namespace_manager = namespace_manager
 

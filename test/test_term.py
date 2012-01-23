@@ -15,7 +15,7 @@ class TestURIRefRepr(unittest.TestCase):
         class MyURIRef(URIRef):
             pass
         x = MyURIRef('http://example.com/')
-        self.assertEqual(repr(x), "MyURIRef('http://example.com/')")
+        self.assertEqual(repr(x), "MyURIRef(u'http://example.com/')")
         
 
 class TestBNodeRepr(unittest.TestCase):
