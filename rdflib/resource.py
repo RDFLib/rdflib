@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from rdflib import py3compat
 __doc__ = py3compat.format_doctest_out("""
-The ``Resource`` class wraps a ``Graph`` and a resource reference (i.e. an
-``URIRef`` or ``BNode``), to support a resource oriented way of working with a
+The :class:`~rdflib.resource.Resource` class wraps a :class:`~rdflib.graph.Graph` 
+and a resource reference (i.e. a :class:`rdflib.term.URIRef` or 
+:class:`rdflib.term.BNode`) to support a resource-oriented way of working with a
 graph.
 
 It contains methods directly corresponding to those methods of the Graph
@@ -12,9 +13,9 @@ tracking both the graph and a current subject. This makes for a "resource
 oriented" style, as compared to the triple orientation of the Graph API.
 
 Resulting generators are also wrapped so that any resource reference values
-(``URIRef``s and ``BNode``s) are in turn wrapped as Resources. (Note that this
-behaviour differs from the corresponding methods in Graph, were no such
-conversion takes place.)
+(:class:`rdflib.term.URIRef`s and :class:`rdflib.term.BNode`s) are in turn 
+wrapped as Resources. (Note that this behaviour differs from the corresponding 
+methods in :class:`~rdflib.graph.Graph`, where no such conversion takes place.)
 
 
 Basic Usage Scenario

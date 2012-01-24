@@ -219,6 +219,7 @@ class NamespaceManager(object):
     and ...
 
     .. code-block:: pycon
+    
         >>> from rdflib import Graph, OWL
         >>> exNs = Namespace('http://example.com/')        
         >>> namespace_manager = NamespaceManager(Graph())

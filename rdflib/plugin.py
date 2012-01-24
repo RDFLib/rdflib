@@ -151,6 +151,8 @@ register('n3', Parser,
                 'rdflib.plugins.parsers.notation3', 'N3Parser')
 register('nt', Parser, 
                 'rdflib.plugins.parsers.nt', 'NTParser')
+register('nquads', Parser, 
+                'rdflib.plugins.parsers.nquads', 'NQuadsParser')
 register('trix', Parser, 
                 'rdflib.plugins.parsers.trix', 'TriXParser')
 register('rdfa', Parser, 

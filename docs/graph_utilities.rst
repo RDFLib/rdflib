@@ -45,7 +45,7 @@ Triples can be added in two ways:
     .. automethod:: rdflib.graph.Graph.parse
                   :noindex:
 
-    The first argument can be a *source* of many kinds, but the most common is the serialization (in various formats: RDF/XML, Notation 3, NTriples of an RDF graph as a string.  The :keyword:`format` parameter is one of ``n3``, ``xml``, or ``ntriples``.  :keyword:`publicID` is the name of the graph into which the RDF serialization will be parsed.
+    The first argument can be a *source* of many kinds, but the most common is the serialization (in various formats: RDF/XML, Notation 3, NTriples of an RDF graph as a string.  The ``format`` parameter is one of ``n3``, ``xml``, or ``ntriples``.  ``publicID`` is the name of the graph into which the RDF serialization will be parsed.
 
 * Triples can also be added with the :meth:`add` function: 
 

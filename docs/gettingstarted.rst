@@ -93,27 +93,94 @@ See also
 .. automethod:: rdflib.graph.Graph.parse
     :noindex:
 
+
 Plugin parsers
 --------------
+
+The plug-in parsers are listed in :mod:`rdfextras.plugins`:
+
+.. code-block:: python
+
+    register('n3', Parser, 
+             'rdflib.plugins.parsers.notation3', 'N3Parser')
+    register('nquads', Parser, 
+             'rdflib.plugins.parsers.nquads', 'NQuadsParser')
+    register('nt', Parser, 
+             'rdflib.plugins.parsers.nt', 'NTParser')
+    register('trix', Parser, 
+             'rdflib.plugins.parsers.trix', 'TriXParser')
+    register('application/rdf+xml', Parser,
+             'rdflib.plugins.parsers.rdfxml', 'RDFXMLParser')
+    register('xml', Parser, 
+             'rdflib.plugins.parsers.rdfxml', 'RDFXMLParser')
+    register('rdfa', Parser, 
+             'rdflib.plugins.parsers.rdfa', 'RDFaParser')
+    register('text/html', Parser,
+             'rdflib.plugins.parsers.rdfa', 'RDFaParser')
+    register('application/xhtml+xml', Parser,
+             'rdflib.plugins.parsers.rdfa', 'RDFaParser')
+
+
+Notation 3
+^^^^^^^^^^^
+
+.. code-block:: python
+
+    ConjunctiveGraph().parse(data=data, format="n3")
 
 .. module:: rdflib.plugins.parsers.notation3
 .. autoclass::  rdflib.plugins.parsers.notation3.N3Parser
     :members:
 
+NQuads
+^^^^^^^
+
+.. code-block:: python
+
+    ConjunctiveGraph().parse(data=data, format="nquads")
+
 .. module:: rdflib.plugins.parsers.nquads
 .. autoclass::  rdflib.plugins.parsers.nquads.NQuadsParser
     :members:
+
+NTriples
+^^^^^^^^
+
+.. code-block:: python
+
+    ConjunctiveGraph().parse(data=data, format="nt")
 
 .. module:: rdflib.plugins.parsers.nt
 .. autoclass::  rdflib.plugins.parsers.nt.NTParser
     :members:
 
-.. module:: rdflib.plugins.parsers.rdfa
+RDFa
+^^^^^
+
+.. code-block:: python
+
+    ConjunctiveGraph().parse(data=data, format="rdfa")
+
+.. automodule:: rdflib.plugins.parsers.rdfa
 .. autoclass::  rdflib.plugins.parsers.rdfa.RDFaParser
     :members:
 
+RDF/XML
+^^^^^^^^
+
+.. code-block:: python
+
+    ConjunctiveGraph().parse(data=data, format="application/rdf+xml")
+
 .. autoclass::  rdflib.plugins.parsers.rdfxml.RDFXMLParser
     :members:
+
+TriX
+^^^^^
+
+.. code-block:: python
+
+    ConjunctiveGraph().parse(data=data, format="trix")
 
 .. module:: rdflib.plugins.parsers.trix
 .. autoclass::  rdflib.plugins.parsers.trix.TriXParser
@@ -123,29 +190,91 @@ Plugin parsers
 Plugin serializers
 ------------------
 
+The plug-in serializers are listed in :mod:`rdfextras.plugins`:
+
+.. code-block:: python
+
+    register('n3', Serializer, 
+             'rdflib.plugins.serializers.n3','N3Serializer')
+    register('turtle', Serializer, 
+             'rdflib.plugins.serializers.turtle', 'TurtleSerializer')
+    register('nt', Serializer, 
+             'rdflib.plugins.serializers.nt', 'NTSerializer')
+    register('xml', Serializer, 
+             'rdflib.plugins.serializers.rdfxml', 'XMLSerializer')
+    register('pretty-xml', Serializer,
+             'rdflib.plugins.serializers.rdfxml', 'PrettyXMLSerializer')
+    register('trix', Serializer,
+             'rdflib.plugins.serializers.trix', 'TriXSerializer')
+    register('nquads', Serializer, 
+             'rdflib.plugins.serializers.nquads', 'NQuadsSerializer')
+
+Notation 3
+^^^^^^^^^^
+
+.. code-block:: python
+
+    ConjunctiveGraph().parse(data=s, format='n3')
+
 .. module:: rdflib.plugins.serializers.n3
 .. autoclass::  rdflib.plugins.serializers.n3.N3Serializer
     :members:
+
+NQuads
+^^^^^^^
+.. code-block:: python
+
+    ConjunctiveGraph().parse(data=s, format='nquads')
 
 .. module:: rdflib.plugins.serializers.nquads
 .. autoclass::  rdflib.plugins.serializers.nquads.NQuadsSerializer
     :members:
 
+NTriples
+^^^^^^^^^
+.. code-block:: python
+
+    ConjunctiveGraph().parse(data=s, format='nt')
+
 .. module:: rdflib.plugins.serializers.nt
 .. autoclass::  rdflib.plugins.serializers.nt.NTSerializer
     :members:
+
+RDF/XML
+^^^^^^^^
+.. code-block:: python
+
+    ConjunctiveGraph().parse(data=s, format='xml')
 
 .. module:: rdflib.plugins.serializers.rdfxml
 .. autoclass::  rdflib.plugins.serializers.rdfxml.XMLSerializer
     :members:
 
+TriX
+^^^^^
+.. code-block:: python
+
+    ConjunctiveGraph().parse(data=s, format='trix')
+
 .. module:: rdflib.plugins.serializers.trix
 .. autoclass::  rdflib.plugins.serializers.trix.TriXSerializer
     :members:
 
+Turtle
+^^^^^^
+.. code-block:: python
+
+    ConjunctiveGraph().parse(data=s, format='turtle')
+
 .. module:: rdflib.plugins.serializers.turtle
 .. autoclass::  rdflib.plugins.serializers.turtle.TurtleSerializer
     :members:
+
+XML
+^^^
+.. code-block:: python
+
+    ConjunctiveGraph().parse(data=s, format='pretty-xml')
 
 .. module:: rdflib.plugins.serializers.xmlwriter
 .. autoclass::  rdflib.plugins.serializers.xmlwriter.XMLWriter
@@ -233,7 +362,7 @@ The results are tuples of values in the same order as your SELECT arguments.
 
 Namespaces
 ^^^^^^^^^^
-The :meth:`~rdflib.graph.Graph.parse` :keyword:`initNs` argument is a dictionary of namespaces to be expanded in the query string. In a large program, it is common to use the same ``dict`` for every single query. You might even hack your graph instance so that the ``initNs`` arg is already filled in.
+The `initNs` argument supplied to :meth:`~rdflib.graph.Graph.parse` is a dictionary of namespaces to be expanded in the query string. In a large program, it is common to use the same ``dict`` for every single query. You might even hack your graph instance so that the ``initNs`` arg is already filled in.
 
 .. warning:: rdfextras.store.SPARQL.query does not support `initNs`. 
 

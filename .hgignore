@@ -10,3 +10,4 @@ docs/_build
 coverage
 nosetests.xml
 *.egg-info
+docs/draft
