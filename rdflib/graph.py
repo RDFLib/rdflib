@@ -24,7 +24,7 @@ Instantiating Graphs with Sleepycat store and an identifier -
 
     >>> g = Graph('IOMemory', URIRef("http://rdflib.net"))
     >>> g.identifier
-    rdflib.term.URIRef('http://rdflib.net')
+    rdflib.term.URIRef(u'http://rdflib.net')
     >>> str(g)
     "<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory']."
 
@@ -43,7 +43,7 @@ via triple pattern:
     >>> print(len(g))
     0
     >>> g.add((statementId, RDF.type, RDF.Statement))
-    >>> g.add((statementId, RDF.subject, URIRef('http://rdflib.net/store/ConjunctiveGraph')))
+    >>> g.add((statementId, RDF.subject, URIRef(u'http://rdflib.net/store/ConjunctiveGraph')))
     >>> g.add((statementId, RDF.predicate, RDFS.label))
     >>> g.add((statementId, RDF.object, Literal("Conjunctive Graph")))
     >>> print(len(g))
@@ -77,15 +77,15 @@ the same store:
     >>> stmt2 = BNode()
     >>> stmt3 = BNode()
     >>> g1.add((stmt1, RDF.type, RDF.Statement))
-    >>> g1.add((stmt1, RDF.subject, URIRef('http://rdflib.net/store/ConjunctiveGraph')))
+    >>> g1.add((stmt1, RDF.subject, URIRef(u'http://rdflib.net/store/ConjunctiveGraph')))
     >>> g1.add((stmt1, RDF.predicate, RDFS.label))
     >>> g1.add((stmt1, RDF.object, Literal("Conjunctive Graph")))
     >>> g2.add((stmt2, RDF.type, RDF.Statement))
-    >>> g2.add((stmt2, RDF.subject, URIRef('http://rdflib.net/store/ConjunctiveGraph')))
+    >>> g2.add((stmt2, RDF.subject, URIRef(u'http://rdflib.net/store/ConjunctiveGraph')))
     >>> g2.add((stmt2, RDF.predicate, RDF.type))
     >>> g2.add((stmt2, RDF.object, RDFS.Class))
     >>> g3.add((stmt3, RDF.type, RDF.Statement))
-    >>> g3.add((stmt3, RDF.subject, URIRef('http://rdflib.net/store/ConjunctiveGraph')))
+    >>> g3.add((stmt3, RDF.subject, URIRef(u'http://rdflib.net/store/ConjunctiveGraph')))
     >>> g3.add((stmt3, RDF.predicate, RDFS.comment))
     >>> g3.add((stmt3, RDF.object, Literal("The top-level aggregate graph - The sum of all named graphs within a Store")))
     >>> len(list(ConjunctiveGraph(store).subjects(RDF.type, RDF.Statement)))
@@ -125,9 +125,9 @@ Using Namespace class:
 
     >>> RDFLib = Namespace('http://rdflib.net')
     >>> RDFLib.ConjunctiveGraph
-    rdflib.term.URIRef('http://rdflib.netConjunctiveGraph')
+    rdflib.term.URIRef(u'http://rdflib.netConjunctiveGraph')
     >>> RDFLib['Graph']
-    rdflib.term.URIRef('http://rdflib.netGraph')
+    rdflib.term.URIRef(u'http://rdflib.netGraph')
 
 """
 
@@ -581,29 +581,29 @@ class Graph(Node):
         skos:prefLabel or rdfs:label.
         
         >>> g = ConjunctiveGraph()
-        >>> u = URIRef('http://example.com/foo')
+        >>> u = URIRef(u'http://example.com/foo')
         >>> g.add([u, RDFS.label, Literal('foo')])
         >>> g.add([u, RDFS.label, Literal('bar')])
         >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
-        [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
+        [(rdflib.term.URIRef(u'http://www.w3.org/2000/01/rdf-schema#label'),
           rdflib.term.Literal(%(u)s'bar')),
-         (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
+         (rdflib.term.URIRef(u'http://www.w3.org/2000/01/rdf-schema#label'),
           rdflib.term.Literal(%(u)s'foo'))]
         >>> g.add([u, SKOS.prefLabel, Literal('bla')])
         >>> g.preferredLabel(u) #doctest: +NORMALIZE_WHITESPACE
-        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+        [(rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal(%(u)s'bla'))]
         >>> g.add([u, SKOS.prefLabel, Literal('blubb', lang='en')])
         >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
-        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+        [(rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal(%(u)s'blubb', lang='en')),
-         (rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+         (rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal(%(u)s'bla'))]
         >>> g.preferredLabel(u, lang='') #doctest: +NORMALIZE_WHITESPACE
-        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+        [(rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal(%(u)s'bla'))]
         >>> g.preferredLabel(u, lang='en') #doctest: +NORMALIZE_WHITESPACE
-        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+        [(rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal(%(u)s'blubb', lang='en'))]
         """
         
