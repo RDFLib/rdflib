@@ -3,8 +3,8 @@ some more specific Literal tests are in test_literal.py
 """
 
 import unittest
-
-from rdflib.term import Literal, URIRef, BNode
+from rdflib.py3compat import format_doctest_out as uformat
+from rdflib.term import URIRef, BNode
 
 class TestURIRefRepr(unittest.TestCase):
     """
@@ -15,7 +15,7 @@ class TestURIRefRepr(unittest.TestCase):
         class MyURIRef(URIRef):
             pass
         x = MyURIRef('http://example.com/')
-        self.assertEqual(repr(x), "MyURIRef(u'http://example.com/')")
+        self.assertEqual(repr(x), uformat("MyURIRef(%(u)s'http://example.com/')"))
         
 
 class TestBNodeRepr(unittest.TestCase):

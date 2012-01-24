@@ -76,7 +76,7 @@ class TestRepr(unittest.TestCase):
     def testOmitsMissingLang(self):
         self.assertEqual(
             repr(Literal("foo", datatype=URIRef('http://example.com/'))),
-            uformat("rdflib.term.Literal(%(u)s'foo', datatype=rdflib.term.URIRef(u'http://example.com/'))"))
+            uformat("rdflib.term.Literal(%(u)s'foo', datatype=rdflib.term.URIRef(%(u)s'http://example.com/'))"))
 
     def testSubclassNameAppearsInRepr(self):
         class MyLiteral(Literal):
