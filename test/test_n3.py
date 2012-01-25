@@ -60,6 +60,7 @@ n3:context      a rdf:Property; rdfs:domain n3:statement;
 
 
 import unittest
+from urllib2 import URLError
 
 from rdflib.graph import Graph, ConjunctiveGraph
 
@@ -160,7 +161,11 @@ foo-bar:Ex foo-bar:name "Test" . """
 
     def testParse(self):
         g = ConjunctiveGraph()
-        g.parse("http://groups.csail.mit.edu/dig/2005/09/rein/examples/troop42-policy.n3", format="n3")
+        try:
+            g.parse("http://groups.csail.mit.edu/dig/2005/09/rein/examples/troop42-policy.n3", format="n3")
+        except URLError:
+            from nose import SkipTest
+            raise SkipTest('No network to retrieve the information, skipping test')
 
 cases = ['no quotes',
          "single ' quote",

@@ -1,4 +1,5 @@
 from unittest import TestCase
+from urllib2 import URLError
 
 from rdflib.graph import ConjunctiveGraph
 
@@ -12,10 +13,14 @@ class NonXhtmlTest(TestCase):
 
     def test_url(self):
         if self.html5lib_installed():
-            g = ConjunctiveGraph()
-            g.parse(location='http://oreilly.com/catalog/9780596516499/',
-                    format='rdfa')
-            self.assertTrue(len(g), 77)
+            try:
+                g = ConjunctiveGraph()
+                g.parse(location='http://oreilly.com/catalog/9780596516499/',
+                        format='rdfa')
+                self.assertTrue(len(g), 77)
+            except URLError:
+                from nose import SkipTest
+                raise SkipTest('No networking, test skipped')
 
     def test_file(self):
         if self.html5lib_installed():
