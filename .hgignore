@@ -11,3 +11,4 @@ coverage
 nosetests.xml
 *.egg-info
 docs/draft
+.pylint

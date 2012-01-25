@@ -308,10 +308,12 @@ class Graph(Node):
         return "<Graph identifier=%s (%s)>" % (self.identifier, type(self))
 
     def __str__(self):
-        if isinstance(self.identifier,URIRef):
-            return "%s a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '%s']."%(self.identifier.n3(),self.store.__class__.__name__)
+        if isinstance(self.identifier, URIRef):
+            return "%s a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '%s']." % (
+                self.identifier.n3(),self.store.__class__.__name__)
         else:
-            return "[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '%s']]."%(self.store.__class__.__name__)
+            return "[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '%s']]." % (
+                self.store.__class__.__name__)
 
     def destroy(self, configuration):
         """Destroy the store identified by `configuration` if supported"""
@@ -431,7 +433,7 @@ class Graph(Node):
             self.remove(triple)
         return self
 
-    def __add__(self,other) :
+    def __add__(self, other) :
         """Set-theoretic union"""
         retval = Graph()
         for x in self:
@@ -440,7 +442,7 @@ class Graph(Node):
             retval.add(y)
         return retval
 
-    def __mul__(self,other) :
+    def __mul__(self, other) :
         """Set-theoretic intersection"""
         retval = Graph()
         for x in other:
@@ -448,7 +450,7 @@ class Graph(Node):
                 retval.add(x)
         return retval
 
-    def __sub__(self,other) :
+    def __sub__(self, other) :
         """Set-theoretic difference"""
         retval = Graph()
         for x in self:
@@ -456,7 +458,7 @@ class Graph(Node):
                 retval.add(x)
         return retval
 
-    def __xor__(self,other):
+    def __xor__(self, other):
         """Set-theoretic XOR"""
         return (self - other) + (other - self)
     
@@ -504,7 +506,7 @@ class Graph(Node):
         for s, p, o in self.triples((subject, None, None)):
             yield p, o
 
-    def triples_choices(self, (subject, predicate, object_),context=None):
+    def triples_choices(self, (subject, predicate, object_), context=None):
         for (s, p, o), cg in self.store.triples_choices(
             (subject, predicate, object_), context=self):
             yield (s, p, o)
@@ -683,7 +685,7 @@ class Graph(Node):
         """
         for rt in func(arg,self):
             yield rt
-            for rt_2 in self.transitiveClosure(func,rt):
+            for rt_2 in self.transitiveClosure(func, rt):
                 yield rt_2
 
     def transitive_objects(self, subject, property, remember=None):
@@ -774,7 +776,7 @@ class Graph(Node):
         else:
             location = destination
             scheme, netloc, path, params, query, fragment = urlparse(location)
-            if netloc!="":
+            if netloc != "":
                 print("WARNING: not saving as location" + \
                       "is not a local file reference")
                 return
@@ -854,7 +856,7 @@ class Graph(Node):
 
         """
 
-        if format=="xml":
+        if format == "xml":
             # warn... backward compat.
             format = "application/rdf+xml"
         source = create_input_source(source=source, publicID=publicID, 
@@ -876,18 +878,15 @@ class Graph(Node):
     def query(self, query_object, processor='sparql', result='sparql', initNs={}, initBindings={}, use_store_provided=True, **kwargs):
         """
         """
-
-        
-
         if hasattr(self.store, "query") and use_store_provided:
-            return self.store.query(self,query_object, initNs, initBindings, **kwargs)
+            return self.store.query(self, query_object, initNs, initBindings, **kwargs)
 
         if not isinstance(result, query.Result):
             result = plugin.get(result, query.Result)
         if not isinstance(processor, query.Processor):
-            processor = plugin.get(processor, query.Processor)(self)
+            processorinst = plugin.get(processor, query.Processor)(self)
 
-        return result(processor.query(query_object, initBindings, initNs, **kwargs))
+        return result(processorinst.query(query_object, initBindings, initNs, **kwargs))
 
 
     def n3(self):
@@ -1026,7 +1025,7 @@ class ConjunctiveGraph(Graph):
         for (s, p, o), cg in self.store.triples((s, p, o), context=context):
             yield s, p, o
 
-    def quads(self,(s,p,o)):
+    def quads(self, (s,p,o)):
         """Iterate over all the quads in the entire conjunctive graph"""
         for (s, p, o), cg in self.store.triples((s, p, o), context=None):
             for ctx in cg:
@@ -1115,9 +1114,9 @@ class QuotedGraph(Graph):
         """Add a triple with self as context"""
         self.store.add(triple, self, quoted=True)
 
-    def addN(self,quads):
+    def addN(self, quads):
         """Add a sequence of triple with context"""
-        self.store.addN([(s,p,o,c) for s,p,o,c in quads
+        self.store.addN([(s,p,o,c) for s, p, o, c in quads
                                    if isinstance(c, QuotedGraph)
                                    and c.identifier is self.identifier])
 
@@ -1352,7 +1351,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     ConjunctiveGraph over an explicit subset of the entire store.
     """
 
-    def __init__(self, graphs,store='default'):
+    def __init__(self, graphs, store='default'):
         if store is not None:
             super(ReadOnlyGraphAggregate, self).__init__(store)
             Graph.__init__(self, store)
@@ -1409,7 +1408,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
                     return True
         return False
 
-    def quads(self,(s,p,o)):
+    def quads(self, (s,p,o)):
         """Iterate over all the quads in the entire aggregate graph"""
         for graph in self.graphs:
             for s1, p1, o1 in graph.triples((s, p, o)):
