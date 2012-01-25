@@ -143,11 +143,14 @@ def all_tests(skip_known_issues=True):
 def manual_run():
     errors, failed, count = 0, 0, 0
     for test, in all_tests(skip_known_issues=False):
-        count += 1; print test.description,
+        count += 1
+        print(test.description)
         try:
-            test(); print "PASSED"
+            test() 
+            print "PASSED"
         except AssertionError, e:
-            failed += 1; print "****FAILED****", e;
+            failed += 1
+            print "****FAILED****", e;
         except Exception, e:
             errors += 1; print "****ERROR**** in %s" % test._source_urls, e
     print "Ran %(count)s tests. Failed: %(failed)s. Errors: %(errors)s."%vars()
