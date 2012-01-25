@@ -2,6 +2,7 @@ import unittest
 import time
 from rdflib.graph import Graph
 from rdflib.graph import QuotedGraph
+from rdflib.graph import ConjunctiveGraph
 from rdflib.term import BNode
 from rdflib.term import Literal
 from rdflib.term import URIRef
@@ -160,6 +161,7 @@ class TestUtilTermConvert(unittest.TestCase):
         default = "TestofDefault"
         res = util.from_n3(s, default=default, backend=None)
         self.assert_(res == default)
+    
 
     def test_util_from_n3_expectdefaultbnode(self):
         s = "michel"
@@ -190,11 +192,76 @@ class TestUtilTermConvert(unittest.TestCase):
         s = '"michel"@fr^^xsd:fr'
         res = util.from_n3(s, default=None, backend=None)
         self.assert_(isinstance(res, Literal))
-
+        self.assertEqual(res, Literal('michel',
+                                      datatype=URIRef('xsd:fr')))
+    
     def test_util_from_n3_expectliteralanddtype(self):
         s = '"true"^^xsd:boolean'
         res = util.from_n3(s, default=None, backend=None)
-        self.assert_(isinstance(res, Literal))
+        self.assertEqual(res, Literal('true',
+                                      datatype=URIRef('xsd:boolean')))
+    
+    def test_util_from_n3_expectliteralwithdatatypefromint(self):
+        s = '42'
+        res = util.from_n3(s)
+        self.assertEqual(res, Literal(42))
+    
+    def test_util_from_n3_expectliteralwithdatatypefrombool(self):
+        s = 'true'
+        res = util.from_n3(s)
+        self.assertEqual(res, Literal(True))
+        s = 'false'
+        res = util.from_n3(s)
+        self.assertEqual(res, Literal(False))
+    
+    def test_util_from_n3_expectliteralmultiline(self):
+        s = '"""multi\nline\nstring"""@en'
+        res = util.from_n3(s, default=None, backend=None)
+        self.assert_(res, Literal('multi\nline\nstring', lang='en'))
+    
+    def test_util_from_n3_expectliteralwithescapedquote(self):
+        s = '"\\""'
+        res = util.from_n3(s, default=None, backend=None)
+        self.assert_(res, Literal('\\"', lang='en'))
+    
+    def test_util_from_n3_expectpartialidempotencewithn3(self):
+        for n3 in ('<http://ex.com/foo>',
+                   '"foo"@de',
+                   #'"\\""', # exception as '\\"' --> '"' by orig parser as well
+                   '"""multi\n"line"\nstring"""@en'):
+            self.assertEqual(util.from_n3(n3).n3(), n3,
+                             'from_n3(%(n3e)r).n3() != %(n3e)r' % {'n3e': n3})
+    
+    def test_util_from_n3_expectsameasn3parser(self):
+        def parse_n3(term_n3):
+            ''' Disclaimer: Quick and dirty hack using the n3 parser. '''
+            prepstr = ("@prefix  xsd: <http://www.w3.org/2001/XMLSchema#> .\n"
+                       "<urn:no_use> <urn:no_use> %s.\n" % term_n3)
+            g = ConjunctiveGraph()
+            g.parse(data=prepstr, format='n3')
+            return [t for t in g.triples((None, None, None))][0][2]
+        
+        for n3 in (# "michel", # won't parse in original parser
+                   # "_:michel", # BNodes won't be the same
+                   '"michel"',
+                   '<http://example.org/schema>',
+                   '"michel"@fr',
+                   # '"michel"@fr^^xsd:fr', # FIXME: invalid n3, orig parser will prefer datatype
+                   # '"true"^^xsd:boolean', # FIXME: orig parser will expand xsd prefix
+                   '42',
+                   'true',
+                   'false',
+                   '"""multi\nline\nstring"""@en',
+                   '<http://ex.com/foo>',
+                   '"foo"@de',
+                   '"\\""@en',
+                   '"""multi\n"line"\nstring"""@en'):
+            res, exp = util.from_n3(n3), parse_n3(n3)
+            self.assertEquals(res, exp,
+                'from_n3(%(n3e)r): %(res)r != parser.notation3: %(exp)r' % {
+                        'res': res, 'exp': exp, 'n3e':n3})
+        
+
 
     def test_util_from_n3_expectquotedgraph(self):
         s = '{http://example.com/schema}'
