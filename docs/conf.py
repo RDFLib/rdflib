@@ -120,6 +120,7 @@ html_theme = 'pyramid'
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
 #html_logo = None
+html_logo = '_static/logo.svg'
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -204,4 +205,5 @@ latex_documents = [
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
-# intersphinx_mapping = {'http://docs.python.org/': None}
+intersphinx_mapping = {'python': ('http://docs.python.org/3.2', None),
+					   'rdfextras': ('http://rdfextras.readthedocs.org/en/latest/', None)}

@@ -7,21 +7,36 @@ rdflib 3.2.1
 Introduction
 ============
 
-A pure Python package providing the core RDF constructs.
-
-The ``rdflib`` package is intended to provide core RDF types and interfaces
-for working with RDF. The package defines a plugin interface for
-parsers, stores, and serializers that other packages can use to
-implement parsers, stores, and serializers that will plug into the
-``rdflib`` package.
+A pure Python package providing the core RDF constructs. The ``rdflib`` package is intended to provide core RDF types and interfaces for working with RDF. 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    gettingstarted
-   graph_utilities
+   intro_to_graphs
+   using_graphs
+   rdf_terms
+   plugin_parsers
+   plugin_serializers
+   namespaces_and_bindings
+   persistence
+   intro_to_sparql
+   howto
    assorted_examples
-   Modules <modules/index>
+   Module documentation <modules/index>
+
+Plugins
+=======
+
+The package defines a plugin interface for parsers, stores, and serializers that other packages can use to implement parsers, stores, and serializers that will plug into the ``rdflib`` package.
+
+The diagram below describes the current set of plugins that are either built in to rdflib or are available in the `rdfextras <http://pypi.python.org/pypi/rdfextras/>`_ support package:
+
+.. image:: /_static/plugins-diagram.svg
+   :alt: rdflib plugin "architecture"
+   :width: 698
+   :height: 450
+
 
 API Documentation
 =================
