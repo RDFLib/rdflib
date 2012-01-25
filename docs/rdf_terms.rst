@@ -15,6 +15,7 @@ BNodes
 .. __: http://en.wikipedia.org/wiki/Blank_node
 
 .. autoclass:: rdflib.term.BNode
+    :noindex:
 
 .. code-block:: pycon
 
@@ -33,6 +34,7 @@ URIRefs
 .. __: http://www.w3.org/TR/rdf-concepts/#section-Graph-URIref
 
 .. autoclass:: rdflib.term.URIRef
+    :noindex:
 
 .. code-block:: pycon
 
@@ -55,6 +57,7 @@ Literals
 ========
 
 .. autoclass:: rdflib.term.Literal
+    :noindex:
 
     A literal in an RDF graph contains one or two named components.
     

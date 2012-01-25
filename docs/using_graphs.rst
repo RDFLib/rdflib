@@ -12,6 +12,7 @@ The :class:`~rdflib.graph.Graph` class
     :noindex:
 
 .. autoclass:: rdflib.graph.ConjunctiveGraph
+    :noindex:
 
 Working with ``rdflib`` graphs
 -------------------------------

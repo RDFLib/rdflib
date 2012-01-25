@@ -5,7 +5,7 @@ Plugin parsers
 ==============
 
 The currently-available plug-in parsers are listed in 
-:ref:`rdfextras plugins <rdfextras:rdfextras.parsers.rdfjson>`
+`rdfextras plugins <http://rdfextras.readthedocs.org/en/latest>`_
 
 .. code-block:: python
 

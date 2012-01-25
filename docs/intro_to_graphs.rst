@@ -113,17 +113,29 @@ Similarly, triples can be removed by a call to :meth:`remove`:
 -----------------------------------------------------------
 
 .. automethod:: rdflib.graph.Graph.add
+    :noindex:
 .. automethod:: rdflib.graph.Graph.set
+    :noindex:
 .. automethod:: rdflib.graph.Graph.label
+    :noindex:
 .. automethod:: rdflib.graph.Graph.remove
+    :noindex:
 .. automethod:: rdflib.graph.Graph.triples
+    :noindex:
 .. automethod:: rdflib.graph.Graph.value
+    :noindex:
 .. automethod:: rdflib.graph.Graph.subjects
+    :noindex:
 .. automethod:: rdflib.graph.Graph.objects
+    :noindex:
 .. automethod:: rdflib.graph.Graph.predicates
+    :noindex:
 .. automethod:: rdflib.graph.Graph.subject_objects
+    :noindex:
 .. automethod:: rdflib.graph.Graph.subject_predicates
+    :noindex:
 .. automethod:: rdflib.graph.Graph.predicate_objects
+    :noindex:
 
 
 Full documentation
