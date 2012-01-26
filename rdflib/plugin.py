@@ -26,7 +26,7 @@ See the `setuptools dynamic discovery of services and plugins`__ for more inform
 from rdflib.store import Store
 from rdflib.parser import Parser
 from rdflib.serializer import Serializer
-from rdflib.query import ResultParser, ResultSerializer
+from rdflib.query import ResultParser, ResultSerializer, Processor, Result
 from rdflib.exceptions import Error
 
 __all__ = ['register', 'get', 'plugins', 'PluginException', 'Plugin', 'PKGPlugin']
@@ -36,6 +36,8 @@ entry_points = {'rdf.plugins.store': Store,
                 'rdf.plugins.parser': Parser,
                 'rdf.plugins.resultparser': ResultParser,
                 'rdf.plugins.resultserializer': ResultSerializer,
+                'rdf.plugins.queryprocessor': Processor,
+                'rdf.plugins.queryresult': Result
                 }
 
 _plugins = {}
