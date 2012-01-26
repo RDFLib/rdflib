@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, sys
+import os
 import rdflib
 import unittest
 try:
@@ -8,7 +8,8 @@ try:
 except ImportError:
     from md5 import md5
 
-if sys.platform == 'Java':
+import platform
+if platform.system() == 'Java':
     from nose import SkipTest
     raise SkipTest('No os.pipe() in Jython, skipping')
 
@@ -26,7 +27,7 @@ def bnode_uuid():
         # if we can't get a network address, just imagine one
         a = random.random()*100000000000000000L
     data = str(t)+' '+str(r)+' '+str(a)
-    data = md5(data).hexdigest()
+    data = md5(data.encode('ascii')).hexdigest()
     yield data
 
 
