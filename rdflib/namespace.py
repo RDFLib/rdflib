@@ -73,7 +73,7 @@ from urllib import pathname2url
 
 from rdflib.term import URIRef, Variable, _XSD_PFX
 
-__all__ = ['is_ncname', 'split_uri', 'Namespace', 'NamespaceDict', 'ClosedNamespace', 'NamespaceManager']
+__all__ = ['is_ncname', 'split_uri', 'Namespace', 'NamespaceDict', 'ClosedNamespace', 'NamespaceManager', 'XMLNS', 'RDF', 'RDFS', 'XSD', 'OWL', 'SKOS']
 
 class Namespace(URIRef):
 
