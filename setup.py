@@ -41,7 +41,8 @@ else:
         from setuptools import setup
         kwargs['test_suite'] = "nose.collector"
         kwargs['install_requires'] = ['isodate']
-        kwargs['requires'] = ['isodate']
+        if sys.version_info[:2] > (2,4):
+            kwargs['requires'] = ['isodate']
     except ImportError:
         from distutils.core import setup
 
