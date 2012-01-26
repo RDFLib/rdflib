@@ -436,6 +436,9 @@ class Graph(Node):
     def __add__(self, other) :
         """Set-theoretic union"""
         retval = Graph()
+        for (prefix, uri) in set(
+                list(self.namespaces()) + list(other.namespaces())):
+            retval.bind(prefix, uri)
         for x in self:
             retval.add(x)
         for y in other:
