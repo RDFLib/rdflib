@@ -56,6 +56,7 @@ class TestRandomSeedInFork(unittest.TestCase):
     def test_random_not_reseeded_in_fork(self):
         """Demonstrates ineffectiveness of reseeding Python's random.
         """
+        import random
         r, w = os.pipe() # these are file descriptors, not file objects
         pid = os.fork()
         if pid:
@@ -66,9 +67,12 @@ class TestRandomSeedInFork(unittest.TestCase):
             os.waitpid(pid, 0) # make sure the child process gets cleaned up
         else:
             os.close(r)
-            import random, time
+            import time
+            from rdflib.py3compat import PY3
+            if not PY3:
+                reload(random)
             try: 
-                preseed = os.urandom(16) 
+                preseed = os.urandom(16)
             except NotImplementedError: 
                 preseed = '' 
             # Have doubts about this. random.seed will just hash the string 
