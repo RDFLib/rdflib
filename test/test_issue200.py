@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os
+import os, sys, time, random
 import rdflib
 import unittest
 try:
@@ -8,9 +8,6 @@ try:
 except ImportError:
     from md5 import md5
 
-import random
-import time
-import socket
 
 import platform
 if platform.system() == 'Java':
@@ -22,6 +19,7 @@ def bnode_uuid():
     """
     Generates a uuid on behalf of Python 2.4
     """
+    import socket
     try: 
         preseed = os.urandom(16)
     except NotImplementedError: 
@@ -39,7 +37,6 @@ def bnode_uuid():
     data = str(t)+' '+str(r)+' '+str(a)
     data = md5(data.encode('ascii')).hexdigest()
     yield data
-
 
 class TestRandomSeedInFork(unittest.TestCase):
     def test_same_bnodeid_sequence_in_fork(self):
@@ -64,7 +61,7 @@ class TestRandomSeedInFork(unittest.TestCase):
         assert txt == str(pb1), "Test now obsolete, random seed working"
 
     def test_random_not_reseeded_in_fork(self):
-        """Demonstrates ineffectiveness of reseeding Python's random.
+        """Demonstrates ineffectiveness of reseeding Python's random. 
         """
         r, w = os.pipe() # these are file descriptors, not file objects
         pid = os.fork()
@@ -98,7 +95,7 @@ class TestRandomSeedInFork(unittest.TestCase):
         r, w = os.pipe() # these are file descriptors, not file objects
         pid = os.fork()
         if pid:
-            pb1 = rdflib.term.BNode(_sn_gen=bnode_uuid(), _prefix="")
+            pb1 = rdflib.term.BNode(_sn_gen=bnode_uuid(), _prefix="urn:uuid:")
             os.close(w) # use os.close() to close a file descriptor
             r = os.fdopen(r) # turn r into a file object
             txt = r.read()
@@ -106,7 +103,7 @@ class TestRandomSeedInFork(unittest.TestCase):
         else:
             os.close(r)
             w = os.fdopen(w, 'w')
-            cb = rdflib.term.BNode(_sn_gen=bnode_uuid(), _prefix="")
+            cb = rdflib.term.BNode(_sn_gen=bnode_uuid(), _prefix="urn:uuid:")
             w.write(cb)
             w.close()
             os._exit(0)
@@ -114,6 +111,36 @@ class TestRandomSeedInFork(unittest.TestCase):
                                 "%s, child process BNode id: %s" % (
                                     txt, str(pb1))
 
+    def test_uuid_differs_in_fork(self):
+        """
+        os.fork()ed child processes using uuid4() should produce a different 
+        sequence of BNode ids from the sequence produced by the parent process.
+        """
+        if sys.version_info[:2] == (2, 4):
+            from nose import SkipTest
+            raise SkipTest('uuid4() not available prior to Python 2.5')
+        def bnode_uuid():
+            # Redefine 'cos Python 2.5 and above allows use of uuid
+            import uuid
+            yield uuid.uuid4()
+        r, w = os.pipe() # these are file descriptors, not file objects
+        pid = os.fork()
+        if pid:
+            pb1 = rdflib.term.BNode(_sn_gen=bnode_uuid(), _prefix="urn:uuid:")
+            os.close(w) # use os.close() to close a file descriptor
+            r = os.fdopen(r) # turn r into a file object
+            txt = r.read()
+            os.waitpid(pid, 0) # make sure the child process gets cleaned up
+        else:
+            os.close(r)
+            w = os.fdopen(w, 'w')
+            cb = rdflib.term.BNode(_sn_gen=bnode_uuid(), _prefix="urn:uuid:")
+            w.write(cb)
+            w.close()
+            os._exit(0)
+        assert txt != str(pb1), "Parent process BNode id: " + \
+                                "%s, child process BNode id: %s" % (
+                                    txt, str(pb1))
 
 if __name__ == "__main__":
     unittest.main()
