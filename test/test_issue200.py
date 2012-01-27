@@ -8,6 +8,10 @@ try:
 except ImportError:
     from md5 import md5
 
+import random
+import time
+import socket
+
 import platform
 if platform.system() == 'Java':
     from nose import SkipTest
@@ -18,7 +22,13 @@ def bnode_uuid():
     """
     Generates a uuid on behalf of Python 2.4
     """
-    import random, time, socket
+    try: 
+        preseed = os.urandom(16)
+    except NotImplementedError: 
+        preseed = '' 
+    # Have doubts about this. random.seed will just hash the string 
+    random.seed('%s%s%s' % (preseed, os.getpid(), time.time())) 
+    del preseed 
     t = long( time.time() * 1000.0 )
     r = long( random.random()*100000000000000000L )
     try:
@@ -33,8 +43,8 @@ def bnode_uuid():
 
 class TestRandomSeedInFork(unittest.TestCase):
     def test_same_bnodeid_sequence_in_fork(self):
-        """Demonstrates that with os.fork(), the child process produces 
-        the same sequence of BNode ids as does the parent process.
+        """Demonstrates that os.fork()ed child processes produce the same 
+        sequence of BNode ids as the parent process.
         """
         r, w = os.pipe() # these are file descriptors, not file objects
         pid = os.fork()
@@ -56,7 +66,6 @@ class TestRandomSeedInFork(unittest.TestCase):
     def test_random_not_reseeded_in_fork(self):
         """Demonstrates ineffectiveness of reseeding Python's random.
         """
-        import random
         r, w = os.pipe() # these are file descriptors, not file objects
         pid = os.fork()
         if pid:
@@ -67,10 +76,6 @@ class TestRandomSeedInFork(unittest.TestCase):
             os.waitpid(pid, 0) # make sure the child process gets cleaned up
         else:
             os.close(r)
-            import time
-            from rdflib.py3compat import PY3
-            if not PY3:
-                reload(random)
             try: 
                 preseed = os.urandom(16)
             except NotImplementedError: 
@@ -86,9 +91,9 @@ class TestRandomSeedInFork(unittest.TestCase):
         assert txt == str(pb1), "Reseeding worked, this test is obsolete"
 
     def test_bnode_uuid_differs_in_fork(self):
-        """Demonstrates that with os.fork(), the child process produces 
-        a sequence of BNode ids that differs from the sequence produced
-        by the parent process.
+        """
+        os.fork()ed child processes should produce a different sequence of 
+        BNode ids from the sequence produced by the parent process.
         """
         r, w = os.pipe() # these are file descriptors, not file objects
         pid = os.fork()
