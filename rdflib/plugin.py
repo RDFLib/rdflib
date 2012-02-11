@@ -151,6 +151,8 @@ register('xml', Parser,
                 'rdflib.plugins.parsers.rdfxml', 'RDFXMLParser')
 register('n3', Parser, 
                 'rdflib.plugins.parsers.notation3', 'N3Parser')
+register('turtle', Parser, 
+                'rdflib.plugins.parsers.notation3', 'N3Parser')
 register('nt', Parser, 
                 'rdflib.plugins.parsers.nt', 'NTParser')
 register('nquads', Parser, 

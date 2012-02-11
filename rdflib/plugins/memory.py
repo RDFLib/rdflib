@@ -478,13 +478,13 @@ class IOMemory(Store):
                         if oi!= Any: # subject+predicate+object is given
                             if subjectDictionary[pi].has_key(oi):
                                 ss, pp, oo = self.intToIdentifier((si, pi, oi))
-                                yield (ss, pp, oo), (c for c in self.contexts((ss, pp, oo)))
+                                yield (ss, pp, oo), (c for c in self.__icontexts((si, pi, oi)))
                             else: # given object not found
                                 pass
                         else: # subject+predicate is given, object unbound
                             for o in subjectDictionary[pi].keys():
                                 ss, pp, oo = self.intToIdentifier((si, pi, o))
-                                yield (ss, pp, oo), (c for c in self.contexts((ss, pp, oo)))
+                                yield (ss, pp, oo), (c for c in self.__icontexts((si, pi, o)))
                     else: # given predicate not found
                         pass
                 else: # subject given, predicate unbound
@@ -492,13 +492,13 @@ class IOMemory(Store):
                         if oi != Any: # object is given
                             if subjectDictionary[p].has_key(oi):
                                 ss, pp, oo = self.intToIdentifier((si, p, oi))
-                                yield (ss, pp, oo), (c for c in self.contexts((ss, pp, oo)))
+                                yield (ss, pp, oo), (c for c in self.__icontexts((si, p, oi)))
                             else: # given object not found
                                 pass
                         else: # object unbound
                             for o in subjectDictionary[p].keys():
                                 ss, pp, oo = self.intToIdentifier((si, p, o))
-                                yield (ss, pp, oo), (c for c in self.contexts((ss, pp, oo)))
+                                yield (ss, pp, oo), (c for c in self.__icontexts((si, p, o)))
             else: # given subject not found
                 pass
         elif pi != Any: # predicate is given, subject unbound
@@ -508,28 +508,28 @@ class IOMemory(Store):
                     if predicateDictionary.has_key(oi):
                         for s in predicateDictionary[oi].keys():
                             ss, pp, oo = self.intToIdentifier((s, pi, oi))
-                            yield (ss, pp, oo), (c for c in self.contexts((ss, pp, oo)))
+                            yield (ss, pp, oo), (c for c in self.__icontexts((s, pi, oi)))
                     else: # given object not found
                         pass
                 else: # predicate is given, object+subject unbound
                     for o in predicateDictionary.keys():
                         for s in predicateDictionary[o].keys():
                             ss, pp, oo = self.intToIdentifier((s, pi, o))
-                            yield (ss, pp, oo), (c for c in self.contexts((ss, pp, oo)))
+                            yield (ss, pp, oo), (c for c in self.__icontexts((s, pi, o)))
         elif oi != Any: # object is given, subject+predicate unbound
             if osp.has_key(oi):
                 objectDictionary = osp[oi]
                 for s in objectDictionary.keys():
                     for p in objectDictionary[s].keys():
                         ss, pp, oo = self.intToIdentifier((s, p, oi))
-                        yield (ss, pp, oo), (c for c in self.contexts((ss, pp, oo)))
+                        yield (ss, pp, oo), (c for c in self.__icontexts((s, p, oi)))
         else: # subject+predicate+object unbound
             for s in spo.keys():
                 subjectDictionary = spo[s]
                 for p in subjectDictionary.keys():
                     for o in subjectDictionary[p].keys():
                         ss, pp, oo = self.intToIdentifier((s, p, o))
-                        yield (ss, pp, oo), (c for c in self.contexts((ss, pp, oo)))
+                        yield (ss, pp, oo), (c for c in self.__icontexts((s, p, o)))
 
     def __len__(self, context=None):
 
@@ -543,6 +543,8 @@ class IOMemory(Store):
             count += 1
         return count
 
+    
+
     def contexts(self, triple=None):
         if triple:
             si, pi, oi = self.identifierToInt(triple)
@@ -552,6 +554,11 @@ class IOMemory(Store):
             for ci in self.cspo.keys():
                 yield self.forward[ci]
 
+
+    def __icontexts(self, triple):
+            si, pi, oi = triple
+            for ci in self.spo[si][pi][oi]:
+                yield self.forward[ci]
 
 
 
