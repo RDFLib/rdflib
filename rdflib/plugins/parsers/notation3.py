@@ -1718,17 +1718,20 @@ class SinkParser:
             return -1
 
         c = argstr[i]
-        if c in "0123456789-+":
+        if c in "0123456789-+.":
             return -1
         if c not in _notNameChars:
             ln = c
             i = i + 1
             while i < len(argstr):
                 c = argstr[i]
-                if c not in _notNameChars:
+                if c=="." or c not in _notNameChars:
                     ln = ln + c
                     i = i + 1
                 else: break
+            if argstr[i-1]==".": # qname cannot end with "." 
+                return -1 
+
         else: # First character is non-alpha
             ln = ''   # Was:  None - TBL (why? useful?)
 

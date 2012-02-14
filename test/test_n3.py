@@ -146,6 +146,11 @@ foo-bar:Ex foo-bar:name "Test" . """
         g = Graph()
         g.parse("test/n3/issue156.n3", format="n3")
 
+    def testDotInPrefix(self): 
+        g=Graph()
+        g.parse(data="@prefix a.1: <http://example.org/> .\n a.1:cake <urn:x> <urn:y> . \n", format='n3')
+        
+
     def testModel(self):
         g = ConjunctiveGraph()
         g.parse(data=test_data, format="n3")
