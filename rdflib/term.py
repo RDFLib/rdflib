@@ -47,6 +47,7 @@ from random import choice
 from itertools import islice
 from datetime import date, time, datetime
 from isodate import parse_time, parse_date, parse_datetime
+from re import sub
 
 try:
     from hashlib import md5
@@ -324,6 +325,10 @@ class Literal(Identifier):
         if lang is not None and datatype is not None:
             raise TypeError("A Literal can only have one of lang or datatype, "
                "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal")
+
+        if isinstance(value, Literal): # create from another Literal instance
+            datatype=datatype or value.datatype
+            lang=lang or value.lang
 
         if datatype:
             lang = None
@@ -656,7 +661,7 @@ class Literal(Identifier):
             %(u)s'"1"^^<http://www.w3.org/2001/XMLSchema#integer>'
 
             >>> Literal(1.0).n3()
-            %(u)s'"1.0"^^<http://www.w3.org/2001/XMLSchema#float>'
+            %(u)s'"1.0"^^<http://www.w3.org/2001/XMLSchema#double>'
 
         Datatype and language isn't allowed (datatype takes precedence)::
 
@@ -676,14 +681,20 @@ class Literal(Identifier):
     def _literal_n3(self, use_plain=False, qname_callback=None):
         '''
         Using plain literal (shorthand) output::
+            >>> from rdflib.namespace import XSD
 
             >>> Literal(1)._literal_n3(use_plain=True)
             %(u)s'1'
 
             >>> Literal(1.0)._literal_n3(use_plain=True)
+            %(u)s'1e+00'
+
+            >>> Literal(1.0, datatype=XSD.decimal)._literal_n3(use_plain=True)
             %(u)s'1.0'
 
-            >>> from rdflib.namespace import XSD
+            >>> Literal(1.0, datatype=XSD.float)._literal_n3(use_plain=True)
+            %(u)s'"1.0"^^<http://www.w3.org/2001/XMLSchema#float>'
+
             >>> Literal("foo", datatype=XSD.string)._literal_n3(
             ...         use_plain=True)
             %(u)s'"foo"^^<http://www.w3.org/2001/XMLSchema#string>'
@@ -704,7 +715,15 @@ class Literal(Identifier):
         if use_plain and self.datatype in _PLAIN_LITERAL_TYPES:
             try:
                 self.toPython() # check validity
-                return '%s' % self
+                # this is a bit of a mess - 
+                # in py >=2.6 the string.format function makes this easier
+                # we try to produce "pretty" output
+                if self.datatype == _XSD_DOUBLE: 
+                    return sub(".?0*e","e", u'%e' % float(self))
+                elif self.datatype == _XSD_DECIMAL:
+                    return sub("0*$","0",u'%f' % float(self))
+                else:
+                    return u'%s' % self
             except ValueError:
                 pass # if it's in, we let it out?
 
@@ -812,11 +831,16 @@ class Literal(Identifier):
 
 _XSD_PFX = 'http://www.w3.org/2001/XMLSchema#'
 
+_XSD_FLOAT = URIRef(_XSD_PFX+'float')
+_XSD_DOUBLE = URIRef(_XSD_PFX+'double')
+_XSD_DECIMAL = URIRef(_XSD_PFX+'decimal')
+
+
 _PLAIN_LITERAL_TYPES = (
     URIRef(_XSD_PFX+'integer'),
-    URIRef(_XSD_PFX+'float'),
-    #XSD.decimal, XSD.double, # TODO: "subsumed" by float...
     URIRef(_XSD_PFX+'boolean'),
+    _XSD_DOUBLE,
+    _XSD_DECIMAL,
 )
 
 
@@ -839,9 +863,14 @@ from decimal import Decimal
 
 # Mappings from Python types to XSD datatypes and back (burrowed from sparta)
 # datetime instances are also instances of date... so we need to order these.
+
+# SPARQL/Turtle/N3 has shortcuts for int, double, decimal 
+# python has only float - to be in tune with sparql/n3/turtle
+# we default to XSD.double for float literals
+
 _PythonToXSD = [
     (basestring, (None, None)),
-    (float     , (None, URIRef(_XSD_PFX+'float'))),
+    (float     , (None, URIRef(_XSD_PFX+'double'))),
     (bool      , (lambda i:str(i).lower(), URIRef(_XSD_PFX+'boolean'))),
     (int       , (None, URIRef(_XSD_PFX+'integer'))),
     (long      , (None, URIRef(_XSD_PFX+'long'))),
