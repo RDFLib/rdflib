@@ -282,11 +282,29 @@ class Literal(Identifier):
     doc = """
     RDF Literal: http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
 
+    The lexical value of the literal is the unicode object
+    The interpreted, datatyped value is available from .value
+
+    Equality and hashing of Literals are done based on the value , i.e.:
+
+    >>> from rdflib.namespace import XSD
+
+    >>> Literal('01')!=Literal('1') # clear - strings differ
+    True
+  
+    but with datatype, value interpretation is possible
+    >>> Literal('01', datatype=XSD.integer)==Literal('1', datatype=XSD.integer) 
+    True
+
+    To check for truly identical literals, use sameTermAs:
+    >>> Literal('01', datatype=XSD.integer).sameTermAs(Literal('1', datatype=XSD.integer).value)
+    False
+
+   
     >>> Literal(1).toPython()
     1%(L)s
     >>> Literal("adsf") > 1
     True
-    >>> from rdflib.namespace import XSD
     >>> lit2006 = Literal('2006-01-01',datatype=XSD.date)
     >>> lit2006.toPython()
     datetime.date(2006, 1, 1)
@@ -302,10 +320,13 @@ class Literal(Identifier):
     False
     >>> Literal('1') < Literal('1')
     False
-    >>> Literal(1) < Literal('1')
+    >>> Literal(1) < Literal('1') # wtf?
     True
-    >>> Literal(1) < Literal(2.0)
-    True
+    >>> Literal(1) > Literal('1')
+    False
+
+    >>> Literal(1) > Literal(2.0)
+    False
     >>> Literal(1) < URIRef('foo')
     True
     >>> Literal(1) < 2.0
@@ -319,35 +340,54 @@ class Literal(Identifier):
     """
     __doc__ = py3compat.format_doctest_out(doc)
 
-    __slots__ = ("language", "datatype", "_cmp_value")
+    __slots__ = ("language", "datatype", "value")
 
-    def __new__(cls, value, lang=None, datatype=None):
+    def __new__(cls, lexical_or_value, lang=None, datatype=None):
         if lang is not None and datatype is not None:
             raise TypeError("A Literal can only have one of lang or datatype, "
                "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal")
-
-        if isinstance(value, Literal): # create from another Literal instance
-            datatype=datatype or value.datatype
-            lang=lang or value.lang
+        value=None
+        if isinstance(lexical_or_value, Literal): # create from another Literal instance
+            datatype=datatype or lexical_or_value.datatype
+            lang=lang or lexical_or_value.language
+            value=lexical_or_value.value
 
         if datatype:
             lang = None
+            value = None # set later by toCompareValue
         else:
-            value, datatype = _castPythonToLiteral(value)
+            _value, datatype = _castPythonToLiteral(lexical_or_value)
+            value = _value or lexical_or_value
+            if datatype==_XSD_BOOLEAN: # Upper-case True is not in XSD lexical space
+                lexical_or_value=str(lexical_or_value).lower()
             if datatype:
                 lang = None
+
         if datatype:
             datatype = URIRef(datatype)
-        if py3compat.PY3 and isinstance(value, bytes):
+        if py3compat.PY3 and isinstance(lexical_or_value, bytes):
             value = value.decode('utf-8')
         try:
-            inst = unicode.__new__(cls, value)
+            inst = unicode.__new__(cls, lexical_or_value)
         except UnicodeDecodeError:
-            inst = unicode.__new__(cls, value, 'utf-8')
+            inst = unicode.__new__(cls, lexical_or_value, 'utf-8')
+
         inst.language = lang
         inst.datatype = datatype
-        inst._cmp_value = inst._toCompareValue()
+        inst.value = value or inst._toCompareValue()
         return inst
+
+    @py3compat.format_doctest_out
+    def normalize(self): 
+        """
+        Returns a new literal with a normalised lexical representation 
+        of this literal
+        >>> from rdflib import XSD
+        >>> Literal("01", datatype=XSD.integer).normalize()
+        rdflib.term.Literal(u'1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+        """
+
+        return Literal(self.value,datatype=self.datatype, lang=self.language)
 
     def __reduce__(self):
         return (Literal, (unicode(self), self.language, self.datatype),)
@@ -384,7 +424,7 @@ class Literal(Identifier):
         >>> (- Literal(10.5))
         -10.5
         >>> from rdflib.namespace import XSD
-        >>> (- Literal("1", datatype=XSD['integer']))
+        >>> (- Literal("1", datatype=XSD.integer))
         -1%(L)s
         
         Not working:
@@ -409,7 +449,7 @@ class Literal(Identifier):
         >>> (+ Literal(-1))
         -1%(L)s
         >>> from rdflib.namespace import XSD
-        >>> (+ Literal("-1", datatype=XSD['integer']))
+        >>> (+ Literal("-1", datatype=XSD.integer))
         -1%(L)s
         
         Not working in Python 3:
@@ -430,7 +470,7 @@ class Literal(Identifier):
         >>> abs(Literal(-1))
         1%(L)s
         >>> from rdflib.namespace import XSD
-        >>> abs( Literal("-1", datatype=XSD['integer']))
+        >>> abs( Literal("-1", datatype=XSD.integer))
         1%(L)s
         
         Not working in Python 3:
@@ -451,7 +491,7 @@ class Literal(Identifier):
         >>> ~(Literal(-1))
         0%(L)s
         >>> from rdflib.namespace import XSD
-        >>> ~( Literal("-1", datatype=XSD['integer']))
+        >>> ~( Literal("-1", datatype=XSD.integer))
         0%(L)s
         
         Not working:
@@ -471,7 +511,7 @@ class Literal(Identifier):
     def __lt__(self, other):
         """
         >>> from rdflib.namespace import XSD
-        >>> Literal("YXNkZg==", datatype=XSD['base64Binary']) < "foo"
+        >>> Literal("YXNkZg==", datatype=XSD.base64Binary) < "foo"
         True
         >>> u"\xfe" < Literal(u"foo")
         False
@@ -481,22 +521,26 @@ class Literal(Identifier):
 
         if other is None:
             return False # Nothing is less than None
+        if isinstance(other, Literal):
+            r=cmp(self.language, other.language)
+            if r: return r<0
+            other=other.value
         try:
-            return self._cmp_value < other
+            return self.value < other
         except UnicodeDecodeError, ue:
-            if isinstance(self._cmp_value, py3compat.bytestype):
-                return self._cmp_value < other.encode("utf-8")
+            if isinstance(self.value, py3compat.bytestype):
+                return self.value < other.encode("utf-8")
             else:
                 raise ue
         except TypeError:
             try:
                 # On Python 3, comparing bytes/str is a TypeError, not a UnicodeError
-                if isinstance(self._cmp_value, py3compat.bytestype):
-                    return self._cmp_value < other.encode("utf-8")
-                return unicode(self._cmp_value) < other
+                if isinstance(self.value, py3compat.bytestype):
+                    return self.value < other.encode("utf-8")
+                return unicode(self.value) < other
             except (TypeError, AttributeError):
                 # Treat different types like Python 2 for now.
-                return py3compat.type_cmp(self._cmp_value, other) == -1
+                return py3compat.type_cmp(self.value, other) == -1
 
     def __le__(self, other):
         """
@@ -512,24 +556,43 @@ class Literal(Identifier):
             return self < other
 
     def __gt__(self, other):
+        """
+        Literals compare by value if datatype and lang match
+        >>> Literal(1)>Literal(2)
+        False
+        >>> Literal(1)>Literal("2")
+        False
+        >>> Literal(1)<2
+        True
+        >>> Literal(1.2)>Literal(1.1)
+        True
+        >>> Literal("a")<Literal("b")
+        True
+        >>> Literal("a", lang="en")<Literal("b")
+        False
+        """
         if other is None:
             return True # Everything is greater than None
+        if isinstance(other, Literal):
+            r=cmp(self.language, other.language)
+            if r: return r>0
+            other=other.value
         try:
-            return self._cmp_value > other
+            return self.value > other
         except UnicodeDecodeError, ue:
-            if isinstance(self._cmp_value, py3compat.bytestype):
-                return self._cmp_value > other.encode("utf-8")
+            if isinstance(self.value, py3compat.bytestype):
+                return self.value > other.encode("utf-8")
             else:
                 raise ue
         except TypeError:
             try:
                 # On Python 3, comparing bytes/str is a TypeError, not a UnicodeError
-                if isinstance(self._cmp_value, py3compat.bytestype):
-                    return self._cmp_value > other.encode("utf-8")
-                return unicode(self._cmp_value) > other
+                if isinstance(self.value, py3compat.bytestype):
+                    return self.value > other.encode("utf-8")
+                return unicode(self.value) > other
             except (TypeError, AttributeError):
                 # Treat different types like Python 2 for now.
-                return py3compat.type_cmp(self._cmp_value, other) == 1
+                return py3compat.type_cmp(self.value, other) == 1
 
     def __ge__(self, other):
         if other is None:
@@ -557,8 +620,12 @@ class Literal(Identifier):
         >>> from rdflib.namespace import XSD
         >>> a = {Literal('1', datatype=XSD.integer):'one'}
         >>> Literal('1', datatype=XSD.double) in a
+        True
+        >>> Literal('01', datatype=XSD.integer) in a 
+        True
+        >>> b = { Literal('hast', lang='en'): True } 
+        >>> Literal('hast', lang='de') in b
         False
-
         
         "Called for the key object for dictionary operations, 
         and by the built-in function hash(). Should return 
@@ -580,11 +647,60 @@ class Literal(Identifier):
 
         """
         
-        return Identifier.__hash__(self) ^ hash(self.language) ^ hash(self.datatype)
+        return hash(self.value) ^ hash(self.language) 
+
+    @py3compat.format_doctest_out
+    def sameTermAs(self, other): 
+        """
+        Is this EXACTLY the same term, i.e. do we have the same Lexical form?
+        >>> Literal("1", datatype=URIRef("foo")).sameTermAs( Literal("1", datatype=URIRef("foo")))
+        True
+        >>> Literal("1", datatype=URIRef("foo")).sameTermAs( Literal("2", datatype=URIRef("foo")))
+        False
+        >>> Literal("1", datatype=URIRef("foo")).sameTermAs( "asdf" ) 
+        False
+        >>> from rdflib.namespace import XSD
+        >>> Literal('2007-01-01', datatype=XSD.date).sameTermAs( Literal('2007-01-01', datatype=XSD.date) )
+        True
+        >>> Literal('2007-01-01', datatype=XSD.date).sameTermAs( date(2007, 1, 1) )
+        False
+        >>> oneInt     = Literal(1)
+        >>> oneNoDtype = Literal('1')
+        >>> oneInt.sameTermAs( oneNoDtype ) 
+        False
+        >>> Literal("1", datatype=XSD.string).sameTermAs( Literal("1", datatype=XSD.string) )
+        True
+        >>> Literal("one", lang="en").sameTermAs( Literal("one", lang="en"))
+        True
+        >>> Literal("hast", lang='en').sameTermAs( Literal("hast", lang='de'))
+        False
+        >>> oneInt.sameTermAs( Literal(1) )
+        True
+        >>> oneFloat = Literal(1.0)
+        >>> oneInt.sameTermAs( oneFloat )
+        False
+        >>> oneInt.sameTermAs( 1 )
+        False
+        >>> Literal("1", datatype=XSD.integer).sameTermAs( Literal(1) )
+        True
+        >>> Literal("1", datatype=XSD.integer).sameTermAs( Literal("01", datatype=XSD.integer) )
+        True
+        """
+        if other is None:
+            return False
+        if isinstance(other, Literal):
+            return self.value==other.value \
+                and self.datatype==other.datatype \
+                and self.language==other.language
+        else:
+            return False
 
     @py3compat.format_doctest_out
     def __eq__(self, other):
         """
+        Equality is based on the interpreted value of literals, 
+        dataTypes, but not language is ignored
+
         >>> f = URIRef("foo")
         >>> f is None or f == ''
         False
@@ -603,7 +719,7 @@ class Literal(Identifier):
         >>> oneNoDtype = Literal('1')
         >>> oneInt == oneNoDtype
         False
-        >>> Literal("1", XSD['string']) == Literal("1", XSD['string'])
+        >>> Literal("1", datatype=XSD.string) == Literal("1", datatype=XSD.string)
         True
         >>> Literal("one", lang="en") == Literal("one", lang="en")
         True
@@ -616,15 +732,20 @@ class Literal(Identifier):
         True
         >>> oneInt == 1
         True
+        >>> Literal("1", datatype=XSD.integer) == Literal(1)
+        True
+        >>> Literal("1", datatype=XSD.integer) == Literal("01", datatype=XSD.integer)
+        True
         """
         if other is None:
             return False
         if isinstance(other, Literal):
-            return self._cmp_value == other._cmp_value
+            return self.value==other.value \
+                and self.language==other.language
         elif isinstance(other, basestring):
             return unicode(self) == other
         else:
-            return self._cmp_value == other
+            return self.value == other
 
     @py3compat.format_doctest_out
     def n3(self):
@@ -722,6 +843,8 @@ class Literal(Identifier):
                     return sub(".?0*e","e", u'%e' % float(self))
                 elif self.datatype == _XSD_DECIMAL:
                     return sub("0*$","0",u'%f' % float(self))
+                elif self.datatype == _XSD_BOOLEAN: 
+                    return (u'%s'%self).lower()
                 else:
                     return u'%s' % self
             except ValueError:
@@ -834,11 +957,12 @@ _XSD_PFX = 'http://www.w3.org/2001/XMLSchema#'
 _XSD_FLOAT = URIRef(_XSD_PFX+'float')
 _XSD_DOUBLE = URIRef(_XSD_PFX+'double')
 _XSD_DECIMAL = URIRef(_XSD_PFX+'decimal')
+_XSD_BOOLEAN = URIRef(_XSD_PFX+'boolean')
 
 
 _PLAIN_LITERAL_TYPES = (
     URIRef(_XSD_PFX+'integer'),
-    URIRef(_XSD_PFX+'boolean'),
+    _XSD_BOOLEAN,
     _XSD_DOUBLE,
     _XSD_DECIMAL,
 )
