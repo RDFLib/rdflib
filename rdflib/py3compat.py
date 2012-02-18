@@ -51,9 +51,10 @@ if PY3:
         "%(u)s'abc'" --> "'abc'"
         "%(b)s'abc'" --> "b'abc'"
         "55%(L)s"    --> "55"
+        "unicode(x)" --> "str(x)"
         
         Accepts a string or a function, so it can be used as a decorator."""
-        return s % {'u':'', 'b':'b', 'L':''}
+        return s % {'u':'', 'b':'b', 'L':'', 'unicode': 'str'}
     
     def type_cmp(a, b):
         """Python 2 style comparison based on type"""
@@ -89,7 +90,7 @@ else:
         "55%(L)s"    --> "55L"
         
         Accepts a string or a function, so it can be used as a decorator."""
-        return s % {'u':'u', 'b':'', 'L':'L'}
+        return s % {'u':'u', 'b':'', 'L':'L', 'unicode':'unicode'}
     
     def type_cmp(a, b):
         # return 1 if a > b else -1 if a < b else 0

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
+import sys
+if sys.version_info[:2] > (2,4): # No doctest.skip in Python 2.4
+    __doc__ = """
 A collection of utilities for canonicalizing and inspecting graphs.
 
 Among other things, they solve of the problem of deterministic bnode
@@ -64,6 +66,8 @@ Only in second::
     <http://example.org> <http://example.org/ns#rel> _:cb558f30e21ddfc05ca53108348338ade8 .
     _:cb558f30e21ddfc05ca53108348338ade8 <http://example.org/ns#label> "B" .
 """
+else:
+    __doc__ = """"""
 
 # ======================================================================
 # FAIL: Doctest: rdflib.compare

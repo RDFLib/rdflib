@@ -138,10 +138,10 @@ def join(here, there):
     
     We grok IRIs
 
-    >>> len(u'Andr\\xe9')
+    >>> len(%(u)s'Andr\\xe9')
     5
     
-    >>> join('http://example.org/', u'#Andr\\xe9')
+    >>> join('http://example.org/', %(u)s'#Andr\\xe9')
     %(u)s'http://example.org/#Andr\\xe9'
     """
 
@@ -336,7 +336,7 @@ def canonical(str_in):
     >>> canonical("foo bar")
     %(b)s'foo%%20bar'
     
-    >>> canonical(u'http:')
+    >>> canonical(%(u)s'http:')
     %(b)s'http:'
     
     >>> canonical('fran%%c3%%83%%c2%%a7ois')

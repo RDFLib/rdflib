@@ -20,29 +20,15 @@ Fully qualified URIs in the namespace can be constructed either by attribute or 
 .. code-block:: pycon
 
     >>> fuxi.ruleBase
-    rdflib.term.URIRef(u'http://metacognition.info/ontologies/FuXi.n3#ruleBase')
+    rdflib.term.URIRef(%(u)s'http://metacognition.info/ontologies/FuXi.n3#ruleBase')
     >>> fuxi['ruleBase']
-    rdflib.term.URIRef(u'http://metacognition.info/ontologies/FuXi.n3#ruleBase')
+    rdflib.term.URIRef(%(u)s'http://metacognition.info/ontologies/FuXi.n3#ruleBase')
 
 Automatic handling of unknown predicates
 -----------------------------------------
 
-As a programming convenience, a namespace binding is automatically created when :class:`rdflib.term.URIRef` predicates are added to the graph:
-
-.. code-block:: pycon
-
-    >>> from rdflib import Graph, URIRef
-    >>> g = Graph()
-    >>> g.add((URIRef("http://example0.com/foo"),
-    ...        URIRef("http://example1.com/bar"),
-    ...        URIRef("http://example2.com/baz")))
-    >>> print(g.serialize(format="n3"))
-    @prefix ns1: <http://example1.com/> .
-    <BLANKLINE>
-    <http://example0.com/foo> ns1:bar <http://example2.com/baz> .
-    <BLANKLINE>
-    <BLANKLINE>
-    >>> 
+As a programming convenience, a namespace binding is automatically 
+created when :class:`rdflib.term.URIRef` predicates are added to the graph.
 
 Importable namespaces
 -----------------------
@@ -58,7 +44,7 @@ The following namespaces are available by directly importing from rdflib:
 
     >>> from rdflib import OWL
     >>> OWL.seeAlso
-    rdflib.term.URIRef(u'http://www.w3.org/2002/07/owl#seeAlso')
+    rdflib.term.URIRef(%(u)s'http://www.w3.org/2002/07/owl#seeAlso')
 
 """)
 

@@ -294,7 +294,7 @@ class Literal(Identifier):
     >>> lit2006 < Literal('2007-01-01',datatype=XSD.date)
     True
     >>> Literal(datetime.utcnow()).datatype
-    rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#dateTime')
+    rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#dateTime')
     >>> oneInt     = Literal(1)
     >>> twoInt     = Literal(2)
     >>> twoInt < oneInt
@@ -319,12 +319,12 @@ class Literal(Identifier):
     True
     >>> x = Literal("2", datatype=XSD.integer)
     >>> x
-    rdflib.term.Literal(u'2', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+    rdflib.term.Literal(%(u)s'2', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
     >>> Literal(x) == x
     True
     >>> x = Literal("cake", lang="en")
     >>> x
-    rdflib.term.Literal(u'cake', lang='en')
+    rdflib.term.Literal(%(u)s'cake', lang='en')
     >>> Literal(x) == x
     True
     """
@@ -484,9 +484,9 @@ class Literal(Identifier):
         >>> from rdflib.namespace import XSD
         >>> Literal("YXNkZg==", datatype=XSD['base64Binary']) < "foo"
         True
-        >>> u"\xfe" < Literal(u"foo")
+        >>> %(u)s"\xfe" < Literal(%(u)s"foo")
         False
-        >>> Literal(base64.encodestring(u"\xfe".encode("utf-8")), datatype=URIRef("http://www.w3.org/2001/XMLSchema#base64Binary")) < u"foo"
+        >>> Literal(base64.encodestring(%(u)s"\xfe".encode("utf-8")), datatype=URIRef("http://www.w3.org/2001/XMLSchema#base64Binary")) < %(u)s"foo"
         False
         """
 
