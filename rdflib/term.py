@@ -282,6 +282,7 @@ class Literal(Identifier):
     doc = """
     RDF Literal: http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
 
+    >>> from rdflib import Literal, XSD
     >>> Literal(1).toPython()
     1%(L)s
     >>> Literal("adsf") > 1
@@ -316,6 +317,16 @@ class Literal(Identifier):
     True
     >>> "2005" < lit2006
     True
+    >>> x = Literal("2", datatype=XSD.integer)
+    >>> x
+    rdflib.term.Literal(u'2', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+    >>> Literal(x) == x
+    True
+    >>> x = Literal("cake", lang="en")
+    >>> x
+    rdflib.term.Literal(u'cake', lang='en')
+    >>> Literal(x) == x
+    True
     """
     __doc__ = py3compat.format_doctest_out(doc)
 
@@ -328,7 +339,7 @@ class Literal(Identifier):
 
         if isinstance(value, Literal): # create from another Literal instance
             datatype=datatype or value.datatype
-            lang=lang or value.lang
+            lang=lang or value.language
 
         if datatype:
             lang = None
