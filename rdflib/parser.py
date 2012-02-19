@@ -16,9 +16,10 @@ import warnings
 from urllib import pathname2url, url2pathname
 from urllib2 import urlopen, Request, HTTPError
 from urlparse import urljoin
-try:
+from rdflib.py3compat import PY3
+if PY3:
     from io import BytesIO
-except:
+else:
     from StringIO import StringIO as BytesIO
 from xml.sax import xmlreader
 from xml.sax.saxutils import prepare_input_source
