@@ -1,4 +1,5 @@
 import os
+import sys
 import unittest
 try:
     maketrans = str.maketrans
@@ -92,14 +93,16 @@ def test_cases():
         else:
             e.skip = False
         # e.skip = True
-        gt = deepcopy(generictest)
+        if sys.version_info[:2] == (2,4):
+            import pickle
+            gjt = pickle.dumps(generictest)
+            gt = pickle.loads(gjt)
+        else:
+            gt = deepcopy(generictest)
         gt.__doc__ = tfile
         yield gt, e
 
 
-import sys
-if sys.version_info <= (2,5):
-    raise SkipTest('test execution code broken in Python 2.4')
 
 if __name__ == "__main__":
     test_cases()
