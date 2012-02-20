@@ -282,6 +282,7 @@ class Literal(Identifier):
     doc = """
     RDF Literal: http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
 
+    >>> from rdflib import Literal, XSD
     >>> Literal(1).toPython()
     1%(L)s
     >>> Literal("adsf") > 1
@@ -293,7 +294,7 @@ class Literal(Identifier):
     >>> lit2006 < Literal('2007-01-01',datatype=XSD.date)
     True
     >>> Literal(datetime.utcnow()).datatype
-    rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#dateTime')
+    rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#dateTime')
     >>> oneInt     = Literal(1)
     >>> twoInt     = Literal(2)
     >>> twoInt < oneInt
@@ -316,6 +317,16 @@ class Literal(Identifier):
     True
     >>> "2005" < lit2006
     True
+    >>> x = Literal("2", datatype=XSD.integer)
+    >>> x
+    rdflib.term.Literal(%(u)s'2', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
+    >>> Literal(x) == x
+    True
+    >>> x = Literal("cake", lang="en")
+    >>> x
+    rdflib.term.Literal(%(u)s'cake', lang='en')
+    >>> Literal(x) == x
+    True
     """
     __doc__ = py3compat.format_doctest_out(doc)
 
@@ -328,7 +339,7 @@ class Literal(Identifier):
 
         if isinstance(value, Literal): # create from another Literal instance
             datatype=datatype or value.datatype
-            lang=lang or value.lang
+            lang=lang or value.language
 
         if datatype:
             lang = None
@@ -473,9 +484,9 @@ class Literal(Identifier):
         >>> from rdflib.namespace import XSD
         >>> Literal("YXNkZg==", datatype=XSD['base64Binary']) < "foo"
         True
-        >>> u"\xfe" < Literal(u"foo")
+        >>> %(u)s"\xfe" < Literal(%(u)s"foo")
         False
-        >>> Literal(base64.encodestring(u"\xfe".encode("utf-8")), datatype=URIRef("http://www.w3.org/2001/XMLSchema#base64Binary")) < u"foo"
+        >>> Literal(base64.encodestring(%(u)s"\xfe".encode("utf-8")), datatype=URIRef("http://www.w3.org/2001/XMLSchema#base64Binary")) < %(u)s"foo"
         False
         """
 
