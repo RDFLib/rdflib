@@ -145,6 +145,9 @@ def create_input_source(source=None, publicID=None,
                 raise Exception("Unexpected type '%s' for source '%s'" % (type(source), source))
 
     if location is not None:
+        # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145
+        if os.path.exists(location):
+            location = pathname2url(location)
         base = urljoin("file:", "%s/" % pathname2url(os.getcwd()))
         absolute_location = URIRef(location, base=base).defrag()
         if absolute_location.startswith("file:///"):
