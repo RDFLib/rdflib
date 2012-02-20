@@ -1,0 +1,15 @@
+build/
+dist/
+coverage/
+/.tox/
+/docs/_build/
+/docs/draft/
+/docs/_static/
+*.egg-info/
+/.coverage
+/.hgtags
+/.hgignore
+__pycache__/
+nosetests.xml
+*.pyc
+*~
