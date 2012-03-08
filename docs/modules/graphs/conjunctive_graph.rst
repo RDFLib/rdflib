@@ -20,4 +20,11 @@ For the sake of persistence, Conjunctive Graphs must be distinguished by identif
 
 <urn:uuid:conjunctive-graph-foo> :persistedBy :MySQL
 
+Terminology
+^^^^^^^^^^^
+
+``Conjunctive Query``: Any query that doesn't limit the store to search
+within a named context only. Such a query expects a context-aware store to
+search the entire asserted universe (the conjunctive graph). A formula-aware
+store is expected not to include quoted statements when matching such a query.
 
