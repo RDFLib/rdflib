@@ -11,4 +11,4 @@ def test_issue_130():
         g.parse(location="http://linked-data.ru/example")
     except:
         raise SkipTest('Test data URL unparseable')
-    assert b('rdf:about="http://linked-data.ru/example/#company"') in g.serialize(), g.serialize()
+    assert b('rdf:about="http://semanticfuture.net/linked-data/example/#company"') in g.serialize(), g.serialize()
