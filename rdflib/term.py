@@ -1,6 +1,6 @@
 """
-This module defines the different types of terms. Terms are the kinds of 
-objects that can appear in a quoted/asserted triple. This includes those 
+This module defines the different types of terms. Terms are the kinds of
+objects that can appear in a quoted/asserted triple. This includes those
 that are core to RDF:
 
 * Blank Nodes
@@ -22,7 +22,7 @@ And those that are primarily for matching against 'Nodes' in the underlying Grap
 
 __all__ = [
     'bind',
-    
+
     'Node',
     'Identifier',
 
@@ -40,6 +40,7 @@ _LOGGER = logging.getLogger(__name__)
 
 import base64
 
+import random
 import threading
 from urlparse import urlparse, urljoin, urldefrag
 from string import ascii_letters
@@ -144,7 +145,7 @@ class URIRef(Identifier):
             return unicode(self)==unicode(other)
         else:
             return False
-    
+
     def __hash__(self):
         return hash(URIRef) ^ hash(unicode(self))
 
@@ -159,7 +160,7 @@ class URIRef(Identifier):
             clsName = self.__class__.__name__
 
         return """%s(%s)""" % (clsName, super(URIRef,self).__repr__())
-        
+
 
     def md5_term_hash(self):
         """a string of hex that will be the same for two URIRefs that
@@ -183,42 +184,20 @@ def _unique_id():
     uid = "".join(islice(_letter(), 0, 8))
     return uid
 
-def _serial_number_generator():
-    i = 0
-    while 1:
-        yield i
-        i = i + 1
-
-bNodeLock = threading.RLock()
 
 class BNode(Identifier):
     """
-    Blank Node: http://www.w3.org/TR/rdf-concepts/#section-blank-nodes    
+    Blank Node: http://www.w3.org/TR/rdf-concepts/#section-blank-nodes
 
     """
     __slots__ = ()
 
-
-    def __new__(cls, value=None, 
-                _sn_gen=_serial_number_generator(), _prefix=_unique_id()):
+    def __new__(cls, value=None):
         """
         # only store implementations should pass in a value
         """
-        if value==None:
-            # so that BNode values do not
-            # collide with ones created with a different instance of this module
-            # at some other time.
-            bNodeLock.acquire()
-            node_id = _sn_gen.next()
-            bNodeLock.release()
-            value = "%s%s" % (_prefix, node_id)
-        else:
-            # TODO: check that value falls within acceptable bnode value range
-            # for RDF/XML needs to be something that can be serialzed
-            # as a nodeID for N3 ??  Unless we require these
-            # constraints be enforced elsewhere?
-            pass #assert is_ncname(unicode(value)), "BNode identifiers
-                 #must be valid NCNames"
+        if value is None:
+            value = _unique_id() + str(random.randint(1, 99999999))
 
         return Identifier.__new__(cls, value)
 
@@ -251,7 +230,7 @@ class BNode(Identifier):
             return unicode(self)==unicode(other)
         else:
             return False
-    
+
     def __hash__(self):
         return hash(BNode) ^ hash(unicode(self))
 
@@ -397,13 +376,13 @@ class Literal(Identifier):
         >>> from rdflib.namespace import XSD
         >>> (- Literal("1", datatype=XSD['integer']))
         -1%(L)s
-        
+
         Not working:
         #>>> (- Literal("1"))
         #Traceback (most recent call last):
         #  File "<stdin>", line 1, in <module>
         #TypeError: Not a number; rdflib.term.Literal(u'1')
-        >>> 
+        >>>
         """
 
         py = self.toPython()
@@ -422,7 +401,7 @@ class Literal(Identifier):
         >>> from rdflib.namespace import XSD
         >>> (+ Literal("-1", datatype=XSD['integer']))
         -1%(L)s
-        
+
         Not working in Python 3:
         #>>> (+ Literal("1"))
         #Traceback (most recent call last):
@@ -443,7 +422,7 @@ class Literal(Identifier):
         >>> from rdflib.namespace import XSD
         >>> abs( Literal("-1", datatype=XSD['integer']))
         1%(L)s
-        
+
         Not working in Python 3:
         #>>> abs(Literal("1"))
         #Traceback (most recent call last):
@@ -464,13 +443,13 @@ class Literal(Identifier):
         >>> from rdflib.namespace import XSD
         >>> ~( Literal("-1", datatype=XSD['integer']))
         0%(L)s
-        
+
         Not working:
         #>>> ~(Literal("1"))
         #Traceback (most recent call last):
         #  File "<stdin>", line 1, in <module>
         #TypeError: Not a number; rdflib.term.Literal(u'1')
-        >>> 
+        >>>
         """
         py = self.toPython()
         try:
@@ -570,15 +549,15 @@ class Literal(Identifier):
         >>> Literal('1', datatype=XSD.double) in a
         False
 
-        
-        "Called for the key object for dictionary operations, 
-        and by the built-in function hash(). Should return 
-        a 32-bit integer usable as a hash value for 
-        dictionary operations. The only required property 
-        is that objects which compare equal have the same 
-        hash value; it is advised to somehow mix together 
-        (e.g., using exclusive or) the hash values for the 
-        components of the object that also play a part in 
+
+        "Called for the key object for dictionary operations,
+        and by the built-in function hash(). Should return
+        a 32-bit integer usable as a hash value for
+        dictionary operations. The only required property
+        is that objects which compare equal have the same
+        hash value; it is advised to somehow mix together
+        (e.g., using exclusive or) the hash values for the
+        components of the object that also play a part in
         comparison of objects." -- 3.4.1 Basic customization (Python)
 
         "Two literals are equal if and only if all of the following hold:
@@ -590,7 +569,7 @@ class Literal(Identifier):
         -- 6.5.1 Literal Equality (RDF: Concepts and Abstract Syntax)
 
         """
-        
+
         return Identifier.__hash__(self) ^ hash(self.language) ^ hash(self.datatype)
 
     @py3compat.format_doctest_out
@@ -726,10 +705,10 @@ class Literal(Identifier):
         if use_plain and self.datatype in _PLAIN_LITERAL_TYPES:
             try:
                 self.toPython() # check validity
-                # this is a bit of a mess - 
+                # this is a bit of a mess -
                 # in py >=2.6 the string.format function makes this easier
                 # we try to produce "pretty" output
-                if self.datatype == _XSD_DOUBLE: 
+                if self.datatype == _XSD_DOUBLE:
                     return sub(".?0*e","e", u'%e' % float(self))
                 elif self.datatype == _XSD_DECIMAL:
                     return sub("0*$","0",u'%f' % float(self))
@@ -816,7 +795,7 @@ class Literal(Identifier):
         try:
             rt = self.toPython()
         except Exception, e:
-            _LOGGER.warning("could not convert %s to a Python datatype" % 
+            _LOGGER.warning("could not convert %s to a Python datatype" %
                             repr(self))
             rt = self
 
@@ -875,7 +854,7 @@ from decimal import Decimal
 # Mappings from Python types to XSD datatypes and back (burrowed from sparta)
 # datetime instances are also instances of date... so we need to order these.
 
-# SPARQL/Turtle/N3 has shortcuts for int, double, decimal 
+# SPARQL/Turtle/N3 has shortcuts for int, double, decimal
 # python has only float - to be in tune with sparql/n3/turtle
 # we default to XSD.double for float literals
 
@@ -929,7 +908,7 @@ def bind(datatype, conversion_function):
     instance.
     """
     if datatype in _toPythonMapping:
-        _LOGGER.warning("datatype '%s' was already bound. Rebinding." % 
+        _LOGGER.warning("datatype '%s' was already bound. Rebinding." %
                         datatype)
     _toPythonMapping[datatype] = conversion_function
 
