@@ -1,14 +1,33 @@
 .. _gettingstarted:
 
 ===========================
-Getting started with rdflib
+Getting started with RDFLib
 ===========================
 
-The primary interface that ``rdflib`` exposes for working with RDF is :class:`~rdflib.graph.Graph`. The package uses various Python idioms that offer an appropriate way to introduce RDF to a Python programmer who hasn't worked with RDF before.
+Installation
+============
 
-``rdflib`` graphs are not sorted containers; they have ordinary ``set`` operations (e.g. :meth:`~rdflib.Graph.add` to add a triple) plus methods that search triples and return them in arbitrary order.
+RDFLib is open source and is maintained in a 
+`GitHub <http://github.com/RDFLib/rdflib/>`_ repository. RDFLib releases, current and previous 
+are listed on `PyPi <pypi.python.org/pypi/rdflib/>`_
 
-``rdflib`` graphs also redefine certain built-in Python methods in order to behave in a predictable way; they `emulate container types <http://docs.python.org/release/2.5.2/ref/sequence-types.html>`_ and are best thought of as a set of 3-item triples:
+RDFLib may be easy_installed:
+
+.. code-block :: bash
+
+    $ easy_install rdflib
+
+Support is available through the rdflib-dev group::
+
+    http://groups.google.com/group/rdflib-dev
+
+and on the IRC channel #redfoot on the freenode.net server
+
+The primary interface that RDFLib exposes for working with RDF is :class:`~rdflib.graph.Graph`. The package uses various Python idioms that offer an appropriate way to introduce RDF to a Python programmer who hasn't worked with RDF before.
+
+RDFLib graphs are not sorted containers; they have ordinary ``set`` operations (e.g. :meth:`~rdflib.Graph.add` to add a triple) plus methods that search triples and return them in arbitrary order.
+
+RDFLib graphs also redefine certain built-in Python methods in order to behave in a predictable way; they `emulate container types <http://docs.python.org/release/2.5.2/ref/sequence-types.html>`_ and are best thought of as a set of 3-item triples:
 
 .. code-block:: text
 
