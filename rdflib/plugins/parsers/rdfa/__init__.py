@@ -13,6 +13,30 @@ This is an adapted version of pyRdfa (`W3C RDFa Distiller page`__) by Ivan Herma
 .. __: http://www.w3.org/TR/rdfa-syntax
 .. __: http://www.w3.org/2007/08/pyRdfa/
 
+Note: By default pyRdfa uses the xml.dom.minidom parser which is referenced
+in a `stackoverflow answer <http://stackoverflow.com/a/2051598>`_ thus: "... a 
+"non-external-entity-reading XML parser. That means it doesn't even look at the DTD 
+... A further consequence of this is that minidom won't know about the HTML-specific
+entities like &eacute; that are defined in the XHTML doctype, so you may lose text
+that way". In essence, this means that::
+
+    <p about="http://example.com" property="dc:title">Exampl&eacute;</p>
+
+will be returned as "Exampl". It is unfortunate that this does not result in an
+Exception because an Exception would have caused the pyRdfa parser to switch to
+the html5lib parser which *does* correctly handle HTML entities.
+
+One workaround is to "unescape" the entities using Python's htmlentities module
+before feeding the markup to RDFaParser.parse()::
+
+    import re
+    from htmlentitydefs import name2codepoint
+    def htmlentitydecode(s):
+        return re.sub('&(%s);' % '|'.join(name2codepoint), 
+                lambda m: unichr(name2codepoint[m.group(1)]), s)
+
+(taken from http://wiki.python.org/moin/EscapingHtml)
+
 """
 
 
