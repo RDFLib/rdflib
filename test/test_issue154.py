@@ -1,5 +1,4 @@
 import sys
-from StringIO import StringIO
 from unittest import TestCase
 from rdflib.graph import ConjunctiveGraph, URIRef
 from nose.exc import SkipTest
@@ -7,7 +6,7 @@ from nose.exc import SkipTest
 class EntityTest(TestCase):
 
     def test_html_entity_xhtml(self):
-        if sys.version_info[0] == 3:
+        if sys.version_info[0] == 3 or sys.version_info[:2] < (2,5):
             raise SkipTest('minidom parser strips HTML entities in Python 3.2')
         g = ConjunctiveGraph()
         html = \
@@ -19,7 +18,7 @@ class EntityTest(TestCase):
         </body>
         </html>
         """
-        g.parse(StringIO(html), format='rdfa')
+        g.parse(data=html, format='rdfa')
         self.assertEqual(len(g), 1)
         self.assertEqual(g.value(URIRef("http://example.com"), 
                                  URIRef("http://purl.org/dc/terms/title")
