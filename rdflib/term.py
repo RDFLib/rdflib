@@ -217,9 +217,9 @@ class BNode(Identifier):
             # for RDF/XML needs to be something that can be serialzed
             # as a nodeID for N3 ??  Unless we require these
             # constraints be enforced elsewhere?
-            pass #assert is_ncname(unicode(value)), "BNode identifiers
-                 #must be valid NCNames"
-
+            pass # assert is_ncname(unicode(value)), "BNode identifiers
+                 # must be valid NCNames" _:[A-Za-z][A-Za-z0-9]*
+                 # http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID
         return Identifier.__new__(cls, value)
 
     def n3(self):
