@@ -283,8 +283,7 @@ class PrettyXMLSerializer(Serializer):
 
         else:
             if first(store.objects(object, RDF.first)): # may not have type RDF.List
-                print("Object %s is a first, added to __serialized" % repr(object))
-                # collection = object
+
                 self.__serialized[object] = 1
 
                 # Warn that any assertions on object other than
