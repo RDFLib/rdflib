@@ -1,4 +1,5 @@
 import sys
+import platform
 import warnings
 from unittest import TestCase
 from rdflib.graph import ConjunctiveGraph, URIRef
@@ -8,7 +9,7 @@ from nose.exc import SkipTest
 import re
 from htmlentitydefs import name2codepoint
 def htmlentitydecode(s):
-    return re.sub('&(%s);' % '|'.join(name2codepoint), 
+    return re.sub('&(%s);' % '|'.join(name2codepoint),
             lambda m: unichr(name2codepoint[m.group(1)]), s)
 
 html = """\
@@ -25,21 +26,25 @@ class EntityTest(TestCase):
     def test_html_entity_xhtml(self):
         if sys.version_info[0] == 3 or sys.version_info[:2] < (2,5):
             raise SkipTest('minidom parser strips HTML entities in Python 3.2')
+        if platform.system() == "Java":
+            raise SkipTest('problem with HTML entities for html5lib in Jython')
         g = ConjunctiveGraph()
         warnings.simplefilter('ignore', UserWarning)
         g.parse(data=html, format='rdfa')
         self.assertEqual(len(g), 1)
-        self.assertEqual(g.value(URIRef("http://example.com"), 
+        self.assertEqual(g.value(URIRef("http://example.com"),
                                  URIRef("http://purl.org/dc/terms/title")
-                                 ), u"Exampl") 
-    
+                                 ), u"Exampl")
+
     def test_html_decoded_entity_xhtml(self):
+        if platform.system() == "Java":
+            raise SkipTest('problem with HTML entities for html5lib in Jython')
         g = ConjunctiveGraph()
         g.parse(data=htmlentitydecode(html), format='rdfa')
         self.assertEqual(len(g), 1)
-        self.assertEqual(g.value(URIRef("http://example.com"), 
+        self.assertEqual(g.value(URIRef("http://example.com"),
                                   URIRef("http://purl.org/dc/terms/title")
-                                  ), u"Exampl\xe9") 
+                                  ), u"Exampl\xe9")
 
 
 
