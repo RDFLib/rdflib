@@ -1,7 +1,7 @@
 from __future__ import generators
 from rdflib.py3compat import format_doctest_out
 __doc__ = format_doctest_out("""\
-Instantiating Graphs with default store (IOMemory) and default identifier 
+Instantiating Graphs with default store (IOMemory) and default identifier
 (a BNode):
 
     >>> g = Graph()
@@ -10,7 +10,7 @@ Instantiating Graphs with default store (IOMemory) and default identifier
     >>> g.identifier.__class__
     <class 'rdflib.term.BNode'>
 
-Instantiating Graphs with a specific kind of store (IOMemory) and a default 
+Instantiating Graphs with a specific kind of store (IOMemory) and a default
 identifier (a BNode):
 
 Other store kinds: Sleepycat, MySQL, SQLite
@@ -22,7 +22,7 @@ Other store kinds: Sleepycat, MySQL, SQLite
     >>> graph.store.__class__
     <class 'rdflib.plugins.memory.IOMemory'>
 
-Instantiating Graphs with Sleepycat store and an identifier - 
+Instantiating Graphs with Sleepycat store and an identifier -
 <http://rdflib.net>:
 
     >>> g = Graph('IOMemory', URIRef("http://rdflib.net"))
@@ -31,16 +31,16 @@ Instantiating Graphs with Sleepycat store and an identifier -
     >>> str(g)
     "<http://rdflib.net> a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory']."
 
-Creating a ConjunctiveGraph - The top level container for all named Graphs 
+Creating a ConjunctiveGraph - The top level container for all named Graphs
 in a 'database':
 
     >>> g = ConjunctiveGraph()
     >>> str(g.default_context)
     "[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory']]."
 
-Adding / removing reified triples to Graph and iterating over it directly or 
+Adding / removing reified triples to Graph and iterating over it directly or
 via triple pattern:
-    
+
     >>> g = Graph('IOMemory')
     >>> statementId = BNode()
     >>> print(len(g))
@@ -58,7 +58,7 @@ via triple pattern:
     <class 'rdflib.term.BNode'>
     <class 'rdflib.term.BNode'>
     <class 'rdflib.term.BNode'>
-    
+
     >>> for s, p, o in g.triples((None, RDF.object, None)):
     ...     print(o)
     ...
@@ -69,9 +69,9 @@ via triple pattern:
 
 ``None`` terms in calls to :meth:`~rdflib.graph.Graph.triples` can be thought of as "open variables".
 
-Graph Aggregation - ConjunctiveGraphs and ReadOnlyGraphAggregate within 
+Graph Aggregation - ConjunctiveGraphs and ReadOnlyGraphAggregate within
 the same store:
-    
+
     >>> store = plugin.get('IOMemory', Store)()
     >>> g1 = Graph(store)
     >>> g2 = Graph(store)
@@ -96,10 +96,10 @@ the same store:
     >>> len(list(ReadOnlyGraphAggregate([g1,g2]).subjects(RDF.type, RDF.Statement)))
     2
 
-ConjunctiveGraphs have a :meth:`~rdflib.graph.ConjunctiveGraph.quads` method which returns quads instead of 
-triples, where the fourth item is the Graph (or subclass thereof) instance 
+ConjunctiveGraphs have a :meth:`~rdflib.graph.ConjunctiveGraph.quads` method which returns quads instead of
+triples, where the fourth item is the Graph (or subclass thereof) instance
 in which the triple was asserted:
-    
+
     >>> uniqueGraphNames = set([graph.identifier for s, p, o, graph in ConjunctiveGraph(store).quads((None, RDF.predicate, None))])
     >>> len(uniqueGraphNames)
     3
@@ -107,7 +107,7 @@ in which the triple was asserted:
     >>> uniqueGraphNames = set([graph.identifier for s, p, o, graph in unionGraph.quads((None, RDF.predicate, None))])
     >>> len(uniqueGraphNames)
     2
-     
+
 Parsing N3 from a string
 
     >>> g2 = Graph()
@@ -143,7 +143,7 @@ import warnings
 try:
     from hashlib import md5
 except ImportError:
-    from md5 import md5    
+    from md5 import md5
 
 try:
     from io import BytesIO
@@ -157,8 +157,8 @@ except ImportError:
 # # because the sparql module has been moved to the RDFExtras package.
 
 # def describe(terms,bindings,graph):
-#     """ 
-#     Default DESCRIBE returns all incomming and outgoing statements about the given terms 
+#     """
+#     Default DESCRIBE returns all incomming and outgoing statements about the given terms
 #     """
 #     from rdflib.sparql.sparqlOperators import getValue
 #     g=Graph()
@@ -206,7 +206,7 @@ class Graph(Node):
     provenance.
 
     The Graph constructor can take an identifier which identifies the Graph
-    by name.  If none is given, the graph is assigned a BNode for its 
+    by name.  If none is given, the graph is assigned a BNode for its
     identifier.
     For more on named graphs, see: http://www.w3.org/2004/03/trix/
 
@@ -271,7 +271,7 @@ class Graph(Node):
 
         {?subGraph rdfg:subGraphOf ?cg;a :DefaultGraph}
           => {?cg a :ConjunctiveGraph;:default_context ?subGraphOf} .
-        
+
     """
 
     def __init__(self, store='default', identifier=None,
@@ -407,15 +407,15 @@ class Graph(Node):
             #Then perhaps a graph with length 0 should be considered
             #equivalent to None (if compared to it)?
             return 1
-    
+
     def __eq__(self, other):
         return isinstance(other, Graph) and self.identifier == other.identifier
-    
+
     def __lt__(self, other):
         return (other is None) or (isinstance(other, Graph) and \
                                             self.identifier < other.identifier)
     def __le__(self, other): return self < other or self == other
-    
+
     def __gt__(self, other):
         return (isinstance(other, Graph) and self.identifier > other.identifier) \
                     or (other is not None)
@@ -449,7 +449,7 @@ class Graph(Node):
         """Set-theoretic intersection"""
         retval = Graph()
         for x in other:
-            if x in self: 
+            if x in self:
                 retval.add(x)
         return retval
 
@@ -457,14 +457,14 @@ class Graph(Node):
         """Set-theoretic difference"""
         retval = Graph()
         for x in self:
-            if not x in other : 
+            if not x in other :
                 retval.add(x)
         return retval
 
     def __xor__(self, other):
         """Set-theoretic XOR"""
         return (self - other) + (other - self)
-    
+
     __or__ = __add__
     __and__ = __mul__
 
@@ -527,7 +527,7 @@ class Graph(Node):
         Parameters:
         subject, predicate, object  -- exactly one must be None
         default -- value to be returned if no values found
-        any -- if True, return any value in the case there is more than one, 
+        any -- if True, return any value in the case there is more than one,
         else, raise UniquenessError
         """
         retval = default
@@ -536,7 +536,7 @@ class Graph(Node):
                 (subject is None and object is None) or \
                 (predicate is None and object is None):
             return None
-        
+
         if object is None:
             values = self.objects(subject, predicate)
         if subject is None:
@@ -578,15 +578,15 @@ class Graph(Node):
     def preferredLabel(self, subject, lang=None, default=[],
                        labelProperties=(SKOS.prefLabel, RDFS.label)):
         """ Find the preferred label for subject.
-        
-        By default prefers skos:prefLabels over rdfs:labels. In case at least 
+
+        By default prefers skos:prefLabels over rdfs:labels. In case at least
         one prefLabel is found returns those, else returns labels. In case a
         language string (e.g., 'en', 'de' or even '' for no lang-tagged
         literals) is given, only such labels will be considered.
-        
+
         Return a list of (labelProp, label) pairs, where labelProp is either
         skos:prefLabel or rdfs:label.
-        
+
         >>> g = ConjunctiveGraph()
         >>> u = URIRef(%(u)s'http://example.com/foo')
         >>> g.add([u, RDFS.label, Literal('foo')])
@@ -613,7 +613,7 @@ class Graph(Node):
         [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal(%(u)s'blubb', lang='en'))]
         """
-        
+
         # setup the language filtering
         if lang != None:
             if lang == '': # we only want not language-tagged literals
@@ -622,7 +622,7 @@ class Graph(Node):
                 langfilter = lambda l: l.language == lang
         else: # we don't care about language tags
             langfilter = lambda l: True
-        
+
         for labelProp in labelProperties:
             labels = filter(langfilter, self.objects(subject, labelProp))
             if len(labels) == 0:
@@ -653,9 +653,9 @@ class Graph(Node):
 
     def transitiveClosure(self,func,arg):
         """
-        Generates transitive closure of a user-defined 
+        Generates transitive closure of a user-defined
         function against the graph
-        
+
         >>> from rdflib.collection import Collection
         >>> g=Graph()
         >>> a=BNode('foo')
@@ -675,16 +675,16 @@ class Graph(Node):
         ...       print(f)
         ...    for s in g.subjects(RDF.rest,node):
         ...       yield s
-        
+
         >>> [rt for rt in g.transitiveClosure(topList,RDF.nil)]
         [rdflib.term.BNode('baz'), rdflib.term.BNode('bar'), rdflib.term.BNode('foo')]
-        
+
         >>> [rt for rt in g.transitiveClosure(reverseList,RDF.nil)]
         http://www.w3.org/2000/01/rdf-schema#comment
         http://www.w3.org/2000/01/rdf-schema#label
         http://www.w3.org/1999/02/22-rdf-syntax-ns#type
         [rdflib.term.BNode('baz'), rdflib.term.BNode('bar'), rdflib.term.BNode('foo')]
-        
+
         """
         for rt in func(arg,self):
             yield rt
@@ -758,14 +758,14 @@ class Graph(Node):
         return self.namespace_manager.absolutize(uri, defrag)
 
     def serialize(
-                self, destination=None, format="xml", 
+                self, destination=None, format="xml",
                 base=None, encoding=None, **args):
         """Serialize the Graph to destination
 
         If destination is None serialize method returns the serialization as a
         string. Format defaults to xml (AKA rdf/xml).
 
-        Format support can be extended with plugins, 
+        Format support can be extended with plugins,
         but 'xml', 'n3', 'turtle', 'nt', 'pretty-xml', trix' are built in.
         """
         serializer = plugin.get(format, Serializer)(self)
@@ -801,20 +801,20 @@ class Graph(Node):
         The source is specified using one of source, location, file or
         data.
 
-        :Parameters: 
-        
-          - `source`: An InputSource, file-like object, or string. In the case 
+        :Parameters:
+
+          - `source`: An InputSource, file-like object, or string. In the case
             of a string the string is the location of the source.
-          - `location`: A string indicating the relative or absolute URL of the 
-            source. Graph's absolutize method is used if a relative location 
+          - `location`: A string indicating the relative or absolute URL of the
+            source. Graph's absolutize method is used if a relative location
             is specified.
           - `file`: A file-like object.
           - `data`: A string containing the data to be parsed.
-          - `format`: Used if format can not be determined from source. 
-            Defaults to rdf/xml. Format support can be extended with plugins, 
+          - `format`: Used if format can not be determined from source.
+            Defaults to rdf/xml. Format support can be extended with plugins,
             but 'xml', 'n3', 'nt', 'trix', 'rdfa' are built in.
-          - `publicID`: the logical URI to use as the document base. If None 
-            specified the document location is used (at least in the case where 
+          - `publicID`: the logical URI to use as the document base. If None
+            specified the document location is used (at least in the case where
             there is a document location).
 
         :Returns:
@@ -862,13 +862,13 @@ class Graph(Node):
         if format == "xml":
             # warn... backward compat.
             format = "application/rdf+xml"
-        source = create_input_source(source=source, publicID=publicID, 
-                                     location=location, file=file, 
+        source = create_input_source(source=source, publicID=publicID,
+                                     location=location, file=file,
                                      data=data, format=format)
         if format is None:
             format = source.content_type
         if format is None:
-            #raise Exception("Could not determine format for %r. You can" + \ 
+            #raise Exception("Could not determine format for %r. You can" + \
             # "expicitly specify one with the format argument." % source)
             format = "application/rdf+xml"
         parser = plugin.get(format, Parser)()
@@ -929,7 +929,7 @@ class Graph(Node):
 
         # take a random one, could also always take the first one, doesn't
         # really matter.
-        if not all_nodes: 
+        if not all_nodes:
             return False
 
         visiting = [all_nodes[random.randrange(len(all_nodes))]]
@@ -978,17 +978,17 @@ class Graph(Node):
 
 class ConjunctiveGraph(Graph):
     """
-    A ConjunctiveGraph is an (unamed) aggregation of all the named graphs 
-    within the Store. It has a ``default`` graph, whose name is associated 
-    with the ConjunctiveGraph throughout its life. All methods work against 
-    this default graph. Its constructor can take an identifier to use as the 
-    name of this default graph or it will assign a BNode. 
-    
-    In practice, it is typical to instantiate a ConjunctiveGraph if you want 
-    to add triples to the Store but don't care to mint a URI for the graph. 
+    A ConjunctiveGraph is an (unamed) aggregation of all the named graphs
+    within the Store. It has a ``default`` graph, whose name is associated
+    with the ConjunctiveGraph throughout its life. All methods work against
+    this default graph. Its constructor can take an identifier to use as the
+    name of this default graph or it will assign a BNode.
+
+    In practice, it is typical to instantiate a ConjunctiveGraph if you want
+    to add triples to the Store but don't care to mint a URI for the graph.
     Any triples in the graph can still be addressed.
     """
-    
+
     def __init__(self, store='default', identifier=None):
         super(ConjunctiveGraph, self).__init__(store)
         assert self.store.context_aware, ("ConjunctiveGraph must be backed by"
@@ -1033,7 +1033,7 @@ class ConjunctiveGraph(Graph):
         for (s, p, o), cg in self.store.triples((s, p, o), context=None):
             for ctx in cg:
                 yield s, p, o, ctx
-            
+
     def triples_choices(self, (s, p, o)):
         """Iterate over all the triples in the entire conjunctive graph"""
         for (s1, p1, o1), cg in self.store.triples_choices((s, p, o),
@@ -1052,7 +1052,7 @@ class ConjunctiveGraph(Graph):
         for context in self.store.contexts(triple):
             if isinstance(context, Graph):
                 yield context
-            else: 
+            else:
                 yield self.get_context(context)
 
     def get_context(self, identifier, quoted=False):
@@ -1060,7 +1060,7 @@ class ConjunctiveGraph(Graph):
 
         identifier must be a URIRef or BNode.
         """
-        return Graph(store=self.store, identifier=identifier, 
+        return Graph(store=self.store, identifier=identifier,
                     namespace_manager=self)
 
     def remove_context(self, context):
@@ -1088,7 +1088,7 @@ class ConjunctiveGraph(Graph):
         it returns the root context.
         """
 
-        source = create_input_source(source=source, publicID=publicID, 
+        source = create_input_source(source=source, publicID=publicID,
                     location=location, file=file, data=data, format=format)
 
         #id = self.context_id(self.absolutize(source.getPublicId()))
@@ -1105,9 +1105,9 @@ class ConjunctiveGraph(Graph):
 
 class QuotedGraph(Graph):
     """
-    Quoted Graphs are intended to implement Notation 3 formulae. They are 
-    associated with a required identifier that the N3 parser *must* provide 
-    in order to maintain consistent formulae identification for scenarios 
+    Quoted Graphs are intended to implement Notation 3 formulae. They are
+    associated with a required identifier that the N3 parser *must* provide
+    in order to maintain consistent formulae identification for scenarios
     such as implication and other such processing.
     """
     def __init__(self, store, identifier):
@@ -1400,7 +1400,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         for graph in self.graphs:
             for s1, p1, o1 in graph.triples((s, p, o)):
                 yield (s1, p1, o1)
-                
+
     def __contains__(self, triple_or_quad):
         context = None
         if len(triple_or_quad) == 4:

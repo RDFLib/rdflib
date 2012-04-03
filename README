@@ -10,7 +10,15 @@ any one of a number of Store implementations.
 This core RDFLib package includes store implementations for 
 in memory storage and persistent storage on top of the Berkeley DB. 
 
-More information is available on the project webpage: 
+RDFLib is open source and is maintained in a 
+`GitHub <http://github.com/RDFLib/rdflib/>`_ repository. RDFLib releases, current and previous 
+are listed on `PyPi <pypi.python.org/pypi/rdflib/>`_
+
+RDFLib may be easy_installed::
+
+    $ easy_install rdflib
+
+More information is available on the project webpage:
 
 https://github.com/RDFLib/rdflib/
 
@@ -19,9 +27,9 @@ SPARQL engine for use with RDFLib:
 
 https://github.com/RDFLib/rdfextras/
 
-The documentation can be built by doing: 
+The documentation can be built by doing::
 
-python setup.py build_sphinx
+    $ python setup.py build_sphinx
 
 And is also available from ReadTheDocs: 
 
