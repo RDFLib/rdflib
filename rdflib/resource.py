@@ -290,7 +290,7 @@ objects::
 
 """)
 
-from rdflib.term import BNode, URIRef
+from rdflib.term import Node, BNode, URIRef
 from rdflib.namespace import RDF
 
 __all__ = ['Resource']
@@ -401,6 +401,59 @@ class Resource(object):
             return self._new(node)
         else:
             return node
+
+    def __getitem__(self, item, subject=None):
+        """
+        Resources can be sliced like graphs, but the subject is fixed. 
+        
+        r[RDFS.label] returns triples for (self.identifier, RDFS.label, None)
+        r[RDFS.label, Literal("Bob")] for (self.identifier, RDFS.label, "Bob")
+        etc. 
+
+        For deeper path, the second level works as for graphs: 
+        r[FOAF.knows, :FOAF.name] gives the name of all people this resource knows
+        """
+
+        if isinstance(item, tuple) and len(item)==1:
+            item=item[0]
+
+        if isinstance(item, slice): 
+            if not subject: # first item is fixed 
+                if item.step: 
+                    raise TypeError("Resources fix the subject for slicing, and can only be sliced by predicate/object. ")
+                p,o=item.start,item.stop
+                s=(self.identifier,)
+            else: 
+                s,p,o=item.start, item.stop, item.step
+
+            if not isinstance(p,tuple): p=(p,)
+            if not isinstance(o,tuple): o=(o,)
+
+            if subject: 
+                s=(subject,)
+
+            for _s in s: 
+                for _p in p:
+                    for _o in o:
+                        for t in self.triples((_s,_p,_o)):
+                            yield t
+
+        elif isinstance(item, Node):
+
+            if subject: 
+                item=subject
+                for t in self.triples((item,None,None)): yield t
+            else: 
+                for t in self.triples((self.identifier, item, None)): yield t
+            
+        elif isinstance(item, tuple): 
+            # carry out the first one, recurse while constraining subject
+            for x in self.__getitem__(item[0],subject):
+                for y in self.__getitem__(item[1:], x[2]):
+                    yield y
+        else: 
+            raise TypeError("You can only index a graph by a single rdflib term, tuples or a slice of rdflib terms.")
+
 
     def _new(self, subject):
         return type(self)(self._graph, subject)
