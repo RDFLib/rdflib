@@ -2,7 +2,7 @@
 import os
 import shutil
 import tempfile
-
+import warnings
 from urlparse import urlparse
 try:
     from io import BytesIO
@@ -10,7 +10,7 @@ except:
     from StringIO import StringIO as BytesIO
 
 
-# __all__ = ['Processor', 'Result']
+__all__ = ['Processor', 'Result', 'ResultParser', 'ResultSerializer', 'ResultException']
 
 
 """
@@ -137,8 +137,15 @@ class Result(object):
     def __getattr__(self,name): 
         if self.type in ("CONSTRUCT", "DESCRIBE") and self.graph!=None: 
             return self.graph.__getattr__(self,name)
+        elif self.type == 'SELECT' and name =='result':
+            warnings.warn(
+                "accessing the 'result' attribute is deprecated."
+                " Iterate over the object instead.",
+                DeprecationWarning, stacklevel=2)
+            # copied from __iter__, above
+            return [(tuple([b[v] for v in self.vars])) for b in self.bindings]
         else: 
-            raise AttributeError("'%s' object has not attribute '%s'"%(self,name))
+            raise AttributeError("'%s' object has no attribute '%s'"%(self,name))
 
     def __eq__(self, other): 
         try:

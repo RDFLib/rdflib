@@ -193,7 +193,7 @@ The following methods are defined to provide this capability (see below for desc
 
 The *configuration* string is understood by the store implementation and represents all the parameters needed to locate an individual instance of a store. This could be similar to an ODBC string or in fact be an ODBC string, if the connection protocol to the underlying database is ODBC.
 
-The :meth:`~rdflib.graph.Graph.open` function needs to fail intelligently in order to clearly express that a store (identified by the given configuration string) already exists or that there is no store (at the location specified by the configuration string) depending on the value of :keyword:`create`.
+The :meth:`~rdflib.graph.Graph.open` function needs to fail intelligently in order to clearly express that a store (identified by the given configuration string) already exists or that there is no store (at the location specified by the configuration string) depending on the value of ``create``.
 
 Triple Interfaces
 =================

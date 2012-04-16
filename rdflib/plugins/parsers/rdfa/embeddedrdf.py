@@ -11,7 +11,7 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 
 from StringIO   import StringIO
 
-# __all__ = ['handle_embeddedRDF']
+__all__ = ['handle_embeddedRDF']
 
 def handle_embeddedRDF(node, graph, state):
     """

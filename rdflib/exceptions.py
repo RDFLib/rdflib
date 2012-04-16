@@ -2,7 +2,7 @@
 TODO:
 """
 
-# __all__ = ['Error', 'TypeCheckError', 'SubjectTypeError', 'PredicateTypeError', 'ObjectTypeError', 'ContextTypeError', 'ParserError']
+__all__ = ['Error', 'TypeCheckError', 'SubjectTypeError', 'PredicateTypeError', 'ObjectTypeError', 'ContextTypeError', 'ParserError']
 
 class Error(Exception):
     """Base class for rdflib exceptions."""

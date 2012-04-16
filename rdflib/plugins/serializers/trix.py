@@ -8,7 +8,7 @@ from rdflib.graph import Graph, ConjunctiveGraph
 
 from rdflib.py3compat import b
 
-# __all__ = ['TriXSerializer']
+__all__ = ['TriXSerializer']
 
 ## TODO: MOve this somewhere central
 TRIXNS=Namespace("http://www.w3.org/2004/03/trix/trix-1/")

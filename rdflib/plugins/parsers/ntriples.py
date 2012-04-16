@@ -12,7 +12,7 @@ from rdflib.term import Literal
 
 from rdflib.py3compat import b, cast_bytes
 
-# __all__ = ['unquote', 'uriquote', 'Sink', 'NTriplesParser']
+__all__ = ['unquote', 'uriquote', 'Sink', 'NTriplesParser']
 
 uriref = b(r'<([^:]+:[^\s"<>]+)>')
 literal = b(r'"([^"\\]*(?:\\.[^"\\]*)*)"')

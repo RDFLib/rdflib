@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from rdflib import py3compat
+
 __doc__ = py3compat.format_doctest_out("""
-The ``Resource`` class wraps a ``Graph`` and a resource reference (i.e. an
-``URIRef`` or ``BNode``), to support a resource oriented way of working with a
+The :class:`~rdflib.resource.Resource` class wraps a :class:`~rdflib.graph.Graph` 
+and a resource reference (i.e. a :class:`rdflib.term.URIRef` or 
+:class:`rdflib.term.BNode`) to support a resource-oriented way of working with a
 graph.
 
 It contains methods directly corresponding to those methods of the Graph
@@ -12,9 +14,9 @@ tracking both the graph and a current subject. This makes for a "resource
 oriented" style, as compared to the triple orientation of the Graph API.
 
 Resulting generators are also wrapped so that any resource reference values
-(``URIRef``s and ``BNode``s) are in turn wrapped as Resources. (Note that this
-behaviour differs from the corresponding methods in Graph, were no such
-conversion takes place.)
+(:class:`rdflib.term.URIRef`s and :class:`rdflib.term.BNode`s) are in turn 
+wrapped as Resources. (Note that this behaviour differs from the corresponding 
+methods in :class:`~rdflib.graph.Graph`, where no such conversion takes place.)
 
 
 Basic Usage Scenario
@@ -62,7 +64,7 @@ Create a Resource::
 Retrieve some basic facts::
 
     >>> person.identifier
-    rdflib.term.URIRef('http://example.org/person/some1#self')
+    rdflib.term.URIRef(%(u)s'http://example.org/person/some1#self')
 
     >>> person.value(FOAF.name)
     rdflib.term.Literal(%(u)s'Some Body')
@@ -72,7 +74,7 @@ Retrieve some basic facts::
 
 Resources as unicode are represented by their identifiers as unicode::
 
-    >>> unicode(person)
+    >>> %(unicode)s(person)
     %(u)s'http://example.org/person/some1#self'
 
 Resource references are also Resources, so you can easily get e.g. a qname
@@ -291,7 +293,7 @@ objects::
 from rdflib.term import BNode, URIRef
 from rdflib.namespace import RDF
 
-# __all__ = ['Resource']
+__all__ = ['Resource']
 
 class Resource(object):
 

@@ -6,7 +6,7 @@ from rdflib.namespace import Namespace, OWL
 from rdflib.plugins.serializers.turtle import (TurtleSerializer,
         SUBJECT, VERB, OBJECT)
 
-# __all__ = ['N3Serializer']
+__all__ = ['N3Serializer']
 
 SWAP_LOG = Namespace("http://www.w3.org/2000/10/swap/log#")
 

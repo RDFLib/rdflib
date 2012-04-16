@@ -4,7 +4,7 @@ from rdflib.term import Literal
 from rdflib.graph import Graph
 from rdflib.py3compat import format_doctest_out
 
-# __all__ = ['Collection']
+__all__ = ['Collection']
 
 class Collection(object):
     __doc__ = format_doctest_out("""
@@ -23,7 +23,7 @@ class Collection(object):
     >>> g.add((listItem2,RDF.first,Literal(3)))
     >>> c=Collection(g,listName)
     >>> print(list(c))
-    [rdflib.term.Literal(%(u)s'1', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer')), rdflib.term.Literal(%(u)s'2', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer')), rdflib.term.Literal(%(u)s'3', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#integer'))]
+    [rdflib.term.Literal(%(u)s'1', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer')), rdflib.term.Literal(%(u)s'2', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer')), rdflib.term.Literal(%(u)s'3', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))]
     >>> 1 in c
     True
     >>> len(c)

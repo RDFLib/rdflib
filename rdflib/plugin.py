@@ -26,16 +26,18 @@ See the `setuptools dynamic discovery of services and plugins`__ for more inform
 from rdflib.store import Store
 from rdflib.parser import Parser
 from rdflib.serializer import Serializer
-from rdflib.query import ResultParser, ResultSerializer
+from rdflib.query import ResultParser, ResultSerializer, Processor, Result
 from rdflib.exceptions import Error
 
-# __all__ = ['register', 'get', 'plugins', 'PluginException', 'Plugin', 'PKGPlugin']
+__all__ = ['register', 'get', 'plugins', 'PluginException', 'Plugin', 'PKGPlugin']
 
 entry_points = {'rdf.plugins.store': Store,
                 'rdf.plugins.serializer': Serializer,
                 'rdf.plugins.parser': Parser,
                 'rdf.plugins.resultparser': ResultParser,
                 'rdf.plugins.resultserializer': ResultSerializer,
+                'rdf.plugins.queryprocessor': Processor,
+                'rdf.plugins.queryresult': Result
                 }
 
 _plugins = {}
@@ -149,8 +151,12 @@ register('xml', Parser,
                 'rdflib.plugins.parsers.rdfxml', 'RDFXMLParser')
 register('n3', Parser, 
                 'rdflib.plugins.parsers.notation3', 'N3Parser')
+register('turtle', Parser, 
+                'rdflib.plugins.parsers.notation3', 'N3Parser')
 register('nt', Parser, 
                 'rdflib.plugins.parsers.nt', 'NTParser')
+register('nquads', Parser, 
+                'rdflib.plugins.parsers.nquads', 'NQuadsParser')
 register('trix', Parser, 
                 'rdflib.plugins.parsers.trix', 'TriXParser')
 register('rdfa', Parser, 

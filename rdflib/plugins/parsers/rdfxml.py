@@ -43,7 +43,7 @@ from rdflib.term import Literal
 from rdflib.exceptions import ParserError, Error
 from rdflib.parser import Parser
 
-# __all__ = ['create_parser', 'BagID', 'ElementHandler', 'RDFXMLHandler', 'RDFXMLParser']
+__all__ = ['create_parser', 'BagID', 'ElementHandler', 'RDFXMLHandler', 'RDFXMLParser']
 
 RDFNS = RDF
 
