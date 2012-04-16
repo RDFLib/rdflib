@@ -394,7 +394,7 @@ class Sleepycat(Store):
         prefix = prefix.encode("utf-8")
         ns = self.__namespace.get(prefix, None)
         if ns is not None:
-            return ns.decode('utf-8')
+            return URIRef(ns.decode('utf-8'))
         return None
 
     def prefix(self, namespace):
