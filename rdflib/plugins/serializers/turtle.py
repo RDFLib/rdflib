@@ -162,7 +162,8 @@ class TurtleSerializer(RecursiveSerializer):
 
         # so we need to keep track of ns rewrites we made so far.
 
-        if prefix[0]=='_' or self.namespaces.get(prefix, namespace)!=namespace:
+        if (prefix > '' and prefix[0] == '_') \
+              or self.namespaces.get(prefix, namespace) != namespace:
 
             if prefix not in self._ns_rewrite:
                 p="p"+prefix
