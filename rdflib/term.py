@@ -99,6 +99,9 @@ class URIRef(Identifier):
             rt = unicode.__new__(cls, value, 'utf-8')
         return rt
 
+    def toPython(self):
+        return unicode(self)
+
     def n3(self):
         return "<%s>" % self
 
@@ -221,6 +224,9 @@ class BNode(Identifier):
                  # must be valid NCNames" _:[A-Za-z][A-Za-z0-9]*
                  # http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID
         return Identifier.__new__(cls, value)
+
+    def toPython(self):
+        return unicode(self)
 
     def n3(self):
         return "_:%s" % self
@@ -948,6 +954,9 @@ class Variable(Identifier):
     def __repr__(self):
         return self.n3()
 
+    def toPython(self):
+        return "?%s" % self
+
     def n3(self):
         return "?%s" % self
 
@@ -973,6 +982,9 @@ class Statement(Node, tuple):
 
     def __reduce__(self):
         return (Statement, (self[0], self[1]))
+
+    def toPython(self):
+        return (self[0], self[1])
 
 
 if __name__ == '__main__':
