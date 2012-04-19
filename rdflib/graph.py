@@ -315,6 +315,9 @@ class Graph(Node):
             return "[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label '%s']]." % (
                 self.store.__class__.__name__)
 
+    def toPython(self):
+        return self
+
     def destroy(self, configuration):
         """Destroy the store identified by `configuration` if supported"""
         self.__store.destroy(configuration)
@@ -1197,6 +1200,9 @@ class Seq(object):
         # here is the trick: the predicates are _1, _2, _3, etc. Ie,
         # by sorting the keys (by integer) we have what we want!
         _list.sort()
+
+    def toPython(self):
+        return self
 
     def __iter__(self):
         """Generator over the items in the Seq"""

@@ -150,11 +150,36 @@ class TurtleSerializer(RecursiveSerializer):
         self.reset()
         self.stream = None
         self._spacious = _SPACIOUS_OUTPUT
+        self._ns_rewrite={}
+
+    def addNamespace(self, prefix, namespace):
+        # Turtle does not support prefix that start with _ 
+        # if they occur in the graph, rewrite to p_blah
+        # this is more complicated since we need to make sure p_blah
+        # does not already exist. And we register namespaces as we go, i.e.
+        # we may first see a triple with prefix _9 - rewrite it to p_9
+        # and then later find a triple with a "real" p_9 prefix 
+
+        # so we need to keep track of ns rewrites we made so far.
+
+        if (prefix > '' and prefix[0] == '_') \
+              or self.namespaces.get(prefix, namespace) != namespace:
+
+            if prefix not in self._ns_rewrite:
+                p="p"+prefix
+                while p in self.namespaces:
+                    p="p"+p
+                self._ns_rewrite[prefix]=p
+
+        prefix=self._ns_rewrite.get(prefix,prefix)
+        super(TurtleSerializer, self).addNamespace(prefix, namespace)
+        return prefix
 
     def reset(self):
         super(TurtleSerializer, self).reset()
         self._shortNames = {}
         self._started = False
+        self._ns_rewrite={}
 
     def serialize(self, stream, base=None, encoding=None, spacious=None, **args):
         self.reset()
@@ -220,7 +245,8 @@ class TurtleSerializer(RecursiveSerializer):
         # Local parts with '.' will mess up serialization
         if '.' in local:
             return None
-        self.addNamespace(prefix, namespace)
+        prefix=self.addNamespace(prefix, namespace)
+
         return u'%s:%s' % (prefix, local)
 
     def startDocument(self):
