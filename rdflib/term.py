@@ -1,5 +1,5 @@
 """
-This module defines the different types of terms. Terms are the kinds of 
+This module defines the different types of terms. Terms are the kinds of
 objects that can appear in a quoted/asserted triple. This includes those 
 that are core to RDF:
 
@@ -39,8 +39,9 @@ import logging
 _LOGGER = logging.getLogger(__name__)
 
 import base64
-
+import sys
 import threading
+
 from urlparse import urlparse, urljoin, urldefrag
 from string import ascii_letters
 from random import choice
@@ -53,6 +54,12 @@ try:
     from hashlib import md5
 except ImportError:
     from md5 import md5
+
+try:
+    from uuid import uuid4
+except ImportError:
+    import os
+    import random
 
 import py3compat
 b = py3compat.b
@@ -176,23 +183,44 @@ class URIRef(Identifier):
         return d.hexdigest()
 
 
-
-def _letter():
-    while True:
-        yield choice(ascii_letters)
-
 def _unique_id():
-    """Create a (hopefully) unique prefix"""
-    uid = "".join(islice(_letter(), 0, 8))
-    return uid
+    # Used to read: """Create a (hopefully) unique prefix"""
+    # now retained merely to leave interal API unchanged.
+    return "id-"
+
+# Adapted from http://icodesnip.com/snippet/python/simple-universally-unique-id-uuid-or-guid
+def bnode_uuid():
+    """
+    Generates a uuid on behalf of Python 2.4
+    """
+    import socket
+    import time
+    try:
+        preseed = os.urandom(16)
+    except NotImplementedError: 
+        preseed = ''
+    # Have doubts about this. random.seed will just hash the string
+    random.seed('%s%s%s' % (preseed, os.getpid(), time.time()))
+    del preseed
+    t = long(time.time() * 1000.0)
+    r = long(random.random()*100000000000000000L)
+    try:
+        a = socket.gethostbyname(socket.gethostname())
+    except:
+        # if we can't get a network address, just imagine one
+        a = random.random()*100000000000000000L
+    data = str(t) + ' ' + str(r) + ' ' + str(a)
+    data = md5(data.encode('ascii')).hexdigest()
+    return data
 
 def _serial_number_generator():
-    i = 0
     while 1:
-        yield i
-        i = i + 1
+        if sys.version_info[:2] < (2, 5):
+            yield bnode_uuid()
+        else:
+            yield uuid4()
 
-bNodeLock = threading.RLock()
+# bNodeLock = threading.RLock()
 
 class BNode(Identifier):
     """
@@ -211,9 +239,7 @@ class BNode(Identifier):
             # so that BNode values do not
             # collide with ones created with a different instance of this module
             # at some other time.
-            bNodeLock.acquire()
             node_id = _sn_gen.next()
-            bNodeLock.release()
             value = "%s%s" % (_prefix, node_id)
         else:
             # TODO: check that value falls within acceptable bnode value range
