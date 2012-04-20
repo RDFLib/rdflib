@@ -186,7 +186,14 @@ class URIRef(Identifier):
 def _unique_id():
     # Used to read: """Create a (hopefully) unique prefix"""
     # now retained merely to leave interal API unchanged.
-    return "id-"
+    # From BNode.__new__() below ...
+    # 
+    # acceptable bnode value range for RDF/XML needs to be
+    # something that can be serialzed as a nodeID for N3
+    # 
+    # BNode identifiers must be valid NCNames" _:[A-Za-z][A-Za-z0-9]*
+    # http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID
+    return "_"
 
 # Adapted from http://icodesnip.com/snippet/python/simple-universally-unique-id-uuid-or-guid
 def bnode_uuid():
@@ -211,7 +218,8 @@ def bnode_uuid():
         a = random.random()*100000000000000000L
     data = str(t) + ' ' + str(r) + ' ' + str(a)
     data = md5(data.encode('ascii')).hexdigest()
-    return data
+    return '-'.join(
+            [data[:8], data[8:12], data[12:16], data[16:20], data[20:]])
 
 def _serial_number_generator():
     while 1:
