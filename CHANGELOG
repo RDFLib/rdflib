@@ -1,3 +1,24 @@
+2012/04/X 
+        RELEASE 3.2.1
+
+    This is mainly a maintenance release. 
+
+    Changes:
+      * New setuptools entry points for query processors and results
+
+      * Literals constructed from other literals copy datatype/lang
+        https://github.com/RDFLib/rdflib/issues/188
+      * Relative URIs are resolved incorrectly after redirects
+        https://github.com/RDFLib/rdflib/issues/130
+      * Illegal prefixes in turtle output
+        https://github.com/RDFLib/rdflib/issues/161
+      * Sleepcat store unstable prefixes
+        https://github.com/RDFLib/rdflib/issues/201
+      * Consistent toPyton() for all node objects
+        https://github.com/RDFLib/rdflib/issues/174
+      * Better random BNode ID in multi-thread environments
+        https://github.com/RDFLib/rdflib/issues/185
+
 2012/01/19
         RELEASE 3.2.0
 

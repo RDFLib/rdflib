@@ -67,7 +67,7 @@ setup(
     maintainer = "Daniel 'eikeon' Krech",
     maintainer_email = "eikeon@eikeon.com",
     url = "http://rdflib.net/",
-    license = "http://rdflib.net/latest/LICENSE",
+    license = "https://raw.github.com/RDFLib/rdflib/master/LICENSE",
     platforms = ["any"],
     classifiers = ["Programming Language :: Python",
                    "Programming Language :: Python :: 2",
