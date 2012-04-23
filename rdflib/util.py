@@ -61,6 +61,10 @@ from rdflib.term import URIRef
 __all__ = ['list2set', 'first', 'uniq', 'more_than', 'to_term', 'from_n3','date_time', 'parse_date_time', 'check_context', 'check_subject', 'check_predicate', 'check_object', 'check_statement', 'check_pattern']
 
 def list2set(seq):
+    """
+    Return a new list without duplicates. 
+    Preserves the order, unlike set(seq)
+    """
     seen = set()
     return [ x for x in seq if x not in seen and not seen.add(x)]
 

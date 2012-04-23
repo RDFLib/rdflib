@@ -131,7 +131,7 @@ class Result(object):
             # To remain compatible with the old SPARQLResult behaviour 
             # this iterates over lists of variable bindings
             for b in self.bindings: 
-                yield tuple([b[v] for v in self.vars])
+                yield tuple(b[v] for v in self.vars)
             
         
     def __getattr__(self,name): 
@@ -143,7 +143,7 @@ class Result(object):
                 " Iterate over the object instead.",
                 DeprecationWarning, stacklevel=2)
             # copied from __iter__, above
-            return [(tuple([b[v] for v in self.vars])) for b in self.bindings]
+            return [(tuple(b[v] for v in self.vars)) for b in self.bindings]
         else: 
             raise AttributeError("'%s' object has no attribute '%s'"%(self,name))
 

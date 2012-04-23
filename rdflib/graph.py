@@ -372,9 +372,9 @@ class Graph(Node):
 
     def addN(self, quads):
         """Add a sequence of triple with context"""
-        self.__store.addN([(s, p, o, c) for s, p, o, c in quads
+        self.__store.addN((s, p, o, c) for s, p, o, c in quads
                                         if isinstance(c, Graph)
-                                        and c.identifier is self.identifier])
+                                        and c.identifier is self.identifier)
 
     def remove(self, (s, p, o)):
         """Remove a triple from the graph
@@ -1045,7 +1045,7 @@ class ConjunctiveGraph(Graph):
 
     def addN(self, quads):
         """Add a sequence of triples with context"""
-        self.store.addN([quad for quad in quads if quad not in self])
+        self.store.addN(quad for quad in quads if quad not in self)
 
     def remove(self, (s, p, o)):
         """Removes from all its contexts"""
@@ -1147,9 +1147,9 @@ class QuotedGraph(Graph):
 
     def addN(self, quads):
         """Add a sequence of triple with context"""
-        self.store.addN([(s,p,o,c) for s, p, o, c in quads
+        self.store.addN((s,p,o,c) for s, p, o, c in quads
                                    if isinstance(c, QuotedGraph)
-                                   and c.identifier is self.identifier])
+                                   and c.identifier is self.identifier)
 
     def n3(self):
         """Return an n3 identifier for the Graph"""
@@ -1449,7 +1449,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
                 yield (s1, p1, o1, graph)
 
     def __len__(self):
-        return reduce(lambda x, y: x + y, [len(g) for g in self.graphs])
+        return sum(len(g) for g in self.graphs)
 
     def __hash__(self):
         raise UnSupportedAggregateOperation()
