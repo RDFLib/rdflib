@@ -1,7 +1,7 @@
-2012/04/X 
+2012/04/24
         RELEASE 3.2.1
 
-    This is mainly a maintenance release. 
+    This is mainly a maintenance release.
 
     Changes:
       * New setuptools entry points for query processors and results
