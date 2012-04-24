@@ -91,13 +91,14 @@ setup(
     in memory storage and persistent storage on top of the Berkeley DB. 
 
     The rdfextras project offers several additional stores as well as a 
-    SPARQL engine for use with rdflib: http://code.google.com/p/rdfextras/
+    SPARQL engine for use with rdflib: http://github.com/RDFLib/rdfextras/
 
     If you have recently reported a bug marked as fixed, or have a craving for
     the very latest, you may want the development version instead:
-    http://rdflib.googlecode.com/hg#egg=rdflib-dev
+    
+    easy_install https://github.com/RDFLib/rdflib/tarball/master
+
     """,
-    download_url = "http://rdflib.googlecode.com/files/rdflib-%s.tar.gz" % version,
     packages = ['rdflib',
                 'rdflib/plugins',
                 'rdflib/plugins',
