@@ -39,7 +39,6 @@ import logging
 _LOGGER = logging.getLogger(__name__)
 
 import base64
-import sys
 import threading
 
 from urlparse import urlparse, urljoin, urldefrag
@@ -222,13 +221,15 @@ def bnode_uuid():
             [data[:8], data[8:12], data[12:16], data[16:20], data[20:]])
 
 def _serial_number_generator():
+    import sys
+    if sys.version_info[:2] < (2, 5):
+        _generator = bnode_uuid
+    else:
+        _generator = uuid4
     while 1:
-        if sys.version_info[:2] < (2, 5):
-            yield bnode_uuid()
-        else:
-            yield uuid4()
+            yield _generator()
 
-# bNodeLock = threading.RLock()
+bNodeLock = threading.RLock()
 
 class BNode(Identifier):
     """
@@ -247,7 +248,9 @@ class BNode(Identifier):
             # so that BNode values do not
             # collide with ones created with a different instance of this module
             # at some other time.
+            bNodeLock.acquire()
             node_id = _sn_gen.next()
+            bNodeLock.release()
             value = "%s%s" % (_prefix, node_id)
         else:
             # TODO: check that value falls within acceptable bnode value range
