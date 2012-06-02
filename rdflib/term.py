@@ -192,7 +192,7 @@ def _unique_id():
     # 
     # BNode identifiers must be valid NCNames" _:[A-Za-z][A-Za-z0-9]*
     # http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID
-    return "_"
+    return "N" # ensure that id starts with a letter
 
 # Adapted from http://icodesnip.com/snippet/python/simple-universally-unique-id-uuid-or-guid
 def bnode_uuid():
@@ -216,16 +216,22 @@ def bnode_uuid():
         # if we can't get a network address, just imagine one
         a = random.random()*100000000000000000L
     data = str(t) + ' ' + str(r) + ' ' + str(a)
-    data = md5(data.encode('ascii')).hexdigest()
-    return '-'.join(
-            [data[:8], data[8:12], data[12:16], data[16:20], data[20:]])
+    return md5(data.encode('ascii')).hexdigest()
+
+
+def uuid4_ncname():
+    """
+    Generates UUID4-based but ncname-compliant identifiers.
+    """
+    return uuid4().hex
+
 
 def _serial_number_generator():
     import sys
     if sys.version_info[:2] < (2, 5):
         _generator = bnode_uuid
     else:
-        _generator = uuid4
+        _generator = uuid4_ncname
     while 1:
             yield _generator()
 
@@ -1027,5 +1033,4 @@ class Statement(Node, tuple):
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
-
 
