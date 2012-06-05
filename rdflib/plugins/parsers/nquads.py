@@ -77,12 +77,6 @@ class NQuadsParser(NTriplesParser):
 
         return self.sink
   
-    def context(self):
-        context = self.uriref()
-        if not context:
-            raise ParseError("Context must be a uriref")
-        return context
-  
     def parseline(self):
         self.eat(r_wspace)
         if (not self.line) or self.line.startswith(b('#')):
@@ -97,7 +91,7 @@ class NQuadsParser(NTriplesParser):
         obj = self.object()
         self.eat(r_wspaces)
       
-        context = self.context()
+        context = self.uriref()
         self.eat(r_tail)
 
         if self.line:
