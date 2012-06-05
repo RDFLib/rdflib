@@ -5,7 +5,7 @@ graphs that can be used and queried. The store that backs the graph
 
 >>> from rdflib import ConjunctiveGraph, URIRef, Namespace
 >>> g = ConjunctiveGraph()
->>> data = open("test/example.nquads", "rb")
+>>> data = open("test/nquads/example.nquads", "rb")
 >>> g.parse(data, format="nquads") # doctest:+ELLIPSIS
 <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
 >>> assert len(g.store) == 449
