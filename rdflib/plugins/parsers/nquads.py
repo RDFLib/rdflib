@@ -69,11 +69,12 @@ class NQuadsParser(NTriplesParser):
         self.file = source
         self.buffer = ''
         while True:
-            self.line = self.readline()
+            self.line = __line = self.readline()
             if self.line is None: break
             try: self.parseline()
-            except ParseError:
-               raise ParseError("Invalid line: %r" % self.line)
+            except ParseError, msg:
+                raise ParseError("Invalid line (%s):\n%r" % (msg, __line))
+
         return self.sink
   
     def context(self):
