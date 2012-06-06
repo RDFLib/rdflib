@@ -1,12 +1,7 @@
-:mod:`rdflib.graph.Graph` -- Graph class definition
-===================================================
+:mod:`rdflib.graph.Graph` -- Graph
+==================================
 
-=====
-Graph
-=====
-
-Module Contents
----------------
 
 .. autoclass:: rdflib.graph.Graph
     :members:
+

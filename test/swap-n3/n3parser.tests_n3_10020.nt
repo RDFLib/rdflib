@@ -1,0 +1,13 @@
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#_work>     <http://www.w3.org/2000/10/swap/log#forAll> <http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#a> .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#_work>     <http://www.w3.org/2000/10/swap/log#forAll> <http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#b> .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#_work>     <http://www.w3.org/2000/10/swap/log#forAll> <http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#p> .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#ancestor>     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.daml.org/2001/03/daml+oil#TransitiveProperty> .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#bill>     <http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#ancestor> <http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#pa> .
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#pa>     <http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#ancestor> <http://www.w3.org/2000/10/swap/test/syntax/this-rules.n3#granpa> .
+    

@@ -1,0 +1,6 @@
+_:formula2 <http://www.w3.org/2000/10/swap/reify#universal> ?var3 .
+_:formula2 <http://www.w3.org/2000/10/swap/reify#statement> _:t1106216678statement1 .
+_:t1106216678statement1 <http://www.w3.org/2000/10/swap/reify#subject> ?var3 .
+_:t1106216678statement1 <http://www.w3.org/2000/10/swap/reify#predicate> <http://example.org/#a> .
+_:t1106216678statement1 <http://www.w3.org/2000/10/swap/reify#object> <http://example.org/#b> .
+_:formula2 <http://example.org/#v> <http://example.org/#c> .

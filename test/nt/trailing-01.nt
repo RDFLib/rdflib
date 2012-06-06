@@ -1,0 +1,3 @@
+<http://example.org/#Alpha> <http://example.org/#p> <http://example.org/#q> .
+<http://example.org/#Beta> <http://example.org/#p> <http://example.org/#q> .
+<http://example.org/#Beta> <http://example.org/#r> <http://example.org/#s> .

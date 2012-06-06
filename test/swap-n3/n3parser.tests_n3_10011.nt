@@ -1,0 +1,9 @@
+    
+    <http://www.w3.org/2000/10/swap/test/syntax/foo.n3#albert>     <http://www.daml.example.org/2001/03/fam#mother> _:L18C10 .
+    
+    _:L18C10     <http://www.daml.example.org/2001/03/fam#sister> <http://www.w3.org/2000/10/swap/test/syntax/foo.n3#auntieAnne> .
+    
+    _:L20C10     <http://www.daml.example.org/2001/03/fam#father> <http://www.w3.org/2000/10/swap/test/syntax/foo.n3#albert> .
+    
+    _:L20C10     <http://www.daml.example.org/2001/03/fam#sister> <http://www.w3.org/2000/10/swap/test/syntax/foo.n3#nieceBertha> .
+    

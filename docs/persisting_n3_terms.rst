@@ -90,3 +90,4 @@ This is the most straight forward way to maintain this distinction - without rel
     {_:bnode} or {<.. URI ..>}
 
 This would facilitate their persistence round-trip - same as the other terms that rely on N3 syntax to distinguish between each other.
+

@@ -1,4 +1,52 @@
 from __future__ import generators
+from rdflib.py3compat import format_doctest_out
+
+__doc__ = format_doctest_out("""
+===================
+Namespace Utilities
+===================
+
+RDFLib provides mechanisms for managing Namespaces.
+
+In particular, there is a :class:`~rdflib.namespace.Namespace` class that takes as its argument the base URI of the namespace.
+
+.. code-block:: pycon
+
+    >>> from rdflib.namespace import Namespace
+    >>> fuxi = Namespace('http://metacognition.info/ontologies/FuXi.n3#')
+
+Fully qualified URIs in the namespace can be constructed either by attribute or by dictionary access on Namespace instances:
+
+.. code-block:: pycon
+
+    >>> fuxi.ruleBase
+    rdflib.term.URIRef(%(u)s'http://metacognition.info/ontologies/FuXi.n3#ruleBase')
+    >>> fuxi['ruleBase']
+    rdflib.term.URIRef(%(u)s'http://metacognition.info/ontologies/FuXi.n3#ruleBase')
+
+Automatic handling of unknown predicates
+-----------------------------------------
+
+As a programming convenience, a namespace binding is automatically 
+created when :class:`rdflib.term.URIRef` predicates are added to the graph.
+
+Importable namespaces
+-----------------------
+
+The following namespaces are available by directly importing from rdflib:
+
+* RDF
+* RDFS
+* OWL
+* XSD
+
+.. code-block:: pycon
+
+    >>> from rdflib import OWL
+    >>> OWL.seeAlso
+    rdflib.term.URIRef(%(u)s'http://www.w3.org/2002/07/owl#seeAlso')
+
+""")
 
 import logging
 
@@ -11,6 +59,7 @@ from urllib import pathname2url
 
 from rdflib.term import URIRef, Variable, _XSD_PFX
 
+__all__ = ['is_ncname', 'split_uri', 'Namespace', 'NamespaceDict', 'ClosedNamespace', 'NamespaceManager', 'XMLNS', 'RDF', 'RDFS', 'XSD', 'OWL', 'SKOS']
 
 class Namespace(URIRef):
 
@@ -139,8 +188,33 @@ OWL = Namespace('http://www.w3.org/2002/07/owl#')
 
 XSD = Namespace(_XSD_PFX)
 
+SKOS = Namespace('http://www.w3.org/2004/02/skos/core#')
 
 class NamespaceManager(object):
+    """
+
+    Sample usage from FuXi ...
+    
+    .. code-block:: python
+
+        ruleStore = N3RuleStore(additionalBuiltins=additionalBuiltins)
+        nsMgr = NamespaceManager(Graph(ruleStore))
+        ruleGraph = Graph(ruleStore,namespace_manager=nsMgr)            
+
+
+    and ...
+
+    .. code-block:: pycon
+    
+        >>> from rdflib import Graph, OWL
+        >>> exNs = Namespace('http://example.com/')        
+        >>> namespace_manager = NamespaceManager(Graph())
+        >>> namespace_manager.bind('ex', exNs, override=False)
+        >>> namespace_manager.bind('owl', OWL, override=False)
+        >>> g = Graph()    
+        >>> g.namespace_manager = namespace_manager
+
+    """
     def __init__(self, graph):
         self.graph = graph
         self.__cache = {}

@@ -1,0 +1,6 @@
+<http://example.org/#Subject> <http://example.org/#predicateOne> <http://example.org/#ObjectP> .
+<http://example.org/#Subject> <http://example.org/#predicateOne> <http://example.org/path#ObjectQ> .
+<http://example.org/#Subject> <http://example.org/#predicateTwo> _:node1 .
+_:node1 <http://xmlns.com/foaf/0.1/nick> "spiggot" .
+<http://example.org/#Subject> <http://example.org/#predicateTwo> "ObjectR" .
+<http://example.org/#Subject> <http://example.org/#predicateTwo> _:ObjectS .

@@ -39,8 +39,10 @@ class Cache(events.Dispatcher):
     def __delitem__(self, key):
         self.dispatch(RemovedEvent(key=key))
 
-    def has_key(self, key):
-        return self._data.has_key(key)
+    def __contains__(self, key):
+        return key in self._data
+    
+    has_key = __contains__
 
 
 class EventTestCase(unittest.TestCase):

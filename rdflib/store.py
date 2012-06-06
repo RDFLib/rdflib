@@ -3,29 +3,24 @@
 rdflib.store
 ============
 
-``Context-aware``: An RDF store capable of storing statements within contexts 
-is considered context-aware. Essentially, such a store is able to partition 
-the RDF model it represents into individual, named, and addressable 
+Types of store
+--------------
+
+``Context-aware``: An RDF store capable of storing statements within contexts
+is considered context-aware. Essentially, such a store is able to partition
+the RDF model it represents into individual, named, and addressable
 sub-graphs.
 
-Relevant Notation3 reference regarding formulae, quoted statements, and such: 
+Relevant Notation3 reference regarding formulae, quoted statements, and such:
 http://www.w3.org/DesignIssues/Notation3.html
 
-``Formula-aware``: An RDF store capable of distinguishing between statements 
+``Formula-aware``: An RDF store capable of distinguishing between statements
 that are asserted and statements that are quoted is considered formula-aware.
 
-``Conjunctive Graph``: This refers to the 'top-level' Graph. It is the 
-aggregation of all the contexts within it and is also the appropriate, 
-absolute boundary for closed world assumptions / models.
+``Transaction-capable``: capable of providing transactional integrity to the
+RDF operations performed on it.
 
-For the sake of persistence, Conjunctive Graphs must be distinguished by 
-identifiers (that may not necessarily be RDF identifiers or may be an RDF 
-identifier normalized - SHA1/MD5 perhaps - for database naming purposes ).
-
-``Conjunctive Query``: Any query that doesn't limit the store to search 
-within a named context only. Such a query expects a context-aware store to 
-search the entire asserted universe (the conjunctive graph). A formula-aware 
-store is expected not to include quoted statements when matching such a query.
+------
 """
 
 #Constants representing the state of a Store (returned by the open method)
@@ -36,11 +31,13 @@ UNKNOWN         = None
 
 from rdflib.events import Dispatcher, Event
 
+__all__ = ['StoreCreatedEvent', 'TripleAddedEvent', 'TripleRemovedEvent', 'NodePickler', 'Store']
+
 class StoreCreatedEvent(Event):
     """
-    This event is fired when the Store is created, it has the folloing attribute:
-    
-      - 'configuration' string that is used to create the store
+    This event is fired when the Store is created, it has the following attribute:
+
+      - ``configuration``: string used to create the store
 
     """
 
@@ -48,22 +45,25 @@ class TripleAddedEvent(Event):
     """
     This event is fired when a triple is added, it has the following attributes:
 
-      - 'triple' added to the graph
-      - 'context' of the triple if any
-      - 'graph' that the triple was added to
+      - the ``triple`` added to the graph
+      - the ``context`` of the triple, if any
+      - the ``graph`` to which the triple was added
     """
 
 class TripleRemovedEvent(Event):
     """
     This event is fired when a triple is removed, it has the following attributes:
 
-      - 'triple' removed from the graph
-      - 'context' of the triple if any
-      - 'graph' that the triple was removed from
+      - the ``triple`` removed from the graph
+      - the ``context`` of the triple, if any
+      - the ``graph`` from which the triple was removed
     """
 
 from cPickle import Pickler, Unpickler, UnpicklingError
-from cStringIO import StringIO
+try:
+    from io import BytesIO
+except ImportError:
+    from cStringIO import StringIO as BytesIO
 
 
 class NodePickler(object):
@@ -83,7 +83,7 @@ class NodePickler(object):
         self._ids[object] = id
 
     def loads(self, s):
-        up = Unpickler(StringIO(s))
+        up = Unpickler(BytesIO(s))
         up.persistent_load = self._get_object
         try:
             return up.load()
@@ -91,7 +91,7 @@ class NodePickler(object):
             raise UnpicklingError, "Could not find Node class for %s" % e
 
     def dumps(self, obj, protocol=None, bin=None):
-        src = StringIO()
+        src = BytesIO()
         p = Pickler(src)
         p.persistent_id = self._get_ids
         p.dump(obj)
@@ -139,7 +139,7 @@ class Store(object):
     #Database management methods
     def create(self, configuration):
         self.dispatcher.dispatch(StoreCreatedEvent(configuration=configuration))
-        
+
     def open(self, configuration, create=False):
         """
         Opens the store specified by the configuration string. If
@@ -233,7 +233,7 @@ class Store(object):
                 for (s1, p1, o1), cg in self.triples((subject,None,object_),context):
                         yield (s1, p1, o1), cg
 
-    def triples(self, (subject, predicate, object), context=None):
+    def triples(self, triple_pattern, context=None):
         """
         A generator over all the triples matching the pattern. Pattern can
         include any objects for used for comparing against nodes in the store, for
@@ -242,6 +242,7 @@ class Store(object):
         A conjunctive query can be indicated by either providing a value of None
         for the context or the identifier associated with the Conjunctive Graph (if it's context aware).
         """
+        subject, predicate, object = triple_pattern
 
     # variants of triples will be done if / when optimization is needed
 

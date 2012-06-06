@@ -1,0 +1,30 @@
+@prefix : <#>.
+@prefix x: <#>.
+@prefix test: <http://www.w3.org/2000/10/swap/test.n3#>.
+@prefix dc:  <http://purl.org/dc/elements/1.1/>. # yuk - under protest - no hash
+@prefix n3test: <http://www.w3.org/2004/11/n3test#> .
+@prefix grammar: <http://www.w3.org/2000/10/swap/grammar/> .
+@base <http://www.w3.org/2000/10/swap/test/>.
+
+<> dc:title "A collection of tests of N3 extensions to RDF".
+
+:n3_10007 a n3test:PositiveParserTest;
+    n3test:description   	"Parse and generate simple contexts";
+	n3test:outputDocument <n3/n3parser.tests_n3_10007.nt> ;
+    n3test:inputDocument     	<contexts.n3>.
+
+:n3_10014 a n3test:PositiveParserTest;
+    n3test:description   "Quick variable syntax, simple";
+	n3test:outputDocument <n3/n3parser.tests_n3_10014.nt> ;
+    n3test:inputDocument  <syntax/qvars1.n3> .
+
+:n3_10015 a n3test:PositiveParserTest;
+    n3test:description   "Quick variable syntax, more";
+	n3test:outputDocument <n3/n3parser.tests_n3_10015.nt> ;
+    n3test:inputDocument  <syntax/qvars2.n3> .
+
+:n3_10021 a n3test:PositiveParserTest;
+	n3test:description "Are we exceeding a maximum recursion limit on formulae?";
+	n3test:inputDocument <syntax/too-nested.n3> .
+
+

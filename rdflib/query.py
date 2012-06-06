@@ -2,11 +2,15 @@
 import os
 import shutil
 import tempfile
-
+import warnings
 from urlparse import urlparse
-from io import BytesIO
+try:
+    from io import BytesIO
+except:
+    from StringIO import StringIO as BytesIO
 
 
+__all__ = ['Processor', 'Result', 'ResultParser', 'ResultSerializer', 'ResultException']
 
 
 """
@@ -78,7 +82,7 @@ class Result(object):
         return parser.parse(source)
 
 
-    def serialize(self, destination=None, encoding="utf8", format='xml', **args):
+    def serialize(self, destination=None, encoding="utf-8", format='xml', **args):
 
         if self.type in ('CONSTRUCT', 'DESCRIBE'): 
             return self.graph.serialize(destination, encoding=encoding, format=format, **args)
@@ -101,8 +105,8 @@ class Result(object):
                 print("WARNING: not saving as location" + \
                       "is not a local file reference")
                 return
-            name = tempfile.mktemp()
-            stream = open(name, 'wb')
+            fd, name = tempfile.mkstemp()
+            stream = os.fdopen(fd, 'wb')
             serializer.serialize(stream, encoding=encoding, **args)
             stream.close()
             if hasattr(shutil,"move"):
@@ -119,7 +123,7 @@ class Result(object):
             return len(self.graph)
     
     def __iter__(self): 
-        if type in ("CONSTRUCT", "DESCRIBE"): 
+        if self.type in ("CONSTRUCT", "DESCRIBE"): 
             for t in self.graph: yield t
         elif self.type=='ASK': 
             yield self.askAnswer
@@ -127,14 +131,21 @@ class Result(object):
             # To remain compatible with the old SPARQLResult behaviour 
             # this iterates over lists of variable bindings
             for b in self.bindings: 
-                yield tuple([b[v] for v in self.vars])
+                yield tuple(b[v] for v in self.vars)
             
         
     def __getattr__(self,name): 
-        if type in ("CONSTRUCT", "DESCRIBE") and self.graph!=None: 
+        if self.type in ("CONSTRUCT", "DESCRIBE") and self.graph!=None: 
             return self.graph.__getattr__(self,name)
+        elif self.type == 'SELECT' and name =='result':
+            warnings.warn(
+                "accessing the 'result' attribute is deprecated."
+                " Iterate over the object instead.",
+                DeprecationWarning, stacklevel=2)
+            # copied from __iter__, above
+            return [(tuple(b[v] for v in self.vars)) for b in self.bindings]
         else: 
-            raise AttributeError("'%s' object has not attribute '%s'"%(self,name))
+            raise AttributeError("'%s' object has no attribute '%s'"%(self,name))
 
     def __eq__(self, other): 
         try:

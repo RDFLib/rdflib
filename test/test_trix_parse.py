@@ -35,8 +35,13 @@ class TestTrixParse(unittest.TestCase):
         
         #print "Parsed %d triples"%len(g)
         
+    def testNG4j(self): 
 
-
+        g=ConjunctiveGraph()
+        
+        g.parse("test/trix/ng4jtest.trix",format="trix")
+        
+        #print "Parsed %d triples"%len(g)
 
 if __name__=='__main__':
     unittest.main()

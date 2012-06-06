@@ -1,83 +1,63 @@
 .. rdflib documentation documentation master file
    
-==========
-rdflib 3.0
-==========
-
-.. warning:: In preparation. This documentation for rdflib 3.0.0 has not yet been reviewed. Some of the code (esp. the "assorted examples") has not been updated to reflect the changes and refactoring introduced in rdflib 3.0.0.
-
+============
+rdflib 3.2.1
+============
 
 Introduction
 ============
 
-A pure Python package providing the core RDF constructs.
+A pure Python package providing the core RDF constructs. The ``rdflib`` package is intended to provide core RDF types and interfaces for working with RDF. 
 
-The ``rdflib`` package is intended to provide core RDF types and interfaces
-for working with RDF. The package defines a plugin interface for
-parsers, stores, and serializers that other packages can use to
-implement parsers, stores, and serializers that will plug into the
-``rdflib`` package.
+.. toctree::
+   :maxdepth: 1
 
-The primary interface that ``rdflib`` exposes for working with RDF is
-:class:`~rdflib.graph.Graph`.
+   gettingstarted
+   intro_to_graphs
+   using_graphs
+   rdf_terms
+   plugin_parsers
+   plugin_serializers
+   namespaces_and_bindings
+   persistence
+   intro_to_sparql
+   howto
+   assorted_examples
+   Module documentation <modules/index>
 
-A tiny example:
+Plugins
+=======
 
-    >>> import rdflib
+The package defines a plugin interface for parsers, stores, and serializers that other packages can use to implement parsers, stores, and serializers that will plug into the ``rdflib`` package.
 
-    >>> g = rdflib.Graph()
-    >>> result = g.parse("http://eikeon.com/foaf.rdf")
+The diagram below describes the current set of plugins that are either built in to rdflib or are available in the `rdfextras <http://pypi.python.org/pypi/rdfextras/>`_ support package:
 
-    >>> print "graph has %s statements." % len(g)
-    graph has 34 statements.
-    >>>
-    >>> for s, p, o in g:
-    ...     if (s, p, o) not in g:
-    ...         raise Exception("It better be!")
+.. image:: /_static/plugins-diagram.svg
+   :alt: rdflib plugin "architecture"
+   :width: 698
+   :height: 450
 
-    >>> s = g.serialize(format='n3')
-
-The package uses various Python idioms that makes them an appropriate way to introduce it to a Python programmer who hasn't used it before.
-
-``rdflib`` graphs redefine certain built-in Python methods in order to behave in a predictable way; they emulate container types and are best thought of as a set of 3-item triples:
-
-.. code-block:: text
-
-    [
-        (subject,  predicate,  object),
-        (subject1, predicate1, object1),
-        ... 
-        (subjectN, predicateN, objectN)
-     ]
-
-``rdflib`` graphs are not sorted containers; they have ordinary set operations (e.g. :meth:`~rdflib.Graph.add` to add a triple) plus methods that search triples and return them in arbitrary order.
 
 API Documentation
 =================
 
     rdflib has epydoc-generated `API Documentation`__
 
-.. __: ./apidocs/index.html
+.. __: ./_static/api/index.html
 
-Contents
-========
+
+Additional discussions / notes
+==============================
+
 .. toctree::
    :maxdepth: 2
 
-   gettingstarted
    univrdfstore
-   graph_utilities
-   graphterms
-   graph_merging
    graphs_bnodes
-   namespace_utilities
-   store
-   persistence
    persisting_n3_terms
-   assorted_examples
-   addons
-   Modules <modules/index>
    Documentation notes <apidocs>
+
+
 
 Indices and tables
 ==================

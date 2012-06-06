@@ -1,0 +1,4 @@
+<http://example.org/#Subject> <http://example.org/#predicateOne> <http://example.org/#ObjectA> .
+<http://example.org/#Subject> <http://example.org/#predicateOne> <http://example.org/#ObjectB> .
+<http://example.org/#Subject> <http://example.org/#predicateTwo> <http://example.org/#ObjectC> .
+<http://example.org/#Subject> <http://example.org/#predicateTwo> <http://example.org/#ObjectD> .

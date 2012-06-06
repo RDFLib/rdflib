@@ -32,7 +32,6 @@ TEST = Namespace("http://www.w3.org/2006/03/test-description#")
 XHTML_RDFA_TEST_MANIFEST_URL = ("http://www.w3.org/2006/07/SWD/RDFa/"
         "testsuite/xhtml1-testcases/rdfa-xhtml1-test-manifest.rdf")
 
-
 class TestCase(object):
     def __init__(self, graph, tc_uri):
         val = lambda p: graph.value(tc_uri, p)
@@ -120,6 +119,10 @@ def all_tests(skip_known_issues=True):
     """
     Generator used to expose test functions. The Nose test runner use this.
     """
+    import platform
+    if platform.system() == 'Java':
+        from nose import SkipTest
+        raise SkipTest('html5lib unavailable in Jython2.5')
     for tc in get_tcs():
         label = "RDFa TC #%(number)s: %(title)s (%(status)s)"%vars(tc)
         urls = "[<%(html_url)s>, <%(sparql_url)s>]"%vars(tc)
@@ -137,22 +140,21 @@ def all_tests(skip_known_issues=True):
         do_test._source_urls = urls
         yield do_test,
 
-
 def manual_run():
     errors, failed, count = 0, 0, 0
     for test, in all_tests(skip_known_issues=False):
-        count += 1; print test.description,
+        count += 1
+        print(test.description)
         try:
-            test(); print "PASSED"
+            test() 
+            print "PASSED"
         except AssertionError, e:
-            failed += 1; print "****FAILED****", e;
+            failed += 1
+            print "****FAILED****", e;
         except Exception, e:
             errors += 1; print "****ERROR**** in %s" % test._source_urls, e
     print "Ran %(count)s tests. Failed: %(failed)s. Errors: %(errors)s."%vars()
 
 
 if __name__ == '__main__':
-
     manual_run()
-
-

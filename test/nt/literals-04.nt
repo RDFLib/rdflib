@@ -1,0 +1,2 @@
+<http://example.org/#subj> <http://example.org/#pred> "simple string" .
+<http://example.org/#subj> <http://example.org/#pred> "string with a newline (\n) and a double-quote (\")" .

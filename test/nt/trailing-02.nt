@@ -1,0 +1,6 @@
+_:node1 <http://example.org/#q> <http://example.org/#r> .
+_:node1 <http://example.org/#s> <http://example.org/#t> .
+<http://example.org/#Gamma> <http://example.org/#p> _:node1 .
+_:node2 <http://example.org/#q> <http://example.org/#r> .
+<http://example.org/#Delta> <http://example.org/#p> _:node2 .
+<http://example.org/#Epsilon> <http://example.org/#p> "q" .

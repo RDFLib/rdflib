@@ -1,0 +1,6 @@
+<http://example.org/alice/foaf.rdf#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://example.org/alice/foaf1.rdf> .
+_:bnode1 <http://xmlns.com/foaf/0.1/Friend> "Michele" <http://example.org/alice/foaf2.rdf> .
+_:bnode2 <http://xmlns.com/foaf/0.1/Friend> _:bnode3 <http://example.org/alice/foaf3.rdf> .
+_:bnode3 <http://xmlns.com/foaf/0.1/Friend> "This literal is \"really\" useful"@it <http://example.org/alice/foaf4.rdf> .
+_:bnode1 <#like> "12345"^^http://www.w3.org/2001/XMLSchema#integer <http://example.org/alice/foaf5.rdf> .
+ 

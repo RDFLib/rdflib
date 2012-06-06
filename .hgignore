@@ -1,4 +1,14 @@
 syntax: glob
 build
+dist
 *.pyc
-
+*~
+*.class
+docs/_build
+.tox
+.coverage
+coverage
+nosetests.xml
+*.egg-info
+docs/draft
+.pylint

@@ -16,19 +16,20 @@ import warnings
 from urllib import pathname2url, url2pathname
 from urllib2 import urlopen, Request, HTTPError
 from urlparse import urljoin
-from StringIO import StringIO
+from rdflib.py3compat import PY3
+if PY3:
+    from io import BytesIO
+else:
+    from StringIO import StringIO as BytesIO
 from xml.sax import xmlreader
 from xml.sax.saxutils import prepare_input_source
 import types
-try:
-    _StringTypes = (types.StringType, types.UnicodeType)
-except AttributeError:
-    _StringTypes = (types.StringType,)
 
 from rdflib import __version__
 from rdflib.term import URIRef
 from rdflib.namespace import Namespace
 
+__all__ = ['Parser', 'InputSource', 'StringInputSource', 'URLInputSource', 'FileInputSource']
 
 class Parser(object):
 
@@ -56,7 +57,7 @@ class StringInputSource(InputSource):
 
     def __init__(self, value, system_id=None):
         super(StringInputSource, self).__init__(system_id)
-        stream = StringIO(value)
+        stream = BytesIO(value)
         self.setByteStream(stream)
         # TODO:
         #   encoding = value.encoding
@@ -89,11 +90,10 @@ class URLInputSource(InputSource):
             myheaders['Accept']='application/rdf+xml,text/rdf+n3;q=0.9,application/xhtml+xml;q=0.5, */*;q=0.1'
         
         req = Request(system_id, None, myheaders)
-        try:
-            file = urlopen(req)
-        except HTTPError, e:
-            # TODO:
-            raise Exception('"%s" while trying to open "%s"' % (e, self.url))
+        file = urlopen(req)
+        # Fix for issue 130 https://github.com/RDFLib/rdflib/issues/130
+        self.url = file.geturl()    # in case redirections took place
+        self.setPublicId(self.url)
         self.content_type = file.info().get('content-type')
         self.content_type = self.content_type.split(";", 1)[0]
         self.setByteStream(file)
@@ -136,7 +136,7 @@ def create_input_source(source=None, publicID=None,
         if isinstance(source, InputSource):
             input_source = source
         else:
-            if isinstance(source, _StringTypes):
+            if isinstance(source, basestring):
                 location = source
             elif hasattr(source, "read") and not isinstance(source, Namespace):
                 f = source
@@ -147,15 +147,20 @@ def create_input_source(source=None, publicID=None,
             else:
                 raise Exception("Unexpected type '%s' for source '%s'" % (type(source), source))
 
+    absolute_location = None # Further to fix for issue 130
+
     if location is not None:
+        # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145
+        if os.path.exists(location):
+            location = pathname2url(location)
         base = urljoin("file:", "%s/" % pathname2url(os.getcwd()))
         absolute_location = URIRef(location, base=base).defrag()
         if absolute_location.startswith("file:///"):
             filename = url2pathname(absolute_location.replace("file:///", "/"))
-            file = __builtin__.file(filename, "rb")
+            file = open(filename, "rb")
         else:
             input_source = URLInputSource(absolute_location, format)
-        publicID = publicID or absolute_location
+        # publicID = publicID or absolute_location # Further to fix for issue 130
 
     if file is not None:
         input_source = FileInputSource(file)
@@ -168,13 +173,11 @@ def create_input_source(source=None, publicID=None,
     if input_source is None:
         raise Exception("could not create InputSource")
     else:
-        if publicID:
+        if publicID is not None: # Further to fix for issue 130
             input_source.setPublicId(publicID)
-
-        # TODO: what motivated this bit?
-        id = input_source.getPublicId()
-        if id is None:
-            input_source.setPublicId("")
+        # Further to fix for issue 130
+        elif input_source.getPublicId() is None:
+            input_source.setPublicId(absolute_location or "")
         return input_source
 
 

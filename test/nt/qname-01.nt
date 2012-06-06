@@ -1,0 +1,6 @@
+<http://example.org/#> <http://example.org/path#> <http://example.org/#> .
+_:list1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://example.org/path#> .
+_:list1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:list2 .
+_:list2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://example.org/#> .
+_:list2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+<http://example.org/#> _:pred _:list1 .

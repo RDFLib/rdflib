@@ -55,12 +55,16 @@ def _parse_or_report(verbose, graph, *args, **kwargs):
 
 
 def _get_test_files_formats():
+    skiptests = [
+        'strquot.n3',
+    ]
     for f in os.listdir('test/n3'):
-        fpath = "test/n3/"+f
-        if f.endswith('.rdf'):
-            yield fpath, 'xml'
-        elif f.endswith('.n3'):
-            yield fpath, 'n3'
+        if f not in skiptests:
+            fpath = "test/n3/"+f
+            if f.endswith('.rdf'):
+                yield fpath, 'xml'
+            elif f.endswith('.n3'):
+                yield fpath, 'n3'
 
 def test_all_n3_serialize():
     for fpath, fmt in _get_test_files_formats():

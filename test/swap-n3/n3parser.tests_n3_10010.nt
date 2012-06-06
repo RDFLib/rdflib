@@ -1,0 +1,21 @@
+    
+    <http://www.w3.org/2000/10/swap/test/i18n/hiragana.n3#D%C3%BCrst>     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> "URI percent ^encoded as C3, BC" .
+    
+    <http://www.w3.org/2000/10/swap/test/i18n/hiragana.n3#D\u00FCrst>     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> "URI straight in UTF8" .
+    
+    _:L9C7     <http://www.w3.org/2000/10/swap/test/i18n/hiragana.n3#script> "\u3072\u3089\u304C\u306A" .
+    
+    _:L9C7     <http://www.w3.org/2000/01/rdf-schema#label> "Martin J D\u00FCrst" .
+    
+    _:L11C2     <http://www.w3.org/2000/10/swap/test/i18n/hiragana.n3#related> <http://www.w3.org/2000/10/swap/test/i18n/hiragana.n3#\u3072\u3089\u304C\u306A> .
+    
+    _:L11C2     <http://www.w3.org/2000/01/rdf-schema#label> "A test with a non-ascii qname" .
+    
+    _:L12C2     <http://www.w3.org/2000/10/swap/test/i18n/hiragana.n3#related> <http://www.w3.org/2000/10/swap/test/i18n/hiragana.n3#D\u00FCrst> .
+    
+    _:L12C2     <http://www.w3.org/2000/01/rdf-schema#label> "A test with a non-ascii fragid" .
+    
+    _:L15C2     <http://www.w3.org/2000/10/swap/test/i18n/hiragana.n3#related> <http://www.w3.org/2000/10/swap/test/i18n/hiragana.n3#D%C3%BCrst> .
+    
+    _:L15C2     <http://www.w3.org/2000/01/rdf-schema#label> "A test with a percent-encoded unicode char in an IRI" .
+    

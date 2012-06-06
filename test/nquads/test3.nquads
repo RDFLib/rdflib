@@ -1,0 +1,7 @@
+<http://example.com/resource/student_10> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/ontology/Student> <http://example.org/graph/students> .
+<http://example.com/resource/student_10> <http://xmlns.com/foaf/0.1/name> "Venus Williams" <http://example.org/graph/students> .
+<http://example.com/resource/student_20> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/ontology/Student> <http://example.org/graph/students> .
+<http://example.com/resource/student_20> <http://xmlns.com/foaf/0.1/name> "Demi Moore" <http://example.org/graph/students> .
+<http://example.com/resource/sport_100> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/ontology/Sport> <http://example.org/graph/sports> .
+<http://example.com/resource/sport_100> <http://www.w3.org/2000/01/rdf-schema#label> "Tennis" <http://example.org/graph/sports> .
+<http://example.com/resource/student_10> <http://example.com/ontology/practises> <http://example.com/resource/sport_100> <http://example.org/graph/practise> .

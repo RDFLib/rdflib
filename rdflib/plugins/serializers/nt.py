@@ -4,8 +4,10 @@ See <http://www.w3.org/TR/rdf-testcases/#ntriples> for details about the
 format.
 """
 from rdflib.serializer import Serializer
+from rdflib.py3compat import b
 import warnings
 
+__all__ = ['NTSerializer']
 
 class NTSerializer(Serializer):
     """
@@ -20,7 +22,7 @@ class NTSerializer(Serializer):
         encoding = self.encoding
         for triple in self.store:
             stream.write(_nt_row(triple).encode(encoding, "replace"))
-        stream.write("\n")
+        stream.write(b("\n"))
 
 
 def _nt_row(triple):
@@ -36,18 +38,39 @@ def _xmlcharref_encode(unicode_data, encoding="ascii"):
     # nothing to do about xmlchars, but replace newlines with escapes: 
     unicode_data=unicode_data.replace("\n","\\n")
     if unicode_data.startswith('"""'):
-        unicode_data = unicode_data.replace('"""', '"')
+        # Updated with Bernhard Schandl's patch...
+        # unicode_data = unicode_data.replace('"""', '"')   # original
+
+        last_triplequote_pos = unicode_data.rfind('"""')
+        payload = unicode_data[3:last_triplequote_pos]
+        trail = unicode_data[last_triplequote_pos+3:]
+
+        # fix three-quotes encoding
+        payload = payload.replace('\\"""', '"""')
+
+        # corner case: if string ends with " it is already encoded.
+        # so we need to de-escape it before it will be re-escaped in the next step.
+        if payload.endswith('\\"'):
+            payload = payload.replace('\\"', '"')
+
+        # escape quotes in payload
+        payload = payload.replace('"', '\\"')
+
+        # reconstruct result using single quotes
+        unicode_data = '"%s"%s' % (payload, trail)
 
     # Step through the unicode_data string one character at a time in
-    # order to catch unencodable characters:
+    # order to catch unencodable characters:                          
     for char in unicode_data:
         try:
-            chars.append(char.encode(encoding, 'strict'))
+            char.encode(encoding, 'strict')
         except UnicodeError:
             if ord(char) <= 0xFFFF:
-                chars.append('\u%04X' % ord(char))
+                chars.append('\\u%04X' % ord(char))
             else:
-                chars.append('\U%08X' % ord(char))
+                chars.append('\\U%08X' % ord(char))
+        else:
+            chars.append(char)
 
     return ''.join(chars)
 

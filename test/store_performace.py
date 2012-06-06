@@ -6,6 +6,7 @@ from time import time
 from random import random
 
 from tempfile import mkdtemp
+import shutil
 
 from rdflib.term import URIRef
 from rdflib.graph import Graph
@@ -21,6 +22,7 @@ class StoreTestCase(unittest.TestCase):
     unit test.
     """
     store = 'default'
+    tmppath = None
 
     def setUp(self):
         self.gcold = gc.isenabled()
@@ -33,8 +35,8 @@ class StoreTestCase(unittest.TestCase):
             path=configString
             MySQL().destroy(path)
         else:
-            path = a_tmp_dir = mkdtemp()
-        self.graph.open(path, create=True)
+            self.tmppath = mkdtemp()
+        self.graph.open(self.tmppath, create=True)
         self.input = input = Graph()
         input.parse("http://eikeon.com")
 
@@ -42,8 +44,8 @@ class StoreTestCase(unittest.TestCase):
         self.graph.close()
         if self.gcold:
             gc.enable()
-        # TODO: delete a_tmp_dir
         del self.graph
+        shutil.rmtree(self.tmppath)
 
     def testTime(self):
         number = 1

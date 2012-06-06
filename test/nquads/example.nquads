@@ -1,0 +1,500 @@
+_:jEOnxGKk5 <http://www.w3.org/2000/01/rdf-schema#label> "20 p" <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246.html> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682246> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246.html> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682246> .
+_:jEOnxGKk3 <http://www.w3.org/2000/01/rdf-schema#label> "London" <http://bibliographica.org/entry/BB2682246> .
+_:jEOnxGKk7 <http://www.w3.org/2004/02/skos/core#inScheme> <http://id.loc.gov/authorities#conceptScheme> <http://bibliographica.org/entry/BB2682246> .
+_:jEOnxGKk7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> <http://bibliographica.org/entry/BB2682246> .
+_:jEOnxGKk7 <http://www.w3.org/2004/02/skos/core#prefLabel> "Composers--Indexes." <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246.nt> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682246> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246.nt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://purl.org/dc/terms/issued> "1927"^^<http://www.w3.org/2001/XMLSchema#gYear> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://purl.org/dc/terms/contributor> <http://bibliographica.org/entity/E10000> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://purl.org/dc/terms/language> _:jEOnxGKk4 <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://purl.org/dc/terms/publisher> <http://bibliographica.org/entity/E10001> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682246.rdf> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682246.html> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682246.ttl> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682246.n3> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682246.nt> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://purl.org/dc/terms/title> "A list of composers, authors, arrangers, etc. represented in the catalogues of Augener Ltd." <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://purl.org/dc/terms/subject> _:jEOnxGKk7 <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://purl.org/dc/terms/subject> _:jEOnxGKk6 <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://purl.org/dc/terms/subject> _:jEOnxGKk8 <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Book> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Document> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://open.vocab.org/terms/blid> "000140898" <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://purl.org/ontology/bibo/identifier> "GBA9C6518" <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://purl.org/dc/terms/isPartOf> <http://ckan.net/package/jiscopenbib-bl_bnb-1> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://iflastandards.info/ns/isbd/elements/hasPlaceOfPublicationProductionDistribution> _:jEOnxGKk3 <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://purl.org/dc/terms/extent> _:jEOnxGKk5 <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://purl.org/dc/terms/description> "Title from cover." <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246> <http://purl.org/dc/terms/description> "\"Printed for private circulation\"--p.1." <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246.rdf> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682246> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246.rdf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entity/E10000> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entity/E10000> <http://www.w3.org/2004/02/skos/core#prefLabel> "Augener & Co." <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entity/E10000> <http://xmlns.com/foaf/0.1/name> "Augener & Co." <http://bibliographica.org/entry/BB2682246> .
+_:jEOnxGKk6 <http://www.w3.org/2004/02/skos/core#inScheme> <http://id.loc.gov/authorities#conceptScheme> <http://bibliographica.org/entry/BB2682246> .
+_:jEOnxGKk6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> <http://bibliographica.org/entry/BB2682246> .
+_:jEOnxGKk6 <http://www.w3.org/2004/02/skos/core#prefLabel> "Augener & Co.--Indexes." <http://bibliographica.org/entry/BB2682246> .
+_:jEOnxGKk4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "eng"^^<http://purl.org/dc/terms/ISO639-2> <http://bibliographica.org/entry/BB2682246> .
+_:jEOnxGKk8 <http://www.w3.org/2004/02/skos/core#inScheme> <http://id.loc.gov/authorities#conceptScheme> <http://bibliographica.org/entry/BB2682246> .
+_:jEOnxGKk8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> <http://bibliographica.org/entry/BB2682246> .
+_:jEOnxGKk8 <http://www.w3.org/2004/02/skos/core#prefLabel> "Arrangers (Musicians)--Indexes." <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entity/E10001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entity/E10001> <http://www.w3.org/2004/02/skos/core#prefLabel> "Augener Ltd." <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entity/E10001> <http://xmlns.com/foaf/0.1/name> "Augener Ltd." <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246.ttl> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682246> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246.ttl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246.n3> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682246> <http://bibliographica.org/entry/BB2682246> .
+<http://bibliographica.org/entry/BB2682246.n3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682246> .
+
+<http://bibliographica.org/entity/E10000> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entity/E10000> .
+<http://bibliographica.org/entity/E10000> <http://www.w3.org/2004/02/skos/core#prefLabel> "Augener & Co." <http://bibliographica.org/entity/E10000> .
+<http://bibliographica.org/entity/E10000> <http://xmlns.com/foaf/0.1/name> "Augener & Co." <http://bibliographica.org/entity/E10000> .
+<http://bibliographica.org/entity/E10000> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10000.n3> <http://bibliographica.org/entity/E10000> .
+<http://bibliographica.org/entity/E10000> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10000.ttl> <http://bibliographica.org/entity/E10000> .
+<http://bibliographica.org/entity/E10000> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10000.html> <http://bibliographica.org/entity/E10000> .
+<http://bibliographica.org/entity/E10000> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10000.rdf> <http://bibliographica.org/entity/E10000> .
+<http://bibliographica.org/entity/E10000> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10000.nt> <http://bibliographica.org/entity/E10000> .
+<http://bibliographica.org/entity/E10000.nt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10000> .
+<http://bibliographica.org/entity/E10000.nt> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10000> <http://bibliographica.org/entity/E10000> .
+<http://bibliographica.org/entity/E10000.ttl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10000> .
+<http://bibliographica.org/entity/E10000.ttl> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10000> <http://bibliographica.org/entity/E10000> .
+<http://bibliographica.org/entity/E10000.html> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10000> .
+<http://bibliographica.org/entity/E10000.html> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10000> <http://bibliographica.org/entity/E10000> .
+<http://bibliographica.org/entity/E10000.rdf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10000> .
+<http://bibliographica.org/entity/E10000.rdf> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10000> <http://bibliographica.org/entity/E10000> .
+<http://bibliographica.org/entity/E10000.n3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10000> .
+<http://bibliographica.org/entity/E10000.n3> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10000> <http://bibliographica.org/entity/E10000> .
+
+<http://bibliographica.org/entity/E10001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entity/E10001> .
+<http://bibliographica.org/entity/E10001> <http://www.w3.org/2004/02/skos/core#prefLabel> "Augener Ltd." <http://bibliographica.org/entity/E10001> .
+<http://bibliographica.org/entity/E10001> <http://xmlns.com/foaf/0.1/name> "Augener Ltd." <http://bibliographica.org/entity/E10001> .
+<http://bibliographica.org/entity/E10001> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10001.rdf> <http://bibliographica.org/entity/E10001> .
+<http://bibliographica.org/entity/E10001> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10001.html> <http://bibliographica.org/entity/E10001> .
+<http://bibliographica.org/entity/E10001> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10001.ttl> <http://bibliographica.org/entity/E10001> .
+<http://bibliographica.org/entity/E10001> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10001.n3> <http://bibliographica.org/entity/E10001> .
+<http://bibliographica.org/entity/E10001> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10001.nt> <http://bibliographica.org/entity/E10001> .
+<http://bibliographica.org/entity/E10001.html> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10001> <http://bibliographica.org/entity/E10001> .
+<http://bibliographica.org/entity/E10001.html> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10001> .
+<http://bibliographica.org/entity/E10001.ttl> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10001> <http://bibliographica.org/entity/E10001> .
+<http://bibliographica.org/entity/E10001.ttl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10001> .
+<http://bibliographica.org/entity/E10001.rdf> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10001> <http://bibliographica.org/entity/E10001> .
+<http://bibliographica.org/entity/E10001.rdf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10001> .
+<http://bibliographica.org/entity/E10001.nt> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10001> <http://bibliographica.org/entity/E10001> .
+<http://bibliographica.org/entity/E10001.nt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10001> .
+<http://bibliographica.org/entity/E10001.n3> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10001> <http://bibliographica.org/entity/E10001> .
+<http://bibliographica.org/entity/E10001.n3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10001> .
+
+<http://bibliographica.org/entry/BB2682251.rdf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251.rdf> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682251> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entity/E10003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entity/E10003> <http://www.w3.org/2004/02/skos/core#prefLabel> "Cable & Wireless Porthcurno and Collections Trust" <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entity/E10003> <http://xmlns.com/foaf/0.1/name> "Cable & Wireless Porthcurno and Collections Trust" <http://bibliographica.org/entry/BB2682251> .
+_:jEOnxGKk20 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> <http://bibliographica.org/entry/BB2682251> .
+_:jEOnxGKk20 <http://www.w3.org/2004/02/skos/core#prefLabel> "Great Eastern (Steamship)" <http://bibliographica.org/entry/BB2682251> .
+_:jEOnxGKk20 <http://www.w3.org/2004/02/skos/core#inScheme> <http://id.loc.gov/authorities#conceptScheme> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251.ttl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251.ttl> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682251> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251.nt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251.nt> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682251> <http://bibliographica.org/entry/BB2682251> .
+_:jEOnxGKk18 <http://www.w3.org/2000/01/rdf-schema#label> "20 p" <http://bibliographica.org/entry/BB2682251> .
+_:jEOnxGKk16 <http://www.w3.org/2000/01/rdf-schema#label> "Porthcurno" <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entity/E10002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entity/E10002> <http://www.w3.org/2004/02/skos/core#prefLabel> "Cable & Wireless Porthcurno & Collections Trust." <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entity/E10002> <http://xmlns.com/foaf/0.1/name> "Cable & Wireless Porthcurno & Collections Trust." <http://bibliographica.org/entry/BB2682251> .
+_:jEOnxGKk19 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> <http://bibliographica.org/entry/BB2682251> .
+_:jEOnxGKk19 <http://www.w3.org/2004/02/skos/core#prefLabel> "Brunel, Isambard Kingdom, 1806-1859." <http://bibliographica.org/entry/BB2682251> .
+_:jEOnxGKk19 <http://www.w3.org/2004/02/skos/core#inScheme> <http://id.loc.gov/authorities#conceptScheme> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251.html> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251.html> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682251> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Book> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Document> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://purl.org/ontology/bibo/isbn> "urn:isbn:1905419155" <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://purl.org/dc/terms/language> _:jEOnxGKk17 <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://purl.org/dc/terms/subject> _:jEOnxGKk20 <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://purl.org/dc/terms/subject> _:jEOnxGKk19 <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://iflastandards.info/ns/isbd/elements/hasPlaceOfPublicationProductionDistribution> _:jEOnxGKk16 <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://purl.org/dc/terms/description> "Originally published to mark the launch in 1858 of the ship, the Great Eastern. Reproduced from an original in the archives of Cable & Wireless at Porthcurno Telegraph Museum in Cornwall." <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://purl.org/dc/terms/description> "Originally published: London: Dean & Son, 1858." <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://purl.org/ontology/bibo/identifier> "GBA814723" <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://purl.org/dc/terms/extent> _:jEOnxGKk18 <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682251.rdf> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682251.n3> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682251.ttl> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682251.nt> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682251.html> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://purl.org/dc/terms/isPartOf> <http://ckan.net/package/jiscopenbib-bl_bnb-1> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://purl.org/dc/terms/title> "The wonderful ship that was planned by Isambard Kingdom Brunel." <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://open.vocab.org/terms/blid> "000504490" <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://purl.org/dc/terms/contributor> <http://bibliographica.org/entity/E10002> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <http://purl.org/NET/book/isbn/1905419155#book> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <http://www4.wiwiss.fu-berlin.de/bookmashup/books/1905419155> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://purl.org/dc/terms/issued> "c2006" <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251> <http://purl.org/dc/terms/publisher> <http://bibliographica.org/entity/E10003> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251.n3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682251> .
+<http://bibliographica.org/entry/BB2682251.n3> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682251> <http://bibliographica.org/entry/BB2682251> .
+_:jEOnxGKk17 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "eng"^^<http://purl.org/dc/terms/ISO639-2> <http://bibliographica.org/entry/BB2682251> .
+
+<http://bibliographica.org/entity/E10002.n3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10002> .
+<http://bibliographica.org/entity/E10002.n3> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10002> <http://bibliographica.org/entity/E10002> .
+<http://bibliographica.org/entity/E10002.ttl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10002> .
+<http://bibliographica.org/entity/E10002.ttl> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10002> <http://bibliographica.org/entity/E10002> .
+<http://bibliographica.org/entity/E10002.html> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10002> .
+<http://bibliographica.org/entity/E10002.html> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10002> <http://bibliographica.org/entity/E10002> .
+<http://bibliographica.org/entity/E10002.nt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10002> .
+<http://bibliographica.org/entity/E10002.nt> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10002> <http://bibliographica.org/entity/E10002> .
+<http://bibliographica.org/entity/E10002.rdf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10002> .
+<http://bibliographica.org/entity/E10002.rdf> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10002> <http://bibliographica.org/entity/E10002> .
+<http://bibliographica.org/entity/E10002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entity/E10002> .
+<http://bibliographica.org/entity/E10002> <http://xmlns.com/foaf/0.1/name> "Cable & Wireless Porthcurno & Collections Trust." <http://bibliographica.org/entity/E10002> .
+<http://bibliographica.org/entity/E10002> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10002.html> <http://bibliographica.org/entity/E10002> .
+<http://bibliographica.org/entity/E10002> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10002.rdf> <http://bibliographica.org/entity/E10002> .
+<http://bibliographica.org/entity/E10002> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10002.nt> <http://bibliographica.org/entity/E10002> .
+<http://bibliographica.org/entity/E10002> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10002.n3> <http://bibliographica.org/entity/E10002> .
+<http://bibliographica.org/entity/E10002> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10002.ttl> <http://bibliographica.org/entity/E10002> .
+<http://bibliographica.org/entity/E10002> <http://www.w3.org/2004/02/skos/core#prefLabel> "Cable & Wireless Porthcurno & Collections Trust." <http://bibliographica.org/entity/E10002> .
+
+<http://bibliographica.org/entity/E10003.nt> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10003> <http://bibliographica.org/entity/E10003> .
+<http://bibliographica.org/entity/E10003.nt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10003> .
+<http://bibliographica.org/entity/E10003.html> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10003> <http://bibliographica.org/entity/E10003> .
+<http://bibliographica.org/entity/E10003.html> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10003> .
+<http://bibliographica.org/entity/E10003.rdf> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10003> <http://bibliographica.org/entity/E10003> .
+<http://bibliographica.org/entity/E10003.rdf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10003> .
+<http://bibliographica.org/entity/E10003> <http://xmlns.com/foaf/0.1/name> "Cable & Wireless Porthcurno and Collections Trust" <http://bibliographica.org/entity/E10003> .
+<http://bibliographica.org/entity/E10003> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10003.n3> <http://bibliographica.org/entity/E10003> .
+<http://bibliographica.org/entity/E10003> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10003.nt> <http://bibliographica.org/entity/E10003> .
+<http://bibliographica.org/entity/E10003> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10003.ttl> <http://bibliographica.org/entity/E10003> .
+<http://bibliographica.org/entity/E10003> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10003.html> <http://bibliographica.org/entity/E10003> .
+<http://bibliographica.org/entity/E10003> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10003.rdf> <http://bibliographica.org/entity/E10003> .
+<http://bibliographica.org/entity/E10003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entity/E10003> .
+<http://bibliographica.org/entity/E10003> <http://www.w3.org/2004/02/skos/core#prefLabel> "Cable & Wireless Porthcurno and Collections Trust" <http://bibliographica.org/entity/E10003> .
+<http://bibliographica.org/entity/E10003.n3> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10003> <http://bibliographica.org/entity/E10003> .
+<http://bibliographica.org/entity/E10003.n3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10003> .
+<http://bibliographica.org/entity/E10003.ttl> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10003> <http://bibliographica.org/entity/E10003> .
+<http://bibliographica.org/entity/E10003.ttl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10003> .
+
+_:jEOnxGKk29 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/vocab/bio/0.1/Death> <http://bibliographica.org/entity/E10004> .
+_:jEOnxGKk29 <http://purl.org/vocab/bio/0.1/date> "1940"^^<http://www.w3.org/2001/XMLSchema#gYear> <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004.rdf> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10004> <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004.rdf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004.n3> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10004> <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004.n3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004.html> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10004> <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004.html> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10004> .
+_:jEOnxGKk28 <http://purl.org/vocab/bio/0.1/date> "1875"^^<http://www.w3.org/2001/XMLSchema#gYear> <http://bibliographica.org/entity/E10004> .
+_:jEOnxGKk28 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/vocab/bio/0.1/Birth> <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004.ttl> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10004> <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004.ttl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004> <http://www.w3.org/2004/02/skos/core#prefLabel> "Buchan, John, 1875-1940" <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004> <http://xmlns.com/foaf/0.1/name> "Buchan, John" <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004> <http://purl.org/vocab/bio/0.1/event> _:jEOnxGKk29 <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004> <http://purl.org/vocab/bio/0.1/event> _:jEOnxGKk28 <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10004.n3> <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10004.rdf> <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10004.ttl> <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10004.nt> <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10004.html> <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004.nt> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10004> <http://bibliographica.org/entity/E10004> .
+<http://bibliographica.org/entity/E10004.nt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10004> .
+
+<http://bibliographica.org/entity/E10005> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entity/E10005> .
+<http://bibliographica.org/entity/E10005> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10005.rdf> <http://bibliographica.org/entity/E10005> .
+<http://bibliographica.org/entity/E10005> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10005.n3> <http://bibliographica.org/entity/E10005> .
+<http://bibliographica.org/entity/E10005> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10005.ttl> <http://bibliographica.org/entity/E10005> .
+<http://bibliographica.org/entity/E10005> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10005.nt> <http://bibliographica.org/entity/E10005> .
+<http://bibliographica.org/entity/E10005> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10005.html> <http://bibliographica.org/entity/E10005> .
+<http://bibliographica.org/entity/E10005> <http://www.w3.org/2004/02/skos/core#prefLabel> "Hodder & Stoughton" <http://bibliographica.org/entity/E10005> .
+<http://bibliographica.org/entity/E10005> <http://xmlns.com/foaf/0.1/name> "Hodder & Stoughton" <http://bibliographica.org/entity/E10005> .
+<http://bibliographica.org/entity/E10005.n3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10005> .
+<http://bibliographica.org/entity/E10005.n3> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10005> <http://bibliographica.org/entity/E10005> .
+<http://bibliographica.org/entity/E10005.html> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10005> .
+<http://bibliographica.org/entity/E10005.html> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10005> <http://bibliographica.org/entity/E10005> .
+<http://bibliographica.org/entity/E10005.rdf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10005> .
+<http://bibliographica.org/entity/E10005.rdf> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10005> <http://bibliographica.org/entity/E10005> .
+<http://bibliographica.org/entity/E10005.nt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10005> .
+<http://bibliographica.org/entity/E10005.nt> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10005> <http://bibliographica.org/entity/E10005> .
+<http://bibliographica.org/entity/E10005.ttl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10005> .
+<http://bibliographica.org/entity/E10005.ttl> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10005> <http://bibliographica.org/entity/E10005> .
+
+_:jEOnxGKk28 <http://purl.org/vocab/bio/0.1/date> "1875"^^<http://www.w3.org/2001/XMLSchema#gYear> <http://bibliographica.org/entry/BB2682253> .
+_:jEOnxGKk28 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/vocab/bio/0.1/Birth> <http://bibliographica.org/entry/BB2682253> .
+_:jEOnxGKk29 <http://purl.org/vocab/bio/0.1/date> "1940"^^<http://www.w3.org/2001/XMLSchema#gYear> <http://bibliographica.org/entry/BB2682253> .
+_:jEOnxGKk29 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/vocab/bio/0.1/Death> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entity/E10004> <http://xmlns.com/foaf/0.1/name> "Buchan, John" <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entity/E10004> <http://purl.org/vocab/bio/0.1/event> _:jEOnxGKk28 <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entity/E10004> <http://purl.org/vocab/bio/0.1/event> _:jEOnxGKk29 <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entity/E10004> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entity/E10004> <http://www.w3.org/2004/02/skos/core#prefLabel> "Buchan, John, 1875-1940" <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entity/E10005> <http://xmlns.com/foaf/0.1/name> "Hodder & Stoughton" <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entity/E10005> <http://www.w3.org/2004/02/skos/core#prefLabel> "Hodder & Stoughton" <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entity/E10005> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entry/BB2682253> .
+_:jEOnxGKk31 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "|||"^^<http://purl.org/dc/terms/ISO639-2> <http://bibliographica.org/entry/BB2682253> .
+_:jEOnxGKk32 <http://www.w3.org/2000/01/rdf-schema#label> "pp. xii. 1307" <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253> <http://purl.org/dc/terms/title> "A Five-Fold Salute to Adventure. An omnibus volume of the historical novels of J. Buchan. (The Blanket of the Dark.-Witch Wood.-Salute to Adventurers.-Midwinter.-The Free Fishers.)." <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253> <http://purl.org/ontology/bibo/identifier> "GBA522580" <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253> <http://purl.org/dc/terms/extent> _:jEOnxGKk32 <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253> <http://open.vocab.org/terms/blid> "000512596" <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253> <http://iflastandards.info/ns/isbd/elements/hasPlaceOfPublicationProductionDistribution> _:jEOnxGKk30 <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253> <http://purl.org/dc/terms/isPartOf> <http://ckan.net/package/jiscopenbib-bl_bnb-1> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253> <http://purl.org/dc/terms/issued> "1939"^^<http://www.w3.org/2001/XMLSchema#gYear> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Document> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Book> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253> <http://purl.org/dc/terms/contributor> <http://bibliographica.org/entity/E10004> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253> <http://purl.org/dc/terms/language> _:jEOnxGKk31 <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253> <http://purl.org/dc/terms/publisher> <http://bibliographica.org/entity/E10005> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682253.rdf> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682253.nt> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682253.html> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682253.n3> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682253.ttl> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253.rdf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253.rdf> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682253> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253.ttl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253.ttl> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682253> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253.nt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253.nt> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682253> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253.n3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253.n3> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682253> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253.html> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682253> .
+<http://bibliographica.org/entry/BB2682253.html> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682253> <http://bibliographica.org/entry/BB2682253> .
+_:jEOnxGKk30 <http://www.w3.org/2000/01/rdf-schema#label> "London" <http://bibliographica.org/entry/BB2682253> .
+
+<http://bibliographica.org/entity/E10006.rdf> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10006> <http://bibliographica.org/entity/E10006> .
+<http://bibliographica.org/entity/E10006.rdf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10006> .
+<http://bibliographica.org/entity/E10006> <http://www.w3.org/2004/02/skos/core#prefLabel> "Burgess, Yvonne." <http://bibliographica.org/entity/E10006> .
+<http://bibliographica.org/entity/E10006> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10006.rdf> <http://bibliographica.org/entity/E10006> .
+<http://bibliographica.org/entity/E10006> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10006.html> <http://bibliographica.org/entity/E10006> .
+<http://bibliographica.org/entity/E10006> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10006.n3> <http://bibliographica.org/entity/E10006> .
+<http://bibliographica.org/entity/E10006> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10006.ttl> <http://bibliographica.org/entity/E10006> .
+<http://bibliographica.org/entity/E10006> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10006.nt> <http://bibliographica.org/entity/E10006> .
+<http://bibliographica.org/entity/E10006> <http://xmlns.com/foaf/0.1/name> "Burgess, Yvonne." <http://bibliographica.org/entity/E10006> .
+<http://bibliographica.org/entity/E10006> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entity/E10006> .
+<http://bibliographica.org/entity/E10006.ttl> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10006> <http://bibliographica.org/entity/E10006> .
+<http://bibliographica.org/entity/E10006.ttl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10006> .
+<http://bibliographica.org/entity/E10006.nt> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10006> <http://bibliographica.org/entity/E10006> .
+<http://bibliographica.org/entity/E10006.nt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10006> .
+<http://bibliographica.org/entity/E10006.html> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10006> <http://bibliographica.org/entity/E10006> .
+<http://bibliographica.org/entity/E10006.html> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10006> .
+<http://bibliographica.org/entity/E10006.n3> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10006> <http://bibliographica.org/entity/E10006> .
+<http://bibliographica.org/entity/E10006.n3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10006> .
+
+<http://bibliographica.org/entry/BB2682255.ttl> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682255> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255.ttl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682255> .
+_:jEOnxGKk48 <http://www.w3.org/2004/02/skos/core#inScheme> <http://dewey.info/scheme/e22> <http://bibliographica.org/entry/BB2682255> .
+_:jEOnxGKk48 <http://www.w3.org/2004/02/skos/core#notation> "823.9936"^^<ddc:Notation> <http://bibliographica.org/entry/BB2682255> .
+_:jEOnxGKk48 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> <http://bibliographica.org/entry/BB2682255> .
+_:jEOnxGKk47 <http://www.w3.org/2004/02/skos/core#prefLabel> "South African fiction (English)" <http://bibliographica.org/entry/BB2682255> .
+_:jEOnxGKk47 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> <http://bibliographica.org/entry/BB2682255> .
+_:jEOnxGKk47 <http://www.w3.org/2004/02/skos/core#inScheme> <http://id.loc.gov/authorities#conceptScheme> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255.n3> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682255> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255.n3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entity/E10007> <http://www.w3.org/2004/02/skos/core#prefLabel> "Penguin" <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entity/E10007> <http://xmlns.com/foaf/0.1/name> "Penguin" <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entity/E10007> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://purl.org/dc/terms/issued> "2002"^^<http://www.w3.org/2001/XMLSchema#gYear> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://purl.org/dc/terms/title> "A life to live" <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://purl.org/dc/terms/extent> _:jEOnxGKk46 <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://purl.org/ontology/bibo/identifier> "GBA479403" <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://purl.org/dc/terms/isPartOf> <http://ckan.net/package/jiscopenbib-bl_bnb-1> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://iflastandards.info/ns/isbd/elements/hasPlaceOfPublicationProductionDistribution> _:jEOnxGKk44 <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://open.vocab.org/terms/blid> "000536125" <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://purl.org/ontology/bibo/isbn> "urn:isbn:0143024078" <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://purl.org/dc/terms/subject> _:jEOnxGKk48 <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://purl.org/dc/terms/subject> _:jEOnxGKk47 <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://purl.org/dc/terms/description> "Originally published : Johannesburg : AD Donker, 1973." <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <http://purl.org/NET/book/isbn/0143024078#book> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <http://www4.wiwiss.fu-berlin.de/bookmashup/books/0143024078> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://purl.org/dc/terms/language> _:jEOnxGKk45 <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682255.n3> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682255.ttl> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682255.html> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682255.nt> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682255.rdf> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://purl.org/dc/terms/publisher> <http://bibliographica.org/entity/E10007> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Book> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Document> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255> <http://purl.org/dc/terms/contributor> <http://bibliographica.org/entity/E10006> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255.html> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682255> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255.html> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255.nt> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682255> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255.nt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682255> .
+_:jEOnxGKk46 <http://www.w3.org/2000/01/rdf-schema#label> "197 p" <http://bibliographica.org/entry/BB2682255> .
+_:jEOnxGKk44 <http://www.w3.org/2000/01/rdf-schema#label> "London" <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entity/E10006> <http://www.w3.org/2004/02/skos/core#prefLabel> "Burgess, Yvonne." <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entity/E10006> <http://xmlns.com/foaf/0.1/name> "Burgess, Yvonne." <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entity/E10006> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255.rdf> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682255> <http://bibliographica.org/entry/BB2682255> .
+<http://bibliographica.org/entry/BB2682255.rdf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682255> .
+_:jEOnxGKk45 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "eng"^^<http://purl.org/dc/terms/ISO639-2> <http://bibliographica.org/entry/BB2682255> .
+
+<http://bibliographica.org/entity/E10007.rdf> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10007> <http://bibliographica.org/entity/E10007> .
+<http://bibliographica.org/entity/E10007.rdf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10007> .
+<http://bibliographica.org/entity/E10007.html> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10007> <http://bibliographica.org/entity/E10007> .
+<http://bibliographica.org/entity/E10007.html> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10007> .
+<http://bibliographica.org/entity/E10007.n3> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10007> <http://bibliographica.org/entity/E10007> .
+<http://bibliographica.org/entity/E10007.n3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10007> .
+<http://bibliographica.org/entity/E10007.nt> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10007> <http://bibliographica.org/entity/E10007> .
+<http://bibliographica.org/entity/E10007.nt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10007> .
+<http://bibliographica.org/entity/E10007.ttl> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10007> <http://bibliographica.org/entity/E10007> .
+<http://bibliographica.org/entity/E10007.ttl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10007> .
+<http://bibliographica.org/entity/E10007> <http://xmlns.com/foaf/0.1/name> "Penguin" <http://bibliographica.org/entity/E10007> .
+<http://bibliographica.org/entity/E10007> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10007.nt> <http://bibliographica.org/entity/E10007> .
+<http://bibliographica.org/entity/E10007> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10007.rdf> <http://bibliographica.org/entity/E10007> .
+<http://bibliographica.org/entity/E10007> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10007.ttl> <http://bibliographica.org/entity/E10007> .
+<http://bibliographica.org/entity/E10007> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10007.n3> <http://bibliographica.org/entity/E10007> .
+<http://bibliographica.org/entity/E10007> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10007.html> <http://bibliographica.org/entity/E10007> .
+<http://bibliographica.org/entity/E10007> <http://www.w3.org/2004/02/skos/core#prefLabel> "Penguin" <http://bibliographica.org/entity/E10007> .
+<http://bibliographica.org/entity/E10007> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entity/E10007> .
+
+<http://bibliographica.org/entity/E10008> <http://www.w3.org/2004/02/skos/core#prefLabel> "Burke, Edmund H." <http://bibliographica.org/entity/E10008> .
+<http://bibliographica.org/entity/E10008> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10008.ttl> <http://bibliographica.org/entity/E10008> .
+<http://bibliographica.org/entity/E10008> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10008.rdf> <http://bibliographica.org/entity/E10008> .
+<http://bibliographica.org/entity/E10008> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10008.nt> <http://bibliographica.org/entity/E10008> .
+<http://bibliographica.org/entity/E10008> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10008.n3> <http://bibliographica.org/entity/E10008> .
+<http://bibliographica.org/entity/E10008> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10008.html> <http://bibliographica.org/entity/E10008> .
+<http://bibliographica.org/entity/E10008> <http://xmlns.com/foaf/0.1/name> "Burke, Edmund H." <http://bibliographica.org/entity/E10008> .
+<http://bibliographica.org/entity/E10008> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entity/E10008> .
+<http://bibliographica.org/entity/E10008.rdf> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10008> <http://bibliographica.org/entity/E10008> .
+<http://bibliographica.org/entity/E10008.rdf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10008> .
+<http://bibliographica.org/entity/E10008.ttl> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10008> <http://bibliographica.org/entity/E10008> .
+<http://bibliographica.org/entity/E10008.ttl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10008> .
+<http://bibliographica.org/entity/E10008.nt> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10008> <http://bibliographica.org/entity/E10008> .
+<http://bibliographica.org/entity/E10008.nt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10008> .
+<http://bibliographica.org/entity/E10008.n3> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10008> <http://bibliographica.org/entity/E10008> .
+<http://bibliographica.org/entity/E10008.n3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10008> .
+<http://bibliographica.org/entity/E10008.html> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10008> <http://bibliographica.org/entity/E10008> .
+<http://bibliographica.org/entity/E10008.html> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10008> .
+
+<http://bibliographica.org/entity/E10009.nt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10009> .
+<http://bibliographica.org/entity/E10009.nt> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10009> <http://bibliographica.org/entity/E10009> .
+<http://bibliographica.org/entity/E10009> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10009.html> <http://bibliographica.org/entity/E10009> .
+<http://bibliographica.org/entity/E10009> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10009.nt> <http://bibliographica.org/entity/E10009> .
+<http://bibliographica.org/entity/E10009> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10009.rdf> <http://bibliographica.org/entity/E10009> .
+<http://bibliographica.org/entity/E10009> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10009.ttl> <http://bibliographica.org/entity/E10009> .
+<http://bibliographica.org/entity/E10009> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entity/E10009.n3> <http://bibliographica.org/entity/E10009> .
+<http://bibliographica.org/entity/E10009> <http://www.w3.org/2004/02/skos/core#prefLabel> "Arco Publications" <http://bibliographica.org/entity/E10009> .
+<http://bibliographica.org/entity/E10009> <http://xmlns.com/foaf/0.1/name> "Arco Publications" <http://bibliographica.org/entity/E10009> .
+<http://bibliographica.org/entity/E10009> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entity/E10009> .
+<http://bibliographica.org/entity/E10009.ttl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10009> .
+<http://bibliographica.org/entity/E10009.ttl> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10009> <http://bibliographica.org/entity/E10009> .
+<http://bibliographica.org/entity/E10009.html> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10009> .
+<http://bibliographica.org/entity/E10009.html> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10009> <http://bibliographica.org/entity/E10009> .
+<http://bibliographica.org/entity/E10009.rdf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10009> .
+<http://bibliographica.org/entity/E10009.rdf> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10009> <http://bibliographica.org/entity/E10009> .
+<http://bibliographica.org/entity/E10009.n3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entity/E10009> .
+<http://bibliographica.org/entity/E10009.n3> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entity/E10009> <http://bibliographica.org/entity/E10009> .
+
+_:jEOnxGKk56 <http://www.w3.org/2000/01/rdf-schema#label> "London" <http://bibliographica.org/entry/BB2682258> .
+_:jEOnxGKk58 <http://www.w3.org/2000/01/rdf-schema#label> "128 p" <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258.nt> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682258> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258.nt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682258> .
+_:jEOnxGKk62 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> <http://bibliographica.org/entry/BB2682258> .
+_:jEOnxGKk62 <http://www.w3.org/2004/02/skos/core#inScheme> <http://id.loc.gov/authorities#conceptScheme> <http://bibliographica.org/entry/BB2682258> .
+_:jEOnxGKk62 <http://www.w3.org/2004/02/skos/core#prefLabel> "World War, 1939-1945--Aerial operations, British." <http://bibliographica.org/entry/BB2682258> .
+_:jEOnxGKk57 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "eng"^^<http://purl.org/dc/terms/ISO639-2> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entity/E10008> <http://xmlns.com/foaf/0.1/name> "Burke, Edmund H." <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entity/E10008> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entity/E10008> <http://www.w3.org/2004/02/skos/core#prefLabel> "Burke, Edmund H." <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258.rdf> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682258> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258.rdf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682258> .
+_:jEOnxGKk59 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> <http://bibliographica.org/entry/BB2682258> .
+_:jEOnxGKk59 <http://www.w3.org/2004/02/skos/core#inScheme> <http://id.loc.gov/authorities#conceptScheme> <http://bibliographica.org/entry/BB2682258> .
+_:jEOnxGKk59 <http://www.w3.org/2004/02/skos/core#prefLabel> "Gibson, Guy." <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entity/E10009> <http://xmlns.com/foaf/0.1/name> "Arco Publications" <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entity/E10009> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entity/E10009> <http://www.w3.org/2004/02/skos/core#prefLabel> "Arco Publications" <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258.n3> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682258> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258.n3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682258> .
+_:jEOnxGKk63 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> <http://bibliographica.org/entry/BB2682258> .
+_:jEOnxGKk63 <http://www.w3.org/2004/02/skos/core#inScheme> <http://dewey.info/scheme/e18> <http://bibliographica.org/entry/BB2682258> .
+_:jEOnxGKk63 <http://www.w3.org/2004/02/skos/core#notation> "940.544941"^^<ddc:Notation> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258.ttl> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682258> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258.ttl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682258> .
+_:jEOnxGKk61 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> <http://bibliographica.org/entry/BB2682258> .
+_:jEOnxGKk61 <http://www.w3.org/2004/02/skos/core#inScheme> <http://id.loc.gov/authorities#conceptScheme> <http://bibliographica.org/entry/BB2682258> .
+_:jEOnxGKk61 <http://www.w3.org/2004/02/skos/core#prefLabel> "Air pilots, Military--Great Britain--Biography." <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258.html> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682258> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258.html> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682258> .
+_:jEOnxGKk60 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> <http://bibliographica.org/entry/BB2682258> .
+_:jEOnxGKk60 <http://www.w3.org/2004/02/skos/core#inScheme> <http://id.loc.gov/authorities#conceptScheme> <http://bibliographica.org/entry/BB2682258> .
+_:jEOnxGKk60 <http://www.w3.org/2004/02/skos/core#prefLabel> "Great Britain. Royal Air Force--Biography." <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://iflastandards.info/ns/isbd/elements/hasPlaceOfPublicationProductionDistribution> _:jEOnxGKk56 <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://purl.org/dc/terms/extent> _:jEOnxGKk58 <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://purl.org/dc/terms/contributor> <http://bibliographica.org/entity/E10008> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://purl.org/dc/terms/isPartOf> <http://ckan.net/package/jiscopenbib-bl_bnb-1> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://purl.org/dc/terms/publisher> <http://bibliographica.org/entity/E10009> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682258.html> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682258.ttl> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682258.rdf> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682258.n3> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682258.nt> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Book> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Document> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://open.vocab.org/terms/blid> "000537740" <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://purl.org/dc/terms/issued> "1961"^^<http://www.w3.org/2001/XMLSchema#gYear> <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://purl.org/dc/terms/language> _:jEOnxGKk57 <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://purl.org/dc/terms/subject> _:jEOnxGKk62 <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://purl.org/dc/terms/subject> _:jEOnxGKk61 <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://purl.org/dc/terms/subject> _:jEOnxGKk59 <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://purl.org/dc/terms/subject> _:jEOnxGKk60 <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://purl.org/dc/terms/subject> _:jEOnxGKk63 <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://purl.org/ontology/bibo/identifier> "GB6122745" <http://bibliographica.org/entry/BB2682258> .
+<http://bibliographica.org/entry/BB2682258> <http://purl.org/dc/terms/title> "Guy Gibson VC" <http://bibliographica.org/entry/BB2682258> .
+
+<http://bibliographica.org/entry/BB2682260.ttl> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682260> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260.ttl> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682260> .
+_:jEOnxGKk71 <http://www.w3.org/2000/01/rdf-schema#label> "Cambridge, Mass" <http://bibliographica.org/entry/BB2682260> .
+_:jEOnxGKk76 <http://www.w3.org/2004/02/skos/core#inScheme> <http://id.loc.gov/authorities#conceptScheme> <http://bibliographica.org/entry/BB2682260> .
+_:jEOnxGKk76 <http://www.w3.org/2004/02/skos/core#prefLabel> "Rare books--Massachusetts--Cambridge." <http://bibliographica.org/entry/BB2682260> .
+_:jEOnxGKk76 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260.rdf> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682260> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260.rdf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://purl.org/dc/terms/language> _:jEOnxGKk72 <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://purl.org/dc/terms/extent> _:jEOnxGKk73 <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://purl.org/dc/terms/contributor> <http://bibliographica.org/entity/E10011> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://purl.org/dc/terms/contributor> <http://bibliographica.org/entity/E10010> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://open.vocab.org/terms/blid> "000580504" <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://purl.org/dc/terms/isPartOf> <http://ckan.net/package/jiscopenbib-bl_bnb-1> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://purl.org/ontology/bibo/identifier> "GBA711489" <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://purl.org/dc/terms/publisher> <http://bibliographica.org/entity/E10012> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://purl.org/dc/terms/description> "Includes index." <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682260.nt> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682260.rdf> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682260.n3> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682260.ttl> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://bibliographica.org/entry/BB2682260.html> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://iflastandards.info/ns/isbd/elements/hasPlaceOfPublicationProductionDistribution> _:jEOnxGKk71 <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://purl.org/dc/terms/issued> "1967"^^<http://www.w3.org/2001/XMLSchema#gYear> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://purl.org/dc/terms/subject> _:jEOnxGKk75 <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://purl.org/dc/terms/subject> _:jEOnxGKk77 <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://purl.org/dc/terms/subject> _:jEOnxGKk76 <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://purl.org/dc/terms/subject> _:jEOnxGKk74 <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://purl.org/dc/terms/title> "The Houghton Library, 1942-1967 : a selection of books and manuscripts in Harvard collections." <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Document> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Book> <http://bibliographica.org/entry/BB2682260> .
+_:jEOnxGKk72 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "eng"^^<http://purl.org/dc/terms/ISO639-2> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entity/E10011> <http://xmlns.com/foaf/0.1/name> "Harvard College Library." <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entity/E10011> <http://www.w3.org/2004/02/skos/core#prefLabel> "Harvard College Library." <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entity/E10011> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entry/BB2682260> .
+_:jEOnxGKk74 <http://www.w3.org/2004/02/skos/core#inScheme> <http://id.loc.gov/authorities#conceptScheme> <http://bibliographica.org/entry/BB2682260> .
+_:jEOnxGKk74 <http://www.w3.org/2004/02/skos/core#prefLabel> "Harvard University." <http://bibliographica.org/entry/BB2682260> .
+_:jEOnxGKk74 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260.nt> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682260> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260.nt> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682260> .
+_:jEOnxGKk75 <http://www.w3.org/2004/02/skos/core#inScheme> <http://id.loc.gov/authorities#conceptScheme> <http://bibliographica.org/entry/BB2682260> .
+_:jEOnxGKk75 <http://www.w3.org/2004/02/skos/core#prefLabel> "Manuscripts--Massachusetts--Cambridge." <http://bibliographica.org/entry/BB2682260> .
+_:jEOnxGKk75 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260.n3> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682260> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260.n3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682260> .
+_:jEOnxGKk77 <http://www.w3.org/2004/02/skos/core#inScheme> <http://dewey.info/scheme/e22> <http://bibliographica.org/entry/BB2682260> .
+_:jEOnxGKk77 <http://www.w3.org/2004/02/skos/core#notation> "090.097444"^^<ddc:Notation> <http://bibliographica.org/entry/BB2682260> .
+_:jEOnxGKk77 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260.html> <http://xmlns.com/foaf/0.1/primaryTopic> <http://bibliographica.org/entry/BB2682260> <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entry/BB2682260.html> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> <http://bibliographica.org/entry/BB2682260> .
+_:jEOnxGKk73 <http://www.w3.org/2000/01/rdf-schema#label> "xiv, 255 p" <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entity/E10010> <http://xmlns.com/foaf/0.1/name> "Houghton Library." <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entity/E10010> <http://www.w3.org/2004/02/skos/core#prefLabel> "Houghton Library." <http://bibliographica.org/entry/BB2682260> .
+<http://bibliographica.org/entity/E10010> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> <http://bibliographica.org/entry/BB2682260> .

@@ -15,10 +15,10 @@ A tiny example:
     >>> import rdflib
 
     >>> g = rdflib.Graph()
-    >>> result = g.parse("http://www.w3.org/People/Berners-Lee/card")
+    >>> result = g.parse("http://www.w3.org/2000/10/swap/test/meet/white.rdf")
 
-    >>> print "graph has %s statements." % len(g)
-    graph has 78 statements.
+    >>> print("graph has %s statements." % len(g))
+    graph has 19 statements.
     >>>
     >>> for s, p, o in g:
     ...     if (s, p, o) not in g:
@@ -29,8 +29,9 @@ A tiny example:
 """
 __docformat__ = "restructuredtext en"
 
-__version__ = "3.2.0-dev"
-__date__ = "2011/03/17"
+# The format of the __version__ line is matched by a regex in setup.py
+__version__ = "3.3.0-dev"
+__date__ = "2012/04/24"
 
 __all__ = [
     'URIRef',

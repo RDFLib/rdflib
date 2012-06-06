@@ -58,7 +58,7 @@ Terminology
 
     Which can be written (in N3) as:
 
-    .. code-block:: text
+    .. code-block:: n3
 
         :chimezie :said {:higherOrderStatements rdf:type :complicated}
 
@@ -149,13 +149,13 @@ Could cause the following statements to be asserted in the store:
 
 This statement would be asserted in the partition associated with quoted statements (in a formula named ``_:a``)
 
-.. code-block:: text
+.. code-block:: n3
 
     ?x rdf:type :N3Programmer
 
 Finally, these statements would be asserted in the same partition (in a formula named ``_:b``)
 
-.. code-block:: text
+.. code-block:: n3
 
     ?x :has _:c
 
@@ -193,7 +193,7 @@ The following methods are defined to provide this capability (see below for desc
 
 The *configuration* string is understood by the store implementation and represents all the parameters needed to locate an individual instance of a store. This could be similar to an ODBC string or in fact be an ODBC string, if the connection protocol to the underlying database is ODBC.
 
-The :meth:`~rdflib.graph.Graph.open` function needs to fail intelligently in order to clearly express that a store (identified by the given configuration string) already exists or that there is no store (at the location specified by the configuration string) depending on the value of :keyword:`create`.
+The :meth:`~rdflib.graph.Graph.open` function needs to fail intelligently in order to clearly express that a store (identified by the given configuration string) already exists or that there is no store (at the location specified by the configuration string) depending on the value of ``create``.
 
 Triple Interfaces
 =================
@@ -237,7 +237,7 @@ Tests parsing, triple patterns, triple pattern removes, size, contextual removes
 Source Graph
 ^^^^^^^^^^^^^
 
-.. code-block:: text
+.. code-block:: n3
 
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> . 
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> . 
@@ -303,7 +303,7 @@ Formula and Variables Test
 Source Graph
 ^^^^^^^^^^^^
 
-.. code-block:: text
+.. code-block:: n3
 
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> . 
     @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> . 

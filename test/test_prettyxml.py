@@ -1,10 +1,14 @@
 from rdflib.term import  URIRef, BNode
 from rdflib.namespace import RDFS
+from rdflib.py3compat import b
 
 from rdflib.plugins.serializers.rdfxml import PrettyXMLSerializer
 
 from rdflib.graph import ConjunctiveGraph
-from StringIO import StringIO
+try:
+    from io import BytesIO
+except ImportError:
+    from StringIO import StringIO as BytesIO
 
 
 class SerializerTestBase(object):
@@ -51,10 +55,10 @@ def _mangled_copy(g):
     return gcopy
 
 
-def serialize(sourceGraph, makeSerializer, getValue=True):
+def serialize(sourceGraph, makeSerializer, getValue=True, extra_args={}):
     serializer = makeSerializer(sourceGraph)
-    stream = StringIO()
-    serializer.serialize(stream)
+    stream = BytesIO()
+    serializer.serialize(stream, **extra_args)
     return getValue and stream.getvalue() or stream
 
 def serialize_and_load(sourceGraph, makeSerializer):
@@ -113,21 +117,29 @@ class TestPrettyXmlSerializer(SerializerTestBase):
 
     def test_result_fragments(self):
         rdfXml = serialize(self.sourceGraph, self.serializer)
-        assert '<Test rdf:about="http://example.org/data/a">' in rdfXml
-        assert '<rdf:Description rdf:about="http://example.org/data/b">' in rdfXml
-        assert '<name xml:lang="en">Bee</name>' in rdfXml
-        assert '<value rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</value>' in rdfXml
-        assert '<BNode rdf:nodeID="' in rdfXml, "expected one identified bnode in serialized graph"
+        assert b('<Test rdf:about="http://example.org/data/a">') in rdfXml
+        assert b('<rdf:Description rdf:about="http://example.org/data/b">') in rdfXml
+        assert b('<name xml:lang="en">Bee</name>') in rdfXml
+        assert b('<value rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</value>') in rdfXml
+        assert b('<BNode rdf:nodeID="') in rdfXml, "expected one identified bnode in serialized graph"
         #onlyBNodesMsg = "expected only inlined subClassOf-bnodes in serialized graph"
         #assert '<rdfs:subClassOf>' in rdfXml, onlyBNodesMsg
         #assert not '<rdfs:subClassOf ' in rdfXml, onlyBNodesMsg
+
+    def test_result_fragments_with_base(self):
+        rdfXml = serialize(self.sourceGraph, self.serializer, 
+                    extra_args={'base':"http://example.org/", 'xml_base':"http://example.org/"})
+        assert b('xml:base="http://example.org/"') in rdfXml
+        assert b('<Test rdf:about="data/a">') in rdfXml
+        assert b('<rdf:Description rdf:about="data/b">') in rdfXml
+        assert b('<value rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</value>') in rdfXml
+        assert b('<BNode rdf:nodeID="') in rdfXml, "expected one identified bnode in serialized graph"
 
     def test_subClassOf_objects(self):
         reparsedGraph = serialize_and_load(self.sourceGraph, self.serializer)
         _assert_expected_object_types_for_predicates(reparsedGraph,
                 [RDFS.seeAlso, RDFS.subClassOf],
                 [URIRef, BNode])
-
 
 def _assert_expected_object_types_for_predicates(graph, predicates, types):
     for s, p, o in graph:
