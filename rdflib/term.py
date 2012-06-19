@@ -48,6 +48,7 @@ from itertools import islice
 from datetime import date, time, datetime
 from isodate import parse_time, parse_date, parse_datetime
 from re import sub
+import types
 
 try:
     from hashlib import md5
@@ -914,6 +915,8 @@ def _castPythonToLiteral(obj):
             if castFunc:
                 return castFunc(obj), dType
             elif dType:
+                if isinstance(dType, types.FunctionType):
+                    return obj, dType(obj)
                 return obj, dType
             else:
                 return obj, None
@@ -928,12 +931,23 @@ from decimal import Decimal
 # python has only float - to be in tune with sparql/n3/turtle
 # we default to XSD.double for float literals
 
+def _integerToSmallestXSDInteger(value):
+    """
+    Dynamically return the smallest datatype URI out of xsd:int, xsd:long,
+    xsd:integer into which value fits according to their ranges.
+    """
+    if -2147483648 <= value <= 2147483647:
+        return URIRef(_XSD_PFX+'int')
+    if -9223372036854775808 <= value <= 9223372036854775807:
+        return URIRef(_XSD_PFX+'long')
+    return URIRef(_XSD_PFX+'integer')
+
 _PythonToXSD = [
     (basestring, (None, None)),
     (float     , (None, URIRef(_XSD_PFX+'double'))),
     (bool      , (lambda i:str(i).lower(), URIRef(_XSD_PFX+'boolean'))),
-    (int       , (None, URIRef(_XSD_PFX+'integer'))),
-    (long      , (None, URIRef(_XSD_PFX+'long'))),
+    (int       , (None, _integerToSmallestXSDInteger)),
+    (long      , (None, _integerToSmallestXSDInteger)),
     (Decimal   , (None, URIRef(_XSD_PFX+'decimal'))),
     (datetime  , (lambda i:i.isoformat(), URIRef(_XSD_PFX+'dateTime'))),
     (date      , (lambda i:i.isoformat(), URIRef(_XSD_PFX+'date'))),
