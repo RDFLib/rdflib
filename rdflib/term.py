@@ -933,7 +933,7 @@ _PythonToXSD = [
     (float     , (None, URIRef(_XSD_PFX+'double'))),
     (bool      , (lambda i:str(i).lower(), URIRef(_XSD_PFX+'boolean'))),
     (int       , (None, URIRef(_XSD_PFX+'integer'))),
-    (long      , (None, URIRef(_XSD_PFX+'long'))),
+    (long      , (None, URIRef(_XSD_PFX+'integer'))),
     (Decimal   , (None, URIRef(_XSD_PFX+'decimal'))),
     (datetime  , (lambda i:i.isoformat(), URIRef(_XSD_PFX+'dateTime'))),
     (date      , (lambda i:i.isoformat(), URIRef(_XSD_PFX+'date'))),
