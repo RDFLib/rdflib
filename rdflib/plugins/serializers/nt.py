@@ -35,8 +35,10 @@ def _xmlcharref_encode(unicode_data, encoding="ascii"):
     """Emulate Python 2.3's 'xmlcharrefreplace' encoding error handler."""
     chars = []
 
-    # nothing to do about xmlchars, but replace newlines with escapes: 
-    unicode_data=unicode_data.replace("\n","\\n")
+    # nothing to do about xmlchars, but escape newlines and linefeeds: 
+    unicode_data = unicode_data.replace("\n","\\n")
+    unicode_data = unicode_data.replace("\r","\\r")
+
     if unicode_data.startswith('"""'):
 
         # Updated with Bernhard Schandl's patch...
@@ -51,9 +53,6 @@ def _xmlcharref_encode(unicode_data, encoding="ascii"):
 
         # print "payload: '%s'" % payload
         # print "payload len: %d" % len(payload)
-
-        # replace carriage returns
-        payload = payload.replace('\r', '\\r')
 
         # fix three-quotes encoding
         payload = payload.replace('\\"""', '"""')
