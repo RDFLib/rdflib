@@ -67,7 +67,7 @@ Only in second::
     _:cb558f30e21ddfc05ca53108348338ade8 <http://example.org/ns#label> "B" .
 """
 else:
-    __doc__ = """"""
+    __doc__ = ""
 
 # ======================================================================
 # FAIL: Doctest: rdflib.compare

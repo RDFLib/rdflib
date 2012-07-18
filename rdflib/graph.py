@@ -928,6 +928,12 @@ class Graph(Node):
         return (Graph, (self.store, self.identifier,))
 
     def isomorphic(self, other):
+        """
+        does a very basic check if these graphs are the same
+        If no BNodes are involved, this is accurate. 
+        
+        See rdflib.compare for a correct implementation of isomorphism checks
+        """
         # TODO: this is only an approximation.
         if len(self) != len(other):
             return False

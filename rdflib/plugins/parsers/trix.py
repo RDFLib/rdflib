@@ -269,7 +269,9 @@ class TriXParser(Parser):
         pass
 
     def parse(self, source, sink, **args):
-        assert sink.store.context_aware
+        assert sink.store.context_aware, ("TriXParser must be given"
+                                          " a context aware store.")
+
         g=ConjunctiveGraph(store=sink.store)
         
         self._parser = create_parser(g)
