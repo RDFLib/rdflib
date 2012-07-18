@@ -1,9 +1,13 @@
 import unittest
 
-import rdflib
 from rdflib.term import Literal
 
 from rdflib.store import NodePickler
+
+try:
+    from literals import cases
+except: 
+    from test.literals import cases
 
 
 class UtilTestCase(unittest.TestCase):
@@ -16,13 +20,14 @@ class UtilTestCase(unittest.TestCase):
         b = np.loads(np.dumps(a))
         self.assertEquals(a, b)
 
-    def test_default_namespaces_method(self):
-        g = rdflib.Graph()
-        g.add((rdflib.URIRef("http://example.org/foo#bar1"), 
-               rdflib.URIRef("http://example.org/foo#bar2"),                
-               rdflib.URIRef("http://example.org/foo#bar3")))
-        g.serialize()
+    def test_literal_cases(self): 
+        np = NodePickler()
 
+        for l in cases: 
+            a = Literal(l)
+            b = np.loads(np.dumps(a))
+            self.assertEquals(a, b)
+        
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+    unittest.main()

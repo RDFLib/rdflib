@@ -75,7 +75,6 @@ class NTTestCase(unittest.TestCase):
         data = 3
         self.assertRaises(ntriples.ParseError, p.parsestring, data)
         fname = "test/nt/lists-02.nt"
-        print fname
         data = open(fname, 'r').read()
         p = ntriples.NTriplesParser()
         res = p.parsestring(data)
@@ -116,49 +115,17 @@ class NTTestCase(unittest.TestCase):
         # p.line = '"baz"@fr^^<http://example.org/datatype1>'
         # self.assertRaises(ntriples.ParseError, p.literal)
 
-def check_nt_parse(fpath, fmt):
-    fp = open(fpath, 'rb')
-    p = ntriples.NTriplesParser(sink=ntriples.Sink()) 
-    sink = p.parse(fp) # file; use parsestring for a string
-    fp.close() 
-    assert(sink is not None)
 
-def _get_test_files_formats():
-    for f in os.listdir('test/nt'):
-        fpath = "test/nt/"+f
-        if f.endswith('.rdf'):
-            yield fpath, 'xml'
-        elif f.endswith('.nt'):
-            yield fpath, 'nt'
+try:
+    import literals
+except: 
+    import test.literals as literals
 
-def test_all_nt_serialize():
-    skiptests = [
-        # http://inamidst.com/sw/n3p/test/
-        'test/nt/anons-02.nt',
-        'test/nt/anons-03.nt',
-        'test/nt/formulae-01.nt',
-        'test/nt/formulae-02.nt',
-        'test/nt/formulae-03.nt',
-        'test/nt/formulae-05.nt',
-        'test/nt/formulae-06.nt',
-        'test/nt/formulae-10.nt',
-        'test/nt/keywords-08.nt',
-        'test/nt/lists-06.nt',
-        'test/nt/literals-01.nt',
-        'test/nt/numeric-01.nt',
-        'test/nt/numeric-02.nt',
-        'test/nt/numeric-03.nt',
-        'test/nt/numeric-04.nt',
-        'test/nt/numeric-05.nt',
-        'test/nt/paths-04.nt',
-        'test/nt/paths-06.nt',
-        'test/nt/qname-01.nt',
-        ]
-    for fpath, fmt in _get_test_files_formats():
-        if fpath in skiptests:
-            log.debug("Skipping %s, known issue" % fpath)
-        else:
-            yield check_nt_parse, fpath, fmt
+class TestNTQuoting(literals.LiteralsTestCase):
+    def test_n3(self): 
+        self.quoting('nt')
+
+
 
 if __name__ == "__main__":
     unittest.main()
