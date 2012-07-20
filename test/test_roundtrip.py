@@ -35,11 +35,14 @@ def roundtrip(e, verbose=False):
     
     s=g1.serialize(format=testfmt)
 
+    if verbose: 
+        print "S:"
+        print s
+
     g2=rdflib.ConjunctiveGraph()
     g2.parse(data=s, format=testfmt)
 
     if verbose: 
-        print "S:"
         print s
         print "G1"
         for t in sorted(g1): print t
@@ -53,7 +56,7 @@ formats=None
 
 def test_cases(): 
     global formats 
-    if formats==None:
+    if not formats:
         serializers=set(x.name for x in rdflib.plugin.plugins(None, rdflib.plugin.Serializer))
         parsers=set(x.name for x in rdflib.plugin.plugins(None, rdflib.plugin.Parser))
         formats=parsers.intersection(serializers)
@@ -72,6 +75,6 @@ if __name__ == "__main__":
         nose.main(defaultTest=sys.argv[0])
     elif len(sys.argv)==2: 
         formats=[sys.argv[1]]
-        nose.main(defaultTest=sys.argv[0])
+        nose.main(defaultTest=sys.argv[0], argv=sys.argv[:1])
     else: 
         roundtrip((sys.argv[2],sys.argv[1],sys.argv[3]), verbose=True)
