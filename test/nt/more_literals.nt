@@ -1,0 +1,17 @@
+<http://example.org/subject> <http://example.org/case_1> "no quotes" . 
+<http://example.org/subject> <http://example.org/case_2> "single ' quote" . 
+<http://example.org/subject> <http://example.org/case_3> "double \" quote" .
+<http://example.org/subject> <http://example.org/case_4> "triple \"\"\" quotes" .
+<http://example.org/subject> <http://example.org/case_5> "mixed \"'\"\"\" quotes" .
+<http://example.org/subject> <http://example.org/case_6> "\"" .
+<http://example.org/subject> <http://example.org/case_7> "'" .
+<http://example.org/subject> <http://example.org/case_8> "\"'\"" .
+# len 1
+<http://example.org/subject> <http://example.org/case_9> "\\" .
+# len 2
+<http://example.org/subject> <http://example.org/case_10> "\\\"" . 
+# len 3
+<http://example.org/subject> <http://example.org/case_11> "\\\\\"" . 
+# len 3
+<http://example.org/subject> <http://example.org/case_12> "\\\"\\" . 
+<http://example.org/subject> <http://example.org/case_13> "<a some=\"typical\" html=\"content\">here</a>" .
