@@ -247,6 +247,7 @@ class TriXHandler(handler.ContentHandler):
         raise ParserError(info + message)
 
 
+
 def create_parser(store):
     parser = make_parser()
     try:
