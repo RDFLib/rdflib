@@ -28,32 +28,10 @@ from rdflib.plugins.parsers.ntriples import r_tail
 from rdflib.plugins.parsers.ntriples import r_wspace
 from rdflib.plugins.parsers.ntriples import r_wspaces
 
-__all__ = ['QuadSink', 'NQuadsParser']
+__all__ = ['NQuadsParser']
 
-class QuadSink(object):
-    def __init__(self):
-        class FakeStore(object):
-            def __init__(self, addn):
-                self.addN = addn
-        self.length = 0
-        self.__quads = []
-        self.__store = FakeStore(self.addN)
-        
-    def addN(self, quads):
-        self.length += 1
-        self.__quads.append(quads)
-        
-    def quads(self, (s,p,o)):
-        for s,p,o,ctx in self.__quads:
-            yield s,p,o,ctx
 
 class NQuadsParser(NTriplesParser):
-    def __init__(self, sink=None):
-        if sink is not None:
-            assert sink.store.context_aware, ("NQuadsParser must be given"
-                                          " a context aware store.")
-            self.sink = sink
-        else: self.sink = QuadSink()
 
     def parse(self, inputsource, sink, **kwargs):
         """Parse f as an N-Triples file."""
