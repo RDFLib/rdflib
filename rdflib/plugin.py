@@ -6,7 +6,8 @@ store, query processor, and query result. Plugins can be registered
 either through setuptools entry_points or by calling
 rdf.plugin.register directly.
 
-If you have a package that uses a setuptools based setup.py you can add the following to your setup::
+If you have a package that uses a setuptools based setup.py you can add the
+following to your setup::
 
     entry_points = {
         'rdf.plugins.parser': [
@@ -17,7 +18,8 @@ If you have a package that uses a setuptools based setup.py you can add the foll
             ],
         }
 
-See the `setuptools dynamic discovery of services and plugins`__ for more information.
+See the `setuptools dynamic discovery of services and plugins`__ for more
+information.
 
 .. __: http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
 
@@ -101,7 +103,7 @@ def get(name, kind):
 try:
     from pkg_resources import iter_entry_points
 except ImportError:
-    pass # TODO: log a message
+    pass  # TODO: log a message
 else:
     # add the plugins specified via pkg_resources' EntryPoints.
     for entry_point, kind in entry_points.iteritems():
@@ -116,30 +118,32 @@ def plugins(name=None, kind=None):
     Pass in name and kind to filter... else leave None to match all.
     """
     for p in _plugins.values():
-        if (name is None or name==p.name) and (kind is None or kind==p.kind):
+        if (name is None or name == p.name) and (kind is None or kind == p.kind):
             yield p
 
-register('default', Store, 
+register('default', Store,
                 'rdflib.plugins.memory', 'IOMemory')
-register('IOMemory', Store, 
+register('IOMemory', Store,
                 'rdflib.plugins.memory', 'IOMemory')
-register('Sleepycat', Store, 
+register('Sleepycat', Store,
                 'rdflib.plugins.sleepycat', 'Sleepycat')
 
-register('xml', Serializer, 
+register('xml', Serializer,
                 'rdflib.plugins.serializers.rdfxml', 'XMLSerializer')
-register('n3', Serializer, 
-                'rdflib.plugins.serializers.n3','N3Serializer')
-register('turtle', Serializer, 
+register('n3', Serializer,
+                'rdflib.plugins.serializers.n3', 'N3Serializer')
+register('turtle', Serializer,
                 'rdflib.plugins.serializers.turtle', 'TurtleSerializer')
-register('nt', Serializer, 
+register('trig', Serializer,
+                'rdflib.plugins.serializers.trig', 'TrigSerializer')
+register('nt', Serializer,
                 'rdflib.plugins.serializers.nt', 'NTSerializer')
 register('pretty-xml', Serializer,
                 'rdflib.plugins.serializers.rdfxml', 'PrettyXMLSerializer')
 register('trix', Serializer,
                 'rdflib.plugins.serializers.trix', 'TriXSerializer')
-register("nquads", Serializer, 
-                 'rdflib.plugins.serializers.nquads', 'NQuadsSerializer')
+register("nquads", Serializer,
+                'rdflib.plugins.serializers.nquads', 'NQuadsSerializer')
 
 register('application/rdf+xml', Parser,
                 'rdflib.plugins.parsers.rdfxml', 'RDFXMLParser')
@@ -147,19 +151,17 @@ register('text/html', Parser,
                 'rdflib.plugins.parsers.rdfa', 'RDFaParser')
 register('application/xhtml+xml', Parser,
                 'rdflib.plugins.parsers.rdfa', 'RDFaParser')
-register('xml', Parser, 
+register('xml', Parser,
                 'rdflib.plugins.parsers.rdfxml', 'RDFXMLParser')
-register('n3', Parser, 
+register('n3', Parser,
                 'rdflib.plugins.parsers.notation3', 'N3Parser')
-register('turtle', Parser, 
+register('turtle', Parser,
                 'rdflib.plugins.parsers.notation3', 'N3Parser')
-register('nt', Parser, 
+register('nt', Parser,
                 'rdflib.plugins.parsers.nt', 'NTParser')
-register('nquads', Parser, 
+register('nquads', Parser,
                 'rdflib.plugins.parsers.nquads', 'NQuadsParser')
-register('trix', Parser, 
+register('trix', Parser,
                 'rdflib.plugins.parsers.trix', 'TriXParser')
-register('rdfa', Parser, 
+register('rdfa', Parser,
                 'rdflib.plugins.parsers.rdfa', 'RDFaParser')
-
-register("nquads", Parser, "rdflib.plugins.parsers.nquads", "NQuadsParser")
