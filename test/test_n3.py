@@ -173,14 +173,6 @@ foo-bar:Ex foo-bar:name "Test" . """
             raise SkipTest('No network to retrieve the information, skipping test')
 
 
-try:
-    import literals
-except: 
-    import test.literals as literals
-
-class TestN3Quoting(literals.LiteralsTestCase):
-    def test_n3(self): 
-        self.quoting('n3')
 
 if __name__ == '__main__':
     unittest.main()

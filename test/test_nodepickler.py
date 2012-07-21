@@ -4,10 +4,22 @@ from rdflib.term import Literal
 
 from rdflib.store import NodePickler
 
-try:
-    from literals import cases
-except: 
-    from test.literals import cases
+# same as nt/more_literals.nt
+cases = [
+    'no quotes',
+    "single ' quote",
+    'double " quote',
+    'triple """ quotes',
+    'mixed "\'""" quotes',
+    '"',
+    "'",
+    '"\'"',
+    '\\', # len 1
+    '\\"', # len 2
+    '\\\\"', # len 3
+    '\\"\\', # len 3
+    '<a some="typical" html="content">here</a>',
+]
 
 
 class UtilTestCase(unittest.TestCase):

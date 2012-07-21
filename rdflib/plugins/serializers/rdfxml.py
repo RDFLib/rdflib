@@ -15,6 +15,8 @@ from rdflib.py3compat import b
 
 from xml.sax.saxutils import quoteattr, escape
 
+from xmlwriter import ESCAPE_ENTITIES
+
 __all__ = ['fix', 'XMLSerializer', 'PrettyXMLSerializer']
 
 class XMLSerializer(Serializer):
@@ -123,7 +125,7 @@ class XMLSerializer(Serializer):
 
             write("%s<%s%s>%s</%s>\n" %
                   (indent, qname, attributes,
-                   escape(object), qname) )
+                   escape(object, ESCAPE_ENTITIES), qname) )
         else:
 
             if isinstance(object, BNode):

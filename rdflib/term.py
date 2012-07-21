@@ -828,10 +828,10 @@ class Literal(Identifier):
                 encoded = encoded.replace('"""','\\"\\"\\"')
             if encoded.endswith('"'):
                 encoded = encoded[:-1] + "\\\""
-            return '"""%s"""' % encoded
+            return '"""%s"""' % encoded.replace('\r','\\r')
         else:
             return '"%s"' % self.replace('\n','\\n').replace('\\', '\\\\'
-                            ).replace('"', '\\"')
+                            ).replace('"', '\\"').replace('\r','\\r')
 
     if not py3compat.PY3:
         def __str__(self):

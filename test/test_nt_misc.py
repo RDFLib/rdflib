@@ -116,17 +116,6 @@ class NTTestCase(unittest.TestCase):
         # self.assertRaises(ntriples.ParseError, p.literal)
 
 
-try:
-    import literals
-except: 
-    import test.literals as literals
-
-class TestNTQuoting(literals.LiteralsTestCase):
-    def test_n3(self): 
-        self.quoting('nt')
-
-
-
 if __name__ == "__main__":
     unittest.main()
 
