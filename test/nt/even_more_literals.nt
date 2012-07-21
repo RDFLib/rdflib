@@ -1,0 +1,24 @@
+<http://example.org/subject> <http://example.org/lit> "#Mahlzeit\rHeute servieren wir Rote Rüben Steak, keine blutige Sache. Hier geht's zum Rezept: http://t.co/tADgp01z" .
+<http://example.org/subject> <http://example.org/lit> "test!!!\r\n\r\n" .
+<http://example.org/subject> <http://example.org/lit> "abc\ndef\"\"\"" .
+<http://example.org/subject> <http://example.org/lit> "abc\ndef\"\"\"\"\"\"" .
+# WORKING:
+<http://example.org/subject> <http://example.org/lit> "\"\"\"\n\"\"\"\"\n\n\\n\n\n\nnnnn\"\"" .
+<http://example.org/subject> <http://example.org/lit> "abc\ndef\"" .
+<http://example.org/subject> <http://example.org/lit> "abc\ndef\"\"" .
+<http://example.org/subject> <http://example.org/lit> "abc\ndef\"\"\"\"" .
+<http://example.org/subject> <http://example.org/lit> "abc\ndef\"\"\"\"\"" .
+<http://example.org/subject> <http://example.org/lit> "\"Something\" quite normal. \"here\"." .
+<http://example.org/subject> <http://example.org/lit> "\"\"\"" .
+<http://example.org/subject> <http://example.org/lit> "\"\"\"\"\"\"\"\"" .
+<http://example.org/subject> <http://example.org/lit> "\"\"\"'\"" .
+<http://example.org/subject> <http://example.org/lit> "\"" .
+<http://example.org/subject> <http://example.org/lit> "\"\"\"'''" .
+<http://example.org/subject> <http://example.org/lit> "'\"\"" .
+<http://example.org/subject> <http://example.org/lit> "Newline written differently: \u000a" .
+<http://example.org/subject> <http://example.org/lit> "fdsafdaf \"\"\"\"\"\"\"\"\" \n " .
+<http://example.org/subject> <http://example.org/lit> "fdsafdaf \"\"\" \n " .
+<http://example.org/subject> <http://example.org/lit> "String with\na\nnewline\ninside." .
+<http://example.org/subject> <http://example.org/lit> "http://www.eurohandball.com\"www.eurohandball.com\n\nactivities.eurohandball.com\n\nebt.eurohandball.com\n\n\u00A0\n" .
+<http://example.org/subject> <http://example.org/lit> "\"\n" .
+<http://example.org/subject> <http://example.org/lit> "\nnn\\\\\n\nnnn\n\n\\n\n\\nn\\nn\n\nn\n\/\\" .

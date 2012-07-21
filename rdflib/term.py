@@ -818,16 +818,12 @@ class Literal(Identifier):
         # NOTE: Could in theory chose quotes based on quotes appearing in the
         # string, i.e. '"' and "'", but N3/turtle doesn't allow "'"(?).
 
-        # which is nicer?
-        # if self.find("\"")!=-1 or self.find("'")!=-1 or self.find("\n")!=-1:
         if "\n" in self:
             # Triple quote this string.
             encoded = self.replace('\\', '\\\\')
             if '"""' in self:
                 # is this ok?
                 encoded = encoded.replace('"""','\\"\\"\\"')
-            if encoded.endswith('"'):
-                encoded = encoded[:-1] + "\\\""
             return '"""%s"""' % encoded.replace('\r','\\r')
         else:
             return '"%s"' % self.replace('\n','\\n').replace('\\', '\\\\'
