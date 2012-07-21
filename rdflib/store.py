@@ -258,6 +258,13 @@ class Store(object):
         contexts the triple is in.
         """
 
+    def query(self, query, initNs, initBindings, **kwargs): 
+        """
+        If stores provide their own SPARQL implementation, override this.
+        """
+        
+        raise NotImplemented
+
     # Optional Namespace methods
 
     def bind(self, prefix, namespace):

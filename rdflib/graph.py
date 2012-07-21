@@ -308,11 +308,11 @@ class Graph(Node):
 
     def __get_store(self):
         return self.__store
-    store = property(__get_store)
+    store = property(__get_store) # read-only attr
 
     def __get_identifier(self):
         return self.__identifier
-    identifier = property(__get_identifier)
+    identifier = property(__get_identifier) # read-only attr
 
     def _get_namespace_manager(self):
         if self.__namespace_manager is None:
@@ -446,8 +446,7 @@ class Graph(Node):
     def __iadd__(self, other):
         """Add all triples in Graph other to Graph. 
            BNode IDs are not changed."""
-        for triple in other:
-            self.add(triple)
+        self.addN((s,p,o,self) for s,p,o in other)
         return self
 
     def __isub__(self, other):
@@ -910,7 +909,10 @@ class Graph(Node):
         """
         """
         if hasattr(self.store, "query") and use_store_provided:
-            return self.store.query(self, query_object, initNs, initBindings, **kwargs)
+            try: 
+                return self.store.query(self, query_object, initNs, initBindings, **kwargs)
+            except NotImplemented:
+                pass # store has no own implementation
 
         if not isinstance(result, query.Result):
             result = plugin.get(result, query.Result)
@@ -1051,7 +1053,7 @@ class ConjunctiveGraph(Graph):
 
     def addN(self, quads):
         """Add a sequence of triples with context"""
-        self.store.addN(quad for quad in quads if quad not in self)
+        self.store.addN(quads)
 
     def remove(self, (s, p, o)):
         """Removes from all its contexts"""
