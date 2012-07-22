@@ -6,9 +6,9 @@ import rdflib.compare
 from nose.exc import SkipTest
 
 try: 
-    from test_nt_suite import all_nt_tests
+    from test_nt_suite import all_nt_files
 except: 
-    from test.test_nt_suite import all_nt_tests
+    from test.test_nt_suite import all_nt_files
 
 """
 Test round-tripping by all serializers/parser that are registerd. 
@@ -66,7 +66,7 @@ def test_cases():
 
     for testfmt in formats:
             
-        for f,infmt in all_nt_tests():
+        for f,infmt in all_nt_files():
             yield roundtrip, (infmt, testfmt,f)
     
 

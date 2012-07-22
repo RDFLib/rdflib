@@ -2354,7 +2354,28 @@ def hexify(ustr):
 #    return delim + res + delim
 
 
-class N3Parser(Parser):
+
+class TurtleParser(Parser):
+
+    def __init__(self):
+        pass
+
+    def parse(self, source, graph, encoding="utf-8"):
+
+        if encoding not in [None, "utf-8"]:
+            raise Exception("N3/Turtle files are always utf-8 encoded, I was passed: %s" % encoding)
+
+        sink = RDFSink(graph)
+
+        baseURI = graph.absolutize(source.getPublicId() or source.getSystemId() or "")
+        p = SinkParser(sink, baseURI=baseURI)
+
+        p.loadStream(source.getByteStream())
+
+        for prefix, namespace in p._bindings.items():
+            graph.bind(prefix, namespace)
+
+class N3Parser(TurtleParser):
 
     def __init__(self):
         pass
@@ -2364,22 +2385,12 @@ class N3Parser(Parser):
         assert graph.store.context_aware  # is this implied by formula_aware
         assert graph.store.formula_aware
 
-        if encoding not in [None, "utf-8"]:
-            raise Exception("N3 files are always utf-8 encoded, I was passed: %s" % encoding)
-
         conj_graph = ConjunctiveGraph(store=graph.store)
         conj_graph.default_context = graph  # TODO: CG __init__ should have a default_context arg
          # TODO: update N3Processor so that it can use conj_graph as the sink
         conj_graph.namespace_manager = graph.namespace_manager
-        sink = RDFSink(conj_graph)
-
-        baseURI = graph.absolutize(source.getPublicId() or source.getSystemId() or "")
-        p = SinkParser(sink, baseURI=baseURI)
-
-        p.loadStream(source.getByteStream())
-
-        for prefix, namespace in p._bindings.items():
-            conj_graph.bind(prefix, namespace)
+    
+        TurtleParser.parse(self,source,conj_graph,encoding)
 
 
 def _test():

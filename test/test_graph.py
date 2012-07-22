@@ -298,7 +298,7 @@ class GraphTestCase(unittest.TestCase):
 
         failed = set()
         for p in rdflib.plugin.plugins(None, rdflib.plugin.Serializer):
-            if p.name is not 'nquads':
+            if p.name not in ( 'nquads', 'trix' ):
                 v = self.graph.serialize(format=p.name)
                 lines = v.split(b("\n"))
                 if b("\n") not in v or (lines[-1]!=b('')):

@@ -4,10 +4,6 @@ import logging
 
 log = logging.getLogger(__name__)
 
-try: 
-    from testutils import check_serialize_parse
-except:
-    from test.testutils import check_serialize_parse
 
 """
 Basic code for loading all NT files in test/nt folder
@@ -22,7 +18,7 @@ def _get_test_files_formats():
         elif f.endswith('.nt'):
             yield fpath, 'nt'
 
-def all_nt_tests():
+def all_nt_files():
     skiptests = [        
         # illegal literal as subject
         'test/nt/literals-01.nt', 
