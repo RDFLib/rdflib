@@ -1,10 +1,9 @@
-from rdflib.namespace import RDF, RDFS
+import sys
 
-from rdflib.term import URIRef
-from rdflib.term import BNode
-from rdflib.term import Variable
+from rdflib import RDF, RDFS, URIRef, BNode, Variable, plugin
+from rdflib.graph import QuotedGraph, ConjunctiveGraph
 
-from rdflib.graph import QuotedGraph,ConjunctiveGraph
+from tempfile import mkdtemp
 
 implies = URIRef("http://www.w3.org/2000/10/swap/log#implies")
 testN3="""
@@ -15,13 +14,20 @@ testN3="""
 _:foo a rdfs:Class.
 :a :d :c."""
 
+from nose.tools import nottest
 
 #Thorough test suite for formula-aware store
-def testN3Store(store="default", configString=None):
+@nottest
+def testFormulaStore(store="default", configString=None):
     g = ConjunctiveGraph(store=store)
+
+
     if configString:
         g.destroy(configString)
         g.open(configString)
+    else: 
+        g.open(mkdtemp(), create=True)
+
     g.parse(data=testN3, format="n3")
     print g.store
     try:
@@ -85,8 +91,28 @@ def testN3Store(store="default", configString=None):
         universe.remove((None,None,None))
         assert len(universe)==0
 
+        g.close()
         g.store.destroy(configString)
     except:
+        g.close()
         g.store.destroy(configString)
         raise
 
+
+def testFormulaStores(): 
+    pluginname=None
+    if __name__=='__main__':
+        if len(sys.argv)>1:
+            pluginname=sys.argv[1]
+
+    for s in plugin.plugins(pluginname, plugin.Store):
+        if not s.getClass().formula_aware: continue
+
+        yield testFormulaStore, s.name
+
+
+
+
+if __name__ == '__main__':
+    import nose
+    nose.main(defaultTest=sys.argv[0])

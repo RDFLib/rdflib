@@ -1,17 +1,17 @@
+import sys
 import unittest
 
 from tempfile import mkdtemp
 import shutil
-from rdflib.graph import Graph, ConjunctiveGraph
-from rdflib.term import URIRef, BNode
+from rdflib import Graph, ConjunctiveGraph, URIRef, BNode, plugin
 
 class ContextTestCase(unittest.TestCase):
-    #store = 'Memory'
     store = 'default'
     slow = True
     tmppath = None
 
     def setUp(self):
+        print self.store
         self.graph = ConjunctiveGraph(store=self.store)
         if self.store == "MySQL":
             from mysql import configString
@@ -314,6 +314,22 @@ class ContextTestCase(unittest.TestCase):
         self.removeStuff()
         asserte(len(list(c1triples((Any, Any, Any)))), 0)
         asserte(len(list(triples((Any, Any, Any)))), 0)
+
+# dynamically create classes for each registered Store
+
+pluginname=None
+if __name__=='__main__':
+    if len(sys.argv)>1:
+        pluginname=sys.argv[1]
+
+tests=0
+for s in plugin.plugins(pluginname, plugin.Store):
+    if s.name in ('default', 'IOMemory'): continue # these are tested by default
+    if not s.getClass().context_aware: continue
+
+    locals()["t%d"%tests]=type("%sContextTestCase"%s.name, (ContextTestCase,), { "store": s.name })    
+    tests+=1
+
 
 
 if __name__ == '__main__':
