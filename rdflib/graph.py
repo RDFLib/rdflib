@@ -1026,7 +1026,7 @@ class ConjunctiveGraph(Graph):
     """
 
     def __init__(self, store='default', identifier=None):
-        super(ConjunctiveGraph, self).__init__(store)
+        super(ConjunctiveGraph, self).__init__(store, identifier=identifier)
         assert self.store.context_aware, ("ConjunctiveGraph must be backed by"
                                           " a context aware store.")
         self.context_aware = True
