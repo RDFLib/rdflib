@@ -147,10 +147,6 @@ register("nquads", Serializer,
 
 register('application/rdf+xml', Parser,
                 'rdflib.plugins.parsers.rdfxml', 'RDFXMLParser')
-register('text/html', Parser,
-                'rdflib.plugins.parsers.rdfa', 'RDFaParser')
-register('application/xhtml+xml', Parser,
-                'rdflib.plugins.parsers.rdfa', 'RDFaParser')
 register('xml', Parser,
                 'rdflib.plugins.parsers.rdfxml', 'RDFXMLParser')
 register('n3', Parser,
@@ -163,5 +159,17 @@ register('nquads', Parser,
                 'rdflib.plugins.parsers.nquads', 'NQuadsParser')
 register('trix', Parser,
                 'rdflib.plugins.parsers.trix', 'TriXParser')
-register('rdfa', Parser,
-                'rdflib.plugins.parsers.rdfa', 'RDFaParser')
+
+# Various combination of structured data in files: microdata, RDFa
+# Big question whether the distribution would point at the RDFa 1.1 parser for 'rdfa' or stay,
+# due to backward compatibility, by the old, 1.0 version...
+register('rdfa',                  Parser, 'rdflib.plugins.parsers.rdfa', 'RDFaParser')
+register('rdfa1.0',               Parser, 'rdflib.plugins.parsers.rdfa', 'RDFaParser')
+# Various combination with 1.1
+register('text/html',             Parser, 'rdflib.plugins.parsers.structureddata', 'StructuredDataParser')
+register('application/xhtml+xml', Parser, 'rdflib.plugins.parsers.structureddata', 'RDFaParser')
+register('application/svg+xml',   Parser, 'rdflib.plugins.parsers.structureddata', 'RDFaParser')
+register('rdfa1.1',               Parser, 'rdflib.plugins.parsers.structureddata', 'RDFaParser')
+register('mdata',                 Parser, 'rdflib.plugins.parsers.structureddata', 'MicrodataParser')
+register('microdata',             Parser, 'rdflib.plugins.parsers.structureddata', 'MicrodataParser')
+register('html',                  Parser, 'rdflib.plugins.parsers.structureddata', 'StructuredDataParser')
