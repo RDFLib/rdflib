@@ -9,8 +9,8 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 
 """
-$Id: utils.py,v 1.6 2012/08/22 12:08:52 ivan Exp $
-$Date: 2012/08/22 12:08:52 $
+$Id: utils.py,v 1.7 2012/09/01 15:17:28 ivan Exp $
+$Date: 2012/09/01 15:17:28 $
 """
 import os, os.path, sys
 (py_v_major, py_v_minor, py_v_micro, py_v_final, py_v_serial) = sys.version_info
@@ -111,7 +111,10 @@ def get_Literal(Pnode):
 			
 	# This presupposes that all spaces and such should be stripped. I am not sure it is true in the spec,
 	# but this is what the examples show
-	return re.sub(r'(\r| |\n|\t)+'," ",rc).strip()
+	# return re.sub(r'(\r| |\n|\t)+'," ",rc).strip()
+	
+	# at present, the agreement seems to say that white spaces are maintained:
+	return rc
 
 #################################################################################
 def get_lang(node) :
