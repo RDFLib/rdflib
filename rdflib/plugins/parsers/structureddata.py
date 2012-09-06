@@ -93,7 +93,7 @@ class MicrodataParser(Parser) :
 				source.file.close()
 							
 			baseURI      = source.getPublicId()
-			processor    = pyMicrodata(base = baseURI)
+			processor    = pyMicrodata(base = baseURI, vocab_expansion = vocab_expansion, vocab_cache = vocab_cache)
 			processor.graph_from_source(orig_source, graph=graph, rdfOutput = rdfOutput)
 		finally :
 			sys.path.pop(0)
@@ -147,7 +147,7 @@ class StructuredDataParser(Parser) :
 			
 			# The Microdata part
 			from pyMicrodata import pyMicrodata
-			processor    = pyMicrodata(base = baseURI)
+			processor    = pyMicrodata(base = baseURI, vocab_expansion = vocab_expansion, vocab_cache = vocab_cache)
 			processor.graph_from_source(orig_source, graph=graph, rdfOutput = rdfOutput)
 		finally :
 			sys.path.pop(0)

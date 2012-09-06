@@ -12,8 +12,8 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 
 """
-$Id: registry.py,v 1.4 2012/03/26 13:18:31 ivan Exp $
-$Date: 2012/03/26 13:18:31 $
+$Id: registry.py,v 1.5 2012/09/05 16:40:43 ivan Exp $
+$Date: 2012/09/05 16:40:43 $
 """
 
 import sys
@@ -25,35 +25,36 @@ _registry = """
     "propertyURI":    "vocabulary",
     "multipleValues": "unordered",
     "properties": {
-      "blogPosts": {"multipleValues": "list"},
-      "breadcrumb": {"multipleValues": "list"},
-      "byArtist": {"multipleValues": "list"},
-      "creator": {"multipleValues": "list"},
-      "episodes": {"multipleValues": "list"},
-      "events": {"multipleValues": "list"},
-      "founders": {"multipleValues": "list"},
-      "itemListElement": {"multipleValues": "list"},
-      "musicGroupMember": {"multipleValues": "list"},
-      "performerIn": {"multipleValues": "list"},
-      "performers": {"multipleValues": "list"},
-      "producer": {"multipleValues": "list"},
-      "recipeInstructions": {"multipleValues": "list"},
-      "seasons": {"multipleValues": "list"},
-      "subEvents": {"multipleValues": "list"},
-      "tracks": {"multipleValues": "list"}
+      "blogPosts"          : {"multipleValues": "list"},
+      "breadcrumb"         : {"multipleValues": "list"},
+      "byArtist"           : {"multipleValues": "list"},
+      "creator"            : {"multipleValues": "list"},
+      "episodes"           : {"multipleValues": "list"},
+      "events"             : {"multipleValues": "list"},
+      "founders"           : {"multipleValues": "list"},
+      "itemListElement"    : {"multipleValues": "list"},
+      "musicGroupMember"   : {"multipleValues": "list"},
+      "performerIn"        : {"multipleValues": "list"},
+      "performers"         : {"multipleValues": "list"},
+      "producer"           : {"multipleValues": "list"},
+      "recipeInstructions" : {"multipleValues": "list"},
+      "seasons"            : {"multipleValues": "list"},
+      "subEvents"          : {"multipleValues": "list"},
+      "tracks"             : {"multipleValues": "list"},
+	    "additionalType"     : {"subPropertyOf" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"}
     }
   },
   "http://xmlns.com/foaf/0.1/": {
-    "propertyURI":    "vocabulary",
-    "multipleValues": "unordered"
+    "propertyURI"    : "vocabulary",
+    "multipleValues" : "unordered"
   },
   "http://microformats.org/profile/hcard": {
-    "propertyURI":    "vocabulary",
-    "multipleValues": "unordered"
+    "propertyURI"    : "vocabulary",
+    "multipleValues" : "unordered"
   },
   "http://microformats.org/profile/hcalendar#": {
-    "propertyURI":    "vocabulary",
-    "multipleValues": "unordered",
+    "propertyURI"    : "vocabulary",
+    "multipleValues" : "unordered",
     "properties": {
       "categories": {"multipleValues": "list"}
     }
@@ -63,7 +64,7 @@ _registry = """
 
 vocab_names = {
 	"http://schema.org/"                         : "schema",
-	"http://xmlns.com/foaf/0.1/"     			 : "foaf",
+	"http://xmlns.com/foaf/0.1/"     			       : "foaf",
 	"http://microformats.org/profile/hcard#"     : "hcard",
 	"http://microformats.org/profile/hcalendar#" : "hcalendar"
 }
@@ -72,8 +73,8 @@ vocab_names = {
 _myRegistry = """
 {
   "http://n.whatwg.org/work": {
-    "propertyURI":    "contextual",
-    "multipleValues": "list"
+    "propertyURI"    : "contextual",
+    "multipleValues" : "list"
   } 
 }
 """
@@ -91,7 +92,6 @@ else :
 
 for (k,v) in list(myRegistry.items()) : registry[k] = v
 
-		
 
 
 

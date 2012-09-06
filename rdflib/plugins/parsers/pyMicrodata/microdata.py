@@ -13,8 +13,8 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 
 """
-$Id: microdata.py,v 1.3 2012/03/26 13:18:31 ivan Exp $
-$Date: 2012/03/26 13:18:31 $
+$Id: microdata.py,v 1.4 2012/09/05 16:40:43 ivan Exp $
+$Date: 2012/09/05 16:40:43 $
 
 Added a reaction on the RDFaStopParsing exception: if raised while setting up the local execution context, parsing
 is stopped (on the whole subtree)
@@ -25,6 +25,8 @@ if sys.version_info[0] >= 3 :
 	from urllib.parse import urlsplit, urlunsplit
 else :	
 	from urlparse import urlsplit, urlunsplit
+
+from types import *
 
 import rdflib
 from rdflib	import URIRef
@@ -39,12 +41,15 @@ else :
 	from rdflib.Graph	import Graph
 	from rdflib.RDFS	import RDFSNS as ns_rdfs
 	from rdflib.RDF		import RDFNS  as ns_rdf
+	
+ns_owl = Namespace("http://www.w3.org/2002/07/owl#")
 
 from pyMicrodata.registry import registry, vocab_names
 from pyMicrodata.utils	  import generate_RDF_collection, get_Literal, get_time_type
 from pyMicrodata.utils	  import get_lang_from_hierarchy, is_absolute_URI, generate_URI, fragment_escape
 
-MD_VOCAB = "http://www.w3.org/ns/md#"
+MD_VOCAB   = "http://www.w3.org/ns/md#"
+RDFA_VOCAB = URIRef("http://www.w3.org/ns/rdfa#usesVocabulary")
 
 from pyMicrodata import debug
 
@@ -126,8 +131,8 @@ class Evaluation_Context :
 		
 class Microdata :
 	"""
-	This class encapsulates methods that are defined by the U{microdata spec<http://dev.w3.org/html5/md/Overview.html>}, as opposed to
-	the RDF conversion note.
+	This class encapsulates methods that are defined by the U{microdata spec<http://dev.w3.org/html5/md/Overview.html>},
+	as opposed to the RDF conversion note.
 	
 	@ivar document: top of the DOM tree, as returned by the HTML5 parser
 	@ivar base: the base URI of the Dom tree, either set from the outside or via a @base element
@@ -174,13 +179,12 @@ class Microdata :
 		
 	def get_item_properties( self, item ) :
 		"""
-		Collect the item's properties, ie, all DOM descendent nodes with @itemprop until the subtree hits another @itemscope. @itemrefs are also added at this point.
+		Collect the item's properties, ie, all DOM descendent nodes with @itemprop until the subtree hits another
+		@itemscope. @itemrefs are also added at this point.
 		
 		@param item: current item
 		@type item: DOM Node
 		@return: array of items, ie, DOM Nodes
-		
-		
 		"""
 		# go down the tree until another itemprop is hit, take care of the itemrefs, too; see the microdata doc
 		# probably the ugliest stuff
@@ -237,7 +241,6 @@ class Microdata :
 		else :
 			return None
 				
-
 class MicrodataConversion(Microdata) :
 	"""
 	Top level class encapsulating the conversion algorithms as described in the W3C note.
@@ -248,17 +251,24 @@ class MicrodataConversion(Microdata) :
 	@ivar ns_md: the Namespace for the microdata vocabulary
 	@ivar base: the base of the Dom tree, either set from the outside or via a @base element
 	"""
-	def __init__( self, document, graph, base = None ) :
+	def __init__( self, document, graph, base = None, vocab_expansion = False, vocab_cache = True  ) :
 		"""
 		@param graph: an RDF graph; an RDFLib Graph
 		@type graph: RDFLib Graph
 		@param document: top of the DOM tree, as returned by the HTML5 parser
-		@param base: the base of the Dom tree, either set from the outside or via a @base element
+		@keyword base: the base of the Dom tree, either set from the outside or via a @base element
+		@keyword vocab_expansion: whether vocab expansion should be performed or not
+		@type vocab_expansion: Boolean
+		@keyword vocab_cache: if vocabulary expansion is done, then perform caching of the vocabulary data
+		@type vocab_cache: Boolean
 		"""
 		Microdata.__init__(self, document, base)
-		self.graph    = graph
-		self.ns_md    = Namespace( MD_VOCAB )
+		self.vocab_expansion   = vocab_expansion
+		self.vocab_cache       = vocab_cache
+		self.graph             = graph
+		self.ns_md             = Namespace( MD_VOCAB )
 		self.graph.bind( "md",MD_VOCAB )
+		self.vocabularies_used = False
 
 		# Get the vocabularies defined in the registry bound to proper names, if any...
 
@@ -280,13 +290,17 @@ class MicrodataConversion(Microdata) :
 					self.graph.bind( vocab_names[hvocab],hvocab )
 					
 		# Add the prefixes defined in the RDFa initial context to improve the outlook of the output
-		from pyRdfa.initialcontext import initial_context
-		vocabs = initial_context["http://www.w3.org/2011/rdfa-context/rdfa-1.1"].ns
-		for prefix in list(vocabs.keys()) :
-			uri = vocabs[prefix]
-			if uri not in registry :
-				# if it is in the registry, then it may have needed some special microdata massage...
-				self.graph.bind( prefix,uri )
+		# I put this into a try: except: in case the pyRdfa package is not available...
+		try :
+			from pyRdfa.initialcontext import initial_context
+			vocabs = initial_context["http://www.w3.org/2011/rdfa-context/rdfa-1.1"].ns
+			for prefix in list(vocabs.keys()) :
+				uri = vocabs[prefix]
+				if uri not in registry :
+					# if it is in the registry, then it may have needed some special microdata massage...
+					self.graph.bind( prefix,uri )
+		except :
+			pass
 		
 	def convert( self ) :
 		"""
@@ -300,6 +314,33 @@ class MicrodataConversion(Microdata) :
 		list = generate_RDF_collection( self.graph, item_list )
 		self.graph.add( (URIRef(self.base),self.ns_md["item"],list) )
 		
+		# If the vocab expansion is also switched on, this is the time to do it.
+		# I have put this into a try:... except:, because there is a dependency on the pyRdfa package. If that
+		# is not available, the rest of the processing should go on...
+		# if self.vocab_expansion and vocabularies_used > 0 :
+		# 	try :
+		# 		from pyRdfa.rdfs.process import MiniOWL
+		# 		MiniOWL(self.graph).closure()
+		# 	except :
+		# 		pass
+
+		# This is the version with my current proposal: the basic expansion is always there;
+		# the follow-your-nose inclusion of vocabulary is optional
+		if self.vocabularies_used :
+			try :
+				from pyRdfa.rdfs.process import MiniOWL, process_rdfa_sem
+				from pyRdfa.options import Options
+				# if we did not get here, the pyRdfa package could not be
+				# imported. Too bad, but life should go on in the except branch...
+				if self.vocab_expansion :
+					# This is the full deal
+					options = Options(vocab_expansion = self.vocab_expansion, vocab_cache = self.vocab_cache)
+					process_rdfa_sem(self.graph, options)
+				else :
+					MiniOWL(self.graph).closure()
+			except :
+				pass
+
 	def generate_triples( self, item, context ) :
 		"""
 		Generate the triples for a specific item. See the W3C Note for the details.
@@ -339,14 +380,17 @@ class MicrodataConversion(Microdata) :
 				itype = context.current_type
 			else :
 				itype = None
-				
-		# Step 7, 8: Check the registry for possible keys and set the vocab
+
+		# Step 7, 8, 9: Check the registry for possible keys and set the vocab
 		vocab = None
 		if itype != None :
 			for key in list(registry.keys()) :
 				if itype.startswith(key) :
 					# There is a predefined vocabulary for this type...
 					vocab = key
+					# Step 7: Issue an rdfa usesVocabulary triple
+					self.graph.add( (URIRef(self.base), RDFA_VOCAB, URIRef(vocab)))
+					self.vocabularies_used = True
 					break
 			# The registry has not set the vocabulary; has to be extracted from the type
 			if vocab == None :
@@ -364,8 +408,6 @@ class MicrodataConversion(Microdata) :
 			context.current_vocabulary = vocab
 		elif item.hasAttribute("itemtype") :
 			context.current_vocabulary = None
-			
-		# context.current_vocabulary = vocab	
 
 		# Step 10: set up a property list; this will be used to generate triples later.
 		# each entry in the dictionary is an array of RDF objects
@@ -413,7 +455,11 @@ class MicrodataConversion(Microdata) :
 		# Step 2: if type is none, that this is just used as a fragment
 		# if not context.current_type  :
 		if context.current_type == None and context.current_vocabulary == None  :
-			return generate_URI( self.base, name )
+			if self.base[-1] == '#' :
+				b = self.base[:-1]
+			else :
+				b = self.base
+			return b + '#' + fragment_escape(name)
 
 		#if context.current_type == None :
 		#	return generate_URI( self.base, name )
@@ -435,16 +481,51 @@ class MicrodataConversion(Microdata) :
 			# s = context.current_type
 			if s != None and s.startswith("http://www.w3.org/ns/md?type=") :
 				# Step 5.2
-				return s + '.' + name
+				expandedURI = s + '.' + name
 			else :
 				# Step 5.3
-				return "http://www.w3.org/ns/md?type=" + fragment_escape(context.current_type) + "&prop=" + name
+				expandedURI =  "http://www.w3.org/ns/md?type=" + fragment_escape(context.current_type) + "&prop=" + name
 		else :
 			# Step 4
 			if context.current_vocabulary[-1] == '#' or context.current_vocabulary[-1] == '/' :
-				return context.current_vocabulary + name
+				expandedURI =  context.current_vocabulary + name
 			else :
-				return context.current_vocabulary + '#' + name
+				expandedURI =  context.current_vocabulary + '#' + name
+
+		# see if there are subproperty/equivalentproperty relations
+		try :
+			vocab_mapping = registry[context.current_vocabulary]["properties"][name]
+			# if we got that far, we may have some mappings
+
+			expandedURIRef = URIRef(expandedURI)
+			try :
+				subpr = vocab_mapping["subPropertyOf"]
+				if subpr != None :
+					if isinstance(subpr,list) :
+						for p in subpr :
+							self.graph.add( (expandedURIRef, ns_rdfs["subPropertyOf"], URIRef(p)) )
+					else :
+						self.graph.add( (expandedURIRef, ns_rdfs["subPropertyOf"], URIRef(subpr)) )
+			except :
+				# Ok, no sub property
+				pass
+			try :
+				subpr = vocab_mapping["equivalentProperty"]
+				if subpr != None :
+					if isinstance(subpr,list) :
+						for p in subpr :
+							self.graph.add( (expandedURIRef, ns_owl["equivalentProperty"], URIRef(p)) )
+					else :
+						self.graph.add( (expandedURIRef, ns_owl["equivalentProperty"], URIRef(subpr)) )
+			except :
+				# Ok, no sub property
+				pass
+		except :
+			# no harm done, no extra vocabulary term
+			pass
+
+
+		return expandedURI
 		
 	def get_property_value(self, node, context) :
 		"""
@@ -522,14 +603,15 @@ class MicrodataConversion(Microdata) :
 		# generate triples with a list, or a bunch of triples, depending on the context
 		# The biggest complication is to find the method...
 		method = ValueMethod.unordered
+		superproperties = None
 		
 		# This is necessary because predicate is a URIRef, and I am not sure the comparisons would work well
 		# to be tested, in fact...
 		pred_key = "%s" % predicate
 		for key in registry :
 			if predicate.startswith(key) :
+				# This the part of the registry corresponding to the predicate's vocabulary
 				registry_object = registry[key]
-				name = pred_key[len(key):]
 				try :
 					if "multipleValues" in registry_object : method = registry_object["multipleValues"]
 					# The generic definition can be overwritten for a specific property. The simplest is to rely on a 'try'
@@ -540,7 +622,6 @@ class MicrodataConversion(Microdata) :
 						pass
 				except :
 					pass
-				break
 		
 		if method == ValueMethod.unordered :
 			for object in objects :
