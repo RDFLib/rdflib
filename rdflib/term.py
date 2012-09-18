@@ -219,7 +219,7 @@ def bnode_uuid():
             seed = long(str(preseed) + str(os.getpid())
                         + str(long(time() * 1000000)) + str(ip))
             random.seed(seed)
-			pid[0] = os.getpid()
+            pid[0] = os.getpid()
 
         t = long(time() * 1000.0)
         r = long(random.random() * 100000000000000000L)
