@@ -4,10 +4,12 @@ import os
 import rdflib
 import unittest
 
-import platform
-if platform.system() == 'Java':
+try:
+    import os.fork
+    import os.pipe
+except ImportError:
     from nose import SkipTest
-    raise SkipTest('No os.pipe() in Jython, skipping')
+    raise SkipTest('No os.fork() and/or os.pipe() on this platform, skipping')
 
 
 class TestRandomSeedInFork(unittest.TestCase):
