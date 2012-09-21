@@ -6,7 +6,7 @@ class TestTrigSerialize(unittest.TestCase):
     def test_empty_graph(self):
         graph = ConjunctiveGraph()
         text = graph.serialize(format='trig')
-        self.assertIsNotNone(text)
+        self.assertFalse(text is None)
 
 if __name__ == "__main__":
     unittest.main()
