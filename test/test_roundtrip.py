@@ -25,6 +25,11 @@ tests roundtripping through rdf/xml with only the literals-02 file
 """
 
 
+SKIP= [ 
+    ('xml', 'test/nt/qname-02.nt'), # uses a property that cannot be qname'd
+]
+
+
 
 def roundtrip(e, verbose=False):
     infmt,testfmt,source=e
@@ -67,7 +72,8 @@ def test_cases():
     for testfmt in formats:
             
         for f,infmt in all_nt_files():
-            yield roundtrip, (infmt, testfmt,f)
+            if (testfmt,f) not in SKIP:
+                yield roundtrip, (infmt, testfmt,f)
     
 
 if __name__ == "__main__":

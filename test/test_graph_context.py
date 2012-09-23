@@ -5,14 +5,19 @@ from tempfile import mkdtemp
 import shutil
 from rdflib import Graph, ConjunctiveGraph, URIRef, BNode, plugin
 
+from nose.exc import SkipTest
+
+
 class ContextTestCase(unittest.TestCase):
     store = 'default'
     slow = True
     tmppath = None
 
     def setUp(self):
-        print self.store
-        self.graph = ConjunctiveGraph(store=self.store)
+        try: 
+            self.graph = ConjunctiveGraph(store=self.store)
+        except ImportError: 
+            raise SkipTest("Dependencies for store '%s' not available!"%self.store)
         if self.store == "MySQL":
             from mysql import configString
             from rdflib.store.MySQL import MySQL

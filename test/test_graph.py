@@ -6,12 +6,18 @@ import shutil
 
 from rdflib import URIRef, RDF, Graph, plugin
 
+from nose.exc import SkipTest
+
+
 class GraphTestCase(unittest.TestCase):
     store = 'default'
     tmppath = None
 
     def setUp(self):
-        self.graph = Graph(store=self.store)
+        try: 
+            self.graph = Graph(store=self.store)
+        except ImportError: 
+            raise SkipTest("Dependencies for store '%s' not available!"%self.store)
         self.tmppath = mkdtemp()
         self.graph.open(self.tmppath, create=True)
 

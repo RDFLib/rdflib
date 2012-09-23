@@ -29,7 +29,7 @@ class Sleepycat(Store):
     db_env = None
 
     def __init__(self, configuration=None, identifier=None):
-        if not has_bsddb: raise Exception("Unable to import bsddb/bsddb3, store is unusable.")
+        if not has_bsddb: raise ImportError("Unable to import bsddb/bsddb3, store is unusable.")
         self.__open = False
         self.__identifier = identifier
         super(Sleepycat, self).__init__(configuration)

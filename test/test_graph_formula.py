@@ -15,11 +15,17 @@ _:foo a rdfs:Class.
 :a :d :c."""
 
 from nose.tools import nottest
+from nose.exc import SkipTest
 
 #Thorough test suite for formula-aware store
-@nottest
+@nottest # do not run on it's own - only as part of generator
 def testFormulaStore(store="default", configString=None):
-    g = ConjunctiveGraph(store=store)
+    try: 
+        g = ConjunctiveGraph(store=store)
+    except ImportError: 
+        raise SkipTest("Dependencies for store '%s' not available!"%store)
+  
+
 
 
     if configString:
