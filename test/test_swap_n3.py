@@ -75,12 +75,21 @@ def generictest(e):
         g.bind(str(i), i)
     g.parse(e.file, format="n3")
 
-def dir_to_uri(directory):
-    items = os.path.split(directory)
+def dir_to_uri(directory, sep=os.path.sep):
+    '''
+    Convert a local path to a File URI.
+    
+    >>> dir_to_uri('c:\\\\temp\\\\foo\\\\file.txt', sep='\\\\')
+    'file:///c:/temp/foo/file.txt'
+    
+    >>> dir_to_uri('/tmp/foo/file.txt', sep='/')
+    'file:///tmp/foo/file.txt'
+    '''
+    items = directory.split(sep)
     path = '/'.join(items)
     if path.startswith('/'):
         path = path[1:]
-    return 'file:///%s/' % (path,)
+    return 'file:///%s' % (path,)
 
 def test_cases():
     from copy import deepcopy
@@ -89,7 +98,7 @@ def test_cases():
     g.parse(os.path.join(swap_dir, 'n3-rdf.tests'), format="n3")
     g.parse(os.path.join(swap_dir, 'n3-full.tests'), format="n3")
     tfiles = []
-    swap_dir_uri = dir_to_uri(swap_dir)
+    swap_dir_uri = dir_to_uri(swap_dir) + '/'
     for tst in g.subjects():
         files = [str(tfile).replace('http://www.w3.org/2000/10/', swap_dir_uri)
                     for tfile in g.objects(tst, rdflib.URIRef("http://www.w3.org/2004/11/n3test#inputDocument")) if tfile.endswith('n3')]
