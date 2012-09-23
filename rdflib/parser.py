@@ -155,8 +155,8 @@ def create_input_source(source=None, publicID=None,
             location = pathname2url(location)
         base = urljoin("file:", "%s/" % pathname2url(os.getcwd()))
         absolute_location = URIRef(location, base=base).defrag()
-        if absolute_location.startswith("file://"):
-            filename = url2pathname(absolute_location.replace("file://", ""))
+        if absolute_location.startswith("file:///"):
+            filename = url2pathname(absolute_location.replace("file:///", "/"))
             file = open(filename, "rb")
         else:
             input_source = URLInputSource(absolute_location, format)
