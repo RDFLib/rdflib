@@ -131,7 +131,7 @@ class Result(object):
             # To remain compatible with the old SPARQLResult behaviour 
             # this iterates over lists of variable bindings
             for b in self.bindings: 
-                yield tuple(b[v] for v in self.vars)
+                yield tuple(b.get(v) for v in self.vars)
             
         
     def __getattr__(self,name): 
