@@ -54,12 +54,6 @@ try:
 except ImportError:
     from md5 import md5
 
-try:
-    from uuid import uuid4
-except ImportError:
-    import os
-    import random
-
 import py3compat
 b = py3compat.b
 
@@ -194,48 +188,66 @@ def _unique_id():
     # http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID
     return "N" # ensure that id starts with a letter
 
+
 # Adapted from http://icodesnip.com/snippet/python/simple-universally-unique-id-uuid-or-guid
 def bnode_uuid():
     """
     Generates a uuid on behalf of Python 2.4
     """
+    import os
+    import random
     import socket
-    import time
+    from time import time
+    from binascii import hexlify
+
+    pid = [None]
+
     try:
-        preseed = os.urandom(16)
-    except NotImplementedError: 
-        preseed = ''
-    # Have doubts about this. random.seed will just hash the string
-    random.seed('%s%s%s' % (preseed, os.getpid(), time.time()))
-    del preseed
-    t = long(time.time() * 1000.0)
-    r = long(random.random()*100000000000000000L)
-    try:
-        a = socket.gethostbyname(socket.gethostname())
+        ip = socket.gethostbyname(socket.gethostname())
+        ip = long(ip.replace('.', '999').replace(':', '999'))
     except:
         # if we can't get a network address, just imagine one
-        a = random.random()*100000000000000000L
-    data = str(t) + ' ' + str(r) + ' ' + str(a)
-    return md5(data.encode('ascii')).hexdigest()
+        ip = long(random.random() * 100000000000000000L)
+
+    def _generator():
+        if os.getpid() != pid[0]:
+            # Process might have been forked (issue 200), must reseed random:
+            try:
+                preseed = long(hexlify(os.urandom(16)), 16)
+            except NotImplementedError:
+                preseed = 0
+            seed = long(str(preseed) + str(os.getpid())
+                        + str(long(time() * 1000000)) + str(ip))
+            random.seed(seed)
+            pid[0] = os.getpid()
+
+        t = long(time() * 1000.0)
+        r = long(random.random() * 100000000000000000L)
+        data = str(t) + ' ' + str(r) + ' ' + str(ip)
+        return md5(data).hexdigest()
+
+    return _generator
 
 
 def uuid4_ncname():
     """
     Generates UUID4-based but ncname-compliant identifiers.
     """
-    return uuid4().hex
+    from uuid import uuid4
+
+    def _generator():
+        return uuid4().hex
+
+    return _generator
 
 
 def _serial_number_generator():
     import sys
     if sys.version_info[:2] < (2, 5):
-        _generator = bnode_uuid
+        return bnode_uuid()
     else:
-        _generator = uuid4_ncname
-    while 1:
-            yield _generator()
+        return uuid4_ncname()
 
-bNodeLock = threading.RLock()
 
 class BNode(Identifier):
     """
@@ -254,9 +266,7 @@ class BNode(Identifier):
             # so that BNode values do not
             # collide with ones created with a different instance of this module
             # at some other time.
-            bNodeLock.acquire()
-            node_id = _sn_gen.next()
-            bNodeLock.release()
+            node_id = _sn_gen()
             value = "%s%s" % (_prefix, node_id)
         else:
             # TODO: check that value falls within acceptable bnode value range

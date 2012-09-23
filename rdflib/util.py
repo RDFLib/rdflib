@@ -34,7 +34,6 @@ from time import altzone
 #from time import daylight
 from time import gmtime
 from time import localtime
-from time import mktime
 from time import time
 from time import timezone
 
@@ -295,10 +294,6 @@ def parse_date_time(val):
     year, month, day = ymd.split("-")
     hour, minute, second = hms.split(":")
 
-    t = mktime((int(year), int(month), int(day), int(hour),
-                int(minute), int(second), 0, 0, 0))
-    t = t - timezone + tz_offset
-    # Alternative handles case when local time is DST
     t = timegm((int(year), int(month), int(day), int(hour),
                 int(minute), int(second), 0, 0, 0))
     t = t + tz_offset

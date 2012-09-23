@@ -9,6 +9,7 @@ from rdflib.plugins.serializers.turtle import VERB
 
 from rdflib.term import BNode, Literal
 
+
 from rdflib.compat import defaultdict
 
 
