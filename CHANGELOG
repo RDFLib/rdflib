@@ -1,3 +1,14 @@
+2012/09/24 
+        RELEASE 3.2.2
+
+    This is mainly a maintenance release. 
+
+    Changes: 
+      * Improved serialization/parsing roundtrip tests led to some fixes
+        of obscure parser/serializer bugs. In particular complex string 
+        Literals in ntriples improved a lot. 
+      * 
+
 2012/04/24
         RELEASE 3.2.1
 
