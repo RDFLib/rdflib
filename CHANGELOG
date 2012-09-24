@@ -3,10 +3,25 @@
 
     This is mainly a maintenance release. 
 
+    This release should be compatible with python 2.4 through to 3. 
+
     Changes: 
       * Improved serialization/parsing roundtrip tests led to some fixes
         of obscure parser/serializer bugs. In particular complex string 
         Literals in ntriples improved a lot. 
+      * The terms of a triple are now asserted to be RDFLib Node's in graph.add
+        This should avoid getting strings and other things in the store.
+        https://github.com/RDFLib/rdflib/issues/200
+      * Added a specific TurtleParser that does not require the store to be 
+        non-formula aware.
+        https://github.com/RDFLib/rdflib/issues/214
+      * A trig-serializer was added, see:
+        http://www4.wiwiss.fu-berlin.de/bizer/trig/
+      * BNode generation was made thread-safe 
+        https://github.com/RDFLib/rdflib/issues/209
+        (also fixed better by dzinxed)
+      * Illegal BNode IDs removed from NT output: 
+        https://github.com/RDFLib/rdflib/issues/212
       * 
 
 2012/04/24
