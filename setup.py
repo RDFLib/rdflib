@@ -34,13 +34,21 @@ if sys.version_info[0] >= 3:
     from setuptools import setup
     kwargs['use_2to3'] = True
     kwargs['install_requires'] = ['isodate']
+
+    # html5lib is required for rdfa/microdata, but is not yet available 
+    # for python3 
+    # a pre-release python3 version can be installed from the 
+    # python3 folder in the html5lib repository at: 
+    #    https://code.google.com/p/html5lib/
+
+    kwargs['extra_requires'] = { 'structureddata': ['html5lib'] } 
     kwargs['requires'] = ['isodate']
     kwargs['src_root'] = setup_python3()
 else:
     try:
         from setuptools import setup
         kwargs['test_suite'] = "nose.collector"
-        kwargs['install_requires'] = ['isodate']
+        kwargs['install_requires'] = ['isodate', 'html5lib']
         if sys.version_info[:2] > (2,4):
             kwargs['requires'] = ['isodate']
     except ImportError:

@@ -15,8 +15,8 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 $Id: utils.py,v 1.8 2012/05/17 15:02:48 ivan Exp $
 $Date: 2012/05/17 15:02:48 $
-"""
-import os, os.path, sys, imp, datetime
+""" 
+import sys, datetime
 
 # Python 3 vs. 2 switch
 if sys.version_info[0] >= 3 :
@@ -40,7 +40,6 @@ else :
 	from rdflib.RDF	import RDFNS  as ns_rdf
 
 from pyRdfa.host import HostLanguage, preferred_suffixes
-from types import *
 
 #########################################################################################################
 # Handling URIs
@@ -184,7 +183,7 @@ def has_one_of_attributes(node,*args) :
 	"""
 	if len(args) == 0 :
 		return None
-	if isinstance(args[0], TupleType) or isinstance(args[0],ListType) :
+	if isinstance(args[0], tuple) or isinstance(args[0], list) :
 		rargs = args[0]
 	else :
 		rargs = args

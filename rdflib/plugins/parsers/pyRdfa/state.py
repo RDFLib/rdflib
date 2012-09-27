@@ -50,14 +50,11 @@ from pyRdfa import err_undefined_terms
 from pyRdfa import err_non_legal_CURIE_ref				
 from pyRdfa import err_undefined_CURIE					
 
-import re
-import random
 if py_v_major >= 3 :
 	from urllib.parse import urlparse, urlunparse, urlsplit, urljoin
 else :	
 	from urlparse import urlparse, urlunparse, urlsplit, urljoin
 
-from types import *
 
 class ListStructure :
 	"""Special class to handle the C{@inlist} type structures in RDFa 1.1; stores the "origin", i.e,
@@ -475,7 +472,7 @@ class ExecutionContext :
 		"""
 		if len(args) == 0 :
 			return None
-		if isinstance(args[0], TupleType) or isinstance(args[0], ListType) :
+		if isinstance(args[0], tuple) or isinstance(args[0], list) :
 			rargs = args[0]
 		else :
 			rargs = args
