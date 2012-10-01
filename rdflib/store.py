@@ -263,7 +263,7 @@ class Store(object):
         If stores provide their own SPARQL implementation, override this.
         """
 
-        return NotImplemented
+        raise NotImplementedError
 
     # Optional Namespace methods
 

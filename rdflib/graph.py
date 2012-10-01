@@ -920,11 +920,11 @@ class Graph(Node):
         """
         """
         if hasattr(self.store, "query") and use_store_provided:
-            res = self.store.query(query_object, initNs, initBindings, **kwargs)
-            if res == NotImplemented:
+            try:
+                return self.store.query(self, query_object, initNs, initBindings, **kwargs)
+            except NotImplementedError:
                 pass # store has no own implementation
-            else:
-                return res
+
         if not isinstance(result, query.Result):
             result = plugin.get(result, query.Result)
         if not isinstance(processor, query.Processor):
