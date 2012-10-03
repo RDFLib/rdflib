@@ -689,7 +689,7 @@ class Graph(Node):
                 yield item
             list = self.value(list, RDF.rest)
 
-    def transitiveClosure(self,func,arg):
+    def transitiveClosure(self, func, arg, seen=None):
         """
         Generates transitive closure of a user-defined
         function against the graph
@@ -724,9 +724,14 @@ class Graph(Node):
         [rdflib.term.BNode('baz'), rdflib.term.BNode('bar'), rdflib.term.BNode('foo')]
 
         """
+        if seen is None:
+            seen = {}
+        elif arg in seen:
+            return
+        seen[arg] = 1
         for rt in func(arg,self):
             yield rt
-            for rt_2 in self.transitiveClosure(func, rt):
+            for rt_2 in self.transitiveClosure(func, rt, seen):
                 yield rt_2
 
     def transitive_objects(self, subject, property, remember=None):
