@@ -160,16 +160,19 @@ register('nquads', Parser,
 register('trix', Parser,
                 'rdflib.plugins.parsers.trix', 'TriXParser')
 
-# Various combination of structured data in files: microdata, RDFa
-# Big question whether the distribution would point at the RDFa 1.1 parser for 'rdfa' or stay,
-# due to backward compatibility, by the old, 1.0 version...
-register('rdfa',                  Parser, 'rdflib.plugins.parsers.rdfa', 'RDFaParser')
-register('rdfa1.0',               Parser, 'rdflib.plugins.parsers.rdfa', 'RDFaParser')
-# Various combination with 1.1
-register('text/html',             Parser, 'rdflib.plugins.parsers.structureddata', 'StructuredDataParser')
-register('application/xhtml+xml', Parser, 'rdflib.plugins.parsers.structureddata', 'RDFaParser')
-register('application/svg+xml',   Parser, 'rdflib.plugins.parsers.structureddata', 'RDFaParser')
-register('rdfa1.1',               Parser, 'rdflib.plugins.parsers.structureddata', 'RDFaParser')
+# The basic parsers: RDFa (by default, 1.1), microdata, and embedded turtle (a.k.a. hturtle)
+register('hturtle',               Parser, 'rdflib.plugins.parsers.hturtle', 'HTurtleParser')
+register('rdfa',                  Parser, 'rdflib.plugins.parsers.structureddata', 'RDFaParser')
 register('mdata',                 Parser, 'rdflib.plugins.parsers.structureddata', 'MicrodataParser')
 register('microdata',             Parser, 'rdflib.plugins.parsers.structureddata', 'MicrodataParser')
+# A convencience to use the RDFa 1.0 syntax (although the parse method can be invoked with an rdfa_version keyword, too)
+register('rdfa1.0',               Parser, 'rdflib.plugins.parsers.structureddata', 'RDFa10Parser')
+# Just for the completeness, if the user uses this
+register('rdfa1.1',               Parser, 'rdflib.plugins.parsers.structureddata', 'RDFaParser')
+# An HTML file may contain both microdata, rdfa, or turtle. If the user wants them all, the parser below simply invokes all:
 register('html',                  Parser, 'rdflib.plugins.parsers.structureddata', 'StructuredDataParser')
+# Some media types are also bound to RDFa
+register('application/svg+xml',   Parser, 'rdflib.plugins.parsers.structureddata', 'RDFaParser')
+register('application/xhtml+xml', Parser, 'rdflib.plugins.parsers.structureddata', 'RDFaParser')
+# 'text/html' media type should be equivalent to html:
+register('text/html',             Parser, 'rdflib.plugins.parsers.structureddata', 'StructuredDataParser')
