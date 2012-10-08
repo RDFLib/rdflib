@@ -47,24 +47,24 @@ else :
 	from rdflib.RDFS	import RDFSNS as ns_rdfs
 	from rdflib.RDF		import RDFNS  as ns_rdf
 
-from pyRdfa.options			import Options
-from pyRdfa.utils 			import quote_URI, URIOpener
-from pyRdfa.host 			import MediaTypes, HostLanguage, predefined_1_0_rel, warn_xmlns_usage
-from pyRdfa					import IncorrectPrefixDefinition, RDFA_VOCAB, UnresolvableReference
-from pyRdfa					import ns_rdfa
+from .options		import Options
+from .utils 		import quote_URI, URIOpener
+from .host 			import MediaTypes, HostLanguage, predefined_1_0_rel, warn_xmlns_usage
+from .				import IncorrectPrefixDefinition, RDFA_VOCAB, UnresolvableReference
+from .				import ns_rdfa
 
-from pyRdfa import err_redefining_URI_as_prefix		
-from pyRdfa import err_xmlns_deprecated				
-from pyRdfa import err_bnode_local_prefix				
-from pyRdfa import err_col_local_prefix				
-from pyRdfa import err_missing_URI_prefix				
-from pyRdfa import err_invalid_prefix					
-from pyRdfa import err_no_default_prefix				
-from pyRdfa import err_prefix_and_xmlns				
-from pyRdfa import err_non_ncname_prefix				
-from pyRdfa import err_absolute_reference				
-from pyRdfa import err_query_reference				
-from pyRdfa import err_fragment_reference				
+from . import err_redefining_URI_as_prefix		
+from . import err_xmlns_deprecated				
+from . import err_bnode_local_prefix				
+from . import err_col_local_prefix				
+from . import err_missing_URI_prefix				
+from . import err_invalid_prefix					
+from . import err_no_default_prefix				
+from . import err_prefix_and_xmlns				
+from . import err_non_ncname_prefix				
+from . import err_absolute_reference				
+from . import err_query_reference				
+from . import err_fragment_reference				
 
 # Regular expression object for NCNAME
 ncname   = re.compile("^[A-Za-z][A-Za-z0-9._-]*$")
@@ -117,9 +117,9 @@ class InitialContext :
 		if state.rdfa_version < "1.1" or top_level == False :
 			return
 		
-		from pyRdfa.initialcontext		import initial_context    as context_data
-		from pyRdfa.host 				import initial_contexts   as context_ids
-		from pyRdfa.host				import default_vocabulary
+		from .initialcontext	import initial_context    as context_data
+		from .host 				import initial_contexts   as context_ids
+		from .host				import default_vocabulary
 
 		for id in context_ids[state.options.host_language] :
 			# This gives the id of a initial context, valid for this media type:
@@ -171,7 +171,7 @@ class TermOrCurie :
 		@type inherited_state: L{state.ExecutionContext}
 		"""
 		def check_prefix(pr) :
-			from pyRdfa	import uri_schemes
+			from . import uri_schemes
 			if pr in uri_schemes :
 				# The prefix being defined is a registered URI scheme, better avoid it...
 				state.options.add_warning(err_redefining_URI_as_prefix % pr, node=state.node.nodeName)

@@ -16,8 +16,8 @@ try :
 except :
 	from StringIO import StringIO
 
-from pyRdfa.host  import HostLanguage, accept_embedded_rdf_xml, accept_embedded_turtle
-from pyRdfa.utils import return_XML
+from .host  import HostLanguage, accept_embedded_rdf_xml, accept_embedded_turtle
+from .utils import return_XML
 import re, sys
 
 def handle_embeddedRDF(node, graph, state) :

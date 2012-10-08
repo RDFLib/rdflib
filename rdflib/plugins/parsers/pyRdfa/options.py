@@ -30,9 +30,9 @@ else :
 	from rdflib.RDFS	import RDFSNS as ns_rdfs
 	from rdflib.RDF		import RDFNS  as ns_rdf
 
-from pyRdfa.host 	import HostLanguage, MediaTypes, content_to_host_language, predefined_1_0_rel, require_embedded_rdf
-from pyRdfa			import ns_xsd, ns_distill, ns_rdfa
-from pyRdfa 		import RDFA_Error, RDFA_Warning, RDFA_Info
+from .host 	import HostLanguage, MediaTypes, content_to_host_language, predefined_1_0_rel, require_embedded_rdf
+from .		import ns_xsd, ns_distill, ns_rdfa
+from . 		import RDFA_Error, RDFA_Warning, RDFA_Info
 
 ns_dc = Namespace("http://purl.org/dc/terms/")
 ns_ht = Namespace("http://www.w3.org/2006/http#")

@@ -31,22 +31,22 @@ else :
 	
 ns_owl = Namespace("http://www.w3.org/2002/07/owl#")
 	
-from pyRdfa.host import MediaTypes
+from ..host import MediaTypes
 	
-from pyRdfa.utils	import URIOpener
+from ..utils	import URIOpener
 
-from pyRdfa.rdfs import err_outdated_cache
-from pyRdfa.rdfs import err_unreachable_vocab
-from pyRdfa.rdfs import err_unparsable_Turtle_vocab
-from pyRdfa.rdfs import err_unparsable_xml_vocab
-from pyRdfa.rdfs import err_unparsable_ntriples_vocab
-from pyRdfa.rdfs import err_unparsable_rdfa_vocab
-from pyRdfa.rdfs import err_unrecognised_vocab_type
+from . import err_outdated_cache
+from . import err_unreachable_vocab
+from . import err_unparsable_Turtle_vocab
+from . import err_unparsable_xml_vocab
+from . import err_unparsable_ntriples_vocab
+from . import err_unparsable_rdfa_vocab
+from . import err_unrecognised_vocab_type
 
-from pyRdfa import VocabReferenceError
+from .. import VocabReferenceError
 
-from pyRdfa.rdfs.cache import CachedVocab
-from pyRdfa import HTTPError, RDFaError
+from .cache import CachedVocab
+from .. import HTTPError, RDFaError
 
 #############################################################################################################
 
@@ -271,7 +271,7 @@ def process_rdfa_sem(graph, options) :
 	from pyRdfa import RDFA_VOCAB
 	for ((s,p,v)) in graph.triples((None,RDFA_VOCAB,None)) :
 		vocabs.add((str(v)))
-		
+
 	if len(vocabs) >= 0 :
 		# 2. get all the vocab graphs
 		vocab_graph = Graph()

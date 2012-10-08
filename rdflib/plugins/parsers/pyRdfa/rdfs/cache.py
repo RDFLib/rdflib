@@ -27,26 +27,26 @@ else :
 	from rdflib.RDF		import RDFNS  as ns_rdf
 	from rdflib.Graph 	import Graph
 
-from pyRdfa			import HTTPError, RDFaError
-from pyRdfa.host 	import MediaTypes, HostLanguage
-from pyRdfa.utils	import create_file_name, URIOpener, quote_URI
-from pyRdfa.options	import Options
-from pyRdfa			import ns_rdfa
+from ..			import HTTPError, RDFaError
+from ..host 	import MediaTypes, HostLanguage
+from ..utils	import create_file_name, URIOpener, quote_URI
+from ..options	import Options
+from ..			import ns_rdfa
 
-from pyRdfa.rdfs import err_outdated_cache
-from pyRdfa.rdfs import err_unreachable_vocab
-from pyRdfa.rdfs import err_unparsable_Turtle_vocab
-from pyRdfa.rdfs import err_unparsable_xml_vocab
-from pyRdfa.rdfs import err_unparsable_ntriples_vocab
-from pyRdfa.rdfs import err_unparsable_rdfa_vocab
-from pyRdfa.rdfs import err_unrecognised_vocab_type
+from . import err_outdated_cache
+from . import err_unreachable_vocab
+from . import err_unparsable_Turtle_vocab
+from . import err_unparsable_xml_vocab
+from . import err_unparsable_ntriples_vocab
+from . import err_unparsable_rdfa_vocab
+from . import err_unrecognised_vocab_type
 
-from pyRdfa.rdfs 			import VocabCachingInfo
+from . import VocabCachingInfo
 
 # Regular expression object for a general XML application media type
 xml_application_media_type = re.compile("application/[a-zA-Z0-9]+\+xml")
 
-from pyRdfa.utils import URIOpener
+from ..utils import URIOpener
 
 #===========================================================================================
 if PY3 :

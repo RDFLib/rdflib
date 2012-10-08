@@ -80,8 +80,8 @@ else :
 
 debug = False
 
-from pyMicrodata.utils      import URIOpener
-from pyMicrodata.microdata	import MicrodataConversion
+from .utils     import URIOpener
+from .microdata	import MicrodataConversion
 
 ns_micro = Namespace("http://www.w3.org/2012/pyMicrodata/vocab#")
 ns_dc    = Namespace("http://purl.org/dc/terms/")

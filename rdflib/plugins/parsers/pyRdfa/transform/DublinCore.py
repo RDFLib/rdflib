@@ -30,7 +30,7 @@ def DC_transform(html, options, state) :
 	@param state: top level execution state
 	@type state: L{State<pyRdfa.state>}
 	"""
-	from pyRdfa.host import HostLanguage
+	from ..host import HostLanguage
 	if not( options.host_language in [ HostLanguage.xhtml, HostLanguage.html5, HostLanguage.xhtml5 ] ) :
 		return
 	

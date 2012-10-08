@@ -72,12 +72,45 @@ vocab_names = {
 # This is the local version, added mainly for testing
 _myRegistry = """
 {
+  "http://vocabulary.list/": {
+    "propertyURI":    "vocabulary",
+    "multipleValues": "list",
+    "properties": {
+      "list": {"multipleValues": "list"},
+      "typed": {"datatype": "http://typed"}
+    }
+  },
+  "http://vocabulary.unordered/": {
+    "propertyURI":    "vocabulary",
+    "multipleValues": "unordered",
+    "properties": {
+      "list": {"multipleValues": "list"},
+      "typed": {"datatype": "http://typed"}
+    }
+  },
+  "http://contextual.unordered/": {
+    "propertyURI":    "contextual",
+    "multipleValues": "unordered",
+    "properties": {
+      "list": {"multipleValues": "list"},
+      "typed": {"datatype": "http://typed"}
+    }
+  },
+  "http://contextual.list/": {
+    "propertyURI":    "contextual",
+    "multipleValues": "list",
+    "properties": {
+      "list": {"multipleValues": "list"},
+      "typed": {"datatype": "http://typed"}
+    }
+  },
   "http://n.whatwg.org/work": {
     "propertyURI"    : "contextual",
     "multipleValues" : "list"
   } 
 }
 """
+
 
 registry   = []
 myRegistry = []

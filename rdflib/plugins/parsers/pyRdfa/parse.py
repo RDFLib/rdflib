@@ -21,10 +21,10 @@ $Date: 2012/06/12 11:47:28 $
 
 import sys
 
-from pyRdfa.state   		import ExecutionContext
-from pyRdfa.property 		import ProcessProperty
-from pyRdfa.embeddedRDF	 	import handle_embeddedRDF
-from pyRdfa.host			import HostLanguage, host_dom_transforms
+from .state   		import ExecutionContext
+from .property 		import ProcessProperty
+from .embeddedRDF	import handle_embeddedRDF
+from .host			import HostLanguage, host_dom_transforms
 
 import rdflib
 from rdflib	import URIRef
@@ -40,8 +40,8 @@ else :
 	from rdflib.RDFS	import RDFSNS as ns_rdfs
 	from rdflib.RDF		import RDFNS  as ns_rdf
 
-from pyRdfa       import IncorrectBlankNodeUsage, err_no_blank_node
-from pyRdfa.utils import has_one_of_attributes
+from .      import IncorrectBlankNodeUsage, err_no_blank_node
+from .utils import has_one_of_attributes
 
 #######################################################################
 def parse_one_node(node, graph, parent_object, incoming_state, parent_incomplete_triples) :

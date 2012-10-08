@@ -32,8 +32,8 @@ else :
 	from rdflib.RDF		import RDFNS  as ns_rdf
 	from rdflib.Graph 	import Graph
 
-from pyRdfa import RDFaError, pyRdfaError
-from pyRdfa import ns_rdfa, ns_xsd, ns_distill
+from .. import RDFaError, pyRdfaError
+from .. import ns_rdfa, ns_xsd, ns_distill
 
 VocabCachingInfo = ns_distill["VocabCachingInfo"]
 

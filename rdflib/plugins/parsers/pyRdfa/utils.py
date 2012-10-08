@@ -31,7 +31,7 @@ else :
 	from urllib         import quote
 	from BaseHTTPServer import BaseHTTPRequestHandler
 
-from pyRdfa.extras.httpheader import content_type, parse_http_datetime
+from .extras.httpheader import content_type, parse_http_datetime
 
 import rdflib
 if rdflib.__version__ >= "3.0.0" :
@@ -39,7 +39,7 @@ if rdflib.__version__ >= "3.0.0" :
 else :
 	from rdflib.RDF	import RDFNS  as ns_rdf
 
-from pyRdfa.host import HostLanguage, preferred_suffixes
+from .host import HostLanguage, preferred_suffixes
 from types import *
 
 #########################################################################################################
@@ -129,12 +129,12 @@ class URIOpener :
 				
 		except urllib_HTTPError :
 			e = sys.exc_info()[1]
-			from pyRdfa import HTTPError
+			from . import HTTPError
 			msg = BaseHTTPRequestHandler.responses[e.code]
 			raise HTTPError('%s' % msg[1], e.code)
 		except Exception :
 			e = sys.exc_info()[1]
-			from pyRdfa import RDFaError
+			from . import RDFaError
 			raise RDFaError('%s' % e)
 
 #########################################################################################################
@@ -153,7 +153,7 @@ def quote_URI(uri, options = None) :
 	@param options: 
 	@type options: L{Options<pyRdfa.Options>}
 	"""
-	from pyRdfa import err_unusual_char_in_URI
+	from . import err_unusual_char_in_URI
 	suri = uri.strip()
 	for c in _warnChars :
 		if suri.find(c) != -1 :

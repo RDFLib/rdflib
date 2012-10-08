@@ -187,7 +187,7 @@ else :
 	from rdflib.RDF		import RDFNS  as ns_rdf
 	from rdflib.Graph import Graph
 
-from pyRdfa.extras.httpheader import acceptable_content_type, content_type
+from .extras.httpheader import acceptable_content_type, content_type
 
 import xml.dom.minidom
 
@@ -291,12 +291,12 @@ err_unusual_char_in_URI             = "Unusual character in uri: %s; possible er
 
 #############################################################################################
 
-from pyRdfa.state            import ExecutionContext
-from pyRdfa.parse            import parse_one_node
-from pyRdfa.options          import Options
-from pyRdfa.transform        import top_about, empty_safe_curie, vocab_for_role
-from pyRdfa.utils            import URIOpener
-from pyRdfa.host             import HostLanguage, MediaTypes, preferred_suffixes, content_to_host_language
+from .state            import ExecutionContext
+from .parse            import parse_one_node
+from .options          import Options
+from .transform        import top_about, empty_safe_curie, vocab_for_role
+from .utils            import URIOpener
+from .host             import HostLanguage, MediaTypes, preferred_suffixes, content_to_host_language
 
 # Environment variable used to characterize cache directories for RDFa vocabulary files. 
 CACHE_DIR_VAR           = "PyRdfaCacheDir"
@@ -502,7 +502,7 @@ class pyRdfa :
 		
 		# If the RDFS expansion has to be made, here is the place...
 		if self.options.vocab_expansion :
-			from pyRdfa.rdfs.process import process_rdfa_sem
+			from .rdfs.process import process_rdfa_sem
 			process_rdfa_sem(default_graph, self.options)
 	
 		# What should be returned depends on the way the options have been set up
@@ -608,7 +608,7 @@ class pyRdfa :
 							input = self._get_input(name)
 						else :
 							input.seek(0)
-						from pyRdfa.host import adjust_html_version
+						from .host import adjust_html_version
 						self.rdfa_version = adjust_html_version(input, self.rdfa_version)
 					except :
 						# if anyting goes wrong, it is not really important; rdfa version stays what it was...
@@ -616,7 +616,7 @@ class pyRdfa :
 					
 				else :
 					# in other cases an XML parser has to be used
-					from pyRdfa.host import adjust_xhtml_and_version
+					from .host import adjust_xhtml_and_version
 					parse = xml.dom.minidom.parse
 					dom = parse(input)
 					(adjusted_host_language, version) = adjust_xhtml_and_version(dom, self.options.host_language, self.rdfa_version)
@@ -763,26 +763,26 @@ def processURI(uri, outputFormat, form={}) :
 	transformers = []
 	
 	if "rdfa_lite" in list(form.keys()) and form.getfirst("rdfa_lite").lower() == "true" :
-		from pyRdfa.transform.lite import lite_prune
+		from .transform.lite import lite_prune
 		transformers.append(lite_prune)
 
 	# The code below is left for backward compatibility only. In fact, these options are not exposed any more,
 	# they are not really in use
 	if "extras" in list(form.keys()) and form.getfirst("extras").lower() == "true" :
-		from pyRdfa.transform.metaname              	import meta_transform
-		from pyRdfa.transform.OpenID                	import OpenID_transform
-		from pyRdfa.transform.DublinCore            	import DC_transform
+		from .transform.metaname              	import meta_transform
+		from .transform.OpenID                	import OpenID_transform
+		from .transform.DublinCore            	import DC_transform
 		for t in [OpenID_transform, DC_transform, meta_transform] :
 			transformers.append(t)
 	else :
 		if "extra-meta" in list(form.keys()) and form.getfirst("extra-meta").lower() == "true" :
-			from pyRdfa.transform.metaname import meta_transform
+			from .transform.metaname import meta_transform
 			transformers.append(meta_transform)
 		if "extra-openid" in list(form.keys()) and form.getfirst("extra-openid").lower() == "true" :
-			from pyRdfa.transform.OpenID import OpenID_transform
+			from .transform.OpenID import OpenID_transform
 			transformers.append(OpenID_transform)
 		if "extra-dc" in list(form.keys()) and form.getfirst("extra-dc").lower() == "true" :
-			from pyRdfa.transform.DublinCore import DC_transform
+			from .transform.DublinCore import DC_transform
 			transformers.append(DC_transform)
 
 	output_default_graph 	= True

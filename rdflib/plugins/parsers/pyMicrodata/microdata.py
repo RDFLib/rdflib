@@ -44,14 +44,14 @@ else :
 	
 ns_owl = Namespace("http://www.w3.org/2002/07/owl#")
 
-from pyMicrodata.registry import registry, vocab_names
-from pyMicrodata.utils	  import generate_RDF_collection, get_Literal, get_time_type
-from pyMicrodata.utils	  import get_lang_from_hierarchy, is_absolute_URI, generate_URI, fragment_escape
+from .registry import registry, vocab_names
+from .utils	   import generate_RDF_collection, get_Literal, get_time_type
+from .utils	   import get_lang_from_hierarchy, is_absolute_URI, generate_URI, fragment_escape
 
 MD_VOCAB   = "http://www.w3.org/ns/md#"
 RDFA_VOCAB = URIRef("http://www.w3.org/ns/rdfa#usesVocabulary")
 
-from pyMicrodata import debug
+from . import debug
 
 # Existing predicate schemes
 class PropertySchemes :
@@ -273,7 +273,10 @@ class MicrodataConversion(Microdata) :
 		# Get the vocabularies defined in the registry bound to proper names, if any...
 
 		def _use_rdfa_context () :
-			from pyRdfa.initialcontext import initial_context
+			try :
+				from ..pyRdfa.initialcontext import initial_context
+			except :
+				from pyRdfa.initialcontext import initial_context
 			retval = {}
 			vocabs = initial_context["http://www.w3.org/2011/rdfa-context/rdfa-1.1"].ns
 			for prefix in list(vocabs.keys()) :
@@ -292,7 +295,10 @@ class MicrodataConversion(Microdata) :
 		# Add the prefixes defined in the RDFa initial context to improve the outlook of the output
 		# I put this into a try: except: in case the pyRdfa package is not available...
 		try :
-			from pyRdfa.initialcontext import initial_context
+			try :
+				from ..pyRdfa.initialcontext import initial_context
+			except :
+				from pyRdfa.initialcontext import initial_context
 			vocabs = initial_context["http://www.w3.org/2011/rdfa-context/rdfa-1.1"].ns
 			for prefix in list(vocabs.keys()) :
 				uri = vocabs[prefix]
@@ -315,21 +321,17 @@ class MicrodataConversion(Microdata) :
 		self.graph.add( (URIRef(self.base),self.ns_md["item"],list) )
 		
 		# If the vocab expansion is also switched on, this is the time to do it.
-		# I have put this into a try:... except:, because there is a dependency on the pyRdfa package. If that
-		# is not available, the rest of the processing should go on...
-		# if self.vocab_expansion and vocabularies_used > 0 :
-		# 	try :
-		# 		from pyRdfa.rdfs.process import MiniOWL
-		# 		MiniOWL(self.graph).closure()
-		# 	except :
-		# 		pass
 
 		# This is the version with my current proposal: the basic expansion is always there;
 		# the follow-your-nose inclusion of vocabulary is optional
 		if self.vocabularies_used :
 			try :
-				from pyRdfa.rdfs.process import MiniOWL, process_rdfa_sem
-				from pyRdfa.options import Options
+				try :
+					from ..pyRdfa.rdfs.process import MiniOWL, process_rdfa_sem
+					from ..pyRdfa.options      import Options
+				except :
+					from pyRdfa.rdfs.process import MiniOWL, process_rdfa_sem
+					from pyRdfa.options      import Options
 				# if we did not get here, the pyRdfa package could not be
 				# imported. Too bad, but life should go on in the except branch...
 				if self.vocab_expansion :

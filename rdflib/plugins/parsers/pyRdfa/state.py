@@ -35,20 +35,20 @@ else :
 	from rdflib.RDFS	import RDFSNS as ns_rdfs
 	from rdflib.RDF		import RDFNS  as ns_rdf
 
-from pyRdfa.options		import Options
-from pyRdfa.utils 		import quote_URI
-from pyRdfa.host 		import HostLanguage, accept_xml_base, accept_xml_lang, beautifying_prefixes
+from .options	import Options
+from .utils 	import quote_URI
+from .host 		import HostLanguage, accept_xml_base, accept_xml_lang, beautifying_prefixes
 
-from pyRdfa.termorcurie	import TermOrCurie
-from pyRdfa				import UnresolvablePrefix, UnresolvableTerm
+from .termorcurie	import TermOrCurie
+from .				import UnresolvablePrefix, UnresolvableTerm
 
-from pyRdfa import err_lang							
-from pyRdfa import err_URI_scheme						
-from pyRdfa import err_illegal_safe_CURIE				
-from pyRdfa import err_no_CURIE_in_safe_CURIE			
-from pyRdfa import err_undefined_terms					
-from pyRdfa import err_non_legal_CURIE_ref				
-from pyRdfa import err_undefined_CURIE					
+from . import err_lang							
+from . import err_URI_scheme						
+from . import err_illegal_safe_CURIE				
+from . import err_no_CURIE_in_safe_CURIE			
+from . import err_undefined_terms					
+from . import err_non_legal_CURIE_ref				
+from . import err_undefined_CURIE					
 
 import re
 import random
@@ -167,7 +167,7 @@ class ExecutionContext :
 			if rdfa_version is not None :
 				self.rdfa_version = rdfa_version
 			else :
-				from pyRdfa import rdfa_current_version				
+				from . import rdfa_current_version				
 				self.rdfa_version = rdfa_current_version
 
 			# This value can be overwritten by a @version attribute
@@ -180,7 +180,7 @@ class ExecutionContext :
 			
 			# this is just to play safe. I believe this should actually not happen...
 			if options == None :
-				from pyRdfa import Options
+				from . import Options
 				self.options = Options()
 			else :
 				self.options = options
@@ -285,7 +285,7 @@ class ExecutionContext :
 			@param uri: (absolute) URI string
 			@return: an RDFLib URIRef instance
 			"""
-			from pyRdfa	import uri_schemes
+			from .	import uri_schemes
 			val = uri.strip()
 			if check and urlsplit(val)[0] not in uri_schemes :
 				self.options.add_warning(err_URI_scheme % val.strip(), node=self.node.nodeName)
@@ -397,12 +397,12 @@ class ExecutionContext :
 		@type val: string
 		@return: an RDFLib URIRef instance or None
 		"""
-		from pyRdfa	import uri_schemes
+		from . import uri_schemes
 		# This case excludes the pure base, ie, the empty value
 		if val == "" :
 			return None
 		
-		from pyRdfa.termorcurie import ncname, termname
+		from .termorcurie import ncname, termname
 		if termname.match(val) :
 			# This is a term, must be handled as such...			
 			retval = self.term_or_curie.term_to_URI(val)

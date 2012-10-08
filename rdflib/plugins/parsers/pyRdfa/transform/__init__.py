@@ -35,8 +35,8 @@ def top_about(root, options, state) :
 			if not has_one_of_attributes(node, "href", "resource", "about", "src") :
 				node.setAttribute("about","")
 	
-	from pyRdfa.host import HostLanguage
-	from pyRdfa.utils import has_one_of_attributes
+	from ..host import HostLanguage
+	from ..utils import has_one_of_attributes
 		
 	if not has_one_of_attributes(root, "about") :
 		# The situation is a bit complicated: if a @resource is present without anything else, then it sets
@@ -98,7 +98,7 @@ def vocab_for_role(node, options, state) :
 	@param state: top level execution state
 	@type state: L{State<pyRdfa.state>}
 	"""
-	from pyRdfa.termorcurie import termname, XHTML_URI
+	from ..termorcurie import termname, XHTML_URI
 	
 	def handle_role(node) :
 		if node.hasAttribute("role") :
