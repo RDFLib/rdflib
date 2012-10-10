@@ -258,9 +258,17 @@ class Store(object):
         contexts the triple is in.
         """
 
-    def query(self, query, initNs, initBindings, **kwargs):
+    def query(self, query, initNs, initBindings, queryGraph, **kwargs):
         """
         If stores provide their own SPARQL implementation, override this.
+
+        queryGraph is None, a URIRef or '__UNION__'
+        If None the graph is specified in the query-string/object
+        If URIRef it specifies the graph to query,         
+        If  '__UNION__' the union of all named graphs should be queried 
+        (This is used by ConjunctiveGraphs
+        Values other than None obviously only makes sense for context-aware stores.)
+
         """
 
         raise NotImplementedError

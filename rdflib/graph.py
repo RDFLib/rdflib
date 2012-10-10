@@ -926,7 +926,7 @@ class Graph(Node):
         """
         if hasattr(self.store, "query") and use_store_provided:
             try:
-                return self.store.query(self, query_object, initNs, initBindings, **kwargs)
+                return self.store.query(query_object, initNs, initBindings, self.context_aware and self.identifier or '__UNION__', **kwargs)
             except NotImplementedError:
                 pass # store has no own implementation
 
