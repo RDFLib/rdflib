@@ -35,6 +35,7 @@ initial_context["http://www.w3.org/2011/rdfa-context/rdfa-1.1"].ns = {
 	'sioc'		: 'http://rdfs.org/sioc/ns#',
 	'skos'		: 'http://www.w3.org/2004/02/skos/core#',
 	'xml'		: 'http://www.w3.org/XML/1998/namespace',
+	'rr'		: 'http://www.w3.org/ns/r2rml#',
 	'rdfs'		: 'http://www.w3.org/2000/01/rdf-schema#',
 	'rev'		: 'http://purl.org/stuff/rev#',
 	'rdfa'		: 'http://www.w3.org/ns/rdfa#',
