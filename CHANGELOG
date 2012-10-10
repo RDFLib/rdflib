@@ -1,3 +1,14 @@
+2012/10/10 
+	RELEASE 3.2.3
+
+    Almost identical to 3.2.2
+    A stupid bug snuck into 3.2.2, and querying graphs were broken.
+
+	* Fixes broken querying 
+	  https://github.com/RDFLib/rdflib/issues/234
+	* graph.transitiveClosure now works with loops
+	  https://github.com/RDFLib/rdflib/issues/206
+
 2012/09/25 
         RELEASE 3.2.2
 
