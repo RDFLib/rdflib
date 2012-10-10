@@ -95,8 +95,7 @@ class RDFaParser(Parser) :
 							  rdfa_version = rdfa_version)
 		processor.graph_from_source(orig_source, graph=graph, pgraph=pgraph, rdfOutput=False)
 		# This may result in an exception if the graph parsing led to an error
-		#_check_error(graph)
-
+		_check_error(graph)
 
 class RDFa10Parser(Parser) :
 	"""
@@ -144,7 +143,7 @@ class MicrodataParser(Parser) :
 	def _process(self, graph, baseURI, orig_source, vocab_expansion = False, vocab_cache  = False) :
 		from .pyMicrodata import pyMicrodata
 		processor    = pyMicrodata(base = baseURI, vocab_expansion = vocab_expansion, vocab_cache = vocab_cache)
-		processor.graph_from_source(orig_source, graph=graph)
+		processor.graph_from_source(orig_source, graph=graph, rdfOutput = False)
 
 class StructuredDataParser(Parser) :
 	"""
@@ -182,5 +181,5 @@ class StructuredDataParser(Parser) :
 			          vocab_expansion = vocab_expansion,
 			          vocab_cache     = vocab_cache)
 		from .hturtle import HTurtleParser
-		HTurtleParser()._process(graph, pgraph, baseURI, orig_source, media_type = 'text/html')
+		HTurtleParser()._process(graph, baseURI, orig_source, media_type = 'text/html')
 

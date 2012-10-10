@@ -15,7 +15,7 @@ from rdflib.parser import Parser, StringInputSource, URLInputSource, FileInputSo
 from .pyRdfa             import pyRdfa, Options
 from .pyRdfa.state       import ExecutionContext
 from .pyRdfa.embeddedRDF import handle_embeddedRDF
-from .structureddata     import _get_orig_source
+from .structureddata     import _get_orig_source, _check_error
 
 class HTurtle(pyRdfa) :
 	"""Bastartizing the RDFa 1.1 parser to do a hturtle extractions """
@@ -61,14 +61,16 @@ class HTurtleParser(Parser) :
 		(baseURI, orig_source) = _get_orig_source(source)
 		self._process(graph, pgraph, baseURI, orig_source, media_type = media_type)
 
-	def _process(self, graph, pgraph, baseURI, orig_source, media_type = "") :
-		self.options = Options(output_processor_graph = (pgraph != None),
+	def _process(self, graph, baseURI, orig_source, media_type = "") :
+		self.options = Options(output_processor_graph = None,
 							   embedded_rdf           = True,
 							   vocab_expansion        = False,
 							   vocab_cache            = False)
 		
 		if media_type == None : media_type = ""
 		processor = HTurtle(self.options, base = baseURI, media_type = media_type)
-		processor.graph_from_source(orig_source, graph=graph, pgraph=pgraph)
+		processor.graph_from_source(orig_source, graph=graph, pgraph=None, rdfOutput = False)
+		# get possible error triples to raise exceptions
+		_check_error(graph)
 
 
