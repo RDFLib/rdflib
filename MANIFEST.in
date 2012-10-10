@@ -1,7 +1,7 @@
 include CHANGELOG
 include LICENSE
 include DEVELOPERS
-include CONSTRIBUTORS
+include CONTRIBUTORS
 include ez_setup.py
 recursive-include rdflib *.py
 recursive-include examples *.py
