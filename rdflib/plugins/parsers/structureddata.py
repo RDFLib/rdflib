@@ -28,6 +28,14 @@ def _get_orig_source(source) :
 	baseURI = source.getPublicId()
 	return (baseURI, orig_source)
 
+
+def _check_error(graph) :
+	from .pyRdfa import RDFA_Error, ns_rdf
+	for (s,p,o) in graph.triples((None, ns_rdf["type"], RDFA_Error)) :
+		for (x,y,msg) in graph.triples((s,None,None)) :
+			raise Exception(msg)
+
+
 # This is the parser interface as it would look when called from the rest of RDFLib
 class RDFaParser(Parser) :
 	""" 
@@ -81,8 +89,13 @@ class RDFaParser(Parser) :
 							   vocab_cache            = vocab_cache)
 		
 		if media_type == None : media_type = ""
-		processor    = pyRdfa(self.options, base = baseURI, media_type = media_type, rdfa_version = rdfa_version)
-		processor.graph_from_source(orig_source, graph=graph, pgraph=pgraph)
+		processor    = pyRdfa(self.options, 
+							  base = baseURI, 
+							  media_type = media_type, 
+							  rdfa_version = rdfa_version)
+		processor.graph_from_source(orig_source, graph=graph, pgraph=pgraph, rdfOutput=False)
+		# This may result in an exception if the graph parsing led to an error
+		#_check_error(graph)
 
 
 class RDFa10Parser(Parser) :
