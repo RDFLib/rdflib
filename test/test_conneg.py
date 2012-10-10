@@ -4,6 +4,10 @@ import BaseHTTPServer
 
 from rdflib import Graph
 
+"""
+Test that correct content negoation headers are passed 
+by graph.parse
+"""
 
 
 xmltestdoc="""<?xml version="1.0" encoding="UTF-8"?>

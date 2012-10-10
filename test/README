@@ -1,6 +1,13 @@
 
 Various unit tests for rdflib
 
+Graph tests
+===========
+
+(Graphs are mostly tested through the store tests - detailed below)
+
+test_aggregate_graphs - special tests for the ReadOnlyGraphAggregate class
+
 Store tests
 ===========
 

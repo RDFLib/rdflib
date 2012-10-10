@@ -4,6 +4,11 @@ import os.path
 
 import rdflib
 
+"""
+Test module naming conventions
+
+modules should all be lower-case initial
+"""
 
 class A(unittest.TestCase):
 
@@ -18,6 +23,7 @@ class A(unittest.TestCase):
             path = path[0]
 
         for importer, name, ispkg in pkgutil.iter_modules([path]):
+            print name
             if ispkg:
                 result = self.module_names(path=os.path.join(path, name), 
                                            names=names)
