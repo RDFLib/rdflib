@@ -68,7 +68,7 @@ def is_ncname(value):
 
     >>> assert is_ncname("urn:uuid:"+str(uuid4())) == True
     >>> from rdflib import BNode
-    >>> assert is_ncname(BNode(_sn_gen=bnode_uuid(), _prefix="urn:uuid:")) == True 
+    >>> assert is_ncname(BNode(_sn_gen=bnode_uuid, _prefix="urn:uuid:")) == True 
     """
     ncnameexp = re.compile('[A-Za-z][A-Za-z0-9]*')
     if ncnameexp.match(value):

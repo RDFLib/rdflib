@@ -23,7 +23,6 @@ class A(unittest.TestCase):
             path = path[0]
 
         for importer, name, ispkg in pkgutil.iter_modules([path]):
-            print name
             if ispkg:
                 result = self.module_names(path=os.path.join(path, name), 
                                            names=names)
