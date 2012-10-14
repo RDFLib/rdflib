@@ -76,10 +76,10 @@ class Result(object):
         self.graph=None
 
     @staticmethod
-    def parse(source, format='xml'):
+    def parse(source, format='xml', **kwargs):
         from rdflib import plugin
         parser=plugin.get(format, ResultParser)()
-        return parser.parse(source)
+        return parser.parse(source, **kwargs)
 
 
     def serialize(self, destination=None, encoding="utf-8", format='xml', **args):
