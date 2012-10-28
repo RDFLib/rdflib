@@ -8,6 +8,7 @@ RDFLib may be installed with setuptools (easy_install) or pip::
 
     $ easy_install rdflib
 or
+
     $ pip install rdflib
 
 Getting Started
@@ -33,7 +34,6 @@ included in RDFLib:
 
 semweb=rdflib.URIRef('http://dbpedia.org/resource/Semantic_Web')
 type=g.value(semweb, rdflib.RDFS.label) 
-
 ```
 
 Where `rdflib.RDFS` is the RDFS Namespace, `graph.value` returns an
@@ -50,7 +50,8 @@ abstracts=list(a for x in g.objects(semweb, dbpedia['abstract']) if a.language==
 See also *./examples*
 
 
-Features --------
+Features 
+--------
 
 The library contains parsers and serializers for RDF/XML, N3,
 NTriples, N-Quads, Turtle, TriX and RDFa.
@@ -61,9 +62,8 @@ any one of a number of Store implementations.
 This core RDFLib package includes store implementations for 
 in memory storage and persistent storage on top of the Berkeley DB. 
 
-RDFLib is open source and is maintained in a 
-`GitHub <http://github.com/RDFLib/rdflib/>`_ repository. RDFLib releases, current and previous 
-are listed on `PyPi <pypi.python.org/pypi/rdflib/>`_
+RDFLib is open source and is maintained on [GitHub](http://github.com/RDFLib/rdflib/). RDFLib releases, current and previous 
+are listed on [PyPi](pypi.python.org/pypi/rdflib/)
 
 RDFLib has a plugin-architecture for store-implementation, as well as parsers/serializers, several other projects exist which extend RDFLib features:
 
