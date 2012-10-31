@@ -21,10 +21,14 @@ from threading import Thread
 
 # These are passed to bsddb when creating DBs
 
+# passed to db.DBEnv.set_flags
 ENVSETFLAGS  = db.DB_CDB_ALLDB
+# passed to db.DBEnv.open
 ENVFLAGS = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD
 CACHESIZE=1024*1024*50
 
+# passed to db.DB.Open()
+DBOPENFLAGS = db.DB_THREAD 
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -82,7 +86,8 @@ class Sleepycat(Store):
         dbname = None
         dbtype = db.DB_BTREE
         # auto-commit ensures that the open-call commits when transactions are enabled
-        dbopenflags = db.DB_THREAD 
+        
+        dbopenflags=DBOPENFLAGS
         if self.transaction_aware == True:
             dbopenflags |= db.DB_AUTO_COMMIT
 
