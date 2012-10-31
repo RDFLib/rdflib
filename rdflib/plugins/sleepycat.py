@@ -3,6 +3,8 @@ from rdflib.term import URIRef
 from rdflib.py3compat import b
 def bb(u): return u.encode('utf-8')
 
+
+
 try:
     from bsddb import db
     has_bsddb = True
@@ -16,6 +18,13 @@ from os import mkdir
 from os.path import exists, abspath
 from urllib import pathname2url
 from threading import Thread
+
+# These are passed to bsddb when creating DBs
+
+ENVSETFLAGS  = db.DB_CDB_ALLDB
+ENVFLAGS = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD
+CACHESIZE=1024*1024*50
+
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -41,8 +50,6 @@ class Sleepycat(Store):
     identifier = property(__get_identifier)
 
     def _init_db_environment(self, homeDir, create=True):
-        envsetflags  = db.DB_CDB_ALLDB
-        envflags = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD
         if not exists(homeDir):
             if create==True:
                 mkdir(homeDir) # TODO: implement create method and refactor this to it
@@ -50,10 +57,10 @@ class Sleepycat(Store):
             else:
                 return NO_STORE
         db_env = db.DBEnv()
-        db_env.set_cachesize(0, 1024*1024*50) # TODO
+        db_env.set_cachesize(0, CACHESIZE) # TODO
         #db_env.set_lg_max(1024*1024)
-        db_env.set_flags(envsetflags, 1)
-        db_env.open(homeDir, envflags | db.DB_CREATE)
+        db_env.set_flags(ENVSETFLAGS, 1)
+        db_env.open(homeDir, ENVFLAGS | db.DB_CREATE)
         return db_env
 
     def is_open(self):
