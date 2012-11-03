@@ -790,7 +790,7 @@ class Literal(Identifier):
                 # in py >=2.6 the string.format function makes this easier
                 # we try to produce "pretty" output
                 if self.datatype == _XSD_DOUBLE: 
-                    return sub(".?0*e","e", u'%e' % float(self))
+                    return sub("\\.?0*e","e", u'%e' % float(self))
                 elif self.datatype == _XSD_DECIMAL:
                     return sub("0*$","0",u'%f' % float(self))
                 else:
