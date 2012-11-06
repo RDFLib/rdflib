@@ -2,12 +2,13 @@
 import sys
 import re
 
+
 def setup_python3():
     # Taken from "distribute" setup.py
     from distutils.filelist import FileList
     from distutils import dir_util, file_util, util, log
     from os.path import join
-  
+
     tmp_src = join("build", "src")
     log.set_verbosity(1)
     fl = FileList()
@@ -41,7 +42,7 @@ else:
         from setuptools import setup
         kwargs['test_suite'] = "nose.collector"
         kwargs['install_requires'] = ['isodate', 'html5lib']
-        if sys.version_info[:2] > (2,4):
+        if sys.version_info[:2] > (2, 4):
             kwargs['requires'] = ['isodate']
     except ImportError:
         from distutils.core import setup
@@ -59,38 +60,41 @@ def find_version(filename):
 version = find_version('rdflib/__init__.py')
 
 setup(
-    name = 'rdflib',
-    version = version,
-    description = "RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information.",
-    author = "Daniel 'eikeon' Krech",
-    author_email = "eikeon@eikeon.com",
-    maintainer = "Daniel 'eikeon' Krech",
-    maintainer_email = "eikeon@eikeon.com",
-    url = "http://rdflib.net/",
-    license = "https://raw.github.com/RDFLib/rdflib/master/LICENSE",
-    platforms = ["any"],
-    classifiers = ["Programming Language :: Python",
-                   "Programming Language :: Python :: 2",
-                   "Programming Language :: Python :: 3",
-                   "Programming Language :: Python :: 2.5",
-                   "Programming Language :: Python :: 2.6",
-                   "Programming Language :: Python :: 2.7",
-                   "Programming Language :: Python :: 3.2",
-                   "License :: OSI Approved :: BSD License",
-                   "Topic :: Software Development :: Libraries :: Python Modules",
-                   "Operating System :: OS Independent",
-                   "Natural Language :: English",
-                   ],
-    long_description = \
-    """RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information.
+    name='rdflib',
+    version=version,
+    description="RDFLib is a Python library for working with RDF, a " + \
+                "simple yet powerful language for representing information.",
+    author="Daniel 'eikeon' Krech",
+    author_email="eikeon@eikeon.com",
+    maintainer="Daniel 'eikeon' Krech",
+    maintainer_email="eikeon@eikeon.com",
+    url="http://rdflib.net/",
+    license="https://raw.github.com/RDFLib/rdflib/master/LICENSE",
+    platforms=["any"],
+    classifiers=[
+            "Programming Language :: Python",
+            "Programming Language :: Python :: 2",
+            "Programming Language :: Python :: 3",
+            "Programming Language :: Python :: 2.5",
+            "Programming Language :: Python :: 2.6",
+            "Programming Language :: Python :: 2.7",
+            "Programming Language :: Python :: 3.2",
+            "License :: OSI Approved :: BSD License",
+            "Topic :: Software Development :: Libraries :: Python Modules",
+            "Operating System :: OS Independent",
+            "Natural Language :: English",
+                 ],
+    long_description="""\
+    RDFLib is a Python library for working with RDF, a simple yet powerful
+    language for representing information.
 
     The library contains parsers and serializers for RDF/XML, N3,
     NTriples, Turtle, TriX, RDFa and Microdata . The library presents a Graph
     interface which can be backed by any one of a number of Store
-    implementations. The core rdflib includes store implementations for 
-    in memory storage and persistent storage on top of the Berkeley DB. 
+    implementations. The core rdflib includes store implementations for
+    in memory storage and persistent storage on top of the Berkeley DB.
 
-    The rdfextras project offers several additional stores as well as a 
+    The rdfextras project offers several additional stores as well as a
     SPARQL engine for use with rdflib: http://github.com/RDFLib/rdfextras/
 
     If you have recently reported a bug marked as fixed, or have a craving for
@@ -99,18 +103,17 @@ setup(
     easy_install https://github.com/RDFLib/rdflib/tarball/master
 
     """,
-    packages = ['rdflib',
-                'rdflib/plugins',
-                'rdflib/plugins',
-                'rdflib/plugins/parsers',
-                'rdflib/plugins/parsers/pyRdfa',
-                'rdflib/plugins/parsers/pyRdfa/transform',
-                'rdflib/plugins/parsers/pyRdfa/extras',
-                'rdflib/plugins/parsers/pyRdfa/host',
-                'rdflib/plugins/parsers/pyRdfa/rdfs',
-                'rdflib/plugins/parsers/pyMicrodata',
-                'rdflib/plugins/serializers',
-                ],
+    packages=['rdflib',
+              'rdflib/plugins',
+              'rdflib/plugins',
+              'rdflib/plugins/parsers',
+              'rdflib/plugins/parsers/pyRdfa',
+              'rdflib/plugins/parsers/pyRdfa/transform',
+              'rdflib/plugins/parsers/pyRdfa/extras',
+              'rdflib/plugins/parsers/pyRdfa/host',
+              'rdflib/plugins/parsers/pyRdfa/rdfs',
+              'rdflib/plugins/parsers/pyMicrodata',
+              'rdflib/plugins/serializers',
+              ],
     **kwargs
     )
-
