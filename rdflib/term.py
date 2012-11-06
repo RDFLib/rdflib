@@ -777,7 +777,7 @@ class Literal(Identifier):
             %(u)s'false'
 
             >>> Literal(1.91)._literal_n3(use_plain=True)
-            %(u)s'1.91e00'
+            %(u)s'1.91e+00'
 
             Only limited precision available for floats:
             >>> Literal(0.123456789)._literal_n3(use_plain=True)
@@ -802,7 +802,7 @@ class Literal(Identifier):
                 if self.datatype == _XSD_DOUBLE: 
                     return sub("\\.?0*e","e", u'%e' % float(self))
                 elif self.datatype == _XSD_DECIMAL:
-                    return str(self._cmp_value)
+                    return unicode(self._cmp_value)
                 else:
                     return u'%s' % self
             except ValueError:
