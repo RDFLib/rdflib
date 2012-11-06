@@ -105,6 +105,12 @@ setup(
                 'rdflib/plugins/parsers',
                 'rdflib/plugins/parsers/rdfa',
                 'rdflib/plugins/parsers/rdfa/transform',
+                'rdflib/plugins/parsers/pyRdfa',
+                'rdflib/plugins/parsers/pyRdfa/transform',
+                'rdflib/plugins/parsers/pyRdfa/extras',
+                'rdflib/plugins/parsers/pyRdfa/host',
+                'rdflib/plugins/parsers/pyRdfa/rdfs',
+                'rdflib/plugins/parsers/pyMicrodata',
                 'rdflib/plugins/serializers',
                 ],
     **kwargs
