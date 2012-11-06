@@ -3,10 +3,14 @@ from urllib2 import URLError
 
 from rdflib.graph import ConjunctiveGraph
 
+from nose import SkipTest
+raise SkipTest("Suspended while test suite is being updated.")
+
+
 class NonXhtmlTest(TestCase):
     """
-    RDFa that is in not well-formed XHTML is passed through html5lib. 
-    These tests make sure that this RDFa can be processed both from 
+    RDFa that is in not well-formed XHTML is passed through html5lib.
+    These tests make sure that this RDFa can be processed both from
     a file, and from a URL. We can only run these tests if html5lib
     is installed. Currently html5lib isn't a dependency.
     """
