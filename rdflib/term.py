@@ -776,6 +776,16 @@ class Literal(Identifier):
             >>> Literal(False)._literal_n3(use_plain=True)
             %(u)s'false'
 
+            >>> Literal(1.91)._literal_n3(use_plain=True)
+            %(u)s'1.91e00'
+
+            Only limited precision available for floats:
+            >>> Literal(0.123456789)._literal_n3(use_plain=True)
+            %(u)s'1.234568e-01'
+
+            >>> Literal('0.123456789', datatype=XSD.decimal)._literal_n3(use_plain=True)
+            %(u)s'0.123456789'
+
         Using callback for datatype QNames::
 
             >>> Literal(1)._literal_n3(
@@ -790,9 +800,9 @@ class Literal(Identifier):
                 # in py >=2.6 the string.format function makes this easier
                 # we try to produce "pretty" output
                 if self.datatype == _XSD_DOUBLE: 
-                    return sub(".?0*e","e", u'%e' % float(self))
+                    return sub("\\.?0*e","e", u'%e' % float(self))
                 elif self.datatype == _XSD_DECIMAL:
-                    return sub("0*$","0",u'%f' % float(self))
+                    return str(self._cmp_value)
                 else:
                     return u'%s' % self
             except ValueError:
