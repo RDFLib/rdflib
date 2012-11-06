@@ -40,7 +40,7 @@ else:
     try:
         from setuptools import setup
         kwargs['test_suite'] = "nose.collector"
-        kwargs['install_requires'] = ['isodate']
+        kwargs['install_requires'] = ['isodate', 'html5lib']
         if sys.version_info[:2] > (2,4):
             kwargs['requires'] = ['isodate']
     except ImportError:
@@ -85,7 +85,7 @@ setup(
     """RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information.
 
     The library contains parsers and serializers for RDF/XML, N3,
-    NTriples, Turtle, TriX and RDFa . The library presents a Graph
+    NTriples, Turtle, TriX, RDFa and Microdata . The library presents a Graph
     interface which can be backed by any one of a number of Store
     implementations. The core rdflib includes store implementations for 
     in memory storage and persistent storage on top of the Berkeley DB. 
@@ -103,8 +103,6 @@ setup(
                 'rdflib/plugins',
                 'rdflib/plugins',
                 'rdflib/plugins/parsers',
-                'rdflib/plugins/parsers/rdfa',
-                'rdflib/plugins/parsers/rdfa/transform',
                 'rdflib/plugins/parsers/pyRdfa',
                 'rdflib/plugins/parsers/pyRdfa/transform',
                 'rdflib/plugins/parsers/pyRdfa/extras',

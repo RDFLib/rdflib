@@ -54,7 +54,7 @@ Features
 --------
 
 The library contains parsers and serializers for RDF/XML, N3,
-NTriples, N-Quads, Turtle, TriX and RDFa.
+NTriples, N-Quads, Turtle, TriX, RDFa and Microdata.
 
 The library presents a Graph interface which can be backed by
 any one of a number of Store implementations. 
