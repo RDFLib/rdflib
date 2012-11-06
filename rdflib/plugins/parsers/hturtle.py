@@ -17,8 +17,16 @@ from .pyRdfa.state       import ExecutionContext
 from .pyRdfa.embeddedRDF import handle_embeddedRDF
 from .structureddata     import _get_orig_source, _check_error
 
+try: 
+	import html5lib
+except ImportError: 
+	import warnings
+	warnings.warn('html5lib not found! RDFa and Microdata parsers will not be available.')
+	html5lib=False
+
+
 class HTurtle(pyRdfa) :
-	"""Bastartizing the RDFa 1.1 parser to do a hturtle extractions """
+	"""Bastardizing the RDFa 1.1 parser to do a hturtle extractions """
 	def __init__(self, options = None, base = "", media_type = "") :
 		pyRdfa.__init__(self, options = options, base = base, media_type = media_type, rdfa_version = "1.1")
 
@@ -58,6 +66,10 @@ class HTurtleParser(Parser) :
 		@keyword media_type: explicit setting of the preferred media type (a.k.a. content type) of the the RDFa source. None means the content type of the HTTP result is used, or a guess is made based on the suffix of a file
 		@type media_type: string
 		"""
+		if html5lib == False: 
+			raise ImportError('html5lib is not installed, cannot use RDFa and Microdata parsers.')
+
+
 		(baseURI, orig_source) = _get_orig_source(source)
 		self._process(graph, pgraph, baseURI, orig_source, media_type = media_type)
 

@@ -14,6 +14,14 @@ import sys, imp
 
 from rdflib.parser import Parser, StringInputSource, URLInputSource, FileInputSource
 
+try: 
+	import html5lib
+except ImportError: 
+	import warnings
+	warnings.warn('html5lib not found! RDFa and Microdata parsers will not be available.')
+	html5lib=False
+	
+
 def _get_orig_source(source) :
 	"""A bit of a hack; the RDFa/microdata parsers need more than what the upper layers of RDFLib provide...
 	This method returns the original source references.
@@ -70,6 +78,10 @@ class RDFaParser(Parser) :
 		@keyword vocab_cache: in case vocab expansion is used, whether the expansion data (i.e., vocabulary) should be cached locally. This requires the ability for the local application to write on the local file system
 		@type vocab_chache: Boolean
 		"""
+
+		if html5lib == False: 
+			raise ImportError('html5lib is not installed, cannot use RDFa and Microdata parsers.')
+
 		(baseURI, orig_source) = _get_orig_source(source)
 		self._process(graph, pgraph, baseURI, orig_source, 
 			          media_type      = media_type,
@@ -135,6 +147,10 @@ class MicrodataParser(Parser) :
 		@keyword rdfOutput: whether Exceptions should be catched and added, as triples, to the processor graph, or whether they should be raised.
 		@type rdfOutput: Boolean
 		"""
+		if html5lib == False: 
+			raise ImportError('html5lib is not installed, cannot use RDFa and Microdata parsers.')
+
+
 		(baseURI, orig_source) = _get_orig_source(source)
 		self._process(graph, baseURI, orig_source, 
 			          vocab_expansion = vocab_expansion,
