@@ -22,12 +22,12 @@ def setup_python3():
         outf, copied = file_util.copy_file(f, join(tmp_src, f), update=1)
         if copied and outf.endswith(".py"):
             outfiles_2to3.append(outf)
-  
+
     util.run_2to3(outfiles_2to3)
-  
+
     # arrange setup to use the copy
     sys.path.insert(0, tmp_src)
-  
+
     return tmp_src
 
 kwargs = {}
@@ -35,6 +35,7 @@ if sys.version_info[0] >= 3:
     from setuptools import setup
     kwargs['use_2to3'] = True
     kwargs['install_requires'] = ['isodate']
+    kwargs['tests_require'] = ['html5lib']
     kwargs['requires'] = ['isodate']
     kwargs['src_root'] = setup_python3()
 else:
@@ -99,7 +100,7 @@ setup(
 
     If you have recently reported a bug marked as fixed, or have a craving for
     the very latest, you may want the development version instead:
-    
+
     easy_install https://github.com/RDFLib/rdflib/tarball/master
 
     """,
