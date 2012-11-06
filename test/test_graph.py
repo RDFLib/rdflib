@@ -125,8 +125,8 @@ class GraphTestCase(unittest.TestCase):
         self.removeStuff()
         asserte(len(list(triples((Any, Any, Any)))), 0)
 
-
     def testStatementNode(self):
+        raise SkipTest("use of RDFLib Statement class is deprecated.")
         graph = self.graph
 
         from rdflib.term import Statement
