@@ -19,16 +19,17 @@ from os.path import exists, abspath
 from urllib import pathname2url
 from threading import Thread
 
-# These are passed to bsddb when creating DBs
+if has_bsddb: 
+    # These are passed to bsddb when creating DBs
 
-# passed to db.DBEnv.set_flags
-ENVSETFLAGS  = db.DB_CDB_ALLDB
-# passed to db.DBEnv.open
-ENVFLAGS = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD
-CACHESIZE=1024*1024*50
+    # passed to db.DBEnv.set_flags
+    ENVSETFLAGS  = db.DB_CDB_ALLDB
+    # passed to db.DBEnv.open
+    ENVFLAGS = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD
+    CACHESIZE=1024*1024*50
 
-# passed to db.DB.Open()
-DBOPENFLAGS = db.DB_THREAD 
+    # passed to db.DB.Open()
+    DBOPENFLAGS = db.DB_THREAD 
 
 import logging
 _logger = logging.getLogger(__name__)
