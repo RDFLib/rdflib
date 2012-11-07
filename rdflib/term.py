@@ -35,19 +35,18 @@ __all__ = [
     ]
 
 import logging
+import warnings
 
 _LOGGER = logging.getLogger(__name__)
 
 import base64
-import threading
 
 from urlparse import urlparse, urljoin, urldefrag
-from string import ascii_letters
-from random import choice
-from itertools import islice
 from datetime import date, time, datetime
 from isodate import parse_time, parse_date, parse_datetime
 from re import sub
+
+
 
 try:
     from hashlib import md5
@@ -111,12 +110,14 @@ class URIRef(Identifier):
         return "<%s>" % self
 
     def concrete(self):
+        warnings.warn("URIRef.concrete is deprecated.", category=DeprecationWarning, stacklevel=2)
         if "#" in self:
             return URIRef("/".join(self.rsplit("#", 1)))
         else:
             return self
 
     def abstract(self):
+        warnings.warn("URIRef.abstract is deprecated.", category=DeprecationWarning, stacklevel=2)
         if "#" not in self:
             scheme, netloc, path, params, query, fragment = urlparse(self)
             if path:
@@ -839,6 +840,16 @@ class Literal(Identifier):
             >>> Literal(False)._literal_n3(use_plain=True)
             %(u)s'false'
 
+            >>> Literal(1.91)._literal_n3(use_plain=True)
+            %(u)s'1.91e+00'
+
+            Only limited precision available for floats:
+            >>> Literal(0.123456789)._literal_n3(use_plain=True)
+            %(u)s'1.234568e-01'
+
+            >>> Literal('0.123456789', datatype=XSD.decimal)._literal_n3(use_plain=True)
+            %(u)s'0.123456789'
+
         Using callback for datatype QNames::
 
             >>> Literal(1)._literal_n3(
@@ -853,9 +864,9 @@ class Literal(Identifier):
                 # in py >=2.6 the string.format function makes this easier
                 # we try to produce "pretty" output
                 if self.datatype == _XSD_DOUBLE: 
-                    return sub(".?0*e","e", u'%e' % float(self))
+                    return sub("\\.?0*e","e", u'%e' % float(self))
                 elif self.datatype == _XSD_DECIMAL:
-                    return sub("0*$","0",u'%f' % float(self))
+                    return unicode(self._cmp_value)
                 else:
                     return u'%s' % self
             except ValueError:
@@ -1093,6 +1104,7 @@ class Variable(Identifier):
 class Statement(Node, tuple):
 
     def __new__(cls, (subject, predicate, object), context):
+        warnings.warn("Class Statement is deprecated.", category=DeprecationWarning, stacklevel=2)
         return tuple.__new__(cls, ((subject, predicate, object), context))
 
     def __reduce__(self):

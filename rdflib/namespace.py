@@ -189,6 +189,8 @@ OWL = Namespace('http://www.w3.org/2002/07/owl#')
 XSD = Namespace(_XSD_PFX)
 
 SKOS = Namespace('http://www.w3.org/2004/02/skos/core#')
+DOAP = Namespace('http://usefulinc.com/ns/doap#')
+FOAF = Namespace('http://xmlns.com/foaf/0.1/')
 
 class NamespaceManager(object):
     """
