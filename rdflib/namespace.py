@@ -157,7 +157,7 @@ class _RDFNamespace(ClosedNamespace):
         "RDF", "Description", "ID", "about", "parseType", "resource", "li", "nodeID", "datatype",
 
         # RDF Classes
-        "Seq", "Bag", "Alt", "Statement", "Property", "XMLLiteral", "List", "PlainLiteral",
+        "Seq", "Bag", "Alt", "Statement", "Property", "XMLLiteral", "HTML", "LangString", "List", "PlainLiteral",
 
         # RDF Properties
         "subject", "predicate", "object", "type", "value", "first", "rest",

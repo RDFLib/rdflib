@@ -57,6 +57,10 @@ except ImportError:
 import py3compat
 b = py3compat.b
 
+skolem_genid        = "/.well-known/genid/"
+rdflib_skolem_genid = "/.well-known/genid/rdflib/"
+skolems             = {}
+
 class Node(object):
     """
     A Node in the Graph.
@@ -93,10 +97,11 @@ class URIRef(Identifier):
                     value += "#"
         #if normalize and value and value != normalize("NFC", value):
         #    raise Error("value must be in NFC normalized form.")
+        final_cls = RDFLibGenid if RDFLibGenid._is_rdflib_skolem(value) else ( Genid if Genid._is_external_skolem(value) else cls )
         try:
-            rt = unicode.__new__(cls, value)
+            rt = unicode.__new__(final_cls, value)
         except UnicodeDecodeError:
-            rt = unicode.__new__(cls, value, 'utf-8')
+            rt = unicode.__new__(final_cls, value, 'utf-8')
         return rt
 
     def toPython(self):
@@ -174,6 +179,50 @@ class URIRef(Identifier):
         d = md5(self.encode())
         d.update(b("U"))
         return d.hexdigest()
+ 
+    def de_skolemize(self) :
+        """ Create a Blank Node from a skolem URI, in accordance
+        with http://www.w3.org/TR/rdf11-concepts/#section-skolemization.
+        This function accepts only rdflib type skolemization, to provide a round-tripping
+        within the system.
+        """
+        if isinstance(self, RDFLibGenid) :
+            parsed_uri = urlparse("%s" % self)
+            return BNode( value=parsed_uri.path[len(rdflib_skolem_genid):] )
+        elif isinstance(self, Genid) :
+            bnode_id = "%s" % self
+            if bnode_id in skolems :
+                return skolems[bnode_id]
+            else :
+                retval            = BNode()
+                skolems[bnode_id] = retval
+                return retval
+        else :
+            raise Exception("<%s> is not a skolem URI" % self)
+
+class Genid(URIRef) :
+    __slots__ = ()
+
+    @staticmethod
+    def _is_external_skolem(uri) :
+        parsed_uri = urlparse(uri)
+        gen_id = parsed_uri.path.rfind(skolem_genid)
+        if gen_id != 0:
+            return False
+        return True
+
+class RDFLibGenid(Genid) :
+    __slots__ = ()
+
+    @staticmethod
+    def _is_rdflib_skolem(uri) :
+        parsed_uri = urlparse(uri)
+        if parsed_uri.params != "" or parsed_uri.query != "" or parsed_uri.fragment != "" :
+            return False
+        gen_id = parsed_uri.path.rfind(rdflib_skolem_genid)
+        if gen_id != 0:
+            return False
+        return True
 
 
 def _unique_id():
@@ -336,6 +385,13 @@ class BNode(Identifier):
         d.update(b("B"))
         return d.hexdigest()
 
+    def skolemize(self, authority = "http://rdlib.net/") :
+        """ Create a URIRef "skolem" representation of the BNode, in accordance
+        with http://www.w3.org/TR/rdf11-concepts/#section-skolemization
+        """
+        skolem = "%s%s" % (rdflib_skolem_genid,unicode(self))
+        return URIRef(urljoin(authority,skolem))       
+
 
 class Literal(Identifier):
     doc = """
@@ -396,6 +452,8 @@ class Literal(Identifier):
             raise TypeError("A Literal can only have one of lang or datatype, "
                "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal")
 
+        from .namespace import RDF
+
         if isinstance(value, Literal): # create from another Literal instance
             datatype=datatype or value.datatype
             lang=lang or value.language
@@ -410,10 +468,16 @@ class Literal(Identifier):
             datatype = URIRef(datatype)
         if py3compat.PY3 and isinstance(value, bytes):
             value = value.decode('utf-8')
-        try:
-            inst = unicode.__new__(cls, value)
-        except UnicodeDecodeError:
-            inst = unicode.__new__(cls, value, 'utf-8')
+
+        if datatype == RDF["XMLLiteral"] :
+            inst = unicode.__new__(XMLLiteral, value)
+        elif datatype == RDF["HTML"] :
+            inst = unicode.__new__(HTMLLiteral, value)
+        else :
+            try:
+                inst = unicode.__new__(cls, value)
+            except UnicodeDecodeError:
+                inst = unicode.__new__(cls, value, 'utf-8')
         inst.language = lang
         inst.datatype = datatype
         inst._cmp_value = inst._toCompareValue()
@@ -896,6 +960,7 @@ class Literal(Identifier):
 
 
 _XSD_PFX = 'http://www.w3.org/2001/XMLSchema#'
+_RDF_PFX = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
 
 _XSD_FLOAT = URIRef(_XSD_PFX+'float')
 _XSD_DOUBLE = URIRef(_XSD_PFX+'double')
@@ -976,6 +1041,7 @@ XSDToPython = {
 }
 
 _toPythonMapping = {}
+
 _toPythonMapping.update(XSDToPython)
 
 def bind(datatype, conversion_function):
@@ -1035,6 +1101,122 @@ class Statement(Node, tuple):
     def toPython(self):
         return (self[0], self[1])
 
+
+class XMLOrHTMLLiteral(Literal) :
+    def __add__(self,val) :
+        raise TypeError("Not a number; %s" % self)
+
+    def __neg__(self,val) :
+        raise TypeError("Not a number; %s" % self)
+
+    def __abs__(self,val) :
+        raise TypeError("Not a number; %s" % self)
+
+    def __invert__(self,val) :
+        raise TypeError("Not a number; %s" % self)
+
+    def __lt__(self,val) :
+        raise TypeError("Not a number; %s" % self)
+
+    def __le__(self,val) :
+        raise TypeError("Not a number; %s" % self)
+
+    def __gt__(self,val) :
+        raise TypeError("Not a number; %s" % self)
+        
+    def __ge__(self,val) :
+        raise TypeError("Not a number; %s" % self)
+
+    def toPython(self):
+        """
+        Returns an appropriate python datatype derived from this RDF Literal
+        """
+        return self
+
+    @staticmethod
+    def _isEqualNode(node, other) :
+        from xml.dom.minidom import Node
+        def recurse() :
+            # Recursion through the children
+            # In Python2, the semantics of 'map' is such that the check on length would be unnecessary. In Python 3,
+            # the semantics of map has changed (why, oh why???) and the check for the length becomes 
+            # necessary...
+            if len(node.childNodes) != len(other.childNodes) : return False 
+            for (nc,oc) in map(lambda x,y: (x,y), node.childNodes, other.childNodes) :
+                if not XMLOrHTMLLiteral._isEqualNode(nc,oc) : return False
+            # if we got here then everything is fine:
+            return True
+
+        if node == None or other == None :
+            return False
+
+        if node.nodeType != other.nodeType :
+            return False
+
+        if node.nodeType in [Node.DOCUMENT_NODE, Node.DOCUMENT_FRAGMENT_NODE] :
+            return recurse()
+
+        elif node.nodeType == Node.ELEMENT_NODE :
+            # Get the basics right
+            if not ( node.tagName == other.tagName and node.namespaceURI == other.namespaceURI ) :
+                return False
+
+            # Handle the (namespaced) attributes; the namespace setting key should be ignored, though
+            # Note that the minidom orders the keys already, so we do not have to worry about that, which is a bonus...
+            n_keys = [ k for k in node.attributes.keysNS()  if k[0] != 'http://www.w3.org/2000/xmlns/' ]
+            o_keys = [ k for k in other.attributes.keysNS() if k[0] != 'http://www.w3.org/2000/xmlns/' ]
+            if len(n_keys) != len(o_keys) : return False
+            for k in n_keys :
+                if not (k in o_keys and node.getAttributeNS(k[0],k[1]) == other.getAttributeNS(k[0],k[1])): return False
+
+            # if we got here, the attributes are all right, we can go down the tree recursively
+            return recurse()
+
+        elif node.nodeType in [Node.TEXT_NODE, Node.COMMENT_NODE, Node.CDATA_SECTION_NODE, Node.NOTATION_NODE]:
+            return node.data == other.data
+
+        elif node.nodeType == Node.PROCESSING_INSTRUCTION_NODE :
+            return node.data == other.data and node.target == other.target
+
+        elif node.nodeType == Node.ENTITY_NODE :
+            return node.nodeValue == other.nodeValue
+
+        elif node.nodeType == Node.DOCUMENT_TYPE_NODE :
+            return node.publicId == other.publicId and node.systemId == other.system.Id 
+
+        else :
+            # should not happen, in fact
+            return False
+
+class XMLLiteral(XMLOrHTMLLiteral) :
+    def _toCompareValue(self):
+        from xml.dom.minidom import parseString
+        retval = parseString("<rdflibtoplevelelement>%s</rdflibtoplevelelement>" % self)
+        retval.normalize()
+        return retval
+
+    def __eq__(self, other):
+        if other != None and isinstance(other, XMLLiteral) :
+            return XMLOrHTMLLiteral._isEqualNode(self._cmp_value, other._cmp_value)
+        else :
+            return False
+
+class HTMLLiteral(XMLOrHTMLLiteral) :
+    def _toCompareValue(self):
+        try :
+            import html5lib
+            parser = html5lib.HTMLParser(tree=html5lib.treebuilders.getTreeBuilder("dom"))
+            retval = parser.parseFragment("%s" % self)
+            retval.normalize()
+            return retval
+        except ImportError :
+            raise ImportError("HTML5 parser not available. Try installing html5lib <http://code.google.com/p/html5lib>")
+
+    def __eq__(self, other):
+        if other != None and isinstance(other, HTMLLiteral) :
+            return XMLOrHTMLLiteral._isEqualNode(self._cmp_value, other._cmp_value)
+        else :
+            return False
 
 if __name__ == '__main__':
     import doctest

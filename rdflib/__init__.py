@@ -62,13 +62,13 @@ _LOGGER = logging.getLogger("rdflib")
 _LOGGER.info("version: %s" % __version__)
 
 
-from rdflib.term import URIRef, BNode, Literal, Variable
+from rdflib.term import URIRef, BNode, Literal, Variable, HTMLLiteral, XMLLiteral
 
 from rdflib.namespace import Namespace
 
-from rdflib.graph import Graph, ConjunctiveGraph
+from rdflib.graph import Graph, ConjunctiveGraph, Dataset
 
-from rdflib.namespace import RDF, RDFS, OWL, XSD
+from rdflib.namespace import RDF, RDFS, OWL, XSD 
 
 from rdflib import plugin
 from rdflib import query

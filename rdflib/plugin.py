@@ -135,7 +135,7 @@ register('n3', Serializer,
 register('turtle', Serializer,
                 'rdflib.plugins.serializers.turtle', 'TurtleSerializer')
 register('trig', Serializer,
-                'rdflib.plugins.serializers.trig', 'TrigSerializer')
+                'rdflib.plugins.serializers.trig', 'TriGSerializer')
 register('nt', Serializer,
                 'rdflib.plugins.serializers.nt', 'NTSerializer')
 register('pretty-xml', Serializer,
