@@ -392,7 +392,7 @@ class Literal(Identifier):
     """
     __doc__ = py3compat.format_doctest_out(doc)
 
-    __slots__ = ("language", "datatype", "_cmp_value")
+    __slots__ = ("language", "datatype", "_language", "_datatype", "_cmp_value")
 
     def __new__(cls, value, lang=None, datatype=None):
         if lang is not None and datatype is not None:
@@ -417,10 +417,17 @@ class Literal(Identifier):
             inst = unicode.__new__(cls, value)
         except UnicodeDecodeError:
             inst = unicode.__new__(cls, value, 'utf-8')
-        inst.language = lang
-        inst.datatype = datatype
+        inst._language = lang
+        inst._datatype = datatype
         inst._cmp_value = inst._toCompareValue()
         return inst
+
+    @property
+    def language(self): return self._language
+    
+    @property 
+    def datatype(self): return self._datatype
+
 
     def __reduce__(self):
         return (Literal, (unicode(self), self.language, self.datatype),)
@@ -430,8 +437,8 @@ class Literal(Identifier):
 
     def __setstate__(self, arg):
         _, d = arg
-        self.language = d["language"]
-        self.datatype = d["datatype"]
+        self._language = d["language"]
+        self._datatype = d["datatype"]
 
     @py3compat.format_doctest_out
     def __add__(self, val):
