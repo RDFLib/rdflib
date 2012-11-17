@@ -1,3 +1,61 @@
+2012/10/10
+	RELEASE 3.2.3
+
+    Almost identical to 3.2.2
+    A stupid bug snuck into 3.2.2, and querying graphs were broken.
+
+	* Fixes broken querying
+	  https://github.com/RDFLib/rdflib/issues/234
+	* graph.transitiveClosure now works with loops
+	  https://github.com/RDFLib/rdflib/issues/206
+
+2012/09/25
+        RELEASE 3.2.2
+
+    This is mainly a maintenance release.
+
+    This release should be compatible with python 2.4 through to 3.
+
+    Changes:
+      * Improved serialization/parsing roundtrip tests led to some fixes
+        of obscure parser/serializer bugs. In particular complex string
+        Literals in ntriples improved a lot.
+      * The terms of a triple are now asserted to be RDFLib Node's in graph.add
+        This should avoid getting strings and other things in the store.
+        https://github.com/RDFLib/rdflib/issues/200
+      * Added a specific TurtleParser that does not require the store to be
+        non-formula aware.
+        https://github.com/RDFLib/rdflib/issues/214
+      * A trig-serializer was added, see:
+        http://www4.wiwiss.fu-berlin.de/bizer/trig/
+      * BNode generation was made thread-safe
+        https://github.com/RDFLib/rdflib/issues/209
+        (also fixed better by dzinxed)
+      * Illegal BNode IDs removed from NT output:
+        https://github.com/RDFLib/rdflib/issues/212
+      * and more minor bug fixes that had no issues
+
+2012/04/24
+        RELEASE 3.2.1
+
+    This is mainly a maintenance release.
+
+    Changes:
+      * New setuptools entry points for query processors and results
+
+      * Literals constructed from other literals copy datatype/lang
+        https://github.com/RDFLib/rdflib/issues/188
+      * Relative URIs are resolved incorrectly after redirects
+        https://github.com/RDFLib/rdflib/issues/130
+      * Illegal prefixes in turtle output
+        https://github.com/RDFLib/rdflib/issues/161
+      * Sleepcat store unstable prefixes
+        https://github.com/RDFLib/rdflib/issues/201
+      * Consistent toPyton() for all node objects
+        https://github.com/RDFLib/rdflib/issues/174
+      * Better random BNode ID in multi-thread environments
+        https://github.com/RDFLib/rdflib/issues/185
+
 2012/01/19
         RELEASE 3.2.0
 

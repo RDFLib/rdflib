@@ -5,7 +5,7 @@ graphs that can be used and queried. The store that backs the graph
 
 >>> from rdflib import ConjunctiveGraph, URIRef, Namespace
 >>> g = ConjunctiveGraph()
->>> data = open("test/example.nquads", "rb")
+>>> data = open("test/nquads/example.nquads", "rb")
 >>> g.parse(data, format="nquads") # doctest:+ELLIPSIS
 <Graph identifier=... (<class 'rdflib.graph.Graph'>)>
 >>> assert len(g.store) == 449
@@ -28,32 +28,10 @@ from rdflib.plugins.parsers.ntriples import r_tail
 from rdflib.plugins.parsers.ntriples import r_wspace
 from rdflib.plugins.parsers.ntriples import r_wspaces
 
-__all__ = ['QuadSink', 'NQuadsParser']
+__all__ = ['NQuadsParser']
 
-class QuadSink(object):
-    def __init__(self):
-        class FakeStore(object):
-            def __init__(self, addn):
-                self.addN = addn
-        self.length = 0
-        self.__quads = []
-        self.__store = FakeStore(self.addN)
-        
-    def addN(self, quads):
-        self.length += 1
-        self.__quads.append(quads)
-        
-    def quads(self, (s,p,o)):
-        for s,p,o,ctx in self.__quads:
-            yield s,p,o,ctx
 
 class NQuadsParser(NTriplesParser):
-    def __init__(self, sink=None):
-        if sink is not None:
-            assert sink.store.context_aware, ("NQuadsParser must be given"
-                                          " a context aware store.")
-            self.sink = sink
-        else: self.sink = QuadSink()
 
     def parse(self, inputsource, sink, **kwargs):
         """Parse f as an N-Triples file."""
@@ -69,18 +47,13 @@ class NQuadsParser(NTriplesParser):
         self.file = source
         self.buffer = ''
         while True:
-            self.line = self.readline()
+            self.line = __line = self.readline()
             if self.line is None: break
             try: self.parseline()
-            except ParseError:
-               raise ParseError("Invalid line: %r" % self.line)
+            except ParseError, msg:
+                raise ParseError("Invalid line (%s):\n%r" % (msg, __line))
+
         return self.sink
-  
-    def context(self):
-        context = self.uriref()
-        if not context:
-            raise ParseError("Context must be a uriref")
-        return context
   
     def parseline(self):
         self.eat(r_wspace)
@@ -96,7 +69,7 @@ class NQuadsParser(NTriplesParser):
         obj = self.object()
         self.eat(r_wspaces)
       
-        context = self.context()
+        context = self.uriref()
         self.eat(r_tail)
 
         if self.line:

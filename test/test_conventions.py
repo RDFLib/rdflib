@@ -4,10 +4,18 @@ import os.path
 
 import rdflib
 
+"""
+Test module naming conventions
+
+modules should all be lower-case initial
+"""
 
 class A(unittest.TestCase):
 
     def module_names(self, path=None, names=None):
+
+        skip_as_ignorably_private = ['embeddedRDF', 'OpenID', 'DublinCore']
+
         if path is None:
             path = rdflib.__path__
         if names is None:
@@ -23,7 +31,7 @@ class A(unittest.TestCase):
                                            names=names)
                 names.union(result)
             else:
-                if name!=name.lower():
+                if name!=name.lower() and name not in skip_as_ignorably_private:
                     names.add(name)
                 #self.assert_(name==name.lower(), "module name '%s' is not lower case" % name)
         return names

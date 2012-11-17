@@ -95,6 +95,8 @@ class NTriplesParser(object):
           p = NTriplesParser(sink=MySink())
           sink = p.parse(f) # file; use parsestring for a string
     """
+    
+    _bnode_ids = {}
 
     def __init__(self, sink=None):
         if sink is not None:
@@ -175,8 +177,8 @@ class NTriplesParser(object):
     def eat(self, pattern):
         m = pattern.match(self.line)
         if not m: # @@ Why can't we get the original pattern?
-            print(dir(pattern))
-            print repr(self.line), type(self.line)
+            # print(dir(pattern))
+            # print repr(self.line), type(self.line)
             raise ParseError("Failed to eat %s" % pattern)
         self.line = self.line[m.end():]
         return m
@@ -210,7 +212,18 @@ class NTriplesParser(object):
 
     def nodeid(self):
         if self.peek(b('_')):
-            return bNode(self.eat(r_nodeid).group(1).decode())
+            # Fix for https://github.com/RDFLib/rdflib/issues/204
+            bnode_id = self.eat(r_nodeid).group(1).decode()
+            new_id = self._bnode_ids.get(bnode_id, None)
+            if new_id is not None:
+                # Re-map to id specfic to this doc
+                return bNode(new_id)
+            else:
+                # Replace with freshly-generated document-specific BNode id
+                bnode = bNode()
+                # Store the mapping
+                self._bnode_ids[bnode_id] = bnode
+                return bnode
         return False
 
     def literal(self):

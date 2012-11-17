@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from rdflib import py3compat
+
 __doc__ = py3compat.format_doctest_out("""
 The :class:`~rdflib.resource.Resource` class wraps a :class:`~rdflib.graph.Graph` 
 and a resource reference (i.e. a :class:`rdflib.term.URIRef` or 
@@ -63,7 +64,7 @@ Create a Resource::
 Retrieve some basic facts::
 
     >>> person.identifier
-    rdflib.term.URIRef(u'http://example.org/person/some1#self')
+    rdflib.term.URIRef(%(u)s'http://example.org/person/some1#self')
 
     >>> person.value(FOAF.name)
     rdflib.term.Literal(%(u)s'Some Body')
@@ -73,7 +74,7 @@ Retrieve some basic facts::
 
 Resources as unicode are represented by their identifiers as unicode::
 
-    >>> unicode(person)
+    >>> %(unicode)s(person)
     %(u)s'http://example.org/person/some1#self'
 
 Resource references are also Resources, so you can easily get e.g. a qname

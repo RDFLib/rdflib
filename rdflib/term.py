@@ -1,5 +1,5 @@
 """
-This module defines the different types of terms. Terms are the kinds of 
+This module defines the different types of terms. Terms are the kinds of
 objects that can appear in a quoted/asserted triple. This includes those 
 that are core to RDF:
 
@@ -35,19 +35,18 @@ __all__ = [
     ]
 
 import logging
+import warnings
 
 _LOGGER = logging.getLogger(__name__)
 
 import base64
 
-import threading
 from urlparse import urlparse, urljoin, urldefrag
-from string import ascii_letters
-from random import choice
-from itertools import islice
 from datetime import date, time, datetime
 from isodate import parse_time, parse_date, parse_datetime
 from re import sub
+
+
 
 try:
     from hashlib import md5
@@ -99,16 +98,21 @@ class URIRef(Identifier):
             rt = unicode.__new__(cls, value, 'utf-8')
         return rt
 
+    def toPython(self):
+        return unicode(self)
+
     def n3(self):
         return "<%s>" % self
 
     def concrete(self):
+        warnings.warn("URIRef.concrete is deprecated.", category=DeprecationWarning, stacklevel=2)
         if "#" in self:
             return URIRef("/".join(self.rsplit("#", 1)))
         else:
             return self
 
     def abstract(self):
+        warnings.warn("URIRef.abstract is deprecated.", category=DeprecationWarning, stacklevel=2)
         if "#" not in self:
             scheme, netloc, path, params, query, fragment = urlparse(self)
             if path:
@@ -173,23 +177,78 @@ class URIRef(Identifier):
         return d.hexdigest()
 
 
-
-def _letter():
-    while True:
-        yield choice(ascii_letters)
-
 def _unique_id():
-    """Create a (hopefully) unique prefix"""
-    uid = "".join(islice(_letter(), 0, 8))
-    return uid
+    # Used to read: """Create a (hopefully) unique prefix"""
+    # now retained merely to leave interal API unchanged.
+    # From BNode.__new__() below ...
+    # 
+    # acceptable bnode value range for RDF/XML needs to be
+    # something that can be serialzed as a nodeID for N3
+    # 
+    # BNode identifiers must be valid NCNames" _:[A-Za-z][A-Za-z0-9]*
+    # http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID
+    return "N" # ensure that id starts with a letter
+
+
+# Adapted from http://icodesnip.com/snippet/python/simple-universally-unique-id-uuid-or-guid
+def bnode_uuid():
+    """
+    Generates a uuid on behalf of Python 2.4
+    """
+    import os
+    import random
+    import socket
+    from time import time
+    from binascii import hexlify
+
+    pid = [None]
+
+    try:
+        ip = socket.gethostbyname(socket.gethostname())
+        ip = long(ip.replace('.', '999').replace(':', '999'))
+    except:
+        # if we can't get a network address, just imagine one
+        ip = long(random.random() * 100000000000000000L)
+
+    def _generator():
+        if os.getpid() != pid[0]:
+            # Process might have been forked (issue 200), must reseed random:
+            try:
+                preseed = long(hexlify(os.urandom(16)), 16)
+            except NotImplementedError:
+                preseed = 0
+            seed = long(str(preseed) + str(os.getpid())
+                        + str(long(time() * 1000000)) + str(ip))
+            random.seed(seed)
+            pid[0] = os.getpid()
+
+        t = long(time() * 1000.0)
+        r = long(random.random() * 100000000000000000L)
+        data = str(t) + ' ' + str(r) + ' ' + str(ip)
+        return md5(data).hexdigest()
+
+    return _generator
+
+
+def uuid4_ncname():
+    """
+    Generates UUID4-based but ncname-compliant identifiers.
+    """
+    from uuid import uuid4
+
+    def _generator():
+        return uuid4().hex
+
+    return _generator
+
 
 def _serial_number_generator():
-    i = 0
-    while 1:
-        yield i
-        i = i + 1
+    import sys
+    if sys.version_info[:2] < (2, 5):
+        return bnode_uuid()
+    else:
+        return uuid4_ncname()
 
-bNodeLock = threading.RLock()
 
 class BNode(Identifier):
     """
@@ -208,19 +267,20 @@ class BNode(Identifier):
             # so that BNode values do not
             # collide with ones created with a different instance of this module
             # at some other time.
-            bNodeLock.acquire()
-            node_id = _sn_gen.next()
-            bNodeLock.release()
+            node_id = _sn_gen()
             value = "%s%s" % (_prefix, node_id)
         else:
             # TODO: check that value falls within acceptable bnode value range
             # for RDF/XML needs to be something that can be serialzed
             # as a nodeID for N3 ??  Unless we require these
             # constraints be enforced elsewhere?
-            pass #assert is_ncname(unicode(value)), "BNode identifiers
-                 #must be valid NCNames"
-
+            pass # assert is_ncname(unicode(value)), "BNode identifiers
+                 # must be valid NCNames" _:[A-Za-z][A-Za-z0-9]*
+                 # http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID
         return Identifier.__new__(cls, value)
+
+    def toPython(self):
+        return unicode(self)
 
     def n3(self):
         return "_:%s" % self
@@ -303,6 +363,7 @@ class Literal(Identifier):
     GT/LT Comparisons are done by language, then by datatype, and finally 
     by lexical representations. Comparisons with non-literals is done by type
 
+    >>> from rdflib import Literal, XSD
     >>> Literal(1).toPython()
     1%(L)s
     >>> Literal("adsf") > 1
@@ -313,7 +374,7 @@ class Literal(Identifier):
     >>> lit2006 < Literal('2007-01-01',datatype=XSD.date)
     True
     >>> Literal(datetime.utcnow()).datatype
-    rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#dateTime')
+    rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#dateTime')
     >>> oneInt     = Literal(1)
     >>> twoInt     = Literal(2)
     >>> twoInt < oneInt
@@ -338,6 +399,16 @@ class Literal(Identifier):
     False
     >>> "2005" < lit2006
     True
+    >>> x = Literal("2", datatype=XSD.integer)
+    >>> x
+    rdflib.term.Literal(%(u)s'2', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
+    >>> Literal(x) == x
+    True
+    >>> x = Literal("cake", lang="en")
+    >>> x
+    rdflib.term.Literal(%(u)s'cake', lang='en')
+    >>> Literal(x) == x
+    True
     """
     __doc__ = py3compat.format_doctest_out(doc)
 
@@ -347,6 +418,7 @@ class Literal(Identifier):
         if lang is not None and datatype is not None:
             raise TypeError("A Literal can only have one of lang or datatype, "
                "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal")
+
         value=None
         if isinstance(lexical_or_value, Literal): # create from another Literal instance
             datatype=datatype or lexical_or_value.datatype
@@ -760,6 +832,16 @@ class Literal(Identifier):
             >>> Literal(False)._literal_n3(use_plain=True)
             %(u)s'false'
 
+            >>> Literal(1.91)._literal_n3(use_plain=True)
+            %(u)s'1.91e+00'
+
+            Only limited precision available for floats:
+            >>> Literal(0.123456789)._literal_n3(use_plain=True)
+            %(u)s'1.234568e-01'
+
+            >>> Literal('0.123456789', datatype=XSD.decimal)._literal_n3(use_plain=True)
+            %(u)s'0.123456789'
+
         Using callback for datatype QNames::
 
             >>> Literal(1)._literal_n3(
@@ -774,7 +856,7 @@ class Literal(Identifier):
                 # in py >=2.6 the string.format function makes this easier
                 # we try to produce "pretty" output
                 if self.datatype == _XSD_DOUBLE: 
-                    return sub(".?0*e","e", u'%e' % float(self))
+                    return sub("\\.?0*e","e", u'%e' % float(self))
                 elif self.datatype == _XSD_DECIMAL:
                     return sub("0*$","0",u'%f' % float(self))
                 elif self.datatype == _XSD_BOOLEAN: 
@@ -815,20 +897,16 @@ class Literal(Identifier):
         # NOTE: Could in theory chose quotes based on quotes appearing in the
         # string, i.e. '"' and "'", but N3/turtle doesn't allow "'"(?).
 
-        # which is nicer?
-        # if self.find("\"")!=-1 or self.find("'")!=-1 or self.find("\n")!=-1:
         if "\n" in self:
             # Triple quote this string.
             encoded = self.replace('\\', '\\\\')
             if '"""' in self:
                 # is this ok?
                 encoded = encoded.replace('"""','\\"\\"\\"')
-            if encoded.endswith('"'):
-                encoded = encoded[:-1] + "\\\""
-            return '"""%s"""' % encoded
+            return '"""%s"""' % encoded.replace('\r','\\r')
         else:
             return '"%s"' % self.replace('\n','\\n').replace('\\', '\\\\'
-                            ).replace('"', '\\"')
+                            ).replace('"', '\\"').replace('\r','\\r')
 
     if not py3compat.PY3:
         def __str__(self):
@@ -931,7 +1009,7 @@ _PythonToXSD = [
     (float     , (None, URIRef(_XSD_PFX+'double'))),
     (bool      , (lambda i:str(i).lower(), URIRef(_XSD_PFX+'boolean'))),
     (int       , (None, URIRef(_XSD_PFX+'integer'))),
-    (long      , (None, URIRef(_XSD_PFX+'long'))),
+    (long      , (None, URIRef(_XSD_PFX+'integer'))),
     (Decimal   , (None, URIRef(_XSD_PFX+'decimal'))),
     (datetime  , (lambda i:i.isoformat(), URIRef(_XSD_PFX+'dateTime'))),
     (date      , (lambda i:i.isoformat(), URIRef(_XSD_PFX+'date'))),
@@ -995,6 +1073,9 @@ class Variable(Identifier):
     def __repr__(self):
         return self.n3()
 
+    def toPython(self):
+        return "?%s" % self
+
     def n3(self):
         return "?%s" % self
 
@@ -1016,14 +1097,17 @@ class Variable(Identifier):
 class Statement(Node, tuple):
 
     def __new__(cls, (subject, predicate, object), context):
+        warnings.warn("Class Statement is deprecated.", category=DeprecationWarning, stacklevel=2)
         return tuple.__new__(cls, ((subject, predicate, object), context))
 
     def __reduce__(self):
         return (Statement, (self[0], self[1]))
 
+    def toPython(self):
+        return (self[0], self[1])
+
 
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
-
 

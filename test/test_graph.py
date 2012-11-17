@@ -1,26 +1,25 @@
+import sys
 import unittest
-import thread
-import time
-import BaseHTTPServer
 
 from tempfile import mkdtemp
 import shutil
 
-from rdflib.term import URIRef
-from rdflib.namespace import RDF
-from rdflib.graph import Graph
-from rdflib.py3compat import b
+from rdflib import URIRef, RDF, Graph, plugin
 
-import rdflib.plugin
+from nose.exc import SkipTest
+
 
 class GraphTestCase(unittest.TestCase):
-    store_name = 'default'
+    store = 'default'
     tmppath = None
 
     def setUp(self):
-        self.graph = Graph(store=self.store_name)
+        try: 
+            self.graph = Graph(store=self.store)
+        except ImportError: 
+            raise SkipTest("Dependencies for store '%s' not available!"%self.store)
         self.tmppath = mkdtemp()
-        self.graph.open(self.tmppath)
+        self.graph.open(self.tmppath, create=True)
 
         self.michel = URIRef(u'michel')
         self.tarek = URIRef(u'tarek')
@@ -126,8 +125,8 @@ class GraphTestCase(unittest.TestCase):
         self.removeStuff()
         asserte(len(list(triples((Any, Any, Any)))), 0)
 
-
     def testStatementNode(self):
+        raise SkipTest("use of RDFLib Statement class is deprecated.")
         graph = self.graph
 
         from rdflib.term import Statement
@@ -284,97 +283,25 @@ class GraphTestCase(unittest.TestCase):
 
         self.assertEquals((michel, likes, cheese) in g1, True)
 
-    def testFinalNewline(self):
-        """
-        http://code.google.com/p/rdflib/issues/detail?id=5
-        """
-        import sys
-        import platform
-        if getattr(sys, 'pypy_version_info', None) or platform.system() == 'Java':
-            from nose import SkipTest
-            raise SkipTest(
-                'Testing under pypy and Jython2.5 fails to detect that ' + \
-                'IOMemory is a context_aware store')
-
-        failed = set()
-        for p in rdflib.plugin.plugins(None, rdflib.plugin.Serializer):
-            if p.name is not 'nquads':
-                v = self.graph.serialize(format=p.name)
-                lines = v.split(b("\n"))
-                if b("\n") not in v or (lines[-1]!=b('')):
-                    failed.add(p.name)
-        self.assertEqual(len(failed), 0, "No final newline for formats: '%s'" % failed)
-
-    def testConNeg(self): 
-        thread.start_new_thread(runHttpServer, tuple())
-        # hang on a second while server starts
-        time.sleep(1)
-        self.graph.parse("http://localhost:12345/foo", format="xml")
-        self.graph.parse("http://localhost:12345/foo", format="n3")
-        self.graph.parse("http://localhost:12345/foo", format="nt")
 
 
 
 
-xmltestdoc="""<?xml version="1.0" encoding="UTF-8"?>
-<rdf:RDF
-   xmlns="http://example.org/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
->
-  <rdf:Description rdf:about="http://example.org/a">
-    <b rdf:resource="http://example.org/c"/>
-  </rdf:Description>
-</rdf:RDF>
-"""
-
-n3testdoc="""@prefix : <http://example.org/> .
-
-:a :b :c .
-"""
-
-nttestdoc="<http://example.org/a> <http://example.org/b> <http://example.org/c> .\n"
+# dynamically create classes for each registered Store
 
 
-class TestHTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler): 
-    def do_GET(self): 
+pluginname=None
+if __name__=='__main__':
+    if len(sys.argv)>1:
+        pluginname=sys.argv[1]
 
-        self.send_response(200, "OK")
-        # fun fun fun parsing accept header. 
+tests=0
+for s in plugin.plugins(pluginname, plugin.Store):
+    if s.name in ('default', 'IOMemory'): continue # these are tested by default
 
-        acs=self.headers["Accept"].split(",")
-        acq=[x.split(";") for x in acs if ";" in x]
-        acn=[(x,"q=1") for x in acs if ";" not in x]
-        acs=[(x[0], float(x[1].strip()[2:])) for x in acq+acn]
-        ac=sorted(acs, key=lambda x: x[1])
-        ct=ac[-1]
-        
-        if "application/rdf+xml" in ct: 
-            rct="application/rdf+xml"
-            content=xmltestdoc
-        elif "text/n3" in ct: 
-            rct="text/n3"
-            content=n3testdoc
-        elif "text/plain" in ct: 
-            rct="text/plain"
-            content=nttestdoc            
-
-        self.send_header("Content-type",rct)
-        self.end_headers()
-        self.wfile.write(content.encode('utf-8'))
-
-    def log_message(self, *args): 
-        pass
-
-def runHttpServer(server_class=BaseHTTPServer.HTTPServer,
-        handler_class=TestHTTPHandler):
-    """Start a server than can handle 3 requests :)"""
-    server_address = ('localhost', 12345)
-    httpd = server_class(server_address, handler_class)
-    
-    httpd.handle_request()
-    httpd.handle_request()
-    httpd.handle_request()
+    locals()["t%d"%tests]=type("%sGraphTestCase"%s.name, (GraphTestCase,), { "store": s.name })    
+    tests+=1
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(argv=sys.argv[:1])

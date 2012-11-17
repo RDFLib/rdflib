@@ -37,21 +37,13 @@ In order to perform SPARQL queries, you need to install the companion ``rdfextra
     
     $ easy_install rdfextras
 
-In order to use the SPARQL plugin in your code, the plugin must first be registered. This binds the the imported SPARQL query processor implementation to the :meth:`rdflib.graph.Graph.query` method, which can then be passed a SPARQL query (a string). When called, the :meth:`~rdflib.graph.Graph.query` method returns a SPARQLQuery object whose ``result`` attribute is a list of results.
+If installed with setuptools this automatically binds the the imported SPARQL query processor implementation to the :meth:`rdflib.graph.Graph.query` method, which can then be passed a SPARQL query (a string). When called, the :meth:`~rdflib.graph.Graph.query` method returns a SPARQLQuery object whose ``result`` attribute is a list of results.
 
 Continuing the example...
 
 .. code-block:: python
 
     import rdflib
-    from rdflib import plugin
-
-    plugin.register(
-        'sparql', rdflib.query.Processor,
-        'rdfextras.sparql.processor', 'Processor')
-    plugin.register(
-        'sparql', rdflib.query.Result,
-        'rdfextras.sparql.query', 'SPARQLQueryResult')
 
     qres = g.query(
         """SELECT DISTINCT ?aname ?bname

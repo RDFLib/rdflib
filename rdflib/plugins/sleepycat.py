@@ -3,6 +3,8 @@ from rdflib.term import URIRef
 from rdflib.py3compat import b
 def bb(u): return u.encode('utf-8')
 
+
+
 try:
     from bsddb import db
     has_bsddb = True
@@ -17,6 +19,18 @@ from os.path import exists, abspath
 from urllib import pathname2url
 from threading import Thread
 
+if has_bsddb: 
+    # These are passed to bsddb when creating DBs
+
+    # passed to db.DBEnv.set_flags
+    ENVSETFLAGS  = db.DB_CDB_ALLDB
+    # passed to db.DBEnv.open
+    ENVFLAGS = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD
+    CACHESIZE=1024*1024*50
+
+    # passed to db.DB.Open()
+    DBOPENFLAGS = db.DB_THREAD 
+
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -29,7 +43,7 @@ class Sleepycat(Store):
     db_env = None
 
     def __init__(self, configuration=None, identifier=None):
-        if not has_bsddb: raise Exception("Unable to import bsddb/bsddb3, store is unusable.")
+        if not has_bsddb: raise ImportError("Unable to import bsddb/bsddb3, store is unusable.")
         self.__open = False
         self.__identifier = identifier
         super(Sleepycat, self).__init__(configuration)
@@ -41,8 +55,6 @@ class Sleepycat(Store):
     identifier = property(__get_identifier)
 
     def _init_db_environment(self, homeDir, create=True):
-        envsetflags  = db.DB_CDB_ALLDB
-        envflags = db.DB_INIT_MPOOL | db.DB_INIT_CDB | db.DB_THREAD
         if not exists(homeDir):
             if create==True:
                 mkdir(homeDir) # TODO: implement create method and refactor this to it
@@ -50,10 +62,10 @@ class Sleepycat(Store):
             else:
                 return NO_STORE
         db_env = db.DBEnv()
-        db_env.set_cachesize(0, 1024*1024*50) # TODO
+        db_env.set_cachesize(0, CACHESIZE) # TODO
         #db_env.set_lg_max(1024*1024)
-        db_env.set_flags(envsetflags, 1)
-        db_env.open(homeDir, envflags | db.DB_CREATE)
+        db_env.set_flags(ENVSETFLAGS, 1)
+        db_env.open(homeDir, ENVFLAGS | db.DB_CREATE)
         return db_env
 
     def is_open(self):
@@ -75,9 +87,13 @@ class Sleepycat(Store):
         dbname = None
         dbtype = db.DB_BTREE
         # auto-commit ensures that the open-call commits when transactions are enabled
-        dbopenflags = db.DB_THREAD 
+        
+        dbopenflags=DBOPENFLAGS
         if self.transaction_aware == True:
             dbopenflags |= db.DB_AUTO_COMMIT
+
+        if create: 
+            dbopenflags |= db.DB_CREATE
 
         dbmode = 0660
         dbsetflags   = 0
@@ -89,7 +105,7 @@ class Sleepycat(Store):
             index_name = to_key_func(i)((b("s"), b("p"), b("o")), b("c")).decode()
             index = db.DB(db_env)
             index.set_flags(dbsetflags)
-            index.open(index_name, dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
+            index.open(index_name, dbname, dbtype, dbopenflags, dbmode)
             self.__indicies[i] = index
             self.__indicies_info[i] = (index, to_key_func(i), from_key_func(i))
 
@@ -131,23 +147,23 @@ class Sleepycat(Store):
 
         self.__contexts = db.DB(db_env)
         self.__contexts.set_flags(dbsetflags)
-        self.__contexts.open("contexts", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
+        self.__contexts.open("contexts", dbname, dbtype, dbopenflags, dbmode)
 
         self.__namespace = db.DB(db_env)
         self.__namespace.set_flags(dbsetflags)
-        self.__namespace.open("namespace", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
+        self.__namespace.open("namespace", dbname, dbtype, dbopenflags, dbmode)
 
         self.__prefix = db.DB(db_env)
         self.__prefix.set_flags(dbsetflags)
-        self.__prefix.open("prefix", dbname, dbtype, dbopenflags|db.DB_CREATE, dbmode)
+        self.__prefix.open("prefix", dbname, dbtype, dbopenflags, dbmode)
 
         self.__k2i = db.DB(db_env)
         self.__k2i.set_flags(dbsetflags)
-        self.__k2i.open("k2i", dbname, db.DB_HASH, dbopenflags|db.DB_CREATE, dbmode)
+        self.__k2i.open("k2i", dbname, db.DB_HASH, dbopenflags, dbmode)
 
         self.__i2k = db.DB(db_env)
         self.__i2k.set_flags(dbsetflags)
-        self.__i2k.open("i2k", dbname, db.DB_RECNO, dbopenflags|db.DB_CREATE, dbmode)
+        self.__i2k.open("i2k", dbname, db.DB_RECNO, dbopenflags, dbmode)
 
         self.__needs_sync = False
         t = Thread(target=self.__sync_run)
@@ -394,7 +410,7 @@ class Sleepycat(Store):
         prefix = prefix.encode("utf-8")
         ns = self.__namespace.get(prefix, None)
         if ns is not None:
-            return ns.decode('utf-8')
+            return URIRef(ns.decode('utf-8'))
         return None
 
     def prefix(self, namespace):

@@ -3,6 +3,10 @@ from xml.sax.saxutils import quoteattr, escape
 
 __all__ = ['XMLWriter']
 
+ESCAPE_ENTITIES={
+    '\r': '&#13;' 
+}
+
 class XMLWriter(object):
     def __init__(self, stream, namespace_manager, encoding=None, decl=1, extra_ns={}):
         encoding = encoding or 'utf-8'
@@ -87,7 +91,7 @@ class XMLWriter(object):
             self.stream.write(text)
             self.stream.write("]]>")
         else:
-            self.stream.write(escape(text))
+            self.stream.write(escape(text, ESCAPE_ENTITIES))
 
     def qname(self,uri): 
         """Compute qname for a uri using our extra namespaces,

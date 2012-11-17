@@ -17,6 +17,9 @@ XMLNS=Namespace("http://www.w3.org/XML/1998/namespace")
 class TriXSerializer(Serializer):
     def __init__(self, store):
         super(TriXSerializer, self).__init__(store)
+        if not store.context_aware: 
+            raise Exception("TriX serialization only makes sense for context-aware stores!")
+
 
     def serialize(self, stream, base=None, encoding=None, **args):
 

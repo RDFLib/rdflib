@@ -247,6 +247,7 @@ class TriXHandler(handler.ContentHandler):
         raise ParserError(info + message)
 
 
+
 def create_parser(store):
     parser = make_parser()
     try:
@@ -269,7 +270,9 @@ class TriXParser(Parser):
         pass
 
     def parse(self, source, sink, **args):
-        assert sink.store.context_aware
+        assert sink.store.context_aware, ("TriXParser must be given"
+                                          " a context aware store.")
+
         g=ConjunctiveGraph(store=sink.store)
         
         self._parser = create_parser(g)
