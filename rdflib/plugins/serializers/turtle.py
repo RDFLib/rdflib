@@ -368,7 +368,7 @@ class TurtleSerializer(RecursiveSerializer):
         self.verb(propList[0], newline=newline)
         self.objectList(properties[propList[0]])
         for predicate in propList[1:]:
-            self.write(';\n' + self.indent(1))
+            self.write(' ;\n' + self.indent(1))
             self.verb(predicate, newline=True)
             self.objectList(properties[predicate])
 
