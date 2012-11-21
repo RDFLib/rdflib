@@ -41,6 +41,7 @@ initial_context["http://www.w3.org/2011/rdfa-context/rdfa-1.1"].ns = {
 	'rdfa'		: 'http://www.w3.org/ns/rdfa#',
 	'dc'		: 'http://purl.org/dc/terms/',
 	'dcterms'	: 'http://purl.org/dc/terms/',
+	'dc11'	    : 'http://purl.org/dc/elements/1.1/',	
 	'foaf'		: 'http://xmlns.com/foaf/0.1/',
 	'void'		: 'http://rdfs.org/ns/void#',
 	'ical'		: 'http://www.w3.org/2002/12/cal/icaltzd#',
