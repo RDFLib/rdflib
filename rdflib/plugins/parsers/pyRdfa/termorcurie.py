@@ -50,7 +50,7 @@ else :
 from .options		import Options
 from .utils 		import quote_URI, URIOpener
 from .host 			import MediaTypes, HostLanguage, predefined_1_0_rel, warn_xmlns_usage
-from .				import IncorrectPrefixDefinition, RDFA_VOCAB, UnresolvableReference
+from .				import IncorrectPrefixDefinition, RDFA_VOCAB, UnresolvableReference, PrefixRedefinitionWarning
 from .				import ns_rdfa
 
 from . import err_redefining_URI_as_prefix		
@@ -65,6 +65,7 @@ from . import err_non_ncname_prefix
 from . import err_absolute_reference				
 from . import err_query_reference				
 from . import err_fragment_reference				
+from . import err_prefix_redefinition
 
 # Regular expression object for NCNAME
 ncname   = re.compile("^[A-Za-z][A-Za-z0-9._-]*$")
@@ -186,8 +187,9 @@ class TermOrCurie :
 		# Set the default CURIE URI
 		if inherited_state == None :
 			# This is the top level...
-			# AFAIK there is no default setting for the URI-s
-			# self.default_curie_uri = None
+			# Add the namespaces bindings defined via a initial context
+			for key in default_vocab.ns :
+				self.graph.bind(key, default_vocab.ns[key])
 			self.default_curie_uri = Namespace(XHTML_URI)
 			self.graph.bind(XHTML_PREFIX, self.default_curie_uri)
 		else :
@@ -195,8 +197,6 @@ class TermOrCurie :
 		
 		# --------------------------------------------------------------------------------
 		# Set the default term URI
-		# Note that it is still an open issue whether the XHTML_URI should be used
-		# for RDFa core, or whether it should be set to None.
 		# This is a 1.1 feature, ie, should be ignored if the version is < 1.0
 		if state.rdfa_version >= "1.1" :
 			# that is the absolute default setup...
@@ -240,11 +240,6 @@ class TermOrCurie :
 		dict = {}
 		# locally defined xmlns namespaces, necessary for correct XML Literal generation
 		xmlns_dict = {}
-				
-		# Add the namespaces defined via a initial context
-		for key in default_vocab.ns :
-			dict[key] = default_vocab.ns[key]
-			self.graph.bind(key, dict[key])
 
 		# Add the locally defined namespaces using the xmlns: syntax
 		for i in range(0, state.node.attributes.length) :
@@ -326,15 +321,19 @@ class TermOrCurie :
 		# If not, the namespaces of the incoming state is
 		# taken over by reference. Otherwise that is copied to the
 		# the local dictionary
-		self.ns = {}
-		if len(dict) == 0 and inherited_state :
-			self.ns = inherited_state.term_or_curie.ns
+		inherited_prefixes = default_vocab.ns if inherited_state == None else inherited_state.term_or_curie.ns
+		if len(dict) == 0 :
+			self.ns = inherited_prefixes
 		else :
-			if inherited_state :
-				for key in inherited_state.term_or_curie.ns	: self.ns[key] = inherited_state.term_or_curie.ns[key]
-				for key in dict								: self.ns[key] = dict[key]
-			else :
-				self.ns = dict
+			self.ns = {}
+			for key in inherited_prefixes : self.ns[key] = inherited_prefixes[key]
+			for key in dict : 
+				try :
+					if dict[key] != inherited_prefixes[key] :
+						state.options.add_warning(err_prefix_redefinition % key, PrefixRedefinitionWarning, node=state.node.nodeName)
+				except KeyError :
+					pass
+				self.ns[key] = dict[key]
 		
 		# the xmlns prefixes have to be stored separately, again for XML Literal generation	
 		self.xmlns = {}

@@ -16,10 +16,11 @@ from rdflib.parser import Parser, StringInputSource, URLInputSource, FileInputSo
 
 try: 
 	import html5lib
+	html5lib = True
 except ImportError: 
 	import warnings
 	warnings.warn('html5lib not found! RDFa and Microdata parsers will not be available.')
-	html5lib=False
+	html5lib = False
 	
 
 def _get_orig_source(source) :
@@ -33,6 +34,8 @@ def _get_orig_source(source) :
 	elif isinstance(source, FileInputSource) :
 		orig_source = source.file.name
 		source.file.close()
+	else:
+		orig_source = source.getByteStream()
 	baseURI = source.getPublicId()
 	return (baseURI, orig_source)
 

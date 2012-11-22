@@ -315,12 +315,9 @@ def base():
     return "file://" + _fixslash(os.getcwd()) + "/"
 
 
-def _fixslash(argstr):
+def _fixslash(s):
     """ Fix windowslike filename to unixlike - (#ifdef WINDOWS)"""
-    s = argstr
-    for i in range(len(s)):
-        if s[i] == "\\":
-            s = s[:i] + "/" + s[i + 1:]
+    s=s.replace("\\","/")
     if s[0] != "/" and s[1] == ":":
         s = s[2:]   # @@@ Hack when drive letter present
     return s
