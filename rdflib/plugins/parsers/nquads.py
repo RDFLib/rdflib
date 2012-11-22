@@ -16,7 +16,7 @@ graphs that can be used and queried. The store that backs the graph
 >>> # <http://bibliographica.org/entity/E10009> <http://xmlns.com/foaf/0.1/name> "Arco Publications" <http://bibliographica.org/entity/E10009>
 >>> s = URIRef("http://bibliographica.org/entity/E10009")
 >>> FOAF = Namespace("http://xmlns.com/foaf/0.1/")
->>> assert(g.value(s, FOAF.name) == "Arco Publications")
+>>> assert(g.value(s, FOAF.name).eq("Arco Publications"))
 """
 
 from rdflib.py3compat import b

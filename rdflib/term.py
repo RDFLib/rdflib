@@ -53,7 +53,7 @@ try:
 except ImportError:
     from md5 import md5
 
-import py3compat
+from rdflib import py3compat, NORMALIZE_LITERALS
 b = py3compat.b
 
 class Node(object):
@@ -148,6 +148,10 @@ class URIRef(Identifier):
             return unicode(self)==unicode(other)
         else:
             return False
+
+    def eq(self, other): 
+        """Same as __eq__"""
+        return self.__eq__(other)
     
     def __hash__(self):
         return hash(URIRef) ^ hash(unicode(self))
@@ -311,6 +315,11 @@ class BNode(Identifier):
             return unicode(self)==unicode(other)
         else:
             return False
+
+    def eq(self, other): 
+        """Same as __eq__"""
+        return self.__eq__(other)
+
     
     def __hash__(self):
         return hash(BNode) ^ hash(unicode(self))
@@ -345,6 +354,10 @@ class Literal(Identifier):
     The lexical value of the literal is the unicode object
     The interpreted, datatyped value is available from .value
 
+    For valid XSD datatypes, the lexical form is optionally normalized 
+    at construction time. Default behaviour is set by rdflib.NORMALIZE_LITERALS
+    and can be overridden by the normalize parameter to __new__
+
     Equality and hashing of Literals are done based on the lexical form, i.e.:
 
     >>> from rdflib.namespace import XSD
@@ -352,12 +365,17 @@ class Literal(Identifier):
     >>> Literal('01')!=Literal('1') # clear - strings differ
     True
   
-    but also: 
+    but with data-type they get normalized:
     >>> Literal('01', datatype=XSD.integer)!=Literal('1', datatype=XSD.integer) 
+    False
+
+    unless disabled:
+    >>> Literal('01', datatype=XSD.integer, normalize=False)!=Literal('1', datatype=XSD.integer) 
     True
+    
 
     Value based comparison is possible:
-    >>> Literal('01', datatype=XSD.integer).value==Literal('1', datatype=XSD.integer).value
+    >>> Literal('01', datatype=XSD.integer).eq(Literal('1', datatype=XSD.float))
     True
 
     GT/LT Comparisons are done by language, then by datatype, and finally 
@@ -365,7 +383,7 @@ class Literal(Identifier):
 
     >>> from rdflib import Literal, XSD
     >>> Literal(1).toPython()
-    1%(L)s
+    1
     >>> Literal("adsf") > 1
     True
     >>> lit2006 = Literal('2006-01-01',datatype=XSD.date)
@@ -414,32 +432,51 @@ class Literal(Identifier):
 
     __slots__ = ("language", "datatype", "value")
 
-    def __new__(cls, lexical_or_value, lang=None, datatype=None):
+
+    def __new__(cls, lexical_or_value, lang=None, datatype=None, normalize=None):
+
+        if lang=='': lang=None # no empty lang-tags in RDF
+
+        normalize=normalize if normalize is not None else NORMALIZE_LITERALS
+
         if lang is not None and datatype is not None:
             raise TypeError("A Literal can only have one of lang or datatype, "
                "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal")
+
+        if datatype: datatype = URIRef(datatype)
 
         value=None
         if isinstance(lexical_or_value, Literal): # create from another Literal instance
             datatype=datatype or lexical_or_value.datatype
             lang=lang or lexical_or_value.language
             value=lexical_or_value.value
+        elif isinstance(lexical_or_value, basestring):
+            
+            if datatype: 
+                convFunc = _toPythonMapping.get(datatype, None)
+                if convFunc:
+                    try: 
+                        value=convFunc(lexical_or_value)
+                    except: 
+                        pass # not a valid lexical representation for this dt
+        
+                if value is not None and normalize:
+                    _value, _datatype = _castPythonToLiteral(value)
+                    if _value is not None:
+                        lexical_or_value = _value
 
-        if datatype:
-            lang = None
-            value = None # set later by toCompareValue
+
         else:
-            _value, datatype = _castPythonToLiteral(lexical_or_value)
-            value = _value or lexical_or_value
-            if datatype==_XSD_BOOLEAN: # Upper-case True is not in XSD lexical space
-                lexical_or_value=str(lexical_or_value).lower()
-            if datatype:
-                lang = None
+            value=lexical_or_value
+            _value, _datatype = _castPythonToLiteral(lexical_or_value)
+            datatype=datatype or _datatype
+            if _value is not None: 
+                lexical_or_value = _value
+            if datatype: lang=None
 
-        if datatype:
-            datatype = URIRef(datatype)
         if py3compat.PY3 and isinstance(lexical_or_value, bytes):
             lexical_or_value = lexical_or_value.decode('utf-8')
+                
         try:
             inst = unicode.__new__(cls, lexical_or_value)
         except UnicodeDecodeError:
@@ -447,7 +484,7 @@ class Literal(Identifier):
 
         inst.language = lang
         inst.datatype = datatype
-        inst.value = value or inst._toCompareValue()
+        inst.value = value
         return inst
 
     @py3compat.format_doctest_out
@@ -477,7 +514,7 @@ class Literal(Identifier):
     def __add__(self, val):
         """
         >>> Literal(1) + 1
-        2%(L)s
+        rdflib.term.Literal(u'2', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
         >>> Literal("1") + "1"
         rdflib.term.Literal(%(u)s'11')
         """
@@ -487,108 +524,105 @@ class Literal(Identifier):
             s = super(Literal, self).__add__(val)
             return Literal(s, self.language, self.datatype)
         else:
-            return py + val
+            return Literal(py + val)
 
     @py3compat.format_doctest_out
     def __neg__(self):
         """
         >>> (- Literal(1))
-        -1%(L)s
+        rdflib.term.Literal(u'-1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
         >>> (- Literal(10.5))
-        -10.5
+        rdflib.term.Literal(u'-10.5', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#double'))
         >>> from rdflib.namespace import XSD
-        >>> (- Literal("1", datatype=XSD['integer']))
-        -1%(L)s
-        
-        Not working:
-        #>>> (- Literal("1"))
-        #Traceback (most recent call last):
-        #  File "<stdin>", line 1, in <module>
-        #TypeError: Not a number; rdflib.term.Literal(u'1')
+        >>> (- Literal("1", datatype=XSD.integer))
+        rdflib.term.Literal(u'-1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+
+        >>> (- Literal("1"))
+        Traceback (most recent call last):
+          File "<stdin>", line 1, in <module>
+        TypeError: Not a number; rdflib.term.Literal(u'1')
         >>> 
         """
 
-        py = self.toPython()
-        try:
-            return py.__neg__()
-        except Exception, e:
+        if isinstance(self.value, (int, long, float)): 
+            return Literal(self.value.__neg__())
+        else: 
             raise TypeError("Not a number; %s" % repr(self))
+
 
     @py3compat.format_doctest_out
     def __pos__(self):
         """
         >>> (+ Literal(1))
-        1%(L)s
+        rdflib.term.Literal(u'1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
         >>> (+ Literal(-1))
-        -1%(L)s
+        rdflib.term.Literal(u'-1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
         >>> from rdflib.namespace import XSD
-        >>> (+ Literal("-1", datatype=XSD['integer']))
-        -1%(L)s
+        >>> (+ Literal("-1", datatype=XSD.integer))
+        rdflib.term.Literal(u'-1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
         
-        Not working in Python 3:
-        #>>> (+ Literal("1"))
-        #Traceback (most recent call last):
-        #  File "<stdin>", line 1, in <module>
-        #TypeError: Not a number; rdflib.term.Literal(u'1')
+        >>> (+ Literal("1"))
+        Traceback (most recent call last):
+          File "<stdin>", line 1, in <module>
+        TypeError: Not a number; rdflib.term.Literal(u'1')
         """
-        py = self.toPython()
-        try:
-            return py.__pos__()
-        except Exception, e:
+        if isinstance(self.value, (int, long, float)): 
+            return Literal(self.value.__pos__())
+        else: 
             raise TypeError("Not a number; %s" % repr(self))
 
     @py3compat.format_doctest_out
     def __abs__(self):
         """
         >>> abs(Literal(-1))
-        1%(L)s
+        rdflib.term.Literal(u'1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+            
         >>> from rdflib.namespace import XSD
-        >>> abs( Literal("-1", datatype=XSD['integer']))
-        1%(L)s
-        
-        Not working in Python 3:
-        #>>> abs(Literal("1"))
-        #Traceback (most recent call last):
-        #  File "<stdin>", line 1, in <module>
-        #TypeError: Not a number; rdflib.term.Literal(u'1')
+        >>> abs( Literal("-1", datatype=XSD.integer))
+        rdflib.term.Literal(u'1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+                
+        >>> abs(Literal("1"))
+        Traceback (most recent call last):
+          File "<stdin>", line 1, in <module>
+        TypeError: Not a number; rdflib.term.Literal(u'1')
         """
-        py = self.toPython()
-        try:
-            return py.__abs__()
-        except Exception, e:
+        if isinstance(self.value, (int, long, float)): 
+            return Literal(self.value.__abs__())
+        else: 
             raise TypeError("Not a number; %s" % repr(self))
+
 
     @py3compat.format_doctest_out
     def __invert__(self):
         """
         >>> ~(Literal(-1))
-        0%(L)s
+        rdflib.term.Literal(u'0', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+
         >>> from rdflib.namespace import XSD
-        >>> ~( Literal("-1", datatype=XSD['integer']))
-        0%(L)s
-        
+        >>> ~( Literal("-1", datatype=XSD.integer))
+        rdflib.term.Literal(u'0', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+
         Not working:
-        #>>> ~(Literal("1"))
-        #Traceback (most recent call last):
-        #  File "<stdin>", line 1, in <module>
-        #TypeError: Not a number; rdflib.term.Literal(u'1')
-        >>> 
+        >>> ~(Literal("1"))
+        Traceback (most recent call last):
+          File "<stdin>", line 1, in <module>
+        TypeError: Not a number; rdflib.term.Literal(u'1')
         """
-        py = self.toPython()
-        try:
-            return py.__invert__()
-        except Exception:
+        if isinstance(self.value, (int, long, float)): 
+            return Literal(self.value.__invert__())
+        else: 
             raise TypeError("Not a number; %s" % repr(self))
+
 
     @py3compat.format_doctest_out
     def __lt__(self, other):
         """
         >>> from rdflib.namespace import XSD
-        >>> Literal("YXNkZg==", datatype=XSD['base64Binary']) < "foo"
+        >>> Literal("YXNkZg==", datatype=XSD.base64Binary) < "foo"
         False
         >>> u"\xfe" < Literal(u"foo")
         True
-        >>> Literal(base64.encodestring(u"\xfe".encode("utf-8")), datatype=URIRef("http://www.w3.org/2001/XMLSchema#base64Binary")) < u"foo"
+        >>> Literal(base64.encodestring(u"\xfe".encode("utf-8")), datatype=XSD.base64Binary) < u"foo"
         False
         """
 
@@ -648,7 +682,7 @@ class Literal(Identifier):
             r=cmp(self.datatype, other.datatype)
             if r: return r>0
             
-            return unicode.__gt__(self, other)
+            return self.value>other.value
         else: 
             return Literal>type(other)
 
@@ -701,57 +735,110 @@ class Literal(Identifier):
 
         """
         
-        return Identifier.__hash__(self) ^ hash(self.language) ^ hash(self.datatype)
+        return Identifier.__hash__(self) ^ hash(self.language.lower() if self.language else None) ^ hash(self.datatype)
 
     @py3compat.format_doctest_out
     def __eq__(self, other):
         """
-        >>> f = URIRef("foo")
-        >>> f is None or f == ''
-        False
+
+        Literals are only equal to other literals. 
+
+        "Two literals are equal if and only if all of the following hold:
+        * The strings of the two lexical forms compare equal, character by character.
+        * Either both or neither have language tags.
+        * The language tags, if any, compare equal.
+        * Either both or neither have datatype URIs.
+        * The two datatype URIs, if any, compare equal, character by character."
+        -- 6.5.1 Literal Equality (RDF: Concepts and Abstract Syntax)
+
         >>> Literal("1", datatype=URIRef("foo")) == Literal("1", datatype=URIRef("foo"))
         True
+        >>> Literal("1", datatype=URIRef("foo")) == Literal("1", datatype=URIRef("foo2"))
+        False
+
         >>> Literal("1", datatype=URIRef("foo")) == Literal("2", datatype=URIRef("foo"))
         False
         >>> Literal("1", datatype=URIRef("foo")) == "asdf"
         False
-        >>> from rdflib.namespace import XSD
+        >>> from rdflib import XSD
         >>> Literal('2007-01-01', datatype=XSD.date) == Literal('2007-01-01', datatype=XSD.date)
         True
         >>> Literal('2007-01-01', datatype=XSD.date) == date(2007, 1, 1)
-        True
-        >>> oneInt     = Literal(1)
-        >>> oneNoDtype = Literal('1')
-        >>> oneInt == oneNoDtype
         False
-        >>> Literal("1", datatype=XSD['string']) == Literal("1", datatype=XSD['string'])
-        True
         >>> Literal("one", lang="en") == Literal("one", lang="en")
         True
         >>> Literal("hast", lang='en') == Literal("hast", lang='de')
         False
-        >>> oneInt == Literal(1)
-        True
-        >>> oneFloat   = Literal(1.0)
-        >>> oneInt == oneFloat
-        False
-        >>> oneInt == 1
-        True
         >>> Literal("1", datatype=XSD.integer) == Literal(1)
         True
         >>> Literal("1", datatype=XSD.integer) == Literal("01", datatype=XSD.integer)
-        False
+        True
+
         """
+        if self is other: return True
         if other is None:
             return False
         if isinstance(other, Literal):
-            return unicode.__eq__(self, other) \
-                and self.datatype==other.datatype \
-                and self.language==other.language
+            return self.datatype==other.datatype \
+                and (self.language.lower() if self.language else None) == (other.language.lower() if other.language else None) \
+                and unicode.__eq__(self, other)
+
+        return False
+
+
+    def eq(self, other): 
+        """
+        Compare the value of this literal with something else
+
+        Either, with the value of another literal 
+        comparisons are then done in literal "value space", 
+        and according to the rules of XSD subtype-substitution/type-promotion
+
+        OR, with a python object: 
+
+        basestring objects can be compared with plain-literals, 
+        or those with datatype xsd:string
+
+        bool objects with xsd:boolean
+
+        a int, long or float with numeric xsd types
+        
+        isodate date,time,datetime objects with xsd:date,xsd:time or xsd:datetime
+        
+        Any other operations returns NotImplemented 
+        
+        """
+        if isinstance(other, Literal):
+            # TODO XSD typePromotion!
+
+            if self.datatype in _NUMERIC_LITERAL_TYPES  \
+                    and other.datatype in _NUMERIC_LITERAL_TYPES:
+                return self.value==other.value
+
+            return self.datatype==other.datatype \
+                and (self.language.lower() if self.language else None) == (other.language.lower() if other.language else None) \
+                and self.value == other.value
+
         elif isinstance(other, basestring):
-            return unicode(self) == other
-        else:
-            return self.value == other
+            # only plain-literals can be directly compared to strings
+            if self.language is None and \
+                    (self.datatype == _XSD_STRING or self.datatype is None): 
+                return unicode(self) == other
+            else: 
+                return False
+        elif isinstance(other, (int, long, float)): 
+            if self.datatype in _NUMERIC_LITERAL_TYPES:
+                return self.value==other
+        elif isinstance(other, (date, datetime, time)):
+            if self.datatype in (_XSD_DATETIME, _XSD_DATE, _XSD_TIME): 
+                return self.value==other
+        elif isinstance(other, bool): 
+            if self.datatype == _XSD_BOOLEAN: 
+                return self.value==other
+
+        return NotImplemented
+
+
 
     @py3compat.format_doctest_out
     def n3(self):
@@ -850,21 +937,22 @@ class Literal(Identifier):
 
         '''
         if use_plain and self.datatype in _PLAIN_LITERAL_TYPES:
-            try:
-                self.toPython() # check validity
+            if self.value is not None:
+
                 # this is a bit of a mess - 
                 # in py >=2.6 the string.format function makes this easier
                 # we try to produce "pretty" output
                 if self.datatype == _XSD_DOUBLE: 
                     return sub("\\.?0*e","e", u'%e' % float(self))
                 elif self.datatype == _XSD_DECIMAL:
-                    return sub("0*$","0",u'%f' % float(self))
+                    s='%s'%self
+                    if '.' not in s: s+='.0'
+                    return s
+                        
                 elif self.datatype == _XSD_BOOLEAN: 
                     return (u'%s'%self).lower()
                 else:
                     return u'%s' % self
-            except ValueError:
-                pass # if it's in, we let it out?
 
         encoded = self._quote_encode()
 
@@ -878,9 +966,6 @@ class Literal(Identifier):
 
         language = self.language
         if language:
-            if datatype:
-                # TODO: this isn't valid RDF (it's datatype XOR language)
-                return '%s@%s^^%s' % (encoded, language, quoted_dt)
             return '%s@%s' % (encoded, language)
         elif datatype:
             return '%s^^%s' % (encoded, quoted_dt)
@@ -928,28 +1013,8 @@ class Literal(Identifier):
         """
         Returns an appropriate python datatype derived from this RDF Literal
         """
-        convFunc = _toPythonMapping.get(self.datatype, None)
-
-        if convFunc:
-            rt = convFunc(self)
-        else:
-            rt = self
-        return rt
-
-    def _toCompareValue(self):
-        try:
-            rt = self.toPython()
-        except Exception, e:
-            _LOGGER.warning("could not convert %s to a Python datatype" % 
-                            repr(self))
-            rt = self
-
-        if rt is self:
-            if self.language is None and self.datatype is None:
-                return unicode(rt)
-            else:
-                return (unicode(rt), rt.datatype, rt.language)
-        return rt
+        if self.value is not None: return self.value 
+        return self
 
     def md5_term_hash(self):
         """a string of hex that will be the same for two Literals that
@@ -964,16 +1029,48 @@ class Literal(Identifier):
 
 
 
+# Cannot import Namespace/XSD because of circular dependencies
+
 _XSD_PFX = 'http://www.w3.org/2001/XMLSchema#'
+
+_XSD_STRING = URIRef(_XSD_PFX+'string')
 
 _XSD_FLOAT = URIRef(_XSD_PFX+'float')
 _XSD_DOUBLE = URIRef(_XSD_PFX+'double')
 _XSD_DECIMAL = URIRef(_XSD_PFX+'decimal')
+_XSD_INTEGER = URIRef(_XSD_PFX+'integer')
 _XSD_BOOLEAN = URIRef(_XSD_PFX+'boolean')
 
+_XSD_DATETIME = URIRef(_XSD_PFX+'dateTime')
+_XSD_DATE = URIRef(_XSD_PFX+'date')
+_XSD_TIME = URIRef(_XSD_PFX+'time')
 
+# TODO: duration, gYearMonth, gYear, gMonthDay, gDay, gMonth
+
+_NUMERIC_LITERAL_TYPES= (
+    _XSD_INTEGER, 
+    _XSD_DECIMAL, 
+    _XSD_DOUBLE, 
+    URIRef(_XSD_PFX+'float'),
+
+    URIRef(_XSD_PFX+'byte'),
+    URIRef(_XSD_PFX+'int'),
+    URIRef(_XSD_PFX+'long'),
+    URIRef(_XSD_PFX+'negativeInteger'),
+    URIRef(_XSD_PFX+'nonNegativeInteger'),
+    URIRef(_XSD_PFX+'nonPositiveInteger'),
+    URIRef(_XSD_PFX+'positiveInteger'),
+    URIRef(_XSD_PFX+'short'),
+    URIRef(_XSD_PFX+'unsignedByte'),
+    URIRef(_XSD_PFX+'unsignedInt'),
+    URIRef(_XSD_PFX+'unsignedLong'),
+    URIRef(_XSD_PFX+'unsignedShort'),
+
+ )
+
+# these have "native" syntax in N3/SPARQL
 _PLAIN_LITERAL_TYPES = (
-    URIRef(_XSD_PFX+'integer'),
+    _XSD_INTEGER, 
     _XSD_BOOLEAN,
     _XSD_DOUBLE,
     _XSD_DECIMAL,
@@ -997,23 +1094,28 @@ def _castPythonToLiteral(obj):
 
 from decimal import Decimal
 
-# Mappings from Python types to XSD datatypes and back (burrowed from sparta)
+# Mappings from Python types to XSD datatypes and back (borrowed from sparta)
 # datetime instances are also instances of date... so we need to order these.
 
-# SPARQL/Turtle/N3 has shortcuts for int, double, decimal 
+# SPARQL/Turtle/N3 has shortcuts for integer, double, decimal 
 # python has only float - to be in tune with sparql/n3/turtle
 # we default to XSD.double for float literals
 
+# python ints are promoted to longs when overflowing
+# python longs have no limit
+# both map to the abstract integer type, 
+# rather than some concrete bit-limited datatype
+
 _PythonToXSD = [
     (basestring, (None, None)),
-    (float     , (None, URIRef(_XSD_PFX+'double'))),
-    (bool      , (lambda i:str(i).lower(), URIRef(_XSD_PFX+'boolean'))),
-    (int       , (None, URIRef(_XSD_PFX+'integer'))),
-    (long      , (None, URIRef(_XSD_PFX+'integer'))),
-    (Decimal   , (None, URIRef(_XSD_PFX+'decimal'))),
-    (datetime  , (lambda i:i.isoformat(), URIRef(_XSD_PFX+'dateTime'))),
-    (date      , (lambda i:i.isoformat(), URIRef(_XSD_PFX+'date'))),
-    (time      , (lambda i:i.isoformat(), URIRef(_XSD_PFX+'time'))),
+    (float     , (None, _XSD_DOUBLE)),
+    (bool      , (lambda i:str(i).lower(), _XSD_BOOLEAN)),
+    (int       , (None, _XSD_INTEGER)), 
+    (long      , (None, _XSD_INTEGER)),
+    (Decimal   , (None, _XSD_DECIMAL)),
+    (datetime  , (lambda i:i.isoformat(), _XSD_DATETIME)),
+    (date      , (lambda i:i.isoformat(), _XSD_DATE)),
+    (time      , (lambda i:i.isoformat(), _XSD_TIME)),
 ]
 
 XSDToPython = {

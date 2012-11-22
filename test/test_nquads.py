@@ -32,7 +32,7 @@ class NQuadsParserTest(unittest.TestCase):
         g = self._load_example()
         s = URIRef("http://bibliographica.org/entity/E10009")
         FOAF = Namespace("http://xmlns.com/foaf/0.1/")
-        self.assertEqual(g.value(s, FOAF.name), "Arco Publications")
+        self.assertTrue(g.value(s, FOAF.name).eq("Arco Publications"))
 
     def test_context_is_optional(self):
         g = ConjunctiveGraph()

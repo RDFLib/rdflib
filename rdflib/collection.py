@@ -24,7 +24,7 @@ class Collection(object):
     >>> c=Collection(g,listName)
     >>> print(list(c))
     [rdflib.term.Literal(%(u)s'1', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer')), rdflib.term.Literal(%(u)s'2', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer')), rdflib.term.Literal(%(u)s'3', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))]
-    >>> 1 in c
+    >>> Literal(1) in c
     True
     >>> len(c)
     3

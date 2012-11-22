@@ -61,6 +61,23 @@ import logging
 _LOGGER = logging.getLogger("rdflib")
 _LOGGER.info("version: %s" % __version__)
 
+"""
+If True - Literals lexical forms are normalized when created.
+I.e. the lexical forms is parsed according to data-type, then the
+stored lexical form is the re-serialized value that was parsed. 
+
+Illegal values for a datatype are simply kept. 
+The normalized keyword for Literal.__new__ can override this. 
+
+For example: 
+
+>>> from rdflib import Literal,XSD
+>>> Literal("01", datatype=XSD.int)
+rdflib.term.Literal(u'1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+
+
+"""
+NORMALIZE_LITERALS=True
 
 from rdflib.term import URIRef, BNode, Literal, Variable
 

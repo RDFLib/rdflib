@@ -34,9 +34,10 @@ class TestPrefLabel(unittest.TestCase):
         self.g.add([self.u, SKOS.prefLabel, Literal('blubb', lang='en')])
         res = sorted(self.g.preferredLabel(self.u))
         tgt = [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-                rdflib.term.Literal(u'blubb', lang='en')),
+                rdflib.term.Literal(u'bla')),
                (rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-                rdflib.term.Literal(u'bla'))]
+                rdflib.term.Literal(u'blubb', lang='en'))]
+
         self.assertEqual(res, tgt)
 
     def test_preflabel_lang_sorting_empty_lang_attr(self):
