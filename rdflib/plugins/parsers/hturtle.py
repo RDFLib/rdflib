@@ -19,10 +19,11 @@ from .structureddata     import _get_orig_source, _check_error
 
 try: 
 	import html5lib
+	html5lib = True
 except ImportError: 
 	import warnings
 	warnings.warn('html5lib not found! RDFa and Microdata parsers will not be available.')
-	html5lib=False
+	html5lib = False
 
 
 class HTurtle(pyRdfa) :
