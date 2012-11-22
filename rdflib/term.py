@@ -53,7 +53,7 @@ try:
 except ImportError:
     from md5 import md5
 
-import py3compat
+from . import py3compat
 b = py3compat.b
 
 class Node(object):
@@ -392,7 +392,10 @@ class Literal(Identifier):
     """
     __doc__ = py3compat.format_doctest_out(doc)
 
-    __slots__ = ("language", "datatype", "_language", "_datatype", "_cmp_value")
+    if not py3compat.PY3:
+        __slots__ = ("language", "datatype", "_language", "_datatype", "_cmp_value")
+    else:
+        __slots__ = ("_language", "_datatype", "_cmp_value")
 
     def __new__(cls, value, lang=None, datatype=None):
         if lang is not None and datatype is not None:
