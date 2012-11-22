@@ -34,6 +34,8 @@ def _get_orig_source(source) :
 	elif isinstance(source, FileInputSource) :
 		orig_source = source.file.name
 		source.file.close()
+	else:
+		orig_source = source.getByteStream()
 	baseURI = source.getPublicId()
 	return (baseURI, orig_source)
 
