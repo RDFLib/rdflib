@@ -75,6 +75,10 @@ class Identifier(Node, unicode): # we allow Identifiers to be Nodes in our Graph
     def __new__(cls, value):
         return unicode.__new__(cls, value)
 
+    def eq(self, other): 
+        """A "semantic"/interpreted equality function, 
+        by default, same as __eq__"""
+        return self.__eq__(other)
 
 class URIRef(Identifier):
     """
@@ -149,10 +153,6 @@ class URIRef(Identifier):
         else:
             return False
 
-    def eq(self, other): 
-        """Same as __eq__"""
-        return self.__eq__(other)
-    
     def __hash__(self):
         return hash(URIRef) ^ hash(unicode(self))
 
@@ -316,11 +316,6 @@ class BNode(Identifier):
         else:
             return False
 
-    def eq(self, other): 
-        """Same as __eq__"""
-        return self.__eq__(other)
-
-    
     def __hash__(self):
         return hash(BNode) ^ hash(unicode(self))
 
@@ -821,11 +816,13 @@ class Literal(Identifier):
 
         elif isinstance(other, basestring):
             # only plain-literals can be directly compared to strings
-            if self.language is None and \
-                    (self.datatype == _XSD_STRING or self.datatype is None): 
+
+            # TODO: Is "blah"@en eq "blah" ? 
+            if self.language is not None: return False 
+
+            if (self.datatype == _XSD_STRING or self.datatype is None): 
                 return unicode(self) == other
-            else: 
-                return False
+
         elif isinstance(other, (int, long, float)): 
             if self.datatype in _NUMERIC_LITERAL_TYPES:
                 return self.value==other
