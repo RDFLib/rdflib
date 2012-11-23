@@ -53,7 +53,10 @@ try:
 except ImportError:
     from md5 import md5
 
-from rdflib import py3compat, NORMALIZE_LITERALS
+
+from rdflib import NORMALIZE_LITERALS
+from . import py3compat
+
 b = py3compat.b
 
 class Node(object):
@@ -427,7 +430,10 @@ class Literal(Identifier):
     """
     __doc__ = py3compat.format_doctest_out(doc)
 
-    __slots__ = ("language", "datatype", "_language", "_datatype", "value")
+    if not py3compat.PY3:
+        __slots__ = ("language", "datatype", "_language", "_datatype", "value")
+    else:
+        __slots__ = ("_language", "_datatype", "value")
 
     def __new__(cls, lexical_or_value, lang=None, datatype=None, normalize=None):
 
