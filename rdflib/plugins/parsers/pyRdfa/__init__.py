@@ -257,6 +257,7 @@ UnresolvablePrefix          = ns_rdfa["UnresolvedCURIEPrefix"]
 UnresolvableReference       = ns_rdfa["UnresolvedCURIEReference"]
 UnresolvableTerm            = ns_rdfa["UnresolvedTerm"]
 VocabReferenceError         = ns_rdfa["VocabReferenceError"]
+PrefixRedefinitionWarning   = ns_rdfa["PrefixRedefinition"]
 
 FileReferenceError          = ns_distill["FileReferenceError"]
 HTError                     = ns_distill["HTTPError"]
@@ -286,6 +287,7 @@ err_no_CURIE_in_safe_CURIE          = "Safe CURIE is used, but the value does no
 err_undefined_terms                 = "'%s' is used as a term, but has not been defined as such; ignored"
 err_non_legal_CURIE_ref             = "Relative URI is not allowed in this position (or not a legal CURIE reference) '%s'; ignored"
 err_undefined_CURIE                 = "Undefined CURIE: '%s'; ignored"
+err_prefix_redefinition             = "Prefix '%s' (defined in the initial RDFa context or in an ancestor) is redefined"
 
 err_unusual_char_in_URI             = "Unusual character in uri: %s; possible error?"
 
