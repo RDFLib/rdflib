@@ -484,8 +484,8 @@ class Literal(Identifier):
         except UnicodeDecodeError:
             inst = unicode.__new__(cls, lexical_or_value, 'utf-8')
 
-        inst.language = lang
-        inst.datatype = datatype
+        inst._language = lang
+        inst._datatype = datatype
         inst.value = value
         return inst
 
