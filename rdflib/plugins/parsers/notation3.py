@@ -436,7 +436,6 @@ class SinkParser:
         return j
 
      # @@I18N
-    global _notNameChars
      # _namechars = string.lowercase + string.uppercase + string.digits + '_-'
 
     def tok(self, tok, argstr, i):
@@ -624,7 +623,6 @@ class SinkParser:
             if j < 0:
                 raise BadSyntax(self._thisDoc, self.lines, argstr, i,
                             "End of file found, expected property after 'is'")
-                return j  # eof
             i = j
             j = self.tok('of', argstr, i)
             if j < 0:
@@ -875,8 +873,6 @@ class SinkParser:
         if j >= 0:
             raise BadSyntax(self._thisDoc, self.lines, argstr, i,
                 "Keyword 'this' was ancient N3. Now use @forSome and @forAll keywords.")
-            res.append(self._context)
-            return j
 
          # booleans
         j = self.tok('true', argstr, i)
@@ -904,7 +900,6 @@ class SinkParser:
             if j < 0:
                 raise BadSyntax(self._thisDoc, self.lines, argstr, i,
                             "EOF found when expected verb in property list")
-                return j  # eof
 
             if argstr[j:j + 2] == ":-":
                 i = j + 2
@@ -937,7 +932,6 @@ class SinkParser:
             if j < 0:
                 raise BadSyntax(self._thisDoc, self.lines, argstr, j,
                                                 "EOF found in list of objects")
-                return j  # eof
             if argstr[i:i + 1] != ";":
                 return i
             i = i + 1  # skip semicolon and continue
@@ -950,7 +944,6 @@ class SinkParser:
         if i < 0:
             raise BadSyntax(self._thisDoc, self.lines, argstr, i,
                                     "EOF found expecting comma sep list")
-            return i
         if argstr[i] == ".":
             return j   # empty list is OK
         i = what(argstr, i, res)
@@ -970,7 +963,6 @@ class SinkParser:
             if i < 0:
                 raise BadSyntax(self._thisDoc, self.lines, argstr, i,
                                                 "bad list content")
-                return i
 
     def objectList(self, argstr, i, res):
         i = self.object(argstr, i, res)
@@ -981,7 +973,6 @@ class SinkParser:
             if j < 0:
                 raise BadSyntax(self._thisDoc, self.lines, argstr, j,
                                     "EOF found after object")
-                return j  # eof
             if argstr[j:j + 1] != ",":
                 return j     # Found something else!
             i = self.object(argstr, j + 1, res)
@@ -1000,7 +991,6 @@ class SinkParser:
             return j
         raise BadSyntax(self._thisDoc, self.lines,
                 argstr, j, "expected '.' or '}' or ']' at end of statement")
-        return i
 
     def uri_ref2(self, argstr, i, res):
         """Generate uri from n3 representation.
@@ -1113,7 +1103,6 @@ class SinkParser:
         if argstr[j] in "0123456789-":
             raise BadSyntax(self._thisDoc, self.lines, argstr, j,
                             "Varible name can't start with '%s'" % argstr[j])
-            return -1
         while i < len(argstr) and argstr[i] not in _notNameChars:
             i = i + 1
         if self._parentContext == None:
