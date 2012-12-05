@@ -118,6 +118,8 @@ Similarly, triples can be removed by a call to :meth:`remove`:
     :noindex:
 .. automethod:: rdflib.graph.Graph.label
     :noindex:
+.. automethod:: rdflib.graph.Graph.preferredLabel
+    :noindex:
 .. automethod:: rdflib.graph.Graph.remove
     :noindex:
 .. automethod:: rdflib.graph.Graph.triples

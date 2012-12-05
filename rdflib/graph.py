@@ -606,7 +606,7 @@ class Graph(Node):
     def label(self, subject, default=''):
         """Query for the RDFS.label of the subject
 
-        Return default if no label exists
+        Return default if no label exists or any label if multiple exist.
         """
         if subject is None:
             return default
