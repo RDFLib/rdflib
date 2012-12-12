@@ -606,14 +606,14 @@ class Graph(Node):
     def label(self, subject, default=''):
         """Query for the RDFS.label of the subject
 
-        Return default if no label exists
+        Return default if no label exists or any label if multiple exist.
         """
         if subject is None:
             return default
         return self.value(subject, RDFS.label, default=default, any=True)
 
     @py3compat.format_doctest_out
-    def preferredLabel(self, subject, lang=None, default=[],
+    def preferredLabel(self, subject, lang=None, default=None,
                        labelProperties=(SKOS.prefLabel, RDFS.label)):
         """ Find the preferred label for subject.
 
@@ -651,6 +651,7 @@ class Graph(Node):
         [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal(%(u)s'blubb', lang='en'))]
         """
+        if default==None: default=[]
 
         # setup the language filtering
         if lang != None:

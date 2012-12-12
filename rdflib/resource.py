@@ -197,6 +197,14 @@ And the sequence of Stuff::
     >>> [it.qname() for it in stuff.seq()]
     [%(u)s'v:One', %(u)s'v:Other']
 
+On add, other resources are auto-unboxed:
+    >>> paper = Resource(graph, URIRef("http://example.org/def/v#Paper"))
+    >>> paper.add(RDFS.subClassOf, artifact)
+    >>> artifact in paper.objects(RDFS.subClassOf) # checks Resource instance
+    True
+    >>> (paper._identifier, RDFS.subClassOf, artifact._identifier) in graph
+    True
+
 
 Technical Details
 -----------------
@@ -332,19 +340,31 @@ class Resource(object):
         __str__ = __unicode__
 
     def add(self, p, o):
+        if isinstance(o, Resource): 
+            o=o._identifier
+
         self._graph.add((self._identifier, p, o))
 
     def remove(self, p, o=None):
+        if isinstance(o, Resource): 
+            o=o._identifier
+
         self._graph.remove((self._identifier, p, o))
 
-    def set(self, predicate, object):
-        self._graph.set((self._identifier, predicate, object))
+    def set(self, p, o):
+        if isinstance(o, Resource): 
+            o=o._identifier
+
+        self._graph.set((self._identifier, p, o))
 
     def subjects(self, predicate=None): # rev
         return self._resources(self._graph.subjects(predicate, self._identifier))
 
-    def predicates(self, object=None):
-        return self._resources(self._graph.predicates(self._identifier, object))
+    def predicates(self, o=None):
+        if isinstance(o, Resource): 
+            o=o._identifier
+
+        return self._resources(self._graph.predicates(self._identifier, o))
 
     def objects(self, predicate=None):
         return self._resources(self._graph.objects(self._identifier, predicate))
@@ -361,9 +381,12 @@ class Resource(object):
         return self._resource_pairs(
                 self._graph.predicate_objects(self._identifier))
 
-    def value(self, predicate=RDF.value, object=None, default=None, any=True):
+    def value(self, p=RDF.value, o=None, default=None, any=True):
+        if isinstance(o, Resource): 
+            o=o._identifier
+
         return self._cast(
-            self._graph.value(self._identifier, predicate, object, default, any))
+            self._graph.value(self._identifier, p, o, default, any))
 
     def label(self):
         return self._graph.label(self._identifier)
@@ -405,4 +428,8 @@ class Resource(object):
     def _new(self, subject):
         return type(self)(self._graph, subject)
 
+    def __str__(self): 
+        return 'Resource(%s)'%self._identifier
 
+    def __repr__(self): 
+        return 'Resource(%s,%s)'%(self._graph, self._identifier)

@@ -33,10 +33,8 @@ import types
 import sys
 import os
 import re
-import StringIO
 import codecs
 
-from binascii import a2b_hex
 from decimal import Decimal
 
 from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX, _unique_id
@@ -44,59 +42,11 @@ from rdflib.graph import QuotedGraph, ConjunctiveGraph
 from rdflib import py3compat
 b = py3compat.b
 
-__all__ = [
-    'URISyntaxError', 'BadSyntax', 'N3Parser', "verbosity", "setVerbosity",
-    "progress", "splitFrag", "splitFragP", "join", "refTo", "base",
-    "canonical", "runNamespace", "uniqueURI", "Canonicalize", "stripCR",
-    "dummyWrite", "toBool", "stringToN3", "backslashUify", "hexify"]
+__all__ = [ 'BadSyntax', 'N3Parser', 'TurtleParser',
+    "splitFragP", "join", "base",
+    "runNamespace", "uniqueURI", "hexify"]
 
 from rdflib.parser import Parser
-
-
-# Incestuous.. would be nice to separate N3 and XML
-# from sax2rdf import XMLtoDOM
-def XMLtoDOM(*args, **kargs):
-     # print >> sys.stderr, args, kargs
-    pass
-
-
-# SWAP http://www.w3.org/2000/10/swap
-# from diag import verbosity, setVerbosity, progress
-def verbosity(*args, **kargs):
-     # print >> sys.stderr, args, kargs
-    pass
-
-
-def setVerbosity(*args, **kargs):
-     # print >> sys.stderr, args, kargs
-    pass
-
-
-def progress(*args, **kargs):
-     # print >> sys.stderr, args, kargs
-    pass
-
-
-def splitFrag(uriref):
-    """split a URI reference between the fragment and the rest.
-
-    Punctuation is thrown away.
-
-    e.g.
-
-    >>> splitFrag("abc#def")
-    ('abc', 'def')
-
-    >>> splitFrag("abcdef")
-    ('abcdef', None)
-
-    """
-
-    i = uriref.rfind("#")
-    if i >= 0:
-        return uriref[:i], uriref[i + 1:]
-    else:
-        return uriref, None
 
 
 def splitFragP(uriref, punct=0):
@@ -212,96 +162,6 @@ def join(here, there):
 
     return here[:slashr + 1] + path + frag
 
-
-commonHost = re.compile(r'^[-_a-zA-Z0-9.]+:(//[^/]*)?/[^/]*$')
-
-
-def refTo(base, uri):
-    """figure out a relative URI reference from base to uri
-
-    >>> refTo('http://example/x/y/z', 'http://example/x/abc')
-    '../abc'
-
-    >>> refTo('file:/ex/x/y', 'file:/ex/x/q/r#s')
-    'q/r#s'
-
-    >>> refTo(None, 'http://ex/x/y')
-    'http://ex/x/y'
-
-    >>> refTo('http://ex/x/y', 'http://ex/x/y')
-    ''
-
-    Note the relationship between refTo and join:
-    join(x, refTo(x, y)) == y
-    which points out certain strings which cannot be URIs. e.g.
-    >>> x='http://ex/x/y';y='http://ex/x/q:r';join(x, refTo(x, y)) == y
-    0
-
-    So 'http://ex/x/q:r' is not a URI. Use 'http://ex/x/q%3ar' instead:
-    >>> x='http://ex/x/y';y='http://ex/x/q%3ar';join(x, refTo(x, y)) == y
-    1
-
-    This one checks that it uses a root-realtive one where that is
-    all they share.  Now uses root-relative where no path is shared.
-    This is a matter of taste but tends to give more resilience IMHO
-    -- and shorter paths
-
-    Note that base may be None, meaning no base.  In some situations, there
-    just ain't a base. Slife. In these cases, relTo returns the absolute value.
-    The axiom abs(,rel(b,x))=x still holds.
-    This saves people having to set the base to "bogus:".
-
-    >>> refTo('http://ex/x/y/z', 'http://ex/r')
-    '/r'
-
-    """
-
-     # assert base  # don't mask bugs -danc  # not a bug. -tim
-    if not base:
-        return uri
-    if base == uri:
-        return ""
-
-     # Find how many path segments in common
-    i = 0
-    while i < len(uri) and i < len(base):
-        if uri[i] == base[i]:
-            i = i + 1
-        else:
-            break
-     # print "# relative", base, uri, "   same up to ", i
-     # i point to end of shortest one or first difference
-
-    m = commonHost.match(base[:i])
-    if m:
-        k = uri.find("//")
-        if k < 0:
-            k = -2  # no host
-        l = uri.find("/", k + 2)
-        if uri[l + 1:l + 2] != "/" and base[l + 1:l + 2] != "/" and uri[:l] == base[:l]:
-            return uri[l:]
-
-    if uri[i:i + 1] == "#" and len(base) == i:
-        return uri[i:]  # fragment of base
-
-    while i > 0 and uri[i - 1] != '/':
-        i = i - 1   # scan for slash
-
-    if i < 3:
-        return uri   # No way.
-    if base.find("//", i - 2) > 0 or uri.find("//", i - 2) > 0:
-        return uri  # An unshared "//"
-    if base.find(":", i) > 0:
-        return uri   # An unshared ":"
-    n = base.count("/", i)
-    if n == 0 and i < len(uri) and uri[i] == '#':
-        return "./" + uri[i:]
-    elif n == 0 and i == len(uri):
-        return "./"
-    else:
-        return ("../" * n) + uri[i:]
-
-
 def base():
     """The base URI for this process - the Web equiv of cwd
 
@@ -320,81 +180,6 @@ def _fixslash(s):
     s=s.replace("\\","/")
     if s[0] != "/" and s[1] == ":":
         s = s[2:]   # @@@ Hack when drive letter present
-    return s
-
-URI_unreserved = b("ABCDEFGHIJJLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~")
-     # unreserved = ALPHA / DIGIT / "-" / "." / "_" / "~"
-
-
-@py3compat.format_doctest_out
-def canonical(str_in):
-    """Convert equivalent URIs (or parts) to the same string
-
-    There are many differenet levels of URI canonicalization
-    which are possible.  See http://www.ietf.org/rfc/rfc3986.txt
-    Done:
-    - Converfting unicode IRI to utf-8
-    - Escaping all non-ASCII
-    - De-escaping, if escaped, ALPHA (%%41-%%5A and %%61-%%7A), DIGIT (%%30-%%39),
-    hyphen (%%2D), period (%%2E), underscore (%%5F), or tilde (%%7E) (Sect 2.4)
-    - Making all escapes uppercase hexadecimal
-
-    Not done:
-    - Making URI scheme lowercase
-    - changing /./ or  /foo/../ to / with care not to change host part
-
-
-    >>> canonical("foo bar")
-    %(b)s'foo%%20bar'
-
-    >>> canonical(%(u)s'http:')
-    %(b)s'http:'
-
-    >>> canonical('fran%%c3%%83%%c2%%a7ois')
-    %(b)s'fran%%C3%%83%%C2%%A7ois'
-
-    >>> canonical('a')
-    %(b)s'a'
-
-    >>> canonical('%%4e')
-    %(b)s'N'
-
-    >>> canonical('%%9d')
-    %(b)s'%%9D'
-
-    >>> canonical('%%2f')
-    %(b)s'%%2F'
-
-    >>> canonical('%%2F')
-    %(b)s'%%2F'
-
-    """
-    if type(str_in) == type(u''):
-        s8 = str_in.encode('utf-8')
-    else:
-        s8 = str_in
-    s = b('')
-    i = 0
-    while i < len(s8):
-        if py3compat.PY3:
-            n = s8[i]
-            ch = bytes([n])
-        else:
-            ch = s8[i]
-            n = ord(ch)
-        if (n > 126) or (n < 33):    # %-encode controls, SP, DEL, and utf-8
-            s += b("%%%02X" % ord(ch))
-        elif ch == b('%') and i + 2 < len(s8):
-            ch2 = a2b_hex(s8[i + 1:i + 3])
-            if ch2 in URI_unreserved:
-                s += ch2
-            else:
-                s += b("%%%02X" % ord(ch2))
-            i = i + 3
-            continue
-        else:
-            s += ch
-        i = i + 1
     return s
 
 
@@ -459,344 +244,9 @@ def uniqueURI():
     return runNamespace() + "u_" + str(nextu)
 
 
-class URISyntaxError(ValueError):
-    """A parameter is passed to a routine that requires a URI reference"""
-    pass
-
 
 tracking = False
 chatty_flag = 50
-
-
-from xml.dom import Node
-try:
-    from xml.ns import XMLNS
-except:
-    class XMLNS:
-        BASE = "http://www.w3.org/2000/xmlns/"
-        XML = "http://www.w3.org/XML/1998/namespace"
-
-
-_attrs = lambda E: (E.attributes and E.attributes.values()) or []
-_children = lambda E: E.childNodes or []
-_IN_XML_NS = lambda n: n.namespaceURI == XMLNS.XML
-_inclusive = lambda n: n.unsuppressedPrefixes == None
-
-# Does a document/PI has lesser/greater document order than the
-# first element?
-_LesserElement, _Element, _GreaterElement = range(3)
-
-
-def _sorter(n1, n2):
-    '''_sorter(n1, n2) -> int
-    Sorting predicate for non-NS attributes.'''
-
-    i = cmp(n1.namespaceURI, n2.namespaceURI)
-    if i:
-        return i
-    return cmp(n1.localName, n2.localName)
-
-
-def _sorter_ns(n1, n2):
-    '''_sorter_ns((n,v),(n,v)) -> int
-    "(an empty namespace URI is lexicographically least)."'''
-
-    if n1[0] == 'xmlns':
-        return -1
-    if n2[0] == 'xmlns':
-        return 1
-    return cmp(n1[0], n2[0])
-
-
-def _utilized(n, node, other_attrs, unsuppressedPrefixes):
-    '''_utilized(n, node, other_attrs, unsuppressedPrefixes) -> boolean
-    Return true if that nodespace is utilized within the node'''
-
-    if n.startswith('xmlns:'):
-        n = n[6:]
-    elif n.startswith('xmlns'):
-        n = n[5:]
-    if (n == "" and node.prefix in ["#default", None]) or \
-          n == node.prefix or n in unsuppressedPrefixes:
-        return 1
-    for attr in other_attrs:
-        if n == attr.prefix:
-            return 1
-    return 0
-
-
-#_in_subset = lambda subset, node: not subset or node in subset
-_in_subset = lambda subset, node: subset is None or node in subset  # rich's tweak
-
-
-class _implementation:
-    '''Implementation class for C14N. This accompanies a node during it's
-    processing and includes the parameters and processing state.'''
-
-     # Handler for each node type; populated during module instantiation.
-    handlers = {}
-
-    def __init__(self, node, write, **kw):
-        '''Create and run the implementation.'''
-        self.write = write
-        self.subset = kw.get('subset')
-        self.comments = kw.get('comments', 0)
-        self.unsuppressedPrefixes = kw.get('unsuppressedPrefixes')
-        nsdict = kw.get('nsdict', {'xml': XMLNS.XML, 'xmlns': XMLNS.BASE})
-
-         # Processing state.
-        self.state = (nsdict, {'xml': ''}, {})  # 0422
-
-        if node.nodeType == Node.DOCUMENT_NODE:
-            self._do_document(node)
-        elif node.nodeType == Node.ELEMENT_NODE:
-            self.documentOrder = _Element         # At document element
-            if not _inclusive(self):
-                self._do_element(node)
-            else:
-                inherited = self._inherit_context(node)
-                self._do_element(node, inherited)
-        elif node.nodeType == Node.DOCUMENT_TYPE_NODE:
-            pass
-        elif node.nodeType == Node.TEXT_NODE:
-            self._do_text(node)
-        else:
-            raise TypeError(str(node))
-
-    def _inherit_context(self, node):
-        '''_inherit_context(self, node) -> list
-        Scan ancestors of attribute and namespace context.  Used only
-        for single element node canonicalization, not for subset
-        canonicalization.'''
-
-         # Collect the initial list of xml:foo attributes.
-        xmlattrs = filter(_IN_XML_NS, _attrs(node))
-
-         # Walk up and get all xml:XXX attributes we inherit.
-        inherited, parent = [], node.parentNode
-        while parent and parent.nodeType == Node.ELEMENT_NODE:
-            for a in filter(_IN_XML_NS, _attrs(parent)):
-                n = a.localName
-                if n not in xmlattrs:
-                    xmlattrs.append(n)
-                    inherited.append(a)
-            parent = parent.parentNode
-        return inherited
-
-    def _do_document(self, node):
-        '''_do_document(self, node) -> None
-        Process a document node. documentOrder holds whether the document
-        element has been encountered such that PIs/comments can be written
-        as specified.'''
-
-        self.documentOrder = _LesserElement
-        for child in node.childNodes:
-            if child.nodeType == Node.ELEMENT_NODE:
-                self.documentOrder = _Element         # At document element
-                self._do_element(child)
-                self.documentOrder = _GreaterElement  # After document element
-            elif child.nodeType == Node.PROCESSING_INSTRUCTION_NODE:
-                self._do_pi(child)
-            elif child.nodeType == Node.COMMENT_NODE:
-                self._do_comment(child)
-            elif child.nodeType == Node.DOCUMENT_TYPE_NODE:
-                pass
-            else:
-                raise TypeError(str(child))
-    handlers[Node.DOCUMENT_NODE] = _do_document
-
-    def _do_text(self, node):
-        '''_do_text(self, node) -> None
-        Process a text or CDATA node.  Render various special characters
-        as their C14N entity representations.'''
-        if not _in_subset(self.subset, node):
-            return
-        s = node.data.replace("&", "&amp;")
-        s = s.replace("<", "&lt;")
-        s = s.replace(">", "&gt;")
-        s = s.replace("\015", "&#xD;")
-        if s:
-            self.write(s)
-    handlers[Node.TEXT_NODE] = _do_text
-    handlers[Node.CDATA_SECTION_NODE] = _do_text
-
-    def _do_pi(self, node):
-        '''_do_pi(self, node) -> None
-        Process a PI node. Render a leading or trailing  # xA if the
-        document order of the PI is greater or lesser (respectively)
-        than the document element.
-        '''
-        if not _in_subset(self.subset, node):
-            return
-        W = self.write
-        if self.documentOrder == _GreaterElement:
-            W('\n')
-        W('<?')
-        W(node.nodeName)
-        s = node.data
-        if s:
-            W(' ')
-            W(s)
-        W('?>')
-        if self.documentOrder == _LesserElement:
-            W('\n')
-    handlers[Node.PROCESSING_INSTRUCTION_NODE] = _do_pi
-
-    def _do_comment(self, node):
-        '''_do_comment(self, node) -> None
-        Process a comment node. Render a leading or trailing  # xA if the
-        document order of the comment is greater or lesser (respectively)
-        than the document element.
-        '''
-        if not _in_subset(self.subset, node):
-            return
-        if self.comments:
-            W = self.write
-            if self.documentOrder == _GreaterElement:
-                W('\n')
-            W('<!--')
-            W(node.data)
-            W('-->')
-            if self.documentOrder == _LesserElement:
-                W('\n')
-    handlers[Node.COMMENT_NODE] = _do_comment
-
-    def _do_attr(self, n, value):
-        ''''_do_attr(self, node) -> None
-        Process an attribute.'''
-
-        W = self.write
-        W(' ')
-        W(n)
-        W('="')
-        s = value.replace(value, "&", "&amp;")
-        s = s.replace("<", "&lt;")
-        s = s.replace('"', '&quot;')
-        s = s.replace('\011', '&#x9')
-        s = s.replace('\012', '&#xA')
-        s = s.replace('\015', '&#xD')
-        W(s)
-        W('"')
-
-    def _do_element(self, node, initial_other_attrs=[]):
-        '''_do_element(self, node, initial_other_attrs = []) -> None
-        Process an element (and its children).'''
-
-        # Get state (from the stack) make local copies.
-        #   ns_parent -- NS declarations in parent
-        #   ns_rendered -- NS nodes rendered by ancestors
-        #        ns_local -- NS declarations relevant to this element
-        #   xml_attrs -- Attributes in XML namespace from parent
-        #       xml_attrs_local -- Local attributes in XML namespace.
-        ns_parent, ns_rendered, xml_attrs = \
-                self.state[0], self.state[1].copy(), self.state[2].copy()  # 0422
-        ns_local = ns_parent.copy()
-        xml_attrs_local = {}
-
-        # progress("_do_element node.nodeName=", node.nodeName)
-        # progress("_do_element node.namespaceURI", node.namespaceURI)
-        # progress("_do_element node.tocml()", node.toxml())
-        # Divide attributes into NS, XML, and others.
-        other_attrs = initial_other_attrs[:]
-        in_subset = _in_subset(self.subset, node)
-        for a in _attrs(node):
-            # progress("\t_do_element a.nodeName=", a.nodeName)
-            if a.namespaceURI == XMLNS.BASE:
-                n = a.nodeName
-                if n == "xmlns:":
-                    n = "xmlns"         # DOM bug workaround
-                ns_local[n] = a.nodeValue
-            elif a.namespaceURI == XMLNS.XML:
-                if _inclusive(self) or in_subset:
-                    xml_attrs_local[a.nodeName] = a  # 0426
-            else:
-                other_attrs.append(a)
-             # add local xml:foo attributes to ancestor's xml:foo attributes
-            xml_attrs.update(xml_attrs_local)
-
-         # Render the node
-        W, name = self.write, None
-        if in_subset:
-            name = node.nodeName
-            W('<')
-            W(name)
-
-             # Create list of NS attributes to render.
-            ns_to_render = []
-            for n, v in ns_local.items():
-
-                 # If default namespace is XMLNS.BASE or empty,
-                 # and if an ancestor was the same
-                if n == "xmlns" and v in [XMLNS.BASE, ''] \
-                  and ns_rendered.get('xmlns') in [XMLNS.BASE, '', None]:
-                    continue
-
-                 # "omit namespace node with local name xml, which defines
-                 # the xml prefix, if its string value is
-                 # http://www.w3.org/XML/1998/namespace."
-                if n in ["xmlns:xml", "xml"] \
-                  and v in ['http://www.w3.org/XML/1998/namespace']:
-                    continue
-
-                 # If not previously rendered
-                 # and it's inclusive  or utilized
-                if (n, v) not in ns_rendered.items() \
-                  and (_inclusive(self) or \
-                  _utilized(n, node, other_attrs, self.unsuppressedPrefixes)):
-                    ns_to_render.append((n, v))
-
-             # Sort and render the ns, marking what was rendered.
-            ns_to_render.sort(_sorter_ns)
-            for n, v in ns_to_render:
-                self._do_attr(n, v)
-                ns_rendered[n] = v     # 0417
-
-             # If exclusive or the parent is in the subset, add the local xml attributes
-             # Else, add all local and ancestor xml attributes
-             # Sort and render the attributes.
-            if not _inclusive(self) or _in_subset(self.subset, node.parentNode):   # 0426
-                other_attrs.extend(xml_attrs_local.values())
-            else:
-                other_attrs.extend(xml_attrs.values())
-            other_attrs.sort(_sorter)
-            for a in other_attrs:
-                self._do_attr(a.nodeName, a.value)
-            W('>')
-
-         # Push state, recurse, pop state.
-        state, self.state = self.state, (ns_local, ns_rendered, xml_attrs)
-        for c in _children(node):
-            _implementation.handlers[c.nodeType](self, c)
-        self.state = state
-
-        if name:
-            W('</%s>' % name)
-    handlers[Node.ELEMENT_NODE] = _do_element
-
-
-def Canonicalize(node, output=None, **kw):
-    '''Canonicalize(node, output=None, **kw) -> UTF-8
-
-    Canonicalize a DOM document/element node and all descendents.
-    Return the text; if output is specified then output.write will
-    be called to output the text and None will be returned
-    Keyword parameters:
-    nsdict -- a dictionary of prefix:uri namespace entries
-    assumed to exist in the surrounding context
-    comments -- keep comments if non-zero (default is 0)
-    subset -- Canonical XML subsetting resulting from XPath (default is [])
-    unsuppressedPrefixes -- do exclusive C14N, and this specifies the
-    prefixes that should be inherited.
-    '''
-    if output:
-        apply(_implementation, (node, output.write), kw)
-    else:
-        s = StringIO.StringIO()
-        apply(_implementation, (node, s.write), kw)
-        return s.getvalue()
-
-# end of xmlC14n.py
-
 
 # from why import BecauseOfData, becauseSubexpression
 def BecauseOfData(*args, **kargs):
@@ -986,7 +436,6 @@ class SinkParser:
         return j
 
      # @@I18N
-    global _notNameChars
      # _namechars = string.lowercase + string.uppercase + string.digits + '_-'
 
     def tok(self, tok, argstr, i):
@@ -1025,9 +474,6 @@ class SinkParser:
                 raise BadSyntax(self._thisDoc, self.lines, argstr, i,
                     "'@keywords' needs comma separated list of words")
             self.setKeywords(res[:])
-             # was: diag.chatty_flag
-            if chatty_flag > 80:
-                progress("Keywords ", self.keywords)
             return i
 
         j = self.tok('forAll', argstr, i)
@@ -1177,7 +623,6 @@ class SinkParser:
             if j < 0:
                 raise BadSyntax(self._thisDoc, self.lines, argstr, i,
                             "End of file found, expected property after 'is'")
-                return j  # eof
             i = j
             j = self.tok('of', argstr, i)
             if j < 0:
@@ -1428,8 +873,6 @@ class SinkParser:
         if j >= 0:
             raise BadSyntax(self._thisDoc, self.lines, argstr, i,
                 "Keyword 'this' was ancient N3. Now use @forSome and @forAll keywords.")
-            res.append(self._context)
-            return j
 
          # booleans
         j = self.tok('true', argstr, i)
@@ -1457,7 +900,6 @@ class SinkParser:
             if j < 0:
                 raise BadSyntax(self._thisDoc, self.lines, argstr, i,
                             "EOF found when expected verb in property list")
-                return j  # eof
 
             if argstr[j:j + 2] == ":-":
                 i = j + 2
@@ -1490,7 +932,6 @@ class SinkParser:
             if j < 0:
                 raise BadSyntax(self._thisDoc, self.lines, argstr, j,
                                                 "EOF found in list of objects")
-                return j  # eof
             if argstr[i:i + 1] != ";":
                 return i
             i = i + 1  # skip semicolon and continue
@@ -1503,7 +944,6 @@ class SinkParser:
         if i < 0:
             raise BadSyntax(self._thisDoc, self.lines, argstr, i,
                                     "EOF found expecting comma sep list")
-            return i
         if argstr[i] == ".":
             return j   # empty list is OK
         i = what(argstr, i, res)
@@ -1523,7 +963,6 @@ class SinkParser:
             if i < 0:
                 raise BadSyntax(self._thisDoc, self.lines, argstr, i,
                                                 "bad list content")
-                return i
 
     def objectList(self, argstr, i, res):
         i = self.object(argstr, i, res)
@@ -1534,7 +973,6 @@ class SinkParser:
             if j < 0:
                 raise BadSyntax(self._thisDoc, self.lines, argstr, j,
                                     "EOF found after object")
-                return j  # eof
             if argstr[j:j + 1] != ",":
                 return j     # Found something else!
             i = self.object(argstr, j + 1, res)
@@ -1553,7 +991,6 @@ class SinkParser:
             return j
         raise BadSyntax(self._thisDoc, self.lines,
                 argstr, j, "expected '.' or '}' or ']' at end of statement")
-        return i
 
     def uri_ref2(self, argstr, i, res):
         """Generate uri from n3 representation.
@@ -1583,8 +1020,6 @@ class SinkParser:
                 res.append(self._variables[symb])
             else:
                 res.append(symb)  # @@@ "#" CONVENTION
-            if not ns.find("#"):
-                progress("Warning: no  # on namespace %s," % ns)
             return j
 
         i = self.skipSpace(argstr, i)
@@ -1668,7 +1103,6 @@ class SinkParser:
         if argstr[j] in "0123456789-":
             raise BadSyntax(self._thisDoc, self.lines, argstr, j,
                             "Varible name can't start with '%s'" % argstr[j])
-            return -1
         while i < len(argstr) and argstr[i] not in _notNameChars:
             i = i + 1
         if self._parentContext == None:
@@ -1776,7 +1210,6 @@ class SinkParser:
                 j, s = self.strconst(argstr, i, delim)
 
                 res.append(self._store.newLiteral(s))
-                progress("New string const ", s, j)
                 return j
             else:
                 return -1
@@ -1834,16 +1267,6 @@ class SinkParser:
                     res2 = []
                     j = self.uri_ref2(argstr, j + 2, res2)  # Read datatype URI
                     dt = res2[0]
-                     # if dt.uriref() == "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral":
-                    if dt == "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral":
-                        try:
-                            dom = XMLtoDOM('<rdf:envelope xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns">'
-                                           + s
-                                           + '</rdf:envelope>').firstChild
-                        except:
-                            raise  ValueError('s="%s"' % s)
-                        res.append(self._store.newXMLLiteral(dom))
-                        return j
                 res.append(self._store.newLiteral(s, dt, lang))
                 return j
             else:
@@ -2025,26 +1448,9 @@ class BadSyntax(SyntaxError):
                                     argstr[st:i], argstr[i:i + 60], post)
 
 
-def stripCR(argstr):
-    res = ""
-    for ch in argstr:
-        if ch != "\r":
-            res = res + ch
-    return res
 
-
-def dummyWrite(x):
-    pass
 
 ################################################################################
-
-
-def toBool(s):
-    if s == 'true' or s == 'True' or s == '1':
-        return True
-    if s == 'false' or s == 'False' or s == '0':
-        return False
-    raise ValueError(s)
 
 
 class Formula(object):
@@ -2088,11 +1494,6 @@ class Formula(object):
 r_hibyte = re.compile(r'([\x80-\xff])')
 
 
-def iri(uri):
-    return uri.decode('utf-8')
-     # return unicode(r_hibyte.sub(lambda m: '%%%02X' % ord(m.group(1)), uri))
-
-
 class RDFSink(object):
     def __init__(self, graph):
         self.rootFormula = None
@@ -2105,8 +1506,7 @@ class RDFSink(object):
         return f
 
     def newSymbol(self, *args):
-        uri = args[0].encode('utf-8')
-        return URIRef(iri(uri))
+        return URIRef(args[0])
 
     def newBlankNode(self, arg=None, **kargs):
         if isinstance(arg, Formula):
@@ -2167,20 +1567,6 @@ class RDFSink(object):
         if isinstance(n, tuple):
             return URIRef(unicode(n[1]))
 
-             # if isinstance(n, list):
-             #    rdflist, f = n
-             #    name = self.newBlankNode()
-             #    if f == self.rootFormula:
-             #       sublist = name
-             #       for i in xrange(0, len(rdflist) - 1):
-             #          print sublist, 'first', rdflist[i]
-             #          rest = self.newBlankNode()
-             #          print sublist, 'rest', rest
-             #          sublist = rest
-             #       print sublist, 'first', rdflist[-1]
-             #       print sublist, 'rest', 'nil'
-             #    return name
-
         if isinstance(n, bool):
             s = Literal(str(n).lower(), datatype=BOOLEAN_DATATYPE)
             return s
@@ -2229,84 +1615,6 @@ class RDFSink(object):
 #  Utilities
 #
 
-Escapes = {'a':  '\a',
-           'b':  '\b',
-           'f':  '\f',
-           'r':  '\r',
-           't':  '\t',
-           'v':  '\v',
-           'n':  '\n',
-           '\\': '\\',
-           '"':  '"'}
-
-forbidden1 = re.compile(ur'[\\\"\a\b\f\r\v\u0080-\U0000ffff]')
-forbidden2 = re.compile(ur'[\\\"\a\b\f\r\v\t\n\u0080-\U0000ffff]')
-
-
-def stringToN3(argstr, singleLine=0, flags=""):
-    res = ''
-    if (len(argstr) > 20 and argstr[-1] != '"' \
-         and not singleLine and (argstr.find("\n") >= 0 \
-         or argstr.find('"') >= 0)):
-        delim = '"""'
-        forbidden = forbidden1    # (allow tabs too now)
-    else:
-        delim = '"'
-        forbidden = forbidden2
-
-    i = 0
-
-    while i < len(argstr):
-        m = forbidden.search(argstr, i)
-        if not m:
-            break
-
-        j = m.start()
-        res = res + argstr[i:j]
-        ch = m.group(0)
-        if ch == '"' and delim == '"""' and argstr[j:j + 3] != '"""':   # "
-            res = res + ch
-        else:
-            k = '\a\b\f\r\t\v\n\\"'.find(ch)
-            if k >= 0:
-                res = res + "\\" + 'abfrtvn\\"'[k]
-            else:
-                if 'e' in flags:
-                     # res = res + ('\\u%04x' % ord(ch))
-                    res = res + ('\\u%04X' % ord(ch))
-                     # http://www.w3.org/TR/rdf-testcases/#ntriples
-                else:
-                    res = res + ch
-        i = j + 1
-
-     # The following code fixes things for really high range Unicode
-    newstr = ""
-    for ch in res + argstr[i:]:
-        if ord(ch) > 65535:
-            newstr = newstr + ('\\U%08X' % ord(ch))
-             # http://www.w3.org/TR/rdf-testcases/#ntriples
-        else:
-            newstr = newstr + ch
-
-    return delim + newstr + delim
-
-
-def backslashUify(ustr):
-    """Use URL encoding to return an ASCII string corresponding
-        to the given unicode"""
-     # progress("String is "+`ustr`)
-     # s1=ustr.encode('utf-8')
-    s = ""
-    for ch in ustr:   # .encode('utf-8'):
-        if ord(ch) > 65535:
-            ch = "\\U%08X" % ord(ch)
-        elif ord(ch) > 126:
-            ch = "\\u%04X" % ord(ch)
-        else:
-            ch = "%c" % ord(ch)
-        s = s + ch
-    return b(s)
-
 
 @py3compat.format_doctest_out
 def hexify(ustr):
@@ -2317,7 +1625,6 @@ def hexify(ustr):
     %(b)s'http://example/a%%20b'
 
     """
-     # progress("String is "+`ustr`)
      # s1=ustr.encode('utf-8')
     s = ""
     for ch in ustr:   # .encode('utf-8'):
@@ -2327,29 +1634,6 @@ def hexify(ustr):
             ch = "%c" % ord(ch)
         s = s + ch
     return b(s)
-
-# # Unused, dysfunctional.
-# def dummy():
-#    res = ""
-#    if len(argstr) > 20 and (argstr.find("\n") >=0 or argstr.find('"') >=0):
-#        delim= '"""'
-#        forbidden = "\\\"\a\b\f\r\v"     # (allow tabs too now)
-#    else:
-#        delim = '"'
-#        forbidden = "\\\"\a\b\f\r\v\t\n"
-#    for i in range(len(argstr)):
-#        ch = argstr[i]
-#        j = forbidden.find(ch)
-#        if ch == '"' and delim == '"""' \
-#              and i+1 < len(argstr) and argstr[i+1] != '"':
-#            j=-1    # Single quotes don't need escaping in long format
-#        if j >= 0:
-#            ch = "\\" + '\\"abfrvtn'[j]
-#        elif ch not in "\n\t" and (ch < " " or ch > "}"):
-#            ch = "[[" + `ch` + "]]"  # [2:-1]  # Use python
-#        res = res + ch
-#    return delim + res + delim
-
 
 
 class TurtleParser(Parser):

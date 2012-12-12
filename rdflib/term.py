@@ -857,6 +857,9 @@ class Literal(Identifier):
             if '"""' in self:
                 # is this ok?
                 encoded = encoded.replace('"""','\\"\\"\\"')
+            if encoded[-1]=='"' and encoded[-2]!='\\': 
+                encoded=encoded[:-1]+'\\'+'"'
+                
             return '"""%s"""' % encoded.replace('\r','\\r')
         else:
             return '"%s"' % self.replace('\n','\\n').replace('\\', '\\\\'
