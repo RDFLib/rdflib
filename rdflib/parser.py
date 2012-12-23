@@ -11,10 +11,8 @@ want to do so through the Graph class parse method.
 """
 
 import os
-import __builtin__
-import warnings
 from urllib import pathname2url, url2pathname
-from urllib2 import urlopen, Request, HTTPError
+from urllib2 import urlopen, Request
 from urlparse import urljoin
 from rdflib.py3compat import PY3
 if PY3:
@@ -22,8 +20,6 @@ if PY3:
 else:
     from StringIO import StringIO as BytesIO
 from xml.sax import xmlreader
-from xml.sax.saxutils import prepare_input_source
-import types
 
 from rdflib import __version__
 from rdflib.term import URIRef

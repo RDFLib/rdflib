@@ -180,11 +180,11 @@ def html5_extra_attributes(node, state) :
 		#return re.sub(r'(\r| |\n|\t)+',"",rc).strip()
 	# end getLiteral
 	
-	if node.hasAttribute("value")  :
+	if node.hasAttribute("value")  and not node.hasAttribute("content") :
 		# state.supress_lang = True
 		node.setAttribute("content", node.getAttribute("value"))
 
-	elif node.tagName == "time":
+	elif node.tagName == "time" and not node.hasAttribute("content") :
 		# see if there is already a datatype element; if so, the author has made his/her own encoding
 		# The value can come from the attribute or the content:
 		if node.hasAttribute("datetime") :

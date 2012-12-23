@@ -68,7 +68,8 @@ class Namespace(URIRef):
         return URIRef(self + 'title')
 
     def term(self, name):
-        return URIRef(self + name)
+        # need to handle slices explicitly because of __getitem__ override
+        return URIRef(self + (name if isinstance(name, basestring) else ''))
 
     def __getitem__(self, key, default=None):
         return self.term(key)
@@ -157,7 +158,7 @@ class _RDFNamespace(ClosedNamespace):
         "RDF", "Description", "ID", "about", "parseType", "resource", "li", "nodeID", "datatype",
 
         # RDF Classes
-        "Seq", "Bag", "Alt", "Statement", "Property", "XMLLiteral", "List", "PlainLiteral",
+        "Seq", "Bag", "Alt", "Statement", "Property", "XMLLiteral", "HTML", "LangString", "List", "PlainLiteral",
 
         # RDF Properties
         "subject", "predicate", "object", "type", "value", "first", "rest",
@@ -208,13 +209,17 @@ class NamespaceManager(object):
 
     .. code-block:: pycon
     
-        >>> from rdflib import Graph, OWL
+        >>> import rdflib
+        >>> from rdflib import Graph
+        >>> from rdflib.namespace import Namespace, NamespaceManager
         >>> exNs = Namespace('http://example.com/')        
         >>> namespace_manager = NamespaceManager(Graph())
         >>> namespace_manager.bind('ex', exNs, override=False)
-        >>> namespace_manager.bind('owl', OWL, override=False)
         >>> g = Graph()    
         >>> g.namespace_manager = namespace_manager
+        >>> all_ns = [n for n in g.namespace_manager.namespaces()]
+        >>> assert ('ex', rdflib.term.URIRef('http://example.com/')) in all_ns
+        >>>
 
     """
     def __init__(self, graph):

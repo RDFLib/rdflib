@@ -53,7 +53,7 @@ try:
 except ImportError:
     from md5 import md5
 
-import py3compat
+from . import py3compat
 b = py3compat.b
 
 class Node(object):
@@ -172,6 +172,7 @@ class URIRef(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
+        warnings.warn("method md5_term_hash is deprecated, and will be removed in the future. If you use this please let rdflib-dev know!", category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("U"))
         return d.hexdigest()
@@ -333,6 +334,7 @@ class BNode(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
+        warnings.warn("method md5_term_hash is deprecated, and will be removed in the future. If you use this please let rdflib-dev know!", category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("B"))
         return d.hexdigest()
@@ -390,7 +392,10 @@ class Literal(Identifier):
     """
     __doc__ = py3compat.format_doctest_out(doc)
 
-    __slots__ = ("language", "datatype", "_cmp_value")
+    if not py3compat.PY3:
+        __slots__ = ("language", "datatype", "_language", "_datatype", "_cmp_value")
+    else:
+        __slots__ = ("_language", "_datatype", "_cmp_value")
 
     def __new__(cls, value, lang=None, datatype=None):
         if lang is not None and datatype is not None:
@@ -415,10 +420,17 @@ class Literal(Identifier):
             inst = unicode.__new__(cls, value)
         except UnicodeDecodeError:
             inst = unicode.__new__(cls, value, 'utf-8')
-        inst.language = lang
-        inst.datatype = datatype
+        inst._language = lang
+        inst._datatype = datatype
         inst._cmp_value = inst._toCompareValue()
         return inst
+
+    @property
+    def language(self): return self._language
+    
+    @property 
+    def datatype(self): return self._datatype
+
 
     def __reduce__(self):
         return (Literal, (unicode(self), self.language, self.datatype),)
@@ -428,8 +440,8 @@ class Literal(Identifier):
 
     def __setstate__(self, arg):
         _, d = arg
-        self.language = d["language"]
-        self.datatype = d["datatype"]
+        self._language = d["language"]
+        self._datatype = d["datatype"]
 
     @py3compat.format_doctest_out
     def __add__(self, val):
@@ -845,6 +857,9 @@ class Literal(Identifier):
             if '"""' in self:
                 # is this ok?
                 encoded = encoded.replace('"""','\\"\\"\\"')
+            if encoded[-1]=='"' and encoded[-2]!='\\': 
+                encoded=encoded[:-1]+'\\'+'"'
+                
             return '"""%s"""' % encoded.replace('\r','\\r')
         else:
             return '"%s"' % self.replace('\n','\\n').replace('\\', '\\\\'
@@ -900,6 +915,7 @@ class Literal(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
+        warnings.warn("method md5_term_hash is deprecated, and will be removed in the future. If you use this please let rdflib-dev know!", category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("L"))
         return d.hexdigest()
@@ -1030,6 +1046,7 @@ class Variable(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
+        warnings.warn("method md5_term_hash is deprecated, and will be removed in the future. If you use this please let rdflib-dev know!", category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("V"))
         return d.hexdigest()
@@ -1038,7 +1055,7 @@ class Variable(Identifier):
 class Statement(Node, tuple):
 
     def __new__(cls, (subject, predicate, object), context):
-        warnings.warn("Class Statement is deprecated.", category=DeprecationWarning, stacklevel=2)
+        warnings.warn("Class Statement is deprecated, and will be removed in the future. If you use this please let rdflib-dev know!", category=DeprecationWarning, stacklevel=2)
         return tuple.__new__(cls, ((subject, predicate, object), context))
 
     def __reduce__(self):

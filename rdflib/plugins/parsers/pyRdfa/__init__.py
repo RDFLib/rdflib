@@ -854,7 +854,7 @@ def processURI(uri, outputFormat, form={}) :
 		elif outputFormat == "nt" or outputFormat == "turtle" :
 			retval = 'Content-Type: text/turtle; charset=utf-8\n'
 		elif outputFormat == "json-ld" or outputFormat == "json" :
-			retval = 'Content-Type: application/json; charset=utf-8\n'
+			retval = 'Content-Type: application/ld+json; charset=utf-8\n'
 		else :
 			retval = 'Content-Type: application/rdf+xml; charset=utf-8\n'
 		retval += '\n'

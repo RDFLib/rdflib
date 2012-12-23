@@ -8,7 +8,7 @@ ESCAPE_ENTITIES={
 }
 
 class XMLWriter(object):
-    def __init__(self, stream, namespace_manager, encoding=None, decl=1, extra_ns={}):
+    def __init__(self, stream, namespace_manager, encoding=None, decl=1, extra_ns=None):
         encoding = encoding or 'utf-8'
         encoder, decoder, stream_reader, stream_writer = codecs.lookup(encoding)
         self.stream = stream = stream_writer(stream)
@@ -16,7 +16,7 @@ class XMLWriter(object):
             stream.write('<?xml version="1.0" encoding="%s"?>' % encoding)
         self.element_stack = []
         self.nm = namespace_manager
-        self.extra_ns=extra_ns
+        self.extra_ns=extra_ns or {}
         self.closed = True
 
     def __get_indent(self):

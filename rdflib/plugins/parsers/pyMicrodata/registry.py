@@ -19,42 +19,51 @@ $Date: 2012/09/05 16:40:43 $
 import sys
 (py_v_major, py_v_minor, py_v_micro, py_v_final, py_v_serial) = sys.version_info
 
+# To be added soon:
+      # "Class"              : {"subPropertyOf" : "http://www.w3.org/2000/01/rdf-schema#Class"},
+      # "Property"           : {"subPropertyOf" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"}
+
 _registry = """
 {
   "http://schema.org/": {
     "propertyURI":    "vocabulary",
     "multipleValues": "unordered",
     "properties": {
-      "blogPosts"          : {"multipleValues": "list"},
-      "breadcrumb"         : {"multipleValues": "list"},
-      "byArtist"           : {"multipleValues": "list"},
-      "creator"            : {"multipleValues": "list"},
-      "episodes"           : {"multipleValues": "list"},
-      "events"             : {"multipleValues": "list"},
-      "founders"           : {"multipleValues": "list"},
-      "itemListElement"    : {"multipleValues": "list"},
-      "musicGroupMember"   : {"multipleValues": "list"},
-      "performerIn"        : {"multipleValues": "list"},
-      "performers"         : {"multipleValues": "list"},
-      "producer"           : {"multipleValues": "list"},
-      "recipeInstructions" : {"multipleValues": "list"},
-      "seasons"            : {"multipleValues": "list"},
-      "subEvents"          : {"multipleValues": "list"},
-      "tracks"             : {"multipleValues": "list"},
-	    "additionalType"     : {"subPropertyOf" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"}
+      "additionalType": {"subPropertyOf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"},
+      "blogPosts": {"multipleValues": "list"},
+      "breadcrumb": {"multipleValues": "list"},
+      "byArtist": {"multipleValues": "list"},
+      "creator": {"multipleValues": "list"},
+      "episode": {"multipleValues": "list"},
+      "episodes": {"multipleValues": "list"},
+      "event": {"multipleValues": "list"},
+      "events": {"multipleValues": "list"},
+      "founder": {"multipleValues": "list"},
+      "founders": {"multipleValues": "list"},
+      "itemListElement": {"multipleValues": "list"},
+      "musicGroupMember": {"multipleValues": "list"},
+      "performerIn": {"multipleValues": "list"},
+      "actor": {"multipleValues": "list"},
+      "actors": {"multipleValues": "list"},
+      "performer": {"multipleValues": "list"},
+      "performers": {"multipleValues": "list"},
+      "producer": {"multipleValues": "list"},
+      "recipeInstructions": {"multipleValues": "list"},
+      "season": {"multipleValues": "list"},
+      "seasons": {"multipleValues": "list"},
+      "subEvent": {"multipleValues": "list"},
+      "subEvents": {"multipleValues": "list"},
+      "track": {"multipleValues": "list"},
+      "tracks": {"multipleValues": "list"}
     }
   },
-  "http://xmlns.com/foaf/0.1/": {
-    "propertyURI"    : "vocabulary",
-    "multipleValues" : "unordered"
-  },
   "http://microformats.org/profile/hcard": {
-    "propertyURI"    : "vocabulary",
-    "multipleValues" : "unordered"
+    "propertyURI":    "vocabulary",
+    "multipleValues": "unordered"
   },
   "http://microformats.org/profile/hcalendar#": {
-    "propertyURI"    : "vocabulary",
-    "multipleValues" : "unordered",
+    "propertyURI":    "vocabulary",
+    "multipleValues": "unordered",
     "properties": {
       "categories": {"multipleValues": "list"}
     }
@@ -63,10 +72,10 @@ _registry = """
 """
 
 vocab_names = {
-	"http://schema.org/"                         : "schema",
-	"http://xmlns.com/foaf/0.1/"     			       : "foaf",
-	"http://microformats.org/profile/hcard#"     : "hcard",
-	"http://microformats.org/profile/hcalendar#" : "hcalendar"
+  "http://schema.org/"                         : "schema",
+  "http://xmlns.com/foaf/0.1/"                 : "foaf",
+  "http://microformats.org/profile/hcard#"     : "hcard",
+  "http://microformats.org/profile/hcalendar#" : "hcalendar"
 }
 
 # This is the local version, added mainly for testing
@@ -115,41 +124,12 @@ _myRegistry = """
 registry   = []
 myRegistry = []
 if py_v_major >= 3 or (py_v_major == 2 and py_v_minor >= 6) :
-	import json
-	registry   = json.loads(_registry)
-	myRegistry = json.loads(_myRegistry)
+  import json
+  registry   = json.loads(_registry)
+  myRegistry = json.loads(_myRegistry)
 else :
-	import simplejson
-	registry   = simplejson.loads(_registry)
-	myRegistry = simplejson.loads(_myRegistry)
+  import simplejson
+  registry   = simplejson.loads(_registry)
+  myRegistry = simplejson.loads(_myRegistry)
 
 for (k,v) in list(myRegistry.items()) : registry[k] = v
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
