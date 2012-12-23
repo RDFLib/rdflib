@@ -1144,8 +1144,8 @@ class ConjunctiveGraph(Graph):
                     location=location, file=file, data=data, format=format)
 
         #id = self.context_id(self.absolutize(source.getPublicId()))
-        context = Graph(store=self.store, identifier=
-          publicID and URIRef(publicID) or source.getPublicId())
+        g_id = URIRef(publicID and publicID or source.getPublicId())
+        context = Graph(store=self.store, identifier=g_id)
         context.remove((None, None, None))
         context.parse(source, publicID=publicID, format=format,
                       location=location, file=file, data=data, **args)
