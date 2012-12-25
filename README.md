@@ -44,7 +44,7 @@ exist). New Namespaces can also be defined:
 
 dbpedia=Namespace('http://dbpedia.org/ontology/')
 
-abstracts=list(a for x in g.objects(semweb, dbpedia['abstract']) if a.language=='en')
+abstracts=list(x for x in g.objects(semweb, dbpedia['abstract']) if x.language=='en')
 ```
 
 See also *./examples*
