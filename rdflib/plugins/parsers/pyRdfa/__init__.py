@@ -488,7 +488,8 @@ class pyRdfa :
 		
 		# Create the initial state. This takes care of things
 		# like base, top level namespace settings, etc.
-		state = ExecutionContext(topElement, default_graph, base=self.base, options=self.options, rdfa_version=self.rdfa_version)
+		state = ExecutionContext(topElement, default_graph, base=self.required_base if self.required_base != None else "", options=self.options, rdfa_version=self.rdfa_version)
+		#state = ExecutionContext(topElement, default_graph, base=self.base, options=self.options, rdfa_version=self.rdfa_version)
 
 		# Perform the built-in and external transformations on the HTML tree. 
 		for trans in self.options.transformers + builtInTransformers :
