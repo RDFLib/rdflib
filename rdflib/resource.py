@@ -74,8 +74,8 @@ Retrieve some basic facts::
 
 Resources as unicode are represented by their identifiers as unicode::
 
-    >>> %(unicode)s(person)
-    %(u)s'http://example.org/person/some1#self'
+    >>> %(unicode)s(person)  #doctest: +SKIP
+    %(u)s'Resource(http://example.org/person/some1#self'
 
 Resource references are also Resources, so you can easily get e.g. a qname
 for the type of a resource, like::
