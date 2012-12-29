@@ -22,7 +22,7 @@ def test_graph_ids():
 
     yield check, dict(data=DATA, publicID=PUBLIC_ID, format="turtle")
 
-    source = StringInputSource(DATA)
+    source = StringInputSource(DATA.encode('utf8'))
     source.setPublicId(PUBLIC_ID)
     yield check, dict(source=source, format='turtle')
 
