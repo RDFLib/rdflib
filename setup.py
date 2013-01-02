@@ -7,9 +7,12 @@ def setup_python3():
     # Taken from "distribute" setup.py
     from distutils.filelist import FileList
     from distutils import dir_util, file_util, util, log
-    from os.path import join
+    from os.path import join, exists
 
     tmp_src = join("build", "src")
+    # Not covered
+    if exists(tmp_src):
+        dir_util.remove_tree(tmp_src)
     log.set_verbosity(1)
     fl = FileList()
     for line in open("MANIFEST.in"):
