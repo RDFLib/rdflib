@@ -544,8 +544,10 @@ class pyRdfa :
 			if options.output_processor_graph :
 				for t in options.processor_graph.graph :
 					tog.add(t)
+					if pgraph != None : pgraph.add(t)
 				for k,ns in options.processor_graph.graph.namespaces() :
 					tog.bind(k,ns)
+					if pgraph != None : pgraph.bind(k,ns)
 			options.reset_processor_graph()
 			return tog		
 

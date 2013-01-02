@@ -113,11 +113,7 @@ class RDFaParser(Parser) :
 							  rdfa_version = rdfa_version)
 		processor.graph_from_source(orig_source, graph=graph, pgraph=processor_graph, rdfOutput=False)
 		# This may result in an exception if the graph parsing led to an error
-		# At this moment, the only Error that is defined is a parsing error for, say, XHTML, and this is 
-		# actually returned as part of the output graph. So the extra check for processor_graph is
-		# not strictly necessary, but it leaves the door open if other types of errors are added.
 		_check_error(processor_graph)
-		_check_error(graph)
 
 class RDFa10Parser(Parser) :
 	"""
