@@ -11,7 +11,7 @@ U{W3C SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/2002/
 """
 
 """
-$Id: options.py,v 1.16 2012/08/20 14:14:14 ivan Exp $ $Date: 2012/08/20 14:14:14 $
+$Id: options.py,v 1.19 2013-01-07 12:46:43 ivan Exp $ $Date: 2013-01-07 12:46:43 $
 """
 
 import sys, datetime
@@ -33,6 +33,7 @@ else :
 from .host 	import HostLanguage, MediaTypes, content_to_host_language, predefined_1_0_rel, require_embedded_rdf
 from .		import ns_xsd, ns_distill, ns_rdfa
 from . 		import RDFA_Error, RDFA_Warning, RDFA_Info
+from .transform.lite import lite_prune
 
 ns_dc = Namespace("http://purl.org/dc/terms/")
 ns_ht = Namespace("http://www.w3.org/2006/http#")
@@ -149,6 +150,9 @@ class Options :
 	@type content_type: string (logically: an enumeration)
 	
 	@ivar add_informational_messages: whether informational messages should also be added to the processor graph, or only errors and warnings
+
+	@ivar experimental_features: whether experimental features should be activated; that is a developer's option...
+	@ivar check_lite: whether RDFa Lite should be checked, to generate warnings.
 	"""
 	def __init__(self, output_default_graph       = True,
 					   output_processor_graph     = False,
@@ -159,7 +163,10 @@ class Options :
 					   vocab_cache                = True,
 					   vocab_cache_report         = False,
 					   refresh_vocab_cache        = False,
-					   add_informational_messages = False) :
+					   add_informational_messages = False,
+					   check_lite                 = False,
+					   experimental_features      = False
+					   ) :
 		self.space_preserve 		    = space_preserve
 		self.transformers   		    = transformers
 		self.processor_graph  		    = ProcessorGraph() 
@@ -172,6 +179,10 @@ class Options :
 		self.vocab_expansion		    = vocab_expansion
 		self.vocab_cache			    = vocab_cache
 		self.add_informational_messages = add_informational_messages
+		self.check_lite                 = check_lite
+		if check_lite :
+			self.transformers.append(lite_prune)
+		self.experimental_features      = experimental_features
 			
 	def set_host_language(self, content_type) :
 		"""
