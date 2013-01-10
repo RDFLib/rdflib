@@ -430,7 +430,7 @@ class RDFXMLHandler(handler.ContentHandler):
                                 #parseTypeOtherPropertyElt
                     object = Literal("", datatype=RDF.XMLLiteral)
                     current.char = self.literal_element_char
-                    current.declared = {}
+                    current.declared = {XMLNS: 'xml'}
                     next.start = self.literal_element_start
                     next.char = self.literal_element_char
                     next.end = self.literal_element_end
