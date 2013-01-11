@@ -26,8 +26,8 @@ try:
 except ImportError:
     import warnings
     warnings.warn(
-        'html5lib not found! RDFa and Microdata parsers will not be available.'
-        )
+        'html5lib not found! RDFa and Microdata parsers ' +
+        'will not be available.')
     html5lib = False
 
 
@@ -87,9 +87,9 @@ class HTurtleParser(Parser):
         suffix of a file
         @type media_type: string
         """
-        if html5lib == False:
+        if html5lib is False:
             raise ImportError(
-                'html5lib is not installed, cannot ' + \
+                'html5lib is not installed, cannot ' +
                 'use RDFa and Microdata parsers.')
 
         (baseURI, orig_source) = _get_orig_source(source)

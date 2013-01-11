@@ -25,6 +25,7 @@ fired:
 
 __all__ = ['Event', 'Dispatcher']
 
+
 class Event(object):
     """
     An event is a container for attributes.  The source of an event
@@ -83,6 +84,7 @@ class Dispatcher(object):
                 raise ValueError("unknown event type: %s" % type(event))
             for l in lst:
                 l(event)
+
 
 def test():
     import doctest

@@ -3,8 +3,8 @@ Notation 3 (N3) RDF graph serializer for RDFLib.
 """
 from rdflib.graph import Graph
 from rdflib.namespace import Namespace, OWL
-from rdflib.plugins.serializers.turtle import (TurtleSerializer,
-        SUBJECT, VERB, OBJECT)
+from rdflib.plugins.serializers.turtle import (
+    TurtleSerializer, SUBJECT, OBJECT)
 
 __all__ = ['N3Serializer']
 
@@ -63,7 +63,7 @@ class N3Serializer(TurtleSerializer):
     def indent(self, modifier=0):
         indent = super(N3Serializer, self).indent(modifier)
         if self.parent is not None:
-            indent += self.parent.indent()#modifier)
+            indent += self.parent.indent()  # modifier)
         return indent
 
     def preprocessTriple(self, triple):
@@ -97,7 +97,7 @@ class N3Serializer(TurtleSerializer):
 
     def s_clause(self, subject):
         if isinstance(subject, Graph):
-            self.write('\n'+self.indent())
+            self.write('\n' + self.indent())
             self.p_clause(subject, SUBJECT)
             self.predicateList(subject)
             self.write(' .')
@@ -115,9 +115,7 @@ class N3Serializer(TurtleSerializer):
             serializer = N3Serializer(node, parent=self)
             serializer.serialize(self.stream)
             self.depth -= 1
-            self.write(self.indent()+'}')
+            self.write(self.indent() + '}')
             return True
         else:
             return False
-
-
