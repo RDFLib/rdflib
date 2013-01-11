@@ -1,0 +1,3 @@
+html5lib==0.95
+isodate==0.4.9
+

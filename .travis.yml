@@ -1,0 +1,19 @@
+# http://travis-ci.org/#!/RDFLib/rdflib
+language: python
+python:
+    - 2.5
+    - 2.6
+    - 2.7
+    - 3.2
+install:
+    - if [[ $TRAVIS_PYTHON_VERSION == '2.5' || $TRAVIS_PYTHON_VERSION == '2.6' || $TRAVIS_PYTHON_VERSION == '2.7' ]]; then pip install --use-mirrors "pyparsing<=1.5.7"; fi
+    - if [[ $TRAVIS_PYTHON_VERSION == '2.5' || $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install --use-mirrors ordereddict; fi
+    - if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then pip install --use-mirrors pyparsing; fi
+    - pip install -r requirements.txt --use-mirrors
+    - python setup.py install
+script:
+    # Must run the tests in build/src so python3 doesn't get confused and run
+    # the python2 code from the current directory instead of the installed
+    # 2to3 version in build/src.
+    - if [[ $TRAVIS_PYTHON_VERSION == '2.5' || $TRAVIS_PYTHON_VERSION == '2.6' || $TRAVIS_PYTHON_VERSION == '2.7' ]]; then nosetests; fi
+    - if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then nosetests --where=./build/src; fi
