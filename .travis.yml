@@ -9,6 +9,8 @@ python:
 
 install:
     - if [[ $TRAVIS_PYTHON_VERSION == '2.5' ]]; then pip install --use-mirrors "simplejson"; fi
+    # iodate0.4.8 is problematic with Pypy, use fixed version
+    - if [[ $TRAVIS_PYTHON_VERSION == 'pyPy' ]]; then pip install --use-mirrors "hg+https://bitbucket.org/gjhiggins/isodate"; fi
     - pip install -r requirements.txt --use-mirrors
     - python setup.py install
 script:
