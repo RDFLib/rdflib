@@ -42,9 +42,10 @@ def _get_orig_source(source) :
 
 def _check_error(graph) :
 	from .pyRdfa import RDFA_Error, ns_rdf
+	from .pyRdfa.options import ns_dc
 	for (s,p,o) in graph.triples((None, ns_rdf["type"], RDFA_Error)) :
-		for (x,y,msg) in graph.triples((s,None,None)) :
-			raise Exception(msg)
+		for (x,y,msg) in graph.triples((s,ns_dc["description"],None)) :
+			raise Exception("RDFa parsing Error! %s" % msg)
 
 
 # This is the parser interface as it would look when called from the rest of RDFLib
@@ -97,8 +98,10 @@ class RDFaParser(Parser) :
 			  rdfa_version    = None,
 			  embedded_rdf    = False,
 			  vocab_expansion = False, vocab_cache     = False) :
-		from .pyRdfa import pyRdfa, Options			
-		self.options = Options(output_processor_graph = (pgraph != None),
+		from .pyRdfa import pyRdfa, Options
+		from rdflib import Graph
+		processor_graph = pgraph if pgraph != None else Graph()			
+		self.options = Options(output_processor_graph = True,
 							   embedded_rdf           = embedded_rdf,
 							   vocab_expansion        = vocab_expansion,
 							   vocab_cache            = vocab_cache)
@@ -108,9 +111,9 @@ class RDFaParser(Parser) :
 							  base = baseURI, 
 							  media_type = media_type, 
 							  rdfa_version = rdfa_version)
-		processor.graph_from_source(orig_source, graph=graph, pgraph=pgraph, rdfOutput=False)
+		processor.graph_from_source(orig_source, graph=graph, pgraph=processor_graph, rdfOutput=False)
 		# This may result in an exception if the graph parsing led to an error
-		_check_error(graph)
+		_check_error(processor_graph)
 
 class RDFa10Parser(Parser) :
 	"""

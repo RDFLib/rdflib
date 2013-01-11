@@ -13,8 +13,8 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 
 """
-$Id: initialcontext.py,v 1.9 2012/09/27 18:10:44 ivan Exp $
-$Date: 2012/09/27 18:10:44 $
+$Id: initialcontext.py,v 1.10 2013-01-07 12:46:43 ivan Exp $
+$Date: 2013-01-07 12:46:43 $
 """
 
 class Wrapper :
