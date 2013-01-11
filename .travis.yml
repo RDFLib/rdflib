@@ -8,10 +8,10 @@ python:
     - "pypy"
 
 install:
-    - if [[ $TRAVIS_PYTHON_VERSION == '2.5' ]]; then pip install --use-mirrors "simplejson"; fi
     # iodate0.4.8 is problematic with Pypy, use fixed version
-    - if [[ $TRAVIS_PYTHON_VERSION == 'pyPy' ]]; then pip install --use-mirrors "hg+https://bitbucket.org/gjhiggins/isodate"; fi
+    - if [[ $TRAVIS_PYTHON_VERSION == '2.5' ]]; then pip install --use-mirrors "simplejson"; fi
     - pip install -r requirements.txt --use-mirrors
+    - if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then pip install --upgrade "https://bitbucket.org/gjhiggins/isodate/downloads/isodate-0.4.8.tar.gz"; fi
     - python setup.py install
 script:
     # Must run the tests in build/src so python3 doesn't get confused and run
@@ -19,3 +19,5 @@ script:
     # 2to3 version in build/src.
     - if [[ $TRAVIS_PYTHON_VERSION != '3.2' ]]; then nosetests; fi
     - if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then nosetests --where=./build/src; fi
+before_script:
+  - "flake8 --exclude=pyRdfa,host,extras,transform,rdfs,pyMicrodata --exit-zero rdflib"
