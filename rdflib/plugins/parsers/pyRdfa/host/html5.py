@@ -195,14 +195,6 @@ def html5_extra_attributes(node, state) :
 	elif node.tagName == "time" and not node.hasAttribute("content") :
 		# Note that a possible @datetime value has already been taken care of
 		_set_time( _get_literal(node) )
-
-	# It seems that the <data> element, and the related @value attribute, has been removed from HTML5,
-	# hence, it has been removed from the RDFa processing, too
-	# if node.hasAttribute("value") and not node.hasAttribute("content") :
-	# 	# state.supress_lang = True
-	# 	node.setAttribute("content", node.getAttribute("value"))
-	#elif node.hasAttribute("data") and not node.hasAttribute("src") :
-	#	node.setAttribute("src", node.getAttribute("data"))
 		
 def remove_rel(node, state):
 	"""

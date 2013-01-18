@@ -155,7 +155,7 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 
 """
- $Id: __init__.py,v 1.88 2013-01-07 12:46:43 ivan Exp $
+ $Id: __init__.py,v 1.89 2013-01-18 09:41:16 ivan Exp $
 """
 
 __version__ = "3.4.3"
@@ -172,6 +172,11 @@ else :
 	from StringIO import StringIO
 
 import os
+import xml.dom.minidom
+if PY3 :
+	from urllib.parse import urlparse
+else :
+	from urlparse import urlparse
 
 import rdflib
 from rdflib	import URIRef
@@ -183,21 +188,15 @@ if rdflib.__version__ >= "3.0.0" :
 	from rdflib	import RDFS as ns_rdfs
 	from rdflib	import Graph
 else :
-	from rdflib.RDFS	import RDFSNS as ns_rdfs
-	from rdflib.RDF		import RDFNS  as ns_rdf
+	from rdflib.RDFS  import RDFSNS as ns_rdfs
+	from rdflib.RDF	  import RDFNS  as ns_rdf
 	from rdflib.Graph import Graph
-
-from .extras.httpheader import acceptable_content_type, content_type
-
-import xml.dom.minidom
-
-if PY3 :
-	from urllib.parse import urlparse
-else :
-	from urlparse import urlparse
 
 # Namespace, in the RDFLib sense, for the rdfa vocabulary
 ns_rdfa		= Namespace("http://www.w3.org/ns/rdfa#")
+
+from .extras.httpheader   import acceptable_content_type, content_type
+from .transform.prototype import handle_prototypes
 
 # Vocabulary terms for vocab reporting
 RDFA_VOCAB  = ns_rdfa["usesVocabulary"]
@@ -500,16 +499,18 @@ class pyRdfa :
 		# is used by the recursion
 		# this function is the real workhorse
 		parse_one_node(topElement, default_graph, None, state, [])
+
+		# Massage the output graph in term of rdfa:Pattern and rdfa:copy
+		handle_prototypes(default_graph)
 		
 		# If the RDFS expansion has to be made, here is the place...
 		if self.options.vocab_expansion :
 			from .rdfs.process import process_rdfa_sem
 			process_rdfa_sem(default_graph, self.options)
 
-		# Experimental feature: prototype
+		# Experimental feature: nothing for now, this is kept as a placeholder
 		if self.options.experimental_features :
-			from transform.prototype import handle_prototypes
-			handle_prototypes(default_graph)
+			pass
 	
 		# What should be returned depends on the way the options have been set up
 		if self.options.output_default_graph :
