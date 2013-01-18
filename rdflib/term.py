@@ -1,6 +1,6 @@
 """
 This module defines the different types of terms. Terms are the kinds of
-objects that can appear in a quoted/asserted triple. This includes those 
+objects that can appear in a quoted/asserted triple. This includes those
 that are core to RDF:
 
 * Blank Nodes
@@ -12,7 +12,8 @@ Those that extend the RDF model into N3:
 * Formulae
 * Universal Quantifications (Variables)
 
-And those that are primarily for matching against 'Nodes' in the underlying Graph:
+And those that are primarily for matching against 'Nodes' in the
+underlying Graph:
 
 * REGEX Expressions
 * Date Ranges
@@ -22,7 +23,7 @@ And those that are primarily for matching against 'Nodes' in the underlying Grap
 
 __all__ = [
     'bind',
-    
+
     'Node',
     'Identifier',
 
@@ -32,7 +33,7 @@ __all__ = [
 
     'Variable',
     'Statement',
-    ]
+]
 
 import logging
 import warnings
@@ -47,7 +48,6 @@ from isodate import parse_time, parse_date, parse_datetime
 from re import sub
 
 
-
 try:
     from hashlib import md5
 except ImportError:
@@ -55,6 +55,7 @@ except ImportError:
 
 from . import py3compat
 b = py3compat.b
+
 
 class Node(object):
     """
@@ -64,7 +65,7 @@ class Node(object):
     __slots__ = ()
 
 
-class Identifier(Node, unicode): # we allow Identifiers to be Nodes in our Graph
+class Identifier(Node, unicode):  # allow Identifiers to be Nodes in the Graph
     """
     See http://www.w3.org/2002/07/rdf-identifer-terminology/
     regarding choice of terminology.
@@ -105,14 +106,16 @@ class URIRef(Identifier):
         return "<%s>" % self
 
     def concrete(self):
-        warnings.warn("URIRef.concrete is deprecated.", category=DeprecationWarning, stacklevel=2)
+        warnings.warn("URIRef.concrete is deprecated.",
+                      category=DeprecationWarning, stacklevel=2)
         if "#" in self:
             return URIRef("/".join(self.rsplit("#", 1)))
         else:
             return self
 
     def abstract(self):
-        warnings.warn("URIRef.abstract is deprecated.", category=DeprecationWarning, stacklevel=2)
+        warnings.warn("URIRef.abstract is deprecated.",
+                      category=DeprecationWarning, stacklevel=2)
         if "#" not in self:
             scheme, netloc, path, params, query, fragment = urlparse(self)
             if path:
@@ -124,7 +127,6 @@ class URIRef(Identifier):
                     return self
         else:
             return self
-
 
     def defrag(self):
         if "#" in self:
@@ -139,16 +141,15 @@ class URIRef(Identifier):
     def __getnewargs__(self):
         return (unicode(self), )
 
-
     def __ne__(self, other):
         return not self.__eq__(other)
 
     def __eq__(self, other):
         if isinstance(other, URIRef):
-            return unicode(self)==unicode(other)
+            return unicode(self) == unicode(other)
         else:
             return False
-    
+
     def __hash__(self):
         return hash(URIRef) ^ hash(unicode(self))
 
@@ -162,8 +163,7 @@ class URIRef(Identifier):
         else:
             clsName = self.__class__.__name__
 
-        return """%s(%s)""" % (clsName, super(URIRef,self).__repr__())
-        
+        return """%s(%s)""" % (clsName, super(URIRef, self).__repr__())
 
     def md5_term_hash(self):
         """a string of hex that will be the same for two URIRefs that
@@ -172,7 +172,10 @@ class URIRef(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
-        warnings.warn("method md5_term_hash is deprecated, and will be removed in the future. If you use this please let rdflib-dev know!", category=DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            "method md5_term_hash is deprecated, and will be removed " +
+            "in the future. If you use this please let rdflib-dev know!",
+            category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("U"))
         return d.hexdigest()
@@ -182,16 +185,17 @@ def _unique_id():
     # Used to read: """Create a (hopefully) unique prefix"""
     # now retained merely to leave interal API unchanged.
     # From BNode.__new__() below ...
-    # 
+    #
     # acceptable bnode value range for RDF/XML needs to be
     # something that can be serialzed as a nodeID for N3
-    # 
+    #
     # BNode identifiers must be valid NCNames" _:[A-Za-z][A-Za-z0-9]*
     # http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID
-    return "N" # ensure that id starts with a letter
+    return "N"  # ensure that id starts with a letter
 
 
-# Adapted from http://icodesnip.com/snippet/python/simple-universally-unique-id-uuid-or-guid
+# Adapted from http://icodesnip.com/snippet/python/
+# simple-universally-unique-id-uuid-or-guid
 def bnode_uuid():
     """
     Generates a uuid on behalf of Python 2.4
@@ -253,21 +257,19 @@ def _serial_number_generator():
 
 class BNode(Identifier):
     """
-    Blank Node: http://www.w3.org/TR/rdf-concepts/#section-blank-nodes    
+    Blank Node: http://www.w3.org/TR/rdf-concepts/#section-blank-nodes
 
     """
     __slots__ = ()
 
-
-    def __new__(cls, value=None, 
+    def __new__(cls, value=None,
                 _sn_gen=_serial_number_generator(), _prefix=_unique_id()):
         """
         # only store implementations should pass in a value
         """
-        if value==None:
-            # so that BNode values do not
-            # collide with ones created with a different instance of this module
-            # at some other time.
+        if value is None:
+            # so that BNode values do not collide with ones created with a
+            # different instance of this module at some other time.
             node_id = _sn_gen()
             value = "%s%s" % (_prefix, node_id)
         else:
@@ -275,7 +277,7 @@ class BNode(Identifier):
             # for RDF/XML needs to be something that can be serialzed
             # as a nodeID for N3 ??  Unless we require these
             # constraints be enforced elsewhere?
-            pass # assert is_ncname(unicode(value)), "BNode identifiers
+            pass  # assert is_ncname(unicode(value)), "BNode identifiers
                  # must be valid NCNames" _:[A-Za-z][A-Za-z0-9]*
                  # http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID
         return Identifier.__new__(cls, value)
@@ -309,10 +311,10 @@ class BNode(Identifier):
         True
         """
         if isinstance(other, BNode):
-            return unicode(self)==unicode(other)
+            return unicode(self) == unicode(other)
         else:
             return False
-    
+
     def __hash__(self):
         return hash(BNode) ^ hash(unicode(self))
 
@@ -334,7 +336,10 @@ class BNode(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
-        warnings.warn("method md5_term_hash is deprecated, and will be removed in the future. If you use this please let rdflib-dev know!", category=DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            "method md5_term_hash is deprecated, and will be removed " +
+            "in the future. If you use this please let rdflib-dev know!",
+            category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("B"))
         return d.hexdigest()
@@ -380,8 +385,8 @@ class Literal(Identifier):
     >>> "2005" < lit2006
     True
     >>> x = Literal("2", datatype=XSD.integer)
-    >>> x
-    rdflib.term.Literal(%(u)s'2', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
+    >>> x.n3()
+    %(u)s'"2"^^<http://www.w3.org/2001/XMLSchema#integer>'
     >>> Literal(x) == x
     True
     >>> x = Literal("cake", lang="en")
@@ -393,18 +398,20 @@ class Literal(Identifier):
     __doc__ = py3compat.format_doctest_out(doc)
 
     if not py3compat.PY3:
-        __slots__ = ("language", "datatype", "_language", "_datatype", "_cmp_value")
+        __slots__ = (
+            "language", "datatype", "_language", "_datatype", "_cmp_value")
     else:
         __slots__ = ("_language", "_datatype", "_cmp_value")
 
     def __new__(cls, value, lang=None, datatype=None):
         if lang is not None and datatype is not None:
-            raise TypeError("A Literal can only have one of lang or datatype, "
-               "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal")
+            raise TypeError(
+                "A Literal can only have one of lang or datatype, "
+                "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal")
 
-        if isinstance(value, Literal): # create from another Literal instance
-            datatype=datatype or value.datatype
-            lang=lang or value.language
+        if isinstance(value, Literal):  # create from another Literal instance
+            datatype = datatype or value.datatype
+            lang = lang or value.language
 
         if datatype:
             lang = None
@@ -426,11 +433,12 @@ class Literal(Identifier):
         return inst
 
     @property
-    def language(self): return self._language
-    
-    @property 
-    def datatype(self): return self._datatype
+    def language(self):
+        return self._language
 
+    @property
+    def datatype(self):
+        return self._datatype
 
     def __reduce__(self):
         return (Literal, (unicode(self), self.language, self.datatype),)
@@ -469,19 +477,19 @@ class Literal(Identifier):
         >>> from rdflib.namespace import XSD
         >>> (- Literal("1", datatype=XSD['integer']))
         -1%(L)s
-        
+
         Not working:
         #>>> (- Literal("1"))
         #Traceback (most recent call last):
         #  File "<stdin>", line 1, in <module>
         #TypeError: Not a number; rdflib.term.Literal(u'1')
-        >>> 
+        >>>
         """
 
         py = self.toPython()
         try:
             return py.__neg__()
-        except Exception, e:
+        except Exception:
             raise TypeError("Not a number; %s" % repr(self))
 
     @py3compat.format_doctest_out
@@ -494,7 +502,7 @@ class Literal(Identifier):
         >>> from rdflib.namespace import XSD
         >>> (+ Literal("-1", datatype=XSD['integer']))
         -1%(L)s
-        
+
         Not working in Python 3:
         #>>> (+ Literal("1"))
         #Traceback (most recent call last):
@@ -504,7 +512,7 @@ class Literal(Identifier):
         py = self.toPython()
         try:
             return py.__pos__()
-        except Exception, e:
+        except Exception:
             raise TypeError("Not a number; %s" % repr(self))
 
     @py3compat.format_doctest_out
@@ -515,7 +523,7 @@ class Literal(Identifier):
         >>> from rdflib.namespace import XSD
         >>> abs( Literal("-1", datatype=XSD['integer']))
         1%(L)s
-        
+
         Not working in Python 3:
         #>>> abs(Literal("1"))
         #Traceback (most recent call last):
@@ -525,7 +533,7 @@ class Literal(Identifier):
         py = self.toPython()
         try:
             return py.__abs__()
-        except Exception, e:
+        except Exception:
             raise TypeError("Not a number; %s" % repr(self))
 
     @py3compat.format_doctest_out
@@ -536,13 +544,13 @@ class Literal(Identifier):
         >>> from rdflib.namespace import XSD
         >>> ~( Literal("-1", datatype=XSD['integer']))
         0%(L)s
-        
+
         Not working:
         #>>> ~(Literal("1"))
         #Traceback (most recent call last):
         #  File "<stdin>", line 1, in <module>
         #TypeError: Not a number; rdflib.term.Literal(u'1')
-        >>> 
+        >>>
         """
         py = self.toPython()
         try:
@@ -558,12 +566,15 @@ class Literal(Identifier):
         True
         >>> %(u)s"\xfe" < Literal(%(u)s"foo")
         False
-        >>> Literal(base64.encodestring(%(u)s"\xfe".encode("utf-8")), datatype=URIRef("http://www.w3.org/2001/XMLSchema#base64Binary")) < %(u)s"foo"
+        >>> Literal(base64.encodestring(%(u)s"\xfe".encode("utf-8")),
+        ...     datatype=URIRef(
+        ...         "http://www.w3.org/2001/XMLSchema#base64Binary")
+        ...          ) < %(u)s"foo"
         False
         """
 
         if other is None:
-            return False # Nothing is less than None
+            return False  # Nothing is less than None
         try:
             return self._cmp_value < other
         except UnicodeDecodeError, ue:
@@ -573,7 +584,8 @@ class Literal(Identifier):
                 raise ue
         except TypeError:
             try:
-                # On Python 3, comparing bytes/str is a TypeError, not a UnicodeError
+                # On Python 3, comparing bytes/str is a TypeError,
+                # not a UnicodeError
                 if isinstance(self._cmp_value, py3compat.bytestype):
                     return self._cmp_value < other.encode("utf-8")
                 return unicode(self._cmp_value) < other
@@ -584,19 +596,20 @@ class Literal(Identifier):
     def __le__(self, other):
         """
         >>> from rdflib.namespace import XSD
-        >>> Literal('2007-01-01T10:00:00', datatype=XSD.dateTime) <= Literal('2007-01-01T10:00:00', datatype=XSD.dateTime)
+        >>> Literal('2007-01-01T10:00:00', datatype=XSD.dateTime
+        ...     ) <= Literal('2007-01-01T10:00:00', datatype=XSD.dateTime)
         True
         """
         if other is None:
             return False
-        if self==other:
+        if self == other:
             return True
         else:
             return self < other
 
     def __gt__(self, other):
         if other is None:
-            return True # Everything is greater than None
+            return True  # Everything is greater than None
         try:
             return self._cmp_value > other
         except UnicodeDecodeError, ue:
@@ -606,7 +619,8 @@ class Literal(Identifier):
                 raise ue
         except TypeError:
             try:
-                # On Python 3, comparing bytes/str is a TypeError, not a UnicodeError
+                # On Python 3, comparing bytes/str is a TypeError, not a
+                # UnicodeError
                 if isinstance(self._cmp_value, py3compat.bytestype):
                     return self._cmp_value > other.encode("utf-8")
                 return unicode(self._cmp_value) > other
@@ -617,7 +631,7 @@ class Literal(Identifier):
     def __ge__(self, other):
         if other is None:
             return False
-        if self==other:
+        if self == other:
             return True
         else:
             return self > other
@@ -642,28 +656,31 @@ class Literal(Identifier):
         >>> Literal('1', datatype=XSD.double) in a
         False
 
-        
-        "Called for the key object for dictionary operations, 
-        and by the built-in function hash(). Should return 
-        a 32-bit integer usable as a hash value for 
-        dictionary operations. The only required property 
-        is that objects which compare equal have the same 
-        hash value; it is advised to somehow mix together 
-        (e.g., using exclusive or) the hash values for the 
-        components of the object that also play a part in 
+
+        "Called for the key object for dictionary operations,
+        and by the built-in function hash(). Should return
+        a 32-bit integer usable as a hash value for
+        dictionary operations. The only required property
+        is that objects which compare equal have the same
+        hash value; it is advised to somehow mix together
+        (e.g., using exclusive or) the hash values for the
+        components of the object that also play a part in
         comparison of objects." -- 3.4.1 Basic customization (Python)
 
         "Two literals are equal if and only if all of the following hold:
-        * The strings of the two lexical forms compare equal, character by character.
+        * The strings of the two lexical forms compare equal, character by
+          character.
         * Either both or neither have language tags.
         * The language tags, if any, compare equal.
         * Either both or neither have datatype URIs.
-        * The two datatype URIs, if any, compare equal, character by character."
+        * The two datatype URIs, if any, compare equal, character by
+          character."
         -- 6.5.1 Literal Equality (RDF: Concepts and Abstract Syntax)
 
         """
-        
-        return Identifier.__hash__(self) ^ hash(self.language) ^ hash(self.datatype)
+
+        return Identifier.__hash__(self) \
+            ^ hash(self.language) ^ hash(self.datatype)
 
     @py3compat.format_doctest_out
     def __eq__(self, other):
@@ -671,14 +688,17 @@ class Literal(Identifier):
         >>> f = URIRef("foo")
         >>> f is None or f == ''
         False
-        >>> Literal("1", datatype=URIRef("foo")) == Literal("1", datatype=URIRef("foo"))
+        >>> Literal("1", datatype=URIRef("foo")) == Literal(
+        ...     "1", datatype=URIRef("foo"))
         True
-        >>> Literal("1", datatype=URIRef("foo")) == Literal("2", datatype=URIRef("foo"))
+        >>> Literal("1", datatype=URIRef("foo")) == Literal(
+        ...     "2", datatype=URIRef("foo"))
         False
         >>> Literal("1", datatype=URIRef("foo")) == "asdf"
         False
         >>> from rdflib.namespace import XSD
-        >>> Literal('2007-01-01', datatype=XSD.date) == Literal('2007-01-01', datatype=XSD.date)
+        >>> Literal('2007-01-01', datatype=XSD.date) == Literal(
+        ...     '2007-01-01', datatype=XSD.date)
         True
         >>> Literal('2007-01-01', datatype=XSD.date) == date(2007, 1, 1)
         True
@@ -795,7 +815,8 @@ class Literal(Identifier):
             >>> Literal(0.123456789)._literal_n3(use_plain=True)
             %(u)s'1.234568e-01'
 
-            >>> Literal('0.123456789', datatype=XSD.decimal)._literal_n3(use_plain=True)
+            >>> Literal('0.123456789',
+            ...     datatype=XSD.decimal)._literal_n3(use_plain=True)
             %(u)s'0.123456789'
 
         Using callback for datatype QNames::
@@ -807,18 +828,18 @@ class Literal(Identifier):
         '''
         if use_plain and self.datatype in _PLAIN_LITERAL_TYPES:
             try:
-                self.toPython() # check validity
-                # this is a bit of a mess - 
+                self.toPython()  # check validity
+                # this is a bit of a mess -
                 # in py >=2.6 the string.format function makes this easier
                 # we try to produce "pretty" output
-                if self.datatype == _XSD_DOUBLE: 
-                    return sub("\\.?0*e","e", u'%e' % float(self))
+                if self.datatype == _XSD_DOUBLE:
+                    return sub("\\.?0*e", "e", u'%e' % float(self))
                 elif self.datatype == _XSD_DECIMAL:
                     return unicode(self._cmp_value)
                 else:
                     return u'%s' % self
             except ValueError:
-                pass # if it's in, we let it out?
+                pass  # if it's in, we let it out?
 
         encoded = self._quote_encode()
 
@@ -856,14 +877,18 @@ class Literal(Identifier):
             encoded = self.replace('\\', '\\\\')
             if '"""' in self:
                 # is this ok?
-                encoded = encoded.replace('"""','\\"\\"\\"')
-            if encoded[-1]=='"' and encoded[-2]!='\\': 
-                encoded=encoded[:-1]+'\\'+'"'
-                
-            return '"""%s"""' % encoded.replace('\r','\\r')
+                encoded = encoded.replace('"""', '\\"\\"\\"')
+            if encoded[-1] == '"' and encoded[-2] != '\\':
+                encoded = encoded[:-1] + '\\' + '"'
+
+            return '"""%s"""' % encoded.replace('\r', '\\r')
         else:
-            return '"%s"' % self.replace('\n','\\n').replace('\\', '\\\\'
-                            ).replace('"', '\\"').replace('\r','\\r')
+            return '"%s"' % \
+                self.replace(
+                    '\n', '\\n').replace(
+                        '\\', '\\\\').replace(
+                            '"', '\\"').replace(
+                                '\r', '\\r')
 
     if not py3compat.PY3:
         def __str__(self):
@@ -896,8 +921,8 @@ class Literal(Identifier):
     def _toCompareValue(self):
         try:
             rt = self.toPython()
-        except Exception, e:
-            _LOGGER.warning("could not convert %s to a Python datatype" % 
+        except Exception:
+            _LOGGER.warning("could not convert %s to a Python datatype" %
                             repr(self))
             rt = self
 
@@ -915,23 +940,25 @@ class Literal(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
-        warnings.warn("method md5_term_hash is deprecated, and will be removed in the future. If you use this please let rdflib-dev know!", category=DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            "method md5_term_hash is deprecated, and will be removed " +
+            "in the future. If you use this please let rdflib-dev know!",
+            category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("L"))
         return d.hexdigest()
 
 
-
 _XSD_PFX = 'http://www.w3.org/2001/XMLSchema#'
 
-_XSD_FLOAT = URIRef(_XSD_PFX+'float')
-_XSD_DOUBLE = URIRef(_XSD_PFX+'double')
-_XSD_DECIMAL = URIRef(_XSD_PFX+'decimal')
+_XSD_FLOAT = URIRef(_XSD_PFX + 'float')
+_XSD_DOUBLE = URIRef(_XSD_PFX + 'double')
+_XSD_DECIMAL = URIRef(_XSD_PFX + 'decimal')
 
 
 _PLAIN_LITERAL_TYPES = (
-    URIRef(_XSD_PFX+'integer'),
-    URIRef(_XSD_PFX+'boolean'),
+    URIRef(_XSD_PFX + 'integer'),
+    URIRef(_XSD_PFX + 'boolean'),
     _XSD_DOUBLE,
     _XSD_DECIMAL,
 )
@@ -942,7 +969,7 @@ def _castPythonToLiteral(obj):
     Casts a python datatype to a tuple of the lexical value and a
     datatype URI (or None)
     """
-    for pType,(castFunc,dType) in _PythonToXSD:
+    for pType, (castFunc, dType) in _PythonToXSD:
         if isinstance(obj, pType):
             if castFunc:
                 return castFunc(obj), dType
@@ -950,60 +977,62 @@ def _castPythonToLiteral(obj):
                 return obj, dType
             else:
                 return obj, None
-    return obj, None # TODO: is this right for the fall through case?
+    return obj, None  # TODO: is this right for the fall through case?
 
 from decimal import Decimal
 
 # Mappings from Python types to XSD datatypes and back (burrowed from sparta)
 # datetime instances are also instances of date... so we need to order these.
 
-# SPARQL/Turtle/N3 has shortcuts for int, double, decimal 
+# SPARQL/Turtle/N3 has shortcuts for int, double, decimal
 # python has only float - to be in tune with sparql/n3/turtle
 # we default to XSD.double for float literals
 
 _PythonToXSD = [
     (basestring, (None, None)),
-    (float     , (None, URIRef(_XSD_PFX+'double'))),
-    (bool      , (lambda i:str(i).lower(), URIRef(_XSD_PFX+'boolean'))),
-    (int       , (None, URIRef(_XSD_PFX+'integer'))),
-    (long      , (None, URIRef(_XSD_PFX+'integer'))),
-    (Decimal   , (None, URIRef(_XSD_PFX+'decimal'))),
-    (datetime  , (lambda i:i.isoformat(), URIRef(_XSD_PFX+'dateTime'))),
-    (date      , (lambda i:i.isoformat(), URIRef(_XSD_PFX+'date'))),
-    (time      , (lambda i:i.isoformat(), URIRef(_XSD_PFX+'time'))),
+    (float, (None, URIRef(_XSD_PFX + 'double'))),
+    (bool, (lambda i:str(i).lower(), URIRef(_XSD_PFX + 'boolean'))),
+    (int, (None, URIRef(_XSD_PFX + 'integer'))),
+    (long, (None, URIRef(_XSD_PFX + 'integer'))),
+    (Decimal, (None, URIRef(_XSD_PFX + 'decimal'))),
+    (datetime, (lambda i:i.isoformat(), URIRef(_XSD_PFX + 'dateTime'))),
+    (date, (lambda i:i.isoformat(), URIRef(_XSD_PFX + 'date'))),
+    (time, (lambda i:i.isoformat(), URIRef(_XSD_PFX + 'time'))),
 ]
 
 XSDToPython = {
-    URIRef(_XSD_PFX+'time')               : parse_time,
-    URIRef(_XSD_PFX+'date')               : parse_date,
-    URIRef(_XSD_PFX+'dateTime')           : parse_datetime,
-    URIRef(_XSD_PFX+'string')             : None,
-    URIRef(_XSD_PFX+'normalizedString')   : None,
-    URIRef(_XSD_PFX+'token')              : None,
-    URIRef(_XSD_PFX+'language')           : None,
-    URIRef(_XSD_PFX+'boolean')            : lambda i:i.lower() in ['1','true'],
-    URIRef(_XSD_PFX+'decimal')            : Decimal,
-    URIRef(_XSD_PFX+'integer')            : long,
-    URIRef(_XSD_PFX+'nonPositiveInteger') : int,
-    URIRef(_XSD_PFX+'long')               : long,
-    URIRef(_XSD_PFX+'nonNegativeInteger') : int,
-    URIRef(_XSD_PFX+'negativeInteger')    : int,
-    URIRef(_XSD_PFX+'int')                : long,
-    URIRef(_XSD_PFX+'unsignedLong')       : long,
-    URIRef(_XSD_PFX+'positiveInteger')    : int,
-    URIRef(_XSD_PFX+'short')              : int,
-    URIRef(_XSD_PFX+'unsignedInt')        : long,
-    URIRef(_XSD_PFX+'byte')               : int,
-    URIRef(_XSD_PFX+'unsignedShort')      : int,
-    URIRef(_XSD_PFX+'unsignedByte')       : int,
-    URIRef(_XSD_PFX+'float')              : float,
-    URIRef(_XSD_PFX+'double')             : float,
-    URIRef(_XSD_PFX+'base64Binary')       : lambda s: base64.b64decode(py3compat.b(s)),
-    URIRef(_XSD_PFX+'anyURI')             : None,
+    URIRef(_XSD_PFX + 'time'): parse_time,
+    URIRef(_XSD_PFX + 'date'): parse_date,
+    URIRef(_XSD_PFX + 'dateTime'): parse_datetime,
+    URIRef(_XSD_PFX + 'string'): None,
+    URIRef(_XSD_PFX + 'normalizedString'): None,
+    URIRef(_XSD_PFX + 'token'): None,
+    URIRef(_XSD_PFX + 'language'): None,
+    URIRef(_XSD_PFX + 'boolean'): lambda i: i.lower() in ['1', 'true'],
+    URIRef(_XSD_PFX + 'decimal'): Decimal,
+    URIRef(_XSD_PFX + 'integer'): long,
+    URIRef(_XSD_PFX + 'nonPositiveInteger'): int,
+    URIRef(_XSD_PFX + 'long'): long,
+    URIRef(_XSD_PFX + 'nonNegativeInteger'): int,
+    URIRef(_XSD_PFX + 'negativeInteger'): int,
+    URIRef(_XSD_PFX + 'int'): long,
+    URIRef(_XSD_PFX + 'unsignedLong'): long,
+    URIRef(_XSD_PFX + 'positiveInteger'): int,
+    URIRef(_XSD_PFX + 'short'): int,
+    URIRef(_XSD_PFX + 'unsignedInt'): long,
+    URIRef(_XSD_PFX + 'byte'): int,
+    URIRef(_XSD_PFX + 'unsignedShort'): int,
+    URIRef(_XSD_PFX + 'unsignedByte'): int,
+    URIRef(_XSD_PFX + 'float'): float,
+    URIRef(_XSD_PFX + 'double'): float,
+    URIRef(
+        _XSD_PFX + 'base64Binary'): lambda s: base64.b64decode(py3compat.b(s)),
+    URIRef(_XSD_PFX + 'anyURI'): None,
 }
 
 _toPythonMapping = {}
 _toPythonMapping.update(XSDToPython)
+
 
 def bind(datatype, conversion_function):
     """
@@ -1011,20 +1040,22 @@ def bind(datatype, conversion_function):
     instance.
     """
     if datatype in _toPythonMapping:
-        _LOGGER.warning("datatype '%s' was already bound. Rebinding." % 
+        _LOGGER.warning("datatype '%s' was already bound. Rebinding." %
                         datatype)
     _toPythonMapping[datatype] = conversion_function
-
 
 
 class Variable(Identifier):
     """
     """
     __slots__ = ()
+
     def __new__(cls, value):
-        if len(value)==0: raise Exception("Attempted to create variable with empty string as name!")
-        if value[0]=='?':
-            value=value[1:]
+        if len(value) == 0:
+            raise Exception(
+                "Attempted to create variable with empty string as name!")
+        if value[0] == '?':
+            value = value[1:]
         return unicode.__new__(cls, value)
 
     def __repr__(self):
@@ -1046,7 +1077,10 @@ class Variable(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
-        warnings.warn("method md5_term_hash is deprecated, and will be removed in the future. If you use this please let rdflib-dev know!", category=DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            "method md5_term_hash is deprecated, and will be removed " +
+            "in the future. If you use this please let rdflib-dev know!",
+            category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("V"))
         return d.hexdigest()
@@ -1055,7 +1089,10 @@ class Variable(Identifier):
 class Statement(Node, tuple):
 
     def __new__(cls, (subject, predicate, object), context):
-        warnings.warn("Class Statement is deprecated, and will be removed in the future. If you use this please let rdflib-dev know!", category=DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            "Class Statement is deprecated, and will be removed in " +
+            "the future. If you use this please let rdflib-dev know!",
+            category=DeprecationWarning, stacklevel=2)
         return tuple.__new__(cls, ((subject, predicate, object), context))
 
     def __reduce__(self):
@@ -1068,4 +1105,3 @@ class Statement(Node, tuple):
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
-

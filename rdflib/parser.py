@@ -25,7 +25,10 @@ from rdflib import __version__
 from rdflib.term import URIRef
 from rdflib.namespace import Namespace
 
-__all__ = ['Parser', 'InputSource', 'StringInputSource', 'URLInputSource', 'FileInputSource']
+__all__ = [
+    'Parser', 'InputSource', 'StringInputSource',
+    'URLInputSource', 'FileInputSource']
+
 
 class Parser(object):
 
@@ -61,8 +64,9 @@ class StringInputSource(InputSource):
 
 
 headers = {
-    'User-agent': 'rdflib-%s (http://rdflib.net/; eikeon@eikeon.com)' % __version__
-    }
+    'User-agent':
+    'rdflib-%s (http://rdflib.net/; eikeon@eikeon.com)' % __version__
+}
 
 
 class URLInputSource(InputSource):
@@ -75,16 +79,18 @@ class URLInputSource(InputSource):
         self.url = system_id
 
         # copy headers to change
-        myheaders=dict(headers)
-        if format=='application/rdf+xml':                 
-            myheaders['Accept']='application/rdf+xml, */*;q=0.1'
-        elif format=='n3':
-            myheaders['Accept']='text/n3, */*;q=0.1'
-        elif format=='nt':
-            myheaders['Accept']='text/plain, */*;q=0.1'
-        else: 
-            myheaders['Accept']='application/rdf+xml,text/rdf+n3;q=0.9,application/xhtml+xml;q=0.5, */*;q=0.1'
-        
+        myheaders = dict(headers)
+        if format == 'application/rdf+xml':
+            myheaders['Accept'] = 'application/rdf+xml, */*;q=0.1'
+        elif format == 'n3':
+            myheaders['Accept'] = 'text/n3, */*;q=0.1'
+        elif format == 'nt':
+            myheaders['Accept'] = 'text/plain, */*;q=0.1'
+        else:
+            myheaders['Accept'] = (
+                'application/rdf+xml,text/rdf+n3;q=0.9,' +
+                'application/xhtml+xml;q=0.5, */*;q=0.1')
+
         req = Request(system_id, None, myheaders)
         file = urlopen(req)
         # Fix for issue 130 https://github.com/RDFLib/rdflib/issues/130
@@ -113,7 +119,7 @@ class FileInputSource(InputSource):
         # TODO: self.setEncoding(encoding)
 
     def __repr__(self):
-        return `self.file`
+        return repr(self.file)
 
 
 def create_input_source(source=None, publicID=None,
@@ -141,9 +147,10 @@ def create_input_source(source=None, publicID=None,
                 if hasattr(f, "name"):
                     input_source.setSystemId(f.name)
             else:
-                raise Exception("Unexpected type '%s' for source '%s'" % (type(source), source))
+                raise Exception("Unexpected type '%s' for source '%s'" %
+                                (type(source), source))
 
-    absolute_location = None # Further to fix for issue 130
+    absolute_location = None  # Further to fix for issue 130
 
     if location is not None:
         # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145
@@ -156,7 +163,7 @@ def create_input_source(source=None, publicID=None,
             file = open(filename, "rb")
         else:
             input_source = URLInputSource(absolute_location, format)
-        # publicID = publicID or absolute_location # Further to fix for issue 130
+        # publicID = publicID or absolute_location # More to fix for issue 130
 
     if file is not None:
         input_source = FileInputSource(file)
@@ -169,11 +176,9 @@ def create_input_source(source=None, publicID=None,
     if input_source is None:
         raise Exception("could not create InputSource")
     else:
-        if publicID is not None: # Further to fix for issue 130
+        if publicID is not None:  # Further to fix for issue 130
             input_source.setPublicId(publicID)
         # Further to fix for issue 130
         elif input_source.getPublicId() is None:
             input_source.setPublicId(absolute_location or "")
         return input_source
-
-

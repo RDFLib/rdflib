@@ -10,7 +10,7 @@ from rdflib.plugins.serializers.turtle import VERB
 from rdflib.term import BNode, Literal
 
 
-from rdflib.compat import defaultdict
+from collections import defaultdict
 
 
 __all__ = ['TrigSerializer']
@@ -55,7 +55,8 @@ class TrigSerializer(TurtleSerializer):
         super(TrigSerializer, self).reset()
         self._contexts = defaultdict(set)
 
-    def serialize(self, stream, base=None, encoding=None, spacious=None, **args):
+    def serialize(self, stream, base=None, encoding=None,
+                  spacious=None, **args):
         self.reset()
         self.stream = stream
         self.base = base

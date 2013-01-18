@@ -80,6 +80,10 @@ More information is available on the project webpage:
 
 https://github.com/RDFLib/rdflib/
 
+Continuous integration status details available from travis.ci:
+
+[![Build Status](https://travis-ci.org/RDFLib/rdflib.png?branch=master)](https://travis-ci.org/RDFLib/rdflib)
+
 The RDFExtras project offers several additional stores as well as a 
 SPARQL engine for use with RDFLib: 
 

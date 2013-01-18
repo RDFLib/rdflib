@@ -553,7 +553,7 @@ class pyRdfa :
 				for k,ns in options.processor_graph.graph.namespaces() :
 					tog.bind(k,ns)
 					if pgraph != None : pgraph.bind(k,ns)
- 			options.reset_processor_graph()
+			options.reset_processor_graph()
 			return tog		
 
 		# Separating this for a forward Python 3 compatibility

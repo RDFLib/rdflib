@@ -10,7 +10,7 @@ def setup_python3():
     from os.path import join, exists
 
     tmp_src = join("build", "src")
-    # Not covered
+    # Not covered by "setup.py clean --all", so explicit deletion required.
     if exists(tmp_src):
         dir_util.remove_tree(tmp_src)
     log.set_verbosity(1)
