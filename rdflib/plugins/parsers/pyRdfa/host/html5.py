@@ -12,8 +12,8 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 
 """
-$Id: html5.py,v 1.10 2012/06/28 11:58:14 ivan Exp $
-$Date: 2012/06/28 11:58:14 $
+$Id: html5.py,v 1.12 2013-01-10 10:42:07 ivan Exp $
+$Date: 2013-01-10 10:42:07 $
 """
 try :
 	from functools import reduce
@@ -178,21 +178,9 @@ def html5_extra_attributes(node, state) :
 		else :
 			return re.sub(r'(\r| |\n|\t)+'," ",rc).strip()
 		#return re.sub(r'(\r| |\n|\t)+',"",rc).strip()
-	# end getLiteral
-	
-	if node.hasAttribute("value")  :
-		# state.supress_lang = True
-		node.setAttribute("content", node.getAttribute("value"))
+	# end _getLiteral
 
-	elif node.tagName == "time":
-		# see if there is already a datatype element; if so, the author has made his/her own encoding
-		# The value can come from the attribute or the content:
-		if node.hasAttribute("datetime") :
-			value = node.getAttribute("datetime")
-		else :
-			# The value comes from the content of the XML
-			value = _get_literal(node)
-		# If the user has already set the datatype, then let that one win
+	def _set_time(value) :
 		if not node.hasAttribute("datatype") :			
 			# Check the datatype:
 			dt = _format_test(value)
@@ -200,7 +188,19 @@ def html5_extra_attributes(node, state) :
 				node.setAttribute("datatype",dt)
 		# Finally, set the value itself
 		node.setAttribute("content",value)
-			
+	# end _set_time
+
+	if node.hasAttribute("datetime") :
+		_set_time( node.getAttribute("datetime") )
+	elif node.tagName == "time" and not node.hasAttribute("content") :
+		# Note that a possible @datetime value has already been taken care of
+		_set_time( _get_literal(node) )
+
+	# It seems that the <data> element, and the related @value attribute, has been removed from HTML5,
+	# hence, it has been removed from the RDFa processing, too
+	# if node.hasAttribute("value") and not node.hasAttribute("content") :
+	# 	# state.supress_lang = True
+	# 	node.setAttribute("content", node.getAttribute("value"))
 	#elif node.hasAttribute("data") and not node.hasAttribute("src") :
 	#	node.setAttribute("src", node.getAttribute("data"))
 		
@@ -212,7 +212,7 @@ def remove_rel(node, state):
 	@param state: current state
 	@type state: L{Execution context<pyRdfa.state.ExecutionContext>}
 	"""
-	from ..termorcurie import termname
+	from pyRdfa.termorcurie import termname
 	def _massage_node(node,attr) :
 		"""The real work for remove_rel is done here, parametrized with @rel and @rev"""
 		if node.hasAttribute("property") and node.hasAttribute(attr) :

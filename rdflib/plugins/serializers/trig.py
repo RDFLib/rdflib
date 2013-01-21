@@ -1,17 +1,22 @@
 """
 Trig RDF graph serializer for RDFLib.
 See <http://www.w3.org/2010/01/Trig/Trig> for syntax specification.
-
-Originally https://github.com/mammadori/rdflib with some minor changes.
-
 """
-from rdflib.plugins.serializers.turtle import TurtleSerializer, VERB, _GEN_QNAME_FOR_DT
+
+from rdflib.plugins.serializers.turtle import TurtleSerializer
+from rdflib.plugins.serializers.turtle import _GEN_QNAME_FOR_DT
+from rdflib.plugins.serializers.turtle import VERB
+
 from rdflib.term import BNode, Literal
+
+
 from collections import defaultdict
 
-__all__ = ['TriGSerializer']
 
-class TriGSerializer(TurtleSerializer):
+__all__ = ['TrigSerializer']
+
+
+class TrigSerializer(TurtleSerializer):
 
     short_name = "trig"
     indentString = 4 * u' '
@@ -22,12 +27,12 @@ class TriGSerializer(TurtleSerializer):
         else:
             self.contexts = [store]
 
-        super(TriGSerializer, self).__init__(store)
+        super(TrigSerializer, self).__init__(store)
 
     def preprocess(self):
         for context in self.contexts:
             for triple in context:
-               self.preprocessTriple(triple, context.identifier)
+                self.preprocessTriple(triple, context.identifier)
 
     def preprocessTriple(self, triple, identifier):
         s, p, o = triple
@@ -39,7 +44,7 @@ class TriGSerializer(TurtleSerializer):
             if node in self.keywords:
                 continue
             # Don't use generated prefixes for subjects and objects
-            self.getQName(node, gen_prefix=(i==VERB))
+            self.getQName(node, gen_prefix=(i == VERB))
             if isinstance(node, Literal) and node.datatype:
                 self.getQName(node.datatype, gen_prefix=_GEN_QNAME_FOR_DT)
         p = triple[1]
@@ -47,10 +52,11 @@ class TriGSerializer(TurtleSerializer):
             self._references[p] = self.refCount(p) + 1
 
     def reset(self):
-        super(TriGSerializer, self).reset()
+        super(TrigSerializer, self).reset()
         self._contexts = defaultdict(set)
 
-    def serialize(self, stream, base=None, encoding=None, spacious=None, **args):
+    def serialize(self, stream, base=None, encoding=None,
+                  spacious=None, **args):
         self.reset()
         self.stream = stream
         self.base = base
@@ -59,7 +65,8 @@ class TriGSerializer(TurtleSerializer):
             self._spacious = spacious
 
         self.preprocess()
-        subjects_list = self.orderSubjects()
+        # @@FIXME: Unused code ...
+        # subjects_list = self.orderSubjects()
 
         self.startDocument()
 
@@ -82,5 +89,3 @@ class TriGSerializer(TurtleSerializer):
 
         self.endDocument()
         stream.write(u"\n".encode('ascii'))
-
-

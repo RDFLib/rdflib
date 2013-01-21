@@ -6,14 +6,15 @@ __all__ = ['Memory', 'IOMemory']
 
 ANY = Any = None
 
+
 class Memory(Store):
     """\
     An in memory implementation of a triple store.
-    
+
     This triple store uses nested dictionaries to store triples. Each
     triple is stored in two such indices as follows spo[s][p][o] = 1 and
     pos[p][o][s] = 1.
-    
+
     Authors: Michel Pelletier, Daniel Krech, Stefan Niederhauser
     """
     def __init__(self, configuration=None, identifier=None):
@@ -74,65 +75,65 @@ class Memory(Store):
 
     def remove(self, (subject, predicate, object), context=None):
         for (subject, predicate, object), c in self.triples(
-                                            (subject, predicate, object)):
+                (subject, predicate, object)):
             del self.__spo[subject][predicate][object]
             del self.__pos[predicate][object][subject]
             del self.__osp[object][subject][predicate]
 
     def triples(self, (subject, predicate, object), context=None):
         """A generator over all the triples matching """
-        if subject!=ANY: # subject is given
+        if subject != ANY:  # subject is given
             spo = self.__spo
             if subject in spo:
                 subjectDictionary = spo[subject]
-                if predicate!=ANY: # subject+predicate is given
+                if predicate != ANY:  # subject+predicate is given
                     if predicate in subjectDictionary:
-                        if object!=ANY: # subject+predicate+object is given
+                        if object != ANY:  # subject+predicate+object is given
                             if object in subjectDictionary[predicate]:
                                 yield (subject, predicate, object), \
-                                                            self.__contexts()
-                            else: # given object not found
+                                    self.__contexts()
+                            else:  # given object not found
                                 pass
-                        else: # subject+predicate is given, object unbound
+                        else:  # subject+predicate is given, object unbound
                             for o in subjectDictionary[predicate].keys():
                                 yield (subject, predicate, o), \
-                                                            self.__contexts()
-                    else: # given predicate not found
+                                    self.__contexts()
+                    else:  # given predicate not found
                         pass
-                else: # subject given, predicate unbound
+                else:  # subject given, predicate unbound
                     for p in subjectDictionary.keys():
-                        if object!=ANY: # object is given
+                        if object != ANY:  # object is given
                             if object in subjectDictionary[p]:
                                 yield (subject, p, object), self.__contexts()
-                            else: # given object not found
+                            else:  # given object not found
                                 pass
-                        else: # object unbound
+                        else:  # object unbound
                             for o in subjectDictionary[p].keys():
                                 yield (subject, p, o), self.__contexts()
-            else: # given subject not found
+            else:  # given subject not found
                 pass
-        elif predicate!=ANY: # predicate is given, subject unbound
+        elif predicate != ANY:  # predicate is given, subject unbound
             pos = self.__pos
             if predicate in pos:
                 predicateDictionary = pos[predicate]
-                if object!=ANY: # predicate+object is given, subject unbound
+                if object != ANY:  # predicate+object is given, subject unbound
                     if object in predicateDictionary:
                         for s in predicateDictionary[object].keys():
                             yield (s, predicate, object), self.__contexts()
-                    else: # given object not found
+                    else:  # given object not found
                         pass
-                else: # predicate is given, object+subject unbound
+                else:  # predicate is given, object+subject unbound
                     for o in predicateDictionary.keys():
                         for s in predicateDictionary[o].keys():
                             yield (s, predicate, o), self.__contexts()
-        elif object!=ANY: # object is given, subject+predicate unbound
+        elif object != ANY:  # object is given, subject+predicate unbound
             osp = self.__osp
             if object in osp:
                 objectDictionary = osp[object]
                 for s in objectDictionary.keys():
                     for p in objectDictionary[s].keys():
                         yield (s, p, object), self.__contexts()
-        else: # subject+predicate+object unbound
+        else:  # subject+predicate+object unbound
             spo = self.__spo
             for s in spo.keys():
                 subjectDictionary = spo[s]
@@ -162,7 +163,8 @@ class Memory(Store):
             yield prefix, namespace
 
     def __contexts(self):
-        return (c for c in []) # TODO: best way to return empty generator
+        return (c for c in [])  # TODO: best way to return empty generator
+
 
 class IOMemory(Store):
     """\
@@ -239,12 +241,14 @@ class IOMemory(Store):
         return self.default_context
 
     def addContext(self, context):
-        """ Add context w/o adding statement. Dan you can remove this if you want """
+        """
+        Add context w/o adding statement. Dan you can remove this if you want.
+        """
 
-        if not self.reverse.has_key(context):
-            ci=randid()
+        if context not in self.reverse:
+            ci = randid()
             while not self.forward.insert(ci, context):
-                ci=randid()
+                ci = randid()
             self.reverse[context] = ci
 
     def intToIdentifier(self, (si, pi, oi)):
@@ -307,37 +311,37 @@ class IOMemory(Store):
 
         # assign keys for new identifiers
 
-        if not r.has_key(subject):
-            si=randid()
-            while f.has_key(si):
-                si=randid()
+        if subject not in r:
+            si = randid()
+            while si in f:
+                si = randid()
             f[si] = subject
             r[subject] = si
         else:
             si = r[subject]
 
-        if not r.has_key(predicate):
-            pi=randid()
-            while f.has_key(pi):
-                pi=randid()
+        if predicate not in r:
+            pi = randid()
+            while pi in f:
+                pi = randid()
             f[pi] = predicate
             r[predicate] = pi
         else:
             pi = r[predicate]
 
-        if not r.has_key(object):
-            oi=randid()
-            while f.has_key(oi):
-                oi=randid()
+        if object not in r:
+            oi = randid()
+            while oi in f:
+                oi = randid()
             f[oi] = object
             r[object] = oi
         else:
             oi = r[object]
 
-        if not r.has_key(context):
-            ci=randid()
-            while f.has_key(ci):
-                ci=randid()
+        if context not in r:
+            ci = randid()
+            while ci in f:
+                ci = randid()
             f[ci] = context
             r[context] = ci
         else:
@@ -357,11 +361,10 @@ class IOMemory(Store):
 
     def _setNestedIndex(self, index, *keys):
         for key in keys[:-1]:
-            if not index.has_key(key):
+            if key not in index:
                 index[key] = self.createIndex()
             index = index[key]
         index[keys[-1]] = 1
-
 
     def _removeNestedIndex(self, index, *keys):
         """ Remove context from the list of contexts in a nested index.
@@ -376,8 +379,8 @@ class IOMemory(Store):
 
         n = len(parents)
         for i in xrange(n):
-            index = parents[n-1-i]
-            key = keys[n-1-i]
+            index = parents[n - 1 - i]
+            key = keys[n - 1 - i]
             if len(index[key]) == 0:
                 del index[key]
 
@@ -387,7 +390,7 @@ class IOMemory(Store):
             if context == self:
                 context = None
 
-        f = self.forward
+        # f = self.forward
         r = self.reverse
         if context is None:
             for triple, cg in self.triples(triple):
@@ -403,7 +406,8 @@ class IOMemory(Store):
                     self._removeNestedIndex(self.spo, si, pi, oi, ci)
                     self._removeNestedIndex(self.pos, pi, oi, si, ci)
                     self._removeNestedIndex(self.osp, oi, si, pi, ci)
-                    # grr!! hafta ref-count these before you can collect them dumbass!
+                    # grr!! hafta ref-count these before you can collect
+                    # them dumbass!
                     #del f[si], f[pi], f[oi]
                     #del r[subject], r[predicate], r[object]
         else:
@@ -425,8 +429,8 @@ class IOMemory(Store):
                         # there will not be a triple in spo, pos or
                         # osp. So ignore any KeyErrors
                         pass
-                    # TODO delete references to resources in self.forward/self.reverse
-                    # that are not in use anymore...
+                    # TODO delete references to resources in
+                    # self.forward/self.reverse that are not in use anymore...
 
             if subject is None and predicate is None and object is None:
                 # remove context
@@ -436,7 +440,6 @@ class IOMemory(Store):
                 except KeyError:
                     # TODO: no exception when removing non-existant context?
                     pass
-
 
     def triples(self, triple, context=None):
         """A generator over all the triples matching """
@@ -462,74 +465,83 @@ class IOMemory(Store):
                 return
         try:
             if subject is not Any:
-                si = self.reverse[subject] # throws keyerror if subject doesn't exist ;(
+                si = self.reverse[subject]
+                    # throws keyerror if subject doesn't exist ;(
             if predicate is not Any:
                 pi = self.reverse[predicate]
             if object is not Any:
                 oi = self.reverse[object]
-        except KeyError, e:
-            return #raise StopIteration
+        except KeyError:
+            return  # raise StopIteration
 
-        if si != Any: # subject is given
-            if spo.has_key(si):
+        if si != Any:  # subject is given
+            if si in spo:
                 subjectDictionary = spo[si]
-                if pi != Any: # subject+predicate is given
-                    if subjectDictionary.has_key(pi):
-                        if oi!= Any: # subject+predicate+object is given
-                            if subjectDictionary[pi].has_key(oi):
+                if pi != Any:  # subject+predicate is given
+                    if pi in subjectDictionary:
+                        if oi != Any:  # subject+predicate+object is given
+                            if oi in subjectDictionary[pi]:
                                 ss, pp, oo = self.intToIdentifier((si, pi, oi))
-                                yield (ss, pp, oo), (c for c in self.__icontexts((si, pi, oi)))
-                            else: # given object not found
+                                yield (ss, pp, oo), (
+                                    c for c in self.__icontexts((si, pi, oi)))
+                            else:  # given object not found
                                 pass
-                        else: # subject+predicate is given, object unbound
+                        else:  # subject+predicate is given, object unbound
                             for o in subjectDictionary[pi].keys():
                                 ss, pp, oo = self.intToIdentifier((si, pi, o))
-                                yield (ss, pp, oo), (c for c in self.__icontexts((si, pi, o)))
-                    else: # given predicate not found
+                                yield (ss, pp, oo), (
+                                    c for c in self.__icontexts((si, pi, o)))
+                    else:  # given predicate not found
                         pass
-                else: # subject given, predicate unbound
+                else:  # subject given, predicate unbound
                     for p in subjectDictionary.keys():
-                        if oi != Any: # object is given
-                            if subjectDictionary[p].has_key(oi):
+                        if oi != Any:  # object is given
+                            if oi in subjectDictionary[p]:
                                 ss, pp, oo = self.intToIdentifier((si, p, oi))
-                                yield (ss, pp, oo), (c for c in self.__icontexts((si, p, oi)))
-                            else: # given object not found
+                                yield (ss, pp, oo), (
+                                    c for c in self.__icontexts((si, p, oi)))
+                            else:  # given object not found
                                 pass
-                        else: # object unbound
+                        else:  # object unbound
                             for o in subjectDictionary[p].keys():
                                 ss, pp, oo = self.intToIdentifier((si, p, o))
-                                yield (ss, pp, oo), (c for c in self.__icontexts((si, p, o)))
-            else: # given subject not found
+                                yield (ss, pp, oo), (
+                                    c for c in self.__icontexts((si, p, o)))
+            else:  # given subject not found
                 pass
-        elif pi != Any: # predicate is given, subject unbound
-            if pos.has_key(pi):
+        elif pi != Any:  # predicate is given, subject unbound
+            if pi in pos:
                 predicateDictionary = pos[pi]
-                if oi != Any: # predicate+object is given, subject unbound
-                    if predicateDictionary.has_key(oi):
+                if oi != Any:  # predicate+object is given, subject unbound
+                    if oi in predicateDictionary:
                         for s in predicateDictionary[oi].keys():
                             ss, pp, oo = self.intToIdentifier((s, pi, oi))
-                            yield (ss, pp, oo), (c for c in self.__icontexts((s, pi, oi)))
-                    else: # given object not found
+                            yield (ss, pp, oo), (
+                                c for c in self.__icontexts((s, pi, oi)))
+                    else:  # given object not found
                         pass
-                else: # predicate is given, object+subject unbound
+                else:  # predicate is given, object+subject unbound
                     for o in predicateDictionary.keys():
                         for s in predicateDictionary[o].keys():
                             ss, pp, oo = self.intToIdentifier((s, pi, o))
-                            yield (ss, pp, oo), (c for c in self.__icontexts((s, pi, o)))
-        elif oi != Any: # object is given, subject+predicate unbound
-            if osp.has_key(oi):
+                            yield (ss, pp, oo), (
+                                c for c in self.__icontexts((s, pi, o)))
+        elif oi != Any:  # object is given, subject+predicate unbound
+            if oi in osp:
                 objectDictionary = osp[oi]
                 for s in objectDictionary.keys():
                     for p in objectDictionary[s].keys():
                         ss, pp, oo = self.intToIdentifier((s, p, oi))
-                        yield (ss, pp, oo), (c for c in self.__icontexts((s, p, oi)))
-        else: # subject+predicate+object unbound
+                        yield (ss, pp, oo), (
+                            c for c in self.__icontexts((s, p, oi)))
+        else:  # subject+predicate+object unbound
             for s in spo.keys():
                 subjectDictionary = spo[s]
                 for p in subjectDictionary.keys():
                     for o in subjectDictionary[p].keys():
                         ss, pp, oo = self.intToIdentifier((s, p, o))
-                        yield (ss, pp, oo), (c for c in self.__icontexts((s, p, o)))
+                        yield (ss, pp, oo), (
+                            c for c in self.__icontexts((s, p, o)))
 
     def __len__(self, context=None):
 
@@ -543,8 +555,6 @@ class IOMemory(Store):
             count += 1
         return count
 
-    
-
     def contexts(self, triple=None):
         if triple:
             si, pi, oi = self.identifierToInt(triple)
@@ -554,17 +564,16 @@ class IOMemory(Store):
             for ci in self.cspo.keys():
                 yield self.forward[ci]
 
-
     def __icontexts(self, triple):
             si, pi, oi = triple
             for ci in self.spo[si][pi][oi]:
                 yield self.forward[ci]
 
 
-
 import random
 
-def randid(randint=random.randint, choice=random.choice, signs=(-1,1)):
-    return choice(signs)*randint(1,2000000000)
+
+def randid(randint=random.randint, choice=random.choice, signs=(-1, 1)):
+    return choice(signs) * randint(1, 2000000000)
 
 del random

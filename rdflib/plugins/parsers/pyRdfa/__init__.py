@@ -155,7 +155,7 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 
 """
- $Id: __init__.py,v 1.82 2012/08/21 10:28:50 ivan Exp $
+ $Id: __init__.py,v 1.88 2013-01-07 12:46:43 ivan Exp $
 """
 
 __version__ = "3.4.3"
@@ -257,6 +257,7 @@ UnresolvablePrefix          = ns_rdfa["UnresolvedCURIEPrefix"]
 UnresolvableReference       = ns_rdfa["UnresolvedCURIEReference"]
 UnresolvableTerm            = ns_rdfa["UnresolvedTerm"]
 VocabReferenceError         = ns_rdfa["VocabReferenceError"]
+PrefixRedefinitionWarning   = ns_rdfa["PrefixRedefinition"]
 
 FileReferenceError          = ns_distill["FileReferenceError"]
 HTError                     = ns_distill["HTTPError"]
@@ -286,6 +287,7 @@ err_no_CURIE_in_safe_CURIE          = "Safe CURIE is used, but the value does no
 err_undefined_terms                 = "'%s' is used as a term, but has not been defined as such; ignored"
 err_non_legal_CURIE_ref             = "Relative URI is not allowed in this position (or not a legal CURIE reference) '%s'; ignored"
 err_undefined_CURIE                 = "Undefined CURIE: '%s'; ignored"
+err_prefix_redefinition             = "Prefix '%s' (defined in the initial RDFa context or in an ancestor) is redefined"
 
 err_unusual_char_in_URI             = "Unusual character in uri: %s; possible error?"
 
@@ -431,7 +433,6 @@ class pyRdfa :
 						self.required_base = name
 					return url_request.data
 				else :
-					self.base = name
 					# Creating a File URI for this thing
 					if self.required_base == None :
 						self.required_base = "file://" + os.path.join(os.getcwd(),name)
@@ -486,7 +487,7 @@ class pyRdfa :
 		
 		# Create the initial state. This takes care of things
 		# like base, top level namespace settings, etc.
-		state = ExecutionContext(topElement, default_graph, base=self.base, options=self.options, rdfa_version=self.rdfa_version)
+		state = ExecutionContext(topElement, default_graph, base=self.required_base if self.required_base != None else "", options=self.options, rdfa_version=self.rdfa_version)
 
 		# Perform the built-in and external transformations on the HTML tree. 
 		for trans in self.options.transformers + builtInTransformers :
@@ -494,7 +495,7 @@ class pyRdfa :
 		
 		# This may have changed if the state setting detected an explicit version information:
 		self.rdfa_version = state.rdfa_version
-				
+
 		# The top level subject starts with the current document; this
 		# is used by the recursion
 		# this function is the real workhorse
@@ -504,6 +505,11 @@ class pyRdfa :
 		if self.options.vocab_expansion :
 			from .rdfs.process import process_rdfa_sem
 			process_rdfa_sem(default_graph, self.options)
+
+		# Experimental feature: prototype
+		if self.options.experimental_features :
+			from transform.prototype import handle_prototypes
+			handle_prototypes(default_graph)
 	
 		# What should be returned depends on the way the options have been set up
 		if self.options.output_default_graph :
@@ -542,8 +548,10 @@ class pyRdfa :
 			if options.output_processor_graph :
 				for t in options.processor_graph.graph :
 					tog.add(t)
+					if pgraph != None : pgraph.add(t)
 				for k,ns in options.processor_graph.graph.namespaces() :
 					tog.bind(k,ns)
+					if pgraph != None : pgraph.bind(k,ns)
 			options.reset_processor_graph()
 			return tog		
 
@@ -762,9 +770,7 @@ def processURI(uri, outputFormat, form={}) :
 		
 	transformers = []
 	
-	if "rdfa_lite" in list(form.keys()) and form.getfirst("rdfa_lite").lower() == "true" :
-		from .transform.lite import lite_prune
-		transformers.append(lite_prune)
+	check_lite = "rdfa_lite" in list(form.keys()) and form.getfirst("rdfa_lite").lower() == "true"
 
 	# The code below is left for backward compatibility only. In fact, these options are not exposed any more,
 	# they are not really in use
@@ -820,7 +826,8 @@ def processURI(uri, outputFormat, form={}) :
 					  vocab_cache_report     = vocab_cache_report,
 					  refresh_vocab_cache    = refresh_vocab_cache,
 					  vocab_expansion        = vocab_expansion,
-					  embedded_rdf           = embedded_rdf
+					  embedded_rdf           = embedded_rdf,
+					  check_lite             = check_lite
 					  )
 	processor = pyRdfa(options = options, base = base, media_type = media_type, rdfa_version = rdfa_version)
 
@@ -852,7 +859,7 @@ def processURI(uri, outputFormat, form={}) :
 		elif outputFormat == "nt" or outputFormat == "turtle" :
 			retval = 'Content-Type: text/turtle; charset=utf-8\n'
 		elif outputFormat == "json-ld" or outputFormat == "json" :
-			retval = 'Content-Type: application/json; charset=utf-8\n'
+			retval = 'Content-Type: application/ld+json; charset=utf-8\n'
 		else :
 			retval = 'Content-Type: application/rdf+xml; charset=utf-8\n'
 		retval += '\n'

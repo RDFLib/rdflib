@@ -13,8 +13,8 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 
 """
-$Id: initialcontext.py,v 1.9 2012/09/27 18:10:44 ivan Exp $
-$Date: 2012/09/27 18:10:44 $
+$Id: initialcontext.py,v 1.10 2013-01-07 12:46:43 ivan Exp $
+$Date: 2013-01-07 12:46:43 $
 """
 
 class Wrapper :
@@ -41,6 +41,7 @@ initial_context["http://www.w3.org/2011/rdfa-context/rdfa-1.1"].ns = {
 	'rdfa'		: 'http://www.w3.org/ns/rdfa#',
 	'dc'		: 'http://purl.org/dc/terms/',
 	'dcterms'	: 'http://purl.org/dc/terms/',
+	'dc11'	    : 'http://purl.org/dc/elements/1.1/',	
 	'foaf'		: 'http://xmlns.com/foaf/0.1/',
 	'void'		: 'http://rdfs.org/ns/void#',
 	'ical'		: 'http://www.w3.org/2002/12/cal/icaltzd#',

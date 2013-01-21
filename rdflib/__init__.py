@@ -48,9 +48,9 @@ __all__ = [
     'RDFS',
     'OWL',
     'XSD',
-    
+
     'util',
-    ]
+]
 
 import sys
 # generator expressions require 2.4
@@ -74,4 +74,3 @@ from rdflib import plugin
 from rdflib import query
 
 from rdflib import util
-
