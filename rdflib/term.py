@@ -484,6 +484,7 @@ class Literal(Identifier):
             value, datatype = _castPythonToLiteral(value)
             if datatype:
                 lang = None
+
         if datatype:
             datatype = URIRef(datatype)
         if py3compat.PY3 and isinstance(value, bytes):
@@ -498,8 +499,10 @@ class Literal(Identifier):
                 inst = unicode.__new__(cls, value)
             except UnicodeDecodeError:
                 inst = unicode.__new__(cls, value, 'utf-8')
-        inst.language = lang
-        inst.datatype = datatype
+
+        inst._language = lang
+        inst._datatype = datatype
+
         inst._cmp_value = inst._toCompareValue()
         return inst
 

@@ -189,9 +189,9 @@ try:
     from io import BytesIO
 except ImportError:
     try:
-        from cStringIO import StringIO as BytesIO
+        from cStringIO import StringIO as BytesIO  # NOQA
     except ImportError:
-        from StringIO import StringIO as BytesIO
+        from StringIO import StringIO as BytesIO  # NOQA
 
 # # Can't use this approach any longer, this function will raise an ImportError
 # # because the sparql module has been moved to the RDFExtras package.
@@ -216,7 +216,7 @@ from rdflib import plugin, exceptions, query
 #, sparql
 
 from rdflib.term import Node
-from rdflib.term import URIRef, Genid, RDFLibGenid
+from rdflib.term import URIRef, Genid
 from rdflib.term import BNode
 from rdflib.store import Store
 from rdflib.serializer import Serializer
@@ -656,10 +656,11 @@ class Graph(Node):
             return default
         return self.value(subject, RDFS.label, default=default, any=True)
 
-    @py3compat.format_doctest_out
+    # @py3compat.format_doctest_out
     def preferredLabel(self, subject, lang=None, default=None,
                        labelProperties=(SKOS.prefLabel, RDFS.label)):
-        """ Find the preferred label for subject.
+        __docs__ = """\
+        Find the preferred label for subject.
 
         By default prefers skos:prefLabels over rdfs:labels. In case at least
         one prefLabel is found returns those, else returns labels. In case a
@@ -673,31 +674,63 @@ class Graph(Node):
         >>> from rdflib.namespace import SKOS
         >>> from pprint import pprint
         >>> g = ConjunctiveGraph()
-        >>> u = URIRef(%(u)s'http://example.com/foo')
+        """
+        __py3dtsts__ = """\
+        >>> u = URIRef('http://example.com/foo')
         >>> g.add([u, RDFS.label, Literal('foo')])
         >>> g.add([u, RDFS.label, Literal('bar')])
         >>> pprint(sorted(g.preferredLabel(u)))
-        [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2000/01/rdf-schema#label'),
-          rdflib.term.Literal(%(u)s'bar')),
-         (rdflib.term.URIRef(%(u)s'http://www.w3.org/2000/01/rdf-schema#label'),
-          rdflib.term.Literal(%(u)s'foo'))]
+        [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
+          rdflib.term.Literal('bar')),
+         (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
+          rdflib.term.Literal('foo'))]
         >>> g.add([u, SKOS.prefLabel, Literal('bla')])
         >>> pprint(g.preferredLabel(u))
-        [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(%(u)s'bla'))]
+        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal('bla'))]
         >>> g.add([u, SKOS.prefLabel, Literal('blubb', lang='en')])
         >>> pprint(sorted(g.preferredLabel(u)))
-        [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(%(u)s'blubb', lang='en')),
-         (rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(%(u)s'bla'))]
+        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal('blubb', lang='en')),
+         (rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal('bla'))]
         >>> pprint(g.preferredLabel(u, lang=''))
-        [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(%(u)s'bla'))]
+        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal('bla'))]
         >>> pprint(g.preferredLabel(u, lang='en'))
-        [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(%(u)s'blubb', lang='en'))]
+        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal('blubb', lang='en'))]
         """
+        __py2dtsts__ = """\
+        >>> u = URIRef(u'http://example.com/foo')
+        >>> g.add([u, RDFS.label, Literal('foo')])
+        >>> g.add([u, RDFS.label, Literal('bar')])
+        >>> pprint(sorted(g.preferredLabel(u)))
+        [(rdflib.term.URIRef(u'http://www.w3.org/2000/01/rdf-schema#label'),
+          rdflib.term.Literal(u'bar')),
+         (rdflib.term.URIRef(u'http://www.w3.org/2000/01/rdf-schema#label'),
+          rdflib.term.Literal(u'foo'))]
+        >>> g.add([u, SKOS.prefLabel, Literal('bla')])
+        >>> pprint(g.preferredLabel(u))
+        [(rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'bla'))]
+        >>> g.add([u, SKOS.prefLabel, Literal('blubb', lang='en')])
+        >>> pprint(sorted(g.preferredLabel(u)))
+        [(rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'blubb', lang='en')),
+         (rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'bla'))]
+        >>> pprint(g.preferredLabel(u, lang=''))
+        [(rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'bla'))]
+        >>> pprint(g.preferredLabel(u, lang='en'))
+        [(rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'blubb', lang='en'))]
+        """
+
+        self.__doc__ = format_doctest_out(
+            __docs__ + __py3dtsts__ if py3compat.PY3 else __py2dtsts__)
+
         if default is None:
             default = []
 
@@ -1089,61 +1122,64 @@ class Graph(Node):
         """
         return Resource(self, identifier)
 
-    def _process_skolem_tuples(self, target, func) :
-        for t in self.triples( (None,None,None) ) :
+    def _process_skolem_tuples(self, target, func):
+        for t in self.triples((None, None, None)):
             target.add(func(t))
 
-    def skolemize(self, new_graph = None, bnode = None) :
-        def do_skolemize( bnode,t ) :
-            (s,p,o) = t
-            if s == bnode :
+    def skolemize(self, new_graph=None, bnode=None):
+        def do_skolemize(bnode, t):
+            (s, p, o) = t
+            if s == bnode:
                 s = s.skolemize()
-            if o == bnode :
+            if o == bnode:
                 o = o.skolemize()
-            return (s,p,o)
+            return (s, p, o)
 
-        def do_skolemize2( t ) :
-            (s,p,o) = t
-            if isinstance(s, BNode) :
+        def do_skolemize2(t):
+            (s, p, o) = t
+            if isinstance(s, BNode):
                 s = s.skolemize()
-            if isinstance(o, BNode) :
+            if isinstance(o, BNode):
                 o = o.skolemize()
-            return (s,p,o)
+            return (s, p, o)
 
-        retval = Graph() if new_graph == None else new_graph
+        retval = Graph() if new_graph is None else new_graph
 
-        if bnode == None :
-            self._process_skolem_tuples( retval, do_skolemize2 )
-        elif isinstance(bnode, BNode) :
-            self._process_skolem_tuples( retval, lambda t: do_skolemize( bnode,t ) )
+        if bnode is None:
+            self._process_skolem_tuples(retval, do_skolemize2)
+        elif isinstance(bnode, BNode):
+            self._process_skolem_tuples(
+                retval, lambda t: do_skolemize(bnode, t))
 
         return retval
 
-    def de_skolemize(self, new_graph = None, uriref = None) :
-        def do_de_skolemize( uriref,t ) :
-            (s,p,o) = t
-            if s == uriref :
+    def de_skolemize(self, new_graph=None, uriref=None):
+        def do_de_skolemize(uriref, t):
+            (s, p, o) = t
+            if s == uriref:
                 s = s.de_skolemize()
-            if o == uriref :
+            if o == uriref:
                 o = o.de_skolemize()
-            return (s,p,o)
+            return (s, p, o)
 
-        def do_de_skolemize2( t ) :
-            (s,p,o) = t
-            if isinstance(s, Genid) :
+        def do_de_skolemize2(t):
+            (s, p, o) = t
+            if isinstance(s, Genid):
                 s = s.de_skolemize()
-            if isinstance(o, Genid) :
+            if isinstance(o, Genid):
                 o = o.de_skolemize()
-            return (s,p,o)
+            return (s, p, o)
 
-        retval = Graph() if new_graph == None else new_graph
+        retval = Graph() if new_graph is None else new_graph
 
-        if uriref == None :
-            self._process_skolem_tuples( retval, do_de_skolemize2 )
-        elif isinstance(uriref, Genid) :
-            self._process_skolem_tuples( retval, lambda t: do_de_skolemize( uriref,t ) )
+        if uriref is None:
+            self._process_skolem_tuples(retval, do_de_skolemize2)
+        elif isinstance(uriref, Genid):
+            self._process_skolem_tuples(
+                retval, lambda t: do_de_skolemize(uriref, t))
 
         return retval
+
 
 class ConjunctiveGraph(Graph):
     """
@@ -1272,11 +1308,13 @@ class ConjunctiveGraph(Graph):
     def __reduce__(self):
         return (ConjunctiveGraph, (self.store, self.identifier))
 
-class Dataset(ConjunctiveGraph) :
-    """
+
+class Dataset(ConjunctiveGraph):
+    __doc__ = format_doctest_out("""
     RDF 1.1 Dataset. Small extension to the Conjunctive Graph:
-    - the primary term is graphs in the datasets and not contexts with quads, so there is a separate
-    method to set/retrieve a graph in a dataset and operate with graphs
+    - the primary term is graphs in the datasets and not contexts with quads,
+    so there is a separate method to set/retrieve a graph in a dataset and
+    operate with graphs
     - graphs cannot be identified with blank nodes
     - added a method to directly add a single quad
 
@@ -1285,161 +1323,210 @@ class Dataset(ConjunctiveGraph) :
     >>> # Create a new Dataset
     >>> ds = Dataset()
     >>> # simple triples goes to default graph
-    >>> ds.add( (URIRef('http://example.org/a'),URIRef('http://www.example.org/b'),Literal('foo')) )
+    >>> ds.add((URIRef('http://example.org/a'),
+    ...    URIRef('http://www.example.org/b'),
+    ...    Literal('foo')))
     >>>
-    >>> # Create a graph in the dataset
-    >>> # if the graph name has already been used, the corresponding graph will be returned
-    >>> (ie, the Dataset keeps track of the constituent graphs)
-    >>> # The special argument Dataset.DEFAULT can be used to return the default graph
+    >>> # Create a graph in the dataset, if the graph name has already been
+    >>> # used, the corresponding graph will be returned
+    >>> # (ie, the Dataset keeps track of the constituent graphs)
+    >>> # The special argument Dataset.DEFAULT can be used to return the
+    >>> # default graph
     >>> g = ds.graph(URIRef('http://www.example.com/gr'))
     >>>
     >>> # add triples to the new graph as usual
-    >>> g.add( (URIRef('http://example.org/x'),URIRef('http://example.org/y'),Literal('bar')) )
+    >>> g.add(
+    ...     (URIRef('http://example.org/x'),
+    ...     URIRef('http://example.org/y'),
+    ...     Literal('bar')) )
     >>> # alternatively: add a quad to the dataset -> goes to the graph
-    >>> ds.add_quad( (URIRef('http://example.org/x'),URIRef('http://example.org/z'),Literal('foo-bar'),g) )
+    >>> ds.add_quad(
+    ...     (URIRef('http://example.org/x'),
+    ...     URIRef('http://example.org/z'),
+    ...     Literal('foo-bar'),g) )
     >>>
     >>> # querying triples return them all regardless of the graph
-    >>> for t in ds.triples((None,None,None)) : print t
-    (rdflib.term.URIRef(u'http://example.org/a'), rdflib.term.URIRef(u'http://www.example.org/b'), rdflib.term.Literal(u'foo'))
-    (rdflib.term.URIRef(u'http://example.org/x'), rdflib.term.URIRef(u'http://example.org/z'), rdflib.term.Literal(u'foo-bar'))
-    (rdflib.term.URIRef(u'http://example.org/x'), rdflib.term.URIRef(u'http://example.org/y'), rdflib.term.Literal(u'bar'))
+    >>> for t in ds.triples((None,None,None)):  # doctest: +SKIP
+    ...     print(t)  # doctest: +NORMALIZE_WHITESPACE
+    (rdflib.term.URIRef(%(u)s'http://example.org/a'),
+     rdflib.term.URIRef(%(u)s'http://www.example.org/b'),
+     rdflib.term.Literal(%(u)s'foo'))
+    (rdflib.term.URIRef(%(u)s'http://example.org/x'),
+     rdflib.term.URIRef(%(u)s'http://example.org/z'),
+     rdflib.term.Literal(%(u)s'foo-bar'))
+    (rdflib.term.URIRef(%(u)s'http://example.org/x'),
+     rdflib.term.URIRef(%(u)s'http://example.org/y'),
+     rdflib.term.Literal(%(u)s'bar'))
     >>>
-    >>> # querying quads return quads; the fourth argument can be unrestricted or restricted to a graph
-    >>> for q in ds.quads((None,None,None,None)) : print q
-    (rdflib.term.URIRef(u'http://example.org/a'), rdflib.term.URIRef(u'http://www.example.org/b'), rdflib.term.Literal(u'foo'), None)
-    (rdflib.term.URIRef(u'http://example.org/x'), rdflib.term.URIRef(u'http://example.org/y'), rdflib.term.Literal(u'bar'), rdflib.term.URIRef(u'http://www.example.com/gr'))
-    (rdflib.term.URIRef(u'http://example.org/x'), rdflib.term.URIRef(u'http://example.org/z'), rdflib.term.Literal(u'foo-bar'), rdflib.term.URIRef(u'http://www.example.com/gr'))
+    >>> # querying quads return quads; the fourth argument can be unrestricted
+    >>> # or restricted to a graph
+    >>> for q in ds.quads((None, None, None, None)):  # doctest: +SKIP
+    ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
+    (rdflib.term.URIRef(%(u)s'http://example.org/a'),
+     rdflib.term.URIRef(%(u)s'http://www.example.org/b'),
+     rdflib.term.Literal(%(u)s'foo'),
+     None)
+    (rdflib.term.URIRef(%(u)s'http://example.org/x'),
+     rdflib.term.URIRef(%(u)s'http://example.org/y'),
+     rdflib.term.Literal(%(u)s'bar'),
+     rdflib.term.URIRef(%(u)s'http://www.example.com/gr'))
+    (rdflib.term.URIRef(%(u)s'http://example.org/x'),
+     rdflib.term.URIRef(%(u)s'http://example.org/z'),
+     rdflib.term.Literal(%(u)s'foo-bar'),
+     rdflib.term.URIRef(%(u)s'http://www.example.com/gr'))
     >>>
-    >>> for q in ds.quads((None,None,None,g)) : print q
-    (rdflib.term.URIRef(u'http://example.org/x'), rdflib.term.URIRef(u'http://example.org/y'), rdflib.term.Literal(u'bar'), rdflib.term.URIRef(u'http://www.example.com/gr'))
-    (rdflib.term.URIRef(u'http://example.org/x'), rdflib.term.URIRef(u'http://example.org/z'), rdflib.term.Literal(u'foo-bar'), rdflib.term.URIRef(u'http://www.example.com/gr'))
-    >>> # Note that in the call above ds.quads((None,None,None,'http://www.example.com/gr')) would have been accepted, too
+    >>> for q in ds.quads((None,None,None,g)):  # doctest: +SKIP
+    ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
+    (rdflib.term.URIRef(%(u)s'http://example.org/x'),
+     rdflib.term.URIRef(%(u)s'http://example.org/y'),
+     rdflib.term.Literal(%(u)s'bar'),
+     rdflib.term.URIRef(%(u)s'http://www.example.com/gr'))
+    (rdflib.term.URIRef(%(u)s'http://example.org/x'),
+     rdflib.term.URIRef(%(u)s'http://example.org/z'),
+     rdflib.term.Literal(%(u)s'foo-bar'),
+     rdflib.term.URIRef(%(u)s'http://www.example.com/gr'))
+    >>> # Note that in the call above -
+    >>> # ds.quads((None,None,None,'http://www.example.com/gr'))
+    >>> # would have been accepted, too
     >>>
     >>> # graph names in the dataset can be queried:
-    >>> for c in ds.graphs() : print c
+    >>> for c in ds.graphs():  # doctest: +SKIP
+    ...     print(c)  # doctest:
     DEFAULT
     http://www.example.com/gr
-    >>> # A graph can be created without specifying a name; a skolemized genid is created on the fly
+    >>> # A graph can be created without specifying a name; a skolemized genid
+    >>> # is created on the fly
     >>> h = ds.graph()
-    >>> for c in ds.graphs() : print c
+    >>> for c in ds.graphs():  # doctest: +SKIP
+    ...     print(c)  # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
     DEFAULT
-    http://rdlib.net/.well-known/genid/rdflib/N62d77cceefde41458cccaf34bae5a5f0
+    http://rdlib.net/.well-known/genid/rdflib/N...
     http://www.example.com/gr
-    >>> # Note that the Dataset.graphs() call returns names of empty graphs, too. This can be restricted:
-    >>> for c in ds.graphs(empty=False) : print c
+    >>> # Note that the Dataset.graphs() call returns names of empty graphs,
+    >>> # too. This can be restricted:
+    >>> for c in ds.graphs(empty=False):  # doctest: +SKIP
+    ...     print(c)  # doctest: +NORMALIZE_WHITESPACE
     DEFAULT
     http://www.example.com/gr
-    >>>>
-    >>>> a graph can also be removed from a dataset via ds.remove_graph(g)
+    >>>
+    >>> # a graph can also be removed from a dataset via ds.remove_graph(g)
+    """)
 
-
-"""
     DEFAULT = "DEFAULT"
+
     def __init__(self, store='default'):
-        super(Dataset,self).__init__(store=store, identifier=None)
-        self.graph_names = { Dataset.DEFAULT : self } 
+        super(Dataset, self).__init__(store=store, identifier=None)
+        self.graph_names = {Dataset.DEFAULT: self}
 
     def __str__(self):
         pattern = ("[a rdflib:Dataset;rdflib:storage "
                    "[a rdflib:Store;rdfs:label '%s']]")
         return pattern % self.store.__class__.__name__
 
-    def graph(self, identifier = None) :
-        if identifier == None :
+    def graph(self, identifier=None):
+        if identifier is None:
             from .term import rdflib_skolem_genid
-            self.bind("genid", "http://rdflib.net" + rdflib_skolem_genid, override = False)
+            self.bind(
+                "genid", "http://rdflib.net" + rdflib_skolem_genid,
+                override=False)
             identifier = BNode().skolemize()
-        elif identifier == Dataset.DEFAULT :
+        elif identifier == Dataset.DEFAULT:
             return self
-        else :
-            if isinstance(identifier, BNode) :
-                raise Exception("Blank nodes cannot be Graph identifiers in RDF Datasets")
-            if not isinstance(identifier, URIRef) :
+        else:
+            if isinstance(identifier, BNode):
+                raise Exception(
+                    "Blank nodes cannot be Graph identifiers in RDF Datasets")
+            if not isinstance(identifier, URIRef):
                 identifier = URIRef(identifier)
 
-        if identifier in self.graph_names.keys() :
+        if identifier in self.graph_names.keys():
             return self.graph_names[identifier]
-        else :
-            retval = Graph(store = self.store, identifier = identifier)
+        else:
+            retval = Graph(store=self.store, identifier=identifier)
             self.graph_names[identifier] = retval
             return retval
 
-    def remove_graph(self, g) :
-        if g == None or g == Dataset.DEFAULT :
+    def remove_graph(self, g):
+        if g is None or g == Dataset.DEFAULT:
             # default graph cannot be removed
             return
-        else :
-            if isinstance(g, Graph) :
-                try :
+        else:
+            if isinstance(g, Graph):
+                try:
                     del self.graph_names[g.identifier]
                     self.remove_context(g.identifier)
-                except KeyError :
+                except KeyError:
                     pass
-            else :
-                try :
+            else:
+                try:
                     del self.graph_names[URIRef(g)]
                     self.remove_context(g)
-                except KeyError :
+                except KeyError:
                     pass
 
-    def graphs(self, empty = True) :
-        if empty :
+    def graphs(self, empty=True):
+        if empty:
             # All graphs should be returned, including the empty ones:
-            for n in self.graph_names.keys() : yield n
-        else :
-            # Only non-empty graphs should be returned; the contexts() call of the 
-            # conjunctive graph does the job
-            for c in self.contexts() :
-                if isinstance(c.identifier, BNode) :
+            for n in self.graph_names.keys():
+                yield n
+        else:
+            # Only non-empty graphs should be returned; the contexts() call of
+            # the conjunctive graph does the job
+            for c in self.contexts():
+                if isinstance(c.identifier, BNode):
                     yield Dataset.DEFAULT
-                else :
+                else:
                     yield c.identifier
 
-    def add_quad(self, (s, p, o, g)) :
-        if g == None :
-            self.add((s,p,o))
-        else :
-            if isinstance(g, Graph) :
-                try :
-                    self.graph_names[g.identifier].add((s,p,o))
-                except KeyError :
+    def add_quad(self, quad):
+        (s, p, o, g) = quad
+        if g is None:
+            self.add((s, p, o))
+        else:
+            if isinstance(g, Graph):
+                try:
+                    self.graph_names[g.identifier].add((s, p, o))
+                except KeyError:
                     pass
-            else :
-                try :
-                    self.graph_names[URIRef(g)].add((s,p,o))
-                except KeyError :
+            else:
+                try:
+                    self.graph_names[URIRef(g)].add((s, p, o))
+                except KeyError:
                     pass
 
-    def remove_quad(self, (s,p,o,g)) :
-        if g == None :
-            self.remove((s,p,o))
-        else :
-            if isinstance(g, Graph) :
-                try :
-                    self.graph_names[g.identifier].remove((s,p,o))
-                except KeyError :
+    def remove_quad(self, (s, p, o, g)):
+        if g is None:
+            self.remove((s, p, o))
+        else:
+            if isinstance(g, Graph):
+                try:
+                    self.graph_names[g.identifier].remove((s, p, o))
+                except KeyError:
                     pass
-            else :
-                try :
-                    self.graph_names[URIRef(g)].remove((s,p,o))
-                except KeyError :
+            else:
+                try:
+                    self.graph_names[URIRef(g)].remove((s, p, o))
+                except KeyError:
                     pass
- 
-    def quads(self, (s,p,o,g)) :
-        for s,p,o,c in super(Dataset,self).quads((s,p,o)) :
-            if g == None :
-                # all quads have to be returned. However, the blank node name for the default graph should be removed
-                if isinstance(c.identifier, BNode) :
-                    yield (s,p,o,None)
-                else :
-                    yield (s,p,o,c.identifier)
-            elif isinstance(g, Graph) :
-                # only quads of a specific graph should be returned :
-                if g.identifier == c.identifier :
-                    yield (s,p,o,c.identifier)
-            else :
-                if ("%s" % g) == ("%s" % c.identifier) :
-                    yield (s,p,o,c.identifier)
+
+    def quads(self, quad):
+        (s, p, o, g) = quad
+        for s, p, o, c in super(Dataset, self).quads((s, p, o)):
+            if g is None:
+                # all quads have to be returned. However, the blank node name
+                # for the default graph should be removed
+                if isinstance(c.identifier, BNode):
+                    yield (s, p, o, None)
+                else:
+                    yield (s, p, o, c.identifier)
+            elif isinstance(g, Graph):
+                # only quads of a specific graph should be returned:
+                if g.identifier == c.identifier:
+                    yield (s, p, o, c.identifier)
+            else:
+                if ("%s" % g) == ("%s" % c.identifier):
+                    yield (s, p, o, c.identifier)
+
 
 class QuotedGraph(Graph):
     """
