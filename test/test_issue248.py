@@ -85,7 +85,7 @@ class TestSerialization(unittest.TestCase):
             (concept,
              DC['LCC'],
              rdflib.Literal('AC999.0999 - AC999999.Z9999')))
-        sg = graph.serialize(format='n3', base=LCCO)
+        sg = graph.serialize(format='n3', base=LCCO).decode('utf8')
         # See issue 248
         self.assert_(
             '<http://loc.gov/catdir/cpso/lcco/1>' in sg, sg)  # BAD BAD
@@ -123,7 +123,7 @@ class TestSerialization(unittest.TestCase):
         graph.bind('skos', SKOS)
         graph.bind('lcco', LCCO)
         graph.parse(data=gp, format="xml")
-        sg = graph.serialize(format='n3', base=LCCO)
+        sg = graph.serialize(format='n3', base=LCCO).decode('utf8')
         self.assert_('<1> a skos:Concept ;' not in sg, sg)  # BAD BAD BAD
 
 if __name__ == "__main__":
