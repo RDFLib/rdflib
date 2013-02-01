@@ -881,7 +881,7 @@ class Graph(Node):
                       "is not a local file reference")
                 return
             fd, name = tempfile.mkstemp()
-            stream = os.fdopen(fd, "w")
+            stream = os.fdopen(fd, "wb")
             serializer.serialize(stream, base=base, encoding=encoding, **args)
             stream.close()
             if hasattr(shutil, "move"):
