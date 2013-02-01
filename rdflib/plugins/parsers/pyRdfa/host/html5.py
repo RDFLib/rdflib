@@ -12,8 +12,8 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 
 """
-$Id: html5.py,v 1.12 2013-01-10 10:42:07 ivan Exp $
-$Date: 2013-01-10 10:42:07 $
+$Id: html5.py,v 1.13 2013-02-01 10:53:48 ivan Exp $
+$Date: 2013-02-01 10:53:48 $
 """
 try :
 	from functools import reduce
@@ -190,11 +190,13 @@ def html5_extra_attributes(node, state) :
 		node.setAttribute("content",value)
 	# end _set_time
 
-	if node.hasAttribute("datetime") :
-		_set_time( node.getAttribute("datetime") )
-	elif node.tagName == "time" and not node.hasAttribute("content") :
-		# Note that a possible @datetime value has already been taken care of
-		_set_time( _get_literal(node) )
+	if not node.hasAttribute("content") :
+		# @content has top priority over the others...
+		if node.hasAttribute("datetime") :
+			_set_time( node.getAttribute("datetime") )
+		elif node.tagName == "time" :
+			# Note that a possible @datetime value has already been taken care of
+			_set_time( _get_literal(node) )
 		
 def remove_rel(node, state):
 	"""
