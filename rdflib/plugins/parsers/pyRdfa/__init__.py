@@ -155,7 +155,7 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 
 """
- $Id: __init__.py,v 1.89 2013-01-18 09:41:16 ivan Exp $
+ $Id: __init__.py,v 1.90 2013-02-05 13:03:27 ivan Exp $
 """
 
 __version__ = "3.4.3"
@@ -252,8 +252,8 @@ RDFA_Error                  = ns_rdfa["Error"]
 RDFA_Warning                = ns_rdfa["Warning"]
 RDFA_Info                   = ns_rdfa["Information"]
 NonConformantMarkup         = ns_rdfa["DocumentError"]
-UnresolvablePrefix          = ns_rdfa["UnresolvedCURIEPrefix"]
-UnresolvableReference       = ns_rdfa["UnresolvedCURIEReference"]
+UnresolvablePrefix          = ns_rdfa["UnresolvedCURIE"]
+UnresolvableReference       = ns_rdfa["UnresolvedCURIE"]
 UnresolvableTerm            = ns_rdfa["UnresolvedTerm"]
 VocabReferenceError         = ns_rdfa["VocabReferenceError"]
 PrefixRedefinitionWarning   = ns_rdfa["PrefixRedefinition"]
@@ -553,7 +553,7 @@ class pyRdfa :
 				for k,ns in options.processor_graph.graph.namespaces() :
 					tog.bind(k,ns)
 					if pgraph != None : pgraph.bind(k,ns)
-			options.reset_processor_graph()
+ 			options.reset_processor_graph()
 			return tog		
 
 		# Separating this for a forward Python 3 compatibility
