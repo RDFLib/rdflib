@@ -4,7 +4,7 @@ language: python
 branches:
   only:
     - master
-    # - rdf11
+    - rdf11
     - reunif
 python:
     - "2.5"
@@ -16,7 +16,11 @@ python:
 install:
     # iodate0.4.8 is problematic with Pypy, use fixed version
     - if [[ $TRAVIS_PYTHON_VERSION == '2.5' ]]; then pip install --use-mirrors "simplejson"; fi
-    - pip install -r requirements.txt --use-mirrors
+    - if [[ $TRAVIS_PYTHON_VERSION == '2.5' ] && [ $TRAVIS_BRANCH == 'reunif' ]]; then pip install --use-mirrors "ordereddict" "elementtree"; fi
+    - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ] && [ $TRAVIS_BRANCH == 'reunif' ]]; then pip install --use-mirrors "ordereddict"; fi
+    - if [[ $TRAVIS_PYTHON_VERSION != '3.2' ]]; then pip install --use-mirrors -r requirements.py2.txt; fi
+    - if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then pip install --use-mirrors -r requirements.py3.txt; fi
+#    - pip install -r requirements.txt --use-mirrors
     - if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then pip install --upgrade "https://bitbucket.org/gjhiggins/isodate/downloads/isodate-0.4.8.tar.gz"; fi
     - python setup.py install
 script:
