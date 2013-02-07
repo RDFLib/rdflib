@@ -69,6 +69,7 @@ class TripleRemovedEvent(Event):
 from cPickle import Pickler, Unpickler, UnpicklingError
 try:
     from io import BytesIO
+    assert BytesIO
 except ImportError:
     from cStringIO import StringIO as BytesIO
 
@@ -190,28 +191,27 @@ class Store(object):
         be an error for the quoted argument to be True when the store is not
         formula-aware.
         """
-        self.dispatcher.dispatch(TripleAddedEvent(
-            triple=(subject, predicate, object), context=context))
+        self.dispatcher.dispatch(
+            TripleAddedEvent(
+                triple=(subject, predicate, object), context=context))
 
     def addN(self, quads):
         """
         Adds each item in the list of statements to a specific context. The
-        quoted argument is interpreted by formula-aware stores to indicate
-        this statement is quoted/hypothetical. Note that the default
-        implementation is a redirect to add
+        quoted argument is interpreted by formula-aware stores to indicate this
+        statement is quoted/hypothetical. Note that the default implementation
+        is a redirect to add
         """
         for s, p, o, c in quads:
             assert c is not None, \
                 "Context associated with %s %s %s is None!" % (s, p, o)
-            self.add(
-                (s, p, o),
-                c
-            )
+            self.add((s, p, o), c)
 
     def remove(self, (subject, predicate, object), context=None):
         """ Remove the set of triples matching the pattern from the store """
-        self.dispatcher.dispatch(TripleRemovedEvent(
-            triple=(subject, predicate, object), context=context))
+        self.dispatcher.dispatch(
+            TripleRemovedEvent(
+                triple=(subject, predicate, object), context=context))
 
     def triples_choices(self, (subject, predicate, object_), context=None):
         """
