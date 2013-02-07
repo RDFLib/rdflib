@@ -4,7 +4,8 @@ language: python
 branches:
   only:
     - master
-    - rdf11
+    # - rdf11
+    - reunif
 python:
     - "2.5"
     - "2.6"
@@ -26,3 +27,8 @@ script:
     - if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then nosetests --where=./build/src; fi
 before_script:
   - "flake8 --exit-zero rdflib"
+notifications:
+  irc:
+    channels: "irc.freenode.org#rdflib"
+    on_success: change
+    on_failure: change
