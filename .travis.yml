@@ -10,7 +10,7 @@ python:
     - "2.6"
     - "2.7"
     - "3.2"
-    - "pypy"
+    # - "pypy"
 
 install:
     # iodate0.4.8 is problematic with Pypy, use fixed version
