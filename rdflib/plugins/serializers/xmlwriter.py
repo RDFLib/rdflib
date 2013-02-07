@@ -73,7 +73,8 @@ class XMLWriter(object):
         for prefix, namespace in namespaces:
             if prefix:
                 write('  xmlns:%s="%s"\n' % (prefix, namespace))
-            else:
+            # Allow user-provided namespace bindings to prevail
+            elif prefix not in self.extra_ns:
                 write('  xmlns="%s"\n' % namespace)
 
         for prefix, namespace in self.extra_ns.items():

@@ -5,6 +5,7 @@ import sys
 
 try:
     from functools import wraps
+    assert wraps
 except ImportError:
     # No-op wraps decorator
     def wraps(f):
@@ -30,6 +31,7 @@ def _modify_str_or_docstring(str_change_func):
         else:
             func = func_or_str
             doc = func.__doc__
+
         doc = str_change_func(doc)
 
         if func:
@@ -37,6 +39,7 @@ def _modify_str_or_docstring(str_change_func):
             return func
         return doc
     return wrapper
+
 
 if PY3:
     # Python 3:
@@ -75,6 +78,13 @@ if PY3:
         else:
             return 0
 
+    def sign(n):
+        if n < 0:
+            return -1
+        if n > 0:
+            return 1
+        return 0
+
 else:
     # Python 2
     # --------
@@ -102,3 +112,6 @@ else:
             return -1
         else:
             return 0
+
+    def sign(n):
+        return cmp(n, 0)

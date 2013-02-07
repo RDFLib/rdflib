@@ -187,12 +187,14 @@ from hashlib import md5
 
 try:
     from io import BytesIO
+    assert BytesIO
 except ImportError:
     try:
-        from cStringIO import StringIO as BytesIO  # NOQA
+        from cStringIO import StringIO as BytesIO
+        assert BytesIO
     except ImportError:
-        from StringIO import StringIO as BytesIO  # NOQA
-
+        from StringIO import StringIO as BytesIO
+        assert BytesIO
 # # Can't use this approach any longer, this function will raise an ImportError
 # # because the sparql module has been moved to the RDFExtras package.
 
@@ -218,6 +220,10 @@ from rdflib import plugin, exceptions, query
 from rdflib.term import Node
 from rdflib.term import URIRef, Genid
 from rdflib.term import BNode
+from rdflib.term import Literal
+assert Literal
+from rdflib.namespace import Namespace
+assert Namespace
 from rdflib.store import Store
 from rdflib.serializer import Serializer
 from rdflib.parser import Parser
@@ -372,7 +378,7 @@ class Graph(Node):
         """Destroy the store identified by `configuration` if supported"""
         self.__store.destroy(configuration)
 
-    #Transactional interfaces (optional)
+    # Transactional interfaces (optional)
     def commit(self):
         """Commits active transactions"""
         self.__store.commit()
@@ -472,9 +478,9 @@ class Graph(Node):
         elif isinstance(other, Graph):
             return cmp(self.identifier, other.identifier)
         else:
-            #Note if None is considered equivalent to owl:Nothing
-            #Then perhaps a graph with length 0 should be considered
-            #equivalent to None (if compared to it)?
+            # Note if None is considered equivalent to owl:Nothing
+            # Then perhaps a graph with length 0 should be considered
+            # equivalent to None (if compared to it)?
             return 1
 
     def __eq__(self, other):
@@ -914,7 +920,7 @@ class Graph(Node):
                       "is not a local file reference")
                 return
             fd, name = tempfile.mkstemp()
-            stream = os.fdopen(fd, "w")
+            stream = os.fdopen(fd, "wb")
             serializer.serialize(stream, base=base, encoding=encoding, **args)
             stream.close()
             if hasattr(shutil, "move"):
@@ -999,7 +1005,7 @@ class Graph(Node):
         if format is None:
             format = source.content_type
         if format is None:
-            #raise Exception("Could not determine format for %r. You can" + \
+            # raise Exception("Could not determine format for %r. You can" + \
             # "expicitly specify one with the format argument." % source)
             format = "application/rdf+xml"
         parser = plugin.get(format, Parser)()
@@ -1265,8 +1271,8 @@ class ConjunctiveGraph(Graph):
 
         identifier must be a URIRef or BNode.
         """
-        return Graph(
-            store=self.store, identifier=identifier, namespace_manager=self)
+        return Graph(store=self.store, identifier=identifier,
+                     namespace_manager=self)
 
     def remove_context(self, context):
         """Removes the given context from the graph"""
@@ -1698,12 +1704,12 @@ class BackwardCompatGraph(ConjunctiveGraph):
         if quoted:
             assert False
             return QuotedGraph(self.store, identifier)
-            #return QuotedGraph(self.store, Graph(store=self.store,
+            # return QuotedGraph(self.store, Graph(store=self.store,
             #                                     identifier=identifier))
         else:
             return Graph(store=self.store, identifier=identifier,
                          namespace_manager=self)
-            #return Graph(self.store, Graph(store=self.store,
+            # return Graph(self.store, Graph(store=self.store,
             #                               identifier=identifier))
 
     def remove_context(self, context):
@@ -1803,7 +1809,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def destroy(self, configuration):
         raise ModificationException()
 
-    #Transactional interfaces (optional)
+    # Transactional interfaces (optional)
     def commit(self):
         raise ModificationException()
 

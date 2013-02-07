@@ -20,6 +20,7 @@ from rdflib.parser import (
 
 try:
     import html5lib
+    assert html5lib
     html5lib = True
 except ImportError:
     import warnings

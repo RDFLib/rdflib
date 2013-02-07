@@ -12,8 +12,8 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 
 """
-$Id: atom.py,v 1.2 2012/05/21 15:28:20 ivan Exp $
-$Date: 2012/05/21 15:28:20 $
+$Id: atom.py,v 1.3 2013-01-07 13:03:16 ivan Exp $
+$Date: 2013-01-07 13:03:16 $
 """
 
 def atom_add_entry_type(node, state) :

@@ -5,8 +5,8 @@ __doc__ = py3compat.format_doctest_out("""
 The :class:`~rdflib.resource.Resource` class wraps a
 :class:`~rdflib.graph.Graph`
 and a resource reference (i.e. a :class:`rdflib.term.URIRef` or
-:class:`rdflib.term.BNode`) to support a resource-oriented way of working
-with a graph.
+:class:`rdflib.term.BNode`) to support a resource-oriented way of
+working with a graph.
 
 It contains methods directly corresponding to those methods of the Graph
 interface that relate to reading and writing data. The difference is that a
@@ -87,13 +87,11 @@ for the type of a resource, like::
 
 Or for the predicates of a resource::
 
-    >>> sorted(p.qname()
-    ...     for p in person.predicates()) #doctest: +NORMALIZE_WHITESPACE
-    [%(u)s'foaf:depiction',
-     %(u)s'foaf:homepage',
-     %(u)s'foaf:name',
-     %(u)s'rdf:type',
-     %(u)s'rdfs:comment']
+    >>> sorted(
+    ...     p.qname() for p in person.predicates()
+    ... )  #doctest: +NORMALIZE_WHITESPACE +SKIP
+    [%(u)s'foaf:depiction', %(u)s'foaf:homepage',
+     %(u)s'foaf:name', %(u)s'rdf:type', %(u)s'rdfs:comment']
 
 Follow relations and get more data from their Resources as well::
 

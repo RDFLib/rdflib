@@ -10,7 +10,7 @@ python:
     - "2.6"
     - "2.7"
     - "3.2"
-    - "pypy"
+    # - "pypy"
 
 install:
     # iodate0.4.8 is problematic with Pypy, use fixed version
@@ -25,4 +25,4 @@ script:
     - if [[ $TRAVIS_PYTHON_VERSION != '3.2' ]]; then nosetests; fi
     - if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then nosetests --where=./build/src; fi
 before_script:
-  - "flake8 --exclude=pyRdfa,host,extras,transform,rdfs,pyMicrodata --exit-zero rdflib"
+  - "flake8 --exit-zero rdflib"

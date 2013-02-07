@@ -19,8 +19,8 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 
 """
-$Id: termorcurie.py,v 1.9 2012/05/21 15:27:07 ivan Exp $
-$Date: 2012/05/21 15:27:07 $
+$Id: termorcurie.py,v 1.11 2013-02-01 10:11:28 ivan Exp $
+$Date: 2013-02-01 10:11:28 $
 """
 
 import re, sys
@@ -64,8 +64,9 @@ from . import err_prefix_and_xmlns
 from . import err_non_ncname_prefix				
 from . import err_absolute_reference				
 from . import err_query_reference				
-from . import err_fragment_reference				
+from . import err_fragment_reference
 from . import err_prefix_redefinition
+
 
 # Regular expression object for NCNAME
 ncname   = re.compile("^[A-Za-z][A-Za-z0-9._-]*$")
@@ -209,11 +210,16 @@ class TermOrCurie :
 			if default_vocab.vocabulary :
 				self.default_term_uri = default_vocab.vocabulary
 				
-			# see if there is local vocab
-			def_term_uri = self.state.getURI("vocab")
-			if def_term_uri :			
-				self.default_term_uri = def_term_uri
-				self.graph.add((URIRef(self.state.base),RDFA_VOCAB,URIRef(def_term_uri)))
+			# see if there is local vocab that would override previous settings
+			# However, care should be taken with the vocab="" value that should not become a URI...
+			# Indeed, this value is used to 'vipe out', ie, get back to the default vocabulary...
+			if self.state.node.hasAttribute("vocab") and self.state.node.getAttribute("vocab") == "" :
+				self.default_term_uri = default_vocab.vocabulary
+			else :
+				def_term_uri = self.state.getURI("vocab")
+				if def_term_uri and def_term_uri != "" :			
+					self.default_term_uri = def_term_uri
+					self.graph.add((URIRef(self.state.base),RDFA_VOCAB,URIRef(def_term_uri)))
 		else :
 			self.default_term_uri = None
 		
@@ -334,6 +340,21 @@ class TermOrCurie :
 				except KeyError :
 					pass
 				self.ns[key] = dict[key]
+
+		# # Add the namespaces defined via a initial context
+		# for key in default_vocab.ns :
+		# 	dict[key] = default_vocab.ns[key]
+		# 	self.graph.bind(key, dict[key])
+		#
+		# self.ns = {}
+		# if len(dict) == 0 and inherited_state :
+		# 	self.ns = inherited_state.term_or_curie.ns
+		# else :
+		# 	if inherited_state :
+		# 		for key in inherited_state.term_or_curie.ns	: self.ns[key] = inherited_state.term_or_curie.ns[key]
+		# 		for key in dict								: self.ns[key] = dict[key]
+		# 	else :
+		# 		self.ns = dict
 		
 		# the xmlns prefixes have to be stored separately, again for XML Literal generation	
 		self.xmlns = {}

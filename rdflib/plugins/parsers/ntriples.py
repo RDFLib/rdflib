@@ -137,8 +137,10 @@ class NTriplesParser(object):
             raise ParseError("Item to parse must be a string instance.")
         try:
             from io import BytesIO
+            assert BytesIO
         except ImportError:
             from cStringIO import StringIO as BytesIO
+            assert BytesIO
         f = BytesIO()
         f.write(cast_bytes(s))
         f.seek(0)

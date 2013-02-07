@@ -196,8 +196,8 @@ register(
 register(
     'microdata', Parser,
     'rdflib.plugins.parsers.structureddata', 'MicrodataParser')
-# A convencience to use the RDFa 1.0 syntax (although the parse method can be
-# invoked with an rdfa_version keyword, too)
+# A convenience to use the RDFa 1.0 syntax (although the parse method can
+# be invoked with an rdfa_version keyword, too)
 register(
     'rdfa1.0', Parser,
     'rdflib.plugins.parsers.structureddata', 'RDFa10Parser')

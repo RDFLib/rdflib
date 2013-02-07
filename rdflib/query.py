@@ -6,13 +6,13 @@ import warnings
 from urlparse import urlparse
 try:
     from io import BytesIO
+    assert BytesIO
 except:
     from StringIO import StringIO as BytesIO
 
 
-__all__ = [
-    'Processor', 'Result', 'ResultParser',
-    'ResultSerializer', 'ResultException']
+__all__ = ['Processor', 'Result', 'ResultParser', 'ResultSerializer',
+           'ResultException']
 
 
 """
@@ -88,8 +88,8 @@ class Result(object):
         parser = plugin.get(format, ResultParser)()
         return parser.parse(source, **kwargs)
 
-    def serialize(self, destination=None, encoding="utf-8",
-                  format='xml', **args):
+    def serialize(
+            self, destination=None, encoding="utf-8", format='xml', **args):
 
         if self.type in ('CONSTRUCT', 'DESCRIBE'):
             return self.graph.serialize(

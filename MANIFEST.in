@@ -9,3 +9,5 @@ recursive-include examples *.py
 include run_tests.py
 graft test
 graft docs
+prune docs/_build
+global-exclude *.pyc *$py.class

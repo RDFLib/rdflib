@@ -30,8 +30,8 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 
 """
-$Id: __init__.py,v 1.19 2012/06/28 11:58:14 ivan Exp $
-$Date: 2012/06/28 11:58:14 $
+$Id: __init__.py,v 1.20 2013-01-07 13:03:16 ivan Exp $
+$Date: 2013-01-07 13:03:16 $
 """
 __version__ = "3.0"
 
@@ -84,7 +84,7 @@ accept_embedded_turtle	= [ HostLanguage.svg, HostLanguage.html5, HostLanguage.xh
 # ie, it cannot be turned down by an option
 require_embedded_rdf    = [ HostLanguage.svg ]
 
-warn_xmlns_usage = [ HostLanguage.html5, HostLanguage.xhtml5, HostLanguage.xhtml]
+warn_xmlns_usage = [ HostLanguage.html5, HostLanguage.xhtml5, HostLanguage.xhtml ]
 
 host_dom_transforms = {
 	HostLanguage.atom   : [atom_add_entry_type],

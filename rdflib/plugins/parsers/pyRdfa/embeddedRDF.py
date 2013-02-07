@@ -7,7 +7,7 @@ by U{SVG 1.2 Tiny<http://www.w3.org/TR/SVGMobile12/>}.
 @license: This software is available for use under the
 U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231">}
 @contact: Ivan Herman, ivan@w3.org
-@version: $Id: embeddedRDF.py,v 1.14 2012/05/18 15:31:13 ivan Exp $
+@version: $Id: embeddedRDF.py,v 1.15 2012/11/16 17:51:53 ivan Exp $
 """
 
 # Python 3 foolproof way...

@@ -17,6 +17,7 @@ from urlparse import urljoin
 from rdflib.py3compat import PY3
 if PY3:
     from io import BytesIO
+    assert BytesIO
 else:
     from StringIO import StringIO as BytesIO
 from xml.sax import xmlreader
@@ -163,7 +164,8 @@ def create_input_source(source=None, publicID=None,
             file = open(filename, "rb")
         else:
             input_source = URLInputSource(absolute_location, format)
-        # publicID = publicID or absolute_location # More to fix for issue 130
+        # publicID = publicID or absolute_location  # Further to fix
+                                                    # for issue 130
 
     if file is not None:
         input_source = FileInputSource(file)
