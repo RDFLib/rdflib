@@ -53,13 +53,14 @@ TEST = Namespace("http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#")
 CACHE_DIR = os.path.join(os.path.dirname(__file__), "rdf")
 
 skipped = (
-    "datatypes/Manifest.rdf#test002",
-    "rdf-containers-syntax-vs-schema/Manifest.rdf#test004",
-    "rdfms-xml-literal-namespaces/Manifest.rdf#test001",
-    "rdfms-xml-literal-namespaces/Manifest.rdf#test002",
-    "rdfms-xmllang/Manifest.rdf#test001",
-    "rdfms-xmllang/Manifest.rdf#test002",
-    "xml-canon/Manifest.rdf#test001")
+    # "datatypes/Manifest.rdf#test002",
+    # "rdf-containers-syntax-vs-schema/Manifest.rdf#test004",
+    # "rdfms-xml-literal-namespaces/Manifest.rdf#test001",
+    # "rdfms-xml-literal-namespaces/Manifest.rdf#test002",
+    # "rdfms-xmllang/Manifest.rdf#test001",
+    # "rdfms-xmllang/Manifest.rdf#test002",
+    # "xml-canon/Manifest.rdf#test001"
+)
 
 
 def cached_file(url):
