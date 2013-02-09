@@ -29,7 +29,9 @@ __all__ = [
 
     'URIRef',
     'BNode',
+    'HTMLLiteral',
     'Literal',
+    'XMLLiteral',
 
     'Variable',
     'Statement',
@@ -99,8 +101,8 @@ class URIRef(Identifier):
         # if normalize and value and value != normalize("NFC", value):
         #    raise Error("value must be in NFC normalized form.")
         final_cls = RDFLibGenid if RDFLibGenid._is_rdflib_skolem(value) \
-                    else (Genid if Genid._is_external_skolem(value) \
-                    else cls)
+            else (
+                Genid if Genid._is_external_skolem(value) else cls)
         try:
             rt = unicode.__new__(final_cls, value)
         except UnicodeDecodeError:
@@ -122,8 +124,9 @@ class URIRef(Identifier):
             return self
 
     def abstract(self):
-        warnings.warn("URIRef.abstract is deprecated.",
-                      category=DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            "URIRef.abstract is deprecated.",
+            category=DeprecationWarning, stacklevel=2)
         if "#" not in self:
             scheme, netloc, path, params, query, fragment = urlparse(self)
             if path:
@@ -1212,7 +1215,7 @@ class XMLOrHTMLLiteral(Literal):
             # if we got here then everything is fine:
             return True
 
-        if node == None or other == None:
+        if node is None or other is None:
             return False
 
         if node.nodeType != other.nodeType:
@@ -1233,15 +1236,15 @@ class XMLOrHTMLLiteral(Literal):
             # to worry about that, which is a bonus...
             n_keys = [
                 k for k in node.attributes.keysNS()
-                    if k[0] != 'http://www.w3.org/2000/xmlns/']
+                if k[0] != 'http://www.w3.org/2000/xmlns/']
             o_keys = [
                 k for k in other.attributes.keysNS()
-                    if k[0] != 'http://www.w3.org/2000/xmlns/']
+                if k[0] != 'http://www.w3.org/2000/xmlns/']
             if len(n_keys) != len(o_keys):
                 return False
             for k in n_keys:
-                if not (k in o_keys \
-                        and node.getAttributeNS(k[0], k[1]) == \
+                if not (k in o_keys
+                        and node.getAttributeNS(k[0], k[1]) ==
                         other.getAttributeNS(k[0], k[1])):
                     return False
 
@@ -1268,6 +1271,34 @@ class XMLOrHTMLLiteral(Literal):
             # should not happen, in fact
             return False
 
+    def __hash__(self):
+        """
+        Cargo-culted from rdflib.term.Literal
+
+        "Called for the key object for dictionary operations,
+        and by the built-in function hash(). Should return
+        a 32-bit integer usable as a hash value for
+        dictionary operations. The only required property
+        is that objects which compare equal have the same
+        hash value; it is advised to somehow mix together
+        (e.g., using exclusive or) the hash values for the
+        components of the object that also play a part in
+        comparison of objects." -- 3.4.1 Basic customization (Python)
+
+        "Two literals are equal if and only if all of the following hold:
+        * The strings of the two lexical forms compare equal, character by
+        character.
+        * Either both or neither have language tags.
+        * The language tags, if any, compare equal.
+        * Either both or neither have datatype URIs.
+        * The two datatype URIs, if any, compare equal, character by
+        character."
+        -- 6.5.1 Literal Equality (RDF: Concepts and Abstract Syntax)
+
+        """
+
+        return Identifier.__hash__(self)
+
 
 class XMLLiteral(XMLOrHTMLLiteral):
     def _toCompareValue(self):
@@ -1278,11 +1309,14 @@ class XMLLiteral(XMLOrHTMLLiteral):
         return retval
 
     def __eq__(self, other):
-        if other != None and isinstance(other, XMLLiteral):
+        if other is not None and isinstance(other, XMLLiteral):
             return XMLOrHTMLLiteral._isEqualNode(
                 self._cmp_value, other._cmp_value)
         else:
             return False
+
+    def __hash__(self):
+        return XMLOrHTMLLiteral.__hash__(self)
 
 
 class HTMLLiteral(XMLOrHTMLLiteral):
@@ -1296,15 +1330,18 @@ class HTMLLiteral(XMLOrHTMLLiteral):
             return retval
         except ImportError:
             raise ImportError(
-                "HTML5 parser not available. Try installing" + \
+                "HTML5 parser not available. Try installing" +
                 " html5lib <http://code.google.com/p/html5lib>")
 
     def __eq__(self, other):
-        if other != None and isinstance(other, HTMLLiteral):
+        if other is not None and isinstance(other, HTMLLiteral):
             return XMLOrHTMLLiteral._isEqualNode(
                 self._cmp_value, other._cmp_value)
         else:
             return False
+
+    def __hash__(self):
+        return XMLOrHTMLLiteral.__hash__(self)
 
 if __name__ == '__main__':
     import doctest

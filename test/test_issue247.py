@@ -1,8 +1,7 @@
 import rdflib
 import unittest
-import threading
 
-failxml = """
+failxml = """\
 <rdf:RDF
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -16,7 +15,7 @@ failxml = """
 
 </rdf:RDF>"""
 
-passxml = """
+passxml = """\
 <rdf:RDF
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:dc="http://purl.org/dc/elements/1.1/"

@@ -240,7 +240,7 @@ from urlparse import urlparse
 
 __all__ = [
     'Graph', 'ConjunctiveGraph', 'QuotedGraph', 'GraphValue', 'Seq',
-    'BackwardCompatGraph', 'ModificationException',
+    'BackwardCompatGraph', 'ModificationException', 'Dataset',
     'UnSupportedAggregateOperation', 'ReadOnlyGraphAggregate']
 
 

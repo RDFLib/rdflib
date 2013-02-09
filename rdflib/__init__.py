@@ -36,11 +36,14 @@ __date__ = "2012/10/10"
 __all__ = [
     'URIRef',
     'BNode',
+    'HTMLLiteral',
     'Literal',
+    'XMLLiteral',
     'Variable',
 
     'Namespace',
 
+    'Dataset',
     'Graph',
     'ConjunctiveGraph',
 
@@ -61,13 +64,14 @@ _LOGGER = logging.getLogger("rdflib")
 _LOGGER.info("version: %s" % __version__)
 
 
-from rdflib.term import URIRef, BNode, Literal, Variable, HTMLLiteral, XMLLiteral
+from rdflib.term import (
+    URIRef, BNode, HTMLLiteral, XMLLiteral, Literal, Variable)
 
 from rdflib.namespace import Namespace
 
-from rdflib.graph import Graph, ConjunctiveGraph, Dataset
+from rdflib.graph import Dataset, Graph, ConjunctiveGraph
 
-from rdflib.namespace import RDF, RDFS, OWL, XSD 
+from rdflib.namespace import RDF, RDFS, OWL, XSD
 
 from rdflib import plugin
 from rdflib import query
