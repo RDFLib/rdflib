@@ -1,7 +1,7 @@
 import unittest
 
 import rdflib # needed for eval(repr(...)) below
-from rdflib.term import Literal, URIRef
+from rdflib.term import Literal, URIRef, _XSD_DOUBLE
 from rdflib.py3compat import format_doctest_out as uformat
 
 # these are actually meant for test_term.py, which is not yet merged into trunk
@@ -84,6 +84,12 @@ class TestRepr(unittest.TestCase):
         x = MyLiteral(u"foo")
         self.assertEqual(repr(x), uformat("MyLiteral(%(u)s'foo')"))
         
+class TestDoubleOutput(unittest.TestCase):
+    def testNoDanglingPoint(self):
+        """confirms the fix for https://github.com/RDFLib/rdflib/issues/237"""
+        vv = Literal("0.88", datatype=_XSD_DOUBLE)
+        out = vv._literal_n3(use_plain=True)
+        self.assert_(out in ["8.8e-01", "0.88"], out)
 
 if __name__ == "__main__":
     unittest.main()
