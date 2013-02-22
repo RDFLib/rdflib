@@ -83,6 +83,12 @@ class Identifier(Node, unicode): # we allow Identifiers to be Nodes in our Graph
         by default, same as __eq__"""
         return self.__eq__(other)
 
+    def neq(self, other): 
+        """A "semantic"/interpreted not equal function, 
+        by default, same as __ne__"""
+        return self.__ne__(other)
+
+
 class URIRef(Identifier):
     """
     RDF URI Reference: http://www.w3.org/TR/rdf-concepts/#section-Graph-URIref
@@ -535,6 +541,15 @@ class Literal(Identifier):
         else:
             return Literal(py + val)
 
+    def __nonzero__(self): 
+        """
+        Is the Literal "True"
+        This is used for if statements, bool(literal), etc. 
+        """
+        if self.value: return bool(self.value)
+        return unicode.__eq__(self, '')
+
+
     @py3compat.format_doctest_out
     def __neg__(self):
         """
@@ -716,6 +731,33 @@ class Literal(Identifier):
         """
         return not self.__eq__(other)
 
+    def _comparable_to(self,other): 
+        """
+        Helper method to decide which things are meaningful to 
+        rich-compare with this literal
+        """
+        if isinstance(other, Literal):
+            if (self.datatype and other.datatype): 
+                # two datatyped literals
+                if not self.datatype in XSDToPython or not other.datatype in XSDToPython: 
+                    # non XSD DTs must match
+                    if self.datatype!=other.datatype: return False
+
+            else: 
+                # xsd:string may be compared with plain literals                
+                if not (self.datatype==_XSD_STRING and not other.datatype) or \
+                        (other.datatype==_XSD_STRING and not self.datatype): 
+                    return False
+
+                # if given lang-tag has to be case insensitive equal 
+                if (self.language or "").lower()!=(other.language or "").lower():
+                    return False
+
+        return True
+
+            
+
+
     def __hash__(self):
         """
         >>> from rdflib.namespace import XSD
@@ -824,9 +866,17 @@ class Literal(Identifier):
                     and other.datatype in _NUMERIC_LITERAL_TYPES:
                 return self.value==other.value
 
-            return self.datatype==other.datatype \
-                and (self.language.lower() if self.language else None) == (other.language.lower() if other.language else None) \
-                and self.value == other.value
+            if not ((self.datatype==_XSD_STRING and other.datatype==None) or (other.datatype==_XSD_STRING and self.datatype==None)):                
+                if self.datatype!=other.datatype: return False
+
+            if (self.language or "").lower() != (other.language or "").lower(): return False
+            
+            if self.value!=None and other.value!=None: 
+                return self.value == other.value
+            else: 
+                if unicode.__eq__(self,other): return True
+                return NotImplemented # not valid values, not equal lexical
+                
 
         elif isinstance(other, basestring):
             # only plain-literals can be directly compared to strings
@@ -849,6 +899,65 @@ class Literal(Identifier):
 
         return NotImplemented
 
+
+    def neq(self, other): 
+        """
+        Compare the value of this literal with something else
+
+        Either, with the value of another literal 
+        comparisons are then done in literal "value space", 
+        and according to the rules of XSD subtype-substitution/type-promotion
+
+        OR, with a python object: 
+
+        basestring objects can be compared with plain-literals, 
+        or those with datatype xsd:string
+
+        bool objects with xsd:boolean
+
+        a int, long or float with numeric xsd types
+        
+        isodate date,time,datetime objects with xsd:date,xsd:time or xsd:datetime
+        
+        Any other operations returns NotImplemented 
+        
+        """
+        if isinstance(other, Literal):
+            # TODO XSD typePromotion!
+
+            if self.datatype in _NUMERIC_LITERAL_TYPES  \
+                    and other.datatype in _NUMERIC_LITERAL_TYPES:
+                return self.value!=other.value
+
+            if self.datatype!=other.datatype \
+                or (self.language or "").lower() != (other.language or "").lower(): return True
+            
+            if self.value!=None and other.value!=None: 
+                return self.value != other.value
+            else: 
+                if unicode.__eq__(self,other): return False
+                return NotImplemented # not valid values, not equal lexical
+
+        elif isinstance(other, basestring):
+            # only plain-literals can be directly compared to strings
+
+            # TODO: Is "blah"@en eq "blah" ? 
+            if self.language is not None: return True
+
+            if (self.datatype == _XSD_STRING or self.datatype is None): 
+                return unicode(self) != other
+
+        elif isinstance(other, (int, long, float)): 
+            if self.datatype in _NUMERIC_LITERAL_TYPES:
+                return self.value!=other
+        elif isinstance(other, (date, datetime, time)):
+            if self.datatype in (_XSD_DATETIME, _XSD_DATE, _XSD_TIME): 
+                return self.value!=other
+        elif isinstance(other, bool): 
+            if self.datatype == _XSD_BOOLEAN: 
+                return self.value!=other
+
+        return NotImplemented
 
 
     @py3compat.format_doctest_out
