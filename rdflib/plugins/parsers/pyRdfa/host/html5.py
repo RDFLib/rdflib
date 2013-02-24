@@ -206,7 +206,7 @@ def remove_rel(node, state):
 	@param state: current state
 	@type state: L{Execution context<pyRdfa.state.ExecutionContext>}
 	"""
-	from pyRdfa.termorcurie import termname
+	from ..termorcurie import termname
 	def _massage_node(node,attr) :
 		"""The real work for remove_rel is done here, parametrized with @rel and @rev"""
 		if node.hasAttribute("property") and node.hasAttribute(attr) :
