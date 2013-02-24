@@ -31,24 +31,12 @@ Statement and component type checkers
 
 from calendar import timegm
 from time import altzone
-#from time import daylight
+# from time import daylight
 from time import gmtime
 from time import localtime
 from time import time
 from time import timezone
 
-try:
-    cmp
-except NameError:
-    def sign(n):
-        if n < 0:
-            return -1
-        if n > 0:
-            return 1
-        return 0
-else:
-    def sign(n):
-        return cmp(n, 0)
 
 from rdflib.exceptions import ContextTypeError
 from rdflib.exceptions import ObjectTypeError
@@ -59,6 +47,7 @@ from rdflib.graph import QuotedGraph
 from rdflib.term import BNode
 from rdflib.term import Literal
 from rdflib.term import URIRef
+from rdflib.py3compat import sign
 
 __all__ = [
     'list2set', 'first', 'uniq', 'more_than', 'to_term', 'from_n3',
@@ -330,13 +319,13 @@ def test():
 
 if __name__ == "__main__":
     # try to make the tests work outside of the time zone they were written in
-    #import os, time
-    #os.environ['TZ'] = 'US/Pacific'
-    #try:
+    # import os, time
+    # os.environ['TZ'] = 'US/Pacific'
+    # try:
     #    time.tzset()
-    #except AttributeError, e:
+    # except AttributeError, e:
     #    print e
-        #pass
+        # pass
         # tzset missing! see
         # http://mail.python.org/pipermail/python-dev/2003-April/034480.html
     test()  # pragma: no cover

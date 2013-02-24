@@ -22,6 +22,7 @@ from .structureddata import _get_orig_source, _check_error
 
 try:
     import html5lib
+    assert html5lib
     html5lib = True
 except ImportError:
     import warnings

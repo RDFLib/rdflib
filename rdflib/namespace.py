@@ -400,8 +400,8 @@ def is_ncname(name):
                 if c in ALLOWED_NAME_CHARS:
                     continue
                 return 0
-            #if in compatibility area
-            #if decomposition(c)!='':
+            # if in compatibility area
+            # if decomposition(c)!='':
             #    return 0
 
         return 1

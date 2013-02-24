@@ -50,6 +50,7 @@ from re import sub
 
 try:
     from hashlib import md5
+    assert md5
 except ImportError:
     from md5 import md5
 
@@ -91,7 +92,7 @@ class URIRef(Identifier):
             if ends_in_hash:
                 if not value.endswith("#"):
                     value += "#"
-        #if normalize and value and value != normalize("NFC", value):
+        # if normalize and value and value != normalize("NFC", value):
         #    raise Error("value must be in NFC normalized form.")
         try:
             rt = unicode.__new__(cls, value)
@@ -172,10 +173,6 @@ class URIRef(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
-        warnings.warn(
-            "method md5_term_hash is deprecated, and will be removed " +
-            "in the future. If you use this please let rdflib-dev know!",
-            category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("U"))
         return d.hexdigest()
@@ -268,8 +265,8 @@ class BNode(Identifier):
         # only store implementations should pass in a value
         """
         if value is None:
-            # so that BNode values do not collide with ones created with a
-            # different instance of this module at some other time.
+            # so that BNode values do not collide with ones created with
+            # a different instance of this module at some other time.
             node_id = _sn_gen()
             value = "%s%s" % (_prefix, node_id)
         else:
@@ -336,10 +333,6 @@ class BNode(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
-        warnings.warn(
-            "method md5_term_hash is deprecated, and will be removed " +
-            "in the future. If you use this please let rdflib-dev know!",
-            category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("B"))
         return d.hexdigest()
@@ -669,12 +662,12 @@ class Literal(Identifier):
 
         "Two literals are equal if and only if all of the following hold:
         * The strings of the two lexical forms compare equal, character by
-          character.
+        character.
         * Either both or neither have language tags.
         * The language tags, if any, compare equal.
         * Either both or neither have datatype URIs.
         * The two datatype URIs, if any, compare equal, character by
-          character."
+        character."
         -- 6.5.1 Literal Equality (RDF: Concepts and Abstract Syntax)
 
         """
@@ -865,9 +858,9 @@ class Literal(Identifier):
     def _quote_encode(self):
         # This simpler encoding doesn't work; a newline gets encoded as "\\n",
         # which is ok in sourcecode, but we want "\n".
-        #encoded = self.encode('unicode-escape').replace(
+        # encoded = self.encode('unicode-escape').replace(
         #        '\\', '\\\\').replace('"','\\"')
-        #encoded = self.replace.replace('\\', '\\\\').replace('"','\\"')
+        # encoded = self.replace.replace('\\', '\\\\').replace('"','\\"')
 
         # NOTE: Could in theory chose quotes based on quotes appearing in the
         # string, i.e. '"' and "'", but N3/turtle doesn't allow "'"(?).
@@ -883,12 +876,11 @@ class Literal(Identifier):
 
             return '"""%s"""' % encoded.replace('\r', '\\r')
         else:
-            return '"%s"' % \
-                self.replace(
-                    '\n', '\\n').replace(
-                        '\\', '\\\\').replace(
-                            '"', '\\"').replace(
-                                '\r', '\\r')
+            return '"%s"' % self.replace(
+                '\n', '\\n').replace(
+                    '\\', '\\\\').replace(
+                        '"', '\\"').replace(
+                            '\r', '\\r')
 
     if not py3compat.PY3:
         def __str__(self):
@@ -922,8 +914,8 @@ class Literal(Identifier):
         try:
             rt = self.toPython()
         except Exception:
-            _LOGGER.warning("could not convert %s to a Python datatype" %
-                            repr(self))
+            _LOGGER.warning(
+                "could not convert %s to a Python datatype" % repr(self))
             rt = self
 
         if rt is self:
@@ -940,10 +932,6 @@ class Literal(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
-        warnings.warn(
-            "method md5_term_hash is deprecated, and will be removed " +
-            "in the future. If you use this please let rdflib-dev know!",
-            category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("L"))
         return d.hexdigest()
@@ -1077,10 +1065,6 @@ class Variable(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
-        warnings.warn(
-            "method md5_term_hash is deprecated, and will be removed " +
-            "in the future. If you use this please let rdflib-dev know!",
-            category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("V"))
         return d.hexdigest()
