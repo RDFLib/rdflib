@@ -194,6 +194,8 @@ def html5_extra_attributes(node, state) :
 		# @content has top priority over the others...
 		if node.hasAttribute("datetime") :
 			_set_time( node.getAttribute("datetime") )
+		elif node.hasAttribute("dateTime") :
+			_set_time( node.getAttribute("dateTime") )
 		elif node.tagName == "time" :
 			# Note that a possible @datetime value has already been taken care of
 			_set_time( _get_literal(node) )
