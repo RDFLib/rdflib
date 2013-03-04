@@ -5,11 +5,14 @@ import sys
 
 try:
     from functools import wraps
+    assert wraps
 except ImportError:
     # No-op wraps decorator
     def wraps(f):
-        def dec(newf): return newf
+        def dec(newf):
+            return newf
         return dec
+
 
 def cast_bytes(s, enc='utf-8'):
     if isinstance(s, unicode):
@@ -17,6 +20,7 @@ def cast_bytes(s, enc='utf-8'):
     return s
 
 PY3 = (sys.version_info[0] >= 3)
+
 
 def _modify_str_or_docstring(str_change_func):
     @wraps(str_change_func)
@@ -27,23 +31,24 @@ def _modify_str_or_docstring(str_change_func):
         else:
             func = func_or_str
             doc = func.__doc__
-        
+
         doc = str_change_func(doc)
-        
+
         if func:
             func.__doc__ = doc
             return func
         return doc
     return wrapper
-    
+
+
 if PY3:
     # Python 3:
     # ---------
     def b(s):
         return s.encode('ascii')
-    
+
     bytestype = bytes
-    
+
     # Abstract u'abc' syntax:
     @_modify_str_or_docstring
     def format_doctest_out(s):
@@ -52,10 +57,10 @@ if PY3:
         "%(b)s'abc'" --> "b'abc'"
         "55%(L)s"    --> "55"
         "unicode(x)" --> "str(x)"
-        
+
         Accepts a string or a function, so it can be used as a decorator."""
-        return s % {'u':'', 'b':'b', 'L':'', 'unicode': 'str'}
-    
+        return s % {'u': '', 'b': 'b', 'L': '', 'unicode': 'str'}
+
     def type_cmp(a, b):
         """Python 2 style comparison based on type"""
         ta, tb = type(a).__name__, type(b).__name__
@@ -73,14 +78,21 @@ if PY3:
         else:
             return 0
 
+    def sign(n):
+        if n < 0:
+            return -1
+        if n > 0:
+            return 1
+        return 0
+
 else:
     # Python 2
     # --------
     def b(s):
         return s
-    
+
     bytestype = str
-    
+
     # Abstract u'abc' syntax:
     @_modify_str_or_docstring
     def format_doctest_out(s):
@@ -88,10 +100,10 @@ else:
         "%(u)s'abc'" --> "u'abc'"
         "%(b)s'abc'" --> "'abc'"
         "55%(L)s"    --> "55L"
-        
+
         Accepts a string or a function, so it can be used as a decorator."""
-        return s % {'u':'u', 'b':'', 'L':'L', 'unicode':'unicode'}
-    
+        return s % {'u': 'u', 'b': '', 'L': 'L', 'unicode': 'unicode'}
+
     def type_cmp(a, b):
         # return 1 if a > b else -1 if a < b else 0
         if a > b:
@@ -101,3 +113,5 @@ else:
         else:
             return 0
 
+    def sign(n):
+        return cmp(n, 0)

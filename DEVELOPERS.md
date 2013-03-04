@@ -1,25 +1,23 @@
 Continous Integration
 ---------------------
 
-A Shining Panda instance for continuous integration and 
-testing of RDFLib and RDFExtras is at: 
+We used Travis for CI, see: 
 
-https://jenkins.shiningpanda.com/rdflib/
+https://travis-ci.org/RDFLib/rdflib
 
 Compatibility
 -------------
 
-RDFLib 3.2.X tries to be compatible with python versions 2.4 - 3
+RDFLib 3.X tries to be compatible with python versions 2.5 - 3
 
 Some of the limitations we've come across:
 
- * no collections.defaultdict => a fall-back implementation is in rdflib/compat, import this instead
- * no 'yield' without arguments => use 'yield None' instead
- * no ternary if (no X if A else B) => rewrite with normal if
- * no context handlers, i.e. not 'with file('blah'): ' => rewrite
- * No skipping tests using unittest, i.e. TestCase.skipTest and decorators are missing => use nose instead
-
-We may drop 2.4 compatability for rdflib 4.X, but for now try to make sure the tests pass under 2.4 !
+ * Python 2.5/2.6 has no abstract base classes from collections, such MutableMap, etc. 
+ * 2.5/2.6 No skipping tests using unittest, i.e. TestCase.skipTest and decorators are missing => use nose instead
+ * no str.decode('string-escape') in py3 
+ * no json module in 2.5 (install simplejson instead)
+ * no ordereddict in 2.5/2.6 (install ordereddict module)
+ * collections.Counter was added in 2.6
 
 Releasing
 ---------

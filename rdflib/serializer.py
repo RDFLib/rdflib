@@ -5,13 +5,15 @@ This module is useful for those wanting to write a serializer that can
 plugin to rdflib. If you are wanting to invoke a serializer you likely
 want to do so through the Graph class serialize method.
 
-TODO: info for how to write a serializer that can plugin to rdflib. See also rdflib.plugin
+TODO: info for how to write a serializer that can plugin to rdflib.
+See also rdflib.plugin
 
 """
 
 from rdflib.term import URIRef
 
 __all__ = ['Serializer']
+
 
 class Serializer(object):
 
@@ -28,4 +30,3 @@ class Serializer(object):
         if base is not None and uri.startswith(base):
             uri = URIRef(uri.replace(base, "", 1))
         return uri
-

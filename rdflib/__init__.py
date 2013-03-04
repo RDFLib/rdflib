@@ -30,8 +30,8 @@ A tiny example:
 __docformat__ = "restructuredtext en"
 
 # The format of the __version__ line is matched by a regex in setup.py
-__version__ = "3.4.0-dev"
-__date__ = "2012/10/10"
+__version__ = "3.4.1-dev"
+__date__ = "2013/03/01"
 
 __all__ = [
     'URIRef',
@@ -48,13 +48,12 @@ __all__ = [
     'RDFS',
     'OWL',
     'XSD',
-    
+
     'util',
-    ]
+]
 
 import sys
-# generator expressions require 2.4
-assert sys.version_info >= (2, 4, 0), "rdflib requires Python 2.4 or higher"
+assert sys.version_info >= (2, 5, 0), "rdflib requires Python 2.5 or higher"
 del sys
 
 import logging
@@ -89,6 +88,8 @@ from rdflib.namespace import RDF, RDFS, OWL, XSD
 
 from rdflib import plugin
 from rdflib import query
+# tedious sop to flake8
+assert plugin
+assert query
 
 from rdflib import util
-

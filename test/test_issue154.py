@@ -37,6 +37,8 @@ class EntityTest(TestCase):
                                  ).eq( u"Exampl"))
 
     def test_html_decoded_entity_xhtml(self):
+        if sys.version_info[0] == 3:
+            raise SkipTest('html5lib not yet available for Python 3')
         if platform.system() == "Java":
             raise SkipTest('problem with HTML entities for html5lib in Jython')
         g = ConjunctiveGraph()

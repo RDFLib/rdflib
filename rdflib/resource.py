@@ -2,10 +2,11 @@
 from rdflib import py3compat
 
 __doc__ = py3compat.format_doctest_out("""
-The :class:`~rdflib.resource.Resource` class wraps a :class:`~rdflib.graph.Graph` 
-and a resource reference (i.e. a :class:`rdflib.term.URIRef` or 
-:class:`rdflib.term.BNode`) to support a resource-oriented way of working with a
-graph.
+The :class:`~rdflib.resource.Resource` class wraps a
+:class:`~rdflib.graph.Graph`
+and a resource reference (i.e. a :class:`rdflib.term.URIRef` or
+:class:`rdflib.term.BNode`) to support a resource-oriented way of
+working with a graph.
 
 It contains methods directly corresponding to those methods of the Graph
 interface that relate to reading and writing data. The difference is that a
@@ -14,8 +15,8 @@ tracking both the graph and a current subject. This makes for a "resource
 oriented" style, as compared to the triple orientation of the Graph API.
 
 Resulting generators are also wrapped so that any resource reference values
-(:class:`rdflib.term.URIRef`s and :class:`rdflib.term.BNode`s) are in turn 
-wrapped as Resources. (Note that this behaviour differs from the corresponding 
+(:class:`rdflib.term.URIRef`s and :class:`rdflib.term.BNode`s) are in turn
+wrapped as Resources. (Note that this behaviour differs from the corresponding
 methods in :class:`~rdflib.graph.Graph`, where no such conversion takes place.)
 
 
@@ -59,7 +60,8 @@ Load some RDF data::
 
 Create a Resource::
 
-    >>> person = Resource(graph, URIRef("http://example.org/person/some1#self"))
+    >>> person = Resource(
+    ...     graph, URIRef("http://example.org/person/some1#self"))
 
 Retrieve some basic facts::
 
@@ -74,8 +76,8 @@ Retrieve some basic facts::
 
 Resources as unicode are represented by their identifiers as unicode::
 
-    >>> %(unicode)s(person)
-    %(u)s'http://example.org/person/some1#self'
+    >>> %(unicode)s(person)  #doctest: +SKIP
+    %(u)s'Resource(http://example.org/person/some1#self'
 
 Resource references are also Resources, so you can easily get e.g. a qname
 for the type of a resource, like::
@@ -85,8 +87,11 @@ for the type of a resource, like::
 
 Or for the predicates of a resource::
 
-    >>> sorted(p.qname() for p in person.predicates())
-    [%(u)s'foaf:depiction', %(u)s'foaf:homepage', %(u)s'foaf:name', %(u)s'rdf:type', %(u)s'rdfs:comment']
+    >>> sorted(
+    ...     p.qname() for p in person.predicates()
+    ... )  #doctest: +NORMALIZE_WHITESPACE +SKIP
+    [%(u)s'foaf:depiction', %(u)s'foaf:homepage',
+     %(u)s'foaf:name', %(u)s'rdf:type', %(u)s'rdfs:comment']
 
 Follow relations and get more data from their Resources as well::
 
@@ -197,6 +202,14 @@ And the sequence of Stuff::
     >>> [it.qname() for it in stuff.seq()]
     [%(u)s'v:One', %(u)s'v:Other']
 
+On add, other resources are auto-unboxed:
+    >>> paper = Resource(graph, URIRef("http://example.org/def/v#Paper"))
+    >>> paper.add(RDFS.subClassOf, artifact)
+    >>> artifact in paper.objects(RDFS.subClassOf) # checks Resource instance
+    True
+    >>> (paper._identifier, RDFS.subClassOf, artifact._identifier) in graph
+    True
+
 
 Technical Details
 -----------------
@@ -295,6 +308,7 @@ from rdflib.namespace import RDF
 
 __all__ = ['Resource']
 
+
 class Resource(object):
 
     def __init__(self, graph, subject):
@@ -332,38 +346,56 @@ class Resource(object):
         __str__ = __unicode__
 
     def add(self, p, o):
+        if isinstance(o, Resource):
+            o = o._identifier
+
         self._graph.add((self._identifier, p, o))
 
     def remove(self, p, o=None):
+        if isinstance(o, Resource):
+            o = o._identifier
+
         self._graph.remove((self._identifier, p, o))
 
-    def set(self, predicate, object):
-        self._graph.set((self._identifier, predicate, object))
+    def set(self, p, o):
+        if isinstance(o, Resource):
+            o = o._identifier
 
-    def subjects(self, predicate=None): # rev
-        return self._resources(self._graph.subjects(predicate, self._identifier))
+        self._graph.set((self._identifier, p, o))
 
-    def predicates(self, object=None):
-        return self._resources(self._graph.predicates(self._identifier, object))
+    def subjects(self, predicate=None):  # rev
+        return self._resources(
+            self._graph.subjects(predicate, self._identifier))
+
+    def predicates(self, o=None):
+        if isinstance(o, Resource):
+            o = o._identifier
+
+        return self._resources(
+            self._graph.predicates(self._identifier, o))
 
     def objects(self, predicate=None):
-        return self._resources(self._graph.objects(self._identifier, predicate))
+        return self._resources(
+            self._graph.objects(self._identifier, predicate))
 
     def subject_predicates(self):
         return self._resource_pairs(
-                self._graph.subject_predicates(self._identifier))
+            self._graph.subject_predicates(self._identifier))
 
     def subject_objects(self):
         return self._resource_pairs(
-                self._graph.subject_objects(self._identifier))
+            self._graph.subject_objects(self._identifier))
 
     def predicate_objects(self):
         return self._resource_pairs(
-                self._graph.predicate_objects(self._identifier))
+            self._graph.predicate_objects(self._identifier))
 
-    def value(self, predicate=RDF.value, object=None, default=None, any=True):
+    def value(self, p=RDF.value, o=None, default=None, any=True):
+        if isinstance(o, Resource):
+            o = o._identifier
+
         return self._cast(
-            self._graph.value(self._identifier, predicate, object, default, any))
+            self._graph.value(self._identifier, p, o, default, any))
 
     def label(self):
         return self._graph.label(self._identifier)
@@ -405,4 +437,8 @@ class Resource(object):
     def _new(self, subject):
         return type(self)(self._graph, subject)
 
+    def __str__(self):
+        return 'Resource(%s)' % self._identifier
 
+    def __repr__(self):
+        return 'Resource(%s,%s)' % (self._graph, self._identifier)

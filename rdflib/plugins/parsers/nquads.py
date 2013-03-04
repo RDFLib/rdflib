@@ -1,6 +1,6 @@
 """
-This is a rdflib plugin for parsing NQuad files into Conjunctive 
-graphs that can be used and queried. The store that backs the graph 
+This is a rdflib plugin for parsing NQuad files into Conjunctive
+graphs that can be used and queried. The store that backs the graph
 *must* be able to handle contexts.
 
 >>> from rdflib import ConjunctiveGraph, URIRef, Namespace
@@ -11,9 +11,13 @@ graphs that can be used and queried. The store that backs the graph
 >>> assert len(g.store) == 449
 >>> # There should be 16 separate contexts
 >>> assert len([x for x in g.store.contexts()]) == 16
->>> # is the name of entity E10009 "Arco Publications"? (in graph http://bibliographica.org/entity/E10009)
+>>> # is the name of entity E10009 "Arco Publications"?
+>>> #   (in graph http://bibliographica.org/entity/E10009)
 >>> # Looking for:
->>> # <http://bibliographica.org/entity/E10009> <http://xmlns.com/foaf/0.1/name> "Arco Publications" <http://bibliographica.org/entity/E10009>
+>>> # <http://bibliographica.org/entity/E10009>
+>>> #   <http://xmlns.com/foaf/0.1/name>
+>>> #   "Arco Publications"
+>>> #   <http://bibliographica.org/entity/E10009>
 >>> s = URIRef("http://bibliographica.org/entity/E10009")
 >>> FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 >>> assert(g.value(s, FOAF.name).eq("Arco Publications"))
@@ -38,9 +42,9 @@ class NQuadsParser(NTriplesParser):
         assert sink.store.context_aware, ("NQuadsParser must be given"
                                           " a context aware store.")
         self.sink = sink
-        
+
         source = inputsource.getByteStream()
-        
+
         if not hasattr(source, 'read'):
             raise ParseError("Item to parse must be a file-like object.")
 
@@ -48,17 +52,19 @@ class NQuadsParser(NTriplesParser):
         self.buffer = ''
         while True:
             self.line = __line = self.readline()
-            if self.line is None: break
-            try: self.parseline()
+            if self.line is None:
+                break
+            try:
+                self.parseline()
             except ParseError, msg:
                 raise ParseError("Invalid line (%s):\n%r" % (msg, __line))
 
         return self.sink
-  
+
     def parseline(self):
         self.eat(r_wspace)
         if (not self.line) or self.line.startswith(b('#')):
-            return # The line is empty or a comment
+            return  # The line is empty or a comment
 
         subject = self.subject()
         self.eat(r_wspaces)
@@ -68,7 +74,7 @@ class NQuadsParser(NTriplesParser):
 
         obj = self.object()
         self.eat(r_wspaces)
-      
+
         context = self.uriref()
         self.eat(r_tail)
 
@@ -77,4 +83,3 @@ class NQuadsParser(NTriplesParser):
         # Must have a context aware store - add on a normal Graph
         # discards anything where the ctx != graph.identifier
         self.sink.store.add((subject, predicate, obj), context)
-

@@ -5,11 +5,13 @@
 @license: This software is available for use under the
 U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231">}
 @contact: Ivan Herman, ivan@w3.org
-@version: $Id: lite.py,v 1.9 2012/06/26 13:29:58 ivan Exp $
-$Date: 2012/06/26 13:29:58 $
+@version: $Id: lite.py,v 1.10 2013-01-07 12:46:31 ivan Exp $
+$Date: 2013-01-07 12:46:31 $
 """
 
-non_lite_attributes = ["about","inlist","datatype","rev","rel"]
+from ..host import HostLanguage
+non_lite_attributes      = ["about","inlist","datatype","rev","rel","content"]
+non_lite_attributes_html = ["about","inlist","datatype","rev"]
 
 def lite_prune(top, options, state) :
 	"""
@@ -26,18 +28,27 @@ def lite_prune(top, options, state) :
 	"""
 	def generate_warning(node, attr) :
 		if attr == "rel" :
-			msg = "Attribute @rel is not used in RDFa Lite, ignored (consider using @property)"
+			msg = "Attribute @rel should not be used in RDFa Lite (consider using @property)"
 		elif attr == "about" :
-			msg = "Attribute @about is not used in RDFa Lite, ignored (consider using a <link> element with @href or @resource)"
+			msg = "Attribute @about should not be used in RDFa Lite (consider using a <link> element with @href or @resource)"
 		else :
-			msg = "Attribute @%s is not used in RDFa Lite, ignored" % attr
+			msg = "Attribute @%s should not be used in RDFa Lite" % attr
 		options.add_warning(msg, node=node)
 
 	def remove_attrs(node) :
 		# first the @content; this has a special treatment
-		if node.tagName != "meta" and node.hasAttribute("content") :
-			generate_warning(node, "content")
-			# node.removeAttribute("content")
+		# there are some extras to check for HTML dialects
+		if options.host_language in [ HostLanguage.html5, HostLanguage.xhtml5, HostLanguage.xhtml ] :
+			if node.tagName != "meta" and node.hasAttribute("content") :
+				generate_warning(node, "content")
+				# node.removeAttribute("content")
+			if node.tagName != "link" and node.hasAttribute("rel") :
+				# Unfortunately, this has to be checked separately and run-time for <link> where @rel is allowed for non-RDFa purposes...
+				generate_warning(node, "rel")
+			for attr in non_lite_attributes_html :
+				if node.hasAttribute(attr) :
+					generate_warning(node, attr)
+					# node.removeAttribute(attr)
 		else :
 			for attr in non_lite_attributes :
 				if node.hasAttribute(attr) :

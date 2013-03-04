@@ -44,7 +44,7 @@ exist). New Namespaces can also be defined:
 
 dbpedia=Namespace('http://dbpedia.org/ontology/')
 
-abstracts=list(a for x in g.objects(semweb, dbpedia['abstract']) if a.language=='en')
+abstracts=list(x for x in g.objects(semweb, dbpedia['abstract']) if x.language=='en')
 ```
 
 See also *./examples*
@@ -79,6 +79,10 @@ Support
 More information is available on the project webpage:
 
 https://github.com/RDFLib/rdflib/
+
+Continuous integration status details available from travis.ci:
+
+[![Build Status](https://travis-ci.org/RDFLib/rdflib.png?branch=master)](https://travis-ci.org/RDFLib/rdflib)
 
 The RDFExtras project offers several additional stores as well as a 
 SPARQL engine for use with RDFLib: 
