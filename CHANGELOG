@@ -10,6 +10,10 @@
 	for different python versions, etc. 
     Several py3 bugs were also fixed.
 
+	This release drops python 2.4 compatability - it was just getting too 
+	expensive for us to maintain. It should however be compatible with any
+	cpython from 2.5 through 3.3.
+
     * node.md5_term is now deprecated, if you use it let us know. 
 
     * Literal.datatype/language are now read-only properties
