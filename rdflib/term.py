@@ -1287,15 +1287,25 @@ _toPythonMapping = {}
 _toPythonMapping.update(XSDToPython)
 
 
-def bind(datatype, conversion_function):
+def bind(datatype, pythontype, constructor=None, lexicalizer=None):
     """
-    bind a datatype to a function for converting it into a Python
-    instance.
+    register a new datatype<->pythontype binding 
+
+    Args: 
+       constructor : an optional function for converting lexical forms 
+                     into a Python instances, if not given the pythontype 
+                     is used directly
+       lexicalizer : an optinoal function for converting python objects to 
+                     lexical form, if not given object.__str__ is used
+
     """
     if datatype in _toPythonMapping:
         _LOGGER.warning("datatype '%s' was already bound. Rebinding." %
                         datatype)
-    _toPythonMapping[datatype] = conversion_function
+
+    if constructor==None:  constructor=pythontype
+    _toPythonMapping[datatype] = constructor
+    _PythonToXSD.append((pythontype, (lexicalizer, datatype)))
 
 
 class Variable(Identifier):

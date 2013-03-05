@@ -1,7 +1,7 @@
 import unittest
 
 import rdflib # needed for eval(repr(...)) below
-from rdflib.term import Literal, URIRef, _XSD_DOUBLE
+from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind
 from rdflib.py3compat import format_doctest_out as uformat
 
 # these are actually meant for test_term.py, which is not yet merged into trunk
@@ -90,6 +90,46 @@ class TestDoubleOutput(unittest.TestCase):
         vv = Literal("0.88", datatype=_XSD_DOUBLE)
         out = vv._literal_n3(use_plain=True)
         self.assert_(out in ["8.8e-01", "0.88"], out)
+
+class TestBindings(unittest.TestCase): 
+    
+    def testBinding(self): 
+
+        class a: 
+            def __init__(self,v): 
+                self.v=v[3:-3]
+            def __str__(self): 
+                return '<<<%s>>>'%self.v
+
+        dtA=rdflib.URIRef('urn:dt:a')
+        bind(dtA,a)
+
+        va=a("<<<2>>>")
+        la=Literal(va, normalize=True)
+        self.assertEqual(la.value,va)
+        self.assertEqual(la.datatype, dtA)
+    
+        la2=Literal("<<<2>>>", datatype=dtA)
+        self.assertTrue(isinstance(la2.value, a))
+        self.assertEqual(la2.value.v,va.v)
+    
+        class b: 
+            def __init__(self,v): 
+                self.v=v[3:-3]
+            def __str__(self): 
+                return 'B%s'%self.v
+
+        dtB=rdflib.URIRef('urn:dt:b')
+        bind(dtB,b,None,lambda x: '<<<%s>>>'%x)
+        
+        vb=b("<<<3>>>")
+        lb=Literal(vb, normalize=True)
+        self.assertEqual(lb.value,vb)
+        self.assertEqual(lb.datatype, dtB)
+
+        
+        
+    
 
 if __name__ == "__main__":
     unittest.main()
