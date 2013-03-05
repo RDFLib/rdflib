@@ -870,20 +870,41 @@ class Literal(Identifier):
 
             if self.datatype in _NUMERIC_LITERAL_TYPES  \
                     and other.datatype in _NUMERIC_LITERAL_TYPES:
-                return self.value==other.value
-
-            if not ((self.datatype==_XSD_STRING and other.datatype==None) or (other.datatype==_XSD_STRING and self.datatype==None)):                
-                if self.datatype!=other.datatype: return False
+                if self.value!=None and other.value!=None: 
+                    return self.value==other.value
+                else: 
+                    if unicode.__eq__(self, other): return True
+                    raise TypeError('I cannot know that these two lexical forms do not map to the same value: %s and %s'%(self, other))
 
             if (self.language or "").lower() != (other.language or "").lower(): return False
+            
+            if ((self.datatype==None and other.datatype==None) or 
+                    (self.datatype==_XSD_STRING and other.datatype==None) or 
+                    (other.datatype==_XSD_STRING and self.datatype==None)):
+                # string/plain literals, compare on lexical form
+                return unicode.__eq__(self,other)
+            
+            if self.datatype!=other.datatype: 
+                raise TypeError("I don't know how to compare literals with datatypes %s and %s"%(self.datatype, other.datatype))
+            
+            # matching non-string DTs
             
             if self.value!=None and other.value!=None: 
                 return self.value == other.value
             else: 
-                if unicode.__eq__(self,other): return True
-                return NotImplemented # not valid values, not equal lexical
                 
+                if unicode.__eq__(self, other): return True
 
+                if self.datatype==_XSD_STRING: 
+                    return False # string value space=lexical space
+
+                # matching DTs, but not matching, we cannot compare!
+                raise TypeError('I cannot know that these two lexical forms do not map to the same value: %s and %s'%(self, other))
+
+
+        elif isinstance(other, Node): 
+            return False # no non-Literal nodes are equal to a literal
+                
         elif isinstance(other, basestring):
             # only plain-literals can be directly compared to strings
 
@@ -903,67 +924,13 @@ class Literal(Identifier):
             if self.datatype == _XSD_BOOLEAN: 
                 return self.value==other
 
+
+
         return NotImplemented
 
 
     def neq(self, other): 
-        """
-        Compare the value of this literal with something else
-
-        Either, with the value of another literal 
-        comparisons are then done in literal "value space", 
-        and according to the rules of XSD subtype-substitution/type-promotion
-
-        OR, with a python object: 
-
-        basestring objects can be compared with plain-literals, 
-        or those with datatype xsd:string
-
-        bool objects with xsd:boolean
-
-        a int, long or float with numeric xsd types
-        
-        isodate date,time,datetime objects with xsd:date,xsd:time or xsd:datetime
-        
-        Any other operations returns NotImplemented 
-        
-        """
-        if isinstance(other, Literal):
-            # TODO XSD typePromotion!
-
-            if self.datatype in _NUMERIC_LITERAL_TYPES  \
-                    and other.datatype in _NUMERIC_LITERAL_TYPES:
-                return self.value!=other.value
-
-            if self.datatype!=other.datatype \
-                or (self.language or "").lower() != (other.language or "").lower(): return True
-            
-            if self.value!=None and other.value!=None: 
-                return self.value != other.value
-            else: 
-                if unicode.__eq__(self,other): return False
-                return NotImplemented # not valid values, not equal lexical
-
-        elif isinstance(other, basestring):
-            # only plain-literals can be directly compared to strings
-
-            # TODO: Is "blah"@en eq "blah" ? 
-            if self.language is not None: return True
-
-            if (self.datatype == _XSD_STRING or self.datatype is None): 
-                return unicode(self) != other
-
-        elif isinstance(other, (int, long, float)): 
-            if self.datatype in _NUMERIC_LITERAL_TYPES:
-                return self.value!=other
-        elif isinstance(other, (date, datetime, time)):
-            if self.datatype in (_XSD_DATETIME, _XSD_DATE, _XSD_TIME): 
-                return self.value!=other
-        elif isinstance(other, bool): 
-            if self.datatype == _XSD_BOOLEAN: 
-                return self.value!=other
-
-        return NotImplemented
+        return not self.eq(other)
 
 
     @py3compat.format_doctest_out
