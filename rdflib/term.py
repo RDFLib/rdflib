@@ -164,6 +164,49 @@ class URIRef(Identifier):
         else:
             return False
 
+
+    def __gt__(self, other):
+        """
+        This implements ordering for URIRefs, 
+
+        This tries to implement this: 
+        http://www.w3.org/TR/sparql11-query/#modOrderBy
+
+        """
+        if other is None:
+            return True # everything bigger than None
+        elif isinstance(other, URIRef):
+            return unicode.__gt__(self, other)
+        elif isinstance(other, Literal): 
+            return False # literals bigger than uriref
+        elif isinstance(other, Node): 
+            return True # all other nodes are less-than URIRefs
+
+        return NotImplemented
+
+
+    def __lt__(self, other):
+        if other is None:
+            return False # Nothing is less than None
+        elif isinstance(other, URIRef):
+            return unicode.__lt__(self, other)
+        elif isinstance(other, Literal): 
+            return True # literals bigger than uriref
+        elif isinstance(other, Node): 
+            return False # all other nodes are less-than URIRefs
+
+        return NotImplemented
+
+    def __le__(self, other):
+        r=self.__lt__(other)
+        if r: return True
+        return self==other
+
+    def __ge__(self, other):
+        r=self.__gt__(other)
+        if r: return True
+        return self==other
+
     def __hash__(self):
         return hash(URIRef) ^ hash(unicode(self))
 
@@ -382,8 +425,8 @@ class Literal(Identifier):
     >>> Literal('01', datatype=XSD.integer).eq(Literal('1', datatype=XSD.float))
     True
 
-    GT/LT Comparisons are done by language, then by datatype, and finally 
-    by lexical representations. Comparisons with non-literals is done by type
+    GT/LT Comparisons are also done in value space. 
+    For other nodes the ordering is None < BNode < URIRef < Literal
 
     >>> from rdflib import Literal, XSD
     >>> Literal(1).toPython()
@@ -406,21 +449,15 @@ class Literal(Identifier):
     >>> Literal('1') < Literal('1')
     False
     >>> Literal(1) < Literal('1')
-    False
+    True
     >>> Literal(1) > Literal('1')
     True
     >>> Literal(1) > Literal(2.0)
-    True
-    >>> Literal(1) < URIRef('foo')
     False
+    >>> Literal(1) > URIRef('foo')
+    True
     >>> Literal(1) < 2.0
     False
-    >>> Literal(1) < object
-    False
-    >>> lit2006 < "2007"
-    False
-    >>> "2005" < lit2006
-    True
     >>> x = Literal("2", datatype=XSD.integer)
     >>> x.n3()
     %(u)s'"2"^^<http://www.w3.org/2001/XMLSchema#integer>'
@@ -443,7 +480,7 @@ class Literal(Identifier):
 
         if lang=='': lang=None # no empty lang-tags in RDF
 
-        normalize=normalize or rdflib.NORMALIZE_LITERALS
+        normalize=normalize if normalize!=None else rdflib.NORMALIZE_LITERALS
 
         if lang is not None and datatype is not None:
             raise TypeError(
@@ -457,8 +494,9 @@ class Literal(Identifier):
             datatype=datatype or lexical_or_value.datatype
             lang=lang or lexical_or_value.language
             value=lexical_or_value.value
-        elif isinstance(lexical_or_value, basestring):
-            
+
+        if value==None and isinstance(lexical_or_value, basestring):
+
             if datatype: 
                 convFunc = _toPythonMapping.get(datatype, None)
                 if convFunc:
@@ -642,46 +680,16 @@ class Literal(Identifier):
             raise TypeError("Not a number; %s" % repr(self))
 
 
-    @py3compat.format_doctest_out
-    def __lt__(self, other):
-        """
-        >>> from rdflib.namespace import XSD
-        >>> Literal("YXNkZg==", datatype=XSD.base64Binary) < "foo"
-        False
-        >>> u"\xfe" < Literal(u"foo")
-        True
-        >>> Literal(base64.encodestring(u"\xfe".encode("utf-8")), datatype=XSD.base64Binary) < u"foo"
-        False
-        """
-
-        if other is None:
-            return False # Nothing is less than None
-        if isinstance(other, Literal):
-            r=cmp(self.language, other.language)
-            if r: return r<0
-            r=cmp(self.datatype, other.datatype)
-            if r: return r<0
-
-            return unicode.__lt__(self, other)
-        else: 
-            return Literal<type(other)
-
-    def __le__(self, other):
-        """
-        >>> from rdflib.namespace import XSD
-        >>> Literal('2007-01-01T10:00:00', datatype=XSD.dateTime
-        ...     ) <= Literal('2007-01-01T10:00:00', datatype=XSD.dateTime)
-        True
-        """
-        if other is None:
-            return False
-        if self == other:
-            return True
-        else:
-            return self < other
 
     def __gt__(self, other):
         """
+
+        This implements ordering for Literals, 
+        the other comparison methods delegate here
+
+        This tries to implement this: 
+        http://www.w3.org/TR/sparql11-query/#modOrderBy
+
         Literals compare by value if datatype and lang match
         >>> Literal(1)>Literal(2)
         False
@@ -704,24 +712,52 @@ class Literal(Identifier):
         False
         """
         if other is None:
-            return True # Everything is greater than None
+            return True # Everything is greater than None        
         if isinstance(other, Literal):
+
+            if self.datatype in _NUMERIC_LITERAL_TYPES and \
+                    other.datatype in _NUMERIC_LITERAL_TYPES: 
+                return cmp(self.value, other.value)>0
+            
+            if self.datatype!=other.datatype: 
+                return NotImplemented
+
             r=cmp(self.language, other.language)
             if r: return r>0
-            r=cmp(self.datatype, other.datatype)
-            if r: return r>0
-            
-            return self.value>other.value
+
+            if self.value!=None and other.value!=None:
+                return self.value>other.value
+            return unicode(self)>unicode(other)
+        elif isinstance(other, Node): 
+            return True # Literal are the greatest!
         else: 
-            return Literal>type(other)
+            return NotImplemented
+
+    def __lt__(self, other):
+        if other is None:
+            return False # Nothing is less than None
+        if isinstance(other, Literal):
+            return other.__gt__(self)
+        if isinstance(other, Node): 
+            return False # all nodes are less-than Literals
+
+        return NotImplemented
+
+    def __le__(self, other):
+        """
+        >>> from rdflib.namespace import XSD
+        >>> Literal('2007-01-01T10:00:00', datatype=XSD.dateTime
+        ...     ) <= Literal('2007-01-01T10:00:00', datatype=XSD.dateTime)
+        True
+        """
+        r=self.__lt__(other)
+        if r: return True
+        return self.eq(other)
 
     def __ge__(self, other):
-        if other is None:
-            return False
-        if self == other:
-            return True
-        else:
-            return self > other
+        r=self.__gt__(other)
+        if r: return True
+        return self.eq(other)
 
     def __ne__(self, other):
         """
@@ -734,7 +770,7 @@ class Literal(Identifier):
         False
 
         """
-        return not self.__eq__(other)
+        return not self==other
 
     def _comparable_to(self,other): 
         """
