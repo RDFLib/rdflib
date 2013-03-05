@@ -179,7 +179,7 @@ Using Namespace class:
 import logging
 _logger = logging.getLogger(__name__)
 
-#import md5
+# import md5
 import random
 import warnings
 
@@ -1212,7 +1212,7 @@ class ConjunctiveGraph(Graph):
             source=source, publicID=publicID, location=location,
             file=file, data=data, format=format)
 
-        #id = self.context_id(self.absolutize(source.getPublicId()))
+        # id = self.context_id(self.absolutize(source.getPublicId()))
         g_id = URIRef(publicID and publicID or source.getPublicId())
         context = Graph(store=self.store, identifier=g_id)
         context.remove((None, None, None))
