@@ -547,7 +547,7 @@ class Literal(Identifier):
         This is used for if statements, bool(literal), etc. 
         """
         if self.value: return bool(self.value)
-        return unicode.__eq__(self, '')
+        return len(self)!=0 
 
 
     @py3compat.format_doctest_out
