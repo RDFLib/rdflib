@@ -435,9 +435,9 @@ class Literal(Identifier):
     __doc__ = py3compat.format_doctest_out(doc)
 
     if not py3compat.PY3:
-        __slots__ = ("language", "datatype", "_language", "_datatype", "value")
+        __slots__ = ("language", "datatype", "value", "_language", "_datatype", "_value")
     else:
-        __slots__ = ("_language", "_datatype", "value")
+        __slots__ = ("_language", "_datatype", "_value")
 
     def __new__(cls, lexical_or_value, lang=None, datatype=None, normalize=None):
 
@@ -491,7 +491,7 @@ class Literal(Identifier):
 
         inst._language = lang
         inst._datatype = datatype
-        inst.value = value
+        inst._value = value
         return inst
 
     @py3compat.format_doctest_out
@@ -505,6 +505,10 @@ class Literal(Identifier):
         """
 
         return Literal(self.value,datatype=self.datatype, lang=self.language)
+
+    @property 
+    def value(self):
+        return self._value
 
     @property
     def language(self):
