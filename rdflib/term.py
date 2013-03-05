@@ -55,7 +55,7 @@ except ImportError:
     from md5 import md5
 
 
-from rdflib import NORMALIZE_LITERALS
+import rdflib
 from . import py3compat
 
 b = py3compat.b
@@ -443,7 +443,7 @@ class Literal(Identifier):
 
         if lang=='': lang=None # no empty lang-tags in RDF
 
-        normalize=normalize if normalize is not None else NORMALIZE_LITERALS
+        normalize=normalize or rdflib.NORMALIZE_LITERALS
 
         if lang is not None and datatype is not None:
             raise TypeError(
