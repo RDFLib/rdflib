@@ -63,10 +63,10 @@ _LOGGER.info("version: %s" % __version__)
 """
 If True - Literals lexical forms are normalized when created.
 I.e. the lexical forms is parsed according to data-type, then the
-stored lexical form is the re-serialized value that was parsed. 
+stored lexical form is the re-serialized value that was parsed.
 
-Illegal values for a datatype are simply kept. 
-The normalized keyword for Literal.__new__ can override this. 
+Illegal values for a datatype are simply kept.  The normalized keyword
+for Literal.__new__ can override this.
 
 For example: 
 
@@ -77,6 +77,27 @@ rdflib.term.Literal(u'1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/X
 
 """
 NORMALIZE_LITERALS=True
+
+"""
+DAWG_LITERAL_COLLATION determines how literals are ordered or compared
+to each other.
+
+In SPARQL, applying the >,<,>=,<= operators to literals of
+incompatible data-types is an error, i.e: 
+
+Literal(2)>Literal('cake') is neither true nor false, but an error.
+
+This is a problem in PY3, where lists of Literals of incompatible
+types can no longer be sorted.
+
+Setting this flag to True gives you strict DAWG/SPARQL compliance,
+setting it to False will order Literals with incompatible datatypes by
+datatype URI
+
+In particular, this determines how the rich comparison operators for
+Literal work, eq, __neq__, __lt__, etc.
+"""
+DAWG_LITERAL_COLLATION=False
 
 from rdflib.term import URIRef, BNode, Literal, Variable
 

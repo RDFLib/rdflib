@@ -60,6 +60,7 @@ from . import py3compat
 
 b = py3compat.b
 
+        
 
 class Node(object):
     """
@@ -425,14 +426,26 @@ class Literal(Identifier):
     >>> Literal('01', datatype=XSD.integer).eq(Literal('1', datatype=XSD.float))
     True
 
-    GT/LT Comparisons are also done in value space. 
+    The eq method also provides limited support for basic python types: 
+    >>> Literal(1).eq(1) # fine - int compatible with xsd:integer
+    True
+    >>> Literal('a').eq('b') # fine - str compatible with plain-lit
+    False
+    >>> Literal('a', datatype=XSD.string).eq('a') # fine - str compatible with xsd:string
+    True
+    >>> Literal('a').eq(1) # not fine, int incompatible with plain-lit
+    NotImplemented
+
+
+    Greater-than/less-than ordering comparisons are also done in value space, when compatible datatypes are used. 
+    Incompatible datatypes are ordered by DT, or by lang-tag. 
     For other nodes the ordering is None < BNode < URIRef < Literal
 
+    Any comparison with non-rdflib Node are "NotImplemented"
+    In PY2.X some stable order will be made up by python
+    In PY3 this is an error. 
+
     >>> from rdflib import Literal, XSD
-    >>> Literal(1).toPython()
-    1
-    >>> Literal("adsf") > 1
-    True
     >>> lit2006 = Literal('2006-01-01',datatype=XSD.date)
     >>> lit2006.toPython()
     datetime.date(2006, 1, 1)
@@ -440,34 +453,25 @@ class Literal(Identifier):
     True
     >>> Literal(datetime.utcnow()).datatype
     rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#dateTime')
-    >>> oneInt     = Literal(1)
-    >>> twoInt     = Literal(2)
-    >>> twoInt < oneInt
+    >>> Literal(1) > Literal(2) # by value
     False
-    >>> Literal('1') < Literal(1)
-    True
-    >>> Literal('1') < Literal('1')
+    >>> Literal(1) > Literal(2.0) # by value
     False
-    >>> Literal(1) < Literal('1')
+    >>> Literal('1') > Literal(1) # by DT
     True
-    >>> Literal(1) > Literal('1')
-    True
-    >>> Literal(1) > Literal(2.0)
+    >>> Literal('1') < Literal('1') # by lexical form
     False
-    >>> Literal(1) > URIRef('foo')
-    True
-    >>> Literal(1) < 2.0
+    >>> Literal('a', lang='en') > Literal('a', lang='fr') # by lang-tag
     False
-    >>> x = Literal("2", datatype=XSD.integer)
-    >>> x.n3()
-    %(u)s'"2"^^<http://www.w3.org/2001/XMLSchema#integer>'
-    >>> Literal(x) == x
+    >>> Literal(1) > URIRef('foo') # by node-type
     True
-    >>> x = Literal("cake", lang="en")
-    >>> x
-    rdflib.term.Literal(%(u)s'cake', lang='en')
-    >>> Literal(x) == x
-    True
+
+    The > < operators will eat this NotImplemented and either make up an ordering (py2.x)
+    or throw a TypeError (py3k)
+    >>> Literal(1).__gt__(2.0) 
+    NotImplemented
+
+
     """
     __doc__ = py3compat.format_doctest_out(doc)
 
@@ -690,25 +694,28 @@ class Literal(Identifier):
         This tries to implement this: 
         http://www.w3.org/TR/sparql11-query/#modOrderBy
 
-        Literals compare by value if datatype and lang match
-        >>> Literal(1)>Literal(2)
+        In short, Literals with compatible data-types are orderd in value space, 
+        i.e. 
+
+        >>> Literal(1)>Literal(2) # int/int
         False
-        >>> Literal(1)>Literal("2")
+        >>> Literal(2.0)>Literal(1) # double/int
         True
-        >>> Literal(1)>2
+        >>> from decimal import Decimal
+        >>> Literal(Decimal("3.3")) > Literal(2.0) # decimal/double
         True
-        >>> 2>Literal(1)
-        False
-        >>> Literal(1)<2
-        False
-        >>> 2<Literal(1)
+        >>> Literal('b')>Literal('a') # plain lit/plain lit
+        True
+        >>> Literal('b')>Literal('a', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#string')) # plain lit/xsd:string
         True
         
-        >>> Literal(1.2)>Literal(1.1)
-        True
-        >>> Literal("a")<Literal("b")
-        True
-        >>> Literal("a", lang="en")<Literal("b")
+        Incompatible datatype mismatches ordered by DT
+        
+        >>> Literal(1)>Literal("2") # int>string
+        False
+
+        Langtagged literals by lang tag
+        >>> Literal("a", lang="en")>Literal("a", lang="fr")
         False
         """
         if other is None:
@@ -718,26 +725,46 @@ class Literal(Identifier):
             if self.datatype in _NUMERIC_LITERAL_TYPES and \
                     other.datatype in _NUMERIC_LITERAL_TYPES: 
                 return cmp(self.value, other.value)>0
-            
-            if self.datatype!=other.datatype: 
-                return NotImplemented
 
+            # plain-literals and xsd:string literals 
+            # are "the same"
+            dtself=self.datatype or _XSD_STRING
+            dtother=other.datatype or _XSD_STRING
+
+            r=cmp(dtself, dtother)
+            if r: 
+                if rdflib.DAWG_LITERAL_COLLATION: 
+                    return NotImplemented
+                else: 
+                    return r>0
+            
             r=cmp(self.language, other.language)
             if r: return r>0
 
             if self.value!=None and other.value!=None:
                 return self.value>other.value
-            return unicode(self)>unicode(other)
+
+            r=cmp(unicode(self),unicode(other))
+            if r: return r>0
+            
+            # same language, same lexical form, check real dt
+            # plain-literals come before xsd:string!
+            
+            return cmp(self.datatype, other.datatype)
+
         elif isinstance(other, Node): 
             return True # Literal are the greatest!
         else: 
-            return NotImplemented
+            return NotImplemented # we can only compare to nodes
 
     def __lt__(self, other):
         if other is None:
             return False # Nothing is less than None
         if isinstance(other, Literal):
-            return other.__gt__(self)
+            try: 
+                return not self.__gt__(other) and not self.eq(other)
+            except TypeError: 
+                return NotImplemented
         if isinstance(other, Node): 
             return False # all nodes are less-than Literals
 
@@ -752,12 +779,19 @@ class Literal(Identifier):
         """
         r=self.__lt__(other)
         if r: return True
-        return self.eq(other)
+        try: 
+            return self.eq(other)
+        except TypeError: 
+            return NotImplemented
+            
 
     def __ge__(self, other):
         r=self.__gt__(other)
         if r: return True
-        return self.eq(other)
+        try: 
+            return self.eq(other)
+        except TypeError: 
+            return NotImplemented
 
     def __ne__(self, other):
         """
@@ -902,7 +936,6 @@ class Literal(Identifier):
         
         """
         if isinstance(other, Literal):
-            # TODO XSD typePromotion!
 
             if self.datatype in _NUMERIC_LITERAL_TYPES  \
                     and other.datatype in _NUMERIC_LITERAL_TYPES:
@@ -913,15 +946,19 @@ class Literal(Identifier):
                     raise TypeError('I cannot know that these two lexical forms do not map to the same value: %s and %s'%(self, other))
 
             if (self.language or "").lower() != (other.language or "").lower(): return False
-            
-            if ((self.datatype==None and other.datatype==None) or 
-                    (self.datatype==_XSD_STRING and other.datatype==None) or 
-                    (other.datatype==_XSD_STRING and self.datatype==None)):
+
+            dtself=self.datatype or _XSD_STRING
+            dtother=other.datatype or _XSD_STRING
+
+            if (dtself==_XSD_STRING and dtother==_XSD_STRING):
                 # string/plain literals, compare on lexical form
                 return unicode.__eq__(self,other)
             
-            if self.datatype!=other.datatype: 
-                raise TypeError("I don't know how to compare literals with datatypes %s and %s"%(self.datatype, other.datatype))
+            if dtself!=dtother:
+                if rdflib.DAWG_LITERAL_COLLATION: 
+                    raise TypeError("I don't know how to compare literals with datatypes %s and %s"%(self.datatype, other.datatype))
+                else: 
+                    return False
             
             # matching non-string DTs
             
