@@ -720,33 +720,44 @@ class Literal(Identifier):
 
             if self.datatype in _NUMERIC_LITERAL_TYPES and \
                     other.datatype in _NUMERIC_LITERAL_TYPES: 
-                return cmp(self.value, other.value)>0
+                return self.value>other.value
 
             # plain-literals and xsd:string literals 
             # are "the same"
             dtself=self.datatype or _XSD_STRING
             dtother=other.datatype or _XSD_STRING
 
-            r=cmp(dtself, dtother)
-            if r: 
+            if dtself!=dtother:            
                 if rdflib.DAWG_LITERAL_COLLATION: 
                     return NotImplemented
                 else: 
-                    return r>0
+                    return dtself>dtother
             
-            r=cmp(self.language, other.language)
-            if r: return r>0
+            if self.language!=other.language: 
+                if not self.language: 
+                    return False
+                elif not other.language:
+                    return True
+                else: 
+                    return self.language>other.language
 
             if self.value!=None and other.value!=None:
                 return self.value>other.value
 
-            r=cmp(unicode(self),unicode(other))
-            if r: return r>0
+            if unicode(self)!=unicode(other): 
+                return unicode(self)>unicode(other)
             
             # same language, same lexical form, check real dt
             # plain-literals come before xsd:string!
-            
-            return cmp(self.datatype, other.datatype)
+            if self.datatype!=other.datatype:
+                if not self.datatype:
+                    return False
+                elif not other.datatype: 
+                    return True
+                else: 
+                    return self.datatype>other.datatype
+
+            return False # they are the same
 
         elif isinstance(other, Node): 
             return True # Literal are the greatest!
