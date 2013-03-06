@@ -676,9 +676,9 @@ class Graph(Node):
           rdflib.term.Literal(%(u)s'bla'))]
         >>> g.add([u, SKOS.prefLabel, Literal('blubb', lang='en')])
         >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
-        [(rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
+        [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal(%(u)s'bla')),
-          (rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
+          (rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal(%(u)s'blubb', lang='en'))]
         >>> g.preferredLabel(u, lang='') #doctest: +NORMALIZE_WHITESPACE
         [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),

@@ -570,7 +570,7 @@ class Literal(Identifier):
     def __add__(self, val):
         """
         >>> Literal(1) + 1
-        rdflib.term.Literal(u'2', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+        rdflib.term.Literal(%(u)s'2', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
         >>> Literal("1") + "1"
         rdflib.term.Literal(%(u)s'11')
         """
@@ -595,17 +595,17 @@ class Literal(Identifier):
     def __neg__(self):
         """
         >>> (- Literal(1))
-        rdflib.term.Literal(u'-1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+        rdflib.term.Literal(%(u)s'-1', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
         >>> (- Literal(10.5))
-        rdflib.term.Literal(u'-10.5', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#double'))
+        rdflib.term.Literal(%(u)s'-10.5', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#double'))
         >>> from rdflib.namespace import XSD
         >>> (- Literal("1", datatype=XSD.integer))
-        rdflib.term.Literal(u'-1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+        rdflib.term.Literal(%(u)s'-1', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
 
         >>> (- Literal("1"))
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
-        TypeError: Not a number; rdflib.term.Literal(u'1')
+        TypeError: Not a number; rdflib.term.Literal(%(u)s'1')
         >>> 
         """
 
@@ -619,17 +619,17 @@ class Literal(Identifier):
     def __pos__(self):
         """
         >>> (+ Literal(1))
-        rdflib.term.Literal(u'1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+        rdflib.term.Literal(%(u)s'1', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
         >>> (+ Literal(-1))
-        rdflib.term.Literal(u'-1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+        rdflib.term.Literal(%(u)s'-1', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
         >>> from rdflib.namespace import XSD
         >>> (+ Literal("-1", datatype=XSD.integer))
-        rdflib.term.Literal(u'-1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+        rdflib.term.Literal(%(u)s'-1', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
         
         >>> (+ Literal("1"))
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
-        TypeError: Not a number; rdflib.term.Literal(u'1')
+        TypeError: Not a number; rdflib.term.Literal(%(u)s'1')
         """
         if isinstance(self.value, (int, long, float)): 
             return Literal(self.value.__pos__())
@@ -640,16 +640,16 @@ class Literal(Identifier):
     def __abs__(self):
         """
         >>> abs(Literal(-1))
-        rdflib.term.Literal(u'1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+        rdflib.term.Literal(%(u)s'1', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
             
         >>> from rdflib.namespace import XSD
         >>> abs( Literal("-1", datatype=XSD.integer))
-        rdflib.term.Literal(u'1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+        rdflib.term.Literal(%(u)s'1', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
                 
         >>> abs(Literal("1"))
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
-        TypeError: Not a number; rdflib.term.Literal(u'1')
+        TypeError: Not a number; rdflib.term.Literal(%(u)s'1')
         """
         if isinstance(self.value, (int, long, float)): 
             return Literal(self.value.__abs__())
@@ -661,17 +661,17 @@ class Literal(Identifier):
     def __invert__(self):
         """
         >>> ~(Literal(-1))
-        rdflib.term.Literal(u'0', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+        rdflib.term.Literal(%(u)s'0', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
 
         >>> from rdflib.namespace import XSD
         >>> ~( Literal("-1", datatype=XSD.integer))
-        rdflib.term.Literal(u'0', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+        rdflib.term.Literal(%(u)s'0', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
 
         Not working:
         >>> ~(Literal("1"))
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
-        TypeError: Not a number; rdflib.term.Literal(u'1')
+        TypeError: Not a number; rdflib.term.Literal(%(u)s'1')
         """
         if isinstance(self.value, (int, long, float)): 
             return Literal(self.value.__invert__())
@@ -691,6 +691,7 @@ class Literal(Identifier):
 
         In short, Literals with compatible data-types are orderd in value space, 
         i.e. 
+        >>> from rdflib import XSD
 
         >>> Literal(1)>Literal(2) # int/int
         False
@@ -701,7 +702,7 @@ class Literal(Identifier):
         True
         >>> Literal('b')>Literal('a') # plain lit/plain lit
         True
-        >>> Literal('b')>Literal('a', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#string')) # plain lit/xsd:string
+        >>> Literal('b')>Literal('a', datatype=XSD.string) # plain lit/xsd:string
         True
         
         Incompatible datatype mismatches ordered by DT
