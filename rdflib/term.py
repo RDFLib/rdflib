@@ -136,7 +136,7 @@ class Identifier(Node, unicode):  # allow Identifiers to be Nodes in the Graph
         elif type(self)==type(other):
             return unicode(self)>unicode(other)
         elif isinstance(other, Node): 
-            return _ORDERING[type(self)]>ORDERING[type(other)]
+            return _ORDERING[type(self)]>_ORDERING[type(other)]
 
         return NotImplemented
 
@@ -160,6 +160,10 @@ class Identifier(Node, unicode):  # allow Identifiers to be Nodes in the Graph
         r=self.__gt__(other)
         if r: return True
         return self==other
+
+    def __hash__(self):
+        return hash(type(self)) ^ hash(unicode(self))
+
 
 
 class URIRef(Identifier):
@@ -225,9 +229,6 @@ class URIRef(Identifier):
 
     def __getnewargs__(self):
         return (unicode(self), )
-
-    def __hash__(self):
-        return hash(URIRef) ^ hash(unicode(self))
 
     if not py3compat.PY3:
         def __str__(self):
@@ -365,9 +366,6 @@ class BNode(Identifier):
 
     def __reduce__(self):
         return (BNode, (unicode(self),))
-
-    def __hash__(self):
-        return hash(BNode) ^ hash(unicode(self))
 
     if not py3compat.PY3:
         def __str__(self):
@@ -847,7 +845,7 @@ class Literal(Identifier):
 
         """
         
-        return Identifier.__hash__(self) ^ hash(self.language.lower() if self.language else None) ^ hash(self.datatype)
+        return unicode.__hash__(self) ^ hash(self.language.lower() if self.language else None) ^ hash(self.datatype)
 
     @py3compat.format_doctest_out
     def __eq__(self, other):
