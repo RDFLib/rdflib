@@ -92,6 +92,76 @@ class Identifier(Node, unicode):  # allow Identifiers to be Nodes in the Graph
         return self.__ne__(other)
 
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __eq__(self, other):
+        """
+        Equality for Nodes. 
+        
+        >>> BNode("foo")==None
+        False
+        >>> BNode("foo")==URIRef("foo")
+        False
+        >>> URIRef("foo")==BNode("foo")
+        False
+        >>> BNode("foo")!=URIRef("foo")
+        True
+        >>> URIRef("foo")!=BNode("foo")
+        True
+        >>> Variable('a')!=URIRef('a')
+        True
+        >>> Variable('a')!=Variable('a')
+        False
+        """
+
+        if type(self)==type(other):
+            return unicode(self) == unicode(other)
+        else:
+            return False
+
+    def __gt__(self, other):
+        """
+        This implements ordering for Nodes, 
+
+        This tries to implement this: 
+        http://www.w3.org/TR/sparql11-query/#modOrderBy
+
+        Variables are no included in the SPARQL list, but 
+        they are greater than BNodes and smaller than everything else
+
+        """
+        if other is None:
+            return True # everything bigger than None        
+        elif type(self)==type(other):
+            return unicode(self)>unicode(other)
+        elif isinstance(other, Node): 
+            return _ORDERING[type(self)]>ORDERING[type(other)]
+
+        return NotImplemented
+
+
+    def __lt__(self, other):
+        if other is None:
+            return False # Nothing is less than None
+        elif type(self)==type(other):
+            return unicode(self)<unicode(other)
+        elif isinstance(other, Node): 
+            return _ORDERING[type(self)]<_ORDERING[type(other)]
+
+        return NotImplemented
+
+    def __le__(self, other):
+        r=self.__lt__(other)
+        if r: return True
+        return self==other
+
+    def __ge__(self, other):
+        r=self.__gt__(other)
+        if r: return True
+        return self==other
+
+
 class URIRef(Identifier):
     """
     RDF URI Reference: http://www.w3.org/TR/rdf-concepts/#section-Graph-URIref
@@ -155,58 +225,6 @@ class URIRef(Identifier):
 
     def __getnewargs__(self):
         return (unicode(self), )
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-    def __eq__(self, other):
-        if isinstance(other, URIRef):
-            return unicode(self) == unicode(other)
-        else:
-            return False
-
-
-    def __gt__(self, other):
-        """
-        This implements ordering for URIRefs, 
-
-        This tries to implement this: 
-        http://www.w3.org/TR/sparql11-query/#modOrderBy
-
-        """
-        if other is None:
-            return True # everything bigger than None
-        elif isinstance(other, URIRef):
-            return unicode.__gt__(self, other)
-        elif isinstance(other, Literal): 
-            return False # literals bigger than uriref
-        elif isinstance(other, Node): 
-            return True # all other nodes are less-than URIRefs
-
-        return NotImplemented
-
-
-    def __lt__(self, other):
-        if other is None:
-            return False # Nothing is less than None
-        elif isinstance(other, URIRef):
-            return unicode.__lt__(self, other)
-        elif isinstance(other, Literal): 
-            return True # literals bigger than uriref
-        elif isinstance(other, Node): 
-            return False # all other nodes are less-than URIRefs
-
-        return NotImplemented
-
-    def __le__(self, other):
-        r=self.__lt__(other)
-        if r: return True
-        return self==other
-
-    def __ge__(self, other):
-        r=self.__gt__(other)
-        if r: return True
-        return self==other
 
     def __hash__(self):
         return hash(URIRef) ^ hash(unicode(self))
@@ -347,27 +365,6 @@ class BNode(Identifier):
 
     def __reduce__(self):
         return (BNode, (unicode(self),))
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-    def __eq__(self, other):
-        """
-        >>> BNode("foo")==None
-        False
-        >>> BNode("foo")==URIRef("foo")
-        False
-        >>> URIRef("foo")==BNode("foo")
-        False
-        >>> BNode("foo")!=URIRef("foo")
-        True
-        >>> URIRef("foo")!=BNode("foo")
-        True
-        """
-        if isinstance(other, BNode):
-            return unicode(self) == unicode(other)
-        else:
-            return False
 
     def __hash__(self):
         return hash(BNode) ^ hash(unicode(self))
@@ -792,19 +789,6 @@ class Literal(Identifier):
             return self.eq(other)
         except TypeError: 
             return NotImplemented
-
-    def __ne__(self, other):
-        """
-        Overriden to ensure property result for comparisons with None via !=.
-        Routes all other such != and <> comparisons to __eq__
-
-        >>> Literal('') != None
-        True
-        >>> Literal('2') != Literal('2')
-        False
-
-        """
-        return not self==other
 
     def _comparable_to(self,other): 
         """
@@ -1400,6 +1384,9 @@ class Statement(Node, tuple):
     def toPython(self):
         return (self[0], self[1])
 
+# Nodes are ordered like this
+# See http://www.w3.org/TR/sparql11-query/#modOrderBy
+_ORDERING=dict(map(reversed, enumerate([BNode, Variable, URIRef, Literal])))
 
 if __name__ == '__main__':
     import doctest
