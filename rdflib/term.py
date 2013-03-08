@@ -60,7 +60,6 @@ from . import py3compat
 
 b = py3compat.b
 
-        
 
 class Node(object):
     """
@@ -81,24 +80,23 @@ class Identifier(Node, unicode):  # allow Identifiers to be Nodes in the Graph
     def __new__(cls, value):
         return unicode.__new__(cls, value)
 
-    def eq(self, other): 
-        """A "semantic"/interpreted equality function, 
+    def eq(self, other):
+        """A "semantic"/interpreted equality function,
         by default, same as __eq__"""
         return self.__eq__(other)
 
-    def neq(self, other): 
-        """A "semantic"/interpreted not equal function, 
+    def neq(self, other):
+        """A "semantic"/interpreted not equal function,
         by default, same as __ne__"""
         return self.__ne__(other)
-
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
     def __eq__(self, other):
         """
-        Equality for Nodes. 
-        
+        Equality for Nodes.
+
         >>> BNode("foo")==None
         False
         >>> BNode("foo")==URIRef("foo")
@@ -115,55 +113,55 @@ class Identifier(Node, unicode):  # allow Identifiers to be Nodes in the Graph
         False
         """
 
-        if type(self)==type(other):
+        if type(self) == type(other):
             return unicode(self) == unicode(other)
         else:
             return False
 
     def __gt__(self, other):
         """
-        This implements ordering for Nodes, 
+        This implements ordering for Nodes,
 
-        This tries to implement this: 
+        This tries to implement this:
         http://www.w3.org/TR/sparql11-query/#modOrderBy
 
-        Variables are no included in the SPARQL list, but 
+        Variables are no included in the SPARQL list, but
         they are greater than BNodes and smaller than everything else
 
         """
         if other is None:
-            return True # everything bigger than None        
-        elif type(self)==type(other):
-            return unicode(self)>unicode(other)
-        elif isinstance(other, Node): 
-            return _ORDERING[type(self)]>_ORDERING[type(other)]
+            return True  # everything bigger than None
+        elif type(self) == type(other):
+            return unicode(self) > unicode(other)
+        elif isinstance(other, Node):
+            return _ORDERING[type(self)] > _ORDERING[type(other)]
 
         return NotImplemented
 
-
     def __lt__(self, other):
         if other is None:
-            return False # Nothing is less than None
-        elif type(self)==type(other):
-            return unicode(self)<unicode(other)
-        elif isinstance(other, Node): 
-            return _ORDERING[type(self)]<_ORDERING[type(other)]
+            return False  # Nothing is less than None
+        elif type(self) == type(other):
+            return unicode(self) < unicode(other)
+        elif isinstance(other, Node):
+            return _ORDERING[type(self)] < _ORDERING[type(other)]
 
         return NotImplemented
 
     def __le__(self, other):
-        r=self.__lt__(other)
-        if r: return True
-        return self==other
+        r = self.__lt__(other)
+        if r:
+            return True
+        return self == other
 
     def __ge__(self, other):
-        r=self.__gt__(other)
-        if r: return True
-        return self==other
+        r = self.__gt__(other)
+        if r:
+            return True
+        return self == other
 
     def __hash__(self):
         return hash(type(self)) ^ hash(unicode(self))
-
 
 
 class URIRef(Identifier):
@@ -397,7 +395,7 @@ class Literal(Identifier):
     The lexical value of the literal is the unicode object
     The interpreted, datatyped value is available from .value
 
-    For valid XSD datatypes, the lexical form is optionally normalized 
+    For valid XSD datatypes, the lexical form is optionally normalized
     at construction time. Default behaviour is set by rdflib.NORMALIZE_LITERALS
     and can be overridden by the normalize parameter to __new__
 
@@ -407,21 +405,21 @@ class Literal(Identifier):
 
     >>> Literal('01')!=Literal('1') # clear - strings differ
     True
-  
+
     but with data-type they get normalized:
-    >>> Literal('01', datatype=XSD.integer)!=Literal('1', datatype=XSD.integer) 
+    >>> Literal('01', datatype=XSD.integer)!=Literal('1', datatype=XSD.integer)
     False
 
     unless disabled:
-    >>> Literal('01', datatype=XSD.integer, normalize=False)!=Literal('1', datatype=XSD.integer) 
+    >>> Literal('01', datatype=XSD.integer, normalize=False)!=Literal('1', datatype=XSD.integer)
     True
-    
+
 
     Value based comparison is possible:
     >>> Literal('01', datatype=XSD.integer).eq(Literal('1', datatype=XSD.float))
     True
 
-    The eq method also provides limited support for basic python types: 
+    The eq method also provides limited support for basic python types:
     >>> Literal(1).eq(1) # fine - int compatible with xsd:integer
     True
     >>> Literal('a').eq('b') # fine - str compatible with plain-lit
@@ -432,13 +430,13 @@ class Literal(Identifier):
     NotImplemented
 
 
-    Greater-than/less-than ordering comparisons are also done in value space, when compatible datatypes are used. 
-    Incompatible datatypes are ordered by DT, or by lang-tag. 
+    Greater-than/less-than ordering comparisons are also done in value space, when compatible datatypes are used.
+    Incompatible datatypes are ordered by DT, or by lang-tag.
     For other nodes the ordering is None < BNode < URIRef < Literal
 
     Any comparison with non-rdflib Node are "NotImplemented"
     In PY2.X some stable order will be made up by python
-    In PY3 this is an error. 
+    In PY3 this is an error.
 
     >>> from rdflib import Literal, XSD
     >>> lit2006 = Literal('2006-01-01',datatype=XSD.date)
@@ -463,7 +461,7 @@ class Literal(Identifier):
 
     The > < operators will eat this NotImplemented and either make up an ordering (py2.x)
     or throw a TypeError (py3k)
-    >>> Literal(1).__gt__(2.0) 
+    >>> Literal(1).__gt__(2.0)
     NotImplemented
 
 
@@ -471,56 +469,59 @@ class Literal(Identifier):
     __doc__ = py3compat.format_doctest_out(doc)
 
     if not py3compat.PY3:
-        __slots__ = ("language", "datatype", "value", "_language", "_datatype", "_value")
+        __slots__ = ("language", "datatype", "value", "_language",
+                     "_datatype", "_value")
     else:
         __slots__ = ("_language", "_datatype", "_value")
 
     def __new__(cls, lexical_or_value, lang=None, datatype=None, normalize=None):
 
-        if lang=='': lang=None # no empty lang-tags in RDF
+        if lang == '':
+            lang = None  # no empty lang-tags in RDF
 
-        normalize=normalize if normalize!=None else rdflib.NORMALIZE_LITERALS
+        normalize = normalize if normalize != None else rdflib.NORMALIZE_LITERALS
 
         if lang is not None and datatype is not None:
             raise TypeError(
                 "A Literal can only have one of lang or datatype, "
                 "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal")
 
-        if datatype: datatype = URIRef(datatype)
+        if datatype:
+            datatype = URIRef(datatype)
 
-        value=None
-        if isinstance(lexical_or_value, Literal): # create from another Literal instance
-            datatype=datatype or lexical_or_value.datatype
-            lang=lang or lexical_or_value.language
-            value=lexical_or_value.value
+        value = None
+        if isinstance(lexical_or_value, Literal):  # create from another Literal instance
+            datatype = datatype or lexical_or_value.datatype
+            lang = lang or lexical_or_value.language
+            value = lexical_or_value.value
 
-        if value==None and isinstance(lexical_or_value, basestring):
+        if value == None and isinstance(lexical_or_value, basestring):
 
-            if datatype: 
+            if datatype:
                 convFunc = _toPythonMapping.get(datatype, None)
                 if convFunc:
-                    try: 
-                        value=convFunc(lexical_or_value)
-                    except: 
-                        pass # not a valid lexical representation for this dt
-        
+                    try:
+                        value = convFunc(lexical_or_value)
+                    except:
+                        pass  # not a valid lexical representation for this dt
+
                 if value is not None and normalize:
                     _value, _datatype = _castPythonToLiteral(value)
                     if _value is not None:
                         lexical_or_value = _value
 
-
         else:
-            value=lexical_or_value
+            value = lexical_or_value
             _value, _datatype = _castPythonToLiteral(lexical_or_value)
-            datatype=datatype or _datatype
-            if _value is not None: 
+            datatype = datatype or _datatype
+            if _value is not None:
                 lexical_or_value = _value
-            if datatype: lang=None
+            if datatype:
+                lang = None
 
         if py3compat.PY3 and isinstance(lexical_or_value, bytes):
             lexical_or_value = lexical_or_value.decode('utf-8')
-                
+
         try:
             inst = unicode.__new__(cls, lexical_or_value)
         except UnicodeDecodeError:
@@ -532,9 +533,9 @@ class Literal(Identifier):
         return inst
 
     @py3compat.format_doctest_out
-    def normalize(self): 
+    def normalize(self):
         """
-        Returns a new literal with a normalised lexical representation 
+        Returns a new literal with a normalised lexical representation
         of this literal
         >>> from rdflib import XSD
         >>> Literal("01", datatype=XSD.integer, normalize=False).normalize()
@@ -543,15 +544,15 @@ class Literal(Identifier):
         Illegal lexical forms for the datatype given are simply passed on
         >>> Literal("a", datatype=XSD.integer, normalize=False)
         rdflib.term.Literal(%(u)s'a', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
-        
+
         """
 
-        if self.value!=None: 
+        if self.value != None:
             return Literal(self.value, datatype=self.datatype, lang=self.language)
-        else: 
+        else:
             return self
 
-    @property 
+    @property
     def value(self):
         return self._value
 
@@ -590,14 +591,14 @@ class Literal(Identifier):
         else:
             return Literal(py + val)
 
-    def __nonzero__(self): 
+    def __nonzero__(self):
         """
         Is the Literal "True"
-        This is used for if statements, bool(literal), etc. 
+        This is used for if statements, bool(literal), etc.
         """
-        if self.value: return bool(self.value)
-        return len(self)!=0 
-
+        if self.value:
+            return bool(self.value)
+        return len(self) != 0
 
     @py3compat.format_doctest_out
     def __neg__(self):
@@ -614,14 +615,13 @@ class Literal(Identifier):
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
         TypeError: Not a number; rdflib.term.Literal(%(u)s'1')
-        >>> 
+        >>>
         """
 
-        if isinstance(self.value, (int, long, float)): 
+        if isinstance(self.value, (int, long, float)):
             return Literal(self.value.__neg__())
-        else: 
+        else:
             raise TypeError("Not a number; %s" % repr(self))
-
 
     @py3compat.format_doctest_out
     def __pos__(self):
@@ -633,15 +633,15 @@ class Literal(Identifier):
         >>> from rdflib.namespace import XSD
         >>> (+ Literal("-1", datatype=XSD.integer))
         rdflib.term.Literal(%(u)s'-1', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
-        
+
         >>> (+ Literal("1"))
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
         TypeError: Not a number; rdflib.term.Literal(%(u)s'1')
         """
-        if isinstance(self.value, (int, long, float)): 
+        if isinstance(self.value, (int, long, float)):
             return Literal(self.value.__pos__())
-        else: 
+        else:
             raise TypeError("Not a number; %s" % repr(self))
 
     @py3compat.format_doctest_out
@@ -649,21 +649,20 @@ class Literal(Identifier):
         """
         >>> abs(Literal(-1))
         rdflib.term.Literal(%(u)s'1', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
-            
+
         >>> from rdflib.namespace import XSD
         >>> abs( Literal("-1", datatype=XSD.integer))
         rdflib.term.Literal(%(u)s'1', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
-                
+
         >>> abs(Literal("1"))
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
         TypeError: Not a number; rdflib.term.Literal(%(u)s'1')
         """
-        if isinstance(self.value, (int, long, float)): 
+        if isinstance(self.value, (int, long, float)):
             return Literal(self.value.__abs__())
-        else: 
+        else:
             raise TypeError("Not a number; %s" % repr(self))
-
 
     @py3compat.format_doctest_out
     def __invert__(self):
@@ -681,24 +680,22 @@ class Literal(Identifier):
           File "<stdin>", line 1, in <module>
         TypeError: Not a number; rdflib.term.Literal(%(u)s'1')
         """
-        if isinstance(self.value, (int, long, float)): 
+        if isinstance(self.value, (int, long, float)):
             return Literal(self.value.__invert__())
-        else: 
+        else:
             raise TypeError("Not a number; %s" % repr(self))
-
-
 
     def __gt__(self, other):
         """
 
-        This implements ordering for Literals, 
+        This implements ordering for Literals,
         the other comparison methods delegate here
 
-        This tries to implement this: 
+        This tries to implement this:
         http://www.w3.org/TR/sparql11-query/#modOrderBy
 
-        In short, Literals with compatible data-types are orderd in value space, 
-        i.e. 
+        In short, Literals with compatible data-types are orderd in value space,
+        i.e.
         >>> from rdflib import XSD
 
         >>> Literal(1)>Literal(2) # int/int
@@ -712,9 +709,9 @@ class Literal(Identifier):
         True
         >>> Literal('b')>Literal('a', datatype=XSD.string) # plain lit/xsd:string
         True
-        
+
         Incompatible datatype mismatches ordered by DT
-        
+
         >>> Literal(1)>Literal("2") # int>string
         False
 
@@ -723,65 +720,65 @@ class Literal(Identifier):
         False
         """
         if other is None:
-            return True # Everything is greater than None        
+            return True  # Everything is greater than None
         if isinstance(other, Literal):
 
             if self.datatype in _NUMERIC_LITERAL_TYPES and \
-                    other.datatype in _NUMERIC_LITERAL_TYPES: 
-                return self.value>other.value
+                    other.datatype in _NUMERIC_LITERAL_TYPES:
+                return self.value > other.value
 
-            # plain-literals and xsd:string literals 
+            # plain-literals and xsd:string literals
             # are "the same"
-            dtself=self.datatype or _XSD_STRING
-            dtother=other.datatype or _XSD_STRING
+            dtself = self.datatype or _XSD_STRING
+            dtother = other.datatype or _XSD_STRING
 
-            if dtself!=dtother:            
-                if rdflib.DAWG_LITERAL_COLLATION: 
+            if dtself != dtother:
+                if rdflib.DAWG_LITERAL_COLLATION:
                     return NotImplemented
-                else: 
-                    return dtself>dtother
-            
-            if self.language!=other.language: 
-                if not self.language: 
+                else:
+                    return dtself > dtother
+
+            if self.language != other.language:
+                if not self.language:
                     return False
                 elif not other.language:
                     return True
-                else: 
-                    return self.language>other.language
+                else:
+                    return self.language > other.language
 
-            if self.value!=None and other.value!=None:
-                return self.value>other.value
+            if self.value != None and other.value != None:
+                return self.value > other.value
 
-            if unicode(self)!=unicode(other): 
-                return unicode(self)>unicode(other)
-            
+            if unicode(self) != unicode(other):
+                return unicode(self) > unicode(other)
+
             # same language, same lexical form, check real dt
             # plain-literals come before xsd:string!
-            if self.datatype!=other.datatype:
+            if self.datatype != other.datatype:
                 if not self.datatype:
                     return False
-                elif not other.datatype: 
+                elif not other.datatype:
                     return True
-                else: 
-                    return self.datatype>other.datatype
+                else:
+                    return self.datatype > other.datatype
 
-            return False # they are the same
+            return False  # they are the same
 
-        elif isinstance(other, Node): 
-            return True # Literal are the greatest!
-        else: 
-            return NotImplemented # we can only compare to nodes
+        elif isinstance(other, Node):
+            return True  # Literal are the greatest!
+        else:
+            return NotImplemented  # we can only compare to nodes
 
     def __lt__(self, other):
         if other is None:
-            return False # Nothing is less than None
+            return False  # Nothing is less than None
         if isinstance(other, Literal):
-            try: 
+            try:
                 return not self.__gt__(other) and not self.eq(other)
-            except TypeError: 
+            except TypeError:
                 return NotImplemented
-        if isinstance(other, Node): 
-            return False # all nodes are less-than Literals
+        if isinstance(other, Node):
+            return False  # all nodes are less-than Literals
 
         return NotImplemented
 
@@ -792,48 +789,47 @@ class Literal(Identifier):
         ...     ) <= Literal('2007-01-01T10:00:00', datatype=XSD.dateTime)
         True
         """
-        r=self.__lt__(other)
-        if r: return True
-        try: 
+        r = self.__lt__(other)
+        if r:
+            return True
+        try:
             return self.eq(other)
-        except TypeError: 
+        except TypeError:
             return NotImplemented
-            
 
     def __ge__(self, other):
-        r=self.__gt__(other)
-        if r: return True
-        try: 
+        r = self.__gt__(other)
+        if r:
+            return True
+        try:
             return self.eq(other)
-        except TypeError: 
+        except TypeError:
             return NotImplemented
 
-    def _comparable_to(self,other): 
+    def _comparable_to(self, other):
         """
-        Helper method to decide which things are meaningful to 
+        Helper method to decide which things are meaningful to
         rich-compare with this literal
         """
         if isinstance(other, Literal):
-            if (self.datatype and other.datatype): 
+            if (self.datatype and other.datatype):
                 # two datatyped literals
-                if not self.datatype in XSDToPython or not other.datatype in XSDToPython: 
+                if not self.datatype in XSDToPython or not other.datatype in XSDToPython:
                     # non XSD DTs must match
-                    if self.datatype!=other.datatype: return False
+                    if self.datatype != other.datatype:
+                        return False
 
-            else: 
-                # xsd:string may be compared with plain literals                
-                if not (self.datatype==_XSD_STRING and not other.datatype) or \
-                        (other.datatype==_XSD_STRING and not self.datatype): 
+            else:
+                # xsd:string may be compared with plain literals
+                if not (self.datatype == _XSD_STRING and not other.datatype) or \
+                        (other.datatype == _XSD_STRING and not self.datatype):
                     return False
 
-                # if given lang-tag has to be case insensitive equal 
-                if (self.language or "").lower()!=(other.language or "").lower():
+                # if given lang-tag has to be case insensitive equal
+                if (self.language or "").lower() != (other.language or "").lower():
                     return False
 
         return True
-
-            
-
 
     def __hash__(self):
         """
@@ -864,13 +860,13 @@ class Literal(Identifier):
         -- 6.5.1 Literal Equality (RDF: Concepts and Abstract Syntax)
 
         """
-        
+
         return unicode.__hash__(self) ^ hash(self.language.lower() if self.language else None) ^ hash(self.datatype)
 
     @py3compat.format_doctest_out
     def __eq__(self, other):
         """
-        Literals are only equal to other literals. 
+        Literals are only equal to other literals.
 
         "Two literals are equal if and only if all of the following hold:
         * The strings of the two lexical forms compare equal, character by character.
@@ -904,109 +900,111 @@ class Literal(Identifier):
         True
 
         """
-        if self is other: return True
+        if self is other:
+            return True
         if other is None:
             return False
         if isinstance(other, Literal):
-            return self.datatype==other.datatype \
+            return self.datatype == other.datatype \
                 and (self.language.lower() if self.language else None) == (other.language.lower() if other.language else None) \
                 and unicode.__eq__(self, other)
 
         return False
 
-
-    def eq(self, other): 
+    def eq(self, other):
         """
         Compare the value of this literal with something else
 
-        Either, with the value of another literal 
-        comparisons are then done in literal "value space", 
+        Either, with the value of another literal
+        comparisons are then done in literal "value space",
         and according to the rules of XSD subtype-substitution/type-promotion
 
-        OR, with a python object: 
+        OR, with a python object:
 
-        basestring objects can be compared with plain-literals, 
+        basestring objects can be compared with plain-literals,
         or those with datatype xsd:string
 
         bool objects with xsd:boolean
 
         a int, long or float with numeric xsd types
-        
+
         isodate date,time,datetime objects with xsd:date,xsd:time or xsd:datetime
-        
-        Any other operations returns NotImplemented 
-        
+
+        Any other operations returns NotImplemented
+
         """
         if isinstance(other, Literal):
 
             if self.datatype in _NUMERIC_LITERAL_TYPES  \
                     and other.datatype in _NUMERIC_LITERAL_TYPES:
-                if self.value!=None and other.value!=None: 
-                    return self.value==other.value
-                else: 
-                    if unicode.__eq__(self, other): return True
-                    raise TypeError('I cannot know that these two lexical forms do not map to the same value: %s and %s'%(self, other))
+                if self.value != None and other.value != None:
+                    return self.value == other.value
+                else:
+                    if unicode.__eq__(self, other):
+                        return True
+                    raise TypeError(
+                        'I cannot know that these two lexical forms do not map to the same value: %s and %s' % (self, other))
 
-            if (self.language or "").lower() != (other.language or "").lower(): return False
+            if (self.language or "").lower() != (other.language or "").lower():
+                return False
 
-            dtself=self.datatype or _XSD_STRING
-            dtother=other.datatype or _XSD_STRING
+            dtself = self.datatype or _XSD_STRING
+            dtother = other.datatype or _XSD_STRING
 
-            if (dtself==_XSD_STRING and dtother==_XSD_STRING):
+            if (dtself == _XSD_STRING and dtother == _XSD_STRING):
                 # string/plain literals, compare on lexical form
-                return unicode.__eq__(self,other)
-            
-            if dtself!=dtother:
-                if rdflib.DAWG_LITERAL_COLLATION: 
-                    raise TypeError("I don't know how to compare literals with datatypes %s and %s"%(self.datatype, other.datatype))
-                else: 
-                    return False
-            
-            # matching non-string DTs
-            
-            if self.value!=None and other.value!=None: 
-                return self.value == other.value
-            else: 
-                
-                if unicode.__eq__(self, other): return True
+                return unicode.__eq__(self, other)
 
-                if self.datatype==_XSD_STRING: 
-                    return False # string value space=lexical space
+            if dtself != dtother:
+                if rdflib.DAWG_LITERAL_COLLATION:
+                    raise TypeError("I don't know how to compare literals with datatypes %s and %s" % (
+                        self.datatype, other.datatype))
+                else:
+                    return False
+
+            # matching non-string DTs
+
+            if self.value != None and other.value != None:
+                return self.value == other.value
+            else:
+
+                if unicode.__eq__(self, other):
+                    return True
+
+                if self.datatype == _XSD_STRING:
+                    return False  # string value space=lexical space
 
                 # matching DTs, but not matching, we cannot compare!
-                raise TypeError('I cannot know that these two lexical forms do not map to the same value: %s and %s'%(self, other))
+                raise TypeError(
+                    'I cannot know that these two lexical forms do not map to the same value: %s and %s' % (self, other))
 
+        elif isinstance(other, Node):
+            return False  # no non-Literal nodes are equal to a literal
 
-        elif isinstance(other, Node): 
-            return False # no non-Literal nodes are equal to a literal
-                
         elif isinstance(other, basestring):
             # only plain-literals can be directly compared to strings
 
-            # TODO: Is "blah"@en eq "blah" ? 
-            if self.language is not None: return False 
+            # TODO: Is "blah"@en eq "blah" ?
+            if self.language is not None:
+                return False
 
-            if (self.datatype == _XSD_STRING or self.datatype is None): 
+            if (self.datatype == _XSD_STRING or self.datatype is None):
                 return unicode(self) == other
 
-        elif isinstance(other, (int, long, float)): 
+        elif isinstance(other, (int, long, float)):
             if self.datatype in _NUMERIC_LITERAL_TYPES:
-                return self.value==other
+                return self.value == other
         elif isinstance(other, (date, datetime, time)):
-            if self.datatype in (_XSD_DATETIME, _XSD_DATE, _XSD_TIME): 
-                return self.value==other
-        elif isinstance(other, bool): 
-            if self.datatype == _XSD_BOOLEAN: 
-                return self.value==other
-
-
+            if self.datatype in (_XSD_DATETIME, _XSD_DATE, _XSD_TIME):
+                return self.value == other
+        elif isinstance(other, bool):
+            if self.datatype == _XSD_BOOLEAN:
+                return self.value == other
 
         return NotImplemented
 
-
-    def neq(self, other): 
+    def neq(self, other):
         return not self.eq(other)
-
 
     @py3compat.format_doctest_out
     def n3(self):
@@ -1108,18 +1106,19 @@ class Literal(Identifier):
         if use_plain and self.datatype in _PLAIN_LITERAL_TYPES:
             if self.value is not None:
 
-                # this is a bit of a mess - 
+                # this is a bit of a mess -
                 # in py >=2.6 the string.format function makes this easier
                 # we try to produce "pretty" output
                 if self.datatype == _XSD_DOUBLE:
                     return sub("\\.?0*e", "e", u'%e' % float(self))
                 elif self.datatype == _XSD_DECIMAL:
-                    s='%s'%self
-                    if '.' not in s: s+='.0'
+                    s = '%s' % self
+                    if '.' not in s:
+                        s += '.0'
                     return s
-                        
-                elif self.datatype == _XSD_BOOLEAN: 
-                    return (u'%s'%self).lower()
+
+                elif self.datatype == _XSD_BOOLEAN:
+                    return (u'%s' % self).lower()
                 else:
                     return u'%s' % self
 
@@ -1189,7 +1188,8 @@ class Literal(Identifier):
         Returns an appropriate python datatype derived from this RDF Literal
         """
 
-        if self.value is not None: return self.value 
+        if self.value is not None:
+            return self.value
         return self
 
     def md5_term_hash(self):
@@ -1204,50 +1204,47 @@ class Literal(Identifier):
         return d.hexdigest()
 
 
-
-
 # Cannot import Namespace/XSD because of circular dependencies
-
 _XSD_PFX = 'http://www.w3.org/2001/XMLSchema#'
 
-_XSD_STRING = URIRef(_XSD_PFX+'string')
+_XSD_STRING = URIRef(_XSD_PFX + 'string')
 
-_XSD_FLOAT = URIRef(_XSD_PFX+'float')
-_XSD_DOUBLE = URIRef(_XSD_PFX+'double')
-_XSD_DECIMAL = URIRef(_XSD_PFX+'decimal')
-_XSD_INTEGER = URIRef(_XSD_PFX+'integer')
-_XSD_BOOLEAN = URIRef(_XSD_PFX+'boolean')
+_XSD_FLOAT = URIRef(_XSD_PFX + 'float')
+_XSD_DOUBLE = URIRef(_XSD_PFX + 'double')
+_XSD_DECIMAL = URIRef(_XSD_PFX + 'decimal')
+_XSD_INTEGER = URIRef(_XSD_PFX + 'integer')
+_XSD_BOOLEAN = URIRef(_XSD_PFX + 'boolean')
 
-_XSD_DATETIME = URIRef(_XSD_PFX+'dateTime')
-_XSD_DATE = URIRef(_XSD_PFX+'date')
-_XSD_TIME = URIRef(_XSD_PFX+'time')
+_XSD_DATETIME = URIRef(_XSD_PFX + 'dateTime')
+_XSD_DATE = URIRef(_XSD_PFX + 'date')
+_XSD_TIME = URIRef(_XSD_PFX + 'time')
 
 # TODO: duration, gYearMonth, gYear, gMonthDay, gDay, gMonth
 
-_NUMERIC_LITERAL_TYPES= (
-    _XSD_INTEGER, 
-    _XSD_DECIMAL, 
-    _XSD_DOUBLE, 
-    URIRef(_XSD_PFX+'float'),
+_NUMERIC_LITERAL_TYPES = (
+    _XSD_INTEGER,
+    _XSD_DECIMAL,
+    _XSD_DOUBLE,
+    URIRef(_XSD_PFX + 'float'),
 
-    URIRef(_XSD_PFX+'byte'),
-    URIRef(_XSD_PFX+'int'),
-    URIRef(_XSD_PFX+'long'),
-    URIRef(_XSD_PFX+'negativeInteger'),
-    URIRef(_XSD_PFX+'nonNegativeInteger'),
-    URIRef(_XSD_PFX+'nonPositiveInteger'),
-    URIRef(_XSD_PFX+'positiveInteger'),
-    URIRef(_XSD_PFX+'short'),
-    URIRef(_XSD_PFX+'unsignedByte'),
-    URIRef(_XSD_PFX+'unsignedInt'),
-    URIRef(_XSD_PFX+'unsignedLong'),
-    URIRef(_XSD_PFX+'unsignedShort'),
+    URIRef(_XSD_PFX + 'byte'),
+    URIRef(_XSD_PFX + 'int'),
+    URIRef(_XSD_PFX + 'long'),
+    URIRef(_XSD_PFX + 'negativeInteger'),
+    URIRef(_XSD_PFX + 'nonNegativeInteger'),
+    URIRef(_XSD_PFX + 'nonPositiveInteger'),
+    URIRef(_XSD_PFX + 'positiveInteger'),
+    URIRef(_XSD_PFX + 'short'),
+    URIRef(_XSD_PFX + 'unsignedByte'),
+    URIRef(_XSD_PFX + 'unsignedInt'),
+    URIRef(_XSD_PFX + 'unsignedLong'),
+    URIRef(_XSD_PFX + 'unsignedShort'),
 
- )
+)
 
 # these have "native" syntax in N3/SPARQL
 _PLAIN_LITERAL_TYPES = (
-    _XSD_INTEGER, 
+    _XSD_INTEGER,
     _XSD_BOOLEAN,
     _XSD_DOUBLE,
     _XSD_DECIMAL,
@@ -1274,25 +1271,25 @@ from decimal import Decimal
 # Mappings from Python types to XSD datatypes and back (borrowed from sparta)
 # datetime instances are also instances of date... so we need to order these.
 
-# SPARQL/Turtle/N3 has shortcuts for integer, double, decimal 
+# SPARQL/Turtle/N3 has shortcuts for integer, double, decimal
 # python has only float - to be in tune with sparql/n3/turtle
 # we default to XSD.double for float literals
 
 # python ints are promoted to longs when overflowing
 # python longs have no limit
-# both map to the abstract integer type, 
+# both map to the abstract integer type,
 # rather than some concrete bit-limited datatype
 
 _PythonToXSD = [
     (basestring, (None, None)),
-    (float     , (None, _XSD_DOUBLE)),
-    (bool      , (lambda i:str(i).lower(), _XSD_BOOLEAN)),
-    (int       , (None, _XSD_INTEGER)), 
-    (long      , (None, _XSD_INTEGER)),
-    (Decimal   , (None, _XSD_DECIMAL)),
-    (datetime  , (lambda i:i.isoformat(), _XSD_DATETIME)),
-    (date      , (lambda i:i.isoformat(), _XSD_DATE)),
-    (time      , (lambda i:i.isoformat(), _XSD_TIME)),
+    (float, (None, _XSD_DOUBLE)),
+    (bool, (lambda i:str(i).lower(), _XSD_BOOLEAN)),
+    (int, (None, _XSD_INTEGER)),
+    (long, (None, _XSD_INTEGER)),
+    (Decimal, (None, _XSD_DECIMAL)),
+    (datetime, (lambda i:i.isoformat(), _XSD_DATETIME)),
+    (date, (lambda i:i.isoformat(), _XSD_DATE)),
+    (time, (lambda i:i.isoformat(), _XSD_TIME)),
 ]
 
 XSDToPython = {
@@ -1331,13 +1328,13 @@ _toPythonMapping.update(XSDToPython)
 
 def bind(datatype, pythontype, constructor=None, lexicalizer=None):
     """
-    register a new datatype<->pythontype binding 
+    register a new datatype<->pythontype binding
 
-    Args: 
-       constructor : an optional function for converting lexical forms 
-                     into a Python instances, if not given the pythontype 
+    Args:
+       constructor : an optional function for converting lexical forms
+                     into a Python instances, if not given the pythontype
                      is used directly
-       lexicalizer : an optinoal function for converting python objects to 
+       lexicalizer : an optinoal function for converting python objects to
                      lexical form, if not given object.__str__ is used
 
     """
@@ -1345,7 +1342,8 @@ def bind(datatype, pythontype, constructor=None, lexicalizer=None):
         _LOGGER.warning("datatype '%s' was already bound. Rebinding." %
                         datatype)
 
-    if constructor==None:  constructor=pythontype
+    if constructor == None:
+        constructor = pythontype
     _toPythonMapping[datatype] = constructor
     _PythonToXSD.append((pythontype, (lexicalizer, datatype)))
 
@@ -1404,7 +1402,7 @@ class Statement(Node, tuple):
 
 # Nodes are ordered like this
 # See http://www.w3.org/TR/sparql11-query/#modOrderBy
-_ORDERING=dict(map(reversed, enumerate([BNode, Variable, URIRef, Literal])))
+_ORDERING = dict(map(reversed, enumerate([BNode, Variable, URIRef, Literal])))
 
 if __name__ == '__main__':
     import doctest
