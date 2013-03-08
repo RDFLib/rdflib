@@ -74,6 +74,9 @@ For example:
 >>> Literal("01", datatype=XSD.int)
 rdflib.term.Literal(u'1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
 
+This flag may be changed at any time, but will only affect literals
+created after that time, previously created literals will remain
+(un)normalized.
 
 """
 NORMALIZE_LITERALS=True
