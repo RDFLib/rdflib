@@ -537,11 +537,19 @@ class Literal(Identifier):
         Returns a new literal with a normalised lexical representation 
         of this literal
         >>> from rdflib import XSD
-        >>> Literal("01", datatype=XSD.integer).normalize()
+        >>> Literal("01", datatype=XSD.integer, normalize=False).normalize()
         rdflib.term.Literal(%(u)s'1', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
+
+        Illegal lexical forms for the datatype given are simply passed on
+        >>> Literal("a", datatype=XSD.integer, normalize=False)
+        rdflib.term.Literal(%(u)s'a', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
+        
         """
 
-        return Literal(self.value,datatype=self.datatype, lang=self.language)
+        if self.value!=None: 
+            return Literal(self.value, datatype=self.datatype, lang=self.language)
+        else: 
+            return self
 
     @property 
     def value(self):
