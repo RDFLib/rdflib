@@ -179,7 +179,7 @@ Using Namespace class:
 import logging
 _logger = logging.getLogger(__name__)
 
-#import md5
+# import md5
 import random
 import warnings
 
@@ -195,27 +195,10 @@ except ImportError:
     except ImportError:
         from StringIO import StringIO as BytesIO
         assert BytesIO
-# # Can't use this approach any longer, this function will raise an ImportError
-# # because the sparql module has been moved to the RDFExtras package.
-
-# def describe(terms,bindings,graph):
-#     """
-#     Default DESCRIBE returns all incomming and outgoing statements
-#     about the given terms
-#     """
-#     from rdflib.sparql.sparqlOperators import getValue
-#     g=Graph()
-#     terms=[getValue(i)(bindings) for i in terms]
-#     for s,p,o in graph.triples_choices((terms,None,None)):
-#         g.add((s,p,o))
-#     for s,p,o in graph.triples_choices((None,None,terms)):
-#         g.add((s,p,o))
-#     return g
 
 from rdflib.namespace import RDF, RDFS, SKOS
 
 from rdflib import plugin, exceptions, query
-#, sparql
 
 from rdflib.term import Node
 from rdflib.term import URIRef
@@ -692,12 +675,12 @@ class Graph(Node):
         [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal(%(u)s'bla'))]
         >>> g.add([u, SKOS.prefLabel, Literal('blubb', lang='en')])
-        >>> pprint(sorted(g.preferredLabel(u)))
+        >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
         [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(%(u)s'blubb', lang='en')),
-         (rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(%(u)s'bla'))]
-        >>> pprint(g.preferredLabel(u, lang=''))
+          rdflib.term.Literal(%(u)s'bla')),
+          (rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(%(u)s'blubb', lang='en'))]
+        >>> g.preferredLabel(u, lang='') #doctest: +NORMALIZE_WHITESPACE
         [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal(%(u)s'bla'))]
         >>> pprint(g.preferredLabel(u, lang='en'))
@@ -1212,7 +1195,7 @@ class ConjunctiveGraph(Graph):
             source=source, publicID=publicID, location=location,
             file=file, data=data, format=format)
 
-        #id = self.context_id(self.absolutize(source.getPublicId()))
+        # id = self.context_id(self.absolutize(source.getPublicId()))
         g_id = URIRef(publicID and publicID or source.getPublicId())
         context = Graph(store=self.store, identifier=g_id)
         context.remove((None, None, None))

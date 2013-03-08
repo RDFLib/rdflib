@@ -198,8 +198,7 @@ class TestUtilTermConvert(unittest.TestCase):
     def test_util_from_n3_expectliteralanddtype(self):
         s = '"true"^^xsd:boolean'
         res = util.from_n3(s, default=None, backend=None)
-        self.assertEqual(res, Literal('true',
-                                      datatype=URIRef('xsd:boolean')))
+        self.assertTrue(res.eq(Literal('true', datatype='xsd:boolean')))
     
     def test_util_from_n3_expectliteralwithdatatypefromint(self):
         s = '42'

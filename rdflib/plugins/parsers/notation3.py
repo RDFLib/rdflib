@@ -1652,7 +1652,7 @@ class RDFSink(object):
             return s
 
         if isinstance(n, Decimal):
-            value = str(n.normalize())
+            value = str(n)
             if value == '-0':
                 value = '0'
             s = Literal(value, datatype=DECIMAL_DATATYPE)

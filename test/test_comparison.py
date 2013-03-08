@@ -52,10 +52,13 @@ class IdentifierEquality(unittest.TestCase):
         self.assertEquals(self.python_literal==self.uriref, False)
 
     def testE(self):
-        self.assertEquals(self.literal==self.python_literal, True)
+        self.assertEquals(self.literal==self.python_literal, False)
+
+    def testE2(self): 
+        self.assertTrue(self.literal.eq(self.python_literal), True)
 
     def testF(self):
-        self.assertEquals(self.python_literal==self.literal, True)
+        self.assertEquals(self.python_literal==self.literal, False)
 
     def testG(self):
         self.assertEquals("foo" in CORE_SYNTAX_TERMS, False)

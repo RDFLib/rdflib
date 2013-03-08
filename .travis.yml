@@ -3,7 +3,7 @@ language: python
 # whitelist
 branches:
   only:
-    - master
+    - master	
     - rdf11
 python:
     - "2.5"
