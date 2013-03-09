@@ -596,7 +596,7 @@ class Literal(Identifier):
         Is the Literal "True"
         This is used for if statements, bool(literal), etc.
         """
-        if self.value:
+        if self.value!=None:
             return bool(self.value)
         return len(self) != 0
 
