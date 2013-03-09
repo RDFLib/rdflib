@@ -7,10 +7,7 @@
 
 # Load up RDFLib
 
-from rdflib import *
-from rdflib.graph import ConjunctiveGraph
-from rdflib.namespace import Namespace
-from rdflib.term import URIRef
+from rdflib import ConjunctiveGraph, Namespace, Literal
 from rdflib.parser import StringInputSource
 
 # Firstly, it doesn't have to be so complex.
@@ -22,7 +19,7 @@ myNS = Namespace('#')
 
 primer.add((myNS.pat, myNS.knows, myNS.jo))
 # or:
-primer.add((myNS['pat'], myNS['age'], long(24)))
+primer.add((myNS['pat'], myNS['age'], Literal(24)))
 
 
 # Now, with just that, lets see how the system
@@ -108,7 +105,7 @@ mySource = """
 # By default, your main namespace is the URI of your 
 # current working directory, so lets make that simpler:
 
-myNS = Namespace(URIRef('http://www.w3.org/2000/10/swap/Primer#'))
+myNS = Namespace('http://www.w3.org/2000/10/swap/Primer#')
 primer.bind('', myNS)
 primer.bind('owl', 'http://www.w3.org/2002/07/owl#')
 primer.bind('dc', 'http://purl.org/dc/elements/1.1/')
