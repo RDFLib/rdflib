@@ -57,6 +57,7 @@ except ImportError:
 
 import rdflib
 from . import py3compat
+from rdflib.compat import numeric_greater
 
 b = py3compat.b
 
@@ -596,7 +597,7 @@ class Literal(Identifier):
         Is the Literal "True"
         This is used for if statements, bool(literal), etc.
         """
-        if self.value!=None:
+        if self.value != None:
             return bool(self.value)
         return len(self) != 0
 
@@ -705,6 +706,8 @@ class Literal(Identifier):
         >>> from decimal import Decimal
         >>> Literal(Decimal("3.3")) > Literal(2.0) # decimal/double
         True
+        >>> Literal(Decimal("3.3")) < Literal(4.0) # decimal/double
+        True
         >>> Literal('b')>Literal('a') # plain lit/plain lit
         True
         >>> Literal('b')>Literal('a', datatype=XSD.string) # plain lit/xsd:string
@@ -725,7 +728,7 @@ class Literal(Identifier):
 
             if self.datatype in _NUMERIC_LITERAL_TYPES and \
                     other.datatype in _NUMERIC_LITERAL_TYPES:
-                return self.value > other.value
+                return numeric_greater(self.value, other.value)
 
             # plain-literals and xsd:string literals
             # are "the same"
