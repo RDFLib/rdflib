@@ -60,7 +60,7 @@ class TriXHandler(handler.ContentHandler):
 
     def reset(self):
         self.bnode = {}
-        self.graph = self.store
+        self.graph = None
         self.triple = None
         self.state = 0
         self.lang = None
@@ -113,7 +113,7 @@ class TriXHandler(handler.ContentHandler):
             if self.state == 2:
                 if self.graph is None:
                     # anonymous graph, create one with random bnode id
-                    self.graph = Graph(store=self.store.store)
+                    self.graph = Graph(store=self.store)
                 # start of a triple
                 self.triple = []
                 self.state = 4
@@ -176,7 +176,7 @@ class TriXHandler(handler.ContentHandler):
 
         if name[1] == "uri":
             if self.state == 3:
-                self.graph = Graph(store=self.store.store,
+                self.graph = Graph(store=self.store,
                                    identifier=URIRef(self.chars.strip()))
                 self.state = 2
             elif self.state == 4:
@@ -188,7 +188,7 @@ class TriXHandler(handler.ContentHandler):
 
         elif name[1] == "id":
             if self.state == 3:
-                self.graph = Graph(self.store.store, identifier=self.get_bnode(
+                self.graph = Graph(self.store, identifier=self.get_bnode(
                     self.chars.strip()))
                 self.state = 2
             elif self.state == 4:
@@ -214,8 +214,8 @@ class TriXHandler(handler.ContentHandler):
                                (len(self.triple), self.triple))
 
                 self.graph.add(self.triple)
-                #self.store.store.add(self.triple,context=self.graph)
-                #self.store.addN([self.triple+[self.graph]])
+                # self.store.store.add(self.triple,context=self.graph)
+                # self.store.addN([self.triple+[self.graph]])
                 self.state = 2
             else:
                 self.error(
@@ -287,14 +287,12 @@ class TriXParser(Parser):
         assert sink.store.context_aware, (
             "TriXParser must be given a context aware store.")
 
-        g = ConjunctiveGraph(store=sink.store)
-
-        self._parser = create_parser(g)
+        self._parser = create_parser(sink.store)
         content_handler = self._parser.getContentHandler()
         preserve_bnode_ids = args.get("preserve_bnode_ids", None)
         if preserve_bnode_ids is not None:
             content_handler.preserve_bnode_ids = preserve_bnode_ids
         # We're only using it once now
-        #content_handler.reset()
-        #self._parser.reset()
+        # content_handler.reset()
+        # self._parser.reset()
         self._parser.parse(source)
