@@ -1,6 +1,7 @@
 from rdflib.term import Literal, URIRef
 from rdflib.namespace import Namespace
 
+from rdflib.py3compat import b
 
 test_data = """
 #  Definitions of terms describing the n3 model
@@ -149,7 +150,7 @@ class TestN3Case(unittest.TestCase):
         g.add((URIRef('http://example.com/people/Bob'), URIRef(
             'urn:knows'), URIRef('http://example.com/people/Linda')))
         s = g.serialize(base='http://example.com/', format='n3')
-        self.assertTrue('<people/Bob>' in s)
+        self.assertTrue(b('<people/Bob>') in s)
         g2 = ConjunctiveGraph()
         g2.parse(data=s, publicID='http://example.com/', format='n3')
         self.assertEqual(list(g), list(g2))
