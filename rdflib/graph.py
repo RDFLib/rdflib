@@ -313,6 +313,10 @@ class Graph(Node):
                  namespace_manager=None):
         super(Graph, self).__init__()
         self.__identifier = identifier or BNode()
+
+        if not isinstance(self.__identifier, Node):
+            self.__identifier = URIRef(self.__identifier)
+
         if not isinstance(store, Store):
             # TODO: error handling
             self.__store = store = plugin.get(store, Store)()
