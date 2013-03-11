@@ -87,44 +87,8 @@ class TestSerialization(unittest.TestCase):
              rdflib.Literal('AC999.0999 - AC999999.Z9999')))
         sg = graph.serialize(format='n3', base=LCCO).decode('utf8')
         # See issue 248
-        self.assert_(
-            '<http://loc.gov/catdir/cpso/lcco/1>' in sg, sg)  # BAD BAD
         # Actual test should be the inverse of the below ...
-        self.assert_('<1> a skos:Concept ;' not in sg, sg)
-
-    def test_base(self):
-        """
-        Further investigations
-        """
-
-        raise SkipTest("base kwarg under investigation")
-
-        gp = """\
-<?xml version="1.0" encoding="UTF-8"?>
-<rdf:RDF
-   xmlns:lcco="http://loc.gov/catdir/cpso/lcco/"
-   xmlns:dc="http://purl.org/dc/terms/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:skos="http://www.w3.org/2004/02/skos/core#"
->
-  <rdf:Description rdf:about="lcco:1">
-    <dc:LCC>AC999.0999 - AC999999.Z9999</dc:LCC>
-    <rdf:type
-        rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-    <skos:prefLabel>Scrapbooks</skos:prefLabel>
-  </rdf:Description>
-</rdf:RDF>
-"""
-        DC = rdflib.Namespace('http://purl.org/dc/terms/')
-        SKOS = rdflib.Namespace('http://www.w3.org/2004/02/skos/core#')
-        LCCO = rdflib.Namespace('http://loc.gov/catdir/cpso/lcco/')
-        graph = rdflib.Graph()
-        graph.bind('dc', DC)
-        graph.bind('skos', SKOS)
-        graph.bind('lcco', LCCO)
-        graph.parse(data=gp, format="xml")
-        sg = graph.serialize(format='n3', base=LCCO).decode('utf8')
-        self.assert_('<1> a skos:Concept ;' not in sg, sg)  # BAD BAD BAD
+        self.assert_('<1> a skos:Concept ;' in sg, sg)
 
 if __name__ == "__main__":
     unittest.main()
