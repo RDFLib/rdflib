@@ -72,6 +72,7 @@ class TrigSerializer(TurtleSerializer):
 
         firstTime = True
         for identifier, subjects in self._contexts.items():
+            self._serialized={}
             self.write(self.indent() + '\n<%s> = {' % identifier)
             self.depth += 1
             for subject in subjects:
