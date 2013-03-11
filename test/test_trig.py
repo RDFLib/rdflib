@@ -1,6 +1,8 @@
 import unittest
 import rdflib
 
+from rdflib.py3compat import b
+
 class TestTrig(unittest.TestCase):
     
     def testEmpty(self): 
@@ -21,6 +23,6 @@ class TestTrig(unittest.TestCase):
         self.assertEqual(len(g.get_context('urn:b')),1)
 
         s=g.serialize(format='trig')
-        self.assert_('{}' not in s) # no empty graphs!
+        self.assert_(b('{}') not in s) # no empty graphs!
 
     
