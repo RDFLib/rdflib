@@ -309,6 +309,8 @@ class TurtleSerializer(RecursiveSerializer):
                 qname_callback=lambda dt: self.getQName(
                     dt, _GEN_QNAME_FOR_DT))
         else:
+            node = self.relativize(node)
+
             return self.getQName(node, position == VERB) or node.n3()
 
     def p_squared(self, node, position, newline=False):
