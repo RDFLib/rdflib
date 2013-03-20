@@ -288,6 +288,8 @@ class Genid(URIRef):
 
     @staticmethod
     def _is_external_skolem(uri):
+        if not isinstance(uri, basestring):
+            uri = str(uri)
         parsed_uri = urlparse(uri)
         gen_id = parsed_uri.path.rfind(skolem_genid)
         if gen_id != 0:
@@ -300,6 +302,8 @@ class RDFLibGenid(Genid):
 
     @staticmethod
     def _is_rdflib_skolem(uri):
+        if not isinstance(uri, basestring):
+            uri = str(uri)
         parsed_uri = urlparse(uri)
         if parsed_uri.params != "" \
                 or parsed_uri.query != "" \
