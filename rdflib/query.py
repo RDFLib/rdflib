@@ -10,6 +10,7 @@ try:
 except:
     from StringIO import StringIO as BytesIO
 
+from . import py3compat
 
 __all__ = ['Processor', 'Result', 'ResultParser', 'ResultSerializer',
            'ResultException']
@@ -57,6 +58,66 @@ class EncodeOnlyUnicode(object):
 
     def __getattr__(self, name):
         return getattr(self.__stream, name)
+
+
+class ResultRow(tuple):
+    """
+    a single result row
+    allows accessing bindings as attributes or with []
+
+    >>> from rdflib import URIRef, Variable
+    >>> rr=ResultRow({ Variable('a'): URIRef('urn:cake') }, [Variable('a')])
+
+    >>> rr[0]
+    rdflib.term.URIRef(%(u)s'urn:cake')
+    >>> rr[1]
+    Traceback (most recent call last):
+        ...
+    IndexError: tuple index out of range
+
+    >>> rr.a
+    rdflib.term.URIRef(%(u)s'urn:cake')
+    >>> rr.b
+    Traceback (most recent call last):
+        ...
+    AttributeError: b
+
+    >>> rr['a']
+    rdflib.term.URIRef(%(u)s'urn:cake')
+    >>> rr['b']
+    Traceback (most recent call last):
+        ...
+    KeyError: 'b'
+
+    >>> rr[Variable('a')]
+    rdflib.term.URIRef(%(u)s'urn:cake')
+
+
+    """
+    __doc__ = py3compat.format_doctest_out(__doc__)
+
+    def __new__(cls, values, labels):
+
+        instance = super(ResultRow, cls).__new__(
+            cls, (values.get(v) for v in labels))
+        instance.labels = dict((unicode(x[
+                               1]), x[0]) for x in enumerate(labels))
+        return instance
+
+    def __getattr__(self, name):
+        if name not in self.labels:
+            raise AttributeError(name)
+        return tuple.__getitem__(self, self.labels[name])
+
+    def __getitem__(self, name):
+        try:
+            return tuple.__getitem__(self, name)
+        except TypeError:
+            if name in self.labels:
+                return tuple.__getitem__(self, self.labels[name])
+            if unicode(name) in self.labels:  # passing in variable object
+                return tuple.__getitem__(self, self.labels[unicode(name)])
+            raise KeyError(name)
 
 
 class Result(object):
@@ -141,7 +202,7 @@ class Result(object):
             # To remain compatible with the old SPARQLResult behaviour
             # this iterates over lists of variable bindings
             for b in self.bindings:
-                yield tuple(b.get(v) for v in self.vars)
+                yield ResultRow(b, self.vars)
 
     def __getattr__(self, name):
         if self.type in ("CONSTRUCT", "DESCRIBE") and self.graph is not None:
