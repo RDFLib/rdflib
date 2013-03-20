@@ -29,7 +29,8 @@ class Collection(object):
     [%(u)s'"1"^^<http://www.w3.org/2001/XMLSchema#integer>',
      %(u)s'"2"^^<http://www.w3.org/2001/XMLSchema#integer>',
      %(u)s'"3"^^<http://www.w3.org/2001/XMLSchema#integer>']
-    >>> 1 in c
+
+    >>> Literal(1) in c
     True
     >>> len(c)
     3
@@ -176,7 +177,7 @@ class Collection(object):
         if len(self) == 1 and key > 0:
             pass
         elif key == len(self) - 1:
-            #the tail
+            # the tail
             priorLink = self._get_container(key - 1)
             self.graph.set((priorLink, RDF.rest, RDF.nil))
             graph.remove((current, None, None))
@@ -205,17 +206,17 @@ class Collection(object):
         """
         container = self.uri
         graph = self.graph
-        #iterate to the end of the linked list
+        # iterate to the end of the linked list
         rest = graph.value(container, RDF.rest)
         while rest:
             if rest == RDF.nil:
-                #the end, append to the end of the linked list
+                # the end, append to the end of the linked list
                 node = BNode()
                 graph.set((container, RDF.rest, node))
                 container = node
                 break
             else:
-                #move down one link
+                # move down one link
                 if container != self.uri:
                     rest = graph.value(rest, RDF.rest)
                 if not rest == RDF.nil:

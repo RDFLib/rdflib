@@ -27,7 +27,7 @@ class TestRelativeBase(unittest.TestCase):
 
         # datetime with microseconds should be cast as a literal with using
         # XML Schema dateTime as the literal datatype
-        self.assertEquals(l.title(), '2009-06-15T23:37:06.522630')
+        self.assertEquals(unicode(l), '2009-06-15T23:37:06.522630')
         self.assertEquals(l.datatype, XSD.dateTime)
 
         dt2 = l.toPython()

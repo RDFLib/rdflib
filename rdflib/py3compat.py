@@ -59,6 +59,9 @@ if PY3:
         "unicode(x)" --> "str(x)"
 
         Accepts a string or a function, so it can be used as a decorator."""
+        # s may be None if processed by Py2exe
+        if s is None:
+            return ''
         return s % {'u': '', 'b': 'b', 'L': '', 'unicode': 'str'}
 
     def type_cmp(a, b):
@@ -102,6 +105,9 @@ else:
         "55%(L)s"    --> "55L"
 
         Accepts a string or a function, so it can be used as a decorator."""
+        # s may be None if processed by Py2exe
+        if s is None:
+            return ''
         return s % {'u': 'u', 'b': '', 'L': 'L', 'unicode': 'unicode'}
 
     def type_cmp(a, b):

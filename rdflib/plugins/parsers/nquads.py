@@ -20,10 +20,12 @@ graphs that can be used and queried. The store that backs the graph
 >>> #   <http://bibliographica.org/entity/E10009>
 >>> s = URIRef("http://bibliographica.org/entity/E10009")
 >>> FOAF = Namespace("http://xmlns.com/foaf/0.1/")
->>> assert(g.value(s, FOAF.name) == "Arco Publications")
+>>> assert(g.value(s, FOAF.name).eq("Arco Publications"))
 """
 
 from rdflib.py3compat import b
+
+from rdflib import ConjunctiveGraph
 
 # Build up from the NTriples parser:
 from rdflib.plugins.parsers.ntriples import NTriplesParser
@@ -41,7 +43,7 @@ class NQuadsParser(NTriplesParser):
         """Parse f as an N-Triples file."""
         assert sink.store.context_aware, ("NQuadsParser must be given"
                                           " a context aware store.")
-        self.sink = sink
+        self.sink = ConjunctiveGraph(store=sink.store)
 
         source = inputsource.getByteStream()
 
@@ -82,4 +84,4 @@ class NQuadsParser(NTriplesParser):
             raise ParseError("Trailing garbage")
         # Must have a context aware store - add on a normal Graph
         # discards anything where the ctx != graph.identifier
-        self.sink.store.add((subject, predicate, obj), context)
+        self.sink.get_context(context).add((subject, predicate, obj))

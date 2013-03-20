@@ -198,9 +198,6 @@ class TurtleSerializer(RecursiveSerializer):
 
         if spacious is not None:
             self._spacious = spacious
-        # In newer rdflibs these are always in the namespace manager
-        #self.store.prefix_mapping('rdf', RDFNS)
-        #self.store.prefix_mapping('rdfs', RDFSNS)
 
         self.preprocess()
         subjects_list = self.orderSubjects()
@@ -286,9 +283,7 @@ class TurtleSerializer(RecursiveSerializer):
         if (self.refCount(subject) > 0) or not isinstance(subject, BNode):
             return False
         self.write('\n' + self.indent() + '[]')
-        #self.depth+=1
         self.predicateList(subject)
-        #self.depth-=1
         self.write(' .')
         return True
 
@@ -314,6 +309,8 @@ class TurtleSerializer(RecursiveSerializer):
                 qname_callback=lambda dt: self.getQName(
                     dt, _GEN_QNAME_FOR_DT))
         else:
+            node = self.relativize(node)
+
             return self.getQName(node, position == VERB) or node.n3()
 
     def p_squared(self, node, position, newline=False):

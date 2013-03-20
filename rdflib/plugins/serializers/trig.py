@@ -72,10 +72,8 @@ class TrigSerializer(TurtleSerializer):
 
         firstTime = True
         for identifier, subjects in self._contexts.items():
-            if not isinstance(identifier, BNode):
-                self.write(self.indent() + '\n<%s> {' % identifier)
-            else:
-                self.write(self.indent() + '\n{')
+            self._serialized={}
+            self.write(self.indent() + '\n<%s> = {' % identifier)
             self.depth += 1
             for subject in subjects:
                 if self.isDone(subject):

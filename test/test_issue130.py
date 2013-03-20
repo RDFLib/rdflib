@@ -7,6 +7,7 @@ if platform.system == 'Java':
 
 
 def test_issue_130():
+    raise SkipTest("Remote content change - skip for now")
     g = rdflib.Graph()
     try:
         g.parse(location="http://linked-data.ru/example")

@@ -1,4 +1,3 @@
-from __future__ import generators
 from rdflib.py3compat import format_doctest_out
 
 __doc__ = format_doctest_out("""

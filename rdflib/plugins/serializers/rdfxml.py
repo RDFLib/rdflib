@@ -1,5 +1,3 @@
-from __future__ import generators
-
 from rdflib.plugins.serializers.xmlwriter import XMLWriter
 
 from rdflib.namespace import Namespace, RDF, RDFS  # , split_uri

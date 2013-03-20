@@ -1,53 +1,25 @@
 #
-# code to simplify supporting 2.4
+# code to simplify supporting older python versions
 #
 
 
-# From
-# http://code.activestate.com/recipes/523034-emulate-collectionsdefaultdict/
+import sys
 
-try:
-    from collections import defaultdict
-    assert defaultdict
-except:
-    class defaultdict(dict):
-        def __init__(self, default_factory=None, *a, **kw):
-            if (default_factory is not None and
-                    not hasattr(default_factory, '__call__')):
-                raise TypeError('first argument must be callable')
-            dict.__init__(self, *a, **kw)
-            self.default_factory = default_factory
+from decimal import Decimal
 
-        def __getitem__(self, key):
-            try:
-                return dict.__getitem__(self, key)
-            except KeyError:
-                return self.__missing__(key)
+if sys.version_info[:2] < (2, 7):
 
-        def __missing__(self, key):
-            if self.default_factory is None:
-                raise KeyError(key)
-            self[key] = value = self.default_factory()
-            return value
+    # Pre-2.7 decimal and float did not compare correctly
 
-        def __reduce__(self):
-            if self.default_factory is None:
-                args = tuple()
-            else:
-                args = self.default_factory,
-            return type(self), args, None, None, self.items()
+    def numeric_greater(a, b):
+        if isinstance(a, Decimal) and isinstance(b, float):
+            return float(a) > b
+        elif isinstance(a, float) and isinstance(b, Decimal):
+            return a > float(b)
+        else:
+            return a > b
 
-        def copy(self):
-            return self.__copy__()
+else:
 
-        def __copy__(self):
-            return type(self)(self.default_factory, self)
-
-        def __deepcopy__(self, memo):
-            import copy
-            return type(self)(self.default_factory,
-                              copy.deepcopy(self.items()))
-
-        def __repr__(self):
-            return 'defaultdict(%s, %s)' % (self.default_factory,
-                                            dict.__repr__(self))
+    def numeric_greater(a, b):
+        return a > b

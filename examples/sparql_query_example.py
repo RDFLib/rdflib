@@ -2,9 +2,9 @@ from rdflib import Literal, ConjunctiveGraph, Namespace, BNode
 
 import rdflib
 
-# Note that this example uses SPARQL and assumes you have rdfextras installed
-# after installation, no other steps are nescessary, the SPARQL implementation
-# should be found automatically. 
+# Note that this example uses SPARQL and assumes you have
+# rdfextras/rdflib-sparql installed, no other steps are nescessary,
+# the SPARQL implementation should be found automatically.
 
 DC = Namespace(u"http://purl.org/dc/elements/1.1/")
 FOAF = Namespace(u"http://xmlns.com/foaf/0.1/")

@@ -1,4 +1,3 @@
-from __future__ import generators
 from rdflib.term import Literal  # required for doctests
 l = Literal('')
 del l
@@ -179,7 +178,7 @@ Using Namespace class:
 import logging
 _logger = logging.getLogger(__name__)
 
-#import md5
+# import md5
 import random
 import warnings
 
@@ -195,27 +194,10 @@ except ImportError:
     except ImportError:
         from StringIO import StringIO as BytesIO
         assert BytesIO
-# # Can't use this approach any longer, this function will raise an ImportError
-# # because the sparql module has been moved to the RDFExtras package.
-
-# def describe(terms,bindings,graph):
-#     """
-#     Default DESCRIBE returns all incomming and outgoing statements
-#     about the given terms
-#     """
-#     from rdflib.sparql.sparqlOperators import getValue
-#     g=Graph()
-#     terms=[getValue(i)(bindings) for i in terms]
-#     for s,p,o in graph.triples_choices((terms,None,None)):
-#         g.add((s,p,o))
-#     for s,p,o in graph.triples_choices((None,None,terms)):
-#         g.add((s,p,o))
-#     return g
 
 from rdflib.namespace import RDF, RDFS, SKOS
 
 from rdflib import plugin, exceptions, query
-#, sparql
 
 from rdflib.term import Node
 from rdflib.term import URIRef, Genid
@@ -261,75 +243,16 @@ class Graph(Node):
     identifier.
     For more on named graphs, see: http://www.w3.org/2004/03/trix/
 
-    Ontology for __str__ provenance terms:
-
-    .. code-block:: n3
-
-        @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-        @prefix : <http://rdflib.net/store#> .
-        @prefix rdfg: <http://www.w3.org/2004/03/trix/rdfg-1/>.
-        @prefix owl: <http://www.w3.org/2002/07/owl#>.
-        @prefix log: <http://www.w3.org/2000/10/swap/log#>.
-        @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
-
-        :Store a owl:Class;
-            rdfs:subClassOf <http://xmlns.com/wordnet/1.6/Electronic_database>;
-            rdfs:subClassOf
-                [a owl:Restriction;
-                 owl:onProperty rdfs:label;
-                 owl:allValuesFrom [a owl:DataRange;
-                                    owl:oneOf ("IOMemory"
-                                               "Sleepcat"
-                                               "MySQL"
-                                               "Redland"
-                                               "REGEXMatching"
-                                               "ZODB"
-                                               "AuditableStorage"
-                                               "Memory")]
-                ].
-
-        :ConjunctiveGraph a owl:Class;
-            rdfs:subClassOf rdfg:Graph;
-            rdfs:label "The top-level graph within the store
-                        - the union of all the Graphs within."
-            rdfs:seeAlso <http://rdflib.net/rdf_store/#ConjunctiveGraph>.
-
-        :DefaultGraph a owl:Class;
-            rdfs:subClassOf rdfg:Graph;
-            rdfs:label "The 'default' subgraph of a conjunctive graph".
-
-
-        :identifier a owl:Datatypeproperty;
-            rdfs:label "The store-associated identifier of the formula. ".
-            rdfs:domain log:Formula
-            rdfs:range xsd:anyURI;
-
-        :storage a owl:ObjectProperty;
-            rdfs:domain [
-                a owl:Class;
-                owl:unionOf (log:Formula rdfg:Graph :ConjunctiveGraph)
-            ];
-            rdfs:range :Store.
-
-        :default_context a owl:FunctionalProperty;
-            rdfs:label "The default context for a conjunctive graph";
-            rdfs:domain :ConjunctiveGraph;
-            rdfs:range :DefaultGraph.
-
-
-        {?cg a :ConjunctiveGraph;:storage ?store}
-          => {?cg owl:sameAs ?store}.
-
-        {?subGraph rdfg:subGraphOf ?cg;a :DefaultGraph}
-          => {?cg a :ConjunctiveGraph;:default_context ?subGraphOf} .
-
     """
 
     def __init__(self, store='default', identifier=None,
                  namespace_manager=None):
         super(Graph, self).__init__()
         self.__identifier = identifier or BNode()
+
+        if not isinstance(self.__identifier, Node):
+            self.__identifier = URIRef(self.__identifier)
+
         if not isinstance(store, Store):
             # TODO: error handling
             self.__store = store = plugin.get(store, Store)()
@@ -721,14 +644,14 @@ class Graph(Node):
         [(rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal(u'bla'))]
         >>> g.add([u, SKOS.prefLabel, Literal('blubb', lang='en')])
-        >>> pprint(sorted(g.preferredLabel(u)))
-        [(rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(u'blubb', lang='en')),
-         (rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(u'bla'))]
-        >>> pprint(g.preferredLabel(u, lang=''))
-        [(rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(u'bla'))]
+        >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
+        [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(%(u)s'bla')),
+          (rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(%(u)s'blubb', lang='en'))]
+        >>> g.preferredLabel(u, lang='') #doctest: +NORMALIZE_WHITESPACE
+        [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(%(u)s'bla'))]
         >>> pprint(g.preferredLabel(u, lang='en'))
         [(rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal(u'blubb', lang='en'))]
@@ -1303,7 +1226,7 @@ class ConjunctiveGraph(Graph):
             source=source, publicID=publicID, location=location,
             file=file, data=data, format=format)
 
-        #id = self.context_id(self.absolutize(source.getPublicId()))
+        # id = self.context_id(self.absolutize(source.getPublicId()))
         g_id = URIRef(publicID and publicID or source.getPublicId())
         context = Graph(store=self.store, identifier=g_id)
         context.remove((None, None, None))
