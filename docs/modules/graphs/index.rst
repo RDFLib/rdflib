@@ -9,6 +9,7 @@ RDFLib defines the following kinds of Graphs:
 * Graph(**store**, **identifier**)
 * QuotedGraph(**store**, **identifier**)
 * ConjunctiveGraph(**store**, **default_identifier** = None)
+* Dataset(**store**, **default_identifier** = None)
 
 Graph
 -----
@@ -44,6 +45,17 @@ This is intended to map the idea of "{ N3-expression }" that is used by N3 into 
     :maxdepth: 2
 
     quoted_graph
+
+Dataset
+-------
+
+The RDF 1.1 Dataset, a small extension to the Conjunctive Graph. The primary term is "graphs in the datasets" and not "contexts with quads" so there is a separate method to set/retrieve a graph in a dataset and to operate with dataset graphs. As a consequence of this approach, dataset graphs cannot be identified with blank nodes, a name is always required (RDFLib will automatically add a name if one is not provided at creation time). This implementation includes a convenience method to directly add a single quad to a dataset graph.
+
+.. toctree::
+    :maxdepth: 2
+
+    dataset
+
 
 Working with graphs
 -------------------
