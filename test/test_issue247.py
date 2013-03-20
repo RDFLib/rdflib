@@ -30,16 +30,23 @@ passxml = """\
 </rdf:RDF>"""
 
 
-class TestRandomSeedInThread(unittest.TestCase):
+class TestXMLLiteralwithLangAttr(unittest.TestCase):
 
-    def test_parse_of_literal_with_xmllang_attr(self):
+    def test_successful_parse_of_literal_without_xmllang_attr(self):
         """
+        Test parse of Literal without xmllang attr passes
         Parsing an RDF/XML document fails with a KeyError when
         it contains a XML Literal with a xml:lang attribute:
         """
         g = rdflib.Graph()
         g.parse(data=passxml)
-        del g
+
+    def test_failing_parse_of_literal_with_xmllang_attr(self):
+        """
+        Show parse of Literal with xmllang attr fails
+        Parsing an RDF/XML document fails with a KeyError when
+        it contains a XML Literal with a xml:lang attribute:
+        """
         g = rdflib.Graph()
         g.parse(data=failxml)
 

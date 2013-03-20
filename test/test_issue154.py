@@ -8,23 +8,27 @@ from nose.exc import SkipTest
 
 import re
 from htmlentitydefs import name2codepoint
+
+
 def htmlentitydecode(s):
     return re.sub('&(%s);' % '|'.join(name2codepoint),
             lambda m: unichr(name2codepoint[m.group(1)]), s)
 
 html = """\
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" \
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <body xmlns:dc="http://purl.org/dc/terms/">
 <p about="http://example.com" property="dc:title">Exampl&eacute;</p>
 </body>
 </html>"""
 
+
 class EntityTest(TestCase):
 
     def test_html_entity_xhtml(self):
-        if sys.version_info[0] == 3 or sys.version_info[:2] < (2,5):
+        if sys.version_info[0] == 3:
             raise SkipTest('minidom parser strips HTML entities in Python 3.2')
         if platform.system() == "Java":
             raise SkipTest('problem with HTML entities for html5lib in Jython')
@@ -34,7 +38,7 @@ class EntityTest(TestCase):
         self.assertEqual(len(g), 1)
         self.assertTrue(g.value(URIRef("http://example.com"),
                                  URIRef("http://purl.org/dc/terms/title")
-                                 ).eq( u"Exampl"))
+                                 ).eq(u"Exampl"))
 
     def test_html_decoded_entity_xhtml(self):
         if sys.version_info[0] == 3:
@@ -47,8 +51,3 @@ class EntityTest(TestCase):
         self.assertTrue(g.value(URIRef("http://example.com"),
                                   URIRef("http://purl.org/dc/terms/title")
                                   ).eq(u"Exampl\xe9"))
-
-
-
-
-
