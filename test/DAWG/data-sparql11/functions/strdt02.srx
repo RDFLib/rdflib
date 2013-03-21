@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+<head>
+	<variable name="s"/>
+	<variable name="str1"/>
+</head>
+<results>
+		<result>
+			<binding name="s"><uri>http://example.org/s2</uri></binding>
+			<binding name="str1"><literal datatype="http://www.w3.org/2001/XMLSchema#string">bar</literal></binding>
+		</result>
+</results>
+</sparql>

@@ -1,0 +1,5 @@
+PREFIX : <http://example.org/>
+SELECT ?s (STRLANG(?str,"en-US") AS ?s2) WHERE {
+	?s :str ?str
+	FILTER(LANGMATCHES(LANG(?str), "en"))
+}

@@ -1,0 +1,3 @@
+BASE <http://example.org/>
+SELECT (URI("uri") AS ?uri) (IRI("iri") AS ?iri)
+WHERE {}

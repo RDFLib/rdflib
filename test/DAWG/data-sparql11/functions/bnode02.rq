@@ -1,0 +1,4 @@
+PREFIX : <http://example.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT (BNODE() AS ?b1) (BNODE() AS ?b2)
+WHERE {}

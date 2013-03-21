@@ -1,0 +1,9 @@
+http://downlode.org/rdf/iso-3166/countries#DE
+http://downlode.org/rdf/iso-3166/countries#US
+http://downlode.org/rdf/iso-3166/countries#GB
+http://downlode.org/rdf/iso-3166/countries#RU
+http://downlode.org/rdf/iso-3166/countries#FR
+http://downlode.org/rdf/iso-3166/countries#ES
+http://downlode.org/rdf/iso-3166/countries#KR
+http://downlode.org/rdf/iso-3166/countries#JP
+http://downlode.org/rdf/iso-3166/countries#CN

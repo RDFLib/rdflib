@@ -1,0 +1,12 @@
+@prefix : <http://example.org/ns#> .
+
+# This file uses UNIX line end conventions.
+
+:x1 :p1 "x" .
+:x2 :p2 """x
+y""" .
+
+:x3 :p3 """x
+y"""^^:someType .
+
+

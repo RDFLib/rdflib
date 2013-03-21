@@ -1,0 +1,7 @@
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix ex:	<http://www.example.org/schema#>
+prefix in:	<http://www.example.org/instance#>
+
+select * where {
+?x rdf:rest{0,1} ?y
+}

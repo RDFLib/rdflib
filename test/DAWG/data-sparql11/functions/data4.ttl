@@ -1,0 +1,6 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://example.org/> .
+
+:s1 :str "abc" .
+:s2 :str "abc"@en .
+:s3 :str "abc"^^xsd:string .

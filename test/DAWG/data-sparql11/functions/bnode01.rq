@@ -1,0 +1,10 @@
+PREFIX : <http://example.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT ?s1 ?s2
+(BNODE(?s1) AS ?b1) (BNODE(?s2) AS ?b2)
+WHERE {
+	?a :str ?s1 .
+	?b :str ?s2 .
+	FILTER (?a = :s1 || ?a = :s3)
+	FILTER (?b = :s1 || ?b = :s3)
+}

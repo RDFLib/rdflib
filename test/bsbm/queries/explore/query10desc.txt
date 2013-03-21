@@ -1,0 +1,5 @@
+QueryType=Select
+
+ProductXYZ=ProductURI
+CountryXYZ=CountryURI
+currentDate=CurrentDate

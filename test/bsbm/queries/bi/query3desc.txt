@@ -1,0 +1,5 @@
+QueryType=Select
+
+ConsecutiveMonth_0=ConsecutiveMonth_0
+ConsecutiveMonth_1=ConsecutiveMonth_1
+ConsecutiveMonth_2=ConsecutiveMonth_2

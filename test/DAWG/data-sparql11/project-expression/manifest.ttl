@@ -1,0 +1,91 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Project Expression" ;
+    mf:entries
+    ( 
+    :projexp01
+    :projexp02
+    :projexp03
+    :projexp04
+    :projexp05
+    :projexp06
+    :projexp07
+ ) .
+
+
+:projexp01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Expression is equality" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3> ;
+    mf:action
+         [ qt:query  <projexp01.rq> ;
+           qt:data   <projexp01.ttl> ] ;
+    mf:result  <projexp01.srx>
+    .
+    
+    
+:projexp02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Expression raise an error" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3> ;
+    mf:action
+         [ qt:query  <projexp02.rq> ;
+           qt:data   <projexp02.ttl> ] ;
+    mf:result  <projexp02.srx>
+    .   
+
+:projexp03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Reuse a project expression variable in select" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3> ;
+    mf:action
+         [ qt:query  <projexp03.rq> ;
+           qt:data   <projexp03.ttl> ] ;
+    mf:result  <projexp03.srx>
+    .   
+
+:projexp04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Reuse a project expression variable in order by" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3> ;
+    mf:action
+         [ qt:query  <projexp04.rq> ;
+           qt:data   <projexp04.ttl> ] ;
+    mf:result  <projexp04.srx>
+    . 
+    
+:projexp05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Expression may return no value" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3> ;
+    mf:action
+         [ qt:query  <projexp05.rq> ;
+           qt:data   <projexp05.ttl> ] ;
+    mf:result  <projexp05.srx>
+    .   
+
+:projexp06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Expression has undefined variable" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3> ;
+    mf:action
+         [ qt:query  <projexp06.rq> ;
+           qt:data   <projexp06.ttl> ] ;
+    mf:result  <projexp06.srx>
+    .   
+    
+:projexp07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Expression has variable that may be unbound" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3> ;
+    mf:action
+         [ qt:query  <projexp07.rq> ;
+           qt:data   <projexp07.ttl> ] ;
+    mf:result  <projexp07.srx>
+    .

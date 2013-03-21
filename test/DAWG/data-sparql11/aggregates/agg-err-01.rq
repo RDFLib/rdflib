@@ -1,0 +1,6 @@
+PREFIX : <http://example.com/data/#>
+SELECT ?g (AVG(?p) AS ?avg) ((MIN(?p) + MAX(?p)) / 2 AS ?c)
+WHERE {
+  ?g :p ?p .
+}
+GROUP BY ?g

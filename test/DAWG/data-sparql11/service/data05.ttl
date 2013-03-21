@@ -1,0 +1,10 @@
+@prefix void:    <http://rdfs.org/ns/void#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+
+[] dc:subject "Query remote RDF Data" ;
+   void:sparqlEndpoint <http://example1.org/sparql> .
+[] dc:subject "Update remote RDF Data"  ;
+   void:sparqlEndpoint <http://example2.org/sparql> .
+[] dc:subject "Query RDF" ;
+   void:sparqlEndpoint <http://example3.org/sparql> .

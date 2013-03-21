@@ -37,17 +37,21 @@ kwargs = {}
 if sys.version_info[0] >= 3:
     from setuptools import setup
     kwargs['use_2to3'] = True
-    kwargs['install_requires'] = ['isodate']
+    kwargs['install_requires'] = ['isodate', 'pyparsing']
     kwargs['tests_require'] = ['html5lib']
-    kwargs['requires'] = ['isodate']
+    kwargs['requires'] = [
+        'isodate', 'pyparsing',
+        'SPARQLWrapper']
     kwargs['src_root'] = setup_python3()
+    assert setup
 else:
     try:
         from setuptools import setup
+        assert setup
         kwargs['test_suite'] = "nose.collector"
-        kwargs['install_requires'] = ['isodate', 'html5lib']
-        if sys.version_info[:2] > (2, 4):
-            kwargs['requires'] = ['isodate']
+        kwargs['install_requires'] = [
+            'isodate', 'html5lib',
+            'pyparsing<=1.5.7', 'SPARQLWrapper']
     except ImportError:
         from distutils.core import setup
 
@@ -70,9 +74,9 @@ setup(
                 "simple yet powerful language for representing information.",
     author="Daniel 'eikeon' Krech",
     author_email="eikeon@eikeon.com",
-    maintainer="Daniel 'eikeon' Krech",
-    maintainer_email="eikeon@eikeon.com",
-    url="http://rdflib.net/",
+    maintainer="RDFLib Team",
+    maintainer_email="rdflib-dev@google.com",
+    url="https://github.com/RDFLib/rdflib",
     license="https://raw.github.com/RDFLib/rdflib/master/LICENSE",
     platforms=["any"],
     classifiers=[
@@ -83,6 +87,7 @@ setup(
             "Programming Language :: Python :: 2.6",
             "Programming Language :: Python :: 2.7",
             "Programming Language :: Python :: 3.2",
+            "Programming Language :: Python :: 3.3",
             "License :: OSI Approved :: BSD License",
             "Topic :: Software Development :: Libraries :: Python Modules",
             "Operating System :: OS Independent",
@@ -108,7 +113,10 @@ setup(
 
     """,
     packages=['rdflib',
-              'rdflib/plugins',
+              'rdflib/extras',
+              'rdflib/extras/sqlstore',
+              'rdflib/extras/sqlstore/foplrelationalmodel',
+              'rdflib/extras/utils',
               'rdflib/plugins',
               'rdflib/plugins/parsers',
               'rdflib/plugins/parsers/pyRdfa',
@@ -118,6 +126,8 @@ setup(
               'rdflib/plugins/parsers/pyRdfa/rdfs',
               'rdflib/plugins/parsers/pyMicrodata',
               'rdflib/plugins/serializers',
+              'rdflib/plugins/sparql',
+              'rdflib/plugins/stores',
               ],
     **kwargs
     )

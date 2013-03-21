@@ -1,0 +1,8 @@
+PREFIX : <http://example/> 
+
+SELECT * 
+FROM <data-g3-dup.ttl>
+FROM NAMED <data-g3.ttl>{ 
+   ?s ?p ?o
+   GRAPH ?g { ?s ?q ?v }
+}

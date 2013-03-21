@@ -1,0 +1,3 @@
+QueryType=Select
+
+ProductXYZ=ProductURI

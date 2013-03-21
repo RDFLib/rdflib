@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="O1"/>
+    <variable name="O2"/>
+  </head>
+  <results>
+    <result>
+      <binding name="O1">
+        <uri>http://www.example.orgorder1</uri>
+      </binding>
+      <binding name="O2">
+        <uri>http://www.example.orgorder1</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="O1">
+        <uri>http://www.example.orgorder1</uri>
+      </binding>
+      <binding name="O2">
+        <uri>http://www.example.orgorder2</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="O1">
+        <uri>http://www.example.orgorder1</uri>
+      </binding>
+      <binding name="O2">
+        <uri>http://www.example.orgorder3</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="O1">
+        <uri>http://www.example.orgorder1</uri>
+      </binding>
+      <binding name="O2">
+        <uri>http://www.example.orgorder4</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="O1">
+        <uri>http://www.example.orgorder2</uri>
+      </binding>
+      <binding name="O2">
+        <uri>http://www.example.orgorder1</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="O1">
+        <uri>http://www.example.orgorder2</uri>
+      </binding>
+      <binding name="O2">
+        <uri>http://www.example.orgorder2</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="O1">
+        <uri>http://www.example.orgorder2</uri>
+      </binding>
+      <binding name="O2">
+        <uri>http://www.example.orgorder3</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="O1">
+        <uri>http://www.example.orgorder2</uri>
+      </binding>
+      <binding name="O2">
+        <uri>http://www.example.orgorder4</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="O1">
+        <uri>http://www.example.orgorder3</uri>
+      </binding>
+      <binding name="O2">
+        <uri>http://www.example.orgorder1</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="O1">
+        <uri>http://www.example.orgorder3</uri>
+      </binding>
+      <binding name="O2">
+        <uri>http://www.example.orgorder2</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="O1">
+        <uri>http://www.example.orgorder3</uri>
+      </binding>
+      <binding name="O2">
+        <uri>http://www.example.orgorder3</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="O1">
+        <uri>http://www.example.orgorder3</uri>
+      </binding>
+      <binding name="O2">
+        <uri>http://www.example.orgorder4</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="O1">
+        <uri>http://www.example.orgorder4</uri>
+      </binding>
+      <binding name="O2">
+        <uri>http://www.example.orgorder1</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="O1">
+        <uri>http://www.example.orgorder4</uri>
+      </binding>
+      <binding name="O2">
+        <uri>http://www.example.orgorder2</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="O1">
+        <uri>http://www.example.orgorder4</uri>
+      </binding>
+      <binding name="O2">
+        <uri>http://www.example.orgorder3</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="O1">
+        <uri>http://www.example.orgorder4</uri>
+      </binding>
+      <binding name="O2">
+        <uri>http://www.example.orgorder4</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>

@@ -1,0 +1,8 @@
+@prefix ex: <http://example.org/ns#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+_:ont a owl:Ontology .
+ex:p a owl:DatatypeProperty .
+
+ex:s ex:p "foo" .

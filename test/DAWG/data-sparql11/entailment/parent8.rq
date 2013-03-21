@@ -1,0 +1,10 @@
+PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+PREFIX : <http://example.org/test#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT * 
+WHERE { ?parent a [
+       a owl:Restriction ;
+       owl:onProperty :hasChild ;
+       owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+       owl:onClass :Female ] . }

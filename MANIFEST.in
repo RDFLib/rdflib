@@ -4,6 +4,7 @@ include DEVELOPERS.md
 include README.md
 include CONTRIBUTORS
 include ez_setup.py
+include skiptests.list
 recursive-include rdflib *.py
 recursive-include examples *.py
 include run_tests.py

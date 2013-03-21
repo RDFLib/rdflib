@@ -1,0 +1,27 @@
+@prefix :        <http://example/> .
+
+:a0 :p1 :b0 ;
+    :p2 :c0 .
+
+:a1 :p1 :b1 ;
+    :p2 :c1 .
+
+:a2 :p1 :b2 ;
+    :p2 :c2 .
+
+:a3 :p1 :b3 ;
+    :p2 :c3 .
+
+:d0 a :Sub .
+
+:d1 a :Sub ;
+    :q1 :b1 ;
+    :q2 :c1 .
+
+:d2 a :Sub ;
+    :q1 :b2 .
+
+:d3 a :Sub ;
+    :q1 :b3 ;
+    :q2 :cx .
+

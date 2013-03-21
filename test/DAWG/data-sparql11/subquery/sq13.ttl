@@ -1,0 +1,21 @@
+@prefix : <http://www.example.org> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+
+:order1 a :Order; :hasItem 
+    [ :amount 2 ; rdfs:label "Ice Cream" ; :price 4 ],
+    [ :amount 2 ; rdfs:label "Pizza" ; :price 10 ],
+    [ :amount 1 ; rdfs:label "Wine" ; :price 8 ].
+
+:order2 a :Order; :hasItem 
+    [ :amount 3 ; rdfs:label "Ice Cream" ; :price 4 ],
+    [ :amount 2 ; rdfs:label "Pasta" ; :price 8 ],
+    [ :amount 3 ; rdfs:label "Soft Drink" ; :price 6 ].
+
+:order3 a :Order; :hasItem 
+    [ :amount 1 ; rdfs:label "Sandwich" ; :price 3 ],
+    [ :amount 1 ; rdfs:label "Soft Drink" ; :price 2 ].
+
+:order4 a :Order; :hasItem 
+    [ :amount 1 ; rdfs:label "Bagel" ; :price 3.5 ],
+    [ :amount 1 ; rdfs:label "Soft Drink" ; :price 2 ].

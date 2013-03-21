@@ -1,0 +1,8 @@
+PREFIX dob: <http://placetime.com/interval/gregorian/1977-01-18T04:00:00Z/P> 
+PREFIX time: <http://www.ai.sri.com/daml/ontologies/time/Time.daml#>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+SELECT ?desc
+WHERE  { 
+  dob:1D a time:ProperInterval;
+         dc:description ?desc.
+}

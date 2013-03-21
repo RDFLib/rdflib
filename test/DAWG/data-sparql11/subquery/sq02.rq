@@ -1,0 +1,8 @@
+prefix ex:	<http://www.example.org/schema#>
+prefix in:	<http://www.example.org/instance#>
+
+select  ?x ?p where {
+graph ?g {
+{select * where {?x ?p ?g}}
+}
+}

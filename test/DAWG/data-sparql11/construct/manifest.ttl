@@ -1,0 +1,74 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/construct/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "CONSTRUCT" ;
+    mf:entries
+    ( 
+    :constructwhere01
+    :constructwhere02
+    :constructwhere03
+    :constructwhere04
+    :constructwhere05
+    :constructwhere06
+    ) .
+
+:constructwhere01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "constructwhere01 - CONSTRUCT WHERE" ;
+    rdfs:comment "CONSTRUCT WHERE { ?S ?P ?O }";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-02-01#resolution_3> ;
+    mf:action
+         [ qt:query  <constructwhere01.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <constructwhere01result.ttl>
+    .
+
+:constructwhere02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "constructwhere02 - CONSTRUCT WHERE" ;
+    rdfs:comment "CONSTRUCT WHERE  with join";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-02-01#resolution_3> ;
+    mf:action
+         [ qt:query  <constructwhere02.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <constructwhere02result.ttl>
+    .
+
+:constructwhere03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "constructwhere03 - CONSTRUCT WHERE" ;
+    rdfs:comment "CONSTRUCT WHERE  with join, using shortcut notation";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-02-01#resolution_3> ;
+    mf:action
+         [ qt:query  <constructwhere03.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <constructwhere03result.ttl>
+    .
+:constructwhere04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "constructwhere04 - CONSTRUCT WHERE" ;
+    rdfs:comment "CONSTRUCT WHERE  with DatasetClause";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-02-01#resolution_3> ;
+    mf:action
+         [ qt:query  <constructwhere04.rq> ] ;
+    mf:result  <constructwhere04result.ttl>
+    .
+
+:constructwhere05 rdf:type mf:NegativeSyntaxTest11 ;
+    mf:name    "constructwhere05 - CONSTRUCT WHERE" ;
+    rdfs:comment "CONSTRUCT WHERE  with FILTER";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-02-01#resolution_3> ;
+    mf:action <constructwhere05.rq> .
+
+:constructwhere06 rdf:type mf:NegativeSyntaxTest11 ;
+    mf:name    "constructwhere06 - CONSTRUCT WHERE" ;
+    mf:description "CONSTRUCT WHERE  with GRAPH";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-02-01#resolution_3> ;
+    mf:action <constructwhere06.rq> .

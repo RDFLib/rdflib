@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+<head>
+	<variable name="s"/>
+	<variable name="str"/>
+	<variable name="bb"/>
+	<variable name="bbc"/>
+	<variable name="bbcy"/>
+	<variable name="b"/>
+	<variable name="ben"/>
+	<variable name="bbx"/>
+	<variable name="bxyzx"/>
+</head>
+<results>
+		<result>
+			<binding name="s"><uri>http://example.org/s1</uri></binding>
+			<binding name="str"><literal>abc</literal></binding>
+			<binding name="bb"><literal>a</literal></binding>
+			<binding name="bbc"><literal>a</literal></binding>
+			<binding name="b"><literal></literal></binding>
+			<binding name="bbx"><literal>a</literal></binding>
+			<binding name="bxyzx"><literal></literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s2</uri></binding>
+			<binding name="str"><literal xml:lang="en">abc</literal></binding>
+			<binding name="bb"><literal xml:lang="en">a</literal></binding>
+			<binding name="bbc"><literal xml:lang="en">a</literal></binding>
+			<binding name="b"><literal xml:lang="en"></literal></binding>
+			<binding name="ben"><literal xml:lang="en"></literal></binding>
+			<binding name="bbx"><literal xml:lang="en">a</literal></binding>
+			<binding name="bxyzx"><literal></literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s3</uri></binding>
+			<binding name="str"><literal datatype="http://www.w3.org/2001/XMLSchema#string">abc</literal></binding>
+			<binding name="bb"><literal datatype="http://www.w3.org/2001/XMLSchema#string">a</literal></binding>
+			<binding name="bbc"><literal datatype="http://www.w3.org/2001/XMLSchema#string">a</literal></binding>
+			<binding name="b"><literal datatype="http://www.w3.org/2001/XMLSchema#string"></literal></binding>
+			<binding name="bbx"><literal datatype="http://www.w3.org/2001/XMLSchema#string">a</literal></binding>
+			<binding name="bxyzx"><literal></literal></binding>
+		</result>
+</results>
+</sparql>

@@ -1,0 +1,2 @@
+CONSTRUCT 
+WHERE { GRAPH <data.ttl> { ?s ?p ?o } }

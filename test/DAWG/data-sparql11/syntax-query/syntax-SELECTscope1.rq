@@ -1,0 +1,8 @@
+SELECT *
+WHERE {
+  {SELECT (1 AS ?X ) {}
+  }
+  UNION
+  {SELECT (2 AS ?X ) {}
+  }
+}

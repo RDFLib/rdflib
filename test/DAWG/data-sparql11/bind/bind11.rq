@@ -1,0 +1,10 @@
+PREFIX : <http://example.org/> 
+
+SELECT ?s ?v ?z
+{
+  # See also bind10.rq
+  BIND(4 AS ?z)
+  # ?z is in scope at the time of filter execution.
+  ?s :p ?v . 
+  FILTER(?v = ?z)
+}

@@ -1,0 +1,20 @@
+PREFIX  void: <http://rdfs.org/ns/void#>
+PREFIX  dc:   <http://purl.org/dc/elements/1.1/>
+PREFIX  doap: <http://usefulinc.com/ns/doap#> 
+
+SELECT ?service ?title
+WHERE {
+  {
+    # Find the service with subject "remote".
+    # Inner block to fix the FILTER not be over
+    # just this local pattern.
+    ?p dc:subject ?projectSubject ;
+       void:sparqlEndpoint ?service  
+       FILTER regex(?projectSubject, "remote")
+  }
+
+  # Query that service projects.
+ 
+  SERVICE ?service {
+     ?project  doap:name ?title . } 
+}

@@ -1,0 +1,18 @@
+@prefix ex: <http://example.org/ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+_:rdfs01 a owl:Ontology .
+ 
+ex:a a owl:NamedIndividual .
+ex:b a owl:NamedIndividual .
+ex:c a owl:ObjectProperty .
+ex:d a owl:ObjectProperty .
+ex:e a owl:ObjectProperty .
+ex:f a owl:ObjectProperty .
+
+ex:c rdfs:subPropertyOf ex:d .
+ex:d rdfs:subPropertyOf ex:e .
+ex:e rdfs:subPropertyOf ex:f .
+
+ex:a ex:c ex:b .

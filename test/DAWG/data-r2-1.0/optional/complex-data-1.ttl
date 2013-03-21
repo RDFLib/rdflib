@@ -1,0 +1,21 @@
+@prefix foaf:       <http://xmlns.com/foaf/0.1/> .
+
+<tag:alice@example:foafUri> 
+    foaf:mbox   <mailto:alice@example.net>;
+    foaf:name   "Alice";
+    foaf:nick   "WhoMe?";
+    foaf:depiction   <http://example.com/alice.png> .
+
+<tag:bert@example:foafUri> 
+    foaf:mbox   <mailto:bert@example.net> ;
+    foaf:nick   "BigB" ;
+    foaf:name   "Bert" .
+
+<tag:eve@example:foafUri> 
+    foaf:mbox   <mailto:eve@example.net> ;
+    foaf:firstName   "Eve" .
+
+<tag:john@example:foafUri>
+    foaf:mbox   <mailto:john@example.net> ;
+    foaf:nick   "jDoe";
+    foaf:isPrimaryTopicOf <http://example.com/people/johnDoe> .

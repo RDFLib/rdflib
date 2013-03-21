@@ -1,0 +1,4 @@
+PREFIX :     <http://example.org/ns#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+
+SELECT * { :x ?p 123.0. }

@@ -1,0 +1,16 @@
+Data Access Working Group SPARQL Query Language test suite reorganization
+
+This directory contains restructured copies of tests from
+the DAWG test suite (available at
+http://www.w3.org/2001/sw/DataAccess/tests/data/). The purpose of this
+restructuring is to enhance usability, clear away obsolete tests and
+provide an up-to-date, consistent and easy to use suite of test cases
+that SPARQL query language implementors can use to evaluate their
+implementation. 
+
+
+The Working Group decided 
+(http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0096/21-dawg-minutes.html#item05)
+on 21 Aug 2007 that the tests as-is constitute a test suite that the group will
+use to generate an implementation report for the SPARQL Query Language for
+RDF.

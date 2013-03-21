@@ -1,0 +1,6 @@
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix :      <http://example.org/> .
+
+:jerry a foaf:Person .
+:jerry foaf:givenName "Jerry" .
+:jerry foaf:mbox  <mailto:jerry@example.org> .

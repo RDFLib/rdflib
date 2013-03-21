@@ -1,0 +1,5 @@
+PREFIX : <http://example.org/>
+SELECT (CONCAT(?str1,?str2) AS ?str) WHERE {
+	?s1 :str ?str1 .
+	?s2 :str ?str2 .
+}

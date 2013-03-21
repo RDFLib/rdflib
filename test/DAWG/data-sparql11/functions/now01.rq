@@ -1,0 +1,5 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+ASK {
+	BIND(NOW() AS ?n)
+	FILTER(DATATYPE(?n) = xsd:dateTime)
+}

@@ -1,0 +1,15 @@
+PREFIX ex: <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation#>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+
+# The closest pre-operative physical examination
+SELECT ?exam ?date { 
+  ?exam a ex:PhysicalExamination; 
+        dc:date ?date;
+        ex:precedes ex:operation1 .
+  ?op   a ex:SurgicalProcedure; dc:date ?opDT .
+  FILTER NOT EXISTS {
+    ?otherExam a ex:PhysicalExamination; 
+               ex:follows ?exam;
+               ex:precedes ex:operation1
+  } 
+}

@@ -1,0 +1,5 @@
+PREFIX : <http://www.example.org/>
+SELECT (AVG(?o) AS ?avg)
+WHERE {
+	?s :dec ?o
+}

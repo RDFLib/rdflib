@@ -1,0 +1,7 @@
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+_:project1  doap:name    "Query remote RDF Data" .
+_:project1  doap:created "2011-02-12"^^xsd:date .
+_:project2  doap:name    "Query multiple SPARQL endpoints" .
+_:project2  doap:created "2011-02-13"^^xsd:date .

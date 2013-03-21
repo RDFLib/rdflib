@@ -1,0 +1,5 @@
+PREFIX : <http://example.org/>
+SELECT ?s ?num WHERE {
+	?s ?p ?num
+	FILTER isNumeric(?num)
+}

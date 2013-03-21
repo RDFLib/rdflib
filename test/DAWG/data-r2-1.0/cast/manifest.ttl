@@ -1,0 +1,83 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/cast/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Casting" ;
+    mf:entries
+    (   
+        :cast-str
+        :cast-flt
+        :cast-dbl
+        :cast-dec
+        :cast-int
+        :cast-dT
+        :cast-bool
+    ) .
+
+:cast-str rdf:type mf:QueryEvaluationTest ;
+     mf:name    "Cast to xsd:string" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0087/14-dawg-minutes.html> ;
+     mf:action
+        [ qt:query  <cast-str.rq> ;
+          qt:data   <data.ttl>  ] ;
+     mf:result  <cast-str.srx> .
+      
+:cast-flt rdf:type mf:QueryEvaluationTest ;
+     mf:name    "Cast to xsd:float" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0087/14-dawg-minutes.html> ;
+     mf:action
+        [ qt:query  <cast-flt.rq> ;
+          qt:data   <data.ttl>  ] ;
+     mf:result  <cast-flt.srx> .
+      
+:cast-dbl rdf:type mf:QueryEvaluationTest ;
+     mf:name    "Cast to xsd:double" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0087/14-dawg-minutes.html> ;
+     mf:action
+        [ qt:query  <cast-dbl.rq> ;
+          qt:data   <data.ttl>  ] ;
+     mf:result  <cast-dbl.srx> .
+      
+:cast-dec rdf:type mf:QueryEvaluationTest ;
+     mf:name    "Cast to xsd:decimal" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0087/14-dawg-minutes.html> ;
+     mf:action
+        [ qt:query  <cast-dec.rq> ;
+          qt:data   <data.ttl>  ] ;
+     mf:result  <cast-dec.srx> .
+      
+:cast-int rdf:type mf:QueryEvaluationTest ;
+     mf:name    "Cast to xsd:integer" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0087/14-dawg-minutes.html> ;
+     mf:action
+        [ qt:query  <cast-int.rq> ;
+          qt:data   <data.ttl>  ] ;
+     mf:result  <cast-int.srx> .
+      
+:cast-dT rdf:type mf:QueryEvaluationTest ;
+     mf:name    "Cast to xsd:dateTime" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0087/14-dawg-minutes.html> ;
+     mf:action
+        [ qt:query  <cast-dT.rq> ;
+          qt:data   <data.ttl>  ] ;
+     mf:result  <cast-dT.srx> .
+      
+:cast-bool rdf:type mf:QueryEvaluationTest ;
+     mf:name    "Cast to xsd:boolean" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0087/14-dawg-minutes.html> ;
+     mf:action
+        [ qt:query  <cast-bool.rq> ;
+          qt:data   <data.ttl>  ] ;
+     mf:result  <cast-bool.srx> .
+

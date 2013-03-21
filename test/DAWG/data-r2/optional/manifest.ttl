@@ -1,0 +1,114 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/optional/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "OPTIONAL test cases" ;
+    mf:entries
+    (:dawg-optional-001 
+     :dawg-optional-002 
+     :dawg-union-001 
+     :dawg-optional-complex-1
+     :dawg-optional-complex-2
+     :dawg-optional-complex-3
+     :dawg-optional-complex-4 ).
+
+:dawg-optional-complex-1 a mf:QueryEvaluationTest ;
+    mf:name    "Complex optional semantics: 1" ;
+    rdfs:comment
+            "Complex optional: LeftJoin(LeftJoin(BGP(..),{..}),Join(BGP(..),Union(..,..)))" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0096/21-dawg-minutes.html> ;
+    mf:action
+    [ qt:query  <q-opt-complex-1.rq> ;
+      qt:data   <complex-data-1.ttl> ] ;
+    mf:result  <result-opt-complex-1.ttl> .
+
+:dawg-optional-complex-2 a mf:QueryEvaluationTest ;
+    mf:name    "Complex optional semantics: 2" ;
+    rdfs:comment
+            "Complex optional: LeftJoin(Join(BGP(..),Graph(var,{..})),Union(..,..))" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0096/21-dawg-minutes.html> ;
+    mf:action
+    [ qt:query  <q-opt-complex-2.rq> ;
+      qt:graphData <complex-data-1.ttl>;
+      qt:data   <complex-data-2.ttl> ] ;
+    mf:result  <result-opt-complex-2.ttl> .
+
+:dawg-optional-complex-3 a mf:QueryEvaluationTest ;
+    mf:name    "Complex optional semantics: 3" ;
+    rdfs:comment
+            "Complex optional: LeftJoin(Join(BGP(..),Graph(var,{..})),LeftJoin(BGP(..),{..}))" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0096/21-dawg-minutes.html> ;
+    mf:action
+    [ qt:query  <q-opt-complex-3.rq> ;
+      qt:graphData <complex-data-1.ttl>;
+      qt:data   <complex-data-2.ttl> ] ;
+    mf:result  <result-opt-complex-3.ttl> .
+
+:dawg-optional-complex-4 a mf:QueryEvaluationTest ;
+    mf:name    "Complex optional semantics: 4" ;
+    rdfs:comment
+            "Complex optional: LeftJoin(Join(BGP(..),Union(..,..)),Join(BGP(..),Graph(varOrIRI,{..})))" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0096/21-dawg-minutes.html> ;
+    mf:action
+    [ qt:query  <q-opt-complex-4.rq> ;
+      qt:graphData <complex-data-1.ttl>;
+      qt:data   <complex-data-2.ttl> ] ;
+    mf:result  <result-opt-complex-4.ttl> .
+
+:dawg-optional-001 a mf:QueryEvaluationTest ;
+    mf:name    "One optional clause" ;
+    rdfs:comment
+            "One optional clause" ;
+    mf:action
+	[ qt:query  <q-opt-1.rq> ;
+	  qt:data   <data.ttl> ] ;
+    mf:result  <result-opt-1.ttl> ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0006> ;
+    dawgt:approval dawgt:Approved .
+
+
+:dawg-optional-002 a mf:QueryEvaluationTest ;
+    mf:name    "Two optional clauses" ;
+    rdfs:comment
+	"One optional clause" ;
+    mf:action
+	[ qt:query  <q-opt-2.rq> ;
+	  qt:data   <data.ttl> ] ;
+    mf:result  <result-opt-2.ttl> ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0006> ;
+    dawgt:approval dawgt:Approved .
+
+
+:dawg-union-001 a mf:QueryEvaluationTest ;
+    mf:name     "Union is not optional" ;
+    rdfs:comment "Union is not optional" ;
+    mf:action
+        [ qt:query  <q-opt-3.rq> ;
+          qt:data   <data.ttl> ] ;
+    mf:result  <result-opt-3.ttl> ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0006> ;
+    dawgt:approval dawgt:Approved .
+

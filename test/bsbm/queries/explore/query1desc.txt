@@ -1,0 +1,6 @@
+QueryType=Select
+
+ProductType=ProductTypeURI
+ProductFeature1=ProductFeatureURI
+ProductFeature2=ProductFeatureURI
+x=ProductPropertyNumericValue

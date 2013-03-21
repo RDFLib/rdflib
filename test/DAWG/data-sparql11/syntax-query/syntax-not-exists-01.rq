@@ -1,0 +1,1 @@
+SELECT * { ?s ?p ?o FILTER(NOT EXISTS{?s ?p ?o}) }

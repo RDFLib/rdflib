@@ -1,0 +1,10 @@
+# Query4
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example.org/test#>
+
+SELECT ?X ?Y1 ?Y2
+WHERE
+{?X rdf:type :Person .
+?X  :name ?Y1 .
+?X  :nick ?Y2 .}

@@ -1,0 +1,13 @@
+PREFIX : <http://example.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT
+	(COALESCE(?x, -1) AS ?cx)     # error when ?x is unbound -> -1
+	(COALESCE(?o/?x, -2) AS ?div) # error when ?x is unbound or zero -> -2
+	(COALESCE(?z, -3) AS ?def)    # always unbound -> -3
+	(COALESCE(?z) AS ?err)        # always an error -> unbound
+WHERE {
+	?s :p ?o .
+	OPTIONAL {
+		?s :q ?x
+	}
+}

@@ -1,3 +1,4 @@
 flake8
 html5lib
 isodate
+pyparsing<=1.5.7

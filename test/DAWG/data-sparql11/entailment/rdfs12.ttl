@@ -1,0 +1,8 @@
+@prefix ex: <http://example.org/ns#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+ex:favourite-fruit a rdf:Seq .
+ex:favourite-fruit rdf:_1 ex:banana .
+ex:favourite-fruit rdf:_2 ex:apple .
+ex:favourite-fruit rdf:_3 ex:pear .

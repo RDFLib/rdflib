@@ -1,0 +1,1 @@
+SELECT (IF(1/0, false, true) AS ?error) WHERE {}

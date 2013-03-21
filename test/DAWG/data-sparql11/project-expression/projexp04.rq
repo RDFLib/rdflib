@@ -1,0 +1,9 @@
+prefix ex:	<http://www.example.org/schema#>
+prefix in:	<http://www.example.org/instance#>
+
+select ?x ?y 
+  ((?y + ?y) as ?sum) 
+where {
+  ?x ex:p ?y
+}
+order by ?sum

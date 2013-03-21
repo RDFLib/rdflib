@@ -1,0 +1,31 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix : <http://example.org/> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://example.org/> .
+
+_:SPARQLDAWGTestOntology rdf:type owl:Ontology .
+
+:hasPublication rdf:type owl:ObjectProperty .
+:publishedAt rdf:type owl:ObjectProperty .
+:name rdf:type owl:DatatypeProperty .
+:Conference rdf:type owl:Class ; owl:disjointWith :Workshop .
+:ConferencePaper rdf:type owl:Class ; rdfs:subClassOf [ 
+    rdf:type owl:Restriction ;
+    owl:onProperty :publishedAt ;
+    owl:someValuesFrom :Conference 
+] .
+:Employee rdf:type owl:Class .
+:GraduateAssistant rdf:type owl:Class ;
+    rdfs:subClassOf :Employee , :Student .
+:Student rdf:type owl:Class .
+:Workshop rdf:type owl:Class .
+:Anite rdf:type :Student , owl:NamedIndividual .
+:George rdf:type :Employee , owl:NamedIndividual .
+:John rdf:type :GraduateAssistant , owl:NamedIndividual ;
+    :name "Johnnie" ;
+    :hasPublication :paper1 .
+:paper1 rdf:type :ConferencePaper , owl:NamedIndividual .
+:person1 rdf:type owl:NamedIndividual ; :hasPublication :paper1 .

@@ -1,0 +1,5 @@
+PREFIX x: <http://example/>
+SELECT *
+{
+  x:a:b:c .
+}

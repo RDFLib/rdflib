@@ -1,0 +1,7 @@
+PREFIX : <http://example.org/> 
+
+SELECT ?z
+{
+  ?s ?p ?o .
+  BIND(?o+10 AS ?z)
+}

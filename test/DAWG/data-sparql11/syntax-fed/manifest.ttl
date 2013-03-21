@@ -1,0 +1,36 @@
+@prefix :       <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-fed/manifest#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "Syntax tests Syntax SPARQL 1.1 Federation" ;
+    mf:entries
+    ( 
+:test_1
+:test_2
+:test_3
+) .
+
+:test_1 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-service-01.rq" ;
+   mf:action  <syntax-service-01.rq> ;.
+
+:test_2 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-service-02.rq" ;
+   mf:action  <syntax-service-02.rq> ;.
+
+:test_3 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-service-03.rq" ;
+   mf:action  <syntax-service-03.rq> ;.
+
+

@@ -1,0 +1,3 @@
+# Legal, if unusual, IRIs
+BASE <http://example/page.html>
+SELECT * WHERE { <a> <b> <#x> }

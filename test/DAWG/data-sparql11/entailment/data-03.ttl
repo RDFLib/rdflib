@@ -1,0 +1,22 @@
+@prefix :  <http://example.org/test#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+_:ont a owl:Ontology .
+
+:a rdf:type owl:NamedIndividual . 
+:b rdf:type owl:NamedIndividual .
+:c rdf:type owl:NamedIndividual .
+:Person rdf:type owl:Class .
+:name rdf:type owl:DatatypeProperty .
+:nick rdf:type owl:DatatypeProperty .
+
+:a rdf:type :Person.
+:b rdf:type :Person.
+:c rdf:type :Person.
+
+:a :name "A".
+:a :nick "Anick".
+
+:b :name "B".
+:b :nick "Bnick".

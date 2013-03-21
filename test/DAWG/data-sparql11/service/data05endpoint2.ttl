@@ -1,0 +1,5 @@
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+_:project3  doap:name    "Update remote RDF Data" .
+_:project3  doap:created "2011-02-14"^^xsd:date .

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+<head>
+<variable name='g'/>
+<variable name='avg'/>
+<variable name='c'/>
+</head>
+<results>
+<result>
+<binding name='g'><uri>http://example.com/data/#x</uri></binding>
+<binding name='avg'><literal datatype='http://www.w3.org/2001/XMLSchema#decimal'>2.5</literal></binding>
+<binding name='c'><literal datatype='http://www.w3.org/2001/XMLSchema#decimal'>2.5</literal></binding>
+</result>
+<result>
+<binding name='g'><uri>http://example.com/data/#y</uri></binding>
+</result>
+<result>
+<binding name='g'><uri>http://example.com/data/#z</uri></binding>
+<binding name='avg'><literal datatype='http://www.w3.org/2001/XMLSchema#decimal'>2.5</literal></binding>
+<binding name='c'><literal datatype='http://www.w3.org/2001/XMLSchema#decimal'>2.5</literal></binding>
+</result>
+</results>
+</sparql>

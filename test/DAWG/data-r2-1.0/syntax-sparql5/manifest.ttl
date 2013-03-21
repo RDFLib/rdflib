@@ -1,0 +1,27 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/syntax-sparql5/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "Syntax tests syntax-sparql5" ;
+    mf:entries
+    ( :syntax-reduced-01 :syntax-reduced-02
+    ).
+
+:syntax-reduced-01  mf:name  "syntax-reduced-01.rq" ;
+         rdf:type   mf:PositiveSyntaxTest ;
+         mf:action  <syntax-reduced-01.rq> ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007OctDec/att-0069/13-dawg-minutes.html> ;
+.
+	 
+:syntax-reduced-02  mf:name  "syntax-reduced-02.rq" ;
+         rdf:type   mf:PositiveSyntaxTest ;
+         mf:action  <syntax-reduced-02.rq> ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007OctDec/att-0069/13-dawg-minutes.html> ;
+.
+

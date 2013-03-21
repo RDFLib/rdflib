@@ -1,0 +1,6 @@
+prefix ex:	<http://www.example.org/schema#>
+prefix in:	<http://www.example.org/instance#>
+
+select  * where {
+in:c ^(ex:p1/ex:p2) ?x
+}

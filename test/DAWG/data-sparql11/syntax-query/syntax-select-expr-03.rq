@@ -1,0 +1,1 @@
+SELECT (datatype(?x +?y) AS ?z) {}

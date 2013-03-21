@@ -1,0 +1,35 @@
+@prefix :         <http://example/> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+
+:x1 :p1 "1"^^xsd:integer .
+:x1 :p2 "1"^^xsd:integer .
+
+:x2 :p1 "1"^^xsd:integer .
+:x2 :p2 "1"^^xsd:integer .
+
+:x3 :p1 "01"^^xsd:integer .
+:x3 :p2 "01"^^xsd:integer .
+
+:x4 :p1 "+1"^^xsd:integer .
+:x4 :p2 "+1"^^xsd:integer .
+
+:y1 :p1 "1.0"^^xsd:decimal .
+:y1 :p2 "1.0"^^xsd:decimal .
+
+:y2 :p1 "+1.0"^^xsd:decimal .
+:y2 :p2 "+1.0"^^xsd:decimal .
+
+:y3 :p1 "01.0"^^xsd:decimal .
+:y3 :p2 "01.0"^^xsd:decimal .
+
+:z1 :p1 "1.0e0"^^xsd:double .
+:z1 :p2 "1.0e0"^^xsd:double .
+
+:z2 :p1 "1.0e0"^^xsd:double .
+:z2 :p2 "1.0e0"^^xsd:double .
+
+:z3 :p1 "1.3e0"^^xsd:double .
+:z3 :p2 "1.3e0"^^xsd:double .
+
+:z4 :p1 "1.3e0"^^xsd:double .
+:z5 :p1 "1.3e0"^^xsd:float .
