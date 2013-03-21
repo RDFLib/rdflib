@@ -132,8 +132,23 @@ register(
     'IOMemory', Store,
     'rdflib.plugins.memory', 'IOMemory')
 register(
+    'Auditable', Store,
+    'rdflib.plugins.stores.auditable', 'AuditableStore')
+register(
+    'Concurrent', Store,
+    'rdflib.plugins.stores.concurrent', 'ConcurrentStore')
+register(
     'Sleepycat', Store,
     'rdflib.plugins.sleepycat', 'Sleepycat')
+register(
+    'SQLite', Store,
+    'rdflib.plugins.stores.sqlite', 'SQLite')
+register(
+    'SPARQLStore', Store,
+    'rdflib.plugins.stores.sparqlstore', 'SPARQLStore')
+register(
+    'SPARQLUpdateStore', Store,
+    'rdflib.plugins.stores.sparqlstore', 'SPARQLUpdateStore')
 
 register(
     'xml', Serializer,
@@ -221,3 +236,34 @@ register(
 register(
     'text/html', Parser,
     'rdflib.plugins.parsers.structureddata', 'StructuredDataParser')
+
+
+register(
+    'sparql', Result,
+    'rdflib.plugins.sparql.processor', 'SPARQLResult')
+register(
+    'sparql', Processor,
+    'rdflib.plugins.sparql.processor', 'SPARQLProcessor')
+
+register(
+    'xml', ResultSerializer,
+    'rdflib.plugins.sparql.results.xmlresults', 'XMLResultSerializer')
+register(
+    'json', ResultSerializer,
+    'rdflib.plugins.sparql.results.jsonresults', 'JSONResultSerializer')
+register(
+    'csv', ResultSerializer,
+    'rdflib.plugins.sparql.results.csvresults', 'CSVResultSerializer')
+
+register(
+    'xml', ResultParser,
+    'rdflib.plugins.sparql.results.xmlresults', 'XMLResultParser')
+register(
+    'json', ResultParser,
+    'rdflib.plugins.sparql.results.jsonresults', 'JSONResultParser')
+register(
+    'csv', ResultParser,
+    'rdflib.plugins.sparql.results.csvresults', 'CSVResultParser')
+register(
+    'tsv', ResultParser,
+    'rdflib.plugins.sparql.results.tsvresults', 'TSVResultParser')

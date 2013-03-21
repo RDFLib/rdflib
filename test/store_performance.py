@@ -1,5 +1,5 @@
 import unittest
-
+import os
 import gc
 import itertools
 from time import time
@@ -15,6 +15,7 @@ from rdflib.graph import Graph
 def random_uri():
     return URIRef("%s" % random())
 
+
 class StoreTestCase(unittest.TestCase):
     """
     Test case for testing store performance... probably should be
@@ -23,6 +24,7 @@ class StoreTestCase(unittest.TestCase):
     """
     store = 'default'
     tmppath = None
+    configString = os.environ.get("DBURI", "dburi")
 
     def setUp(self):
         self.gcold = gc.isenabled()
@@ -30,9 +32,9 @@ class StoreTestCase(unittest.TestCase):
         gc.disable()
         self.graph = Graph(store=self.store)
         if self.store == "MySQL":
-            from test.mysql import configString
+            # from test.mysql import configString
             from rdflib.store.MySQL import MySQL
-            path=configString
+            path = self.configString
             MySQL().destroy(path)
         else:
             self.tmppath = mkdtemp()
@@ -92,7 +94,7 @@ class StoreTestCase(unittest.TestCase):
 
 
 class MemoryStoreTestCase(StoreTestCase):
-    store = "Memory"
+    store = "IOMemory"
 
 
 if __name__ == '__main__':

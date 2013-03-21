@@ -187,9 +187,11 @@ class URIRef(Identifier):
                     value += "#"
         # if normalize and value and value != normalize("NFC", value):
         #    raise Error("value must be in NFC normalized form.")
-        final_cls = RDFLibGenid if RDFLibGenid._is_rdflib_skolem(value) \
-            else (
-                Genid if Genid._is_external_skolem(value) else cls)
+
+        # Unused code
+        # final_cls = RDFLibGenid if RDFLibGenid._is_rdflib_skolem(value) \
+        #     else (
+        #         Genid if Genid._is_external_skolem(value) else cls)
         try:
             rt = unicode.__new__(cls, value)
         except UnicodeDecodeError:
@@ -1477,6 +1479,7 @@ class Statement(Node, tuple):
 # Nodes are ordered like this
 # See http://www.w3.org/TR/sparql11-query/#modOrderBy
 _ORDERING = dict(map(reversed, enumerate([BNode, Variable, URIRef, Literal])))
+
 
 class XMLOrHTMLLiteral(Literal):
     def __add__(self, val):
