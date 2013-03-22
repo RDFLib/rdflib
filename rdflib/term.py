@@ -187,9 +187,11 @@ class URIRef(Identifier):
                     value += "#"
         # if normalize and value and value != normalize("NFC", value):
         #    raise Error("value must be in NFC normalized form.")
-        final_cls = RDFLibGenid if RDFLibGenid._is_rdflib_skolem(value) \
-            else (
-                Genid if Genid._is_external_skolem(value) else cls)
+
+        # # Unused code
+        # final_cls = RDFLibGenid if RDFLibGenid._is_rdflib_skolem(value) \
+        #     else (
+        #         Genid if Genid._is_external_skolem(value) else cls)
         try:
             rt = unicode.__new__(cls, value)
         except UnicodeDecodeError:
@@ -257,6 +259,10 @@ class URIRef(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
+        warnings.warn(
+            "method md5_term_hash is deprecated, and will be ",
+            "removed in the future. If you use this please let rdflib-dev know!",
+            category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("U"))
         return d.hexdigest()
@@ -446,6 +452,10 @@ class BNode(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
+        warnings.warn(
+            "method md5_term_hash is deprecated, and will be ",
+            "removed in the future. If you use this please let rdflib-dev know!",
+            category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("B"))
         return d.hexdigest()
@@ -1271,6 +1281,10 @@ class Literal(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
+        warnings.warn(
+            "method md5_term_hash is deprecated, and will be ",
+            "removed in the future. If you use this please let rdflib-dev know!",
+            category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("L"))
         return d.hexdigest()
@@ -1454,6 +1468,10 @@ class Variable(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
+        warnings.warn(
+            "method md5_term_hash is deprecated, and will be ",
+            "removed in the future. If you use this please let rdflib-dev know!",
+            category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("V"))
         return d.hexdigest()
@@ -1477,6 +1495,7 @@ class Statement(Node, tuple):
 # Nodes are ordered like this
 # See http://www.w3.org/TR/sparql11-query/#modOrderBy
 _ORDERING = dict(map(reversed, enumerate([BNode, Variable, URIRef, Literal])))
+
 
 class XMLOrHTMLLiteral(Literal):
     def __add__(self, val):
