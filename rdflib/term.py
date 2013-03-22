@@ -260,8 +260,8 @@ class URIRef(Identifier):
         probably just use __hash__
         """
         warnings.warn(
-            "method md5_term_hash is deprecated, and will be ",
-            "removed in the future. If you use this please let rdflib-dev know!",
+            "method md5_term_hash is deprecated, and will be removed " +
+            "in the future. If you use this please let rdflib-dev know!",
             category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("U"))
@@ -453,8 +453,8 @@ class BNode(Identifier):
         probably just use __hash__
         """
         warnings.warn(
-            "method md5_term_hash is deprecated, and will be ",
-            "removed in the future. If you use this please let rdflib-dev know!",
+            "method md5_term_hash is deprecated, and will be removed " +
+            "in the future. If you use this please let rdflib-dev know!",
             category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("B"))
@@ -1282,7 +1282,7 @@ class Literal(Identifier):
         probably just use __hash__
         """
         warnings.warn(
-            "method md5_term_hash is deprecated, and will be ",
+            "method md5_term_hash is deprecated, and will be removed " +
             "removed in the future. If you use this please let rdflib-dev know!",
             category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
@@ -1469,7 +1469,7 @@ class Variable(Identifier):
         probably just use __hash__
         """
         warnings.warn(
-            "method md5_term_hash is deprecated, and will be ",
+            "method md5_term_hash is deprecated, and will be removed " +
             "removed in the future. If you use this please let rdflib-dev know!",
             category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
