@@ -52,8 +52,16 @@ else:
         kwargs['install_requires'] = [
             'isodate', 'html5lib',
             'pyparsing<=1.5.7', 'SPARQLWrapper']
+
+        if sys.version_info[1]<7:
+            kwargs['install_requires'].append('ordereddict')
+        if sys.version_info[1]<6: 
+            kwargs['install_requires'].append('simplejson')
+
     except ImportError:
         from distutils.core import setup
+
+
 
 
 # Find version. We have to do this because we can't import it in Python 3 until
