@@ -12,11 +12,6 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 @var initial_context: dictionary for all the initial context data, keyed through the context URI-s
 """
 
-"""
-$Id: initialcontext.py,v 1.10 2013-01-07 12:46:43 ivan Exp $
-$Date: 2013-01-07 12:46:43 $
-"""
-
 class Wrapper :
 	pass
 	
