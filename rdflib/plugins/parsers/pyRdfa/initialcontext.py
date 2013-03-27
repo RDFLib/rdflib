@@ -56,6 +56,8 @@ initial_context["http://www.w3.org/2011/rdfa-context/rdfa-1.1"].ns = {
 	'skosxl'	: 'http://www.w3.org/2008/05/skos-xl#',
 	'schema'	: 'http://schema.org/',
 	'ma'		: 'http://www.w3.org/ns/ma-ont#',
+	'sd'        : 'http://www.w3.org/ns/sparql-service-description#',
+	'prov'      : 'http://www.w3.org/ns/prov#',
 }
 
 initial_context["http://www.w3.org/2011/rdfa-context/rdfa-1.1"].terms = {
