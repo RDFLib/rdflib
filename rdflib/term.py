@@ -333,48 +333,9 @@ def _unique_id():
     return "N"  # ensure that id starts with a letter
 
 
-# Adapted from http://icodesnip.com/snippet/python/
-# simple-universally-unique-id-uuid-or-guid
-def bnode_uuid():
-    """
-    Generates a uuid on behalf of Python 2.4
-    """
-    import os
-    import random
-    import socket
-    from time import time
-    from binascii import hexlify
-
-    pid = [None]
-
-    try:
-        ip = socket.gethostbyname(socket.gethostname())
-        ip = long(ip.replace('.', '999').replace(':', '999'))
-    except:
-        # if we can't get a network address, just imagine one
-        ip = long(random.random() * 100000000000000000L)
-
-    def _generator():
-        if os.getpid() != pid[0]:
-            # Process might have been forked (issue 200), must reseed random:
-            try:
-                preseed = long(hexlify(os.urandom(16)), 16)
-            except NotImplementedError:
-                preseed = 0
-            seed = long(str(preseed) + str(os.getpid())
-                        + str(long(time() * 1000000)) + str(ip))
-            random.seed(seed)
-            pid[0] = os.getpid()
-
-        t = long(time() * 1000.0)
-        r = long(random.random() * 100000000000000000L)
-        data = str(t) + ' ' + str(r) + ' ' + str(ip)
-        return md5(data).hexdigest()
-
-    return _generator
 
 
-def uuid4_ncname():
+def _serial_number_generator():
     """
     Generates UUID4-based but ncname-compliant identifiers.
     """
@@ -384,14 +345,6 @@ def uuid4_ncname():
         return uuid4().hex
 
     return _generator
-
-
-def _serial_number_generator():
-    import sys
-    if sys.version_info[:2] < (2, 5):
-        return bnode_uuid()
-    else:
-        return uuid4_ncname()
 
 
 class BNode(Identifier):
