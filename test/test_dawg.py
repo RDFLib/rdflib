@@ -57,16 +57,28 @@ else:
     from io import BytesIO
 
 
-import rdflib
-# import rdflib.plugins.sparql as rdflib_sparql
-# Several tests rely on lexical form of literals being kept!
-rdflib.NORMALIZE_LITERALS = False
+def setFlags():
+    import rdflib
+    # Several tests rely on lexical form of literals being kept!
+    rdflib.NORMALIZE_LITERALS = False
 
-# we need an explicit default graph
-rdflib_sparql_module.SPARQL_DEFAULT_GRAPH_UNION = False
+    # we need an explicit default graph
+    rdflib_sparql_module.SPARQL_DEFAULT_GRAPH_UNION = False
 
-# we obviously need this
-rdflib.DAWG_LITERAL_COLLATION = True
+    # we obviously need this
+    rdflib.DAWG_LITERAL_COLLATION = True
+    
+def resetFlags():
+    import rdflib
+    # Several tests rely on lexical form of literals being kept!
+    rdflib.NORMALIZE_LITERALS = True
+
+    # we need an explicit default graph
+    rdflib_sparql_module.SPARQL_DEFAULT_GRAPH_UNION = True
+
+    # we obviously need this
+    rdflib.DAWG_LITERAL_COLLATION = False
+        
 
 DEBUG_FAIL = True
 DEBUG_FAIL = False
@@ -627,6 +639,8 @@ def read_manifest(f):
 
 
 def test_dawg():
+    
+    setFlags()
 
     if SPARQL10Tests:
         for t in read_manifest("test/DAWG/data-r2/manifest-evaluation.ttl"):
@@ -635,6 +649,8 @@ def test_dawg():
     if SPARQL11Tests:
         for t in read_manifest("test/DAWG/data-sparql11/manifest-all.ttl"):
             yield t
+
+    resetFlags()
 
 
 def earl(test, res, info=None):
