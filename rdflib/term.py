@@ -258,6 +258,10 @@ class URIRef(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
+        warnings.warn(
+            "method md5_term_hash is deprecated, and will be removed " +
+            "in the future. If you use this please let rdflib-dev know!",
+            category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("U"))
         return d.hexdigest()
@@ -447,6 +451,10 @@ class BNode(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
+        warnings.warn(
+            "method md5_term_hash is deprecated, and will be removed " +
+            "in the future. If you use this please let rdflib-dev know!",
+            category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("B"))
         return d.hexdigest()
@@ -1281,6 +1289,10 @@ class Literal(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
+        warnings.warn(
+            "method md5_term_hash is deprecated, and will be removed " +
+            "removed in the future. If you use this please let rdflib-dev know!",
+            category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("L"))
         return d.hexdigest()
@@ -1513,6 +1525,10 @@ class Variable(Identifier):
         Supported for backwards compatibility; new code should
         probably just use __hash__
         """
+        warnings.warn(
+            "method md5_term_hash is deprecated, and will be removed " +
+            "removed in the future. If you use this please let rdflib-dev know!",
+            category=DeprecationWarning, stacklevel=2)
         d = md5(self.encode())
         d.update(b("V"))
         return d.hexdigest()
