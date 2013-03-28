@@ -36,9 +36,7 @@ __date__ = "2013/03/01"
 __all__ = [
     'URIRef',
     'BNode',
-    'HTMLLiteral',
     'Literal',
-    'XMLLiteral',
     'Variable',
 
     'Namespace',
@@ -106,7 +104,7 @@ Literal work, eq, __neq__, __lt__, etc.
 DAWG_LITERAL_COLLATION=False
 
 from rdflib.term import (
-    URIRef, BNode, HTMLLiteral, XMLLiteral, Literal, Variable)
+    URIRef, BNode, Literal, Variable)
 
 from rdflib.namespace import Namespace
 
