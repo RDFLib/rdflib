@@ -60,10 +60,10 @@ Path(http://xmlns.com/foaf/0.1/knows / http://xmlns.com/foaf/0.1/name)
 >>> foaf.name|foaf.firstName
 Path(http://xmlns.com/foaf/0.1/name | http://xmlns.com/foaf/0.1/firstName)
 
-Modifiers (?, *, +) are done using % and the strings '*', '?', '+', also
-defined as constants in this file
+Modifiers (?, *, +) are done using * (the multiplication operator) and
+the strings '*', '?', '+', also defined as constants in this file.
 
->>> foaf.knows%OneOrMore
+>>> foaf.knows*OneOrMore
 Path(http://xmlns.com/foaf/0.1/knows+)
 
 The path objects can be used with the normal graph methods.
@@ -92,7 +92,7 @@ True
 
 Graph generator functions, triples, subjects, objects, etc. :
 
->>> pprint(list(g.objects(e.c, (e.p3%OneOrMore)/e.p2)))
+>>> pprint(list(g.objects(e.c, (e.p3*OneOrMore)/e.p2)))
 [rdflib.term.URIRef(u'ex:j'),
  rdflib.term.URIRef(u'ex:g'),
  rdflib.term.URIRef(u'ex:f')]
@@ -105,12 +105,12 @@ True
 True
 >>> list(evalPath(g, (e.c, ~e.p1, None))) == [ (e.c, e.a) ]
 True
->>> list(evalPath(g, (e.a, e.p1%ZeroOrOne, None))) == [(e.a, e.a), (e.a, e.c)]
+>>> list(evalPath(g, (e.a, e.p1*ZeroOrOne, None))) == [(e.a, e.a), (e.a, e.c)]
 True
->>> list(evalPath(g, (e.c, e.p3%OneOrMore, None))) == [
+>>> list(evalPath(g, (e.c, e.p3*OneOrMore, None))) == [
 ...     (e.c, e.g), (e.c, e.h), (e.c, e.a)]
 True
->>> list(evalPath(g, (e.c, e.p3%ZeroOrMore, None))) == [(e.c, e.c),
+>>> list(evalPath(g, (e.c, e.p3*ZeroOrMore, None))) == [(e.c, e.c),
 ...     (e.c, e.g), (e.c, e.h), (e.c, e.a)]
 True
 >>> list(evalPath(g, (e.a, -e.p1, None))) == [(e.a, e.f)]
@@ -124,7 +124,7 @@ True
 >>> list(evalPath(g, (e.a, e.p1/e.p3/e.p3, None))) == [(e.a, e.h)]
 True
 
->>> list(evalPath(g, (e.q, e.px%OneOrMore, None)))
+>>> list(evalPath(g, (e.q, e.px*OneOrMore, None)))
 [(rdflib.term.URIRef('ex:q'), rdflib.term.URIRef('ex:q'))]
 
 >>> list(evalPath(g, (None, e.p1|e.p2, e.c)))
@@ -132,16 +132,16 @@ True
 
 >>> list(evalPath(g, (None, ~e.p1, e.a))) == [ (e.c, e.a) ]
 True
->>> pprint(list(evalPath(g, (None, e.p1%ZeroOrOne, e.c))))
+>>> pprint(list(evalPath(g, (None, e.p1*ZeroOrOne, e.c))))
 [(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:c')),
  (rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:c'))]
 
->>> pprint(list(evalPath(g, (None, e.p3%OneOrMore, e.a))))
+>>> pprint(list(evalPath(g, (None, e.p3*OneOrMore, e.a))))
 [(rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a'))]
 
->>> pprint(list(evalPath(g, (None, e.p3%ZeroOrMore, e.a))))
+>>> pprint(list(evalPath(g, (None, e.p3*ZeroOrMore, e.a))))
 [(rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:a')),
@@ -158,14 +158,14 @@ True
 >>> list(evalPath(g, (None, e.p1/e.p3/e.p3, e.h))) == [(e.a, e.h)]
 True
 
->>> list(evalPath(g, (e.q, e.px%OneOrMore, None)))
+>>> list(evalPath(g, (e.q, e.px*OneOrMore, None)))
 [(rdflib.term.URIRef('ex:q'), rdflib.term.URIRef('ex:q'))]
 
->>> list(evalPath(g, (e.c, (e.p2|e.p3)%ZeroOrMore, e.j)))
+>>> list(evalPath(g, (e.c, (e.p2|e.p3)*ZeroOrMore, e.j)))
 [(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:j'))]
 
 No vars specified
->>> pprint(sorted(list(evalPath(g, (None, e.p3%OneOrMore, None)))))
+>>> pprint(sorted(list(evalPath(g, (None, e.p3*OneOrMore, None)))))
 [(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:g')),
  (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:h')),
@@ -235,10 +235,10 @@ Path(http://xmlns.com/foaf/0.1/knows / http://xmlns.com/foaf/0.1/name)
 >>> foaf.name|foaf.firstName
 Path(http://xmlns.com/foaf/0.1/name | http://xmlns.com/foaf/0.1/firstName)
 
-Modifiers (?, *, +) are done using % and the strings '*', '?', '+', also
-defined as constants in this file
+Modifiers (?, *, +) are done using * (the multiplication operator) and
+the strings '*', '?', '+', also defined as constants in this file.
 
->>> foaf.knows%OneOrMore
+>>> foaf.knows*OneOrMore
 Path(http://xmlns.com/foaf/0.1/knows+)
 
 The path objects can be used with the normal graph methods.
@@ -267,7 +267,7 @@ True
 
 Graph generator functions, triples, subjects, objects, etc. :
 
->>> pprint(list(g.objects(e.c, (e.p3%OneOrMore)/e.p2)))
+>>> pprint(list(g.objects(e.c, (e.p3*OneOrMore)/e.p2)))
 [rdflib.term.URIRef(u'ex:j'),
  rdflib.term.URIRef(u'ex:g'),
  rdflib.term.URIRef(u'ex:f')]
@@ -280,12 +280,12 @@ True
 True
 >>> list(evalPath(g, (e.c, ~e.p1, None))) == [ (e.c, e.a) ]
 True
->>> list(evalPath(g, (e.a, e.p1%ZeroOrOne, None))) == [(e.a, e.a), (e.a, e.c)]
+>>> list(evalPath(g, (e.a, e.p1*ZeroOrOne, None))) == [(e.a, e.a), (e.a, e.c)]
 True
->>> list(evalPath(g, (e.c, e.p3%OneOrMore, None))) == [
+>>> list(evalPath(g, (e.c, e.p3*OneOrMore, None))) == [
 ...     (e.c, e.g), (e.c, e.h), (e.c, e.a)]
 True
->>> list(evalPath(g, (e.c, e.p3%ZeroOrMore, None))) == [(e.c, e.c),
+>>> list(evalPath(g, (e.c, e.p3*ZeroOrMore, None))) == [(e.c, e.c),
 ...     (e.c, e.g), (e.c, e.h), (e.c, e.a)]
 True
 >>> list(evalPath(g, (e.a, -e.p1, None))) == [(e.a, e.f)]
@@ -299,7 +299,7 @@ True
 >>> list(evalPath(g, (e.a, e.p1/e.p3/e.p3, None))) == [(e.a, e.h)]
 True
 
->>> list(evalPath(g, (e.q, e.px%OneOrMore, None)))
+>>> list(evalPath(g, (e.q, e.px*OneOrMore, None)))
 [(rdflib.term.URIRef(u'ex:q'), rdflib.term.URIRef(u'ex:q'))]
 
 >>> list(evalPath(g, (None, e.p1|e.p2, e.c)))
@@ -307,16 +307,16 @@ True
 
 >>> list(evalPath(g, (None, ~e.p1, e.a))) == [ (e.c, e.a) ]
 True
->>> pprint(list(evalPath(g, (None, e.p1%ZeroOrOne, e.c))))
+>>> pprint(list(evalPath(g, (None, e.p1*ZeroOrOne, e.c))))
 [(rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:c')),
  (rdflib.term.URIRef(u'ex:a'), rdflib.term.URIRef(u'ex:c'))]
 
->>> pprint(list(evalPath(g, (None, e.p3%OneOrMore, e.a))))
+>>> pprint(list(evalPath(g, (None, e.p3*OneOrMore, e.a))))
 [(rdflib.term.URIRef(u'ex:h'), rdflib.term.URIRef(u'ex:a')),
  (rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:a')),
  (rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:a'))]
 
->>> pprint(list(evalPath(g, (None, e.p3%ZeroOrMore, e.a))))
+>>> pprint(list(evalPath(g, (None, e.p3*ZeroOrMore, e.a))))
 [(rdflib.term.URIRef(u'ex:a'), rdflib.term.URIRef(u'ex:a')),
  (rdflib.term.URIRef(u'ex:h'), rdflib.term.URIRef(u'ex:a')),
  (rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:a')),
@@ -333,14 +333,14 @@ True
 >>> list(evalPath(g, (None, e.p1/e.p3/e.p3, e.h))) == [(e.a, e.h)]
 True
 
->>> list(evalPath(g, (e.q, e.px%OneOrMore, None)))
+>>> list(evalPath(g, (e.q, e.px*OneOrMore, None)))
 [(rdflib.term.URIRef(u'ex:q'), rdflib.term.URIRef(u'ex:q'))]
 
->>> list(evalPath(g, (e.c, (e.p2|e.p3)%ZeroOrMore, e.j)))
+>>> list(evalPath(g, (e.c, (e.p2|e.p3)*ZeroOrMore, e.j)))
 [(rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:j'))]
 
 No vars specified
->>> pprint(sorted(list(evalPath(g, (None, e.p3%OneOrMore, None)))))
+>>> pprint(sorted(list(evalPath(g, (None, e.p3*OneOrMore, None)))))
 [(rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:a')),
  (rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:g')),
  (rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:h')),
@@ -441,7 +441,7 @@ class AlternativePath(Path):
         return "Path(%s)" % " | ".join(str(x) for x in self.args)
 
 
-class ModPath(Path):
+class MulPath(Path):
     def __init__(self, path, mod):
         self.path = path
         self.mod = mod
@@ -615,13 +615,13 @@ def conjunctive_graph_triples(graph, t, context=None):
 
 URIRef.__or__ = path_alternative
 URIRef.__div__ = path_sequence
-URIRef.__mod__ = lambda self, mod: ModPath(self, mod)
+URIRef.__mul__ = lambda self, mod: MulPath(self, mod)
 URIRef.__invert__ = lambda self: InvPath(self)
 URIRef.__neg__ = lambda self: NegatedPath(self)
 
 Path.__invert__ = lambda self: InvPath(self)
 Path.__neg__ = lambda self: NegatedPath(self)
-Path.__mod__ = lambda self, mod: ModPath(self, mod)
+Path.__mul__ = lambda self, mod: MulPath(self, mod)
 Path.__or__ = path_alternative
 Path.__div__ = path_sequence
 
@@ -633,7 +633,7 @@ ConjunctiveGraph.triples=conjunctive_graph_triples
 if __name__ == '__main__':
 
     # print "---------------------"
-    # for x in evalPath(g, (e.a, e.p1/(e.p3%ZeroOrMore)/e.p2, None)):
+    # for x in evalPath(g, (e.a, e.p1/(e.p3*ZeroOrMore)/e.p2, None)):
     #     print x
 
 #     g=Graph()
@@ -650,6 +650,6 @@ if __name__ == '__main__':
 #  ''', format='n3')
 
 #     e=Namespace('ex:')
-#     print list(evalPath(g, (e.c, (e.p2|e.p3)%ZeroOrMore, e.j)))
+#     print list(evalPath(g, (e.c, (e.p2|e.p3)*ZeroOrMore, e.j)))
     import doctest
     doctest.testmod()
