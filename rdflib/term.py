@@ -1426,6 +1426,8 @@ def bind(datatype, pythontype, constructor=None, lexicalizer=None):
 
 class Variable(Identifier):
     """
+    A Variable - this is used for querying, or in Formula aware
+    graphs, where Variables can stored in the graph
     """
     __slots__ = ()
 
