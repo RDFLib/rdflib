@@ -251,6 +251,18 @@ class URIRef(Identifier):
 
         return """%s(%s)""" % (clsName, super(URIRef, self).__repr__())
 
+    def __add__(self, other):
+        return self.__class__(unicode(self) + other)
+
+    def __radd__(self, other):
+        return self.__class__(other + unicode(self))
+
+    def format(self, *args, **kwargs):
+        return self.__class__(unicode(self).format(*args, **kwargs))
+
+    def __mod__(self, other):
+        return self.__class__(unicode(self) % other)
+
     def md5_term_hash(self):
         """a string of hex that will be the same for two URIRefs that
         are the same. It is not a suitable unique id.
