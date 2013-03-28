@@ -60,10 +60,10 @@ Path(http://xmlns.com/foaf/0.1/knows / http://xmlns.com/foaf/0.1/name)
 >>> foaf.name|foaf.firstName
 Path(http://xmlns.com/foaf/0.1/name | http://xmlns.com/foaf/0.1/firstName)
 
-Modifiers (?, *, +) are done using % and the strings '*', '?', '+', also
-defined as constants in this file
+Modifiers (?, *, +) are done using * (the multiplication operator) and
+the strings '*', '?', '+', also defined as constants in this file.
 
->>> foaf.knows%OneOrMore
+>>> foaf.knows*OneOrMore
 Path(http://xmlns.com/foaf/0.1/knows+)
 
 The path objects can be used with the normal graph methods.
@@ -92,7 +92,7 @@ True
 
 Graph generator functions, triples, subjects, objects, etc. :
 
->>> pprint(list(g.objects(e.c, (e.p3%OneOrMore)/e.p2)))
+>>> pprint(list(g.objects(e.c, (e.p3*OneOrMore)/e.p2)))
 [rdflib.term.URIRef(u'ex:j'),
  rdflib.term.URIRef(u'ex:g'),
  rdflib.term.URIRef(u'ex:f')]
@@ -105,12 +105,12 @@ True
 True
 >>> list(evalPath(g, (e.c, ~e.p1, None))) == [ (e.c, e.a) ]
 True
->>> list(evalPath(g, (e.a, e.p1%ZeroOrOne, None))) == [(e.a, e.a), (e.a, e.c)]
+>>> list(evalPath(g, (e.a, e.p1*ZeroOrOne, None))) == [(e.a, e.a), (e.a, e.c)]
 True
->>> list(evalPath(g, (e.c, e.p3%OneOrMore, None))) == [
+>>> list(evalPath(g, (e.c, e.p3*OneOrMore, None))) == [
 ...     (e.c, e.g), (e.c, e.h), (e.c, e.a)]
 True
->>> list(evalPath(g, (e.c, e.p3%ZeroOrMore, None))) == [(e.c, e.c),
+>>> list(evalPath(g, (e.c, e.p3*ZeroOrMore, None))) == [(e.c, e.c),
 ...     (e.c, e.g), (e.c, e.h), (e.c, e.a)]
 True
 >>> list(evalPath(g, (e.a, -e.p1, None))) == [(e.a, e.f)]
@@ -124,7 +124,7 @@ True
 >>> list(evalPath(g, (e.a, e.p1/e.p3/e.p3, None))) == [(e.a, e.h)]
 True
 
->>> list(evalPath(g, (e.q, e.px%OneOrMore, None)))
+>>> list(evalPath(g, (e.q, e.px*OneOrMore, None)))
 [(rdflib.term.URIRef('ex:q'), rdflib.term.URIRef('ex:q'))]
 
 >>> list(evalPath(g, (None, e.p1|e.p2, e.c)))
@@ -132,16 +132,16 @@ True
 
 >>> list(evalPath(g, (None, ~e.p1, e.a))) == [ (e.c, e.a) ]
 True
->>> pprint(list(evalPath(g, (None, e.p1%ZeroOrOne, e.c))))
+>>> pprint(list(evalPath(g, (None, e.p1*ZeroOrOne, e.c))))
 [(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:c')),
  (rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:c'))]
 
->>> pprint(list(evalPath(g, (None, e.p3%OneOrMore, e.a))))
+>>> pprint(list(evalPath(g, (None, e.p3*OneOrMore, e.a))))
 [(rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a'))]
 
->>> pprint(list(evalPath(g, (None, e.p3%ZeroOrMore, e.a))))
+>>> pprint(list(evalPath(g, (None, e.p3*ZeroOrMore, e.a))))
 [(rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:a')),
@@ -158,14 +158,14 @@ True
 >>> list(evalPath(g, (None, e.p1/e.p3/e.p3, e.h))) == [(e.a, e.h)]
 True
 
->>> list(evalPath(g, (e.q, e.px%OneOrMore, None)))
+>>> list(evalPath(g, (e.q, e.px*OneOrMore, None)))
 [(rdflib.term.URIRef('ex:q'), rdflib.term.URIRef('ex:q'))]
 
->>> list(evalPath(g, (e.c, (e.p2|e.p3)%ZeroOrMore, e.j)))
+>>> list(evalPath(g, (e.c, (e.p2|e.p3)*ZeroOrMore, e.j)))
 [(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:j'))]
 
 No vars specified
->>> pprint(sorted(list(evalPath(g, (None, e.p3%OneOrMore, None)))))
+>>> pprint(sorted(list(evalPath(g, (None, e.p3*OneOrMore, None)))))
 [(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:g')),
  (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:h')),
