@@ -82,16 +82,14 @@ class Bindings(MutableMapping):
             d = d.outer
 
 
-class FrozenBindings(Mapping):
+class FrozenDict(Mapping):
     """
     An immutable hashable dict
 
     Taken from http://stackoverflow.com/a/2704866/81121
 
     """
-
-    def __init__(self, ctx, *args, **kwargs):
-        self.ctx = ctx
+    def __init__(self, *args, **kwargs):
         self._d = dict(*args, **kwargs)
         self._hash = None
 
@@ -102,9 +100,6 @@ class FrozenBindings(Mapping):
         return len(self._d)
 
     def __getitem__(self, key):
-        if not type(key) in (BNode, Variable):
-            return key
-
         return self._d[key]
 
     def __hash__(self):
@@ -121,8 +116,8 @@ class FrozenBindings(Mapping):
         return self._hash
 
     def project(self, vars):
-        return FrozenBindings(
-            self.ctx, (x for x in self.iteritems() if x[0] in vars))
+        return FrozenDict(
+            (x for x in self.iteritems() if x[0] in vars))
 
     def disjointDomain(self, other):
         return not bool(set(self).intersection(other))
@@ -138,8 +133,8 @@ class FrozenBindings(Mapping):
         return True
 
     def merge(self, other):
-        res = FrozenBindings(
-            self.ctx, itertools.chain(self.iteritems(), other.iteritems()))
+        res = FrozenDict(
+            itertools.chain(self.iteritems(), other.iteritems()))
 
         return res
 
@@ -148,6 +143,29 @@ class FrozenBindings(Mapping):
 
     def __repr__(self):
         return repr(self._d)
+
+
+class FrozenBindings(FrozenDict):
+
+    def __init__(self, ctx, *args, **kwargs):
+        FrozenDict.__init__(self, *args, **kwargs)
+        self.ctx = ctx
+
+    def __getitem__(self, key):
+        if not type(key) in (BNode, Variable):
+            return key
+
+        return self._d[key]
+
+    def project(self, vars):
+        return FrozenBindings(
+            self.ctx, (x for x in self.iteritems() if x[0] in vars))
+
+    def merge(self, other):
+        res = FrozenBindings(
+            self.ctx, itertools.chain(self.iteritems(), other.iteritems()))
+
+        return res
 
     def _now(self):
         return self.ctx.now
