@@ -41,7 +41,7 @@ import warnings
 _LOGGER = logging.getLogger(__name__)
 
 import base64
-import xml.dom.minidom 
+import xml.dom.minidom
 
 from urlparse import urlparse, urljoin, urldefrag
 from datetime import date, time, datetime
@@ -333,8 +333,6 @@ def _unique_id():
     return "N"  # ensure that id starts with a letter
 
 
-
-
 def _serial_number_generator():
     """
     Generates UUID4-based but ncname-compliant identifiers.
@@ -618,14 +616,13 @@ class Literal(Identifier):
 
         py = self.toPython()
         if not isinstance(py, Literal):
-            try: 
+            try:
                 return Literal(py + val)
             except TypeError:
-                pass # fall-through
+                pass  # fall-through
 
         s = unicode.__add__(self, val)
         return Literal(s, self.language, self.datatype)
-                
 
     def __nonzero__(self):
         """
@@ -981,7 +978,6 @@ class Literal(Identifier):
                     if unicode.__eq__(self, other):
                         return True
                     raise TypeError('I cannot know that these two lexical forms do not map to the same value: %s and %s' % (self, other))
-                
             if (self.language or "").lower() != (other.language or "").lower():
                 return False
 
@@ -1007,7 +1003,7 @@ class Literal(Identifier):
 
                 if self.datatype in (_RDF_XMLLITERAL, _RDF_HTMLLITERAL):
                     return _isEqualXMLNode(self.value, other.value)
-                
+
                 return self.value == other.value
             else:
 
@@ -1257,6 +1253,7 @@ def _parseXML(xmlstring):
     retval.normalize()
     return retval
 
+
 def _parseHTML(htmltext):
     try:
         import html5lib
@@ -1271,28 +1268,29 @@ def _parseHTML(htmltext):
             " html5lib <http://code.google.com/p/html5lib>")
 
 
-def _writeXML(xmlnode): 
+def _writeXML(xmlnode):
     if isinstance(xmlnode, xml.dom.minidom.DocumentFragment):
-        d=xml.dom.minidom.Document()
-        d.childNodes+=xmlnode.childNodes
-        xmlnode=d
-    s=xmlnode.toxml('utf-8')
+        d = xml.dom.minidom.Document()
+        d.childNodes += xmlnode.childNodes
+        xmlnode = d
+    s = xmlnode.toxml('utf-8')
     # for clean round-tripping, remove headers -- I have great and
     # specific worries that this will blow up later, but this margin
     # is too narrow to contain them
-    if s.startswith(u'<?xml version="1.0" encoding="utf-8"?>'): 
-        s=s[38:]
-    if s.startswith('<rdflibtoplevelelement>'):
-        s=s[23:-24]
-    if s=='<rdflibtoplevelelement/>': s=''
+    if s.startswith(b(u'<?xml version="1.0" encoding="utf-8"?>')):
+        s = s[38:]
+    if s.startswith(b('<rdflibtoplevelelement>')):
+        s = s[23:-24]
+    if s == b('<rdflibtoplevelelement/>'):
+        s = b('')
     return s
 
 # Cannot import Namespace/XSD because of circular dependencies
 _XSD_PFX = 'http://www.w3.org/2001/XMLSchema#'
 _RDF_PFX = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
 
-_RDF_XMLLITERAL = URIRef(_RDF_PFX+'XMLLiteral')
-_RDF_HTMLLITERAL = URIRef(_RDF_PFX+'HTML')
+_RDF_XMLLITERAL = URIRef(_RDF_PFX + 'XMLLiteral')
+_RDF_HTMLLITERAL = URIRef(_RDF_PFX + 'HTML')
 
 _XSD_STRING = URIRef(_XSD_PFX + 'string')
 
@@ -1382,7 +1380,7 @@ _PythonToXSD = [
     # DocumentFragments, and the xml parser Documents, letting this
     # decide what datatype to use makes roundtripping easier, but it a
     # bit random
-    (xml.dom.minidom.DocumentFragment, (_writeXML, _RDF_HTMLLITERAL)) 
+    (xml.dom.minidom.DocumentFragment, (_writeXML, _RDF_HTMLLITERAL))
 ]
 
 XSDToPython = {
@@ -1413,7 +1411,7 @@ XSDToPython = {
     URIRef(
         _XSD_PFX + 'base64Binary'): lambda s: base64.b64decode(py3compat.b(s)),
     URIRef(_XSD_PFX + 'anyURI'): None,
-    _RDF_XMLLITERAL: _parseXML, 
+    _RDF_XMLLITERAL: _parseXML,
     _RDF_HTMLLITERAL: _parseHTML
 }
 
@@ -1507,7 +1505,6 @@ class Statement(Node, tuple):
 _ORDERING = dict(map(reversed, enumerate([BNode, Variable, URIRef, Literal])))
 
 
-
 def _isEqualXMLNode(node, other):
     from xml.dom.minidom import Node
 
@@ -1580,7 +1577,8 @@ def _isEqualXMLNode(node, other):
 
     else:
         # should not happen, in fact
-        raise Exception('I dont know how to compare XML Node type: %s'%node.nodeType)
+        raise Exception(
+            'I dont know how to compare XML Node type: %s' % node.nodeType)
 
 if __name__ == '__main__':
     import doctest
