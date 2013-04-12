@@ -1,6 +1,4 @@
 from rdflib.py3compat import PY3  # format_doctest_out
-from pprint import pprint
-assert pprint
 if PY3:
     __doc__ = """
 
@@ -92,10 +90,9 @@ True
 
 Graph generator functions, triples, subjects, objects, etc. :
 
->>> pprint(list(g.objects(e.c, (e.p3%OneOrMore)/e.p2)))
-[rdflib.term.URIRef(u'ex:j'),
- rdflib.term.URIRef(u'ex:g'),
- rdflib.term.URIRef(u'ex:f')]
+>>> list(g.objects(e.c, (e.p3%OneOrMore)/e.p2)) #doctest: +NORMALIZE_WHITESPACE
+[rdflib.term.URIRef(
+    u'ex:j'), rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:f')]
 
 A more complete set of tests:
 
@@ -132,16 +129,16 @@ True
 
 >>> list(evalPath(g, (None, ~e.p1, e.a))) == [ (e.c, e.a) ]
 True
->>> pprint(list(evalPath(g, (None, e.p1%ZeroOrOne, e.c))))
+>>> list(evalPath(g, (None, e.p1%ZeroOrOne, e.c))) # doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:c')),
  (rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:c'))]
 
->>> pprint(list(evalPath(g, (None, e.p3%OneOrMore, e.a))))
+>>> list(evalPath(g, (None, e.p3%OneOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a'))]
 
->>> pprint(list(evalPath(g, (None, e.p3%ZeroOrMore, e.a))))
+>>> list(evalPath(g, (None, e.p3%ZeroOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:a')),
@@ -158,14 +155,14 @@ True
 >>> list(evalPath(g, (None, e.p1/e.p3/e.p3, e.h))) == [(e.a, e.h)]
 True
 
->>> list(evalPath(g, (e.q, e.px%OneOrMore, None)))
+>>> list(evalPath(g, (e.q, e.px%OneOrMore, None))) #doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef('ex:q'), rdflib.term.URIRef('ex:q'))]
 
 >>> list(evalPath(g, (e.c, (e.p2|e.p3)%ZeroOrMore, e.j)))
 [(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:j'))]
 
 No vars specified
->>> pprint(sorted(list(evalPath(g, (None, e.p3%OneOrMore, None)))))
+>>> sorted(list(evalPath(g, (None, e.p3%OneOrMore, None)))) #doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a')),
  (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:g')),
  (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:h')),
@@ -267,10 +264,9 @@ True
 
 Graph generator functions, triples, subjects, objects, etc. :
 
->>> pprint(list(g.objects(e.c, (e.p3%OneOrMore)/e.p2)))
-[rdflib.term.URIRef(u'ex:j'),
- rdflib.term.URIRef(u'ex:g'),
- rdflib.term.URIRef(u'ex:f')]
+>>> list(g.objects(e.c, (e.p3%OneOrMore)/e.p2)) #doctest: +NORMALIZE_WHITESPACE
+[rdflib.term.URIRef(
+    u'ex:j'), rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:f')]
 
 A more complete set of tests:
 
@@ -307,16 +303,16 @@ True
 
 >>> list(evalPath(g, (None, ~e.p1, e.a))) == [ (e.c, e.a) ]
 True
->>> pprint(list(evalPath(g, (None, e.p1%ZeroOrOne, e.c))))
+>>> list(evalPath(g, (None, e.p1%ZeroOrOne, e.c))) # doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:c')),
  (rdflib.term.URIRef(u'ex:a'), rdflib.term.URIRef(u'ex:c'))]
 
->>> pprint(list(evalPath(g, (None, e.p3%OneOrMore, e.a))))
+>>> list(evalPath(g, (None, e.p3%OneOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef(u'ex:h'), rdflib.term.URIRef(u'ex:a')),
  (rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:a')),
  (rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:a'))]
 
->>> pprint(list(evalPath(g, (None, e.p3%ZeroOrMore, e.a))))
+>>> list(evalPath(g, (None, e.p3%ZeroOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef(u'ex:a'), rdflib.term.URIRef(u'ex:a')),
  (rdflib.term.URIRef(u'ex:h'), rdflib.term.URIRef(u'ex:a')),
  (rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:a')),
@@ -333,14 +329,14 @@ True
 >>> list(evalPath(g, (None, e.p1/e.p3/e.p3, e.h))) == [(e.a, e.h)]
 True
 
->>> list(evalPath(g, (e.q, e.px%OneOrMore, None)))
+>>> list(evalPath(g, (e.q, e.px%OneOrMore, None))) #doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef(u'ex:q'), rdflib.term.URIRef(u'ex:q'))]
 
 >>> list(evalPath(g, (e.c, (e.p2|e.p3)%ZeroOrMore, e.j)))
 [(rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:j'))]
 
 No vars specified
->>> pprint(sorted(list(evalPath(g, (None, e.p3%OneOrMore, None)))))
+>>> sorted(list(evalPath(g, (None, e.p3%OneOrMore, None)))) #doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:a')),
  (rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:g')),
  (rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:h')),
