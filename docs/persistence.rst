@@ -17,13 +17,24 @@ Stores currently supported in rdflib
 Usage
 ^^^^^
 
-Store instances can be created with the :meth:`plugin` function:
+Most cases passing the name of the store to the Graph constrcutor is enough: 
 
 .. code-block:: python
 
-    from rdflib import plugin
-    from rdflib.store import Store
-    plugin.get('.. one of the supported Stores ..',Store)(identifier=.. id of conjunctive graph ..)
+    from rdflib import Graph
+
+    graph = Graph(store='Sleepycat')
+
+
+If additional configuration of the store is required, a store instances can be created with the :meth:`plugin` function:
+
+.. code-block:: python
+
+    from rdflib import plugin, Store, Graph
+
+    store = plugin.get('.. one of the supported Stores ..',Store)(identifier=.. id of conjunctive graph ..)
+    
+    graph = Graph(store=store)
 
 
 Additional store plugins in ``rdfextras``
@@ -44,24 +55,17 @@ remove the database files that were created.
 
 .. code-block:: python
 
-    import rdflib
-    from rdflib.graph import ConjunctiveGraph as Graph
-    from rdflib import plugin
-    from rdflib.store import Store, NO_STORE, VALID_STORE
-    from rdflib.namespace import Namespace
-    from rdflib.term import Literal
-    from rdflib.term import URIRef
+    from rdflib import ConjunctiveGraph, plugin, Namespace, Literal, URIRef, Store
+    from rdflib.store import NO_STORE, VALID_STORE
+
     from tempfile import mkdtemp
 
     default_graph_uri = "http://rdflib.net/rdfstore"
     configString = "/var/tmp/rdfstore"
 
-    # Get the Sleepycat plugin. 
-    store = plugin.get('Sleepycat', Store)('rdfstore')
-    
     # Open previously created store, or create it if it doesn't exist yet
-    graph = Graph(store="Sleepycat", 
-                  identifier = URIRef(default_graph_uri))
+    graph = ConjunctiveGraph(store="Sleepycat", 
+                  identifier = default_graph_uri)
     path = mkdtemp()
     rt = graph.open(path, create=False)
     if rt == NO_STORE:

@@ -11,7 +11,7 @@ RDFLib is open source and is maintained in a
 `GitHub <http://github.com/RDFLib/rdflib/>`_ repository. RDFLib releases, current and previous 
 are listed on `PyPi <pypi.python.org/pypi/rdflib/>`_
 
-RDFLib may be easy_installed:
+The best way to install RDFLib is to use easy_install or pip:
 
 .. code-block :: bash
 
@@ -57,9 +57,7 @@ A more extensive example:
 
 .. code-block:: python
 
-    from rdflib.graph import Graph
-    from rdflib import Literal, BNode, Namespace
-    from rdflib import RDF
+    from rdflib import Graph, Literal, BNode, Namespace, RDF
 
     g = Graph()
 
@@ -89,3 +87,4 @@ A more extensive example:
         for mbox in g.objects(person, FOAF["mbox"]):
             print(mbox)
 
+Additional examples can be found in the examples folder in the source distribution.
