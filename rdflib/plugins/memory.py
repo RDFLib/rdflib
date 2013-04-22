@@ -329,9 +329,14 @@ class IOMemory(Store):
             else: 
                 return self.__emptygen() 
                 
-        # to get the result, do an intersection of the sets
+        # to get the result, do an intersection of the sets (if necessary)
+        if len(sets) > 1:
+            enctriples = sets[0].intersection(*sets[1:])
+        else:
+            enctriples = sets[0].copy()
+
         return ((self.__decodeTriple(enctriple), self.__contexts(enctriple))
-                for enctriple in sets[0].intersection(*sets[1:])
+                for enctriple in enctriples
                 if self.__tripleHasContext(enctriple,cid))
 
     def contexts(self, triple=None):
