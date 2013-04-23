@@ -1,4 +1,0 @@
-QueryType=Select
-
-ProductXYZ=ProductURI
-currentDate=CurrentDate

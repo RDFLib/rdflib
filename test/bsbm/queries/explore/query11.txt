@@ -1,6 +1,0 @@
-SELECT ?property ?hasValue ?isValueOf
-WHERE {
-  { %OfferXYZ% ?property ?hasValue }
-  UNION
-  { ?isValueOf ?property %OfferXYZ% }
-}

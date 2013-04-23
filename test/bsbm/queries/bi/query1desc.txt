@@ -1,4 +1,0 @@
-QueryType=Select
-
-Country1=CountryURI
-Country2=CountryURI

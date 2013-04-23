@@ -1,8 +1,0 @@
-QueryType=Select
-
-ProductType=ProductTypeURI
-ProductFeature1=ProductFeatureURI
-ProductFeature2=ProductFeatureURI
-ProductFeature3=ProductFeatureURI
-x=ProductPropertyNumericValue
-y=ProductPropertyNumericValue
