@@ -18,7 +18,7 @@ In an interactive python interpreter, try this:
 
 .. code-block:: pycon
 
-    >>> from rdflib.graph import Graph
+    >>> from rdflib import Graph
     >>> g = Graph()
     >>> g.parse("demo.nt", format="nt")
     <Graph identifier=HCbubHJy0 (<class 'rdflib.graph.Graph'>)>

@@ -11,7 +11,7 @@ You might parse some files into a new graph (see `Introduction to parsing <intro
 
 .. code-block:: python
 
-    from rdflib.graph import Graph
+    from rdflib import Graph
     g = Graph()
     g.parse("http://bigasterisk.com/foaf.rdf")
     g.parse("http://www.w3.org/People/Berners-Lee/card.rdf")
@@ -20,7 +20,7 @@ LiveJournal produces FOAF data for their users, but they seem to use ``foaf:memb
 
 .. code-block:: python
 
-    from rdflib.namespace import Namespace
+    from rdflib import Namespace
     FOAF = Namespace("http://xmlns.com/foaf/0.1/")
     g.parse("http://danbri.livejournal.com/data/foaf") 
     [g.add((s, FOAF['name'], n)) 
@@ -31,11 +31,19 @@ Run a Query
 
 The ``rdflib`` package concentrates on providing the core RDF types and interfaces for working with RDF. As indicated in the introduction, the package defines a plugin interface (for parsers, stores, and serializers) that other packages can use to implement parsers, stores, and serializers that will plug into the ``rdflib`` package.
 
-In order to perform SPARQL queries, you need to install the companion ``rdfextras`` package which includes a SPARQL plugin implementation:
+In order to perform SPARQL queries, you need to install a SPARQL plugin implementation: either the old ``rdfextras`` package, or the new ``rdflib-sparql``, i.e. either: 
 
 .. code-block:: bash
     
     $ easy_install rdfextras
+
+or 
+
+.. code-block:: bash
+    
+    $ easy_install rdflib-sparql
+
+
 
 If installed with setuptools this automatically binds the the imported SPARQL query processor implementation to the :meth:`rdflib.graph.Graph.query` method, which can then be passed a SPARQL query (a string). When called, the :meth:`~rdflib.graph.Graph.query` method returns a SPARQLQuery object whose ``result`` attribute is a list of results.
 

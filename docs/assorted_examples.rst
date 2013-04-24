@@ -43,8 +43,7 @@ fold_sha1.py
     might be easier to do some operations on.
     """
 
-    from rdflib.graph import Graph
-    from rdflib import Namespace
+    from rdflib import Graph, Namespace
 
     FOAF = Namespace("http://xmlns.com/foaf/0.1/")
     STABLE = Namespace("http://example.com/person/mbox_sha1sum/")

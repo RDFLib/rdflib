@@ -11,8 +11,7 @@ Clarifying the query more precisely:
 
 .. code-block:: pycon
 
-    >>> from rdflib.graph import Graph, ConjunctiveGraph
-    >>> from rdflib import URIRef
+    >>> from rdflib import Graph, ConjunctiveGraph, URIRef
 
 [1]
 

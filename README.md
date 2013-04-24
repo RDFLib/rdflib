@@ -67,10 +67,12 @@ are listed on [PyPi](pypi.python.org/pypi/rdflib/)
 
 RDFLib has a plugin-architecture for store-implementation, as well as parsers/serializers, several other projects exist which extend RDFLib features:
 
- * [rdfextras](https://github.com/RDFLib/rdfextras) - for SPARQL Support
+ * [rdflib-sparql](https://github.com/RDFLib/rdflib-sparql) - for SPARQL Support
  * [rdflib-json](https://github.com/RDFLib/rdflib-jsonld) - Serializer and parser for [json-ld](http://json-ld.org)
  * [rdflib-sparqlstore](https://github.com/RDFLib/rdflib-sparqlstore) - a store implementation on top of a SPARQL endpoint accessed over HTTP
  * [rdflib-mysql](https://github.com/RDFLib/rdflib-mysql) - a store implementation of top of MySQL
+
+ * [rdfextras](https://github.com/RDFLib/rdfextras) - additional experimental plugins and tools
 
 
 Support
@@ -83,11 +85,6 @@ https://github.com/RDFLib/rdflib/
 Continuous integration status details available from travis.ci:
 
 [![Build Status](https://travis-ci.org/RDFLib/rdflib.png?branch=master)](https://travis-ci.org/RDFLib/rdflib)
-
-The RDFExtras project offers several additional stores as well as a 
-SPARQL engine for use with RDFLib: 
-
-https://github.com/RDFLib/rdfextras/
 
 The documentation can be built by doing::
 
