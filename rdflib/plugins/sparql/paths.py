@@ -43,10 +43,6 @@ can also be used to query RDFLib Graphs directly.
 Where possible the SPARQL syntax is mapped to python operators, and property
 path objects can be constructed from existing URIRefs.
 
-(NOTE: This version monkey-patches the operators and path-aware triples
-functions into the URIRef and Graph class, when rdflib-sparql is merged
-into core rdflib it will be cleaner)
-
 >>> foaf=Namespace('http://xmlns.com/foaf/0.1/')
 
 >>> ~foaf.knows
@@ -570,12 +566,18 @@ class PathList(list):
 
 
 def path_alternative(self, other):
+    """
+    alternative path
+    """
     if not isinstance(other, (URIRef, Path)):
         raise Exception('Only URIRefs or Paths can be in paths!')
     return AlternativePath(self, other)
 
 
 def path_sequence(self, other):
+    """
+    sequence path
+    """
     if not isinstance(other, (URIRef, Path)):
         raise Exception('Only URIRefs or Paths can be in paths!')
     return SequencePath(self, other)
@@ -608,16 +610,38 @@ def conjunctive_graph_triples(graph, t, context=None):
     else:
         raise Exception('I need a URIRef or path as predicate, not %s' % path)
 
+def mod_path(p, mod): 
+    """
+    cardinality path
+    """
+    return ModPath(p, mod)
+
+
+def inv_path(p):
+    """
+    inverse path
+    """
+    return InvPath(p)
+
+def neg_path(p):
+    """
+    negated path
+    """
+    return NegatedPath(p)
+
+# monkey patch
+# (these cannot be directly in terms.py 
+#  as it would introduce circular imports)
 
 URIRef.__or__ = path_alternative
 URIRef.__div__ = path_sequence
-URIRef.__mod__ = lambda self, mod: ModPath(self, mod)
-URIRef.__invert__ = lambda self: InvPath(self)
-URIRef.__neg__ = lambda self: NegatedPath(self)
+URIRef.__mod__ = mod_path
+URIRef.__invert__ = inv_path
+URIRef.__neg__ = neg_path
 
-Path.__invert__ = lambda self: InvPath(self)
-Path.__neg__ = lambda self: NegatedPath(self)
-Path.__mod__ = lambda self, mod: ModPath(self, mod)
+Path.__invert__ = inv_path
+Path.__neg__ = neg_path
+Path.__mod__ = mod_path
 Path.__or__ = path_alternative
 Path.__div__ = path_sequence
 
