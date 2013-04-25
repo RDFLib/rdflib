@@ -59,7 +59,7 @@ del sys
 
 import logging
 _LOGGER = logging.getLogger("rdflib")
-_LOGGER.info("version: %s" % __version__)
+_LOGGER.info("RDFLib Version: %s" % __version__)
 
 """
 If True - Literals lexical forms are normalized when created.
