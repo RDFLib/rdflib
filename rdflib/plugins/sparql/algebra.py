@@ -71,18 +71,53 @@ def Group(p, expr=None):
     return CompValue('Group', p=p, expr=expr)
 
 
-def _knownterms(triple):
-    return len(filter(None, (isinstance(x, (Variable, BNode))
-                             for x in triple)))
+def _knownTerms(triple, varsknown):
+    return len(filter(None, (x not in varsknown and 
+                   isinstance(x, (Variable, BNode)) for x in triple)))
+
+
+def reorderTriples(l): 
+    """
+    Reorder triple patterns so that we execute the 
+    ones with most bindings first
+    """
+
+    def _addvar(term, varsknown): 
+        if isinstance(term, (Variable, BNode)): 
+            varsknown.add(term)
+
+    l=[(None,x) for x in l]
+    varsknown=set()
+    i = 0
+
+    # Done in steps, sort by number of bound terms
+    # the top block of patterns with the most bound terms is kept
+    # the rest is resorted based on the vars bound after the first 
+    # block is evaluated
+
+    # we sort by decorate/undecorate, since we need the value of the sort keys
+
+    while i<len(l): 
+        l[i:] = sorted((_knownTerms(x[1], varsknown),x[1]) for x in l[i:])
+        t=l[i][0] # top block has this many terms bound
+        j=0
+        while i+j<len(l) and l[i+j][0]==t:
+            for c in l[i+j][1]: _addvar(c, varsknown)
+            j+=1
+        i+=1
+    
+    return [x[1] for x in l]
 
 
 def triples(l):
+
     l = reduce(lambda x, y: x + y, l)
     if (len(l) % 3) != 0:
         # import pdb ; pdb.set_trace()
         raise Exception('these aint triples')
-    return sorted([(l[x], l[x + 1], l[x + 2])
-                   for x in range(0, len(l), 3)], key=_knownterms)
+    return reorderTriples((l[x], l[x + 1], l[x + 2])
+                   for x in range(0, len(l), 3))
+
 
 
 def translatePName(p, prologue):
@@ -534,11 +569,17 @@ def translate(q):
 
 def simplify(n):
     """Remove joins to empty BGPs"""
-    if isinstance(n, CompValue) and n.name == 'Join':
-        if n.p1.name == 'BGP' and len(n.p1.triples) == 0:
-            return n.p2
-        if n.p2.name == 'BGP' and len(n.p2.triples) == 0:
-            return n.p1
+    if isinstance(n, CompValue): 
+        if n.name == 'Join':
+            if n.p1.name == 'BGP' and len(n.p1.triples) == 0:
+                return n.p2
+            if n.p2.name == 'BGP' and len(n.p2.triples) == 0:
+                return n.p1
+        elif n.name == 'BGP':
+            n["triples"] = reorderTriples(n.triples)
+            return n
+            
+    
 
 
 def translatePrologue(p, base, initNs=None, prologue=None):
@@ -671,7 +712,7 @@ def pprintAlgebra(q):
             return
         print "%s(" % (p.name, )
         for k in p:
-            print "%s%s =" % (ind, k,)
+            print "%s%s =" % (ind, k,),
             pp(p[k], ind + "    ")
         print "%s)" % ind
 

@@ -103,13 +103,20 @@ def expandCollection(terms):
         print "Collection: ", terms
 
     res = []
+    other = []
     for x in terms:
+        if isinstance(x, list): # is this a [ .. ] ?
+            other+=x
+            x=x[0]
+
         b = rdflib.BNode()
         if res:
             res += [res[-3], rdflib.RDF.rest, b, b, rdflib.RDF.first, x]
         else:
             res += [b, rdflib.RDF.first, x]
     res += [b, rdflib.RDF.rest, rdflib.RDF.nil]
+
+    res += other
 
     if DEBUG:
         print "CollectionOut", res
@@ -999,9 +1006,11 @@ def parseUpdate(q):
 
 if __name__ == '__main__':
     import sys
-
+    DEBUG=True
     try:
-        print Query.parseString(sys.argv[1])
+        q=Query.parseString(sys.argv[1])
+        print "\nSyntax Tree:\n"
+        print q
     except ParseException, err:
         print err.line
         print " " * (err.column - 1) + "^"
