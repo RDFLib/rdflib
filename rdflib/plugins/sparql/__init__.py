@@ -29,6 +29,8 @@ from . import parser
 from . import operators
 from . import parserutils
 
+from .processor import prepareQuery, processUpdate
+
 assert parser
 assert operators
 assert parserutils

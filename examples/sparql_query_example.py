@@ -1,31 +1,27 @@
-from rdflib import Literal, ConjunctiveGraph, Namespace, BNode
+
+"""
+
+Query using graph.query
+
+Result is iterable over the result rows
+
+The variable bindings can be access 
+as attributes of the row objects 
+For variable names that are not valid python identifiers, 
+dict access (i.e. with row[var] /  __getitem__) is also possible. 
+
+result.vars contains the variables
+
+"""
 
 import rdflib
 
-# Note that this example uses SPARQL and assumes you have
-# rdfextras/rdflib-sparql installed, no other steps are nescessary,
-# the SPARQL implementation should be found automatically.
+g = rdflib.Graph()
+g.load("foaf.rdf")
 
-DC = Namespace(u"http://purl.org/dc/elements/1.1/")
-FOAF = Namespace(u"http://xmlns.com/foaf/0.1/")
-
-graph = ConjunctiveGraph()
-s = BNode()
-graph.add((s, FOAF['givenName'], Literal('Alice')))
-b = BNode()
-graph.add((b, FOAF['givenName'], Literal('Bob')))
-graph.add((b, DC['date'], Literal("2005-04-04T04:04:04Z")))
-
-q="""
-PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-PREFIX dc:  <http://purl.org/dc/elements/1.1/>
-PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
-SELECT ?name
-WHERE { ?x foaf:givenName  ?name .
-        OPTIONAL { ?x dc:date ?date } .
-        FILTER ( bound(?date) ) 
-      }
-"""
-
-for x in graph.query(q):
-    print x
+for row in g.query(
+        'select ?s where { [] <http://xmlns.com/foaf/0.1/knows> ?s .}'):
+    print row.s 
+    # or row["s"]
+    # or row[rdflib.Variable("s")]
+    
