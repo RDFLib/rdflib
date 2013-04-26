@@ -265,10 +265,6 @@ def translateGroupGraphPattern(graphPattern):
             if not (g and g[-1].name == 'BGP'):
                 g.append(BGP())
             g[-1]["triples"] += triples(p.triples)
-        elif p.name == 'Bind':
-            if not g or g[-1].name not in ('BGP', 'Extend'):
-                g.append(BGP())
-            g[-1] = Extend(g[-1], p.expr, p.var)
         else:
             g.append(p)
 
@@ -292,6 +288,9 @@ def translateGroupGraphPattern(graphPattern):
             G = Join(p1=G, p2=p)
         elif p.name in ('BGP', 'Extend'):
             G = Join(p1=G, p2=p)
+        elif p.name == 'Bind':
+            G = Extend(G, p.expr, p.var)
+
         else:
             raise Exception('Unknown part in GroupGraphPattern: %s - %s' %
                             (type(p), p.name))
