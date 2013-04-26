@@ -406,7 +406,8 @@ def Builtin_STRLEN(e, ctx):
 
 def Builtin_STR(e, ctx):
     arg = e.arg
-
+    if isinstance(arg, SPARQLError): 
+        raise arg
     return Literal(unicode(arg))  # plain literal
 
 

@@ -4,6 +4,7 @@ import datetime
 
 from rdflib.namespace import NamespaceManager
 from rdflib import Variable, BNode, Graph, ConjunctiveGraph, URIRef, Literal
+from rdflib.term import Node
 
 from parserutils import CompValue
 
@@ -152,6 +153,10 @@ class FrozenBindings(FrozenDict):
         self.ctx = ctx
 
     def __getitem__(self, key):
+
+        if not isinstance(key, Node):
+            key=Variable(key)
+        
         if not type(key) in (BNode, Variable):
             return key
 
