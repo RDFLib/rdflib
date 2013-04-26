@@ -1,18 +1,60 @@
-2013/03/01 
-	RELEASE 3.4
+2013/XX/XX 
+    RELEASE 4.0 
 
-	This release introduced new parsers for structured data in HTML. 
-	In particular formats: hturtle, rdfa, mdata and an auto-detecting html 
-	format were added. 
-	Thanks to Ivan Herman for this!
+    This release includes several major changes:
 
-	This release includes a lot of admin maintentance - correct dependencies
-	for different python versions, etc. 
-	Several py3 bugs were also fixed.
+    * The new SPARQL 1.1 engine (rdflib-sparql) has been included in
+      the core distribution. SPARQL 1.1 queries and updates should
+      work out of the box.
 
-	This release drops python 2.4 compatability - it was just getting too 
-	expensive for us to maintain. It should however be compatible with any
-	cpython from 2.5 through 3.3.
+    * Several RDF 1.1 features are available:
+      * A new DataSet class 
+      * XMLLiteral and HTMLLiterals 
+      * BNode (de)skolemization is supported through BNode.skolemize, 
+        URIRef.de_skolemize, Graph.skolemize and Graph.de_skolemize
+        
+    * Handled of Literal equality was split into lexical comparison
+      (for normal == operator) and value space (using new Node.eq
+      methods). This introduces some slight backwards incomaptible
+      changes, but was necessary, as the old version had
+      inconsisten hash and equality methods that could lead the
+      literals not working correctly in dicts/sets. 
+      The new way is more in line with how SPARQL 1.1 works.
+      For the full details, see:
+      
+      https://github.com/RDFLib/rdflib/wiki/Literal-reworking
+
+    * Iterating over QueryResults will generate ResultRow objects,
+      these allow access to variable bindings as attributes or as a
+      dict. I.e. 
+
+            for row in graph.query('select ... ') :
+                print row.age, row["name"]
+    
+
+    Minor Changes:
+
+    
+    * Turtle/N3 serializer now supports the base keyword correctly
+      https://github.com/RDFLib/rdflib/issues/248
+    * py2exe support was fixed
+      https://github.com/RDFLib/rdflib/pull/257
+    * Several bugs in the TriG serializer were fixed
+    * Several bugs in the NQuads parser were fixed
+
+2013/03/01 RELEASE 3.4
+
+	This release introduced new parsers for structured data in HTML.
+	In particular formats: hturtle, rdfa, mdata and an auto-detecting
+	html format were added.  Thanks to Ivan Herman for this!
+
+	This release includes a lot of admin maintentance - correct
+	dependencies for different python versions, etc.  Several py3 bugs
+	were also fixed.
+
+	This release drops python 2.4 compatability - it was just getting
+	too expensive for us to maintain. It should however be compatible
+	with any cpython from 2.5 through 3.3.
 
 	* node.md5_term is now deprecated, if you use it let us know. 
 
