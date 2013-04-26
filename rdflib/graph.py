@@ -16,26 +16,22 @@ Instantiating Graphs with default store (IOMemory) and default identifier
     >>> g.identifier.__class__
     <class 'rdflib.term.BNode'>
 
-Instantiating Graphs with a Sleepycat store and an identifier -
+Instantiating Graphs with a IOMemory store and an identifier -
 <http://rdflib.net>:
 
-    >>> g = Graph('Sleepycat', URIRef("http://rdflib.net"))
+    >>> g = Graph('IOMemory', URIRef("http://rdflib.net"))
     >>> g.identifier
     rdflib.term.URIRef(%(u)s'http://rdflib.net')
     >>> str(g) # doctest: +NORMALIZE_WHITESPACE
     "<http://rdflib.net> a rdfg:Graph;rdflib:storage 
-     [a rdflib:Store;rdfs:label 'Sleepycat']."
+     [a rdflib:Store;rdfs:label 'IOMemory']."
 
 Some stores require pre-configuration (for example DB access details), 
 you can get the store plugin directly
 
-    >>> store = plugin.get('Sleepycat', Store)()
-    >>> store.__class__.__name__
-    'Sleepycat'
-    >>> graph = Graph(store=store)
-    >>> graph.store.__class__
-    <class 'rdflib.plugins.sleepycat.Sleepycat'>
-
+    store = plugin.get('MyDBStore', Store)()
+    store.setConfiguration('blah')
+    graph = Graph(store=store)
 
 Creating a ConjunctiveGraph - The top level container for all named Graphs
 in a 'database':

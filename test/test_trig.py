@@ -41,7 +41,7 @@ class TestTrig(unittest.TestCase):
 
         s=g.serialize(format='trig')
 
-        self.assertEqual(len(re.findall("p1", s)), 1)
-        self.assertEqual(len(re.findall("p2", s)), 1)
+        self.assertEqual(len(re.findall(b("p1"), s)), 1)
+        self.assertEqual(len(re.findall(b("p2"), s)), 1)
 
         self.assert_(b('{}') not in s) # no empty graphs!
