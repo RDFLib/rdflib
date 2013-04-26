@@ -91,6 +91,10 @@ class RecursiveSerializer(Serializer):
         self._subjects = {}
         self._topLevels = {}
 
+        for prefix, ns in self.store.namespaces():
+            self.addNamespace(prefix, ns)
+
+
     def buildPredicateHash(self, subject):
         """
         Build a hash key by predicate to a list of objects for the given
@@ -152,6 +156,7 @@ class TurtleSerializer(RecursiveSerializer):
     indentString = '    '
 
     def __init__(self, store):
+        self._ns_rewrite = {}
         super(TurtleSerializer, self).__init__(store)
         self.keywords = {
             RDF.type: 'a'
@@ -159,7 +164,7 @@ class TurtleSerializer(RecursiveSerializer):
         self.reset()
         self.stream = None
         self._spacious = _SPACIOUS_OUTPUT
-        self._ns_rewrite = {}
+        
 
     def addNamespace(self, prefix, namespace):
         # Turtle does not support prefix that start with _
@@ -249,9 +254,6 @@ class TurtleSerializer(RecursiveSerializer):
                 return None
 
         prefix, namespace, local = parts
-        # Local parts with '.' will mess up serialization
-        if '.' in local:
-            return None
         prefix = self.addNamespace(prefix, namespace)
 
         return u'%s:%s' % (prefix, local)
