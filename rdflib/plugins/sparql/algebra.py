@@ -98,8 +98,6 @@ def reorderTriples(l):
                 varscount[c]+=1
     i = 0
 
-    #import pdb; pdb.set_trace()
-
     # Done in steps, sort by number of bound terms
     # the top block of patterns with the most bound terms is kept
     # the rest is resorted based on the vars bound after the first 
@@ -123,7 +121,6 @@ def triples(l):
 
     l = reduce(lambda x, y: x + y, l)
     if (len(l) % 3) != 0:
-        # import pdb ; pdb.set_trace()
         raise Exception('these aint triples')
     return reorderTriples((l[x], l[x + 1], l[x + 2])
                    for x in range(0, len(l), 3))
@@ -425,8 +422,6 @@ def translateAggregates(q, M):
     E = []
     A = []
 
-    # import pdb; pdb.set_trace()
-
     # collect/replace aggs in :
     #    select expr as ?var
     if q.evar:
@@ -484,7 +479,6 @@ def translate(q):
 
     """
 
-    # import pdb; pdb.set_trace()
     _traverse(q, _simplifyFilters)
 
     q.where = traverse(q.where, visitPost=translatePath)
