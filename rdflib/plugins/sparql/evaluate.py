@@ -23,7 +23,7 @@ from rdflib.plugins.sparql.parserutils import value
 from rdflib.plugins.sparql.sparql import (
     QueryContext, AlreadyBound, FrozenBindings, SPARQLError)
 from rdflib.plugins.sparql.evalutils import (
-    _filter, _eval, _join, _diff, _minus, _fillTemplate)
+    _filter, _eval, _join, _diff, _minus, _fillTemplate, _ebv)
 
 from rdflib.plugins.sparql.aggregates import evalAgg
 
@@ -35,9 +35,9 @@ def evalBGP(ctx, bgp):
     """
 
     if not bgp:
-        return [ctx.solution()]
+        yield ctx.solution()
+        return
 
-    res = []
     s, p, o = bgp[0]
 
     _s = ctx[s]
@@ -45,32 +45,31 @@ def evalBGP(ctx, bgp):
     _o = ctx[o]
 
     for ss, sp, so in ctx.graph.triples((_s, _p, _o)):
+        if None in (_s, _p, _o):
+            c=ctx.push()
+        else: 
+            c=ctx
+
+        if _s is None:
+            c[s] = ss
+
         try:
-            if None in (_s, _p, _o):
-                ctx.push()
+            if _p is None:
+                c[p] = sp
+        except AlreadyBound:
+            continue
 
-            if _s is None:
-                ctx[s] = ss
+        try:
+            if _o is None:
+                c[o] = so
+        except AlreadyBound:
+            continue
 
-            try:
-                if _p is None:
-                    ctx[p] = sp
-            except AlreadyBound:
-                continue
+        for x in evalBGP(c, bgp[1:]): 
+            yield x
 
-            try:
-                if _o is None:
-                    ctx[o] = so
-            except AlreadyBound:
-                continue
 
-            res += evalBGP(ctx, bgp[1:])
 
-        finally:
-            if None in (_s, _p, _o):
-                ctx.pop()
-
-    return res
 
 
 def evalExtend(ctx, extend):
@@ -91,21 +90,41 @@ def evalExtend(ctx, extend):
     return res
 
 
+def evalLazyJoin(ctx, join): 
+    """
+    A lazy join will push the variables bound
+    in the first part to the second part, 
+    essentially doing the join implicitly 
+    hopefully evaluating much fewer triples
+    """
+    for a in evalPart(ctx, join.p1): 
+        c=a.thaw()
+        for b in evalPart(c, join.p2): 
+            yield b
+
+
 def evalJoin(ctx, join):
 
     # TODO: Deal with dict returned from evalPart from GROUP BY
     # only ever for join.p1
 
-    a = set(evalPart(ctx, join.p1))
-    b = set(evalPart(ctx, join.p2))
-    return _join(a, b)
+    if join.lazy: 
+        return evalLazyJoin(ctx, join)
+    else: 
+        a = evalPart(ctx, join.p1)
+        b = set(evalPart(ctx, join.p2))
+        return _join(a, b)
 
 
 def evalUnion(ctx, union):
     res = set()
-    res.update(evalPart(ctx, union.p1))
-    res.update(evalPart(ctx, union.p2))
-    return res
+    for x in evalPart(ctx, union.p1): 
+        res.add(x)
+        yield x
+    for x in evalPart(ctx, union.p2): 
+        if x not in res: 
+            yield x
+
 
 
 def evalMinus(ctx, minus):
@@ -115,22 +134,37 @@ def evalMinus(ctx, minus):
 
 
 def evalLeftJoin(ctx, join):
+    #import pdb; pdb.set_trace()
+    for a in evalPart(ctx, join.p1):
+        ok=False
+        c=a.thaw()
+        for b in evalPart(c, join.p2):
+            if _ebv(join.expr, b.forget(ctx)):
+                ok=True
+                yield b
+        if not ok:
+            # we've cheated, the ctx above may contain
+            # vars bound outside our scope
+            # before we yield a solution without the OPTIONAL part
+            # check that we would have had no OPTIONAL matches
+            # even without prior bindings... 
+            if not any(_ebv(join.expr, b) 
+                       for b in evalPart(a.forget(ctx).thaw(), join.p2)):
 
-    a = set(evalPart(ctx, join.p1))
-    b = set(evalPart(ctx, join.p2))
-    res = set()
-    res.update(_filter(_join(a, b), join.expr))
-    res.update(_diff(a, b, join.expr))
+                yield a
 
-    return res
+
+
 
 
 def evalFilter(ctx, part):
     # import pdb; pdb.set_trace()
 
     # TODO: Deal with dict returned from evalPart!
+    for c in evalPart(ctx, part.p): 
+        if _ebv(part.expr, c.forget(ctx)):
+            yield c
 
-    return _filter(evalPart(ctx, part.p), part.expr)
 
 
 def evalGraph(ctx, part):
@@ -150,27 +184,33 @@ def evalGraph(ctx, part):
             if graph == ctx.dataset.default_context:
                 continue
 
-            ctx.pushGraph(graph)
-            ctx.push()
+            c = ctx.pushGraph(graph)
+            c = c.push()
             graphSolution = [{part.term: graph.identifier}]
-            res += _join(evalPart(ctx, part.p), graphSolution)
-            ctx.pop()
-            ctx.popGraph()
+            res += _join(evalPart(c, part.p), graphSolution)
+            
         return res
     else:
-        ctx.pushGraph(ctx.dataset.get_context(graph))
-        return evalPart(ctx, part.p)
+        c = ctx.pushGraph(ctx.dataset.get_context(graph))
+        return evalPart(c, part.p)
 
+
+def evalValues(ctx, part):
+    for r in part.p.res:
+        c=ctx.push()
+        try:
+            for k,v in r.iteritems():
+                if v != 'UNDEF':
+                    c[k]=v
+        except AlreadyBound:
+            continue
+
+        yield c.solution()
 
 def evalMultiset(ctx, part):
 
-    # TODO: Once prefix/pname conversion is moved to algebra translation
-    # stage this can go
-    def _c(d):
-        return [(k, value(ctx, v)) for k, v in d.iteritems() if v != 'UNDEF']
-
     if part.p.name == 'values':
-        return [FrozenBindings(ctx, _c(x)) for x in part.p.res]
+        return evalValues(ctx, part)
 
     return evalPart(ctx, part.p)
 
@@ -245,7 +285,7 @@ def evalGroup(ctx, group):
 
     p = evalPart(ctx, group.p)
     if not group.expr:
-        return {1: p}
+        return {1: list(p)}
     else:
         res = collections.defaultdict(list)
         for c in p:
@@ -296,12 +336,23 @@ def evalOrderBy(ctx, part):
 
 
 def evalSlice(ctx, slice):
+    #import pdb; pdb.set_trace()
     res = evalPart(ctx, slice.p)
-
-    if slice.length is not None:
-        return list(res)[slice.start:slice.start + slice.length]
-    else:
-        return list(res)[slice.start:]
+    i = 0
+    while i<slice.start: 
+        next(res)
+        i+=1
+    i = 0
+    for x in res:         
+        i+=1
+        if slice.length is None:
+            yield x 
+        else: 
+            if i<=slice.length:
+                yield x
+            else: 
+                break
+        
 
 
 def evalReduced(ctx, part):
@@ -311,20 +362,18 @@ def evalReduced(ctx, part):
 def evalDistinct(ctx, part):
     res = evalPart(ctx, part.p)
 
-    nodups = []
     done = set()
     for x in res:
         if x not in done:
-            nodups.append(x)
+            yield x
             done.add(x)
 
-    return nodups
 
 
 def evalProject(ctx, project):
     res = evalPart(ctx, project.p)
 
-    return [row.project(project.PV) for row in res]
+    return (row.project(project.PV) for row in res)
 
 
 def evalSelectQuery(ctx, query):
@@ -376,7 +425,7 @@ def evalQuery(graph, query, initBindings, base=None):
             if not isinstance(k, Variable):
                 k = Variable(k)
             ctx[k] = v
-        ctx.push()  # nescessary?
+        #ctx.push()  # nescessary?
 
     main = query.algebra
 
@@ -396,7 +445,7 @@ def evalQuery(graph, query, initBindings, base=None):
                 if firstDefault:
                     # replace current default graph
                     dg = ctx.dataset.get_context(BNode())
-                    ctx.pushGraph(dg)
+                    ctx = c.pushGraph(dg)
                     firstDefault = True
 
                 ctx.load(d.default, default=True)

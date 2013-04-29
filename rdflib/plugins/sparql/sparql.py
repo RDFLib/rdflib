@@ -82,6 +82,8 @@ class Bindings(MutableMapping):
                 yield i
             d = d.outer
 
+        
+
 
 class FrozenDict(Mapping):
     """
@@ -189,10 +191,17 @@ class FrozenBindings(FrozenDict):
         """
         Create a new read/write query context from this solution
         """
-        c = self.ctx.clone()
-        c.push()
-        c.bindings.update(self)
+        c = self.ctx.clone(self)
+
         return c
+
+    def forget(self, before): 
+        """
+        return a frozen dict only of bindings made in self 
+        since before
+        """
+
+        return FrozenBindings(self.ctx, (x for x in self.iteritems() if before[x[0]] is None))
 
 
 class QueryContext(object):
@@ -201,35 +210,32 @@ class QueryContext(object):
     Query context - passed along when evaluating the query
     """
 
-    def __init__(self, graph=None):
-        self.bindings = Bindings()
+    def __init__(self, graph=None, bindings=None):
+        self.bindings = bindings or Bindings()
+
         if isinstance(graph, ConjunctiveGraph):
             self._dataset = graph
             if rdflib.plugins.sparql.SPARQL_DEFAULT_GRAPH_UNION:
-                self._graph = [self.dataset]
+                self.graph = self.dataset
             else:
-                self._graph = [self.dataset.default_context]
+                self.graph = self.dataset.default_context
         else:
             self._dataset = None
-            self._graph = [graph]
+            self.graph = graph
+
         self.prologue = None
         self.now = datetime.datetime.now()
 
         self.bnodes = collections.defaultdict(BNode)
 
-    def clone(self):
+    def clone(self, bindings=None):
         r = QueryContext(
-            self._dataset if self._dataset is not None else self._graph)
+            self._dataset if self._dataset is not None else self.graph)
         r.prologue = self.prologue
-        r.bindings.update(self.bindings)
-        r._graph = list(self._graph)
+        r.bindings.update(bindings or self.bindings)
+        r.graph = self.graph
         r.bnodes = self.bnodes
         return r
-
-    def _get_graph(self):
-        return self._graph[-1]
-
-    graph = property(_get_graph, doc="current graph")
 
     def _get_dataset(self):
         if self._dataset is None:
@@ -263,7 +269,7 @@ class QueryContext(object):
             # we are not loading - if we already know the graph
             # being "loaded", just add it to the default-graph
             if default:
-                self._graph[-1] += self.dataset.get_context(source)
+                self.graph += self.dataset.get_context(source)
         else:
 
             if default:
@@ -305,18 +311,21 @@ class QueryContext(object):
         self.bindings[key] = value
 
     def pushGraph(self, graph):
-        self._graph.append(graph)
-
-    def popGraph(self):
-        self._graph.pop()
-
+        r = self.clone()
+        r.graph = graph
+        return r
+        
     def push(self):
-        self.bindings = Bindings(self.bindings)
+        r = self.clone(Bindings(self.bindings))
+        return r
 
-    def pop(self):
-        self.bindings = self.bindings.outer
-        if self.bindings is None:
-            raise Exception("We've bottomed out of the bindings stack!")
+    def clean(self): 
+        return self.clone([])
+
+    # def pop(self):
+    #     self.bindings = self.bindings.outer
+    #     if self.bindings is None:
+    #         raise Exception("We've bottomed out of the bindings stack!")
 
 
 class Prologue:

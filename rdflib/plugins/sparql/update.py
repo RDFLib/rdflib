@@ -101,9 +101,8 @@ def evalDeleteWhere(ctx, u):
     res = evalBGP(ctx, u.triples)
     for g in u.quads:
         cg = ctx.dataset.get_context(g)
-        ctx.pushGraph(cg)
-        res = _join(res, evalBGP(ctx, u.quads[g]))
-        ctx.popGraph()
+        c=ctx.pushGraph(cg)
+        res = _join(res, list(evalBGP(c, u.quads[g])))
 
     for c in res:
         g = ctx.graph
@@ -116,6 +115,8 @@ def evalDeleteWhere(ctx, u):
 
 def evalModify(ctx, u):
 
+    originalctx = ctx
+
     # Using replaces the dataset for evaluating the where-clause
     if u.using:
         otherDefault = False
@@ -125,7 +126,7 @@ def evalModify(ctx, u):
                 if not otherDefault:
                     # replace current default graph
                     dg = Graph()
-                    ctx.pushGraph(dg)
+                    ctx = ctx.pushGraph(dg)
                     otherDefault = True
 
                 ctx.load(d.default, default=True)
@@ -145,16 +146,17 @@ def evalModify(ctx, u):
     # clause."
     if not u.using and u.withClause:
         g = ctx.dataset.get_context(u.withClause)
-        ctx.pushGraph(g)
+        ctx = ctx.pushGraph(g)
+        
 
     res = evalPart(ctx, u.where)
 
     if u.using:
         if otherDefault:
-            ctx.popGraph()  # restore original default graph
+            ctx = originalctx # restore original default graph
         if u.withClause:
             g = ctx.dataset.get_context(u.withClause)
-            ctx.pushGraph(g)
+            ctx = ctx.pushGraph(g)
 
     for c in res:
         dg = ctx.graph
@@ -268,7 +270,7 @@ def evalUpdate(graph, update, initBindings=None):
                 if not isinstance(k, Variable):
                     k = Variable(k)
                 ctx[k] = v
-            ctx.push()  # nescessary?
+            #ctx.push()  # nescessary?
 
         try:
             if u.name == 'Load':

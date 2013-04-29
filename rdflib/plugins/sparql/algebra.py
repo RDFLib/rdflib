@@ -341,6 +341,25 @@ def _traverse(e, visitPre=lambda n: None, visitPost=lambda n: None):
 
     return e
 
+def _traverseAgg(e, visitor=lambda n, v: None):
+    """
+    Traverse a parse-tree, visit each node
+
+    if visit functions return a value, replace current node
+    """
+
+    res = []
+
+    if isinstance(e, (list, ParseResults, tuple)):
+        res=[_traverseAgg(x, visitor) for x in e]
+
+    elif isinstance(e, CompValue):
+        for k, val in e.iteritems():
+            if val != None:
+                res.append(_traverseAgg(val, visitor))
+
+    return visitor(e, res)
+
 
 def traverse(
         tree, visitPre=lambda n: None,
@@ -583,7 +602,18 @@ def simplify(n):
             return n
             
     
-
+def analyse(n, children): 
+    
+    if isinstance(n, CompValue): 
+        if n.name == 'Join':
+            n["lazy"]=all(children)
+            return False
+        elif n.name in ('Slice', 'Distinct'): 
+            return False
+        else: 
+            return all(children)
+    else: 
+        return True
 
 def translatePrologue(p, base, initNs=None, prologue=None):
 
@@ -699,6 +729,7 @@ def translateQuery(q, base=None, initNs=None):
         res = CompValue(q[1].name, p=P, datasetClause=datasetClause, PV=PV)
 
     res = traverse(res, visitPost=simplify)
+    _traverseAgg(res, visitor=analyse)
 
     return Query(prologue, res)
 

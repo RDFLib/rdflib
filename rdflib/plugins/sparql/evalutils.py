@@ -27,12 +27,10 @@ def _minus(a, b):
 
 
 def _join(a, b):
-    res = set()
     for x in a:
         for y in b:
             if x.compatible(y):
-                res.add(x.merge(y))
-    return res
+                yield x.merge(y)
 
 
 def _ebv(expr, ctx):
