@@ -139,7 +139,7 @@ def _fmt(f):
     return "turtle"
 
 
-def _bindingsTable(b):
+def _bindingsTable(res):
 
     def termString(t):
         if t == None:
@@ -155,17 +155,17 @@ def _bindingsTable(b):
         h = (w - len(s)) / 2
         return " " * h + s + " " * h
 
-    if not b:
+    if not res:
         return "(no results)\n"
     else:
         out = StringIO()
-        keys = set()
-        for r in b:
-            keys.update(r.keys())
+        # keys = r.vars
+        # for r in b:
+        #     keys.update(r.keys())
 
-        keys = sorted(keys)
+        keys = sorted(res.vars)
         maxlen = [0] * len(keys)
-        b = [[termString(r.get(k)) for k in keys] for r in b]
+        b = [[termString(r[k]) for k in keys] for r in res]
         for r in b:
             for i in range(len(keys)):
                 maxlen[i] = max(maxlen[i], 1 + len(r[i]))
@@ -206,8 +206,8 @@ def bindingsCompatible(a, b):
 
     def rowCompatible(x, y):
         m = {}
-        y = dict(y)
-        for v1, b1 in x:
+        y = y.asdict()
+        for v1, b1 in x.asdict().iteritems():
             if v1 not in y:
                 return False
             if isinstance(b1, BNode):
@@ -452,10 +452,8 @@ def query_test(t):
             if res.type == 'SELECT':
                 eq(set(res.vars), set(res2.vars), 'Vars do not match')
                 comp = bindingsCompatible(
-                    set(frozenset(x.iteritems())
-                        for x in res.bindings),
-                    set(frozenset(x.iteritems())
-                        for x in res2.bindings)
+                    set(res),
+                    set(res2)
                 )
                 assert comp, 'Bindings do not match'
             elif res.type == 'ASK':
@@ -466,7 +464,6 @@ def query_test(t):
             else:
                 raise Exception('Unknown result type: %s' % res.type)
         else:
-
             eq(res.type, res2.type,
                'Types do not match: %r != %r' % (res.type, res2.type))
             if res.type == 'SELECT':
@@ -474,13 +471,11 @@ def query_test(t):
                    set(res2.vars), 'Vars do not match: %r != %r' % (
                    set(res.vars), set(res2.vars)))
                 assert bindingsCompatible(
-                    set(frozenset(x.iteritems())
-                        for x in res.bindings),
-                    set(frozenset(x.iteritems())
-                        for x in res2.bindings)
+                    set(res),
+                    set(res2)
                 ), 'Bindings do not match: \n%s\n!=\n%s' % (
-                    _bindingsTable(res.bindings),
-                    _bindingsTable(res2.bindings))
+                    _bindingsTable(res),
+                    _bindingsTable(res2))
             elif res.type == 'ASK':
                 eq(res.askAnswer,
                    res2.askAnswer, "Ask answer does not match: %r != %r" % (
