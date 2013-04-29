@@ -71,9 +71,12 @@ def Group(p, expr=None):
     return CompValue('Group', p=p, expr=expr)
 
 
-def _knownTerms(triple, varsknown):
-    return len(filter(None, (x not in varsknown and 
-                   isinstance(x, (Variable, BNode)) for x in triple)))
+def _knownTerms(triple, varsknown, varscount):
+    return ( len(filter(None, (x not in varsknown and 
+                   isinstance(x, (Variable, BNode)) for x in triple))), 
+             -sum(varscount.get(x, 0) for x in triple), 
+             not isinstance(triple[2], Literal),
+             )
 
 
 def reorderTriples(l): 
@@ -88,7 +91,14 @@ def reorderTriples(l):
 
     l=[(None,x) for x in l]
     varsknown=set()
+    varscount=collections.defaultdict(int)
+    for t in l: 
+        for c in t[1]: 
+            if isinstance(c, (Variable, BNode)): 
+                varscount[c]+=1
     i = 0
+
+    #import pdb; pdb.set_trace()
 
     # Done in steps, sort by number of bound terms
     # the top block of patterns with the most bound terms is kept
@@ -98,10 +108,10 @@ def reorderTriples(l):
     # we sort by decorate/undecorate, since we need the value of the sort keys
 
     while i<len(l): 
-        l[i:] = sorted((_knownTerms(x[1], varsknown),x[1]) for x in l[i:])
-        t=l[i][0] # top block has this many terms bound
+        l[i:] = sorted((_knownTerms(x[1], varsknown, varscount),x[1]) for x in l[i:])
+        t=l[i][0][0] # top block has this many terms bound
         j=0
-        while i+j<len(l) and l[i+j][0]==t:
+        while i+j<len(l) and l[i+j][0][0]==t:
             for c in l[i+j][1]: _addvar(c, varsknown)
             j+=1
         i+=1
