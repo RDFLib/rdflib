@@ -18,12 +18,10 @@ def _diff(a, b, expr):
 
 
 def _minus(a, b):
-    res = set()
     for x in a:
         if all((not x.compatible(y)) or x.disjointDomain(y) for y in b):
-            res.add(x)
+            yield x
 
-    return res
 
 
 def _join(a, b):

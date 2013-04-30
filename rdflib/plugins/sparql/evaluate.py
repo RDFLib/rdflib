@@ -121,7 +121,7 @@ def evalUnion(ctx, union):
 
 
 def evalMinus(ctx, minus):
-    a = set(evalPart(ctx, minus.p1))
+    a = evalPart(ctx, minus.p1)
     b = set(evalPart(ctx, minus.p2))
     return _minus(a, b)
 
@@ -164,7 +164,7 @@ def evalGraph(ctx, part):
     ctx = ctx.clone()
     graph = ctx[part.term]
     if graph is None:
-        res = []
+        
         for graph in ctx.dataset.contexts():
 
             # in SPARQL the default graph is NOT a named graph
@@ -174,12 +174,13 @@ def evalGraph(ctx, part):
             c = ctx.pushGraph(graph)
             c = c.push()
             graphSolution = [{part.term: graph.identifier}]
-            res += _join(evalPart(c, part.p), graphSolution)
+            for x in _join(evalPart(c, part.p), graphSolution): 
+                yield x
 
-        return res
     else:
         c = ctx.pushGraph(ctx.dataset.get_context(graph))
-        return evalPart(c, part.p)
+        for x in evalPart(c, part.p): 
+            yield x
 
 
 def evalValues(ctx, part):
@@ -287,17 +288,16 @@ def evalAggregateJoin(ctx, agg):
     p = evalPart(ctx, agg.p)
     # p is always a Group, we always get a dict back
 
-    res = []
     for row in p:
         bindings = {}
         for a in agg.A:
             evalAgg(a, p[row], bindings)
 
-        res.append(FrozenBindings(ctx, bindings))
+        yield FrozenBindings(ctx, bindings)
 
     if len(p) == 0:
-        res.append(FrozenBindings(ctx))
-    return res
+        yield FrozenBindings(ctx)
+
 
 
 def evalOrderBy(ctx, part):
@@ -431,7 +431,7 @@ def evalQuery(graph, query, initBindings, base=None):
                 if firstDefault:
                     # replace current default graph
                     dg = ctx.dataset.get_context(BNode())
-                    ctx = c.pushGraph(dg)
+                    ctx = ctx.pushGraph(dg)
                     firstDefault = True
 
                 ctx.load(d.default, default=True)
