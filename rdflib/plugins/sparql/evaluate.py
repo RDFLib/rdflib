@@ -75,19 +75,17 @@ def evalBGP(ctx, bgp):
 def evalExtend(ctx, extend):
     # TODO: Deal with dict returned from evalPart from GROUP BY
 
-    res = []
     for c in evalPart(ctx, extend.p):
         try:
-            e = _eval(extend.expr, c)
+            e = _eval(extend.expr, c.forget(ctx))
             if isinstance(e, SPARQLError):
                 raise e
 
-            res.append(c.merge({extend.var: e}))
+            yield c.merge({extend.var: e})
 
         except SPARQLError:
-            res.append(c)
+            yield c
 
-    return res
 
 
 def evalLazyJoin(ctx, join): 
