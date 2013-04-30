@@ -7,6 +7,7 @@ http://www.w3.org/TR/sparql11-query/#sparqlQuery
 """
 
 import functools
+import operator
 import collections
 
 from rdflib import Literal, Variable, URIRef, BNode
@@ -420,6 +421,20 @@ def _findVars(x, res):
             res.update(x.evar or [])
             return x
 
+def _addVars(x, children): 
+    #import pdb; pdb.set_trace()
+    if isinstance(x, Variable):
+        return set([x])
+    elif isinstance(x, CompValue):
+        x["_vars"]=set(reduce(operator.or_, children, set()))
+        if x.name == "Bind":
+            return set([x.var])
+        elif x.name == 'SubSelect':
+            s = set(x.var or [])
+            s.update(x.evar or [])
+            return s
+    return reduce(operator.or_, children, set())
+    
 
 def _sample(e, v=None):
     """
@@ -730,6 +745,7 @@ def translateQuery(q, base=None, initNs=None):
 
     res = traverse(res, visitPost=simplify)
     _traverseAgg(res, visitor=analyse)
+    _traverseAgg(res, _addVars)
 
     return Query(prologue, res)
 
