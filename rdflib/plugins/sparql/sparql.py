@@ -82,7 +82,10 @@ class Bindings(MutableMapping):
                 yield i
             d = d.outer
 
-        
+    def __str__(self):
+        return "Bindings({"+", ".join((k,self[k]) for k in self)+"})"
+    
+    def __repr__(self): return unicode(self)
 
 
 class FrozenDict(Mapping):
