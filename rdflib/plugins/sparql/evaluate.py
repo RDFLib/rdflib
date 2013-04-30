@@ -96,7 +96,7 @@ def evalLazyJoin(ctx, join):
     hopefully evaluating much fewer triples
     """
     for a in evalPart(ctx, join.p1): 
-        c=a.thaw()
+        c=ctx.thaw(a)
         for b in evalPart(c, join.p2): 
             yield b
 
@@ -135,7 +135,7 @@ def evalLeftJoin(ctx, join):
     #import pdb; pdb.set_trace()
     for a in evalPart(ctx, join.p1):
         ok=False
-        c=a.thaw()
+        c=ctx.thaw(a)
         for b in evalPart(c, join.p2):
             if _ebv(join.expr, b.forget(ctx)):
                 ok=True
@@ -146,8 +146,8 @@ def evalLeftJoin(ctx, join):
             # before we yield a solution without the OPTIONAL part
             # check that we would have had no OPTIONAL matches
             # even without prior bindings... 
-            if not any(_ebv(join.expr, b) 
-                       for b in evalPart(a.forget(ctx).thaw(), join.p2)):
+            if not any(_ebv(join.expr, b) for b in 
+                       evalPart(ctx.thaw(a.remember(join.p1._vars)), join.p2)):
 
                 yield a
 
@@ -156,8 +156,6 @@ def evalLeftJoin(ctx, join):
 
 
 def evalFilter(ctx, part):
-    # import pdb; pdb.set_trace()
-
     # TODO: Deal with dict returned from evalPart!
     for c in evalPart(ctx, part.p): 
         if _ebv(part.expr, c.forget(ctx)):

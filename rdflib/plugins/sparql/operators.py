@@ -561,7 +561,7 @@ def Builtin_EXISTS(e, ctx):
 
     exists = e.name == 'Builtin_EXISTS'
 
-    ctx = ctx.thaw()
+    ctx = ctx.ctx.thaw(ctx) # hmm
     for x in evalPart(ctx, e.graph):
         return Literal(exists)
     return Literal(not exists)

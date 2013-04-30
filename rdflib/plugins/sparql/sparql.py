@@ -187,14 +187,6 @@ class FrozenBindings(FrozenDict):
     bnodes = property(_bnodes)
     now = property(_now)
 
-    def thaw(self):
-        """
-        Create a new read/write query context from this solution
-        """
-        c = self.ctx.clone(self)
-
-        return c
-
     def forget(self, before): 
         """
         return a frozen dict only of bindings made in self 
@@ -202,6 +194,12 @@ class FrozenBindings(FrozenDict):
         """
 
         return FrozenBindings(self.ctx, (x for x in self.iteritems() if before[x[0]] is None))
+
+    def remember(self, these): 
+        """
+        return a frozen dict only of bindings in these
+        """
+        return FrozenBindings(self.ctx, (x for x in self.iteritems() if x[0] in these))
 
 
 class QueryContext(object):
@@ -326,6 +324,14 @@ class QueryContext(object):
     #     self.bindings = self.bindings.outer
     #     if self.bindings is None:
     #         raise Exception("We've bottomed out of the bindings stack!")
+
+    def thaw(self, frozenbindings):
+        """
+        Create a new read/write query context from the given solution
+        """
+        c = self.clone(frozenbindings)
+
+        return c
 
 
 class Prologue:
