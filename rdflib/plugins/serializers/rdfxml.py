@@ -80,7 +80,7 @@ class XMLSerializer(Serializer):
         write("</rdf:RDF>\n")
 
         # Set to None so that the memory can get garbage collected.
-        #self.__serialized = None
+        # self.__serialized = None
         del self.__serialized
 
     def subject(self, subject, depth=1):
@@ -201,7 +201,7 @@ class PrettyXMLSerializer(Serializer):
                 continue
             self.subject(subject, 1)
 
-        #now serialize only those BNodes that have not been serialized yet
+        # now serialize only those BNodes that have not been serialized yet
         for bnode in bnodes:
             if bnode not in self.__serialized:
                 self.subject(subject, 1)
@@ -239,9 +239,9 @@ class PrettyXMLSerializer(Serializer):
                     return True
                     # more_than(store.triples((None, None, subject)), ceil)
 
-                #here we only include BNode labels if they are referenced
-                #more than once (this reduces the use of redundant BNode
-                #identifiers)
+                # here we only include BNode labels if they are referenced
+                # more than once (this reduces the use of redundant BNode
+                # identifiers)
                 if subj_as_obj_more_than(1):
                     writer.attribute(RDF.nodeID, fix(subject))
 
@@ -322,8 +322,8 @@ class PrettyXMLSerializer(Serializer):
                     if not object in self.__serialized \
                             and (object, None, None) in store \
                             and len(list(store.subjects(object=object))) == 1:
-                        #inline blank nodes if they haven't been serialized yet
-                        #and are only referenced once (regardless of depth)
+                        # inline blank nodes if they haven't been serialized yet
+                        # and are only referenced once (regardless of depth)
                         self.subject(object, depth + 1)
                     else:
                         writer.attribute(RDF.nodeID, fix(object))

@@ -38,22 +38,22 @@ class N3Serializer(TurtleSerializer):
 
     def startDocument(self):
         super(N3Serializer, self).startDocument()
-        #if not isinstance(self.store, N3Store):
+        # if not isinstance(self.store, N3Store):
         #    return
         #
-        #all_list = [self.label(var) for var in
+        # all_list = [self.label(var) for var in
         #        self.store.get_universals(recurse=False)]
-        #all_list.sort()
-        #some_list = [self.label(var) for var in
+        # all_list.sort()
+        # some_list = [self.label(var) for var in
         #        self.store.get_existentials(recurse=False)]
-        #some_list.sort()
+        # some_list.sort()
         #
-        #for var in all_list:
+        # for var in all_list:
         #    self.write('\n'+self.indent()+'@forAll %s. '%var)
-        #for var in some_list:
+        # for var in some_list:
         #    self.write('\n'+self.indent()+'@forSome %s. '%var)
         #
-        #if (len(all_list) + len(some_list)) > 0:
+        # if (len(all_list) + len(some_list)) > 0:
         #    self.write('\n')
 
     def endDocument(self):

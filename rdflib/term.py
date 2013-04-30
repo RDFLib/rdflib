@@ -977,7 +977,8 @@ class Literal(Identifier):
                 else:
                     if unicode.__eq__(self, other):
                         return True
-                    raise TypeError('I cannot know that these two lexical forms do not map to the same value: %s and %s' % (self, other))
+                    raise TypeError(
+                        'I cannot know that these two lexical forms do not map to the same value: %s and %s' % (self, other))
             if (self.language or "").lower() != (other.language or "").lower():
                 return False
 

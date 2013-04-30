@@ -22,13 +22,13 @@ try:
     from SPARQLWrapper import SPARQLWrapper, XML
 except ImportError:
     raise Exception(
-            "SPARQLWrapper not found! SPARQL Store will not work." + \
-            "Install with 'easy_install SPARQLWrapper'")
+        "SPARQLWrapper not found! SPARQL Store will not work." +
+        "Install with 'easy_install SPARQLWrapper'")
 
 import sys
 if getattr(sys, 'pypy_version_info', None) is not None \
-      or sys.platform.startswith('java') \
-      or sys.version_info[:2] < (2, 6):
+    or sys.platform.startswith('java') \
+        or sys.version_info[:2] < (2, 6):
     # import elementtree as etree
     from elementtree import ElementTree
     assert ElementTree
@@ -75,9 +75,9 @@ class NSSPARQLWrapper(SPARQLWrapper):
         """
         self.queryType = self._parseQueryType(query)
         self.queryString = '\n'.join(
-                        ['\n'.join(['PREFIX %s: <%s>' % (key, val)
-                            for key, val in self.nsBindings.items()]),
-                                     query])
+            ['\n'.join(['PREFIX %s: <%s>' % (key, val)
+                        for key, val in self.nsBindings.items()]),
+             query])
 
 BNODE_IDENT_PATTERN = re.compile('(?P<label>_\:[^\s]+)')
 SPARQL_NS = Namespace('http://www.w3.org/2005/sparql-results#')
@@ -91,10 +91,10 @@ def TraverseSPARQLResultDOM(doc, asDictionary=False):
     """
     # namespace handling in elementtree xpath sub-set is not pretty :(
     vars = [Variable(v.attrib["name"]) for v in doc.findall(
-            './{http://www.w3.org/2005/sparql-results#}head/' + \
+            './{http://www.w3.org/2005/sparql-results#}head/' +
             '{http://www.w3.org/2005/sparql-results#}variable')]
     for result in doc.findall(
-            './{http://www.w3.org/2005/sparql-results#}results/' + \
+            './{http://www.w3.org/2005/sparql-results#}results/' +
             '{http://www.w3.org/2005/sparql-results#}result'):
         currBind = {}
         values = []
@@ -139,7 +139,7 @@ def CastToTerm(node):
                 return Literal(node.text, datatype=dT)
         elif '{http://www.w3.org/XML/1998/namespace}lang' in node.attrib:
             return Literal(node.text, lang=node.attrib[
-                    "{http://www.w3.org/XML/1998/namespace}lang"])
+                "{http://www.w3.org/XML/1998/namespace}lang"])
         else:
             return Literal(node.text)
     else:
@@ -173,8 +173,8 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     batch_unification = False
 
     def __init__(self,
-            endpoint=None, bNodeAsURI=False,
-            sparql11=True, context_aware=True):
+                 endpoint=None, bNodeAsURI=False,
+                 sparql11=True, context_aware=True):
         """
         """
         if endpoint:
@@ -184,7 +184,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         self.sparql11 = sparql11
         self.context_aware = context_aware
 
-    #Database Management Methods
+    # Database Management Methods
     def create(self, configuration):
         raise TypeError('The SPARQL store is read only')
 
@@ -213,7 +213,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         """
         raise TypeError('The SPARQL store is read only')
 
-    #Transactional interfaces
+    # Transactional interfaces
     def commit(self):
         """ """
         raise TypeError('The SPARQL store is read only')
@@ -241,10 +241,10 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         raise TypeError('The SPARQL store is read only')
 
     def query(self, query,
-                    initNs={},
-                    initBindings={},
-                    queryGraph=None,
-                    DEBUG=False):
+              initNs={},
+              initBindings={},
+              queryGraph=None,
+              DEBUG=False):
         self.debug = DEBUG
         assert isinstance(query, basestring)
         self.setNamespaceBindings(initNs)
@@ -257,7 +257,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             # VALUES was added to SPARQL 1.1 on 2012/07/24
             query += "\nVALUES ( %s )\n{ ( %s ) }\n"\
                 % (" ".join("?" + str(x) for x in v),
-                  " ".join(initBindings[x].n3() for x in v))
+                   " ".join(initBindings[x].n3() for x in v))
 
         self.resetQuery()
 
@@ -310,7 +310,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
         self.setQuery(query)
         doc = ElementTree.parse(SPARQLWrapper.query(self).response)
-        #ElementTree.dump(doc)
+        # ElementTree.dump(doc)
         for rt, vars in TraverseSPARQLResultDOM(doc, asDictionary=True):
             yield (rt.get(s, s),
                    rt.get(p, p),
@@ -329,18 +329,18 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     def __len__(self, context=None):
         if not self.sparql11:
             raise NotImplementedError(
-                    "For performance reasons, this is not" + \
-                    "supported for sparql1.0 endpoints")
+                "For performance reasons, this is not" +
+                "supported for sparql1.0 endpoints")
         else:
             if self.context_aware and context is not None:
                 q = "SELECT (count(*) as ?c) FROM %s WHERE {?s ?p ?o .}" % (
-                                                context.identifier.n3())
+                    context.identifier.n3())
             else:
                 q = "SELECT (count(*) as ?c) WHERE {?s ?p ?o .}"
             self.setQuery(q)
             doc = ElementTree.parse(SPARQLWrapper.query(self).response)
             rt, vars = iter(
-                    TraverseSPARQLResultDOM(doc, asDictionary=True)).next()
+                TraverseSPARQLResultDOM(doc, asDictionary=True)).next()
             return int(rt.get(Variable("c")))
 
     def contexts(self, triple=None):
@@ -366,17 +366,17 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         doc = ElementTree.parse(SPARQLWrapper.query(self).response)
 
         return (rt.get(Variable("name"))
-            for rt, vars in TraverseSPARQLResultDOM(doc, asDictionary=True))
+                for rt, vars in TraverseSPARQLResultDOM(doc, asDictionary=True))
 
-    #Namespace persistence interface implementation
+    # Namespace persistence interface implementation
     def bind(self, prefix, namespace):
         self.nsBindings[prefix] = namespace
 
     def prefix(self, namespace):
         """ """
         return dict(
-                [(v, k) for k, v in self.nsBindings.items()]
-                    ).get(namespace)
+            [(v, k) for k, v in self.nsBindings.items()]
+        ).get(namespace)
 
     def namespace(self, prefix):
         return self.nsBindings.get(prefix)
@@ -401,12 +401,12 @@ class SPARQLUpdateStore(SPARQLStore):
     """
 
     def __init__(self,
-        queryEndpoint=None, update_endpoint=None,
-        bNodeAsURI=False, sparql11=True,
-        context_aware=True):
+                 queryEndpoint=None, update_endpoint=None,
+                 bNodeAsURI=False, sparql11=True,
+                 context_aware=True):
 
         SPARQLStore.__init__(self,
-            queryEndpoint, bNodeAsURI, sparql11, context_aware)
+                             queryEndpoint, bNodeAsURI, sparql11, context_aware)
 
         self.connection = None
         if update_endpoint:
@@ -437,7 +437,7 @@ class SPARQLUpdateStore(SPARQLStore):
     update_endpoint = property(
         __get_update_endpoint,
         __set_update_endpoint,
-        doc='the HTTP URL for the Update endpoint, typically' + \
+        doc='the HTTP URL for the Update endpoint, typically' +
             'something like http://server/dataset/update')
 
     def open(self, configuration, create=False):
@@ -462,7 +462,7 @@ class SPARQLUpdateStore(SPARQLStore):
         if not self.update_endpoint:
             self.update_endpoint = self.endpoint
 
-    #Transactional interfaces
+    # Transactional interfaces
     def commit(self):
         """ """
         raise TypeError('The SPARQL Update store is not transaction aware!')
@@ -482,14 +482,14 @@ class SPARQLUpdateStore(SPARQLStore):
         triple = "%s %s %s ." % (subject.n3(), predicate.n3(), obj.n3())
         if self.context_aware and context is not None:
             q = "INSERT DATA { GRAPH %s { %s } }" % (
-                                context.identifier.n3(), triple)
+                context.identifier.n3(), triple)
         else:
             q = "INSERT DATA { %s }" % triple
         r = self._do_update(q)
         content = r.read()  # we expect no content
         if r.status not in (200, 204):
             raise Exception("Could not update: %d %s\n%s" % (
-                    r.status, r.reason, content))
+                r.status, r.reason, content))
 
     def addN(self, quads):
         """ Add a list of quads to the store. """
@@ -506,7 +506,7 @@ class SPARQLUpdateStore(SPARQLStore):
         content = r.read()  # we expect no content
         if r.status not in (200, 204):
             raise Exception("Could not update: %d %s\n%s" % (
-                    r.status, r.reason, content))
+                r.status, r.reason, content))
 
     def remove(self, spo, context):
         """ Remove a triple from the store """
@@ -524,15 +524,15 @@ class SPARQLUpdateStore(SPARQLStore):
         triple = "%s %s %s ." % (subject.n3(), predicate.n3(), obj.n3())
         if self.context_aware and context is not None:
             q = "DELETE { GRAPH %s { %s } } WHERE { GRAPH %s { %s } }" % (
-                    context.identifier.n3(), triple,
-                    context.identifier.n3(), triple)
+                context.identifier.n3(), triple,
+                context.identifier.n3(), triple)
         else:
             q = "DELETE { %s } WHERE { %s } " % (triple, triple)
         r = self._do_update(q)
         content = r.read()  # we expect no content
         if r.status not in (200, 204):
             raise Exception("Could not update: %d %s\n%s" % (
-                                    r.status, r.reason, content))
+                r.status, r.reason, content))
 
     def _do_update(self, update):
         import urllib
@@ -550,4 +550,4 @@ class SPARQLUpdateStore(SPARQLStore):
         content = r.read()  # we expect no content
         if r.status not in (200, 204):
             raise Exception("Could not update: %d %s\n%s" % (
-                                    r.status, r.reason, content))
+                r.status, r.reason, content))

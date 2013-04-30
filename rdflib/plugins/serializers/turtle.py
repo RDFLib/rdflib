@@ -94,7 +94,6 @@ class RecursiveSerializer(Serializer):
         for prefix, ns in self.store.namespaces():
             self.addNamespace(prefix, ns)
 
-
     def buildPredicateHash(self, subject):
         """
         Build a hash key by predicate to a list of objects for the given
@@ -164,7 +163,6 @@ class TurtleSerializer(RecursiveSerializer):
         self.reset()
         self.stream = None
         self._spacious = _SPACIOUS_OUTPUT
-        
 
     def addNamespace(self, prefix, namespace):
         # Turtle does not support prefix that start with _
@@ -335,12 +333,12 @@ class TurtleSerializer(RecursiveSerializer):
         else:
             self.subjectDone(node)
             self.depth += 2
-            #self.write('[\n' + self.indent())
+            # self.write('[\n' + self.indent())
             self.write('[')
             self.depth -= 1
-            #self.predicateList(node, newline=True)
+            # self.predicateList(node, newline=True)
             self.predicateList(node, newline=False)
-            #self.write('\n' + self.indent() + ']')
+            # self.write('\n' + self.indent() + ']')
             self.write(' ]')
             self.depth -= 1
 

@@ -73,48 +73,51 @@ def Group(p, expr=None):
 
 
 def _knownTerms(triple, varsknown, varscount):
-    return ( len(filter(None, (x not in varsknown and 
-                   isinstance(x, (Variable, BNode)) for x in triple))), 
-             -sum(varscount.get(x, 0) for x in triple), 
-             not isinstance(triple[2], Literal),
-             )
+    return (len(filter(None, (x not in varsknown and
+                              isinstance(
+                                  x, (Variable, BNode)) for x in triple))),
+            -sum(varscount.get(x, 0) for x in triple),
+            not isinstance(triple[2], Literal),
+            )
 
 
-def reorderTriples(l): 
+def reorderTriples(l):
     """
-    Reorder triple patterns so that we execute the 
+    Reorder triple patterns so that we execute the
     ones with most bindings first
     """
 
-    def _addvar(term, varsknown): 
-        if isinstance(term, (Variable, BNode)): 
+    def _addvar(term, varsknown):
+        if isinstance(term, (Variable, BNode)):
             varsknown.add(term)
 
-    l=[(None,x) for x in l]
-    varsknown=set()
-    varscount=collections.defaultdict(int)
-    for t in l: 
-        for c in t[1]: 
-            if isinstance(c, (Variable, BNode)): 
-                varscount[c]+=1
+    l = [(None, x) for x in l]
+    varsknown = set()
+    varscount = collections.defaultdict(int)
+    for t in l:
+        for c in t[1]:
+            if isinstance(c, (Variable, BNode)):
+                varscount[c] += 1
     i = 0
 
     # Done in steps, sort by number of bound terms
     # the top block of patterns with the most bound terms is kept
-    # the rest is resorted based on the vars bound after the first 
+    # the rest is resorted based on the vars bound after the first
     # block is evaluated
 
     # we sort by decorate/undecorate, since we need the value of the sort keys
 
-    while i<len(l): 
-        l[i:] = sorted((_knownTerms(x[1], varsknown, varscount),x[1]) for x in l[i:])
-        t=l[i][0][0] # top block has this many terms bound
-        j=0
-        while i+j<len(l) and l[i+j][0][0]==t:
-            for c in l[i+j][1]: _addvar(c, varsknown)
-            j+=1
-        i+=1
-    
+    while i < len(l):
+        l[i:] = sorted((_knownTerms(x[
+                       1], varsknown, varscount), x[1]) for x in l[i:])
+        t = l[i][0][0]  # top block has this many terms bound
+        j = 0
+        while i+j < len(l) and l[i+j][0][0] == t:
+            for c in l[i+j][1]:
+                _addvar(c, varsknown)
+            j += 1
+        i += 1
+
     return [x[1] for x in l]
 
 
@@ -124,8 +127,7 @@ def triples(l):
     if (len(l) % 3) != 0:
         raise Exception('these aint triples')
     return reorderTriples((l[x], l[x + 1], l[x + 2])
-                   for x in range(0, len(l), 3))
-
+                          for x in range(0, len(l), 3))
 
 
 def translatePName(p, prologue):
@@ -342,6 +344,7 @@ def _traverse(e, visitPre=lambda n: None, visitPost=lambda n: None):
 
     return e
 
+
 def _traverseAgg(e, visitor=lambda n, v: None):
     """
     Traverse a parse-tree, visit each node
@@ -352,7 +355,7 @@ def _traverseAgg(e, visitor=lambda n, v: None):
     res = []
 
     if isinstance(e, (list, ParseResults, tuple)):
-        res=[_traverseAgg(x, visitor) for x in e]
+        res = [_traverseAgg(x, visitor) for x in e]
 
     elif isinstance(e, CompValue):
         for k, val in e.iteritems():
@@ -421,12 +424,13 @@ def _findVars(x, res):
             res.update(x.evar or [])
             return x
 
-def _addVars(x, children): 
-    #import pdb; pdb.set_trace()
+
+def _addVars(x, children):
+    # import pdb; pdb.set_trace()
     if isinstance(x, Variable):
         return set([x])
     elif isinstance(x, CompValue):
-        x["_vars"]=set(reduce(operator.or_, children, set()))
+        x["_vars"] = set(reduce(operator.or_, children, set()))
         if x.name == "Bind":
             return set([x.var])
         elif x.name == 'SubSelect':
@@ -434,7 +438,7 @@ def _addVars(x, children):
             s.update(x.evar or [])
             return s
     return reduce(operator.or_, children, set())
-    
+
 
 def _sample(e, v=None):
     """
@@ -606,7 +610,7 @@ def translate(q):
 
 def simplify(n):
     """Remove joins to empty BGPs"""
-    if isinstance(n, CompValue): 
+    if isinstance(n, CompValue):
         if n.name == 'Join':
             if n.p1.name == 'BGP' and len(n.p1.triples) == 0:
                 return n.p2
@@ -615,20 +619,21 @@ def simplify(n):
         elif n.name == 'BGP':
             n["triples"] = reorderTriples(n.triples)
             return n
-            
-    
-def analyse(n, children): 
-    
-    if isinstance(n, CompValue): 
+
+
+def analyse(n, children):
+
+    if isinstance(n, CompValue):
         if n.name == 'Join':
-            n["lazy"]=all(children)
+            n["lazy"] = all(children)
             return False
-        elif n.name in ('Slice', 'Distinct'): 
+        elif n.name in ('Slice', 'Distinct'):
             return False
-        else: 
+        else:
             return all(children)
-    else: 
+    else:
         return True
+
 
 def translatePrologue(p, base, initNs=None, prologue=None):
 

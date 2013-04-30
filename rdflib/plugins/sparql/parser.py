@@ -6,7 +6,7 @@ from pyparsing import (
     ParseException, Suppress, Combine, restOfLine, Group,
     ParseResults, delimitedList)
 from pyparsing import CaselessKeyword as Keyword  # watch out :)
-#from pyparsing import Keyword as CaseSensitiveKeyword
+# from pyparsing import Keyword as CaseSensitiveKeyword
 
 from parserutils import Comp, Param, ParamList
 
@@ -37,7 +37,7 @@ def expandTriples(terms):
     """
     Expand ; and , syntax for repeat predicates, subjects
     """
-    #import pdb; pdb.set_trace()
+    # import pdb; pdb.set_trace()
     try:
         res = []
         if DEBUG:
@@ -82,7 +82,7 @@ def expandBNodeTriples(terms):
     """
     expand [ ?p ?o ] syntax for implicit bnodes
     """
-    #import pdb; pdb.set_trace()
+    # import pdb; pdb.set_trace()
     try:
         if DEBUG:
             print "Bnode terms", terms
@@ -105,9 +105,9 @@ def expandCollection(terms):
     res = []
     other = []
     for x in terms:
-        if isinstance(x, list): # is this a [ .. ] ?
-            other+=x
-            x=x[0]
+        if isinstance(x, list):  # is this a [ .. ] ?
+            other += x
+            x = x[0]
 
         b = rdflib.BNode()
         if res:
@@ -159,7 +159,7 @@ PN_CHARS_U_re = '_' + PN_CHARS_BASE_re
 
 # [167] PN_CHARS ::= PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
 PN_CHARS_re = u'\\-0-9\u00B7\u0300-\u036F\u203F-\u2040' + PN_CHARS_U_re
-#PN_CHARS = Regex(u'[%s]'%PN_CHARS_re, flags=re.U)
+# PN_CHARS = Regex(u'[%s]'%PN_CHARS_re, flags=re.U)
 
 # [168] PN_PREFIX ::= PN_CHARS_BASE ((PN_CHARS|'.')* PN_CHARS)?
 PN_PREFIX = Regex(ur'[%s](?:[%s\.]*[%s])?' % (PN_CHARS_BASE_re,
@@ -185,7 +185,8 @@ PERCENT.setParseAction(lambda x: unichr(int(x[0][1:], 16)))
 PLX = PERCENT | PN_LOCAL_ESC
 
 # [169] PN_LOCAL ::= (PN_CHARS_U | ':' | [0-9] | PLX ) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX) )?
-PN_LOCAL = Combine((Regex(u'[%s0-9:]' % PN_CHARS_U_re, flags=re.U) | PLX) + ZeroOrMore((Regex(u'[%s\\.:]' % PN_CHARS_re, flags=re.U) | PLX) + Optional(Regex(u'[%s:]' % PN_CHARS_re, flags=re.U) | PLX)))
+PN_LOCAL = Combine((Regex(u'[%s0-9:]' % PN_CHARS_U_re, flags=re.U) | PLX) + ZeroOrMore((Regex(
+    u'[%s\\.:]' % PN_CHARS_re, flags=re.U) | PLX) + Optional(Regex(u'[%s:]' % PN_CHARS_re, flags=re.U) | PLX)))
 
 
 # [141] PNAME_LN ::= PNAME_NS PN_LOCAL
@@ -212,7 +213,7 @@ LANGTAG = Combine(Suppress('@') + Regex('[a-zA-Z]+(?:-[a-zA-Z0-9]+)*'))
 
 # [146] INTEGER ::= [0-9]+
 INTEGER = Regex(r"[0-9]+")
-#INTEGER.setResultsName('integer')
+# INTEGER.setResultsName('integer')
 INTEGER.setParseAction(
     lambda x: rdflib.Literal(x[0], datatype=rdflib.XSD.integer))
 
@@ -221,21 +222,22 @@ EXPONENT_re = '[eE][+-]?[0-9]+'
 
 # [147] DECIMAL ::= [0-9]* '.' [0-9]+
 DECIMAL = Regex(r'[0-9]*\.[0-9]+')  # (?![eE])
-#DECIMAL.setResultsName('decimal')
+# DECIMAL.setResultsName('decimal')
 DECIMAL.setParseAction(
     lambda x: rdflib.Literal(x[0], datatype=rdflib.XSD.decimal))
 
 # [148] DOUBLE ::= [0-9]+ '.' [0-9]* EXPONENT | '.' ([0-9])+ EXPONENT | ([0-9])+ EXPONENT
 DOUBLE = Regex(
     r'[0-9]+\.[0-9]*%(e)s|\.([0-9])+%(e)s|[0-9]+%(e)s' % {'e': EXPONENT_re})
-#DOUBLE.setResultsName('double')
+# DOUBLE.setResultsName('double')
 DOUBLE.setParseAction(
     lambda x: rdflib.Literal(x[0], datatype=rdflib.XSD.double))
 
 
 # [149] INTEGER_POSITIVE ::= '+' INTEGER
 INTEGER_POSITIVE = Suppress('+') + INTEGER.copy().leaveWhitespace()
-INTEGER_POSITIVE.setParseAction(lambda x: rdflib.Literal("+"+x[0], datatype=rdflib.XSD.integer))
+INTEGER_POSITIVE.setParseAction(lambda x: rdflib.Literal(
+    "+"+x[0], datatype=rdflib.XSD.integer))
 
 # [150] DECIMAL_POSITIVE ::= '+' DECIMAL
 DECIMAL_POSITIVE = Suppress('+') + DECIMAL.copy().leaveWhitespace()
@@ -260,19 +262,22 @@ DOUBLE_NEGATIVE.setParseAction(lambda x: neg(x[0]))
 
 
 # [158] STRING_LITERAL_LONG1 ::= "'''" ( ( "'" | "''" )? ( [^'\] | ECHAR ) )* "'''"
-#STRING_LITERAL_LONG1 = Literal("'''") + ( Optional( Literal("'") | "''" ) + ZeroOrMore( ~ Literal("'\\") | ECHAR ) ) + "'''"
+# STRING_LITERAL_LONG1 = Literal("'''") + ( Optional( Literal("'") | "''"
+# ) + ZeroOrMore( ~ Literal("'\\") | ECHAR ) ) + "'''"
 STRING_LITERAL_LONG1 = Regex(ur"'''((?:'|'')?(?:[^'\\]|\\['ntbrf\\]))*'''")
 STRING_LITERAL_LONG1.setParseAction(
     lambda x: rdflib.Literal(decodeStringEscape(x[0][3:-3])))
 
 # [159] STRING_LITERAL_LONG2 ::= '"""' ( ( '"' | '""' )? ( [^"\] | ECHAR ) )* '"""'
-#STRING_LITERAL_LONG2 = Literal('"""') + ( Optional( Literal('"') | '""' ) + ZeroOrMore( ~ Literal('"\\') | ECHAR ) ) +  '"""'
+# STRING_LITERAL_LONG2 = Literal('"""') + ( Optional( Literal('"') | '""'
+# ) + ZeroOrMore( ~ Literal('"\\') | ECHAR ) ) +  '"""'
 STRING_LITERAL_LONG2 = Regex(ur'"""(?:(?:"|"")?(?:[^"\\]|\\["ntbrf\\]))*"""')
 STRING_LITERAL_LONG2.setParseAction(
     lambda x: rdflib.Literal(decodeStringEscape(x[0][3:-3])))
 
 # [156] STRING_LITERAL1 ::= "'" ( ([^#x27#x5C#xA#xD]) | ECHAR )* "'"
-#STRING_LITERAL1 = Literal("'") + ZeroOrMore( Regex(u'[^\u0027\u005C\u000A\u000D]',flags=re.U) | ECHAR ) + "'"
+# STRING_LITERAL1 = Literal("'") + ZeroOrMore(
+# Regex(u'[^\u0027\u005C\u000A\u000D]',flags=re.U) | ECHAR ) + "'"
 
 STRING_LITERAL1 = Regex(
     ur"'(?:[^'\n\r\\]|\\['ntbrf\\])*'(?!')", flags=re.U)
@@ -280,7 +285,8 @@ STRING_LITERAL1.setParseAction(
     lambda x: rdflib.Literal(decodeStringEscape(x[0][1:-1])))
 
 # [157] STRING_LITERAL2 ::= '"' ( ([^#x22#x5C#xA#xD]) | ECHAR )* '"'
-#STRING_LITERAL2 = Literal('"') + ZeroOrMore ( Regex(u'[^\u0022\u005C\u000A\u000D]',flags=re.U) | ECHAR ) + '"'
+# STRING_LITERAL2 = Literal('"') + ZeroOrMore (
+# Regex(u'[^\u0022\u005C\u000A\u000D]',flags=re.U) | ECHAR ) + '"'
 
 STRING_LITERAL2 = Regex(
     ur'"(?:[^"\n\r\\]|\\["ntbrf\\])*"(?!")', flags=re.U)
@@ -298,7 +304,7 @@ NIL.setParseAction(lambda x: rdflib.RDF.nil)
 ANON = Literal('[') + ']'
 ANON.setParseAction(lambda x: rdflib.BNode())
 
-#A = CaseSensitiveKeyword('a')
+# A = CaseSensitiveKeyword('a')
 A = Literal('a')
 A.setParseAction(lambda x: rdflib.RDF.type)
 
@@ -330,7 +336,8 @@ String = STRING_LITERAL_LONG1 | STRING_LITERAL_LONG2 | STRING_LITERAL1 | STRING_
 
 # [129] RDFLiteral ::= String ( LANGTAG | ( '^^' iri ) )?
 
-RDFLiteral = Comp('literal', Param('string', String) + Optional(Param('lang', LANGTAG.leaveWhitespace()) | Literal('^^').leaveWhitespace() + Param('datatype', iri).leaveWhitespace()))
+RDFLiteral = Comp('literal', Param('string', String) + Optional(Param(
+    'lang', LANGTAG.leaveWhitespace()) | Literal('^^').leaveWhitespace() + Param('datatype', iri).leaveWhitespace()))
 
 # [132] NumericLiteralPositive ::= INTEGER_POSITIVE | DECIMAL_POSITIVE | DOUBLE_POSITIVE
 NumericLiteralPositive = DOUBLE_POSITIVE | DECIMAL_POSITIVE | INTEGER_POSITIVE
@@ -405,10 +412,12 @@ PathOneInPropertySet = iri | A | Comp('InversePath', '^' + (iri | A))
 Path = Forward()
 
 # [95] PathNegatedPropertySet ::= PathOneInPropertySet | '(' ( PathOneInPropertySet ( '|' PathOneInPropertySet )* )? ')'
-PathNegatedPropertySet = Comp('PathNegatedPropertySet', ParamList('part', PathOneInPropertySet) | '(' + Optional(ParamList('part', PathOneInPropertySet) + ZeroOrMore('|' + ParamList('part', PathOneInPropertySet))) + ')')
+PathNegatedPropertySet = Comp('PathNegatedPropertySet', ParamList('part', PathOneInPropertySet) | '(' + Optional(
+    ParamList('part', PathOneInPropertySet) + ZeroOrMore('|' + ParamList('part', PathOneInPropertySet))) + ')')
 
 # [94] PathPrimary ::= iri | A | '!' PathNegatedPropertySet | '(' Path ')' | 'DISTINCT' '(' Path ')'
-PathPrimary = iri | A | Suppress('!') + PathNegatedPropertySet | Suppress('(') + Path + Suppress(')') | Comp('DistinctPath', Keyword('DISTINCT') + '(' + Param('part', Path) + ')')
+PathPrimary = iri | A | Suppress('!') + PathNegatedPropertySet | Suppress('(') + Path + Suppress(
+    ')') | Comp('DistinctPath', Keyword('DISTINCT') + '(' + Param('part', Path) + ')')
 
 # [91] PathElt ::= PathPrimary Optional(PathMod)
 PathElt = Comp('PathElt', Param(
@@ -458,7 +467,8 @@ Object = GraphNode
 ObjectList = Object + ZeroOrMore(',' + Object)
 
 # [83] PropertyListPathNotEmpty ::= ( VerbPath | VerbSimple ) ObjectListPath ( ';' ( ( VerbPath | VerbSimple ) ObjectList )? )*
-PropertyListPathNotEmpty = (VerbPath | VerbSimple) + ObjectListPath + ZeroOrMore(';' + Optional((VerbPath | VerbSimple) + ObjectList))
+PropertyListPathNotEmpty = (VerbPath | VerbSimple) + ObjectListPath + ZeroOrMore(
+    ';' + Optional((VerbPath | VerbSimple) + ObjectList))
 
 # [82] PropertyListPath ::= Optional(PropertyListPathNotEmpty)
 PropertyListPath = Optional(PropertyListPathNotEmpty)
@@ -502,7 +512,8 @@ QuadsNotTriples = Comp('QuadsNotTriples', Keyword('GRAPH') + Param(
     'term', VarOrIri) + '{' + Optional(TriplesTemplate) + '}')
 
 # [50] Quads ::= Optional(TriplesTemplate) ( QuadsNotTriples '.'? Optional(TriplesTemplate) )*
-Quads = Comp('Quads', Optional(TriplesTemplate) + ZeroOrMore(ParamList('quadsNotTriples', QuadsNotTriples) + Optional(Suppress('.')) + Optional(TriplesTemplate)))
+Quads = Comp('Quads', Optional(TriplesTemplate) + ZeroOrMore(ParamList(
+    'quadsNotTriples', QuadsNotTriples) + Optional(Suppress('.')) + Optional(TriplesTemplate)))
 
 # [48] QuadPattern ::= '{' Quads '}'
 QuadPattern = '{' + Param('quads', Quads) + '}'
@@ -526,7 +537,8 @@ MinusGraphPattern = Comp(
     'MinusGraphPattern', Keyword('MINUS') + Param('graph', GroupGraphPattern))
 
 # [67] GroupOrUnionGraphPattern ::= GroupGraphPattern ( 'UNION' GroupGraphPattern )*
-GroupOrUnionGraphPattern = Comp('GroupOrUnionGraphPattern', ParamList('graph', GroupGraphPattern) + ZeroOrMore(Keyword('UNION') + ParamList('graph', GroupGraphPattern)))
+GroupOrUnionGraphPattern = Comp('GroupOrUnionGraphPattern', ParamList(
+    'graph', GroupGraphPattern) + ZeroOrMore(Keyword('UNION') + ParamList('graph', GroupGraphPattern)))
 
 
 Expression = Forward()
@@ -536,21 +548,25 @@ ExpressionList = NIL | Group(
     Suppress('(') + delimitedList(Expression) + Suppress(')'))
 
 # [122] RegexExpression ::= 'REGEX' '(' Expression ',' Expression ( ',' Expression )? ')'
-RegexExpression = Comp('Builtin_REGEX', Keyword('REGEX') + '(' + Param('text', Expression) + ',' + Param('pattern', Expression) + Optional(',' + Param('flags', Expression)) + ')')
+RegexExpression = Comp('Builtin_REGEX', Keyword('REGEX') + '(' + Param('text', Expression) + ',' + Param(
+    'pattern', Expression) + Optional(',' + Param('flags', Expression)) + ')')
 RegexExpression.setEvalFn(op.Builtin_REGEX)
 
 # [123] SubstringExpression ::= 'SUBSTR' '(' Expression ',' Expression ( ',' Expression )? ')'
-SubstringExpression = Comp('Builtin_SUBSTR', Keyword('SUBSTR') + '(' + Param('arg', Expression) + ',' + Param('start', Expression) + Optional(',' + Param('length', Expression)) + ')').setEvalFn(op.Builtin_SUBSTR)
+SubstringExpression = Comp('Builtin_SUBSTR', Keyword('SUBSTR') + '(' + Param('arg', Expression) + ',' + Param(
+    'start', Expression) + Optional(',' + Param('length', Expression)) + ')').setEvalFn(op.Builtin_SUBSTR)
 
 # [124] StrReplaceExpression ::= 'REPLACE' '(' Expression ',' Expression ',' Expression ( ',' Expression )? ')'
-StrReplaceExpression = Comp('Builtin_REPLACE', Keyword('REPLACE') + '(' + Param('arg', Expression) + ',' + Param('pattern', Expression) + ',' + Param('replacement', Expression) + Optional(',' + Param('flags', Expression)) + ')').setEvalFn(op.Builtin_REPLACE)
+StrReplaceExpression = Comp('Builtin_REPLACE', Keyword('REPLACE') + '(' + Param('arg', Expression) + ',' + Param(
+    'pattern', Expression) + ',' + Param('replacement', Expression) + Optional(',' + Param('flags', Expression)) + ')').setEvalFn(op.Builtin_REPLACE)
 
 # [125] ExistsFunc ::= 'EXISTS' GroupGraphPattern
 ExistsFunc = Comp('Builtin_EXISTS', Keyword('EXISTS') + Param(
     'graph', GroupGraphPattern)).setEvalFn(op.Builtin_EXISTS)
 
 # [126] NotExistsFunc ::= 'NOT' 'EXISTS' GroupGraphPattern
-NotExistsFunc = Comp('Builtin_NOTEXISTS', Keyword('NOT') + Keyword('EXISTS') + Param('graph', GroupGraphPattern)).setEvalFn(op.Builtin_EXISTS)
+NotExistsFunc = Comp('Builtin_NOTEXISTS', Keyword('NOT') + Keyword(
+    'EXISTS') + Param('graph', GroupGraphPattern)).setEvalFn(op.Builtin_EXISTS)
 
 
 # [127] Aggregate ::= 'COUNT' '(' 'DISTINCT'? ( '*' | Expression ) ')'
@@ -714,14 +730,16 @@ UnaryExpression = Comp('UnaryNot', '!' + Param('expr', PrimaryExpression)).setEv
     | PrimaryExpression
 
 # [117] MultiplicativeExpression ::= UnaryExpression ( '*' UnaryExpression | '/' UnaryExpression )*
-MultiplicativeExpression = Comp('MultiplicativeExpression', Param('expr', UnaryExpression) + ZeroOrMore(ParamList('op', '*') + ParamList('other', UnaryExpression) | ParamList('op', '/') + ParamList('other', UnaryExpression))).setEvalFn(op.MultiplicativeExpression)
+MultiplicativeExpression = Comp('MultiplicativeExpression', Param('expr', UnaryExpression) + ZeroOrMore(ParamList('op', '*') + ParamList(
+    'other', UnaryExpression) | ParamList('op', '/') + ParamList('other', UnaryExpression))).setEvalFn(op.MultiplicativeExpression)
 
 # [116] AdditiveExpression ::= MultiplicativeExpression ( '+' MultiplicativeExpression | '-' MultiplicativeExpression | ( NumericLiteralPositive | NumericLiteralNegative ) ( ( '*' UnaryExpression ) | ( '/' UnaryExpression ) )* )*
 
 ### NOTE: The second part of this production is there because:
 ### "In signed numbers, no white space is allowed between the sign and the number. The AdditiveExpression grammar rule allows for this by covering the two cases of an expression followed by a signed number. These produce an addition or subtraction of the unsigned number as appropriate."
 
-# Here (I think) this is not nescessary since pyparsing doesn't separate tokenizing and parsing
+# Here (I think) this is not nescessary since pyparsing doesn't separate
+# tokenizing and parsing
 
 
 AdditiveExpression = Comp('AdditiveExpression', Param('expr', MultiplicativeExpression) +
@@ -748,10 +766,12 @@ RelationalExpression = Comp('RelationalExpression', Param('expr', NumericExpress
 ValueLogical = RelationalExpression
 
 # [112] ConditionalAndExpression ::= ValueLogical ( '&&' ValueLogical )*
-ConditionalAndExpression = Comp('ConditionalAndExpression', Param('expr', ValueLogical) + ZeroOrMore('&&' + ParamList('other', ValueLogical))).setEvalFn(op.ConditionalAndExpression)
+ConditionalAndExpression = Comp('ConditionalAndExpression', Param('expr', ValueLogical) + ZeroOrMore(
+    '&&' + ParamList('other', ValueLogical))).setEvalFn(op.ConditionalAndExpression)
 
 # [111] ConditionalOrExpression ::= ConditionalAndExpression ( '||' ConditionalAndExpression )*
-ConditionalOrExpression = Comp('ConditionalOrExpression', Param('expr', ConditionalAndExpression) + ZeroOrMore('||' + ParamList('other', ConditionalAndExpression))).setEvalFn(op.ConditionalOrExpression)
+ConditionalOrExpression = Comp('ConditionalOrExpression', Param('expr', ConditionalAndExpression) + ZeroOrMore(
+    '||' + ParamList('other', ConditionalAndExpression))).setEvalFn(op.ConditionalOrExpression)
 
 # [110] Expression ::= ConditionalOrExpression
 Expression << ConditionalOrExpression
@@ -778,7 +798,8 @@ DatasetClause = Comp('DatasetClause', Keyword(
     'FROM') + (Param('default', DefaultGraphClause) | NamedGraphClause))
 
 # [20] GroupCondition ::= BuiltInCall | FunctionCall | '(' Expression ( 'AS' Var )? ')' | Var
-GroupCondition = BuiltInCall | FunctionCall | Comp('GroupAs', '(' + Param('expr', Expression) + Optional(Keyword('AS') + Param('var', Var)) + ')') | Var
+GroupCondition = BuiltInCall | FunctionCall | Comp('GroupAs', '(' + Param(
+    'expr', Expression) + Optional(Keyword('AS') + Param('var', Var)) + ')') | Var
 
 # [19] GroupClause ::= 'GROUP' 'BY' GroupCondition+
 GroupClause = Comp('GroupClause', Keyword('GROUP') + Keyword(
@@ -833,7 +854,8 @@ UsingClause = Comp('UsingClause', Keyword('USING') + (
     Param('default', iri) | Keyword('NAMED') + Param('named', iri)))
 
 # [41] Modify ::= ( 'WITH' iri )? ( DeleteClause Optional(InsertClause) | InsertClause ) ZeroOrMore(UsingClause) 'WHERE' GroupGraphPattern
-Modify = Comp('Modify', Optional(Keyword('WITH') + Param('withClause', iri)) + (Param('delete', DeleteClause) + Optional(Param('insert', InsertClause)) | Param('insert', InsertClause)) + ZeroOrMore(ParamList('using', UsingClause)) + Keyword('WHERE') + Param('where', GroupGraphPattern))
+Modify = Comp('Modify', Optional(Keyword('WITH') + Param('withClause', iri)) + (Param('delete', DeleteClause) + Optional(Param(
+    'insert', InsertClause)) | Param('insert', InsertClause)) + ZeroOrMore(ParamList('using', UsingClause)) + Keyword('WHERE') + Param('where', GroupGraphPattern))
 
 
 # [30] Update1 ::= Load | Clear | Drop | Add | Move | Copy | Create | InsertData | DeleteData | DeleteWhere | Modify
@@ -845,7 +867,8 @@ InlineDataOneVar = ParamList(
     'var', Var) + '{' + ZeroOrMore(ParamList('value', DataBlockValue)) + '}'
 
 # [64] InlineDataFull ::= ( NIL | '(' ZeroOrMore(Var) ')' ) '{' ( '(' ZeroOrMore(DataBlockValue) ')' | NIL )* '}'
-InlineDataFull = (NIL | '(' + ZeroOrMore(ParamList('var', Var)) + ')') + '{' + ZeroOrMore(ParamList('value', Group(Suppress('(') + ZeroOrMore(DataBlockValue) + Suppress(')') | NIL))) + '}'
+InlineDataFull = (NIL | '(' + ZeroOrMore(ParamList('var', Var)) + ')') + '{' + ZeroOrMore(
+    ParamList('value', Group(Suppress('(') + ZeroOrMore(DataBlockValue) + Suppress(')') | NIL))) + '}'
 
 # [62] DataBlock ::= InlineDataOneVar | InlineDataFull
 DataBlock = InlineDataOneVar | InlineDataFull
@@ -874,7 +897,8 @@ GraphGraphPattern = Comp('GraphGraphPattern', Keyword(
     'GRAPH') + Param('term', VarOrIri) + Param('graph', GroupGraphPattern))
 
 # [59] ServiceGraphPattern ::= 'SERVICE' _Silent VarOrIri GroupGraphPattern
-ServiceGraphPattern = Comp('ServiceGraphPattern', Keyword('SERVICE') + _Silent + Param('term', VarOrIri) + Param('graph', GroupGraphPattern))
+ServiceGraphPattern = Comp('ServiceGraphPattern', Keyword(
+    'SERVICE') + _Silent + Param('term', VarOrIri) + Param('graph', GroupGraphPattern))
 
 # [60] Bind ::= 'BIND' '(' Expression 'AS' Var ')'
 Bind = Comp('Bind', Keyword('BIND') + '(' + Param(
@@ -887,7 +911,8 @@ InlineData = Comp('InlineData', Keyword('VALUES') + DataBlock)
 GraphPatternNotTriples = GroupOrUnionGraphPattern | OptionalGraphPattern | MinusGraphPattern | GraphGraphPattern | ServiceGraphPattern | Filter | Bind | InlineData
 
 # [54] GroupGraphPatternSub ::= Optional(TriplesBlock) ( GraphPatternNotTriples '.'? Optional(TriplesBlock) )*
-GroupGraphPatternSub = Comp('GroupGraphPatternSub', Optional(ParamList('part', Comp('TriplesBlock', TriplesBlock))) + ZeroOrMore(ParamList('part', GraphPatternNotTriples) + Optional('.') + Optional(ParamList('part', Comp('TriplesBlock', TriplesBlock)))))
+GroupGraphPatternSub = Comp('GroupGraphPatternSub', Optional(ParamList('part', Comp('TriplesBlock', TriplesBlock))) + ZeroOrMore(
+    ParamList('part', GraphPatternNotTriples) + Optional('.') + Optional(ParamList('part', Comp('TriplesBlock', TriplesBlock)))))
 
 
 # ----------------
@@ -900,7 +925,8 @@ HavingClause = Comp('HavingClause', Keyword(
 
 # [24] OrderCondition ::= ( ( 'ASC' | 'DESC' ) BrackettedExpression )
 # | ( Constraint | Var )
-OrderCondition = Comp('OrderCondition', Param('order', Keyword('ASC') | Keyword('DESC')) + Param('expr', BrackettedExpression) | Param('expr', Constraint | Var))
+OrderCondition = Comp('OrderCondition', Param('order', Keyword('ASC') | Keyword(
+    'DESC')) + Param('expr', BrackettedExpression) | Param('expr', Constraint | Var))
 
 # [23] OrderClause ::= 'ORDER' 'BY' OneOrMore(OrderCondition)
 OrderClause = Comp('OrderClause', Keyword('ORDER') + Keyword(
@@ -917,11 +943,13 @@ LimitOffsetClauses = Comp('LimitOffsetClauses', LimitClause + Optional(
     OffsetClause) | OffsetClause + Optional(LimitClause))
 
 # [18] SolutionModifier ::= GroupClause? HavingClause? OrderClause? LimitOffsetClauses?
-SolutionModifier = Optional(Param('groupby', GroupClause)) + Optional(Param('having', HavingClause)) + Optional(Param('orderby', OrderClause)) + Optional(Param('limitoffset', LimitOffsetClauses))
+SolutionModifier = Optional(Param('groupby', GroupClause)) + Optional(Param('having', HavingClause)) + Optional(
+    Param('orderby', OrderClause)) + Optional(Param('limitoffset', LimitOffsetClauses))
 
 
 # [9] SelectClause ::= 'SELECT' ( 'DISTINCT' | 'REDUCED' )? ( ( Var | ( '(' Expression 'AS' Var ')' ) )+ | '*' )
-SelectClause = Keyword('SELECT') + Optional(Param('modifier', Keyword('DISTINCT') | Keyword('REDUCED'))) + (OneOrMore(ParamList('var', Var) | (Literal('(') + ParamList('expr', Expression) + Keyword('AS') + ParamList('evar', Var) + ')')) | '*')
+SelectClause = Keyword('SELECT') + Optional(Param('modifier', Keyword('DISTINCT') | Keyword('REDUCED'))) + (OneOrMore(
+    ParamList('var', Var) | (Literal('(') + ParamList('expr', Expression) + Keyword('AS') + ParamList('evar', Var) + ')')) | '*')
 
 # [17] WhereClause ::= 'WHERE'? GroupGraphPattern
 WhereClause = Optional(Keyword('WHERE')) + Param('where', GroupGraphPattern)
@@ -935,19 +963,22 @@ GroupGraphPattern << (
     Suppress('{') + (SubSelect | GroupGraphPatternSub) + Suppress('}'))
 
 # [7] SelectQuery ::= SelectClause DatasetClause* WhereClause SolutionModifier
-SelectQuery = Comp('SelectQuery', SelectClause + ZeroOrMore(ParamList('datasetClause', DatasetClause)) + WhereClause + SolutionModifier + ValuesClause)
+SelectQuery = Comp('SelectQuery', SelectClause + ZeroOrMore(ParamList(
+    'datasetClause', DatasetClause)) + WhereClause + SolutionModifier + ValuesClause)
 
 # [10] ConstructQuery ::= 'CONSTRUCT' ( ConstructTemplate DatasetClause* WhereClause SolutionModifier | DatasetClause* 'WHERE' '{' TriplesTemplate? '}' SolutionModifier )
 # NOTE: The CONSTRUCT WHERE alternative has unnescessarily many Comp/Param pairs
 # to allow it to through the same algebra translation process
-ConstructQuery = Comp('ConstructQuery', Keyword('CONSTRUCT') + (ConstructTemplate + ZeroOrMore(ParamList('datasetClause', DatasetClause)) + WhereClause + SolutionModifier + ValuesClause | ZeroOrMore(ParamList('datasetClause', DatasetClause)) + Keyword('WHERE') + '{' + Optional(Param('where', Comp('FakeGroupGraphPatten', ParamList('part', Comp('TriplesBlock', TriplesTemplate))))) + '}' + SolutionModifier + ValuesClause))
+ConstructQuery = Comp('ConstructQuery', Keyword('CONSTRUCT') + (ConstructTemplate + ZeroOrMore(ParamList('datasetClause', DatasetClause)) + WhereClause + SolutionModifier + ValuesClause | ZeroOrMore(ParamList(
+    'datasetClause', DatasetClause)) + Keyword('WHERE') + '{' + Optional(Param('where', Comp('FakeGroupGraphPatten', ParamList('part', Comp('TriplesBlock', TriplesTemplate))))) + '}' + SolutionModifier + ValuesClause))
 
 # [12] AskQuery ::= 'ASK' DatasetClause* WhereClause SolutionModifier
 AskQuery = Comp('AskQuery', Keyword('ASK') + Param('datasetClause', ZeroOrMore(
     DatasetClause)) + WhereClause + SolutionModifier + ValuesClause)
 
 # [11] DescribeQuery ::= 'DESCRIBE' ( VarOrIri+ | '*' ) DatasetClause* WhereClause? SolutionModifier
-DescribeQuery = Comp('DescribeQuery', Keyword('DESCRIBE') + (OneOrMore(ParamList('var', VarOrIri)) | '*') + Param('datasetClause', ZeroOrMore(DatasetClause)) + Optional(WhereClause) + SolutionModifier + ValuesClause)
+DescribeQuery = Comp('DescribeQuery', Keyword('DESCRIBE') + (OneOrMore(ParamList('var', VarOrIri)) | '*') + Param(
+    'datasetClause', ZeroOrMore(DatasetClause)) + Optional(WhereClause) + SolutionModifier + ValuesClause)
 
 # [29] Update ::= Prologue ( Update1 ( ';' Update )? )?
 Update = Forward()
@@ -1006,9 +1037,9 @@ def parseUpdate(q):
 
 if __name__ == '__main__':
     import sys
-    DEBUG=True
+    DEBUG = True
     try:
-        q=Query.parseString(sys.argv[1])
+        q = Query.parseString(sys.argv[1])
         print "\nSyntax Tree:\n"
         print q
     except ParseException, err:

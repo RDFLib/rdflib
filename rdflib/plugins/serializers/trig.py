@@ -29,10 +29,10 @@ class TrigSerializer(TurtleSerializer):
 
         super(TrigSerializer, self).__init__(store)
 
-    def _get_graph(self, id): 
+    def _get_graph(self, id):
         if self.store.context_aware:
             return self.store.get_context(id)
-        else: 
+        else:
             # non-context aware graphs only contain one graph
             return self.store
 
@@ -91,7 +91,7 @@ class TrigSerializer(TurtleSerializer):
 
         firstTime = True
         for store, subjects in self._contexts.items():
-            self._serialized={}
+            self._serialized = {}
             self._current_graph = store
             self.write(self.indent() + '\n<%s> = {' % store.identifier)
             self.depth += 1

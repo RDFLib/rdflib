@@ -178,8 +178,8 @@ class _RDFNamespace(ClosedNamespace):
                 # RDF Resources
                 "nil",
 
-                #Added in RDF 1.1 
-                "XMLLiteral", "HTML", "langString" ]
+                # Added in RDF 1.1
+                "XMLLiteral", "HTML", "langString"]
         )
 
     def term(self, name):

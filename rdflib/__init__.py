@@ -69,7 +69,7 @@ stored lexical form is the re-serialized value that was parsed.
 Illegal values for a datatype are simply kept.  The normalized keyword
 for Literal.__new__ can override this.
 
-For example: 
+For example:
 
 >>> from rdflib import Literal,XSD
 >>> Literal("01", datatype=XSD.int)
@@ -80,14 +80,14 @@ created after that time, previously created literals will remain
 (un)normalized.
 
 """
-NORMALIZE_LITERALS=True
+NORMALIZE_LITERALS = True
 
 """
 DAWG_LITERAL_COLLATION determines how literals are ordered or compared
 to each other.
 
 In SPARQL, applying the >,<,>=,<= operators to literals of
-incompatible data-types is an error, i.e: 
+incompatible data-types is an error, i.e:
 
 Literal(2)>Literal('cake') is neither true nor false, but an error.
 
@@ -101,7 +101,7 @@ datatype URI
 In particular, this determines how the rich comparison operators for
 Literal work, eq, __neq__, __lt__, etc.
 """
-DAWG_LITERAL_COLLATION=False
+DAWG_LITERAL_COLLATION = False
 
 from rdflib.term import (
     URIRef, BNode, Literal, Variable)
@@ -120,5 +120,5 @@ assert query
 
 from rdflib import util
 
-import rdflib.plugins.sparql.paths # monkey-patch graph
+import rdflib.plugins.sparql.paths  # monkey-patch graph
 del rdflib.plugins.sparql.paths

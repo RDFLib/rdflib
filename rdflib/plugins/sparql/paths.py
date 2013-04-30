@@ -597,6 +597,7 @@ def graph_triples(graph, t, context=None):
     else:
         raise Exception('I need a URIRef or path as predicate, not %s' % path)
 
+
 def conjunctive_graph_triples(graph, t, context=None):
 
     subj, path, obj = t
@@ -610,7 +611,8 @@ def conjunctive_graph_triples(graph, t, context=None):
     else:
         raise Exception('I need a URIRef or path as predicate, not %s' % path)
 
-def mod_path(p, mod): 
+
+def mod_path(p, mod):
     """
     cardinality path
     """
@@ -623,6 +625,7 @@ def inv_path(p):
     """
     return InvPath(p)
 
+
 def neg_path(p):
     """
     negated path
@@ -630,7 +633,7 @@ def neg_path(p):
     return NegatedPath(p)
 
 # monkey patch
-# (these cannot be directly in terms.py 
+# (these cannot be directly in terms.py
 #  as it would introduce circular imports)
 
 URIRef.__or__ = path_alternative
@@ -647,8 +650,8 @@ Path.__div__ = path_sequence
 
 Graph._triples = Graph.triples
 Graph.triples = graph_triples
-ConjunctiveGraph._triples=ConjunctiveGraph.triples
-ConjunctiveGraph.triples=conjunctive_graph_triples
+ConjunctiveGraph._triples = ConjunctiveGraph.triples
+ConjunctiveGraph.triples = conjunctive_graph_triples
 
 if __name__ == '__main__':
 

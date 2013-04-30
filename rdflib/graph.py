@@ -23,10 +23,10 @@ Instantiating Graphs with a IOMemory store and an identifier -
     >>> g.identifier
     rdflib.term.URIRef(%(u)s'http://rdflib.net')
     >>> str(g) # doctest: +NORMALIZE_WHITESPACE
-    "<http://rdflib.net> a rdfg:Graph;rdflib:storage 
+    "<http://rdflib.net> a rdfg:Graph;rdflib:storage
      [a rdflib:Store;rdfs:label 'IOMemory']."
 
-Some stores require pre-configuration (for example DB access details), 
+Some stores require pre-configuration (for example DB access details),
 you can get the store plugin directly
 
     store = plugin.get('MyDBStore', Store)()
@@ -1160,8 +1160,8 @@ class ConjunctiveGraph(Graph):
 
     def quads(self, pattern=None):
         """Iterate over all the quads in the entire conjunctive graph"""
-        if pattern is None: 
-            s,p,o = (None, None, None)
+        if pattern is None:
+            s, p, o = (None, None, None)
         else:
             s, p, o = pattern
         for (s, p, o), cg in self.store.triples((s, p, o), context=None):

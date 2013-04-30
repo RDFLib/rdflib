@@ -83,9 +83,10 @@ class Bindings(MutableMapping):
             d = d.outer
 
     def __str__(self):
-        return "Bindings({"+", ".join((k,self[k]) for k in self)+"})"
-    
-    def __repr__(self): return unicode(self)
+        return "Bindings({"+", ".join((k, self[k]) for k in self)+"})"
+
+    def __repr__(self):
+        return unicode(self)
 
 
 class FrozenDict(Mapping):
@@ -160,8 +161,8 @@ class FrozenBindings(FrozenDict):
     def __getitem__(self, key):
 
         if not isinstance(key, Node):
-            key=Variable(key)
-        
+            key = Variable(key)
+
         if not type(key) in (BNode, Variable):
             return key
 
@@ -190,15 +191,15 @@ class FrozenBindings(FrozenDict):
     bnodes = property(_bnodes)
     now = property(_now)
 
-    def forget(self, before): 
+    def forget(self, before):
         """
-        return a frozen dict only of bindings made in self 
+        return a frozen dict only of bindings made in self
         since before
         """
 
         return FrozenBindings(self.ctx, (x for x in self.iteritems() if before[x[0]] is None))
 
-    def remember(self, these): 
+    def remember(self, these):
         """
         return a frozen dict only of bindings in these
         """
@@ -315,12 +316,12 @@ class QueryContext(object):
         r = self.clone()
         r.graph = graph
         return r
-        
+
     def push(self):
         r = self.clone(Bindings(self.bindings))
         return r
 
-    def clean(self): 
+    def clean(self):
         return self.clone([])
 
     # def pop(self):

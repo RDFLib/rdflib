@@ -101,7 +101,7 @@ def evalDeleteWhere(ctx, u):
     res = evalBGP(ctx, u.triples)
     for g in u.quads:
         cg = ctx.dataset.get_context(g)
-        c=ctx.pushGraph(cg)
+        c = ctx.pushGraph(cg)
         res = _join(res, list(evalBGP(c, u.quads[g])))
 
     for c in res:
@@ -147,13 +147,12 @@ def evalModify(ctx, u):
     if not u.using and u.withClause:
         g = ctx.dataset.get_context(u.withClause)
         ctx = ctx.pushGraph(g)
-        
 
     res = evalPart(ctx, u.where)
 
     if u.using:
         if otherDefault:
-            ctx = originalctx # restore original default graph
+            ctx = originalctx  # restore original default graph
         if u.withClause:
             g = ctx.dataset.get_context(u.withClause)
             ctx = ctx.pushGraph(g)
@@ -270,7 +269,7 @@ def evalUpdate(graph, update, initBindings=None):
                 if not isinstance(k, Variable):
                     k = Variable(k)
                 ctx[k] = v
-            #ctx.push()  # nescessary?
+            # ctx.push()  # nescessary?
 
         try:
             if u.name == 'Load':

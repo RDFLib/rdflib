@@ -406,7 +406,7 @@ def Builtin_STRLEN(e, ctx):
 
 def Builtin_STR(e, ctx):
     arg = e.arg
-    if isinstance(arg, SPARQLError): 
+    if isinstance(arg, SPARQLError):
         raise arg
     return Literal(unicode(arg))  # plain literal
 
@@ -561,7 +561,7 @@ def Builtin_EXISTS(e, ctx):
 
     exists = e.name == 'Builtin_EXISTS'
 
-    ctx = ctx.ctx.thaw(ctx) # hmm
+    ctx = ctx.ctx.thaw(ctx)  # hmm
     for x in evalPart(ctx, e.graph):
         return Literal(exists)
     return Literal(not exists)

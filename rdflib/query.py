@@ -102,7 +102,7 @@ class ResultRow(tuple):
 
         instance = super(ResultRow, cls).__new__(
             cls, (values.get(v) for v in labels))
-        instance.labels = dict((unicode(x[1]), x[0]) 
+        instance.labels = dict((unicode(x[1]), x[0])
                                for x in enumerate(labels))
         return instance
 
@@ -121,8 +121,9 @@ class ResultRow(tuple):
                 return tuple.__getitem__(self, self.labels[unicode(name)])
             raise KeyError(name)
 
-    def asdict(self): 
-        return dict((v,self[v]) for v in self.labels if self[v]!=None)
+    def asdict(self):
+        return dict((v, self[v]) for v in self.labels if self[v] != None)
+
 
 class Result(object):
     """
@@ -148,23 +149,22 @@ class Result(object):
         self.askAnswer = None
         self.graph = None
 
-    def _get_bindings(self): 
+    def _get_bindings(self):
         if self._genbindings:
-            self._bindings+=list(self._genbindings)
-            self._genbindings=None
+            self._bindings += list(self._genbindings)
+            self._genbindings = None
 
         return self._bindings
 
-    def _set_bindings(self, b): 
-        if isinstance(b, types.GeneratorType): 
-            self._genbindings=b
+    def _set_bindings(self, b):
+        if isinstance(b, types.GeneratorType):
+            self._genbindings = b
             self._bindings = []
         else:
             self._bindings = b
 
-    bindings = property(_get_bindings, _set_bindings, doc="a list of variable bindings as dicts")
-
-        
+    bindings = property(
+        _get_bindings, _set_bindings, doc="a list of variable bindings as dicts")
 
     @staticmethod
     def parse(source, format='xml', **kwargs):
@@ -210,11 +210,10 @@ class Result(object):
     def __len__(self):
         if self.type == 'ASK':
             return 1
-        elif self.type == 'SELECT':            
+        elif self.type == 'SELECT':
             return len(self.bindings)
         else:
             return len(self.graph)
-            
 
     def __iter__(self):
         if self.type in ("CONSTRUCT", "DESCRIBE"):
@@ -229,8 +228,8 @@ class Result(object):
                 for b in self._genbindings:
                     self._bindings.append(b)
                     yield ResultRow(b, self.vars)
-                self._genbindings=None
-            else: 
+                self._genbindings = None
+            else:
                 for b in self._bindings:
                     yield ResultRow(b, self.vars)
 
