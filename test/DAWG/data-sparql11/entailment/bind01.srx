@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="z"/>
+  </head>
+  <results>
+    <result>
+      <binding name="z">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">14</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="z">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">13</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="z">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">12</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="z">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">11</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

@@ -1,0 +1,4 @@
+@prefix : <http://example.org/> .
+ :A0 :P :A1, :A2 .
+ :A1 :P :A0, :A2 .
+ :A2 :P :A0, :A1 .

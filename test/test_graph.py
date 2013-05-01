@@ -1,7 +1,8 @@
 import sys
+import os
 import unittest
 
-from tempfile import mkdtemp
+from tempfile import mkdtemp, mkstemp
 import shutil
 
 from rdflib import URIRef, RDF, Graph, plugin
@@ -14,11 +15,16 @@ class GraphTestCase(unittest.TestCase):
     tmppath = None
 
     def setUp(self):
-        try: 
+        try:
             self.graph = Graph(store=self.store)
-        except ImportError: 
-            raise SkipTest("Dependencies for store '%s' not available!"%self.store)
-        self.tmppath = mkdtemp()
+        except ImportError:
+            raise SkipTest(
+                "Dependencies for store '%s' not available!" % self.store)
+        if self.store == "SQLite":
+            _, self.tmppath = mkstemp(
+                prefix='test', dir='/tmp', suffix='.sqlite')
+        else:
+            self.tmppath = mkdtemp()
         self.graph.open(self.tmppath, create=True)
 
         self.michel = URIRef(u'michel')
@@ -31,7 +37,10 @@ class GraphTestCase(unittest.TestCase):
 
     def tearDown(self):
         self.graph.close()
-        shutil.rmtree(self.tmppath)
+        if os.path.isdir(self.tmppath):
+            shutil.rmtree(self.tmppath)
+        else:
+            os.remove(self.tmppath)
 
     def addStuff(self):
         tarek = self.tarek
@@ -48,7 +57,7 @@ class GraphTestCase(unittest.TestCase):
         self.graph.add((michel, likes, cheese))
         self.graph.add((bob, likes, cheese))
         self.graph.add((bob, hates, pizza))
-        self.graph.add((bob, hates, michel)) # gasp!
+        self.graph.add((bob, hates, michel))  # gasp!
 
     def removeStuff(self):
         tarek = self.tarek
@@ -65,7 +74,7 @@ class GraphTestCase(unittest.TestCase):
         self.graph.remove((michel, likes, cheese))
         self.graph.remove((bob, likes, cheese))
         self.graph.remove((bob, hates, pizza))
-        self.graph.remove((bob, hates, michel)) # gasp!
+        self.graph.remove((bob, hates, michel))  # gasp!
 
     def testAdd(self):
         self.addStuff()
@@ -125,18 +134,6 @@ class GraphTestCase(unittest.TestCase):
         self.removeStuff()
         asserte(len(list(triples((Any, Any, Any)))), 0)
 
-    def testStatementNode(self):
-        raise SkipTest("use of RDFLib Statement class is deprecated.")
-        graph = self.graph
-
-        from rdflib.term import Statement
-        c = URIRef("http://example.org/foo#c")
-        r = URIRef("http://example.org/foo#r")
-        s = Statement((self.michel, self.likes, self.pizza), c)
-        graph.add((s, RDF.value, r))
-        self.assertEquals(r, graph.value(s, RDF.value))
-        self.assertEquals(s, graph.value(predicate=RDF.value, object=r))
-
     def testGraphValue(self):
         from rdflib.graph import GraphValue
 
@@ -161,10 +158,10 @@ class GraphTestCase(unittest.TestCase):
         gv2 = GraphValue(store=graph.store, graph=g2)
         graph.add((gv1, RDF.value, gv2))
         v = graph.value(gv1)
-        #print type(v)
+        # print type(v)
         self.assertEquals(gv2, v)
-        #print list(gv2)
-        #print gv2.identifier
+        # print list(gv2)
+        # print gv2.identifier
         graph.remove((gv1, RDF.value, gv2))
 
     def testConnected(self):
@@ -175,28 +172,28 @@ class GraphTestCase(unittest.TestCase):
         jeroen = URIRef("jeroen")
         unconnected = URIRef("unconnected")
 
-        graph.add((jeroen,self.likes,unconnected))
+        graph.add((jeroen, self.likes, unconnected))
 
         self.assertEquals(False, graph.connected())
 
     def testSub(self):
-        g1=Graph()
-        g2=Graph()
+        g1 = Graph()
+        g2 = Graph()
 
         tarek = self.tarek
-        michel = self.michel
+        # michel = self.michel
         bob = self.bob
         likes = self.likes
-        hates = self.hates
+        # hates = self.hates
         pizza = self.pizza
         cheese = self.cheese
-        
+
         g1.add((tarek, likes, pizza))
         g1.add((bob, likes, cheese))
 
         g2.add((bob, likes, cheese))
 
-        g3=g1-g2
+        g3 = g1 - g2
 
         self.assertEquals(len(g3), 1)
         self.assertEquals((tarek, likes, pizza) in g3, True)
@@ -204,7 +201,7 @@ class GraphTestCase(unittest.TestCase):
 
         self.assertEquals((bob, likes, cheese) in g3, False)
 
-        g1-=g2
+        g1 -= g2
 
         self.assertEquals(len(g1), 1)
         self.assertEquals((tarek, likes, pizza) in g1, True)
@@ -213,22 +210,22 @@ class GraphTestCase(unittest.TestCase):
         self.assertEquals((bob, likes, cheese) in g1, False)
 
     def testGraphAdd(self):
-        g1=Graph()
-        g2=Graph()
+        g1 = Graph()
+        g2 = Graph()
 
         tarek = self.tarek
-        michel = self.michel
+        # michel = self.michel
         bob = self.bob
         likes = self.likes
-        hates = self.hates
+        # hates = self.hates
         pizza = self.pizza
         cheese = self.cheese
-        
+
         g1.add((tarek, likes, pizza))
 
         g2.add((bob, likes, cheese))
 
-        g3=g1+g2
+        g3 = g1 + g2
 
         self.assertEquals(len(g3), 2)
         self.assertEquals((tarek, likes, pizza) in g3, True)
@@ -236,7 +233,7 @@ class GraphTestCase(unittest.TestCase):
 
         self.assertEquals((bob, likes, cheese) in g3, True)
 
-        g1+=g2
+        g1 += g2
 
         self.assertEquals(len(g1), 2)
         self.assertEquals((tarek, likes, pizza) in g1, True)
@@ -245,24 +242,24 @@ class GraphTestCase(unittest.TestCase):
         self.assertEquals((bob, likes, cheese) in g1, True)
 
     def testGraphIntersection(self):
-        g1=Graph()
-        g2=Graph()
+        g1 = Graph()
+        g2 = Graph()
 
         tarek = self.tarek
         michel = self.michel
         bob = self.bob
         likes = self.likes
-        hates = self.hates
+        # hates = self.hates
         pizza = self.pizza
         cheese = self.cheese
-        
+
         g1.add((tarek, likes, pizza))
         g1.add((michel, likes, cheese))
 
         g2.add((bob, likes, cheese))
         g2.add((michel, likes, cheese))
 
-        g3=g1*g2
+        g3 = g1 * g2
 
         self.assertEquals(len(g3), 1)
         self.assertEquals((tarek, likes, pizza) in g3, False)
@@ -272,7 +269,7 @@ class GraphTestCase(unittest.TestCase):
 
         self.assertEquals((michel, likes, cheese) in g3, True)
 
-        g1*=g2
+        g1 *= g2
 
         self.assertEquals(len(g1), 1)
 
@@ -284,23 +281,23 @@ class GraphTestCase(unittest.TestCase):
         self.assertEquals((michel, likes, cheese) in g1, True)
 
 
-
-
-
 # dynamically create classes for each registered Store
 
+pluginname = None
+if __name__ == '__main__':
+    if len(sys.argv) > 1:
+        pluginname = sys.argv[1]
 
-pluginname=None
-if __name__=='__main__':
-    if len(sys.argv)>1:
-        pluginname=sys.argv[1]
-
-tests=0
+tests = 0
 for s in plugin.plugins(pluginname, plugin.Store):
-    if s.name in ('default', 'IOMemory'): continue # these are tested by default
+    if s.name in ('default', 'IOMemory', 'Auditable',
+                  'Concurrent', 'SPARQLStore',
+                  'SPARQLUpdateStore'):
+        continue  # these are tested by default
 
-    locals()["t%d"%tests]=type("%sGraphTestCase"%s.name, (GraphTestCase,), { "store": s.name })    
-    tests+=1
+    locals()["t%d" % tests] = type("%sGraphTestCase" %
+                                   s.name, (GraphTestCase,), {"store": s.name})
+    tests += 1
 
 
 if __name__ == '__main__':

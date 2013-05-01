@@ -1,0 +1,11 @@
+prefix ex:	<http://www.example.org/schema#>
+prefix in:	<http://www.example.org/instance#>
+
+select * where {
+
+{select * where { 
+  {select ?x where {?x ex:q ?t}}
+}}
+
+?x ex:p ?y 
+}

@@ -1,0 +1,1 @@
+SELECT (1 AS ?X) (1 AS ?X) {}

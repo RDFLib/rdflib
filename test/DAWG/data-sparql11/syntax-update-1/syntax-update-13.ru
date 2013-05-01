@@ -1,0 +1,1 @@
+CREATE GRAPH <graph>

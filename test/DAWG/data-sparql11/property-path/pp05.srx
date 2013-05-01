@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="x"/>
+    <variable name="y"/>
+  </head>
+  <results>
+    <result>
+      <binding name="x">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+      <binding name="y">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal>
+      </binding>
+      <binding name="y">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#nil</uri>
+      </binding>
+      <binding name="y">
+        <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#nil</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <bnode>b0</bnode>
+      </binding>
+      <binding name="y">
+        <bnode>b0</bnode>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <bnode>b0</bnode>
+      </binding>
+      <binding name="y">
+        <uri>http://www.w3.org/1999/02/22-rdf-syntax-ns#nil</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <bnode>b1</bnode>
+      </binding>
+      <binding name="y">
+        <bnode>b1</bnode>
+      </binding>
+    </result>
+  </results>
+</sparql>

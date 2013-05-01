@@ -1,0 +1,5 @@
+prefix : <http://example/> 
+
+select * where {
+    ?s :p{,3} :z
+} 

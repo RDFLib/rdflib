@@ -1,0 +1,1 @@
+CREATE SILENT GRAPH <graph>

@@ -1,0 +1,1 @@
+SELECT REDUCED ?x ?y WHERE { ?x ?y ?z }

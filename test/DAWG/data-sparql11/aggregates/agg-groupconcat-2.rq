@@ -1,0 +1,10 @@
+PREFIX : <http://www.example.org/>
+SELECT (COUNT(*) AS ?c) {
+	{SELECT ?p (GROUP_CONCAT(?o) AS ?g) WHERE {
+		[] ?p ?o
+	} GROUP BY ?p}
+	FILTER(
+		(?p = :p1 && (?g = "1 22" || ?g = "22 1"))
+		|| (?p = :p2 && (?g = "aaa bb c" || ?g = "aaa c bb" || ?g = "bb aaa c" || ?g = "bb c aaa" || ?g = "c aaa bb" || ?g = "c bb aaa"))
+	)
+}

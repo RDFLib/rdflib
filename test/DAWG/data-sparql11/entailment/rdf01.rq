@@ -1,0 +1,8 @@
+PREFIX ex: <http://example.org/ns#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?x
+WHERE {
+  ex:b ?x rdf:Property .
+}
+

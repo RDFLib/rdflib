@@ -1,0 +1,7 @@
+PREFIX : <http://example.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT (STRLEN(STR(?uuid)) AS ?length)
+WHERE {
+	BIND(UUID() AS ?uuid)
+	FILTER(ISIRI(?uuid) && REGEX(STR(?uuid), "^urn:uuid:[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$", "i"))
+}

@@ -1,0 +1,13 @@
+# SERVICE and OPTIONAL
+
+PREFIX : <http://example.org/> 
+
+SELECT ?s ?o1 ?o2
+{
+  SERVICE <http://example1.org/sparql> {
+  ?s ?p ?o1 . }
+  OPTIONAL {
+	SERVICE <http://example2.org/sparql> {
+    ?s ?p2 ?o2 }
+  }
+}

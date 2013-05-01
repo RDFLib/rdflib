@@ -1,0 +1,1 @@
+SELECT (SUM(DISTINCT ?x) AS ?y) {}

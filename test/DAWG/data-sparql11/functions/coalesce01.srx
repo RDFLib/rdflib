@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+<head>
+	<variable name="cx"/>
+	<variable name="div"/>
+	<variable name="def"/>
+	<variable name="err"/>
+</head>
+<results>
+		<result>
+			<binding name="cx"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">-1</literal></binding>
+			<binding name="div"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">-2</literal></binding>
+			<binding name="def"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">-3</literal></binding>
+		</result>
+		<result>
+			<binding name="cx"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">0</literal></binding>
+			<binding name="div"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">-2</literal></binding>
+			<binding name="def"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">-3</literal></binding>
+		</result>
+		<result>
+			<binding name="cx"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal></binding>
+			<binding name="div"><literal datatype="http://www.w3.org/2001/XMLSchema#decimal">0.0</literal></binding>
+			<binding name="def"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">-3</literal></binding>
+		</result>
+		<result>
+			<binding name="cx"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal></binding>
+			<binding name="div"><literal datatype="http://www.w3.org/2001/XMLSchema#decimal">2.0</literal></binding>
+			<binding name="def"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">-3</literal></binding>
+		</result>
+</results>
+</sparql>
+

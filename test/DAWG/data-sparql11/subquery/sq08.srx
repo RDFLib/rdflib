@@ -1,0 +1,12 @@
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+<head>
+<variable name='x'/>
+<variable name='max'/>
+</head>
+<results>
+<result>
+<binding name='x'><uri>http://www.example.org/instance#b</uri></binding>
+<binding name='max'><literal datatype='http://www.w3.org/2001/XMLSchema#integer'>3</literal></binding>
+</result>
+</results>
+</sparql>

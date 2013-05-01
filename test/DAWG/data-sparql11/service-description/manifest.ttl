@@ -1,0 +1,34 @@
+@prefix : <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service-description/manifest#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix sd:     <http://www.w3.org/ns/sparql-service-description#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "Service" ;
+    mf:entries
+    (
+		:has-endpoint-triple
+		:returns-rdf
+		:conforms-to-schema
+	) .
+
+:returns-rdf rdf:type mf:ServiceDescriptionTest ;
+       mf:name    "GET on endpoint returns RDF" ;
+       dawgt:approval dawgt:Approved ;
+       dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-07-31#resolution_2> ;
+       .
+
+:has-endpoint-triple rdf:type mf:ServiceDescriptionTest ;
+       mf:name    "Service description contains a matching sd:endpoint triple" ;
+       dawgt:approval dawgt:Approved ;
+       dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-07-31#resolution_2> ;
+       .
+
+:conforms-to-schema rdf:type mf:ServiceDescriptionTest ;
+       mf:name    "Service description conforms to schema" ;
+       dawgt:approval dawgt:Approved ;
+       dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-07-31#resolution_2> ;
+       .

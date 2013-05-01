@@ -1,0 +1,96 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/boolean-effective-value/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "Test of boolean expressions" ;
+    mf:entries
+    ( :dawg-boolean-literal :dawg-bev-1 :dawg-bev-2 :dawg-bev-3 :dawg-bev-4 :dawg-bev-5 :dawg-bev-6 ) .
+
+:dawg-boolean-literal a mf:QueryEvaluationTest ;
+       mf:name    "Test literal 'true'" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0087/14-dawg-minutes.html> ;
+       mf:action
+          [ qt:query  <query-boolean-literal.rq> ;
+            qt:data   <data-1.ttl> ] ;
+      mf:result  <result-boolean-literal.ttl> .
+
+:dawg-bev-1 a mf:QueryEvaluationTest ;
+       mf:name    "Test 'boolean effective value' - true" ;
+       rdfs:comment "Non-zero numerics, non-empty strings, and the true boolean have an EBV of true" ;
+       dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html> ;
+       dawgt:approval dawgt:Approved ;
+       mf:action
+          [ qt:query  <query-bev-1.rq> ;
+            qt:data   <data-1.ttl> ] ;
+      mf:result  <result-bev-1.ttl> .
+
+:dawg-bev-2 a mf:QueryEvaluationTest ;
+        mf:name    "Test 'boolean effective value' - false" ;
+       rdfs:comment "Zero-valued numerics, the empty string, and the false boolean have an EBV of false" ;
+       dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html> ;
+       dawgt:approval dawgt:Approved ;
+         mf:action
+            [ qt:query  <query-bev-2.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <result-bev-2.ttl>
+      .
+:dawg-bev-3 a mf:QueryEvaluationTest ;
+        mf:name    "Test 'boolean effective value' - &&" ;
+       rdfs:comment "The && operator takes the EBV of its operands" ;
+       dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html> ;
+       dawgt:approval dawgt:Approved ;
+         mf:action
+            [ qt:query  <query-bev-3.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <result-bev-3.ttl> .
+      
+:dawg-bev-4 a mf:QueryEvaluationTest ;
+        mf:name    "Test 'boolean effective value' - ||" ;
+       rdfs:comment "The || operator takes the EBV of its operands" ;
+       dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html> ;
+       dawgt:approval dawgt:Approved ;
+         mf:action
+            [ qt:query  <query-bev-4.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <result-bev-4.ttl> .
+      
+:dawg-bev-5 a mf:QueryEvaluationTest ;
+        mf:name    "Test 'boolean effective value' - optional" ;
+       rdfs:comment "The EBV of an unbound value  or a literal with an unknown datatype is a type error, which eliminates the solution in question" ;
+       dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html> ;
+       dawgt:approval dawgt:Approved ;
+         mf:action
+            [ qt:query  <query-bev-5.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <result-bev-5.ttl> .
+      
+:dawg-bev-6 a mf:QueryEvaluationTest ;
+        mf:name    "Test 'boolean effective value' - unknown types" ;
+        rdfs:comment "Negating a type error is still a type error" ;
+       dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html> ;
+       dawgt:approval dawgt:Approved ;
+         mf:action
+            [ qt:query  <query-bev-6.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <result-bev-6.ttl> .
+

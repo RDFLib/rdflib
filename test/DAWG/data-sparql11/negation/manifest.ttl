@@ -1,0 +1,132 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Negation" ;
+    mf:entries
+    ( 
+    :subset-by-exclusion-nex-1
+    :subset-by-exclusion-minus-1
+    :temporal-proximity-by-exclusion-nex-1
+    #:temporal-proximity-by-exclusion-minus-1
+    :subset-01
+    :subset-02
+    :set-equals-1
+    :subset-03
+    :exists-01
+    :exists-02
+    :full-minuend
+    :partial-minuend
+   ) .
+
+
+:subset-by-exclusion-nex-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Subsets by exclusion (NOT EXISTS)" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
+    mf:action
+         [ qt:query  <subsetByExcl01.rq> ;
+           qt:data   <subsetByExcl.ttl> ] ;
+    mf:result  <subsetByExcl01.srx> .
+
+:subset-by-exclusion-minus-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Subsets by exclusion (MINUS)" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
+    mf:action
+         [ qt:query  <subsetByExcl02.rq> ;
+           qt:data   <subsetByExcl.ttl> ] ;
+    mf:result  <subsetByExcl02.srx> .
+
+:temporal-proximity-by-exclusion-nex-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Medical, temporal proximity by exclusion (NOT EXISTS)" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
+    mf:action
+         [ qt:query  <temporalProximity01.rq> ;
+           qt:data   <temporalProximity01.ttl> ] ;
+    mf:result  <temporalProximity01.srx> .
+
+:temporal-proximity-by-exclusion-minus-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Medical, temporal proximity by exclusion (MINUS)" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
+    mf:action
+         [ qt:query  <temporalProximity02.rq> ;
+           qt:data   <temporalProximity02.ttl> ] ;
+    mf:result  <temporalProximity02.srx> .
+
+:subset-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Calculate which sets are subsets of others (include A subsetOf A)" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
+    mf:action
+         [ qt:query  <subset-01.rq> ;
+           qt:data   <set-data.ttl> ] ;
+    mf:result  <subset-01.srx> .
+
+:subset-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Calculate which sets are subsets of others (exclude A subsetOf A)" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
+    mf:action
+         [ qt:query  <subset-02.rq> ;
+           qt:data   <set-data.ttl> ] ;
+    mf:result  <subset-02.srx> .
+
+:set-equals-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Calculate which sets have the same elements" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
+    mf:action
+         [ qt:query  <set-equals-1.rq> ;
+           qt:data   <set-data.ttl> ] ;
+    mf:result  <set-equals-1.srx> .
+
+:subset-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Calculate proper subset" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
+    mf:action
+         [ qt:query  <subset-03.rq> ;
+           qt:data   <set-data.ttl> ] ;
+    mf:result  <subset-03.srx> .
+
+:exists-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Positive EXISTS 1" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
+    mf:action
+         [ qt:query  <exists-01.rq> ;
+           qt:data   <set-data.ttl> ] ;
+    mf:result  <exists-01.srx> .
+
+:exists-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Positive EXISTS 2" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
+    mf:action
+         [ qt:query  <exists-02.rq> ;
+           qt:data   <set-data.ttl> ] ;
+    mf:result  <exists-02.srx> .
+
+:full-minuend rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Subtraction with MINUS from a fully bound minuend" ;
+    dawgt:approval dawgt:Approved ;
+    mf:action
+         [ qt:query  <full-minuend.rq> ;
+           qt:data   <full-minuend.ttl> ] ;
+    mf:result  <full-minuend.srx> .
+
+:partial-minuend rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Subtraction with MINUS from a partially bound minuend" ;
+    dawgt:approval dawgt:Approved ;
+    mf:action
+         [ qt:query  <part-minuend.rq> ;
+           qt:data   <part-minuend.ttl> ] ;
+    mf:result  <part-minuend.srx> .
+

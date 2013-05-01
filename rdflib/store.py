@@ -23,7 +23,7 @@ RDF operations performed on it.
 ------
 """
 
-#Constants representing the state of a Store (returned by the open method)
+# Constants representing the state of a Store (returned by the open method)
 VALID_STORE = 1
 CORRUPTED_STORE = 0
 NO_STORE = -1
@@ -107,7 +107,7 @@ class NodePickler(object):
 
 
 class Store(object):
-    #Properties
+    # Properties
     context_aware = False
     formula_aware = False
     transaction_aware = False
@@ -145,7 +145,7 @@ class Store(object):
         return self.__node_pickler
     node_pickler = property(__get_node_pickler)
 
-    #Database management methods
+    # Database management methods
     def create(self, configuration):
         self.dispatcher.dispatch(
             StoreCreatedEvent(configuration=configuration))
@@ -181,7 +181,7 @@ class Store(object):
         """
         pass
 
-    #RDF APIs
+    # RDF APIs
     def add(self, (subject, predicate, object), context, quoted=False):
         """
         Adds the given statement to a specific context or to the model. The

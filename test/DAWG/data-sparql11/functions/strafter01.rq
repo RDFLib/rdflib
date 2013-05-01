@@ -1,0 +1,5 @@
+PREFIX : <http://example.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT ?s (STRAFTER(?str,"e") AS ?suffix) WHERE {
+	?s :str ?str
+}

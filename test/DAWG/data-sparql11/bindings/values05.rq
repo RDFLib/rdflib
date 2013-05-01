@@ -1,0 +1,10 @@
+PREFIX : <http://example.org/> 
+
+SELECT ?s ?o1 ?o2
+{
+  ?s ?p1 ?o1 .
+  ?s ?p2 ?o2 .
+} VALUES (?o1 ?o2) {
+ (UNDEF "Alan")
+ (:b UNDEF)
+}

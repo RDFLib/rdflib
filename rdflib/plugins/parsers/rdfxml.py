@@ -251,7 +251,7 @@ class RDFXMLHandler(handler.ContentHandler):
             if att.startswith(XMLNS) or att[0:3].lower() == "xml":
                 pass
             elif att in UNQUALIFIED:
-                #if not RDFNS[att] in atts:
+                # if not RDFNS[att] in atts:
                 atts[RDFNS[att]] = v
             else:
                 atts[URIRef(att)] = v
@@ -265,7 +265,7 @@ class RDFXMLHandler(handler.ContentHandler):
             next.end = self.node_element_end
         else:
             self.node_element_start(name, qname, attrs)
-            #self.current.end = self.node_element_end
+            # self.current.end = self.node_element_end
             # TODO... set end to something that sets start such that
             # another element will cause error
 
@@ -421,13 +421,13 @@ class RDFXMLHandler(handler.ContentHandler):
                 elif parse_type == "Collection":
                     current.char = None
                     object = current.list = RDF.nil  # BNode()
-                                                     #self.parent.subject
+                                                     # self.parent.subject
                     next.start = self.node_element_start
                     next.end = self.list_node_element_end
                 else:  # if parse_type=="Literal":
                      # All other values are treated as Literal
                      # See: http://www.w3.org/TR/rdf-syntax-grammar/
-                                #parseTypeOtherPropertyElt
+                                # parseTypeOtherPropertyElt
                     object = Literal("", datatype=RDF.XMLLiteral)
                     current.char = self.literal_element_char
                     current.declared = {XMLNS: 'xml'}
@@ -505,7 +505,7 @@ class RDFXMLHandler(handler.ContentHandler):
         if self.parent.list == RDF.nil:
             list = BNode()
             # Removed between 20030123 and 20030905
-            #self.store.add((list, RDF.type, LIST))
+            # self.store.add((list, RDF.type, LIST))
             self.parent.list = list
             self.store.add((self.parent.list, RDF.first, current.subject))
             self.parent.object = list
@@ -513,7 +513,7 @@ class RDFXMLHandler(handler.ContentHandler):
         else:
             list = BNode()
             # Removed between 20030123 and 20030905
-            #self.store.add((list, RDF.type, LIST))
+            # self.store.add((list, RDF.type, LIST))
             self.store.add((self.parent.list, RDF.rest, list))
             self.store.add((list, RDF.first, current.subject))
             self.parent.list = list

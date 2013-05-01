@@ -1,0 +1,7 @@
+# $Id: syn-blabel-cross-graph-bad.rq,v 1.2 2007/04/18 23:11:57 eric Exp $
+# BNode label used across a GRAPH.
+PREFIX : <http://xmlns.com/foaf/0.1/>
+
+ASK { _:who :homepage ?homepage 
+      GRAPH ?g { ?someone :made ?homepage } 
+      _:who :schoolHomepage ?schoolPage }

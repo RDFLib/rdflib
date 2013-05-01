@@ -1,0 +1,4 @@
+PREFIX : <http://example.org/>
+SELECT ?s (MINUTES(?date) AS ?x) WHERE {
+	?s :date ?date
+}

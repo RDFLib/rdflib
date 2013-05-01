@@ -1,0 +1,11 @@
+# Query6 - cycle with undistinguished variables
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example.org/test#>
+
+SELECT *
+WHERE
+{:a :p _:aa.
+ ?X :t ?Y.
+ ?Y :s _:aa.
+ _:aa :r ?Z.}

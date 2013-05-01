@@ -1,0 +1,7 @@
+ PREFIX : <http://www.example.org>
+ SELECT *
+ WHERE {
+    :s :p ?o .
+    BIND((1+?o) AS ?o1)
+    :s :q ?o1
+ }

@@ -1,0 +1,4 @@
+PREFIX : <http://example.org/>
+SELECT ?s (TIMEZONE(?date) AS ?x) WHERE {
+	?s :date ?date
+}

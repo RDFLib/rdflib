@@ -1,0 +1,7 @@
+prefix ex:	<http://www.example.org/schema#>
+prefix in:	<http://www.example.org/instance#>
+
+select ?x ?max where {
+{select (max(?y) as ?max) where {?x ex:p ?y} } 
+?x ex:p ?max
+}

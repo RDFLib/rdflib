@@ -1,0 +1,60 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/json-res/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "JSON Result Format" ;
+    mf:entries
+    ( 
+    :jsonres01
+    :jsonres02
+    :jsonres03
+    :jsonres04
+    ) .
+
+:jsonres01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "jsonres01 - JSON Result Format" ;
+    rdfs:comment "SELECT * WHERE { ?S ?P ?O }";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-08-16#resolution_2>; 
+    mf:action
+         [ qt:query  <jsonres01.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <jsonres01.srj>
+    .
+
+:jsonres02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "jsonres02 - JSON Result Format" ;
+    rdfs:comment "SELECT with OPTIONAL (i.e. not all vars bound in all results)";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-08-16#resolution_2>; 
+    mf:action
+         [ qt:query  <jsonres02.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <jsonres02.srj>
+    .
+
+:jsonres03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "jsonres03 - JSON Result Format" ;
+    rdfs:comment "ASK - answer: true";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-08-16#resolution_2>; 
+    mf:action
+         [ qt:query  <jsonres03.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <jsonres03.srj>
+    .
+
+:jsonres04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "jsonres04 - JSON Result Format" ;
+    rdfs:comment "ASK - answer: false";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-08-16#resolution_2>; 
+    mf:action
+         [ qt:query  <jsonres04.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <jsonres04.srj>
+    .

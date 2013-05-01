@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+    <head>
+        <variable name="animal"/>
+    </head>
+    <results>
+        <result>
+            <binding name="animal">
+                <uri>http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation#lifeForm1</uri>
+            </binding>
+        </result>
+        <result>
+            <binding name="animal">
+                <uri>http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation#lifeForm2</uri>
+            </binding>
+        </result>        
+    </results>
+</sparql>

@@ -1,0 +1,246 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/basic-update/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix ut:     <http://www.w3.org/2009/sparql/tests/test-update#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Basic SPARQL 1.1 Update test cases" ;
+    mf:entries
+    ( 
+      :insert-data-spo1
+      :insert-data-spo-named1
+      :insert-data-spo-named2
+      :insert-data-spo-named3
+      :insert-where-01
+      :insert-where-02
+      :insert-where-03
+      :insert-where-04
+      :insert-using-01
+      :insert-05a
+      :insert-data-same-bnode
+      :insert-where-same-bnode
+      :insert-where-same-bnode2
+    ) .
+
+:insert-data-spo1 rdf:type mf:UpdateEvaluationTest ;
+    mf:name    "Simple insert data 1" ;
+    rdfs:comment "This is a simple insert of a single triple to the unnamed graph of an empty graph store" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [ ut:request <insert-data-spo1.ru> ; 
+              ] ;
+    mf:result [ ut:result ut:success ; 
+                ut:data  <spo.ttl>
+              ] .
+
+
+:insert-data-spo-named1 rdf:type mf:UpdateEvaluationTest ;
+    mf:name    "Simple insert data named 1" ;
+    rdfs:comment "This is a simple insert of a single triple into the named graph <http://example.org/g1> of an empty graph store" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [ ut:request <insert-data-named1.ru> ; 
+              ] ;
+    mf:result [ ut:result ut:success ; 
+                ut:graphData  [ ut:graph <spo.ttl> ;
+                                rdfs:label "http://example.org/g1" ] 
+              ] .
+
+:insert-data-spo-named2 rdf:type mf:UpdateEvaluationTest ;
+    mf:name    "Simple insert data named 2" ;
+    rdfs:comment "This is a simple insert of a single triple into the named graph <http://example.org/g1> of a graph store consisting of an empty unnamed graph and the named graph holds one (different) triple already" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [ ut:request <insert-data-named2.ru> ; 
+                ut:graphData  [ ut:graph <spo.ttl> ;
+                                rdfs:label "http://example.org/g1" ]
+              ] ;
+    mf:result [ ut:result ut:success ; 
+                ut:graphData  [ ut:graph <spo2.ttl> ;
+                                rdfs:label "http://example.org/g1" ]
+              ] .
+
+:insert-data-spo-named3 rdf:type mf:UpdateEvaluationTest ;
+    mf:name    "Simple insert data named 3" ;
+    rdfs:comment "This is a simple insert of a single triple into the named graph <http://example.org/g1> of a graph store consisting of an empty unnamed graph and the named holds the inserted triple already (using the same query as insert-data-named1)" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [ ut:request <insert-data-named1.ru> ; 
+                ut:graphData  [ ut:graph <spo.ttl> ;
+                                rdfs:label "http://example.org/g1" ]
+              ] ;
+    mf:result [ ut:result ut:success ; 
+                ut:graphData  [ ut:graph <spo.ttl> ;
+                                rdfs:label "http://example.org/g1" ]
+              ] .
+
+:insert-where-01 a mf:UpdateEvaluationTest ;
+    mf:name    "INSERT 01" ;
+    rdfs:comment "This is a INSERT over a dataset with a single triple in the default graph" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [
+    			ut:request <insert-01.ru> ; 
+                ut:data <insert-01-pre.ttl> ;
+              ] ;
+    mf:result [
+                ut:data <insert-01-post.ttl> ;
+            ] ;
+    .
+
+:insert-where-02 a mf:UpdateEvaluationTest ;
+    mf:name    "INSERT 02" ;
+    rdfs:comment "This is a INSERT over a dataset with a single triple in the default graph, inserting into a named graph" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [
+    			ut:request <insert-02.ru> ; 
+                ut:data <insert-02-pre.ttl> ;
+              ] ;
+    mf:result [
+                ut:data <insert-02-post.ttl> ;
+                  ut:graphData [ ut:graph <insert-02-g1-post.ttl> ;
+                               rdfs:label "http://example.org/g1" ] ;
+            ] ;
+    .
+
+:insert-where-03 a mf:UpdateEvaluationTest ;
+    mf:name    "INSERT 03" ;
+    rdfs:comment "This is a INSERT over a dataset with a single triple in a named graph, inserting into the named graph using the WITH keyword" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [
+    			ut:request <insert-03.ru> ; 
+                ut:data <insert-03-pre.ttl> ;
+                  ut:graphData [ ut:graph <insert-03-g1-pre.ttl> ;
+                               rdfs:label "http://example.org/g1" ] ;
+              ] ;
+    mf:result [
+                ut:data <insert-03-post.ttl> ;
+                  ut:graphData [ ut:graph <insert-03-g1-post.ttl> ;
+                               rdfs:label "http://example.org/g1" ] ;
+            ] ;
+    .
+
+:insert-where-04 a mf:UpdateEvaluationTest ;
+    mf:name    "INSERT 04" ;
+    rdfs:comment "This is a INSERT of a triple over a dataset with data in named graphs, inserting into the default graph using the USING keyword" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [
+    			ut:request <insert-04.ru> ; 
+                ut:data <insert-04-pre.ttl> ;
+                  ut:graphData [ ut:graph <insert-04-g1-pre.ttl> ;
+                               rdfs:label "http://example.org/g1" ] ;
+              ] ;
+    mf:result [
+                ut:data <insert-04-post.ttl> ;
+                  ut:graphData [ ut:graph <insert-04-g1-post.ttl> ;
+                               rdfs:label "http://example.org/g1" ] ;
+            ] ;
+    .
+
+:insert-using-01 a mf:UpdateEvaluationTest ;
+    mf:name    "INSERT USING 01" ;
+    rdfs:comment "This is an INSERT into the default graph of two triples constructed from the data in two named graphs that are treated as the default graph during matching with the USING keyword." ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3> ;
+    mf:action [
+    			ut:request <insert-using-01.ru> ; 
+                ut:data <insert-using-01-pre.ttl> ;
+                  ut:graphData [ ut:graph <insert-using-01-g1-pre.ttl> ;
+                               rdfs:label "http://example.org/g1" ] ;
+                  ut:graphData [ ut:graph <insert-using-01-g2-pre.ttl> ;
+                               rdfs:label "http://example.org/g2" ] ;
+              ] ;
+    mf:result [
+                ut:data <insert-using-01-post.ttl> ;
+                  ut:graphData [ ut:graph <insert-using-01-g1-post.ttl> ;
+                               rdfs:label "http://example.org/g1" ] ;
+                  ut:graphData [ ut:graph <insert-using-01-g2-post.ttl> ;
+                               rdfs:label "http://example.org/g2" ] ;
+            ] ;
+    .
+
+# 2012-07-10: :insert-05 was removed from the manifest list (in favor of :insert-05a) as mf:result isn't able to properly capture the situation of a bnode being shared across graphs in the expected resulting graph store state.
+:insert-05 a mf:UpdateEvaluationTest ;
+   mf:name "INSERT same bnode twice" ; 
+   rdfs:comment "As per http://lists.w3.org/Archives/Public/public-rdf-dawg/2012AprJun/0165.html. Tests whether inserting the same triples from the same source graph into the same target graph twice is idempotent, even in the presence of blank nodes. Note that this doesn't imply that blank nodes are actually shared across graphs, but only that the two graphs remain equivalent, cf. http://lists.w3.org/Archives/Public/public-rdf-dawg/2012JulSep/0009.html" ; 
+   dawgt:approval dawgt:NotClassified ;
+   mf:action [
+                ut:request <insert-05.ru> ;
+                ut:graphData [ ut:graph <insert-05-g1-pre.ttl> ;
+                               rdfs:label "http://example.org/g1" ] ;
+             ] ;
+   mf:result [
+                ut:graphData [ ut:graph <insert-05-g1-pre.ttl> ;
+                               rdfs:label "http://example.org/g1" ] ;
+                ut:graphData [ ut:graph <insert-05-g1-pre.ttl> ;
+                               rdfs:label "http://example.org/g2" ] ;
+             ] ;
+ .   
+
+:insert-05a a mf:UpdateEvaluationTest ;
+   mf:name "INSERT same bnode twice" ; 
+   rdfs:comment "As per http://lists.w3.org/Archives/Public/public-rdf-dawg/2012AprJun/0165.html" ; 
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_3> ;
+   mf:action [
+                ut:request <insert-05a.ru> ;
+                ut:graphData [ ut:graph <insert-05a-g1-pre.ttl> ;
+                               rdfs:label "http://example.org/g1" ] ;
+             ] ;
+   mf:result [
+                ut:graphData [ ut:graph <insert-05a-g3-post.ttl> ;
+                               rdfs:label "http://example.org/g3" ] ;
+             ] ;
+ .   
+
+:insert-data-same-bnode  a mf:UpdateEvaluationTest ;
+   mf:name "INSERTing the same bnode with INSERT DATA into two different Graphs is the same bnode" ; 
+   rdfs:comment "http://lists.w3.org/Archives/Public/public-rdf-dawg/2012JulSep/0196.html, this can be viewed as a variation of :insert-05a" ; 
+    dawgt:approval dawgt:NotClassified ;
+   mf:action [
+                ut:request <insert-data-same-bnode.ru> ;
+             ] ;
+   mf:result [
+                ut:graphData [ ut:graph <insert-05a-g3-post.ttl> ;
+                               rdfs:label "http://example.org/g3" ] ;
+             ] ;
+ .   
+
+:insert-where-same-bnode  a mf:UpdateEvaluationTest ;
+   mf:name "INSERTing the same bnode with two INSERT WHERE statement within one request is NOT the same bnode" ;
+   rdfs:comment "http://lists.w3.org/Archives/Public/public-rdf-dawg/2012OctDec/0001.html, this can be viewed as a further variation of :insert-05a" ;
+    dawgt:approval dawgt:NotClassified ;
+   mf:action [
+                ut:request <insert-where-same-bnode.ru> ;
+                ut:data <insert-where-same-bnode-pre.ttl> ;
+
+             ] ;
+   mf:result [
+                ut:data <insert-where-same-bnode-pre.ttl> ;
+                ut:graphData [ ut:graph <insert-where-same-bnode-g3-post.ttl> ;
+                               rdfs:label "http://example.org/g3" ] ;
+             ] ;
+ .
+
+:insert-where-same-bnode2  a mf:UpdateEvaluationTest ;
+   mf:name "INSERTing the same bnode with two INSERT WHERE statement within one request is NOT the same bnode even if both WHERE clauses have the empty solution mapping as the only solution." ;
+   rdfs:comment "http://lists.w3.org/Archives/Public/public-rdf-dawg/2012OctDec/0001.html, this can be viewed as a further variation of :insert-05a" ;
+    dawgt:approval dawgt:NotClassified ;
+   mf:action [
+                ut:request <insert-where-same-bnode2.ru> ;
+                ut:data <insert-where-same-bnode-pre.ttl> ;
+
+             ] ;
+   mf:result [
+                ut:data <insert-where-same-bnode-pre.ttl> ;
+                ut:graphData [ ut:graph <insert-where-same-bnode-g3-post.ttl> ;
+                               rdfs:label "http://example.org/g3" ] ;
+             ] ;
+ .
+

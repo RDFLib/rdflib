@@ -3,6 +3,8 @@ import os
 import shutil
 import tempfile
 import warnings
+import types
+
 from urlparse import urlparse
 try:
     from io import BytesIO
@@ -100,8 +102,8 @@ class ResultRow(tuple):
 
         instance = super(ResultRow, cls).__new__(
             cls, (values.get(v) for v in labels))
-        instance.labels = dict((unicode(x[
-                               1]), x[0]) for x in enumerate(labels))
+        instance.labels = dict((unicode(x[1]), x[0])
+                               for x in enumerate(labels))
         return instance
 
     def __getattr__(self, name):
@@ -118,6 +120,9 @@ class ResultRow(tuple):
             if unicode(name) in self.labels:  # passing in variable object
                 return tuple.__getitem__(self, self.labels[unicode(name)])
             raise KeyError(name)
+
+    def asdict(self):
+        return dict((v, self[v]) for v in self.labels if self[v] != None)
 
 
 class Result(object):
@@ -139,9 +144,27 @@ class Result(object):
 
         self.type = type_
         self.vars = None
-        self.bindings = None
+        self._bindings = None
+        self._genbindings = None
         self.askAnswer = None
         self.graph = None
+
+    def _get_bindings(self):
+        if self._genbindings:
+            self._bindings += list(self._genbindings)
+            self._genbindings = None
+
+        return self._bindings
+
+    def _set_bindings(self, b):
+        if isinstance(b, types.GeneratorType):
+            self._genbindings = b
+            self._bindings = []
+        else:
+            self._bindings = b
+
+    bindings = property(
+        _get_bindings, _set_bindings, doc="a list of variable bindings as dicts")
 
     @staticmethod
     def parse(source, format='xml', **kwargs):
@@ -199,10 +222,16 @@ class Result(object):
         elif self.type == 'ASK':
             yield self.askAnswer
         elif self.type == 'SELECT':
-            # To remain compatible with the old SPARQLResult behaviour
-            # this iterates over lists of variable bindings
-            for b in self.bindings:
-                yield ResultRow(b, self.vars)
+            # this iterates over ResultRows of variable bindings
+
+            if self._genbindings:
+                for b in self._genbindings:
+                    self._bindings.append(b)
+                    yield ResultRow(b, self.vars)
+                self._genbindings = None
+            else:
+                for b in self._bindings:
+                    yield ResultRow(b, self.vars)
 
     def __getattr__(self, name):
         if self.type in ("CONSTRUCT", "DESCRIBE") and self.graph is not None:

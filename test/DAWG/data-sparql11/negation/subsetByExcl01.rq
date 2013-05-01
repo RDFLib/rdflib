@@ -1,0 +1,5 @@
+PREFIX ex: <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation#>
+SELECT ?animal { 
+  ?animal a ex:Animal 
+  FILTER NOT EXISTS { ?animal a ex:Insect } 
+}

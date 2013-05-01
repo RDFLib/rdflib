@@ -1,0 +1,8 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://example.org/> .
+
+# numeric data
+:n0 :p 1 .
+:n1 :p 0 ; :q 0 .
+:n2 :p 0 ; :q 2 .
+:n3 :p 4 ; :q 2 .

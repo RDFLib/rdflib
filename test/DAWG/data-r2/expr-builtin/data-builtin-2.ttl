@@ -1,0 +1,14 @@
+@prefix : <http://example/> .
+@prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+:x1 :p  "string" .
+:x2 :p  "string"^^xsd:string .
+:x3 :p  "string"@en .
+:x4 :p  "lex"^^:unknownType .
+:x5 :p  "1234"^^xsd:integer .
+:x6 :p  <http://example/iri> .
+:x7 :p  _:bNode .
+
+
+
+

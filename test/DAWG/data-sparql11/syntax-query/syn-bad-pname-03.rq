@@ -1,0 +1,4 @@
+# Bad declaration
+PREFIX :: <http://example/>
+
+ASK{}

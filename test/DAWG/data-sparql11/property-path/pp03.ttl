@@ -1,0 +1,12 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ex:	<http://www.example.org/schema#>.
+@prefix in:	<http://www.example.org/instance#>.
+
+in:a ex:p1 in:b .
+in:b ex:p2 in:a .
+in:a ex:p3 in:b .
+in:b ex:p4 in:a .
+
+
+

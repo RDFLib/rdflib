@@ -1,0 +1,68 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/optional-filter/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "OPTIONAL with inner and outer FILTERs" ;
+    mf:entries
+    (:dawg-optional-filter-001 :dawg-optional-filter-002 :dawg-optional-filter-003 :dawg-optional-filter-004 :dawg-optional-filter-005-simplified :dawg-optional-filter-005-not-simplified).
+
+:dawg-optional-filter-001 a mf:QueryEvaluationTest ;
+      mf:name    "OPTIONAL-FILTER" ;
+      rdfs:comment "FILTER inside an OPTIONAL does not block an entire solution" ;
+      mf:action
+          [ qt:query  <expr-1.rq> ;
+            qt:data   <data-1.ttl> ] ;
+      mf:result  <expr-1-result.ttl> ;
+       dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html> ;
+      dawgt:approval dawgt:Approved .
+
+:dawg-optional-filter-002 a mf:QueryEvaluationTest ;
+      mf:name    "OPTIONAL - Outer FILTER" ;
+      rdfs:comment "FILTER outside an OPTIONAL tests bound and unbound variables" ; 
+       mf:action
+          [ qt:query  <expr-2.rq> ;
+            qt:data   <data-1.ttl> ] ;
+       mf:result  <expr-2-result.ttl> ;
+       dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html> ;
+       dawgt:approval dawgt:Approved .
+
+
+:dawg-optional-filter-003 a mf:QueryEvaluationTest ;
+      mf:name    "OPTIONAL - Outer FILTER with BOUND" ;
+      rdfs:comment "Use !bound to only run outer FILTERs against variables bound in an OPTIONAL" ;
+       mf:action
+          [ qt:query  <expr-3.rq> ;
+            qt:data   <data-1.ttl> ] ;
+       mf:result  <expr-3-result.ttl> ;
+       dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html> ;
+       dawgt:approval dawgt:Approved .
+
+:dawg-optional-filter-004 a mf:QueryEvaluationTest ;
+      mf:name    "OPTIONAL - Inner FILTER with negative EBV for outer variables" ;
+      rdfs:comment "FILTER inside an OPTIONAL does not corrupt the entire solution" ;
+       mf:action
+          [ qt:query  <expr-4.rq> ;
+            qt:data   <data-1.ttl> ] ;
+       mf:result  <expr-4-result.ttl> ;
+       dawgt:approval dawgt:Approved ;
+       dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007OctDec/att-0006/02-dawg-minutes.html> .
+
+:dawg-optional-filter-005-simplified a mf:QueryEvaluationTest ;
+      mf:name    "dawg-optional-filter-005-simplified";
+      rdfs:comment "Double curly braces get simplified to single curly braces early on, before filters are scoped";
+       mf:action
+          [ qt:query  <expr-5.rq> ;
+            qt:data   <data-1.ttl> ] ;
+       mf:result  <expr-5-result-simplified.ttl> .
+
+:dawg-optional-filter-005-not-simplified a mf:QueryEvaluationTest ;
+      mf:name    "dawg-optional-filter-005-not-simplified";
+      rdfs:comment "Double curly braces do NOT get simplified to single curly braces early on, before filters are scoped";
+       mf:action
+          [ qt:query  <expr-5.rq> ;
+            qt:data   <data-1.ttl> ] ;
+       mf:result  <expr-5-result-not-simplified.ttl> .

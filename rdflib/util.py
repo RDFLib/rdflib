@@ -65,6 +65,10 @@ def list2set(seq):
 
 
 def first(seq):
+    """
+    return the first element in a python sequence
+    for graphs, use graph.value instead
+    """
     for result in seq:
         return result
     return None

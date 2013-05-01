@@ -1,0 +1,7 @@
+PREFIX : <http://www.example.org/>
+SELECT ?s (AVG(?o) AS ?avg)
+WHERE {
+	?s ?p ?o
+}
+GROUP BY ?s
+HAVING (AVG(?o) <= 2.0)

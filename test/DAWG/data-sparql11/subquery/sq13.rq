@@ -1,0 +1,15 @@
+# return labels of items for the first 2 orders
+
+PREFIX : <http://www.example.org>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?O1 ?O2
+WHERE {
+ ?O1 :hasItem [ rdfs:label ?L ] .
+ {
+ SELECT ?O2
+ WHERE {
+ ?O2 :hasItem [ rdfs:label ?L ] .
+ }
+}} ORDER BY ?O1 ?O2
+

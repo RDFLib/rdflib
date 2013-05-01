@@ -1,0 +1,21 @@
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+<head>
+<variable name='x'/>
+<variable name='y'/>
+<variable name='z'/>
+<variable name='sum'/>
+</head>
+<results>
+<result>
+<binding name='x'><uri>http://www.example.org/instance#a</uri></binding>
+<binding name='y'><literal datatype='http://www.w3.org/2001/XMLSchema#integer'>1</literal></binding>
+<binding name='z'><literal datatype='http://www.w3.org/2001/XMLSchema#integer'>1</literal></binding>
+<binding name='sum'><literal datatype='http://www.w3.org/2001/XMLSchema#integer'>2</literal></binding>
+</result>
+<result>
+<binding name='x'><uri>http://www.example.org/instance#a</uri></binding>
+<binding name='y'><literal datatype='http://www.w3.org/2001/XMLSchema#integer'>1</literal></binding>
+<binding name='z'><literal>foobar</literal></binding>
+</result>
+</results>
+</sparql>

@@ -1,0 +1,8 @@
+PREFIX : <http://example.org/> 
+
+SELECT ?s ?p ?o ?z
+{
+  ?s ?p ?o .
+  FILTER(?z = 3 )
+  BIND(?o+1 AS ?z)
+}

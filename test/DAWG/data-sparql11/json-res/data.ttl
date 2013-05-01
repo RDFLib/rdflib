@@ -1,0 +1,9 @@
+@prefix : <http://example.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:s1 :p1 :s2 .
+:s2 :p2 "foo" .
+:s3 :p2 "bar"^^xsd:string .
+:s4 :p4 4 .
+:s5 :p5 "5"^^xsd:decimal.
+:s6 :p6 _:o6.

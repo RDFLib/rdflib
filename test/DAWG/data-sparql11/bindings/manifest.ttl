@@ -1,0 +1,237 @@
+@prefix : <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "Bindings" ;
+    mf:entries
+    ( 
+## Awaiting WG decision to remove these tests.
+##         :b1	# removed 2012-07-31
+##         :b2	# removed 2012-07-31
+##         :b3	# removed 2012-07-31
+##         :b4	# removed 2012-07-31
+##         :b5	# removed 2012-07-31
+##         :b6	# removed 2012-07-31
+##         :b7	# removed 2012-07-31
+##         :b8	# removed 2012-07-31
+        :values1
+        :values2
+        :values3
+        :values4
+        :values5
+        :values6
+        :values7
+        :values8
+        :inline1
+        :inline2
+    ).
+
+
+# :b1 rdf:type mf:QueryEvaluationTest ;
+#     mf:name    "BINDINGS with subj-var, 1 row" ;
+#     dawgt:approval dawgt:Approved ;
+#     dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-05-17#resolution_3> ;
+#     mf:action
+#     [
+#         qt:query  <bindings01.rq> ;
+#         qt:data   <data01.ttl>
+#     ] ;
+#     mf:result  <bindings01.srx> .
+# 
+# :b2 rdf:type mf:QueryEvaluationTest ;
+#     mf:name    "BINDINGS with obj-var, 1 row" ;
+#     dawgt:approval dawgt:Approved ;
+#     dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-05-17#resolution_3> ;
+#     mf:action
+#     [
+#         qt:query  <bindings02.rq> ;
+#         qt:data   <data02.ttl>
+#     ] ;
+#     mf:result  <bindings02.srx> .  
+# 
+# :b3 rdf:type mf:QueryEvaluationTest ;
+#     mf:name    "BINDINGS with 2 obj-vars, 1 row" ;
+#     dawgt:approval dawgt:Approved ;
+#     dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-05-17#resolution_3> ;
+#     mf:action
+#     [
+#         qt:query  <bindings03.rq> ;
+#         qt:data   <data03.ttl>
+#     ] ;
+#     mf:result  <bindings03.srx> . 
+# 
+# :b4 rdf:type mf:QueryEvaluationTest ;
+#     mf:name    "BINDINGS with 2 obj-vars, 1 row with UNDEF" ;
+#     dawgt:approval dawgt:Approved ;
+#     dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-05-17#resolution_3> ;
+#     mf:action
+#     [
+#         qt:query  <bindings04.rq> ;
+#         qt:data   <data04.ttl>
+#     ] ;
+#     mf:result  <bindings04.srx> .   
+# 
+# :b5 rdf:type mf:QueryEvaluationTest ;
+#     mf:name    "BINDINGS with 2 obj-vars, 2 rows with UNDEF" ;
+#     dawgt:approval dawgt:Approved ;
+#     dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-05-17#resolution_3> ;
+#     mf:action
+#     [
+#         qt:query  <bindings05.rq> ;
+#         qt:data   <data05.ttl>
+#     ] ;
+#     mf:result  <bindings05.srx> .  
+# 
+# :b6 rdf:type mf:QueryEvaluationTest ;
+#     mf:name    "BINDINGS with pred-var, 1 row" ;
+#     dawgt:approval dawgt:Approved ;
+#     dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-05-17#resolution_3> ;
+#     mf:action
+#     [
+#         qt:query  <bindings06.rq> ;
+#         qt:data   <data06.ttl>
+#     ] ;
+#     mf:result  <bindings06.srx> .   
+# 
+# :b7 rdf:type mf:QueryEvaluationTest ;
+#     mf:name    "BINDINGS with (OPTIONAL) obj-var, 1 row" ;
+#     dawgt:approval dawgt:Approved ;
+#     dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-05-24#resolution_4> ;
+#     mf:action
+#     [
+#         qt:query  <bindings07.rq> ;
+#         qt:data   <data07.ttl>
+#     ] ;
+#     mf:result  <bindings07.srx> .   
+# 
+# :b8 rdf:type mf:QueryEvaluationTest ;
+#     mf:name    "BINDINGS with subj/obj-vars, 2 rows with UNDEF" ;
+#     dawgt:approval dawgt:Approved ;
+#     dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-05-17#resolution_3> ;
+#     mf:action
+#     [
+#         qt:query  <bindings08.rq> ;
+#         qt:data   <data08.ttl>
+#     ] ;
+#     mf:result  <bindings08.srx> .   
+
+
+
+:values1 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Post-query VALUES with subj-var, 1 row" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+    mf:action
+    [
+        qt:query  <values01.rq> ;
+        qt:data   <data01.ttl>
+    ] ;
+    mf:result  <values01.srx> .
+
+:values2 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Post-query VALUES with obj-var, 1 row" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+    mf:action
+    [
+        qt:query  <values02.rq> ;
+        qt:data   <data02.ttl>
+    ] ;
+    mf:result  <values02.srx> .  
+
+:values3 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Post-query VALUES with 2 obj-vars, 1 row" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+    mf:action
+    [
+        qt:query  <values03.rq> ;
+        qt:data   <data03.ttl>
+    ] ;
+    mf:result  <values03.srx> . 
+
+:values4 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Post-query VALUES with 2 obj-vars, 1 row with UNDEF" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+    mf:action
+    [
+        qt:query  <values04.rq> ;
+        qt:data   <data04.ttl>
+    ] ;
+    mf:result  <values04.srx> .   
+
+:values5 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Post-query VALUES with 2 obj-vars, 2 rows with UNDEF" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+    mf:action
+    [
+        qt:query  <values05.rq> ;
+        qt:data   <data05.ttl>
+    ] ;
+    mf:result  <values05.srx> .  
+
+:values6 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Post-query VALUES with pred-var, 1 row" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+    mf:action
+    [
+        qt:query  <values06.rq> ;
+        qt:data   <data06.ttl>
+    ] ;
+    mf:result  <values06.srx> .   
+
+:values7 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Post-query VALUES with (OPTIONAL) obj-var, 1 row" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-05-24#resolution_4> ;
+    mf:action
+    [
+        qt:query  <values07.rq> ;
+        qt:data   <data07.ttl>
+    ] ;
+    mf:result  <values07.srx> .   
+
+:values8 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Post-query VALUES with subj/obj-vars, 2 rows with UNDEF" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+    mf:action
+    [
+        qt:query  <values08.rq> ;
+        qt:data   <data08.ttl>
+    ] ;
+    mf:result  <values08.srx> .   
+
+
+:inline1 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Inline VALUES graph pattern" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+    mf:action
+    [
+        qt:query  <inline01.rq> ;
+        qt:data   <data01.ttl>
+    ] ;
+    mf:result  <inline01.srx> .   
+
+:inline2 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Post-subquery VALUES" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+    mf:action
+    [
+        qt:query  <inline02.rq> ;
+        qt:data   <data02.ttl>
+    ] ;
+    mf:result  <inline02.srx> .   
+
+
+

@@ -1,0 +1,1 @@
+SELECT (MIN(?x) AS ?y) {}

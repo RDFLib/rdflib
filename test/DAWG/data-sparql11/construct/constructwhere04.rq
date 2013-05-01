@@ -1,0 +1,5 @@
+PREFIX : <http://example.org/>
+
+CONSTRUCT 
+FROM <data.ttl>
+WHERE { ?s ?p ?o }

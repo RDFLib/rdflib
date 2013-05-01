@@ -67,13 +67,7 @@ are listed on [PyPi](pypi.python.org/pypi/rdflib/)
 
 RDFLib has a plugin-architecture for store-implementation, as well as parsers/serializers, several other projects exist which extend RDFLib features:
 
- * [rdflib-sparql](https://github.com/RDFLib/rdflib-sparql) - for SPARQL Support
  * [rdflib-json](https://github.com/RDFLib/rdflib-jsonld) - Serializer and parser for [json-ld](http://json-ld.org)
- * [rdflib-sparqlstore](https://github.com/RDFLib/rdflib-sparqlstore) - a store implementation on top of a SPARQL endpoint accessed over HTTP
- * [rdflib-mysql](https://github.com/RDFLib/rdflib-mysql) - a store implementation of top of MySQL
-
- * [rdfextras](https://github.com/RDFLib/rdfextras) - additional experimental plugins and tools
-
 
 Support
 -------

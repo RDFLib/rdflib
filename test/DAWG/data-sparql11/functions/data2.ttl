@@ -1,0 +1,13 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://example.org/> .
+
+:s1 :str "123" .
+
+:s2 :str "日本語"@ja .
+:s3 :str "english"@en .
+:s4 :str "français"@fr .
+
+:s5 :str "abc"^^xsd:string .
+:s6 :str "def"^^xsd:string .
+
+:s7 :str 7 .

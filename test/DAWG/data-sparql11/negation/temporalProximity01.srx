@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+    <head>
+        <variable name="exam"/>
+        <variable name="date"/>
+    </head>
+    <results>
+        <result>
+            <binding name="exam">
+                <uri>http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation#examination1</uri>
+            </binding>
+            <binding name="date">
+                <literal
+                    datatype="http://www.w3.org/2001/XMLSchema#date">2010-01-10</literal>
+            </binding>
+        </result>
+    </results>
+</sparql>

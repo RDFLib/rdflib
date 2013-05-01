@@ -1,0 +1,6 @@
+PREFIX : <http://www.example.org>
+
+SELECT ?P (COUNT(*) AS ?C)
+WHERE { ?S ?P ?O }
+GROUP BY ?P
+HAVING ( COUNT(*) > 2 )

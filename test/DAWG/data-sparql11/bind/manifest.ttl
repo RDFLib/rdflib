@@ -1,0 +1,122 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "BIND" ;
+    mf:entries
+    ( 
+    :bind01
+    :bind02
+    :bind03
+    :bind04
+    :bind05
+    :bind06
+    :bind07
+    :bind08
+    :bind10
+    :bind11
+    ) .
+
+:bind01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bind01 - BIND" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-02-01#resolution_2> ;
+    mf:action
+         [ qt:query  <bind01.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <bind01.srx>
+    .
+
+:bind02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bind02 - BIND" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-02-01#resolution_2> ;
+    mf:action
+         [ qt:query  <bind02.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <bind02.srx>
+    .
+
+:bind03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bind03 - BIND" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-02-01#resolution_2> ;
+    mf:action
+         [ qt:query  <bind03.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <bind03.srx>
+    .
+
+:bind04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bind04 - BIND" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-02-01#resolution_2> ;
+    mf:action
+         [ qt:query  <bind04.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <bind04.srx>
+    .
+
+:bind05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bind05 - BIND" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-02-01#resolution_2> ;
+    mf:action
+         [ qt:query  <bind05.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <bind05.srx>
+    .
+
+:bind06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bind06 - BIND" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-02-01#resolution_2> ;
+    mf:action
+         [ qt:query  <bind06.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <bind06.srx>
+    .
+
+:bind07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bind07 - BIND" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-02-01#resolution_2> ;
+    mf:action
+         [ qt:query  <bind07.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <bind07.srx>
+    .
+
+:bind08 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bind08 - BIND" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-02-01#resolution_2> ;
+    mf:action
+         [ qt:query  <bind08.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <bind08.srx>
+    .
+
+:bind10 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bind10 - BIND scoping - Variable in filter not in scope" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-12-06#resolution_2> ;
+    mf:action
+         [ qt:query  <bind10.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <bind10.srx>
+    .
+
+:bind11 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "bind11 - BIND scoping - Variable in filter in scope" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-12-06#resolution_2> ;
+    mf:action
+         [ qt:query  <bind11.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <bind11.srx>
+    .

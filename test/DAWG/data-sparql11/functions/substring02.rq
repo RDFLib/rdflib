@@ -1,0 +1,4 @@
+PREFIX : <http://example.org/>
+SELECT ?s ?str (SUBSTR(?str,2) AS ?substr) WHERE {
+	?s :str ?str
+}

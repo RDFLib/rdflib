@@ -1,0 +1,11 @@
+prefix : <http://example/>
+
+select ?a ?b ?c {
+  ?a :p1 ?b; :p2 ?c
+  MINUS {
+    ?d a :Sub
+    OPTIONAL { ?d :q1 ?b }
+    OPTIONAL { ?d :q2 ?c }
+  }
+}
+order by ?a

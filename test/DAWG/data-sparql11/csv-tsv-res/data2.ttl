@@ -1,0 +1,10 @@
+@prefix : <http://example.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:s1 :p1 "1"^^xsd:string .
+:s2 :p2 "2.2"^^xsd:decimal .
+:s3 :p3 "-3"^^xsd:negativeInteger .
+:s4 :p4 "4,4"^^xsd:string .
+:s5 :p5 "5,5"^^:myCustomDatatype .
+:s6 :p6 "1.0E6"^^xsd:double .
+:s7 :p7 "a7"^^xsd:hexBinary .

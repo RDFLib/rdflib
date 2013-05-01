@@ -29,17 +29,24 @@ class TrigSerializer(TurtleSerializer):
 
         super(TrigSerializer, self).__init__(store)
 
+    def _get_graph(self, id):
+        if self.store.context_aware:
+            return self.store.get_context(id)
+        else:
+            # non-context aware graphs only contain one graph
+            return self.store
+
     def preprocess(self):
         for context in self.contexts:
             for triple in context:
-                self.preprocessTriple(triple, context.identifier)
+                self.preprocessTriple(triple, context)
 
-    def preprocessTriple(self, triple, identifier):
+    def preprocessTriple(self, triple, store):
         s, p, o = triple
         references = self.refCount(o) + 1
         self._references[o] = references
         self._subjects[s] = True
-        self._contexts[identifier].add(s)
+        self._contexts[store].add(s)
         for i, node in enumerate(triple):
             if node in self.keywords:
                 continue
@@ -50,6 +57,18 @@ class TrigSerializer(TurtleSerializer):
         p = triple[1]
         if isinstance(p, BNode):
             self._references[p] = self.refCount(p) + 1
+
+    def buildPredicateHash(self, subject):
+        """
+        Build a hash key by predicate to a list of objects for the given
+        subject
+        """
+        properties = {}
+        for s, p, o in self._current_graph.triples((subject, None, None)):
+            oList = properties.get(p, [])
+            oList.append(o)
+            properties[p] = oList
+        return properties
 
     def reset(self):
         super(TrigSerializer, self).reset()
@@ -71,9 +90,10 @@ class TrigSerializer(TurtleSerializer):
         self.startDocument()
 
         firstTime = True
-        for identifier, subjects in self._contexts.items():
-            self._serialized={}
-            self.write(self.indent() + '\n<%s> = {' % identifier)
+        for store, subjects in self._contexts.items():
+            self._serialized = {}
+            self._current_graph = store
+            self.write(self.indent() + '\n<%s> = {' % store.identifier)
             self.depth += 1
             for subject in subjects:
                 if self.isDone(subject):

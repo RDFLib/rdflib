@@ -1,0 +1,188 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+
+[]  rdf:type    rs:ResultSet ;
+    rs:resultVariable
+                "x1", "v1", "x2", "v2" ;
+    rs:solution [ rs:binding  [ rs:value    <http://example.org/things#xu> ;
+                                rs:variable "x1"
+                              ] ,
+                              [ rs:value    <http://example.org/things#z> ;
+                                rs:variable "v1"
+                              ] ,
+                              [ rs:value    <http://example.org/things#xu> ;
+                                rs:variable "x2"
+                              ] ,
+                              [ rs:value    <http://example.org/things#z> ;
+                                rs:variable "v2"
+                              ]
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    <http://example.org/things#xd2> ;
+                                rs:variable "x1"
+                              ] ,
+                              [ rs:value    "1.0"^^<http://www.w3.org/2001/XMLSchema#double> ;
+                                rs:variable "v1"
+                              ] ,
+                              [ rs:value    <http://example.org/things#xd2> ;
+                                rs:variable "x2"
+                              ] ,
+                              [ rs:value    "1.0"^^<http://www.w3.org/2001/XMLSchema#double> ;
+                                rs:variable "v2"
+                              ]
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    <http://example.org/things#xp1> ;
+                                rs:variable "x1"
+                              ] ,
+                              [ rs:value    "zzz" ;
+                                rs:variable "v1"
+                              ] ,
+                              [ rs:value    <http://example.org/things#xp1> ;
+                                rs:variable "x2"
+                              ] ,
+                              [ rs:value    "zzz" ;
+                                rs:variable "v2"
+                              ]
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    <http://example.org/things#xp2> ;
+                                rs:variable "x1"
+                              ] ,
+                              [ rs:value    "1" ;
+                                rs:variable "v1"
+                              ] ,
+                              [ rs:value    <http://example.org/things#xp2> ;
+                                rs:variable "x2"
+                              ] ,
+                              [ rs:value    "1" ;
+                                rs:variable "v2"
+                              ]
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    <http://example.org/things#xi2> ;
+                                rs:variable "x1"
+                              ] ,
+                              [ rs:value    "1"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+                                rs:variable "v1"
+                              ] ,
+                              [ rs:value    <http://example.org/things#xi2> ;
+                                rs:variable "x2"
+                              ] ,
+                              [ rs:value    "1"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+                                rs:variable "v2"
+                              ]
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    <http://example.org/things#xi2> ;
+                                rs:variable "x1"
+                              ] ,
+                              [ rs:value    "1"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+                                rs:variable "v1"
+                              ] ,
+                              [ rs:value    <http://example.org/things#xi1> ;
+                                rs:variable "x2"
+                              ] ,
+                              [ rs:value    "1"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+                                rs:variable "v2"
+                              ]
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    <http://example.org/things#xp2> ;
+                                rs:variable "x1"
+                              ] ,
+                              [ rs:value    "" ;
+                                rs:variable "v1"
+                              ] ,
+                              [ rs:value    <http://example.org/things#xp2> ;
+                                rs:variable "x2"
+                              ] ,
+                              [ rs:value    "" ;
+                                rs:variable "v2"
+                              ]
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    <http://example.org/things#xd1> ;
+                                rs:variable "x1"
+                              ] ,
+                              [ rs:value    "1.0e0"^^<http://www.w3.org/2001/XMLSchema#double> ;
+                                rs:variable "v1"
+                              ] ,
+                              [ rs:value    <http://example.org/things#xd1> ;
+                                rs:variable "x2"
+                              ] ,
+                              [ rs:value    "1.0e0"^^<http://www.w3.org/2001/XMLSchema#double> ;
+                                rs:variable "v2"
+                              ]
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    <http://example.org/things#xb> ;
+                                rs:variable "x1"
+                              ] ,
+                              [ rs:value    _:b ;
+                                rs:variable "v1"
+                              ] ,
+                              [ rs:value    <http://example.org/things#xb> ;
+                                rs:variable "x2"
+                              ] ,
+                              [ rs:value    _:b ;
+                                rs:variable "v2"
+                              ]
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    <http://example.org/things#xi3> ;
+                                rs:variable "x1"
+                              ] ,
+                              [ rs:value    "01"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+                                rs:variable "v1"
+                              ] ,
+                              [ rs:value    <http://example.org/things#xi3> ;
+                                rs:variable "x2"
+                              ] ,
+                              [ rs:value    "01"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+                                rs:variable "v2"
+                              ]
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    <http://example.org/things#xt1> ;
+                                rs:variable "x1"
+                              ] ,
+                              [ rs:value    "zzz"^^<http://example.org/things#myType> ;
+                                rs:variable "v1"
+                              ] ,
+                              [ rs:value    <http://example.org/things#xt1> ;
+                                rs:variable "x2"
+                              ] ,
+                              [ rs:value    "zzz"^^<http://example.org/things#myType> ;
+                                rs:variable "v2"
+                              ]
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    <http://example.org/things#xd3> ;
+                                rs:variable "x1"
+                              ] ,
+                              [ rs:value    "1"^^<http://www.w3.org/2001/XMLSchema#double> ;
+                                rs:variable "v1"
+                              ] ,
+                              [ rs:value    <http://example.org/things#xd3> ;
+                                rs:variable "x2"
+                              ] ,
+                              [ rs:value    "1"^^<http://www.w3.org/2001/XMLSchema#double> ;
+                                rs:variable "v2"
+                              ]
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    <http://example.org/things#xi1> ;
+                                rs:variable "x1"
+                              ] ,
+                              [ rs:value    "1"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+                                rs:variable "v1"
+                              ] ,
+                              [ rs:value    <http://example.org/things#xi2> ;
+                                rs:variable "x2"
+                              ] ,
+                              [ rs:value    "1"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+                                rs:variable "v2"
+                              ]
+                ] ;
+    rs:solution [ rs:binding  [ rs:value    <http://example.org/things#xi1> ;
+                                rs:variable "x1"
+                              ] ,
+                              [ rs:value    "1"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+                                rs:variable "v1"
+                              ] ,
+                              [ rs:value    <http://example.org/things#xi1> ;
+                                rs:variable "x2"
+                              ] ,
+                              [ rs:value    "1"^^<http://www.w3.org/2001/XMLSchema#integer> ;
+                                rs:variable "v2"
+                              ]
+                ] .

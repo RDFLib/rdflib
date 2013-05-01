@@ -69,7 +69,7 @@ class Sleepycat(Store):
                 return NO_STORE
         db_env = db.DBEnv()
         db_env.set_cachesize(0, CACHESIZE)  # TODO
-        #db_env.set_lg_max(1024*1024)
+        # db_env.set_lg_max(1024*1024)
         db_env.set_flags(ENVSETFLAGS, 1)
         db_env.open(homeDir, ENVFLAGS | db.DB_CREATE)
         return db_env
@@ -530,7 +530,8 @@ class Sleepycat(Store):
             i += 4
             object = _to_string(object, txn=txn)
         index, prefix_func, from_key, results_from_key = self.__lookup_dict[i]
-        #print (subject, predicate, object), context, prefix_func, index #DEBUG
+        # print (subject, predicate, object), context, prefix_func, index
+        # #DEBUG
         prefix = bb(
             "^".join(prefix_func((subject, predicate, object), context)))
         return index, prefix, from_key, results_from_key

@@ -1,0 +1,14 @@
+@prefix ex: <http://example.org/ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+_:rdfs04 a owl:Ontology .
+ 
+ex:a a owl:NamedIndividual .
+ex:c1 a owl:Class .
+ex:c2 a owl:Class .
+
+ex:a rdf:type ex:c1 .
+ex:c1 rdfs:subClassOf ex:c2 .
+

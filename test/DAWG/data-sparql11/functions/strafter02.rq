@@ -1,0 +1,15 @@
+PREFIX : <http://example.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT
+	?s
+	?str
+	(STRAFTER(?str,"b") AS ?ab)
+	(STRAFTER(?str,"ab") AS ?aab)
+	(STRAFTER(?str,"b"@cy) AS ?abcy)
+	(STRAFTER(?str,"") AS ?a)
+	(STRAFTER(?str,""@en) AS ?aen)
+	(STRAFTER(?str,"b"^^xsd:string) AS ?abx)
+	(STRAFTER(?str,"xyz"^^xsd:string) AS ?axyzx)
+WHERE {
+	?s :str ?str
+}
