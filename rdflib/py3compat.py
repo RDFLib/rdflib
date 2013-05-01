@@ -2,6 +2,7 @@
 Utility functions and objects to ease Python 3 compatibility.
 """
 import sys
+import re
 
 try:
     from functools import wraps
@@ -127,5 +128,4 @@ def decodeStringEscape(s):
     if not PY3:
         return s.decode('string-escape')
     else:
-        # I love py3, isn't this marvellously convenient?
-        return bytes(s, "utf-8").decode("unicode_escape")
+        return re.sub(r'(\\u[0-9A-Fa-f]+)', lambda m: chr(int(m.group(0)[2:], 16)), s)

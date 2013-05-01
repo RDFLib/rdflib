@@ -154,7 +154,7 @@ def _bindingsTable(res):
         """
         center the string s in w wide string
         """
-        h = (w - len(s)) / 2
+        h = (w - len(s)) // 2
         return " " * h + s + " " * h
 
     if not res:
