@@ -92,6 +92,8 @@ SPARQL10Tests = True
 SPARQL11Tests = True
 # SPARQL11Tests=False
 
+RDFLibTests = True
+
 DETAILEDASSERT = True
 # DETAILEDASSERT=False
 
@@ -643,6 +645,10 @@ def test_dawg():
 
     if SPARQL11Tests:
         for t in read_manifest("test/DAWG/data-sparql11/manifest-all.ttl"):
+            yield t
+
+    if RDFLibTests: 
+        for t in read_manifest("test/DAWG/rdflib/manifest.ttl"):
             yield t
 
     resetFlags()
