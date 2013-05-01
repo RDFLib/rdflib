@@ -1,0 +1,14 @@
+# Example 1 from
+# http://lists.w3.org/Archives/Public/public-rdf-dawg/2005JulSep/0096
+# $Id: normalization-03-results.ttl,v 1.1 2005/08/09 14:35:26 eric Exp $
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+
+[]  <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                rs:ResultSet ;
+    rs:resultVariable
+                "S" ;
+    rs:solution [ rs:binding  [ rs:value    <http://example/vocab#s3> ;
+                                rs:variable "S"
+                              ]
+                ] .

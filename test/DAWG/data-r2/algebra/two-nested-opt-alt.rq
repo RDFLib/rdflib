@@ -1,0 +1,10 @@
+PREFIX :    <http://example/>
+
+## The nested optional example, rewritten to a form that is the same
+## for the SPARQL algebra and the declarative semantics.
+SELECT *
+{ 
+    :x1 :p ?v .
+    OPTIONAL { :x3 :q ?w }
+    OPTIONAL { :x3 :q ?w  . :x2 :p ?v }
+}

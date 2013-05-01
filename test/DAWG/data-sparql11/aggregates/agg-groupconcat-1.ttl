@@ -1,0 +1,4 @@
+@prefix : <http://www.example.org/> .
+
+:s :p1 "1", "22" .
+:s :p2 "aaa", "bb", "c" .

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+<head>
+	<variable name="s"/>
+	<variable name="ustr"/>
+</head>
+<results>
+		<result>
+			<binding name="s"><uri>http://example.org/s2</uri></binding>
+			<binding name="ustr"><literal xml:lang="en">BAR</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s4</uri></binding>
+			<binding name="ustr"><literal>食べ物</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s7</uri></binding>
+			<binding name="ustr"><literal datatype="http://www.w3.org/2001/XMLSchema#string">DEF</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s3</uri></binding>
+			<binding name="ustr"><literal>BAZ</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s5</uri></binding>
+			<binding name="ustr"><literal>100%</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s6</uri></binding>
+			<binding name="ustr"><literal datatype="http://www.w3.org/2001/XMLSchema#string">ABC</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s1</uri></binding>
+			<binding name="ustr"><literal>FOO</literal></binding>
+		</result>
+</results>
+</sparql>

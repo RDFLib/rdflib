@@ -1,0 +1,2 @@
+PREFIX : <http://example/>
+SELECT (COUNT(*) AS ?count) {}

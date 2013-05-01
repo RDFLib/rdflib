@@ -1,0 +1,6 @@
+PREFIX : <http://example.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT ?s ?str WHERE {
+	?s :str ?str
+	FILTER CONTAINS(?str, "a")
+}

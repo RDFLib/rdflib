@@ -1,0 +1,216 @@
+@prefix : <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "SPARQL Protocol" ;
+    mf:entries
+    (
+		:query_post_form
+		:query_dataset_default_graphs_get
+		:query_dataset_default_graphs_post
+		:query_dataset_named_graphs_post
+		:query_dataset_named_graphs_get
+		:query_dataset_full
+		:query_multiple_dataset
+		:query_get
+		:query_content_type_select
+		:query_content_type_ask
+		:query_content_type_describe
+		:query_content_type_construct
+		:update_dataset_default_graph
+		:update_dataset_default_graphs
+		:update_dataset_named_graphs
+		:update_dataset_full
+		:update_post_form
+		:update_post_direct
+		:update_base_uri
+		:query_post_direct
+		:bad_query_method
+		:bad_multiple_queries
+		:bad_query_wrong_media_type
+		:bad_query_missing_form_type
+		:bad_query_missing_direct_type
+		:bad_query_non_utf8
+		:bad_query_syntax
+		:bad_update_get
+		:bad_multiple_updates
+		:bad_update_wrong_media_type
+		:bad_update_missing_form_type
+		:bad_update_non_utf8
+		:bad_update_syntax
+		:bad_update_dataset_conflict
+	) .
+
+:query_post_form rdf:type mf:ProtocolTest ;
+       mf:name    "query via URL-encoded POST" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:query_dataset_default_graphs_get rdf:type mf:ProtocolTest ;
+       mf:name    "GET query with protocol-specified default graph" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:query_dataset_default_graphs_post rdf:type mf:ProtocolTest ;
+       mf:name    "POST query with protocol-specified default graphs" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:query_dataset_named_graphs_post rdf:type mf:ProtocolTest ;
+       mf:name    "POST query with protocol-specified named graphs" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:query_dataset_named_graphs_get rdf:type mf:ProtocolTest ;
+       mf:name    "GET query with protocol-specified named graphs" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:query_dataset_full rdf:type mf:ProtocolTest ;
+       mf:name    "query with protocol-specified dataset (both named and default graphs)" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:query_multiple_dataset rdf:type mf:ProtocolTest ;
+       mf:name    "query specifying dataset in both query string and protocol; test for use of protocol-specified dataset" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:query_get rdf:type mf:ProtocolTest ;
+       mf:name    "query via GET" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:query_content_type_select rdf:type mf:ProtocolTest ;
+       mf:name    "query appropriate content type (expect one of: XML, JSON, CSV, TSV)" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:query_content_type_ask rdf:type mf:ProtocolTest ;
+       mf:name    "query appropriate content type (expect one of: XML, JSON)" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:query_content_type_describe rdf:type mf:ProtocolTest ;
+       mf:name    "query appropriate content type (expect one of: RDF/XML, Turtle, N-Triples, RDFa)" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:query_content_type_construct rdf:type mf:ProtocolTest ;
+       mf:name    "query appropriate content type (expect one of: RDF/XML, Turtle, N-Triples, RDFa)" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:update_dataset_default_graph rdf:type mf:ProtocolTest ;
+       mf:name    "update with protocol-specified default graph" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:update_dataset_default_graphs rdf:type mf:ProtocolTest ;
+       mf:name    "update with protocol-specified default graphs" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:update_dataset_named_graphs rdf:type mf:ProtocolTest ;
+       mf:name    "update with protocol-specified named graphs" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:update_dataset_full rdf:type mf:ProtocolTest ;
+       mf:name    "update with protocol-specified dataset (both named and default graphs)" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:update_post_form rdf:type mf:ProtocolTest ;
+       mf:name    "update via URL-encoded POST" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:update_post_direct rdf:type mf:ProtocolTest ;
+       mf:name    "update via POST directly" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:update_base_uri rdf:type mf:ProtocolTest ;
+       mf:name    "test for service-defined BASE URI (\"which MAY be the service endpoint\")" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:query_post_direct rdf:type mf:ProtocolTest ;
+       mf:name    "query via POST directly" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:bad_query_method rdf:type mf:ProtocolTest ;
+       mf:name    "invoke query operation with a method other than GET or POST" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:bad_multiple_queries rdf:type mf:ProtocolTest ;
+       mf:name    "invoke query operation with more than one query string" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:bad_query_wrong_media_type rdf:type mf:ProtocolTest ;
+       mf:name    "invoke query operation with a POST with media type that's not url-encoded or application/sparql-query" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:bad_query_missing_form_type rdf:type mf:ProtocolTest ;
+       mf:name    "invoke query operation with url-encoded body, but without application/x-www-url-form-urlencoded media type" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:bad_query_missing_direct_type rdf:type mf:ProtocolTest ;
+       mf:name    "invoke query operation with SPARQL body, but without application/sparql-query media type" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:bad_query_non_utf8 rdf:type mf:ProtocolTest ;
+       mf:name    "invoke query operation with direct POST, but with a non-UTF8 encoding (UTF-16)" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:bad_query_syntax rdf:type mf:ProtocolTest ;
+       mf:name    "invoke query operation with invalid query syntax (4XX result)" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:bad_update_get rdf:type mf:ProtocolTest ;
+       mf:name    "invoke update operation with GET" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:bad_multiple_updates rdf:type mf:ProtocolTest ;
+       mf:name    "invoke update operation with more than one update string" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:bad_update_wrong_media_type rdf:type mf:ProtocolTest ;
+       mf:name    "invoke update operation with a POST with media type that's not url-encoded or application/sparql-update" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:bad_update_missing_form_type rdf:type mf:ProtocolTest ;
+       mf:name    "invoke update operation with url-encoded body, but without application/x-www-url-form-urlencoded media type" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:bad_update_non_utf8 rdf:type mf:ProtocolTest ;
+       mf:name    "invoke update operation with direct POST, but with a non-UTF8 encoding" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:bad_update_syntax rdf:type mf:ProtocolTest ;
+       mf:name    "invoke update operation with invalid update syntax" ;
+       dawgt:approval dawgt:NotClassified ;
+       .
+
+:bad_update_dataset_conflict rdf:type mf:ProtocolTest ;
+       mf:name    "invoke update with both using-graph-uri/using-named-graph-uri parameter and USING/WITH clause" ;
+       dawgt:approval dawgt:NotClassified ;
+       .

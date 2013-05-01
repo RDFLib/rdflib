@@ -1,0 +1,4 @@
+PREFIX : <http://example.org/>
+SELECT ?s (UCASE(?str) AS ?ustr) WHERE {
+	?s :str ?str
+}

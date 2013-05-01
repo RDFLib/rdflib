@@ -1,0 +1,8 @@
+@prefix : <http://example.org/ns#> .
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+
+
+:x :list0 () .
+:x :list1 ("1"^^xsd:integer) .
+:x :list2 ("11"^^xsd:integer "22"^^xsd:integer) .
+:x :list3 ("111"^^xsd:integer "222"^^xsd:integer "333"^^xsd:integer) .

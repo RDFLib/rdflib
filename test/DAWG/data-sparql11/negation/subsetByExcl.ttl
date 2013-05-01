@@ -1,0 +1,5 @@
+@prefix ex: <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation#> .
+
+ex:lifeForm1 a ex:Mammal, ex:Animal .
+ex:lifeForm2 a ex:Reptile, ex:Animal .
+ex:lifeForm3 a ex:Insect, ex:Animal .

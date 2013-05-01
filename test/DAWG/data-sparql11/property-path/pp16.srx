@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="X"/>
+    <variable name="Y"/>
+  </head>
+  <results>
+    <result>
+      <binding name="X">
+        <uri>http://example.org/a</uri>
+      </binding>
+      <binding name="Y">
+        <uri>http://example.org/a</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="X">
+        <uri>http://example.org/a</uri>
+      </binding>
+      <binding name="Y">
+        <uri>http://example.org/b</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="X">
+        <uri>http://example.org/a</uri>
+      </binding>
+      <binding name="Y">
+        <uri>http://example.org/c</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="X">
+        <uri>http://example.org/b</uri>
+      </binding>
+      <binding name="Y">
+        <uri>http://example.org/b</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="X">
+        <uri>http://example.org/b</uri>
+      </binding>
+      <binding name="Y">
+        <uri>http://example.org/c</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="X">
+        <uri>http://example.org/c</uri>
+      </binding>
+      <binding name="Y">
+        <uri>http://example.org/c</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="X">
+        <uri>http://example.org/d</uri>
+      </binding>
+      <binding name="Y">
+        <uri>http://example.org/d</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="X">
+        <uri>http://example.org/d</uri>
+      </binding>
+      <binding name="Y">
+        <uri>http://example.org/e</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="X">
+        <uri>http://example.org/d</uri>
+      </binding>
+      <binding name="Y">
+        <uri>http://example.org/f</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="X">
+        <uri>http://example.org/e</uri>
+      </binding>
+      <binding name="Y">
+        <uri>http://example.org/e</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="X">
+        <uri>http://example.org/e</uri>
+      </binding>
+      <binding name="Y">
+        <uri>http://example.org/f</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="X">
+        <uri>http://example.org/f</uri>
+      </binding>
+      <binding name="Y">
+        <uri>http://example.org/e</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="X">
+        <uri>http://example.org/f</uri>
+      </binding>
+      <binding name="Y">
+        <uri>http://example.org/f</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="X">
+        <uri>http://example.org/h</uri>
+      </binding>
+      <binding name="Y">
+        <uri>http://example.org/h</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="X">
+        <literal>test</literal>
+      </binding>
+      <binding name="Y">
+        <literal>test</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

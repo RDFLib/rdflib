@@ -1,0 +1,6 @@
+PREFIX : <http://example.org/ns#>
+
+SELECT ?x
+{ ?x ?p '''x''' }
+
+

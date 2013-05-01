@@ -1,0 +1,190 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Algebra" ;
+    mf:entries
+    (   :nested-opt-1 
+        :nested-opt-2 
+        :opt-filter-1 
+        :opt-filter-2 
+        :opt-filter-3 
+        :filter-place-1 
+        :filter-place-2 
+        :filter-place-3 
+        :filter-nested-1 
+        :filter-nested-2 
+        :filter-scope-1 
+        :join-scope-1
+        :join-combo-1 
+        :join-combo-2
+    ) .
+
+:join-combo-1 a mf:QueryEvaluationTest ;
+   mf:name    "Join operator with OPTs, BGPs, and UNIONs" ;
+   rdfs:comment """Tests nested combination of Join with a BGP / OPT and a BGP / UNION""" ;
+      dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0096/21-dawg-minutes.html> ;
+    dawgt:approval dawgt:Approved ;
+         mf:action
+            [ qt:query  <join-combo-1.rq> ;
+              qt:data   <join-combo-graph-2.ttl> ] ;
+         mf:result  <join-combo-1.srx> .
+
+:join-combo-2 a mf:QueryEvaluationTest ;
+   mf:name    "Join operator with Graph and Union" ;
+   rdfs:comment """Tests combination of Join operator with Graph on LHS and Union on RHS""" ;
+      dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0096/21-dawg-minutes.html> ;
+    dawgt:approval dawgt:Approved ;
+         mf:action
+            [ qt:query  <join-combo-2.rq> ;
+              qt:graphData   <join-combo-graph-1.ttl>;
+              qt:data        <join-combo-graph-2.ttl> ] ;
+         mf:result  <join-combo-2.srx> .
+
+:nested-opt-1 rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Nested Optionals - 1" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/06/19-dawg-minutes.html> ;
+    rdfs:comment """Nested-optionals with a shared variable that does not appear in the middle pattern (a not well-formed query pattern as per "Semantics and Complexity" of SPARQL""" ;
+         mf:action
+            [ qt:query  <two-nested-opt.rq> ;
+              qt:data   <two-nested-opt.ttl> ] ;
+         mf:result  <two-nested-opt.srx> .
+
+:nested-opt-2 rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Nested Optionals - 2" ;
+         rdfs:comment "OPTIONALs parse in a left-associative manner" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/06/19-dawg-minutes.html> ;
+         mf:action
+            [ qt:query  <two-nested-opt-alt.rq> ;
+              qt:data   <two-nested-opt.ttl>  ] ;
+        mf:result  <two-nested-opt-alt.srx> .
+      
+
+:opt-filter-1 rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Optional-filter - 1" ;
+         rdfs:comment "A FILTER inside an OPTIONAL can reference a variable bound in the required part of the OPTIONAL" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/06/19-dawg-minutes.html> ;
+         mf:action
+            [ qt:query  <opt-filter-1.rq> ;
+              qt:data   <opt-filter-1.ttl>  ] ;
+        mf:result  <opt-filter-1.srx> .
+      
+
+:opt-filter-2 rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Optional-filter - 2 filters" ;
+     rdfs:comment "FILTERs inside an OPTIONAL can refer to variables from both the required and optional parts of the construct." ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/06/19-dawg-minutes.html> ;
+         mf:action
+            [ qt:query  <opt-filter-2.rq> ;
+              qt:data   <opt-filter-2.ttl>  ] ;
+        mf:result  <opt-filter-2.srx> .
+
+:opt-filter-3 rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Optional-filter - scope of variable" ;
+         rdfs:comment "FILTERs in an OPTIONAL do not extend to variables bound outside of the LeftJoin(...) operation" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/06/19-dawg-minutes.html> ;
+         mf:action
+            [ qt:query  <opt-filter-3.rq> ;
+              qt:data   <opt-filter-3.ttl>  ] ;
+        mf:result  <opt-filter-3.srx> .
+      
+
+:filter-place-1 rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Filter-placement - 1" ;
+        rdfs:comment "FILTER placed after the triple pattern that contains the variable tested" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/06/19-dawg-minutes.html> ;
+         mf:action
+            [ qt:query  <filter-placement-1.rq> ;
+              qt:data   <data-2.ttl>  ] ;
+        mf:result  <filter-placement-1.srx> .
+      
+
+:filter-place-2 rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Filter-placement - 2" ;
+         rdfs:comment "FILTERs are scoped to the nearest enclosing group - placement within that group does not matter" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/06/19-dawg-minutes.html> ;
+         mf:action
+            [ qt:query  <filter-placement-2.rq> ;
+              qt:data   <data-2.ttl>  ] ;
+        mf:result  <filter-placement-2.srx> .
+      
+
+:filter-place-3 rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Filter-placement - 3" ;
+         rdfs:comment "FILTERs are scoped to the nearest enclosing group - placement within that group does not matter" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/06/19-dawg-minutes.html> ;
+         mf:action
+            [ qt:query  <filter-placement-3.rq> ;
+              qt:data   <data-2.ttl>  ] ;
+        mf:result  <filter-placement-3.srx> .
+      
+
+:filter-nested-1 rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Filter-nested - 1" ;
+         rdfs:comment "A FILTER is in scope for variables bound at the same level of the query tree" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/06/19-dawg-minutes.html> ;
+         mf:action
+            [ qt:query  <filter-nested-1.rq> ;
+              qt:data   <data-1.ttl>  ] ;
+        mf:result  <filter-nested-1.srx> .
+      
+
+:filter-nested-2 rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Filter-nested - 2" ;
+         rdfs:comment "A FILTER in a group { ... } cannot see variables bound outside that group" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/06/19-dawg-minutes.html> ;
+         mf:action
+            [ qt:query  <filter-nested-2.rq> ;
+              qt:data   <data-1.ttl>  ] ;
+        mf:result  <filter-nested-2.srx> .
+       
+
+:filter-scope-1 rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Filter-scope - 1" ;
+         rdfs:comment "FILTERs in an OPTIONAL do not extend to variables bound outside of the LeftJoin(...) operation" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/06/19-dawg-minutes.html> ;
+         mf:action
+            [ qt:query  <filter-scope-1.rq> ;
+              qt:data   <data-2.ttl>  ] ;
+        mf:result  <filter-scope-1.srx> .
+      
+
+:join-scope-1 rdf:type mf:QueryEvaluationTest ;
+       mf:name      "Join scope - 1" ;
+       rdfs:comment "Variables have query scope." ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/06/19-dawg-minutes.html> ;
+         mf:action
+            [ qt:query  <var-scope-join-1.rq> ;
+              qt:data   <var-scope-join-1.ttl>  ] ;
+       mf:result  <var-scope-join-1.srx> .

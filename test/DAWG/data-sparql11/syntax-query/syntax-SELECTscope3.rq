@@ -1,0 +1,7 @@
+SELECT *
+WHERE {
+  {SELECT (1 AS ?X ) {}
+  }
+  {SELECT (1 AS ?X ) {}
+  }
+}

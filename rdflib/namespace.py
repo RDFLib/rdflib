@@ -168,7 +168,7 @@ class _RDFNamespace(ClosedNamespace):
 
                 # RDF Classes
                 "Seq", "Bag", "Alt", "Statement", "Property",
-                "XMLLiteral", "HTML", "LangString", "List", "PlainLiteral",
+                "List", "PlainLiteral",
 
                 # RDF Properties
                 "subject", "predicate", "object", "type",
@@ -176,7 +176,10 @@ class _RDFNamespace(ClosedNamespace):
                 # and _n where n is a non-negative integer
 
                 # RDF Resources
-                "nil"]
+                "nil",
+
+                # Added in RDF 1.1
+                "XMLLiteral", "HTML", "langString"]
         )
 
     def term(self, name):

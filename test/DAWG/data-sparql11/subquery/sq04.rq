@@ -1,0 +1,6 @@
+select ?x 
+where {
+graph ?g {
+{select * where {?x ?p ?y}}
+}
+}

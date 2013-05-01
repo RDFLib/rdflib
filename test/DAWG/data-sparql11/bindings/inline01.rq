@@ -1,0 +1,10 @@
+PREFIX dc:   <http://purl.org/dc/elements/1.1/> 
+PREFIX :     <http://example.org/book/> 
+PREFIX ns:   <http://example.org/ns#> 
+
+SELECT ?book ?title ?price
+{
+   VALUES ?book { :book1 }
+   ?book dc:title ?title ;
+         ns:price ?price .
+}

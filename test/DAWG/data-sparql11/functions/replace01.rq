@@ -1,0 +1,5 @@
+PREFIX : <http://example.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT ?s (REPLACE(?str,"[^a-z0-9]", "-") AS ?new) WHERE {
+	?s :str ?str
+}

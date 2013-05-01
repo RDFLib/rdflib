@@ -5,6 +5,7 @@ from rdflib.namespace import Namespace  # required for doctests
 n = Namespace('xxx')
 del n
 from rdflib.py3compat import format_doctest_out
+
 __doc__ = format_doctest_out("""\
 Instantiating Graphs with default store (IOMemory) and default identifier
 (a BNode):
@@ -15,19 +16,7 @@ Instantiating Graphs with default store (IOMemory) and default identifier
     >>> g.identifier.__class__
     <class 'rdflib.term.BNode'>
 
-Instantiating Graphs with a specific kind of store (IOMemory) and a default
-identifier (a BNode):
-
-Other store kinds: Sleepycat, MySQL, SQLite
-
-    >>> store = plugin.get('IOMemory', Store)()
-    >>> store.__class__.__name__
-    'IOMemory'
-    >>> graph = Graph(store)
-    >>> graph.store.__class__
-    <class 'rdflib.plugins.memory.IOMemory'>
-
-Instantiating Graphs with Sleepycat store and an identifier -
+Instantiating Graphs with a IOMemory store and an identifier -
 <http://rdflib.net>:
 
     >>> g = Graph('IOMemory', URIRef("http://rdflib.net"))
@@ -35,7 +24,14 @@ Instantiating Graphs with Sleepycat store and an identifier -
     rdflib.term.URIRef(%(u)s'http://rdflib.net')
     >>> str(g) # doctest: +NORMALIZE_WHITESPACE
     "<http://rdflib.net> a rdfg:Graph;rdflib:storage
-        [a rdflib:Store;rdfs:label 'IOMemory']."
+     [a rdflib:Store;rdfs:label 'IOMemory']."
+
+Some stores require pre-configuration (for example DB access details),
+you can get the store plugin directly
+
+    store = plugin.get('MyDBStore', Store)()
+    store.setConfiguration('blah')
+    graph = Graph(store=store)
 
 Creating a ConjunctiveGraph - The top level container for all named Graphs
 in a 'database':
@@ -47,7 +43,7 @@ in a 'database':
 Adding / removing reified triples to Graph and iterating over it directly or
 via triple pattern:
 
-    >>> g = Graph('IOMemory')
+    >>> g = Graph()
     >>> statementId = BNode()
     >>> print(len(g))
     0
@@ -167,11 +163,11 @@ Parsing N3 from a string
 
 Using Namespace class:
 
-    >>> RDFLib = Namespace('http://rdflib.net')
+    >>> RDFLib = Namespace('http://rdflib.net/')
     >>> RDFLib.ConjunctiveGraph
-    rdflib.term.URIRef(%(u)s'http://rdflib.netConjunctiveGraph')
+    rdflib.term.URIRef(%(u)s'http://rdflib.net/ConjunctiveGraph')
     >>> RDFLib['Graph']
-    rdflib.term.URIRef(%(u)s'http://rdflib.netGraph')
+    rdflib.term.URIRef(%(u)s'http://rdflib.net/Graph')
 
 """)
 
@@ -1164,8 +1160,8 @@ class ConjunctiveGraph(Graph):
 
     def quads(self, pattern=None):
         """Iterate over all the quads in the entire conjunctive graph"""
-        if pattern is None: 
-            s,p,o = (None, None, None)
+        if pattern is None:
+            s, p, o = (None, None, None)
         else:
             s, p, o = pattern
         for (s, p, o), cg in self.store.triples((s, p, o), context=None):

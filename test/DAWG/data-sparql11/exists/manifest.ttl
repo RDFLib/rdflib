@@ -1,0 +1,82 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/exists/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix sparql:  <http://www.w3.org/ns/sparql#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Positive Exists" ;
+    mf:entries
+    ( 
+    :exists01
+    :exists02
+    :exists03
+    :exists04
+    :exists05
+  ).
+
+
+:exists01 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Exists with one constant";
+	mf:feature sparql:exists ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_2> ;
+    mf:action
+         [ qt:query  <exists01.rq> ;
+           qt:data   <exists01.ttl> ] ;
+    mf:result  <exists01.srx>
+    .
+    
+    
+:exists02 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Exists with ground triple";
+	mf:feature sparql:exists ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_2> ;
+    mf:action
+         [ qt:query  <exists02.rq> ;
+           qt:data   <exists01.ttl> ] ;
+    mf:result  <exists02.srx>  
+    .
+    
+:exists03 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Exists within graph pattern";
+	mf:feature sparql:exists ;
+    rdfs:comment    "Checks that exists is interpreted within named graph" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_2> ;
+    mf:action
+         [ qt:query  <exists03.rq> ;
+           qt:data   <exists01.ttl> ;
+           qt:graphData   <exists02.ttl> 
+          ] ;
+    mf:result  <exists03.srx>  
+    .    
+   
+    
+ :exists04 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Nested positive exists";
+	mf:feature sparql:exists ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_2> ;
+    mf:action
+         [ qt:query  <exists04.rq> ;
+           qt:data   <exists01.ttl> ;
+          ] ;
+    mf:result  <exists04.srx>  
+    .       
+    
+:exists05 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Nested negative exists in positive exists";
+	mf:feature sparql:exists ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_2> ;
+    mf:action
+         [ qt:query  <exists05.rq> ;
+           qt:data   <exists01.ttl> ;
+          ] ;
+    mf:result  <exists05.srx>  
+    .           
+    

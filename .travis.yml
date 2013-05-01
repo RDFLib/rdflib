@@ -3,34 +3,37 @@ language: python
 # whitelist
 branches:
   only:
-    - master	
-    - rdf11
+    - master
+    - reunification
+
 python:
-    - "2.5"
-    - "2.6"
-    - "2.7"
-    - "3.2"
-    - "3.3"
+    - 2.5
+    - 2.6
+    - 2.7
+    - 3.2
+    - 3.3
     # - "pypy"
 
 install:
     # iodate0.4.8 is problematic with Pypy, use fixed version
-    - if [[ $TRAVIS_PYTHON_VERSION == '2.5' ]]; then pip install --use-mirrors "simplejson"; fi
+    - if [[ $TRAVIS_PYTHON_VERSION == '2.5' ]]; then pip install --use-mirrors ordereddict; pip install --use-mirrors "simplejson"; pip install --use-mirrors "elementtree"; fi
+    - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install --use-mirrors ordereddict; fi
     - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then pip install --use-mirrors -r requirements.py2.txt; fi
     - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '3' ]]; then pip install --use-mirrors -r requirements.py3.txt; fi
-#    - pip install -r requirements.txt --use-mirrors
-    - if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then pip install --upgrade "https://bitbucket.org/gjhiggins/isodate/downloads/isodate-0.4.8.tar.gz"; fi
+    - if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then pip install --upgrade "https://bitbucket.org/gjhiggins/isodate/downloads/isodate-0.4.8.tar.gz"; pip install --use-mirrors "elementtree"; fi
     - python setup.py install
+
+before_script:
+    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then flake8 --exclude=pyRdfa,extras,host,transform,rdfs,sparql,results,pyMicrodata --exit-zero rdflib; fi
+
 script:
     # Must run the tests in build/src so python3 doesn't get confused and run
     # the python2 code from the current directory instead of the installed
     # 2to3 version in build/src.
     - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then nosetests; fi
     - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '3' ]]; then nosetests --where=./build/src; fi
-before_script:
-    - "flake8 --exclude=pyRdfa,extras,host,transform,rdfs,sparql,results,pyMicrodata --exit-zero rdflib"
-notifications:
-  irc:
-    channels: "irc.freenode.org#rdflib"
-    on_success: change
-    on_failure: change
+# notifications:
+#   irc:
+#     channels: "irc.freenode.org#rdflib"
+#     on_success: change
+#     on_failure: change

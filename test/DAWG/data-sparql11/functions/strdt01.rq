@@ -1,0 +1,6 @@
+PREFIX : <http://example.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT ?s (STRDT(?str,xsd:string) AS ?str1) WHERE {
+	?s :str ?str
+	FILTER(LANGMATCHES(LANG(?str), "en"))
+}

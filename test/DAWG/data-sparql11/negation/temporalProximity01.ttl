@@ -1,0 +1,14 @@
+@prefix ex:  <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation#> .
+@prefix dc:  <http://purl.org/dc/elements/1.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:examination1 a ex:PhysicalExamination;
+                dc:date "2010-01-10"^^xsd:date ;
+                ex:precedes ex:operation1 ;
+                ex:follows ex:examination2  .
+ex:operation1   a ex:SurgicalProcedure;
+                dc:date "2010-01-15"^^xsd:date;
+                ex:follows ex:examination1, ex:examination2 .
+ex:examination2 a ex:PhysicalExamination;
+                dc:date "2010-01-02"^^xsd:date;
+                ex:precedes ex:operation1, ex:examination1 .

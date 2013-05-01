@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="s"/>
+    <variable name="min"/>
+  </head>
+  <results>
+    <result>
+      <binding name="s">
+        <uri>http://www.example.org/ints</uri>
+      </binding>
+      <binding name="min">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://www.example.org/decimals</uri>
+      </binding>
+      <binding name="min">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">1.0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://www.example.org/doubles</uri>
+      </binding>
+      <binding name="min">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">1.0E2</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://www.example.org/mixed1</uri>
+      </binding>
+      <binding name="min">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://www.example.org/mixed2</uri>
+      </binding>
+      <binding name="min">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">2.0E-1</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

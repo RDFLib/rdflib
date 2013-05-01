@@ -1,0 +1,9 @@
+PREFIX :        <http://example/>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?X (SAMPLE(?v) AS ?S)
+{
+  ?s :p ?v .
+  OPTIONAL { ?s :q ?w }
+}
+GROUP BY (COALESCE(?w, "1605-11-05"^^xsd:date) AS ?X) 

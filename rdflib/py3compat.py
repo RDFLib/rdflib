@@ -121,3 +121,11 @@ else:
 
     def sign(n):
         return cmp(n, 0)
+
+
+def decodeStringEscape(s):
+    if not PY3:
+        return s.decode('string-escape')
+    else:
+        # I love py3, isn't this marvellously convenient?
+        return bytes(s, "utf-8").decode("unicode_escape")

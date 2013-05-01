@@ -1,0 +1,3 @@
+@prefix : <http://example.org/> .
+
+:g1 :p "y" .

@@ -1,0 +1,15 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:in="http://www.example.org/instance#"
+    xmlns:ex="http://www.example.org/schema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" > 
+  <rdf:Description rdf:about="http://www.example.org/instance#a">
+    <ex:p rdf:resource="http://www.example.org/instance#b"/>
+    <ex:q rdf:resource="http://www.example.org/instance#c"/>
+  </rdf:Description>
+</rdf:RDF>
+
+
+
+
+

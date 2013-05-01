@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+<head>
+	<variable name="str"/>
+	<variable name="len"/>
+</head>
+<results>
+		<result>
+			<binding name="str"><literal xml:lang="en">bar</literal></binding>
+			<binding name="len"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal></binding>
+		</result>
+		<result>
+			<binding name="str"><literal>食べ物</literal></binding>
+			<binding name="len"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal></binding>
+		</result>
+		<result>
+			<binding name="str"><literal datatype="http://www.w3.org/2001/XMLSchema#string">DEF</literal></binding>
+			<binding name="len"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal></binding>
+		</result>
+		<result>
+			<binding name="str"><literal>BAZ</literal></binding>
+			<binding name="len"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal></binding>
+		</result>
+		<result>
+			<binding name="str"><literal>100%</literal></binding>
+			<binding name="len"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">4</literal></binding>
+		</result>
+		<result>
+			<binding name="str"><literal datatype="http://www.w3.org/2001/XMLSchema#string">abc</literal></binding>
+			<binding name="len"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal></binding>
+		</result>
+		<result>
+			<binding name="str"><literal>foo</literal></binding>
+			<binding name="len"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal></binding>
+		</result>
+</results>
+</sparql>

@@ -1,0 +1,7 @@
+@prefix ex: <http://example.org/ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+ex:a ex:b1 ex:c1 .
+ex:b1 rdfs:subPropertyOf ex:b2 .
+ex:b2 rdfs:domain ex:c2 .
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+<head>
+	<variable name="s"/>
+	<variable name="str"/>
+	<variable name="substr"/>
+</head>
+<results>
+		<result>
+			<binding name="s"><uri>http://example.org/s2</uri></binding>
+			<binding name="str"><literal xml:lang="en">bar</literal></binding>
+			<binding name="substr"><literal xml:lang="en">ar</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s4</uri></binding>
+			<binding name="str"><literal>食べ物</literal></binding>
+			<binding name="substr"><literal>べ物</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s7</uri></binding>
+			<binding name="str"><literal datatype="http://www.w3.org/2001/XMLSchema#string">DEF</literal></binding>
+			<binding name="substr"><literal datatype="http://www.w3.org/2001/XMLSchema#string">EF</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s3</uri></binding>
+			<binding name="str"><literal>BAZ</literal></binding>
+			<binding name="substr"><literal>AZ</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s5</uri></binding>
+			<binding name="str"><literal>100%</literal></binding>
+			<binding name="substr"><literal>00%</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s6</uri></binding>
+			<binding name="str"><literal datatype="http://www.w3.org/2001/XMLSchema#string">abc</literal></binding>
+			<binding name="substr"><literal datatype="http://www.w3.org/2001/XMLSchema#string">bc</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s1</uri></binding>
+			<binding name="str"><literal>foo</literal></binding>
+			<binding name="substr"><literal>oo</literal></binding>
+		</result>
+</results>
+</sparql>

@@ -1,0 +1,5 @@
+@prefix : <http://example.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+:a foaf:interest "SPARQL 1.1 Basic Federated Query" .
+:b foaf:interest  "SPARQL 1.1 Query" .

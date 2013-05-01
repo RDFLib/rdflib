@@ -1,0 +1,53 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/reduced/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "REDUCED" ;
+    mf:entries
+    ( 
+      :reduced-1
+      :reduced-2
+    ) .
+
+:reduced-1 rdf:type mf:QueryEvaluationTest ;
+    mf:resultCardinality mf:LaxCardinality ;
+    mf:name    "SELECT REDUCED *" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007OctDec/att-0069/13-dawg-minutes.html> ;
+    #dawgt:approval dawgt:NotApproved ;
+    
+    mf:action
+            [ qt:query <reduced-1.rq> ;
+              qt:data <reduced-star.ttl> ] ;
+    mf:result <reduced-1.srx> .
+
+:reduced-2 rdf:type mf:QueryEvaluationTest ;
+    mf:resultCardinality mf:LaxCardinality ;
+    mf:name    "SELECT REDUCED ?x with strings" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007OctDec/att-0069/13-dawg-minutes.html> ;
+    #dawgt:approval dawgt:NotApproved ;
+    mf:action
+            [ qt:query  <reduced-2.rq> ;
+              qt:data   <reduced-str.ttl> ] ;
+    mf:result  <reduced-2.srx> .
+

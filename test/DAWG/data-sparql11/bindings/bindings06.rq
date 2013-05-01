@@ -1,0 +1,10 @@
+# bindings with two variables and two sets of values
+
+PREFIX : <http://example.org/> 
+PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
+SELECT ?s ?p1 ?o1
+{
+  ?s ?p1 ?o1 .
+} BINDINGS ?p1 {
+ (foaf:knows)
+}

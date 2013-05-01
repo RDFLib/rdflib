@@ -1,0 +1,167 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-insert/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix ut:     <http://www.w3.org/2009/sparql/tests/test-update#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "Tests for SPARQL UPDATE" ;
+    mf:entries
+    (
+	:dawg-delete-insert-01
+	:dawg-delete-insert-01b
+	:dawg-delete-insert-01c
+	:dawg-delete-insert-02
+	:dawg-delete-insert-03
+	:dawg-delete-insert-03b
+	:dawg-delete-insert-04
+	:dawg-delete-insert-04b
+	:dawg-delete-insert-05
+	:dawg-delete-insert-05b
+	:dawg-delete-insert-06
+	:dawg-delete-insert-06b
+	:dawg-delete-insert-07
+	:dawg-delete-insert-07b
+	:dawg-delete-insert-08
+	:dawg-delete-insert-09
+   ).
+
+:dawg-delete-insert-01 a ut:UpdateEvaluationTest ;
+    mf:name    "DELETE INSERT 1" ;
+    rdfs:comment "This update request reverts all foaf:knows relations" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action [ ut:request <delete-insert-01.ru> ; 
+                ut:data <delete-insert-pre-01.ttl>
+              ] ;
+    mf:result [ ut:data <delete-insert-post-01.ttl>
+              ] .
+
+:dawg-delete-insert-01b a ut:UpdateEvaluationTest ;
+    mf:name    "DELETE INSERT 1b" ;
+    rdfs:comment "This test case, as a variant of dawg-delete-insert-01, shoes that DELETE followed by INSERT is different from DELETE INSERT in a single operation" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action [ ut:request <delete-insert-01b.ru> ; 
+                ut:data <delete-insert-pre-01.ttl>
+              ] ;
+    mf:result [ ut:data <delete-insert-post-01b.ttl>
+              ] .
+
+:dawg-delete-insert-01c a ut:UpdateEvaluationTest ;
+    mf:name    "DELETE INSERT 1c" ;
+    rdfs:comment "This test case, as a variant of dawg-delete-insert-01, shoes that INSERT followed by DELETE is different from DELETE INSERT in a single operation." ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action [ ut:request <delete-insert-01c.ru> ; 
+                ut:data <delete-insert-pre-01.ttl>
+              ] ;
+    mf:result [ ut:data <delete-insert-post-01b.ttl>
+              ] .
+
+
+:dawg-delete-insert-02 a ut:UpdateEvaluationTest ;
+    mf:name    "DELETE INSERT 2" ;
+    rdfs:comment "This deletes all foaf:knows relations from anyone named 'Alan'." ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action [ ut:request <delete-insert-02.ru> ; 
+                ut:data <delete-insert-pre-01.ttl>
+              ] ;
+    mf:result [ ut:data <delete-insert-post-02.ttl>
+              ] .
+
+:dawg-delete-insert-03
+    a mf:NegativeSyntaxTest11 ;
+    mf:name    "DELETE INSERT 3" ;
+    rdfs:comment "This deletes all foaf:knows relations from anyone named 'Alan' using an unnamed bnode as wildcard" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action <delete-insert-03.ru> .
+
+:dawg-delete-insert-03b
+    a mf:NegativeSyntaxTest11 ;
+    mf:name    "DELETE INSERT 3b" ;
+    rdfs:comment "This deletes all foaf:knows relations from anyone named 'Alan' using a named bnode as wildcard" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action <delete-insert-03b.ru> .
+
+:dawg-delete-insert-04 a ut:UpdateEvaluationTest ;
+    mf:name    "DELETE INSERT 4" ;
+    rdfs:comment "This deletes all foaf:knows relations from anyone named 'Alan' using a naive rewriting, as suggested in http://lists.w3.org/Archives/Public/public-rdf-dawg/2011JanMar/0305.html" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action [ ut:request <delete-insert-04.ru> ; 
+                ut:data <delete-insert-pre-01.ttl>
+              ] ;
+    mf:result [ ut:data <delete-insert-post-02.ttl>
+              ] .
+
+:dawg-delete-insert-04b a ut:UpdateEvaluationTest ;
+    mf:name    "DELETE INSERT 4b" ;
+    rdfs:comment "This deletes all foaf:knows relations from anyone named 'Alan' using a simpler rewriting than dawg-delete-insert-04" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action [ ut:request <delete-insert-04b.ru> ; 
+                ut:data <delete-insert-pre-01.ttl>
+              ] ;
+    mf:result [ ut:data <delete-insert-post-02.ttl>
+              ] .
+
+:dawg-delete-insert-05
+    a mf:NegativeSyntaxTest11 ;
+    mf:name    "DELETE INSERT 5" ;
+    rdfs:comment "This deletes all foaf:knows relations from anyone named 'Alan' and inserts that all 'Alans' know themselves only." ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action <delete-insert-05.ru> .
+
+:dawg-delete-insert-05b a ut:UpdateEvaluationTest ;
+    mf:name    "DELETE INSERT 5b" ;
+    rdfs:comment "This deletes all foaf:knows relations from anyone named 'Alan' and inserts that all 'Alans' know themselves only, using a rewriting analogous to :dawg-delete-insert-04b" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action [ ut:request <delete-insert-05b.ru> ; 
+                ut:data <delete-insert-pre-01.ttl>
+              ] ;
+    mf:result [ ut:data <delete-insert-post-05.ttl>
+              ] .
+
+:dawg-delete-insert-06
+    a mf:NegativeSyntaxTest11 ;
+    mf:name    "DELETE INSERT 6" ;
+    rdfs:comment "dawg-delete-insert-06 and dawg-delete-insert-06b show that the rewriting in dawg-delete-insert-05b.ru isn't equivalent to dawg-delete-insert-05.ru in case Alan doesn't know anybody." ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action <delete-insert-05.ru> .
+
+:dawg-delete-insert-06b a ut:UpdateEvaluationTest ;
+    mf:name    "DELETE INSERT 6b" ;
+    rdfs:comment "dawg-delete-insert-06 and dawg-delete-insert-06b show that the rewriting in dawg-delete-insert-05b.ru isn't equivalent to dawg-delete-insert-05.ru in case Alan doesn't know anybody." ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action [ ut:request <delete-insert-05b.ru> ; 
+                ut:data <delete-insert-pre-06.ttl>
+              ] ;
+    mf:result [ ut:data <delete-insert-pre-06.ttl>
+              ] .
+
+:dawg-delete-insert-07
+    a mf:NegativeSyntaxTest11 ;
+    mf:name    "DELETE INSERT 7" ;
+    rdfs:comment "This deletes all foaf:knows relations from anyone named 'Alan' and inserts a single foaf:knows triple with a blank node as object for 'Alan'. This shows the different behavior of bnodes in INSERT (similar to CONSTRUCT) and DELETE (bnodes act as wildcards) templates." ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action <delete-insert-07.ru> .
+
+:dawg-delete-insert-07b 
+    a mf:NegativeSyntaxTest11 ;
+    mf:name    "DELETE INSERT 7b" ;
+    rdfs:comment "This deletes all foaf:knows relations from anyone named 'Alan' and replaces them by bnodes. This shows the different behavior of bnodes in INSERT (similar to CONSTRUCT) and DELETE (bnodes act as wildcards) templates. As opposed to test case dawg-delete-insert-7, note that the result graph in this example is non-lean." ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action <delete-insert-07b.ru> .
+
+
+:dawg-delete-insert-08
+    a mf:NegativeSyntaxTest11 ;
+    mf:name    "DELETE INSERT 8" ;
+    rdfs:comment "This DELETE test was first brought up in http://lists.w3.org/Archives/Public/public-rdf-dawg/2011JanMar/0290.html. It demonstrates how unbound variables (from an OPTIONAL) are handled in DELETE templates" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action <delete-insert-08.ru> .
+
+:dawg-delete-insert-09
+    a mf:NegativeSyntaxTest11 ;
+    mf:name    "DELETE INSERT 9" ;
+    rdfs:comment "This DELETE test was first brought up in http://lists.w3.org/Archives/Public/public-rdf-dawg/2011JanMar/0317.html. It demonstrates the behavior of shared bnodes in a DELETE template." ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action <delete-insert-09.ru> .

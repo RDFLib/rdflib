@@ -1,0 +1,1 @@
+SELECT (GROUP_CONCAT(?x; SEPARATOR=';') AS ?y) {}

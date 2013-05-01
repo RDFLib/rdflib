@@ -1,0 +1,291 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+# $Id: manifest.ttl,v 1.13 2007/09/05 17:32:28 lfeigenb Exp $
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/expr-builtin/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment  "DAWG Expression tests: Built-ins" ;
+    mf:entries
+    ( :dawg-str-1 :dawg-str-2 :dawg-str-3 :dawg-str-4
+      :dawg-isBlank-1 :dawg-isLiteral-1 :dawg-datatype-1 
+      ## remove test - chnages for SPARQL 1.1 and RDF 1.1 (rdf:langString)
+      ##:dawg-datatype-2 
+      :dawg-datatype-3
+      :dawg-lang-1 :dawg-lang-2 :dawg-lang-3 :dawg-isURI-1
+      :dawg-isIRI-1 :dawg-langMatches-1 :dawg-langMatches-2 
+      :dawg-langMatches-3 :dawg-langMatches-4 :dawg-langMatches-basic
+      :lang-case-insensitive-eq
+      :lang-case-insensitive-ne
+      :sameTerm-simple :sameTerm-eq :sameTerm-not-eq
+    ).
+
+:dawg-isLiteral-1 a mf:QueryEvaluationTest ;
+     mf:name    "isLiteral" ;
+     mf:action
+	[ qt:query  <q-isliteral-1.rq> ;
+	  qt:data   <data-builtin-2.ttl> ] ;
+     mf:result  <result-isliteral-1.ttl> ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0087/14-dawg-minutes.html> .
+
+:dawg-str-1 a mf:QueryEvaluationTest ;
+     mf:name    "str-1" ;
+     mf:action
+	[ qt:query  <q-str-1.rq> ;
+	  qt:data   <data-builtin-1.ttl> ] ;
+     mf:result  <result-str-1.ttl> ;
+     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0006> ;
+     dawgt:approval dawgt:Approved .
+
+:dawg-str-2 a mf:QueryEvaluationTest ;
+     mf:name    "str-2" ;
+     mf:action
+	[ qt:query  <q-str-2.rq> ;
+	  qt:data   <data-builtin-1.ttl> ] ;
+     mf:result  <result-str-2.ttl> ;
+     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0006> ;
+     dawgt:approval dawgt:Approved .
+
+
+:dawg-str-3 a mf:QueryEvaluationTest ;
+     mf:name    "str-3" ;
+     mf:action
+	[ qt:query  <q-str-3.rq> ;
+	  qt:data   <data-builtin-1.ttl> ] ;
+     mf:result  <result-str-3.ttl> ;
+     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0006> ;
+     dawgt:approval dawgt:Approved .
+
+
+:dawg-str-4 a mf:QueryEvaluationTest ;
+     mf:name    "str-4" ;
+     mf:action
+	[ qt:query  <q-str-4.rq> ;
+	  qt:data   <data-builtin-1.ttl> ] ;
+     mf:result  <result-str-4.ttl> ;
+     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0006> ;
+     dawgt:approval dawgt:Approved .
+
+
+:dawg-isBlank-1 a mf:QueryEvaluationTest ;
+     mf:name    "isBlank-1" ;
+     mf:action
+	[ qt:query  <q-blank-1.rq> ;
+	  qt:data   <data-builtin-1.ttl> ] ;
+     mf:result  <result-blank-1.ttl> ;
+     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0006> ;
+     dawgt:approval dawgt:Approved .
+
+
+:dawg-datatype-1 a mf:QueryEvaluationTest ;
+     mf:name    "datatype-1" ;
+     mf:action
+	[ qt:query  <q-datatype-1.rq> ;
+	  qt:data   <data-builtin-1.ttl> ] ;
+     mf:result  <result-datatype-1.ttl> ;
+     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0006> ;
+     dawgt:approval dawgt:Approved .
+
+
+:dawg-datatype-2 a mf:QueryEvaluationTest ;
+    mf:name "datatype-2 : Literals with a datatype" ;
+    rdfs:comment "updated from original test case: eliminated ordering from test" ;
+    mf:action
+        [ qt:query  <q-datatype-2.rq> ;
+	  qt:data   <data-builtin-2.ttl> ] ;
+    mf:result  <result-datatype-2.srx> ;
+     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0006> ;
+     dawgt:approval dawgt:Approved .
+
+
+:dawg-datatype-3 a mf:QueryEvaluationTest ;
+    mf:name "datatype-3 : Literals with a datatype of xsd:string" ;
+    rdfs:comment "updated from original test case: eliminated ordering from test" ;
+    mf:action
+	[ qt:query  <q-datatype-3.rq> ;
+          qt:data   <data-builtin-2.ttl> ] ;
+    mf:result  <result-datatype-3.srx> ;
+     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0006> ;
+     dawgt:approval dawgt:Approved .
+
+
+:dawg-lang-1 a mf:QueryEvaluationTest ;
+    mf:name "lang-1 : Literals with a lang tag of some kind" ;
+    rdfs:comment "updated from original test case: eliminated ordering from test" ;
+    mf:action
+	[ qt:query  <q-lang-1.rq> ;
+	  qt:data   <data-builtin-2.ttl> ] ;
+    mf:result  <result-lang-1.srx> ;
+     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0006> ;
+     dawgt:approval dawgt:Approved .
+
+
+:dawg-lang-2 a mf:QueryEvaluationTest ;
+    mf:name "lang-2 : Literals with a lang tag of ''" ;
+    rdfs:comment "updated from original test case: eliminated ordering from test" ;
+    mf:action
+	[ qt:query  <q-lang-2.rq> ;
+          qt:data   <data-builtin-2.ttl> ] ;
+    mf:result  <result-lang-2.srx> ;
+     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0006> ;
+     dawgt:approval dawgt:Approved .
+
+
+:dawg-lang-3 a mf:QueryEvaluationTest ;
+    mf:name "lang-3 : Graph matching with lang tag being a different case" ;
+    rdfs:comment "updated from original test case: eliminated ordering from test" ;
+    mf:action
+	[ qt:query  <q-lang-3.rq> ;
+          qt:data   <data-builtin-2.ttl> ] ;
+    mf:result  <result-lang-3.srx> ;
+     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0006> ;
+     dawgt:approval dawgt:Approved .
+
+
+:dawg-isURI-1 a mf:QueryEvaluationTest ;
+    mf:name    "isURI-1" ;
+    mf:action
+	[ qt:query  <q-uri-1.rq> ;
+          qt:data   <data-builtin-1.ttl> ] ;
+    mf:result  <result-uri-1.ttl> ;
+     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0006> ;
+     dawgt:approval dawgt:Approved .
+
+
+:dawg-isIRI-1 a mf:QueryEvaluationTest ;
+    mf:name    "isIRI-1" ;
+    mf:action
+       [ qt:query  <q-iri-1.rq> ;
+	 qt:data   <data-builtin-1.ttl> ] ;
+    # NB same result as before.
+    mf:result  <result-iri-1.ttl> ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0087/14-dawg-minutes.html> .
+
+
+:dawg-langMatches-1 a mf:QueryEvaluationTest ;
+    mf:name    "LangMatches-1" ;
+    rdfs:comment "langMatches(lang(?v), 'en-GB') matches 'abc'@en-gb" ;
+    mf:action
+	[ qt:query  <q-langMatches-1.rq> ;
+          qt:data   <data-langMatches.ttl> ] ;
+    mf:result  <result-langMatches-1.ttl> ;
+     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0006> ;
+     dawgt:approval dawgt:Approved .
+
+
+:dawg-langMatches-2 a mf:QueryEvaluationTest ;
+    mf:name    "LangMatches-2" ;
+    rdfs:comment "langMatches(lang(?v), 'en') matches 'abc'@en, 'abc'@en-gb" ;
+    mf:action
+	[ qt:query  <q-langMatches-2.rq> ;
+          qt:data   <data-langMatches.ttl> ] ;
+    mf:result  <result-langMatches-2.ttl> ;
+     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0006> ;
+     dawgt:approval dawgt:Approved .
+
+
+:dawg-langMatches-3 a mf:QueryEvaluationTest ;
+    mf:name    "LangMatches-3" ;
+    rdfs:comment "langMatches(lang(?v), '*') matches 'abc'@en, 'abc'@en-gb, 'abc'@fr" ;
+    mf:action
+	[ qt:query  <q-langMatches-3.rq> ;
+          qt:data   <data-langMatches.ttl> ] ;
+    mf:result  <result-langMatches-3.ttl> ;
+     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0006> ;
+     dawgt:approval dawgt:Approved .
+
+
+:dawg-langMatches-4 a mf:QueryEvaluationTest ;
+    mf:name    "LangMatches-4" ;
+    rdfs:comment "! langMatches(lang(?v), '*') matches 'abc'" ;
+    mf:action
+	[ qt:query  <q-langMatches-4.rq> ;
+          qt:data   <data-langMatches.ttl> ] ;
+    mf:result  <result-langMatches-4.ttl> ;
+     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0006> ;
+     dawgt:approval dawgt:Approved .
+
+:dawg-langMatches-basic a mf:QueryEvaluationTest ;
+    mf:name    "LangMatches-basic" ;
+    rdfs:comment "the basic range 'de-de' does not match 'de-Latn-de'" ;
+    mf:action
+	[ qt:query  <q-langMatches-de-de.rq> ;
+          qt:data   <data-langMatches-de.ttl> ] ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0087/14-dawg-minutes.html> ;
+    mf:result  <result-langMatches-de.ttl> .
+
+:lang-case-insensitive-eq a mf:QueryEvaluationTest ;
+    mf:name    "lang-case-insensitive-eq" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/06/19-dawg-minutes.html> ;
+	rdfs:comment "'xyz'@en = 'xyz'@EN" ;
+        mf:action
+           [ qt:query  <lang-case-sensitivity-eq.rq> ;
+             qt:data   <lang-case-sensitivity.ttl> ] ;
+        mf:result  <lang-case-insensitive-eq.srx> .
+
+:lang-case-insensitive-ne a mf:QueryEvaluationTest ;
+    mf:name    "lang-case-insensitive-ne" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2007/06/19-dawg-minutes.html> ;
+	rdfs:comment	"'xyz'@en != 'xyz'@EN" ;
+    mf:action
+       [ qt:query  <lang-case-sensitivity-ne.rq> ;
+         qt:data   <lang-case-sensitivity.ttl> ] ;
+    mf:result  <lang-case-insensitive-ne.srx> .
+
+
+:sameTerm-simple a mf:QueryEvaluationTest ;
+    mf:name    "sameTerm-simple" ;
+    rdfs:comment	"sameTerm(?v1, ?v2)" ;
+    mf:action
+       [ qt:query  <sameTerm.rq> ;
+	 qt:data   <data-builtin-1.ttl> ] ;
+     dawgt:approval dawgt:Approved ;
+     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0118/04-dawg-minutes.html> ;
+    mf:result  <result-sameTerm.ttl> .
+
+
+:sameTerm-eq a mf:QueryEvaluationTest ;
+    mf:name    "sameTerm-eq" ;
+    rdfs:comment	"sameTerm(?v1, ?v2) && ?v1 = ?v2" ;
+    mf:action
+       [ qt:query  <sameTerm-eq.rq> ;
+	 qt:data   <data-builtin-1.ttl> ] ;
+     dawgt:approval dawgt:Approved ;
+     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0118/04-dawg-minutes.html> ;
+    mf:result  <result-sameTerm-eq.ttl> .
+
+
+:sameTerm-not-eq a mf:QueryEvaluationTest ;
+    mf:name    "sameTerm-not-eq" ;
+    rdfs:comment	"!sameTerm(?v1, ?v2) && ?v1 = ?v2" ;
+    mf:action
+       [ qt:query  <sameTerm-not-eq.rq> ;
+	 qt:data   <data-builtin-1.ttl> ] ;
+     dawgt:approval dawgt:Approved ;
+     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0118/04-dawg-minutes.html> ;
+    mf:result  <result-sameTerm-not-eq.ttl> .
+
+

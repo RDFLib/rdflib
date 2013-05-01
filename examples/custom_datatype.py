@@ -10,7 +10,7 @@ from rdflib import Graph, Literal, Namespace, XSD
 from rdflib.term import bind
 
 # complex numbers are not registered by default
-# on custom constructor/serializer needed since 
+# no custom constructor/serializer needed since 
 # complex('(2+3j)') works fine
 bind(XSD.complexNumber, complex) 
 

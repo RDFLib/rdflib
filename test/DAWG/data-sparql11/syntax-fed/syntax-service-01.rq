@@ -1,0 +1,1 @@
+SELECT * { SERVICE <g> { ?s ?p ?o } }

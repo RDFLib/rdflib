@@ -1,0 +1,6 @@
+prefix ex: <http://www.example.org/>
+
+select * where {
+?s ?p ?o
+filter exists {?s ?p ex:o}
+}

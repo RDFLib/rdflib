@@ -1,0 +1,329 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/basic/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Basic test cases" ;
+    mf:entries
+    ( 
+      :base-prefix-1
+      :base-prefix-2
+      :base-prefix-3
+      :base-prefix-4
+      :base-prefix-5
+
+      :list-1
+      :list-2
+      :list-3
+      :list-4
+
+      :quotes-1
+      :quotes-2
+      :quotes-3
+      :quotes-4
+
+      :term-1
+      :term-2
+      :term-3
+      :term-4
+      :term-5
+#      :term-6 # Not SPARQL 1.1
+#      :term-7 # Not SPARQL 1.1
+      :term-8
+      :term-9
+
+      :var-1
+      :var-2
+
+      :bgp-no-match
+      :spoo-1
+
+      :prefix-name-1
+    ) .
+
+
+:bgp-no-match rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Non-matching triple pattern" ;
+    rdfs:comment "Patterns not in data don't match" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0087/14-dawg-minutes.html> ;
+    mf:action [ qt:query <bgp-no-match.rq> ; qt:data <data-7.ttl> ] ;
+    mf:result <bgp-no-match.srx> ;
+    .
+:prefix-name-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Prefix name 1" ;
+    rdfs:comment "No local name - foo:" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0087/14-dawg-minutes.html> ;
+    mf:action [ qt:query <prefix-name-1.rq> ; qt:data <data-6.ttl> ] ;
+    mf:result <prefix-name-1.srx> ;
+    .
+
+:spoo-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic graph pattern - spoo" ;
+    rdfs:comment "Test the :x :y :o1, :o2 construct" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action [ qt:query <spoo-1.rq> ; qt:data <data-6.ttl> ] ;
+    mf:result <spoo-1.srx> ;
+    .
+    
+
+:base-prefix-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Prefix/Base 1" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <base-prefix-1.rq> ;
+           qt:data   <data-1.ttl> ] ;
+    mf:result  <base-prefix-1.srx> ;
+    .
+
+:base-prefix-2 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Prefix/Base 2" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <base-prefix-2.rq> ;
+           qt:data   <data-1.ttl> ] ;
+    mf:result  <base-prefix-2.srx>
+    .
+
+:base-prefix-3 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Prefix/Base 3" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <base-prefix-3.rq> ;
+           qt:data   <data-1.ttl> ] ;
+    mf:result  <base-prefix-3.srx>
+    .
+
+:base-prefix-4 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Prefix/Base 4" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <base-prefix-4.rq> ;
+           qt:data   <data-1.ttl> ] ;
+    mf:result  <base-prefix-4.srx>
+    .
+
+:base-prefix-5 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Prefix/Base 5" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <base-prefix-5.rq> ;
+           qt:data   <data-1.ttl> ] ;
+    mf:result  <base-prefix-5.srx>
+    .
+
+:list-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - List 1" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <list-1.rq> ;
+           qt:data   <data-2.ttl> ] ;
+    mf:result  <list-1.srx>
+    .
+
+:list-2 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - List 2" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <list-2.rq> ;
+           qt:data   <data-2.ttl> ] ;
+    mf:result  <list-2.srx>
+    .
+
+:list-3 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - List 3" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <list-3.rq> ;
+           qt:data   <data-2.ttl> ] ;
+    mf:result  <list-3.srx>
+    .
+
+:list-4 rdf:type mf:QueryEvaluationTest ;
+   mf:name    "Basic - List 4" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <list-4.rq> ;
+           qt:data   <data-2.ttl> ] ;
+    mf:result  <list-4.srx>
+    .
+
+:quotes-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Quotes 1" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <quotes-1.rq> ;
+           qt:data   <data-3.ttl> ] ;
+    mf:result  <quotes-1.srx>
+    .
+
+:quotes-2 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Quotes 2" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <quotes-2.rq> ;
+           qt:data   <data-3.ttl> ] ;
+    mf:result  <quotes-2.srx>
+    .
+
+:quotes-3 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Quotes 3" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <quotes-3.rq> ;
+           qt:data   <data-3.ttl> ] ;
+    mf:result  <quotes-3.srx>
+    .
+
+:quotes-4 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Quotes 4" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <quotes-4.rq> ;
+           qt:data   <data-3.ttl> ] ;
+    mf:result  <quotes-4.srx>
+    .
+
+:term-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Term 1" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <term-1.rq> ;
+           qt:data   <data-4.ttl> ] ;
+    mf:result  <term-1.srx> 
+    .
+
+:term-2 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Term 2" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <term-2.rq> ;
+           qt:data   <data-4.ttl> ] ;
+    mf:result  <term-2.srx>
+    .
+
+:term-3 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Term 3" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <term-3.rq> ;
+           qt:data   <data-4.ttl> ] ;
+    mf:result  <term-3.srx>
+    .
+
+:term-4 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Term 4" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <term-4.rq> ;
+           qt:data   <data-4.ttl> ] ;
+    mf:result  <term-4.srx>
+    .
+
+:term-5 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Term 5" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <term-5.rq> ;
+           qt:data   <data-4.ttl> ] ;
+    mf:result  <term-5.srx>
+    .
+
+:term-6 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Term 6" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <term-6.rq> ;
+           qt:data   <data-4.ttl> ] ;
+    mf:result  <term-6.srx>
+    .
+
+:term-7 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Term 7" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <term-7.rq> ;
+           qt:data   <data-4.ttl> ] ;
+    mf:result  <term-7.srx>
+    .
+
+:term-8 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Term 8" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <term-8.rq> ;
+           qt:data   <data-4.ttl> ] ;
+    mf:result  <term-8.srx>
+    .
+
+:term-9 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Term 9" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <term-9.rq> ;
+           qt:data   <data-4.ttl> ] ;
+    mf:result  <term-9.srx>
+    .
+
+:var-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Var 1" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <var-1.rq> ;
+           qt:data   <data-5.ttl> ] ;
+    mf:result  <var-1.srx>
+    .
+
+:var-2 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Basic - Var 2" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0060/2007-08-07-dawg-minutes.html> ;
+    mf:action
+         [ qt:query  <var-2.rq> ;
+           qt:data   <data-5.ttl> ] ;
+    mf:result  <var-2.srx>
+    .
+

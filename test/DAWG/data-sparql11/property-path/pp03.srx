@@ -1,0 +1,10 @@
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+<head>
+<variable name='x'/>
+</head>
+<results>
+<result>
+<binding name='x'><uri>http://www.example.org/instance#a</uri></binding>
+</result>
+</results>
+</sparql>

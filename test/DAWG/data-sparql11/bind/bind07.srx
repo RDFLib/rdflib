@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="s"/>
+    <variable name="p"/>
+    <variable name="o"/>
+    <variable name="z"/>
+  </head>
+  <results>
+    <result>
+      <binding name="s">
+        <uri>http://example.org/s4</uri>
+      </binding>
+      <binding name="p">
+        <uri>http://example.org/p</uri>
+      </binding>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">4</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://example.org/s4</uri>
+      </binding>
+      <binding name="p">
+        <uri>http://example.org/p</uri>
+      </binding>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">4</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://example.org/s3</uri>
+      </binding>
+      <binding name="p">
+        <uri>http://example.org/p</uri>
+      </binding>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://example.org/s3</uri>
+      </binding>
+      <binding name="p">
+        <uri>http://example.org/p</uri>
+      </binding>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://example.org/s2</uri>
+      </binding>
+      <binding name="p">
+        <uri>http://example.org/p</uri>
+      </binding>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://example.org/s2</uri>
+      </binding>
+      <binding name="p">
+        <uri>http://example.org/p</uri>
+      </binding>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://example.org/s1</uri>
+      </binding>
+      <binding name="p">
+        <uri>http://example.org/p</uri>
+      </binding>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://example.org/s1</uri>
+      </binding>
+      <binding name="p">
+        <uri>http://example.org/p</uri>
+      </binding>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

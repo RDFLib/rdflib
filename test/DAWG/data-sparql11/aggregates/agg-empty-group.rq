@@ -1,0 +1,5 @@
+PREFIX ex: <http://example.com/>
+SELECT ?x (MAX(?value) AS ?max)
+WHERE {
+	?x ex:p ?value
+} GROUP BY ?x

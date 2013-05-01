@@ -1,0 +1,13 @@
+PREFIX dc:   <http://purl.org/dc/elements/1.1/> 
+PREFIX :     <http://example.org/book/> 
+PREFIX ns:   <http://example.org/ns#> 
+
+SELECT ?book ?title ?price
+{
+   ?book dc:title ?title ;
+         ns:price ?price .
+}
+VALUES (?book ?title) {
+ (UNDEF "SPARQL Tutorial")
+ (:book2 UNDEF)
+}

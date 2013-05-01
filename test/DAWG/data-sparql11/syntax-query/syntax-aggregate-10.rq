@@ -1,0 +1,1 @@
+SELECT (MAX(DISTINCT ?x) AS ?y) {}

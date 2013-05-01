@@ -1,0 +1,18 @@
+@prefix :  <http://example.org/x/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+_:ont a owl:Ontology .
+
+:p rdf:type owl:ObjectProperty .
+:c rdf:type owl:Class .
+:d rdf:type owl:Class .
+:a rdf:type owl:NamedIndividual .
+
+:a rdf:type :c .
+:a rdf:type :d .
+:a rdf:type _:x .
+
+_:x rdf:type owl:Restriction.
+_:x owl:onProperty :p.
+_:x owl:someValuesFrom :c .

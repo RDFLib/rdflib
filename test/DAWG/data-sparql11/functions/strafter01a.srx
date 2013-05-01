@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+<head>
+	<variable name="s"/>
+	<variable name="suffix"/>
+</head>
+<results>
+		<result>
+			<binding name="s"><uri>http://example.org/s1</uri></binding>
+			<binding name="suffix"><literal></literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s2</uri></binding>
+			<binding name="suffix"><literal></literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s3</uri></binding>
+			<binding name="suffix"><literal xml:lang="en">nglish</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s4</uri></binding>
+			<binding name="suffix"><literal></literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s5</uri></binding>
+			<binding name="suffix"><literal></literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s6</uri></binding>
+			<binding name="suffix"><literal datatype="http://www.w3.org/2001/XMLSchema#string">f</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s7</uri></binding>
+		</result>
+</results>
+</sparql>

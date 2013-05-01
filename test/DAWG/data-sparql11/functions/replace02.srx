@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+<head>
+	<variable name="new"/>
+</head>
+<results>
+		<result>
+			<binding name="new"><literal>b*na</literal></binding>
+		</result>
+</results>
+</sparql>

@@ -1,0 +1,72 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/regex/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "SPARQL regex test cases" ;
+    mf:entries (
+      :dawg-regex-001 :dawg-regex-002 :dawg-regex-003 :dawg-regex-004
+    ).
+
+:dawg-regex-001 a mf:QueryEvaluationTest ;
+      mf:name    "regex-query-001" ;
+      dawgt:approval dawgt:Approved ;
+      dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0029.html> ;
+      rdfs:comment
+            "Simple unanchored match test" ;
+        mf:action
+            [ qt:query  <regex-query-001.rq> ;
+              qt:data   <regex-data-01.ttl> ] ;
+        mf:result  <regex-result-001.ttl> .
+
+:dawg-regex-002 a mf:QueryEvaluationTest ;
+      mf:name    "regex-query-002" ;
+      dawgt:approval dawgt:Approved ;
+      dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0029.html> ;
+      rdfs:comment
+          "Case insensitive unanchored match test" ;
+      mf:action
+          [ qt:query  <regex-query-002.rq> ;
+            qt:data   <regex-data-01.ttl> ] ;
+      mf:result  <regex-result-002.ttl> .
+
+:dawg-regex-003 a mf:QueryEvaluationTest ;
+      mf:name    "regex-query-003" ;
+      dawgt:approval dawgt:Approved ;
+      dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0029.html> ;
+      rdfs:comment
+          "Use/mention test" ;
+      mf:action
+          [ qt:query  <regex-query-003.rq> ;
+            qt:data   <regex-data-01.ttl> ] ;
+      mf:result  <regex-result-003.ttl> .
+
+:dawg-regex-004 a mf:QueryEvaluationTest ;
+      mf:name    "regex-query-004" ;
+      dawgt:approval dawgt:Approved ;
+      dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/0029.html> ;
+      rdfs:comment
+          "str()+URI test" ;
+      mf:action
+          [ qt:query  <regex-query-004.rq> ;
+            qt:data   <regex-data-01.ttl> ] ;
+      mf:result  <regex-result-004.ttl> .
+

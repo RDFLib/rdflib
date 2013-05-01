@@ -1,0 +1,2 @@
+# required syntax error : out of scope variable in SELECT from group
+SELECT ?o { ?s ?p ?o } GROUP BY ?s

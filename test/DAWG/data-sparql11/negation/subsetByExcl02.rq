@@ -1,0 +1,7 @@
+PREFIX ex: <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation#>
+SELECT ?animal { 
+  ?animal a ex:Animal MINUS { 
+    ?animal a ?type 
+    FILTER(?type = ex:Reptile || ?type = ex:Insect) 
+  } 
+}

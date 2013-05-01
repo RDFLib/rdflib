@@ -1,0 +1,8 @@
+@prefix : <http://example.org/> .
+@prefix foaf:       <http://xmlns.com/foaf/0.1/> .
+
+:c foaf:name "Chris" .
+:c foaf:mbox "chris@example.org" .
+:d foaf:name "Dan" .
+:d foaf:mbox "dan@example.org" .
+:c foaf:knows :d .

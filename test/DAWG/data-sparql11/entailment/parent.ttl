@@ -1,0 +1,38 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix : <http://example.org/test#> .
+@base <http://example.org/test#> .
+
+_:ont rdf:type owl:Ontology .
+
+:hasChild rdf:type owl:ObjectProperty .
+:Father rdf:type owl:Class ;
+    owl:equivalentClass [ rdf:type owl:Class ;
+        owl:intersectionOf ( :Male :Parent )
+    ] .
+:Female rdf:type owl:Class .
+:Male rdf:type owl:Class .
+:Mother rdf:type owl:Class ; 
+    owl:equivalentClass [ rdf:type owl:Class ;
+        owl:intersectionOf ( :Female :Parent )
+    ] .
+:Parent rdf:type owl:Class ;
+    owl:equivalentClass [ 
+        rdf:type owl:Restriction ;
+        owl:onProperty :hasChild ;
+        owl:someValuesFrom owl:Thing
+    ] .
+:Alice rdf:type :Female , :Parent , owl:NamedIndividual .
+:Bob rdf:type :Male , owl:NamedIndividual ; :hasChild :Charlie .
+:Charlie rdf:type owl:NamedIndividual .
+:Dudley rdf:type owl:NamedIndividual ,
+    [ rdf:type owl:Restriction ;
+      owl:onProperty :hasChild ;
+      owl:allValuesFrom [ rdf:type owl:Class ;
+          owl:oneOf ( :Alice )
+      ]
+    ] ;
+    :hasChild :Alice .

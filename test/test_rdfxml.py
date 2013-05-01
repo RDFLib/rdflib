@@ -5,13 +5,9 @@ import os.path
 from urllib import url2pathname
 from urllib2 import urlopen
 
-from rdflib.namespace import RDF, RDFS
-from rdflib.term import URIRef
-from rdflib.term import BNode
-from rdflib.term import Literal
-from rdflib.namespace import Namespace
+import rdflib
+from rdflib import RDF, RDFS, URIRef, BNode, Literal, Namespace, Graph
 from rdflib.exceptions import ParserError
-from rdflib.graph import Graph
 from rdflib.util import first
 
 
@@ -238,15 +234,19 @@ if __name__ == "__main__":
     except getopt.GetoptError, msg:
         write(msg)
         # usage()
-
+        
     try:
         argv = sys.argv
-        for arg in sys.argv[1:]:
+        if len(argv)>1:
+            _logger.setLevel(logging.INFO)
+            _logger.addHandler(logging.StreamHandler())
+
+        for arg in argv[1:]:            
             verbose = 1
             case = URIRef(arg)
             write(u"Testing: %s" % case)
             if (case, RDF.type, TEST["PositiveParserTest"]) in manifest:
-                result = _testPositive(case, manifest)
+                result = _testPositive(case, manifest)                
                 write(u"Positive test %s" % ["PASSED", "FAILED"][result])
             elif (case, RDF.type, TEST["NegativeParserTest"]) in manifest:
                 result = _testNegative(case, manifest)

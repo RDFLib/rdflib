@@ -1,0 +1,8 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX : <http://example.com/data/#>
+SELECT ?g 
+(AVG(IF(isNumeric(?p), ?p, COALESCE(xsd:double(?p),0))) AS ?avg) 
+WHERE {
+  ?g :p ?p .
+}
+GROUP BY ?g

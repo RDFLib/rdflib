@@ -1,0 +1,23 @@
+# $Id: normalization-01.ttl,v 1.1 2005/10/25 09:38:08 aseaborne Exp $
+# See DOCUMENT INFO below.
+
+# NAMESPACES
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix HR: <http://www.w3.org/2001/sw/DataAccess/tests/data/i18n/normalization.ttl#> .
+
+# DOCUMENT INFO
+<> rdfs:comment "Normalized and non-normalized IRIs" ;
+   owl:versionInfo "$Id: normalization-01.ttl,v 1.1 2005/10/25 09:38:08 aseaborne Exp $".
+
+# DOCUMENT
+[] foaf:name "Alice" ;
+  HR:resumé "Alice's normalized resumé"  .
+
+[] foaf:name "Bob" ;
+  HR:resumé "Bob's non-normalized resumé" .
+
+[] foaf:name "Eve" ;
+  HR:resumé "Eve's normalized resumé" ;
+  HR:resumé "Eve's non-normalized resumé" .

@@ -1,0 +1,2 @@
+PREFIX ex: <http://example/>
+ASK{}

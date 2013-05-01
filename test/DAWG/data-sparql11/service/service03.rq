@@ -1,0 +1,14 @@
+# SERVICE with one optional and a nested SERVICE. This query depends in the capabilities of the example1.org endpoint
+
+PREFIX : <http://example.org/> 
+
+SELECT ?s ?o1 ?o2
+{
+  SERVICE <http://example1.org/sparql> {
+  ?s ?p ?o1 .
+  OPTIONAL {
+	SERVICE <http://example2.org/sparql> {
+    ?s ?p2 ?o2 }
+  }
+}
+}

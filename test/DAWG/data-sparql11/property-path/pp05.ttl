@@ -1,0 +1,13 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ex:	<http://www.example.org/schema#>.
+@prefix in:	<http://www.example.org/instance#>.
+
+_:b1 rdf:first 1 .
+_:b1 rdf:rest rdf:nil .
+
+_:b2 ex:prop 2 .
+
+
+
+

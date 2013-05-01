@@ -1,0 +1,11 @@
+@prefix ex: <http://example.org/ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+_:rdfs08 a owl:Ontology .
+ 
+ex:d a owl:DatatypeProperty .
+
+ex:d rdfs:range rdf:XMLLiteral .
+

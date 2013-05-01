@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+<head>
+	<variable name="s"/>
+	<variable name="new"/>
+</head>
+<results>
+		<result>
+			<binding name="s"><uri>http://example.org/s1</uri></binding>
+			<binding name="new"><literal>123</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s2</uri></binding>
+			<binding name="new"><literal xml:lang="ja">---</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s3</uri></binding>
+			<binding name="new"><literal xml:lang="en">-nglish</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s4</uri></binding>
+			<binding name="new"><literal xml:lang="fr">-ran-ais</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s5</uri></binding>
+			<binding name="new"><literal datatype="http://www.w3.org/2001/XMLSchema#string">abc</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s6</uri></binding>
+			<binding name="new"><literal datatype="http://www.w3.org/2001/XMLSchema#string">def</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s7</uri></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s8</uri></binding>
+			<binding name="new"><literal>banana</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/s9</uri></binding>
+			<binding name="new"><literal>abcd</literal></binding>
+		</result>
+</results>
+</sparql>

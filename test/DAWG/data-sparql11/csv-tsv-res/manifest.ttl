@@ -1,0 +1,84 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "CSV/TSV Result Format" ;
+    mf:entries
+    ( 
+    :csv01
+    :tsv01
+    :csv02
+    :tsv02
+    :csv03
+    :tsv03
+    ) .
+
+:csv01 rdf:type mf:CSVResultFormatTest ;
+    mf:name    "csv01 - CSV Result Format" ;
+    rdfs:comment "SELECT * WHERE { ?S ?P ?O }";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-08-16#resolution_3>; 
+    mf:action
+         [ qt:query  <csvtsv01.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <csvtsv01.csv>
+    .
+
+:csv02 rdf:type mf:CSVResultFormatTest ;
+    mf:name    "cvs02 - CSV Result Format" ;
+    rdfs:comment "SELECT with OPTIONAL (i.e. not all vars bound in all results)";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-08-16#resolution_3>; 
+    mf:action
+         [ qt:query  <csvtsv02.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <csvtsv02.csv>
+    .
+
+:csv03 rdf:type mf:CSVResultFormatTest ;
+    mf:name    "csv03 - CSV Result Format" ;
+    rdfs:comment "SELECT * WHERE { ?S ?P ?O } with some corner cases of typed literals";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-08-16#resolution_3>; 
+    mf:action
+         [ qt:query  <csvtsv01.rq> ;
+           qt:data   <data2.ttl> ] ;
+    mf:result  <csvtsv03.csv>
+    .
+
+:tsv01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "tsv01 - TSV Result Format" ;
+    rdfs:comment "SELECT * WHERE { ?S ?P ?O }";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-08-16#resolution_3>; 
+    mf:action
+         [ qt:query  <csvtsv01.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <csvtsv01.tsv>
+    .
+
+:tsv02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "tvs02 - TSV Result Format" ;
+    rdfs:comment "SELECT with OPTIONAL (i.e. not all vars bound in all results)";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-08-16#resolution_3>; 
+    mf:action
+         [ qt:query  <csvtsv02.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <csvtsv02.tsv>
+    .
+
+:tsv03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "tsv03 - TSV Result Format" ;
+    rdfs:comment "SELECT * WHERE { ?S ?P ?O } with some corner cases of typed literals";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-08-16#resolution_3>; 
+    mf:action
+         [ qt:query  <csvtsv01.rq> ;
+           qt:data   <data2.ttl> ] ;
+    mf:result  <csvtsv03.tsv>
+    .

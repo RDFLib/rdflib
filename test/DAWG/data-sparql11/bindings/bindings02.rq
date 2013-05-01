@@ -1,0 +1,10 @@
+# bindings with one element and one value in the object variable
+
+PREFIX : <http://example.org/> 
+
+SELECT ?s ?o
+{
+  ?s ?p ?o .
+} BINDINGS ?o {
+ (:b)
+}

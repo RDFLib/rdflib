@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="o"/>
+    <variable name="z"/>
+    <variable name="z2"/>
+  </head>
+  <results>
+    <result>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">4</literal>
+      </binding>
+      <binding name="z">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">14</literal>
+      </binding>
+      <binding name="z2">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">104</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
+      </binding>
+      <binding name="z">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">13</literal>
+      </binding>
+      <binding name="z2">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">103</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal>
+      </binding>
+      <binding name="z">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">12</literal>
+      </binding>
+      <binding name="z2">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">102</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+      <binding name="z">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">11</literal>
+      </binding>
+      <binding name="z2">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">101</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

@@ -1,0 +1,10 @@
+PREFIX : <http://www.example.org/>
+ASK {
+	{
+		SELECT (SAMPLE(?o) AS ?sample)
+		WHERE {
+			?s :dec ?o
+		}
+	}
+	FILTER(?sample = 1.0 || ?sample = 2.2 || ?sample = 3.5)
+}

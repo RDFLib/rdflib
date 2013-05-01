@@ -1,0 +1,1 @@
+@prefix ex: <http://example.com/> .

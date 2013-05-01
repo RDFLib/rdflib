@@ -1,0 +1,13 @@
+PREFIX : <http://example/> 
+
+SELECT * 
+FROM <data-g1.ttl>
+FROM NAMED <data-g1.ttl>
+FROM NAMED <data-g2.ttl>
+FROM NAMED <data-g3.ttl>
+FROM NAMED <data-g4.ttl>
+{ 
+   { ?s ?p ?o }
+  UNION
+   { GRAPH ?g { ?s ?p ?o } }
+}
