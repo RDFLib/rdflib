@@ -122,8 +122,6 @@ setup(
     """,
     packages=['rdflib',
               'rdflib/extras',
-              'rdflib/extras/sqlstore',
-              'rdflib/extras/sqlstore/foplrelationalmodel',
               'rdflib/extras/utils',
               'rdflib/plugins',
               'rdflib/plugins/parsers',
