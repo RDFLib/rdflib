@@ -133,6 +133,7 @@ setup(
               'rdflib/plugins/parsers/pyMicrodata',
               'rdflib/plugins/serializers',
               'rdflib/plugins/sparql',
+              'rdflib/plugins/sparql/results',
               'rdflib/plugins/stores',
               ],
     **kwargs
