@@ -63,6 +63,11 @@ class SPARQLStoreDBPediaTestCase(unittest.TestCase):
             assert type(i[0]) == Literal, i[0].n3()
 
 from nose import SkipTest
+import os
+
+if os.getenv("TRAVIS"): 
+    SkipTest("Doesn't work in travis")
+
 import urllib2
 try:
     assert len(urllib2.urlopen("http://dbpedia.org/sparql").read()) > 0

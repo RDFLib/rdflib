@@ -328,7 +328,7 @@ def evalSlice(ctx, slice):
     res = evalPart(ctx, slice.p)
     i = 0
     while i < slice.start:
-        next(res)
+        res.next()
         i += 1
     i = 0
     for x in res:
