@@ -365,38 +365,56 @@ class Graph(Node):
         for (s, p, o), cg in self.__store.triples((s, p, o), context=self):
             yield (s, p, o)
 
-    def __getitem__(self, item, subject=None): 
+    @py3compat.format_doctest_out
+    def __getitem__(self, item): 
+        """
+        A graph can be "sliced" as a shortcut for the triples method
+        The python slice syntax is (ab)used for specifying triples. 
+        A generator over matching triples is returned
 
-        if isinstance(item, tuple) and len(item)==1:
-            item=item[0]
+        >>> import rdflib
+        >>> g = rdflib.Graph()
+        >>> g.add((rdflib.URIRef('urn:bob'), rdflib.RDFS.label, rdflib.Literal('Bob')))
+
+        >>> list(g[rdflib.URIRef('urn:bob')]) # all triples about bob
+        [(rdflib.term.URIRef(%(u)s'urn:bob'), rdflib.term.URIRef(%(u)s'http://www.w3.org/2000/01/rdf-schema#label'), rdflib.term.Literal(%(u)s'Bob'))]
+        
+        >>> list(g[:rdflib.RDFS.label]) # all label triples
+        [(rdflib.term.URIRef(%(u)s'urn:bob'), rdflib.term.URIRef(%(u)s'http://www.w3.org/2000/01/rdf-schema#label'), rdflib.term.Literal(%(u)s'Bob'))]
+
+        >>> list(g[::rdflib.Literal('Bob')]) # all label triples
+        [(rdflib.term.URIRef(%(u)s'urn:bob'), rdflib.term.URIRef(%(u)s'http://www.w3.org/2000/01/rdf-schema#label'), rdflib.term.Literal(%(u)s'Bob'))]
+
+        Combined with SPARQL paths, more complex queries can be
+        written concisely:
+
+        Name of all Bobs friends: 
+
+        g[bob : FOAF.knows/FOAF.name ]
+
+        Some label for Bob:
+
+        g[bob : DC.title|FOAF.name|RDFS.label]
+
+        All friends and friends of friends of Bob
+
+        g[bob : FOAF.knows * '+']
+
+        etc.
+
+        """
 
         if isinstance(item, slice): 
 
             s,p,o=item.start,item.stop,item.step
-            if not isinstance(s,tuple): s=(s,)
-            if not isinstance(p,tuple): p=(p,)
-            if not isinstance(o,tuple): o=(o,)
-
-            if subject: s=(subject,)
-
-            for _s in s: 
-                for _p in p:
-                    for _o in o:
-                        for t in self.triples((_s,_p,_o)):
-                            yield t
+            return self.triples((s,p,o))
 
         elif isinstance(item, Node):
 
-            if subject: item=subject
-            for t in self.triples((item,None,None)): yield t
+            return self.triples((item,None,None))
             
-        elif isinstance(item, tuple): 
-            # carry out the first one, recurse while constraining subject
-            for x in self.__getitem__(item[0],subject):
-                for y in self.__getitem__(item[1:], x[2]):
-                    yield y
         else: 
-            raise TypeError("You can only index a graph by a single rdflib term, tuples or a slice of rdflib terms.")
+            raise TypeError("You can only index a graph by a single rdflib term or a slice of rdflib terms.")
 
     def __len__(self):
         """Returns the number of triples in the graph
