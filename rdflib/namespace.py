@@ -267,7 +267,7 @@ class NamespaceManager(object):
         """
         try:
             namespace, name = split_uri(rdfTerm)
-            namespace = URIRef(namespace)
+            namespace = URIRef(unicode(namespace))
         except:
             if isinstance(rdfTerm, Variable):
                 return "?%s" % rdfTerm
@@ -302,7 +302,7 @@ class NamespaceManager(object):
         return self.__cache[uri]
 
     def bind(self, prefix, namespace, override=True):
-        namespace = URIRef(namespace)
+        namespace = URIRef(unicode(namespace))
         # When documenting explain that override only applies in what cases
         if prefix is None:
             prefix = ''

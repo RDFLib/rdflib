@@ -60,12 +60,21 @@ import rdflib
 from . import py3compat
 from rdflib.compat import numeric_greater
 
+
+
 b = py3compat.b
 
 skolem_genid = "/.well-known/genid/"
 rdflib_skolem_genid = "/.well-known/genid/rdflib/"
 skolems = {}
 
+
+_invalid_uri_chars = '<>" {}|\\^`'
+
+def _is_valid_uri(uri):
+    for c in _invalid_uri_chars: 
+        if c in uri: return False
+    return True
 
 class Node(object):
     """
@@ -184,13 +193,11 @@ class URIRef(Identifier):
             if ends_in_hash:
                 if not value.endswith("#"):
                     value += "#"
-        # if normalize and value and value != normalize("NFC", value):
-        #    raise Error("value must be in NFC normalized form.")
 
-        # Unused code
-        # final_cls = RDFLibGenid if RDFLibGenid._is_rdflib_skolem(value) \
-        #     else (
-        #         Genid if Genid._is_external_skolem(value) else cls)
+        if not _is_valid_uri(value): 
+            raise Exception('%s does not look like a valid URI, perhaps you want to urlencode it?')
+
+
         try:
             rt = unicode.__new__(cls, value)
         except UnicodeDecodeError:
