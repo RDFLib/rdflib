@@ -18,7 +18,7 @@ In an interactive python interpreter, try this:
 
 .. code-block:: pycon
 
-    >>> from rdflib.graph import Graph
+    >>> from rdflib import Graph
     >>> g = Graph()
     >>> g.parse("demo.nt", format="nt")
     <Graph identifier=HCbubHJy0 (<class 'rdflib.graph.Graph'>)>
@@ -117,6 +117,8 @@ Similarly, triples can be removed by a call to :meth:`remove`:
 .. automethod:: rdflib.graph.Graph.set
     :noindex:
 .. automethod:: rdflib.graph.Graph.label
+    :noindex:
+.. automethod:: rdflib.graph.Graph.preferredLabel
     :noindex:
 .. automethod:: rdflib.graph.Graph.remove
     :noindex:

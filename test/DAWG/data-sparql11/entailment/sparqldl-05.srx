@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.w3.org/2001/sw/DataAccess/rf1/result2.xsd">
+
+  <head>
+    <link href="sparqldl-06.rq" />
+  </head>
+
+  <boolean>true</boolean>
+
+</sparql>

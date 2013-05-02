@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="subset"/>
+    <variable name="superset"/>
+  </head>
+  <results>
+    <result>
+      <binding name="subset">
+        <uri>http://example/empty</uri>
+      </binding>
+      <binding name="superset">
+        <uri>http://example/e</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="subset">
+        <uri>http://example/empty</uri>
+      </binding>
+      <binding name="superset">
+        <uri>http://example/d</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="subset">
+        <uri>http://example/empty</uri>
+      </binding>
+      <binding name="superset">
+        <uri>http://example/c</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="subset">
+        <uri>http://example/empty</uri>
+      </binding>
+      <binding name="superset">
+        <uri>http://example/b</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="subset">
+        <uri>http://example/empty</uri>
+      </binding>
+      <binding name="superset">
+        <uri>http://example/a</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="subset">
+        <uri>http://example/e</uri>
+      </binding>
+      <binding name="superset">
+        <uri>http://example/a</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="subset">
+        <uri>http://example/c</uri>
+      </binding>
+      <binding name="superset">
+        <uri>http://example/a</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>

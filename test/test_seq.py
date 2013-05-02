@@ -3,32 +3,6 @@ import unittest
 from rdflib.term import URIRef
 from rdflib.graph import Graph
 
-class SeqTestCase(unittest.TestCase):
-    backend = 'default'
-    path = 'store'
-
-    def setUp(self):
-        store = self.store = Graph(store=self.backend)
-        store.open(self.path)
-        store.parse(data=s)
-
-    def tearDown(self):
-        self.store.close()
-
-    def testSeq(self):
-        items = self.store.seq(URIRef("http://example.org/Seq"))
-        self.assertEquals(len(items), 6)
-        self.assertEquals(items[-1].concrete(), URIRef("http://example.org/six"))
-        self.assertEquals(items[2].concrete(), URIRef("http://example.org/three"))
-        # just make sure we can serialize
-        self.store.serialize()
-
-def test_suite():
-    return unittest.makeSuite(SeqTestCase)
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
-
 s = """\
 <?xml version="1.0" encoding="UTF-8"?>
 <rdf:RDF
@@ -46,4 +20,32 @@ s = """\
  </rdf:Seq>
 </rdf:RDF>
 """
+
+
+
+class SeqTestCase(unittest.TestCase):
+    backend = 'default'
+    path = 'store'
+
+    def setUp(self):
+        store = self.store = Graph(store=self.backend)
+        store.open(self.path)
+        store.parse(data=s)
+
+    def tearDown(self):
+        self.store.close()
+
+    def testSeq(self):
+        items = self.store.seq(URIRef("http://example.org/Seq"))
+        self.assertEquals(len(items), 6)
+        self.assertEquals(items[-1], URIRef("http://example.org/six"))
+        self.assertEquals(items[2], URIRef("http://example.org/three"))
+        # just make sure we can serialize
+        self.store.serialize()
+
+def test_suite():
+    return unittest.makeSuite(SeqTestCase)
+
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')
 

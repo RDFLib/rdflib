@@ -1,0 +1,7 @@
+PREFIX : <http://example.org/> 
+
+SELECT ?s ?p ?o ?z
+{
+  ?s ?p ?o .
+  { BIND(?o+1 AS ?z) } UNION { BIND(?o+2 AS ?z) }
+}

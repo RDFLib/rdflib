@@ -1,0 +1,6 @@
+PREFIX : <http://www.example.org/>
+
+SELECT *
+WHERE { ?X :p{0} "o" .
+        ?Y :p{0} :o .
+        :s :p{0} ?Z . } 

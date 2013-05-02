@@ -1,0 +1,392 @@
+@prefix :       <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "Syntax tests Syntax SPARQL Update" ;
+    mf:entries
+    ( 
+
+:test_1
+:test_2
+:test_3
+:test_4
+:test_5
+:test_6
+:test_7
+:test_8
+:test_9
+:test_10
+:test_11
+:test_12
+:test_13
+:test_14
+:test_15
+:test_16
+:test_17
+:test_18
+:test_19
+:test_20
+:test_21
+:test_22
+:test_23
+:test_24
+:test_25
+:test_26
+:test_27
+:test_28
+:test_29
+:test_30
+:test_31
+:test_32
+:test_33
+:test_34
+:test_35
+:test_36
+:test_37
+:test_38
+:test_39
+:test_40
+:test_41
+:test_42
+:test_43
+:test_44
+:test_45
+:test_46
+:test_47
+:test_48
+:test_49
+:test_50
+:test_51
+:test_52
+:test_53
+:test_54
+) .
+
+:test_1 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-01.ru" ;
+   mf:action  <syntax-update-01.ru> ;.
+
+:test_2 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-02.ru" ;
+   mf:action  <syntax-update-02.ru> ;.
+
+:test_3 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-03.ru" ;
+   mf:action  <syntax-update-03.ru> ;.
+
+:test_4 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-04.ru" ;
+   mf:action  <syntax-update-04.ru> ;.
+
+:test_5 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-05.ru" ;
+   mf:action  <syntax-update-05.ru> ;.
+
+:test_6 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-06.ru" ;
+   mf:action  <syntax-update-06.ru> ;.
+
+:test_7 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-07.ru" ;
+   mf:action  <syntax-update-07.ru> ;.
+
+:test_8 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-08.ru" ;
+   mf:action  <syntax-update-08.ru> ;.
+
+:test_9 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-09.ru" ;
+   mf:action  <syntax-update-09.ru> ;.
+
+:test_10 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-10.ru" ;
+   mf:action  <syntax-update-10.ru> ;.
+
+:test_11 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-11.ru" ;
+   mf:action  <syntax-update-11.ru> ;.
+
+:test_12 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-12.ru" ;
+   mf:action  <syntax-update-12.ru> ;.
+
+:test_13 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-13.ru" ;
+   mf:action  <syntax-update-13.ru> ;.
+
+:test_14 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-14.ru" ;
+   mf:action  <syntax-update-14.ru> ;.
+
+:test_15 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-15.ru" ;
+   mf:action  <syntax-update-15.ru> ;.
+
+:test_16 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-16.ru" ;
+   mf:action  <syntax-update-16.ru> ;.
+
+:test_17 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-17.ru" ;
+   mf:action  <syntax-update-17.ru> ;.
+
+:test_18 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-18.ru" ;
+   mf:action  <syntax-update-18.ru> ;.
+
+:test_19 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-19.ru" ;
+   mf:action  <syntax-update-19.ru> ;.
+
+:test_20 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-20.ru" ;
+   mf:action  <syntax-update-20.ru> ;.
+
+:test_21 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-21.ru" ;
+   mf:action  <syntax-update-21.ru> ;.
+
+:test_22 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-22.ru" ;
+   mf:action  <syntax-update-22.ru> ;.
+
+:test_23 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-23.ru" ;
+   mf:action  <syntax-update-23.ru> ;.
+
+:test_24 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-24.ru" ;
+   mf:action  <syntax-update-24.ru> ;.
+
+:test_25 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-25.ru" ;
+   mf:action  <syntax-update-25.ru> ;.
+
+:test_26 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-26.ru" ;
+   mf:action  <syntax-update-26.ru> ;.
+
+:test_27 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-27.ru" ;
+   mf:action  <syntax-update-27.ru> ;.
+
+:test_28 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-28.ru" ;
+   mf:action  <syntax-update-28.ru> ;.
+
+:test_29 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-29.ru" ;
+   mf:action  <syntax-update-29.ru> ;.
+
+:test_30 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-30.ru" ;
+   mf:action  <syntax-update-30.ru> ;.
+
+:test_31 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-31.ru" ;
+   mf:action  <syntax-update-31.ru> ;.
+
+:test_32 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-32.ru" ;
+   mf:action  <syntax-update-32.ru> ;.
+
+:test_33 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-33.ru" ;
+   mf:action  <syntax-update-33.ru> ;.
+
+:test_34 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-34.ru" ;
+   mf:action  <syntax-update-34.ru> ;.
+
+:test_35 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-35.ru" ;
+   mf:action  <syntax-update-35.ru> ;.
+
+:test_36 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-36.ru" ;
+   mf:action  <syntax-update-36.ru> ;.
+
+:test_37 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-37.ru" ;
+   mf:action  <syntax-update-37.ru> ;.
+
+:test_38 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-38.ru" ;
+   mf:action  <syntax-update-38.ru> ;.
+
+:test_39 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-39.ru" ;
+   mf:action  <syntax-update-39.ru> ;.
+
+:test_40 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-40.ru" ;
+   mf:action  <syntax-update-40.ru> ;.
+
+:test_41 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-bad-01.ru" ;
+   mf:action  <syntax-update-bad-01.ru> ;.
+
+:test_42 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-bad-02.ru" ;
+   mf:action  <syntax-update-bad-02.ru> ;.
+
+:test_43 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-bad-03.ru" ;
+   mf:action  <syntax-update-bad-03.ru> ;.
+
+:test_44 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-bad-04.ru" ;
+   mf:action  <syntax-update-bad-04.ru> ;.
+
+:test_45 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-bad-05.ru" ;
+   mf:action  <syntax-update-bad-05.ru> ;.
+
+:test_46 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-bad-06.ru" ;
+   mf:action  <syntax-update-bad-06.ru> ;.
+
+:test_47 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-bad-07.ru" ;
+   mf:action  <syntax-update-bad-07.ru> ;.
+
+:test_48 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-bad-08.ru" ;
+   mf:action  <syntax-update-bad-08.ru> ;.
+
+:test_49 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-bad-09.ru" ;
+   mf:action  <syntax-update-bad-09.ru> ;.
+
+:test_50 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-bad-10.ru" ;
+   mf:action  <syntax-update-bad-10.ru> ;.
+
+:test_51 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-bad-11.ru" ;
+   mf:action  <syntax-update-bad-11.ru> ;.
+
+:test_52 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-update-bad-12.ru" ;
+   mf:action  <syntax-update-bad-12.ru> ;.
+
+:test_53 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_3> ;
+   mf:name    "syntax-update-53.ru" ;
+   mf:action  <syntax-update-53.ru> ;.
+
+:test_54 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+    dawgt:approval  dawgt:NotClassified ;
+    # Reuse of bNode label across operations.  
+    mf:name    "syntax-update-54.ru" ;
+    mf:action  <syntax-update-54.ru> ;.

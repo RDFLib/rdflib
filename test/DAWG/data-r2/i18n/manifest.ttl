@@ -1,0 +1,93 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+# $Id: manifest.ttl,v 1.3 2005/10/25 09:38:08 aseaborne Exp $
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/i18n/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "I18N" ;
+    mf:entries
+    (
+        :kanji-1
+        :kanji-2
+        :normalization-1
+        :normalization-2
+        :normalization-3
+    ) .
+
+
+
+
+:kanji-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "kanji-01" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes> ;
+    mf:action
+        [ qt:data   <kanji.ttl> ;
+          qt:query  <kanji-01.rq> ] ;
+    mf:result  <kanji-01-results.ttl>
+    .
+      
+
+:kanji-2 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "kanji-02" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes> ;
+    mf:action
+        [ qt:data   <kanji.ttl> ;
+          qt:query  <kanji-02.rq> ] ;
+    mf:result  <kanji-02-results.ttl>
+    .
+
+
+:normalization-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "normalization-01" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0118/04-dawg-minutes.html> ;
+    mf:action
+        [ qt:data   <normalization-01.ttl> ;
+          qt:query  <normalization-01.rq> ] ;
+    mf:result  <normalization-01-results.ttl>
+    .
+    
+:normalization-2 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "normalization-02" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes> ;
+    rdfs:comment
+        "Example 1 from http://lists.w3.org/Archives/Public/public-rdf-dawg/2005JulSep/0096" ;
+    mf:action
+        [ qt:data   <normalization-02.ttl> ;
+          qt:query  <normalization-02.rq> ] ;
+    mf:result  <normalization-02-results.ttl>
+    .
+
+:normalization-3 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "normalization-03" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes> ;
+    rdfs:comment
+        "Example 2 from http://lists.w3.org/Archives/Public/public-rdf-dawg/2005JulSep/0096" ;
+    mf:action
+        [ qt:data   <normalization-03.ttl> ;
+          qt:query  <normalization-03.rq> ] ;
+    mf:result  <normalization-03-results.ttl>
+    .

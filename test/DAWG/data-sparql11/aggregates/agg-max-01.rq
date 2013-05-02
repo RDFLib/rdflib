@@ -1,0 +1,5 @@
+PREFIX : <http://www.example.org/>
+SELECT (MAX(?o) AS ?max)
+WHERE {
+	?s ?p ?o
+}

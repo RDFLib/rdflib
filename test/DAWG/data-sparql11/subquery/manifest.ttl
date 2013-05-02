@@ -1,0 +1,171 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Sub query" ;
+    mf:entries
+    ( 
+    :subquery01
+    :subquery02
+    :subquery03
+    :subquery04
+    :subquery05
+    :subquery06
+    :subquery07
+    :subquery08
+    :subquery09
+    :subquery10
+    :subquery11
+    :subquery12
+    :subquery13
+    :subquery14
+   ) .
+
+
+:subquery01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sq01 - Subquery within graph pattern" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-07-13#resolution_2> ;
+    mf:action
+         [ qt:query  <sq01.rq> ;
+           qt:graphData   <sq01.rdf> ] ;
+    mf:result  <sq01.srx>
+    .
+ 
+ :subquery02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sq02 - Subquery within graph pattern, graph variable is bound" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-07-13#resolution_3> ;
+    mf:action
+         [ qt:query  <sq02.rq> ;
+           qt:graphData   <sq01.rdf> ] ;
+    mf:result  <sq02.srx>
+    .
+ 
+ :subquery03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sq03 - Subquery within graph pattern, graph variable is not bound" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-07-13#resolution_4> ;
+    mf:action
+         [ qt:query  <sq03.rq> ;
+           qt:graphData   <sq01.rdf> ] ;
+    mf:result  <sq03.srx>
+    .
+    
+  :subquery04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sq04 - Subquery within graph pattern, default graph does not apply" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-07-13#resolution_5> ;
+    mf:action
+         [ qt:query  <sq04.rq> ;
+           qt:data   <sq04.rdf> ;
+           qt:graphData   <sq01.rdf> ] ;
+    mf:result  <sq04.srx>
+    .   
+    
+  :subquery05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sq05 - Subquery within graph pattern, from named applies" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-07-20#resolution_2> ;
+    mf:action
+         [ qt:query  <sq05.rq> ;
+           qt:graphData   <sq05.rdf> ] ;
+    mf:result  <sq05.srx>
+    . 
+    
+   :subquery06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sq06 - Subquery with graph pattern, from named applies" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-07-20#resolution_2> ;
+    mf:action
+         [ qt:query  <sq06.rq> ;
+           qt:data   <sq05.rdf> ] ;
+    mf:result  <sq06.srx>
+    .     
+    
+   :subquery07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sq07 - Subquery with from " ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-07-20#resolution_2> ;
+    mf:action
+         [ qt:query  <sq07.rq> ;
+           qt:graphData   <sq05.rdf> ] ;
+    mf:result  <sq07.srx>
+    .   
+    
+   :subquery08 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sq08 - Subquery with aggregate" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-07-20#resolution_2> ;
+    mf:action
+         [ qt:query  <sq08.rq> ;
+           qt:data   <sq08.rdf> ] ;
+    mf:result  <sq08.srx>
+    .     
+      
+  :subquery09 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sq09 - Nested Subqueries" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-07-20#resolution_2> ;
+    mf:action
+         [ qt:query  <sq09.rq> ;
+           qt:data   <sq09.rdf> ] ;
+    mf:result  <sq09.srx>
+    .     
+          
+  :subquery10 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sq10 - Subquery with exists" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-07-20#resolution_2> ;
+    mf:action
+         [ qt:query  <sq10.rq> ;
+           qt:data   <sq10.rdf> ] ;
+    mf:result  <sq10.srx>
+    .     
+                
+  :subquery11 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sq11 - Subquery limit per resource" ;
+    rdfs:comment "This query limits results per number of orders, rather than by number of rows";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
+    mf:action
+         [ qt:query  <sq11.rq> ;
+           qt:data   <sq11.ttl> ] ;
+    mf:result  <sq11.srx>
+    .     
+
+  :subquery12 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sq12 - Subquery in CONSTRUCT with built-ins" ;
+    rdfs:comment "This query constructs full names from first and last names";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
+    mf:action
+         [ qt:query  <sq12.rq> ;
+           qt:data   <sq12.ttl> ] ;
+    mf:result  <sq12_out.ttl>
+    .     
+
+  :subquery13 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sq13 - Subqueries don't inject bindings" ;
+    rdfs:comment "The result of this subquery is a Kartesian product of all orders, rather than paris of orders sharing products, since subqueries are evaluated independent from bindings from outside the subquery";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
+    mf:action
+         [ qt:query  <sq11.rq> ;
+           qt:data   <sq11.ttl> ] ;
+    mf:result  <sq11.srx>
+    . 
+
+  :subquery14 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sq14 - limit by resource" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
+    mf:action
+         [ qt:query  <sq14.rq> ;
+           qt:data   <sq14.ttl> ] ;
+    mf:result  <sq14-out.ttl>
+    . 

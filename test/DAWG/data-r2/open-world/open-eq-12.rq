@@ -1,0 +1,10 @@
+PREFIX     :    <http://example/>
+PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?x ?v1 ?y ?v2
+{
+    ?x :p ?v1 .
+    ?y :p ?v2 .
+    OPTIONAL { ?y :p ?v3 . FILTER( ?v1 != ?v3 || ?v1 = ?v3 )}
+    FILTER (!bound(?v3))
+}

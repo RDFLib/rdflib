@@ -1,0 +1,5 @@
+PREFIX : <http://example.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT ?s ?num (ROUND(?num) AS ?round) WHERE {
+	?s :num ?num
+}

@@ -1,0 +1,16 @@
+PREFIX   ex:  <http://example.org/>
+PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX  owl:  <http://www.w3.org/2002/07/owl#> 
+
+SELECT ?x
+WHERE { 
+      ?x ex:hasPublication _:b0 . 
+      _:b0 rdf:type [ 
+        owl:onProperty ex:publishedAt ; 
+        rdf:type owl:Restriction ; 
+        owl:someValuesFrom [ 
+          rdf:type owl:Class ; 
+          owl:complementOf ex:Workshop ] 
+       ]
+}

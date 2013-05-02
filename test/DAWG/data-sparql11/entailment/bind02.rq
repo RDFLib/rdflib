@@ -1,0 +1,11 @@
+PREFIX : <http://example.org/> 
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?o ?z ?z2
+{
+  ?s ?p ?o .
+  ?p a owl:DatatypeProperty . 
+  BIND(?o+10 AS ?z)
+  BIND(?o+100 AS ?z2)
+}

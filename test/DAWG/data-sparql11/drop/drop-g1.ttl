@@ -1,0 +1,5 @@
+@prefix : <http://example.org/> .
+
+:g1 :name "G1" ;
+	:description "Graph 1" ;
+	.

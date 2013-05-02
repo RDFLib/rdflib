@@ -39,8 +39,9 @@ except ImportError:
 def bnode_uuid():
     yield uuid4()
 
+@format_doctest_out
 def is_ncname(value):
-    __doc__ = format_doctest_out("""
+    """
     BNode identifiers must be valid NCNames.
 
     From the `W3C RDF Syntax doc <http://www.w3.org/TR/REC-rdf-syntax/#section-blank-nodeid-event>`_
@@ -67,8 +68,8 @@ def is_ncname(value):
 
     >>> assert is_ncname("urn:uuid:"+str(uuid4())) == True
     >>> from rdflib import BNode
-    >>> assert is_ncname(BNode(_sn_gen=bnode_uuid(), _prefix="urn:uuid:")) == True 
-    """)
+    >>> assert is_ncname(BNode(_sn_gen=bnode_uuid, _prefix="urn:uuid:")) == True 
+    """
     ncnameexp = re.compile('[A-Za-z][A-Za-z0-9]*')
     if ncnameexp.match(value):
         return True

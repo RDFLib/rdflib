@@ -1,0 +1,3 @@
+ASK {
+	FILTER(2 NOT IN ())
+}

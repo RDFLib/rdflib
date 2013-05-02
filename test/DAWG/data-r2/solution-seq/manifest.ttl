@@ -1,0 +1,132 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/solution-seq/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Solution Sequence" ;
+    mf:entries
+    ( 
+        :limit-1
+        :limit-2
+        :limit-3
+        :limit-4
+        :offset-1
+        :offset-2
+        :offset-3
+        :offset-4
+        :slice-1
+        :slice-2
+        :slice-3
+        :slice-4
+        :slice-5
+    ) .
+    
+
+:limit-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Limit 1" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes#item03> ;
+    mf:action [ qt:query  <slice-01.rq> ; qt:data <data.ttl> ] ;
+    mf:result <slice-results-01.ttl> .
+
+:limit-2 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Limit 2" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes#item03> ;
+    mf:action [ qt:query  <slice-02.rq> ; qt:data <data.ttl> ] ;
+    mf:result <slice-results-02.ttl> .
+
+:limit-3 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Limit 3" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes#item03> ;
+    mf:action [ qt:query  <slice-03.rq> ; qt:data <data.ttl> ] ;
+    mf:result <slice-results-03.ttl> .
+
+:limit-4 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Limit 4" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes#item03> ;
+    mf:action [ qt:query  <slice-04.rq> ; qt:data <data.ttl> ] ;
+    mf:result <slice-results-04.ttl> .
+
+:offset-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Offset 1" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes#item03> ;
+    mf:action [ qt:query  <slice-10.rq> ; qt:data <data.ttl> ] ;
+    mf:result <slice-results-10.ttl> .
+
+:offset-2 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Offset 2" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes#item03> ;
+    mf:action [ qt:query  <slice-11.rq> ; qt:data <data.ttl> ] ;
+    mf:result <slice-results-11.ttl> .
+
+:offset-3 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Offset 3" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes#item03> ;
+    mf:action [ qt:query  <slice-12.rq> ; qt:data <data.ttl> ] ;
+    mf:result <slice-results-12.ttl> .
+
+:offset-4 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Offset 4" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes#item03> ;
+    mf:action [ qt:query  <slice-13.rq> ; qt:data <data.ttl> ] ;
+    mf:result <slice-results-13.ttl> .
+
+:slice-1 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Slice 1" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes#item03> ;
+    mf:action [ qt:query  <slice-20.rq> ; qt:data <data.ttl> ] ;
+    mf:result <slice-results-20.ttl> .
+
+:slice-2 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Slice 2" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes#item03> ;
+    mf:action [ qt:query  <slice-21.rq> ; qt:data <data.ttl> ] ;
+    mf:result <slice-results-21.ttl> .
+
+:slice-3 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Slice 3" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes#item03> ;
+    mf:action [ qt:query  <slice-22.rq> ; qt:data <data.ttl> ] ;
+    mf:result <slice-results-22.ttl> .
+
+:slice-4 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Slice 4" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes#item03> ;
+    mf:action [ qt:query  <slice-23.rq> ; qt:data <data.ttl> ] ;
+    mf:result <slice-results-23.ttl> .
+
+:slice-5 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Slice 5" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes#item03> ;
+    mf:action [ qt:query  <slice-24.rq> ; qt:data <data.ttl> ] ;
+    mf:result <slice-results-24.ttl> .

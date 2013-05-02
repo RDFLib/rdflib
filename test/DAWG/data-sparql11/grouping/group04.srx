@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="X"/>
+    <variable name="S"/>
+  </head>
+  <results>
+    <result>
+      <binding name="X">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#date">1605-11-05</literal>
+      </binding>
+      <binding name="S">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="X">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">9</literal>
+      </binding>
+      <binding name="S">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

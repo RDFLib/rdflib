@@ -34,8 +34,7 @@ The diagram below describes the current set of plugins that are either built in 
 
 .. image:: /_static/plugins-diagram.svg
    :alt: rdflib plugin "architecture"
-   :width: 698
-   :height: 450
+   :width: 90%
 
 
 API Documentation

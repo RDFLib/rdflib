@@ -1,4 +1,3 @@
-from __future__ import generators
 from rdflib.py3compat import format_doctest_out
 
 __doc__ = format_doctest_out("""
@@ -8,26 +7,29 @@ Namespace Utilities
 
 RDFLib provides mechanisms for managing Namespaces.
 
-In particular, there is a :class:`~rdflib.namespace.Namespace` class that takes as its argument the base URI of the namespace.
+In particular, there is a :class:`~rdflib.namespace.Namespace` class
+that takes as its argument the base URI of the namespace.
 
 .. code-block:: pycon
 
     >>> from rdflib.namespace import Namespace
-    >>> fuxi = Namespace('http://metacognition.info/ontologies/FuXi.n3#')
+    >>> owl = Namespace('http://www.w3.org/2002/07/owl#')
 
-Fully qualified URIs in the namespace can be constructed either by attribute or by dictionary access on Namespace instances:
+Fully qualified URIs in the namespace can be constructed either by attribute
+or by dictionary access on Namespace instances:
 
 .. code-block:: pycon
 
-    >>> fuxi.ruleBase
-    rdflib.term.URIRef(%(u)s'http://metacognition.info/ontologies/FuXi.n3#ruleBase')
-    >>> fuxi['ruleBase']
-    rdflib.term.URIRef(%(u)s'http://metacognition.info/ontologies/FuXi.n3#ruleBase')
+    >>> owl.seeAlso
+    rdflib.term.URIRef(%(u)s'http://www.w3.org/2002/07/owl#seeAlso')
+    >>> owl['seeAlso']
+    rdflib.term.URIRef(%(u)s'http://www.w3.org/2002/07/owl#seeAlso')
+
 
 Automatic handling of unknown predicates
 -----------------------------------------
 
-As a programming convenience, a namespace binding is automatically 
+As a programming convenience, a namespace binding is automatically
 created when :class:`rdflib.term.URIRef` predicates are added to the graph.
 
 Importable namespaces
@@ -59,7 +61,11 @@ from urllib import pathname2url
 
 from rdflib.term import URIRef, Variable, _XSD_PFX
 
-__all__ = ['is_ncname', 'split_uri', 'Namespace', 'NamespaceDict', 'ClosedNamespace', 'NamespaceManager', 'XMLNS', 'RDF', 'RDFS', 'XSD', 'OWL', 'SKOS']
+__all__ = [
+    'is_ncname', 'split_uri', 'Namespace', 'NamespaceDict',
+    'ClosedNamespace', 'NamespaceManager',
+    'XMLNS', 'RDF', 'RDFS', 'XSD', 'OWL', 'SKOS']
+
 
 class Namespace(URIRef):
 
@@ -68,13 +74,14 @@ class Namespace(URIRef):
         return URIRef(self + 'title')
 
     def term(self, name):
-        return URIRef(self + name)
+        # need to handle slices explicitly because of __getitem__ override
+        return URIRef(self + (name if isinstance(name, basestring) else ''))
 
     def __getitem__(self, key, default=None):
         return self.term(key)
 
     def __getattr__(self, name):
-        if name.startswith("__"): # ignore any special Python names!
+        if name.startswith("__"):  # ignore any special Python names!
             raise AttributeError
         else:
             return self.term(name)
@@ -84,7 +91,8 @@ class NamespaceDict(dict):
 
     def __new__(cls, uri=None, context=None):
         inst = dict.__new__(cls)
-        inst.uri = uri # TODO: do we need to set these both here and in __init__ ??
+        inst.uri = uri  # TODO: do we need to set these
+                        # both here and in __init__ ??
         inst.__context = context
         return inst
 
@@ -128,7 +136,8 @@ class ClosedNamespace(object):
     def term(self, name):
         uri = self.__uris.get(name)
         if uri is None:
-            raise Exception("term '%s' not in namespace '%s'" % (name, self.uri))
+            raise Exception(
+                "term '%s' not in namespace '%s'" % (name, self.uri))
         else:
             return uri
 
@@ -136,7 +145,7 @@ class ClosedNamespace(object):
         return self.term(key)
 
     def __getattr__(self, name):
-        if name.startswith("__"): # ignore any special Python names!
+        if name.startswith("__"):  # ignore any special Python names!
             raise AttributeError
         else:
             return self.term(name)
@@ -153,66 +162,79 @@ class _RDFNamespace(ClosedNamespace):
         super(_RDFNamespace, self).__init__(
             URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
             terms=[
-        # Syntax Names
-        "RDF", "Description", "ID", "about", "parseType", "resource", "li", "nodeID", "datatype",
+                # Syntax Names
+                "RDF", "Description", "ID", "about", "parseType",
+                "resource", "li", "nodeID", "datatype",
 
-        # RDF Classes
-        "Seq", "Bag", "Alt", "Statement", "Property", "XMLLiteral", "List", "PlainLiteral",
+                # RDF Classes
+                "Seq", "Bag", "Alt", "Statement", "Property",
+                "List", "PlainLiteral",
 
-        # RDF Properties
-        "subject", "predicate", "object", "type", "value", "first", "rest",
-        # and _n where n is a non-negative integer
+                # RDF Properties
+                "subject", "predicate", "object", "type",
+                "value", "first", "rest",
+                # and _n where n is a non-negative integer
 
-        # RDF Resources
-        "nil"]
-            )
+                # RDF Resources
+                "nil",
+
+                # Added in RDF 1.1
+                "XMLLiteral", "HTML", "langString"]
+        )
 
     def term(self, name):
         try:
             i = int(name)
             return URIRef("%s_%s" % (self.uri, i))
-        except ValueError, e:
+        except ValueError:
             return super(_RDFNamespace, self).term(name)
 
 RDF = _RDFNamespace()
 
 RDFS = ClosedNamespace(
-    uri = URIRef("http://www.w3.org/2000/01/rdf-schema#"),
-    terms = [
+    uri=URIRef("http://www.w3.org/2000/01/rdf-schema#"),
+    terms=[
         "Resource", "Class", "subClassOf", "subPropertyOf", "comment", "label",
         "domain", "range", "seeAlso", "isDefinedBy", "Literal", "Container",
         "ContainerMembershipProperty", "member", "Datatype"]
-    )
+)
 
 OWL = Namespace('http://www.w3.org/2002/07/owl#')
 
 XSD = Namespace(_XSD_PFX)
 
 SKOS = Namespace('http://www.w3.org/2004/02/skos/core#')
+DOAP = Namespace('http://usefulinc.com/ns/doap#')
+FOAF = Namespace('http://xmlns.com/foaf/0.1/')
+
 
 class NamespaceManager(object):
     """
 
     Sample usage from FuXi ...
-    
+
     .. code-block:: python
 
         ruleStore = N3RuleStore(additionalBuiltins=additionalBuiltins)
         nsMgr = NamespaceManager(Graph(ruleStore))
-        ruleGraph = Graph(ruleStore,namespace_manager=nsMgr)            
+        ruleGraph = Graph(ruleStore,namespace_manager=nsMgr)
 
 
     and ...
 
     .. code-block:: pycon
-    
-        >>> from rdflib import Graph, OWL
-        >>> exNs = Namespace('http://example.com/')        
+
+        >>> import rdflib
+        >>> from rdflib import Graph
+        >>> from rdflib.namespace import Namespace, NamespaceManager
+        >>> exNs = Namespace('http://example.com/')
         >>> namespace_manager = NamespaceManager(Graph())
         >>> namespace_manager.bind('ex', exNs, override=False)
-        >>> namespace_manager.bind('owl', OWL, override=False)
-        >>> g = Graph()    
+        >>> g = Graph()
         >>> g.namespace_manager = namespace_manager
+        >>> all_ns = [n for n in g.namespace_manager.namespaces()]
+        >>> assert ('ex', rdflib.term.URIRef('http://example.com/')) in all_ns
+        >>>
 
     """
     def __init__(self, graph):
@@ -232,32 +254,33 @@ class NamespaceManager(object):
 
     def qname(self, uri):
         prefix, namespace, name = self.compute_qname(uri)
-        if prefix=="":
+        if prefix == "":
             return name
         else:
             return ":".join((prefix, name))
 
-    def normalizeUri(self,rdfTerm):
+    def normalizeUri(self, rdfTerm):
         """
-        Takes an RDF Term and 'normalizes' it into a QName (using the registered prefix)
-        or (unlike compute_qname) the Notation 3 form for URIs: <...URI...>
+        Takes an RDF Term and 'normalizes' it into a QName (using the
+        registered prefix) or (unlike compute_qname) the Notation 3
+        form for URIs: <...URI...>
         """
         try:
             namespace, name = split_uri(rdfTerm)
-            namespace = URIRef(namespace)
+            namespace = URIRef(unicode(namespace))
         except:
-            if isinstance(rdfTerm,Variable):
-                return "?%s"%rdfTerm
+            if isinstance(rdfTerm, Variable):
+                return "?%s" % rdfTerm
             else:
-                return "<%s>"%rdfTerm
+                return "<%s>" % rdfTerm
         prefix = self.store.prefix(namespace)
-        if prefix is None and isinstance(rdfTerm,Variable):
-            return "?%s"%rdfTerm
+        if prefix is None and isinstance(rdfTerm, Variable):
+            return "?%s" % rdfTerm
         elif prefix is None:
-            return "<%s>"%rdfTerm
+            return "<%s>" % rdfTerm
         else:
             qNameParts = self.compute_qname(rdfTerm)
-            return ':'.join([qNameParts[0],qNameParts[-1]])
+            return ':'.join([qNameParts[0], qNameParts[-1]])
 
     def compute_qname(self, uri, generate=True):
         if not uri in self.__cache:
@@ -265,8 +288,9 @@ class NamespaceManager(object):
             namespace = URIRef(namespace)
             prefix = self.store.prefix(namespace)
             if prefix is None:
-                if not generate: 
-                    raise Exception("No known prefix for %s and generate=False")
+                if not generate:
+                    raise Exception(
+                        "No known prefix for %s and generate=False")
                 num = 1
                 while 1:
                     prefix = "ns%s" % num
@@ -278,12 +302,12 @@ class NamespaceManager(object):
         return self.__cache[uri]
 
     def bind(self, prefix, namespace, override=True):
-        namespace = URIRef(namespace)
+        namespace = URIRef(unicode(namespace))
         # When documenting explain that override only applies in what cases
         if prefix is None:
             prefix = ''
         bound_namespace = self.store.namespace(prefix)
-        if bound_namespace and bound_namespace!=namespace:
+        if bound_namespace and bound_namespace != namespace:
             # prefix already in use for different namespace
             #
             # append number to end of prefix until we find one
@@ -295,16 +319,17 @@ class NamespaceManager(object):
                 new_prefix = "%s%s" % (prefix, num)
                 if not self.store.namespace(new_prefix):
                     break
-                num +=1
+                num += 1
             self.store.bind(new_prefix, namespace)
         else:
             bound_prefix = self.store.prefix(namespace)
             if bound_prefix is None:
                 self.store.bind(prefix, namespace)
             elif bound_prefix == prefix:
-                pass # already bound
+                pass  # already bound
             else:
-                if override or bound_prefix.startswith("_"): # or a generated prefix
+                if override or bound_prefix.startswith("_"):  # or a generated
+                                                              # prefix
                     self.store.bind(prefix, namespace)
 
     def namespaces(self):
@@ -318,7 +343,7 @@ class NamespaceManager(object):
         if defrag:
             result = urldefrag(result)[0]
         if not defrag:
-            if uri and uri[-1]=="#" and result[-1]!="#":
+            if uri and uri[-1] == "#" and result[-1] != "#":
                 result = "%s#" % result
         return URIRef(result)
 
@@ -355,7 +380,7 @@ class NamespaceManager(object):
 #
 # * Characters '-' and '.' are allowed as name characters.
 
-from unicodedata import category, decomposition
+from unicodedata import category
 
 NAME_START_CATEGORIES = ["Ll", "Lu", "Lo", "Lt", "Nl"]
 NAME_CATEGORIES = NAME_START_CATEGORIES + ["Mc", "Me", "Mn", "Lm", "Nd"]
@@ -367,17 +392,18 @@ ALLOWED_NAME_CHARS = [u"\u00B7", u"\u0387", u"-", u".", u"_"]
 #  [5] NCNameChar ::= Letter | Digit | '.' | '-' | '_' | CombiningChar
 #      | Extender
 
+
 def is_ncname(name):
     first = name[0]
-    if first=="_" or category(first) in NAME_START_CATEGORIES:
+    if first == "_" or category(first) in NAME_START_CATEGORIES:
         for i in xrange(1, len(name)):
             c = name[i]
             if not category(c) in NAME_CATEGORIES:
                 if c in ALLOWED_NAME_CHARS:
                     continue
                 return 0
-            #if in compatibility area
-            #if decomposition(c)!='':
+            # if in compatibility area
+            # if decomposition(c)!='':
             #    return 0
 
         return 1
@@ -386,17 +412,18 @@ def is_ncname(name):
 
 XMLNS = "http://www.w3.org/XML/1998/namespace"
 
+
 def split_uri(uri):
     if uri.startswith(XMLNS):
         return (XMLNS, uri.split(XMLNS)[1])
     length = len(uri)
     for i in xrange(0, length):
-        c = uri[-i-1]
+        c = uri[-i - 1]
         if not category(c) in NAME_CATEGORIES:
             if c in ALLOWED_NAME_CHARS:
                 continue
-            for j in xrange(-1-i, length):
-                if category(uri[j]) in NAME_START_CATEGORIES or uri[j]=="_":
+            for j in xrange(-1 - i, length):
+                if category(uri[j]) in NAME_START_CATEGORIES or uri[j] == "_":
                     ns = uri[:j]
                     if not ns:
                         break

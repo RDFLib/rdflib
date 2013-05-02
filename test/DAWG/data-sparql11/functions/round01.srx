@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+<head>
+	<variable name="s"/>
+	<variable name="num"/>
+	<variable name="round"/>
+</head>
+<results>
+		<result>
+			<binding name="s"><uri>http://example.org/n1</uri></binding>
+			<binding name="num"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">-1</literal></binding>
+			<binding name="round"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">-1</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/n5</uri></binding>
+			<binding name="num"><literal datatype="http://www.w3.org/2001/XMLSchema#decimal">2.5</literal></binding>
+			<binding name="round"><literal datatype="http://www.w3.org/2001/XMLSchema#decimal">3</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/n4</uri></binding>
+			<binding name="num"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">-2</literal></binding>
+			<binding name="round"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">-2</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/n3</uri></binding>
+			<binding name="num"><literal datatype="http://www.w3.org/2001/XMLSchema#decimal">1.1</literal></binding>
+			<binding name="round"><literal datatype="http://www.w3.org/2001/XMLSchema#decimal">1</literal></binding>
+		</result>
+		<result>
+			<binding name="s"><uri>http://example.org/n2</uri></binding>
+			<binding name="num"><literal datatype="http://www.w3.org/2001/XMLSchema#decimal">-1.6</literal></binding>
+			<binding name="round"><literal datatype="http://www.w3.org/2001/XMLSchema#decimal">-2</literal></binding>
+		</result>
+</results>
+</sparql>

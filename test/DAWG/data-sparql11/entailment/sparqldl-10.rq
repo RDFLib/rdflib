@@ -1,0 +1,14 @@
+# Query6 - articulation simplification test
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#> 
+PREFIX : <http://example.org/test#>
+
+SELECT ?X ?Y
+WHERE
+{
+  ?X :p ?a.
+  ?a owl:sameAs ?b.
+  ?b owl:sameAs ?Y.
+  ?Y :q ?c.
+}

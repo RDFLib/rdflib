@@ -1,0 +1,666 @@
+@prefix :       <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "Syntax tests Syntax SPARQL 1.1" ;
+    mf:entries
+    ( 
+
+:test_1
+:test_2
+:test_3
+:test_4
+:test_5
+:test_6
+:test_7
+:test_8
+:test_9
+:test_10
+:test_11
+:test_12
+:test_13
+:test_14
+:test_15
+:test_16
+:test_17
+:test_18
+:test_19
+:test_20
+:test_21
+:test_22
+:test_23
+:test_24
+:test_25
+:test_26
+:test_27
+:test_28
+:test_29
+:test_30
+:test_31
+:test_32
+:test_33
+## Needs renaming - it is  a BIND not BINDINGS test - see 39
+:test_34
+## To be unapproved (BINDINGS) 35,36,37,38
+## :test_35	# removed 2012-07-31
+:test_35a
+#:test_36	# removed 2012-07-31
+:test_36a
+##:test_37	# removed 2012-07-31
+##:test_38	# removed 2012-07-31
+:test_38a
+## :test_39	# duplicate of :test_34
+:test_40
+:test_41
+:test_42
+:test_43
+:test_44
+:test_45
+:test_46
+:test_47
+:test_48
+:test_49
+:test_50
+:test_51
+
+# :test_52	# obsoleted by decision to allow colons in prefixname local parts, but not allow them to be escaped
+:test_53
+:test_54
+:test_55
+:test_56
+:test_57
+:test_58
+:test_59
+:test_60
+:test_61a
+:test_62a
+:test_63
+:test_64
+:test_65
+:test_66
+
+:test_pn_01
+:test_pn_02
+:test_pn_03
+:test_pn_04
+:test_pn_05
+:test_pn_06
+:test_pn_07
+:test_pn_08
+:test_pn_09
+
+:test_pn_bad_01
+:test_pn_bad_02
+:test_pn_bad_03
+:test_pn_bad_04
+:test_pn_bad_05
+:test_pn_bad_06
+:test_pn_bad_07
+:test_pn_bad_08
+:test_pn_bad_09
+:test_pn_bad_10
+:test_pn_bad_11
+:test_pn_bad_12
+:test_pn_bad_13
+
+:test_pp_coll
+) .
+
+:test_1 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-select-expr-01.rq" ;
+   mf:action  <syntax-select-expr-01.rq> ;.
+
+:test_2 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-select-expr-02.rq" ;
+   mf:action  <syntax-select-expr-02.rq> ;.
+
+:test_3 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-select-expr-03.rq" ;
+   mf:action  <syntax-select-expr-03.rq> ;.
+
+:test_4 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-select-expr-04.rq" ;
+   mf:action  <syntax-select-expr-04.rq> ;.
+
+:test_5 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-select-expr-05.rq" ;
+   mf:action  <syntax-select-expr-05.rq> ;.
+
+:test_6 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-aggregate-01.rq" ;
+   mf:action  <syntax-aggregate-01.rq> ;.
+
+:test_7 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-aggregate-02.rq" ;
+   mf:action  <syntax-aggregate-02.rq> ;.
+
+:test_8 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-aggregate-03.rq" ;
+   mf:action  <syntax-aggregate-03.rq> ;.
+
+:test_9 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-aggregate-04.rq" ;
+   mf:action  <syntax-aggregate-04.rq> ;.
+
+:test_10 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-aggregate-05.rq" ;
+   mf:action  <syntax-aggregate-05.rq> ;.
+
+:test_11 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-aggregate-06.rq" ;
+   mf:action  <syntax-aggregate-06.rq> ;.
+
+:test_12 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-aggregate-07.rq" ;
+   mf:action  <syntax-aggregate-07.rq> ;.
+
+:test_13 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-aggregate-08.rq" ;
+   mf:action  <syntax-aggregate-08.rq> ;.
+
+:test_14 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-aggregate-09.rq" ;
+   mf:action  <syntax-aggregate-09.rq> ;.
+
+:test_15 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-aggregate-10.rq" ;
+   mf:action  <syntax-aggregate-10.rq> ;.
+
+:test_16 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-aggregate-11.rq" ;
+   mf:action  <syntax-aggregate-11.rq> ;.
+
+:test_17 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-aggregate-12.rq" ;
+   mf:action  <syntax-aggregate-12.rq> ;.
+
+:test_18 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-aggregate-13.rq" ;
+   mf:action  <syntax-aggregate-13.rq> ;.
+
+:test_19 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-aggregate-14.rq" ;
+   mf:action  <syntax-aggregate-14.rq> ;.
+
+:test_20 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-aggregate-15.rq" ;
+   mf:action  <syntax-aggregate-15.rq> ;.
+
+:test_21 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-subquery-01.rq" ;
+   mf:action  <syntax-subquery-01.rq> ;.
+
+:test_22 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-subquery-02.rq" ;
+   mf:action  <syntax-subquery-02.rq> ;.
+
+:test_23 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-subquery-03.rq" ;
+   mf:action  <syntax-subquery-03.rq> ;.
+
+:test_24 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-not-exists-01.rq" ;
+   mf:action  <syntax-not-exists-01.rq> ;.
+
+:test_25 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-not-exists-02.rq" ;
+   mf:action  <syntax-not-exists-02.rq> ;.
+
+:test_26 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-not-exists-03.rq" ;
+   mf:action  <syntax-not-exists-03.rq> ;.
+
+:test_27 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-exists-01.rq" ;
+   mf:action  <syntax-exists-01.rq> ;.
+
+:test_28 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-exists-02.rq" ;
+   mf:action  <syntax-exists-02.rq> ;.
+
+:test_29 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-exists-03.rq" ;
+   mf:action  <syntax-exists-03.rq> ;.
+
+:test_30 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-minus-01.rq" ;
+   mf:action  <syntax-minus-01.rq> ;.
+
+:test_31 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-oneof-01.rq" ;
+   mf:action  <syntax-oneof-01.rq> ;.
+
+:test_32 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-oneof-02.rq" ;
+   mf:action  <syntax-oneof-02.rq> ;.
+
+:test_33 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-oneof-03.rq" ;
+   mf:action  <syntax-oneof-03.rq> ;.
+
+:test_34 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-bindingBINDscopes-01.rq" ;
+   mf:action  <syntax-bindings-01.rq> ;.
+
+# :test_35 rdf:type   mf:PositiveSyntaxTest11 ;
+#    dawgt:approval dawgt:Approved ;
+#    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+#    mf:name    "syntax-bindings-02.rq" ;
+#    mf:action  <syntax-bindings-02.rq> ;.
+
+:test_35a rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+
+   mf:name    "syntax-bindings-02a.rq with VALUES clause" ;
+   mf:action  <syntax-bindings-02a.rq> ;.
+
+# :test_36 rdf:type   mf:PositiveSyntaxTest11 ;
+#    dawgt:approval dawgt:Approved ;
+#    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+#    mf:name    "syntax-bindings-03.rq" ;
+#    mf:action  <syntax-bindings-03.rq> ;.
+
+:test_36a rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syntax-bindings-03a.rq with VALUES clause" ;
+   mf:action  <syntax-bindings-03a.rq> ;.
+
+# :test_37 rdf:type   mf:PositiveSyntaxTest11 ;
+#    dawgt:approval dawgt:Approved ;
+#    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+#    mf:name    "syntax-bindings-04.rq" ;
+#    mf:action  <syntax-bindings-04.rq> ;.
+
+# :test_38 rdf:type   mf:PositiveSyntaxTest11 ;
+#    dawgt:approval dawgt:NotClassified ;
+#    mf:name    "syntax-bindings-05.rq" ;
+#    mf:action  <syntax-bindings-05.rq> ;.
+
+:test_38a rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syntax-bindings-05a.rq with VALUES clause" ;
+   mf:action  <syntax-bindings-05a.rq> ;.
+
+# duplicate of :test_34
+# :test_39 rdf:type   mf:PositiveSyntaxTest11 ;
+#    dawgt:approval dawgt:Approved ;
+#    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+#    mf:name    "syntax-bindings-01.rq" ;
+#    mf:action  <syntax-bindings-01.rq> ;.
+
+:test_40 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-bind-02.rq" ;
+   mf:action  <syntax-bind-02.rq> ;.
+
+:test_41 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-construct-where-01.rq" ;
+   mf:action  <syntax-construct-where-01.rq> ;.
+
+:test_42 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-construct-where-02.rq" ;
+   mf:action  <syntax-construct-where-02.rq> ;.
+
+:test_43 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syn-bad-01.rq" ;
+   mf:action  <syn-bad-01.rq> ;.
+
+:test_44 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syn-bad-02.rq" ;
+   mf:action  <syn-bad-02.rq> ;.
+
+:test_45 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syn-bad-03.rq" ;
+   mf:action  <syn-bad-03.rq> ;.
+
+:test_46 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syn-bad-04.rq" ;
+   mf:action  <syn-bad-04.rq> ;.
+
+:test_47 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syn-bad-05.rq" ;
+   mf:action  <syn-bad-05.rq> ;.
+
+:test_48 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syn-bad-06.rq" ;
+   mf:action  <syn-bad-06.rq> ;.
+
+:test_49 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syn-bad-07.rq" ;
+   mf:action  <syn-bad-07.rq> ;.
+
+:test_50 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syn-bad-08.rq" ;
+   mf:action  <syn-bad-08.rq> ;.
+
+:test_51 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+   mf:name    "syntax-bindings-09.rq" ;
+   mf:action  <syntax-bindings-09.rq> ;.
+
+:test_52 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
+   mf:name    "PrefixName with backslash-escaped colons" ;
+   mf:action  <qname-escape-01.rq> ;.
+
+:test_53 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
+   mf:name    "PrefixName with hex-encoded colons" ;
+   mf:action  <qname-escape-02.rq> ;.
+
+:test_54 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "PrefixName with unescaped colons" ;
+   mf:action  <qname-escape-03.rq> ;.
+
+:test_55 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syntax-BINDscope1.rq" ;
+   mf:action  <syntax-BINDscope1.rq> ;.
+
+:test_56 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syntax-BINDscope2.rq" ;
+   mf:action  <syntax-BINDscope2.rq> ;.
+
+:test_57 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syntax-BINDscope3.rq" ;
+   mf:action  <syntax-BINDscope3.rq> ;.
+
+:test_58 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syntax-BINDscope4.rq" ;
+   mf:action  <syntax-BINDscope4.rq> ;.
+
+:test_59 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syntax-BINDscope5.rq" ;
+   mf:action  <syntax-BINDscope5.rq> ;.
+
+:test_60 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syntax-BINDscope6.rq" ;
+   mf:action  <syntax-BINDscope6.rq> ;.
+
+:test_61a rdf:type   mf:NegativeSyntaxTest11 ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-09-25#resolution_2> ;
+    mf:name    "syntax-BINDscope7.rq" ;
+    mf:action  <syntax-BINDscope7.rq> ;.
+
+:test_62a rdf:type   mf:NegativeSyntaxTest11 ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-09-25#resolution_2> ;
+    mf:name    "syntax-BINDscope8.rq" ;
+    mf:action  <syntax-BINDscope8.rq> ;.
+
+:test_63 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syntax-propertyPaths-01.rq" ;
+   mf:action  <syntax-propertyPaths-01.rq> ;.
+
+:test_64 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syntax-SELECTscope1.rq" ;
+   mf:action  <syntax-SELECTscope1.rq> ;.
+
+:test_65 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syntax-SELECTscope2" ;
+   mf:action  <syntax-SELECTscope2.rq> ;.
+
+:test_66 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syntax-SELECTscope3.rq" ;
+   mf:action  <syntax-SELECTscope3.rq> ;.
+
+:test_pn_01 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-pname-01" ;
+   mf:action  <syn-pname-01.rq> ;.
+
+:test_pn_02 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-pname-02" ;
+   mf:action  <syn-pname-02.rq> ;.
+
+:test_pn_03 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-pname-03" ;
+   mf:action  <syn-pname-03.rq> ;.
+
+:test_pn_04 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-pname-04" ;
+   mf:action  <syn-pname-04.rq> ;.
+
+:test_pn_05 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-pname-05" ;
+   mf:action  <syn-pname-05.rq> ;.
+
+:test_pn_06 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-pname-06" ;
+   mf:action  <syn-pname-06.rq> ;.
+
+:test_pn_07 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-pname-07" ;
+   mf:action  <syn-pname-07.rq> ;.
+
+:test_pn_08 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-pname-08" ;
+   mf:action  <syn-pname-08.rq> ;.
+
+:test_pn_09 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-pname-09" ;
+   mf:action  <syn-pname-09.rq> ;.
+
+
+:test_pn_bad_01 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-bad-pname-01" ;
+   mf:action  <syn-bad-pname-01.rq> ;.
+
+:test_pn_bad_02 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-bad-pname-02" ;
+   mf:action  <syn-bad-pname-02.rq> ;.
+
+:test_pn_bad_03 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-bad-pname-03" ;
+   mf:action  <syn-bad-pname-03.rq> ;.
+
+:test_pn_bad_04 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-bad-pname-04" ;
+   mf:action  <syn-bad-pname-04.rq> ;.
+
+:test_pn_bad_05 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-bad-pname-05" ;
+   mf:action  <syn-bad-pname-05.rq> ;.
+
+:test_pn_bad_06 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-bad-pname-06" ;
+   mf:action  <syn-bad-pname-06.rq> ;.
+
+:test_pn_bad_07 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-bad-pname-07" ;
+   mf:action  <syn-bad-pname-07.rq> ;.
+
+:test_pn_bad_08 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-bad-pname-08" ;
+   mf:action  <syn-bad-pname-08.rq> ;.
+
+:test_pn_bad_09 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-bad-pname-09" ;
+   mf:action  <syn-bad-pname-09.rq> ;.
+
+:test_pn_bad_10 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-bad-pname-10" ;
+   mf:action  <syn-bad-pname-10.rq> ;.
+
+:test_pn_bad_11 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-bad-pname-11" ;
+   mf:action  <syn-bad-pname-11.rq> ;.
+
+:test_pn_bad_12 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-bad-pname-12" ;
+   mf:action  <syn-bad-pname-12.rq> ;.
+
+:test_pn_bad_13 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-bad-pname-13" ;
+   mf:action  <syn-bad-pname-13.rq> ;.
+
+:test_pp_coll rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+   mf:name    "syn-pp-in-collection" ;
+   mf:action  <syn-pp-in-collection.rq> ;.

@@ -2,7 +2,10 @@
 TODO:
 """
 
-__all__ = ['Error', 'TypeCheckError', 'SubjectTypeError', 'PredicateTypeError', 'ObjectTypeError', 'ContextTypeError', 'ParserError']
+__all__ = ['Error', 'TypeCheckError', 'SubjectTypeError',
+           'PredicateTypeError', 'ObjectTypeError', 'ContextTypeError',
+           'ParserError']
+
 
 class Error(Exception):
     """Base class for rdflib exceptions."""
@@ -25,7 +28,7 @@ class SubjectTypeError(TypeCheckError):
     def __init__(self, node):
         TypeCheckError.__init__(self, node)
         self.msg = "Subject must be instance of URIRef or BNode: %s(%s)" \
-                       % (self.node, self.type)
+            % (self.node, self.type)
 
 
 class PredicateTypeError(TypeCheckError):
@@ -33,7 +36,7 @@ class PredicateTypeError(TypeCheckError):
     def __init__(self, node):
         TypeCheckError.__init__(self, node)
         self.msg = "Predicate must be a URIRef instance: %s(%s)" \
-                       % (self.node, self.type)
+            % (self.node, self.type)
 
 
 class ObjectTypeError(TypeCheckError):
@@ -43,14 +46,16 @@ class ObjectTypeError(TypeCheckError):
         TypeCheckError.__init__(self, node)
         self.msg = "\
 Object must be instance of URIRef, Literal, or BNode: %s(%s)" % \
-                       (self.node, self.type)
+            (self.node, self.type)
+
 
 class ContextTypeError(TypeCheckError):
     """Context of an assertion must be an instance of URIRef."""
     def __init__(self, node):
         TypeCheckError.__init__(self, node)
         self.msg = "Context must be instance of URIRef or BNode: %s(%s)" \
-                       % (self.node, self.type)
+            % (self.node, self.type)
+
 
 class ParserError(Error):
     """RDF Parser error."""
@@ -62,10 +67,8 @@ class ParserError(Error):
         return self.msg
 
 
-class UniquenessError(Error) :
+class UniquenessError(Error):
     """A uniqueness assumption was made in the context, and that is not true"""
     def __init__(self, values):
         Error.__init__(self, "\
 Uniqueness assumption is not fulfilled. Multiple values are: %s" % values)
-
-

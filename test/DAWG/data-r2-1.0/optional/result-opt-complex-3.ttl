@@ -1,0 +1,33 @@
+@prefix ex:      <http://example.org/things#> .
+@prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+[]    rdf:type      rs:ResultSet ;
+      rs:resultVariable  "name" ;
+      rs:resultVariable  "nick" ;
+      rs:resultVariable  "plan" ;
+      rs:resultVariable  "dept" ;
+      rs:solution   [ rs:binding    [ rs:value      "Alice" ;
+                                      rs:variable   "name"
+                                    ] ;
+                      rs:binding    [ rs:value      "WhoMe?" ;
+                                      rs:variable   "nick"
+                                    ];
+                      rs:binding    [ rs:value      ex:HealthPlanD ;
+                                      rs:variable   "plan"
+                                    ]
+                    ] ;
+      rs:solution  _:a . _:a  rs:binding    [ rs:value      "Bert" ;
+                                      rs:variable   "name"
+                                    ] ;
+                      rs:binding    [ rs:value      "BigB" ;
+                                      rs:variable   "nick"
+                                    ];
+                      rs:binding    [ rs:value      ex:HealthPlanA ;
+                                      rs:variable   "plan"
+                                    ];
+                      rs:binding    [ rs:value      "DeptA" ;
+                                      rs:variable   "dept"
+                                    ]
+                    .

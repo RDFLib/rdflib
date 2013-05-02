@@ -1,0 +1,7 @@
+PREFIX : <http://example/> 
+
+SELECT * 
+{ 
+   ?s ?p ?o
+   GRAPH ?g { ?s ?q ?v }
+}

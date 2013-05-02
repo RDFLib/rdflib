@@ -1,0 +1,6 @@
+PREFIX ex: <http://example.org/ns#>
+SELECT ?x
+WHERE {
+  ?x ex:b1 _:c .
+}
+

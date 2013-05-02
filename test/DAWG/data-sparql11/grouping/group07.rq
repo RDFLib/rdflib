@@ -1,0 +1,17 @@
+prefix lode: <http://linkedevents.org/ontology/>
+prefix dc: <http://purl.org/dc/elements/1.1/>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+select ?event ?eventName ?venue ?photo
+where {
+   ?photo lode:illustrate ?event .
+   {
+   select ?event ?eventName ?venue
+   where {
+         ?event dc:title ?eventName .
+         ?event lode:atPlace ?venue .
+         ?venue rdfs:label "Live Music Hall" .
+         }
+   }
+}
+GROUP BY ?event

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="max"/>
+  </head>
+  <results>
+    <result>
+      <binding name="max">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">3.0E4</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

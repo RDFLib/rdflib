@@ -1,0 +1,9 @@
+# Simple false result to an ASK query.
+# $Id: false.ttl,v 1.1 2007/06/29 14:24:48 aseaborne Exp $
+
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+[]  rdf:type    rs:ResultSet ;
+    rs:boolean  "false"^^xsd:boolean .

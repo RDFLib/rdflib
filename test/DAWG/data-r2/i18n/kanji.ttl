@@ -1,0 +1,20 @@
+# $Id: kanji.ttl,v 1.5 2005/11/06 08:27:50 eric Exp $
+# See DOCUMENT INFO below.
+
+# NAMESPACES
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix 食: <http://www.w3.org/2001/sw/DataAccess/tests/data/i18n/kanji.ttl#> .
+
+# DOCUMENT INFO
+<> rdfs:comment "test kanji IRIs (composed from QNames)" ;
+   owl:versionInfo "$Id: kanji.ttl,v 1.5 2005/11/06 08:27:50 eric Exp $".
+
+# DOCUMENT
+_:alice foaf:name "Alice" ;
+        食:食べる   食:納豆 .
+
+_:bob   foaf:name "Bob" ;
+        食:食べる   食:海老 .
+

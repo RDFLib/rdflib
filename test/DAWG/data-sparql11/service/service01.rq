@@ -1,0 +1,11 @@
+# SERVICE join with pattern in the default graph
+
+PREFIX : <http://example.org/> 
+
+SELECT ?s ?o1 ?o2 
+{
+  ?s ?p1 ?o1 .
+  SERVICE <http://example.org/sparql> {
+    ?s ?p2 ?o2
+  }
+} 

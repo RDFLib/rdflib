@@ -1,0 +1,16 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>  
+PREFIX : <http://example.org/test#>
+
+SELECT ?x
+WHERE { 
+    ?x a [
+        a owl:Restriction ;
+        owl:onProperty :p ;
+        owl:someValuesFrom [
+            a owl:Restriction ;
+            owl:onProperty :p ;
+            owl:someValuesFrom :B
+        ] 
+    ]
+}

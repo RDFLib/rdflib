@@ -1,0 +1,7 @@
+PREFIX : <http://www.example.org/>
+ASK {
+	{SELECT (GROUP_CONCAT(?o;SEPARATOR=":") AS ?g) WHERE {
+		[] :p1 ?o
+	}}
+	FILTER(?g = "1:22" || ?g = "22:1")
+}

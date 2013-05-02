@@ -1,0 +1,7 @@
+prefix ex:	<http://www.example.org/schema#>
+prefix in:	<http://www.example.org/instance#>
+
+select ?x (datatype(?l) as ?dt) where {
+  ?x ex:p ?y .
+  optional {?x ex:q ?l}
+}

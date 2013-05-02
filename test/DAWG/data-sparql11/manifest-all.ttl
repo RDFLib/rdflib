@@ -1,0 +1,106 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<> a mf:Manifest ;
+	rdfs:label "SPARQL 1.1 tests" ;
+	mf:include (
+		<add/manifest.ttl>
+		<aggregates/manifest.ttl>
+		<basic-update/manifest.ttl>
+		<bind/manifest.ttl>
+		<bindings/manifest.ttl>
+		<clear/manifest.ttl>
+		<construct/manifest.ttl>
+		<copy/manifest.ttl>
+		<csv-tsv-res/manifest.ttl>
+		<delete-data/manifest.ttl>
+		<delete-insert/manifest.ttl>
+		<delete-where/manifest.ttl>
+		<delete/manifest.ttl>
+		<drop/manifest.ttl>
+		<entailment/manifest.ttl>
+		<exists/manifest.ttl>
+		<functions/manifest.ttl>
+		<grouping/manifest.ttl>
+		<json-res/manifest.ttl>
+		<move/manifest.ttl>
+		<negation/manifest.ttl>
+		<project-expression/manifest.ttl>
+		<property-path/manifest.ttl>
+		<service/manifest.ttl>
+		<subquery/manifest.ttl>
+		<syntax-query/manifest.ttl>
+		<syntax-update-1/manifest.ttl>
+		<syntax-update-2/manifest.ttl>
+		<update-silent/manifest.ttl>
+		<syntax-fed/manifest.ttl>
+		<service-description/manifest.ttl>
+		<protocol/manifest.ttl>
+	).
+
+
+<http://www.w3.org/TR/sparql11-query/> rdfs:label "SPARQL 1.1 Query Language" ;
+	mf:conformanceRequirement (
+		<aggregates/manifest.ttl>
+		<bind/manifest.ttl>
+		<bindings/manifest.ttl>
+		<construct/manifest.ttl>
+		<exists/manifest.ttl>
+		<functions/manifest.ttl>
+		<grouping/manifest.ttl>
+		<negation/manifest.ttl>
+		<project-expression/manifest.ttl>
+		<property-path/manifest.ttl>
+		<subquery/manifest.ttl>
+		<syntax-query/manifest.ttl>
+	).
+
+<http://www.w3.org/TR/sparql11-update/> rdfs:label "SPARQL 1.1 Update" ;
+	mf:conformanceRequirement (
+		<add/manifest.ttl>
+		<basic-update/manifest.ttl>
+		<clear/manifest.ttl>
+		<copy/manifest.ttl>
+		<delete-data/manifest.ttl>
+		<delete-insert/manifest.ttl>
+		<delete-where/manifest.ttl>
+		<delete/manifest.ttl>
+		<drop/manifest.ttl>
+		<move/manifest.ttl>
+		<syntax-update-1/manifest.ttl>
+		<syntax-update-2/manifest.ttl>
+		<update-silent/manifest.ttl>
+	).
+
+<http://www.w3.org/TR/sparql11-results-csv-tsv/> rdfs:label "SPARQL 1.1 Query Results CSV and TSV Formats" ;
+	mf:conformanceRequirement (
+		<csv-tsv-res/manifest.ttl>
+	).
+
+<http://www.w3.org/TR/sparql11-results-json/> rdfs:label "SPARQL 1.1 Query Results JSON Format" ;
+	mf:conformanceRequirement (
+		<json-res/manifest.ttl>
+	).
+
+<http://www.w3.org/TR/sparql11-federated-query/> rdfs:label "SPARQL 1.1 Federation Extensions" ;
+	mf:conformanceRequirement (
+		<syntax-fed/manifest.ttl>
+		<service/manifest.ttl>
+	).
+
+<http://www.w3.org/TR/sparql11-entailment/> rdfs:label "SPARQL 1.1 Entailment Regimes" ;
+	mf:conformanceRequirement (
+		<entailment/manifest.ttl>
+	).
+
+<http://www.w3.org/TR/sparql11-service-description/> rdfs:label "SPARQL 1.1 Service Description" ;
+	mf:conformanceRequirement (
+		<service-description/manifest.ttl>
+	).
+
+<http://www.w3.org/TR/sparql11-protocol/> rdfs:label "SPARQL 1.1 Protocol" ;
+	mf:conformanceRequirement (
+		<protocol/manifest.ttl>
+	).

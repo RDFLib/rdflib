@@ -1,0 +1,6 @@
+# Figure out what happens with normalization form C.
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX HR: <http://www.w3.org/2001/sw/DataAccess/tests/data/i18n/normalization.ttl#>
+SELECT ?name
+ WHERE { [ foaf:name ?name; 
+           HR:resumé ?resume ] . }

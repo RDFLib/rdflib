@@ -1,0 +1,231 @@
+<?xml version="1.0"?>
+<sparql
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema#"
+    xmlns="http://www.w3.org/2005/sparql-results#" >
+  <head>
+    <variable name="v"/>
+  </head>
+  <results>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#string">ABC</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#string">ABC</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#float">1.3e0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#string">abc</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#string">abc</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">1.3e0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal xml:lang="en">ABC</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal xml:lang="en">ABC</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">+1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">+1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">1.3e0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">1.3e0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">01.0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">01.0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal>ABC</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal>ABC</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">01</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">01</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#string"></literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#string"></literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">1.0e0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">1.0e0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">+1.0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">+1.0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal xml:lang="en">abc</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal xml:lang="en">abc</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal xml:lang="en"></literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal xml:lang="en"></literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">1.0e0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">1.0e0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">1.0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">1.0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <bnode>b0</bnode>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <uri>http://example/z1</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <bnode>b0</bnode>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <uri>http://example/z1</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal>abc</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal>abc</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal></literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal></literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

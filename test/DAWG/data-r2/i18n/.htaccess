@@ -1,0 +1,6 @@
+<Files ~ ".*.ttl">
+ForceType "text/plain; charset=utf-8"
+</Files>
+<Files ~ ".*.rq">
+ForceType "application/sparql-query; charset=utf-8"
+</Files>

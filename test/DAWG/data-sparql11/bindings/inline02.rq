@@ -1,0 +1,12 @@
+# bindings with one element and one value in the object variable
+
+PREFIX : <http://example.org/> 
+
+SELECT ?s ?o {
+	{
+		SELECT * WHERE {
+			?s ?p ?o .
+		}
+		VALUES (?o) { (:b) }
+	}
+}

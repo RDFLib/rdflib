@@ -1,0 +1,11 @@
+# bindings with one element UNDEF
+
+PREFIX : <http://example.org/> 
+
+SELECT ?s ?o1 ?o2
+{
+  ?s ?p1 ?o1 .
+  ?s ?p2 ?o2 .
+} BINDINGS ?o1 ?o2 {
+ ("Alan" UNDEF)
+}

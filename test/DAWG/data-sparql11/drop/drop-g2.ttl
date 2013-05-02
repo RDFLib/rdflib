@@ -1,0 +1,4 @@
+@prefix : <http://example.org/> .
+
+:g2 :name "G2" ;
+	.

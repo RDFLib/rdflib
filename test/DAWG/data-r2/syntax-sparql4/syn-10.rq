@@ -1,0 +1,6 @@
+PREFIX : <http://example.org/>
+SELECT *
+WHERE
+{
+  { _:a ?p ?v .  _:a ?q _:a } UNION { _:b ?q _:c }
+}

@@ -1,0 +1,17 @@
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+CONSTRUCT {
+   ?person a foaf:Person ;
+           foaf:name ?name ;
+           foaf:homepage ?homepage ;
+           foaf:mbox ?mbox .
+} WHERE {
+  {
+    SELECT ?person ?name WHERE {
+       ?person a foaf:Person ;
+               foaf:name ?name .
+      } ORDER BY ?name LIMIT 3
+  }
+  ?person foaf:homepage ?homepage .
+  OPTIONAL { ?person foaf:mbox ?mbox . }        
+}
+

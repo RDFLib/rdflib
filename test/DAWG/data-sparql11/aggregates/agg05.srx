@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="P"/>
+    <variable name="C"/>
+  </head>
+  <results>
+    <result>
+      <binding name="P">
+        <uri>http://www.example.org/p1</uri>
+      </binding>
+      <binding name="C">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="P">
+        <uri>http://www.example.org/p2</uri>
+      </binding>
+      <binding name="C">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

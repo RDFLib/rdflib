@@ -1,0 +1,105 @@
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix :      <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/move/manifest#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:    <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:    <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix ut:    <http://www.w3.org/2009/sparql/tests/test-update#> .
+@prefix dawgt: <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Move" ;
+    mf:entries
+    ( 
+    :move01
+    :move02
+    :move03
+    :move04
+    :move06
+    :move07
+    ) .
+
+:move01 rdf:type mf:UpdateEvaluationTest ;
+    mf:name "MOVE 1" ;
+    rdfs:comment "Move the default graph to an existing graph" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-05-22#resolution_2> ;
+    mf:action [ ut:request <move-01.ru> ;
+                ut:data <move-default.ttl> ;
+                ut:graphData [ ut:graph <move-01.ttl> ;
+                               rdfs:label "http://example.org/g1" ]
+              ] ;
+    mf:result [ ut:graphData [ ut:graph <move-default.ttl> ;
+                               rdfs:label "http://example.org/g1" ]
+              ] .
+
+:move02 rdf:type mf:UpdateEvaluationTest ;
+    mf:name "MOVE 2" ;
+    rdfs:comment "Move the default graph to a non-existing graph" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-05-22#resolution_2> ;
+    mf:action [ ut:request <move-01.ru> ;
+                ut:data <move-default.ttl> ;
+              ] ;
+    mf:result [ ut:graphData [ ut:graph <move-default.ttl> ;
+                               rdfs:label "http://example.org/g1" ]
+              ] .
+
+:move03 rdf:type mf:UpdateEvaluationTest ;
+    mf:name "MOVE 3" ;
+    rdfs:comment "Move a named graph to an existing graph" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-05-22#resolution_2> ;
+    mf:action [ ut:request <move-03.ru> ;
+                ut:data <move-default.ttl> ;
+                ut:graphData [ ut:graph <move-01.ttl> ;
+                               rdfs:label "http://example.org/g1" ] ;
+                ut:graphData [ ut:graph <move-02.ttl> ;
+                               rdfs:label "http://example.org/g2" ]
+              ] ;
+    mf:result [ ut:data <move-default.ttl> ;
+                ut:graphData [ ut:graph <move-01.ttl> ;
+                               rdfs:label "http://example.org/g2" ]
+              ] .
+
+:move04 rdf:type mf:UpdateEvaluationTest ;
+    mf:name "MOVE 4" ;
+    rdfs:comment "Move a named graph to a non-existing graph" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-05-22#resolution_2> ;
+    mf:action [ ut:request <move-03.ru> ;
+                ut:data <move-default.ttl> ;
+                ut:graphData [ ut:graph <move-01.ttl> ;
+                               rdfs:label "http://example.org/g1" ]
+              ] ;
+    mf:result [ ut:data <move-default.ttl> ;
+                ut:graphData [ ut:graph <move-01.ttl> ;
+                               rdfs:label "http://example.org/g2" ]
+              ] .
+
+:move06 rdf:type mf:UpdateEvaluationTest ;
+    mf:name "MOVE 6" ;
+    rdfs:comment "Move an existing graph to the default graph" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-05-22#resolution_2> ;
+    mf:action [ ut:request <move-06.ru> ;
+                ut:data <move-default.ttl> ;
+                ut:graphData [ ut:graph <move-01.ttl> ;
+                               rdfs:label "http://example.org/g1" ]
+              ] ;
+    mf:result [ ut:data <move-01.ttl> ;
+              ] .
+
+:move07 rdf:type mf:UpdateEvaluationTest ;
+    mf:name "MOVE 7" ;
+    rdfs:comment "Move a graph to itself" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-05-22#resolution_2> ;
+    mf:action [ ut:request <move-07.ru> ;
+                ut:data <move-default.ttl> ;
+                ut:graphData [ ut:graph <move-01.ttl> ;
+                               rdfs:label "http://example.org/g1" ]
+              ] ;
+    mf:result [ ut:data <move-default.ttl> ;
+                ut:graphData [ ut:graph <move-01.ttl> ;
+                               rdfs:label "http://example.org/g1" ]
+              ] .

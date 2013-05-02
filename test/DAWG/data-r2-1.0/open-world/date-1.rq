@@ -1,0 +1,8 @@
+PREFIX     :    <http://example/>
+PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+SELECT *
+{
+    ?x :r ?v .
+    FILTER ( ?v = "2006-08-23"^^xsd:date )
+}

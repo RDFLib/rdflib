@@ -1,0 +1,16 @@
+<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
+<head>
+<variable name='x'/>
+<variable name='dt'/>
+</head>
+<results>
+<result>
+<binding name='x'><uri>http://www.example.org/instance#b</uri></binding>
+</result>
+<result>
+<binding name='x'><uri>http://www.example.org/instance#a</uri></binding>
+<binding name='dt'><uri>http://www.w3.org/2001/XMLSchema#integer</uri></binding>
+</result>
+</results>
+</sparql>
+

@@ -30,8 +30,8 @@ A tiny example:
 __docformat__ = "restructuredtext en"
 
 # The format of the __version__ line is matched by a regex in setup.py
-__version__ = "3.3.0-dev"
-__date__ = "2012/01/19"
+__version__ = "3.4.1-dev"
+__date__ = "2013/03/01"
 
 __all__ = [
     'URIRef',
@@ -41,6 +41,7 @@ __all__ = [
 
     'Namespace',
 
+    'Dataset',
     'Graph',
     'ConjunctiveGraph',
 
@@ -48,30 +49,76 @@ __all__ = [
     'RDFS',
     'OWL',
     'XSD',
-    
+
     'util',
-    ]
+]
 
 import sys
-# generator expressions require 2.4
-assert sys.version_info >= (2, 4, 0), "rdflib requires Python 2.4 or higher"
+assert sys.version_info >= (2, 5, 0), "rdflib requires Python 2.5 or higher"
 del sys
 
 import logging
 _LOGGER = logging.getLogger("rdflib")
-_LOGGER.info("version: %s" % __version__)
+_LOGGER.info("RDFLib Version: %s" % __version__)
 
+"""
+If True - Literals lexical forms are normalized when created.
+I.e. the lexical forms is parsed according to data-type, then the
+stored lexical form is the re-serialized value that was parsed.
 
-from rdflib.term import URIRef, BNode, Literal, Variable
+Illegal values for a datatype are simply kept.  The normalized keyword
+for Literal.__new__ can override this.
+
+For example:
+
+>>> from rdflib import Literal,XSD
+>>> Literal("01", datatype=XSD.int)
+rdflib.term.Literal(u'1', datatype=rdflib.term.URIRef(u'http://www.w3.org/2001/XMLSchema#integer'))
+
+This flag may be changed at any time, but will only affect literals
+created after that time, previously created literals will remain
+(un)normalized.
+
+"""
+NORMALIZE_LITERALS = True
+
+"""
+DAWG_LITERAL_COLLATION determines how literals are ordered or compared
+to each other.
+
+In SPARQL, applying the >,<,>=,<= operators to literals of
+incompatible data-types is an error, i.e:
+
+Literal(2)>Literal('cake') is neither true nor false, but an error.
+
+This is a problem in PY3, where lists of Literals of incompatible
+types can no longer be sorted.
+
+Setting this flag to True gives you strict DAWG/SPARQL compliance,
+setting it to False will order Literals with incompatible datatypes by
+datatype URI
+
+In particular, this determines how the rich comparison operators for
+Literal work, eq, __neq__, __lt__, etc.
+"""
+DAWG_LITERAL_COLLATION = False
+
+from rdflib.term import (
+    URIRef, BNode, Literal, Variable)
 
 from rdflib.namespace import Namespace
 
-from rdflib.graph import Graph, ConjunctiveGraph
+from rdflib.graph import Dataset, Graph, ConjunctiveGraph
 
 from rdflib.namespace import RDF, RDFS, OWL, XSD
 
 from rdflib import plugin
 from rdflib import query
+# tedious sop to flake8
+assert plugin
+assert query
 
 from rdflib import util
 
+import rdflib.plugins.sparql.paths  # monkey-patch graph
+del rdflib.plugins.sparql.paths

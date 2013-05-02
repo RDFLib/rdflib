@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="L"/>
+  </head>
+  <results>
+    <result>
+      <binding name="L">
+        <literal>Ice Cream</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="L">
+        <literal>Ice Cream</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="L">
+        <literal>Pasta</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="L">
+        <literal>Pizza</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="L">
+        <literal>Soft Drink</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="L">
+        <literal>Wine</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

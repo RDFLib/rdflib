@@ -1,0 +1,10 @@
+prefix ex:	<http://www.example.org/schema#>
+prefix in:	<http://www.example.org/instance#>
+
+select ?x ?y ?z
+  ((?y + ?z) as ?sum) 
+  ((2 * ?sum) as ?twice)
+where {
+  ?x ex:p ?y .
+  ?x ex:q ?z
+}

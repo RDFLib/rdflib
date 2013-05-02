@@ -5,7 +5,7 @@ except ImportError:
     from StringIO import StringIO
     BytesIO = StringIO
 
-from rdflib.term import URIRef
+from rdflib import URIRef, Literal
 from rdflib.graph import Graph
 
 rdf = u"""@prefix skos:
@@ -19,7 +19,7 @@ rdf = u"""@prefix skos:
     skos:prefLabel "Africa"@en;
     skos:broaderTransitive :world.
 :CI rdf:type skos:Concept;
-    skos:prefLabel "C\u00f4te d'Ivoire"@en;
+    skos:prefLabel "C\u00f4te d'Ivoire"@fr;
     skos:broaderTransitive :africa.    
 """
 
@@ -36,14 +36,14 @@ def test_a():
     g = Graph()
     g.parse(data=rdf, format='n3')
     v = g.value(subject=URIRef("http://www.test.org/#CI"), predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"))
-    assert v==u"C\u00f4te d'Ivoire"
+    assert v==Literal(u"C\u00f4te d'Ivoire", lang='fr')
 
 def test_b():
     """Test reading N3 from a utf8 encoded string as data"""
     g = Graph()
     g.parse(data=rdf_utf8, format='n3')
     v = g.value(subject=URIRef("http://www.test.org/#CI"), predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"))
-    assert v==u"C\u00f4te d'Ivoire"
+    assert v==Literal(u"C\u00f4te d'Ivoire", lang='fr')
 
 def test_c():
     """Test reading N3 from a codecs.StreamReader, outputting unicode"""
@@ -51,21 +51,21 @@ def test_c():
 #    rdf_reader.seek(0)
     g.parse(source=rdf_reader, format='n3')
     v = g.value(subject=URIRef("http://www.test.org/#CI"), predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"))
-    assert v==u"C\u00f4te d'Ivoire"
+    assert v==Literal(u"C\u00f4te d'Ivoire", lang='fr')
 
 def test_d():
     """Test reading N3 from a StringIO over the unicode object"""
     g = Graph()
     g.parse(source=StringIO(rdf), format='n3')
     v = g.value(subject=URIRef("http://www.test.org/#CI"), predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"))
-    assert v==u"C\u00f4te d'Ivoire"
+    assert v==Literal(u"C\u00f4te d'Ivoire", lang='fr')
 
 def test_e():
     """Test reading N3 from a BytesIO over the string object"""
     g = Graph()
     g.parse(source=BytesIO(rdf_utf8), format='n3')
     v = g.value(subject=URIRef("http://www.test.org/#CI"), predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"))
-    assert v==u"C\u00f4te d'Ivoire"
+    assert v==Literal(u"C\u00f4te d'Ivoire", lang='fr')
 
 
 # this is unicode
@@ -76,7 +76,7 @@ rdfxml=u"""<?xml version="1.0" encoding="UTF-8"?>
 >
   <rdf:Description rdf:about="http://www.test.org/#CI">
     <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-    <skos:prefLabel xml:lang="en">C\u00f4te d\'Ivoire</skos:prefLabel>
+    <skos:prefLabel xml:lang="fr">C\u00f4te d\'Ivoire</skos:prefLabel>
     <skos:broaderTransitive rdf:resource="http://www.test.org/#africa"/>
   </rdf:Description>
 </rdf:RDF>
@@ -97,7 +97,7 @@ def test_xml_a():
     g = Graph()
     g.parse(data=rdfxml, format='xml')
     v = g.value(subject=URIRef("http://www.test.org/#CI"), predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"))
-    assert v==u"C\u00f4te d'Ivoire"
+    assert v==Literal(u"C\u00f4te d'Ivoire", lang='fr')
 
 def test_xml_b():
     """Test reading XML from a utf8 encoded string object as data"""
@@ -108,7 +108,7 @@ def test_xml_b():
     g = Graph()
     g.parse(data=rdfxml_utf8, format='xml')
     v = g.value(subject=URIRef("http://www.test.org/#CI"), predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"))
-    assert v==u"C\u00f4te d'Ivoire"
+    assert v==Literal(u"C\u00f4te d'Ivoire", lang='fr')
 
 # The following two cases are currently not supported by Graph.parse
 # def test_xml_c():
@@ -116,14 +116,14 @@ def test_xml_b():
 #     g = Graph()
 #     g.parse(source=rdfxml_reader, format='xml')
 #     v = g.value(subject=URIRef("http://www.test.org/#CI"), predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"))
-#     assert v==u"C\u00f4te d'Ivoire"
+#     assert v==Literal(u"C\u00f4te d'Ivoire", lang='fr')
 
 # def test_xml_d():
 #     """Test reading XML from a BytesIO created from unicode object"""
 #     g = Graph()
 #     g.parse(source=BytesIO(rdfxml), format='xml')
 #     v = g.value(subject=URIRef("http://www.test.org/#CI"), predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"))
-#     assert v==u"C\u00f4te d'Ivoire"
+#     assert v==Literal(u"C\u00f4te d'Ivoire", lang='fr')
 
 def test_xml_e():
     """Test reading XML from a BytesIO created from utf8 encoded string"""
@@ -134,4 +134,4 @@ def test_xml_e():
     g = Graph()
     g.parse(source=BytesIO(rdfxml_utf8), format='xml')
     v = g.value(subject=URIRef("http://www.test.org/#CI"), predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"))
-    assert v==u"C\u00f4te d'Ivoire"
+    assert v==Literal(u"C\u00f4te d'Ivoire", lang='fr')

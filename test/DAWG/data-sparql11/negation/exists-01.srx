@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+	<head>
+		<variable name="set"/>
+	</head>
+	<results>
+		<result>
+			<binding name="set">
+				<uri>http://example/b</uri>
+			</binding>
+		</result>
+		<result>
+			<binding name="set">
+				<uri>http://example/d</uri>
+			</binding>
+		</result>
+	</results>
+</sparql>

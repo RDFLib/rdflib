@@ -1,0 +1,7 @@
+PREFIX : <http://example.org/ns#>
+
+SELECT ?v
+WHERE { [] ?p ?v }
+ORDER BY ?v
+OFFSET 100
+LIMIT 1

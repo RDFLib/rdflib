@@ -14,6 +14,10 @@ The :class:`~rdflib.graph.Graph` class
 .. autoclass:: rdflib.graph.ConjunctiveGraph
     :noindex:
 
+.. autoclass:: rdflib.graph.Dataset
+    :members:
+    :noindex:
+
 Working with ``rdflib`` graphs
 -------------------------------
 .. automodule:: rdflib.graph
