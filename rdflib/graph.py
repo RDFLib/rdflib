@@ -365,6 +365,57 @@ class Graph(Node):
         for (s, p, o), cg in self.__store.triples((s, p, o), context=self):
             yield (s, p, o)
 
+    @py3compat.format_doctest_out
+    def __getitem__(self, item): 
+        """
+        A graph can be "sliced" as a shortcut for the triples method
+        The python slice syntax is (ab)used for specifying triples. 
+        A generator over matching triples is returned
+
+        >>> import rdflib
+        >>> g = rdflib.Graph()
+        >>> g.add((rdflib.URIRef('urn:bob'), rdflib.RDFS.label, rdflib.Literal('Bob')))
+
+        >>> list(g[rdflib.URIRef('urn:bob')]) # all triples about bob
+        [(rdflib.term.URIRef(%(u)s'urn:bob'), rdflib.term.URIRef(%(u)s'http://www.w3.org/2000/01/rdf-schema#label'), rdflib.term.Literal(%(u)s'Bob'))]
+        
+        >>> list(g[:rdflib.RDFS.label]) # all label triples
+        [(rdflib.term.URIRef(%(u)s'urn:bob'), rdflib.term.URIRef(%(u)s'http://www.w3.org/2000/01/rdf-schema#label'), rdflib.term.Literal(%(u)s'Bob'))]
+
+        >>> list(g[::rdflib.Literal('Bob')]) # all label triples
+        [(rdflib.term.URIRef(%(u)s'urn:bob'), rdflib.term.URIRef(%(u)s'http://www.w3.org/2000/01/rdf-schema#label'), rdflib.term.Literal(%(u)s'Bob'))]
+
+        Combined with SPARQL paths, more complex queries can be
+        written concisely:
+
+        Name of all Bobs friends: 
+
+        g[bob : FOAF.knows/FOAF.name ]
+
+        Some label for Bob:
+
+        g[bob : DC.title|FOAF.name|RDFS.label]
+
+        All friends and friends of friends of Bob
+
+        g[bob : FOAF.knows * '+']
+
+        etc.
+
+        """
+
+        if isinstance(item, slice): 
+
+            s,p,o=item.start,item.stop,item.step
+            return self.triples((s,p,o))
+
+        elif isinstance(item, Node):
+
+            return self.triples((item,None,None))
+            
+        else: 
+            raise TypeError("You can only index a graph by a single rdflib term or a slice of rdflib terms.")
+
     def __len__(self):
         """Returns the number of triples in the graph
 

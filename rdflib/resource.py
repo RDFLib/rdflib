@@ -303,7 +303,7 @@ objects::
 
 """)
 
-from rdflib.term import BNode, URIRef
+from rdflib.term import Node, BNode, URIRef
 from rdflib.namespace import RDF
 
 __all__ = ['Resource']
@@ -433,6 +433,31 @@ class Resource(object):
             return self._new(node)
         else:
             return node
+
+    def __getitem__(self, item):
+        """
+        Resources can be sliced like graphs, but the subject is fixed. 
+        
+        r[RDFS.label] returns triples for (self.identifier, RDFS.label, None)
+        r[RDFS.label : Literal("Bob")] for (self.identifier, RDFS.label, "Bob")
+        etc. 
+
+        """
+
+        if isinstance(item, slice): 
+            if item.step: 
+                raise TypeError("Resources fix the subject for slicing, and can only be sliced by predicate/object. ")
+            p,o=item.start,item.stop
+            s=(self.identifier,)
+            return self.triples((s,p,o))
+
+        elif isinstance(item, Node):
+
+            return self.triples((self.identifier, item, None))
+            
+        else: 
+            raise TypeError("You can only index a resource by a single rdflib term, a slice of rdflib terms.")
+
 
     def _new(self, subject):
         return type(self)(self._graph, subject)
