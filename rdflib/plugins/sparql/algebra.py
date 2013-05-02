@@ -17,7 +17,7 @@ from rdflib.plugins.sparql.parserutils import CompValue, Expr
 from rdflib.plugins.sparql.operators import (
     and_, TrueFilter, simplify as simplifyFilters)
 from rdflib.plugins.sparql.paths import (
-    InvPath, AlternativePath, SequencePath, ModPath, NegatedPath)
+    InvPath, AlternativePath, SequencePath, MulPath, NegatedPath)
 
 from pyparsing import ParseResults
 
@@ -171,9 +171,9 @@ def translatePath(p):
                     if len(p.part) != 1:
                         raise Exception('Denkfehler!')
 
-                    return ModPath(p.part[0], p.mod)
+                    return MulPath(p.part[0], p.mod)
                 else:
-                    return ModPath(p.part, p.mod)
+                    return MulPath(p.part, p.mod)
 
         elif p.name == 'PathEltOrInverse':
             if isinstance(p.part, list):
