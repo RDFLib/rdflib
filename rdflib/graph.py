@@ -953,10 +953,32 @@ class Graph(Node):
         if not isinstance(result, query.Result):
             result = plugin.get(result, query.Result)
         if not isinstance(processor, query.Processor):
-            processorinst = plugin.get(processor, query.Processor)(self)
+            processor = plugin.get(processor, query.Processor)(self)
 
-        return result(processorinst.query(
+        return result(processor.query(
             query_object, initBindings, initNs, **kwargs))
+
+    def update(self, update_object, processor='sparql',
+              initNs={}, initBindings={},
+              use_store_provided=True, **kwargs):
+        """
+        """
+        if hasattr(self.store, "update") and use_store_provided:
+            try:
+                return self.store.update(
+                    update_object, initNs, initBindings,
+                    self.context_aware
+                    and self.identifier
+                    or '__UNION__',
+                    **kwargs)
+            except NotImplementedError:
+                pass  # store has no own implementation
+
+        if not isinstance(processor, query.UpdateProcessor):
+            processor = plugin.get(processor, query.UpdateProcessor)(self)
+
+        return processor.update(update_object, initBindings, initNs, **kwargs)
+
 
     def n3(self):
         """return an n3 identifier for the Graph"""

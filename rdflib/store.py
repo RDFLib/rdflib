@@ -306,6 +306,24 @@ class Store(object):
 
         raise NotImplementedError
 
+    def update(self, update, initNs, initBindings, queryGraph, **kwargs):
+        """
+        If stores provide their own (SPARQL) Update implementation,
+        override this.
+
+        queryGraph is None, a URIRef or '__UNION__'
+        If None the graph is specified in the query-string/object
+        If URIRef it specifies the graph to query,
+        If  '__UNION__' the union of all named graphs should be queried
+        (This is used by ConjunctiveGraphs
+        Values other than None obviously only makes sense for
+        context-aware stores.)
+
+        """
+
+        raise NotImplementedError
+
+
     # Optional Namespace methods
 
     def bind(self, prefix, namespace):

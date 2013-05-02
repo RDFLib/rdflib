@@ -29,7 +29,8 @@ information.
 from rdflib.store import Store
 from rdflib.parser import Parser
 from rdflib.serializer import Serializer
-from rdflib.query import ResultParser, ResultSerializer, Processor, Result
+from rdflib.query import ResultParser, ResultSerializer, \
+    Processor, Result, UpdateProcessor
 from rdflib.exceptions import Error
 
 __all__ = [
@@ -41,7 +42,8 @@ entry_points = {'rdf.plugins.store': Store,
                 'rdf.plugins.resultparser': ResultParser,
                 'rdf.plugins.resultserializer': ResultSerializer,
                 'rdf.plugins.queryprocessor': Processor,
-                'rdf.plugins.queryresult': Result
+                'rdf.plugins.queryresult': Result,
+                'rdf.plugins.updateprocessor': UpdateProcessor
                 }
 
 _plugins = {}
@@ -241,6 +243,11 @@ register(
 register(
     'sparql', Processor,
     'rdflib.plugins.sparql.processor', 'SPARQLProcessor')
+
+register(
+    'sparql', UpdateProcessor,
+    'rdflib.plugins.sparql.processor', 'SPARQLUpdateProcessor')
+
 
 register(
     'xml', ResultSerializer,

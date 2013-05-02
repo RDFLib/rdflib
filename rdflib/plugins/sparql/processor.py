@@ -7,7 +7,7 @@ These should be automatically registered with RDFLib
 """
 
 
-from rdflib.query import Processor, Result
+from rdflib.query import Processor, Result, UpdateProcessor
 
 from rdflib.plugins.sparql.sparql import Query
 
@@ -42,6 +42,16 @@ class SPARQLResult(Result):
         self.bindings = res.get("bindings")
         self.askAnswer = res.get("askAnswer")
         self.graph = res.get("graph")
+
+class SPARQLUpdateProcessor(UpdateProcessor):
+    def __init__(self, graph):
+        self.graph = graph
+
+    def update(self, strOrQuery, initBindings={}, initNs={}):
+        if isinstance(strOrQuery, basestring): 
+            strOrQuery=translateUpdate(parseUpdate(strOrQuery), initNs=initNs)
+
+        return evalUpdate(self.graph, strOrQuery, initBindings)
 
 
 class SPARQLProcessor(Processor):

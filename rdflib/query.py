@@ -36,6 +36,11 @@ class Processor(object):
     def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False):
         pass
 
+class UpdateProcessor(object): 
+    def __init__(self, graph): 
+        pass
+    def update(self, strOrQuery, initBindings={}, initNs={}):
+        pass
 
 class ResultException(Exception):
     pass
