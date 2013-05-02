@@ -36,7 +36,7 @@ class GraphSlice(unittest.TestCase):
         sl(g[:self.likes:self.pizza],2)
        
         # does tarek like pizza?
-        sl(g[self.tarek:self.likes:self.pizza],1)
+        self.assertTrue(g[self.tarek:self.likes:self.pizza])
 
         # More intesting is using paths
 

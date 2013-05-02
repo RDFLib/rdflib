@@ -195,10 +195,12 @@ from rdflib.namespace import RDF, RDFS, SKOS
 
 from rdflib import plugin, exceptions, query
 
-from rdflib.term import Node
-from rdflib.term import URIRef, Genid
+from rdflib.term import Node, URIRef, Genid
 from rdflib.term import BNode
 from rdflib.term import Literal
+
+from rdflib.paths import Path
+
 assert Literal
 from rdflib.namespace import Namespace
 assert Namespace
@@ -362,28 +364,33 @@ class Graph(Node):
         Returns triples that match the given triple pattern. If triple pattern
         does not provide a context, all contexts will be searched.
         """
-        for (s, p, o), cg in self.__store.triples((s, p, o), context=self):
-            yield (s, p, o)
+        if isinstance(p, Path): 
+            for _s, _o in p.eval(self, s, o):
+                yield (_s, p, _o)
+        else:
+            for (s, p, o), cg in self.__store.triples((s, p, o), context=self):
+                yield (s, p, o)
 
     @py3compat.format_doctest_out
     def __getitem__(self, item): 
         """
         A graph can be "sliced" as a shortcut for the triples method
         The python slice syntax is (ab)used for specifying triples. 
-        A generator over matching triples is returned
+        A generator over matches is returned, 
+        the returned tuples include only the parts not given
 
         >>> import rdflib
         >>> g = rdflib.Graph()
         >>> g.add((rdflib.URIRef('urn:bob'), rdflib.RDFS.label, rdflib.Literal('Bob')))
 
         >>> list(g[rdflib.URIRef('urn:bob')]) # all triples about bob
-        [(rdflib.term.URIRef(%(u)s'urn:bob'), rdflib.term.URIRef(%(u)s'http://www.w3.org/2000/01/rdf-schema#label'), rdflib.term.Literal(%(u)s'Bob'))]
+        [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2000/01/rdf-schema#label'), rdflib.term.Literal(%(u)s'Bob'))]
         
         >>> list(g[:rdflib.RDFS.label]) # all label triples
-        [(rdflib.term.URIRef(%(u)s'urn:bob'), rdflib.term.URIRef(%(u)s'http://www.w3.org/2000/01/rdf-schema#label'), rdflib.term.Literal(%(u)s'Bob'))]
+        [(rdflib.term.URIRef(%(u)s'urn:bob'), rdflib.term.Literal(%(u)s'Bob'))]
 
-        >>> list(g[::rdflib.Literal('Bob')]) # all label triples
-        [(rdflib.term.URIRef(%(u)s'urn:bob'), rdflib.term.URIRef(%(u)s'http://www.w3.org/2000/01/rdf-schema#label'), rdflib.term.Literal(%(u)s'Bob'))]
+        >>> list(g[::rdflib.Literal('Bob')]) # all triples with bob as object
+        [(rdflib.term.URIRef(%(u)s'urn:bob'), rdflib.term.URIRef(%(u)s'http://www.w3.org/2000/01/rdf-schema#label'))]
 
         Combined with SPARQL paths, more complex queries can be
         written concisely:
@@ -407,11 +414,27 @@ class Graph(Node):
         if isinstance(item, slice): 
 
             s,p,o=item.start,item.stop,item.step
-            return self.triples((s,p,o))
+            if s is None and p is None and o is None:
+                return self.triples((s,p,o))
+            elif s is None and p is None: 
+                return self.subject_predicates(o)
+            elif s is None and o is None: 
+                return self.subject_objects(p)
+            elif p is None and o is None: 
+                return self.predicate_objects(s)
+            elif s is None: 
+                return self.subjects(p,o)
+            elif p is None: 
+                return self.predicates(s,o)
+            elif o is None: 
+                return self.objects(s,p)
+            else: 
+                # all given 
+                return (s,p,o) in self
 
         elif isinstance(item, Node):
 
-            return self.triples((item,None,None))
+            return self.predicate_objects(item)
             
         else: 
             raise TypeError("You can only index a graph by a single rdflib term or a slice of rdflib terms.")
@@ -1230,8 +1253,16 @@ class ConjunctiveGraph(Graph):
 
     def triples(self, (s, p, o), context=None):
         """Iterate over all the triples in the entire conjunctive graph"""
-        for (s, p, o), cg in self.store.triples((s, p, o), context=context):
-            yield s, p, o
+        if isinstance(p, Path): 
+            if context is None:
+                for s, o in p.eval(self, s, o):
+                    yield (s, p, o)
+            else:
+                for s, o in p.eval(self.get_context(context), s, o):
+                    yield (s, p, o)
+        else:
+            for (s, p, o), cg in self.store.triples((s, p, o), context=context):
+                yield s, p, o
 
     def quads(self, pattern=None):
         """Iterate over all the quads in the entire conjunctive graph"""
@@ -1429,7 +1460,7 @@ class Dataset(ConjunctiveGraph):
 
     def graph(self, identifier=None):
         if identifier is None:
-            from .term import rdflib_skolem_genid
+            from rdflib.term import rdflib_skolem_genid
             self.bind(
                 "genid", "http://rdflib.net" + rdflib_skolem_genid,
                 override=False)
@@ -1834,8 +1865,12 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
 
     def triples(self, (s, p, o)):
         for graph in self.graphs:
-            for s1, p1, o1 in graph.triples((s, p, o)):
-                yield (s1, p1, o1)
+            if isinstance(p, Path): 
+                for s, o in p.eval(self, s, o):
+                    yield s, p, o
+            else:
+                for s1, p1, o1 in graph.triples((s, p, o)):
+                    yield (s1, p1, o1)
 
     def __contains__(self, triple_or_quad):
         context = None

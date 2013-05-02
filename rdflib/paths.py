@@ -43,6 +43,8 @@ can also be used to query RDFLib Graphs directly.
 Where possible the SPARQL syntax is mapped to python operators, and property
 path objects can be constructed from existing URIRefs.
 
+>>> from rdflib import Graph, Namespace
+
 >>> foaf=Namespace('http://xmlns.com/foaf/0.1/')
 
 >>> ~foaf.knows
@@ -213,9 +215,7 @@ can also be used to query RDFLib Graphs directly.
 Where possible the SPARQL syntax is mapped to python operators, and property
 path objects can be constructed from existing URIRefs.
 
-(NOTE: This version monkey-patches the operators and path-aware triples
-functions into the URIRef and Graph class, when rdflib-sparql is merged
-into core rdflib it will be cleaner)
+>>> from rdflib import Graph, Namespace
 
 >>> foaf=Namespace('http://xmlns.com/foaf/0.1/')
 
@@ -234,7 +234,7 @@ the strings '*', '?', '+', also defined as constants in this file.
 >>> foaf.knows*OneOrMore
 Path(http://xmlns.com/foaf/0.1/knows+)
 
-The path objects can be used with the normal graph methods.
+The path objects can also be used with the normal graph methods.
 
 First some example data:
 
@@ -260,9 +260,8 @@ True
 
 Graph generator functions, triples, subjects, objects, etc. :
 
->>> list(g.objects(e.c, (e.p3*OneOrMore)/e.p2)) #doctest: +NORMALIZE_WHITESPACE
-[rdflib.term.URIRef(
-    u'ex:j'), rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:f')]
+>>> list(g.objects(e.c, (e.p3*OneOrMore)/e.p2)) # doctest: +NORMALIZE_WHITESPACE
+[rdflib.term.URIRef(u'ex:j'), rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:f')]
 
 A more complete set of tests:
 
@@ -345,9 +344,8 @@ No vars specified
 """
 
 
-from rdflib import URIRef, Graph, ConjunctiveGraph, Namespace
+from rdflib.term import URIRef
 
-DEBUG = True
 
 # property paths
 
@@ -586,32 +584,6 @@ def path_sequence(self, other):
 def evalPath(graph, t):
     return ((s, o) for s, p, o in graph.triples(t))
 
-
-def graph_triples(graph, t, context=None):
-#    if DEBUG: print ">>>",t
-    subj, path, obj = t
-    if path is None or isinstance(path, URIRef):
-        return graph._triples((subj, path, obj))
-    elif isinstance(path, Path):
-        return ((s, path, o) for s, o in path.eval(graph, subj, obj))
-    else:
-        raise Exception('I need a URIRef or path as predicate, not %s' % path)
-
-
-def conjunctive_graph_triples(graph, t, context=None):
-
-    subj, path, obj = t
-    if path is None or isinstance(path, URIRef):
-        return graph._triples((subj, path, obj), context)
-    elif isinstance(path, Path):
-        if context is None:
-            return ((s, path, o) for s, o in path.eval(graph, subj, obj))
-        else:
-            return ((s, path, o) for s, o in path.eval(graph.get_context(context), subj, obj))
-    else:
-        raise Exception('I need a URIRef or path as predicate, not %s' % path)
-
-
 def mul_path(p, mul):
     """
     cardinality path
@@ -636,43 +608,21 @@ def neg_path(p):
 # (these cannot be directly in terms.py
 #  as it would introduce circular imports)
 
-URIRef.__or__ = path_alternative
-URIRef.__div__ = path_sequence
-URIRef.__mul__ = mul_path
-URIRef.__invert__ = inv_path
-URIRef.__neg__ = neg_path
-
-Path.__invert__ = inv_path
-Path.__neg__ = neg_path
-Path.__mul__ = mul_path
-Path.__or__ = path_alternative
-Path.__div__ = path_sequence
-
-Graph._triples = Graph.triples
-Graph.triples = graph_triples
-ConjunctiveGraph._triples = ConjunctiveGraph.triples
-ConjunctiveGraph.triples = conjunctive_graph_triples
 
 if __name__ == '__main__':
 
-    # print "---------------------"
-    # for x in evalPath(g, (e.a, e.p1/(e.p3*ZeroOrMore)/e.p2, None)):
-    #     print x
-
-#     g=Graph()
-#     g=g.parse(data='''
-# @prefix : <ex:> .
-
-#  :a :p1 :c ; :p2 :f .
-#  :c :p2 :e ; :p3 :g .
-#  :g :p3 :h ; :p2 :j .
-#  :h :p3 :a ; :p2 :g .
-
-#  :q :px :q .
-
-#  ''', format='n3')
-
-#     e=Namespace('ex:')
-#     print list(evalPath(g, (e.c, (e.p2|e.p3)*ZeroOrMore, e.j)))
     import doctest
     doctest.testmod()
+else: 
+    # only monkey patch once!
+    URIRef.__or__ = path_alternative
+    URIRef.__div__ = path_sequence
+    URIRef.__mul__ = mul_path
+    URIRef.__invert__ = inv_path
+    URIRef.__neg__ = neg_path
+
+    Path.__invert__ = inv_path
+    Path.__neg__ = neg_path
+    Path.__mul__ = mul_path
+    Path.__or__ = path_alternative
+    Path.__div__ = path_sequence

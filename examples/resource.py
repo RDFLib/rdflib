@@ -30,8 +30,16 @@ print "Bill's friend: ", bill.value(FOAF.knows).value(FOAF.name)
 
 # slicing ([] syntax) can also be used: 
 
-print list(bill[FOAF.knows])  # return triples!
+print "Bill knows: ",
+for friend in bill[FOAF.knows]: 
+    print friend[FOAF.name].next(), " "
 
+# or even quicker with paths:
+print "Bill knows: ",
+for friend in bill[FOAF.knows/FOAF.name]:
+    print friend
+
+# setting single properties is also possible:
 bill[RDFS.label]=Literal("William")
 
 print g.serialize(format='n3')

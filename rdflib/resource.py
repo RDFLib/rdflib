@@ -305,6 +305,7 @@ objects::
 
 from rdflib.term import Node, BNode, URIRef
 from rdflib.namespace import RDF
+from rdflib.paths import Path
 
 __all__ = ['Resource']
 
@@ -455,15 +456,21 @@ class Resource(object):
             if item.step: 
                 raise TypeError("Resources fix the subject for slicing, and can only be sliced by predicate/object. ")
             p,o=item.start,item.stop
-            s=(self.identifier,)
-            return self._resource_triples(self._graph.triples((s,p,o)))
+            if p is None and o is None: 
+                return self.predicate_objects()
+            elif p is None:
+                return self.predicates(o)
+            elif o is None:
+                return self.objects(p)
+            else: 
+                return self.identifier,p,o in self._graph
 
-        elif isinstance(item, Node):
+        elif isinstance(item, (Node, Path)):
 
-            return self._resource_triples(self._graph.triples((self.identifier, item, None)))
+            return self.objects(item)
             
         else: 
-            raise TypeError("You can only index a resource by a single rdflib term, a slice of rdflib terms.")
+            raise TypeError("You can only index a resource by a single rdflib term, a slice of rdflib terms, not %s (%s)"%(item, type(item)))
 
     def __setitem__(self, item, value): 
         self.set(item, value)

@@ -16,11 +16,11 @@ graph = Graph()
 
 graph.load("foaf.rdf")
 
-for person,_,_ in graph[: RDF.type : FOAF.Person]:
+for person in graph[: RDF.type : FOAF.Person]:
     
     friends = list(graph[person:FOAF.knows * '+'/FOAF.name])
     if friends: 
         print "%s's circle of friends:"%graph.value(person, FOAF.name)
-        for _,_,name in friends:
+        for name in friends:
             print name
     

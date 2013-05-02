@@ -16,7 +16,7 @@ from rdflib.plugins.sparql.sparql import Prologue, Query
 from rdflib.plugins.sparql.parserutils import CompValue, Expr
 from rdflib.plugins.sparql.operators import (
     and_, TrueFilter, simplify as simplifyFilters)
-from rdflib.plugins.sparql.paths import (
+from rdflib.paths import (
     InvPath, AlternativePath, SequencePath, MulPath, NegatedPath)
 
 from pyparsing import ParseResults

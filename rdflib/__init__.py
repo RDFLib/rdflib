@@ -120,5 +120,3 @@ assert query
 
 from rdflib import util
 
-import rdflib.plugins.sparql.paths  # monkey-patch graph
-del rdflib.plugins.sparql.paths
