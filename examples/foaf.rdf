@@ -234,7 +234,9 @@
         <foaf:name>Amy van der Hiel</foaf:name>
     </rdf:Description>
     <rdf:Description rdf:about="http://www.w3.org/People/Berners-Lee/card#i">
+		<rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
         <foaf:img rdf:resource="http://www.w3.org/Press/Stock/Berners-Lee/2001-europaeum-eighth.jpg"/>
+		<foaf:name>Tim Berners-Lee</foaf:name>	
         <foaf:knows rdf:resource="http://bblfish.net/people/henry/card#me"/>
         <foaf:knows rdf:resource="http://danbri.org/foaf#danbri"/>
         <foaf:knows rdf:resource="http://dbpedia.org/resource/John_Gage"/>

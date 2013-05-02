@@ -23,6 +23,7 @@ Usage:
 """
 import datetime, os, sys, re, time, imdb
 from rdflib import BNode, ConjunctiveGraph, URIRef, Literal, Namespace, RDF
+from rdflib.namespace import FOAF, DC
 
 #storefn = os.path.expanduser('~/movies.n3')
 storefn = '/home/simon/codes/film.dev/movies.n3'
@@ -31,8 +32,6 @@ title = 'Movies viewed by %s'
 
 r_who = re.compile('^(.*?) <([a-z0-9_-]+(\.[a-z0-9_-]+)*@[a-z0-9_-]+(\.[a-z0-9_-]+)+)>$')
 
-DC = Namespace('http://purl.org/dc/elements/1.1/')
-FOAF = Namespace('http://xmlns.com/foaf/0.1/')
 IMDB = Namespace('http://www.csd.abdn.ac.uk/~ggrimnes/dev/imdb/IMDB#')
 REV = Namespace('http://purl.org/stuff/rev#')
 

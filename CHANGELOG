@@ -7,6 +7,17 @@
       the core distribution. SPARQL 1.1 queries and updates should
       work out of the box.
 
+      * SPARQL paths are exposed as operators on URIRefs, these can
+        then be be used with graph.triples and friends:
+  
+           List names of friends of Bob:
+           g.triples(( bob, FOAF.knows/FOAF.name , None )) 
+
+		   All super-classes:
+		   g.triples(( cls, RDFS.subClassOf * '+', None )) 
+
+	  * a new graph.update method will apply SPARQL update statements
+
     * Several RDF 1.1 features are available:
       * A new DataSet class 
       * XMLLiteral and HTMLLiterals 
@@ -30,11 +41,30 @@
 
             for row in graph.query('select ... ') :
                 print row.age, row["name"]
+
+    * String operations on URIRefs return new URIRefs
+	  https://github.com/RDFLib/rdflib/pull/258
+ 
+	  >>> URIRef('http://example.org/')+'test
+      rdflib.term.URIRef('http://example.org/test')
+
+	  >>> URIRef('http://example.org/persons/%d/id')%32
+	  rdflib.term.URIRef('http://example.org/persons/32/id')	
+
+	* "Slicing" of Graphs and Resources as syntactic sugar: 
+	  https://github.com/RDFLib/rdflib/pull/271
+
+		graph[bob:FOAF.knows/FOAF.name] -> generator over the names of Bobs friends
     
 
     Minor Changes:
 
-    
+    * URIRefs are validated on construction, avoiding some
+      "RDF-injection" issues
+	  https://github.com/RDFLib/rdflib/issues/266
+    * A new memory store needs much less memory when loading large
+      graphs
+	  https://github.com/RDFLib/rdflib/pull/268 
     * Turtle/N3 serializer now supports the base keyword correctly
       https://github.com/RDFLib/rdflib/issues/248
     * py2exe support was fixed

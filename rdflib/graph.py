@@ -1118,6 +1118,8 @@ class Graph(Node):
             >>> assert resource.graph is graph
 
         """
+        if not isinstance(identifier, Node): 
+            identifier = URIRef(identifier)
         return Resource(self, identifier)
 
     def _process_skolem_tuples(self, target, func):

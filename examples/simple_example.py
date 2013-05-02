@@ -1,30 +1,28 @@
 import logging
 
-# Configure how we want rdflib logger to log messages
+# Optional: Configure how we want rdflib logger to log messages
 _logger = logging.getLogger("rdflib")
 _logger.setLevel(logging.DEBUG)
 _hdlr = logging.StreamHandler()
 _hdlr.setFormatter(logging.Formatter('%(name)s %(levelname)s: %(message)s'))
 _logger.addHandler(_hdlr)
 
-from rdflib import Graph, URIRef, Literal, BNode, Namespace, RDF
+from rdflib import Graph, Literal, BNode, RDF
+from rdflib.namespace import FOAF, DC
 
 store = Graph()
 
-# Bind a few prefix, namespace pairs.
-store.bind("dc", "http://http://purl.org/dc/elements/1.1/")
-store.bind("foaf", "http://xmlns.com/foaf/0.1/")
-
-# Create a namespace object for the Friend of a friend namespace.
-FOAF = Namespace("http://xmlns.com/foaf/0.1/")
+# Bind a few prefix, namespace pairs for pretty output
+store.bind("dc", DC)
+store.bind("foaf", FOAF)
 
 # Create an identifier to use as the subject for Donna.
 donna = BNode()
 
 # Add triples using store's add method.
-store.add((donna, RDF.type, FOAF["Person"]))
-store.add((donna, FOAF["nick"], Literal("donna", lang="foo")))
-store.add((donna, FOAF["name"], Literal("Donna Fales")))
+store.add((donna, RDF.type, FOAF.Person))
+store.add((donna, FOAF.nick, Literal("donna", lang="foo")))
+store.add((donna, FOAF.name, Literal("Donna Fales")))
 
 # Iterate over triples in store and print them out.
 print "--- printing raw triples ---"

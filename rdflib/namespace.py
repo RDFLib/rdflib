@@ -206,7 +206,7 @@ XSD = Namespace(_XSD_PFX)
 SKOS = Namespace('http://www.w3.org/2004/02/skos/core#')
 DOAP = Namespace('http://usefulinc.com/ns/doap#')
 FOAF = Namespace('http://xmlns.com/foaf/0.1/')
-
+DC = Namespace('http://purl.org/dc/elements/1.1/')
 
 class NamespaceManager(object):
     """

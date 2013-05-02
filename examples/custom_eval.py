@@ -22,8 +22,7 @@ import rdflib.plugins.sparql.paths
 import rdflib
 
 from rdflib.plugins.sparql.evaluate import evalBGP
-
-FOAF = rdflib.Namespace("http://xmlns.com/foaf/0.1/")
+from rdflib.namespace import FOAF
 
 inferredSubClass = \
     rdflib.RDFS.subClassOf % '*'  # any number of rdfs.subClassOf

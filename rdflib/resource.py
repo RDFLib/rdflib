@@ -424,6 +424,10 @@ class Resource(object):
         for s1, s2 in pairs:
             yield self._cast(s1), self._cast(s2)
 
+    def _resource_triples(self, triples):
+        for s,p,o in triples:
+            yield self._cast(s), self._cast(p), self._cast(o)
+
     def _resources(self, nodes):
         for node in nodes:
             yield self._cast(node)
@@ -433,6 +437,9 @@ class Resource(object):
             return self._new(node)
         else:
             return node
+
+    def __iter__(self): 
+        return self._resource_triples(self._graph.triples((self.identifier, None, None)))    
 
     def __getitem__(self, item):
         """
@@ -449,15 +456,17 @@ class Resource(object):
                 raise TypeError("Resources fix the subject for slicing, and can only be sliced by predicate/object. ")
             p,o=item.start,item.stop
             s=(self.identifier,)
-            return self.triples((s,p,o))
+            return self._resource_triples(self._graph.triples((s,p,o)))
 
         elif isinstance(item, Node):
 
-            return self.triples((self.identifier, item, None))
+            return self._resource_triples(self._graph.triples((self.identifier, item, None)))
             
         else: 
             raise TypeError("You can only index a resource by a single rdflib term, a slice of rdflib terms.")
 
+    def __setitem__(self, item, value): 
+        self.set(item, value)
 
     def _new(self, subject):
         return type(self)(self._graph, subject)

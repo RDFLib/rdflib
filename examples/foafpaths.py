@@ -21,9 +21,7 @@ See the docs for rdflib.plugins.sparql.path for the details
 """
 
 from rdflib import URIRef, Graph, Namespace
-
-
-FOAF = Namespace("http://xmlns.com/foaf/0.1/")
+from rdflib.namespace import FOAF
 
 g = Graph()
 g.load("foaf.rdf")

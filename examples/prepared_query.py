@@ -16,10 +16,11 @@ initBindings keyword parameter
 
 import rdflib
 from rdflib.plugins.sparql import prepareQuery
-
+from rdflib.namespace import FOAF
 
 q = prepareQuery(
-    'select ?s where { ?person <http://xmlns.com/foaf/0.1/knows> ?s .}')
+    'SELECT ?s WHERE { ?person foaf:knows ?s .}', 
+    initNs = { "foaf": FOAF })
 
 g = rdflib.Graph()
 g.load("foaf.rdf")
