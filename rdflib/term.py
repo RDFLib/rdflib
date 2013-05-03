@@ -46,7 +46,7 @@ import xml.dom.minidom
 from urlparse import urlparse, urljoin, urldefrag
 from datetime import date, time, datetime
 from isodate import parse_time, parse_date, parse_datetime
-from re import sub
+from re import sub, compile
 
 
 try:
@@ -75,6 +75,12 @@ def _is_valid_uri(uri):
     for c in _invalid_uri_chars: 
         if c in uri: return False
     return True
+
+_lang_tag_regex = compile('^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$')
+
+def _is_valid_langtag(tag): 
+    return bool(_lang_tag_regex.match(tag))
+    
 
 class Node(object):
     """
@@ -534,6 +540,9 @@ class Literal(Identifier):
             raise TypeError(
                 "A Literal can only have one of lang or datatype, "
                 "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal")
+
+        if lang and not _is_valid_langtag(lang): 
+            raise Exception("'%s' is not a valid language tag!"%lang)
 
         if datatype:
             datatype = URIRef(datatype)
