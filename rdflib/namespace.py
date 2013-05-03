@@ -102,9 +102,11 @@ class URIPattern(unicode):
 
     __doc__ = format_doctest_out("""
     Utility class for creating URIs according to some pattern
+    This supports either new style formatting with .format
+    or old-style with %% operator
 
-    >>> u=URIPattern("http://example.org/{type}/{id}/resource")
-    >>> u.format(type='books', id='12345')
+    >>> u=URIPattern("http://example.org/%%s/%%d/resource")
+    >>> u%%('books', 12345)
     rdflib.term.URIRef(%(u)s'http://example.org/books/12345/resource')
 
     """)
@@ -119,8 +121,8 @@ class URIPattern(unicode):
     def __mod__(self, *args, **kwargs):
         return URIRef(unicode(self).__mod__(*args, **kwargs))
 
-    def format(self, *args, **kwargs):
-        return URIRef(unicode(self).format(*args, **kwargs))
+    def format(self, *args, **kwargs): 
+        return URIRef(unicode.format(self, *args, **kwargs))
 
     def __repr__(self): 
         return "URIPattern(%r)"%unicode.__repr__(self)
