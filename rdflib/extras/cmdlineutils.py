@@ -4,7 +4,7 @@ import getopt
 import rdflib
 import codecs
 
-from rdflib.extras.utils.pathutils import guess_format
+from rdflib.util import guess_format
 
 
 def _help():

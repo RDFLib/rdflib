@@ -37,6 +37,8 @@ from time import localtime
 from time import time
 from time import timezone
 
+from os.path import splitext
+from StringIO import StringIO
 
 from rdflib.exceptions import ContextTypeError
 from rdflib.exceptions import ObjectTypeError
@@ -52,7 +54,8 @@ from rdflib.py3compat import sign
 __all__ = [
     'list2set', 'first', 'uniq', 'more_than', 'to_term', 'from_n3',
     'date_time', 'parse_date_time', 'check_context', 'check_subject',
-    'check_predicate', 'check_object', 'check_statement', 'check_pattern']
+    'check_predicate', 'check_object', 'check_statement', 'check_pattern',
+    'guess_format', 'pprint_query_results', 'find_roots', 'get_tree']
 
 
 def list2set(seq):
@@ -315,6 +318,208 @@ def parse_date_time(val):
                 int(minute), int(second), 0, 0, 0))
     t = t + tz_offset
     return t
+
+
+
+
+
+SUFFIX_FORMAT_MAP = {
+    'rdf': 'xml',
+    'rdfs': 'xml',
+    'owl': 'xml',
+    'n3': 'n3',
+    'ttl': 'n3',
+    'nt': 'nt',
+    'trix': 'trix',
+    'xhtml': 'rdfa',
+    'html': 'rdfa',
+    'svg': 'rdfa',
+    'nq': 'nquads',
+    'trig': 'trig'
+}
+
+
+def guess_format(fpath, fmap=None):
+    """
+    Guess RDF serialization based on file suffix. Uses
+    ``SUFFIX_FORMAT_MAP`` unless ``fmap`` is provided. Examples:
+
+        >>> guess_format('path/to/file.rdf')
+        'xml'
+        >>> guess_format('path/to/file.owl')
+        'xml'
+        >>> guess_format('path/to/file.ttl')
+        'n3'
+        >>> guess_format('path/to/file.xhtml')
+        'rdfa'
+        >>> guess_format('path/to/file.svg')
+        'rdfa'
+        >>> guess_format('path/to/file.xhtml', {'xhtml': 'grddl'})
+        'grddl'
+
+    This also works with just the suffixes, with or without leading dot, and
+    regardless of letter case::
+
+        >>> guess_format('.rdf')
+        'xml'
+        >>> guess_format('rdf')
+        'xml'
+        >>> guess_format('RDF')
+        'xml'
+    """
+    fmap = fmap or SUFFIX_FORMAT_MAP
+    return fmap.get(_get_ext(fpath)) or fmap.get(fpath.lower())
+
+
+def _get_ext(fpath, lower=True):
+    """
+    Gets the file extension from a file(path); stripped of leading '.' and in
+    lower case. Examples:
+
+        >>> _get_ext("path/to/file.txt")
+        'txt'
+        >>> _get_ext("OTHER.PDF")
+        'pdf'
+        >>> _get_ext("noext")
+        ''
+        >>> _get_ext(".rdf")
+        'rdf'
+    """
+    ext = splitext(fpath)[-1]
+    if ext == '' and fpath.startswith("."):
+        ext = fpath
+    if lower:
+        ext = ext.lower()
+    if ext.startswith('.'):
+        ext = ext[1:]
+    return ext
+
+
+def find_roots(graph, prop, roots=None):
+    """
+    Find the roots in some sort of transitive hierarchy.
+
+    find_roots(graph, rdflib.RDFS.subClassOf)
+    will return a set of all roots of the sub-class hierarchy
+
+    Assumes triple of the form (child, prop, parent), i.e. the direction of
+    RDFS.subClassOf or SKOS.broader
+
+    """
+
+    non_roots = set()
+    if roots is None:
+        roots = set()
+    for x, y in graph.subject_objects(prop):
+        non_roots.add(x)
+        if x in roots:
+            roots.remove(x)
+        if y not in non_roots:
+            roots.add(y)
+    return roots
+
+
+def get_tree(graph,
+             root,
+             prop,
+             mapper=lambda x: x,
+             sortkey=None,
+             done=None,
+             dir='down'):
+    """
+    Return a nested list/tuple structure representing the tree
+    built by the transitive property given, starting from the root given
+
+    i.e.
+
+    get_tree(graph,
+       rdflib.URIRef("http://xmlns.com/foaf/0.1/Person"),
+       rdflib.RDFS.subClassOf)
+
+    will return the structure for the subClassTree below person.
+
+    dir='down' assumes triple of the form (child, prop, parent),
+    i.e. the direction of RDFS.subClassOf or SKOS.broader
+    Any other dir traverses in the other direction
+
+    """
+
+    if done is None:
+        done = set()
+    if root in done:
+        return
+    done.add(root)
+    tree = []
+
+    if dir == 'down':
+        branches = graph.subjects(prop, root)
+    else:
+        branches = graph.objects(root, prop)
+
+    for branch in branches:
+        t = get_tree(graph, branch, prop, mapper, sortkey, done, dir)
+        if t:
+            tree.append(t)
+
+    return (mapper(root), sorted(tree, key=sortkey))
+
+
+def pprint_query_results(res, namespace_manager = None, stream = None):
+
+    """
+    return a text table of query results
+    """
+
+    def termString(t):
+        if t == None:
+            return "-"
+        if namespace_manager:
+            if isinstance(t, URIRef): 
+                return namespace_manager.normalizeUri(t)
+            elif isinstance(t, BNode): 
+                return t.n3()
+            elif isinstance(t, Literal): 
+                return t._literal_n3(qname_callback=namespace_manager.normalizeUri)
+        else: 
+            return t.n3()
+
+    def c(s, w):
+        """
+        center the string s in w wide string
+        """
+        h = (w - len(s)) // 2
+        return " " * h + s + " " * h
+
+    if res.type!='SELECT': 
+        raise Exception("Can only pretty print SELECT results!")
+
+    if not res:
+        return "(no results)\n"
+    else:
+        if stream: 
+            out = stream
+        else: 
+            out = StringIO()
+        # keys = r.vars
+        # for r in b:
+        #     keys.update(r.keys())
+
+        keys = sorted(res.vars)
+        maxlen = [0] * len(keys)
+        b = [[termString(r[k]) for k in keys] for r in res]
+        for r in b:
+            for i in range(len(keys)):
+                maxlen[i] = max(maxlen[i], 1 + len(r[i]))
+
+        out.write(
+            "|".join([c(k, maxlen[i]) for i, k in enumerate(keys)]) + "\n")
+        out.write("-" * sum(maxlen) + "\n")
+        for r in sorted(b):
+            out.write("|".join(
+                [t + " " * (i - len(t) - 1) for i, t in zip(maxlen, r)]) + "\n")
+
+        if not stream: 
+            return out.getvalue()
 
 
 def test():

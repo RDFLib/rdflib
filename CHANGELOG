@@ -42,23 +42,23 @@
             for row in graph.query('select ... ') :
                 print row.age, row["name"]
 
-    * String operations on URIRefs return new URIRefs
-	  https://github.com/RDFLib/rdflib/pull/258
- 
-	  >>> URIRef('http://example.org/')+'test
-      rdflib.term.URIRef('http://example.org/test')
-
-	  >>> URIRef('http://example.org/persons/%d/id')%32
-	  rdflib.term.URIRef('http://example.org/persons/32/id')	
-
 	* "Slicing" of Graphs and Resources as syntactic sugar: 
 	  https://github.com/RDFLib/rdflib/pull/271
 
-		graph[bob:FOAF.knows/FOAF.name] -> generator over the names of Bobs friends
+		graph[bob:FOAF.knows/FOAF.name] 
+			-> generator over the names of Bobs friends
+		
+	* The SPARQLStore and SPARQLUpdateStore are now included in the RDFLib core
+	
     
 
     Minor Changes:
-	
+
+    * String operations on URIRefs return new URIRefs:
+	  >>> URIRef('http://example.org/')+'test
+      rdflib.term.URIRef('http://example.org/test')
+
+	  https://github.com/RDFLib/rdflib/pull/258 
 	* Namespace is no longer a subclass of URIRef
     * URIRefs and Literal language tags are validated on construction,
       avoiding some "RDF-injection" issues

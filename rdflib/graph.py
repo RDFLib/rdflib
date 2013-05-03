@@ -874,6 +874,9 @@ class Graph(Node):
 
         If override is True will bind namespace to given prefix if namespace
         was already bound to a different prefix.
+
+        for example:  graph.bind('foaf', 'http://xmlns.com/foaf/0.1/')
+        
         """
         return self.namespace_manager.bind(
             prefix, namespace, override=override)
@@ -1009,10 +1012,25 @@ class Graph(Node):
         self.parse(source, publicID, format)
 
     def query(self, query_object, processor='sparql',
-              result='sparql', initNs={}, initBindings={},
+              result='sparql', initNs=None, initBindings=None,
               use_store_provided=True, **kwargs):
         """
+        Query this graph. 
+        
+        A type of 'prepared queries' can be realised by providing
+        initial variable bindings with initBindings
+
+        Initial namespaces are used to resolve prefixes used in the query, 
+        if none are given, the namespaces from the graph's namespace manager
+        are used. 
+
+        A rdflib.query.QueryResult object is returned
+        
         """
+
+        initBindings = initBindings or {}
+        initNs = initNs or dict(self.namespaces())
+
         if hasattr(self.store, "query") and use_store_provided:
             try:
                 return self.store.query(

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-import rdflib.extras
-import rdflib.extras.utils
+import rdflib.extras.cmdlineutils
 
 import sys
 import itertools
@@ -98,7 +97,7 @@ DOT language to stdout
 
 
 def main():
-    rdflib.extras.utils.cmdlineutils.main(rdfs2dot, _help)
+    rdflib.extras.cmdlineutils.main(rdfs2dot, _help)
 
 if __name__ == '__main__':
     main()

@@ -43,6 +43,8 @@ from rdflib.plugins.sparql.update import evalUpdate
 
 from rdflib.py3compat import decodeStringEscape
 
+from rdflib.util import pprint_query_results
+
 from nose.tools import nottest, eq_ as eq
 from nose import SkipTest
 
@@ -141,44 +143,6 @@ def _fmt(f):
     return "turtle"
 
 
-def _bindingsTable(res):
-
-    def termString(t):
-        if t == None:
-            return "-"
-        return repr(t).replace('rdflib.term.', '').replace(
-            "datatype=URIRef(u'http://www.w3.org/2001/XMLSchema#",
-            'datatype=xsd:').replace("datatype=URIRef(u'", "datatype=")
-
-    def c(s, w):
-        """
-        center the string s in w wide string
-        """
-        h = (w - len(s)) // 2
-        return " " * h + s + " " * h
-
-    if not res:
-        return "(no results)\n"
-    else:
-        out = StringIO()
-        # keys = r.vars
-        # for r in b:
-        #     keys.update(r.keys())
-
-        keys = sorted(res.vars)
-        maxlen = [0] * len(keys)
-        b = [[termString(r[k]) for k in keys] for r in res]
-        for r in b:
-            for i in range(len(keys)):
-                maxlen[i] = max(maxlen[i], 1 + len(r[i]))
-
-        out.write(
-            "|".join([c(k, maxlen[i]) for i, k in enumerate(keys)]) + "\n")
-        out.write("-" * sum(maxlen) + "\n")
-        for r in sorted(b):
-            out.write("|".join(
-                [t + " " * (i - len(t) - 1) for i, t in zip(maxlen, r)]) + "\n")
-        return out.getvalue()
 
 
 def bindingsCompatible(a, b):
@@ -476,8 +440,8 @@ def query_test(t):
                     set(res),
                     set(res2)
                 ), 'Bindings do not match: \n%s\n!=\n%s' % (
-                    _bindingsTable(res),
-                    _bindingsTable(res2))
+                    pprint_query_results(res, namespace_manager=g.namespace_manager),
+                    pprint_query_results(res2, namespace_manager=g.namespace_manager))
             elif res.type == 'ASK':
                 eq(res.askAnswer,
                    res2.askAnswer, "Ask answer does not match: %r != %r" % (

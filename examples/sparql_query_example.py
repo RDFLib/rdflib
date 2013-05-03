@@ -19,9 +19,14 @@ import rdflib
 g = rdflib.Graph()
 g.load("foaf.rdf")
 
+# the QueryProcessor knows the FOAF prefix from the graph
+# which in turn knows it from reading the RDF/XML file
 for row in g.query(
-        'select ?s where { [] <http://xmlns.com/foaf/0.1/knows> ?s .}'):
+        'select ?s where { [] foaf:knows ?s .}'):
     print row.s 
     # or row["s"]
     # or row[rdflib.Variable("s")]
     
+
+
+

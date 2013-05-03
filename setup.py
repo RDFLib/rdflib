@@ -136,5 +136,15 @@ setup(
               'rdflib/plugins/sparql/results',
               'rdflib/plugins/stores',
               ],
+    entry_points = {
+        'console_scripts': [
+            'rdfpipe = rdflib.tools.rdfpipe:main',
+            'csv2rdf = rdflib.tools.csv2rdf:main',
+            'rdf2dot = rdflib.tools.rdf2dot:main',
+            'rdfs2dot = rdflib.tools.rdfs2dot:main',
+            'graphisomorpishm = rdflib.tools.graphisomorphism:main',
+            ],
+        },
+    
     **kwargs
     )

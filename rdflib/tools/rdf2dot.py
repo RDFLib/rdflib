@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
 import rdflib
-import rdflib.extras
-import rdflib.extras.utils.cmdlineutils
+import rdflib.extras.cmdlineutils
 
 import sys
 import cgi
@@ -118,7 +117,7 @@ language to stdout
 
 
 def main():
-    rdflib.extras.utils.cmdlineutils.main(rdf2dot, _help)
+    rdflib.extras.cmdlineutils.main(rdf2dot, _help)
 
 if __name__ == '__main__':
     main()

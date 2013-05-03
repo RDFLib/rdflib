@@ -16,7 +16,7 @@ from rdflib import RDF, RDFS
 from rdflib.namespace import split_uri
 
 HELP = """
-toRDF.py \
+csv2rdf.py \
     -b <instance-base> \
     -p <property-base> \
     [-c <classname>] \

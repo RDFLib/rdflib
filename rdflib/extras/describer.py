@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import with_statement
+
 from rdflib import py3compat
 __doc__ = py3compat.format_doctest_out("""
 A Describer is a stateful utility for creating RDF statements in a
@@ -15,11 +15,10 @@ Full example in the ``to_rdf`` method below::
 
     >>> import datetime
     >>> from rdflib.graph import Graph
-    >>> from rdflib.namespace import Namespace, RDFS
+    >>> from rdflib.namespace import Namespace, RDFS, FOAF
     >>>
     >>> ORG_URI = "http://example.org/"
     >>>
-    >>> FOAF = Namespace("http://xmlns.com/foaf/0.1/")
     >>> CV = Namespace("http://purl.org/captsolo/resume-rdf/0.2/cv#")
     >>>
     >>> class Person(object):
