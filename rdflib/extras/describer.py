@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+from __future__ import with_statement
 from rdflib import py3compat
 __doc__ = py3compat.format_doctest_out("""
 A Describer is a stateful utility for creating RDF statements in a
