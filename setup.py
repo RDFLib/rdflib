@@ -122,7 +122,6 @@ setup(
     """,
     packages=['rdflib',
               'rdflib/extras',
-              'rdflib/extras/utils',
               'rdflib/plugins',
               'rdflib/plugins/parsers',
               'rdflib/plugins/parsers/pyRdfa',
