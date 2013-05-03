@@ -94,6 +94,43 @@ class Namespace(unicode):
         else:
             return self.term(name)
 
+    def __repr__(self): 
+        return "Namespace(%s)"%unicode(self)
+    
+    def __str__(self): 
+        return "Namespace(%s)"%unicode(self)
+
+
+class URIPattern(unicode):
+
+    __doc__ = format_doctest_out("""
+    Utility class for creating URIs according to some pattern
+
+    >>> u=URIPattern("http://example.org/{type}/{id}/resource")
+    >>> u.format(type='books', id='12345')
+    rdflib.term.URIRef(%(u)s'http://example.org/books/12345/resource')
+
+    """)
+
+    def __new__(cls, value): 
+        try:
+            rt = unicode.__new__(cls, value)
+        except UnicodeDecodeError:
+            rt = unicode.__new__(cls, value, 'utf-8')
+        return rt
+
+    def __mod__(self, *args, **kwargs):
+        return URIRef(unicode(self).__mod__(*args, **kwargs))
+
+    def format(self, *args, **kwargs):
+        return URIRef(unicode(self).format(*args, **kwargs))
+
+    def __repr__(self): 
+        return "URIPattern(%r)"%unicode(self)
+    
+    def __str__(self): 
+        return "URIPattern(%r)"%unicode(self)
+
 
 class ClosedNamespace(object):
     """

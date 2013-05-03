@@ -270,9 +270,6 @@ class URIRef(Identifier):
     def __radd__(self, other):
         return self.__class__(other + unicode(self))
 
-    def format(self, *args, **kwargs):
-        return self.__class__(unicode(self).format(*args, **kwargs))
-
     def __mod__(self, other):
         return self.__class__(unicode(self) % other)
 
