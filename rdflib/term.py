@@ -201,7 +201,7 @@ class URIRef(Identifier):
                     value += "#"
 
         if not _is_valid_uri(value): 
-            raise Exception('%s does not look like a valid URI, perhaps you want to urlencode it?')
+            raise Exception('%s does not look like a valid URI, perhaps you want to urlencode it?'%value)
 
 
         try:

@@ -95,7 +95,7 @@ class Namespace(unicode):
             return self.term(name)
 
     def __repr__(self): 
-        return "Namespace(%s)"%unicode(self)
+        return "Namespace(%s)"%unicode.__repr__(self)
 
 
 class URIPattern(unicode):
@@ -123,10 +123,8 @@ class URIPattern(unicode):
         return URIRef(unicode(self).format(*args, **kwargs))
 
     def __repr__(self): 
-        return "URIPattern(%r)"%unicode(self)
+        return "URIPattern(%r)"%unicode.__repr__(self)
     
-    def __str__(self): 
-        return "URIPattern(%r)"%unicode(self)
 
 
 class ClosedNamespace(object):
