@@ -420,8 +420,8 @@ def _findVars(x, res):
             res.add(x.var)
             return x  # stop recursion and finding vars in the expr
         elif x.name == 'SubSelect':
-            res.update(x.var or [])
-            res.update(x.evar or [])
+            if x.projection: 
+                res.update(v.var or v.evar for v in x.projection)
             return x
 
 
@@ -434,8 +434,11 @@ def _addVars(x, children):
         if x.name == "Bind":
             return set([x.var])
         elif x.name == 'SubSelect':
-            s = set(x.var or [])
-            s.update(x.evar or [])
+            if x.projection:
+                s = set(v.var or v.evar for v in x.projection)
+            else: 
+                s = set()
+
             return s
     return reduce(operator.or_, children, set())
 
@@ -462,13 +465,12 @@ def translateAggregates(q, M):
 
     # collect/replace aggs in :
     #    select expr as ?var
-    if q.evar:
-        es = []
-        for e, v in zip(q.expr, q.evar):
-            e = traverse(e, functools.partial(_sample, v=v))
-            e = traverse(e, functools.partial(_aggs, A=A))
-            es.append(e)
-        q.expr = es
+    if q.projection:
+        for v in q.projection:
+            if v.evar: 
+                v.expr = traverse(v.expr, functools.partial(_sample, v=v.evar))
+                v.expr = traverse(v.expr, functools.partial(_aggs, A=A))
+
 
     # having clause
     if traverse(q.having, _hasAggregate, complete=False):
@@ -482,12 +484,13 @@ def translateAggregates(q, M):
 
     # sample all other select vars
     # TODO: only allowed for vars in group-by?
-    if q.var:
-        for v in q.var:
-            rv = Variable('__agg_%d__' % (len(A) + 1))
-            A.append(CompValue('Aggregate_Sample', vars=v, res=rv))
-            E.append((rv, v))
-
+    if q.projection: 
+        for v in q.projection: 
+            if v.var:
+                rv = Variable('__agg_%d__' % (len(A) + 1))
+                A.append(CompValue('Aggregate_Sample', vars=v.var, res=rv))
+                E.append((rv, v.var))
+                
     return CompValue('AggregateJoin', A=A, p=M), E
 
 
@@ -542,8 +545,8 @@ def translate(q):
         aggregate = True
     elif traverse(q.having, _hasAggregate, complete=False) or \
             traverse(q.orderby, _hasAggregate, complete=False) or \
-            any(traverse(x, _hasAggregate, complete=False)
-                for x in q.expr or []):
+            any(traverse(x.expr, _hasAggregate, complete=False)
+                for x in q.projection or [] if x.evar):
         # if any aggregate is used, implicit group by
         M = Group(p=M)
         aggregate = True
@@ -561,21 +564,22 @@ def translate(q):
     if q.valuesClause:
         M = Join(p1=M, p2=ToMultiSet(translateValues(q.valuesClause)))
 
-    if not q.var and not q.expr:
+    if not q.projection: 
         # select *
         PV = list(VS)
     else:
         PV = list()
-        if q.var:
-            for v in q.var:
+        for v in q.projection:
+            if v.var:
                 if v not in PV:
-                    PV.append(v)
-        if q.evar:
-            for v in q.evar:
+                    PV.append(v.var)
+            elif v.evar:
                 if v not in PV:
-                    PV.append(v)
+                    PV.append(v.evar)
 
-            E += zip(q.expr, q.evar)
+                E.append((v.expr, v.evar))
+            else: 
+                raise Exception("I expected a var or evar here!")
 
     for e, v in E:
         M = Extend(M, e, v)

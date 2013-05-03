@@ -948,8 +948,8 @@ SolutionModifier = Optional(Param('groupby', GroupClause)) + Optional(Param('hav
 
 
 # [9] SelectClause ::= 'SELECT' ( 'DISTINCT' | 'REDUCED' )? ( ( Var | ( '(' Expression 'AS' Var ')' ) )+ | '*' )
-SelectClause = Keyword('SELECT') + Optional(Param('modifier', Keyword('DISTINCT') | Keyword('REDUCED'))) + (OneOrMore(
-    ParamList('var', Var) | (Literal('(') + ParamList('expr', Expression) + Keyword('AS') + ParamList('evar', Var) + ')')) | '*')
+SelectClause = Keyword('SELECT') + Optional(Param('modifier', Keyword('DISTINCT') | Keyword('REDUCED'))) + (OneOrMore(ParamList('projection', Comp('vars',  
+    Param('var', Var) | (Literal('(') + Param('expr', Expression) + Keyword('AS') + Param('evar', Var) + ')')))) | '*')
 
 # [17] WhereClause ::= 'WHERE'? GroupGraphPattern
 WhereClause = Optional(Keyword('WHERE')) + Param('where', GroupGraphPattern)
