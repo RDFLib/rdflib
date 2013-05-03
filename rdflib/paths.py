@@ -88,9 +88,9 @@ True
 
 Graph generator functions, triples, subjects, objects, etc. :
 
->>> list(g.objects(e.c, (e.p3*OneOrMore)/e.p2)) #doctest: +NORMALIZE_WHITESPACE
-[rdflib.term.URIRef(
-    u'ex:j'), rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:f')]
+>>> list(g.objects(e.c, (e.p3*OneOrMore)/e.p2)) # doctest: +NORMALIZE_WHITESPACE
+[rdflib.term.URIRef('ex:j'), rdflib.term.URIRef('ex:g'), 
+rdflib.term.URIRef('ex:f')]
 
 A more complete set of tests:
 
@@ -261,7 +261,8 @@ True
 Graph generator functions, triples, subjects, objects, etc. :
 
 >>> list(g.objects(e.c, (e.p3*OneOrMore)/e.p2)) # doctest: +NORMALIZE_WHITESPACE
-[rdflib.term.URIRef(u'ex:j'), rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:f')]
+[rdflib.term.URIRef(u'ex:j'), rdflib.term.URIRef(u'ex:g'), 
+    rdflib.term.URIRef(u'ex:f')]
 
 A more complete set of tests:
 
@@ -604,9 +605,6 @@ def neg_path(p):
     """
     return NegatedPath(p)
 
-# monkey patch
-# (these cannot be directly in terms.py
-#  as it would introduce circular imports)
 
 
 if __name__ == '__main__':
@@ -614,15 +612,26 @@ if __name__ == '__main__':
     import doctest
     doctest.testmod()
 else: 
-    # only monkey patch once!
+    # monkey patch
+    # (these cannot be directly in terms.py
+    #  as it would introduce circular imports)
+
     URIRef.__or__ = path_alternative
-    URIRef.__div__ = path_sequence
     URIRef.__mul__ = mul_path
     URIRef.__invert__ = inv_path
     URIRef.__neg__ = neg_path
+    if PY3:
+        URIRef.__truediv__ = path_sequence
+    else: 
+        URIRef.__div__ = path_sequence
 
+    
     Path.__invert__ = inv_path
     Path.__neg__ = neg_path
     Path.__mul__ = mul_path
     Path.__or__ = path_alternative
-    Path.__div__ = path_sequence
+    if PY3:
+        Path.__truediv__ = path_sequence
+    else: 
+        Path.__div__ = path_sequence
+
