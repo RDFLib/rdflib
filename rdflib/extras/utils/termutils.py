@@ -90,10 +90,10 @@ def normalizeGraph(graph):
     (rdflib.term.URIRef(%(u)s'http://purl.org/net/bel-epa/gjh'), 'U')
     >>> g = ConjunctiveGraph(memstore, Namespace("http://rdflib.net/ns"))
     >>> normalizeGraph(g)  #doctest: +ELLIPSIS
-    (Namespace(%(u)s'http://rdflib.net/ns'), 'U')
+    (rdflib.term.URIRef(%(u)s'http://rdflib.net/ns'), 'U')
     >>> g = QuotedGraph(memstore, Namespace("http://rdflib.net/ns"))
     >>> normalizeGraph(g)
-    (Namespace(%(u)s'http://rdflib.net/ns'), 'F')
+    (rdflib.term.URIRef(%(u)s'http://rdflib.net/ns'), 'F')
 
     """
     if isinstance(graph, QuotedGraph):
