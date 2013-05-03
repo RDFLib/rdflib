@@ -62,7 +62,7 @@ from urllib import pathname2url
 from rdflib.term import URIRef, Variable, _XSD_PFX
 
 __all__ = [
-    'is_ncname', 'split_uri', 'Namespace', 'NamespaceDict',
+    'is_ncname', 'split_uri', 'Namespace', 
     'ClosedNamespace', 'NamespaceManager',
     'XMLNS', 'RDF', 'RDFS', 'XSD', 'OWL', 'SKOS']
 
@@ -85,41 +85,6 @@ class Namespace(URIRef):
             raise AttributeError
         else:
             return self.term(name)
-
-
-class NamespaceDict(dict):
-
-    def __new__(cls, uri=None, context=None):
-        inst = dict.__new__(cls)
-        inst.uri = uri  # TODO: do we need to set these
-                        # both here and in __init__ ??
-        inst.__context = context
-        return inst
-
-    def __init__(self, uri, context=None):
-        self.uri = uri
-        self.__context = context
-
-    def term(self, name):
-        uri = self.get(name)
-        if uri is None:
-            uri = URIRef(self.uri + name)
-            if self.__context and (uri, None, None) not in self.__context:
-                _logger.warning("%s not defined" % uri)
-            self[name] = uri
-        return uri
-
-    def __getattr__(self, name):
-        return self.term(name)
-
-    def __getitem__(self, key, default=None):
-        return self.term(key) or default
-
-    def __str__(self):
-        return self.uri
-
-    def __repr__(self):
-        return """rdflib.namespace.NamespaceDict('%s')""" % str(self.uri)
 
 
 class ClosedNamespace(object):
