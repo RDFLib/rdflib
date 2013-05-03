@@ -96,9 +96,6 @@ class Namespace(unicode):
 
     def __repr__(self): 
         return "Namespace(%s)"%unicode(self)
-    
-    def __str__(self): 
-        return "Namespace(%s)"%unicode(self)
 
 
 class URIPattern(unicode):
