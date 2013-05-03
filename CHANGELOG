@@ -58,10 +58,11 @@
     
 
     Minor Changes:
-
-    * URIRefs are validated on construction, avoiding some
-      "RDF-injection" issues
-	  https://github.com/RDFLib/rdflib/issues/266
+	
+	* Namespace is no longer a subclass of URIRef
+    * URIRefs and Literal language tags are validated on construction,
+      avoiding some "RDF-injection" issues
+      https://github.com/RDFLib/rdflib/issues/266
     * A new memory store needs much less memory when loading large
       graphs
 	  https://github.com/RDFLib/rdflib/pull/268 
