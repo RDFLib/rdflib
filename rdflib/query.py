@@ -226,6 +226,12 @@ class Result(object):
         else:
             return len(self.graph)
 
+    def __nonzero__(self): 
+        if self.type == 'ASK': 
+            return self.askAnswer
+        else: 
+            return len(self)>0
+
     def __iter__(self):
         if self.type in ("CONSTRUCT", "DESCRIBE"):
             for t in self.graph:
