@@ -1,13 +1,22 @@
 .. rdflib documentation documentation master file
    
-============
-rdflib 3.2.1
-============
+==========
+rdflib |release|
+==========
 
 Introduction
 ============
 
-A pure Python package providing the core RDF constructs. The ``rdflib`` package is intended to provide core RDF types and interfaces for working with RDF. 
+RDFLib is a pure Python package work working with `RDF <http://www.w3.org/RDF/>`_. ``rdflib`` contains most things you need to work with RDF, including: 
+
+* parsers and serializers for RDF/XML, N3, NTriples, N-Quads, Turtle, TriX, RDFa and Microdata.
+
+* a Graph interface which can be backed by any one of a number of Store implementations. 
+
+* store implementations for in memory storage and persistent storage on top of the Berkeley DB. 
+
+* a SPARQL 1.1 implementation - supporting SPARQL 1.1 Queries and Update statements. 
+
 
 .. toctree::
    :maxdepth: 1
@@ -16,13 +25,19 @@ A pure Python package providing the core RDF constructs. The ``rdflib`` package 
    intro_to_graphs
    using_graphs
    rdf_terms
+   namespaces_and_bindings
+   intro_to_sparql
+
+   persistence
+
+   howto
+   upgrade3to4
+   assorted_examples
+
    plugin_parsers
    plugin_serializers
-   namespaces_and_bindings
-   persistence
-   intro_to_sparql
-   howto
-   assorted_examples
+
+   
    Module documentation <modules/index>
 
 Plugins
@@ -30,7 +45,7 @@ Plugins
 
 The package defines a plugin interface for parsers, stores, and serializers that other packages can use to implement parsers, stores, and serializers that will plug into the ``rdflib`` package.
 
-The diagram below describes the current set of plugins that are either built in to rdflib or are available in the `rdfextras <http://pypi.python.org/pypi/rdfextras/>`_ support package:
+The diagram below describes the current set of plugins that are either built in to rdflib or are available in extension projects:
 
 .. image:: /_static/plugins-diagram.svg
    :alt: rdflib plugin "architecture"
@@ -52,7 +67,6 @@ Additional discussions / notes
    :maxdepth: 2
 
    univrdfstore
-   graphs_bnodes
    persisting_n3_terms
    Documentation notes <apidocs>
 

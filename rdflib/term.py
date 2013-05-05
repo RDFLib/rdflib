@@ -459,19 +459,23 @@ class Literal(Identifier):
     True
 
     but with data-type they get normalized:
+
     >>> Literal('01', datatype=XSD.integer)!=Literal('1', datatype=XSD.integer)
     False
 
     unless disabled:
+
     >>> Literal('01', datatype=XSD.integer, normalize=False)!=Literal('1', datatype=XSD.integer)
     True
 
 
     Value based comparison is possible:
+
     >>> Literal('01', datatype=XSD.integer).eq(Literal('1', datatype=XSD.float))
     True
 
     The eq method also provides limited support for basic python types:
+
     >>> Literal(1).eq(1) # fine - int compatible with xsd:integer
     True
     >>> Literal('a').eq('b') # fine - str compatible with plain-lit
@@ -481,13 +485,14 @@ class Literal(Identifier):
     >>> Literal('a').eq(1) # not fine, int incompatible with plain-lit
     NotImplemented
 
-
-    Greater-than/less-than ordering comparisons are also done in value space, when compatible datatypes are used.
-    Incompatible datatypes are ordered by DT, or by lang-tag.
-    For other nodes the ordering is None < BNode < URIRef < Literal
+    Greater-than/less-than ordering comparisons are also done in value
+    space, when compatible datatypes are used.  Incompatible datatypes
+    are ordered by DT, or by lang-tag.  For other nodes the ordering
+    is None < BNode < URIRef < Literal
 
     Any comparison with non-rdflib Node are "NotImplemented"
     In PY2.X some stable order will be made up by python
+
     In PY3 this is an error.
 
     >>> from rdflib import Literal, XSD
@@ -511,8 +516,9 @@ class Literal(Identifier):
     >>> Literal(1) > URIRef('foo') # by node-type
     True
 
-    The > < operators will eat this NotImplemented and either make up an ordering (py2.x)
-    or throw a TypeError (py3k)
+    The > < operators will eat this NotImplemented and either make up
+    an ordering (py2.x) or throw a TypeError (py3k):
+
     >>> Literal(1).__gt__(2.0)
     NotImplemented
 

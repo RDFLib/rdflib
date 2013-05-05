@@ -21,7 +21,7 @@ Support is available through the rdflib-dev group::
 
     http://groups.google.com/group/rdflib-dev
 
-and on the IRC channel #redfoot on the freenode.net server
+and on the IRC channel `#rdflib <irc://irc.freenode.net/swig>`_ on the freenode.net server
 
 The primary interface that RDFLib exposes for working with RDF is :class:`~rdflib.graph.Graph`. The package uses various Python idioms that offer an appropriate way to introduce RDF to a Python programmer who hasn't worked with RDF before.
 
@@ -58,15 +58,13 @@ A more extensive example:
 .. code-block:: python
 
     from rdflib import Graph, Literal, BNode, Namespace, RDF
+	from rdflib.namespace import DC, FOAF
 
     g = Graph()
 
     # Bind a few prefix, namespace pairs.
-    g.bind("dc", "http://http://purl.org/dc/elements/1.1/")
-    g.bind("foaf", "http://xmlns.com/foaf/0.1/")
-
-    # Create a namespace object for the Friend of a friend namespace.
-    FOAF = Namespace("http://xmlns.com/foaf/0.1/")
+    g.bind("dc", DC)
+    g.bind("foaf", FOAF)
 
     # Create an identifier to use as the subject for Donna.
     donna = BNode()

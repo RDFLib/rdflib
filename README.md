@@ -62,6 +62,8 @@ any one of a number of Store implementations.
 This core RDFLib package includes store implementations for 
 in memory storage and persistent storage on top of the Berkeley DB. 
 
+A SPARQL 1.1 implementation is included - supporting SPARQL 1.1 Queries and Update statements. 
+
 RDFLib is open source and is maintained on [GitHub](http://github.com/RDFLib/rdflib/). RDFLib releases, current and previous 
 are listed on [PyPi](pypi.python.org/pypi/rdflib/)
 

@@ -41,6 +41,12 @@ The following namespaces are available by directly importing from rdflib:
 * RDFS
 * OWL
 * XSD
+* FOAF
+* SKOS
+* DOAP
+* DC
+* DCTERMS
+* VOID
 
 .. code-block:: pycon
 
@@ -64,10 +70,24 @@ from rdflib.term import URIRef, Variable, _XSD_PFX
 __all__ = [
     'is_ncname', 'split_uri', 'Namespace', 
     'ClosedNamespace', 'NamespaceManager',
-    'XMLNS', 'RDF', 'RDFS', 'XSD', 'OWL', 'SKOS']
+    'XMLNS', 'RDF', 'RDFS', 'XSD', 'OWL', 
+    'SKOS', 'DOAP', 'FOAF', 'DC', 'DCTERMS', 'VOID']
 
 
 class Namespace(unicode):
+
+    """
+    Utility class for quickly generating URIRefs with a common prefix
+
+    >>> from rdflib import Namespace
+    >>> n = Namespace("http://example.org/")
+    >>> n.Person # as attribute
+    rdflib.term.URIRef(u'http://example.org/Person')
+    >>> n['first%20name'] # as item - for things that are not valid python identifiers
+    rdflib.term.URIRef(u'http://example.org/first%20name')
+  
+    """
+    
     
     def __new__(cls, value): 
         try:
@@ -131,7 +151,9 @@ class URIPattern(unicode):
 
 class ClosedNamespace(object):
     """
+    A namespace with a closed list of members
 
+    Trying to create terms not listen is an error
     """
 
     def __init__(self, uri, terms):
@@ -165,6 +187,9 @@ class ClosedNamespace(object):
 
 
 class _RDFNamespace(ClosedNamespace):
+    """
+    Closed namespace for RDF terms
+    """
     def __init__(self):
         super(_RDFNamespace, self).__init__(
             URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
@@ -221,6 +246,8 @@ VOID = Namespace('http://rdfs.org/ns/void#')
 
 class NamespaceManager(object):
     """
+
+    Class for managing prefix => namespace mappings
 
     Sample usage from FuXi ...
 

@@ -4,39 +4,42 @@
 Namespaces and Bindings
 =======================
 
-Namespaces
-----------
-The ``initNs`` argument supplied to :meth:`~rdflib.graph.Graph.parse` is a dictionary of namespaces to be expanded in the query string. In a large program, it is common to use the same ``dict`` for every single query. You might even hack your graph instance so that the ``initNs`` arg is already filled in.
+``rdflib`` provides several short-cuts to working with many URIs in the same namespace. 
 
-.. warning:: rdfextras.store.SPARQL.query does not support `initNs`. 
+The :mod:`rdflib.namespace` defines the :class:`rdflib.namespace.Namespace` class which lets you easily create URIs in a namespace: 
 
-In order to use an empty prefix (e.g. ``?a :knows ?b``), use a ``BASE`` directive in the SPARQL query to set a default namespace:
+.. code-block:: python
+
+	>>> from rdflib import Namespace
+	>>> n = Namespace("http://example.org/")
+	>>> n.Person # as attribute
+	rdflib.term.URIRef(u'http://example.org/Person')
+	>>> n['first%20name'] # as item - for things that are not valid python identifiers
+	rdflib.term.URIRef(u'http://example.org/first%20name')
+
+The ``namespace`` module also defines many common namespaces such as RDF, RDFS, OWL, FOAF, SKOS, etc. 
+
+Namespaces can also be associated with prefixes, in a :class:`rdflib.namespace.NamespaceManager`, i.e. using ``foaf`` for ``http://xmlns.com/foaf/0.1/``. Each ``rdflib`` graph has a :attr:`rdflib.graph.Graph:namespace_manager` that keeps a list of namespace to prefix mappings. The namespace manager is populated when reading in RDF, and these prefixes are used when serialising RDF, or when parsing SPARQL queries. Additional prefixes can be bound with the :meth:`rdflib.graph.bind` method.
+
+
+Namespaces in SPARQL Queries
+----------------------------
+
+The ``initNs`` argument supplied to :meth:`~rdflib.graph.Graph.query` is a dictionary of namespaces to be expanded in the query string. 
+If you pass no ``initNS`` argument, the namespaces registered with the graphs namespace_manager are used. 
+
+.. code-block:: python
+
+	>>> ...
+	>>> from rdflib.namespace import FOAF
+	>>> graph.query('SELECT * WHERE { ?p a foaf:Person }', initNs={ 'foaf': FOAF })
+
+
+In order to use an empty prefix (e.g. ``?a :knows ?b``), use a ``PREFIX`` directive with no prefix in the SPARQL query to set a default namespace:
 
 .. code-block:: text
 
-    BASE <http://xmlns.com/foaf/0.1/>
+    PREFIX : <http://xmlns.com/foaf/0.1/>
 
-Bindings
---------
-
-As with SQL queries, it is common to run the same SPARQL query many times with only a few terms changing each time. rdflib calls this ``initBindings``:
-
-.. warning:: rdfextras.store.SPARQL.query does not support `initBindings`. 
-
-.. code-block:: python
-
-    FOAF = Namespace("http://xmlns.com/foaf/0.1/")
-    ns = dict(foaf=FOAF)
-    drew = URIRef('http://bigasterisk.com/foaf.rdf#drewp')
-    for row in g.query("""SELECT ?name 
-                          WHERE { ?p foaf:name ?name }""", 
-                       initNs=ns, initBindings={'p' : drew}):
-        print row
-
-Output:
-
-.. code-block:: python
-
-    (rdflib.Literal('Drew Perttula', language=None, datatype=None),)
 
 

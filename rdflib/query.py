@@ -133,13 +133,19 @@ class ResultRow(tuple):
 class Result(object):
     """
     A common class for representing query result.
-    This is backwards compatible with the old SPARQLResult objects
-    Like before there is a bit of magic that makes this appear like Python
-    objects, depending on the type of result.
+    
+    There is a bit of magic here that makes this appear like different
+    Python objects, depending on the type of result.
 
-    If the type is "SELECT", this is like a list of list of values
-    If the type is "ASK" this is like a list of a single bool
-    If the type is "CONSTRUCT" or "DESCRIBE" this is like a graph
+    If the type is "SELECT", iterating will yield lists of QueryRow objects
+    
+    If the type is "ASK", iterating will yield a single bool (or
+    bool(result) will return the same bool)
+
+    If the type is "CONSTRUCT" or "DESCRIBE" iterating will yield the
+    triples. 
+
+    len(result) also works.
 
     """
     def __init__(self, type_):

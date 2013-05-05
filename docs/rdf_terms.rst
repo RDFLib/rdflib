@@ -6,6 +6,8 @@ RDF terms in rdflib
 
 Terms are the kinds of objects that can appear in a quoted/asserted triple. Those that are part of core  RDF concepts are: ``Blank Node``, ``URI Reference`` and ``Literal``, the latter consisting of a literal value and either a `datatype <http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/#built-in-datatypes>`_ or an `rfc3066 <http://tools.ietf.org/html/rfc3066>`_ language tag.
 
+All terms in ``rdflib`` are sub-classes of the :class:`rdflib.term.Identifier` class. 
+
 BNodes
 ======
 
@@ -56,6 +58,8 @@ URIRefs
 Literals
 ========
 
+Literals are the attribute values in RDF, for instance, a person's name, the date of birth, height, etc. Literals can have a data-type (i.e. this is a double) or a language tag (this label is in english).
+
 .. autoclass:: rdflib.term.Literal
     :noindex:
 
@@ -67,11 +71,11 @@ Literals
     
     Typed literals have a lexical form and a datatype URI being an RDF URI reference.
     
-    Note: Literals in which the lexical form begins with a composing character (as defined by CHARMOD)are allowed however they may cause interoperability problems, particularly with XML version 1.1.
+.. note:: When using the language tag, care must be taken not to confuse language with locale. The language tag relates only to human language text. Presentational issues should be addressed in end-user applications.
     
-    Note: When using the language tag, care must be taken not to confuse language with locale. The language tag relates only to human language text. Presentational issues should be addressed in end-user applications.
-    
-    Note: The case normalization of language tags is part of the description of the abstract syntax, and consequently the abstract behaviour of RDF applications. It does not constrain an RDF implementation to actually normalize the case. Crucially, the result of comparing two language tags should not be sensitive to the case of the original input. -- `RDF Concepts and Abstract Syntax`__
+.. note:: The case normalization of language tags is part of the description of the abstract syntax, and consequently the abstract behaviour of RDF applications. It does not constrain an RDF implementation to actually normalize the case. Crucially, the result of comparing two language tags should not be sensitive to the case of the original input. -- `RDF Concepts and Abstract Syntax`__
+
+
 
 .. __: http://www.w3.org/TR/rdf-concepts/#section-Graph-URIref
 
