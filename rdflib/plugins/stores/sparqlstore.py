@@ -4,8 +4,7 @@
 This is an RDFLib store around Ivan Herman et al.'s SPARQL service wrapper.
 This was first done in layer-cake, and then ported to RDFLib 3 and rdfextras
 
-This version works with vanilla SPARQLWrapper installed by ``easy_install`` or
-similar
+This version works with vanilla SPARQLWrapper installed by ``easy_install``, ``pip`` or similar. If you installed ``rdflib`` with a tool that understands dependencies, it should have been installed automatically for you
 
 Changes:
     - Layercake adding support for namespace binding, I removed it again to
@@ -164,6 +163,12 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config)
     If this is set this will work fine.
 
+    .. warning:: The SPARQL Store does not support blank-nodes!  
+
+                 As blank-nodes acts as variables in SPARQL queries
+                 there is no way to query for a particular blank node.
+                 
+                 See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes
 
 
     """
@@ -283,6 +288,11 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         SELECT ?subj ?pred ?obj WHERE { ?subj ?pred ?obj }
         """
 
+        if ( isinstance(s, BNode) or
+             isinstance(p, BNode) or 
+             isinstance(o, BNode) ): 
+            raise Exception("SPARQLStore does not support Bnodes! See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes")
+
         vars = []
         if not s:
             s = Variable('s')
@@ -396,6 +406,13 @@ class SPARQLUpdateStore(SPARQLStore):
 
     For Graph objects, everything works as expected.
 
+    .. warning:: The SPARQL Update Store does not support blank-nodes!  
+
+                 As blank-nodes acts as variables in SPARQL queries
+                 there is no way to query for a particular blank node.
+                 
+                 See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes
+
 
 
     """
@@ -479,6 +496,13 @@ class SPARQLUpdateStore(SPARQLStore):
 
         assert not quoted
         (subject, predicate, obj) = spo
+
+        if ( isinstance(subject, BNode) or
+             isinstance(predicate, BNode) or 
+             isinstance(obj, BNode) ): 
+            raise Exception("SPARQLStore does not support Bnodes! See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes")
+
+
         triple = "%s %s %s ." % (subject.n3(), predicate.n3(), obj.n3())
         if self.context_aware and context is not None:
             q = "INSERT DATA { GRAPH %s { %s } }" % (
@@ -499,6 +523,13 @@ class SPARQLUpdateStore(SPARQLStore):
         data = ""
         for spoc in quads:
             (subject, predicate, obj, context) = spoc
+
+            if ( isinstance(subject, BNode) or
+                 isinstance(predicate, BNode) or 
+                 isinstance(obj, BNode) ): 
+                raise Exception("SPARQLStore does not support Bnodes! See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes")
+
+
             triple = "%s %s %s ." % (subject.n3(), predicate.n3(), obj.n3())
             data += "INSERT DATA { GRAPH <%s> { %s } }\n" % (
                 context.identifier, triple)
