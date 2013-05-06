@@ -76,17 +76,17 @@ __all__ = [
 
 class Namespace(unicode):
 
-    """
+    __doc__ = format_doctest_out("""
     Utility class for quickly generating URIRefs with a common prefix
 
     >>> from rdflib import Namespace
     >>> n = Namespace("http://example.org/")
     >>> n.Person # as attribute
-    rdflib.term.URIRef(u'http://example.org/Person')
-    >>> n['first%20name'] # as item - for things that are not valid python identifiers
-    rdflib.term.URIRef(u'http://example.org/first%20name')
+    rdflib.term.URIRef(%(u)s'http://example.org/Person')
+    >>> n['first-name'] # as item - for things that are not valid python identifiers
+    rdflib.term.URIRef(%(u)s'http://example.org/first-name')
   
-    """
+    """)
     
     
     def __new__(cls, value): 
