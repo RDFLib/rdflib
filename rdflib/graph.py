@@ -463,12 +463,12 @@ class Graph(Node):
                 # all given 
                 return (s,p,o) in self
 
-        elif isinstance(item, Node):
+        elif isinstance(item, (Path,Node)):
 
             return self.predicate_objects(item)
             
         else: 
-            raise TypeError("You can only index a graph by a single rdflib term or a slice of rdflib terms.")
+            raise TypeError("You can only index a graph by a single rdflib term or path, or a slice of rdflib terms.")
 
     def __len__(self):
         """Returns the number of triples in the graph

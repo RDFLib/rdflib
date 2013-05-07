@@ -1,184 +1,14 @@
-from rdflib.py3compat import PY3  # format_doctest_out
-if PY3:
-    __doc__ = """
+from rdflib.py3compat import PY3, format_doctest_out
 
-This module implements the SPARQL 1.1 Property path operators, as defined in:
+__doc__ = format_doctest_out("""
 
-http://www.w3.org/TR/sparql11-query/#propertypaths
-
-In SPARQL the syntax is as follows:
-
-iri     - An IRI. A path of length one.
-
-^elt        - Inverse path (object to subject).
-
-elt1 / elt2 - A sequence path of elt1 followed by elt2.
-
-elt1 | elt2 - A alternative path of elt1 or elt2 (all possibilities are tried).
-
-elt*        - A path that connects the subject and object of the path by zero
-    or more matches of elt.
-
-elt+        - A path that connects the subject and object of the path by one
-    or more matches of elt.
-
-elt?        - A path that connects the subject and object of the path by zero
-    or one matches of elt.
-
-!iri or !(iri1| ...|irin) - Negated property set. An IRI which is not one of
-    irii. !iri is short for !(iri).
-
-!^iri or !(^iri1| ...|^irin) -  Negated property set where the excluded matches
-    are based on reversed path. That is, not one of iri1...irin as
-    reverse paths. !^iri is short for !(^iri).
-
-!(iri1| ...|irij|^irij+1| ...|^irin) - A combination of forward and reverse
-    properties in a negated property set.
-(elt)       A group path elt, brackets control precedence.
-
-
-This module is used internally be the SPARQL engine, but they property paths
-can also be used to query RDFLib Graphs directly.
-
-Where possible the SPARQL syntax is mapped to python operators, and property
-path objects can be constructed from existing URIRefs.
-
->>> from rdflib import Graph, Namespace
-
->>> foaf=Namespace('http://xmlns.com/foaf/0.1/')
-
->>> ~foaf.knows
-Path(~http://xmlns.com/foaf/0.1/knows)
-
->>> foaf.knows/foaf.name
-Path(http://xmlns.com/foaf/0.1/knows / http://xmlns.com/foaf/0.1/name)
-
->>> foaf.name|foaf.firstName
-Path(http://xmlns.com/foaf/0.1/name | http://xmlns.com/foaf/0.1/firstName)
-
-Modifiers (?, *, +) are done using * (the multiplication operator) and
-the strings '*', '?', '+', also defined as constants in this file.
-
->>> foaf.knows*OneOrMore
-Path(http://xmlns.com/foaf/0.1/knows+)
-
-The path objects can be used with the normal graph methods.
-
-First some example data:
-
->>> g=Graph()
-
->>> g=g.parse(data='''
-... @prefix : <ex:> .
-...
-... :a :p1 :c ; :p2 :f .
-... :c :p2 :e ; :p3 :g .
-... :g :p3 :h ; :p2 :j .
-... :h :p3 :a ; :p2 :g .
-...
-... :q :px :q .
-...
-... ''', format='n3') # doctest: +ELLIPSIS
-
->>> e=Namespace('ex:')
-
-Graph contains:
->>> (e.a, e.p1/e.p2, e.e) in g
-True
-
-Graph generator functions, triples, subjects, objects, etc. :
-
->>> list(g.objects(e.c, (e.p3*OneOrMore)/e.p2)) # doctest: +NORMALIZE_WHITESPACE
-[rdflib.term.URIRef('ex:j'), rdflib.term.URIRef('ex:g'), 
-rdflib.term.URIRef('ex:f')]
-
-A more complete set of tests:
-
->>> list(evalPath(g, (None, e.p1/e.p2, None)))==[(e.a, e.e)]
-True
->>> list(evalPath(g, (e.a, e.p1|e.p2, None)))==[(e.a,e.c), (e.a,e.f)]
-True
->>> list(evalPath(g, (e.c, ~e.p1, None))) == [ (e.c, e.a) ]
-True
->>> list(evalPath(g, (e.a, e.p1*ZeroOrOne, None))) == [(e.a, e.a), (e.a, e.c)]
-True
->>> list(evalPath(g, (e.c, e.p3*OneOrMore, None))) == [
-...     (e.c, e.g), (e.c, e.h), (e.c, e.a)]
-True
->>> list(evalPath(g, (e.c, e.p3*ZeroOrMore, None))) == [(e.c, e.c),
-...     (e.c, e.g), (e.c, e.h), (e.c, e.a)]
-True
->>> list(evalPath(g, (e.a, -e.p1, None))) == [(e.a, e.f)]
-True
->>> list(evalPath(g, (e.a, -(e.p1|e.p2), None))) == []
-True
->>> list(evalPath(g, (e.g, -~e.p2, None))) == [(e.g, e.j)]
-True
->>> list(evalPath(g, (e.e, ~(e.p1/e.p2), None))) == [(e.e, e.a)]
-True
->>> list(evalPath(g, (e.a, e.p1/e.p3/e.p3, None))) == [(e.a, e.h)]
-True
-
->>> list(evalPath(g, (e.q, e.px*OneOrMore, None)))
-[(rdflib.term.URIRef('ex:q'), rdflib.term.URIRef('ex:q'))]
-
->>> list(evalPath(g, (None, e.p1|e.p2, e.c)))
-[(rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:c'))]
-
->>> list(evalPath(g, (None, ~e.p1, e.a))) == [ (e.c, e.a) ]
-True
->>> list(evalPath(g, (None, e.p1*ZeroOrOne, e.c))) # doctest: +NORMALIZE_WHITESPACE
-[(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:c')),
- (rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:c'))]
-
->>> list(evalPath(g, (None, e.p3*OneOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
-[(rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a')),
- (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:a')),
- (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a'))]
-
->>> list(evalPath(g, (None, e.p3*ZeroOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
-[(rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:a')),
- (rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a')),
- (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:a')),
- (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a'))]
-
->>> list(evalPath(g, (None, -e.p1, e.f))) == [(e.a, e.f)]
-True
->>> list(evalPath(g, (None, -(e.p1|e.p2), e.c))) == []
-True
->>> list(evalPath(g, (None, -~e.p2, e.j))) == [(e.g, e.j)]
-True
->>> list(evalPath(g, (None, ~(e.p1/e.p2), e.a))) == [(e.e, e.a)]
-True
->>> list(evalPath(g, (None, e.p1/e.p3/e.p3, e.h))) == [(e.a, e.h)]
-True
-
->>> list(evalPath(g, (e.q, e.px*OneOrMore, None)))
-[(rdflib.term.URIRef('ex:q'), rdflib.term.URIRef('ex:q'))]
-
->>> list(evalPath(g, (e.c, (e.p2|e.p3)*ZeroOrMore, e.j)))
-[(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:j'))]
-
-No vars specified
->>> sorted(list(evalPath(g, (None, e.p3*OneOrMore, None)))) #doctest: +NORMALIZE_WHITESPACE
-[(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a')),
- (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:g')),
- (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:h')),
- (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:a')),
- (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:h')),
- (rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a'))]
-
-
-
-"""
-else:
-    __doc__ = """
-
-This module implements the SPARQL 1.1 Property path operators, as defined in:
+This module implements the SPARQL 1.1 Property path operators, as
+defined in:
 
 http://www.w3.org/TR/sparql11-query/#propertypaths
 
 In SPARQL the syntax is as follows:
+
 
 iri     - An IRI. A path of length one.
 
@@ -342,7 +172,7 @@ No vars specified
 
 
 
-"""
+""")
 
 
 from rdflib.term import URIRef

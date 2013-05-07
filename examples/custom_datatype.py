@@ -1,7 +1,12 @@
 """
 
-rdflib.term.bind lets you register new mappings between literal
-datatypes and python objects 
+RDFLib can map between data-typed literals and python objects. 
+
+Mapping for integers, floats, dateTimes, etc. are already added, but
+you can also add your own.
+
+This example shows how :meth:`rdflib.term.bind` lets you register new
+mappings between literal datatypes and python objects
 
 """
 
@@ -9,31 +14,33 @@ datatypes and python objects
 from rdflib import Graph, Literal, Namespace, XSD
 from rdflib.term import bind
 
-# complex numbers are not registered by default
-# no custom constructor/serializer needed since 
-# complex('(2+3j)') works fine
-bind(XSD.complexNumber, complex) 
+if __name__=='__main__':
 
-ns=Namespace("urn:my:namespace:")
+    # complex numbers are not registered by default
+    # no custom constructor/serializer needed since 
+    # complex('(2+3j)') works fine
+    bind(XSD.complexNumber, complex) 
 
-c=complex(2,3)
+    ns=Namespace("urn:my:namespace:")
 
-l=Literal(c)
+    c=complex(2,3)
 
-g=Graph()
-g.add((ns.mysubject, ns.myprop, l))
+    l=Literal(c)
 
-n3=g.serialize(format='n3')
+    g=Graph()
+    g.add((ns.mysubject, ns.myprop, l))
 
-# round-trip through n3
+    n3=g.serialize(format='n3')
 
-g2=Graph()
-g2.parse(data=n3, format='n3')
+    # round-trip through n3
 
-l2=list(g2)[0][2]
+    g2=Graph()
+    g2.parse(data=n3, format='n3')
 
-print l2 
+    l2=list(g2)[0][2]
 
-print l2.value == c # back to a python complex object
+    print l2 
+
+    print l2.value == c # back to a python complex object
 
 

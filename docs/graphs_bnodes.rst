@@ -392,15 +392,7 @@ a containing graph (or None if the Store chooses to persist triples in a
 flat space).
 
 The Graph API's do most of the leg work of named graph aggregation. 
-:class:`ConjunctiveGraph` is an (unamed) aggregation of all the named graphs within 
-the Store.  It has a 'default' graph, whose name is associated with the 
-ConjunctiveGraph throughout its life.  All methods work against this 
-default graph.  Its constructor can take an identifier to use as the name 
-of this 'default' graph or it will assign a BNode.  In practice (at least 
-how \*I\* use RDFLib), I instantiate a ConjunctiveGraph if I want to add 
-triples to the Store but don't care to mint a URI for the graph (the 
-scenario which triggered this thread).  These triples can still be 
-addressed.
+
 
 :class:`ReadOnlyGraphAggregate` is a subset of the :class:`ConjunctiveGraph` where the names 
 of the graphs it provides an aggregate view for are passed on in the 

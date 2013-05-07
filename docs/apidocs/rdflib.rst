@@ -104,6 +104,10 @@ rdflib Package
     :undoc-members:
     :show-inheritance:
 
+    .. autoclass:: ResultRow
+       :members:
+
+
 :mod:`resource` Module
 ----------------------
 

@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-""" film.py: a simple tool to manage your movies review
+""" 
+
+film.py: a simple tool to manage your movies review
 Simon Rozet, http://atonie.org/
 
 @@ :
@@ -21,12 +23,19 @@ Usage:
     film.py http://www.imdb.com/title/tt0105236/
         Review the movie "Reservoir Dogs"
 """
-import datetime, os, sys, re, time, imdb
+import datetime, os, sys, re, time
+
+try: 
+    import imdb
+except ImportError: 
+    imdb = None
+
 from rdflib import BNode, ConjunctiveGraph, URIRef, Literal, Namespace, RDF
 from rdflib.namespace import FOAF, DC
 
-#storefn = os.path.expanduser('~/movies.n3')
-storefn = '/home/simon/codes/film.dev/movies.n3'
+
+storefn = os.path.expanduser('~/movies.n3')
+#storefn = '/home/simon/codes/film.dev/movies.n3'
 storeuri = 'file://'+storefn
 title = 'Movies viewed by %s'
 
@@ -40,9 +49,9 @@ class Store:
         self.graph = ConjunctiveGraph()
         if os.path.exists(storefn):
             self.graph.load(storeuri, format='n3')
-        self.graph.bind('dc', 'http://purl.org/dc/elements/1.1/')
-        self.graph.bind('foaf', 'http://xmlns.com/foaf/0.1/')
-        self.graph.bind('imdb', 'http://www.csd.abdn.ac.uk/~ggrimnes/dev/imdb/IMDB#')
+        self.graph.bind('dc', DC)
+        self.graph.bind('foaf', FOAF)
+        self.graph.bind('imdb', IMDB)
         self.graph.bind('rev', 'http://purl.org/stuff/rev#')
     
     def save(self):
@@ -128,4 +137,6 @@ def main(argv=None):
         help()
 
 if __name__ == '__main__':
+    if not imdb: 
+        raise Exception('This example requires the IMDB library! Install with "pip install imdbpy"')
     main()

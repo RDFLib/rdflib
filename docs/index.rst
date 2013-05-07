@@ -42,6 +42,7 @@ In depth
    persistence
 
    upgrade3to4
+   upgrade2to3
 
    howto
    assorted_examples

@@ -18,17 +18,17 @@ __all__ = ['Processor', 'Result', 'ResultParser', 'ResultSerializer',
            'ResultException']
 
 
-"""
-Query plugin interface.
-
-This module is useful for those wanting to write a query processor
-that can plugin to rdf. If you are wanting to execute a query you
-likely want to do so through the Graph class query method.
-
-"""
 
 
 class Processor(object):
+    """
+    Query plugin interface.
+    
+    This module is useful for those wanting to write a query processor
+    that can plugin to rdf. If you are wanting to execute a query you
+    likely want to do so through the Graph class query method.
+    
+    """
 
     def __init__(self, graph):
         pass
@@ -36,7 +36,17 @@ class Processor(object):
     def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False):
         pass
 
-class UpdateProcessor(object): 
+class UpdateProcessor(object):
+    """
+    Update plugin interface.
+    
+    This module is useful for those wanting to write an update
+    processor that can plugin to rdflib. If you are wanting to execute
+    an update statement you likely want to do so through the Graph
+    class update method.
+    
+    """
+ 
     def __init__(self, graph): 
         pass
     def update(self, strOrQuery, initBindings={}, initNs={}):

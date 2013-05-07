@@ -8,7 +8,7 @@ The docs are generated with Sphinx.
 
 TODO: Docstrings ... 
 
-To get N3 syntax highlighting do
+To get N3 syntax highlighting do:
 
 .. code-block:: bash
 
@@ -18,7 +18,7 @@ API Docs are automatically generated with ``sphinx-apidoc``:
 
 .. code-block:: bash
 
-   sphinx-apidoc -f -d 10 -o docs/apidocs/ rdflib
+   sphinx-apidoc -f -d 10 -o docs/apidocs/ rdflib examples
 
 (then ``rdflib.rst`` was tweaked manually to not include all convenience imports that are directly in the ``rdflib/__init__.py``)
 

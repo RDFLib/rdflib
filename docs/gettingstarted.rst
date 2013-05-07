@@ -85,4 +85,4 @@ A more extensive example:
         for mbox in g.objects(person, FOAF["mbox"]):
             print(mbox)
 
-Additional examples can be found in the examples folder in the source distribution.
+Many more :mod:`examples` can be found in the :file:`examples` folder in the source distribution.

@@ -1,6 +1,8 @@
-============================================
-Upgrading from RDFLib version 3 to version 4
-============================================
+.. _upgrade3to4: Upgrading from RDFLib version 3.X to 4.X
+
+========================================
+Upgrading from RDFLib version 3.X to 4.X
+========================================
 
 RDFLib version 4.0 introduced a small number of backwards compatible changes that you should know about when porting code from version 3 or earlier.
 

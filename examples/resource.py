@@ -1,6 +1,10 @@
 """
 
-RDFLib has a Resource class, for a resource-centric API
+RDFLib has a :class:`~rdflib.resource.Resource` class, for a resource-centric API.
+
+A resource acts like a URIRef with an associated graph, and allows
+quickly adding or querying for triples where this resource is the
+subject.
 
 
 """
@@ -8,38 +12,40 @@ RDFLib has a Resource class, for a resource-centric API
 from rdflib import Graph, RDF, RDFS, Literal
 from rdflib.namespace import FOAF
 
-g = Graph()
+if __name__=='__main__':
 
-bob = g.resource('urn:bob')
+    g = Graph()
 
-bob.set(RDF.type, FOAF.Person) # .set replaces all other values
-bob.set(FOAF.name, Literal("Bob"))
+    bob = g.resource('urn:bob')
+
+    bob.set(RDF.type, FOAF.Person) # .set replaces all other values
+    bob.set(FOAF.name, Literal("Bob"))
 
 
-bill = g.resource('urn:bill')
+    bill = g.resource('urn:bill')
 
-bill.add(RDF.type, FOAF.Person) # add adds to existing values
-bill.add(RDF.type, FOAF.Agent)
-bill.set(RDFS.label, Literal("Bill"))
+    bill.add(RDF.type, FOAF.Person) # add adds to existing values
+    bill.add(RDF.type, FOAF.Agent)
+    bill.set(RDFS.label, Literal("Bill"))
 
-bill.add(FOAF.knows, bob)
+    bill.add(FOAF.knows, bob)
 
-# Resources returned when querying are 'auto-boxed' as resources:
+    # Resources returned when querying are 'auto-boxed' as resources:
 
-print "Bill's friend: ", bill.value(FOAF.knows).value(FOAF.name)
+    print "Bill's friend: ", bill.value(FOAF.knows).value(FOAF.name)
 
-# slicing ([] syntax) can also be used: 
+    # slicing ([] syntax) can also be used: 
 
-print "Bill knows: ",
-for friend in bill[FOAF.knows]: 
-    print friend[FOAF.name].next(), " "
+    print "Bill knows: ",
+    for friend in bill[FOAF.knows]: 
+        print friend[FOAF.name].next(), " "
 
-# or even quicker with paths:
-print "Bill knows: ",
-for friend in bill[FOAF.knows/FOAF.name]:
-    print friend
+    # or even quicker with paths:
+    print "Bill knows: ",
+    for friend in bill[FOAF.knows/FOAF.name]:
+        print friend
 
-# setting single properties is also possible:
-bill[RDFS.label]=Literal("William")
+    # setting single properties is also possible:
+    bill[RDFS.label]=Literal("William")
 
-print g.serialize(format='n3')
+    print g.serialize(format='n3')
