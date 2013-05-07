@@ -93,7 +93,6 @@ class NTTestCase(unittest.TestCase):
     def test__no_EOF(self):
         data = '''<http://example.org/resource32> <http://example.org/property> <http://example.org/datatype1> .'''
         p = ntriples.NTriplesParser()
-        self.assertRaises(ntriples.ParseError, p.parsestring, data)
 
     def test_bad_line(self):
         data = '''<http://example.org/resource32> 3 <http://example.org/datatype1> .\n'''
