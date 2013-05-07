@@ -4,9 +4,18 @@
 RDF terms in rdflib
 ===================
 
-Terms are the kinds of objects that can appear in a quoted/asserted triple. Those that are part of core  RDF concepts are: ``Blank Node``, ``URI Reference`` and ``Literal``, the latter consisting of a literal value and either a `datatype <http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/#built-in-datatypes>`_ or an `rfc3066 <http://tools.ietf.org/html/rfc3066>`_ language tag.
+Terms are the kinds of objects that can appear in a quoted/asserted triples. Those that are part of core  RDF concepts are: ``Blank Node``, ``URI Reference`` and ``Literal``, the latter consisting of a literal value and either a `datatype <http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/#built-in-datatypes>`_ or an `rfc3066 <http://tools.ietf.org/html/rfc3066>`_ language tag.
 
-All terms in ``rdflib`` are sub-classes of the :class:`rdflib.term.Identifier` class. 
+All terms in ``RDFLib`` are sub-classes of the :class:`rdflib.term.Identifier` class.
+
+Nodes are a subset of the Terms that the underlying store actually persists.
+The set of such Terms depends on whether or not the store is formula-aware. 
+Stores that aren't formula-aware would only persist those terms core to the 
+RDF Model, and those that are formula-aware would be able to persist the N3 
+extensions as well. However, utility terms that only serve the purpose for 
+matching nodes by term-patterns probably will only be terms and not nodes.
+
+
 
 BNodes
 ======

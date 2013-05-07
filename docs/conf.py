@@ -110,7 +110,6 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
 # Sphinx are currently 'default' and 'sphinxdoc'.
 html_theme = 'armstrong'
-html_theme_path = ["_themes", ]
 
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -119,7 +118,7 @@ html_theme_path = ["_themes", ]
 #html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = []
+html_theme_path = ["_themes", ]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -216,5 +215,6 @@ latex_documents = [
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'python': ('http://docs.python.org/3.2', None),
-					   'rdfextras': ('http://rdfextras.readthedocs.org/en/latest/', None)}
+intersphinx_mapping = {
+    'python': ('http://docs.python.org/3.2', None),
+}

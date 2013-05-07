@@ -450,7 +450,7 @@ div.topic {
 
 table {
     border-collapse: collapse;
-    margin: 0 -0.5em 0 -0.5em;
+    margin: 0 -0.5em 0 0;
 }
 
 table td, table th {

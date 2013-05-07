@@ -1,3 +1,9 @@
+"""
+SPARQL 1.1 Parser
+
+based on pyparsing
+"""
+
 import sys
 import re
 

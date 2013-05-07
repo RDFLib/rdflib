@@ -1,29 +1,34 @@
-
-__version__ = "0.2-dev"
-
-
 """
-If true, using FROM <uri> and FROM NAMED <uri>
-will load/parse more data
+SPARQL implementation for RDFLib
 """
+
+
 SPARQL_LOAD_GRAPHS = True
+"""
+If True, using FROM <uri> and FROM NAMED <uri>
+will load/parse more data 
+"""
 
+
+SPARQL_DEFAULT_GRAPH_UNION = True
 """
 If True - the default graph in the RDF Dataset is the union of all
 named graphs (like RDFLib's ConjunctiveGraph)
 """
-SPARQL_DEFAULT_GRAPH_UNION = True
 
+
+CUSTOM_EVALS = {}
 """
 Custom evaluation functions
 
-These must be functions taking ctx, part
-and returning False if they cannot handle a certain part
+These must be functions taking (ctx, part) and raise
+NotImplementedError if they cannot handle a certain part
 """
+
 
 PLUGIN_ENTRY_POINT = 'rdf.plugins.sparqleval'
 
-CUSTOM_EVALS = {}
+
 
 from . import parser
 from . import operators

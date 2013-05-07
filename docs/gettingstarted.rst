@@ -1,8 +1,8 @@
 .. _gettingstarted:
 
-===========================
-Getting started with RDFLib
-===========================
+===============================
+Getting started with ``RDFLib``
+===============================
 
 Installation
 ============

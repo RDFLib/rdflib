@@ -1714,6 +1714,12 @@ def hexify(ustr):
 
 class TurtleParser(Parser):
 
+    """
+    An RDFLib parser for Turtle
+    
+    See http://www.w3.org/TR/turtle/ 
+    """
+
     def __init__(self):
         pass
 
@@ -1737,6 +1743,13 @@ class TurtleParser(Parser):
 
 
 class N3Parser(TurtleParser):
+
+    """
+    An RDFLib parser for Notation3 
+
+    See http://www.w3.org/DesignIssues/Notation3.html
+
+    """
 
     def __init__(self):
         pass

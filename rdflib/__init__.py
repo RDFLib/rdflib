@@ -61,6 +61,8 @@ import logging
 _LOGGER = logging.getLogger("rdflib")
 _LOGGER.info("RDFLib Version: %s" % __version__)
 
+
+NORMALIZE_LITERALS = True
 """
 If True - Literals lexical forms are normalized when created.
 I.e. the lexical forms is parsed according to data-type, then the
@@ -80,8 +82,9 @@ created after that time, previously created literals will remain
 (un)normalized.
 
 """
-NORMALIZE_LITERALS = True
 
+
+DAWG_LITERAL_COLLATION = False
 """
 DAWG_LITERAL_COLLATION determines how literals are ordered or compared
 to each other.
@@ -101,7 +104,6 @@ datatype URI
 In particular, this determines how the rich comparison operators for
 Literal work, eq, __neq__, __lt__, etc.
 """
-DAWG_LITERAL_COLLATION = False
 
 from rdflib.term import (
     URIRef, BNode, Literal, Variable)
