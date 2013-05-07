@@ -95,6 +95,7 @@ For developers
 
    univrdfstore
    persisting_n3_terms
+   faq
    Documentation notes <docs>
 
 
