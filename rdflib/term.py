@@ -216,29 +216,6 @@ class URIRef(Identifier):
     def n3(self):
         return "<%s>" % self
 
-    def concrete(self):
-        warnings.warn("URIRef.concrete is deprecated.",
-                      category=DeprecationWarning, stacklevel=2)
-        if "#" in self:
-            return URIRef("/".join(self.rsplit("#", 1)))
-        else:
-            return self
-
-    def abstract(self):
-        warnings.warn("URIRef.abstract is deprecated.",
-                      category=DeprecationWarning, stacklevel=2)
-        if "#" not in self:
-            scheme, netloc, path, params, query, fragment = urlparse(self)
-            if path:
-                return URIRef("#".join(self.rsplit("/", 1)))
-            else:
-                if not self.endswith("#"):
-                    return URIRef("%s#" % self)
-                else:
-                    return self
-        else:
-            return self
-
     def defrag(self):
         if "#" in self:
             url, frag = urldefrag(self)
