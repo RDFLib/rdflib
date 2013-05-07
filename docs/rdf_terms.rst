@@ -6,7 +6,7 @@ RDF terms in rdflib
 
 Terms are the kinds of objects that can appear in a quoted/asserted triples. Those that are part of core  RDF concepts are: ``Blank Node``, ``URI Reference`` and ``Literal``, the latter consisting of a literal value and either a `datatype <http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/#built-in-datatypes>`_ or an `rfc3066 <http://tools.ietf.org/html/rfc3066>`_ language tag.
 
-All terms in ``RDFLib`` are sub-classes of the :class:`rdflib.term.Identifier` class.
+All terms in RDFLib are sub-classes of the :class:`rdflib.term.Identifier` class.
 
 Nodes are a subset of the Terms that the underlying store actually persists.
 The set of such Terms depends on whether or not the store is formula-aware. 
@@ -145,7 +145,7 @@ package).
 
 Maps WXS datatyped Literals to Python.  This mapping is used by the :meth:`toPython` method defined on all Literal instances.
 
-.. image:: /_static/datatype-hierarchy.gif
+.. image:: /_static/datatype_hierarchy.png
    :alt: datatype hierarchy
    :align: center
    :width: 629

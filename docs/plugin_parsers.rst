@@ -4,7 +4,7 @@
 Plugin parsers
 ==============
 
-These serializers are available in default ``RDFLib``, you can use them by 
+These serializers are available in default RDFLib, you can use them by 
 passing the name to graph's :meth:`~rdflib.graph.Graph.parse` method: 
 
 .. code-block:: python

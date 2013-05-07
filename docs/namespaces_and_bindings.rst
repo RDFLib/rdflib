@@ -4,7 +4,7 @@
 Namespaces and Bindings
 =======================
 
-``RDFLib`` provides several short-cuts to working with many URIs in the same namespace. 
+RDFLib provides several short-cuts to working with many URIs in the same namespace. 
 
 The :mod:`rdflib.namespace` defines the :class:`rdflib.namespace.Namespace` class which lets you easily create URIs in a namespace: 
 
@@ -19,7 +19,7 @@ The :mod:`rdflib.namespace` defines the :class:`rdflib.namespace.Namespace` clas
 
 The ``namespace`` module also defines many common namespaces such as RDF, RDFS, OWL, FOAF, SKOS, etc. 
 
-Namespaces can also be associated with prefixes, in a :class:`rdflib.namespace.NamespaceManager`, i.e. using ``foaf`` for ``http://xmlns.com/foaf/0.1/``. Each ``RDFLib`` graph has a :attr:`rdflib.graph.Graph:namespace_manager` that keeps a list of namespace to prefix mappings. The namespace manager is populated when reading in RDF, and these prefixes are used when serialising RDF, or when parsing SPARQL queries. Additional prefixes can be bound with the :meth:`rdflib.graph.bind` method.
+Namespaces can also be associated with prefixes, in a :class:`rdflib.namespace.NamespaceManager`, i.e. using ``foaf`` for ``http://xmlns.com/foaf/0.1/``. Each RDFLib graph has a :attr:`rdflib.graph.Graph:namespace_manager` that keeps a list of namespace to prefix mappings. The namespace manager is populated when reading in RDF, and these prefixes are used when serialising RDF, or when parsing SPARQL queries. Additional prefixes can be bound with the :meth:`rdflib.graph.bind` method.
 
 
 Namespaces in SPARQL Queries

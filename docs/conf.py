@@ -193,7 +193,7 @@ htmlhelp_basename = 'rdflibdoc'
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
   ('index', 'rdflib.tex', u'rdflib Documentation',
-   u'Daniel Krech', 'manual'),
+   u'RDFLib Team', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

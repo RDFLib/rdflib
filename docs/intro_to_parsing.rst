@@ -1,7 +1,7 @@
-.. _intro_to_parsing_graphs: Parsing RDF
+.. _intro_to_parsing: Parsing RDF
 
 ==================================
-Parsing RDF into ``RDFLib`` graphs
+Parsing RDF into RDFLib graphs
 ==================================
 
 Reading an NT file
@@ -35,7 +35,7 @@ In an interactive python interpreter, try this:
      rdflib.term.URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
      rdflib.term.URIRef('http://xmlns.com/foaf/0.1/Person'))
 
-The final lines show how ``RDFLib`` represents the two statements in the file. The statements themselves are just length-3 tuples; and the subjects, predicates, and objects are all rdflib types.
+The final lines show how RDFLib represents the two statements in the file. The statements themselves are just length-3 tuples; and the subjects, predicates, and objects are all rdflib types.
 
 Reading remote graphs
 ---------------------

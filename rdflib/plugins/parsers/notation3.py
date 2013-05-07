@@ -21,7 +21,7 @@ License: W3C Software License
 http://www.w3.org/Consortium/Legal/copyright-software
 
 Modified by Sean B. Palmer
-Copyright 2007, Sean B. Palmer. \u32E1
+Copyright 2007, Sean B. Palmer. 
 
 Modified to work with rdflib by Gunnar Aastrand Grimnes
 Copyright 2010, Gunnar A. Grimnes

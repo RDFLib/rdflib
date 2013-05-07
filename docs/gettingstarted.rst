@@ -1,7 +1,7 @@
 .. _gettingstarted:
 
 ===============================
-Getting started with ``RDFLib``
+Getting started with RDFLib
 ===============================
 
 Installation
@@ -9,7 +9,7 @@ Installation
 
 RDFLib is open source and is maintained in a 
 `GitHub <http://github.com/RDFLib/rdflib/>`_ repository. RDFLib releases, current and previous 
-are listed on `PyPi <pypi.python.org/pypi/rdflib/>`_
+are listed on `PyPi <http://pypi.python.org/pypi/rdflib/>`_
 
 The best way to install RDFLib is to use easy_install or pip:
 

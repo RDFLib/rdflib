@@ -1,7 +1,7 @@
 .. _rdflib_graph: Navigating Graphs
 
 ============================
-Navigating ``RDFLib`` Graphs
+Navigating RDFLib Graphs
 ============================
 .. module rdflib.graph
 
@@ -18,7 +18,7 @@ The :class:`~rdflib.graph.Graph` class
     :members:
     :noindex:
 
-Working with ``RDFLib`` graphs
+Working with RDFLib graphs
 -------------------------------
 .. automodule:: rdflib.graph
 

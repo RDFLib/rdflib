@@ -1,13 +1,13 @@
 .. _intro_to_using_sparql: Querying with SPARQL
 
 ============================
-SPARQL Queries in ``RDFLib``
+SPARQL Queries in RDFLib
 ============================
 
 Create an Rdflib Graph
 ^^^^^^^^^^^^^^^^^^^^^^
 
-You might parse some files into a new graph (see `Introduction to parsing <intro_to_parsing_graphs>`_) or open an on-disk rdflib store.
+You might parse some files into a new graph (see :doc:`Introduction to parsing <intro_to_parsing>`) or open an on-disk rdflib store.
 
 .. code-block:: python
 
@@ -28,7 +28,7 @@ LiveJournal produces FOAF data for their users, but they seem to use ``foaf:memb
 Run a Query
 ^^^^^^^^^^^
 
-The ``RDFLib`` comes with an implementation of the `SPARQL 1.1 Query <http://www.w3.org/TR/sparql11-query/>`_ and `SPARQL 1.1 Update <http://www.w3.org/TR/sparql11-update/>`_ languages. 
+The RDFLib comes with an implementation of the `SPARQL 1.1 Query <http://www.w3.org/TR/sparql11-query/>`_ and `SPARQL 1.1 Update <http://www.w3.org/TR/sparql11-update/>`_ languages. 
 
 Queries can be evaluated against a graph with the :meth:`rdflib.graph.Graph.query` method, and updates with :meth:`rdflib.graph.Graph.update`. 
 
@@ -69,7 +69,7 @@ Alternatively, the values can be accessed by variable name, either as attributes
 Prepared Queries
 ^^^^^^^^^^^^^^^^
 
-``RDFLib`` lets you *prepare* queries before execution, this saves re-parsing and translating the query into SPARQL Algebra each time. 
+RDFLib lets you *prepare* queries before execution, this saves re-parsing and translating the query into SPARQL Algebra each time. 
 
 The method :meth:`rdflib.plugins.sparql.prepareQuery` takes a query as a string and will return a :class:`rdflib.plugins.sparql.sparql.Query` object. This can then be passed to the :meth:`rdflib.graph.Graph.query` method. 
 

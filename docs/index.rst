@@ -7,7 +7,7 @@ rdflib |release|
 Introduction
 ============
 
-RDFLib is a pure Python package work working with `RDF <http://www.w3.org/RDF/>`_. ``RDFLib`` contains most things you need to work with RDF, including: 
+RDFLib is a pure Python package work working with `RDF <http://www.w3.org/RDF/>`_. RDFLib contains most things you need to work with RDF, including: 
 
 * parsers and serializers for RDF/XML, N3, NTriples, N-Quads, Turtle, TriX, RDFa and Microdata.
 
@@ -20,7 +20,7 @@ RDFLib is a pure Python package work working with `RDF <http://www.w3.org/RDF/>`
 Getting started
 ---------------
 
-If you never used ``RDFLib``, click through these
+If you never used RDFLib, click through these
 
 .. toctree::
    :maxdepth: 1
@@ -52,7 +52,7 @@ Reference
 Plugins
 ^^^^^^^
 
-Many parts of ``RDFLib`` are extensible with plugins through `setuptools entry-points <http://pythonhosted.org/distribute/setuptools.html#dynamic-discovery-of-services-and-plugins>`_. These pages list the plugins included in ``RDFLib`` core.  
+Many parts of RDFLib are extensible with plugins through `setuptools entry-points <http://pythonhosted.org/distribute/setuptools.html#dynamic-discovery-of-services-and-plugins>`_. These pages list the plugins included in RDFLib core.  
 
 .. toctree::
    :maxdepth: 1
@@ -77,11 +77,11 @@ API docs
 Plugins
 =======
 
-The package defines a plugin interface for parsers, stores, and serializers that other packages can use to implement parsers, stores, and serializers that will plug into the ``RDFLib`` package.
+The package defines a plugin interface for parsers, stores, and serializers that other packages can use to implement parsers, stores, and serializers that will plug into the RDFLib package.
 
 The diagram below describes the current set of plugins that are either built in to rdflib or are available in extension projects:
 
-.. image:: /_static/plugins-diagram.svg
+.. image:: /_static/plugins-diagram.*
    :alt: rdflib plugin "architecture"
    :width: 90%
 
@@ -94,7 +94,7 @@ For developers
 
    univrdfstore
    persisting_n3_terms
-   Documentation notes <apidocs>
+   Documentation notes <docs>
 
 
 

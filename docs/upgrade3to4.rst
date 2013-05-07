@@ -2,7 +2,7 @@
 Upgrading from RDFLib version 3 to version 4
 ============================================
 
-``RDFLib`` version 4.0 introduced a small number of backwards compatible changes that you should know about when porting code from version 3 or earlier.
+RDFLib version 4.0 introduced a small number of backwards compatible changes that you should know about when porting code from version 3 or earlier.
 
 SPARQL and SPARQLStore are now included in core
 -----------------------------------------------
