@@ -17,6 +17,10 @@ RDFLib is a pure Python package work working with `RDF <http://www.w3.org/RDF/>`
 
 * a SPARQL 1.1 implementation - supporting SPARQL 1.1 Queries and Update statements. 
 
+Getting started:
+----------------
+
+If you never used rdflib, click through these
 
 .. toctree::
    :maxdepth: 1
@@ -24,19 +28,28 @@ RDFLib is a pure Python package work working with `RDF <http://www.w3.org/RDF/>`
    gettingstarted
    intro_to_graphs
    using_graphs
-   rdf_terms
-   namespaces_and_bindings
    intro_to_sparql
 
+In depth: 
+---------
+
+.. toctree::
+   :maxdepth: 1
+
+   rdf_terms
+   namespaces_and_bindings
    persistence
 
-   howto
    upgrade3to4
+
+   howto
    assorted_examples
+
+Reference
+---------
 
    plugin_parsers
    plugin_serializers
-
    
    Module documentation <modules/index>
 
@@ -52,16 +65,8 @@ The diagram below describes the current set of plugins that are either built in 
    :width: 90%
 
 
-API Documentation
-=================
-
-    rdflib has epydoc-generated `API Documentation`__
-
-.. __: ./_static/api/index.html
-
-
-Additional discussions / notes
-==============================
+For developers
+==============
 
 .. toctree::
    :maxdepth: 2
