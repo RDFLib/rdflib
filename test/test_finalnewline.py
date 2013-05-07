@@ -23,7 +23,7 @@ def testFinalNewline():
 
     failed = set()
     for p in rdflib.plugin.plugins(None, rdflib.plugin.Serializer):
-        if p.name not in ( 'nquads', 'trix' ):
+        if p.name not in ( 'application/n-quads', 'nquads', 'trix' ):
             v = graph.serialize(format=p.name)
             lines = v.split(b("\n"))
             if b("\n") not in v or (lines[-1]!=b('')):
