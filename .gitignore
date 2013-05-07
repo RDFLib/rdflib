@@ -2,7 +2,6 @@ RDFLib.sublime-project
 /docs/_build/
 nosetests.xml
 RDFLib.sublime-workspace
-/docs/_static/
 *.egg-info/
 coverage/
 dist/
