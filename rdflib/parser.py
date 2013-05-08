@@ -107,13 +107,10 @@ class URLInputSource(InputSource):
 
 
 class FileInputSource(InputSource):
-    """
-    TODO:
-    """
 
     def __init__(self, file):
         base = urljoin("file:", pathname2url(os.getcwd()))
-        system_id = URIRef(file.name, base=base)
+        system_id = URIRef(urljoin("file:", pathname2url(file.name)), base=base)
         super(FileInputSource, self).__init__(system_id)
         self.file = file
         self.setByteStream(file)
