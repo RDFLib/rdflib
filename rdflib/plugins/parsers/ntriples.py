@@ -164,7 +164,8 @@ class NTriplesParser(object):
             else:
                 buffer = self.file.read(bufsiz)
                 if not buffer and not self.buffer.isspace():
-                    raise ParseError("EOF in line")
+                    # Last line does not need to be terminated with a newline
+                    buffer += b("\n")
                 elif not buffer:
                     return None
                 self.buffer += buffer
