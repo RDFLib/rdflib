@@ -9,35 +9,43 @@ http://www.w3.org/TR/sparql11-query/#propertypaths
 
 In SPARQL the syntax is as follows:
 
-
-iri     - An IRI. A path of length one.
-
-^elt        - Inverse path (object to subject).
-
-elt1 / elt2 - A sequence path of elt1 followed by elt2.
-
-elt1 | elt2 - A alternative path of elt1 or elt2 (all possibilities are tried).
-
-elt*        - A path that connects the subject and object of the path by zero
-    or more matches of elt.
-
-elt+        - A path that connects the subject and object of the path by one
-    or more matches of elt.
-
-elt?        - A path that connects the subject and object of the path by zero
-    or one matches of elt.
-
-!iri or !(iri1| ...|irin) - Negated property set. An IRI which is not one of
-    irii. !iri is short for !(iri).
-
-!^iri or !(^iri1| ...|^irin) -  Negated property set where the excluded matches
-    are based on reversed path. That is, not one of iri1...irin as
-    reverse paths. !^iri is short for !(^iri).
-
-!(iri1| ...|irij|^irij+1| ...|^irin) - A combination of forward and reverse
-    properties in a negated property set.
-(elt)       A group path elt, brackets control precedence.
-
++--------------------+-------------------------------------------------+
+|Syntax              | Matches                                         |
++====================+=================================================+
+|iri                 | An IRI. A path of length one.                   |
++--------------------+-------------------------------------------------+
+|^elt                | Inverse path (object to subject).               |
++--------------------+-------------------------------------------------+
+|elt1 / elt2         | A sequence path of elt1 followed by elt2.       |
++--------------------+-------------------------------------------------+
+|elt1 | elt2         | A alternative path of elt1 or elt2              |
+|                    | (all possibilities are tried).                  |
++--------------------+-------------------------------------------------+
+|elt*                | A path that connects the subject and object     |
+|                    | of the path by zero or more matches of elt.     |
++--------------------+-------------------------------------------------+
+|elt+                | A path that connects the subject and object     |
+|                    | of the path by one or more matches of elt.      |
++--------------------+-------------------------------------------------+
+|elt?                | A path that connects the subject and object     |
+|                    | of the path by zero or one matches of elt.      |
++--------------------+-------------------------------------------------+
+|!iri or             | Negated property set. An IRI which is not one of|
+|!(iri\ :sub:`1`\ |  | iri\ :sub:`1`...iri\ :sub:`n`.                  |
+|... |iri\ :sub:`n`) | !iri is short for !(iri).                       |
++--------------------+-------------------------------------------------+
+|!^iri or            | Negated property set where the excluded matches |
+|!(^iri\ :sub:`1`\ | | are based on reversed path. That is, not one of |
+|... |^iri\ :sub:`n`)| iri\ :sub:`1`...iri\ :sub:`n` as reverse paths. |
+|                    | !^iri is short for !(^iri).                     |
++--------------------+-------------------------------------------------+
+|!(iri\ :sub:`1`\ |  | A combination of forward and reverse            |
+|...|iri\ :sub:`j`\ || properties in a negated property set.           |
+|^iri\ :sub:`j+1`\ | |                                                 |
+|... |^iri\ :sub:`n`)|                                                 |
++--------------------+-------------------------------------------------+
+|(elt)               | A group path elt, brackets control precedence.  |
++--------------------+-------------------------------------------------+
 
 This module is used internally be the SPARQL engine, but they property paths
 can also be used to query RDFLib Graphs directly.
@@ -91,8 +99,8 @@ True
 Graph generator functions, triples, subjects, objects, etc. :
 
 >>> list(g.objects(e.c, (e.p3*OneOrMore)/e.p2)) # doctest: +NORMALIZE_WHITESPACE
-[rdflib.term.URIRef(u'ex:j'), rdflib.term.URIRef(u'ex:g'), 
-    rdflib.term.URIRef(u'ex:f')]
+[rdflib.term.URIRef(%(u)s'ex:j'), rdflib.term.URIRef(%(u)s'ex:g'), 
+    rdflib.term.URIRef(%(u)s'ex:f')]
 
 A more complete set of tests:
 
@@ -122,27 +130,27 @@ True
 True
 
 >>> list(evalPath(g, (e.q, e.px*OneOrMore, None)))
-[(rdflib.term.URIRef(u'ex:q'), rdflib.term.URIRef(u'ex:q'))]
+[(rdflib.term.URIRef(%(u)s'ex:q'), rdflib.term.URIRef(%(u)s'ex:q'))]
 
 >>> list(evalPath(g, (None, e.p1|e.p2, e.c)))
-[(rdflib.term.URIRef(u'ex:a'), rdflib.term.URIRef(u'ex:c'))]
+[(rdflib.term.URIRef(%(u)s'ex:a'), rdflib.term.URIRef(%(u)s'ex:c'))]
 
 >>> list(evalPath(g, (None, ~e.p1, e.a))) == [ (e.c, e.a) ]
 True
 >>> list(evalPath(g, (None, e.p1*ZeroOrOne, e.c))) # doctest: +NORMALIZE_WHITESPACE
-[(rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:c')),
- (rdflib.term.URIRef(u'ex:a'), rdflib.term.URIRef(u'ex:c'))]
+[(rdflib.term.URIRef(%(u)s'ex:c'), rdflib.term.URIRef(%(u)s'ex:c')),
+ (rdflib.term.URIRef(%(u)s'ex:a'), rdflib.term.URIRef(%(u)s'ex:c'))]
 
 >>> list(evalPath(g, (None, e.p3*OneOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
-[(rdflib.term.URIRef(u'ex:h'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:a'))]
+[(rdflib.term.URIRef(%(u)s'ex:h'), rdflib.term.URIRef(%(u)s'ex:a')),
+ (rdflib.term.URIRef(%(u)s'ex:g'), rdflib.term.URIRef(%(u)s'ex:a')),
+ (rdflib.term.URIRef(%(u)s'ex:c'), rdflib.term.URIRef(%(u)s'ex:a'))]
 
 >>> list(evalPath(g, (None, e.p3*ZeroOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
-[(rdflib.term.URIRef(u'ex:a'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:h'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:a'))]
+[(rdflib.term.URIRef(%(u)s'ex:a'), rdflib.term.URIRef(%(u)s'ex:a')),
+ (rdflib.term.URIRef(%(u)s'ex:h'), rdflib.term.URIRef(%(u)s'ex:a')),
+ (rdflib.term.URIRef(%(u)s'ex:g'), rdflib.term.URIRef(%(u)s'ex:a')),
+ (rdflib.term.URIRef(%(u)s'ex:c'), rdflib.term.URIRef(%(u)s'ex:a'))]
 
 >>> list(evalPath(g, (None, -e.p1, e.f))) == [(e.a, e.f)]
 True
@@ -156,19 +164,19 @@ True
 True
 
 >>> list(evalPath(g, (e.q, e.px*OneOrMore, None)))
-[(rdflib.term.URIRef(u'ex:q'), rdflib.term.URIRef(u'ex:q'))]
+[(rdflib.term.URIRef(%(u)s'ex:q'), rdflib.term.URIRef(%(u)s'ex:q'))]
 
 >>> list(evalPath(g, (e.c, (e.p2|e.p3)*ZeroOrMore, e.j)))
-[(rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:j'))]
+[(rdflib.term.URIRef(%(u)s'ex:c'), rdflib.term.URIRef(%(u)s'ex:j'))]
 
 No vars specified
 >>> sorted(list(evalPath(g, (None, e.p3*OneOrMore, None)))) #doctest: +NORMALIZE_WHITESPACE
-[(rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:g')),
- (rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:h')),
- (rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:h')),
- (rdflib.term.URIRef(u'ex:h'), rdflib.term.URIRef(u'ex:a'))]
+[(rdflib.term.URIRef(%(u)s'ex:c'), rdflib.term.URIRef(%(u)s'ex:a')),
+ (rdflib.term.URIRef(%(u)s'ex:c'), rdflib.term.URIRef(%(u)s'ex:g')),
+ (rdflib.term.URIRef(%(u)s'ex:c'), rdflib.term.URIRef(%(u)s'ex:h')),
+ (rdflib.term.URIRef(%(u)s'ex:g'), rdflib.term.URIRef(%(u)s'ex:a')),
+ (rdflib.term.URIRef(%(u)s'ex:g'), rdflib.term.URIRef(%(u)s'ex:h')),
+ (rdflib.term.URIRef(%(u)s'ex:h'), rdflib.term.URIRef(%(u)s'ex:a'))]
 
 
 

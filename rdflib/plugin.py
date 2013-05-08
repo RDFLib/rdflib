@@ -21,8 +21,7 @@ following to your setup::
 See the `setuptools dynamic discovery of services and plugins`__ for more
 information.
 
-.. __: http://peak.telecommunity.com/DevCenter/setuptools
-#dynamic-discovery-of-services-and-plugins
+.. __: http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
 
 """
 
