@@ -53,6 +53,19 @@ class TestNew(unittest.TestCase):
         self.assertRaises(TypeError,
            Literal, 'foo', lang='en', datatype=URIRef("http://example.com/"))
 
+    def testFromOtherLiteral(self): 
+        l = Literal(1)
+        l2 = Literal(l)
+        self.assertTrue(isinstance(l.value, int))
+        self.assertTrue(isinstance(l2.value, int))
+
+        # change datatype
+        l = Literal("1")
+        l2 = Literal(l, datatype=rdflib.XSD.integer)
+        self.assertTrue(isinstance(l2.value, long))
+
+        
+
     def testDatatypeGetsAutoURIRefConversion(self):
         # drewp disapproves of this behavior, but it should be
         # represented in the tests

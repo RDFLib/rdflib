@@ -528,20 +528,21 @@ class Literal(Identifier):
             datatype = URIRef(datatype)
 
         value = None
-        if isinstance(lexical_or_value, Literal):  # create from another Literal instance
-            datatype = datatype or lexical_or_value.datatype
+        if isinstance(lexical_or_value, Literal):  
+            # create from another Literal instance
+
             lang = lang or lexical_or_value.language
-            value = lexical_or_value.value
+            if datatype: 
+                # override datatype
+                value = _castLexicalToPython(lexical_or_value, datatype)
+            else: 
+                datatype = lexical_or_value.datatype
+                value = lexical_or_value.value
 
-        if value == None and isinstance(lexical_or_value, basestring):
-
-            if datatype:
-                convFunc = _toPythonMapping.get(datatype, None)
-                if convFunc:
-                    try:
-                        value = convFunc(lexical_or_value)
-                    except:
-                        pass  # not a valid lexical representation for this dt
+        elif isinstance(lexical_or_value, basestring):
+                # passed a string 
+                # try parsing lexical form of datatyped literal
+                value = _castLexicalToPython(lexical_or_value, datatype) 
 
                 if value is not None and normalize:
                     _value, _datatype = _castPythonToLiteral(value)
@@ -549,13 +550,16 @@ class Literal(Identifier):
                         lexical_or_value = _value
 
         else:
+            # passed some python object 
             value = lexical_or_value
             _value, _datatype = _castPythonToLiteral(lexical_or_value)
+
             datatype = datatype or _datatype
             if _value is not None:
                 lexical_or_value = _value
             if datatype:
                 lang = None
+
 
         if py3compat.PY3 and isinstance(lexical_or_value, bytes):
             lexical_or_value = lexical_or_value.decode('utf-8')
@@ -1393,6 +1397,7 @@ _PythonToXSD = [
 ]
 
 XSDToPython = {
+    None : None, # plain literals map directly to value space
     URIRef(_XSD_PFX + 'time'): parse_time,
     URIRef(_XSD_PFX + 'date'): parse_date,
     URIRef(_XSD_PFX + 'dateTime'): parse_datetime,
@@ -1428,6 +1433,27 @@ _toPythonMapping = {}
 
 _toPythonMapping.update(XSDToPython)
 
+def _castLexicalToPython(lexical, datatype):
+    """
+    Map a lexical form to the value-space for the given datatype
+    :returns: a python object for the value or ``None``
+    """
+    convFunc = _toPythonMapping.get(datatype, False)
+    if convFunc:
+        try:
+            return convFunc(lexical)
+        except:
+            # not a valid lexical representation for this dt
+            return None
+    elif convFunc is None: 
+        # no conv func means 1-1 lexical<->value-space mapping
+        try: 
+            return unicode(lexical)
+        except UnicodeDecodeError: 
+            return unicode(lexical, 'utf-8')
+    else: 
+        # no convFunc - unknown data-type
+        return None
 
 def bind(datatype, pythontype, constructor=None, lexicalizer=None):
     """
