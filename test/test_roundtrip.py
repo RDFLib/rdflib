@@ -26,6 +26,7 @@ tests roundtripping through rdf/xml with only the literals-02 file
 
 SKIP = [
     ('xml', 'test/nt/qname-02.nt'),  # uses a property that cannot be qname'd
+    ('application/rdf+xml', 'test/nt/qname-02.nt'),  # uses a property that cannot be qname'd
 ]
 
 
