@@ -76,6 +76,7 @@ def test_cases():
         formats = parsers.intersection(serializers)
 
     for testfmt in formats:
+        if "/" in format: continue # skip double testing
         for f, infmt in all_nt_files():
             if (testfmt, f) not in SKIP:
                 yield roundtrip, (infmt, testfmt, f)

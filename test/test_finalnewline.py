@@ -1,5 +1,5 @@
 
-from rdflib import Graph, URIRef
+from rdflib import ConjunctiveGraph, URIRef
 import rdflib.plugin
 
 from rdflib.py3compat import b
@@ -16,18 +16,17 @@ def testFinalNewline():
             'Testing under pypy and Jython2.5 fails to detect that ' + \
             'IOMemory is a context_aware store')
 
-    graph=Graph()
+    graph=ConjunctiveGraph()
     graph.add((URIRef("http://ex.org/a"),
                URIRef("http://ex.org/b"),
                URIRef("http://ex.org/c")))
 
     failed = set()
     for p in rdflib.plugin.plugins(None, rdflib.plugin.Serializer):
-        if p.name not in ( 'application/n-quads', 'nquads', 'trix' ):
-            v = graph.serialize(format=p.name)
-            lines = v.split(b("\n"))
-            if b("\n") not in v or (lines[-1]!=b('')):
-                failed.add(p.name)
+        v = graph.serialize(format=p.name)
+        lines = v.split(b("\n"))
+        if b("\n") not in v or (lines[-1]!=b('')):
+            failed.add(p.name)
     assert len(failed)==0, "No final newline for formats: '%s'" % failed
 
 if __name__ == "__main__":

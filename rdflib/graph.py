@@ -1023,9 +1023,6 @@ class Graph(Node):
 
         """
 
-        if format == "xml":
-            # warn... backward compat.
-            format = "application/rdf+xml"
         source = create_input_source(source=source, publicID=publicID,
                                      location=location, file=file,
                                      data=data, format=format)
