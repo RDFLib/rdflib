@@ -295,7 +295,7 @@ class ResultParser(object):
     def __init__(self):
         pass
 
-    def parse(self, source):
+    def parse(self, source, **kwargs):
         """return a Result object"""
         pass  # abstract
 
@@ -305,6 +305,6 @@ class ResultSerializer(object):
     def __init__(self, result):
         self.result = result
 
-    def serialize(self, stream, encoding="utf-8"):
+    def serialize(self, stream, encoding="utf-8", **kwargs):
         """return a string properly serialized"""
         pass  # abstract

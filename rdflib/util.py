@@ -464,62 +464,6 @@ def get_tree(graph,
     return (mapper(root), sorted(tree, key=sortkey))
 
 
-def pprint_query_results(res, namespace_manager = None, stream = None):
-
-    """
-    return a text table of query results
-    """
-
-    def termString(t):
-        if t == None:
-            return "-"
-        if namespace_manager:
-            if isinstance(t, URIRef): 
-                return namespace_manager.normalizeUri(t)
-            elif isinstance(t, BNode): 
-                return t.n3()
-            elif isinstance(t, Literal): 
-                return t._literal_n3(qname_callback=namespace_manager.normalizeUri)
-        else: 
-            return t.n3()
-
-    def c(s, w):
-        """
-        center the string s in w wide string
-        """
-        h = (w - len(s)) // 2
-        return " " * h + s + " " * h
-
-    if res.type!='SELECT': 
-        raise Exception("Can only pretty print SELECT results!")
-
-    if not res:
-        return "(no results)\n"
-    else:
-        if stream: 
-            out = stream
-        else: 
-            out = StringIO()
-        # keys = r.vars
-        # for r in b:
-        #     keys.update(r.keys())
-
-        keys = sorted(res.vars)
-        maxlen = [0] * len(keys)
-        b = [[termString(r[k]) for k in keys] for r in res]
-        for r in b:
-            for i in range(len(keys)):
-                maxlen[i] = max(maxlen[i], 1 + len(r[i]))
-
-        out.write(
-            "|".join([c(k, maxlen[i]) for i, k in enumerate(keys)]) + "\n")
-        out.write("-" * sum(maxlen) + "\n")
-        for r in sorted(b):
-            out.write("|".join(
-                [t + " " * (i - len(t) - 1) for i, t in zip(maxlen, r)]) + "\n")
-
-        if not stream: 
-            return out.getvalue()
 
 
 def test():

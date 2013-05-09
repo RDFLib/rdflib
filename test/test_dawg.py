@@ -43,8 +43,6 @@ from rdflib.plugins.sparql.update import evalUpdate
 
 from rdflib.py3compat import decodeStringEscape
 
-from rdflib.util import pprint_query_results
-
 from nose.tools import nottest, eq_ as eq
 from nose import SkipTest
 
@@ -440,8 +438,8 @@ def query_test(t):
                     set(res),
                     set(res2)
                 ), 'Bindings do not match: \n%s\n!=\n%s' % (
-                    pprint_query_results(res, namespace_manager=g.namespace_manager),
-                    pprint_query_results(res2, namespace_manager=g.namespace_manager))
+                    res.serialize(format='txt', namespace_manager=g.namespace_manager),
+                    res2.serialize(format='txt', namespace_manager=g.namespace_manager))
             elif res.type == 'ASK':
                 eq(res.askAnswer,
                    res2.askAnswer, "Ask answer does not match: %r != %r" % (

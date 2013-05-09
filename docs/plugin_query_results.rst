@@ -1,7 +1,7 @@
-.. _plugin_query_results: Plugin Query Results
+.. _plugin_query_results: Plugin query results
 
 ====================
-Plugin Query Results
+Plugin query results
 ====================
 
 Plugins for reading and writing of (SPARQL) :class:`~rdflib.querye.QueryResult` - pass ``name`` to either :meth:`~rdflib.query.QueryResult.parse` or :meth:`~rdflib.query.QueryResult.serialize` 
@@ -27,5 +27,6 @@ Name Class
 ==== ========================================================================
 csv  :class:`~rdflib.plugins.sparql.results.csvresults.CSVResultSerializer`
 json :class:`~rdflib.plugins.sparql.results.jsonresults.JSONResultSerializer`
+txt  :class:`~rdflib.plugins.sparql.results.txtresults.TXTResultSerializer`
 xml  :class:`~rdflib.plugins.sparql.results.xmlresults.XMLResultSerializer`
 ==== ========================================================================

@@ -285,6 +285,9 @@ register(
     'xml', ResultSerializer,
     'rdflib.plugins.sparql.results.xmlresults', 'XMLResultSerializer')
 register(
+    'txt', ResultSerializer,
+    'rdflib.plugins.sparql.results.txtresults', 'TXTResultSerializer')
+register(
     'json', ResultSerializer,
     'rdflib.plugins.sparql.results.jsonresults', 'JSONResultSerializer')
 register(
