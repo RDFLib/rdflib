@@ -12,6 +12,7 @@ cls = sys.argv[1]
 p = {}
 
 for (name, kind), plugin in _plugins.items(): 
+    if "/" in name: continue # skip duplicate entries for mimetypes
     if cls == kind.__name__: 
         p[name]="%s.%s"%(plugin.module_path, plugin.class_name)
 

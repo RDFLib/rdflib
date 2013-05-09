@@ -195,6 +195,7 @@ def Builtin_ROUND(expr, ctx):
 
 def Builtin_REGEX(expr, ctx):
     """
+    http://www.w3.org/TR/sparql11-query/#func-regex
     Invokes the XPath fn:matches function to match text against a regular
     expression pattern.
     The regular expression language is defined in XQuery 1.0 and XPath 2.0
@@ -433,6 +434,9 @@ def Builtin_LANGMATCHES(e, ctx):
 
 
 def Builtin_NOW(e, ctx):
+    """
+    http://www.w3.org/TR/sparql11-query/#func-now
+    """
     return Literal(ctx.now)
 
 
@@ -462,14 +466,19 @@ def Builtin_MINUTES(e, ctx):
 
 
 def Builtin_SECONDS(e, ctx):
+    """
+    http://www.w3.org/TR/sparql11-query/#func-seconds
+    """
     d = datetime(e.arg)
     return Literal(d.second, datatype=XSD.decimal)
 
 
 def Builtin_TIMEZONE(e, ctx):
     """
-    Returns the timezone part of arg as an xsd:dayTimeDuration.
-    Raises an error if there is no timezone.
+    http://www.w3.org/TR/sparql11-query/#func-timezone
+
+    :returns: the timezone part of arg as an xsd:dayTimeDuration.
+    :raises: an error if there is no timezone.
     """
     dt = datetime(e.arg)
     if not dt.tzinfo:

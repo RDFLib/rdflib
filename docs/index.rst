@@ -31,8 +31,12 @@ If you never used RDFLib, click through these
    intro_to_graphs
    intro_to_sparql
 
+   RDFLib Examples <apidocs/examples>
+
 In depth
 --------
+
+If you already worked with RDF and need to know the peculiarities of RDFLib, these are for you. 
 
 .. toctree::
    :maxdepth: 1
@@ -49,6 +53,8 @@ In depth
 
 Reference
 ---------
+
+The nitty-gritty details of everything.
 
 Plugins
 ^^^^^^^
@@ -91,7 +97,7 @@ For developers
 ==============
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    univrdfstore
    persisting_n3_terms

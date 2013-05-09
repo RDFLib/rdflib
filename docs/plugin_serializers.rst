@@ -5,12 +5,13 @@ Plugin serializers
 ==================
 
 These serializers are available in default RDFLib, you can use them by 
-passing the name to a graph's :meth:`~rdflib.graph.Graph.serialize` method: 
-
-.. code-block:: python
+passing the name to a graph's :meth:`~rdflib.graph.Graph.serialize` method::
 
 	print graph.serialize(format='n3')
 
+It is also possible to pass a mime-type for the ``format`` parameter::
+    
+  graph.serialize(my_url, format='application/rdf+xml')
 
 ========== ===============================================================
 Name       Class                                                          

@@ -1,18 +1,21 @@
-.. _intro_to_parsing: Parsing RDF
+.. _intro_to_parsing: 
 
-==================================
-Parsing RDF into RDFLib graphs
-==================================
+======================
+Loading and saving RDF
+======================
 
 Reading an NT file
 -------------------
 
-RDF data has various syntaxes (``xml``, ``n3``, ``ntriples``, ``trix``, etc) that you might want to read. The simplest format is ``ntriples``. Create the file :file:`demo.nt` in the current directory with these two lines:
+RDF data has various syntaxes (``xml``, ``n3``, ``ntriples``, ``trix``, etc) that you might want to read. The simplest format is ``ntriples``, a line-based format. Create the file :file:`demo.nt` in the current directory with these two lines:
 
 .. code-block:: n3
 
     <http://bigasterisk.com/foaf.rdf#drewp> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .
     <http://bigasterisk.com/foaf.rdf#drewp> <http://example.com/says> "Hello world" .
+
+You need to tell RDFLib what format to parse, use the ``format`` keyword-parameter to :meth:`~rdflib.graph.Graph.parse`, you can pass either a mime-type or the name (a :doc:`list of available parsers <plugin_parsers>` is available).
+If you are not sure what format your file will be, you can use :func:`rdflib.util.guess_format` which will guess based on the file extension. 
 
 In an interactive python interpreter, try this:
 
@@ -50,101 +53,5 @@ Reading graphs from the net is just as easy:
 
 The format defaults to ``xml``, which is the common format for .rdf files you'll find on the net.
 
-Graphs as Iterators
--------------------
-
-RDFLib graphs also override :meth:`__iter__` in order to support iteration over the contained triples:
-
-.. code-block:: python
-
-    for subject,predicate,obj_ in someGraph:
-       assert (subject,predicate,obj_) in someGraph, "Iterator / Container Protocols are Broken!!"
-
-Set Operations on RDFLib Graphs 
--------------------------------
-
-:meth:`__iadd__` and :meth:`__isub__` are overridden to support adding and subtracting Graphs to/from each other (in place):
-
-* G1 += G1
-* G2 -= G2
-
-Basic Triple Matching
----------------------
-
-RDFLib graphs support basic triple pattern matching with a :meth:`triples` function.
-
-.. automethod:: rdflib.graph.Graph.triples
-    :noindex:
-
-This function is a generator of triples that match the pattern given by the arguments.  The arguments of these are RDF terms that restrict the triples that are returned.  Terms that are :data:`None` are treated as a wildcard.
-
-Managing Triples
-----------------
-
-Adding Triples
-^^^^^^^^^^^^^^
-Triples can be added either of two ways:
-
-Triples can be added with with the :meth:`parse` function.
-
-.. automethod:: rdflib.graph.Graph.parse
-    :noindex:
-
-The first argument can be a *source* of many kinds, but the most common is the serialization (in various formats: RDF/XML, Notation 3, NTriples of an RDF graph as a string.  The ``format`` parameter is one of ``n3``, ``xml``, or ``ntriples``.  ``publicID`` is the name of the graph into which the RDF serialization will be parsed.
-
-Triples can also be added with the :meth:`add` function: 
-
-.. automethod:: rdflib.graph.Graph.add
-    :noindex:
-
-Removing Triples
-^^^^^^^^^^^^^^^^
-
-Similarly, triples can be removed by a call to :meth:`remove`:
-
-.. automethod:: rdflib.graph.Graph.remove
-    :noindex:
-
-
-
-.. module:: rdflib.graph
-
-:class:`~rdflib.graph.Graph` methods for accessing triples
------------------------------------------------------------
-
-.. automethod:: rdflib.graph.Graph.add
-    :noindex:
-.. automethod:: rdflib.graph.Graph.set
-    :noindex:
-.. automethod:: rdflib.graph.Graph.label
-    :noindex:
-.. automethod:: rdflib.graph.Graph.preferredLabel
-    :noindex:
-.. automethod:: rdflib.graph.Graph.remove
-    :noindex:
-.. automethod:: rdflib.graph.Graph.triples
-    :noindex:
-.. automethod:: rdflib.graph.Graph.value
-    :noindex:
-.. automethod:: rdflib.graph.Graph.subjects
-    :noindex:
-.. automethod:: rdflib.graph.Graph.objects
-    :noindex:
-.. automethod:: rdflib.graph.Graph.predicates
-    :noindex:
-.. automethod:: rdflib.graph.Graph.subject_objects
-    :noindex:
-.. automethod:: rdflib.graph.Graph.subject_predicates
-    :noindex:
-.. automethod:: rdflib.graph.Graph.predicate_objects
-    :noindex:
-
-
-Full documentation
-------------------
-
-.. toctree::
-   :maxdepth: 2
-
-   intro_to_graphs
+RDFLib will also happily read RDF from any file-like object, i.e. anything with a ``.read`` method. 
 

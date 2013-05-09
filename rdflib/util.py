@@ -55,7 +55,7 @@ __all__ = [
     'list2set', 'first', 'uniq', 'more_than', 'to_term', 'from_n3',
     'date_time', 'parse_date_time', 'check_context', 'check_subject',
     'check_predicate', 'check_object', 'check_statement', 'check_pattern',
-    'guess_format', 'pprint_query_results', 'find_roots', 'get_tree']
+    'guess_format', 'find_roots', 'get_tree']
 
 
 def list2set(seq):

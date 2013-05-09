@@ -1,8 +1,8 @@
-.. _intro_to_using_sparql: Querying with SPARQL
+.. _intro_to_using_sparql: 
 
-============================
-SPARQL Queries in RDFLib
-============================
+====================
+Querying with SPARQL
+====================
 
 Create an Rdflib Graph
 ^^^^^^^^^^^^^^^^^^^^^^
