@@ -1035,8 +1035,8 @@ class Graph(Node):
                 return self.store.query(
                     query_object, initNs, initBindings,
                     self.context_aware
-                    and self.identifier
-                    or '__UNION__',
+                    and '__UNION__'
+                    or self.identifier,
                     **kwargs)
             except NotImplementedError:
                 pass  # store has no own implementation
