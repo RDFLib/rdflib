@@ -418,7 +418,7 @@ class BNode(Identifier):
 
 
 class Literal(Identifier):
-    doc = """
+    __doc__ = py3compat.format_doctest_out("""
     RDF Literal: http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
 
     The lexical value of the literal is the unicode object
@@ -500,8 +500,8 @@ class Literal(Identifier):
     NotImplemented
 
 
-    """
-    __doc__ = py3compat.format_doctest_out(doc)
+    """)
+    
 
     if not py3compat.PY3:
         __slots__ = ("language", "datatype", "value", "_language",
@@ -720,6 +720,7 @@ class Literal(Identifier):
         rdflib.term.Literal(%(u)s'0', datatype=rdflib.term.URIRef(%(u)s'http://www.w3.org/2001/XMLSchema#integer'))
 
         Not working:
+
         >>> ~(Literal("1"))
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>

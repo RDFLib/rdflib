@@ -169,7 +169,8 @@ True
 >>> list(evalPath(g, (e.c, (e.p2|e.p3)*ZeroOrMore, e.j)))
 [(rdflib.term.URIRef(%(u)s'ex:c'), rdflib.term.URIRef(%(u)s'ex:j'))]
 
-No vars specified
+No vars specified:
+
 >>> sorted(list(evalPath(g, (None, e.p3*OneOrMore, None)))) #doctest: +NORMALIZE_WHITESPACE
 [(rdflib.term.URIRef(%(u)s'ex:c'), rdflib.term.URIRef(%(u)s'ex:a')),
  (rdflib.term.URIRef(%(u)s'ex:c'), rdflib.term.URIRef(%(u)s'ex:g')),

@@ -306,8 +306,10 @@ class Graph(Node):
 
     def _set_namespace_manager(self, nm):
         self.__namespace_manager = nm
-    namespace_manager = property(
-        _get_namespace_manager, _set_namespace_manager)
+
+    namespace_manager = property(_get_namespace_manager, 
+                                 _set_namespace_manager, 
+                                 doc="this graph's namespace-manager")
 
     def __repr__(self):
         return "<Graph identifier=%s (%s)>" % (self.identifier, type(self))
@@ -686,10 +688,10 @@ class Graph(Node):
             return default
         return self.value(subject, RDFS.label, default=default, any=True)
 
-    # @py3compat.format_doctest_out
+    @py3compat.format_doctest_out
     def preferredLabel(self, subject, lang=None, default=None,
                        labelProperties=(SKOS.prefLabel, RDFS.label)):
-        __docs__ = """\
+        """
         Find the preferred label for subject.
 
         By default prefers skos:prefLabels over rdfs:labels. In case at least
@@ -704,46 +706,18 @@ class Graph(Node):
         >>> from rdflib.namespace import SKOS
         >>> from pprint import pprint
         >>> g = ConjunctiveGraph()
-        """
-        __py3dtsts__ = """\
-        >>> u = URIRef('http://example.com/foo')
+        >>> u = URIRef(%(u)s'http://example.com/foo')
         >>> g.add([u, RDFS.label, Literal('foo')])
         >>> g.add([u, RDFS.label, Literal('bar')])
         >>> pprint(sorted(g.preferredLabel(u)))
-        [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
-          rdflib.term.Literal('bar')),
-         (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
-          rdflib.term.Literal('foo'))]
+        [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2000/01/rdf-schema#label'),
+          rdflib.term.Literal(%(u)s'bar')),
+         (rdflib.term.URIRef(%(u)s'http://www.w3.org/2000/01/rdf-schema#label'),
+          rdflib.term.Literal(%(u)s'foo'))]
         >>> g.add([u, SKOS.prefLabel, Literal('bla')])
         >>> pprint(g.preferredLabel(u))
-        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal('bla'))]
-        >>> g.add([u, SKOS.prefLabel, Literal('blubb', lang='en')])
-        >>> pprint(sorted(g.preferredLabel(u)))
-        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal('blubb', lang='en')),
-         (rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal('bla'))]
-        >>> pprint(g.preferredLabel(u, lang=''))
-        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal('bla'))]
-        >>> pprint(g.preferredLabel(u, lang='en'))
-        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal('blubb', lang='en'))]
-        """
-        __py2dtsts__ = """\
-        >>> u = URIRef(u'http://example.com/foo')
-        >>> g.add([u, RDFS.label, Literal('foo')])
-        >>> g.add([u, RDFS.label, Literal('bar')])
-        >>> pprint(sorted(g.preferredLabel(u)))
-        [(rdflib.term.URIRef(u'http://www.w3.org/2000/01/rdf-schema#label'),
-          rdflib.term.Literal(u'bar')),
-         (rdflib.term.URIRef(u'http://www.w3.org/2000/01/rdf-schema#label'),
-          rdflib.term.Literal(u'foo'))]
-        >>> g.add([u, SKOS.prefLabel, Literal('bla')])
-        >>> pprint(g.preferredLabel(u))
-        [(rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(u'bla'))]
+        [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(%(u)s'bla'))]
         >>> g.add([u, SKOS.prefLabel, Literal('blubb', lang='en')])
         >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
         [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
@@ -754,12 +728,9 @@ class Graph(Node):
         [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal(%(u)s'bla'))]
         >>> pprint(g.preferredLabel(u, lang='en'))
-        [(rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(u'blubb', lang='en'))]
+        [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(%(u)s'blubb', lang='en'))]
         """
-
-        self.__doc__ = format_doctest_out(
-            __docs__ + __py3dtsts__ if py3compat.PY3 else __py2dtsts__)
 
         if default is None:
             default = []
@@ -1052,7 +1023,7 @@ class Graph(Node):
         if none are given, the namespaces from the graph's namespace manager
         are used. 
 
-        A rdflib.query.QueryResult object is returned
+        :returntype: rdflib.query.QueryResult
         
         """
 

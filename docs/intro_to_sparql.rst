@@ -4,26 +4,6 @@
 Querying with SPARQL
 ====================
 
-Create an Rdflib Graph
-^^^^^^^^^^^^^^^^^^^^^^
-
-You might parse some files into a new graph (see :doc:`Introduction to parsing <intro_to_parsing>`) or open an on-disk rdflib store.
-
-.. code-block:: python
-
-    from rdflib import Graph
-    g = Graph()
-    g.parse("http://bigasterisk.com/foaf.rdf")
-    g.parse("http://www.w3.org/People/Berners-Lee/card.rdf")
-
-LiveJournal produces FOAF data for their users, but they seem to use ``foaf:member_name`` for a person's full name. For this demo, I made ``foaf:name`` act as a synonym for ``foaf:member_name`` (a poor man's one-way ``owl:equivalentProperty``):
-
-.. code-block:: python
-
-    from rdflib.namespace import FOAF
-    g.parse("http://danbri.livejournal.com/data/foaf") 
-	for s,_,n: in g.triples((None, FOAF['member_name'], None)): 	
-		g.add((s, FOAF['name'], n))
 
 Run a Query
 ^^^^^^^^^^^
@@ -39,6 +19,11 @@ Continuing the example...
 .. code-block:: python
 
     import rdflib
+
+	g = rdflib.Graph()
+
+	# ... add some triples to g somehow ...
+    g.parse("some_foaf_file.rdf")
 
     qres = g.query(
         """SELECT DISTINCT ?aname ?bname

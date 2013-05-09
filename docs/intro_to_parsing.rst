@@ -17,20 +17,20 @@ RDF data has various syntaxes (``xml``, ``n3``, ``ntriples``, ``trix``, etc) tha
 You need to tell RDFLib what format to parse, use the ``format`` keyword-parameter to :meth:`~rdflib.graph.Graph.parse`, you can pass either a mime-type or the name (a :doc:`list of available parsers <plugin_parsers>` is available).
 If you are not sure what format your file will be, you can use :func:`rdflib.util.guess_format` which will guess based on the file extension. 
 
-In an interactive python interpreter, try this:
+In an interactive python interpreter, try this::
 
-.. code-block:: pycon
+    from rdflib import Graph
 
-    >>> from rdflib import Graph
-    >>> g = Graph()
-    >>> g.parse("demo.nt", format="nt")
-    <Graph identifier=HCbubHJy0 (<class 'rdflib.graph.Graph'>)>
-    >>> len(g)
-    2
-    >>> import pprint
-    >>> for stmt in g:
-    ...     pprint.pprint(stmt)
-    ... 
+    g = Graph()
+    g.parse("demo.nt", format="nt")
+
+    len(g) # prints 2
+
+    import pprint
+    for stmt in g:
+        pprint.pprint(stmt)
+
+    # prints :
     (rdflib.term.URIRef('http://bigasterisk.com/foaf.rdf#drewp'),
      rdflib.term.URIRef('http://example.com/says'),
      rdflib.term.Literal(u'Hello world'))
@@ -43,13 +43,11 @@ The final lines show how RDFLib represents the two statements in the file. The s
 Reading remote graphs
 ---------------------
 
-Reading graphs from the net is just as easy:
+Reading graphs from the net is just as easy::
 
-.. code-block:: pycon
-
-    >>> g.parse("http://bigasterisk.com/foaf.rdf")
-    >>> len(g)
-    42
+    g.parse("http://bigasterisk.com/foaf.rdf")
+    len(g)
+    # prints 42
 
 The format defaults to ``xml``, which is the common format for .rdf files you'll find on the net.
 

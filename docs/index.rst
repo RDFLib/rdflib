@@ -31,7 +31,7 @@ If you never used RDFLib, click through these
    intro_to_graphs
    intro_to_sparql
 
-   RDFLib Examples <apidocs/examples>
+   RDFLib examples <apidocs/examples>
 
 In depth
 --------

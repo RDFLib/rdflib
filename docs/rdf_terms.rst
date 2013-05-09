@@ -64,7 +64,8 @@ URIRefs
     u'<http://example.com>'
 
 
-.. literals:
+.. _rdflibliterals:
+
 Literals
 ========
 

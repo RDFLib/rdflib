@@ -23,19 +23,21 @@ import sys, os, re
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 # extensions = ['sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.doctest']
-extensions = ['sphinx.ext.autodoc',
-			  'sphinx.ext.doctest', 'sphinx.ext.intersphinx',
-			  'sphinx.ext.todo', 'sphinx.ext.coverage',
-			  'sphinx.ext.ifconfig', 'sphinx.ext.viewcode']
+extensions = ['sphinx.ext.autodoc', #'sphinx.ext.autosummary',
+              'sphinx.ext.doctest', 'sphinx.ext.intersphinx',
+              'sphinx.ext.todo', 'sphinx.ext.coverage',
+              'sphinx.ext.ifconfig', 'sphinx.ext.viewcode']
 
 autodoc_default_flags = [ "special-members" ]
+
+autosummary_generate = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
-epydoc_mapping = {
-   '/_static/api/': [r'rdflib\.'],
-   }
+#epydoc_mapping = {
+#   '/_static/api/': [r'rdflib\.'],
+#   }
 
 
 # The suffix of source filenames.

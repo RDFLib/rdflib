@@ -912,7 +912,7 @@ class Class(AnnotatableTerms):
      necessary but not sufficient conditions for establishing class
      membership of an individual."
 
-   ".. A class axiom may contain (multiple) owl:equivalentClass statements"
+    ".. A class axiom may contain (multiple) owl:equivalentClass statements"
 
     "..A class axiom may also contain (multiple) owl:disjointWith statements.."
 

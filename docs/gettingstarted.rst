@@ -11,7 +11,7 @@ RDFLib is open source and is maintained in a
 `GitHub <http://github.com/RDFLib/rdflib/>`_ repository. RDFLib releases, current and previous 
 are listed on `PyPi <http://pypi.python.org/pypi/rdflib/>`_
 
-The best way to install RDFLib is to use easy_install or pip:
+The best way to install RDFLib is to use ``easy_install`` or ``pip``:
 
 .. code-block :: bash
 
@@ -42,15 +42,19 @@ A tiny usage example:
 
 .. code-block:: pycon
 
-    >>> import rdflib
-    >>> g = rdflib.Graph()
-    >>> result = g.parse("http://www.w3.org/People/Berners-Lee/card")
-    >>> print("graph has %s statements." % len(g))
-    graph has 79 statements.
-    >>> for subj, pred, obj in g:
-    ...     if (subj, pred, obj) not in g:
-    ...         raise Exception("It better be!")
-    >>> s = g.serialize(format='n3')
+    import rdflib
+
+    g = rdflib.Graph()
+    result = g.parse("http://www.w3.org/People/Berners-Lee/card")
+
+    print("graph has %s statements." % len(g))
+    # prints graph has 79 statements.
+
+    for subj, pred, obj in g:
+       if (subj, pred, obj) not in g:
+           raise Exception("It better be!")
+
+    s = g.serialize(format='n3')
 
 A more extensive example:
 
@@ -62,17 +66,14 @@ A more extensive example:
 
     g = Graph()
 
-    # Bind a few prefix, namespace pairs.
-    g.bind("dc", DC)
-    g.bind("foaf", FOAF)
-
     # Create an identifier to use as the subject for Donna.
     donna = BNode()
 
     # Add triples using store's add method.
-    g.add((donna, RDF.type, FOAF["Person"]))
-    g.add((donna, FOAF["nick"], Literal("donna", lang="foo")))
-    g.add((donna, FOAF["name"], Literal("Donna Fales")))
+    g.add( (donna, RDF.type, FOAF.Person]) )
+    g.add( (donna, FOAF.nick, Literal("donna", lang="foo")) )
+    g.add( (donna, FOAF.name, Literal("Donna Fales")) )
+	g.add( (donna, FOAF.mbox, URIRef("mailto:donna@example.org")) )
 
     # Iterate over triples in store and print them out.
     print("--- printing raw triples ---")
@@ -81,8 +82,14 @@ A more extensive example:
 
     # For each foaf:Person in the store print out its mbox property.
     print("--- printing mboxes ---")
-    for person in g.subjects(RDF.type, FOAF["Person"]):
-        for mbox in g.objects(person, FOAF["mbox"]):
+    for person in g.subjects(RDF.type, FOAF.Person):
+        for mbox in g.objects(person, FOAF.mbox):
             print(mbox)
 
-Many more :mod:`examples` can be found in the :file:`examples` folder in the source distribution.
+    # Bind a few prefix, namespace pairs for more readable output
+    g.bind("dc", DC)
+    g.bind("foaf", FOAF)
+	
+    print( g.serialize(format='n3') )
+			
+Many more :doc:`apidocs/examples` can be found in the :file:`examples` folder in the source distribution.
