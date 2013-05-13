@@ -44,12 +44,12 @@ If you already worked with RDF and need to know the peculiarities of RDFLib, the
    rdf_terms
    namespaces_and_bindings
    persistence
+   merging
 
    upgrade3to4
    upgrade2to3
 
-   howto
-   assorted_examples
+   
 
 Reference
 ---------

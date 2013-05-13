@@ -75,6 +75,14 @@ These examples all live in ``./examples`` in the source-distribution of RDFLib.
     :undoc-members:
     :show-inheritance:
 
+:mod:`smushing` Module
+-------------------
+
+.. automodule:: examples.smushing
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`sparql_query_example` Module
 ----------------------------------
 

@@ -179,7 +179,7 @@ No vars specified:
  (rdflib.term.URIRef(%(u)s'ex:g'), rdflib.term.URIRef(%(u)s'ex:h')),
  (rdflib.term.URIRef(%(u)s'ex:h'), rdflib.term.URIRef(%(u)s'ex:a'))]
 
-
+.. versionadded:: 4.0
 
 """)
 

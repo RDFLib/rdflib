@@ -44,6 +44,8 @@ class UpdateProcessor(object):
     processor that can plugin to rdflib. If you are wanting to execute
     an update statement you likely want to do so through the Graph
     class update method.
+
+    .. versionadded:: 4.0
     
     """
  
@@ -109,6 +111,7 @@ class ResultRow(tuple):
     >>> rr[Variable('a')]
     rdflib.term.URIRef(%(u)s'urn:cake')
 
+    .. versionadded:: 4.0
 
     """
     __doc__ = py3compat.format_doctest_out(__doc__)

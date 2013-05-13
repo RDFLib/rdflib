@@ -51,7 +51,7 @@ operation    effect
 ``G1 ^ G2``  xor (triples in either G1 or G2, but not in both)
 ============ ==================================================
 
-.. warning:: Set-operations on graphs assume bnodes are shared between graphs. This may or may not do what you want. 
+.. warning:: Set-operations on graphs assume bnodes are shared between graphs. This may or may not do what you want. See :doc:`merging` for details.
 
 Basic Triple Matching
 ---------------------

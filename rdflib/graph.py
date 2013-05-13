@@ -10,10 +10,10 @@ __doc__ = format_doctest_out("""\
 
 RDFLib defines the following kinds of Graphs:
 
-* Graph(**store**, **identifier**)
-* QuotedGraph(**store**, **identifier**)
-* ConjunctiveGraph(**store**, **default_identifier** = None)
-* Dataset(**store**, **default_identifier** = None)
+* :class:`~rdflib.graph.Graph`
+* :class:`~rdflib.graph.QuotedGraph`
+* :class:`~rdflib.graph.ConjunctiveGraph`
+* :class:`~rdflib.graph.Dataset`
 
 Graph
 -----
@@ -441,6 +441,8 @@ class Graph(Node):
         g[bob : FOAF.knows * '+']
 
         etc.
+
+        .. versionadded:: 4.0
 
         """
 
@@ -1462,6 +1464,8 @@ class Dataset(ConjunctiveGraph):
     http://www.example.com/gr
     >>>
     >>> # a graph can also be removed from a dataset via ds.remove_graph(g)
+
+    .. versionadded:: 4.0
     """)
 
     DEFAULT = "DEFAULT"

@@ -1,0 +1,14 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+## from one document
+_:p1 a foaf:Person;
+  foaf:mbox_sha1sum "65b983bb397fb71849da910996741752ace8369b";
+  foaf:nick "mortenf";
+  foaf:weblog <http://www.wasab.dk/morten/blog/archives/author/mortenf/> .
+
+## from another document
+_:p2 a foaf:Person;
+	foaf:mbox_sha1sum "65b983bb397fb71849da910996741752ace8369b";
+	foaf:nick "mortenf";
+	foaf:homepage <http://www.wasab.dk/morten/>;
+	foaf:interest <http://en.wikipedia.org/wiki/Atom_(standard)> .

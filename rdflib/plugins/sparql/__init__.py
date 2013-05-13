@@ -1,5 +1,7 @@
 """
 SPARQL implementation for RDFLib
+
+.. versionadded:: 4.0
 """
 
 

@@ -3,14 +3,14 @@ This module defines the different types of terms. Terms are the kinds of
 objects that can appear in a quoted/asserted triple. This includes those
 that are core to RDF:
 
-* Blank Nodes
-* URI References
-* Literals (which consist of a literal value,datatype and language tag)
+* :class:`Blank Nodes <rdflib.term.BNode>`
+* :class:`URI References <rdflib.term.URIRef>`
+* :class:`Literals <rdflib.term.Literal>` (which consist of a literal value,datatype and language tag)
 
 Those that extend the RDF model into N3:
 
-* Formulae
-* Universal Quantifications (Variables)
+* :class:`Formulae <rdflib.graph.QuotedGraph>`
+* :class:`Universal Quantifications (Variables) <rdflib.term.Variable>`
 
 And those that are primarily for matching against 'Nodes' in the
 underlying Graph:
@@ -270,6 +270,8 @@ class URIRef(Identifier):
         with http://www.w3.org/TR/rdf11-concepts/#section-skolemization.
         This function accepts only rdflib type skolemization, to provide
         a round-tripping within the system.
+
+        .. versionadded:: 4.0
         """
         if isinstance(self, RDFLibGenid):
             parsed_uri = urlparse("%s" % self)
@@ -412,6 +414,8 @@ class BNode(Identifier):
     def skolemize(self, authority="http://rdlib.net/"):
         """ Create a URIRef "skolem" representation of the BNode, in accordance
         with http://www.w3.org/TR/rdf11-concepts/#section-skolemization
+
+        .. versionadded:: 4.0
         """
         skolem = "%s%s" % (rdflib_skolem_genid, unicode(self))
         return URIRef(urljoin(authority, skolem))
