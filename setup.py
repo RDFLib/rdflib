@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import sys
+import os
 import re
 
 
@@ -75,6 +76,27 @@ def find_version(filename):
 
 version = find_version('rdflib/__init__.py')
 
+packages = ['rdflib',
+              'rdflib/extras',
+              'rdflib/plugins',
+              'rdflib/plugins/parsers',
+              'rdflib/plugins/parsers/pyRdfa',
+              'rdflib/plugins/parsers/pyRdfa/transform',
+              'rdflib/plugins/parsers/pyRdfa/extras',
+              'rdflib/plugins/parsers/pyRdfa/host',
+              'rdflib/plugins/parsers/pyRdfa/rdfs',
+              'rdflib/plugins/parsers/pyMicrodata',
+              'rdflib/plugins/serializers',
+              'rdflib/plugins/sparql',
+              'rdflib/plugins/sparql/results',
+              'rdflib/plugins/stores',
+              ]
+
+if os.environ.get('READTHEDOCS', None):
+    # if building docs for RTD
+    # install examples, to get docstrings
+    packages.append("examples")
+
 setup(
     name='rdflib',
     version=version,
@@ -120,21 +142,7 @@ setup(
     easy_install https://github.com/RDFLib/rdflib/tarball/master
 
     """,
-    packages=['rdflib',
-              'rdflib/extras',
-              'rdflib/plugins',
-              'rdflib/plugins/parsers',
-              'rdflib/plugins/parsers/pyRdfa',
-              'rdflib/plugins/parsers/pyRdfa/transform',
-              'rdflib/plugins/parsers/pyRdfa/extras',
-              'rdflib/plugins/parsers/pyRdfa/host',
-              'rdflib/plugins/parsers/pyRdfa/rdfs',
-              'rdflib/plugins/parsers/pyMicrodata',
-              'rdflib/plugins/serializers',
-              'rdflib/plugins/sparql',
-              'rdflib/plugins/sparql/results',
-              'rdflib/plugins/stores',
-              ],
+    packages = packages,
     entry_points = {
         'console_scripts': [
             'rdfpipe = rdflib.tools.rdfpipe:main',
