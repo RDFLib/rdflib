@@ -4,7 +4,7 @@
 rdflib |release|
 ================
 
-Introduction
+User's Guide
 ============
 
 RDFLib is a pure Python package work working with `RDF <http://www.w3.org/RDF/>`_. RDFLib contains most things you need to work with RDF, including: 
@@ -49,6 +49,7 @@ If you already worked with RDF and need to know the peculiarities of RDFLib, the
    upgrade3to4
    upgrade2to3
 
+   faq
    
 
 Reference
@@ -59,7 +60,15 @@ The nitty-gritty details of everything.
 Plugins
 ^^^^^^^
 
+.. image:: /_static/plugins-diagram.*
+   :alt: rdflib plugin "architecture"
+   :width: 50%
+   :target: _static/plugins_diagram.svg
+
+
 Many parts of RDFLib are extensible with plugins through `setuptools entry-points <http://pythonhosted.org/distribute/setuptools.html#dynamic-discovery-of-services-and-plugins>`_. These pages list the plugins included in RDFLib core.  
+
+
 
 .. toctree::
    :maxdepth: 1
@@ -81,33 +90,22 @@ API docs
 * :ref:`modindex`
 
 
-Plugins
-=======
-
-The package defines a plugin interface for parsers, stores, and serializers that other packages can use to implement parsers, stores, and serializers that will plug into the RDFLib package.
-
-The diagram below describes the current set of plugins that are either built in to rdflib or are available in extension projects:
-
-.. image:: /_static/plugins-diagram.*
-   :alt: rdflib plugin "architecture"
-   :width: 90%
 
 
 For developers
-==============
+--------------
 
 .. toctree::
    :maxdepth: 1
 
    univrdfstore
    persisting_n3_terms
-   faq
    Documentation notes <docs>
 
 
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
