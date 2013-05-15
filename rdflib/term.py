@@ -188,6 +188,10 @@ class Identifier(Node, unicode):  # allow Identifiers to be Nodes in the Graph
 class URIRef(Identifier):
     """
     RDF URI Reference: http://www.w3.org/TR/rdf-concepts/#section-Graph-URIref
+
+    The URIRef constructor will do a limited check for valid URIs,
+    essentially just making sure that the string includes no illegal
+    characters (``<, >, ", {, }, |, \\, `, ^``)
     """
 
     __slots__ = ()
@@ -213,8 +217,11 @@ class URIRef(Identifier):
     def toPython(self):
         return unicode(self)
 
-    def n3(self):
-        return "<%s>" % self
+    def n3(self, namespace_manager = None):
+        if namespace_manager: 
+            return namespace_manager.normalizeUri(self)
+        else: 
+            return "<%s>" % self
 
     def defrag(self):
         if "#" in self:
@@ -376,7 +383,7 @@ class BNode(Identifier):
     def toPython(self):
         return unicode(self)
 
-    def n3(self):
+    def n3(self, namespace_manager=None):
         return "_:%s" % self
 
     def __getnewargs__(self):
@@ -427,6 +434,8 @@ class Literal(Identifier):
 
     The lexical value of the literal is the unicode object
     The interpreted, datatyped value is available from .value
+
+    Language tags must be valid according to :rfc:5646
 
     For valid XSD datatypes, the lexical form is optionally normalized
     at construction time. Default behaviour is set by rdflib.NORMALIZE_LITERALS
@@ -1064,7 +1073,7 @@ class Literal(Identifier):
         return not self.eq(other)
 
     @py3compat.format_doctest_out
-    def n3(self):
+    def n3(self, namespace_manager = None):
         r'''
         Returns a representation in the N3 format.
 
@@ -1094,16 +1103,16 @@ class Literal(Identifier):
             >>> Literal(1).n3()
             %(u)s'"1"^^<http://www.w3.org/2001/XMLSchema#integer>'
 
-            >>> Literal(1, lang="en").n3()
-            %(u)s'"1"^^<http://www.w3.org/2001/XMLSchema#integer>'
-
             >>> Literal(1.0).n3()
             %(u)s'"1.0"^^<http://www.w3.org/2001/XMLSchema#double>'
 
-        Datatype and language isn't allowed (datatype takes precedence)::
-
             >>> Literal(True).n3()
             %(u)s'"true"^^<http://www.w3.org/2001/XMLSchema#boolean>'
+
+        Datatype and language isn't allowed (datatype takes precedence)::
+
+            >>> Literal(1, lang="en").n3()
+            %(u)s'"1"^^<http://www.w3.org/2001/XMLSchema#integer>'
 
         Custom datatype::
 
@@ -1111,8 +1120,17 @@ class Literal(Identifier):
             >>> Literal("1", datatype=footype).n3()
             %(u)s'"1"^^<http://example.org/ns#foo>'
 
+        Passing a namespace-manager will use it to abbreviate datatype URIs:
+
+            >>> from rdflib import Graph
+            >>> Literal(1).n3(Graph().namespace_manager)
+            %(u)s'"1"^^xsd:integer'
         '''
-        return self._literal_n3()
+        if namespace_manager:
+            return self._literal_n3(qname_callback = 
+                                    namespace_manager.normalizeUri)
+        else:
+            return self._literal_n3()
 
     @py3compat.format_doctest_out
     def _literal_n3(self, use_plain=False, qname_callback=None):
@@ -1464,12 +1482,12 @@ def bind(datatype, pythontype, constructor=None, lexicalizer=None):
     """
     register a new datatype<->pythontype binding
 
-    Args:
-       constructor : an optional function for converting lexical forms
-                     into a Python instances, if not given the pythontype
-                     is used directly
-       lexicalizer : an optinoal function for converting python objects to
-                     lexical form, if not given object.__str__ is used
+    :param constructor: an optional function for converting lexical forms
+                        into a Python instances, if not given the pythontype
+                        is used directly
+                        
+    :param lexicalizer: an optinoal function for converting python objects to
+                        lexical form, if not given object.__str__ is used
 
     """
     if datatype in _toPythonMapping:
@@ -1503,7 +1521,7 @@ class Variable(Identifier):
     def toPython(self):
         return "?%s" % self
 
-    def n3(self):
+    def n3(self, namespace_manager = None):
         return "?%s" % self
 
     def __reduce__(self):

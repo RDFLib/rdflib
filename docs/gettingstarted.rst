@@ -17,17 +17,25 @@ The best way to install RDFLib is to use ``easy_install`` or ``pip``:
 
     $ easy_install rdflib
 
-Support is available through the rdflib-dev group::
+Support is available through the rdflib-dev group:
 
     http://groups.google.com/group/rdflib-dev
 
 and on the IRC channel `#rdflib <irc://irc.freenode.net/swig>`_ on the freenode.net server
 
-The primary interface that RDFLib exposes for working with RDF is :class:`~rdflib.graph.Graph`. The package uses various Python idioms that offer an appropriate way to introduce RDF to a Python programmer who hasn't worked with RDF before.
+The primary interface that RDFLib exposes for working with RDF is a
+:class:`~rdflib.graph.Graph`. The package uses various Python idioms
+that offer an appropriate way to introduce RDF to a Python programmer
+who hasn't worked with RDF before.
 
-RDFLib graphs are not sorted containers; they have ordinary ``set`` operations (e.g. :meth:`~rdflib.Graph.add` to add a triple) plus methods that search triples and return them in arbitrary order.
+RDFLib graphs are not sorted containers; they have ordinary ``set``
+operations (e.g. :meth:`~rdflib.Graph.add` to add a triple) plus
+methods that search triples and return them in arbitrary order.
 
-RDFLib graphs also redefine certain built-in Python methods in order to behave in a predictable way; they `emulate container types <http://docs.python.org/release/2.5.2/ref/sequence-types.html>`_ and are best thought of as a set of 3-item triples:
+RDFLib graphs also redefine certain built-in Python methods in order
+to behave in a predictable way; they `emulate container types
+<http://docs.python.org/release/2.5.2/ref/sequence-types.html>`_ and
+are best thought of as a set of 3-item triples:
 
 .. code-block:: text
 
@@ -40,7 +48,7 @@ RDFLib graphs also redefine certain built-in Python methods in order to behave i
 
 A tiny usage example:
 
-.. code-block:: pycon
+.. code-block:: python
 
     import rdflib
 
@@ -92,4 +100,4 @@ A more extensive example:
 	
     print( g.serialize(format='n3') )
 			
-Many more :doc:`apidocs/examples` can be found in the :file:`examples` folder in the source distribution.
+Many more :doc:`examples <apidocs/examples>` can be found in the :file:`examples` folder in the source distribution.

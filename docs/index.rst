@@ -54,34 +54,15 @@ Reference
 
 The nitty-gritty details of everything.
 
-Plugins
-^^^^^^^
-
-.. image:: /_static/plugins-diagram.*
-   :alt: rdflib plugin "architecture"
-   :width: 450px
-   :target: _static/plugins-diagram.svg
-
-
-Many parts of RDFLib are extensible with plugins through `setuptools entry-points <http://pythonhosted.org/distribute/setuptools.html#dynamic-discovery-of-services-and-plugins>`_. These pages list the plugins included in RDFLib core.  
-
-
+.. toctree:: 
+   :maxdepth: 2
+			  
+   plugins
 
 .. toctree::
    :maxdepth: 1
 
-   plugin_parsers
-   plugin_serializers
-   plugin_stores
-   plugin_query_results   
-
-API docs
-^^^^^^^^
-
-.. toctree::
-   :maxdepth: 1
-
-   Full API docs <apidocs/modules>
+   apidocs/modules
 
 * :ref:`genindex`
 * :ref:`modindex`
@@ -110,13 +91,22 @@ Indices and tables
 
 .. glossary::
 
-    graph
+   graph
         An RDF graph is a set of RDF triples. The set of nodes of an RDF graph
         is the set of subjects and objects of triples in the graph.
     
-    named graph
+   named graph
         Named Graphs is the idea that having multiple RDF graphs in a single
         document/repository and naming them with URIs provides useful
         additional functionality. -- http://www.w3.org/2004/03/trix/
-    
-    
+
+   transitivity 
+        A property is transitive: 
+            
+            if whenever an element ``a`` is related to an element
+            ``b``, and ``b`` is in turn related to an element ``c``,
+            then ``a`` is also related to ``c``.  --
+            http://en.wikipedia.org/wiki/Transitive_relation
+		
+        Standard examples include ``rdfs:subClassOf`` or greater-than
+   

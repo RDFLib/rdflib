@@ -17,7 +17,7 @@ RDFLib defines the following kinds of Graphs:
 
 Graph
 -----
-An RDF graph is a set of RDF triples.
+An RDF graph is a set of RDF triples. Graphs support the python ``in`` operator, as well as iteration and some operations like union, difference and intersection.
 
 Conjunctive Graph
 -----------------

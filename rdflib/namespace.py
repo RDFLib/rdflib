@@ -280,8 +280,9 @@ class NamespaceManager(object):
         self.__cache = {}
         self.__log = None
         self.bind("xml", u"http://www.w3.org/XML/1998/namespace")
-        self.bind("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
-        self.bind("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
+        self.bind("rdf", RDF)
+        self.bind("rdfs", RDFS)
+        self.bind("xsd", XSD)
 
     def reset(self):
         self.__cache = {}

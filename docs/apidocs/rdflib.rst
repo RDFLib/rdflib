@@ -115,6 +115,7 @@ rdflib Package
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: __dict__
 
 :mod:`serializer` Module
 ------------------------
@@ -139,6 +140,7 @@ rdflib Package
     :members:
     :undoc-members:
     :show-inheritance:
+
 
 :mod:`util` Module
 ------------------

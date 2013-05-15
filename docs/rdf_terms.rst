@@ -92,64 +92,71 @@ Literals are the attribute values in RDF, for instance, a person's name, the dat
 
 Python support
 --------------
-RDFLib Literals essentially behave like unicode characters with an XML Schema datatype or language attribute.  
-
-
-The class provides a mechanism to both convert Python literals (and their built-ins such as time/date/datetime) into equivalent RDF Literals and (conversely) convert Literals to their Python equivalent.  There is some support of considering datatypes in comparing Literal instances, implemented as an override to :meth:`__eq__`.  This mapping to and from Python literals is achieved with the following dictionaries:
-
-.. code-block:: python
-
-    PythonToXSD = {
-        basestring : (None,None),
-        float      : (None,XSD_NS+u'float'),
-        int        : (None,XSD_NS+u'int'),
-        long       : (None,XSD_NS+u'long'),    
-        bool       : (None,XSD_NS+u'boolean'),
-        date       : (lambda i:i.isoformat(),XSD_NS+u'date'),
-        time       : (lambda i:i.isoformat(),XSD_NS+u'time'),
-        datetime   : (lambda i:i.isoformat(),XSD_NS+u'dateTime'),
-    }
-
-Maps Python instances to WXS datatyped Literals (the parse_time, _date and _datetime
-functions are imports from the `isodate <http://pypi.python.org/pypi/isodate/>`_ 
-package).
-
-.. code-block:: python
-
-     XSDToPython = {
-        URIRef(_XSD_PFX+'time')               : parse_time,
-        URIRef(_XSD_PFX+'date')               : parse_date,
-        URIRef(_XSD_PFX+'dateTime')           : parse_datetime,
-        URIRef(_XSD_PFX+'string')             : None,
-        URIRef(_XSD_PFX+'normalizedString')   : None,
-        URIRef(_XSD_PFX+'token')              : None,
-        URIRef(_XSD_PFX+'language')           : None,
-        URIRef(_XSD_PFX+'boolean')            : lambda i:i.lower() in ['1','true'],
-        URIRef(_XSD_PFX+'decimal')            : float,
-        URIRef(_XSD_PFX+'integer')            : long,
-        URIRef(_XSD_PFX+'nonPositiveInteger') : int,
-        URIRef(_XSD_PFX+'long')               : long,
-        URIRef(_XSD_PFX+'nonNegativeInteger') : int,
-        URIRef(_XSD_PFX+'negativeInteger')    : int,
-        URIRef(_XSD_PFX+'int')                : long,
-        URIRef(_XSD_PFX+'unsignedLong')       : long,
-        URIRef(_XSD_PFX+'positiveInteger')    : int,
-        URIRef(_XSD_PFX+'short')              : int,
-        URIRef(_XSD_PFX+'unsignedInt')        : long,
-        URIRef(_XSD_PFX+'byte')               : int,
-        URIRef(_XSD_PFX+'unsignedShort')      : int,
-        URIRef(_XSD_PFX+'unsignedByte')       : int,
-        URIRef(_XSD_PFX+'float')              : float,
-        URIRef(_XSD_PFX+'double')             : float,
-        URIRef(_XSD_PFX+'base64Binary')       : lambda s: base64.b64decode(py3compat.b(s)),
-        URIRef(_XSD_PFX+'anyURI')             : None,
-    }
-
-Maps WXS datatyped Literals to Python.  This mapping is used by the :meth:`toPython` method defined on all Literal instances.
+RDFLib Literals essentially behave like unicode characters with an XML Schema datatype or language attribute. 
 
 .. image:: /_static/datatype_hierarchy.png
    :alt: datatype hierarchy
    :align: center
    :width: 629
    :height: 717
+
+
+The class provides a mechanism to both convert Python literals (and their built-ins such as time/date/datetime) into equivalent RDF Literals and (conversely) convert Literals to their Python equivalent.  This mapping to and from Python literals is done as follows:
+
+====================== ===========
+XML Datatype           Python type
+====================== ===========
+None                   None [#f1]_
+xsd:time               time [#f2]_
+xsd:date               date
+xsd:dateTime           datetime
+xsd:string             None
+xsd:normalizedString   None
+xsd:token              None
+xsd:language           None
+xsd:boolean            boolean
+xsd:decimal            Decimal
+xsd:integer            long
+xsd:nonPositiveInteger int
+xsd:long               long
+xsd:nonNegativeInteger int
+xsd:negativeInteger    int
+xsd:int                long
+xsd:unsignedLong       long
+xsd:positiveInteger    int
+xsd:short              int
+xsd:unsignedInt        long
+xsd:byte               int
+xsd:unsignedShort      int
+xsd:unsignedByte       int
+xsd:float              float
+xsd:double             float
+xsd:base64Binary       :mod:`base64`
+xsd:anyURI             None
+rdf:XMLLiteral         :class:`xml.dom.minidom.Document` [#f3]_
+rdf:HTML               :class:`xml.dom.minidom.DocumentFragment`
+====================== ===========
+
+.. [#f1] plain literals map directly to value space
+
+.. [#f2] Date, time and datetime literals are mapped to Python
+         instances using the `isodate <http://pypi.python.org/pypi/isodate/>`_
+         package).
+
+.. [#f3] this is a bit dirty - by accident the ``html5lib`` parser
+         produces ``DocumentFragments``, and the xml parser ``Documents``,
+         letting us use this to decide what datatype when roundtripping.
+
+An appropriate data-type and lexical representation can be found using:
+
+.. autofunction:: rdflib.term._castPythonToLiteral
+
+and the other direction with 
+
+.. autofunction:: rdflib.term._castLexicalToPython
+
+All this happens automatically when creating ``Literal`` objects by passing Python objects to the constructor, and you never have to do this manually. 
+
+You can add custom data-types with :func:`rdflib.term.bind`, see also :mod:`examples.custom_datatype`
+
 
