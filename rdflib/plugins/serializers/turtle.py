@@ -250,8 +250,12 @@ class TurtleSerializer(RecursiveSerializer):
             else:
                 # nothing worked
                 return None
-
+        
         prefix, namespace, local = parts
+
+        # QName cannot end with . 
+        if local.endswith("."): return None 
+
         prefix = self.addNamespace(prefix, namespace)
 
         return u'%s:%s' % (prefix, local)
