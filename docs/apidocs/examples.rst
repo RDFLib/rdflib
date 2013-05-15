@@ -67,6 +67,14 @@ These examples all live in ``./examples`` in the source-distribution of RDFLib.
     :undoc-members:
     :show-inheritance:
 
+:mod:`sleepycat_example` Module
+-----------------------------------
+
+.. automodule:: examples.sleepycat_example
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`slice` Module
 -------------------
 
@@ -95,6 +103,14 @@ These examples all live in ``./examples`` in the source-distribution of RDFLib.
 -----------------------------------
 
 .. automodule:: examples.sparql_update_example
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`sparqlstore_example` Module
+-----------------------------------
+
+.. automodule:: examples.sparqlstore_example
     :members:
     :undoc-members:
     :show-inheritance:

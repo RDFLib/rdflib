@@ -1,3 +1,3 @@
-from regexmatching import REGEXMatching
-
-__all__ = ['REGEXMatching']
+"""
+This package contains modules for additional RDFLib stores
+"""

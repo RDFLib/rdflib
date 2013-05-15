@@ -4,9 +4,6 @@
 rdflib |release|
 ================
 
-User's Guide
-============
-
 RDFLib is a pure Python package work working with `RDF <http://www.w3.org/RDF/>`_. RDFLib contains most things you need to work with RDF, including: 
 
 * parsers and serializers for RDF/XML, N3, NTriples, N-Quads, Turtle, TriX, RDFa and Microdata.
@@ -62,8 +59,8 @@ Plugins
 
 .. image:: /_static/plugins-diagram.*
    :alt: rdflib plugin "architecture"
-   :width: 50%
-   :target: _static/plugins_diagram.svg
+   :width: 450px
+   :target: _static/plugins-diagram.svg
 
 
 Many parts of RDFLib are extensible with plugins through `setuptools entry-points <http://pythonhosted.org/distribute/setuptools.html#dynamic-discovery-of-services-and-plugins>`_. These pages list the plugins included in RDFLib core.  

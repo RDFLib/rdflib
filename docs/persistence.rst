@@ -4,15 +4,25 @@
 Persistence
 ===========
 
-RDFLib provides an abstracted Store API for persistence of RDF and Notation 3. The :class:`~rdflib.graph.Graph` class works with instances of this API (as the first argument to its constructor) for triple-based management of an RDF store including: garbage collection, transaction management, update, pattern matching, removal, length, and database management (:meth:`~rdflib.graph.Graph.open` / :meth:`~rdflib.graph.Graph.close` / :meth:`~rdflib.graph.Graph.destroy`).  
+RDFLib provides an :class:`abstracted Store API <rdflib.store.Store>`
+for persistence of RDF and Notation 3. The
+:class:`~rdflib.graph.Graph` class works with instances of this API
+(as the first argument to its constructor) for triple-based management
+of an RDF store including: garbage collection, transaction management,
+update, pattern matching, removal, length, and database management
+(:meth:`~rdflib.graph.Graph.open` / :meth:`~rdflib.graph.Graph.close`
+/ :meth:`~rdflib.graph.Graph.destroy`).
 
-Additional persistence mechanisms can be supported by implementing this API for a different store.
+Additional persistence mechanisms can be supported by implementing
+this API for a different store.
 
-Stores currently supported in rdflib
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Stores currently shipped with core RDFLib
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Random access memory
-* Sleepycat (via Python's ``bsddb`` or ``bsddb3`` packages)
+* :class:`Memory <rdflib.plugins.memory.IOMemory>` (not persistent!)
+* :class:`~rdflib.plugins.sleepycat.Sleepycat` (on disk persistence via Python's :ref:`bsddb` or :ref:`bsddb3` packages)
+* :class:`~rdflib.plugins.stores.sparqlstore.SPARQLStore` - a read-only wrapper around a remote SPARQL Query endpoint. 
+* :class:`~rdflib.plugins.stores.sparqlstore.SPARQLUpdateStore` - a read-write wrapper around a remote SPARQL query/update endpoint pair. 
 
 Usage
 ^^^^^
@@ -26,92 +36,51 @@ Most cases passing the name of the store to the Graph constrcutor is enough:
     graph = Graph(store='Sleepycat')
 
 
-If additional configuration of the store is required, a store instances can be created with the :meth:`plugin` function:
+.. note:: If additional configuration of the store is required, 
+   a store instance can also be passed, the class can be retrieved with the :mod:`~rdflib.plugin` module:
+   
+   .. code-block:: python
+
+		from rdflib import plugin, Store, Graph
+
+		store = plugin.get('.. store name ..',Store)(identifier = myid)
+
+		# configure the store object somehow
+		store.set_configuration ( ... blah ... )
+
+		graph = Graph(store = store)
+
+Most store offering on-disk persistence will need to be opened before reading or writing :
 
 .. code-block:: python
 
-    from rdflib import plugin, Store, Graph
+   graph = Graph('Sleepycat')
 
-    store = plugin.get('.. one of the supported Stores ..',Store)(identifier=.. id of conjunctive graph ..)
-    
-    graph = Graph(store=store)
+   # first time create the store:
+   graph.open('/home/user/data/myRDFLibStore', create = True) 
+   
+   # work with the graph: 
+   graph.add( mytriples ) 
 
-
-Additional store plugins in ``rdfextras``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-* Berkeley DB
-* MySQL (not Python 3)
-* PostgreSQL
-* SQLite
-* Zope Object Database (ZODB3) (not Python 3)
+   # when done!
+   graph.close() 
 
 
-Store operations
-================
 
-Example code to create a Sleepycat (``bsddb`` or ``bsddb3``) triple store, add some triples, and serialize the resulting graph. Finally, close the graph and
-remove the database files that were created.
+When done, :meth:`~rdflib.graph.Graph.close` must be called to free the resources associated with the store. 
+	
 
-.. code-block:: python
+Additional store plugins
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-    from rdflib import ConjunctiveGraph, plugin, Namespace, Literal, URIRef, Store
-    from rdflib.store import NO_STORE, VALID_STORE
+More store implementations are available in RDFLib extension projects: 
 
-    from tempfile import mkdtemp
+ * `rdflib-sqlalchemy <https://github.com/RDFLib/rdflib-sqlalchemy>`_, which supports stored on a wide-variety of RDBMs backends, 
+ * `rdflib-leveldb <https://github.com/RDFLib/rdflib-leveldb>`_ - a store on to of Google's `LevelDB <https://code.google.com/p/leveldb/>`_ key-value store. 
+ * `rdflib-kyotocabinet <https://github.com/RDFLib/rdflib-kyotocabinet>`_ - a store on to of the `Kyoto Cabinet <http://fallabs.com/kyotocabinet/>`_ key-value store. 
 
-    default_graph_uri = "http://rdflib.net/rdfstore"
-    configString = "/var/tmp/rdfstore"
+Example
+^^^^^^^
 
-    # Open previously created store, or create it if it doesn't exist yet
-    graph = ConjunctiveGraph(store="Sleepycat", 
-                  identifier = default_graph_uri)
-    path = mkdtemp()
-    rt = graph.open(path, create=False)
-    if rt == NO_STORE:
-        # There is no underlying Sleepycat infrastructure, create it
-        graph.open(path, create=True)
-    else:
-        assert rt == VALID_STORE, "The underlying store is corrupt"
-
-    print "Triples in graph before add: ", len(graph)
-
-    # Now we'll add some triples to the graph & commit the changes
-    rdflib = Namespace('http://rdflib.net/test/')
-    graph.bind("test", "http://rdflib.net/test/")
-    
-    graph.add((rdflib['pic:1'], rdflib['name'], Literal('Jane & Bob')))
-    graph.add((rdflib['pic:2'], rdflib['name'], Literal('Squirrel in Tree')))
-    graph.commit()
-
-    print "Triples in graph after add: ", len(graph)
-
-    # display the graph in RDF/XML
-    print graph.serialize()
-    
-    graph.close()
-    
-    # Clean up the mkdtemp spoor to remove the Sleepycat database files...
-    import os
-    for f in os.listdir(path): 
-        os.unlink(path+'/'+f)
-    os.rmdir(path)
-
-The output will appear as follows:
-
-.. code-block:: text
-
-    Triples in graph before add:  0
-    Triples in graph after add:  2
-    <?xml version="1.0" encoding="UTF-8"?>
-    <rdf:RDF
-       xmlns="http://rdflib.net/test/"
-       xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-    >
-      <rdf:Description rdf:about="http://rdflib.net/test/pic:1">
-        <name>Jane &amp; Bob</name>
-      </rdf:Description>
-      <rdf:Description rdf:about="http://rdflib.net/test/pic:2">
-        <name>Squirrel in Tree</name>
-      </rdf:Description>
-    </rdf:RDF>
+* :mod:`examples.sleepycat_example` contains an example for using a Sleepycat store. 
+* :mod:`examples.sparqlstore_example` contains an example for using a SPARQLStore. 
