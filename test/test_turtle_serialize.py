@@ -1,4 +1,5 @@
 import rdflib
+from rdflib.py3compat import b
 
 def testTurtleFinalDot(): 
     """
@@ -10,7 +11,7 @@ def testTurtleFinalDot():
     g.bind("ns", "http://ex.org/")
     g.add( (u, u, u) )
     s=g.serialize(format='turtle')
-    assert "ns:bob." not in s
+    assert b("ns:bob.") not in s
 
 
 if __name__ == "__main__":
