@@ -1,6 +1,5 @@
-include CHANGELOG
+include CHANGELOG.md
 include LICENSE
-include DEVELOPERS.md
 include README.md
 include CONTRIBUTORS
 include ez_setup.py
