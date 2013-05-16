@@ -46,7 +46,7 @@ This release includes several major changes:
      print row.age, row["name"]
   ```
 
-* "Slicing" of Graphs and Resources as syntactic sugar: (#271)
+* "Slicing" of Graphs and Resources as syntactic sugar: ([#271](https://github.com/RDFLib/rdflib/issues/271))
 
   ```py
   graph[bob : FOAF.knows/FOAF.name] 
@@ -62,21 +62,21 @@ This release includes several major changes:
 Minor Changes:
 --------------
 
-* String operations on URIRefs return new URIRefs: (#258) 
+* String operations on URIRefs return new URIRefs: ([#258](https://github.com/RDFLib/rdflib/issues/258)) 
   ```py
   >>> URIRef('http://example.org/')+'test
   rdflib.term.URIRef('http://example.org/test')
   ```
  
 * Parser/Serializer plugins are also found by mime-type, not just 
-  by plugin name:  (#277)
+  by plugin name:  ([#277](https://github.com/RDFLib/rdflib/issues/277))
 * ```Namespace``` is no longer a subclass of ```URIRef```
 * URIRefs and Literal language tags are validated on construction,
-  avoiding some "RDF-injection" issues (#266)
+  avoiding some "RDF-injection" issues ([#266](https://github.com/RDFLib/rdflib/issues/266))
 * A new memory store needs much less memory when loading large
-  graphs (#268) 
-* Turtle/N3 serializer now supports the base keyword correctly (#248)
-* py2exe support was fixed (#257)
+  graphs ([#268](https://github.com/RDFLib/rdflib/issues/268)) 
+* Turtle/N3 serializer now supports the base keyword correctly ([#248](https://github.com/RDFLib/rdflib/issues/248))
+* py2exe support was fixed ([#257](https://github.com/RDFLib/rdflib/issues/257))
 * Several bugs in the TriG serializer were fixed
 * Several bugs in the NQuads parser were fixed
 
@@ -97,13 +97,13 @@ with any cpython from 2.5 through 3.3.
 
 * ```node.md5_term``` is now deprecated, if you use it let us know. 
 
-* Literal.datatype/language are now read-only properties (#226)
-* Serializing to file fails in py3 (#249)
-* TriX serializer places two xmlns attributes on same element (#250)
-* RDF/XML parser fails on when XML namespace is not explicitly declared (#247)
-* Resource class should "unbox" Resource instances on add (#215)       
-* Turtle/N3 does not encode final quote of a string (#239)
-* float Literal precision lost when serializing graph to turtle or n3 (#237)
+* Literal.datatype/language are now read-only properties ([#226](https://github.com/RDFLib/rdflib/issues/226))
+* Serializing to file fails in py3 ([#249](https://github.com/RDFLib/rdflib/issues/249))
+* TriX serializer places two xmlns attributes on same element ([#250](https://github.com/RDFLib/rdflib/issues/250))
+* RDF/XML parser fails on when XML namespace is not explicitly declared ([#247](https://github.com/RDFLib/rdflib/issues/247))
+* Resource class should "unbox" Resource instances on add ([#215](https://github.com/RDFLib/rdflib/issues/215))       
+* Turtle/N3 does not encode final quote of a string ([#239](https://github.com/RDFLib/rdflib/issues/239))
+* float Literal precision lost when serializing graph to turtle or n3 ([#237](https://github.com/RDFLib/rdflib/issues/237))
 * plain-literal representation of xsd:decimals fixed
 * allow read-only sleepycat stores 
 * language tag parsing in N3/Turtle fixes to allow several subtags. 
@@ -114,8 +114,8 @@ with any cpython from 2.5 through 3.3.
 Almost identical to 3.2.2
 A stupid bug snuck into 3.2.2, and querying graphs were broken.
 
-* Fixes broken querying (#234)
-* graph.transitiveClosure now works with loops (#206)
+* Fixes broken querying ([#234](https://github.com/RDFLib/rdflib/issues/234))
+* graph.transitiveClosure now works with loops ([#206](https://github.com/RDFLib/rdflib/issues/206))
 
 2012/09/25 RELEASE 3.2.2
 ========================
@@ -130,14 +130,14 @@ Changes:
   of obscure parser/serializer bugs. In particular complex string
   Literals in ntriples improved a lot.
 * The terms of a triple are now asserted to be RDFLib Node's in graph.add
-  This should avoid getting strings and other things in the store. (#200)
+  This should avoid getting strings and other things in the store. ([#200](https://github.com/RDFLib/rdflib/issues/200))
 * Added a specific TurtleParser that does not require the store to be
-  non-formula aware. (#214)
+  non-formula aware. ([#214](https://github.com/RDFLib/rdflib/issues/214))
 * A trig-serializer was added, see:
   http://www4.wiwiss.fu-berlin.de/bizer/trig/
-* BNode generation was made thread-safe (#209)
+* BNode generation was made thread-safe ([#209](https://github.com/RDFLib/rdflib/issues/209))
   (also fixed better by dzinxed)
-* Illegal BNode IDs removed from NT output: (#212)
+* Illegal BNode IDs removed from NT output: ([#212](https://github.com/RDFLib/rdflib/issues/212))
 * and more minor bug fixes that had no issues
 
 2012/04/24 RELEASE 3.2.1
@@ -149,12 +149,12 @@ Changes:
 
 * New setuptools entry points for query processors and results
 
-* Literals constructed from other literals copy datatype/lang (#188)
-* Relative URIs are resolved incorrectly after redirects (#130)
-* Illegal prefixes in turtle output (#161)
-* Sleepcat store unstable prefixes (#201)
-* Consistent toPyton() for all node objects (#174)
-* Better random BNode ID in multi-thread environments (#185)
+* Literals constructed from other literals copy datatype/lang ([#188](https://github.com/RDFLib/rdflib/issues/188))
+* Relative URIs are resolved incorrectly after redirects ([#130](https://github.com/RDFLib/rdflib/issues/130))
+* Illegal prefixes in turtle output ([#161](https://github.com/RDFLib/rdflib/issues/161))
+* Sleepcat store unstable prefixes ([#201](https://github.com/RDFLib/rdflib/issues/201))
+* Consistent toPyton() for all node objects ([#174](https://github.com/RDFLib/rdflib/issues/174))
+* Better random BNode ID in multi-thread environments ([#185](https://github.com/RDFLib/rdflib/issues/185))
 
 2012/01/19 RELEASE 3.2.0
 ========================
