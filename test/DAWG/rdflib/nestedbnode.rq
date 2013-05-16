@@ -1,0 +1,8 @@
+PREFIX ex: <http://example.org/>
+
+SELECT * WHERE { 
+  [ a ex:Thing ; 
+    ex:p1 [ ex:p2 ex:a ] ;
+    ex:p2 ex:b 
+  ]
+}

@@ -10,7 +10,10 @@
 <> a mf:Manifest ;
 	rdfs:label "RDFLib Extra SPARQL tests" ;
     mf:entries
-    ( :unicode ) . 
+    ( 
+	:unicode 
+	:nestedbnode 
+	) . 
 
 
 :opt-subquery rdf:type mf:QueryEvaluationTest ;
@@ -31,4 +34,14 @@
          [ qt:query  <unicode.rq> ;
            qt:data   <unicode.ttl> ] ;
     mf:result  <unicode.srx>
+    .
+
+
+:nestedbnode rdf:type mf:QueryEvaluationTest ;
+    mf:name "Nestedbnode in SPARQL queries";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query  <nestedbnode.rq> ] ;
+    mf:result  <nestedbnode.srx>
     .

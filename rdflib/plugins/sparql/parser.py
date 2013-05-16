@@ -64,7 +64,7 @@ def expandTriples(terms):
                 if len(t) > 1:
                     res += t
                 # is this bnode the subject of more triples?
-                if i + 1 < l and terms[i + 1] != ".":
+                if i + 1 < l and terms[i + 1] not in ".,;" :
                     res.append(t[0])
             elif isinstance(t, ParseResults):
                 res += t.asList()
