@@ -80,6 +80,7 @@ sparql Package
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: __dict__,__weakref__
 
 :mod:`processor` Module
 -----------------------
@@ -96,6 +97,7 @@ sparql Package
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: __dict__,__weakref__
 
 :mod:`update` Module
 --------------------

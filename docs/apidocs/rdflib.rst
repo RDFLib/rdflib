@@ -15,6 +15,7 @@ rdflib Package
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: __dict__,__weakref__
 
 :mod:`compare` Module
 ---------------------
@@ -39,6 +40,7 @@ rdflib Package
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: __dict__,__weakref__
 
 :mod:`exceptions` Module
 ------------------------
@@ -55,6 +57,7 @@ rdflib Package
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: __dict__,__weakref__
 
 :mod:`namespace` Module
 -----------------------
@@ -63,6 +66,7 @@ rdflib Package
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: __dict__,__weakref__
 
 :mod:`parser` Module
 --------------------
@@ -71,6 +75,7 @@ rdflib Package
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: __dict__,__weakref__
 
 :mod:`paths` Module
 -------------------
@@ -79,6 +84,7 @@ rdflib Package
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: __dict__,__weakref__
 
 :mod:`plugin` Module
 --------------------
@@ -87,6 +93,7 @@ rdflib Package
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: __dict__,__weakref__
 
 :mod:`py3compat` Module
 -----------------------
@@ -103,6 +110,7 @@ rdflib Package
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: __dict__,__weakref__
 
     .. autoclass:: ResultRow
        :members:
@@ -115,7 +123,7 @@ rdflib Package
     :members:
     :undoc-members:
     :show-inheritance:
-    :exclude-members: __dict__
+    :exclude-members: __dict__,__weakref__
 
 :mod:`serializer` Module
 ------------------------
@@ -124,6 +132,7 @@ rdflib Package
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: __dict__,__weakref__
 
 :mod:`store` Module
 -------------------
@@ -132,6 +141,7 @@ rdflib Package
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: __dict__,__weakref__
 
 :mod:`term` Module
 ------------------
@@ -140,6 +150,7 @@ rdflib Package
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: __dict__,__weakref__
 
 
 :mod:`util` Module

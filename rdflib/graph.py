@@ -57,13 +57,6 @@ Instantiating Graphs with a IOMemory store and an identifier -
     "<http://rdflib.net> a rdfg:Graph;rdflib:storage
      [a rdflib:Store;rdfs:label 'IOMemory']."
 
-Some stores require pre-configuration (for example DB access details),
-you can get the store plugin directly
-
-    store = plugin.get('MyDBStore', Store)()
-    store.setConfiguration('blah')
-    graph = Graph(store=store)
-
 Creating a ConjunctiveGraph - The top level container for all named Graphs
 in a 'database':
 

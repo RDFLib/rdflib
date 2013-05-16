@@ -1,6 +1,17 @@
 tools Package
 =============
 
+These commandline-tools are installed into :samp:`{INSTALL_PREFIX}/bin` by setuptools.
+
+:mod:`tools` Package
+---------------------
+
+.. automodule:: rdflib.tools
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 :mod:`csv2rdf` Module
 ---------------------
 
@@ -8,6 +19,7 @@ tools Package
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: __dict__,__weakref__
 
 :mod:`graphisomorphism` Module
 ------------------------------

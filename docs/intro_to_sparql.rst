@@ -12,7 +12,7 @@ The RDFLib comes with an implementation of the `SPARQL 1.1 Query <http://www.w3.
 
 Queries can be evaluated against a graph with the :meth:`rdflib.graph.Graph.query` method, and updates with :meth:`rdflib.graph.Graph.update`. 
 
-The query method returns a :class:`rdflib.query.Result` instance. For SELECT queries, iterating over this return :class:`rdflib.query.ResultRow` instances, each containing a set of variable bindings. For CONSTRUCT/DESCRIBE queries, iterating over the result object gives the triples. For ASK queries, iterating will yield the single bool answer, or evaluating the result object in a bool-context (i.e. ``bool(result)``)
+The query method returns a :class:`rdflib.query.Result` instance. For SELECT queries, iterating over this return :class:`rdflib.query.ResultRow` instances, each containing a set of variable bindings. For CONSTRUCT/DESCRIBE queries, iterating over the result object gives the triples. For ASK queries, iterating will yield the single boolean answer, or evaluating the result object in a boolean-context (i.e. ``bool(result)``)
 
 Continuing the example...
 
@@ -50,6 +50,10 @@ Alternatively, the values can be accessed by variable name, either as attributes
     Drew Perttula knows David McClosky
     Timothy Berners-Lee knows Dan Connolly
     ...
+
+As an alternative to using ``PREFIX`` in the SPARQL query, namespace bindings can be passed in with the ``initNs`` kwarg, see :doc:`namespace_and_bindings`.
+
+Variables can also be pre-bound, using ``initBindings`` kwarg can be used to pass in a ``dict`` of initial bindings, this is particularly useful for prepared queries, as described below.
 
 Prepared Queries
 ^^^^^^^^^^^^^^^^

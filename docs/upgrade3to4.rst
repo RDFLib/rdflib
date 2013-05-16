@@ -72,7 +72,7 @@ Custom mapping of datatypes to python objects
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 You can add new mappings of datatype URIs to python objects using the :func:`rdflib.term.bind` method. 
-This also allows you to specify a constructor for constructing objects from the lexical string representation, and a serialisation method for generating a lexical string representation from an object. 
+This also allows you to specify a constructor for constructing objects from the lexical string representation, and a serialization method for generating a lexical string representation from an object. 
 
 
 

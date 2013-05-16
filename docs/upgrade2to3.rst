@@ -8,7 +8,7 @@ Introduction
 ============
 This page details the changes required to upgrade from RDFLib 2.X to 3.X. 
 
-Some older linux distributions still ship 2.4.X. If needed, you can also install 2.4 using easy_install/setup tools.
+Some older Linux distributions still ship 2.4.X. If needed, you can also install 2.4 using easy_install/setup tools.
 
 Version 3.0 reorganised some packages, and moved non-core parts of rdflib to the `rdfextras project <http://code.google.com/p/rdfextras/>`_
 

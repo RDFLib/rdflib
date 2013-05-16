@@ -149,7 +149,7 @@ setup(
             'csv2rdf = rdflib.tools.csv2rdf:main',
             'rdf2dot = rdflib.tools.rdf2dot:main',
             'rdfs2dot = rdflib.tools.rdfs2dot:main',
-            'graphisomorpishm = rdflib.tools.graphisomorphism:main',
+            'rdfgraphisomorpishm = rdflib.tools.graphisomorphism:main',
             ],
         },
     

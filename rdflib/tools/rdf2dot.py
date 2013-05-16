@@ -1,4 +1,13 @@
-#!/usr/bin/env python
+"""
+A commandline tool for drawing RDF graphs in Graphviz DOT format
+
+You can draw the graph of an RDF file directly:
+
+.. code-block: bash
+
+   rdf2dot my_rdf_file.rdf | dot -Tpng | display
+
+"""
 
 import rdflib
 import rdflib.extras.cmdlineutils

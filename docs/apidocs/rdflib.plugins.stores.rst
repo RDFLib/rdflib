@@ -24,6 +24,7 @@ stores Package
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: __dict__,__weakref__
 
 :mod:`regexmatching` Module
 ---------------------------
@@ -32,6 +33,7 @@ stores Package
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: __dict__,__weakref__
 
 :mod:`sparqlstore` Module
 -------------------------

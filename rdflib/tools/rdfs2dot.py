@@ -1,4 +1,13 @@
-#!/usr/bin/env python
+"""
+A commandline tool for drawing RDFS Class diagrams in Graphviz DOT
+format
+
+You can draw the graph of an RDFS file directly:
+
+.. code-block: bash
+
+   rdf2dot my_rdfs_file.rdf | dot -Tpng | display
+"""
 
 import rdflib.extras.cmdlineutils
 

@@ -27,7 +27,7 @@ Stores currently shipped with core RDFLib
 Usage
 ^^^^^
 
-Most cases passing the name of the store to the Graph constrcutor is enough: 
+Most cases passing the name of the store to the Graph constructor is enough: 
 
 .. code-block:: python
 
@@ -35,20 +35,6 @@ Most cases passing the name of the store to the Graph constrcutor is enough:
 
     graph = Graph(store='Sleepycat')
 
-
-.. note:: If additional configuration of the store is required, 
-   a store instance can also be passed, the class can be retrieved with the :mod:`~rdflib.plugin` module:
-   
-   .. code-block:: python
-
-		from rdflib import plugin, Store, Graph
-
-		store = plugin.get('.. store name ..',Store)(identifier = myid)
-
-		# configure the store object somehow
-		store.set_configuration ( ... blah ... )
-
-		graph = Graph(store = store)
 
 Most store offering on-disk persistence will need to be opened before reading or writing :
 

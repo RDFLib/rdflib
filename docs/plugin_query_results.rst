@@ -4,7 +4,7 @@
 Plugin query results
 ====================
 
-Plugins for reading and writing of (SPARQL) :class:`~rdflib.querye.QueryResult` - pass ``name`` to either :meth:`~rdflib.query.QueryResult.parse` or :meth:`~rdflib.query.QueryResult.serialize` 
+Plugins for reading and writing of (SPARQL) :class:`~rdflib.query.QueryResult` - pass ``name`` to either :meth:`~rdflib.query.QueryResult.parse` or :meth:`~rdflib.query.QueryResult.serialize` 
 
 
 Parsers

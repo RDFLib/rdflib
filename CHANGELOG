@@ -1,4 +1,4 @@
-2013/XX/XX 
+2013/06/16
     RELEASE 4.0 
 
     This release includes several major changes:
@@ -45,11 +45,13 @@
 	* "Slicing" of Graphs and Resources as syntactic sugar: 
 	  https://github.com/RDFLib/rdflib/pull/271
 
-		graph[bob:FOAF.knows/FOAF.name] 
+		graph[bob : FOAF.knows/FOAF.name] 
 			-> generator over the names of Bobs friends
 		
 	* The SPARQLStore and SPARQLUpdateStore are now included in the RDFLib core
-	
+
+	* The documentation has been given a major overhaul, and examples
+      for most features have been added.
     
 
     Minor Changes:
@@ -59,6 +61,9 @@
       rdflib.term.URIRef('http://example.org/test')
 
 	  https://github.com/RDFLib/rdflib/pull/258 
+    * Parser/Serializer plugins are also found by mime-type, not just 
+      by plugin name: 
+      https://github.com/RDFLib/rdflib/pull/277
 	* Namespace is no longer a subclass of URIRef
     * URIRefs and Literal language tags are validated on construction,
       avoiding some "RDF-injection" issues

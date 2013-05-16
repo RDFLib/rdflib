@@ -7,7 +7,7 @@ Writing RDFLib Documentation
 The docs are generated with Sphinx. 
 
 Sphinx makes it very easy to pull in doc-strings from modules, classes, methods, etc. 
-When writing doc-strings, special reST fields can be used to annotate parameters, returntypes, etc. This make for pretty API docs: 
+When writing doc-strings, special reST fields can be used to annotate parameters, return-types, etc. This make for pretty API docs: 
 
 http://sphinx-doc.org/domains.html?highlight=param#info-field-lists
 

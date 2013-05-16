@@ -39,7 +39,8 @@ Each graph comes with a `NamespaceManager`__ instance in the `namespace_manager`
 __ http://rdflib.net/rdflib-2.4.0/html/public/rdflib.syntax.NamespaceManager.NamespaceManager-class.html
 
 Does RDFLib support serialization to the `TriX`__ format?
-=========================================================================================
+=========================================================
+
 Yes, both parsing and serialising is supported::
 
 	graph.serialize(format="trix") and graph.load(source, format="trix")

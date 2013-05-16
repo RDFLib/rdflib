@@ -4,7 +4,7 @@
 RDF terms in rdflib
 ===================
 
-Terms are the kinds of objects that can appear in a quoted/asserted triples. Those that are part of core  RDF concepts are: ``Blank Node``, ``URI Reference`` and ``Literal``, the latter consisting of a literal value and either a `datatype <http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/#built-in-datatypes>`_ or an `rfc3066 <http://tools.ietf.org/html/rfc3066>`_ language tag.
+Terms are the kinds of objects that can appear in a quoted/asserted triples. Those that are part of core  RDF concepts are: ``Blank Node``, ``URI Reference`` and ``Literal``, the latter consisting of a literal value and either a `datatype <http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/#built-in-datatypes>`_ or an :rfc:`3066` language tag.
 
 All terms in RDFLib are sub-classes of the :class:`rdflib.term.Identifier` class.
 
@@ -20,7 +20,7 @@ matching nodes by term-patterns probably will only be terms and not nodes.
 BNodes
 ======
 
-    In RDF, a blank node (also called bnode) is a node in an RDF graph representing a resource for which a URI or literal is not given. The resource represented by a blank node is also called an anonymous resource. By RDF standard a blank node can only be used as subject or object in an RDF triple, although in some syntaxes like Notation 3 [1] it is acceptable to use a blank node as a predicate. If a blank node has a node ID (not all blank nodes are labeled in all RDF serializations), it is limited in scope to a serialization of a particular RDF graph, i.e. the node p1 in the subsequent example does not represent the same node as a node named p1 in any other graph  --`wikipedia`__
+    In RDF, a blank node (also called BNode) is a node in an RDF graph representing a resource for which a URI or literal is not given. The resource represented by a blank node is also called an anonymous resource. By RDF standard a blank node can only be used as subject or object in an RDF triple, although in some syntaxes like Notation 3 [1] it is acceptable to use a blank node as a predicate. If a blank node has a node ID (not all blank nodes are labelled in all RDF serializations), it is limited in scope to a serialization of a particular RDF graph, i.e. the node p1 in the subsequent example does not represent the same node as a node named p1 in any other graph  --`wikipedia`__
 
 
 .. __: http://en.wikipedia.org/wiki/Blank_node
@@ -28,7 +28,7 @@ BNodes
 .. autoclass:: rdflib.term.BNode
     :noindex:
 
-.. code-block:: pycon
+.. code-block:: python
 
     >>> from rdflib import BNode
     >>> anode = BNode()
@@ -47,7 +47,7 @@ URIRefs
 .. autoclass:: rdflib.term.URIRef
     :noindex:
 
-.. code-block:: pycon
+.. code-block:: python
 
     >>> from rdflib import URIRef
     >>> aref = URIRef()
@@ -69,7 +69,7 @@ URIRefs
 Literals
 ========
 
-Literals are the attribute values in RDF, for instance, a person's name, the date of birth, height, etc. Literals can have a data-type (i.e. this is a double) or a language tag (this label is in english).
+Literals are the attribute values in RDF, for instance, a person's name, the date of birth, height, etc. Literals can have a data-type (i.e. this is a double) or a language tag (this label is in English).
 
 .. autoclass:: rdflib.term.Literal
     :noindex:
@@ -78,7 +78,7 @@ Literals are the attribute values in RDF, for instance, a person's name, the dat
     
     All literals have a lexical form being a Unicode string, which SHOULD be in Normal Form C.
     
-    Plain literals have a lexical form and optionally a language tag as defined by RFC-3066, normalized to lowercase. An exception will be raised if illegal language-tags are passed to :meth:`rdflib.term.Literal.__init__`.
+    Plain literals have a lexical form and optionally a language tag as defined by :rfc:`3066`, normalized to lowercase. An exception will be raised if illegal language-tags are passed to :meth:`rdflib.term.Literal.__init__`.
     
     Typed literals have a lexical form and a datatype URI being an RDF URI reference.
     
@@ -145,7 +145,7 @@ rdf:HTML               :class:`xml.dom.minidom.DocumentFragment`
 
 .. [#f3] this is a bit dirty - by accident the ``html5lib`` parser
          produces ``DocumentFragments``, and the xml parser ``Documents``,
-         letting us use this to decide what datatype when roundtripping.
+         letting us use this to decide what datatype when round-tripping.
 
 An appropriate data-type and lexical representation can be found using:
 

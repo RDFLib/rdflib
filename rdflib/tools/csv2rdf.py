@@ -1,3 +1,11 @@
+"""
+A commandline tool for semi-automatically converting CSV to RDF
+
+try: ``csv2rdf --help``
+
+"""
+
+
 import sys
 import re
 import csv
@@ -14,6 +22,8 @@ import rdflib
 
 from rdflib import RDF, RDFS
 from rdflib.namespace import split_uri
+
+__all__ = [ 'CSV2RDF' ]
 
 HELP = """
 csv2rdf.py \

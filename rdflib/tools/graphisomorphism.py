@@ -1,3 +1,8 @@
+"""
+A commandline tool for testing if RDF graphs are isomorpic, i.e. equal
+if BNode labels are ignored.
+"""
+
 from rdflib.graph import Graph
 from rdflib import BNode
 try:

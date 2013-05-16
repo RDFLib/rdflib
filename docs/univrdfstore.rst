@@ -336,7 +336,7 @@ Additional Terms to Model
 =========================
 These are a list of additional kinds of RDF terms (all of which are special Literals)
 
-    * RegExLiteral - a REGEX string which can be used in any term slot in order to match by applying the Regular Expression to statements in the underlying graph.
+    * :class:`rdflib.plugins.store.regexmatching.REGEXTerm` - a REGEX string which can be used in any term slot in order to match by applying the Regular Expression to statements in the underlying graph.
     * Date (could provide some utility functions for date manipulation / serialization, etc..)
     * DateRange
 
@@ -367,7 +367,7 @@ The Store implementation needs a mechanism to distinguish between triples (quote
 
 An identifier of ``None`` can be used to indicate the store (aka `all contexts`) in methods such as :meth:`~rdflib.store.Store.triples`, :meth:`~rdflib.store.Store.__len__`, etc. This works as long as we're only dealing with one Conjunctive Graph at a time -- which may not always be the case.
 
-Is there any value in persisting terms that lie outside N3 (RegExLiteral, Date, etc..)?
+Is there any value in persisting terms that lie outside N3 (:class:`rdflib.plugins.store.regexmatching.REGEXTerm`, Date, etc..)?
 
 Potentially, not sure yet.
 

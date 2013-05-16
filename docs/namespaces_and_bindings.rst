@@ -26,7 +26,7 @@ Namespaces in SPARQL Queries
 ----------------------------
 
 The ``initNs`` argument supplied to :meth:`~rdflib.graph.Graph.query` is a dictionary of namespaces to be expanded in the query string. 
-If you pass no ``initNS`` argument, the namespaces registered with the graphs namespace_manager are used::
+If you pass no ``initNs`` argument, the namespaces registered with the graphs namespace_manager are used::
 
 	...
 	from rdflib.namespace import FOAF

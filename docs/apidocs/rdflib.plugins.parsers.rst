@@ -40,6 +40,7 @@ parsers Package
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: __dict__,__weakref__
 
 :mod:`ntriples` Module
 ----------------------
@@ -48,6 +49,7 @@ parsers Package
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: __dict__,__weakref__
 
 :mod:`rdfxml` Module
 --------------------
