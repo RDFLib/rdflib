@@ -13,7 +13,7 @@ Use :meth:`~rdflib.graph.Graph.label` to quickly look up the RDFS
 label of something, or better use
 :meth:`~rdflib.graph.Graph.preferredLabel` to find a label using
 several different properties (i.e. either ``rdfs:label``,
-``skos:preferredLabel``, ``dc:title``, etc.
+``skos:preferredLabel``, ``dc:title``, etc.).
 
 Functional properties
 ---------------------
