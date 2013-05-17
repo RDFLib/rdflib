@@ -51,13 +51,16 @@ else:
         assert setup
         kwargs['test_suite'] = "nose.collector"
         kwargs['install_requires'] = [
-            'isodate', 'html5lib',
+            'isodate',
             'pyparsing<=1.5.7', 'SPARQLWrapper']
 
         if sys.version_info[1]<7:
             kwargs['install_requires'].append('ordereddict')
         if sys.version_info[1]<6: 
             kwargs['install_requires'].append('simplejson')
+            kwargs['install_requires'].append('html5lib==0.95')
+        else:
+            kwargs['install_requires'].append('html5lib')
 
     except ImportError:
         from distutils.core import setup
