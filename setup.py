@@ -80,19 +80,20 @@ def find_version(filename):
 version = find_version('rdflib/__init__.py')
 
 packages = ['rdflib',
-              'rdflib/extras',
-              'rdflib/plugins',
-              'rdflib/plugins/parsers',
-              'rdflib/plugins/parsers/pyRdfa',
-              'rdflib/plugins/parsers/pyRdfa/transform',
-              'rdflib/plugins/parsers/pyRdfa/extras',
-              'rdflib/plugins/parsers/pyRdfa/host',
-              'rdflib/plugins/parsers/pyRdfa/rdfs',
-              'rdflib/plugins/parsers/pyMicrodata',
-              'rdflib/plugins/serializers',
-              'rdflib/plugins/sparql',
-              'rdflib/plugins/sparql/results',
-              'rdflib/plugins/stores',
+            'rdflib/extras',
+            'rdflib/plugins',
+            'rdflib/plugins/parsers',
+            'rdflib/plugins/parsers/pyRdfa',
+            'rdflib/plugins/parsers/pyRdfa/transform',
+            'rdflib/plugins/parsers/pyRdfa/extras',
+            'rdflib/plugins/parsers/pyRdfa/host',
+            'rdflib/plugins/parsers/pyRdfa/rdfs',
+            'rdflib/plugins/parsers/pyMicrodata',
+            'rdflib/plugins/serializers',
+            'rdflib/plugins/sparql',
+            'rdflib/plugins/sparql/results',
+            'rdflib/plugins/stores',
+            'rdflib/tools'
               ]
 
 if os.environ.get('READTHEDOCS', None):
@@ -127,22 +128,26 @@ setup(
             "Natural Language :: English",
                  ],
     long_description="""\
-    RDFLib is a Python library for working with
-    RDF, a simple yet powerful language for representing information.
+RDFLib is a Python library for working with
+RDF, a simple yet powerful language for representing information.
 
-    The library contains parsers and serializers for RDF/XML, N3,
-    NTriples, Turtle, TriX, RDFa and Microdata . The library presents
-    a Graph interface which can be backed by any one of a number of
-    Store implementations. The core rdflib includes store
-    implementations for in memory storage, persistent storage on top
-    of the Berkeley DB, and a wrapper for remote SPARQL endpoints.
+The library contains parsers and serializers for RDF/XML, N3,
+NTriples, Turtle, TriX, RDFa and Microdata . The library presents
+a Graph interface which can be backed by any one of a number of
+Store implementations. The core rdflib includes store
+implementations for in memory storage, persistent storage on top
+of the Berkeley DB, and a wrapper for remote SPARQL endpoints.
 
-    A SPARQL 1.1 engine is also included. 
+A SPARQL 1.1 engine is also included. 
 
-    If you have recently reported a bug marked as fixed, or have a craving for
-    the very latest, you may want the development version instead:
+If you have recently reported a bug marked as fixed, or have a craving for
+the very latest, you may want the development version instead:
 
-    easy_install https://github.com/RDFLib/rdflib/tarball/master
+   easy_install https://github.com/RDFLib/rdflib/tarball/master
+
+Read the docs at: 
+   
+   http://rdflib.readthedocs.org
 
     """,
     packages = packages,
