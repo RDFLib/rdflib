@@ -11,6 +11,7 @@ want to do so through the Graph class parse method.
 """
 
 import os
+import sys
 from urllib import pathname2url, url2pathname
 from urllib2 import urlopen, Request
 from urlparse import urljoin
@@ -142,7 +143,9 @@ def create_input_source(source=None, publicID=None,
                 f = source
                 input_source = InputSource()
                 input_source.setByteStream(f)
-                if hasattr(f, "name"):
+                if f is sys.stdin:
+                    input_source.setSystemId("file:///dev/stdin")
+                elif hasattr(f, "name"):
                     input_source.setSystemId(f.name)
             else:
                 raise Exception("Unexpected type '%s' for source '%s'" %
