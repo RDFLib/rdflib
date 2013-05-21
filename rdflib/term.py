@@ -205,7 +205,7 @@ class URIRef(Identifier):
                     value += "#"
 
         if not _is_valid_uri(value): 
-            raise Exception('%s does not look like a valid URI, perhaps you want to urlencode it?'%value)
+            _LOGGER.warning('%s does not look like a valid URI, trying to serialize this will break.'%value)
 
 
         try:
@@ -218,6 +218,9 @@ class URIRef(Identifier):
         return unicode(self)
 
     def n3(self, namespace_manager = None):
+        if not _is_valid_uri(self): 
+            raise Exception('"%s" does not look like a valid URI, I cannot serialize this as N3/Turtle. Perhaps you wanted to urlencode it?'%self)
+
         if namespace_manager: 
             return namespace_manager.normalizeUri(self)
         else: 

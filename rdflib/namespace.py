@@ -65,7 +65,7 @@ import os
 from urlparse import urljoin, urldefrag
 from urllib import pathname2url
 
-from rdflib.term import URIRef, Variable, _XSD_PFX
+from rdflib.term import URIRef, Variable, _XSD_PFX, _is_valid_uri
 
 __all__ = [
     'is_ncname', 'split_uri', 'Namespace', 
@@ -322,6 +322,11 @@ class NamespaceManager(object):
             return ':'.join([qNameParts[0], qNameParts[-1]])
 
     def compute_qname(self, uri, generate=True):
+
+        if not _is_valid_uri(uri): 
+            raise Exception('"%s" does not look like a valid URI, I cannot serialize this. Perhaps you wanted to urlencode it?'%uri)
+
+
         if not uri in self.__cache:
             namespace, name = split_uri(uri)
             namespace = URIRef(namespace)
