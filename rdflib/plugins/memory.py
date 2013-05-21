@@ -436,7 +436,7 @@ class IOMemory(Store):
     def __all_triples(self, cid):
         """return a generator which yields all the triples (unencoded) of
            the given context"""
-        for tset in self.__subjectIndex.itervalues():
+        for tset in self.__subjectIndex.values():
             for enctriple in tset.copy():
                 if self.__tripleHasContext(enctriple, cid):
                     yield self.__decodeTriple(enctriple), self.__contexts(enctriple)
