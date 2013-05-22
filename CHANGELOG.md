@@ -1,4 +1,32 @@
-2013/06/16 RELEASE 4.0 
+2013/05/22 RELEASE 4.0.1
+========================
+
+    Following RDFLib tradition, some bugs snuck into the 4.0 release.
+    This is a bug-fixing release: 
+
+    * the new URI validation caused lots of problems, but is
+      nescessary to avoid ''RDF injection'' vulnerabilities. In the
+      spirit of ''be liberal in what you accept, but conservative in
+      what you produce", we moved validation to serialisation time.
+
+    * the   ```rdflib.tools```   package    was   missing   from   the
+      ```setup.py```  script, and  was therefore  not included  in the
+      PYPI tarballs.
+
+    * RDF parser choked on empty namespace URI
+      [#288](https://github.com/RDFLib/rdflib/issues/288)
+       
+    * Parsing from ```sys.stdin``` was broken
+      [#285](https://github.com/RDFLib/rdflib/issues/285)
+
+    * The new IO store had problems with concurrent modifications if
+      several graphs used the same store
+      [#286](https://github.com/RDFLib/rdflib/issues/286)
+
+    * Moved HTML5Lib dependency to the recently released 1.0b1 which
+      support python3
+
+2013/05/16 RELEASE 4.0 
 ======================
 
 This release includes several major changes:
@@ -46,14 +74,16 @@ This release includes several major changes:
      print row.age, row["name"]
   ```
 
-* "Slicing" of Graphs and Resources as syntactic sugar: ([#271](https://github.com/RDFLib/rdflib/issues/271))
+* "Slicing" of Graphs and Resources as syntactic sugar:
+  ([#271](https://github.com/RDFLib/rdflib/issues/271))
 
   ```py
   graph[bob : FOAF.knows/FOAF.name] 
             -> generator over the names of Bobs friends
   ```
         
-* The ```SPARQLStore``` and ```SPARQLUpdateStore``` are now included in the RDFLib core
+* The ```SPARQLStore``` and ```SPARQLUpdateStore``` are now included
+  in the RDFLib core
 
 * The documentation has been given a major overhaul, and examples
   for most features have been added.
