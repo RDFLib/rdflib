@@ -1,30 +1,30 @@
 2013/05/22 RELEASE 4.0.1
 ========================
 
-    Following RDFLib tradition, some bugs snuck into the 4.0 release.
-    This is a bug-fixing release: 
+Following RDFLib tradition, some bugs snuck into the 4.0 release.
+This is a bug-fixing release: 
 
-    * the new URI validation caused lots of problems, but is
-      nescessary to avoid ''RDF injection'' vulnerabilities. In the
-      spirit of ''be liberal in what you accept, but conservative in
-      what you produce", we moved validation to serialisation time.
+* the new URI validation caused lots of problems, but is
+  nescessary to avoid ''RDF injection'' vulnerabilities. In the
+  spirit of ''be liberal in what you accept, but conservative in
+  what you produce", we moved validation to serialisation time.
 
-    * the   ```rdflib.tools```   package    was   missing   from   the
-      ```setup.py```  script, and  was therefore  not included  in the
-      PYPI tarballs.
+* the   ```rdflib.tools```   package    was   missing   from   the
+  ```setup.py```  script, and  was therefore  not included  in the
+  PYPI tarballs.
 
-    * RDF parser choked on empty namespace URI
-      [#288](https://github.com/RDFLib/rdflib/issues/288)
-       
-    * Parsing from ```sys.stdin``` was broken
-      [#285](https://github.com/RDFLib/rdflib/issues/285)
+* RDF parser choked on empty namespace URI
+  [#288](https://github.com/RDFLib/rdflib/issues/288)
 
-    * The new IO store had problems with concurrent modifications if
-      several graphs used the same store
-      [#286](https://github.com/RDFLib/rdflib/issues/286)
+* Parsing from ```sys.stdin``` was broken
+  [#285](https://github.com/RDFLib/rdflib/issues/285)
 
-    * Moved HTML5Lib dependency to the recently released 1.0b1 which
-      support python3
+* The new IO store had problems with concurrent modifications if
+  several graphs used the same store
+  [#286](https://github.com/RDFLib/rdflib/issues/286)
+
+* Moved HTML5Lib dependency to the recently released 1.0b1 which
+  support python3
 
 2013/05/16 RELEASE 4.0 
 ======================
