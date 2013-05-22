@@ -84,3 +84,9 @@ Minor Changes
 
 * The identifiers for Graphs are now converted to URIRefs if they are not a :class:`rdflib.term.Node`, i.e. no more graphs with string identifiers. Again, unless you do something quite unusual, you should not notice. 
 
+* String concatenation with URIRefs now returns URIRefs, not strings:: 
+
+  >>> URIRef("http://example.org/people/") + "Bill"
+  rdflib.term.URIRef(u'http://example.org/people/Bill')
+
+  This is be convenient, but may cause trouble if you expected a string.
