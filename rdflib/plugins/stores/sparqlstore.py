@@ -420,6 +420,8 @@ class SPARQLUpdateStore(SPARQLStore):
 
     """
 
+    where_pattern = re.compile(r"""(?P<where>WHERE\s*{)""", re.IGNORECASE)
+
     def __init__(self,
                  queryEndpoint=None, update_endpoint=None,
                  bNodeAsURI=False, sparql11=True,
@@ -581,6 +583,14 @@ class SPARQLUpdateStore(SPARQLStore):
         """
         Perform a SPARQL Update Query against the endpoint,
         INSERT, LOAD, DELETE etc.
+        Setting initNs adds PREFIX declarations to the beginning of
+        the update. Setting initBindings adds inline VALUEs to the
+        beginning of every WHERE clause. By the SPARQL grammar, all
+        operations that support variables (namely INSERT and DELETE)
+        require a WHERE clause. 
+        Important: initBindings fails if the update contains the
+        substring 'WHERE {' which does not denote a WHERE clause, e.g.
+        if it is part of a literal.
         """
         self.debug = DEBUG
         assert isinstance(query, basestring)
@@ -594,14 +604,11 @@ class SPARQLUpdateStore(SPARQLStore):
             # have a WHERE clause.  This also works for updates with
             # more than one INSERT/DELETE.
             v = list(initBindings)
-
             values = "\nVALUES ( %s )\n{ ( %s ) }\n"\
                 % (" ".join("?" + str(x) for x in v),
                    " ".join(initBindings[x].n3() for x in v))
 
-            pattern = re.compile(r"""(?P<where>WHERE\s*{)""")
-            query = pattern.sub("WHERE { " + values, query)
-
+            query = self.where_pattern.sub("WHERE { " + values, query)
 
         r = self._do_update(query)
         content = r.read()  # we expect no content
