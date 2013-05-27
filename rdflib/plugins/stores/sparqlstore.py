@@ -268,20 +268,8 @@ class SPARQLStore(NSSPARQLWrapper, Store):
                    " ".join(initBindings[x].n3() for x in v))
 
         self.resetQuery()
-
         if self.context_aware and queryGraph and queryGraph != '__UNION__':
-            # we care about context
-
-            if not re.search('[\s{]GRAPH[{\s]', query, flags=re.I):
-                # if a GRAPH clause was already specified, move on...
-
-                # insert GRAPH clause after/before first/last { }
-                # not 100% sure how rock-steady this is
-                i1 = query.index("{") + 1
-                i2 = query.rindex("}")
-                query = query[:i1] + ' GRAPH %s { ' % queryGraph.n3() + \
-                    query[i1:i2] + ' } ' + query[i2:]
-
+            self.addDefaultGraph(queryGraph)
         self.setQuery(query)
 
         return Result.parse(SPARQLWrapper.query(self).response)
@@ -312,16 +300,15 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             v = ' '.join([term.n3() for term in vars])
         else:
             v = '*'
+
+        query = "SELECT %s WHERE { %s %s %s }" % \
+            (v, s.n3(), p.n3(), o.n3())
+
+        self.resetQuery()
         if self.context_aware and context is not None:
-
-            query = "SELECT %s WHERE { GRAPH %s { %s %s %s } }" % \
-                (v, context.identifier.n3(),
-                 s.n3(), p.n3(), o.n3())
-        else:
-            query = "SELECT %s WHERE { %s %s %s }" % \
-                (v, s.n3(), p.n3(), o.n3())
-
+            self.addDefaultGraph(context.identifier)
         self.setQuery(query)
+
         doc = ElementTree.parse(SPARQLWrapper.query(self).response)
         # ElementTree.dump(doc)
         for rt, vars in TraverseSPARQLResultDOM(doc, asDictionary=True):
@@ -345,11 +332,10 @@ class SPARQLStore(NSSPARQLWrapper, Store):
                 "For performance reasons, this is not" +
                 "supported for sparql1.0 endpoints")
         else:
+            self.resetQuery()
+            q = "SELECT (count(*) as ?c) WHERE {?s ?p ?o .}"
             if self.context_aware and context is not None:
-                q = "SELECT (count(*) as ?c) FROM %s WHERE {?s ?p ?o .}" % (
-                    context.identifier.n3())
-            else:
-                q = "SELECT (count(*) as ?c) WHERE {?s ?p ?o .}"
+                self.addDefaultGraph(context.identifier)
             self.setQuery(q)
             doc = ElementTree.parse(SPARQLWrapper.query(self).response)
             rt, vars = iter(
