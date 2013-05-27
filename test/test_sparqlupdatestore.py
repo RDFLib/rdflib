@@ -116,7 +116,7 @@ class TestSparql11(unittest.TestCase):
         g = self.graph.get_context(graphuri)
         self.assertEquals(
             set(g.triples((None,None,None))),
-            {(michel,likes,pizza)},
+            set([(michel,likes,pizza)]),
             'only michel likes pizza'
         )
         
@@ -133,7 +133,7 @@ class TestSparql11(unittest.TestCase):
         g = self.graph.get_context(graphuri)
         self.assertEquals(
             set(g.triples((None,None,None))),
-            {(michel,likes,pizza)},
+            set([(michel,likes,pizza)]),
             'only michel likes pizza'
         )
 
@@ -152,7 +152,7 @@ class TestSparql11(unittest.TestCase):
         g = self.graph.get_context(graphuri)
         self.assertEquals(
             set(g.triples((None,None,None))),
-            {(michel,likes,pizza), (bob,likes,pizza)},
+            set([(michel,likes,pizza), (bob,likes,pizza)]),
             'michel and bob like pizza'
         )
 
