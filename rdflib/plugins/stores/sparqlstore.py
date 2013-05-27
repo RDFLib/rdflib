@@ -493,12 +493,8 @@ class SPARQLUpdateStore(SPARQLStore):
 
 
         triple = "%s %s %s ." % (subject.n3(), predicate.n3(), obj.n3())
-        if self.context_aware and context is not None:
-            q = "INSERT DATA { GRAPH %s { %s } }" % (
-                context.identifier.n3(), triple)
-        else:
-            q = "INSERT DATA { %s }" % triple
-        r = self._do_update(q)
+        q = "INSERT DATA { %s }" % triple
+        r = self._do_update(q, context=context)
         content = r.read()  # we expect no content
         if r.status not in (200, 204):
             raise Exception("Could not update: %d %s\n%s" % (
@@ -542,21 +538,20 @@ class SPARQLUpdateStore(SPARQLStore):
             obj = Variable("O")
 
         triple = "%s %s %s ." % (subject.n3(), predicate.n3(), obj.n3())
-        if self.context_aware and context is not None:
-            q = "DELETE { GRAPH %s { %s } } WHERE { GRAPH %s { %s } }" % (
-                context.identifier.n3(), triple,
-                context.identifier.n3(), triple)
-        else:
-            q = "DELETE { %s } WHERE { %s } " % (triple, triple)
-        r = self._do_update(q)
+        q = "DELETE { %s } WHERE { %s } " % (triple, triple)
+        r = self._do_update(q, context=context)
         content = r.read()  # we expect no content
         if r.status not in (200, 204):
             raise Exception("Could not update: %d %s\n%s" % (
                 r.status, r.reason, content))
 
-    def _do_update(self, update):
+    def _do_update(self, update, defaultGraph=None, context=None):
+        # context=c is shorthand for defaultGraph=c.identifier
         import urllib
-        update = urllib.urlencode({'update': update})
+        parameters = {'update': update}
+        if self.context_aware and (defaultGraph or context) is not None:
+            parameters['using-graph-uri'] = defaultGraph or context.identifier
+        update = urllib.urlencode(parameters)
         self.connection.request(
             'POST', self.path, update.encode("utf-8"), self.headers)
         return self.connection.getresponse()
@@ -596,7 +591,9 @@ class SPARQLUpdateStore(SPARQLStore):
 
             query = self.where_pattern.sub("WHERE { " + values, query)
 
-        r = self._do_update(query)
+        #raise Exception(repr(queryGraph))
+        if queryGraph == '__UNION__': queryGraph=None
+        r = self._do_update(query, defaultGraph=queryGraph)
         content = r.read()  # we expect no content
         if r.status not in (200, 204):
             raise Exception("Could not update: %d %s\n%s" % (
