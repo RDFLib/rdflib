@@ -73,7 +73,10 @@ class NSSPARQLWrapper(SPARQLWrapper):
         @bug: #2320024
         """
         self.queryType = self._parseQueryType(query)
-        self.queryString = '\n'.join(
+        self.queryString = self.injectPrefixes(query)
+
+    def injectPrefixes(self, query):
+        return '\n'.join(
             ['\n'.join(['PREFIX %s: <%s>' % (key, val)
                         for key, val in self.nsBindings.items()]),
              query])
@@ -417,6 +420,8 @@ class SPARQLUpdateStore(SPARQLStore):
 
     """
 
+    where_pattern = re.compile(r"""(?P<where>WHERE\s*{)""", re.IGNORECASE)
+
     def __init__(self,
                  queryEndpoint=None, update_endpoint=None,
                  bNodeAsURI=False, sparql11=True,
@@ -429,7 +434,7 @@ class SPARQLUpdateStore(SPARQLStore):
         if update_endpoint:
             self.update_endpoint = update_endpoint
 
-        self.headers = {'Content-type': "application/sparql-update",
+        self.headers = {'Content-type': "application/x-www-form-urlencoded",
                         'Connection': 'Keep-alive'}
 
     def __set_update_endpoint(self, update_endpoint):
@@ -565,16 +570,46 @@ class SPARQLUpdateStore(SPARQLStore):
 
     def _do_update(self, update):
         import urllib
-        update = urllib.urlencode({'query': update})
+        update = urllib.urlencode({'update': update})
         self.connection.request(
             'POST', self.path, update.encode("utf-8"), self.headers)
         return self.connection.getresponse()
 
-    def update(self, query):
+    def update(self, query,
+               initNs={},
+               initBindings={},
+               queryGraph=None,
+               DEBUG=False):
         """
         Perform a SPARQL Update Query against the endpoint,
         INSERT, LOAD, DELETE etc.
+        Setting initNs adds PREFIX declarations to the beginning of
+        the update. Setting initBindings adds inline VALUEs to the
+        beginning of every WHERE clause. By the SPARQL grammar, all
+        operations that support variables (namely INSERT and DELETE)
+        require a WHERE clause. 
+        Important: initBindings fails if the update contains the
+        substring 'WHERE {' which does not denote a WHERE clause, e.g.
+        if it is part of a literal.
         """
+        self.debug = DEBUG
+        assert isinstance(query, basestring)
+        self.setNamespaceBindings(initNs)
+        query = self.injectPrefixes(query)
+
+        if initBindings:
+            # For INSERT and DELETE the WHERE clause is obligatory
+            # (http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rModify)
+            # Other query types do not allow variables and don't
+            # have a WHERE clause.  This also works for updates with
+            # more than one INSERT/DELETE.
+            v = list(initBindings)
+            values = "\nVALUES ( %s )\n{ ( %s ) }\n"\
+                % (" ".join("?" + str(x) for x in v),
+                   " ".join(initBindings[x].n3() for x in v))
+
+            query = self.where_pattern.sub("WHERE { " + values, query)
+
         r = self._do_update(query)
         content = r.read()  # we expect no content
         if r.status not in (200, 204):

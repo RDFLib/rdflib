@@ -33,6 +33,7 @@ class TestSparql11(unittest.TestCase):
         # clean out the store
         for c in self.graph.contexts():
             c.remove((None, None, None))
+            assert len(c) == 0
 
     def tearDown(self):
         self.graph.close()
@@ -99,6 +100,61 @@ class TestSparql11(unittest.TestCase):
 
         r = self.graph.query("SELECT * WHERE { ?s <urn:likes> <urn:pizza> . }")
         self.assertEquals(1, len(list(r)), "only tarek likes pizza")
+
+    def testUpdate(self):
+        self.graph.update("INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> . } }")
+        
+        g = self.graph.get_context(graphuri)
+        self.assertEquals(1, len(g), 'graph contains 1 triples')
+        
+    def testUpdateWithInitNs(self):
+        self.graph.update(
+            "INSERT DATA { GRAPH ns:graph { ns:michel ns:likes ns:pizza . } }",
+            initNs={'ns': URIRef('urn:')}
+        )
+        
+        g = self.graph.get_context(graphuri)
+        self.assertEquals(
+            set(g.triples((None,None,None))),
+            set([(michel,likes,pizza)]),
+            'only michel likes pizza'
+        )
+        
+    def testUpdateWithInitBindings(self):
+        self.graph.update(
+            "INSERT { GRAPH <urn:graph> { ?a ?b ?c . } } WherE { }",
+            initBindings={
+                'a': URIRef('urn:michel'),
+                'b': URIRef('urn:likes'),
+                'c': URIRef('urn:pizza'),
+            }
+        )
+        
+        g = self.graph.get_context(graphuri)
+        self.assertEquals(
+            set(g.triples((None,None,None))),
+            set([(michel,likes,pizza)]),
+            'only michel likes pizza'
+        )
+
+    def testMultipleUpdateWithInitBindings(self):
+        self.graph.update(
+            "INSERT { GRAPH <urn:graph> { ?a ?b ?c . } } WHERE { };"
+            "INSERT { GRAPH <urn:graph> { ?d ?b ?c . } } WHERE { }",
+            initBindings={
+                'a': URIRef('urn:michel'),
+                'b': URIRef('urn:likes'),
+                'c': URIRef('urn:pizza'),
+                'd': URIRef('urn:bob'),
+            }
+        )
+        
+        g = self.graph.get_context(graphuri)
+        self.assertEquals(
+            set(g.triples((None,None,None))),
+            set([(michel,likes,pizza), (bob,likes,pizza)]),
+            'michel and bob like pizza'
+        )
 
 from nose import SkipTest
 import urllib2
