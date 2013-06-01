@@ -205,6 +205,11 @@ foo-bar:Ex foo-bar:name "Test" . """
 
         g.close()
 
+    def testQuotedSerialization(self):
+        g = ConjunctiveGraph()
+        g.parse(data=test_data, format="n3")
+        g.serialize(format="n3")
+
     def testParse(self):
         g = ConjunctiveGraph()
         try:
