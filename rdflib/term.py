@@ -45,8 +45,10 @@ import xml.dom.minidom
 
 from urlparse import urlparse, urljoin, urldefrag
 from datetime import date, time, datetime
-from isodate import parse_time, parse_date, parse_datetime
 from re import sub, compile
+from collections import defaultdict
+
+from isodate import parse_time, parse_date, parse_datetime
 
 
 try:
@@ -1563,7 +1565,15 @@ class Statement(Node, tuple):
 
 # Nodes are ordered like this
 # See http://www.w3.org/TR/sparql11-query/#modOrderBy
-_ORDERING = dict(map(reversed, enumerate([BNode, Variable, URIRef, Literal])))
+# we leave "space" for more subclasses of Node elsewhere
+# default-dict to grazefully fail for new subclasses
+_ORDERING = defaultdict(int)
+_ORDERING.update({ 
+    BNode: 10, 
+    Variable: 20, 
+    URIRef: 30, 
+    Literal: 40 
+    })
 
 
 def _isEqualXMLNode(node, other):

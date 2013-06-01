@@ -221,13 +221,11 @@ from rdflib import plugin, exceptions, query
 
 from rdflib.term import Node, URIRef, Genid
 from rdflib.term import BNode
-from rdflib.term import Literal
+
+import rdflib.term
 
 from rdflib.paths import Path
 
-assert Literal
-from rdflib.namespace import Namespace
-assert Namespace
 from rdflib.store import Store
 from rdflib.serializer import Serializer
 from rdflib.parser import Parser
@@ -1612,7 +1610,6 @@ class QuotedGraph(Graph):
     def __reduce__(self):
         return (QuotedGraph, (self.store, self.identifier))
 
-
 class GraphValue(QuotedGraph):
     def __init__(self, store, identifier=None, graph=None):
         if graph is not None:
@@ -1638,6 +1635,13 @@ class GraphValue(QuotedGraph):
 
     def __reduce__(self):
         return (GraphValue, (self.store, self.identifier,))
+
+# Make sure QuotedGraph and GraphValues are ordered correctly 
+# wrt to other Terms. 
+# this must be done here, as the QuotedGraph cannot be 
+# circularily imported in term.py
+rdflib.term._ORDERING[QuotedGraph]=11
+rdflib.term._ORDERING[GraphValue]=12
 
 
 class Seq(object):
