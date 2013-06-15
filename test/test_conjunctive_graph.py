@@ -1,5 +1,5 @@
-from rdflib.graph import ConjunctiveGraph
-from rdflib.term import Identifier, URIRef
+from rdflib import ConjunctiveGraph
+from rdflib.term import Identifier, URIRef, BNode
 from rdflib.parser import StringInputSource
 from os import path
 
@@ -10,6 +10,23 @@ DATA = u"""
 
 PUBLIC_ID = u"http://example.org/record/1"
 
+def test_bnode_publicid(): 
+
+    g = ConjunctiveGraph()
+    b = BNode()
+    data = '<d:d> <e:e> <f:f> .'
+    print ("Parsing '{}' into {}".format(data, repr(b)))
+    g.parse(data=data, format='turtle', publicID=b)
+
+    triples = list( g.get_context(b).triples((None,None,None)) )
+    if not triples:
+        raise Exception("No triples found in graph {}".format(repr(b)))
+
+    u = URIRef(b)
+
+    triples = list( g.get_context(u).triples((None,None,None)) )
+    if triples:
+        raise Exception("Bad: Found in graph {}: {}".format(repr(u), triples))
 
 def test_graph_ids():
     def check(kws):
