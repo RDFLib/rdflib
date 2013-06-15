@@ -15,18 +15,18 @@ def test_bnode_publicid():
     g = ConjunctiveGraph()
     b = BNode()
     data = '<d:d> <e:e> <f:f> .'
-    print ("Parsing '{}' into {}".format(data, repr(b)))
+    print ("Parsing %r into %r"%(data, b))
     g.parse(data=data, format='turtle', publicID=b)
 
     triples = list( g.get_context(b).triples((None,None,None)) )
     if not triples:
-        raise Exception("No triples found in graph {}".format(repr(b)))
+        raise Exception("No triples found in graph %r"%b)
 
     u = URIRef(b)
 
     triples = list( g.get_context(u).triples((None,None,None)) )
     if triples:
-        raise Exception("Bad: Found in graph {}: {}".format(repr(u), triples))
+        raise Exception("Bad: Found in graph %r: %r"%(u, triples))
 
 def test_graph_ids():
     def check(kws):
