@@ -759,11 +759,15 @@ class Graph(Node):
 
         list is an RDF collection.
         """
+        chain = set([list])
         while list:
             item = self.value(list, RDF.first)
             if item:
                 yield item
             list = self.value(list, RDF.rest)
+            if list in chain:
+                raise ValueError("List contains a recursive rdf:rest reference")
+            chain.add(list)
 
     def transitiveClosure(self, func, arg, seen=None):
         """
