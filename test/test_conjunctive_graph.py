@@ -1,4 +1,4 @@
-from rdflib import ConjunctiveGraph
+from rdflib import ConjunctiveGraph, Graph
 from rdflib.term import Identifier, URIRef, BNode
 from rdflib.parser import StringInputSource
 from os import path
@@ -27,6 +27,18 @@ def test_bnode_publicid():
     triples = list( g.get_context(u).triples((None,None,None)) )
     if triples:
         raise Exception("Bad: Found in graph %r: %r"%(u, triples))
+
+
+def test_quad_contexts(): 
+    g = ConjunctiveGraph()
+    a = URIRef('urn:a')
+    b = URIRef('urn:b')
+    g.get_context(a).add((a,a,a))
+    g.addN([(b,b,b,b)])
+
+    assert set(g) == set([(a,a,a), (b,b,b)])
+    for q in g.quads(): 
+        assert isinstance(q[3], Graph)
 
 def test_graph_ids():
     def check(kws):
