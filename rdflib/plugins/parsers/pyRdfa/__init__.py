@@ -609,8 +609,7 @@ class pyRdfa :
 						# No charset set. The HTMLLib parser tries to sniff into the
 						# the file to find a meta header for the charset; if that
 						# works, fine, otherwise it falls back on window-...
-						dom = parser.parse(input)
-						
+						dom = parser.parse(input)						
 					try :
 						if isstring :
 							input.close()

@@ -1356,7 +1356,7 @@ class ConjunctiveGraph(Graph):
         return (ConjunctiveGraph, (self.store, self.identifier))
 
 
-class Dataset(ConjunctiveGraph):
+class Dataset(Graph):
     __doc__ = format_doctest_out("""
     RDF 1.1 Dataset. Small extension to the Conjunctive Graph:
     - the primary term is graphs in the datasets and not contexts with quads,
@@ -1575,6 +1575,22 @@ class Dataset(ConjunctiveGraph):
             else:
                 if ("%s" % g) == ("%s" % c.identifier):
                     yield (s, p, o, c.identifier)
+
+
+    def parse(self, source=None, publicID=None, format="xml",
+              location=None, file=None, data=None, **args):
+        """
+        Parse source adding the resulting triples to the default graph.
+
+        The graph into which the source was parsed. In the case of n3
+        it returns the root context.
+        """
+
+        target = self if publicID == None else self.graph(publicID)
+        Graph.parse(target, source=source, publicID=None, format=format, location=location, file=file, data=data, **args)
+
+        return self
+
 
 
 class QuotedGraph(Graph):

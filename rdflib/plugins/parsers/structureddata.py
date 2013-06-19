@@ -142,8 +142,7 @@ class RDFaParser(Parser):
                            base=baseURI,
                            media_type=media_type,
                            rdfa_version=rdfa_version)
-        processor.graph_from_source(
-            orig_source, graph=graph, pgraph=processor_graph, rdfOutput=False)
+        processor.graph_from_source(orig_source, graph=graph, pgraph=processor_graph, rdfOutput=False)
         # This may result in an exception if the graph parsing led to an error
         _check_error(processor_graph)
 
@@ -232,7 +231,9 @@ class StructuredDataParser(Parser):
               pgraph=None,
               rdfa_version="",
               vocab_expansion=False,
-              vocab_cache=False):
+              vocab_cache=False,
+              media_type='text/html'
+              ):
         """
         @param source: one of the input sources that the RDFLib package defined
         @type source: InputSource class instance
@@ -260,7 +261,10 @@ class StructuredDataParser(Parser):
         as triples, to the processor graph, or whether they should be raised.
         @type rdfOutput: Boolean
         """
+        # Note that the media_type argument is ignored, and is here only to avoid an 'unexpected argument' error. 
+        # This parser works for text/html only anyway...
         (baseURI, orig_source) = _get_orig_source(source)
+        if rdfa_version == "" : rdfa_version = "1.1"
         RDFaParser()._process(graph, pgraph, baseURI, orig_source,
                               media_type='text/html',
                               rdfa_version=rdfa_version,
@@ -270,5 +274,4 @@ class StructuredDataParser(Parser):
                                    vocab_expansion=vocab_expansion,
                                    vocab_cache=vocab_cache)
         from .hturtle import HTurtleParser
-        HTurtleParser(
-        )._process(graph, baseURI, orig_source, media_type='text/html')
+        HTurtleParser()._process(graph, baseURI, orig_source, media_type='text/html')
