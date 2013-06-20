@@ -362,17 +362,12 @@ class Graph(Node):
     def addN(self, quads):
         """Add a sequence of triple with context"""
 
-        def assertnode(t):
-            assert isinstance(t, Node), \
-                'Term %s must be an rdflib term' % (t,)
-            return True
-
         self.__store.addN((s, p, o, c) for s, p, o, c in quads
                           if isinstance(c, Graph)
                           and c.identifier is self.identifier
-                          and assertnode(s)
-                          and assertnode(p)
-                          and assertnode(o))
+                          and _assertnode(s)
+                          and _assertnode(p)
+                          and _assertnode(o))
 
     def remove(self, (s, p, o)):
         """Remove a triple from the graph
@@ -759,11 +754,15 @@ class Graph(Node):
 
         list is an RDF collection.
         """
+        chain = set([list])
         while list:
             item = self.value(list, RDF.first)
             if item:
                 yield item
             list = self.value(list, RDF.rest)
+            if list in chain:
+                raise ValueError("List contains a recursive rdf:rest reference")
+            chain.add(list)
 
     def transitiveClosure(self, func, arg, seen=None):
         """
@@ -1251,11 +1250,31 @@ class ConjunctiveGraph(Graph):
 
     def add(self, (s, p, o)):
         """Add the triple to the default context"""
+        assert isinstance(s, Node), \
+            "Subject %s must be an rdflib term" % (s,)
+        assert isinstance(p, Node), \
+            "Predicate %s must be an rdflib term" % (p,)
+        assert isinstance(o, Node), \
+            "Object %s must be an rdflib term" % (o,)
+
         self.store.add((s, p, o), context=self.default_context, quoted=False)
 
     def addN(self, quads):
         """Add a sequence of triples with context"""
-        self.store.addN(quads)
+
+        def graph(c): 
+            if not isinstance(c, Graph): 
+                return self.get_context(c)
+            else: 
+                return c
+
+        self.store.addN(
+            (s, p, o, graph(c)) for s, p, o, c in quads if
+            _assertnode(s)
+            and _assertnode(p)
+            and _assertnode(o)
+            )
+
 
     def remove(self, (s, p, o)):
         """Removes from all its contexts"""
@@ -1603,16 +1622,28 @@ class QuotedGraph(Graph):
     def __init__(self, store, identifier):
         super(QuotedGraph, self).__init__(store, identifier)
 
-    def add(self, triple):
+    def add(self, (s, p, o)):
         """Add a triple with self as context"""
-        self.store.add(triple, self, quoted=True)
+        assert isinstance(s, Node), \
+            "Subject %s must be an rdflib term" % (s,)
+        assert isinstance(p, Node), \
+            "Predicate %s must be an rdflib term" % (p,)
+        assert isinstance(o, Node), \
+            "Object %s must be an rdflib term" % (o,)
+
+        self.store.add((s, p, o), self, quoted=True)
 
     def addN(self, quads):
         """Add a sequence of triple with context"""
+
         self.store.addN(
             (s, p, o, c) for s, p, o, c in quads
             if isinstance(c, QuotedGraph)
-            and c.identifier is self.identifier)
+            and c.identifier is self.identifier
+            and _assertnode(s)
+            and _assertnode(p)
+            and _assertnode(o)
+            )
 
     def n3(self):
         """Return an n3 identifier for the Graph"""
@@ -1729,12 +1760,21 @@ class BackwardCompatGraph(ConjunctiveGraph):
 
     def add(self, (s, p, o), context=None):
         """Add to to the given context or to the default context"""
+
+        assert isinstance(s, Node), \
+            "Subject %s must be an rdflib term" % (s,)
+        assert isinstance(p, Node), \
+            "Predicate %s must be an rdflib term" % (p,)
+        assert isinstance(o, Node), \
+            "Object %s must be an rdflib term" % (o,)
+
         if context is not None:
             c = self.get_context(context)
             assert c.identifier == context, "%s != %s" % \
                                             (c.identifier, context)
         else:
             c = self.default_context
+
         self.store.add((s, p, o), context=c, quoted=False)
 
     def remove(self, (s, p, o), context=None):
@@ -1987,6 +2027,11 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
 
     def __reduce__(self):
         raise UnSupportedAggregateOperation()
+
+def _assertnode(t):
+    assert isinstance(t, Node), \
+        'Term %s must be an rdflib term' % (t,)
+    return True
 
 
 def test():

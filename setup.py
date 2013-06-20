@@ -60,7 +60,8 @@ else:
             kwargs['install_requires'].append('simplejson')
             kwargs['install_requires'].append('html5lib==0.95')
         else:
-            kwargs['install_requires'].append('html5lib')
+            # 1.0b1 is broken - revert to no version when fixed
+            kwargs['install_requires'].append('html5lib==0.95') 
 
     except ImportError:
         from distutils.core import setup
