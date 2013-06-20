@@ -218,7 +218,7 @@ class Store(object):
         A variant of triples that can take a list of terms instead of a single
         term in any slot.  Stores can implement this to optimize the response
         time from the default 'fallback' implementation, which will iterate
-        over each term in the list and dispatch to tripless
+        over each term in the list and dispatch to triples
         """
         if isinstance(object_, list):
             assert not isinstance(
