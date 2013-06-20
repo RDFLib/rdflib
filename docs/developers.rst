@@ -78,7 +78,9 @@ Upload tarball to pypi with::
 
 Set new dev version number in the above locations, i.e. next release `-dev`: ``8.9.2-dev`` and commit again. 
 
+Update the topic of #rdflib on freenode irc::
 
+  /msg ChanServ topic #rdflib https://github.com/RDFLib/rdflib | latest stable version: 4.0.1 | docs: http://readthedocs.org/docs/rdflib
 
 
 
