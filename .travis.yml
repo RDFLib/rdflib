@@ -4,6 +4,7 @@ language: python
 branches:
   only:
     - master
+    - coveralls-ci
 
 python:
     - 2.5
