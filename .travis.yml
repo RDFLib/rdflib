@@ -4,7 +4,6 @@ language: python
 branches:
   only:
     - master
-    - reunification
 
 python:
     - 2.5
