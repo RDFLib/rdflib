@@ -1246,6 +1246,8 @@ class ConjunctiveGraph(Graph):
         helper method for having methods that support 
         either triples or quads
         """
+        if triple_or_quad is None: 
+            return (None, None, None, self.default_context if default else None)
         if len(triple_or_quad) == 3: 
             c = self.default_context if default else None
             (s, p, o) = triple_or_quad
@@ -1329,13 +1331,12 @@ class ConjunctiveGraph(Graph):
             for (s, p, o), cg in self.store.triples((s, p, o), context=context):
                 yield s, p, o
 
-    def quads(self, pattern=None):
+    def quads(self, triple_or_quad=None):
         """Iterate over all the quads in the entire conjunctive graph"""
-        if pattern is None:
-            s, p, o = (None, None, None)
-        else:
-            s, p, o = pattern
-        for (s, p, o), cg in self.store.triples((s, p, o), context=None):
+        
+        s,p,o,c = self._spoc(triple_or_quad)
+        
+        for (s, p, o), cg in self.store.triples((s, p, o), context=c):
             for ctx in cg:
                 yield s, p, o, ctx
 
@@ -1356,11 +1357,11 @@ class ConjunctiveGraph(Graph):
         """
         for context in self.store.contexts(triple):
             if isinstance(context, Graph):
+                # TODO: One of these should never happen and probably
+                # should raise an exception rather than smoothing over
+                # the weirdness - see #225
                 yield context
             else:
-                # TODO: This should never happen and probably should
-                # raise an exception rather than smoothing over the 
-                # weirdness - see #225
                 yield self.get_context(context)
 
     def get_context(self, identifier, quoted=False):
@@ -1415,7 +1416,7 @@ class ConjunctiveGraph(Graph):
 
 
 
-
+DATASET_DEFAULT_GRAPH_ID = URIRef('urn:x-rdflib:default')
 
 class Dataset(ConjunctiveGraph):
     __doc__ = format_doctest_out("""
@@ -1438,8 +1439,6 @@ class Dataset(ConjunctiveGraph):
     >>> # Create a graph in the dataset, if the graph name has already been
     >>> # used, the corresponding graph will be returned
     >>> # (ie, the Dataset keeps track of the constituent graphs)
-    >>> # The special argument Dataset.DEFAULT can be used to return the
-    >>> # default graph
     >>> g = ds.graph(URIRef('http://www.example.com/gr'))
     >>>
     >>> # add triples to the new graph as usual
@@ -1448,7 +1447,7 @@ class Dataset(ConjunctiveGraph):
     ...     URIRef('http://example.org/y'),
     ...     Literal('bar')) )
     >>> # alternatively: add a quad to the dataset -> goes to the graph
-    >>> ds.add_quad(
+    >>> ds.add(
     ...     (URIRef('http://example.org/x'),
     ...     URIRef('http://example.org/z'),
     ...     Literal('foo-bar'),g) )
@@ -1522,11 +1521,12 @@ class Dataset(ConjunctiveGraph):
     .. versionadded:: 4.0
     """)
 
-    DEFAULT = "DEFAULT"
-
     def __init__(self, store='default'):
         super(Dataset, self).__init__(store=store, identifier=None)
-        self.graph_names = {Dataset.DEFAULT: self}
+
+        if not self.store.graph_aware: 
+            raise Exception("DataSet must be backed by a graph-aware store!")
+        self.default_context = Graph(store=self.store, identifier=DATASET_DEFAULT_GRAPH_ID)
 
     def __str__(self):
         pattern = ("[a rdflib:Dataset;rdflib:storage "
@@ -1540,102 +1540,41 @@ class Dataset(ConjunctiveGraph):
                 "genid", "http://rdflib.net" + rdflib_skolem_genid,
                 override=False)
             identifier = BNode().skolemize()
-        elif identifier == Dataset.DEFAULT:
-            return self
         else:
             if isinstance(identifier, BNode):
                 raise Exception(
                     "Blank nodes cannot be Graph identifiers in RDF Datasets")
             if not isinstance(identifier, URIRef):
                 identifier = URIRef(identifier)
-
-        if identifier in self.graph_names.keys():
-            return self.graph_names[identifier]
-        else:
-            retval = Graph(store=self.store, identifier=identifier)
-            self.graph_names[identifier] = retval
-            return retval
+                
+        g = self.get_context(identifier)
+        self.store.add_graph(g)
+        return g
 
     def remove_graph(self, g):
-        if g is None or g == Dataset.DEFAULT:
+        if not isinstance(g, Graph):
+            g = self.get_context(g)
+
+        self.store.remove_graph(g)
+        if g is None or g == self.default_context:
             # default graph cannot be removed
-            return
-        else:
-            if isinstance(g, Graph):
-                try:
-                    del self.graph_names[g.identifier]
-                    self.remove_context(g.identifier)
-                except KeyError:
-                    pass
-            else:
-                try:
-                    del self.graph_names[URIRef(g)]
-                    self.remove_context(g)
-                except KeyError:
-                    pass
+            # only triples deleted, so add it back in
+            self.store.add_graph(self.default_context)
 
-    def graphs(self, empty=True):
-        if empty:
-            # All graphs should be returned, including the empty ones:
-            for n in self.graph_names.keys():
-                yield n
-        else:
-            # Only non-empty graphs should be returned; the contexts() call of
-            # the conjunctive graph does the job
-            for c in self.contexts():
-                if isinstance(c.identifier, BNode):
-                    yield Dataset.DEFAULT
-                else:
-                    yield c.identifier
-
-    def add_quad(self, quad):
-        (s, p, o, g) = quad
-        if g is None:
-            self.add((s, p, o))
-        else:
-            if isinstance(g, Graph):
-                try:
-                    self.graph_names[g.identifier].add((s, p, o))
-                except KeyError:
-                    pass
-            else:
-                try:
-                    self.graph_names[URIRef(g)].add((s, p, o))
-                except KeyError:
-                    pass
-
-    def remove_quad(self, (s, p, o, g)):
-        if g is None:
-            self.remove((s, p, o))
-        else:
-            if isinstance(g, Graph):
-                try:
-                    self.graph_names[g.identifier].remove((s, p, o))
-                except KeyError:
-                    pass
-            else:
-                try:
-                    self.graph_names[URIRef(g)].remove((s, p, o))
-                except KeyError:
-                    pass
+    def contexts(self, triple=None): 
+        default = False
+        for c in super(Dataset, self).contexts(triple): 
+            default|=c.identifier == DATASET_DEFAULT_GRAPH_ID
+            yield c
+        if not default: yield self.graph(DATASET_DEFAULT_GRAPH_ID)
+            
 
     def quads(self, quad):
-        (s, p, o, g) = quad
-        for s, p, o, c in super(Dataset, self).quads((s, p, o)):
-            if g is None:
-                # all quads have to be returned. However, the blank node name
-                # for the default graph should be removed
-                if isinstance(c.identifier, BNode):
-                    yield (s, p, o, None)
-                else:
-                    yield (s, p, o, c.identifier)
-            elif isinstance(g, Graph):
-                # only quads of a specific graph should be returned:
-                if g.identifier == c.identifier:
-                    yield (s, p, o, c.identifier)
+        for s, p, o, c in super(Dataset, self).quads(quad):
+            if c.identifier==self.default_context:
+                yield (s, p, o, None)
             else:
-                if ("%s" % g) == ("%s" % c.identifier):
-                    yield (s, p, o, c.identifier)
+                yield (s, p, o, c.identifier)
 
 
 class QuotedGraph(Graph):

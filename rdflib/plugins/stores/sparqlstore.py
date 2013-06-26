@@ -178,7 +178,6 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     formula_aware = False
     transaction_aware = False
     regex_matching = NATIVE_REGEX
-    batch_unification = False
 
     def __init__(self,
                  endpoint=None, bNodeAsURI=False,

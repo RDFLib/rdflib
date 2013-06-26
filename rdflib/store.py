@@ -20,6 +20,8 @@ that are asserted and statements that are quoted is considered formula-aware.
 ``Transaction-capable``: capable of providing transactional integrity to the
 RDF operations performed on it.
 
+``Graph-aware``: capable of keeping track of empty graphs.
+
 ------
 """
 
@@ -111,7 +113,7 @@ class Store(object):
     context_aware = False
     formula_aware = False
     transaction_aware = False
-    batch_unification = False
+    graph_aware = False
 
     def __init__(self, configuration=None, identifier=None):
         """
@@ -268,9 +270,9 @@ class Store(object):
         for example, REGEXTerm, URIRef, Literal, BNode, Variable, Graph,
         QuotedGraph, Date? DateRange?
 
-        A conjunctive query can be indicated by either providing a value of
-        None for the context or the identifier associated with the Conjunctive
-        Graph (if it is context aware).
+        :param context: A conjunctive query can be indicated by either
+        providing a value of None, or a specific context can be
+        queries by passing a Graph instance (if store is context aware).
         """
         subject, predicate, object = triple_pattern
 
@@ -282,12 +284,18 @@ class Store(object):
         quoted (asserted) statements if the context is not specified,
         otherwise it should return the number of statements in the formula or
         context given.
+
+        :param context: a graph instance to query or None
         """
 
     def contexts(self, triple=None):
         """
         Generator over all contexts in the graph. If triple is specified,
         a generator over all contexts the triple is in.
+
+        if store is graph_aware, may also return empty contexts
+
+        :returns: a generator over Nodes
         """
 
     def query(self, query, initNs, initBindings, queryGraph, **kwargs):
@@ -347,3 +355,22 @@ class Store(object):
 
     def rollback(self):
         """ """
+
+    # Optional graph methods
+
+    def add_graph(self, graph): 
+        """
+        Add a graph to the store, no effect if the graph already
+        exists.
+        :param graph: a Graph instance
+        """
+        raise Exception("Graph method called on non-graph_aware store")
+
+    def remove_graph(self, graph): 
+        """
+        Remove a graph from the store, this shoud also remove all
+        triples in the graph
+
+        :param graphid: a Graph instance
+        """
+        raise Exception("Graph method called on non-graph_aware store")
