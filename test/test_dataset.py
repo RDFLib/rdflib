@@ -103,8 +103,13 @@ class DatasetTestCase(unittest.TestCase):
         self.assertEquals(set(x.identifier for x in self.graph.contexts()), 
                           set([DATASET_DEFAULT_GRAPH_ID]))
 
+    def testNotUnion(self): 
+        g1 = self.graph.graph(self.c1)
+        g1.add((self.tarek, self.likes, self.pizza))
 
-        
+        self.assertEqual(list(self.graph.objects(self.tarek, None)), 
+                         [])
+        self.assertEqual(list(g1.objects(self.tarek, None)), [self.pizza])
 
 
 # dynamically create classes for each registered Store

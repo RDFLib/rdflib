@@ -281,6 +281,7 @@ class Graph(Node):
         self.__namespace_manager = namespace_manager
         self.context_aware = False
         self.formula_aware = False
+        self.default_union = False
 
     def __get_store(self):
         return self.__store
@@ -1025,7 +1026,7 @@ class Graph(Node):
             try:
                 return self.store.query(
                     query_object, initNs, initBindings,
-                    self.context_aware
+                    self.default_union
                     and '__UNION__'
                     or self.identifier,
                     **kwargs)
@@ -1049,7 +1050,7 @@ class Graph(Node):
             try:
                 return self.store.update(
                     update_object, initNs, initBindings,
-                    self.context_aware
+                    self.default_union
                     and '__UNION__'
                     or self.identifier,
                     **kwargs)
@@ -1233,6 +1234,7 @@ class ConjunctiveGraph(Graph):
         assert self.store.context_aware, ("ConjunctiveGraph must be backed by"
                                           " a context aware store.")
         self.context_aware = True
+        self.default_union = True # Conjunctive!
         self.default_context = Graph(store=self.store,
                                      identifier=identifier or BNode())
 
@@ -1317,15 +1319,16 @@ class ConjunctiveGraph(Graph):
         """
 
         s,p,o,c = self._spoc(triple_or_quad)
-        context = context or c
+        context = self._graph(context or c)
+
+        if not self.default_union and context is None: 
+            context=self.default_context
         
         if isinstance(p, Path): 
             if context is None:
                 context = self
-            else: 
-                context = self._graph(context)
 
-            for s, o in p.eval(self.get_context(context), s, o):
+            for s, o in p.eval(context, s, o):
                 yield (s, p, o)
         else:
             for (s, p, o), cg in self.store.triples((s, p, o), context=context):
@@ -1340,10 +1343,17 @@ class ConjunctiveGraph(Graph):
             for ctx in cg:
                 yield s, p, o, ctx
 
-    def triples_choices(self, (s, p, o)):
+    def triples_choices(self, (s, p, o), context=None):
         """Iterate over all the triples in the entire conjunctive graph"""
+
+        if context is None: 
+            if not self.default_union:
+                context=self.default_context
+        else: 
+            context = self._graph(context)
+
         for (s1, p1, o1), cg in self.store.triples_choices((s, p, o),
-                                                           context=None):
+                                                           context=context):
             yield (s1, p1, o1)
 
     def __len__(self):
@@ -1521,12 +1531,15 @@ class Dataset(ConjunctiveGraph):
     .. versionadded:: 4.0
     """)
 
-    def __init__(self, store='default'):
+    def __init__(self, store='default', default_union=False):
         super(Dataset, self).__init__(store=store, identifier=None)
 
         if not self.store.graph_aware: 
             raise Exception("DataSet must be backed by a graph-aware store!")
         self.default_context = Graph(store=self.store, identifier=DATASET_DEFAULT_GRAPH_ID)
+
+        self.default_union = default_union
+
 
     def __str__(self):
         pattern = ("[a rdflib:Dataset;rdflib:storage "
@@ -1567,7 +1580,6 @@ class Dataset(ConjunctiveGraph):
             default|=c.identifier == DATASET_DEFAULT_GRAPH_ID
             yield c
         if not default: yield self.graph(DATASET_DEFAULT_GRAPH_ID)
-            
 
     def quads(self, quad):
         for s, p, o, c in super(Dataset, self).quads(quad):
