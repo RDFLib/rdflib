@@ -36,8 +36,6 @@ script:
 after_success:
     - if [[ $HAS_COVERALLS ]] ; then coveralls ; fi
 
-# notifications:
-#   irc:
-#     channels: "irc.freenode.org#rdflib"
-#     on_success: change
-#     on_failure: change
+notifications:
+    irc:
+        channels: "chat.freenode.net#rdflib"
