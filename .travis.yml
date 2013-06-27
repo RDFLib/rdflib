@@ -4,7 +4,6 @@ language: python
 branches:
   only:
     - master
-    - reunification
 
 python:
     - 2.5
@@ -21,6 +20,7 @@ install:
     - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then pip install --use-mirrors --default-timeout 60 -r requirements.py2.txt;  pip install --use-mirrors --default-timeout 60 "html5lib";fi
     - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '3' ]]; then pip install --use-mirrors --default-timeout 60 -r requirements.py3.txt; fi
     - if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then pip install --upgrade "https://bitbucket.org/gjhiggins/isodate/downloads/isodate-0.4.8.tar.gz"; pip install --use-mirrors --default-timeout 60 "elementtree"; fi
+    - if [[ $TRAVIS_PYTHON_VERSION != '2.5' ]]; then pip install --use-mirrors --default-timeout 60 coverage coveralls && export HAS_COVERALLS=1; fi
     - python setup.py install
 
 before_script:
@@ -30,8 +30,12 @@ script:
     # Must run the tests in build/src so python3 doesn't get confused and run
     # the python2 code from the current directory instead of the installed
     # 2to3 version in build/src.
-    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then nosetests; fi
-    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '3' ]]; then nosetests --where=./build/src; fi
+    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then nosetests --with-coverage --cover-tests --cover-package=rdflib ; fi
+    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '3' ]]; then nosetests --with-coverage --cover-tests --cover-package=build/src/rdflib --where=./build/src; fi
+
+after_success:
+    - if [[ $HAS_COVERALLS ]] ; then coveralls ; fi
+
 # notifications:
 #   irc:
 #     channels: "irc.freenode.org#rdflib"

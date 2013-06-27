@@ -78,9 +78,10 @@ More information is available on the project webpage:
 
 https://github.com/RDFLib/rdflib/
 
-Continuous integration status details available from travis.ci:
+Continuous integration status details available from travis.ci, test coverage from coveralls:
 
 [![Build Status](https://travis-ci.org/RDFLib/rdflib.png?branch=master)](https://travis-ci.org/RDFLib/rdflib)
+[![Coverage Status](https://coveralls.io/repos/RDFLib/rdflib/badge.png?branch=master)](https://coveralls.io/r/RDFLib/rdflib?branch=master)
 
 The documentation can be built by doing::
 

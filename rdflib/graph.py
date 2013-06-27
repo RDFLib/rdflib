@@ -365,9 +365,8 @@ class Graph(Node):
         self.__store.addN((s, p, o, c) for s, p, o, c in quads
                           if isinstance(c, Graph)
                           and c.identifier is self.identifier
-                          and _assertnode(s)
-                          and _assertnode(p)
-                          and _assertnode(o))
+                          and _assertnode(s,p,o)
+                          )
 
     def remove(self, (s, p, o)):
         """Remove a triple from the graph
@@ -1051,8 +1050,8 @@ class Graph(Node):
                 return self.store.update(
                     update_object, initNs, initBindings,
                     self.context_aware
-                    and self.identifier
-                    or '__UNION__',
+                    and '__UNION__'
+                    or self.identifier,
                     **kwargs)
             except NotImplementedError:
                 pass  # store has no own implementation
@@ -1212,18 +1211,21 @@ class Graph(Node):
 
         return retval
 
+class ConjunctiveGraph(Graph): 
 
-class ConjunctiveGraph(Graph):
     """
-    A ConjunctiveGraph is an (unamed) aggregation of all the named graphs
-    within the Store. It has a ``default`` graph, whose name is associated
-    with the ConjunctiveGraph throughout its life. All methods work against
-    this default graph. Its constructor can take an identifier to use as the
-    name of this default graph or it will assign a BNode.
+    A ConjunctiveGraph is an (unamed) aggregation of all the named
+    graphs in a store.
 
-    In practice, it is typical to instantiate a ConjunctiveGraph if you want
-    to add triples to the Store but don't care to mint a URI for the graph.
-    Any triples in the graph can still be addressed.
+    It has a ``default`` graph, whose name is associated with the
+    graph throughout its life. :meth:`__init__` can take an identifier
+    to use as the name of this default graph or it will assign a
+    BNode.
+
+    All methods that add triples work against this default graph. 
+
+    All queries are carried out against the union of all graphs.
+
     """
 
     def __init__(self, store='default', identifier=None):
@@ -1239,56 +1241,90 @@ class ConjunctiveGraph(Graph):
                    "[a rdflib:Store;rdfs:label '%s']]")
         return pattern % self.store.__class__.__name__
 
+    def _spoc(self, triple_or_quad, default=False): 
+        """
+        helper method for having methods that support 
+        either triples or quads
+        """
+        if len(triple_or_quad) == 3: 
+            c = self.default_context if default else None
+            (s, p, o) = triple_or_quad
+        elif len(triple_or_quad) == 4: 
+            (s, p, o, c) = triple_or_quad
+            c = self._graph(c)
+        return s,p,o,c
+
+
     def __contains__(self, triple_or_quad):
         """Support for 'triple/quad in graph' syntax"""
-        context = None
-        if len(triple_or_quad) == 4:
-            context = triple_or_quad[3]
-        for t in self.triples(triple_or_quad[:3], context=context):
+        s,p,o,c = self._spoc(triple_or_quad)
+        for t in self.triples((s,p,o), context=c):
             return True
         return False
 
-    def add(self, (s, p, o)):
-        """Add the triple to the default context"""
-        assert isinstance(s, Node), \
-            "Subject %s must be an rdflib term" % (s,)
-        assert isinstance(p, Node), \
-            "Predicate %s must be an rdflib term" % (p,)
-        assert isinstance(o, Node), \
-            "Object %s must be an rdflib term" % (o,)
 
-        self.store.add((s, p, o), context=self.default_context, quoted=False)
+    def add(self, triple_or_quad):
+
+        """
+        Add a triple or quad to the store. 
+
+        if a triple is given it is added to the default context
+        """
+        
+        s,p,o,c = self._spoc(triple_or_quad, default=True)
+            
+        _assertnode(s,p,o)
+
+        self.store.add((s, p, o), context=c, quoted=False)
+
+    def _graph(self, c): 
+        if not isinstance(c, Graph): 
+            return self.get_context(c)
+        else: 
+            return c
+
 
     def addN(self, quads):
         """Add a sequence of triples with context"""
 
-        def graph(c): 
-            if not isinstance(c, Graph): 
-                return self.get_context(c)
-            else: 
-                return c
-
         self.store.addN(
-            (s, p, o, graph(c)) for s, p, o, c in quads if
-            _assertnode(s)
-            and _assertnode(p)
-            and _assertnode(o)
+            (s, p, o, self._graph(c)) for s, p, o, c in quads if
+            _assertnode(s, p, o)
             )
 
+    def remove(self, triple_or_quad):
+        """
+        Removes a triple or quads
+        
+        if a triple is given it is removed from all contexts
+        
+        a quad is removed from the given context only
 
-    def remove(self, (s, p, o)):
-        """Removes from all its contexts"""
-        self.store.remove((s, p, o), context=None)
+        """
+        s,p,o,c = self._spoc(triple_or_quad)
+        
+        self.store.remove((s, p, o), context=c)
+    
+    def triples(self, triple_or_quad, context=None):
+        """
+        Iterate over all the triples in the entire conjunctive graph
+        
+        For legacy reasons, this can take the context to query either
+        as a fourth element of the quad, or as the explicit context
+        keyword paramater. The kw param takes precedence.
+        """
 
-    def triples(self, (s, p, o), context=None):
-        """Iterate over all the triples in the entire conjunctive graph"""
+        s,p,o,c = self._spoc(triple_or_quad)
+        context = context or c
+        
         if isinstance(p, Path): 
             if context is None:
-                for s, o in p.eval(self, s, o):
-                    yield (s, p, o)
-            else:
-                for s, o in p.eval(self.get_context(context), s, o):
-                    yield (s, p, o)
+                context = self
+            else: 
+                context = self._graph(context)
+
+            for s, o in p.eval(self.get_context(context), s, o):
+                yield (s, p, o)
         else:
             for (s, p, o), cg in self.store.triples((s, p, o), context=context):
                 yield s, p, o
@@ -1322,6 +1358,9 @@ class ConjunctiveGraph(Graph):
             if isinstance(context, Graph):
                 yield context
             else:
+                # TODO: This should never happen and probably should
+                # raise an exception rather than smoothing over the 
+                # weirdness - see #225
                 yield self.get_context(context)
 
     def get_context(self, identifier, quoted=False):
@@ -1375,7 +1414,10 @@ class ConjunctiveGraph(Graph):
         return (ConjunctiveGraph, (self.store, self.identifier))
 
 
-class Dataset(Graph):
+
+
+
+class Dataset(ConjunctiveGraph):
     __doc__ = format_doctest_out("""
     RDF 1.1 Dataset. Small extension to the Conjunctive Graph:
     - the primary term is graphs in the datasets and not contexts with quads,
@@ -1596,22 +1638,6 @@ class Dataset(Graph):
                     yield (s, p, o, c.identifier)
 
 
-    def parse(self, source=None, publicID=None, format="xml",
-              location=None, file=None, data=None, **args):
-        """
-        Parse source adding the resulting triples to the default graph.
-
-        The graph into which the source was parsed. In the case of n3
-        it returns the root context.
-        """
-
-        target = self if publicID == None else self.graph(publicID)
-        Graph.parse(target, source=source, publicID=None, format=format, location=location, file=file, data=data, **args)
-
-        return self
-
-
-
 class QuotedGraph(Graph):
     """
     Quoted Graphs are intended to implement Notation 3 formulae. They are
@@ -1640,9 +1666,7 @@ class QuotedGraph(Graph):
             (s, p, o, c) for s, p, o, c in quads
             if isinstance(c, QuotedGraph)
             and c.identifier is self.identifier
-            and _assertnode(s)
-            and _assertnode(p)
-            and _assertnode(o)
+            and _assertnode(s, p, o)
             )
 
     def n3(self):
@@ -2028,9 +2052,10 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def __reduce__(self):
         raise UnSupportedAggregateOperation()
 
-def _assertnode(t):
-    assert isinstance(t, Node), \
-        'Term %s must be an rdflib term' % (t,)
+def _assertnode(*terms):
+    for t in terms:
+        assert isinstance(t, Node), \
+            'Term %s must be an rdflib term' % (t,)
     return True
 
 
