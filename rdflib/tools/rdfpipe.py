@@ -23,17 +23,6 @@ from rdflib.util import guess_format
 DEFAULT_INPUT_FORMAT = 'xml'
 DEFAULT_OUTPUT_FORMAT = 'n3'
 
-NS_BINDINGS = {
-    'rdf': RDF,
-    'rdfs': RDFS,
-    'owl': OWL,
-    'xsd': XSD,
-    'dc': "http://purl.org/dc/elements/1.1/",
-    'dct': "http://purl.org/dc/terms/",
-    'foaf': "http://xmlns.com/foaf/0.1/",
-    'wot': "http://xmlns.com/wot/0.1/"
-}
-
 
 def parse_and_serialize(input_files, input_format, guess,
                         outfile, output_format, ns_bindings,
@@ -172,7 +161,7 @@ def main():
         loglevel = logging.CRITICAL
     logging.basicConfig(level=loglevel)
 
-    ns_bindings = dict(NS_BINDINGS)
+    ns_bindings = {}
     if opts.ns:
         for ns_kw in opts.ns:
             pfx, uri = ns_kw.split('=')
