@@ -12,16 +12,13 @@ import logging
 import rdflib
 from rdflib import plugin
 from rdflib.store import Store
-from rdflib.graph import Graph
+from rdflib.graph import ConjunctiveGraph
 from rdflib.namespace import RDF, RDFS, OWL, XSD
 from rdflib.parser import Parser
 from rdflib.serializer import Serializer
 
 from rdflib.util import guess_format
 
-
-STORE_CONNECTION = ''
-STORE_TYPE = 'IOMemory'
 
 DEFAULT_INPUT_FORMAT = 'xml'
 DEFAULT_OUTPUT_FORMAT = 'n3'
@@ -40,11 +37,15 @@ NS_BINDINGS = {
 
 def parse_and_serialize(input_files, input_format, guess,
                         outfile, output_format, ns_bindings,
-                        store_conn=STORE_CONNECTION, store_type=STORE_TYPE):
+                        store_conn="", store_type=None):
 
-    store = plugin.get(store_type, Store)()
-    store.open(store_conn)
-    graph = Graph(store)
+    if store_type:
+        store = plugin.get(store_type, Store)()
+        store.open(store_conn)
+        graph = ConjunctiveGraph(store)
+    else:
+        store = None
+        graph = ConjunctiveGraph()
 
     for prefix, uri in ns_bindings.items():
         graph.namespace_manager.bind(prefix, uri, override=False)
@@ -61,7 +62,9 @@ def parse_and_serialize(input_files, input_format, guess,
         output_format, kws = _format_and_kws(output_format)
         graph.serialize(
             destination=outfile, format=output_format, base=None, **kws)
-    store.rollback()
+
+    if store:
+        store.rollback()
 
 
 def _format_and_kws(fmt):
