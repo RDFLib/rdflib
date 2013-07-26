@@ -237,7 +237,11 @@ def return_XML(state, inode, base = True, xmlns = True) :
 			if not node.getAttribute("xml:lang") :
 				node.setAttribute("xml:lang", state.lang)
 	
-	return node.toxml()
+	if sys.version_info[0] >= 3 :
+		return node.toxml()
+	else :
+		q = node.toxml(encoding='utf-8')
+		return unicode(q, encoding='utf-8')
 
 #########################################################################################################
 

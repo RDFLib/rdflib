@@ -19,7 +19,7 @@ $Id: property.py,v 1.11 2012/06/12 11:47:11 ivan Exp $
 $Date: 2012/06/12 11:47:11 $
 """
 
-import re
+import re, sys
 
 import rdflib
 from rdflib	import BNode
@@ -121,9 +121,17 @@ class ProcessProperty :
 				# see if there *is* a datatype (even if it is empty!)
 				if dtset :
 					if datatype == XMLLiteral :
-						object = Literal(self._get_XML_literal(self.node), datatype=XMLLiteral)
+						litval = self._get_XML_literal(self.node)
+						object = Literal(litval,datatype=XMLLiteral)
 					elif datatype == HTMLLiteral :
-						object = Literal(self._get_HTML_literal(self.node), datatype=HTMLLiteral)						
+						# I am not sure why this hack is necessary, but otherwise an encoding error occurs
+						# In Python3 all this should become moot, due to the unicode everywhere approach...
+						if sys.version_info[0] >= 3 :
+							object = Literal(self._get_HTML_literal(self.node), datatype=HTMLLiteral)
+						else :
+							litval = self._get_HTML_literal(self.node)
+							o = Literal(litval, datatype=XMLLiteral)	
+							object = Literal(o, datatype=HTMLLiteral)					
 					else :
 						object = self._create_Literal(self._get_literal(self.node), datatype=datatype, lang=lang)
 				else :
@@ -176,9 +184,17 @@ class ProcessProperty :
 				# We have to check whether the specified datatype is, in fact, an
 				# explicit XML Literal
 				if datatype == XMLLiteral :
-					object = Literal(self._get_XML_literal(self.node),datatype=XMLLiteral)
+					litval = self._get_XML_literal(self.node)
+					object = Literal(litval,datatype=XMLLiteral)
 				elif datatype == HTMLLiteral :
-						object = Literal(self._get_HTML_literal(self.node), datatype=HTMLLiteral)						
+					# I am not sure why this hack is necessary, but otherwise an encoding error occurs
+					# In Python3 all this should become moot, due to the unicode everywhere approach...
+					if sys.version_info[0] >= 3 :
+						object = Literal(self._get_HTML_literal(self.node), datatype=HTMLLiteral)
+					else :
+						litval = self._get_HTML_literal(self.node)
+						o = Literal(litval, datatype=XMLLiteral)	
+						object = Literal(o, datatype=HTMLLiteral)					
 				else :
 					object = self._create_Literal(self._get_literal(self.node), datatype=datatype, lang=lang)
 			else :
