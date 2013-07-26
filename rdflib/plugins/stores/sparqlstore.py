@@ -14,6 +14,8 @@ Changes:
     - Incorporated as an RDFLib store
 
 """
+SPARQL_POST_UPDATE = "application/sparql-update"
+SPARQL_POST_ENCODED = "application/x-www-form-urlencoded"
 
 import re
 # import warnings
@@ -47,6 +49,8 @@ from rdflib import Variable, Namespace, BNode, URIRef, Literal
 import httplib
 import urlparse
 
+SPARQL_POST_UPDATE = "application/sparql-update"
+SPARQL_POST_ENCODED = "application/x-www-form-urlencoded"
 
 class NSSPARQLWrapper(SPARQLWrapper):
     nsBindings = {}
@@ -74,7 +78,7 @@ class NSSPARQLWrapper(SPARQLWrapper):
         """
         self.queryType = self._parseQueryType(query)
         self.queryString = self.injectPrefixes(query)
-
+        
     def injectPrefixes(self, query):
         return '\n'.join(
             ['\n'.join(['PREFIX %s: <%s>' % (key, val)
@@ -166,7 +170,8 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config)
     If this is set this will work fine.
 
-    .. warning:: The SPARQL Store does not support blank-nodes!  
+    .. warning:: The SPARQL Store does not support blank-nodes!  SPARQL_POST_UPDATE = "application/sparql-update"
+SPARQL_POST_ENCODED = "application/x-www-form-urlencoded"
 
                  As blank-nodes acts as variables in SPARQL queries
                  there is no way to query for a particular blank node.
@@ -411,7 +416,8 @@ class SPARQLUpdateStore(SPARQLStore):
     def __init__(self,
                  queryEndpoint=None, update_endpoint=None,
                  bNodeAsURI=False, sparql11=True,
-                 context_aware=True):
+                 context_aware=True,
+                 postAsEncoded=False):
 
         SPARQLStore.__init__(self,
                              queryEndpoint, bNodeAsURI, sparql11, context_aware)
@@ -420,8 +426,12 @@ class SPARQLUpdateStore(SPARQLStore):
         if update_endpoint:
             self.update_endpoint = update_endpoint
 
-        self.headers = {'Content-type': "application/x-www-form-urlencoded",
+        self.postAsEncoded = postAsEncoded
+        self.headers = {'Content-type': SPARQL_POST_UPDATE,
                         'Connection': 'Keep-alive'}
+        
+        if self.postAsEncoded:
+            self.headers['Content-type'] = SPARQL_POST_ENCODED
 
     def __set_update_endpoint(self, update_endpoint):
         self.__update_endpoint = update_endpoint
@@ -556,7 +566,8 @@ class SPARQLUpdateStore(SPARQLStore):
 
     def _do_update(self, update):
         import urllib
-        #update = urllib.urlencode({'update': update})
+        if self.postAsEncoded:            
+            update = urllib.urlencode({'query': update})
         self.connection.request(
             'POST', self.path, update.encode("utf-8"), self.headers)
         return self.connection.getresponse()
