@@ -417,7 +417,7 @@ class SPARQLUpdateStore(SPARQLStore):
                  queryEndpoint=None, update_endpoint=None,
                  bNodeAsURI=False, sparql11=True,
                  context_aware=True,
-                 postAsEncoded=False):
+                 postAsEncoded=True):
 
         SPARQLStore.__init__(self,
                              queryEndpoint, bNodeAsURI, sparql11, context_aware)
@@ -427,11 +427,11 @@ class SPARQLUpdateStore(SPARQLStore):
             self.update_endpoint = update_endpoint
 
         self.postAsEncoded = postAsEncoded
-        self.headers = {'Content-type': SPARQL_POST_UPDATE,
+        self.headers = {'Content-type': SPARQL_POST_ENCODED,
                         'Connection': 'Keep-alive'}
         
-        if self.postAsEncoded:
-            self.headers['Content-type'] = SPARQL_POST_ENCODED
+        if not self.postAsEncoded:
+            self.headers['Content-type'] = SPARQL_POST_UPDATE
 
     def __set_update_endpoint(self, update_endpoint):
         self.__update_endpoint = update_endpoint
@@ -567,7 +567,7 @@ class SPARQLUpdateStore(SPARQLStore):
     def _do_update(self, update):
         import urllib
         if self.postAsEncoded:            
-            update = urllib.urlencode({'query': update})
+            update = urllib.urlencode({'update': update})
         self.connection.request(
             'POST', self.path, update.encode("utf-8"), self.headers)
         return self.connection.getresponse()
