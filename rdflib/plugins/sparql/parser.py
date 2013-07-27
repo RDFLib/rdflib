@@ -196,9 +196,9 @@ PLX_re = '(%s|%s)'%(PN_LOCAL_ESC_re,PERCENT_re)
 
 # [169] PN_LOCAL ::= (PN_CHARS_U | ':' | [0-9] | PLX ) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX) )?
 
-PN_LOCAL = Regex(ur"""([{PN_CHARS_U}:0-9]|{PLX})
-                     (([{PN_CHARS}\.:]|{PLX})*
-                      ([{PN_CHARS}:]|{PLX}) )?""".format(PN_CHARS_U=PN_CHARS_U_re,
+PN_LOCAL = Regex(ur"""([%(PN_CHARS_U)s:0-9]|%(PLX)s)
+                     (([%(PN_CHARS)s\.:]|%(PLX)s)*
+                      ([%(PN_CHARS)s:]|%(PLX)s) )?"""%dict(PN_CHARS_U=PN_CHARS_U_re,
                                                        PN_CHARS=PN_CHARS_re,
                                                          PLX=PLX_re), flags=re.X|re.UNICODE)
 
