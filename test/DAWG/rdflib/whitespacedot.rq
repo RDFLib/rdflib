@@ -1,0 +1,7 @@
+prefix : <urn:p:>
+select * where {
+ ?s ?p ?o.
+ ?s ?p "".
+ ?s ?p <urn:a>.
+ ?s ?p :a.
+}

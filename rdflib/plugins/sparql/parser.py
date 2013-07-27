@@ -177,22 +177,37 @@ PNAME_NS = Optional(
 
 # [173] PN_LOCAL_ESC ::= '\' ( '_' | '~' | '.' | '-' | '!' | '$' | '&' | "'" | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%' )
 
-PN_LOCAL_ESC = Regex('\\\\[_~\\.\\-!$&"\'()*+,;=/?#@%]')
-PN_LOCAL_ESC.setParseAction(lambda x: x[0][1:])
+PN_LOCAL_ESC_re = '\\\\[_~\\.\\-!$&"\'()*+,;=/?#@%]'
+#PN_LOCAL_ESC = Regex(PN_LOCAL_ESC_re) # regex'd
+#PN_LOCAL_ESC.setParseAction(lambda x: x[0][1:])
 
 # [172] HEX ::= [0-9] | [A-F] | [a-f]
 # HEX = Regex('[0-9A-Fa-f]') # not needed
 
 # [171] PERCENT ::= '%' HEX HEX
-PERCENT = Regex('%[0-9a-fA-F]{2}')
-PERCENT.setParseAction(lambda x: unichr(int(x[0][1:], 16)))
+PERCENT_re = '%[0-9a-fA-F]{2}'
+#PERCENT = Regex(PERCENT_re) # regex'd
+#PERCENT.setParseAction(lambda x: unichr(int(x[0][1:], 16)))
 
 # [170] PLX ::= PERCENT | PN_LOCAL_ESC
-PLX = PERCENT | PN_LOCAL_ESC
+PLX_re = '(%s|%s)'%(PN_LOCAL_ESC_re,PERCENT_re)
+#PLX = PERCENT | PN_LOCAL_ESC # regex'd
+
 
 # [169] PN_LOCAL ::= (PN_CHARS_U | ':' | [0-9] | PLX ) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX) )?
-PN_LOCAL = Combine((Regex(u'[%s0-9:]' % PN_CHARS_U_re, flags=re.U) | PLX) + ZeroOrMore((Regex(
-    u'[%s\\.:]' % PN_CHARS_re, flags=re.U) | PLX) + Optional(Regex(u'[%s:]' % PN_CHARS_re, flags=re.U) | PLX)))
+
+PN_LOCAL = Regex(ur"""([{PN_CHARS_U}:0-9]|{PLX})
+                     (([{PN_CHARS}\.:]|{PLX})*
+                      ([{PN_CHARS}:]|{PLX}) )?""".format(PN_CHARS_U=PN_CHARS_U_re,
+                                                       PN_CHARS=PN_CHARS_re,
+                                                         PLX=PLX_re), flags=re.X|re.UNICODE)
+
+def _hexExpand(match):
+    return unichr(int(match.group(0)[1:], 16))
+
+PN_LOCAL.setParseAction(lambda x: re.sub("(%s)"%PERCENT_re, _hexExpand, x[0]))
+
+
 
 
 # [141] PNAME_LN ::= PNAME_NS PN_LOCAL
@@ -954,7 +969,7 @@ SolutionModifier = Optional(Param('groupby', GroupClause)) + Optional(Param('hav
 
 
 # [9] SelectClause ::= 'SELECT' ( 'DISTINCT' | 'REDUCED' )? ( ( Var | ( '(' Expression 'AS' Var ')' ) )+ | '*' )
-SelectClause = Keyword('SELECT') + Optional(Param('modifier', Keyword('DISTINCT') | Keyword('REDUCED'))) + (OneOrMore(ParamList('projection', Comp('vars',  
+SelectClause = Keyword('SELECT') + Optional(Param('modifier', Keyword('DISTINCT') | Keyword('REDUCED'))) + (OneOrMore(ParamList('projection', Comp('vars',
     Param('var', Var) | (Literal('(') + Param('expr', Expression) + Keyword('AS') + Param('evar', Var) + ')')))) | '*')
 
 # [17] WhereClause ::= 'WHERE'? GroupGraphPattern

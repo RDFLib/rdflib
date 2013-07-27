@@ -10,10 +10,11 @@
 <> a mf:Manifest ;
 	rdfs:label "RDFLib Extra SPARQL tests" ;
     mf:entries
-    ( 
-	:unicode 
-	:nestedbnode 
-	) . 
+    (
+	:unicode
+	:nestedbnode
+    :whitespacedot
+	) .
 
 
 :opt-subquery rdf:type mf:QueryEvaluationTest ;
@@ -44,4 +45,11 @@
     mf:action
          [ qt:query  <nestedbnode.rq> ] ;
     mf:result  <nestedbnode.srx>
+    .
+
+:whitespacedot rdf:type mf:PositiveSyntaxTest11 ;
+    mf:name "Dot without whitespace after triple-pattern";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action <whitespacedot.rq>
     .
