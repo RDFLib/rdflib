@@ -94,7 +94,7 @@ def rdf2dot(g, stream, opts={}):
             continue
         if isinstance(o, (rdflib.URIRef, rdflib.BNode)):
             on = node(o)
-            opstr = u"\t%s -> %s [ color=%s, label=< <font point-size='10'" + \
+            opstr = u"\t%s -> %s [ color=%s, label=< <font point-size='10' " + \
                     u"color='#336633'>%s</font> > ] ;\n"
             stream.write(opstr % (sn, on, color(p), qname(p, g)))
         else:
