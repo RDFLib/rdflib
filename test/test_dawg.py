@@ -67,7 +67,7 @@ def setFlags():
 
     # we obviously need this
     rdflib.DAWG_LITERAL_COLLATION = True
-    
+
 def resetFlags():
     import rdflib
     # Several tests rely on lexical form of literals being kept!
@@ -598,7 +598,7 @@ def read_manifest(f):
 
 
 def test_dawg():
-    
+
     setFlags()
 
     if SPARQL10Tests:
@@ -609,7 +609,7 @@ def test_dawg():
         for t in read_manifest("test/DAWG/data-sparql11/manifest-all.ttl"):
             yield t
 
-    if RDFLibTests: 
+    if RDFLibTests:
         for t in read_manifest("test/DAWG/rdflib/manifest.ttl"):
             yield t
 

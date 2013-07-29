@@ -279,7 +279,7 @@ class GraphTestCase(unittest.TestCase):
         self.assertEquals((bob, likes, cheese) in g1, False)
 
         self.assertEquals((michel, likes, cheese) in g1, True)
-    
+
 
 # dynamically create classes for each registered Store
 

@@ -288,7 +288,7 @@ class IOMemory(Store):
 
         if triplepat == (None, None, None) and \
                 context in self.__all_contexts and \
-                not self.graph_aware: 
+                not self.graph_aware:
             # remove the whole context
             self.__all_contexts.remove(context)
 
@@ -357,13 +357,13 @@ class IOMemory(Store):
         cid = self.__obj2id(context)
         return sum(1 for enctriple, contexts in self.__all_triples(cid))
 
-    def add_graph(self, graph): 
+    def add_graph(self, graph):
         if not self.graph_aware:
             Store.add_graph(self, graph)
         else:
             self.__all_contexts.add(graph)
 
-    def remove_graph(self, graph): 
+    def remove_graph(self, graph):
         if not self.graph_aware:
             Store.remove_graph(self, graph)
         else:
