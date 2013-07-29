@@ -49,9 +49,6 @@ from rdflib import Variable, Namespace, BNode, URIRef, Literal
 import httplib
 import urlparse
 
-SPARQL_POST_UPDATE = "application/sparql-update"
-SPARQL_POST_ENCODED = "application/x-www-form-urlencoded"
-
 class NSSPARQLWrapper(SPARQLWrapper):
     nsBindings = {}
 
@@ -170,8 +167,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config)
     If this is set this will work fine.
 
-    .. warning:: The SPARQL Store does not support blank-nodes!  SPARQL_POST_UPDATE = "application/sparql-update"
-SPARQL_POST_ENCODED = "application/x-www-form-urlencoded"
+    .. warning:: The SPARQL Store does not support blank-nodes!  
 
                  As blank-nodes acts as variables in SPARQL queries
                  there is no way to query for a particular blank node.
