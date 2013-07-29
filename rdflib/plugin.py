@@ -227,6 +227,9 @@ register(
 register(
     'trix', Parser,
     'rdflib.plugins.parsers.trix', 'TriXParser')
+register(
+    'trig', Parser,
+    'rdflib.plugins.parsers.trig', 'TrigParser')
 
 # The basic parsers: RDFa (by default, 1.1),
 # microdata, and embedded turtle (a.k.a. hturtle)

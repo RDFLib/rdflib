@@ -47,18 +47,21 @@ def roundtrip(e, verbose=False):
     g2.parse(data=s, format=testfmt)
 
     if verbose:
+        both, first, second = rdflib.compare.graph_diff(g1,g2)
         print "Diff:"
-        for t in g1 - g2:
+        print "%d triples in both"%len(both)
+        print "G1 Only:"
+        for t in first:
             print t
 
-        print "G1"
-        for t in sorted(g1):
-            print t
-        print "--------------------------------\nG2:"
-        for t in sorted(g2):
+        print "--------------------"
+        print "G2 Only"
+        for t in second:
             print t
 
     assert rdflib.compare.isomorphic(g1, g2)
+
+    if verbose: print "Ok!"
 
 
 formats = None
