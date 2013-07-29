@@ -178,7 +178,7 @@ class GraphTestCase(unittest.TestCase):
 
     def testSub(self):
         g1 = self.graph
-        g2 = Graph(store=g2.store)
+        g2 = Graph(store=g1.store)
 
         tarek = self.tarek
         # michel = self.michel

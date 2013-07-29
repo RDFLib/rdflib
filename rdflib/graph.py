@@ -1308,8 +1308,9 @@ class ConjunctiveGraph(Graph):
 
         self.store.add((s, p, o), context=c, quoted=False)
 
-    def _graph(self, c): 
-        if not isinstance(c, Graph): 
+    def _graph(self, c):
+        if c is None: return None
+        if not isinstance(c, Graph):
             return self.get_context(c)
         else:
             return c
@@ -1348,10 +1349,14 @@ class ConjunctiveGraph(Graph):
         s,p,o,c = self._spoc(triple_or_quad)
         context = self._graph(context or c)
 
-        if not self.default_union and context is None: 
-            context=self.default_context
-        
-        if isinstance(p, Path): 
+        if self.default_union:
+            if context==self.default_context:
+                context = None
+        else:
+            if context is None:
+                context = self.default_context
+
+        if isinstance(p, Path):
             if context is None:
                 context = self
 
@@ -1443,7 +1448,7 @@ class ConjunctiveGraph(Graph):
             g_id = URIRef(g_id)
 
         context = Graph(store=self.store, identifier=g_id)
-        context.remove((None, None, None))
+        context.remove((None, None, None)) # hmm ?
         context.parse(source, publicID=publicID, format=format,
                       location=location, file=file, data=data, **args)
         return context
@@ -1580,16 +1585,20 @@ class Dataset(ConjunctiveGraph):
                 "genid", "http://rdflib.net" + rdflib_skolem_genid,
                 override=False)
             identifier = BNode().skolemize()
-        else:
-            if isinstance(identifier, BNode):
-                raise Exception(
-                    "Blank nodes cannot be Graph identifiers in RDF Datasets")
-            if not isinstance(identifier, URIRef):
-                identifier = URIRef(identifier)
-                
-        g = self.get_context(identifier)
+
+        g = self._graph(identifier)
+
         self.store.add_graph(g)
         return g
+
+    def parse(self, source=None, publicID=None, format="xml",
+              location=None, file=None, data=None, **args):
+        c = ConjunctiveGraph.parse(self, source, publicID, format, location, file, data, **args)
+        self.graph(c)
+
+    def add_graph(self, g):
+        """alias of graph for consistency"""
+        return self.graph(g)
 
     def remove_graph(self, g):
         if not isinstance(g, Graph):

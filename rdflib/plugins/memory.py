@@ -368,7 +368,11 @@ class IOMemory(Store):
             Store.remove_graph(self, graph)
         else:
             self.remove((None,None,None), graph)
-            self.__all_contexts.remove(graph)
+            try:
+                self.__all_contexts.remove(graph)
+            except KeyError:
+                pass # we didn't know this graph, no problem
+
 
 
     # internal utility methods below
