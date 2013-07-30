@@ -2,12 +2,12 @@
 Turtle RDF graph serializer for RDFLib.
 See <http://www.w3.org/TeamSubmission/turtle/> for syntax specification.
 """
+
+from collections import defaultdict
+
 from rdflib.term import BNode, Literal, URIRef
-
 from rdflib.exceptions import Error
-
 from rdflib.serializer import Serializer
-
 from rdflib.namespace import RDF, RDFS
 
 __all__ = ['RecursiveSerializer', 'TurtleSerializer']
@@ -58,7 +58,7 @@ class RecursiveSerializer(Serializer):
 
         recursable = [
             (isinstance(subject, BNode),
-             self.refCount(subject), subject)
+             self._references[subject], subject)
             for subject in self._subjects if subject not in seen]
 
         recursable.sort()
@@ -71,22 +71,14 @@ class RecursiveSerializer(Serializer):
             self.preprocessTriple(triple)
 
     def preprocessTriple(self, (s, p, o)):
-        references = self.refCount(o) + 1
-        self._references[o] = references
+        self._references[o]+=1
         self._subjects[s] = True
-
-    def refCount(self, node):
-        """
-        Return the number of times this node has been referenced in the
-        object position
-        """
-        return self._references.get(node, 0)
 
     def reset(self):
         self.depth = 0
         self.lists = {}
         self.namespaces = {}
-        self._references = {}
+        self._references = defaultdict(int)
         self._serialized = {}
         self._subjects = {}
         self._topLevels = {}
@@ -229,8 +221,8 @@ class TurtleSerializer(RecursiveSerializer):
             if isinstance(node, Literal) and node.datatype:
                 self.getQName(node.datatype, gen_prefix=_GEN_QNAME_FOR_DT)
         p = triple[1]
-        if isinstance(p, BNode):
-            self._references[p] = self.refCount(p) + 1
+        if isinstance(p, BNode): # hmm - when is P ever a bnode?
+            self._references[p]+=1
 
     def getQName(self, uri, gen_prefix=True):
         if not isinstance(uri, URIRef):
@@ -250,11 +242,11 @@ class TurtleSerializer(RecursiveSerializer):
             else:
                 # nothing worked
                 return None
-        
+
         prefix, namespace, local = parts
 
-        # QName cannot end with . 
-        if local.endswith("."): return None 
+        # QName cannot end with .
+        if local.endswith("."): return None
 
         prefix = self.addNamespace(prefix, namespace)
 
@@ -284,7 +276,7 @@ class TurtleSerializer(RecursiveSerializer):
         return True
 
     def s_squared(self, subject):
-        if (self.refCount(subject) > 0) or not isinstance(subject, BNode):
+        if (self._references[subject] > 0) or not isinstance(subject, BNode):
             return False
         self.write('\n' + self.indent() + '[]')
         self.predicateList(subject)
@@ -320,7 +312,7 @@ class TurtleSerializer(RecursiveSerializer):
     def p_squared(self, node, position, newline=False):
         if (not isinstance(node, BNode)
                 or node in self._serialized
-                or self.refCount(node) > 1
+                or self._references[node] > 1
                 or position == SUBJECT):
             return False
 

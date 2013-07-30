@@ -3,15 +3,11 @@ Trig RDF graph serializer for RDFLib.
 See <http://www.w3.org/2010/01/Trig/Trig> for syntax specification.
 """
 
-from rdflib.plugins.serializers.turtle import TurtleSerializer
-from rdflib.plugins.serializers.turtle import _GEN_QNAME_FOR_DT
-from rdflib.plugins.serializers.turtle import VERB
-
-from rdflib.term import BNode, Literal
-
-
 from collections import defaultdict
 
+from rdflib.plugins.serializers.turtle import TurtleSerializer, _GEN_QNAME_FOR_DT, VERB
+
+from rdflib.term import BNode, Literal
 
 __all__ = ['TrigSerializer']
 
@@ -32,16 +28,18 @@ class TrigSerializer(TurtleSerializer):
     def preprocess(self):
         for context in self.contexts:
             self.store = context
+            self._references = defaultdict(int)
+            self._subjects = {}
+
             for triple in context:
                 self.preprocessTriple(triple)
 
-            self._contexts[context]=self.orderSubjects()
+            self._contexts[context]=(self.orderSubjects(), self._subjects, self._references)
 
 
     def preprocessTriple(self, triple):
         s, p, o = triple
-        references = self.refCount(o) + 1
-        self._references[o] = references
+        self._references[o]+=1
         self._subjects[s] = True
         for i, node in enumerate(triple):
             if node in self.keywords:
@@ -52,11 +50,11 @@ class TrigSerializer(TurtleSerializer):
                 self.getQName(node.datatype, gen_prefix=_GEN_QNAME_FOR_DT)
         p = triple[1]
         if isinstance(p, BNode):
-            self._references[p] = self.refCount(p) + 1
+            self._references[p]+=1
 
     def reset(self):
         super(TrigSerializer, self).reset()
-        self._contexts = defaultdict(set)
+        self._contexts = {}
 
     def serialize(self, stream, base=None, encoding=None,
                   spacious=None, **args):
@@ -72,12 +70,15 @@ class TrigSerializer(TurtleSerializer):
         self.startDocument()
 
         firstTime = True
-        for store, subjects in self._contexts.items():
+        for store, (ordered_subjects, subjects, ref) in self._contexts.items():
+            self._references = ref
             self._serialized = {}
             self.store = store
+            self._subjects = subjects
+
             self.write(self.indent() + '\n<%s> = {' % store.identifier)
             self.depth += 1
-            for subject in subjects:
+            for subject in ordered_subjects:
                 if self.isDone(subject):
                     continue
                 if firstTime:
