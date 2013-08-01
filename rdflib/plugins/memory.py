@@ -194,13 +194,13 @@ class IOMemory(Store):
 
     # The following variable name conventions are used in this class:
     #
-    # subject, predicate, object 		unencoded triple parts
-    # triple = (subject, predicate, object)	unencoded triple
-    # context:					unencoded context
+    # subject, predicate, object             unencoded triple parts
+    # triple = (subject, predicate, object)  unencoded triple
+    # context:                               unencoded context
     #
-    # sid, pid, oid				integer-encoded triple parts
-    # enctriple = (sid, pid, oid)		integer-encoded triple
-    # cid					integer-encoded context
+    # sid, pid, oid                          integer-encoded triple parts
+    # enctriple = (sid, pid, oid)            integer-encoded triple
+    # cid                                    integer-encoded context
 
     def __init__(self, configuration=None, identifier=None):
         super(IOMemory, self).__init__()
@@ -214,11 +214,11 @@ class IOMemory(Store):
         self.__obj2int = {None: None}  # maps objects to integer keys
 
         # Indexes for each triple part, and a list of contexts for each triple
-        self.__subjectIndex = {}   # key: sid   	val: enctriple
-        self.__predicateIndex = {}  # key: pid 		val: enctriple
-        self.__objectIndex = {}    # key: oid   	val: enctriple
+        self.__subjectIndex = {}    # key: sid    val: enctriple
+        self.__predicateIndex = {}  # key: pid    val: enctriple
+        self.__objectIndex = {}     # key: oid    val: enctriple
         self.__tripleContexts = {
-        }  # key: enctriple	val: {cid1: quoted, cid2: quoted ...}
+        }  # key: enctriple    val: {cid1: quoted, cid2: quoted ...}
 
         # all contexts used in store (unencoded)
         self.__all_contexts = set()
@@ -376,7 +376,7 @@ class IOMemory(Store):
             # the triple didn't exist before in the store
             if quoted:  # this context only
                 self.__tripleContexts[enctriple] = {cid: quoted}
-            else: 	# default context as well
+            else:  # default context as well
                 self.__tripleContexts[enctriple] = {cid: quoted, None: quoted}
 
         # if this is the first ever triple in the store, set default ctx info
