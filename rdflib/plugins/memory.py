@@ -214,9 +214,9 @@ class IOMemory(Store):
         self.__obj2int = {None: None}  # maps objects to integer keys
 
         # Indexes for each triple part, and a list of contexts for each triple
-        self.__subjectIndex = {}    # key: sid    val: enctriple
-        self.__predicateIndex = {}  # key: pid    val: enctriple
-        self.__objectIndex = {}     # key: oid    val: enctriple
+        self.__subjectIndex = {}    # key: sid    val: set(enctriples)
+        self.__predicateIndex = {}  # key: pid    val: set(enctriples)
+        self.__objectIndex = {}     # key: oid    val: set(enctriples)
         self.__tripleContexts = {
         }  # key: enctriple    val: {cid1: quoted, cid2: quoted ...}
 
@@ -266,9 +266,9 @@ class IOMemory(Store):
             self.__objectIndex[oid] = set([enctriple])
 
     def remove(self, triplepat, context=None):
+        req_cid = self.__obj2id(context)
         for triple, contexts in self.triples(triplepat, context):
             enctriple = self.__encodeTriple(triple)
-            req_cid = self.__obj2id(context)
             for cid in self.__getTripleContexts(enctriple):
                 if context is not None and req_cid != cid:
                     continue
