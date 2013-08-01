@@ -1,9 +1,5 @@
 # http://travis-ci.org/#!/RDFLib/rdflib
 language: python
-# whitelist
-branches:
-  only:
-    - master
 
 python:
     - 2.5
