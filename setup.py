@@ -52,7 +52,7 @@ else:
         kwargs['test_suite'] = "nose.collector"
         kwargs['install_requires'] = [
             'isodate',
-            'pyparsing<=1.5.7', 'SPARQLWrapper']
+            'pyparsing', 'SPARQLWrapper']
 
         if sys.version_info[1]<7:
             kwargs['install_requires'].append('ordereddict')
