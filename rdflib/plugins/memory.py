@@ -219,6 +219,7 @@ class IOMemory(Store):
         self.__objectIndex = {}     # key: oid    val: set(enctriples)
         self.__tripleContexts = {
         }  # key: enctriple    val: {cid1: quoted, cid2: quoted ...}
+        self.__contextTriples = {None: set()}  # key: cid    val: set(enctriples)
 
         # all contexts used in store (unencoded)
         self.__all_contexts = set()
@@ -284,6 +285,13 @@ class IOMemory(Store):
                 self.__objectIndex[oid].remove(enctriple)
 
                 del self.__tripleContexts[enctriple]
+
+        if not req_cid is None and \
+                req_cid in self.__contextTriples and \
+                len(self.__contextTriples[req_cid]) == 0:
+            # all triples are removed out of this context
+            # and it's not the default context so delete it
+            del self.__contextTriples[req_cid]
 
         if triplepat == (None, None, None) and context in self.__all_contexts:
             # remove the whole context
@@ -379,6 +387,15 @@ class IOMemory(Store):
             else:  # default context as well
                 self.__tripleContexts[enctriple] = {cid: quoted, None: quoted}
 
+        # if the triple is not quoted add it to the default context
+        if not quoted:
+            self.__contextTriples[None].add(enctriple)
+
+        # always add the triple to given context, making sure it's initialized
+        if cid not in self.__contextTriples:
+            self.__contextTriples[cid] = set()
+        self.__contextTriples[cid].add(enctriple)
+
         # if this is the first ever triple in the store, set default ctx info
         if self.__defaultContexts is None:
             self.__defaultContexts = self.__tripleContexts[enctriple]
@@ -412,6 +429,7 @@ class IOMemory(Store):
             del self.__tripleContexts[enctriple]
         else:
             self.__tripleContexts[enctriple] = ctxs
+        self.__contextTriples[cid].remove(enctriple)
 
     def __obj2id(self, obj):
         """encode object, storing it in the encoding map if necessary, and
@@ -436,10 +454,10 @@ class IOMemory(Store):
     def __all_triples(self, cid):
         """return a generator which yields all the triples (unencoded) of
            the given context"""
-        for tset in self.__subjectIndex.values():
-            for enctriple in tset.copy():
-                if self.__tripleHasContext(enctriple, cid):
-                    yield self.__decodeTriple(enctriple), self.__contexts(enctriple)
+        if cid not in self.__contextTriples:
+            return
+        for enctriple in self.__contextTriples[cid].copy():
+            yield self.__decodeTriple(enctriple), self.__contexts(enctriple)
 
     def __contexts(self, enctriple):
         """return a generator for all the non-quoted contexts (unencoded)
