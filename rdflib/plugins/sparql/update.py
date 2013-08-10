@@ -62,6 +62,16 @@ def evalClear(ctx, u):
     for g in _graphAll(ctx, u.graphiri):
         g.remove((None, None, None))
 
+def evalDrop(ctx, u):
+    """
+    http://www.w3.org/TR/sparql11-update/#drop
+    """
+    if ctx.dataset.store.graph_aware:
+        for g in _graphAll(ctx, u.graphiri):
+            ctx.dataset.store.remove_graph(g)
+    else:
+        evalClear(ctx, u)
+
 
 def evalInsertData(ctx, u):
     """
@@ -214,7 +224,10 @@ def evalMove(ctx, u):
 
     dstg += srcg
 
-    srcg.remove((None, None, None))
+    if ctx.dataset.store.graph_aware:
+        ctx.dataset.store.remove_graph(srcg)
+    else:
+        srcg.remove((None, None, None))
 
 
 def evalCopy(ctx, u):
@@ -277,8 +290,7 @@ def evalUpdate(graph, update, initBindings=None):
             elif u.name == 'Clear':
                 evalClear(ctx, u)
             elif u.name == 'Drop':
-                # rdflib does not record empty graphs, so clear == drop
-                evalClear(ctx, u)
+                evalDrop(ctx, u)
             elif u.name == 'Create':
                 evalCreate(ctx, u)
             elif u.name == 'Add':

@@ -47,12 +47,6 @@ class ContextTestCase(unittest.TestCase):
         else:
             os.remove(self.tmppath)
 
-    def get_context(self, identifier):
-        assert isinstance(identifier, URIRef) or \
-            isinstance(identifier, BNode), type(identifier)
-        return Graph(store=self.graph.store, identifier=identifier,
-                     namespace_manager=self)
-
     def addStuff(self):
         tarek = self.tarek
         michel = self.michel
@@ -126,15 +120,15 @@ class ContextTestCase(unittest.TestCase):
         c1 = self.c1
         # make sure context is empty
 
-        self.graph.remove_context(self.get_context(c1))
+        self.graph.remove_context(self.graph.get_context(c1))
         graph = Graph(self.graph.store, c1)
         oldLen = len(self.graph)
 
         for i in range(0, 10):
             graph.add((BNode(), self.hates, self.hates))
         self.assertEquals(len(graph), oldLen + 10)
-        self.assertEquals(len(self.get_context(c1)), oldLen + 10)
-        self.graph.remove_context(self.get_context(c1))
+        self.assertEquals(len(self.graph.get_context(c1)), oldLen + 10)
+        self.graph.remove_context(self.graph.get_context(c1))
         self.assertEquals(len(self.graph), oldLen)
         self.assertEquals(len(graph), 0)
 
@@ -194,9 +188,9 @@ class ContextTestCase(unittest.TestCase):
 
         self.addStuffInMultipleContexts()
         self.assertEquals(len(Graph(self.graph.store, c1)), 1)
-        self.assertEquals(len(self.get_context(c1)), 1)
+        self.assertEquals(len(self.graph.get_context(c1)), 1)
 
-        self.graph.remove_context(self.get_context(c1))
+        self.graph.remove_context(self.graph.get_context(c1))
         self.assert_(self.c1 not in self.graph.contexts())
 
     def testRemoveAny(self):
@@ -292,7 +286,7 @@ class ContextTestCase(unittest.TestCase):
         # all unbound without context, same result!
         asserte(len(list(triples((Any, Any, Any)))), 7)
 
-        for c in [graph, self.get_context(c1)]:
+        for c in [graph, self.graph.get_context(c1)]:
             # unbound subjects
             asserte(set(c.subjects(likes, pizza)), set((michel, tarek)))
             asserte(set(c.subjects(hates, pizza)), set((bob,)))
@@ -342,6 +336,9 @@ class ContextTestCase(unittest.TestCase):
         self.removeStuff()
         asserte(len(list(c1triples((Any, Any, Any)))), 0)
         asserte(len(list(triples((Any, Any, Any)))), 0)
+
+        
+
 
 # dynamically create classes for each registered Store
 
