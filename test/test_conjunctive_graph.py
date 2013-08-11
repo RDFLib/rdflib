@@ -1,3 +1,7 @@
+"""
+Tests for ConjunctiveGraph that do not depend on the underlying store
+"""
+
 from rdflib import ConjunctiveGraph, Graph
 from rdflib.term import Identifier, URIRef, BNode
 from rdflib.parser import StringInputSource

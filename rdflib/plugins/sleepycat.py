@@ -43,6 +43,7 @@ class Sleepycat(Store):
     context_aware = True
     formula_aware = True
     transaction_aware = False
+    graph_aware = True
     db_env = None
 
     def __init__(self, configuration=None, identifier=None):
@@ -494,6 +495,12 @@ class Sleepycat(Store):
                 except db.DBNotFoundError:
                     current = None
                 cursor.close()
+
+    def add_graph(self, graph): 
+        self.__contexts.put(bb(self._to_string(graph)), "")
+
+    def remove_graph(self, graph): 
+        self.remove((None, None, None), graph)
 
     def _from_string(self, i):
         k = self.__i2k.get(int(i))
