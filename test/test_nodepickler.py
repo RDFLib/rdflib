@@ -1,4 +1,5 @@
 import unittest
+import pickle
 
 from rdflib.term import Literal
 
@@ -32,14 +33,21 @@ class UtilTestCase(unittest.TestCase):
         b = np.loads(np.dumps(a))
         self.assertEquals(a, b)
 
-    def test_literal_cases(self): 
+    def test_literal_cases(self):
         np = NodePickler()
 
-        for l in cases: 
+        for l in cases:
             a = Literal(l)
             b = np.loads(np.dumps(a))
             self.assertEquals(a, b)
-        
+
+    def test_pickle(self):
+        np = NodePickler()
+        dump = pickle.dumps(np)
+        np2 = pickle.loads(dump)
+        self.assertEquals(np._ids, np2._ids)
+        self.assertEquals(np._objects,  np2._objects)
+
 
 if __name__ == '__main__':
     unittest.main()
