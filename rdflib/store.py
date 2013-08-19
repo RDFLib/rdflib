@@ -107,6 +107,21 @@ class NodePickler(object):
         p.dump(obj)
         return src.getvalue()
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        del state['_get_object']
+        state.update({
+            '_ids': tuple(self._ids.items()),
+            '_objects': tuple(self._objects.items())
+            })
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self._ids = dict(self._ids)
+        self._objects = dict(self._objects)
+        self._get_object = self._objects.__getitem__
+
 
 class Store(object):
     # Properties
@@ -331,7 +346,6 @@ class Store(object):
 
         raise NotImplementedError
 
-
     # Optional Namespace methods
 
     def bind(self, prefix, namespace):
@@ -358,7 +372,7 @@ class Store(object):
 
     # Optional graph methods
 
-    def add_graph(self, graph): 
+    def add_graph(self, graph):
         """
         Add a graph to the store, no effect if the graph already
         exists.
@@ -366,7 +380,7 @@ class Store(object):
         """
         raise Exception("Graph method called on non-graph_aware store")
 
-    def remove_graph(self, graph): 
+    def remove_graph(self, graph):
         """
         Remove a graph from the store, this shoud also remove all
         triples in the graph
