@@ -351,6 +351,12 @@ class NamespaceManager(object):
         if prefix is None:
             prefix = ''
         bound_namespace = self.store.namespace(prefix)
+        # Check if the bound_namespace contains a URI
+        # and if so convert it into a URIRef for comparison
+        # This is to prevent duplicate namespaces with the
+        # same URI
+        if bound_namespace:
+            bound_namespace = URIRef(bound_namespace)
         if bound_namespace and bound_namespace != namespace:
             # prefix already in use for different namespace
             #
@@ -361,6 +367,11 @@ class NamespaceManager(object):
             num = 1
             while 1:
                 new_prefix = "%s%s" % (prefix, num)
+                tnamespace = self.store.namespace(new_prefix)
+                if tnamespace and namespace == URIRef(tnamespace):
+                    # the prefix is already bound to the correct
+                    # namespace
+                    return
                 if not self.store.namespace(new_prefix):
                     break
                 num += 1
