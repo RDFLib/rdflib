@@ -344,6 +344,9 @@ class SinkParser:
         self._reason = why       # Why the parser was asked to parse this
 
         self.turtle = turtle # raise exception when encountering N3 extensions
+        # Turtle allows single or double quotes around strings, whereas N3
+        # only allows double quotes.
+        self.string_delimiters = ('"', "'") if turtle else ('"',)
 
         self._reason2 = None     # Why these triples
          # was: diag.tracking
@@ -1252,7 +1255,7 @@ class SinkParser:
             else:
                 i = j
 
-            if argstr[i] in ('"', "'"):
+            if argstr[i] in self.string_delimiters:
                 if argstr[i:i + 3] == argstr[i] * 3:
                     delim = argstr[i] * 3
                 else:
@@ -1297,7 +1300,7 @@ class SinkParser:
                      #     self._store.newSymbol(INTEGER_DATATYPE)))
                 return j
 
-            if argstr[i] in ('"', "'"):
+            if argstr[i] in self.string_delimiters:
                 if argstr[i:i + 3] == argstr[i] * 3:
                     delim = argstr[i] * 3
                 else:
