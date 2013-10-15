@@ -20,9 +20,9 @@ Continuing the example...
 
     import rdflib
 
-	g = rdflib.Graph()
+    g = rdflib.Graph()
 
-	# ... add some triples to g somehow ...
+    # ... add some triples to g somehow ...
     g.parse("some_foaf_file.rdf")
 
     qres = g.query(

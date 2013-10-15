@@ -62,7 +62,7 @@ This function is a generator of triples that match the pattern given by the argu
 
   g.load("some_foaf.rdf")
   for s,p,o in g.triples( (None, RDF.type, FOAF.Person) ): 
-     print "%s is a person"%o
+     print "%s is a person"%s
 
   for s,p,o in g.triples( (None,  RDF.type, None) ): 
      print "%s is a %s"%(s,o)
@@ -73,7 +73,7 @@ This function is a generator of triples that match the pattern given by the argu
 
 If you are not interested in whole triples, you can get only the bits you want with the methods :meth:`~rdflib.graph.Graph.objects`, :meth:`~rdflib.graph.Graph.subjects`, :meth:`~rdflib.graph.Graph.predicates`, :meth:`~rdflib.graph.Graph.predicates_objects`, etc. Each take parameters for the components of the triple to constraint:: 
 
-  for person in g.subject(RDF.type, FOAF.Person): 
+  for person in g.subjects(RDF.type, FOAF.Person): 
      print "%s is a person"%person
 
 
