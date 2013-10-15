@@ -69,7 +69,7 @@ A more extensive example:
 
 .. code-block:: python
 
-    from rdflib import Graph, Literal, BNode, Namespace, RDF
+    from rdflib import Graph, Literal, BNode, Namespace, RDF, URIRef
     from rdflib.namespace import DC, FOAF
 
     g = Graph()
@@ -78,7 +78,7 @@ A more extensive example:
     donna = BNode()
 
     # Add triples using store's add method.
-    g.add( (donna, RDF.type, FOAF.Person]) )
+    g.add( (donna, RDF.type, FOAF.Person) )
     g.add( (donna, FOAF.nick, Literal("donna", lang="foo")) )
     g.add( (donna, FOAF.name, Literal("Donna Fales")) )
     g.add( (donna, FOAF.mbox, URIRef("mailto:donna@example.org")) )
