@@ -87,7 +87,7 @@ For some properties, only one value per resource makes sense (i.e they are *func
 
 .. code-block:: python
 
-  g.add( ( bob, FOAF.age, Literal(42) ) 
+  g.add( ( bob, FOAF.age, Literal(42) ) )
   print "Bob is ", g.value( bob, FOAF.age ) 
   # prints: Bob is 42
   
@@ -124,5 +124,5 @@ for ``foaf:member_name`` (a poor man's one-way
 
     from rdflib.namespace import FOAF
     g.parse("http://danbri.livejournal.com/data/foaf") 
-	for s,_,n: in g.triples((None, FOAF['member_name'], None)): 	
-		g.add((s, FOAF['name'], n))
+    for s,_,n in g.triples((None, FOAF['member_name'], None)): 	
+        g.add((s, FOAF['name'], n))
