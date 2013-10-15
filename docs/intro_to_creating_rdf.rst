@@ -87,7 +87,7 @@ For some properties, only one value per resource makes sense (i.e they are *func
 
 .. code-block:: python
 
-  g.add( ( bob, FOAF.age, Literal(42) ) 
+  g.add( ( bob, FOAF.age, Literal(42) ) )
   print "Bob is ", g.value( bob, FOAF.age ) 
   # prints: Bob is 42
   
