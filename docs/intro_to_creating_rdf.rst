@@ -124,5 +124,5 @@ for ``foaf:member_name`` (a poor man's one-way
 
     from rdflib.namespace import FOAF
     g.parse("http://danbri.livejournal.com/data/foaf") 
-	for s,_,n: in g.triples((None, FOAF['member_name'], None)): 	
-		g.add((s, FOAF['name'], n))
+    for s,_,n in g.triples((None, FOAF['member_name'], None)): 	
+        g.add((s, FOAF['name'], n))
