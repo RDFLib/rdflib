@@ -62,7 +62,7 @@ This function is a generator of triples that match the pattern given by the argu
 
   g.load("some_foaf.rdf")
   for s,p,o in g.triples( (None, RDF.type, FOAF.Person) ): 
-     print "%s is a person"%o
+     print "%s is a person"%s
 
   for s,p,o in g.triples( (None,  RDF.type, None) ): 
      print "%s is a %s"%(s,o)
