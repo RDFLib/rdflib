@@ -19,8 +19,8 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 
 """
-$Id: termorcurie.py,v 1.11 2013-02-01 10:11:28 ivan Exp $
-$Date: 2013-02-01 10:11:28 $
+$Id: termorcurie.py,v 1.12 2013-10-16 11:48:54 ivan Exp $
+$Date: 2013-10-16 11:48:54 $
 """
 
 import re, sys
@@ -136,7 +136,7 @@ class InitialContext :
 			for key in data.terms :
 				self.terms[key] = URIRef(data.terms[key])
 			for key in data.ns :
-				self.ns[key] = Namespace(data.ns[key])
+				self.ns[key] = (Namespace(data.ns[key]),False)
 
 
 ##################################################################################################################
@@ -188,11 +188,8 @@ class TermOrCurie :
 		# Set the default CURIE URI
 		if inherited_state == None :
 			# This is the top level...
-			# Add the namespaces bindings defined via a initial context
-			for key in default_vocab.ns :
-				self.graph.bind(key, default_vocab.ns[key])
 			self.default_curie_uri = Namespace(XHTML_URI)
-			self.graph.bind(XHTML_PREFIX, self.default_curie_uri)
+			# self.graph.bind(XHTML_PREFIX, self.default_curie_uri)
 		else :
 			self.default_curie_uri = inherited_state.term_or_curie.default_curie_uri
 		
@@ -236,7 +233,6 @@ class TermOrCurie :
 				# The terms are hardwired...
 				for key in predefined_1_0_rel :
 					self.terms[key] = URIRef(XHTML_URI + key)
-				self.graph.bind(XHTML_PREFIX, XHTML_URI)
 		else :
 			# just refer to the inherited terms
 			self.terms = inherited_state.term_or_curie.terms
@@ -327,34 +323,23 @@ class TermOrCurie :
 		# If not, the namespaces of the incoming state is
 		# taken over by reference. Otherwise that is copied to the
 		# the local dictionary
-		inherited_prefixes = default_vocab.ns if inherited_state == None else inherited_state.term_or_curie.ns
+		if inherited_state == None :
+			self.default_prefixes = default_vocab.ns
+			inherited_prefixes    = {}
+		else :
+			self.default_prefixes = inherited_state.term_or_curie.default_prefixes
+			inherited_prefixes    = inherited_state.term_or_curie.ns
+
 		if len(dict) == 0 :
 			self.ns = inherited_prefixes
 		else :
 			self.ns = {}
 			for key in inherited_prefixes : self.ns[key] = inherited_prefixes[key]
 			for key in dict : 
-				try :
-					if dict[key] != inherited_prefixes[key] :
-						state.options.add_warning(err_prefix_redefinition % key, PrefixRedefinitionWarning, node=state.node.nodeName)
-				except KeyError :
-					pass
+				if (key in inherited_prefixes and dict[key] != inherited_prefixes[key]) or (key in self.default_prefixes and dict[key] != self.default_prefixes[key][0]) :
+					state.options.add_warning(err_prefix_redefinition % key, PrefixRedefinitionWarning, node=state.node.nodeName)
 				self.ns[key] = dict[key]
 
-		# # Add the namespaces defined via a initial context
-		# for key in default_vocab.ns :
-		# 	dict[key] = default_vocab.ns[key]
-		# 	self.graph.bind(key, dict[key])
-		#
-		# self.ns = {}
-		# if len(dict) == 0 and inherited_state :
-		# 	self.ns = inherited_state.term_or_curie.ns
-		# else :
-		# 	if inherited_state :
-		# 		for key in inherited_state.term_or_curie.ns	: self.ns[key] = inherited_state.term_or_curie.ns[key]
-		# 		for key in dict								: self.ns[key] = dict[key]
-		# 	else :
-		# 		self.ns = dict
 		
 		# the xmlns prefixes have to be stored separately, again for XML Literal generation	
 		self.xmlns = {}
@@ -461,6 +446,17 @@ class TermOrCurie :
 							return URIRef(str(self.ns[prefix]))
 						else :
 							return self.ns[prefix][reference]
+					elif prefix in self.default_prefixes and self._check_reference(reference) :
+						# this has been defined through the default context
+						if len(reference) == 0 :
+							return URIRef(str(self.default_prefixes[prefix][0]))
+						else :
+							(ns,used) = self.default_prefixes[prefix]
+							# lazy binding of prefixes (to avoid unnecessary prefix definitions in the serializations at the end...)
+							if not used :
+								self.graph.bind(prefix,ns)
+								self.default_prefixes[prefix] = (ns,True)
+							return ns[reference]
 					else :
 						# no definition for this thing...
 						return None
@@ -488,11 +484,15 @@ class TermOrCurie :
 			# 1. simple, case sensitive test:
 			if term in self.terms :
 				# yep, term is a valid key as is
+				# lazy binding of the xhv prefix for terms...
+				self.graph.bind(XHTML_PREFIX, XHTML_URI)
 				return self.terms[term]
 				
 			# 2. case insensitive test
 			for defined_term in self.terms :
 				if term.lower() == defined_term.lower() :
+					# lazy binding of the xhv prefix for terms...
+					self.graph.bind(XHTML_PREFIX, XHTML_URI)
 					return self.terms[defined_term]
 
 		# If it got here, it is all wrong...
