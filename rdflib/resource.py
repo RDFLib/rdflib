@@ -77,7 +77,7 @@ Retrieve some basic facts::
 Resources can be sliced (like graphs, but the subject is fixed)::
 
     >>> for name in person[FOAF.name]:
-    ...     print name
+    ...     print(name)
     Some Body
     >>> person[FOAF.name : Literal("Some Body")]
     True
