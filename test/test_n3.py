@@ -1,5 +1,6 @@
 from rdflib.term import Literal, URIRef
 from rdflib.namespace import Namespace
+from rdflib.plugins.parsers.notation3 import BadSyntax
 
 from rdflib.py3compat import b
 
@@ -220,6 +221,21 @@ foo-bar:Ex foo-bar:name "Test" . """
             raise SkipTest(
                 'No network to retrieve the information, skipping test')
 
+    def testSingleQuotedLiterals(self):
+        test_data = ["""@prefix : <#> . :s :p 'o' .""",
+                     """@prefix : <#> . :s :p '''o''' ."""]
+
+        for data in test_data:
+            # N3 doesn't accept single quotes around string literals
+            g = ConjunctiveGraph()
+            self.assertRaises(BadSyntax, g.parse,
+                              data=data, format='n3')
+
+            g = ConjunctiveGraph()
+            g.parse(data=data, format='turtle')
+            self.assertEqual(len(g), 1)
+            for _, _, o in g:
+                self.assertEqual(o, Literal('o'))
 
 if __name__ == '__main__':
     unittest.main()
