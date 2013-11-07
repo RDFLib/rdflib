@@ -14,6 +14,8 @@ Changes:
     - Incorporated as an RDFLib store
 
 """
+SPARQL_POST_UPDATE = "application/sparql-update"
+SPARQL_POST_ENCODED = "application/x-www-form-urlencoded"
 
 import re
 # import warnings
@@ -47,7 +49,6 @@ from rdflib import Variable, Namespace, BNode, URIRef, Literal
 import httplib
 import urlparse
 
-
 class NSSPARQLWrapper(SPARQLWrapper):
     nsBindings = {}
 
@@ -74,7 +75,7 @@ class NSSPARQLWrapper(SPARQLWrapper):
         """
         self.queryType = self._parseQueryType(query)
         self.queryString = self.injectPrefixes(query)
-
+        
     def injectPrefixes(self, query):
         return '\n'.join(
             ['\n'.join(['PREFIX %s: <%s>' % (key, val)
@@ -410,7 +411,8 @@ class SPARQLUpdateStore(SPARQLStore):
     def __init__(self,
                  queryEndpoint=None, update_endpoint=None,
                  bNodeAsURI=False, sparql11=True,
-                 context_aware=True):
+                 context_aware=True,
+                 postAsEncoded=True):
 
         SPARQLStore.__init__(self,
                              queryEndpoint, bNodeAsURI, sparql11, context_aware)
@@ -419,8 +421,12 @@ class SPARQLUpdateStore(SPARQLStore):
         if update_endpoint:
             self.update_endpoint = update_endpoint
 
-        self.headers = {'Content-type': "application/x-www-form-urlencoded",
+        self.postAsEncoded = postAsEncoded
+        self.headers = {'Content-type': SPARQL_POST_ENCODED,
                         'Connection': 'Keep-alive'}
+        
+        if not self.postAsEncoded:
+            self.headers['Content-type'] = SPARQL_POST_UPDATE
 
     def __set_update_endpoint(self, update_endpoint):
         self.__update_endpoint = update_endpoint
@@ -555,7 +561,8 @@ class SPARQLUpdateStore(SPARQLStore):
 
     def _do_update(self, update):
         import urllib
-        update = urllib.urlencode({'update': update})
+        if self.postAsEncoded:            
+            update = urllib.urlencode({'update': update})
         self.connection.request(
             'POST', self.path, update.encode("utf-8"), self.headers)
         return self.connection.getresponse()
