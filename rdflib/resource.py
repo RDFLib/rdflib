@@ -74,6 +74,14 @@ Retrieve some basic facts::
     >>> person.value(RDFS.comment)
     rdflib.term.Literal(%(u)s'Just a Python & RDF hacker.', lang=%(u)s'en')
 
+Resources can be sliced (like graphs, but the subject is fixed)::
+
+    >>> for name in person[FOAF.name]:
+    ...     print(name)
+    Some Body
+    >>> person[FOAF.name : Literal("Some Body")]
+    True
+
 Resources as unicode are represented by their identifiers as unicode::
 
     >>> %(unicode)s(person)  #doctest: +SKIP
@@ -439,40 +447,28 @@ class Resource(object):
         else:
             return node
 
-    def __iter__(self): 
-        return self._resource_triples(self._graph.triples((self.identifier, None, None)))    
+    def __iter__(self):
+        return self._resource_triples(self._graph.triples((self.identifier, None, None)))
 
     def __getitem__(self, item):
-        """
-        Resources can be sliced like graphs, but the subject is fixed. 
-        
-        r[RDFS.label] returns triples for (self.identifier, RDFS.label, None)
-        r[RDFS.label : Literal("Bob")] for (self.identifier, RDFS.label, "Bob")
-        etc. 
-
-        """
-
-        if isinstance(item, slice): 
-            if item.step: 
+        if isinstance(item, slice):
+            if item.step:
                 raise TypeError("Resources fix the subject for slicing, and can only be sliced by predicate/object. ")
             p,o=item.start,item.stop
-            if p is None and o is None: 
+            if p is None and o is None:
                 return self.predicate_objects()
             elif p is None:
                 return self.predicates(o)
             elif o is None:
                 return self.objects(p)
-            else: 
-                return self.identifier,p,o in self._graph
-
+            else:
+                return (self.identifier, p, o) in self._graph
         elif isinstance(item, (Node, Path)):
-
             return self.objects(item)
-            
-        else: 
+        else:
             raise TypeError("You can only index a resource by a single rdflib term, a slice of rdflib terms, not %s (%s)"%(item, type(item)))
 
-    def __setitem__(self, item, value): 
+    def __setitem__(self, item, value):
         self.set(item, value)
 
     def _new(self, subject):

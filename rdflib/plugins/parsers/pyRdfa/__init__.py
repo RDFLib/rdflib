@@ -155,7 +155,7 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 
 """
- $Id: __init__.py,v 1.90 2013-02-05 13:03:27 ivan Exp $
+ $Id: __init__.py,v 1.91 2013-10-16 11:48:54 ivan Exp $
 """
 
 __version__ = "3.4.3"
@@ -609,7 +609,8 @@ class pyRdfa :
 						# No charset set. The HTMLLib parser tries to sniff into the
 						# the file to find a meta header for the charset; if that
 						# works, fine, otherwise it falls back on window-...
-						dom = parser.parse(input)						
+						dom = parser.parse(input)
+						
 					try :
 						if isstring :
 							input.close()
@@ -678,7 +679,7 @@ class pyRdfa :
 		except :
 			graph = Graph()
 
-		graph.bind("xsd", Namespace('http://www.w3.org/2001/XMLSchema#'))
+		# graph.bind("xsd", Namespace('http://www.w3.org/2001/XMLSchema#'))
 		# the value of rdfOutput determines the reaction on exceptions...
 		for name in names :
 			self.graph_from_source(name, graph, rdfOutput)

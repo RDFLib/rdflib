@@ -5,11 +5,12 @@
 @license: This software is available for use under the
 U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231">}
 @contact: Ivan Herman, ivan@w3.org
-@version: $Id: lite.py,v 1.10 2013-01-07 12:46:31 ivan Exp $
-$Date: 2013-01-07 12:46:31 $
+@version: $Id: lite.py,v 1.11 2013-09-26 16:37:54 ivan Exp $
+$Date: 2013-09-26 16:37:54 $
 """
 
-from ..host import HostLanguage
+from ..host        import HostLanguage
+
 non_lite_attributes      = ["about","inlist","datatype","rev","rel","content"]
 non_lite_attributes_html = ["about","inlist","datatype","rev"]
 
@@ -36,6 +37,7 @@ def lite_prune(top, options, state) :
 		options.add_warning(msg, node=node)
 
 	def remove_attrs(node) :
+		from ..termorcurie import termname
 		# first the @content; this has a special treatment
 		# there are some extras to check for HTML dialects
 		if options.host_language in [ HostLanguage.html5, HostLanguage.xhtml5, HostLanguage.xhtml ] :
@@ -44,7 +46,15 @@ def lite_prune(top, options, state) :
 				# node.removeAttribute("content")
 			if node.tagName != "link" and node.hasAttribute("rel") :
 				# Unfortunately, this has to be checked separately and run-time for <link> where @rel is allowed for non-RDFa purposes...
-				generate_warning(node, "rel")
+				# Additional complication: @rel is allowed in an <a> element, for example, if used as a pure term and not as a URI or CURIE
+				if node.tagName == "a" :
+					vals = node.getAttribute("rel").strip().split()
+					if len(vals) != 0 :
+						final_vals = [ v for v in vals if not termname.match(v) ]
+						if len(final_vals) != 0 :
+							generate_warning(node, "rel")
+				else :
+					generate_warning(node, "rel")
 			for attr in non_lite_attributes_html :
 				if node.hasAttribute(attr) :
 					generate_warning(node, attr)

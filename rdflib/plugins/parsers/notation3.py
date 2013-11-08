@@ -311,7 +311,7 @@ number_syntax = re.compile(
     r'(?P<integer>[-+]?[0-9]+)(?P<decimal>\.[0-9]+)' +
     r'?(?P<exponent>(?:e|E)[-+]?[0-9]+)?')
 digitstring = re.compile(r'[0-9]+')              # Unsigned integer
-interesting = re.compile(r'[\\\r\n\"]')
+interesting = re.compile(r"""[\\\r\n\"\']""")
 langcode = re.compile(r'[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*')
 
 
@@ -344,6 +344,9 @@ class SinkParser:
         self._reason = why       # Why the parser was asked to parse this
 
         self.turtle = turtle # raise exception when encountering N3 extensions
+        # Turtle allows single or double quotes around strings, whereas N3
+        # only allows double quotes.
+        self.string_delimiters = ('"', "'") if turtle else ('"',)
 
         self._reason2 = None     # Why these triples
          # was: diag.tracking
@@ -1252,11 +1255,11 @@ class SinkParser:
             else:
                 i = j
 
-            if argstr[i] == '"':
-                if argstr[i:i + 3] == '"""':
-                    delim = '"""'
+            if argstr[i] in self.string_delimiters:
+                if argstr[i:i + 3] == argstr[i] * 3:
+                    delim = argstr[i] * 3
                 else:
-                    delim = '"'
+                    delim = argstr[i]
                 i = i + len(delim)
 
                 j, s = self.strconst(argstr, i, delim)
@@ -1297,11 +1300,11 @@ class SinkParser:
                      #     self._store.newSymbol(INTEGER_DATATYPE)))
                 return j
 
-            if argstr[i] == '"':
-                if argstr[i:i + 3] == '"""':
-                    delim = '"""'
+            if argstr[i] in self.string_delimiters:
+                if argstr[i:i + 3] == argstr[i] * 3:
+                    delim = argstr[i] * 3
                 else:
-                    delim = '"'
+                    delim = argstr[i]
                 i = i + len(delim)
 
                 dt = None
@@ -1336,31 +1339,33 @@ class SinkParser:
         """parse an N3 string constant delimited by delim.
         return index, val
         """
+        delim1 = delim[0]
+        delim2, delim3, delim4, delim5 = delim1 * 2, delim1 * 3, delim1 * 4, delim1 * 5
 
         j = i
         ustr = u""    # Empty unicode string
         startline = self.lines  # Remember where for error messages
         while j < len(argstr):
-            if argstr[j] == '"':
-                if delim == '"':  # done when delim is "
+            if argstr[j] == delim1:
+                if delim == delim1:  # done when delim is " or '
                     i = j + 1
                     return i, ustr
-                if delim == '"""':  # done when delim is """ and ...
-                    if argstr[j:j + 5] == '"""""':  # ... we have "" before
+                if delim == delim3:  # done when delim is """ or ''' and, respectively ...
+                    if argstr[j:j + 5] == delim5:  # ... we have "" or '' before
                         i = j + 5
-                        ustr = ustr + '""'
+                        ustr = ustr + delim2
                         return i, ustr
-                    if argstr[j:j + 4] == '""""':  # ... we have " before
+                    if argstr[j:j + 4] == delim4:  # ... we have " or ' before
                         i = j + 4
-                        ustr = ustr + '"'
+                        ustr = ustr + delim1
                         return i, ustr
-                    if argstr[j:j + 3] == '"""':  # current " is part of delim
+                    if argstr[j:j + 3] == delim3:  # current " or ' is part of delim
                         i = j + 3
                         return i, ustr
 
-                     # we are inside of the string and current char is "
+                     # we are inside of the string and current char is " or '
                     j = j + 1
-                    ustr = ustr + '"'
+                    ustr = ustr + delim1
                     continue
 
             m = interesting.search(argstr, j)   # was argstr[j:].
@@ -1385,14 +1390,18 @@ class SinkParser:
              # print "@@@ i = ",i, " j=",j, "m.end=", m.end()
 
             ch = argstr[i]
-            if ch == '"':
+            if ch == delim1:
                 j = i
+                continue
+            elif ch in ('"', "'") and ch != delim1:
+                ustr = ustr + ch
+                j = i + 1
                 continue
             elif ch == "\r":    # Strip carriage returns
                 j = i + 1
                 continue
             elif ch == "\n":
-                if delim == '"':
+                if delim == delim1:
                     raise BadSyntax(
                         self._thisDoc, startline, argstr, i,
                         "newline found in string literal")

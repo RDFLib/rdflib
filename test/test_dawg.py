@@ -30,7 +30,7 @@ import isodate
 
 
 from rdflib import (
-    ConjunctiveGraph, Graph, Namespace, RDF, RDFS, URIRef, BNode, Literal)
+    Dataset, Graph, Namespace, RDF, RDFS, URIRef, BNode, Literal)
 from rdflib.query import Result
 from rdflib.compare import isomorphic
 
@@ -43,7 +43,7 @@ from rdflib.plugins.sparql.update import evalUpdate
 
 from rdflib.py3compat import decodeStringEscape
 
-from nose.tools import nottest, eq_ as eq
+from nose.tools import nottest, eq_
 from nose import SkipTest
 
 from urlparse import urljoin
@@ -56,6 +56,8 @@ if sys.version_info[0:2] < (2, 7):
 else:
     from io import BytesIO
 
+def eq(a,b,msg):
+    return eq_(a,b,msg+': (%r!=%r)'%(a,b))
 
 def setFlags():
     import rdflib
@@ -67,7 +69,7 @@ def setFlags():
 
     # we obviously need this
     rdflib.DAWG_LITERAL_COLLATION = True
-    
+
 def resetFlags():
     import rdflib
     # Several tests rely on lexical form of literals being kept!
@@ -78,13 +80,13 @@ def resetFlags():
 
     # we obviously need this
     rdflib.DAWG_LITERAL_COLLATION = False
-        
+
 
 DEBUG_FAIL = True
-DEBUG_FAIL = False
+#DEBUG_FAIL = False
 
 DEBUG_ERROR = True
-DEBUG_ERROR = False
+#DEBUG_ERROR = False
 
 SPARQL10Tests = True
 # SPARQL10Tests = False
@@ -226,7 +228,7 @@ def update_test(t):
         raise SkipTest()
 
     try:
-        g = ConjunctiveGraph()
+        g = Dataset()
 
         if not res:
             if syntax:
@@ -253,7 +255,7 @@ def update_test(t):
         evalUpdate(g, req)
 
         # read expected results
-        resg = ConjunctiveGraph()
+        resg = Dataset()
         if resdata:
             resg.default_context.load(resdata, format=_fmt(resdata))
 
@@ -263,7 +265,7 @@ def update_test(t):
 
         eq(set(x.identifier for x in g.contexts() if x != g.default_context),
            set(x.identifier for x in resg.contexts()
-               if x != resg.default_context))
+               if x != resg.default_context), 'named graphs in datasets do not match')
         assert isomorphic(g.default_context, resg.default_context), \
             'Default graphs are not isomorphic'
 
@@ -354,7 +356,7 @@ def query_test(t):
         f.close()
 
     try:
-        g = ConjunctiveGraph()
+        g = Dataset()
         if data:
             g.default_context.load(data, format=_fmt(data))
 
@@ -598,7 +600,7 @@ def read_manifest(f):
 
 
 def test_dawg():
-    
+
     setFlags()
 
     if SPARQL10Tests:
@@ -609,7 +611,7 @@ def test_dawg():
         for t in read_manifest("test/DAWG/data-sparql11/manifest-all.ttl"):
             yield t
 
-    if RDFLibTests: 
+    if RDFLibTests:
         for t in read_manifest("test/DAWG/rdflib/manifest.ttl"):
             yield t
 

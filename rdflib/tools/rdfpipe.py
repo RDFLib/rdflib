@@ -49,8 +49,8 @@ def parse_and_serialize(input_files, input_format, guess,
 
     if outfile:
         output_format, kws = _format_and_kws(output_format)
-        graph.serialize(
-            destination=outfile, format=output_format, base=None, **kws)
+        kws.setdefault('base', None)
+        graph.serialize(destination=outfile, format=output_format, **kws)
 
     if store:
         store.rollback()
@@ -68,10 +68,12 @@ def _format_and_kws(fmt):
     ('fmt', {'a': True, 'b': False})
     >>> _format_and_kws("fmt:c=d")
     ('fmt', {'c': 'd'})
+    >>> _format_and_kws("fmt:a=b:c")
+    ('fmt', {'a': 'b:c'})
     """
     fmt, kws = fmt, {}
     if fmt and ':' in fmt:
-        fmt, kwrepr = fmt.split(':')
+        fmt, kwrepr = fmt.split(':', 1)
         for kw in kwrepr.split(','):
             if '=' in kw:
                 k, v = kw.split('=')

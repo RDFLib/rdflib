@@ -177,8 +177,8 @@ class GraphTestCase(unittest.TestCase):
         self.assertEquals(False, graph.connected())
 
     def testSub(self):
-        g1 = Graph()
-        g2 = Graph()
+        g1 = self.graph
+        g2 = Graph(store=g1.store)
 
         tarek = self.tarek
         # michel = self.michel
@@ -210,8 +210,8 @@ class GraphTestCase(unittest.TestCase):
         self.assertEquals((bob, likes, cheese) in g1, False)
 
     def testGraphAdd(self):
-        g1 = Graph()
-        g2 = Graph()
+        g1 = self.graph
+        g2 = Graph(store=g1.store)
 
         tarek = self.tarek
         # michel = self.michel
@@ -242,8 +242,8 @@ class GraphTestCase(unittest.TestCase):
         self.assertEquals((bob, likes, cheese) in g1, True)
 
     def testGraphIntersection(self):
-        g1 = Graph()
-        g2 = Graph()
+        g1 = self.graph
+        g2 = Graph(store=g1.store)
 
         tarek = self.tarek
         michel = self.michel

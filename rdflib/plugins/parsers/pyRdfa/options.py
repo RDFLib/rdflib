@@ -11,7 +11,7 @@ U{W3C SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/2002/
 """
 
 """
-$Id: options.py,v 1.19 2013-01-07 12:46:43 ivan Exp $ $Date: 2013-01-07 12:46:43 $
+$Id: options.py,v 1.20 2013-10-16 11:48:54 ivan Exp $ $Date: 2013-10-16 11:48:54 $
 """
 
 import sys, datetime
@@ -44,11 +44,6 @@ class ProcessorGraph :
 	"""
 	def __init__(self) :
 		self.graph = Graph()
-		self.graph.bind("dcterms", ns_dc)
-		self.graph.bind("pyrdfa",  ns_distill)
-		self.graph.bind("rdf",     ns_rdf)
-		self.graph.bind("rdfa",    ns_rdfa)
-		self.graph.bind("ht",      ns_ht)
 		
 	def add_triples(self, msg, top_class, info_class, context, node) :
 		"""
@@ -68,6 +63,13 @@ class ProcessorGraph :
 		@return: the bnode that serves as a subject for the errors. The caller may add additional information
 		@rtype: BNode
 		"""
+		# Lazy binding of relevant prefixes
+		self.graph.bind("dcterms", ns_dc)
+		self.graph.bind("pyrdfa",  ns_distill)
+		self.graph.bind("rdf",     ns_rdf)
+		self.graph.bind("rdfa",    ns_rdfa)
+		self.graph.bind("ht",      ns_ht)
+		self.graph.bind("xsd",     ns_xsd)
 		# Python 3 foolproof way
 		try :
 			is_context_string = isinstance(context, basestring)

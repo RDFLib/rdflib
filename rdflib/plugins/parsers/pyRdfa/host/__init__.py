@@ -30,8 +30,8 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 
 """
-$Id: __init__.py,v 1.20 2013-01-07 13:03:16 ivan Exp $
-$Date: 2013-01-07 13:03:16 $
+$Id: __init__.py,v 1.21 2013-10-16 11:49:11 ivan Exp $
+$Date: 2013-10-16 11:49:11 $
 """
 __version__ = "3.0"
 
@@ -62,12 +62,12 @@ beautifying_prefixes = {
 	HostLanguage.xhtml	: {
 		"xhv" : "http://www.w3.org/1999/xhtml/vocab#"
 	},
-	HostLanguage.html5	: {
-		"xhv" : "http://www.w3.org/1999/xhtml/vocab#"
-	},	
-	HostLanguage.xhtml5	: {
-		"xhv" : "http://www.w3.org/1999/xhtml/vocab#"
-	},
+	# HostLanguage.html5	: {
+	# 	"xhv" : "http://www.w3.org/1999/xhtml/vocab#"
+	# },	
+	# HostLanguage.xhtml5	: {
+	# 	"xhv" : "http://www.w3.org/1999/xhtml/vocab#"
+	# },
 	HostLanguage.atom : {
 		"atomrel" : "http://www.iana.org/assignments/relation/"
 	}
