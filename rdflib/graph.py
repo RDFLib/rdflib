@@ -1595,6 +1595,7 @@ class Dataset(ConjunctiveGraph):
               location=None, file=None, data=None, **args):
         c = ConjunctiveGraph.parse(self, source, publicID, format, location, file, data, **args)
         self.graph(c)
+        return c
 
     def add_graph(self, g):
         """alias of graph for consistency"""
