@@ -363,7 +363,9 @@ class IOMemory(Store):
 
     def __len__(self, context=None):
         cid = self.__obj2id(context)
-        return sum(1 for enctriple, contexts in self.__all_triples(cid))
+        if cid not in self.__contextTriples:
+            return 0
+        return len(self.__contextTriples[cid])
 
     def add_graph(self, graph):
         if not self.graph_aware:
