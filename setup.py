@@ -52,11 +52,12 @@ else:
         kwargs['test_suite'] = "nose.collector"
         kwargs['install_requires'] = [
             'isodate',
-            'pyparsing<=1.5.7', 'SPARQLWrapper']
+            'pyparsing', 'SPARQLWrapper']
 
-        if sys.version_info[1]<7:
+        if sys.version_info[1]<7:  # Python 2.6
             kwargs['install_requires'].append('ordereddict')
-        if sys.version_info[1]<6: 
+        if sys.version_info[1]<6:  # Python 2.5
+            kwargs['install_requires'].append('pyparsing<=1.5.7')
             kwargs['install_requires'].append('simplejson')
             kwargs['install_requires'].append('html5lib==0.95')
         else:
