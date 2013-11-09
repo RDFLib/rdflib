@@ -268,7 +268,7 @@ import tempfile
 from urlparse import urlparse
 
 __all__ = [
-    'Graph', 'ConjunctiveGraph', 'QuotedGraph', 'GraphValue', 'Seq',
+    'Graph', 'ConjunctiveGraph', 'QuotedGraph', 'Seq',
     'BackwardCompatGraph', 'ModificationException', 'Dataset',
     'UnSupportedAggregateOperation', 'ReadOnlyGraphAggregate']
 
@@ -1671,38 +1671,12 @@ class QuotedGraph(Graph):
     def __reduce__(self):
         return (QuotedGraph, (self.store, self.identifier))
 
-class GraphValue(QuotedGraph):
-    def __init__(self, store, identifier=None, graph=None):
-        if graph is not None:
-            assert identifier is None
-            np = store.node_pickler
-            identifier = md5()
-            s = list(graph.triples((None, None, None)))
-            s.sort()
-            for t in s:
-                identifier.update(b("^").join((np.dumps(i) for i in t)))
-            identifier = URIRef("data:%s" % identifier.hexdigest())
-            super(GraphValue, self).__init__(store, identifier)
-            for t in graph:
-                store.add(t, context=self)
-        else:
-            super(GraphValue, self).__init__(store, identifier)
 
-    def add(self, triple):
-        raise Exception("not mutable")
-
-    def remove(self, triple):
-        raise Exception("not mutable")
-
-    def __reduce__(self):
-        return (GraphValue, (self.store, self.identifier,))
-
-# Make sure QuotedGraph and GraphValues are ordered correctly
+# Make sure QuotedGraph is ordered correctly
 # wrt to other Terms.
 # this must be done here, as the QuotedGraph cannot be
 # circularily imported in term.py
 rdflib.term._ORDERING[QuotedGraph]=11
-rdflib.term._ORDERING[GraphValue]=12
 
 
 class Seq(object):

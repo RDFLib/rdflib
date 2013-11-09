@@ -134,36 +134,6 @@ class GraphTestCase(unittest.TestCase):
         self.removeStuff()
         asserte(len(list(triples((Any, Any, Any)))), 0)
 
-    def testGraphValue(self):
-        from rdflib.graph import GraphValue
-
-        graph = self.graph
-
-        alice = URIRef("alice")
-        bob = URIRef("bob")
-        pizza = URIRef("pizza")
-        cheese = URIRef("cheese")
-
-        g1 = Graph()
-        g1.add((alice, RDF.value, pizza))
-        g1.add((bob, RDF.value, cheese))
-        g1.add((bob, RDF.value, pizza))
-
-        g2 = Graph()
-        g2.add((bob, RDF.value, pizza))
-        g2.add((bob, RDF.value, cheese))
-        g2.add((alice, RDF.value, pizza))
-
-        gv1 = GraphValue(store=graph.store, graph=g1)
-        gv2 = GraphValue(store=graph.store, graph=g2)
-        graph.add((gv1, RDF.value, gv2))
-        v = graph.value(gv1)
-        # print type(v)
-        self.assertEquals(gv2, v)
-        # print list(gv2)
-        # print gv2.identifier
-        graph.remove((gv1, RDF.value, gv2))
-
     def testConnected(self):
         graph = self.graph
         self.addStuff()
