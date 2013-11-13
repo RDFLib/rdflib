@@ -1,6 +1,6 @@
 """
 Trig RDF graph serializer for RDFLib.
-See <http://www.w3.org/2010/01/Trig/Trig> for syntax specification.
+See <http://www.w3.org/TR/trig/> for syntax specification.
 """
 
 from collections import defaultdict
