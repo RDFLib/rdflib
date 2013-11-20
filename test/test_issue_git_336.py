@@ -4,6 +4,8 @@ from rdflib.plugins.parsers.notation3 import BadSyntax
 import nose.tools
 
 # Test for https://github.com/RDFLib/rdflib/issues/336
+# and https://github.com/RDFLib/rdflib/issues/345
+
 
 # stripped-down culprit:
 '''\
@@ -34,9 +36,8 @@ def test_ns_localname_roundtrip():
 
     g1.parse(data=xmldump)
 
-    nose.tools.assert_raises(BadSyntax,
-        lambda: g1.parse(data=turtledump, format="turtle")
-        )
+    g1.parse(data=turtledump, format="turtle")
+
 
 
 if __name__ == '__main__':

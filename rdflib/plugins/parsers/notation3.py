@@ -1226,14 +1226,21 @@ class SinkParser:
         if i < len(argstr) and argstr[i] == ':':
             pfx = ln
             i = i + 1
+            start = i
             ln = ''
             while i < len(argstr):
                 c = argstr[i]
-                if c not in _notNameChars:
+                if (i!=start and c==".") or c not in _notNameChars:
                     ln = ln + c
                     i = i + 1
                 else:
                     break
+
+            if argstr[i-1]=='.':
+                # localname cannot end in .
+                ln = ln[:-1]
+                if not ln: return -1
+                i -= 1
 
             res.append((pfx, ln))
             return i
