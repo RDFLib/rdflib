@@ -73,25 +73,6 @@ class TestN3Case(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testFileName(self):
-        """
-        Test that the n3 parser throws an Exception when using the identifier
-        ":foo.txt", as this is not valid as per the rdf spec.
-        """
-        test_data = """
-@prefix : <http://www.example.com/> .
-
-:foo.txt :p :q .
-"""
-        g = Graph()
-        # TODO: determine what's correct here, either:
-        # seeAlso <http://www.w3.org/TeamSubmission/turtle/#name>
-        self.assertRaises(Exception, g.parse, data=test_data, format="n3")
-        # or.. (challenging comment below):
-        # This isn't the expected result based on my reading of n3 bits
-        # g.parse(data=test_data, format="n3")
-        # s = g.value(predicate=URIRef("http://www.example.com/p"), object=URIRef("http://www.example.com/q"))
-        # self.assertEquals(s, URIRef("http://www.example.org/foo.txt"))
 
     def testBaseCumulative(self):
         """
