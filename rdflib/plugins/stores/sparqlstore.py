@@ -17,6 +17,9 @@ Changes:
 SPARQL_POST_UPDATE = "application/sparql-update"
 SPARQL_POST_ENCODED = "application/x-www-form-urlencoded"
 
+#Defines a SPARQL keyword
+LIMIT = 'LIMIT' 
+
 import re
 # import warnings
 try:
@@ -304,6 +307,12 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
         query = "SELECT %s WHERE { %s %s %s }" % \
             (v, s.n3(), p.n3(), o.n3())
+
+        try:
+            if hasattr(context, LIMIT):
+                query = query + ' LIMIT %s' % int(getattr(context, LIMIT))
+        except ValueError: 
+            pass
 
         self.resetQuery()
         if self.context_aware and context is not None:
