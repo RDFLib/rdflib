@@ -309,9 +309,8 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             (v, s.n3(), p.n3(), o.n3())
 
         try:
-            if hasattr(context, LIMIT):
-                query = query + ' LIMIT %s' % int(getattr(context, LIMIT))
-        except ValueError: 
+            query = query + ' LIMIT %s' % int(getattr(context, LIMIT))
+        except (ValueError, TypeError, AttributeError): 
             pass
 
         self.resetQuery()
