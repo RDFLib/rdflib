@@ -28,16 +28,13 @@ class TestSparql11(unittest.TestCase):
         self.longMessage = True
         self.graph = ConjunctiveGraph('SPARQLUpdateStore')
 
-        root = "http://localhost:3030/"
+        root = "http://localhost:3030/ukpp/"
         self.graph.open((root + "sparql", root + "update"))
 
         # clean out the store
-        try:
-            for c in self.graph.contexts():
-                c.remove((None, None, None))
-                assert len(c) == 0
-        except QueryBadFormed:
-            pass
+        for c in self.graph.contexts():
+            c.remove((None, None, None))
+            assert len(c) == 0
 
     def tearDown(self):
         self.graph.close()
