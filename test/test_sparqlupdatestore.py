@@ -2,6 +2,7 @@
 from rdflib import ConjunctiveGraph, URIRef
 
 import unittest
+from SPARQLWrapper.SPARQLExceptions import QueryBadFormed
 
 # this assumed SPARQL1.1 query/update endpoints
 # running locally at localhost:3030/data
@@ -27,13 +28,16 @@ class TestSparql11(unittest.TestCase):
         self.longMessage = True
         self.graph = ConjunctiveGraph('SPARQLUpdateStore')
 
-        root = "http://localhost:3030/ukpp/"
+        root = "http://localhost:3030/"
         self.graph.open((root + "sparql", root + "update"))
 
         # clean out the store
-        for c in self.graph.contexts():
-            c.remove((None, None, None))
-            assert len(c) == 0
+        try:
+            for c in self.graph.contexts():
+                c.remove((None, None, None))
+                assert len(c) == 0
+        except QueryBadFormed:
+            pass
 
     def tearDown(self):
         self.graph.close()
