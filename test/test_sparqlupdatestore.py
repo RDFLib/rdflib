@@ -2,7 +2,6 @@
 from rdflib import ConjunctiveGraph, URIRef
 
 import unittest
-from SPARQLWrapper.SPARQLExceptions import QueryBadFormed
 
 # this assumed SPARQL1.1 query/update endpoints
 # running locally at localhost:3030/data
