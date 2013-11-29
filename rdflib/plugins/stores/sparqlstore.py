@@ -17,8 +17,10 @@ Changes:
 SPARQL_POST_UPDATE = "application/sparql-update"
 SPARQL_POST_ENCODED = "application/x-www-form-urlencoded"
 
-#Defines a SPARQL keyword
+#Defines some SPARQL keywords
 LIMIT = 'LIMIT' 
+OFFSET = 'OFFSET'
+ORDERBY = 'ORDER BY'
 
 import re
 # import warnings
@@ -280,7 +282,23 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
     def triples(self, (s, p, o), context=None):
         """
-        SELECT ?subj ?pred ?obj WHERE { ?subj ?pred ?obj }
+        Returns a tuple of triples.
+        (s, p, o) defines the triple. None means anything.
+        'context' is the graph effectively calling this method.
+        For the sake of this method 'context' may include three parameter
+        to refine the underlying query:
+        1) LIMIT: an integer to limit the number of results
+        2) OFFSET: an integer to enable paging of results
+        3) ORDERBY: an instance of Variable('s'), Variable('o') or Variable('p')
+        or, by default, the first 'None' from the given triple
+        Please note the following:
+        - Using LIMIT or OFFSET automatically include ORDERBY otherwise this is
+        because the results are retrieved in a not deterministic way (depends on
+        the walking path on the graph)
+        - Using OFFSET without defining LIMIT will discard the first OFFSET - 1 
+        results
+        
+        SELECT ?subj ?pred ?obj WHERE { ?subj ?pred ?obj }            
         """
 
         if ( isinstance(s, BNode) or
@@ -308,8 +326,27 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         query = "SELECT %s WHERE { %s %s %s }" % \
             (v, s.n3(), p.n3(), o.n3())
 
+        #The ORDER BY is necessa
+        if hasattr(context, LIMIT) or getattr(context, OFFSET) \
+            or hasattr(context, ORDERBY):
+            var = None
+            if isinstance(s, Variable):
+                var = s
+            elif isinstance(p, Variable):
+                var = p
+            elif isinstance(o, Variable):
+                var = o
+            elif hasattr(context, ORDERBY) \
+                    and isinstance(getattr(context, ORDERBY), Variable):          
+                var = getattr(context, ORDERBY)                
+            query = query + ' %s %s' % (ORDERBY, var.n3())
+
         try:
             query = query + ' LIMIT %s' % int(getattr(context, LIMIT))
+        except (ValueError, TypeError, AttributeError): 
+            pass
+        try:
+            query = query + ' OFFSET %s' % int(getattr(context, OFFSET))
         except (ValueError, TypeError, AttributeError): 
             pass
 
