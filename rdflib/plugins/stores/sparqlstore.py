@@ -327,7 +327,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             (v, s.n3(), p.n3(), o.n3())
 
         #The ORDER BY is necessa
-        if hasattr(context, LIMIT) or getattr(context, OFFSET) \
+        if hasattr(context, LIMIT) or hasattr(context, OFFSET) \
             or hasattr(context, ORDERBY):
             var = None
             if isinstance(s, Variable):
