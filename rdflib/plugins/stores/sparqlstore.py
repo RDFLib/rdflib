@@ -341,7 +341,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         query = "SELECT %s WHERE { %s %s %s }" % \
             (v, s.n3(), p.n3(), o.n3())
 
-        #The ORDER BY is necessa
+        #The ORDER BY is necessary
         if hasattr(context, LIMIT) or hasattr(context, OFFSET) \
             or hasattr(context, ORDERBY):
             var = None
