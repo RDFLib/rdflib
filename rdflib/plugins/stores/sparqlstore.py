@@ -282,23 +282,38 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
     def triples(self, (s, p, o), context=None):
         """
-        Returns a tuple of triples.
-        (s, p, o) defines the triple. None means anything.
-        'context' is the graph effectively calling this method.
-        For the sake of this method 'context' may include three parameter
+        - tuple **(s, o, p)** 
+            the triple used as filter for the SPARQL select. 
+            (None, None, None) means anything.
+        - context **context** 
+            the graph effectively calling this method.
+            
+        Returns a tuple of triples executing essentially a SPARQL like         
+        SELECT ?subj ?pred ?obj WHERE { ?subj ?pred ?obj }
+
+        **context** may include three parameter
         to refine the underlying query:
-        1) LIMIT: an integer to limit the number of results
-        2) OFFSET: an integer to enable paging of results
-        3) ORDERBY: an instance of Variable('s'), Variable('o') or Variable('p')
+         * LIMIT: an integer to limit the number of results
+         * OFFSET: an integer to enable paging of results
+         * ORDERBY: an instance of Variable('s'), Variable('o') or Variable('p')
         or, by default, the first 'None' from the given triple
-        Please note the following:
+        
+        .. warning::
         - Using LIMIT or OFFSET automatically include ORDERBY otherwise this is
         because the results are retrieved in a not deterministic way (depends on
         the walking path on the graph)
         - Using OFFSET without defining LIMIT will discard the first OFFSET - 1 
-        results
+        results    
         
-        SELECT ?subj ?pred ?obj WHERE { ?subj ?pred ?obj }            
+        ``
+        g.LIMIT = limit
+        g.OFFSET = offset
+        triple_generator = graph.triples(mytriple):
+            #do something
+        #Removes LIMIT and OFFSET if not required for the next triple() calls
+        del g.LIMIT        
+        del g.OFFSET
+        ``        
         """
 
         if ( isinstance(s, BNode) or
