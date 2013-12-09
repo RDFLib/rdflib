@@ -4,7 +4,9 @@
 This is an RDFLib store around Ivan Herman et al.'s SPARQL service wrapper.
 This was first done in layer-cake, and then ported to RDFLib 3 and rdfextras
 
-This version works with vanilla SPARQLWrapper installed by ``easy_install``, ``pip`` or similar. If you installed ``rdflib`` with a tool that understands dependencies, it should have been installed automatically for you
+This version works with vanilla SPARQLWrapper installed by ``easy_install``,
+``pip`` or similar. If you installed ``rdflib`` with a tool that understands
+dependencies, it should have been installed automatically for you.
 
 Changes:
     - Layercake adding support for namespace binding, I removed it again to
@@ -17,8 +19,8 @@ Changes:
 SPARQL_POST_UPDATE = "application/sparql-update"
 SPARQL_POST_ENCODED = "application/x-www-form-urlencoded"
 
-#Defines some SPARQL keywords
-LIMIT = 'LIMIT' 
+# Defines some SPARQL keywords
+LIMIT = 'LIMIT'
 OFFSET = 'OFFSET'
 ORDERBY = 'ORDER BY'
 
@@ -80,7 +82,7 @@ class NSSPARQLWrapper(SPARQLWrapper):
         """
         self.queryType = self._parseQueryType(query)
         self.queryString = self.injectPrefixes(query)
-        
+
     def injectPrefixes(self, query):
         return '\n'.join(
             ['\n'.join(['PREFIX %s: <%s>' % (key, val)
@@ -172,11 +174,11 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config)
     If this is set this will work fine.
 
-    .. warning:: The SPARQL Store does not support blank-nodes!  
+    .. warning:: The SPARQL Store does not support blank-nodes!
 
                  As blank-nodes acts as variables in SPARQL queries
                  there is no way to query for a particular blank node.
-                 
+
                  See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes
 
 
@@ -281,13 +283,13 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
     def triples(self, (s, p, o), context=None):
         """
-        - tuple **(s, o, p)** 
-            the triple used as filter for the SPARQL select. 
+        - tuple **(s, o, p)**
+            the triple used as filter for the SPARQL select.
             (None, None, None) means anything.
-        - context **context** 
+        - context **context**
             the graph effectively calling this method.
-            
-        Returns a tuple of triples executing essentially a SPARQL like         
+
+        Returns a tuple of triples executing essentially a SPARQL like
         SELECT ?subj ?pred ?obj WHERE { ?subj ?pred ?obj }
 
         **context** may include three parameter
@@ -296,29 +298,30 @@ class SPARQLStore(NSSPARQLWrapper, Store):
          * OFFSET: an integer to enable paging of results
          * ORDERBY: an instance of Variable('s'), Variable('o') or Variable('p')
         or, by default, the first 'None' from the given triple
-        
+
         .. warning::
         - Using LIMIT or OFFSET automatically include ORDERBY otherwise this is
         because the results are retrieved in a not deterministic way (depends on
         the walking path on the graph)
-        - Using OFFSET without defining LIMIT will discard the first OFFSET - 1 
-        results    
-        
+        - Using OFFSET without defining LIMIT will discard the first OFFSET - 1
+        results
+
         ``
         g.LIMIT = limit
         g.OFFSET = offset
         triple_generator = graph.triples(mytriple):
             #do something
         #Removes LIMIT and OFFSET if not required for the next triple() calls
-        del g.LIMIT        
+        del g.LIMIT
         del g.OFFSET
-        ``        
+        ``
         """
 
         if ( isinstance(s, BNode) or
-             isinstance(p, BNode) or 
-             isinstance(o, BNode) ): 
-            raise Exception("SPARQLStore does not support Bnodes! See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes")
+             isinstance(p, BNode) or
+             isinstance(o, BNode) ):
+            raise Exception("SPARQLStore does not support Bnodes! "
+                            "See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes")
 
         vars = []
         if not s:
@@ -340,7 +343,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         query = "SELECT %s WHERE { %s %s %s }" % \
             (v, s.n3(), p.n3(), o.n3())
 
-        #The ORDER BY is necessary
+        # The ORDER BY is necessary
         if hasattr(context, LIMIT) or hasattr(context, OFFSET) \
             or hasattr(context, ORDERBY):
             var = None
@@ -351,17 +354,17 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             elif isinstance(o, Variable):
                 var = o
             elif hasattr(context, ORDERBY) \
-                    and isinstance(getattr(context, ORDERBY), Variable):          
-                var = getattr(context, ORDERBY)                
+                    and isinstance(getattr(context, ORDERBY), Variable):
+                var = getattr(context, ORDERBY)
             query = query + ' %s %s' % (ORDERBY, var.n3())
 
         try:
             query = query + ' LIMIT %s' % int(getattr(context, LIMIT))
-        except (ValueError, TypeError, AttributeError): 
+        except (ValueError, TypeError, AttributeError):
             pass
         try:
             query = query + ' OFFSET %s' % int(getattr(context, OFFSET))
-        except (ValueError, TypeError, AttributeError): 
+        except (ValueError, TypeError, AttributeError):
             pass
 
         self.resetQuery()
@@ -455,11 +458,11 @@ class SPARQLUpdateStore(SPARQLStore):
 
     For Graph objects, everything works as expected.
 
-    .. warning:: The SPARQL Update Store does not support blank-nodes!  
+    .. warning:: The SPARQL Update Store does not support blank-nodes!
 
                  As blank-nodes acts as variables in SPARQL queries
                  there is no way to query for a particular blank node.
-                 
+
                  See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes
 
 
@@ -484,7 +487,7 @@ class SPARQLUpdateStore(SPARQLStore):
         self.postAsEncoded = postAsEncoded
         self.headers = {'Content-type': SPARQL_POST_ENCODED,
                         'Connection': 'Keep-alive'}
-        
+
         if not self.postAsEncoded:
             self.headers['Content-type'] = SPARQL_POST_UPDATE
 
@@ -516,7 +519,8 @@ class SPARQLUpdateStore(SPARQLStore):
     def open(self, configuration, create=False):
         """
         sets the endpoint URLs for this SPARQLStore
-        :param configuration: either a tuple of (queryEndpoint, update_endpoint), or a string with the query endpoint
+        :param configuration: either a tuple of (queryEndpoint, update_endpoint),
+            or a string with the query endpoint
         :param create: if True an exception is thrown.
         """
 
@@ -552,9 +556,10 @@ class SPARQLUpdateStore(SPARQLStore):
         (subject, predicate, obj) = spo
 
         if ( isinstance(subject, BNode) or
-             isinstance(predicate, BNode) or 
-             isinstance(obj, BNode) ): 
-            raise Exception("SPARQLStore does not support Bnodes! See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes")
+             isinstance(predicate, BNode) or
+             isinstance(obj, BNode) ):
+            raise Exception("SPARQLStore does not support Bnodes! "
+                            "See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes")
 
 
         triple = "%s %s %s ." % (subject.n3(), predicate.n3(), obj.n3())
@@ -579,9 +584,10 @@ class SPARQLUpdateStore(SPARQLStore):
             (subject, predicate, obj, context) = spoc
 
             if ( isinstance(subject, BNode) or
-                 isinstance(predicate, BNode) or 
-                 isinstance(obj, BNode) ): 
-                raise Exception("SPARQLStore does not support Bnodes! See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes")
+                 isinstance(predicate, BNode) or
+                 isinstance(obj, BNode) ):
+                raise Exception("SPARQLStore does not support Bnodes! "
+                                "See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes")
 
 
             triple = "%s %s %s ." % (subject.n3(), predicate.n3(), obj.n3())
@@ -621,7 +627,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
     def _do_update(self, update):
         import urllib
-        if self.postAsEncoded:            
+        if self.postAsEncoded:
             update = urllib.urlencode({'update': update})
         self.connection.request(
             'POST', self.path, update.encode("utf-8"), self.headers)
@@ -639,7 +645,7 @@ class SPARQLUpdateStore(SPARQLStore):
         the update. Setting initBindings adds inline VALUEs to the
         beginning of every WHERE clause. By the SPARQL grammar, all
         operations that support variables (namely INSERT and DELETE)
-        require a WHERE clause. 
+        require a WHERE clause.
         Important: initBindings fails if the update contains the
         substring 'WHERE {' which does not denote a WHERE clause, e.g.
         if it is part of a literal.
