@@ -306,13 +306,13 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         results    
         
         ``
-        g.LIMIT = limit
-        g.OFFSET = offset
-        triple_generator = graph.triples(mytriple):
+        a_graph.LIMIT = limit
+        a_graph.OFFSET = offset
+        triple_generator = a_graph.triples(mytriple):
             #do something
         #Removes LIMIT and OFFSET if not required for the next triple() calls
-        del g.LIMIT        
-        del g.OFFSET
+        del a_graph.LIMIT        
+        del a_graph.OFFSET
         ``        
         """
 
