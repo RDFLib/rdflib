@@ -159,7 +159,7 @@ Read the docs at:
             'csv2rdf = rdflib.tools.csv2rdf:main',
             'rdf2dot = rdflib.tools.rdf2dot:main',
             'rdfs2dot = rdflib.tools.rdfs2dot:main',
-            'rdfgraphisomorpishm = rdflib.tools.graphisomorphism:main',
+            'rdfgraphisomorphism = rdflib.tools.graphisomorphism:main',
             ],
         },
     
