@@ -12,6 +12,7 @@ data, per SVG specification
 License: W3C Software License,
 http://www.w3.org/Consortium/Legal/copyright-software
 Author: Ivan Herman
+Copyright: W3C
 """
 
 from rdflib.parser import Parser
