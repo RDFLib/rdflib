@@ -147,6 +147,7 @@ The user of the package may refer add these transformers to L{Options} instance.
 @author: U{Ivan Herman<a href="http://www.w3.org/People/Ivan/">}
 @license: This software is available for use under the
 U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231">}
+@copyright: W3C
 
 @var builtInTransformers: List of built-in transformers that are to be run regardless, because they are part of the RDFa spec
 @var CACHE_DIR_VAR: Environment variable used to define cache directories for RDFa vocabularies in case the default setting does not work or is not appropriate. 

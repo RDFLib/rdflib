@@ -40,6 +40,7 @@ By default, the output format for the graph is RDF/XML. At present, the followin
 @author: U{Ivan Herman<http://www.w3.org/People/Ivan/>}
 @license: This software is available for use under the
 U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231">}
+@copyright: W3C
 """
 
 """
