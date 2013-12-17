@@ -16,14 +16,14 @@ __all__ = ['unquote', 'uriquote', 'Sink', 'NTriplesParser']
 
 uriref = b(r'<([^:]+:[^\s"<>]+)>')
 literal = b(r'"([^"\\]*(?:\\.[^"\\]*)*)"')
-litinfo = b(r'(?:@([a-z]+(?:-[a-z0-9]+)*)|\^\^') + uriref + b(r')?')
+litinfo = b(r'(?:@([a-z]+(?:-[a-zA-Z0-9]+)*)|\^\^') + uriref + b(r')?')
 
 r_line = re.compile(b(r'([^\r\n]*)(?:\r\n|\r|\n)'))
 r_wspace = re.compile(b(r'[ \t]*'))
 r_wspaces = re.compile(b(r'[ \t]+'))
-r_tail = re.compile(b(r'[ \t]*\.[ \t]*'))
+r_tail = re.compile(b(r'[ \t]*\.[ \t]*(#.*)?'))
 r_uriref = re.compile(uriref)
-r_nodeid = re.compile(b(r'_:([A-Za-z][A-Za-z0-9]*)'))
+r_nodeid = re.compile(b(r'_:([A-Za-z0-9]*)'))
 r_literal = re.compile(literal + litinfo)
 
 bufsiz = 2048
@@ -196,7 +196,7 @@ class NTriplesParser(object):
         if not m:  # @@ Why can't we get the original pattern?
             # print(dir(pattern))
             # print repr(self.line), type(self.line)
-            raise ParseError("Failed to eat %s" % pattern)
+            raise ParseError("Failed to eat %s at %s" % (pattern, self.line))
         self.line = self.line[m.end():]
         return m
 

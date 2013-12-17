@@ -69,15 +69,15 @@ class NQuadsParser(NTriplesParser):
             return  # The line is empty or a comment
 
         subject = self.subject()
-        self.eat(r_wspaces)
+        self.eat(r_wspace)
 
         predicate = self.predicate()
-        self.eat(r_wspaces)
+        self.eat(r_wspace)
 
         obj = self.object()
-        self.eat(r_wspaces)
+        self.eat(r_wspace)
 
-        context = self.uriref()
+        context = self.uriref() or self.nodeid()
         self.eat(r_tail)
 
         if self.line:
