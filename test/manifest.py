@@ -6,6 +6,7 @@ from rdflib import Graph, RDF, RDFS, Namespace
 MF = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#')
 QT = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/test-query#')
 UP = Namespace('http://www.w3.org/2009/sparql/tests/test-update#')
+RDFT = Namespace('http://www.w3.org/ns/rdftest#')
 
 DAWG = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#')
 
@@ -33,7 +34,8 @@ def read_manifest(f):
             for e in g.items(col):
 
                 if not ((e, DAWG.approval, DAWG.Approved) in g or
-                        (e, DAWG.approval, DAWG.NotClassified) in g):
+                        (e, DAWG.approval, DAWG.NotClassified) in g or
+                        (e, RDFT.approval, RDFT.Approved) in g ):
                     continue
 
                 _type = g.value(e, RDF.type)
@@ -81,6 +83,12 @@ def read_manifest(f):
                            MF.NegativeUpdateSyntaxTest11):
                     query = g.value(e, MF.action)
                     syntax = _type == MF.PositiveUpdateSyntaxTest11
+
+                elif _type in (RDFT.TestNQuadsPositiveSyntax,
+                               RDFT.TestNQuadsNegativeSyntax):
+                    query = g.value(e, MF.action)
+                    syntax = _type == RDFT.TestNQuadsPositiveSyntax
+
 
                 else:
                     pass
