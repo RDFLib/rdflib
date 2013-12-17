@@ -30,7 +30,7 @@ import isodate
 
 
 from rdflib import (
-    Dataset, Graph, Namespace, RDF, RDFS, URIRef, BNode, Literal)
+    Dataset, Graph, Namespace, RDF, URIRef, BNode, Literal)
 from rdflib.query import Result
 from rdflib.compare import isomorphic
 
@@ -55,6 +55,8 @@ if sys.version_info[0:2] < (2, 7):
     assert BytesIO
 else:
     from io import BytesIO
+
+from manifest import nose_tests, MF, UP
 
 def eq(a,b,msg):
     return eq_(a,b,msg+': (%r!=%r)'%(a,b))
@@ -99,11 +101,7 @@ RDFLibTests = True
 DETAILEDASSERT = True
 # DETAILEDASSERT=False
 
-MF = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#')
-QT = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/test-query#')
-UP = Namespace('http://www.w3.org/2009/sparql/tests/test-update#')
 
-DAWG = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#')
 DOAP = Namespace('http://usefulinc.com/ns/doap#')
 FOAF = Namespace('http://xmlns.com/foaf/0.1/')
 EARL = Namespace("http://www.w3.org/ns/earl#")
@@ -507,96 +505,17 @@ def query_test(t):
         raise
 
 
-def read_manifest(f):
+testers = {
+    UP.UpdateEvaluationTest: update_test,
+    MF.UpdateEvaluationTest: update_test,
+    MF.PositiveUpdateSyntaxTest11: update_test,
+    MF.NegativeUpdateSyntaxTest11: update_test,
 
-    def _str(x):
-        if x is not None:
-            return str(x)
-        return None
-
-    g = Graph()
-    g.load(f, format='turtle')
-
-    for m in g.subjects(RDF.type, MF.Manifest):
-
-        for col in g.objects(m, MF.include):
-            for i in g.items(col):
-                for x in read_manifest(i):
-                    yield x
-
-        for col in g.objects(m, MF.entries):
-            for e in g.items(col):
-
-                if not ((e, DAWG.approval, DAWG.Approved) in g or
-                        (e, DAWG.approval, DAWG.NotClassified) in g):
-                    continue
-
-                t = g.value(e, RDF.type)
-
-                tester = query_test
-
-                if t in (MF.ServiceDescriptionTest, MF.ProtocolTest):
-                    continue  # skip tests we do not know
-
-                name = g.value(e, MF.name)
-                comment = g.value(e, RDFS.comment)
-
-                if t in (MF.QueryEvaluationTest, MF.CSVResultFormatTest):
-                    a = g.value(e, MF.action)
-                    query = g.value(a, QT.query)
-                    data = g.value(a, QT.data)
-                    graphdata = list(g.objects(a, QT.graphData))
-                    res = g.value(e, MF.result)
-                    syntax = True
-                elif t in (MF.UpdateEvaluationTest, UP.UpdateEvaluationTest):
-                    a = g.value(e, MF.action)
-                    query = g.value(a, UP.request)
-                    data = g.value(a, UP.data)
-                    graphdata = []
-                    for gd in g.objects(a, UP.graphData):
-                        graphdata.append((g.value(gd, UP.graph),
-                                          g.value(gd, RDFS.label)))
-
-                    r = g.value(e, MF.result)
-                    resdata = g.value(r, UP.data)
-                    resgraphdata = []
-                    for gd in g.objects(r, UP.graphData):
-                        resgraphdata.append((g.value(gd, UP.graph),
-                                             g.value(gd, RDFS.label)))
-
-                    res = resdata, resgraphdata
-                    syntax = True
-                    tester = update_test
-
-                elif t in (MF.NegativeSyntaxTest11, MF.PositiveSyntaxTest11):
-                    query = g.value(e, MF.action)
-                    if t == MF.NegativeSyntaxTest11:
-                        syntax = False
-                    else:
-                        syntax = True
-                    data = None
-                    graphdata = None
-                    res = None
-
-                elif t in (MF.PositiveUpdateSyntaxTest11,
-                           MF.NegativeUpdateSyntaxTest11):
-                    query = g.value(e, MF.action)
-                    if t == MF.NegativeUpdateSyntaxTest11:
-                        syntax = False
-                    else:
-                        syntax = True
-                    data = None
-                    graphdata = None
-                    res = None
-                    tester = update_test
-
-                else:
-                    print "I dont know DAWG Test Type %s" % t
-                    continue
-
-                yield tester, (e, _str(name), _str(comment),
-                               _str(data), graphdata, _str(query),
-                               res, syntax)
+    MF.QueryEvaluationTest: query_test,
+    MF.NegativeSyntaxTest11: query_test,
+    MF.PositiveSyntaxTest11: query_test,
+    MF.CSVResultFormatTest: query_test,
+}
 
 
 def test_dawg():
@@ -604,16 +523,17 @@ def test_dawg():
     setFlags()
 
     if SPARQL10Tests:
-        for t in read_manifest("test/DAWG/data-r2/manifest-evaluation.ttl"):
+        for t in nose_tests(testers, "test/DAWG/data-r2/manifest-evaluation.ttl"):
             yield t
 
     if SPARQL11Tests:
-        for t in read_manifest("test/DAWG/data-sparql11/manifest-all.ttl"):
+        for t in nose_tests(testers, "test/DAWG/data-sparql11/manifest-all.ttl"):
             yield t
 
     if RDFLibTests:
-        for t in read_manifest("test/DAWG/rdflib/manifest.ttl"):
+        for t in nose_tests(testers, "test/DAWG/rdflib/manifest.ttl"):
             yield t
+
 
     resetFlags()
 
@@ -646,18 +566,26 @@ if __name__ == '__main__':
     success = 0
 
     skip = 0
-    for f, t in test_dawg():
+
+    for _type, t in test_dawg():
+
+
         if NAME and not str(t[0]).startswith(NAME):
             continue
         i += 1
         try:
+            if _type not in testers:
+                raise SkipTest('unknown type: '+_type) # unknown type
+            f = testers[_type]
+
             f(t)
             earl(t[0], "passed")
             success += 1
 
-        except SkipTest:
-            earl(t[0], "untested", skiptests[t[0]])
-            print "skipping %s - %s" % (t[0], skiptests[t[0]])
+        except SkipTest, e:
+            msg = skiptests.get(t[0], e.message)
+            earl(t[0], "untested", msg)
+            print "skipping %s - %s" % (t[0], msg)
             skip += 1
 
         except KeyboardInterrupt:
