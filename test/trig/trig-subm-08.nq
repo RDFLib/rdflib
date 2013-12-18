@@ -1,0 +1,11 @@
+_:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "banana" .
+_:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "apple" .
+_:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid1 .
+<http://example.org/stuff/1.0/a> <http://example.org/stuff/1.0/b> _:genid2 .
+
+_:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "banana" <http://example/graph> .
+_:genid3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> <http://example/graph> .
+_:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "apple" <http://example/graph> .
+_:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid3 <http://example/graph> .
+<http://example.org/stuff/1.0/a> <http://example.org/stuff/1.0/b> _:genid4 <http://example/graph> .

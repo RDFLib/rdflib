@@ -1,0 +1,2 @@
+<http://a.example/s> <http://a.example/p> "\u0000\u0026\u0028\u005B\u005D\u007F" .
+<http://a.example/s> <http://a.example/p> "\u0000\u0026\u0028\u005B\u005D\u007F" <http://example/graph> .

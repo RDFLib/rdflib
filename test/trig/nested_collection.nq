@@ -1,0 +1,10 @@
+<http://a.example/s> <http://a.example/p> _:outerEl1 .
+_:outerEl1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:innerEl1 .
+_:innerEl1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:innerEl1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:outerEl1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+<http://a.example/s> <http://a.example/p> _:outerEl3 <http://example/graph> .
+_:outerEl3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:innerEl3 <http://example/graph> .
+_:innerEl3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "1"^^<http://www.w3.org/2001/XMLSchema#integer> <http://example/graph> .
+_:innerEl3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> <http://example/graph> .
+_:outerEl3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> <http://example/graph> .
