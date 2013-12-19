@@ -98,13 +98,17 @@ def read_manifest(f):
                                RDFT.TestTrigPositiveSyntax,
                                RDFT.TestTrigNegativeSyntax,
                                RDFT.TestNTriplesPositiveSyntax,
-                               RDFT.TestNTriplesNegativeSyntax
+                               RDFT.TestNTriplesNegativeSyntax,
+                               RDFT.TestTurtlePositiveSyntax,
+                               RDFT.TestTurtleNegativeSyntax,
+
 
                 ):
                     query = g.value(e, MF.action)
                     syntax = _type in (RDFT.TestNQuadsPositiveSyntax,
                                        RDFT.TestNTriplesPositiveSyntax,
-                                       RDFT.TestTrigPositiveSyntax)
+                                       RDFT.TestTrigPositiveSyntax,
+                                       RDFT.TestTurtlePositiveSyntax)
 
                 else:
                     pass
