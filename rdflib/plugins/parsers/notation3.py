@@ -950,10 +950,13 @@ class SinkParser:
         Leaves the terminating punctuation in the buffer
         """
         while 1:
-            j = self.skipSpace(argstr, i)
-            if j < 0:
-                self.BadSyntax(argstr, i,
-                    "EOF found when expected verb in property list")
+            while 1: # skip repeat ;
+                j = self.skipSpace(argstr, i)
+                if j < 0:
+                    self.BadSyntax(argstr, i,
+                                   "EOF found when expected verb in property list")
+                if argstr[j]!=';': break
+                i = j+1
 
             if argstr[j:j + 2] == ":-":
                 if self.turtle:
