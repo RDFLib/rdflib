@@ -85,10 +85,10 @@ def resetFlags():
 
 
 DEBUG_FAIL = True
-#DEBUG_FAIL = False
+DEBUG_FAIL = False
 
 DEBUG_ERROR = True
-#DEBUG_ERROR = False
+DEBUG_ERROR = False
 
 SPARQL10Tests = True
 # SPARQL10Tests = False
