@@ -21,10 +21,23 @@ testers = {
     RDFT.TestTurtleNegativeSyntax: turtle
 }
 
-def test_turtle():
+def test_turtle(tests = None):
     for t in nose_tests(testers, 'test/w3c/turtle/manifest.ttl'):
+        if tests:
+            for test in tests:
+                if test in t[1].uri: break
+            else:
+                continue
+
         yield t
 
 
 if __name__ == '__main__':
-    pass
+
+    from optparse import OptionParser
+    p = OptionParser()
+    (options, args) = p.parse_args()
+
+    for t in test_turtle(args):
+        print 'Running ', t[1].uri
+        t[0](t[1])
