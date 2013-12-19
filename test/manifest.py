@@ -89,6 +89,12 @@ def read_manifest(f):
                     query = g.value(e, MF.action)
                     syntax = _type == RDFT.TestNQuadsPositiveSyntax
 
+                elif _type in (RDFT.TestTrigPositiveSyntax,
+                               RDFT.TestTrigNegativeSyntax):
+                    query = g.value(e, MF.action)
+                    syntax = _type == RDFT.TestTrigPositiveSyntax
+
+
 
                 else:
                     pass

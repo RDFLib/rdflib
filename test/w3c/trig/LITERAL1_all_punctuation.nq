@@ -1,0 +1,2 @@
+<http://a.example/s> <http://a.example/p> " !\u0022#$%&():;<=>?@[]^_`{|}~" .
+<http://a.example/s> <http://a.example/p> " !\u0022#$%&():;<=>?@[]^_`{|}~" <http://example/graph> .
