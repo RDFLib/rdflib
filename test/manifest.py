@@ -33,9 +33,18 @@ def read_manifest(f):
         for col in g.objects(m, MF.entries):
             for e in g.items(col):
 
-                if not ((e, DAWG.approval, DAWG.Approved) in g or
-                        (e, DAWG.approval, DAWG.NotClassified) in g or
-                        (e, RDFT.approval, RDFT.Approved) in g ):
+                approved = ((e, DAWG.approval, DAWG.Approved) in g or
+                            (e, DAWG.approval, DAWG.NotClassified) in g or
+                            (e, RDFT.approval, RDFT.Approved) in g)
+
+                # run proposed tests
+                # approved |= (e, RDFT.approval, RDFT.Proposed) in g
+
+                # run legacy tests with no approval set
+                approved |= ((e, DAWG.approval, None) not in g and
+                             (e, RDFT.approval, None) not in g)
+
+                if not approved:
                     continue
 
                 _type = g.value(e, RDF.type)
@@ -85,16 +94,17 @@ def read_manifest(f):
                     syntax = _type == MF.PositiveUpdateSyntaxTest11
 
                 elif _type in (RDFT.TestNQuadsPositiveSyntax,
-                               RDFT.TestNQuadsNegativeSyntax):
+                               RDFT.TestNQuadsNegativeSyntax,
+                               RDFT.TestTrigPositiveSyntax,
+                               RDFT.TestTrigNegativeSyntax,
+                               RDFT.TestNTriplesPositiveSyntax,
+                               RDFT.TestNTriplesNegativeSyntax
+
+                ):
                     query = g.value(e, MF.action)
-                    syntax = _type == RDFT.TestNQuadsPositiveSyntax
-
-                elif _type in (RDFT.TestTrigPositiveSyntax,
-                               RDFT.TestTrigNegativeSyntax):
-                    query = g.value(e, MF.action)
-                    syntax = _type == RDFT.TestTrigPositiveSyntax
-
-
+                    syntax = _type in (RDFT.TestNQuadsPositiveSyntax,
+                                       RDFT.TestNTriplesPositiveSyntax,
+                                       RDFT.TestTrigPositiveSyntax)
 
                 else:
                     pass
