@@ -13,7 +13,7 @@ DAWG = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#')
 RDFTest = namedtuple('RDFTest', ['uri', 'name', 'comment', 'data',
                          'graphdata', 'action', 'res', 'syntax'])
 
-def read_manifest(f):
+def read_manifest(f, legacy=False):
 
     def _str(x):
         if x is not None:
@@ -41,8 +41,9 @@ def read_manifest(f):
                 # approved |= (e, RDFT.approval, RDFT.Proposed) in g
 
                 # run legacy tests with no approval set
-                approved |= ((e, DAWG.approval, None) not in g and
-                             (e, RDFT.approval, None) not in g)
+                if legacy:
+                    approved |= ((e, DAWG.approval, None) not in g and
+                                 (e, RDFT.approval, None) not in g)
 
                 if not approved:
                     continue
@@ -120,7 +121,7 @@ def read_manifest(f):
                                res, syntax)
 
 @nottest
-def nose_tests(testers, manifest):
-    for _type, test in read_manifest(manifest):
+def nose_tests(testers, manifest, legacy=False):
+    for _type, test in read_manifest(manifest, legacy):
         if _type in testers:
             yield testers[_type], test

@@ -22,7 +22,7 @@ testers = {
 }
 
 def test_nt():
-    for t in nose_tests(testers, 'test/w3c/nt/manifest.ttl'):
+    for t in nose_tests(testers, 'test/w3c/nt/manifest.ttl', legacy=True):
         yield t
 
 
