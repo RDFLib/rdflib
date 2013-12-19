@@ -307,9 +307,11 @@ eof = re.compile(
     r'[ \t]*(#[^\n]*)?$')           # end  of file, poss. w/comment
 ws = re.compile(r'[ \t]*')                       # Whitespace not including NL
 signed_integer = re.compile(r'[-+]?[0-9]+')      # integer
-number_syntax = re.compile(
-    r'(?P<integer>[-+]?[0-9]+)(?P<decimal>\.[0-9]+)' +
-    r'?(?P<exponent>(?:e|E)[-+]?[0-9]+)?')
+integer_syntax = re.compile(r'[-+]?[0-9]+')
+decimal_syntax = re.compile(r'[-+]?[0-9]*\.[0-9]+')
+exponent_syntax = re.compile(r'[-+]?(?:[0-9]+\.[0-9]*(?:e|E)[-+]?[0-9]+|'+
+                             r'\.[0-9](?:e|E)[-+]?[0-9]+|'+
+                             r'[0-9]+(?:e|E)[-+]?[0-9]+)')
 digitstring = re.compile(r'[0-9]+')              # Unsigned integer
 interesting = re.compile(r"""[\\\r\n\"\']""")
 langcode = re.compile(r'[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*')
@@ -1289,23 +1291,27 @@ class SinkParser:
                 i = j
 
             ch = argstr[i]
-            if ch in "-+0987654321":
-                m = number_syntax.match(argstr, i)
-                if m is None:
-                    self.BadSyntax(argstr, i,
-                        "Bad number syntax")
-                j = m.end()
-                if m.group('exponent') is not None:  # has decimal exponent
+            if ch in "-+0987654321.":
+                #import ipdb; ipdb.set_trace()
+                m = exponent_syntax.match(argstr, i)
+                if m:
+                    j = m.end()
                     res.append(float(argstr[i:j]))
-                     # res.append(self._store.newLiteral(argstr[i:j],
-                     #     self._store.newSymbol(FLOAT_DATATYPE)))
-                elif m.group('decimal') is not None:
+                    return j
+
+                m = decimal_syntax.match(argstr, i)
+                if m:
+                    j = m.end()
                     res.append(Decimal(argstr[i:j]))
-                else:
+                    return j
+
+                m = integer_syntax.match(argstr, i)
+                if m:
+                    j = m.end()
                     res.append(long(argstr[i:j]))
-                     # res.append(self._store.newLiteral(argstr[i:j],
-                     #     self._store.newSymbol(INTEGER_DATATYPE)))
-                return j
+                    return j
+
+                # return -1  ## or fall through?
 
             if argstr[i] in self.string_delimiters:
                 if argstr[i:i + 3] == argstr[i] * 3:
