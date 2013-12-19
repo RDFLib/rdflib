@@ -22,7 +22,7 @@ testers = {
 }
 
 def test_nquads():
-    for t in nose_tests(testers, 'test/nquads/manifest.ttl'):
+    for t in nose_tests(testers, 'test/w3c/nquads/manifest.ttl'):
         yield t
 
 
