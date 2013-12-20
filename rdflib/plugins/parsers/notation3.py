@@ -803,14 +803,8 @@ class SinkParser:
         if j < 0:
             return j   # nope
 
-        while argstr[j:j + 1] in "!^.":   # no spaces, must follow exactly (?)
+        while argstr[j:j + 1] in "!^":   # no spaces, must follow exactly (?)
             ch = argstr[j:j + 1]
-                # @@ Allow "." followed IMMEDIATELY by a node.
-            if ch == ".":
-                ahead = argstr[j + 1:j + 2]
-                if not ahead or (ahead in _notNameChars
-                                 and ahead not in ":?<[{("):
-                    break
             subj = res.pop()
             obj = self.blankNode(uri=self.here(j))
             j = self.node(argstr, j + 1, res)
