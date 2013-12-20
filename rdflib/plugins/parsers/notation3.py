@@ -291,9 +291,12 @@ option_noregen = 0    # If set, do not regenerate genids on output
 # characaters.
 # _namechars = string.lowercase + string.uppercase + string.digits + '_-'
 _notQNameChars = \
-    "\t\r\n !\"#$%&'()*.,+/;<=>?@[\\]^`{|}~"  # else valid qname :-/
+    "\t\r\n !\"#$&'()*,+/;<=>?@[\\]^`{|}~"  # else valid qname :-/
+_notKeywordsChars = _notQNameChars + "."
 _notNameChars = _notQNameChars + ":"   # Assume anything else valid name :-/
 _rdfns = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+
+hexChars = 'ABCDEFabcdef0123456789'
 
 
 N3CommentCharacter = "#"      # For unix script  # ! compatabilty
@@ -475,7 +478,7 @@ class SinkParser:
                 return -1  # No, this has neither keywords declaration nor "@"
 
         if (argstr[i:i + len(tok)] == tok
-                and (argstr[i + len(tok)] in _notQNameChars)):
+                and (argstr[i + len(tok)] in _notKeywordsChars)):
             i = i + len(tok)
             return i
         else:
@@ -1235,7 +1238,7 @@ class SinkParser:
         if argstr[j] in "0123456789-":
             self.BadSyntax(argstr, j,
                 "Varible name can't start with '%s'" % argstr[j])
-        while i < len(argstr) and argstr[i] not in _notNameChars:
+        while i < len(argstr) and argstr[i] not in _notKeywordsChars:
             i = i + 1
         if self._parentContext is None:
             varURI = self._store.newSymbol(self._baseURI + "#" + argstr[j:i])
@@ -1262,10 +1265,10 @@ class SinkParser:
         if j < 0:
             return -1
 
-        if argstr[j] in "0123456789-" or argstr[j] in _notNameChars:
+        if argstr[j] in "0123456789-" or argstr[j] in _notKeywordsChars:
             return -1
         i = j
-        while i < len(argstr) and argstr[i] not in _notNameChars:
+        while i < len(argstr) and argstr[i] not in _notKeywordsChars:
             i = i + 1
         res.append(argstr[j:i])
         return i
@@ -1289,13 +1292,16 @@ class SinkParser:
             i = i + 1
             while i < len(argstr):
                 c = argstr[i]
-                if c == "." or c not in _notNameChars:
+                if c not in _notNameChars:
                     ln = ln + c
                     i = i + 1
                 else:
                     break
+
             if argstr[i - 1] == ".":  # qname cannot end with "."
-                return -1
+                ln = ln[:-1]
+                if not ln: return -1
+                i -= 1
 
         else:  # First character is non-alpha
             ln = ''    # Was:  None - TBL (why? useful?)
@@ -1303,15 +1309,37 @@ class SinkParser:
         if i < len(argstr) and argstr[i] == ':':
             pfx = ln
             i = i + 1
-            start = i
+            lastslash = False
+            # start = i # TODO first char .
             ln = ''
             while i < len(argstr):
                 c = argstr[i]
-                if (i!=start and c==".") or c not in _notNameChars:
+                if not lastslash and c == '\\':
+                    lastslash = True
+                    i += 1
+
+                elif lastslash or c not in _notQNameChars:
+
+                    if lastslash and c not in "\(_~.-!$&'()*+,;=/?#@%)":
+                        raise BadSyntax(self._thisDoc, self.line, argstr, i,
+                                    "illegal escape "+c)
+
+                    if not lastslash and c=='%':
+                        if argstr[i+1] not in hexChars or argstr[i+2] not in hexChars:
+                            raise BadSyntax(self._thisDoc, self.line, argstr, i,
+                                            "illegal hex escape "+c)
+
                     ln = ln + c
                     i = i + 1
+                    lastslash = False
                 else:
                     break
+
+            if lastslash:
+                raise BadSyntax(
+                    self._thisDoc, self.line, argstr, i,
+                    "qname cannot end with \\")
+
 
             if argstr[i-1]=='.':
                 # localname cannot end in .
@@ -1527,6 +1555,7 @@ class SinkParser:
         j = i
         count = 0
         value = 0
+        # TODO: replace with a call to int(_, 16)
         while count < 4:   # Get 4 more characters
             ch = argstr[j:j + 1].lower()
                  # sbp http://ilrt.org/discovery/chatlogs/rdfig/2002-07-05
@@ -1550,6 +1579,7 @@ class SinkParser:
         j = i
         count = 0
         value = '\\U'
+        # TODO: replace with a call to int(_, 16)
         while count < 8:   # Get 8 more characters
             ch = argstr[j:j + 1].lower()
              # sbp http://ilrt.org/discovery/chatlogs/rdfig/2002-07-05
