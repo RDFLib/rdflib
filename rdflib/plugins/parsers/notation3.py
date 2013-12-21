@@ -297,6 +297,7 @@ _notNameChars = _notQNameChars + ":"   # Assume anything else valid name :-/
 _rdfns = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
 
 hexChars = 'ABCDEFabcdef0123456789'
+escapeChars = "(_~.-!$&'()*+,;=/?#@%)" # valid for \ escapes in localnames
 
 
 N3CommentCharacter = "#"      # For unix script  # ! compatabilty
@@ -1320,7 +1321,7 @@ class SinkParser:
 
                 elif lastslash or c not in _notQNameChars:
 
-                    if lastslash and c not in "\(_~.-!$&'()*+,;=/?#@%)":
+                    if lastslash and c not in escapeChars:
                         raise BadSyntax(self._thisDoc, self.line, argstr, i,
                                     "illegal escape "+c)
 
