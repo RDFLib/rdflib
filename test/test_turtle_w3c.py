@@ -2,23 +2,52 @@
 test suite."""
 
 from rdflib import Graph
+from rdflib.namespace import split_uri
+from rdflib.compare import graph_diff, isomorphic
 from manifest import nose_tests, RDFT
 
+verbose = False
 
 def turtle(test):
     g = Graph()
 
     try:
-        g.parse(test.action, format='turtle')
+        base = 'http://www.w3.org/2013/TurtleTests/'+split_uri(test.action)[1]
+
+        g.parse(test.action, publicID=base, format='turtle')
         if not test.syntax:
             raise AssertionError("Input shouldn't have parsed!")
+
+        if test.result: # eval test
+            res = Graph()
+            res.parse(test.result, format='nt')
+
+            if verbose:
+                both, first, second = graph_diff(g,res)
+                if not first and not second: return
+                print "Diff:"
+                #print "%d triples in both"%len(both)
+                print "Turtle Only:"
+                for t in first:
+                    print t
+
+                print "--------------------"
+                print "NT Only"
+                for t in second:
+                    print t
+                raise Exception('Graphs do not match!')
+
+            assert isomorphic(g, res), 'graphs must be the same'
+
+
     except:
         if test.syntax:
             raise
 
 testers = {
     RDFT.TestTurtlePositiveSyntax: turtle,
-    RDFT.TestTurtleNegativeSyntax: turtle
+    RDFT.TestTurtleNegativeSyntax: turtle,
+    RDFT.TestTurtleEval: turtle
 }
 
 def test_turtle(tests = None):
@@ -33,6 +62,8 @@ def test_turtle(tests = None):
 
 
 if __name__ == '__main__':
+
+    verbose = True
 
     from optparse import OptionParser
     p = OptionParser()
