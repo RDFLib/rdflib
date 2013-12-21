@@ -299,6 +299,18 @@ _rdfns = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
 hexChars = 'ABCDEFabcdef0123456789'
 escapeChars = "(_~.-!$&'()*+,;=/?#@%)" # valid for \ escapes in localnames
 
+def unicodeExpand(m):
+    try:
+        return unichr(int(m.group(1), 16))
+    except:
+        raise Exception("Invalid unicode code point: " + m)
+
+unicodeEscape4 = re.compile(
+    r'\\u([0-9a-f]{4})', flags=re.I)
+unicodeEscape8 = re.compile(
+    r'\\U([0-9a-f]{8})', flags=re.I)
+
+
 
 N3CommentCharacter = "#"      # For unix script  # ! compatabilty
 
@@ -1175,6 +1187,11 @@ class SinkParser:
             while i < len(argstr):
                 if argstr[i] == ">":
                     uref = argstr[st:i]  # the join should dealt with "":
+
+                    # expand unicode escapes
+                    uref = unicodeEscape8.sub(unicodeExpand, uref)
+                    uref = unicodeEscape4.sub(unicodeExpand, uref)
+
                     if self._baseURI:
                         uref = join(self._baseURI, uref)  # was: uripath.join
                     else:
@@ -1552,53 +1569,23 @@ class SinkParser:
         self.BadSyntax(argstr, i,
                         "unterminated string literal")
 
-    def uEscape(self, argstr, i, startline):
-        j = i
-        count = 0
-        value = 0
-        # TODO: replace with a call to int(_, 16)
-        while count < 4:   # Get 4 more characters
-            ch = argstr[j:j + 1].lower()
-                 # sbp http://ilrt.org/discovery/chatlogs/rdfig/2002-07-05
-            j = j + 1
-            if ch == "":
-                raise BadSyntax(
+    def _unicodeEscape(self, argstr, i, startline, reg, n):
+        if len(argstr)<i+4:
+            raise BadSyntax(
                     self._thisDoc, startline, argstr, i,
                     "unterminated string literal(3)")
-            k = "0123456789abcdef".find(ch)
-            if k < 0:
-                raise BadSyntax(
-                    self._thisDoc, startline, argstr, i,
-                    "bad string literal hex escape")
-            value = value * 16 + k
-            count = count + 1
-        uch = unichr(value)
-        return j, uch
+        try:
+            return i+n, reg.sub(unicodeExpand, '\\u'+argstr[i:i+n])
+        except:
+            raise BadSyntax(
+                self._thisDoc, startline, argstr, i,
+                "bad string literal hex escape: "+argstr[i:i+n])
+
+    def uEscape(self, argstr, i, startline):
+        return self._unicodeEscape(argstr, i, startline, unicodeEscape4, 4)
 
     def UEscape(self, argstr, i, startline):
-        stringType = type('')
-        j = i
-        count = 0
-        value = '\\U'
-        # TODO: replace with a call to int(_, 16)
-        while count < 8:   # Get 8 more characters
-            ch = argstr[j:j + 1].lower()
-             # sbp http://ilrt.org/discovery/chatlogs/rdfig/2002-07-05
-            j = j + 1
-            if ch == "":
-                raise BadSyntax(
-                    self._thisDoc, startline, argstr, i,
-                    "unterminated string literal(3)")
-            k = "0123456789abcdef".find(ch)
-            if k < 0:
-                raise BadSyntax(
-                    self._thisDoc, startline, argstr, i,
-                    "bad string literal hex escape")
-            value = value + ch
-            count = count + 1
-
-        uch = py3compat.decodeStringEscape(stringType(value))
-        return j, uch
+        return self._unicodeEscape(argstr, i, startline, unicodeEscape8, 8 )
 
     def BadSyntax(self, argstr, i, msg):
         raise BadSyntax(self._thisDoc, self.lines, argstr, i, msg)
