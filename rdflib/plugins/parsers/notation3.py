@@ -1531,10 +1531,7 @@ class SinkParser:
                 ustr = ustr + ch
                 j = i + 1
                 continue
-            elif ch == "\r":    # Strip carriage returns
-                j = i + 1
-                continue
-            elif ch == "\n":
+            elif ch in "\r\n":
                 if delim == delim1:
                     raise BadSyntax(
                         self._thisDoc, startline, argstr, i,
