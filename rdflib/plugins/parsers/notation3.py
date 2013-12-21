@@ -451,7 +451,7 @@ class SinkParser:
 
             i = self.directiveOrStatement(s, j)
             if i < 0:
-                print("# next char: %s" % s[j])
+                #print("# next char: %s" % s[j])
                 self.BadSyntax(s, j,
                     "expected directive or statement")
 
@@ -1338,11 +1338,11 @@ class SinkParser:
 
                 elif lastslash or c not in _notQNameChars:
 
-                    if lastslash and c not in escapeChars:
-                        raise BadSyntax(self._thisDoc, self.line, argstr, i,
-                                    "illegal escape "+c)
-
-                    if not lastslash and c=='%':
+                    if lastslash:
+                        if c not in escapeChars:
+                            raise BadSyntax(self._thisDoc, self.line, argstr, i,
+                                            "illegal escape "+c)
+                    elif c=='%':
                         if argstr[i+1] not in hexChars or argstr[i+2] not in hexChars:
                             raise BadSyntax(self._thisDoc, self.line, argstr, i,
                                             "illegal hex escape "+c)

@@ -11,13 +11,13 @@ RDFT = Namespace('http://www.w3.org/ns/rdftest#')
 DAWG = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#')
 
 RDFTest = namedtuple('RDFTest', ['uri', 'name', 'comment', 'data',
-                         'graphdata', 'action', 'res', 'syntax'])
+                         'graphdata', 'action', 'result', 'syntax'])
 
 def read_manifest(f, legacy=False):
 
     def _str(x):
         if x is not None:
-            return str(x)
+            return unicode(x)
         return None
 
     g = Graph()
