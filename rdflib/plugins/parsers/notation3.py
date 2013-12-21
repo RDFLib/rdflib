@@ -1596,7 +1596,7 @@ class SinkParser:
             value = value + ch
             count = count + 1
 
-        uch = stringType(value).decode('unicode-escape')
+        uch = py3compat.decodeStringEscape(stringType(value))
         return j, uch
 
     def BadSyntax(self, argstr, i, msg):
