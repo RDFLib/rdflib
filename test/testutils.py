@@ -4,7 +4,7 @@ import isodate
 import datetime
 
 from traceback import print_exc
-from unittest import SkipTest
+from nose import SkipTest
 from earl import add_test, report
 
 from rdflib import BNode, Graph, ConjunctiveGraph
