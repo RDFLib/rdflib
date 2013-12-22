@@ -14,3 +14,4 @@ build/
 /.tox/
 /docs/draft/
 *~
+test_reports/*latest.ttl

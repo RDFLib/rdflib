@@ -8,6 +8,7 @@ from rdflib.compare import graph_diff, isomorphic
 from manifest import nose_tests, RDFT
 from testutils import nose_tst_earl_report
 
+verbose = False
 
 def trig(test):
     g = ConjunctiveGraph()
@@ -49,7 +50,7 @@ testers = {
     RDFT.TestTrigNegativeEval: trig
 }
 
-def test_trig(tests):
+def test_trig(tests=None):
     for t in nose_tests(testers, 'test/w3c/trig/manifest.ttl'):
         if tests:
             for test in tests:

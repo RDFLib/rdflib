@@ -6,6 +6,8 @@ from manifest import nose_tests, RDFT
 
 from testutils import nose_tst_earl_report
 
+verbose = False
+
 def nt(test):
     g = Graph()
 
