@@ -49,7 +49,8 @@ def turtle(test):
 testers = {
     RDFT.TestTurtlePositiveSyntax: turtle,
     RDFT.TestTurtleNegativeSyntax: turtle,
-    RDFT.TestTurtleEval: turtle
+    RDFT.TestTurtleEval: turtle,
+    RDFT.TestTurtleNegativeEval: turtle
 }
 
 def test_turtle(tests = None):
