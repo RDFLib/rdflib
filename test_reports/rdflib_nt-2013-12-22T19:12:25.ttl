@@ -1,0 +1,401 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://gromgull.net/me> a foaf:Person ;
+    foaf:homepage <http://gromgull.net> ;
+    foaf:name "Gunnar Aastrand Grimnes" .
+
+<https://github.com/RDFLib/rdflib> a doap:Project ;
+    doap:homepage <https://github.com/RDFLib/rdflib> ;
+    doap:name "rdflib" .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-lang-01> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-str-esc-03> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-subm-01> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-string-02> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-uri-04> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-datatypes-01> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-uri-05> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bnode-02> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-uri-01> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-string-01> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-esc-01> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-esc-02> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-struct-02> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-uri-01> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-str-esc-01> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-struct-01> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-uri-04> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-num-01> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-uri-03> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-datatypes-02> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-file-01> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#literal_all_controls> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-string-02> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-string-03> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-file-03> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-uri-08> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bnode-03> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-string-05> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-prefix-01> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-string-04> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-uri-06> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-esc-03> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-num-02> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-string-03> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#literal_all_punctuation> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-num-03> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-uri-07> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-string-01> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-uri-03> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bnode-01> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-str-esc-02> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-string-07> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-uri-02> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-string-06> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-uri-02> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-uri-09> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-file-02> .
+
+[] a earl:Assertion ;
+    dc:date "2013-12-22T20:12:25.300887"^^xsd:dateTime ;
+    earl:assertedBy <http://gromgull.net/me> ;
+    earl:result [ a earl:TestResult ;
+            earl:outcome earl:passed ] ;
+    earl:subject <https://github.com/RDFLib/rdflib> ;
+    earl:test <https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-turtle/tests-nt/manifest.ttl#nt-syntax-bad-base-01> .
+
