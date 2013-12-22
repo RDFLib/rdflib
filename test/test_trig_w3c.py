@@ -2,25 +2,51 @@
 
 """
 
-from rdflib import Graph
+from rdflib import ConjunctiveGraph
+from rdflib.compare import graph_diff, isomorphic
+
 from manifest import nose_tests, RDFT
 from testutils import nose_tst_earl_report
 
 
 def trig(test):
-    g = Graph()
+    g = ConjunctiveGraph()
 
     try:
         g.parse(test.action, format='trig')
         if not test.syntax:
             raise AssertionError("Input shouldn't have parsed!")
+
+        if test.result: # eval test
+            res = ConjunctiveGraph()
+            res.parse(test.result, format='nquads')
+
+            if verbose:
+                both, first, second = graph_diff(g,res)
+                if not first and not second: return
+                print "Diff:"
+                #print "%d triples in both"%len(both)
+                print "TriG Only:"
+                for t in first:
+                    print t
+
+                print "--------------------"
+                print "NQuads Only"
+                for t in second:
+                    print t
+                raise Exception('Graphs do not match!')
+
+            assert isomorphic(g, res), 'graphs must be the same'
+
     except:
         if test.syntax:
             raise
 
 testers = {
     RDFT.TestTrigPositiveSyntax: trig,
-    RDFT.TestTrigNegativeSyntax: trig
+    RDFT.TestTrigNegativeSyntax: trig,
+#    RDFT.TestTrigEval: trig,
+    RDFT.TestTrigNegativeEval: trig
 }
 
 def test_trig(tests):

@@ -1,13 +1,13 @@
 """This runs the nquads tests for the W3C RDF Working Group's N-Quads
 test suite."""
 
-from rdflib import Graph
+from rdflib import ConjunctiveGraph
 from manifest import nose_tests, RDFT
 
 from testutils import nose_tst_earl_report
 
 def nquads(test):
-    g = Graph()
+    g = ConjunctiveGraph()
 
     try:
         g.parse(test.action, format='nquads')
