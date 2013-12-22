@@ -904,10 +904,10 @@ class SinkParser:
             res.append(subj)
             return j + 1
 
-        if ch == "{":
-            if self.turtle:
-                self.BadSyntax(argstr, i,
-                                "found '{' while in Turtle mode, Formulas not supported!")
+        if not self.turtle and ch == "{":
+            # if self.turtle:
+            #     self.BadSyntax(argstr, i,
+            #                     "found '{' while in Turtle mode, Formulas not supported!")
             ch2 = argstr[i + 1:i + 2]
             if ch2 == '$':
                 # a set
