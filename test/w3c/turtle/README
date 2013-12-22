@@ -1,14 +1,18 @@
 This README is for the W3C RDF Working Group's Turtle test suite.
-This test suite contains three kinds of tests:
+This test suite contains four kinds of tests:
 
-  Evaluation (rdft:TestTurtleEval) - a pair of an input turtle file
-  and reference ntriples file.
+  132 Evaluation (rdft:TestTurtleEval) - a pair of an input turtle
+  file and reference ntriples file.
 
-  Positive syntax (rdft:TestTurtlePositiveSyntax) - an input turtle
+  77 Positive syntax (rdft:TestTurtlePositiveSyntax) - an input turtle
   file with no syntax errors.
 
-  Negative syntax (rdft:TestTurtleNegativeSyntax) - an input turtle
+  78 Negative syntax (rdft:TestTurtleNegativeSyntax) - an input turtle
   file with at least one syntax error.
+
+  4 Negative Evaluation (rdft:TestTurtleNegativeEval) - a pair of an
+  input turtle file and reference ntriples file. These tests have the
+  same properties as rdft:TestTurtleNegativeSyntax.
 
 The manifest.ttl file in this directory lists all of the tests in the
 RDF WG's Turtle test suite. Each test is one of the above tests. All

@@ -1567,7 +1567,7 @@ class SinkParser:
                         "unterminated string literal")
 
     def _unicodeEscape(self, argstr, i, startline, reg, n):
-        if len(argstr)<i+4:
+        if len(argstr)<i+n:
             raise BadSyntax(
                     self._thisDoc, startline, argstr, i,
                     "unterminated string literal(3)")
