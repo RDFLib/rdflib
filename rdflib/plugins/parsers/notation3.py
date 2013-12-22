@@ -479,9 +479,13 @@ class SinkParser:
      # @@I18N
      # _namechars = string.lowercase + string.uppercase + string.digits + '_-'
 
-    def tok(self, tok, argstr, i):
+    def tok(self, tok, argstr, i, colon=False):
         """Check for keyword.  Space must have been stripped on entry and
-        we must not be at end of file."""
+        we must not be at end of file.
+
+        if colon, then keyword followed by colon is ok
+        (@prefix:<blah> is ok, rdf:type shortcut a must be followed by ws)
+        """
 
         assert tok[0] not in _notNameChars  # not for punctuation
         if argstr[i:i + 1] == "@":
@@ -491,7 +495,8 @@ class SinkParser:
                 return -1  # No, this has neither keywords declaration nor "@"
 
         if (argstr[i:i + len(tok)] == tok
-                and (argstr[i + len(tok)] in _notKeywordsChars)):
+            and ( argstr[i + len(tok)] in _notKeywordsChars)
+            or (colon and argstr[i+len(tok)] == ':')):
             i = i + len(tok)
             return i
         else:
@@ -564,7 +569,7 @@ class SinkParser:
                 self._context.declareExistential(x)
             return i
 
-        j = self.tok('prefix', argstr, i)    # no implied "#"
+        j = self.tok('prefix', argstr, i, colon=True)    # no implied "#"
         if j >= 0:
             t = []
             i = self.qname(argstr, j, t)
@@ -1326,6 +1331,12 @@ class SinkParser:
 
         if i < len(argstr) and argstr[i] == ':':
             pfx = ln
+            # bnodes names have different rules
+            if pfx == '_':
+                allowedChars = _notNameChars
+            else:
+                allowedChars = _notQNameChars
+
             i = i + 1
             lastslash = False
             # start = i # TODO first char .
@@ -1336,7 +1347,7 @@ class SinkParser:
                     lastslash = True
                     i += 1
 
-                elif lastslash or c not in _notQNameChars:
+                elif lastslash or c not in allowedChars:
 
                     if lastslash:
                         if c not in escapeChars:
@@ -1413,7 +1424,6 @@ class SinkParser:
 
             ch = argstr[i]
             if ch in "-+0987654321.":
-                #import ipdb; ipdb.set_trace()
                 m = exponent_syntax.match(argstr, i)
                 if m:
                     j = m.end()
