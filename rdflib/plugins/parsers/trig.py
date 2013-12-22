@@ -17,6 +17,10 @@ class TrigSinkParser(SinkParser):
         if j >= 0:
             return j
 
+        j = self.sparqlDirective(argstr, i)
+        if j >= 0:
+            return j
+
         j = self.directive(argstr, i)
         if j >= 0:
             return self.checkDot(argstr, j)
@@ -38,28 +42,35 @@ class TrigSinkParser(SinkParser):
         raise Exception if it looks like a graph, but isn't.
         """
 
+        #import pdb; pdb.set_trace()
+        j = self.sparqlTok('GRAPH', argstr, i) # optional GRAPH keyword
+        if j >= 0: i = j
 
         r = []
-        i = self.node(argstr, i, r)
-        if i < 0:
-            return i
+        j = self.node(argstr, i, r)
+        if j >= 0:
+            graph = r[0]
+            i = j
+        else:
+            graph = self._store.graph.identifier # hack
 
-        subj = r[0]
 
         j = self.skipSpace(argstr, i)
         if j < 0:
             self.BadSyntax(argstr, i,
-                           "EOF found when expected verb in property list")
+                           "EOF found when expected graph")
 
-        if argstr[j:j + 1] != "=":
-            return -1
+        if argstr[j:j + 1] == "=": # optional = for legacy support
 
-        i = self.skipSpace(argstr, j + 1)
-        if i < 0:
-            self.BadSyntax(argstr, i, "EOF found when expecting '{'")
+            i = self.skipSpace(argstr, j + 1)
+            if i < 0:
+                self.BadSyntax(argstr, i, "EOF found when expecting '{'")
+        else:
+            i = j
 
         if argstr[i:i+1] != "{":
-            self.BadSyntax(argstr, i, "needed '{', found '%s'."%argstr[j])
+            return -1 # the node wasn't part of a graph
+
 
         j = i+1
 
@@ -67,7 +78,7 @@ class TrigSinkParser(SinkParser):
         self._parentContext = self._context
         reason2 = self._reason2
         self._reason2 = becauseSubexpression
-        self._context = self._store.newGraph(subj)
+        self._context = self._store.newGraph(graph)
 
         while 1:
             i = self.skipSpace(argstr, j)
