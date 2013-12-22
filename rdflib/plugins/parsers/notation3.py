@@ -303,7 +303,7 @@ def unicodeExpand(m):
     try:
         return unichr(int(m.group(1), 16))
     except:
-        raise Exception("Invalid unicode code point: " + m)
+        raise Exception("Invalid unicode code point: " + m.group(1))
 
 unicodeEscape4 = re.compile(
     r'\\u([0-9a-f]{4})', flags=re.I)
