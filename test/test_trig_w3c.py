@@ -4,6 +4,7 @@
 
 from rdflib import Graph
 from manifest import nose_tests, RDFT
+from testutils import nose_tst_earl_report
 
 
 def trig(test):
@@ -22,10 +23,18 @@ testers = {
     RDFT.TestTrigNegativeSyntax: trig
 }
 
-def test_trig():
+def test_trig(tests):
     for t in nose_tests(testers, 'test/w3c/trig/manifest.ttl'):
+        if tests:
+            for test in tests:
+                if test in t[1].uri: break
+            else:
+                continue
+
         yield t
 
 
 if __name__ == '__main__':
-    pass
+    verbose = True
+
+    nose_tst_earl_report(test_trig, 'rdflib_trig')

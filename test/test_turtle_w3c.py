@@ -4,7 +4,9 @@ test suite."""
 from rdflib import Graph
 from rdflib.namespace import split_uri
 from rdflib.compare import graph_diff, isomorphic
+
 from manifest import nose_tests, RDFT
+from testutils import nose_tst_earl_report
 
 verbose = False
 
@@ -51,7 +53,8 @@ testers = {
 }
 
 def test_turtle(tests = None):
-    for t in nose_tests(testers, 'test/w3c/turtle/manifest.ttl'):
+    for t in nose_tests(testers,
+                        'test/w3c/turtle/manifest.ttl'):
         if tests:
             for test in tests:
                 if test in t[1].uri: break
@@ -65,10 +68,4 @@ if __name__ == '__main__':
 
     verbose = True
 
-    from optparse import OptionParser
-    p = OptionParser()
-    (options, args) = p.parse_args()
-
-    for t in test_turtle(args):
-        print 'Running ', t[1].uri
-        t[0](t[1])
+    nose_tst_earl_report(test_turtle, 'rdflib_turtle')

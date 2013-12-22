@@ -1,5 +1,14 @@
 
+import sys
+import isodate
+import datetime
+
+from traceback import print_exc
+from unittest import SkipTest
+from earl import add_test, report
+
 from rdflib import BNode, Graph, ConjunctiveGraph
+
 
 # TODO: make an introspective version (like this one) of
 # rdflib.graphutils.isomorphic and use instead.
@@ -47,3 +56,43 @@ def _parse_or_report(verbose, graph, *args, **kwargs):
             print "Error in parsing serialization:"
             print args, kwargs
         raise
+
+
+def nose_tst_earl_report(generator, earl_report_name=None):
+    from optparse import OptionParser
+    p = OptionParser()
+    (options, args) = p.parse_args()
+
+    skip = 0
+    tests = 0
+    success = 0
+
+    for t in generator(args):
+        tests += 1
+        print 'Running ', t[1].uri
+        try:
+            t[0](t[1])
+            add_test(t[1].uri, "passed")
+            success += 1
+        except SkipTest, e:
+            add_test(t[1].uri, "untested", e.message)
+            print "skipping %s - %s" % (t[1].uri, e.message)
+            skip += 1
+
+        except KeyboardInterrupt:
+            raise
+        except AssertionError:
+            add_test(t[1].uri, "failed")
+        except:
+            add_test(t[1].uri, "failed", "error")
+            print_exc()
+            sys.stderr.write("%s\n" % t[1].uri)
+
+    print "Ran %d tests, %d skipped, %d failed. "%(tests, skip, tests-skip-success)
+    if earl_report_name:
+        now = isodate.datetime_isoformat(datetime.datetime.utcnow())
+        earl_report = 'test_reports/%s-%s.ttl' % (earl_report_name, now)
+
+        report.serialize(earl_report, format='n3')
+        report.serialize('test_reports/%s-latest.ttl'%earl_report_name, format='n3')
+        print "Wrote EARL-report to '%s'" % earl_report

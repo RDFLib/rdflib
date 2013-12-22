@@ -30,7 +30,7 @@ import isodate
 
 
 from rdflib import (
-    Dataset, Graph, Namespace, RDF, URIRef, BNode, Literal)
+    Dataset, Graph, URIRef, BNode)
 from rdflib.query import Result
 from rdflib.compare import isomorphic
 
@@ -57,6 +57,7 @@ else:
     from io import BytesIO
 
 from manifest import nose_tests, MF, UP
+from earl import report, add_test
 
 def eq(a,b,msg):
     return eq_(a,b,msg+': (%r!=%r)'%(a,b))
@@ -102,9 +103,6 @@ DETAILEDASSERT = True
 # DETAILEDASSERT=False
 
 
-DOAP = Namespace('http://usefulinc.com/ns/doap#')
-FOAF = Namespace('http://xmlns.com/foaf/0.1/')
-EARL = Namespace("http://www.w3.org/ns/earl#")
 
 NAME = None
 
@@ -114,19 +112,8 @@ errors = Counter()
 failed_tests = []
 error_tests = []
 
-EARL_REPORT = Graph()
 
 
-rdflib_sparql = URIRef('https://github.com/RDFLib/rdflib-sparql')
-
-EARL_REPORT.add((rdflib_sparql, DOAP.homepage, rdflib_sparql))
-EARL_REPORT.add((rdflib_sparql, DOAP.name, Literal("rdflib_sparql")))
-EARL_REPORT.add((rdflib_sparql, RDF.type, DOAP.Project))
-
-me = URIRef('http://gromgull.net/me')
-EARL_REPORT.add((me, RDF.type, FOAF.Person))
-EARL_REPORT.add((me, FOAF.homepage, URIRef("http://gromgull.net")))
-EARL_REPORT.add((me, FOAF.name, Literal("Gunnar Aastrand Grimnes")))
 
 try:
     skiptests = dict([(URIRef(x.strip().split(
@@ -538,21 +525,6 @@ def test_dawg():
     resetFlags()
 
 
-def earl(test, res, info=None):
-    a = BNode()
-    EARL_REPORT.add((a, RDF.type, EARL.Assertion))
-    EARL_REPORT.add((a, EARL.assertedBy, me))
-    EARL_REPORT.add((a, EARL.test, test))
-    EARL_REPORT.add((a, EARL.subject, rdflib_sparql))
-
-    r = BNode()
-    EARL_REPORT.add((a, EARL.result, r))
-    EARL_REPORT.add((r, RDF.type, EARL.TestResult))
-
-    EARL_REPORT.add((r, EARL.outcome, EARL[res]))
-    if info:
-        EARL_REPORT.add((r, EARL.info, Literal(info)))
-
 
 if __name__ == '__main__':
 
@@ -574,26 +546,24 @@ if __name__ == '__main__':
             continue
         i += 1
         try:
-            if _type not in testers:
-                raise SkipTest('unknown type: '+_type) # unknown type
-            f = testers[_type]
 
-            f(t)
-            earl(t[0], "passed")
+            _type(t)
+
+            add_test(t[0], "passed")
             success += 1
 
         except SkipTest, e:
             msg = skiptests.get(t[0], e.message)
-            earl(t[0], "untested", msg)
+            add_test(t[0], "untested", msg)
             print "skipping %s - %s" % (t[0], msg)
             skip += 1
 
         except KeyboardInterrupt:
             raise
         except AssertionError:
-            earl(t[0], "failed")
+            add_test(t[0], "failed")
         except:
-            earl(t[0], "failed", "error")
+            add_test(t[0], "failed", "error")
             import traceback
             traceback.print_exc()
             sys.stderr.write("%s\n" % t[0])
@@ -646,8 +616,8 @@ if __name__ == '__main__':
             now, i, success, f, e, skip, 100. * success / i))
         tf.close()
 
-        earl_report = 'test_reports/earl_%s.ttl' % now
+        earl_report = 'test_reports/rdflib_sparql-%s.ttl' % now
 
-        EARL_REPORT.serialize(earl_report, format='n3')
-        EARL_REPORT.serialize('test_reports/earl_latest.ttl', format='n3')
+        report.serialize(earl_report, format='n3')
+        report.serialize('test_reports/rdflib_sparql-latest.ttl', format='n3')
         print "Wrote EARL-report to '%s'" % earl_report

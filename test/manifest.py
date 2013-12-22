@@ -13,7 +13,7 @@ DAWG = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#')
 RDFTest = namedtuple('RDFTest', ['uri', 'name', 'comment', 'data',
                          'graphdata', 'action', 'result', 'syntax'])
 
-def read_manifest(f, legacy=False):
+def read_manifest(f, base=None, legacy=False):
 
     def _str(x):
         if x is not None:
@@ -21,7 +21,7 @@ def read_manifest(f, legacy=False):
         return None
 
     g = Graph()
-    g.load(f, format='turtle')
+    g.load(f, publicID=base, format='turtle')
 
     for m in g.subjects(RDF.type, MF.Manifest):
 
@@ -123,7 +123,7 @@ def read_manifest(f, legacy=False):
                                res, syntax)
 
 @nottest
-def nose_tests(testers, manifest, legacy=False):
-    for _type, test in read_manifest(manifest, legacy):
+def nose_tests(testers, manifest, base=None, legacy=False):
+    for _type, test in read_manifest(manifest, base, legacy):
         if _type in testers:
             yield testers[_type], test

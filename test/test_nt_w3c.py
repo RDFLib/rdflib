@@ -4,6 +4,7 @@ test suite."""
 from rdflib import Graph
 from manifest import nose_tests, RDFT
 
+from testutils import nose_tst_earl_report
 
 def nt(test):
     g = Graph()
@@ -21,10 +22,18 @@ testers = {
     RDFT.TestNTriplesNegativeSyntax: nt
 }
 
-def test_nt():
+def test_nt(tests=None):
     for t in nose_tests(testers, 'test/w3c/nt/manifest.ttl', legacy=True):
+        if tests:
+            for test in tests:
+                if test in t[1].uri: break
+            else:
+                continue
+
         yield t
 
 
 if __name__ == '__main__':
-    pass
+    verbose = True
+
+    nose_tst_earl_report(test_nt, 'rdflib_nt')
