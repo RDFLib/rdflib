@@ -1,6 +1,9 @@
 from datetime import datetime
+
 from rdflib import Graph, URIRef, Literal, BNode, RDF, Namespace
 from rdflib.namespace import FOAF, DOAP, DC
+
+from nose.tools import nottest
 
 EARL = Namespace("http://www.w3.org/ns/earl#")
 
@@ -24,6 +27,7 @@ report.add((me, FOAF.name, Literal("Gunnar Aastrand Grimnes")))
 
 now = Literal(datetime.now())
 
+@nottest
 def add_test(test, res, info=None):
     a = BNode()
     report.add((a, RDF.type, EARL.Assertion))
