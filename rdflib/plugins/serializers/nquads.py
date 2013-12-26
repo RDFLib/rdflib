@@ -14,7 +14,7 @@ class NQuadsSerializer(Serializer):
     def __init__(self, store):
         if not store.context_aware:
             raise Exception(
-                "NQuads serialization only makes"
+                "NQuads serialization only makes "
                 "sense for context-aware stores!")
 
         super(NQuadsSerializer, self).__init__(store)
