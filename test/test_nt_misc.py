@@ -90,10 +90,6 @@ class NTTestCase(unittest.TestCase):
         # ATM we are only really interested in any exceptions thrown
         self.assert_(sink is not None)
 
-    def test__no_EOF(self):
-        data = '''<http://example.org/resource32> <http://example.org/property> <http://example.org/datatype1> .'''
-        p = ntriples.NTriplesParser()
-
     def test_bad_line(self):
         data = '''<http://example.org/resource32> 3 <http://example.org/datatype1> .\n'''
         p = ntriples.NTriplesParser()
