@@ -550,7 +550,7 @@ class SPARQLUpdateStore(SPARQLStore):
         """ Add a triple to the store of triples. """
 
         if not self.connection:
-            raise "UpdateEndpoint is not set - call 'open'"
+            raise Exception("UpdateEndpoint is not set - call 'open'")
 
         assert not quoted
         (subject, predicate, obj) = spo
@@ -577,7 +577,7 @@ class SPARQLUpdateStore(SPARQLStore):
     def addN(self, quads):
         """ Add a list of quads to the store. """
         if not self.connection:
-            raise "UpdateEndpoint is not set - call 'open'"
+            raise Exception("UpdateEndpoint is not set - call 'open'")
 
         data = ""
         for spoc in quads:
@@ -602,7 +602,7 @@ class SPARQLUpdateStore(SPARQLStore):
     def remove(self, spo, context):
         """ Remove a triple from the store """
         if not self.connection:
-            raise "UpdateEndpoint is not set - call 'open'"
+            raise Exception("UpdateEndpoint is not set - call 'open'")
 
         (subject, predicate, obj) = spo
         if not subject:
