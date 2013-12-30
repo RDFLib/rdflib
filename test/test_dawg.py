@@ -553,7 +553,7 @@ if __name__ == '__main__':
             success += 1
 
         except SkipTest, e:
-            msg = skiptests.get(t[0], e.message)
+            msg = skiptests.get(t[0], e.args)
             add_test(t[0], "untested", msg)
             print "skipping %s - %s" % (t[0], msg)
             skip += 1
