@@ -1,6 +1,9 @@
 from rdflib import ConjunctiveGraph
 from rdflib.parser import Parser
-from .notation3 import SinkParser, RDFSink, becauseSubexpression
+from .notation3 import SinkParser, RDFSink
+
+
+def becauseSubGraph(*args, **kwargs): pass
 
 
 class TrigSinkParser(SinkParser):
@@ -29,8 +32,28 @@ class TrigSinkParser(SinkParser):
         if j >= 0:
             return self.checkDot(argstr, j)
 
+
         return j
 
+    def labelOrSubject(self, argstr, i, res):
+        j = self.skipSpace(argstr, i)
+        if j < 0:
+            return j  # eof
+        i = j
+
+        j = self.uri_ref2(argstr, i, res)
+        if j >= 0:
+            return j
+
+        if argstr[i] == '[':
+            j = self.skipSpace(argstr, i+1)
+            if j < 0:
+                self.BadSyntax(argstr, i,
+                    "Expected ] got EOF")
+            if argstr[j] == ']':
+                res.append(self.blankNode())
+                return j+1
+        return -1
 
     def graph(self, argstr, i):
         """
@@ -47,7 +70,7 @@ class TrigSinkParser(SinkParser):
         if j >= 0: i = j
 
         r = []
-        j = self.node(argstr, i, r)
+        j = self.labelOrSubject(argstr, i, r)
         if j >= 0:
             graph = r[0]
             i = j
@@ -77,7 +100,7 @@ class TrigSinkParser(SinkParser):
         oldParentContext = self._parentContext
         self._parentContext = self._context
         reason2 = self._reason2
-        self._reason2 = becauseSubexpression
+        self._reason2 = becauseSubGraph
         self._context = self._store.newGraph(graph)
 
         while 1:

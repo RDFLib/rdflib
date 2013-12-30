@@ -3,6 +3,7 @@
 """
 
 from rdflib import ConjunctiveGraph
+from rdflib.namespace import split_uri
 from rdflib.compare import graph_diff, isomorphic
 
 from manifest import nose_tests, RDFT
@@ -14,7 +15,9 @@ def trig(test):
     g = ConjunctiveGraph()
 
     try:
-        g.parse(test.action, format='trig')
+        base = 'http://www.w3.org/2013/TriGTests/'+split_uri(test.action)[1]
+
+        g.parse(test.action, publicID=base, format='trig')
         if not test.syntax:
             raise AssertionError("Input shouldn't have parsed!")
 
@@ -23,8 +26,19 @@ def trig(test):
             res.parse(test.result, format='nquads')
 
             if verbose:
+
+
                 both, first, second = graph_diff(g,res)
                 if not first and not second: return
+
+                print '==============================='
+                print 'TriG'
+                print g.serialize(format='nquads')
+                print '==============================='
+                print 'NQuads'
+                print res.serialize(format='nquads')
+                print '==============================='
+
                 print "Diff:"
                 #print "%d triples in both"%len(both)
                 print "TriG Only:"
@@ -46,7 +60,7 @@ def trig(test):
 testers = {
     RDFT.TestTrigPositiveSyntax: trig,
     RDFT.TestTrigNegativeSyntax: trig,
-#    RDFT.TestTrigEval: trig,
+    RDFT.TestTrigEval: trig,
     RDFT.TestTrigNegativeEval: trig
 }
 
