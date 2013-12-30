@@ -69,7 +69,7 @@ class NQuadsParser(NTriplesParser):
 
     def parseline(self):
         self.eat(r_wspace)
-        if (not self.line) or self.line.startswith(b('#')):
+        if (not self.line) or self.line.startswith(('#')):
             return  # The line is empty or a comment
 
         subject = self.subject()
