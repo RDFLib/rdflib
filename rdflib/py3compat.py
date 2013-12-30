@@ -52,6 +52,9 @@ if PY3:
     def ascii(stream):
         return codecs.getreader('ascii')(stream)
 
+    def bopen(*args, **kwargs):
+        return open(*args, mode = 'rb', **kwargs)
+
     bytestype = bytes
 
     # Abstract u'abc' syntax:
@@ -101,6 +104,8 @@ else:
 
     def ascii(stream):
         return stream
+
+    bopen = open
 
     bytestype = str
 

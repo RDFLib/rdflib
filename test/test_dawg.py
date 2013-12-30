@@ -41,7 +41,7 @@ from rdflib.plugins.sparql.parser import parseQuery, parseUpdate
 from rdflib.plugins.sparql.results.rdfresults import RDFResultParser
 from rdflib.plugins.sparql.update import evalUpdate
 
-from rdflib.py3compat import decodeStringEscape
+from rdflib.py3compat import decodeStringEscape, bopen
 
 from nose.tools import nottest, eq_
 from nose import SkipTest
@@ -217,10 +217,10 @@ def update_test(t):
 
         if not res:
             if syntax:
-                translateUpdate(parseUpdate(open(query[7:])))
+                translateUpdate(parseUpdate(bopen(query[7:])))
             else:
                 try:
-                    translateUpdate(parseUpdate(open(query[7:])))
+                    translateUpdate(parseUpdate(bopen(query[7:])))
                     raise AssertionError("Query shouldn't have parsed!")
                 except:
                     pass  # negative syntax test
@@ -236,7 +236,7 @@ def update_test(t):
             for x, l in graphdata:
                 g.load(x, publicID=URIRef(l), format=_fmt(x))
 
-        req = translateUpdate(parseUpdate(open(query[7:])))
+        req = translateUpdate(parseUpdate(bopen(query[7:])))
         evalUpdate(g, req)
 
         # read expected results
@@ -284,33 +284,33 @@ def update_test(t):
             if data:
                 print "----------------- DATA --------------------"
                 print ">>>", data
-                print open(data[7:]).read()
+                print bopen(data[7:]).read()
             if graphdata:
                 print "----------------- GRAPHDATA --------------------"
                 for x, l in graphdata:
                     print ">>>", x, l
-                    print open(x[7:]).read()
+                    print bopen(x[7:]).read()
 
             print "----------------- Request -------------------"
             print ">>>", query
-            print open(query[7:]).read()
+            print bopen(query[7:]).read()
 
             if res:
                 if resdata:
                     print "----------------- RES DATA --------------------"
                     print ">>>", resdata
-                    print open(resdata[7:]).read()
+                    print bopen(resdata[7:]).read()
                 if resgraphdata:
                     print "----------------- RES GRAPHDATA -------------------"
                     for x, l in resgraphdata:
                         print ">>>", x, l
-                        print open(x[7:]).read()
+                        print bopen(x[7:]).read()
 
             print "------------- MY RESULT ----------"
             print g.serialize(format='trig')
 
             try:
-                pq = translateUpdate(parseUpdate(open(query[7:]).read()))
+                pq = translateUpdate(parseUpdate(bopen(query[7:]).read()))
                 print "----------------- Parsed ------------------"
                 pprintAlgebra(pq)
                 # print pq
@@ -336,7 +336,7 @@ def query_test(t):
 
     def skip(reason='(none)'):
         print "Skipping %s from now on." % uri
-        f = open("skiptests.list", "a")
+        f = bopen("skiptests.list", "a")
         f.write("%s\t%s\n" % (uri, reason))
         f.close()
 
@@ -354,12 +354,12 @@ def query_test(t):
 
             if syntax:
                 translateQuery(parseQuery(
-                    open(query[7:]).read()), base=urljoin(query, '.'))
+                    bopen(query[7:]).read()), base=urljoin(query, '.'))
             else:
                 # negative syntax test
                 try:
                     translateQuery(parseQuery(
-                        open(query[7:]).read()), base=urljoin(query, '.'))
+                        bopen(query[7:]).read()), base=urljoin(query, '.'))
 
                     assert False, 'Query should not have parsed!'
                 except:
@@ -367,7 +367,7 @@ def query_test(t):
             return
 
         # eval test - carry out query
-        res2 = g.query(open(query[7:]).read(), base=urljoin(query, '.'))
+        res2 = g.query(bopen(query[7:]).read(), base=urljoin(query, '.'))
 
         if resfile.endswith('ttl'):
             resg = Graph()
@@ -378,12 +378,12 @@ def query_test(t):
             resg.load(resfile, publicID=resfile)
             res = RDFResultParser().parse(resg)
         elif resfile.endswith('srj'):
-            res = Result.parse(open(resfile[7:]), format='json')
+            res = Result.parse(bopen(resfile[7:]), format='json')
         elif resfile.endswith('tsv'):
-            res = Result.parse(open(resfile[7:]), format='tsv')
+            res = Result.parse(bopen(resfile[7:]), format='tsv')
 
         elif resfile.endswith('csv'):
-            res = Result.parse(open(resfile[7:]), format='csv')
+            res = Result.parse(bopen(resfile[7:]), format='csv')
 
             # CSV is lossy, round-trip our own resultset to
             # lose the same info :)
@@ -396,7 +396,7 @@ def query_test(t):
             res2 = Result.parse(s, format='csv')
 
         else:
-            res = Result.parse(open(resfile[7:]), format='xml')
+            res = Result.parse(bopen(resfile[7:]), format='xml')
 
         if not DETAILEDASSERT:
             eq(res.type, res2.type, 'Types do not match')
@@ -461,23 +461,23 @@ def query_test(t):
             if data:
                 print "----------------- DATA --------------------"
                 print ">>>", data
-                print open(data[7:]).read()
+                print bopen(data[7:]).read()
             if graphdata:
                 print "----------------- GRAPHDATA --------------------"
                 for x in graphdata:
                     print ">>>", x
-                    print open(x[7:]).read()
+                    print bopen(x[7:]).read()
 
             print "----------------- Query -------------------"
             print ">>>", query
-            print open(query[7:]).read()
+            print bopen(query[7:]).read()
             if resfile:
                 print "----------------- Res -------------------"
                 print ">>>", resfile
-                print open(resfile[7:]).read()
+                print bopen(resfile[7:]).read()
 
             try:
-                pq = parseQuery(open(query[7:]).read())
+                pq = parseQuery(bopen(query[7:]).read())
                 print "----------------- Parsed ------------------"
                 pprintAlgebra(translateQuery(pq, base=urljoin(query, '.')))
             except:

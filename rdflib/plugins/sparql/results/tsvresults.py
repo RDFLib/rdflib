@@ -5,6 +5,8 @@ This implements the Tab Separated SPARQL Result Format
 It is implemented with pyparsing, reusing the elements from the SPARQL Parser
 """
 
+import codecs
+
 from pyparsing import (
     Optional, ZeroOrMore, Literal, ParserElement, ParseException, Suppress)
 
@@ -37,6 +39,9 @@ HEADER.parseWithTabs()
 
 class TSVResultParser(ResultParser):
     def parse(self, source):
+
+        if hasattr(source, 'mode') and 'b' in source.mode:
+            source = codecs.getreader('utf-8')(source)
 
         try:
             r = Result('SELECT')

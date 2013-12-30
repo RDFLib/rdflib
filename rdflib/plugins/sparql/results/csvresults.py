@@ -7,7 +7,7 @@ http://www.w3.org/TR/sparql11-results-csv-tsv/
 
 """
 
-
+import codecs
 import csv
 
 from rdflib import Variable, BNode, URIRef, Literal, py3compat
@@ -22,6 +22,9 @@ class CSVResultParser(ResultParser):
     def parse(self, source):
 
         r = Result('SELECT')
+
+        if hasattr(source, 'mode') and 'b' in source.mode:
+            source = codecs.getreader('utf-8')(source)
 
         reader = csv.reader(source, delimiter=self.delim)
         r.vars = [Variable(x) for x in reader.next()]

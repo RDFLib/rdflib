@@ -2,6 +2,9 @@ from rdflib.query import (
     Result, ResultException, ResultSerializer, ResultParser)
 from rdflib import Literal, URIRef, BNode, Variable
 
+from rdflib.py3compat import bytestype
+
+
 import jsonlayer
 
 """A Serializer for SPARQL results in JSON:
@@ -19,7 +22,10 @@ Authors: Drew Perttula, Gunnar Aastrand Grimnes
 class JSONResultParser(ResultParser):
 
     def parse(self, source):
-        return JSONResult(jsonlayer.decode(source.read()))
+        inp = source.read()
+        if isinstance(inp, bytestype):
+            inp = inp.decode('utf-8')
+        return JSONResult(jsonlayer.decode(inp))
 
 
 class JSONResultSerializer(ResultSerializer):
