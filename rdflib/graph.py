@@ -278,7 +278,7 @@ from urlparse import urlparse
 
 __all__ = [
     'Graph', 'ConjunctiveGraph', 'QuotedGraph', 'Seq',
-    'BackwardCompatGraph', 'ModificationException', 'Dataset',
+    'ModificationException', 'Dataset',
     'UnSupportedAggregateOperation', 'ReadOnlyGraphAggregate']
 
 
@@ -1736,132 +1736,6 @@ class Seq(object):
         """Item given by index from the Seq"""
         index, item = self._list.__getitem__(index)
         return item
-
-
-class BackwardCompatGraph(ConjunctiveGraph):
-
-    def __init__(self, backend='default'):
-        warnings.warn("Use ConjunctiveGraph instead. "
-                      "( from rdflib.graph import ConjunctiveGraph )",
-                      DeprecationWarning, stacklevel=2)
-        super(BackwardCompatGraph, self).__init__(store=backend)
-
-    def __get_backend(self):
-        return self.store
-    backend = property(__get_backend)
-
-    def open(self, configuration, create=True):
-        return ConjunctiveGraph.open(self, configuration, create)
-
-    def add(self, (s, p, o), context=None):
-        """Add to to the given context or to the default context"""
-
-        assert isinstance(s, Node), \
-            "Subject %s must be an rdflib term" % (s,)
-        assert isinstance(p, Node), \
-            "Predicate %s must be an rdflib term" % (p,)
-        assert isinstance(o, Node), \
-            "Object %s must be an rdflib term" % (o,)
-
-        if context is not None:
-            c = self.get_context(context)
-            assert c.identifier == context, "%s != %s" % \
-                                            (c.identifier, context)
-        else:
-            c = self.default_context
-
-        self.store.add((s, p, o), context=c, quoted=False)
-
-    def remove(self, (s, p, o), context=None):
-        """Remove from the given context or from the default context"""
-        if context is not None:
-            context = self.get_context(context)
-        self.store.remove((s, p, o), context)
-
-    def triples(self, (s, p, o), context=None):
-        """Iterate over all the triples in the entire graph"""
-        if context is not None:
-            c = self.get_context(context)
-            assert c.identifier == context
-        else:
-            c = None
-        for (s, p, o), cg in self.store.triples((s, p, o), c):
-            yield (s, p, o)
-
-    def __len__(self, context=None):
-        """Number of triples in the entire graph"""
-        if context is not None:
-            context = self.get_context(context)
-        return self.store.__len__(context)
-
-    def get_context(self, identifier, quoted=False):
-        """Return a context graph for the given identifier
-
-        identifier must be a URIRef or BNode.
-        """
-        assert isinstance(identifier, URIRef) or \
-            isinstance(identifier, BNode), type(identifier)
-        if quoted:
-            assert False
-            return QuotedGraph(self.store, identifier)
-            # return QuotedGraph(self.store, Graph(store=self.store,
-            #                                     identifier=identifier))
-        else:
-            return Graph(store=self.store, identifier=identifier,
-                         namespace_manager=self)
-            # return Graph(self.store, Graph(store=self.store,
-            #                               identifier=identifier))
-
-    def remove_context(self, context):
-        """Remove the given context from the graph"""
-        self.store.remove((None, None, None), self.get_context(context))
-
-    def contexts(self, triple=None):
-        """Iterate over all contexts in the graph
-
-        If triple is specified, iterate over all contexts the triple is in.
-        """
-        for context in self.store.contexts(triple):
-            yield context.identifier
-
-    def subjects(self, predicate=None, object=None, context=None):
-        """Generate subjects with the given predicate and object"""
-        for s, p, o in self.triples((None, predicate, object), context):
-            yield s
-
-    def predicates(self, subject=None, object=None, context=None):
-        """Generate predicates with the given subject and object"""
-        for s, p, o in self.triples((subject, None, object), context):
-            yield p
-
-    def objects(self, subject=None, predicate=None, context=None):
-        """Generate objects with the given subject and predicate"""
-        for s, p, o in self.triples((subject, predicate, None), context):
-            yield o
-
-    def subject_predicates(self, object=None, context=None):
-        """Generate (subject, predicate) tuples for the given object"""
-        for s, p, o in self.triples((None, None, object), context):
-            yield s, p
-
-    def subject_objects(self, predicate=None, context=None):
-        """Generate (subject, object) tuples for the given predicate"""
-        for s, p, o in self.triples((None, predicate, None), context):
-            yield s, o
-
-    def predicate_objects(self, subject=None, context=None):
-        """Generate (predicate, object) tuples for the given subject"""
-        for s, p, o in self.triples((subject, None, None), context):
-            yield p, o
-
-    def __reduce__(self):
-        return (BackwardCompatGraph, (self.store, self.identifier))
-
-    def save(self, destination, format="xml", base=None, encoding=None):
-        warnings.warn("Use serialize method instead. ",
-                      DeprecationWarning, stacklevel=2)
-        self.serialize(destination=destination, format=format, base=base,
-                       encoding=encoding)
 
 
 class ModificationException(Exception):
