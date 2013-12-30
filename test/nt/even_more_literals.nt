@@ -1,4 +1,4 @@
-<http://example.org/subject> <http://example.org/lit> "#Mahlzeit\rHeute servieren wir Rote Rüben Steak, keine blutige Sache. Hier geht's zum Rezept: http://t.co/tADgp01z" .
+<http://example.org/subject> <http://example.org/lit> "#Mahlzeit\rHeute servieren wir Rote R\u00fcben Steak, keine blutige Sache. Hier geht's zum Rezept: http://t.co/tADgp01z" .
 <http://example.org/subject> <http://example.org/lit> "test!!!\r\n\r\n" .
 <http://example.org/subject> <http://example.org/lit> "abc\ndef\"\"\"" .
 <http://example.org/subject> <http://example.org/lit> "abc\ndef\"\"\"\"\"\"" .
