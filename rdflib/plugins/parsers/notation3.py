@@ -1165,8 +1165,11 @@ class SinkParser:
                     if pfx == "_":  # Magic prefix 2001/05/30, can be changed
                         res.append(self.anonymousNode(ln))
                         return j
-                    self.BadSyntax(argstr, i,
-                        "Prefix \"%s:\" not bound" % (pfx))
+                    if not self.turtle and pfx == "":
+                        ns = join(self._baseURI or "", "#")
+                    else:
+                        self.BadSyntax(argstr, i,
+                                       "Prefix \"%s:\" not bound" % (pfx))
             symb = self._store.newSymbol(ns + ln)
             if symb in self._variables:
                 res.append(self._variables[symb])

@@ -218,5 +218,16 @@ foo-bar:Ex foo-bar:name "Test" . """
             for _, _, o in g:
                 self.assertEqual(o, Literal('o'))
 
+    def testEmptyPrefix(self):
+
+        # this is issue https://github.com/RDFLib/rdflib/issues/312
+        g1 = Graph()
+        g1.parse(data = ":a :b :c .", format='n3')
+
+        g2 = Graph()
+        g2.parse(data = "@prefix : <#> . :a :b :c .", format='n3')
+
+        assert set(g1) == set(g2), 'Document with declared empty prefix must match default #'
+
 if __name__ == '__main__':
     unittest.main()
