@@ -12,6 +12,8 @@ from rdflib.term import Literal
 
 from rdflib.py3compat import b, cast_bytes
 
+from notation3 import unicodeExpand
+
 __all__ = ['unquote', 'uriquote', 'Sink', 'NTriplesParser']
 
 uriref = b(r'<([^:]+:[^\s"<>]+)>')
@@ -51,12 +53,20 @@ quot = {b('t'): u'\t', b('n'): u'\n', b('r'): u'\r', b('"'): u'"', b('\\'):
 r_safe = re.compile(b(r'([\x20\x21\x23-\x5B\x5D-\x7E]+)'))
 r_quot = re.compile(b(r'\\(t|n|r|"|\\)'))
 r_uniquot = re.compile(b(r'\\u([0-9A-F]{4})|\\U([0-9A-F]{8})'))
+r_uniquot2 = re.compile(b(r'\\[uU]([0-9A-F]{4}(?:[0-9A-F]{4})?)'))
 
 
 def unquote(s):
     """Unquote an N-Triples string."""
     if not validate:
-        return s.decode('unicode-escape')
+
+        if isinstance(s, unicode): # nquads
+            s = s.encode('utf-8').decode('string-escape')
+            s = r_uniquot2.sub(unicodeExpand, s)
+        else:
+            s = s.decode('unicode-escape')
+
+        return s
     else:
         result = []
         while s:

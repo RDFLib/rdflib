@@ -23,6 +23,8 @@ graphs that can be used and queried. The store that backs the graph
 >>> assert(g.value(s, FOAF.name).eq("Arco Publications"))
 """
 
+from codecs import getreader
+
 from rdflib.py3compat import b
 
 from rdflib import ConjunctiveGraph
@@ -49,6 +51,8 @@ class NQuadsParser(NTriplesParser):
 
         if not hasattr(source, 'read'):
             raise ParseError("Item to parse must be a file-like object.")
+
+        source = getreader('utf-8')(source)
 
         self.file = source
         self.buffer = ''
