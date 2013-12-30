@@ -22,6 +22,8 @@ An RDF graph is a set of RDF triples. Graphs support the python ``in``
 operator, as well as iteration and some operations like union,
 difference and intersection.
 
+see :class:`~rdflib.graph.Graph`
+
 Conjunctive Graph
 -----------------
 
@@ -34,6 +36,7 @@ equivalent to all the named graphs within it and associated with a
 ``_default_`` graph which is automatically assigned a :class:`BNode`
 for an identifier - if one isn't given.
 
+see :class:`~rdflib.graph.ConjunctiveGraph`
 
 Quoted graph
 ------------
@@ -50,6 +53,8 @@ node and any other graph.)
 This is intended to map the idea of "{ N3-expression }" that is used
 by N3 into an RDF graph upon which RDF semantics is defined.
 
+see :class:`~rdflib.graph.QuotedGraph`
+
 Dataset
 -------
 
@@ -62,6 +67,10 @@ required (RDFLib will automatically add a name if one is not provided
 at creation time). This implementation includes a convenience method
 to directly add a single quad to a dataset graph.
 
+see :class:`~rdflib.graph.Dataset`
+
+Working with graphs
+===================
 
 Instantiating Graphs with default store (IOMemory) and default identifier
 (a BNode):
