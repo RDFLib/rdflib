@@ -8,7 +8,7 @@ fi
 
 mkdir build/py3_testing
 cp -r test build/py3_testing/
-cp run_tests.py build/py3_testing/
+cp skiptests.list run_tests.py build/py3_testing/
 cp -r build/lib/rdflib build/py3_testing/
 
 cd build/py3_testing
