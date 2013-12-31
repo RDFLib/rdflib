@@ -345,7 +345,17 @@ class NamespaceManager(object):
             self.__cache[uri] = (prefix, namespace, name)
         return self.__cache[uri]
 
-    def bind(self, prefix, namespace, override=True):
+    def bind(self, prefix, namespace, override=True, replace=False):
+
+        """bind a given namespace to the prefix
+
+        if override, rebind, even if the given namespace is already
+        bound to another prefix.
+
+        if replace, replace any existing prefix with the new namespace
+
+        """
+
         namespace = URIRef(unicode(namespace))
         # When documenting explain that override only applies in what cases
         if prefix is None:
@@ -358,6 +368,11 @@ class NamespaceManager(object):
         if bound_namespace:
             bound_namespace = URIRef(bound_namespace)
         if bound_namespace and bound_namespace != namespace:
+
+            if replace:
+                self.store.bind(prefix, namespace)
+                return
+
             # prefix already in use for different namespace
             #
             # append number to end of prefix until we find one

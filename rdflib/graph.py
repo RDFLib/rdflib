@@ -902,8 +902,8 @@ class Graph(Node):
     def bind(self, prefix, namespace, override=True):
         """Bind prefix to namespace
 
-        If override is True will bind namespace to given prefix if namespace
-        was already bound to a different prefix.
+        If override is True will bind namespace to given prefix even
+        if namespace was already bound to a different prefix.
 
         for example:  graph.bind('foaf', 'http://xmlns.com/foaf/0.1/')
 

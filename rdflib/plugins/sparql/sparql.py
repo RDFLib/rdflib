@@ -356,7 +356,7 @@ class Prologue:
         return URIRef(ns + (localname or ""))
 
     def bind(self, prefix, uri):
-        self.namespace_manager.bind(prefix, uri)
+        self.namespace_manager.bind(prefix, uri, replace=True)
 
     def absolutize(self, iri):
 
