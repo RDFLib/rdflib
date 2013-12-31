@@ -14,16 +14,17 @@ report.bind('earl', EARL)
 report.bind('doap', DOAP)
 report.bind('dc', DC)
 
-rdflib = URIRef('https://github.com/RDFLib/rdflib')
-
-report.add((rdflib, DOAP.homepage, rdflib))
-report.add((rdflib, DOAP.name, Literal("rdflib")))
-report.add((rdflib, RDF.type, DOAP.Project))
-
 me = URIRef('http://gromgull.net/me')
 report.add((me, RDF.type, FOAF.Person))
 report.add((me, FOAF.homepage, URIRef("http://gromgull.net")))
 report.add((me, FOAF.name, Literal("Gunnar Aastrand Grimnes")))
+
+rdflib = URIRef('https://github.com/RDFLib/rdflib')
+
+report.add((rdflib, DOAP.homepage, rdflib))
+report.add((rdflib, DOAP.name, Literal("rdflib")))
+report.add((rdflib, DOAP.developer, me))
+report.add((rdflib, RDF.type, DOAP.Project))
 
 now = Literal(datetime.now())
 
