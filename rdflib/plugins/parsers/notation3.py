@@ -37,6 +37,8 @@ import codecs
 
 from decimal import Decimal
 
+from uuid import uuid4
+
 from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX, _unique_id
 from rdflib.graph import QuotedGraph, ConjunctiveGraph, Graph
 from rdflib import py3compat
@@ -1642,6 +1644,7 @@ class Formula(object):
     number = 0
 
     def __init__(self, parent):
+        self.uuid = uuid4().hex
         self.counter = 0
         Formula.number += 1
         self.number = Formula.number
@@ -1660,7 +1663,7 @@ class Formula(object):
     def newBlankNode(self, uri=None, why=None):
         if uri is None:
             self.counter += 1
-            bn = BNode('f%sb%s' % (id(self), self.counter))
+            bn = BNode('f%sb%s' % (self.uuid, self.counter))
         else:
             bn = BNode(uri.split('#').pop().replace('_', 'b'))
         return bn
