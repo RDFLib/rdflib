@@ -68,9 +68,9 @@ from urllib import pathname2url
 from rdflib.term import URIRef, Variable, _XSD_PFX, _is_valid_uri
 
 __all__ = [
-    'is_ncname', 'split_uri', 'Namespace', 
+    'is_ncname', 'split_uri', 'Namespace',
     'ClosedNamespace', 'NamespaceManager',
-    'XMLNS', 'RDF', 'RDFS', 'XSD', 'OWL', 
+    'XMLNS', 'RDF', 'RDFS', 'XSD', 'OWL',
     'SKOS', 'DOAP', 'FOAF', 'DC', 'DCTERMS', 'VOID']
 
 
@@ -85,11 +85,11 @@ class Namespace(unicode):
     rdflib.term.URIRef(%(u)s'http://example.org/Person')
     >>> n['first-name'] # as item - for things that are not valid python identifiers
     rdflib.term.URIRef(%(u)s'http://example.org/first-name')
-  
+
     """)
-    
-    
-    def __new__(cls, value): 
+
+
+    def __new__(cls, value):
         try:
             rt = unicode.__new__(cls, value)
         except UnicodeDecodeError:
@@ -114,7 +114,7 @@ class Namespace(unicode):
         else:
             return self.term(name)
 
-    def __repr__(self): 
+    def __repr__(self):
         return "Namespace(%s)"%unicode.__repr__(self)
 
 
@@ -131,7 +131,7 @@ class URIPattern(unicode):
 
     """)
 
-    def __new__(cls, value): 
+    def __new__(cls, value):
         try:
             rt = unicode.__new__(cls, value)
         except UnicodeDecodeError:
@@ -141,12 +141,12 @@ class URIPattern(unicode):
     def __mod__(self, *args, **kwargs):
         return URIRef(unicode(self).__mod__(*args, **kwargs))
 
-    def format(self, *args, **kwargs): 
+    def format(self, *args, **kwargs):
         return URIRef(unicode.format(self, *args, **kwargs))
 
-    def __repr__(self): 
+    def __repr__(self):
         return "URIPattern(%r)"%unicode.__repr__(self)
-    
+
 
 
 class ClosedNamespace(object):
@@ -323,7 +323,7 @@ class NamespaceManager(object):
 
     def compute_qname(self, uri, generate=True):
 
-        if not _is_valid_uri(uri): 
+        if not _is_valid_uri(uri):
             raise Exception('"%s" does not look like a valid URI, I cannot serialize this. Perhaps you wanted to urlencode it?'%uri)
 
 
