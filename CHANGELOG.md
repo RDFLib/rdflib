@@ -2,7 +2,7 @@
 ========================
 
 Following RDFLib tradition, some bugs snuck into the 4.0 release.
-This is a bug-fixing release: 
+This is a bug-fixing release:
 
 * the new URI validation caused lots of problems, but is
   nescessary to avoid ''RDF injection'' vulnerabilities. In the
@@ -26,7 +26,7 @@ This is a bug-fixing release:
 * Moved HTML5Lib dependency to the recently released 1.0b1 which
   support python3
 
-2013/05/16 RELEASE 4.0 
+2013/05/16 RELEASE 4.0
 ======================
 
 This release includes several major changes:
@@ -37,37 +37,37 @@ This release includes several major changes:
 
   * SPARQL paths are exposed as operators on ```URIRefs```, these can
     then be be used with graph.triples and friends:
-  
+
     ```py
     # List names of friends of Bob:
-    g.triples(( bob, FOAF.knows/FOAF.name , None )) 
-    
+    g.triples(( bob, FOAF.knows/FOAF.name , None ))
+
     # All super-classes:
-    g.triples(( cls, RDFS.subClassOf * '+', None )) 
+    g.triples(( cls, RDFS.subClassOf * '+', None ))
     ```
 
       * a new ```graph.update``` method will apply SPARQL update statements
 
 * Several RDF 1.1 features are available:
-  * A new ```DataSet``` class 
-  * ```XMLLiteral``` and ```HTMLLiterals``` 
-  * ```BNode``` (de)skolemization is supported through ```BNode.skolemize```, 
+  * A new ```DataSet``` class
+  * ```XMLLiteral``` and ```HTMLLiterals```
+  * ```BNode``` (de)skolemization is supported through ```BNode.skolemize```,
     ```URIRef.de_skolemize```, ```Graph.skolemize``` and ```Graph.de_skolemize```
-    
+
 * Handled of Literal equality was split into lexical comparison
   (for normal ```==``` operator) and value space (using new ```Node.eq```
   methods). This introduces some slight backwards incomaptible
   changes, but was necessary, as the old version had
   inconsisten hash and equality methods that could lead the
-  literals not working correctly in dicts/sets. 
+  literals not working correctly in dicts/sets.
   The new way is more in line with how SPARQL 1.1 works.
   For the full details, see:
-  
+
   https://github.com/RDFLib/rdflib/wiki/Literal-reworking
 
 * Iterating over ```QueryResults``` will generate ```ResultRow``` objects,
   these allow access to variable bindings as attributes or as a
-  dict. I.e. 
+  dict. I.e.
 
   ```py
   for row in graph.query('select ... ') :
@@ -78,10 +78,10 @@ This release includes several major changes:
   ([#271](https://github.com/RDFLib/rdflib/issues/271))
 
   ```py
-  graph[bob : FOAF.knows/FOAF.name] 
+  graph[bob : FOAF.knows/FOAF.name]
             -> generator over the names of Bobs friends
   ```
-        
+
 * The ```SPARQLStore``` and ```SPARQLUpdateStore``` are now included
   in the RDFLib core
 
@@ -92,19 +92,19 @@ This release includes several major changes:
 Minor Changes:
 --------------
 
-* String operations on URIRefs return new URIRefs: ([#258](https://github.com/RDFLib/rdflib/issues/258)) 
+* String operations on URIRefs return new URIRefs: ([#258](https://github.com/RDFLib/rdflib/issues/258))
   ```py
   >>> URIRef('http://example.org/')+'test
   rdflib.term.URIRef('http://example.org/test')
   ```
- 
-* Parser/Serializer plugins are also found by mime-type, not just 
+
+* Parser/Serializer plugins are also found by mime-type, not just
   by plugin name:  ([#277](https://github.com/RDFLib/rdflib/issues/277))
 * ```Namespace``` is no longer a subclass of ```URIRef```
 * URIRefs and Literal language tags are validated on construction,
   avoiding some "RDF-injection" issues ([#266](https://github.com/RDFLib/rdflib/issues/266))
 * A new memory store needs much less memory when loading large
-  graphs ([#268](https://github.com/RDFLib/rdflib/issues/268)) 
+  graphs ([#268](https://github.com/RDFLib/rdflib/issues/268))
 * Turtle/N3 serializer now supports the base keyword correctly ([#248](https://github.com/RDFLib/rdflib/issues/248))
 * py2exe support was fixed ([#257](https://github.com/RDFLib/rdflib/issues/257))
 * Several bugs in the TriG serializer were fixed
@@ -125,18 +125,18 @@ This release drops python 2.4 compatability - it was just getting
 too expensive for us to maintain. It should however be compatible
 with any cpython from 2.5 through 3.3.
 
-* ```node.md5_term``` is now deprecated, if you use it let us know. 
+* ```node.md5_term``` is now deprecated, if you use it let us know.
 
 * Literal.datatype/language are now read-only properties ([#226](https://github.com/RDFLib/rdflib/issues/226))
 * Serializing to file fails in py3 ([#249](https://github.com/RDFLib/rdflib/issues/249))
 * TriX serializer places two xmlns attributes on same element ([#250](https://github.com/RDFLib/rdflib/issues/250))
 * RDF/XML parser fails on when XML namespace is not explicitly declared ([#247](https://github.com/RDFLib/rdflib/issues/247))
-* Resource class should "unbox" Resource instances on add ([#215](https://github.com/RDFLib/rdflib/issues/215))       
+* Resource class should "unbox" Resource instances on add ([#215](https://github.com/RDFLib/rdflib/issues/215))
 * Turtle/N3 does not encode final quote of a string ([#239](https://github.com/RDFLib/rdflib/issues/239))
 * float Literal precision lost when serializing graph to turtle or n3 ([#237](https://github.com/RDFLib/rdflib/issues/237))
 * plain-literal representation of xsd:decimals fixed
-* allow read-only sleepycat stores 
-* language tag parsing in N3/Turtle fixes to allow several subtags. 
+* allow read-only sleepycat stores
+* language tag parsing in N3/Turtle fixes to allow several subtags.
 
 2012/10/10 RELEASE 3.2.3
 ========================
@@ -885,7 +885,7 @@ method.
 
 Fixed a bug in the SleepyCatBackend multi threaded concurrency
 support. (Tested fairly extensively under the following
-conditions: multi threaded, multi process, and both).  
+conditions: multi threaded, multi process, and both).
 
 > NOTE: fix involved change to database format -- so 2.0.1 will not be
 > able to open databases created with 2.0.0
@@ -1093,7 +1093,7 @@ return type in default case.
 
 
 
-2002/11/05 RELEASE 1.1.0 
+2002/11/05 RELEASE 1.1.0
 ========================
 
 # A new development branch
@@ -1114,7 +1114,7 @@ Cleaned up interfaces for load/parse: removed generate_path
 from loadsave andrenamed parse_URI to parse.
 
 
-2002/10/08 RELEASE 0.9.6 
+2002/10/08 RELEASE 0.9.6
 ========================
 
 
@@ -1230,5 +1230,3 @@ Added ```__len__``` and ```__eq__``` methods to store interface.
 ========================
 
 Initial release after being split from redfootlib.
-
-
