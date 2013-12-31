@@ -30,7 +30,7 @@ A tiny example:
 __docformat__ = "restructuredtext en"
 
 # The format of the __version__ line is matched by a regex in setup.py
-__version__ = "4.1-dev"
+__version__ = "4.1"
 __date__ = "2013/05/22"
 
 __all__ = [
@@ -121,4 +121,3 @@ assert plugin
 assert query
 
 from rdflib import util
-
