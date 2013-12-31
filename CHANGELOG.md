@@ -1,3 +1,74 @@
+2013/12/31 RELEASE 4.1
+======================
+
+This is a new minor version RDFLib, which includes a handful of new features:
+
+* A TriG parser was added (we already had a serializer) - it is
+  up-to-date wrt. to the newest spec from: http://www.w3.org/TR/trig/
+
+* The Turtle parser was made up to date wrt. to the latest Turtle spec.
+
+* Many more tests have been added - RDFLib now has over 2000
+  (passing!) tests. This is mainly thanks to the NT, Turtle, TriG,
+  NQuads and SPARQL test-suites from W3C. This also included many
+  fixes to the nt and nquad parsers.
+
+* ```ConjunctiveGraph``` and ```Dataset``` now support directly adding/removing
+  quads with ```add/addN/remove``` methods.
+
+* ```rdfpipe``` command now supports datasets, and reading/writing context
+  sensitive formats.
+
+* Optional graph-tracking was added to the Store interface, allowing
+  empty graphs to be tracked for Datasets. The DataSet class also saw
+  a general clean-up, see: https://github.com/RDFLib/rdflib/pull/309
+
+* After long deprecation, ```BackwardCompatibleGraph``` was removed.
+
+Minor enhancements/bugs fixed:
+------------------------------
+
+* Many code samples in the documentation were fixed thanks to @PuckCh
+
+* The new ```IOMemory``` store was optimised a bit
+
+* ```SPARQL(Update)Store``` has been made more generic.
+
+* MD5 sums were never reinitialized in ```rdflib.compare```
+
+* Correct default value for empty prefix in N3
+  [#312]https://github.com/RDFLib/rdflib/issues/312
+
+* Fixed tests when running in a non UTF-8 locale
+  [#344]https://github.com/RDFLib/rdflib/issues/344
+
+* Prefix in the original turtle have an impact on SPARQL query
+  resolution
+  [#313]https://github.com/RDFLib/rdflib/issues/313
+
+* Duplicate BNode IDs from N3 Parser
+  [#305]https://github.com/RDFLib/rdflib/issues/305
+
+* Use QNames for TriG graph names
+  [#330]https://github.com/RDFLib/rdflib/issues/330
+
+* \uXXXX escapes in Turtle/N3 were fixed
+  [#335]https://github.com/RDFLib/rdflib/issues/335
+
+* A way to limit the number of triples retrieved from the
+  ```SPARQLStore``` was added
+  [#346]https://github.com/RDFLib/rdflib/pull/346
+
+* Dots in localnames in Turtle
+  [#345]https://github.com/RDFLib/rdflib/issues/345
+  [#336]https://github.com/RDFLib/rdflib/issues/336
+
+* ```BNode``` as Graph's public ID
+  [#300]https://github.com/RDFLib/rdflib/issues/300
+
+* Introduced ordering of ```QuotedGraphs```
+  [#291]https://github.com/RDFLib/rdflib/issues/291
+
 2013/05/22 RELEASE 4.0.1
 ========================
 
