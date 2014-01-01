@@ -37,37 +37,37 @@ Minor enhancements/bugs fixed:
 * MD5 sums were never reinitialized in ```rdflib.compare```
 
 * Correct default value for empty prefix in N3
-  [#312]https://github.com/RDFLib/rdflib/issues/312
+  [#312](https://github.com/RDFLib/rdflib/issues/312)
 
 * Fixed tests when running in a non UTF-8 locale
-  [#344]https://github.com/RDFLib/rdflib/issues/344
+  [#344](https://github.com/RDFLib/rdflib/issues/344)
 
 * Prefix in the original turtle have an impact on SPARQL query
   resolution
-  [#313]https://github.com/RDFLib/rdflib/issues/313
+  [#313](https://github.com/RDFLib/rdflib/issues/313)
 
 * Duplicate BNode IDs from N3 Parser
-  [#305]https://github.com/RDFLib/rdflib/issues/305
+  [#305](https://github.com/RDFLib/rdflib/issues/305)
 
 * Use QNames for TriG graph names
-  [#330]https://github.com/RDFLib/rdflib/issues/330
+  [#330](https://github.com/RDFLib/rdflib/issues/330)
 
 * \uXXXX escapes in Turtle/N3 were fixed
-  [#335]https://github.com/RDFLib/rdflib/issues/335
+  [#335](https://github.com/RDFLib/rdflib/issues/335)
 
 * A way to limit the number of triples retrieved from the
   ```SPARQLStore``` was added
-  [#346]https://github.com/RDFLib/rdflib/pull/346
+  [#346](https://github.com/RDFLib/rdflib/pull/346)
 
 * Dots in localnames in Turtle
-  [#345]https://github.com/RDFLib/rdflib/issues/345
-  [#336]https://github.com/RDFLib/rdflib/issues/336
+  [#345](https://github.com/RDFLib/rdflib/issues/345)
+  [#336](https://github.com/RDFLib/rdflib/issues/336)
 
 * ```BNode``` as Graph's public ID
-  [#300]https://github.com/RDFLib/rdflib/issues/300
+  [#300](https://github.com/RDFLib/rdflib/issues/300)
 
 * Introduced ordering of ```QuotedGraphs```
-  [#291]https://github.com/RDFLib/rdflib/issues/291
+  [#291](https://github.com/RDFLib/rdflib/issues/291)
 
 2013/05/22 RELEASE 4.0.1
 ========================
