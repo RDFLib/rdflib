@@ -5,12 +5,13 @@ License: GPL 2, W3C, BSD, or MIT
 Author: Sean B. Palmer, inamidst.com
 """
 
+import codecs
 import re
 from rdflib.term import URIRef as URI
 from rdflib.term import BNode as bNode
 from rdflib.term import Literal
 
-from rdflib.py3compat import cast_bytes, decodeUnicodeEscape, ascii
+from rdflib.py3compat import cast_bytes, bytestype
 
 __all__ = ['unquote', 'uriquote', 'Sink', 'NTriplesParser']
 
@@ -46,51 +47,51 @@ class Sink(object):
         self.length += 1
         print (s, p, o)
 
-quot = {'t': u'\t', 'n': u'\n', 'r': u'\r', '"': u'"', '\\':
-        u'\\'}
-r_safe = re.compile(r'([\x20\x21\x23-\x5B\x5D-\x7E]+)')
-r_quot = re.compile(r'\\(t|n|r|"|\\)')
-r_uniquot = re.compile(r'\\u([0-9A-F]{4})|\\U([0-9A-F]{8})')
-
+quot = {u't': u'\t',
+        u'b': u'\b',
+        u'n': u'\n',
+        u'r': u'\r',
+        u'f': u'\f',
+        u'"': u'"',
+        u"'": u"'",
+        u'\\': u'\\'}
+r_safe = re.compile(ur'([^\x22\x5c\x0a\x0d]+)')
+r_quot = re.compile(ur"""\\(t|b|n|r|f|"|'|\\)""")
+r_uniquot = re.compile(ur'\\u([0-9a-fA-F]{4})|\\U([0-9a-fA-F]{8})')
 
 def unquote(s):
     """Unquote an N-Triples string."""
-    if not validate:
 
-        if isinstance(s, unicode): # nquads
-            s = decodeUnicodeEscape(s)
+    if isinstance(s, bytestype):
+        raise TypeError("unquote expects a decoded Unicode string")
+
+    result = []
+    while s:
+        m = r_safe.match(s)
+        if m:
+            s = s[m.end():]
+            result.append(m.group(1))
+            continue
+
+        m = r_quot.match(s)
+        if m:
+            s = s[2:]
+            result.append(quot[m.group(1)])
+            continue
+
+        m = r_uniquot.match(s)
+        if m:
+            s = s[m.end():]
+            u, U = m.groups()
+            codepoint = int(u or U, 16)
+            if codepoint > 0x10FFFF:
+                raise ParseError("Disallowed codepoint: %08X" % codepoint)
+            result.append(unichr(codepoint))
+        elif s.startswith(u'\\'):
+            raise ParseError("Illegal escape at: %s..." % s[:10])
         else:
-            s = s.decode('unicode-escape')
-
-        return s
-    else:
-        result = []
-        while s:
-            m = r_safe.match(s)
-            if m:
-                s = s[m.end():]
-                result.append(m.group(1))
-                continue
-
-            m = r_quot.match(s)
-            if m:
-                s = s[2:]
-                result.append(quot[m.group(1)])
-                continue
-
-            m = r_uniquot.match(s)
-            if m:
-                s = s[m.end():]
-                u, U = m.groups()
-                codepoint = int(u or U, 16)
-                if codepoint > 0x10FFFF:
-                    raise ParseError("Disallowed codepoint: %08X" % codepoint)
-                result.append(unichr(codepoint))
-            elif s.startswith('\\'):
-                raise ParseError("Illegal escape at: %s..." % s[:10])
-            else:
-                raise ParseError("Illegal literal character: %r" % s[0])
-        return u''.join(result)
+            raise ParseError("Illegal literal character: %r" % s[0])
+    return u''.join(result)
 
 r_hibyte = re.compile(ur'([\x80-\xFF])')
 
@@ -125,7 +126,8 @@ class NTriplesParser(object):
         if not hasattr(f, 'read'):
             raise ParseError("Item to parse must be a file-like object.")
 
-        f = ascii(f)
+        # All N-Triples files are UTF-8 encoded
+        f = codecs.getreader('utf-8')(f)
 
         self.file = f
         self.buffer = ''
