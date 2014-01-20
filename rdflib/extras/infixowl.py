@@ -338,7 +338,7 @@ def manchesterSyntax(thing, store, boolean=None, transientList=False):
             ["PREFIX %s: <%s>" % (k, nsBinds[k]) for k in nsBinds])
         qstr = \
             prolog + \
-            "SELECT ?p ?bool WHERE {?class a owl:Class; ?p ?bool ." + \
+            "\nSELECT ?p ?bool WHERE {?class a owl:Class; ?p ?bool ." + \
             "?bool rdf:first ?foo }"
         initb = {Variable("?class"): thing}
         for boolProp, col in \
