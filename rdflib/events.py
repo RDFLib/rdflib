@@ -1,4 +1,3 @@
-
 __doc__ = """
 Dirt Simple Events
 
@@ -35,7 +34,7 @@ class Event(object):
 
     The target of an event registers a function to handle the event it
     is interested with subscribe().  When a sources calls
-    notify(event), each subscriber to that even will be called i no
+    notify(event), each subscriber to that event will be called in no
     particular order.
     """
 
