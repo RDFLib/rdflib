@@ -1,5 +1,6 @@
-from rdflib.term import  URIRef, BNode
-from rdflib.namespace import RDFS
+# -*- coding: UTF-8 -*-
+from rdflib.term import  URIRef, BNode, Literal
+from rdflib.namespace import RDF, RDFS
 from rdflib.py3compat import b
 
 from rdflib.plugins.serializers.rdfxml import PrettyXMLSerializer
@@ -140,6 +141,20 @@ class TestPrettyXmlSerializer(SerializerTestBase):
         _assert_expected_object_types_for_predicates(reparsedGraph,
                 [RDFS.seeAlso, RDFS.subClassOf],
                 [URIRef, BNode])
+
+    def test_pretty_xmlliteral(self):
+        # given:
+        g = ConjunctiveGraph()
+        g.add((BNode(), RDF.value, Literal(u'''<p xmlns="http://www.w3.org/1999/xhtml">See also <a href="#aring">Å</a></p>''', datatype=RDF.XMLLiteral)))
+        # when:
+        xmlrepr = g.serialize(format='pretty-xml')
+        # then:
+        assert b('''<rdf:value rdf:parseType="Literal"><p xmlns="http://www.w3.org/1999/xhtml">See also <a href="#aring">Å</a></p></rdf:value>''') in xmlrepr
+        # when:
+        xmlrepr = g.serialize(format='pretty-xml', use_well_formed_xmlliterals=False)
+        # then:
+        assert b('''<rdf:value rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral"><![CDATA[<p ''') in xmlrepr
+
 
 def _assert_expected_object_types_for_predicates(graph, predicates, types):
     for s, p, o in graph:
