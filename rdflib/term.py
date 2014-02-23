@@ -1289,6 +1289,8 @@ class Literal(Identifier):
 
 
 def _parseXML(xmlstring):
+    if not py3compat.PY3:
+        xmlstring = xmlstring.encode('utf-8')
     retval = xml.dom.minidom.parseString(
         "<rdflibtoplevelelement>%s</rdflibtoplevelelement>" % xmlstring)
     retval.normalize()
@@ -1318,7 +1320,7 @@ def _writeXML(xmlnode):
     # for clean round-tripping, remove headers -- I have great and
     # specific worries that this will blow up later, but this margin
     # is too narrow to contain them
-    if s.startswith(b(u'<?xml version="1.0" encoding="utf-8"?>')):
+    if s.startswith(b('<?xml version="1.0" encoding="utf-8"?>')):
         s = s[38:]
     if s.startswith(b('<rdflibtoplevelelement>')):
         s = s[23:-24]
