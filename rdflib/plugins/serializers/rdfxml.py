@@ -12,7 +12,7 @@ from rdflib.serializer import Serializer
 from rdflib.py3compat import b
 
 from xml.sax.saxutils import quoteattr, escape
-from xml.parsers import expat
+import xml.dom.minidom
 
 from xmlwriter import ESCAPE_ENTITIES
 
@@ -150,15 +150,6 @@ def fix(val):
     else:
         return val
 
-def is_well_formed_xml(value):
-    try:
-        parser = expat.ParserCreate()
-        parser.SetParamEntityParsing(expat.XML_PARAM_ENTITY_PARSING_NEVER)
-        parser.Parse(value.encode('utf-8'), True)
-    except expat.ExpatError:
-        return False
-    return True
-
 
 class PrettyXMLSerializer(Serializer):
 
@@ -172,8 +163,6 @@ class PrettyXMLSerializer(Serializer):
         self.base = base
         self.max_depth = args.get("max_depth", 3)
         assert self.max_depth > 0, "max_depth must be greater than 0"
-        self.use_well_formed_xmlliterals = args.get(
-                'use_well_formed_xmlliterals', True)
 
         self.nm = nm = store.namespace_manager
         self.writer = writer = XMLWriter(stream, nm, encoding)
@@ -283,8 +272,7 @@ class PrettyXMLSerializer(Serializer):
                 writer.attribute(XMLLANG, object.language)
 
             if (object.datatype == RDF.XMLLiteral and
-                    self.use_well_formed_xmlliterals and
-                    is_well_formed_xml(object)):
+                    isinstance(object.value, xml.dom.minidom.Document)):
                 writer.attribute(RDF.parseType, "Literal")
                 writer.text(u"")
                 writer.stream.write(object)
