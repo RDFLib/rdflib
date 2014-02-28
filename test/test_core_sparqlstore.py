@@ -1,4 +1,10 @@
 import unittest
+try:
+    import SPARQLWrapper
+except ImportError:
+    from nose.exc import SkipTest
+    raise SkipTest("SPARQLWrapper not installed")
+
 from rdflib.graph import Graph
 
 
