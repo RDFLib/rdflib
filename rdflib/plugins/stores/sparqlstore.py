@@ -17,7 +17,7 @@ Changes:
 
 """
 SPARQL_POST_UPDATE = "application/sparql-update"
-SPARQL_POST_ENCODED = "application/x-www-form-urlencoded"
+SPARQL_POST_ENCODED = "application/x-www-form-urlencoded; charset=UTF-8"
 
 # Defines some SPARQL keywords
 LIMIT = 'LIMIT'
@@ -628,7 +628,7 @@ class SPARQLUpdateStore(SPARQLStore):
     def _do_update(self, update):
         import urllib
         if self.postAsEncoded:
-            update = urllib.urlencode({'update': update})
+            update = urllib.urlencode({'update': update.encode("utf-8")})
         self.connection.request(
             'POST', self.path, update.encode("utf-8"), self.headers)
         return self.connection.getresponse()
