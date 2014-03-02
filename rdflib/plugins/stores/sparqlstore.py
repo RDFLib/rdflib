@@ -481,8 +481,8 @@ class SPARQLUpdateStore(SPARQLStore):
                              queryEndpoint, bNodeAsURI, sparql11, context_aware)
 
         self.connection = None
-        if update_endpoint:
-            self.update_endpoint = update_endpoint
+
+        self.update_endpoint = update_endpoint
 
         self.postAsEncoded = postAsEncoded
         self.headers = {'Content-type': SPARQL_POST_ENCODED,
@@ -494,18 +494,24 @@ class SPARQLUpdateStore(SPARQLStore):
     def __set_update_endpoint(self, update_endpoint):
         self.__update_endpoint = update_endpoint
 
-        p = urlparse.urlparse(self.update_endpoint)
+        if self.__update_endpoint:
 
-        assert not p.username, \
-            "SPARQL Update store does not support HTTP authentication"
-        assert not p.password, \
-            "SPARQL Update store does not support HTTP authentication"
-        assert p.scheme == "http", "SPARQL Update is an http protocol!"
-        self.host = p.hostname
-        self.port = p.port
-        self.path = p.path
-        self.connection = httplib.HTTPConnection(
-            self.host, self.port)
+            p = urlparse.urlparse(self.update_endpoint)
+
+            assert not p.username, \
+                "SPARQL Update store does not support HTTP authentication"
+            assert not p.password, \
+                "SPARQL Update store does not support HTTP authentication"
+            assert p.scheme == "http", "SPARQL Update is an http protocol!"
+            self.host = p.hostname
+            self.port = p.port
+            self.path = p.path
+            self.connection = httplib.HTTPConnection(
+                self.host, self.port)
+
+        else:
+
+            self.host = self.port = self.path = self.connection = None
 
     def __get_update_endpoint(self):
         return self.__update_endpoint
