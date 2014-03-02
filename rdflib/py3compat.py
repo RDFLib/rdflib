@@ -135,7 +135,7 @@ else:
     def sign(n):
         return cmp(n, 0)
 
-r_unicodeEscape = re.compile(r'(\\[uU][0-9A-Fa-f]{4}(?:[0-9A-Fa-f]{4})?)')
+r_unicodeEscape = re.compile(r'(\\u[0-9A-Fa-f]{4}|\\U[0-9A-Fa-f]{8})')
 
 def _unicodeExpand(s):
     return r_unicodeEscape.sub(lambda m: unichr(int(m.group(0)[2:], 16)), s)
