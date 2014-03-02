@@ -1,9 +1,20 @@
+import os
 import unittest
+from nose import SkipTest
+
 try:
     import SPARQLWrapper
 except ImportError:
-    from nose.exc import SkipTest
     raise SkipTest("SPARQLWrapper not installed")
+
+if os.getenv("TRAVIS"): 
+    raise SkipTest("Doesn't work in travis")
+
+import urllib2
+try:
+    assert len(urllib2.urlopen("http://dbpedia.org/sparql").read()) > 0
+except:
+    raise SkipTest("No HTTP connection.")
 
 from rdflib import Graph, URIRef, Literal
 
@@ -62,17 +73,6 @@ class SPARQLStoreDBPediaTestCase(unittest.TestCase):
         for i in res:
             assert type(i[0]) == Literal, i[0].n3()
 
-from nose import SkipTest
-import os
-
-if os.getenv("TRAVIS"): 
-    raise SkipTest("Doesn't work in travis")
-
-import urllib2
-try:
-    assert len(urllib2.urlopen("http://dbpedia.org/sparql").read()) > 0
-except:
-    raise SkipTest("No HTTP connection.")
 
 if __name__ == '__main__':
     unittest.main()
