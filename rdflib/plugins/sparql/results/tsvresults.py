@@ -40,7 +40,10 @@ HEADER.parseWithTabs()
 class TSVResultParser(ResultParser):
     def parse(self, source):
 
-        if hasattr(source, 'mode') and 'b' in source.mode:
+        if not hasattr(source, 'mode') or 'b' in source.mode and not getattr(source, 'encoding', None):
+            # if there is no mode, or source is in binary mode
+            # assume we need to decode from utf-8.
+            # if there is a mode set and it's not binary, check if source has encoding set.
             source = codecs.getreader('utf-8')(source)
 
         try:
