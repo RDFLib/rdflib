@@ -21,7 +21,7 @@ data2 = '''<?xml version="1.0" encoding="utf-8"?>
     xmlns="http://www.example.org/meeting_organization#">
 
     <rdf:Description about="http://meetings.example.com/cal#m1">
-        <Location parseType="Resource">
+        <Location rdf:parseType="Resource">
             <zip xmlns="http://www.another.example.org/geographical#">02139</zip>
             <lat xmlns="http://www.another.example.org/geographical#">14.124425</lat>
         </Location>
