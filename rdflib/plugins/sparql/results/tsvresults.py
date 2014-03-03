@@ -19,6 +19,8 @@ from rdflib.plugins.sparql.parserutils import Comp, Param, CompValue
 
 from rdflib import Literal as RDFLiteral
 
+from rdflib.py3compat import bytestype
+
 ParserElement.setDefaultWhitespaceChars(" \n")
 
 
@@ -40,7 +42,8 @@ HEADER.parseWithTabs()
 class TSVResultParser(ResultParser):
     def parse(self, source):
 
-        if hasattr(source, 'mode') and 'b' in source.mode:
+        if isinstance(source.read(0), bytestype):
+            # if reading from source returns bytes do utf-8 decoding
             source = codecs.getreader('utf-8')(source)
 
         try:

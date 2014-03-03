@@ -23,7 +23,8 @@ class CSVResultParser(ResultParser):
 
         r = Result('SELECT')
 
-        if hasattr(source, 'mode') and 'b' in source.mode:
+        if isinstance(source.read(0), py3compat.bytestype):
+            # if reading from source returns bytes do utf-8 decoding
             source = codecs.getreader('utf-8')(source)
 
         reader = csv.reader(source, delimiter=self.delim)

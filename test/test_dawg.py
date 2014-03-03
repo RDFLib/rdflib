@@ -391,8 +391,7 @@ def query_test(t):
             # write bytes, read strings...
             s = BytesIO()
             res2.serialize(s, format='csv')
-            print s.getvalue()
-            s = StringIO(s.getvalue().decode('utf-8'))  # hmm ?
+            s.seek(0)
             res2 = Result.parse(s, format='csv')
 
         else:
