@@ -31,7 +31,6 @@ data2 = '''<?xml version="1.0" encoding="utf-8"?>
 
 def test_broken_rdfxml():
     #import ipdb; ipdb.set_trace()
-    raise SkipTest()
     def p():
         rdflib.Graph().parse(data=data)
 
@@ -42,5 +41,5 @@ def test_parsetype_resource():
     print g.serialize(format='n3')
 
 if __name__ == '__main__':
-    #test_broken_rdfxml()
+    test_broken_rdfxml()
     test_parsetype_resource()
