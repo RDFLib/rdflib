@@ -41,8 +41,8 @@ if sys.version_info[0] >= 3:
     kwargs['install_requires'] = ['isodate', 'pyparsing']
     kwargs['tests_require'] = ['html5lib']
     kwargs['requires'] = [
-        'isodate', 'pyparsing',
-        'SPARQLWrapper']
+        'isodate', 'pyparsing']
+    kwargs['extras_require'] = {'SPARQLStore': 'SPARQLWrapper'}
     kwargs['src_root'] = setup_python3()
     assert setup
 else:
@@ -52,7 +52,8 @@ else:
         kwargs['test_suite'] = "nose.collector"
         kwargs['install_requires'] = [
             'isodate',
-            'pyparsing', 'SPARQLWrapper']
+            'pyparsing']
+        kwargs['extras_require'] = {'SPARQLStore': 'SPARQLWrapper'}
 
         if sys.version_info[1]<7:  # Python 2.6
             kwargs['install_requires'].append('ordereddict')
