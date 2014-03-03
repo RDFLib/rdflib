@@ -15,10 +15,10 @@ A tiny example:
     >>> import rdflib
 
     >>> g = rdflib.Graph()
-    >>> result = g.parse("http://www.w3.org/2000/10/swap/test/meet/white.rdf")
+    >>> result = g.parse("http://www.w3.org/2000/10/swap/test/meet/blue.rdf")
 
     >>> print("graph has %s statements." % len(g))
-    graph has 19 statements.
+    graph has 9 statements.
     >>>
     >>> for s, p, o in g:
     ...     if (s, p, o) not in g:
