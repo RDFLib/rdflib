@@ -1,3 +1,27 @@
+2014/03/03 RELEASE 4.1.1
+========================
+
+This is a bug-fix release.
+
+* The RDF/XML Parser was made stricter, now raises exceptions for
+  illegal repeated node-elements.
+  [#363](https://github.com/RDFLib/rdflib/issues/363)
+
+* The SPARQLUpdateStore now supports non-ascii unicode in update
+  statements
+  [#356](https://github.com/RDFLib/rdflib/issues/356)
+
+* Fixed a bug in the NTriple/NQuad parser wrt. to unicode escape sequences
+  [#352](https://github.com/RDFLib/rdflib/issues/352)
+
+* HTML5Lib is no longer pinned to 0.95
+  [#355](https://github.com/RDFLib/rdflib/issues/360)
+
+* RDF/XML Serializer now uses parseType=Literal for well-formed XML literals
+
+* A bug in the manchester OWL syntax was fixed
+  [#355](https://github.com/RDFLib/rdflib/issues/355)
+
 2013/12/31 RELEASE 4.1
 ======================
 
@@ -21,7 +45,7 @@ This is a new minor version RDFLib, which includes a handful of new features:
 
 * Optional graph-tracking was added to the Store interface, allowing
   empty graphs to be tracked for Datasets. The DataSet class also saw
-  a general clean-up, see: https://github.com/RDFLib/rdflib/pull/309
+  a general clean-up, see: [#309](https://github.com/RDFLib/rdflib/pull/309)
 
 * After long deprecation, ```BackwardCompatibleGraph``` was removed.
 
