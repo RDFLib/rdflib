@@ -3,6 +3,8 @@
 
 This is a bug-fix release.
 
+This will be the last RDFLib release to support python 2.5.
+
 * The RDF/XML Parser was made stricter, now raises exceptions for
   illegal repeated node-elements.
   [#363](https://github.com/RDFLib/rdflib/issues/363)
