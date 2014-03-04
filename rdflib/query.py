@@ -23,11 +23,11 @@ __all__ = ['Processor', 'Result', 'ResultParser', 'ResultSerializer',
 class Processor(object):
     """
     Query plugin interface.
-    
+
     This module is useful for those wanting to write a query processor
     that can plugin to rdf. If you are wanting to execute a query you
     likely want to do so through the Graph class query method.
-    
+
     """
 
     def __init__(self, graph):
@@ -39,17 +39,17 @@ class Processor(object):
 class UpdateProcessor(object):
     """
     Update plugin interface.
-    
+
     This module is useful for those wanting to write an update
     processor that can plugin to rdflib. If you are wanting to execute
     an update statement you likely want to do so through the Graph
     class update method.
 
     .. versionadded:: 4.0
-    
+
     """
- 
-    def __init__(self, graph): 
+
+    def __init__(self, graph):
         pass
     def update(self, strOrQuery, initBindings={}, initNs={}):
         pass
@@ -146,17 +146,17 @@ class ResultRow(tuple):
 class Result(object):
     """
     A common class for representing query result.
-    
+
     There is a bit of magic here that makes this appear like different
     Python objects, depending on the type of result.
 
     If the type is "SELECT", iterating will yield lists of QueryRow objects
-    
+
     If the type is "ASK", iterating will yield a single bool (or
     bool(result) will return the same bool)
 
     If the type is "CONSTRUCT" or "DESCRIBE" iterating will yield the
-    triples. 
+    triples.
 
     len(result) also works.
 
@@ -239,10 +239,10 @@ class Result(object):
         else:
             return len(self.graph)
 
-    def __nonzero__(self): 
-        if self.type == 'ASK': 
+    def __nonzero__(self):
+        if self.type == 'ASK':
             return self.askAnswer
-        else: 
+        else:
             return len(self)>0
 
     def __iter__(self):

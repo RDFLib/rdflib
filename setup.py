@@ -61,7 +61,7 @@ else:
             kwargs['install_requires'].append('simplejson')
             kwargs['install_requires'].append('html5lib==0.95')
         else:
-            kwargs['install_requires'].append('html5lib') 
+            kwargs['install_requires'].append('html5lib')
 
     except ImportError:
         from distutils.core import setup
@@ -139,15 +139,15 @@ Store implementations. The core rdflib includes store
 implementations for in memory storage, persistent storage on top
 of the Berkeley DB, and a wrapper for remote SPARQL endpoints.
 
-A SPARQL 1.1 engine is also included. 
+A SPARQL 1.1 engine is also included.
 
 If you have recently reported a bug marked as fixed, or have a craving for
 the very latest, you may want the development version instead:
 
    easy_install https://github.com/RDFLib/rdflib/tarball/master
 
-Read the docs at: 
-   
+Read the docs at:
+
    http://rdflib.readthedocs.org
 
     """,
@@ -161,6 +161,6 @@ Read the docs at:
             'rdfgraphisomorphism = rdflib.tools.graphisomorphism:main',
             ],
         },
-    
+
     **kwargs
     )

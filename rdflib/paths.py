@@ -99,7 +99,7 @@ True
 Graph generator functions, triples, subjects, objects, etc. :
 
 >>> list(g.objects(e.c, (e.p3*OneOrMore)/e.p2)) # doctest: +NORMALIZE_WHITESPACE
-[rdflib.term.URIRef(%(u)s'ex:j'), rdflib.term.URIRef(%(u)s'ex:g'), 
+[rdflib.term.URIRef(%(u)s'ex:j'), rdflib.term.URIRef(%(u)s'ex:g'),
     rdflib.term.URIRef(%(u)s'ex:f')]
 
 A more complete set of tests:
@@ -450,7 +450,7 @@ if __name__ == '__main__':
 
     import doctest
     doctest.testmod()
-else: 
+else:
     # monkey patch
     # (these cannot be directly in terms.py
     #  as it would introduce circular imports)
@@ -470,4 +470,3 @@ else:
     Path.__truediv__ = path_sequence
     if not PY3:
         Path.__div__ = path_sequence
-

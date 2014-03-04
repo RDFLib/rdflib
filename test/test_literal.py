@@ -9,23 +9,23 @@ class TestLiteral(unittest.TestCase):
     def setUp(self):
         pass
 
-    def test_repr_apostrophe(self):        
+    def test_repr_apostrophe(self):
         a = rdflib.Literal("'")
         b = eval(repr(a))
         self.assertEquals(a, b)
 
-    def test_repr_quote(self):        
+    def test_repr_quote(self):
         a = rdflib.Literal('"')
         b = eval(repr(a))
         self.assertEquals(a, b)
 
     def test_backslash(self):
         d = r"""
-<rdf:RDF 
+<rdf:RDF
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   xmlns:foo="http://example.org/foo#">
     <rdf:Description>
-      <foo:bar>a\b</foo:bar>	
+      <foo:bar>a\b</foo:bar>
     </rdf:Description>
 </rdf:RDF>
 """
@@ -44,7 +44,7 @@ class TestNew(unittest.TestCase):
         self.assertRaises(TypeError,
            Literal, 'foo', lang='en', datatype=URIRef("http://example.com/"))
 
-    def testFromOtherLiteral(self): 
+    def testFromOtherLiteral(self):
         l = Literal(1)
         l2 = Literal(l)
         self.assertTrue(isinstance(l.value, int))
@@ -55,7 +55,7 @@ class TestNew(unittest.TestCase):
         l2 = Literal(l, datatype=rdflib.XSD.integer)
         self.assertTrue(isinstance(l2.value, long))
 
-        
+
 
     def testDatatypeGetsAutoURIRefConversion(self):
         # drewp disapproves of this behavior, but it should be
@@ -87,7 +87,7 @@ class TestRepr(unittest.TestCase):
             pass
         x = MyLiteral(u"foo")
         self.assertEqual(repr(x), uformat("MyLiteral(%(u)s'foo')"))
-        
+
 class TestDoubleOutput(unittest.TestCase):
     def testNoDanglingPoint(self):
         """confirms the fix for https://github.com/RDFLib/rdflib/issues/237"""
@@ -95,14 +95,14 @@ class TestDoubleOutput(unittest.TestCase):
         out = vv._literal_n3(use_plain=True)
         self.assert_(out in ["8.8e-01", "0.88"], out)
 
-class TestBindings(unittest.TestCase): 
-    
-    def testBinding(self): 
+class TestBindings(unittest.TestCase):
 
-        class a: 
-            def __init__(self,v): 
+    def testBinding(self):
+
+        class a:
+            def __init__(self,v):
                 self.v=v[3:-3]
-            def __str__(self): 
+            def __str__(self):
                 return '<<<%s>>>'%self.v
 
         dtA=rdflib.URIRef('urn:dt:a')
@@ -112,29 +112,28 @@ class TestBindings(unittest.TestCase):
         la=Literal(va, normalize=True)
         self.assertEqual(la.value,va)
         self.assertEqual(la.datatype, dtA)
-    
+
         la2=Literal("<<<2>>>", datatype=dtA)
         self.assertTrue(isinstance(la2.value, a))
         self.assertEqual(la2.value.v,va.v)
-    
-        class b: 
-            def __init__(self,v): 
+
+        class b:
+            def __init__(self,v):
                 self.v=v[3:-3]
-            def __str__(self): 
+            def __str__(self):
                 return 'B%s'%self.v
 
         dtB=rdflib.URIRef('urn:dt:b')
         bind(dtB,b,None,lambda x: '<<<%s>>>'%x)
-        
+
         vb=b("<<<3>>>")
         lb=Literal(vb, normalize=True)
         self.assertEqual(lb.value,vb)
         self.assertEqual(lb.datatype, dtB)
 
-        
-        
-    
+
+
+
 
 if __name__ == "__main__":
     unittest.main()
-
