@@ -591,7 +591,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
 
             triple = "%s %s %s ." % (subject.n3(), predicate.n3(), obj.n3())
-            data += "INSERT DATA { GRAPH <%s> { %s } }\n" % (
+            data += "INSERT DATA { GRAPH <%s> { %s } } ;\n" % (
                 context.identifier, triple)
         r = self._do_update(data)
         content = r.read()  # we expect no content

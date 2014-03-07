@@ -399,11 +399,10 @@ class Graph(Node):
     def addN(self, quads):
         """Add a sequence of triple with context"""
 
-        self.__store.addN((s, p, o, c) for s, p, o, c in quads
-                          if isinstance(c, Graph)
-                          and c.identifier is self.identifier
+        self.__store.addN([(s, p, o, c) for s, p, o, c in quads
+                          if isinstance(c, URIRef)
                           and _assertnode(s,p,o)
-                          )
+                          ])
 
     def remove(self, (s, p, o)):
         """Remove a triple from the graph
