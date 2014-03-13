@@ -12,9 +12,20 @@ want to do so through the Graph class parse method.
 
 import os
 import sys
-from urllib import pathname2url, url2pathname
-from urllib2 import urlopen, Request
-from urlparse import urljoin
+(py_v_major, py_v_minor, py_v_micro, py_v_final, py_v_serial) = sys.version_info
+
+if py_v_major >= 3:
+    from urllib.request import pathname2url, url2pathname
+    from urllib.request import urlopen, Request
+    from urllib.parse import urljoin
+    unicode = str
+    basestring = str
+    long = int
+else:
+    from urllib import pathname2url, url2pathname
+    from urllib2 import urlopen, Request
+    from urlparse import urljoin
+
 from rdflib.py3compat import PY3
 if PY3:
     from io import BytesIO

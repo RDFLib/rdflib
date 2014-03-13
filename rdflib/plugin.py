@@ -110,7 +110,7 @@ except ImportError:
     pass  # TODO: log a message
 else:
     # add the plugins specified via pkg_resources' EntryPoints.
-    for entry_point, kind in entry_points.iteritems():
+    for entry_point, kind in entry_points.items():
         for ep in iter_entry_points(entry_point):
             _plugins[(ep.name, kind)] = PKGPlugin(ep.name, kind, ep)
 

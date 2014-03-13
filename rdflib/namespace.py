@@ -56,14 +56,24 @@ The following namespaces are available by directly importing from rdflib:
 
 """)
 
+import sys
+(py_v_major, py_v_minor, py_v_micro, py_v_final, py_v_serial) = sys.version_info
+
 import logging
 
 _logger = logging.getLogger(__name__)
 
 import os
 
-from urlparse import urljoin, urldefrag
-from urllib import pathname2url
+if py_v_major >= 3:
+    from urllib.parse import urljoin, urldefrag
+    from urllib.request import pathname2url
+    unicode = str
+    basestring = str
+    long = int
+else:
+    from urlparse import urljoin, urldefrag
+    from urllib import pathname2url
 
 from rdflib.term import URIRef, Variable, _XSD_PFX, _is_valid_uri
 

@@ -274,7 +274,11 @@ b = py3compat.b
 import os
 import shutil
 import tempfile
-from urlparse import urlparse
+
+try:
+    from urlparse import urlparse
+except ImportError:
+    from urllib.parse import urlparse
 
 __all__ = [
     'Graph', 'ConjunctiveGraph', 'QuotedGraph', 'Seq',
@@ -386,7 +390,8 @@ class Graph(Node):
         self.__store.close(
             commit_pending_transaction=commit_pending_transaction)
 
-    def add(self, (s, p, o)):
+    def add(self, triple):
+        (s, p, o) = triple
         """Add a triple with self as context"""
         assert isinstance(s, Node), \
             "Subject %s must be an rdflib term" % (s,)
@@ -405,7 +410,8 @@ class Graph(Node):
                           and _assertnode(s,p,o)
                           )
 
-    def remove(self, (s, p, o)):
+    def remove(self, triple):
+        (s, p, o) = triple
         """Remove a triple from the graph
 
         If the triple does not provide a context attribute, removes the triple
@@ -413,7 +419,8 @@ class Graph(Node):
         """
         self.__store.remove((s, p, o), context=self)
 
-    def triples(self, (s, p, o)):
+    def triples(self, triple):
+        (s, p, o) = triple
         """Generator over the triple store
 
         Returns triples that match the given triple pattern. If triple pattern
@@ -642,7 +649,8 @@ class Graph(Node):
         for s, p, o in self.triples((subject, None, None)):
             yield p, o
 
-    def triples_choices(self, (subject, predicate, object_), context=None):
+    def triples_choices(self, triple, context=None):
+        (subject, predicate, object_) = triple
         for (s, p, o), cg in self.store.triples_choices(
                 (subject, predicate, object_), context=self):
             yield (s, p, o)
@@ -1379,7 +1387,8 @@ class ConjunctiveGraph(Graph):
             for ctx in cg:
                 yield s, p, o, ctx
 
-    def triples_choices(self, (s, p, o), context=None):
+    def triples_choices(self, triple, context=None):
+        (s, p, o) = triple
         """Iterate over all the triples in the entire conjunctive graph"""
 
         if context is None:
@@ -1640,7 +1649,8 @@ class QuotedGraph(Graph):
     def __init__(self, store, identifier):
         super(QuotedGraph, self).__init__(store, identifier)
 
-    def add(self, (s, p, o)):
+    def add(self, triple):
+        (s, p, o) = triple
         """Add a triple with self as context"""
         assert isinstance(s, Node), \
             "Subject %s must be an rdflib term" % (s,)
@@ -1794,16 +1804,19 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         for graph in self.graphs:
             graph.close()
 
-    def add(self, (s, p, o)):
+    def add(self, triple):
+        (s, p, o) = triple
         raise ModificationException()
 
     def addN(self, quads):
         raise ModificationException()
 
-    def remove(self, (s, p, o)):
+    def remove(self, triple):
+        (s, p, o) = triple
         raise ModificationException()
 
-    def triples(self, (s, p, o)):
+    def triples(self, triple):
+        (s, p, o) = triple
         for graph in self.graphs:
             if isinstance(p, Path):
                 for s, o in p.eval(self, s, o):
@@ -1822,7 +1835,8 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
                     return True
         return False
 
-    def quads(self, (s, p, o)):
+    def quads(self, triple):
+        (s, p, o) = triple
         """Iterate over all the quads in the entire aggregate graph"""
         for graph in self.graphs:
             for s1, p1, o1 in graph.triples((s, p, o)):
@@ -1852,7 +1866,8 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
 
     # Conv. methods
 
-    def triples_choices(self, (subject, predicate, object_), context=None):
+    def triples_choices(self, triple, context=None):
+        (subject, predicate, object_) = triple
         for graph in self.graphs:
             choices = graph.triples_choices((subject, predicate, object_))
             for (s, p, o) in choices:

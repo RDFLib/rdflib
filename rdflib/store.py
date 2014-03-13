@@ -68,7 +68,11 @@ class TripleRemovedEvent(Event):
       - the ``graph`` from which the triple was removed
     """
 
-from cPickle import Pickler, Unpickler, UnpicklingError
+try:
+    from cPickle import Pickler, Unpickler, UnpicklingError
+except ImportError:
+    from pickle import Pickler, Unpickler, UnpicklingError
+
 try:
     from io import BytesIO
     assert BytesIO
@@ -97,7 +101,7 @@ class NodePickler(object):
         up.persistent_load = self._get_object
         try:
             return up.load()
-        except KeyError, e:
+        except KeyError as e:
             raise UnpicklingError("Could not find Node class for %s" % e)
 
     def dumps(self, obj, protocol=None, bin=None):
@@ -198,7 +202,8 @@ class Store(object):
         pass
 
     # RDF APIs
-    def add(self, (subject, predicate, object), context, quoted=False):
+    def add(self, triple, context, quoted=False):
+        (subject, predicate, object) = triple
         """
         Adds the given statement to a specific context or to the model. The
         quoted argument is interpreted by formula-aware stores to indicate
@@ -223,13 +228,15 @@ class Store(object):
                 "Context associated with %s %s %s is None!" % (s, p, o)
             self.add((s, p, o), c)
 
-    def remove(self, (subject, predicate, object), context=None):
+    def remove(self, triple, context=None):
+        (subject, predicate, object) = triple
         """ Remove the set of triples matching the pattern from the store """
         self.dispatcher.dispatch(
             TripleRemovedEvent(
                 triple=(subject, predicate, object), context=context))
 
-    def triples_choices(self, (subject, predicate, object_), context=None):
+    def triples_choices(self, triple, context=None):
+        (subject, predicate, object_) = triple
         """
         A variant of triples that can take a list of terms instead of a single
         term in any slot.  Stores can implement this to optimize the response

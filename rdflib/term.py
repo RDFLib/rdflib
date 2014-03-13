@@ -35,6 +35,9 @@ __all__ = [
     'Statement',
 ]
 
+import sys
+(py_v_major, py_v_minor, py_v_micro, py_v_final, py_v_serial) = sys.version_info
+
 import logging
 import warnings
 
@@ -43,7 +46,14 @@ _LOGGER = logging.getLogger(__name__)
 import base64
 import xml.dom.minidom
 
-from urlparse import urlparse, urljoin, urldefrag
+if py_v_major >= 3 :
+    from urllib.parse import urlparse, urlunparse, urlsplit, urljoin
+    unicode = str
+    basestring = str
+    long = int
+else :
+    from urlparse import urlparse, urlunparse, urlsplit, urljoin
+
 from datetime import date, time, datetime
 from re import sub, compile
 from collections import defaultdict
@@ -1494,7 +1504,8 @@ class Variable(Identifier):
 
 class Statement(Node, tuple):
 
-    def __new__(cls, (subject, predicate, object), context):
+    def __new__(cls, triple, context):
+        (subject, predicate, object) = triple
         warnings.warn(
             "Class Statement is deprecated, and will be removed in " +
             "the future. If you use this please let rdflib-dev know!",
