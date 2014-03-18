@@ -4,6 +4,7 @@ Utility functions and objects to ease Python 3 compatibility.
 import sys
 import re
 import codecs
+from six import PY3
 
 try:
     from functools import wraps
@@ -20,9 +21,6 @@ def cast_bytes(s, enc='utf-8'):
     if isinstance(s, unicode):
         return s.encode(enc)
     return s
-
-PY3 = (sys.version_info[0] >= 3)
-
 
 def _modify_str_or_docstring(str_change_func):
     @wraps(str_change_func)

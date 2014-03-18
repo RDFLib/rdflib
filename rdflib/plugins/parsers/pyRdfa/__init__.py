@@ -165,7 +165,7 @@ __contact__ = 'Ivan Herman, ivan@w3.org'
 __license__ = 'W3C® SOFTWARE NOTICE AND LICENSE, http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231'
 
 import sys
-PY3 = (sys.version_info[0] >= 3)
+from six import PY3
 
 if PY3 :
 	from io import StringIO

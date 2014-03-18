@@ -15,7 +15,7 @@ import sys
 from urllib import pathname2url, url2pathname
 from urllib2 import urlopen, Request
 from urlparse import urljoin
-from rdflib.py3compat import PY3
+from six import PY3
 if PY3:
     from io import BytesIO
     assert BytesIO

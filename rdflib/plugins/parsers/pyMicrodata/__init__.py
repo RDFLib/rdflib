@@ -52,7 +52,7 @@ __author__  = 'Ivan Herman'
 __contact__ = 'Ivan Herman, ivan@w3.org'
 
 import sys
-PY3 = (sys.version_info[0] >= 3)
+from six import PY3
 
 if PY3 :
 	from io import StringIO

@@ -109,7 +109,7 @@ DIGIT = '0123456789'
 HEX = '0123456789ABCDEFabcdef'
 
 import sys
-PY3 = (sys.version_info[0] >= 3)
+from six import PY3
 
 # Try to get a set/frozenset implementation if possible
 try:
