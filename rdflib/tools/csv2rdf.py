@@ -421,7 +421,7 @@ def main():
     opts = dict(opts)
 
     if "-h" in opts or "--help" in opts:
-        print HELP
+        print(HELP)
         sys.exit(-1)
 
     if "-f" in opts:

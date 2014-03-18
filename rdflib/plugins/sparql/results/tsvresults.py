@@ -68,9 +68,9 @@ class TSVResultParser(ResultParser):
             return r
 
         except ParseException, err:
-            print err.line
-            print " " * (err.column - 1) + "^"
-            print err
+            print(err.line)
+            print(" " * (err.column - 1) + "^")
+            print(err)
 
     def convertTerm(self, t):
         if isinstance(t, CompValue):
@@ -84,6 +84,6 @@ class TSVResultParser(ResultParser):
 if __name__ == '__main__':
     import sys
     r = Result.parse(file(sys.argv[1]), format='tsv')
-    print r.vars
-    print r.bindings
-    # print r.serialize(format='json')
+    print(r.vars)
+    print(r.bindings)
+    # print(r.serialize(format='json'))

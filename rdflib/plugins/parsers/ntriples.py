@@ -44,7 +44,7 @@ class Sink(object):
 
     def triple(self, s, p, o):
         self.length += 1
-        print (s, p, o)
+        print((s, p, o))
 
 quot = {'t': u'\t', 'n': u'\n', 'r': u'\r', '"': u'"', '\\':
         u'\\'}

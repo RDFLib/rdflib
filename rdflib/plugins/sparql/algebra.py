@@ -5,6 +5,7 @@ Converting the 'parse-tree' output of pyparsing to a SPARQL Algebra expression
 http://www.w3.org/TR/sparql11-query/#sparqlQuery
 
 """
+from __future__ import print_function
 
 import functools
 import operator
@@ -767,13 +768,13 @@ def pprintAlgebra(q):
         #     print "%s ]"%ind
         #     return
         if not isinstance(p, CompValue):
-            print p
+            print(p)
             return
-        print "%s(" % (p.name, )
+        print("%s(" % (p.name, ))
         for k in p:
-            print "%s%s =" % (ind, k,),
+            print("%s%s =" % (ind, k,), end=' ')
             pp(p[k], ind + "    ")
-        print "%s)" % ind
+        print("%s)" % ind)
 
     try:
         pp(q.algebra)
@@ -793,6 +794,6 @@ if __name__ == '__main__':
         q = sys.argv[1]
 
     pq = parser.parseQuery(q)
-    print pq
+    print(pq)
     tq = translateQuery(pq)
-    print pprintAlgebra(tq)
+    print(pprintAlgebra(tq))

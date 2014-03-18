@@ -10,10 +10,10 @@ The module can be used via a stand-alone script (an example is part of the distr
 ==============
 From a Python file, expecting a Turtle output::
  from pyMicrodata import pyMicrodata
- print pyMicrodata().rdf_from_source('filename')
+ print(pyMicrodata().rdf_from_source('filename'))
 Other output formats are also possible. E.g., to produce RDF/XML output, one could use::
  from pyMicrodata import pyMicrodata
- print pyMicrodata().rdf_from_source('filename', outputFormat='pretty-xml')
+ print(pyMicrodata().rdf_from_source('filename', outputFormat='pretty-xml'))
 It is also possible to embed an RDFa processing. Eg, using::
  from pyMicrodata import pyMicrodata
  graph = pyMicrodata().graph_from_source('filename')

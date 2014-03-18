@@ -1913,7 +1913,7 @@ def main():
     p.endDoc()
     for t in g.quads((None, None, None)):
 
-        print t
+        print(t)
 
 if __name__ == '__main__':
     main()

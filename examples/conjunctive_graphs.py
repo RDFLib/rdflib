@@ -53,6 +53,6 @@ if __name__=='__main__':
 
     # query the conjunction of all graphs
 
-    print 'Mary loves:'
+    print('Mary loves:')
     for x in g[mary : ns.loves/ns.hasName]:
-        print x
+        print(x)
