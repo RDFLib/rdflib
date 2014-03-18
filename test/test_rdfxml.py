@@ -64,7 +64,7 @@ def cached_file(url):
 
     fpath = os.path.join(CACHE_DIR, fname)
     if not os.path.exists(fpath):
-        print "%s does not exist, fetching from %s" % (fpath, url)
+        print("%s does not exist, fetching from %s" % (fpath, url))
         folder = os.path.dirname(fpath)
         if not os.path.exists(folder):
             os.makedirs(folder)
