@@ -38,7 +38,7 @@ if __name__=='__main__':
 
     print("Bill knows: ", end=" ")
     for friend in bill[FOAF.knows]: 
-        print friend[FOAF.name].next(), " "
+        print(friend[FOAF.name].next(), " ")
 
     # or even quicker with paths:
     print("Bill knows: ", end=" ")

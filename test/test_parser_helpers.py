@@ -1,4 +1,4 @@
-from __future__ import print(function)
+from __future__ import print_function
 
 from rdflib.plugins.sparql.parser import TriplesSameSubject
 # from rdflib.plugins.sparql.algebra import triples
