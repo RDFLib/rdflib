@@ -1,5 +1,8 @@
 # http://travis-ci.org/#!/RDFLib/rdflib
 language: python
+branches:
+  only:
+    - master
 
 python:
     # - 2.5
