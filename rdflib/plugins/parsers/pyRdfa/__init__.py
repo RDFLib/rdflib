@@ -174,10 +174,8 @@ else :
 
 import os
 import xml.dom.minidom
-if PY3 :
-	from urllib.parse import urlparse
-else :
-	from urlparse import urlparse
+
+from six.moves.urllib.parse import urlparse
 
 import rdflib
 from rdflib	import URIRef

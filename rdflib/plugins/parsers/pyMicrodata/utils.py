@@ -15,17 +15,10 @@ $Date: 2012/09/01 15:17:28 $
 import os, os.path, sys
 (py_v_major, py_v_minor, py_v_micro, py_v_final, py_v_serial) = sys.version_info
 
-if py_v_major >= 3 :
-	from urllib.request import Request, urlopen
-	from urllib.parse   import urljoin, quote, urlparse
-	from http.server    import BaseHTTPRequestHandler
-	from urllib.error   import HTTPError as urllib_HTTPError
-else :
-	from urllib2        import Request, urlopen
-	from urllib2        import HTTPError as urllib_HTTPError
-	from urlparse       import urljoin, urlparse
-	from urllib         import quote
-	from BaseHTTPServer import BaseHTTPRequestHandler
+from six.moves.urllib.request import Request, urlopen
+from six.moves.urllib.parse   import urljoin, quote, urlparse
+from six.moves.urllib.error   import HTTPError as urllib_HTTPError
+from six.moves.BaseHTTPServer import BaseHTTPRequestHandler
 
 import re
 from datetime import datetime

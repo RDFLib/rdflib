@@ -274,7 +274,7 @@ b = py3compat.b
 import os
 import shutil
 import tempfile
-from urlparse import urlparse
+from six.moves.urllib.parse import urlparse
 
 __all__ = [
     'Graph', 'ConjunctiveGraph', 'QuotedGraph', 'Seq',

@@ -18,18 +18,10 @@ $Date: 2012/11/16 17:51:53 $
 """
 import os, os.path, sys, imp, datetime
 
-# Python 3 vs. 2 switch
-if sys.version_info[0] >= 3 :
-	from urllib.request import Request, urlopen
-	from urllib.parse   import urljoin, quote
-	from http.server    import BaseHTTPRequestHandler
-	from urllib.error   import HTTPError as urllib_HTTPError
-else :
-	from urllib2        import Request, urlopen
-	from urllib2        import HTTPError as urllib_HTTPError
-	from urlparse       import urljoin
-	from urllib         import quote
-	from BaseHTTPServer import BaseHTTPRequestHandler
+from six.moves.urllib.request import Request, urlopen
+from six.moves.urllib.parse   import urljoin, quote
+from six.moves.urllib.error   import HTTPError as urllib_HTTPError
+from six.moves.BaseHTTPServer import BaseHTTPRequestHandler
 
 from .extras.httpheader import content_type, parse_http_datetime
 

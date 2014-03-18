@@ -5,7 +5,7 @@ import tempfile
 import warnings
 import types
 
-from urlparse import urlparse
+from six.moves.urllib.parse import urlparse
 try:
     from io import BytesIO
     assert BytesIO

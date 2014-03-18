@@ -2,8 +2,7 @@ import unittest
 
 import os
 import os.path
-from urllib import url2pathname
-from urllib2 import urlopen
+from six.moves.urllib.request import url2pathname, urlopen
 
 import rdflib
 from rdflib import RDF, RDFS, URIRef, BNode, Literal, Namespace, Graph

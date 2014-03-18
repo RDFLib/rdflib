@@ -62,8 +62,8 @@ _logger = logging.getLogger(__name__)
 
 import os
 
-from urlparse import urljoin, urldefrag
-from urllib import pathname2url
+from six.moves.urllib.parse import urljoin, urldefrag
+from six.moves.urllib.request import pathname2url
 
 from rdflib.term import URIRef, Variable, _XSD_PFX, _is_valid_uri
 

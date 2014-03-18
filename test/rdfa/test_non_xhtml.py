@@ -1,5 +1,5 @@
 from unittest import TestCase
-from urllib2 import URLError
+from six.moves.urllib.error import URLError
 
 from rdflib.graph import ConjunctiveGraph
 

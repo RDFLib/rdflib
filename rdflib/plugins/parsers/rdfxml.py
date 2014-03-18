@@ -5,7 +5,7 @@ An RDF/XML parser for RDFLib
 from xml.sax import make_parser
 from xml.sax.handler import ErrorHandler
 from xml.sax.saxutils import handler, quoteattr, escape
-from urlparse import urljoin, urldefrag
+from six.moves.urllib.parse   import urljoin, urldefrag
 
 from rdflib.namespace import RDF, is_ncname
 from rdflib.term import URIRef

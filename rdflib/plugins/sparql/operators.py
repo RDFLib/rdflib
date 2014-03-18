@@ -11,7 +11,7 @@ import math
 import random
 import uuid
 import hashlib
-import urllib2
+from six.moves.urllib.parse import quote
 
 from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
 
@@ -380,7 +380,7 @@ def Builtin_CONTAINS(expr, ctx):
 
 
 def Builtin_ENCODE_FOR_URI(expr, ctx):
-    return Literal(urllib2.quote(string(expr.arg).encode("utf-8")))
+    return Literal(quote(string(expr.arg).encode("utf-8")))
 
 
 def Builtin_SUBSTR(expr, ctx):

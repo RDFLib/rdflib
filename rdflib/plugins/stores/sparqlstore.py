@@ -54,7 +54,7 @@ from rdflib.query import Result
 from rdflib import Variable, Namespace, BNode, URIRef, Literal
 
 import httplib
-import urlparse
+from six.moves.urllib.parse import urlparse, urlencode
 
 class NSSPARQLWrapper(SPARQLWrapper):
     nsBindings = {}
@@ -496,7 +496,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
         if self.__update_endpoint:
 
-            p = urlparse.urlparse(self.update_endpoint)
+            p = urlparse(self.update_endpoint)
 
             assert not p.username, \
                 "SPARQL Update store does not support HTTP authentication"
@@ -632,9 +632,8 @@ class SPARQLUpdateStore(SPARQLStore):
                 r.status, r.reason, content))
 
     def _do_update(self, update):
-        import urllib
         if self.postAsEncoded:
-            update = urllib.urlencode({'update': update.encode("utf-8")})
+            update = urlencode({'update': update.encode("utf-8")})
         self.connection.request(
             'POST', self.path, update.encode("utf-8"), self.headers)
         return self.connection.getresponse()

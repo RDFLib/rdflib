@@ -46,7 +46,7 @@ from rdflib.py3compat import decodeStringEscape, bopen
 from nose.tools import nottest, eq_
 from nose import SkipTest
 
-from urlparse import urljoin
+from six.moves.urllib.parse import urljoin
 
 from StringIO import StringIO
 

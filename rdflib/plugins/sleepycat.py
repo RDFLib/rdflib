@@ -18,7 +18,7 @@ except ImportError:
         has_bsddb = False
 from os import mkdir
 from os.path import exists, abspath
-from urllib import pathname2url
+from six.moves.urllib.request import pathname2url
 from threading import Thread
 
 if has_bsddb:

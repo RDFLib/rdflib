@@ -16,7 +16,7 @@ import codecs
 import time
 import datetime
 import warnings
-import urllib2
+from six.moves.urllib.parse import quote
 
 import rdflib
 
@@ -130,7 +130,7 @@ def csv_reader(csv_data, dialect=csv.excel, **kwargs):
 def prefixuri(x, prefix, class_=None):
     if prefix:
         r = rdflib.URIRef(
-            prefix + urllib2.quote(
+            prefix + quote(
                 x.encode("utf8").replace(" ", "_"), safe=""))
     else:
         r = rdflib.URIRef(x)
@@ -351,7 +351,7 @@ class CSV2RDF(object):
                 if self.IDENT == 'auto':
                     uri = self.BASE["%d" % rows]
                 else:
-                    uri = self.BASE["_".join([urllib2.quote(x.encode(
+                    uri = self.BASE["_".join([quote(x.encode(
                         "utf8").replace(" ", "_"), safe="")
                         for x in index(l, self.IDENT)])]
 

@@ -60,7 +60,7 @@ n3:context      a rdf:Property; rdfs:domain n3:statement;
 
 
 import unittest
-from urllib2 import URLError
+from six.moves.urllib.error import URLError
 
 from rdflib.graph import Graph, ConjunctiveGraph
 

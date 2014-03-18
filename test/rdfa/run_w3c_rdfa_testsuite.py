@@ -19,8 +19,7 @@ from __future__ import print_function
 from operator import attrgetter
 import re
 import os
-from urllib2 import urlopen
-from urllib import url2pathname
+from six.moves.urllib.request import urlopen, url2pathname
 
 from rdflib.graph import Graph
 from rdflib.namespace import Namespace, RDF

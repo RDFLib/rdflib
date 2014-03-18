@@ -157,9 +157,9 @@ class TestSparql11(unittest.TestCase):
         )
 
 from nose import SkipTest
-import urllib2
+from six.moves.urllib.request import urlopen
 try:
-    assert len(urllib2.urlopen("http://localhost:3030/").read()) > 0
+    assert len(urlopen("http://localhost:3030/").read()) > 0
 except:
     raise SkipTest("http://localhost:3030/ is unavailable.")
 

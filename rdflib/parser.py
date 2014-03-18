@@ -12,9 +12,8 @@ want to do so through the Graph class parse method.
 
 import os
 import sys
-from urllib import pathname2url, url2pathname
-from urllib2 import urlopen, Request
-from urlparse import urljoin
+from six.moves.urllib.request import Request, urlopen, url2pathname, pathname2url
+from six.moves.urllib.parse import urljoin
 from six import PY3
 if PY3:
     from io import BytesIO

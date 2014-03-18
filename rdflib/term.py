@@ -43,7 +43,7 @@ _LOGGER = logging.getLogger(__name__)
 import base64
 import xml.dom.minidom
 
-from urlparse import urlparse, urljoin, urldefrag
+from six.moves.urllib.parse import urlparse, urljoin, urldefrag
 from datetime import date, time, datetime
 from re import sub, compile
 from collections import defaultdict

@@ -76,10 +76,7 @@ else :
 	from rdflib.RDFS	import RDFSNS as ns_rdfs
 	from rdflib.RDF		import RDFNS  as ns_rdf
 
-if PY3 :
-	from urllib.parse import urlparse
-else :
-	from urlparse import urlparse
+from six.moves.urllib.parse import urlparse
 
 debug = False
 
