@@ -33,7 +33,8 @@ class TestStore(Graph):
         super(TestStore, self).__init__()
         self.expected = expected
 
-    def add(self, (s, p, o)):
+    def add(self, triple):
+        s, p, o = triple
         if not isinstance(s, BNode) and not isinstance(o, BNode):
             if not (s, p, o) in self.expected:
                 m = u"Triple not in expected result: %s, %s, %s" % (

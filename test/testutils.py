@@ -22,7 +22,7 @@ def crapCompare(g1, g2):
         o = _no_blank(t[2])
         if not (s, t[1] ,o) in g2:
             e = "(%s, %s, %s) is not in both graphs!"%(s, t[1], o)
-            raise Exception, e
+            raise Exception(e)
 def _no_blank(node):
     if isinstance(node, BNode): return None
     if isinstance(node, Graph):
