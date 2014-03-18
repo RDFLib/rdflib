@@ -14,6 +14,8 @@ It is intended to be run by Nose (but can also be invoked as a script).
 If files in "test/rdfa/w3c_rdfa_suite" are removed, the test module
 automatically downloads them (to allow for "manual+automatic" update).
 """
+from __future__ import print_function
+
 from operator import attrgetter
 import re
 import os
@@ -149,13 +151,14 @@ def manual_run():
         print(test.description)
         try:
             test() 
-            print "PASSED"
+            print("PASSED")
         except AssertionError, e:
             failed += 1
-            print "****FAILED****", e;
+            print("****FAILED****", e)
         except Exception, e:
-            errors += 1; print "****ERROR**** in %s" % test._source_urls, e
-    print "Ran %(count)s tests. Failed: %(failed)s. Errors: %(errors)s."%vars()
+            errors += 1
+            print("****ERROR**** in %s" % test._source_urls, e)
+    print("Ran %(count)s tests. Failed: %(failed)s. Errors: %(errors)s."%vars())
 
 
 if __name__ == '__main__':

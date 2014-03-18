@@ -45,7 +45,7 @@ def test_variable_order():
     res = g.query("SELECT (42 AS ?a) ?b { ?b ?c ?d }")
 
     row = list(res)[0]
-    print row
+    print(row)
     assert len(row) == 2
     assert row[0] == Literal(42)
     assert row[1] == URIRef("http://foo")

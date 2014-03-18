@@ -4,6 +4,8 @@ A simple example showing how to use the SPARQLStore
 
 """
 
+from __future__ import print_function
+
 from rdflib import Graph, URIRef, Namespace
 
 if __name__ == '__main__': 
@@ -18,5 +20,5 @@ if __name__ == '__main__':
         URIRef("http://dbpedia.org/resource/Berlin"), 
         dbo.populationTotal)
 
-    print "According to DBPedia Berlin has a population of", pop
-              
+    print("According to DBPedia Berlin has a population of", pop)
+

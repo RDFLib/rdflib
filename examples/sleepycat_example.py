@@ -4,6 +4,7 @@ A simple example showing how to use a Sleepycat store to do on-disk
 persistence.
 
 """
+from __future__ import print_function
 
 from rdflib import ConjunctiveGraph, Namespace, Literal
 from rdflib.store import NO_STORE, VALID_STORE
@@ -24,7 +25,7 @@ if __name__ == '__main__':
     else:
         assert rt == VALID_STORE, 'The underlying store is corrupt'
 
-    print 'Triples in graph before add: ', len(graph)
+    print('Triples in graph before add: ', len(graph))
 
     # Now we'll add some triples to the graph & commit the changes
     rdflib = Namespace('http://rdflib.net/test/')
@@ -33,10 +34,10 @@ if __name__ == '__main__':
     graph.add((rdflib['pic:1'], rdflib.name, Literal('Jane & Bob')))
     graph.add((rdflib['pic:2'], rdflib.name, Literal('Squirrel in Tree')))
 
-    print 'Triples in graph after add: ', len(graph)
+    print('Triples in graph after add: ', len(graph))
 
     # display the graph in RDF/XML
-    print graph.serialize(format='n3')
+    print(graph.serialize(format='n3'))
 
     # close when done, otherwise sleepycat will leak lock entries. 
     graph.close()
@@ -49,7 +50,7 @@ if __name__ == '__main__':
     
     graph.open(path, create = False) 
     
-    print 'Triples still in graph: ', len(graph)
+    print('Triples still in graph: ', len(graph))
     
     graph.close()
 

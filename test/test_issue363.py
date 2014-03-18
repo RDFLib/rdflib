@@ -38,7 +38,7 @@ def test_broken_rdfxml():
 
 def test_parsetype_resource():
     g = rdflib.Graph().parse(data=data2)
-    print g.serialize(format='n3')
+    print(g.serialize(format='n3'))
 
 if __name__ == '__main__':
     test_broken_rdfxml()

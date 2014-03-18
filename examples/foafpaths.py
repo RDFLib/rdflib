@@ -38,7 +38,7 @@ if __name__=='__main__':
 
     tim = URIRef("http://www.w3.org/People/Berners-Lee/card#i")
 
-    print "Timbl knows:"
+    print("Timbl knows:")
 
     for o in g.objects(tim, FOAF.knows / FOAF.name):
-        print o
+        print(o)

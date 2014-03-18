@@ -28,7 +28,7 @@ class OWLCollectionTest(unittest.TestCase):
     def testCollectionRDFXML(self):
         g=Graph().parse(data=DATA, format='nt')
         g.namespace_manager.bind('owl',URIRef('http://www.w3.org/2002/07/owl#'))
-        print g.serialize(format='pretty-xml')
+        print(g.serialize(format='pretty-xml'))
 
 if __name__ == '__main__':
     main()

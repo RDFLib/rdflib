@@ -26,4 +26,4 @@ if __name__=='__main__':
     tim = rdflib.URIRef("http://www.w3.org/People/Berners-Lee/card#i")
 
     for row in g.query(q, initBindings={'person': tim}):
-        print row
+        print(row)

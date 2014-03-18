@@ -117,7 +117,7 @@ def read_manifest(f, base=None, legacy=False):
 
                 else:
                     pass
-                    print "I dont know DAWG Test Type %s" % _type
+                    print("I dont know DAWG Test Type %s" % _type)
                     continue
 
                 yield _type, RDFTest(e, _str(name), _str(comment),

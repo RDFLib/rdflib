@@ -126,7 +126,7 @@ if __name__=='__main__':
 
     # or spit it back out (mostly) the way we created it:
 
-    print primer.serialize(format='n3')
+    print(primer.serialize(format='n3'))
 
     # for more insight into things already done, lets see the namespaces
 
