@@ -1494,7 +1494,8 @@ class Variable(Identifier):
 
 class Statement(Node, tuple):
 
-    def __new__(cls, (subject, predicate, object), context):
+    def __new__(cls, triple, context):
+        subject, predicate, object = triple
         warnings.warn(
             "Class Statement is deprecated, and will be removed in " +
             "the future. If you use this please let rdflib-dev know!",

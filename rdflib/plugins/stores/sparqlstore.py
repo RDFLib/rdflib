@@ -251,7 +251,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         """
         raise TypeError('The SPARQL store is read only')
 
-    def remove(self, (subject, predicate, obj), context):
+    def remove(self, triple, context):
         """ Remove a triple from the store """
         raise TypeError('The SPARQL store is read only')
 
@@ -281,7 +281,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
         return Result.parse(SPARQLWrapper.query(self).response)
 
-    def triples(self, (s, p, o), context=None):
+    def triples(self, triple_pattern, context=None):
         """
         - tuple **(s, o, p)**
             the triple used as filter for the SPARQL select.
@@ -316,7 +316,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         del a_graph.OFFSET
         ``
         """
-
+        s, p, o = triple_pattern
         if ( isinstance(s, BNode) or
              isinstance(p, BNode) or
              isinstance(o, BNode) ):
@@ -379,7 +379,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
                    rt.get(p, p),
                    rt.get(o, o)), None
 
-    def triples_choices(self, (subject, predicate, object_), context=None):
+    def triples_choices(self, triple_choices, context=None):
         """
         A variant of triples that can take a list of terms instead of a
         single term in any slot.  Stores can implement this to optimize

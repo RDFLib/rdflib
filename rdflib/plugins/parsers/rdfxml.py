@@ -171,7 +171,8 @@ class RDFXMLHandler(handler.ContentHandler):
     def processingInstruction(self, target, data):
         pass
 
-    def add_reified(self, sid, (s, p, o)):
+    def add_reified(self, sid, triple):
+        s, p, o = triple
         self.store.add((sid, RDF.type, RDF.Statement))
         self.store.add((sid, RDF.subject, s))
         self.store.add((sid, RDF.predicate, p))

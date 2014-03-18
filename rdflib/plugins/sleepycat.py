@@ -273,7 +273,8 @@ class Sleepycat(Store):
 
             self.__needs_sync = True
 
-    def __remove(self, (s, p, o), c, quoted=False, txn=None):
+    def __remove(self, triple, c, quoted=False, txn=None):
+        s, p, o = triple
         cspo, cpos, cosp = self.__indicies
         contexts_value = cspo.get(
             b("^").join([b(""), s, p, o, b("")]), txn=txn) or b("")
@@ -293,7 +294,8 @@ class Sleepycat(Store):
                     except db.DBNotFoundError:
                         pass  # TODO: is it okay to ignore these?
 
-    def remove(self, (subject, predicate, object), context, txn=None):
+    def remove(self, triple, context, txn=None):
+        subject, predicate, object = triple
         assert self.__open, "The Store must be open."
         Store.remove(self, (subject, predicate, object), context)
         _to_string = self._to_string
@@ -366,8 +368,9 @@ class Sleepycat(Store):
 
             self.__needs_sync = needs_sync
 
-    def triples(self, (subject, predicate, object), context=None, txn=None):
+    def triples(self, triple_pattern, context=None, txn=None):
         """A generator over all the triples matching """
+        subject, predicate, object = triple_pattern
         assert self.__open, "The Store must be open."
 
         if context is not None:
@@ -522,7 +525,8 @@ class Sleepycat(Store):
             i = i.decode()
         return i
 
-    def __lookup(self, (subject, predicate, object), context, txn=None):
+    def __lookup(self, triple_pattern, context, txn=None):
+        subject, predicate, object = triple_pattern
         _to_string = self._to_string
         if context is not None:
             context = _to_string(context, txn=txn)
