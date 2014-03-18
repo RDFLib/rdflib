@@ -27,10 +27,7 @@ exclude_lines =
 [paths]
 source =
     rdflib/
-    build/src/rdflib/
 tests =
     test/
-    build/src/test/
 examples =
     examples/
-    build/src/examples/

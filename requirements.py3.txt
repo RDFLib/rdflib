@@ -1,3 +1,4 @@
+six
 pyparsing
 flake8
 html5lib
