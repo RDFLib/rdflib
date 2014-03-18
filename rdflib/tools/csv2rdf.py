@@ -376,7 +376,7 @@ class CSV2RDF(object):
                             else:
                                 self.triple(uri, headers[i], o)
 
-                        except Exception, e:
+                        except Exception as e:
                             warnings.warn(
                                 "Could not process value for column " +
                                 "%d:%s in row %d, ignoring: %s " % (

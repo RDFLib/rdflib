@@ -62,7 +62,7 @@ class NQuadsParser(NTriplesParser):
                 break
             try:
                 self.parseline()
-            except ParseError, msg:
+            except ParseError as msg:
                 raise ParseError("Invalid line (%s):\n%r" % (msg, __line))
 
         return self.sink

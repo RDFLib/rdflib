@@ -192,7 +192,7 @@ class Expr(CompValue):
         try:
             self.ctx = ctx
             return self._evalfn(ctx)
-        except SPARQLError, e:
+        except SPARQLError as e:
             return e
         finally:
             self.ctx = None

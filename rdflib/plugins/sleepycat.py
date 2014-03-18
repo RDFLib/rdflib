@@ -206,7 +206,7 @@ class Sleepycat(Store):
                             break
                 else:
                     sleep(1)
-        except Exception, e:
+        except Exception as e:
             _logger.exception(e)
 
     def sync(self):

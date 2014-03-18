@@ -303,7 +303,7 @@ class RDFXMLHandler(handler.ContentHandler):
                 predicate = absolutize(att)
                 try:
                     object = Literal(atts[att], language)
-                except Error, e:
+                except Error as e:
                     self.error(e.msg)
             elif att == RDF.type:  # S2
                 predicate = RDF.type
@@ -317,7 +317,7 @@ class RDFXMLHandler(handler.ContentHandler):
                 predicate = absolutize(att)
                 try:
                     object = Literal(atts[att], language)
-                except Error, e:
+                except Error as e:
                     self.error(e.msg)
             self.store.add((subject, predicate, object))
 

@@ -380,7 +380,7 @@ def traverse(
         if complete is not None:
             return complete
         return r
-    except StopTraversal, st:
+    except StopTraversal as st:
         return st.rv
 
 

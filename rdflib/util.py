@@ -476,7 +476,7 @@ if __name__ == "__main__":
     # os.environ['TZ'] = 'US/Pacific'
     # try:
     #    time.tzset()
-    # except AttributeError, e:
+    # except AttributeError as e:
     #    print e
         # pass
         # tzset missing! see

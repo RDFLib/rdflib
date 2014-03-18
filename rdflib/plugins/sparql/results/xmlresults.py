@@ -43,7 +43,7 @@ class XMLResult(Result):
             xmlstring = xmlstring.encode('utf-8')
         try:
             tree = ElementTree.fromstring(xmlstring)
-        except Exception, e:
+        except Exception as e:
             try:
                 raise e.__class__("error parsing %r: %s" % (xmlstring, e))
             except:

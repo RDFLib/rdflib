@@ -97,7 +97,7 @@ def expandBNodeTriples(terms):
             print("1", terms[0])
             print("2", [rdflib.BNode()] + terms.asList()[0])
         return [expandTriples([rdflib.BNode()] + terms.asList()[0])]
-    except Exception, e:
+    except Exception as e:
         if DEBUG:
             print(">>>>>>>>", e)
         raise
@@ -1072,7 +1072,7 @@ if __name__ == '__main__':
         q = Query.parseString(sys.argv[1])
         print("\nSyntax Tree:\n")
         print(q)
-    except ParseException, err:
+    except ParseException as err:
         print(err.line)
         print(" " * (err.column - 1) + "^")
         print(err)

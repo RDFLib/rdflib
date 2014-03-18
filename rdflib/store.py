@@ -97,7 +97,7 @@ class NodePickler(object):
         up.persistent_load = self._get_object
         try:
             return up.load()
-        except KeyError, e:
+        except KeyError as e:
             raise UnpicklingError("Could not find Node class for %s" % e)
 
     def dumps(self, obj, protocol=None, bin=None):

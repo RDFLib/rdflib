@@ -67,7 +67,7 @@ class TSVResultParser(ResultParser):
 
             return r
 
-        except ParseException, err:
+        except ParseException as err:
             print(err.line)
             print(" " * (err.column - 1) + "^")
             print(err)
