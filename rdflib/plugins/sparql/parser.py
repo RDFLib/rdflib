@@ -198,7 +198,7 @@ PLX_re = '(%s|%s)'%(PN_LOCAL_ESC_re,PERCENT_re)
 
 # [169] PN_LOCAL ::= (PN_CHARS_U | ':' | [0-9] | PLX ) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX) )?
 
-PN_LOCAL = Regex(ur"""([%(PN_CHARS_U)s:0-9]|%(PLX)s)
+PN_LOCAL = Regex(r"""([%(PN_CHARS_U)s:0-9]|%(PLX)s)
                      (([%(PN_CHARS)s\.:]|%(PLX)s)*
                       ([%(PN_CHARS)s:]|%(PLX)s) )?"""%dict(PN_CHARS_U=PN_CHARS_U_re,
                                                        PN_CHARS=PN_CHARS_re,
@@ -303,7 +303,7 @@ STRING_LITERAL_LONG2.setParseAction(
 # Regex(u'[^\u0027\u005C\u000A\u000D]',flags=re.U) | ECHAR ) + "'"
 
 STRING_LITERAL1 = Regex(
-    ur"'(?:[^'\n\r\\]|\\['ntbrf\\])*'(?!')", flags=re.U)
+    r"'(?:[^'\n\r\\]|\\['ntbrf\\])*'(?!')", flags=re.U)
 STRING_LITERAL1.setParseAction(
     lambda x: rdflib.Literal(decodeUnicodeEscape(x[0][1:-1])))
 
