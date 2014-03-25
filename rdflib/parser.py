@@ -12,7 +12,7 @@ want to do so through the Graph class parse method.
 
 import os
 import sys
-from six import text_type
+from six import text_type, string_types
 from six.moves.urllib.request import Request, urlopen, url2pathname, pathname2url
 from six.moves.urllib.parse import urljoin
 from six import PY3
@@ -137,7 +137,7 @@ def create_input_source(source=None, publicID=None,
         if isinstance(source, InputSource):
             input_source = source
         else:
-            if isinstance(source, basestring):
+            if isinstance(source, string_types):
                 location = source
             elif hasattr(source, "read") and not isinstance(source, Namespace):
                 f = source

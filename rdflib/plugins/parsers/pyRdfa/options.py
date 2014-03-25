@@ -16,6 +16,8 @@ $Id: options.py,v 1.20 2013-10-16 11:48:54 ivan Exp $ $Date: 2013-10-16 11:48:54
 
 import sys, datetime
 
+from six import string_types
+
 import rdflib
 from rdflib	import URIRef
 from rdflib	import Literal
@@ -71,10 +73,7 @@ class ProcessorGraph :
 		self.graph.bind("ht",      ns_ht)
 		self.graph.bind("xsd",     ns_xsd)
 		# Python 3 foolproof way
-		try :
-			is_context_string = isinstance(context, basestring)
-		except :
-			is_context_string = isinstance(context, str)
+		is_context_string = isinstance(context, string_types)
 		
 		bnode = BNode()
 		

@@ -55,6 +55,8 @@ SPARQLWrapper to use custom decoding and encoding functions::
 
 """
 
+from six import string_types
+
 __all__ = ['decode', 'encode', 'use']
 
 _initialized = False
@@ -67,7 +69,7 @@ def decode(string):
     """Decode the given JSON string.
 
     :param string: the JSON string to decode
-    :type string: basestring
+    :type string: string_types
     :return: the corresponding Python data structure
     :rtype: object
     """
@@ -82,7 +84,7 @@ def encode(obj):
     :param obj: the Python data structure to encode
     :type obj: object
     :return: the corresponding JSON string
-    :rtype: basestring
+    :rtype: string_types
     """
     if not _initialized:
         _initialize()
@@ -112,7 +114,7 @@ def use(module=None, decode=None, encode=None):
     """
     global _decode, _encode, _initialized, _using
     if module is not None:
-        if not isinstance(module, basestring):
+        if not isinstance(module, string_types):
             module = module.__name__
         if module not in ('cjson', 'json', 'simplejson'):
             raise ValueError('Unsupported JSON module %s' % module)

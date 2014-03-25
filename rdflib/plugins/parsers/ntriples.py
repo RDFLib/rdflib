@@ -10,7 +10,7 @@ from rdflib.term import URIRef as URI
 from rdflib.term import BNode as bNode
 from rdflib.term import Literal
 
-from six import text_type
+from six import text_type, string_types
 from rdflib.py3compat import cast_bytes, decodeUnicodeEscape, ascii
 
 __all__ = ['unquote', 'uriquote', 'Sink', 'NTriplesParser']
@@ -142,7 +142,7 @@ class NTriplesParser(object):
 
     def parsestring(self, s):
         """Parse s as an N-Triples string."""
-        if not isinstance(s, basestring):
+        if not isinstance(s, string_types):
             raise ParseError("Item to parse must be a string instance.")
         try:
             from io import BytesIO

@@ -62,7 +62,7 @@ _logger = logging.getLogger(__name__)
 
 import os
 
-from six import text_type
+from six import text_type, string_types
 from six.moves.urllib.parse import urljoin, urldefrag
 from six.moves.urllib.request import pathname2url
 
@@ -104,7 +104,7 @@ class Namespace(text_type):
 
     def term(self, name):
         # need to handle slices explicitly because of __getitem__ override
-        return URIRef(self + (name if isinstance(name, basestring) else ''))
+        return URIRef(self + (name if isinstance(name, string_types) else ''))
 
     def __getitem__(self, key, default=None):
         return self.term(key)

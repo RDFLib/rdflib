@@ -52,7 +52,7 @@ __author__  = 'Ivan Herman'
 __contact__ = 'Ivan Herman, ivan@w3.org'
 
 import sys
-from six import PY3
+from six import PY3, string_types
 
 if PY3 :
 	from io import StringIO
@@ -187,13 +187,8 @@ class pyMicrodata :
 		@type name: string or a file-like object
 		@return: a file like object if opening "name" is possible and successful, "name" otherwise
 		"""
-		try :
-			# Python 2 branch
-			isstring = isinstance(name, basestring)
-		except :
-			# Python 3 branch
-			isstring = isinstance(name, str)
-
+		isstring = isinstance(name, string_types)
+		
 		if isstring :
 			# check if this is a URI, ie, if there is a valid 'scheme' part
 			# otherwise it is considered to be a simple file

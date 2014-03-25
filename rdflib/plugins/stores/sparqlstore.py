@@ -54,6 +54,7 @@ from rdflib.query import Result
 from rdflib import Variable, Namespace, BNode, URIRef, Literal
 
 import httplib
+from six import string_types
 from six.moves.urllib.parse import urlparse, urlencode
 
 class NSSPARQLWrapper(SPARQLWrapper):
@@ -261,7 +262,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
               queryGraph=None,
               DEBUG=False):
         self.debug = DEBUG
-        assert isinstance(query, basestring)
+        assert isinstance(query, string_types)
         self.setNamespaceBindings(initNs)
         if initBindings:
             if not self.sparql11:
@@ -656,7 +657,7 @@ class SPARQLUpdateStore(SPARQLStore):
         if it is part of a literal.
         """
         self.debug = DEBUG
-        assert isinstance(query, basestring)
+        assert isinstance(query, string_types)
         self.setNamespaceBindings(initNs)
         query = self.injectPrefixes(query)
 

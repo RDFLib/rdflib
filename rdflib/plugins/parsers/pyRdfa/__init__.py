@@ -175,6 +175,7 @@ else :
 import os
 import xml.dom.minidom
 
+from six import string_types
 from six.moves.urllib.parse import urlparse
 
 import rdflib
@@ -406,13 +407,8 @@ class pyRdfa :
 		@type name: string or a file-like object
 		@return: a file like object if opening "name" is possible and successful, "name" otherwise
 		"""
-		try :
-			# Python 2 branch
-			isstring = isinstance(name, basestring)
-		except :
-			# Python 3 branch
-			isstring = isinstance(name, str)
-
+		isstring = isinstance(name, string_types)
+		
 		try :
 			if isstring :
 				# check if this is a URI, ie, if there is a valid 'scheme' part
@@ -555,13 +551,7 @@ class pyRdfa :
 			options.reset_processor_graph()
 			return tog		
 
-		# Separating this for a forward Python 3 compatibility
-		try :
-			# Python 2 branch
-			isstring = isinstance(name, basestring)
-		except :
-			# Python 3 branch
-			isstring = isinstance(name, str)
+		isstring = isinstance(name, string_types)
 		
 		try :
 			# First, open the source... Possible HTTP errors are returned as error triples
