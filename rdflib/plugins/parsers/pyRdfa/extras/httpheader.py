@@ -109,7 +109,7 @@ DIGIT = '0123456789'
 HEX = '0123456789ABCDEFabcdef'
 
 import sys
-from six import PY3
+from six import PY3, text_type
 
 # Try to get a set/frozenset implementation if possible
 try:
@@ -140,7 +140,7 @@ def _is_string( obj ):
     if PY3 :
         return isinstance(obj,str)
     else :
-        return isinstance(obj,str) or isinstance(obj,unicode)
+        return isinstance(obj,str) or isinstance(obj, text_type)
 
 
 def http_datetime( dt=None ):
@@ -1359,7 +1359,7 @@ class content_type(object):
         if PY3 :
             return str(self.__str__())
         else :
-            return unicode(self.__str__())
+            return text_type(self.__str__())
 
     def __repr__(self):
         """Python representation of this object."""
@@ -1781,7 +1781,7 @@ class language_tag(object):
         if PY3 :
             return str(self.__str__())
         else :
-            return unicode(self.__str__())
+            return text_type(self.__str__())
 
     def __repr__(self):
         """The python representation of this language tag."""

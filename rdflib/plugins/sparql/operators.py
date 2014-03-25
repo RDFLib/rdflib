@@ -11,6 +11,7 @@ import math
 import random
 import uuid
 import hashlib
+from six import text_type
 from six.moves.urllib.parse import quote
 
 from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
@@ -214,7 +215,7 @@ def Builtin_REGEX(expr, ctx):
             [('i', re.IGNORECASE), ('s', re.DOTALL), ('m', re.MULTILINE)])
         cFlag = reduce(pyop.or_, [flagMap.get(f, 0) for f in flags])
 
-    return Literal(bool(re.search(unicode(pattern), text, cFlag)))
+    return Literal(bool(re.search(text_type(pattern), text, cFlag)))
 
 
 def Builtin_REPLACE(expr, ctx):
@@ -260,7 +261,7 @@ def Builtin_REPLACE(expr, ctx):
         cFlag = reduce(pyop.or_, [flagMap.get(f, 0) for f in flags])
 
         # @@FIXME@@ either datatype OR lang, NOT both
-    return Literal(re.sub(unicode(pattern), _r, text, cFlag),
+    return Literal(re.sub(text_type(pattern), _r, text, cFlag),
                    datatype=text.datatype, lang=text.language)
 
 
@@ -269,7 +270,7 @@ def Builtin_STRDT(expr, ctx):
     http://www.w3.org/TR/sparql11-query/#func-strdt
     """
 
-    return Literal(unicode(expr.arg1), datatype=expr.arg2)
+    return Literal(text_type(expr.arg1), datatype=expr.arg2)
 
 
 def Builtin_STRLANG(expr, ctx):
@@ -283,7 +284,7 @@ def Builtin_STRLANG(expr, ctx):
 
     # TODO: normalisation of lang tag to lower-case
     # should probably happen in literal __init__
-    return Literal(unicode(s), lang=str(expr.arg2).lower())
+    return Literal(text_type(s), lang=str(expr.arg2).lower())
 
 
 def Builtin_CONCAT(expr, ctx):
@@ -409,7 +410,7 @@ def Builtin_STR(e, ctx):
     arg = e.arg
     if isinstance(arg, SPARQLError):
         raise arg
-    return Literal(unicode(arg))  # plain literal
+    return Literal(text_type(arg))  # plain literal
 
 
 def Builtin_LCASE(e, ctx):
@@ -427,7 +428,7 @@ def Builtin_LANGMATCHES(e, ctx):
     langTag = string(e.arg1)
     langRange = string(e.arg2)
 
-    if unicode(langTag) == "":
+    if text_type(langTag) == "":
         return Literal(False)  # nothing matches empty!
 
     return Literal(_lang_range_check(langRange, langTag))

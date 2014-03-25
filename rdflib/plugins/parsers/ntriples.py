@@ -10,6 +10,7 @@ from rdflib.term import URIRef as URI
 from rdflib.term import BNode as bNode
 from rdflib.term import Literal
 
+from six import text_type
 from rdflib.py3compat import cast_bytes, decodeUnicodeEscape, ascii
 
 __all__ = ['unquote', 'uriquote', 'Sink', 'NTriplesParser']
@@ -30,7 +31,7 @@ bufsiz = 2048
 validate = False
 
 
-class Node(unicode):
+class Node(text_type):
     pass
 
 
@@ -57,7 +58,7 @@ def unquote(s):
     """Unquote an N-Triples string."""
     if not validate:
 
-        if isinstance(s, unicode): # nquads
+        if isinstance(s, text_type): # nquads
             s = decodeUnicodeEscape(s)
         else:
             s = s.decode('unicode-escape')

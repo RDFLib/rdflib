@@ -83,6 +83,7 @@ Only in second::
 __all__ = ['IsomorphicGraph', 'to_isomorphic', 'isomorphic',
            'to_canonical_graph', 'graph_diff', 'similar']
 
+from six import text_type
 from rdflib.graph import Graph, ConjunctiveGraph, ReadOnlyGraphAggregate
 from rdflib.term import BNode
 try:
@@ -242,7 +243,7 @@ def _md5_hash(t):
         if isinstance(i, tuple):
             h.update(_md5_hash(i).encode('ascii'))
         else:
-            h.update(unicode(i).encode("utf8"))
+            h.update(text_type(i).encode("utf8"))
     return h.hexdigest()
 
 

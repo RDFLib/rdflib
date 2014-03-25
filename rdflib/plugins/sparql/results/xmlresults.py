@@ -1,4 +1,6 @@
 
+from six import text_type
+
 from xml.sax.saxutils import XMLGenerator
 from xml.dom import XML_NAMESPACE
 from xml.sax.xmlreader import AttributesNSImpl
@@ -39,7 +41,7 @@ class XMLResult(Result):
 
         xmlstring = source.read()
 
-        if isinstance(xmlstring, unicode):
+        if isinstance(xmlstring, text_type):
             xmlstring = xmlstring.encode('utf-8')
         try:
             tree = ElementTree.fromstring(xmlstring)
@@ -161,7 +163,7 @@ class SPARQLXMLWriter:
             u'head', AttributesNSImpl({}, {}))
         for i in xrange(0, len(allvarsL)):
             attr_vals = {
-                (None, u'name'): unicode(allvarsL[i]),
+                (None, u'name'): text_type(allvarsL[i]),
             }
             attr_qnames = {
                 (None, u'name'): u'name',
@@ -203,7 +205,7 @@ class SPARQLXMLWriter:
         assert self._resultStarted
 
         attr_vals = {
-            (None, u'name'): unicode(name),
+            (None, u'name'): text_type(name),
         }
         attr_qnames = {
             (None, u'name'): u'name',

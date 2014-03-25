@@ -12,6 +12,7 @@ want to do so through the Graph class parse method.
 
 import os
 import sys
+from six import text_type
 from six.moves.urllib.request import Request, urlopen, url2pathname, pathname2url
 from six.moves.urllib.parse import urljoin
 from six import PY3
@@ -170,7 +171,7 @@ def create_input_source(source=None, publicID=None,
         input_source = FileInputSource(file)
 
     if data is not None:
-        if isinstance(data, unicode):
+        if isinstance(data, text_type):
             data = data.encode('utf-8')
         input_source = StringInputSource(data)
 

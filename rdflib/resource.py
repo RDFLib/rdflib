@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from six import text_type
 from rdflib import py3compat
 
 __doc__ = py3compat.format_doctest_out("""
@@ -349,7 +350,7 @@ class Resource(object):
     __ge__ = lambda self, other: not self < other
 
     def __unicode__(self):
-        return unicode(self._identifier)
+        return text_type(self._identifier)
 
     if py3compat.PY3:
         __str__ = __unicode__

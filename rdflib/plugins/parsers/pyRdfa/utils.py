@@ -18,6 +18,7 @@ $Date: 2012/11/16 17:51:53 $
 """
 import os, os.path, sys, imp, datetime
 
+from six import text_type
 from six.moves.urllib.request import Request, urlopen
 from six.moves.urllib.parse   import urljoin, quote
 from six.moves.urllib.error   import HTTPError as urllib_HTTPError
@@ -233,7 +234,7 @@ def return_XML(state, inode, base = True, xmlns = True) :
 		return node.toxml()
 	else :
 		q = node.toxml(encoding='utf-8')
-		return unicode(q, encoding='utf-8')
+		return text_type(q, encoding='utf-8')
 
 #########################################################################################################
 
