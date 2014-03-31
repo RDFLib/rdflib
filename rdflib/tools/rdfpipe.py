@@ -18,6 +18,7 @@ from rdflib.parser import Parser
 from rdflib.serializer import Serializer
 
 from rdflib.util import guess_format
+from rdflib.py3compat import PY3
 
 
 DEFAULT_INPUT_FORMAT = 'xml'
@@ -170,6 +171,9 @@ def main():
             ns_bindings[pfx] = uri
 
     outfile = sys.stdout
+    if PY3:
+        outfile = sys.stdout.buffer
+
     if opts.no_out:
         outfile = None
 
