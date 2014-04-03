@@ -206,7 +206,7 @@ class pyMicrodata :
 				return url_request.data
 			else :
 				self.base = name
-				return file(name)
+				return open(name, 'rb')
 		else :
 			return name
 	
