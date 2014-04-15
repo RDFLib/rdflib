@@ -1,3 +1,11 @@
+2014/04/15 RELEASE 4.1.2
+========================
+
+This is a bug-fix release.
+
+* Fixed unicode/str bug in py3 for rdfpipe
+  [#375](https://github.com/RDFLib/rdflib/issues/375)
+
 2014/03/03 RELEASE 4.1.1
 ========================
 
