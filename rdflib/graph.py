@@ -793,7 +793,7 @@ class Graph(Node):
         chain = set([list])
         while list:
             item = self.value(list, RDF.first)
-            if item:
+            if item is not None:
                 yield item
             list = self.value(list, RDF.rest)
             if list in chain:
