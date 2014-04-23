@@ -148,7 +148,7 @@ class Identifier(Node, unicode):  # allow Identifiers to be Nodes in the Graph
         This tries to implement this:
         http://www.w3.org/TR/sparql11-query/#modOrderBy
 
-        Variables are no included in the SPARQL list, but
+        Variables are not included in the SPARQL list, but
         they are greater than BNodes and smaller than everything else
 
         """
@@ -190,10 +190,6 @@ class Identifier(Node, unicode):  # allow Identifiers to be Nodes in the Graph
 class URIRef(Identifier):
     """
     RDF URI Reference: http://www.w3.org/TR/rdf-concepts/#section-Graph-URIref
-
-    The URIRef constructor will do a limited check for valid URIs,
-    essentially just making sure that the string includes no illegal
-    characters (``<, >, ", {, }, |, \\, `, ^``)
     """
 
     __slots__ = ()
@@ -220,6 +216,15 @@ class URIRef(Identifier):
         return unicode(self)
 
     def n3(self, namespace_manager = None):
+        """
+        This will do a limited check for valid URIs,
+        essentially just making sure that the string includes no illegal
+        characters (``<, >, ", {, }, |, \\, `, ^``)
+
+        :param namespace_manager: if not None, will be used to make up
+             a prefixed name
+        """
+
         if not _is_valid_uri(self):
             raise Exception('"%s" does not look like a valid URI, I cannot serialize this as N3/Turtle. Perhaps you wanted to urlencode it?'%self)
 
