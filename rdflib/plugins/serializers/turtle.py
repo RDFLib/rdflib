@@ -359,7 +359,7 @@ class TurtleSerializer(RecursiveSerializer):
     def doList(self, l):
         while l:
             item = self.store.value(l, RDF.first)
-            if item:
+            if item is not None:
                 self.path(item, OBJECT)
                 self.subjectDone(l)
             l = self.store.value(l, RDF.rest)
