@@ -49,6 +49,7 @@ from re import sub, compile
 from collections import defaultdict
 
 from isodate import parse_time, parse_date, parse_datetime
+from binascii import hexlify, unhexlify
 
 
 try:
@@ -1352,6 +1353,8 @@ _XSD_DATETIME = URIRef(_XSD_PFX + 'dateTime')
 _XSD_DATE = URIRef(_XSD_PFX + 'date')
 _XSD_TIME = URIRef(_XSD_PFX + 'time')
 
+_XSD_HEXBINARY = URIRef(_XSD_PFX + 'hexBinary')
+
 # TODO: duration, gYearMonth, gYear, gMonthDay, gDay, gMonth
 
 _NUMERIC_LITERAL_TYPES = (
@@ -1417,6 +1420,8 @@ from decimal import Decimal
 # rather than some concrete bit-limited datatype
 
 _PythonToXSD = [
+    # Specific first
+    ((basestring, _XSD_HEXBINARY), (hexlify, _XSD_HEXBINARY)),
     ((basestring, None), (None, None)),
     ((float, None), (None, _XSD_DOUBLE)),
     ((bool, None), (lambda i:str(i).lower(), _XSD_BOOLEAN)),
@@ -1434,11 +1439,15 @@ _PythonToXSD = [
     ((xml.dom.minidom.DocumentFragment, None), (_writeXML, _RDF_HTMLLITERAL))
 ]
 
+if py3compat:
+    _PythonToXSD.insert(0, ((bytes, _XSD_HEXBINARY), (hexlify, _XSD_HEXBINARY)))
+
 XSDToPython = {
     None : None, # plain literals map directly to value space
     URIRef(_XSD_PFX + 'time'): parse_time,
     URIRef(_XSD_PFX + 'date'): parse_date,
     URIRef(_XSD_PFX + 'dateTime'): parse_datetime,
+    URIRef(_XSD_PFX + 'hexBinary'): unhexlify,
     URIRef(_XSD_PFX + 'string'): None,
     URIRef(_XSD_PFX + 'normalizedString'): None,
     URIRef(_XSD_PFX + 'token'): None,
