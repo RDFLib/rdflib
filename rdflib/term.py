@@ -568,14 +568,14 @@ class Literal(Identifier):
                 value = _castLexicalToPython(lexical_or_value, datatype)
 
                 if value is not None and normalize:
-                    _value, _datatype = _castPythonToLiteral(value)
+                    _value, _datatype = _castPythonToLiteral(value, datatype)
                     if _value is not None:
                         lexical_or_value = _value
 
         else:
             # passed some python object
             value = lexical_or_value
-            _value, _datatype = _castPythonToLiteral(lexical_or_value)
+            _value, _datatype = _castPythonToLiteral(lexical_or_value, datatype)
 
             datatype = datatype or _datatype
             if _value is not None:
@@ -1384,13 +1384,16 @@ _PLAIN_LITERAL_TYPES = (
 )
 
 
-def _castPythonToLiteral(obj):
+def _castPythonToLiteral(obj, datatype):
     """
-    Casts a python datatype to a tuple of the lexical value and a
+    Casts a tuple of a python datatype and a special datatype URI to a tuple of the lexical value and a
     datatype URI (or None)
     """
-    for pType, (castFunc, dType) in _PythonToXSD:
+    for (pType, sdType), (castFunc, dType) in _PythonToXSD:
         if isinstance(obj, pType):
+            # Allows specific datatype management
+            if sdType is not None and sdType != datatype:
+                continue
             if castFunc:
                 return castFunc(obj), dType
             elif dType:
@@ -1414,21 +1417,21 @@ from decimal import Decimal
 # rather than some concrete bit-limited datatype
 
 _PythonToXSD = [
-    (basestring, (None, None)),
-    (float, (None, _XSD_DOUBLE)),
-    (bool, (lambda i:str(i).lower(), _XSD_BOOLEAN)),
-    (int, (None, _XSD_INTEGER)),
-    (long, (None, _XSD_INTEGER)),
-    (Decimal, (None, _XSD_DECIMAL)),
-    (datetime, (lambda i:i.isoformat(), _XSD_DATETIME)),
-    (date, (lambda i:i.isoformat(), _XSD_DATE)),
-    (time, (lambda i:i.isoformat(), _XSD_TIME)),
-    (xml.dom.minidom.Document, (_writeXML, _RDF_XMLLITERAL)),
+    ((basestring, None), (None, None)),
+    ((float, None), (None, _XSD_DOUBLE)),
+    ((bool, None), (lambda i:str(i).lower(), _XSD_BOOLEAN)),
+    ((int, None), (None, _XSD_INTEGER)),
+    ((long, None), (None, _XSD_INTEGER)),
+    ((Decimal, None), (None, _XSD_DECIMAL)),
+    ((datetime, None), (lambda i:i.isoformat(), _XSD_DATETIME)),
+    ((date, None), (lambda i:i.isoformat(), _XSD_DATE)),
+    ((time, None), (lambda i:i.isoformat(), _XSD_TIME)),
+    ((xml.dom.minidom.Document, None), (_writeXML, _RDF_XMLLITERAL)),
     # this is a bit dirty - by accident the html5lib parser produces
     # DocumentFragments, and the xml parser Documents, letting this
     # decide what datatype to use makes roundtripping easier, but it a
     # bit random
-    (xml.dom.minidom.DocumentFragment, (_writeXML, _RDF_HTMLLITERAL))
+    ((xml.dom.minidom.DocumentFragment, None), (_writeXML, _RDF_HTMLLITERAL))
 ]
 
 XSDToPython = {
@@ -1509,7 +1512,7 @@ def bind(datatype, pythontype, constructor=None, lexicalizer=None):
     if constructor == None:
         constructor = pythontype
     _toPythonMapping[datatype] = constructor
-    _PythonToXSD.append((pythontype, (lexicalizer, datatype)))
+    _PythonToXSD.append(((pythontype, None), (lexicalizer, datatype)))
 
 
 class Variable(Identifier):
