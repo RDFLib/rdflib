@@ -563,7 +563,7 @@ class Literal(Identifier):
                 datatype = lexical_or_value.datatype
                 value = lexical_or_value.value
 
-        elif isinstance(lexical_or_value, basestring):
+        elif isinstance(lexical_or_value, basestring) or (py3compat and isinstance(lexical_or_value, bytes)):
                 # passed a string
                 # try parsing lexical form of datatyped literal
                 value = _castLexicalToPython(lexical_or_value, datatype)

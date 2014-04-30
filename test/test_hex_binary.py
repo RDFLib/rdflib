@@ -36,6 +36,14 @@ class HexBinaryTestCase(unittest.TestCase):
         self.assertEquals(b_str1.decode('utf-8'), str1)
         self.assertEquals(unicode(l1), hex_str1)
 
+        # b hexstring
+        hex_str1b = binascii.hexlify(str1.encode('utf-8'))
+        l1b = Literal(hex_str1b, datatype=XSD.hexBinary)
+        b_str1b = l1b.toPython()
+        self.assertEquals(b_str1, b_str1b)
+        self.assertEquals(b_str1b.decode('utf-8'), str1)
+        self.assertEquals(unicode(l1b), hex_str1)
 
+        
 if __name__ == '__main__':
     unittest.main()
