@@ -563,7 +563,7 @@ class Literal(Identifier):
                 datatype = lexical_or_value.datatype
                 value = lexical_or_value.value
 
-        elif isinstance(lexical_or_value, basestring) or (py3compat and isinstance(lexical_or_value, bytes)):
+        elif isinstance(lexical_or_value, basestring) or (py3compat.PY3 and isinstance(lexical_or_value, bytes)):
                 # passed a string
                 # try parsing lexical form of datatyped literal
                 value = _castLexicalToPython(lexical_or_value, datatype)
@@ -1317,6 +1317,13 @@ def _parseHTML(htmltext):
             " html5lib <http://code.google.com/p/html5lib>")
 
 
+def _unhexlify(value):
+    # In Python 3.2, unhexlify does not support str (only bytes)
+    if py3compat.PY3 and isinstance(value, str):
+        value = value.encode()
+    return unhexlify(value)
+
+
 def _writeXML(xmlnode):
     if isinstance(xmlnode, xml.dom.minidom.DocumentFragment):
         d = xml.dom.minidom.Document()
@@ -1447,7 +1454,7 @@ XSDToPython = {
     URIRef(_XSD_PFX + 'time'): parse_time,
     URIRef(_XSD_PFX + 'date'): parse_date,
     URIRef(_XSD_PFX + 'dateTime'): parse_datetime,
-    URIRef(_XSD_PFX + 'hexBinary'): unhexlify,
+    URIRef(_XSD_PFX + 'hexBinary'): _unhexlify,
     URIRef(_XSD_PFX + 'string'): None,
     URIRef(_XSD_PFX + 'normalizedString'): None,
     URIRef(_XSD_PFX + 'token'): None,
