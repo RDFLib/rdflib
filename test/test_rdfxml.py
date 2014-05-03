@@ -29,6 +29,8 @@ def write(msg):
 
 
 class TestStore(Graph):
+    __test__ = False
+
     def __init__(self, expected):
         super(TestStore, self).__init__()
         self.expected = expected
