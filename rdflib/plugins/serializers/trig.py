@@ -76,7 +76,7 @@ class TrigSerializer(TurtleSerializer):
             self.store = store
             self._subjects = subjects
 
-            self.write(self.indent() + '\n<%s> = {' % self.getQName(store.identifier))
+            self.write(self.indent() + '\n<%s> {' % self.getQName(store.identifier))
             self.depth += 1
             for subject in ordered_subjects:
                 if self.isDone(subject):
