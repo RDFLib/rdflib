@@ -140,8 +140,29 @@ class TestBindings(unittest.TestCase):
         self.assertEqual(lb.value,vb)
         self.assertEqual(lb.datatype, dtB)
 
+    def testSpecificBinding(self):
 
+        def lexify(s):
+            return "--%s--" % s
 
+        def unlexify(s):
+            return s[2:-2]
+
+        datatype = rdflib.URIRef('urn:dt:mystring')
+
+        #Datatype-specific rule
+        bind(datatype, basestring, unlexify, lexify, datatype_specific=True)
+
+        s = "Hello"
+        normal_l = Literal(s)
+        self.assertEqual(str(normal_l), s)
+        self.assertEqual(normal_l.toPython(), s)
+        self.assertEqual(normal_l.datatype, None)
+
+        specific_l = Literal("--%s--" % s, datatype=datatype)
+        self.assertEqual(str(specific_l), lexify(s))
+        self.assertEqual(specific_l.toPython(), s)
+        self.assertEqual(specific_l.datatype, datatype)
 
 
 if __name__ == "__main__":

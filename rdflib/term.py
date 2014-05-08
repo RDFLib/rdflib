@@ -1394,22 +1394,28 @@ _PLAIN_LITERAL_TYPES = (
 )
 
 
+def _py2literal(obj, pType, castFunc, dType):
+    if castFunc:
+        return castFunc(obj), dType
+    elif dType:
+        return obj, dType
+    else:
+        return obj, None
+
+
 def _castPythonToLiteral(obj, datatype):
     """
-    Casts a tuple of a python datatype and a special datatype URI to a tuple of the lexical value and a
+    Casts a tuple of a python type and a special datatype URI to a tuple of the lexical value and a
     datatype URI (or None)
     """
-    for (pType, sdType), (castFunc, dType) in _PythonToXSD:
+    for (pType, dType), castFunc in _SpecificPythonToXSDRules:
+        if isinstance(obj, pType) and dType == datatype:
+            return _py2literal(obj, pType, castFunc, dType)
+
+    for pType, (castFunc, dType) in _GenericPythonToXSDRules:
         if isinstance(obj, pType):
-            # Allows specific datatype management
-            if sdType is not None and sdType != datatype:
-                continue
-            if castFunc:
-                return castFunc(obj), dType
-            elif dType:
-                return obj, dType
-            else:
-                return obj, None
+            return _py2literal(obj, pType, castFunc, dType)
+
     return obj, None  # TODO: is this right for the fall through case?
 
 from decimal import Decimal
@@ -1426,28 +1432,29 @@ from decimal import Decimal
 # both map to the abstract integer type,
 # rather than some concrete bit-limited datatype
 
-_PythonToXSD = [
-    # Specific first
-    ((basestring, _XSD_HEXBINARY), (hexlify, _XSD_HEXBINARY)),
-    ((basestring, None), (None, None)),
-    ((float, None), (None, _XSD_DOUBLE)),
-    ((bool, None), (lambda i:str(i).lower(), _XSD_BOOLEAN)),
-    ((int, None), (None, _XSD_INTEGER)),
-    ((long, None), (None, _XSD_INTEGER)),
-    ((Decimal, None), (None, _XSD_DECIMAL)),
-    ((datetime, None), (lambda i:i.isoformat(), _XSD_DATETIME)),
-    ((date, None), (lambda i:i.isoformat(), _XSD_DATE)),
-    ((time, None), (lambda i:i.isoformat(), _XSD_TIME)),
-    ((xml.dom.minidom.Document, None), (_writeXML, _RDF_XMLLITERAL)),
+_GenericPythonToXSDRules = [
+    (basestring, (None, None)),
+    (float, (None, _XSD_DOUBLE)),
+    (bool, (lambda i:str(i).lower(), _XSD_BOOLEAN)),
+    (int, (None, _XSD_INTEGER)),
+    (long, (None, _XSD_INTEGER)),
+    (Decimal, (None, _XSD_DECIMAL)),
+    (datetime, (lambda i:i.isoformat(), _XSD_DATETIME)),
+    (date, (lambda i:i.isoformat(), _XSD_DATE)),
+    (time, (lambda i:i.isoformat(), _XSD_TIME)),
+    (xml.dom.minidom.Document, (_writeXML, _RDF_XMLLITERAL)),
     # this is a bit dirty - by accident the html5lib parser produces
     # DocumentFragments, and the xml parser Documents, letting this
     # decide what datatype to use makes roundtripping easier, but it a
     # bit random
-    ((xml.dom.minidom.DocumentFragment, None), (_writeXML, _RDF_HTMLLITERAL))
+    (xml.dom.minidom.DocumentFragment, (_writeXML, _RDF_HTMLLITERAL))
 ]
 
+_SpecificPythonToXSDRules = [
+    ((basestring, _XSD_HEXBINARY), hexlify),
+]
 if py3compat:
-    _PythonToXSD.insert(0, ((bytes, _XSD_HEXBINARY), (hexlify, _XSD_HEXBINARY)))
+    _SpecificPythonToXSDRules.append(((bytes, _XSD_HEXBINARY), hexlify))
 
 XSDToPython = {
     None : None, # plain literals map directly to value space
@@ -1509,7 +1516,7 @@ def _castLexicalToPython(lexical, datatype):
         # no convFunc - unknown data-type
         return None
 
-def bind(datatype, pythontype, constructor=None, lexicalizer=None):
+def bind(datatype, pythontype, constructor=None, lexicalizer=None, datatype_specific=False):
     """
     register a new datatype<->pythontype binding
 
@@ -1517,10 +1524,16 @@ def bind(datatype, pythontype, constructor=None, lexicalizer=None):
                         into a Python instances, if not given the pythontype
                         is used directly
 
-    :param lexicalizer: an optinoal function for converting python objects to
+    :param lexicalizer: an optional function for converting python objects to
                         lexical form, if not given object.__str__ is used
 
+    :param datatype_specific: makes the lexicalizer function be accessible
+                              from the pair (pythontype, datatype) if set to True
+                              or from the pythontype otherwise.  False by default
     """
+    if datatype_specific and datatype is None:
+        raise Exception("No datatype given for a datatype-specific binding")
+
     if datatype in _toPythonMapping:
         _LOGGER.warning("datatype '%s' was already bound. Rebinding." %
                         datatype)
@@ -1528,7 +1541,10 @@ def bind(datatype, pythontype, constructor=None, lexicalizer=None):
     if constructor == None:
         constructor = pythontype
     _toPythonMapping[datatype] = constructor
-    _PythonToXSD.append(((pythontype, None), (lexicalizer, datatype)))
+    if datatype_specific:
+        _SpecificPythonToXSDRules.append(((pythontype, datatype), lexicalizer))
+    else:
+        _GenericPythonToXSDRules.append((pythontype, (lexicalizer, datatype)))
 
 
 class Variable(Identifier):
