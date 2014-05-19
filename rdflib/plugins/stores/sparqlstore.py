@@ -470,6 +470,7 @@ class SPARQLUpdateStore(SPARQLStore):
     """
 
     where_pattern = re.compile(r"""(?P<where>WHERE\s*{)""", re.IGNORECASE)
+    braces_pattern = re.compile("[\{\}]")
 
     def __init__(self,
                  queryEndpoint=None, update_endpoint=None,
@@ -661,6 +662,13 @@ class SPARQLUpdateStore(SPARQLStore):
         self.setNamespaceBindings(initNs)
         query = self.injectPrefixes(query)
 
+        if self.context_aware and queryGraph and queryGraph != '__UNION__':
+            # GRAPH should not already appear in the update request
+            if "GRAPH <" in query:
+                raise Exception("GRAPH keyword is reserved to ConjunctiveGraphs and Datasets,"
+                                "not simple Graphs.")
+            query = self._insert_named_graph(query, queryGraph)
+
         if initBindings:
             # For INSERT and DELETE the WHERE clause is obligatory
             # (http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rModify)
@@ -679,3 +687,30 @@ class SPARQLUpdateStore(SPARQLStore):
         if r.status not in (200, 204):
             raise Exception("Could not update: %d %s\n%s" % (
                 r.status, r.reason, content))
+
+    def _insert_named_graph(self, query, query_graph):
+        """
+            Inserts GRAPH <query_graph> {} into INSERT, DELETE,
+            INSERT DATA, DELETE DATA and WHERE blocks
+
+            For instance,  "INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"
+            is converted to
+            "INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> } }"
+        """
+        graph_str = " GRAPH <%s> {" % query_graph
+        iterator = self.braces_pattern.finditer(query)
+        level = 0
+        shift = 0
+        length = len(graph_str)
+        for match in iterator:
+            index, end = match.span()
+            c = query[index + shift]
+            level = (level +1) if c == "{" else (level - 1)
+            if level == 1 and c == "{":
+                    query = query[:(end + shift)] + graph_str + query[(end + shift):]
+                    shift += length
+            elif level == 0 and c == "}":
+                    query = query[:(end + shift)] + " } " + query[(end + shift):]
+                    shift += 3
+        return query
+

@@ -156,6 +156,40 @@ class TestSparql11(unittest.TestCase):
             'michel and bob like pizza'
         )
 
+    def testNamedGraphUpdate(self):
+        g = self.graph.get_context(graphuri)
+        r1 = "INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"
+        g.update(r1)
+        self.assertEquals(
+            set(g.triples((None,None,None))),
+            set([(michel,likes,pizza)]),
+            'only michel likes pizza'
+        )
+
+        r2 = "DELETE { <urn:michel> <urn:likes> <urn:pizza> } " + \
+             "INSERT { <urn:bob> <urn:likes> <urn:pizza> } WHERE {}"
+        g.update(r2)
+        self.assertEquals(
+            set(g.triples((None, None, None))),
+            set([(bob, likes, pizza)]),
+            'only bob likes pizza'
+        )
+
+    def testNamedGraphUpdateWithInitBindings(self):
+        g = self.graph.get_context(graphuri)
+        r = "INSERT { ?a ?b ?c } WHERE {}"
+        g.update(r, initBindings={
+                'a': michel,
+                'b': likes,
+                'c': pizza
+            })
+        self.assertEquals(
+            set(g.triples((None,None,None))),
+            set([(michel,likes,pizza)]),
+            'only michel likes pizza'
+        )
+
+
 from nose import SkipTest
 import urllib2
 try:
