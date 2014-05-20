@@ -471,6 +471,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
     where_pattern = re.compile(r"""(?P<where>WHERE\s*{)""", re.IGNORECASE)
     braces_pattern = re.compile("[\{\}]")
+    empty_graph_pattern = re.compile(r"GRAPH\s*<[^>]*>\s+\{\s*\}", re.IGNORECASE)
 
     def __init__(self,
                  queryEndpoint=None, update_endpoint=None,
@@ -698,11 +699,11 @@ class SPARQLUpdateStore(SPARQLStore):
             "INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> } }"
         """
         graph_str = " GRAPH <%s> {" % query_graph
-        iterator = self.braces_pattern.finditer(query)
+        brace_iterator = self.braces_pattern.finditer(query)
         level = 0
         shift = 0
         length = len(graph_str)
-        for match in iterator:
+        for match in brace_iterator:
             index, end = match.span()
             c = query[index + shift]
             level = (level +1) if c == "{" else (level - 1)
@@ -712,5 +713,9 @@ class SPARQLUpdateStore(SPARQLStore):
             elif level == 0 and c == "}":
                     query = query[:(end + shift)] + " } " + query[(end + shift):]
                     shift += 3
+        # Remove empty named graph blocks
+        empty_graph_iterator = self.empty_graph_pattern.finditer(query)
+        for match in empty_graph_iterator:
+            index, end = match.span()
+            query = query[:index] + query[end:]
         return query
-
