@@ -2,18 +2,7 @@
 #
 """
 This is an RDFLib store around Ivan Herman et al.'s SPARQL service wrapper.
-This was first done in layer-cake, and then ported to RDFLib 3 and rdfextras
-
-This version works with vanilla SPARQLWrapper installed by ``easy_install``,
-``pip`` or similar. If you installed ``rdflib`` with a tool that understands
-dependencies, it should have been installed automatically for you.
-
-Changes:
-    - Layercake adding support for namespace binding, I removed it again to
-      work with vanilla SPARQLWrapper
-    - JSON object mapping support suppressed
-    - Replaced '4Suite-XML Domlette with Elementtree
-    - Incorporated as an RDFLib store
+This was first done in layer-cake, and then ported to RDFLib
 
 """
 
@@ -158,23 +147,20 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     """
     An RDFLib store around a SPARQL endpoint
 
-    This is in theory context-aware, and should work OK
-    when the context is specified. (I.e. for Graph objects)
-    then all queries should work against the named graph with the
-    identifier of the graph only.
+    This is in theory context-aware and should work as expected
+    when a context is specified.
 
-    For ConjunctiveGraphs, reading is done from the "default graph"
-    Exactly what this means depends on your endpoint.
-    General SPARQL does not offer a simple way to query the
-    union of all graphs.
+    For ConjunctiveGraphs, reading is done from the "default graph" Exactly
+    what this means depends on your endpoint, because SPARQL does not offer a
+    simple way to query the union of all graphs as it would be expected for a
+    ConjuntiveGraph.
 
     Fuseki/TDB has a flag for specifying that the default graph
-    is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config)
-    If this is set this will work fine.
+    is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config).
 
     .. warning:: The SPARQL Store does not support blank-nodes!
 
-                 As blank-nodes acts as variables in SPARQL queries
+                 As blank-nodes act as variables in SPARQL queries
                  there is no way to query for a particular blank node.
 
                  See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes
@@ -222,36 +208,22 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     query_endpoint = property(__get_query_endpoint, __set_query_endpoint)
 
     def destroy(self, configuration):
-        """
-        FIXME: Add documentation
-        """
         raise TypeError('The SPARQL store is read only')
 
     # Transactional interfaces
     def commit(self):
-        """ """
         raise TypeError('The SPARQL store is read only')
 
     def rollback(self):
-        """ """
         raise TypeError('The SPARQL store is read only')
 
     def add(self, (subject, predicate, obj), context=None, quoted=False):
-        """ Add a triple to the store of triples. """
         raise TypeError('The SPARQL store is read only')
 
     def addN(self, quads):
-        """
-        Adds each item in the list of statements to a specific context.
-        The quoted argument is interpreted by formula-aware stores to
-        indicate this statement is quoted/hypothetical.
-
-        Note that the default implementation is a redirect to add.
-        """
         raise TypeError('The SPARQL store is read only')
 
     def remove(self, (subject, predicate, obj), context):
-        """ Remove a triple from the store """
         raise TypeError('The SPARQL store is read only')
 
     def query(self, query,
@@ -516,11 +488,9 @@ class SPARQLUpdateStore(SPARQLStore):
 
     # Transactional interfaces
     def commit(self):
-        """ """
         raise TypeError('The SPARQL Update store is not transaction aware!')
 
     def rollback(self):
-        """ """
         raise TypeError('The SPARQL Update store is not transaction aware')
 
     def add(self, spo, context=None, quoted=False):
