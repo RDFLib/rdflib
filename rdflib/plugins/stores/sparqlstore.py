@@ -189,11 +189,12 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
     def __init__(self,
                  endpoint=None, bNodeAsURI=False,
-                 sparql11=True, context_aware=True):
+                 sparql11=True, context_aware=True,
+                 **sparqlwrapper_kwargs):
         """
         """
         if endpoint:
-            super(SPARQLStore, self).__init__(endpoint, returnFormat=XML)
+            super(SPARQLStore, self).__init__(endpoint, returnFormat=XML, **sparqlwrapper_kwargs)
         self.bNodeAsURI = bNodeAsURI
         self.nsBindings = {}
         self.sparql11 = sparql11
@@ -478,7 +479,7 @@ class SPARQLUpdateStore(SPARQLStore):
                  postAsEncoded=True):
 
         SPARQLStore.__init__(self,
-                             queryEndpoint, bNodeAsURI, sparql11, context_aware)
+                             queryEndpoint, bNodeAsURI, sparql11, context_aware, updateEndpoint=update_endpoint)
 
         self.connection = None
 
@@ -536,7 +537,7 @@ class SPARQLUpdateStore(SPARQLStore):
         if isinstance(configuration, tuple):
             self.query_endpoint = configuration[0]
             if len(configuration) > 1:
-                self.update_endpoint = configuration[1]
+                self.updateEndpoint = configuration[1]
         else:
             self.endpoint = configuration
 
@@ -574,11 +575,7 @@ class SPARQLUpdateStore(SPARQLStore):
                 context.identifier.n3(), triple)
         else:
             q = "INSERT DATA { %s }" % triple
-        r = self._do_update(q)
-        content = r.read()  # we expect no content
-        if r.status not in (200, 204):
-            raise Exception("Could not update: %d %s\n%s" % (
-                r.status, r.reason, content))
+        self._do_update(q)
 
     def addN(self, quads):
         """ Add a list of quads to the store. """
@@ -599,11 +596,7 @@ class SPARQLUpdateStore(SPARQLStore):
             triple = "%s %s %s ." % (subject.n3(), predicate.n3(), obj.n3())
             data += "INSERT DATA { GRAPH <%s> { %s } }\n" % (
                 context.identifier, triple)
-        r = self._do_update(data)
-        content = r.read()  # we expect no content
-        if r.status not in (200, 204):
-            raise Exception("Could not update: %d %s\n%s" % (
-                r.status, r.reason, content))
+        self._do_update(data)
 
     def remove(self, spo, context):
         """ Remove a triple from the store """
@@ -625,19 +618,14 @@ class SPARQLUpdateStore(SPARQLStore):
                 context.identifier.n3(), triple)
         else:
             q = "DELETE { %s } WHERE { %s } " % (triple, triple)
-        r = self._do_update(q)
-        content = r.read()  # we expect no content
-        if r.status not in (200, 204):
-            raise Exception("Could not update: %d %s\n%s" % (
-                r.status, r.reason, content))
+        self._do_update(q)
 
     def _do_update(self, update):
-        import urllib
-        if self.postAsEncoded:
-            update = urllib.urlencode({'update': update.encode("utf-8")})
-        self.connection.request(
-            'POST', self.path, update.encode("utf-8"), self.headers)
-        return self.connection.getresponse()
+        self.setQuery(update)
+        self.setMethod('POST')
+
+        result = SPARQLWrapper.query(self)
+        return result
 
     def update(self, query,
                initNs={},
@@ -674,8 +662,4 @@ class SPARQLUpdateStore(SPARQLStore):
 
             query = self.where_pattern.sub("WHERE { " + values, query)
 
-        r = self._do_update(query)
-        content = r.read()  # we expect no content
-        if r.status not in (200, 204):
-            raise Exception("Could not update: %d %s\n%s" % (
-                r.status, r.reason, content))
+        self._do_update(query)
