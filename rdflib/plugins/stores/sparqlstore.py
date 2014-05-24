@@ -16,8 +16,6 @@ Changes:
     - Incorporated as an RDFLib store
 
 """
-SPARQL_POST_UPDATE = "application/sparql-update"
-SPARQL_POST_ENCODED = "application/x-www-form-urlencoded; charset=UTF-8"
 
 # Defines some SPARQL keywords
 LIMIT = 'LIMIT'
@@ -27,7 +25,7 @@ ORDERBY = 'ORDER BY'
 import re
 # import warnings
 try:
-    from SPARQLWrapper import SPARQLWrapper, XML
+    from SPARQLWrapper import SPARQLWrapper, XML, POST, GET
 except ImportError:
     raise Exception(
         "SPARQLWrapper not found! SPARQL Store will not work." +
@@ -193,8 +191,8 @@ class SPARQLStore(NSSPARQLWrapper, Store):
                  **sparqlwrapper_kwargs):
         """
         """
-        if endpoint:
-            super(SPARQLStore, self).__init__(endpoint, returnFormat=XML, **sparqlwrapper_kwargs)
+        super(SPARQLStore, self).__init__(endpoint, returnFormat=XML, **sparqlwrapper_kwargs)
+        self.setUseKeepAlive()
         self.bNodeAsURI = bNodeAsURI
         self.nsBindings = {}
         self.sparql11 = sparql11
@@ -481,47 +479,7 @@ class SPARQLUpdateStore(SPARQLStore):
         SPARQLStore.__init__(self,
                              queryEndpoint, bNodeAsURI, sparql11, context_aware, updateEndpoint=update_endpoint)
 
-        self.connection = None
-
-        self.update_endpoint = update_endpoint
-
         self.postAsEncoded = postAsEncoded
-        self.headers = {'Content-type': SPARQL_POST_ENCODED,
-                        'Connection': 'Keep-alive'}
-
-        if not self.postAsEncoded:
-            self.headers['Content-type'] = SPARQL_POST_UPDATE
-
-    def __set_update_endpoint(self, update_endpoint):
-        self.__update_endpoint = update_endpoint
-
-        if self.__update_endpoint:
-
-            p = urlparse.urlparse(self.update_endpoint)
-
-            assert not p.username, \
-                "SPARQL Update store does not support HTTP authentication"
-            assert not p.password, \
-                "SPARQL Update store does not support HTTP authentication"
-            assert p.scheme == "http", "SPARQL Update is an http protocol!"
-            self.host = p.hostname
-            self.port = p.port
-            self.path = p.path
-            self.connection = httplib.HTTPConnection(
-                self.host, self.port)
-
-        else:
-
-            self.host = self.port = self.path = self.connection = None
-
-    def __get_update_endpoint(self):
-        return self.__update_endpoint
-
-    update_endpoint = property(
-        __get_update_endpoint,
-        __set_update_endpoint,
-        doc='the HTTP URL for the Update endpoint, typically' +
-            'something like http://server/dataset/update')
 
     def open(self, configuration, create=False):
         """
@@ -535,14 +493,26 @@ class SPARQLUpdateStore(SPARQLStore):
             raise Exception("Cannot create a SPARQL Endpoint")
 
         if isinstance(configuration, tuple):
-            self.query_endpoint = configuration[0]
+            self.endpoint = configuration[0]
             if len(configuration) > 1:
                 self.updateEndpoint = configuration[1]
         else:
             self.endpoint = configuration
 
-        if not self.update_endpoint:
-            self.update_endpoint = self.endpoint
+        if not self.updateEndpoint:
+            self.updateEndpoint = self.endpoint
+
+    def __set_update_endpoint(self, update_endpoint):
+        self.updateEndpoint = update_endpoint
+
+    def __get_update_endpoint(self):
+        return self.updateEndpoint
+
+    update_endpoint = property(
+        __get_update_endpoint,
+        __set_update_endpoint,
+        doc='the HTTP URL for the Update endpoint, typically' +
+            'something like http://server/dataset/update')
 
     # Transactional interfaces
     def commit(self):
@@ -556,7 +526,7 @@ class SPARQLUpdateStore(SPARQLStore):
     def add(self, spo, context=None, quoted=False):
         """ Add a triple to the store of triples. """
 
-        if not self.connection:
+        if not self.endpoint:
             raise Exception("UpdateEndpoint is not set - call 'open'")
 
         assert not quoted
@@ -579,7 +549,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
     def addN(self, quads):
         """ Add a list of quads to the store. """
-        if not self.connection:
+        if not self.endpoint:
             raise Exception("UpdateEndpoint is not set - call 'open'")
 
         data = ""
@@ -600,7 +570,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
     def remove(self, spo, context):
         """ Remove a triple from the store """
-        if not self.connection:
+        if not self.endpoint:
             raise Exception("UpdateEndpoint is not set - call 'open'")
 
         (subject, predicate, obj) = spo
@@ -620,9 +590,12 @@ class SPARQLUpdateStore(SPARQLStore):
             q = "DELETE { %s } WHERE { %s } " % (triple, triple)
         self._do_update(q)
 
-    def _do_update(self, update):
+    def _do_update(self, update, queryGraph=None):
+        self.resetQuery()
+        if self.context_aware and queryGraph and queryGraph != '__UNION__':
+            self.addDefaultGraph(queryGraph)
         self.setQuery(update)
-        self.setMethod('POST')
+        self.setMethod(POST)
 
         result = SPARQLWrapper.query(self)
         return result
@@ -644,6 +617,9 @@ class SPARQLUpdateStore(SPARQLStore):
         substring 'WHERE {' which does not denote a WHERE clause, e.g.
         if it is part of a literal.
         """
+        if not self.endpoint:
+            raise Exception("UpdateEndpoint is not set - call 'open'")
+
         self.debug = DEBUG
         assert isinstance(query, basestring)
         self.setNamespaceBindings(initNs)
@@ -662,4 +638,4 @@ class SPARQLUpdateStore(SPARQLStore):
 
             query = self.where_pattern.sub("WHERE { " + values, query)
 
-        self._do_update(query)
+        self._do_update(query, queryGraph)
