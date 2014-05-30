@@ -657,6 +657,22 @@ class SPARQLUpdateStore(SPARQLStore):
         Important: initBindings fails if the update contains the
         substring 'WHERE {' which does not denote a WHERE clause, e.g.
         if it is part of a literal.
+
+        .. admonition:: Context-aware query rewriting
+
+            - **When:**  If context-awareness is enabled and the graph is not the default graph of the store.
+            - **Why:** To ensure consistency with the :class:`~rdflib.plugins.memory.IOMemory` store.
+              The graph must except "local" SPARQL requests (requests with no GRAPH keyword)
+              like if it was the default graph.
+            - **What is done:** These "local" queries are rewritten by this store.
+              The content of the INSERT, INSERT DATA, DELETE, DELETE DATA and WHERE blocks
+              is wrapped in a GRAPH block.
+              With one exception: if the WHERE block is empty, no GRAPH block is added to this block.
+            - **Example:** `"INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"` is converted into
+              `"INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> } }"`.
+            - **Warning:** Queries are presumed to be "local" but this assumption is **not checked**.
+              For instance, if the query already contains GRAPH blocks, the latter will be wrapped in new GRAPH blocks.
+
         """
         self.debug = DEBUG
         assert isinstance(query, basestring)
@@ -664,10 +680,6 @@ class SPARQLUpdateStore(SPARQLStore):
         query = self.injectPrefixes(query)
 
         if self.context_aware and queryGraph and queryGraph != '__UNION__':
-            # GRAPH should not already appear in the update request
-            if "GRAPH <" in query:
-                raise Exception("GRAPH keyword is reserved to ConjunctiveGraphs and Datasets,"
-                                "not simple Graphs.")
             query = self._insert_named_graph(query, queryGraph)
 
         if initBindings:
@@ -695,7 +707,7 @@ class SPARQLUpdateStore(SPARQLStore):
             INSERT DATA, DELETE DATA and WHERE blocks
 
             For instance,  "INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"
-            is converted to
+            is converted into
             "INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> } }"
         """
         graph_str = " GRAPH <%s> {" % query_graph
@@ -706,7 +718,7 @@ class SPARQLUpdateStore(SPARQLStore):
         for match in brace_iterator:
             index, end = match.span()
             c = query[index + shift]
-            level = (level +1) if c == "{" else (level - 1)
+            level = (level + 1) if c == "{" else (level - 1)
             if level == 1 and c == "{":
                     query = query[:(end + shift)] + graph_str + query[(end + shift):]
                     shift += length
