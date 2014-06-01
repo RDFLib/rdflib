@@ -47,6 +47,11 @@ else:
     except ImportError:
         from elementtree import ElementTree
 
+if sys.version_info[0] == 2:
+    import ushlex as shlex
+else:
+    import shlex
+
 from rdflib.plugins.stores.regexmatching import NATIVE_REGEX
 
 from rdflib.store import Store
@@ -470,7 +475,6 @@ class SPARQLUpdateStore(SPARQLStore):
     """
 
     where_pattern = re.compile(r"""(?P<where>WHERE\s*{)""", re.IGNORECASE)
-    braces_pattern = re.compile("[\{\}]")
     empty_graph_pattern = re.compile(r"GRAPH\s*<[^>]*>\s+\{\s*\}", re.IGNORECASE)
 
     def __init__(self,
@@ -666,8 +670,7 @@ class SPARQLUpdateStore(SPARQLStore):
               like if it was the default graph.
             - **What is done:** These "local" queries are rewritten by this store.
               The content of the INSERT, INSERT DATA, DELETE, DELETE DATA and WHERE blocks
-              is wrapped in a GRAPH block.
-              With one exception: if the WHERE block is empty, no GRAPH block is added to this block.
+              is wrapped in a GRAPH block expect if the block is empty.
             - **Example:** `"INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"` is converted into
               `"INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> } }"`.
             - **Warning:** Queries are presumed to be "local" but this assumption is **not checked**.
@@ -711,20 +714,27 @@ class SPARQLUpdateStore(SPARQLStore):
             "INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> } }"
         """
         graph_str = " GRAPH <%s> {" % query_graph
-        brace_iterator = self.braces_pattern.finditer(query)
+
+        # Distinguish literals with curly braces from regular curly braces
+        lexems = shlex.split(query.replace("{", " { ").replace("}", " } "), True, False)
+
         level = 0
-        shift = 0
-        length = len(graph_str)
-        for match in brace_iterator:
-            index, end = match.span()
-            c = query[index + shift]
-            level = (level + 1) if c == "{" else (level - 1)
-            if level == 1 and c == "{":
-                    query = query[:(end + shift)] + graph_str + query[(end + shift):]
-                    shift += length
-            elif level == 0 and c == "}":
-                    query = query[:(end + shift)] + " } " + query[(end + shift):]
-                    shift += 3
+        for i in range(len(lexems)):
+            lexem = lexems[i]
+            if lexem == "{":
+                level = (level + 1)
+                if level == 1:
+                    lexems[i] = lexem + graph_str
+            elif lexem == "}":
+                level = (level - 1)
+                if level == 0:
+                    lexems[i] = lexem + " } "
+            # Literal containing "{" or "}"
+            elif "{" in lexem or "}" in lexem:
+                lexems[i] = lexem.replace(" { ", "{").replace(" } ", "}")
+
+        query = " ".join(lexems)
+
         # Remove empty named graph blocks
         empty_graph_iterator = self.empty_graph_pattern.finditer(query)
         for match in empty_graph_iterator:

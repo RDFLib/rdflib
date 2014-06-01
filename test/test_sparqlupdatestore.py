@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 from rdflib import ConjunctiveGraph, URIRef
 
 import unittest
@@ -174,6 +174,27 @@ class TestSparql11(unittest.TestCase):
             set([(bob, likes, pizza)]),
             'only bob likes pizza'
         )
+        says = URIRef("urn:says")
+        tricky_strs = ["With an unbalanced curly brace %s " % brace
+                       for brace in ["{", "}"]]
+
+        for tricky_str in tricky_strs:
+            r3 = """INSERT { ?b <urn:says> "%s" }
+            WHERE { ?b <urn:likes> <urn:pizza>} """ % tricky_str
+            g.update(r3)
+
+        values = set()
+        for v in g.objects(bob, says):
+            values.add(str(v))
+        self.assertEquals(values, set(tricky_strs))
+
+        bio = u"éï }"
+        r4 = u'INSERT DATA { <urn:michel> <urn:says> "%s" }' % bio
+        g.update(r4)
+        values = set()
+        for v in g.objects(michel, says):
+            values.add(unicode(v))
+        self.assertEquals(values, set([bio]))
 
     def testNamedGraphUpdateWithInitBindings(self):
         g = self.graph.get_context(graphuri)
@@ -184,8 +205,8 @@ class TestSparql11(unittest.TestCase):
                 'c': pizza
             })
         self.assertEquals(
-            set(g.triples((None,None,None))),
-            set([(michel,likes,pizza)]),
+            set(g.triples((None, None, None))),
+            set([(michel, likes, pizza)]),
             'only michel likes pizza'
         )
 
