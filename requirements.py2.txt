@@ -2,3 +2,4 @@ flake8
 isodate
 pyparsing<=1.5.7
 SPARQLWrapper
+ushlex

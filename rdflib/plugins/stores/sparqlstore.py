@@ -47,6 +47,11 @@ else:
     except ImportError:
         from elementtree import ElementTree
 
+if sys.version_info[0] == 2:
+    import ushlex as shlex
+else:
+    import shlex
+
 from rdflib.plugins.stores.regexmatching import NATIVE_REGEX
 
 from rdflib.store import Store
@@ -470,6 +475,7 @@ class SPARQLUpdateStore(SPARQLStore):
     """
 
     where_pattern = re.compile(r"""(?P<where>WHERE\s*{)""", re.IGNORECASE)
+    empty_graph_pattern = re.compile(r"GRAPH\s*<[^>]*>\s+\{\s*\}", re.IGNORECASE)
 
     def __init__(self,
                  queryEndpoint=None, update_endpoint=None,
@@ -655,11 +661,29 @@ class SPARQLUpdateStore(SPARQLStore):
         Important: initBindings fails if the update contains the
         substring 'WHERE {' which does not denote a WHERE clause, e.g.
         if it is part of a literal.
+
+        .. admonition:: Context-aware query rewriting
+
+            - **When:**  If context-awareness is enabled and the graph is not the default graph of the store.
+            - **Why:** To ensure consistency with the :class:`~rdflib.plugins.memory.IOMemory` store.
+              The graph must except "local" SPARQL requests (requests with no GRAPH keyword)
+              like if it was the default graph.
+            - **What is done:** These "local" queries are rewritten by this store.
+              The content of the INSERT, INSERT DATA, DELETE, DELETE DATA and WHERE blocks
+              is wrapped in a GRAPH block expect if the block is empty.
+            - **Example:** `"INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"` is converted into
+              `"INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> } }"`.
+            - **Warning:** Queries are presumed to be "local" but this assumption is **not checked**.
+              For instance, if the query already contains GRAPH blocks, the latter will be wrapped in new GRAPH blocks.
+
         """
         self.debug = DEBUG
         assert isinstance(query, basestring)
         self.setNamespaceBindings(initNs)
         query = self.injectPrefixes(query)
+
+        if self.context_aware and queryGraph and queryGraph != '__UNION__':
+            query = self._insert_named_graph(query, queryGraph)
 
         if initBindings:
             # For INSERT and DELETE the WHERE clause is obligatory
@@ -679,3 +703,41 @@ class SPARQLUpdateStore(SPARQLStore):
         if r.status not in (200, 204):
             raise Exception("Could not update: %d %s\n%s" % (
                 r.status, r.reason, content))
+
+    def _insert_named_graph(self, query, query_graph):
+        """
+            Inserts GRAPH <query_graph> {} into INSERT, DELETE,
+            INSERT DATA, DELETE DATA and WHERE blocks
+
+            For instance,  "INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"
+            is converted into
+            "INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> } }"
+        """
+        graph_str = " GRAPH <%s> {" % query_graph
+
+        # Distinguish literals with curly braces from regular curly braces
+        lexems = shlex.split(query.replace("{", " { ").replace("}", " } "), True, False)
+
+        level = 0
+        for i in range(len(lexems)):
+            lexem = lexems[i]
+            if lexem == "{":
+                level = (level + 1)
+                if level == 1:
+                    lexems[i] = lexem + graph_str
+            elif lexem == "}":
+                level = (level - 1)
+                if level == 0:
+                    lexems[i] = lexem + " } "
+            # Literal containing "{" or "}"
+            elif "{" in lexem or "}" in lexem:
+                lexems[i] = lexem.replace(" { ", "{").replace(" } ", "}")
+
+        query = " ".join(lexems)
+
+        # Remove empty named graph blocks
+        empty_graph_iterator = self.empty_graph_pattern.finditer(query)
+        for match in empty_graph_iterator:
+            index, end = match.span()
+            query = query[:index] + query[end:]
+        return query

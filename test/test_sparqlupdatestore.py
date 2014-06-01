@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 from rdflib import ConjunctiveGraph, URIRef
 
 import unittest
@@ -155,6 +155,61 @@ class TestSparql11(unittest.TestCase):
             set([(michel,likes,pizza), (bob,likes,pizza)]),
             'michel and bob like pizza'
         )
+
+    def testNamedGraphUpdate(self):
+        g = self.graph.get_context(graphuri)
+        r1 = "INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"
+        g.update(r1)
+        self.assertEquals(
+            set(g.triples((None,None,None))),
+            set([(michel,likes,pizza)]),
+            'only michel likes pizza'
+        )
+
+        r2 = "DELETE { <urn:michel> <urn:likes> <urn:pizza> } " + \
+             "INSERT { <urn:bob> <urn:likes> <urn:pizza> } WHERE {}"
+        g.update(r2)
+        self.assertEquals(
+            set(g.triples((None, None, None))),
+            set([(bob, likes, pizza)]),
+            'only bob likes pizza'
+        )
+        says = URIRef("urn:says")
+        tricky_strs = ["With an unbalanced curly brace %s " % brace
+                       for brace in ["{", "}"]]
+
+        for tricky_str in tricky_strs:
+            r3 = """INSERT { ?b <urn:says> "%s" }
+            WHERE { ?b <urn:likes> <urn:pizza>} """ % tricky_str
+            g.update(r3)
+
+        values = set()
+        for v in g.objects(bob, says):
+            values.add(str(v))
+        self.assertEquals(values, set(tricky_strs))
+
+        bio = u"éï }"
+        r4 = u'INSERT DATA { <urn:michel> <urn:says> "%s" }' % bio
+        g.update(r4)
+        values = set()
+        for v in g.objects(michel, says):
+            values.add(unicode(v))
+        self.assertEquals(values, set([bio]))
+
+    def testNamedGraphUpdateWithInitBindings(self):
+        g = self.graph.get_context(graphuri)
+        r = "INSERT { ?a ?b ?c } WHERE {}"
+        g.update(r, initBindings={
+                'a': michel,
+                'b': likes,
+                'c': pizza
+            })
+        self.assertEquals(
+            set(g.triples((None, None, None))),
+            set([(michel, likes, pizza)]),
+            'only michel likes pizza'
+        )
+
 
 from nose import SkipTest
 import urllib2
