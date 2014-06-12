@@ -258,6 +258,16 @@ class TestSparql11(unittest.TestCase):
             'only michel likes pizza'
         )
 
+    def testEmptyNamedGraph(self):
+        empty_graph_iri = u"urn:empty-graph-1"
+        self.graph.update(u"CREATE GRAPH <%s>" % empty_graph_iri)
+        named_graphs = [unicode(r[0]) for r in self.graph.query(
+            "SELECT ?name WHERE { GRAPH ?name {} }")]
+        # Some SPARQL endpoint backends (like TDB) are not able to find empty named graphs
+        # (at least with this query)
+        if empty_graph_iri in named_graphs:
+            self.assertTrue(empty_graph_iri in [unicode(g.identifier)
+                                                for g in self.graph.contexts()])
 
 from nose import SkipTest
 import urllib2

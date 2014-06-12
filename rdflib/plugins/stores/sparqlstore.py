@@ -407,24 +407,28 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
     def contexts(self, triple=None):
         """
-        Iterates over results to SELECT ?NAME { GRAPH ?NAME { ?s ?p ?o } }
-        returning instances of this store with the SPARQL wrapper
-        object updated via addNamedGraph(?NAME)
+        Iterates over results to "SELECT ?NAME { GRAPH ?NAME { ?s ?p ?o } }"
+        or "SELECT ?NAME { GRAPH ?NAME {} }" if triple is `None`.
+
+        Returns instances of this store with the SPARQL wrapper
+        object updated via addNamedGraph(?NAME).
+
         This causes a named-graph-uri key / value  pair to be sent over
-        the protocol
+        the protocol.
+
+        Please note that some SPARQL endpoints are not able to find empty named
+        graphs.
         """
 
         if triple:
             s, p, o = triple
+            params = ((s if s else Variable('s')).n3(),
+                      (p if p else Variable('p')).n3(),
+                      (o if o else Variable('o')).n3())
+            self.setQuery('SELECT ?name WHERE { GRAPH ?name { %s %s %s }}' % params)
         else:
-            s = p = o = None
+            self.setQuery('SELECT ?name WHERE { GRAPH ?name {} }')
 
-        params = ((s if s else Variable('s')).n3(),
-                  (p if p else Variable('p')).n3(),
-                  (o if o else Variable('o')).n3())
-
-        self.setQuery(
-            'SELECT ?name WHERE { GRAPH ?name { %s %s %s }}' % params)
         doc = ElementTree.parse(SPARQLWrapper.query(self).response)
 
         return (rt.get(Variable("name"))
