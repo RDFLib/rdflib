@@ -419,6 +419,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         Please note that some SPARQL endpoints are not able to find empty named
         graphs.
         """
+        self.resetQuery()
 
         if triple:
             s, p, o = triple
