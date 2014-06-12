@@ -185,6 +185,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     """
     formula_aware = False
     transaction_aware = False
+    graph_aware = True
     regex_matching = NATIVE_REGEX
 
     def __init__(self,
@@ -198,6 +199,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         self.nsBindings = {}
         self.sparql11 = sparql11
         self.context_aware = context_aware
+        self.graph_aware = context_aware
 
     # Database Management Methods
     def create(self, configuration):
@@ -451,6 +453,12 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     def namespaces(self):
         for prefix, ns in self.nsBindings.items():
             yield prefix, ns
+
+    def add_graph(self, graph):
+        raise TypeError('The SPARQL store is read only')
+
+    def remove_graph(self, graph):
+        raise TypeError('The SPARQL store is read only')
 
 
 class SPARQLUpdateStore(SPARQLStore):
@@ -804,3 +812,15 @@ class SPARQLUpdateStore(SPARQLStore):
         modified_query.append(query[pos:])
 
         return "".join(modified_query)
+
+    def add_graph(self, graph):
+        if not self.graph_aware:
+            Store.add_graph(self, graph)
+        else:
+            self.update("CREATE GRAPH <%s>" % graph.identifier)
+
+    def remove_graph(self, graph):
+        if not self.graph_aware:
+            Store.remove_graph(self, graph)
+        else:
+            self.update("DROP GRAPH <%s>" % graph.identifier)

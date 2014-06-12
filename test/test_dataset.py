@@ -24,9 +24,14 @@ class DatasetTestCase(unittest.TestCase):
         if self.store == "SQLite":
             _, self.tmppath = mkstemp(
                 prefix='test', dir='/tmp', suffix='.sqlite')
+        elif self.store == "SPARQLUpdateStore":
+            root = "http://localhost:3030/ukpp/"
+            self.graph.open((root + "sparql", root + "update"))
         else:
             self.tmppath = mkdtemp()
-        self.graph.open(self.tmppath, create=True)
+
+        if self.store != "SPARQLUpdateStore":
+            self.graph.open(self.tmppath, create=True)
         self.michel = URIRef(u'michel')
         self.tarek = URIRef(u'tarek')
         self.bob = URIRef(u'bob')
@@ -35,18 +40,25 @@ class DatasetTestCase(unittest.TestCase):
         self.pizza = URIRef(u'pizza')
         self.cheese = URIRef(u'cheese')
 
-        self.c1 = URIRef(u'context-1')
-        self.c2 = URIRef(u'context-2')
+        # Use regular URIs because SPARQL endpoints like Fuseki alter short names
+        self.c1 = URIRef(u'urn:context-1')
+        self.c2 = URIRef(u'urn:context-2')
 
         # delete the graph for each test!
         self.graph.remove((None, None, None))
+        for c in self.graph.contexts():
+            c.remove((None, None, None))
+            assert len(c) == 0
 
     def tearDown(self):
         self.graph.close()
-        if os.path.isdir(self.tmppath):
-            shutil.rmtree(self.tmppath)
+        if self.store == "SPARQLUpdateStore":
+            pass
         else:
-            os.remove(self.tmppath)
+            if os.path.isdir(self.tmppath):
+                shutil.rmtree(self.tmppath)
+            else:
+                os.remove(self.tmppath)
 
 
     def testGraphAware(self): 
@@ -54,7 +66,6 @@ class DatasetTestCase(unittest.TestCase):
         
         g = self.graph
         g1 = g.graph(self.c1)
-        
         
         # added graph exists
         self.assertEquals(set(x.identifier for x in self.graph.contexts()), 
@@ -66,7 +77,7 @@ class DatasetTestCase(unittest.TestCase):
         g1.add( (self.tarek, self.likes, self.pizza) )
 
         # added graph still exists
-        self.assertEquals(set(x.identifier for x in self.graph.contexts()), 
+        self.assertEquals(set(x.identifier for x in self.graph.contexts()),
                           set([self.c1, DATASET_DEFAULT_GRAPH_ID]))
 
         # added graph contains one triple
@@ -87,7 +98,7 @@ class DatasetTestCase(unittest.TestCase):
         self.assertEquals(set(x.identifier for x in self.graph.contexts()), 
                           set([DATASET_DEFAULT_GRAPH_ID]))
         
-    def testDefaultGraph(self): 
+    def testDefaultGraph(self):
         
         self.graph.add(( self.tarek, self.likes, self.pizza))
         self.assertEquals(len(self.graph), 1)
@@ -103,7 +114,11 @@ class DatasetTestCase(unittest.TestCase):
         self.assertEquals(set(x.identifier for x in self.graph.contexts()), 
                           set([DATASET_DEFAULT_GRAPH_ID]))
 
-    def testNotUnion(self): 
+    def testNotUnion(self):
+        # Depends on the SPARQL endpoint configuration
+        # not the SPARQLUpdateStore
+        if self.store == "SPARQLUpdateStore":
+            return
         g1 = self.graph.graph(self.c1)
         g1.add((self.tarek, self.likes, self.pizza))
 
@@ -120,12 +135,22 @@ if __name__ == '__main__':
         pluginname = sys.argv[1]
 
 tests = 0
+
 for s in plugin.plugins(pluginname, plugin.Store):
     if s.name in ('default', 'IOMemory', 'Auditable',
-                  'Concurrent', 'SPARQLStore', 'SPARQLUpdateStore'):
+                  'Concurrent', 'SPARQLStore'):
         continue  # these are tested by default
+
     if not s.getClass().graph_aware:
         continue
+
+    if s.name == "SPARQLUpdateStore":
+        import urllib2
+        try:
+            assert len(urllib2.urlopen("http://localhost:3030/").read()) > 0
+        except:
+            sys.stderr.write("No SPARQL endpoint for %s (tests skipped)\n" % s.name)
+            continue
 
     locals()["t%d" % tests] = type("%sContextTestCase" % s.name, (
         DatasetTestCase,), {"store": s.name})
