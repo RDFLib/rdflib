@@ -140,7 +140,7 @@ class URIOpener :
 
 # 'safe' characters for the URI quoting, ie, characters that can safely stay as they are. Other 
 # special characters are converted to their %.. equivalents for namespace prefixes
-_unquotedChars = ':/\?=#~'
+_unquotedChars = ':/\?=#~%'
 _warnChars     = [' ','\n','\r','\t']
 
 def quote_URI(uri, options = None) :
