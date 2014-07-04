@@ -21,7 +21,7 @@ initial_context = {
 }
 
 initial_context["http://www.w3.org/2011/rdfa-context/rdfa-1.1"].ns = {
-	'cat'		: 'http://www.w3.org/ns/dcat#',
+	'dcat'		: 'http://www.w3.org/ns/dcat#',
     'qb'		: 'http://purl.org/linked-data/cube#',
     'org'		: 'http://www.w3.org/ns/org#',
 	'owl'		: 'http://www.w3.org/2002/07/owl#',

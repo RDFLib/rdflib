@@ -1,11 +1,13 @@
+# -*- coding: utf-8 -*-
+import unittest
+import re
 
 from rdflib import ConjunctiveGraph, URIRef
-
-import unittest
+from rdflib.util import from_n3
 
 # this assumed SPARQL1.1 query/update endpoints
-# running locally at localhost:3030/data
-# for instance fuseki started with ./fuseki-server --mem --update /data
+# running locally at http://localhost:3030/ukpp/
+# for instance fuseki started with ./fuseki-server --mem --update /ukpp
 
 # THIS WILL DELETE ALL DATA IN THE /data dataset
 
@@ -155,6 +157,107 @@ class TestSparql11(unittest.TestCase):
             set([(michel,likes,pizza), (bob,likes,pizza)]),
             'michel and bob like pizza'
         )
+
+    def testNamedGraphUpdate(self):
+        g = self.graph.get_context(graphuri)
+        r1 = "INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"
+        g.update(r1)
+        self.assertEquals(
+            set(g.triples((None,None,None))),
+            set([(michel,likes,pizza)]),
+            'only michel likes pizza'
+        )
+
+        r2 = "DELETE { <urn:michel> <urn:likes> <urn:pizza> } " + \
+             "INSERT { <urn:bob> <urn:likes> <urn:pizza> } WHERE {}"
+        g.update(r2)
+        self.assertEquals(
+            set(g.triples((None, None, None))),
+            set([(bob, likes, pizza)]),
+            'only bob likes pizza'
+        )
+        says = URIRef("urn:says")
+
+        # Strings with unbalanced curly braces
+        tricky_strs = ["With an unbalanced curly brace %s " % brace
+                       for brace in ["{", "}"]]
+        for tricky_str in tricky_strs:
+            r3 = """INSERT { ?b <urn:says> "%s" }
+            WHERE { ?b <urn:likes> <urn:pizza>} """ % tricky_str
+            g.update(r3)
+
+        values = set()
+        for v in g.objects(bob, says):
+            values.add(str(v))
+        self.assertEquals(values, set(tricky_strs))
+
+        # Complicated Strings
+        r4strings = []
+        r4strings.append(ur'''"1: adfk { ' \\\" \" { "''')
+        r4strings.append(ur'''"2: adfk } <foo> #éï \\"''')
+
+        r4strings.append(ur"""'3: adfk { " \\\' \' { '""")
+        r4strings.append(ur"""'4: adfk } <foo> #éï \\'""")
+
+        r4strings.append(ur'''"""5: adfk { ' \\\" \" { """''')
+        r4strings.append(ur'''"""6: adfk } <foo> #éï \\"""''')
+        r4strings.append(u'"""7: ad adsfj \n { \n sadfj"""')
+
+        r4strings.append(ur"""'''8: adfk { " \\\' \' { '''""")
+        r4strings.append(ur"""'''9: adfk } <foo> #éï \\'''""")
+        r4strings.append(u"'''10: ad adsfj \n { \n sadfj'''")
+
+        r4 = "\n".join([
+            u'INSERT DATA { <urn:michel> <urn:says> %s } ;' % s
+            for s in r4strings
+        ])
+        g.update(r4)
+        values = set()
+        for v in g.objects(michel, says):
+            values.add(unicode(v))
+        self.assertEquals(values, set([re.sub(ur"\\(.)", ur"\1", re.sub(ur"^'''|'''$|^'|'$|" + ur'^"""|"""$|^"|"$', ur"", s)) for s in r4strings]))
+
+        # IRI Containing ' or #
+        # The fragment identifier must not be misinterpreted as a comment
+        # (commenting out the end of the block).
+        # The ' must not be interpreted as the start of a string, causing the }
+        # in the literal to be identified as the end of the block.
+        r5 = u"""INSERT DATA { <urn:michel> <urn:hates> <urn:foo'bar?baz;a=1&b=2#fragment>, "'}" }"""
+
+        g.update(r5)
+        values = set()
+        for v in g.objects(michel, hates):
+            values.add(unicode(v))
+        self.assertEquals(values, set([u"urn:foo'bar?baz;a=1&b=2#fragment", u"'}"]))
+
+        # Comments
+        r6 = u"""
+            INSERT DATA {
+                <urn:bob> <urn:hates> <urn:bob> . # No closing brace: }
+                <urn:bob> <urn:hates> <urn:michel>.
+            }
+        #Final { } comment"""
+
+        g.update(r6)
+        values = set()
+        for v in g.objects(bob, hates):
+            values.add(v)
+        self.assertEquals(values, set([bob, michel]))
+
+    def testNamedGraphUpdateWithInitBindings(self):
+        g = self.graph.get_context(graphuri)
+        r = "INSERT { ?a ?b ?c } WHERE {}"
+        g.update(r, initBindings={
+                'a': michel,
+                'b': likes,
+                'c': pizza
+            })
+        self.assertEquals(
+            set(g.triples((None, None, None))),
+            set([(michel, likes, pizza)]),
+            'only michel likes pizza'
+        )
+
 
 from nose import SkipTest
 import urllib2

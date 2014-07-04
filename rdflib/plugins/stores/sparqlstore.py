@@ -442,6 +442,52 @@ class SPARQLUpdateStore(SPARQLStore):
 
     where_pattern = re.compile(r"""(?P<where>WHERE\s*{)""", re.IGNORECASE)
 
+    ##################################################################
+    ### Regex for injecting GRAPH blocks into updates on a context ###
+    ##################################################################
+
+    # Observations on the SPARQL grammar (http://www.w3.org/TR/2013/REC-sparql11-query-20130321/):
+    # 1. Only the terminals STRING_LITERAL1, STRING_LITERAL2,
+    #    STRING_LITERAL_LONG1, STRING_LITERAL_LONG2, and comments can contain
+    #    curly braces.
+    # 2. The non-terminals introduce curly braces in pairs only.
+    # 3. Unescaped " can occur only in strings and comments.
+    # 3. Unescaped ' can occur only in strings, comments, and IRIRefs.
+    # 4. \ always escapes the following character, especially \", \', and
+    #    \\ denote literal ", ', and \ respectively.
+    # 5. # always starts a comment outside of string and IRI
+    # 6. A comment ends at the next newline
+    # 7. IRIREFs need to be detected, as they may contain # without starting a comment
+    # 8. PrefixedNames do not contain a #
+    # As a consequence, it should be rather easy to detect strings and comments
+    # in order to avoid unbalanced curly braces.
+
+    # From the SPARQL grammar
+    STRING_LITERAL1 = ur"'([^'\\]|\\.)*'"
+    STRING_LITERAL2 = ur'"([^"\\]|\\.)*"'
+    STRING_LITERAL_LONG1 = ur"'''(('|'')?([^'\\]|\\.))*'''"
+    STRING_LITERAL_LONG2 = ur'"""(("|"")?([^"\\]|\\.))*"""'
+    String = u'(%s)|(%s)|(%s)|(%s)' % (STRING_LITERAL1, STRING_LITERAL2, STRING_LITERAL_LONG1, STRING_LITERAL_LONG2)
+    IRIREF = ur'<([^<>"{}|^`\]\\\[\x00-\x20])*>'
+    COMMENT = ur'#[^\x0D\x0A]*([\x0D\x0A]|\Z)'
+
+    # Simplified grammar to find { at beginning and } at end of blocks
+    BLOCK_START = u'{'
+    BLOCK_END = u'}'
+    ESCAPED = ur'\\.'
+
+    # Match anything that doesn't start or end a block:
+    BlockContent = u'(%s)|(%s)|(%s)|(%s)' % (String, IRIREF, COMMENT, ESCAPED)
+    BlockFinding = u'(?P<block_start>%s)|(?P<block_end>%s)|(?P<block_content>%s)' % (BLOCK_START, BLOCK_END, BlockContent)
+    BLOCK_FINDING_PATTERN = re.compile(BlockFinding)
+
+    # Note that BLOCK_FINDING_PATTERN.finditer() will not cover the whole
+    # string with matches. Everything that is not matched will have to be
+    # part of the modified query as is.
+
+    ##################################################################
+
+
     def __init__(self,
                  queryEndpoint=None, update_endpoint=None,
                  bNodeAsURI=False, sparql11=True,
@@ -560,10 +606,8 @@ class SPARQLUpdateStore(SPARQLStore):
             q = "DELETE { %s } WHERE { %s } " % (triple, triple)
         self._do_update(q)
 
-    def _do_update(self, update, queryGraph=None):
+    def _do_update(self, update):
         self.resetQuery()
-        if self.context_aware and queryGraph and queryGraph != '__UNION__':
-            self.addDefaultGraph(queryGraph)
         self.setQuery(update)
         self.setMethod(POST)
 
@@ -586,6 +630,26 @@ class SPARQLUpdateStore(SPARQLStore):
         Important: initBindings fails if the update contains the
         substring 'WHERE {' which does not denote a WHERE clause, e.g.
         if it is part of a literal.
+
+        .. admonition:: Context-aware query rewriting
+
+            - **When:**  If context-awareness is enabled and the graph is not the default graph of the store.
+            - **Why:** To ensure consistency with the :class:`~rdflib.plugins.memory.IOMemory` store.
+              The graph must except "local" SPARQL requests (requests with no GRAPH keyword)
+              like if it was the default graph.
+            - **What is done:** These "local" queries are rewritten by this store.
+              The content of each block of a SPARQL Update operation is wrapped in a GRAPH block
+              except if the block is empty.
+              This basically causes INSERT, INSERT DATA, DELETE, DELETE DATA and WHERE to operate
+              only on the context.
+            - **Example:** `"INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"` is converted into
+              `"INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> } }"`.
+            - **Warning:** Queries are presumed to be "local" but this assumption is **not checked**.
+              For instance, if the query already contains GRAPH blocks, the latter will be wrapped in new GRAPH blocks.
+            - **Warning:** A simplified grammar is used that should tolerate
+              extensions of the SPARQL grammar. Still, the process may fail in
+              uncommon situations and produce invalid output.
+
         """
         if not self.endpoint:
             raise Exception("UpdateEndpoint is not set - call 'open'")
@@ -594,6 +658,9 @@ class SPARQLUpdateStore(SPARQLStore):
         assert isinstance(query, basestring)
         self.setNamespaceBindings(initNs)
         query = self.injectPrefixes(query)
+
+        if self.context_aware and queryGraph and queryGraph != '__UNION__':
+            query = self._insert_named_graph(query, queryGraph)
 
         if initBindings:
             # For INSERT and DELETE the WHERE clause is obligatory
@@ -608,4 +675,55 @@ class SPARQLUpdateStore(SPARQLStore):
 
             query = self.where_pattern.sub("WHERE { " + values, query)
 
-        self._do_update(query, queryGraph)
+        self._do_update(query)
+
+    def _insert_named_graph(self, query, query_graph):
+        """
+            Inserts GRAPH <query_graph> {} into blocks of SPARQL Update operations
+
+            For instance,  "INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"
+            is converted into
+            "INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> } }"
+        """
+        graph_block_open = " GRAPH <%s> {" % query_graph
+        graph_block_close = "} "
+
+        # SPARQL Update supports the following operations:
+        # LOAD, CLEAR, DROP, ADD, MOVE, COPY, CREATE, INSERT DATA, DELETE DATA, DELETE/INSERT, DELETE WHERE
+        # LOAD, CLEAR, DROP, ADD, MOVE, COPY, CREATE do not make much sense in a context.
+        # INSERT DATA, DELETE DATA, and DELETE WHERE require the contents of their block to be wrapped in a GRAPH <?> { }.
+        # DELETE/INSERT supports the WITH keyword, which sets the graph to be
+        # used for all following DELETE/INSERT instruction including the
+        # non-optional WHERE block. Equivalently, a GRAPH block can be added to
+        # all blocks.
+        #
+        # Strategy employed here: Wrap the contents of every top-level block into a `GRAPH <?> { }`.
+
+        level = 0
+        modified_query = []
+        pos = 0
+        for match in self.BLOCK_FINDING_PATTERN.finditer(query):
+            if match.group('block_start') is not None:
+                level += 1
+                if level == 1:
+                    modified_query.append(query[pos:match.end()])
+                    modified_query.append(graph_block_open)
+                    pos = match.end()
+            elif match.group('block_end') is not None:
+                if level == 1:
+                    since_previous_pos = query[pos:match.start()]
+                    if modified_query[-1] is graph_block_open and (since_previous_pos == "" or since_previous_pos.isspace()):
+                        # In this case, adding graph_block_start and
+                        # graph_block_end results in an empty GRAPH block. Some
+                        # enpoints (e.g. TDB) can not handle this. Therefore
+                        # remove the previously added block_start.
+                        modified_query.pop()
+                        modified_query.append(since_previous_pos)
+                    else:
+                        modified_query.append(since_previous_pos)
+                        modified_query.append(graph_block_close)
+                    pos = match.start()
+                level -= 1
+        modified_query.append(query[pos:])
+
+        return "".join(modified_query)
