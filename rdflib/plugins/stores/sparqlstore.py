@@ -52,6 +52,7 @@ from rdflib.plugins.stores.regexmatching import NATIVE_REGEX
 from rdflib.store import Store
 from rdflib.query import Result
 from rdflib import Variable, Namespace, BNode, URIRef, Literal
+from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 
 import httplib
 import urlparse
@@ -185,6 +186,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     """
     formula_aware = False
     transaction_aware = False
+    graph_aware = True
     regex_matching = NATIVE_REGEX
 
     def __init__(self,
@@ -198,6 +200,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         self.nsBindings = {}
         self.sparql11 = sparql11
         self.context_aware = context_aware
+        self.graph_aware = context_aware
 
     # Database Management Methods
     def create(self, configuration):
@@ -275,7 +278,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
                    " ".join(initBindings[x].n3() for x in v))
 
         self.resetQuery()
-        if self.context_aware and queryGraph and queryGraph != '__UNION__':
+        if self._is_contextual(queryGraph):
             self.addDefaultGraph(queryGraph)
         self.setQuery(query)
 
@@ -368,7 +371,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             pass
 
         self.resetQuery()
-        if self.context_aware and context is not None:
+        if self._is_contextual(context):
             self.addDefaultGraph(context.identifier)
         self.setQuery(query)
 
@@ -397,7 +400,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         else:
             self.resetQuery()
             q = "SELECT (count(*) as ?c) WHERE {?s ?p ?o .}"
-            if self.context_aware and context is not None:
+            if self._is_contextual(context):
                 self.addDefaultGraph(context.identifier)
             self.setQuery(q)
             doc = ElementTree.parse(SPARQLWrapper.query(self).response)
@@ -407,24 +410,29 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
     def contexts(self, triple=None):
         """
-        Iterates over results to SELECT ?NAME { GRAPH ?NAME { ?s ?p ?o } }
-        returning instances of this store with the SPARQL wrapper
-        object updated via addNamedGraph(?NAME)
+        Iterates over results to "SELECT ?NAME { GRAPH ?NAME { ?s ?p ?o } }"
+        or "SELECT ?NAME { GRAPH ?NAME {} }" if triple is `None`.
+
+        Returns instances of this store with the SPARQL wrapper
+        object updated via addNamedGraph(?NAME).
+
         This causes a named-graph-uri key / value  pair to be sent over
-        the protocol
+        the protocol.
+
+        Please note that some SPARQL endpoints are not able to find empty named
+        graphs.
         """
+        self.resetQuery()
 
         if triple:
             s, p, o = triple
+            params = ((s if s else Variable('s')).n3(),
+                      (p if p else Variable('p')).n3(),
+                      (o if o else Variable('o')).n3())
+            self.setQuery('SELECT ?name WHERE { GRAPH ?name { %s %s %s }}' % params)
         else:
-            s = p = o = None
+            self.setQuery('SELECT ?name WHERE { GRAPH ?name {} }')
 
-        params = ((s if s else Variable('s')).n3(),
-                  (p if p else Variable('p')).n3(),
-                  (o if o else Variable('o')).n3())
-
-        self.setQuery(
-            'SELECT ?name WHERE { GRAPH ?name { %s %s %s }}' % params)
         doc = ElementTree.parse(SPARQLWrapper.query(self).response)
 
         return (rt.get(Variable("name"))
@@ -446,6 +454,23 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     def namespaces(self):
         for prefix, ns in self.nsBindings.items():
             yield prefix, ns
+
+    def add_graph(self, graph):
+        raise TypeError('The SPARQL store is read only')
+
+    def remove_graph(self, graph):
+        raise TypeError('The SPARQL store is read only')
+
+    def _is_contextual(self, graph):
+        """ Returns `True` if the "GRAPH" keyword must appear
+        in the final SPARQL query sent to the endpoint.
+        """
+        if (not self.context_aware) or (graph is None):
+            return False
+        if isinstance(graph, basestring):
+            return graph != '__UNION__'
+        else:
+            return graph.identifier != DATASET_DEFAULT_GRAPH_ID
 
 
 class SPARQLUpdateStore(SPARQLStore):
@@ -615,7 +640,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
 
         triple = "%s %s %s ." % (subject.n3(), predicate.n3(), obj.n3())
-        if self.context_aware and context is not None:
+        if self._is_contextual(context):
             q = "INSERT DATA { GRAPH %s { %s } }" % (
                 context.identifier.n3(), triple)
         else:
@@ -665,7 +690,7 @@ class SPARQLUpdateStore(SPARQLStore):
             obj = Variable("O")
 
         triple = "%s %s %s ." % (subject.n3(), predicate.n3(), obj.n3())
-        if self.context_aware and context is not None:
+        if self._is_contextual(context):
             q = "DELETE { GRAPH %s { %s } } WHERE { GRAPH %s { %s } }" % (
                 context.identifier.n3(), triple,
                 context.identifier.n3(), triple)
@@ -727,7 +752,7 @@ class SPARQLUpdateStore(SPARQLStore):
         self.setNamespaceBindings(initNs)
         query = self.injectPrefixes(query)
 
-        if self.context_aware and queryGraph and queryGraph != '__UNION__':
+        if self._is_contextual(queryGraph):
             query = self._insert_named_graph(query, queryGraph)
 
         if initBindings:
@@ -799,3 +824,17 @@ class SPARQLUpdateStore(SPARQLStore):
         modified_query.append(query[pos:])
 
         return "".join(modified_query)
+
+    def add_graph(self, graph):
+        if not self.graph_aware:
+            Store.add_graph(self, graph)
+        elif graph.identifier != DATASET_DEFAULT_GRAPH_ID:
+            self.update("CREATE GRAPH <%s>" % graph.identifier)
+
+    def remove_graph(self, graph):
+        if not self.graph_aware:
+            Store.remove_graph(self, graph)
+        elif graph.identifier == DATASET_DEFAULT_GRAPH_ID:
+            self.update("DROP DEFAULT")
+        else:
+            self.update("DROP GRAPH <%s>" % graph.identifier)
