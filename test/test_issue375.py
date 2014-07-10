@@ -90,11 +90,11 @@ rdfa_expected = u'''@prefix dc: <http://purl.org/dc/terms/> .
     dc:type <http://purl.oreilly.com/product-types/BOOK> .
 '''.strip()
 
-mdata_expected = u'''@prefix dcat: <http://www.w3.org/ns/dcat#> .
-@prefix cc: <http://creativecommons.org/ns#> .
+mdata_expected = u'''@prefix cc: <http://creativecommons.org/ns#> .
 @prefix ctag: <http://commontag.org/ns#> .
 @prefix dc: <http://purl.org/dc/terms/> .
 @prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix gr: <http://purl.org/goodrelations/v1#> .
