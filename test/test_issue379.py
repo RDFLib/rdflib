@@ -16,7 +16,18 @@ base_data = """
             """
 
 
-class TestBaseAllowsHash(unittest.TestCase):
+class TestCase(unittest.TestCase):
+    def assertIsInstance(self, obj, cls, msg=None, *args, **kwargs):
+        """Python < v2.7 compatibility.  Assert 'obj' is instance of 'cls'"""
+        try:
+            f = super(TestCase, self).assertIsInstance
+        except AttributeError:
+            self.assertTrue(isinstance(obj, cls), *args, **kwargs)
+        else:
+            f(obj, cls, *args, **kwargs)
+
+
+class TestBaseAllowsHash(TestCase):
     """
     GitHub Issue 379: https://github.com/RDFLib/rdflib/issues/379
     """
@@ -30,6 +41,7 @@ class TestBaseAllowsHash(unittest.TestCase):
         http://www.w3.org/TR/2014/REC-turtle-20140225/#grammar-production-prefixID
         """
         self.g.parse(data=prefix_data, format='n3')
+        self.assertIsInstance(self.g.subjects().next(), rdflib.URIRef)
 
     def test_parse_successful_base_with_hash(self):
         """
@@ -38,6 +50,7 @@ class TestBaseAllowsHash(unittest.TestCase):
         http://www.w3.org/TR/2014/REC-turtle-20140225/#grammar-production-base
         """
         self.g.parse(data=base_data, format='n3')
+        self.assertIsInstance(self.g.subjects().next(), rdflib.URIRef)
 
 if __name__ == "__main__":
     unittest.main()
