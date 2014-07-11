@@ -19,9 +19,13 @@ class TrigSerializer(TurtleSerializer):
 
     def __init__(self, store):
         if store.context_aware:
-            self.contexts = store.contexts()
+            self.contexts = list(store.contexts())
+            self.default_context = store.default_context.identifier
+            if store.default_context:
+                self.contexts.append(store.default_context)
         else:
             self.contexts = [store]
+            self.default_context = None
 
         super(TrigSerializer, self).__init__(store)
 
@@ -76,7 +80,11 @@ class TrigSerializer(TurtleSerializer):
             self.store = store
             self._subjects = subjects
 
-            self.write(self.indent() + '\n<%s> {' % self.getQName(store.identifier))
+            if self.default_context and store.identifier==self.default_context:
+                self.write(self.indent() + '\n{')
+            else:
+                self.write(self.indent() + '\n<%s> {' % self.getQName(store.identifier))
+
             self.depth += 1
             for subject in ordered_subjects:
                 if self.isDone(subject):
