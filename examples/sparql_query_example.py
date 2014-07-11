@@ -25,7 +25,7 @@ if __name__=='__main__':
     # which in turn knows it from reading the RDF/XML file
     for row in g.query(
             'select ?s where { [] foaf:knows ?s .}'):
-        print row.s 
+        print(row.s)
         # or row["s"]
         # or row[rdflib.Variable("s")]
 

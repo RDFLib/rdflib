@@ -10,10 +10,10 @@ The module can be used via a stand-alone script (an example is part of the distr
 ==============
 From a Python file, expecting a Turtle output::
  from pyMicrodata import pyMicrodata
- print pyMicrodata().rdf_from_source('filename')
+ print(pyMicrodata().rdf_from_source('filename'))
 Other output formats are also possible. E.g., to produce RDF/XML output, one could use::
  from pyMicrodata import pyMicrodata
- print pyMicrodata().rdf_from_source('filename', outputFormat='pretty-xml')
+ print(pyMicrodata().rdf_from_source('filename', outputFormat='pretty-xml'))
 It is also possible to embed an RDFa processing. Eg, using::
  from pyMicrodata import pyMicrodata
  graph = pyMicrodata().graph_from_source('filename')
@@ -52,7 +52,7 @@ __author__  = 'Ivan Herman'
 __contact__ = 'Ivan Herman, ivan@w3.org'
 
 import sys
-PY3 = (sys.version_info[0] >= 3)
+from six import PY3, string_types
 
 if PY3 :
 	from io import StringIO
@@ -76,10 +76,7 @@ else :
 	from rdflib.RDFS	import RDFSNS as ns_rdfs
 	from rdflib.RDF		import RDFNS  as ns_rdf
 
-if PY3 :
-	from urllib.parse import urlparse
-else :
-	from urlparse import urlparse
+from six.moves.urllib.parse import urlparse
 
 debug = False
 
@@ -190,13 +187,8 @@ class pyMicrodata :
 		@type name: string or a file-like object
 		@return: a file like object if opening "name" is possible and successful, "name" otherwise
 		"""
-		try :
-			# Python 2 branch
-			isstring = isinstance(name, basestring)
-		except :
-			# Python 3 branch
-			isstring = isinstance(name, str)
-
+		isstring = isinstance(name, string_types)
+		
 		if isstring :
 			# check if this is a URI, ie, if there is a valid 'scheme' part
 			# otherwise it is considered to be a simple file

@@ -50,10 +50,7 @@ from . import err_undefined_terms
 from . import err_non_legal_CURIE_ref				
 from . import err_undefined_CURIE					
 
-if py_v_major >= 3 :
-	from urllib.parse import urlparse, urlunparse, urlsplit, urljoin
-else :	
-	from urlparse import urlparse, urlunparse, urlsplit, urljoin
+from six.moves.urllib.parse import urlparse, urlunparse, urlsplit, urljoin
 
 class ListStructure :
 	"""Special class to handle the C{@inlist} type structures in RDFa 1.1; stores the "origin", i.e,

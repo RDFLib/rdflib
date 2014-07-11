@@ -272,7 +272,7 @@ b = py3compat.b
 import os
 import shutil
 import tempfile
-from urlparse import urlparse
+from six.moves.urllib.parse import urlparse
 
 __all__ = [
     'Graph', 'ConjunctiveGraph', 'QuotedGraph', 'Seq',
@@ -384,8 +384,9 @@ class Graph(Node):
         self.__store.close(
             commit_pending_transaction=commit_pending_transaction)
 
-    def add(self, (s, p, o)):
+    def add(self, triple):
         """Add a triple with self as context"""
+        s, p, o = triple
         assert isinstance(s, Node), \
             "Subject %s must be an rdflib term" % (s,)
         assert isinstance(p, Node), \
@@ -403,20 +404,21 @@ class Graph(Node):
                           and _assertnode(s,p,o)
                           )
 
-    def remove(self, (s, p, o)):
+    def remove(self, triple):
         """Remove a triple from the graph
 
         If the triple does not provide a context attribute, removes the triple
         from all contexts.
         """
-        self.__store.remove((s, p, o), context=self)
+        self.__store.remove(triple, context=self)
 
-    def triples(self, (s, p, o)):
+    def triples(self, triple_pattern):
         """Generator over the triple store
 
         Returns triples that match the given triple pattern. If triple pattern
         does not provide a context, all contexts will be searched.
         """
+        s, p, o = triple_pattern
         if isinstance(p, Path):
             for _s, _o in p.eval(self, s, o):
                 yield (_s, p, _o)
@@ -645,9 +647,9 @@ class Graph(Node):
         for s, p, o in self.triples((subject, None, None)):
             yield p, o
 
-    def triples_choices(self, (subject, predicate, object_), context=None):
-        for (s, p, o), cg in self.store.triples_choices(
-                (subject, predicate, object_), context=self):
+    def triples_choices(self, triple_choices, context=None):
+        for (s, p, o), cg in self.store.triples_choices(triple_choices,
+                                                        context=self):
             yield (s, p, o)
 
     def value(self, subject=None, predicate=RDF.value, object=None,
@@ -1382,7 +1384,7 @@ class ConjunctiveGraph(Graph):
             for ctx in cg:
                 yield s, p, o, ctx
 
-    def triples_choices(self, (s, p, o), context=None):
+    def triples_choices(self, triple_choices, context=None):
         """Iterate over all the triples in the entire conjunctive graph"""
 
         if context is None:
@@ -1391,9 +1393,9 @@ class ConjunctiveGraph(Graph):
         else:
             context = self._graph(context)
 
-        for (s1, p1, o1), cg in self.store.triples_choices((s, p, o),
-                                                           context=context):
-            yield (s1, p1, o1)
+        for (s, p, o), cg in self.store.triples_choices(triple_choices,
+                                                        context=context):
+            yield (s, p, o)
 
     def __len__(self):
         """Number of triples in the entire conjunctive graph"""
@@ -1643,8 +1645,9 @@ class QuotedGraph(Graph):
     def __init__(self, store, identifier):
         super(QuotedGraph, self).__init__(store, identifier)
 
-    def add(self, (s, p, o)):
+    def add(self, triple):
         """Add a triple with self as context"""
+        s,p,o = triple
         assert isinstance(s, Node), \
             "Subject %s must be an rdflib term" % (s,)
         assert isinstance(p, Node), \
@@ -1797,16 +1800,17 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
         for graph in self.graphs:
             graph.close()
 
-    def add(self, (s, p, o)):
+    def add(self, triple):
         raise ModificationException()
 
     def addN(self, quads):
         raise ModificationException()
 
-    def remove(self, (s, p, o)):
+    def remove(self, triple):
         raise ModificationException()
 
-    def triples(self, (s, p, o)):
+    def triples(self, triple_pattern):
+        s, p, o = triple_pattern
         for graph in self.graphs:
             if isinstance(p, Path):
                 for s, o in p.eval(self, s, o):
@@ -1825,11 +1829,11 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
                     return True
         return False
 
-    def quads(self, (s, p, o)):
+    def quads(self, triple_pattern):
         """Iterate over all the quads in the entire aggregate graph"""
         for graph in self.graphs:
-            for s1, p1, o1 in graph.triples((s, p, o)):
-                yield (s1, p1, o1, graph)
+            for s, p, o in graph.triples(triple_pattern):
+                yield (s, p, o, graph)
 
     def __len__(self):
         return sum(len(g) for g in self.graphs)
@@ -1855,9 +1859,9 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
 
     # Conv. methods
 
-    def triples_choices(self, (subject, predicate, object_), context=None):
+    def triples_choices(self, triple_choices, context=None):
         for graph in self.graphs:
-            choices = graph.triples_choices((subject, predicate, object_))
+            choices = graph.triples_choices(triple_choices)
             for (s, p, o) in choices:
                 yield (s, p, o)
 

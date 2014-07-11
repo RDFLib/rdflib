@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from threading import Lock
 
 
@@ -86,7 +88,7 @@ class ConcurrentStore(object):
                     self.store.remove((s, p, o))
                 except:
                     # TODO: change to try finally?
-                    print s, p, o, "Not in store to remove"
+                    print(s, p, o, "Not in store to remove")
             pending_adds = self.__pending_adds
             while pending_adds:
                 (s, p, o) = pending_adds.pop()

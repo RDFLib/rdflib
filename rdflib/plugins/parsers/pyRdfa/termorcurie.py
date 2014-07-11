@@ -27,11 +27,7 @@ import re, sys
 import xml.dom.minidom
 import random
 
-if sys.version_info[0] >= 3 :
-	from urllib.parse import urlsplit
-else :	
-	from urlparse import urlsplit
-
+from six.moves.urllib.parse import urlsplit
 
 import rdflib
 from rdflib	import URIRef

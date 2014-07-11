@@ -82,9 +82,9 @@ class NTTestCase(unittest.TestCase):
 
     def test_w3_ntriple_variants(self):
         uri = "file:///"+os.getcwd()+"/test/nt/test.ntriples"
-        import urllib
+        from six.moves.urllib.request import urlopen
         parser = ntriples.NTriplesParser()
-        u = urllib.urlopen(uri)
+        u = urlopen(uri)
         sink = parser.parse(u)
         u.close()
         # ATM we are only really interested in any exceptions thrown

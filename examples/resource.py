@@ -8,7 +8,7 @@ subject.
 
 
 """
-
+from __future__ import print_function
 from rdflib import Graph, RDF, RDFS, Literal
 from rdflib.namespace import FOAF
 
@@ -32,20 +32,20 @@ if __name__=='__main__':
 
     # Resources returned when querying are 'auto-boxed' as resources:
 
-    print "Bill's friend: ", bill.value(FOAF.knows).value(FOAF.name)
+    print("Bill's friend: ", bill.value(FOAF.knows).value(FOAF.name))
 
     # slicing ([] syntax) can also be used: 
 
-    print "Bill knows: ",
+    print("Bill knows: ", end=" ")
     for friend in bill[FOAF.knows]: 
-        print friend[FOAF.name].next(), " "
+        print(friend[FOAF.name].next(), " ")
 
     # or even quicker with paths:
-    print "Bill knows: ",
+    print("Bill knows: ", end=" ")
     for friend in bill[FOAF.knows/FOAF.name]:
-        print friend
+        print(friend)
 
     # setting single properties is also possible:
     bill[RDFS.label]=Literal("William")
 
-    print g.serialize(format='n3')
+    print(g.serialize(format='n3'))

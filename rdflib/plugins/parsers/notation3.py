@@ -39,6 +39,7 @@ from decimal import Decimal
 
 from uuid import uuid4
 
+from six import text_type
 from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX, _unique_id
 from rdflib.graph import QuotedGraph, ConjunctiveGraph, Graph
 from rdflib import py3compat
@@ -437,7 +438,7 @@ class SinkParser:
         So if there is more data to feed to the
         parser, it should be straightforward to recover."""
 
-        if not isinstance(octets, unicode):
+        if not isinstance(octets, text_type):
             s = octets.decode('utf-8')
              # NB already decoded, so \ufeff
             if len(s) > 0 and s[0] == codecs.BOM_UTF8.decode('utf-8'):
@@ -1759,14 +1760,14 @@ class RDFSink(object):
 
     def normalise(self, f, n):
         if isinstance(n, tuple):
-            return URIRef(unicode(n[1]))
+            return URIRef(text_type(n[1]))
 
         if isinstance(n, bool):
             s = Literal(str(n).lower(), datatype=BOOLEAN_DATATYPE)
             return s
 
         if isinstance(n, int) or isinstance(n, long):
-            s = Literal(unicode(n), datatype=INTEGER_DATATYPE)
+            s = Literal(text_type(n), datatype=INTEGER_DATATYPE)
             return s
 
         if isinstance(n, Decimal):
@@ -1913,7 +1914,7 @@ def main():
     p.endDoc()
     for t in g.quads((None, None, None)):
 
-        print t
+        print(t)
 
 if __name__ == '__main__':
     main()

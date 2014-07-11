@@ -2,6 +2,8 @@ import collections
 import itertools
 import datetime
 
+from six import text_type
+
 from rdflib.namespace import NamespaceManager
 from rdflib import Variable, BNode, Graph, ConjunctiveGraph, URIRef, Literal
 from rdflib.term import Node
@@ -86,7 +88,7 @@ class Bindings(MutableMapping):
         return "Bindings({"+", ".join((k, self[k]) for k in self)+"})"
 
     def __repr__(self):
-        return unicode(self)
+        return text_type(self)
 
 
 class FrozenDict(Mapping):

@@ -1,3 +1,5 @@
+from six import text_type
+
 from rdflib import Literal, XSD
 
 from rdflib.plugins.sparql.evalutils import _eval
@@ -109,7 +111,7 @@ def agg_GroupConcat(a, group, bindings):
     sep = a.separator or " "
 
     bindings[a.res] = Literal(
-        sep.join(unicode(x) for x in _eval_rows(a.vars, group)))
+        sep.join(text_type(x) for x in _eval_rows(a.vars, group)))
 
 
 def agg_Avg(a, group, bindings):

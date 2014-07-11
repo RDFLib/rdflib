@@ -24,7 +24,7 @@ if __name__=='__main__':
 
         friends = list(graph[person:FOAF.knows * '+'/FOAF.name])
         if friends: 
-            print "%s's circle of friends:"%graph.value(person, FOAF.name)
+            print("%s's circle of friends:"%graph.value(person, FOAF.name))
             for name in friends:
-                print name
+                print(name)
 

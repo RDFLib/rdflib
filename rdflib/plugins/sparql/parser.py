@@ -4,6 +4,8 @@ SPARQL 1.1 Parser
 based on pyparsing
 """
 
+from __future__ import print_function
+
 import sys
 import re
 
@@ -47,7 +49,7 @@ def expandTriples(terms):
     try:
         res = []
         if DEBUG:
-            print "Terms", terms
+            print("Terms", terms)
         l = len(terms)
         for i, t in enumerate(terms):
             if t == ',':
@@ -91,13 +93,13 @@ def expandBNodeTriples(terms):
     # import pdb; pdb.set_trace()
     try:
         if DEBUG:
-            print "Bnode terms", terms
-            print "1", terms[0]
-            print "2", [rdflib.BNode()] + terms.asList()[0]
+            print("Bnode terms", terms)
+            print("1", terms[0])
+            print("2", [rdflib.BNode()] + terms.asList()[0])
         return [expandTriples([rdflib.BNode()] + terms.asList()[0])]
-    except Exception, e:
+    except Exception as e:
         if DEBUG:
-            print ">>>>>>>>", e
+            print(">>>>>>>>", e)
         raise
 
 
@@ -106,7 +108,7 @@ def expandCollection(terms):
     expand ( 1 2 3 ) notation for collections
     """
     if DEBUG:
-        print "Collection: ", terms
+        print("Collection: ", terms)
 
     res = []
     other = []
@@ -125,7 +127,7 @@ def expandCollection(terms):
     res += other
 
     if DEBUG:
-        print "CollectionOut", res
+        print("CollectionOut", res)
     return [res]
 
 
@@ -196,7 +198,7 @@ PLX_re = '(%s|%s)'%(PN_LOCAL_ESC_re,PERCENT_re)
 
 # [169] PN_LOCAL ::= (PN_CHARS_U | ':' | [0-9] | PLX ) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX) )?
 
-PN_LOCAL = Regex(ur"""([%(PN_CHARS_U)s:0-9]|%(PLX)s)
+PN_LOCAL = Regex(r"""([%(PN_CHARS_U)s:0-9]|%(PLX)s)
                      (([%(PN_CHARS)s\.:]|%(PLX)s)*
                       ([%(PN_CHARS)s:]|%(PLX)s) )?"""%dict(PN_CHARS_U=PN_CHARS_U_re,
                                                        PN_CHARS=PN_CHARS_re,
@@ -301,7 +303,7 @@ STRING_LITERAL_LONG2.setParseAction(
 # Regex(u'[^\u0027\u005C\u000A\u000D]',flags=re.U) | ECHAR ) + "'"
 
 STRING_LITERAL1 = Regex(
-    ur"'(?:[^'\n\r\\]|\\['ntbrf\\])*'(?!')", flags=re.U)
+    r"'(?:[^'\n\r\\]|\\['ntbrf\\])*'(?!')", flags=re.U)
 STRING_LITERAL1.setParseAction(
     lambda x: rdflib.Literal(decodeUnicodeEscape(x[0][1:-1])))
 
@@ -1068,9 +1070,9 @@ if __name__ == '__main__':
     DEBUG = True
     try:
         q = Query.parseString(sys.argv[1])
-        print "\nSyntax Tree:\n"
-        print q
-    except ParseException, err:
-        print err.line
-        print " " * (err.column - 1) + "^"
-        print err
+        print("\nSyntax Tree:\n")
+        print(q)
+    except ParseException as err:
+        print(err.line)
+        print(" " * (err.column - 1) + "^")
+        print(err)

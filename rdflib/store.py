@@ -97,7 +97,7 @@ class NodePickler(object):
         up.persistent_load = self._get_object
         try:
             return up.load()
-        except KeyError, e:
+        except KeyError as e:
             raise UnpicklingError("Could not find Node class for %s" % e)
 
     def dumps(self, obj, protocol=None, bin=None):
@@ -198,7 +198,7 @@ class Store(object):
         pass
 
     # RDF APIs
-    def add(self, (subject, predicate, object), context, quoted=False):
+    def add(self, triple, context, quoted=False):
         """
         Adds the given statement to a specific context or to the model. The
         quoted argument is interpreted by formula-aware stores to indicate
@@ -208,8 +208,7 @@ class Store(object):
         formula-aware.
         """
         self.dispatcher.dispatch(
-            TripleAddedEvent(
-                triple=(subject, predicate, object), context=context))
+            TripleAddedEvent(triple=triple, context=context))
 
     def addN(self, quads):
         """
@@ -223,19 +222,19 @@ class Store(object):
                 "Context associated with %s %s %s is None!" % (s, p, o)
             self.add((s, p, o), c)
 
-    def remove(self, (subject, predicate, object), context=None):
+    def remove(self, triple, context=None):
         """ Remove the set of triples matching the pattern from the store """
         self.dispatcher.dispatch(
-            TripleRemovedEvent(
-                triple=(subject, predicate, object), context=context))
+            TripleRemovedEvent(triple=triple, context=context))
 
-    def triples_choices(self, (subject, predicate, object_), context=None):
+    def triples_choices(self, triple_choices, context=None):
         """
         A variant of triples that can take a list of terms instead of a single
         term in any slot.  Stores can implement this to optimize the response
         time from the default 'fallback' implementation, which will iterate
         over each term in the list and dispatch to triples
         """
+        subject, predicate, object_ = triple_choices
         if isinstance(object_, list):
             assert not isinstance(
                 subject, list), "object_ / subject are both lists"

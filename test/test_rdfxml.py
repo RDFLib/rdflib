@@ -2,8 +2,7 @@ import unittest
 
 import os
 import os.path
-from urllib import url2pathname
-from urllib2 import urlopen
+from six.moves.urllib.request import url2pathname, urlopen
 
 import rdflib
 from rdflib import RDF, RDFS, URIRef, BNode, Literal, Namespace, Graph
@@ -35,7 +34,8 @@ class TestStore(Graph):
         super(TestStore, self).__init__()
         self.expected = expected
 
-    def add(self, (s, p, o)):
+    def add(self, triple):
+        s, p, o = triple
         if not isinstance(s, BNode) and not isinstance(o, BNode):
             if not (s, p, o) in self.expected:
                 m = u"Triple not in expected result: %s, %s, %s" % (
@@ -66,7 +66,7 @@ def cached_file(url):
 
     fpath = os.path.join(CACHE_DIR, fname)
     if not os.path.exists(fpath):
-        print "%s does not exist, fetching from %s" % (fpath, url)
+        print("%s does not exist, fetching from %s" % (fpath, url))
         folder = os.path.dirname(fpath)
         if not os.path.exists(folder):
             os.makedirs(folder)

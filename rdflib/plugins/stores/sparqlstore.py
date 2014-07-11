@@ -55,7 +55,8 @@ from rdflib import Variable, Namespace, BNode, URIRef, Literal
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 
 import httplib
-import urlparse
+from six import string_types
+from six.moves.urllib.parse import urlparse, urlencode
 
 class NSSPARQLWrapper(SPARQLWrapper):
     nsBindings = {}
@@ -254,7 +255,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         """
         raise TypeError('The SPARQL store is read only')
 
-    def remove(self, (subject, predicate, obj), context):
+    def remove(self, triple, context):
         """ Remove a triple from the store """
         raise TypeError('The SPARQL store is read only')
 
@@ -264,7 +265,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
               queryGraph=None,
               DEBUG=False):
         self.debug = DEBUG
-        assert isinstance(query, basestring)
+        assert isinstance(query, string_types)
         self.setNamespaceBindings(initNs)
         if initBindings:
             if not self.sparql11:
@@ -284,7 +285,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
         return Result.parse(SPARQLWrapper.query(self).response)
 
-    def triples(self, (s, p, o), context=None):
+    def triples(self, triple_pattern, context=None):
         """
         - tuple **(s, o, p)**
             the triple used as filter for the SPARQL select.
@@ -319,7 +320,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         del a_graph.OFFSET
         ``
         """
-
+        s, p, o = triple_pattern
         if ( isinstance(s, BNode) or
              isinstance(p, BNode) or
              isinstance(o, BNode) ):
@@ -382,7 +383,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
                    rt.get(p, p),
                    rt.get(o, o)), None
 
-    def triples_choices(self, (subject, predicate, object_), context=None):
+    def triples_choices(self, triple_choices, context=None):
         """
         A variant of triples that can take a list of terms instead of a
         single term in any slot.  Stores can implement this to optimize
@@ -567,7 +568,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
         if self.__update_endpoint:
 
-            p = urlparse.urlparse(self.update_endpoint)
+            p = urlparse(self.update_endpoint)
 
             assert not p.username, \
                 "SPARQL Update store does not support HTTP authentication"
@@ -703,9 +704,8 @@ class SPARQLUpdateStore(SPARQLStore):
                 r.status, r.reason, content))
 
     def _do_update(self, update):
-        import urllib
         if self.postAsEncoded:
-            update = urllib.urlencode({'update': update.encode("utf-8")})
+            update = urlencode({'update': update.encode("utf-8")})
         self.connection.request(
             'POST', self.path, update.encode("utf-8"), self.headers)
         return self.connection.getresponse()
@@ -748,7 +748,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
         """
         self.debug = DEBUG
-        assert isinstance(query, basestring)
+        assert isinstance(query, string_types)
         self.setNamespaceBindings(initNs)
         query = self.injectPrefixes(query)
 

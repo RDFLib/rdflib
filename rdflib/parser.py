@@ -12,10 +12,10 @@ want to do so through the Graph class parse method.
 
 import os
 import sys
-from urllib import pathname2url, url2pathname
-from urllib2 import urlopen, Request
-from urlparse import urljoin
-from rdflib.py3compat import PY3
+from six import text_type, string_types
+from six.moves.urllib.request import Request, urlopen, url2pathname, pathname2url
+from six.moves.urllib.parse import urljoin
+from six import PY3
 if PY3:
     from io import BytesIO
     assert BytesIO
@@ -137,7 +137,7 @@ def create_input_source(source=None, publicID=None,
         if isinstance(source, InputSource):
             input_source = source
         else:
-            if isinstance(source, basestring):
+            if isinstance(source, string_types):
                 location = source
             elif hasattr(source, "read") and not isinstance(source, Namespace):
                 f = source
@@ -171,7 +171,7 @@ def create_input_source(source=None, publicID=None,
         input_source = FileInputSource(file)
 
     if data is not None:
-        if isinstance(data, unicode):
+        if isinstance(data, text_type):
             data = data.encode('utf-8')
         input_source = StringInputSource(data)
 

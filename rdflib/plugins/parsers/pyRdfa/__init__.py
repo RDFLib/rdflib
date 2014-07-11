@@ -17,10 +17,10 @@ different project. (The version numbering has been continued, though, to avoid a
 ==============
 From a Python file, expecting a Turtle output::
  from pyRdfa import pyRdfa
- print pyRdfa().rdf_from_source('filename')
+ print(pyRdfa().rdf_from_source('filename'))
 Other output formats are also possible. E.g., to produce RDF/XML output, one could use::
  from pyRdfa import pyRdfa
- print pyRdfa().rdf_from_source('filename', outputFormat='pretty-xml')
+ print(pyRdfa().rdf_from_source('filename', outputFormat='pretty-xml'))
 It is also possible to embed an RDFa processing. Eg, using::
  from pyRdfa import pyRdfa
  graph = pyRdfa().graph_from_source('filename')
@@ -46,7 +46,7 @@ The package also implements some optional features that are not part of the RDFa
 Options are collected in an instance of the L{Options} class and may be passed to the processing functions as an extra argument. E.g., to allow the inclusion of embedded content::
  from pyRdfa.options import Options
  options = Options(embedded_rdf=True)
- print pyRdfa(options=options).rdf_from_source('filename')
+ print(pyRdfa(options=options).rdf_from_source('filename'))
  
 See the description of the L{Options} class for the details.
 
@@ -81,7 +81,7 @@ RDFa 1.1 has the notion of vocabulary files (using the C{@vocab} attribute) that
 pyRdfa implements this feature, although it does not do this by default. The extra C{vocab_expansion} parameter should be used for this extra step, for example::
  from pyRdfa.options import Options
  options = Options(vocab_expansion=True)
- print pyRdfa(options=options).rdf_from_source('filename')
+ print(pyRdfa(options=options).rdf_from_source('filename'))
 
 The triples in the vocabulary files themselves (i.e., the small ontology in RDF Schema and OWL) are removed from the result, leaving the inferred property and type relationships only (additionally to the “core” RDF content).
 
@@ -135,7 +135,7 @@ The user of the package may refer add these transformers to L{Options} instance.
  from pyRdfa.options import Options
  from pyRdfa.transform.OpenID import OpenID_transform
  options = Options(transformers=[OpenID_transform])
- print pyRdfa(options=options).rdf_from_source('filename')
+ print(pyRdfa(options=options).rdf_from_source('filename'))
  
 
 @summary: RDFa parser (distiller)
@@ -165,7 +165,7 @@ __contact__ = 'Ivan Herman, ivan@w3.org'
 __license__ = 'W3C® SOFTWARE NOTICE AND LICENSE, http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231'
 
 import sys
-PY3 = (sys.version_info[0] >= 3)
+from six import PY3
 
 if PY3 :
 	from io import StringIO
@@ -174,10 +174,9 @@ else :
 
 import os
 import xml.dom.minidom
-if PY3 :
-	from urllib.parse import urlparse
-else :
-	from urlparse import urlparse
+
+from six import string_types
+from six.moves.urllib.parse import urlparse
 
 import rdflib
 from rdflib	import URIRef
@@ -408,13 +407,8 @@ class pyRdfa :
 		@type name: string or a file-like object
 		@return: a file like object if opening "name" is possible and successful, "name" otherwise
 		"""
-		try :
-			# Python 2 branch
-			isstring = isinstance(name, basestring)
-		except :
-			# Python 3 branch
-			isstring = isinstance(name, str)
-
+		isstring = isinstance(name, string_types)
+		
 		try :
 			if isstring :
 				# check if this is a URI, ie, if there is a valid 'scheme' part
@@ -557,13 +551,7 @@ class pyRdfa :
 			options.reset_processor_graph()
 			return tog		
 
-		# Separating this for a forward Python 3 compatibility
-		try :
-			# Python 2 branch
-			isstring = isinstance(name, basestring)
-		except :
-			# Python 3 branch
-			isstring = isinstance(name, str)
+		isstring = isinstance(name, string_types)
 		
 		try :
 			# First, open the source... Possible HTTP errors are returned as error triples

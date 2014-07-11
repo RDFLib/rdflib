@@ -26,11 +26,7 @@ before_script:
     - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then flake8 --exclude=pyRdfa,extras,host,transform,rdfs,sparql,results,pyMicrodata --exit-zero rdflib; fi
 
 script:
-    # Must run the tests in build/src so python3 doesn't get confused and run
-    # the python2 code from the current directory instead of the installed
-    # 2to3 version in build/src.
-    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=rdflib ; fi
-    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '3' ]]; then nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=build/src/rdflib --where=./build/src; fi
+    - nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=rdflib
 
 after_success:
     - if [[ $HAS_COVERALLS ]] ; then coveralls ; fi

@@ -10,6 +10,7 @@ from rdflib.term import URIRef as URI
 from rdflib.term import BNode as bNode
 from rdflib.term import Literal
 
+from six import text_type, string_types
 from rdflib.py3compat import cast_bytes, decodeUnicodeEscape, ascii
 
 __all__ = ['unquote', 'uriquote', 'Sink', 'NTriplesParser']
@@ -30,7 +31,7 @@ bufsiz = 2048
 validate = False
 
 
-class Node(unicode):
+class Node(text_type):
     pass
 
 
@@ -44,7 +45,7 @@ class Sink(object):
 
     def triple(self, s, p, o):
         self.length += 1
-        print (s, p, o)
+        print((s, p, o))
 
 quot = {'t': u'\t', 'n': u'\n', 'r': u'\r', '"': u'"', '\\':
         u'\\'}
@@ -57,7 +58,7 @@ def unquote(s):
     """Unquote an N-Triples string."""
     if not validate:
 
-        if isinstance(s, unicode): # nquads
+        if isinstance(s, text_type): # nquads
             s = decodeUnicodeEscape(s)
         else:
             s = s.decode('unicode-escape')
@@ -141,7 +142,7 @@ class NTriplesParser(object):
 
     def parsestring(self, s):
         """Parse s as an N-Triples string."""
-        if not isinstance(s, basestring):
+        if not isinstance(s, string_types):
             raise ParseError("Item to parse must be a string instance.")
         try:
             from io import BytesIO

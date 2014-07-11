@@ -8,6 +8,8 @@ provides the support by replacing the REGEXTerms by wildcards (None) and
 matching against the results from the store it's wrapping.
 """
 
+from six import text_type
+
 from rdflib.store import Store
 from rdflib.graph import Graph
 import re
@@ -18,7 +20,7 @@ NATIVE_REGEX = 0
 PYTHON_REGEX = 1
 
 
-class REGEXTerm(unicode):
+class REGEXTerm(text_type):
     """
     REGEXTerm can be used in any term slot and is interpreted as a request to
     perform a REGEX match (not a string comparison) using the value
@@ -28,7 +30,7 @@ class REGEXTerm(unicode):
         self.compiledExpr = re.compile(expr)
 
     def __reduce__(self):
-        return (REGEXTerm, (unicode(''),))
+        return (REGEXTerm, (text_type(''),))
 
 
 def regexCompareQuad(quad, regexQuad):

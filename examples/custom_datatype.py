@@ -39,8 +39,8 @@ if __name__=='__main__':
 
     l2=list(g2)[0][2]
 
-    print l2 
+    print(l2)
 
-    print l2.value == c # back to a python complex object
+    print(l2.value == c) # back to a python complex object
 
 

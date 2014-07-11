@@ -11,7 +11,7 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 import os, sys, datetime, re
 
-PY3 = (sys.version_info[0] >= 3)
+from six import PY3
 
 import rdflib
 from rdflib	import URIRef

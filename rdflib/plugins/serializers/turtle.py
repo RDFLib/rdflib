@@ -70,7 +70,8 @@ class RecursiveSerializer(Serializer):
         for triple in self.store.triples((None, None, None)):
             self.preprocessTriple(triple)
 
-    def preprocessTriple(self, (s, p, o)):
+    def preprocessTriple(self, triple):
+        s, p, o = triple
         self._references[o]+=1
         self._subjects[s] = True
 

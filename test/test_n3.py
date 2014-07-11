@@ -60,7 +60,7 @@ n3:context      a rdf:Property; rdfs:domain n3:statement;
 
 
 import unittest
-from urllib2 import URLError
+from six.moves.urllib.error import URLError
 
 from rdflib.graph import Graph, ConjunctiveGraph
 
@@ -97,7 +97,7 @@ class TestN3Case(unittest.TestCase):
 """
         g = Graph()
         g.parse(data=input, format="n3")
-        print list(g)
+        print(list(g))
         self.assertTrue((None, None, Literal('Foo')) in g)
         self.assertTrue(
             (URIRef('http://example.com/doc/bar'), None, None) in g)
@@ -121,7 +121,7 @@ class TestN3Case(unittest.TestCase):
 """
         g = Graph()
         g.parse(data=input, publicID='http://blah.com/', format="n3")
-        print list(g)
+        print(list(g))
         self.assertTrue(
             (URIRef('http://blah.com/foo'), None, Literal('Foo')) in g)
         self.assertTrue(

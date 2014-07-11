@@ -16,7 +16,9 @@ import codecs
 import time
 import datetime
 import warnings
-import urllib2
+
+from six import text_type
+from six.moves.urllib.parse import quote
 
 import rdflib
 
@@ -124,13 +126,13 @@ def csv_reader(csv_data, dialect=csv.excel, **kwargs):
                             dialect=dialect, **kwargs)
     for row in csv_reader:
         # decode UTF-8 back to Unicode, cell by cell:
-        yield [unicode(cell, 'utf-8', errors='replace') for cell in row]
+        yield [text_type(cell, 'utf-8', errors='replace') for cell in row]
 
 
 def prefixuri(x, prefix, class_=None):
     if prefix:
         r = rdflib.URIRef(
-            prefix + urllib2.quote(
+            prefix + quote(
                 x.encode("utf8").replace(" ", "_"), safe=""))
     else:
         r = rdflib.URIRef(x)
@@ -351,7 +353,7 @@ class CSV2RDF(object):
                 if self.IDENT == 'auto':
                     uri = self.BASE["%d" % rows]
                 else:
-                    uri = self.BASE["_".join([urllib2.quote(x.encode(
+                    uri = self.BASE["_".join([quote(x.encode(
                         "utf8").replace(" ", "_"), safe="")
                         for x in index(l, self.IDENT)])]
 
@@ -376,7 +378,7 @@ class CSV2RDF(object):
                             else:
                                 self.triple(uri, headers[i], o)
 
-                        except Exception, e:
+                        except Exception as e:
                             warnings.warn(
                                 "Could not process value for column " +
                                 "%d:%s in row %d, ignoring: %s " % (
@@ -421,7 +423,7 @@ def main():
     opts = dict(opts)
 
     if "-h" in opts or "--help" in opts:
-        print HELP
+        print(HELP)
         sys.exit(-1)
 
     if "-f" in opts:

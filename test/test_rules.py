@@ -67,7 +67,7 @@ try:
             interp.run()
             #_logger.debug("inferred facts: %s" % interp.inferredFacts)
 
-except ImportError, e:
-    print "Could not test Pychinko: %s" % e
+except ImportError as e:
+    print("Could not test Pychinko: %s" % e)
 
 
