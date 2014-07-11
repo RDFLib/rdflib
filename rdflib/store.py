@@ -147,18 +147,13 @@ class Store(object):
 
     def __get_node_pickler(self):
         if self.__node_pickler is None:
-            from rdflib.term import URIRef
-            from rdflib.term import BNode
-            from rdflib.term import Literal
-            from rdflib.graph import Graph, QuotedGraph
-            from rdflib.term import Variable
-            from rdflib.term import Statement
             self.__node_pickler = np = NodePickler()
+            from rdflib.graph import QuotedGraph # here to avoid circular import
+
             np.register(self, "S")
             np.register(URIRef, "U")
             np.register(BNode, "B")
             np.register(Literal, "L")
-            np.register(Graph, "G")
             np.register(QuotedGraph, "Q")
             np.register(Variable, "V")
             np.register(Statement, "s")
@@ -211,6 +206,8 @@ class Store(object):
         be an error for the quoted argument to be True when the store is not
         formula-aware.
         """
+        if not isinstance(context, Identifier): raise Exception("Trying to add to a context that isn't an identifier: %s"%context)
+
         self.dispatcher.dispatch(
             TripleAddedEvent(
                 triple=triple, context=context))
@@ -229,6 +226,8 @@ class Store(object):
 
     def remove(self, triple, context=None):
         """ Remove the set of triples matching the pattern from the store """
+        if context is not None and not isinstance(context, Identifier): raise Exception("Trying to remove from a context that isn't an identifier: %s"%context)
+
         self.dispatcher.dispatch(
             TripleRemovedEvent(
                 triple=triple, context=context))

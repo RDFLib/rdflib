@@ -180,7 +180,7 @@ class ContextTestCase(unittest.TestCase):
         self.assertTrue(self.c2 in map(cid, self.graph.contexts()))
 
         contextList = list(map(cid, list(self.graph.contexts(triple))))
-        self.assertTrue(self.c1 in contextList, (self.c1, contextList))
+        self.assertTrue(self.c1 in contextList, (self.c2, contextList))
         self.assertTrue(self.c2 in contextList, (self.c2, contextList))
 
     def testRemoveContext(self):
@@ -336,6 +336,8 @@ class ContextTestCase(unittest.TestCase):
         self.removeStuff()
         asserte(len(list(c1triples((Any, Any, Any)))), 0)
         asserte(len(list(triples((Any, Any, Any)))), 0)
+
+
 
 
 # dynamically create classes for each registered Store
