@@ -1900,7 +1900,7 @@ class N3Parser(TurtleParser):
         assert graph.store.context_aware  # is this implied by formula_aware
         assert graph.store.formula_aware
 
-        conj_graph = ConjunctiveGraph(store=graph.store)
+        conj_graph = ConjunctiveGraph(identifier=graph.identifier, store=graph.store)
         conj_graph.default_context = graph  # TODO: CG __init__ should have a
                                             # default_context arg
          # TODO: update N3Processor so that it can use conj_graph as the sink

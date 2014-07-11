@@ -53,8 +53,7 @@ class AuditableStore(Store):
         lock = destructiveOpLocks['add']
         lock = lock if lock else threading.RLock()
         with lock:
-            context = context.__class__(self.store, context.identifier) if context is not None else None
-            ctxId = context.identifier if context is not None else None
+            ctxId = context if context is not None else None
             if list(self.store.triples(triple, context)):
                 return # triple already in store, do nothing
             self.reverseOps.append((s, p, o, ctxId, 'remove'))
@@ -71,11 +70,10 @@ class AuditableStore(Store):
         with lock:
             # Need to determine which quads will be removed if any term is a
             # wildcard
-            context = context.__class__(self.store, context.identifier) if context is not None else None
-            ctxId = context.identifier if context is not None else None
+            ctxId = context if context is not None else None
             if None in [subject, predicate, object_, context]:
                 if ctxId:
-                    for s, p, o in context.triples((subject, predicate, object_)):
+                    for (s, p, o), cg in self.store.triples((subject, predicate, object_), context):
                         try:
                             self.reverseOps.remove((s, p, o, ctxId, 'remove'))
                         except ValueError:
@@ -83,9 +81,9 @@ class AuditableStore(Store):
                 else:
                     for s, p, o, ctx in ConjunctiveGraph(self.store).quads((subject, predicate, object_)):
                         try:
-                            self.reverseOps.remove((s, p, o, ctx.identifier, 'remove'))
+                            self.reverseOps.remove((s, p, o, ctx, 'remove'))
                         except ValueError:
-                            self.reverseOps.append((s, p, o, ctx.identifier, 'add'))
+                            self.reverseOps.append((s, p, o, ctx, 'add'))
             else:
                 if not list(self.triples((subject, predicate, object_), context)):
                     return # triple not present in store, do nothing
@@ -97,12 +95,10 @@ class AuditableStore(Store):
 
     def triples(self, triple, context=None):
         (su, pr, ob) = triple
-        context = context.__class__(self.store, context.identifier) if context is not None else None
         for (s, p, o), cg in self.store.triples((su, pr, ob), context):
             yield (s, p, o), cg
 
     def __len__(self, context=None):
-        context = context.__class__(self.store, context.identifier) if context is not None else None
         return self.store.__len__(context)
 
     def contexts(self, triple=None):
@@ -131,9 +127,9 @@ class AuditableStore(Store):
             for subject, predicate, obj, context, op in self.reverseOps:
                 if op == 'add':
                     self.store.add(
-                        (subject, predicate, obj), Graph(self.store, context))
+                        (subject, predicate, obj), context)
                 else:
                     self.store.remove(
-                        (subject, predicate, obj), Graph(self.store, context))
+                        (subject, predicate, obj), context)
 
             self.reverseOps = []

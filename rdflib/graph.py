@@ -389,12 +389,12 @@ class Graph(Node):
             "Predicate %s must be an rdflib term" % (p,)
         assert isinstance(o, Node), \
             "Object %s must be an rdflib term" % (o,)
-        self.__store.add((s, p, o), self, quoted=False)
+        self.__store.add((s, p, o), self.identifier, quoted=False)
 
     def addN(self, quads):
         """Add a sequence of triple with context"""
 
-        self.__store.addN((s, p, o, c) for s, p, o, c in quads
+        self.__store.addN((s, p, o, c.identifier) for s, p, o, c in quads
                           if isinstance(c, Graph)
                           and c.identifier is self.identifier
                           and _assertnode(s,p,o)
@@ -406,7 +406,7 @@ class Graph(Node):
         If the triple does not provide a context attribute, removes the triple
         from all contexts.
         """
-        self.__store.remove(triple, context=self)
+        self.__store.remove(triple, context=self.identifier)
 
     def triples(self, triple):
         """Generator over the triple store
@@ -419,7 +419,7 @@ class Graph(Node):
             for _s, _o in p.eval(self, s, o):
                 yield (_s, p, _o)
         else:
-            for (s, p, o), cg in self.__store.triples((s, p, o), context=self):
+            for (s, p, o), cg in self.__store.triples((s, p, o), context=self.identifier):
                 yield (s, p, o)
 
     @format_doctest_out
@@ -498,7 +498,7 @@ class Graph(Node):
         If context is specified then the number of triples in the context is
         returned instead.
         """
-        return self.__store.__len__(context=self)
+        return self.__store.__len__(context=self.identifier)
 
     def __iter__(self):
         """Iterates over all triples in the store"""
@@ -645,7 +645,7 @@ class Graph(Node):
     def triples_choices(self, triple, context=None):
         subject, predicate, object_ = triple
         for (s, p, o), cg in self.store.triples_choices(
-                (subject, predicate, object_), context=self):
+                (subject, predicate, object_), context=self.identifier):
             yield (s, p, o)
 
     def value(self, subject=None, predicate=RDF.value, object=None,
@@ -1296,7 +1296,8 @@ class ConjunctiveGraph(Graph):
         self.context_aware = True
         self.default_union = True # Conjunctive!
         self.default_context = Graph(store=self.store,
-                                     identifier=identifier or BNode())
+                                     identifier=self.identifier)
+
 
     def __str__(self):
         pattern = ("[a rdflib:ConjunctiveGraph;rdflib:storage "
@@ -1309,13 +1310,12 @@ class ConjunctiveGraph(Graph):
         either triples or quads
         """
         if triple_or_quad is None:
-            return (None, None, None, self.default_context if default else None)
+            return (None, None, None, self.identifier if default else None)
         if len(triple_or_quad) == 3:
-            c = self.default_context if default else None
+            c = self.identifier if default else None
             (s, p, o) = triple_or_quad
         elif len(triple_or_quad) == 4:
             (s, p, o, c) = triple_or_quad
-            c = self._graph(c)
         return s,p,o,c
 
 
@@ -1339,7 +1339,9 @@ class ConjunctiveGraph(Graph):
 
         _assertnode(s,p,o)
 
-        self.store.add((s, p, o), context=c, quoted=False)
+        self.store.add((s, p, o),
+                       context=c.identifier if isinstance(c, Graph) else c,
+                       quoted=False)
 
     def _graph(self, c):
         if c is None: return None
@@ -1353,8 +1355,9 @@ class ConjunctiveGraph(Graph):
         """Add a sequence of triples with context"""
 
         self.store.addN(
-            (s, p, o, self._graph(c)) for s, p, o, c in quads if
-            _assertnode(s, p, o)
+            (s, p, o,
+             c.identifier if isinstance(c, Graph) else c)
+            for s, p, o, c in quads if _assertnode(s, p, o)
             )
 
     def remove(self, triple_or_quad):
@@ -1368,7 +1371,8 @@ class ConjunctiveGraph(Graph):
         """
         s,p,o,c = self._spoc(triple_or_quad)
 
-        self.store.remove((s, p, o), context=c)
+        self.store.remove((s, p, o),
+                          context=c.identifier if isinstance(c, Graph) else c)
 
     def triples(self, triple_or_quad, context=None):
         """
@@ -1380,14 +1384,14 @@ class ConjunctiveGraph(Graph):
         """
 
         s,p,o,c = self._spoc(triple_or_quad)
-        context = self._graph(context or c)
+        context = context or c
 
         if self.default_union:
-            if context==self.default_context:
+            if context == self.identifier:
                 context = None
         else:
             if context is None:
-                context = self.default_context
+                context = self.identifier
 
         if isinstance(p, Path):
             if context is None:
@@ -1404,18 +1408,19 @@ class ConjunctiveGraph(Graph):
 
         s,p,o,c = self._spoc(triple_or_quad)
 
-        for (s, p, o), cg in self.store.triples((s, p, o), context=c):
+        for (s, p, o), cg in self.store.triples((s, p, o),
+                                                context=c if isinstance(c, Graph) else c ):
             for ctx in cg:
-                yield s, p, o, ctx
+                yield s, p, o, self._graph(ctx)
 
     def triples_choices(self, triple, context=None):
         """Iterate over all the triples in the entire conjunctive graph"""
         s, p, o = triple
         if context is None:
             if not self.default_union:
-                context=self.default_context
+                context=self.identifier
         else:
-            context = self._graph(context)
+            if isinstance(context, Graph): context = context.identifier
 
         for (s1, p1, o1), cg in self.store.triples_choices((s, p, o),
                                                            context=context):
@@ -1432,10 +1437,7 @@ class ConjunctiveGraph(Graph):
         """
         for context in self.store.contexts(triple):
             if isinstance(context, Graph):
-                # TODO: One of these should never happen and probably
-                # should raise an exception rather than smoothing over
-                # the weirdness - see #225
-                yield context
+                raise Exception("Got graph object as context, not Identifier!")
             else:
                 yield self.get_context(context)
 
@@ -1449,7 +1451,8 @@ class ConjunctiveGraph(Graph):
 
     def remove_context(self, context):
         """Removes the given context from the graph"""
-        self.store.remove((None, None, None), context)
+        self.store.remove((None, None, None),
+                          context.identifier if isinstance(context, Graph) else context)
 
     def context_id(self, uri, context_id=None):
         """URI#context"""
@@ -1600,10 +1603,12 @@ class Dataset(ConjunctiveGraph):
 
         if not self.store.graph_aware:
             raise Exception("DataSet must be backed by a graph-aware store!")
-        self.default_context = Graph(store=self.store, identifier=DATASET_DEFAULT_GRAPH_ID)
 
         self.default_union = default_union
 
+    def add(self, triple_or_quad):
+        if len(triple_or_quad)==4: super(Dataset, self).add(triple_or_quad)
+        else: super(Dataset, self).add(triple_or_quad+(DATASET_DEFAULT_GRAPH_ID,))
 
     def __str__(self):
         pattern = ("[a rdflib:Dataset;rdflib:storage "
@@ -1611,6 +1616,7 @@ class Dataset(ConjunctiveGraph):
         return pattern % self.store.__class__.__name__
 
     def graph(self, identifier=None):
+        if isinstance(identifier, Graph): identifier = identifier.identifier
         if identifier is None:
             from rdflib.term import rdflib_skolem_genid
             self.bind(
@@ -1620,7 +1626,7 @@ class Dataset(ConjunctiveGraph):
 
         g = self._graph(identifier)
 
-        self.store.add_graph(g)
+        self.store.add_graph(identifier)
         return g
 
     def parse(self, source=None, publicID=None, format="xml",
@@ -1634,14 +1640,14 @@ class Dataset(ConjunctiveGraph):
         return self.graph(g)
 
     def remove_graph(self, g):
-        if not isinstance(g, Graph):
-            g = self.get_context(g)
+        if isinstance(g, Graph):
+            g = g.identifier
 
         self.store.remove_graph(g)
-        if g is None or g == self.default_context:
+        if g is None or g == DATASET_DEFAULT_GRAPH_ID:
             # default graph cannot be removed
             # only triples deleted, so add it back in
-            self.store.add_graph(self.default_context)
+            self.store.add_graph(DATASET_DEFAULT_GRAPH_ID)
 
     def contexts(self, triple=None):
         default = False
@@ -1655,7 +1661,7 @@ class Dataset(ConjunctiveGraph):
 
     def quads(self, quad):
         for s, p, o, c in super(Dataset, self).quads(quad):
-            if c.identifier==self.default_context:
+            if c.identifier == DATASET_DEFAULT_GRAPH_ID:
                 yield (s, p, o, None)
             else:
                 yield (s, p, o, c.identifier)
@@ -1680,13 +1686,13 @@ class QuotedGraph(Graph):
         assert isinstance(o, Node), \
             "Object %s must be an rdflib term" % (o,)
 
-        self.store.add((s, p, o), self, quoted=True)
+        self.store.add((s, p, o), self.identifier, quoted=True)
 
     def addN(self, quads):
         """Add a sequence of triple with context"""
 
         self.store.addN(
-            (s, p, o, c) for s, p, o, c in quads
+            (s, p, o, c.identifier) for s, p, o, c in quads
             if isinstance(c, QuotedGraph)
             and c.identifier is self.identifier
             and _assertnode(s, p, o)
