@@ -109,8 +109,8 @@ def join(here, there):
     %(u)s'http://example.org/#Andr\\xe9'
     """
 
-    assert(here.find("#") < 0), \
-        "Base may not contain hash: '%s'" % here  # why must caller splitFrag?
+#    assert(here.find("#") < 0), \
+#        "Base may not contain hash: '%s'" % here  # why must caller splitFrag?
 
     slashl = there.find('/')
     colonl = there.find(':')
