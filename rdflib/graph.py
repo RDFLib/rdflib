@@ -268,6 +268,9 @@ from rdflib.namespace import NamespaceManager
 from rdflib.resource import Resource
 from rdflib.collection import Collection
 from rdflib import py3compat
+
+from rdflib.sink import create_graph_sink
+
 b = py3compat.b
 
 import os
@@ -1023,6 +1026,9 @@ class Graph(Node):
         source = create_input_source(source=source, publicID=publicID,
                                      location=location, file=file,
                                      data=data, format=format)
+
+        sink = create_graph_sink(self)
+
         if format is None:
             format = source.content_type
         if format is None:
@@ -1031,7 +1037,7 @@ class Graph(Node):
             format = "application/rdf+xml"
         parser = plugin.get(format, Parser)()
         try:
-            parser.parse(source, self, **args)
+            parser.parse(source, sink, **args)
         finally:
             if source.auto_close:
                 source.close()
@@ -1328,7 +1334,6 @@ class ConjunctiveGraph(Graph):
             return True
         return False
 
-
     def add(self, triple_or_quad):
 
         """
@@ -1351,7 +1356,6 @@ class ConjunctiveGraph(Graph):
             return self.get_context(c)
         else:
             return c
-
 
     def addN(self, quads):
         """Add a sequence of triples with context"""
