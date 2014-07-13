@@ -14,7 +14,7 @@ ORDERBY = 'ORDER BY'
 import re
 # import warnings
 try:
-    from SPARQLWrapper import SPARQLWrapper, XML, POST, GET
+    from SPARQLWrapper import SPARQLWrapper, XML, POST, GET, URLENCODED, POSTDIRECTLY
 except ImportError:
     raise Exception(
         "SPARQLWrapper not found! SPARQL Store will not work." +
@@ -610,6 +610,7 @@ class SPARQLUpdateStore(SPARQLStore):
         self.resetQuery()
         self.setQuery(update)
         self.setMethod(POST)
+        self.setUpdateMethod(URLENCODED if self.postAsEncoded else POSTDIRECTLY)
 
         result = SPARQLWrapper.query(self)
         return result
