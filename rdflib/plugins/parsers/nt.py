@@ -1,5 +1,5 @@
 """
-N-Triples Parser for RDFLib, 
+N-Triples Parser for RDFLib,
 
 The ntriples format is often stored with the .nt extension
 See http://www.w3.org/TR/rdf-testcases/#ntriples
@@ -106,6 +106,9 @@ class NTParser(Parser):
 
     def parse(self, source, sink):
         """Parse f as an N-Triples file."""
+
+        source = source.getByteStream()
+
         if not hasattr(source, 'read'):
             raise ParseError("Item to parse must be a file-like object.")
 
@@ -177,7 +180,7 @@ class NTParser(Parser):
 
         if self.line:
             raise ParseError("Trailing garbage")
-        self.sink.triple(subject, predicate, object)
+        self.sink.triple((subject, predicate, object))
 
     def peek(self, token):
         return self.line.startswith(token)
