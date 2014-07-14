@@ -65,7 +65,7 @@ class ContextGraphSink(Sink):
         self.default_context = graph.identifier
 
     def triple(self, triple, context=None):
-        print 'C', context, self.default_context
+        #print 'C', context, self.default_context
         self.store.add(triple, context or self.default_context)
 
 

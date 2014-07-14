@@ -13,9 +13,10 @@ available under either of the licenses: GPL 2, W3C, BSD, or MIT
 
 
 import re
+import codecs
 
 from rdflib.parser import Parser, ParseError
-from rdflib.term import URIRef 
+from rdflib.term import URIRef
 from rdflib.term import BNode
 from rdflib.term import Literal
 
@@ -38,10 +39,10 @@ r_literal = re.compile(literal + litinfo)
 bufsiz = 2048
 validate = False
 
-quot = {b('t'): u'\t', 
-        b('n'): u'\n', 
-        b('r'): u'\r', 
-        b('"'): u'"', 
+quot = {b('t'): u'\t',
+        b('n'): u'\n',
+        b('r'): u'\r',
+        b('"'): u'"',
         b('\\'): u'\\'}
 
 r_safe = re.compile(b(r'([\x20\x21\x23-\x5B\x5D-\x7E]+)'))
@@ -113,7 +114,7 @@ class NTParser(Parser):
             raise ParseError("Item to parse must be a file-like object.")
 
         self.sink = sink
-        self.file = source
+        self.file = codecs.getreader('utf-8')(source)
         self.buffer = ''
         while True:
             self.line = self.readline()
@@ -190,7 +191,7 @@ class NTParser(Parser):
         if not m:  # @@ Why can't we get the original pattern?
             # print(dir(pattern))
             # print repr(self.line), type(self.line)
-            raise ParseError("Failed to eat %s" % pattern)
+            raise ParseError("Failed to eat %s at %s" % (pattern.pattern, self.line))
         self.line = self.line[m.end():]
         return m
 
@@ -253,11 +254,3 @@ class NTParser(Parser):
             lit = unquote(lit)
             return Literal(lit, lang, dtype)
         return False
-
-
-
-
-
-
-
-
