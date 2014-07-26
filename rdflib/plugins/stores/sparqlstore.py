@@ -610,7 +610,7 @@ class SPARQLUpdateStore(SPARQLStore):
         self.resetQuery()
         self.setQuery(update)
         self.setMethod(POST)
-        self.setUpdateMethod(URLENCODED if self.postAsEncoded else POSTDIRECTLY)
+        self.setRequestMethod(URLENCODED if self.postAsEncoded else POSTDIRECTLY)
 
         result = SPARQLWrapper.query(self)
         return result
