@@ -458,7 +458,7 @@ PathAlternative = Comp('PathAlternative', ParamList('part', PathSequence) +
                        ZeroOrMore('|' + ParamList('part', PathSequence)))
 
 # [88] Path ::= PathAlternative
-Path << PathAlternative
+Path <<= PathAlternative
 
 # [84] VerbPath ::= Path
 VerbPath = Path
@@ -513,10 +513,10 @@ BlankNodePropertyListPath = Group(
 BlankNodePropertyListPath.setParseAction(expandBNodeTriples)
 
 # [98] TriplesNode ::= Collection | BlankNodePropertyList
-TriplesNode << (Collection | BlankNodePropertyList)
+TriplesNode <<= (Collection | BlankNodePropertyList)
 
 # [100] TriplesNodePath ::= CollectionPath | BlankNodePropertyListPath
-TriplesNodePath << (CollectionPath | BlankNodePropertyListPath)
+TriplesNodePath <<= (CollectionPath | BlankNodePropertyListPath)
 
 # [75] TriplesSameSubject ::= VarOrTerm PropertyListNotEmpty | TriplesNode PropertyList
 TriplesSameSubject = VarOrTerm + PropertyListNotEmpty | TriplesNode + \
@@ -525,7 +525,7 @@ TriplesSameSubject.setParseAction(expandTriples)
 
 # [52] TriplesTemplate ::= TriplesSameSubject ( '.' Optional(TriplesTemplate) )?
 TriplesTemplate = Forward()
-TriplesTemplate << (ParamList('triples', TriplesSameSubject) + Optional(
+TriplesTemplate <<= (ParamList('triples', TriplesSameSubject) + Optional(
     Suppress('.') + Optional(TriplesTemplate)))
 
 # [51] QuadsNotTriples ::= 'GRAPH' VarOrIri '{' Optional(TriplesTemplate) '}'
@@ -549,7 +549,7 @@ TriplesSameSubjectPath.setParseAction(expandTriples)
 
 # [55] TriplesBlock ::= TriplesSameSubjectPath ( '.' Optional(TriplesBlock) )?
 TriplesBlock = Forward()
-TriplesBlock << (ParamList('triples', TriplesSameSubjectPath) + Optional(
+TriplesBlock <<= (ParamList('triples', TriplesSameSubjectPath) + Optional(
     Suppress('.') + Optional(TriplesBlock)))
 
 
@@ -795,7 +795,7 @@ ConditionalOrExpression = Comp('ConditionalOrExpression', Param('expr', Conditio
     '||' + ParamList('other', ConditionalAndExpression))).setEvalFn(op.ConditionalOrExpression)
 
 # [110] Expression ::= ConditionalOrExpression
-Expression << ConditionalOrExpression
+Expression <<= ConditionalOrExpression
 
 
 # [69] Constraint ::= BrackettedExpression | BuiltInCall | FunctionCall
@@ -902,7 +902,7 @@ ValuesClause = Optional(Param(
 
 # [74] ConstructTriples ::= TriplesSameSubject ( '.' Optional(ConstructTriples) )?
 ConstructTriples = Forward()
-ConstructTriples << (ParamList('template', TriplesSameSubject) + Optional(
+ConstructTriples <<= (ParamList('template', TriplesSameSubject) + Optional(
     Suppress('.') + Optional(ConstructTriples)))
 
 # [73] ConstructTemplate ::= '{' Optional(ConstructTriples) '}'
@@ -980,7 +980,7 @@ SubSelect = Comp('SubSelect', SelectClause + WhereClause +
                  SolutionModifier + ValuesClause)
 
 # [53] GroupGraphPattern ::= '{' ( SubSelect | GroupGraphPatternSub ) '}'
-GroupGraphPattern << (
+GroupGraphPattern <<= (
     Suppress('{') + (SubSelect | GroupGraphPatternSub) + Suppress('}'))
 
 # [7] SelectQuery ::= SelectClause DatasetClause* WhereClause SolutionModifier
@@ -1003,7 +1003,7 @@ DescribeQuery = Comp('DescribeQuery', Keyword('DESCRIBE') + (OneOrMore(ParamList
 
 # [29] Update ::= Prologue ( Update1 ( ';' Update )? )?
 Update = Forward()
-Update << (ParamList('prologue', Prologue) + Optional(ParamList('request',
+Update <<= (ParamList('prologue', Prologue) + Optional(ParamList('request',
            Update1) + Optional(';' + Update)))
 
 
