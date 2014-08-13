@@ -208,10 +208,10 @@ class Options :
 		output default graph                   : %s
 		host language                          : %s
 		accept embedded RDF                    : %s
-		perfom semantic postprocessing         : %s
+		check rdfa lite                        : %s
 		cache vocabulary graphs                : %s
 		"""
-		return retval % (self.space_preserve, self.output_processor_graph, self.output_default_graph, self.host_language, self.embedded_rdf, self.rdfa_sem, self.vocab_cache)
+		return retval % (self.space_preserve, self.output_processor_graph, self.output_default_graph, self.host_language, self.embedded_rdf, self.check_lite, self.vocab_cache)
 		
 	def reset_processor_graph(self):
 		"""Empty the processor graph. This is necessary if the same options is reused
