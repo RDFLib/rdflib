@@ -403,6 +403,11 @@ class Graph(Node):
                           and _assertnode(s,p,o)
                           )
 
+
+    def add_nested(self, nested_triple):
+        for new_triple in expand_nested_triples(nested_triple):
+            self.add(new_triple)
+
     def remove(self, (s, p, o)):
         """Remove a triple from the graph
 
@@ -1900,6 +1905,43 @@ def _assertnode(*terms):
         assert isinstance(t, Node), \
             'Term %s must be an rdflib term' % (t,)
     return True
+
+
+def is_node(*x):
+    """
+    Returns True iff all the arguments are an instance of Node.
+
+    Convenience function
+    """
+    return all(isinstance(y, Node) for y in x)
+
+
+def expand_nested_triples(nested_triples):
+    if nested_triples == [] or nested_triples == tuple():
+        # Empty in, empty out
+        return nested_triples
+    elif len(nested_triples) == 3 and all(is_node(x) for x in nested_triples):
+        # Support bare, non-nested versions:
+        return [nested_triples]
+    elif len(nested_triples) == 2 and is_node(nested_triples[0]) and len(nested_triples[1]) > 0 and all(is_node(sub[0], sub[1]) for sub in nested_triples[1]):
+        # (a, [ (b, c), ... ] )
+        return [
+            (nested_triples[0], sub[0], sub[1]) 
+            for sub in nested_triples[1]
+        ]
+    elif len(nested_triples) == 3 and is_node(nested_triples[0], nested_triples[1]) and len(nested_triples[2]) > 0 and is_node(*nested_triples[2]):
+        # (a, b [ c, d, .. ] )
+        return [
+            (nested_triples[0], nested_triples[1], sub)
+            for sub in nested_triples[2]
+        ]
+    elif len(nested_triples) == 3 and is_node(nested_triples[0], nested_triples[1]) and len(nested_triples[2]) > 0 and all(is_node(sub[0], sub[1]) for sub in nested_triples[2]):
+        # (a, b [ (c, d), (e, f), ... ] )
+        end_node = BNode()
+        return [(nested_triples[0], nested_triples[1], end_node)] + [ (end_node, sub[0], sub[1]) for sub in nested_triples[2] ]
+    else:
+        print nested_triples
+        raise NotImplementedError("Unknown input %r" % nested_triples)
 
 
 def test():

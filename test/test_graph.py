@@ -5,7 +5,8 @@ import unittest
 from tempfile import mkdtemp, mkstemp
 import shutil
 
-from rdflib import URIRef, RDF, Graph, plugin
+from rdflib import URIRef, RDF, Graph, plugin, BNode
+from rdflib.graph import expand_nested_triples
 
 from nose.exc import SkipTest
 
@@ -249,6 +250,85 @@ class GraphTestCase(unittest.TestCase):
         self.assertEquals((bob, likes, cheese) in g1, False)
 
         self.assertEquals((michel, likes, cheese) in g1, True)
+
+
+class GraphAddNestedTestCase(unittest.TestCase):
+    store = 'default'
+    tmppath = None
+
+    def setUp(self):
+        try:
+            self.graph = Graph(store=self.store)
+        except ImportError:
+            raise SkipTest(
+                "Dependencies for store '%s' not available!" % self.store)
+        if self.store == "SQLite":
+            _, self.tmppath = mkstemp(
+                prefix='test', dir='/tmp', suffix='.sqlite')
+        else:
+            self.tmppath = mkdtemp()
+        self.graph.open(self.tmppath, create=True)
+
+        self.michel = URIRef(u'michel')
+        self.tarek = URIRef(u'tarek')
+        self.bob = URIRef(u'bob')
+        self.likes = URIRef(u'likes')
+        self.hates = URIRef(u'hates')
+        self.pizza = URIRef(u'pizza')
+        self.cheese = URIRef(u'cheese')
+
+    def tearDown(self):
+        self.graph.close()
+        if os.path.isdir(self.tmppath):
+            shutil.rmtree(self.tmppath)
+        else:
+            os.remove(self.tmppath)
+
+    def testNestedExpansion(self):
+        """Tests the algorithm for expanding the nested triples"""
+        a = URIRef("a")
+        b = URIRef("b")
+        c = URIRef("c")
+        d = URIRef("d")
+        e = URIRef("e")
+        f = URIRef("f")
+        
+        # empty in, empty out
+        self.assertEqual(expand_nested_triples([]), [])
+
+        # no nesting
+        self.assertEqual(expand_nested_triples([a, b, c]), [[a, b, c]] )
+
+        # [a, [(b, c), (d, e)]
+        self.assertEqual(expand_nested_triples((a, [(b, c), (d, e)])), [ (a, b, c), (a, d, e) ])
+
+        # [a, b, [c, d, e]] 
+        self.assertEqual(expand_nested_triples((a, b, [c, d, e]) ), [ (a, b, c), (a, b, d), (a, b, e) ])
+
+        # [a, b, [(c, d), (f, g)]
+        expanded = expand_nested_triples( (a, b, [(c, d), (e, f)]) )
+        self.assertEqual(len(expanded), 3)
+        first_triple = expanded[0]
+        self.assertEqual(first_triple[0], a)
+        self.assertEqual(first_triple[1], b)
+        new_bnode = first_triple[2]
+        self.assertTrue(isinstance(new_bnode, BNode))
+        self.assertEqual(expanded[1], (new_bnode, c, d) )
+        self.assertEqual(expanded[2], (new_bnode, e, f) )
+
+    def testAddNested1(self):
+        self.graph.add_nested( (self.michel, [(self.likes, self.pizza), (self.hates, self.cheese)]) )
+
+        self.assertTrue((self.michel, self.likes, self.pizza), self.graph)
+        self.assertTrue((self.michel, self.hates, self.cheese), self.graph)
+
+    def testAddNested2(self):
+        self.graph.add_nested( (self.michel, self.likes, [(self.likes, self.pizza), (self.likes, self.cheese)]) )
+
+        self.assertTrue((self.michel, self.likes, self.pizza), self.graph)
+        self.assertTrue((self.michel, self.hates, self.cheese), self.graph)
+
+
 
 
 # dynamically create classes for each registered Store
