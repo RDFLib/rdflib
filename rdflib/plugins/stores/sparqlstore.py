@@ -2,22 +2,9 @@
 #
 """
 This is an RDFLib store around Ivan Herman et al.'s SPARQL service wrapper.
-This was first done in layer-cake, and then ported to RDFLib 3 and rdfextras
-
-This version works with vanilla SPARQLWrapper installed by ``easy_install``,
-``pip`` or similar. If you installed ``rdflib`` with a tool that understands
-dependencies, it should have been installed automatically for you.
-
-Changes:
-    - Layercake adding support for namespace binding, I removed it again to
-      work with vanilla SPARQLWrapper
-    - JSON object mapping support suppressed
-    - Replaced '4Suite-XML Domlette with Elementtree
-    - Incorporated as an RDFLib store
+This was first done in layer-cake, and then ported to RDFLib
 
 """
-SPARQL_POST_UPDATE = "application/sparql-update"
-SPARQL_POST_ENCODED = "application/x-www-form-urlencoded; charset=UTF-8"
 
 # Defines some SPARQL keywords
 LIMIT = 'LIMIT'
@@ -27,7 +14,7 @@ ORDERBY = 'ORDER BY'
 import re
 # import warnings
 try:
-    from SPARQLWrapper import SPARQLWrapper, XML
+    from SPARQLWrapper import SPARQLWrapper, XML, POST, GET, URLENCODED, POSTDIRECTLY
 except ImportError:
     raise Exception(
         "SPARQLWrapper not found! SPARQL Store will not work." +
@@ -161,23 +148,20 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     """
     An RDFLib store around a SPARQL endpoint
 
-    This is in theory context-aware, and should work OK
-    when the context is specified. (I.e. for Graph objects)
-    then all queries should work against the named graph with the
-    identifier of the graph only.
+    This is in theory context-aware and should work as expected
+    when a context is specified.
 
-    For ConjunctiveGraphs, reading is done from the "default graph"
-    Exactly what this means depends on your endpoint.
-    General SPARQL does not offer a simple way to query the
-    union of all graphs.
+    For ConjunctiveGraphs, reading is done from the "default graph" Exactly
+    what this means depends on your endpoint, because SPARQL does not offer a
+    simple way to query the union of all graphs as it would be expected for a
+    ConjuntiveGraph.
 
     Fuseki/TDB has a flag for specifying that the default graph
-    is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config)
-    If this is set this will work fine.
+    is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config).
 
     .. warning:: The SPARQL Store does not support blank-nodes!
 
-                 As blank-nodes acts as variables in SPARQL queries
+                 As blank-nodes act as variables in SPARQL queries
                  there is no way to query for a particular blank node.
 
                  See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes
@@ -191,11 +175,12 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
     def __init__(self,
                  endpoint=None, bNodeAsURI=False,
-                 sparql11=True, context_aware=True):
+                 sparql11=True, context_aware=True,
+                 **sparqlwrapper_kwargs):
         """
         """
-        if endpoint:
-            super(SPARQLStore, self).__init__(endpoint, returnFormat=XML)
+        super(SPARQLStore, self).__init__(endpoint, returnFormat=XML, **sparqlwrapper_kwargs)
+        self.setUseKeepAlive()
         self.bNodeAsURI = bNodeAsURI
         self.nsBindings = {}
         self.sparql11 = sparql11
@@ -226,36 +211,22 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     query_endpoint = property(__get_query_endpoint, __set_query_endpoint)
 
     def destroy(self, configuration):
-        """
-        FIXME: Add documentation
-        """
         raise TypeError('The SPARQL store is read only')
 
     # Transactional interfaces
     def commit(self):
-        """ """
         raise TypeError('The SPARQL store is read only')
 
     def rollback(self):
-        """ """
         raise TypeError('The SPARQL store is read only')
 
     def add(self, (subject, predicate, obj), context=None, quoted=False):
-        """ Add a triple to the store of triples. """
         raise TypeError('The SPARQL store is read only')
 
     def addN(self, quads):
-        """
-        Adds each item in the list of statements to a specific context.
-        The quoted argument is interpreted by formula-aware stores to
-        indicate this statement is quoted/hypothetical.
-
-        Note that the default implementation is a redirect to add.
-        """
         raise TypeError('The SPARQL store is read only')
 
     def remove(self, (subject, predicate, obj), context):
-        """ Remove a triple from the store """
         raise TypeError('The SPARQL store is read only')
 
     def query(self, query,
@@ -549,49 +520,9 @@ class SPARQLUpdateStore(SPARQLStore):
                  postAsEncoded=True):
 
         SPARQLStore.__init__(self,
-                             queryEndpoint, bNodeAsURI, sparql11, context_aware)
-
-        self.connection = None
-
-        self.update_endpoint = update_endpoint
+                             queryEndpoint, bNodeAsURI, sparql11, context_aware, updateEndpoint=update_endpoint)
 
         self.postAsEncoded = postAsEncoded
-        self.headers = {'Content-type': SPARQL_POST_ENCODED,
-                        'Connection': 'Keep-alive'}
-
-        if not self.postAsEncoded:
-            self.headers['Content-type'] = SPARQL_POST_UPDATE
-
-    def __set_update_endpoint(self, update_endpoint):
-        self.__update_endpoint = update_endpoint
-
-        if self.__update_endpoint:
-
-            p = urlparse.urlparse(self.update_endpoint)
-
-            assert not p.username, \
-                "SPARQL Update store does not support HTTP authentication"
-            assert not p.password, \
-                "SPARQL Update store does not support HTTP authentication"
-            assert p.scheme == "http", "SPARQL Update is an http protocol!"
-            self.host = p.hostname
-            self.port = p.port
-            self.path = p.path
-            self.connection = httplib.HTTPConnection(
-                self.host, self.port)
-
-        else:
-
-            self.host = self.port = self.path = self.connection = None
-
-    def __get_update_endpoint(self):
-        return self.__update_endpoint
-
-    update_endpoint = property(
-        __get_update_endpoint,
-        __set_update_endpoint,
-        doc='the HTTP URL for the Update endpoint, typically' +
-            'something like http://server/dataset/update')
 
     def open(self, configuration, create=False):
         """
@@ -605,28 +536,38 @@ class SPARQLUpdateStore(SPARQLStore):
             raise Exception("Cannot create a SPARQL Endpoint")
 
         if isinstance(configuration, tuple):
-            self.query_endpoint = configuration[0]
+            self.endpoint = configuration[0]
             if len(configuration) > 1:
-                self.update_endpoint = configuration[1]
+                self.updateEndpoint = configuration[1]
         else:
             self.endpoint = configuration
 
-        if not self.update_endpoint:
-            self.update_endpoint = self.endpoint
+        if not self.updateEndpoint:
+            self.updateEndpoint = self.endpoint
+
+    def __set_update_endpoint(self, update_endpoint):
+        self.updateEndpoint = update_endpoint
+
+    def __get_update_endpoint(self):
+        return self.updateEndpoint
+
+    update_endpoint = property(
+        __get_update_endpoint,
+        __set_update_endpoint,
+        doc='the HTTP URL for the Update endpoint, typically' +
+            'something like http://server/dataset/update')
 
     # Transactional interfaces
     def commit(self):
-        """ """
         raise TypeError('The SPARQL Update store is not transaction aware!')
 
     def rollback(self):
-        """ """
         raise TypeError('The SPARQL Update store is not transaction aware')
 
     def add(self, spo, context=None, quoted=False):
         """ Add a triple to the store of triples. """
 
-        if not self.connection:
+        if not self.endpoint:
             raise Exception("UpdateEndpoint is not set - call 'open'")
 
         assert not quoted
@@ -645,15 +586,11 @@ class SPARQLUpdateStore(SPARQLStore):
                 context.identifier.n3(), triple)
         else:
             q = "INSERT DATA { %s }" % triple
-        r = self._do_update(q)
-        content = r.read()  # we expect no content
-        if r.status not in (200, 204):
-            raise Exception("Could not update: %d %s\n%s" % (
-                r.status, r.reason, content))
+        self._do_update(q)
 
     def addN(self, quads):
         """ Add a list of quads to the store. """
-        if not self.connection:
+        if not self.endpoint:
             raise Exception("UpdateEndpoint is not set - call 'open'")
 
         data = ""
@@ -670,15 +607,11 @@ class SPARQLUpdateStore(SPARQLStore):
             triple = "%s %s %s ." % (subject.n3(), predicate.n3(), obj.n3())
             data += "INSERT DATA { GRAPH <%s> { %s } }\n" % (
                 context.identifier, triple)
-        r = self._do_update(data)
-        content = r.read()  # we expect no content
-        if r.status not in (200, 204):
-            raise Exception("Could not update: %d %s\n%s" % (
-                r.status, r.reason, content))
+        self._do_update(data)
 
     def remove(self, spo, context):
         """ Remove a triple from the store """
-        if not self.connection:
+        if not self.endpoint:
             raise Exception("UpdateEndpoint is not set - call 'open'")
 
         (subject, predicate, obj) = spo
@@ -696,19 +629,16 @@ class SPARQLUpdateStore(SPARQLStore):
                 context.identifier.n3(), triple)
         else:
             q = "DELETE { %s } WHERE { %s } " % (triple, triple)
-        r = self._do_update(q)
-        content = r.read()  # we expect no content
-        if r.status not in (200, 204):
-            raise Exception("Could not update: %d %s\n%s" % (
-                r.status, r.reason, content))
+        self._do_update(q)
 
     def _do_update(self, update):
-        import urllib
-        if self.postAsEncoded:
-            update = urllib.urlencode({'update': update.encode("utf-8")})
-        self.connection.request(
-            'POST', self.path, update.encode("utf-8"), self.headers)
-        return self.connection.getresponse()
+        self.resetQuery()
+        self.setQuery(update)
+        self.setMethod(POST)
+        self.setRequestMethod(URLENCODED if self.postAsEncoded else POSTDIRECTLY)
+
+        result = SPARQLWrapper.query(self)
+        return result
 
     def update(self, query,
                initNs={},
@@ -747,6 +677,9 @@ class SPARQLUpdateStore(SPARQLStore):
               uncommon situations and produce invalid output.
 
         """
+        if not self.endpoint:
+            raise Exception("UpdateEndpoint is not set - call 'open'")
+
         self.debug = DEBUG
         assert isinstance(query, basestring)
         self.setNamespaceBindings(initNs)
@@ -768,11 +701,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
             query = self.where_pattern.sub("WHERE { " + values, query)
 
-        r = self._do_update(query)
-        content = r.read()  # we expect no content
-        if r.status not in (200, 204):
-            raise Exception("Could not update: %d %s\n%s" % (
-                r.status, r.reason, content))
+        self._do_update(query)
 
     def _insert_named_graph(self, query, query_graph):
         """
