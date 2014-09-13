@@ -308,9 +308,9 @@ def unicodeExpand(m):
         raise Exception("Invalid unicode code point: " + m.group(1))
 
 unicodeEscape4 = re.compile(
-    r'\\u([0-9a-f]{4})', flags=re.I)
+    r'\\u([0-9a-fA-F]{4})')
 unicodeEscape8 = re.compile(
-    r'\\U([0-9a-f]{8})', flags=re.I)
+    r'\\U([0-9a-fA-F]{8})')
 
 
 

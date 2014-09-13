@@ -40,6 +40,22 @@ def testTurtleBoolList():
     assert bool_list == [True, False, True]
 
 
+def testUnicodeEscaping():
+    turtle_string = " <http://example.com/A> <http://example.com/B> <http://example.com/aaa\u00F3bbbb> . <http://example.com/A> <http://example.com/C> <http://example.com/zzz\U00100000zzz> . <http://example.com/A> <http://example.com/D> <http://example.com/aaa\u00f3bbb> ."
+    g = Graph()
+
+    # shouldn't get an exception
+    g.parse(data=turtle_string, format="turtle")
+    triples = sorted(list(g))
+    assert len(triples) == 3
+    print triples
+    # Now check that was decoded into python values properly
+    assert triples[0][2] == URIRef(u'http://example.com/aaa\xf3bbbb')
+    assert triples[1][2] == URIRef(u'http://example.com/zzz\U00100000zzz')
+    assert triples[2][2] == URIRef(u'http://example.com/aaa\xf3bbb')
+
+
+
 if __name__ == "__main__":
     import nose, sys
     nose.main(defaultTest=sys.argv[0])
