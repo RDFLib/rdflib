@@ -80,5 +80,74 @@ class TestTrig(unittest.TestCase):
         g.add(TRIPLE + (rdflib.BNode(),))
         out = g.serialize(format='trig')
         graph_label_line = out.splitlines()[-4]
+
         self.assertTrue(re.match(br'^_:[a-zA-Z0-9]+ \{', graph_label_line))
-        
+
+    def testGraphParsing(self):
+        # should parse into single default graph context
+        data = """
+<http://example.com/thing#thing_a> <http://example.com/knows> <http://example.com/thing#thing_b> .
+"""
+        g = rdflib.ConjunctiveGraph()
+        g.parse(data=data, format='trig')
+        self.assertEqual(len(list(g.contexts())), 1)
+
+        # should parse into single default graph context
+        data = """
+<http://example.com/thing#thing_a> <http://example.com/knows> <http://example.com/thing#thing_b> .
+
+{ <http://example.com/thing#thing_c> <http://example.com/knows> <http://example.com/thing#thing_d> . }
+"""
+        g = rdflib.ConjunctiveGraph()
+        g.parse(data=data, format='trig')
+        self.assertEqual(len(list(g.contexts())), 1)
+
+        # should parse into 2 contexts, one default, one named
+        data = """
+<http://example.com/thing#thing_a> <http://example.com/knows> <http://example.com/thing#thing_b> .
+
+{ <http://example.com/thing#thing_c> <http://example.com/knows> <http://example.com/thing#thing_d> . }
+
+<http://example.com/graph#graph_a> {
+    <http://example.com/thing/thing_e> <http://example.com/knows> <http://example.com/thing#thing_f> .
+}
+"""
+        g = rdflib.ConjunctiveGraph()
+        g.parse(data=data, format='trig')
+        self.assertEqual(len(list(g.contexts())), 2)
+
+    def testRoundTrips(self):
+        data = """
+<http://example.com/thing#thing_a> <http://example.com/knows> <http://example.com/thing#thing_b> .
+
+{ <http://example.com/thing#thing_c> <http://example.com/knows> <http://example.com/thing#thing_d> . }
+
+<http://example.com/graph#graph_a> {
+    <http://example.com/thing/thing_e> <http://example.com/knows> <http://example.com/thing#thing_f> .
+}
+"""
+        g = rdflib.ConjunctiveGraph()
+        for i in range(5):
+            g.parse(data=data, format='trig')
+            data = g.serialize(format='trig')
+
+        # output should only contain 1 mention of each resource/graph name
+        self.assertEqual(data.count('thing_a'), 1)
+        self.assertEqual(data.count('thing_b'), 1)
+        self.assertEqual(data.count('thing_c'), 1)
+        self.assertEqual(data.count('thing_d'), 1)
+        self.assertEqual(data.count('thing_e'), 1)
+        self.assertEqual(data.count('thing_f'), 1)
+        self.assertEqual(data.count('graph_a'), 1)
+
+    def testDefaultGraphSerializesWithoutName(self):
+        data = """
+<http://example.com/thing#thing_a> <http://example.com/knows> <http://example.com/thing#thing_b> .
+
+{ <http://example.com/thing#thing_c> <http://example.com/knows> <http://example.com/thing#thing_d> . }
+"""
+        g = rdflib.ConjunctiveGraph()
+        g.parse(data=data, format='trig')
+        data = g.serialize(format='trig')
+
+        self.assertTrue('None' not in data)
