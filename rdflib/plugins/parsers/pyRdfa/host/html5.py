@@ -82,7 +82,7 @@ def _format_test(string) :
 			
 	# Now come the special cases:-(
 	# Check first for the duration stuff, that is the nastiest.
-	if len(string) > 2 and string[0] == 'P' or (string [0] == '-' and string[1] == 'P') :
+	if len(string) > 2 and (string[0] == 'P' or (string[0] == '-' and string[1] == 'P')) :
 		# this is meant to be a duration type
 		# first of all, get rid of the leading '-' and check again
 		if string[0] == '-' :
