@@ -84,14 +84,14 @@ __all__ = ['IsomorphicGraph', 'to_isomorphic', 'isomorphic',
            'to_canonical_graph', 'graph_diff', 'similar']
 
 from rdflib.graph import Graph, ConjunctiveGraph, ReadOnlyGraphAggregate
-from rdflib.term import BNode
+from rdflib.term import BNode, Node
 try:
     import hashlib
-    md = hashlib.md5
+    sha256 = hashlib.sha256
 except ImportError:
     # for Python << 2.5
-    import md5
-    md = md5.new
+    import sha256
+    sha256 = sha256.new
 
 
 class IsomorphicGraph(ConjunctiveGraph):
@@ -112,13 +112,13 @@ class IsomorphicGraph(ConjunctiveGraph):
             return False
         elif list(self) == list(other):
             return True  # TODO: really generally cheaper?
-        return self.internal_hash() == other.internal_hash()
+        return self.internal_hash() == other.graph_digest()
 
     def __ne__(self, other):
         """Negative graph isomorphism testing."""
         return not self.__eq__(other)
 
-    def internal_hash(self):
+    def graph_digest(self):
         """
         This is defined instead of __hash__ to avoid a circular recursion
         scenario with the Memory store for rdflib which requires a hash lookup
@@ -126,50 +126,219 @@ class IsomorphicGraph(ConjunctiveGraph):
         """
         return _TripleCanonicalizer(self).to_hash()
 
+class Color:
+    def __init__(self, nodes, hashfunc, color=()):
+        self.color = color
+        self.nodes = nodes
+        self.hashfunc = hashfunc
+
+    def key(self):
+        return (len(self.nodes),self.hash_color())
+
+    def hash_color(self, color=None):
+        if color == None:
+            color = self.color
+        def stringify(x):
+            if isinstance(x,Node):
+                return x.n3().encode("utf-8")
+            else: return str(x)
+        if isinstance(color, Node):
+            return stringify(color)
+        value = sum(map(self.hashfunc, ' '.join([stringify(x) for x in color])))
+        return "%x"% value
+
+    def distinguish(self, W, graph):
+        colors = {}
+        for n in self.nodes:
+            new_color = list(self.color)
+            for node in W.nodes:
+                new_color += [(1,p,W.hash_color()) for s,p,o in graph.triples((n,None,node))]
+                new_color += [(W.hash_color(),p,3) for s,p,o in graph.triples((node,None,n))]
+            new_color = tuple(new_color)
+            new_hash_color = self.hash_color(new_color)
+            #print new_hash_color, n
+            #print self.color, n
+            #print '\t' + "\n\t".join([str(n) for n in new_color])
+
+            if new_hash_color not in colors:
+                c = Color([],self.hashfunc, new_color)
+                colors[new_hash_color] = c
+            colors[new_hash_color].nodes.append(n)
+        return colors.values()
+
+    def discrete(self):
+        return len(self.nodes) == 1
+
+    def copy(self):
+        return Color(self.nodes[:], self.hashfunc, self.color)
 
 class _TripleCanonicalizer(object):
 
-    def __init__(self, graph, hashfunc=hash):
+    def __init__(self, graph, hashfunc=sha256):
         self.graph = graph
-        self.hashfunc = hashfunc
+        def _hashfunc(s):
+            h = hashfunc()
+            h.update(unicode(s).encode("utf8"))
+            return int(h.hexdigest(),16)
+
+        self.hashfunc = _hashfunc
+
+
+    def _discrete(self, coloring):
+        return len([c for c in coloring if not c.discrete()]) == 0
+
+
+    def _initial_color(self):
+        '''Finds an initial color for the graph by finding all blank nodes and
+        non-blank nodes that are adjacent. Nodes that are not adjacent to blank
+        nodes are not included, as they are a) already colored (by URI or literal) 
+        and b) do not factor into the color of any blank node.'''
+        bnodes = set()
+        others = set()
+        for s,p,o in self.graph:
+            nodes = set([s,o])
+            b = set([x for x in nodes if isinstance(x,BNode)])
+            if len(b) > 0:
+                others |= nodes-b
+                bnodes |= b
+        if len(bnodes) > 0:
+            return [Color(list(bnodes),self.hashfunc)]+[
+                    Color([x],self.hashfunc, x) for x in others]
+        else:
+            return []
+
+    def _individuate(self, color, individual):
+        #candidates = [c for c in coloring if not c.discrete()]
+        #if len(candidates) == 0:
+        #    return None
+        #candidates = sorted(candidates, key=lambda x: x.key())
+        #color = candidates[0]
+        new_color = list(color.color)
+        new_color.append((len(color.nodes)))
+
+        #individual = color.nodes.pop()
+        color.nodes.remove(individual)
+        c = Color([individual],self.hashfunc, tuple(new_color))
+        return c
+
+    def _get_candidates(self, coloring):
+        candidates = [c for c in coloring if not c.discrete()]
+        for c in [c for c in coloring if not c.discrete()]:
+            for node in c.nodes:
+                yield node, c
+
+    def _refine(self, coloring, sequence):
+        sequence = sorted(sequence,key=lambda x: x.key(), reverse=True)
+        coloring = coloring[:]
+        while len(sequence) > 0 and not self._discrete(coloring):
+            W = sequence.pop()
+            #new_coloring = []
+            for c in coloring:
+                if len(c.nodes) > 1:
+                    colors = sorted(c.distinguish(W, self.graph),
+                                    key=lambda x: x.key(),
+                                    reverse=True)
+                    coloring.remove(c)
+                    coloring.extend(colors)
+                    try:
+                        si = sequence.remove(c)
+                        #sequence = sequence[:si] + colors + sequence[si+1:]
+                    except ValueError:
+                        pass
+                    sequence = colors[1:] + sequence
+                #else:
+                #    new_coloring.append(c)
+            #coloring = new_coloring
+        return coloring
+
 
     def to_hash(self):
-        return self.hashfunc(tuple(sorted(
-            map(self.hashfunc, self.canonical_triples()))))
+        def stringify(x):
+            if isinstance(x,Node):
+                return x.n3()
+            else: return str(x)
+        return sum(map(self.hashfunc, ' '.join([stringify(x) for x 
+                       in self.canonical_triples()]).encode('utf-8')))
+
+    def _experimental_path(self, coloring):
+        coloring = [c.copy() for c in coloring]
+        while not self._discrete(coloring):
+            color = [x for x in coloring if not x.discrete()][0]
+            node = color.nodes[0]
+            new_color = self._individuate(color, node)
+            coloring.append(new_color)
+            print "Refining..."
+            coloring = self._refine(coloring,[new_color])
+        return coloring
+
+
+    def _traces(self, coloring):
+        candidates = self._get_candidates(coloring)
+        best = []
+        best_score = None
+        for candidate, color in candidates:
+            #print candidate, color
+            coloring_copy = []
+            color_copy = None
+            for c in coloring:
+                c_copy = c.copy()
+                coloring_copy.append(c_copy)
+                if c == color:
+                    color_copy = c_copy
+            #print "Individuating..."
+            new_color = self._individuate(color_copy, candidate)
+            coloring_copy.append(new_color)
+            #print "Refining..."
+            refined_coloring = self._refine(coloring_copy,[new_color])
+            color_score = tuple([c.key() for c in refined_coloring])
+            if best_score == None or best_score < color_score:
+                best = [refined_coloring]
+                best_score = color_score
+            elif best_score > color_score:
+                # prune this branch.
+                pass
+            else:
+                best.append(refined_coloring)
+        discrete = [x for x in best if self._discrete(x)]
+        if len(discrete) == 0:
+            very_best = None
+            best_score = None
+            for coloring in best:
+                new_color = self._traces(coloring)
+                color_score = tuple([c.key() for c in refined_coloring])
+                if best_score == None or color_score > best_score:
+                    discrete = [new_color]
+                    best_score = color_score
+        return discrete[0]
 
     def canonical_triples(self):
-        for triple in self.graph:
-            yield tuple(self._canonicalize_bnodes(triple))
+        print "Initial color..."
+        coloring = self._initial_color()
+        print "First refinement..."
+        coloring = self._refine(coloring,coloring[:])
+        print "colors:"
+        for c in coloring:
+            print c.key()
+            #print '\t' + "\n\t".join([str(n) for n in c.color])
+            print "\t\t"+"\n\t\t".join([n.n3() for n in c.nodes])
+        if not self._discrete(coloring):
+            coloring = self._traces(coloring)
+        print "colors:"
+        for c in coloring:
+            print c.key()
+            #print '\t' + "\n\t".join([str(n) for n in c.color])
+            print "\t\t"+"\n\t\t".join([n.n3() for n in c.nodes])
+        bnode_labels = dict([(c.nodes[0], c.hash_color()) for c in coloring])
 
-    def _canonicalize_bnodes(self, triple):
+        for triple in self.graph:
+            yield tuple(self._canonicalize_bnodes(triple, bnode_labels))
+
+    def _canonicalize_bnodes(self, triple, labels):
         for term in triple:
             if isinstance(term, BNode):
-                yield BNode(value="cb%s" % self._canonicalize(term))
+                yield BNode(value="cb%s" % labels[term])
             else:
                 yield term
-
-    def _canonicalize(self, term, done=False):
-        return self.hashfunc(tuple(sorted(self._vhashtriples(term, done),
-                                          key=_hetero_tuple_key)))
-
-    def _vhashtriples(self, term, done):
-        for triple in self.graph:
-            if term in triple:
-                yield tuple(self._vhashtriple(triple, term, done))
-
-    def _vhashtriple(self, triple, target_term, done):
-        for i, term in enumerate(triple):
-            if not isinstance(term, BNode):
-                yield term
-            elif done or (term == target_term):
-                yield i
-            else:
-                yield self._canonicalize(term, done=True)
-
-
-def _hetero_tuple_key(x):
-    "Sort like Python 2 - by name of type, then by value. Expects tuples."
-    return tuple((type(a).__name__, a) for a in x)
 
 
 def to_isomorphic(graph):
@@ -219,7 +388,7 @@ def to_canonical_graph(g1):
     deterministical MD5 checksums, correlated with the graph contents.
     """
     graph = Graph()
-    graph += _TripleCanonicalizer(g1, _md5_hash).canonical_triples()
+    graph += _TripleCanonicalizer(g1, _sha256_hash).canonical_triples()
     return ReadOnlyGraphAggregate([graph])
 
 
@@ -236,11 +405,11 @@ def graph_diff(g1, g2):
     return (in_both, in_first, in_second)
 
 
-def _md5_hash(t):
-    h = md()
+def _sha256_hash(t):
+    h = sha256()
     for i in t:
         if isinstance(i, tuple):
-            h.update(_md5_hash(i).encode('ascii'))
+            h.update(_sha256_hash(i).encode('ascii'))
         else:
             h.update(unicode(i).encode("utf8"))
     return h.hexdigest()
