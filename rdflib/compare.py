@@ -126,11 +126,14 @@ class IsomorphicGraph(ConjunctiveGraph):
         """
         return _TripleCanonicalizer(self).to_hash()
 
+_hash_cache = {}
 class Color:
     def __init__(self, nodes, hashfunc, color=()):
         self.color = color
         self.nodes = nodes
         self.hashfunc = hashfunc
+        self._hash_color = None
+        self.hash_cache = {}
 
     def key(self):
         return (len(self.nodes),self.hash_color())
@@ -138,6 +141,8 @@ class Color:
     def hash_color(self, color=None):
         if color == None:
             color = self.color
+        if color in _hash_cache:
+            return _hash_cache[color]
         def stringify(x):
             if isinstance(x,Node):
                 return x.n3().encode("utf-8")
@@ -145,7 +150,9 @@ class Color:
         if isinstance(color, Node):
             return stringify(color)
         value = sum(map(self.hashfunc, ' '.join([stringify(x) for x in color])))
-        return "%x"% value
+        val = "%x"% value
+        _hash_cache[color] = val
+        return val
 
     def distinguish(self, W, graph):
         colors = {}
@@ -208,15 +215,9 @@ class _TripleCanonicalizer(object):
             return []
 
     def _individuate(self, color, individual):
-        #candidates = [c for c in coloring if not c.discrete()]
-        #if len(candidates) == 0:
-        #    return None
-        #candidates = sorted(candidates, key=lambda x: x.key())
-        #color = candidates[0]
         new_color = list(color.color)
         new_color.append((len(color.nodes)))
 
-        #individual = color.nodes.pop()
         color.nodes.remove(individual)
         c = Color([individual],self.hashfunc, tuple(new_color))
         return c
@@ -232,8 +233,7 @@ class _TripleCanonicalizer(object):
         coloring = coloring[:]
         while len(sequence) > 0 and not self._discrete(coloring):
             W = sequence.pop()
-            #new_coloring = []
-            for c in coloring:
+            for c in coloring[:]:
                 if len(c.nodes) > 1:
                     colors = sorted(c.distinguish(W, self.graph),
                                     key=lambda x: x.key(),
@@ -241,14 +241,10 @@ class _TripleCanonicalizer(object):
                     coloring.remove(c)
                     coloring.extend(colors)
                     try:
-                        si = sequence.remove(c)
-                        #sequence = sequence[:si] + colors + sequence[si+1:]
+                        si = sequence.index(c)
+                        sequence = sequence[:si] + colors + sequence[si+1:]
                     except ValueError:
-                        pass
-                    sequence = colors[1:] + sequence
-                #else:
-                #    new_coloring.append(c)
-            #coloring = new_coloring
+                        sequence = colors[1:] + sequence
         return coloring
 
 
@@ -267,7 +263,6 @@ class _TripleCanonicalizer(object):
             node = color.nodes[0]
             new_color = self._individuate(color, node)
             coloring.append(new_color)
-            print "Refining..."
             coloring = self._refine(coloring,[new_color])
         return coloring
 
@@ -277,7 +272,6 @@ class _TripleCanonicalizer(object):
         best = []
         best_score = None
         for candidate, color in candidates:
-            #print candidate, color
             coloring_copy = []
             color_copy = None
             for c in coloring:
@@ -285,10 +279,8 @@ class _TripleCanonicalizer(object):
                 coloring_copy.append(c_copy)
                 if c == color:
                     color_copy = c_copy
-            #print "Individuating..."
             new_color = self._individuate(color_copy, candidate)
             coloring_copy.append(new_color)
-            #print "Refining..."
             refined_coloring = self._refine(coloring_copy,[new_color])
             color_score = tuple([c.key() for c in refined_coloring])
             if best_score == None or best_score < color_score:
@@ -312,22 +304,22 @@ class _TripleCanonicalizer(object):
         return discrete[0]
 
     def canonical_triples(self):
-        print "Initial color..."
+        #print "Initial color..."
         coloring = self._initial_color()
-        print "First refinement..."
+        #print "First refinement..."
         coloring = self._refine(coloring,coloring[:])
-        print "colors:"
-        for c in coloring:
-            print c.key()
-            #print '\t' + "\n\t".join([str(n) for n in c.color])
-            print "\t\t"+"\n\t\t".join([n.n3() for n in c.nodes])
+        #print "colors:"
+        # for c in coloring:
+        #     print c.key()
+        #     #print '\t' + "\n\t".join([str(n) for n in c.color])
+        #     print "\t\t"+"\n\t\t".join([n.n3() for n in c.nodes])
         if not self._discrete(coloring):
             coloring = self._traces(coloring)
-        print "colors:"
-        for c in coloring:
-            print c.key()
-            #print '\t' + "\n\t".join([str(n) for n in c.color])
-            print "\t\t"+"\n\t\t".join([n.n3() for n in c.nodes])
+        # print "colors:"
+        # for c in coloring:
+        #     print c.key()
+        #     #print '\t' + "\n\t".join([str(n) for n in c.color])
+        #     print "\t\t"+"\n\t\t".join([n.n3() for n in c.nodes])
         bnode_labels = dict([(c.nodes[0], c.hash_color()) for c in coloring])
 
         for triple in self.graph:
