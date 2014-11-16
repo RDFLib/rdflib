@@ -271,6 +271,8 @@ class _TripleCanonicalizer(object):
         candidates = self._get_candidates(coloring)
         best = []
         best_score = None
+        best_experimental = None
+        best_experimental_score = None
         for candidate, color in candidates:
             coloring_copy = []
             color_copy = None
@@ -283,13 +285,17 @@ class _TripleCanonicalizer(object):
             coloring_copy.append(new_color)
             refined_coloring = self._refine(coloring_copy,[new_color])
             color_score = tuple([c.key() for c in refined_coloring])
+            experimental = self._experimental_path(coloring_copy)
+            experimental_score = tuple([c.key() for c in refined_coloring])
             if best_score == None or best_score < color_score:
                 best = [refined_coloring]
                 best_score = color_score
+                best_experimental = experimental
+                best_experimental_score = experimental_score
             elif best_score > color_score:
                 # prune this branch.
                 pass
-            else:
+            elif experimental_score != best_experimental_score:
                 best.append(refined_coloring)
         discrete = [x for x in best if self._discrete(x)]
         if len(discrete) == 0:
