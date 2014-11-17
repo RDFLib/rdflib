@@ -193,6 +193,9 @@ else :
 	from rdflib.RDF	  import RDFNS  as ns_rdf
 	from rdflib.Graph import Graph
 
+import logging
+logger = logging.getLogger(__name__)
+
 # Namespace, in the RDFLib sense, for the rdfa vocabulary
 ns_rdfa		= Namespace("http://www.w3.org/ns/rdfa#")
 
@@ -490,7 +493,7 @@ class pyRdfa :
 		state = ExecutionContext(topElement, default_graph, base=self.required_base if self.required_base != None else "", options=self.options, rdfa_version=self.rdfa_version)
 
 		# Perform the built-in and external transformations on the HTML tree. 
-		print self.options
+		logger.info(self.options)
 		for trans in self.options.transformers + builtInTransformers :
 			trans(topElement, self.options, state)
 		
