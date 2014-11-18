@@ -5,8 +5,11 @@ from io import StringIO
 def get_digest_value(rdf, mimetype):
     graph = Graph()
     graph.load(StringIO(rdf),format=mimetype)
+    stats = {}
     ig = to_isomorphic(graph)
-    return ig.graph_digest()
+    result = ig.graph_digest(stats)
+    print stats
+    return result
 
 def negative_graph_match_test():
     '''Test of FRIR identifiers against tricky RDF graphs with blank nodes.'''
@@ -127,13 +130,13 @@ def negative_graph_match_test():
      _:0001 :rel _:0003, _:0004.
      _:0002 :rel _:0005, _:0006.
      _:0003 :rel _:0001, _:0007, _:0010.
+     _:0008 :rel _:0004, _:0006, _:0010.
+     _:0009 :rel _:0004, _:0005, _:0007.
+     _:0010 :rel _:0003, _:0006, _:0008.
      _:0004 :rel _:0001, _:0009, _:0008.
      _:0005 :rel _:0002, _:0007, _:0009.
      _:0006 :rel _:0002, _:0008, _:0010.
      _:0007 :rel _:0003, _:0005, _:0009.
-     _:0008 :rel _:0004, _:0006, _:0010.
-     _:0009 :rel _:0004, _:0005, _:0007.
-     _:0010 :rel _:0003, _:0006, _:0008.
      '''),
     True
     ],
@@ -141,6 +144,8 @@ def negative_graph_match_test():
     def fn(rdf1, rdf2, identical):
         digest1 = get_digest_value(rdf1,"text/turtle")
         digest2 = get_digest_value(rdf2,"text/turtle")
+        print digest1
+        print digest2
         assert (digest1 == digest2) == identical
     for inputs in testInputs:
         yield fn, inputs[0], inputs[1], inputs[2]

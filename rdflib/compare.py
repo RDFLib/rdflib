@@ -93,6 +93,39 @@ except ImportError:
     import sha256
     sha256 = sha256.new
 
+from datetime import datetime
+
+class runtime(object):
+    def __init__(self, label):
+        self.label = label
+
+    def __call__(self,f):
+        if self.label == None:
+            self.label = f.__name__+"_runtime"
+        def wrapped_f(*args,**kwargs):
+            start = datetime.now()
+            result = f(*args, **kwargs)
+            if 'stats' in kwargs and kwargs['stats'] != None:
+                stats = kwargs['stats']
+                stats[self.label] = (datetime.now() - start).total_seconds()
+            return result
+        return wrapped_f
+
+class call_count(object):
+    def __init__(self, label):
+        self.label = label
+
+    def __call__(self,f):
+        if self.label == None:
+            self.label = f.__name__+"_runtime"
+        def wrapped_f(*args,**kwargs):
+            if 'stats' in kwargs and kwargs['stats'] != None:
+                stats = kwargs['stats']
+                if self.label not in stats:
+                    stats[self.label] = 0
+                stats[self.label] += 1
+            return f(*args, **kwargs)
+        return wrapped_f
 
 class IsomorphicGraph(ConjunctiveGraph):
     """
@@ -118,13 +151,13 @@ class IsomorphicGraph(ConjunctiveGraph):
         """Negative graph isomorphism testing."""
         return not self.__eq__(other)
 
-    def graph_digest(self):
+    def graph_digest(self, stats=None):
         """
         This is defined instead of __hash__ to avoid a circular recursion
         scenario with the Memory store for rdflib which requires a hash lookup
         in order to return a generator of triples.
         """
-        return _TripleCanonicalizer(self).to_hash()
+        return _TripleCanonicalizer(self).to_hash(stats=stats)
 
 _hash_cache = {}
 class Color:
@@ -247,14 +280,17 @@ class _TripleCanonicalizer(object):
                         sequence = colors[1:] + sequence
         return coloring
 
-
-    def to_hash(self):
+    @runtime("to_hash_runtime")
+    def to_hash(self, stats=None):
         def stringify(x):
             if isinstance(x,Node):
                 return x.n3()
             else: return str(x)
-        return sum(map(self.hashfunc, ' '.join([stringify(x) for x 
-                       in self.canonical_triples()]).encode('utf-8')))
+        result = sum(map(self.hashfunc, ' '.join([stringify(x) for x 
+                       in self.canonical_triples(stats=stats)]).encode('utf-8')))
+        if stats != None:
+            stats['graph_digest'] = "%x"% result
+        return result
 
     def _experimental_path(self, coloring):
         coloring = [c.copy() for c in coloring]
@@ -266,8 +302,11 @@ class _TripleCanonicalizer(object):
             coloring = self._refine(coloring,[new_color])
         return coloring
 
-
-    def _traces(self, coloring):
+    @call_count("individuations")
+    def _traces(self, coloring, stats=None, depth=[0]):
+        if stats != None and 'prunings' not in stats:
+            stats['prunings'] = 0
+        depth[0] += 1
         candidates = self._get_candidates(coloring)
         best = []
         best_score = None
@@ -286,7 +325,7 @@ class _TripleCanonicalizer(object):
             refined_coloring = self._refine(coloring_copy,[new_color])
             color_score = tuple([c.key() for c in refined_coloring])
             experimental = self._experimental_path(coloring_copy)
-            experimental_score = tuple([c.key() for c in refined_coloring])
+            experimental_score = set([c.key() for c in refined_coloring])
             if best_score == None or best_score < color_score:
                 best = [refined_coloring]
                 best_score = color_score
@@ -294,38 +333,54 @@ class _TripleCanonicalizer(object):
                 best_experimental_score = experimental_score
             elif best_score > color_score:
                 # prune this branch.
-                pass
+                if stats != None:
+                    stats['prunings'] += 1
             elif experimental_score != best_experimental_score:
                 best.append(refined_coloring)
+            else:
+                # prune this branch.
+                if stats != None:
+                    stats['prunings'] += 1
         discrete = [x for x in best if self._discrete(x)]
         if len(discrete) == 0:
             very_best = None
             best_score = None
+            best_depth = None
             for coloring in best:
-                new_color = self._traces(coloring)
+                d = [depth[0]]
+                new_color = self._traces(coloring, stats=stats, depth=d)
                 color_score = tuple([c.key() for c in refined_coloring])
                 if best_score == None or color_score > best_score:
                     discrete = [new_color]
                     best_score = color_score
+                    best_depth = d[0]
+            print best_depth
+            depth[0] = best_depth
         return discrete[0]
 
-    def canonical_triples(self):
-        #print "Initial color..."
+    @runtime("canonicalize_triples_runtime")
+    def canonical_triples(self, stats=None):
+        if stats != None:
+            start_coloring = datetime.now()
         coloring = self._initial_color()
-        #print "First refinement..."
+        if stats != None:
+            stats['triple_count'] = len(self.graph)
+            stats['adjacent_nodes']  = max(0, len(coloring) - 1)
         coloring = self._refine(coloring,coloring[:])
-        #print "colors:"
-        # for c in coloring:
-        #     print c.key()
-        #     #print '\t' + "\n\t".join([str(n) for n in c.color])
-        #     print "\t\t"+"\n\t\t".join([n.n3() for n in c.nodes])
+        if stats != None:
+            stats['initial_coloring_runtime'] = (datetime.now() - start_coloring).total_seconds()
+            stats['initial_color_count'] = len(coloring)
         if not self._discrete(coloring):
-            coloring = self._traces(coloring)
-        # print "colors:"
-        # for c in coloring:
-        #     print c.key()
-        #     #print '\t' + "\n\t".join([str(n) for n in c.color])
-        #     print "\t\t"+"\n\t\t".join([n.n3() for n in c.nodes])
+            depth = [0]
+            coloring = self._traces(coloring, stats=stats, depth=depth)
+            if stats != None:
+                stats['tree_depth'] = depth[0]
+        elif stats != None:
+            stats['individuations'] = 0
+            stats['tree_depth'] = 0
+        if stats != None:
+            stats['color_count'] = len(coloring)
+
         bnode_labels = dict([(c.nodes[0], c.hash_color()) for c in coloring])
 
         for triple in self.graph:
