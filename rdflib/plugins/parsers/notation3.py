@@ -308,9 +308,9 @@ def unicodeExpand(m):
         raise Exception("Invalid unicode code point: " + m.group(1))
 
 unicodeEscape4 = re.compile(
-    r'\\u([0-9a-f]{4})', flags=re.I)
+    r'\\u([0-9a-fA-F]{4})')
 unicodeEscape8 = re.compile(
-    r'\\U([0-9a-f]{8})', flags=re.I)
+    r'\\U([0-9a-fA-F]{8})')
 
 
 
@@ -1581,23 +1581,23 @@ class SinkParser:
         self.BadSyntax(argstr, i,
                         "unterminated string literal")
 
-    def _unicodeEscape(self, argstr, i, startline, reg, n):
+    def _unicodeEscape(self, argstr, i, startline, reg, n, prefix):
         if len(argstr)<i+n:
             raise BadSyntax(
                     self._thisDoc, startline, argstr, i,
                     "unterminated string literal(3)")
         try:
-            return i+n, reg.sub(unicodeExpand, '\\u'+argstr[i:i+n])
+            return i+n, reg.sub(unicodeExpand, '\\'+prefix+argstr[i:i+n])
         except:
             raise BadSyntax(
                 self._thisDoc, startline, argstr, i,
                 "bad string literal hex escape: "+argstr[i:i+n])
 
     def uEscape(self, argstr, i, startline):
-        return self._unicodeEscape(argstr, i, startline, unicodeEscape4, 4)
+        return self._unicodeEscape(argstr, i, startline, unicodeEscape4, 4, 'u')
 
     def UEscape(self, argstr, i, startline):
-        return self._unicodeEscape(argstr, i, startline, unicodeEscape8, 8 )
+        return self._unicodeEscape(argstr, i, startline, unicodeEscape8, 8, 'U')
 
     def BadSyntax(self, argstr, i, msg):
         raise BadSyntax(self._thisDoc, self.lines, argstr, i, msg)
