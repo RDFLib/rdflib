@@ -31,6 +31,7 @@ stat_cols = [
     'tree_depth', 
     'color_count', 
     'individuations', 
+    'prunings',
     'initial_color_count', 
     'adjacent_nodes', 
     'initial_coloring_runtime', 
@@ -46,7 +47,6 @@ def bioportal_benchmark(apikey, output_file):
     ontology_graph = Graph()
     print url
     ontology_list_json = urlopen(url).read()
-    print ontology_list_json[:1000]
     ontology_graph.parse(StringIO(unicode(ontology_list_json)), format="json-ld")
     ontologies = ontology_graph.query(bioportal_query)
     w = open(output_file, 'w')
