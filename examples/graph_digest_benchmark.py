@@ -11,6 +11,7 @@ import sys, csv
 from urllib import *
 from io import StringIO
 from collections import defaultdict
+from urllib2 import urlopen
 
 from multiprocessing import *
 from Queue import Empty
@@ -58,14 +59,20 @@ def bioportal_benchmark(apikey, output_file, threads):
     writer.writeheader()
     tasks = Queue()
     finished_tasks = Queue()
+    dl_lock = Semaphore(4)
     task_count = len(ontologies)
-    def worker(q,finished_tasks):
+    def worker(q,finished_tasks, dl_lock):
         try:
             while True:
                 stats = q.get()
-                og = stats['graph']
-                print stats['ontology'], stats['download_url']
+                og = Graph()
                 try:
+                    try:
+                        dl_lock.acquire()
+                        og.load(stats['download_url']+"?apikey=%s"%apikey)
+                    finally:
+                        dl_lock.release()
+                    print stats['ontology'], stats['download_url']
                     ig = to_isomorphic(og)
                     graph_digest = ig.graph_digest(stats)
                 except Exception as e:
@@ -76,7 +83,7 @@ def bioportal_benchmark(apikey, output_file, threads):
             pass
     for i in range(int(threads)):
         print "Starting worker", i
-        t = Process(target=worker, args=[tasks,finished_tasks])
+        t = Process(target=worker, args=[tasks,finished_tasks, dl_lock])
         t.daemon = True
         t.start()
     for ontology, title, download in ontologies:
@@ -86,13 +93,7 @@ def bioportal_benchmark(apikey, output_file, threads):
             "ontology": title,
             "download_url": download
         })
-        try:
-            og = Graph()
-            og.load(stats['download_url']+"?apikey=%s"%apikey)
-            stats['graph'] = og
-            tasks.put(stats)
-        except Exception as e:
-            print ontology, e
+        tasks.put(stats)
     tasks.close()
     written_tasks = 0
     while written_tasks < task_count:
