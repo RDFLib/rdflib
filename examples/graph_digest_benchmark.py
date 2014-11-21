@@ -12,6 +12,9 @@ from urllib import *
 from io import StringIO
 from collections import defaultdict
 
+from threading import *
+from Queue import Queue, Empty
+
 bioportal_query = '''
 PREFIX metadata: <http://data.bioontology.org/metadata/>
 
@@ -39,9 +42,10 @@ stat_cols = [
     'graph_digest',
     'to_hash_runtime',
     'canonicalize_triples_runtime',
+    'error',
     ]     
 
-def bioportal_benchmark(apikey, output_file):
+def bioportal_benchmark(apikey, output_file, threads):
     metadata = Namespace("http://data.bioontology.org/metadata/")
     url = 'http://data.bioontology.org/ontologies?apikey=%s'%apikey
     ontology_graph = Graph()
@@ -52,6 +56,32 @@ def bioportal_benchmark(apikey, output_file):
     w = open(output_file, 'w')
     writer = csv.DictWriter(w,stat_cols)
     writer.writeheader()
+    tasks = Queue()
+    finished_tasks = Queue()
+    lock = Lock()
+    task_count = len(ontologies)
+    class Worker(Thread):
+        def run(self):
+            while True:
+                lock.acquire()
+                stats = tasks.get()
+                lock.release()
+                print stats['ontology'], stats['download_url']
+                try:
+                    og = Graph()
+                    og.load(stats['download_url']+"?apikey=%s"%apikey)
+                    ig = to_isomorphic(og)
+                    graph_digest = ig.graph_digest(stats)
+                except Exception as e:
+                    print e
+                    stats['error'] = str(e)
+                finished_tasks.put(stats)
+                tasks.task_done()
+    for i in range(int(threads)):
+        print "Starting worker", i
+        t = Worker()
+        t.daemon = True
+        t.start()
     for ontology, title, download in ontologies:
         stats = defaultdict(str)
         stats.update({
@@ -59,16 +89,14 @@ def bioportal_benchmark(apikey, output_file):
             "ontology": title,
             "download_url": download
         })
-        print title, download
-        try:
-            og = Graph()
-            og.load(download+"?apikey=%s"%apikey)
-            ig = to_isomorphic(og)
-            graph_digest = ig.graph_digest(stats)
-            writer.writerow(stats)
-            w.flush()
-        except Exception as e:
-            print e
+        tasks.put(stats)
+    written_tasks = 0
+    while written_tasks < task_count:
+        stats = finished_tasks.get()
+        print "Writing", stats['ontology']
+        writer.writerow(stats)
+        w.flush()
+        written_tasks += 1
 
 if __name__ == '__main__':
-    bioportal_benchmark(sys.argv[1], sys.argv[2])
+    bioportal_benchmark(sys.argv[1], sys.argv[2], sys.argv[3])
