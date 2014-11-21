@@ -72,12 +72,12 @@ def bioportal_benchmark(apikey, output_file, threads):
                         og.load(stats['download_url']+"?apikey=%s"%apikey)
                     finally:
                         dl_lock.release()
-                    print stats['ontology'], stats['download_url']
+                    print stats['ontology'], stats['id']
                     ig = to_isomorphic(og)
                     graph_digest = ig.graph_digest(stats)
                     finished_tasks.put(stats)
                 except Exception as e:
-                    print 'ERROR' id, e
+                    print 'ERROR', stats['id'], e
                     stats['error'] = str(e)
                     finished_tasks.put(stats)
         except Empty:
@@ -99,7 +99,7 @@ def bioportal_benchmark(apikey, output_file, threads):
     written_tasks = 0
     while written_tasks < task_count:
         stats = finished_tasks.get()
-        print "Writing", stats['ontology']
+        #print "Writing", stats['ontology']
         writer.writerow(stats)
         w.flush()
         written_tasks += 1
