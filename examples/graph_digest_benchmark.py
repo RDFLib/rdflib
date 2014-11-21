@@ -75,8 +75,9 @@ def bioportal_benchmark(apikey, output_file, threads):
                     print stats['ontology'], stats['download_url']
                     ig = to_isomorphic(og)
                     graph_digest = ig.graph_digest(stats)
+                    finished_tasks.put(stats)
                 except Exception as e:
-                    print e
+                    print 'ERROR' id, e
                     stats['error'] = str(e)
                     finished_tasks.put(stats)
         except Empty:
