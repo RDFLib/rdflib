@@ -12,8 +12,8 @@ from urllib import *
 from io import StringIO
 from collections import defaultdict
 
-from threading import *
-from Queue import Queue, Empty
+from multiprocessing import *
+from Queue import Empty
 
 bioportal_query = '''
 PREFIX metadata: <http://data.bioontology.org/metadata/>
@@ -58,14 +58,11 @@ def bioportal_benchmark(apikey, output_file, threads):
     writer.writeheader()
     tasks = Queue()
     finished_tasks = Queue()
-    lock = Lock()
     task_count = len(ontologies)
-    class Worker(Thread):
-        def run(self):
+    def worker(q,finished_tasks):
+        try:
             while True:
-                lock.acquire()
-                stats = tasks.get()
-                lock.release()
+                stats = q.get()
                 print stats['ontology'], stats['download_url']
                 try:
                     og = Graph()
@@ -75,11 +72,12 @@ def bioportal_benchmark(apikey, output_file, threads):
                 except Exception as e:
                     print e
                     stats['error'] = str(e)
-                finished_tasks.put(stats)
-                tasks.task_done()
+                    finished_tasks.put(stats)
+        except Empty:
+            pass
     for i in range(int(threads)):
         print "Starting worker", i
-        t = Worker()
+        t = Process(target=worker, args=[tasks,finished_tasks])
         t.daemon = True
         t.start()
     for ontology, title, download in ontologies:
@@ -90,6 +88,7 @@ def bioportal_benchmark(apikey, output_file, threads):
             "download_url": download
         })
         tasks.put(stats)
+    tasks.close()
     written_tasks = 0
     while written_tasks < task_count:
         stats = finished_tasks.get()
