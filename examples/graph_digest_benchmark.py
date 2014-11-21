@@ -63,10 +63,9 @@ def bioportal_benchmark(apikey, output_file, threads):
         try:
             while True:
                 stats = q.get()
+                og = stats['graph']
                 print stats['ontology'], stats['download_url']
                 try:
-                    og = Graph()
-                    og.load(stats['download_url']+"?apikey=%s"%apikey)
                     ig = to_isomorphic(og)
                     graph_digest = ig.graph_digest(stats)
                 except Exception as e:
@@ -87,7 +86,13 @@ def bioportal_benchmark(apikey, output_file, threads):
             "ontology": title,
             "download_url": download
         })
-        tasks.put(stats)
+        try:
+            og = Graph()
+            og.load(stats['download_url']+"?apikey=%s"%apikey)
+            stats['graph'] = og
+            tasks.put(stats)
+        except Exception as e:
+            print ontology, e
     tasks.close()
     written_tasks = 0
     while written_tasks < task_count:
