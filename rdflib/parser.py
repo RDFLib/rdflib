@@ -105,6 +105,7 @@ class URLInputSource(InputSource):
         self.content_type = self.content_type.split(";", 1)[0]
         self.setByteStream(file)
         # TODO: self.setEncoding(encoding)
+        self.response_info = file.info() # a mimetools.Message instance
 
     def __repr__(self):
         return self.url
