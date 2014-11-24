@@ -41,7 +41,7 @@ if sys.version_info[0] >= 3:
     kwargs['install_requires'] = ['isodate', 'pyparsing']
     kwargs['tests_require'] = ['html5lib', 'networkx']
     kwargs['requires'] = [
-        'isodate', 'pyparsing',
+        'six', 'isodate', 'pyparsing',
         ]
     html5lib = 'html5lib'
     kwargs['src_root'] = setup_python3()
@@ -52,7 +52,7 @@ else:
         assert setup
         kwargs['test_suite'] = "nose.collector"
         kwargs['install_requires'] = [
-            'isodate',
+            'six', 'isodate',
             'pyparsing']
         kwargs['tests_require'] = ['networkx']
 
