@@ -37,7 +37,7 @@ def setup_python3():
 kwargs = {}
 if sys.version_info[0] >= 3:
     from setuptools import setup
-    kwargs['use_2to3'] = True
+    # kwargs['use_2to3'] = True  # is done in setup_python3 above already
     kwargs['install_requires'] = ['isodate', 'pyparsing']
     kwargs['tests_require'] = ['html5lib']
     kwargs['requires'] = [
