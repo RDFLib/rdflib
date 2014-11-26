@@ -59,6 +59,8 @@ from hashlib import md5
 import rdflib
 from . import py3compat
 from .compat import numeric_greater
+from .py3compat import PY2
+from .py3compat import PY3
 from .py3compat import b
 from .py3compat import urldefrag
 from .py3compat import urljoin
@@ -246,7 +248,7 @@ class URIRef(Identifier):
     def __getnewargs__(self):
         return (unicode(self), )
 
-    if not py3compat.PY3:
+    if PY2:
         def __str__(self):
             return self.encode()
 
@@ -389,7 +391,7 @@ class BNode(Identifier):
     def __reduce__(self):
         return (BNode, (unicode(self),))
 
-    if not py3compat.PY3:
+    if PY2:
         def __str__(self):
             return self.encode()
 
@@ -631,7 +633,7 @@ class Literal(Identifier):
         s = unicode.__add__(self, val)
         return Literal(s, self.language, self.datatype)
 
-    def __nonzero__(self):
+    def __bool__(self):
         """
         Is the Literal "True"
         This is used for if statements, bool(literal), etc.
@@ -639,6 +641,9 @@ class Literal(Identifier):
         if self.value != None:
             return bool(self.value)
         return len(self) != 0
+
+    if PY2:
+        __nonzero__ = __bool__
 
     @py3compat.format_doctest_out
     def __neg__(self):
@@ -1228,7 +1233,7 @@ class Literal(Identifier):
                         '"', '\\"').replace(
                             '\r', '\\r')
 
-    if not py3compat.PY3:
+    if PY2:
         def __str__(self):
             return self.encode()
 
@@ -1255,7 +1260,7 @@ class Literal(Identifier):
 
 
 def _parseXML(xmlstring):
-    if not py3compat.PY3:
+    if PY2:
         xmlstring = xmlstring.encode('utf-8')
     retval = xml.dom.minidom.parseString(
         "<rdflibtoplevelelement>%s</rdflibtoplevelelement>" % xmlstring)
