@@ -47,7 +47,6 @@ import math
 import base64
 import xml.dom.minidom
 
-from urlparse import urlparse, urljoin, urldefrag
 from datetime import date, time, datetime
 from re import sub, compile
 from collections import defaultdict
@@ -58,6 +57,9 @@ from isodate import parse_time, parse_date, parse_datetime
 import rdflib
 from . import py3compat
 from .py3compat import b
+from .py3compat import urldefrag
+from .py3compat import urljoin
+from .py3compat import urlparse
 
 skolem_genid = "/.well-known/genid/"
 rdflib_skolem_genid = "/.well-known/genid/rdflib/"
