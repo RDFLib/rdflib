@@ -54,12 +54,6 @@ from collections import defaultdict
 
 from isodate import parse_time, parse_date, parse_datetime
 
-try:
-    from hashlib import md5
-    assert md5
-except ImportError:
-    from md5 import md5
-
 
 import rdflib
 from . import py3compat
