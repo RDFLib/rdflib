@@ -59,6 +59,7 @@ from . import py3compat
 from .py3compat import PY2
 from .py3compat import PY3
 from .py3compat import b
+from .py3compat import string_types
 from .py3compat import text_type
 from .py3compat import urldefrag
 from .py3compat import urljoin
@@ -316,7 +317,7 @@ class Genid(URIRef):
 
     @staticmethod
     def _is_external_skolem(uri):
-        if not isinstance(uri, basestring):
+        if not isinstance(uri, string_types):
             uri = str(uri)
         parsed_uri = urlparse(uri)
         gen_id = parsed_uri.path.rfind(skolem_genid)
@@ -330,7 +331,7 @@ class RDFLibGenid(Genid):
 
     @staticmethod
     def _is_rdflib_skolem(uri):
-        if not isinstance(uri, basestring):
+        if not isinstance(uri, string_types):
             uri = str(uri)
         parsed_uri = urlparse(uri)
         if parsed_uri.params != "" \
@@ -552,7 +553,7 @@ class Literal(Identifier):
                 datatype = lexical_or_value.datatype
                 value = lexical_or_value.value
 
-        elif isinstance(lexical_or_value, basestring):
+        elif isinstance(lexical_or_value, string_types):
                 # passed a string
                 # try parsing lexical form of datatyped literal
                 value = _castLexicalToPython(lexical_or_value, datatype)
@@ -1053,7 +1054,7 @@ class Literal(Identifier):
         elif isinstance(other, Node):
             return False  # no non-Literal nodes are equal to a literal
 
-        elif isinstance(other, basestring):
+        elif isinstance(other, string_types):
             # only plain-literals can be directly compared to strings
 
             # TODO: Is "blah"@en eq "blah" ?
@@ -1425,7 +1426,7 @@ from decimal import Decimal
 # rather than some concrete bit-limited datatype
 
 _PythonToXSD = [
-    (basestring, (None, None)),
+    (string_types, (None, None)),
     (float, (None, _XSD_DOUBLE)),
     (bool, (lambda i:str(i).lower(), _XSD_BOOLEAN)),
     (int, (None, _XSD_INTEGER)),
