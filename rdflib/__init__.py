@@ -81,8 +81,9 @@ logger = logging.getLogger(__name__)
 logger.info("RDFLib Version: %s" % __version__)
 
 
+import six
 try:
-    unichr(0x10FFFF)
+    six.unichr(0x10FFFF)
 except ValueError:
     import warnings
     warnings.warn(
@@ -94,6 +95,7 @@ except ValueError:
         'Python build in production systems.',
         ImportWarning)
     del warnings
+del six
 
 
 NORMALIZE_LITERALS = True

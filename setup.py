@@ -28,6 +28,7 @@ def setup_python3():
             outfiles_2to3.append(outf)
 
     six_ed = [  # add files which have already been transformed to use six
+        join(tmp_src, 'rdflib', '__init__.py'),
         join(tmp_src, 'rdflib', 'compat.py'),
         join(tmp_src, 'rdflib', 'py3compat.py'),
         join(tmp_src, 'rdflib', 'term.py'),
