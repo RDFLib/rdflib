@@ -63,6 +63,7 @@ from .compat import numeric_greater
 from .py3compat import PY2
 from .py3compat import PY3
 from .py3compat import b
+from .py3compat import text_type
 from .py3compat import urldefrag
 from .py3compat import urljoin
 from .py3compat import urlparse
@@ -93,7 +94,7 @@ class Node(object):
     __slots__ = ()
 
 
-class Identifier(Node, unicode):  # allow Identifiers to be Nodes in the Graph
+class Identifier(Node, text_type):  # allow Identifiers to be Nodes in the Graph
     """
     See http://www.w3.org/2002/07/rdf-identifer-terminology/
     regarding choice of terminology.
@@ -102,7 +103,7 @@ class Identifier(Node, unicode):  # allow Identifiers to be Nodes in the Graph
     __slots__ = ()
 
     def __new__(cls, value):
-        return unicode.__new__(cls, value)
+        return text_type.__new__(cls, value)
 
     def eq(self, other):
         """A "semantic"/interpreted equality function,
@@ -138,7 +139,7 @@ class Identifier(Node, unicode):  # allow Identifiers to be Nodes in the Graph
         """
 
         if type(self) == type(other):
-            return unicode(self) == unicode(other)
+            return text_type(self) == text_type(other)
         else:
             return False
 
@@ -156,7 +157,7 @@ class Identifier(Node, unicode):  # allow Identifiers to be Nodes in the Graph
         if other is None:
             return True  # everything bigger than None
         elif type(self) == type(other):
-            return unicode(self) > unicode(other)
+            return text_type(self) > text_type(other)
         elif isinstance(other, Node):
             return _ORDERING[type(self)] > _ORDERING[type(other)]
 
@@ -166,7 +167,7 @@ class Identifier(Node, unicode):  # allow Identifiers to be Nodes in the Graph
         if other is None:
             return False  # Nothing is less than None
         elif type(self) == type(other):
-            return unicode(self) < unicode(other)
+            return text_type(self) < text_type(other)
         elif isinstance(other, Node):
             return _ORDERING[type(self)] < _ORDERING[type(other)]
 
@@ -185,7 +186,7 @@ class Identifier(Node, unicode):  # allow Identifiers to be Nodes in the Graph
         return self == other
 
     def __hash__(self):
-        return hash(type(self)) ^ hash(unicode(self))
+        return hash(type(self)) ^ hash(text_type(self))
 
 
 class URIRef(Identifier):
@@ -208,13 +209,13 @@ class URIRef(Identifier):
 
 
         try:
-            rt = unicode.__new__(cls, value)
+            rt = text_type.__new__(cls, value)
         except UnicodeDecodeError:
-            rt = unicode.__new__(cls, value, 'utf-8')
+            rt = text_type.__new__(cls, value, 'utf-8')
         return rt
 
     def toPython(self):
-        return unicode(self)
+        return text_type(self)
 
     def n3(self, namespace_manager = None):
         """
@@ -242,10 +243,10 @@ class URIRef(Identifier):
             return self
 
     def __reduce__(self):
-        return (URIRef, (unicode(self),))
+        return (URIRef, (text_type(self),))
 
     def __getnewargs__(self):
-        return (unicode(self), )
+        return (text_type(self), )
 
     if PY2:
         def __str__(self):
@@ -260,13 +261,13 @@ class URIRef(Identifier):
         return """%s(%s)""" % (clsName, super(URIRef, self).__repr__())
 
     def __add__(self, other):
-        return self.__class__(unicode(self) + other)
+        return self.__class__(text_type(self) + other)
 
     def __radd__(self, other):
-        return self.__class__(other + unicode(self))
+        return self.__class__(other + text_type(self))
 
     def __mod__(self, other):
-        return self.__class__(unicode(self) % other)
+        return self.__class__(text_type(self) % other)
 
     def md5_term_hash(self):
         """a string of hex that will be the same for two URIRefs that
@@ -386,22 +387,22 @@ class BNode(Identifier):
             # for RDF/XML needs to be something that can be serialzed
             # as a nodeID for N3 ??  Unless we require these
             # constraints be enforced elsewhere?
-            pass  # assert is_ncname(unicode(value)), "BNode identifiers
+            pass  # assert is_ncname(text_type(value)), "BNode identifiers
                  # must be valid NCNames" _:[A-Za-z][A-Za-z0-9]*
                  # http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID
         return Identifier.__new__(cls, value)
 
     def toPython(self):
-        return unicode(self)
+        return text_type(self)
 
     def n3(self, namespace_manager=None):
         return "_:%s" % self
 
     def __getnewargs__(self):
-        return (unicode(self), )
+        return (text_type(self), )
 
     def __reduce__(self):
-        return (BNode, (unicode(self),))
+        return (BNode, (text_type(self),))
 
     if PY2:
         def __str__(self):
@@ -435,7 +436,7 @@ class BNode(Identifier):
 
         .. versionadded:: 4.0
         """
-        skolem = "%s%s" % (rdflib_skolem_genid, unicode(self))
+        skolem = "%s%s" % (rdflib_skolem_genid, text_type(self))
         return URIRef(urljoin(authority, skolem))
 
 
@@ -589,9 +590,9 @@ class Literal(Identifier):
             lexical_or_value = lexical_or_value.decode('utf-8')
 
         try:
-            inst = unicode.__new__(cls, lexical_or_value)
+            inst = text_type.__new__(cls, lexical_or_value)
         except UnicodeDecodeError:
-            inst = unicode.__new__(cls, lexical_or_value, 'utf-8')
+            inst = text_type.__new__(cls, lexical_or_value, 'utf-8')
 
         inst._language = lang
         inst._datatype = datatype
@@ -631,7 +632,7 @@ class Literal(Identifier):
         return self._datatype
 
     def __reduce__(self):
-        return (Literal, (unicode(self), self.language, self.datatype),)
+        return (Literal, (text_type(self), self.language, self.datatype),)
 
     def __getstate__(self):
         return (None, dict(language=self.language, datatype=self.datatype))
@@ -657,7 +658,7 @@ class Literal(Identifier):
             except TypeError:
                 pass  # fall-through
 
-        s = unicode.__add__(self, val)
+        s = text_type.__add__(self, val)
         return Literal(s, self.language, self.datatype)
 
     def __bool__(self):
@@ -824,8 +825,8 @@ class Literal(Identifier):
             if self.value != None and other.value != None:
                 return self.value > other.value
 
-            if unicode(self) != unicode(other):
-                return unicode(self) > unicode(other)
+            if text_type(self) != text_type(other):
+                return text_type(self) > text_type(other)
 
             # same language, same lexical form, check real dt
             # plain-literals come before xsd:string!
@@ -936,7 +937,7 @@ class Literal(Identifier):
 
         """
 
-        return unicode.__hash__(self) ^ hash(self.language.lower() if self.language else None) ^ hash(self.datatype)
+        return text_type.__hash__(self) ^ hash(self.language.lower() if self.language else None) ^ hash(self.datatype)
 
     @py3compat.format_doctest_out
     def __eq__(self, other):
@@ -982,7 +983,7 @@ class Literal(Identifier):
         if isinstance(other, Literal):
             return self.datatype == other.datatype \
                 and (self.language.lower() if self.language else None) == (other.language.lower() if other.language else None) \
-                and unicode.__eq__(self, other)
+                and text_type.__eq__(self, other)
 
         return False
 
@@ -1015,7 +1016,7 @@ class Literal(Identifier):
                 if self.value != None and other.value != None:
                     return self.value == other.value
                 else:
-                    if unicode.__eq__(self, other):
+                    if text_type.__eq__(self, other):
                         return True
                     raise TypeError(
                         'I cannot know that these two lexical forms do not map to the same value: %s and %s' % (self, other))
@@ -1027,7 +1028,7 @@ class Literal(Identifier):
 
             if (dtself == _XSD_STRING and dtother == _XSD_STRING):
                 # string/plain literals, compare on lexical form
-                return unicode.__eq__(self, other)
+                return text_type.__eq__(self, other)
 
             if dtself != dtother:
                 if rdflib.DAWG_LITERAL_COLLATION:
@@ -1048,7 +1049,7 @@ class Literal(Identifier):
                 return self.value == other.value
             else:
 
-                if unicode.__eq__(self, other):
+                if text_type.__eq__(self, other):
                     return True
 
                 if self.datatype == _XSD_STRING:
@@ -1069,7 +1070,7 @@ class Literal(Identifier):
                 return False
 
             if (self.datatype == _XSD_STRING or self.datatype is None):
-                return unicode(self) == other
+                return text_type(self) == other
 
         elif isinstance(other, (int, long, float)):
             if self.datatype in _NUMERIC_LITERAL_TYPES:
@@ -1487,9 +1488,9 @@ def _castLexicalToPython(lexical, datatype):
     elif convFunc is None:
         # no conv func means 1-1 lexical<->value-space mapping
         try:
-            return unicode(lexical)
+            return text_type(lexical)
         except UnicodeDecodeError:
-            return unicode(lexical, 'utf-8')
+            return text_type(lexical, 'utf-8')
     else:
         # no convFunc - unknown data-type
         return None
@@ -1529,7 +1530,7 @@ class Variable(Identifier):
                 "Attempted to create variable with empty string as name!")
         if value[0] == '?':
             value = value[1:]
-        return unicode.__new__(cls, value)
+        return text_type.__new__(cls, value)
 
     def __repr__(self):
         return self.n3()
@@ -1541,7 +1542,7 @@ class Variable(Identifier):
         return "?%s" % self
 
     def __reduce__(self):
-        return (Variable, (unicode(self),))
+        return (Variable, (text_type(self),))
 
     def md5_term_hash(self):
         """a string of hex that will be the same for two Variables that
