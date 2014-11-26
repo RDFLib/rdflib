@@ -57,9 +57,7 @@ from isodate import parse_time, parse_date, parse_datetime
 
 import rdflib
 from . import py3compat
-
-
-b = py3compat.b
+from .py3compat import b
 
 skolem_genid = "/.well-known/genid/"
 rdflib_skolem_genid = "/.well-known/genid/rdflib/"
