@@ -1428,7 +1428,7 @@ XSDToPython = {
     URIRef(_XSD_PFX + 'float'): float,
     URIRef(_XSD_PFX + 'double'): float,
     URIRef(
-        _XSD_PFX + 'base64Binary'): lambda s: base64.b64decode(py3compat.b(s)),
+        _XSD_PFX + 'base64Binary'): lambda s: base64.b64decode(b(s)),
     URIRef(_XSD_PFX + 'anyURI'): None,
     _RDF_XMLLITERAL: _parseXML,
     _RDF_HTMLLITERAL: _parseHTML
