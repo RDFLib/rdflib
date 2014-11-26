@@ -63,6 +63,8 @@ from .compat import numeric_greater
 from .py3compat import PY2
 from .py3compat import PY3
 from .py3compat import b
+from .py3compat import integer_types
+from .py3compat import long_type
 from .py3compat import string_types
 from .py3compat import text_type
 from .py3compat import urldefrag
@@ -692,7 +694,7 @@ class Literal(Identifier):
         >>>
         """
 
-        if isinstance(self.value, (int, long, float)):
+        if isinstance(self.value, (int, long_type, float)):
             return Literal(self.value.__neg__())
         else:
             raise TypeError("Not a number; %s" % repr(self))
@@ -713,7 +715,7 @@ class Literal(Identifier):
           File "<stdin>", line 1, in <module>
         TypeError: Not a number; rdflib.term.Literal(%(u)s'1')
         """
-        if isinstance(self.value, (int, long, float)):
+        if isinstance(self.value, (int, long_type, float)):
             return Literal(self.value.__pos__())
         else:
             raise TypeError("Not a number; %s" % repr(self))
@@ -733,7 +735,7 @@ class Literal(Identifier):
           File "<stdin>", line 1, in <module>
         TypeError: Not a number; rdflib.term.Literal(%(u)s'1')
         """
-        if isinstance(self.value, (int, long, float)):
+        if isinstance(self.value, (int, long_type, float)):
             return Literal(self.value.__abs__())
         else:
             raise TypeError("Not a number; %s" % repr(self))
@@ -755,7 +757,7 @@ class Literal(Identifier):
           File "<stdin>", line 1, in <module>
         TypeError: Not a number; rdflib.term.Literal(%(u)s'1')
         """
-        if isinstance(self.value, (int, long, float)):
+        if isinstance(self.value, (int, long_type, float)):
             return Literal(self.value.__invert__())
         else:
             raise TypeError("Not a number; %s" % repr(self))
@@ -1073,7 +1075,7 @@ class Literal(Identifier):
             if (self.datatype == _XSD_STRING or self.datatype is None):
                 return text_type(self) == other
 
-        elif isinstance(other, (int, long, float)):
+        elif isinstance(other, (int, long_type, float)):
             if self.datatype in _NUMERIC_LITERAL_TYPES:
                 return self.value == other
         elif isinstance(other, (date, datetime, time)):
@@ -1424,7 +1426,7 @@ _PythonToXSD = [
     (float, (None, _XSD_DOUBLE)),
     (bool, (lambda i:str(i).lower(), _XSD_BOOLEAN)),
     (int, (None, _XSD_INTEGER)),
-    (long, (None, _XSD_INTEGER)),
+    (long_type, (None, _XSD_INTEGER)),
     (Decimal, (None, _XSD_DECIMAL)),
     (datetime, (lambda i:i.isoformat(), _XSD_DATETIME)),
     (date, (lambda i:i.isoformat(), _XSD_DATE)),
@@ -1448,16 +1450,16 @@ XSDToPython = {
     URIRef(_XSD_PFX + 'language'): None,
     URIRef(_XSD_PFX + 'boolean'): lambda i: i.lower() in ['1', 'true'],
     URIRef(_XSD_PFX + 'decimal'): Decimal,
-    URIRef(_XSD_PFX + 'integer'): long,
+    URIRef(_XSD_PFX + 'integer'): long_type,
     URIRef(_XSD_PFX + 'nonPositiveInteger'): int,
-    URIRef(_XSD_PFX + 'long'): long,
+    URIRef(_XSD_PFX + 'long'): long_type,
     URIRef(_XSD_PFX + 'nonNegativeInteger'): int,
     URIRef(_XSD_PFX + 'negativeInteger'): int,
-    URIRef(_XSD_PFX + 'int'): long,
-    URIRef(_XSD_PFX + 'unsignedLong'): long,
+    URIRef(_XSD_PFX + 'int'): long_type,
+    URIRef(_XSD_PFX + 'unsignedLong'): long_type,
     URIRef(_XSD_PFX + 'positiveInteger'): int,
     URIRef(_XSD_PFX + 'short'): int,
-    URIRef(_XSD_PFX + 'unsignedInt'): long,
+    URIRef(_XSD_PFX + 'unsignedInt'): long_type,
     URIRef(_XSD_PFX + 'byte'): int,
     URIRef(_XSD_PFX + 'unsignedShort'): int,
     URIRef(_XSD_PFX + 'unsignedByte'): int,
