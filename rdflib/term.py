@@ -53,13 +53,9 @@ from re import sub, compile
 from collections import defaultdict
 
 from isodate import parse_time, parse_date, parse_datetime
+from hashlib import md5
 
 
-try:
-    from hashlib import md5
-    assert md5
-except ImportError:
-    from md5 import md5
 
 
 import rdflib
