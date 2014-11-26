@@ -27,6 +27,14 @@ def setup_python3():
         if copied and outf.endswith(".py"):
             outfiles_2to3.append(outf)
 
+    six_ed = [  # add files which have already been transformed to use six
+        join(tmp_src, 'rdflib', 'compat.py'),
+    ]
+    for fn in six_ed:
+        outfiles_2to3.remove(fn)
+    for fn in outfiles_2to3:
+        print('running 2to3 on', fn)
+
     util.run_2to3(outfiles_2to3)
 
     # arrange setup to use the copy
