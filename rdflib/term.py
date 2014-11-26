@@ -60,11 +60,8 @@ from hashlib import md5
 
 import rdflib
 from . import py3compat
-from rdflib.compat import numeric_greater
-
-
-
-b = py3compat.b
+from .compat import numeric_greater
+from .py3compat import b
 
 skolem_genid = "/.well-known/genid/"
 rdflib_skolem_genid = "/.well-known/genid/rdflib/"
