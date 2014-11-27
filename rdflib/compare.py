@@ -73,6 +73,9 @@ Only in second::
     _:cb558f30e21ddfc05ca53108348338ade8
         <http://example.org/ns#label> "B" .
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 
 # TODO:
@@ -92,6 +95,8 @@ except ImportError:
     # for Python << 2.5
     import md5
     md = md5.new
+
+from .py3compat import text_type
 
 
 class IsomorphicGraph(ConjunctiveGraph):
@@ -242,7 +247,7 @@ def _md5_hash(t):
         if isinstance(i, tuple):
             h.update(_md5_hash(i).encode('ascii'))
         else:
-            h.update(unicode(i).encode("utf8"))
+            h.update(text_type(i).encode("utf8"))
     return h.hexdigest()
 
 
