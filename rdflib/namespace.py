@@ -57,8 +57,7 @@ The following namespaces are available by directly importing from rdflib:
 """)
 
 import logging
-
-_logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 import os
 

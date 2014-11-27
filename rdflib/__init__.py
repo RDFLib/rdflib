@@ -58,8 +58,12 @@ assert sys.version_info >= (2, 5, 0), "rdflib requires Python 2.5 or higher"
 del sys
 
 import logging
-_LOGGER = logging.getLogger("rdflib")
-_LOGGER.info("RDFLib Version: %s" % __version__)
+import __main__
+if not hasattr(__main__, '__file__'):
+    # show log messages in interactive mode
+    logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.info("RDFLib Version: %s" % __version__)
 
 
 NORMALIZE_LITERALS = True

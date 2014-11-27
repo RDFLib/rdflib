@@ -230,7 +230,7 @@ Using Namespace class:
 """)
 
 import logging
-_logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 # import md5
 import random
