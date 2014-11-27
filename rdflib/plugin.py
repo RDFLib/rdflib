@@ -24,6 +24,9 @@ information.
 .. __: http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
 
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 from rdflib.store import Store
 from rdflib.parser import Parser
@@ -110,7 +113,7 @@ except ImportError:
     pass  # TODO: log a message
 else:
     # add the plugins specified via pkg_resources' EntryPoints.
-    for entry_point, kind in entry_points.iteritems():
+    for entry_point, kind in entry_points.items():
         for ep in iter_entry_points(entry_point):
             _plugins[(ep.name, kind)] = PKGPlugin(ep.name, kind, ep)
 
