@@ -36,9 +36,8 @@ __all__ = [
 ]
 
 import logging
+logger = logging.getLogger(__name__)
 import warnings
-
-_LOGGER = logging.getLogger(__name__)
 
 import base64
 import xml.dom.minidom
@@ -203,7 +202,7 @@ class URIRef(Identifier):
                     value += "#"
 
         if not _is_valid_uri(value):
-            _LOGGER.warning('%s does not look like a valid URI, trying to serialize this will break.'%value)
+            logger.warning('%s does not look like a valid URI, trying to serialize this will break.'%value)
 
 
         try:
@@ -1503,7 +1502,7 @@ def bind(datatype, pythontype, constructor=None, lexicalizer=None):
 
     """
     if datatype in _toPythonMapping:
-        _LOGGER.warning("datatype '%s' was already bound. Rebinding." %
+        logger.warning("datatype '%s' was already bound. Rebinding." %
                         datatype)
 
     if constructor == None:
