@@ -22,6 +22,7 @@ from six import text_type
 from six import BytesIO
 from six import StringIO
 
+from six.moves import cPickle
 from six.moves.urllib.parse import urldefrag
 from six.moves.urllib.parse import urljoin
 from six.moves.urllib.parse import urlparse
