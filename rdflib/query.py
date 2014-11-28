@@ -239,11 +239,14 @@ class Result(object):
         else:
             return len(self.graph)
 
-    def __nonzero__(self):
+    def __bool__(self):
         if self.type == 'ASK':
             return self.askAnswer
         else:
             return len(self)>0
+
+    if PY2:
+        __nonzero__ = __bool__
 
     def __iter__(self):
         if self.type in ("CONSTRUCT", "DESCRIBE"):
