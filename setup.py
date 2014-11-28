@@ -141,7 +141,7 @@ def setup_python3():
         # join(tmp_src, 'rdflib', 'plugins', 'stores', 'sparqlstore.py'),
         join(tmp_src, 'rdflib', 'py3compat.py'),
         join(tmp_src, 'rdflib', 'query.py'),
-        # join(tmp_src, 'rdflib', 'resource.py'),
+        join(tmp_src, 'rdflib', 'resource.py'),
         join(tmp_src, 'rdflib', 'serializer.py'),
         # join(tmp_src, 'rdflib', 'store.py'),
         join(tmp_src, 'rdflib', 'term.py'),
