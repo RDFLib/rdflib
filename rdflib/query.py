@@ -8,14 +8,11 @@ import tempfile
 import warnings
 import types
 
-from urlparse import urlparse
-try:
-    from io import BytesIO
-    assert BytesIO
-except:
-    from StringIO import StringIO as BytesIO
-
 from . import py3compat
+from .py3compat import BytesIO
+from .py3compat import PY2
+from .py3compat import text_type
+from .py3compat import urlparse
 
 __all__ = ['Processor', 'Result', 'ResultParser', 'ResultSerializer',
            'ResultException']
