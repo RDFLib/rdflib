@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
-from rdflib import py3compat
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
+from . import py3compat
+from .py3compat import text_type
+
 
 __doc__ = py3compat.format_doctest_out("""
 The :class:`~rdflib.resource.Resource` class wraps a
@@ -349,7 +355,7 @@ class Resource(object):
     __ge__ = lambda self, other: not self < other
 
     def __unicode__(self):
-        return unicode(self._identifier)
+        return text_type(self._identifier)
 
     if py3compat.PY3:
         __str__ = __unicode__
