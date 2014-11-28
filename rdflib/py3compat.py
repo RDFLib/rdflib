@@ -19,7 +19,7 @@ from six import integer_types
 from six import string_types
 from six import text_type
 
-from six import BytesIO
+# from six import BytesIO  # see below!
 from six import StringIO
 
 from six.moves import cPickle
@@ -80,6 +80,8 @@ if PY3:
 
     long_type = int
 
+    from io import BytesIO
+
     # Abstract u'abc' syntax:
     @_modify_str_or_docstring
     def format_doctest_out(s):
@@ -133,6 +135,8 @@ else:
     bytestype = str
 
     long_type = long
+
+    from cStringIO import StringIO as BytesIO
 
     # Abstract u'abc' syntax:
     @_modify_str_or_docstring
