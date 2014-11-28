@@ -28,6 +28,9 @@ Statement and component type checkers
 * check_pattern
 
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 from calendar import timegm
 from time import altzone
@@ -38,7 +41,6 @@ from time import time
 from time import timezone
 
 from os.path import splitext
-from StringIO import StringIO
 
 from rdflib.exceptions import ContextTypeError
 from rdflib.exceptions import ObjectTypeError
@@ -51,7 +53,8 @@ from rdflib.namespace import NamespaceManager
 from rdflib.term import BNode
 from rdflib.term import Literal
 from rdflib.term import URIRef
-from rdflib.py3compat import sign
+from .py3compat import sign
+from .py3compat import StringIO
 
 __all__ = [
     'list2set', 'first', 'uniq', 'more_than', 'to_term', 'from_n3',
