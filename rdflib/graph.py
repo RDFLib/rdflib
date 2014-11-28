@@ -1,8 +1,12 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 from rdflib.term import Literal  # required for doctests
 assert Literal # avoid warning
 from rdflib.namespace import Namespace  # required for doctests
 assert Namespace # avoid warning
-from rdflib.py3compat import format_doctest_out
+from .py3compat import format_doctest_out
 
 __doc__ = format_doctest_out("""\
 
@@ -238,16 +242,6 @@ import warnings
 
 from hashlib import md5
 
-try:
-    from io import BytesIO
-    assert BytesIO
-except ImportError:
-    try:
-        from cStringIO import StringIO as BytesIO
-        assert BytesIO
-    except ImportError:
-        from StringIO import StringIO as BytesIO
-        assert BytesIO
 
 from rdflib.namespace import RDF, RDFS, SKOS
 
@@ -266,13 +260,14 @@ from rdflib.parser import Parser
 from rdflib.parser import create_input_source
 from rdflib.namespace import NamespaceManager
 from rdflib.resource import Resource
-from rdflib import py3compat
-b = py3compat.b
 
 import os
 import shutil
 import tempfile
-from urlparse import urlparse
+
+from .py3compat import BytesIO
+from .py3compat import b
+from .py3compat import urlparse
 
 __all__ = [
     'Graph', 'ConjunctiveGraph', 'QuotedGraph', 'Seq',
@@ -424,7 +419,7 @@ class Graph(Node):
             for (s, p, o), cg in self.__store.triples((s, p, o), context=self):
                 yield (s, p, o)
 
-    @py3compat.format_doctest_out
+    @format_doctest_out
     def __getitem__(self, item):
         """
         A graph can be "sliced" as a shortcut for the triples method
@@ -709,7 +704,7 @@ class Graph(Node):
             return default
         return self.value(subject, RDFS.label, default=default, any=True)
 
-    @py3compat.format_doctest_out
+    @format_doctest_out
     def preferredLabel(self, subject, lang=None, default=None,
                        labelProperties=(SKOS.prefLabel, RDFS.label)):
         """
