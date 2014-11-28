@@ -59,7 +59,7 @@ def setup_python3():
         join(tmp_src, 'rdflib', 'extras', 'cmdlineutils.py'),
         # join(tmp_src, 'rdflib', 'extras', 'describer.py'),
         # join(tmp_src, 'rdflib', 'extras', 'infixowl.py'),
-        # join(tmp_src, 'rdflib', 'graph.py'),
+        join(tmp_src, 'rdflib', 'graph.py'),
         # join(tmp_src, 'rdflib', 'namespace.py'),
         # join(tmp_src, 'rdflib', 'parser.py'),
         join(tmp_src, 'rdflib', 'paths.py'),
