@@ -26,6 +26,7 @@ from six.moves import cPickle
 from six.moves.urllib.parse import urldefrag
 from six.moves.urllib.parse import urljoin
 from six.moves.urllib.parse import urlparse
+from six.moves.urllib.request import pathname2url
 
 try:
     from functools import wraps
