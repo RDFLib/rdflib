@@ -473,7 +473,7 @@ ALLOWED_NAME_CHARS = [u"\u00B7", u"\u0387", u"-", u".", u"_"]
 def is_ncname(name):
     first = name[0]
     if first == "_" or category(first) in NAME_START_CATEGORIES:
-        for i in xrange(1, len(name)):
+        for i in range(1, len(name)):
             c = name[i]
             if not category(c) in NAME_CATEGORIES:
                 if c in ALLOWED_NAME_CHARS:
@@ -494,12 +494,12 @@ def split_uri(uri):
     if uri.startswith(XMLNS):
         return (XMLNS, uri.split(XMLNS)[1])
     length = len(uri)
-    for i in xrange(0, length):
+    for i in range(0, length):
         c = uri[-i - 1]
         if not category(c) in NAME_CATEGORIES:
             if c in ALLOWED_NAME_CHARS:
                 continue
-            for j in xrange(-1 - i, length):
+            for j in range(-1 - i, length):
                 if category(uri[j]) in NAME_START_CATEGORIES or uri[j] == "_":
                     ns = uri[:j]
                     if not ns:
