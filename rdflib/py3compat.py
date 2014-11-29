@@ -26,7 +26,10 @@ from six.moves import cPickle
 from six.moves.urllib.parse import urldefrag
 from six.moves.urllib.parse import urljoin
 from six.moves.urllib.parse import urlparse
+from six.moves.urllib.request import Request
 from six.moves.urllib.request import pathname2url
+from six.moves.urllib.request import url2pathname
+from six.moves.urllib.request import urlopen
 
 try:
     from functools import wraps
