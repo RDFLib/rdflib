@@ -9,18 +9,23 @@ can plugin to rdflib. If you are wanting to invoke a parser you likely
 want to do so through the Graph class parse method.
 
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 import os
 import sys
-from urllib import pathname2url, url2pathname
-from urllib2 import urlopen, Request
-from urlparse import urljoin
-from rdflib.py3compat import PY3
-if PY3:
-    from io import BytesIO
-    assert BytesIO
-else:
-    from StringIO import StringIO as BytesIO
+
+from .py3compat import BytesIO
+from .py3compat import string_types
+from .py3compat import text_type
+
+from .py3compat import pathname2url
+from .py3compat import Request
+from .py3compat import url2pathname
+from .py3compat import urljoin
+from .py3compat import urlopen
+
 from xml.sax import xmlreader
 
 from rdflib import __version__
@@ -156,7 +161,7 @@ def create_input_source(source=None, publicID=None,
         if isinstance(source, InputSource):
             input_source = source
         else:
-            if isinstance(source, basestring):
+            if isinstance(source, string_types):
                 location = source
             elif hasattr(source, "read") and not isinstance(source, Namespace):
                 f = source
@@ -192,7 +197,7 @@ def create_input_source(source=None, publicID=None,
         input_source = FileInputSource(file)
 
     if data is not None:
-        if isinstance(data, unicode):
+        if isinstance(data, text_type):
             data = data.encode('utf-8')
         input_source = StringInputSource(data)
         auto_close = True
