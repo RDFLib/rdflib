@@ -81,7 +81,7 @@ __all__ = [
     'SKOS', 'DOAP', 'FOAF', 'DC', 'DCTERMS', 'VOID']
 
 
-class Namespace(unicode):
+class Namespace(text_type):
 
     __doc__ = format_doctest_out("""
     Utility class for quickly generating URIRefs with a common prefix
@@ -98,9 +98,9 @@ class Namespace(unicode):
 
     def __new__(cls, value):
         try:
-            rt = unicode.__new__(cls, value)
+            rt = text_type.__new__(cls, value)
         except UnicodeDecodeError:
-            rt = unicode.__new__(cls, value, 'utf-8')
+            rt = text_type.__new__(cls, value, 'utf-8')
         return rt
 
 
@@ -110,7 +110,7 @@ class Namespace(unicode):
 
     def term(self, name):
         # need to handle slices explicitly because of __getitem__ override
-        return URIRef(self + (name if isinstance(name, basestring) else ''))
+        return URIRef(self + (name if isinstance(name, string_types) else ''))
 
     def __getitem__(self, key, default=None):
         return self.term(key)
@@ -122,10 +122,10 @@ class Namespace(unicode):
             return self.term(name)
 
     def __repr__(self):
-        return "Namespace(%s)"%unicode.__repr__(self)
+        return "Namespace(%s)"%text_type.__repr__(self)
 
 
-class URIPattern(unicode):
+class URIPattern(text_type):
 
     __doc__ = format_doctest_out("""
     Utility class for creating URIs according to some pattern
@@ -140,19 +140,19 @@ class URIPattern(unicode):
 
     def __new__(cls, value):
         try:
-            rt = unicode.__new__(cls, value)
+            rt = text_type.__new__(cls, value)
         except UnicodeDecodeError:
-            rt = unicode.__new__(cls, value, 'utf-8')
+            rt = text_type.__new__(cls, value, 'utf-8')
         return rt
 
     def __mod__(self, *args, **kwargs):
-        return URIRef(unicode(self).__mod__(*args, **kwargs))
+        return URIRef(text_type(self).__mod__(*args, **kwargs))
 
     def format(self, *args, **kwargs):
-        return URIRef(unicode.format(self, *args, **kwargs))
+        return URIRef(text_type.format(self, *args, **kwargs))
 
     def __repr__(self):
-        return "URIPattern(%r)"%unicode.__repr__(self)
+        return "URIPattern(%r)"%text_type.__repr__(self)
 
 
 
@@ -313,7 +313,7 @@ class NamespaceManager(object):
         """
         try:
             namespace, name = split_uri(rdfTerm)
-            namespace = URIRef(unicode(namespace))
+            namespace = URIRef(text_type(namespace))
         except:
             if isinstance(rdfTerm, Variable):
                 return "?%s" % rdfTerm
@@ -363,7 +363,7 @@ class NamespaceManager(object):
 
         """
 
-        namespace = URIRef(unicode(namespace))
+        namespace = URIRef(text_type(namespace))
         # When documenting explain that override only applies in what cases
         if prefix is None:
             prefix = ''
