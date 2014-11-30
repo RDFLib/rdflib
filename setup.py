@@ -153,7 +153,7 @@ def setup_python3():
         # join(tmp_src, 'rdflib', 'tools', 'rdfs2dot.py'),
         join(tmp_src, 'rdflib', 'util.py'),
         join(tmp_src, 'rdflib', 'void.py'),
-        # join(tmp_src, 'run_tests.py'),
+        join(tmp_src, 'run_tests.py'),
         join(tmp_src, 'test', '__init__.py'),
         join(tmp_src, 'test', 'earl.py'),
         # join(tmp_src, 'test', 'manifest.py'),
