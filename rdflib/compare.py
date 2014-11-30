@@ -94,6 +94,7 @@ except ImportError:
     sha256 = sha256.new
 
 from datetime import datetime
+from collections import defaultdict
 
 class runtime(object):
     def __init__(self, label):
@@ -235,12 +236,17 @@ class _TripleCanonicalizer(object):
         and b) do not factor into the color of any blank node.'''
         bnodes = set()
         others = set()
+        self._neighbors = defaultdict(set)
         for s,p,o in self.graph:
             nodes = set([s,o])
             b = set([x for x in nodes if isinstance(x,BNode)])
             if len(b) > 0:
-                others |= nodes-b
+                others |= nodes - b
                 bnodes |= b
+                if isinstance(s,BNode):
+                    self._neighbors[s].add(o)
+                if isinstance(o,BNode):
+                    self._neighbors[o].add(s)
         if len(bnodes) > 0:
             return [Color(list(bnodes),self.hashfunc)]+[
                     Color([x],self.hashfunc, x) for x in others]
@@ -266,8 +272,15 @@ class _TripleCanonicalizer(object):
         coloring = coloring[:]
         while len(sequence) > 0 and not self._discrete(coloring):
             W = sequence.pop()
+            #neighbors = set()
+            #for n in W.nodes:
+            #    neighbors |= self._neighbors[n]
             for c in coloring[:]:
                 if len(c.nodes) > 1:
+                    #n_diff = neighbors.difference(c.nodes)
+                    #if len(n_diff) == neighbors: 
+                    #    # This color does not have any neighbors to W.
+                    #    continue
                     colors = sorted(c.distinguish(W, self.graph),
                                     key=lambda x: x.key(),
                                     reverse=True)
@@ -302,6 +315,17 @@ class _TripleCanonicalizer(object):
             coloring = self._refine(coloring,[new_color])
         return coloring
 
+    def _create_generator(self, colorings, groupings = None):
+        if not groupings:
+            groupings = defaultdict(set)
+        for group in zip(*colorings):
+            g = set([c.nodes[0] for c in group])
+            for n in group:
+                g |= groupings[n]
+            for n in g:
+                groupings[n] = g
+        return groupings
+
     @call_count("individuations")
     def _traces(self, coloring, stats=None, depth=[0]):
         if stats != None and 'prunings' not in stats:
@@ -312,7 +336,16 @@ class _TripleCanonicalizer(object):
         best_score = None
         best_experimental = None
         best_experimental_score = None
+        last_coloring = None
+        generator = defaultdict(set)
+        visited = set()
         for candidate, color in candidates:
+            if candidate in generator:
+                v = generator[candidate] & visited
+                if len(v) > 0:
+                    visited.add(candidate)
+                    continue
+            visited.add(candidate)
             coloring_copy = []
             color_copy = None
             for c in coloring:
@@ -325,7 +358,11 @@ class _TripleCanonicalizer(object):
             refined_coloring = self._refine(coloring_copy,[new_color])
             color_score = tuple([c.key() for c in refined_coloring])
             experimental = self._experimental_path(coloring_copy)
-            experimental_score = set([c.key() for c in refined_coloring])
+            experimental_score = set([c.key() for c in experimental])
+            if last_coloring:
+                generator = self._create_generator([last_coloring,experimental],
+                                                   generator)
+            last_coloring = experimental
             if best_score == None or best_score < color_score:
                 best = [refined_coloring]
                 best_score = color_score
@@ -358,8 +395,9 @@ class _TripleCanonicalizer(object):
             depth[0] = best_depth
         return discrete[0]
 
-    @runtime("canonicalize_triples_runtime")
     def canonical_triples(self, stats=None):
+        if stats != None:
+            start_canonicalization = datetime.now()
         if stats != None:
             start_coloring = datetime.now()
         coloring = self._initial_color()
@@ -382,7 +420,8 @@ class _TripleCanonicalizer(object):
             stats['color_count'] = len(coloring)
 
         bnode_labels = dict([(c.nodes[0], c.hash_color()) for c in coloring])
-
+        if stats != None:
+            stats["canonicalize_triples_runtime"] = (datetime.now() - start_coloring).total_seconds()
         for triple in self.graph:
             yield tuple(self._canonicalize_bnodes(triple, bnode_labels))
 

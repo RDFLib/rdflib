@@ -46,6 +46,53 @@ stat_cols = [
     'error',
     ]     
 
+def files_benchmark(ontologies, output_file, threads):
+    w = open(output_file, 'w')
+    writer = csv.DictWriter(w,stat_cols)
+    writer.writeheader()
+    tasks = Queue()
+    finished_tasks = Queue()
+    dl_lock = Semaphore(4)
+    task_count = len(ontologies)
+    def worker(q,finished_tasks, dl_lock):
+        try:
+            while True:
+                stats = q.get()
+                og = Graph()
+                try:
+                    og.load(stats['download_url'])
+                    print stats['ontology'], stats['id']
+                    ig = to_isomorphic(og)
+                    graph_digest = ig.graph_digest(stats)
+                    finished_tasks.put(stats)
+                except Exception as e:
+                    print 'ERROR', stats['id'], e
+                    stats['error'] = str(e)
+                    finished_tasks.put(stats)
+        except Empty:
+            pass
+    for i in range(int(threads)):
+        print "Starting worker", i
+        t = Process(target=worker, args=[tasks,finished_tasks, dl_lock])
+        t.daemon = True
+        t.start()
+    for download in ontologies:
+        stats = defaultdict(str)
+        stats.update({
+            "id":download.split("/")[-1].split(".")[0],
+            "ontology": download.split("/")[-1].split(".")[0],
+            "download_url": download
+        })
+        tasks.put(stats)
+    tasks.close()
+    written_tasks = 0
+    while written_tasks < task_count:
+        stats = finished_tasks.get()
+        #print "Writing", stats['ontology']
+        writer.writerow(stats)
+        w.flush()
+        written_tasks += 1
+
 def bioportal_benchmark(apikey, output_file, threads):
     metadata = Namespace("http://data.bioontology.org/metadata/")
     url = 'http://data.bioontology.org/ontologies?apikey=%s'%apikey
@@ -105,4 +152,7 @@ def bioportal_benchmark(apikey, output_file, threads):
         written_tasks += 1
 
 if __name__ == '__main__':
-    bioportal_benchmark(sys.argv[1], sys.argv[2], sys.argv[3])
+    if len(sys.argv) > 4:
+        files_benchmark(sys.argv[1:-2],sys.argv[-2],sys.argv[-1])
+    else:
+        bioportal_benchmark(sys.argv[1], sys.argv[2], sys.argv[3])
