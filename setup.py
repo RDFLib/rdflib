@@ -57,7 +57,7 @@ def setup_python3():
         join(tmp_src, 'rdflib', 'exceptions.py'),
         join(tmp_src, 'rdflib', 'extras', '__init__.py'),
         join(tmp_src, 'rdflib', 'extras', 'cmdlineutils.py'),
-        # join(tmp_src, 'rdflib', 'extras', 'describer.py'),
+        join(tmp_src, 'rdflib', 'extras', 'describer.py'),
         # join(tmp_src, 'rdflib', 'extras', 'infixowl.py'),
         join(tmp_src, 'rdflib', 'graph.py'),
         join(tmp_src, 'rdflib', 'namespace.py'),
