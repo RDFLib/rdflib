@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from rdflib import py3compat
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
-__doc__ = py3compat.format_doctest_out("""
+from ..py3compat import PY3
+from ..py3compat import format_doctest_out
+
+__doc__ = format_doctest_out("""
 RDFLib Python binding for OWL Abstract Syntax
 
 see: http://www.w3.org/TR/owl-semantics/syntax.html
@@ -1366,7 +1371,7 @@ class OWLRDFListProxy(object):
 
 
 class EnumeratedClass(OWLRDFListProxy, Class):
-    py3compat.format_doctest_out("""
+    format_doctest_out("""
     Class for owl:oneOf forms:
 
     OWL Abstract Syntax is used
@@ -1560,7 +1565,7 @@ class BooleanClass(OWLRDFListProxy, Class):
         ... except Exception%s: print(e)
         The new operator is already being used!
 
-        """ % 'as e' if py3compat.PY3 else ', e'
+        """ % 'as e' if PY3 else ', e'
         assert newOperator != self._operator, \
             "The new operator is already being used!"
         self.graph.remove((self.identifier, self._operator, self._rdfList.uri))
@@ -1654,7 +1659,7 @@ class Restriction(Class):
             self.graph.add((self.identifier, RDF.type, OWL_NS.Restriction))
             self.graph.remove((self.identifier, RDF.type, OWL_NS.Class))
 
-    @py3compat.format_doctest_out
+    @format_doctest_out
     def serialize(self, graph):
         """
         >>> g1 = Graph()
