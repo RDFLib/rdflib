@@ -65,7 +65,7 @@ def setup_python3():
         join(tmp_src, 'rdflib', 'paths.py'),
         join(tmp_src, 'rdflib', 'plugin.py'),
         join(tmp_src, 'rdflib', 'plugins', '__init__.py'),
-        # join(tmp_src, 'rdflib', 'plugins', 'memory.py'),
+        join(tmp_src, 'rdflib', 'plugins', 'memory.py'),
         join(tmp_src, 'rdflib', 'plugins', 'parsers', '__init__.py'),
         join(tmp_src, 'rdflib', 'plugins', 'parsers', 'hturtle.py'),
         # join(tmp_src, 'rdflib', 'plugins', 'parsers', 'notation3.py'),
