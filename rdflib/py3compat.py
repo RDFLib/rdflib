@@ -19,6 +19,10 @@ from six import integer_types
 from six import string_types
 from six import text_type
 
+from six import iteritems
+from six import iterkeys
+from six import itervalues
+
 # from six import BytesIO  # see below!
 from six import StringIO
 
