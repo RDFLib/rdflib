@@ -27,6 +27,9 @@ Modified to work with rdflib by Gunnar Aastrand Grimnes
 Copyright 2010, Gunnar A. Grimnes
 
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 # Python standard libraries
 import types
@@ -42,8 +45,15 @@ from uuid import uuid4
 
 from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX, _unique_id
 from rdflib.graph import QuotedGraph, ConjunctiveGraph, Graph
-from rdflib import py3compat
-b = py3compat.b
+
+from ...py3compat import b
+from ...py3compat import binary_type
+from ...py3compat import format_doctest_out
+from ...py3compat import long_type
+from ...py3compat import string_types
+from ...py3compat import text_type
+from ...py3compat import unichr
+from ...py3compat import narrow_build
 
 __all__ = ['BadSyntax', 'N3Parser', 'TurtleParser',
            "splitFragP", "join", "base",
@@ -74,7 +84,7 @@ def splitFragP(uriref, punct=0):
         return uriref, ''
 
 
-@py3compat.format_doctest_out
+@format_doctest_out
 def join(here, there):
     """join an absolute URI and URI reference
     (non-ascii characters are supported/doctested;
@@ -308,7 +318,7 @@ def unicodeExpand(m):
     except:
         raise Exception("Invalid unicode code point: " + m.group(1))
 
-if py3compat.narrow_build:
+if narrow_build:
     def unicodeExpand(m):
         try:
             return unichr(int(m.group(1), 16))
@@ -449,7 +459,7 @@ class SinkParser:
         So if there is more data to feed to the
         parser, it should be straightforward to recover."""
 
-        if not isinstance(octets, unicode):
+        if not isinstance(octets, text_type):
             s = octets.decode('utf-8')
              # NB already decoded, so \ufeff
             if len(s) > 0 and s[0] == codecs.BOM_UTF8.decode('utf-8'):
@@ -687,7 +697,7 @@ class SinkParser:
 
     def bind(self, qn, uri):
         assert isinstance(
-            uri, types.StringType), "Any unicode must be %x-encoded already"
+            uri, binary_type), "Any unicode must be %x-encoded already"
         if qn == "":
             self._store.setDefaultNamespace(uri)
         else:
@@ -1456,7 +1466,7 @@ class SinkParser:
                 m = integer_syntax.match(argstr, i)
                 if m:
                     j = m.end()
-                    res.append(long(argstr[i:j]))
+                    res.append(long_type(argstr[i:j]))
                     return j
 
                 # return -1  ## or fall through?
@@ -1491,7 +1501,7 @@ class SinkParser:
                 return -1
 
     def uriOf(self, sym):
-        if isinstance(sym, types.TupleType):
+        if isinstance(sym, tuple):
             return sym[1]  # old system for --pipe
          # return sym.uriref()  # cwm api
         return sym
@@ -1771,14 +1781,14 @@ class RDFSink(object):
 
     def normalise(self, f, n):
         if isinstance(n, tuple):
-            return URIRef(unicode(n[1]))
+            return URIRef(text_type(n[1]))
 
         if isinstance(n, bool):
             s = Literal(str(n).lower(), datatype=BOOLEAN_DATATYPE)
             return s
 
-        if isinstance(n, int) or isinstance(n, long):
-            s = Literal(unicode(n), datatype=INTEGER_DATATYPE)
+        if isinstance(n, int) or isinstance(n, long_type):
+            s = Literal(text_type(n), datatype=INTEGER_DATATYPE)
             return s
 
         if isinstance(n, Decimal):
@@ -1823,7 +1833,7 @@ class RDFSink(object):
 #
 
 
-@py3compat.format_doctest_out
+@format_doctest_out
 def hexify(ustr):
     """Use URL encoding to return an ASCII string
     corresponding to the given UTF8 string
@@ -1925,7 +1935,7 @@ def main(): # pragma: no cover
     p.endDoc()
     for t in g.quads((None, None, None)):
 
-        print t
+        print(t)
 
 if __name__ == '__main__':
     main()
