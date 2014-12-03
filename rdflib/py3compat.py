@@ -15,9 +15,11 @@ import six
 from six import PY2
 from six import PY3
 # from six import b  # see below!
+from six import binary_type
 from six import integer_types
 from six import string_types
 from six import text_type
+from six import unichr
 
 from six import iteritems
 from six import iterkeys
@@ -175,7 +177,7 @@ else:
 r_unicodeEscape = re.compile(r'(\\u[0-9A-Fa-f]{4}|\\U[0-9A-Fa-f]{8})')
 
 def _unicodeExpand(s):
-    return r_unicodeEscape.sub(lambda m: six.unichr(int(m.group(0)[2:], 16)), s)
+    return r_unicodeEscape.sub(lambda m: unichr(int(m.group(0)[2:], 16)), s)
 
 narrow_build = False
 try:
