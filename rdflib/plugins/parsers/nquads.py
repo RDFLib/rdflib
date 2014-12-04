@@ -22,6 +22,9 @@ graphs that can be used and queried. The store that backs the graph
 >>> FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 >>> assert(g.value(s, FOAF.name).eq("Arco Publications"))
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 from codecs import getreader
 
@@ -62,7 +65,7 @@ class NQuadsParser(NTriplesParser):
                 break
             try:
                 self.parseline()
-            except ParseError, msg:
+            except ParseError as msg:
                 raise ParseError("Invalid line (%s):\n%r" % (msg, __line))
 
         return self.sink
