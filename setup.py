@@ -72,7 +72,7 @@ def setup_python3():
         join(tmp_src, 'rdflib', 'plugins', 'parsers', 'nquads.py'),
         join(tmp_src, 'rdflib', 'plugins', 'parsers', 'nt.py'),
         join(tmp_src, 'rdflib', 'plugins', 'parsers', 'ntriples.py'),
-        # join(tmp_src, 'rdflib', 'plugins', 'parsers', 'pyMicrodata', '__init__.py'),
+        join(tmp_src, 'rdflib', 'plugins', 'parsers', 'pyMicrodata', '__init__.py'),
         # join(tmp_src, 'rdflib', 'plugins', 'parsers', 'pyMicrodata', 'microdata.py'),
         join(tmp_src, 'rdflib', 'plugins', 'parsers', 'pyMicrodata', 'registry.py'),
         # join(tmp_src, 'rdflib', 'plugins', 'parsers', 'pyMicrodata', 'utils.py'),
