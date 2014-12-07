@@ -153,6 +153,10 @@ class IsomorphicGraph(ConjunctiveGraph):
         return not self.__eq__(other)
 
     def graph_digest(self, stats=None):
+        """Synonym for IsomorphicGraph.internal_hash."""
+        return self.internal_hash(stats=stats)
+
+    def internal_hash(self,stats=None):
         """
         This is defined instead of __hash__ to avoid a circular recursion
         scenario with the Memory store for rdflib which requires a hash lookup
@@ -295,12 +299,9 @@ class _TripleCanonicalizer(object):
 
     @runtime("to_hash_runtime")
     def to_hash(self, stats=None):
-        def stringify(x):
-            if isinstance(x,Node):
-                return x.n3()
-            else: return str(x)
-        result = sum(map(self.hashfunc, ' '.join([stringify(x) for x 
-                       in self.canonical_triples(stats=stats)]).encode('utf-8')))
+        result = 0
+        for triple in self.canonical_triples(stats=stats):
+            result += self.hashfunc(' '.join([x.n3() for x in triple]))
         if stats != None:
             stats['graph_digest'] = "%x"% result
         return result
@@ -391,7 +392,6 @@ class _TripleCanonicalizer(object):
                     discrete = [new_color]
                     best_score = color_score
                     best_depth = d[0]
-            print best_depth
             depth[0] = best_depth
         return discrete[0]
 
@@ -423,7 +423,8 @@ class _TripleCanonicalizer(object):
         if stats != None:
             stats["canonicalize_triples_runtime"] = (datetime.now() - start_coloring).total_seconds()
         for triple in self.graph:
-            yield tuple(self._canonicalize_bnodes(triple, bnode_labels))
+            result = tuple(self._canonicalize_bnodes(triple, bnode_labels))
+            yield result
 
     def _canonicalize_bnodes(self, triple, labels):
         for term in triple:
@@ -470,8 +471,10 @@ def isomorphic(graph1, graph2):
         >>> isomorphic(g1, g3)
         False
     """
-    return _TripleCanonicalizer(graph1).to_hash() == \
-        _TripleCanonicalizer(graph2).to_hash()
+    gd1 = _TripleCanonicalizer(graph1).to_hash()
+    gd2 = _TripleCanonicalizer(graph2).to_hash()
+    return gd1 == gd2
+        
 
 
 def to_canonical_graph(g1):
