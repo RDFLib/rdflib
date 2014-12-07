@@ -189,8 +189,8 @@ class Color:
             return _hash_cache[color]
         def stringify(x):
             if isinstance(x,Node):
-                return x.n3().encode("utf-8")
-            else: return str(x).encode("utf-8")
+                return x.n3()
+            else: return unicode(x)
         if isinstance(color, Node):
             return stringify(color)
         value = sum(map(self.hashfunc, ' '.join([stringify(x) for x in color])))
