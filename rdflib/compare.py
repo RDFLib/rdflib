@@ -190,7 +190,7 @@ class Color:
         def stringify(x):
             if isinstance(x,Node):
                 return x.n3().encode("utf-8")
-            else: return unicode(x)
+            else: return str(x).encode("utf-8")
         if isinstance(color, Node):
             return stringify(color)
         value = sum(map(self.hashfunc, ' '.join([stringify(x) for x in color])))
