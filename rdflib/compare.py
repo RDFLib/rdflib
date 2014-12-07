@@ -96,6 +96,12 @@ except ImportError:
 from datetime import datetime
 from collections import defaultdict
 
+def total_seconds(td):
+    result = td.days * 24 * 60 * 60
+    result += td.seconds
+    result += td.microseconds / 1000000.0
+    return result
+
 class runtime(object):
     def __init__(self, label):
         self.label = label
@@ -108,7 +114,7 @@ class runtime(object):
             result = f(*args, **kwargs)
             if 'stats' in kwargs and kwargs['stats'] != None:
                 stats = kwargs['stats']
-                stats[self.label] = (datetime.now() - start).total_seconds()
+                stats[self.label] = total_seconds(datetime.now() - start)
             return result
         return wrapped_f
 
@@ -184,11 +190,11 @@ class Color:
         def stringify(x):
             if isinstance(x,Node):
                 return x.n3().encode("utf-8")
-            else: return str(x)
+            else: return unicode(x)
         if isinstance(color, Node):
             return stringify(color)
         value = sum(map(self.hashfunc, ' '.join([stringify(x) for x in color])))
-        val = "%x"% value
+        val = u"%x"% value
         _hash_cache[color] = val
         return val
 
@@ -272,19 +278,12 @@ class _TripleCanonicalizer(object):
                 yield node, c
 
     def _refine(self, coloring, sequence):
-        sequence = sorted(sequence,key=lambda x: x.key(), reverse=True)
+        sequence = sorted(sequence, key=lambda x: x.key(), reverse=True)
         coloring = coloring[:]
         while len(sequence) > 0 and not self._discrete(coloring):
             W = sequence.pop()
-            #neighbors = set()
-            #for n in W.nodes:
-            #    neighbors |= self._neighbors[n]
             for c in coloring[:]:
                 if len(c.nodes) > 1:
-                    #n_diff = neighbors.difference(c.nodes)
-                    #if len(n_diff) == neighbors: 
-                    #    # This color does not have any neighbors to W.
-                    #    continue
                     colors = sorted(c.distinguish(W, self.graph),
                                     key=lambda x: x.key(),
                                     reverse=True)
@@ -406,7 +405,7 @@ class _TripleCanonicalizer(object):
             stats['adjacent_nodes']  = max(0, len(coloring) - 1)
         coloring = self._refine(coloring,coloring[:])
         if stats != None:
-            stats['initial_coloring_runtime'] = (datetime.now() - start_coloring).total_seconds()
+            stats['initial_coloring_runtime'] = total_seconds(datetime.now() - start_coloring)
             stats['initial_color_count'] = len(coloring)
         if not self._discrete(coloring):
             depth = [0]
@@ -421,7 +420,7 @@ class _TripleCanonicalizer(object):
 
         bnode_labels = dict([(c.nodes[0], c.hash_color()) for c in coloring])
         if stats != None:
-            stats["canonicalize_triples_runtime"] = (datetime.now() - start_coloring).total_seconds()
+            stats["canonicalize_triples_runtime"] = total_seconds(datetime.now() - start_coloring)
         for triple in self.graph:
             result = tuple(self._canonicalize_bnodes(triple, bnode_labels))
             yield result
