@@ -220,18 +220,10 @@ class MicrodataParser(Parser):
         @param graph: target graph for the triples; output graph, in RDFa
         spec. parlance
         @type graph: RDFLib Graph
-        @keyword vocab_expansion: whether the RDFa @vocab attribute should
-        also mean vocabulary expansion (see the RDFa 1.1 spec for further
-            details)
+        @keyword vocab_expansion: this argument is not used any more, maintained for backward compatibility reasons only
         @type vocab_expansion: Boolean
-        @keyword vocab_cache: in case vocab expansion is used, whether the
-        expansion data (i.e., vocabulary) should be cached locally. This
-        requires the ability for the local application to write on the
-        local file system
+        @keyword vocab_cache: this argument is not used any more, maintained for backward compatibility reasons only
         @type vocab_chache: Boolean
-        @keyword rdfOutput: whether Exceptions should be catched and added,
-        as triples, to the processor graph, or whether they should be raised.
-        @type rdfOutput: Boolean
         """
         if html5lib is False:
             raise ImportError(
@@ -239,17 +231,12 @@ class MicrodataParser(Parser):
                 'and Microdata parsers.')
 
         (baseURI, orig_source) = _get_orig_source(source)
-        self._process(graph, baseURI, orig_source,
-                      vocab_expansion=vocab_expansion,
-                      vocab_cache=vocab_cache)
+        self._process(graph, baseURI, orig_source)
 
-    def _process(self, graph, baseURI, orig_source,
-                 vocab_expansion=False, vocab_cache=False):
+    def _process(self, graph, baseURI, orig_source):
         from .pyMicrodata import pyMicrodata
-        processor = pyMicrodata(base=baseURI, vocab_expansion=vocab_expansion,
-                                vocab_cache=vocab_cache)
-        processor.graph_from_source(
-            orig_source, graph=graph, rdfOutput=False)
+        processor = pyMicrodata(base=baseURI)
+        processor.graph_from_source(orig_source, graph=graph, rdfOutput=False)
 
 
 class StructuredDataParser(Parser):
@@ -288,9 +275,6 @@ class StructuredDataParser(Parser):
         requires the ability for the local application to write on the
         local file system
         @type vocab_chache: Boolean
-        @keyword rdfOutput: whether Exceptions should be catched and added,
-        as triples, to the processor graph, or whether they should be raised.
-        @type rdfOutput: Boolean
         """
         # Note that the media_type argument is ignored, and is here only to avoid an 'unexpected argument' error. 
         # This parser works for text/html only anyway...
@@ -301,8 +285,6 @@ class StructuredDataParser(Parser):
                               rdfa_version=rdfa_version,
                               vocab_expansion=vocab_expansion,
                               vocab_cache=vocab_cache)
-        MicrodataParser()._process(graph, baseURI, orig_source,
-                                   vocab_expansion=vocab_expansion,
-                                   vocab_cache=vocab_cache)
+        MicrodataParser()._process(graph, baseURI, orig_source)
         from .hturtle import HTurtleParser
         HTurtleParser()._process(graph, baseURI, orig_source, media_type='text/html')
