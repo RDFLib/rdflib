@@ -96,13 +96,13 @@ except ImportError:
 from datetime import datetime
 from collections import defaultdict
 
-def total_seconds(td):
+def _total_seconds(td):
     result = td.days * 24 * 60 * 60
     result += td.seconds
     result += td.microseconds / 1000000.0
     return result
 
-class runtime(object):
+class _runtime(object):
     def __init__(self, label):
         self.label = label
 
@@ -114,17 +114,17 @@ class runtime(object):
             result = f(*args, **kwargs)
             if 'stats' in kwargs and kwargs['stats'] != None:
                 stats = kwargs['stats']
-                stats[self.label] = total_seconds(datetime.now() - start)
+                stats[self.label] = _total_seconds(datetime.now() - start)
             return result
         return wrapped_f
 
-class call_count(object):
+class _call_count(object):
     def __init__(self, label):
         self.label = label
 
     def __call__(self,f):
         if self.label == None:
-            self.label = f.__name__+"_runtime"
+            self.label = f.__name__+"_call_count"
         def wrapped_f(*args,**kwargs):
             if 'stats' in kwargs and kwargs['stats'] != None:
                 stats = kwargs['stats']
@@ -296,7 +296,7 @@ class _TripleCanonicalizer(object):
                         sequence = colors[1:] + sequence
         return coloring
 
-    @runtime("to_hash_runtime")
+    @_runtime("to_hash__runtime")
     def to_hash(self, stats=None):
         result = 0
         for triple in self.canonical_triples(stats=stats):
@@ -326,7 +326,7 @@ class _TripleCanonicalizer(object):
                 groupings[n] = g
         return groupings
 
-    @call_count("individuations")
+    @_call_count("individuations")
     def _traces(self, coloring, stats=None, depth=[0]):
         if stats != None and 'prunings' not in stats:
             stats['prunings'] = 0
@@ -405,7 +405,7 @@ class _TripleCanonicalizer(object):
             stats['adjacent_nodes']  = max(0, len(coloring) - 1)
         coloring = self._refine(coloring,coloring[:])
         if stats != None:
-            stats['initial_coloring_runtime'] = total_seconds(datetime.now() - start_coloring)
+            stats['initial_coloring__runtime'] = _total_seconds(datetime.now() - start_coloring)
             stats['initial_color_count'] = len(coloring)
         if not self._discrete(coloring):
             depth = [0]
@@ -420,7 +420,7 @@ class _TripleCanonicalizer(object):
 
         bnode_labels = dict([(c.nodes[0], c.hash_color()) for c in coloring])
         if stats != None:
-            stats["canonicalize_triples_runtime"] = total_seconds(datetime.now() - start_coloring)
+            stats["canonicalize_triples__runtime"] = _total_seconds(datetime.now() - start_coloring)
         for triple in self.graph:
             result = tuple(self._canonicalize_bnodes(triple, bnode_labels))
             yield result
