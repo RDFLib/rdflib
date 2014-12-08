@@ -34,41 +34,26 @@ from rdflib	import Literal
 from rdflib	import BNode
 from rdflib	import Namespace
 if rdflib.__version__ >= "3.0.0" :
-	from rdflib	import Graph
 	from rdflib	import RDF  as ns_rdf
-	from rdflib	import RDFS as ns_rdfs
 	from rdflib import XSD  as ns_xsd
 else :
-	from rdflib.Graph	import Graph
-	from rdflib.RDFS	import RDFSNS  as ns_rdfs
-	from rdflib.Literal import _XSD_NS as ns_xsd
 	from rdflib.RDF		import RDFNS   as ns_rdf
+	from rdflib.Literal import _XSD_NS as ns_xsd
 	
 ns_owl = Namespace("http://www.w3.org/2002/07/owl#")
 
 from .registry import registry, vocab_names
-from .utils	   import generate_RDF_collection, get_Literal, get_time_type
+from .utils	   import get_Literal, get_time_type
 from .utils	   import get_lang_from_hierarchy, is_absolute_URI, generate_URI, fragment_escape
-
-MD_VOCAB   = "http://www.w3.org/ns/md#"
-RDFA_VOCAB = URIRef("http://www.w3.org/ns/rdfa#usesVocabulary")
 
 from . import debug
 
-# Existing predicate schemes
-class PropertySchemes :
-	vocabulary = "vocabulary"
-	contextual = "contextual"
-	
-class ValueMethod :
-	unordered = "unordered"
-	list      = "list"
-
 # ----------------------------------------------------------------------------
 
-class Evaluation_Context :
+
+class EvaluationContext :
 	"""
-	Evaluation context structure. See Section 4.1 of the U{W3C IG Note<http://www.w3.org/TR/microdata-rdf/>}for the details.
+	Evaluation context structure. See Section 6.1 of the U{W3C IG Note<http://www.w3.org/TR/microdata-rdf/>}for the details.
 	
 	@ivar current_type : an absolute URL for the current type, used when an item does not contain an item type
 	@ivar memory: mapping from items to RDF subjects
@@ -76,13 +61,13 @@ class Evaluation_Context :
 	@ivar current_name: an absolute URL for the in-scope name, used for generating URIs for properties of items without an item type
 	@ivar current_vocabulary: an absolute URL for the current vocabulary, from the registry
 	"""
-	def __init__( self ) :
+	def __init__(self) :
 		self.current_type       = None
 		self.memory             = {}
 		self.current_name       = None
 		self.current_vocabulary = None
 		
-	def get_memory( self, item ) :
+	def get_memory(self, item) :
 		"""
 		Get the memory content (ie, RDF subject) for 'item', or None if not stored yet
 		@param item: an 'item', in microdata terminology
@@ -94,7 +79,7 @@ class Evaluation_Context :
 		else :
 			return None
 		
-	def set_memory( self, item, subject ) :
+	def set_memory(self, item, subject) :
 		"""
 		Set the memory content, ie, the subject, for 'item'.
 		@param item: an 'item', in microdata terminology
@@ -113,7 +98,7 @@ class Evaluation_Context :
 		@param itype : an absolute URL for the current type
 		@return: a new evaluation context instance
 		"""
-		retval = Evaluation_Context()
+		retval = EvaluationContext()
 		for k in self.memory :
 			retval.memory[k] = self.memory[k]
 
@@ -130,23 +115,22 @@ class Evaluation_Context :
 		retval += "  memory:             %s\n" % self.memory
 		retval += "----\n"
 		return retval
-		
+
+
 class Microdata :
 	"""
-	This class encapsulates methods that are defined by the U{microdata spec<http://dev.w3.org/html5/md/Overview.html>},
+	This class encapsulates methods that are defined by the U{microdata spec<http://www.w3.org/TR/microdata/>},
 	as opposed to the RDF conversion note.
 	
 	@ivar document: top of the DOM tree, as returned by the HTML5 parser
 	@ivar base: the base URI of the Dom tree, either set from the outside or via a @base element
 	"""
-	def __init__( self, document, base = None) :
+	def __init__(self, document, base = None) :
 		"""
 		@param document: top of the DOM tree, as returned by the HTML5 parser
 		@param base: the base URI of the Dom tree, either set from the outside or via a @base element
 		"""
 		self.document = document
-		
-		#-----------------------------------------------------------------
 		# set the document base, will be used to generate top level URIs
 		self.base = None
 		# handle the base element case for HTML
@@ -158,14 +142,14 @@ class Microdata :
 		# If got here, ie, if no local setting for base occurs, the input argument has it
 		self.base = base	
 
-	def get_top_level_items( self ) :
+	def get_top_level_items(self) :
 		"""
-		A top level item is and element that has the @itemscope set, but no @itemtype. They have to
-		be collected in pre-order and depth-first fashion.
+		A top level item is and element that has the @itemscope set, but no @itemtype. They are
+		collected in pre-order and depth-first fashion.
 		
 		@return: list of items (ie, DOM Nodes)
 		"""
-		def collect_items( node ) :
+		def collect_items(node) :
 			items = []
 			for child in node.childNodes :
 				if child.nodeType == node.ELEMENT_NODE :
@@ -177,29 +161,29 @@ class Microdata :
 			
 			return items
 				
-		return collect_items( self.document )
-		
-	def get_item_properties( self, item ) :
+		return collect_items(self.document)
+
+	def get_item_properties(self, item) :
 		"""
-		Collect the item's properties, ie, all DOM descendent nodes with @itemprop until the subtree hits another
-		@itemscope. @itemrefs are also added at this point.
+		Collect the item's properties, ie, all DOM descendant nodes with @itemprop until the subtree hits another @itemscope. @itemrefs are also added at this point.
 		
 		@param item: current item
 		@type item: DOM Node
 		@return: array of items, ie, DOM Nodes
 		"""
 		# go down the tree until another itemprop is hit, take care of the itemrefs, too; see the microdata doc
-		# probably the ugliest stuff
+		# probably the ugliest stuff around!
 		# returns a series of element nodes.
 		# Is it worth filtering the ones with itemprop at that level???
 		results = []
-		memory  = [ item ]		
-		pending = [ child for child in item.childNodes if child.nodeType == item.ELEMENT_NODE ]
-		
+		memory  = [item]
+		pending = [child for child in item.childNodes if child.nodeType == item.ELEMENT_NODE]
+
+		# Add the possible "@itemref" targets to the nodes to work on
 		if item.hasAttribute("itemref") :
-			for id in item.getAttribute("itemref").strip().split() :
-				obj = self.getElementById(id)
-				if obj != None : pending.append(obj)
+			for it in item.getAttribute("itemref").strip().split() :
+				obj = self.getElementById(it)
+				if obj is not None : pending.append(obj)
 		
 		while len(pending) > 0 :
 			current = pending.pop(0)
@@ -213,9 +197,11 @@ class Microdata :
 			
 			# @itemscope is the barrier...
 			if not current.hasAttribute("itemscope") :
-				pending = [ child for child in current.childNodes if child.nodeType == child.ELEMENT_NODE ] + pending
+				pending = [child for child in current.childNodes if child.nodeType == child.ELEMENT_NODE] + pending
 
 			if current.hasAttribute("itemprop") and current.getAttribute("itemprop").strip() != "" :
+				results.append(current)
+			elif current.hasAttribute("itemprop-reverse") and current.getAttribute("itemprop-reverse").strip() != "" :
 				results.append(current)
 				
 		return results
@@ -225,24 +211,25 @@ class Microdata :
 		@param id: value of an @id attribute to look for
 		@return: array of nodes whose @id attribute matches C{id} (formally, there should be only one...)
 		"""
-		def collect_ids( node ) :
-			ids = []
+		def collect_ids(node) :
+			lids = []
 			for child in node.childNodes :
 				if child.nodeType == node.ELEMENT_NODE :
-					ids += collect_ids( child )
+					lids += collect_ids(child)
 					
 			if node.hasAttribute("id") and node.getAttribute("id") == id :
 				# This is also a top level item
-				ids.append(node)
+				lids.append(node)
 			
-			return ids
+			return lids
 		
 		ids = collect_ids(self.document)
 		if len(ids) > 0 :
 			return ids[0]
 		else :
 			return None
-				
+
+
 class MicrodataConversion(Microdata) :
 	"""
 	Top level class encapsulating the conversion algorithms as described in the W3C note.
@@ -250,42 +237,23 @@ class MicrodataConversion(Microdata) :
 	@ivar graph: an RDF graph; an RDFLib Graph
 	@type graph: RDFLib Graph
 	@ivar document: top of the DOM tree, as returned by the HTML5 parser
-	@ivar ns_md: the Namespace for the microdata vocabulary
 	@ivar base: the base of the Dom tree, either set from the outside or via a @base element
+	@ivar subs: dictionary mapping predicates to possible superproperties
+	@ivar bnodes: dictionary mapping items to bnodes (to be used when an item is the target of an @itemref)
 	"""
-	def __init__( self, document, graph, base = None, vocab_expansion = False, vocab_cache = True  ) :
+	def __init__(self, document, graph, base = None) :
 		"""
 		@param graph: an RDF graph; an RDFLib Graph
 		@type graph: RDFLib Graph
 		@param document: top of the DOM tree, as returned by the HTML5 parser
 		@keyword base: the base of the Dom tree, either set from the outside or via a @base element
-		@keyword vocab_expansion: whether vocab expansion should be performed or not
-		@type vocab_expansion: Boolean
-		@keyword vocab_cache: if vocabulary expansion is done, then perform caching of the vocabulary data
-		@type vocab_cache: Boolean
 		"""
 		Microdata.__init__(self, document, base)
-		self.vocab_expansion   = vocab_expansion
-		self.vocab_cache       = vocab_cache
-		self.graph             = graph
-		self.ns_md             = Namespace( MD_VOCAB )
-		self.graph.bind( "md",MD_VOCAB )
-		self.vocabularies_used = False
+		self.graph  = graph
+		self.subs   = {}
+		self.bnodes = {}
 
 		# Get the vocabularies defined in the registry bound to proper names, if any...
-
-		def _use_rdfa_context () :
-			try :
-				from ..pyRdfa.initialcontext import initial_context
-			except :
-				from pyRdfa.initialcontext import initial_context
-			retval = {}
-			vocabs = initial_context["http://www.w3.org/2011/rdfa-context/rdfa-1.1"].ns
-			for prefix in list(vocabs.keys()) :
-				uri = vocabs[prefix]				
-				if uri not in vocab_names and uri not in registry : retval[uri] = prefix
-			return retval
-				
 		for vocab in registry :
 			if vocab in vocab_names :
 				self.graph.bind( vocab_names[vocab],vocab )
@@ -296,241 +264,210 @@ class MicrodataConversion(Microdata) :
 					
 		# Add the prefixes defined in the RDFa initial context to improve the outlook of the output
 		# I put this into a try: except: in case the pyRdfa package is not available...
-		try :
-			try :
-				from ..pyRdfa.initialcontext import initial_context
-			except :
-				from pyRdfa.initialcontext import initial_context
-			vocabs = initial_context["http://www.w3.org/2011/rdfa-context/rdfa-1.1"].ns
-			for prefix in list(vocabs.keys()) :
-				uri = vocabs[prefix]
-				if uri not in registry :
-					# if it is in the registry, then it may have needed some special microdata massage...
-					self.graph.bind( prefix,uri )
-		except :
-			pass
+		# This is put in a debug branch; in general, the RDFLib Turtle serializer adds all the
+		# namespace declarations, which can be a bit of a problem for reading the results...
+
+		# try :
+		# 	try :
+		# 		from ..pyRdfa.initialcontext import initial_context
+		# 	except :
+		# 		from pyRdfa.initialcontext import initial_context
+		# 	vocabs = initial_context["http://www.w3.org/2011/rdfa-context/rdfa-1.1"].ns
+		# 	for prefix in list(vocabs.keys()) :
+		# 		uri = vocabs[prefix]
+		# 		if uri not in registry :
+		# 			# if it is in the registry, then it may have needed some special microdata massage...
+		# 			self.graph.bind(prefix,uri)
+		# except :
+		# 	pass
 		
-	def convert( self ) :
+	def convert(self) :
 		"""
 		Top level entry to convert and generate all the triples. It finds the top level items,
-		and generates triples for each of them; additionally, it generates a top level entry point
-		to the items from base in the form of an RDF list.
+		and generates triples for each of them.
 		"""
-		item_list = []
 		for top_level_item in self.get_top_level_items() :
-			item_list.append( self.generate_triples(top_level_item, Evaluation_Context()) )
-		list = generate_RDF_collection( self.graph, item_list )
-		self.graph.add( (URIRef(self.base),self.ns_md["item"],list) )
-		
-		# If the vocab expansion is also switched on, this is the time to do it.
+			self.generate_triples(top_level_item, EvaluationContext())
 
-		# This is the version with my current proposal: the basic expansion is always there;
-		# the follow-your-nose inclusion of vocabulary is optional
-		if self.vocabularies_used :
-			try :
-				try :
-					from ..pyRdfa.rdfs.process import MiniOWL, process_rdfa_sem
-					from ..pyRdfa.options      import Options
-				except :
-					from pyRdfa.rdfs.process import MiniOWL, process_rdfa_sem
-					from pyRdfa.options      import Options
-				# if we did not get here, the pyRdfa package could not be
-				# imported. Too bad, but life should go on in the except branch...
-				if self.vocab_expansion :
-					# This is the full deal
-					options = Options(vocab_expansion = self.vocab_expansion, vocab_cache = self.vocab_cache)
-					process_rdfa_sem(self.graph, options)
-				else :
-					MiniOWL(self.graph).closure()
-			except :
-				pass
-
-	def generate_triples( self, item, context ) :
+	def generate_triples(self, item, context) :
 		"""
 		Generate the triples for a specific item. See the W3C Note for the details.
 		
 		@param item: the DOM Node for the specific item
 		@type item: DOM Node
 		@param context: an instance of an evaluation context
-		@type context: L{Evaluation_Context}
+		@type context: L{EvaluationContext}
 		@return: a URIRef or a BNode for the (RDF) subject
 		"""
+		def _get_predicate_object(prop, name, item_type) :
+			"""
+			Generate the predicate and the object for an item that contains either "itemprop" or "itemprop-reverse".
+			Steps 9.1.1 to 9.1.3 of the processing steps
+
+			@param prop: the item that should produce a predicate
+			@type prop: a DOM Node for an element
+			@param name: an itemprop or itemprop-reverse item
+			@type name: string
+			@param item_type: the type of the item; necessary for the creation of a new context
+			@type item_type: a string with the absolute URI of the type
+			@return: a tuple consisting of the predicate (URI) and the object for the triple to be generated
+			"""
+			# 9.1.1. set a new context
+			new_context = context.new_copy(item_type)
+			# 9.1.2, generate the URI for the property name, that will be the predicate
+			# Also update the context
+			# Note that the method also checks, and stores, the possible superproperty/equivalent property values
+			new_context.current_name = predicate = self.generate_predicate_URI(name, new_context)
+			# 9.1.3, generate the property value. The extra flag signals that the value is a new item
+			# Note that 9.1.4 step is done in the method itself, ie, a recursion may occur there
+			# if a new item is hit (in which case the return value is a RDF resource chaining to a subject)
+			# Note that the value may be None (e.g, for an <img> element without a @src), in which case nothing
+			# is generated
+			value  = self.get_property_value(prop, new_context)
+			return (predicate, value)
+
 		# Step 1,2: if the subject has to be set, store it in memory
-		subject = context.get_memory( item )
-		if subject == None :
+		subject = context.get_memory(item)
+
+		if subject is None :
 			# nop, there is no subject set. If there is a valid @itemid, that carries it
-			if item.hasAttribute("itemid") and is_absolute_URI( item.getAttribute("itemid") ):
-				subject = URIRef( item.getAttribute("itemid").strip() )
+			if item.hasAttribute("itemid") :
+				subject = URIRef(generate_URI(self.base, item.getAttribute("itemid").strip()))
 			else :
-				subject = BNode()
-			context.set_memory( item, subject )
+				if item in self.bnodes :
+					subject = self.bnodes[item]
+				else :
+					subject = BNode()
+					self.bnodes[item] = subject
+			context.set_memory(item,subject)
 			
 		# Step 3: set the type triples if any
 		types = []
 		if item.hasAttribute("itemtype") :
 			types = item.getAttribute("itemtype").strip().split()
-			for t in types :
-				if is_absolute_URI( t ) :
-					self.graph.add( (subject, ns_rdf["type"], URIRef(t)) )
+			for t in types:
+				if is_absolute_URI(t) :
+					self.graph.add((subject, ns_rdf["type"], URIRef(t)))
 		
-		# Step 4, 5 and 6 to set the typing variable
+		# Step 4, 5 to set the typing variable
 		if len(types) == 0 :
 			itype = None
 		else :
 			if is_absolute_URI(types[0]) :
 				itype = types[0]
 				context.current_name = None
-			elif context.current_type != None :
+			elif context.current_type is not None :
 				itype = context.current_type
 			else :
 				itype = None
 
-		# Step 7, 8, 9: Check the registry for possible keys and set the vocab
+		# Step 6, 7: Check the registry for possible keys and set the vocab
 		vocab = None
-		if itype != None :
+		if itype is not None :
 			for key in list(registry.keys()) :
 				if itype.startswith(key) :
 					# There is a predefined vocabulary for this type...
 					vocab = key
-					# Step 7: Issue an rdfa usesVocabulary triple
-					self.graph.add( (URIRef(self.base), RDFA_VOCAB, URIRef(vocab)))
-					self.vocabularies_used = True
 					break
-			# The registry has not set the vocabulary; has to be extracted from the type
-			if vocab == None :
+			# The registry has not set the vocabulary; it has to be extracted from the type
+			if vocab is None :
 				parsed = urlsplit(itype)
 				if parsed.fragment != "" :
-					vocab = urlunsplit( (parsed.scheme,parsed.netloc,parsed.path,parsed.query,"") ) + '#'					
+					vocab = urlunsplit((parsed.scheme, parsed.netloc, parsed.path, parsed.query,"")) + '#'
 				elif parsed.path == "" and parsed.query == "" :
 					vocab = itype
 					if vocab[-1] != '/' : vocab += '/'
 				else :
-					vocab = itype.rsplit('/',1)[0] + '/'
+					vocab = itype.rsplit('/', 1)[0] + '/'
 		
-		# Step 9: update vocab in the context
-		if vocab != None :
+		# Step 8: update vocab in the context
+		if vocab is not None :
 			context.current_vocabulary = vocab
 		elif item.hasAttribute("itemtype") :
 			context.current_vocabulary = None
 
-		# Step 10: set up a property list; this will be used to generate triples later.
+		# Step 9: Get the item properties and run a cycle on those
 		# each entry in the dictionary is an array of RDF objects
-		property_list = {}
-		
-		# Step 11: Get the item properties and run a cycle on those
 		for prop in self.get_item_properties(item) :
 			for name in prop.getAttribute("itemprop").strip().split() :
-				# 11.1.1. set a new context
-				new_context = context.new_copy(itype)
-				# 11.1.2, generate the URI for the property name, that will be the predicate
-				# Also update the context
-				new_context.current_name = predicate = self.generate_predicate_URI( name,new_context )
-				# 11.1.3, generate the property value. The extra flag signals that the value is a new item
-				# Note that 10.1.4 step is done in the method itself, ie, a recursion may occur there
-				# if a new item is hit (in which case the return value is a RDF resource chaining to a subject)
-				value  = self.get_property_value( prop, new_context )
-				# 11.1.5, store all the values
-				if predicate in property_list :
-					property_list[predicate].append(value)
-				else :
-					property_list[predicate] = [ value ]
-						
-		# step 12: generate the triples
-		for property in list(property_list.keys()) :
-			self.generate_property_values( subject, URIRef(property), property_list[property], context )
-			
-		# Step 13: return the subject to the caller
+				# Steps 9.1.1 to 9.1.3 are done in a separate function
+				(predicate, value) = _get_predicate_object(prop, name, itype)
+				if value is None : continue
+				# 9.1.5, generate the triple
+				self.graph.add((subject, URIRef(predicate), value))
+				# 9.1.6, take care of the possible subProperty/equivalentProperty
+				if name in self.subs and self.subs[name] is not None :
+					for sup in self.subs[name] :
+						self.graph.add((subject, sup, value))
+
+		# Step 10: Almost identical to step 9, except for itemprop-reverse
+		# The only difference is that a Literal value must be ignored
+		for prop in self.get_item_properties(item) :
+			for name in prop.getAttribute("itemprop-reverse").strip().split() :
+				# Steps 9.1.1 to 9.1.3 are done in a separate function
+				(predicate, value) = _get_predicate_object(prop, name, itype)
+				if value is None or isinstance(value, Literal) : 
+					continue
+				# 9.1.5, generate the triple
+				self.graph.add((value, URIRef(predicate), subject))
+				# 9.1.6, take care of the possible subProperty/equivalentProperty
+				if name in self.subs and self.subs[name] is not None :
+					for sup in self.subs[name] :
+						self.graph.add((value, sup, subject))
+
+		# Step 11: return the subject to the caller
 		return subject
 		
-	def generate_predicate_URI( self, name, context ) :
+	def generate_predicate_URI(self, name, context) :
 		"""
 		Generate a full URI for a predicate, using the type, the vocabulary, etc.
 		
 		For details of this entry, see Section 4.4
 		@param name: name of the property, ie, what appears in @itemprop
 		@param context: an instance of an evaluation context
-		@type context: L{Evaluation_Context}
+		@type context: L{EvaluationContext}
 		"""
-		if debug: print( "name: %s, %s" % (name,context) )
-		
+		def add_to_subs(subpr) :
+			if subpr is not None :
+				if isinstance(subpr,list) :
+					self.subs[name] = []
+					for p in subpr :
+						self.subs[name].append(URIRef(p))
+				else :
+					self.subs[name] = [URIRef(subpr)]
+
 		# Step 1: absolute URI-s are fine, take them as they are
 		if is_absolute_URI(name) : return name
 		
 		# Step 2: if type is none, that this is just used as a fragment
 		# if not context.current_type  :
-		if context.current_type == None and context.current_vocabulary == None  :
+		if context.current_type is None and context.current_vocabulary is None  :
 			if self.base[-1] == '#' :
 				b = self.base[:-1]
 			else :
 				b = self.base
 			return b + '#' + fragment_escape(name)
 
-		#if context.current_type == None :
-		#	return generate_URI( self.base, name )
-		
-		# Step 3: set the scheme
-		try :
-			if context.current_vocabulary in registry and "propertyURI" in registry[context.current_vocabulary] :
-				scheme = registry[context.current_vocabulary]["propertyURI"]
-			else :
-				scheme = PropertySchemes.vocabulary
-		except :
-			# This is when the structure of the registry is broken
-			scheme = PropertySchemes.vocabulary
-			
-		name = fragment_escape( name )
-		if scheme == PropertySchemes.contextual :
-			# Step 5.1
-			s = context.current_name
-			# s = context.current_type
-			if s != None and s.startswith("http://www.w3.org/ns/md?type=") :
-				# Step 5.2
-				expandedURI = s + '.' + name
-			else :
-				# Step 5.3
-				expandedURI =  "http://www.w3.org/ns/md?type=" + fragment_escape(context.current_type) + "&prop=" + name
+		# Extract the possible subproperty/equivalentProperty relations on the fly
+		# see if there are subproperty/equivalentProperty relations
+		if name not in self.subs :
+			try :
+				vocab_mapping = registry[context.current_vocabulary]["properties"][name]
+				for rel in ["subPropertyOf", "equivalentProperty"] :
+					if rel in vocab_mapping :
+						add_to_subs(vocab_mapping[rel])
+			except :
+				# no harm done, no extra vocabulary term
+				self.subs[name] = None
 		else :
-			# Step 4
-			if context.current_vocabulary[-1] == '#' or context.current_vocabulary[-1] == '/' :
-				expandedURI =  context.current_vocabulary + name
-			else :
-				expandedURI =  context.current_vocabulary + '#' + name
+			self.subs[name] = None
 
-		# see if there are subproperty/equivalentproperty relations
-		try :
-			vocab_mapping = registry[context.current_vocabulary]["properties"][name]
-			# if we got that far, we may have some mappings
+		escaped_name = fragment_escape(name)
+		if context.current_vocabulary[-1] == '#' or context.current_vocabulary[-1] == '/' :
+			return context.current_vocabulary + escaped_name
+		else :
+			return context.current_vocabulary + '#' + escaped_name
 
-			expandedURIRef = URIRef(expandedURI)
-			try :
-				subpr = vocab_mapping["subPropertyOf"]
-				if subpr != None :
-					if isinstance(subpr,list) :
-						for p in subpr :
-							self.graph.add( (expandedURIRef, ns_rdfs["subPropertyOf"], URIRef(p)) )
-					else :
-						self.graph.add( (expandedURIRef, ns_rdfs["subPropertyOf"], URIRef(subpr)) )
-			except :
-				# Ok, no sub property
-				pass
-			try :
-				subpr = vocab_mapping["equivalentProperty"]
-				if subpr != None :
-					if isinstance(subpr,list) :
-						for p in subpr :
-							self.graph.add( (expandedURIRef, ns_owl["equivalentProperty"], URIRef(p)) )
-					else :
-						self.graph.add( (expandedURIRef, ns_owl["equivalentProperty"], URIRef(subpr)) )
-			except :
-				# Ok, no sub property
-				pass
-		except :
-			# no harm done, no extra vocabulary term
-			pass
-
-
-		return expandedURI
-		
 	def get_property_value(self, node, context) :
 		"""
 		Generate an RDF object, ie, the value of a property. Note that if this element contains
@@ -539,42 +476,53 @@ class MicrodataConversion(Microdata) :
 		object.
 		
 		Otherwise, either URIRefs are created for <a>, <img>, etc, elements, or a Literal; the latter
-		gets a time-related type for the <time> element.
+		gets a time-related type for the <time> element, and possible numeric types for the @value
+		attribute of the <meter> and <data> elements.
 		
 		@param node: the DOM Node for which the property values should be generated
 		@type node: DOM Node
 		@param context: an instance of an evaluation context
-		@type context: L{Evaluation_Context}
+		@type context: L{EvaluationContext}
 		@return: an RDF resource (URIRef, BNode, or Literal)
 		"""
 		URI_attrs = {
+			"a"			: "href",
 			"audio"		: "src",
+			"area"		: "href",
 			"embed"		: "src",
 			"iframe"	: "src",
 			"img"		: "src",
+			"link"		: "href",
+			"object"	: "data",
 			"source"	: "src",
 			"track"		: "src",
-			"video"		: "src",
-			"data"		: "src",
-			"a"			: "href",
-			"area"		: "href",
-			"link"		: "href", 
-			"object"	: "data" 
+			"video"		: "src"
 		}
-		lang = get_lang_from_hierarchy( self.document, node )
+		lang = get_lang_from_hierarchy(self.document, node)
 
 		if node.hasAttribute("itemscope") :
 			# THIS IS A RECURSION ENTRY POINT!
-			return self.generate_triples( node, context )
+			return self.generate_triples(node, context)
 			
-		elif node.tagName in URI_attrs and node.hasAttribute(URI_attrs[node.tagName]) :
-			return URIRef( generate_URI( self.base, node.getAttribute(URI_attrs[node.tagName]).strip() ) )
+		elif node.tagName in URI_attrs :
+			if node.hasAttribute(URI_attrs[node.tagName]) :
+				return URIRef(generate_URI(self.base, node.getAttribute(URI_attrs[node.tagName]).strip()))
+			else :
+				return None
 			
 		elif node.tagName == "meta" and node.hasAttribute("content") :
 			if lang :
-				return Literal( node.getAttribute("content"), lang = lang )
+				return Literal(node.getAttribute("content"), lang = lang)
 			else :
-				return Literal( node.getAttribute("content") )
+				return Literal(node.getAttribute("content"))
+
+		elif node.tagName == "time" and node.hasAttribute("datetime") :
+			litval = node.getAttribute("datetime")
+			dtype  = get_time_type(litval)
+			if dtype :
+				return Literal(litval, datatype = dtype)
+			else :
+				return Literal(litval)
 
 		elif node.tagName == "meter" or node.tagName == "data" :
 			if node.hasAttribute("value") :
@@ -582,82 +530,21 @@ class MicrodataConversion(Microdata) :
 				# check whether the attribute value can be defined as a float or an integer
 				try :
 					fval = int(val)
-					dt   = ns_xsd["integer"]
+					return Literal(val, datatype = ns_xsd["integer"])
 				except :
-					# Well, not an int, try then a integer
+					# Well, not an int, try then a float
 					try :
 						fval = float(val)
-						dt   = ns_xsd["float"]
+						return Literal(val, datatype = ns_xsd["double"])
 					except :
 						# Sigh, this is not a valid value, but let it go through as a plain literal nevertheless
-						fval = val
-						dt   = None
-				if dt :
-					return Literal( val, datatype = dt)
-				else :
-					return Literal( val )
+						return Literal(val)
 			else :
-				return Literal( "" )
-
-		elif node.tagName == "time" and node.hasAttribute("datetime") :
-			litval = node.getAttribute("datetime")
-			dtype  = get_time_type(litval)
-			if dtype :
-				return Literal( litval, datatype = dtype )
-			else :
-				return Literal( litval )
+				return Literal("")
 
 		else :
 			if lang :
-				return Literal( get_Literal(node), lang = lang )
+				return Literal(get_Literal(node), lang = lang)
 			else :
-				return Literal( get_Literal(node) )
-		
-	def generate_property_values( self, subject, predicate, objects, context) :
-		"""
-		Generate the property values for a specific subject and predicate. The context should specify whether
-		the objects should be added in an RDF list or each triples individually.
-		
-		@param subject: RDF subject
-		@type subject: RDFLib Node (URIRef or blank node)
-		@param predicate: RDF predicate
-		@type predicate: RDFLib URIRef
-		@param objects: RDF objects
-		@type objects: list of RDFLib nodes (URIRefs, Blank Nodes, or literals)
-		@param context: evaluation context
-		@type context: L{Evaluation_Context}
-		"""
-		# generate triples with a list, or a bunch of triples, depending on the context
-		# The biggest complication is to find the method...
-		method = ValueMethod.unordered
-		superproperties = None
-		
-		# This is necessary because predicate is a URIRef, and I am not sure the comparisons would work well
-		# to be tested, in fact...
-		pred_key = "%s" % predicate
-		for key in registry :
-			if predicate.startswith(key) :
-				# This the part of the registry corresponding to the predicate's vocabulary
-				registry_object = registry[key]
-				try :
-					if "multipleValues" in registry_object : method = registry_object["multipleValues"]
-					# The generic definition can be overwritten for a specific property. The simplest is to rely on a 'try'
-					# with the right structure...
-					try :
-						method = registry_object["properties"][pred_key[len(key):]]["multipleValues"]
-					except :
-						pass
-				except :
-					pass
-		
-		if method == ValueMethod.unordered :
-			for object in objects :
-				self.graph.add( (subject, predicate, object) )
-		else :
-			self.graph.add( (subject,predicate,generate_RDF_collection( self.graph, objects )) )
-		
-						
-				
-					
-		
+				return Literal(get_Literal(node))
 
