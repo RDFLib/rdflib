@@ -5,8 +5,8 @@ A collection of utilities for canonicalizing and inspecting graphs.
 Among other things, they solve of the problem of deterministic bnode
 comparisons.
 
-Warning: the time to canonicalize bnodes may increase exponentially on larger
-graphs. Use with care!
+Warning: the time to canonicalize bnodes may increase exponentially on 
+degnerate larger graphs. Use with care!
 
 Example of comparing two graphs::
 
@@ -136,9 +136,11 @@ class call_count(object):
 
 class IsomorphicGraph(ConjunctiveGraph):
     """
-    Ported from
-    <http://www.w3.org/2001/sw/DataAccess/proto-tests/tools/rdfdiff.py>
-    (Sean B Palmer's RDF Graph Isomorphism Tester).
+    An implementation of RGDA1 (publication forthcoming),
+    a combination of Sayers & Karp's graph digest algorithm using 
+    sum and SHA-256 <http://www.hpl.hp.com/techreports/2003/HPL-2003-235R1.pdf>
+    and traces <http://pallini.di.uniroma1.it>, an average case
+    polynomial time algorithm for graph canonicalization.
     """
 
     def __init__(self, **kwargs):
@@ -150,9 +152,7 @@ class IsomorphicGraph(ConjunctiveGraph):
             return False
         elif len(self) != len(other):
             return False
-        elif list(self) == list(other):
-            return True  # TODO: really generally cheaper?
-        return self.internal_hash() == other.graph_digest()
+        return self.internal_hash() == other.internal_hash()
 
     def __ne__(self, other):
         """Negative graph isomorphism testing."""
@@ -170,14 +170,13 @@ class IsomorphicGraph(ConjunctiveGraph):
         """
         return _TripleCanonicalizer(self).to_hash(stats=stats)
 
-_hash_cache = {}
 class Color:
-    def __init__(self, nodes, hashfunc, color=()):
+    def __init__(self, nodes, hashfunc, color=(), hash_cache={}):
         self.color = color
         self.nodes = nodes
         self.hashfunc = hashfunc
         self._hash_color = None
-        self.hash_cache = {}
+        self._hash_cache = hash_cache
 
     def key(self):
         return (len(self.nodes),self.hash_color())
@@ -185,8 +184,8 @@ class Color:
     def hash_color(self, color=None):
         if color == None:
             color = self.color
-        if color in _hash_cache:
-            return _hash_cache[color]
+        if color in self._hash_cache:
+            return self._hash_cache[color]
         def stringify(x):
             if isinstance(x,Node):
                 return x.n3()
@@ -195,7 +194,7 @@ class Color:
             return stringify(color)
         value = sum(map(self.hashfunc, ' '.join([stringify(x) for x in color])))
         val = u"%x"% value
-        _hash_cache[color] = val
+        self._hash_cache[color] = val
         return val
 
     def distinguish(self, W, graph):
@@ -212,7 +211,7 @@ class Color:
             #print '\t' + "\n\t".join([str(n) for n in new_color])
 
             if new_hash_color not in colors:
-                c = Color([],self.hashfunc, new_color)
+                c = Color([],self.hashfunc, new_color, hash_cache=self._hash_cache)
                 colors[new_hash_color] = c
             colors[new_hash_color].nodes.append(n)
         return colors.values()
@@ -221,7 +220,7 @@ class Color:
         return len(self.nodes) == 1
 
     def copy(self):
-        return Color(self.nodes[:], self.hashfunc, self.color)
+        return Color(self.nodes[:], self.hashfunc, self.color,hash_cache=self._hash_cache)
 
 class _TripleCanonicalizer(object):
 
@@ -231,7 +230,7 @@ class _TripleCanonicalizer(object):
             h = hashfunc()
             h.update(unicode(s).encode("utf8"))
             return int(h.hexdigest(),16)
-
+        self._hash_cache = {}
         self.hashfunc = _hashfunc
 
 
@@ -258,8 +257,8 @@ class _TripleCanonicalizer(object):
                 if isinstance(o,BNode):
                     self._neighbors[o].add(s)
         if len(bnodes) > 0:
-            return [Color(list(bnodes),self.hashfunc)]+[
-                    Color([x],self.hashfunc, x) for x in others]
+            return [Color(list(bnodes),self.hashfunc,hash_cache=self._hash_cache)]+[
+                    Color([x],self.hashfunc, x,hash_cache=self._hash_cache) for x in others]
         else:
             return []
 
@@ -268,7 +267,8 @@ class _TripleCanonicalizer(object):
         new_color.append((len(color.nodes)))
 
         color.nodes.remove(individual)
-        c = Color([individual],self.hashfunc, tuple(new_color))
+        c = Color([individual],self.hashfunc, tuple(new_color),
+                  hash_cache=self._hash_cache)
         return c
 
     def _get_candidates(self, coloring):
@@ -479,10 +479,10 @@ def isomorphic(graph1, graph2):
 def to_canonical_graph(g1):
     """
     Creates a canonical, read-only graph where all bnode id:s are based on
-    deterministical MD5 checksums, correlated with the graph contents.
+    deterministical SHA-256 checksums, correlated with the graph contents.
     """
     graph = Graph()
-    graph += _TripleCanonicalizer(g1, _sha256_hash).canonical_triples()
+    graph += _TripleCanonicalizer(g1).canonical_triples()
     return ReadOnlyGraphAggregate([graph])
 
 
@@ -498,15 +498,6 @@ def graph_diff(g1, g2):
     in_second = cg2 - cg1
     return (in_both, in_first, in_second)
 
-
-def _sha256_hash(t):
-    h = sha256()
-    for i in t:
-        if isinstance(i, tuple):
-            h.update(_sha256_hash(i).encode('ascii'))
-        else:
-            h.update(unicode(i).encode("utf8"))
-    return h.hexdigest()
 
 
 _MOCK_BNODE = BNode()
