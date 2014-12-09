@@ -320,7 +320,7 @@ class _TripleCanonicalizer(object):
                         sequence = colors[1:] + sequence
         return coloring
 
-    @_runtime("to_hash__runtime")
+    @_runtime("to_hash_runtime")
     def to_hash(self, stats=None):
         result = 0
         for triple in self.canonical_triples(stats=stats):
