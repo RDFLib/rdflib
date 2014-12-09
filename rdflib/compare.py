@@ -291,7 +291,7 @@ class _TripleCanonicalizer(object):
         new_color.append((len(color.nodes)))
 
         color.nodes.remove(individual)
-        c = Color([individual], s elf.hashfunc, tuple(new_color),
+        c = Color([individual], self.hashfunc, tuple(new_color),
                   hash_cache=self._hash_cache)
         return c
 
@@ -422,7 +422,7 @@ class _TripleCanonicalizer(object):
     def canonical_triples(self, stats=None):
         if stats is not None:
             start_canonicalization = datetime.now()
-        if statsis not None:
+        if stats is not None:
             start_coloring = datetime.now()
         coloring = self._initial_color()
         if stats is not None:
