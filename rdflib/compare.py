@@ -179,12 +179,14 @@ class IsomorphicGraph(ConjunctiveGraph):
 
 
 class Color:
-    def __init__(self, nodes, hashfunc, color=(), hash_cache={}):
+    def __init__(self, nodes, hashfunc, color=(), hash_cache=None):
+        if hash_cache is None:
+            hash_cache = {}
+        self._hash_cache = hash_cache
         self.color = color
         self.nodes = nodes
         self.hashfunc = hashfunc
         self._hash_color = None
-        self._hash_cache = hash_cache
 
     def key(self):
         return (len(self.nodes), self.hash_color())
