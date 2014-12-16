@@ -9,41 +9,40 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 
 """
-$Id: utils.py,v 1.7 2012/09/01 15:17:28 ivan Exp $
-$Date: 2012/09/01 15:17:28 $
+$Id: utils.py,v 1.8 2014-02-21 16:26:59 ivan Exp $
+$Date: 2014-02-21 16:26:59 $
 """
-import os, os.path, sys
+import sys, socket
 (py_v_major, py_v_minor, py_v_micro, py_v_final, py_v_serial) = sys.version_info
 
+# The separate W3C branch is necessary for the local security setup at W3C. It is ugly to have this
+# in the code, but I was lazy to make it more generic...
+# With the inclusion of pyMicrodata into RDFLib, this service looses its importance anyway...
 if py_v_major >= 3 :
-	from urllib.request import Request, urlopen
+	import urllib.request
+	url_opener = urllib.request.build_opener()
+	from urllib.request import Request
 	from urllib.parse   import urljoin, quote, urlparse
 	from http.server    import BaseHTTPRequestHandler
 	from urllib.error   import HTTPError as urllib_HTTPError
 else :
-	from urllib2        import Request, urlopen
+	import urllib2
+	url_opener = urllib2.build_opener()
+	from urllib2        import Request
 	from urllib2        import HTTPError as urllib_HTTPError
 	from urlparse       import urljoin, urlparse
 	from urllib         import quote
 	from BaseHTTPServer import BaseHTTPRequestHandler
 
-import re
 from datetime import datetime
 
-from rdflib	import BNode
-import rdflib
-if rdflib.__version__ >= "3.0.0" :
-	from rdflib	import RDF as ns_rdf
-else :
-	from rdflib.RDF	import RDFNS  as ns_rdf
-
 #################################################################################
-def is_absolute_URI( uri ) :
+def is_absolute_URI(uri) :
 	return urlparse(uri)[0] != ""
 
 #################################################################################
 
-def fragment_escape( name ) :
+def fragment_escape(name) :
 	return quote(name, '/~:-.')
 		
 #################################################################################
@@ -55,7 +54,7 @@ def generate_URI(base, v) :
 	@param base: Absolute URI for base
 	@param v: relative or absolute URI
 	"""
-	if is_absolute_URI( v ) :
+	if is_absolute_URI(v) :
 		return v
 	else :		
 		# UGLY!!! There is a bug for a corner case in python version <= 2.5.X
@@ -78,24 +77,7 @@ def generate_URI(base, v) :
 			return joined		
 
 #################################################################################
-def generate_RDF_collection( graph, vals ) :
-	"""
-	Generate an RDF List from vals, returns the head of the list
-	@param graph: RDF graph
-	@type graph: RDFLib Graph
-	@param vals: array of RDF Resources
-	@return: head of the List (an RDF Resource)
-	"""
-	# generate an RDF List, returns the head
-	# list has all the elements in RDF format already
-	heads = [ BNode() for r in vals ] + [ ns_rdf["nil"] ]
-	for i in range(0, len(vals)) :
-		graph.add( (heads[i], ns_rdf["first"], vals[i]) )
-		graph.add( (heads[i], ns_rdf["rest"],  heads[i+1]) )
-	return heads[0]
-
-#################################################################################
-def get_Literal(Pnode):
+def get_Literal(Pnode) :
 	"""
 	Get (recursively) the full text from a DOM Node.
 
@@ -119,21 +101,21 @@ def get_Literal(Pnode):
 #################################################################################
 def get_lang(node) :
 	# we may have lang and xml:lang
-	retval  = None
+	retval = None
 	if node.hasAttribute("lang") :
 		retval = node.getAttribute("lang")
 	if retval and node.hasAttribute("xml:lang") :
 		xmllang = node.getAttribute("xml:lang").lower()
-		if not( xmllang != None and xmllang == retval.lower() ) :
+		if not(xmllang is not None and xmllang == retval.lower()) :
 			# This is an error, in which case retval must be invalidated...
 			retval = None
 	return retval
 
 def get_lang_from_hierarchy(document, node) :
 	lang = get_lang(node)
-	if lang == None :
+	if lang is None :
 		parent = node.parentNode
-		if parent != None and parent != document :
+		if parent is not None and parent != document :
 			return get_lang_from_hierarchy(document, parent)
 		else :
 			return get_lang(document)
@@ -174,7 +156,7 @@ _formats = {
 						 ],
 }
 
-_dur_times = [ "%HH%MM%SS", "%HH", "%MM", "%SS", "%HH%MM", "%HH%SS", "%MM%SS" ]
+_dur_times = ["%HH%MM%SS", "%HH", "%MM", "%SS", "%HH%MM", "%HH%SS", "%MM%SS"]
 
 def get_time_type(string) :
 	"""
@@ -223,7 +205,7 @@ def get_time_type(string) :
 					break
 				except ValueError :
 					pass
-			if td == True :
+			if td :
 				# Getting there...
 				for format in _dur_times :
 					try :
@@ -240,7 +222,7 @@ def get_time_type(string) :
 			return None
 
 	# If we got here, we should check the time zone
-	# there is a discrepancy betwen the python and the HTML5/XSD lexical string,
+	# there is a discrepancy between the python and the HTML5/XSD lexical string,
 	# which means that this has to handled separately for the date and the timezone portion
 	try :
 		# The time-zone-less portion of the string
@@ -278,7 +260,7 @@ class URIOpener :
 	@ivar headers: the return headers as sent back by the server
 	@ivar location: the real location of the data (ie, after possible redirection and content negotiation)
 	"""
-	CONTENT_LOCATION	= 'Content-Location'
+	CONTENT_LOCATION = 'Content-Location'
 	def __init__(self, name) :
 		"""
 		@param name: URL to be opened
@@ -287,14 +269,13 @@ class URIOpener :
 		try :
 			# Note the removal of the fragment ID. This is necessary, per the HTTP spec
 			req = Request(url=name.split('#')[0])
-
 			req.add_header('Accept', 'text/html, application/xhtml+xml')
 				
-			self.data		= urlopen(req)
-			self.headers	= self.data.info()
+			self.data    = url_opener.open(req)
+			self.headers = self.data.info()
 
 			if URIOpener.CONTENT_LOCATION in self.headers :
-				self.location = urlparse.urljoin(self.data.geturl(),self.headers[URIOpener.CONTENT_LOCATION])
+				self.location = urlparse.urljoin(self.data.geturl(), self.headers[URIOpener.CONTENT_LOCATION])
 			else :
 				self.location = name
 				
