@@ -194,8 +194,8 @@ class pyMicrodata :
 				self.base   = url_request.location
 				return url_request.data
 			else :
-				self.base = name
-				return file(name)
+				self.base = 'file://'+name
+				return open(name, 'rb')
 		else :
 			return name
 
