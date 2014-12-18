@@ -26,7 +26,7 @@ try:
 except ImportError:
     import warnings
     warnings.warn(
-        'html5lib not found! RDFa and Microdata ' +
+        'html5lib not found! RDFa and Microdata the ' +
         'parsers will not be available.')
     html5lib = False
 
@@ -129,7 +129,7 @@ class RDFaParser(Parser):
 
         if html5lib is False:
             raise ImportError(
-                'html5lib is not installed, cannot use ' +
+                'html5lib is not installed, cannot use the ' +
                 'RDFa and Microdata parsers.')
 
         (baseURI, orig_source) = _get_orig_source(source)
@@ -227,7 +227,7 @@ class MicrodataParser(Parser):
         """
         if html5lib is False:
             raise ImportError(
-                'html5lib is not installed, cannot use RDFa ' +
+                'html5lib is not installed, cannot use the RDFa ' +
                 'and Microdata parsers.')
 
         (baseURI, orig_source) = _get_orig_source(source)

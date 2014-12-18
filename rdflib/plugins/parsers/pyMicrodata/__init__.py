@@ -2,7 +2,7 @@
 """
 
 This module implements the microdata->RDF algorithm, as documented by the U{W3C Semantic Web Interest Group
-Note<http://www.w3.org/TR/2012/NOTE-microdata-rdf-20120308/>}.
+Note<http://www.w3.org/TR/2012/NOTE-microdata-rdf-20141216/>}.
 
 The module can be used via a stand-alone script (an example is part of the distribution) or bound to a CGI script as a Web Service. An example CGI script is also added to the distribution. Both the local script and the distribution may have to be adapted to local circumstances.
 
@@ -97,7 +97,7 @@ class MicrodataError(Exception) :
 	def __init__(self, msg) :
 		self.msg = msg
 		Exception.__init__(self)
-
+		
 class HTTPError(MicrodataError) :
 	"""Raised when HTTP problems are detected. It does not add any new functionality to the
 	Exception class."""
@@ -133,48 +133,48 @@ class pyMicrodata :
 		"""
 		self.http_status     = 200
 		self.base            = base
-
+		
 	def _generate_error_graph(self, pgraph, full_msg, uri = None) :
 		"""
 		Generate an error message into the graph. This method is usually used reacting on exceptions.
-
+		
 		Later versions of pyMicrodata may have more detailed error conditions on which it wishes to react. At the moment, this
 		is fairly crude...
 		"""
-		if pgraph is None :
+		if pgraph == None :
 			retval = Graph()
 		else :
 			retval = pgraph
-
-		pgraph.bind("dc", "http://purl.org/dc/terms/")
-		pgraph.bind("xsd", 'http://www.w3.org/2001/XMLSchema#')
-		pgraph.bind("ht", 'http://www.w3.org/2006/http#')
-		pgraph.bind("pyMicrodata", 'http://www.w3.org/2012/pyMicrodata/vocab#')
+			
+		pgraph.bind( "dc","http://purl.org/dc/terms/" )
+		pgraph.bind( "xsd",'http://www.w3.org/2001/XMLSchema#' )
+		pgraph.bind( "ht",'http://www.w3.org/2006/http#' )
+		pgraph.bind( "pyMicrodata",'http://www.w3.org/2012/pyMicrodata/vocab#' )
 
 		bnode = BNode()
 		retval.add((bnode, ns_rdf["type"], ns_micro["Error"]))
 		retval.add((bnode, ns_dc["description"], Literal(full_msg)))
 		retval.add((bnode, ns_dc["date"], Literal(datetime.datetime.utcnow().isoformat(),datatype=ns_xsd["dateTime"])))
-
-		if uri is not None :
+		
+		if uri != None :
 			htbnode = BNode()
-			retval.add((bnode, ns_micro["context"],htbnode))
-			retval.add((htbnode, ns_rdf["type"], ns_ht["Request"]))
-			retval.add((htbnode, ns_ht["requestURI"], Literal(uri)))
-
-		if self.http_status is not None and self.http_status != 200 :
+			retval.add( (bnode, ns_micro["context"],htbnode) )
+			retval.add( (htbnode, ns_rdf["type"], ns_ht["Request"]) )
+			retval.add( (htbnode, ns_ht["requestURI"], Literal(uri)) )
+		
+		if self.http_status != None and self.http_status != 200:
 			htbnode = BNode()
-			retval.add((bnode, ns_micro["context"],htbnode))
-			retval.add((htbnode, ns_rdf["type"], ns_ht["Response"]))
-			retval.add((htbnode, ns_ht["responseCode"], URIRef("http://www.w3.org/2006/http#%s" % self.http_status)))
+			retval.add( (bnode, ns_micro["context"],htbnode) )
+			retval.add( (htbnode, ns_rdf["type"], ns_ht["Response"]) )
+			retval.add( (htbnode, ns_ht["responseCode"], URIRef("http://www.w3.org/2006/http#%s" % self.http_status)) )
 
 		return retval
-
+		
 	def _get_input(self, name) :
 		"""
 		Trying to guess whether "name" is a URI, a string; it then tries to open these as such accordingly,
 		returning a file-like object. If name is a plain string then it returns the input argument (that should
-		be, supposedly, a file-like object already)
+		be, supposidly, a file-like object already)
 		@param name: identifier of the input source
 		@type name: string or a file-like object
 		@return: a file like object if opening "name" is possible and successful, "name" otherwise
@@ -194,11 +194,11 @@ class pyMicrodata :
 				self.base   = url_request.location
 				return url_request.data
 			else :
-				self.base = name
-				return file(name)
+				self.base = 'file://'+name
+				return open(name, 'rb')
 		else :
 			return name
-
+	
 	####################################################################################################################
 	# Externally used methods
 	#
@@ -212,19 +212,19 @@ class pyMicrodata :
 		@return: an RDF Graph
 		@rtype: rdflib Graph instance
 		"""
-		if graph is None :
+		if graph == None :
 			# Create the RDF Graph, that will contain the return triples...
-			graph = Graph()
-
+			graph   = Graph()
+		
 		conversion = MicrodataConversion(dom.documentElement, graph, base = self.base)
 		conversion.convert()
 		return graph
-
+	
 	def graph_from_source(self, name, graph = None, rdfOutput = False) :
 		"""
 		Extract an RDF graph from an microdata source. The source is parsed, the RDF extracted, and the RDF Graph is
 		returned. This is a front-end to the L{pyMicrodata.graph_from_DOM} method.
-
+				
 		@param name: a URI, a file name, or a file-like object
 		@return: an RDF Graph
 		@rtype: rdflib Graph instance
@@ -246,7 +246,7 @@ class pyMicrodata :
 				self.http_status = 500
 				if not rdfOutput : raise e
 				return self._generate_error_graph(graph, str(e), uri=name)
-
+				
 			dom = None
 			try :
 				import warnings
@@ -263,7 +263,7 @@ class pyMicrodata :
 				e = sys.exc_info()[1]
 				self.http_status = 400
 				if not rdfOutput : raise e
-				return self._generate_error_graph(graph, str(e), uri=name)
+				return self._generate_error_graph(graph, str(e), uri=name)	
 
 		except Exception :
 			# Something nasty happened:-(
@@ -274,7 +274,7 @@ class pyMicrodata :
 				self.http_status = 500
 			if not rdfOutput : raise e
 			return self._generate_error_graph(graph, str(e), uri=name)
-
+	
 	def rdf_from_sources(self, names, outputFormat = "turtle", rdfOutput = False) :
 		"""
 		Extract and RDF graph from a list of RDFa sources and serialize them in one graph. The sources are parsed, the RDF
@@ -291,7 +291,7 @@ class pyMicrodata :
 			graph = Graph()
 
 		for prefix in _bindings :
-			graph.bind(prefix, Namespace(_bindings[prefix]))
+			graph.bind(prefix,Namespace(_bindings[prefix]))
 
 		# the value of rdfOutput determines the reaction on exceptions...
 		for name in names :
@@ -314,7 +314,7 @@ def processURI(uri, outputFormat, form) :
 	"""The standard processing of a microdata uri options in a form, ie, as an entry point from a CGI call.
 
 	The call accepts extra form options (eg, HTTP GET options) as follows:
-
+	
 	@param uri: URI to access. Note that the "text:" and "uploaded:" values are treated separately; the former is for textual intput (in which case a StringIO is used to get the data) and the latter is for uploaded file, where the form gives access to the file directly.
 	@param outputFormat: serialization formats, as understood by RDFLib. Note that though "turtle" is
 	a possible parameter value, some versions of the RDFLib turtle generation does funny (though legal) things with
@@ -326,23 +326,22 @@ def processURI(uri, outputFormat, form) :
 	"""
 
 	if uri == "uploaded:" :
-		input = form["uploaded"].file
-		base  = ""
+		input	= form["uploaded"].file
+		base	= ""
 	elif uri == "text:" :
-		input = StringIO(form.getfirst("text"))
-		base  = ""
+		input	= StringIO(form.getfirst("text"))
+		base	= ""
 	else :
-		input = uri
-		base  = uri
+		input	= uri
+		base	= uri
 
 	processor = pyMicrodata(base = base)
 
 	# Decide the output format; the issue is what should happen in case of a top level error like an inaccessibility of
 	# the html source: should a graph be returned or an HTML page with an error message?
 
-	# decide whether HTML or RDF should be sent.
+	# decide whether HTML or RDF should be sent. 
 	htmlOutput = False
-	#import os
 	#if 'HTTP_ACCEPT' in os.environ :
 	#	acc = os.environ['HTTP_ACCEPT']
 	#	possibilities = ['text/html',
@@ -375,7 +374,7 @@ def processURI(uri, outputFormat, form) :
 		import cgi
 		h = sys.exc_info()[1]
 		retval = 'Content-type: text/html; charset=utf-8\nStatus: %s \n\n' % h.http_code
-		retval += "<html>\n"
+		retval += "<html>\n"		
 		retval += "<head>\n"
 		retval += "<title>HTTP Error in Microdata processing</title>\n"
 		retval += "</head><body>\n"
@@ -393,7 +392,7 @@ def processURI(uri, outputFormat, form) :
 		import traceback, cgi
 
 		retval = 'Content-type: text/html; charset=utf-8\nStatus: %s\n\n' % processor.http_status
-		retval += "<html>\n"
+		retval += "<html>\n"		
 		retval += "<head>\n"
 		retval += "<title>Exception in Microdata processing</title>\n"
 		retval += "</head><body>\n"
@@ -406,7 +405,7 @@ def processURI(uri, outputFormat, form) :
 		retval +="<pre>%s</pre>\n" % value
 		retval +="<h1>Distiller request details</h1>\n"
 		retval +="<dl>\n"
-		if uri == "text:" and "text" in form and form["text"].value is not None and len(form["text"].value.strip()) != 0 :
+		if uri == "text:" and "text" in form and form["text"].value != None and len(form["text"].value.strip()) != 0 :
 			retval +="<dt>Text input:</dt><dd>%s</dd>\n" % cgi.escape(form["text"].value).replace('\n','<br/>')
 		elif uri == "uploaded:" :
 			retval +="<dt>Uploaded file</dt>\n"
