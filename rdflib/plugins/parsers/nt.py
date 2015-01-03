@@ -20,8 +20,8 @@ class NTParser(Parser):
     def __init__(self):
         super(NTParser, self).__init__()
 
-    def parse(self, source, sink, baseURI=None):
+    def parse(self, source, sink, baseURI=None, encoding="ascii"):
         f = source.getByteStream()  # TODO getCharacterStream?
         parser = NTriplesParser(NTSink(sink))
-        parser.parse(f)
+        parser.parse(f, encoding)
         f.close()

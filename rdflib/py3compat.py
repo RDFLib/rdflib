@@ -52,6 +52,9 @@ if PY3:
     def ascii(stream):
         return codecs.getreader('ascii')(stream)
 
+    def utf8(stream):
+        return codecs.getreader('utf-8')(stream)
+
     def bopen(*args, **kwargs):
         return open(*args, mode = 'rb', **kwargs)
 
