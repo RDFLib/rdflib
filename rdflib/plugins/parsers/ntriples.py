@@ -10,7 +10,7 @@ from rdflib.term import URIRef as URI
 from rdflib.term import BNode as bNode
 from rdflib.term import Literal
 
-from rdflib.py3compat import cast_bytes, decodeUnicodeEscape, ascii
+from rdflib.py3compat import cast_bytes, decodeUnicodeEscape, ascii, utf8
 
 __all__ = ['unquote', 'uriquote', 'Sink', 'NTriplesParser']
 
@@ -120,12 +120,17 @@ class NTriplesParser(object):
         else:
             self.sink = Sink()
 
-    def parse(self, f):
+    def parse(self, f, encoding="ascii"):
         """Parse f as an N-Triples file."""
         if not hasattr(f, 'read'):
             raise ParseError("Item to parse must be a file-like object.")
 
-        f = ascii(f)
+        if encoding == "ascii":
+            f = ascii(f)
+        elif encoding == "utf-8":
+            f = utf8(f)
+        else:
+            raise ParseError("Invalid encoding: %s" % encoding)
 
         self.file = f
         self.buffer = ''
