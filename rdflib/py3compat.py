@@ -108,6 +108,9 @@ else:
     def ascii(stream):
         return stream
 
+    def utf8(stream):
+        return stream
+
     bopen = open
 
     bytestype = str
