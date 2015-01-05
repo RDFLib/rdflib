@@ -6,11 +6,13 @@ Author: Sean B. Palmer, inamidst.com
 """
 
 import re
+import codecs
+
 from rdflib.term import URIRef as URI
 from rdflib.term import BNode as bNode
 from rdflib.term import Literal
 
-from rdflib.py3compat import cast_bytes, decodeUnicodeEscape, ascii
+from rdflib.py3compat import cast_bytes, decodeUnicodeEscape
 
 __all__ = ['unquote', 'uriquote', 'Sink', 'NTriplesParser']
 
@@ -125,7 +127,8 @@ class NTriplesParser(object):
         if not hasattr(f, 'read'):
             raise ParseError("Item to parse must be a file-like object.")
 
-        f = ascii(f)
+        # since N-Triples 1.1 files can and should be utf-8 encoded
+        f = codecs.getreader('utf-8')(f)
 
         self.file = f
         self.buffer = ''
