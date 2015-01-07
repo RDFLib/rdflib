@@ -30,8 +30,8 @@ A tiny example:
 __docformat__ = "restructuredtext en"
 
 # The format of the __version__ line is matched by a regex in setup.py
-__version__ = "4.2-dev"
-__date__ = "2013/12/31"
+__version__ = "4.2.0-dev"
+__date__ = "2014/01/07"
 
 __all__ = [
     'URIRef',
