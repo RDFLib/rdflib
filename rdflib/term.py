@@ -655,7 +655,7 @@ class Literal(Identifier):
             except TypeError:
                 pass  # fall-through
 
-        s = unicode.__add__(self, val)
+        s = py + val.toPython()
         return Literal(s, self.language, self.datatype)
 
     def __nonzero__(self):
