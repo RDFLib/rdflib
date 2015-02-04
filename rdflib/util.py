@@ -328,7 +328,7 @@ SUFFIX_FORMAT_MAP = {
     'rdfs': 'xml',
     'owl': 'xml',
     'n3': 'n3',
-    'ttl': 'n3',
+    'ttl': 'turtle',
     'nt': 'nt',
     'trix': 'trix',
     'xhtml': 'rdfa',
@@ -349,7 +349,7 @@ def guess_format(fpath, fmap=None):
         >>> guess_format('path/to/file.owl')
         'xml'
         >>> guess_format('path/to/file.ttl')
-        'n3'
+        'turtle'
         >>> guess_format('path/to/file.xhtml')
         'rdfa'
         >>> guess_format('path/to/file.svg')
