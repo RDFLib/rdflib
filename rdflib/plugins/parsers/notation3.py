@@ -303,7 +303,7 @@ escapeChars = "(_~.-!$&'()*+,;=/?#@%)" # valid for \ escapes in localnames
 
 def unicodeExpand(m):
     try:
-        return unichr(int(m.group(1), 16))
+        return codecs.decode(m.group(0), 'unicode_escape')
     except:
         raise Exception("Invalid unicode code point: " + m.group(1))
 
