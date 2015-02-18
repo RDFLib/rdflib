@@ -34,6 +34,7 @@ import sys
 import os
 import re
 import codecs
+import warnings
 
 from decimal import Decimal
 
@@ -303,9 +304,20 @@ escapeChars = "(_~.-!$&'()*+,;=/?#@%)" # valid for \ escapes in localnames
 
 def unicodeExpand(m):
     try:
-        return codecs.decode(m.group(0), 'unicode_escape')
+        return unichr(int(m.group(1), 16))
     except:
         raise Exception("Invalid unicode code point: " + m.group(1))
+
+if py3compat.narrow_build:
+    def unicodeExpand(m):
+        try:
+            return unichr(int(m.group(1), 16))
+        except ValueError:
+            warnings.warn(
+                'Encountered a unicode char > 0xFFFF in a narrow python build. '
+                'Trying to degrade gracefully, but this can cause problems '
+                'later when working with the string:\n%s' % m.group(0))
+            return codecs.decode(m.group(0), 'unicode_escape')
 
 unicodeEscape4 = re.compile(
     r'\\u([0-9a-fA-F]{4})')
