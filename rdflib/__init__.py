@@ -66,6 +66,21 @@ logger = logging.getLogger(__name__)
 logger.info("RDFLib Version: %s" % __version__)
 
 
+try:
+    unichr(0x10FFFF)
+except ValueError:
+    import warnings
+    warnings.warn(
+        'You are using a narrow Python build!\n'
+        'This means that your Python does not properly support chars > 16bit.\n'
+        'On your system chars like c=u"\\U0010FFFF" will have a len(c)==2.\n'
+        'As this can cause hard to debug problems with string processing\n'
+        '(slicing, regexp, ...) later on, we strongly advise to use a wide\n'
+        'Python build in production systems.',
+        ImportWarning)
+    del warnings
+
+
 NORMALIZE_LITERALS = True
 """
 If True - Literals lexical forms are normalized when created.
