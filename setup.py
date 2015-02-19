@@ -51,7 +51,7 @@ def setup_python3():
         # join(tmp_src, 'ez_setup.py'),
         join(tmp_src, 'rdflib', '__init__.py'),
         join(tmp_src, 'rdflib', 'collection.py'),
-        # join(tmp_src, 'rdflib', 'compare.py'),
+        join(tmp_src, 'rdflib', 'compare.py'),
         join(tmp_src, 'rdflib', 'compat.py'),
         # join(tmp_src, 'rdflib', 'events.py'),
         join(tmp_src, 'rdflib', 'exceptions.py'),
