@@ -73,6 +73,9 @@ Only in second::
     _:cb558f30e21ddfc05ca53108348338ade8
         <http://example.org/ns#label> "B" .
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 
 # TODO:
@@ -89,6 +92,8 @@ from hashlib import sha256
 
 from datetime import datetime
 from collections import defaultdict
+
+from .py3compat import text_type
 
 
 def _total_seconds(td):
@@ -199,7 +204,7 @@ class Color:
             if isinstance(x, Node):
                 return x.n3()
             else:
-                return unicode(x)
+                return text_type(x)
         if isinstance(color, Node):
             return stringify(color)
         value = 0
@@ -247,7 +252,7 @@ class _TripleCanonicalizer(object):
 
         def _hashfunc(s):
             h = hashfunc()
-            h.update(unicode(s).encode("utf8"))
+            h.update(text_type(s).encode("utf8"))
             return int(h.hexdigest(), 16)
         self._hash_cache = {}
         self.hashfunc = _hashfunc
