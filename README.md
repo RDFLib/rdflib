@@ -14,7 +14,7 @@ or
 Alternatively manually download the package from the Python Package
 Index (PyPI) at https://pypi.python.org/pypi/rdflib
 
-The current version of RDFLib is 4.1.2, see the ``CHANGELOG.md``
+The current version of RDFLib is 4.2.0, see the ``CHANGELOG.md``
 file for what's new.
 
 
@@ -96,7 +96,7 @@ The documentation can be built by doing::
 
 And is also available from ReadTheDocs:
 
-http://readthedocs.org/docs/rdflib/
+http://rdflib.readthedocs.org
 
 Support is available through the rdflib-dev group:
 
