@@ -70,24 +70,37 @@ Some of the limitations we've come across:
 Releasing
 ---------
 
-Set to-be-released version number in :file:`rdflib/__init__.py`
+Set to-be-released version number in :file:`rdflib/__init__.py` and
+:file:`README.md`. Check date in :file:`LICENSE`.
 
-Add :file:`CHANGELOG` entry.
+Add :file:`CHANGELOG.md` entry.
 
-Commit this change, and tag it with::
+Commit this change. It's preferable make the release tag via
+https://github.com/RDFLib/rdflib/releases/new ::
+Our Tag versions aren't started with 'v', so just use a plain 4.2.0 like
+version. Release title is like "RDFLib 4.2.0", the description a copy of your
+:file:`CHANGELOG.md` entry.
+This gives us a nice release page like this::
+https://github.com/RDFLib/rdflib/releases/tag/4.2.0
 
-  git tag -a -m 'tagged version' X.X.X
+If for whatever reason you don't want to take this approach, the old one is::
 
-When pushing, remember to do::
+    Tagging the release commit with::
 
-  git push --tags
+      git tag -a -m 'tagged version' X.X.X
 
-Upload tarball to pypi with::
+    When pushing, remember to do::
+
+      git push --tags
+
+
+No matter how you create the release tag, remember to upload tarball to pypi with::
 
   python setup.py sdist upload
 
-Set new dev version number in the above locations, i.e. next release `-dev`: ``8.9.2-dev`` and commit again.
+Set new dev version number in the above locations, i.e. next release `-dev`: ``2.4.1-dev`` and commit again.
 
 Update the topic of #rdflib on freenode irc::
 
-  /msg ChanServ topic #rdflib https://github.com/RDFLib/rdflib | latest stable version: 4.0.1 | docs: http://readthedocs.org/docs/rdflib
+  /msg ChanServ topic #rdflib https://github.com/RDFLib/rdflib | latest stable version: 4.2.0 | docs: http://rdflib.readthedocs.org
+
