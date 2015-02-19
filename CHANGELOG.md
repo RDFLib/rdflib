@@ -1,3 +1,65 @@
+2015/02/19 RELEASE 4.2.0
+========================
+
+This is a new minor version of RDFLib including a handful of new features:
+
+* Supporting N-Triples 1.1 syntax using UTF-8 encoding
+  [#447](https://github.com/RDFLib/rdflib/pull/447),
+  [#449](https://github.com/RDFLib/rdflib/pull/449),
+  [#400](https://github.com/RDFLib/rdflib/issues/400)
+* Graph comparison now really works using RGDA1 (RDF Graph Digest Algorithm 1)
+  [#441](https://github.com/RDFLib/rdflib/pull/441)
+  [#385](https://github.com/RDFLib/rdflib/issues/385)
+* More graceful degradation than simple crashing for unicode chars > 0xFFFF on
+  narrow python builds. Parsing such characters will now work, but issue a
+  UnicodeWarning. If you run `python -W all` you will already see a warning on
+  `import rdflib` will show a warning (ImportWarning).
+  [#453](https://github.com/RDFLib/rdflib/pull/453),
+  [#454](https://github.com/RDFLib/rdflib/pull/454)
+* URLInputSource now supports json-ld
+  [#425](https://github.com/RDFLib/rdflib/pull/425)
+* SPARQLStore is now graph aware
+  [#401](https://github.com/RDFLib/rdflib/pull/401),
+  [#402](https://github.com/RDFLib/rdflib/pull/402)
+* SPARQLStore now uses SPARQLWrapper for updates
+  [#397](https://github.com/RDFLib/rdflib/pull/397)
+* Certain logging output is immediately shown in interactive mode
+  [#414](https://github.com/RDFLib/rdflib/pull/414)
+* Python 3.4 fully supported
+  [#418](https://github.com/RDFLib/rdflib/pull/418)
+
+Minor enhancements & bugs fixed:
+--------------------------------
+
+* Fixed double invocation of 2to3
+  [#437](https://github.com/RDFLib/rdflib/pull/437)
+* PyRDFa parser missing brackets
+  [#434](https://github.com/RDFLib/rdflib/pull/434)
+* Correctly handle \uXXXX and \UXXXXXXXX escapes in n3 files
+  [#426](https://github.com/RDFLib/rdflib/pull/426)
+* Logging cleanups and keeping it on stderr
+  [#420](https://github.com/RDFLib/rdflib/pull/420)
+  [#414](https://github.com/RDFLib/rdflib/pull/414)
+  [#413](https://github.com/RDFLib/rdflib/issues/413)
+* n3: allow @base URI to have a trailing '#'
+  [#407](https://github.com/RDFLib/rdflib/pull/407)
+  [#379](https://github.com/RDFLib/rdflib/issues/379)
+* microdata: add file:// to base if it's a filename so rdflib can parse its own
+  output
+  [#406](https://github.com/RDFLib/rdflib/pull/406)
+  [#403](https://github.com/RDFLib/rdflib/issues/403)
+* TSV Results parse skips empty bindings in result
+  [#390](https://github.com/RDFLib/rdflib/pull/390)
+* fixed accidental test run due to name
+  [#389](https://github.com/RDFLib/rdflib/pull/389)
+* Bad boolean list serialization to Turtle & fixed ambiguity between
+  Literal(False) and None
+  [#387](https://github.com/RDFLib/rdflib/pull/387)
+  [#382](https://github.com/RDFLib/rdflib/pull/382)
+* Current version number & PyPI link in README.md
+  [#383](https://github.com/RDFLib/rdflib/pull/383)
+
+
 2014/04/15 RELEASE 4.1.2
 ========================
 
