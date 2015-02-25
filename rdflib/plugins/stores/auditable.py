@@ -45,6 +45,9 @@ class AuditableStore(Store):
     def destroy(self, configuration):
         self.store.destroy(configuration)
 
+    def query(self, *args, **kw):
+        return self.store.query(*args, **kw)
+
     def add(self, triple, context, quoted=False):
         (s, p, o) = triple
         lock = destructiveOpLocks['add']
