@@ -48,11 +48,10 @@ class AuditableStore(Store):
     def add(self, triple, context, quoted=False):
         (s, p, o) = triple
         lock = destructiveOpLocks['add']
-        lock = lock and lock or threading.RLock()
+        lock = lock if lock else threading.RLock()
         lock.acquire()
-        context = context is not None and context.__class__(
-            self.store, context.identifier) or None
-        ctxId = context is not None and context.identifier or None
+        context = context.__class__(self.store, context.identifier) if context is not None else None
+        ctxId = context.identifier if context is not None else None
         self.reverseOps.append((s, p, o, ctxId, 'remove'))
         if (s, p, o, ctxId, 'add') in self.reverseOps:
             self.reverseOps.remove(
@@ -62,13 +61,12 @@ class AuditableStore(Store):
 
     def remove(self, (subject, predicate, object_), context=None):
         lock = destructiveOpLocks['remove']
-        lock = lock and lock or threading.RLock()
+        lock = lock if lock else threading.RLock()
         lock.acquire()
         # Need to determine which quads will be removed if any term is a
         # wildcard
-        context = context is not None and context.__class__(
-            self.store, context.identifier) or None
-        ctxId = context is not None and context.identifier or None
+        context = context.__class__(self.store, context.identifier) if context is not None else None
+        ctxId = context.identifier if context is not None else None
         if None in [subject, predicate, object_, context]:
             if ctxId:
                 for s, p, o in context.triples((subject, predicate, object_)):
@@ -97,14 +95,12 @@ class AuditableStore(Store):
 
     def triples(self, triple, context=None):
         (su, pr, ob) = triple
-        context = context is not None and context.__class__(
-            self.store, context.identifier) or None
+        context = context.__class__(self.store, context.identifier) if context is not None else None
         for (s, p, o), cg in self.store.triples((su, pr, ob), context):
             yield (s, p, o), cg
 
     def __len__(self, context=None):
-        context = context is not None and context.__class__(
-            self.store, context.identifier) or None
+        context = context.__class__(self.store, context.identifier) if context is not None else None
         return self.store.__len__(context)
 
     def contexts(self, triple=None):
