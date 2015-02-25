@@ -49,51 +49,49 @@ class AuditableStore(Store):
         (s, p, o) = triple
         lock = destructiveOpLocks['add']
         lock = lock and lock or threading.RLock()
-        lock.acquire()
-        context = context is not None and context.__class__(
-            self.store, context.identifier) or None
-        ctxId = context is not None and context.identifier or None
-        self.reverseOps.append((s, p, o, ctxId, 'remove'))
-        if (s, p, o, ctxId, 'add') in self.reverseOps:
-            self.reverseOps.remove(
-                (s, p, o, context, 'add'))
-        self.store.add((s, p, o), context, quoted)
-        lock.release()
+        with lock:
+            context = context is not None and context.__class__(
+                self.store, context.identifier) or None
+            ctxId = context is not None and context.identifier or None
+            self.reverseOps.append((s, p, o, ctxId, 'remove'))
+            if (s, p, o, ctxId, 'add') in self.reverseOps:
+                self.reverseOps.remove(
+                    (s, p, o, context, 'add'))
+            self.store.add((s, p, o), context, quoted)
 
     def remove(self, (subject, predicate, object_), context=None):
         lock = destructiveOpLocks['remove']
         lock = lock and lock or threading.RLock()
-        lock.acquire()
-        # Need to determine which quads will be removed if any term is a
-        # wildcard
-        context = context is not None and context.__class__(
-            self.store, context.identifier) or None
-        ctxId = context is not None and context.identifier or None
-        if None in [subject, predicate, object_, context]:
-            if ctxId:
-                for s, p, o in context.triples((subject, predicate, object_)):
-                    if (s, p, o, ctxId, 'remove') in self.reverseOps:
-                        self.reverseOps.remove((s, p, o, ctxId, 'remove'))
-                    else:
-                        self.reverseOps.append((s, p, o, ctxId, 'add'))
+        with lock:
+            # Need to determine which quads will be removed if any term is a
+            # wildcard
+            context = context is not None and context.__class__(
+                self.store, context.identifier) or None
+            ctxId = context is not None and context.identifier or None
+            if None in [subject, predicate, object_, context]:
+                if ctxId:
+                    for s, p, o in context.triples((subject, predicate, object_)):
+                        if (s, p, o, ctxId, 'remove') in self.reverseOps:
+                            self.reverseOps.remove((s, p, o, ctxId, 'remove'))
+                        else:
+                            self.reverseOps.append((s, p, o, ctxId, 'add'))
+                else:
+                    for s, p, o, ctx in ConjunctiveGraph(
+                            self.store).quads((subject, predicate, object_)):
+                        if (s, p, o, ctx.identifier, 'remove') in self.reverseOps:
+                            self.reverseOps.remove(
+                                (s, p, o, ctx.identifier, 'remove'))
+                        else:
+                            self.reverseOps.append(
+                                (s, p, o, ctx.identifier, 'add'))
+    
+            elif (subject, predicate, object_, ctxId, 'add') in self.reverseOps:
+                self.reverseOps.remove(
+                    (subject, predicate, object_, ctxId, 'add'))
             else:
-                for s, p, o, ctx in ConjunctiveGraph(
-                        self.store).quads((subject, predicate, object_)):
-                    if (s, p, o, ctx.identifier, 'remove') in self.reverseOps:
-                        self.reverseOps.remove(
-                            (s, p, o, ctx.identifier, 'remove'))
-                    else:
-                        self.reverseOps.append(
-                            (s, p, o, ctx.identifier, 'add'))
-
-        elif (subject, predicate, object_, ctxId, 'add') in self.reverseOps:
-            self.reverseOps.remove(
-                (subject, predicate, object_, ctxId, 'add'))
-        else:
-            self.reverseOps.append(
-                (subject, predicate, object_, ctxId, 'add'))
-        self.store.remove((subject, predicate, object_), context)
-        lock.release()
+                self.reverseOps.append(
+                    (subject, predicate, object_, ctxId, 'add'))
+            self.store.remove((subject, predicate, object_), context)
 
     def triples(self, triple, context=None):
         (su, pr, ob) = triple
@@ -130,14 +128,13 @@ class AuditableStore(Store):
     def rollback(self):
         # Aquire Rollback lock and apply reverse operations in the forward
         # order
-        self.rollbackLock.acquire()
-        for subject, predicate, obj, context, op in self.reverseOps:
-            if op == 'add':
-                self.store.add(
-                    (subject, predicate, obj), Graph(self.store, context))
-            else:
-                self.store.remove(
-                    (subject, predicate, obj), Graph(self.store, context))
-
-        self.reverseOps = []
-        self.rollbackLock.release()
+        with self.rollbackLock:
+            for subject, predicate, obj, context, op in self.reverseOps:
+                if op == 'add':
+                    self.store.add(
+                        (subject, predicate, obj), Graph(self.store, context))
+                else:
+                    self.store.remove(
+                        (subject, predicate, obj), Graph(self.store, context))
+    
+            self.reverseOps = []
