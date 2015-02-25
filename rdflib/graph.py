@@ -1163,9 +1163,9 @@ class Graph(Node):
             return False
 
     def all_nodes(self):
-        obj = set(self.objects())
-        allNodes = obj.union(set(self.subjects()))
-        return allNodes
+        res = set(self.objects())
+        res.update(self.subjects())
+        return res
 
     def resource(self, identifier):
         """Create a new ``Resource`` instance.
