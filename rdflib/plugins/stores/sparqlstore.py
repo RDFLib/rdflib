@@ -129,17 +129,15 @@ def CastToTerm(node):
     elif node.tag == '{%s}uri' % SPARQL_NS:
         return URIRef(node.text)
     elif node.tag == '{%s}literal' % SPARQL_NS:
+        value = node.text if node.text is not None else ''
         if 'datatype' in node.attrib:
             dT = URIRef(node.attrib['datatype'])
-            if False:  # not node.xpath('*'):
-                return Literal('', datatype=dT)
-            else:
-                return Literal(node.text, datatype=dT)
+            return Literal(value, datatype=dT)
         elif '{http://www.w3.org/XML/1998/namespace}lang' in node.attrib:
-            return Literal(node.text, lang=node.attrib[
+            return Literal(value, lang=node.attrib[
                 "{http://www.w3.org/XML/1998/namespace}lang"])
         else:
-            return Literal(node.text)
+            return Literal(value)
     else:
         raise Exception('Unknown answer type')
 

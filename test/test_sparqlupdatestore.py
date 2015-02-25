@@ -2,7 +2,7 @@
 import unittest
 import re
 
-from rdflib import ConjunctiveGraph, URIRef
+from rdflib import ConjunctiveGraph, URIRef, Literal
 from rdflib.util import from_n3
 
 # this assumed SPARQL1.1 query/update endpoints
@@ -105,23 +105,23 @@ class TestSparql11(unittest.TestCase):
 
     def testUpdate(self):
         self.graph.update("INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> . } }")
-        
+
         g = self.graph.get_context(graphuri)
         self.assertEquals(1, len(g), 'graph contains 1 triples')
-        
+
     def testUpdateWithInitNs(self):
         self.graph.update(
             "INSERT DATA { GRAPH ns:graph { ns:michel ns:likes ns:pizza . } }",
             initNs={'ns': URIRef('urn:')}
         )
-        
+
         g = self.graph.get_context(graphuri)
         self.assertEquals(
             set(g.triples((None,None,None))),
             set([(michel,likes,pizza)]),
             'only michel likes pizza'
         )
-        
+
     def testUpdateWithInitBindings(self):
         self.graph.update(
             "INSERT { GRAPH <urn:graph> { ?a ?b ?c . } } WherE { }",
@@ -131,7 +131,7 @@ class TestSparql11(unittest.TestCase):
                 'c': URIRef('urn:pizza'),
             }
         )
-        
+
         g = self.graph.get_context(graphuri)
         self.assertEquals(
             set(g.triples((None,None,None))),
@@ -150,7 +150,7 @@ class TestSparql11(unittest.TestCase):
                 'd': URIRef('urn:bob'),
             }
         )
-        
+
         g = self.graph.get_context(graphuri)
         self.assertEquals(
             set(g.triples((None,None,None))),
@@ -268,6 +268,18 @@ class TestSparql11(unittest.TestCase):
         if empty_graph_iri in named_graphs:
             self.assertTrue(empty_graph_iri in [unicode(g.identifier)
                                                 for g in self.graph.contexts()])
+
+    def testEmptyLiteral(self):
+        # test for https://github.com/RDFLib/rdflib/issues/457
+        # also see test_issue457.py which is sparql store independent!
+        g = self.graph.get_context(graphuri)
+        g.add((
+            URIRef('http://example.com/s'),
+            URIRef('http://example.com/p'),
+            Literal('')))
+
+        o = tuple(g)[0][2]
+        self.assertEquals(o, Literal(''), repr(o))
 
 from nose import SkipTest
 import urllib2
