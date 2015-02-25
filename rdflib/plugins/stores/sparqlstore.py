@@ -132,10 +132,7 @@ def CastToTerm(node):
         value = node.text if node.text is not None else ''
         if 'datatype' in node.attrib:
             dT = URIRef(node.attrib['datatype'])
-            if False:  # not node.xpath('*'):
-                return Literal('', datatype=dT)
-            else:
-                return Literal(value, datatype=dT)
+            return Literal(value, datatype=dT)
         elif '{http://www.w3.org/XML/1998/namespace}lang' in node.attrib:
             return Literal(value, lang=node.attrib[
                 "{http://www.w3.org/XML/1998/namespace}lang"])
