@@ -29,7 +29,7 @@ class TestSparql11(unittest.TestCase):
         self.longMessage = True
         self.graph = ConjunctiveGraph('SPARQLUpdateStore')
 
-        root = "http://localhost:3030/ukpp/"
+        root = "http://localhost:3030/db/"
         self.graph.open((root + "sparql", root + "update"))
 
         # clean out the store

@@ -25,7 +25,7 @@ class DatasetTestCase(unittest.TestCase):
             _, self.tmppath = mkstemp(
                 prefix='test', dir='/tmp', suffix='.sqlite')
         elif self.store == "SPARQLUpdateStore":
-            root = "http://localhost:3030/ukpp/"
+            root = "http://localhost:3030/db/"
             self.graph.open((root + "sparql", root + "update"))
         else:
             self.tmppath = mkdtemp()
