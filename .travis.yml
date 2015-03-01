@@ -18,7 +18,7 @@ before_install:
   - tar -zxf jena-fuseki-1.1.1-distribution.tar.gz
   - mv jena-fuseki-1.1.1 fuseki
   - cd fuseki
-  - bash fuseki-server --debug --update --mem /db &>fuseki.log &
+  - bash fuseki-server --debug --update --memTDB --set tdb:unionDefaultGraph=true /db &>fuseki.log &
   - sleep 2
   - cd ..
 

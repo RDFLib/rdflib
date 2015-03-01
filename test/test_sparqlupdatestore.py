@@ -6,10 +6,11 @@ from rdflib import ConjunctiveGraph, URIRef, Literal
 from rdflib.util import from_n3
 
 # this assumed SPARQL1.1 query/update endpoints
-# running locally at http://localhost:3030/ukpp/
-# for instance fuseki started with ./fuseki-server --mem --update /ukpp
+# running locally at http://localhost:3030/db/
+# for instance fuseki started with
+# ./fuseki-server --memTDB --update --set tdb:unionDefaultGraph=true /db
 
-# THIS WILL DELETE ALL DATA IN THE /data dataset
+# THIS WILL DELETE ALL DATA IN THE /db dataset
 
 michel = URIRef(u'urn:michel')
 tarek = URIRef(u'urn:tarek')
@@ -82,8 +83,20 @@ class TestSparql11(unittest.TestCase):
         g.add((tarek, hates, cheese))
 
         self.assertEquals(2, len(g), 'graph contains 2 triples')
+
+        # the following are actually bad tests as they depend on your endpoint,
+        # as pointed out in the sparqlstore.py code:
+        #
+        ## For ConjunctiveGraphs, reading is done from the "default graph" Exactly
+        ## what this means depends on your endpoint, because SPARQL does not offer a
+        ## simple way to query the union of all graphs as it would be expected for a
+        ## ConjuntiveGraph.
+        ##
+        ## Fuseki/TDB has a flag for specifying that the default graph
+        ## is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config).
         self.assertEquals(3, len(self.graph),
-                          'default union graph contains three triples')
+            'default union graph should contain three triples but contains:\n'
+            '%s' % list(self.graph))
 
         r = self.graph.query("SELECT * WHERE { ?s <urn:likes> <urn:pizza> . }")
         self.assertEquals(2, len(list(r)), "two people like pizza")
