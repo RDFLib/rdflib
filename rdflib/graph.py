@@ -611,9 +611,13 @@ class Graph(Node):
         Remove any existing triples for subject and predicate before adding
         (subject, predicate, object).
         """
-        (subject, predicate, object) = triple
+        (subject, predicate, object_) = triple
+        assert subject is not None, \
+            "s can't be None in .set([s,p,o]), as it would remove (*, p, *)"
+        assert predicate is not None, \
+            "p can't be None in .set([s,p,o]), as it would remove (s, *, *)"
         self.remove((subject, predicate, None))
-        self.add((subject, predicate, object))
+        self.add((subject, predicate, object_))
 
     def subjects(self, predicate=None, object=None):
         """A generator of subjects with the given predicate and object"""
