@@ -18,7 +18,10 @@ before_install:
   - tar -zxf jena-fuseki-1.1.1-distribution.tar.gz
   - mv jena-fuseki-1.1.1 fuseki
   - cd fuseki
-  - bash fuseki-server --debug --update --memTDB --set tdb:unionDefaultGraph=true /db &>fuseki.log &
+  # normal SPARQLStore & Dataset tests:
+  - bash fuseki-server --port 3030 --debug --update --mem /db &>fuseki.log &
+  # SPARQLUpdateStore tests & ConjunctiveGraph endpoint behavior:
+  - bash fuseki-server --port 3031 --debug --update --memTDB --set tdb:unionDefaultGraph=true /db &>fuseki.log &
   - sleep 2
   - cd ..
 

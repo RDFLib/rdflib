@@ -5,10 +5,18 @@ import re
 from rdflib import ConjunctiveGraph, URIRef, Literal
 from rdflib.util import from_n3
 
-# this assumed SPARQL1.1 query/update endpoints
-# running locally at http://localhost:3030/db/
-# for instance fuseki started with
-# ./fuseki-server --memTDB --update --set tdb:unionDefaultGraph=true /db
+HOST = 'http://localhost:3031'
+DB = '/db/'
+
+# this assumes SPARQL1.1 query/update endpoints running locally at
+# http://localhost:3031/db/
+#
+# The ConjunctiveGraph tests below require that the SPARQL endpoint renders its
+# default graph as the union of all known graphs! This is incompatible with the
+# endpoint behavior required by our Dataset tests in test_dataset.py, so you
+# need to run a second SPARQL endpoint on a non standard port,
+# e.g. fuseki started with:
+# ./fuseki-server --port 3031 --memTDB --update --set tdb:unionDefaultGraph=true /db
 
 # THIS WILL DELETE ALL DATA IN THE /db dataset
 
@@ -30,7 +38,7 @@ class TestSparql11(unittest.TestCase):
         self.longMessage = True
         self.graph = ConjunctiveGraph('SPARQLUpdateStore')
 
-        root = "http://localhost:3030/db/"
+        root = HOST + DB
         self.graph.open((root + "sparql", root + "update"))
 
         # clean out the store
@@ -297,9 +305,9 @@ class TestSparql11(unittest.TestCase):
 from nose import SkipTest
 import urllib2
 try:
-    assert len(urllib2.urlopen("http://localhost:3030/").read()) > 0
+    assert len(urllib2.urlopen(HOST).read()) > 0
 except:
-    raise SkipTest("http://localhost:3030/ is unavailable.")
+    raise SkipTest(HOST + " is unavailable.")
 
 
 if __name__ == '__main__':
