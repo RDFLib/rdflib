@@ -149,10 +149,11 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     This is in theory context-aware and should work as expected
     when a context is specified.
 
-    For ConjunctiveGraphs, reading is done from the "default graph" Exactly
+    For ConjunctiveGraphs, reading is done from the "default graph". Exactly
     what this means depends on your endpoint, because SPARQL does not offer a
     simple way to query the union of all graphs as it would be expected for a
-    ConjuntiveGraph.
+    ConjuntiveGraph. This is why we recommend using Dataset instead, which is
+    motivated by the SPARQL 1.1.
 
     Fuseki/TDB has a flag for specifying that the default graph
     is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config).
@@ -443,12 +444,15 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
 
 class SPARQLUpdateStore(SPARQLStore):
-    """
-    A store using SPARQL queries for read-access
-    and SPARQL Update for changes
+    """A store using SPARQL queries for reading and SPARQL Update for changes.
 
-    This can be context-aware, if so, any changes will
-    be to the given named graph only.
+    This can be context-aware, if so, any changes will be to the given named
+    graph only.
+
+    In favor of the SPARQL 1.1 motivated Dataset, we advise against using this
+    with ConjunctiveGraphs, as it reads and writes from and to the
+    "default graph". Exactly what this means depends on the endpoint and can
+    result in confusion.
 
     For Graph objects, everything works as expected.
 
