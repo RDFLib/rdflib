@@ -1,4 +1,4 @@
 flake8
 isodate
 pyparsing<=1.5.7
-SPARQLWrapper
+SPARQLWrapper>=1.6.2

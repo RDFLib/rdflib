@@ -10,6 +10,22 @@ from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 from nose.exc import SkipTest
 
 
+# Will also run SPARQLUpdateStore tests against local SPARQL1.1 endpoint if
+# available. This assumes SPARQL1.1 query/update endpoints running locally at
+# http://localhost:3030/db/
+#
+# Testing SPARQLUpdateStore Dataset behavior needs a different endpoint behavior
+# than our ConjunctiveGraph tests in test_sparqlupdatestore.py!
+#
+# For the tests here to run, you can for example start fuseki with:
+# ./fuseki-server --mem --update /db
+
+# THIS WILL DELETE ALL DATA IN THE /db dataset
+
+HOST = 'http://localhost:3030'
+DB = '/db/'
+
+
 class DatasetTestCase(unittest.TestCase):
     store = 'default'
     slow = True
@@ -25,7 +41,7 @@ class DatasetTestCase(unittest.TestCase):
             _, self.tmppath = mkstemp(
                 prefix='test', dir='/tmp', suffix='.sqlite')
         elif self.store == "SPARQLUpdateStore":
-            root = "http://localhost:3030/ukpp/"
+            root = HOST + DB
             self.graph.open((root + "sparql", root + "update"))
         else:
             self.tmppath = mkdtemp()
@@ -64,8 +80,8 @@ class DatasetTestCase(unittest.TestCase):
 
     def testGraphAware(self):
 
-        if not self.graph.store.graph_aware: return 
-        
+        if not self.graph.store.graph_aware: return
+
         g = self.graph
         g1 = g.graph(self.c1)
 
@@ -76,9 +92,9 @@ class DatasetTestCase(unittest.TestCase):
             self.assertEquals(set(x.identifier for x in self.graph.contexts()),
                               set([self.c1, DATASET_DEFAULT_GRAPH_ID]))
 
-        # added graph is empty 
+        # added graph is empty
         self.assertEquals(len(g1), 0)
-        
+
         g1.add( (self.tarek, self.likes, self.pizza) )
 
         # added graph still exists
@@ -90,7 +106,7 @@ class DatasetTestCase(unittest.TestCase):
 
         g1.remove( (self.tarek, self.likes, self.pizza) )
 
-        # added graph is empty 
+        # added graph is empty
         self.assertEquals(len(g1), 0)
 
         # Some SPARQL endpoint backends (e.g. TDB) do not consider
@@ -101,21 +117,21 @@ class DatasetTestCase(unittest.TestCase):
                               set([self.c1, DATASET_DEFAULT_GRAPH_ID]))
 
         g.remove_graph(self.c1)
-                
+
         # graph is gone
-        self.assertEquals(set(x.identifier for x in self.graph.contexts()), 
+        self.assertEquals(set(x.identifier for x in self.graph.contexts()),
                           set([DATASET_DEFAULT_GRAPH_ID]))
-        
+
     def testDefaultGraph(self):
         # Something the default graph is read-only (e.g. TDB in union mode)
         if self.store == "SPARQLUpdateStore":
             print "Please make sure updating the default graph " \
                   "is supported by your SPARQL endpoint"
-        
+
         self.graph.add(( self.tarek, self.likes, self.pizza))
         self.assertEquals(len(self.graph), 1)
         # only default exists
-        self.assertEquals(set(x.identifier for x in self.graph.contexts()), 
+        self.assertEquals(set(x.identifier for x in self.graph.contexts()),
                           set([DATASET_DEFAULT_GRAPH_ID]))
 
         # removing default graph removes triples but not actual graph
@@ -123,7 +139,7 @@ class DatasetTestCase(unittest.TestCase):
 
         self.assertEquals(len(self.graph), 0)
         # default still exists
-        self.assertEquals(set(x.identifier for x in self.graph.contexts()), 
+        self.assertEquals(set(x.identifier for x in self.graph.contexts()),
                           set([DATASET_DEFAULT_GRAPH_ID]))
 
     def testNotUnion(self):
@@ -134,7 +150,7 @@ class DatasetTestCase(unittest.TestCase):
         g1 = self.graph.graph(self.c1)
         g1.add((self.tarek, self.likes, self.pizza))
 
-        self.assertEqual(list(self.graph.objects(self.tarek, None)), 
+        self.assertEqual(list(self.graph.objects(self.tarek, None)),
                          [])
         self.assertEqual(list(g1.objects(self.tarek, None)), [self.pizza])
 
@@ -159,7 +175,7 @@ for s in plugin.plugins(pluginname, plugin.Store):
     if s.name == "SPARQLUpdateStore":
         import urllib2
         try:
-            assert len(urllib2.urlopen("http://localhost:3030/").read()) > 0
+            assert len(urllib2.urlopen(HOST).read()) > 0
         except:
             sys.stderr.write("No SPARQL endpoint for %s (tests skipped)\n" % s.name)
             continue

@@ -5,11 +5,20 @@ import re
 from rdflib import ConjunctiveGraph, URIRef, Literal
 from rdflib.util import from_n3
 
-# this assumed SPARQL1.1 query/update endpoints
-# running locally at http://localhost:3030/ukpp/
-# for instance fuseki started with ./fuseki-server --mem --update /ukpp
+HOST = 'http://localhost:3031'
+DB = '/db/'
 
-# THIS WILL DELETE ALL DATA IN THE /data dataset
+# this assumes SPARQL1.1 query/update endpoints running locally at
+# http://localhost:3031/db/
+#
+# The ConjunctiveGraph tests below require that the SPARQL endpoint renders its
+# default graph as the union of all known graphs! This is incompatible with the
+# endpoint behavior required by our Dataset tests in test_dataset.py, so you
+# need to run a second SPARQL endpoint on a non standard port,
+# e.g. fuseki started with:
+# ./fuseki-server --port 3031 --memTDB --update --set tdb:unionDefaultGraph=true /db
+
+# THIS WILL DELETE ALL DATA IN THE /db dataset
 
 michel = URIRef(u'urn:michel')
 tarek = URIRef(u'urn:tarek')
@@ -29,7 +38,7 @@ class TestSparql11(unittest.TestCase):
         self.longMessage = True
         self.graph = ConjunctiveGraph('SPARQLUpdateStore')
 
-        root = "http://localhost:3030/ukpp/"
+        root = HOST + DB
         self.graph.open((root + "sparql", root + "update"))
 
         # clean out the store
@@ -82,8 +91,20 @@ class TestSparql11(unittest.TestCase):
         g.add((tarek, hates, cheese))
 
         self.assertEquals(2, len(g), 'graph contains 2 triples')
+
+        # the following are actually bad tests as they depend on your endpoint,
+        # as pointed out in the sparqlstore.py code:
+        #
+        ## For ConjunctiveGraphs, reading is done from the "default graph" Exactly
+        ## what this means depends on your endpoint, because SPARQL does not offer a
+        ## simple way to query the union of all graphs as it would be expected for a
+        ## ConjuntiveGraph.
+        ##
+        ## Fuseki/TDB has a flag for specifying that the default graph
+        ## is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config).
         self.assertEquals(3, len(self.graph),
-                          'default union graph contains three triples')
+            'default union graph should contain three triples but contains:\n'
+            '%s' % list(self.graph))
 
         r = self.graph.query("SELECT * WHERE { ?s <urn:likes> <urn:pizza> . }")
         self.assertEquals(2, len(list(r)), "two people like pizza")
@@ -284,9 +305,9 @@ class TestSparql11(unittest.TestCase):
 from nose import SkipTest
 import urllib2
 try:
-    assert len(urllib2.urlopen("http://localhost:3030/").read()) > 0
+    assert len(urllib2.urlopen(HOST).read()) > 0
 except:
-    raise SkipTest("http://localhost:3030/ is unavailable.")
+    raise SkipTest(HOST + " is unavailable.")
 
 
 if __name__ == '__main__':

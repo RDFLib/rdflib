@@ -13,6 +13,18 @@ python:
     - 3.4
     # - "pypy"
 
+before_install:
+  - wget http://www.eu.apache.org/dist/jena/binaries/jena-fuseki-1.1.1-distribution.tar.gz
+  - tar -zxf jena-fuseki-1.1.1-distribution.tar.gz
+  - mv jena-fuseki-1.1.1 fuseki
+  - cd fuseki
+  # normal SPARQLStore & Dataset tests:
+  - bash fuseki-server --port 3030 --debug --update --mem /db &>fuseki.log &
+  # SPARQLUpdateStore tests & ConjunctiveGraph endpoint behavior:
+  - bash fuseki-server --port 3031 --debug --update --memTDB --set tdb:unionDefaultGraph=true /db &>fuseki.log &
+  - sleep 2
+  - cd ..
+
 install:
     # iodate0.4.8 is problematic with Pypy, use fixed version
     - if [[ $TRAVIS_PYTHON_VERSION == '2.5' ]]; then pip install --default-timeout 60 ordereddict; pip install --default-timeout 60 "simplejson"; pip install --default-timeout 60 "elementtree"; pip install --default-timeout 60 "html5lib==0.95"; fi
