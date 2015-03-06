@@ -20,7 +20,7 @@ __all__ = ['create_parser', 'BagID', 'ElementHandler',
 RDFNS = RDF
 
 # http://www.w3.org/TR/rdf-syntax-grammar/#eventterm-attribute-URI
-# A mapping from unqualified terms to there qualified version.
+# A mapping from unqualified terms to their qualified version.
 UNQUALIFIED = {"about": RDF.about,
                "ID": RDF.ID,
                "type": RDF.type,
