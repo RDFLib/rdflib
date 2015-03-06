@@ -56,9 +56,10 @@ class AuditableStore(Store):
             context = context.__class__(self.store, context.identifier) if context is not None else None
             ctxId = context.identifier if context is not None else None
             self.reverseOps.append((s, p, o, ctxId, 'remove'))
-            if (s, p, o, ctxId, 'add') in self.reverseOps:
-                self.reverseOps.remove(
-                    (s, p, o, context, 'add'))
+            try:
+                self.reverseOps.remove((s, p, o, ctxId, 'add'))
+            except ValueError:
+                pass
             self.store.add((s, p, o), context, quoted)
 
     def remove(self, (subject, predicate, object_), context=None):
@@ -72,26 +73,21 @@ class AuditableStore(Store):
             if None in [subject, predicate, object_, context]:
                 if ctxId:
                     for s, p, o in context.triples((subject, predicate, object_)):
-                        if (s, p, o, ctxId, 'remove') in self.reverseOps:
+                        try:
                             self.reverseOps.remove((s, p, o, ctxId, 'remove'))
-                        else:
+                        except ValueError:
                             self.reverseOps.append((s, p, o, ctxId, 'add'))
                 else:
-                    for s, p, o, ctx in ConjunctiveGraph(
-                            self.store).quads((subject, predicate, object_)):
-                        if (s, p, o, ctx.identifier, 'remove') in self.reverseOps:
-                            self.reverseOps.remove(
-                                (s, p, o, ctx.identifier, 'remove'))
-                        else:
-                            self.reverseOps.append(
-                                (s, p, o, ctx.identifier, 'add'))
-
-            elif (subject, predicate, object_, ctxId, 'add') in self.reverseOps:
-                self.reverseOps.remove(
-                    (subject, predicate, object_, ctxId, 'add'))
+                    for s, p, o, ctx in ConjunctiveGraph(self.store).quads((subject, predicate, object_)):
+                        try:
+                            self.reverseOps.remove((s, p, o, ctx.identifier, 'remove'))
+                        except ValueError:
+                            self.reverseOps.append((s, p, o, ctx.identifier, 'add'))
             else:
-                self.reverseOps.append(
-                    (subject, predicate, object_, ctxId, 'add'))
+                try:
+                    self.reverseOps.remove((subject, predicate, object_, ctxId, 'add'))
+                except ValueError:
+                    self.reverseOps.append((subject, predicate, object_, ctxId, 'add'))
             self.store.remove((subject, predicate, object_), context)
 
     def triples(self, triple, context=None):
