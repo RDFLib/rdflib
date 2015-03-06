@@ -216,9 +216,9 @@ class RDFXMLHandler(handler.ContentHandler):
         atts = {}
         for (n, v) in attrs.items():  # attrs._attrs.iteritems(): #
             if n[0] is None:
-                att = URIRef(n[1])
+                att = n[1]
             else:
-                att = URIRef("".join(n))
+                att = "".join(n)
             if att.startswith(XMLNS) or att[0:3].lower() == "xml":
                 pass
             elif att in UNQUALIFIED:
