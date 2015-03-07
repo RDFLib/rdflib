@@ -1,5 +1,4 @@
-"""\
-A pure Python package providing the core RDF constructs.
+"""A pure Python package providing the core RDF constructs.
 
 The packages is intended to provide the core RDF types and interfaces
 for working with RDF. The package defines a plugin interface for
@@ -12,19 +11,35 @@ The primary interface `rdflib` exposes to work with RDF is
 
 A tiny example:
 
-    >>> import rdflib
+    >>> from rdflib import Graph, URIRef, Literal
 
-    >>> g = rdflib.Graph()
+    >>> g = Graph()
     >>> result = g.parse("http://www.w3.org/2000/10/swap/test/meet/blue.rdf")
 
     >>> print("graph has %s statements." % len(g))
-    graph has 9 statements.
+    graph has 4 statements.
     >>>
     >>> for s, p, o in g:
     ...     if (s, p, o) not in g:
     ...         raise Exception("It better be!")
 
-    >>> s = g.serialize(format='n3')
+    >>> s = g.serialize(format='nt')
+    >>>
+    >>> sorted(g) == [
+    ...  (URIRef(u'http://meetings.example.com/cal#m1'),
+    ...   URIRef(u'http://www.example.org/meeting_organization#homePage'),
+    ...   URIRef(u'http://meetings.example.com/m1/hp')),
+    ...  (URIRef(u'http://www.example.org/people#fred'),
+    ...   URIRef(u'http://www.example.org/meeting_organization#attending'),
+    ...   URIRef(u'http://meetings.example.com/cal#m1')),
+    ...  (URIRef(u'http://www.example.org/people#fred'),
+    ...   URIRef(u'http://www.example.org/personal_details#GivenName'),
+    ...   Literal(u'Fred')),
+    ...  (URIRef(u'http://www.example.org/people#fred'),
+    ...   URIRef(u'http://www.example.org/personal_details#hasEmail'),
+    ...   URIRef(u'mailto:fred@example.com'))
+    ... ]
+    True
 
 """
 __docformat__ = "restructuredtext en"

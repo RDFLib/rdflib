@@ -20,7 +20,7 @@ __all__ = ['create_parser', 'BagID', 'ElementHandler',
 RDFNS = RDF
 
 # http://www.w3.org/TR/rdf-syntax-grammar/#eventterm-attribute-URI
-# A mapping from unqualified terms to there qualified version.
+# A mapping from unqualified terms to their qualified version.
 UNQUALIFIED = {"about": RDF.about,
                "ID": RDF.ID,
                "type": RDF.type,
@@ -216,9 +216,9 @@ class RDFXMLHandler(handler.ContentHandler):
         atts = {}
         for (n, v) in attrs.items():  # attrs._attrs.iteritems(): #
             if n[0] is None:
-                att = URIRef(n[1])
+                att = n[1]
             else:
-                att = URIRef("".join(n))
+                att = "".join(n)
             if att.startswith(XMLNS) or att[0:3].lower() == "xml":
                 pass
             elif att in UNQUALIFIED:
