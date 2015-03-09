@@ -171,7 +171,7 @@ def rdflib_to_networkx_graph(graph,
     return g
 
 
-def main():
+def main(): # pragma: no cover
     import sys
     import logging.config
     logging.basicConfig(level=logging.DEBUG)
