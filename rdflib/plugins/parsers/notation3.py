@@ -1899,7 +1899,7 @@ class N3Parser(TurtleParser):
         TurtleParser.parse(self, source, conj_graph, encoding, turtle=False)
 
 
-def _test():
+def _test(): # pragma: no cover
     import doctest
     doctest.testmod()
 
@@ -1907,7 +1907,7 @@ def _test():
 # if __name__ == '__main__':
 #    _test()
 
-def main():
+def main(): # pragma: no cover
     g = ConjunctiveGraph()
 
     sink = RDFSink(g)

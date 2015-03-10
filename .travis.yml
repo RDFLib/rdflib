@@ -32,7 +32,7 @@ install:
     - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then pip install --default-timeout 60 -r requirements.py2.txt;  pip install --default-timeout 60 "html5lib";fi
     - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '3' ]]; then pip install --default-timeout 60 -r requirements.py3.txt; fi
     - if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then pip install --upgrade "https://bitbucket.org/gjhiggins/isodate/downloads/isodate-0.4.8.tar.gz"; pip install --default-timeout 60 "elementtree"; fi
-    - if [[ $TRAVIS_PYTHON_VERSION != '2.5' ]]; then pip install --default-timeout 60 coverage coveralls nose-timer && export HAS_COVERALLS=1; fi
+    - if [[ $TRAVIS_PYTHON_VERSION != '2.5' ]]; then pip install --default-timeout 60 coverage coveralls nose-timer networkx && export HAS_COVERALLS=1; fi
     - python setup.py install
 
 before_script:

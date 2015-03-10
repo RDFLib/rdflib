@@ -39,7 +39,7 @@ if sys.version_info[0] >= 3:
     from setuptools import setup
     # kwargs['use_2to3'] = True  # is done in setup_python3 above already
     kwargs['install_requires'] = ['isodate', 'pyparsing']
-    kwargs['tests_require'] = ['html5lib']
+    kwargs['tests_require'] = ['html5lib', 'networkx']
     kwargs['requires'] = [
         'isodate', 'pyparsing',
         'SPARQLWrapper']
@@ -53,6 +53,7 @@ else:
         kwargs['install_requires'] = [
             'isodate',
             'pyparsing', 'SPARQLWrapper']
+        kwargs['tests_require'] = ['networkx']
 
         if sys.version_info[1]<7:  # Python 2.6
             kwargs['install_requires'].append('ordereddict')
