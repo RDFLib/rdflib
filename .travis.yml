@@ -14,9 +14,9 @@ python:
     # - "pypy"
 
 before_install:
-  - wget http://www.eu.apache.org/dist/jena/binaries/jena-fuseki-1.1.1-distribution.tar.gz
-  - tar -zxf jena-fuseki-1.1.1-distribution.tar.gz
-  - mv jena-fuseki-1.1.1 fuseki
+  - wget http://www.eu.apache.org/dist/jena/binaries/jena-fuseki1-1.1.2-distribution.tar.gz
+  - tar -zxf jena-fuseki*-distribution.tar.gz
+  - mv jena-fuseki*/ fuseki
   - cd fuseki
   # normal SPARQLStore & Dataset tests:
   - bash fuseki-server --port 3030 --debug --update --mem /db &>fuseki.log &
