@@ -10,6 +10,10 @@ from __future__ import unicode_literals
 Currently the following libraries are supported:
 - networkx: MultiDiGraph, DiGraph, Graph
 - graph_tool: Graph
+
+Doctests in this file are all skipped, as we can't run them conditionally if
+networkx or graph_tool are available and they would err otherwise.
+see ../../test/test_extras_external_graph_libs.py for conditional tests
 """
 
 import logging
@@ -333,13 +337,10 @@ def rdflib_to_graphtool(
     return g
 
 
-def main(): # pragma: no cover
+if __name__ == '__main__':
     import sys
     import logging.config
     logging.basicConfig(level=logging.DEBUG)
 
     import nose
     nose.run(argv=[sys.argv[0], sys.argv[0], '-v', '--with-doctest'])
-
-if __name__ == '__main__':
-    main()
