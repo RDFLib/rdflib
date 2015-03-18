@@ -1,4 +1,6 @@
+import os
 import subprocess
+import sys
 import re
 
 rdfa_expected = u'''@prefix dc: <http://purl.org/dc/terms/> .
@@ -146,6 +148,9 @@ mdata_expected = u'''@prefix cc: <http://creativecommons.org/ns#> .
     rdfa:usesVocabulary schema: .
 '''.strip()
 
+env = os.environ.copy()
+env['PYTHONPATH'] = '.:' + env.get('PYTHONPATH', '')
+
 def test_rdfpipe_bytes_vs_str():
     """
     Issue 375: rdfpipe command generates bytes vs. str TypeError
@@ -155,7 +160,7 @@ def test_rdfpipe_bytes_vs_str():
     rdfpipe to ensure that we get the expected results.
     """
     args = ['python', 'rdflib/tools/rdfpipe.py', '-i', 'rdfa1.1', 'test/rdfa/oreilly.html']
-    proc = subprocess.Popen(args, stdout=subprocess.PIPE, universal_newlines=True)
+    proc = subprocess.Popen(args, stdout=subprocess.PIPE, universal_newlines=True, env=env)
     res = ''
     while proc.poll() is None:
         res += proc.stdout.read()
@@ -170,7 +175,7 @@ def test_rdfpipe_mdata_open():
     the open() builtin instead.
     """
     args = ['python', 'rdflib/tools/rdfpipe.py', '-i', 'mdata', 'test/mdata/codelab.html']
-    proc = subprocess.Popen(args, stdout=subprocess.PIPE, universal_newlines=True)
+    proc = subprocess.Popen(args, stdout=subprocess.PIPE, universal_newlines=True, env=env)
     res = ''
     while proc.poll() is None:
         res += proc.stdout.read()
