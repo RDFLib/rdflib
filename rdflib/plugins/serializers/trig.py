@@ -68,7 +68,10 @@ class TrigSerializer(TurtleSerializer):
             if self.default_context and store.identifier==self.default_context:
                 self.write(self.indent() + '\n{')
             else:
-                self.write(self.indent() + '\n<%s> {' % self.getQName(store.identifier))
+                iri = self.getQName(store.identifier)
+                if iri is None:
+                    iri = '<%s>' % store.identifier
+                self.write(self.indent() + '\n%s {' % iri)
 
             self.depth += 1
             for subject in ordered_subjects:

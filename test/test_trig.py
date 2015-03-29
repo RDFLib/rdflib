@@ -61,3 +61,23 @@ class TestTrig(unittest.TestCase):
         self.assertIn('@prefix ns1: <http://example.com/> .', first_out)
 
         print first_out
+
+    def testGraphQnameSyntax(self):
+        g = rdflib.ConjunctiveGraph()
+        g.add((rdflib.URIRef("http://example.com/s"),
+               rdflib.RDFS.label,
+               rdflib.Literal("example 1"),
+               rdflib.URIRef("http://example.com/graph1")))
+        out = g.serialize(format='trig')
+        self.assertIn('ns1:graph1 {', out)
+
+    def testGraphUriSyntax(self):
+        g = rdflib.ConjunctiveGraph()
+        g.add((rdflib.URIRef("http://example.com/s"),
+               rdflib.RDFS.label,
+               rdflib.Literal("example 1"),
+               # getQName will not abbreviate this, so it should come
+               # out as a '<...>' term.
+               rdflib.URIRef("http://example.com/foo.")))
+        out = g.serialize(format='trig')
+        self.assertIn('<http://example.com/foo.> {', out)
