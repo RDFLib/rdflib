@@ -46,3 +46,18 @@ class TestTrig(unittest.TestCase):
         self.assertEqual(len(re.findall(b("p2"), s)), 1)
 
         self.assert_(b('{}') not in s) # no empty graphs!
+
+    def testRememberNamespace(self):
+        g = rdflib.ConjunctiveGraph()
+        g.add((rdflib.URIRef("http://example.com/s"),
+               rdflib.RDFS.label,
+               rdflib.Literal("example 1"),
+               rdflib.URIRef("http://example.com/graph1")))
+        # In 4.2.0 the first serialization would fail to include the
+        # prefix for the graph but later serialize() calls would work.
+        first_out = g.serialize(format='trig')
+        second_out = g.serialize(format='trig')
+        self.assertIn('@prefix ns1: <http://example.com/> .', second_out)
+        self.assertIn('@prefix ns1: <http://example.com/> .', first_out)
+
+        print first_out
