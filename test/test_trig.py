@@ -57,8 +57,8 @@ class TestTrig(unittest.TestCase):
         # prefix for the graph but later serialize() calls would work.
         first_out = g.serialize(format='trig')
         second_out = g.serialize(format='trig')
-        self.assertIn('@prefix ns1: <http://example.com/> .', second_out)
-        self.assertIn('@prefix ns1: <http://example.com/> .', first_out)
+        self.assertIn(b'@prefix ns1: <http://example.com/> .', second_out)
+        self.assertIn(b'@prefix ns1: <http://example.com/> .', first_out)
 
         print first_out
 
@@ -69,7 +69,7 @@ class TestTrig(unittest.TestCase):
                rdflib.Literal("example 1"),
                rdflib.URIRef("http://example.com/graph1")))
         out = g.serialize(format='trig')
-        self.assertIn('ns1:graph1 {', out)
+        self.assertIn(b'ns1:graph1 {', out)
 
     def testGraphUriSyntax(self):
         g = rdflib.ConjunctiveGraph()
@@ -80,4 +80,4 @@ class TestTrig(unittest.TestCase):
                # out as a '<...>' term.
                rdflib.URIRef("http://example.com/foo.")))
         out = g.serialize(format='trig')
-        self.assertIn('<http://example.com/foo.> {', out)
+        self.assertIn(b'<http://example.com/foo.> {', out)
