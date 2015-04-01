@@ -68,9 +68,12 @@ class TrigSerializer(TurtleSerializer):
             if self.default_context and store.identifier==self.default_context:
                 self.write(self.indent() + '\n{')
             else:
-                iri = self.getQName(store.identifier)
-                if iri is None:
-                    iri = '<%s>' % store.identifier
+                if isinstance(store.identifier, BNode):
+                    iri = store.identifier.n3()
+                else:
+                    iri = self.getQName(store.identifier)
+                    if iri is None:
+                        iri = store.identifier.n3()
                 self.write(self.indent() + '\n%s {' % iri)
 
             self.depth += 1
