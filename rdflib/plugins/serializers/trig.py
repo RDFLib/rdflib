@@ -32,6 +32,7 @@ class TrigSerializer(TurtleSerializer):
     def preprocess(self):
         for context in self.contexts:
             self.store = context
+            self.getQName(context.identifier)
             self._references = defaultdict(int)
             self._subjects = {}
 
@@ -39,22 +40,6 @@ class TrigSerializer(TurtleSerializer):
                 self.preprocessTriple(triple)
 
             self._contexts[context]=(self.orderSubjects(), self._subjects, self._references)
-
-
-    def preprocessTriple(self, triple):
-        s, p, o = triple
-        self._references[o]+=1
-        self._subjects[s] = True
-        for i, node in enumerate(triple):
-            if node in self.keywords:
-                continue
-            # Don't use generated prefixes for subjects and objects
-            self.getQName(node, gen_prefix=(i == VERB))
-            if isinstance(node, Literal) and node.datatype:
-                self.getQName(node.datatype, gen_prefix=_GEN_QNAME_FOR_DT)
-        p = triple[1]
-        if isinstance(p, BNode):
-            self._references[p]+=1
 
     def reset(self):
         super(TrigSerializer, self).reset()
@@ -83,7 +68,13 @@ class TrigSerializer(TurtleSerializer):
             if self.default_context and store.identifier==self.default_context:
                 self.write(self.indent() + '\n{')
             else:
-                self.write(self.indent() + '\n<%s> {' % self.getQName(store.identifier))
+                if isinstance(store.identifier, BNode):
+                    iri = store.identifier.n3()
+                else:
+                    iri = self.getQName(store.identifier)
+                    if iri is None:
+                        iri = store.identifier.n3()
+                self.write(self.indent() + '\n%s {' % iri)
 
             self.depth += 1
             for subject in ordered_subjects:
