@@ -91,7 +91,7 @@ For some properties, only one value per resource makes sense (i.e they are *func
   print "Bob is ", g.value( bob, FOAF.age ) 
   # prints: Bob is 42
   
-  g.set( ( bob, age, Literal(43) ) ) # replaces 42 set above
+  g.set( ( bob, FOAF.age, Literal(43) ) ) # replaces 42 set above
   print "Bob is now ", g.value( bob, FOAF.age ) 
   # prints: Bob is now 43
 
