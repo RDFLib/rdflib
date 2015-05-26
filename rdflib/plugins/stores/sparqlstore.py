@@ -522,29 +522,33 @@ class SPARQLUpdateStore(SPARQLStore):
                  queryEndpoint=None, update_endpoint=None,
                  bNodeAsURI=False, sparql11=True,
                  context_aware=True,
-                 postAsEncoded=True):
+                 postAsEncoded=True, autocommit=True):
 
         SPARQLStore.__init__(self,
                              queryEndpoint, bNodeAsURI, sparql11, context_aware, updateEndpoint=update_endpoint)
 
         self.postAsEncoded = postAsEncoded
-        self.transaction_aware = True
+        self.autocommit = autocommit
         self._edits = None
 
     def query(self,*args, **kwargs):
-        self.commit()
+        if not self.autocommit:
+            self.commit()
         return SPARQLStore.query(self,*args, **kwargs)
 	
     def triples(self,*args, **kwargs):
-        self.commit()
+        if not self.autocommit:
+            self.commit()
         return SPARQLStore.triples(self,*args, **kwargs)
 	
     def contexts(self,*args, **kwargs):
-        self.commit()
+        if not self.autocommit:
+            self.commit()
         return SPARQLStore.contexts(self,*args, **kwargs)
 	
     def __len__(self,*args, **kwargs):
-        self.commit()
+        if not self.autocommit:
+            self.commit()
         return SPARQLStore.__len__(self,*args, **kwargs)
 
     def open(self, configuration, create=False):
@@ -668,6 +672,8 @@ class SPARQLUpdateStore(SPARQLStore):
         self.setRequestMethod(URLENCODED if self.postAsEncoded else POSTDIRECTLY)
 
         result = SPARQLWrapper.query(self)
+        if self.autocommit:
+            self.commit()
         return result
 
     def update(self, query,
