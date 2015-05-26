@@ -636,7 +636,7 @@ class SPARQLUpdateStore(SPARQLStore):
         for context in contexts:
             triples = ["%s %s %s ." % (x[0].n3(), x[1].n3(), x[2].n3()) for x in contexts[context]]
             data.append("INSERT DATA { GRAPH <%s> { %s } }\n" % (context.identifier, '\n'.join(triples)))
-	    self._transaction().extend(data)
+        self._transaction().extend(data)
 
     def remove(self, spo, context):
         """ Remove a triple from the store """
