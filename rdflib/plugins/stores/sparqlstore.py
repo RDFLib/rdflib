@@ -627,6 +627,8 @@ class SPARQLUpdateStore(SPARQLStore):
         else:
             q = "INSERT DATA { %s }" % triple
         self._transaction().append(q)
+        if self.autocommit:
+            self.commit()
 
     def addN(self, quads):
         """ Add a list of quads to the store. """
@@ -641,6 +643,8 @@ class SPARQLUpdateStore(SPARQLStore):
             triples = ["%s %s %s ." % (x[0].n3(), x[1].n3(), x[2].n3()) for x in contexts[context]]
             data.append("INSERT DATA { GRAPH <%s> { %s } }\n" % (context.identifier, '\n'.join(triples)))
         self._transaction().extend(data)
+        if self.autocommit:
+            self.commit()
 
     def remove(self, spo, context):
         """ Remove a triple from the store """
@@ -663,6 +667,8 @@ class SPARQLUpdateStore(SPARQLStore):
         else:
             q = "DELETE { %s } WHERE { %s } " % (triple, triple)
         self._transaction().append(q)
+        if self.autocommit:
+            self.commit()
 
     def _do_update(self, update):
         print update
@@ -672,8 +678,6 @@ class SPARQLUpdateStore(SPARQLStore):
         self.setRequestMethod(URLENCODED if self.postAsEncoded else POSTDIRECTLY)
 
         result = SPARQLWrapper.query(self)
-        if self.autocommit:
-            self.commit()
         return result
 
     def update(self, query,
@@ -738,6 +742,8 @@ class SPARQLUpdateStore(SPARQLStore):
             query = self.where_pattern.sub("WHERE { " + values, query)
 
         self._transaction().append(query)
+        if self.autocommit:
+            self.commit()
 
     def _insert_named_graph(self, query, query_graph):
         """
