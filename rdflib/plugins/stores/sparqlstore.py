@@ -671,7 +671,6 @@ class SPARQLUpdateStore(SPARQLStore):
             self.commit()
 
     def _do_update(self, update):
-        print update
         self.resetQuery()
         self.setQuery(update)
         self.setMethod(POST)
