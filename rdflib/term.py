@@ -1527,7 +1527,12 @@ class Variable(Identifier):
         return unicode.__new__(cls, value)
 
     def __repr__(self):
-        return self.n3()
+        if self.__class__ is Variable:
+            clsName = "rdflib.term.Variable"
+        else:
+            clsName = self.__class__.__name__
+
+        return """%s(%s)""" % (clsName, super(Variable, self).__repr__())
 
     def toPython(self):
         return "?%s" % self
