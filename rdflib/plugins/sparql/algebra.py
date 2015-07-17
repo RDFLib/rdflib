@@ -784,7 +784,7 @@ def pprintAlgebra(q):
 
 if __name__ == '__main__':
     import sys
-    from . import parser
+    from rdflib.plugins.sparql import parser
     import os.path
 
     if os.path.exists(sys.argv[1]):
