@@ -102,7 +102,8 @@ class URLInputSource(InputSource):
         self.url = file.geturl()    # in case redirections took place
         self.setPublicId(self.url)
         self.content_type = file.info().get('content-type')
-        self.content_type = self.content_type.split(";", 1)[0]
+        if self.content_type is not None:
+            self.content_type = self.content_type.split(";", 1)[0]
         self.setByteStream(file)
         # TODO: self.setEncoding(encoding)
         self.response_info = file.info() # a mimetools.Message instance
