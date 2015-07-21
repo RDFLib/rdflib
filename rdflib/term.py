@@ -183,7 +183,9 @@ class Identifier(Node, unicode):  # allow Identifiers to be Nodes in the Graph
         return self == other
 
     def __hash__(self):
-        return hash(type(self)) ^ hash(unicode(self))
+        t = type(self)
+        fqn = t.__module__ + '.' + t.__name__
+        return hash(fqn) ^ hash(unicode(self))
 
 
 class URIRef(Identifier):
@@ -930,8 +932,12 @@ class Literal(Identifier):
         -- 6.5.1 Literal Equality (RDF: Concepts and Abstract Syntax)
 
         """
-
-        return unicode.__hash__(self) ^ hash(self.language.lower() if self.language else None) ^ hash(self.datatype)
+        res = super(Literal, self).__hash__()
+        if self.language:
+            res ^= hash(self.language.lower())
+        if self.datatype:
+            res ^= hash(self.datatype)
+        return res
 
     @py3compat.format_doctest_out
     def __eq__(self, other):
