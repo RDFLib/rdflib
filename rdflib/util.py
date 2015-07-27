@@ -46,6 +46,8 @@ from rdflib.exceptions import PredicateTypeError
 from rdflib.exceptions import SubjectTypeError
 from rdflib.graph import Graph
 from rdflib.graph import QuotedGraph
+from rdflib.namespace import Namespace
+from rdflib.namespace import NamespaceManager
 from rdflib.term import BNode
 from rdflib.term import Literal
 from rdflib.term import URIRef
@@ -122,7 +124,7 @@ def to_term(s, default=None):
         raise Exception(msg)
 
 
-def from_n3(s, default=None, backend=None):
+def from_n3(s, default=None, backend=None, nsm=None):
     r'''
     Creates the Identifier corresponding to the given n3 string.
 
@@ -137,10 +139,18 @@ def from_n3(s, default=None, backend=None):
         True
         >>> from_n3(Literal(42).n3()) == Literal(42)
         True
+        >>> from_n3('"42"^^xsd:integer') == Literal(42)
+        True
+        >>> from rdflib import RDFS
+        >>> from_n3('rdfs:label') == RDFS['label']
+        True
+        >>> nsm = NamespaceManager(Graph())
+        >>> nsm.bind('dbpedia', 'http://dbpedia.org/resource/')
+        >>> berlin = URIRef('http://dbpedia.org/resource/Berlin')
+        >>> from_n3('dbpedia:Berlin', nsm=nsm) == berlin
+        True
 
     '''
-    # TODO: should be able to handle prefixes given as opt. argument maybe:
-    # from_n3('rdfs:label')
     if not s:
         return default
     if s.startswith('<'):
@@ -162,7 +172,7 @@ def from_n3(s, default=None, backend=None):
             # datatype has to come after lang-tag so ignore everything before
             # see: http://www.w3.org/TR/2011/WD-turtle-20110809/
             # #prod-turtle2-RDFLiteral
-            datatype = from_n3(rest[dtoffset + 2:], default, backend)
+            datatype = from_n3(rest[dtoffset + 2:], default, backend, nsm)
         else:
             if rest.startswith("@"):
                 language = rest[1:]  # strip leading at sign
@@ -182,11 +192,17 @@ def from_n3(s, default=None, backend=None):
     elif s.startswith('['):
         identifier = from_n3(s[1:-1])
         return Graph(backend, identifier)
+    elif s.startswith("_:"):
+        return BNode(s[2:])
+    elif ':' in s:
+        if nsm is None:
+            # instantiate default NamespaceManager and rely on its defaults
+            nsm = NamespaceManager(Graph())
+        prefix, last_part = s.split(':', 1)
+        ns = dict(nsm.namespaces())[prefix]
+        return Namespace(ns)[last_part]
     else:
-        if s.startswith("_:"):
-            return BNode(s[2:])
-        else:
-            return BNode(s)
+        return BNode(s)
 
 
 def check_context(c):
