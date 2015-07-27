@@ -135,6 +135,8 @@ def from_n3(s, default=None, backend=None):
         True
         >>> from_n3('42') == Literal(42)
         True
+        >>> from_n3(Literal(42).n3()) == Literal(42)
+        True
 
     '''
     # TODO: should be able to handle prefixes given as opt. argument maybe:
@@ -160,7 +162,7 @@ def from_n3(s, default=None, backend=None):
             # datatype has to come after lang-tag so ignore everything before
             # see: http://www.w3.org/TR/2011/WD-turtle-20110809/
             # #prod-turtle2-RDFLiteral
-            datatype = rest[dtoffset + 2:]
+            datatype = from_n3(rest[dtoffset + 2:], default, backend)
         else:
             if rest.startswith("@"):
                 language = rest[1:]  # strip leading at sign
