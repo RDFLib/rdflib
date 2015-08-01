@@ -1629,13 +1629,19 @@ class Dataset(ConjunctiveGraph):
             yield c
         if not default: yield self.graph(DATASET_DEFAULT_GRAPH_ID)
 
+    def graphs(self, triple=None) :
+        default = False
+        for c in super(Dataset, self).contexts(triple):
+            default|=c.identifier == DATASET_DEFAULT_GRAPH_ID
+            yield c
+        if not default: yield self.graph(DATASET_DEFAULT_GRAPH_ID)
+
     def quads(self, quad):
         for s, p, o, c in super(Dataset, self).quads(quad):
             if c.identifier==self.default_context:
                 yield (s, p, o, None)
             else:
                 yield (s, p, o, c.identifier)
-
 
 class QuotedGraph(Graph):
     """
