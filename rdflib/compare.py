@@ -204,7 +204,9 @@ class Color:
                 return unicode(x)
         if isinstance(color, Node):
             return stringify(color)
-        value = sum(map(self.hashfunc, ' '.join([stringify(x) for x in color])))
+        value = 0
+        for triple in color:
+            value += self.hashfunc(' '.join([stringify(x) for x in triple]))
         val = u"%x" % value
         self._hash_cache[color] = val
         return val
@@ -290,7 +292,7 @@ class _TripleCanonicalizer(object):
 
     def _individuate(self, color, individual):
         new_color = list(color.color)
-        new_color.append((len(color.nodes)))
+        new_color.append(tuple([len(color.nodes)]))
 
         color.nodes.remove(individual)
         c = Color([individual], self.hashfunc, tuple(new_color),
@@ -320,6 +322,7 @@ class _TripleCanonicalizer(object):
                         sequence = sequence[:si] + colors + sequence[si+1:]
                     except ValueError:
                         sequence = colors[1:] + sequence
+
         return coloring
 
     @_runtime("to_hash_runtime")
@@ -407,7 +410,6 @@ class _TripleCanonicalizer(object):
                     stats['prunings'] += 1
         discrete = [x for x in best if self._discrete(x)]
         if len(discrete) == 0:
-            very_best = None
             best_score = None
             best_depth = None
             for coloring in best:
@@ -434,6 +436,7 @@ class _TripleCanonicalizer(object):
         if stats is not None:
             stats['initial_coloring_runtime'] = _total_seconds(datetime.now() - start_coloring)
             stats['initial_color_count'] = len(coloring)
+
         if not self._discrete(coloring):
             depth = [0]
             coloring = self._traces(coloring, stats=stats, depth=depth)
