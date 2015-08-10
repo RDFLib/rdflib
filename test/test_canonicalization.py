@@ -144,7 +144,9 @@ def negative_graph_match_test():
     def fn(rdf1, rdf2, identical):
         digest1 = get_digest_value(rdf1,"text/turtle")
         digest2 = get_digest_value(rdf2,"text/turtle")
+        print rdf1
         print digest1
+        print rdf2
         print digest2
         assert (digest1 == digest2) == identical
     for inputs in testInputs:
