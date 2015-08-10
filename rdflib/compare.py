@@ -292,7 +292,7 @@ class _TripleCanonicalizer(object):
 
     def _individuate(self, color, individual):
         new_color = list(color.color)
-        new_color.append(tuple([len(color.nodes)]))
+        new_color.append((len(color.nodes),))
 
         color.nodes.remove(individual)
         c = Color([individual], self.hashfunc, tuple(new_color),
