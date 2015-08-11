@@ -1,5 +1,6 @@
 # http://travis-ci.org/#!/RDFLib/rdflib
 language: python
+sudo: false
 branches:
   only:
     - master
