@@ -1,3 +1,86 @@
+2015/08/12 RELEASE 4.2.1
+========================
+
+This is a bug-fix release.
+
+Minor enhancements:
+-------------------
+* Added a Networkx connector
+  [#471](https://github.com/RDFLib/rdflib/pull/471),
+  [#507](https://github.com/RDFLib/rdflib/pull/507)
+* Added a graph_tool connector
+  [#473](https://github.com/RDFLib/rdflib/pull/473)
+* Added a `graphs` method to the Dataset object
+  [#504](https://github.com/RDFLib/rdflib/pull/504),
+  [#495](https://github.com/RDFLib/rdflib/issues/495)
+* Batch commits for `SPARQLUpdateStore`
+  [#486](https://github.com/RDFLib/rdflib/pull/486)
+
+Bug fixes:
+----------
+* Fixed bnode collision bug
+  [#506](https://github.com/RDFLib/rdflib/pull/506),
+  [#496](https://github.com/RDFLib/rdflib/pull/496),
+  [#494](https://github.com/RDFLib/rdflib/issues/494)
+* fix `util.from_n3()` parsing Literals with datatypes and Namespace support
+  [#503](https://github.com/RDFLib/rdflib/pull/503),
+  [#502](https://github.com/RDFLib/rdflib/issues/502)
+* make `Identifier.__hash__` stable wrt. multi processes
+  [#501](https://github.com/RDFLib/rdflib/pull/501),
+  [#500](https://github.com/RDFLib/rdflib/issues/500)
+* fix handling `URLInputSource` without content-type
+  [#499](https://github.com/RDFLib/rdflib/pull/499),
+  [#498](https://github.com/RDFLib/rdflib/pull/498)
+* no relative import in `algebra` when run as a script
+  [#497](https://github.com/RDFLib/rdflib/pull/497)
+* Duplicate option in armstrong `theme.conf` removed
+  [#491](https://github.com/RDFLib/rdflib/issues/491)
+* `Variable.__repr__` returns a python representation string, not n3
+  [#488](https://github.com/RDFLib/rdflib/pull/488)
+* fixed broken example
+  [#482](https://github.com/RDFLib/rdflib/pull/482)
+* trig output fixes
+  [#480](https://github.com/RDFLib/rdflib/pull/480)
+* set PYTHONPATH to make rdfpipe tests use the right rdflib version
+  [#477](https://github.com/RDFLib/rdflib/pull/477)
+* fix RDF/XML problem with unqualified use of `rdf:about`
+  [#470](https://github.com/RDFLib/rdflib/pull/470),
+  [#468](https://github.com/RDFLib/rdflib/issues/468)
+* `AuditableStore` improvements
+  [#469](https://github.com/RDFLib/rdflib/pull/469),
+  [#463](https://github.com/RDFLib/rdflib/pull/463)
+* added asserts for `graph.set([s,p,o])` so `s` and `p` aren't `None`
+  [#467](https://github.com/RDFLib/rdflib/pull/467)
+* `threading.RLock` instances are context managers
+  [#465](https://github.com/RDFLib/rdflib/pull/465)
+* SPARQLStore does not transform Literal('') into Literal('None') anymore
+  [#459](https://github.com/RDFLib/rdflib/pull/459),
+  [#457](https://github.com/RDFLib/rdflib/issues/457)
+* slight performance increase for graph.all_nodes()
+  [#458](https://github.com/RDFLib/rdflib/pull/458)
+
+Testing improvements:
+---------------------
+* travis: migrate to docker container infrastructure
+  [#508](https://github.com/RDFLib/rdflib/pull/508)
+* test for narrow python builds (chars > 0xFFFF) (related to
+    [#453](https://github.com/RDFLib/rdflib/pull/453),
+    [#454](https://github.com/RDFLib/rdflib/pull/454)
+  )
+  [#456](https://github.com/RDFLib/rdflib/issues/456),
+  [#509](https://github.com/RDFLib/rdflib/pull/509)
+* dropped testing py3.2
+  [#448](https://github.com/RDFLib/rdflib/issues/448)
+* Running a local fuseki server on travis and making it failsafe
+  [#476](https://github.com/RDFLib/rdflib/pull/476),
+  [#475](https://github.com/RDFLib/rdflib/issues/475),
+  [#474](https://github.com/RDFLib/rdflib/pull/474),
+  [#466](https://github.com/RDFLib/rdflib/pull/466),
+  [#460](https://github.com/RDFLib/rdflib/issues/460)
+* exclude `def main():` functions from test coverage analysis
+  [#472](https://github.com/RDFLib/rdflib/pull/472)
+
+
 2015/02/19 RELEASE 4.2.0
 ========================
 
