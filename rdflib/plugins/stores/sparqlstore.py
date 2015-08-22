@@ -145,6 +145,14 @@ def CastToTerm(node):
         raise Exception('Unknown answer type')
 
 
+def to_sparql(r):
+    if isinstance (r, BNode):
+        # This is a non-standard SPARQL extension.
+        return '<bnode:%s>' % r
+    else:
+        return r.n3()
+
+
 class SPARQLStore(NSSPARQLWrapper, Store):
     """
     An RDFLib store around a SPARQL endpoint
@@ -161,13 +169,12 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     Fuseki/TDB has a flag for specifying that the default graph
     is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config).
 
-    .. warning:: The SPARQL Store does not support blank-nodes!
-
-                 As blank-nodes act as variables in SPARQL queries
-                 there is no way to query for a particular blank node.
-
-                 See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes
-
+    As blank-nodes act as variables in SPARQL queries, there is no way to query
+    for a particular blank node except with non-standard SPARQL extensions. By
+    default this extension is not used, and an exception will be raised if a
+    query involves a blank node. If ``bNodeAsURI`` is set to True, blank nodes
+    will be represented in the SPARQL queries in a ``<bnode:b0001>`` form which
+    some SPARQL endpoints will understand.
 
     """
     formula_aware = False
@@ -295,8 +302,9 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
         if ( isinstance(s, BNode) or
              isinstance(p, BNode) or
-             isinstance(o, BNode) ):
-            raise Exception("SPARQLStore does not support Bnodes! "
+             isinstance(o, BNode) ) and not self.bNodeAsURI:
+            raise Exception("SPARQLStore does not support blank nodes, unless "
+                            "the bNodeAsURI setting is enabled."
                             "See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes")
 
         vars = []
@@ -317,7 +325,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             v = '*'
 
         query = "SELECT %s WHERE { %s %s %s }" % \
-            (v, s.n3(), p.n3(), o.n3())
+            (v, to_sparql(s), to_sparql(p), to_sparql(o))
 
         # The ORDER BY is necessary
         if hasattr(context, LIMIT) or hasattr(context, OFFSET) \
@@ -459,14 +467,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
     For Graph objects, everything works as expected.
 
-    .. warning:: The SPARQL Update Store does not support blank-nodes!
-
-                 As blank-nodes acts as variables in SPARQL queries
-                 there is no way to query for a particular blank node.
-
-                 See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes
-
-
+    See the :class:`SPARQLStore` base class for more information.
 
     """
 
@@ -615,12 +616,12 @@ class SPARQLUpdateStore(SPARQLStore):
 
         if ( isinstance(subject, BNode) or
              isinstance(predicate, BNode) or
-             isinstance(obj, BNode) ):
+             isinstance(obj, BNode) ) and not self.bNodeAsURI:
             raise Exception("SPARQLStore does not support Bnodes! "
                             "See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes")
 
 
-        triple = "%s %s %s ." % (subject.n3(), predicate.n3(), obj.n3())
+        triple = "%s %s %s ." % (to_sparql(subject), to_sparql(predicate), to_sparql(obj))
         if self._is_contextual(context):
             q = "INSERT DATA { GRAPH %s { %s } }" % (
                 context.identifier.n3(), triple)
