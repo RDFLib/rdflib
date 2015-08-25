@@ -240,6 +240,12 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             endpoint, returnFormat=XML, **sparqlwrapper_kwargs)
         self.setUseKeepAlive()
         self.bNodeAsURI = bNodeAsURI
+        if bNodeAsURI:
+            warnings.warn(
+                "bNodeAsURI argument was never supported and will be dropped "
+                "in favor of node_to_sparql and node_from_result args.",
+                category=DeprecationWarning,
+            )
         self.node_to_sparql = node_to_sparql
         self.node_from_result = node_from_result
         self.nsBindings = {}
