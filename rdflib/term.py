@@ -268,20 +268,7 @@ class URIRef(Identifier):
     def __mod__(self, other):
         return self.__class__(unicode(self) % other)
 
-    def md5_term_hash(self):
-        """a string of hex that will be the same for two URIRefs that
-        are the same. It is not a suitable unique id.
 
-        Supported for backwards compatibility; new code should
-        probably just use __hash__
-        """
-        warnings.warn(
-            "method md5_term_hash is deprecated, and will be removed " +
-            "in the future. If you use this please let rdflib-dev know!",
-            category=DeprecationWarning, stacklevel=2)
-        d = md5(self.encode())
-        d.update(b("U"))
-        return d.hexdigest()
 
     def de_skolemize(self):
         """ Create a Blank Node from a skolem URI, in accordance
@@ -413,21 +400,6 @@ class BNode(Identifier):
         else:
             clsName = self.__class__.__name__
         return """%s('%s')""" % (clsName, str(self))
-
-    def md5_term_hash(self):
-        """a string of hex that will be the same for two BNodes that
-        are the same. It is not a suitable unique id.
-
-        Supported for backwards compatibility; new code should
-        probably just use __hash__
-        """
-        warnings.warn(
-            "method md5_term_hash is deprecated, and will be removed " +
-            "in the future. If you use this please let rdflib-dev know!",
-            category=DeprecationWarning, stacklevel=2)
-        d = md5(self.encode())
-        d.update(b("B"))
-        return d.hexdigest()
 
     def skolemize(self, authority="http://rdlib.net/"):
         """ Create a URIRef "skolem" representation of the BNode, in accordance
@@ -1282,21 +1254,6 @@ class Literal(Identifier):
             return self.value
         return self
 
-    def md5_term_hash(self):
-        """a string of hex that will be the same for two Literals that
-        are the same. It is not a suitable unique id.
-
-        Supported for backwards compatibility; new code should
-        probably just use __hash__
-        """
-        warnings.warn(
-            "method md5_term_hash is deprecated, and will be removed " +
-            "removed in the future. If you use this please let rdflib-dev know!",
-            category=DeprecationWarning, stacklevel=2)
-        d = md5(self.encode())
-        d.update(b("L"))
-        return d.hexdigest()
-
 
 def _parseXML(xmlstring):
     if not py3compat.PY3:
@@ -1548,21 +1505,6 @@ class Variable(Identifier):
 
     def __reduce__(self):
         return (Variable, (unicode(self),))
-
-    def md5_term_hash(self):
-        """a string of hex that will be the same for two Variables that
-        are the same. It is not a suitable unique id.
-
-        Supported for backwards compatibility; new code should
-        probably just use __hash__
-        """
-        warnings.warn(
-            "method md5_term_hash is deprecated, and will be removed " +
-            "removed in the future. If you use this please let rdflib-dev know!",
-            category=DeprecationWarning, stacklevel=2)
-        d = md5(self.encode())
-        d.update(b("V"))
-        return d.hexdigest()
 
 
 class Statement(Node, tuple):

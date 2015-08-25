@@ -515,11 +515,6 @@ class Graph(Node):
     def __hash__(self):
         return hash(self.identifier)
 
-    def md5_term_hash(self):
-        d = md5(str(self.identifier))
-        d.update("G")
-        return d.hexdigest()
-
     def __cmp__(self, other):
         if other is None:
             return -1
