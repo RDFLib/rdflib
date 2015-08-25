@@ -14,8 +14,8 @@ ORDERBY = 'ORDER BY'
 import re
 import collections
 import urllib2
+import warnings
 
-# import warnings
 try:
     from SPARQLWrapper import SPARQLWrapper, XML, POST, GET, URLENCODED, POSTDIRECTLY
 except ImportError:
@@ -86,43 +86,7 @@ sparqlNsBindings = {u'sparql': SPARQL_NS}
 ElementTree._namespace_map["sparql"] = SPARQL_NS
 
 
-def TraverseSPARQLResultDOM(doc, asDictionary=False):
-    """
-    Returns a generator over tuples of results
-    """
-    # namespace handling in elementtree xpath sub-set is not pretty :(
-    vars = [Variable(v.attrib["name"]) for v in doc.findall(
-            './{http://www.w3.org/2005/sparql-results#}head/' +
-            '{http://www.w3.org/2005/sparql-results#}variable')]
-    for result in doc.findall(
-            './{http://www.w3.org/2005/sparql-results#}results/' +
-            '{http://www.w3.org/2005/sparql-results#}result'):
-        currBind = {}
-        values = []
-        for binding in result.findall(
-                '{http://www.w3.org/2005/sparql-results#}binding'):
-            varVal = binding.attrib["name"]
-            var = Variable(varVal)
-            term = CastToTerm(binding.findall('*')[0])
-            values.append(term)
-            currBind[var] = term
-        if asDictionary:
-            yield currBind, vars
-        else:
-            def __locproc(values):
-                if len(values) == 1:
-                    return values[0]
-                else:
-                    return tuple(values)
-            yield __locproc(values), vars
-
-
-def localName(qname):
-    # wtf - elementtree cant do this for me
-    return qname[qname.index("}") + 1:]
-
-
-def CastToTerm(node):
+def _node_from_result(node):
     """
     Helper function that casts XML node in SPARQL results
     to appropriate rdflib term
@@ -145,12 +109,82 @@ def CastToTerm(node):
         raise Exception('Unknown answer type')
 
 
-def to_sparql(r):
-    if isinstance (r, BNode):
-        # This is a non-standard SPARQL extension.
-        return '<bnode:%s>' % r
-    else:
-        return r.n3()
+def CastToTerm(node):
+    warnings.warn(
+        "Call to deprecated function CastToTerm, use _node_from_result.",
+        category=DeprecationWarning,
+    )
+    return _node_from_result(node)
+
+
+def _node_to_sparql(node):
+    if isinstance(node, BNode):
+        raise Exception(
+            "SPARQLStore does not support BNodes! "
+            "See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes"
+        )
+    return node.n3()
+
+
+
+def _traverse_sparql_result_dom(
+        doc, as_dictionary=False, node_from_result=_node_from_result):
+    """
+    Returns a generator over tuples of results
+    """
+    # namespace handling in elementtree xpath sub-set is not pretty :(
+    vars_ = [
+        Variable(v.attrib["name"])
+        for v in doc.findall(
+            './{http://www.w3.org/2005/sparql-results#}head/'
+            '{http://www.w3.org/2005/sparql-results#}variable'
+        )
+    ]
+    for result in doc.findall(
+            './{http://www.w3.org/2005/sparql-results#}results/'
+            '{http://www.w3.org/2005/sparql-results#}result'):
+        curr_bind = {}
+        values = []
+        for binding in result.findall(
+                '{http://www.w3.org/2005/sparql-results#}binding'):
+            var_val = binding.attrib["name"]
+            var = Variable(var_val)
+            term = node_from_result(binding.findall('*')[0])
+            values.append(term)
+            curr_bind[var] = term
+        if as_dictionary:
+            yield curr_bind, vars_
+        else:
+            def __locproc(values_):
+                if len(values_) == 1:
+                    return values_[0]
+                else:
+                    return tuple(values_)
+            yield __locproc(values), vars_
+
+
+def TraverseSPARQLResultDOM(doc, asDictionary=False):
+    warnings.warn(
+        "Call to deprecated function TraverseSPARQLResultDOM, use "
+        "_traverse_sparql_result_dom instead and update asDictionary arg to "
+        "as_dictionary.",
+        category=DeprecationWarning,
+    )
+    return _traverse_sparql_result_dom(
+        doc, as_dictionary=asDictionary, node_from_result=_node_from_result)
+
+
+def _local_name(qname):
+    # wtf - elementtree cant do this for me
+    return qname[qname.index("}") + 1:]
+
+
+def localName(qname):
+    warnings.warn(
+        "Call to deprecated unused function localName, will be dropped soon.",
+        category=DeprecationWarning,
+    )
+    return _local_name(qname)
 
 
 class SPARQLStore(NSSPARQLWrapper, Store):
