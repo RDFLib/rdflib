@@ -14,7 +14,6 @@ ORDERBY = 'ORDER BY'
 import re
 import collections
 import urllib2
-import warnings
 
 try:
     from SPARQLWrapper import SPARQLWrapper, XML, POST, GET, URLENCODED, POSTDIRECTLY
@@ -196,7 +195,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     regex_matching = NATIVE_REGEX
 
     def __init__(self,
-                 endpoint=None, bNodeAsURI=False,
+                 endpoint=None,
                  sparql11=True, context_aware=True,
                  node_to_sparql=_node_to_sparql,
                  node_from_result=_node_from_result,
@@ -206,13 +205,6 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         super(SPARQLStore, self).__init__(
             endpoint, returnFormat=XML, **sparqlwrapper_kwargs)
         self.setUseKeepAlive()
-        self.bNodeAsURI = bNodeAsURI
-        if bNodeAsURI:
-            warnings.warn(
-                "bNodeAsURI argument was never supported and will be dropped "
-                "in favor of node_to_sparql and node_from_result args.",
-                category=DeprecationWarning,
-            )
         self.node_to_sparql = node_to_sparql
         self.node_from_result = node_from_result
         self.nsBindings = {}
@@ -549,7 +541,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
     def __init__(self,
                  queryEndpoint=None, update_endpoint=None,
-                 bNodeAsURI=False, sparql11=True,
+                 sparql11=True,
                  context_aware=True,
                  postAsEncoded=True, autocommit=True,
                  **kwds
@@ -558,7 +550,6 @@ class SPARQLUpdateStore(SPARQLStore):
         SPARQLStore.__init__(
             self,
             queryEndpoint,
-            bNodeAsURI,
             sparql11,
             context_aware,
             updateEndpoint=update_endpoint,
