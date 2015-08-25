@@ -98,8 +98,8 @@ def _node_from_result(node):
     elif node.tag == '{%s}literal' % SPARQL_NS:
         value = node.text if node.text is not None else ''
         if 'datatype' in node.attrib:
-            dT = URIRef(node.attrib['datatype'])
-            return Literal(value, datatype=dT)
+            dt = URIRef(node.attrib['datatype'])
+            return Literal(value, datatype=dt)
         elif '{http://www.w3.org/XML/1998/namespace}lang' in node.attrib:
             return Literal(value, lang=node.attrib[
                 "{http://www.w3.org/XML/1998/namespace}lang"])
@@ -602,25 +602,25 @@ class SPARQLUpdateStore(SPARQLStore):
         self.autocommit = autocommit
         self._edits = None
 
-    def query(self,*args, **kwargs):
+    def query(self, *args, **kwargs):
         if not self.autocommit:
             self.commit()
-        return SPARQLStore.query(self,*args, **kwargs)
-	
-    def triples(self,*args, **kwargs):
+        return SPARQLStore.query(self, *args, **kwargs)
+
+    def triples(self, *args, **kwargs):
         if not self.autocommit:
             self.commit()
-        return SPARQLStore.triples(self,*args, **kwargs)
-	
-    def contexts(self,*args, **kwargs):
+        return SPARQLStore.triples(self, *args, **kwargs)
+
+    def contexts(self, *args, **kwargs):
         if not self.autocommit:
             self.commit()
-        return SPARQLStore.contexts(self,*args, **kwargs)
-	
-    def __len__(self,*args, **kwargs):
+        return SPARQLStore.contexts(self, *args, **kwargs)
+
+    def __len__(self, *args, **kwargs):
         if not self.autocommit:
             self.commit()
-        return SPARQLStore.__len__(self,*args, **kwargs)
+        return SPARQLStore.__len__(self, *args, **kwargs)
 
     def open(self, configuration, create=False):
         """
@@ -644,7 +644,7 @@ class SPARQLUpdateStore(SPARQLStore):
             self.updateEndpoint = self.endpoint
 
     def _transaction(self):
-        if self._edits == None:
+        if self._edits is None:
             self._edits = []
         return self._edits
 
@@ -657,14 +657,14 @@ class SPARQLUpdateStore(SPARQLStore):
     update_endpoint = property(
         __get_update_endpoint,
         __set_update_endpoint,
-        doc='the HTTP URL for the Update endpoint, typically' +
+        doc='the HTTP URL for the Update endpoint, typically '
             'something like http://server/dataset/update')
 
     # Transactional interfaces
     def commit(self):
-        """ add(), addN(), and remove() are transactional to reduce overhead of many small edits. 
-            Read and update() calls will automatically commit any outstanding edits. 
-            This should behave as expected most of the time, except that alternating writes 
+        """ add(), addN(), and remove() are transactional to reduce overhead of many small edits.
+            Read and update() calls will automatically commit any outstanding edits.
+            This should behave as expected most of the time, except that alternating writes
             and reads can degenerate to the original call-per-triple situation that originally existed.
         """
         if self._edits and len(self._edits) > 0:
