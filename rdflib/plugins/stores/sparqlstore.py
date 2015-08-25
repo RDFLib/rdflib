@@ -154,19 +154,6 @@ def _traverse_sparql_result_dom(
             yield __locproc(values), vars_
 
 
-def _local_name(qname):
-    # wtf - elementtree cant do this for me
-    return qname[qname.index("}") + 1:]
-
-
-def localName(qname):
-    warnings.warn(
-        "Call to deprecated unused function localName, will be dropped soon.",
-        category=DeprecationWarning,
-    )
-    return _local_name(qname)
-
-
 class SPARQLStore(NSSPARQLWrapper, Store):
     """
     An RDFLib store around a SPARQL endpoint
