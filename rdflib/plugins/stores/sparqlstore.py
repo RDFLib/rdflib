@@ -109,14 +109,6 @@ def _node_from_result(node):
         raise Exception('Unknown answer type')
 
 
-def CastToTerm(node):
-    warnings.warn(
-        "Call to deprecated function CastToTerm, use _node_from_result.",
-        category=DeprecationWarning,
-    )
-    return _node_from_result(node)
-
-
 def _node_to_sparql(node):
     if isinstance(node, BNode):
         raise Exception(
