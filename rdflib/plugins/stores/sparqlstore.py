@@ -203,12 +203,24 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     Fuseki/TDB has a flag for specifying that the default graph
     is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config).
 
-    As blank-nodes act as variables in SPARQL queries, there is no way to query
-    for a particular blank node except with non-standard SPARQL extensions. By
-    default this extension is not used, and an exception will be raised if a
-    query involves a blank node. If ``bNodeAsURI`` is set to True, blank nodes
-    will be represented in the SPARQL queries in a ``<bnode:b0001>`` form which
-    some SPARQL endpoints will understand.
+    .. warning:: By default the SPARQL Store does not support blank-nodes!
+
+                 As blank-nodes act as variables in SPARQL queries,
+                 there is no way to query for a particular blank node without
+                 using non-standard SPARQL extensions.
+
+                 See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes
+
+    You can make use of such extensions through the node_to_sparql and
+    node_from_result arguments. For example if you want to transform
+    BNode('0001') into "<bnode:b0001>", you can use a function like this:
+
+    >>> def my_bnode_ext(node):
+    ...    if isinstance(node, BNode):
+    ...        return '<bnode:b%s>' % node
+    ...    return _node_to_sparql(node)
+    >>> store = SPARQLStore('http://dbpedia.org/sparql',
+    ...                     node_to_sparql=my_bnode_ext)
 
     """
     formula_aware = False
@@ -219,12 +231,17 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     def __init__(self,
                  endpoint=None, bNodeAsURI=False,
                  sparql11=True, context_aware=True,
+                 node_to_sparql=_node_to_sparql,
+                 node_from_result=_node_from_result,
                  **sparqlwrapper_kwargs):
         """
         """
-        super(SPARQLStore, self).__init__(endpoint, returnFormat=XML, **sparqlwrapper_kwargs)
+        super(SPARQLStore, self).__init__(
+            endpoint, returnFormat=XML, **sparqlwrapper_kwargs)
         self.setUseKeepAlive()
         self.bNodeAsURI = bNodeAsURI
+        self.node_to_sparql = node_to_sparql
+        self.node_from_result = node_from_result
         self.nsBindings = {}
         self.sparql11 = sparql11
         self.context_aware = context_aware
@@ -334,13 +351,6 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         ``
         """
 
-        if ( isinstance(s, BNode) or
-             isinstance(p, BNode) or
-             isinstance(o, BNode) ) and not self.bNodeAsURI:
-            raise Exception("SPARQLStore does not support blank nodes, unless "
-                            "the bNodeAsURI setting is enabled."
-                            "See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes")
-
         vars = []
         if not s:
             s = Variable('s')
@@ -358,8 +368,8 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         else:
             v = '*'
 
-        query = "SELECT %s WHERE { %s %s %s }" % \
-            (v, to_sparql(s), to_sparql(p), to_sparql(o))
+        nts = self.node_to_sparql
+        query = "SELECT %s WHERE { %s %s %s }" % (v, nts(s), nts(p), nts(o))
 
         # The ORDER BY is necessary
         if hasattr(context, LIMIT) or hasattr(context, OFFSET) \
@@ -392,7 +402,10 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
         doc = ElementTree.parse(SPARQLWrapper.query(self).response)
         # ElementTree.dump(doc)
-        for rt, vars in TraverseSPARQLResultDOM(doc, asDictionary=True):
+        for rt, vars in _traverse_sparql_result_dom(
+                doc,
+                as_dictionary=True,
+                node_from_result=self.node_from_result):
             yield (rt.get(s, s),
                    rt.get(p, p),
                    rt.get(o, o)), None
@@ -420,7 +433,12 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             self.setQuery(q)
             doc = ElementTree.parse(SPARQLWrapper.query(self).response)
             rt, vars = iter(
-                TraverseSPARQLResultDOM(doc, asDictionary=True)).next()
+                _traverse_sparql_result_dom(
+                    doc,
+                    as_dictionary=True,
+                    node_from_result=self.node_from_result
+                )
+            ).next()
             return int(rt.get(Variable("c")))
 
     def contexts(self, triple=None):
@@ -450,8 +468,11 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
         doc = ElementTree.parse(SPARQLWrapper.query(self).response)
 
-        return (rt.get(Variable("name"))
-                for rt, vars in TraverseSPARQLResultDOM(doc, asDictionary=True))
+        return (
+            rt.get(Variable("name"))
+            for rt, vars in _traverse_sparql_result_dom(
+                doc, as_dictionary=True, node_from_result=self.node_from_result)
+        )
 
     # Namespace persistence interface implementation
     def bind(self, prefix, namespace):
@@ -557,10 +578,19 @@ class SPARQLUpdateStore(SPARQLStore):
                  queryEndpoint=None, update_endpoint=None,
                  bNodeAsURI=False, sparql11=True,
                  context_aware=True,
-                 postAsEncoded=True, autocommit=True):
+                 postAsEncoded=True, autocommit=True,
+                 **kwds
+                 ):
 
-        SPARQLStore.__init__(self,
-                             queryEndpoint, bNodeAsURI, sparql11, context_aware, updateEndpoint=update_endpoint)
+        SPARQLStore.__init__(
+            self,
+            queryEndpoint,
+            bNodeAsURI,
+            sparql11,
+            context_aware,
+            updateEndpoint=update_endpoint,
+            **kwds
+        )
 
         self.postAsEncoded = postAsEncoded
         self.autocommit = autocommit
@@ -648,14 +678,8 @@ class SPARQLUpdateStore(SPARQLStore):
         assert not quoted
         (subject, predicate, obj) = spo
 
-        if ( isinstance(subject, BNode) or
-             isinstance(predicate, BNode) or
-             isinstance(obj, BNode) ) and not self.bNodeAsURI:
-            raise Exception("SPARQLStore does not support Bnodes! "
-                            "See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes")
-
-
-        triple = "%s %s %s ." % (to_sparql(subject), to_sparql(predicate), to_sparql(obj))
+        nts = self.node_to_sparql
+        triple = "%s %s %s ." % (nts(subject), nts(predicate), nts(obj))
         if self._is_contextual(context):
             q = "INSERT DATA { GRAPH %s { %s } }" % (
                 context.identifier.n3(), triple)
