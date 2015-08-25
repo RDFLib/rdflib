@@ -532,7 +532,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
     """
 
-    where_pattern = re.compile(r"""(?P<where>WHERE\s*{)""", re.IGNORECASE)
+    where_pattern = re.compile(r"""(?P<where>WHERE\s*\{)""", re.IGNORECASE)
 
     ##################################################################
     ### Regex for injecting GRAPH blocks into updates on a context ###
