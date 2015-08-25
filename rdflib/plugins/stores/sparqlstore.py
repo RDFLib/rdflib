@@ -118,7 +118,6 @@ def _node_to_sparql(node):
     return node.n3()
 
 
-
 def _traverse_sparql_result_dom(
         doc, as_dictionary=False, node_from_result=_node_from_result):
     """
@@ -153,17 +152,6 @@ def _traverse_sparql_result_dom(
                 else:
                     return tuple(values_)
             yield __locproc(values), vars_
-
-
-def TraverseSPARQLResultDOM(doc, asDictionary=False):
-    warnings.warn(
-        "Call to deprecated function TraverseSPARQLResultDOM, use "
-        "_traverse_sparql_result_dom instead and update asDictionary arg to "
-        "as_dictionary.",
-        category=DeprecationWarning,
-    )
-    return _traverse_sparql_result_dom(
-        doc, as_dictionary=asDictionary, node_from_result=_node_from_result)
 
 
 def _local_name(qname):
