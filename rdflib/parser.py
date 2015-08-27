@@ -139,8 +139,16 @@ def create_input_source(source=None, publicID=None,
     parameters.
     """
 
-    # TODO: test that exactly one of source, location, file, and data
-    # is not None.
+    # test that exactly one of source, location, file, and data is not None.
+    if sum((
+        source is not None,
+        location is not None,
+        file is not None,
+        data is not None,
+    )) != 1:
+        raise ValueError(
+            'exactly one of source, location, file or data must be given'
+        )
 
     input_source = None
 
