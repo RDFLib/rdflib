@@ -14,7 +14,6 @@ ORDERBY = 'ORDER BY'
 import re
 import collections
 import urllib2
-import warnings
 
 try:
     from SPARQLWrapper import SPARQLWrapper, XML, POST, GET, URLENCODED, POSTDIRECTLY
@@ -109,14 +108,6 @@ def _node_from_result(node):
         raise Exception('Unknown answer type')
 
 
-def CastToTerm(node):
-    warnings.warn(
-        "Call to deprecated function CastToTerm, use _node_from_result.",
-        category=DeprecationWarning,
-    )
-    return _node_from_result(node)
-
-
 def _node_to_sparql(node):
     if isinstance(node, BNode):
         raise Exception(
@@ -124,7 +115,6 @@ def _node_to_sparql(node):
             "See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes"
         )
     return node.n3()
-
 
 
 def _traverse_sparql_result_dom(
@@ -161,30 +151,6 @@ def _traverse_sparql_result_dom(
                 else:
                     return tuple(values_)
             yield __locproc(values), vars_
-
-
-def TraverseSPARQLResultDOM(doc, asDictionary=False):
-    warnings.warn(
-        "Call to deprecated function TraverseSPARQLResultDOM, use "
-        "_traverse_sparql_result_dom instead and update asDictionary arg to "
-        "as_dictionary.",
-        category=DeprecationWarning,
-    )
-    return _traverse_sparql_result_dom(
-        doc, as_dictionary=asDictionary, node_from_result=_node_from_result)
-
-
-def _local_name(qname):
-    # wtf - elementtree cant do this for me
-    return qname[qname.index("}") + 1:]
-
-
-def localName(qname):
-    warnings.warn(
-        "Call to deprecated unused function localName, will be dropped soon.",
-        category=DeprecationWarning,
-    )
-    return _local_name(qname)
 
 
 class SPARQLStore(NSSPARQLWrapper, Store):
@@ -229,7 +195,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     regex_matching = NATIVE_REGEX
 
     def __init__(self,
-                 endpoint=None, bNodeAsURI=False,
+                 endpoint=None,
                  sparql11=True, context_aware=True,
                  node_to_sparql=_node_to_sparql,
                  node_from_result=_node_from_result,
@@ -239,13 +205,6 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         super(SPARQLStore, self).__init__(
             endpoint, returnFormat=XML, **sparqlwrapper_kwargs)
         self.setUseKeepAlive()
-        self.bNodeAsURI = bNodeAsURI
-        if bNodeAsURI:
-            warnings.warn(
-                "bNodeAsURI argument was never supported and will be dropped "
-                "in favor of node_to_sparql and node_from_result args.",
-                category=DeprecationWarning,
-            )
         self.node_to_sparql = node_to_sparql
         self.node_from_result = node_from_result
         self.nsBindings = {}
@@ -582,7 +541,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
     def __init__(self,
                  queryEndpoint=None, update_endpoint=None,
-                 bNodeAsURI=False, sparql11=True,
+                 sparql11=True,
                  context_aware=True,
                  postAsEncoded=True, autocommit=True,
                  **kwds
@@ -591,7 +550,6 @@ class SPARQLUpdateStore(SPARQLStore):
         SPARQLStore.__init__(
             self,
             queryEndpoint,
-            bNodeAsURI,
             sparql11,
             context_aware,
             updateEndpoint=update_endpoint,
