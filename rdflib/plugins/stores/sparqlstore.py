@@ -316,7 +316,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
         self.resetQuery()
         if self._is_contextual(queryGraph):
-            self.addDefaultGraph(queryGraph)
+            self.addParameter("default-graph-uri", queryGraph)
         self.setQuery(query)
 
         return Result.parse(SPARQLWrapper.query(self).response)
@@ -403,7 +403,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
         self.resetQuery()
         if self._is_contextual(context):
-            self.addDefaultGraph(context.identifier)
+            self.addParameter("default-graph-uri", context.identifier)
         self.setQuery(query)
 
         doc = ElementTree.parse(SPARQLWrapper.query(self).response)
@@ -435,7 +435,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             self.resetQuery()
             q = "SELECT (count(*) as ?c) WHERE {?s ?p ?o .}"
             if self._is_contextual(context):
-                self.addDefaultGraph(context.identifier)
+                self.addParameter("default-graph-uri", context.identifier)
             self.setQuery(q)
             doc = ElementTree.parse(SPARQLWrapper.query(self).response)
             rt, vars = iter(
