@@ -1464,8 +1464,7 @@ class ConjunctiveGraph(Graph):
 
         context = Graph(store=self.store, identifier=g_id)
         context.remove((None, None, None)) # hmm ?
-        context.parse(source, publicID=publicID, format=format,
-                      location=location, file=file, data=data, **args)
+        context.parse(source, publicID=publicID, format=format, **args)
         return context
 
     def __reduce__(self):
