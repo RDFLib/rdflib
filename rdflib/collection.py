@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 from rdflib.namespace import RDF
 from rdflib.term import BNode
 from rdflib.term import Literal
@@ -260,7 +264,7 @@ if __name__ == "__main__":
 
     try:
         del c[500]
-    except IndexError, i:
+    except IndexError as i:
         pass
 
     c.append(Literal("5"))

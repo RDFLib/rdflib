@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 __doc__ = """
 N-Triples Parser
 License: GPL 2, W3C, BSD, or MIT
@@ -12,7 +16,15 @@ from rdflib.term import URIRef as URI
 from rdflib.term import BNode as bNode
 from rdflib.term import Literal
 
-from rdflib.py3compat import cast_bytes, decodeUnicodeEscape
+
+from ...py3compat import cast_bytes
+from ...py3compat import decodeUnicodeEscape
+from ...py3compat import ascii
+
+from ...py3compat import BytesIO
+from ...py3compat import string_types
+from ...py3compat import text_type
+from ...py3compat import unichr
 
 __all__ = ['unquote', 'uriquote', 'Sink', 'NTriplesParser']
 
@@ -32,7 +44,7 @@ bufsiz = 2048
 validate = False
 
 
-class Node(unicode):
+class Node(text_type):
     pass
 
 
@@ -46,7 +58,7 @@ class Sink(object):
 
     def triple(self, s, p, o):
         self.length += 1
-        print (s, p, o)
+        print(s, p, o)
 
 quot = {'t': u'\t', 'n': u'\n', 'r': u'\r', '"': u'"', '\\':
         u'\\'}
@@ -59,7 +71,7 @@ def unquote(s):
     """Unquote an N-Triples string."""
     if not validate:
 
-        if isinstance(s, unicode): # nquads
+        if isinstance(s, text_type): # nquads
             s = decodeUnicodeEscape(s)
         else:
             s = s.decode('unicode-escape')
@@ -94,7 +106,7 @@ def unquote(s):
                 raise ParseError("Illegal literal character: %r" % s[0])
         return u''.join(result)
 
-r_hibyte = re.compile(ur'([\x80-\xFF])')
+r_hibyte = re.compile(r'([\x80-\xFF])')
 
 
 def uriquote(uri):
@@ -144,14 +156,8 @@ class NTriplesParser(object):
 
     def parsestring(self, s):
         """Parse s as an N-Triples string."""
-        if not isinstance(s, basestring):
+        if not isinstance(s, string_types):
             raise ParseError("Item to parse must be a string instance.")
-        try:
-            from io import BytesIO
-            assert BytesIO
-        except ImportError:
-            from cStringIO import StringIO as BytesIO
-            assert BytesIO
         f = BytesIO()
         f.write(cast_bytes(s))
         f.seek(0)

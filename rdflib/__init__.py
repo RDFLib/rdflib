@@ -45,7 +45,7 @@ A tiny example:
 __docformat__ = "restructuredtext en"
 
 # The format of the __version__ line is matched by a regex in setup.py
-__version__ = "4.2.2-dev"
+__version__ = "5.0.0-dev"
 __date__ = "2015/08/12"
 
 __all__ = [
@@ -81,8 +81,9 @@ logger = logging.getLogger(__name__)
 logger.info("RDFLib Version: %s" % __version__)
 
 
+import six
 try:
-    unichr(0x10FFFF)
+    six.unichr(0x10FFFF)
 except ValueError:
     import warnings
     warnings.warn(
@@ -94,6 +95,7 @@ except ValueError:
         'Python build in production systems.',
         ImportWarning)
     del warnings
+del six
 
 
 NORMALIZE_LITERALS = True

@@ -1,10 +1,41 @@
 """
 Utility functions and objects to ease Python 3 compatibility.
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+# from __future__ import unicode_literals
+
 import sys
 import re
 import codecs
 import warnings
+
+import six
+from six import PY2
+from six import PY3
+# from six import b  # see below!
+from six import binary_type
+from six import integer_types
+from six import string_types
+from six import text_type
+from six import unichr
+
+from six import iteritems
+from six import iterkeys
+from six import itervalues
+
+# from six import BytesIO  # see below!
+from six import StringIO
+
+from six.moves import cPickle
+from six.moves.urllib.parse import urldefrag
+from six.moves.urllib.parse import urljoin
+from six.moves.urllib.parse import urlparse
+from six.moves.urllib.request import Request
+from six.moves.urllib.request import pathname2url
+from six.moves.urllib.request import url2pathname
+from six.moves.urllib.request import urlopen
 
 try:
     from functools import wraps
@@ -18,11 +49,10 @@ except ImportError:
 
 
 def cast_bytes(s, enc='utf-8'):
-    if isinstance(s, unicode):
+    if isinstance(s, text_type):
         return s.encode(enc)
     return s
 
-PY3 = (sys.version_info[0] >= 3)
 
 
 def _modify_str_or_docstring(str_change_func):
@@ -57,6 +87,10 @@ if PY3:
         return open(*args, mode = 'rb', **kwargs)
 
     bytestype = bytes
+
+    long_type = int
+
+    from io import BytesIO
 
     # Abstract u'abc' syntax:
     @_modify_str_or_docstring
@@ -110,6 +144,10 @@ else:
 
     bytestype = str
 
+    long_type = long
+
+    from cStringIO import StringIO as BytesIO
+
     # Abstract u'abc' syntax:
     @_modify_str_or_docstring
     def format_doctest_out(s):
@@ -143,7 +181,7 @@ def _unicodeExpand(s):
 
 narrow_build = False
 try:
-    unichr(0x10FFFF)
+    six.unichr(0x10FFFF)
 except ValueError:
     narrow_build = True
 
@@ -151,7 +189,7 @@ if narrow_build:
     def _unicodeExpand(s):
         try:
             return r_unicodeEscape.sub(
-                lambda m: unichr(int(m.group(0)[2:], 16)), s)
+                lambda m: six.unichr(int(m.group(0)[2:], 16)), s)
         except ValueError:
             warnings.warn(
                 'Encountered a unicode char > 0xFFFF in a narrow python build. '
@@ -185,7 +223,7 @@ def decodeStringEscape(s):
 def decodeUnicodeEscape(s):
     """
     s is a unicode string
-    replace \n and \u00AC unicode escapes
+    replace \n and \\u00AC unicode escapes
     """
     if not PY3:
         s = s.encode('utf-8').decode('string-escape')

@@ -38,22 +38,24 @@ coverage options).
 See <http://nedbatchelder.com/code/modules/coverage.html> for details.
 
 """
+from __future__ import print_function
 
 
 NOSE_ARGS = [
-        '--where=./',
-        '--with-doctest',
-        '--doctest-extension=.doctest',
-        '--doctest-tests',
-#        '--with-EARL',
-    ]
+    '--with-doctest',
+    '--doctest-extension=.doctest',
+    '--doctest-tests',
+    # '--with-EARL',
+]
 
 COVERAGE_EXTRA_ARGS = [
-        '--cover-package=rdflib',
-        '--cover-inclusive',
-    ]
+    '--cover-package=rdflib',
+    '--cover-inclusive',
+]
 
-DEFAULT_ATTRS = [] # ['!known_issue', '!sparql']
+DEFAULT_LOCATION = '--where=./'
+
+DEFAULT_ATTRS = []  # ['!known_issue', '!sparql']
 
 DEFAULT_DIRS = ['test', 'rdflib']
 
@@ -61,20 +63,23 @@ DEFAULT_DIRS = ['test', 'rdflib']
 if __name__ == '__main__':
 
     from sys import argv, exit, stderr
-    try: import nose
+    try:
+        import nose
     except ImportError:
-        print >>stderr, """\
+        print("""\
     Requires Nose. Try:
 
         $ sudo easy_install nose
 
-    Exiting. """; exit(1)
+    Exiting. """, file=stderr)
+        exit(1)
 
 
     if '--with-coverage' in argv:
-        try: import coverage
+        try:
+            import coverage
         except ImportError:
-            print >>stderr, "No coverage module found, skipping code coverage."
+            print("No coverage module found, skipping code coverage.", file=stderr)
             argv.remove('--with-coverage')
         else:
             NOSE_ARGS += COVERAGE_EXTRA_ARGS
@@ -84,9 +89,11 @@ if __name__ == '__main__':
         argv.append('--attr=' + ','.join(DEFAULT_ATTRS))
 
     if not [a for a in argv[1:] if not a.startswith('-')]:
-        argv += DEFAULT_DIRS # since nose doesn't look here by default..
+        argv += DEFAULT_DIRS  # since nose doesn't look here by default..
 
+    if not [a for a in argv if a.startswith('--where=')]:
+        argv += [DEFAULT_LOCATION]
 
     finalArgs = argv + NOSE_ARGS
-    print "Running nose with:", " ".join(finalArgs[1:])
+    print("Running nose with:", " ".join(finalArgs[1:]))
     nose.run_exit(argv=finalArgs)
