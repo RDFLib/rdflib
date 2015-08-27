@@ -14,8 +14,8 @@ ORDERBY = 'ORDER BY'
 import re
 import collections
 import urllib2
+import warnings
 
-# import warnings
 try:
     from SPARQLWrapper import SPARQLWrapper, XML, POST, GET, URLENCODED, POSTDIRECTLY
 except ImportError:
@@ -86,43 +86,7 @@ sparqlNsBindings = {u'sparql': SPARQL_NS}
 ElementTree._namespace_map["sparql"] = SPARQL_NS
 
 
-def TraverseSPARQLResultDOM(doc, asDictionary=False):
-    """
-    Returns a generator over tuples of results
-    """
-    # namespace handling in elementtree xpath sub-set is not pretty :(
-    vars = [Variable(v.attrib["name"]) for v in doc.findall(
-            './{http://www.w3.org/2005/sparql-results#}head/' +
-            '{http://www.w3.org/2005/sparql-results#}variable')]
-    for result in doc.findall(
-            './{http://www.w3.org/2005/sparql-results#}results/' +
-            '{http://www.w3.org/2005/sparql-results#}result'):
-        currBind = {}
-        values = []
-        for binding in result.findall(
-                '{http://www.w3.org/2005/sparql-results#}binding'):
-            varVal = binding.attrib["name"]
-            var = Variable(varVal)
-            term = CastToTerm(binding.findall('*')[0])
-            values.append(term)
-            currBind[var] = term
-        if asDictionary:
-            yield currBind, vars
-        else:
-            def __locproc(values):
-                if len(values) == 1:
-                    return values[0]
-                else:
-                    return tuple(values)
-            yield __locproc(values), vars
-
-
-def localName(qname):
-    # wtf - elementtree cant do this for me
-    return qname[qname.index("}") + 1:]
-
-
-def CastToTerm(node):
+def _node_from_result(node):
     """
     Helper function that casts XML node in SPARQL results
     to appropriate rdflib term
@@ -134,8 +98,8 @@ def CastToTerm(node):
     elif node.tag == '{%s}literal' % SPARQL_NS:
         value = node.text if node.text is not None else ''
         if 'datatype' in node.attrib:
-            dT = URIRef(node.attrib['datatype'])
-            return Literal(value, datatype=dT)
+            dt = URIRef(node.attrib['datatype'])
+            return Literal(value, datatype=dt)
         elif '{http://www.w3.org/XML/1998/namespace}lang' in node.attrib:
             return Literal(value, lang=node.attrib[
                 "{http://www.w3.org/XML/1998/namespace}lang"])
@@ -143,6 +107,84 @@ def CastToTerm(node):
             return Literal(value)
     else:
         raise Exception('Unknown answer type')
+
+
+def CastToTerm(node):
+    warnings.warn(
+        "Call to deprecated function CastToTerm, use _node_from_result.",
+        category=DeprecationWarning,
+    )
+    return _node_from_result(node)
+
+
+def _node_to_sparql(node):
+    if isinstance(node, BNode):
+        raise Exception(
+            "SPARQLStore does not support BNodes! "
+            "See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes"
+        )
+    return node.n3()
+
+
+
+def _traverse_sparql_result_dom(
+        doc, as_dictionary=False, node_from_result=_node_from_result):
+    """
+    Returns a generator over tuples of results
+    """
+    # namespace handling in elementtree xpath sub-set is not pretty :(
+    vars_ = [
+        Variable(v.attrib["name"])
+        for v in doc.findall(
+            './{http://www.w3.org/2005/sparql-results#}head/'
+            '{http://www.w3.org/2005/sparql-results#}variable'
+        )
+    ]
+    for result in doc.findall(
+            './{http://www.w3.org/2005/sparql-results#}results/'
+            '{http://www.w3.org/2005/sparql-results#}result'):
+        curr_bind = {}
+        values = []
+        for binding in result.findall(
+                '{http://www.w3.org/2005/sparql-results#}binding'):
+            var_val = binding.attrib["name"]
+            var = Variable(var_val)
+            term = node_from_result(binding.findall('*')[0])
+            values.append(term)
+            curr_bind[var] = term
+        if as_dictionary:
+            yield curr_bind, vars_
+        else:
+            def __locproc(values_):
+                if len(values_) == 1:
+                    return values_[0]
+                else:
+                    return tuple(values_)
+            yield __locproc(values), vars_
+
+
+def TraverseSPARQLResultDOM(doc, asDictionary=False):
+    warnings.warn(
+        "Call to deprecated function TraverseSPARQLResultDOM, use "
+        "_traverse_sparql_result_dom instead and update asDictionary arg to "
+        "as_dictionary.",
+        category=DeprecationWarning,
+    )
+    return _traverse_sparql_result_dom(
+        doc, as_dictionary=asDictionary, node_from_result=_node_from_result)
+
+
+def _local_name(qname):
+    # wtf - elementtree cant do this for me
+    return qname[qname.index("}") + 1:]
+
+
+def localName(qname):
+    warnings.warn(
+        "Call to deprecated unused function localName, will be dropped soon.",
+        category=DeprecationWarning,
+    )
+    return _local_name(qname)
 
 
 class SPARQLStore(NSSPARQLWrapper, Store):
@@ -161,13 +203,24 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     Fuseki/TDB has a flag for specifying that the default graph
     is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config).
 
-    .. warning:: The SPARQL Store does not support blank-nodes!
+    .. warning:: By default the SPARQL Store does not support blank-nodes!
 
-                 As blank-nodes act as variables in SPARQL queries
-                 there is no way to query for a particular blank node.
+                 As blank-nodes act as variables in SPARQL queries,
+                 there is no way to query for a particular blank node without
+                 using non-standard SPARQL extensions.
 
                  See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes
 
+    You can make use of such extensions through the node_to_sparql and
+    node_from_result arguments. For example if you want to transform
+    BNode('0001') into "<bnode:b0001>", you can use a function like this:
+
+    >>> def my_bnode_ext(node):
+    ...    if isinstance(node, BNode):
+    ...        return '<bnode:b%s>' % node
+    ...    return _node_to_sparql(node)
+    >>> store = SPARQLStore('http://dbpedia.org/sparql',
+    ...                     node_to_sparql=my_bnode_ext)
 
     """
     formula_aware = False
@@ -178,12 +231,23 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     def __init__(self,
                  endpoint=None, bNodeAsURI=False,
                  sparql11=True, context_aware=True,
+                 node_to_sparql=_node_to_sparql,
+                 node_from_result=_node_from_result,
                  **sparqlwrapper_kwargs):
         """
         """
-        super(SPARQLStore, self).__init__(endpoint, returnFormat=XML, **sparqlwrapper_kwargs)
+        super(SPARQLStore, self).__init__(
+            endpoint, returnFormat=XML, **sparqlwrapper_kwargs)
         self.setUseKeepAlive()
         self.bNodeAsURI = bNodeAsURI
+        if bNodeAsURI:
+            warnings.warn(
+                "bNodeAsURI argument was never supported and will be dropped "
+                "in favor of node_to_sparql and node_from_result args.",
+                category=DeprecationWarning,
+            )
+        self.node_to_sparql = node_to_sparql
+        self.node_from_result = node_from_result
         self.nsBindings = {}
         self.sparql11 = sparql11
         self.context_aware = context_aware
@@ -293,12 +357,6 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         ``
         """
 
-        if ( isinstance(s, BNode) or
-             isinstance(p, BNode) or
-             isinstance(o, BNode) ):
-            raise Exception("SPARQLStore does not support Bnodes! "
-                            "See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes")
-
         vars = []
         if not s:
             s = Variable('s')
@@ -316,8 +374,8 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         else:
             v = '*'
 
-        query = "SELECT %s WHERE { %s %s %s }" % \
-            (v, s.n3(), p.n3(), o.n3())
+        nts = self.node_to_sparql
+        query = "SELECT %s WHERE { %s %s %s }" % (v, nts(s), nts(p), nts(o))
 
         # The ORDER BY is necessary
         if hasattr(context, LIMIT) or hasattr(context, OFFSET) \
@@ -350,7 +408,10 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
         doc = ElementTree.parse(SPARQLWrapper.query(self).response)
         # ElementTree.dump(doc)
-        for rt, vars in TraverseSPARQLResultDOM(doc, asDictionary=True):
+        for rt, vars in _traverse_sparql_result_dom(
+                doc,
+                as_dictionary=True,
+                node_from_result=self.node_from_result):
             yield (rt.get(s, s),
                    rt.get(p, p),
                    rt.get(o, o)), None
@@ -378,7 +439,12 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             self.setQuery(q)
             doc = ElementTree.parse(SPARQLWrapper.query(self).response)
             rt, vars = iter(
-                TraverseSPARQLResultDOM(doc, asDictionary=True)).next()
+                _traverse_sparql_result_dom(
+                    doc,
+                    as_dictionary=True,
+                    node_from_result=self.node_from_result
+                )
+            ).next()
             return int(rt.get(Variable("c")))
 
     def contexts(self, triple=None):
@@ -408,8 +474,11 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
         doc = ElementTree.parse(SPARQLWrapper.query(self).response)
 
-        return (rt.get(Variable("name"))
-                for rt, vars in TraverseSPARQLResultDOM(doc, asDictionary=True))
+        return (
+            rt.get(Variable("name"))
+            for rt, vars in _traverse_sparql_result_dom(
+                doc, as_dictionary=True, node_from_result=self.node_from_result)
+        )
 
     # Namespace persistence interface implementation
     def bind(self, prefix, namespace):
@@ -459,18 +528,11 @@ class SPARQLUpdateStore(SPARQLStore):
 
     For Graph objects, everything works as expected.
 
-    .. warning:: The SPARQL Update Store does not support blank-nodes!
-
-                 As blank-nodes acts as variables in SPARQL queries
-                 there is no way to query for a particular blank node.
-
-                 See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes
-
-
+    See the :class:`SPARQLStore` base class for more information.
 
     """
 
-    where_pattern = re.compile(r"""(?P<where>WHERE\s*{)""", re.IGNORECASE)
+    where_pattern = re.compile(r"""(?P<where>WHERE\s*\{)""", re.IGNORECASE)
 
     ##################################################################
     ### Regex for injecting GRAPH blocks into updates on a context ###
@@ -522,34 +584,43 @@ class SPARQLUpdateStore(SPARQLStore):
                  queryEndpoint=None, update_endpoint=None,
                  bNodeAsURI=False, sparql11=True,
                  context_aware=True,
-                 postAsEncoded=True, autocommit=True):
+                 postAsEncoded=True, autocommit=True,
+                 **kwds
+                 ):
 
-        SPARQLStore.__init__(self,
-                             queryEndpoint, bNodeAsURI, sparql11, context_aware, updateEndpoint=update_endpoint)
+        SPARQLStore.__init__(
+            self,
+            queryEndpoint,
+            bNodeAsURI,
+            sparql11,
+            context_aware,
+            updateEndpoint=update_endpoint,
+            **kwds
+        )
 
         self.postAsEncoded = postAsEncoded
         self.autocommit = autocommit
         self._edits = None
 
-    def query(self,*args, **kwargs):
+    def query(self, *args, **kwargs):
         if not self.autocommit:
             self.commit()
-        return SPARQLStore.query(self,*args, **kwargs)
-	
-    def triples(self,*args, **kwargs):
+        return SPARQLStore.query(self, *args, **kwargs)
+
+    def triples(self, *args, **kwargs):
         if not self.autocommit:
             self.commit()
-        return SPARQLStore.triples(self,*args, **kwargs)
-	
-    def contexts(self,*args, **kwargs):
+        return SPARQLStore.triples(self, *args, **kwargs)
+
+    def contexts(self, *args, **kwargs):
         if not self.autocommit:
             self.commit()
-        return SPARQLStore.contexts(self,*args, **kwargs)
-	
-    def __len__(self,*args, **kwargs):
+        return SPARQLStore.contexts(self, *args, **kwargs)
+
+    def __len__(self, *args, **kwargs):
         if not self.autocommit:
             self.commit()
-        return SPARQLStore.__len__(self,*args, **kwargs)
+        return SPARQLStore.__len__(self, *args, **kwargs)
 
     def open(self, configuration, create=False):
         """
@@ -573,7 +644,7 @@ class SPARQLUpdateStore(SPARQLStore):
             self.updateEndpoint = self.endpoint
 
     def _transaction(self):
-        if self._edits == None:
+        if self._edits is None:
             self._edits = []
         return self._edits
 
@@ -586,14 +657,14 @@ class SPARQLUpdateStore(SPARQLStore):
     update_endpoint = property(
         __get_update_endpoint,
         __set_update_endpoint,
-        doc='the HTTP URL for the Update endpoint, typically' +
+        doc='the HTTP URL for the Update endpoint, typically '
             'something like http://server/dataset/update')
 
     # Transactional interfaces
     def commit(self):
-        """ add(), addN(), and remove() are transactional to reduce overhead of many small edits. 
-            Read and update() calls will automatically commit any outstanding edits. 
-            This should behave as expected most of the time, except that alternating writes 
+        """ add(), addN(), and remove() are transactional to reduce overhead of many small edits.
+            Read and update() calls will automatically commit any outstanding edits.
+            This should behave as expected most of the time, except that alternating writes
             and reads can degenerate to the original call-per-triple situation that originally existed.
         """
         if self._edits and len(self._edits) > 0:
@@ -613,14 +684,8 @@ class SPARQLUpdateStore(SPARQLStore):
         assert not quoted
         (subject, predicate, obj) = spo
 
-        if ( isinstance(subject, BNode) or
-             isinstance(predicate, BNode) or
-             isinstance(obj, BNode) ):
-            raise Exception("SPARQLStore does not support Bnodes! "
-                            "See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes")
-
-
-        triple = "%s %s %s ." % (subject.n3(), predicate.n3(), obj.n3())
+        nts = self.node_to_sparql
+        triple = "%s %s %s ." % (nts(subject), nts(predicate), nts(obj))
         if self._is_contextual(context):
             q = "INSERT DATA { GRAPH %s { %s } }" % (
                 context.identifier.n3(), triple)
