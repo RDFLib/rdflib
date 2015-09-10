@@ -8,8 +8,8 @@ class NQuadsParserTest(unittest.TestCase):
 
     def _load_example(self):
         g = ConjunctiveGraph()
-        data = open("test/nquads.rdflib/example.nquads", "rb")
-        g.parse(data, format="nquads")
+        with open("test/nquads.rdflib/example.nquads", "rb") as data:
+            g.parse(data, format="nquads")
         return g
 
     def test_01_simple_open(self):
@@ -37,8 +37,8 @@ class NQuadsParserTest(unittest.TestCase):
 
     def test_context_is_optional(self):
         g = ConjunctiveGraph()
-        data = open("test/nquads.rdflib/test6.nq", "rb")
-        g.parse(data, format="nquads")
+        with open("test/nquads.rdflib/test6.nq", "rb") as data:
+            g.parse(data, format="nquads")
         assert len(g) > 0
 
     def test_serialize(self):
