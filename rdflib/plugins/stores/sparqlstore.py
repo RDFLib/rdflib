@@ -75,10 +75,15 @@ class NSSPARQLWrapper(SPARQLWrapper):
         self.queryString = self.injectPrefixes(query)
 
     def injectPrefixes(self, query):
-        return '\n'.join(
-            ['\n'.join(['PREFIX %s: <%s>' % (key, val)
-                        for key, val in self.nsBindings.items()]),
-             query])
+        prefixes = self.nsBindings.items()
+        if not prefixes:
+            return query
+        return '\n'.join([
+            '\n'.join(['PREFIX %s: <%s>' % (k, v) for k, v in prefixes]),
+            '',  # separate prefixes from query with an empty line
+            query
+        ])
+
 
 BNODE_IDENT_PATTERN = re.compile('(?P<label>_\:[^\s]+)')
 SPARQL_NS = Namespace('http://www.w3.org/2005/sparql-results#')
