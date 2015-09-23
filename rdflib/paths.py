@@ -194,9 +194,15 @@ OneOrMore = '+'
 ZeroOrOne = '?'
 
 
-class Path:
+class Path(object):
     def eval(self, graph, subj=None, obj=None):
         raise NotImplementedError()
+
+    def __lt__(self, other):
+        if not isinstance(other, Path):
+            raise TypeError('unorderable types: %s() < %s()' % (
+                repr(self), repr(other)))
+        return repr(self) < repr(other)
 
 
 class InvPath(Path):
