@@ -374,8 +374,9 @@ class Prologue:
                 return Literal(
                     iri.string, lang=iri.lang,
                     datatype=self.absolutize(iri.datatype))
-        elif isinstance(iri, URIRef) and not ':' in iri:  # TODO: Check for relative URI?
-            return URIRef(self.base + iri)
+        elif isinstance(iri, URIRef) and not ':' in iri:
+            return URIRef(iri, base=self.base)
+
         return iri
 
 
