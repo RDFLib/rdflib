@@ -6,6 +6,7 @@ using setEvalFn
 
 """
 
+import sys
 import re
 import math
 import random
@@ -234,7 +235,7 @@ def Builtin_REPLACE(expr, ctx):
         # Now this is ugly.
         # Python has a "feature" where unmatched groups return None
         # then re.sub chokes on this.
-        # see http://bugs.python.org/issue1519638
+        # see http://bugs.python.org/issue1519638 , fixed and errs in py3.5
 
         # this works around and hooks into the internal of the re module...
 
@@ -260,7 +261,10 @@ def Builtin_REPLACE(expr, ctx):
         cFlag = reduce(pyop.or_, [flagMap.get(f, 0) for f in flags])
 
         # @@FIXME@@ either datatype OR lang, NOT both
-    return Literal(re.sub(unicode(pattern), _r, text, cFlag),
+
+    compat_r = unicode(replacement) if sys.version_info[:2] >= (3, 5) else _r
+
+    return Literal(re.sub(unicode(pattern), compat_r, text, cFlag),
                    datatype=text.datatype, lang=text.language)
 
 
