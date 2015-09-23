@@ -17,5 +17,5 @@ where
 print(rdflib.__version__)
 g = rdflib.Graph()
 
-# raises a TypeError: unorderable types: SequencePath() < SequencePath()
+# raised a TypeError: unorderable types: SequencePath() < SequencePath()
 result = g.query(query)
