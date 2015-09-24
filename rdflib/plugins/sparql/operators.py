@@ -262,6 +262,8 @@ def Builtin_REPLACE(expr, ctx):
 
         # @@FIXME@@ either datatype OR lang, NOT both
 
+    # this is necessary due to different treatment of unmatched groups in
+    # python versions. see comments above in _r(m).
     compat_r = unicode(replacement) if sys.version_info[:2] >= (3, 5) else _r
 
     return Literal(re.sub(unicode(pattern), compat_r, text, cFlag),
