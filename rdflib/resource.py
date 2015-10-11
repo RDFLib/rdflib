@@ -455,6 +455,8 @@ class Resource(object):
             if item.step:
                 raise TypeError("Resources fix the subject for slicing, and can only be sliced by predicate/object. ")
             p,o=item.start,item.stop
+            if isinstance(p, Resource): p = p._identifier
+            if isinstance(o, Resource): o = o._identifier
             if p is None and o is None:
                 return self.predicate_objects()
             elif p is None:
