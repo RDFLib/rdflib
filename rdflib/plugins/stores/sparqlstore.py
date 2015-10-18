@@ -741,9 +741,11 @@ class SPARQLUpdateStore(SPARQLStore):
             self.commit()
 
     def _do_update(self, update):
+        timeout = self.timeout
         self.resetQuery()
         self.setQuery(update)
         self.setMethod(POST)
+        self.setTimeout(timeout)
         self.setRequestMethod(URLENCODED if self.postAsEncoded else POSTDIRECTLY)
 
         result = SPARQLWrapper.query(self)
