@@ -319,9 +319,11 @@ class SPARQLStore(NSSPARQLWrapper, Store):
                 % (" ".join("?" + str(x) for x in v),
                    " ".join(initBindings[x].n3() for x in v))
 
+        timeout = self.timeout
         self.resetQuery()
         if self._is_contextual(queryGraph):
             self.addParameter("default-graph-uri", queryGraph)
+        self.setTimeout(timeout)
         self.setQuery(query)
 
         return Result.parse(SPARQLWrapper.query(self).response)
@@ -406,9 +408,11 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         except (ValueError, TypeError, AttributeError):
             pass
 
+        timeout = self.timeout
         self.resetQuery()
         if self._is_contextual(context):
             self.addParameter("default-graph-uri", context.identifier)
+        self.setTimeout(timeout)
         self.setQuery(query)
 
         doc = ElementTree.parse(SPARQLWrapper.query(self).response)
