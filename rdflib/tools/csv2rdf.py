@@ -151,7 +151,10 @@ class NodeMaker(object):
 class NodeUri(NodeMaker):
     def __init__(self, prefix, class_):
         self.prefix = prefix
-        self.class_ = rdflib.URIRef(class_)
+        if class_:
+            self.class_ = rdflib.URIRef(class_)
+        else:
+            self.class_ = None
 
     def __call__(self, x):
         return prefixuri(x, self.prefix, self.class_)
@@ -213,7 +216,7 @@ class NodeSplit(NodeMaker):
 
     def __call__(self, x):
         if not self.f:
-            f = rdflib.Literal
+            self.f = rdflib.Literal
         if not callable(self.f):
             raise Exception("Function passed to split is not callable!")
         return [
@@ -227,7 +230,7 @@ class NodeSplit(NodeMaker):
 default_node_make = NodeMaker()
 
 
-def _config_ignore(**args):
+def _config_ignore(*args, **kwargs):
     return "ignore"
 
 
@@ -328,7 +331,7 @@ class CSV2RDF(object):
         # override header properties if some are given
         for k, v in self.PROPS.iteritems():
             headers[k] = v
-            header_labels[k] = split_uri[1]
+            header_labels[k] = split_uri(v)[1]
 
         if self.DEFINECLASS:
             # output class/property definitions
@@ -337,7 +340,7 @@ class CSV2RDF(object):
                 h, l = headers[i], header_labels[i]
                 if h == "" or l == "":
                     continue
-                if self.COLUMNS.get(i) == "ignore":
+                if self.COLUMNS.get(i) == _config_ignore:
                     continue
                 self.triple(h, RDF.type, RDF.Property)
                 self.triple(h, RDFS.label, rdflib.Literal(toPropertyLabel(l)))
@@ -366,7 +369,7 @@ class CSV2RDF(object):
                 for i, x in enumerate(l):
                     x = x.strip()
                     if x != '':
-                        if self.COLUMNS.get(i) == "ignore":
+                        if self.COLUMNS.get(i) == _config_ignore:
                             continue
                         try:
                             o = self.COLUMNS.get(i, rdflib.Literal)(x)
