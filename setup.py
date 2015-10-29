@@ -14,7 +14,7 @@ def setup_python3():
     # Not covered by "setup.py clean --all", so explicit deletion required.
     if exists(tmp_src):
         dir_util.remove_tree(tmp_src)
-    log.set_verbosity(1)
+    # log.set_verbosity(1)
     fl = FileList()
     for line in open("MANIFEST.in"):
         if not line.strip():
