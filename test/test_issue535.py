@@ -4,14 +4,15 @@ from rdflib.parser import StringInputSource
 def test_nquads_default_graph():
     ds = ConjunctiveGraph()
 
-    src = StringInputSource("""
+    data = """
     <http://example.org/s1> <http://example.org/p1> <http://example.org/o1> .
     <http://example.org/s2> <http://example.org/p2> <http://example.org/o2> .
     <http://example.org/s3> <http://example.org/p3> <http://example.org/o3> <http://example.org/g3> .
-    """)
+    """
 
     publicID = URIRef("http://example.org/g0")
-    ds.parse(src, format="nquads", publicID=publicID)
+    
+    ds.parse(data=data, format="nquads", publicID=publicID)
 
     assert len(ds) == 3, len(g)
     assert len(list(ds.contexts())) == 2, len(list(ds.contexts()))
