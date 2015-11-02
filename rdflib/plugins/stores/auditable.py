@@ -85,7 +85,7 @@ class AuditableStore(Store):
                             self.reverseOps.append((s, p, o, ctx.identifier, 'add'))
             else:
                 try:
-                    self.reverseOps.remove((subject, predicate, object_, ctxId, 'add'))
+                    self.reverseOps.remove((subject, predicate, object_, ctxId, 'remove'))
                 except ValueError:
                     self.reverseOps.append((subject, predicate, object_, ctxId, 'add'))
             self.store.remove((subject, predicate, object_), context)
