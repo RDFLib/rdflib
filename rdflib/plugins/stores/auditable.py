@@ -121,7 +121,6 @@ class AuditableStore(Store):
         return self.store.namespaces()
 
     def commit(self):
-        self.store.commit()
         self.reverseOps = []
 
     def rollback(self):
