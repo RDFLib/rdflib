@@ -214,7 +214,11 @@ def evalPart(ctx, part):
             pass  # the given custome-function did not handle this part
 
     if part.name == 'BGP':
-        return evalBGP(ctx, part.triples)  # NOTE pass part.triples, not part!
+        # Reorder triples patterns by number of bound nodes in the current ctx
+        # Do patterns with more bound nodes first
+        triples = sorted(part.triples, key=lambda t: len([n for n in t if ctx[n] is None]))
+
+        return evalBGP(ctx, triples)
     elif part.name == 'Filter':
         return evalFilter(ctx, part)
     elif part.name == 'Join':
