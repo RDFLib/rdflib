@@ -223,6 +223,12 @@ class TestUtilTermConvert(unittest.TestCase):
         s = '"\\""'
         res = util.from_n3(s, default=None, backend=None)
         self.assert_(res, Literal('\\"', lang='en'))
+
+    def test_util_from_n3_expectliteralwithtrailingbackslash(self):
+        s = '"trailing\\\\"^^<http://www.w3.org/2001/XMLSchema#string>'
+        res = util.from_n3(s)
+        self.assert_(res, Literal('trailing\\', datatype=XSD['string']))
+        self.assert_(res.n3(), s)
     
     def test_util_from_n3_expectpartialidempotencewithn3(self):
         for n3 in ('<http://ex.com/foo>',
