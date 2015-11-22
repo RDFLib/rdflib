@@ -6,22 +6,22 @@ def _termString(t, namespace_manager):
     if t == None:
         return "-"
     if namespace_manager:
-        if isinstance(t, URIRef): 
+        if isinstance(t, URIRef):
             return namespace_manager.normalizeUri(t)
-        elif isinstance(t, BNode): 
+        elif isinstance(t, BNode):
             return t.n3()
-        elif isinstance(t, Literal): 
+        elif isinstance(t, Literal):
             return t._literal_n3(qname_callback=namespace_manager.normalizeUri)
-    else: 
+    else:
         return t.n3()
 
 
-class TXTResultSerializer(ResultSerializer): 
+class TXTResultSerializer(ResultSerializer):
     """
     A write only QueryResult serializer for text/ascii tables
     """
 
-    def serialize(self, stream, encoding, namespace_manager = None): 
+    def serialize(self, stream, encoding, namespace_manager = None):
 
         """
         return a text table of query results
@@ -37,7 +37,7 @@ class TXTResultSerializer(ResultSerializer):
             if w % 2: h2 += 1
             return " " * h1 + s + " " * h2
 
-        if self.result.type!='SELECT': 
+        if self.result.type!='SELECT':
             raise Exception("Can only pretty print SELECT results!")
 
         if not self.result:

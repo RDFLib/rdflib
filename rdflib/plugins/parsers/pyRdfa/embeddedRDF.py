@@ -23,16 +23,16 @@ import re, sys
 def handle_embeddedRDF(node, graph, state) :
 	"""
 	Handles embedded RDF. There are two possibilities:
-	
-	 - the file is one of the XML dialects that allows for an embedded RDF/XML portion. See the L{host.accept_embedded_rdf_xml} for those (a typical example is SVG). 
-	 - the file is HTML and there is a turtle portion in the C{<script>} element with type text/turtle. 
-	
+
+	 - the file is one of the XML dialects that allows for an embedded RDF/XML portion. See the L{host.accept_embedded_rdf_xml} for those (a typical example is SVG).
+	 - the file is HTML and there is a turtle portion in the C{<script>} element with type text/turtle.
+
 	@param node: a DOM node for the top level element
 	@param graph: target rdf graph
 	@type graph: RDFLib's Graph object instance
 	@param state: the inherited state (namespaces, lang, etc)
 	@type state: L{state.ExecutionContext}
-	@return: whether an RDF/XML or turtle content has been detected or not. If TRUE, the RDFa processing should not occur on the node and its descendents. 
+	@return: whether an RDF/XML or turtle content has been detected or not. If TRUE, the RDFa processing should not occur on the node and its descendents.
 	@rtype: Boolean
 	"""
 	#def _get_prefixes_in_turtle() :
@@ -41,7 +41,7 @@ def handle_embeddedRDF(node, graph, state) :
 	#		retval += "@prefix %s: <%s> .\n" % (key, state.term_or_curie.ns[key])
 	#	retval += '\n'
 	#	return retval
-	
+
 	# This feature is optional!
 	def _get_literal(Pnode):
 		"""

@@ -164,7 +164,7 @@ def evalGraph(ctx, part):
     ctx = ctx.clone()
     graph = ctx[part.term]
     if graph is None:
-        
+
         for graph in ctx.dataset.contexts():
 
             # in SPARQL the default graph is NOT a named graph
@@ -174,12 +174,12 @@ def evalGraph(ctx, part):
             c = ctx.pushGraph(graph)
             c = c.push()
             graphSolution = [{part.term: graph.identifier}]
-            for x in _join(evalPart(c, part.p), graphSolution): 
+            for x in _join(evalPart(c, part.p), graphSolution):
                 yield x
 
     else:
         c = ctx.pushGraph(ctx.dataset.get_context(graph))
-        for x in evalPart(c, part.p): 
+        for x in evalPart(c, part.p):
             yield x
 
 

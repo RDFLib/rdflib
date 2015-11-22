@@ -420,7 +420,7 @@ def _findVars(x, res):
             res.add(x.var)
             return x  # stop recursion and finding vars in the expr
         elif x.name == 'SubSelect':
-            if x.projection: 
+            if x.projection:
                 res.update(v.var or v.evar for v in x.projection)
             return x
 
@@ -436,7 +436,7 @@ def _addVars(x, children):
         elif x.name == 'SubSelect':
             if x.projection:
                 s = set(v.var or v.evar for v in x.projection)
-            else: 
+            else:
                 s = set()
 
             return s
@@ -467,7 +467,7 @@ def translateAggregates(q, M):
     #    select expr as ?var
     if q.projection:
         for v in q.projection:
-            if v.evar: 
+            if v.evar:
                 v.expr = traverse(v.expr, functools.partial(_sample, v=v.evar))
                 v.expr = traverse(v.expr, functools.partial(_aggs, A=A))
 
@@ -484,13 +484,13 @@ def translateAggregates(q, M):
 
     # sample all other select vars
     # TODO: only allowed for vars in group-by?
-    if q.projection: 
-        for v in q.projection: 
+    if q.projection:
+        for v in q.projection:
             if v.var:
                 rv = Variable('__agg_%d__' % (len(A) + 1))
                 A.append(CompValue('Aggregate_Sample', vars=v.var, res=rv))
                 E.append((rv, v.var))
-                
+
     return CompValue('AggregateJoin', A=A, p=M), E
 
 
@@ -564,7 +564,7 @@ def translate(q):
     if q.valuesClause:
         M = Join(p1=M, p2=ToMultiSet(translateValues(q.valuesClause)))
 
-    if not q.projection: 
+    if not q.projection:
         # select *
         PV = list(VS)
     else:
@@ -578,7 +578,7 @@ def translate(q):
                     PV.append(v.evar)
 
                 E.append((v.expr, v.evar))
-            else: 
+            else:
                 raise Exception("I expected a var or evar here!")
 
     for e, v in E:

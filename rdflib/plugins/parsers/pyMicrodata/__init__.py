@@ -98,7 +98,7 @@ class MicrodataError(Exception) :
 	def __init__(self, msg) :
 		self.msg = msg
 		Exception.__init__(self)
-		
+
 class HTTPError(MicrodataError) :
 	"""Raised when HTTP problems are detected. It does not add any new functionality to the
 	Exception class."""
@@ -144,11 +144,11 @@ class pyMicrodata :
 		self.base            = base
 		self.vocab_expansion = vocab_expansion
 		self.vocab_cache     = vocab_cache
-		
+
 	def _generate_error_graph(self, pgraph, full_msg, uri = None) :
 		"""
 		Generate an error message into the graph. This method is usually used reacting on exceptions.
-		
+
 		Later versions of pyMicrodata may have more detailed error conditions on which it wishes to react. At the moment, this
 		is fairly crude...
 		"""
@@ -156,7 +156,7 @@ class pyMicrodata :
 			retval = Graph()
 		else :
 			retval = pgraph
-			
+
 		pgraph.bind( "dc","http://purl.org/dc/terms/" )
 		pgraph.bind( "xsd",'http://www.w3.org/2001/XMLSchema#' )
 		pgraph.bind( "ht",'http://www.w3.org/2006/http#' )
@@ -166,13 +166,13 @@ class pyMicrodata :
 		retval.add((bnode, ns_rdf["type"], ns_micro["Error"]))
 		retval.add((bnode, ns_dc["description"], Literal(full_msg)))
 		retval.add((bnode, ns_dc["date"], Literal(datetime.datetime.utcnow().isoformat(),datatype=ns_xsd["dateTime"])))
-		
+
 		if uri != None :
 			htbnode = BNode()
 			retval.add( (bnode, ns_micro["context"],htbnode) )
 			retval.add( (htbnode, ns_rdf["type"], ns_ht["Request"]) )
 			retval.add( (htbnode, ns_ht["requestURI"], Literal(uri)) )
-		
+
 		if self.http_status != None and self.http_status != 200:
 			htbnode = BNode()
 			retval.add( (bnode, ns_micro["context"],htbnode) )
@@ -180,7 +180,7 @@ class pyMicrodata :
 			retval.add( (htbnode, ns_ht["responseCode"], URIRef("http://www.w3.org/2006/http#%s" % self.http_status)) )
 
 		return retval
-		
+
 	def _get_input(self, name) :
 		"""
 		Trying to guess whether "name" is a URI, a string; it then tries to open these as such accordingly,
@@ -209,7 +209,7 @@ class pyMicrodata :
 				return open(name, 'rb')
 		else :
 			return name
-	
+
 	####################################################################################################################
 	# Externally used methods
 	#
@@ -226,20 +226,20 @@ class pyMicrodata :
 		if graph == None :
 			# Create the RDF Graph, that will contain the return triples...
 			graph   = Graph()
-		
-		conversion = MicrodataConversion(dom.documentElement, 
-			                             graph,  
-			                             base            = self.base, 
-			                             vocab_expansion = self.vocab_expansion, 
+
+		conversion = MicrodataConversion(dom.documentElement,
+			                             graph,
+			                             base            = self.base,
+			                             vocab_expansion = self.vocab_expansion,
 			                             vocab_cache     = self.vocab_cache)
 		conversion.convert()
 		return graph
-	
+
 	def graph_from_source(self, name, graph = None, rdfOutput = False) :
 		"""
 		Extract an RDF graph from an microdata source. The source is parsed, the RDF extracted, and the RDF Graph is
 		returned. This is a front-end to the L{pyMicrodata.graph_from_DOM} method.
-				
+
 		@param name: a URI, a file name, or a file-like object
 		@return: an RDF Graph
 		@rtype: rdflib Graph instance
@@ -261,7 +261,7 @@ class pyMicrodata :
 				self.http_status = 500
 				if not rdfOutput : raise e
 				return self._generate_error_graph(graph, str(e), uri=name)
-				
+
 			dom = None
 			try :
 				import warnings
@@ -278,7 +278,7 @@ class pyMicrodata :
 				e = sys.exc_info()[1]
 				self.http_status = 400
 				if not rdfOutput : raise e
-				return self._generate_error_graph(graph, str(e), uri=name)	
+				return self._generate_error_graph(graph, str(e), uri=name)
 
 		except Exception :
 			# Something nasty happened:-(
@@ -289,7 +289,7 @@ class pyMicrodata :
 				self.http_status = 500
 			if not rdfOutput : raise e
 			return self._generate_error_graph(graph, str(e), uri=name)
-	
+
 	def rdf_from_sources(self, names, outputFormat = "pretty-xml", rdfOutput = False) :
 		"""
 		Extract and RDF graph from a list of RDFa sources and serialize them in one graph. The sources are parsed, the RDF
@@ -329,7 +329,7 @@ def processURI(uri, outputFormat, form) :
 	"""The standard processing of a microdata uri options in a form, ie, as an entry point from a CGI call.
 
 	The call accepts extra form options (eg, HTTP GET options) as follows:
-	
+
 	@param uri: URI to access. Note that the "text:" and "uploaded:" values are treated separately; the former is for textual intput (in which case a StringIO is used to get the data) and the latter is for uploaded file, where the form gives access to the file directly.
 	@param outputFormat: serialization formats, as understood by RDFLib. Note that though "turtle" is
 	a possible parameter value, some versions of the RDFLib turtle generation does funny (though legal) things with
@@ -370,7 +370,7 @@ def processURI(uri, outputFormat, form) :
 	# Decide the output format; the issue is what should happen in case of a top level error like an inaccessibility of
 	# the html source: should a graph be returned or an HTML page with an error message?
 
-	# decide whether HTML or RDF should be sent. 
+	# decide whether HTML or RDF should be sent.
 	htmlOutput = False
 	#if 'HTTP_ACCEPT' in os.environ :
 	#	acc = os.environ['HTTP_ACCEPT']
@@ -404,7 +404,7 @@ def processURI(uri, outputFormat, form) :
 		import cgi
 		h = sys.exc_info()[1]
 		retval = 'Content-type: text/html; charset=utf-8\nStatus: %s \n\n' % h.http_code
-		retval += "<html>\n"		
+		retval += "<html>\n"
 		retval += "<head>\n"
 		retval += "<title>HTTP Error in Microdata processing</title>\n"
 		retval += "</head><body>\n"
@@ -422,7 +422,7 @@ def processURI(uri, outputFormat, form) :
 		import traceback, cgi
 
 		retval = 'Content-type: text/html; charset=utf-8\nStatus: %s\n\n' % processor.http_status
-		retval += "<html>\n"		
+		retval += "<html>\n"
 		retval += "<head>\n"
 		retval += "<title>Exception in Microdata processing</title>\n"
 		retval += "</head><body>\n"

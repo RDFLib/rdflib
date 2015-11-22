@@ -28,11 +28,11 @@ else :
 	from rdflib.RDFS	import RDFSNS as ns_rdfs
 	from rdflib.RDF		import RDFNS  as ns_rdf
 	from rdflib.Graph import Graph
-	
+
 ns_owl = Namespace("http://www.w3.org/2002/07/owl#")
-	
+
 from ..host import MediaTypes
-	
+
 from ..utils	import URIOpener
 
 from . import err_outdated_cache
@@ -54,11 +54,11 @@ def return_graph(uri, options, newCache = False) :
 	"""Parse a file, and return an RDFLib Graph. The URI's content type is checked and either one of
 	RDFLib's parsers is invoked (for the Turtle, RDF/XML, and N Triple cases) or a separate RDFa processing is invoked
 	on the RDFa content.
-			
+
 	The Accept header of the HTTP request gives a preference to Turtle, followed by RDF/XML and then HTML (RDFa), in case content negotiation is used.
-	
+
 	This function is used to retreive the vocabulary file and turn it into an RDFLib graph.
-	
+
 	@param uri: URI for the graph
 	@param options: used as a place where warnings can be sent
 	@param newCache: in case this is used with caching, whether a new cache is generated; that modifies the warning text
@@ -69,11 +69,11 @@ def return_graph(uri, options, newCache = False) :
 			options.add_warning(err_unreachable_vocab % uri, warning_type=VocabReferenceError)
 		else :
 			options.add_warning(err_outdated_cache % uri, warning_type=VocabReferenceError)
-	
+
 	retval 			= None
 	expiration_date = None
 	content			= None
-	
+
 	try :
 		content = URIOpener(uri,
 							{'Accept' : 'text/html;q=0.8, application/xhtml+xml;q=0.8, text/turtle;q=1.0, application/rdf+xml;q=0.9'})
@@ -89,10 +89,10 @@ def return_graph(uri, options, newCache = False) :
 		(type,value,traceback) = sys.exc_info()
 		return_to_cache(value)
 		return (None,None)
-	
+
 	# Store the expiration date of the newly accessed data
 	expiration_date = content.expiration_date
-					
+
 	if content.content_type == MediaTypes.turtle :
 		try :
 			retval = Graph()
@@ -125,9 +125,9 @@ def return_graph(uri, options, newCache = False) :
 			options.add_warning(err_unparsable_rdfa_vocab % (uri,value))
 	else :
 		options.add_warning(err_unrecognised_vocab_type % (uri, content.content_type))
-		
+
 	return (retval, expiration_date)
-	
+
 ############################################################################################
 type 				= ns_rdf["type"]
 Property 			= ns_rdf["Property"]
@@ -142,7 +142,7 @@ class MiniOWL :
 	Class implementing the simple OWL RL Reasoning required by RDFa in managing vocabulary files. This is done via
 	a forward chaining process (in the L{closure} method) using a few simple rules as defined by the RDF and the OWL Semantics
 	specifications.
-	
+
 	@ivar graph: the graph that has to be expanded
 	@ivar added_triples: each cycle collects the triples that are to be added to the graph eventually.
 	@type added_triples: a set, to ensure the unicity of triples being added
@@ -210,20 +210,20 @@ class MiniOWL :
 			# extra resonings on the vocabulary only to reduce the overall load by reducing the expected number of chaining cycles
 			if p == subPropertyOf :
 				for Z,Y,xxx in self.graph.triples((o, subPropertyOf, None)) :
-					self.store_triple((s,subPropertyOf,xxx))  
+					self.store_triple((s,subPropertyOf,xxx))
 			elif p == equivalentProperty :
 				for Z,Y,xxx in self.graph.triples((o, equivalentProperty, None)) :
-					self.store_triple((s,equivalentProperty,xxx))  
+					self.store_triple((s,equivalentProperty,xxx))
 				for xxx,Y,Z in self.graph.triples((None, equivalentProperty, s)) :
-					self.store_triple((xxx,equivalentProperty,o))  
+					self.store_triple((xxx,equivalentProperty,o))
 			elif p == subClassOf :
 				for Z,Y,xxx in self.graph.triples((o, subClassOf, None)) :
 					self.store_triple((s,subClassOf,xxx))
 			elif p == equivalentClass :
 				for Z,Y,xxx in self.graph.triples((o, equivalentClass, None)) :
-					self.store_triple((s,equivalentClass,xxx))  
+					self.store_triple((s,equivalentClass,xxx))
 				for xxx,Y,Z in self.graph.triples((None, equivalentClass, s)) :
-					self.store_triple((xxx,equivalentClass,o))  
+					self.store_triple((xxx,equivalentClass,o))
 		else :
 			if p == subPropertyOf :
 				# prp-spo1
@@ -235,7 +235,7 @@ class MiniOWL :
 					self.store_triple((zzz, o, www))
 				# prp-eqp2
 				for zzz,Z,www in self.graph.triples((None, o, None)) :
-					self.store_triple((zzz, s, www))					
+					self.store_triple((zzz, s, www))
 			elif p == subClassOf :
 				# cax-sco
 				for vvv,Y,Z in self.graph.triples((None, type, s)) :
@@ -253,7 +253,7 @@ class MiniOWL :
 def process_rdfa_sem(graph, options) :
 	"""
 	Expand the graph through the minimal RDFS and OWL rules defined for RDFa.
-	
+
 	The expansion is done in several steps:
 	 1. the vocabularies are retrieved from the incoming graph (there are RDFa triples generated for that)
 	 2. all vocabularies are merged into a separate vocabulary graph
@@ -261,7 +261,7 @@ def process_rdfa_sem(graph, options) :
 	 4. the (expanded) vocabulary graph content is added to the incoming graph
 	 5. the incoming graph is expanded
 	 6. the triples appearing in the vocabulary graph are removed from the incoming graph, to avoid unnecessary extra triples from the data
-	 
+
 	@param graph: an RDFLib Graph instance, to be expanded
 	@param options: options as defined for the RDFa run; used to generate warnings
 	@type options: L{pyRdfa.Options}
@@ -283,22 +283,22 @@ def process_rdfa_sem(graph, options) :
 			if v_graph != None :
 				for t in v_graph :
 					vocab_graph.add(t)
-				
+
 		# 3. Get the closure of the vocab graph; this will take care of local subproperty, etc, statements
 		# Strictly speaking this is not necessary, but will speed up processing, because it may save chaining cycles on the
 		# real graph
 		MiniOWL(vocab_graph, schema_semantics = True).closure()
-		
+
 		# 4. Now get the vocab graph content added to the default graph
 		for t in vocab_graph :
 			graph.add(t)
-						
+
 		# 5. get the graph expanded through RDFS
 		MiniOWL(graph).closure()
-		
+
 		# 4. clean up the graph by removing the schema triples
 		for t in vocab_graph : graph.remove(t)
-	
+
 	# That was it...
 	return graph
 

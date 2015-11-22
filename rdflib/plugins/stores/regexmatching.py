@@ -14,7 +14,7 @@ import re
 
 # Store is capable of doing its own REGEX matching
 NATIVE_REGEX = 0
-# Store uses Python's re module internally for REGEX matching 
+# Store uses Python's re module internally for REGEX matching
 PYTHON_REGEX = 1
 
 
