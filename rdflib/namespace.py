@@ -102,10 +102,6 @@ class Namespace(text_type):
             rt = text_type.__new__(cls, value, 'utf-8')
         return rt
 
-    @property
-    def title(self):
-        return URIRef(self + 'title')
-
     def term(self, name):
         # need to handle slices explicitly because of __getitem__ override
         return URIRef(self + (name if isinstance(name, string_types) else ''))
@@ -153,27 +149,39 @@ class URIPattern(text_type):
         return "URIPattern(%r)" % text_type(self)
 
 
-class ClosedNamespace(object):
+class ClosedNamespace(Namespace):
     """
     A namespace with a closed list of members
 
     Trying to create terms not listen is an error
     """
 
-    def __init__(self, uri, terms):
-        self.uri = uri
-        self.__uris = {}
+    def __new__(cls, uri, terms):
+        rt = Namespace.__new__(cls, uri)
+
+        rt.__uris = {}
         for t in terms:
-            self.__uris[t] = URIRef(self.uri + t)
+            rt.__uris[t] = URIRef(rt + t)
+
+        return rt
 
     def term(self, name):
         uri = self.__uris.get(name)
         if uri is None:
+<<<<<<< HEAD
             raise AttributeError(
                 "term '{}' not in namespace '{}'".format(name, self.uri)
             )
+=======
+            raise Exception(
+                "term '%s' not in namespace '%s'" % (name, self))
+>>>>>>> Made ClosedNamespace (and _RDFNamespace) inherit from Namespace
         else:
             return uri
+
+    @property
+    def uri(self): # support legacy code from before ClosedNamespace extended unicode
+        return self
 
     def __getitem__(self, key, default=None):
         return self.term(key)
@@ -184,21 +192,26 @@ class ClosedNamespace(object):
         else:
             return self.term(name)
 
+<<<<<<< HEAD
     def __str__(self):
         return text_type(self.uri)
 
     def __repr__(self):
         return "rdf.namespace.ClosedNamespace(%r)" % text_type(self.uri)
+=======
+    def __repr__(self):
+        return """rdf.namespace.ClosedNamespace('%s')""" % self
+>>>>>>> Made ClosedNamespace (and _RDFNamespace) inherit from Namespace
 
 
 class _RDFNamespace(ClosedNamespace):
     """
     Closed namespace for RDF terms
     """
-    def __init__(self):
-        super(_RDFNamespace, self).__init__(
-            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
-            terms=[
+
+    def __new__(cls):
+        return ClosedNamespace.__new__(cls, "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+              terms=[
                 # Syntax Names
                 "RDF", "Description", "ID", "about", "parseType",
                 "resource", "li", "nodeID", "datatype",
@@ -219,10 +232,11 @@ class _RDFNamespace(ClosedNamespace):
                 "XMLLiteral", "HTML", "langString"]
         )
 
+
     def term(self, name):
         try:
             i = int(name)
-            return URIRef("%s_%s" % (self.uri, i))
+            return URIRef("%s_%s" % (self, i))
         except ValueError:
             return super(_RDFNamespace, self).term(name)
 
