@@ -184,7 +184,8 @@ No vars specified:
 """)
 
 
-from rdflib.term import URIRef
+from functools import total_ordering
+from rdflib.term import URIRef, Node
 
 
 # property paths
@@ -193,13 +194,13 @@ ZeroOrMore = '*'
 OneOrMore = '+'
 ZeroOrOne = '?'
 
-
+@total_ordering
 class Path(object):
     def eval(self, graph, subj=None, obj=None):
         raise NotImplementedError()
 
     def __lt__(self, other):
-        if not isinstance(other, Path):
+        if not isinstance(other, (Path, Node)):
             raise TypeError('unorderable types: %s() < %s()' % (
                 repr(self), repr(other)))
         return repr(self) < repr(other)
