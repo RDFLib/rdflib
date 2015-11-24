@@ -2,3 +2,4 @@ flake8
 isodate
 pyparsing<=1.5.7
 SPARQLWrapper>=1.6.2
+git+https://github.com/wikier/keepalive.git

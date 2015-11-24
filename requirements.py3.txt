@@ -3,3 +3,4 @@ flake8
 html5lib
 isodate
 SPARQLWrapper>=1.6.2
+git+https://github.com/wikier/keepalive.git
