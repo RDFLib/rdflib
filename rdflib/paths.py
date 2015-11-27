@@ -217,6 +217,9 @@ class InvPath(Path):
     def __repr__(self):
         return "Path(~%s)" % (self.arg,)
 
+    def n3(self):
+        return '^%s'%self.arg.n3()
+
 
 class SequencePath(Path):
     def __init__(self, *args):
@@ -258,6 +261,9 @@ class SequencePath(Path):
     def __repr__(self):
         return "Path(%s)" % " / ".join(str(x) for x in self.args)
 
+    def n3(self):
+        return '/'.join(a.n3() for a in self.args)
+
 
 class AlternativePath(Path):
     def __init__(self, *args):
@@ -275,6 +281,10 @@ class AlternativePath(Path):
 
     def __repr__(self):
         return "Path(%s)" % " | ".join(str(x) for x in self.args)
+
+    def n3(self):
+        return '|'.join(a.n3() for a in self.args)
+
 
 
 class MulPath(Path):
@@ -375,6 +385,10 @@ class MulPath(Path):
     def __repr__(self):
         return "Path(%s%s)" % (self.path, self.mod)
 
+    def n3(self):
+        return '%s%s'%(self.path, self.mod)
+
+
 
 class NegatedPath(Path):
     def __init__(self, arg):
@@ -403,6 +417,9 @@ class NegatedPath(Path):
 
     def __repr__(self):
         return "Path(! %s)" % ",".join(str(x) for x in self.args)
+
+    def n3(self):
+        return '!(%s)'%('|'.join(self.args))
 
 
 class PathList(list):
