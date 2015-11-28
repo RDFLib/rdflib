@@ -45,7 +45,7 @@ class NQuadsParser(NTriplesParser):
         """Parse f as an N-Triples file."""
         assert sink.store.context_aware, ("NQuadsParser must be given"
                                           " a context aware store.")
-        self.sink = ConjunctiveGraph(store=sink.store)
+        self.sink = ConjunctiveGraph(store=sink.store, identifier=sink.identifier)
 
         source = inputsource.getByteStream()
 
@@ -81,7 +81,7 @@ class NQuadsParser(NTriplesParser):
         obj = self.object()
         self.eat(r_wspace)
 
-        context = self.uriref() or self.nodeid()
+        context = self.uriref() or self.nodeid() or self.sink.identifier
         self.eat(r_tail)
 
         if self.line:
