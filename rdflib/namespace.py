@@ -102,6 +102,11 @@ class Namespace(text_type):
             rt = text_type.__new__(cls, value, 'utf-8')
         return rt
 
+    @property
+    def title(self):
+        # overrides unicode.title to allow DCTERMS.title for example
+        return URIRef(self + 'title')
+
     def term(self, name):
         # need to handle slices explicitly because of __getitem__ override
         return URIRef(self + (name if isinstance(name, string_types) else ''))

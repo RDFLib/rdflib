@@ -1,8 +1,15 @@
 import unittest
 
+from rdflib.namespace import DCTERMS
 from rdflib.graph import Graph
 from rdflib.term import URIRef
 from six import b
+
+
+class NamespaceTest(unittest.TestCase):
+    def test_dcterms_title(self):
+        self.assertEqual(DCTERMS.title, URIRef(DCTERMS + 'title'))
+
 
 class NamespacePrefixTest(unittest.TestCase):
 
