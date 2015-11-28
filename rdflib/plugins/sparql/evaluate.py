@@ -26,7 +26,7 @@ from rdflib.plugins.sparql.evalutils import (
     _filter, _eval, _join, _diff, _minus, _fillTemplate, _ebv)
 
 from rdflib.plugins.sparql.aggregates import evalAgg
-
+from rdflib.plugins.sparql.algebra import Join, ToMultiSet, Values
 
 def evalBGP(ctx, bgp):
 
@@ -410,16 +410,38 @@ def evalQuery(graph, query, initBindings, base=None):
 
     ctx.prologue = query.prologue
 
-    if initBindings:
-        for k, v in initBindings.iteritems():
-            if not isinstance(k, Variable):
-                k = Variable(k)
-            ctx[k] = v
-        # ctx.push()  # nescessary?
-
     main = query.algebra
 
-    # import pdb; pdb.set_trace()
+    if initBindings:
+        # add initBindings as a values clause
+
+        values = {} # no dict comprehension in 2.6 :(
+        for k,v in initBindings.iteritems():
+            if not isinstance(k, Variable):
+                k = Variable(k)
+            values[k] = v
+
+        main = main.clone() # clone to not change prepared q
+        main['p'] = main.p.clone()
+        # Find the right place to insert MultiSet join
+        repl = main.p
+        if repl.name == 'Slice':
+            repl['p'] = repl.p.clone()
+            repl = repl.p
+        if repl.name == 'Distinct':
+            repl['p'] = repl.p.clone()
+            repl = repl.p
+        if repl.p.name == 'OrderBy':
+            repl['p'] = repl.p.clone()
+            repl = repl.p
+        if repl.p.name == 'Extend':
+            repl['p'] = repl.p.clone()
+            repl = repl.p
+
+        repl['p'] = Join(repl.p, ToMultiSet(Values([values])))
+
+        # TODO: Vars?
+
     if main.datasetClause:
         if ctx.dataset is None:
             raise Exception(

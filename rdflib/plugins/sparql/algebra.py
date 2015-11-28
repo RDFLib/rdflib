@@ -63,6 +63,8 @@ def Filter(expr, p):
 def Extend(p, expr, var):
     return CompValue('Extend', p=p, expr=expr, var=var)
 
+def Values(res):
+    return CompValue('values', res=res)
 
 def Project(p, PV):
     return CompValue('Project', p=p, PV=PV)
@@ -511,7 +513,7 @@ def translateValues(v):
         for vals in v.value:
             res.append(dict(zip(v.var, vals)))
 
-    return CompValue('values', res=res)
+    return Values(res)
 
 
 def translate(q):
