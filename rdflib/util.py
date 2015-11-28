@@ -177,7 +177,7 @@ def from_n3(s, default=None, backend=None, nsm=None):
             if rest.startswith("@"):
                 language = rest[1:]  # strip leading at sign
 
-        value = value.replace(r'\"', '"').replace('\\\\', '\\')
+        value = value.replace(r'\"', '"')
         # Hack: this should correctly handle strings with either native unicode
         # characters, or \u1234 unicode escapes.
         value = value.encode("raw-unicode-escape").decode("unicode-escape")
