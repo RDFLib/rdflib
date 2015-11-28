@@ -257,6 +257,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         self.sparql11 = sparql11
         self.context_aware = context_aware
         self.graph_aware = context_aware
+        self._timeout = None
 
     # Database Management Methods
     def create(self, configuration):
@@ -322,6 +323,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         self.resetQuery()
         if self._is_contextual(queryGraph):
             self.addParameter("default-graph-uri", queryGraph)
+        self.timeout = self._timeout
         self.setQuery(query)
 
         return Result.parse(SPARQLWrapper.query(self).response)
@@ -409,6 +411,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         self.resetQuery()
         if self._is_contextual(context):
             self.addParameter("default-graph-uri", context.identifier)
+        self.timeout = self._timeout
         self.setQuery(query)
 
         doc = ElementTree.parse(SPARQLWrapper.query(self).response)
@@ -740,10 +743,14 @@ class SPARQLUpdateStore(SPARQLStore):
         if self.autocommit:
             self.commit()
 
+    def setTimeout(self, timeout):
+        self._timeout = int(timeout)
+
     def _do_update(self, update):
         self.resetQuery()
         self.setQuery(update)
         self.setMethod(POST)
+        self.timeout = self._timeout
         self.setRequestMethod(URLENCODED if self.postAsEncoded else POSTDIRECTLY)
 
         result = SPARQLWrapper.query(self)
