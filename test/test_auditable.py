@@ -11,7 +11,10 @@ EX = Namespace("http://example.org/")
 class BaseTestAuditableStore(unittest.TestCase):
 
     def assert_graph_equal(self, g1, g2):
-        return self.assertSetEqual(set(g1), set(g2))
+        try:
+            return self.assertSetEqual(set(g1), set(g2))
+        except AttributeError:
+            assert set(g1) == set(g2)
 
 
 class TestAuditableStore(BaseTestAuditableStore):
