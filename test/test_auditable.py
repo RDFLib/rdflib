@@ -1,6 +1,5 @@
 # -*- coding=utf8 -*-
 from __future__ import unicode_literals
-from nose.tools import assert_items_equal
 import unittest
 
 from rdflib import Graph, Namespace
@@ -9,7 +8,13 @@ from rdflib.plugins.stores.auditable import AuditableStore
 EX = Namespace("http://example.org/")
 
 
-class TestAuditableStore(unittest.TestCase):
+class BaseTestAuditableStore(unittest.TestCase):
+
+    def assert_graph_equal(self, g1, g2):
+        return self.assertSetEqual(set(g1), set(g2))
+
+
+class TestAuditableStore(BaseTestAuditableStore):
 
     def setUp(self):
         self.g = Graph()
@@ -21,13 +26,13 @@ class TestAuditableStore(unittest.TestCase):
 
     def test_add_commit(self):
         self.t.add((EX.s1, EX.p1, EX.o1))
-        assert_items_equal(self.t, [
+        self.assert_graph_equal(self.t, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
             (EX.s1, EX.p1, EX.o1),
         ])
         self.t.commit()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
             (EX.s1, EX.p1, EX.o1),
@@ -35,42 +40,42 @@ class TestAuditableStore(unittest.TestCase):
 
     def test_remove_commit(self):
         self.t.remove((EX.s0, EX.p0, EX.o0))
-        assert_items_equal(self.t, [
+        self.assert_graph_equal(self.t, [
             (EX.s0, EX.p0, EX.o0bis),
         ])
         self.t.commit()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s0, EX.p0, EX.o0bis),
         ])
 
     def test_multiple_remove_commit(self):
         self.t.remove((EX.s0, EX.p0, None))
-        assert_items_equal(self.t, [
+        self.assert_graph_equal(self.t, [
         ])
         self.t.commit()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
         ])
 
     def test_noop_add_commit(self):
         self.t.add((EX.s0, EX.p0, EX.o0))
-        assert_items_equal(self.t, [
+        self.assert_graph_equal(self.t, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
         ])
         self.t.commit()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
         ])
 
     def test_noop_remove_commit(self):
         self.t.add((EX.s0, EX.p0, EX.o0))
-        assert_items_equal(self.t, [
+        self.assert_graph_equal(self.t, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
         ])
         self.t.commit()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
         ])
@@ -78,12 +83,12 @@ class TestAuditableStore(unittest.TestCase):
     def test_add_remove_commit(self):
         self.t.add((EX.s1, EX.p1, EX.o1))
         self.t.remove((EX.s1, EX.p1, EX.o1))
-        assert_items_equal(self.t, [
+        self.assert_graph_equal(self.t, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
         ])
         self.t.commit()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
         ])
@@ -91,13 +96,13 @@ class TestAuditableStore(unittest.TestCase):
     def test_remove_add_commit(self):
         self.t.remove((EX.s1, EX.p1, EX.o1))
         self.t.add((EX.s1, EX.p1, EX.o1))
-        assert_items_equal(self.t, [
+        self.assert_graph_equal(self.t, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
             (EX.s1, EX.p1, EX.o1),
         ])
         self.t.commit()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
             (EX.s1, EX.p1, EX.o1),
@@ -106,7 +111,7 @@ class TestAuditableStore(unittest.TestCase):
     def test_add_rollback(self):
         self.t.add((EX.s1, EX.p1, EX.o1))
         self.t.rollback()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
         ])
@@ -114,7 +119,7 @@ class TestAuditableStore(unittest.TestCase):
     def test_remove_rollback(self):
         self.t.remove((EX.s0, EX.p0, EX.o0))
         self.t.rollback()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
         ])
@@ -122,7 +127,7 @@ class TestAuditableStore(unittest.TestCase):
     def test_multiple_remove_rollback(self):
         self.t.remove((EX.s0, EX.p0, None))
         self.t.rollback()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
         ])
@@ -130,7 +135,7 @@ class TestAuditableStore(unittest.TestCase):
     def test_noop_add_rollback(self):
         self.t.add((EX.s0, EX.p0, EX.o0))
         self.t.rollback()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
         ])
@@ -138,7 +143,7 @@ class TestAuditableStore(unittest.TestCase):
     def test_noop_remove_rollback(self):
         self.t.add((EX.s0, EX.p0, EX.o0))
         self.t.rollback()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
         ])
@@ -147,7 +152,7 @@ class TestAuditableStore(unittest.TestCase):
         self.t.add((EX.s1, EX.p1, EX.o1))
         self.t.remove((EX.s1, EX.p1, EX.o1))
         self.t.rollback()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
         ])
@@ -156,13 +161,13 @@ class TestAuditableStore(unittest.TestCase):
         self.t.remove((EX.s1, EX.p1, EX.o1))
         self.t.add((EX.s1, EX.p1, EX.o1))
         self.t.rollback()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
         ])
 
 
-class TestAuditableStoreEmptyGraph(unittest.TestCase):
+class TestAuditableStoreEmptyGraph(BaseTestAuditableStore):
 
     def setUp(self):
         self.g = Graph()
@@ -171,22 +176,22 @@ class TestAuditableStoreEmptyGraph(unittest.TestCase):
 
     def test_add_commit(self):
         self.t.add((EX.s1, EX.p1, EX.o1))
-        assert_items_equal(self.t, [
+        self.assert_graph_equal(self.t, [
             (EX.s1, EX.p1, EX.o1),
         ])
         self.t.commit()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s1, EX.p1, EX.o1),
         ])
 
     def test_add_rollback(self):
         self.t.add((EX.s1, EX.p1, EX.o1))
         self.t.rollback()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
         ])
 
 
-class TestAuditableStoreConccurent(unittest.TestCase):
+class TestAuditableStoreConccurent(BaseTestAuditableStore):
 
     def setUp(self):
         self.g = Graph()
@@ -204,7 +209,7 @@ class TestAuditableStoreConccurent(unittest.TestCase):
     def test_commit_commit(self):
         self.t1.commit()
         self.t2.commit()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s1, EX.p1, EX.o1),
             (EX.s2, EX.p2, EX.o2),
         ])
@@ -212,7 +217,7 @@ class TestAuditableStoreConccurent(unittest.TestCase):
     def test_commit_rollback(self):
         self.t1.commit()
         self.t2.rollback()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s1, EX.p1, EX.o1),
             (EX.s0, EX.p0, EX.o0bis),
         ])
@@ -220,7 +225,7 @@ class TestAuditableStoreConccurent(unittest.TestCase):
     def test_rollback_commit(self):
         self.t1.rollback()
         self.t2.commit()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s2, EX.p2, EX.o2),
         ])
@@ -228,13 +233,13 @@ class TestAuditableStoreConccurent(unittest.TestCase):
     def test_rollback_rollback(self):
         self.t1.rollback()
         self.t2.rollback()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
         ])
 
 
-class TestAuditableStoreEmbeded(unittest.TestCase):
+class TestAuditableStoreEmbeded(BaseTestAuditableStore):
 
     def setUp(self):
         self.g = Graph()
@@ -252,17 +257,17 @@ class TestAuditableStoreEmbeded(unittest.TestCase):
         self.t2.remove((EX.s1, EX.p1, EX.o1))
 
     def test_commit_commit(self):
-        assert_items_equal(self.t2, [
+        self.assert_graph_equal(self.t2, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s2, EX.p2, EX.o2),
         ])
         self.t2.commit()
-        assert_items_equal(self.t1, [
+        self.assert_graph_equal(self.t1, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s2, EX.p2, EX.o2),
         ])
         self.t1.commit()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s2, EX.p2, EX.o2),
         ])
@@ -270,19 +275,19 @@ class TestAuditableStoreEmbeded(unittest.TestCase):
     def test_commit_rollback(self):
         self.t2.commit()
         self.t1.rollback()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
         ])
 
     def test_rollback_commit(self):
         self.t2.rollback()
-        assert_items_equal(self.t1, [
+        self.assert_graph_equal(self.t1, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s1, EX.p1, EX.o1),
         ])
         self.t1.commit()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s1, EX.p1, EX.o1),
         ])
@@ -290,7 +295,7 @@ class TestAuditableStoreEmbeded(unittest.TestCase):
     def test_rollback_rollback(self):
         self.t2.rollback()
         self.t1.rollback()
-        assert_items_equal(self.g, [
+        self.assert_graph_equal(self.g, [
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
         ])
