@@ -55,6 +55,8 @@ class AuditableStore(Store):
         with lock:
             context = context.__class__(self.store, context.identifier) if context is not None else None
             ctxId = context.identifier if context is not None else None
+            if list(self.store.triples(triple, context)):
+                return # triple already in store, do nothing
             self.reverseOps.append((s, p, o, ctxId, 'remove'))
             try:
                 self.reverseOps.remove((s, p, o, ctxId, 'add'))
@@ -84,8 +86,10 @@ class AuditableStore(Store):
                         except ValueError:
                             self.reverseOps.append((s, p, o, ctx.identifier, 'add'))
             else:
+                if not list(self.triples((subject, predicate, object_), context)):
+                    return # triple not present in store, do nothing
                 try:
-                    self.reverseOps.remove((subject, predicate, object_, ctxId, 'add'))
+                    self.reverseOps.remove((subject, predicate, object_, ctxId, 'remove'))
                 except ValueError:
                     self.reverseOps.append((subject, predicate, object_, ctxId, 'add'))
             self.store.remove((subject, predicate, object_), context)
@@ -117,7 +121,6 @@ class AuditableStore(Store):
         return self.store.namespaces()
 
     def commit(self):
-        self.store.commit()
         self.reverseOps = []
 
     def rollback(self):
