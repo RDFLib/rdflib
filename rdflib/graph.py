@@ -1257,7 +1257,7 @@ class Graph(Node):
 class ConjunctiveGraph(Graph):
 
     """
-    A ConjunctiveGraph is an (unamed) aggregation of all the named
+    A ConjunctiveGraph is an (unnamed) aggregation of all the named
     graphs in a store.
 
     It has a ``default`` graph, whose name is associated with the

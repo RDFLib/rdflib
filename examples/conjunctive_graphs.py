@@ -1,6 +1,6 @@
 """
 
-An RDFLib ConjunctiveGraph is an (unamed) aggregation of all the named graphs
+An RDFLib ConjunctiveGraph is an (unnamed) aggregation of all the named graphs
 within a Store. The :meth:`~rdflib.graph.ConjunctiveGraph.get_context`
 method can be used to get a particular named graph, or triples can be
 added to the default graph
