@@ -1257,7 +1257,7 @@ class Graph(Node):
 class ConjunctiveGraph(Graph):
 
     """
-    A ConjunctiveGraph is an (unamed) aggregation of all the named
+    A ConjunctiveGraph is an (unnamed) aggregation of all the named
     graphs in a store.
 
     It has a ``default`` graph, whose name is associated with the
@@ -1358,7 +1358,7 @@ class ConjunctiveGraph(Graph):
 
         For legacy reasons, this can take the context to query either
         as a fourth element of the quad, or as the explicit context
-        keyword paramater. The kw param takes precedence.
+        keyword parameter. The kw param takes precedence.
         """
 
         s,p,o,c = self._spoc(triple_or_quad)

@@ -721,7 +721,7 @@ CLASS_RELATIONS = set(
 def ComponentTerms(cls):
     """
     Takes a Class instance and returns a generator over the classes that
-    are involved in its definition, ignoring unamed classes
+    are involved in its definition, ignoring unnamed classes
     """
     if OWL_NS.Restriction in cls.type:
         try:

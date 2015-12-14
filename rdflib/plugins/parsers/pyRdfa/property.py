@@ -116,7 +116,7 @@ class ProcessProperty :
 					object = Literal(val, lang=lang)
 				else :
 					object = self._create_Literal(val, datatype=datatype, lang=lang)
-				# The value of datatype has been set, and the keyword paramaters take care of the rest
+				# The value of datatype has been set, and the keyword parameters take care of the rest
 			else :
 				# see if there *is* a datatype (even if it is empty!)
 				if dtset :
@@ -176,7 +176,7 @@ class ProcessProperty :
 				object = Literal(val, lang=lang)
 			else :
 				object = self._create_Literal(val, datatype=datatype, lang=lang)
-			# The value of datatype has been set, and the keyword paramaters take care of the rest
+			# The value of datatype has been set, and the keyword parameters take care of the rest
 		else :
 			# see if there *is* a datatype (even if it is empty!)
 			if dtset :
