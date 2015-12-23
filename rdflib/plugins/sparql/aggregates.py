@@ -1,6 +1,6 @@
 from rdflib import Literal, XSD
 
-from rdflib.plugins.sparql.evalutils import _eval
+from rdflib.plugins.sparql.evalutils import _eval, NotBoundError
 from rdflib.plugins.sparql.operators import numeric
 from rdflib.plugins.sparql.datatypes import type_promotion
 
@@ -88,7 +88,9 @@ def agg_Count(a, group, bindings):
     for x in group:
         try:
             if a.vars != '*':
-                _eval(a.vars, x)
+                val = _eval(a.vars, x)
+                if type(val) is NotBoundError:
+                    continue
             c += 1
         except:
             return  # error in aggregate => no binding
@@ -98,10 +100,14 @@ def agg_Count(a, group, bindings):
 
 
 def agg_Sample(a, group, bindings):
-    try:
-        bindings[a.res] = _eval(a.vars, iter(group).next())
-    except StopIteration:
-        pass  # no res
+    for ctx in group:
+        val = _eval(a.vars, ctx)
+        if type(val) is not NotBoundError:
+            bindings[a.res] = val
+            break
+    else:
+        bindings[a.res] = Literal(0)
+
 
 
 def agg_GroupConcat(a, group, bindings):
