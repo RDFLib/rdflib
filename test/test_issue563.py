@@ -24,21 +24,21 @@ def test_sample():
     g = Graph()
     results = set( tuple(i) for i in g.query(QUERY % ("SAMPLE", "SAMPLE")) )
 
-    assert results == {
+    assert results == set([
         (Literal(2), Literal(6), Literal(10)),
         (Literal(3), Literal(9), Literal(15)),
         (Literal(5), Literal(0), Literal(25)),
-    }
+    ])
 
 def test_count():
     g = Graph()
     results = set( tuple(i) for i in g.query(QUERY % ("COUNT", "COUNT")) )
 
-    assert results == {
+    assert results == set([
         (Literal(2), Literal(1), Literal(1)),
         (Literal(3), Literal(1), Literal(1)),
         (Literal(5), Literal(0), Literal(1)),
-    }
+    ])
 
 if __name__ == "__main__":
     #test_sample()
