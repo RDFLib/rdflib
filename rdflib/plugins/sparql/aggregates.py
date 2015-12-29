@@ -105,9 +105,6 @@ def agg_Sample(a, group, bindings):
         if type(val) is not NotBoundError:
             bindings[a.res] = val
             break
-    else:
-        bindings[a.res] = Literal(0)
-
 
 
 def agg_GroupConcat(a, group, bindings):
