@@ -22,17 +22,17 @@ GROUP BY ?x
 
 def test_sample():
     g = Graph()
-    results = set( tuple(i) for i in g.query(QUERY % ("SAMPLE", "SAMPLE")) )
+    results = set(tuple(i) for i in g.query(QUERY % ("SAMPLE", "SAMPLE")))
 
     assert results == set([
         (Literal(2), Literal(6), Literal(10)),
         (Literal(3), Literal(9), Literal(15)),
-        (Literal(5), Literal(0), Literal(25)),
+        (Literal(5), None, Literal(25)),
     ])
 
 def test_count():
     g = Graph()
-    results = set( tuple(i) for i in g.query(QUERY % ("COUNT", "COUNT")) )
+    results = set(tuple(i) for i in g.query(QUERY % ("COUNT", "COUNT")))
 
     assert results == set([
         (Literal(2), Literal(1), Literal(1)),
@@ -41,7 +41,7 @@ def test_count():
     ])
 
 if __name__ == "__main__":
-    #test_sample()
+    test_sample()
     test_count()
 
 
