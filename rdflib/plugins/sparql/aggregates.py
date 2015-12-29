@@ -89,7 +89,7 @@ def agg_Count(a, group, bindings):
         try:
             if a.vars != '*':
                 val = _eval(a.vars, x)
-                if type(val) is NotBoundError:
+                if isinstance(val, NotBoundError):
                     continue
             c += 1
         except:
@@ -102,7 +102,7 @@ def agg_Count(a, group, bindings):
 def agg_Sample(a, group, bindings):
     for ctx in group:
         val = _eval(a.vars, ctx)
-        if type(val) is not NotBoundError:
+        if not isinstance(val, NotBoundError):
             bindings[a.res] = val
             break
 
