@@ -83,13 +83,13 @@ def agg_Max(a, group, bindings):
 
 
 def agg_Count(a, group, bindings):
-
     c = 0
     for x in group:
         try:
             if a.vars != '*':
-                val = _eval(a.vars, x)
-                if isinstance(val, NotBoundError):
+                try:
+                    _eval(a.vars, x)
+                except NotBoundError:
                     continue
             c += 1
         except:
@@ -101,10 +101,11 @@ def agg_Count(a, group, bindings):
 
 def agg_Sample(a, group, bindings):
     for ctx in group:
-        val = _eval(a.vars, ctx)
-        if not isinstance(val, NotBoundError):
-            bindings[a.res] = val
+        try:
+            bindings[a.res] = _eval(a.vars, ctx)
             break
+        except NotBoundError:
+            pass
 
 
 def agg_GroupConcat(a, group, bindings):
