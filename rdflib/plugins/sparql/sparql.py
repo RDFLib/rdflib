@@ -338,7 +338,7 @@ class QueryContext(object):
         return c
 
 
-class Prologue:
+class Prologue(object):
 
     """
     A class for holding prefixing bindings and base URI information
@@ -380,7 +380,7 @@ class Prologue:
         return iri
 
 
-class Query:
+class Query(object):
     """
     A parsed and translated query
     """
