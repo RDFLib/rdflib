@@ -26,7 +26,9 @@ import sys, os, re
 extensions = ['sphinx.ext.autodoc', #'sphinx.ext.autosummary',
               'sphinx.ext.doctest', 'sphinx.ext.intersphinx',
               'sphinx.ext.todo', 'sphinx.ext.coverage',
-              'sphinx.ext.ifconfig', 'sphinx.ext.viewcode']
+              'sphinx.ext.ifconfig', 'sphinx.ext.viewcode',
+              'sphinx_epytext'  # pypi:sphinx-epytext
+]
 
 autodoc_default_flags = [ "special-members" ]
 
