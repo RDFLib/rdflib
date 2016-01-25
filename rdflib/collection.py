@@ -9,8 +9,8 @@ __all__ = ['Collection']
 
 class Collection(object):
     __doc__ = format_doctest_out("""
-    See 3.3.5 Emulating container types:
-    http://docs.python.org/ref/sequence-types.html#l2h-232
+    See "Emulating container types":
+    https://docs.python.org/reference/datamodel.html#emulating-container-types
 
     >>> from rdflib.graph import Graph
     >>> from pprint import pprint
