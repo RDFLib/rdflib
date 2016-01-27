@@ -3,6 +3,9 @@ import subprocess
 import sys
 import re
 
+from rdflib import Graph
+from rdflib.compare import isomorphic
+
 rdfa_expected = u'''@prefix dc: <http://purl.org/dc/terms/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix frbr: <http://vocab.org/frbr/core#> .
@@ -176,13 +179,26 @@ def test_rdfpipe_mdata_open():
     """
     args = ['python', 'rdflib/tools/rdfpipe.py', '-i', 'mdata', 'test/mdata/codelab.html']
     proc = subprocess.Popen(args, stdout=subprocess.PIPE, universal_newlines=True, env=env)
-    res = ''
+    res_abs = ''
     while proc.poll() is None:
-        res += proc.stdout.read()
+        res_abs += proc.stdout.read()
 
+    # we don't know the test system's paths, make them relative to this file
     a = re.compile(r'^(.*?<)[^>]+(test/mdata/codelab.*?>)', flags=re.DOTALL)
     b = re.compile(r'^(.*?<)[^>]+(test/mdata/squares.*?>)', flags=re.DOTALL)
-    res = a.sub(r'\1\2', res.strip())
+    res = a.sub(r'\1\2', res_abs.strip())
     res = b.sub(r'\1\2', res)
 
-    assert res == mdata_expected
+    # compare if result graphs are isomorphic
+    g_expected = Graph()
+    g_expected.parse(data=mdata_expected, format='n3')
+
+    g_res = Graph()
+    g_res.parse(data=res, format='n3')
+
+    assert isomorphic(g_expected, g_res), \
+        'not isomorphic:\nres:\n%s\ng_res:\n%s\nexpected:\n%s' % (
+        res_abs,
+        g_res.serialize(format='nt'),
+        g_expected.serialize(format='nt')
+    )
