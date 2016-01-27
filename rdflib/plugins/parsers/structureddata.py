@@ -213,7 +213,7 @@ class MicrodataParser(Parser):
     spec: http://www.w3.org/TR/microdata/; for the algorithm used to extract
     microdata into RDF, see http://www.w3.org/TR/microdata-rdf/.
     """
-    def parse(self, source, graph, vocab_expansion=False, vocab_cache=False):
+    def parse(self, source, graph):
         """
         @param source: one of the input sources that the RDFLib package defined
         @type source: InputSource class instance
@@ -239,15 +239,11 @@ class MicrodataParser(Parser):
                 'and Microdata parsers.')
 
         (baseURI, orig_source) = _get_orig_source(source)
-        self._process(graph, baseURI, orig_source,
-                      vocab_expansion=vocab_expansion,
-                      vocab_cache=vocab_cache)
+        self._process(graph, baseURI, orig_source)
 
-    def _process(self, graph, baseURI, orig_source,
-                 vocab_expansion=False, vocab_cache=False):
+    def _process(self, graph, baseURI, orig_source):
         from .pyMicrodata import pyMicrodata
-        processor = pyMicrodata(base=baseURI, vocab_expansion=vocab_expansion,
-                                vocab_cache=vocab_cache)
+        processor = pyMicrodata(base=baseURI)
         processor.graph_from_source(
             orig_source, graph=graph, rdfOutput=False)
 
@@ -301,8 +297,6 @@ class StructuredDataParser(Parser):
                               rdfa_version=rdfa_version,
                               vocab_expansion=vocab_expansion,
                               vocab_cache=vocab_cache)
-        MicrodataParser()._process(graph, baseURI, orig_source,
-                                   vocab_expansion=vocab_expansion,
-                                   vocab_cache=vocab_cache)
+        MicrodataParser()._process(graph, baseURI, orig_source)
         from .hturtle import HTurtleParser
         HTurtleParser()._process(graph, baseURI, orig_source, media_type='text/html')
