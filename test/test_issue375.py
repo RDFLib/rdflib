@@ -95,60 +95,27 @@ rdfa_expected = u'''@prefix dc: <http://purl.org/dc/terms/> .
     dc:type <http://purl.oreilly.com/product-types/BOOK> .
 '''.strip()
 
-mdata_expected = u'''@prefix cc: <http://creativecommons.org/ns#> .
-@prefix ctag: <http://commontag.org/ns#> .
-@prefix dc: <http://purl.org/dc/terms/> .
-@prefix dc11: <http://purl.org/dc/elements/1.1/> .
-@prefix dcat: <http://www.w3.org/ns/dcat#> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix gr: <http://purl.org/goodrelations/v1#> .
-@prefix grddl: <http://www.w3.org/2003/g/data-view#> .
-@prefix hcalendar: <http://microformats.org/profile/hcalendar#> .
+mdata_expected = u'''
 @prefix hcard: <http://microformats.org/profile/hcard#> .
-@prefix ical: <http://www.w3.org/2002/12/cal/icaltzd#> .
-@prefix ma: <http://www.w3.org/ns/ma-ont#> .
-@prefix md: <http://www.w3.org/ns/md#> .
-@prefix og: <http://ogp.me/ns#> .
-@prefix org: <http://www.w3.org/ns/org#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix prov: <http://www.w3.org/ns/prov#> .
-@prefix qb: <http://purl.org/linked-data/cube#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfa: <http://www.w3.org/ns/rdfa#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rev: <http://purl.org/stuff/rev#> .
-@prefix rif: <http://www.w3.org/2007/rif#> .
-@prefix rr: <http://www.w3.org/ns/r2rml#> .
 @prefix schema: <http://schema.org/> .
-@prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
-@prefix sioc: <http://rdfs.org/sioc/ns#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix skosxl: <http://www.w3.org/2008/05/skos-xl#> .
-@prefix v: <http://rdf.data-vocabulary.org/#> .
-@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
-@prefix void: <http://rdfs.org/ns/void#> .
-@prefix wdr: <http://www.w3.org/2007/05/powder#> .
-@prefix wdrs: <http://www.w3.org/2007/05/powder-s#> .
-@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-<test/mdata/codelab.html> md:item ( [ a schema:TechArticle ;
-                schema:articleBody """
+[] a schema:TechArticle ;
+    schema:articleBody """
     Exercise 1: From basic HTML to RDFa: first steps
     Exercise 2: Embedded types
     Exercise 3: From strings to things
 """ ;
-                schema:author "Author Name" ;
-                schema:datePublished "January 29, 2014" ;
-                schema:description """
+    schema:author "Author Name" ;
+    schema:datePublished "January 29, 2014" ;
+    schema:description """
     About this codelab
 """ ;
-                schema:educationalUse "codelab" ;
-                schema:image <test/mdata/squares.png> ;
-                schema:name "Structured data with schema.org codelab" ] ) ;
-    rdfa:usesVocabulary schema: .
+    schema:educationalUse "codelab" ;
+    schema:image <test/mdata/squares.png> ;
+    schema:name "Structured data with schema.org codelab" .
 '''.strip()
 
 env = os.environ.copy()
