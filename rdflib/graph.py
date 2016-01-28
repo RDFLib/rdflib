@@ -1010,8 +1010,8 @@ class Graph(Node):
         2
 
         >>> g = Graph()
-        >>> result = g.parse(file=open(file_name, "r"),
-        ...     format="application/rdf+xml")
+        >>> with open(file_name, "r") as f:
+        ...     result = g.parse(f, format="application/rdf+xml")
         >>> len(g)
         2
 
@@ -1029,7 +1029,11 @@ class Graph(Node):
             # "expicitly specify one with the format argument." % source)
             format = "application/rdf+xml"
         parser = plugin.get(format, Parser)()
-        parser.parse(source, self, **args)
+        try:
+            parser.parse(source, self, **args)
+        finally:
+            if source.auto_close:
+                source.close()
         return self
 
     def load(self, source, publicID=None, format="xml"):
@@ -1248,7 +1252,7 @@ class Graph(Node):
 class ConjunctiveGraph(Graph):
 
     """
-    A ConjunctiveGraph is an (unamed) aggregation of all the named
+    A ConjunctiveGraph is an (unnamed) aggregation of all the named
     graphs in a store.
 
     It has a ``default`` graph, whose name is associated with the
@@ -1349,7 +1353,7 @@ class ConjunctiveGraph(Graph):
 
         For legacy reasons, this can take the context to query either
         as a fourth element of the quad, or as the explicit context
-        keyword paramater. The kw param takes precedence.
+        keyword parameter. The kw param takes precedence.
         """
 
         s,p,o,c = self._spoc(triple_or_quad)
@@ -1455,8 +1459,7 @@ class ConjunctiveGraph(Graph):
 
         context = Graph(store=self.store, identifier=g_id)
         context.remove((None, None, None)) # hmm ?
-        context.parse(source, publicID=publicID, format=format,
-                      location=location, file=file, data=data, **args)
+        context.parse(source, publicID=publicID, format=format, **args)
         return context
 
     def __reduce__(self):

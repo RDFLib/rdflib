@@ -46,7 +46,7 @@ class HostLanguage :
 	html5		= "HTML5+RDFa"
 	atom		= "Atom+RDFa"
 	svg			= "SVG+RDFa"
-	
+
 # initial contexts for host languages
 initial_contexts = {
 	HostLanguage.xhtml      : ["http://www.w3.org/2011/rdfa-context/rdfa-1.1",
@@ -64,7 +64,7 @@ beautifying_prefixes = {
 	},
 	# HostLanguage.html5	: {
 	# 	"xhv" : "http://www.w3.org/1999/xhtml/vocab#"
-	# },	
+	# },
 	# HostLanguage.xhtml5	: {
 	# 	"xhv" : "http://www.w3.org/1999/xhtml/vocab#"
 	# },
@@ -97,11 +97,11 @@ default_vocabulary = {
 }
 
 predefined_1_0_rel  = ['alternate', 'appendix', 'cite', 'bookmark', 'chapter', 'contents',
-'copyright', 'glossary', 'help', 'icon', 'index', 'meta', 'next', 'p3pv1', 'prev', 'previous', 
+'copyright', 'glossary', 'help', 'icon', 'index', 'meta', 'next', 'p3pv1', 'prev', 'previous',
 'role', 'section', 'subsection', 'start', 'license', 'up', 'last', 'stylesheet', 'first', 'top']
 
 # ----------------------------------------------------------------------------------------------------------
-		
+
 class MediaTypes :
 	"""An enumeration style class: some common media types (better have them at one place to avoid misstyping...)"""
 	rdfxml 	= 'application/rdf+xml'
@@ -115,7 +115,7 @@ class MediaTypes :
 	xml		= 'application/xml'
 	xmlt	= 'text/xml'
 	nt		= 'text/plain'
-	
+
 # mapping from (some) content types to RDFa host languages. This may control the exact processing or at least the initial context (see below)...
 content_to_host_language = {
 	MediaTypes.html		: HostLanguage.html5,
@@ -143,7 +143,7 @@ preferred_suffixes = {
 	".nt"		: MediaTypes.nt,
 	".atom"		: MediaTypes.atom
 }
-	
+
 # DTD combinations that may determine the host language and the rdfa version
 _XHTML_1_0 = [
 	("-//W3C//DTD XHTML+RDFa 1.0//EN", "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd")
@@ -151,13 +151,13 @@ _XHTML_1_0 = [
 
 _XHTML_1_1 = [
 	("-//W3C//DTD XHTML+RDFa 1.1//EN", "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-2.dtd"),
-	("-//W3C//DTD HTML 4.01+RDFa 1.1//EN", "http://www.w3.org/MarkUp/DTD/html401-rdfa11-1.dtd")	
+	("-//W3C//DTD HTML 4.01+RDFa 1.1//EN", "http://www.w3.org/MarkUp/DTD/html401-rdfa11-1.dtd")
 ]
 
 _XHTML = [
 	("-//W3C//DTD XHTML 1.0 Strict//EN",       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"),
 	("-//W3C//DTD XHTML 1.0 Transitional//EN", "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"),
-	("-//W3C//DTD XHTML 1.1//EN",              "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd")	
+	("-//W3C//DTD XHTML 1.1//EN",              "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd")
 ]
 
 def adjust_html_version(input, rdfa_version) :
@@ -170,16 +170,16 @@ def adjust_html_version(input, rdfa_version) :
 	import xml.dom.minidom
 	parse = xml.dom.minidom.parse
 	dom = parse(input)
-	
+
 	(hl,version) = adjust_xhtml_and_version(dom, HostLanguage.xhtml, rdfa_version)
 	return version
-	
+
 def adjust_xhtml_and_version(dom, incoming_language, rdfa_version) :
 	"""
 	Check if the xhtml+RDFa is really XHTML 0 or 1 or whether it should be considered as XHTML5. This is done
 	by looking at the DTD. Furthermore, checks whether whether the system id signals an rdfa 1.0, in which case the
 	version is also set.
-	
+
 	@param dom: top level DOM node
 	@param incoming_language: host language to be checked; the whole check is relevant for xhtml only.
 	@param rdfa_version: rdfa_version as known by the caller

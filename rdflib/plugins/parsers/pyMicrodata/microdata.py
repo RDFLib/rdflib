@@ -23,7 +23,7 @@ is stopped (on the whole subtree)
 import sys
 if sys.version_info[0] >= 3 :
 	from urllib.parse import urlsplit, urlunsplit
-else :	
+else :
 	from urlparse import urlsplit, urlunsplit
 
 from types import *
@@ -43,7 +43,7 @@ else :
 	from rdflib.RDFS	import RDFSNS  as ns_rdfs
 	from rdflib.Literal import _XSD_NS as ns_xsd
 	from rdflib.RDF		import RDFNS   as ns_rdf
-	
+
 ns_owl = Namespace("http://www.w3.org/2002/07/owl#")
 
 from .registry import registry, vocab_names
@@ -59,7 +59,7 @@ from . import debug
 class PropertySchemes :
 	vocabulary = "vocabulary"
 	contextual = "contextual"
-	
+
 class ValueMethod :
 	unordered = "unordered"
 	list      = "list"
@@ -69,7 +69,7 @@ class ValueMethod :
 class Evaluation_Context :
 	"""
 	Evaluation context structure. See Section 4.1 of the U{W3C IG Note<http://www.w3.org/TR/microdata-rdf/>}for the details.
-	
+
 	@ivar current_type : an absolute URL for the current type, used when an item does not contain an item type
 	@ivar memory: mapping from items to RDF subjects
 	@type memory: dictionary
@@ -81,7 +81,7 @@ class Evaluation_Context :
 		self.memory             = {}
 		self.current_name       = None
 		self.current_vocabulary = None
-		
+
 	def get_memory( self, item ) :
 		"""
 		Get the memory content (ie, RDF subject) for 'item', or None if not stored yet
@@ -93,7 +93,7 @@ class Evaluation_Context :
 			return self.memory[item]
 		else :
 			return None
-		
+
 	def set_memory( self, item, subject ) :
 		"""
 		Set the memory content, ie, the subject, for 'item'.
@@ -103,11 +103,11 @@ class Evaluation_Context :
 		@type subject: URIRef or Blank Node
 		"""
 		self.memory[item] = subject
-		
+
 	def new_copy(self, itype) :
 		"""
 		During the generation algorithm a new copy of the current context has to be done with a new current type.
-		
+
 		At the moment, the content of memory is copied, ie, a fresh dictionary is created and the content copied over.
 		Not clear whether that is necessary, though, maybe a simple reference is enough...
 		@param itype : an absolute URL for the current type
@@ -117,11 +117,11 @@ class Evaluation_Context :
 		for k in self.memory :
 			retval.memory[k] = self.memory[k]
 
-		retval.current_type       = itype		
+		retval.current_type       = itype
 		retval.current_name       = self.current_name
 		retval.current_vocabulary = self.current_vocabulary
 		return retval
-	
+
 	def __str__(self) :
 		retval = "Evaluation context:\n"
 		retval += "  current type:       %s\n" % self.current_type
@@ -130,12 +130,12 @@ class Evaluation_Context :
 		retval += "  memory:             %s\n" % self.memory
 		retval += "----\n"
 		return retval
-		
+
 class Microdata :
 	"""
 	This class encapsulates methods that are defined by the U{microdata spec<http://dev.w3.org/html5/md/Overview.html>},
 	as opposed to the RDF conversion note.
-	
+
 	@ivar document: top of the DOM tree, as returned by the HTML5 parser
 	@ivar base: the base URI of the Dom tree, either set from the outside or via a @base element
 	"""
@@ -145,7 +145,7 @@ class Microdata :
 		@param base: the base URI of the Dom tree, either set from the outside or via a @base element
 		"""
 		self.document = document
-		
+
 		#-----------------------------------------------------------------
 		# set the document base, will be used to generate top level URIs
 		self.base = None
@@ -156,13 +156,13 @@ class Microdata :
 				self.base = set_base.getAttribute("href")
 				return
 		# If got here, ie, if no local setting for base occurs, the input argument has it
-		self.base = base	
+		self.base = base
 
 	def get_top_level_items( self ) :
 		"""
 		A top level item is and element that has the @itemscope set, but no @itemtype. They have to
 		be collected in pre-order and depth-first fashion.
-		
+
 		@return: list of items (ie, DOM Nodes)
 		"""
 		def collect_items( node ) :
@@ -170,20 +170,20 @@ class Microdata :
 			for child in node.childNodes :
 				if child.nodeType == node.ELEMENT_NODE :
 					items += collect_items( child )
-					
+
 			if node.hasAttribute("itemscope") and not node.hasAttribute("itemprop") :
 				# This is also a top level item
 				items.append(node)
-			
+
 			return items
-				
+
 		return collect_items( self.document )
-		
+
 	def get_item_properties( self, item ) :
 		"""
 		Collect the item's properties, ie, all DOM descendent nodes with @itemprop until the subtree hits another
 		@itemscope. @itemrefs are also added at this point.
-		
+
 		@param item: current item
 		@type item: DOM Node
 		@return: array of items, ie, DOM Nodes
@@ -193,14 +193,14 @@ class Microdata :
 		# returns a series of element nodes.
 		# Is it worth filtering the ones with itemprop at that level???
 		results = []
-		memory  = [ item ]		
+		memory  = [ item ]
 		pending = [ child for child in item.childNodes if child.nodeType == item.ELEMENT_NODE ]
-		
+
 		if item.hasAttribute("itemref") :
 			for id in item.getAttribute("itemref").strip().split() :
 				obj = self.getElementById(id)
 				if obj != None : pending.append(obj)
-		
+
 		while len(pending) > 0 :
 			current = pending.pop(0)
 			if current in memory :
@@ -210,16 +210,16 @@ class Microdata :
 			else :
 				# this for the check above
 				memory.append(current)
-			
+
 			# @itemscope is the barrier...
 			if not current.hasAttribute("itemscope") :
 				pending = [ child for child in current.childNodes if child.nodeType == child.ELEMENT_NODE ] + pending
 
 			if current.hasAttribute("itemprop") and current.getAttribute("itemprop").strip() != "" :
 				results.append(current)
-				
+
 		return results
-	
+
 	def getElementById(self, id) :
 		"""This is a method defined for DOM 2 HTML, but the HTML5 parser does not seem to define it. Oh well...
 		@param id: value of an @id attribute to look for
@@ -230,23 +230,23 @@ class Microdata :
 			for child in node.childNodes :
 				if child.nodeType == node.ELEMENT_NODE :
 					ids += collect_ids( child )
-					
+
 			if node.hasAttribute("id") and node.getAttribute("id") == id :
 				# This is also a top level item
 				ids.append(node)
-			
+
 			return ids
-		
+
 		ids = collect_ids(self.document)
 		if len(ids) > 0 :
 			return ids[0]
 		else :
 			return None
-				
+
 class MicrodataConversion(Microdata) :
 	"""
 	Top level class encapsulating the conversion algorithms as described in the W3C note.
-	
+
 	@ivar graph: an RDF graph; an RDFLib Graph
 	@type graph: RDFLib Graph
 	@ivar document: top of the DOM tree, as returned by the HTML5 parser
@@ -282,10 +282,10 @@ class MicrodataConversion(Microdata) :
 			retval = {}
 			vocabs = initial_context["http://www.w3.org/2011/rdfa-context/rdfa-1.1"].ns
 			for prefix in list(vocabs.keys()) :
-				uri = vocabs[prefix]				
+				uri = vocabs[prefix]
 				if uri not in vocab_names and uri not in registry : retval[uri] = prefix
 			return retval
-				
+
 		for vocab in registry :
 			if vocab in vocab_names :
 				self.graph.bind( vocab_names[vocab],vocab )
@@ -293,7 +293,7 @@ class MicrodataConversion(Microdata) :
 				hvocab = vocab + '#'
 				if hvocab in vocab_names :
 					self.graph.bind( vocab_names[hvocab],hvocab )
-					
+
 		# Add the prefixes defined in the RDFa initial context to improve the outlook of the output
 		# I put this into a try: except: in case the pyRdfa package is not available...
 		try :
@@ -309,7 +309,7 @@ class MicrodataConversion(Microdata) :
 					self.graph.bind( prefix,uri )
 		except :
 			pass
-		
+
 	def convert( self ) :
 		"""
 		Top level entry to convert and generate all the triples. It finds the top level items,
@@ -321,7 +321,7 @@ class MicrodataConversion(Microdata) :
 			item_list.append( self.generate_triples(top_level_item, Evaluation_Context()) )
 		list = generate_RDF_collection( self.graph, item_list )
 		self.graph.add( (URIRef(self.base),self.ns_md["item"],list) )
-		
+
 		# If the vocab expansion is also switched on, this is the time to do it.
 
 		# This is the version with my current proposal: the basic expansion is always there;
@@ -348,7 +348,7 @@ class MicrodataConversion(Microdata) :
 	def generate_triples( self, item, context ) :
 		"""
 		Generate the triples for a specific item. See the W3C Note for the details.
-		
+
 		@param item: the DOM Node for the specific item
 		@type item: DOM Node
 		@param context: an instance of an evaluation context
@@ -364,7 +364,7 @@ class MicrodataConversion(Microdata) :
 			else :
 				subject = BNode()
 			context.set_memory( item, subject )
-			
+
 		# Step 3: set the type triples if any
 		types = []
 		if item.hasAttribute("itemtype") :
@@ -372,7 +372,7 @@ class MicrodataConversion(Microdata) :
 			for t in types :
 				if is_absolute_URI( t ) :
 					self.graph.add( (subject, ns_rdf["type"], URIRef(t)) )
-		
+
 		# Step 4, 5 and 6 to set the typing variable
 		if len(types) == 0 :
 			itype = None
@@ -400,13 +400,13 @@ class MicrodataConversion(Microdata) :
 			if vocab == None :
 				parsed = urlsplit(itype)
 				if parsed.fragment != "" :
-					vocab = urlunsplit( (parsed.scheme,parsed.netloc,parsed.path,parsed.query,"") ) + '#'					
+					vocab = urlunsplit( (parsed.scheme,parsed.netloc,parsed.path,parsed.query,"") ) + '#'
 				elif parsed.path == "" and parsed.query == "" :
 					vocab = itype
 					if vocab[-1] != '/' : vocab += '/'
 				else :
 					vocab = itype.rsplit('/',1)[0] + '/'
-		
+
 		# Step 9: update vocab in the context
 		if vocab != None :
 			context.current_vocabulary = vocab
@@ -416,7 +416,7 @@ class MicrodataConversion(Microdata) :
 		# Step 10: set up a property list; this will be used to generate triples later.
 		# each entry in the dictionary is an array of RDF objects
 		property_list = {}
-		
+
 		# Step 11: Get the item properties and run a cycle on those
 		for prop in self.get_item_properties(item) :
 			for name in prop.getAttribute("itemprop").strip().split() :
@@ -434,28 +434,28 @@ class MicrodataConversion(Microdata) :
 					property_list[predicate].append(value)
 				else :
 					property_list[predicate] = [ value ]
-						
+
 		# step 12: generate the triples
 		for property in list(property_list.keys()) :
 			self.generate_property_values( subject, URIRef(property), property_list[property], context )
-			
+
 		# Step 13: return the subject to the caller
 		return subject
-		
+
 	def generate_predicate_URI( self, name, context ) :
 		"""
 		Generate a full URI for a predicate, using the type, the vocabulary, etc.
-		
+
 		For details of this entry, see Section 4.4
 		@param name: name of the property, ie, what appears in @itemprop
 		@param context: an instance of an evaluation context
 		@type context: L{Evaluation_Context}
 		"""
 		if debug: print( "name: %s, %s" % (name,context) )
-		
+
 		# Step 1: absolute URI-s are fine, take them as they are
 		if is_absolute_URI(name) : return name
-		
+
 		# Step 2: if type is none, that this is just used as a fragment
 		# if not context.current_type  :
 		if context.current_type == None and context.current_vocabulary == None  :
@@ -467,7 +467,7 @@ class MicrodataConversion(Microdata) :
 
 		#if context.current_type == None :
 		#	return generate_URI( self.base, name )
-		
+
 		# Step 3: set the scheme
 		try :
 			if context.current_vocabulary in registry and "propertyURI" in registry[context.current_vocabulary] :
@@ -477,7 +477,7 @@ class MicrodataConversion(Microdata) :
 		except :
 			# This is when the structure of the registry is broken
 			scheme = PropertySchemes.vocabulary
-			
+
 		name = fragment_escape( name )
 		if scheme == PropertySchemes.contextual :
 			# Step 5.1
@@ -530,17 +530,17 @@ class MicrodataConversion(Microdata) :
 
 
 		return expandedURI
-		
+
 	def get_property_value(self, node, context) :
 		"""
 		Generate an RDF object, ie, the value of a property. Note that if this element contains
 		an @itemscope, then a recursive call to L{MicrodataConversion.generate_triples} is done and the
 		return value of that method (ie, the subject for the corresponding item) is return as an
 		object.
-		
+
 		Otherwise, either URIRefs are created for <a>, <img>, etc, elements, or a Literal; the latter
 		gets a time-related type for the <time> element.
-		
+
 		@param node: the DOM Node for which the property values should be generated
 		@type node: DOM Node
 		@param context: an instance of an evaluation context
@@ -558,18 +558,18 @@ class MicrodataConversion(Microdata) :
 			"data"		: "src",
 			"a"			: "href",
 			"area"		: "href",
-			"link"		: "href", 
-			"object"	: "data" 
+			"link"		: "href",
+			"object"	: "data"
 		}
 		lang = get_lang_from_hierarchy( self.document, node )
 
 		if node.hasAttribute("itemscope") :
 			# THIS IS A RECURSION ENTRY POINT!
 			return self.generate_triples( node, context )
-			
+
 		elif node.tagName in URI_attrs and node.hasAttribute(URI_attrs[node.tagName]) :
 			return URIRef( generate_URI( self.base, node.getAttribute(URI_attrs[node.tagName]).strip() ) )
-			
+
 		elif node.tagName == "meta" and node.hasAttribute("content") :
 			if lang :
 				return Literal( node.getAttribute("content"), lang = lang )
@@ -612,12 +612,12 @@ class MicrodataConversion(Microdata) :
 				return Literal( get_Literal(node), lang = lang )
 			else :
 				return Literal( get_Literal(node) )
-		
+
 	def generate_property_values( self, subject, predicate, objects, context) :
 		"""
 		Generate the property values for a specific subject and predicate. The context should specify whether
 		the objects should be added in an RDF list or each triples individually.
-		
+
 		@param subject: RDF subject
 		@type subject: RDFLib Node (URIRef or blank node)
 		@param predicate: RDF predicate
@@ -631,7 +631,7 @@ class MicrodataConversion(Microdata) :
 		# The biggest complication is to find the method...
 		method = ValueMethod.unordered
 		superproperties = None
-		
+
 		# This is necessary because predicate is a URIRef, and I am not sure the comparisons would work well
 		# to be tested, in fact...
 		pred_key = "%s" % predicate
@@ -649,15 +649,15 @@ class MicrodataConversion(Microdata) :
 						pass
 				except :
 					pass
-		
+
 		if method == ValueMethod.unordered :
 			for object in objects :
 				self.graph.add( (subject, predicate, object) )
 		else :
 			self.graph.add( (subject,predicate,generate_RDF_collection( self.graph, objects )) )
-		
-						
-				
-					
-		
+
+
+
+
+
 

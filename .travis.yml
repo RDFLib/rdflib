@@ -12,6 +12,7 @@ python:
     # - 3.2
     - 3.3
     - 3.4
+    - 3.5
     # - "pypy"
 
 before_install:
@@ -34,8 +35,8 @@ script:
     # Must run the tests in build/src so python3 doesn't get confused and run
     # the python2 code from the current directory instead of the installed
     # 2to3 version in build/src.
-    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then PYTHONWARNINGS=always nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=rdflib ; fi
-    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '3' ]]; then PYTHONWARNINGS=always nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=build/src/rdflib --where=./build/src; fi
+    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=rdflib ; fi
+    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '3' ]]; then PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=build/src/rdflib --where=./build/src; fi
 
 after_success:
     - if [[ $HAS_COVERALLS ]] ; then coveralls ; fi

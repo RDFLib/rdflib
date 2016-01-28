@@ -20,7 +20,7 @@ def lite_prune(top, options, state) :
 	usage of non-lite attributes. A more aggressive version would mean to remove those attributes, but that would,
 	in fact, define an RDFa Lite conformance level in the parser, which is against the WG decisions. So this should
 	not be done; the corresponding commands are commented in the code below...
-	
+
 	@param top: a DOM node for the top level element
 	@param options: invocation options
 	@type options: L{Options<pyRdfa.options>}
@@ -70,4 +70,4 @@ def lite_prune(top, options, state) :
 		if n.nodeType == top.ELEMENT_NODE :
 			lite_prune(n, options, state)
 
-	
+

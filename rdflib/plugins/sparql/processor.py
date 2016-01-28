@@ -48,7 +48,7 @@ class SPARQLUpdateProcessor(UpdateProcessor):
         self.graph = graph
 
     def update(self, strOrQuery, initBindings={}, initNs={}):
-        if isinstance(strOrQuery, basestring): 
+        if isinstance(strOrQuery, basestring):
             strOrQuery=translateUpdate(parseUpdate(strOrQuery), initNs=initNs)
 
         return evalUpdate(self.graph, strOrQuery, initBindings)

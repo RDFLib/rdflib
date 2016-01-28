@@ -184,7 +184,7 @@ No vars specified:
 """)
 
 
-from rdflib.term import URIRef
+from rdflib.term import URIRef, Node
 
 
 # property paths
@@ -194,9 +194,36 @@ OneOrMore = '+'
 ZeroOrOne = '?'
 
 
-class Path:
+class Path(object):
     def eval(self, graph, subj=None, obj=None):
         raise NotImplementedError()
+
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __eq__(self, other):
+        return repr(self) == repr(other)
+
+    def __lt__(self, other):
+        if not isinstance(other, (Path, Node)):
+            raise TypeError('unorderable types: %s() < %s()' % (
+                repr(self), repr(other)))
+        return repr(self) < repr(other)
+
+    def __le__(self, other):
+        if not isinstance(other, (Path, Node)):
+            raise TypeError('unorderable types: %s() < %s()' % (
+                repr(self), repr(other)))
+        return repr(self) <= repr(other)
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __gt__(self, other):
+        return not self <= other
+
+    def __ge__(self, other):
+        return not self < other
 
 
 class InvPath(Path):
@@ -210,6 +237,9 @@ class InvPath(Path):
 
     def __repr__(self):
         return "Path(~%s)" % (self.arg,)
+
+    def n3(self):
+        return '^%s' % self.arg.n3()
 
 
 class SequencePath(Path):
@@ -252,6 +282,9 @@ class SequencePath(Path):
     def __repr__(self):
         return "Path(%s)" % " / ".join(str(x) for x in self.args)
 
+    def n3(self):
+        return '/'.join(a.n3() for a in self.args)
+
 
 class AlternativePath(Path):
     def __init__(self, *args):
@@ -269,6 +302,10 @@ class AlternativePath(Path):
 
     def __repr__(self):
         return "Path(%s)" % " | ".join(str(x) for x in self.args)
+
+    def n3(self):
+        return '|'.join(a.n3() for a in self.args)
+
 
 
 class MulPath(Path):
@@ -369,6 +406,10 @@ class MulPath(Path):
     def __repr__(self):
         return "Path(%s%s)" % (self.path, self.mod)
 
+    def n3(self):
+        return '%s%s' % (self.path, self.mod)
+
+
 
 class NegatedPath(Path):
     def __init__(self, arg):
@@ -397,6 +438,9 @@ class NegatedPath(Path):
 
     def __repr__(self):
         return "Path(! %s)" % ",".join(str(x) for x in self.args)
+
+    def n3(self):
+        return '!(%s)' % ('|'.join(self.args))
 
 
 class PathList(list):

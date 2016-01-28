@@ -74,10 +74,15 @@ class NSSPARQLWrapper(SPARQLWrapper):
         self.queryString = self.injectPrefixes(query)
 
     def injectPrefixes(self, query):
-        return '\n'.join(
-            ['\n'.join(['PREFIX %s: <%s>' % (key, val)
-                        for key, val in self.nsBindings.items()]),
-             query])
+        prefixes = self.nsBindings.items()
+        if not prefixes:
+            return query
+        return '\n'.join([
+            '\n'.join(['PREFIX %s: <%s>' % (k, v) for k, v in prefixes]),
+            '',  # separate prefixes from query with an empty line
+            query
+        ])
+
 
 BNODE_IDENT_PATTERN = re.compile('(?P<label>_\:[^\s]+)')
 SPARQL_NS = Namespace('http://www.w3.org/2005/sparql-results#')
@@ -211,6 +216,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         self.sparql11 = sparql11
         self.context_aware = context_aware
         self.graph_aware = context_aware
+        self._timeout = None
 
     # Database Management Methods
     def create(self, configuration):
@@ -275,7 +281,8 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
         self.resetQuery()
         if self._is_contextual(queryGraph):
-            self.addDefaultGraph(queryGraph)
+            self.addParameter("default-graph-uri", queryGraph)
+        self.timeout = self._timeout
         self.setQuery(query)
 
         return Result.parse(SPARQLWrapper.query(self).response)
@@ -362,7 +369,8 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
         self.resetQuery()
         if self._is_contextual(context):
-            self.addDefaultGraph(context.identifier)
+            self.addParameter("default-graph-uri", context.identifier)
+        self.timeout = self._timeout
         self.setQuery(query)
 
         doc = ElementTree.parse(SPARQLWrapper.query(self).response)
@@ -394,7 +402,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             self.resetQuery()
             q = "SELECT (count(*) as ?c) WHERE {?s ?p ?o .}"
             if self._is_contextual(context):
-                self.addDefaultGraph(context.identifier)
+                self.addParameter("default-graph-uri", context.identifier)
             self.setQuery(q)
             doc = ElementTree.parse(SPARQLWrapper.query(self).response)
             rt, vars = iter(
@@ -693,10 +701,14 @@ class SPARQLUpdateStore(SPARQLStore):
         if self.autocommit:
             self.commit()
 
+    def setTimeout(self, timeout):
+        self._timeout = int(timeout)
+
     def _do_update(self, update):
         self.resetQuery()
         self.setQuery(update)
         self.setMethod(POST)
+        self.timeout = self._timeout
         self.setRequestMethod(URLENCODED if self.postAsEncoded else POSTDIRECTLY)
 
         result = SPARQLWrapper.query(self)

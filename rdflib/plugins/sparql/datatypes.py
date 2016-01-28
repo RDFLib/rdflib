@@ -9,7 +9,7 @@ XSD_DTs = set(
      XSD.boolean, XSD.dateTime, XSD.nonPositiveInteger, XSD.negativeInteger,
      XSD.long, XSD.int, XSD.short, XSD.byte, XSD.nonNegativeInteger,
      XSD.unsignedLong, XSD.unsignedInt, XSD.unsignedShort, XSD.unsignedByte,
-     XSD.positiveInteger))
+     XSD.positiveInteger, XSD.date))
 
 _sub_types = {
     XSD.integer: [

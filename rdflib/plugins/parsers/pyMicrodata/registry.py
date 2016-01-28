@@ -116,7 +116,7 @@ _myRegistry = """
   "http://n.whatwg.org/work": {
     "propertyURI"    : "contextual",
     "multipleValues" : "list"
-  } 
+  }
 }
 """
 

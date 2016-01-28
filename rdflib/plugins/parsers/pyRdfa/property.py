@@ -31,17 +31,17 @@ else :
 	from rdflib.RDF	    import RDFNS as ns_rdf
 	from rdflib.Literal import XSDToPython
 
-from .	         import IncorrectBlankNodeUsage, IncorrectLiteral, err_no_blank_node, ns_xsd 
+from .	         import IncorrectBlankNodeUsage, IncorrectLiteral, err_no_blank_node, ns_xsd
 from .utils      import has_one_of_attributes, return_XML
 from .host.html5 import handled_time_types
 
 XMLLiteral  = ns_rdf["XMLLiteral"]
-HTMLLiteral = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML") 
+HTMLLiteral = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML")
 
 class ProcessProperty :
 	"""Generate the value for C{@property} taking into account datatype, etc.
-	Note: this class is created only if the C{@property} is indeed present, no need to check. 
-	
+	Note: this class is created only if the C{@property} is indeed present, no need to check.
+
 	@ivar node: DOM element node
 	@ivar graph: the (RDF) graph to add the properies to
 	@ivar subject: the RDFLib URIRef serving as a subject for the generated triples
@@ -63,7 +63,7 @@ class ProcessProperty :
 		self.subject        = subject
 		self.state          = state
 		self.typed_resource = typed_resource
-		
+
 	def generate(self) :
 		"""
 		Common entry point for the RDFa 1.0 and RDFa 1.1 versions; bifurcates based on the RDFa version, as retrieved from the state object.
@@ -72,11 +72,11 @@ class ProcessProperty :
 			self.generate_1_1()
 		else :
 			self.generate_1_0()
-	
+
 	def generate_1_1(self) :
 		"""Generate the property object, 1.1 version"""
-				
-		#########################################################################		
+
+		#########################################################################
 		# See if the target is _not_ a literal
 		irirefs      = ("resource", "href", "src")
 		noiri        = ("content", "datatype", "rel", "rev")
@@ -89,7 +89,7 @@ class ProcessProperty :
 				object = self.typed_resource
 		else :
 			# We have to generate a literal
-			
+
 			# Get, if exists, the value of @datatype
 			datatype = ''
 			dtset    = False
@@ -98,7 +98,7 @@ class ProcessProperty :
 				dt = self.node.getAttribute("datatype")
 				if dt != "" :
 					datatype = self.state.getURI("datatype")
-		
+
 			# Supress lange is set in case some elements explicitly want to supress the effect of language
 			# There were discussions, for example, that the <time> element should do so. Although,
 			# after all, this was reversed, the functionality is kept in the code in case another
@@ -107,7 +107,7 @@ class ProcessProperty :
 				lang = self.state.lang
 			else :
 				lang = ''
-	
+
 			# The simple case: separate @content attribute
 			if self.node.hasAttribute("content") :
 				val = self.node.getAttribute("content")
@@ -116,7 +116,7 @@ class ProcessProperty :
 					object = Literal(val, lang=lang)
 				else :
 					object = self._create_Literal(val, datatype=datatype, lang=lang)
-				# The value of datatype has been set, and the keyword paramaters take care of the rest
+				# The value of datatype has been set, and the keyword parameters take care of the rest
 			else :
 				# see if there *is* a datatype (even if it is empty!)
 				if dtset :
@@ -130,29 +130,29 @@ class ProcessProperty :
 							object = Literal(self._get_HTML_literal(self.node), datatype=HTMLLiteral)
 						else :
 							litval = self._get_HTML_literal(self.node)
-							o = Literal(litval, datatype=XMLLiteral)	
-							object = Literal(o, datatype=HTMLLiteral)					
+							o = Literal(litval, datatype=XMLLiteral)
+							object = Literal(o, datatype=HTMLLiteral)
 					else :
 						object = self._create_Literal(self._get_literal(self.node), datatype=datatype, lang=lang)
 				else :
 					object = self._create_Literal(self._get_literal(self.node), lang=lang)
-	
+
 		if object != None :
 			for prop in self.state.getURI("property") :
 				if not isinstance(prop, BNode) :
 					if self.node.hasAttribute("inlist") :
 						self.state.add_to_list_mapping(prop, object)
-					else :			
+					else :
 						self.graph.add( (self.subject, prop, object) )
 				else :
 					self.state.options.add_warning(err_no_blank_node % "property", warning_type=IncorrectBlankNodeUsage, node=self.node.nodeName)
-	
+
 		# return
 
 	def generate_1_0(self) :
 		"""Generate the property object, 1.0 version"""
-				
-		#########################################################################		
+
+		#########################################################################
 		# We have to generate a literal indeed.
 		# Get, if exists, the value of @datatype
 		datatype = ''
@@ -162,7 +162,7 @@ class ProcessProperty :
 			dt = self.node.getAttribute("datatype")
 			if dt != "" :
 				datatype = self.state.getURI("datatype")
-	
+
 		if self.state.lang != None :
 			lang = self.state.lang
 		else :
@@ -176,7 +176,7 @@ class ProcessProperty :
 				object = Literal(val, lang=lang)
 			else :
 				object = self._create_Literal(val, datatype=datatype, lang=lang)
-			# The value of datatype has been set, and the keyword paramaters take care of the rest
+			# The value of datatype has been set, and the keyword parameters take care of the rest
 		else :
 			# see if there *is* a datatype (even if it is empty!)
 			if dtset :
@@ -193,8 +193,8 @@ class ProcessProperty :
 						object = Literal(self._get_HTML_literal(self.node), datatype=HTMLLiteral)
 					else :
 						litval = self._get_HTML_literal(self.node)
-						o = Literal(litval, datatype=XMLLiteral)	
-						object = Literal(o, datatype=HTMLLiteral)					
+						o = Literal(litval, datatype=XMLLiteral)
+						object = Literal(o, datatype=HTMLLiteral)
 				else :
 					object = self._create_Literal(self._get_literal(self.node), datatype=datatype, lang=lang)
 			else :
@@ -207,18 +207,18 @@ class ProcessProperty :
 					# At this point, there might be entities in the string that are returned as real characters by the dom
 					# implementation. That should be turned back
 					object = self._create_Literal(self._get_literal(self.node), lang=lang)
-	
+
 		for prop in self.state.getURI("property") :
 			if not isinstance(prop,BNode) :
 				self.graph.add( (self.subject,prop,object) )
 			else :
 				self.state.options.add_warning(err_no_blank_node % "property", warning_type=IncorrectBlankNodeUsage, node=self.node.nodeName)
-	
+
 		# return
-	
+
 	######################################################################################################################################
-	
-	
+
+
 	def _putBackEntities(self, str) :
 		"""Put 'back' entities for the '&','<', and '>' characters, to produce a proper XML string.
 		Used by the XML Literal extraction.
@@ -227,11 +227,11 @@ class ProcessProperty :
 		@rtype: string
 		"""
 		return str.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;')
-		
+
 	def _get_literal(self, Pnode):
 		"""
 		Get (recursively) the full text from a DOM Node.
-	
+
 		@param Pnode: DOM Node
 		@return: string
 		"""
@@ -241,24 +241,24 @@ class ProcessProperty :
 				rc = rc + node.data
 			elif node.nodeType == node.ELEMENT_NODE :
 				rc = rc + self._get_literal(node)
-	
+
 		# The decision of the group in February 2008 is not to normalize the result by default.
-		# This is reflected in the default value of the option		
-		
+		# This is reflected in the default value of the option
+
 		if self.state.options.space_preserve :
 			return rc
 		else :
 			return re.sub(r'(\r| |\n|\t)+'," ",rc).strip()
 	# end getLiteral
-	
+
 	def _get_XML_literal(self, Pnode) :
 		"""
-		Get (recursively) the XML Literal content of a DOM Node. 
-	
+		Get (recursively) the XML Literal content of a DOM Node.
+
 		@param Pnode: DOM Node
 		@return: string
-		"""	
-		rc = ""		
+		"""
+		rc = ""
 		for node in Pnode.childNodes:
 			if node.nodeType == node.TEXT_NODE:
 				rc = rc + self._putBackEntities(node.data)
@@ -269,12 +269,12 @@ class ProcessProperty :
 
 	def _get_HTML_literal(self, Pnode) :
 		"""
-		Get (recursively) the XML Literal content of a DOM Node. 
-	
+		Get (recursively) the XML Literal content of a DOM Node.
+
 		@param Pnode: DOM Node
 		@return: string
-		"""	
-		rc = ""		
+		"""
+		rc = ""
 		for node in Pnode.childNodes:
 			if node.nodeType == node.TEXT_NODE:
 				rc = rc + self._putBackEntities(node.data)
@@ -282,7 +282,7 @@ class ProcessProperty :
 				rc = rc + return_XML(self.state, node, base = False, xmlns = False )
 		return rc
 	# end getXMLLiteral
-	
+
 	def _create_Literal(self, val, datatype = '', lang = '') :
 		"""
 		Create a literal, taking into account the datatype and language.

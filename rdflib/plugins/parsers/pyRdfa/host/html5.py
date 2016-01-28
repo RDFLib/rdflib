@@ -43,7 +43,7 @@ _formats = {
 	date_type      	  : [ "%Y-%m-%d", "%Y-%m-%dZ" ],
 	time_type      	  : [ "%H:%M",
 					      "%H:%M:%S",
-					      "%H:%M:%SZ",						
+					      "%H:%M:%SZ",
 					      "%H:%M:%S.%f" ],
 	datetime_type  	  : [ "%Y-%m-%dT%H:%M",
 					      "%Y-%m-%dT%H:%M:%S",
@@ -79,7 +79,7 @@ def _format_test(string) :
 				return key
 			except ValueError :
 				pass
-			
+
 	# Now come the special cases:-(
 	# Check first for the duration stuff, that is the nastiest.
 	if len(string) > 2 and (string[0] == 'P' or (string[0] == '-' and string[1] == 'P')) :
@@ -122,12 +122,12 @@ def _format_test(string) :
 					except ValueError :
 						pass
 			# something went wrong...
-			return plain			
+			return plain
 		else :
 			# Well, no more tricks, this is a plain type
 			return plain
-	
-	
+
+
 	# If we got here, we should check the time zone
 	# there is a discrepancy betwen the python and the HTML5/XSD lexical string,
 	# which means that this has to handled separately for the date and the timezone portion
@@ -141,7 +141,7 @@ def _format_test(string) :
 		except ValueError :
 			# Bummer, this is not a correct time
 			return plain
-		# The time-zone is fine, the datetime portion has to be checked		
+		# The time-zone is fine, the datetime portion has to be checked
 		for format in _formats[datetime_type] :
 			try :
 				# try to check if it is fine
@@ -163,7 +163,7 @@ def html5_extra_attributes(node, state) :
 	def _get_literal(Pnode):
 		"""
 		Get (recursively) the full text from a DOM Node.
-	
+
 		@param Pnode: DOM Node
 		@return: string
 		"""
@@ -172,7 +172,7 @@ def html5_extra_attributes(node, state) :
 			if node.nodeType == node.TEXT_NODE:
 				rc = rc + node.data
 			elif node.nodeType == node.ELEMENT_NODE :
-				rc = rc + self._get_literal(node)
+				rc = rc + _get_literal(node)
 		if state.options.space_preserve :
 			return rc
 		else :
@@ -181,7 +181,7 @@ def html5_extra_attributes(node, state) :
 	# end _getLiteral
 
 	def _set_time(value) :
-		if not node.hasAttribute("datatype") :			
+		if not node.hasAttribute("datatype") :
 			# Check the datatype:
 			dt = _format_test(value)
 			if dt != plain :
@@ -199,11 +199,11 @@ def html5_extra_attributes(node, state) :
 		elif node.tagName == "time" :
 			# Note that a possible @datetime value has already been taken care of
 			_set_time( _get_literal(node) )
-		
+
 def remove_rel(node, state):
 	"""
 	If @property and @rel/@rev are on the same element, then only CURIE and URI can appear as a rel/rev value.
-	
+
 	@param node: the current node that could be modified
 	@param state: current state
 	@type state: L{Execution context<pyRdfa.state.ExecutionContext>}
@@ -219,19 +219,19 @@ def remove_rel(node, state):
 					node.removeAttribute(attr)
 				else :
 					node.setAttribute(attr, reduce(lambda x,y: x+' '+y,final_vals))
-	
+
 	_massage_node(node, "rev")
 	_massage_node(node, "rel")
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
+
+

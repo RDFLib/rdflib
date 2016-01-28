@@ -45,8 +45,8 @@ from .utils import has_one_of_attributes
 
 #######################################################################
 def parse_one_node(node, graph, parent_object, incoming_state, parent_incomplete_triples) :
-	"""The (recursive) step of handling a single node. 
-	
+	"""The (recursive) step of handling a single node.
+
 	This entry just switches between the RDFa 1.0 and RDFa 1.1 versions for parsing. This method is only invoked once,
 	actually, from the top level; the recursion then happens in the L{_parse_1_0} and L{_parse_1_1} methods for
 	RDFa 1.0 and RDFa 1.1, respectively.
@@ -72,7 +72,7 @@ def parse_one_node(node, graph, parent_object, incoming_state, parent_incomplete
 def _parse_1_1(node, graph, parent_object, incoming_state, parent_incomplete_triples) :
 	"""The (recursive) step of handling a single node. See the
 	U{RDFa 1.1 Core document<http://www.w3.org/TR/rdfa-core/>} for further details.
-	
+
 	This is the RDFa 1.1 version.
 
 	@param node: the DOM node to handle
@@ -108,18 +108,18 @@ def _parse_1_1(node, graph, parent_object, incoming_state, parent_incomplete_tri
 	#---------------------------------------------------------------------------------
 	# Extra warning check on RDFa Lite
 	lite_check()
-	
+
 	#---------------------------------------------------------------------------------
 	# Handling the role attribute is pretty much orthogonal to everything else...
 	handle_role_attribute(node, graph, state)
 
 	#---------------------------------------------------------------------------------
-	# Handle the special case for embedded RDF, eg, in SVG1.2. 
+	# Handle the special case for embedded RDF, eg, in SVG1.2.
 	# This may add some triples to the target graph that does not originate from RDFa parsing
 	# If the function return TRUE, that means that an rdf:RDF has been found. No
 	# RDFa parsing should be done on that subtree, so we simply return...
-	if state.options.embedded_rdf and node.nodeType == node.ELEMENT_NODE and handle_embeddedRDF(node, graph, state) : 
-		return	
+	if state.options.embedded_rdf and node.nodeType == node.ELEMENT_NODE and handle_embeddedRDF(node, graph, state) :
+		return
 
 	#---------------------------------------------------------------------------------
 	# calling the host language specific massaging of the DOM
@@ -143,7 +143,7 @@ def _parse_1_1(node, graph, parent_object, incoming_state, parent_incomplete_tri
 	current_subject = None
 	current_object  = None
 	typed_resource	= None
-	
+
 	if has_one_of_attributes(node, "rel", "rev")  :
 		# in this case there is the notion of 'left' and 'right' of @rel/@rev
 		# in establishing the new Subject and the objectResource
@@ -153,22 +153,22 @@ def _parse_1_1(node, graph, parent_object, incoming_state, parent_incomplete_tri
 		if node.hasAttribute("about") :
 			current_subject = state.getURI("about")
 			if node.hasAttribute("typeof") : typed_resource = current_subject
-			
+
 		# get_URI may return None in case of an illegal CURIE, so
 		# we have to be careful here, not use only an 'else'
 		if current_subject == None :
 			current_subject = parent_object
 		else :
 			state.reset_list_mapping(origin = current_subject)
-		
+
 		# set the object resource
 		current_object = state.getResource("resource", "href", "src")
-			
+
 		if node.hasAttribute("typeof") and not node.hasAttribute("about") :
 			if current_object == None :
 				current_object = BNode()
 			typed_resource = current_object
-		
+
 		if not node.hasAttribute("inlist") and current_object != None :
 			# In this case the newly defined object is, in fact, the head of the list
 			# just reset the whole thing.
@@ -196,7 +196,7 @@ def _parse_1_1(node, graph, parent_object, incoming_state, parent_incomplete_tri
 			current_object = typed_resource
 		else :
 			current_object = current_subject
-			
+
 	else :
 		current_subject = header_check(parent_object)
 
@@ -204,7 +204,7 @@ def _parse_1_1(node, graph, parent_object, incoming_state, parent_incomplete_tri
 		# behave identically, though they also have their own priority
 		if current_subject == None :
 			current_subject = state.getResource("about", "resource", "href", "src")
-			
+
 		# get_URI_ref may return None in case of an illegal CURIE, so
 		# we have to be careful here, not use only an 'else'
 		if current_subject == None :
@@ -221,7 +221,7 @@ def _parse_1_1(node, graph, parent_object, incoming_state, parent_incomplete_tri
 		# the children node
 		current_object = current_subject
 		if node.hasAttribute("typeof") : typed_resource = current_subject
-		
+
 	# ---------------------------------------------------------------------
 	## The possible typeof indicates a number of type statements on the typed resource
 	for defined_type in state.getURI("typeof") :
@@ -245,7 +245,7 @@ def _parse_1_1(node, graph, parent_object, incoming_state, parent_incomplete_tri
 					# if that list was initialized already with a real content
 					# this call will have no effect
 					state.add_to_list_mapping(prop, None)
-					
+
 					# Add a placeholder into the hanging rels
 					incomplete_triples.append( (None, prop, None) )
 			else :
@@ -270,7 +270,7 @@ def _parse_1_1(node, graph, parent_object, incoming_state, parent_incomplete_tri
 	# ----------------------------------------------------------------------
 	# Generation of the @property values, including literals. The newSubject is the subject
 	# A particularity of property is that it stops the parsing down the DOM tree if an XML Literal is generated,
-	# because everything down there is part of the generated literal. 
+	# because everything down there is part of the generated literal.
 	if node.hasAttribute("property") :
 		ProcessProperty(node, graph, current_subject, state, typed_resource).generate_1_1()
 
@@ -285,7 +285,7 @@ def _parse_1_1(node, graph, parent_object, incoming_state, parent_incomplete_tri
 	#-----------------------------------------------------------------------
 	# Here is the recursion step for all the children
 	for n in node.childNodes :
-		if n.nodeType == node.ELEMENT_NODE : 
+		if n.nodeType == node.ELEMENT_NODE :
 			_parse_1_1(n, graph, object_to_children, state, incomplete_triples)
 
 	# ---------------------------------------------------------------------
@@ -299,7 +299,7 @@ def _parse_1_1(node, graph, parent_object, incoming_state, parent_incomplete_tri
 			if o == None : o = current_subject
 			graph.add((s,p,o))
 
-	# Generate the lists, if any and if this is the level where a new list was originally created	
+	# Generate the lists, if any and if this is the level where a new list was originally created
 	if state.new_list and not state.list_empty() :
 		for prop in state.get_list_props() :
 			vals  = state.get_list_value(prop)
@@ -325,7 +325,7 @@ def _parse_1_1(node, graph, parent_object, incoming_state, parent_incomplete_tri
 def _parse_1_0(node, graph, parent_object, incoming_state, parent_incomplete_triples) :
 	"""The (recursive) step of handling a single node. See the
 	U{RDFa 1.0 syntax document<http://www.w3.org/TR/rdfa-syntax>} for further details.
-	
+
 	This is the RDFa 1.0 version.
 
 	@param node: the DOM node to handle
@@ -350,12 +350,12 @@ def _parse_1_0(node, graph, parent_object, incoming_state, parent_incomplete_tri
 	handle_role_attribute(node, graph, state)
 
 	#---------------------------------------------------------------------------------
-	# Handle the special case for embedded RDF, eg, in SVG1.2. 
+	# Handle the special case for embedded RDF, eg, in SVG1.2.
 	# This may add some triples to the target graph that does not originate from RDFa parsing
 	# If the function return TRUE, that means that an rdf:RDF has been found. No
 	# RDFa parsing should be done on that subtree, so we simply return...
-	if state.options.embedded_rdf and node.nodeType == node.ELEMENT_NODE and handle_embeddedRDF(node, graph, state) : 
-		return	
+	if state.options.embedded_rdf and node.nodeType == node.ELEMENT_NODE and handle_embeddedRDF(node, graph, state) :
+		return
 
 	#---------------------------------------------------------------------------------
 	# calling the host language specific massaging of the DOM
@@ -384,7 +384,7 @@ def _parse_1_0(node, graph, parent_object, incoming_state, parent_incomplete_tri
 		# in this case there is the notion of 'left' and 'right' of @rel/@rev
 		# in establishing the new Subject and the objectResource
 		current_subject = state.getResource("about","src")
-			
+
 		# get_URI may return None in case of an illegal CURIE, so
 		# we have to be careful here, not use only an 'else'
 		if current_subject == None :
@@ -394,15 +394,15 @@ def _parse_1_0(node, graph, parent_object, incoming_state, parent_incomplete_tri
 				current_subject = parent_object
 		else :
 			state.reset_list_mapping(origin = current_subject)
-		
+
 		# set the object resource
 		current_object = state.getResource("resource", "href")
-		
+
 	else :
 		# in this case all the various 'resource' setting attributes
 		# behave identically, though they also have their own priority
 		current_subject = state.getResource("about", "src", "resource", "href")
-		
+
 		# get_URI_ref may return None in case of an illegal CURIE, so
 		# we have to be careful here, not use only an 'else'
 		if current_subject == None :
@@ -418,7 +418,7 @@ def _parse_1_0(node, graph, parent_object, incoming_state, parent_incomplete_tri
 		# only role of the current_object Resource is to be transferred to
 		# the children node
 		current_object = current_subject
-		
+
 	# ---------------------------------------------------------------------
 	## The possible typeof indicates a number of type statements on the new Subject
 	for defined_type in state.getURI("typeof") :
@@ -451,7 +451,7 @@ def _parse_1_0(node, graph, parent_object, incoming_state, parent_incomplete_tri
 	# ----------------------------------------------------------------------
 	# Generation of the literal values. The newSubject is the subject
 	# A particularity of property is that it stops the parsing down the DOM tree if an XML Literal is generated,
-	# because everything down there is part of the generated literal. 
+	# because everything down there is part of the generated literal.
 	if node.hasAttribute("property") :
 		ProcessProperty(node, graph, current_subject, state).generate_1_0()
 
@@ -466,7 +466,7 @@ def _parse_1_0(node, graph, parent_object, incoming_state, parent_incomplete_tri
 	#-----------------------------------------------------------------------
 	# Here is the recursion step for all the children
 	for n in node.childNodes :
-		if n.nodeType == node.ELEMENT_NODE : 
+		if n.nodeType == node.ELEMENT_NODE :
 			_parse_1_0(n, graph, object_to_children, state, incomplete_triples)
 
 	# ---------------------------------------------------------------------
@@ -506,14 +506,14 @@ def handle_role_attribute(node, graph, state) :
 		predicate = URIRef('http://www.w3.org/1999/xhtml/vocab#role')
 		for object in state.getURI("role") :
 			graph.add((subject, predicate, object))
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
 

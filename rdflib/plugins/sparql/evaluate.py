@@ -26,7 +26,7 @@ from rdflib.plugins.sparql.evalutils import (
     _filter, _eval, _join, _diff, _minus, _fillTemplate, _ebv)
 
 from rdflib.plugins.sparql.aggregates import evalAgg
-
+from rdflib.plugins.sparql.algebra import Join, ToMultiSet, Values
 
 def evalBGP(ctx, bgp):
 
@@ -164,7 +164,7 @@ def evalGraph(ctx, part):
     ctx = ctx.clone()
     graph = ctx[part.term]
     if graph is None:
-        
+
         for graph in ctx.dataset.contexts():
 
             # in SPARQL the default graph is NOT a named graph
@@ -174,12 +174,12 @@ def evalGraph(ctx, part):
             c = ctx.pushGraph(graph)
             c = c.push()
             graphSolution = [{part.term: graph.identifier}]
-            for x in _join(evalPart(c, part.p), graphSolution): 
+            for x in _join(evalPart(c, part.p), graphSolution):
                 yield x
 
     else:
         c = ctx.pushGraph(ctx.dataset.get_context(graph))
-        for x in evalPart(c, part.p): 
+        for x in evalPart(c, part.p):
             yield x
 
 
@@ -214,7 +214,11 @@ def evalPart(ctx, part):
             pass  # the given custome-function did not handle this part
 
     if part.name == 'BGP':
-        return evalBGP(ctx, part.triples)  # NOTE pass part.triples, not part!
+        # Reorder triples patterns by number of bound nodes in the current ctx
+        # Do patterns with more bound nodes first
+        triples = sorted(part.triples, key=lambda t: len([n for n in t if ctx[n] is None]))
+
+        return evalBGP(ctx, triples)
     elif part.name == 'Filter':
         return evalFilter(ctx, part)
     elif part.name == 'Join':
@@ -406,16 +410,38 @@ def evalQuery(graph, query, initBindings, base=None):
 
     ctx.prologue = query.prologue
 
-    if initBindings:
-        for k, v in initBindings.iteritems():
-            if not isinstance(k, Variable):
-                k = Variable(k)
-            ctx[k] = v
-        # ctx.push()  # nescessary?
-
     main = query.algebra
 
-    # import pdb; pdb.set_trace()
+    if initBindings:
+        # add initBindings as a values clause
+
+        values = {} # no dict comprehension in 2.6 :(
+        for k,v in initBindings.iteritems():
+            if not isinstance(k, Variable):
+                k = Variable(k)
+            values[k] = v
+
+        main = main.clone() # clone to not change prepared q
+        main['p'] = main.p.clone()
+        # Find the right place to insert MultiSet join
+        repl = main.p
+        if repl.name == 'Slice':
+            repl['p'] = repl.p.clone()
+            repl = repl.p
+        if repl.name == 'Distinct':
+            repl['p'] = repl.p.clone()
+            repl = repl.p
+        if repl.p.name == 'OrderBy':
+            repl['p'] = repl.p.clone()
+            repl = repl.p
+        if repl.p.name == 'Extend':
+            repl['p'] = repl.p.clone()
+            repl = repl.p
+
+        repl['p'] = Join(repl.p, ToMultiSet(Values([values])))
+
+        # TODO: Vars?
+
     if main.datasetClause:
         if ctx.dataset is None:
             raise Exception(

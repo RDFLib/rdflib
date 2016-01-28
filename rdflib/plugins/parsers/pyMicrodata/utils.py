@@ -45,7 +45,7 @@ def is_absolute_URI( uri ) :
 
 def fragment_escape( name ) :
 	return quote(name, '/~:-.')
-		
+
 #################################################################################
 
 def generate_URI(base, v) :
@@ -57,12 +57,12 @@ def generate_URI(base, v) :
 	"""
 	if is_absolute_URI( v ) :
 		return v
-	else :		
+	else :
 		# UGLY!!! There is a bug for a corner case in python version <= 2.5.X
 		if len(v) > 0 and v[0] == '?' and (py_v_major < 3 and py_v_minor <= 5) :
 			return base+val
 		####
-		
+
 		# Trust the python library...
 		# Well, not quite:-) there is what is, in my view, a bug in the urljoin; in some cases it
 		# swallows the '#' or '?' character at the end. This is clearly a problem with
@@ -75,7 +75,7 @@ def generate_URI(base, v) :
 			else :
 				return joined
 		except :
-			return joined		
+			return joined
 
 #################################################################################
 def generate_RDF_collection( graph, vals ) :
@@ -108,11 +108,11 @@ def get_Literal(Pnode):
 			rc = rc + node.data
 		elif node.nodeType == node.ELEMENT_NODE :
 			rc = rc + get_Literal(node)
-			
+
 	# This presupposes that all spaces and such should be stripped. I am not sure it is true in the spec,
 	# but this is what the examples show
 	# return re.sub(r'(\r| |\n|\t)+'," ",rc).strip()
-	
+
 	# at present, the agreement seems to say that white spaces are maintained:
 	return rc
 
@@ -139,7 +139,7 @@ def get_lang_from_hierarchy(document, node) :
 			return get_lang(document)
 	else :
 		return lang
-	
+
 #################################################################################
 datetime_type 	= "http://www.w3.org/2001/XMLSchema#dateTime"
 time_type 	 	= "http://www.w3.org/2001/XMLSchema#time"
@@ -156,7 +156,7 @@ _formats = {
 	date_type      	  : [ "%Y-%m-%d", "%Y-%m-%dZ" ],
 	time_type      	  : [ "%H:%M",
 					      "%H:%M:%S",
-					      "%H:%M:%SZ",						
+					      "%H:%M:%SZ",
 					      "%H:%M:%S.%f" ],
 	datetime_type  	  : [ "%Y-%m-%dT%H:%M",
 					      "%Y-%m-%dT%H:%M:%S",
@@ -234,7 +234,7 @@ def get_time_type(string) :
 					except ValueError :
 						pass
 			# something went wrong...
-			return None			
+			return None
 		else :
 			# Well, no more tricks, this is a plain type
 			return None
@@ -273,7 +273,7 @@ class URIOpener :
 	sets the content location.
 	The class also adds an accept header to the outgoing request, namely
 	text/html and application/xhtml+xml (unless set explicitly by the caller).
-	
+
 	@ivar data: the real data, ie, a file-like object
 	@ivar headers: the return headers as sent back by the server
 	@ivar location: the real location of the data (ie, after possible redirection and content negotiation)
@@ -283,21 +283,21 @@ class URIOpener :
 		"""
 		@param name: URL to be opened
 		@keyword additional_headers: additional HTTP request headers to be added to the call
-		"""		
+		"""
 		try :
 			# Note the removal of the fragment ID. This is necessary, per the HTTP spec
 			req = Request(url=name.split('#')[0])
 
 			req.add_header('Accept', 'text/html, application/xhtml+xml')
-				
+
 			self.data		= urlopen(req)
 			self.headers	= self.data.info()
 
 			if URIOpener.CONTENT_LOCATION in self.headers :
-				self.location = urlparse.urljoin(self.data.geturl(),self.headers[URIOpener.CONTENT_LOCATION])
+				self.location = urljoin(self.data.geturl(),self.headers[URIOpener.CONTENT_LOCATION])
 			else :
 				self.location = name
-				
+
 		except urllib_HTTPError :
 			e = sys.exc_info()[1]
 			from pyMicrodata import HTTPError

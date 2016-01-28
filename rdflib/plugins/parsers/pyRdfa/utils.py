@@ -48,13 +48,13 @@ class URIOpener :
 	sets a number of instance variable that might be relevant for processing.
 	The class also adds an accept header to the outgoing request, namely
 	text/html and application/xhtml+xml (unless set explicitly by the caller).
-	
+
 	If the content type is set by the server, the relevant HTTP response field is used. Otherwise,
 	common suffixes are used (see L{host.preferred_suffixes}) to set the content type (this is really of importance
 	for C{file:///} URI-s). If none of these works, the content type is empty.
-		
+
 	Interpretation of the content type for the return is done by Deron Meranda's U{httpheader module<http://deron.meranda.us/>}.
-	
+
 	@ivar data: the real data, ie, a file-like object
 	@ivar headers: the return headers as sent back by the server
 	@ivar content_type: the content type of the resource or the empty string, if the content type cannot be determined
@@ -70,7 +70,7 @@ class URIOpener :
 		"""
 		@param name: URL to be opened
 		@keyword additional_headers: additional HTTP request headers to be added to the call
-		"""		
+		"""
 		try :
 			# Note the removal of the fragment ID. This is necessary, per the HTTP spec
 			req = Request(url=name.split('#')[0])
@@ -79,10 +79,10 @@ class URIOpener :
 				req.add_header(key, additional_headers[key])
 			if 'Accept' not in additional_headers :
 				req.add_header('Accept', 'text/html, application/xhtml+xml')
-				
+
 			self.data		= urlopen(req)
 			self.headers	= self.data.info()
-			
+
 			if URIOpener.CONTENT_TYPE in self.headers :
 				# The call below will remove the possible media type parameters, like charset settings
 				ct = content_type(self.headers[URIOpener.CONTENT_TYPE])
@@ -102,12 +102,12 @@ class URIOpener :
 					if name.endswith(suffix) :
 						self.content_type = preferred_suffixes[suffix]
 						break
-			
+
 			if URIOpener.CONTENT_LOCATION in self.headers :
 				self.location = urljoin(self.data.geturl(),self.headers[URIOpener.CONTENT_LOCATION])
 			else :
 				self.location = name
-			
+
 			self.expiration_date = datetime.datetime.utcnow() + datetime.timedelta(days=1)
 			if URIOpener.EXPIRES in self.headers :
 				try :
@@ -125,7 +125,7 @@ class URIOpener :
 				except :
 					# The last modified date format was wrong, sorry, forget it...
 					pass
-				
+
 		except urllib_HTTPError :
 			e = sys.exc_info()[1]
 			from . import HTTPError
@@ -138,7 +138,7 @@ class URIOpener :
 
 #########################################################################################################
 
-# 'safe' characters for the URI quoting, ie, characters that can safely stay as they are. Other 
+# 'safe' characters for the URI quoting, ie, characters that can safely stay as they are. Other
 # special characters are converted to their %.. equivalents for namespace prefixes
 _unquotedChars = ':/\?=#~'
 _warnChars     = [' ','\n','\r','\t']
@@ -146,10 +146,10 @@ _warnChars     = [' ','\n','\r','\t']
 def quote_URI(uri, options = None) :
 	"""
 	'quote' a URI, ie, exchange special characters for their '%..' equivalents. Some of the characters
-	may stay as they are (listed in L{_unquotedChars}. If one of the characters listed in L{_warnChars} 
+	may stay as they are (listed in L{_unquotedChars}. If one of the characters listed in L{_warnChars}
 	is also in the uri, an extra warning is also generated.
 	@param uri: URI
-	@param options: 
+	@param options:
 	@type options: L{Options<pyRdfa.Options>}
 	"""
 	from . import err_unusual_char_in_URI
@@ -160,9 +160,9 @@ def quote_URI(uri, options = None) :
 				options.add_warning(err_unusual_char_in_URI % suri)
 			break
 	return quote(suri, _unquotedChars)
-	
+
 #########################################################################################################
-	
+
 def create_file_name(uri) :
 	"""
 	Create a suitable file name from an (absolute) URI. Used, eg, for the generation of a file name for a cached vocabulary file.
@@ -187,7 +187,7 @@ def has_one_of_attributes(node,*args) :
 		rargs = args[0]
 	else :
 		rargs = args
-	
+
 	return True in [ node.hasAttribute(attr) for attr in rargs ]
 
 #########################################################################################################
@@ -236,7 +236,7 @@ def return_XML(state, inode, base = True, xmlns = True) :
 		else :
 			if not node.getAttribute("xml:lang") :
 				node.setAttribute("xml:lang", state.lang)
-	
+
 	if sys.version_info[0] >= 3 :
 		return node.toxml()
 	else :
@@ -252,6 +252,6 @@ def dump(node) :
 	@param node: DOM node
 	"""
 	print( node.toprettyxml(indent="", newl="") )
-	
 
-	
+
+

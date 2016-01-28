@@ -42,17 +42,17 @@ from .host 		import HostLanguage, accept_xml_base, accept_xml_lang, beautifying_
 from .termorcurie	import TermOrCurie
 from .				import UnresolvablePrefix, UnresolvableTerm
 
-from . import err_lang							
-from . import err_URI_scheme						
-from . import err_illegal_safe_CURIE				
-from . import err_no_CURIE_in_safe_CURIE			
-from . import err_undefined_terms					
-from . import err_non_legal_CURIE_ref				
-from . import err_undefined_CURIE					
+from . import err_lang
+from . import err_URI_scheme
+from . import err_illegal_safe_CURIE
+from . import err_no_CURIE_in_safe_CURIE
+from . import err_undefined_terms
+from . import err_non_legal_CURIE_ref
+from . import err_undefined_CURIE
 
 if py_v_major >= 3 :
 	from urllib.parse import urlparse, urlunparse, urlsplit, urljoin
-else :	
+else :
 	from urlparse import urlparse, urlunparse, urlsplit, urljoin
 
 class ListStructure :
@@ -68,7 +68,7 @@ class ExecutionContext :
 	"""State at a specific node, including the current set of namespaces in the RDFLib sense, current language,
 	the base, vocabularies, etc. The class is also used to interpret URI-s and CURIE-s to produce
 	URI references for RDFLib.
-	
+
 	@ivar options: reference to the overall options
 	@type options: L{Options}
 	@ivar base: the 'base' URI
@@ -88,11 +88,11 @@ class ExecutionContext :
 	@cvar _resource_type: dictionary; mapping table from attribute name to the exact method to retrieve the URI(s). Is initialized at first instantiation.
 	"""
 
-	# list of attributes that allow for lists of values and should be treated as such	
+	# list of attributes that allow for lists of values and should be treated as such
 	_list = [ "rel", "rev", "property", "typeof", "role" ]
 	# mapping table from attribute name to the exact method to retrieve the URI(s).
 	_resource_type = {}
-	
+
 	def __init__(self, node, graph, inherited_state=None, base="", options=None, rdfa_version = None) :
 		"""
 		@param node: the current DOM Node
@@ -102,7 +102,7 @@ class ExecutionContext :
 		retrieved from the current node.
 		@type inherited_state: L{state.ExecutionContext}
 		@keyword base: string denoting the base URI for the specific node. This overrides the possible
-		base inherited from the upper layers. The 
+		base inherited from the upper layers. The
 		current XHTML+RDFa syntax does not allow the usage of C{@xml:base}, but SVG1.2 does, so this is
 		necessary for SVG (and other possible XML dialects that accept C{@xml:base})
 		@keyword options: invocation options, and references to warning graphs
@@ -118,27 +118,27 @@ class ExecutionContext :
 				return urlunparse((t[0],t[1],t[2],t[3],t[4],""))
 			except :
 				return uri
-			
+
 		# This is, conceptually, an additional class initialization, but it must be done run time, otherwise import errors show up
-		if len(	ExecutionContext._resource_type ) == 0 :	
+		if len(	ExecutionContext._resource_type ) == 0 :
 			ExecutionContext._resource_type = {
 				"href"		:	ExecutionContext._URI,
 				"src"		:	ExecutionContext._URI,
 				"vocab"	    :   ExecutionContext._URI,
-			
-				"about"		:	ExecutionContext._CURIEorURI, 
-				"resource"	:	ExecutionContext._CURIEorURI, 
-			
+
+				"about"		:	ExecutionContext._CURIEorURI,
+				"resource"	:	ExecutionContext._CURIEorURI,
+
 				"rel"		:	ExecutionContext._TERMorCURIEorAbsURI,
 				"rev"		:	ExecutionContext._TERMorCURIEorAbsURI,
 				"datatype"	:	ExecutionContext._TERMorCURIEorAbsURI,
 				"typeof"	:	ExecutionContext._TERMorCURIEorAbsURI,
 				"property"	:	ExecutionContext._TERMorCURIEorAbsURI,
 				"role"		:	ExecutionContext._TERMorCURIEorAbsURI,
-			}	
+			}
 		#-----------------------------------------------------------------
 		self.node = node
-		
+
 		#-----------------------------------------------------------------
 		# Settling the base. In a generic XML, xml:base should be accepted at all levels (though this is not the
 		# case in, say, XHTML...)
@@ -148,22 +148,22 @@ class ExecutionContext :
 			self.rdfa_version		= inherited_state.rdfa_version
 			self.base				= inherited_state.base
 			self.options			= inherited_state.options
-						
+
 			self.list_mapping 		= inherited_state.list_mapping
 			self.new_list			= False
-			
+
 			# for generic XML versions the xml:base attribute should be handled
 			if self.options.host_language in accept_xml_base and node.hasAttribute("xml:base") :
 				self.base = remove_frag_id(node.getAttribute("xml:base"))
 		else :
-			# this is the branch called from the very top			
+			# this is the branch called from the very top
 			self.list_mapping = ListStructure()
 			self.new_list	  = True
-			
+
 			if rdfa_version is not None :
 				self.rdfa_version = rdfa_version
 			else :
-				from . import rdfa_current_version				
+				from . import rdfa_current_version
 				self.rdfa_version = rdfa_current_version
 
 			# This value can be overwritten by a @version attribute
@@ -172,8 +172,8 @@ class ExecutionContext :
 				if top_version.find("RDFa 1.0") != -1 or top_version.find("RDFa1.0") != -1 :
 					self.rdfa_version = "1.0"
 				elif top_version.find("RDFa 1.1") != -1 or top_version.find("RDFa1.1") != -1 :
-					self.rdfa_version = "1.1"						
-			
+					self.rdfa_version = "1.1"
+
 			# this is just to play safe. I believe this should actually not happen...
 			if options == None :
 				from . import Options
@@ -190,23 +190,23 @@ class ExecutionContext :
 						continue
 			elif self.options.host_language in accept_xml_base and node.hasAttribute("xml:base") :
 				self.base = remove_frag_id(node.getAttribute("xml:base"))
-				
+
 			# If no local setting for base occurs, the input argument has it
 			if self.base == "" :
 				self.base = base
-				
+
 			# Perform an extra beautification in RDFLib
 			if self.options.host_language in beautifying_prefixes :
 				dict = beautifying_prefixes[self.options.host_language]
 				for key in dict :
 					graph.bind(key,dict[key])
-					
+
 			input_info = "Input Host Language:%s, RDFa version:%s, base:%s" % (self.options.host_language, self.rdfa_version, self.base)
 			self.options.add_info(input_info)
 
-								
+
 		#-----------------------------------------------------------------
-		# this will be used repeatedly, better store it once and for all...		
+		# this will be used repeatedly, better store it once and for all...
 		self.parsedBase = urlsplit(self.base)
 
 		#-----------------------------------------------------------------
@@ -222,10 +222,10 @@ class ExecutionContext :
 			self.lang = inherited_state.lang
 		else :
 			self.lang = None
-			
+
 		self.supress_lang = False
-			
-			
+
+
 		if self.options.host_language in [ HostLanguage.xhtml, HostLanguage.xhtml5, HostLanguage.html5 ] :
 			# we may have lang and xml:lang
 			if node.hasAttribute("lang") :
@@ -247,15 +247,15 @@ class ExecutionContext :
 				if len(lang) != 0 :
 					self.lang = lang
 				else :
-					self.lang = None					
+					self.lang = None
 			# Ideally, a warning should be generated if lang and xmllang are both present with different values. But
 			# the HTML5 Parser does its magic by overriding a lang value if xmllang is present, so the potential
 			# error situations are simply swallowed...
-				
+
 		elif self.options.host_language in accept_xml_lang and node.hasAttribute("xml:lang") :
 				self.lang = node.getAttribute("xml:lang").lower()
 				if len(self.lang) == 0 : self.lang = None
-			
+
 		#-----------------------------------------------------------------
 		# Set the default namespace. Used when generating XML Literals
 		if node.hasAttribute("xmlns") :
@@ -302,7 +302,7 @@ class ExecutionContext :
 			if len(v) > 0 and v[0] == '?' and (py_v_major < 3 and py_v_minor <= 5) :
 				return create_URIRef(base+v, check)
 			####
-			
+
 			joined = urljoin(base, v)
 			try :
 				if v[-1] != joined[-1] and (v[-1] == "#" or v[-1] == "?") :
@@ -315,7 +315,7 @@ class ExecutionContext :
 		if val == "" :
 			# The fragment ID must be removed...
 			return URIRef(self.base)
-			
+
 		# fall back on good old traditional URI-s.
 		# To be on the safe side, let us use the Python libraries
 		if self.parsedBase[0] == "" :
@@ -323,7 +323,7 @@ class ExecutionContext :
 			# The following call is just to be sure that some pathological cases when
 			# the ':' _does_ appear in the URI but not in a scheme position is taken
 			# care of properly...
-			
+
 			key = urlsplit(val)[0]
 			if key == "" :
 				# relative URI, to be combined with local file name:
@@ -334,7 +334,7 @@ class ExecutionContext :
 			# Trust the python library...
 			# Well, not quite:-) there is what is, in my view, a bug in the urljoin; in some cases it
 			# swallows the '#' or '?' character at the end. This is clearly a problem with
-			# Semantic Web URI-s			
+			# Semantic Web URI-s
 			return join(self.base, val)
 	# end _URI
 
@@ -397,10 +397,10 @@ class ExecutionContext :
 		# This case excludes the pure base, ie, the empty value
 		if val == "" :
 			return None
-		
+
 		from .termorcurie import ncname, termname
 		if termname.match(val) :
-			# This is a term, must be handled as such...			
+			# This is a term, must be handled as such...
 			retval = self.term_or_curie.term_to_URI(val)
 			if not retval :
 				self.options.add_warning(err_undefined_terms % val, UnresolvableTerm, node=self.node.nodeName, buggy_value = val)
@@ -446,7 +446,7 @@ class ExecutionContext :
 				return []
 			else :
 				return None
-		
+
 		# This may raise an exception if the attr has no key. This, actually,
 		# should not happen if the code is correct, but it does not harm having it here...
 		try :
@@ -454,7 +454,7 @@ class ExecutionContext :
 		except :
 			# Actually, this should not happen...
 			func = ExecutionContext._URI
-		
+
 		if attr in ExecutionContext._list :
 			# Allows for a list
 			resources = [ func(self, v.strip()) for v in val.strip().split() if v != None ]
@@ -463,7 +463,7 @@ class ExecutionContext :
 			retval = func(self, val.strip())
 		return retval
 	# end getURI
-	
+
 	def getResource(self, *args) :
 		"""Get single resources from several different attributes. The first one that returns a valid URI wins.
 		@param args: variable list of attribute names, or a single attribute being a list itself.
@@ -475,12 +475,12 @@ class ExecutionContext :
 			rargs = args[0]
 		else :
 			rargs = args
-			
+
 		for resource in rargs :
 			uri = self.getURI(resource)
 			if uri != None : return uri
 		return None
-	
+
 	# -----------------------------------------------------------------------------------------------
 	def reset_list_mapping(self, origin=None) :
 		"""
@@ -496,39 +496,39 @@ class ExecutionContext :
 		@return: Boolean
 		"""
 		return len(self.list_mapping.mapping) == 0
-		
+
 	def get_list_props(self) :
 		"""
 		Return the list of property values in the list structure
 		@return: list of URIRef
 		"""
 		return list(self.list_mapping.mapping.keys())
-		
+
 	def get_list_value(self,prop) :
 		"""
 		Return the list of values in the list structure for a specific property
 		@return: list of RDF nodes
 		"""
 		return self.list_mapping.mapping[prop]
-		
+
 	def set_list_origin(self, origin) :
 		"""
 		Set the origin of the list, ie, the subject to attach the final list(s) to
 		@param origin: URIRef
-		"""		
+		"""
 		self.list_mapping.origin = origin
-		
+
 	def get_list_origin(self) :
 		"""
 		Return the origin of the list, ie, the subject to attach the final list(s) to
 		@return: URIRef
-		"""		
+		"""
 		return self.list_mapping.origin
-		
+
 	def add_to_list_mapping(self, property, resource) :
 		"""Add a new property-resource on the list mapping structure. The latter is a dictionary of arrays;
 		if the array does not exist yet, it will be created on the fly.
-		
+
 		@param property: the property URI, used as a key in the dictionary
 		@param resource: the resource to be added to the relevant array in the dictionary. Can be None; this is a dummy
 		placeholder for C{<span rel="property" inlist>...</span>} constructions that may be filled in by children or siblings; if not
@@ -540,13 +540,13 @@ class ExecutionContext :
 				if self.list_mapping.mapping[property] == None :
 					# replacing a dummy with real content
 					self.list_mapping.mapping[property] = [ resource ]
-				else :			
+				else :
 					self.list_mapping.mapping[property].append(resource)
 		else :
 			if resource != None :
 				self.list_mapping.mapping[property] = [ resource ]
 			else :
 				self.list_mapping.mapping[property] = None
-				
+
 
 ####################

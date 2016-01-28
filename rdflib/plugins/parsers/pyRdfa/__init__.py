@@ -42,12 +42,12 @@ The package also implements some optional features that are not part of the RDFa
  - possibility for plain literals to be normalized in terms of white spaces. Default: false. (The RDFa specification requires keeping the white spaces and leave applications to normalize them, if needed)
  - inclusion of embedded RDF: Turtle content may be enclosed in a C{script} element and typed as C{text/turtle}, U{defined by the RDF Working Group<http://www.w3.org/TR/turtle/>}. Alternatively, some XML dialects (e.g., SVG) allows the usage of RDF/XML as part of their core content to define metadata in RDF. For both of these cases pyRdfa parses these serialized RDF content and adds the resulting triples to the output Graph. Default: true.
  - extra, built-in transformers are executed on the DOM tree prior to RDFa processing (see below). These transformers can be provided by the end user.
- 
+
 Options are collected in an instance of the L{Options} class and may be passed to the processing functions as an extra argument. E.g., to allow the inclusion of embedded content::
  from pyRdfa.options import Options
  options = Options(embedded_rdf=True)
  print pyRdfa(options=options).rdf_from_source('filename')
- 
+
 See the description of the L{Options} class for the details.
 
 
@@ -88,16 +88,16 @@ The triples in the vocabulary files themselves (i.e., the small ontology in RDF 
 Vocabulary caching
 ------------------
 
-By default, pyRdfa uses a caching mechanism instead of fetching the vocabulary files each time their URI is met as a C{@vocab} attribute value. (This behavior can be switched off setting the C{vocab_cache} option to false.) 
+By default, pyRdfa uses a caching mechanism instead of fetching the vocabulary files each time their URI is met as a C{@vocab} attribute value. (This behavior can be switched off setting the C{vocab_cache} option to false.)
 
 Caching happens in a file system directory. The directory itself is determined by the platform the tool is used on, namely:
  - On Windows, it is the C{pyRdfa-cache} subdirectory of the C{%APPDATA%} environment variable
  - On MacOS, it is the C{~/Library/Application Support/pyRdfa-cache}
  - Otherwise, it is the C{~/.pyRdfa-cache}
- 
-This automatic choice can be overridden by the C{PyRdfaCacheDir} environment variable. 
 
-Caching can be set to be read-only, i.e., the setup might generate the cache files off-line instead of letting the tool writing its own cache when operating, e.g., as a service on the Web. This can be achieved by making the cache directory read only. 
+This automatic choice can be overridden by the C{PyRdfaCacheDir} environment variable.
+
+Caching can be set to be read-only, i.e., the setup might generate the cache files off-line instead of letting the tool writing its own cache when operating, e.g., as a service on the Web. This can be achieved by making the cache directory read only.
 
 If the directories are neither readable nor writable, the vocabulary files are retrieved via HTTP every time they are hit. This may slow down processing, it is advised to avoid such a setup for the package.
 
@@ -136,7 +136,7 @@ The user of the package may refer add these transformers to L{Options} instance.
  from pyRdfa.transform.OpenID import OpenID_transform
  options = Options(transformers=[OpenID_transform])
  print pyRdfa(options=options).rdf_from_source('filename')
- 
+
 
 @summary: RDFa parser (distiller)
 @requires: Python version 2.5 or up; 2.7 is preferred
@@ -150,7 +150,7 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 @copyright: W3C
 
 @var builtInTransformers: List of built-in transformers that are to be run regardless, because they are part of the RDFa spec
-@var CACHE_DIR_VAR: Environment variable used to define cache directories for RDFa vocabularies in case the default setting does not work or is not appropriate. 
+@var CACHE_DIR_VAR: Environment variable used to define cache directories for RDFa vocabularies in case the default setting does not work or is not appropriate.
 @var rdfa_current_version: Current "official" version of RDFa that this package implements by default. This can be changed at the invocation of the package
 @var uri_schemes: List of registered (or widely used) URI schemes; used for warnings...
 """
@@ -233,7 +233,7 @@ class FailedSource(RDFaError) :
 		self.msg		= msg
 		self.http_code 	= http_code
 		RDFaError.__init__(self, msg)
-		
+
 class HTTPError(RDFaError) :
 	"""Raised when HTTP problems are detected. It does not add any new functionality to the
 	Exception class."""
@@ -280,9 +280,9 @@ err_invalid_prefix                  = "Invalid prefix declaration '%s' (in '%s')
 err_no_default_prefix               = "Default prefix cannot be changed (in '%s')"
 err_prefix_and_xmlns                = "@prefix setting for '%s' overrides the 'xmlns:%s' setting; may be a source of problem if same file is run through RDFa 1.0"
 err_non_ncname_prefix               = "Non NCNAME '%s' in prefix definition (in '%s'); ignored"
-err_absolute_reference              = "CURIE Reference part contains an authority part: %s (in '%s'); ignored"     
-err_query_reference                 = "CURIE Reference query part contains an unauthorized character: %s (in '%s'); ignored"     
-err_fragment_reference              = "CURIE Reference fragment part contains an unauthorized character: %s (in '%s'); ignored"     
+err_absolute_reference              = "CURIE Reference part contains an authority part: %s (in '%s'); ignored"
+err_query_reference                 = "CURIE Reference query part contains an unauthorized character: %s (in '%s'); ignored"
+err_fragment_reference              = "CURIE Reference fragment part contains an unauthorized character: %s (in '%s'); ignored"
 err_lang                            = "There is a problem with language setting; either both xml:lang and lang used on an element with different values, or, for (X)HTML5, only xml:lang is used."
 err_URI_scheme                      = "Unusual URI scheme used in <%s>; may that be a mistake, e.g., resulting from using an undefined CURIE prefix or an incorrect CURIE?"
 err_illegal_safe_CURIE              = "Illegal safe CURIE: %s; ignored"
@@ -303,7 +303,7 @@ from .transform        import top_about, empty_safe_curie, vocab_for_role
 from .utils            import URIOpener
 from .host             import HostLanguage, MediaTypes, preferred_suffixes, content_to_host_language
 
-# Environment variable used to characterize cache directories for RDFa vocabulary files. 
+# Environment variable used to characterize cache directories for RDFa vocabulary files.
 CACHE_DIR_VAR           = "PyRdfaCacheDir"
 
 # current "official" version of RDFa that this package implements. This can be changed at the invocation of the package
@@ -341,11 +341,11 @@ historical_iana_schemes = [
 ]
 
 provisional_iana_schemes = [
-	"afs", "dtn", "dvb", "icon", "ipn", "jms", "oid", "rsync", "ni" 
+	"afs", "dtn", "dvb", "icon", "ipn", "jms", "oid", "rsync", "ni"
 ]
 
 other_used_schemes = [
-	"hdl", "isbn", "issn", "mstp", "rtmp", "rtspu", "stp" 
+	"hdl", "isbn", "issn", "mstp", "rtmp", "rtspu", "stp"
 ]
 
 uri_schemes = registered_iana_schemes + unofficial_common + historical_iana_schemes + provisional_iana_schemes + other_used_schemes
@@ -354,11 +354,11 @@ uri_schemes = registered_iana_schemes + unofficial_common + historical_iana_sche
 builtInTransformers = [
 	empty_safe_curie, top_about, vocab_for_role
 ]
-	
+
 #########################################################################################################
 class pyRdfa :
 	"""Main processing class for the distiller
-	
+
 	@ivar options: an instance of the L{Options} class
 	@ivar media_type: the preferred default media type, possibly set at initialization
 	@ivar base: the base value, possibly set at initialization
@@ -373,7 +373,7 @@ class pyRdfa :
 		@keyword rdfa_version: the RDFa version that should be used. If not set, the value of the global L{rdfa_current_version} variable is used
 		"""
 		self.http_status = 200
-		
+
 		self.base = base
 		if base == "" :
 			self.required_base = None
@@ -391,22 +391,22 @@ class pyRdfa :
 
 		if media_type != "" :
 			self.options.set_host_language(self.media_type)
-			
+
 		if rdfa_version is not None :
 			self.rdfa_version = rdfa_version
 		else :
 			self.rdfa_version = None
-		
+
 	def _get_input(self, name) :
 		"""
 		Trying to guess whether "name" is a URI or a string (for a file); it then tries to open this source accordingly,
 		returning a file-like object. If name is none of these, it returns the input argument (that should
 		be, supposedly, a file-like object already).
-		
+
 		If the media type has not been set explicitly at initialization of this instance,
 		the method also sets the media_type based on the HTTP GET response or the suffix of the file. See
-		L{host.preferred_suffixes} for the suffix to media type mapping. 
-		
+		L{host.preferred_suffixes} for the suffix to media type mapping.
+
 		@param name: identifier of the input source
 		@type name: string or a file-like object
 		@return: a file like object if opening "name" is possible and successful, "name" otherwise
@@ -456,7 +456,7 @@ class pyRdfa :
 		except :
 			(type, value, traceback) = sys.exc_info()
 			raise FailedSource(value)
-	
+
 	####################################################################################################################
 	# Externally used methods
 	#
@@ -481,22 +481,22 @@ class pyRdfa :
 		if graph == None :
 			# Create the RDF Graph, that will contain the return triples...
 			graph   = Graph()
-			
+
 		# this will collect the content, the 'default graph', as called in the RDFa spec
 		default_graph = Graph()
-	
+
 		# get the DOM tree
 		topElement = dom.documentElement
-		
+
 		# Create the initial state. This takes care of things
 		# like base, top level namespace settings, etc.
 		state = ExecutionContext(topElement, default_graph, base=self.required_base if self.required_base != None else "", options=self.options, rdfa_version=self.rdfa_version)
 
-		# Perform the built-in and external transformations on the HTML tree. 
+		# Perform the built-in and external transformations on the HTML tree.
 		logger.info(self.options)
 		for trans in self.options.transformers + builtInTransformers :
 			trans(topElement, self.options, state)
-		
+
 		# This may have changed if the state setting detected an explicit version information:
 		self.rdfa_version = state.rdfa_version
 
@@ -507,7 +507,7 @@ class pyRdfa :
 
 		# Massage the output graph in term of rdfa:Pattern and rdfa:copy
 		handle_prototypes(default_graph)
-		
+
 		# If the RDFS expansion has to be made, here is the place...
 		if self.options.vocab_expansion :
 			from .rdfs.process import process_rdfa_sem
@@ -516,14 +516,14 @@ class pyRdfa :
 		# Experimental feature: nothing for now, this is kept as a placeholder
 		if self.options.experimental_features :
 			pass
-	
+
 		# What should be returned depends on the way the options have been set up
 		if self.options.output_default_graph :
 			copyGraph(graph, default_graph)
 			if self.options.output_processor_graph :
 				if pgraph != None :
 					copyGraph(pgraph, self.options.processor_graph.graph)
-				else :					
+				else :
 					copyGraph(graph, self.options.processor_graph.graph)
 		elif self.options.output_processor_graph :
 			if pgraph != None :
@@ -535,12 +535,12 @@ class pyRdfa :
 		self.options.reset_processor_graph()
 
 		return graph
-	
+
 	def graph_from_source(self, name, graph = None, rdfOutput = False, pgraph = None) :
 		"""
 		Extract an RDF graph from an RDFa source. The source is parsed, the RDF extracted, and the RDFa Graph is
 		returned. This is a front-end to the L{pyRdfa.graph_from_DOM} method.
-				
+
 		@param name: a URI, a file name, or a file-like object
 		@param graph: rdflib Graph instance. If None, a new one is created.
 		@param pgraph: rdflib Graph instance for the processor graph. If None, and the error/warning triples are to be generated, they will be added to the returned graph. Otherwise they are stored in this graph.
@@ -559,7 +559,7 @@ class pyRdfa :
 					tog.bind(k,ns)
 					if pgraph != None : pgraph.bind(k,ns)
 			options.reset_processor_graph()
-			return tog		
+			return tog
 
 		# Separating this for a forward Python 3 compatibility
 		try :
@@ -568,7 +568,7 @@ class pyRdfa :
 		except :
 			# Python 3 branch
 			isstring = isinstance(name, str)
-		
+
 		try :
 			# First, open the source... Possible HTTP errors are returned as error triples
 			input = None
@@ -615,7 +615,7 @@ class pyRdfa :
 						# the file to find a meta header for the charset; if that
 						# works, fine, otherwise it falls back on window-...
 						dom = parser.parse(input)
-						
+
 					try :
 						if isstring :
 							input.close()
@@ -627,7 +627,7 @@ class pyRdfa :
 					except :
 						# if anyting goes wrong, it is not really important; rdfa version stays what it was...
 						pass
-					
+
 				else :
 					# in other cases an XML parser has to be used
 					from .host import adjust_xhtml_and_version
@@ -649,7 +649,7 @@ class pyRdfa :
 				self.options.processor_graph.add_http_context(err, 400)
 				return copyErrors(graph, self.options)
 
-			# If we got here, we have a DOM tree to operate on...	
+			# If we got here, we have a DOM tree to operate on...
 			return self.graph_from_DOM(dom, graph, pgraph)
 		except Exception :
 			# Something nasty happened during the generation of the graph...
@@ -663,7 +663,7 @@ class pyRdfa :
 			err = self.options.add_error(str(b), context = name)
 			self.options.processor_graph.add_http_context(err, 500)
 			return copyErrors(graph, self.options)
-	
+
 	def rdf_from_sources(self, names, outputFormat = "turtle", rdfOutput = False) :
 		"""
 		Extract and RDF graph from a list of RDFa sources and serialize them in one graph. The sources are parsed, the RDF
@@ -709,7 +709,7 @@ def processURI(uri, outputFormat, form={}) :
 	"""The standard processing of an RDFa uri options in a form; used as an entry point from a CGI call.
 
 	The call accepts extra form options (i.e., HTTP GET options) as follows:
-	
+
 	 - C{graph=[output|processor|output,processor|processor,output]} specifying which graphs are returned. Default: C{output}
 	 - C{space_preserve=[true|false]} means that plain literals are normalized in terms of white spaces. Default: C{false}
 	 - C{rfa_version} provides the RDFa version that should be used for distilling. The string should be of the form "1.0" or "1.1". Default is the highest version the current package implements, currently "1.1"
@@ -721,7 +721,7 @@ def processURI(uri, outputFormat, form={}) :
 	 - C{vocab_cache_bypass=[true|false]} : whether vocab caches have to be regenerated every time. Default: C{false}
 	 - C{rdfa_lite=[true|false]} : whether warnings should be generated for non RDFa Lite attribute usage. Default: C{false}
 
-	@param uri: URI to access. Note that the C{text:} and C{uploaded:} fake URI values are treated separately; the former is for textual intput (in which case a StringIO is used to get the data) and the latter is for uploaded file, where the form gives access to the file directly. 
+	@param uri: URI to access. Note that the C{text:} and C{uploaded:} fake URI values are treated separately; the former is for textual intput (in which case a StringIO is used to get the data) and the latter is for uploaded file, where the form gives access to the file directly.
 	@param outputFormat: serialization format, as defined by the package. Currently "xml", "turtle", "nt", or "json". Default is "turtle", also used if any other string is given.
 	@param form: extra call options (from the CGI call) to set up the local options
 	@type form: cgi FieldStorage instance
@@ -750,12 +750,12 @@ def processURI(uri, outputFormat, form={}) :
 	else :
 		input	= uri
 		base	= uri
-		
+
 	if "rdfa_version" in list(form.keys()) :
 		rdfa_version = form.getfirst("rdfa_version")
 	else :
 		rdfa_version = None
-	
+
 	# working through the possible options
 	# Host language: HTML, XHTML, or XML
 	# Note that these options should be used for the upload and inline version only in case of a form
@@ -773,9 +773,9 @@ def processURI(uri, outputFormat, form={}) :
 			media_type = MediaTypes.xml
 	else :
 		media_type = ""
-		
+
 	transformers = []
-	
+
 	check_lite = "rdfa_lite" in list(form.keys()) and form.getfirst("rdfa_lite").lower() == "true"
 
 	# The code below is left for backward compatibility only. In fact, these options are not exposed any more,
@@ -815,7 +815,7 @@ def processURI(uri, outputFormat, form={}) :
 			output_processor_graph 	= True
 		elif a == "processor,output" or a == "output,processor" :
 			output_processor_graph 	= True
-		
+
 	embedded_rdf        = _get_option( "embedded_rdf", "true", False)
 	space_preserve      = _get_option( "space_preserve", "true", True)
 	vocab_cache         = _get_option( "vocab_cache", "true", True)
@@ -840,7 +840,7 @@ def processURI(uri, outputFormat, form={}) :
 	# Decide the output format; the issue is what should happen in case of a top level error like an inaccessibility of
 	# the html source: should a graph be returned or an HTML page with an error message?
 
-	# decide whether HTML or RDF should be sent. 
+	# decide whether HTML or RDF should be sent.
 	htmlOutput = False
 	#if 'HTTP_ACCEPT' in os.environ :
 	#	acc = os.environ['HTTP_ACCEPT']
@@ -855,7 +855,7 @@ def processURI(uri, outputFormat, form={}) :
 	#	sg = acceptable_content_type(acc, possibilities)
 	#	htmlOutput = (sg != None and sg[0] == content_type('text/html'))
 	#	os.environ['rdfaerror'] = 'true'
-		
+
 	# This is really for testing purposes only, it is an unpublished flag to force RDF output no
 	# matter what
 	try :
@@ -874,9 +874,9 @@ def processURI(uri, outputFormat, form={}) :
 	except HTTPError :
 		(type,h,traceback) = sys.exc_info()
 		import cgi
-		
+
 		retval = 'Content-type: text/html; charset=utf-8\nStatus: %s \n\n' % h.http_code
-		retval += "<html>\n"		
+		retval += "<html>\n"
 		retval += "<head>\n"
 		retval += "<title>HTTP Error in distilling RDFa content</title>\n"
 		retval += "</head><body>\n"
@@ -894,7 +894,7 @@ def processURI(uri, outputFormat, form={}) :
 		import traceback, cgi
 
 		retval = 'Content-type: text/html; charset=utf-8\nStatus: %s\n\n' % processor.http_status
-		retval += "<html>\n"		
+		retval += "<html>\n"
 		retval += "<head>\n"
 		retval += "<title>Exception in RDFa processing</title>\n"
 		retval += "</head><body>\n"

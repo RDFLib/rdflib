@@ -338,7 +338,7 @@ class QueryContext(object):
         return c
 
 
-class Prologue:
+class Prologue(object):
 
     """
     A class for holding prefixing bindings and base URI information
@@ -374,12 +374,13 @@ class Prologue:
                 return Literal(
                     iri.string, lang=iri.lang,
                     datatype=self.absolutize(iri.datatype))
-        elif isinstance(iri, URIRef) and not ':' in iri:  # TODO: Check for relative URI?
-            return URIRef(self.base + iri)
+        elif isinstance(iri, URIRef) and not ':' in iri:
+            return URIRef(iri, base=self.base)
+
         return iri
 
 
-class Query:
+class Query(object):
     """
     A parsed and translated query
     """

@@ -33,7 +33,7 @@ def DC_transform(html, options, state) :
 	from ..host import HostLanguage
 	if not( options.host_language in [ HostLanguage.xhtml, HostLanguage.html5, HostLanguage.xhtml5 ] ) :
 		return
-	
+
 	# the head element is necessary; to be sure, the namespaces are set
 	# on that level only
 	head = None

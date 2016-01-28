@@ -29,7 +29,7 @@ import random
 
 if sys.version_info[0] >= 3 :
 	from urllib.parse import urlsplit
-else :	
+else :
 	from urlparse import urlsplit
 
 
@@ -53,17 +53,17 @@ from .host 			import MediaTypes, HostLanguage, predefined_1_0_rel, warn_xmlns_us
 from .				import IncorrectPrefixDefinition, RDFA_VOCAB, UnresolvableReference, PrefixRedefinitionWarning
 from .				import ns_rdfa
 
-from . import err_redefining_URI_as_prefix		
-from . import err_xmlns_deprecated				
-from . import err_bnode_local_prefix				
-from . import err_col_local_prefix				
-from . import err_missing_URI_prefix				
-from . import err_invalid_prefix					
-from . import err_no_default_prefix				
-from . import err_prefix_and_xmlns				
-from . import err_non_ncname_prefix				
-from . import err_absolute_reference				
-from . import err_query_reference				
+from . import err_redefining_URI_as_prefix
+from . import err_xmlns_deprecated
+from . import err_bnode_local_prefix
+from . import err_col_local_prefix
+from . import err_missing_URI_prefix
+from . import err_invalid_prefix
+from . import err_no_default_prefix
+from . import err_prefix_and_xmlns
+from . import err_non_ncname_prefix
+from . import err_absolute_reference
+from . import err_query_reference
 from . import err_fragment_reference
 from . import err_prefix_redefinition
 
@@ -91,22 +91,22 @@ class InitialContext :
 	Get the initial context values. In most cases this class has an empty content, except for the
 	top level (in case of RDFa 1.1). Each L{TermOrCurie} class has one instance of this class. It provides initial
 	mappings for terms, namespace prefixes, etc, that the top level L{TermOrCurie} instance uses for its own initialization.
-	
+
 	@ivar terms: collection of all term mappings
 	@type terms: dictionary
 	@ivar ns: namespace mapping
 	@type ns: dictionary
 	@ivar vocabulary: default vocabulary
 	@type vocabulary: string
-	"""	
-	
+	"""
+
 	def __init__(self, state, top_level) :
 		"""
 		@param state: the state behind this term mapping
 		@type state: L{state.ExecutionContext}
 		@param top_level : whether this is the top node of the DOM tree (the only place where initial contexts are handled)
 		@type top_level : boolean
-		"""		
+		"""
 		self.state = state
 
 		# This is to store the local terms
@@ -115,10 +115,10 @@ class InitialContext :
 		self.ns     = {}
 		# Default vocabulary
 		self.vocabulary = None
-		
+
 		if state.rdfa_version < "1.1" or top_level == False :
 			return
-		
+
 		from .initialcontext	import initial_context    as context_data
 		from .host 				import initial_contexts   as context_ids
 		from .host				import default_vocabulary
@@ -126,7 +126,7 @@ class InitialContext :
 		for id in context_ids[state.options.host_language] :
 			# This gives the id of a initial context, valid for this media type:
 			data = context_data[id]
-			
+
 			# Merge the context data with the overall definition
 			if state.options.host_language in default_vocabulary :
 				self.vocabulary = default_vocabulary[state.options.host_language]
@@ -145,14 +145,14 @@ class TermOrCurie :
 	"""
 	Wrapper around vocabulary management, ie, mapping a term to a URI, as well as a CURIE to a URI. Each instance of this class belongs to a
 	"state", instance of L{state.ExecutionContext}. Context definitions are managed at initialization time.
-	
+
 	(In fact, this class is, conceptually, part of the overall state at a node, and has been separated here for an
 	easier maintenance.)
-	
+
 	The class takes care of the stack-like behavior of vocabulary items, ie, inheriting everything that is possible
 	from the "parent". At initialization time, this works through the prefix definitions (i.e., C{@prefix} or C{@xmln:} attributes)
 	and/or C{@vocab} attributes.
-	
+
 	@ivar state: State to which this instance belongs
 	@type state: L{state.ExecutionContext}
 	@ivar graph: The RDF Graph under generation
@@ -164,7 +164,7 @@ class TermOrCurie :
 	@ivar default_curie_uri: URI for a default CURIE
 	"""
 	def __init__(self, state, graph, inherited_state) :
-		"""Initialize the vocab bound to a specific state. 
+		"""Initialize the vocab bound to a specific state.
 		@param state: the state to which this vocab instance belongs to
 		@type state: L{state.ExecutionContext}
 		@param graph: the RDF graph being worked on
@@ -177,14 +177,14 @@ class TermOrCurie :
 			if pr in uri_schemes :
 				# The prefix being defined is a registered URI scheme, better avoid it...
 				state.options.add_warning(err_redefining_URI_as_prefix % pr, node=state.node.nodeName)
-				
+
 		self.state	= state
 		self.graph	= graph
-		
+
 		# --------------------------------------------------------------------------------
 		# This is set to non-void only on the top level and in the case of 1.1
 		default_vocab = InitialContext(self.state, inherited_state == None)
-		
+
 		# Set the default CURIE URI
 		if inherited_state == None :
 			# This is the top level...
@@ -192,7 +192,7 @@ class TermOrCurie :
 			# self.graph.bind(XHTML_PREFIX, self.default_curie_uri)
 		else :
 			self.default_curie_uri = inherited_state.term_or_curie.default_curie_uri
-		
+
 		# --------------------------------------------------------------------------------
 		# Set the default term URI
 		# This is a 1.1 feature, ie, should be ignored if the version is < 1.0
@@ -202,11 +202,11 @@ class TermOrCurie :
 				self.default_term_uri = None
 			else :
 				self.default_term_uri = inherited_state.term_or_curie.default_term_uri
-				
+
 			# see if the initial context has defined a default vocabulary:
 			if default_vocab.vocabulary :
 				self.default_term_uri = default_vocab.vocabulary
-				
+
 			# see if there is local vocab that would override previous settings
 			# However, care should be taken with the vocab="" value that should not become a URI...
 			# Indeed, this value is used to 'vipe out', ie, get back to the default vocabulary...
@@ -214,12 +214,12 @@ class TermOrCurie :
 				self.default_term_uri = default_vocab.vocabulary
 			else :
 				def_term_uri = self.state.getURI("vocab")
-				if def_term_uri and def_term_uri != "" :			
+				if def_term_uri and def_term_uri != "" :
 					self.default_term_uri = def_term_uri
 					self.graph.add((URIRef(self.state.base),RDFA_VOCAB,URIRef(def_term_uri)))
 		else :
 			self.default_term_uri = None
-		
+
 		# --------------------------------------------------------------------------------
 		# The simpler case: terms, adding those that have been defined by a possible initial context
 		if inherited_state is None :
@@ -246,7 +246,7 @@ class TermOrCurie :
 		# Add the locally defined namespaces using the xmlns: syntax
 		for i in range(0, state.node.attributes.length) :
 			attr = state.node.attributes.item(i)
-			if attr.name.find('xmlns:') == 0 :	
+			if attr.name.find('xmlns:') == 0 :
 				# yep, there is a namespace setting
 				prefix = attr.localName
 				if prefix != "" : # exclude the top level xmlns setting...
@@ -256,7 +256,7 @@ class TermOrCurie :
 						state.options.add_warning(err_bnode_local_prefix, IncorrectPrefixDefinition, node=state.node.nodeName)
 					elif prefix.find(':') != -1 :
 						state.options.add_warning(err_col_local_prefix % prefix, IncorrectPrefixDefinition, node=state.node.nodeName)
-					else :					
+					else :
 						# quote the URI, ie, convert special characters into %.. This is
 						# true, for example, for spaces
 						uri = quote_URI(attr.value, state.options)
@@ -279,7 +279,7 @@ class TermOrCurie :
 			if pr != None :
 				# separator character is whitespace
 				pr_list = pr.strip().split()
-				# range(0, len(pr_list), 2) 
+				# range(0, len(pr_list), 2)
 				for i in range(len(pr_list) - 2, -1, -2) :
 					prefix = pr_list[i]
 					# see if there is a URI at all
@@ -288,14 +288,14 @@ class TermOrCurie :
 						break
 					else :
 						value = pr_list[i+1]
-					
+
 					# see if the value of prefix is o.k., ie, there is a ':' at the end
 					if prefix[-1] != ':' :
 						state.options.add_warning(err_invalid_prefix % (prefix,pr), IncorrectPrefixDefinition, node=state.node.nodeName)
 						continue
 					elif prefix == ":" :
 						state.options.add_warning(err_no_default_prefix % pr, IncorrectPrefixDefinition, node=state.node.nodeName)
-						continue						
+						continue
 					else :
 						prefix = prefix[:-1]
 						uri    = Namespace(quote_URI(value, state.options))
@@ -335,13 +335,13 @@ class TermOrCurie :
 		else :
 			self.ns = {}
 			for key in inherited_prefixes : self.ns[key] = inherited_prefixes[key]
-			for key in dict : 
+			for key in dict :
 				if (key in inherited_prefixes and dict[key] != inherited_prefixes[key]) or (key in self.default_prefixes and dict[key] != self.default_prefixes[key][0]) :
 					state.options.add_warning(err_prefix_redefinition % key, PrefixRedefinitionWarning, node=state.node.nodeName)
 				self.ns[key] = dict[key]
 
-		
-		# the xmlns prefixes have to be stored separately, again for XML Literal generation	
+
+		# the xmlns prefixes have to be stored separately, again for XML Literal generation
 		self.xmlns = {}
 		if len(xmlns_dict) == 0 and inherited_state :
 			self.xmlns = inherited_state.term_or_curie.xmlns
@@ -376,13 +376,13 @@ class TermOrCurie :
 			return True
 
 	def CURIE_to_URI(self, val) :
-		"""CURIE to URI mapping. 
-		
+		"""CURIE to URI mapping.
+
 		This method does I{not} take care of the last step of CURIE processing, ie, the fact that if
 		it does not have a CURIE then the value is used a URI. This is done on the caller's side, because this has
 		to be combined with base, for example. The method I{does} take care of BNode processing, though, ie,
 		CURIE-s of the form "_:XXX".
-		
+
 		@param val: the full CURIE
 		@type val: string
 		@return: URIRef of a URI or None.
@@ -395,7 +395,7 @@ class TermOrCurie :
 				return URIRef(self.default_curie_uri)
 			else :
 				return None
-		
+
 		# See if this is indeed a valid CURIE, ie, it can be split by a colon
 		curie_split = val.split(':',1)
 		if len(curie_split) == 1 :
@@ -415,7 +415,7 @@ class TermOrCurie :
 			#		return None
 			#	if reference[0] == ":" :
 			#		return None
-			
+
 			# first possibility: empty prefix
 			if len(prefix) == 0 :
 				if self.default_curie_uri and self._check_reference(reference) :
@@ -439,7 +439,7 @@ class TermOrCurie :
 							return retval
 				# check if the prefix is a valid NCNAME
 				elif ncname.match(prefix) :
-					# see if there is a binding for this:					
+					# see if there is a binding for this:
 					if prefix in self.ns and self._check_reference(reference) :
 						# yep, a binding has been defined!
 						if len(reference) == 0 :
@@ -474,20 +474,20 @@ class TermOrCurie :
 
 		if termname.match(term) :
 			# It is a valid NCNAME
-			
+
 			# First of all, a @vocab nukes everything. That has to be done first...
 			if self.default_term_uri != None :
 				return URIRef(self.default_term_uri + term)
 
 			# For default terms, the algorithm is (see 7.4.3 of the document): first make a case sensitive match;
-			# if that fails than make a case insensive one			
+			# if that fails than make a case insensive one
 			# 1. simple, case sensitive test:
 			if term in self.terms :
 				# yep, term is a valid key as is
 				# lazy binding of the xhv prefix for terms...
 				self.graph.bind(XHTML_PREFIX, XHTML_URI)
 				return self.terms[term]
-				
+
 			# 2. case insensitive test
 			for defined_term in self.terms :
 				if term.lower() == defined_term.lower() :

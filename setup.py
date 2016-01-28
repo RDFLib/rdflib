@@ -14,7 +14,7 @@ def setup_python3():
     # Not covered by "setup.py clean --all", so explicit deletion required.
     if exists(tmp_src):
         dir_util.remove_tree(tmp_src)
-    log.set_verbosity(1)
+    # log.set_verbosity(1)
     fl = FileList()
     for line in open("MANIFEST.in"):
         if not line.strip():
@@ -82,20 +82,20 @@ def find_version(filename):
 version = find_version('rdflib/__init__.py')
 
 packages = ['rdflib',
-            'rdflib/extras',
-            'rdflib/plugins',
-            'rdflib/plugins/parsers',
-            'rdflib/plugins/parsers/pyRdfa',
-            'rdflib/plugins/parsers/pyRdfa/transform',
-            'rdflib/plugins/parsers/pyRdfa/extras',
-            'rdflib/plugins/parsers/pyRdfa/host',
-            'rdflib/plugins/parsers/pyRdfa/rdfs',
-            'rdflib/plugins/parsers/pyMicrodata',
-            'rdflib/plugins/serializers',
-            'rdflib/plugins/sparql',
-            'rdflib/plugins/sparql/results',
-            'rdflib/plugins/stores',
-            'rdflib/tools'
+            'rdflib.extras',
+            'rdflib.plugins',
+            'rdflib.plugins.parsers',
+            'rdflib.plugins.parsers.pyRdfa',
+            'rdflib.plugins.parsers.pyRdfa.transform',
+            'rdflib.plugins.parsers.pyRdfa.extras',
+            'rdflib.plugins.parsers.pyRdfa.host',
+            'rdflib.plugins.parsers.pyRdfa.rdfs',
+            'rdflib.plugins.parsers.pyMicrodata',
+            'rdflib.plugins.serializers',
+            'rdflib.plugins.sparql',
+            'rdflib.plugins.sparql.results',
+            'rdflib.plugins.stores',
+            'rdflib.tools'
               ]
 
 if os.environ.get('READTHEDOCS', None):
@@ -123,6 +123,7 @@ setup(
             "Programming Language :: Python :: 2.7",
             "Programming Language :: Python :: 3.3",
             "Programming Language :: Python :: 3.4",
+            "Programming Language :: Python :: 3.5",
             "License :: OSI Approved :: BSD License",
             "Topic :: Software Development :: Libraries :: Python Modules",
             "Operating System :: OS Independent",

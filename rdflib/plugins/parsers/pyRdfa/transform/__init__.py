@@ -34,10 +34,10 @@ def top_about(root, options, state) :
 		else :
 			if not has_one_of_attributes(node, "href", "resource", "about", "src") :
 				node.setAttribute("about","")
-	
+
 	from ..host import HostLanguage
 	from ..utils import has_one_of_attributes
-		
+
 	if not has_one_of_attributes(root, "about") :
 		# The situation is a bit complicated: if a @resource is present without anything else, then it sets
 		# the subject, ie, should be accepted...
@@ -46,7 +46,7 @@ def top_about(root, options, state) :
 				root.setAttribute("about","")
 		else :
 			root.setAttribute("about","")
-		
+
 	if options.host_language in [ HostLanguage.xhtml, HostLanguage.html5, HostLanguage.xhtml5 ] :
 		if state.rdfa_version >= "1.1" :
 			pass
@@ -64,7 +64,7 @@ def empty_safe_curie(node, options, state) :
 	Remove the attributes whose value is an empty safe curie. It also adds an 'artificial' flag, ie, an
 	attribute (called 'emptysc') into the node to signal that there _is_ an attribute with an ignored
 	safe curie value. The name of the attribute is 'about_pruned' or 'resource_pruned'.
-	
+
 	@param node: a DOM node for the top level element
 	@param options: invocation options
 	@type options: L{Options<pyRdfa.options>}
@@ -79,19 +79,19 @@ def empty_safe_curie(node, options, state) :
 				node.setAttribute(name+'_pruned','')
 				msg = "Attribute @%s uses an empty safe CURIE; the attribute is ignored" % name
 				options.add_warning(msg, node=node)
-				
+
 	prune_safe_curie(node, "about")
 	prune_safe_curie(node, "resource")
 	for n in node.childNodes :
 		if n.nodeType == node.ELEMENT_NODE :
 			empty_safe_curie(n, options, state)
-			
+
 def vocab_for_role(node, options, state) :
 	"""
 	The value of the @role attribute (defined separately in the U{Role Attribute Specification Lite<http://www.w3.org/TR/role-attribute/#using-role-in-conjunction-with-rdfa>}) should be as if a @vocab value to the
 	XHTML vocabulary was defined for it. This method turns all terms in role attributes into full URI-s, so that
 	this would not be an issue for the run-time.
-	
+
 	@param node: a DOM node for the top level element
 	@param options: invocation options
 	@type options: L{Options<pyRdfa.options>}
@@ -99,7 +99,7 @@ def vocab_for_role(node, options, state) :
 	@type state: L{State<pyRdfa.state>}
 	"""
 	from ..termorcurie import termname, XHTML_URI
-	
+
 	def handle_role(node) :
 		if node.hasAttribute("role") :
 			old_values = node.getAttribute("role").strip().split()
@@ -115,6 +115,6 @@ def vocab_for_role(node, options, state) :
 	for n in node.childNodes :
 		if n.nodeType == node.ELEMENT_NODE :
 			vocab_for_role(n, options, state)
-	
+
 
 
