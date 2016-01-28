@@ -121,6 +121,7 @@ mdata_expected = u'''
 env = os.environ.copy()
 env['PYTHONPATH'] = '.:' + env.get('PYTHONPATH', '')
 
+
 def test_rdfpipe_bytes_vs_str():
     """
     Issue 375: rdfpipe command generates bytes vs. str TypeError
@@ -129,13 +130,18 @@ def test_rdfpipe_bytes_vs_str():
     explicitly exposes sys.stdout.buffer for this purpose. Test
     rdfpipe to ensure that we get the expected results.
     """
-    args = ['python', 'rdflib/tools/rdfpipe.py', '-i', 'rdfa1.1', 'test/rdfa/oreilly.html']
-    proc = subprocess.Popen(args, stdout=subprocess.PIPE, universal_newlines=True, env=env)
+    args = [
+        'python', 'rdflib/tools/rdfpipe.py', '-i', 'rdfa1.1',
+        'test/rdfa/oreilly.html'
+    ]
+    proc = subprocess.Popen(
+        args, stdout=subprocess.PIPE, universal_newlines=True, env=env)
     res = ''
     while proc.poll() is None:
         res += proc.stdout.read()
 
     assert res.strip() == rdfa_expected
+
 
 def test_rdfpipe_mdata_open():
     """
@@ -144,8 +150,12 @@ def test_rdfpipe_mdata_open():
     The file() builtin has been deprecated for a long time. Use
     the open() builtin instead.
     """
-    args = ['python', 'rdflib/tools/rdfpipe.py', '-i', 'mdata', 'test/mdata/codelab.html']
-    proc = subprocess.Popen(args, stdout=subprocess.PIPE, universal_newlines=True, env=env)
+    args = [
+        'python', 'rdflib/tools/rdfpipe.py', '-i', 'mdata',
+        'test/mdata/codelab.html'
+    ]
+    proc = subprocess.Popen(
+        args, stdout=subprocess.PIPE, universal_newlines=True, env=env)
     res_abs = ''
     while proc.poll() is None:
         res_abs += proc.stdout.read()
