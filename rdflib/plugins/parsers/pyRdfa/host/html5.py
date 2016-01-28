@@ -172,7 +172,7 @@ def html5_extra_attributes(node, state) :
 			if node.nodeType == node.TEXT_NODE:
 				rc = rc + node.data
 			elif node.nodeType == node.ELEMENT_NODE :
-				rc = rc + self._get_literal(node)
+				rc = rc + _get_literal(node)
 		if state.options.space_preserve :
 			return rc
 		else :
