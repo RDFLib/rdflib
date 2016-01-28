@@ -145,7 +145,7 @@ class SPARQLXMLWriter:
     def __init__(self, output, encoding='utf-8'):
         writer = XMLGenerator(output, encoding)
         writer.startDocument()
-        writer.startPrefixMapping(u'sparql', SPARQL_XML_NAMESPACE)
+        writer.startPrefixMapping(u'', SPARQL_XML_NAMESPACE)
         writer.startPrefixMapping(u'xml', XML_NAMESPACE)
         writer.startElementNS(
             (SPARQL_XML_NAMESPACE, u'sparql'),
