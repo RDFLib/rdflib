@@ -23,7 +23,7 @@ def prepareQuery(queryString, initNs={}, base=None):
     Parse and translate a SPARQL Query
     """
     ret = translateQuery(parseQuery(queryString), base, initNs)
-    ret.original_args = (queryString, initNs, base)
+    ret._original_args = (queryString, initNs, base)
     return ret
 
 
