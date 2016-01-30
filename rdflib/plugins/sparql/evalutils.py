@@ -70,7 +70,7 @@ def _eval(expr, ctx):
         try:
             return ctx[expr]
         except KeyError:
-            return NotBoundError("Variable %s is not bound" % expr)
+            raise NotBoundError("Variable %s is not bound" % expr)
     elif isinstance(expr, CompValue):
         raise Exception(
             "Weird - _eval got a CompValue without evalfn! %r" % expr)
