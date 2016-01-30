@@ -36,7 +36,7 @@ def setup_python3():
 
 kwargs = {}
 if sys.version_info[0] >= 3:
-    from setuptools import setup
+    from setuptools import setup, find_packages
     # kwargs['use_2to3'] = True  # is done in setup_python3 above already
     kwargs['install_requires'] = ['isodate', 'pyparsing']
     kwargs['tests_require'] = ['html5lib', 'networkx']
@@ -47,7 +47,7 @@ if sys.version_info[0] >= 3:
     assert setup
 else:
     try:
-        from setuptools import setup
+        from setuptools import setup, find_packages
         assert setup
         kwargs['test_suite'] = "nose.collector"
         kwargs['install_requires'] = [
@@ -65,7 +65,7 @@ else:
             kwargs['install_requires'].append('html5lib')
 
     except ImportError:
-        from distutils.core import setup
+        from distutils.core import setup, find_packages
 
 
 
@@ -81,22 +81,7 @@ def find_version(filename):
 
 version = find_version('rdflib/__init__.py')
 
-packages = ['rdflib',
-            'rdflib.extras',
-            'rdflib.plugins',
-            'rdflib.plugins.parsers',
-            'rdflib.plugins.parsers.pyRdfa',
-            'rdflib.plugins.parsers.pyRdfa.transform',
-            'rdflib.plugins.parsers.pyRdfa.extras',
-            'rdflib.plugins.parsers.pyRdfa.host',
-            'rdflib.plugins.parsers.pyRdfa.rdfs',
-            'rdflib.plugins.parsers.pyMicrodata',
-            'rdflib.plugins.serializers',
-            'rdflib.plugins.sparql',
-            'rdflib.plugins.sparql.results',
-            'rdflib.plugins.stores',
-            'rdflib.tools'
-              ]
+packages = find_packages(exclude=('examples*', 'test*'))
 
 if os.environ.get('READTHEDOCS', None):
     # if building docs for RTD
