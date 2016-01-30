@@ -256,12 +256,14 @@ class Result(object):
 
             if self._genbindings:
                 for b in self._genbindings:
-                    self._bindings.append(b)
-                    yield ResultRow(b, self.vars)
+                    if b:  # don't add a result row in case of empty binding {}
+                        self._bindings.append(b)
+                        yield ResultRow(b, self.vars)
                 self._genbindings = None
             else:
                 for b in self._bindings:
-                    yield ResultRow(b, self.vars)
+                    if b:  # don't add a result row in case of empty binding {}
+                        yield ResultRow(b, self.vars)
 
     def __getattr__(self, name):
         if self.type in ("CONSTRUCT", "DESCRIBE") and self.graph is not None:
