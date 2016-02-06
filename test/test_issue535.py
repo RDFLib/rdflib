@@ -1,5 +1,4 @@
 from rdflib import ConjunctiveGraph, URIRef
-from rdflib.parser import StringInputSource
 
 def test_nquads_default_graph():
     ds = ConjunctiveGraph()
