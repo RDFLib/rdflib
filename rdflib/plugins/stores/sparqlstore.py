@@ -676,9 +676,8 @@ class SPARQLUpdateStore(SPARQLStore):
             and reads can degenerate to the original call-per-triple situation that originally existed.
         """
         if self._edits and len(self._edits) > 0:
-            r = self._do_update('\n;\n'.join(self._edits))
+            self._do_update('\n;\n'.join(self._edits))
             self._edits = None
-            return r
 
     def rollback(self):
         self._edits = None
@@ -754,7 +753,11 @@ class SPARQLUpdateStore(SPARQLStore):
         self.setRequestMethod(URLENCODED if self.postAsEncoded else POSTDIRECTLY)
 
         result = SPARQLWrapper.query(self)
-        return result
+
+        # we must read (and discard) the whole response
+        # otherwise the network socket buffer will at some point be "full"
+        # and we will block
+        result.response.read()
 
     def update(self, query,
                initNs={},
