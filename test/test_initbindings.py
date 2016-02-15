@@ -101,7 +101,7 @@ def testDistinctOrderByLimit():
 def testPrepare():
     q = prepareQuery('SELECT ?target WHERE { }')
     r = list(g.query(q))
-    e = [(None,)] # TODO: https://github.com/RDFLib/rdflib/issues/554
+    e = []
     assert r == e, 'prepare: %r != %r'%(r,e)
 
     r = list(g.query(q, initBindings={'target': Literal('example')}))
@@ -109,7 +109,7 @@ def testPrepare():
     assert r == e, 'prepare: %r != %r'%(r, e)
 
     r = list(g.query(q))
-    e = [(None,)] # TODO: https://github.com/RDFLib/rdflib/issues/554
+    e = []
     assert r == e, 'prepare: %r != %r'%(r,e)
 
 
