@@ -4,6 +4,7 @@ sudo: false
 branches:
   only:
     - master
+    - /^([0-9]+\.){3}(-dev)?$/
 
 python:
     # - 2.5
