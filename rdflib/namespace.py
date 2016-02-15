@@ -81,13 +81,15 @@ __all__ = [
 logger = logging.getLogger(__name__)
 
 
-class Namespace(text_type):
+class Namespace(object):
 
     __doc__ = """
     Utility class for quickly generating URIRefs with a common prefix
 
     >>> from rdflib import Namespace
     >>> n = Namespace("http://example.org/")
+    >>> n['Person'] # as item
+    rdflib.term.URIRef(%(u)s'http://example.org/Person')
     >>> n.Person # as attribute
     rdflib.term.URIRef(u'http://example.org/Person')
     >>> n['first-name'] # as item - for things that are not valid python identifiers
@@ -95,33 +97,35 @@ class Namespace(text_type):
 
     """
 
-    def __new__(cls, value):
+    def __init__(self, prefix):
         try:
-            rt = text_type.__new__(cls, value)
+            prefix = unicode(prefix)
         except UnicodeDecodeError:
-            rt = text_type.__new__(cls, value, 'utf-8')
-        return rt
-
-    @property
-    def title(self):
-        # overrides unicode.title to allow DCTERMS.title for example
-        return URIRef(self + 'title')
+            prefix = unicode(prefix, 'utf-8')
+        self.__prefix__ = prefix
 
     def term(self, name):
-        # need to handle slices explicitly because of __getitem__ override
-        return URIRef(self + (name if isinstance(name, string_types) else ''))
+        if name is None:
+            return URIRef(self.__prefix__)
+        elif isinstance(name, basestring):
+            return URIRef(self.__prefix__ + name)
+        else:
+            raise TypeError(name)
 
     def __getitem__(self, key, default=None):
         return self.term(key)
 
     def __getattr__(self, name):
         if name.startswith("__"):  # ignore any special Python names!
-            raise AttributeError
+            raise AttributeError(name)
         else:
             return self.term(name)
 
+    def __str__(self):
+        return self.__prefix__
+
     def __repr__(self):
-        return "Namespace(%r)" % text_type(self)
+        return "rdflib.namespace.Namespace(%r)" % str(self)
 
 
 class URIPattern(text_type):
@@ -161,18 +165,17 @@ class ClosedNamespace(Namespace):
     Trying to create terms not listen is an error
     """
 
-    def __new__(cls, uri, terms):
-        rt = Namespace.__new__(cls, uri)
+    def __init__(self, uri, terms):
+        super(ClosedNamespace, self).__init__(uri)
 
-        rt.__uris = {}
+        self.__uris__ = {}
         for t in terms:
-            rt.__uris[t] = URIRef(rt + t)
-
-        return rt
+            self.__uris__[t] = URIRef(uri + t)
 
     def term(self, name):
-        uri = self.__uris.get(name)
+        uri = self.__uris__.get(name)
         if uri is None:
+<<<<<<< HEAD
 <<<<<<< HEAD
             raise AttributeError(
                 "term '{}' not in namespace '{}'".format(name, self.uri)
@@ -207,6 +210,14 @@ class ClosedNamespace(Namespace):
     def __repr__(self):
         return """rdf.namespace.ClosedNamespace('%s')""" % self
 >>>>>>> Made ClosedNamespace (and _RDFNamespace) inherit from Namespace
+=======
+            raise ValueError("term %r not in namespace %r" % (name, self))
+        else:
+            return uri
+
+    def __repr__(self):
+        return """rdf.namespace.ClosedNamespace(%r)""" % str(self)
+>>>>>>> Namespace and ClosedNamespace behavior changed, no more subclass of unicode
 
 
 class _RDFNamespace(ClosedNamespace):
@@ -214,9 +225,10 @@ class _RDFNamespace(ClosedNamespace):
     Closed namespace for RDF terms
     """
 
-    def __new__(cls):
-        return ClosedNamespace.__new__(cls, "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-              terms=[
+    def __init__(self):
+        super(_RDFNamespace, self).__init__(
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+            terms=[
                 # Syntax Names
                 "RDF", "Description", "ID", "about", "parseType",
                 "resource", "li", "nodeID", "datatype",
@@ -234,9 +246,9 @@ class _RDFNamespace(ClosedNamespace):
                 "nil",
 
                 # Added in RDF 1.1
-                "XMLLiteral", "HTML", "langString"]
+                "XMLLiteral", "HTML", "langString"
+            ]
         )
-
 
     def term(self, name):
         try:
