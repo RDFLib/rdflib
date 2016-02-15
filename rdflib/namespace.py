@@ -73,48 +73,60 @@ __all__ = [
     'SKOS', 'DOAP', 'FOAF', 'DC', 'DCTERMS', 'VOID']
 
 
-class Namespace(unicode):
+class Namespace(object):
 
     __doc__ = format_doctest_out("""
     Utility class for quickly generating URIRefs with a common prefix
 
     >>> from rdflib import Namespace
     >>> n = Namespace("http://example.org/")
+    >>> n['Person'] # as item
+    rdflib.term.URIRef(%(u)s'http://example.org/Person')
     >>> n.Person # as attribute
     rdflib.term.URIRef(%(u)s'http://example.org/Person')
+
+    As the attribute use of Namespace is way more error prone, we recommend to
+    use the item version (so use n['Person'] instead of n.Person) if you don't
+    have a reason to be exceptionally lazy (e.g., interactive python console):
+
     >>> n['first-name'] # as item - for things that are not valid python identifiers
     rdflib.term.URIRef(%(u)s'http://example.org/first-name')
+    >>> n['__first-name__'] # as item - for things that are not valid python identifiers
+    rdflib.term.URIRef(%(u)s'http://example.org/__first-name__')
+
 
     """)
 
 
-    def __new__(cls, value):
+    def __init__(self, prefix):
         try:
-            rt = unicode.__new__(cls, value)
+            prefix = unicode(prefix)
         except UnicodeDecodeError:
-            rt = unicode.__new__(cls, value, 'utf-8')
-        return rt
-
-    @property
-    def title(self):
-        # overrides unicode.title to allow DCTERMS.title for example
-        return URIRef(self + 'title')
+            prefix = unicode(prefix, 'utf-8')
+        self.__prefix__ = prefix
 
     def term(self, name):
-        # need to handle slices explicitly because of __getitem__ override
-        return URIRef(self + (name if isinstance(name, basestring) else ''))
+        if name is None:
+            return URIRef(self.__prefix__)
+        elif isinstance(name, basestring):
+            return URIRef(self.__prefix__ + name)
+        else:
+            raise TypeError(name)
 
     def __getitem__(self, key, default=None):
         return self.term(key)
 
     def __getattr__(self, name):
         if name.startswith("__"):  # ignore any special Python names!
-            raise AttributeError
+            raise AttributeError(name)
         else:
             return self.term(name)
 
+    def __str__(self):
+        return self.__prefix__
+
     def __repr__(self):
-        return "Namespace(%s)"%unicode.__repr__(self)
+        return "rdflib.namespace.Namespace(%r)" % str(self)
 
 
 class URIPattern(unicode):
@@ -155,38 +167,22 @@ class ClosedNamespace(Namespace):
     Trying to create terms not listen is an error
     """
 
-    def __new__(cls, uri, terms):
-        rt = Namespace.__new__(cls, uri)
+    def __init__(self, uri, terms):
+        super(ClosedNamespace, self).__init__(uri)
 
-        rt.__uris = {}
+        self.__uris__ = {}
         for t in terms:
-            rt.__uris[t] = URIRef(rt + t)
-
-        return rt
+            self.__uris__[t] = URIRef(uri + t)
 
     def term(self, name):
-        uri = self.__uris.get(name)
+        uri = self.__uris__.get(name)
         if uri is None:
-            raise Exception(
-                "term '%s' not in namespace '%s'" % (name, self))
+            raise ValueError("term %r not in namespace %r" % (name, self))
         else:
             return uri
 
-    @property
-    def uri(self): # support legacy code from before ClosedNamespace extended unicode
-        return self
-
-    def __getitem__(self, key, default=None):
-        return self.term(key)
-
-    def __getattr__(self, name):
-        if name.startswith("__"):  # ignore any special Python names!
-            raise AttributeError
-        else:
-            return self.term(name)
-
     def __repr__(self):
-        return """rdf.namespace.ClosedNamespace('%s')""" % self
+        return """rdf.namespace.ClosedNamespace(%r)""" % str(self)
 
 
 class _RDFNamespace(ClosedNamespace):
@@ -194,9 +190,10 @@ class _RDFNamespace(ClosedNamespace):
     Closed namespace for RDF terms
     """
 
-    def __new__(cls):
-        return ClosedNamespace.__new__(cls, "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-              terms=[
+    def __init__(self):
+        super(_RDFNamespace, self).__init__(
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+            terms=[
                 # Syntax Names
                 "RDF", "Description", "ID", "about", "parseType",
                 "resource", "li", "nodeID", "datatype",
@@ -214,9 +211,9 @@ class _RDFNamespace(ClosedNamespace):
                 "nil",
 
                 # Added in RDF 1.1
-                "XMLLiteral", "HTML", "langString"]
+                "XMLLiteral", "HTML", "langString"
+            ]
         )
-
 
     def term(self, name):
         try:
