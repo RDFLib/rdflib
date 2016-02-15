@@ -95,9 +95,9 @@ class Namespace(unicode):
             rt = unicode.__new__(cls, value, 'utf-8')
         return rt
 
+
     @property
     def title(self):
-        # overrides unicode.title to allow DCTERMS.title for example
         return URIRef(self + 'title')
 
     def term(self, name):
@@ -148,33 +148,26 @@ class URIPattern(unicode):
 
 
 
-class ClosedNamespace(Namespace):
+class ClosedNamespace(object):
     """
     A namespace with a closed list of members
 
     Trying to create terms not listen is an error
     """
 
-    def __new__(cls, uri, terms):
-        rt = Namespace.__new__(cls, uri)
-
-        rt.__uris = {}
+    def __init__(self, uri, terms):
+        self.uri = uri
+        self.__uris = {}
         for t in terms:
-            rt.__uris[t] = URIRef(rt + t)
-
-        return rt
+            self.__uris[t] = URIRef(self.uri + t)
 
     def term(self, name):
         uri = self.__uris.get(name)
         if uri is None:
             raise Exception(
-                "term '%s' not in namespace '%s'" % (name, self))
+                "term '%s' not in namespace '%s'" % (name, self.uri))
         else:
             return uri
-
-    @property
-    def uri(self): # support legacy code from before ClosedNamespace extended unicode
-        return self
 
     def __getitem__(self, key, default=None):
         return self.term(key)
@@ -185,18 +178,21 @@ class ClosedNamespace(Namespace):
         else:
             return self.term(name)
 
+    def __str__(self):
+        return str(self.uri)
+
     def __repr__(self):
-        return """rdf.namespace.ClosedNamespace('%s')""" % self
+        return """rdf.namespace.ClosedNamespace('%s')""" % str(self.uri)
 
 
 class _RDFNamespace(ClosedNamespace):
     """
     Closed namespace for RDF terms
     """
-
-    def __new__(cls):
-        return ClosedNamespace.__new__(cls, "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-              terms=[
+    def __init__(self):
+        super(_RDFNamespace, self).__init__(
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
+            terms=[
                 # Syntax Names
                 "RDF", "Description", "ID", "about", "parseType",
                 "resource", "li", "nodeID", "datatype",
@@ -217,11 +213,10 @@ class _RDFNamespace(ClosedNamespace):
                 "XMLLiteral", "HTML", "langString"]
         )
 
-
     def term(self, name):
         try:
             i = int(name)
-            return URIRef("%s_%s" % (self, i))
+            return URIRef("%s_%s" % (self.uri, i))
         except ValueError:
             return super(_RDFNamespace, self).term(name)
 
