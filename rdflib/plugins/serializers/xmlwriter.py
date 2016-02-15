@@ -99,8 +99,8 @@ class XMLWriter(object):
     def qname(self, uri):
         """Compute qname for a uri using our extra namespaces,
         or the given namespace manager"""
-
         for pre, ns in self.extra_ns.items():
+            ns = unicode(ns)
             if uri.startswith(ns):
                 if pre != "":
                     return ":".join(pre, uri[len(ns):])

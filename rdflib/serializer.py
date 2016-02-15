@@ -26,7 +26,7 @@ class Serializer(object):
         """Abstract method"""
 
     def relativize(self, uri):
-        base = self.base
+        base = unicode(self.base)
         if base is not None and uri.startswith(base):
             uri = URIRef(uri.replace(base, "", 1))
         return uri
