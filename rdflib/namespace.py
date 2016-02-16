@@ -147,7 +147,8 @@ class Namespace(object):
         return self.__prefix__
 
     def __repr__(self):
-        return "rdflib.namespace.Namespace(%r)" % str(self)
+        t = type(self)
+        return "%s(%r)" % (t.__module__ + '.' + t.__name__, self.__prefix__)
 
 
 class URIPattern(unicode):
@@ -201,9 +202,6 @@ class ClosedNamespace(Namespace):
             raise ValueError("term %r not in namespace %r" % (name, self))
         else:
             return uri
-
-    def __repr__(self):
-        return """rdf.namespace.ClosedNamespace(%r)""" % str(self)
 
 
 class _RDFNamespace(ClosedNamespace):
