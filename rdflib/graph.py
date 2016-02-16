@@ -1084,10 +1084,12 @@ class Graph(Node):
             query_object, initBindings, initNs, **kwargs))
 
     def update(self, update_object, processor='sparql',
-              initNs={}, initBindings={},
+              initNs=None, initBindings=None,
               use_store_provided=True, **kwargs):
-        """
-        """
+        """Update this graph with the given update query."""
+        initBindings = initBindings or {}
+        initNs = initNs or dict(self.namespaces())
+
         if hasattr(self.store, "update") and use_store_provided:
             try:
                 return self.store.update(
