@@ -1,14 +1,28 @@
+# coding=utf-8
 import unittest
 
 from rdflib.namespace import DCTERMS
+from rdflib.namespace import Namespace
 from rdflib.graph import Graph
 from rdflib.term import URIRef
 from rdflib.py3compat import b
+from rdflib.py3compat import PY3
 
 
 class NamespaceTest(unittest.TestCase):
     def test_dcterms_title(self):
         self.assertEqual(DCTERMS.title, URIRef(DCTERMS + 'title'))
+
+    def test_iri(self):
+        prefix = u'http://jörn.loves.encoding.problems/'
+        ns = Namespace(prefix)
+        self.assertEqual(bytes(ns), prefix.encode('utf-8'))
+        self.assertEqual(unicode(ns), prefix)
+        if PY3:
+            self.assertEqual(str(ns), prefix)
+        else:
+            self.assertEqual(str(ns), prefix.encode('utf-8'))
+        self.assert_(unicode(ns[u'jörn']).startswith(unicode(ns)))
 
 
 class NamespacePrefixTest(unittest.TestCase):
