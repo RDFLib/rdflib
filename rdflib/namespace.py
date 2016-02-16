@@ -1,4 +1,4 @@
-from rdflib.py3compat import format_doctest_out
+from rdflib.py3compat import format_doctest_out, PY3
 
 __doc__ = format_doctest_out("""
 ===================
@@ -143,8 +143,16 @@ class Namespace(object):
         """Syntactic sugar to allow to write ns[foo] as ns + foo."""
         return self[other]
 
-    def __str__(self):
+    def __unicode__(self):
         return self.__prefix__
+
+    def __bytes__(self):
+        return self.__prefix__.encode('utf-8')
+
+    if PY3:
+        __str__ = __unicode__
+    else:
+        __str__ = __bytes__
 
     def __repr__(self):
         t = type(self)
