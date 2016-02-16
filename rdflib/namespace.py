@@ -142,8 +142,13 @@ class Namespace(object):
         """Syntactic sugar to allow to write ns[foo] as ns + foo."""
         return self[other]
 
-    def __str__(self):
+    def __unicode__(self):
         return self.__prefix__
+
+    def __bytes__(self):
+        return self.__prefix__.encode('utf-8')
+
+    __str__ = string_types
 
     def __repr__(self):
         t = type(self)
@@ -217,9 +222,6 @@ class ClosedNamespace(Namespace):
 
     def __repr__(self):
         return """rdf.namespace.ClosedNamespace('%s')""" % self
-            raise ValueError("term %r not in namespace %r" % (name, self))
-        else:
-            return uri
 
 
 class _RDFNamespace(ClosedNamespace):
