@@ -121,6 +121,27 @@ class Namespace(object):
         else:
             return self.term(name)
 
+    def __contains__(self, uri):
+        """Allows to check if a URI is within (starts with) this Namespace.
+
+        >>> from rdflib import URIRef
+        >>> n = Namespace('http://example.org/')
+        >>> u = URIRef('http://example.org/foo')
+        >>> u in n
+        True
+        >>> p = n['Person']
+        >>> p in n
+        True
+        >>> o = URIRef('http://not.example.org/bar')
+        >>> o in n
+        False
+        """
+        return unicode(uri).startswith(self.__prefix__)
+
+    def __add__(self, other):
+        """Syntactic sugar to allow to write ns[foo] as ns + foo."""
+        return self[other]
+
     def __str__(self):
         return self.__prefix__
 
