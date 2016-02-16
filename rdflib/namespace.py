@@ -146,7 +146,8 @@ class Namespace(object):
         return self.__prefix__
 
     def __repr__(self):
-        return "rdflib.namespace.Namespace(%r)" % str(self)
+        t = type(self)
+        return "%s(%r)" % (t.__module__ + '.' + t.__name__, self.__prefix__)
 
 
 class URIPattern(text_type):
@@ -196,15 +197,8 @@ class ClosedNamespace(Namespace):
     def term(self, name):
         uri = self.__uris__.get(name)
         if uri is None:
-<<<<<<< HEAD
-<<<<<<< HEAD
-            raise AttributeError(
-                "term '{}' not in namespace '{}'".format(name, self.uri)
-            )
-=======
             raise Exception(
                 "term '%s' not in namespace '%s'" % (name, self))
->>>>>>> Made ClosedNamespace (and _RDFNamespace) inherit from Namespace
         else:
             return uri
 
@@ -221,24 +215,11 @@ class ClosedNamespace(Namespace):
         else:
             return self.term(name)
 
-<<<<<<< HEAD
-    def __str__(self):
-        return text_type(self.uri)
-
-    def __repr__(self):
-        return "rdf.namespace.ClosedNamespace(%r)" % text_type(self.uri)
-=======
     def __repr__(self):
         return """rdf.namespace.ClosedNamespace('%s')""" % self
->>>>>>> Made ClosedNamespace (and _RDFNamespace) inherit from Namespace
-=======
             raise ValueError("term %r not in namespace %r" % (name, self))
         else:
             return uri
-
-    def __repr__(self):
-        return """rdf.namespace.ClosedNamespace(%r)""" % str(self)
->>>>>>> Namespace and ClosedNamespace behavior changed, no more subclass of unicode
 
 
 class _RDFNamespace(ClosedNamespace):
