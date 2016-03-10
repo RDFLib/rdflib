@@ -129,7 +129,7 @@ class Collection(object):
         """TODO"""
         c = self._get_container(key)
         if c:
-            self.graph.add((c, RDF.first, value))
+            self.graph.set((c, RDF.first, value))
         else:
             raise IndexError(key)
 
