@@ -19,7 +19,7 @@ assert len(g) == 8
 simple_query = '''
 select ?s ?o ?x where {
   ?x s:knows ?o .
-  BIND(?x as ?s).
+  BIND(?x as ?s)
 }
 '''
 expected = [
@@ -36,7 +36,7 @@ assert res == expected, '\nexpected: %s\ngot     : %s' % (expected, res)
 simple_problematic_query = '''
 select ?s ?o ?x where {
   ?x s:knows ?o .
-  { BIND(?x as ?s). }
+  { BIND(?x as ?s) }
 }
 '''
 res = sorted(g.query(simple_problematic_query))
