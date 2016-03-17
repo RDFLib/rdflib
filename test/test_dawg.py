@@ -432,7 +432,7 @@ def query_test(t):
                 assert bindingsCompatible(
                     set(res),
                     set(res2)
-                ), 'Bindings do not match: \n%s\n!=\n%s' % (
+                ), 'Bindings do not match: \nexpected:\n%s\n!=\ngot:\n%s' % (
                     res.serialize(format='txt', namespace_manager=g.namespace_manager),
                     res2.serialize(format='txt', namespace_manager=g.namespace_manager))
             elif res.type == 'ASK':
