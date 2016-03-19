@@ -54,15 +54,15 @@ def agg_Sum(a, group, bindings):
 def agg_Min(a, group, bindings):
     m = None
 
-    for x in group:
+    for v in _eval_rows(a.vars, group, None): # DISTINCT makes no difference for MIN
         try:
-            v = numeric(_eval(a.vars, x))
+            v = numeric(v)
             if m is None:
                 m = v
             else:
                 m = num_min(v, m)
         except:
-            return  # error in aggregate => no binding
+            continue # try other values
 
     if m is not None:
         bindings[a.res] = Literal(m)
@@ -71,9 +71,9 @@ def agg_Min(a, group, bindings):
 def agg_Max(a, group, bindings):
     m = None
 
-    for x in group:
+    for v in _eval_rows(a.vars, group, None): # DISTINCT makes no difference for MAX
         try:
-            v = numeric(_eval(a.vars, x))
+            v = numeric(v)
             if m is None:
                 m = v
             else:
@@ -86,14 +86,11 @@ def agg_Max(a, group, bindings):
 
 
 def agg_Count(a, group, bindings):
-
     if a.vars == '*':
         c = len(group)
     else:
         c = 0
         for e in _eval_rows(a.vars, group, a.distinct):
-            if isinstance(e, NotBoundError):
-                continue
             c += 1
 
     bindings[a.res] = Literal(c)
@@ -101,10 +98,11 @@ def agg_Count(a, group, bindings):
 
 def agg_Sample(a, group, bindings):
     for ctx in group:
-        val = _eval(a.vars, ctx)
-        if not isinstance(val, NotBoundError):
-            bindings[a.res] = val
+        try:
+            bindings[a.res] = _eval(a.vars, ctx)
             break
+        except NotBoundError:
+            pass
 
 
 def agg_GroupConcat(a, group, bindings):
