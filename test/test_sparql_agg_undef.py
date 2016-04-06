@@ -29,3 +29,22 @@ def test_aggregates():
     yield template_tst, 'SAMPLE', None, Literal(42)
     yield template_tst, 'COUNT', Literal(0), Literal(1)
     yield template_tst, 'GROUP_CONCAT', Literal(''), Literal("42")
+
+def test_group_by_null():
+    g = Graph()
+    results = list(g.query("""
+        SELECT ?x ?y (AVG(?z) as ?az) {
+            VALUES (?x ?y ?z) {
+                (1 undef 10)
+                (1 undef 15)
+                (2 undef 20)
+                (2 undef 21)
+                (2 undef 24)
+           }
+        } GROUP BY ?x ?y
+        ORDER BY ?x
+    """))
+    assert len(results) == 2
+    assert results[0][0] == Literal(1)
+    assert results[1][0] == Literal(2)
+
