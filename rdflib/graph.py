@@ -930,7 +930,7 @@ class Graph(Node):
         string. Format defaults to xml (AKA rdf/xml).
 
         Format support can be extended with plugins,
-        but 'xml', 'n3', 'turtle', 'nt', 'pretty-xml', trix' are built in.
+        but 'xml', 'n3', 'turtle', 'nt', 'pretty-xml', 'trix', 'trig' and 'nquads' are built in.
         """
         serializer = plugin.get(format, Serializer)(self)
         if destination is None:
