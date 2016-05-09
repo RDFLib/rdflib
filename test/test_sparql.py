@@ -64,6 +64,16 @@ def test_sparql_bnodelist():
     prepareQuery('select * where { ?s ?p ( [ ?p2 ?o2 ] [] ) . }')
     prepareQuery('select * where { ?s ?p ( [] [ ?p2 ?o2 ] [] ) . }')
 
+def test_complex_sparql_construct():
+
+    g = Graph()
+    q = '''select ?subject ?study ?id where {
+    ?s a <urn:Person>;
+      <urn:partOf> ?c;
+      <urn:hasParent> ?mother, ?father;
+      <urn:id> [ a <urn:Identifier>; <urn:has-value> ?id].
+    }'''
+    g.query(q)
 
 if __name__ == '__main__':
     import nose
