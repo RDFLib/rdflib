@@ -59,7 +59,7 @@ def expandTriples(terms):
             elif isinstance(t, list):
                 # BlankNodePropertyList
                 # is this bnode the object of previous triples?
-                if (i % 3) == 2:
+                if (len(res) % 3) == 2:
                     res.append(t[0])
                 # is this a single [] ?
                 if len(t) > 1:
@@ -71,6 +71,11 @@ def expandTriples(terms):
                 res += t.asList()
             elif t != '.':
                 res.append(t)
+            if DEBUG:
+                print len(res), t
+        if DEBUG:
+            import json
+            print json.dumps(res, indent=2)
 
         return res
         # print res
