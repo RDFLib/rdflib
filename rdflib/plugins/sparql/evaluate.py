@@ -282,7 +282,7 @@ def evalGroup(ctx, group):
     else:
         res = collections.defaultdict(list)
         for c in p:
-            k = tuple(_eval(e, c) for e in group.expr)
+            k = tuple(_eval(e, c, False) for e in group.expr)
             res[k].append(c)
         return res
 
