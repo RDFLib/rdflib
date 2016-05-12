@@ -1,5 +1,12 @@
 RDFLib
 ======
+[![Build Status](https://travis-ci.org/RDFLib/rdflib.png?branch=master)](https://travis-ci.org/RDFLib/rdflib)
+[![Coveralls branch](https://img.shields.io/coveralls/RDFLib/rdflib/master.svg)](https://coveralls.io/r/RDFLib/rdflib?branch=master)
+[![GitHub stars](https://img.shields.io/github/stars/RDFLib/rdflib.svg)](https://github.com/RDFLib/rdflib/stargazers)
+[![PyPI](https://img.shields.io/pypi/v/rdflib.svg)](https://pypi.python.org/pypi/rdflib)
+[![PyPI](https://img.shields.io/pypi/dm/rdflib.svg)](https://pypi.python.org/pypi/rdflib)
+[![PyPI](https://img.shields.io/pypi/pyversions/rdflib.svg)](https://pypi.python.org/pypi/rdflib)
+
 
 RDFLib is a Python library for working with RDF, a simple yet
 powerful language for representing information as graphs.
@@ -30,7 +37,7 @@ g=rdflib.Graph()
 g.load('http://dbpedia.org/resource/Semantic_Web')
 
 for s,p,o in g:
-  print s,p,o
+    print s,p,o
 ```
 
 The components of the triples are URIs (resources) or Literals
@@ -54,7 +61,7 @@ dbpedia=Namespace('http://dbpedia.org/ontology/')
 abstracts=list(x for x in g.objects(semweb, dbpedia['abstract']) if x.language=='en')
 ```
 
-See also *./examples*
+See also [./examples](./examples)
 
 
 Features
@@ -84,11 +91,6 @@ Support
 More information is available on the project webpage:
 
 https://github.com/RDFLib/rdflib/
-
-Continuous integration status details available from travis.ci, test coverage from coveralls:
-
-[![Build Status](https://travis-ci.org/RDFLib/rdflib.png?branch=master)](https://travis-ci.org/RDFLib/rdflib)
-[![Coverage Status](https://coveralls.io/repos/RDFLib/rdflib/badge.png?branch=master)](https://coveralls.io/r/RDFLib/rdflib?branch=master)
 
 The documentation can be built by doing::
 
