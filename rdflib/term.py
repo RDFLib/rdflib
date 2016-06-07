@@ -1440,6 +1440,8 @@ XSDToPython = {
     None : None, # plain literals map directly to value space
     URIRef(_XSD_PFX + 'time'): parse_time,
     URIRef(_XSD_PFX + 'date'): parse_date,
+    URIRef(_XSD_PFX + 'gYear'): parse_date,
+    URIRef(_XSD_PFX + 'gYearMonth'): parse_date,
     URIRef(_XSD_PFX + 'dateTime'): parse_datetime,
     URIRef(_XSD_PFX + 'string'): None,
     URIRef(_XSD_PFX + 'normalizedString'): None,
