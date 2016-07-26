@@ -207,7 +207,7 @@ class NTriplesParser(object):
         if not m:  # @@ Why can't we get the original pattern?
             # print(dir(pattern))
             # print repr(self.line), type(self.line)
-            raise ParseError("Failed to eat %s at %s" % (pattern, self.line))
+            raise ParseError("Failed to eat %s at %s" % (pattern.pattern, self.line))
         self.line = self.line[m.end():]
         return m
 
