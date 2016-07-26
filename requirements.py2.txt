@@ -2,4 +2,4 @@ flake8
 html5lib
 isodate
 pyparsing<=1.5.7
-SPARQLWrapper>=1.6.2
+SPARQLWrapper
