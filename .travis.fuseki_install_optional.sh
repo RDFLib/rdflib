@@ -2,11 +2,11 @@
 
 set -v
 
-uri="http://archive.eu.apache.org/dist/jena/binaries/jena-fuseki1-1.1.2-distribution.tar.gz"
+uri="http://archive.apache.org/dist/jena/binaries/apache-jena-fuseki-2.4.0.tar.gz"
 
 if wget "$uri" &&
-       tar -zxf jena-fuseki*-distribution.tar.gz &&
-       mv jena-fuseki*/ fuseki &&
+       tar -zxf *jena*fuseki*.tar.gz &&
+       mv *jena*fuseki*/ fuseki &&
        cd fuseki ; then
     # normal SPARQLStore & Dataset tests:
     bash fuseki-server --port 3030 --debug --update --mem /db &>fuseki.log &
