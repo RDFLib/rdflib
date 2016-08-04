@@ -345,7 +345,7 @@ class TurtleSerializer(RecursiveSerializer):
         Checks if l is a valid RDF list, i.e. no nodes have other properties.
         """
         try:
-            if not self.store.value(l, RDF.first):
+            if self.store.value(l, RDF.first) is None:
                 return False
         except:
             return False
