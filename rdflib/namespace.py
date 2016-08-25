@@ -331,16 +331,25 @@ class NamespaceManager(object):
             namespace = URIRef(namespace)
             prefix = self.store.prefix(namespace)
             if prefix is None:
-                if not generate:
-                    raise Exception(
-                        "No known prefix for %s and generate=False")
-                num = 1
-                while 1:
-                    prefix = "ns%s" % num
-                    if not self.store.namespace(prefix):
+                temp_namespace = namespace.toPython()
+                for i in range(1, len(name)):
+                    test = URIRef(temp_namespace + name[:i])
+                    prefix = self.store.prefix(test)
+                    if prefix is not None:
+                        namespace = test
+                        name = name[i:]
                         break
-                    num += 1
-                self.bind(prefix, namespace)
+                if prefix is None:
+                    if not generate:
+                        raise Exception(
+                            "No known prefix for %s and generate=False")
+                    num = 1
+                    while 1:
+                        prefix = "ns%s" % num
+                        if not self.store.namespace(prefix):
+                            break
+                        num += 1
+                    self.bind(prefix, namespace)
             self.__cache[uri] = (prefix, namespace, name)
         return self.__cache[uri]
 
@@ -451,7 +460,7 @@ class NamespaceManager(object):
 
 from unicodedata import category
 
-NAME_START_CATEGORIES = ["Ll", "Lu", "Lo", "Lt", "Nl"]
+NAME_START_CATEGORIES = ["Ll", "Lu", "Lo", "Lt", "Nl", "Nd"]
 NAME_CATEGORIES = NAME_START_CATEGORIES + ["Mc", "Me", "Mn", "Lm", "Nd"]
 ALLOWED_NAME_CHARS = [u"\u00B7", u"\u0387", u"-", u".", u"_"]
 
