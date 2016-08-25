@@ -354,6 +354,9 @@ class NamespaceManager(object):
         self.graph = graph
         self.__cache = {}
         self.__log = None
+        self.__trie = {}
+        for p, n in self.namespaces():  # self.bind is not always called
+            insert_trie(self.__trie, n)
         self.bind("xml", "http://www.w3.org/XML/1998/namespace")
         self.bind("rdf", RDF)
         self.bind("rdfs", RDFS)
@@ -404,10 +407,19 @@ class NamespaceManager(object):
             )
 
         if uri not in self.__cache:
-            namespace, name = split_uri(uri)
-            namespace = URIRef(namespace)
-            prefix = self.store.prefix(namespace)
-            if prefix is None:
+            namespace = get_longest_namespace(self.__trie, uri)
+            if namespace is not None:
+                name = uri[len(namespace):]
+                if '/' in name or '#' in name:
+                    name = None
+                else:
+                    prefix = self.store.prefix(namespace)  # warning multiple prefixes problem
+            else:
+                name = None
+
+            if name is None:
+                namespace, name = split_uri(uri)
+                namespace = URIRef(namespace)
                 if not generate:
                     raise KeyError(
                         "No known prefix for {} and generate=False".format(namespace)
@@ -447,6 +459,7 @@ class NamespaceManager(object):
 
             if replace:
                 self.store.bind(prefix, namespace)
+                insert_trie(self.__trie, namespace)
                 return
 
             # prefix already in use for different namespace
@@ -476,6 +489,7 @@ class NamespaceManager(object):
             else:
                 if override or bound_prefix.startswith("_"):  # or a generated prefix
                     self.store.bind(prefix, namespace)
+        insert_trie(self.__trie, namespace)
 
     def namespaces(self):
         for prefix, namespace in self.store.namespaces():
@@ -577,3 +591,27 @@ def split_uri(uri):
                     return (ns, ln)
             break
     raise ValueError("Can't split '{}'".format(uri))
+
+def insert_trie(trie, value):
+    if value in trie:
+        return
+    for key in trie:
+        if value.startswith(key):
+            insert_trie(trie[key], value)
+            return
+        elif key.startswith(value):
+            dict_ = trie.pop(key)
+            trie[value] = {key:dict_}
+            return
+    trie[value] = {}
+
+def get_longest_namespace(trie, value):
+    for key in trie:
+        if value.startswith(key):
+            out = get_longest_namespace(trie[key], value)
+            if out is None:
+                return key
+            else:
+                return out
+    return None
+
