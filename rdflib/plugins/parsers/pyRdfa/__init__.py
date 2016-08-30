@@ -609,7 +609,10 @@ class pyRdfa :
 					if self.charset :
 						# This means the HTTP header has provided a charset, or the
 						# file is a local file when we suppose it to be a utf-8
-						dom = parser.parse(input, encoding=self.charset)
+						try:
+							dom = parser.parse(input, encoding=self.charset)
+						except TypeError:
+							dom = parser.parse(input, transport_encoding=self.charset)
 					else :
 						# No charset set. The HTMLLib parser tries to sniff into the
 						# the file to find a meta header for the charset; if that
