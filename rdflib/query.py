@@ -5,7 +5,11 @@ import tempfile
 import warnings
 import types
 
-from urlparse import urlparse
+try:
+    from urlparse import urlparse
+except ImportError:
+    from urllib.parse import urlparse
+
 try:
     from io import BytesIO
     assert BytesIO
