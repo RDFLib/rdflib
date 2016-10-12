@@ -3,9 +3,9 @@ from rdflib.compare import to_isomorphic
 import unittest
 
 
-class TestIssueXXXX(unittest.TestCase):
+class TestIssue655(unittest.TestCase):
 
-    def test_issuexxxx(self):
+    def test_issue655(self):
         PROV = Namespace('http://www.w3.org/ns/prov#')
 
         bob = URIRef("http://example.org/object/Bob")
