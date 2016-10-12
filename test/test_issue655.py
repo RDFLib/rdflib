@@ -9,11 +9,11 @@ class TestIssue655(unittest.TestCase):
         PROV = Namespace('http://www.w3.org/ns/prov#')
 
         bob = URIRef("http://example.org/object/Bob")
-        value = Literal(float("inf"))
 
-        # g1 is a simple graph with one attribute having an infinite value
+        # g1 is a simple graph with an infinite and a nan values
         g1 = Graph()
-        g1.add((bob, PROV.value, value))
+        g1.add((bob, PROV.value, Literal(float("inf"))))
+        g1.add((bob, PROV.value, Literal(float("nan"))))
 
         # Build g2 out of the deserialisation of g1 serialisation
         g2 = Graph()
@@ -23,5 +23,7 @@ class TestIssue655(unittest.TestCase):
 
         self.assertTrue(Literal(float("inf")).n3().split("^")[0] == '"INF"')
         self.assertTrue(Literal(float("-inf")).n3().split("^")[0] == '"-INF"')
+        self.assertTrue(Literal(float("nan")).n3().split("^")[0] == '"NaN"')
+
 if __name__ == "__main__":
     unittest.main()

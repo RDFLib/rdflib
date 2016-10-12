@@ -1195,11 +1195,12 @@ class Literal(Identifier):
 
         '''
 
-        # If self is infinity then we must use a xsd:float datatype
+        # If self is infinity or not-a-number, we must use a xsd:float datatype
         # (no plain representation)
-        is_inf = math.isinf(float(self))
+        is_inf_nan = math.isinf(float(self)) or math.isnan(float(self))
 
-        if use_plain and self.datatype in _PLAIN_LITERAL_TYPES and not is_inf:
+        if use_plain and self.datatype in _PLAIN_LITERAL_TYPES \
+                and not is_inf_nan:
             if self.value is not None:
 
                 # this is a bit of a mess -
@@ -1262,7 +1263,8 @@ class Literal(Identifier):
                     '\\', '\\\\').replace(
                         '"', '\\"').replace(
                             '\r', '\\r').replace(
-                                "inf", "INF")
+                                "inf", "INF").replace(
+                                    "nan", "NaN")
 
     if not py3compat.PY3:
         def __str__(self):
