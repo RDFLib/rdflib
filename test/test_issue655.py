@@ -19,8 +19,6 @@ class TestIssue655(unittest.TestCase):
         g2 = Graph()
         g2.parse(data=g1.serialize(format='turtle'), format='turtle')
 
-        self.assertTrue(g1.serialize(
-            format='turtle') == g2.serialize(format='turtle'))
         self.assertTrue(to_isomorphic(g1) == to_isomorphic(g2))
 
         self.assertTrue(Literal(float("inf")).n3().split("^")[0] == '"INF"')
