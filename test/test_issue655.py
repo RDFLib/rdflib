@@ -23,5 +23,7 @@ class TestIssue655(unittest.TestCase):
             format='turtle') == g2.serialize(format='turtle'))
         self.assertTrue(to_isomorphic(g1) == to_isomorphic(g2))
 
+        self.assertTrue(Literal(float("inf")).n3().split("^")[0] == '"INF"')
+        self.assertTrue(Literal(float("-inf")).n3().split("^")[0] == '"-INF"')
 if __name__ == "__main__":
     unittest.main()
