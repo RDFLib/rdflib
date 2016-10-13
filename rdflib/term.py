@@ -1197,7 +1197,8 @@ class Literal(Identifier):
 
         # If self is infinity or not-a-number, we must use a xsd:float datatype
         # (no plain representation)
-        is_inf_nan = math.isinf(float(self)) or math.isnan(float(self))
+        is_inf_nan = (self.datatype == _XSD_DOUBLE) and \
+            (math.isinf(float(self)) or math.isnan(float(self)))
 
         if use_plain and self.datatype in _PLAIN_LITERAL_TYPES \
                 and not is_inf_nan:
