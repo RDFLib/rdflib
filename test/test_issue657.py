@@ -3,7 +3,7 @@ from rdflib.compare import to_isomorphic
 import unittest
 
 
-class TestIssuexxx(unittest.TestCase):
+class TestIssue657(unittest.TestCase):
 
     def test_graph_equivalence(self):
         g1_ttl = """
