@@ -38,6 +38,7 @@ __all__ = [
 import logging
 logger = logging.getLogger(__name__)
 import warnings
+import math
 
 import base64
 import xml.dom.minidom
@@ -1193,7 +1194,14 @@ class Literal(Identifier):
             %(u)s'"1"^^xsd:integer'
 
         '''
-        if use_plain and self.datatype in _PLAIN_LITERAL_TYPES:
+
+        # If self is infinity or not-a-number, we must use a xsd:float datatype
+        # (no plain representation)
+        is_inf_nan = (self.datatype == _XSD_DOUBLE) and \
+            (math.isinf(float(self)) or math.isnan(float(self)))
+
+        if use_plain and self.datatype in _PLAIN_LITERAL_TYPES \
+                and not is_inf_nan:
             if self.value is not None:
 
                 # this is a bit of a mess -
@@ -1255,7 +1263,9 @@ class Literal(Identifier):
                 '\n', '\\n').replace(
                     '\\', '\\\\').replace(
                         '"', '\\"').replace(
-                            '\r', '\\r')
+                            '\r', '\\r').replace(
+                                "inf", "INF").replace(
+                                    "nan", "NaN")
 
     if not py3compat.PY3:
         def __str__(self):
