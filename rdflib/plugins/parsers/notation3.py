@@ -286,6 +286,7 @@ DECIMAL_DATATYPE = _XSD_PFX + "decimal"
 DOUBLE_DATATYPE = _XSD_PFX + "double"
 FLOAT_DATATYPE = _XSD_PFX + "float"
 INTEGER_DATATYPE = _XSD_PFX + "integer"
+STRING_DATATYPE = _XSD_PFX + "string"
 
 option_noregen = 0    # If set, do not regenerate genids on output
 
@@ -1790,6 +1791,10 @@ class RDFSink(object):
 
         if isinstance(n, float):
             s = Literal(str(n), datatype=DOUBLE_DATATYPE)
+            return s
+
+        if isinstance(n, Literal) and (n.datatype is None):
+            s = Literal(str(n), datatype=STRING_DATATYPE)
             return s
 
         if isinstance(f, Formula):
