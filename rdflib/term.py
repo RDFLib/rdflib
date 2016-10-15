@@ -1194,15 +1194,14 @@ class Literal(Identifier):
             %(u)s'"1"^^xsd:integer'
 
         '''
-
-        # If self is infinity or not-a-number, we must use a xsd:float datatype
-        # (no plain representation)
-        is_inf_nan = (self.datatype == _XSD_DOUBLE) and \
-            (math.isinf(float(self)) or math.isnan(float(self)))
-
-        if use_plain and self.datatype in _PLAIN_LITERAL_TYPES \
-                and not is_inf_nan:
+        if use_plain and self.datatype in _PLAIN_LITERAL_TYPES:
             if self.value is not None:
+                # If self is inf or NaN, we need a datatype
+                # (there is no plain representation)
+                if self.datatype in _NUMERIC_INF_NAN_LITERAL_TYPES:
+                    v = float(self)
+                    if math.isinf(v) or math.isnan(v):
+                        return self._literal_n3(False, qname_callback)
 
                 # this is a bit of a mess -
                 # in py >=2.6 the string.format function makes this easier
@@ -1394,6 +1393,13 @@ _NUMERIC_LITERAL_TYPES = (
 _PLAIN_LITERAL_TYPES = (
     _XSD_INTEGER,
     _XSD_BOOLEAN,
+    _XSD_DOUBLE,
+    _XSD_DECIMAL,
+)
+
+# these have special INF and NaN XSD representations
+_NUMERIC_INF_NAN_LITERAL_TYPES = (
+    URIRef(_XSD_PFX + 'float'),
     _XSD_DOUBLE,
     _XSD_DECIMAL,
 )
