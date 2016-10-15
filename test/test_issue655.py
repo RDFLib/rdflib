@@ -1,11 +1,56 @@
-from rdflib import Graph, Namespace, URIRef, Literal
-from rdflib.compare import to_isomorphic
+from decimal import Decimal
 import unittest
+from rdflib import Graph, Namespace, URIRef, Literal, XSD
+from rdflib.compare import to_isomorphic
 
 
 class TestIssue655(unittest.TestCase):
 
     def test_issue655(self):
+        # make sure that inf and nan are serialized correctly
+        dt = XSD['double'].n3()
+        self.assertEqual(
+            Literal(float("inf"))._literal_n3(True),
+            '"INF"^^%s' % dt
+        )
+        self.assertEqual(
+            Literal(float("-inf"))._literal_n3(True),
+            '"-INF"^^%s' % dt
+        )
+        self.assertEqual(
+            Literal(float("nan"))._literal_n3(True),
+            '"NaN"^^%s' % dt
+        )
+
+        dt = XSD['decimal'].n3()
+        self.assertEqual(
+            Literal(Decimal("inf"))._literal_n3(True),
+            '"INF"^^%s' % dt
+        )
+        self.assertEqual(
+            Literal(Decimal("-inf"))._literal_n3(True),
+            '"-INF"^^%s' % dt
+        )
+        self.assertEqual(
+            Literal(Decimal("nan"))._literal_n3(True),
+            '"NaN"^^%s' % dt
+        )
+
+        self.assertEqual(
+            Literal("inf", datatype=XSD['decimal'])._literal_n3(True),
+            '"INF"^^%s' % dt
+        )
+
+        # assert that non-numerical aren't changed
+        self.assertEqual(
+            Literal('inf')._literal_n3(True),
+            '"inf"'
+        )
+        self.assertEqual(
+            Literal('nan')._literal_n3(True),
+            '"nan"'
+        )
+
         PROV = Namespace('http://www.w3.org/ns/prov#')
 
         bob = URIRef("http://example.org/object/Bob")
@@ -21,9 +66,6 @@ class TestIssue655(unittest.TestCase):
 
         self.assertTrue(to_isomorphic(g1) == to_isomorphic(g2))
 
-        self.assertTrue(Literal(float("inf")).n3().split("^")[0] == '"INF"')
-        self.assertTrue(Literal(float("-inf")).n3().split("^")[0] == '"-INF"')
-        self.assertTrue(Literal(float("nan")).n3().split("^")[0] == '"NaN"')
 
 if __name__ == "__main__":
     unittest.main()
