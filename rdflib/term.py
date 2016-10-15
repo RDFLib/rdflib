@@ -1228,6 +1228,15 @@ class Literal(Identifier):
                 quoted_dt = qname_callback(datatype)
             if not quoted_dt:
                 quoted_dt = "<%s>" % datatype
+            if datatype in _NUMERIC_INF_NAN_LITERAL_TYPES:
+                v = float(self)
+                if math.isinf(v):
+                    # python's string reps: float: 'inf', Decimal: 'Infinity"
+                    # both need to become "INF" in xsd datatypes
+                    encoded = encoded.replace('inf', 'INF').replace(
+                        'Infinity', 'INF')
+                if math.isnan(v):
+                    encoded = encoded.replace('nan', 'NaN')
 
         language = self.language
         if language:
@@ -1262,9 +1271,7 @@ class Literal(Identifier):
                 '\n', '\\n').replace(
                     '\\', '\\\\').replace(
                         '"', '\\"').replace(
-                            '\r', '\\r').replace(
-                                "inf", "INF").replace(
-                                    "nan", "NaN")
+                            '\r', '\\r')
 
     if not py3compat.PY3:
         def __str__(self):
