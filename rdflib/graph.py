@@ -925,7 +925,7 @@ class Graph(Node):
         string. Format defaults to xml (AKA rdf/xml).
 
         Format support can be extended with plugins,
-        but 'xml', 'n3', 'turtle', 'nt', 'pretty-xml', trix' are built in.
+        but 'xml', 'n3', 'turtle', 'nt', 'pretty-xml', 'trix', 'trig' and 'nquads' are built in.
         """
         serializer = plugin.get(format, Serializer)(self)
         if destination is None:
@@ -1079,10 +1079,12 @@ class Graph(Node):
             query_object, initBindings, initNs, **kwargs))
 
     def update(self, update_object, processor='sparql',
-              initNs={}, initBindings={},
+              initNs=None, initBindings=None,
               use_store_provided=True, **kwargs):
-        """
-        """
+        """Update this graph with the given update query."""
+        initBindings = initBindings or {}
+        initNs = initNs or dict(self.namespaces())
+
         if hasattr(self.store, "update") and use_store_provided:
             try:
                 return self.store.update(

@@ -146,7 +146,7 @@ class TrigParser(Parser):
         # we're currently being handed a Graph, not a ConjunctiveGraph
         assert graph.store.context_aware, "TriG Parser needs a context-aware store!"
 
-        conj_graph = ConjunctiveGraph(store=graph.store)
+        conj_graph = ConjunctiveGraph(store=graph.store, identifier=graph.identifier)
         conj_graph.default_context = graph  # TODO: CG __init__ should have a
                                             # default_context arg
          # TODO: update N3Processor so that it can use conj_graph as the sink

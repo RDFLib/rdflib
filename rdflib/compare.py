@@ -143,11 +143,15 @@ class _call_count(object):
 class IsomorphicGraph(ConjunctiveGraph):
     """An implementation of the RGDA1 graph digest algorithm.
 
-    An implementation of RGDA1 (publication forthcoming),
+    An implementation of RGDA1 (publication below),
     a combination of Sayers & Karp's graph digest algorithm using
     sum and SHA-256 <http://www.hpl.hp.com/techreports/2003/HPL-2003-235R1.pdf>
     and traces <http://pallini.di.uniroma1.it>, an average case
     polynomial time algorithm for graph canonicalization.
+    
+    McCusker, J. P. (2015). WebSig: A Digital Signature Framework for the Web.
+    Rensselaer Polytechnic Institute, Troy, NY.
+    http://gradworks.umi.com/3727015.pdf
     """
 
     def __init__(self, **kwargs):

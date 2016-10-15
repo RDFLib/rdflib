@@ -1,5 +1,6 @@
-from rdflib import Graph, URIRef, BNode, RDF, Literal
+from rdflib import Graph, URIRef, BNode, RDF, Literal, Namespace
 from rdflib.collection import Collection
+from rdflib.plugins.serializers.turtle import TurtleSerializer
 from rdflib.py3compat import b
 
 
@@ -54,6 +55,19 @@ def testUnicodeEscaping():
     assert triples[1][2] == URIRef(u'http://example.com/zzz\U00100000zzz')
     assert triples[2][2] == URIRef(u'http://example.com/aaa\xf3bbb')
 
+
+def test_turtle_valid_list():
+    NS = Namespace('http://example.org/ns/')
+    g = Graph()
+    g.parse(data="""
+            @prefix : <{0}> .
+            :s :p (""), (0), (false) .
+            """.format(NS), format='turtle')
+
+    turtle_serializer = TurtleSerializer(g)
+
+    for o in g.objects(NS.s, NS.p):
+        assert turtle_serializer.isValidList(o)
 
 
 if __name__ == "__main__":

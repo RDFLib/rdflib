@@ -42,6 +42,7 @@ from rdflib.store import Store
 from rdflib.query import Result
 from rdflib import Variable, Namespace, BNode, URIRef, Literal
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
+from rdflib.term import Node
 
 import httplib
 import urlparse
@@ -277,7 +278,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             # VALUES was added to SPARQL 1.1 on 2012/07/24
             query += "\nVALUES ( %s )\n{ ( %s ) }\n"\
                 % (" ".join("?" + str(x) for x in v),
-                   " ".join(initBindings[x].n3() for x in v))
+                   " ".join(self.node_to_sparql(initBindings[x]) for x in v))
 
         self.resetQuery()
         if self._is_contextual(queryGraph):
@@ -345,7 +346,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
         # The ORDER BY is necessary
         if hasattr(context, LIMIT) or hasattr(context, OFFSET) \
-            or hasattr(context, ORDERBY):
+                or hasattr(context, ORDERBY):
             var = None
             if isinstance(s, Variable):
                 var = s
@@ -431,10 +432,11 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         self.resetQuery()
 
         if triple:
+            nts = self.node_to_sparql
             s, p, o = triple
-            params = ((s if s else Variable('s')).n3(),
-                      (p if p else Variable('p')).n3(),
-                      (o if o else Variable('o')).n3())
+            params = (nts(s if s else Variable('s')),
+                      nts(p if p else Variable('p')),
+                      nts(o if o else Variable('o')))
             self.setQuery('SELECT ?name WHERE { GRAPH ?name { %s %s %s }}' % params)
         else:
             self.setQuery('SELECT ?name WHERE { GRAPH ?name {} }')
@@ -653,7 +655,7 @@ class SPARQLUpdateStore(SPARQLStore):
         triple = "%s %s %s ." % (nts(subject), nts(predicate), nts(obj))
         if self._is_contextual(context):
             q = "INSERT DATA { GRAPH %s { %s } }" % (
-                context.identifier.n3(), triple)
+                nts(context.identifier), triple)
         else:
             q = "INSERT DATA { %s }" % triple
         self._transaction().append(q)
@@ -669,9 +671,15 @@ class SPARQLUpdateStore(SPARQLStore):
         for subject, predicate, obj, context in quads:
             contexts[context].append((subject,predicate,obj))
         data = []
+        nts = self.node_to_sparql
         for context in contexts:
-            triples = ["%s %s %s ." % (x[0].n3(), x[1].n3(), x[2].n3()) for x in contexts[context]]
-            data.append("INSERT DATA { GRAPH <%s> { %s } }\n" % (context.identifier, '\n'.join(triples)))
+            triples = [
+                "%s %s %s ." % (
+                    nts(subject), nts(predicate), nts(obj)
+                ) for subject, predicate, obj in contexts[context]
+            ]
+            data.append("INSERT DATA { GRAPH %s { %s } }\n" % (
+                nts(context.identifier), '\n'.join(triples)))
         self._transaction().extend(data)
         if self.autocommit:
             self.commit()
@@ -689,11 +697,13 @@ class SPARQLUpdateStore(SPARQLStore):
         if not obj:
             obj = Variable("O")
 
-        triple = "%s %s %s ." % (subject.n3(), predicate.n3(), obj.n3())
+        nts = self.node_to_sparql
+        triple = "%s %s %s ." % (nts(subject), nts(predicate), nts(obj))
         if self._is_contextual(context):
+            cid = nts(context.identifier)
             q = "DELETE { GRAPH %s { %s } } WHERE { GRAPH %s { %s } }" % (
-                context.identifier.n3(), triple,
-                context.identifier.n3(), triple)
+                cid, triple,
+                cid, triple)
         else:
             q = "DELETE { %s } WHERE { %s } " % (triple, triple)
         self._transaction().append(q)
@@ -774,7 +784,7 @@ class SPARQLUpdateStore(SPARQLStore):
             v = list(initBindings)
             values = "\nVALUES ( %s )\n{ ( %s ) }\n"\
                 % (" ".join("?" + str(x) for x in v),
-                   " ".join(initBindings[x].n3() for x in v))
+                   " ".join(self.node_to_sparql(initBindings[x]) for x in v))
 
             query = self.where_pattern.sub("WHERE { " + values, query)
 
@@ -790,7 +800,11 @@ class SPARQLUpdateStore(SPARQLStore):
             is converted into
             "INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> } }"
         """
-        graph_block_open = " GRAPH <%s> {" % query_graph
+        if isinstance(query_graph, Node):
+            query_graph = self.node_to_sparql(query_graph)
+        else:
+            query_graph = '<%s>' % query_graph
+        graph_block_open = " GRAPH %s {" % query_graph
         graph_block_close = "} "
 
         # SPARQL Update supports the following operations:
@@ -837,7 +851,8 @@ class SPARQLUpdateStore(SPARQLStore):
         if not self.graph_aware:
             Store.add_graph(self, graph)
         elif graph.identifier != DATASET_DEFAULT_GRAPH_ID:
-            self.update("CREATE GRAPH <%s>" % graph.identifier)
+            self.update(
+                "CREATE GRAPH %s" % self.node_to_sparql(graph.identifier))
 
     def remove_graph(self, graph):
         if not self.graph_aware:
@@ -845,4 +860,5 @@ class SPARQLUpdateStore(SPARQLStore):
         elif graph.identifier == DATASET_DEFAULT_GRAPH_ID:
             self.update("DROP DEFAULT")
         else:
-            self.update("DROP GRAPH <%s>" % graph.identifier)
+            self.update(
+                "DROP GRAPH %s" % self.node_to_sparql(graph.identifier))
