@@ -38,6 +38,7 @@ __all__ = [
 import logging
 logger = logging.getLogger(__name__)
 import warnings
+import math
 
 import base64
 import xml.dom.minidom
@@ -1195,6 +1196,15 @@ class Literal(Identifier):
         '''
         if use_plain and self.datatype in _PLAIN_LITERAL_TYPES:
             if self.value is not None:
+                # If self is inf or NaN, we need a datatype
+                # (there is no plain representation)
+                if self.datatype in _NUMERIC_INF_NAN_LITERAL_TYPES:
+                    try:
+                        v = float(self)
+                        if math.isinf(v) or math.isnan(v):
+                            return self._literal_n3(False, qname_callback)
+                    except ValueError:
+                        return self._literal_n3(False, qname_callback)
 
                 # this is a bit of a mess -
                 # in py >=2.6 the string.format function makes this easier
@@ -1221,6 +1231,20 @@ class Literal(Identifier):
                 quoted_dt = qname_callback(datatype)
             if not quoted_dt:
                 quoted_dt = "<%s>" % datatype
+            if datatype in _NUMERIC_INF_NAN_LITERAL_TYPES:
+                try:
+                    v = float(self)
+                    if math.isinf(v):
+                        # py string reps: float: 'inf', Decimal: 'Infinity"
+                        # both need to become "INF" in xsd datatypes
+                        encoded = encoded.replace('inf', 'INF').replace(
+                            'Infinity', 'INF')
+                    if math.isnan(v):
+                        encoded = encoded.replace('nan', 'NaN')
+                except ValueError:
+                    # if we can't cast to float something is wrong, but we can
+                    # still serialize. Warn user about it
+                    warnings.warn("Serializing weird numerical %r" % self)
 
         language = self.language
         if language:
@@ -1384,6 +1408,13 @@ _NUMERIC_LITERAL_TYPES = (
 _PLAIN_LITERAL_TYPES = (
     _XSD_INTEGER,
     _XSD_BOOLEAN,
+    _XSD_DOUBLE,
+    _XSD_DECIMAL,
+)
+
+# these have special INF and NaN XSD representations
+_NUMERIC_INF_NAN_LITERAL_TYPES = (
+    URIRef(_XSD_PFX + 'float'),
     _XSD_DOUBLE,
     _XSD_DECIMAL,
 )
