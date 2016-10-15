@@ -1199,8 +1199,11 @@ class Literal(Identifier):
                 # If self is inf or NaN, we need a datatype
                 # (there is no plain representation)
                 if self.datatype in _NUMERIC_INF_NAN_LITERAL_TYPES:
-                    v = float(self)
-                    if math.isinf(v) or math.isnan(v):
+                    try:
+                        v = float(self)
+                        if math.isinf(v) or math.isnan(v):
+                            return self._literal_n3(False, qname_callback)
+                    except ValueError:
                         return self._literal_n3(False, qname_callback)
 
                 # this is a bit of a mess -
@@ -1229,14 +1232,19 @@ class Literal(Identifier):
             if not quoted_dt:
                 quoted_dt = "<%s>" % datatype
             if datatype in _NUMERIC_INF_NAN_LITERAL_TYPES:
-                v = float(self)
-                if math.isinf(v):
-                    # python's string reps: float: 'inf', Decimal: 'Infinity"
-                    # both need to become "INF" in xsd datatypes
-                    encoded = encoded.replace('inf', 'INF').replace(
-                        'Infinity', 'INF')
-                if math.isnan(v):
-                    encoded = encoded.replace('nan', 'NaN')
+                try:
+                    v = float(self)
+                    if math.isinf(v):
+                        # py string reps: float: 'inf', Decimal: 'Infinity"
+                        # both need to become "INF" in xsd datatypes
+                        encoded = encoded.replace('inf', 'INF').replace(
+                            'Infinity', 'INF')
+                    if math.isnan(v):
+                        encoded = encoded.replace('nan', 'NaN')
+                except ValueError:
+                    # if we can't cast to float something is wrong, but we can
+                    # still serialize. Warn user about it
+                    warnings.warn("Serializing weird numerical %r" % self)
 
         language = self.language
         if language:
