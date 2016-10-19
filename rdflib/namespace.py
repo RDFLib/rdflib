@@ -370,6 +370,7 @@ class NamespaceManager(object):
 
             if replace:
                 self.store.bind(prefix, namespace)
+                self.__cache[namespace] = (prefix, namespace, '')
                 return
 
             # prefix already in use for different namespace
@@ -390,16 +391,19 @@ class NamespaceManager(object):
                     break
                 num += 1
             self.store.bind(new_prefix, namespace)
+            self.__cache[namespace] = (new_prefix, namespace, '')
         else:
             bound_prefix = self.store.prefix(namespace)
             if bound_prefix is None:
                 self.store.bind(prefix, namespace)
+                self.__cache[namespace] = (prefix, namespace, '')
             elif bound_prefix == prefix:
                 pass  # already bound
             else:
                 if override or bound_prefix.startswith("_"):  # or a generated
                                                               # prefix
                     self.store.bind(prefix, namespace)
+                    self.__cache[namespace] = (prefix, namespace, '')
 
     def namespaces(self):
         for prefix, namespace in self.store.namespaces():

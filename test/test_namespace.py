@@ -20,6 +20,14 @@ class NamespacePrefixTest(unittest.TestCase):
         self.assertEqual(g.compute_qname(URIRef("http://blip/blop")),
             ("ns4", URIRef("http://blip/"), "blop"))
 
+        g.bind("ns5", URIRef("http://example.org/#special"))
+        self.assertEqual(g.compute_qname(URIRef("http://example.org/#special")),
+            ('ns5', URIRef('http://example.org/#special'), ''))
+
+        g.bind("ns6", URIRef("http://example.org/#special"))
+        self.assertEqual(g.compute_qname(URIRef("http://example.org/#special")),
+                     ('ns6', URIRef('http://example.org/#special'), ''))
+
     def test_n3(self):
         g = Graph()
         g.add((URIRef("http://example.com/foo"),
