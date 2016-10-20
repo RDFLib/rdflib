@@ -70,6 +70,10 @@ def test_turtle_valid_list():
         assert turtle_serializer.isValidList(o)
 
 
+def test_turtle_namespace():
+    
+
+
 if __name__ == "__main__":
     import nose, sys
     nose.main(defaultTest=sys.argv[0])

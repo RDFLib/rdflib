@@ -228,19 +228,26 @@ class TurtleSerializer(RecursiveSerializer):
         if not isinstance(uri, URIRef):
             return None
 
-        parts = None
+        pfx = self.store.store.prefix(uri)
 
-        try:
-            parts = self.store.compute_qname(uri, generate=gen_prefix)
-        except:
+        if pfx is not None:
+            parts = (pfx, uri, '')
+        else:
+            ns_list = sorted(self.namespaces.items())
+            old_length = 0
+            for prefix, ns_uri in ns_list:
+                if uri.startswith(ns_uri) and len(ns_uri) > old_length:
+                    local_name = uri.replace(ns_uri, '')
+                    if local_name.count('/') > 0 or local_name.count('#') > 0:
+                        continue
+                    parts = (prefix, ns_uri, local_name)
+                    old_length = len(ns_uri)
+                    pfx = prefix
 
-            # is the uri a namespace in itself?
-            pfx = self.store.store.prefix(uri)
-
-            if pfx is not None:
-                parts = (pfx, uri, '')
-            else:
-                # nothing worked
+        if pfx is None:
+            try:
+                parts = self.store.compute_qname(uri, generate=gen_prefix)
+            except:
                 return None
 
         prefix, namespace, local = parts
