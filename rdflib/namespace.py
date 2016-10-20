@@ -327,13 +327,23 @@ class NamespaceManager(object):
 
 
         if not uri in self.__cache:
-            namespace, name = split_uri(uri)
-            namespace = URIRef(namespace)
-            prefix = self.store.prefix(namespace)
+            prefix = self.store.prefix(uri)
+            if prefix is None:
+                for namespace in self.namespaces():
+                    if uri.startswith(namespace[1]):
+                        prefix = namespace[0]
+                        namespace = namespace[1]
+                        name = uri.replace(namespace, '')
+                        break
+            else:
+                namespace = uri
+                name = ''
             if prefix is None:
                 if not generate:
                     raise Exception(
                         "No known prefix for %s and generate=False")
+                namespace, name = split_uri(uri)
+                namespace = URIRef(namespace)
                 num = 1
                 while 1:
                     prefix = "ns%s" % num
@@ -370,7 +380,6 @@ class NamespaceManager(object):
 
             if replace:
                 self.store.bind(prefix, namespace)
-                self.__cache[namespace] = (prefix, namespace, '')
                 return
 
             # prefix already in use for different namespace
@@ -391,19 +400,16 @@ class NamespaceManager(object):
                     break
                 num += 1
             self.store.bind(new_prefix, namespace)
-            self.__cache[namespace] = (new_prefix, namespace, '')
         else:
             bound_prefix = self.store.prefix(namespace)
             if bound_prefix is None:
                 self.store.bind(prefix, namespace)
-                self.__cache[namespace] = (prefix, namespace, '')
             elif bound_prefix == prefix:
                 pass  # already bound
             else:
                 if override or bound_prefix.startswith("_"):  # or a generated
                                                               # prefix
                     self.store.bind(prefix, namespace)
-                    self.__cache[namespace] = (prefix, namespace, '')
 
     def namespaces(self):
         for prefix, namespace in self.store.namespaces():

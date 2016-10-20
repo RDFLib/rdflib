@@ -26,7 +26,7 @@ class NamespacePrefixTest(unittest.TestCase):
 
         g.bind("ns6", URIRef("http://example.org/#special"))
         self.assertEqual(g.compute_qname(URIRef("http://example.org/#special")),
-                     ('ns6', URIRef('http://example.org/#special'), ''))
+                     ('ns5', URIRef('http://example.org/#special'), ''))
 
     def test_n3(self):
         g = Graph()
