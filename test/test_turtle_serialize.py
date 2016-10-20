@@ -82,7 +82,7 @@ def test_turtle_namespace():
               graph.serialize(format='turtle').decode().splitlines()
               if not val.startswith('@prefix')]
     output = ' '.join(output)
-    assert 'RO_has_phenotype:' in output
+    assert 'RO_has_phenotype: ' in output
     assert 'GENO:0000385' in output
 
 
