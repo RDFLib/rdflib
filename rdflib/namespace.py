@@ -460,7 +460,7 @@ class NamespaceManager(object):
 
 from unicodedata import category
 
-NAME_START_CATEGORIES = ["Ll", "Lu", "Lo", "Lt", "Nl", "Nd"]
+NAME_START_CATEGORIES = ["Ll", "Lu", "Lo", "Lt", "Nl"]
 NAME_CATEGORIES = NAME_START_CATEGORIES + ["Mc", "Me", "Mn", "Lm", "Nd"]
 ALLOWED_NAME_CHARS = [u"\u00B7", u"\u0387", u"-", u".", u"_"]
 
