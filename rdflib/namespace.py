@@ -332,7 +332,7 @@ class NamespaceManager(object):
             prefix = self.store.prefix(namespace)
             if prefix is None:
                 temp_namespace = namespace.toPython()
-                for i in range(1, len(name)):
+                for i in xrange(1, len(name) + 1):
                     test = URIRef(temp_namespace + name[:i])
                     prefix = self.store.prefix(test)
                     if prefix is not None:
