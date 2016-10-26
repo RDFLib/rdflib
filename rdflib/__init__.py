@@ -83,9 +83,6 @@ except ImportError:
     import warnings
     warnings.warn('__main__ already imported', ImportWarning)
     del warnings
-    
-logger = logging.getLogger(__name__)
-logger.info("RDFLib Version: %s" % __version__)
 
 
 try:
