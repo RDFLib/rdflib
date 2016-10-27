@@ -69,9 +69,12 @@ def test_turtle_valid_list():
     for o in g.objects(NS.s, NS.p):
         assert turtle_serializer.isValidList(o)
 
+
 def test_turtle_namespace():
    graph = Graph()
+   graph.bind('OBO', 'http://purl.obolibrary.org/obo/')
    graph.bind('GENO', 'http://purl.obolibrary.org/obo/GENO_')
+   graph.bind('RO', 'http://purl.obolibrary.org/obo/RO_')
    graph.bind('RO_has_phenotype',
                    'http://purl.obolibrary.org/obo/RO_0002200')
    graph.add((URIRef('http://example.org'),
