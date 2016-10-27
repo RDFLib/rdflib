@@ -332,13 +332,19 @@ class NamespaceManager(object):
             prefix = self.store.prefix(namespace)
             if prefix is None:
                 temp_namespace = namespace.toPython()
+                output_prefix = prefix
+                output_namespace = namespace
+                output_name = name
                 for i in xrange(1, len(name) + 1):
                     test = URIRef(temp_namespace + name[:i])
                     prefix = self.store.prefix(test)
                     if prefix is not None:
-                        namespace = test
-                        name = name[i:]
-                        break
+                        output_prefix = prefix
+                        output_namespace = test
+                        output_name = name[i:]
+                prefix = output_prefix
+                namespace = output_namespace
+                name = output_name
                 if prefix is None:
                     if not generate:
                         raise Exception(
