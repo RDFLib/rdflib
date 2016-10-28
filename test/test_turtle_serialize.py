@@ -72,6 +72,7 @@ def test_turtle_valid_list():
 
 def test_turtle_namespace():
    graph = Graph()
+   graph.bind('OBO', 'http://purl.obolibrary.org/obo/')
    graph.bind('GENO', 'http://purl.obolibrary.org/obo/GENO_')
    graph.bind('RO', 'http://purl.obolibrary.org/obo/RO_')
    graph.bind('RO_has_phenotype',
