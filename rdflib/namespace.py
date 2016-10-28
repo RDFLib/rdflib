@@ -330,32 +330,32 @@ class NamespaceManager(object):
             namespace, name = split_uri(uri)
             namespace = URIRef(namespace)
             prefix = self.store.prefix(namespace)
+            # check to see if there are longer prefixes defined
+            temp_namespace = namespace.toPython()
+            output_prefix = prefix
+            output_namespace = namespace
+            output_name = name
+            for i in xrange(1, len(name) + 1):
+                test = URIRef(temp_namespace + name[:i])
+                prefix = self.store.prefix(test)
+                if prefix is not None:
+                    output_prefix = prefix
+                    output_namespace = test
+                    output_name = name[i:]
+            prefix = output_prefix
+            namespace = output_namespace
+            name = output_name
             if prefix is None:
-                temp_namespace = namespace.toPython()
-                output_prefix = prefix
-                output_namespace = namespace
-                output_name = name
-                for i in xrange(1, len(name) + 1):
-                    test = URIRef(temp_namespace + name[:i])
-                    prefix = self.store.prefix(test)
-                    if prefix is not None:
-                        output_prefix = prefix
-                        output_namespace = test
-                        output_name = name[i:]
-                prefix = output_prefix
-                namespace = output_namespace
-                name = output_name
-                if prefix is None:
-                    if not generate:
-                        raise Exception(
-                            "No known prefix for %s and generate=False")
-                    num = 1
-                    while 1:
-                        prefix = "ns%s" % num
-                        if not self.store.namespace(prefix):
-                            break
-                        num += 1
-                    self.bind(prefix, namespace)
+                if not generate:
+                    raise Exception(
+                        "No known prefix for %s and generate=False")
+                num = 1
+                while 1:
+                    prefix = "ns%s" % num
+                    if not self.store.namespace(prefix):
+                        break
+                    num += 1
+                self.bind(prefix, namespace)
             self.__cache[uri] = (prefix, namespace, name)
         return self.__cache[uri]
 
