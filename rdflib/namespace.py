@@ -453,7 +453,7 @@ from unicodedata import category
 
 NAME_START_CATEGORIES = ["Ll", "Lu", "Lo", "Lt", "Nl"]
 NAME_CATEGORIES = NAME_START_CATEGORIES + ["Mc", "Me", "Mn", "Lm", "Nd"]
-ALLOWED_NAME_CHARS = [u"\u00B7", u"\u0387", u"-", u".", u"_"]
+ALLOWED_NAME_CHARS = [u"\u00B7", u"\u0387", u"-", u".", u"_", u":"]
 
 # http://www.w3.org/TR/REC-xml-names/#NT-NCName
 #  [4] NCName ::= (Letter | '_') (NCNameChar)* /* An XML Name, minus
