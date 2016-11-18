@@ -131,7 +131,7 @@ def test_rdfpipe_bytes_vs_str():
     rdfpipe to ensure that we get the expected results.
     """
     args = [
-        'python', 'rdflib/tools/rdfpipe.py', '-i', 'rdfa1.1',
+        sys.executable, 'rdflib/tools/rdfpipe.py', '-i', 'rdfa1.1',
         'test/rdfa/oreilly.html'
     ]
     proc = subprocess.Popen(
@@ -151,7 +151,7 @@ def test_rdfpipe_mdata_open():
     the open() builtin instead.
     """
     args = [
-        'python', 'rdflib/tools/rdfpipe.py', '-i', 'mdata',
+        sys.executable, 'rdflib/tools/rdfpipe.py', '-i', 'mdata',
         'test/mdata/codelab.html'
     ]
     proc = subprocess.Popen(
