@@ -10,6 +10,7 @@ from rdflib.term import BNode, Literal, URIRef
 from rdflib.exceptions import Error
 from rdflib.serializer import Serializer
 from rdflib.namespace import RDF, RDFS
+from rdflib.py3compat import b
 
 __all__ = ['RecursiveSerializer', 'TurtleSerializer']
 
@@ -92,7 +93,8 @@ class RecursiveSerializer(Serializer):
         for triple in self.store.triples((None, None, None)):
             self.preprocessTriple(triple)
 
-    def preprocessTriple(self, (s, p, o)):
+    def preprocessTriple(self, spo):
+        s, p, o = spo
         self._references[o]+=1
         self._subjects[s] = True
 
@@ -134,7 +136,7 @@ class RecursiveSerializer(Serializer):
             if (prop in properties) and (prop not in seen):
                 propList.append(prop)
                 seen[prop] = True
-        props = properties.keys()
+        props = list(properties.keys())
         props.sort()
         for prop in props:
             if prop not in seen:
@@ -232,7 +234,7 @@ class TurtleSerializer(RecursiveSerializer):
                 self.write('\n')
 
         self.endDocument()
-        stream.write(u"\n".encode('ascii'))
+        stream.write(b("\n"))
 
     def preprocessTriple(self, triple):
         super(TurtleSerializer, self).preprocessTriple(triple)
