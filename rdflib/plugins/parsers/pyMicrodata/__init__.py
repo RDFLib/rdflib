@@ -52,32 +52,18 @@ __contact__ = 'Ivan Herman, ivan@w3.org'
 
 import sys
 
-PY3 = (sys.version_info[0] >= 3)
-
-if PY3:
-    from io import StringIO
-else:
-    from StringIO import StringIO
+from rdflib.py3compat import StringIO, urlparse, string_types
 
 import datetime
 
-import rdflib
 from rdflib import URIRef
 from rdflib import Literal
 from rdflib import BNode
 from rdflib import Namespace
 
-if rdflib.__version__ >= "3.0.0":
-    from rdflib import Graph
-    from rdflib import RDF as ns_rdf
-else:
-    from rdflib.Graph import Graph
-    from rdflib.RDF import RDFNS as ns_rdf
+from rdflib import Graph
+from rdflib import RDF as ns_rdf
 
-if PY3:
-    from urllib.parse import urlparse
-else:
-    from urlparse import urlparse
 
 debug = False
 
@@ -187,12 +173,7 @@ class pyMicrodata(object):
         @type name: string or a file-like object
         @return: a file like object if opening "name" is possible and successful, "name" otherwise
         """
-        try:
-            # Python 2 branch
-            isstring = isinstance(name, basestring)
-        except:
-            # Python 3 branch
-            isstring = isinstance(name, str)
+        isstring = isinstance(name, string_types)
 
         if isstring:
             # check if this is a URI, ie, if there is a valid 'scheme' part
