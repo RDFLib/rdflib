@@ -13,6 +13,8 @@ from rdflib.query import (
     ResultException
 )
 
+from rdflib.py3compat import text_type
+
 SPARQL_XML_NAMESPACE = u'http://www.w3.org/2005/sparql-results#'
 RESULTS_NS_ET = '{%s}' % SPARQL_XML_NAMESPACE
 
@@ -39,11 +41,11 @@ class XMLResult(Result):
 
         xmlstring = source.read()
 
-        if isinstance(xmlstring, unicode):
+        if isinstance(xmlstring, text_type):
             xmlstring = xmlstring.encode('utf-8')
         try:
             tree = etree.fromstring(xmlstring)
-        except Exception, e:
+        except Exception as e:
             try:
                 raise e.__class__("error parsing %r: %s" % (xmlstring, e))
             except:
@@ -159,9 +161,9 @@ class SPARQLXMLWriter:
         self.writer.startElementNS(
             (SPARQL_XML_NAMESPACE, u'head'),
             u'head', AttributesNSImpl({}, {}))
-        for i in xrange(0, len(allvarsL)):
+        for i in range(0, len(allvarsL)):
             attr_vals = {
-                (None, u'name'): unicode(allvarsL[i]),
+                (None, u'name'): text_type(allvarsL[i]),
             }
             attr_qnames = {
                 (None, u'name'): u'name',
@@ -203,7 +205,7 @@ class SPARQLXMLWriter:
         assert self._resultStarted
 
         attr_vals = {
-            (None, u'name'): unicode(name),
+            (None, u'name'): text_type(name),
         }
         attr_qnames = {
             (None, u'name'): u'name',

@@ -28,7 +28,7 @@ class CSVResultParser(ResultParser):
             source = codecs.getreader('utf-8')(source)
 
         reader = csv.reader(source, delimiter=self.delim)
-        r.vars = [Variable(x) for x in reader.next()]
+        r.vars = [Variable(x) for x in next(reader)]
         r.bindings = []
 
         for row in reader:
