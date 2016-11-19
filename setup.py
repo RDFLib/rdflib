@@ -28,7 +28,7 @@ def setup_python3():
             outfiles_2to3.append(outf)
 
     six_ed = [  # uncomment files which have already been transformed to use six
-        # join(tmp_src, 'docs', 'conf.py'),
+        join(tmp_src, 'docs', 'conf.py'),
         # join(tmp_src, 'docs', 'plugintable.py'),
         join(tmp_src, 'examples', '__init__.py'),
         # join(tmp_src, 'examples', 'conjunctive_graphs.py'),
@@ -147,10 +147,10 @@ def setup_python3():
         join(tmp_src, 'rdflib', 'term.py'),
         join(tmp_src, 'rdflib', 'tools', '__init__.py'),
         # join(tmp_src, 'rdflib', 'tools', 'csv2rdf.py'),
-        # join(tmp_src, 'rdflib', 'tools', 'graphisomorphism.py'),
-        # join(tmp_src, 'rdflib', 'tools', 'rdf2dot.py'),
-        # join(tmp_src, 'rdflib', 'tools', 'rdfpipe.py'),
-        # join(tmp_src, 'rdflib', 'tools', 'rdfs2dot.py'),
+        join(tmp_src, 'rdflib', 'tools', 'graphisomorphism.py'),
+        join(tmp_src, 'rdflib', 'tools', 'rdf2dot.py'),
+        join(tmp_src, 'rdflib', 'tools', 'rdfpipe.py'),
+        join(tmp_src, 'rdflib', 'tools', 'rdfs2dot.py'),
         join(tmp_src, 'rdflib', 'util.py'),
         join(tmp_src, 'rdflib', 'void.py'),
         join(tmp_src, 'run_tests.py'),

@@ -3,7 +3,9 @@ A commandline tool for testing if RDF graphs are isomorpic, i.e. equal
 if BNode labels are ignored.
 """
 
-from rdflib.graph import Graph
+from __future__ import absolute_import
+
+from rdflib import Graph
 from rdflib import BNode
 from itertools import combinations
 
@@ -39,7 +41,7 @@ class IsomorphicTestableGraph(Graph):
                 yield tuple(self.vhashtriple(t, term, done))
 
     def vhashtriple(self, triple, term, done):
-        for p in xrange(3):
+        for p in range(3):
             if not isinstance(triple[p], BNode):
                 yield triple[p]
             elif done or (triple[p] == term):
