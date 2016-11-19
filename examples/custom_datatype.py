@@ -1,6 +1,6 @@
 """
 
-RDFLib can map between data-typed literals and python objects. 
+RDFLib can map between data-typed literals and python objects.
 
 Mapping for integers, floats, dateTimes, etc. are already added, but
 you can also add your own.
@@ -17,9 +17,9 @@ from rdflib.term import bind
 if __name__=='__main__':
 
     # complex numbers are not registered by default
-    # no custom constructor/serializer needed since 
+    # no custom constructor/serializer needed since
     # complex('(2+3j)') works fine
-    bind(XSD.complexNumber, complex) 
+    bind(XSD.complexNumber, complex)
 
     ns=Namespace("urn:my:namespace:")
 
@@ -39,8 +39,6 @@ if __name__=='__main__':
 
     l2=list(g2)[0][2]
 
-    print l2 
+    print(l2)
 
-    print l2.value == c # back to a python complex object
-
-
+    print(l2.value == c) # back to a python complex object

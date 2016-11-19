@@ -4,7 +4,7 @@
 SPARQL Query using :meth:`rdflib.graph.Graph.query`
 
 The method returns a :class:`~rdflib.query.Result`, iterating over
-this yields :class:`~rdflib.query.ResultRow` objects 
+this yields :class:`~rdflib.query.ResultRow` objects
 
 The variable bindings can be access as attributes of the row objects
 For variable names that are not valid python identifiers, dict access
@@ -25,10 +25,6 @@ if __name__=='__main__':
     # which in turn knows it from reading the RDF/XML file
     for row in g.query(
             'select ?s where { [] foaf:knows ?s .}'):
-        print row.s 
+        print(row.s)
         # or row["s"]
         # or row[rdflib.Variable("s")]
-
-
-
-
