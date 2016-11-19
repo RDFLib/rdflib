@@ -1,6 +1,6 @@
 """
 
-This is a simple primer using some of the 
+This is a simple primer using some of the
 example stuff in the Primer on N3:
 
 http://www.w3.org/2000/10/swap/Primer
@@ -93,7 +93,7 @@ if __name__=='__main__':
 
     :sister a rdf:Property.
 
-    :sister rdfs:domain :Person; 
+    :sister rdfs:domain :Person;
             rdfs:range :Woman.
 
     :Woman = foo:FemaleAdult .
@@ -103,10 +103,10 @@ if __name__=='__main__':
 
     """ # --- End of primer code
 
-    # To make this go easier to spit back out... 
+    # To make this go easier to spit back out...
     # technically, we already created a namespace
     # with the object init (and it added some namespaces as well)
-    # By default, your main namespace is the URI of your 
+    # By default, your main namespace is the URI of your
     # current working directory, so lets make that simpler:
 
     myNS = Namespace('http://www.w3.org/2000/10/swap/Primer#')
@@ -126,7 +126,7 @@ if __name__=='__main__':
 
     # or spit it back out (mostly) the way we created it:
 
-    print primer.serialize(format='n3')
+    print(primer.serialize(format='n3'))
 
     # for more insight into things already done, lets see the namespaces
 
@@ -135,5 +135,3 @@ if __name__=='__main__':
     # lets ask something about the data
 
     list(primer.objects(myNS.pat, myNS.child))
-
-

@@ -15,7 +15,7 @@ if __name__ == '__main__':
 
     # Open previously created store, or create it if it doesn't exist yet
     graph = ConjunctiveGraph('Sleepycat')
-    
+
     rt = graph.open(path, create=False)
 
     if rt == NO_STORE:
@@ -24,7 +24,7 @@ if __name__ == '__main__':
     else:
         assert rt == VALID_STORE, 'The underlying store is corrupt'
 
-    print 'Triples in graph before add: ', len(graph)
+    print('Triples in graph before add: ', len(graph))
 
     # Now we'll add some triples to the graph & commit the changes
     rdflib = Namespace('http://rdflib.net/test/')
@@ -33,28 +33,28 @@ if __name__ == '__main__':
     graph.add((rdflib['pic:1'], rdflib.name, Literal('Jane & Bob')))
     graph.add((rdflib['pic:2'], rdflib.name, Literal('Squirrel in Tree')))
 
-    print 'Triples in graph after add: ', len(graph)
+    print('Triples in graph after add: ', len(graph))
 
     # display the graph in RDF/XML
-    print graph.serialize(format='n3')
+    print(graph.serialize(format='n3'))
 
-    # close when done, otherwise sleepycat will leak lock entries. 
+    # close when done, otherwise sleepycat will leak lock entries.
     graph.close()
-    
+
     graph = None
-    
+
     # reopen the graph
-    
+
     graph = ConjunctiveGraph('Sleepycat')
-    
-    graph.open(path, create = False) 
-    
-    print 'Triples still in graph: ', len(graph)
-    
+
+    graph.open(path, create = False)
+
+    print('Triples still in graph: ', len(graph))
+
     graph.close()
 
     # Clean up the temp folder to remove the Sleepycat database files...
     import os
-    for f in os.listdir(path): 
+    for f in os.listdir(path):
         os.unlink(path+'/'+f)
     os.rmdir(path)
