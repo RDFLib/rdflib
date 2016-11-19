@@ -16,8 +16,8 @@ class ResponsibleGenerator(object):
     def __iter__(self):
         return self
 
-    def next(self):
-        return self.gen.next()
+    def __next__(self):
+        return next(self.gen)
 
 
 class ConcurrentStore(object):
@@ -86,7 +86,7 @@ class ConcurrentStore(object):
                     self.store.remove((s, p, o))
                 except:
                     # TODO: change to try finally?
-                    print s, p, o, "Not in store to remove"
+                    print(s, p, o, "Not in store to remove")
             pending_adds = self.__pending_adds
             while pending_adds:
                 (s, p, o) = pending_adds.pop()
