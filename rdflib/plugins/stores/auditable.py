@@ -64,7 +64,8 @@ class AuditableStore(Store):
                 pass
             self.store.add((s, p, o), context, quoted)
 
-    def remove(self, (subject, predicate, object_), context=None):
+    def remove(self, spo, context=None):
+        subject, predicate, object_ = spo
         lock = destructiveOpLocks['remove']
         lock = lock if lock else threading.RLock()
         with lock:
