@@ -14,38 +14,18 @@ $Date: 2014-12-17 08:52:43 $
 """
 import sys, socket
 
-(py_v_major, py_v_minor, py_v_micro, py_v_final, py_v_serial) = sys.version_info
+from rdflib.py3compat import urlparse, build_opener, quote, urljoin, Request, HTTPError, BaseHTTPRequestHandler
 
 # The separate W3C branch is necessary for the local security setup at W3C. It is ugly to have this
 # in the code, but I was lazy to make it more generic...
 # With the inclusion of pyMicrodata into RDFLib, this service looses its importance anyway...
-if py_v_major >= 3:
-    if socket.getfqdn().endswith('.w3.org'):
-        import checkremote
 
-        url_opener = checkremote.safe_url_opener
-    else:
-        import urllib.request
+if socket.getfqdn().endswith('.w3.org'):
+    import checkremote
 
-        url_opener = urllib.request.build_opener()
-    from urllib.request import Request
-    from urllib.parse import urljoin, quote, urlparse
-    from http.server import BaseHTTPRequestHandler
-    from urllib.error import HTTPError as urllib_HTTPError
+    url_opener = checkremote.safe_url_opener
 else:
-    if socket.getfqdn().endswith('.w3.org'):
-        import checkremote
-
-        url_opener = checkremote.safe_url_opener
-    else:
-        import urllib2
-
-        url_opener = urllib2.build_opener()
-    from urllib2 import Request
-    from urllib2 import HTTPError as urllib_HTTPError
-    from urlparse import urljoin, urlparse
-    from urllib import quote
-    from BaseHTTPServer import BaseHTTPRequestHandler
+    url_opener = build_opener()
 
 from datetime import datetime
 
@@ -73,10 +53,6 @@ def generate_URI(base, v):
     if is_absolute_URI(v):
         return v
     else:
-        # UGLY!!! There is a bug for a corner case in python version <= 2.5.X
-        if len(v) > 0 and v[0] == '?' and (py_v_major < 3 and py_v_minor <= 5):
-            return base + val
-        ####
 
         # Trust the python library...
         # Well, not quite:-) there is what is, in my view, a bug in the urljoin; in some cases it
@@ -304,7 +280,7 @@ class URIOpener(object):
             else:
                 self.location = name
 
-        except urllib_HTTPError:
+        except HTTPError:
             e = sys.exc_info()[1]
             from pyMicrodata import HTTPError
             msg = BaseHTTPRequestHandler.responses[e.code]

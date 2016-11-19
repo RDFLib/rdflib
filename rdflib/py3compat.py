@@ -34,10 +34,19 @@ from six.moves.urllib.parse import quote
 from six.moves.urllib.parse import urldefrag
 from six.moves.urllib.parse import urljoin
 from six.moves.urllib.parse import urlparse
+from six.moves.urllib.parse import urlsplit
+from six.moves.urllib.parse import urlunsplit
+from six.moves.urllib.parse import urlunparse
+
+
 from six.moves.urllib.request import Request
 from six.moves.urllib.request import pathname2url
 from six.moves.urllib.request import url2pathname
 from six.moves.urllib.request import urlopen
+from six.moves.urllib.request import build_opener
+
+from six.moves.urllib.error import HTTPError
+from six.moves.BaseHTTPServer import BaseHTTPRequestHandler
 
 try:
     from functools import wraps

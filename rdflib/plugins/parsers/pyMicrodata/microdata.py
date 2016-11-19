@@ -20,27 +20,16 @@ Added a reaction on the RDFaStopParsing exception: if raised while setting up th
 is stopped (on the whole subtree)
 """
 
-import sys
 
-if sys.version_info[0] >= 3:
-    from urllib.parse import urlsplit, urlunsplit
-else:
-    from urlparse import urlsplit, urlunsplit
-
-from types import *
-
-import rdflib
 from rdflib import URIRef
 from rdflib import Literal
 from rdflib import BNode
 from rdflib import Namespace
 
-if rdflib.__version__ >= "3.0.0":
-    from rdflib import RDF as ns_rdf
-    from rdflib import XSD as ns_xsd
-else:
-    from rdflib.RDF import RDFNS as ns_rdf
-    from rdflib.Literal import _XSD_NS as ns_xsd
+from rdflib import RDF as ns_rdf
+from rdflib import XSD as ns_xsd
+
+from rdflib.py3compat import urlsplit, urlunsplit
 
 ns_owl = Namespace("http://www.w3.org/2002/07/owl#")
 
@@ -49,7 +38,7 @@ from .utils import get_Literal, get_time_type
 from .utils import get_lang_from_hierarchy, is_absolute_URI, generate_URI, \
     fragment_escape
 
-from . import debug
+
 
 
 # ----------------------------------------------------------------------------
