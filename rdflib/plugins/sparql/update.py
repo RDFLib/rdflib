@@ -6,6 +6,8 @@ Code for carrying out Update Operations
 
 from rdflib import Graph, Variable
 
+from rdflib.py3compat import iteritems
+
 from rdflib.plugins.sparql.sparql import QueryContext
 from rdflib.plugins.sparql.evalutils import _fillTemplate, _join
 from rdflib.plugins.sparql.evaluate import evalBGP, evalPart
@@ -172,14 +174,14 @@ def evalModify(ctx, u):
         if u.delete:
             dg -= _fillTemplate(u.delete.triples, c)
 
-            for g, q in u.delete.quads.iteritems():
+            for g, q in iteritems(u.delete.quads):
                 cg = ctx.dataset.get_context(c.get(g))
                 cg -= _fillTemplate(q, c)
 
         if u.insert:
             dg += _fillTemplate(u.insert.triples, c)
 
-            for g, q in u.insert.quads.iteritems():
+            for g, q in iteritems(u.insert.quads):
                 cg = ctx.dataset.get_context(c.get(g))
                 cg += _fillTemplate(q, c)
 

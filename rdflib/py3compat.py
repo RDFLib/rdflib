@@ -30,6 +30,7 @@ from six import StringIO
 
 from six.moves import cPickle
 from six.moves import input
+from six.moves.urllib.parse import quote
 from six.moves.urllib.parse import urldefrag
 from six.moves.urllib.parse import urljoin
 from six.moves.urllib.parse import urlparse
