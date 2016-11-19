@@ -1,6 +1,6 @@
 from rdflib.store import Store, VALID_STORE, NO_STORE
 from rdflib.term import URIRef
-from rdflib.py3compat import b
+from rdflib.py3compat import b, pathname2url
 
 
 def bb(u):
@@ -18,7 +18,7 @@ except ImportError:
         has_bsddb = False
 from os import mkdir
 from os.path import exists, abspath
-from urllib import pathname2url
+
 from threading import Thread
 
 if has_bsddb:
@@ -104,13 +104,13 @@ class Sleepycat(Store):
         if create:
             dbopenflags |= db.DB_CREATE
 
-        dbmode = 0660
+        dbmode = 0o660
         dbsetflags = 0
 
         # create and open the DBs
         self.__indicies = [None, ] * 3
         self.__indicies_info = [None, ] * 3
-        for i in xrange(0, 3):
+        for i in range(0, 3):
             index_name = to_key_func(
                 i)((b("s"), b("p"), b("o")), b("c")).decode()
             index = db.DB(db_env)
@@ -120,12 +120,12 @@ class Sleepycat(Store):
             self.__indicies_info[i] = (index, to_key_func(i), from_key_func(i))
 
         lookup = {}
-        for i in xrange(0, 8):
+        for i in range(0, 8):
             results = []
-            for start in xrange(0, 3):
+            for start in range(0, 3):
                 score = 1
                 len = 0
-                for j in xrange(start, start + 3):
+                for j in range(start, start + 3):
                     if i & (1 << (j % 3)):
                         score = score << 1
                         len += 1
@@ -206,7 +206,7 @@ class Sleepycat(Store):
                             break
                 else:
                     sleep(1)
-        except Exception, e:
+        except Exception as e:
             logger.exception(e)
 
     def sync(self):
@@ -273,7 +273,8 @@ class Sleepycat(Store):
 
             self.__needs_sync = True
 
-    def __remove(self, (s, p, o), c, quoted=False, txn=None):
+    def __remove(self, spo, c, quoted=False, txn=None):
+        s, p, o = spo
         cspo, cpos, cosp = self.__indicies
         contexts_value = cspo.get(
             b("^").join([b(""), s, p, o, b("")]), txn=txn) or b("")
@@ -293,7 +294,8 @@ class Sleepycat(Store):
                     except db.DBNotFoundError:
                         pass  # TODO: is it okay to ignore these?
 
-    def remove(self, (subject, predicate, object), context, txn=None):
+    def remove(self, spo, context, txn=None):
+        subject, predicate, object = spo
         assert self.__open, "The Store must be open."
         Store.remove(self, (subject, predicate, object), context)
         _to_string = self._to_string
@@ -366,9 +368,11 @@ class Sleepycat(Store):
 
             self.__needs_sync = needs_sync
 
-    def triples(self, (subject, predicate, object), context=None, txn=None):
+    def triples(self, spo, context=None, txn=None):
         """A generator over all the triples matching """
         assert self.__open, "The Store must be open."
+
+        subject, predicate, object = spo
 
         if context is not None:
             if context == self:
@@ -522,7 +526,8 @@ class Sleepycat(Store):
             i = i.decode()
         return i
 
-    def __lookup(self, (subject, predicate, object), context, txn=None):
+    def __lookup(self, spo, context, txn=None):
+        subject, predicate, object = spo
         _to_string = self._to_string
         if context is not None:
             context = _to_string(context, txn=txn)
