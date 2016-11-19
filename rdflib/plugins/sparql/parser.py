@@ -4,6 +4,8 @@ SPARQL 1.1 Parser
 based on pyparsing
 """
 
+from __future__ import absolute_import
+
 import sys
 import re
 
@@ -14,10 +16,10 @@ from pyparsing import (
 from pyparsing import CaselessKeyword as Keyword  # watch out :)
 # from pyparsing import Keyword as CaseSensitiveKeyword
 
-from parserutils import Comp, Param, ParamList
+from .parserutils import Comp, Param, ParamList
 
 from . import operators as op
-from rdflib.py3compat import decodeUnicodeEscape, bytestype
+from rdflib.py3compat import decodeUnicodeEscape, bytestype, unichr
 
 import rdflib
 
@@ -47,7 +49,7 @@ def expandTriples(terms):
     try:
         res = []
         if DEBUG:
-            print "Terms", terms
+            print("Terms", terms)
         l = len(terms)
         for i, t in enumerate(terms):
             if t == ',':
@@ -72,10 +74,10 @@ def expandTriples(terms):
             elif t != '.':
                 res.append(t)
             if DEBUG:
-                print len(res), t
+                print(len(res), t)
         if DEBUG:
             import json
-            print json.dumps(res, indent=2)
+            print(json.dumps(res, indent=2))
 
         return res
         # print res
@@ -97,13 +99,13 @@ def expandBNodeTriples(terms):
     # import pdb; pdb.set_trace()
     try:
         if DEBUG:
-            print "Bnode terms", terms
-            print "1", terms[0]
-            print "2", [rdflib.BNode()] + terms.asList()[0]
+            print("Bnode terms", terms)
+            print("1", terms[0])
+            print("2", [rdflib.BNode()] + terms.asList()[0])
         return [expandTriples([rdflib.BNode()] + terms.asList()[0])]
-    except Exception, e:
+    except Exception as e:
         if DEBUG:
-            print ">>>>>>>>", e
+            print(">>>>>>>>", e)
         raise
 
 
@@ -112,7 +114,7 @@ def expandCollection(terms):
     expand ( 1 2 3 ) notation for collections
     """
     if DEBUG:
-        print "Collection: ", terms
+        print("Collection: ", terms)
 
     res = []
     other = []
@@ -131,7 +133,7 @@ def expandCollection(terms):
     res += other
 
     if DEBUG:
-        print "CollectionOut", res
+        print("CollectionOut", res)
     return [res]
 
 
@@ -174,7 +176,7 @@ PN_CHARS_re = u'\\-0-9\u00B7\u0300-\u036F\u203F-\u2040' + PN_CHARS_U_re
 # PN_CHARS = Regex(u'[%s]'%PN_CHARS_re, flags=re.U)
 
 # [168] PN_PREFIX ::= PN_CHARS_BASE ((PN_CHARS|'.')* PN_CHARS)?
-PN_PREFIX = Regex(ur'[%s](?:[%s\.]*[%s])?' % (PN_CHARS_BASE_re,
+PN_PREFIX = Regex(u'[%s](?:[%s\\.]*[%s])?' % (PN_CHARS_BASE_re,
                   PN_CHARS_re, PN_CHARS_re), flags=re.U)
 
 # [140] PNAME_NS ::= PN_PREFIX? ':'
@@ -202,8 +204,8 @@ PLX_re = '(%s|%s)'%(PN_LOCAL_ESC_re,PERCENT_re)
 
 # [169] PN_LOCAL ::= (PN_CHARS_U | ':' | [0-9] | PLX ) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX) )?
 
-PN_LOCAL = Regex(ur"""([%(PN_CHARS_U)s:0-9]|%(PLX)s)
-                     (([%(PN_CHARS)s\.:]|%(PLX)s)*
+PN_LOCAL = Regex(u"""([%(PN_CHARS_U)s:0-9]|%(PLX)s)
+                     (([%(PN_CHARS)s\\.:]|%(PLX)s)*
                       ([%(PN_CHARS)s:]|%(PLX)s) )?"""%dict(PN_CHARS_U=PN_CHARS_U_re,
                                                        PN_CHARS=PN_CHARS_re,
                                                          PLX=PLX_re), flags=re.X|re.UNICODE)
@@ -220,7 +222,7 @@ PN_LOCAL.setParseAction(lambda x: re.sub("(%s)"%PERCENT_re, _hexExpand, x[0]))
 PNAME_LN = PNAME_NS + Param('localname', PN_LOCAL.leaveWhitespace())
 
 # [142] BLANK_NODE_LABEL ::= '_:' ( PN_CHARS_U | [0-9] ) ((PN_CHARS|'.')* PN_CHARS)?
-BLANK_NODE_LABEL = Regex(ur'_:[0-9%s](?:[\.%s]*[%s])?' % (
+BLANK_NODE_LABEL = Regex(u'_:[0-9%s](?:[\\.%s]*[%s])?' % (
     PN_CHARS_U_re, PN_CHARS_re, PN_CHARS_re), flags=re.U)
 BLANK_NODE_LABEL.setParseAction(lambda x: rdflib.BNode(x[0]))
 
@@ -291,14 +293,14 @@ DOUBLE_NEGATIVE.setParseAction(lambda x: neg(x[0]))
 # [158] STRING_LITERAL_LONG1 ::= "'''" ( ( "'" | "''" )? ( [^'\] | ECHAR ) )* "'''"
 # STRING_LITERAL_LONG1 = Literal("'''") + ( Optional( Literal("'") | "''"
 # ) + ZeroOrMore( ~ Literal("'\\") | ECHAR ) ) + "'''"
-STRING_LITERAL_LONG1 = Regex(ur"'''((?:'|'')?(?:[^'\\]|\\['ntbrf\\]))*'''")
+STRING_LITERAL_LONG1 = Regex(u"'''((?:'|'')?(?:[^'\\\\]|\\\\['ntbrf\\\\]))*'''")
 STRING_LITERAL_LONG1.setParseAction(
     lambda x: rdflib.Literal(decodeUnicodeEscape(x[0][3:-3])))
 
 # [159] STRING_LITERAL_LONG2 ::= '"""' ( ( '"' | '""' )? ( [^"\] | ECHAR ) )* '"""'
 # STRING_LITERAL_LONG2 = Literal('"""') + ( Optional( Literal('"') | '""'
 # ) + ZeroOrMore( ~ Literal('"\\') | ECHAR ) ) +  '"""'
-STRING_LITERAL_LONG2 = Regex(ur'"""(?:(?:"|"")?(?:[^"\\]|\\["ntbrf\\]))*"""')
+STRING_LITERAL_LONG2 = Regex(u'"""(?:(?:"|"")?(?:[^"\\\\]|\\\\["ntbrf\\\\]))*"""')
 STRING_LITERAL_LONG2.setParseAction(
     lambda x: rdflib.Literal(decodeUnicodeEscape(x[0][3:-3])))
 
@@ -307,7 +309,7 @@ STRING_LITERAL_LONG2.setParseAction(
 # Regex(u'[^\u0027\u005C\u000A\u000D]',flags=re.U) | ECHAR ) + "'"
 
 STRING_LITERAL1 = Regex(
-    ur"'(?:[^'\n\r\\]|\\['ntbrf\\])*'(?!')", flags=re.U)
+    u"'(?:[^'\\n\\r\\\\]|\\\\['ntbrf\\\\])*'(?!')", flags=re.U)
 STRING_LITERAL1.setParseAction(
     lambda x: rdflib.Literal(decodeUnicodeEscape(x[0][1:-1])))
 
@@ -316,7 +318,7 @@ STRING_LITERAL1.setParseAction(
 # Regex(u'[^\u0022\u005C\u000A\u000D]',flags=re.U) | ECHAR ) + '"'
 
 STRING_LITERAL2 = Regex(
-    ur'"(?:[^"\n\r\\]|\\["ntbrf\\])*"(?!")', flags=re.U)
+    u'"(?:[^"\\n\\r\\\\]|\\\\["ntbrf\\\\])*"(?!")', flags=re.U)
 STRING_LITERAL2.setParseAction(
     lambda x: rdflib.Literal(decodeUnicodeEscape(x[0][1:-1])))
 
@@ -1074,9 +1076,9 @@ if __name__ == '__main__':
     DEBUG = True
     try:
         q = Query.parseString(sys.argv[1])
-        print "\nSyntax Tree:\n"
-        print q
-    except ParseException, err:
-        print err.line
-        print " " * (err.column - 1) + "^"
-        print err
+        print("\nSyntax Tree:\n")
+        print(q)
+    except ParseException as err:
+        print(err.line)
+        print(" " * (err.column - 1) + "^")
+        print(err)

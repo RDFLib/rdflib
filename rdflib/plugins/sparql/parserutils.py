@@ -195,7 +195,7 @@ class Expr(CompValue):
         try:
             self.ctx = ctx
             return self._evalfn(ctx)
-        except SPARQLError, e:
+        except SPARQLError as e:
             return e
         finally:
             self.ctx = None
@@ -276,8 +276,8 @@ if __name__ == '__main__':
     Plus.setEvalFn(lambda self, ctx: self.a + self.b)
 
     r = Plus.parseString(sys.argv[1])
-    print r
-    print r[0].eval({})
+    print(r)
+    print(r[0].eval({}))
 
 # hurrah for circular imports
 from rdflib.plugins.sparql.sparql import SPARQLError, NotBoundError

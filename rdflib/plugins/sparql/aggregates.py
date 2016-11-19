@@ -1,5 +1,6 @@
 from rdflib import Literal, XSD
 
+from rdflib.py3compat import text_type
 from rdflib.plugins.sparql.evalutils import _eval, NotBoundError, _val
 from rdflib.plugins.sparql.operators import numeric
 from rdflib.plugins.sparql.datatypes import type_promotion
