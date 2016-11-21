@@ -137,7 +137,7 @@ def setup_python3():
         join(tmp_src, 'rdflib', 'plugins', 'stores', 'auditable.py'),
         join(tmp_src, 'rdflib', 'plugins', 'stores', 'concurrent.py'),
         join(tmp_src, 'rdflib', 'plugins', 'stores', 'regexmatching.py'),
-        # join(tmp_src, 'rdflib', 'plugins', 'stores', 'sparqlstore.py'),
+        join(tmp_src, 'rdflib', 'plugins', 'stores', 'sparqlstore.py'),
         join(tmp_src, 'rdflib', 'py3compat.py'),
         join(tmp_src, 'rdflib', 'query.py'),
         join(tmp_src, 'rdflib', 'resource.py'),
