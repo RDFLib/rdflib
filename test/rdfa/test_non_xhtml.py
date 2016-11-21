@@ -1,5 +1,5 @@
 from unittest import TestCase
-from urllib2 import URLError
+from rdflib.py3compat import URLError
 
 from rdflib.graph import ConjunctiveGraph
 

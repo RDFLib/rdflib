@@ -5,8 +5,8 @@ from rdflib import Graph
 from rdflib.namespace import split_uri
 from rdflib.compare import graph_diff, isomorphic
 
-from manifest import nose_tests, RDFT
-from testutils import nose_tst_earl_report
+from .manifest import nose_tests, RDFT
+from .testutils import nose_tst_earl_report
 
 verbose = False
 
@@ -27,16 +27,16 @@ def turtle(test):
             if verbose:
                 both, first, second = graph_diff(g,res)
                 if not first and not second: return
-                print "Diff:"
+                print("Diff:")
                 #print "%d triples in both"%len(both)
-                print "Turtle Only:"
+                print("Turtle Only:")
                 for t in first:
-                    print t
+                    print(t)
 
-                print "--------------------"
-                print "NT Only"
+                print("--------------------")
+                print("NT Only")
                 for t in second:
-                    print t
+                    print(t)
                 raise Exception('Graphs do not match!')
 
             assert isomorphic(g, res), 'graphs must be the same'

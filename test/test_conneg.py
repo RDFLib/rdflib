@@ -1,8 +1,8 @@
-import thread
 import time
-import BaseHTTPServer
+
 
 from rdflib import Graph
+from rdflib.py3compat import HTTPServer, BaseHTTPRequestHandler, thread
 
 """
 Test that correct content negoation headers are passed 
@@ -29,8 +29,8 @@ n3testdoc="""@prefix : <http://example.org/> .
 nttestdoc="<http://example.org/a> <http://example.org/b> <http://example.org/c> .\n"
 
 
-class TestHTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler): 
-    def do_GET(self): 
+class TestHTTPHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
 
         self.send_response(200, "OK")
         # fun fun fun parsing accept header. 
@@ -59,7 +59,7 @@ class TestHTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def log_message(self, *args): 
         pass
 
-def runHttpServer(server_class=BaseHTTPServer.HTTPServer,
+def runHttpServer(server_class=HTTPServer,
         handler_class=TestHTTPHandler):
     """Start a server than can handle 3 requests :)"""
     server_address = ('localhost', 12345)

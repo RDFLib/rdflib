@@ -3,11 +3,12 @@ import platform
 import warnings
 from unittest import TestCase
 from rdflib.graph import ConjunctiveGraph, URIRef
+from rdflib.py3compat import unichr, name2codepoint
+
 from nose.exc import SkipTest
 # Workaround for otherwise-dropped HTML entities
 
 import re
-from htmlentitydefs import name2codepoint
 
 
 def htmlentitydecode(s):

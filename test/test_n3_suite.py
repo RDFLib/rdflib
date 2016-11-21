@@ -2,7 +2,7 @@ import os
 import sys
 
 try:
-    from testutils import check_serialize_parse
+    from .testutils import check_serialize_parse
 except:
     from test.testutils import check_serialize_parse
 

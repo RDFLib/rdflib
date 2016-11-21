@@ -3,7 +3,7 @@ import rdflib
 import rdflib.compare
 
 try:
-    from test_nt_suite import all_nt_files
+    from .test_nt_suite import all_nt_files
     assert all_nt_files
 except:
     from test.test_nt_suite import all_nt_files
@@ -40,28 +40,28 @@ def roundtrip(e, verbose=False):
     s = g1.serialize(format=testfmt)
 
     if verbose:
-        print "S:"
-        print s
+        print("S:")
+        print(s)
 
     g2 = rdflib.ConjunctiveGraph()
     g2.parse(data=s, format=testfmt)
 
     if verbose:
         both, first, second = rdflib.compare.graph_diff(g1,g2)
-        print "Diff:"
-        print "%d triples in both"%len(both)
-        print "G1 Only:"
+        print("Diff:")
+        print("%d triples in both"%len(both))
+        print("G1 Only:")
         for t in first:
-            print t
+            print(t)
 
-        print "--------------------"
-        print "G2 Only"
+        print("--------------------")
+        print("G2 Only")
         for t in second:
-            print t
+            print(t)
 
     assert rdflib.compare.isomorphic(g1, g2)
 
-    if verbose: print "Ok!"
+    if verbose: print("Ok!")
 
 
 formats = None

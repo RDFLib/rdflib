@@ -1,9 +1,5 @@
 from codecs import getreader
-try:
-    from io import BytesIO, StringIO
-except ImportError:
-    from StringIO import StringIO
-    BytesIO = StringIO
+from rdflib.py3compat import BytesIO, StringIO
 
 from rdflib import URIRef, Literal
 from rdflib.graph import Graph
