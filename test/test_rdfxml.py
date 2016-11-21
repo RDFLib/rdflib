@@ -1,11 +1,11 @@
+from __future__ import print_function
+
 import unittest
 
 import os
 import os.path
-from urllib import url2pathname
-from urllib2 import urlopen
+from rdflib.py3compat import url2pathname, urlopen
 
-import rdflib
 from rdflib import RDF, RDFS, URIRef, BNode, Literal, Namespace, Graph
 from rdflib.exceptions import ParserError
 from rdflib.util import first
@@ -35,10 +35,11 @@ class TestStore(Graph):
         super(TestStore, self).__init__()
         self.expected = expected
 
-    def add(self, (s, p, o)):
+    def add(self, spo):
+        (s, p, o) = spo
         if not isinstance(s, BNode) and not isinstance(o, BNode):
             if not (s, p, o) in self.expected:
-                m = u"Triple not in expected result: %s, %s, %s" % (
+                m = "Triple not in expected result: %s, %s, %s" % (
                     s.n3(), p.n3(), o.n3())
                 if verbose:
                     write(m)
@@ -66,7 +67,7 @@ def cached_file(url):
 
     fpath = os.path.join(CACHE_DIR, fname)
     if not os.path.exists(fpath):
-        print "%s does not exist, fetching from %s" % (fpath, url)
+        print("%s does not exist, fetching from %s" % (fpath, url))
         folder = os.path.dirname(fpath)
         if not os.path.exists(folder):
             os.makedirs(folder)
@@ -109,7 +110,7 @@ def _testPositive(uri, manifest):
 
     try:
         store.parse(cached_file(inDoc), publicID=inDoc, format=format)
-    except ParserError, pe:
+    except ParserError as pe:
         write("Failed '")
         write(inDoc)
         write("' failed with")
@@ -233,7 +234,7 @@ if __name__ == "__main__":
     import getopt
     try:
         optlist, args = getopt.getopt(sys.argv[1:], 'h:', ["help"])
-    except getopt.GetoptError, msg:
+    except getopt.GetoptError as msg:
         write(msg)
         # usage()
         

@@ -1,14 +1,10 @@
 from rdflib.term import  URIRef, BNode
 from rdflib.namespace import RDFS
-from rdflib.py3compat import b
+from rdflib.py3compat import b, BytesIO
 
 from rdflib.plugins.serializers.rdfxml import XMLSerializer
 
 from rdflib.graph import ConjunctiveGraph
-try:
-    from io import BytesIO
-except ImportError:
-    from StringIO import StringIO as BytesIO
 
 
 class SerializerTestBase(object):

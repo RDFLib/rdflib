@@ -9,10 +9,11 @@ from isodate.isostrf import DATE_EXT_COMPLETE, TZ_EXT
 from rdflib.term import URIRef
 from rdflib.term import Literal
 from rdflib.namespace import XSD
+from rdflib.py3compat import text_type
 
 
 class TestRelativeBase(unittest.TestCase):
-    def test_equality(self):        
+    def test_equality(self):
         x = Literal("2008-12-01T18:02:00Z",
                     datatype=URIRef('http://www.w3.org/2001/XMLSchema#dateTime'))
         self.assertEqual(x == x, True)
@@ -27,7 +28,7 @@ class TestRelativeBase(unittest.TestCase):
 
         # datetime with microseconds should be cast as a literal with using
         # XML Schema dateTime as the literal datatype
-        self.assertEqual(unicode(l), '2009-06-15T23:37:06.522630')
+        self.assertEqual(text_type(l), '2009-06-15T23:37:06.522630')
         self.assertEqual(l.datatype, XSD.dateTime)
 
         dt2 = l.toPython()
@@ -80,4 +81,3 @@ class TestRelativeBase(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

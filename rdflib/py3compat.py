@@ -45,8 +45,19 @@ from six.moves.urllib.request import url2pathname
 from six.moves.urllib.request import urlopen
 from six.moves.urllib.request import build_opener
 
+from six.moves.urllib.error import URLError
 from six.moves.urllib.error import HTTPError
+
 from six.moves.BaseHTTPServer import BaseHTTPRequestHandler
+from six.moves.BaseHTTPServer import HTTPServer
+
+if PY3:
+    import _thread as thread
+    from html.entities import name2codepoint
+else:
+    import thread
+    from htmlentitydefs import name2codepoint
+
 
 try:
     from functools import wraps

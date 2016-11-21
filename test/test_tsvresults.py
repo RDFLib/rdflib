@@ -1,5 +1,5 @@
 import unittest
-from StringIO import StringIO
+from rdflib.py3compat import StringIO
 from rdflib.plugins.sparql.results.tsvresults import TSVResultParser
 
 

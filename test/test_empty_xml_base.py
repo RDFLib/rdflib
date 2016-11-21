@@ -9,7 +9,8 @@ from rdflib.graph import ConjunctiveGraph
 from rdflib.term import URIRef
 from rdflib.namespace import Namespace
 from rdflib.namespace import RDF
-from StringIO import StringIO
+from rdflib.py3compat import StringIO
+
 import unittest
 
 FOAF = Namespace('http://xmlns.com/foaf/0.1/')

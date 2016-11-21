@@ -10,9 +10,9 @@ except ImportError:
 if os.getenv("TRAVIS"): 
     raise SkipTest("Doesn't work in travis")
 
-import urllib2
+from rdflib.py3compat import urlopen
 try:
-    assert len(urllib2.urlopen("http://dbpedia.org/sparql").read()) > 0
+    assert len(urlopen("http://dbpedia.org/sparql").read()) > 0
 except:
     raise SkipTest("No HTTP connection.")
 

@@ -1,8 +1,7 @@
 from rdflib.term import Literal, URIRef
-from rdflib.namespace import Namespace
 from rdflib.plugins.parsers.notation3 import BadSyntax
 
-from rdflib.py3compat import b
+from rdflib.py3compat import b, URLError
 
 test_data = """
 #  Definitions of terms describing the n3 model
@@ -60,7 +59,6 @@ n3:context      a rdf:Property; rdfs:domain n3:statement;
 
 
 import unittest
-from urllib2 import URLError
 
 from rdflib.graph import Graph, ConjunctiveGraph
 
@@ -97,7 +95,7 @@ class TestN3Case(unittest.TestCase):
 """
         g = Graph()
         g.parse(data=input, format="n3")
-        print list(g)
+        print(list(g))
         self.assertTrue((None, None, Literal('Foo')) in g)
         self.assertTrue(
             (URIRef('http://example.com/doc/bar'), None, None) in g)
@@ -121,7 +119,7 @@ class TestN3Case(unittest.TestCase):
 """
         g = Graph()
         g.parse(data=input, publicID='http://blah.com/', format="n3")
-        print list(g)
+        print(list(g))
         self.assertTrue(
             (URIRef('http://blah.com/foo'), None, Literal('Foo')) in g)
         self.assertTrue(

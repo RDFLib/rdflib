@@ -24,13 +24,13 @@ except ImportError:
         # Have doubts about this. random.seed will just hash the string 
         random.seed('%s%s%s' % (preseed, os.getpid(), time.time())) 
         del preseed 
-        t = long( time.time() * 1000.0 )
-        r = long( random.random()*100000000000000000L )
+        t = int( time.time() * 1000.0 )
+        r = int( random.random()*100000000000000000 )
         try:
             a = socket.gethostbyname( socket.gethostname() )
         except:
             # if we can't get a network address, just imagine one
-            a = random.random()*100000000000000000L
+            a = random.random()*100000000000000000
         strdata = str(t)+' '+str(r)+' '+str(a)
         data = md5(strdata.encode('ascii')).hexdigest()
         yield data
