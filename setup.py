@@ -145,7 +145,7 @@ def setup_python3():
         join(tmp_src, 'rdflib', 'store.py'),
         join(tmp_src, 'rdflib', 'term.py'),
         join(tmp_src, 'rdflib', 'tools', '__init__.py'),
-        # join(tmp_src, 'rdflib', 'tools', 'csv2rdf.py'),
+        join(tmp_src, 'rdflib', 'tools', 'csv2rdf.py'),
         join(tmp_src, 'rdflib', 'tools', 'graphisomorphism.py'),
         join(tmp_src, 'rdflib', 'tools', 'rdf2dot.py'),
         join(tmp_src, 'rdflib', 'tools', 'rdfpipe.py'),

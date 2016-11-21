@@ -28,8 +28,8 @@ from six import itervalues
 # from six import BytesIO  # see below!
 from six import StringIO
 
-from six.moves import cPickle
 from six.moves import input
+from six.moves import cPickle, configparser
 from six.moves.urllib.parse import quote
 from six.moves.urllib.parse import urldefrag
 from six.moves.urllib.parse import urljoin
