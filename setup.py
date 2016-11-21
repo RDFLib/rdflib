@@ -29,7 +29,7 @@ def setup_python3():
 
     six_ed = [  # uncomment files which have already been transformed to use six
         join(tmp_src, 'docs', 'conf.py'),
-        # join(tmp_src, 'docs', 'plugintable.py'),
+        join(tmp_src, 'docs', 'plugintable.py'),
         join(tmp_src, 'examples', '__init__.py'),
         join(tmp_src, 'examples', 'conjunctive_graphs.py'),
         join(tmp_src, 'examples', 'custom_datatype.py'),
