@@ -239,6 +239,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
                  sparql11=True, context_aware=True,
                  node_to_sparql=_node_to_sparql,
                  node_from_result=_node_from_result,
+                 query_as_post=False,
                  **sparqlwrapper_kwargs):
         """
         """
@@ -259,6 +260,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         self.context_aware = context_aware
         self.graph_aware = context_aware
         self._timeout = None
+        self.query_as_post = query_as_post
 
     # Database Management Methods
     def create(self, configuration):
@@ -322,6 +324,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
                    " ".join(self.node_to_sparql(initBindings[x]) for x in v))
 
         self.resetQuery()
+        self.setMethod(POST if self.query_as_post else GET)
         if self._is_contextual(queryGraph):
             self.addParameter("default-graph-uri", queryGraph)
         self.timeout = self._timeout
