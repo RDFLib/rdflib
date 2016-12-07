@@ -42,7 +42,8 @@ if sys.version_info[0] >= 3:
     kwargs['tests_require'] = ['html5lib', 'networkx']
     kwargs['requires'] = [
         'isodate', 'pyparsing',
-        'SPARQLWrapper']
+        ]
+    html5lib = 'html5lib'
     kwargs['src_root'] = setup_python3()
     assert setup
 else:
@@ -52,7 +53,7 @@ else:
         kwargs['test_suite'] = "nose.collector"
         kwargs['install_requires'] = [
             'isodate',
-            'pyparsing', 'SPARQLWrapper']
+            'pyparsing']
         kwargs['tests_require'] = ['networkx']
 
         if sys.version_info[1]<7:  # Python 2.6
@@ -60,14 +61,18 @@ else:
         if sys.version_info[1]<6:  # Python 2.5
             kwargs['install_requires'].append('pyparsing<=1.5.7')
             kwargs['install_requires'].append('simplejson')
-            kwargs['install_requires'].append('html5lib==0.95')
+            html5lib = 'html5lib==0.95'
         else:
-            kwargs['install_requires'].append('html5lib')
+            html5lib = 'html5lib'
 
     except ImportError:
         from distutils.core import setup, find_packages
+        html5lib = None
 
-
+if html5lib is not None: # ie. we're not using the simplified distutils setup
+    kwargs['extras_require'] = {'sparql': ['SPARQLWrapper'], 'html': [html5lib]}
+    kwargs['tests_require'].append('SPARQLWrapper')
+    kwargs['tests_require'].append(html5lib)
 
 
 # Find version. We have to do this because we can't import it in Python 3 until
