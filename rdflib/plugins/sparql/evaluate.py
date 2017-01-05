@@ -351,7 +351,41 @@ def evalSlice(ctx, slice):
 
 
 def evalReduced(ctx, part):
-    return evalPart(ctx, part.p)  # TODO!
+    """apply REDUCED to result
+
+    REDUCED is not as strict as DISTINCT, but if the incoming rows were sorted
+    it should produce the same result with limited extra memory and time per
+    incoming row.
+    """
+
+    # This implementation uses a most recently used strategy and a limited
+    # buffer size. It relates to a LRU caching algorithm:
+    # https://en.wikipedia.org/wiki/Cache_algorithms#Least_Recently_Used_.28LRU.29
+    MAX = 1
+    # TODO: add configuration or determine "best" size for most use cases
+    # 0: No reduction
+    # 1: compare only with the last row, almost no reduction with 
+    #    unordered incoming rows
+    # N: The greater the buffer size the greater the reduction but more
+    #    memory and time are needed
+
+    # mixed data structure: set for lookup, deque for append/pop/remove
+    mru_set = set()
+    mru_queue = collections.deque()
+
+    for row in evalPart(ctx, part.p):
+        if row in mru_set:
+            # forget last position of row
+            mru_queue.remove(row)
+        else:
+            #row seems to be new
+            yield row
+            mru_set.add(row)
+            if len(mru_set) > MAX:
+                # drop the least recently used row from buffer
+                mru_set.remove(mru_queue.pop())
+        # put row to the front
+        mru_queue.appendleft(row)
 
 
 def evalDistinct(ctx, part):
