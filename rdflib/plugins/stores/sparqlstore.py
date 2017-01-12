@@ -13,6 +13,7 @@ ORDERBY = 'ORDER BY'
 
 import re
 import collections
+import contextlib
 import urllib2
 import warnings
 
@@ -330,7 +331,9 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         self.timeout = self._timeout
         self.setQuery(query)
 
-        return Result.parse(SPARQLWrapper.query(self).response)
+        with contextlib.closing(SPARQLWrapper.query(self).response) as res:
+            return Result.parse(res)
+
 
     def triples(self, (s, p, o), context=None):
         """
@@ -418,7 +421,9 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         self.timeout = self._timeout
         self.setQuery(query)
 
-        doc = ElementTree.parse(SPARQLWrapper.query(self).response)
+        with contextlib.closing(SPARQLWrapper.query(self).response) as res:
+            doc = ElementTree.parse(res)
+
         # ElementTree.dump(doc)
         for rt, vars in _traverse_sparql_result_dom(
                 doc,
@@ -449,7 +454,8 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             if self._is_contextual(context):
                 self.addParameter("default-graph-uri", context.identifier)
             self.setQuery(q)
-            doc = ElementTree.parse(SPARQLWrapper.query(self).response)
+            with contextlib.closing(SPARQLWrapper.query(self).response) as res:
+                doc = ElementTree.parse(res)
             rt, vars = iter(
                 _traverse_sparql_result_dom(
                     doc,
@@ -485,7 +491,8 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         else:
             self.setQuery('SELECT ?name WHERE { GRAPH ?name {} }')
 
-        doc = ElementTree.parse(SPARQLWrapper.query(self).response)
+        with contextlib.closing(SPARQLWrapper.query(self).response) as res:
+            doc = ElementTree.parse(res)
 
         return (
             rt.get(Variable("name"))
@@ -770,7 +777,8 @@ class SPARQLUpdateStore(SPARQLStore):
         # we must read (and discard) the whole response
         # otherwise the network socket buffer will at some point be "full"
         # and we will block
-        result.response.read()
+        with contextlib.closing(result.response) as res:
+            res.read()
 
     def update(self, query,
                initNs={},
