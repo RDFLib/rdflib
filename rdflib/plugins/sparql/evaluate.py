@@ -25,7 +25,7 @@ from rdflib.plugins.sparql.sparql import (
 from rdflib.plugins.sparql.evalutils import (
     _filter, _eval, _join, _diff, _minus, _fillTemplate, _ebv)
 
-from rdflib.plugins.sparql.aggregates import evalAgg
+from rdflib.plugins.sparql.aggregates import Aggregator
 from rdflib.plugins.sparql.algebra import Join, ToMultiSet, Values
 
 def evalBGP(ctx, bgp):
@@ -275,16 +275,8 @@ def evalGroup(ctx, group):
     """
     http://www.w3.org/TR/sparql11-query/#defn_algGroup
     """
-
-    p = evalPart(ctx, group.p)
-    if not group.expr:
-        return {1: list(p)}
-    else:
-        res = collections.defaultdict(list)
-        for c in p:
-            k = tuple(_eval(e, c, False) for e in group.expr)
-            res[k].append(c)
-        return res
+    # grouping should be implemented by evalAggregateJoin
+    return evalPart(ctx, group.p)
 
 
 def evalAggregateJoin(ctx, agg):
@@ -292,16 +284,28 @@ def evalAggregateJoin(ctx, agg):
     p = evalPart(ctx, agg.p)
     # p is always a Group, we always get a dict back
 
-    for row in p:
-        bindings = {}
-        for a in agg.A:
-            evalAgg(a, p[row], bindings)
+    group_expr = agg.p.expr
+    res = collections.defaultdict(lambda: Aggregator(aggregations=agg.A))
 
-        yield FrozenBindings(ctx, bindings)
+    if group_expr is None:
+        # no grouping, just COUNT in SELECT clause
+        # get 1 aggregator for counting
+        aggregator = res[True]
+        for row in p:
+            aggregator.update(row)
+    else:
+        for row in p:
+            # determine right group aggregator for row
+            k = tuple(_eval(e, row, False) for e in group_expr)
+            res[k].update(row)
 
-    if len(p) == 0:
+    # all rows are done; yield aggregated values
+    for aggregator in res.itervalues():
+        yield FrozenBindings(ctx, aggregator.get_bindings())
+
+    # there were no matches
+    if len(res) == 0:
         yield FrozenBindings(ctx)
-
 
 
 def evalOrderBy(ctx, part):
@@ -347,7 +351,41 @@ def evalSlice(ctx, slice):
 
 
 def evalReduced(ctx, part):
-    return evalPart(ctx, part.p)  # TODO!
+    """apply REDUCED to result
+
+    REDUCED is not as strict as DISTINCT, but if the incoming rows were sorted
+    it should produce the same result with limited extra memory and time per
+    incoming row.
+    """
+
+    # This implementation uses a most recently used strategy and a limited
+    # buffer size. It relates to a LRU caching algorithm:
+    # https://en.wikipedia.org/wiki/Cache_algorithms#Least_Recently_Used_.28LRU.29
+    MAX = 1
+    # TODO: add configuration or determine "best" size for most use cases
+    # 0: No reduction
+    # 1: compare only with the last row, almost no reduction with 
+    #    unordered incoming rows
+    # N: The greater the buffer size the greater the reduction but more
+    #    memory and time are needed
+
+    # mixed data structure: set for lookup, deque for append/pop/remove
+    mru_set = set()
+    mru_queue = collections.deque()
+
+    for row in evalPart(ctx, part.p):
+        if row in mru_set:
+            # forget last position of row
+            mru_queue.remove(row)
+        else:
+            #row seems to be new
+            yield row
+            mru_set.add(row)
+            if len(mru_set) > MAX:
+                # drop the least recently used row from buffer
+                mru_set.remove(mru_queue.pop())
+        # put row to the front
+        mru_queue.appendleft(row)
 
 
 def evalDistinct(ctx, part):
