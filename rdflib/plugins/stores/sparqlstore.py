@@ -13,9 +13,8 @@ ORDERBY = 'ORDER BY'
 
 import re
 import collections
-import contextlib
-import urllib2
 import warnings
+import contextlib
 
 try:
     from SPARQLWrapper import SPARQLWrapper, XML, POST, GET, URLENCODED, POSTDIRECTLY
@@ -24,20 +23,7 @@ except ImportError:
         "SPARQLWrapper not found! SPARQL Store will not work." +
         "Install with 'easy_install SPARQLWrapper'")
 
-import sys
-if getattr(sys, 'pypy_version_info', None) is not None \
-    or sys.platform.startswith('java') \
-        or sys.version_info[:2] < (2, 6):
-    # import elementtree as etree
-    from elementtree import ElementTree
-    assert ElementTree
-else:
-    try:
-        from xml.etree import ElementTree
-        assert ElementTree
-    except ImportError:
-        from elementtree import ElementTree
-
+from rdflib.compat import etree, etree_register_namespace
 from rdflib.plugins.stores.regexmatching import NATIVE_REGEX
 
 from rdflib.store import Store
@@ -45,9 +31,6 @@ from rdflib.query import Result
 from rdflib import Variable, Namespace, BNode, URIRef, Literal
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 from rdflib.term import Node
-
-import httplib
-import urlparse
 
 class NSSPARQLWrapper(SPARQLWrapper):
     nsBindings = {}
@@ -90,7 +73,7 @@ class NSSPARQLWrapper(SPARQLWrapper):
 BNODE_IDENT_PATTERN = re.compile('(?P<label>_\:[^\s]+)')
 SPARQL_NS = Namespace('http://www.w3.org/2005/sparql-results#')
 sparqlNsBindings = {u'sparql': SPARQL_NS}
-ElementTree._namespace_map["sparql"] = SPARQL_NS
+etree_register_namespace("sparql", SPARQL_NS)
 
 
 def _node_from_result(node):
@@ -422,7 +405,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         self.setQuery(query)
 
         with contextlib.closing(SPARQLWrapper.query(self).response) as res:
-            doc = ElementTree.parse(res)
+            doc = etree.parse(res)
 
         # ElementTree.dump(doc)
         for rt, vars in _traverse_sparql_result_dom(
@@ -454,8 +437,10 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             if self._is_contextual(context):
                 self.addParameter("default-graph-uri", context.identifier)
             self.setQuery(q)
+
             with contextlib.closing(SPARQLWrapper.query(self).response) as res:
-                doc = ElementTree.parse(res)
+                doc = etree.parse(res)
+
             rt, vars = iter(
                 _traverse_sparql_result_dom(
                     doc,
@@ -492,7 +477,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             self.setQuery('SELECT ?name WHERE { GRAPH ?name {} }')
 
         with contextlib.closing(SPARQLWrapper.query(self).response) as res:
-            doc = ElementTree.parse(res)
+            doc = etree.parse(res)
 
         return (
             rt.get(Variable("name"))

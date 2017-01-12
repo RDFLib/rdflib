@@ -3,7 +3,7 @@ from xml.sax.saxutils import XMLGenerator
 from xml.dom import XML_NAMESPACE
 from xml.sax.xmlreader import AttributesNSImpl
 
-from xml.etree import cElementTree as ElementTree
+from rdflib.compat import etree
 
 from rdflib import Literal, URIRef, BNode, Graph, Variable
 from rdflib.query import (
@@ -42,7 +42,7 @@ class XMLResult(Result):
         if isinstance(xmlstring, unicode):
             xmlstring = xmlstring.encode('utf-8')
         try:
-            tree = ElementTree.fromstring(xmlstring)
+            tree = etree.fromstring(xmlstring)
         except Exception, e:
             try:
                 raise e.__class__("error parsing %r: %s" % (xmlstring, e))
