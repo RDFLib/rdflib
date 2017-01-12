@@ -141,8 +141,10 @@ def evalLeftJoin(ctx, join):
             # before we yield a solution without the OPTIONAL part
             # check that we would have had no OPTIONAL matches
             # even without prior bindings...
-            if not any(_ebv(join.expr, b) for b in
-                       evalPart(ctx.thaw(a.remember(join.p1._vars)), join.p2)):
+            p1_vars = join.p1._vars
+            if p1_vars is None \
+            or not any(_ebv(join.expr, b) for b in
+                       evalPart(ctx.thaw(a.remember(p1_vars)), join.p2)):
 
                 yield a
 
