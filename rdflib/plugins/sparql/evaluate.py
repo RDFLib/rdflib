@@ -74,7 +74,14 @@ def evalExtend(ctx, extend):
 
     for c in evalPart(ctx, extend.p):
         try:
-            e = _eval(extend.expr, c.forget(ctx))
+            # the following breaks the test
+            # /test/DAWG/data-sparql11/bind/bind07.rq
+            # SELECT ?s ?p ?o ?z {
+            #   ?s ?p ?o .
+            #   { BIND(?o+1 AS ?z) } UNION { BIND(?o+2 AS ?z) }
+            # }
+            # but fixes #580
+            e = _eval(extend.expr, c)
             if isinstance(e, SPARQLError):
                 raise e
 

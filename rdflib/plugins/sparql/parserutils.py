@@ -241,6 +241,31 @@ class Comp(TokenConverter):
         return self
 
 
+def prettify_parsetree(t, indent='', depth=0):
+        out = []
+        if isinstance(t, ParseResults):
+            for e in t.asList():
+                out.append(prettify_parsetree(e, indent, depth + 1))
+            for k, v in sorted(t.items()):
+                out.append("%s%s- %s:\n" % (indent, '  ' * depth, k))
+                out.append(prettify_parsetree(v, indent, depth + 1))
+        elif isinstance(t, CompValue):
+            out.append("%s%s> %s:\n" % (indent, '  ' * depth, t.name))
+            for k, v in t.items():
+                out.append("%s%s- %s:\n" % (indent, '  ' * (depth + 1), k))
+                out.append(prettify_parsetree(v, indent, depth + 2))
+        elif isinstance(t, dict):
+            for k, v in t.items():
+                out.append("%s%s- %s:\n" % (indent, '  ' * (depth + 1), k))
+                out.append(prettify_parsetree(v, indent, depth + 2))
+        elif isinstance(t, list):
+            for e in t:
+                out.append(prettify_parsetree(e, indent, depth + 1))
+        else:
+            out.append("%s%s- %r\n" % (indent, '  ' * depth, t))
+        return "".join(out)
+
+
 if __name__ == '__main__':
     from pyparsing import Word, nums
     import sys
