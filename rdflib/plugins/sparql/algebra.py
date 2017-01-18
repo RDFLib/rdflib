@@ -435,16 +435,21 @@ def _addVars(x, children):
     if isinstance(x, Variable):
         return set([x])
     elif isinstance(x, CompValue):
-        x["_vars"] = set(reduce(operator.or_, children, set()))
-        if x.name == "Bind":
-            return set([x.var])
-        elif x.name == 'SubSelect':
-            if x.projection:
-                s = set(v.var or v.evar for v in x.projection)
-            else:
-                s = set()
+        if x.name == "Extend":
+            # vars only used in the expr for a bind should not be included
+            x["_vars"] = reduce(operator.or_, [ child for child,part in zip(children,x) if part!='expr' ], set())
 
-            return s
+            return set([x.var]) # perhaps this should expose all vars here too?
+        else:
+            x["_vars"] = set(reduce(operator.or_, children, set()))
+
+            if x.name == 'SubSelect':
+                if x.projection:
+                    s = set(v.var or v.evar for v in x.projection)
+                else:
+                    s = set()
+
+                return s
     return reduce(operator.or_, children, set())
 
 

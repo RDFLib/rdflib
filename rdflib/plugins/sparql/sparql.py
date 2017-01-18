@@ -191,13 +191,14 @@ class FrozenBindings(FrozenDict):
     bnodes = property(_bnodes)
     now = property(_now)
 
-    def forget(self, before):
+    def forget(self, before, _except=None):
         """
         return a frozen dict only of bindings made in self
         since before
         """
+        if not _except : _except = []
 
-        return FrozenBindings(self.ctx, (x for x in self.iteritems() if before[x[0]] is None))
+        return FrozenBindings(self.ctx, (x for x in self.iteritems() if x[0] in _except or before[x[0]] is None))
 
     def remember(self, these):
         """
