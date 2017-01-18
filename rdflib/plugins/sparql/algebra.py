@@ -203,6 +203,9 @@ def translateExists(e):
         if isinstance(n, CompValue):
             if n.name in ('Builtin_EXISTS', 'Builtin_NOTEXISTS'):
                 n.graph = translateGroupGraphPattern(n.graph)
+                if n.graph.name == 'Filter':
+                    # filters inside (NOT) EXISTS can see vars bound outside
+                    n.graph.no_isolated_scope = True
 
     e = traverse(e, visitPost=_c)
 

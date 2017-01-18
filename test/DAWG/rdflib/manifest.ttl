@@ -14,6 +14,8 @@
 	:unicode
 	:nestedbnode
     :whitespacedot
+    :minusfilter
+    :notexistsfilter
 	) .
 
 
@@ -52,4 +54,30 @@
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://gromgull.net/me> ;
     mf:action <whitespacedot.rq>
+    .
+
+
+
+:minusfilter rdf:type mf:QueryEvaluationTest ;
+    mf:name "Filter in MINUS";
+    rdfs:comment """' with MINUS, the FILTER inside the pattern does not have a value for ?n and it is always unbound:'
+From https://github.com/RDFLib/rdflib/issues/615, contributed by https://github.com/pfps""" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query  <minusfilter.rq> ;
+           qt:data <minusfilter.ttl> ] ;
+    mf:result  <minusfilter.srx>
+    .
+
+:notexistsfilter rdf:type mf:QueryEvaluationTest ;
+    mf:name "Filter in NOT EXISTS";
+    rdfs:comment """'the FILTER inside the NOT EXISTS has access to the value of ?n for the solution being considered.'
+From https://github.com/RDFLib/rdflib/issues/615, contributed by https://github.com/pfps""" ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query  <notexistsfilter.rq> ;
+           qt:data <minusfilter.ttl> ] ;
+    mf:result  <notexistsfilter.srx>
     .
