@@ -152,7 +152,7 @@ def evalLeftJoin(ctx, join):
 def evalFilter(ctx, part):
     # TODO: Deal with dict returned from evalPart!
     for c in evalPart(ctx, part.p):
-        if _ebv(part.expr, c.forget(ctx) if not part.no_isolated_scope else c):
+        if _ebv(part.expr, c.forget(ctx, _except=part._vars) if not part.no_isolated_scope else c):
             yield c
 
 

@@ -431,15 +431,18 @@ def _findVars(x, res):
 
 
 def _addVars(x, children):
-    # import pdb; pdb.set_trace()
+    """
+    find which variables may be bound by this part of the query
+    """
     if isinstance(x, Variable):
         return set([x])
     elif isinstance(x, CompValue):
-        if x.name == "Extend":
+        if x.name == "RelationalExpression":
+            x["_vars"] = set()
+        elif x.name == "Extend":
             # vars only used in the expr for a bind should not be included
             x["_vars"] = reduce(operator.or_, [ child for child,part in zip(children,x) if part!='expr' ], set())
 
-            return set([x.var]) # perhaps this should expose all vars here too?
         else:
             x["_vars"] = set(reduce(operator.or_, children, set()))
 
@@ -450,6 +453,9 @@ def _addVars(x, children):
                     s = set()
 
                 return s
+
+        return x["_vars"]
+
     return reduce(operator.or_, children, set())
 
 
