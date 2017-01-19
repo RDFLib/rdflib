@@ -74,7 +74,7 @@ def evalExtend(ctx, extend):
 
     for c in evalPart(ctx, extend.p):
         try:
-            e = _eval(extend.expr, c.forget(ctx))
+            e = _eval(extend.expr, c.forget(ctx, _except=extend._vars))
             if isinstance(e, SPARQLError):
                 raise e
 

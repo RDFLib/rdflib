@@ -1,0 +1,6 @@
+@prefix s: <http://schema.org/> .
+@prefix x: <http://example.org/> .
+
+x:john a s:Person ; s:name "John" .
+x:jane a s:Person ; s:name "Jane" ; s:knows x:john.
+x:ecorp a s:Organization ; s:name "Evil Corp" ; s:employee x:jane .

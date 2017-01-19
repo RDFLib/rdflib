@@ -1,0 +1,9 @@
+PREFIX s: <http://schema.org/>
+PREFIX x: <http://example.org/>
+
+SELECT ?s ?p ?o ?x
+WHERE {
+  ?x a s:Person .
+  { ?x ?p ?o . BIND (?x as ?s) } UNION
+  { ?s ?p ?x . BIND (?x as ?o) }
+}

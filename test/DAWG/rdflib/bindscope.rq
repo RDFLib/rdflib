@@ -1,0 +1,6 @@
+PREFIX s: <http://schema.org/>
+
+SELECT ?s ?o ?x WHERE {
+  ?x s:knows ?o .
+  { ?x a s:Person. BIND(?x as ?s) }
+}

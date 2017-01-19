@@ -16,6 +16,8 @@
     :whitespacedot
     :minusfilter
     :notexistsfilter
+    :bindscope
+    :bindscope2
 	) .
 
 
@@ -80,4 +82,32 @@ From https://github.com/RDFLib/rdflib/issues/615, contributed by https://github.
          [ qt:query  <notexistsfilter.rq> ;
            qt:data <minusfilter.ttl> ] ;
     mf:result  <notexistsfilter.srx>
+    .
+
+
+:bindscope rdf:type mf:QueryEvaluationTest ;
+    mf:name "Scope of bind in groups";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/580, contributed by https://github.com/pchampin
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query  <bindscope.rq> ;
+           qt:data <bindscope.ttl> ] ;
+    mf:result  <bindscope.srx>
+    .
+
+
+:bindscope2 rdf:type mf:QueryEvaluationTest ;
+    mf:name "Scope of bind in groups2";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/580, contributed by https://github.com/pchampin
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query  <bindscope2.rq> ;
+           qt:data <bindscope.ttl> ] ;
+    mf:result  <bindscope2.tsv>
     .
