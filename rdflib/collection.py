@@ -43,6 +43,7 @@ class Collection(object):
     def __init__(self, graph, uri, seq=[]):
         self.graph = graph
         self.uri = uri or BNode()
+        self._end = self.uri
         for item in seq:
             self.append(item)
 
@@ -161,10 +162,25 @@ class Collection(object):
         >>> len(g)
         4
 
+        >>> from rdflib.graph import Namespace
+        >>> from rdflib.collection import Collection
+        >>> g = Graph()
+        >>> EX = Namespace("http://example.org/ex#")
+        >>> c = Collection(g, BNode(), [EX[str(i)] for i in range(1,10)])
+        >>> len(c)
+        9
+        >>> del c[0]
+        >>> len(c)
+        8
+        >>> del c[8]
+        >>> len(c)
+        7
+
         """
         self[key]  # to raise any potential key exceptions
         graph = self.graph
         current = self._get_container(key)
+        self._end = self.uri
         assert current
         if len(self) == 1 and key > 0:
             pass
@@ -186,7 +202,7 @@ class Collection(object):
 
     def append(self, item):
         """
-        >>> from rdflib.graph import Graph
+        >>> from rdflib.graph import Graph, Namespace
         >>> listName = BNode()
         >>> g = Graph()
         >>> c = Collection(g,listName,[Literal(1),Literal(2)])
@@ -195,30 +211,58 @@ class Collection(object):
         >>> len([i for i in links if (i,RDF.rest, RDF.nil) in g])
         1
 
+        The following test can take a long time if append is not implemented correctly
+        >>> from rdflib.graph import Namespace
+        >>> from rdflib.collection import Collection
+        >>> g = Graph()
+        >>> EX = Namespace("http://example.org/ex#")
+        >>> c = Collection(g, BNode(), [EX[str(i)] for i in range(1,10000)])
+        >>> len(c)
+        9999
+        >>> c.append(EX['new'])
+        >>> str(c[-1])
+        'http://example.org/ex#1'
+        >>> del c[9999]
+        >>> len(c)
+        9999
+        >>> str(c[9998])
+        'http://example.org/ex#9999'
+        >>> c.clear()
+        >>> c.append(EX['1'])
+        >>> len(c)
+        1
         """
-        container = self.uri
         graph = self.graph
-        # iterate to the end of the linked list
-        rest = graph.value(container, RDF.rest)
-        while rest:
-            if rest == RDF.nil:
-                # the end, append to the end of the linked list
-                node = BNode()
-                graph.set((container, RDF.rest, node))
-                container = node
-                break
-            else:
-                # move down one link
-                if container != self.uri:
-                    rest = graph.value(rest, RDF.rest)
-                if not rest == RDF.nil:
-                    container = rest
-        graph.add((container, RDF.first, item))
-        graph.add((container, RDF.rest, RDF.nil))
+        if graph.value(self._end, RDF.rest) == RDF.nil:
+            container = BNode()
+            graph.set((self._end, RDF.rest, container))
+            graph.add((container, RDF.first, item))
+            graph.add((container, RDF.rest, RDF.nil))
+        else:
+            container = self.uri
+            # iterate to the end of the linked list
+            rest = graph.value(container, RDF.rest)
+            while rest:
+                if rest == RDF.nil:
+                    # the end, append to the end of the linked list
+                    node = BNode()
+                    graph.set((container, RDF.rest, node))
+                    container = node
+                    break
+                else:
+                    # move down one link
+                    if container != self.uri:
+                        rest = graph.value(rest, RDF.rest)
+                    if not rest == RDF.nil:
+                        container = rest
+            graph.add((container, RDF.first, item))
+            graph.add((container, RDF.rest, RDF.nil))
+        self._end = container
 
     def clear(self):
         container = self.uri
         graph = self.graph
+        self._end = self.uri
         while container:
             rest = graph.value(container, RDF.rest)
             graph.remove((container, RDF.first, None))
@@ -252,7 +296,7 @@ if __name__ == "__main__":
 
     try:
         del c[500]
-    except IndexError, i:
+    except IndexError as i:
         pass
 
     c.append(Literal("5"))
