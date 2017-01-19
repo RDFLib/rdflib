@@ -266,6 +266,7 @@ from rdflib.parser import Parser
 from rdflib.parser import create_input_source
 from rdflib.namespace import NamespaceManager
 from rdflib.resource import Resource
+from rdflib.collection import Collection
 from rdflib import py3compat
 b = py3compat.b
 
@@ -1176,6 +1177,28 @@ class Graph(Node):
         res = set(self.objects())
         res.update(self.subjects())
         return res
+
+    def collection(self, identifier):
+        """Create a new ``Collection`` instance.
+
+        Parameters:
+
+        - ``identifier``: a URIRef or BNode instance.
+
+        Example::
+
+            >>> graph = Graph()
+            >>> uri = URIRef("http://example.org/resource")
+            >>> collection = graph.collection(uri)
+            >>> assert isinstance(collection, Collection)
+            >>> assert collection.uri is uri
+            >>> assert collection.graph is graph
+            >>> collection += [ Literal(1), Literal(2) ]
+        """
+
+        return Collection(self, identifier)
+
+
 
     def resource(self, identifier):
         """Create a new ``Resource`` instance.
