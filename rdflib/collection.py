@@ -82,15 +82,7 @@ class Collection(object):
 
     def __len__(self):
         """length of items in collection."""
-        count = 0
-        links = set()
-        for item in self.graph.items(self.uri):
-            assert item not in links, \
-                "There is a loop in the RDF list! " + \
-                "(%s has been processed before)" % item
-            links.add(item)
-            count += 1
-        return count
+        return len(list(self.graph.items(self.uri)))
 
     def index(self, item):
         """
