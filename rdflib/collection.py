@@ -82,12 +82,7 @@ class Collection(object):
 
     def __len__(self):
         """length of items in collection."""
-        count = 0
-        links = set()
-        for item in self.graph.items(self.uri):
-            links.add(item)
-            count += 1
-        return count
+        return len(list(self.graph.items(self.uri)))
 
     def index(self, item):
         """

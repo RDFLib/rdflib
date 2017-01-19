@@ -11,8 +11,9 @@ def test_collection_with_duplicates():
     g = Graph().parse(data=ttl, format="turtle")
     for _,_,o in g.triples((URIRef("http://example.org/s"), URIRef("http://example.org/p"), None)):
         break
-    c = list(Collection(g, o))
-    assert c == list(URIRef("http://example.org/" + x) for x in ["a", "b", "a"])
-
+    c = Collection(g, o)
+    assert list(c) == list(URIRef("http://example.org/" + x) for x in ["a", "b", "a"])
+    assert len(c) == 3
+    
 if __name__ == '__main__':
     test_collection_with_duplicates()
