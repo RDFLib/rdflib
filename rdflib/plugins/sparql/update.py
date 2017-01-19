@@ -252,7 +252,7 @@ def evalCopy(ctx, u):
     dstg += srcg
 
 
-def evalUpdate(graph, update, initBindings=None):
+def evalUpdate(graph, update, initBindings={}):
     """
 
     http://www.w3.org/TR/sparql11-update/#updateLanguage
@@ -274,15 +274,11 @@ def evalUpdate(graph, update, initBindings=None):
 
     for u in update:
 
-        ctx = QueryContext(graph)
+        initBindings = dict( ( Variable(k),v ) for k,v in initBindings.iteritems() )
+
+        ctx = QueryContext(graph, initBindings=initBindings)
         ctx.prologue = u.prologue
 
-        if initBindings:
-            for k, v in initBindings.iteritems():
-                if not isinstance(k, Variable):
-                    k = Variable(k)
-                ctx[k] = v
-            # ctx.push()  # nescessary?
 
         try:
             if u.name == 'Load':

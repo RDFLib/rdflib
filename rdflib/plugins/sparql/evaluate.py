@@ -446,41 +446,13 @@ def evalConstructQuery(ctx, query):
 
 
 def evalQuery(graph, query, initBindings, base=None):
-    ctx = QueryContext(graph)
+
+    initBindings = dict( ( Variable(k),v ) for k,v in initBindings.iteritems() )
+
+    ctx = QueryContext(graph, initBindings=initBindings)
 
     ctx.prologue = query.prologue
-
     main = query.algebra
-
-    if initBindings:
-        # add initBindings as a values clause
-
-        values = {} # no dict comprehension in 2.6 :(
-        for k,v in initBindings.iteritems():
-            if not isinstance(k, Variable):
-                k = Variable(k)
-            values[k] = v
-
-        main = main.clone() # clone to not change prepared q
-        main['p'] = main.p.clone()
-        # Find the right place to insert MultiSet join
-        repl = main.p
-        if repl.name == 'Slice':
-            repl['p'] = repl.p.clone()
-            repl = repl.p
-        if repl.name == 'Distinct':
-            repl['p'] = repl.p.clone()
-            repl = repl.p
-        if repl.p.name == 'OrderBy':
-            repl['p'] = repl.p.clone()
-            repl = repl.p
-        if repl.p.name == 'Extend':
-            repl['p'] = repl.p.clone()
-            repl = repl.p
-
-        repl['p'] = Join(repl.p, ToMultiSet(Values([values])))
-
-        # TODO: Vars?
 
     if main.datasetClause:
         if ctx.dataset is None:

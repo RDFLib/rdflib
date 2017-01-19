@@ -150,6 +150,9 @@ def testVariableKeyWithQuestionMark():
     results = list(g2.query("SELECT ?o WHERE { ?s :p ?o }", initBindings={Variable("?s"): EX['s1']}))
     assert len(results) == 1, results
 
+def testFilter():
+    results = list(g2.query("SELECT ?o WHERE { ?s :p ?o FILTER (?s = ?x)}", initBindings={Variable("?x"): EX['s1']}))
+    assert len(results) == 1, results
 
 if __name__ == "__main__":
 
