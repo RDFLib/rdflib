@@ -1,10 +1,9 @@
 from rdflib import Literal, XSD
 
-from rdflib.plugins.sparql.evalutils import _eval, NotBoundError
+from rdflib.plugins.sparql.evalutils import _eval, NotBoundError, _val
 from rdflib.plugins.sparql.operators import numeric
 from rdflib.plugins.sparql.datatypes import type_promotion
 
-from rdflib.plugins.sparql.compat import num_max, num_min
 from rdflib.plugins.sparql.sparql import SPARQLTypeError
 
 from decimal import Decimal
@@ -157,10 +156,10 @@ class Extremum(Accumulator):
     def update(self, row, aggregator):
         try:
             if self.value is None:
-                self.value = numeric(_eval(self.expr, row))
+                self.value = _eval(self.expr, row)
             else:
                 # self.compare is implemented by Minimum/Maximum
-                self.value = self.compare(self.value, numeric(_eval(self.expr, row)))
+                self.value = self.compare(self.value, _eval(self.expr, row))
         # skip UNDEF or BNode => SPARQLTypeError
         except NotBoundError:
             pass
@@ -171,13 +170,13 @@ class Extremum(Accumulator):
 class Minimum(Extremum):
 
     def compare(self, val1, val2):
-        return num_min(val1, val2)
+        return min(val1, val2, key=_val)
 
 
 class Maximum(Extremum):
 
     def compare(self, val1, val2):
-        return num_max(val1, val2)
+        return max(val1, val2, key=_val)
 
 
 class Sample(Accumulator):
@@ -199,7 +198,7 @@ class Sample(Accumulator):
 
     def get_value(self):
         # set None if no value was set
-        return None 
+        return None
 
 class GroupConcat(Accumulator):
 
@@ -247,8 +246,9 @@ class Aggregator(object):
 
     def update(self, row):
         """update all own accumulators"""
-        # SAMPLE accumulators may delete themselves 
+        # SAMPLE accumulators may delete themselves
         # => iterate over list not generator
+
         for acc in self.accumulators.values():
             if acc.use_row(row):
                 acc.update(row, self)
@@ -258,4 +258,3 @@ class Aggregator(object):
         for acc in self.accumulators.itervalues():
             acc.set_value(self.bindings)
         return self.bindings
-
