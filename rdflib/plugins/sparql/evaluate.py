@@ -94,7 +94,7 @@ def evalLazyJoin(ctx, join):
     for a in evalPart(ctx, join.p1):
         c = ctx.thaw(a)
         for b in evalPart(c, join.p2):
-            yield b
+            yield b.merge(a) # merge, as some bindings may have been forgotten
 
 
 def evalJoin(ctx, join):

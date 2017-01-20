@@ -643,6 +643,12 @@ def simplify(n):
 
 def analyse(n, children):
 
+    """
+    Some things can be lazily joined.
+    This propegates whether they can up the tree
+    and sets lazy flags for all joins
+    """
+
     if isinstance(n, CompValue):
         if n.name == 'Join':
             n["lazy"] = all(children)
