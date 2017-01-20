@@ -23,7 +23,7 @@ from rdflib.plugins.sparql.parserutils import value
 from rdflib.plugins.sparql.sparql import (
     QueryContext, AlreadyBound, FrozenBindings, SPARQLError)
 from rdflib.plugins.sparql.evalutils import (
-    _filter, _eval, _join, _diff, _minus, _fillTemplate, _ebv)
+    _filter, _eval, _join, _diff, _minus, _fillTemplate, _ebv, _val)
 
 from rdflib.plugins.sparql.aggregates import Aggregator
 from rdflib.plugins.sparql.algebra import Join, ToMultiSet, Values
@@ -316,19 +316,8 @@ def evalOrderBy(ctx, part):
 
     for e in reversed(part.expr):
 
-        def val(x):
-            v = value(x, e.expr, variables=True)
-            if isinstance(v, Variable):
-                return (0, v)
-            elif isinstance(v, BNode):
-                return (1, v)
-            elif isinstance(v, URIRef):
-                return (2, v)
-            elif isinstance(v, Literal):
-                return (3, v)
-
         reverse = bool(e.order and e.order == 'DESC')
-        res = sorted(res, key=val, reverse=reverse)
+        res = sorted(res, key=lambda x: _val(value(x, e.expr, variables=True)), reverse=reverse)
 
     return res
 
@@ -366,7 +355,7 @@ def evalReduced(ctx, part):
     MAX = 1
     # TODO: add configuration or determine "best" size for most use cases
     # 0: No reduction
-    # 1: compare only with the last row, almost no reduction with 
+    # 1: compare only with the last row, almost no reduction with
     #    unordered incoming rows
     # N: The greater the buffer size the greater the reduction but more
     #    memory and time are needed

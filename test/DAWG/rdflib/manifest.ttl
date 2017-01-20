@@ -16,8 +16,10 @@
     :whitespacedot
     :minusfilter
     :notexistsfilter
+
     :bindscope
     :bindscope2
+
     :filtersubquery1
     :filtersubquery2
     :filtersubquery3
@@ -26,6 +28,9 @@
     :subquery1
     :subquery2
     :subquery3
+
+    :subqueryagg1
+    :subqueryagg2
 
 	) .
 
@@ -212,4 +217,32 @@ From https://github.com/RDFLib/rdflib/issues/615, contributed by https://github.
          [ qt:query <subquery3.rq> ;
            qt:data <subquery.ttl> ] ;
     mf:result  <subquery.tsv>
+    .
+
+
+:subqueryagg1 rdf:type mf:QueryEvaluationTest ;
+    mf:name "plain query aggregation function";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/628, contributed by https://github.com/wrobell
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <subqueryagg1.rq> ;
+           qt:data <subqueryagg.ttl> ] ;
+    mf:result  <subqueryagg.tsv>
+    .
+
+
+:subqueryagg2 rdf:type mf:QueryEvaluationTest ;
+    mf:name "subquery aggregation function";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/628, contributed by https://github.com/wrobell
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <subqueryagg.rq> ;
+           qt:data <subqueryagg.ttl> ] ;
+    mf:result  <subqueryagg.tsv>
     .
