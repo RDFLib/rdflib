@@ -22,6 +22,11 @@
     :filtersubquery2
     :filtersubquery3
     :filteroptional
+
+    :subquery1
+    :subquery2
+    :subquery3
+
 	) .
 
 
@@ -30,7 +35,7 @@
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://gromgull.net/> ;
     mf:action
-         [ qt:query  <optsubq.rq> ;
+         [ qt:query <optsubq.rq> ;
            qt:data   <optsubq.ttl> ] ;
     mf:result  <optsubq.srx>
     .
@@ -40,7 +45,7 @@
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://gromgull.net/me> ;
     mf:action
-         [ qt:query  <unicode.rq> ;
+         [ qt:query <unicode.rq> ;
            qt:data   <unicode.ttl> ] ;
     mf:result  <unicode.srx>
     .
@@ -51,7 +56,7 @@
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://gromgull.net/me> ;
     mf:action
-         [ qt:query  <nestedbnode.rq> ] ;
+         [ qt:query <nestedbnode.rq> ] ;
     mf:result  <nestedbnode.srx>
     .
 
@@ -71,7 +76,7 @@ From https://github.com/RDFLib/rdflib/issues/615, contributed by https://github.
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://gromgull.net/me> ;
     mf:action
-         [ qt:query  <minusfilter.rq> ;
+         [ qt:query <minusfilter.rq> ;
            qt:data <minusfilter.ttl> ] ;
     mf:result  <minusfilter.srx>
     .
@@ -83,7 +88,7 @@ From https://github.com/RDFLib/rdflib/issues/615, contributed by https://github.
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://gromgull.net/me> ;
     mf:action
-         [ qt:query  <notexistsfilter.rq> ;
+         [ qt:query <notexistsfilter.rq> ;
            qt:data <minusfilter.ttl> ] ;
     mf:result  <notexistsfilter.srx>
     .
@@ -97,7 +102,7 @@ From https://github.com/RDFLib/rdflib/issues/615, contributed by https://github.
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://gromgull.net/me> ;
     mf:action
-         [ qt:query  <bindscope.rq> ;
+         [ qt:query <bindscope.rq> ;
            qt:data <bindscope.ttl> ] ;
     mf:result  <bindscope.srx>
     .
@@ -111,7 +116,7 @@ From https://github.com/RDFLib/rdflib/issues/615, contributed by https://github.
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://gromgull.net/me> ;
     mf:action
-         [ qt:query  <bindscope2.rq> ;
+         [ qt:query <bindscope2.rq> ;
            qt:data <bindscope.ttl> ] ;
     mf:result  <bindscope2.tsv>
     .
@@ -124,7 +129,7 @@ From https://github.com/RDFLib/rdflib/issues/615, contributed by https://github.
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://gromgull.net/me> ;
     mf:action
-         [ qt:query  <filtersubquery1.rq> ] ;
+         [ qt:query <filtersubquery1.rq> ] ;
     mf:result  <filtersubquery.tsv>
     .
 
@@ -137,7 +142,7 @@ From https://github.com/RDFLib/rdflib/issues/615, contributed by https://github.
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://gromgull.net/me> ;
     mf:action
-         [ qt:query  <filtersubquery2.rq> ] ;
+         [ qt:query <filtersubquery2.rq> ] ;
     mf:result  <filtersubquery.tsv>
     .
 
@@ -150,7 +155,7 @@ From https://github.com/RDFLib/rdflib/issues/615, contributed by https://github.
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://gromgull.net/me> ;
     mf:action
-         [ qt:query  <filtersubquery3.rq> ] ;
+         [ qt:query <filtersubquery3.rq> ] ;
     mf:result  <filtersubquery.tsv>
     .
 
@@ -163,6 +168,48 @@ From https://github.com/RDFLib/rdflib/issues/615, contributed by https://github.
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://gromgull.net/me> ;
     mf:action
-         [ qt:query  <filteroptional.rq> ] ;
+         [ qt:query <filteroptional.rq> ] ;
     mf:result  <filtersubquery.tsv>
+    .
+
+
+:subquery1 rdf:type mf:QueryEvaluationTest ;
+    mf:name "subquery1";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/607, contributed by https://github.com/pfps
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <subquery1.rq> ;
+           qt:data <subquery.ttl> ] ;
+    mf:result  <subquery.tsv>
+    .
+
+
+:subquery2 rdf:type mf:QueryEvaluationTest ;
+    mf:name "subquery2";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/607, contributed by https://github.com/pfps
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <subquery2.rq> ;
+           qt:data <subquery.ttl> ] ;
+    mf:result  <subquery.tsv>
+    .
+
+
+:subquery3 rdf:type mf:QueryEvaluationTest ;
+    mf:name "subquery3";
+    rdfs:comment """
+    From https://github.com/RDFLib/rdflib/issues/607, contributed by https://github.com/pfps
+""";
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://gromgull.net/me> ;
+    mf:action
+         [ qt:query <subquery3.rq> ;
+           qt:data <subquery.ttl> ] ;
+    mf:result  <subquery.tsv>
     .
