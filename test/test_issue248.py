@@ -88,7 +88,7 @@ class TestSerialization(unittest.TestCase):
         sg = graph.serialize(format='n3', base=LCCO).decode('utf8')
         # See issue 248
         # Actual test should be the inverse of the below ...
-        self.assert_('<1> a skos:Concept ;' in sg, sg)
+        self.assertTrue('<1> a skos:Concept ;' in sg, sg)
 
 if __name__ == "__main__":
     unittest.main()

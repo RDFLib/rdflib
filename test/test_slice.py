@@ -12,8 +12,8 @@ class GraphSlice(unittest.TestCase):
          all operations return generators over full triples 
         """
 
-        sl=lambda x,y: self.assertEquals(len(list(x)),y)
-        soe=lambda x,y: self.assertEquals(set([a[2] for a in x]),set(y)) # equals objects
+        sl=lambda x,y: self.assertEqual(len(list(x)),y)
+        soe=lambda x,y: self.assertEqual(set([a[2] for a in x]),set(y)) # equals objects
         g=self.graph
          
         # Single terms are all trivial:
