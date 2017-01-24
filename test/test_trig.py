@@ -151,3 +151,25 @@ class TestTrig(unittest.TestCase):
         data = g.serialize(format='trig')
 
         self.assertTrue('None' not in data)
+
+    def testPrefixes(self):
+
+        data = """
+        @prefix ns1: <http://ex.org/schema#> .
+        <http://ex.org/docs/document1> = {
+            ns1:Person_A a ns1:Person ;
+                ns1:TextSpan "Simon" .
+        }
+        <http://ex.org/docs/document2> = {
+            ns1:Person_C a ns1:Person ;
+                ns1:TextSpan "Agnes" .
+        }
+        """
+
+        cg = rdflib.ConjunctiveGraph()
+        cg.parse(data=data, format='trig')
+        data = cg.serialize(format='trig')
+
+        self.assert_('ns2: <http://ex.org/docs/' in data, data)
+        self.assert_('<ns2:document1>' not in data, data)
+        self.assert_('ns2:document1' in data, data)
