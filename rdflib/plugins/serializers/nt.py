@@ -33,6 +33,17 @@ class NTSerializer(Serializer):
         stream.write(b("\n"))
 
 
+class NT11Serializer(NTSerializer):
+    """
+    Serializes RDF graphs to RDF 1.1 NTriples format.
+
+    Exactly like nt - only utf8 encoded.
+    """
+
+    def __init__(self, store):
+        Serializer.__init__(self, store) # default to utf-8
+
+
 def _nt_row(triple):
     if isinstance(triple[2], Literal):
         return u"%s %s %s .\n" % (
