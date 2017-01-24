@@ -45,7 +45,7 @@ class OWLCollectionTest(unittest.TestCase):
 class ListTest(unittest.TestCase):
     def testFalseElement(self):
         g=Graph().parse(data=DATA_FALSE_ELEMENT, format='nt')
-        self.assertEquals(len(list(g.items(URIRef('http://example.org/#ThreeMemberList')))), 3)
+        self.assertEqual(len(list(g.items(URIRef('http://example.org/#ThreeMemberList')))), 3)
 
 
 if __name__ == '__main__':

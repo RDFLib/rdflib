@@ -182,8 +182,8 @@ foo-bar:Ex foo-bar:name "Test" . """
         for s, p, o in g:
             if isinstance(s, Graph):
                 i += 1
-        self.assertEquals(i, 3)
-        self.assertEquals(len(list(g.contexts())), 13)
+        self.assertEqual(i, 3)
+        self.assertEqual(len(list(g.contexts())), 13)
 
         g.close()
 

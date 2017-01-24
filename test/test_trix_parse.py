@@ -22,8 +22,8 @@ class TestTrixParse(unittest.TestCase):
         #print list(g.contexts())
         t=sum(map(len, g.contexts()))
 
-        self.assertEquals(t,24)
-        self.assertEquals(len(c),4)
+        self.assertEqual(t,24)
+        self.assertEqual(len(c),4)
         
         #print "Parsed %d triples"%t
 

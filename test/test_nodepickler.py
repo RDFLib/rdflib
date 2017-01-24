@@ -31,7 +31,7 @@ class UtilTestCase(unittest.TestCase):
         a = Literal(u'''A test with a \\n (backslash n), "\u00a9" , and newline \n and a second line.
 ''')
         b = np.loads(np.dumps(a))
-        self.assertEquals(a, b)
+        self.assertEqual(a, b)
 
     def test_literal_cases(self):
         np = NodePickler()
@@ -39,14 +39,14 @@ class UtilTestCase(unittest.TestCase):
         for l in cases:
             a = Literal(l)
             b = np.loads(np.dumps(a))
-            self.assertEquals(a, b)
+            self.assertEqual(a, b)
 
     def test_pickle(self):
         np = NodePickler()
         dump = pickle.dumps(np)
         np2 = pickle.loads(dump)
-        self.assertEquals(np._ids, np2._ids)
-        self.assertEquals(np._objects,  np2._objects)
+        self.assertEqual(np._ids, np2._ids)
+        self.assertEqual(np._objects,  np2._objects)
 
 
 if __name__ == '__main__':

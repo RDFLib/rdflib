@@ -13,12 +13,12 @@ class TestLiteral(unittest.TestCase):
     def test_repr_apostrophe(self):
         a = rdflib.Literal("'")
         b = eval(repr(a))
-        self.assertEquals(a, b)
+        self.assertEqual(a, b)
 
     def test_repr_quote(self):
         a = rdflib.Literal('"')
         b = eval(repr(a))
-        self.assertEquals(a, b)
+        self.assertEqual(a, b)
 
     def test_backslash(self):
         d = r"""
@@ -34,11 +34,11 @@ class TestLiteral(unittest.TestCase):
         g.parse(data=d)
         a = rdflib.Literal('a\\b')
         b = list(g.objects())[0]
-        self.assertEquals(a, b)
+        self.assertEqual(a, b)
 
     def test_literal_from_bool(self):
         l = rdflib.Literal(True)
-        self.assertEquals(l.datatype, rdflib.XSD["boolean"])
+        self.assertEqual(l.datatype, rdflib.XSD["boolean"])
 
 class TestNew(unittest.TestCase):
     def testCantPassLangAndDatatype(self):
@@ -62,7 +62,7 @@ class TestNew(unittest.TestCase):
         # drewp disapproves of this behavior, but it should be
         # represented in the tests
         x = Literal("foo", datatype="http://example.com/")
-        self.assert_(isinstance(x.datatype, URIRef))
+        self.assertTrue(isinstance(x.datatype, URIRef))
 
         x = Literal("foo", datatype=Literal("pennies"))
         self.assertEqual(x.datatype, URIRef("pennies"))
@@ -94,7 +94,7 @@ class TestDoubleOutput(unittest.TestCase):
         """confirms the fix for https://github.com/RDFLib/rdflib/issues/237"""
         vv = Literal("0.88", datatype=_XSD_DOUBLE)
         out = vv._literal_n3(use_plain=True)
-        self.assert_(out in ["8.8e-01", "0.88"], out)
+        self.assertTrue(out in ["8.8e-01", "0.88"], out)
 
 class TestBindings(unittest.TestCase):
 

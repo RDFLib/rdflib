@@ -36,4 +36,4 @@ class TestBNodeRepr(unittest.TestCase):
         class MyBNode(BNode):
             pass
         x = MyBNode()
-        self.assert_(repr(x).startswith("MyBNode("))
+        self.assertTrue(repr(x).startswith("MyBNode("))

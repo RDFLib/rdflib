@@ -185,7 +185,7 @@ class ParserTestCase(unittest.TestCase):
                 result = _testNegative(neg, manifest)
                 total += 1
                 num_failed += result
-        self.assertEquals(
+        self.assertEqual(
             num_failed, 0, "Failed: %s of %s." % (num_failed, total))
 
     def testPositive(self):
@@ -210,7 +210,7 @@ class ParserTestCase(unittest.TestCase):
                     results.add((test, RDF.type, RESULT["FailingRun"]))
                 total += 1
                 num_failed += result
-        self.assertEquals(
+        self.assertEqual(
             num_failed, 0, "Failed: %s of %s." % (num_failed, total))
 
 RESULT = Namespace("http://www.w3.org/2002/03owlt/resultsOntology#")
