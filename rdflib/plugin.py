@@ -176,6 +176,10 @@ register(
     'nt', Serializer,
     'rdflib.plugins.serializers.nt', 'NTSerializer')
 register(
+    'nt11', Serializer,
+    'rdflib.plugins.serializers.nt', 'NT11Serializer')
+
+register(
     'pretty-xml', Serializer,
     'rdflib.plugins.serializers.rdfxml', 'PrettyXMLSerializer')
 register(
@@ -214,6 +218,9 @@ register(
     'rdflib.plugins.parsers.nt', 'NTParser')
 register(
     'nt', Parser,
+    'rdflib.plugins.parsers.nt', 'NTParser')
+register(
+    'nt11', Parser,
     'rdflib.plugins.parsers.nt', 'NTParser')
 register(
     'application/n-quads', Parser,
