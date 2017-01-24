@@ -2,6 +2,7 @@ import unittest
 import rdflib
 import re
 
+from nose import SkipTest
 from rdflib.py3compat import b
 
 TRIPLE = (rdflib.URIRef("http://example.com/s"),
@@ -118,7 +119,7 @@ class TestTrig(unittest.TestCase):
 
     def testRoundTrips(self):
 
-        raise unittest.SkipTest('skipped until 5.0')
+        raise SkipTest('skipped until 5.0')
 
         data = """
 <http://example.com/thing#thing_a> <http://example.com/knows> <http://example.com/thing#thing_b> .
@@ -153,7 +154,7 @@ class TestTrig(unittest.TestCase):
         g.parse(data=data, format='trig')
         data = g.serialize(format='trig')
 
-        self.assertTrue('None' not in data)
+        self.assertTrue(b('None') not in data)
 
     def testPrefixes(self):
 
@@ -173,6 +174,6 @@ class TestTrig(unittest.TestCase):
         cg.parse(data=data, format='trig')
         data = cg.serialize(format='trig')
 
-        self.assert_('ns2: <http://ex.org/docs/' in data, data)
-        self.assert_('<ns2:document1>' not in data, data)
-        self.assert_('ns2:document1' in data, data)
+        self.assert_(b('ns2: <http://ex.org/docs/') in data, data)
+        self.assert_(b('<ns2:document1>') not in data, data)
+        self.assert_(b('ns2:document1') in data, data)

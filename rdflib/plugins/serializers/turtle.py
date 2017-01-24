@@ -47,6 +47,8 @@ class RecursiveSerializer(Serializer):
         self.reset()
 
     def addNamespace(self, prefix, uri):
+        if prefix in self.namespaces and self.namespaces[prefix]!=uri:
+            raise Exception("Trying to override namespace prefix %s => %s, but it's already bound to %s"%(prefix, uri, self.namespaces[prefix]))
         self.namespaces[prefix] = uri
 
     def checkSubject(self, subject):
@@ -195,7 +197,8 @@ class TurtleSerializer(RecursiveSerializer):
                     p = "p" + p
                 self._ns_rewrite[prefix] = p
 
-        prefix = self._ns_rewrite.get(prefix, prefix)
+            prefix = self._ns_rewrite.get(prefix, prefix)
+
         super(TurtleSerializer, self).addNamespace(prefix, namespace)
         return prefix
 
