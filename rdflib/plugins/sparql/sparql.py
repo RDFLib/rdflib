@@ -191,13 +191,14 @@ class FrozenBindings(FrozenDict):
     bnodes = property(_bnodes)
     now = property(_now)
 
-    def forget(self, before):
+    def forget(self, before, _except=None):
         """
         return a frozen dict only of bindings made in self
         since before
         """
-
-        return FrozenBindings(self.ctx, (x for x in self.iteritems() if before[x[0]] is None))
+        if not _except : _except = []
+        # bindings from initBindings are newer forgotten
+        return FrozenBindings(self.ctx, (x for x in self.iteritems() if x[0] in _except or x[0] in self.ctx.initBindings or before[x[0]] is None))
 
     def remember(self, these):
         """
@@ -212,8 +213,10 @@ class QueryContext(object):
     Query context - passed along when evaluating the query
     """
 
-    def __init__(self, graph=None, bindings=None):
-        self.bindings = bindings or Bindings()
+    def __init__(self, graph=None, bindings=None, initBindings=None):
+        self.initBindings = initBindings
+        self.bindings = Bindings(d=bindings or [])
+        if initBindings: self.bindings.update(initBindings)
 
         if isinstance(graph, ConjunctiveGraph):
             self._dataset = graph
@@ -232,9 +235,8 @@ class QueryContext(object):
 
     def clone(self, bindings=None):
         r = QueryContext(
-            self._dataset if self._dataset is not None else self.graph)
+            self._dataset if self._dataset is not None else self.graph, bindings or self.bindings, initBindings=self.initBindings)
         r.prologue = self.prologue
-        r.bindings.update(bindings or self.bindings)
         r.graph = self.graph
         r.bnodes = self.bnodes
         return r

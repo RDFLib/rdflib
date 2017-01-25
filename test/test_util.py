@@ -57,15 +57,15 @@ class TestUtilMisc(unittest.TestCase):
     def test_util_list2set(self):
         base = [Literal('foo'), self.x]
         r = util.list2set(base+base)
-        self.assert_(r == base)
+        self.assertTrue(r == base)
 
     def test_util_uniq(self):
         base = ["michel", "hates", "pizza"]
         r = util.uniq(base+base)
-        self.assertEquals(sorted(r), sorted(base))
+        self.assertEqual(sorted(r), sorted(base))
         base = ["michel", "hates", "pizza"]
         r = util.uniq(base+base, strip=True)
-        self.assertEquals(sorted(r), sorted(base))
+        self.assertEqual(sorted(r), sorted(base))
 
     def test_coverage_dodge(self):
         util.test()
@@ -79,32 +79,32 @@ class TestUtilDateTime(unittest.TestCase):
     def test_util_date_time_tisnoneandnotz(self):
         t = None
         res = util.date_time(t, local_time_zone=False)
-        self.assert_(res[4:5] == "-")
+        self.assertTrue(res[4:5] == "-")
 
     def test_util_date_time_tisnonebuttz(self):
         t = None
         res = util.date_time(t, local_time_zone=True)
-        self.assert_(res[4:5] == "-")
+        self.assertTrue(res[4:5] == "-")
 
     def test_util_date_time_tistime(self):
         t = time.time()
         res = util.date_time(t, local_time_zone=False)
-        self.assert_(res[4:5] == "-")
+        self.assertTrue(res[4:5] == "-")
 
     def test_util_date_time_tistimewithtz(self):
         t = time.time()
         res = util.date_time(t, local_time_zone=True)
-        self.assert_(res[4:5] == "-")
+        self.assertTrue(res[4:5] == "-")
 
     def test_util_parse_date_time(self):
         t = time.time()
         res = util.parse_date_time("1970-01-01")
-        self.assert_(res is not t)
+        self.assertTrue(res is not t)
 
     def test_util_parse_date_timewithtz(self):
         t = time.time()
         res = util.parse_date_time("1970-01-01")
-        self.assert_(res is not t)
+        self.assertTrue(res is not t)
 
     def test_util_date_timewithtoutz(self):
         t = time.time()
@@ -114,7 +114,7 @@ class TestUtilDateTime(unittest.TestCase):
             return res
         util.localtime = ablocaltime
         res = util.date_time(t, local_time_zone=True)
-        self.assert_(res is not t)
+        self.assertTrue(res is not t)
 
 class TestUtilTermConvert(unittest.TestCase):
     def setUp(self):
@@ -123,25 +123,25 @@ class TestUtilTermConvert(unittest.TestCase):
 
     def test_util_to_term_sisNone(self):
         s = None
-        self.assertEquals(util.to_term(s), s)
-        self.assertEquals(util.to_term(s, default=""), "")
+        self.assertEqual(util.to_term(s), s)
+        self.assertEqual(util.to_term(s, default=""), "")
 
     def test_util_to_term_sisstr(self):
         s = '"http://example.com"'
         res = util.to_term(s)
-        self.assert_(isinstance(res, Literal))
-        self.assertEquals(str(res), s[1:-1])
+        self.assertTrue(isinstance(res, Literal))
+        self.assertEqual(str(res), s[1:-1])
 
     def test_util_to_term_sisurl(self):
         s = "<http://example.com>"
         res = util.to_term(s)
-        self.assert_(isinstance(res, URIRef))
-        self.assertEquals(str(res), s[1:-1])
+        self.assertTrue(isinstance(res, URIRef))
+        self.assertEqual(str(res), s[1:-1])
 
     def test_util_to_term_sisbnode(self):
         s = '_http%23%4F%4Fexample%33com'
         res = util.to_term(s)
-        self.assert_(isinstance(res, BNode))
+        self.assertTrue(isinstance(res, BNode))
 
     def test_util_to_term_sisunknown(self):
         s = 'http://example.com'
@@ -155,44 +155,44 @@ class TestUtilTermConvert(unittest.TestCase):
         s = None
         default = None
         res = util.from_n3(s, default=default, backend=None)
-        self.assert_(res == default)
+        self.assertTrue(res == default)
 
     def test_util_from_n3_sisnonewithdefault(self):
         s = None
         default = "TestofDefault"
         res = util.from_n3(s, default=default, backend=None)
-        self.assert_(res == default)
+        self.assertTrue(res == default)
     
 
     def test_util_from_n3_expectdefaultbnode(self):
         s = "michel"
         res = util.from_n3(s, default=None, backend=None)
-        self.assert_(isinstance(res, BNode))
+        self.assertTrue(isinstance(res, BNode))
 
     def test_util_from_n3_expectbnode(self):
         s = "_:michel"
         res = util.from_n3(s, default=None, backend=None)
-        self.assert_(isinstance(res, BNode))
+        self.assertTrue(isinstance(res, BNode))
 
     def test_util_from_n3_expectliteral(self):
         s = '"michel"'
         res = util.from_n3(s, default=None, backend=None)
-        self.assert_(isinstance(res, Literal))
+        self.assertTrue(isinstance(res, Literal))
 
     def test_util_from_n3_expecturiref(self):
         s = '<http://example.org/schema>'
         res = util.from_n3(s, default=None, backend=None)
-        self.assert_(isinstance(res, URIRef))
+        self.assertTrue(isinstance(res, URIRef))
 
     def test_util_from_n3_expectliteralandlang(self):
         s = '"michel"@fr'
         res = util.from_n3(s, default=None, backend=None)
-        self.assert_(isinstance(res, Literal))
+        self.assertTrue(isinstance(res, Literal))
 
     def test_util_from_n3_expectliteralandlangdtype(self):
         s = '"michel"@fr^^xsd:fr'
         res = util.from_n3(s, default=None, backend=None)
-        self.assert_(isinstance(res, Literal))
+        self.assertTrue(isinstance(res, Literal))
         self.assertEqual(res, Literal('michel',
                                       datatype=XSD['fr']))
 
@@ -217,18 +217,18 @@ class TestUtilTermConvert(unittest.TestCase):
     def test_util_from_n3_expectliteralmultiline(self):
         s = '"""multi\nline\nstring"""@en'
         res = util.from_n3(s, default=None, backend=None)
-        self.assert_(res, Literal('multi\nline\nstring', lang='en'))
+        self.assertTrue(res, Literal('multi\nline\nstring', lang='en'))
     
     def test_util_from_n3_expectliteralwithescapedquote(self):
         s = '"\\""'
         res = util.from_n3(s, default=None, backend=None)
-        self.assert_(res, Literal('\\"', lang='en'))
+        self.assertTrue(res, Literal('\\"', lang='en'))
 
     def test_util_from_n3_expectliteralwithtrailingbackslash(self):
         s = '"trailing\\\\"^^<http://www.w3.org/2001/XMLSchema#string>'
         res = util.from_n3(s)
-        self.assert_(res, Literal('trailing\\', datatype=XSD['string']))
-        self.assert_(res.n3(), s)
+        self.assertTrue(res, Literal('trailing\\', datatype=XSD['string']))
+        self.assertTrue(res.n3(), s)
     
     def test_util_from_n3_expectpartialidempotencewithn3(self):
         for n3 in ('<http://ex.com/foo>',
@@ -263,7 +263,7 @@ class TestUtilTermConvert(unittest.TestCase):
                    '"\\""@en',
                    '"""multi\n"line"\nstring"""@en'):
             res, exp = util.from_n3(n3), parse_n3(n3)
-            self.assertEquals(res, exp,
+            self.assertEqual(res, exp,
                 'from_n3(%(n3e)r): %(res)r != parser.notation3: %(exp)r' % {
                         'res': res, 'exp': exp, 'n3e':n3})
         
@@ -272,12 +272,12 @@ class TestUtilTermConvert(unittest.TestCase):
     def test_util_from_n3_expectquotedgraph(self):
         s = '{<http://example.com/schema>}'
         res = util.from_n3(s, default=None, backend="IOMemory")
-        self.assert_(isinstance(res, QuotedGraph))
+        self.assertTrue(isinstance(res, QuotedGraph))
 
     def test_util_from_n3_expectgraph(self):
         s = '[<http://example.com/schema>]'
         res = util.from_n3(s, default=None, backend="IOMemory")
-        self.assert_(isinstance(res, Graph))
+        self.assertTrue(isinstance(res, Graph))
 
 class TestUtilCheckers(unittest.TestCase):
     def setUp(self):
@@ -295,19 +295,19 @@ class TestUtilCheckers(unittest.TestCase):
 
     def test_util_check_context(self):
         res = util.check_context(self.c)
-        self.assert_(res == None)
+        self.assertTrue(res == None)
 
     def test_util_check_subject(self):
         res = util.check_subject(self.s)
-        self.assert_(res == None)
+        self.assertTrue(res == None)
     
     def test_util_check_predicate(self):
         res = util.check_predicate(self.p)
-        self.assert_(res == None)
+        self.assertTrue(res == None)
 
     def test_util_check_object(self):
         res = util.check_object(self.o)
-        self.assert_(res == None)
+        self.assertTrue(res == None)
     
     def test_util_check_statement(self):
         c = "http://example.com"
@@ -324,7 +324,7 @@ class TestUtilCheckers(unittest.TestCase):
                 util.check_statement, 
                     (self.s, self.p, c)) 
         res = util.check_statement((self.s, self.p, self.o))
-        self.assert_(res == None)
+        self.assertTrue(res == None)
     
     def test_util_check_pattern(self):
         c = "http://example.com"
@@ -341,7 +341,7 @@ class TestUtilCheckers(unittest.TestCase):
                 util.check_pattern, 
                     (self.s, self.p, c)) 
         res = util.check_pattern((self.s, self.p, self.o))
-        self.assert_(res == None)
+        self.assertTrue(res == None)
 
 if __name__ == "__main__":
     unittest.main()

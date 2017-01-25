@@ -50,7 +50,6 @@ from collections import defaultdict
 
 from isodate import parse_time, parse_date, parse_datetime
 
-
 try:
     from hashlib import md5
     assert md5
@@ -61,7 +60,6 @@ except ImportError:
 import rdflib
 from . import py3compat
 from rdflib.compat import numeric_greater
-
 
 
 b = py3compat.b
@@ -83,6 +81,24 @@ _lang_tag_regex = compile('^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$')
 def _is_valid_langtag(tag):
     return bool(_lang_tag_regex.match(tag))
 
+def _is_valid_unicode(value):
+    """
+    Verify that the provided value can be converted into a Python
+    unicode object.
+    """
+    if isinstance(value, bytes):
+        coding_func, param = getattr(value, 'decode'), 'utf-8'
+    elif py3compat.PY3:
+        coding_func, param = str, value
+    else:
+        coding_func, param = unicode, value
+
+    # try to convert value into unicode
+    try:
+        coding_func(param)
+    except UnicodeError:
+        return False
+    return True
 
 class Node(object):
     """
@@ -543,7 +559,7 @@ class Literal(Identifier):
 
                 if value is not None and normalize:
                     _value, _datatype = _castPythonToLiteral(value)
-                    if _value is not None:
+                    if _value is not None and _is_valid_unicode(_value):
                         lexical_or_value = _value
 
         else:
@@ -556,7 +572,6 @@ class Literal(Identifier):
                 lexical_or_value = _value
             if datatype:
                 lang = None
-
 
         if py3compat.PY3 and isinstance(lexical_or_value, bytes):
             lexical_or_value = lexical_or_value.decode('utf-8')
@@ -1452,8 +1467,7 @@ XSDToPython = {
     URIRef(_XSD_PFX + 'unsignedByte'): int,
     URIRef(_XSD_PFX + 'float'): float,
     URIRef(_XSD_PFX + 'double'): float,
-    URIRef(
-        _XSD_PFX + 'base64Binary'): lambda s: base64.b64decode(py3compat.b(s)),
+    URIRef(_XSD_PFX + 'base64Binary'): lambda s: base64.b64decode(s),
     URIRef(_XSD_PFX + 'anyURI'): None,
     _RDF_XMLLITERAL: _parseXML,
     _RDF_HTMLLITERAL: _parseHTML

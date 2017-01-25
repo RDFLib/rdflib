@@ -60,6 +60,8 @@ class TrigSerializer(TurtleSerializer):
 
         firstTime = True
         for store, (ordered_subjects, subjects, ref) in self._contexts.items():
+            if not ordered_subjects: continue
+
             self._references = ref
             self._serialized = {}
             self.store = store

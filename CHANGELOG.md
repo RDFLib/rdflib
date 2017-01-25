@@ -1,3 +1,44 @@
+2017/01/2X RELEASE 4.2.2
+========================
+
+This is a bug-fix release, and the last release in the 4.X series.
+
+Bug fixes:
+----------
+* Many SPARQL Engine fixes for aggregates, subqueries, variable-scope
+  [#404](https://github.com/RDFLib/rdflib/issues/404)
+  [#580](https://github.com/RDFLib/rdflib/issues/580)
+  [#607](https://github.com/RDFLib/rdflib/issues/607)
+  [#615](https://github.com/RDFLib/rdflib/issues/615)
+  [#619](https://github.com/RDFLib/rdflib/issues/619)
+  [#628](https://github.com/RDFLib/rdflib/issues/628)
+  [#631](https://github.com/RDFLib/rdflib/issues/631)
+
+
+* initBindings in SPARQL queries finally work everywhere
+  [#294](https://github.com/RDFLib/rdflib/issues/294)
+
+* A handful of Trig serialisation issues
+
+  [#433](https://github.com/RDFLib/rdflib/issues/433)
+  [#679](https://github.com/RDFLib/rdflib/issues/679)
+  [#428](https://github.com/RDFLib/rdflib/issues/428)
+
+
+* Improved support for base64 encoded literals
+  [#646](https://github.com/RDFLib/rdflib/issues/646)
+
+* A handful of bugs around orderability on py3
+  [#676](https://github.com/RDFLib/rdflib/issues/676)
+  [#613](https://github.com/RDFLib/rdflib/issues/613)
+  [#648](https://github.com/RDFLib/rdflib/issues/648)
+  [#653](https://github.com/RDFLib/rdflib/issues/653)
+
+* Improved performance of managing large collections
+  [#609](https://github.com/RDFLib/rdflib/issues/609)
+
+* And many other minor things!
+
 2015/08/12 RELEASE 4.2.1
 ========================
 

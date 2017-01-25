@@ -5,12 +5,32 @@ See <http://www.w3.org/TeamSubmission/turtle/> for syntax specification.
 
 from collections import defaultdict
 
+from rdflib.compat import cmp_to_key
 from rdflib.term import BNode, Literal, URIRef
 from rdflib.exceptions import Error
 from rdflib.serializer import Serializer
 from rdflib.namespace import RDF, RDFS
 
 __all__ = ['RecursiveSerializer', 'TurtleSerializer']
+
+def _object_comparator(a,b):
+    """
+    for nice clean output we sort the objects of triples,
+    some of them are literals,
+    these are sorted according to the sort order of the underlying python objects
+    in py3 not all things are comparable.
+    This falls back on comparing string representations when not.
+    """
+
+    try:
+        if a>b: return 1
+        if a<b: return -1
+        return 0
+
+    except TypeError:
+        a = unicode(a)
+        b = unicode(b)
+        return (a > b) - (a < b)
 
 
 class RecursiveSerializer(Serializer):
@@ -27,6 +47,8 @@ class RecursiveSerializer(Serializer):
         self.reset()
 
     def addNamespace(self, prefix, uri):
+        if prefix in self.namespaces and self.namespaces[prefix]!=uri:
+            raise Exception("Trying to override namespace prefix %s => %s, but it's already bound to %s"%(prefix, uri, self.namespaces[prefix]))
         self.namespaces[prefix] = uri
 
     def checkSubject(self, subject):
@@ -103,7 +125,7 @@ class RecursiveSerializer(Serializer):
            Sort the lists of values.  Return a sorted list of properties."""
         # Sort object lists
         for prop, objects in properties.items():
-            objects.sort()
+            objects.sort(key=cmp_to_key(_object_comparator))
 
         # Make sorted list of properties
         propList = []
@@ -175,7 +197,8 @@ class TurtleSerializer(RecursiveSerializer):
                     p = "p" + p
                 self._ns_rewrite[prefix] = p
 
-        prefix = self._ns_rewrite.get(prefix, prefix)
+            prefix = self._ns_rewrite.get(prefix, prefix)
+
         super(TurtleSerializer, self).addNamespace(prefix, namespace)
         return prefix
 

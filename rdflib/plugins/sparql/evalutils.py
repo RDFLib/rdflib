@@ -3,7 +3,7 @@ import collections
 from rdflib.term import Variable, Literal, BNode, URIRef
 
 from rdflib.plugins.sparql.operators import EBV
-from rdflib.plugins.sparql.parserutils import Expr, CompValue
+from rdflib.plugins.sparql.parserutils import Expr, CompValue, value
 from rdflib.plugins.sparql.sparql import SPARQLError, NotBoundError
 
 
@@ -112,3 +112,14 @@ def _fillTemplate(template, solution):
                 _o is not None:
 
             yield (_s, _p, _o)
+
+def _val(v):
+    """ utilitity for ordering things"""
+    if isinstance(v, Variable):
+        return (0, v)
+    elif isinstance(v, BNode):
+        return (1, v)
+    elif isinstance(v, URIRef):
+        return (2, v)
+    elif isinstance(v, Literal):
+        return (3, v)

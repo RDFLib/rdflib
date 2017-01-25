@@ -35,9 +35,9 @@ class ParserTestCase(unittest.TestCase):
 
         subject = URIRef("http://example.org#")
         label = g.value(subject, RDFS.label)
-        self.assertEquals(label, Literal("testing"))
+        self.assertEqual(label, Literal("testing"))
         type = g.value(subject, RDF.type)
-        self.assertEquals(type, RDFS.Class)
+        self.assertEqual(type, RDFS.Class)
 
 
 if __name__ == "__main__":

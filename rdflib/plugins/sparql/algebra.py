@@ -203,6 +203,9 @@ def translateExists(e):
         if isinstance(n, CompValue):
             if n.name in ('Builtin_EXISTS', 'Builtin_NOTEXISTS'):
                 n.graph = translateGroupGraphPattern(n.graph)
+                if n.graph.name == 'Filter':
+                    # filters inside (NOT) EXISTS can see vars bound outside
+                    n.graph.no_isolated_scope = True
 
     e = traverse(e, visitPost=_c)
 
@@ -428,20 +431,31 @@ def _findVars(x, res):
 
 
 def _addVars(x, children):
-    # import pdb; pdb.set_trace()
+    """
+    find which variables may be bound by this part of the query
+    """
     if isinstance(x, Variable):
         return set([x])
     elif isinstance(x, CompValue):
-        x["_vars"] = set(reduce(operator.or_, children, set()))
-        if x.name == "Bind":
-            return set([x.var])
-        elif x.name == 'SubSelect':
-            if x.projection:
-                s = set(v.var or v.evar for v in x.projection)
-            else:
-                s = set()
+        if x.name == "RelationalExpression":
+            x["_vars"] = set()
+        elif x.name == "Extend":
+            # vars only used in the expr for a bind should not be included
+            x["_vars"] = reduce(operator.or_, [ child for child,part in zip(children,x) if part!='expr' ], set())
 
-            return s
+        else:
+            x["_vars"] = set(reduce(operator.or_, children, set()))
+
+            if x.name == 'SubSelect':
+                if x.projection:
+                    s = set(v.var or v.evar for v in x.projection)
+                else:
+                    s = set()
+
+                return s
+
+        return x["_vars"]
+
     return reduce(operator.or_, children, set())
 
 
@@ -628,6 +642,12 @@ def simplify(n):
 
 
 def analyse(n, children):
+
+    """
+    Some things can be lazily joined.
+    This propegates whether they can up the tree
+    and sets lazy flags for all joins
+    """
 
     if isinstance(n, CompValue):
         if n.name == 'Join':

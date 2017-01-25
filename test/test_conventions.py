@@ -33,12 +33,11 @@ class A(unittest.TestCase):
             else:
                 if name!=name.lower() and name not in skip_as_ignorably_private:
                     names.add(name)
-                #self.assert_(name==name.lower(), "module name '%s' is not lower case" % name)
         return names
 
     def test_module_names(self):
         names = self.module_names()
-        self.assert_(names==set(), "module names '%s' are not lower case" % names)
+        self.assertTrue(names==set(), "module names '%s' are not lower case" % names)
 
 try:
     getattr(pkgutil, 'iter_modules')

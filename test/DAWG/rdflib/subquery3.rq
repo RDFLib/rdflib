@@ -1,0 +1,12 @@
+# find 2 hop chain with subquery, exec subquery first
+
+PREFIX x: <http://example.org/>
+
+SELECT ?a ?b ?c WHERE {
+  {
+    SELECT ?b ?c WHERE {
+      ?b x:p ?c .
+    }
+  }
+  ?a x:p ?b .
+}

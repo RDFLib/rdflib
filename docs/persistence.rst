@@ -36,11 +36,13 @@ Most cases passing the name of the store to the Graph constructor is enough:
     graph = Graph(store='Sleepycat')
 
 
-Most store offering on-disk persistence will need to be opened before reading or writing :
+Most store offering on-disk persistence will need to be opened before reading or writing.
+When peristing a triplestore (instead of a ConjuntiveGraph quadstore), you need to specify
+an identifier with which you can open the graph:
 
 .. code-block:: python
 
-   graph = Graph('Sleepycat')
+   graph = Graph('Sleepycat', identifier='mygraph')
 
    # first time create the store:
    graph.open('/home/user/data/myRDFLibStore', create = True) 
@@ -49,7 +51,7 @@ Most store offering on-disk persistence will need to be opened before reading or
    graph.add( mytriples ) 
 
    # when done!
-   graph.close() 
+   graph.close()
 
 
 

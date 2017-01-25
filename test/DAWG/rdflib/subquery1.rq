@@ -1,0 +1,9 @@
+# baseline - actually no subquery
+# find 2 hop chain (this works)
+
+PREFIX x: <http://example.org/>
+
+SELECT ?a ?b ?c WHERE {
+  ?a x:p ?b .
+  ?b x:p ?c .
+}
