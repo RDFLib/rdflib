@@ -176,6 +176,9 @@ register(
     'application/n-triples', Serializer,
     'rdflib.plugins.serializers.nt', 'NTSerializer')
 register(
+    'ntriples', Serializer,
+    'rdflib.plugins.serializers.nt', 'NTSerializer')
+register(
     'nt', Serializer,
     'rdflib.plugins.serializers.nt', 'NTSerializer')
 register(
@@ -221,6 +224,9 @@ register(
     'rdflib.plugins.parsers.notation3', 'TurtleParser')
 register(
     'application/n-triples', Parser,
+    'rdflib.plugins.parsers.nt', 'NTParser')
+register(
+    'ntriples', Parser,
     'rdflib.plugins.parsers.nt', 'NTParser')
 register(
     'nt', Parser,
