@@ -329,7 +329,8 @@ class NamespaceManager(object):
             name = None
             for prefix, namespace in self.ordered_prefixnames:
                 if namespace in uri:
-                    name = uri.split(namespace, 1)[1]
+                    name = uri[len(namespace):]
+                    #name = uri.split(namespace, 1)[1]
                     break
 
             if name is None:
