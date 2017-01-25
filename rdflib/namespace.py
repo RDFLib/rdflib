@@ -325,27 +325,16 @@ class NamespaceManager(object):
         if not _is_valid_uri(uri):
             raise Exception('"%s" does not look like a valid URI, I cannot serialize this. Perhaps you wanted to urlencode it?'%uri)
 
-
         if not uri in self.__cache:
-            namespace, name = split_uri(uri)
-            namespace = URIRef(namespace)
-            prefix = self.store.prefix(namespace)
-            # check to see if there are longer prefixes defined
-            temp_namespace = namespace.toPython()
-            output_prefix = prefix
-            output_namespace = namespace
-            output_name = name
-            for i in xrange(1, len(name) + 1):
-                test = URIRef(temp_namespace + name[:i])
-                prefix = self.store.prefix(test)
-                if prefix is not None:
-                    output_prefix = prefix
-                    output_namespace = test
-                    output_name = name[i:]
-            prefix = output_prefix
-            namespace = output_namespace
-            name = output_name
-            if prefix is None:
+            name = None
+            for prefix, namespace in self.ordered_prefixnames:
+                if namespace in uri:
+                    name = uri.split(namespace, 1)[1]
+                    break
+
+            if name is None:
+                namespace, name = split_uri(uri)
+                namespace = URIRef(namespace)
                 if not generate:
                     raise Exception(
                         "No known prefix for %s and generate=False")
@@ -415,6 +404,8 @@ class NamespaceManager(object):
                 if override or bound_prefix.startswith("_"):  # or a generated
                                                               # prefix
                     self.store.bind(prefix, namespace)
+
+        self.ordered_prefixnames = sorted(self.namespaces(), key=lambda l: -len(l[1]))
 
     def namespaces(self):
         for prefix, namespace in self.store.namespaces():
