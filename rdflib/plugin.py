@@ -167,6 +167,9 @@ register(
     'turtle', Serializer,
     'rdflib.plugins.serializers.turtle', 'TurtleSerializer')
 register(
+    'ttl', Serializer,
+    'rdflib.plugins.serializers.turtle', 'TurtleSerializer')
+register(
     'trig', Serializer,
     'rdflib.plugins.serializers.trig', 'TrigSerializer')
 register(
@@ -212,6 +215,9 @@ register(
     'rdflib.plugins.parsers.notation3', 'TurtleParser')
 register(
     'turtle', Parser,
+    'rdflib.plugins.parsers.notation3', 'TurtleParser')
+register(
+    'ttl', Parser,
     'rdflib.plugins.parsers.notation3', 'TurtleParser')
 register(
     'application/n-triples', Parser,
