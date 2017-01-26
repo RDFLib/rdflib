@@ -2,7 +2,6 @@ import unittest
 import rdflib
 import re
 
-from nose import SkipTest
 from rdflib.py3compat import b
 
 TRIPLE = (rdflib.URIRef("http://example.com/s"),
@@ -118,9 +117,6 @@ class TestTrig(unittest.TestCase):
         self.assertEqual(len(list(g.contexts())), 2)
 
     def testRoundTrips(self):
-
-        raise SkipTest('skipped until 5.0')
-
         data = """
 <http://example.com/thing#thing_a> <http://example.com/knows> <http://example.com/thing#thing_b> .
 
