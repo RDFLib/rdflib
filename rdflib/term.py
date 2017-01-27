@@ -59,7 +59,6 @@ except ImportError:
 
 import rdflib
 from . import py3compat
-from rdflib.compat import numeric_greater
 
 
 b = py3compat.b
@@ -785,7 +784,7 @@ class Literal(Identifier):
 
             if self.datatype in _NUMERIC_LITERAL_TYPES and \
                     other.datatype in _NUMERIC_LITERAL_TYPES:
-                return numeric_greater(self.value, other.value)
+                return self.value>other.value
 
             # plain-literals and xsd:string literals
             # are "the same"

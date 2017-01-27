@@ -1,11 +1,11 @@
+import json
+
 from rdflib.query import (
     Result, ResultException, ResultSerializer, ResultParser)
 from rdflib import Literal, URIRef, BNode, Variable
 
 from rdflib.py3compat import bytestype
 
-
-import jsonlayer
 
 """A Serializer for SPARQL results in JSON:
 
@@ -25,7 +25,7 @@ class JSONResultParser(ResultParser):
         inp = source.read()
         if isinstance(inp, bytestype):
             inp = inp.decode('utf-8')
-        return JSONResult(jsonlayer.decode(inp))
+        return JSONResult(json.loads(inp))
 
 
 class JSONResultSerializer(ResultSerializer):
@@ -47,7 +47,7 @@ class JSONResultSerializer(ResultSerializer):
             res["results"]["bindings"] = [self._bindingToJSON(
                 x) for x in self.result.bindings]
 
-        r = jsonlayer.encode(res)
+        r = json.dumps(res, allow_nan=False, ensure_ascii=False)
         if encoding is not None:
             stream.write(r.encode(encoding))
         else:

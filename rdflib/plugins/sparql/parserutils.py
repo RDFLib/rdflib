@@ -1,7 +1,7 @@
 
 from types import MethodType
 
-from rdflib.plugins.sparql.compat import OrderedDict
+from collections import OrderedDict
 
 from pyparsing import TokenConverter, ParseResults
 

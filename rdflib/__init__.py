@@ -69,7 +69,7 @@ __all__ = [
 ]
 
 import sys
-assert sys.version_info >= (2, 5, 0), "rdflib requires Python 2.5 or higher"
+assert sys.version_info >= (2, 7, 0), "rdflib requires Python 2.7 or higher"
 
 import logging
 _interactive_mode = False
