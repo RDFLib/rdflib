@@ -10,7 +10,7 @@ from rdflib.term import BNode, Literal, URIRef
 from rdflib.exceptions import Error
 from rdflib.serializer import Serializer
 from rdflib.namespace import RDF, RDFS
-from rdflib.py3compat import b
+from rdflib.py3compat import b, text_type
 
 __all__ = ['RecursiveSerializer', 'TurtleSerializer']
 
@@ -29,8 +29,8 @@ def _object_comparator(a,b):
         return 0
 
     except TypeError:
-        a = unicode(a)
-        b = unicode(b)
+        a = text_type(a)
+        b = text_type(b)
         return (a > b) - (a < b)
 
 
