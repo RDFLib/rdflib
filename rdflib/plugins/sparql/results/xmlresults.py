@@ -4,6 +4,7 @@ from xml.dom import XML_NAMESPACE
 from xml.sax.xmlreader import AttributesNSImpl
 
 from rdflib.compat import etree
+from rdflib.py3compat import iteritems
 
 from rdflib import Literal, URIRef, BNode, Graph, Variable
 from rdflib.query import (
@@ -131,7 +132,7 @@ class XMLResultSerializer(ResultSerializer):
             writer.write_results_header()
             for b in self.result.bindings:
                 writer.write_start_result()
-                for key, val in b.iteritems():
+                for key, val in iteritems(b):
                     writer.write_binding(key, val)
 
                 writer.write_end_result()

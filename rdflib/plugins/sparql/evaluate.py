@@ -17,6 +17,7 @@ also return a dict of list of dicts
 import collections
 
 from rdflib import Variable, Graph, BNode, URIRef, Literal
+from rdflib.py3compat import iteritems, itervalues
 
 from rdflib.plugins.sparql import CUSTOM_EVALS
 from rdflib.plugins.sparql.parserutils import value
@@ -302,7 +303,7 @@ def evalAggregateJoin(ctx, agg):
             res[k].update(row)
 
     # all rows are done; yield aggregated values
-    for aggregator in res.itervalues():
+    for aggregator in itervalues(res):
         yield FrozenBindings(ctx, aggregator.get_bindings())
 
     # there were no matches
@@ -436,7 +437,7 @@ def evalConstructQuery(ctx, query):
 
 def evalQuery(graph, query, initBindings, base=None):
 
-    initBindings = dict( ( Variable(k),v ) for k,v in initBindings.iteritems() )
+    initBindings = dict( ( Variable(k),v ) for k,v in iteritems(initBindings) )
 
     ctx = QueryContext(graph, initBindings=initBindings)
 

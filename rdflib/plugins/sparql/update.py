@@ -276,7 +276,7 @@ def evalUpdate(graph, update, initBindings={}):
 
     for u in update:
 
-        initBindings = dict( ( Variable(k),v ) for k,v in initBindings.iteritems() )
+        initBindings = dict( ( Variable(k),v ) for k,v in iteritems(initBindings) )
 
         ctx = QueryContext(graph, initBindings=initBindings)
         ctx.prologue = u.prologue
