@@ -72,8 +72,10 @@ class Counter(Accumulator):
 
 
 def type_safe_numbers(*args):
-    types = map(type, args)
-    if float in types and Decimal in types:
+    if (
+            any(isinstance(arg, float) for arg in args)
+            and any(isinstance(arg, Decimal) for arg in args)
+    ):
         return map(float, args)
     return args
 
