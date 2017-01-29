@@ -11,17 +11,14 @@ RDFLib
 RDFLib is a Python library for working with RDF, a simple yet
 powerful language for representing information as graphs.
 
-RDFLib may be installed with setuptools (easy_install) or pip::
-
-    $ easy_install rdflib
-or
+RDFLib may be installed with pip (use sudo as required):
 
     $ pip install rdflib
 
 Alternatively manually download the package from the Python Package
 Index (PyPI) at https://pypi.python.org/pypi/rdflib
 
-The current version of RDFLib is 4.2.1, see the ``CHANGELOG.md``
+The current version of RDFLib is 4.2.2, see the ``CHANGELOG.md``
 file for what's new.
 
 
@@ -98,7 +95,7 @@ The documentation can be built by doing::
 
 And is also available from ReadTheDocs:
 
-http://rdflib.readthedocs.org
+http://rdflib.readthedocs.io
 
 Support is available through the rdflib-dev group:
 

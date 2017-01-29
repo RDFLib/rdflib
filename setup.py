@@ -56,14 +56,7 @@ else:
             'pyparsing']
         kwargs['tests_require'] = ['networkx']
 
-        if sys.version_info[1]<7:  # Python 2.6
-            kwargs['install_requires'].append('ordereddict')
-        if sys.version_info[1]<6:  # Python 2.5
-            kwargs['install_requires'].append('pyparsing<=1.5.7')
-            kwargs['install_requires'].append('simplejson')
-            html5lib = 'html5lib==0.95'
-        else:
-            html5lib = 'html5lib'
+        html5lib = 'html5lib'
 
     except ImportError:
         from distutils.core import setup, find_packages
@@ -109,9 +102,7 @@ setup(
             "Programming Language :: Python",
             "Programming Language :: Python :: 2",
             "Programming Language :: Python :: 3",
-            "Programming Language :: Python :: 2.6",
             "Programming Language :: Python :: 2.7",
-            "Programming Language :: Python :: 3.3",
             "Programming Language :: Python :: 3.4",
             "Programming Language :: Python :: 3.5",
             "License :: OSI Approved :: BSD License",
@@ -135,11 +126,12 @@ A SPARQL 1.1 engine is also included.
 If you have recently reported a bug marked as fixed, or have a craving for
 the very latest, you may want the development version instead:
 
-   easy_install https://github.com/RDFLib/rdflib/tarball/master
+   pip install git+https://github.com/rdflib/rdflib
+
 
 Read the docs at:
 
-   http://rdflib.readthedocs.org
+   http://rdflib.readthedocs.io
 
     """,
     packages = packages,

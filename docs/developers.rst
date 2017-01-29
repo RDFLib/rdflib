@@ -27,7 +27,7 @@ Run tests with `nose <https://nose.readthedocs.org/en/latest/>`_:
 
 .. code-block: bash
 
-   $ easy_install nose
+   $ pip install nose
    $ python run_tests.py
    $ python run_tests.py --attr known_issue # override attr in setup.cfg to run only tests marked with "known_issue"
    $ python run_tests.py --attr \!known_issue # runs all tests (including "slow" and "non_core") except those with known issues
@@ -103,4 +103,3 @@ Set new dev version number in the above locations, i.e. next release `-dev`: ``2
 Update the topic of #rdflib on freenode irc::
 
   /msg ChanServ topic #rdflib https://github.com/RDFLib/rdflib | latest stable version: 4.2.0 | docs: http://rdflib.readthedocs.org
-
