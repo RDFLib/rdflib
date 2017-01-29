@@ -21,7 +21,7 @@ try:
 except ImportError:
     raise Exception(
         "SPARQLWrapper not found! SPARQL Store will not work." +
-        "Install with 'easy_install SPARQLWrapper'")
+        "Install with 'pip install SPARQLWrapper'")
 
 from rdflib.compat import etree, etree_register_namespace
 from rdflib.plugins.stores.regexmatching import NATIVE_REGEX
