@@ -21,6 +21,7 @@ initial_context = {
 }
 
 initial_context["http://www.w3.org/2011/rdfa-context/rdfa-1.1"].ns = {
+	'csvw'		: 'http://www.w3.org/ns/csvw#',
 	'dcat'		: 'http://www.w3.org/ns/dcat#',
     'qb'		: 'http://purl.org/linked-data/cube#',
     'org'		: 'http://www.w3.org/ns/org#',
@@ -99,4 +100,3 @@ initial_context["http://www.w3.org/2011/rdfa-context/xhtml-rdfa-1.1"].terms = {
 	'first'					: 'http://www.w3.org/1999/xhtml/vocab#first',
 	'top'					: 'http://www.w3.org/1999/xhtml/vocab#top',
 }
-

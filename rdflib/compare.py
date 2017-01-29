@@ -85,13 +85,7 @@ __all__ = ['IsomorphicGraph', 'to_isomorphic', 'isomorphic',
 
 from rdflib.graph import Graph, ConjunctiveGraph, ReadOnlyGraphAggregate
 from rdflib.term import BNode, Node
-try:
-    import hashlib
-    sha256 = hashlib.sha256
-except ImportError:
-    # for Python << 2.5
-    import sha256
-    sha256 = sha256.new
+from hashlib import sha256
 
 from datetime import datetime
 from collections import defaultdict

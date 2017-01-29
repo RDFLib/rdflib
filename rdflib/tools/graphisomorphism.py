@@ -5,32 +5,7 @@ if BNode labels are ignored.
 
 from rdflib.graph import Graph
 from rdflib import BNode
-try:
-    from itertools import combinations
-    assert combinations
-except ImportError:  # Python == 2.5
-    # Copied from
-    # http://docs.python.org/2/library/itertools.html#itertools.combinations
-    def combinations(iterable, r):
-        # combinations('ABCD', 2) --> AB AC AD BC BD CD
-        # combinations(range(4), 3) --> 012 013 023 123
-        pool = tuple(iterable)
-        n = len(pool)
-        if r > n:
-            return
-        indices = range(r)
-        yield tuple(pool[i] for i in indices)
-        while True:
-            for i in reversed(range(r)):
-                if indices[i] != i + n - r:
-                    break
-            else:
-                return
-            indices[i] += 1
-            for j in range(i + 1, r):
-                indices[j] = indices[j - 1] + 1
-            yield tuple(pool[i] for i in indices)
-
+from itertools import combinations
 
 class IsomorphicTestableGraph(Graph):
     """

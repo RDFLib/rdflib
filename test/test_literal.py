@@ -4,7 +4,6 @@ import rdflib # needed for eval(repr(...)) below
 from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind
 from rdflib.py3compat import format_doctest_out as uformat
 
-# these are actually meant for test_term.py, which is not yet merged into trunk
 
 class TestLiteral(unittest.TestCase):
     def setUp(self):
