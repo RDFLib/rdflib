@@ -20,7 +20,10 @@ import warnings
 
 import rdflib
 
-from rdflib.py3compat import configparser, quote, text_type
+from six.moves import configparser
+from six.moves.urllib.parse import quote
+from six import text_type
+
 from rdflib import RDF, RDFS
 from rdflib.namespace import split_uri
 
