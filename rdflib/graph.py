@@ -6,7 +6,7 @@ from rdflib.term import Literal  # required for doctests
 assert Literal # avoid warning
 from rdflib.namespace import Namespace  # required for doctests
 assert Namespace # avoid warning
-from .py3compat import format_doctest_out
+from rdflib.py3compat import format_doctest_out
 
 __doc__ = format_doctest_out("""\
 
@@ -266,9 +266,9 @@ import os
 import shutil
 import tempfile
 
-from .py3compat import BytesIO
-from .py3compat import b
-from .py3compat import urlparse
+from six import BytesIO
+from six import b
+from six.moves.urllib.parse import urlparse
 
 __all__ = [
     'Graph', 'ConjunctiveGraph', 'QuotedGraph', 'Seq',

@@ -3,7 +3,7 @@ import rdflib
 import re
 
 from nose import SkipTest
-from rdflib.py3compat import b
+from six import b
 
 TRIPLE = (rdflib.URIRef("http://example.com/s"),
           rdflib.RDFS.label,

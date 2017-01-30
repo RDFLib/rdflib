@@ -23,7 +23,7 @@ from rdflib	import Namespace
 from rdflib	import Graph
 from rdflib	import RDF  as ns_rdf
 
-from rdflib.py3compat import string_types
+from six import string_types
 
 from .host 	import HostLanguage, content_to_host_language, predefined_1_0_rel, require_embedded_rdf
 from .		import ns_xsd, ns_distill, ns_rdfa

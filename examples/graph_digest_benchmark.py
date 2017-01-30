@@ -10,7 +10,8 @@ from __future__ import print_function
 
 from rdflib import Namespace, Graph
 from rdflib.compare import to_isomorphic
-from rdflib.py3compat import urlopen, queue
+from six.moves.urllib.request import urlopen
+from six.moves import queue
 import sys, csv
 
 from io import StringIO
@@ -75,7 +76,7 @@ def files_benchmark(ontologies, output_file, threads):
                     print('ERROR', stats['id'], e)
                     stats['error'] = str(e)
                     finished_tasks.put(stats)
-        except Empty:
+        except queue.Empty:
             pass
     for i in range(int(threads)):
         print("Starting worker", i)

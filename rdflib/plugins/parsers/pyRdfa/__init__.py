@@ -166,7 +166,8 @@ __license__ = 'W3C® SOFTWARE NOTICE AND LICENSE, http://www.w3.org/Consortium/L
 
 import sys
 
-from rdflib.py3compat import StringIO, urlparse, string_types
+from six import StringIO, string_types
+from six.moves.urllib.parse import urlparse
 
 import os
 import xml.dom.minidom

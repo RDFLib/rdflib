@@ -4,7 +4,7 @@ from collections import namedtuple
 from nose.tools import nottest
 
 from rdflib import Graph, RDF, RDFS, Namespace
-from rdflib.py3compat import text_type
+from six import text_type
 
 MF = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#')
 QT = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/test-query#')

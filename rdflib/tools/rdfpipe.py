@@ -20,7 +20,7 @@ from rdflib.parser import Parser
 from rdflib.serializer import Serializer
 
 from rdflib.util import guess_format
-from rdflib.py3compat import PY3
+from six import PY3
 
 
 DEFAULT_INPUT_FORMAT = 'xml'

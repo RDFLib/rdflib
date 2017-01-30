@@ -4,7 +4,7 @@ from __future__ import division
 from __future__ import print_function
 
 from . import py3compat
-from .py3compat import text_type
+from six import text_type, PY3
 
 
 __doc__ = py3compat.format_doctest_out("""
@@ -357,7 +357,7 @@ class Resource(object):
     def __unicode__(self):
         return text_type(self._identifier)
 
-    if py3compat.PY3:
+    if PY3:
         __str__ = __unicode__
 
     def add(self, p, o):

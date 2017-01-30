@@ -16,15 +16,15 @@ from __future__ import print_function
 import os
 import sys
 
-from .py3compat import BytesIO
-from .py3compat import string_types
-from .py3compat import text_type
+from six import BytesIO
+from six import string_types
+from six import text_type
 
-from .py3compat import pathname2url
-from .py3compat import Request
-from .py3compat import url2pathname
-from .py3compat import urljoin
-from .py3compat import urlopen
+from six.moves.urllib.request import pathname2url
+from six.moves.urllib.request import Request
+from six.moves.urllib.request import url2pathname
+from six.moves.urllib.parse import urljoin
+from six.moves.urllib.request import urlopen
 
 from xml.sax import xmlreader
 

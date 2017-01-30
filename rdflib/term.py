@@ -56,16 +56,16 @@ from isodate import parse_time, parse_date, parse_datetime
 
 import rdflib
 from . import py3compat
-from .py3compat import PY2
-from .py3compat import PY3
-from .py3compat import b
-from .py3compat import integer_types
-from .py3compat import long_type
-from .py3compat import string_types
-from .py3compat import text_type
-from .py3compat import urldefrag
-from .py3compat import urljoin
-from .py3compat import urlparse
+from six import PY2
+from six import PY3
+from six import b
+from six import integer_types
+from rdflib.py3compat import long_type
+from six import string_types
+from six import text_type
+from six.moves.urllib.parse import urldefrag
+from six.moves.urllib.parse import urljoin
+from six.moves.urllib.parse import urlparse
 
 skolem_genid = "/.well-known/genid/"
 rdflib_skolem_genid = "/.well-known/genid/rdflib/"
@@ -91,7 +91,7 @@ def _is_valid_unicode(value):
     """
     if isinstance(value, bytes):
         coding_func, param = getattr(value, 'decode'), 'utf-8'
-    elif py3compat.PY3:
+    elif PY3:
         coding_func, param = str, value
     else:
         coding_func, param = unicode, value
@@ -432,7 +432,7 @@ class BNode(Identifier):
 
 
 class Literal(Identifier):
-    __doc__ = py3compat.format_doctest_out("""
+    __doc__ = rdflib.py3compat.format_doctest_out("""
     RDF Literal: http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
 
     The lexical value of the literal is the unicode object
@@ -519,7 +519,7 @@ class Literal(Identifier):
     """)
 
 
-    if not py3compat.PY3:
+    if not PY3:
         __slots__ = ("language", "datatype", "value", "_language",
                      "_datatype", "_value")
     else:
@@ -576,7 +576,7 @@ class Literal(Identifier):
             if datatype:
                 lang = None
 
-        if py3compat.PY3 and isinstance(lexical_or_value, bytes):
+        if PY3 and isinstance(lexical_or_value, bytes):
             lexical_or_value = lexical_or_value.decode('utf-8')
 
         try:
@@ -589,7 +589,7 @@ class Literal(Identifier):
         inst._value = value
         return inst
 
-    @py3compat.format_doctest_out
+    @rdflib.py3compat.format_doctest_out
     def normalize(self):
         """
         Returns a new literal with a normalised lexical representation
@@ -632,7 +632,7 @@ class Literal(Identifier):
         self._language = d["language"]
         self._datatype = d["datatype"]
 
-    @py3compat.format_doctest_out
+    @rdflib.py3compat.format_doctest_out
     def __add__(self, val):
         """
         >>> Literal(1) + 1
@@ -663,7 +663,7 @@ class Literal(Identifier):
     if PY2:
         __nonzero__ = __bool__
 
-    @py3compat.format_doctest_out
+    @rdflib.py3compat.format_doctest_out
     def __neg__(self):
         """
         >>> (- Literal(1))
@@ -686,7 +686,7 @@ class Literal(Identifier):
         else:
             raise TypeError("Not a number; %s" % repr(self))
 
-    @py3compat.format_doctest_out
+    @rdflib.py3compat.format_doctest_out
     def __pos__(self):
         """
         >>> (+ Literal(1))
@@ -707,7 +707,7 @@ class Literal(Identifier):
         else:
             raise TypeError("Not a number; %s" % repr(self))
 
-    @py3compat.format_doctest_out
+    @rdflib.py3compat.format_doctest_out
     def __abs__(self):
         """
         >>> abs(Literal(-1))
@@ -727,7 +727,7 @@ class Literal(Identifier):
         else:
             raise TypeError("Not a number; %s" % repr(self))
 
-    @py3compat.format_doctest_out
+    @rdflib.py3compat.format_doctest_out
     def __invert__(self):
         """
         >>> ~(Literal(-1))
@@ -933,7 +933,7 @@ class Literal(Identifier):
             res ^= hash(self.datatype)
         return res
 
-    @py3compat.format_doctest_out
+    @rdflib.py3compat.format_doctest_out
     def __eq__(self, other):
         """
         Literals are only equal to other literals.
@@ -1081,7 +1081,7 @@ class Literal(Identifier):
     def neq(self, other):
         return not self.eq(other)
 
-    @py3compat.format_doctest_out
+    @rdflib.py3compat.format_doctest_out
     def n3(self, namespace_manager = None):
         r'''
         Returns a representation in the N3 format.
@@ -1141,7 +1141,7 @@ class Literal(Identifier):
         else:
             return self._literal_n3()
 
-    @py3compat.format_doctest_out
+    @rdflib.py3compat.format_doctest_out
     def _literal_n3(self, use_plain=False, qname_callback=None):
         '''
         Using plain literal (shorthand) output::

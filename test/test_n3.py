@@ -1,7 +1,8 @@
 from rdflib.term import Literal, URIRef
 from rdflib.plugins.parsers.notation3 import BadSyntax
 
-from rdflib.py3compat import b, URLError
+from six import b
+from six.moves.urllib.error import URLError
 
 test_data = """
 #  Definitions of terms describing the n3 model

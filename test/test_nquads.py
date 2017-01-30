@@ -1,6 +1,6 @@
 import unittest
 from rdflib import ConjunctiveGraph, URIRef, Namespace
-from rdflib.py3compat import b
+from six import b
 
 TEST_BASE = 'test/nquads.rdflib'
 

@@ -46,14 +46,14 @@ from uuid import uuid4
 from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX, _unique_id
 from rdflib.graph import QuotedGraph, ConjunctiveGraph, Graph
 
-from ...py3compat import b
-from ...py3compat import binary_type
-from ...py3compat import format_doctest_out
-from ...py3compat import long_type
-from ...py3compat import string_types
-from ...py3compat import text_type
-from ...py3compat import unichr
-from ...py3compat import narrow_build
+from six import b
+from six import binary_type
+from rdflib.py3compat import format_doctest_out
+from rdflib.py3compat import long_type
+from six import string_types
+from six import text_type
+from six import unichr
+from rdflib.py3compat import narrow_build
 
 __all__ = ['BadSyntax', 'N3Parser', 'TurtleParser',
            "splitFragP", "join", "base",

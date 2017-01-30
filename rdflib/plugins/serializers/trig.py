@@ -7,7 +7,7 @@ from collections import defaultdict
 
 from rdflib.plugins.serializers.turtle import TurtleSerializer, _GEN_QNAME_FOR_DT, VERB
 from rdflib.term import BNode, Literal
-from rdflib.py3compat import b
+from six import b
 
 __all__ = ['TrigSerializer']
 

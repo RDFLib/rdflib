@@ -4,7 +4,7 @@ from __future__ import print_function
 
 from rdflib.term import BNode
 from rdflib.store import Store, NO_STORE, VALID_STORE
-from ..py3compat import iteritems
+from six import iteritems
 
 __all__ = ['Memory', 'IOMemory']
 

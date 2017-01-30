@@ -4,8 +4,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from ..py3compat import PY3
-from ..py3compat import format_doctest_out
+from six import PY3
+from rdflib.py3compat import format_doctest_out
 
 __doc__ = format_doctest_out("""
 RDFLib Python binding for OWL Abstract Syntax

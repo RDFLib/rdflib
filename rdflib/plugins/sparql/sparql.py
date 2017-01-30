@@ -5,7 +5,7 @@ import itertools
 import datetime
 from collections import Mapping, MutableMapping
 
-from rdflib.py3compat import text_type, iteritems
+from six import text_type, iteritems
 
 from rdflib.namespace import NamespaceManager
 from rdflib import Variable, BNode, Graph, ConjunctiveGraph, URIRef, Literal

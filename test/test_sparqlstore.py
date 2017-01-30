@@ -7,10 +7,10 @@ try:
 except ImportError:
     raise SkipTest("SPARQLWrapper not installed")
 
-if os.getenv("TRAVIS"): 
+if os.getenv("TRAVIS"):
     raise SkipTest("Doesn't work in travis")
 
-from rdflib.py3compat import urlopen
+from six.moves.urllib.request import urlopen
 try:
     assert len(urlopen("http://dbpedia.org/sparql").read()) > 0
 except:

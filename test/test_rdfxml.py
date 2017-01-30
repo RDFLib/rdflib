@@ -4,7 +4,8 @@ import unittest
 
 import os
 import os.path
-from rdflib.py3compat import url2pathname, urlopen
+
+from six.moves.urllib.request import url2pathname, urlopen
 
 from rdflib import RDF, RDFS, URIRef, BNode, Literal, Namespace, Graph
 from rdflib.exceptions import ParserError
@@ -237,19 +238,19 @@ if __name__ == "__main__":
     except getopt.GetoptError as msg:
         write(msg)
         # usage()
-        
+
     try:
         argv = sys.argv
         if len(argv)>1:
             _logger.setLevel(logging.INFO)
             _logger.addHandler(logging.StreamHandler())
 
-        for arg in argv[1:]:            
+        for arg in argv[1:]:
             verbose = 1
             case = URIRef(arg)
             write(u"Testing: %s" % case)
             if (case, RDF.type, TEST["PositiveParserTest"]) in manifest:
-                result = _testPositive(case, manifest)                
+                result = _testPositive(case, manifest)
                 write(u"Positive test %s" % ["PASSED", "FAILED"][result])
             elif (case, RDF.type, TEST["NegativeParserTest"]) in manifest:
                 result = _testNegative(case, manifest)

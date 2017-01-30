@@ -11,7 +11,7 @@ matching against the results from the store it's wrapping.
 from rdflib.store import Store
 from rdflib.graph import Graph
 
-from rdflib.py3compat import text_type
+from six import text_type
 
 import re
 

@@ -25,7 +25,8 @@ from rdflib.plugins.sparql.parserutils import CompValue, Expr
 from rdflib.plugins.sparql.datatypes import XSD_DTs, type_promotion
 from rdflib import URIRef, BNode, Variable, Literal, XSD, RDF
 from rdflib.term import Node
-from rdflib.py3compat import text_type, quote
+from six import text_type
+from six.moves.urllib.parse import quote
 
 from pyparsing import ParseResults
 

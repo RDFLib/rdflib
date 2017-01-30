@@ -2,7 +2,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from rdflib.py3compat import format_doctest_out
+from .py3compat import format_doctest_out
 
 __doc__ = format_doctest_out("""
 ===================
@@ -65,12 +65,12 @@ logger = logging.getLogger(__name__)
 
 import os
 
-from .py3compat import string_types
-from .py3compat import text_type
+from six import string_types
+from six import text_type
 
-from .py3compat import pathname2url
-from .py3compat import urldefrag
-from .py3compat import urljoin
+from six.moves.urllib.request import pathname2url
+from six.moves.urllib.parse import urldefrag
+from six.moves.urllib.parse import urljoin
 
 from rdflib.term import URIRef, Variable, _XSD_PFX, _is_valid_uri
 

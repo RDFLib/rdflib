@@ -8,7 +8,7 @@ from rdflib.term import Literal
 from rdflib.graph import Graph, ConjunctiveGraph
 from rdflib.exceptions import ParserError
 from rdflib.parser import Parser
-from rdflib.py3compat import text_type
+from six import text_type
 
 from xml.sax.saxutils import handler
 from xml.sax import make_parser

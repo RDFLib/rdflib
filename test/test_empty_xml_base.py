@@ -9,7 +9,7 @@ from rdflib.graph import ConjunctiveGraph
 from rdflib.term import URIRef
 from rdflib.namespace import Namespace
 from rdflib.namespace import RDF
-from rdflib.py3compat import StringIO
+from six import StringIO
 
 import unittest
 
@@ -60,4 +60,3 @@ class TestRelativeBase(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

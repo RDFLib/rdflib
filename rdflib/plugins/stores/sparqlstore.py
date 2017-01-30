@@ -32,7 +32,7 @@ from rdflib import Variable, Namespace, BNode, URIRef, Literal
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 from rdflib.term import Node
 
-from rdflib.py3compat import text_type, string_types
+from six import text_type, string_types
 
 class NSSPARQLWrapper(SPARQLWrapper):
     nsBindings = {}

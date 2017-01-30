@@ -4,7 +4,9 @@ import os
 import re
 from rdflib import Graph, Literal, URIRef
 from rdflib.plugins.parsers import ntriples
-from rdflib.py3compat import bytestype, text_type, b, urlopen
+from six import binary_type, text_type, b
+from six.moves.urllib.request import urlopen
+
 log = logging.getLogger(__name__)
 
 class NTTestCase(unittest.TestCase):
@@ -13,7 +15,7 @@ class NTTestCase(unittest.TestCase):
         g = Graph()
         g.add((URIRef("foo"), URIRef("foo"), Literal(u"R\u00E4ksm\u00F6rg\u00E5s")))
         s = g.serialize(format='nt')
-        self.assertEqual(type(s), bytestype)
+        self.assertEqual(type(s), binary_type)
         self.assertTrue(b(r"R\u00E4ksm\u00F6rg\u00E5s") in s)
 
     def testIssue146(self):

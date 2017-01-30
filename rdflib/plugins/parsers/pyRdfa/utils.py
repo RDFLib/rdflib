@@ -18,7 +18,11 @@ $Date: 2012/11/16 17:51:53 $
 """
 import sys, datetime
 
-from rdflib.py3compat import Request, urlopen, urljoin, HTTPError, quote, BaseHTTPRequestHandler, text_type
+from six.moves.urllib.request import Request, urlopen
+from six.moves.urllib.parse import urljoin, quote
+from six.moves.urllib.error import HTTPError
+from six.moves.BaseHTTPServer import BaseHTTPRequestHandler
+from six import text_type
 
 from .extras.httpheader import content_type, parse_http_datetime
 

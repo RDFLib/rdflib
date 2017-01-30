@@ -4,7 +4,7 @@ from rdflib.query import (
     Result, ResultException, ResultSerializer, ResultParser)
 from rdflib import Literal, URIRef, BNode, Variable
 
-from rdflib.py3compat import bytestype, text_type
+from six import binary_type, text_type
 
 
 """A Serializer for SPARQL results in JSON:
@@ -23,7 +23,7 @@ class JSONResultParser(ResultParser):
 
     def parse(self, source):
         inp = source.read()
-        if isinstance(inp, bytestype):
+        if isinstance(inp, binary_type):
             inp = inp.decode('utf-8')
         return JSONResult(json.loads(inp))
 

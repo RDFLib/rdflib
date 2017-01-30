@@ -6,7 +6,7 @@ These should be automatically registered with RDFLib
 
 """
 
-from rdflib.py3compat import string_types
+from six import string_types
 
 from rdflib.query import Processor, Result, UpdateProcessor
 

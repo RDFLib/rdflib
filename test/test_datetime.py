@@ -9,7 +9,7 @@ from isodate.isostrf import DATE_EXT_COMPLETE, TZ_EXT
 from rdflib.term import URIRef
 from rdflib.term import Literal
 from rdflib.namespace import XSD
-from rdflib.py3compat import text_type
+from six import text_type
 
 
 class TestRelativeBase(unittest.TestCase):

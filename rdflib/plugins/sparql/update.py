@@ -6,7 +6,7 @@ Code for carrying out Update Operations
 
 from rdflib import Graph, Variable
 
-from rdflib.py3compat import iteritems
+from six import iteritems
 
 from rdflib.plugins.sparql.sparql import QueryContext
 from rdflib.plugins.sparql.evalutils import _fillTemplate, _join

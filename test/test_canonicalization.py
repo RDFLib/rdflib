@@ -1,6 +1,6 @@
 from rdflib import Graph, RDF, BNode, URIRef
 from rdflib.compare import to_isomorphic, to_canonical_graph
-from rdflib.py3compat import text_type
+from six import text_type
 from io import StringIO
 
 def get_digest_value(rdf, mimetype):

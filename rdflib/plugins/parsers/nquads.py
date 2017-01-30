@@ -28,7 +28,7 @@ from __future__ import print_function
 
 from codecs import getreader
 
-from rdflib.py3compat import b
+from six import b
 
 from rdflib import ConjunctiveGraph
 

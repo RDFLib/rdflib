@@ -173,7 +173,7 @@ for s in plugin.plugins(pluginname, plugin.Store):
         continue
 
     if s.name == "SPARQLUpdateStore":
-        from rdflib.py3compat import urlopen
+        from six.moves.urllib.request import urlopen
         try:
             assert len(urlopen(HOST).read()) > 0
         except:

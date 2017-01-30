@@ -1,4 +1,5 @@
-from rdflib.py3compat import PY3, format_doctest_out
+from six import PY3
+from rdflib.py3compat import format_doctest_out
 
 __doc__ = format_doctest_out("""
 

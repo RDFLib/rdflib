@@ -2,7 +2,7 @@ import unittest
 
 import rdflib # needed for eval(repr(...)) below
 from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind
-from rdflib.py3compat import integer_types
+from six import integer_types
 from rdflib.py3compat import format_doctest_out as uformat
 
 

@@ -17,14 +17,14 @@ from rdflib.term import BNode as bNode
 from rdflib.term import Literal
 
 
-from ...py3compat import cast_bytes
-from ...py3compat import decodeUnicodeEscape
-from ...py3compat import ascii
+from rdflib.py3compat import cast_bytes
+from rdflib.py3compat import decodeUnicodeEscape
+from rdflib.py3compat import ascii
 
-from ...py3compat import BytesIO
-from ...py3compat import string_types
-from ...py3compat import text_type
-from ...py3compat import unichr
+from six import BytesIO
+from six import string_types
+from six import text_type
+from six import unichr
 
 __all__ = ['unquote', 'uriquote', 'Sink', 'NTriplesParser']
 

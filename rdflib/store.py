@@ -37,8 +37,8 @@ UNKNOWN = None
 
 from rdflib.events import Dispatcher, Event
 
-from .py3compat import cPickle
-from .py3compat import BytesIO
+from six.moves import cPickle
+from six import BytesIO
 Pickler = cPickle.Pickler
 Unpickler = cPickle.Unpickler
 UnpicklingError = cPickle.UnpicklingError

@@ -6,7 +6,8 @@ import unittest
 import re
 
 from rdflib import ConjunctiveGraph, URIRef, Literal
-from rdflib.py3compat import text_type, urlopen
+from six import text_type
+from six.moves.urllib.request import urlopen
 
 HOST = 'http://localhost:3031'
 DB = '/db/'

@@ -18,7 +18,7 @@ from operator import attrgetter
 import re
 import os
 
-from rdflib.py3compat import urlopen, url2pathname
+from six.moves.urllib.request import urlopen, url2pathname
 
 from rdflib.graph import Graph
 from rdflib.namespace import Namespace, RDF

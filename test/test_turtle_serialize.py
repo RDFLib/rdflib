@@ -1,7 +1,7 @@
 from rdflib import Graph, URIRef, BNode, RDF, Literal, Namespace
 from rdflib.collection import Collection
 from rdflib.plugins.serializers.turtle import TurtleSerializer
-from rdflib.py3compat import b
+from six import b
 
 
 def testTurtleFinalDot():

@@ -52,7 +52,8 @@ __contact__ = 'Ivan Herman, ivan@w3.org'
 
 import sys
 
-from rdflib.py3compat import StringIO, urlparse, string_types
+from six import StringIO, string_types
+from six.moves.urllib.parse import urlparse
 
 import datetime
 

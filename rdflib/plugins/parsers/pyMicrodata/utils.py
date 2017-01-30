@@ -14,7 +14,10 @@ $Date: 2014-12-17 08:52:43 $
 """
 import sys, socket
 
-from rdflib.py3compat import urlparse, build_opener, quote, urljoin, Request, HTTPError, BaseHTTPRequestHandler
+from six.moves.urllib.parse import urlparse, quote, urljoin
+from six.moves.urllib.request import build_opener, Request
+from six.moves.urllib.error import HTTPError
+from six.moves.BaseHTTPServer import BaseHTTPRequestHandler
 
 # The separate W3C branch is necessary for the local security setup at W3C. It is ugly to have this
 # in the code, but I was lazy to make it more generic...

@@ -4,7 +4,7 @@ from xml.dom import XML_NAMESPACE
 from xml.sax.xmlreader import AttributesNSImpl
 
 from rdflib.compat import etree
-from rdflib.py3compat import iteritems
+from six import iteritems
 
 from rdflib import Literal, URIRef, BNode, Graph, Variable
 from rdflib.query import (
@@ -14,7 +14,7 @@ from rdflib.query import (
     ResultException
 )
 
-from rdflib.py3compat import text_type
+from six import text_type
 
 SPARQL_XML_NAMESPACE = u'http://www.w3.org/2005/sparql-results#'
 RESULTS_NS_ET = '{%s}' % SPARQL_XML_NAMESPACE

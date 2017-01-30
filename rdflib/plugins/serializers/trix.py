@@ -6,7 +6,7 @@ from rdflib.namespace import Namespace
 
 from rdflib.graph import Graph, ConjunctiveGraph
 
-from rdflib.py3compat import b, text_type
+from six import text_type, b
 
 __all__ = ['TriXSerializer']
 

@@ -5,7 +5,7 @@ import unittest
 from rdflib.graph import ConjunctiveGraph
 from rdflib.term import URIRef, Literal
 from rdflib.graph import Graph
-from rdflib.py3compat import BytesIO
+from six import BytesIO
 
 
 class TestTrixSerialize(unittest.TestCase):

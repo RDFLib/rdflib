@@ -25,7 +25,7 @@ $Date: 2013-10-16 11:48:54 $
 
 import re
 
-from rdflib.py3compat import urlsplit
+from six.moves.urllib.parse import urlsplit
 
 from rdflib	import URIRef
 from rdflib	import BNode

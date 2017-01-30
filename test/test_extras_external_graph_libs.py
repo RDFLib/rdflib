@@ -1,6 +1,6 @@
 from nose import SkipTest
 from rdflib import Graph, URIRef, Literal
-from rdflib.py3compat import text_type
+from six import text_type
 
 def test_rdflib_to_networkx():
     try:

@@ -53,7 +53,7 @@ from rdflib.namespace import NamespaceManager
 from rdflib.term import BNode
 from rdflib.term import Literal
 from rdflib.term import URIRef
-from .py3compat import sign
+from rdflib.py3compat import sign
 
 __all__ = [
     'list2set', 'first', 'uniq', 'more_than', 'to_term', 'from_n3',

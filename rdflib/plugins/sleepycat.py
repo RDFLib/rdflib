@@ -1,6 +1,7 @@
 from rdflib.store import Store, VALID_STORE, NO_STORE
 from rdflib.term import URIRef
-from rdflib.py3compat import b, pathname2url
+from six import b
+from six.moves.urllib.request import pathname2url
 
 
 def bb(u):

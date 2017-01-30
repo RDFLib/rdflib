@@ -9,10 +9,10 @@ import warnings
 import types
 
 from . import py3compat
-from .py3compat import BytesIO
-from .py3compat import PY2
-from .py3compat import text_type
-from .py3compat import urlparse
+from six import BytesIO
+from six import PY2
+from six import text_type
+from six.moves.urllib.parse import urlparse
 
 __all__ = ['Processor', 'Result', 'ResultParser', 'ResultSerializer',
            'ResultException']

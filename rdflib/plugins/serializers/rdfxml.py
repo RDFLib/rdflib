@@ -11,7 +11,7 @@ from rdflib.serializer import Serializer
 
 # from rdflib.exceptions import Error
 
-from rdflib.py3compat import b
+from six import b
 
 from xml.sax.saxutils import quoteattr, escape
 import xml.dom.minidom

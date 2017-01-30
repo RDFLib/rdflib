@@ -29,7 +29,7 @@ from rdflib import Namespace
 from rdflib import RDF as ns_rdf
 from rdflib import XSD as ns_xsd
 
-from rdflib.py3compat import urlsplit, urlunsplit
+from six.moves.urllib.parse import urlsplit, urlunsplit
 
 ns_owl = Namespace("http://www.w3.org/2002/07/owl#")
 

@@ -4,7 +4,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from ..py3compat import format_doctest_out
+from rdflib.py3compat import format_doctest_out
 __doc__ = format_doctest_out("""
 A Describer is a stateful utility for creating RDF statements in a
 semi-declarative manner. It has methods for creating literal values, rel and

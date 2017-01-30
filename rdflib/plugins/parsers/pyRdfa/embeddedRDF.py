@@ -10,7 +10,7 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 @version: $Id: embeddedRDF.py,v 1.15 2012/11/16 17:51:53 ivan Exp $
 """
 
-from rdflib.py3compat import StringIO
+from six import StringIO
 
 from .host  import accept_embedded_rdf_xml, accept_embedded_turtle
 from .utils import return_XML
