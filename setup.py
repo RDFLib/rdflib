@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import re
 from setuptools import setup, find_packages
 
 kwargs = {}
@@ -9,8 +10,14 @@ kwargs['tests_require'] = ['html5lib', 'networkx', 'SPARQLWrapper']
 kwargs['test_suite'] = "nose.collector"
 kwargs['extras_require'] = {'sparql': ['SPARQLWrapper'], 'html': ['html5lib']}
 
+def find_version(filename):
+    _version_re = re.compile(r'__version__ = "(.*)"')
+    for line in open(filename):
+        version_match = _version_re.match(line)
+        if version_match:
+            return version_match.group(1)
 
-from rdflib import __version__ as version
+version = find_version('rdflib/__init__.py')
 
 packages = find_packages(exclude=('examples*', 'test*'))
 
