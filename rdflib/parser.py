@@ -31,6 +31,8 @@ __all__ = [
     'Parser', 'InputSource', 'StringInputSource',
     'URLInputSource', 'FileInputSource']
 
+class ParseError(Exception):
+    pass
 
 class Parser(object):
 

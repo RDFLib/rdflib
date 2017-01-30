@@ -93,8 +93,8 @@ class ElementHandler(object):
 
 class RDFXMLHandler(handler.ContentHandler):
 
-    def __init__(self, store):
-        self.store = store
+    def __init__(self, sink):
+        self.sink = sink
         self.preserve_bnode_ids = False
         self.reset()
 
@@ -119,7 +119,7 @@ class RDFXMLHandler(handler.ContentHandler):
     def startPrefixMapping(self, prefix, namespace):
         self._ns_contexts.append(self._current_context.copy())
         self._current_context[namespace] = prefix
-        self.store.bind(prefix, namespace or "", override=False)
+        self.sink.bind(prefix, namespace or "", override=False)
 
     def endPrefixMapping(self, prefix):
         self._current_context = self._ns_contexts[-1]
@@ -172,10 +172,10 @@ class RDFXMLHandler(handler.ContentHandler):
         pass
 
     def add_reified(self, sid, (s, p, o)):
-        self.store.add((sid, RDF.type, RDF.Statement))
-        self.store.add((sid, RDF.subject, s))
-        self.store.add((sid, RDF.predicate, p))
-        self.store.add((sid, RDF.object, o))
+        self.sink.triple((sid, RDF.type, RDF.Statement))
+        self.sink.triple((sid, RDF.subject, s))
+        self.sink.triple((sid, RDF.predicate, p))
+        self.sink.triple((sid, RDF.object, o))
 
     def error(self, message):
         locator = self.locator
@@ -294,7 +294,7 @@ class RDFXMLHandler(handler.ContentHandler):
             subject = BNode()
 
         if name != RDF.Description:  # S1
-            self.store.add((subject, RDF.type, absolutize(name)))
+            self.sink.triple((subject, RDF.type, absolutize(name)))
 
         language = current.language
         for att in atts:
@@ -318,7 +318,7 @@ class RDFXMLHandler(handler.ContentHandler):
                     object = Literal(atts[att], language)
                 except Error, e:
                     self.error(e.msg)
-            self.store.add((subject, predicate, object))
+            self.sink.triple((subject, predicate, object))
 
         current.subject = subject
 
@@ -445,7 +445,7 @@ class RDFXMLHandler(handler.ContentHandler):
 
                 if object is None:
                     object = BNode()
-                self.store.add((object, predicate, o))
+                self.sink.triple((object, predicate, o))
         if object is None:
             current.data = ""
             current.object = None
@@ -469,9 +469,9 @@ class RDFXMLHandler(handler.ContentHandler):
             current.data = None
         if self.next.end == self.list_node_element_end:
             if current.object != RDF.nil:
-                self.store.add((current.list, RDF.rest, RDF.nil))
+                self.sink.triple((current.list, RDF.rest, RDF.nil))
         if current.object is not None:
-            self.store.add(
+            self.sink.triple(
                 (self.parent.subject, current.predicate, current.object))
             if current.id is not None:
                 self.add_reified(current.id, (self.parent.subject,
@@ -483,17 +483,17 @@ class RDFXMLHandler(handler.ContentHandler):
         if self.parent.list == RDF.nil:
             list = BNode()
             # Removed between 20030123 and 20030905
-            # self.store.add((list, RDF.type, LIST))
+            # self.sink.triple((list, RDF.type, LIST))
             self.parent.list = list
-            self.store.add((self.parent.list, RDF.first, current.subject))
+            self.sink.triple((self.parent.list, RDF.first, current.subject))
             self.parent.object = list
             self.parent.char = None
         else:
             list = BNode()
             # Removed between 20030123 and 20030905
-            # self.store.add((list, RDF.type, LIST))
-            self.store.add((self.parent.list, RDF.rest, list))
-            self.store.add((list, RDF.first, current.subject))
+            # self.sink.triple((list, RDF.type, LIST))
+            self.sink.triple((self.parent.list, RDF.rest, list))
+            self.sink.triple((list, RDF.first, current.subject))
             self.parent.list = list
 
     def literal_element_start(self, name, qname, attrs):
@@ -542,7 +542,7 @@ class RDFXMLHandler(handler.ContentHandler):
         self.parent.object += self.current.object + end
 
 
-def create_parser(target, store):
+def create_parser(target, sink):
     parser = make_parser()
     try:
         # Workaround for bug in expatreader.py. Needed when
@@ -552,7 +552,7 @@ def create_parser(target, store):
     except AttributeError:
         pass  # Not present in Jython (at least)
     parser.setFeature(handler.feature_namespaces, 1)
-    rdfxml = RDFXMLHandler(store)
+    rdfxml = RDFXMLHandler(sink)
     rdfxml.setDocumentLocator(target)
     # rdfxml.setDocumentLocator(_Locator(self.url, self.parser))
     parser.setContentHandler(rdfxml)

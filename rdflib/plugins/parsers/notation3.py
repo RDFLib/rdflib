@@ -958,7 +958,7 @@ class SinkParser:
                     if j < 0:
                         self.BadSyntax(argstr, i,
                             "expected item in set or '$}'")
-                    List.append(self._store.intern(item[0]))
+                    List.append(item[0])
                 res.append(self._store.newSet(List, self._context))
                 return j
             else:
@@ -1025,7 +1025,7 @@ class SinkParser:
                 if j < 0:
                     self.BadSyntax(argstr, i,
                         "expected item in list or ')'")
-                List.append(self._store.intern(item[0]))
+                List.append(item[0])
             res.append(thing_type(List, self._context))
             return j
 
@@ -1695,18 +1695,15 @@ r_hibyte = re.compile(r'([\x80-\xff])')
 
 
 class RDFSink(object):
-    def __init__(self, graph):
+    def __init__(self, sink):
         self.rootFormula = None
         self.counter = 0
-        self.graph = graph
+        self.sink = sink
 
     def newFormula(self):
-        assert self.graph.store.formula_aware
-        f = Formula(self.graph)
+        assert self.sink.store.formula_aware
+        f = Formula(self.sink)
         return f
-
-    def newGraph(self, identifier):
-        return Graph(self.graph.store, identifier)
 
     def newSymbol(self, *args):
         return URIRef(args[0])
@@ -1761,7 +1758,7 @@ class RDFSink(object):
 
         if f == self.rootFormula:
              # print s, p, o, '.'
-            self.graph.add((s, p, o))
+            self.sink.triple((s, p, o))
         elif isinstance(f, Formula):
             f.quotedgraph.add((s, p, o))
         else:
@@ -1803,9 +1800,6 @@ class RDFSink(object):
          #    return f.universals[n]
 
         return n
-
-    def intern(self, something):
-        return something
 
     def bind(self, pfx, uri):
         pass  # print pfx, ':', uri
@@ -1854,23 +1848,21 @@ class TurtleParser(Parser):
     def __init__(self):
         pass
 
-    def parse(self, source, graph, encoding="utf-8", turtle=True):
+    def parse(self, source, sink, encoding="utf-8", turtle=True):
 
         if encoding not in [None, "utf-8"]:
             raise Exception(
                 ("N3/Turtle files are always utf-8 encoded, ",
                  "I was passed: %s") % encoding)
 
-        sink = RDFSink(graph)
-
-        baseURI = graph.absolutize(
+        baseURI = sink.namespace_manager.absolutize(
             source.getPublicId() or source.getSystemId() or "")
-        p = SinkParser(sink, baseURI=baseURI, turtle=turtle)
+        p = SinkParser(RDFSink(sink), baseURI=baseURI, turtle=turtle)
 
         p.loadStream(source.getByteStream())
 
         for prefix, namespace in p._bindings.items():
-            graph.bind(prefix, namespace)
+            sink.bind(prefix, namespace)
 
 
 class N3Parser(TurtleParser):
@@ -1885,18 +1877,12 @@ class N3Parser(TurtleParser):
     def __init__(self):
         pass
 
-    def parse(self, source, graph, encoding="utf-8"):
-         # we're currently being handed a Graph, not a ConjunctiveGraph
-        assert graph.store.context_aware  # is this implied by formula_aware
-        assert graph.store.formula_aware
+    def parse(self, source, sink, encoding="utf-8"):
 
-        conj_graph = ConjunctiveGraph(store=graph.store)
-        conj_graph.default_context = graph  # TODO: CG __init__ should have a
-                                            # default_context arg
-         # TODO: update N3Processor so that it can use conj_graph as the sink
-        conj_graph.namespace_manager = graph.namespace_manager
+        assert sink.context_aware  # is this implied by formula_aware
+        assert sink.formula_aware
 
-        TurtleParser.parse(self, source, conj_graph, encoding, turtle=False)
+        TurtleParser.parse(self, source, sink, encoding, turtle=False)
 
 
 def _test(): # pragma: no cover
