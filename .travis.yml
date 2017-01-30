@@ -16,6 +16,7 @@ python:
     - 3.6
 
 before_install:
+    - pip install -U setuptools pip  # seems travis comes with a too old setuptools for html5lib
     - bash .travis.fuseki_install_optional.sh
 
 install:
