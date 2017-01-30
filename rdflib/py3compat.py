@@ -102,7 +102,7 @@ else:
 r_unicodeEscape = re.compile(r'(\\u[0-9A-Fa-f]{4}|\\U[0-9A-Fa-f]{8})')
 
 def _unicodeExpand(s):
-    return r_unicodeEscape.sub(lambda m: unichr(int(m.group(0)[2:], 16)), s)
+    return r_unicodeEscape.sub(lambda m: six.unichr(int(m.group(0)[2:], 16)), s)
 
 narrow_build = False
 try:
