@@ -54,8 +54,10 @@ from six.moves.BaseHTTPServer import HTTPServer
 if PY3:
     import _thread as thread
     from html.entities import name2codepoint
+    import queue
 else:
     import thread
+    import Queue as queue
     from htmlentitydefs import name2codepoint
 
 
