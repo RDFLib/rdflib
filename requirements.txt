@@ -4,3 +4,4 @@ isodate
 pyparsing
 six
 SPARQLWrapper
+doctest-ignore-unicode

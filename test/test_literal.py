@@ -2,9 +2,12 @@ import unittest
 
 import rdflib # needed for eval(repr(...)) below
 from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind
-from six import integer_types
-from rdflib.py3compat import format_doctest_out as uformat
+from six import integer_types, PY3
 
+def uformat(s):
+    if PY3:
+        return s.replace("u'","'")
+    return s
 
 class TestLiteral(unittest.TestCase):
     def setUp(self):
@@ -72,22 +75,22 @@ class TestNew(unittest.TestCase):
 class TestRepr(unittest.TestCase):
     def testOmitsMissingDatatypeAndLang(self):
         self.assertEqual(repr(Literal("foo")),
-                         uformat("rdflib.term.Literal(%(u)s'foo')"))
+                         uformat("rdflib.term.Literal(u'foo')"))
 
     def testOmitsMissingDatatype(self):
         self.assertEqual(repr(Literal("foo", lang='en')),
-                         uformat("rdflib.term.Literal(%(u)s'foo', lang='en')"))
+                         uformat("rdflib.term.Literal(u'foo', lang='en')"))
 
     def testOmitsMissingLang(self):
         self.assertEqual(
             repr(Literal("foo", datatype=URIRef('http://example.com/'))),
-            uformat("rdflib.term.Literal(%(u)s'foo', datatype=rdflib.term.URIRef(%(u)s'http://example.com/'))"))
+            uformat("rdflib.term.Literal(u'foo', datatype=rdflib.term.URIRef(u'http://example.com/'))"))
 
     def testSubclassNameAppearsInRepr(self):
         class MyLiteral(Literal):
             pass
         x = MyLiteral(u"foo")
-        self.assertEqual(repr(x), uformat("MyLiteral(%(u)s'foo')"))
+        self.assertEqual(repr(x), uformat("MyLiteral(u'foo')"))
 
 class TestDoubleOutput(unittest.TestCase):
     def testNoDanglingPoint(self):

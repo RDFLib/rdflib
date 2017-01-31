@@ -6,9 +6,9 @@ from rdflib.term import Literal  # required for doctests
 assert Literal # avoid warning
 from rdflib.namespace import Namespace  # required for doctests
 assert Namespace # avoid warning
-from rdflib.py3compat import format_doctest_out
 
-__doc__ = format_doctest_out("""\
+
+__doc__ = """\
 
 RDFLib defines the following kinds of Graphs:
 
@@ -88,7 +88,7 @@ Instantiating Graphs with a IOMemory store and an identifier -
 
     >>> g = Graph('IOMemory', URIRef("http://rdflib.net"))
     >>> g.identifier
-    rdflib.term.URIRef(%(u)s'http://rdflib.net')
+    rdflib.term.URIRef(u'http://rdflib.net')
     >>> str(g) # doctest: +NORMALIZE_WHITESPACE
     "<http://rdflib.net> a rdfg:Graph;rdflib:storage
      [a rdflib:Store;rdfs:label 'IOMemory']."
@@ -109,7 +109,7 @@ via triple pattern:
     0
     >>> g.add((statementId, RDF.type, RDF.Statement))
     >>> g.add((statementId, RDF.subject,
-    ...     URIRef(%(u)s'http://rdflib.net/store/ConjunctiveGraph')))
+    ...     URIRef(u'http://rdflib.net/store/ConjunctiveGraph')))
     >>> g.add((statementId, RDF.predicate, RDFS.label))
     >>> g.add((statementId, RDF.object, Literal("Conjunctive Graph")))
     >>> print(len(g))
@@ -145,7 +145,7 @@ by RDFLib they are UUIDs and unique.
 
     >>> g1 = Graph()
     >>> g2 = Graph()
-    >>> u = URIRef(%(u)s'http://example.com/foo')
+    >>> u = URIRef(u'http://example.com/foo')
     >>> g1.add([u, RDFS.label, Literal('foo')])
     >>> g1.add([u, RDFS.label, Literal('bar')])
     >>> g2.add([u, RDFS.label, Literal('foo')])
@@ -171,17 +171,17 @@ the same store:
     >>> stmt3 = BNode()
     >>> g1.add((stmt1, RDF.type, RDF.Statement))
     >>> g1.add((stmt1, RDF.subject,
-    ...     URIRef(%(u)s'http://rdflib.net/store/ConjunctiveGraph')))
+    ...     URIRef(u'http://rdflib.net/store/ConjunctiveGraph')))
     >>> g1.add((stmt1, RDF.predicate, RDFS.label))
     >>> g1.add((stmt1, RDF.object, Literal("Conjunctive Graph")))
     >>> g2.add((stmt2, RDF.type, RDF.Statement))
     >>> g2.add((stmt2, RDF.subject,
-    ...     URIRef(%(u)s'http://rdflib.net/store/ConjunctiveGraph')))
+    ...     URIRef(u'http://rdflib.net/store/ConjunctiveGraph')))
     >>> g2.add((stmt2, RDF.predicate, RDF.type))
     >>> g2.add((stmt2, RDF.object, RDFS.Class))
     >>> g3.add((stmt3, RDF.type, RDF.Statement))
     >>> g3.add((stmt3, RDF.subject,
-    ...     URIRef(%(u)s'http://rdflib.net/store/ConjunctiveGraph')))
+    ...     URIRef(u'http://rdflib.net/store/ConjunctiveGraph')))
     >>> g3.add((stmt3, RDF.predicate, RDFS.comment))
     >>> g3.add((stmt3, RDF.object, Literal(
     ...     "The top-level aggregate graph - The sum " +
@@ -227,11 +227,11 @@ Using Namespace class:
 
     >>> RDFLib = Namespace('http://rdflib.net/')
     >>> RDFLib.ConjunctiveGraph
-    rdflib.term.URIRef(%(u)s'http://rdflib.net/ConjunctiveGraph')
+    rdflib.term.URIRef(u'http://rdflib.net/ConjunctiveGraph')
     >>> RDFLib['Graph']
-    rdflib.term.URIRef(%(u)s'http://rdflib.net/Graph')
+    rdflib.term.URIRef(u'http://rdflib.net/Graph')
 
-""")
+"""
 
 import logging
 logger = logging.getLogger(__name__)
@@ -422,7 +422,7 @@ class Graph(Node):
             for (s, p, o), cg in self.__store.triples((s, p, o), context=self):
                 yield (s, p, o)
 
-    @format_doctest_out
+
     def __getitem__(self, item):
         """
         A graph can be "sliced" as a shortcut for the triples method
@@ -435,13 +435,13 @@ class Graph(Node):
         >>> g.add((rdflib.URIRef('urn:bob'), rdflib.RDFS.label, rdflib.Literal('Bob')))
 
         >>> list(g[rdflib.URIRef('urn:bob')]) # all triples about bob
-        [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2000/01/rdf-schema#label'), rdflib.term.Literal(%(u)s'Bob'))]
+        [(rdflib.term.URIRef(u'http://www.w3.org/2000/01/rdf-schema#label'), rdflib.term.Literal(u'Bob'))]
 
         >>> list(g[:rdflib.RDFS.label]) # all label triples
-        [(rdflib.term.URIRef(%(u)s'urn:bob'), rdflib.term.Literal(%(u)s'Bob'))]
+        [(rdflib.term.URIRef(u'urn:bob'), rdflib.term.Literal(u'Bob'))]
 
         >>> list(g[::rdflib.Literal('Bob')]) # all triples with bob as object
-        [(rdflib.term.URIRef(%(u)s'urn:bob'), rdflib.term.URIRef(%(u)s'http://www.w3.org/2000/01/rdf-schema#label'))]
+        [(rdflib.term.URIRef(u'urn:bob'), rdflib.term.URIRef(u'http://www.w3.org/2000/01/rdf-schema#label'))]
 
         Combined with SPARQL paths, more complex queries can be
         written concisely:
@@ -708,7 +708,7 @@ class Graph(Node):
             return default
         return self.value(subject, RDFS.label, default=default, any=True)
 
-    @format_doctest_out
+
     def preferredLabel(self, subject, lang=None, default=None,
                        labelProperties=(SKOS.prefLabel, RDFS.label)):
         """
@@ -726,30 +726,30 @@ class Graph(Node):
         >>> from rdflib.namespace import SKOS
         >>> from pprint import pprint
         >>> g = ConjunctiveGraph()
-        >>> u = URIRef(%(u)s'http://example.com/foo')
+        >>> u = URIRef(u'http://example.com/foo')
         >>> g.add([u, RDFS.label, Literal('foo')])
         >>> g.add([u, RDFS.label, Literal('bar')])
         >>> pprint(sorted(g.preferredLabel(u)))
-        [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2000/01/rdf-schema#label'),
-          rdflib.term.Literal(%(u)s'bar')),
-         (rdflib.term.URIRef(%(u)s'http://www.w3.org/2000/01/rdf-schema#label'),
-          rdflib.term.Literal(%(u)s'foo'))]
+        [(rdflib.term.URIRef(u'http://www.w3.org/2000/01/rdf-schema#label'),
+          rdflib.term.Literal(u'bar')),
+         (rdflib.term.URIRef(u'http://www.w3.org/2000/01/rdf-schema#label'),
+          rdflib.term.Literal(u'foo'))]
         >>> g.add([u, SKOS.prefLabel, Literal('bla')])
         >>> pprint(g.preferredLabel(u))
-        [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(%(u)s'bla'))]
+        [(rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'bla'))]
         >>> g.add([u, SKOS.prefLabel, Literal('blubb', lang='en')])
         >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
-        [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(%(u)s'bla')),
-          (rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(%(u)s'blubb', lang='en'))]
+        [(rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'bla')),
+          (rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'blubb', lang='en'))]
         >>> g.preferredLabel(u, lang='') #doctest: +NORMALIZE_WHITESPACE
-        [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(%(u)s'bla'))]
+        [(rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'bla'))]
         >>> pprint(g.preferredLabel(u, lang='en'))
-        [(rdflib.term.URIRef(%(u)s'http://www.w3.org/2004/02/skos/core#prefLabel'),
-          rdflib.term.Literal(%(u)s'blubb', lang='en'))]
+        [(rdflib.term.URIRef(u'http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal(u'blubb', lang='en'))]
         """
 
         if default is None:
@@ -1493,7 +1493,7 @@ class ConjunctiveGraph(Graph):
 DATASET_DEFAULT_GRAPH_ID = URIRef('urn:x-rdflib:default')
 
 class Dataset(ConjunctiveGraph):
-    __doc__ = format_doctest_out("""
+    __doc__ = """
     RDF 1.1 Dataset. Small extension to the Conjunctive Graph:
     - the primary term is graphs in the datasets and not contexts with quads,
     so there is a separate method to set/retrieve a graph in a dataset and
@@ -1529,43 +1529,43 @@ class Dataset(ConjunctiveGraph):
     >>> # querying triples return them all regardless of the graph
     >>> for t in ds.triples((None,None,None)):  # doctest: +SKIP
     ...     print(t)  # doctest: +NORMALIZE_WHITESPACE
-    (rdflib.term.URIRef(%(u)s'http://example.org/a'),
-     rdflib.term.URIRef(%(u)s'http://www.example.org/b'),
-     rdflib.term.Literal(%(u)s'foo'))
-    (rdflib.term.URIRef(%(u)s'http://example.org/x'),
-     rdflib.term.URIRef(%(u)s'http://example.org/z'),
-     rdflib.term.Literal(%(u)s'foo-bar'))
-    (rdflib.term.URIRef(%(u)s'http://example.org/x'),
-     rdflib.term.URIRef(%(u)s'http://example.org/y'),
-     rdflib.term.Literal(%(u)s'bar'))
+    (rdflib.term.URIRef(u'http://example.org/a'),
+     rdflib.term.URIRef(u'http://www.example.org/b'),
+     rdflib.term.Literal(u'foo'))
+    (rdflib.term.URIRef(u'http://example.org/x'),
+     rdflib.term.URIRef(u'http://example.org/z'),
+     rdflib.term.Literal(u'foo-bar'))
+    (rdflib.term.URIRef(u'http://example.org/x'),
+     rdflib.term.URIRef(u'http://example.org/y'),
+     rdflib.term.Literal(u'bar'))
     >>>
     >>> # querying quads return quads; the fourth argument can be unrestricted
     >>> # or restricted to a graph
     >>> for q in ds.quads((None, None, None, None)):  # doctest: +SKIP
     ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
-    (rdflib.term.URIRef(%(u)s'http://example.org/a'),
-     rdflib.term.URIRef(%(u)s'http://www.example.org/b'),
-     rdflib.term.Literal(%(u)s'foo'),
+    (rdflib.term.URIRef(u'http://example.org/a'),
+     rdflib.term.URIRef(u'http://www.example.org/b'),
+     rdflib.term.Literal(u'foo'),
      None)
-    (rdflib.term.URIRef(%(u)s'http://example.org/x'),
-     rdflib.term.URIRef(%(u)s'http://example.org/y'),
-     rdflib.term.Literal(%(u)s'bar'),
-     rdflib.term.URIRef(%(u)s'http://www.example.com/gr'))
-    (rdflib.term.URIRef(%(u)s'http://example.org/x'),
-     rdflib.term.URIRef(%(u)s'http://example.org/z'),
-     rdflib.term.Literal(%(u)s'foo-bar'),
-     rdflib.term.URIRef(%(u)s'http://www.example.com/gr'))
+    (rdflib.term.URIRef(u'http://example.org/x'),
+     rdflib.term.URIRef(u'http://example.org/y'),
+     rdflib.term.Literal(u'bar'),
+     rdflib.term.URIRef(u'http://www.example.com/gr'))
+    (rdflib.term.URIRef(u'http://example.org/x'),
+     rdflib.term.URIRef(u'http://example.org/z'),
+     rdflib.term.Literal(u'foo-bar'),
+     rdflib.term.URIRef(u'http://www.example.com/gr'))
     >>>
     >>> for q in ds.quads((None,None,None,g)):  # doctest: +SKIP
     ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
-    (rdflib.term.URIRef(%(u)s'http://example.org/x'),
-     rdflib.term.URIRef(%(u)s'http://example.org/y'),
-     rdflib.term.Literal(%(u)s'bar'),
-     rdflib.term.URIRef(%(u)s'http://www.example.com/gr'))
-    (rdflib.term.URIRef(%(u)s'http://example.org/x'),
-     rdflib.term.URIRef(%(u)s'http://example.org/z'),
-     rdflib.term.Literal(%(u)s'foo-bar'),
-     rdflib.term.URIRef(%(u)s'http://www.example.com/gr'))
+    (rdflib.term.URIRef(u'http://example.org/x'),
+     rdflib.term.URIRef(u'http://example.org/y'),
+     rdflib.term.Literal(u'bar'),
+     rdflib.term.URIRef(u'http://www.example.com/gr'))
+    (rdflib.term.URIRef(u'http://example.org/x'),
+     rdflib.term.URIRef(u'http://example.org/z'),
+     rdflib.term.Literal(u'foo-bar'),
+     rdflib.term.URIRef(u'http://www.example.com/gr'))
     >>> # Note that in the call above -
     >>> # ds.quads((None,None,None,'http://www.example.com/gr'))
     >>> # would have been accepted, too
@@ -1593,7 +1593,7 @@ class Dataset(ConjunctiveGraph):
     >>> # a graph can also be removed from a dataset via ds.remove_graph(g)
 
     .. versionadded:: 4.0
-    """)
+    """
 
     def __init__(self, store='default', default_union=False):
         super(Dataset, self).__init__(store=store, identifier=None)

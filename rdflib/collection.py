@@ -5,13 +5,13 @@ from __future__ import print_function
 from rdflib.namespace import RDF
 from rdflib.term import BNode
 from rdflib.term import Literal
-from rdflib.py3compat import format_doctest_out
+
 
 __all__ = ['Collection']
 
 
 class Collection(object):
-    __doc__ = format_doctest_out("""
+    __doc__ = """
     See "Emulating container types":
     https://docs.python.org/reference/datamodel.html#emulating-container-types
 
@@ -29,9 +29,9 @@ class Collection(object):
     >>> g.add((listItem2, RDF.first, Literal(3)))
     >>> c = Collection(g,listName)
     >>> pprint([term.n3() for term in c])
-    [%(u)s'"1"^^<http://www.w3.org/2001/XMLSchema#integer>',
-     %(u)s'"2"^^<http://www.w3.org/2001/XMLSchema#integer>',
-     %(u)s'"3"^^<http://www.w3.org/2001/XMLSchema#integer>']
+    [u'"1"^^<http://www.w3.org/2001/XMLSchema#integer>',
+     u'"2"^^<http://www.w3.org/2001/XMLSchema#integer>',
+     u'"3"^^<http://www.w3.org/2001/XMLSchema#integer>']
 
     >>> Literal(1) in c
     True
@@ -41,7 +41,7 @@ class Collection(object):
     True
     >>> c.index(Literal(2)) == 1
     True
-    """)
+    """
 
     def __init__(self, graph, uri, seq=[]):
         self.graph = graph

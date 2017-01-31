@@ -8,7 +8,6 @@ import tempfile
 import warnings
 import types
 
-from . import py3compat
 from six import BytesIO
 from six import PY2
 from six import text_type
@@ -88,33 +87,32 @@ class ResultRow(tuple):
     >>> rr=ResultRow({ Variable('a'): URIRef('urn:cake') }, [Variable('a')])
 
     >>> rr[0]
-    rdflib.term.URIRef(%(u)s'urn:cake')
+    rdflib.term.URIRef(u'urn:cake')
     >>> rr[1]
     Traceback (most recent call last):
         ...
     IndexError: tuple index out of range
 
     >>> rr.a
-    rdflib.term.URIRef(%(u)s'urn:cake')
+    rdflib.term.URIRef(u'urn:cake')
     >>> rr.b
     Traceback (most recent call last):
         ...
     AttributeError: b
 
     >>> rr['a']
-    rdflib.term.URIRef(%(u)s'urn:cake')
+    rdflib.term.URIRef(u'urn:cake')
     >>> rr['b']
     Traceback (most recent call last):
         ...
     KeyError: 'b'
 
     >>> rr[Variable('a')]
-    rdflib.term.URIRef(%(u)s'urn:cake')
+    rdflib.term.URIRef(u'urn:cake')
 
     .. versionadded:: 4.0
 
     """
-    __doc__ = py3compat.format_doctest_out(__doc__)
 
     def __new__(cls, values, labels):
 

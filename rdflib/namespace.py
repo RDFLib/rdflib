@@ -2,9 +2,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from .py3compat import format_doctest_out
-
-__doc__ = format_doctest_out("""
+__doc__ = """
 ===================
 Namespace Utilities
 ===================
@@ -25,9 +23,9 @@ or by dictionary access on Namespace instances:
 .. code-block:: pycon
 
     >>> owl.seeAlso
-    rdflib.term.URIRef(%(u)s'http://www.w3.org/2002/07/owl#seeAlso')
+    rdflib.term.URIRef(u'http://www.w3.org/2002/07/owl#seeAlso')
     >>> owl['seeAlso']
-    rdflib.term.URIRef(%(u)s'http://www.w3.org/2002/07/owl#seeAlso')
+    rdflib.term.URIRef(u'http://www.w3.org/2002/07/owl#seeAlso')
 
 
 Automatic handling of unknown predicates
@@ -56,9 +54,9 @@ The following namespaces are available by directly importing from rdflib:
 
     >>> from rdflib import OWL
     >>> OWL.seeAlso
-    rdflib.term.URIRef(%(u)s'http://www.w3.org/2002/07/owl#seeAlso')
+    rdflib.term.URIRef(u'http://www.w3.org/2002/07/owl#seeAlso')
 
-""")
+"""
 
 import logging
 logger = logging.getLogger(__name__)
@@ -83,17 +81,17 @@ __all__ = [
 
 class Namespace(text_type):
 
-    __doc__ = format_doctest_out("""
+    __doc__ = """
     Utility class for quickly generating URIRefs with a common prefix
 
     >>> from rdflib import Namespace
     >>> n = Namespace("http://example.org/")
     >>> n.Person # as attribute
-    rdflib.term.URIRef(%(u)s'http://example.org/Person')
+    rdflib.term.URIRef(u'http://example.org/Person')
     >>> n['first-name'] # as item - for things that are not valid python identifiers
-    rdflib.term.URIRef(%(u)s'http://example.org/first-name')
+    rdflib.term.URIRef(u'http://example.org/first-name')
 
-    """)
+    """
 
 
     def __new__(cls, value):
@@ -127,16 +125,16 @@ class Namespace(text_type):
 
 class URIPattern(text_type):
 
-    __doc__ = format_doctest_out("""
+    __doc__ = """
     Utility class for creating URIs according to some pattern
     This supports either new style formatting with .format
-    or old-style with %% operator
+    or old-style with % operator
 
-    >>> u=URIPattern("http://example.org/%%s/%%d/resource")
-    >>> u%%('books', 12345)
-    rdflib.term.URIRef(%(u)s'http://example.org/books/12345/resource')
+    >>> u=URIPattern("http://example.org/%s/%d/resource")
+    >>> u%('books', 12345)
+    rdflib.term.URIRef(u'http://example.org/books/12345/resource')
 
-    """)
+    """
 
     def __new__(cls, value):
         try:

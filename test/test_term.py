@@ -5,21 +5,28 @@ some more specific Literal tests are in test_literal.py
 import unittest
 import base64
 
-from rdflib.py3compat import format_doctest_out as uformat
 from rdflib.term import URIRef, BNode, Literal, _is_valid_unicode
 from rdflib.graph import QuotedGraph, Graph
 from rdflib.namespace import XSD
+
+from six import PY3
+
+def uformat(s):
+    if PY3:
+        return s.replace("u'","'")
+    return s
+
 
 class TestURIRefRepr(unittest.TestCase):
     """
     see also test_literal.TestRepr
     """
-    
+
     def testSubclassNameAppearsInRepr(self):
         class MyURIRef(URIRef):
             pass
         x = MyURIRef('http://example.com/')
-        self.assertEqual(repr(x), uformat("MyURIRef(%(u)s'http://example.com/')"))
+        self.assertEqual(repr(x), uformat("MyURIRef(u'http://example.com/')"))
 
     def testGracefulOrdering(self):
         u = URIRef('cake')

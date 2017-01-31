@@ -11,31 +11,10 @@ import warnings
 
 import six
 
-from functools import wraps
-
 def cast_bytes(s, enc='utf-8'):
     if isinstance(s, six.text_type):
         return s.encode(enc)
     return s
-
-def _modify_str_or_docstring(str_change_func):
-    @wraps(str_change_func)
-    def wrapper(func_or_str):
-        if isinstance(func_or_str, str):
-            func = None
-            doc = func_or_str
-        else:
-            func = func_or_str
-            doc = func.__doc__
-
-        doc = str_change_func(doc)
-
-        if func:
-            func.__doc__ = doc
-            return func
-        return doc
-    return wrapper
-
 
 if six.PY3:
     # Python 3:
@@ -48,21 +27,6 @@ if six.PY3:
         return open(*args, mode = 'rb', **kwargs)
 
     long_type = int
-
-    # Abstract u'abc' syntax:
-    @_modify_str_or_docstring
-    def format_doctest_out(s):
-        """Python 2 version
-        "%(u)s'abc'" --> "'abc'"
-        "%(b)s'abc'" --> "b'abc'"
-        "55%(L)s"    --> "55"
-        "unicode(x)" --> "str(x)"
-
-        Accepts a string or a function, so it can be used as a decorator."""
-        # s may be None if processed by Py2exe
-        if s is None:
-            return ''
-        return s % {'u': '', 'b': 'b', 'L': '', 'unicode': 'str'}
 
     def sign(n):
         if n < 0:
@@ -81,20 +45,6 @@ else:
     bopen = open
 
     long_type = long
-
-    # Abstract u'abc' syntax:
-    @_modify_str_or_docstring
-    def format_doctest_out(s):
-        """Python 2 version
-        "%(u)s'abc'" --> "u'abc'"
-        "%(b)s'abc'" --> "'abc'"
-        "55%(L)s"    --> "55L"
-
-        Accepts a string or a function, so it can be used as a decorator."""
-        # s may be None if processed by Py2exe
-        if s is None:
-            return ''
-        return s % {'u': 'u', 'b': '', 'L': 'L', 'unicode': 'unicode'}
 
     def sign(n):
         return cmp(n, 0)
