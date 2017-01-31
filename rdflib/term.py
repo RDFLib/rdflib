@@ -58,7 +58,7 @@ import rdflib
 from six import PY2
 from six import PY3
 from six import b
-from rdflib.py3compat import long_type
+from rdflib.compat import long_type
 from six import string_types
 from six import text_type
 from six.moves.urllib.parse import urldefrag

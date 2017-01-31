@@ -19,7 +19,7 @@ from pyparsing import CaselessKeyword as Keyword  # watch out :)
 from .parserutils import Comp, Param, ParamList
 
 from . import operators as op
-from rdflib.py3compat import decodeUnicodeEscape
+from rdflib.compat import decodeUnicodeEscape
 from six import binary_type, unichr
 
 import rdflib

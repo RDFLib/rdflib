@@ -17,9 +17,9 @@ from rdflib.term import BNode as bNode
 from rdflib.term import Literal
 
 
-from rdflib.py3compat import cast_bytes
-from rdflib.py3compat import decodeUnicodeEscape
-from rdflib.py3compat import ascii
+from rdflib.compat import cast_bytes
+from rdflib.compat import decodeUnicodeEscape
+from rdflib.compat import ascii
 
 from six import BytesIO
 from six import string_types

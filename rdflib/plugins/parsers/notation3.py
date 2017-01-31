@@ -49,11 +49,11 @@ from rdflib.graph import QuotedGraph, ConjunctiveGraph, Graph
 from six import b
 from six import binary_type
 
-from rdflib.py3compat import long_type
+from rdflib.compat import long_type
 from six import string_types
 from six import text_type
 from six import unichr
-from rdflib.py3compat import narrow_build
+from rdflib.compat import narrow_build
 
 __all__ = ['BadSyntax', 'N3Parser', 'TurtleParser',
            "splitFragP", "join", "base",
