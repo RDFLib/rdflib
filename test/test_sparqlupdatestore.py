@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import unicode_literals
+
 import unittest
 import re
 
 from rdflib import ConjunctiveGraph, URIRef, Literal
-from rdflib.util import from_n3
+from six import text_type
+from six.moves.urllib.request import urlopen
 
 HOST = 'http://localhost:3031'
 DB = '/db/'
@@ -214,19 +218,19 @@ class TestSparql11(unittest.TestCase):
 
         # Complicated Strings
         r4strings = []
-        r4strings.append(ur'''"1: adfk { ' \\\" \" { "''')
-        r4strings.append(ur'''"2: adfk } <foo> #éï \\"''')
+        r4strings.append(r'''"1: adfk { ' \\\" \" { "''')
+        r4strings.append(r'''"2: adfk } <foo> #éï \\"''')
 
-        r4strings.append(ur"""'3: adfk { " \\\' \' { '""")
-        r4strings.append(ur"""'4: adfk } <foo> #éï \\'""")
+        r4strings.append(r"""'3: adfk { " \\\' \' { '""")
+        r4strings.append(r"""'4: adfk } <foo> #éï \\'""")
 
-        r4strings.append(ur'''"""5: adfk { ' \\\" \" { """''')
-        r4strings.append(ur'''"""6: adfk } <foo> #éï \\"""''')
-        r4strings.append(u'"""7: ad adsfj \n { \n sadfj"""')
+        r4strings.append(r'''"""5: adfk { ' \\\" \" { """''')
+        r4strings.append(r'''"""6: adfk } <foo> #éï \\"""''')
+        r4strings.append('"""7: ad adsfj \n { \n sadfj"""')
 
-        r4strings.append(ur"""'''8: adfk { " \\\' \' { '''""")
-        r4strings.append(ur"""'''9: adfk } <foo> #éï \\'''""")
-        r4strings.append(u"'''10: ad adsfj \n { \n sadfj'''")
+        r4strings.append(r"""'''8: adfk { " \\\' \' { '''""")
+        r4strings.append(r"""'''9: adfk } <foo> #éï \\'''""")
+        r4strings.append("'''10: ad adsfj \n { \n sadfj'''")
 
         r4 = "\n".join([
             u'INSERT DATA { <urn:michel> <urn:says> %s } ;' % s
@@ -235,20 +239,20 @@ class TestSparql11(unittest.TestCase):
         g.update(r4)
         values = set()
         for v in g.objects(michel, says):
-            values.add(unicode(v))
-        self.assertEqual(values, set([re.sub(ur"\\(.)", ur"\1", re.sub(ur"^'''|'''$|^'|'$|" + ur'^"""|"""$|^"|"$', ur"", s)) for s in r4strings]))
+            values.add(text_type(v))
+        self.assertEqual(values, set([re.sub(r"\\(.)", r"\1", re.sub(r"^'''|'''$|^'|'$|" + r'^"""|"""$|^"|"$', r"", s)) for s in r4strings]))
 
         # IRI Containing ' or #
         # The fragment identifier must not be misinterpreted as a comment
         # (commenting out the end of the block).
         # The ' must not be interpreted as the start of a string, causing the }
         # in the literal to be identified as the end of the block.
-        r5 = u"""INSERT DATA { <urn:michel> <urn:hates> <urn:foo'bar?baz;a=1&b=2#fragment>, "'}" }"""
+        r5 = """INSERT DATA { <urn:michel> <urn:hates> <urn:foo'bar?baz;a=1&b=2#fragment>, "'}" }"""
 
         g.update(r5)
         values = set()
         for v in g.objects(michel, hates):
-            values.add(unicode(v))
+            values.add(text_type(v))
         self.assertEqual(values, set([u"urn:foo'bar?baz;a=1&b=2#fragment", u"'}"]))
 
         # Comments
@@ -280,14 +284,14 @@ class TestSparql11(unittest.TestCase):
         )
 
     def testEmptyNamedGraph(self):
-        empty_graph_iri = u"urn:empty-graph-1"
-        self.graph.update(u"CREATE GRAPH <%s>" % empty_graph_iri)
-        named_graphs = [unicode(r[0]) for r in self.graph.query(
+        empty_graph_iri = "urn:empty-graph-1"
+        self.graph.update("CREATE GRAPH <%s>" % empty_graph_iri)
+        named_graphs = [text_type(r[0]) for r in self.graph.query(
             "SELECT ?name WHERE { GRAPH ?name {} }")]
         # Some SPARQL endpoint backends (like TDB) are not able to find empty named graphs
         # (at least with this query)
         if empty_graph_iri in named_graphs:
-            self.assertTrue(empty_graph_iri in [unicode(g.identifier)
+            self.assertTrue(empty_graph_iri in [text_type(g.identifier)
                                                 for g in self.graph.contexts()])
 
     def testEmptyLiteral(self):
@@ -303,9 +307,9 @@ class TestSparql11(unittest.TestCase):
         self.assertEqual(o, Literal(''), repr(o))
 
 from nose import SkipTest
-import urllib2
+
 try:
-    assert len(urllib2.urlopen(HOST).read()) > 0
+    assert len(urlopen(HOST).read()) > 0
 except:
     raise SkipTest(HOST + " is unavailable.")
 

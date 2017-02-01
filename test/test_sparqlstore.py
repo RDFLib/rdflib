@@ -7,12 +7,12 @@ try:
 except ImportError:
     raise SkipTest("SPARQLWrapper not installed")
 
-if os.getenv("TRAVIS"): 
+if os.getenv("TRAVIS"):
     raise SkipTest("Doesn't work in travis")
 
-import urllib2
+from six.moves.urllib.request import urlopen
 try:
-    assert len(urllib2.urlopen("http://dbpedia.org/sparql").read()) > 0
+    assert len(urlopen("http://dbpedia.org/sparql").read()) > 0
 except:
     raise SkipTest("No HTTP connection.")
 

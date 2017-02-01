@@ -125,8 +125,8 @@ class DatasetTestCase(unittest.TestCase):
     def testDefaultGraph(self):
         # Something the default graph is read-only (e.g. TDB in union mode)
         if self.store == "SPARQLUpdateStore":
-            print "Please make sure updating the default graph " \
-                  "is supported by your SPARQL endpoint"
+            print("Please make sure updating the default graph " \
+                  "is supported by your SPARQL endpoint")
 
         self.graph.add(( self.tarek, self.likes, self.pizza))
         self.assertEqual(len(self.graph), 1)
@@ -145,8 +145,8 @@ class DatasetTestCase(unittest.TestCase):
     def testNotUnion(self):
         # Union depends on the SPARQL endpoint configuration
         if self.store == "SPARQLUpdateStore":
-            print "Please make sure your SPARQL endpoint has not configured " \
-                  "its default graph as the union of the named graphs"
+            print("Please make sure your SPARQL endpoint has not configured " \
+                  "its default graph as the union of the named graphs")
         g1 = self.graph.graph(self.c1)
         g1.add((self.tarek, self.likes, self.pizza))
 
@@ -173,9 +173,9 @@ for s in plugin.plugins(pluginname, plugin.Store):
         continue
 
     if s.name == "SPARQLUpdateStore":
-        import urllib2
+        from six.moves.urllib.request import urlopen
         try:
-            assert len(urllib2.urlopen(HOST).read()) > 0
+            assert len(urlopen(HOST).read()) > 0
         except:
             sys.stderr.write("No SPARQL endpoint for %s (tests skipped)\n" % s.name)
             continue

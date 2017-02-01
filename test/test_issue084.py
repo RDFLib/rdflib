@@ -1,9 +1,5 @@
 from codecs import getreader
-try:
-    from io import BytesIO, StringIO
-except ImportError:
-    from StringIO import StringIO
-    BytesIO = StringIO
+from six import BytesIO, StringIO
 
 from rdflib import URIRef, Literal
 from rdflib.graph import Graph
@@ -20,7 +16,7 @@ rdf = u"""@prefix skos:
     skos:broaderTransitive :world.
 :CI rdf:type skos:Concept;
     skos:prefLabel "C\u00f4te d'Ivoire"@fr;
-    skos:broaderTransitive :africa.    
+    skos:broaderTransitive :africa.
 """
 
 
@@ -30,7 +26,7 @@ rdf_reader = getreader('utf-8')(BytesIO(rdf.encode('utf-8')))
 
 
 
-        
+
 def test_a():
     """Test reading N3 from a unicode objects as data"""
     g = Graph()
@@ -87,7 +83,7 @@ rdfxml_utf8 = rdfxml.encode('utf-8')
 
 rdfxml_reader = getreader('utf-8')(BytesIO(rdfxml.encode('utf-8')))
 
-        
+
 def test_xml_a():
     """Test reading XML from a unicode object as data"""
     import platform

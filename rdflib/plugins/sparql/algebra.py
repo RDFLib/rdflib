@@ -6,9 +6,13 @@ http://www.w3.org/TR/sparql11-query/#sparqlQuery
 
 """
 
+from __future__ import print_function
+
 import functools
 import operator
 import collections
+
+from functools import reduce
 
 from rdflib import Literal, Variable, URIRef, BNode
 
@@ -75,12 +79,11 @@ def Group(p, expr=None):
 
 
 def _knownTerms(triple, varsknown, varscount):
-    return (len(filter(None, (x not in varsknown and
-                              isinstance(
-                                  x, (Variable, BNode)) for x in triple))),
+    return (len([ x for x in triple if x not in varsknown and
+                  isinstance(x, (Variable, BNode)) ]),
             -sum(varscount.get(x, 0) for x in triple),
             not isinstance(triple[2], Literal),
-            )
+    )
 
 
 def reorderTriples(l):
@@ -340,7 +343,7 @@ def _traverse(e, visitPre=lambda n: None, visitPost=lambda n: None):
         return tuple([_traverse(x, visitPre, visitPost) for x in e])
 
     elif isinstance(e, CompValue):
-        for k, val in e.iteritems():
+        for k, val in e.items():
             e[k] = _traverse(val, visitPre, visitPost)
 
     _e = visitPost(e)
@@ -363,7 +366,7 @@ def _traverseAgg(e, visitor=lambda n, v: None):
         res = [_traverseAgg(x, visitor) for x in e]
 
     elif isinstance(e, CompValue):
-        for k, val in e.iteritems():
+        for k, val in e.items():
             if val != None:
                 res.append(_traverseAgg(val, visitor))
 
@@ -384,7 +387,7 @@ def traverse(
         if complete is not None:
             return complete
         return r
-    except StopTraversal, st:
+    except StopTraversal as st:
         return st.rv
 
 
@@ -669,7 +672,7 @@ def translatePrologue(p, base, initNs=None, prologue=None):
     if base:
         prologue.base = base
     if initNs:
-        for k, v in initNs.iteritems():
+        for k, v in initNs.items():
             prologue.bind(k, v)
 
     for x in p:
@@ -789,13 +792,13 @@ def pprintAlgebra(q):
         #     print "%s ]"%ind
         #     return
         if not isinstance(p, CompValue):
-            print p
+            print(p)
             return
-        print "%s(" % (p.name, )
+        print("%s(" % (p.name, ))
         for k in p:
-            print "%s%s =" % (ind, k,),
+            print("%s%s =" % (ind, k,), end=' ')
             pp(p[k], ind + "    ")
-        print "%s)" % ind
+        print("%s)" % ind)
 
     try:
         pp(q.algebra)
@@ -815,6 +818,6 @@ if __name__ == '__main__':
         q = sys.argv[1]
 
     pq = parser.parseQuery(q)
-    print pq
+    print(pq)
     tq = translateQuery(pq)
-    print pprintAlgebra(tq)
+    pprintAlgebra(tq)

@@ -1,6 +1,8 @@
-from rdflib.py3compat import format_doctest_out
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
-__doc__ = format_doctest_out("""
+__doc__ = """
 ===================
 Namespace Utilities
 ===================
@@ -21,9 +23,9 @@ or by dictionary access on Namespace instances:
 .. code-block:: pycon
 
     >>> owl.seeAlso
-    rdflib.term.URIRef(%(u)s'http://www.w3.org/2002/07/owl#seeAlso')
+    rdflib.term.URIRef(u'http://www.w3.org/2002/07/owl#seeAlso')
     >>> owl['seeAlso']
-    rdflib.term.URIRef(%(u)s'http://www.w3.org/2002/07/owl#seeAlso')
+    rdflib.term.URIRef(u'http://www.w3.org/2002/07/owl#seeAlso')
 
 
 Automatic handling of unknown predicates
@@ -52,17 +54,21 @@ The following namespaces are available by directly importing from rdflib:
 
     >>> from rdflib import OWL
     >>> OWL.seeAlso
-    rdflib.term.URIRef(%(u)s'http://www.w3.org/2002/07/owl#seeAlso')
+    rdflib.term.URIRef(u'http://www.w3.org/2002/07/owl#seeAlso')
 
-""")
+"""
 
 import logging
 logger = logging.getLogger(__name__)
 
 import os
 
-from urlparse import urljoin, urldefrag
-from urllib import pathname2url
+from six import string_types
+from six import text_type
+
+from six.moves.urllib.request import pathname2url
+from six.moves.urllib.parse import urldefrag
+from six.moves.urllib.parse import urljoin
 
 from rdflib.term import URIRef, Variable, _XSD_PFX, _is_valid_uri
 
@@ -73,26 +79,26 @@ __all__ = [
     'SKOS', 'DOAP', 'FOAF', 'DC', 'DCTERMS', 'VOID']
 
 
-class Namespace(unicode):
+class Namespace(text_type):
 
-    __doc__ = format_doctest_out("""
+    __doc__ = """
     Utility class for quickly generating URIRefs with a common prefix
 
     >>> from rdflib import Namespace
     >>> n = Namespace("http://example.org/")
     >>> n.Person # as attribute
-    rdflib.term.URIRef(%(u)s'http://example.org/Person')
+    rdflib.term.URIRef(u'http://example.org/Person')
     >>> n['first-name'] # as item - for things that are not valid python identifiers
-    rdflib.term.URIRef(%(u)s'http://example.org/first-name')
+    rdflib.term.URIRef(u'http://example.org/first-name')
 
-    """)
+    """
 
 
     def __new__(cls, value):
         try:
-            rt = unicode.__new__(cls, value)
+            rt = text_type.__new__(cls, value)
         except UnicodeDecodeError:
-            rt = unicode.__new__(cls, value, 'utf-8')
+            rt = text_type.__new__(cls, value, 'utf-8')
         return rt
 
 
@@ -102,7 +108,7 @@ class Namespace(unicode):
 
     def term(self, name):
         # need to handle slices explicitly because of __getitem__ override
-        return URIRef(self + (name if isinstance(name, basestring) else ''))
+        return URIRef(self + (name if isinstance(name, string_types) else ''))
 
     def __getitem__(self, key, default=None):
         return self.term(key)
@@ -114,37 +120,37 @@ class Namespace(unicode):
             return self.term(name)
 
     def __repr__(self):
-        return "Namespace(%s)"%unicode.__repr__(self)
+        return "Namespace(%s)"%text_type.__repr__(self)
 
 
-class URIPattern(unicode):
+class URIPattern(text_type):
 
-    __doc__ = format_doctest_out("""
+    __doc__ = """
     Utility class for creating URIs according to some pattern
     This supports either new style formatting with .format
-    or old-style with %% operator
+    or old-style with % operator
 
-    >>> u=URIPattern("http://example.org/%%s/%%d/resource")
-    >>> u%%('books', 12345)
-    rdflib.term.URIRef(%(u)s'http://example.org/books/12345/resource')
+    >>> u=URIPattern("http://example.org/%s/%d/resource")
+    >>> u%('books', 12345)
+    rdflib.term.URIRef(u'http://example.org/books/12345/resource')
 
-    """)
+    """
 
     def __new__(cls, value):
         try:
-            rt = unicode.__new__(cls, value)
+            rt = text_type.__new__(cls, value)
         except UnicodeDecodeError:
-            rt = unicode.__new__(cls, value, 'utf-8')
+            rt = text_type.__new__(cls, value, 'utf-8')
         return rt
 
     def __mod__(self, *args, **kwargs):
-        return URIRef(unicode(self).__mod__(*args, **kwargs))
+        return URIRef(text_type(self).__mod__(*args, **kwargs))
 
     def format(self, *args, **kwargs):
-        return URIRef(unicode.format(self, *args, **kwargs))
+        return URIRef(text_type.format(self, *args, **kwargs))
 
     def __repr__(self):
-        return "URIPattern(%r)"%unicode.__repr__(self)
+        return "URIPattern(%r)"%text_type.__repr__(self)
 
 
 
@@ -278,7 +284,7 @@ class NamespaceManager(object):
         self.graph = graph
         self.__cache = {}
         self.__log = None
-        self.bind("xml", u"http://www.w3.org/XML/1998/namespace")
+        self.bind("xml", "http://www.w3.org/XML/1998/namespace")
         self.bind("rdf", RDF)
         self.bind("rdfs", RDFS)
         self.bind("xsd", XSD)
@@ -305,7 +311,7 @@ class NamespaceManager(object):
         """
         try:
             namespace, name = split_uri(rdfTerm)
-            namespace = URIRef(unicode(namespace))
+            namespace = URIRef(text_type(namespace))
         except:
             if isinstance(rdfTerm, Variable):
                 return "?%s" % rdfTerm
@@ -355,7 +361,7 @@ class NamespaceManager(object):
 
         """
 
-        namespace = URIRef(unicode(namespace))
+        namespace = URIRef(text_type(namespace))
         # When documenting explain that override only applies in what cases
         if prefix is None:
             prefix = ''
@@ -465,7 +471,7 @@ ALLOWED_NAME_CHARS = [u"\u00B7", u"\u0387", u"-", u".", u"_"]
 def is_ncname(name):
     first = name[0]
     if first == "_" or category(first) in NAME_START_CATEGORIES:
-        for i in xrange(1, len(name)):
+        for i in range(1, len(name)):
             c = name[i]
             if not category(c) in NAME_CATEGORIES:
                 if c in ALLOWED_NAME_CHARS:
@@ -486,12 +492,12 @@ def split_uri(uri):
     if uri.startswith(XMLNS):
         return (XMLNS, uri.split(XMLNS)[1])
     length = len(uri)
-    for i in xrange(0, length):
+    for i in range(0, length):
         c = uri[-i - 1]
         if not category(c) in NAME_CATEGORIES:
             if c in ALLOWED_NAME_CHARS:
                 continue
-            for j in xrange(-1 - i, length):
+            for j in range(-1 - i, length):
                 if category(uri[j]) in NAME_START_CATEGORIES or uri[j] == "_":
                     ns = uri[:j]
                     if not ns:

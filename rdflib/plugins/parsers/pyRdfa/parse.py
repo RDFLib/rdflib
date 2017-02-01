@@ -19,26 +19,15 @@ $Id: parse.py,v 1.19 2013-01-07 12:46:43 ivan Exp $
 $Date: 2013-01-07 12:46:43 $
 """
 
-import sys
-
 from .state   		import ExecutionContext
 from .property 		import ProcessProperty
 from .embeddedRDF	import handle_embeddedRDF
 from .host			import HostLanguage, host_dom_transforms
 
-import rdflib
 from rdflib	import URIRef
-from rdflib	import Literal
 from rdflib	import BNode
-from rdflib	import Namespace
-if rdflib.__version__ >= "3.0.0" :
-	from rdflib	import Graph
-	from rdflib	import RDF  as ns_rdf
-	from rdflib	import RDFS as ns_rdfs
-else :
-	from rdflib.Graph	import Graph
-	from rdflib.RDFS	import RDFSNS as ns_rdfs
-	from rdflib.RDF		import RDFNS  as ns_rdf
+from rdflib	import RDF  as ns_rdf
+
 
 from .      import IncorrectBlankNodeUsage, err_no_blank_node
 from .utils import has_one_of_attributes
@@ -506,14 +495,3 @@ def handle_role_attribute(node, graph, state) :
 		predicate = URIRef('http://www.w3.org/1999/xhtml/vocab#role')
 		for object in state.getURI("role") :
 			graph.add((subject, predicate, object))
-
-
-
-
-
-
-
-
-
-
-

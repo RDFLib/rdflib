@@ -59,7 +59,7 @@ class XMLWriter(object):
     def element(self, uri, content, attributes={}):
         """Utility method for adding a complete simple element"""
         self.push(uri)
-        for k, v in attributes.iteritems():
+        for k, v in attributes.items():
             self.attribute(k, v)
         self.text(content)
         self.pop()

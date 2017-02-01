@@ -1,5 +1,6 @@
 from rdflib import Literal, XSD
 
+from six import text_type, itervalues
 from rdflib.plugins.sparql.evalutils import _eval, NotBoundError, _val
 from rdflib.plugins.sparql.operators import numeric
 from rdflib.plugins.sparql.datatypes import type_promotion
@@ -71,8 +72,10 @@ class Counter(Accumulator):
 
 
 def type_safe_numbers(*args):
-    types = map(type, args)
-    if float in types and Decimal in types:
+    if (
+            any(isinstance(arg, float) for arg in args)
+            and any(isinstance(arg, Decimal) for arg in args)
+    ):
         return map(float, args)
     return args
 
@@ -219,7 +222,7 @@ class GroupConcat(Accumulator):
             pass
 
     def get_value(self):
-        return Literal(self.separator.join(unicode(v) for v in self.value))
+        return Literal(self.separator.join(text_type(v) for v in self.value))
 
 
 class Aggregator(object):
@@ -249,12 +252,12 @@ class Aggregator(object):
         # SAMPLE accumulators may delete themselves
         # => iterate over list not generator
 
-        for acc in self.accumulators.values():
+        for acc in list(itervalues(self.accumulators)):
             if acc.use_row(row):
                 acc.update(row, self)
 
     def get_bindings(self):
         """calculate and set last values"""
-        for acc in self.accumulators.itervalues():
+        for acc in itervalues(self.accumulators):
             acc.set_value(self.bindings)
         return self.bindings

@@ -6,8 +6,8 @@ from rdflib import ConjunctiveGraph
 from rdflib.namespace import split_uri
 from rdflib.compare import graph_diff, isomorphic
 
-from manifest import nose_tests, RDFT
-from testutils import nose_tst_earl_report
+from .manifest import nose_tests, RDFT
+from .testutils import nose_tst_earl_report
 
 verbose = False
 
@@ -31,24 +31,24 @@ def trig(test):
                 both, first, second = graph_diff(g,res)
                 if not first and not second: return
 
-                print '==============================='
-                print 'TriG'
-                print g.serialize(format='nquads')
-                print '==============================='
-                print 'NQuads'
-                print res.serialize(format='nquads')
-                print '==============================='
+                print('===============================')
+                print('TriG')
+                print(g.serialize(format='nquads'))
+                print('===============================')
+                print('NQuads')
+                print(res.serialize(format='nquads'))
+                print('===============================')
 
-                print "Diff:"
+                print("Diff:")
                 #print "%d triples in both"%len(both)
-                print "TriG Only:"
+                print("TriG Only:")
                 for t in first:
-                    print t
+                    print(t)
 
-                print "--------------------"
-                print "NQuads Only"
+                print("--------------------")
+                print("NQuads Only")
                 for t in second:
-                    print t
+                    print(t)
                 raise Exception('Graphs do not match!')
 
             assert isomorphic(g, res), 'graphs must be the same'

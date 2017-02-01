@@ -2,7 +2,7 @@ import warnings
 
 from rdflib.term import Literal
 from rdflib.serializer import Serializer
-from rdflib.py3compat import b
+from six import b
 
 from rdflib.plugins.serializers.nt import _quoteLiteral
 

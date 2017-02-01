@@ -1,14 +1,10 @@
 from rdflib.term import  URIRef, BNode
 from rdflib.namespace import RDFS
-from rdflib.py3compat import b
+from six import b, BytesIO
 
 from rdflib.plugins.serializers.rdfxml import XMLSerializer
 
 from rdflib.graph import ConjunctiveGraph
-try:
-    from io import BytesIO
-except ImportError:
-    from StringIO import StringIO as BytesIO
 
 
 class SerializerTestBase(object):
@@ -128,7 +124,7 @@ class TestXMLSerializer(SerializerTestBase):
         assert b('<rdf:Description rdf:nodeID="') in rdfXml, "expected one identified bnode in serialized graph"
 
     def test_result_fragments_with_base(self):
-        rdfXml = serialize(self.sourceGraph, self.serializer, 
+        rdfXml = serialize(self.sourceGraph, self.serializer,
                     extra_args={'base':"http://example.org/", 'xml_base':"http://example.org/"})
         #print "--------"
         #print rdfXml
@@ -152,5 +148,3 @@ def _assert_expected_object_types_for_predicates(graph, predicates, types):
             someTrue = [isinstance(o, t) for t in types]
             assert True in someTrue, \
                     "Bad type %s for object when predicate is <%s>." % (type(o), p)
-
-

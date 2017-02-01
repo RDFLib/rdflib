@@ -1,5 +1,10 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 from rdflib.term import BNode
 from rdflib.store import Store, NO_STORE, VALID_STORE
+from six import iteritems
 
 __all__ = ['Memory', 'IOMemory']
 
@@ -32,13 +37,14 @@ class Memory(Store):
         self.__namespace = {}
         self.__prefix = {}
 
-    def add(self, (subject, predicate, object), context, quoted=False):
+    def add(self, triple, context, quoted=False):
         """\
         Add a triple to the store of triples.
         """
         # add dictionary entries for spo[s][p][p] = 1 and pos[p][o][s]
         # = 1, creating the nested dictionaries where they do not yet
         # exits.
+        subject, predicate, object = triple
         spo = self.__spo
         try:
             po = spo[subject]
@@ -72,15 +78,15 @@ class Memory(Store):
             p = sp[subject] = {}
         p[predicate] = 1
 
-    def remove(self, (subject, predicate, object), context=None):
-        for (subject, predicate, object), c in self.triples(
-                (subject, predicate, object)):
+    def remove(self, triple_pattern, context=None):
+        for (subject, predicate, object), c in self.triples(triple_pattern):
             del self.__spo[subject][predicate][object]
             del self.__pos[predicate][object][subject]
             del self.__osp[object][subject][predicate]
 
-    def triples(self, (subject, predicate, object), context=None):
+    def triples(self, triple_pattern, context=None):
         """A generator over all the triples matching """
+        subject, predicate, object = triple_pattern
         if subject != ANY:  # subject is given
             spo = self.__spo
             if subject in spo:
@@ -158,7 +164,7 @@ class Memory(Store):
         return self.__prefix.get(namespace, None)
 
     def namespaces(self):
-        for prefix, namespace in self.__namespace.iteritems():
+        for prefix, namespace in iteritems(self.__namespace):
             yield prefix, namespace
 
     def __contexts(self):
@@ -238,7 +244,7 @@ class IOMemory(Store):
         return self.__prefix.get(namespace, None)
 
     def namespaces(self):
-        for prefix, namespace in self.__namespace.iteritems():
+        for prefix, namespace in iteritems(self.__namespace):
             yield prefix, namespace
 
     def add(self, triple, context, quoted=False):
@@ -436,7 +442,7 @@ class IOMemory(Store):
         if not skipQuoted:
             return ctxs.keys()
 
-        return [cid for cid, quoted in ctxs.iteritems() if not quoted]
+        return [cid for cid, quoted in ctxs.items() if not quoted]
 
     def __tripleHasContext(self, enctriple, cid):
         """return True iff the triple exists in the given context"""

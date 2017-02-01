@@ -11,48 +11,22 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 """
 import os, sys, datetime, re
 
-PY3 = (sys.version_info[0] >= 3)
 
-import rdflib
-from rdflib	import URIRef
-from rdflib	import Literal
-from rdflib	import BNode
-from rdflib	import Namespace
-if rdflib.__version__ >= "3.0.0" :
-	from rdflib	import RDF  as ns_rdf
-	from rdflib	import RDFS as ns_rdfs
-	from rdflib	import Graph
-else :
-	from rdflib.RDFS	import RDFSNS as ns_rdfs
-	from rdflib.RDF		import RDFNS  as ns_rdf
-	from rdflib.Graph 	import Graph
+from rdflib	import Graph
 
-from ..			import HTTPError, RDFaError
-from ..host 	import MediaTypes, HostLanguage
-from ..utils	import create_file_name, URIOpener, quote_URI
-from ..options	import Options
-from ..			import ns_rdfa
-
-from . import err_outdated_cache
-from . import err_unreachable_vocab
-from . import err_unparsable_Turtle_vocab
-from . import err_unparsable_xml_vocab
-from . import err_unparsable_ntriples_vocab
-from . import err_unparsable_rdfa_vocab
-from . import err_unrecognised_vocab_type
+from ..utils	import create_file_name
 
 from . import VocabCachingInfo
 
 # Regular expression object for a general XML application media type
 xml_application_media_type = re.compile("application/[a-zA-Z0-9]+\+xml")
 
-from ..utils import URIOpener
-
 #===========================================================================================
-if PY3 :
-	import pickle
-else :
+try:
 	import cPickle as pickle
+except ImportError:
+	import pickle
+
 
 # Protocol to be used for pickle files. 0 is good for debug, it stores the data in ASCII; 1 is better for deployment,
 # it stores data in binary format. Care should be taken for consistency; when changing from 0 to 1 or back, all
@@ -391,5 +365,3 @@ def offline_cache_generation(args) :
 		print( "URI: " + uri )
 		print( "default vocab: " + rd.vocabulary )
 		print( "terms: %s prefixes: %s" % (rd.terms,rd.ns) )
-
-

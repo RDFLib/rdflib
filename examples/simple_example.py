@@ -19,35 +19,34 @@ if __name__=='__main__':
     store.add((donna, FOAF.name, Literal("Donna Fales")))
 
     # Iterate over triples in store and print them out.
-    print "--- printing raw triples ---"
+    print("--- printing raw triples ---")
     for s, p, o in store:
-        print s, p, o
+        print(s, p, o)
 
     # For each foaf:Person in the store print out its mbox property.
-    print "--- printing mboxes ---"
+    print("--- printing mboxes ---")
     for person in store.subjects(RDF.type, FOAF["Person"]):
         for mbox in store.objects(person, FOAF["mbox"]):
-            print mbox
+            print(mbox)
 
     # Serialize the store as RDF/XML to the file donna_foaf.rdf.
     store.serialize("donna_foaf.rdf", format="pretty-xml", max_depth=3)
 
     # Let's show off the serializers
 
-    print "RDF Serializations:"
+    print("RDF Serializations:")
 
     # Serialize as XML
-    print "--- start: rdf-xml ---"
-    print store.serialize(format="pretty-xml")
-    print "--- end: rdf-xml ---\n"
+    print("--- start: rdf-xml ---")
+    print(store.serialize(format="pretty-xml"))
+    print("--- end: rdf-xml ---\n")
 
     # Serialize as Turtle
-    print "--- start: turtle ---"
-    print store.serialize(format="turtle")
-    print "--- end: turtle ---\n"
+    print("--- start: turtle ---")
+    print(store.serialize(format="turtle"))
+    print("--- end: turtle ---\n")
 
     # Serialize as NTriples
-    print "--- start: ntriples ---"
-    print store.serialize(format="nt")
-    print "--- end: ntriples ---\n"
- 
+    print("--- start: ntriples ---")
+    print(store.serialize(format="nt"))
+    print("--- end: ntriples ---\n")

@@ -1,20 +1,25 @@
 #!/usr/bin/env python
 
+
 '''
 This benchmark will produce graph digests for all of the
 downloadable ontologies available in Bioportal.
 '''
 
-from rdflib import *
+from __future__ import print_function
+
+from rdflib import Namespace, Graph
 from rdflib.compare import to_isomorphic
+from six.moves.urllib.request import urlopen
+from six.moves import queue
 import sys, csv
-from urllib import *
+
 from io import StringIO
 from collections import defaultdict
-from urllib2 import urlopen
 
-from multiprocessing import *
-from Queue import Empty
+
+from multiprocessing import Process, Semaphore, Queue
+
 
 bioportal_query = '''
 PREFIX metadata: <http://data.bioontology.org/metadata/>
@@ -63,18 +68,18 @@ def files_benchmark(ontologies, output_file, threads):
                 og = Graph()
                 try:
                     og.load(stats['download_url'])
-                    print stats['ontology'], stats['id']
+                    print(stats['ontology'], stats['id'])
                     ig = to_isomorphic(og)
                     graph_digest = ig.graph_digest(stats)
                     finished_tasks.put(stats)
                 except Exception as e:
-                    print 'ERROR', stats['id'], e
+                    print('ERROR', stats['id'], e)
                     stats['error'] = str(e)
                     finished_tasks.put(stats)
-        except Empty:
+        except queue.Empty:
             pass
     for i in range(int(threads)):
-        print "Starting worker", i
+        print("Starting worker", i)
         t = Process(target=worker, args=[tasks, finished_tasks, dl_lock])
         t.daemon = True
         t.start()
@@ -100,7 +105,7 @@ def bioportal_benchmark(apikey, output_file, threads):
     metadata = Namespace("http://data.bioontology.org/metadata/")
     url = 'http://data.bioontology.org/ontologies?apikey=%s' % apikey
     ontology_graph = Graph()
-    print url
+    print(url)
     ontology_list_json = urlopen(url).read()
     ontology_graph.parse(StringIO(unicode(ontology_list_json)), format="json-ld")
     ontologies = ontology_graph.query(bioportal_query)
@@ -123,18 +128,18 @@ def bioportal_benchmark(apikey, output_file, threads):
                         og.load(stats['download_url'] + "?apikey=%s" % apikey)
                     finally:
                         dl_lock.release()
-                    print stats['ontology'], stats['id']
+                    print(stats['ontology'], stats['id'])
                     ig = to_isomorphic(og)
                     graph_digest = ig.graph_digest(stats)
                     finished_tasks.put(stats)
                 except Exception as e:
-                    print 'ERROR', stats['id'], e
+                    print('ERROR', stats['id'], e)
                     stats['error'] = str(e)
                     finished_tasks.put(stats)
         except Empty:
             pass
     for i in range(int(threads)):
-        print "Starting worker", i
+        print("Starting worker", i)
         t = Process(target=worker, args=[tasks, finished_tasks, dl_lock])
         t.daemon = True
         t.start()

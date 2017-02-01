@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 __doc__ = """
 Dirt Simple Events
 
@@ -42,8 +46,7 @@ class Event(object):
         self.__dict__.update(kw)
 
     def __repr__(self):
-        attrs = self.__dict__.keys()
-        attrs.sort()
+        attrs = sorted(self.__dict__.keys())
         return '<rdflib.events.Event %s>' % ([a for a in attrs],)
 
 

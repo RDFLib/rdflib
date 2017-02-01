@@ -1,10 +1,10 @@
 from rdflib import Graph, URIRef, BNode, RDF, Literal, Namespace
 from rdflib.collection import Collection
 from rdflib.plugins.serializers.turtle import TurtleSerializer
-from rdflib.py3compat import b
+from six import b
 
 
-def testTurtleFinalDot(): 
+def testTurtleFinalDot():
     """
     https://github.com/RDFLib/rdflib/issues/282
     """
@@ -49,7 +49,7 @@ def testUnicodeEscaping():
     g.parse(data=turtle_string, format="turtle")
     triples = sorted(list(g))
     assert len(triples) == 3
-    print triples
+    print(triples)
     # Now check that was decoded into python values properly
     assert triples[0][2] == URIRef(u'http://example.com/aaa\xf3bbbb')
     assert triples[1][2] == URIRef(u'http://example.com/zzz\U00100000zzz')

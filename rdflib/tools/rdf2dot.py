@@ -9,6 +9,8 @@ You can draw the graph of an RDF file directly:
 
 """
 
+from __future__ import absolute_import
+
 import rdflib
 import rdflib.extras.cmdlineutils
 

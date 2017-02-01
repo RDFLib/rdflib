@@ -23,26 +23,14 @@ $Date: 2013-10-16 11:48:54 $
 import sys
 (py_v_major, py_v_minor, py_v_micro, py_v_final, py_v_serial) = sys.version_info
 
-import rdflib
-from rdflib	import URIRef
-from rdflib	import Literal
-from rdflib	import BNode
-from rdflib	import Namespace
-if rdflib.__version__ >= "3.0.0" :
-	from rdflib	import RDF  as ns_rdf
-	from rdflib	import RDFS as ns_rdfs
-else :
-	from rdflib.RDFS	import RDFSNS as ns_rdfs
-	from rdflib.RDF		import RDFNS  as ns_rdf
 
-from .options	import Options
-from .utils 	import quote_URI
+from rdflib	import URIRef
+from rdflib	import BNode
 from .host 		import HostLanguage, accept_xml_base, accept_xml_lang, beautifying_prefixes
 
 from .termorcurie	import TermOrCurie
 from .				import UnresolvablePrefix, UnresolvableTerm
 
-from . import err_lang
 from . import err_URI_scheme
 from . import err_illegal_safe_CURIE
 from . import err_no_CURIE_in_safe_CURIE
@@ -50,10 +38,8 @@ from . import err_undefined_terms
 from . import err_non_legal_CURIE_ref
 from . import err_undefined_CURIE
 
-if py_v_major >= 3 :
-	from urllib.parse import urlparse, urlunparse, urlsplit, urljoin
-else :
-	from urlparse import urlparse, urlunparse, urlsplit, urljoin
+
+from six.moves.urllib.parse import urlparse, urlunparse, urlsplit, urljoin
 
 class ListStructure :
 	"""Special class to handle the C{@inlist} type structures in RDFa 1.1; stores the "origin", i.e,
@@ -398,7 +384,7 @@ class ExecutionContext :
 		if val == "" :
 			return None
 
-		from .termorcurie import ncname, termname
+		from .termorcurie import termname
 		if termname.match(val) :
 			# This is a term, must be handled as such...
 			retval = self.term_or_curie.term_to_URI(val)

@@ -11,12 +11,8 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 @version: $Id: prototype.py,v 1.1 2013-01-18 09:41:49 ivan Exp $
 $Date: 2013-01-18 09:41:49 $
 """
-import rdflib
-from rdflib	import Namespace
-if rdflib.__version__ >= "3.0.0" :
-	from rdflib	import RDF  as ns_rdf
-else :
-	from rdflib.RDF	import RDFNS  as ns_rdf
+
+from rdflib	import RDF  as ns_rdf
 
 from .. import ns_rdfa
 

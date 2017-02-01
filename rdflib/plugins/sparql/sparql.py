@@ -1,7 +1,11 @@
+from __future__ import absolute_import
+
 import collections
 import itertools
 import datetime
 from collections import Mapping, MutableMapping
+
+from six import text_type, iteritems
 
 from rdflib.namespace import NamespaceManager
 from rdflib import Variable, BNode, Graph, ConjunctiveGraph, URIRef, Literal
@@ -87,7 +91,7 @@ class Bindings(MutableMapping):
         return "Bindings({"+", ".join((k, self[k]) for k in self)+"})"
 
     def __repr__(self):
-        return unicode(self)
+        return text_type(self)
 
 
 class FrozenDict(Mapping):
@@ -118,14 +122,14 @@ class FrozenDict(Mapping):
         # urge to optimize when it will gain improved algorithmic performance.
         if self._hash is None:
             self._hash = 0
-            for key, value in self.iteritems():
+            for key, value in iteritems(self):
                 self._hash ^= hash(key)
                 self._hash ^= hash(value)
         return self._hash
 
     def project(self, vars):
         return FrozenDict(
-            (x for x in self.iteritems() if x[0] in vars))
+            (x for x in iteritems(self) if x[0] in vars))
 
     def disjointDomain(self, other):
         return not bool(set(self).intersection(other))
@@ -142,7 +146,7 @@ class FrozenDict(Mapping):
 
     def merge(self, other):
         res = FrozenDict(
-            itertools.chain(self.iteritems(), other.iteritems()))
+            itertools.chain(iteritems(self), iteritems(other)))
 
         return res
 
@@ -171,11 +175,11 @@ class FrozenBindings(FrozenDict):
 
     def project(self, vars):
         return FrozenBindings(
-            self.ctx, (x for x in self.iteritems() if x[0] in vars))
+            self.ctx, (x for x in iteritems(self) if x[0] in vars))
 
     def merge(self, other):
         res = FrozenBindings(
-            self.ctx, itertools.chain(self.iteritems(), other.iteritems()))
+            self.ctx, itertools.chain(iteritems(self), iteritems(other)))
 
         return res
 
@@ -197,15 +201,23 @@ class FrozenBindings(FrozenDict):
         return a frozen dict only of bindings made in self
         since before
         """
-        if not _except : _except = []
+        if not _except:
+            _except = []
+
         # bindings from initBindings are newer forgotten
-        return FrozenBindings(self.ctx, (x for x in self.iteritems() if x[0] in _except or x[0] in self.ctx.initBindings or before[x[0]] is None))
+        return FrozenBindings(
+            self.ctx, (
+                x for x in iteritems(self) if (
+                    x[0] in _except or
+                    x[0] in self.ctx.initBindings or
+                    before[x[0]] is None)))
 
     def remember(self, these):
         """
         return a frozen dict only of bindings in these
         """
-        return FrozenBindings(self.ctx, (x for x in self.iteritems() if x[0] in these))
+        return FrozenBindings(
+            self.ctx, (x for x in iteritems(self) if x[0] in these))
 
 
 class QueryContext(object):
@@ -304,10 +316,10 @@ class QueryContext(object):
         if vars:
             return FrozenBindings(
                 self, ((k, v)
-                       for k, v in self.bindings.iteritems()
+                       for k, v in iteritems(self.bindings)
                        if k in vars))
         else:
-            return FrozenBindings(self, self.bindings.iteritems())
+            return FrozenBindings(self, iteritems(self.bindings))
 
     def __setitem__(self, key, value):
         if key in self.bindings and self.bindings[key] != value:

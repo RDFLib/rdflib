@@ -13,21 +13,11 @@ $Id: process.py,v 1.7 2012-03-23 14:06:38 ivan Exp $ $Date: 2012-03-23 14:06:38 
 """
 
 import sys
-import os
 
-import rdflib
-from rdflib	import URIRef
-from rdflib	import Literal
-from rdflib	import BNode
 from rdflib	import Namespace
-if rdflib.__version__ >= "3.0.0" :
-	from rdflib	import RDF  as ns_rdf
-	from rdflib	import RDFS as ns_rdfs
-	from rdflib	import Graph
-else :
-	from rdflib.RDFS	import RDFSNS as ns_rdfs
-	from rdflib.RDF		import RDFNS  as ns_rdf
-	from rdflib.Graph import Graph
+from rdflib	import RDF  as ns_rdf
+from rdflib	import RDFS as ns_rdfs
+from rdflib	import Graph
 
 ns_owl = Namespace("http://www.w3.org/2002/07/owl#")
 
@@ -38,7 +28,6 @@ from ..utils	import URIOpener
 from . import err_outdated_cache
 from . import err_unreachable_vocab
 from . import err_unparsable_Turtle_vocab
-from . import err_unparsable_xml_vocab
 from . import err_unparsable_ntriples_vocab
 from . import err_unparsable_rdfa_vocab
 from . import err_unrecognised_vocab_type
@@ -301,4 +290,3 @@ def process_rdfa_sem(graph, options) :
 
 	# That was it...
 	return graph
-

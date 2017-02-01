@@ -23,14 +23,9 @@ from rdflib	import URIRef
 from rdflib	import Literal
 from rdflib	import BNode
 from rdflib	import Namespace
-if rdflib.__version__ >= "3.0.0" :
-	from rdflib	import RDF  as ns_rdf
-	from rdflib	import RDFS as ns_rdfs
-	from rdflib	import Graph
-else :
-	from rdflib.RDFS	import RDFSNS as ns_rdfs
-	from rdflib.RDF		import RDFNS  as ns_rdf
-	from rdflib.Graph 	import Graph
+from rdflib	import RDF  as ns_rdf
+from rdflib	import RDFS as ns_rdfs
+from rdflib	import Graph
 
 from .. import RDFaError, pyRdfaError
 from .. import ns_rdfa, ns_xsd, ns_distill

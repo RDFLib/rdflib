@@ -2,7 +2,7 @@ import unittest
 
 from rdflib.graph import Graph
 from rdflib.term import URIRef
-from rdflib.py3compat import b
+from six import b
 
 class NamespacePrefixTest(unittest.TestCase):
 
@@ -14,7 +14,7 @@ class NamespacePrefixTest(unittest.TestCase):
 
         self.assertEqual(g.compute_qname(URIRef("http://foo/bar#baz")),
             ("ns2", URIRef("http://foo/bar#"), "baz"))
-        
+
         # should skip to ns4 when ns3 is already assigned
         g.bind("ns3", URIRef("http://example.org/"))
         self.assertEqual(g.compute_qname(URIRef("http://blip/blop")),
@@ -28,7 +28,7 @@ class NamespacePrefixTest(unittest.TestCase):
         n3 = g.serialize(format="n3")
         # Gunnar disagrees that this is right:
         # self.assertTrue("<http://example.com/foo> ns1:bar <http://example.com/baz> ." in n3)
-        # as this is much prettier, and ns1 is already defined: 
+        # as this is much prettier, and ns1 is already defined:
         self.assertTrue(b("ns1:foo ns1:bar ns1:baz .") in n3)
 
     def test_n32(self):
@@ -40,4 +40,3 @@ class NamespacePrefixTest(unittest.TestCase):
         n3 = g.serialize(format="n3")
 
         self.assertTrue(b("<http://example1.com/foo> ns1:bar <http://example3.com/baz> .") in n3)
-

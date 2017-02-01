@@ -1,5 +1,6 @@
 from nose import SkipTest
 from rdflib import Graph, URIRef, Literal
+from six import text_type
 
 def test_rdflib_to_networkx():
     try:
@@ -80,11 +81,11 @@ def test_rdflib_to_graphtool():
 
     mdg = rdflib_to_graphtool(
         g,
-        e_prop_names=[str('name')],
-        transform_p=lambda s, p, o: {str('name'): unicode(p)})
+        e_prop_names=[text_type('name')],
+        transform_p=lambda s, p, o: {text_type('name'): text_type(p)})
     epterm = mdg.edge_properties['name']
-    assert len(list(gt_util.find_edge(mdg, epterm, unicode(p)))) == 3
-    assert len(list(gt_util.find_edge(mdg, epterm, unicode(q)))) == 1
+    assert len(list(gt_util.find_edge(mdg, epterm, text_type(p)))) == 3
+    assert len(list(gt_util.find_edge(mdg, epterm, text_type(q)))) == 1
 
 if __name__ == "__main__":
     import sys

@@ -1,5 +1,6 @@
-from rdflib import *
-from rdflib.compare import *
+from rdflib import Graph, RDF, BNode, URIRef
+from rdflib.compare import to_isomorphic, to_canonical_graph
+from six import text_type
 from io import StringIO
 
 def get_digest_value(rdf, mimetype):
@@ -8,43 +9,43 @@ def get_digest_value(rdf, mimetype):
     stats = {}
     ig = to_isomorphic(graph)
     result = ig.graph_digest(stats)
-    print stats
+    print(stats)
     return result
 
 def negative_graph_match_test():
     '''Test of FRIR identifiers against tricky RDF graphs with blank nodes.'''
     testInputs = [
-    [ unicode('''@prefix : <http://example.org/ns#> .
+    [ text_type('''@prefix : <http://example.org/ns#> .
      <http://example.org> :rel
          [ :label "Same" ].
          '''),
-    unicode('''@prefix : <http://example.org/ns#> .
+    text_type('''@prefix : <http://example.org/ns#> .
      <http://example.org> :rel
          [ :label "Same" ],
          [ :label "Same" ].
          '''),
     False
     ],
-    [ unicode('''@prefix : <http://example.org/ns#> .
+    [ text_type('''@prefix : <http://example.org/ns#> .
      <http://example.org> :rel
          <http://example.org/a>.
          '''),
-    unicode('''@prefix : <http://example.org/ns#> .
+    text_type('''@prefix : <http://example.org/ns#> .
      <http://example.org> :rel
          <http://example.org/a>,
          <http://example.org/a>.
          '''),
     True
     ],
-    [ unicode('''@prefix : <http://example.org/ns#> .
+    [ text_type('''@prefix : <http://example.org/ns#> .
      :linear_two_step_symmetry_start :related [ :related [ :related :linear_two_step_symmatry_end]],
                                               [ :related [ :related :linear_two_step_symmatry_end]].'''),
-    unicode('''@prefix : <http://example.org/ns#> .
+    text_type('''@prefix : <http://example.org/ns#> .
      :linear_two_step_symmetry_start :related [ :related [ :related :linear_two_step_symmatry_end]],
                                               [ :related [ :related :linear_two_step_symmatry_end]].'''),
     True
     ],
-    [ unicode('''@prefix : <http://example.org/ns#> .
+    [ text_type('''@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -54,7 +55,7 @@ def negative_graph_match_test():
           ];
           ];
           ].'''),
-    unicode('''@prefix : <http://example.org/ns#> .
+    text_type('''@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -69,7 +70,7 @@ def negative_graph_match_test():
     False
     ],
     # This test fails because the algorithm purposefully breaks the symmetry of symetric
-    [ unicode('''@prefix : <http://example.org/ns#> .
+    [ text_type('''@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -79,7 +80,7 @@ def negative_graph_match_test():
           ];
           ];
           ].'''),
-    unicode('''@prefix : <http://example.org/ns#> .
+    text_type('''@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -91,7 +92,7 @@ def negative_graph_match_test():
           ].'''),
     True
     ],
-    [ unicode('''@prefix : <http://example.org/ns#> .
+    [ text_type('''@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :label "foo";
@@ -102,7 +103,7 @@ def negative_graph_match_test():
           ];
           ];
           ].'''),
-    unicode('''@prefix : <http://example.org/ns#> .
+    text_type('''@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -114,7 +115,7 @@ def negative_graph_match_test():
           ].'''),
     False
     ],
-    [ unicode('''@prefix : <http://example.org/ns#> .
+    [ text_type('''@prefix : <http://example.org/ns#> .
      _:0001 :rel _:0003, _:0004.
      _:0002 :rel _:0005, _:0006.
      _:0003 :rel _:0001, _:0007, _:0010.
@@ -126,7 +127,7 @@ def negative_graph_match_test():
      _:0009 :rel _:0004, _:0005, _:0007.
      _:0010 :rel _:0003, _:0006, _:0008.
      '''),
-    unicode('''@prefix : <http://example.org/ns#> .
+    text_type('''@prefix : <http://example.org/ns#> .
      _:0001 :rel _:0003, _:0004.
      _:0002 :rel _:0005, _:0006.
      _:0003 :rel _:0001, _:0007, _:0010.
@@ -144,10 +145,10 @@ def negative_graph_match_test():
     def fn(rdf1, rdf2, identical):
         digest1 = get_digest_value(rdf1,"text/turtle")
         digest2 = get_digest_value(rdf2,"text/turtle")
-        print rdf1
-        print digest1
-        print rdf2
-        print digest2
+        print(rdf1)
+        print(digest1)
+        print(rdf2)
+        print(digest2)
         assert (digest1 == digest2) == identical
     for inputs in testInputs:
         yield fn, inputs[0], inputs[1], inputs[2]
@@ -218,28 +219,28 @@ def test_issue494_collapsing_bnodes():
          RDF['Statement']),
     ]
 
-    print 'graph length: %d, nodes: %d' % (len(g), len(g.all_nodes()))
-    print 'triple_bnode degrees:'
+    print('graph length: %d, nodes: %d' % (len(g), len(g.all_nodes())))
+    print('triple_bnode degrees:')
     for triple_bnode in g.subjects(RDF['type'], RDF['Statement']):
-        print len(list(g.triples([triple_bnode, None, None])))
-    print 'all node degrees:'
+        print(len(list(g.triples([triple_bnode, None, None]))))
+    print('all node degrees:')
     g_node_degs = sorted([
         len(list(g.triples([node, None, None])))
         for node in g.all_nodes()
     ], reverse=True)
-    print g_node_degs
+    print(g_node_degs)
 
     cg = to_canonical_graph(g)
-    print 'graph length: %d, nodes: %d' % (len(cg), len(cg.all_nodes()))
-    print 'triple_bnode degrees:'
+    print('graph length: %d, nodes: %d' % (len(cg), len(cg.all_nodes())))
+    print('triple_bnode degrees:')
     for triple_bnode in cg.subjects(RDF['type'], RDF['Statement']):
-        print len(list(cg.triples([triple_bnode, None, None])))
-    print 'all node degrees:'
+        print(len(list(cg.triples([triple_bnode, None, None]))))
+    print('all node degrees:')
     cg_node_degs = sorted([
         len(list(cg.triples([node, None, None])))
         for node in cg.all_nodes()
     ], reverse=True)
-    print cg_node_degs
+    print(cg_node_degs)
 
     assert len(g) == len(cg), \
         'canonicalization changed number of triples in graph'

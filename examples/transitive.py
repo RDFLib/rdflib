@@ -66,11 +66,10 @@ if __name__=='__main__':
     g.add((mom, parent, momOfMom))
     g.add((mom, parent, dadOfMom))
 
-    print "Parents, forward from `ex:person`:"
+    print("Parents, forward from `ex:person`:")
     for i in g.transitive_objects(person, parent):
-        print i
+        print(i)
 
-    print "Parents, *backward* from `ex:gm1`:"
+    print("Parents, *backward* from `ex:gm1`:")
     for i in g.transitive_subjects(parent, momOfMom):
-        print i
-      
+        print(i)

@@ -10,7 +10,9 @@ http://www.w3.org/TR/sparql11-results-csv-tsv/
 import codecs
 import csv
 
-from rdflib import Variable, BNode, URIRef, Literal, py3compat
+from six import binary_type, PY3
+
+from rdflib import Variable, BNode, URIRef, Literal
 
 from rdflib.query import Result, ResultSerializer, ResultParser
 
@@ -23,12 +25,12 @@ class CSVResultParser(ResultParser):
 
         r = Result('SELECT')
 
-        if isinstance(source.read(0), py3compat.bytestype):
+        if isinstance(source.read(0), binary_type):
             # if reading from source returns bytes do utf-8 decoding
             source = codecs.getreader('utf-8')(source)
 
         reader = csv.reader(source, delimiter=self.delim)
-        r.vars = [Variable(x) for x in reader.next()]
+        r.vars = [Variable(x) for x in next(reader)]
         r.bindings = []
 
         for row in reader:
@@ -63,7 +65,7 @@ class CSVResultSerializer(ResultSerializer):
 
     def serialize(self, stream, encoding='utf-8'):
 
-        if py3compat.PY3:
+        if PY3:
             # the serialiser writes bytes in the given encoding
             # in py3 csv.writer is unicode aware and writes STRINGS,
             # so we encode afterwards
@@ -84,7 +86,7 @@ class CSVResultSerializer(ResultSerializer):
     def serializeTerm(self, term, encoding):
         if term is None:
             return ""
-        if not py3compat.PY3:
+        if not PY3:
             return term.encode(encoding)
         else:
             return term

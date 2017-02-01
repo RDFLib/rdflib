@@ -1,15 +1,12 @@
 # -*- coding: UTF-8 -*-
 from rdflib.term import  URIRef, BNode, Literal
 from rdflib.namespace import RDF, RDFS
-from rdflib.py3compat import b
+from six import b, BytesIO
 
 from rdflib.plugins.serializers.rdfxml import PrettyXMLSerializer
 
 from rdflib.graph import ConjunctiveGraph
-try:
-    from io import BytesIO
-except ImportError:
-    from StringIO import StringIO as BytesIO
+
 
 
 class SerializerTestBase(object):
@@ -128,7 +125,7 @@ class TestPrettyXmlSerializer(SerializerTestBase):
         #assert not '<rdfs:subClassOf ' in rdfXml, onlyBNodesMsg
 
     def test_result_fragments_with_base(self):
-        rdfXml = serialize(self.sourceGraph, self.serializer, 
+        rdfXml = serialize(self.sourceGraph, self.serializer,
                     extra_args={'base':"http://example.org/", 'xml_base':"http://example.org/"})
         assert b('xml:base="http://example.org/"') in rdfXml
         assert b('<Test rdf:about="data/a">') in rdfXml
@@ -167,5 +164,3 @@ def _assert_expected_object_types_for_predicates(graph, predicates, types):
             someTrue = [isinstance(o, t) for t in types]
             assert True in someTrue, \
                     "Bad type %s for object when predicate is <%s>." % (type(o), p)
-
-

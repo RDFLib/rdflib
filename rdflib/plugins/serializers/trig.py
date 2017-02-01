@@ -6,8 +6,8 @@ See <http://www.w3.org/TR/trig/> for syntax specification.
 from collections import defaultdict
 
 from rdflib.plugins.serializers.turtle import TurtleSerializer, _GEN_QNAME_FOR_DT, VERB
-
 from rdflib.term import BNode, Literal
+from six import b
 
 __all__ = ['TrigSerializer']
 
@@ -90,4 +90,4 @@ class TrigSerializer(TurtleSerializer):
             self.write('}\n')
 
         self.endDocument()
-        stream.write(u"\n".encode('ascii'))
+        stream.write(b("\n"))

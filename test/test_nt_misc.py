@@ -4,7 +4,9 @@ import os
 import re
 from rdflib import Graph, Literal, URIRef
 from rdflib.plugins.parsers import ntriples
-from rdflib.py3compat import bytestype, b
+from six import binary_type, text_type, b
+from six.moves.urllib.request import urlopen
+
 log = logging.getLogger(__name__)
 
 class NTTestCase(unittest.TestCase):
@@ -13,7 +15,7 @@ class NTTestCase(unittest.TestCase):
         g = Graph()
         g.add((URIRef("foo"), URIRef("foo"), Literal(u"R\u00E4ksm\u00F6rg\u00E5s")))
         s = g.serialize(format='nt')
-        self.assertEqual(type(s), bytestype)
+        self.assertEqual(type(s), binary_type)
         self.assertTrue(b(r"R\u00E4ksm\u00F6rg\u00E5s") in s)
 
     def testIssue146(self):
@@ -32,7 +34,7 @@ class NTTestCase(unittest.TestCase):
         safe = """<http://example.org/alice/foaf.rdf#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://example.org/alice/foaf1.rdf> ."""
         ntriples.validate = False
         res = ntriples.unquote(safe)
-        self.assertTrue(isinstance(res, unicode))
+        self.assertTrue(isinstance(res, text_type))
 
     def test_validating_unquote(self):
         quot = """<http://example.org/alice/foaf.rdf#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://example.org/alice/foaf1.rdf> ."""
@@ -83,9 +85,9 @@ class NTTestCase(unittest.TestCase):
 
     def test_w3_ntriple_variants(self):
         uri = "file:///"+os.getcwd()+"/test/nt/test.ntriples"
-        import urllib
+
         parser = ntriples.NTriplesParser()
-        u = urllib.urlopen(uri)
+        u = urlopen(uri)
         sink = parser.parse(u)
         u.close()
         # ATM we are only really interested in any exceptions thrown

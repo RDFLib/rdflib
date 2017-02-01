@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
-from rdflib import py3compat
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
-__doc__ = py3compat.format_doctest_out("""
+from six import text_type, PY3
+
+
+__doc__ = """
 The :class:`~rdflib.resource.Resource` class wraps a
 :class:`~rdflib.graph.Graph`
 and a resource reference (i.e. a :class:`rdflib.term.URIRef` or
@@ -66,13 +71,13 @@ Create a Resource::
 Retrieve some basic facts::
 
     >>> person.identifier
-    rdflib.term.URIRef(%(u)s'http://example.org/person/some1#self')
+    rdflib.term.URIRef(u'http://example.org/person/some1#self')
 
     >>> person.value(FOAF.name)
-    rdflib.term.Literal(%(u)s'Some Body')
+    rdflib.term.Literal(u'Some Body')
 
     >>> person.value(RDFS.comment)
-    rdflib.term.Literal(%(u)s'Just a Python & RDF hacker.', lang=%(u)s'en')
+    rdflib.term.Literal(u'Just a Python & RDF hacker.', lang=u'en')
 
 Resources can be sliced (like graphs, but the subject is fixed)::
 
@@ -85,21 +90,21 @@ Resources can be sliced (like graphs, but the subject is fixed)::
 Resources as unicode are represented by their identifiers as unicode::
 
     >>> %(unicode)s(person)  #doctest: +SKIP
-    %(u)s'Resource(http://example.org/person/some1#self'
+    u'Resource(http://example.org/person/some1#self'
 
 Resource references are also Resources, so you can easily get e.g. a qname
 for the type of a resource, like::
 
     >>> person.value(RDF.type).qname()
-    %(u)s'foaf:Person'
+    u'foaf:Person'
 
 Or for the predicates of a resource::
 
     >>> sorted(
     ...     p.qname() for p in person.predicates()
     ... )  #doctest: +NORMALIZE_WHITESPACE +SKIP
-    [%(u)s'foaf:depiction', %(u)s'foaf:homepage',
-     %(u)s'foaf:name', %(u)s'rdf:type', %(u)s'rdfs:comment']
+    [u'foaf:depiction', u'foaf:homepage',
+     u'foaf:name', u'rdf:type', u'rdfs:comment']
 
 Follow relations and get more data from their Resources as well::
 
@@ -191,24 +196,24 @@ we can get at subclasses::
 
     >>> subclasses = list(artifact.transitive_subjects(RDFS.subClassOf))
     >>> [c.qname() for c in subclasses]
-    [%(u)s'v:Artifact', %(u)s'v:Document', %(u)s'v:Paper']
+    [u'v:Artifact', u'v:Document', u'v:Paper']
 
 and superclasses from the last subclass::
 
     >>> [c.qname() for c in subclasses[-1].transitive_objects(RDFS.subClassOf)]
-    [%(u)s'v:Paper', %(u)s'v:Document', %(u)s'v:Artifact']
+    [u'v:Paper', u'v:Document', u'v:Artifact']
 
 Get items from the Choice::
 
     >>> choice = Resource(graph, URIRef("http://example.org/def/v#Choice"))
     >>> [it.qname() for it in choice.value(OWL.oneOf).items()]
-    [%(u)s'v:One', %(u)s'v:Other']
+    [u'v:One', u'v:Other']
 
 And the sequence of Stuff::
 
     >>> stuff = Resource(graph, URIRef("http://example.org/def/v#Stuff"))
     >>> [it.qname() for it in stuff.seq()]
-    [%(u)s'v:One', %(u)s'v:Other']
+    [u'v:One', u'v:Other']
 
 On add, other resources are auto-unboxed:
     >>> paper = Resource(graph, URIRef("http://example.org/def/v#Paper"))
@@ -309,7 +314,7 @@ objects::
     >>> print(person.foaf_depiction[0].rdfs_comment[0])
     Just an image
 
-""")
+"""
 
 from rdflib.term import Node, BNode, URIRef
 from rdflib.namespace import RDF
@@ -349,9 +354,9 @@ class Resource(object):
     __ge__ = lambda self, other: not self < other
 
     def __unicode__(self):
-        return unicode(self._identifier)
+        return text_type(self._identifier)
 
-    if py3compat.PY3:
+    if PY3:
         __str__ = __unicode__
 
     def add(self, p, o):

@@ -56,8 +56,8 @@ class EventTestCase(unittest.TestCase):
         assert c2['bob'] == 'uncle'
         assert c3['bob'] == 'uncle'
         del c3['bob']
-        assert c1.has_key('bob') == False
-        assert c2.has_key('bob') == False
+        assert ('bob' in c1) == False
+        assert ('bob' in c2) == False
 
 if __name__ == "__main__":
     unittest.main()

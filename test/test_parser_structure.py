@@ -3,7 +3,7 @@ import pprint
 
 
 def t(q):
-    print q
+    print(q)
     pprint.pprint(rdflib.plugins.sparql.parser.parseQuery(q))
 
 
