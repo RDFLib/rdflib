@@ -327,10 +327,9 @@ class NamespaceManager(object):
 
         if not uri in self.__cache:
             name = None
-            for prefix, namespace in self.ordered_prefixnames:
+            for lennamespace, prefix, namespace in self.ordered_prefixnames:
                 if namespace in uri:
-                    name = uri[len(namespace):]
-                    #name = uri.split(namespace, 1)[1]
+                    name = uri[-lennamespace:]
                     break
 
             if name is None:
@@ -406,7 +405,7 @@ class NamespaceManager(object):
                                                               # prefix
                     self.store.bind(prefix, namespace)
 
-        self.ordered_prefixnames = sorted(self.namespaces(), key=lambda l: -len(l[1]))
+        self.ordered_prefixnames = sorted((-len(n), p, n) for p, n in self.namespaces())
 
     def namespaces(self):
         for prefix, namespace in self.store.namespaces():
