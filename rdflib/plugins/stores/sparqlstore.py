@@ -17,22 +17,21 @@ import warnings
 import contextlib
 
 try:
-    from SPARQLWrapper import SPARQLWrapper, XML, POST, GET, URLENCODED, POSTDIRECTLY
+    from SPARQLWrapper import SPARQLWrapper, XML, JSON, POST, GET, URLENCODED, POSTDIRECTLY
 except ImportError:
     raise Exception(
         "SPARQLWrapper not found! SPARQL Store will not work." +
         "Install with 'pip install SPARQLWrapper'")
 
-from rdflib.compat import etree, etree_register_namespace
 from rdflib.plugins.stores.regexmatching import NATIVE_REGEX
 
 from rdflib.store import Store
 from rdflib.query import Result
-from rdflib import Variable, Namespace, BNode, URIRef, Literal
+from rdflib import Variable, BNode
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 from rdflib.term import Node
 
-from six import text_type, string_types
+from six import string_types
 
 class NSSPARQLWrapper(SPARQLWrapper):
     nsBindings = {}
@@ -73,32 +72,6 @@ class NSSPARQLWrapper(SPARQLWrapper):
 
 
 BNODE_IDENT_PATTERN = re.compile('(?P<label>_\:[^\s]+)')
-SPARQL_NS = Namespace('http://www.w3.org/2005/sparql-results#')
-sparqlNsBindings = {u'sparql': SPARQL_NS}
-etree_register_namespace("sparql", SPARQL_NS)
-
-
-def _node_from_result(node):
-    """
-    Helper function that casts XML node in SPARQL results
-    to appropriate rdflib term
-    """
-    if node.tag == '{%s}bnode' % SPARQL_NS:
-        return BNode(node.text)
-    elif node.tag == '{%s}uri' % SPARQL_NS:
-        return URIRef(node.text)
-    elif node.tag == '{%s}literal' % SPARQL_NS:
-        value = node.text if node.text is not None else ''
-        if 'datatype' in node.attrib:
-            dt = URIRef(node.attrib['datatype'])
-            return Literal(value, datatype=dt)
-        elif '{http://www.w3.org/XML/1998/namespace}lang' in node.attrib:
-            return Literal(value, lang=node.attrib[
-                "{http://www.w3.org/XML/1998/namespace}lang"])
-        else:
-            return Literal(value)
-    else:
-        raise Exception('Unknown answer type')
 
 
 def _node_to_sparql(node):
@@ -109,41 +82,6 @@ def _node_to_sparql(node):
         )
     return node.n3()
 
-
-def _traverse_sparql_result_dom(
-        doc, as_dictionary=False, node_from_result=_node_from_result):
-    """
-    Returns a generator over tuples of results
-    """
-    # namespace handling in elementtree xpath sub-set is not pretty :(
-    vars_ = [
-        Variable(v.attrib["name"])
-        for v in doc.findall(
-            './{http://www.w3.org/2005/sparql-results#}head/'
-            '{http://www.w3.org/2005/sparql-results#}variable'
-        )
-    ]
-    for result in doc.findall(
-            './{http://www.w3.org/2005/sparql-results#}results/'
-            '{http://www.w3.org/2005/sparql-results#}result'):
-        curr_bind = {}
-        values = []
-        for binding in result.findall(
-                '{http://www.w3.org/2005/sparql-results#}binding'):
-            var_val = binding.attrib["name"]
-            var = Variable(var_val)
-            term = node_from_result(binding.findall('*')[0])
-            values.append(term)
-            curr_bind[var] = term
-        if as_dictionary:
-            yield curr_bind, vars_
-        else:
-            def __locproc(values_):
-                if len(values_) == 1:
-                    return values_[0]
-                else:
-                    return tuple(values_)
-            yield __locproc(values), vars_
 
 
 class SPARQLStore(NSSPARQLWrapper, Store):
@@ -191,16 +129,16 @@ class SPARQLStore(NSSPARQLWrapper, Store):
                  endpoint=None,
                  sparql11=True, context_aware=True,
                  node_to_sparql=_node_to_sparql,
-                 node_from_result=_node_from_result,
                  default_query_method=GET,
+                 returnFormat=XML,
                  **sparqlwrapper_kwargs):
         """
         """
         super(SPARQLStore, self).__init__(
-            endpoint, returnFormat=XML, **sparqlwrapper_kwargs)
+            endpoint, returnFormat=returnFormat, **sparqlwrapper_kwargs)
+        self.returnFormat = returnFormat
         self.setUseKeepAlive()
         self.node_to_sparql = node_to_sparql
-        self.node_from_result = node_from_result
         self.nsBindings = {}
         self.sparql11 = sparql11
         self.context_aware = context_aware
@@ -223,7 +161,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         self.query_endpoint = configuration
 
     def __set_query_endpoint(self, queryEndpoint):
-        super(SPARQLStore, self).__init__(queryEndpoint, returnFormat=XML)
+        super(SPARQLStore, self).__init__(queryEndpoint, returnFormat=self.returnFormat)
         self.endpoint = queryEndpoint
 
     def __get_query_endpoint(self):
@@ -277,7 +215,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         self.setQuery(query)
 
         with contextlib.closing(SPARQLWrapper.query(self).response) as res:
-            return Result.parse(res)
+            return Result.parse(res, format=self.returnFormat)
 
 
     def triples(self, spo, context=None):
@@ -369,16 +307,12 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         self.setQuery(query)
 
         with contextlib.closing(SPARQLWrapper.query(self).response) as res:
-            doc = etree.parse(res)
+            result = Result.parse(res, format=self.returnFormat)
 
-        # ElementTree.dump(doc)
-        for rt, vars in _traverse_sparql_result_dom(
-                doc,
-                as_dictionary=True,
-                node_from_result=self.node_from_result):
-            yield (rt.get(s, s),
-                   rt.get(p, p),
-                   rt.get(o, o)), None
+        for row in result:
+            yield (row.get(s, s),
+                   row.get(p, p),
+                   row.get(o, o)), None
 
     def triples_choices(self, _, context=None):
         """
@@ -403,16 +337,9 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             self.setQuery(q)
 
             with contextlib.closing(SPARQLWrapper.query(self).response) as res:
-                doc = etree.parse(res)
+                result = Result.parse(res, format=self.returnFormat)
 
-            rt, vars = next(iter(
-                _traverse_sparql_result_dom(
-                    doc,
-                    as_dictionary=True,
-                    node_from_result=self.node_from_result
-                )
-            ))
-            return int(rt.get(Variable("c")))
+            return int(next(iter(result)).c)
 
     def contexts(self, triple=None):
         """
@@ -441,13 +368,9 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             self.setQuery('SELECT ?name WHERE { GRAPH ?name {} }')
 
         with contextlib.closing(SPARQLWrapper.query(self).response) as res:
-            doc = etree.parse(res)
+            result = Result.parse(res, format=self.returnFormat)
 
-        return (
-            rt.get(Variable("name"))
-            for rt, vars in _traverse_sparql_result_dom(
-                doc, as_dictionary=True, node_from_result=self.node_from_result)
-        )
+        return ( row.name for row in result )
 
     # Namespace persistence interface implementation
     def bind(self, prefix, namespace):

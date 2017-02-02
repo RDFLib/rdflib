@@ -137,6 +137,12 @@ class ResultRow(tuple):
                 return tuple.__getitem__(self, self.labels[text_type(name)])
             raise KeyError(name)
 
+    def get(self, name, default=None):
+        try:
+            return self[name]
+        except KeyError:
+            return default
+
     def asdict(self):
         return dict((v, self[v]) for v in self.labels if self[v] != None)
 
