@@ -33,6 +33,7 @@ HELP = """
 csv2rdf.py \
     -b <instance-base> \
     -p <property-base> \
+    [-D <default>] \
     [-c <classname>] \
     [-i <identity column(s)>] \
     [-l <label columns>] \
@@ -67,11 +68,13 @@ Long options also supported: \
 Long options --col0, --col1, ...
 can be used to specify conversion for columns.
 Conversions can be:
-    float(), int(), split(sep, [more]), uri(base, [class]), date(format)
+    ignore, float(), int(), split(sep, [more]), uri(base, [class]), date(format)
 
 Long options --prop0, --prop1, ...
 can be used to use specific properties, rather than ones auto-generated
 from the headers
+
+-D sets the default conversion for columns not listed
 
 -f says to read config from a .ini/config file - the file must contain one
 section called csv2rdf, with keys like the long options, i.e.:
@@ -293,6 +296,7 @@ class CSV2RDF(object):
         self.DEFINECLASS = False
         self.SKIP = 0
         self.DELIM = ","
+        self.DEFAULT = None
 
         self.COLUMNS = {}
         self.PROPS = {}
@@ -344,7 +348,7 @@ class CSV2RDF(object):
                 h, l = headers[i], header_labels[i]
                 if h == "" or l == "":
                     continue
-                if self.COLUMNS.get(i) == _config_ignore:
+                if self.COLUMNS.get(i, self.DEFAULT) == 'ignore':
                     continue
                 self.triple(h, RDF.type, RDF.Property)
                 self.triple(h, RDFS.label, rdflib.Literal(toPropertyLabel(l)))
@@ -373,7 +377,7 @@ class CSV2RDF(object):
                 for i, x in enumerate(l):
                     x = x.strip()
                     if x != '':
-                        if self.COLUMNS.get(i) == _config_ignore:
+                        if self.COLUMNS.get(i, self.DEFAULT) == 'ignore':
                             continue
                         try:
                             o = self.COLUMNS.get(i, rdflib.Literal)(x)
@@ -422,8 +426,8 @@ def main():
 
     opts, files = getopt.getopt(
         sys.argv[1:],
-        "hc:b:p:i:o:Cf:l:s:d:",
-        ["out=", "base=", "delim=", "propbase=", "class=",
+        "hc:b:p:i:o:Cf:l:s:d:D:",
+        ["out=", "base=", "delim=", "propbase=", "class=", "default="
          "ident=", "label=", "skip=", "defineclass", "help"])
     opts = dict(opts)
 
@@ -453,6 +457,8 @@ def main():
                 csv2rdf.DELIM = v
             elif k == "skip":
                 csv2rdf.SKIP = int(v)
+            elif k == "default":
+                csv2rdf.DEFAULT = column(v)
             elif k.startswith("col"):
                 csv2rdf.COLUMNS[int(k[3:])] = column(v)
             elif k.startswith("prop"):
@@ -472,6 +478,11 @@ def main():
         csv2rdf.DELIM = opts["-d"]
     if "--delim" in opts:
         csv2rdf.DELIM = opts["--delim"]
+
+    if "-D" in opts:
+        csv2rdf.DEFAULT = column(opts["-D"])
+    if "--default" in opts:
+        csv2rdf.DEFAULT = column(opts["--default"])
 
     if "-p" in opts:
         csv2rdf.PROPBASE = rdflib.Namespace(opts["-p"])
