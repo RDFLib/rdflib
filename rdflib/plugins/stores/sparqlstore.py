@@ -624,9 +624,7 @@ class SPARQLUpdateStore(SPARQLStore):
         triple = "%s %s %s ." % (nts(subject), nts(predicate), nts(obj))
         if self._is_contextual(context):
             cid = nts(context.identifier)
-            q = "DELETE { GRAPH %s { %s } } WHERE { GRAPH %s { %s } }" % (
-                cid, triple,
-                cid, triple)
+            q = "WITH %(graph)s DELETE { %(triple)s } WHERE { %(triple)s }" % { 'graph': cid, 'triple': triple }
         else:
             q = "DELETE { %s } WHERE { %s } " % (triple, triple)
         self._transaction().append(q)
