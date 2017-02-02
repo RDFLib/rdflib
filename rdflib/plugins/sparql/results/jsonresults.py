@@ -103,9 +103,7 @@ def parseJsonTerm(d):
     if t == 'uri':
         return URIRef(d['value'])
     elif t == 'literal':
-        if 'xml:lang' in d:
-            return Literal(d['value'], lang=d['xml:lang'])
-        return Literal(d['value'])
+        return Literal(d['value'], datatype=d.get('datatype'), lang=d.get('xml:lang'))
     elif t == 'typed-literal':
         return Literal(d['value'], datatype=URIRef(d['datatype']))
     elif t == 'bnode':
@@ -118,16 +116,14 @@ def termToJSON(self, term):
     if isinstance(term, URIRef):
         return {'type': 'uri', 'value': text_type(term)}
     elif isinstance(term, Literal):
+        r = {'type': 'literal',
+             'value': text_type(term)}
+
         if term.datatype is not None:
-            return {'type': 'typed-literal',
-                    'value': text_type(term),
-                    'datatype': text_type(term.datatype)}
-        else:
-            r = {'type': 'literal',
-                 'value': text_type(term)}
-            if term.language is not None:
-                r['xml:lang'] = term.language
-            return r
+            r['datatype'] = text_type(term.datatype)
+        if term.language is not None:
+            r['xml:lang'] = term.language
+        return r
 
     elif isinstance(term, BNode):
         return {'type': 'bnode', 'value': str(term)}
