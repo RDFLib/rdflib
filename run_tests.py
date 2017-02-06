@@ -8,7 +8,7 @@ This test runner uses Nose for test discovery and running. It uses the argument
 spec of Nose, but with some options pre-set. To begin with, make sure you have
 Nose installed, e.g.:
 
-    $ sudo easy_install nose
+    $ pip nose doctest-ignore-unicode
 
 For daily test runs, use:
 

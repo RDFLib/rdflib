@@ -2,6 +2,20 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import logging
+
+import os
+from unicodedata import category
+
+from six import string_types
+from six import text_type
+
+from six.moves.urllib.request import pathname2url
+from six.moves.urllib.parse import urldefrag
+from six.moves.urllib.parse import urljoin
+
+from rdflib.term import URIRef, Variable, _XSD_PFX, _is_valid_uri
+
 __doc__ = """
 ===================
 Namespace Utilities
@@ -58,25 +72,13 @@ The following namespaces are available by directly importing from rdflib:
 
 """
 
-import logging
-logger = logging.getLogger(__name__)
-
-import os
-
-from six import string_types
-from six import text_type
-
-from six.moves.urllib.request import pathname2url
-from six.moves.urllib.parse import urldefrag
-from six.moves.urllib.parse import urljoin
-
-from rdflib.term import URIRef, Variable, _XSD_PFX, _is_valid_uri
-
 __all__ = [
     'is_ncname', 'split_uri', 'Namespace',
     'ClosedNamespace', 'NamespaceManager',
     'XMLNS', 'RDF', 'RDFS', 'XSD', 'OWL',
     'SKOS', 'DOAP', 'FOAF', 'DC', 'DCTERMS', 'VOID']
+
+logger = logging.getLogger(__name__)
 
 
 class Namespace(text_type):
@@ -93,14 +95,12 @@ class Namespace(text_type):
 
     """
 
-
     def __new__(cls, value):
         try:
             rt = text_type.__new__(cls, value)
         except UnicodeDecodeError:
             rt = text_type.__new__(cls, value, 'utf-8')
         return rt
-
 
     @property
     def title(self):
@@ -120,7 +120,7 @@ class Namespace(text_type):
             return self.term(name)
 
     def __repr__(self):
-        return "Namespace(%s)"%text_type.__repr__(self)
+        return "Namespace(%s)" % text_type.__repr__(self)
 
 
 class URIPattern(text_type):
@@ -150,8 +150,7 @@ class URIPattern(text_type):
         return URIRef(text_type.format(self, *args, **kwargs))
 
     def __repr__(self):
-        return "URIPattern(%r)"%text_type.__repr__(self)
-
+        return "URIPattern(%r)" % text_type.__repr__(self)
 
 
 class ClosedNamespace(object):
@@ -170,8 +169,9 @@ class ClosedNamespace(object):
     def term(self, name):
         uri = self.__uris.get(name)
         if uri is None:
-            raise Exception(
-                "term '%s' not in namespace '%s'" % (name, self.uri))
+            raise KeyError(
+                "term '{}' not in namespace '{}'".format(name, self.uri)
+            )
         else:
             return uri
 
@@ -226,7 +226,9 @@ class _RDFNamespace(ClosedNamespace):
         except ValueError:
             return super(_RDFNamespace, self).term(name)
 
+
 RDF = _RDFNamespace()
+
 
 RDFS = ClosedNamespace(
     uri=URIRef("http://www.w3.org/2000/01/rdf-schema#"),
@@ -246,7 +248,6 @@ FOAF = Namespace('http://xmlns.com/foaf/0.1/')
 DC = Namespace('http://purl.org/dc/elements/1.1/')
 DCTERMS = Namespace('http://purl.org/dc/terms/')
 VOID = Namespace('http://rdfs.org/ns/void#')
-
 
 
 class NamespaceManager(object):
@@ -329,17 +330,19 @@ class NamespaceManager(object):
     def compute_qname(self, uri, generate=True):
 
         if not _is_valid_uri(uri):
-            raise Exception('"%s" does not look like a valid URI, I cannot serialize this. Perhaps you wanted to urlencode it?'%uri)
+            raise ValueError(
+                '"{}" does not look like a valid URI, cannot serialize this. Did you want to urlencode it?'.format(uri)
+            )
 
-
-        if not uri in self.__cache:
+        if uri not in self.__cache:
             namespace, name = split_uri(uri)
             namespace = URIRef(namespace)
             prefix = self.store.prefix(namespace)
             if prefix is None:
                 if not generate:
-                    raise Exception(
-                        "No known prefix for %s and generate=False")
+                    raise KeyError(
+                        "No known prefix for {} and generate=False".format(namespace)
+                    )
                 num = 1
                 while 1:
                     prefix = "ns%s" % num
@@ -403,8 +406,7 @@ class NamespaceManager(object):
             elif bound_prefix == prefix:
                 pass  # already bound
             else:
-                if override or bound_prefix.startswith("_"):  # or a generated
-                                                              # prefix
+                if override or bound_prefix.startswith("_"):  # or a generated prefix
                     self.store.bind(prefix, namespace)
 
     def namespaces(self):
@@ -455,11 +457,11 @@ class NamespaceManager(object):
 #
 # * Characters '-' and '.' are allowed as name characters.
 
-from unicodedata import category
 
 NAME_START_CATEGORIES = ["Ll", "Lu", "Lo", "Lt", "Nl"]
 NAME_CATEGORIES = NAME_START_CATEGORIES + ["Mc", "Me", "Mn", "Lm", "Nd"]
 ALLOWED_NAME_CHARS = [u"\u00B7", u"\u0387", u"-", u".", u"_"]
+
 
 # http://www.w3.org/TR/REC-xml-names/#NT-NCName
 #  [4] NCName ::= (Letter | '_') (NCNameChar)* /* An XML Name, minus
@@ -485,6 +487,7 @@ def is_ncname(name):
     else:
         return 0
 
+
 XMLNS = "http://www.w3.org/XML/1998/namespace"
 
 
@@ -505,4 +508,4 @@ def split_uri(uri):
                     ln = uri[j:]
                     return (ns, ln)
             break
-    raise Exception("Can't split '%s'" % uri)
+    raise ValueError("Can't split '{}'".format(uri))
