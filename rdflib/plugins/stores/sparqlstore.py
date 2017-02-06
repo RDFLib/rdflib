@@ -476,9 +476,20 @@ class SPARQLUpdateStore(SPARQLStore):
                  queryEndpoint=None, update_endpoint=None,
                  sparql11=True,
                  context_aware=True,
-                 postAsEncoded=True, autocommit=True,
+                 postAsEncoded=True,
+                 autocommit=True,
+                 dirty_reads=False,
                  **kwds
                  ):
+        """
+        :param autocommit if set, the store will commit after every
+        writing operations. If False, we only make queries on the
+        server once commit is called.
+
+        :param dirty_reads if set, we do not commit before reading. So you
+        cannot read what you wrote before manually calling commit.
+
+        """
 
         SPARQLStore.__init__(
             self,
@@ -491,25 +502,26 @@ class SPARQLUpdateStore(SPARQLStore):
 
         self.postAsEncoded = postAsEncoded
         self.autocommit = autocommit
+        self.dirty_reads = dirty_reads
         self._edits = None
 
     def query(self, *args, **kwargs):
-        if not self.autocommit:
+        if not self.autocommit and not self.dirty_reads:
             self.commit()
         return SPARQLStore.query(self, *args, **kwargs)
 
     def triples(self, *args, **kwargs):
-        if not self.autocommit:
+        if not self.autocommit and not self.dirty_reads:
             self.commit()
         return SPARQLStore.triples(self, *args, **kwargs)
 
     def contexts(self, *args, **kwargs):
-        if not self.autocommit:
+        if not self.autocommit and not self.dirty_reads:
             self.commit()
         return SPARQLStore.contexts(self, *args, **kwargs)
 
     def __len__(self, *args, **kwargs):
-        if not self.autocommit:
+        if not self.autocommit and not self.dirty_reads:
             self.commit()
         return SPARQLStore.__len__(self, *args, **kwargs)
 
