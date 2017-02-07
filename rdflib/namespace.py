@@ -333,13 +333,23 @@ class NamespaceManager(object):
 
 
         if not uri in self.__cache:
-            namespace, name = split_uri(uri)
-            namespace = URIRef(namespace)
-            prefix = self.store.prefix(namespace)
+            prefix = self.store.prefix(uri)
+            if prefix is None:
+                for namespace in self.namespaces():
+                    if uri.startswith(namespace[1]):
+                        prefix = namespace[0]
+                        namespace = namespace[1]
+                        name = uri.replace(namespace, '')
+                        break
+            else:
+                namespace = uri
+                name = ''
             if prefix is None:
                 if not generate:
                     raise Exception(
                         "No known prefix for %s and generate=False")
+                namespace, name = split_uri(uri)
+                namespace = URIRef(namespace)
                 num = 1
                 while 1:
                     prefix = "ns%s" % num
