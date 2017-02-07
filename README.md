@@ -75,12 +75,12 @@ in memory storage and persistent storage on top of the Berkeley DB.
 
 A SPARQL 1.1 implementation is included - supporting SPARQL 1.1 Queries and Update statements.
 
-RDFLib is open source and is maintained on [GitHub](http://github.com/RDFLib/rdflib/). RDFLib releases, current and previous
-are listed on [PyPI](http://pypi.python.org/pypi/rdflib/)
+RDFLib is open source and is maintained on [GitHub](https://github.com/RDFLib/rdflib/). RDFLib releases, current and previous
+are listed on [PyPI](https://pypi.python.org/pypi/rdflib/)
 
 RDFLib has a plugin-architecture for store-implementation, as well as parsers/serializers, several other projects exist which extend RDFLib features:
 
- * [rdflib-json](https://github.com/RDFLib/rdflib-jsonld) - Serializer and parser for [json-ld](http://json-ld.org)
+ * [rdflib-jsonld](https://github.com/RDFLib/rdflib-jsonld) - Serializer and parser for [json-ld](http://json-ld.org)
 
 Support
 -------
@@ -95,10 +95,10 @@ The documentation can be built by doing::
 
 And is also available from ReadTheDocs:
 
-http://rdflib.readthedocs.io
+https://rdflib.readthedocs.io
 
 Support is available through the rdflib-dev group:
 
-http://groups.google.com/group/rdflib-dev
+https://groups.google.com/group/rdflib-dev
 
 and on the IRC channel #rdflib on the freenode.net server
