@@ -120,7 +120,7 @@ class Namespace(text_type):
             return self.term(name)
 
     def __repr__(self):
-        return "Namespace(%s)" % text_type.__repr__(self)
+        return "Namespace(%r)" % text_type(self)
 
 
 class URIPattern(text_type):
@@ -150,7 +150,7 @@ class URIPattern(text_type):
         return URIRef(text_type.format(self, *args, **kwargs))
 
     def __repr__(self):
-        return "URIPattern(%r)" % text_type.__repr__(self)
+        return "URIPattern(%r)" % text_type(self)
 
 
 class ClosedNamespace(object):
@@ -185,10 +185,10 @@ class ClosedNamespace(object):
             return self.term(name)
 
     def __str__(self):
-        return str(self.uri)
+        return text_type(self.uri)
 
     def __repr__(self):
-        return """rdf.namespace.ClosedNamespace('%s')""" % str(self.uri)
+        return "rdf.namespace.ClosedNamespace(%r)" % text_type(self.uri)
 
 
 class _RDFNamespace(ClosedNamespace):
