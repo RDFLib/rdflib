@@ -145,6 +145,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         self.graph_aware = context_aware
         self._timeout = None
         self.query_method = default_query_method
+        self._queries = 0
 
     # Database Management Methods
     def create(self, configuration):
@@ -187,6 +188,11 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
     def remove(self, _, context):
         raise TypeError('The SPARQL store is read only')
+
+    def _query(self, *args, **kwargs):
+        self._queries += 1
+
+        return super(SPARQLStore, self)._query(*args, **kwargs)
 
     def query(self, query,
               initNs={},
@@ -504,6 +510,8 @@ class SPARQLUpdateStore(SPARQLStore):
         self.autocommit = autocommit
         self.dirty_reads = dirty_reads
         self._edits = None
+        self._updates = 0
+
 
     def query(self, *args, **kwargs):
         if not self.autocommit and not self.dirty_reads:
@@ -647,6 +655,9 @@ class SPARQLUpdateStore(SPARQLStore):
         self._timeout = int(timeout)
 
     def _do_update(self, update):
+
+        self._updates += 1
+
         self.resetQuery()
         self.setQuery(update)
         self.setMethod(POST)
