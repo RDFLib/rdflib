@@ -276,11 +276,12 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
         if vars:
             v = ' '.join([term.n3() for term in vars])
+            verb = 'SELECT %s '%v
         else:
-            v = '*'
+            verb = 'ASK'
 
         nts = self.node_to_sparql
-        query = "SELECT %s WHERE { %s %s %s }" % (v, nts(s), nts(p), nts(o))
+        query = "%s { %s %s %s }" % (verb, nts(s), nts(p), nts(o))
 
         # The ORDER BY is necessary
         if hasattr(context, LIMIT) or hasattr(context, OFFSET) \
@@ -315,10 +316,14 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         with contextlib.closing(SPARQLWrapper.query(self).response) as res:
             result = Result.parse(res, format=self.returnFormat)
 
-        for row in result:
-            yield (row.get(s, s),
-                   row.get(p, p),
-                   row.get(o, o)), None
+        if vars:
+            for row in result:
+                yield (row.get(s, s),
+                       row.get(p, p),
+                       row.get(o, o)), None # why is the context here not the passed in graph 'context'?
+        else:
+            if result.askAnswer:
+                yield (s,p,o), None
 
     def triples_choices(self, _, context=None):
         """
