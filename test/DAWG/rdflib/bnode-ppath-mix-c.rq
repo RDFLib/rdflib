@@ -10,5 +10,5 @@ ask {
            [ rdfs:subClassOf ?classC ]
         ];
   a rdf:Property ;
-  rdfs:domain ?classF .
+  rdfs:domain/rdfs:subClassOf/rdfs:subClassOf ?classF .
 }
