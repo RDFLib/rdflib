@@ -498,7 +498,7 @@ ObjectList = Object + ZeroOrMore(',' + Object)
 
 # [83] PropertyListPathNotEmpty ::= ( VerbPath | VerbSimple ) ObjectListPath ( ';' ( ( VerbPath | VerbSimple ) ObjectList )? )*
 PropertyListPathNotEmpty = (VerbPath | VerbSimple) + ObjectListPath + ZeroOrMore(
-    ';' + Optional((VerbPath | VerbSimple) + ObjectList))
+    ';' + Optional((VerbPath | VerbSimple) + ObjectListPath))
 
 # [82] PropertyListPath ::= Optional(PropertyListPathNotEmpty)
 PropertyListPath = Optional(PropertyListPathNotEmpty)
