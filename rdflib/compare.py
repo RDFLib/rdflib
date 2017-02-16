@@ -469,8 +469,11 @@ class _TripleCanonicalizer(object):
 def to_isomorphic(graph):
     if isinstance(graph, IsomorphicGraph):
         return graph
-    return IsomorphicGraph(store=graph.store)
-
+    result = IsomorphicGraph()
+    if hasattr(graph, "identifier"):
+        result = IsomorphicGraph(identifier=graph.identifier)
+    result += graph
+    return result
 
 def isomorphic(graph1, graph2):
     """Compare graph for equality.
