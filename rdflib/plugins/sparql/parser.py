@@ -58,7 +58,7 @@ def expandTriples(terms):
             elif t == ';':
                 if i+1 == len(terms) or terms[i+1] == ";" or terms[i+1] == ".":
                     continue # this semicolon is spurious
-                res.append(res[-3])
+                res.append(res[0])
             elif isinstance(t, list):
                 # BlankNodePropertyList
                 # is this bnode the object of previous triples?
@@ -498,7 +498,7 @@ ObjectList = Object + ZeroOrMore(',' + Object)
 
 # [83] PropertyListPathNotEmpty ::= ( VerbPath | VerbSimple ) ObjectListPath ( ';' ( ( VerbPath | VerbSimple ) ObjectList )? )*
 PropertyListPathNotEmpty = (VerbPath | VerbSimple) + ObjectListPath + ZeroOrMore(
-    ';' + Optional((VerbPath | VerbSimple) + ObjectList))
+    ';' + Optional((VerbPath | VerbSimple) + ObjectListPath))
 
 # [82] PropertyListPath ::= Optional(PropertyListPathNotEmpty)
 PropertyListPath = Optional(PropertyListPathNotEmpty)
