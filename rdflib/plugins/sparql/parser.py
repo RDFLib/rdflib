@@ -58,7 +58,7 @@ def expandTriples(terms):
             elif t == ';':
                 if i+1 == len(terms) or terms[i+1] == ";" or terms[i+1] == ".":
                     continue # this semicolon is spurious
-                res.append(res[-3])
+                res.append(res[0])
             elif isinstance(t, list):
                 # BlankNodePropertyList
                 # is this bnode the object of previous triples?
