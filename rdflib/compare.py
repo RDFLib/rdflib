@@ -168,6 +168,9 @@ class IsomorphicGraph(ConjunctiveGraph):
         """Negative graph isomorphism testing."""
         return not self.__eq__(other)
 
+    def __hash__(self):
+        return super(IsomorphicGraph, self).__hash__()
+
     def graph_digest(self, stats=None):
         """Synonym for IsomorphicGraph.internal_hash."""
         return self.internal_hash(stats=stats)
