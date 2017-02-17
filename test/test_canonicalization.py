@@ -278,10 +278,7 @@ def test_issue682_signing_named_graphs():
     ig = to_isomorphic(g)
     igmary = to_isomorphic(gmary)
 
-    print len(igmary), len(mary)
     assert len(igmary) == len(gmary)
-    print len(ig), len(g)
     assert len(ig) == len(g)
     assert len(igmary) < len(ig)
-    print ig.graph_digest(), igmary.graph_digest()
     assert ig.graph_digest() != igmary.graph_digest()
