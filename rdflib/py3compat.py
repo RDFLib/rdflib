@@ -182,6 +182,27 @@ def decodeStringEscape(s):
     return s
     #return _unicodeExpand(s) # hmm - string escape doesn't do unicode escaping
 
+
+UNESCAPE_DICT = {
+    "\\\\": "\\",
+    "\\t": "\t",
+    "\\b": "\b",
+    "\\n": "\n",
+    "\\r": "\r",
+    "\\f": "\f",
+    '\\"': '"',
+    "\\'": "'",
+}
+
+
+UNESCAPE_PATTERN = re.compile("""\\\\(\\\\|t|b|n|r|f|\"|')""")
+
+
+def unescape(m):
+    value = m.group(0)
+    return UNESCAPE_DICT.get(value, value)
+
+
 def decodeUnicodeEscape(s):
     """
     s is a unicode string
@@ -191,15 +212,7 @@ def decodeUnicodeEscape(s):
         s = s.encode('utf-8').decode('string-escape')
         s = _unicodeExpand(s)
     else:
-        s = s.replace('\\t', '\t')
-        s = s.replace('\\n', '\n')
-        s = s.replace('\\r', '\r')
-        s = s.replace('\\b', '\b')
-        s = s.replace('\\f', '\f')
-        s = s.replace('\\"', '"')
-        s = s.replace("\\'", "'")
-        s = s.replace('\\\\', '\\')
-
+        s = UNESCAPE_PATTERN.sub(unescape, s)
         s = _unicodeExpand(s) # hmm - string escape doesn't do unicode escaping
 
     return s

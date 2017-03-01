@@ -9,6 +9,7 @@ from rdflib.py3compat import b
 
 import warnings
 import codecs
+import re
 
 __all__ = ['NTSerializer']
 
@@ -73,11 +74,30 @@ def _quoteLiteral(l):
         return '%s' % encoded
 
 
+ESCAPE_DICT = {
+    "\\": "\\\\",
+    "\t": "\\t",
+    # "\b": "\\b",
+    "\n": "\\n",
+    "\r": "\\r",
+    # "\f": "\\f",
+    "\x0c": "\\f",
+    "\x08": "\\b",
+    "\"": "\\\"",
+    "'": "\\'",
+}
+
+
+ESCAPE_PATTERN = re.compile(r"(\\|\t|\n|\r|\x0c|\x08|\"|')")
+
+
+def escapes(m):
+    value = m.group(0)
+    return ESCAPE_DICT.get(value, value)
+
+
 def _quote_encode(l):
-    return '"%s"' % l.replace('\\', '\\\\')\
-        .replace('\n', '\\n')\
-        .replace('"', '\\"')\
-        .replace('\r', '\\r')
+    return '"%s"' % ESCAPE_PATTERN.sub(escapes, l)
 
 def _nt_unicode_error_resolver(err):
 
