@@ -617,17 +617,21 @@ def Function(e, ctx):
     Custom functions and casts
     """
     pair =_CUSTOM_FUNCTIONS.get(e.iri)
-    if pair is not None:
-        func, raw = pair
-        if raw:
-            return func(e, ctx)
-        else:
-            try:
-                return func(*e.expr)
-            except TypeError as ex:
-                raise SPARQLError(*ex.args)
+    if pair is None:
+        # no such function is registered
+        raise SPARQLError('Unknown function %r"%e.iri')
+    func, raw = pair
+    if raw:
+        # function expects expression and context
+        return func(e, ctx)
     else:
-         raise SPARQLError('Unknown function %r"%e.iri')
+        # function expects the argument list
+        try:
+            return func(*e.expr)
+        except TypeError as ex:
+            # wrong argument number
+            raise SPARQLError(*ex.args)
+         
 
 
 @custom_function(XSD.string, raw=True)
