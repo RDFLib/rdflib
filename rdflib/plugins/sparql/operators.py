@@ -624,7 +624,7 @@ def Function(e, ctx):
         else:
             try:
                 return func(*e.expr)
-            except TypeError, ex:
+            except TypeError as ex:
                 raise SPARQLError(*ex.args)
     else:
          raise SPARQLError('Unknown function %r"%e.iri')
@@ -808,7 +808,7 @@ def RelationalExpression(e, ctx):
             try:
                 if x == expr:
                     return Literal(True ^ res)
-            except SPARQLError, e:
+            except SPARQLError as e:
                 error = e
         if not error:
             return Literal(False ^ res)
@@ -842,7 +842,7 @@ def RelationalExpression(e, ctx):
         r = ops[op](expr, other)
         if r == NotImplemented:
             raise SPARQLError('Error when comparing')
-    except TypeError, te:
+    except TypeError as te:
         raise SPARQLError(*te.args)
     return Literal(r)
 
@@ -881,7 +881,7 @@ def ConditionalOrExpression(e, ctx):
         try:
             if EBV(x):
                 return Literal(True)
-        except SPARQLError, e:
+        except SPARQLError as e:
             error = e
     if error:
         raise error
