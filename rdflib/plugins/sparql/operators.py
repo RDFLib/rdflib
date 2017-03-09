@@ -619,7 +619,7 @@ def Function(e, ctx):
     pair =_CUSTOM_FUNCTIONS.get(e.iri)
     if pair is None:
         # no such function is registered
-        raise SPARQLError('Unknown function %r"%e.iri')
+        raise SPARQLError('Unknown function %r' % e.iri)
     func, raw = pair
     if raw:
         # function expects expression and context
@@ -631,7 +631,6 @@ def Function(e, ctx):
         except TypeError as ex:
             # wrong argument number
             raise SPARQLError(*ex.args)
-         
 
 
 @custom_function(XSD.string, raw=True)
