@@ -246,7 +246,7 @@ def _config_uri(prefix=None, class_=None):
 
 
 def _config_literal():
-    return NodeLiteral
+    return NodeLiteral()
 
 
 def _config_float(f=None):
