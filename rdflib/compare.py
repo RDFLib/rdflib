@@ -168,6 +168,9 @@ class IsomorphicGraph(ConjunctiveGraph):
         """Negative graph isomorphism testing."""
         return not self.__eq__(other)
 
+    def __hash__(self):
+        return super(IsomorphicGraph, self).__hash__()
+
     def graph_digest(self, stats=None):
         """Synonym for IsomorphicGraph.internal_hash."""
         return self.internal_hash(stats=stats)
@@ -487,8 +490,11 @@ class _TripleCanonicalizer(object):
 def to_isomorphic(graph):
     if isinstance(graph, IsomorphicGraph):
         return graph
-    return IsomorphicGraph(store=graph.store)
-
+    result = IsomorphicGraph()
+    if hasattr(graph, "identifier"):
+        result = IsomorphicGraph(identifier=graph.identifier)
+    result += graph
+    return result
 
 def isomorphic(graph1, graph2):
     """Compare graph for equality.
