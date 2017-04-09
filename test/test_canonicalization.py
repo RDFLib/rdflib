@@ -1,5 +1,6 @@
 from rdflib import Graph, RDF, BNode, URIRef
 from rdflib.compare import to_isomorphic, to_canonical_graph
+import rdflib
 from six import text_type
 from io import StringIO
 
@@ -153,6 +154,130 @@ def negative_graph_match_test():
     for inputs in testInputs:
         yield fn, inputs[0], inputs[1], inputs[2]
 
+def test_issue725_collapsing_bnodes():
+    g = rdflib.Graph()
+    g += [
+        (rdflib.term.BNode('N0a76d42406b84fe4b8029d0a7fa04244'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#object'),
+         rdflib.term.BNode('v2')),
+        (rdflib.term.BNode('N0a76d42406b84fe4b8029d0a7fa04244'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate'),
+         rdflib.term.BNode('v0')),
+        (rdflib.term.BNode('N0a76d42406b84fe4b8029d0a7fa04244'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#subject'),
+         rdflib.term.URIRef(u'urn:gp_learner:fixed_var:target')),
+        (rdflib.term.BNode('N0a76d42406b84fe4b8029d0a7fa04244'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement')),
+        (rdflib.term.BNode('N2f62af5936b94a8eb4b1e4bfa8e11d95'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#object'),
+         rdflib.term.BNode('v1')),
+        (rdflib.term.BNode('N2f62af5936b94a8eb4b1e4bfa8e11d95'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate'),
+         rdflib.term.BNode('v0')),
+        (rdflib.term.BNode('N2f62af5936b94a8eb4b1e4bfa8e11d95'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#subject'),
+         rdflib.term.URIRef(u'urn:gp_learner:fixed_var:target')),
+        (rdflib.term.BNode('N2f62af5936b94a8eb4b1e4bfa8e11d95'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement')),
+        (rdflib.term.BNode('N5ae541f93e1d4e5880450b1bdceb6404'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#object'),
+         rdflib.term.BNode('v5')),
+        (rdflib.term.BNode('N5ae541f93e1d4e5880450b1bdceb6404'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate'),
+         rdflib.term.BNode('v4')),
+        (rdflib.term.BNode('N5ae541f93e1d4e5880450b1bdceb6404'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#subject'),
+         rdflib.term.URIRef(u'urn:gp_learner:fixed_var:target')),
+        (rdflib.term.BNode('N5ae541f93e1d4e5880450b1bdceb6404'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement')),
+        (rdflib.term.BNode('N86ac7ca781f546ae939b8963895f672e'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#object'),
+         rdflib.term.URIRef(u'urn:gp_learner:fixed_var:source')),
+        (rdflib.term.BNode('N86ac7ca781f546ae939b8963895f672e'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate'),
+         rdflib.term.BNode('v0')),
+        (rdflib.term.BNode('N86ac7ca781f546ae939b8963895f672e'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#subject'),
+         rdflib.term.URIRef(u'urn:gp_learner:fixed_var:target')),
+        (rdflib.term.BNode('N86ac7ca781f546ae939b8963895f672e'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement')),
+        (rdflib.term.BNode('Nac82b883ca3849b5ab6820b7ac15e490'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#object'),
+         rdflib.term.BNode('v1')),
+        (rdflib.term.BNode('Nac82b883ca3849b5ab6820b7ac15e490'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate'),
+         rdflib.term.BNode('v3')),
+        (rdflib.term.BNode('Nac82b883ca3849b5ab6820b7ac15e490'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#subject'),
+         rdflib.term.URIRef(u'urn:gp_learner:fixed_var:target')),
+        (rdflib.term.BNode('Nac82b883ca3849b5ab6820b7ac15e490'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+         rdflib.term.URIRef(u'http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement'))
+    ]
+
+    turtle = '''
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+[] a rdf:Statement ;
+    rdf:object [ ] ;
+    rdf:predicate _:v0 ;
+    rdf:subject <urn:gp_learner:fixed_var:target> .
+
+[] a rdf:Statement ;
+    rdf:object _:v1 ;
+    rdf:predicate _:v0 ;
+    rdf:subject <urn:gp_learner:fixed_var:target> .
+
+[] a rdf:Statement ;
+    rdf:object [ ] ;
+    rdf:predicate [ ] ;
+    rdf:subject <urn:gp_learner:fixed_var:target> .
+
+[] a rdf:Statement ;
+    rdf:object <urn:gp_learner:fixed_var:source> ;
+    rdf:predicate _:v0 ;
+    rdf:subject <urn:gp_learner:fixed_var:target> .
+
+[] a rdf:Statement ;
+    rdf:object _:v1 ;
+    rdf:predicate [ ] ;
+    rdf:subject <urn:gp_learner:fixed_var:target> .'''
+
+    #g = Graph()
+    #g.parse(data=turtle, format='turtle')
+
+    stats = {}
+    cg = rdflib.compare.to_canonical_graph(g, stats=stats)
+
+    print ('graph g length: %d, nodes: %d' % (len(g), len(g.all_nodes())))
+    print ('triple_bnode degrees:')
+    for triple_bnode in g.subjects(rdflib.RDF['type'], rdflib.RDF['Statement']):
+        print (len(list(g.triples([triple_bnode, None, None]))))
+    print ('all node out-degrees:')
+    print (sorted([len(list(g.triples([node, None, None]))) for node in g.all_nodes()]))
+    print ('all node in-degrees:')
+    print (sorted([len(list(g.triples([None, None, node]))) for node in g.all_nodes()]))
+    print(g.serialize(format='n3'))
+
+    print ('graph cg length: %d, nodes: %d' % (len(cg), len(cg.all_nodes())))
+    print ('triple_bnode degrees:')
+    for triple_bnode in cg.subjects(rdflib.RDF['type'], rdflib.RDF['Statement']):
+        print (len(list(cg.triples([triple_bnode, None, None]))))
+    print ('all node out-degrees:')
+    print (sorted([len(list(cg.triples([node, None, None]))) for node in cg.all_nodes()]))
+    print ('all node in-degrees:')
+    print (sorted([len(list(cg.triples([None, None, node]))) for node in cg.all_nodes()]))
+    print(cg.serialize(format='n3'))
+
+    assert(len(g.all_nodes()) == len(cg.all_nodes()))
+            
 def test_issue494_collapsing_bnodes():
     """Test for https://github.com/RDFLib/rdflib/issues/494 collapsing BNodes"""
     g = Graph()

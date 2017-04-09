@@ -191,6 +191,10 @@ class Color:
         self.hashfunc = hashfunc
         self._hash_color = None
 
+    def __str__(self):
+        nodes, color  = self.key()
+        return "Color %s (%s nodes)" % (color, nodes)
+        
     def key(self):
         return (len(self.nodes), self.hash_color())
 
@@ -274,7 +278,7 @@ class _TripleCanonicalizer(object):
         others = set()
         self._neighbors = defaultdict(set)
         for s, p, o in self.graph:
-            nodes = set([s, o])
+            nodes = set([s, p, o])
             b = set([x for x in nodes if isinstance(x, BNode)])
             if len(b) > 0:
                 others |= nodes - b
@@ -283,6 +287,9 @@ class _TripleCanonicalizer(object):
                     self._neighbors[s].add(o)
                 if isinstance(o, BNode):
                     self._neighbors[o].add(s)
+                if isinstance(p, BNode):
+                    self._neighbors[p].add(s)
+                    self._neighbors[p].add(p)
         if len(bnodes) > 0:
             return [
                     Color(list(bnodes), self.hashfunc, hash_cache=self._hash_cache)
@@ -314,7 +321,7 @@ class _TripleCanonicalizer(object):
         while len(sequence) > 0 and not self._discrete(coloring):
             W = sequence.pop()
             for c in coloring[:]:
-                if len(c.nodes) > 1:
+                if len(c.nodes) > 1 or isinstance(c.nodes[0], BNode):
                     colors = sorted(c.distinguish(W, self.graph),
                                     key=lambda x: x.key(),
                                     reverse=True)
@@ -325,8 +332,17 @@ class _TripleCanonicalizer(object):
                         sequence = sequence[:si] + colors + sequence[si+1:]
                     except ValueError:
                         sequence = colors[1:] + sequence
-
-        return coloring
+        combined_colors = []
+        combined_color_map = dict()
+        for color in coloring:
+            color_hash = color.hash_color()
+            # This is a hash collision, and be combined into a single color for individuation.
+            if color_hash in combined_color_map:
+                combined_color_map[color_hash].nodes.extend(color.nodes)
+            else:
+                combined_colors.append(color)
+                combined_color_map[color_hash] = color
+        return combined_colors
 
     @_runtime("to_hash_runtime")
     def to_hash(self, stats=None):
@@ -452,6 +468,8 @@ class _TripleCanonicalizer(object):
             stats['color_count'] = len(coloring)
 
         bnode_labels = dict([(c.nodes[0], c.hash_color()) for c in coloring])
+        print ("BNode Labels:")
+        print ("\n".join(['\t'.join(item) for item in bnode_labels.items()]))
         if stats is not None:
             stats["canonicalize_triples_runtime"] = _total_seconds(datetime.now() - start_coloring)
         for triple in self.graph:
@@ -509,14 +527,14 @@ def isomorphic(graph1, graph2):
 
 
 
-def to_canonical_graph(g1):
+def to_canonical_graph(g1, stats=None):
     """Creates a canonical, read-only graph.
 
     Creates a canonical, read-only graph where all bnode id:s are based on
     deterministical SHA-256 checksums, correlated with the graph contents.
     """
     graph = Graph()
-    graph += _TripleCanonicalizer(g1).canonical_triples()
+    graph += _TripleCanonicalizer(g1).canonical_triples(stats=stats)
     return ReadOnlyGraphAggregate([graph])
 
 
