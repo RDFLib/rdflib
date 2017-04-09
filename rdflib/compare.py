@@ -468,8 +468,6 @@ class _TripleCanonicalizer(object):
             stats['color_count'] = len(coloring)
 
         bnode_labels = dict([(c.nodes[0], c.hash_color()) for c in coloring])
-        print ("BNode Labels:")
-        print ("\n".join(['\t'.join(item) for item in bnode_labels.items()]))
         if stats is not None:
             stats["canonicalize_triples_runtime"] = _total_seconds(datetime.now() - start_coloring)
         for triple in self.graph:
