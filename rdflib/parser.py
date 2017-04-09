@@ -101,7 +101,7 @@ class URLInputSource(InputSource):
             myheaders['Accept'] = 'text/plain, */*;q=0.1'
         elif format == 'json-ld':
             myheaders['Accept'] = (
-                'application/ld+json, application/json;p=0.9, */*;q=0.1')
+                'application/ld+json, application/json;q=0.9, */*;q=0.1')
         else:
             myheaders['Accept'] = (
                 'application/rdf+xml,text/rdf+n3;q=0.9,' +

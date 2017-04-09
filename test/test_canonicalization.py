@@ -1,6 +1,9 @@
-from rdflib import Graph, RDF, BNode, URIRef
+from rdflib import Graph, RDF, BNode, URIRef, Namespace, ConjunctiveGraph, Literal
 from rdflib.compare import to_isomorphic, to_canonical_graph
+
 import rdflib
+from rdflib.plugins.memory import IOMemory
+
 from six import text_type
 from io import StringIO
 
@@ -376,3 +379,33 @@ def test_issue494_collapsing_bnodes():
         'canonicalization changed number of statements'
     assert g_node_degs == cg_node_degs, \
         'canonicalization changed node degrees'
+
+def test_issue682_signing_named_graphs():
+    ns = Namespace("http://love.com#")
+
+    mary = BNode()
+    john = URIRef("http://love.com/lovers/john#")
+
+    cmary=URIRef("http://love.com/lovers/mary#")
+    cjohn=URIRef("http://love.com/lovers/john#")
+
+    store = IOMemory()
+
+    g = ConjunctiveGraph(store=store)
+    g.bind("love",ns)
+
+    gmary = Graph(store=store, identifier=cmary)
+
+    gmary.add((mary, ns['hasName'], Literal("Mary")))
+    gmary.add((mary, ns['loves'], john))
+
+    gjohn = Graph(store=store, identifier=cjohn)
+    gjohn.add((john, ns['hasName'], Literal("John")))
+
+    ig = to_isomorphic(g)
+    igmary = to_isomorphic(gmary)
+
+    assert len(igmary) == len(gmary)
+    assert len(ig) == len(g)
+    assert len(igmary) < len(ig)
+    assert ig.graph_digest() != igmary.graph_digest()
