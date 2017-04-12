@@ -72,13 +72,15 @@ import sys
 assert sys.version_info >= (2, 7, 0), "rdflib requires Python 2.7 or higher"
 
 import logging
+logger = logging.getLogger(__name__)
 _interactive_mode = False
 try:
     import __main__
-    if not hasattr(__main__, '__file__') and sys.stdout.isatty():
+    if not hasattr(__main__, '__file__') and sys.stderr.isatty():
         # show log messages in interactive mode
         _interactive_mode = True
-        logging.basicConfig(level=logging.INFO)
+        logger.setLevel(logging.INFO)
+        logger.addHandler(logging.StreamHandler())
     del __main__
 except ImportError:
     #Main already imported from elsewhere
@@ -86,7 +88,6 @@ except ImportError:
     warnings.warn('__main__ already imported', ImportWarning)
     del warnings
 
-logger = logging.getLogger(__name__)
 if _interactive_mode:
     logger.info("RDFLib Version: %s" % __version__)
 else:
