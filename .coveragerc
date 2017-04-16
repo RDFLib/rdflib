@@ -22,6 +22,7 @@ exclude_lines =
     if 0:
     if __name__ == .__main__.:
     if __name__==.__main__.:
+    def main\(\):
 
 # path mappings for the py3 environments (doesn't seem to work on coveralls yet)
 [paths]
