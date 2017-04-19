@@ -6,6 +6,8 @@ Code for carrying out Update Operations
 
 from rdflib import Graph, Variable
 
+from six import iteritems
+
 from rdflib.plugins.sparql.sparql import QueryContext
 from rdflib.plugins.sparql.evalutils import _fillTemplate, _join
 from rdflib.plugins.sparql.evaluate import evalBGP, evalPart
@@ -172,14 +174,14 @@ def evalModify(ctx, u):
         if u.delete:
             dg -= _fillTemplate(u.delete.triples, c)
 
-            for g, q in u.delete.quads.iteritems():
+            for g, q in iteritems(u.delete.quads):
                 cg = ctx.dataset.get_context(c.get(g))
                 cg -= _fillTemplate(q, c)
 
         if u.insert:
             dg += _fillTemplate(u.insert.triples, c)
 
-            for g, q in u.insert.quads.iteritems():
+            for g, q in iteritems(u.insert.quads):
                 cg = ctx.dataset.get_context(c.get(g))
                 cg += _fillTemplate(q, c)
 
@@ -252,7 +254,7 @@ def evalCopy(ctx, u):
     dstg += srcg
 
 
-def evalUpdate(graph, update, initBindings=None):
+def evalUpdate(graph, update, initBindings={}):
     """
 
     http://www.w3.org/TR/sparql11-update/#updateLanguage
@@ -274,15 +276,11 @@ def evalUpdate(graph, update, initBindings=None):
 
     for u in update:
 
-        ctx = QueryContext(graph)
+        initBindings = dict( ( Variable(k),v ) for k,v in iteritems(initBindings) )
+
+        ctx = QueryContext(graph, initBindings=initBindings)
         ctx.prologue = u.prologue
 
-        if initBindings:
-            for k, v in initBindings.iteritems():
-                if not isinstance(k, Variable):
-                    k = Variable(k)
-                ctx[k] = v
-            # ctx.push()  # nescessary?
 
         try:
             if u.name == 'Load':

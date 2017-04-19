@@ -17,8 +17,8 @@ automatically downloads them (to allow for "manual+automatic" update).
 from operator import attrgetter
 import re
 import os
-from urllib2 import urlopen
-from urllib import url2pathname
+
+from six.moves.urllib.request import urlopen, url2pathname
 
 from rdflib.graph import Graph
 from rdflib.namespace import Namespace, RDF
@@ -149,13 +149,14 @@ def manual_run():
         print(test.description)
         try:
             test()
-            print "PASSED"
-        except AssertionError, e:
+            print("PASSED")
+        except AssertionError as e:
             failed += 1
-            print "****FAILED****", e;
-        except Exception, e:
-            errors += 1; print "****ERROR**** in %s" % test._source_urls, e
-    print "Ran %(count)s tests. Failed: %(failed)s. Errors: %(errors)s."%vars()
+            print("****FAILED****", e);
+        except Exception as e:
+            errors += 1
+            print("****ERROR**** in %s" % test._source_urls, e)
+    print("Ran %(count)s tests. Failed: %(failed)s. Errors: %(errors)s."%vars())
 
 
 if __name__ == '__main__':

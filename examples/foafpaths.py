@@ -4,7 +4,7 @@ SPARQL 1.1 defines path operators for combining/repeating predicates
 in triple-patterns.
 
 We overload some python operators on URIRefs to allow creating path
-operators directly in python. 
+operators directly in python.
 
 ============ =========================================
 Operator     Path
@@ -13,7 +13,7 @@ Operator     Path
 ``p1 | p2``  Path alternative
 ``p1 * '*'`` chain of 0 or more p's
 ``p1 * '+'`` chain of 1 or more p's
-``p1 * '?'`` 0 or 1 p 
+``p1 * '?'`` 0 or 1 p
 ``~p1``      p1 inverted, i.e. (s p1 o) <=> (o ~p1 s)
 ``-p1``      NOT p1, i.e. any property but p1
 ============ =========================================
@@ -38,7 +38,7 @@ if __name__=='__main__':
 
     tim = URIRef("http://www.w3.org/People/Berners-Lee/card#i")
 
-    print "Timbl knows:"
+    print("Timbl knows:")
 
     for o in g.objects(tim, FOAF.knows / FOAF.name):
-        print o
+        print(o)

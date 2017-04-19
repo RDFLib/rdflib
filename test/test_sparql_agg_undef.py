@@ -17,7 +17,7 @@ def template_tst(agg_func, first, second):
     g = Graph()
     results = list(g.query(query_tpl % agg_func))
 
-    print "===", results
+    print("===", results)
     assert results[0][1] == first, (results[0][1], first)
     assert results[1][1] == second, (results[1][1], second)
 

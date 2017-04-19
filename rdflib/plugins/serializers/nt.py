@@ -5,8 +5,10 @@ format.
 """
 from rdflib.term import Literal
 from rdflib.serializer import Serializer
-from rdflib.py3compat import b
+from six import b
+
 import warnings
+import codecs
 
 __all__ = ['NTSerializer']
 
@@ -16,6 +18,10 @@ class NTSerializer(Serializer):
     Serializes RDF graphs to NTriples format.
     """
 
+    def __init__(self, store):
+        Serializer.__init__(self, store)
+        self.encoding = 'ascii' # n-triples are ascii encoded
+
     def serialize(self, stream, base=None, encoding=None, **args):
         if base is not None:
             warnings.warn("NTSerializer does not support base.")
@@ -23,8 +29,19 @@ class NTSerializer(Serializer):
             warnings.warn("NTSerializer does not use custom encoding.")
         encoding = self.encoding
         for triple in self.store:
-            stream.write(_nt_row(triple).encode(encoding, "replace"))
+            stream.write(_nt_row(triple).encode(self.encoding, "_rdflib_nt_escape"))
         stream.write(b("\n"))
+
+
+class NT11Serializer(NTSerializer):
+    """
+    Serializes RDF graphs to RDF 1.1 NTriples format.
+
+    Exactly like nt - only utf8 encoded.
+    """
+
+    def __init__(self, store):
+        Serializer.__init__(self, store) # default to utf-8
 
 
 def _nt_row(triple):
@@ -32,11 +49,11 @@ def _nt_row(triple):
         return u"%s %s %s .\n" % (
             triple[0].n3(),
             triple[1].n3(),
-            _xmlcharref_encode(_quoteLiteral(triple[2])))
+            _quoteLiteral(triple[2]))
     else:
         return u"%s %s %s .\n" % (triple[0].n3(),
                                   triple[1].n3(),
-                                  _xmlcharref_encode(triple[2].n3()))
+                                  triple[2].n3())
 
 
 def _quoteLiteral(l):
@@ -62,23 +79,18 @@ def _quote_encode(l):
         .replace('"', '\\"')\
         .replace('\r', '\\r')
 
+def _nt_unicode_error_resolver(err):
 
-# from <http://code.activestate.com/recipes/303668/>
-def _xmlcharref_encode(unicode_data, encoding="ascii"):
-    """Emulate Python 2.3's 'xmlcharrefreplace' encoding error handler."""
-    res = ""
+    """
+    Do unicode char replaces as defined in https://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#ntrip_strings
+    """
 
-    # Step through the unicode_data string one character at a time in
-    # order to catch unencodable characters:
-    for char in unicode_data:
-        try:
-            char.encode(encoding, 'strict')
-        except UnicodeError:
-            if ord(char) <= 0xFFFF:
-                res += '\\u%04X' % ord(char)
-            else:
-                res += '\\U%08X' % ord(char)
-        else:
-            res += char
+    def _replace_single(c):
+        c = ord(c)
+        fmt = u'\\u%04X' if c <= 0xFFFF else u'\\U%08X'
+        return fmt % c
 
-    return res
+    string = err.object[err.start:err.end]
+    return ( "".join( _replace_single(c) for c in string ), err.end )
+
+codecs.register_error('_rdflib_nt_escape', _nt_unicode_error_resolver)

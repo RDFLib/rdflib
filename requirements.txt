@@ -1,5 +1,7 @@
 flake8
-html5lib==1.0b8
+html5lib
 isodate
 pyparsing
+six
 SPARQLWrapper
+doctest-ignore-unicode

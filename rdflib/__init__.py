@@ -45,8 +45,8 @@ A tiny example:
 __docformat__ = "restructuredtext en"
 
 # The format of the __version__ line is matched by a regex in setup.py
-__version__ = "4.2.2-dev"
-__date__ = "2015/08/12"
+__version__ = "5.0.0-dev"
+__date__ = "2017/01/29"
 
 __all__ = [
     'URIRef',
@@ -69,27 +69,36 @@ __all__ = [
 ]
 
 import sys
-assert sys.version_info >= (2, 5, 0), "rdflib requires Python 2.5 or higher"
-del sys
+assert sys.version_info >= (2, 7, 0), "rdflib requires Python 2.7 or higher"
 
 import logging
+logger = logging.getLogger(__name__)
+_interactive_mode = False
 try:
     import __main__
-    if not hasattr(__main__, '__file__'):
+    if not hasattr(__main__, '__file__') and sys.stderr.isatty():
         # show log messages in interactive mode
-        logging.basicConfig(level=logging.INFO)
+        _interactive_mode = True
+        logger.setLevel(logging.INFO)
+        logger.addHandler(logging.StreamHandler())
+    del __main__
 except ImportError:
     #Main already imported from elsewhere
     import warnings
     warnings.warn('__main__ already imported', ImportWarning)
     del warnings
-    
-logger = logging.getLogger(__name__)
-logger.info("RDFLib Version: %s" % __version__)
+
+if _interactive_mode:
+    logger.info("RDFLib Version: %s" % __version__)
+else:
+    logger.debug("RDFLib Version: %s" % __version__)
+del _interactive_mode
+del sys
 
 
+import six
 try:
-    unichr(0x10FFFF)
+    six.unichr(0x10FFFF)
 except ValueError:
     import warnings
     warnings.warn(
@@ -101,6 +110,7 @@ except ValueError:
         'Python build in production systems.',
         ImportWarning)
     del warnings
+del six
 
 
 NORMALIZE_LITERALS = True

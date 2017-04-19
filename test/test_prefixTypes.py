@@ -2,7 +2,7 @@ import unittest
 
 
 from rdflib import Graph
-from rdflib.py3compat import b
+from six import b
 
 graph = Graph().parse(format='n3', data="""
 @prefix dct: <http://purl.org/dc/terms/> .
@@ -13,9 +13,9 @@ graph = Graph().parse(format='n3', data="""
     dct:created "2011-03-20"^^xsd:date .
 """)
 
-class PrefixTypesTest(unittest.TestCase): 
-    
-    """N3/Turtle serializers should use prefixes, 
+class PrefixTypesTest(unittest.TestCase):
+
+    """N3/Turtle serializers should use prefixes,
     also for types and datatypes
 
     This is issue 161
@@ -25,7 +25,7 @@ class PrefixTypesTest(unittest.TestCase):
 
     def test(self):
         s=graph.serialize(format='n3')
-        print s
+        print(s)
         self.assertTrue(b("foaf:Document") in s)
         self.assertTrue(b("xsd:date") in s)
 
@@ -33,5 +33,3 @@ class PrefixTypesTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
-

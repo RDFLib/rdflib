@@ -89,64 +89,64 @@ class DatasetTestCase(unittest.TestCase):
         # empty named graphs
         if self.store != "SPARQLUpdateStore":
             # added graph exists
-            self.assertEquals(set(x.identifier for x in self.graph.contexts()),
+            self.assertEqual(set(x.identifier for x in self.graph.contexts()),
                               set([self.c1, DATASET_DEFAULT_GRAPH_ID]))
 
         # added graph is empty
-        self.assertEquals(len(g1), 0)
+        self.assertEqual(len(g1), 0)
 
         g1.add( (self.tarek, self.likes, self.pizza) )
 
         # added graph still exists
-        self.assertEquals(set(x.identifier for x in self.graph.contexts()),
+        self.assertEqual(set(x.identifier for x in self.graph.contexts()),
                           set([self.c1, DATASET_DEFAULT_GRAPH_ID]))
 
         # added graph contains one triple
-        self.assertEquals(len(g1), 1)
+        self.assertEqual(len(g1), 1)
 
         g1.remove( (self.tarek, self.likes, self.pizza) )
 
         # added graph is empty
-        self.assertEquals(len(g1), 0)
+        self.assertEqual(len(g1), 0)
 
         # Some SPARQL endpoint backends (e.g. TDB) do not consider
         # empty named graphs
         if self.store != "SPARQLUpdateStore":
             # graph still exists, although empty
-            self.assertEquals(set(x.identifier for x in self.graph.contexts()),
+            self.assertEqual(set(x.identifier for x in self.graph.contexts()),
                               set([self.c1, DATASET_DEFAULT_GRAPH_ID]))
 
         g.remove_graph(self.c1)
 
         # graph is gone
-        self.assertEquals(set(x.identifier for x in self.graph.contexts()),
+        self.assertEqual(set(x.identifier for x in self.graph.contexts()),
                           set([DATASET_DEFAULT_GRAPH_ID]))
 
     def testDefaultGraph(self):
         # Something the default graph is read-only (e.g. TDB in union mode)
         if self.store == "SPARQLUpdateStore":
-            print "Please make sure updating the default graph " \
-                  "is supported by your SPARQL endpoint"
+            print("Please make sure updating the default graph " \
+                  "is supported by your SPARQL endpoint")
 
         self.graph.add(( self.tarek, self.likes, self.pizza))
-        self.assertEquals(len(self.graph), 1)
+        self.assertEqual(len(self.graph), 1)
         # only default exists
-        self.assertEquals(set(x.identifier for x in self.graph.contexts()),
+        self.assertEqual(set(x.identifier for x in self.graph.contexts()),
                           set([DATASET_DEFAULT_GRAPH_ID]))
 
         # removing default graph removes triples but not actual graph
         self.graph.remove_graph(DATASET_DEFAULT_GRAPH_ID)
 
-        self.assertEquals(len(self.graph), 0)
+        self.assertEqual(len(self.graph), 0)
         # default still exists
-        self.assertEquals(set(x.identifier for x in self.graph.contexts()),
+        self.assertEqual(set(x.identifier for x in self.graph.contexts()),
                           set([DATASET_DEFAULT_GRAPH_ID]))
 
     def testNotUnion(self):
         # Union depends on the SPARQL endpoint configuration
         if self.store == "SPARQLUpdateStore":
-            print "Please make sure your SPARQL endpoint has not configured " \
-                  "its default graph as the union of the named graphs"
+            print("Please make sure your SPARQL endpoint has not configured " \
+                  "its default graph as the union of the named graphs")
         g1 = self.graph.graph(self.c1)
         g1.add((self.tarek, self.likes, self.pizza))
 
@@ -173,9 +173,9 @@ for s in plugin.plugins(pluginname, plugin.Store):
         continue
 
     if s.name == "SPARQLUpdateStore":
-        import urllib2
+        from six.moves.urllib.request import urlopen
         try:
-            assert len(urllib2.urlopen(HOST).read()) > 0
+            assert len(urlopen(HOST).read()) > 0
         except:
             sys.stderr.write("No SPARQL endpoint for %s (tests skipped)\n" % s.name)
             continue

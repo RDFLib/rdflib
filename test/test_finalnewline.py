@@ -2,7 +2,7 @@
 from rdflib import ConjunctiveGraph, URIRef
 import rdflib.plugin
 
-from rdflib.py3compat import b
+from six import b
 
 def testFinalNewline():
     """
@@ -33,5 +33,5 @@ if __name__ == "__main__":
 
     import sys
     import nose
-    if len(sys.argv)==1: 
+    if len(sys.argv)==1:
         nose.main(defaultTest=sys.argv[0])

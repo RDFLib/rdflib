@@ -23,4 +23,4 @@ if __name__=='__main__':
 
     for x in g.subjects(
             rdflib.RDF.type, rdflib.URIRef('http://dbpedia.org/resource/Human')):
-        print x
+        print(x)

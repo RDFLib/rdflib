@@ -44,4 +44,4 @@ if __name__=='__main__':
         o = newURI.get(o, o) # might be linked to another person
         out.add((s,p,o))
 
-    print out.serialize(format="n3")
+    print(out.serialize(format="n3").decode('utf-8'))

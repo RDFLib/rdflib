@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+	<variable name="x"/>
+	<variable name="n"/>
+  </head>
+  <results>
+    <result>
+      <binding name="x">
+        <uri>http://example.com/a</uri>
+      </binding>
+      <binding name="n">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example.com/b</uri>
+      </binding>
+      <binding name="n">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">3.0</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

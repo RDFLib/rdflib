@@ -14,23 +14,18 @@ U{W3C SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/2002/
 $Id: options.py,v 1.20 2013-10-16 11:48:54 ivan Exp $ $Date: 2013-10-16 11:48:54 $
 """
 
-import sys, datetime
+import datetime
 
-import rdflib
 from rdflib	import URIRef
 from rdflib	import Literal
 from rdflib	import BNode
 from rdflib	import Namespace
-if rdflib.__version__ >= "3.0.0" :
-	from rdflib	import Graph
-	from rdflib	import RDF  as ns_rdf
-	from rdflib	import RDFS as ns_rdfs
-else :
-	from rdflib.Graph	import Graph
-	from rdflib.RDFS	import RDFSNS as ns_rdfs
-	from rdflib.RDF		import RDFNS  as ns_rdf
+from rdflib	import Graph
+from rdflib	import RDF  as ns_rdf
 
-from .host 	import HostLanguage, MediaTypes, content_to_host_language, predefined_1_0_rel, require_embedded_rdf
+from six import string_types
+
+from .host 	import HostLanguage, content_to_host_language, predefined_1_0_rel, require_embedded_rdf
 from .		import ns_xsd, ns_distill, ns_rdfa
 from . 		import RDFA_Error, RDFA_Warning, RDFA_Info
 from .transform.lite import lite_prune
@@ -70,11 +65,8 @@ class ProcessorGraph :
 		self.graph.bind("rdfa",    ns_rdfa)
 		self.graph.bind("ht",      ns_ht)
 		self.graph.bind("xsd",     ns_xsd)
-		# Python 3 foolproof way
-		try :
-			is_context_string = isinstance(context, basestring)
-		except :
-			is_context_string = isinstance(context, str)
+
+		is_context_string = isinstance(context, string_types)
 
 		bnode = BNode()
 
@@ -259,4 +251,3 @@ class Options :
 		@type buggy_value: String
 		"""
 		return self.processor_graph.add_triples(txt, RDFA_Error, err_type, context, node)
-

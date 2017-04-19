@@ -1,14 +1,17 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 from rdflib.namespace import RDF
 from rdflib.term import BNode
 from rdflib.term import Literal
-from rdflib.graph import Graph
-from rdflib.py3compat import format_doctest_out
+
 
 __all__ = ['Collection']
 
 
 class Collection(object):
-    __doc__ = format_doctest_out("""
+    __doc__ = """
     See "Emulating container types":
     https://docs.python.org/reference/datamodel.html#emulating-container-types
 
@@ -26,9 +29,9 @@ class Collection(object):
     >>> g.add((listItem2, RDF.first, Literal(3)))
     >>> c = Collection(g,listName)
     >>> pprint([term.n3() for term in c])
-    [%(u)s'"1"^^<http://www.w3.org/2001/XMLSchema#integer>',
-     %(u)s'"2"^^<http://www.w3.org/2001/XMLSchema#integer>',
-     %(u)s'"3"^^<http://www.w3.org/2001/XMLSchema#integer>']
+    [u'"1"^^<http://www.w3.org/2001/XMLSchema#integer>',
+     u'"2"^^<http://www.w3.org/2001/XMLSchema#integer>',
+     u'"3"^^<http://www.w3.org/2001/XMLSchema#integer>']
 
     >>> Literal(1) in c
     True
@@ -38,13 +41,12 @@ class Collection(object):
     True
     >>> c.index(Literal(2)) == 1
     True
-    """)
+    """
 
     def __init__(self, graph, uri, seq=[]):
         self.graph = graph
         self.uri = uri or BNode()
-        for item in seq:
-            self.append(item)
+        self += seq
 
     def n3(self):
         """
@@ -82,15 +84,7 @@ class Collection(object):
 
     def __len__(self):
         """length of items in collection."""
-        count = 0
-        links = set()
-        for item in self.graph.items(self.uri):
-            assert item not in links, \
-                "There is a loop in the RDF list! " + \
-                "(%s has been processed before)" % item
-            links.add(item)
-            count += 1
-        return count
+        return len(list(self.graph.items(self.uri)))
 
     def index(self, item):
         """
@@ -192,6 +186,16 @@ class Collection(object):
         """Iterator over items in Collections"""
         return self.graph.items(self.uri)
 
+    def _end(self):
+        # find end of list
+        container = self.uri
+        while True:
+            rest = self.graph.value(container, RDF.rest)
+            if rest == None or rest == RDF.nil:
+                return container
+            else:
+                container = rest
+
     def append(self, item):
         """
         >>> from rdflib.graph import Graph
@@ -200,29 +204,36 @@ class Collection(object):
         >>> c = Collection(g,listName,[Literal(1),Literal(2)])
         >>> links = [
         ...     list(g.subjects(object=i, predicate=RDF.first))[0] for i in c]
-        >>> len([i for i in links if (i,RDF.rest, RDF.nil) in g])
+        >>> len([i for i in links if (i, RDF.rest, RDF.nil) in g])
         1
 
         """
-        container = self.uri
-        graph = self.graph
-        # iterate to the end of the linked list
-        rest = graph.value(container, RDF.rest)
-        while rest:
-            if rest == RDF.nil:
-                # the end, append to the end of the linked list
-                node = BNode()
-                graph.set((container, RDF.rest, node))
-                container = node
-                break
-            else:
-                # move down one link
-                if container != self.uri:
-                    rest = graph.value(rest, RDF.rest)
-                if not rest == RDF.nil:
-                    container = rest
-        graph.add((container, RDF.first, item))
-        graph.add((container, RDF.rest, RDF.nil))
+
+        end = self._end()
+        if (end, RDF.first, None) in self.graph:
+            # append new node to the end of the linked list
+            node = BNode()
+            self.graph.set((end, RDF.rest, node))
+            end = node
+
+        self.graph.add((end, RDF.first, item))
+        self.graph.add((end, RDF.rest, RDF.nil))
+
+    def __iadd__(self, other):
+
+        end = self._end()
+        self.graph.remove((end, RDF.rest, None))
+
+        for item in other:
+            if (end, RDF.first, None) in self.graph:
+                nxt = BNode()
+                self.graph.add((end, RDF.rest, nxt))
+                end = nxt
+
+            self.graph.add((end, RDF.first, item))
+
+
+        self.graph.add((end, RDF.rest, RDF.nil))
 
     def clear(self):
         container = self.uri
@@ -241,6 +252,7 @@ def test():
 if __name__ == "__main__":
     test()
 
+    from rdflib import Graph
     g = Graph()
 
     c = Collection(g, BNode())
@@ -260,7 +272,7 @@ if __name__ == "__main__":
 
     try:
         del c[500]
-    except IndexError, i:
+    except IndexError as i:
         pass
 
     c.append(Literal("5"))

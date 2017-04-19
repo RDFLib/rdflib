@@ -21,19 +21,14 @@ $Date: 2012/06/12 11:47:11 $
 
 import re, sys
 
-import rdflib
 from rdflib	import BNode
-from rdflib	import Literal, URIRef, Namespace
-if rdflib.__version__ >= "3.0.0" :
-	from rdflib	     import RDF as ns_rdf
-	from rdflib.term import XSDToPython
-else :
-	from rdflib.RDF	    import RDFNS as ns_rdf
-	from rdflib.Literal import XSDToPython
+from rdflib	import Literal, URIRef
+from rdflib	     import RDF as ns_rdf
+from rdflib.term import XSDToPython
 
-from .	         import IncorrectBlankNodeUsage, IncorrectLiteral, err_no_blank_node, ns_xsd
+from .	         import IncorrectBlankNodeUsage, IncorrectLiteral, err_no_blank_node
 from .utils      import has_one_of_attributes, return_XML
-from .host.html5 import handled_time_types
+
 
 XMLLiteral  = ns_rdf["XMLLiteral"]
 HTMLLiteral = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML")
@@ -298,10 +293,8 @@ class ProcessProperty :
 			# rdflib code to get this working...
 			# To make things worse: rdlib 3.1.0 does not handle the various xsd date types properly, ie,
 			# the conversion function below will generate errors. Ie, the check should be skipped for those
-			if ("%s" % datatype) in handled_time_types and rdflib.__version__ < "3.2.0" :
-				convFunc = False
-			else :
-				convFunc = XSDToPython.get(datatype, None)
+
+			convFunc = XSDToPython.get(datatype, None)
 			if convFunc :
 				try :
 					pv = convFunc(val)

@@ -7,15 +7,15 @@ Getting started with RDFLib
 Installation
 ============
 
-RDFLib is open source and is maintained in a 
-`GitHub <http://github.com/RDFLib/rdflib/>`_ repository. RDFLib releases, current and previous 
+RDFLib is open source and is maintained in a
+`GitHub <http://github.com/RDFLib/rdflib/>`_ repository. RDFLib releases, current and previous
 are listed on `PyPi <http://pypi.python.org/pypi/rdflib/>`_
 
-The best way to install RDFLib is to use ``easy_install`` or ``pip``:
+The best way to install RDFLib is to use ``pip`` (sudo as required):
 
 .. code-block :: bash
 
-    $ easy_install rdflib
+    $ pip install rdflib
 
 Support is available through the rdflib-dev group:
 
@@ -42,7 +42,7 @@ are best thought of as a set of 3-item triples:
     [
         (subject,  predicate,  object),
         (subject1, predicate1, object1),
-        ... 
+        ...
         (subjectN, predicateN, objectN)
      ]
 
@@ -97,7 +97,7 @@ A more extensive example:
     # Bind a few prefix, namespace pairs for more readable output
     g.bind("dc", DC)
     g.bind("foaf", FOAF)
-	
+
     print( g.serialize(format='n3') )
-			
+
 Many more :doc:`examples <apidocs/examples>` can be found in the :file:`examples` folder in the source distribution.

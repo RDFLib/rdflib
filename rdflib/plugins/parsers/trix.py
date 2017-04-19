@@ -8,6 +8,7 @@ from rdflib.term import Literal
 from rdflib.graph import Graph, ConjunctiveGraph
 from rdflib.exceptions import ParserError
 from rdflib.parser import Parser
+from six import text_type
 
 from xml.sax.saxutils import handler
 from xml.sax import make_parser
@@ -97,7 +98,7 @@ class TriXHandler(handler.ContentHandler):
                 self.datatype = None
 
                 try:
-                    self.lang = attrs.getValue((unicode(XMLNS), u"lang"))
+                    self.lang = attrs.getValue((text_type(XMLNS), u"lang"))
                 except:
                     # language not required - ignore
                     pass
@@ -114,7 +115,7 @@ class TriXHandler(handler.ContentHandler):
                 self.lang = None
                 self.datatype = None
                 try:
-                    self.lang = attrs.getValue((unicode(XMLNS), u"lang"))
+                    self.lang = attrs.getValue((text_type(XMLNS), u"lang"))
                 except:
                     # language not required - ignore
                     pass

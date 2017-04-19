@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-""" 
+"""
 
 film.py: a simple tool to manage your movies review
 Simon Rozet, http://atonie.org/
@@ -10,7 +10,7 @@ Simon Rozet, http://atonie.org/
 - handle non IMDB uri
 - markdown support in comment
 
-Requires download and import of Python imdb library from 
+Requires download and import of Python imdb library from
 http://imdbpy.sourceforge.net/ - (warning: installation
 will trigger automatic installation of several other packages)
 
@@ -25,14 +25,14 @@ Usage:
 """
 import datetime, os, sys, re, time
 
-try: 
+try:
     import imdb
-except ImportError: 
+except ImportError:
     imdb = None
 
 from rdflib import BNode, ConjunctiveGraph, URIRef, Literal, Namespace, RDF
 from rdflib.namespace import FOAF, DC
-
+from six.moves import input
 
 storefn = os.path.expanduser('~/movies.n3')
 #storefn = '/home/simon/codes/film.dev/movies.n3'
@@ -53,10 +53,10 @@ class Store:
         self.graph.bind('foaf', FOAF)
         self.graph.bind('imdb', IMDB)
         self.graph.bind('rev', 'http://purl.org/stuff/rev#')
-    
+
     def save(self):
         self.graph.serialize(storeuri, format='n3')
-    
+
     def who(self, who=None):
         if who is not None:
             name, email = (r_who.match(who).group(1), r_who.match(who).group(2))
@@ -67,14 +67,14 @@ class Store:
             self.save()
         else:
             return self.graph.objects(URIRef(storeuri+'#author'), FOAF['name'])
-        
+
     def new_movie(self, movie):
         movieuri = URIRef('http://www.imdb.com/title/tt%s/' % movie.movieID)
         self.graph.add((movieuri, RDF.type, IMDB['Movie']))
         self.graph.add((movieuri, DC['title'], Literal(movie['title'])))
         self.graph.add((movieuri, IMDB['year'], Literal(int(movie['year']))))
         self.save()
-    
+
     def new_review(self, movie, date, rating, comment=None):
         review = BNode() # @@ humanize the identifier (something like #rev-$date)
         movieuri = URIRef('http://www.imdb.com/title/tt%s/' % movie.movieID)
@@ -91,7 +91,7 @@ class Store:
 
     def movie_is_in(self, uri):
         return (URIRef(uri), RDF.type, IMDB['Movie']) in self.graph
-        
+
 def help():
     print(__doc__.split('--')[1])
 
@@ -121,22 +121,22 @@ def main(argv=None):
             rating = None
             while not rating or (rating > 5 or rating <= 0):
                 try:
-                    rating = int(raw_input('Rating (on five): '))
+                    rating = int(input('Rating (on five): '))
                 except ValueError:
                     rating = None
             date = None
             while not date:
                 try:
-                    i = raw_input('Review date (YYYY-MM-DD): ')
+                    i = input('Review date (YYYY-MM-DD): ')
                     date = datetime.datetime(*time.strptime(i, '%Y-%m-%d')[:6])
                 except:
                     date = None
-            comment = raw_input('Comment: ')
+            comment = input('Comment: ')
             s.new_review(movie, date, rating, comment)
     else:
         help()
 
 if __name__ == '__main__':
-    if not imdb: 
+    if not imdb:
         raise Exception('This example requires the IMDB library! Install with "pip install imdbpy"')
     main()

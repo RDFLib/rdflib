@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
@@ -101,26 +102,14 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 """
 
+from six import string_types, text_type
+
 # Character classes from RFC 2616 section 2.2
 SEPARATORS = '()<>@,;:\\"/[]?={} \t'
 LWS = ' \t\n\r'  # linear white space
 CRLF = '\r\n'
 DIGIT = '0123456789'
 HEX = '0123456789ABCDEFabcdef'
-
-import sys
-PY3 = (sys.version_info[0] >= 3)
-
-# Try to get a set/frozenset implementation if possible
-try:
-    type(frozenset)
-except NameError:
-    try:
-        # The demset.py module is available at http://deron.meranda.us/
-        from demset import set, frozenset
-        __emulating_set = True  # So we can clean up global namespace later
-    except ImportError:
-        pass
 
 try:
     # Turn character classes into set types (for Python 2.4 or greater)
@@ -137,10 +126,9 @@ except NameError:
 
 def _is_string( obj ):
     """Returns True if the object is a string or unicode type."""
-    if PY3 :
-        return isinstance(obj,str)
-    else :
-        return isinstance(obj,str) or isinstance(obj,unicode)
+
+    return isinstance(obj, string_types)
+
 
 
 def http_datetime( dt=None ):
@@ -697,7 +685,7 @@ class range_spec(object):
         is the is_unbounded() method.
 
         """
-        return first is not None and last is not None
+        return self.first is not None and self.last is not None
 
     def is_unbounded(self):
         """Returns True if the number of bytes in the range is unspecified.
@@ -1307,9 +1295,9 @@ class content_type(object):
             # already a dictionary
             pl = parameter_list_or_dict
         else:
-            pl, k = parse_parameter_list(parameter_list)
-            if k < len(parameter_list):
-                raise ParseError('Invalid parameter list',paramter_list,k)
+            pl, k = parse_parameter_list(parameter_list_or_dict)
+            if k < len(parameter_list_or_dict):
+                raise ParseError('Invalid parameter list', parameter_list_or_dict ,k)
         self.parmdict = dict(pl)
 
     def set(self, content_type_string, with_parameters=True):
@@ -1355,11 +1343,7 @@ class content_type(object):
 
     def __unicode__(self):
         """Unicode string value."""
-        # In Python 3 this is probably unnecessary in general, this is just to avoid possible syntax issues. I.H.
-        if PY3 :
-            return str(self.__str__())
-        else :
-            return unicode(self.__str__())
+        return text_type(self.__str__())
 
     def __repr__(self):
         """Python representation of this object."""
@@ -1687,7 +1671,7 @@ def acceptable_charset( accept_charset_header, charsets, ignore_wildcard=True, d
 
     """
     if default:
-        default = _canonical_charset(default)
+        default = canonical_charset(default)
 
     if _is_string(accept_charset_header):
         accept_list = parse_accept_header(accept_charset_header)
@@ -1695,9 +1679,9 @@ def acceptable_charset( accept_charset_header, charsets, ignore_wildcard=True, d
         accept_list = accept_charset_header
 
     if _is_string(charsets):
-        charsets = [_canonical_charset(charsets)]
+        charsets = [canonical_charset(charsets)]
     else:
-        charsets = [_canonical_charset(c) for c in charsets]
+        charsets = [canonical_charset(c) for c in charsets]
 
     # Note per RFC that 'ISO-8859-1' is special, and is implictly in the
     # accept list with q=1; unless it is already in the list, or '*' is in the list.
@@ -1711,7 +1695,7 @@ def acceptable_charset( accept_charset_header, charsets, ignore_wildcard=True, d
             if not best or qvalue > best[1]:
                 best = (c, qvalue)
         else:
-            c = _canonical_charset(c)
+            c = canonical_charset(c)
             for test_c in charsets:
                 if c == default:
                     default = None
@@ -1777,11 +1761,7 @@ class language_tag(object):
 
     def __unicode__(self):
         """The unicode string form of this language tag."""
-        # Probably unnecessary in Python 3
-        if PY3 :
-            return str(self.__str__())
-        else :
-            return unicode(self.__str__())
+        return text_type(self.__str__())
 
     def __repr__(self):
         """The python representation of this language tag."""

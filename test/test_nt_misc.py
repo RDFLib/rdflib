@@ -4,7 +4,9 @@ import os
 import re
 from rdflib import Graph, Literal, URIRef
 from rdflib.plugins.parsers import ntriples
-from rdflib.py3compat import bytestype, b
+from six import binary_type, text_type, b
+from six.moves.urllib.request import urlopen
+
 log = logging.getLogger(__name__)
 
 class NTTestCase(unittest.TestCase):
@@ -13,7 +15,7 @@ class NTTestCase(unittest.TestCase):
         g = Graph()
         g.add((URIRef("foo"), URIRef("foo"), Literal(u"R\u00E4ksm\u00F6rg\u00E5s")))
         s = g.serialize(format='nt')
-        self.assertEquals(type(s), bytestype)
+        self.assertEqual(type(s), binary_type)
         self.assertTrue(b(r"R\u00E4ksm\u00F6rg\u00E5s") in s)
 
     def testIssue146(self):
@@ -24,15 +26,15 @@ class NTTestCase(unittest.TestCase):
 
     def test_sink(self):
         s = ntriples.Sink()
-        self.assert_(s.length == 0)
+        self.assertTrue(s.length == 0)
         s.triple(None, None, None)
-        self.assert_(s.length == 1)
+        self.assertTrue(s.length == 1)
 
     def test_nonvalidating_unquote(self):
         safe = """<http://example.org/alice/foaf.rdf#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://example.org/alice/foaf1.rdf> ."""
         ntriples.validate = False
         res = ntriples.unquote(safe)
-        self.assert_(isinstance(res, unicode))
+        self.assertTrue(isinstance(res, text_type))
 
     def test_validating_unquote(self):
         quot = """<http://example.org/alice/foaf.rdf#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://example.org/alice/foaf1.rdf> ."""
@@ -55,7 +57,7 @@ class NTTestCase(unittest.TestCase):
         ntriples.validate = False
         safe = """<http://example.org/alice/foaf.rdf#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://example.org/alice/foaf1.rdf> ."""
         res = ntriples.uriquote(safe)
-        self.assert_(res == safe)
+        self.assertTrue(res == safe)
 
     def test_validating_uriquote(self):
         ntriples.validate = True
@@ -79,17 +81,17 @@ class NTTestCase(unittest.TestCase):
             data = f.read()
         p = ntriples.NTriplesParser()
         res = p.parsestring(data)
-        self.assert_(res == None)
+        self.assertTrue(res == None)
 
     def test_w3_ntriple_variants(self):
         uri = "file:///"+os.getcwd()+"/test/nt/test.ntriples"
-        import urllib
+
         parser = ntriples.NTriplesParser()
-        u = urllib.urlopen(uri)
+        u = urlopen(uri)
         sink = parser.parse(u)
         u.close()
         # ATM we are only really interested in any exceptions thrown
-        self.assert_(sink is not None)
+        self.assertTrue(sink is not None)
 
     def test_bad_line(self):
         data = '''<http://example.org/resource32> 3 <http://example.org/datatype1> .\n'''

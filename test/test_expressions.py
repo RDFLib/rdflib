@@ -16,7 +16,7 @@ def _eval(e, ctx=None):
     try:
         r = e.eval(ctx)
         if isinstance(r, SPARQLError):
-            print r
+            print(r)
             return False
         return r
     except SPARQLError:

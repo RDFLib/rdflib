@@ -10,38 +10,25 @@ git:
   depth: 3
 
 python:
-    # - 2.5
-    - 2.6
     - 2.7
-    # - 3.2
-    - 3.3
     - 3.4
     - 3.5
-    # - "pypy"
+    - 3.6
 
 before_install:
     - pip install -U setuptools pip  # seems travis comes with a too old setuptools for html5lib
     - bash .travis.fuseki_install_optional.sh
 
 install:
-    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then pip install --default-timeout 60 -r requirements.py2.txt; fi
-    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '3' ]]; then pip install --default-timeout 60 -r requirements.py3.txt; fi
-    - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install --default-timeout 60 ordereddict 'networkx<1.10' ; fi
-    - if [[ $TRAVIS_PYTHON_VERSION != '2.6' ]]; then pip install --default-timeout 60 networkx ; fi
-    # isodate0.4.8 is problematic with Pypy, use fixed version
-    - if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then pip install --upgrade "https://bitbucket.org/gjhiggins/isodate/downloads/isodate-0.4.8.tar.gz"; pip install --default-timeout 60 "elementtree"; fi
+    - pip install --default-timeout 60 -r requirements.txt
     - pip install --default-timeout 60 coverage coveralls nose-timer && export HAS_COVERALLS=1
     - python setup.py install
 
 before_script:
-    - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]] || [[ $TRAVIS_PYTHON_VERSION == '3.5' ]]; then flake8 --exclude=pyRdfa,extras,host,transform,rdfs,sparql,results,pyMicrodata --exit-zero rdflib; fi
+    - flake8 --exclude=pyRdfa,extras,host,transform,rdfs,sparql,results,pyMicrodata --exit-zero rdflib
 
 script:
-    # Must run the tests in build/src so python3 doesn't get confused and run
-    # the python2 code from the current directory instead of the installed
-    # 2to3 version in build/src.
-    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=rdflib ; fi
-    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '3' ]]; then PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=build/src/rdflib --where=./build/src; fi
+    - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=rdflib
 
 after_success:
     - if [[ $HAS_COVERALLS ]] ; then coveralls ; fi

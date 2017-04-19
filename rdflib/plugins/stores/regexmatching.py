@@ -10,6 +10,9 @@ matching against the results from the store it's wrapping.
 
 from rdflib.store import Store
 from rdflib.graph import Graph
+
+from six import text_type
+
 import re
 
 # Store is capable of doing its own REGEX matching
@@ -18,7 +21,7 @@ NATIVE_REGEX = 0
 PYTHON_REGEX = 1
 
 
-class REGEXTerm(unicode):
+class REGEXTerm(text_type):
     """
     REGEXTerm can be used in any term slot and is interpreted as a request to
     perform a REGEX match (not a string comparison) using the value
@@ -28,7 +31,7 @@ class REGEXTerm(unicode):
         self.compiledExpr = re.compile(expr)
 
     def __reduce__(self):
-        return (REGEXTerm, (unicode(''),))
+        return (REGEXTerm, (text_type(''),))
 
 
 def regexCompareQuad(quad, regexQuad):

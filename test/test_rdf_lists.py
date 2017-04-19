@@ -39,13 +39,13 @@ class OWLCollectionTest(unittest.TestCase):
     def testCollectionRDFXML(self):
         g=Graph().parse(data=DATA, format='nt')
         g.namespace_manager.bind('owl',URIRef('http://www.w3.org/2002/07/owl#'))
-        print g.serialize(format='pretty-xml')
+        print(g.serialize(format='pretty-xml'))
 
 
 class ListTest(unittest.TestCase):
     def testFalseElement(self):
         g=Graph().parse(data=DATA_FALSE_ELEMENT, format='nt')
-        self.assertEquals(len(list(g.items(URIRef('http://example.org/#ThreeMemberList')))), 3)
+        self.assertEqual(len(list(g.items(URIRef('http://example.org/#ThreeMemberList')))), 3)
 
 
 if __name__ == '__main__':

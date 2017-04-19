@@ -24,6 +24,9 @@ information.
 .. __: http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
 
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 from rdflib.store import Store
 from rdflib.parser import Parser
@@ -110,7 +113,7 @@ except ImportError:
     pass  # TODO: log a message
 else:
     # add the plugins specified via pkg_resources' EntryPoints.
-    for entry_point, kind in entry_points.iteritems():
+    for entry_point, kind in entry_points.items():
         for ep in iter_entry_points(entry_point):
             _plugins[(ep.name, kind)] = PKGPlugin(ep.name, kind, ep)
 
@@ -167,14 +170,24 @@ register(
     'turtle', Serializer,
     'rdflib.plugins.serializers.turtle', 'TurtleSerializer')
 register(
+    'ttl', Serializer,
+    'rdflib.plugins.serializers.turtle', 'TurtleSerializer')
+register(
     'trig', Serializer,
     'rdflib.plugins.serializers.trig', 'TrigSerializer')
 register(
     'application/n-triples', Serializer,
     'rdflib.plugins.serializers.nt', 'NTSerializer')
 register(
+    'ntriples', Serializer,
+    'rdflib.plugins.serializers.nt', 'NTSerializer')
+register(
     'nt', Serializer,
     'rdflib.plugins.serializers.nt', 'NTSerializer')
+register(
+    'nt11', Serializer,
+    'rdflib.plugins.serializers.nt', 'NT11Serializer')
+
 register(
     'pretty-xml', Serializer,
     'rdflib.plugins.serializers.rdfxml', 'PrettyXMLSerializer')
@@ -185,10 +198,10 @@ register(
     'application/trix', Serializer,
     'rdflib.plugins.serializers.trix', 'TriXSerializer')
 register(
-    "application/n-quads", Serializer,
+    'application/n-quads', Serializer,
     'rdflib.plugins.serializers.nquads', 'NQuadsSerializer')
 register(
-    "nquads", Serializer,
+    'nquads', Serializer,
     'rdflib.plugins.serializers.nquads', 'NQuadsSerializer')
 
 register(
@@ -210,10 +223,19 @@ register(
     'turtle', Parser,
     'rdflib.plugins.parsers.notation3', 'TurtleParser')
 register(
+    'ttl', Parser,
+    'rdflib.plugins.parsers.notation3', 'TurtleParser')
+register(
     'application/n-triples', Parser,
     'rdflib.plugins.parsers.nt', 'NTParser')
 register(
+    'ntriples', Parser,
+    'rdflib.plugins.parsers.nt', 'NTParser')
+register(
     'nt', Parser,
+    'rdflib.plugins.parsers.nt', 'NTParser')
+register(
+    'nt11', Parser,
     'rdflib.plugins.parsers.nt', 'NTParser')
 register(
     'application/n-quads', Parser,

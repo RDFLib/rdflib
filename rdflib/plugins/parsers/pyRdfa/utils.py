@@ -16,28 +16,15 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 $Id: utils.py,v 1.9 2012/11/16 17:51:53 ivan Exp $
 $Date: 2012/11/16 17:51:53 $
 """
-import os, os.path, sys, imp, datetime
+import sys, datetime
 
-# Python 3 vs. 2 switch
-if sys.version_info[0] >= 3 :
-	from urllib.request import Request, urlopen
-	from urllib.parse   import urljoin, quote
-	from http.server    import BaseHTTPRequestHandler
-	from urllib.error   import HTTPError as urllib_HTTPError
-else :
-	from urllib2        import Request, urlopen
-	from urllib2        import HTTPError as urllib_HTTPError
-	from urlparse       import urljoin
-	from urllib         import quote
-	from BaseHTTPServer import BaseHTTPRequestHandler
+from six.moves.urllib.request import Request, urlopen
+from six.moves.urllib.parse import urljoin, quote
+from six.moves.urllib.error import HTTPError
+from six.moves.BaseHTTPServer import BaseHTTPRequestHandler
+from six import text_type
 
 from .extras.httpheader import content_type, parse_http_datetime
-
-import rdflib
-if rdflib.__version__ >= "3.0.0" :
-	from rdflib	import RDF as ns_rdf
-else :
-	from rdflib.RDF	import RDFNS  as ns_rdf
 
 from .host import HostLanguage, preferred_suffixes
 
@@ -126,7 +113,7 @@ class URIOpener :
 					# The last modified date format was wrong, sorry, forget it...
 					pass
 
-		except urllib_HTTPError :
+		except HTTPError :
 			e = sys.exc_info()[1]
 			from . import HTTPError
 			msg = BaseHTTPRequestHandler.responses[e.code]
@@ -241,7 +228,7 @@ def return_XML(state, inode, base = True, xmlns = True) :
 		return node.toxml()
 	else :
 		q = node.toxml(encoding='utf-8')
-		return unicode(q, encoding='utf-8')
+		return text_type(q, encoding='utf-8')
 
 #########################################################################################################
 
@@ -252,6 +239,3 @@ def dump(node) :
 	@param node: DOM node
 	"""
 	print( node.toprettyxml(indent="", newl="") )
-
-
-

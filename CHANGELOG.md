@@ -1,3 +1,245 @@
+2017/01/29 RELEASE 4.2.2
+========================
+
+This is a bug-fix release, and the last release in the 4.X.X series.
+
+Bug fixes:
+----------
+* SPARQL bugs fixed:
+  * Fix for filters in sub-queries
+    [#693](https://github.com/RDFLib/rdflib/pull/693)
+  * Fixed bind, initBindings and filter problems
+    [#294](https://github.com/RDFLib/rdflib/issues/294)
+    [#555](https://github.com/RDFLib/rdflib/pull/555)
+    [#580](https://github.com/RDFLib/rdflib/issues/580)
+    [#586](https://github.com/RDFLib/rdflib/issues/586)
+    [#601](https://github.com/RDFLib/rdflib/pull/601)
+    [#615](https://github.com/RDFLib/rdflib/issues/615)
+    [#617](https://github.com/RDFLib/rdflib/issues/617)
+    [#619](https://github.com/RDFLib/rdflib/issues/619)
+    [#630](https://github.com/RDFLib/rdflib/issues/630)
+    [#653](https://github.com/RDFLib/rdflib/issues/653)
+    [#686](https://github.com/RDFLib/rdflib/issues/686)
+    [#688](https://github.com/RDFLib/rdflib/pull/688)
+    [#692](https://github.com/RDFLib/rdflib/pull/692)
+  * Fixed unexpected None value in SPARQL-update
+    [#633](https://github.com/RDFLib/rdflib/issues/633)
+    [#634](https://github.com/RDFLib/rdflib/pull/634)
+  * Fix sparql, group by and count of null values with `optional`
+    [#631](https://github.com/RDFLib/rdflib/issues/631)
+  * Fixed sparql sub-query and aggregation bugs
+    [#607](https://github.com/RDFLib/rdflib/issues/607)
+    [#610](https://github.com/RDFLib/rdflib/pull/610)
+    [#628](https://github.com/RDFLib/rdflib/issues/628)
+    [#694](https://github.com/RDFLib/rdflib/pull/694)
+  * Fixed parsing Complex BGPs as triples
+    [#622](https://github.com/RDFLib/rdflib/pull/622)
+    [#623](https://github.com/RDFLib/rdflib/issues/623)
+  * Fixed DISTINCT being ignored inside aggregate functions
+    [#404](https://github.com/RDFLib/rdflib/issues/404)
+    [#611](https://github.com/RDFLib/rdflib/pull/611)
+    [#678](https://github.com/RDFLib/rdflib/pull/678)
+  * Fix unicode encoding errors in sparql processor
+    [#446](https://github.com/RDFLib/rdflib/issues/446)
+    [#599](https://github.com/RDFLib/rdflib/pull/599)
+  * Fixed SPARQL select nothing no longer returning a `None` row
+    [#554](https://github.com/RDFLib/rdflib/issues/554)
+    [#592](https://github.com/RDFLib/rdflib/pull/592)
+  * Fixed aggregate operators COUNT and SAMPLE to ignore unbound / NULL values
+    [#564](https://github.com/RDFLib/rdflib/pull/564)
+    [#563](https://github.com/RDFLib/rdflib/issues/563)
+    [#567](https://github.com/RDFLib/rdflib/pull/567)
+    [#568](https://github.com/RDFLib/rdflib/pull/568)
+  * Fix sparql relative uris
+    [#523](https://github.com/RDFLib/rdflib/issues/523)
+    [#524](https://github.com/RDFLib/rdflib/pull/524)
+  * SPARQL can now compare xsd:date type as well, fixes #532
+    [#532](https://github.com/RDFLib/rdflib/issues/532)
+    [#533](https://github.com/RDFLib/rdflib/pull/533)
+  * fix sparql path order on python3: "TypeError: unorderable types: SequencePath() < SequencePath()""
+    [#492](https://github.com/RDFLib/rdflib/issues/492)
+    [#525](https://github.com/RDFLib/rdflib/pull/525)
+  * SPARQL parser now robust to spurious semicolon
+    [#381](https://github.com/RDFLib/rdflib/issues/381)
+    [#528](https://github.com/RDFLib/rdflib/pull/528)
+  * Let paths be comparable against all nodes even in py3 (preparedQuery error)
+    [#545](https://github.com/RDFLib/rdflib/issues/545)
+    [#552](https://github.com/RDFLib/rdflib/pull/552)
+  * Made behavior of `initN` in `update` and `query` more consistent
+    [#579](https://github.com/RDFLib/rdflib/issues/579)
+    [#600](https://github.com/RDFLib/rdflib/pull/600)
+* SparqlStore:
+  * SparqlStore now closes underlying urllib response body
+    [#638](https://github.com/RDFLib/rdflib/pull/638)
+    [#683](https://github.com/RDFLib/rdflib/pull/683)
+  * SparqlStore injectPrefixes only modifies query if prefixes present and if adds a newline in between
+    [#521](https://github.com/RDFLib/rdflib/issues/521)
+    [#522](https://github.com/RDFLib/rdflib/pull/522)
+* Fixes and tests for AuditableStore
+  [#537](https://github.com/RDFLib/rdflib/pull/537)
+  [#557](https://github.com/RDFLib/rdflib/pull/557)
+* Trig bugs fixed:
+  * trig export of multiple graphs assigns wrong prefixes to prefixedNames
+    [#679](https://github.com/RDFLib/rdflib/issues/679)
+  * Trig serialiser writing empty named graph name for default graph
+    [#433](https://github.com/RDFLib/rdflib/issues/433)
+  * Trig parser can creating multiple contexts for the default graph
+    [#432](https://github.com/RDFLib/rdflib/issues/432)
+  * Trig serialisation handling prefixes incorrectly
+    [#428](https://github.com/RDFLib/rdflib/issues/428)
+    [#699](https://github.com/RDFLib/rdflib/pull/699)
+* Fixed Nquads parser handling of triples in default graph
+  [#535](https://github.com/RDFLib/rdflib/issues/535)
+  [#536](https://github.com/RDFLib/rdflib/pull/536)
+* Fixed TypeError in Turtle serializer (unorderable types: DocumentFragment() > DocumentFragment())
+  [#613](https://github.com/RDFLib/rdflib/issues/613)
+  [#648](https://github.com/RDFLib/rdflib/issues/648)
+  [#666](https://github.com/RDFLib/rdflib/pull/666)
+  [#676](https://github.com/RDFLib/rdflib/issues/676)
+* Fixed serialization and parsing of inf/nan
+  [#655](https://github.com/RDFLib/rdflib/pull/655)
+  [#658](https://github.com/RDFLib/rdflib/pull/658)
+* Fixed RDFa parser from failing on time elements with child nodes
+  [#576](https://github.com/RDFLib/rdflib/issues/576)
+  [#577](https://github.com/RDFLib/rdflib/pull/577)
+* Fix double reduction of \\ escapes in from_n3
+  [#546](https://github.com/RDFLib/rdflib/issues/546)
+  [#548](https://github.com/RDFLib/rdflib/pull/548)
+* Fixed handling of xsd:base64Binary
+  [#646](https://github.com/RDFLib/rdflib/issues/646)
+  [#674](https://github.com/RDFLib/rdflib/pull/674)
+* Fixed Collection.__setitem__ broken
+  [#604](https://github.com/RDFLib/rdflib/issues/604)
+  [#605](https://github.com/RDFLib/rdflib/pull/605)
+* Fix ImportError when __main__ already loaded
+  [#616](https://github.com/RDFLib/rdflib/pull/616)
+* Fixed broken top_level.txt file in distribution
+  [#571](https://github.com/RDFLib/rdflib/issues/571)
+  [#572](https://github.com/RDFLib/rdflib/pull/572)
+  [#573](https://github.com/RDFLib/rdflib/pull/573)
+
+
+Enhancements:
+-------------
+* Added support for Python 3.5+
+  [#526](https://github.com/RDFLib/rdflib/pull/526)
+* More aliases for common formats (nt, turtle)
+  [#701](https://github.com/RDFLib/rdflib/pull/701)
+* Improved RDF1.1 ntriples support
+  [#695](https://github.com/RDFLib/rdflib/issues/695)
+  [#700](https://github.com/RDFLib/rdflib/pull/700)
+* Dependencies updated and improved compatibility with pyparsing, html5lib, SPARQLWrapper and elementtree
+  [#550](https://github.com/RDFLib/rdflib/pull/550)
+  [#589](https://github.com/RDFLib/rdflib/issues/589)
+  [#606](https://github.com/RDFLib/rdflib/issues/606)
+  [#641](https://github.com/RDFLib/rdflib/pull/641)
+  [#642](https://github.com/RDFLib/rdflib/issues/642)
+  [#650](https://github.com/RDFLib/rdflib/pull/650)
+  [#671](https://github.com/RDFLib/rdflib/issues/671)
+  [#675](https://github.com/RDFLib/rdflib/pull/675)
+  [#684](https://github.com/RDFLib/rdflib/pull/684)
+  [#696](https://github.com/RDFLib/rdflib/pull/696)
+* Improved prefix for SPARQL namespace in XML serialization
+  [#493](https://github.com/RDFLib/rdflib/issues/493)
+  [#588](https://github.com/RDFLib/rdflib/pull/588)
+* Performance improvements:
+  * SPARQL Aggregation functions don't build up memory for each row
+    [#678](https://github.com/RDFLib/rdflib/pull/678)
+  * Collections now support += (__iadd__), fixes slow creation of large lists
+    [#609](https://github.com/RDFLib/rdflib/issues/609)
+    [#612](https://github.com/RDFLib/rdflib/pull/612)
+    [#691](https://github.com/RDFLib/rdflib/pull/691)
+  * SPARQL Optimisation to expand BGPs in a smarter way
+    [#547](https://github.com/RDFLib/rdflib/pull/547)
+* SPARQLStore improvements
+  * improved SPARQLStore BNode customizability
+    [#511](https://github.com/RDFLib/rdflib/issues/511)
+    [#512](https://github.com/RDFLib/rdflib/pull/512)
+    [#513](https://github.com/RDFLib/rdflib/pull/513)
+    [#603](https://github.com/RDFLib/rdflib/pull/603)
+  * Adding the option of using POST for long queries in SPARQLStore
+    [#672](https://github.com/RDFLib/rdflib/issues/672)
+    [#673](https://github.com/RDFLib/rdflib/pull/673)
+  * Exposed the timeout of SPARQLWrapper
+    [#531](https://github.com/RDFLib/rdflib/pull/531)
+* SPARQL prepared query now carries the original (unparsed) parameters
+  [#565](https://github.com/RDFLib/rdflib/pull/565)
+* added .n3 methods for path objects
+  [#553](https://github.com/RDFLib/rdflib/pull/553)
+* Added support for xsd:gYear and xsd:gYearMonth
+  [#635](https://github.com/RDFLib/rdflib/issues/635)
+  [#636](https://github.com/RDFLib/rdflib/pull/636)
+* Allow duplicates in rdf:List
+  [#223](https://github.com/RDFLib/rdflib/issues/223)
+  [#690](https://github.com/RDFLib/rdflib/pull/690)
+* Improved slicing of Resource objects
+  [#529](https://github.com/RDFLib/rdflib/pull/529)
+
+
+Cleanups:
+---------
+* cleanup: SPARQL Prologue and Query new style classes
+  [#566](https://github.com/RDFLib/rdflib/pull/566)
+* Reduce amount of warnings, especially closing opened file pointers
+  [#518](https://github.com/RDFLib/rdflib/pull/518)
+  [#651](https://github.com/RDFLib/rdflib/issues/651)
+* Improved ntriples parsing exceptions to actually tell you what's wrong
+  [#640](https://github.com/RDFLib/rdflib/pull/640)
+  [#643](https://github.com/RDFLib/rdflib/pull/643)
+* remove ancient and broken 2.3 support code.
+  [#680](https://github.com/RDFLib/rdflib/issues/680)
+  [#681](https://github.com/RDFLib/rdflib/pull/681)
+* Logger output improved
+  [#662](https://github.com/RDFLib/rdflib/pull/662)
+* properly cite RGDA1
+  [#624](https://github.com/RDFLib/rdflib/pull/624)
+* Avoid class reference to imported function
+  [#574](https://github.com/RDFLib/rdflib/issues/574)
+  [#578](https://github.com/RDFLib/rdflib/pull/578)
+* Use find_packages for package discovery.
+  [#590](https://github.com/RDFLib/rdflib/pull/590)
+* Prepared ClosedNamespace (and _RDFNamespace) to inherit from Namespace (5.0.0)
+  [#551](https://github.com/RDFLib/rdflib/pull/551)
+  [#595](https://github.com/RDFLib/rdflib/pull/595)
+* Avoid verbose build logging
+  [#534](https://github.com/RDFLib/rdflib/pull/534)
+* (ultra petty) Remove an unused import
+  [#593](https://github.com/RDFLib/rdflib/pull/593)
+
+
+Testing improvements:
+---------------------
+* updating deprecated testing syntax
+  [#697](https://github.com/RDFLib/rdflib/pull/697)
+* make test 375 more portable (use sys.executable rather than python)
+  [#664](https://github.com/RDFLib/rdflib/issues/664)
+  [#668](https://github.com/RDFLib/rdflib/pull/668)
+* Removed outdated, skipped test for #130 that depended on content from the internet
+  [#256](https://github.com/RDFLib/rdflib/issues/256)
+* enable all warnings during travis nosetests
+  [#517](https://github.com/RDFLib/rdflib/pull/517)
+* travis updates
+  [#659](https://github.com/RDFLib/rdflib/issues/659)
+* travis also builds release branches
+  [#598](https://github.com/RDFLib/rdflib/pull/598)
+
+
+Doc improvements:
+-----------------
+* Update list of builtin serialisers in docstring
+  [#621](https://github.com/RDFLib/rdflib/pull/621)
+* Update reference to "Emulating container types"
+  [#575](https://github.com/RDFLib/rdflib/issues/575)
+  [#581](https://github.com/RDFLib/rdflib/pull/581)
+  [#583](https://github.com/RDFLib/rdflib/pull/583)
+  [#584](https://github.com/RDFLib/rdflib/pull/584)
+* docs: clarify the use of an identifier when persisting a triplestore
+  [#654](https://github.com/RDFLib/rdflib/pull/654)
+* DOC: unamed -> unnamed, typos
+  [#562](https://github.com/RDFLib/rdflib/pull/562)
+
+
+
 2015/08/12 RELEASE 4.2.1
 ========================
 

@@ -23,35 +23,16 @@ $Id: termorcurie.py,v 1.12 2013-10-16 11:48:54 ivan Exp $
 $Date: 2013-10-16 11:48:54 $
 """
 
-import re, sys
-import xml.dom.minidom
-import random
+import re
 
-if sys.version_info[0] >= 3 :
-	from urllib.parse import urlsplit
-else :
-	from urlparse import urlsplit
+from six.moves.urllib.parse import urlsplit
 
-
-import rdflib
 from rdflib	import URIRef
-from rdflib	import Literal
 from rdflib	import BNode
 from rdflib	import Namespace
-if rdflib.__version__ >= "3.0.0" :
-	from rdflib	import Graph
-	from rdflib	import RDF  as ns_rdf
-	from rdflib	import RDFS as ns_rdfs
-else :
-	from rdflib.Graph	import Graph
-	from rdflib.RDFS	import RDFSNS as ns_rdfs
-	from rdflib.RDF		import RDFNS  as ns_rdf
-
-from .options		import Options
-from .utils 		import quote_URI, URIOpener
-from .host 			import MediaTypes, HostLanguage, predefined_1_0_rel, warn_xmlns_usage
+from .utils 		import quote_URI
+from .host 			import predefined_1_0_rel, warn_xmlns_usage
 from .				import IncorrectPrefixDefinition, RDFA_VOCAB, UnresolvableReference, PrefixRedefinitionWarning
-from .				import ns_rdfa
 
 from . import err_redefining_URI_as_prefix
 from . import err_xmlns_deprecated

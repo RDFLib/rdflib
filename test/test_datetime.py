@@ -9,13 +9,14 @@ from isodate.isostrf import DATE_EXT_COMPLETE, TZ_EXT
 from rdflib.term import URIRef
 from rdflib.term import Literal
 from rdflib.namespace import XSD
+from six import text_type
 
 
 class TestRelativeBase(unittest.TestCase):
-    def test_equality(self):        
+    def test_equality(self):
         x = Literal("2008-12-01T18:02:00Z",
                     datatype=URIRef('http://www.w3.org/2001/XMLSchema#dateTime'))
-        self.assertEquals(x == x, True)
+        self.assertEqual(x == x, True)
 
     def test_microseconds(self):
         import platform
@@ -27,8 +28,8 @@ class TestRelativeBase(unittest.TestCase):
 
         # datetime with microseconds should be cast as a literal with using
         # XML Schema dateTime as the literal datatype
-        self.assertEquals(unicode(l), '2009-06-15T23:37:06.522630')
-        self.assertEquals(l.datatype, XSD.dateTime)
+        self.assertEqual(text_type(l), '2009-06-15T23:37:06.522630')
+        self.assertEqual(l.datatype, XSD.dateTime)
 
         dt2 = l.toPython()
         self.assertEqual(dt2, dt1)
@@ -38,19 +39,19 @@ class TestRelativeBase(unittest.TestCase):
         l = Literal(dt,
                     datatype=URIRef('http://www.w3.org/2001/XMLSchema#dateTime'))
 
-        self.assert_(isinstance(l.toPython(), datetime))
-        self.assertEquals(l.toPython().isoformat(), dt)
+        self.assertTrue(isinstance(l.toPython(), datetime))
+        self.assertEqual(l.toPython().isoformat(), dt)
 
     def test_timezone_z(self):
         dt = "2008-12-01T18:02:00.522630Z"
         l = Literal(dt,
                     datatype=URIRef('http://www.w3.org/2001/XMLSchema#dateTime'))
 
-        self.assert_(isinstance(l.toPython(), datetime))
-        self.assertEquals(datetime_isoformat(l.toPython(),
+        self.assertTrue(isinstance(l.toPython(), datetime))
+        self.assertEqual(datetime_isoformat(l.toPython(),
                                              DATE_EXT_COMPLETE + 'T' + '%H:%M:%S.%f' + TZ_EXT),
                           dt)
-        self.assertEquals(l.toPython().isoformat(),
+        self.assertEqual(l.toPython().isoformat(),
                           "2008-12-01T18:02:00.522630+00:00")
 
     def test_timezone_offset(self):
@@ -58,8 +59,8 @@ class TestRelativeBase(unittest.TestCase):
         l = Literal(dt,
                     datatype=URIRef('http://www.w3.org/2001/XMLSchema#dateTime'))
 
-        self.assert_(isinstance(l.toPython(), datetime))
-        self.assertEquals(l.toPython().isoformat(), dt)
+        self.assertTrue(isinstance(l.toPython(), datetime))
+        self.assertEqual(l.toPython().isoformat(), dt)
 
     def test_timezone_offset_to_utc(self):
         dt = "2010-02-10T12:36:00+03:00"
@@ -67,7 +68,7 @@ class TestRelativeBase(unittest.TestCase):
                     datatype=URIRef('http://www.w3.org/2001/XMLSchema#dateTime'))
 
         utc_dt = l.toPython().astimezone(UTC)
-        self.assertEquals(datetime_isoformat(utc_dt),
+        self.assertEqual(datetime_isoformat(utc_dt),
                           "2010-02-10T09:36:00Z")
 
     def test_timezone_offset_millisecond(self):
@@ -75,9 +76,8 @@ class TestRelativeBase(unittest.TestCase):
         l = Literal(dt,
                     datatype=URIRef('http://www.w3.org/2001/XMLSchema#dateTime'))
 
-        self.assert_(isinstance(l.toPython(), datetime))
-        self.assertEquals(l.toPython().isoformat(), dt)
+        self.assertTrue(isinstance(l.toPython(), datetime))
+        self.assertEqual(l.toPython().isoformat(), dt)
 
 if __name__ == "__main__":
     unittest.main()
-

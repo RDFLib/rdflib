@@ -1,3 +1,6 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 import os
 import shutil
@@ -5,14 +8,10 @@ import tempfile
 import warnings
 import types
 
-from urlparse import urlparse
-try:
-    from io import BytesIO
-    assert BytesIO
-except:
-    from StringIO import StringIO as BytesIO
-
-from . import py3compat
+from six import BytesIO
+from six import PY2
+from six import text_type
+from six.moves.urllib.parse import urlparse
 
 __all__ = ['Processor', 'Result', 'ResultParser', 'ResultSerializer',
            'ResultException']
@@ -70,7 +69,7 @@ class EncodeOnlyUnicode(object):
         self.__stream = stream
 
     def write(self, arg):
-        if isinstance(arg, unicode):
+        if isinstance(arg, text_type):
             self.__stream.write(arg.encode("utf-8"))
         else:
             self.__stream.write(arg)
@@ -88,39 +87,38 @@ class ResultRow(tuple):
     >>> rr=ResultRow({ Variable('a'): URIRef('urn:cake') }, [Variable('a')])
 
     >>> rr[0]
-    rdflib.term.URIRef(%(u)s'urn:cake')
+    rdflib.term.URIRef(u'urn:cake')
     >>> rr[1]
     Traceback (most recent call last):
         ...
     IndexError: tuple index out of range
 
     >>> rr.a
-    rdflib.term.URIRef(%(u)s'urn:cake')
+    rdflib.term.URIRef(u'urn:cake')
     >>> rr.b
     Traceback (most recent call last):
         ...
     AttributeError: b
 
     >>> rr['a']
-    rdflib.term.URIRef(%(u)s'urn:cake')
+    rdflib.term.URIRef(u'urn:cake')
     >>> rr['b']
     Traceback (most recent call last):
         ...
     KeyError: 'b'
 
     >>> rr[Variable('a')]
-    rdflib.term.URIRef(%(u)s'urn:cake')
+    rdflib.term.URIRef(u'urn:cake')
 
     .. versionadded:: 4.0
 
     """
-    __doc__ = py3compat.format_doctest_out(__doc__)
 
     def __new__(cls, values, labels):
 
         instance = super(ResultRow, cls).__new__(
             cls, (values.get(v) for v in labels))
-        instance.labels = dict((unicode(x[1]), x[0])
+        instance.labels = dict((text_type(x[1]), x[0])
                                for x in enumerate(labels))
         return instance
 
@@ -135,9 +133,15 @@ class ResultRow(tuple):
         except TypeError:
             if name in self.labels:
                 return tuple.__getitem__(self, self.labels[name])
-            if unicode(name) in self.labels:  # passing in variable object
-                return tuple.__getitem__(self, self.labels[unicode(name)])
+            if text_type(name) in self.labels:  # passing in variable object
+                return tuple.__getitem__(self, self.labels[text_type(name)])
             raise KeyError(name)
+
+    def get(self, name, default=None):
+        try:
+            return self[name]
+        except KeyError:
+            return default
 
     def asdict(self):
         return dict((v, self[v]) for v in self.labels if self[v] != None)
@@ -239,11 +243,14 @@ class Result(object):
         else:
             return len(self.graph)
 
-    def __nonzero__(self):
+    def __bool__(self):
         if self.type == 'ASK':
             return self.askAnswer
         else:
             return len(self)>0
+
+    if PY2:
+        __nonzero__ = __bool__
 
     def __iter__(self):
         if self.type in ("CONSTRUCT", "DESCRIBE"):

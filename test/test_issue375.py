@@ -3,6 +3,9 @@ import subprocess
 import sys
 import re
 
+from rdflib import Graph
+from rdflib.compare import isomorphic
+
 rdfa_expected = u'''@prefix dc: <http://purl.org/dc/terms/> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix frbr: <http://vocab.org/frbr/core#> .
@@ -92,64 +95,32 @@ rdfa_expected = u'''@prefix dc: <http://purl.org/dc/terms/> .
     dc:type <http://purl.oreilly.com/product-types/BOOK> .
 '''.strip()
 
-mdata_expected = u'''@prefix cc: <http://creativecommons.org/ns#> .
-@prefix ctag: <http://commontag.org/ns#> .
-@prefix dc: <http://purl.org/dc/terms/> .
-@prefix dc11: <http://purl.org/dc/elements/1.1/> .
-@prefix dcat: <http://www.w3.org/ns/dcat#> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix gr: <http://purl.org/goodrelations/v1#> .
-@prefix grddl: <http://www.w3.org/2003/g/data-view#> .
-@prefix hcalendar: <http://microformats.org/profile/hcalendar#> .
+mdata_expected = u'''
 @prefix hcard: <http://microformats.org/profile/hcard#> .
-@prefix ical: <http://www.w3.org/2002/12/cal/icaltzd#> .
-@prefix ma: <http://www.w3.org/ns/ma-ont#> .
-@prefix md: <http://www.w3.org/ns/md#> .
-@prefix og: <http://ogp.me/ns#> .
-@prefix org: <http://www.w3.org/ns/org#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix prov: <http://www.w3.org/ns/prov#> .
-@prefix qb: <http://purl.org/linked-data/cube#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfa: <http://www.w3.org/ns/rdfa#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rev: <http://purl.org/stuff/rev#> .
-@prefix rif: <http://www.w3.org/2007/rif#> .
-@prefix rr: <http://www.w3.org/ns/r2rml#> .
 @prefix schema: <http://schema.org/> .
-@prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
-@prefix sioc: <http://rdfs.org/sioc/ns#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix skosxl: <http://www.w3.org/2008/05/skos-xl#> .
-@prefix v: <http://rdf.data-vocabulary.org/#> .
-@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
-@prefix void: <http://rdfs.org/ns/void#> .
-@prefix wdr: <http://www.w3.org/2007/05/powder#> .
-@prefix wdrs: <http://www.w3.org/2007/05/powder-s#> .
-@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-<test/mdata/codelab.html> md:item ( [ a schema:TechArticle ;
-                schema:articleBody """
+[] a schema:TechArticle ;
+    schema:articleBody """
     Exercise 1: From basic HTML to RDFa: first steps
     Exercise 2: Embedded types
     Exercise 3: From strings to things
 """ ;
-                schema:author "Author Name" ;
-                schema:datePublished "January 29, 2014" ;
-                schema:description """
+    schema:author "Author Name" ;
+    schema:datePublished "January 29, 2014" ;
+    schema:description """
     About this codelab
 """ ;
-                schema:educationalUse "codelab" ;
-                schema:image <test/mdata/squares.png> ;
-                schema:name "Structured data with schema.org codelab" ] ) ;
-    rdfa:usesVocabulary schema: .
+    schema:educationalUse "codelab" ;
+    schema:image <test/mdata/squares.png> ;
+    schema:name "Structured data with schema.org codelab" .
 '''.strip()
 
 env = os.environ.copy()
 env['PYTHONPATH'] = '.:' + env.get('PYTHONPATH', '')
+
 
 def test_rdfpipe_bytes_vs_str():
     """
@@ -159,13 +130,18 @@ def test_rdfpipe_bytes_vs_str():
     explicitly exposes sys.stdout.buffer for this purpose. Test
     rdfpipe to ensure that we get the expected results.
     """
-    args = ['python', 'rdflib/tools/rdfpipe.py', '-i', 'rdfa1.1', 'test/rdfa/oreilly.html']
-    proc = subprocess.Popen(args, stdout=subprocess.PIPE, universal_newlines=True, env=env)
+    args = [
+        sys.executable, 'rdflib/tools/rdfpipe.py', '-i', 'rdfa1.1',
+        'test/rdfa/oreilly.html'
+    ]
+    proc = subprocess.Popen(
+        args, stdout=subprocess.PIPE, universal_newlines=True, env=env)
     res = ''
     while proc.poll() is None:
         res += proc.stdout.read()
 
     assert res.strip() == rdfa_expected
+
 
 def test_rdfpipe_mdata_open():
     """
@@ -174,15 +150,32 @@ def test_rdfpipe_mdata_open():
     The file() builtin has been deprecated for a long time. Use
     the open() builtin instead.
     """
-    args = ['python', 'rdflib/tools/rdfpipe.py', '-i', 'mdata', 'test/mdata/codelab.html']
-    proc = subprocess.Popen(args, stdout=subprocess.PIPE, universal_newlines=True, env=env)
-    res = ''
+    args = [
+        sys.executable, 'rdflib/tools/rdfpipe.py', '-i', 'mdata',
+        'test/mdata/codelab.html'
+    ]
+    proc = subprocess.Popen(
+        args, stdout=subprocess.PIPE, universal_newlines=True, env=env)
+    res_abs = ''
     while proc.poll() is None:
-        res += proc.stdout.read()
+        res_abs += proc.stdout.read()
 
+    # we don't know the test system's paths, make them relative to this file
     a = re.compile(r'^(.*?<)[^>]+(test/mdata/codelab.*?>)', flags=re.DOTALL)
     b = re.compile(r'^(.*?<)[^>]+(test/mdata/squares.*?>)', flags=re.DOTALL)
-    res = a.sub(r'\1\2', res.strip())
+    res = a.sub(r'\1\2', res_abs.strip())
     res = b.sub(r'\1\2', res)
 
-    assert res == mdata_expected
+    # compare if result graphs are isomorphic
+    g_expected = Graph()
+    g_expected.parse(data=mdata_expected, format='n3')
+
+    g_res = Graph()
+    g_res.parse(data=res, format='n3')
+
+    assert isomorphic(g_expected, g_res), \
+        'not isomorphic:\nres:\n%s\ng_res:\n%s\nexpected:\n%s' % (
+        res_abs,
+        g_res.serialize(format='nt'),
+        g_expected.serialize(format='nt')
+    )

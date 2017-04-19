@@ -10,15 +10,11 @@ U{W3C® SOFTWARE NOTICE AND LICENSE<href="http://www.w3.org/Consortium/Legal/200
 @version: $Id: embeddedRDF.py,v 1.15 2012/11/16 17:51:53 ivan Exp $
 """
 
-# Python 3 foolproof way...
-try :
-	from io import StringIO
-except :
-	from StringIO import StringIO
+from six import StringIO
 
-from .host  import HostLanguage, accept_embedded_rdf_xml, accept_embedded_turtle
+from .host  import accept_embedded_rdf_xml, accept_embedded_turtle
 from .utils import return_XML
-import re, sys
+import sys
 
 def handle_embeddedRDF(node, graph, state) :
 	"""
@@ -85,4 +81,3 @@ def handle_embeddedRDF(node, graph, state) :
 			return False
 	else :
 		return False
-

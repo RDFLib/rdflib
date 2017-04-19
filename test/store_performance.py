@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import unittest
 import os
 import gc
@@ -51,14 +53,14 @@ class StoreTestCase(unittest.TestCase):
 
     def testTime(self):
         number = 1
-        print self.store
-        print "input:",
+        print(self.store)
+        print("input:", end=' ')
         for i in itertools.repeat(None, number):
             self._testInput()
-        print "random:",
+        print("random:", end=' ')
         for i in itertools.repeat(None, number):
             self._testRandom()
-        print "."
+        print(".")
 
     def _testRandom(self):
         number = len(self.input)
@@ -75,7 +77,7 @@ class StoreTestCase(unittest.TestCase):
         for _i in it:
             add_random()
         t1 = time()
-        print "%.3g" % (t1 - t0),
+        print("%.3g" % (t1 - t0), end=' ')
 
     def _testInput(self):
         number = 1
@@ -90,7 +92,7 @@ class StoreTestCase(unittest.TestCase):
         for _i in it:
             add_from_input()
         t1 = time()
-        print "%.3g" % (t1 - t0),
+        print("%.3g" % (t1 - t0), end=' ')
 
 
 class MemoryStoreTestCase(StoreTestCase):

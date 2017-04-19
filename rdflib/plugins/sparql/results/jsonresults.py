@@ -1,11 +1,11 @@
+import json
+
 from rdflib.query import (
     Result, ResultException, ResultSerializer, ResultParser)
 from rdflib import Literal, URIRef, BNode, Variable
 
-from rdflib.py3compat import bytestype
+from six import binary_type, text_type
 
-
-import jsonlayer
 
 """A Serializer for SPARQL results in JSON:
 
@@ -23,9 +23,9 @@ class JSONResultParser(ResultParser):
 
     def parse(self, source):
         inp = source.read()
-        if isinstance(inp, bytestype):
+        if isinstance(inp, binary_type):
             inp = inp.decode('utf-8')
-        return JSONResult(jsonlayer.decode(inp))
+        return JSONResult(json.loads(inp))
 
 
 class JSONResultSerializer(ResultSerializer):
@@ -47,7 +47,7 @@ class JSONResultSerializer(ResultSerializer):
             res["results"]["bindings"] = [self._bindingToJSON(
                 x) for x in self.result.bindings]
 
-        r = jsonlayer.encode(res)
+        r = json.dumps(res, allow_nan=False, ensure_ascii=False)
         if encoding is not None:
             stream.write(r.encode(encoding))
         else:
@@ -103,9 +103,7 @@ def parseJsonTerm(d):
     if t == 'uri':
         return URIRef(d['value'])
     elif t == 'literal':
-        if 'xml:lang' in d:
-            return Literal(d['value'], lang=d['xml:lang'])
-        return Literal(d['value'])
+        return Literal(d['value'], datatype=d.get('datatype'), lang=d.get('xml:lang'))
     elif t == 'typed-literal':
         return Literal(d['value'], datatype=URIRef(d['datatype']))
     elif t == 'bnode':
@@ -116,18 +114,16 @@ def parseJsonTerm(d):
 
 def termToJSON(self, term):
     if isinstance(term, URIRef):
-        return {'type': 'uri', 'value': unicode(term)}
+        return {'type': 'uri', 'value': text_type(term)}
     elif isinstance(term, Literal):
+        r = {'type': 'literal',
+             'value': text_type(term)}
+
         if term.datatype is not None:
-            return {'type': 'typed-literal',
-                    'value': unicode(term),
-                    'datatype': unicode(term.datatype)}
-        else:
-            r = {'type': 'literal',
-                 'value': unicode(term)}
-            if term.language is not None:
-                r['xml:lang'] = term.language
-            return r
+            r['datatype'] = text_type(term.datatype)
+        if term.language is not None:
+            r['xml:lang'] = term.language
+        return r
 
     elif isinstance(term, BNode):
         return {'type': 'bnode', 'value': str(term)}

@@ -5,12 +5,7 @@ import unittest
 from rdflib.graph import ConjunctiveGraph
 from rdflib.term import URIRef, Literal
 from rdflib.graph import Graph
-
-try:
-    from io import BytesIO
-    assert BytesIO
-except ImportError:
-    from StringIO import StringIO as BytesIO
+from six import BytesIO
 
 
 class TestTrixSerialize(unittest.TestCase):
@@ -60,7 +55,7 @@ class TestTrixSerialize(unittest.TestCase):
                 # here I know there is only one anonymous graph,
                 # and that is the default one, but this is not always the case
                 tg = g.default_context
-            self.assert_(q[0:3] in tg)
+            self.assertTrue(q[0:3] in tg)
 
     def test_issue_250(self):
         """
@@ -93,9 +88,9 @@ class TestTrixSerialize(unittest.TestCase):
         graph = ConjunctiveGraph()
         graph.bind(None, "http://defaultnamespace")
         sg = graph.serialize(format='trix').decode('UTF-8')
-        self.assert_(
+        self.assertTrue(
             'xmlns="http://defaultnamespace"' not in sg, sg)
-        self.assert_(
+        self.assertTrue(
             'xmlns="http://www.w3.org/2004/03/trix/trix-1/' in sg, sg)
 
 

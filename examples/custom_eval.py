@@ -65,4 +65,4 @@ if __name__=='__main__':
     # Find all FOAF Agents
     for x in g.query(
             'PREFIX foaf: <%s> SELECT * WHERE { ?s a foaf:Agent . }' % FOAF):
-        print x
+        print(x)

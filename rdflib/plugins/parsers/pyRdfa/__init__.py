@@ -165,33 +165,21 @@ __contact__ = 'Ivan Herman, ivan@w3.org'
 __license__ = 'W3C® SOFTWARE NOTICE AND LICENSE, http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231'
 
 import sys
-PY3 = (sys.version_info[0] >= 3)
 
-if PY3 :
-	from io import StringIO
-else :
-	from StringIO import StringIO
+from six import StringIO, string_types
+from six.moves.urllib.parse import urlparse
 
 import os
 import xml.dom.minidom
-if PY3 :
-	from urllib.parse import urlparse
-else :
-	from urlparse import urlparse
 
 import rdflib
 from rdflib	import URIRef
 from rdflib	import Literal
 from rdflib	import BNode
 from rdflib	import Namespace
-if rdflib.__version__ >= "3.0.0" :
-	from rdflib	import RDF  as ns_rdf
-	from rdflib	import RDFS as ns_rdfs
-	from rdflib	import Graph
-else :
-	from rdflib.RDFS  import RDFSNS as ns_rdfs
-	from rdflib.RDF	  import RDFNS  as ns_rdf
-	from rdflib.Graph import Graph
+from rdflib	import RDF  as ns_rdf
+from rdflib	import RDFS as ns_rdfs
+from rdflib	import Graph
 
 import logging
 logger = logging.getLogger(__name__)
@@ -199,7 +187,6 @@ logger = logging.getLogger(__name__)
 # Namespace, in the RDFLib sense, for the rdfa vocabulary
 ns_rdfa		= Namespace("http://www.w3.org/ns/rdfa#")
 
-from .extras.httpheader   import acceptable_content_type, content_type
 from .transform.prototype import handle_prototypes
 
 # Vocabulary terms for vocab reporting
@@ -411,12 +398,8 @@ class pyRdfa :
 		@type name: string or a file-like object
 		@return: a file like object if opening "name" is possible and successful, "name" otherwise
 		"""
-		try :
-			# Python 2 branch
-			isstring = isinstance(name, basestring)
-		except :
-			# Python 3 branch
-			isstring = isinstance(name, str)
+
+		isstring = isinstance(name, string_types)
 
 		try :
 			if isstring :
@@ -609,7 +592,10 @@ class pyRdfa :
 					if self.charset :
 						# This means the HTTP header has provided a charset, or the
 						# file is a local file when we suppose it to be a utf-8
-						dom = parser.parse(input, encoding=self.charset)
+						try:
+							dom = parser.parse(input, encoding=self.charset)
+						except TypeError:
+							dom = parser.parse(input, transport_encoding=self.charset)
 					else :
 						# No charset set. The HTMLLib parser tries to sniff into the
 						# the file to find a meta header for the charset; if that

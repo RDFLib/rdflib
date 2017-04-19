@@ -27,7 +27,7 @@ Run tests with `nose <https://nose.readthedocs.org/en/latest/>`_:
 
 .. code-block: bash
 
-   $ easy_install nose
+   $ pip install nose
    $ python run_tests.py
    $ python run_tests.py --attr known_issue # override attr in setup.cfg to run only tests marked with "known_issue"
    $ python run_tests.py --attr \!known_issue # runs all tests (including "slow" and "non_core") except those with known issues
@@ -56,16 +56,8 @@ If you make a pull-request to RDFLib on GitHub, travis will automatically test y
 Compatibility
 -------------
 
-RDFLib>=3.X tries to be compatible with python versions 2.5 - 3
+RDFLib>=5.0.0 tries to be compatible with python versions 2.7, 3.5, 3.6.
 
-Some of the limitations we've come across:
-
- * Python 2.5/2.6 has no abstract base classes from collections, such ``MutableMap``, etc.
- * 2.5/2.6 No skipping tests using :mod:`unittest`, i.e. ``TestCase.skipTest`` and decorators are missing => use nose instead
- * no ``str.decode('string-escape')`` in py3
- * no :mod:`json` module in 2.5 (install ``simplejson`` instead)
- * no ``ordereddict`` in 2.5/2.6 (install ``ordereddict`` module)
- * :class:`collections.Counter` was added in 2.6
 
 Releasing
 ---------
@@ -77,11 +69,11 @@ Add :file:`CHANGELOG.md` entry.
 
 Commit this change. It's preferable make the release tag via
 https://github.com/RDFLib/rdflib/releases/new ::
-Our Tag versions aren't started with 'v', so just use a plain 4.2.0 like
-version. Release title is like "RDFLib 4.2.0", the description a copy of your
+Our Tag versions aren't started with 'v', so just use a plain 5.0.0 like
+version. Release title is like "RDFLib 5.0.0", the description a copy of your
 :file:`CHANGELOG.md` entry.
 This gives us a nice release page like this::
-https://github.com/RDFLib/rdflib/releases/tag/4.2.0
+https://github.com/RDFLib/rdflib/releases/tag/4.2.2
 
 If for whatever reason you don't want to take this approach, the old one is::
 
@@ -96,11 +88,19 @@ If for whatever reason you don't want to take this approach, the old one is::
 
 No matter how you create the release tag, remember to upload tarball to pypi with::
 
-  python setup.py sdist upload
+  rm -r dist/X.X.X[.-]*  # delete all previous builds for this release, just in case
 
-Set new dev version number in the above locations, i.e. next release `-dev`: ``2.4.1-dev`` and commit again.
+  rm -r build
+  python setup.py sdist
+  python setup.py bdist_wheel
+  ls dist
 
-Update the topic of #rdflib on freenode irc::
+  # upload with twine
+  # WARNING: once uploaded can never be modified, only deleted!
+  twine upload dist/rdflib-X.X.X[.-]*
+
+Set new dev version number in the above locations, i.e. next release `-dev`: ``5.0.1-dev`` and commit again.
+
+Tweet, email mailing list and update the topic of #rdflib on freenode irc::
 
   /msg ChanServ topic #rdflib https://github.com/RDFLib/rdflib | latest stable version: 4.2.0 | docs: http://rdflib.readthedocs.org
-

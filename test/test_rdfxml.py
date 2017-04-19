@@ -1,11 +1,12 @@
+from __future__ import print_function
+
 import unittest
 
 import os
 import os.path
-from urllib import url2pathname
-from urllib2 import urlopen
 
-import rdflib
+from six.moves.urllib.request import url2pathname, urlopen
+
 from rdflib import RDF, RDFS, URIRef, BNode, Literal, Namespace, Graph
 from rdflib.exceptions import ParserError
 from rdflib.util import first
@@ -35,10 +36,11 @@ class TestStore(Graph):
         super(TestStore, self).__init__()
         self.expected = expected
 
-    def add(self, (s, p, o)):
+    def add(self, spo):
+        (s, p, o) = spo
         if not isinstance(s, BNode) and not isinstance(o, BNode):
             if not (s, p, o) in self.expected:
-                m = u"Triple not in expected result: %s, %s, %s" % (
+                m = "Triple not in expected result: %s, %s, %s" % (
                     s.n3(), p.n3(), o.n3())
                 if verbose:
                     write(m)
@@ -66,7 +68,7 @@ def cached_file(url):
 
     fpath = os.path.join(CACHE_DIR, fname)
     if not os.path.exists(fpath):
-        print "%s does not exist, fetching from %s" % (fpath, url)
+        print("%s does not exist, fetching from %s" % (fpath, url))
         folder = os.path.dirname(fpath)
         if not os.path.exists(folder):
             os.makedirs(folder)
@@ -109,7 +111,7 @@ def _testPositive(uri, manifest):
 
     try:
         store.parse(cached_file(inDoc), publicID=inDoc, format=format)
-    except ParserError, pe:
+    except ParserError as pe:
         write("Failed '")
         write(inDoc)
         write("' failed with")
@@ -185,7 +187,7 @@ class ParserTestCase(unittest.TestCase):
                 result = _testNegative(neg, manifest)
                 total += 1
                 num_failed += result
-        self.assertEquals(
+        self.assertEqual(
             num_failed, 0, "Failed: %s of %s." % (num_failed, total))
 
     def testPositive(self):
@@ -210,7 +212,7 @@ class ParserTestCase(unittest.TestCase):
                     results.add((test, RDF.type, RESULT["FailingRun"]))
                 total += 1
                 num_failed += result
-        self.assertEquals(
+        self.assertEqual(
             num_failed, 0, "Failed: %s of %s." % (num_failed, total))
 
 RESULT = Namespace("http://www.w3.org/2002/03owlt/resultsOntology#")
@@ -233,22 +235,22 @@ if __name__ == "__main__":
     import getopt
     try:
         optlist, args = getopt.getopt(sys.argv[1:], 'h:', ["help"])
-    except getopt.GetoptError, msg:
+    except getopt.GetoptError as msg:
         write(msg)
         # usage()
-        
+
     try:
         argv = sys.argv
         if len(argv)>1:
             _logger.setLevel(logging.INFO)
             _logger.addHandler(logging.StreamHandler())
 
-        for arg in argv[1:]:            
+        for arg in argv[1:]:
             verbose = 1
             case = URIRef(arg)
             write(u"Testing: %s" % case)
             if (case, RDF.type, TEST["PositiveParserTest"]) in manifest:
-                result = _testPositive(case, manifest)                
+                result = _testPositive(case, manifest)
                 write(u"Positive test %s" % ["PASSED", "FAILED"][result])
             elif (case, RDF.type, TEST["NegativeParserTest"]) in manifest:
                 result = _testNegative(case, manifest)
