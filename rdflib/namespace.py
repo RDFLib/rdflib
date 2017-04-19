@@ -476,7 +476,7 @@ def is_ncname(name):
         for i in range(1, len(name)):
             c = name[i]
             if not category(c) in NAME_CATEGORIES:
-                if c in ALLOWED_NAME_CHARS:
+                if c in ALLOWED_NAME_CHARS[:-1]:
                     continue
                 return 0
             # if in compatibility area
