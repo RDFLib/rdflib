@@ -41,6 +41,7 @@ class XMLResult(Result):
     def __init__(self, source):
 
         xmlstring = source.read()
+        source.close_connection()
 
         if isinstance(xmlstring, text_type):
             xmlstring = xmlstring.encode('utf-8')
