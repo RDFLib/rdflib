@@ -355,6 +355,7 @@ class NamespaceManager(object):
         self.__cache = {}
         self.__log = None
         self.__trie = {}
+        self.__strie = {}
         for p, n in self.namespaces():  # self.bind is not always called
             insert_trie(self.__trie, n)
         self.bind("xml", "http://www.w3.org/XML/1998/namespace")
@@ -384,6 +385,8 @@ class NamespaceManager(object):
         """
         try:
             namespace, name = split_uri(rdfTerm)
+            if namespace not in self.__strie:
+                insert_strie(self.__strie, self.__trie, namespace)
             namespace = URIRef(text_type(namespace))
         except:
             if isinstance(rdfTerm, Variable):
@@ -407,19 +410,22 @@ class NamespaceManager(object):
             )
 
         if uri not in self.__cache:
-            namespace = get_longest_namespace(self.__trie, uri)
-            if namespace is not None:
-                name = uri[len(namespace):]
-                if '/' in name or '#' in name:
-                    name = None
-                else:
-                    prefix = self.store.prefix(namespace)  # warning multiple prefixes problem
-            else:
-                name = None
+            namespace, name = split_uri(uri)
+            if namespace not in self.__strie:
+                insert_strie(self.__strie, self.__trie, namespace)
 
-            if name is None:
-                namespace, name = split_uri(uri)
-                namespace = URIRef(namespace)
+            if self.__strie[namespace]:
+                #print('BEFORE', namespace, uri, self.__strie[namespace])
+                pl_namespace = get_longest_namespace(self.__strie[namespace], uri)
+                if pl_namespace is not None:
+                    namespace = pl_namespace
+                    name = uri[len(namespace):]
+                #print('AFTER', namespace)
+
+            namespace = URIRef(namespace)
+            prefix = self.store.prefix(namespace)  # warning multiple prefixes problem
+
+            if prefix is None:
                 if not generate:
                     raise KeyError(
                         "No known prefix for {} and generate=False".format(namespace)
@@ -430,6 +436,7 @@ class NamespaceManager(object):
                     if not self.store.namespace(prefix):
                         break
                     num += 1
+                print(prefix, namespace)
                 self.bind(prefix, namespace)
             self.__cache[uri] = (prefix, namespace, name)
         return self.__cache[uri]
@@ -592,18 +599,25 @@ def split_uri(uri):
             break
     raise ValueError("Can't split '{}'".format(uri))
 
-def insert_trie(trie, value):
+def insert_trie(trie, value):  # aka get_subtrie_or_insert
+    """ Insert a value into the trie if it is not already contained in the trie.
+        Return the subtree for the value regardless of whether it is a new value
+        or not. """
     if value in trie:
-        return
+        return trie[value]
     for key in trie:
         if value.startswith(key):
-            insert_trie(trie[key], value)
-            return
+            return insert_trie(trie[key], value)
         elif key.startswith(value):
-            dict_ = trie.pop(key)
+            dict_ = trie.pop(key)  # does not break strie since key<->dict_ remains unchanged
             trie[value] = {key:dict_}
-            return
+            return trie[value]
     trie[value] = {}
+    return trie[value]
+
+def insert_strie(strie, trie, value):
+    if value not in strie:
+        strie[value] = insert_trie(trie, value)
 
 def get_longest_namespace(trie, value):
     for key in trie:
