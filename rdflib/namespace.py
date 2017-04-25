@@ -357,7 +357,7 @@ class NamespaceManager(object):
         self.__trie = {}
         self.__strie = {}
         for p, n in self.namespaces():  # self.bind is not always called
-            insert_trie(self.__trie, n)
+            insert_trie(self.__trie, str(n))
         self.bind("xml", "http://www.w3.org/XML/1998/namespace")
         self.bind("rdf", RDF)
         self.bind("rdfs", RDFS)
@@ -386,7 +386,7 @@ class NamespaceManager(object):
         try:
             namespace, name = split_uri(rdfTerm)
             if namespace not in self.__strie:
-                insert_strie(self.__strie, self.__trie, namespace)
+                insert_strie(self.__strie, self.__trie, str(namespace))
             namespace = URIRef(text_type(namespace))
         except:
             if isinstance(rdfTerm, Variable):
@@ -415,12 +415,10 @@ class NamespaceManager(object):
                 insert_strie(self.__strie, self.__trie, namespace)
 
             if self.__strie[namespace]:
-                #print('BEFORE', namespace, uri, self.__strie[namespace])
                 pl_namespace = get_longest_namespace(self.__strie[namespace], uri)
                 if pl_namespace is not None:
                     namespace = pl_namespace
                     name = uri[len(namespace):]
-                #print('AFTER', namespace)
 
             namespace = URIRef(namespace)
             prefix = self.store.prefix(namespace)  # warning multiple prefixes problem
@@ -436,7 +434,6 @@ class NamespaceManager(object):
                     if not self.store.namespace(prefix):
                         break
                     num += 1
-                print(prefix, namespace)
                 self.bind(prefix, namespace)
             self.__cache[uri] = (prefix, namespace, name)
         return self.__cache[uri]
@@ -466,7 +463,7 @@ class NamespaceManager(object):
 
             if replace:
                 self.store.bind(prefix, namespace)
-                insert_trie(self.__trie, namespace)
+                insert_trie(self.__trie, str(namespace))
                 return
 
             # prefix already in use for different namespace
@@ -496,7 +493,7 @@ class NamespaceManager(object):
             else:
                 if override or bound_prefix.startswith("_"):  # or a generated prefix
                     self.store.bind(prefix, namespace)
-        insert_trie(self.__trie, namespace)
+        insert_trie(self.__trie, str(namespace))
 
     def namespaces(self):
         for prefix, namespace in self.store.namespaces():
@@ -605,14 +602,18 @@ def insert_trie(trie, value):  # aka get_subtrie_or_insert
         or not. """
     if value in trie:
         return trie[value]
-    for key in trie:
+    multi_check = False
+    for key in list(trie.keys()):
         if value.startswith(key):
             return insert_trie(trie[key], value)
         elif key.startswith(value):
+            if not multi_check:
+                trie[value] = {}
+                multi_check = True  # there can be multiple longer existing prefixes
             dict_ = trie.pop(key)  # does not break strie since key<->dict_ remains unchanged
-            trie[value] = {key:dict_}
-            return trie[value]
-    trie[value] = {}
+            trie[value][key] = dict_
+    if value not in trie:
+        trie[value] = {}
     return trie[value]
 
 def insert_strie(strie, trie, value):
