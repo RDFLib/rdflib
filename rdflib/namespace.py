@@ -581,13 +581,14 @@ def split_uri(uri):
     if uri.startswith(XMLNS):
         return (XMLNS, uri.split(XMLNS)[1])
     length = len(uri)
+    name_start_plus_nd = NAME_START_CATEGORIES + ["Nd"]
     for i in range(0, length):
         c = uri[-i - 1]
         if not category(c) in NAME_CATEGORIES:
             if c in ALLOWED_NAME_CHARS:
                 continue
             for j in range(-1 - i, length):
-                if category(uri[j]) in NAME_START_CATEGORIES or uri[j] == "_":
+                if category(uri[j]) in name_start_plus_nd or uri[j] == "_":
                     ns = uri[:j]
                     if not ns:
                         break
