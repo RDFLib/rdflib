@@ -1585,9 +1585,9 @@ class SinkParser:
                     raise BadSyntax(
                         self._thisDoc, startline, argstr, i,
                         "unterminated string literal (2)")
-                k = 'abfrtvn\\"'.find(ch)
+                k = 'abfrtvn\\"\''.find(ch)
                 if k >= 0:
-                    uch = '\a\b\f\r\t\v\n\\"'[k]
+                    uch = '\a\b\f\r\t\v\n\\"\''[k]
                     ustr = ustr + uch
                     j = j + 1
                 elif ch == "u":
