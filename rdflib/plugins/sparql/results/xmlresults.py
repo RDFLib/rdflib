@@ -1,3 +1,4 @@
+import logging
 
 from xml.sax.saxutils import XMLGenerator
 from xml.dom import XML_NAMESPACE
@@ -18,6 +19,8 @@ from six import text_type
 
 SPARQL_XML_NAMESPACE = u'http://www.w3.org/2005/sparql-results#'
 RESULTS_NS_ET = '{%s}' % SPARQL_XML_NAMESPACE
+
+log = logging.getLogger(__name__)
 
 
 """A Parser for SPARQL results in XML:
@@ -47,10 +50,8 @@ class XMLResult(Result):
         try:
             tree = etree.fromstring(xmlstring)
         except Exception as e:
-            try:
-                raise e.__class__("error parsing %r: %s" % (xmlstring, e))
-            except:
-                raise e
+            log.exception("Error parsing XML results: %s"%xmlstring)
+            raise e
 
         boolean = tree.find(RESULTS_NS_ET + 'boolean')
         results = tree.find(RESULTS_NS_ET + 'results')
