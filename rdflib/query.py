@@ -195,10 +195,11 @@ class Result(object):
         _get_bindings, _set_bindings, doc="a list of variable bindings as dicts")
 
     @staticmethod
-    def parse(source, format='xml', **kwargs):
+    def parse(source=None, format=None, content_type=None, **kwargs):
         from rdflib import plugin
-        parser = plugin.get(format, ResultParser)()
-        return parser.parse(source, **kwargs)
+        parser = plugin.get(format or content_type or 'xml', ResultParser)()
+
+        return parser.parse(source, content_type=content_type, **kwargs)
 
     def serialize(
             self, destination=None, encoding="utf-8", format='xml', **args):
