@@ -352,6 +352,9 @@ class SPARQLStore(SPARQLWrapper, Store):
         else:
             return graph.identifier != DATASET_DEFAULT_GRAPH_ID
 
+    def close(self, commit_pending_transaction=None):
+        SPARQLWrapper.close(self)
+
 
 class SPARQLUpdateStore(SPARQLStore):
     """A store using SPARQL queries for reading and SPARQL Update for changes.
