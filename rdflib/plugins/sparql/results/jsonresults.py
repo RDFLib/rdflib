@@ -21,7 +21,7 @@ Authors: Drew Perttula, Gunnar Aastrand Grimnes
 
 class JSONResultParser(ResultParser):
 
-    def parse(self, source):
+    def parse(self, source, content_type=None):
         inp = source.read()
         if isinstance(inp, binary_type):
             inp = inp.decode('utf-8')
