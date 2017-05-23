@@ -21,15 +21,20 @@ initial_context = {
 }
 
 initial_context["http://www.w3.org/2011/rdfa-context/rdfa-1.1"].ns = {
+	'as'		: 'https://www.w3.org/ns/activitystreams#',
 	'csvw'		: 'http://www.w3.org/ns/csvw#',
 	'dcat'		: 'http://www.w3.org/ns/dcat#',
-    'qb'		: 'http://purl.org/linked-data/cube#',
-    'org'		: 'http://www.w3.org/ns/org#',
+	'dqv'		: 'http://www.w3.org/ns/dqv#',
+	'duv'		: 'https://www.w3.org/TR/vocab-duv#',
+	'qb'		: 'http://purl.org/linked-data/cube#',
+	'org'		: 'http://www.w3.org/ns/org#',
 	'owl'		: 'http://www.w3.org/2002/07/owl#',
 	'gr'		: 'http://purl.org/goodrelations/v1#',
 	'ctag'		: 'http://commontag.org/ns#',
 	'cc'		: 'http://creativecommons.org/ns#',
 	'grddl'		: 'http://www.w3.org/2003/g/data-view#',
+	'ldp'		: 'http://www.w3.org/ns/ldp#',
+	'oa'		: 'http://www.w3.org/ns/oa#',
 	'rif'		: 'http://www.w3.org/2007/rif#',
 	'sioc'		: 'http://rdfs.org/sioc/ns#',
 	'skos'		: 'http://www.w3.org/2004/02/skos/core#',
