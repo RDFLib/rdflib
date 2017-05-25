@@ -200,10 +200,11 @@ class Identifier(Node, text_type):  # allow Identifiers to be Nodes in the Graph
             return True
         return self == other
 
-    def __hash__(self):
-        t = type(self)
-        fqn = t.__module__ + '.' + t.__name__
-        return hash(fqn) ^ hash(text_type(self))
+    # use parent's hash for efficiency reasons
+    # clashes of 'foo', URIRef('foo') and Literal('foo') are typically so rare
+    # that they don't justify additional overhead. Notice that even in case of
+    # clash __eq__ is still the fallback and very quick in those cases.
+    __hash__ = text_type.__hash__
 
 
 class URIRef(Identifier):
@@ -924,7 +925,8 @@ class Literal(Identifier):
         -- 6.5.1 Literal Equality (RDF: Concepts and Abstract Syntax)
 
         """
-        res = super(Literal, self).__hash__()
+        # don't use super()... for efficiency reasons, see Identifier.__hash__
+        res = text_type.__hash__(self)
         if self.language:
             res ^= hash(self.language.lower())
         if self.datatype:
