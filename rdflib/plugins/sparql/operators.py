@@ -585,14 +585,65 @@ def Builtin_EXISTS(e, ctx):
     return Literal(not exists)
 
 
+_CUSTOM_FUNCTIONS = {}
+
+def register_custom_function(uri, func, override=False, raw=False):
+    """
+    Register a custom SPARQL function.
+
+    By default, the function will be passed the RDF terms in the argument list.
+    If raw is True, the function will be passed an Expression and a Context.
+
+    The function must return an RDF term, or raise a SparqlError.
+    """
+    if not override and uri in _CUSTOM_FUNCTIONS:
+        raise ValueError("A function is already registered as %s" % uri.n3())
+    _CUSTOM_FUNCTIONS[uri] = (func, raw)
+
+def custom_function(uri, override=False, raw=False):
+    """
+    Decorator version of :func:`register_custom_function`.
+    """
+    def decorator(func):
+        register_custom_function(uri, func, override=override, raw=raw)
+        return func
+    return decorator
+
+def unregister_custom_function(uri, func):
+    if _CUSTOM_FUNCTIONS.get(uri, (None, None))[0] != func:
+        raise ValueError("This function is not registered as %s" % uri.n3())
+    del _CUSTOM_FUNCTIONS[uri]
+
+    
 def Function(e, ctx):
     """
-    Custom functions (and casts!)
+    Custom functions and casts
     """
+    pair =_CUSTOM_FUNCTIONS.get(e.iri)
+    if pair is None:
+        # no such function is registered
+        raise SPARQLError('Unknown function %r' % e.iri)
+    func, raw = pair
+    if raw:
+        # function expects expression and context
+        return func(e, ctx)
+    else:
+        # function expects the argument list
+        try:
+            return func(*e.expr)
+        except TypeError as ex:
+            # wrong argument number
+            raise SPARQLError(*ex.args)
 
-    if e.iri in XSD_DTs:
-        # a cast
 
+@custom_function(XSD.string, raw=True)
+@custom_function(XSD.dateTime, raw=True)
+@custom_function(XSD.float, raw=True)
+@custom_function(XSD.double, raw=True)
+@custom_function(XSD.decimal, raw=True)
+@custom_function(XSD.integer, raw=True)
+@custom_function(XSD.boolean, raw=True)
+def default_cast(e, ctx):
         if not e.expr:
             raise SPARQLError("Nothing given to cast.")
         if len(e.expr) > 1:
@@ -657,15 +708,7 @@ def Function(e, ctx):
                 return Literal(True)
             if x.lower() in ("0", "false"):
                 return Literal(False)
-
             raise SPARQLError("Cannot interpret '%r' as bool" % x)
-        else:
-            raise Exception("I do not know how to cast to %r" % e.iri)
-
-    else:
-        raise SPARQLError('Unknown function %r"%e.iri')
-
-    # TODO: Custom functions!
 
 
 def UnaryNot(expr, ctx):
