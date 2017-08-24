@@ -52,7 +52,7 @@ exist). New Namespaces can also be defined:
 
 ```python
 
-dbpedia=Namespace('http://dbpedia.org/ontology/')
+dbpedia=rdflib.Namespace('http://dbpedia.org/ontology/')
 
 abstracts=list(x for x in g.objects(semweb, dbpedia['abstract']) if x.language=='en')
 ```
