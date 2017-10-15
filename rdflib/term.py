@@ -157,8 +157,6 @@ class Identifier(Node, text_type):  # allow Identifiers to be Nodes in the Graph
         True
         >>> Identifier("foo")=="foo"
         True
-        >>> Literal("foo")=="foo"
-        True
         >>> BNode("foo")!=URIRef("foo")
         True
         >>> URIRef("foo")!=BNode("foo")
@@ -953,7 +951,7 @@ class Literal(Identifier):
 
     def __eq__(self, other):
         """
-        Literals are only equal to other literals.
+        Literals are only equal to other literals, pure Identifiers and str.
 
         "Two literals are equal if and only if all of the following hold:
         * The strings of the two lexical forms compare equal, character by character.
@@ -972,6 +970,10 @@ class Literal(Identifier):
         False
         >>> Literal("1", datatype=URIRef("foo")) == "asdf"
         False
+        >>> Literal("1", datatype=URIRef("foo")) == "1"
+        True
+        >>> Literal("1", datatype=URIRef("foo")) == Identifier("1")
+        True
         >>> from rdflib import XSD
         >>> Literal('2007-01-01', datatype=XSD.date) == Literal('2007-01-01', datatype=XSD.date)
         True
@@ -996,7 +998,7 @@ class Literal(Identifier):
                 and (self.language.lower() if self.language else None) == (other.language.lower() if other.language else None) \
                 and text_type.__eq__(self, other)
 
-        return False
+        return super(self) == other
 
     def eq(self, other):
         """
