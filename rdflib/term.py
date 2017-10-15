@@ -193,7 +193,7 @@ class Identifier(Node, text_type):  # allow Identifiers to be Nodes in the Graph
         """
         if other is None:
             return True  # everything bigger than None
-        elif self.is_compatible(other):
+        elif self.is_comparable(other):
             return text_type(self) > text_type(other)
         elif isinstance(other, Node):
             return _ORDERING[type(self)] > _ORDERING[type(other)]
@@ -203,7 +203,7 @@ class Identifier(Node, text_type):  # allow Identifiers to be Nodes in the Graph
     def __lt__(self, other):
         if other is None:
             return False  # Nothing is less than None
-        elif self.is_compatible(other):
+        elif self.is_comparable(other):
             return text_type(self) < text_type(other)
         elif isinstance(other, Node):
             return _ORDERING[type(self)] < _ORDERING[type(other)]
