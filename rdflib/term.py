@@ -120,8 +120,18 @@ class Identifier(Node, text_type):  # allow Identifiers to be Nodes in the Graph
     def __new__(cls, value):
         return text_type.__new__(cls, value)
 
-    def is_compatible(self, other):
-        """Check whether the types are compatible"""
+    def is_comparable(self, other):
+        """Check whether the types are comparable
+        
+        >>> is_comparable(BNode('bar'), URIRef('bar'))
+        False
+        >>> is_comparable(BNode('bar'), 'string')
+        True
+        >>> is_comparable(BNode('bar'), Identifier('id'))
+        True
+        >>> is_comparable(BNode('bar'), Node('nd'))
+        True
+        """
         return issubclass(type(other), type(self)) or issubclass(type(self), type(other)) or isinstance(other, str)
 
     def eq(self, other):
@@ -168,10 +178,7 @@ class Identifier(Node, text_type):  # allow Identifiers to be Nodes in the Graph
         >>> Variable('a')!=Variable('a')
         False
         """
-        if self.is_compatible(other):
-            return text_type(self) == text_type(other)
-        else:
-            return False
+        return False if not self.is_comparable(other) else text_type(self) == text_type(other)
 
     def __gt__(self, other):
         """
@@ -998,7 +1005,7 @@ class Literal(Identifier):
                 and (self.language.lower() if self.language else None) == (other.language.lower() if other.language else None) \
                 and text_type.__eq__(self, other)
 
-        return super() == other
+        return super(type(self), self) == other
 
     def eq(self, other):
         """
