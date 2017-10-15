@@ -998,7 +998,7 @@ class Literal(Identifier):
                 and (self.language.lower() if self.language else None) == (other.language.lower() if other.language else None) \
                 and text_type.__eq__(self, other)
 
-        return super(self) == other
+        return super() == other
 
     def eq(self, other):
         """
