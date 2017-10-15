@@ -17,7 +17,7 @@ Ah... it's coming back to me...
 [6:32p] eikeon: if a==b and b==c then a should == c
 [6:32p] eikeon: "foo"==Literal("foo")
 [6:33p] eikeon: We don't want URIRef("foo")==Literal("foo")
-[6:33p] eikeon: But if we have URIRef("foo")=="foo" then it implies it.
+[6:33p] eikeon: But if we have URIRef("foo")=="foo" then it implies it.  # FALSE statement: the URIRef equality does not imply anything about Literal
 [6:33p] chimezie: yes, definately not the other RDFLib 'typed' RDF (and N3) terms
 [6:34p] eikeon: Why do you need URIRef("foo")=="foo" ?
 [6:34p] chimezie: i'm just wondering if a URI and a string with the same lexical value, are by definition 'different'
@@ -36,6 +36,8 @@ class IdentifierEquality(unittest.TestCase):
         self.uriref = URIRef("http://example.org/")
         self.bnode = BNode()
         self.literal = Literal("http://example.org/")
+        # Note that Python literal is comparable to any `Identifier` (including  `Literal`)
+        # but `Literal` is not comparable to non-`Literal` `Identifier`s
         self.python_literal = u"http://example.org/"
         self.python_literal_2 = u"foo"
 
@@ -46,19 +48,19 @@ class IdentifierEquality(unittest.TestCase):
         self.assertEqual(self.literal==self.uriref, False)
 
     def testC(self):
-        self.assertEqual(self.uriref==self.python_literal, False)
+        self.assertEqual(self.uriref==self.python_literal, True)
 
     def testD(self):
-        self.assertEqual(self.python_literal==self.uriref, False)
+        self.assertEqual(self.python_literal==self.uriref, True)
 
     def testE(self):
-        self.assertEqual(self.literal==self.python_literal, False)
+        self.assertEqual(self.literal==self.python_literal, True)
 
     def testE2(self): 
         self.assertTrue(self.literal.eq(self.python_literal), True)
 
     def testF(self):
-        self.assertEqual(self.python_literal==self.literal, False)
+        self.assertEqual(self.python_literal==self.literal, True)
 
     def testG(self):
         self.assertEqual("foo" in CORE_SYNTAX_TERMS, False)

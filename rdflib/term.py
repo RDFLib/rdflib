@@ -155,9 +155,15 @@ class Identifier(Node, text_type):  # allow Identifiers to be Nodes in the Graph
         True
         >>> Identifier("foo")==URIRef("foo")
         True
+        >>> Identifier("foo")=="foo"
+        True
+        >>> Literal("foo")=="foo"
+        True
         >>> BNode("foo")!=URIRef("foo")
         True
         >>> URIRef("foo")!=BNode("foo")
+        True
+        >>> URIRef("foo")!=Literal("foo")
         True
         >>> Variable('a')!=URIRef('a')
         True
