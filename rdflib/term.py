@@ -120,20 +120,6 @@ class Identifier(Node, text_type):  # allow Identifiers to be Nodes in the Graph
     def __new__(cls, value):
         return text_type.__new__(cls, value)
 
-    def is_comparable(self, other):
-        """Check whether the types are comparable
-        
-        >>> is_comparable(BNode('bar'), URIRef('bar'))
-        False
-        >>> is_comparable(BNode('bar'), 'string')
-        True
-        >>> is_comparable(BNode('bar'), Identifier('id'))
-        True
-        >>> is_comparable(BNode('bar'), Node('nd'))
-        True
-        """
-        return issubclass(type(other), type(self)) or issubclass(type(self), type(other)) or isinstance(other, str)
-
     def eq(self, other):
         """A "semantic"/interpreted equality function,
         by default, same as __eq__"""
@@ -144,21 +130,32 @@ class Identifier(Node, text_type):  # allow Identifiers to be Nodes in the Graph
         by default, same as __ne__"""
         return self.__ne__(other)
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
+    def is_comparable(self, other):
+        """Check whether the types are comparable
+        
+        >>> BNode('bar').is_comparable(URIRef('bar'))
+        False
+        >>> BNode('bar').is_comparable('string')
+        True
+        >>> BNode('bar').is_comparable(Identifier('id'))
+        True
+        >>> BNode('bar').is_comparable(Node('nd'))
+        True
+        """
+        return issubclass(type(other), type(self)) or issubclass(type(self), type(other)) or isinstance(other, str)
 
     def __eq__(self, other):
         """
-        Equality for Nodes.
+        Equality for Identifiers.
 
         >>> BNode("foo")==None
         False
         >>> BNode("foo")==URIRef("foo")
-        False
+        NotImplemented
         >>> BNode("foo")=="foo"
         True
         >>> URIRef("foo")==BNode("foo")
-        False
+        NotImplemented
         >>> URIRef("foo")=="foo"
         True
         >>> URIRef("foo")==Identifier("foo")
@@ -168,17 +165,22 @@ class Identifier(Node, text_type):  # allow Identifiers to be Nodes in the Graph
         >>> Identifier("foo")=="foo"
         True
         >>> BNode("foo")!=URIRef("foo")
-        True
+        NotImplemented
         >>> URIRef("foo")!=BNode("foo")
-        True
+        NotImplemented
         >>> URIRef("foo")!=Literal("foo")
-        True
+        NotImplemented
         >>> Variable('a')!=URIRef('a')
-        True
+        NotImplemented
         >>> Variable('a')!=Variable('a')
         False
         """
-        return False if not self.is_comparable(other) else text_type(self) == text_type(other)
+        # NotImplemented should be returned when the comparison is illegal:
+        # https://docs.python.org/3/library/stdtypes.html#the-notimplemented-object
+        return NotImplemented if not self.is_comparable(other) else text_type(self) == text_type(other)
+
+    def __ne__(self, other):
+        return NotImplemented if not self.is_comparable(other) else not self.__eq__(other)
 
     def __gt__(self, other):
         """
@@ -985,7 +987,7 @@ class Literal(Identifier):
         >>> Literal('2007-01-01', datatype=XSD.date) == Literal('2007-01-01', datatype=XSD.date)
         True
         >>> Literal('2007-01-01', datatype=XSD.date) == date(2007, 1, 1)
-        False
+        NotImplemented
         >>> Literal("one", lang="en") == Literal("one", lang="en")
         True
         >>> Literal("hast", lang='en') == Literal("hast", lang='de')
@@ -1005,7 +1007,11 @@ class Literal(Identifier):
                 and (self.language.lower() if self.language else None) == (other.language.lower() if other.language else None) \
                 and text_type.__eq__(self, other)
 
-        return super(type(self), self) == other
+        return NotImplemented if not self.is_comparable(other) else text_type(self) == text_type(other)
+
+
+    def __ne__(self, other):
+        return NotImplemented if not self.is_comparable(other) else not self.__eq__(other)
 
     def eq(self, other):
         """
