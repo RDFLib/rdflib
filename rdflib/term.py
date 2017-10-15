@@ -278,6 +278,9 @@ class URIRef(Identifier):
 
         return """%s(%s)""" % (clsName, super(URIRef, self).__repr__())
 
+    def __eq__(self, other):
+        return hash(self) == hash(other) if isinstance(other, self.__class__) else self == self.__class__(other)
+
     def __add__(self, other):
         return self.__class__(text_type(self) + other)
 
