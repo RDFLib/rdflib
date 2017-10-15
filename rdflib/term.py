@@ -120,6 +120,10 @@ class Identifier(Node, text_type):  # allow Identifiers to be Nodes in the Graph
     def __new__(cls, value):
         return text_type.__new__(cls, value)
 
+    def is_compatible(self, other):
+        """Check whether the types are compatible"""
+        return issubclass(type(other), type(self)) or issubclass(type(self), type(other)) or isinstance(other, str)
+
     def eq(self, other):
         """A "semantic"/interpreted equality function,
         by default, same as __eq__"""
@@ -141,8 +145,16 @@ class Identifier(Node, text_type):  # allow Identifiers to be Nodes in the Graph
         False
         >>> BNode("foo")==URIRef("foo")
         False
+        >>> BNode("foo")=="foo"
+        True
         >>> URIRef("foo")==BNode("foo")
         False
+        >>> URIRef("foo")=="foo"
+        True
+        >>> URIRef("foo")==Identifier("foo")
+        True
+        >>> Identifier("foo")==URIRef("foo")
+        True
         >>> BNode("foo")!=URIRef("foo")
         True
         >>> URIRef("foo")!=BNode("foo")
@@ -152,8 +164,7 @@ class Identifier(Node, text_type):  # allow Identifiers to be Nodes in the Graph
         >>> Variable('a')!=Variable('a')
         False
         """
-
-        if type(self) == type(other):
+        if self.is_compatible(other):
             return text_type(self) == text_type(other)
         else:
             return False
@@ -171,7 +182,7 @@ class Identifier(Node, text_type):  # allow Identifiers to be Nodes in the Graph
         """
         if other is None:
             return True  # everything bigger than None
-        elif type(self) == type(other):
+        elif self.is_compatible(other):
             return text_type(self) > text_type(other)
         elif isinstance(other, Node):
             return _ORDERING[type(self)] > _ORDERING[type(other)]
@@ -181,7 +192,7 @@ class Identifier(Node, text_type):  # allow Identifiers to be Nodes in the Graph
     def __lt__(self, other):
         if other is None:
             return False  # Nothing is less than None
-        elif type(self) == type(other):
+        elif self.is_compatible(other):
             return text_type(self) < text_type(other)
         elif isinstance(other, Node):
             return _ORDERING[type(self)] < _ORDERING[type(other)]
@@ -277,9 +288,6 @@ class URIRef(Identifier):
             clsName = self.__class__.__name__
 
         return """%s(%s)""" % (clsName, super(URIRef, self).__repr__())
-
-    def __eq__(self, other):
-        return hash(self) == hash(other) if isinstance(other, self.__class__) else self == self.__class__(other)
 
     def __add__(self, other):
         return self.__class__(text_type(self) + other)
