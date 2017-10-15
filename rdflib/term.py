@@ -151,11 +151,11 @@ class Identifier(Node, text_type):  # allow Identifiers to be Nodes in the Graph
         >>> BNode("foo")==None
         False
         >>> BNode("foo")==URIRef("foo")
-        NotImplemented
+        False
         >>> BNode("foo")=="foo"
         True
         >>> URIRef("foo")==BNode("foo")
-        NotImplemented
+        False
         >>> URIRef("foo")=="foo"
         True
         >>> URIRef("foo")==Identifier("foo")
@@ -165,13 +165,13 @@ class Identifier(Node, text_type):  # allow Identifiers to be Nodes in the Graph
         >>> Identifier("foo")=="foo"
         True
         >>> BNode("foo")!=URIRef("foo")
-        NotImplemented
+        True
         >>> URIRef("foo")!=BNode("foo")
-        NotImplemented
+        True
         >>> URIRef("foo")!=Literal("foo")
-        NotImplemented
+        True
         >>> Variable('a')!=URIRef('a')
-        NotImplemented
+        True
         >>> Variable('a')!=Variable('a')
         False
         """
@@ -987,7 +987,7 @@ class Literal(Identifier):
         >>> Literal('2007-01-01', datatype=XSD.date) == Literal('2007-01-01', datatype=XSD.date)
         True
         >>> Literal('2007-01-01', datatype=XSD.date) == date(2007, 1, 1)
-        NotImplemented
+        False
         >>> Literal("one", lang="en") == Literal("one", lang="en")
         True
         >>> Literal("hast", lang='en') == Literal("hast", lang='de')
