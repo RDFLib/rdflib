@@ -139,7 +139,9 @@ class Identifier(Node, text_type):  # allow Identifiers to be Nodes in the Graph
         True
         >>> BNode('bar').is_comparable(Identifier('id'))
         True
-        >>> BNode('bar').is_comparable(Node('nd'))
+        >>> BNode('bar').is_comparable(Variable('v'))
+        False
+        >>> BNode('bar').is_comparable(text_type('t'))
         True
         """
         return issubclass(type(other), type(self)) or issubclass(type(self), type(other)) or isinstance(other, str)
