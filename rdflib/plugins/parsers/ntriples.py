@@ -30,7 +30,7 @@ __all__ = ['unquote', 'uriquote', 'Sink', 'NTriplesParser']
 
 uriref = r'<([^:]+:[^\s"<>]+)>'
 literal = r'"([^"\\]*(?:\\.[^"\\]*)*)"'
-litinfo = r'(?:@([a-z]+(?:-[a-zA-Z0-9]+)*)|\^\^' + uriref + r')?'
+litinfo = r'(?:@([a-zA-Z]+(?:-[a-zA-Z0-9]+)*)|\^\^' + uriref + r')?'
 
 r_line = re.compile(r'([^\r\n]*)(?:\r\n|\r|\n)')
 r_wspace = re.compile(r'[ \t]*')
