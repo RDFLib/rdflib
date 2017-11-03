@@ -50,7 +50,7 @@ def evalCreate(ctx, u):
     """
     http://www.w3.org/TR/sparql11-update/#create
     """
-    g = ctx.datset.get_context(u.graphiri)
+    g = ctx.dataset.get_context(u.graphiri)
     if len(g) > 0:
         raise Exception("Graph %s already exists." % g.identifier)
     raise Exception("Create not implemented!")
