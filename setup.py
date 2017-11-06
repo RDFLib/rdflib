@@ -36,7 +36,7 @@ setup(
     maintainer="RDFLib Team",
     maintainer_email="rdflib-dev@google.com",
     url="https://github.com/RDFLib/rdflib",
-    license="https://raw.github.com/RDFLib/rdflib/master/LICENSE",
+    license="BSD-3-Clause",
     platforms=["any"],
     classifiers=[
             "Programming Language :: Python",
