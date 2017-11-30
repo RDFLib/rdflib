@@ -1362,6 +1362,9 @@ _XSD_DATETIME = URIRef(_XSD_PFX + 'dateTime')
 _XSD_DATE = URIRef(_XSD_PFX + 'date')
 _XSD_TIME = URIRef(_XSD_PFX + 'time')
 
+_XSD_GYEARMONTH = URIRef(_XSD_PFX + 'gYearMonth')
+_XSD_GYEAR = URIRef(_XSD_PFX + 'gYear')
+
 # TODO: duration, gYearMonth, gYear, gMonthDay, gDay, gMonth
 
 _NUMERIC_LITERAL_TYPES = (
@@ -1405,6 +1408,10 @@ _NUMERIC_INF_NAN_LITERAL_TYPES = (
 # the function must partition the type into subtypes that do have total orders
 _NO_TOTAL_ORDER_TYPES = {
     _XSD_DATETIME:lambda value:bool(value.tzinfo),
+    #_XSD_DATE:lambda value:bool(value.tzinfo),  # TODO: xsd spec allows tz
+    _XSD_TIME:lambda value:bool(value.tzinfo),
+    #_XSD_GYEARMONTH:lambda value:bool(value.tzinfo),  # TODO: spec allows tz
+    #_XSD_GYEAR:lambda value:bool(value.tzinfo),  # TODO: spec allows tz
 }
 
 def _castPythonToLiteral(obj):
