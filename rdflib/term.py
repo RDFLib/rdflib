@@ -812,6 +812,9 @@ class Literal(Identifier):
                     return self.language > other.language
 
             if self.value != None and other.value != None:
+                if dtself in _NO_TOTAL_ORDER_TYPES:
+                    comparator = _NO_TOTAL_ORDER_TYPES[dtself]
+                    return comparator(self.value) > comparator(other.value)
                 return self.value > other.value
 
             if text_type(self) != text_type(other):
@@ -1397,6 +1400,12 @@ _NUMERIC_INF_NAN_LITERAL_TYPES = (
     _XSD_DECIMAL,
 )
 
+# these are not guranteed to sort because it is not possible
+# to calculate a total order over all valid members of the type
+# the function must partition the type into subtypes that do have total orders
+_NO_TOTAL_ORDER_TYPES = {
+    _XSD_DATETIME:lambda value:bool(value.tzinfo),
+}
 
 def _castPythonToLiteral(obj):
     """
