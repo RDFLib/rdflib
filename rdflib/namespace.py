@@ -354,8 +354,8 @@ class NamespaceManager(object):
         self.graph = graph
         self.__cache = {}
         self.__log = None
-        self.__trie = {}
         self.__strie = {}
+        self.__trie = {}
         for p, n in self.namespaces():  # self.bind is not always called
             insert_trie(self.__trie, str(n))
         self.bind("xml", "http://www.w3.org/XML/1998/namespace")
@@ -365,6 +365,8 @@ class NamespaceManager(object):
 
     def reset(self):
         self.__cache = {}
+        self.__strie = {}
+        self.__trie = {}
 
     def __get_store(self):
         return self.graph.store
