@@ -606,10 +606,10 @@ def insert_trie(trie, value):  # aka get_subtrie_or_insert
     if value in trie:
         return trie[value]
     multi_check = False
-    for key in list(trie.keys()):
-        if value.startswith(key):
+    for key in tuple(trie.keys()):
+        if len(value) > len(key) and value.startswith(key):
             return insert_trie(trie[key], value)
-        elif key.startswith(value):
+        elif key.startswith(value):  # we know the value is not in the trie
             if not multi_check:
                 trie[value] = {}
                 multi_check = True  # there can be multiple longer existing prefixes
