@@ -22,6 +22,18 @@ class NamespacePrefixTest(unittest.TestCase):
         self.assertEqual(g.compute_qname(URIRef("http://blip/blop")),
                          ("ns4", URIRef("http://blip/"), "blop"))
 
+    def test_reset(self):
+        data = ('@prefix a: <http://example.org/a> .\n'
+                'a: <http://example.org/b> <http://example.org/c> .')
+        graph = Graph().parse(data=data, format='turtle')
+        for p, n in tuple(graph.namespaces()):
+            graph.store._IOMemory__namespace.pop(p)
+            graph.store._IOMemory__prefix.pop(n)
+        graph.namespace_manager.reset()
+        self.assertFalse(tuple(graph.namespaces()))
+        prefix, namespace, name = graph.namespace_manager.compute_qname(URIRef('http://example.org/a'), generate=True)
+        self.assertNotEqual(namespace, URIRef('http://example.org/a'))
+
     def test_n3(self):
         g = Graph()
         g.add((URIRef("http://example.com/foo"),
