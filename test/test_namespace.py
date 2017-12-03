@@ -31,8 +31,19 @@ class NamespacePrefixTest(unittest.TestCase):
             graph.store._IOMemory__prefix.pop(n)
         graph.namespace_manager.reset()
         self.assertFalse(tuple(graph.namespaces()))
-        prefix, namespace, name = graph.namespace_manager.compute_qname(URIRef('http://example.org/a'), generate=True)
-        self.assertNotEqual(namespace, URIRef('http://example.org/a'))
+        u = URIRef('http://example.org/a')
+        prefix, namespace, name = graph.namespace_manager.compute_qname(u, generate=True)
+        self.assertNotEqual(namespace, u)
+
+    def test_reset_preserve_prefixes(self):
+        data = ('@prefix a: <http://example.org/a> .\n'
+                'a: <http://example.org/b> <http://example.org/c> .')
+        graph = Graph().parse(data=data, format='turtle')
+        graph.namespace_manager.reset()
+        self.assertTrue(tuple(graph.namespaces()))
+        u = URIRef('http://example.org/a')
+        prefix, namespace, name = graph.namespace_manager.compute_qname(u, generate=True)
+        self.assertEqual(namespace, u)
 
     def test_n3(self):
         g = Graph()
