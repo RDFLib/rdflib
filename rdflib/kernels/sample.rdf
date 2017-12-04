@@ -1,0 +1,23 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix ns0: <http://swrc.ontoware.org/ontology#> .
+@prefix db: <http://dbpedia.org/resource/> .
+
+<http://data.semanticweb.org/person/abraham-bernstein>
+  a foaf:Person ;
+  ns0:affiliation <http://data.semanticweb.org/organization/university-of-zurich> ;
+  foaf:made <http://data.semanticweb.org/conference/eswc/2008/paper/133>, <http://data.semanticweb.org/conference/eswc/2008/paper/32> ;
+  foaf:name "Abraham Bernstein" .
+
+<http://data.semanticweb.org/person/andre-locher>
+  a foaf:Person ;
+  ns0:affiliation <http://data.semanticweb.org/organization/university-of-zurich> ;
+  foaf:made <http://data.semanticweb.org/conference/eswc/2008/paper/32> ;
+  foaf:name "André Locher" .
+
+<http://data.semanticweb.org/person/heiko-stoermer>
+  a foaf:Person ;
+  ns0:affiliation <http://data.semanticweb.org/organization/university-of-trento-italy"> ;
+  foaf:made <http://data.semanticweb.org/conference/eswc/2008/paper/245> ;
+  foaf:name "Heiko Stoermer" .
+
+<http://data.semanticweb.org/organization/university-of-zurich> a db:University .
