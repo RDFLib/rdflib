@@ -1406,6 +1406,7 @@ _NUMERIC_INF_NAN_LITERAL_TYPES = (
 _NO_TOTAL_ORDER_TYPES = {
     datetime:lambda value:bool(value.tzinfo),
     time:lambda value:bool(value.tzinfo),
+    xml.dom.minidom.Document:lambda value:value.toxml(),
 }
 
 def _castPythonToLiteral(obj):
