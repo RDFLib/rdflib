@@ -25,7 +25,7 @@ class NTSerializer(Serializer):
     def serialize(self, stream, base=None, encoding=None, **args):
         if base is not None:
             warnings.warn("NTSerializer does not support base.")
-        if encoding is not None:
+        if encoding is not None and encoding.lower() != self.encoding.lower():
             warnings.warn("NTSerializer does not use custom encoding.")
         encoding = self.encoding
         for triple in self.store:
