@@ -16,6 +16,8 @@ also return a dict of list of dicts
 
 import collections
 import itertools
+import re
+import requests
 
 from rdflib import Variable, Graph, BNode, URIRef, Literal
 from six import iteritems, itervalues
@@ -261,15 +263,37 @@ def evalPart(ctx, part):
         return evalConstructQuery(ctx, part)
 
     elif part.name == 'ServiceGraphPattern':
-        raise Exception('ServiceGraphPattern not implemented')
+        return evalServiceQuery(ctx, part)
+        #raise Exception('ServiceGraphPattern not implemented')
 
     elif part.name == 'DescribeQuery':
         raise Exception('DESCRIBE not implemented')
 
     else:
-        # import pdb ; pdb.set_trace()
         raise Exception('I dont know: %s' % part.name)
 
+def evalServiceQuery(ctx, part):
+    res = {}
+    match = re.match('^service <(.*)>[ \n]*{(.*)}[ \n]*$',
+                     part.get('service_string', ''), re.DOTALL)
+
+    if match:
+        service_url = match.group(1)
+        service_query = match.group(2)
+        response = requests.post(service_url, data={'query': service_query,
+                                               'output': 'json'})
+        if response.status_code == 200:
+            # build a dict, like in Select
+            res["bindings"] = response.json()['results']['bindings']
+
+            res["type_"] = "SELECT"
+            res["vars_"] = response.json()['head']['vars']
+            # or just return the bindings?
+            res = response.json()['results']['bindings']
+
+    # The challenge, as I see it now, is to understand what to return from
+    # this function to ensure the results are availabe in the outer SELECT
+    return res
 
 def evalGroup(ctx, group):
     """
