@@ -1743,7 +1743,6 @@ class RDFSink(object):
         )
         if not n:
             return nil
-
         first = self.newSymbol(
             'http://www.w3.org/1999/02/22-rdf-syntax-ns#first'
         )
@@ -1755,9 +1754,13 @@ class RDFSink(object):
         for ne in n:
             self.makeStatement((f, first, a, ne))
             an = self.newBlankNode(f)
-            self.makeStatement((f, rest, a, an, f))
+            self.makeStatement((f, rest, a, an))
             a = an
-        self.makeStatement((f, rest, a, nil, f))
+
+        rest = self.newSymbol(
+            'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest'
+        )
+        self.makeStatement((f, rest, a, nil))
         return af
 
     def newSet(self, *args):
