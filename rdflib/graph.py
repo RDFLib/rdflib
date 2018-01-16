@@ -1218,21 +1218,21 @@ class Graph(Node):
         for t in self.triples((None, None, None)):
             target.add(func(t))
 
-    def skolemize(self, new_graph=None, bnode=None):
+    def skolemize(self, new_graph=None, bnode=None, authority=None, basepath=None):
         def do_skolemize(bnode, t):
             (s, p, o) = t
             if s == bnode:
-                s = s.skolemize()
+                s = s.skolemize(authority=authority, basepath=basepath)
             if o == bnode:
-                o = o.skolemize()
+                o = o.skolemize(authority=authority, basepath=basepath)
             return (s, p, o)
 
         def do_skolemize2(t):
             (s, p, o) = t
             if isinstance(s, BNode):
-                s = s.skolemize()
+                s = s.skolemize(authority=authority, basepath=basepath)
             if isinstance(o, BNode):
-                o = o.skolemize()
+                o = o.skolemize(authority=authority, basepath=basepath)
             return (s, p, o)
 
         retval = Graph() if new_graph is None else new_graph
