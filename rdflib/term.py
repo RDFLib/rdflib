@@ -47,12 +47,11 @@ import math
 import base64
 import xml.dom.minidom
 
-from datetime import date, time, datetime
+from datetime import date, time, datetime, timedelta
 from re import sub, compile
 from collections import defaultdict
 
-from isodate import parse_time, parse_date, parse_datetime
-
+from isodate import parse_time, parse_date, parse_datetime, Duration, parse_duration, duration_isoformat
 
 import rdflib
 from six import PY2
@@ -1072,6 +1071,9 @@ class Literal(Identifier):
         elif isinstance(other, (date, datetime, time)):
             if self.datatype in (_XSD_DATETIME, _XSD_DATE, _XSD_TIME):
                 return self.value == other
+        elif isinstance(other, (timedelta, Duration)):
+            if self.datatype in (_XSD_DURATION, _XSD_DAYTIMEDURATION, _XSD_YEARMONTHDURATION):
+                return self.value == other
         elif isinstance(other, bool):
             if self.datatype == _XSD_BOOLEAN:
                 return self.value == other
@@ -1358,8 +1360,11 @@ _XSD_BOOLEAN = URIRef(_XSD_PFX + 'boolean')
 _XSD_DATETIME = URIRef(_XSD_PFX + 'dateTime')
 _XSD_DATE = URIRef(_XSD_PFX + 'date')
 _XSD_TIME = URIRef(_XSD_PFX + 'time')
+_XSD_DURATION = URIRef(_XSD_PFX + 'duration')
+_XSD_DAYTIMEDURATION = URIRef(_XSD_PFX + 'dayTimeDuration')
+_XSD_YEARMONTHDURATION = URIRef(_XSD_PFX + 'yearMonthDuration')
 
-# TODO: duration, gYearMonth, gYear, gMonthDay, gDay, gMonth
+# TODO: gYearMonth, gYear, gMonthDay, gDay, gMonth
 
 _NUMERIC_LITERAL_TYPES = (
     _XSD_INTEGER,
@@ -1437,6 +1442,8 @@ _PythonToXSD = [
     (datetime, (lambda i:i.isoformat(), _XSD_DATETIME)),
     (date, (lambda i:i.isoformat(), _XSD_DATE)),
     (time, (lambda i:i.isoformat(), _XSD_TIME)),
+    (Duration, (lambda i:duration_isoformat(i), _XSD_DURATION)),
+    (timedelta, (lambda i:duration_isoformat(i), _XSD_DAYTIMEDURATION)),
     (xml.dom.minidom.Document, (_writeXML, _RDF_XMLLITERAL)),
     # this is a bit dirty - by accident the html5lib parser produces
     # DocumentFragments, and the xml parser Documents, letting this
@@ -1452,6 +1459,9 @@ XSDToPython = {
     URIRef(_XSD_PFX + 'gYear'): parse_date,
     URIRef(_XSD_PFX + 'gYearMonth'): parse_date,
     URIRef(_XSD_PFX + 'dateTime'): parse_datetime,
+    URIRef(_XSD_PFX + 'duration'): parse_duration,
+    URIRef(_XSD_PFX + 'dayTimeDuration'): parse_duration,
+    URIRef(_XSD_PFX + 'yearMonthDuration'): parse_duration,
     URIRef(_XSD_PFX + 'string'): None,
     URIRef(_XSD_PFX + 'normalizedString'): None,
     URIRef(_XSD_PFX + 'token'): None,
