@@ -22,6 +22,10 @@ class NamespacePrefixTest(unittest.TestCase):
         self.assertEqual(g.compute_qname(URIRef("http://blip/blop")),
                          ("ns4", URIRef("http://blip/"), "blop"))
 
+        # should return empty qnames correctly
+        self.assertEqual(g.compute_qname(URIRef("http://foo/bar/")),
+            ("ns1", URIRef("http://foo/bar/"), ""))
+
     def test_reset(self):
         data = ('@prefix a: <http://example.org/a> .\n'
                 'a: <http://example.org/b> <http://example.org/c> .')

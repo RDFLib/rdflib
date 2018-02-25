@@ -414,7 +414,13 @@ class NamespaceManager(object):
             )
 
         if uri not in self.__cache:
-            namespace, name = split_uri(uri)
+            try:
+                namespace, name = split_uri(uri)
+            except ValueError as e:
+                namespace = URIRef(uri)
+                prefix = self.store.prefix(namespace)
+                if not prefix:
+                    raise e
             if namespace not in self.__strie:
                 insert_strie(self.__strie, self.__trie, namespace)
 
