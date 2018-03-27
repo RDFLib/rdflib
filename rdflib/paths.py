@@ -408,7 +408,7 @@ class MulPath(Path):
         return "Path(%s%s)" % (self.path, self.mod)
 
     def n3(self):
-        return '%s%s' % (self.path, self.mod)
+        return '%s%s' % (self.path.n3(), self.mod)
 
 
 
