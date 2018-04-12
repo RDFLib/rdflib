@@ -361,7 +361,7 @@ class MulPath(Path):
                     for s2, o2 in _bwd(None, s, seen):
                         yield s2, o
 
-        def _fwdbwd():
+        def _all_fwd_paths():
             if self.zero:
                 seen1 = set()
                 # According to the spec, ALL nodes are possible solutions
@@ -377,15 +377,17 @@ class MulPath(Path):
                         seen1.add(o)
                         yield o, o
 
+            seen = set()
             for s, o in evalPath(graph, (None, self.path, None)):
                 if not self.more:
                     yield s, o
                 else:
-                    seen = set()
-                    f = list(_fwd(s, None, seen))  # cache or recompute?
-                    for s3, o3 in _bwd(None, o, seen):
-                        for s2, o2 in f:
-                            yield s3, o2  # ?
+                    if s not in seen:
+                        seen.add(s)
+                        f = list(_fwd(s, None, set()))
+                        for s1, o1 in f:
+                            assert s1 == s
+                            yield(s1, o1)
 
         done = set()  # the spec does by defn. not allow duplicates
         if subj:
@@ -399,7 +401,7 @@ class MulPath(Path):
                     done.add(x)
                     yield x
         else:
-            for x in _fwdbwd():
+            for x in _all_fwd_paths():
                 if x not in done:
                     done.add(x)
                     yield x
