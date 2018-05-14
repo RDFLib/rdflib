@@ -1738,20 +1738,28 @@ class RDFSink(object):
             return Literal(s, lang=lang)
 
     def newList(self, n, f):
+        nil = self.newSymbol(
+            'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil'
+        )
         if not n:
-            return self.newSymbol(
-                'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil'
-            )
+            return nil
 
-        a = self.newBlankNode(f)
         first = self.newSymbol(
             'http://www.w3.org/1999/02/22-rdf-syntax-ns#first'
         )
         rest = self.newSymbol(
-            'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest')
-        self.makeStatement((f, first, a, n[0]))
-        self.makeStatement((f, rest, a, self.newList(n[1:], f)))
-        return a
+            'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest'
+        )
+        af = a = self.newBlankNode(f)
+
+        for ne in n[:-1]:
+            self.makeStatement((f, first, a, ne))
+            an = self.newBlankNode(f)
+            self.makeStatement((f, rest, a, an))
+            a = an
+        self.makeStatement((f, first, a, n[-1]))
+        self.makeStatement((f, rest, a, nil))
+        return af
 
     def newSet(self, *args):
         return set(args)
