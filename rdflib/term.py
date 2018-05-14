@@ -419,13 +419,17 @@ class BNode(Identifier):
             clsName = self.__class__.__name__
         return """%s('%s')""" % (clsName, str(self))
 
-    def skolemize(self, authority="http://rdlib.net/"):
+    def skolemize(self, authority=None, basepath=None):
         """ Create a URIRef "skolem" representation of the BNode, in accordance
         with http://www.w3.org/TR/rdf11-concepts/#section-skolemization
 
         .. versionadded:: 4.0
         """
-        skolem = "%s%s" % (rdflib_skolem_genid, text_type(self))
+        if authority is None:
+            authority = "http://rdlib.net/"
+        if basepath is None:
+            basepath = rdflib_skolem_genid
+        skolem = "%s%s" % (basepath, text_type(self))
         return URIRef(urljoin(authority, skolem))
 
 
