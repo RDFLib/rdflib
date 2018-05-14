@@ -55,6 +55,28 @@ class TestLiteral(unittest.TestCase):
         self.assertEqual(lit.value, decoded_b64msg)
         self.assertEqual(str(lit), b64msg)
 
+    def test_total_order(self):
+        types = {
+            XSD.dateTime:('0001-01-01T00:00:00', '0001-01-01T00:00:00Z',
+                          '0001-01-01T00:00:00-00:00'),
+            XSD.date:('0001-01-01', '0001-01-01Z', '0001-01-01-00:00'),
+            XSD.time:('00:00:00', '00:00:00Z', '00:00:00-00:00'),
+            XSD.gYear:('0001', '0001Z', '0001-00:00'),  # interval
+            XSD.gYearMonth:('0001-01', '0001-01Z', '0001-01-00:00'),
+        }
+        literals = [Literal(literal, datatype=type)
+                    for type, literals in types.items()
+                    for literal in literals]
+        try:
+            sorted(literals)
+            orderable = True
+        except TypeError as e:
+            for l in literals:
+                print(repr(l), repr(l.value))
+            print(e)
+            orderable = False
+        self.assertTrue(orderable)
+
 
 class TestValidityFunctions(unittest.TestCase):
 
