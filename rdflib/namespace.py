@@ -169,7 +169,7 @@ class ClosedNamespace(object):
     def term(self, name):
         uri = self.__uris.get(name)
         if uri is None:
-            raise KeyError(
+            raise AttributeError(
                 "term '{}' not in namespace '{}'".format(name, self.uri)
             )
         else:
