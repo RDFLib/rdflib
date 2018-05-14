@@ -28,6 +28,8 @@ tests roundtripping through rdf/xml with only the literals-02 file
 
 
 SKIP = [
+    ('xml', 'test/n3/n3-writer-test-29.n3'),  # has predicates that cannot be shortened to strict qnames
+    ('application/rdf+xml', 'test/n3/n3-writer-test-29.n3'),  # has predicates that cannot be shortened to strict qnames
     ('xml', 'test/nt/qname-02.nt'),  # uses a property that cannot be qname'd
     # uses a property that cannot be qname'd
     ('application/rdf+xml', 'test/nt/qname-02.nt'),

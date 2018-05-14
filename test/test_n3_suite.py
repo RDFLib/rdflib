@@ -24,7 +24,6 @@ def _get_test_files_formats():
 def all_n3_files():
     skiptests = [
         'test/n3/example-lots_of_graphs.n3',  # the issue here seems to be with QuotedGraph, should this work?
-        # 'test/n3/n3-writer-test-29.n3', # this reveals the broken xml qname handling
         # 'test/n3/n3-writer-test-30.n3', # this reveals the broken xml qname handling
     ]
     for fpath, fmt in _get_test_files_formats():

@@ -107,4 +107,4 @@ class XMLWriter(object):
                 else:
                     return uri[len(ns):]
 
-        return self.nm.qname(uri)
+        return self.nm.qname_strict(uri)
