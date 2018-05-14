@@ -1,4 +1,5 @@
 import logging
+from io import BytesIO
 
 from xml.sax.saxutils import XMLGenerator
 from xml.dom import XML_NAMESPACE
@@ -48,6 +49,9 @@ class XMLResult(Result):
         if isinstance(xmlstring, text_type):
             xmlstring = xmlstring.encode('utf-8')
         try:
+            parser = etree.XMLParser(huge_tree=True)
+            tree = etree.parse(BytesIO(xmlstring), parser)
+        except TypeError:
             tree = etree.fromstring(xmlstring)
         except Exception as e:
             log.exception("Error parsing XML results: %s"%xmlstring)
