@@ -460,7 +460,7 @@ class NamespaceManager(object):
 
 NAME_START_CATEGORIES = ["Ll", "Lu", "Lo", "Lt", "Nl"]
 NAME_CATEGORIES = NAME_START_CATEGORIES + ["Mc", "Me", "Mn", "Lm", "Nd"]
-ALLOWED_NAME_CHARS = [u"\u00B7", u"\u0387", u"-", u".", u"_"]
+ALLOWED_NAME_CHARS = [u"\u00B7", u"\u0387", u"-", u".", u"_", u":"]
 
 
 # http://www.w3.org/TR/REC-xml-names/#NT-NCName
@@ -476,7 +476,7 @@ def is_ncname(name):
         for i in range(1, len(name)):
             c = name[i]
             if not category(c) in NAME_CATEGORIES:
-                if c in ALLOWED_NAME_CHARS:
+                if c != ':' and c in ALLOWED_NAME_CHARS:
                     continue
                 return 0
             # if in compatibility area
