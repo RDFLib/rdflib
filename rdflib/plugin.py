@@ -145,6 +145,9 @@ register(
     'Sleepycat', Store,
     'rdflib.plugins.sleepycat', 'Sleepycat')
 register(
+    'Shelf', Store,
+    'rdflib.plugins.stores.shelf', 'Shelf')
+register(
     'SPARQLStore', Store,
     'rdflib.plugins.stores.sparqlstore', 'SPARQLStore')
 register(
