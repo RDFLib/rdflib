@@ -102,6 +102,8 @@ class ContextTestCase(unittest.TestCase):
     def testConjunction(self):
         if self.store == "SQLite":
             raise SkipTest("Skipping known issue with __len__")
+        if self.store == "Shelf":
+            raise SkipTest("Skipping known issue with __len__, indexing doesn't allow for comparisons across contexts.")
         self.addStuffInMultipleContexts()
         triple = (self.pizza, self.likes, self.pizza)
         # add to context 1
@@ -135,6 +137,8 @@ class ContextTestCase(unittest.TestCase):
     def testLenInMultipleContexts(self):
         if self.store == "SQLite":
             raise SkipTest("Skipping known issue with __len__")
+        if self.store == "Shelf":
+            raise SkipTest("Skipping known issue with __len__, indexing doesn't allow for comparisons across contexts.")
         oldLen = len(self.graph)
         self.addStuffInMultipleContexts()
 

@@ -492,14 +492,14 @@ def lru(original_function, maxsize=1000):
     tail = [head, None, None, None]   # newest
     head[NEXT] = tail
 
-    def clear():
-        mapping = {}
-
-        PREV, NEXT, KEY, VALUE = 0, 1, 2, 3         # link fields
-        head = [None, None, None, None]        # oldest
-        tail = [head, None, None, None]   # newest
-        head[NEXT] = tail        
+    def evict(*args, **kw):
+        key = (args,tuple(kw.items()))
+        if key in mapping:
+            del mapping[key]
     
+    def clear():
+        mapping.clear()
+        
     def fn(*args, **kw):
         key = (args,tuple(kw.items()))
         PREV, NEXT = 0, 1
@@ -526,6 +526,7 @@ def lru(original_function, maxsize=1000):
             link[PREV] = last
             link[NEXT] = tail
         return value
+    fn.evict = evict
     fn.clear = clear
     return fn
 
