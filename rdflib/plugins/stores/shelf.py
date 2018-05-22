@@ -37,7 +37,11 @@ class Shelf(Store):
     identifier = property(__get_identifier)
 
     def _init_db_environment(self, path):
-        db_env = shelve.open(path, writeback=False)
+        if not exists(path):
+            mkdir(path)
+            # TODO: implement create method and refactor this to it
+            self.create(path)
+        db_env = shelve.open(path+"/contexts.db")
         return db_env
 
     def is_open(self):
@@ -67,10 +71,10 @@ class Shelf(Store):
 
     @lru
     def __get_context(self, ident):
-        return self.db_env.get(ident, {})
+        return self.db_env.get(ident.encode('utf-8'), {})
 
     def __set_context(self, ident, g):
-        self.db_env[ident] = g
+        self.db_env[ident.encode('utf-8')] = g
     
     def add(self, triple, context, quoted=False, txn=None):
         """\
@@ -108,7 +112,7 @@ class Shelf(Store):
             self.db_env.clear()
             self.__get_context.clear() # clear the LRU cache
             return # this is pretty much it, special case.
-        for c in [x for x in [context.identifier.n3()] if x in self.db_env] if context is not None else self.db_env.keys():
+        for c in [x for x in [context.identifier.n3().encode('utf-8')] if x in self.db_env] if context is not None else self.db_env.keys():
             ctx = self.__get_context(c)
             if subject is None and predicate is None and object is None:
                 ctx.clear()
@@ -145,12 +149,12 @@ class Shelf(Store):
             if context == self:
                 context = None
 
-        for c in [x for x in [context.identifier.n3()] if x in self.db_env] if context is not None else self.db_env.keys():
+        for c in [x for x in [context.identifier.n3().encode('utf-8')] if x in self.db_env] if context is not None else self.db_env.keys():
             ctx = self.__get_context(c)
             for s in [x for x in [subject.n3()] if x in ctx] if subject is not None else ctx.keys():
                 for p in [x for x in [predicate.n3()] if x in ctx[s]] if predicate is not None else ctx[s].keys():
                     for o in [x for x in [object.n3()] if x in ctx[s][p]] if object is not None else ctx[s][p]:
-                        yield (from_n3(s),from_n3(p),from_n3(o)), from_n3(c)
+                        yield (from_n3(s),from_n3(p),from_n3(o)), from_n3(unicode(c,encoding='utf-8'))
 
     def __len__(self, context=None):
         assert self.__open, "The Store must be open."
@@ -189,13 +193,13 @@ class Shelf(Store):
                     yield c
         else:
             for c in self.db_env.keys():
-                yield from_n3(c)
+                yield from_n3(unicode(c,encoding='utf-8'))
 
     def add_graph(self, graph):
         if graph.identifier.n3() not in self.db_env:
             self.__set_context(graph.identifier.n3(), self.__get_context(graph.identifier.n3()))
 
     def remove_graph(self, graph):
-        if graph.identifier.n3() in self.db_env:
-            del self.db_env[graph.identifier.n3()]
-            self.__get_context.evict(self,graph.identifier.n3())
+        if graph.identifier.n3().encode('utf-8') in self.db_env:
+            del self.db_env[graph.identifier.n3().encode('utf-8')]
+            self.__get_context.evict(self,graph.identifier.n3().encode('utf-8'))
