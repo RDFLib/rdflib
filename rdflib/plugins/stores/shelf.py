@@ -71,10 +71,10 @@ class Shelf(Store):
 
     @lru
     def __get_context(self, ident):
-        return self.db_env.get(ident.encode('utf-8'), {})
+        return self.db_env.get(ident, {})
 
     def __set_context(self, ident, g):
-        self.db_env[ident.encode('utf-8')] = g
+        self.db_env[ident] = g
     
     def add(self, triple, context, quoted=False, txn=None):
         """\
@@ -90,14 +90,14 @@ class Shelf(Store):
         o = object.n3()
         c = context.identifier.n3()
 
-        ctx = self.__get_context(c)
+        ctx = self.__get_context(c.encode('utf-8'))
 
         if s not in ctx:
             ctx[s] = {}
         if p not in ctx[s]:
             ctx[s][p] = set()
         ctx[s][p].add(o)
-        self.__set_context(c,ctx)
+        self.__set_context(c.encode('utf-8'),ctx)
 
     def remove(self, spo, context, txn=None):
         subject, predicate, object = spo
@@ -113,7 +113,7 @@ class Shelf(Store):
             self.__get_context.clear() # clear the LRU cache
             return # this is pretty much it, special case.
         for c in [x for x in [context.identifier.n3().encode('utf-8')] if x in self.db_env] if context is not None else self.db_env.keys():
-            ctx = self.__get_context(c)
+            ctx = self.__get_context(c.encode('utf-8'))
             if subject is None and predicate is None and object is None:
                 ctx.clear()
             else:
@@ -137,7 +137,7 @@ class Shelf(Store):
             #    del self.db_env[c]
             #    self.__get_context.clear()
             #else:
-            self.__set_context(c, ctx)
+            self.__set_context(c.encode('utf-8'), ctx)
 
     def triples(self, spo, context=None, txn=None):
         """A generator over all the triples matching """
@@ -150,7 +150,7 @@ class Shelf(Store):
                 context = None
 
         for c in [x for x in [context.identifier.n3().encode('utf-8')] if x in self.db_env] if context is not None else self.db_env.keys():
-            ctx = self.__get_context(c)
+            ctx = self.__get_context(c.encode('utf-8'))
             for s in [x for x in [subject.n3()] if x in ctx] if subject is not None else ctx.keys():
                 for p in [x for x in [predicate.n3()] if x in ctx[s]] if predicate is not None else ctx[s].keys():
                     for o in [x for x in [object.n3()] if x in ctx[s][p]] if object is not None else ctx[s][p]:
@@ -164,7 +164,7 @@ class Shelf(Store):
 
         i = 0
         for c in [x for x in [context.identifier.n3()] if x in self.db_env] if context is not None else self.db_env.keys():
-            ctx = self.__get_context(c)
+            ctx = self.__get_context(c.encode('utf-8'))
             for s in ctx.keys():
                 for p in ctx[s].keys():
                     i += len(ctx[s][p])
@@ -196,8 +196,8 @@ class Shelf(Store):
                 yield from_n3(unicode(c,encoding='utf-8'))
 
     def add_graph(self, graph):
-        if graph.identifier.n3() not in self.db_env:
-            self.__set_context(graph.identifier.n3(), self.__get_context(graph.identifier.n3()))
+        if graph.identifier.n3().encode('utf-8') not in self.db_env:
+            self.__set_context(graph.identifier.n3().encode('utf-8'), self.__get_context(graph.identifier.n3().encode('utf-8')))
 
     def remove_graph(self, graph):
         if graph.identifier.n3().encode('utf-8') in self.db_env:
