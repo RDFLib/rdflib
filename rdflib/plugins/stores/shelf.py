@@ -163,7 +163,7 @@ class Shelf(Store):
                 context = None
 
         i = 0
-        for c in [x for x in [context.identifier.n3()] if x in self.db_env] if context is not None else self.db_env.keys():
+        for c in [x for x in [context.identifier.n3().encode('utf-8')] if x in self.db_env] if context is not None else self.db_env.keys():
             ctx = self.__get_context(c.encode('utf-8'))
             for s in ctx.keys():
                 for p in ctx[s].keys():
