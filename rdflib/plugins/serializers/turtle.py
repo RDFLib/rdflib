@@ -107,9 +107,6 @@ class RecursiveSerializer(Serializer):
         self._subjects = {}
         self._topLevels = {}
 
-        for prefix, ns in self.store.namespaces():
-            self.addNamespace(prefix, ns)
-
     def buildPredicateHash(self, subject):
         """
         Build a hash key by predicate to a list of objects for the given
