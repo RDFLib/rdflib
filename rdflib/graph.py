@@ -236,12 +236,7 @@ Using Namespace class:
 import logging
 logger = logging.getLogger(__name__)
 
-# import md5
 import random
-import warnings
-
-from hashlib import md5
-
 
 from rdflib.namespace import RDF, RDFS, SKOS
 
@@ -267,7 +262,6 @@ import shutil
 import tempfile
 
 from six import BytesIO
-from six import b
 from six.moves.urllib.parse import urlparse
 
 __all__ = [
@@ -394,11 +388,14 @@ class Graph(Node):
     def addN(self, quads):
         """Add a sequence of triple with context"""
 
-        self.__store.addN((s, p, o, c) for s, p, o, c in quads
-                          if isinstance(c, Graph)
-                          and c.identifier is self.identifier
-                          and _assertnode(s,p,o)
-                          )
+        triples_stored = self.__store.addN((s, p, o, c) for s, p, o, c in quads
+                                           if isinstance(c, Graph)
+                                           and c.identifier is self.identifier
+                                           and _assertnode(s, p, o)
+                                           )
+        if triples_stored is None:
+            return -1
+        return triples_stored
 
     def remove(self, triple):
         """Remove a triple from the graph
@@ -1348,14 +1345,16 @@ class ConjunctiveGraph(Graph):
         else:
             return c
 
-
     def addN(self, quads):
         """Add a sequence of triples with context"""
 
-        self.store.addN(
+        triples_stored = self.store.addN(
             (s, p, o, self._graph(c)) for s, p, o, c in quads if
             _assertnode(s, p, o)
             )
+        if triples_stored is None:
+            return -1
+        return triples_stored
 
     def remove(self, triple_or_quad):
         """
@@ -1685,12 +1684,15 @@ class QuotedGraph(Graph):
     def addN(self, quads):
         """Add a sequence of triple with context"""
 
-        self.store.addN(
+        triples_stored = self.store.addN(
             (s, p, o, c) for s, p, o, c in quads
             if isinstance(c, QuotedGraph)
             and c.identifier is self.identifier
             and _assertnode(s, p, o)
             )
+        if triples_stored is None:
+            return -1
+        return triples_stored
 
     def n3(self):
         """Return an n3 identifier for the Graph"""
