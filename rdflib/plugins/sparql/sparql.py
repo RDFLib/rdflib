@@ -5,6 +5,7 @@ import itertools
 import datetime
 from collections import Mapping, MutableMapping
 
+import isodate
 from six import text_type, iteritems
 
 from rdflib.namespace import NamespaceManager
@@ -242,7 +243,7 @@ class QueryContext(object):
             self.graph = graph
 
         self.prologue = None
-        self.now = datetime.datetime.now()
+        self.now = datetime.datetime.now(isodate.tzinfo.UTC)
 
         self.bnodes = collections.defaultdict(BNode)
 
