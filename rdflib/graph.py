@@ -1444,9 +1444,10 @@ class ConjunctiveGraph(Graph):
 
         identifier must be a URIRef or BNode.
         """
-        for graph in self.store.contexts():
-            if graph.identifier == identifier:
-                return graph
+        for context in self.store.contexts():
+            if isinstance(context, Graph):
+                if context.identifier == identifier:
+                    return context
 
         return Graph(store=self.store, identifier=identifier,
                      namespace_manager=self)
