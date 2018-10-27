@@ -11,6 +11,17 @@ log = logging.getLogger(__name__)
 
 class NTTestCase(unittest.TestCase):
 
+    def testIssue859(self):
+        graphA = Graph()
+        graphB = Graph()
+        graphA.parse("test/nt/quote-01.nt", format="ntriples")
+        graphB.parse("test/nt/quote-02.nt", format="ntriples")
+        for subjectA,predicateA,objA in graphA:
+            for subjectB,predicateB,objB in graphB:
+                self.assertEqual(subjectA, subjectB)
+                self.assertEqual(predicateA, predicateB)
+                self.assertEqual(objA, objB)
+
     def testIssue78(self):
         g = Graph()
         g.add((URIRef("foo"), URIRef("foo"), Literal(u"R\u00E4ksm\u00F6rg\u00E5s")))
