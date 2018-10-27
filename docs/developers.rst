@@ -56,7 +56,7 @@ If you make a pull-request to RDFLib on GitHub, travis will automatically test y
 Compatibility
 -------------
 
-RDFLib>=5.0.0 tries to be compatible with python versions 2.7, 3.5, 3.6.
+RDFLib>=5.0.0 tries to be compatible with python versions 2.7, 3.5, 3.6, 3.7.
 
 
 Releasing
