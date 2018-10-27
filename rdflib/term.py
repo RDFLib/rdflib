@@ -760,31 +760,31 @@ class Literal(Identifier):
         This tries to implement this:
         http://www.w3.org/TR/sparql11-query/#modOrderBy
 
-        In short, Literals with compatible data-types are orderd in value space,
-        i.e.
+        In short, Literals with compatible data-types are ordered in value
+        space, i.e.
         >>> from rdflib import XSD
 
-        >>> Literal(1)>Literal(2) # int/int
+        >>> Literal(1) > Literal(2) # int/int
         False
-        >>> Literal(2.0)>Literal(1) # double/int
+        >>> Literal(2.0) > Literal(1) # double/int
         True
         >>> from decimal import Decimal
         >>> Literal(Decimal("3.3")) > Literal(2.0) # decimal/double
         True
         >>> Literal(Decimal("3.3")) < Literal(4.0) # decimal/double
         True
-        >>> Literal('b')>Literal('a') # plain lit/plain lit
+        >>> Literal('b') > Literal('a') # plain lit/plain lit
         True
-        >>> Literal('b')>Literal('a', datatype=XSD.string) # plain lit/xsd:string
+        >>> Literal('b') > Literal('a', datatype=XSD.string) # plain lit/xsd:str
         True
 
         Incompatible datatype mismatches ordered by DT
 
-        >>> Literal(1)>Literal("2") # int>string
+        >>> Literal(1) > Literal("2") # int>string
         False
 
         Langtagged literals by lang tag
-        >>> Literal("a", lang="en")>Literal("a", lang="fr")
+        >>> Literal("a", lang="en") > Literal("a", lang="fr")
         False
         """
         if other is None:
@@ -814,10 +814,10 @@ class Literal(Identifier):
                 else:
                     return self.language > other.language
 
-            if self.value != None and other.value != None:
-                if type(self.value) in _NO_TOTAL_ORDER_TYPES:
-                    comparator = _NO_TOTAL_ORDER_TYPES[type(self.value)]
-                    return comparator(self.value) > comparator(other.value)
+            if self.value is not None and other.value is not None:
+                if type(self.value) in _TOTAL_ORDER_CASTERS:
+                    caster = _TOTAL_ORDER_CASTERS[type(self.value)]
+                    return caster(self.value) > caster(other.value)
                 return self.value > other.value
 
             if text_type(self) != text_type(other):
@@ -1409,13 +1409,21 @@ _NUMERIC_INF_NAN_LITERAL_TYPES = (
     _XSD_DECIMAL,
 )
 
-# these are not guranteed to sort because it is not possible
-# to calculate a total order over all valid members of the type
-# the function must partition the type into subtypes that do have total orders
-_NO_TOTAL_ORDER_TYPES = {
-    datetime:lambda value:bool(value.tzinfo),
-    time:lambda value:bool(value.tzinfo),
-    xml.dom.minidom.Document:lambda value:value.toxml(),
+# the following types need special treatment for reasonable sorting because
+# certain instances can't be compared to each other. We treat this by
+# partitioning and then sorting within those partitions.
+_TOTAL_ORDER_CASTERS = {
+    datetime: lambda value: (
+        # naive vs. aware
+        value.tzinfo is not None and value.tzinfo.utcoffset(value) is not None,
+        value
+    ),
+    time: lambda value: (
+        # naive vs. aware
+        value.tzinfo is not None and value.tzinfo.utcoffset(None) is not None,
+        value
+    ),
+    xml.dom.minidom.Document: lambda value: value.toxml(),
 }
 
 def _castPythonToLiteral(obj):
