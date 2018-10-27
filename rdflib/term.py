@@ -757,31 +757,31 @@ class Literal(Identifier):
         This tries to implement this:
         http://www.w3.org/TR/sparql11-query/#modOrderBy
 
-        In short, Literals with compatible data-types are orderd in value space,
-        i.e.
+        In short, Literals with compatible data-types are ordered in value
+        space, i.e.
         >>> from rdflib import XSD
 
-        >>> Literal(1)>Literal(2) # int/int
+        >>> Literal(1) > Literal(2) # int/int
         False
-        >>> Literal(2.0)>Literal(1) # double/int
+        >>> Literal(2.0) > Literal(1) # double/int
         True
         >>> from decimal import Decimal
         >>> Literal(Decimal("3.3")) > Literal(2.0) # decimal/double
         True
         >>> Literal(Decimal("3.3")) < Literal(4.0) # decimal/double
         True
-        >>> Literal('b')>Literal('a') # plain lit/plain lit
+        >>> Literal('b') > Literal('a') # plain lit/plain lit
         True
-        >>> Literal('b')>Literal('a', datatype=XSD.string) # plain lit/xsd:string
+        >>> Literal('b') > Literal('a', datatype=XSD.string) # plain lit/xsd:str
         True
 
         Incompatible datatype mismatches ordered by DT
 
-        >>> Literal(1)>Literal("2") # int>string
+        >>> Literal(1) > Literal("2") # int>string
         False
 
         Langtagged literals by lang tag
-        >>> Literal("a", lang="en")>Literal("a", lang="fr")
+        >>> Literal("a", lang="en") > Literal("a", lang="fr")
         False
         """
         if other is None:
