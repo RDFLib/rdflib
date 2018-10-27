@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 
 import os
+import itertools
 import shutil
 import tempfile
 import warnings
@@ -185,7 +186,7 @@ class Result(object):
         return self._bindings
 
     def _set_bindings(self, b):
-        if isinstance(b, types.GeneratorType):
+        if isinstance(b, (types.GeneratorType, itertools.islice)):
             self._genbindings = b
             self._bindings = []
         else:
