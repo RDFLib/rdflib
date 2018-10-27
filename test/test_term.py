@@ -118,13 +118,8 @@ class TestLiteral(unittest.TestCase):
                 '2001-01-02T01:00:01-01:30'
             ]
         ]
-        l2 = l1.copy()
+        l2 = list(l1)
         random.shuffle(l2)
-        for d in l1:
-            print(d)
-        print()
-        for d in sorted(l2):
-            print(d)
         self.assertListEqual(l1, sorted(l2))
 
 
