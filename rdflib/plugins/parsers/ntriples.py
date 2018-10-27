@@ -268,7 +268,9 @@ class NTriplesParser(object):
             else:
                 lang = None
             if dtype:
-                dtype = dtype
+                dtype = unquote(dtype)
+                dtype = uriquote(dtype)
+                dtype = URI(dtype)
             else:
                 dtype = None
             if lang and dtype:
