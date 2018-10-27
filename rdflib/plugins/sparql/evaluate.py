@@ -15,6 +15,7 @@ also return a dict of list of dicts
 """
 
 import collections
+import itertools
 
 from rdflib import Variable, Graph, BNode, URIRef, Literal
 from six import iteritems, itervalues
@@ -321,22 +322,9 @@ def evalOrderBy(ctx, part):
 
 
 def evalSlice(ctx, slice):
-    # import pdb; pdb.set_trace()
     res = evalPart(ctx, slice.p)
-    i = 0
-    while i < slice.start:
-        next(res)
-        i += 1
-    i = 0
-    for x in res:
-        i += 1
-        if slice.length is None:
-            yield x
-        else:
-            if i <= slice.length:
-                yield x
-            else:
-                break
+
+    return itertools.islice(res, slice.start, slice.start+slice.length if slice.length is not None else None)
 
 
 def evalReduced(ctx, part):
