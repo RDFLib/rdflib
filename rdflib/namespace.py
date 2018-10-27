@@ -169,7 +169,7 @@ class ClosedNamespace(object):
     def term(self, name):
         uri = self.__uris.get(name)
         if uri is None:
-            raise AttributeError(
+            raise KeyError(
                 "term '{}' not in namespace '{}'".format(name, self.uri)
             )
         else:
@@ -182,7 +182,10 @@ class ClosedNamespace(object):
         if name.startswith("__"):  # ignore any special Python names!
             raise AttributeError
         else:
-            return self.term(name)
+            try:
+                return self.term(name)
+            except KeyError as e:
+                raise AttributeError(e)
 
     def __str__(self):
         return text_type(self.uri)
