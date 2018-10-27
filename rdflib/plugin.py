@@ -323,11 +323,31 @@ register(
     'xml', ResultParser,
     'rdflib.plugins.sparql.results.xmlresults', 'XMLResultParser')
 register(
+    'application/sparql-results+xml', ResultParser,
+    'rdflib.plugins.sparql.results.xmlresults', 'XMLResultParser')
+
+register(
+    'application/rdf+xml', ResultParser,
+    'rdflib.plugins.sparql.results.graph', 'GraphResultParser')
+
+
+register(
     'json', ResultParser,
     'rdflib.plugins.sparql.results.jsonresults', 'JSONResultParser')
+register(
+    'application/sparql-results+json', ResultParser,
+    'rdflib.plugins.sparql.results.jsonresults', 'JSONResultParser')
+
 register(
     'csv', ResultParser,
     'rdflib.plugins.sparql.results.csvresults', 'CSVResultParser')
 register(
+    'text/csv', ResultParser,
+    'rdflib.plugins.sparql.results.csvresults', 'CSVResultParser')
+
+register(
     'tsv', ResultParser,
+    'rdflib.plugins.sparql.results.tsvresults', 'TSVResultParser')
+register(
+    'text/tab-separated-values', ResultParser,
     'rdflib.plugins.sparql.results.tsvresults', 'TSVResultParser')

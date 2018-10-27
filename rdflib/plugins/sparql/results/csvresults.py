@@ -21,7 +21,7 @@ class CSVResultParser(ResultParser):
     def __init__(self):
         self.delim = ","
 
-    def parse(self, source):
+    def parse(self, source, content_type=None):
 
         r = Result('SELECT')
 

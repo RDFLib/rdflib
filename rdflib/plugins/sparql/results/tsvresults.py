@@ -47,7 +47,7 @@ HEADER.parseWithTabs()
 
 
 class TSVResultParser(ResultParser):
-    def parse(self, source):
+    def parse(self, source, content_type=None):
 
         if isinstance(source.read(0), binary_type):
             # if reading from source returns bytes do utf-8 decoding
