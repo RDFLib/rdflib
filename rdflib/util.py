@@ -59,7 +59,7 @@ __all__ = [
     'list2set', 'first', 'uniq', 'more_than', 'to_term', 'from_n3',
     'date_time', 'parse_date_time', 'check_context', 'check_subject',
     'check_predicate', 'check_object', 'check_statement', 'check_pattern',
-    'guess_format', 'find_roots', 'get_tree']
+    'guess_format', 'find_roots', 'get_tree', 'lru']
 
 
 def list2set(seq):
@@ -126,7 +126,7 @@ def to_term(s, default=None):
         raise Exception(msg)
 
 
-def from_n3(s, default=None, backend=None, nsm=None):
+def from_n3(s, default=None, backend='default', nsm=None):
     r'''
     Creates the Identifier corresponding to the given n3 string.
 
@@ -484,7 +484,51 @@ def get_tree(graph,
     return (mapper(root), sorted(tree, key=sortkey))
 
 
+def lru(original_function, maxsize=1000):
+    mapping = {}
 
+    PREV, NEXT, KEY, VALUE = 0, 1, 2, 3         # link fields
+    head = [None, None, None, None]        # oldest
+    tail = [head, None, None, None]   # newest
+    head[NEXT] = tail
+
+    def evict(*args, **kw):
+        key = (args,tuple(kw.items()))
+        if key in mapping:
+            del mapping[key]
+    
+    def clear():
+        mapping.clear()
+        
+    def fn(*args, **kw):
+        key = (args,tuple(kw.items()))
+        PREV, NEXT = 0, 1
+        #print "Cache lookup for "+str(key)
+        link = mapping.get(key, head)
+        if link is head:
+            #print "Cache miss for "+str(key)
+            value = original_function(*args,**kw)
+            if len(mapping) >= maxsize:
+                old_prev, old_next, old_key, old_value = head[NEXT]
+                head[NEXT] = old_next
+                old_next[PREV] = head
+                del mapping[old_key]
+            last = tail[PREV]
+            link = [last, tail, key, value]
+            mapping[key] = last[NEXT] = tail[PREV] = link
+        else:
+            #print "Cache hit for "+str(key)
+            link_prev, link_next, key, value = link
+            link_prev[NEXT] = link_next
+            link_next[PREV] = link_prev
+            last = tail[PREV]
+            last[NEXT] = tail[PREV] = link
+            link[PREV] = last
+            link[NEXT] = tail
+        return value
+    fn.evict = evict
+    fn.clear = clear
+    return fn
 
 def test():
     import doctest
