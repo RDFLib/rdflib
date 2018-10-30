@@ -27,7 +27,7 @@ from six import text_type
 from rdflib import RDF, RDFS
 from rdflib.namespace import split_uri
 
-__all__ = [ 'CSV2RDF' ]
+__all__ = ['CSV2RDF']
 
 HELP = """
 csv2rdf.py \
@@ -198,6 +198,7 @@ class NodeInt(NodeLiteral):
     def range(self):
         return rdflib.XSD.int
 
+
 class NodeBool(NodeLiteral):
     def __call__(self, x):
         if not self.f:
@@ -245,6 +246,7 @@ class NodeSplit(NodeMaker):
             return self.f.range()
         return NodeMaker.range(self)
 
+
 default_node_make = NodeMaker()
 
 
@@ -271,6 +273,7 @@ def _config_replace(a, b):
 def _config_int(f=None):
     return NodeInt(f)
 
+
 def _config_bool(f=None):
     return NodeBool(f)
 
@@ -281,6 +284,7 @@ def _config_date(format_):
 
 def _config_split(sep=None, f=None):
     return NodeSplit(sep, f)
+
 
 config_functions = {"ignore": _config_ignore,
                     "uri": _config_uri,
@@ -406,13 +410,13 @@ class CSV2RDF(object):
                             warnings.warn(
                                 "Could not process value for column " +
                                 "%d:%s in row %d, ignoring: %s " % (
-                                i, headers[i], rows, e.message))
+                                    i, headers[i], rows, e.message))
 
                 rows += 1
                 if rows % 100000 == 0:
                     sys.stderr.write(
                         "%d rows, %d triples, elapsed %.2fs.\n" % (
-                        rows, self.triples, time.time() - start))
+                            rows, self.triples, time.time() - start))
             except:
                 sys.stderr.write("Error processing line: %d\n" % rows)
                 raise

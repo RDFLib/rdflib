@@ -340,9 +340,6 @@ def parse_date_time(val):
     return t
 
 
-
-
-
 SUFFIX_FORMAT_MAP = {
     'rdf': 'xml',
     'rdfs': 'xml',
@@ -484,11 +481,10 @@ def get_tree(graph,
     return (mapper(root), sorted(tree, key=sortkey))
 
 
-
-
 def test():
     import doctest
     doctest.testmod()
+
 
 if __name__ == "__main__":
     # try to make the tests work outside of the time zone they were written in

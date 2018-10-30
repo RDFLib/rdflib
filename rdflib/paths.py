@@ -308,7 +308,6 @@ class AlternativePath(Path):
         return '|'.join(a.n3() for a in self.args)
 
 
-
 class MulPath(Path):
     def __init__(self, path, mod):
         self.path = path
@@ -413,7 +412,6 @@ class MulPath(Path):
         return '%s%s' % (self.path.n3(), self.mod)
 
 
-
 class NegatedPath(Path):
     def __init__(self, arg):
         if isinstance(arg, (URIRef, InvPath)):
@@ -471,6 +469,7 @@ def path_sequence(self, other):
 def evalPath(graph, t):
     return ((s, o) for s, p, o in graph.triples(t))
 
+
 def mul_path(p, mul):
     """
     cardinality path
@@ -490,7 +489,6 @@ def neg_path(p):
     negated path
     """
     return NegatedPath(p)
-
 
 
 if __name__ == '__main__':

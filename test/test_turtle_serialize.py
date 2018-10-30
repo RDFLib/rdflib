@@ -12,8 +12,8 @@ def testTurtleFinalDot():
     g = Graph()
     u = URIRef("http://ex.org/bob.")
     g.bind("ns", "http://ex.org/")
-    g.add( (u, u, u) )
-    s=g.serialize(format='turtle')
+    g.add((u, u, u))
+    s = g.serialize(format='turtle')
     assert b("ns:bob.") not in s
 
 
@@ -71,5 +71,6 @@ def test_turtle_valid_list():
 
 
 if __name__ == "__main__":
-    import nose, sys
+    import nose
+    import sys
     nose.main(defaultTest=sys.argv[0])

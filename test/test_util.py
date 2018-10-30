@@ -11,7 +11,7 @@ from rdflib import XSD
 from rdflib.exceptions import SubjectTypeError
 from rdflib.exceptions import PredicateTypeError
 from rdflib.exceptions import ObjectTypeError
-from rdflib.exceptions import ContextTypeError 
+from rdflib.exceptions import ContextTypeError
 
 n3source = """\
 @prefix : <http://www.w3.org/2000/10/swap/Primer#>.
@@ -47,7 +47,8 @@ n3source = """\
 :Woman = foo:FemaleAdult .
 :Title a rdf:Property; = dc:title .
 
-""" # --- End of primer code
+"""  # --- End of primer code
+
 
 class TestUtilMisc(unittest.TestCase):
     def setUp(self):
@@ -56,19 +57,20 @@ class TestUtilMisc(unittest.TestCase):
 
     def test_util_list2set(self):
         base = [Literal('foo'), self.x]
-        r = util.list2set(base+base)
+        r = util.list2set(base + base)
         self.assertTrue(r == base)
 
     def test_util_uniq(self):
         base = ["michel", "hates", "pizza"]
-        r = util.uniq(base+base)
+        r = util.uniq(base + base)
         self.assertEqual(sorted(r), sorted(base))
         base = ["michel", "hates", "pizza"]
-        r = util.uniq(base+base, strip=True)
+        r = util.uniq(base + base, strip=True)
         self.assertEqual(sorted(r), sorted(base))
 
     def test_coverage_dodge(self):
         util.test()
+
 
 class TestUtilDateTime(unittest.TestCase):
 
@@ -108,6 +110,7 @@ class TestUtilDateTime(unittest.TestCase):
 
     def test_util_date_timewithtoutz(self):
         t = time.time()
+
         def ablocaltime(t):
             from time import gmtime
             res = gmtime(t)
@@ -115,6 +118,7 @@ class TestUtilDateTime(unittest.TestCase):
         util.localtime = ablocaltime
         res = util.date_time(t, local_time_zone=True)
         self.assertTrue(res is not t)
+
 
 class TestUtilTermConvert(unittest.TestCase):
     def setUp(self):
@@ -162,7 +166,6 @@ class TestUtilTermConvert(unittest.TestCase):
         default = "TestofDefault"
         res = util.from_n3(s, default=default, backend=None)
         self.assertTrue(res == default)
-    
 
     def test_util_from_n3_expectdefaultbnode(self):
         s = "michel"
@@ -205,7 +208,7 @@ class TestUtilTermConvert(unittest.TestCase):
         s = '42'
         res = util.from_n3(s)
         self.assertEqual(res, Literal(42))
-    
+
     def test_util_from_n3_expectliteralwithdatatypefrombool(self):
         s = 'true'
         res = util.from_n3(s)
@@ -213,12 +216,12 @@ class TestUtilTermConvert(unittest.TestCase):
         s = 'false'
         res = util.from_n3(s)
         self.assertEqual(res, Literal(False))
-    
+
     def test_util_from_n3_expectliteralmultiline(self):
         s = '"""multi\nline\nstring"""@en'
         res = util.from_n3(s, default=None, backend=None)
         self.assertTrue(res, Literal('multi\nline\nstring', lang='en'))
-    
+
     def test_util_from_n3_expectliteralwithescapedquote(self):
         s = '"\\""'
         res = util.from_n3(s, default=None, backend=None)
@@ -229,15 +232,15 @@ class TestUtilTermConvert(unittest.TestCase):
         res = util.from_n3(s)
         self.assertTrue(res, Literal('trailing\\', datatype=XSD['string']))
         self.assertTrue(res.n3(), s)
-    
+
     def test_util_from_n3_expectpartialidempotencewithn3(self):
         for n3 in ('<http://ex.com/foo>',
                    '"foo"@de',
-                   #'"\\""', # exception as '\\"' --> '"' by orig parser as well
+                   # '"\\""', # exception as '\\"' --> '"' by orig parser as well
                    '"""multi\n"line"\nstring"""@en'):
             self.assertEqual(util.from_n3(n3).n3(), n3,
                              'from_n3(%(n3e)r).n3() != %(n3e)r' % {'n3e': n3})
-    
+
     def test_util_from_n3_expectsameasn3parser(self):
         def parse_n3(term_n3):
             ''' Disclaimer: Quick and dirty hack using the n3 parser. '''
@@ -246,28 +249,26 @@ class TestUtilTermConvert(unittest.TestCase):
             g = ConjunctiveGraph()
             g.parse(data=prepstr, format='n3')
             return [t for t in g.triples((None, None, None))][0][2]
-        
-        for n3 in (# "michel", # won't parse in original parser
-                   # "_:michel", # BNodes won't be the same
-                   '"michel"',
-                   '<http://example.org/schema>',
-                   '"michel"@fr',
-                   # '"michel"@fr^^xsd:fr', # FIXME: invalid n3, orig parser will prefer datatype
-                   # '"true"^^xsd:boolean', # FIXME: orig parser will expand xsd prefix
-                   '42',
-                   'true',
-                   'false',
-                   '"""multi\nline\nstring"""@en',
-                   '<http://ex.com/foo>',
-                   '"foo"@de',
-                   '"\\""@en',
-                   '"""multi\n"line"\nstring"""@en'):
+
+        for n3 in (  # "michel", # won't parse in original parser
+            # "_:michel", # BNodes won't be the same
+            '"michel"',
+            '<http://example.org/schema>',
+            '"michel"@fr',
+            # '"michel"@fr^^xsd:fr', # FIXME: invalid n3, orig parser will prefer datatype
+            # '"true"^^xsd:boolean', # FIXME: orig parser will expand xsd prefix
+            '42',
+            'true',
+            'false',
+            '"""multi\nline\nstring"""@en',
+            '<http://ex.com/foo>',
+            '"foo"@de',
+            '"\\""@en',
+                '"""multi\n"line"\nstring"""@en'):
             res, exp = util.from_n3(n3), parse_n3(n3)
             self.assertEqual(res, exp,
-                'from_n3(%(n3e)r): %(res)r != parser.notation3: %(exp)r' % {
-                        'res': res, 'exp': exp, 'n3e':n3})
-        
-
+                             'from_n3(%(n3e)r): %(res)r != parser.notation3: %(exp)r' % {
+                                 'res': res, 'exp': exp, 'n3e': n3})
 
     def test_util_from_n3_expectquotedgraph(self):
         s = '{<http://example.com/schema>}'
@@ -279,6 +280,7 @@ class TestUtilTermConvert(unittest.TestCase):
         res = util.from_n3(s, default=None, backend="IOMemory")
         self.assertTrue(isinstance(res, Graph))
 
+
 class TestUtilCheckers(unittest.TestCase):
     def setUp(self):
         self.c = URIRef("http://example.com")
@@ -288,10 +290,10 @@ class TestUtilCheckers(unittest.TestCase):
 
     def test_util_checker_exceptions(self):
         c = "http://example.com"
-        self.assertRaises(ContextTypeError, util.check_context, c) 
-        self.assertRaises(SubjectTypeError, util.check_subject, c) 
-        self.assertRaises(PredicateTypeError, util.check_predicate, c) 
-        self.assertRaises(ObjectTypeError, util.check_object, c) 
+        self.assertRaises(ContextTypeError, util.check_context, c)
+        self.assertRaises(SubjectTypeError, util.check_subject, c)
+        self.assertRaises(PredicateTypeError, util.check_predicate, c)
+        self.assertRaises(ObjectTypeError, util.check_object, c)
 
     def test_util_check_context(self):
         res = util.check_context(self.c)
@@ -300,7 +302,7 @@ class TestUtilCheckers(unittest.TestCase):
     def test_util_check_subject(self):
         res = util.check_subject(self.s)
         self.assertTrue(res == None)
-    
+
     def test_util_check_predicate(self):
         res = util.check_predicate(self.p)
         self.assertTrue(res == None)
@@ -308,41 +310,41 @@ class TestUtilCheckers(unittest.TestCase):
     def test_util_check_object(self):
         res = util.check_object(self.o)
         self.assertTrue(res == None)
-    
+
     def test_util_check_statement(self):
         c = "http://example.com"
         self.assertRaises(
-            SubjectTypeError, 
-                util.check_statement, 
-                    (c, self.p, self.o)) 
+            SubjectTypeError,
+            util.check_statement,
+            (c, self.p, self.o))
         self.assertRaises(
-            PredicateTypeError, 
-                util.check_statement, 
-                    (self.s, c, self.o)) 
+            PredicateTypeError,
+            util.check_statement,
+            (self.s, c, self.o))
         self.assertRaises(
-            ObjectTypeError, 
-                util.check_statement, 
-                    (self.s, self.p, c)) 
+            ObjectTypeError,
+            util.check_statement,
+            (self.s, self.p, c))
         res = util.check_statement((self.s, self.p, self.o))
         self.assertTrue(res == None)
-    
+
     def test_util_check_pattern(self):
         c = "http://example.com"
         self.assertRaises(
-            SubjectTypeError, 
-                util.check_pattern, 
-                    (c, self.p, self.o)) 
+            SubjectTypeError,
+            util.check_pattern,
+            (c, self.p, self.o))
         self.assertRaises(
-            PredicateTypeError, 
-                util.check_pattern, 
-                    (self.s, c, self.o)) 
+            PredicateTypeError,
+            util.check_pattern,
+            (self.s, c, self.o))
         self.assertRaises(
-            ObjectTypeError, 
-                util.check_pattern, 
-                    (self.s, self.p, c)) 
+            ObjectTypeError,
+            util.check_pattern,
+            (self.s, self.p, c))
         res = util.check_pattern((self.s, self.p, self.o))
         self.assertTrue(res == None)
 
+
 if __name__ == "__main__":
     unittest.main()
-

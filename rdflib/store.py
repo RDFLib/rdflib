@@ -1,3 +1,10 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
+from six import BytesIO
+from six.moves import cPickle
+from rdflib.events import Dispatcher, Event
 """
 ============
 rdflib.store
@@ -24,9 +31,6 @@ RDF operations performed on it.
 
 ------
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 
 # Constants representing the state of a Store (returned by the open method)
@@ -35,10 +39,7 @@ CORRUPTED_STORE = 0
 NO_STORE = -1
 UNKNOWN = None
 
-from rdflib.events import Dispatcher, Event
 
-from six.moves import cPickle
-from six import BytesIO
 Pickler = cPickle.Pickler
 Unpickler = cPickle.Unpickler
 UnpicklingError = cPickle.UnpicklingError
@@ -79,7 +80,6 @@ class TripleRemovedEvent(Event):
     """
 
 
-
 class NodePickler(object):
     def __init__(self):
         self._objects = {}
@@ -117,7 +117,7 @@ class NodePickler(object):
         state.update({
             '_ids': tuple(self._ids.items()),
             '_objects': tuple(self._objects.items())
-            })
+        })
         return state
 
     def __setstate__(self, state):

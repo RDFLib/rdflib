@@ -12,19 +12,18 @@ subject.
 from rdflib import Graph, RDF, RDFS, Literal
 from rdflib.namespace import FOAF
 
-if __name__=='__main__':
+if __name__ == '__main__':
 
     g = Graph()
 
     bob = g.resource('urn:bob')
 
-    bob.set(RDF.type, FOAF.Person) # .set replaces all other values
+    bob.set(RDF.type, FOAF.Person)  # .set replaces all other values
     bob.set(FOAF.name, Literal("Bob"))
-
 
     bill = g.resource('urn:bill')
 
-    bill.add(RDF.type, FOAF.Person) # add adds to existing values
+    bill.add(RDF.type, FOAF.Person)  # add adds to existing values
     bill.add(RDF.type, FOAF.Agent)
     bill.set(RDFS.label, Literal("Bill"))
 
@@ -42,8 +41,8 @@ if __name__=='__main__':
 
     # or even quicker with paths:
     print("Bill knows: ")
-    for friend in bill[FOAF.knows/FOAF.name]:
+    for friend in bill[FOAF.knows / FOAF.name]:
         print(friend)
 
     # setting single properties is also possible:
-    bill[RDFS.label]=Literal("William")
+    bill[RDFS.label] = Literal("William")

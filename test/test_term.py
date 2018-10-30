@@ -12,9 +12,10 @@ from rdflib.namespace import XSD
 
 from six import PY3
 
+
 def uformat(s):
     if PY3:
-        return s.replace("u'","'")
+        return s.replace("u'", "'")
     return s
 
 
@@ -32,10 +33,10 @@ class TestURIRefRepr(unittest.TestCase):
     def testGracefulOrdering(self):
         u = URIRef('cake')
         g = Graph()
-        a = u>u
-        a = u>BNode()
-        a = u>QuotedGraph(g.store, u)
-        a = u>g
+        a = u > u
+        a = u > BNode()
+        a = u > QuotedGraph(g.store, u)
+        a = u > g
 
 
 class TestBNodeRepr(unittest.TestCase):
@@ -74,9 +75,9 @@ class TestLiteral(unittest.TestCase):
                 '00:00:00-00:00'
             ),
             XSD.gYear: (
-                 '2001',
-                 '2001Z',
-                 '2001-00:00'
+                '2001',
+                '2001Z',
+                '2001-00:00'
             ),  # interval
             XSD.gYearMonth: (
                 '2001-01',

@@ -67,8 +67,10 @@ def Filter(expr, p):
 def Extend(p, expr, var):
     return CompValue('Extend', p=p, expr=expr, var=var)
 
+
 def Values(res):
     return CompValue('values', res=res)
+
 
 def Project(p, PV):
     return CompValue('Project', p=p, PV=PV)
@@ -79,11 +81,11 @@ def Group(p, expr=None):
 
 
 def _knownTerms(triple, varsknown, varscount):
-    return (len([ x for x in triple if x not in varsknown and
-                  isinstance(x, (Variable, BNode)) ]),
+    return (len([x for x in triple if x not in varsknown and
+                 isinstance(x, (Variable, BNode))]),
             -sum(varscount.get(x, 0) for x in triple),
             not isinstance(triple[2], Literal),
-    )
+            )
 
 
 def reorderTriples(l):
@@ -117,8 +119,8 @@ def reorderTriples(l):
                        1], varsknown, varscount), x[1]) for x in l[i:])
         t = l[i][0][0]  # top block has this many terms bound
         j = 0
-        while i+j < len(l) and l[i+j][0][0] == t:
-            for c in l[i+j][1]:
+        while i + j < len(l) and l[i + j][0][0] == t:
+            for c in l[i + j][1]:
                 _addvar(c, varsknown)
             j += 1
         i += 1
@@ -150,7 +152,6 @@ def translatePName(p, prologue):
 
 
 def translatePath(p):
-
     """
     Translate PropertyPath expressions
     """
@@ -196,7 +197,6 @@ def translatePath(p):
 
 
 def translateExists(e):
-
     """
     Translate the graph pattern used by EXISTS and NOT EXISTS
     http://www.w3.org/TR/sparql11-query/#sparqlCollectFilters
@@ -216,7 +216,6 @@ def translateExists(e):
 
 
 def collectAndRemoveFilters(parts):
-
     """
 
     FILTER expressions apply to the whole group graph pattern in which
@@ -444,7 +443,8 @@ def _addVars(x, children):
             x["_vars"] = set()
         elif x.name == "Extend":
             # vars only used in the expr for a bind should not be included
-            x["_vars"] = reduce(operator.or_, [ child for child,part in zip(children,x) if part!='expr' ], set())
+            x["_vars"] = reduce(operator.or_, [child for child,
+                                               part in zip(children, x) if part != 'expr'], set())
 
         else:
             x["_vars"] = set(reduce(operator.or_, children, set()))
@@ -489,7 +489,6 @@ def translateAggregates(q, M):
             if v.evar:
                 v.expr = traverse(v.expr, functools.partial(_sample, v=v.evar))
                 v.expr = traverse(v.expr, functools.partial(_aggs, A=A))
-
 
     # having clause
     if traverse(q.having, _hasAggregate, complete=False):
@@ -606,7 +605,7 @@ def translate(q):
     # ORDER BY
     if q.orderby:
         M = OrderBy(M, [CompValue('OrderCondition', expr=c.expr,
-                    order=c.order) for c in q.orderby.condition])
+                                  order=c.order) for c in q.orderby.condition])
 
     # PROJECT
     M = Project(M, PV)
@@ -645,7 +644,6 @@ def simplify(n):
 
 
 def analyse(n, children):
-
     """
     Some things can be lazily joined.
     This propegates whether they can up the tree
@@ -806,6 +804,7 @@ def pprintAlgebra(q):
         # it's update, just a list
         for x in q:
             pp(x)
+
 
 if __name__ == '__main__':
     import sys

@@ -1,3 +1,7 @@
+import logging
+from threading import Thread
+from os.path import exists, abspath
+from os import mkdir
 from rdflib.store import Store, VALID_STORE, NO_STORE
 from rdflib.term import URIRef
 from six import b
@@ -17,10 +21,7 @@ except ImportError:
         has_bsddb = True
     except ImportError:
         has_bsddb = False
-from os import mkdir
-from os.path import exists, abspath
 
-from threading import Thread
 
 if has_bsddb:
     # These are passed to bsddb when creating DBs
@@ -34,7 +35,6 @@ if has_bsddb:
     # passed to db.DB.Open()
     DBOPENFLAGS = db.DB_THREAD
 
-import logging
 logger = logging.getLogger(__name__)
 
 __all__ = ['Sleepycat']
@@ -65,7 +65,7 @@ class Sleepycat(Store):
         if not exists(homeDir):
             if create is True:
                 mkdir(homeDir)
-                      # TODO: implement create method and refactor this to it
+                # TODO: implement create method and refactor this to it
                 self.create(homeDir)
             else:
                 return NO_STORE
@@ -314,7 +314,7 @@ class Sleepycat(Store):
             o = _to_string(object, txn=txn)
             c = _to_string(context, txn=txn)
             value = self.__indicies[0].get(bb("%s^%s^%s^%s^" %
-                                           (c, s, p, o)), txn=txn)
+                                              (c, s, p, o)), txn=txn)
             if value is not None:
                 self.__remove((bb(s), bb(p), bb(o)), bb(c), txn=txn)
                 self.__needs_sync = True

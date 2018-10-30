@@ -9,12 +9,14 @@ from rdflib import Graph
 from rdflib import BNode
 from itertools import combinations
 
+
 class IsomorphicTestableGraph(Graph):
     """
     Ported from:
     http://www.w3.org/2001/sw/DataAccess/proto-tests/tools/rdfdiff.py
     (Sean B Palmer's RDF Graph Isomorphism Tester)
     """
+
     def __init__(self, **kargs):
         super(IsomorphicTestableGraph, self).__init__(**kargs)
         self.hash = None
@@ -99,6 +101,7 @@ def main():
         if (graph1, graph2) not in checked and (graph2, graph1) not in checked:
             assert graph1 == graph2, "%s != %s" % (
                 graph2FName[graph1], graph2FName[graph2])
+
 
 if __name__ == '__main__':
     main()

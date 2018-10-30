@@ -30,7 +30,6 @@ class GraphTest(unittest.TestCase):
         for s, p, o in self.store:
             pass
 
+
 if __name__ == "__main__":
     unittest.main()
-
-

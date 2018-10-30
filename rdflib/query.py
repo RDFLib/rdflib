@@ -18,8 +18,6 @@ __all__ = ['Processor', 'Result', 'ResultParser', 'ResultSerializer',
            'ResultException']
 
 
-
-
 class Processor(object):
     """
     Query plugin interface.
@@ -36,6 +34,7 @@ class Processor(object):
     def query(self, strOrQuery, initBindings={}, initNs={}, DEBUG=False):
         pass
 
+
 class UpdateProcessor(object):
     """
     Update plugin interface.
@@ -51,8 +50,10 @@ class UpdateProcessor(object):
 
     def __init__(self, graph):
         pass
+
     def update(self, strOrQuery, initBindings={}, initNs={}):
         pass
+
 
 class ResultException(Exception):
     pass
@@ -166,6 +167,7 @@ class Result(object):
     len(result) also works.
 
     """
+
     def __init__(self, type_):
 
         if type_ not in ('CONSTRUCT', 'DESCRIBE', 'SELECT', 'ASK'):
@@ -249,7 +251,7 @@ class Result(object):
         if self.type == 'ASK':
             return self.askAnswer
         else:
-            return len(self)>0
+            return len(self) > 0
 
     if PY2:
         __nonzero__ = __bool__

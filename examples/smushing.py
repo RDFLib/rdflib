@@ -27,21 +27,20 @@ from rdflib.namespace import FOAF
 
 STABLE = Namespace("http://example.com/person/mbox_sha1sum/")
 
-if __name__=='__main__':
+if __name__ == '__main__':
     g = Graph()
     g.parse("smushingdemo.n3", format="n3")
 
-    newURI = {} # old subject : stable uri
-    for s,p,o in g.triples((None, FOAF['mbox_sha1sum'], None)):
+    newURI = {}  # old subject : stable uri
+    for s, p, o in g.triples((None, FOAF['mbox_sha1sum'], None)):
         newURI[s] = STABLE[o]
-
 
     out = Graph()
     out.bind('foaf', FOAF)
 
-    for s,p,o in g:
+    for s, p, o in g:
         s = newURI.get(s, s)
-        o = newURI.get(o, o) # might be linked to another person
-        out.add((s,p,o))
+        o = newURI.get(o, o)  # might be linked to another person
+        out.add((s, p, o))
 
     print(out.serialize(format="n3").decode('utf-8'))

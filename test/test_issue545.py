@@ -2,9 +2,8 @@
 from rdflib.plugins import sparql
 from rdflib.namespace import RDFS, OWL, DC, SKOS
 
+
 def test_issue():
-
-
 
     query = sparql.prepareQuery(
         """
@@ -16,4 +15,4 @@ def test_issue():
                 ?property rdfs:label | skos:altLabel ?label .
             }
         """,
-        initNs = {"rdfs":RDFS, "owl":OWL, "dc":DC, "skos":SKOS})
+        initNs={"rdfs": RDFS, "owl": OWL, "dc": DC, "skos": SKOS})

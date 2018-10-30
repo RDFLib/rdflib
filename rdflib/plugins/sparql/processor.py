@@ -46,13 +46,14 @@ class SPARQLResult(Result):
         self.askAnswer = res.get("askAnswer")
         self.graph = res.get("graph")
 
+
 class SPARQLUpdateProcessor(UpdateProcessor):
     def __init__(self, graph):
         self.graph = graph
 
     def update(self, strOrQuery, initBindings={}, initNs={}):
         if isinstance(strOrQuery, string_types):
-            strOrQuery=translateUpdate(parseUpdate(strOrQuery), initNs=initNs)
+            strOrQuery = translateUpdate(parseUpdate(strOrQuery), initNs=initNs)
 
         return evalUpdate(self.graph, strOrQuery, initBindings)
 

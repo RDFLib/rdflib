@@ -4,6 +4,7 @@ from six import b
 
 TEST_BASE = 'test/nquads.rdflib'
 
+
 class NQuadsParserTest(unittest.TestCase):
 
     def _load_example(self):

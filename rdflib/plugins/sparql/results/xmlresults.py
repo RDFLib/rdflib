@@ -80,9 +80,6 @@ class XMLResult(Result):
             self.askAnswer = boolean.text.lower().strip() == "true"
 
 
-
-
-
 def parseTerm(element):
     """rdflib object (Literal, URIRef, BNode) for the given
     elementtree element"""
@@ -137,6 +134,7 @@ class SPARQLXMLWriter:
     """
     Python saxutils-based SPARQL XML Writer
     """
+
     def __init__(self, output, encoding='utf-8'):
         writer = XMLGenerator(output, encoding)
         writer.startDocument()

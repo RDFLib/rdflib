@@ -89,5 +89,6 @@ class TestSerialization(unittest.TestCase):
         # Actual test should be the inverse of the below ...
         self.assertTrue('<1> a skos:Concept ;' in sg, sg)
 
+
 if __name__ == "__main__":
     unittest.main()

@@ -7,7 +7,7 @@ SPARQL Update statements can be applied with :meth:`rdflib.graph.Graph.update`
 
 import rdflib
 
-if __name__=='__main__':
+if __name__ == '__main__':
 
     g = rdflib.Graph()
     g.load("foaf.rdf")

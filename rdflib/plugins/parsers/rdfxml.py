@@ -173,7 +173,7 @@ class RDFXMLHandler(handler.ContentHandler):
         pass
 
     def add_reified(self, sid, spo):
-        s,p,o = spo
+        s, p, o = spo
         self.store.add((sid, RDF.type, RDF.Statement))
         self.store.add((sid, RDF.subject, s))
         self.store.add((sid, RDF.predicate, p))
@@ -477,7 +477,7 @@ class RDFXMLHandler(handler.ContentHandler):
                 (self.parent.subject, current.predicate, current.object))
             if current.id is not None:
                 self.add_reified(current.id, (self.parent.subject,
-                                 current.predicate, current.object))
+                                              current.predicate, current.object))
         current.subject = None
 
     def list_node_element_end(self, name, qname):

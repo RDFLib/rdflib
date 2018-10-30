@@ -128,7 +128,6 @@ class Describer(object):
         self._subjects = []
         self.about(about or None)
 
-
     def about(self, subject, **kws):
         """
         Sets the current subject. Will convert the given object into an
@@ -151,7 +150,6 @@ class Describer(object):
         else:
             self._subjects.append(subject)
 
-
     def value(self, p, v, **kws):
         """
         Set a literal value for the given property. Will cast the value to an
@@ -169,7 +167,6 @@ class Describer(object):
         """
         v = cast_value(v, **kws)
         self.graph.add((self._current(), p, v))
-
 
     def rel(self, p, o=None, **kws):
         """Set an object for the given property. Will convert the given object
@@ -203,7 +200,6 @@ class Describer(object):
         o = cast_identifier(o, **kws)
         self.graph.add((self._current(), p, o))
         return self._subject_stack(o)
-
 
     def rev(self, p, s=None, **kws):
         """

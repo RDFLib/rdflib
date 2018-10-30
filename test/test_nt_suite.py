@@ -10,13 +10,15 @@ Basic code for loading all NT files in test/nt folder
 The actual tests are done in test_roundtrip
 """
 
+
 def _get_test_files_formats():
     for f in os.listdir('test/nt'):
-        fpath = "test/nt/"+f
+        fpath = "test/nt/" + f
         if f.endswith('.rdf'):
             yield fpath, 'xml'
         elif f.endswith('.nt'):
             yield fpath, 'nt'
+
 
 def all_nt_files():
     skiptests = [

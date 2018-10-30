@@ -129,6 +129,7 @@ def plugins(name=None, kind=None):
                 kind is None or kind == p.kind):
             yield p
 
+
 register(
     'default', Store,
     'rdflib.plugins.memory', 'IOMemory')
@@ -252,7 +253,6 @@ register(
 register(
     'trig', Parser,
     'rdflib.plugins.parsers.trig', 'TrigParser')
-
 
 
 register(

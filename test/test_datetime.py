@@ -45,10 +45,10 @@ class TestRelativeBase(unittest.TestCase):
 
         self.assertTrue(isinstance(l.toPython(), datetime))
         self.assertEqual(datetime_isoformat(l.toPython(),
-                                             DATE_EXT_COMPLETE + 'T' + '%H:%M:%S.%f' + TZ_EXT),
-                          dt)
+                                            DATE_EXT_COMPLETE + 'T' + '%H:%M:%S.%f' + TZ_EXT),
+                         dt)
         self.assertEqual(l.toPython().isoformat(),
-                          "2008-12-01T18:02:00.522630+00:00")
+                         "2008-12-01T18:02:00.522630+00:00")
 
     def test_timezone_offset(self):
         dt = "2010-02-10T12:36:00+03:00"
@@ -65,7 +65,7 @@ class TestRelativeBase(unittest.TestCase):
 
         utc_dt = l.toPython().astimezone(UTC)
         self.assertEqual(datetime_isoformat(utc_dt),
-                          "2010-02-10T09:36:00Z")
+                         "2010-02-10T09:36:00Z")
 
     def test_timezone_offset_millisecond(self):
         dt = "2011-01-16T19:39:18.239743+01:00"
@@ -74,6 +74,7 @@ class TestRelativeBase(unittest.TestCase):
 
         self.assertTrue(isinstance(l.toPython(), datetime))
         self.assertEqual(l.toPython().isoformat(), dt)
+
 
 if __name__ == "__main__":
     unittest.main()

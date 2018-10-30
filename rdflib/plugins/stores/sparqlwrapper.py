@@ -10,11 +10,15 @@ from rdflib.query import Result
 
 log = logging.getLogger(__name__)
 
-class SPARQLWrapperException(Exception): pass
+
+class SPARQLWrapperException(Exception):
+    pass
+
 
 _response_mime_types = {
     'xml': 'application/sparql-results+xml, application/rdf+xml',
 }
+
 
 class SPARQLWrapper(object):
 
@@ -23,7 +27,6 @@ class SPARQLWrapper(object):
     """
 
     def __init__(self, query_endpoint=None, update_endpoint=None, returnFormat='xml', method='GET', **kwargs):
-
         """
         Any additional keyword arguments will be passed to requests, and can be used to setup timesouts, basic auth, etc.
         """
@@ -39,10 +42,9 @@ class SPARQLWrapper(object):
 
         self._session = threading.local()
 
-
     @property
     def session(self):
-        k = 'session_%d'%os.getpid()
+        k = 'session_%d' % os.getpid()
         self._session.__dict__.setdefault(k, requests.Session())
         log.debug('Session %s %s', os.getpid(), id(self._session.__dict__[k]))
         return self._session.__dict__[k]
@@ -58,16 +60,16 @@ class SPARQLWrapper(object):
 
         self._method = method
 
-
     def query(self, query, default_graph=None):
 
         if not self.query_endpoint:
             raise SPARQLWrapperException("Query endpoint not set!")
 
-        params = { 'query': query }
-        if default_graph: params["default-graph-uri"] = default_graph
+        params = {'query': query}
+        if default_graph:
+            params["default-graph-uri"] = default_graph
 
-        headers = { 'Accept': _response_mime_types[self.returnFormat] }
+        headers = {'Accept': _response_mime_types[self.returnFormat]}
 
         args = dict(self.kwargs)
         args.update(url=self.query_endpoint)
@@ -83,7 +85,7 @@ class SPARQLWrapper(object):
         elif self.method == 'POST':
             args['data'] = params
         else:
-            raise SPARQLWrapperException("Unknown method %s"%self.method)
+            raise SPARQLWrapperException("Unknown method %s" % self.method)
 
         res = self.session.request(self.method, **args)
 
@@ -95,11 +97,12 @@ class SPARQLWrapper(object):
         if not self.update_endpoint:
             raise SPARQLWrapperException("Query endpoint not set!")
 
-        params = { }
+        params = {}
 
-        if default_graph: params["using-graph-uri"] = default_graph
+        if default_graph:
+            params["using-graph-uri"] = default_graph
 
-        headers = { 'Accept': _response_mime_types[self.returnFormat] }
+        headers = {'Accept': _response_mime_types[self.returnFormat]}
 
         args = dict(self.kwargs)
 
@@ -114,9 +117,7 @@ class SPARQLWrapper(object):
 
         res = self.session.post(**args)
 
-
         res.raise_for_status()
-
 
     def close(self):
         self.session.close()

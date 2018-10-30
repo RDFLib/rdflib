@@ -8,6 +8,7 @@ from .testutils import nose_tst_earl_report
 
 verbose = False
 
+
 def nt(test):
     g = Graph()
 
@@ -19,16 +20,19 @@ def nt(test):
         if test.syntax:
             raise
 
+
 testers = {
     RDFT.TestNTriplesPositiveSyntax: nt,
     RDFT.TestNTriplesNegativeSyntax: nt
 }
 
+
 def test_nt(tests=None):
     for t in nose_tests(testers, 'test/w3c/nt/manifest.ttl', legacy=True):
         if tests:
             for test in tests:
-                if test in t[1].uri: break
+                if test in t[1].uri:
+                    break
             else:
                 continue
 

@@ -14,7 +14,6 @@ if __name__ == '__main__':
 
     graph.open("http://dbpedia.org/sparql")
 
-
     pop = graph.value(
         URIRef("http://dbpedia.org/resource/Berlin"),
         dbo.populationTotal)

@@ -15,25 +15,26 @@ import six
 
 # clean ElementTree import
 try:
-  from lxml import etree
+    from lxml import etree
 except ImportError:
-  try:
-    # Python 2.5
-    import xml.etree.cElementTree as etree
-  except ImportError:
     try:
-      # Python 2.5
-      import xml.etree.ElementTree as etree
+        # Python 2.5
+        import xml.etree.cElementTree as etree
     except ImportError:
-      try:
-        # normal cElementTree install
-        import cElementTree as etree
-      except ImportError:
         try:
-          # normal ElementTree install
-          import elementtree.ElementTree as etree
+            # Python 2.5
+            import xml.etree.ElementTree as etree
         except ImportError:
-          raise Exception("Failed to import ElementTree from any known place")
+            try:
+                # normal cElementTree install
+                import cElementTree as etree
+            except ImportError:
+                try:
+                    # normal ElementTree install
+                    import elementtree.ElementTree as etree
+                except ImportError:
+                    raise Exception(
+                        "Failed to import ElementTree from any known place")
 
 try:
     etree_register_namespace = etree.register_namespace
@@ -44,10 +45,12 @@ except AttributeError:
     def etree_register_namespace(prefix, uri):
         etreenative._namespace_map[uri] = prefix
 
+
 def cast_bytes(s, enc='utf-8'):
     if isinstance(s, six.text_type):
         return s.encode(enc)
     return s
+
 
 if six.PY3:
     # Python 3:
@@ -57,7 +60,7 @@ if six.PY3:
         return codecs.getreader('ascii')(stream)
 
     def bopen(*args, **kwargs):
-        return open(*args, mode = 'rb', **kwargs)
+        return open(*args, mode='rb', **kwargs)
 
     long_type = int
 
@@ -84,8 +87,10 @@ else:
 
 r_unicodeEscape = re.compile(r'(\\u[0-9A-Fa-f]{4}|\\U[0-9A-Fa-f]{8})')
 
+
 def _unicodeExpand(s):
     return r_unicodeEscape.sub(lambda m: six.unichr(int(m.group(0)[2:], 16)), s)
+
 
 narrow_build = False
 try:
@@ -108,7 +113,6 @@ if narrow_build:
 
 
 def decodeStringEscape(s):
-
     """
     s is byte-string - replace \ escapes in string
     """
@@ -126,7 +130,8 @@ def decodeStringEscape(s):
         s = s.replace('\\\\', '\\')
 
     return s
-    #return _unicodeExpand(s) # hmm - string escape doesn't do unicode escaping
+    # return _unicodeExpand(s) # hmm - string escape doesn't do unicode escaping
+
 
 def decodeUnicodeEscape(s):
     """
@@ -146,6 +151,6 @@ def decodeUnicodeEscape(s):
         s = s.replace("\\'", "'")
         s = s.replace('\\\\', '\\')
 
-        s = _unicodeExpand(s) # hmm - string escape doesn't do unicode escaping
+        s = _unicodeExpand(s)  # hmm - string escape doesn't do unicode escaping
 
     return s

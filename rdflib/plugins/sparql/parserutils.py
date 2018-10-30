@@ -45,7 +45,6 @@ the resulting CompValue
 # Comp('Sum')( Param('x')(Number) + '+' + Param('y')(Number) )
 
 def value(ctx, val, variables=False, errors=False):
-
     """
     utility function for evaluating something...
 
@@ -91,6 +90,7 @@ class ParamValue(object):
     This just keeps the name/value
     All cleverness is in the CompValue
     """
+
     def __init__(self, name, tokenList, isList):
         self.isList = isList
         self.name = name
@@ -109,6 +109,7 @@ class Param(TokenConverter):
     if isList is true repeat occurrences of ParamList have
     their values merged in a list
     """
+
     def __init__(self, name, expr, isList=False):
         self.name = name
         self.isList = isList
@@ -123,6 +124,7 @@ class ParamList(Param):
     """
     A shortcut for a Param with isList=True
     """
+
     def __init__(self, name, expr):
         Param.__init__(self, name, expr, True)
 
@@ -242,28 +244,28 @@ class Comp(TokenConverter):
 
 
 def prettify_parsetree(t, indent='', depth=0):
-        out = []
-        if isinstance(t, ParseResults):
-            for e in t.asList():
-                out.append(prettify_parsetree(e, indent, depth + 1))
-            for k, v in sorted(t.items()):
-                out.append("%s%s- %s:\n" % (indent, '  ' * depth, k))
-                out.append(prettify_parsetree(v, indent, depth + 1))
-        elif isinstance(t, CompValue):
-            out.append("%s%s> %s:\n" % (indent, '  ' * depth, t.name))
-            for k, v in t.items():
-                out.append("%s%s- %s:\n" % (indent, '  ' * (depth + 1), k))
-                out.append(prettify_parsetree(v, indent, depth + 2))
-        elif isinstance(t, dict):
-            for k, v in t.items():
-                out.append("%s%s- %s:\n" % (indent, '  ' * (depth + 1), k))
-                out.append(prettify_parsetree(v, indent, depth + 2))
-        elif isinstance(t, list):
-            for e in t:
-                out.append(prettify_parsetree(e, indent, depth + 1))
-        else:
-            out.append("%s%s- %r\n" % (indent, '  ' * depth, t))
-        return "".join(out)
+    out = []
+    if isinstance(t, ParseResults):
+        for e in t.asList():
+            out.append(prettify_parsetree(e, indent, depth + 1))
+        for k, v in sorted(t.items()):
+            out.append("%s%s- %s:\n" % (indent, '  ' * depth, k))
+            out.append(prettify_parsetree(v, indent, depth + 1))
+    elif isinstance(t, CompValue):
+        out.append("%s%s> %s:\n" % (indent, '  ' * depth, t.name))
+        for k, v in t.items():
+            out.append("%s%s- %s:\n" % (indent, '  ' * (depth + 1), k))
+            out.append(prettify_parsetree(v, indent, depth + 2))
+    elif isinstance(t, dict):
+        for k, v in t.items():
+            out.append("%s%s- %s:\n" % (indent, '  ' * (depth + 1), k))
+            out.append(prettify_parsetree(v, indent, depth + 2))
+    elif isinstance(t, list):
+        for e in t:
+            out.append(prettify_parsetree(e, indent, depth + 1))
+    else:
+        out.append("%s%s- %r\n" % (indent, '  ' * depth, t))
+    return "".join(out)
 
 
 if __name__ == '__main__':

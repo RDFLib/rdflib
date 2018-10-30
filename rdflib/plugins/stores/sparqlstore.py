@@ -27,6 +27,7 @@ from six import string_types
 
 BNODE_IDENT_PATTERN = re.compile('(?P<label>_\:[^\s]+)')
 
+
 def _node_to_sparql(node):
     if isinstance(node, BNode):
         raise Exception(
@@ -222,7 +223,7 @@ class SPARQLStore(SPARQLWrapper, Store):
 
         if vars:
             v = ' '.join([term.n3() for term in vars])
-            verb = 'SELECT %s '%v
+            verb = 'SELECT %s ' % v
         else:
             verb = 'ASK'
 
@@ -253,7 +254,6 @@ class SPARQLStore(SPARQLWrapper, Store):
         except (ValueError, TypeError, AttributeError):
             pass
 
-
         result = self._query(query,
                              default_graph=context.identifier if self._is_contextual(context) else None)
 
@@ -261,10 +261,10 @@ class SPARQLStore(SPARQLWrapper, Store):
             for row in result:
                 yield (row.get(s, s),
                        row.get(p, p),
-                       row.get(o, o)), None # why is the context here not the passed in graph 'context'?
+                       row.get(o, o)), None  # why is the context here not the passed in graph 'context'?
         else:
             if result.askAnswer:
-                yield (s,p,o), None
+                yield (s, p, o), None
 
     def triples_choices(self, _, context=None):
         """
@@ -316,7 +316,7 @@ class SPARQLStore(SPARQLWrapper, Store):
 
         result = self._query(q)
 
-        return ( row.name for row in result )
+        return (row.name for row in result)
 
     # Namespace persistence interface implementation
     def bind(self, prefix, namespace):
@@ -400,7 +400,8 @@ class SPARQLUpdateStore(SPARQLStore):
     STRING_LITERAL2 = u'"([^"\\\\]|\\\\.)*"'
     STRING_LITERAL_LONG1 = u"'''(('|'')?([^'\\\\]|\\\\.))*'''"
     STRING_LITERAL_LONG2 = u'"""(("|"")?([^"\\\\]|\\\\.))*"""'
-    String = u'(%s)|(%s)|(%s)|(%s)' % (STRING_LITERAL1, STRING_LITERAL2, STRING_LITERAL_LONG1, STRING_LITERAL_LONG2)
+    String = u'(%s)|(%s)|(%s)|(%s)' % (STRING_LITERAL1, STRING_LITERAL2,
+                                       STRING_LITERAL_LONG1, STRING_LITERAL_LONG2)
     IRIREF = u'<([^<>"{}|^`\\]\\\\\[\\x00-\\x20])*>'
     COMMENT = u'#[^\\x0D\\x0A]*([\\x0D\\x0A]|\\Z)'
 
@@ -419,7 +420,6 @@ class SPARQLUpdateStore(SPARQLStore):
     # part of the modified query as is.
 
     ##################################################################
-
 
     def __init__(self,
                  queryEndpoint=None, update_endpoint=None,
@@ -454,7 +454,6 @@ class SPARQLUpdateStore(SPARQLStore):
         self.dirty_reads = dirty_reads
         self._edits = None
         self._updates = 0
-
 
     def query(self, *args, **kwargs):
         if not self.autocommit and not self.dirty_reads:
@@ -543,7 +542,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
         contexts = collections.defaultdict(list)
         for subject, predicate, obj, context in quads:
-            contexts[context].append((subject,predicate,obj))
+            contexts[context].append((subject, predicate, obj))
         data = []
         nts = self.node_to_sparql
         for context in contexts:
@@ -590,8 +589,6 @@ class SPARQLUpdateStore(SPARQLStore):
         self._updates += 1
 
         SPARQLWrapper.update(self, update)
-
-
 
     def update(self, query,
                initNs={},
@@ -721,7 +718,8 @@ class SPARQLUpdateStore(SPARQLStore):
 
     def close(self, commit_pending_transaction=False):
 
-        if commit_pending_transaction: self.commit()
+        if commit_pending_transaction:
+            self.commit()
 
         super(SPARQLStore, self).close()
 

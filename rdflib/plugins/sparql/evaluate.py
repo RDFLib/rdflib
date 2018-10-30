@@ -30,8 +30,8 @@ from rdflib.plugins.sparql.evalutils import (
 from rdflib.plugins.sparql.aggregates import Aggregator
 from rdflib.plugins.sparql.algebra import Join, ToMultiSet, Values
 
-def evalBGP(ctx, bgp):
 
+def evalBGP(ctx, bgp):
     """
     A basic graph pattern
     """
@@ -96,7 +96,7 @@ def evalLazyJoin(ctx, join):
     for a in evalPart(ctx, join.p1):
         c = ctx.thaw(a)
         for b in evalPart(c, join.p2):
-            yield b.merge(a) # merge, as some bindings may have been forgotten
+            yield b.merge(a)  # merge, as some bindings may have been forgotten
 
 
 def evalJoin(ctx, join):
@@ -142,8 +142,8 @@ def evalLeftJoin(ctx, join):
             # even without prior bindings...
             p1_vars = join.p1._vars
             if p1_vars is None \
-            or not any(_ebv(join.expr, b) for b in
-                       evalPart(ctx.thaw(a.remember(p1_vars)), join.p2)):
+                or not any(_ebv(join.expr, b) for b in
+                           evalPart(ctx.thaw(a.remember(p1_vars)), join.p2)):
 
                 yield a
 
@@ -272,7 +272,6 @@ def evalPart(ctx, part):
 
 
 def evalGroup(ctx, group):
-
     """
     http://www.w3.org/TR/sparql11-query/#defn_algGroup
     """
@@ -324,7 +323,7 @@ def evalOrderBy(ctx, part):
 def evalSlice(ctx, slice):
     res = evalPart(ctx, slice.p)
 
-    return itertools.islice(res, slice.start, slice.start+slice.length if slice.length is not None else None)
+    return itertools.islice(res, slice.start, slice.start + slice.length if slice.length is not None else None)
 
 
 def evalReduced(ctx, part):
@@ -355,7 +354,7 @@ def evalReduced(ctx, part):
             # forget last position of row
             mru_queue.remove(row)
         else:
-            #row seems to be new
+            # row seems to be new
             yield row
             mru_set.add(row)
             if len(mru_set) > MAX:
@@ -422,7 +421,7 @@ def evalConstructQuery(ctx, query):
 
 def evalQuery(graph, query, initBindings, base=None):
 
-    initBindings = dict( ( Variable(k),v ) for k,v in iteritems(initBindings) )
+    initBindings = dict((Variable(k), v) for k, v in iteritems(initBindings))
 
     ctx = QueryContext(graph, initBindings=initBindings)
 

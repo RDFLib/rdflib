@@ -14,21 +14,20 @@ from rdflib import Namespace, Literal, URIRef
 from rdflib.graph import Graph, ConjunctiveGraph
 from rdflib.plugins.memory import IOMemory
 
-if __name__=='__main__':
-
+if __name__ == '__main__':
 
     ns = Namespace("http://love.com#")
 
     mary = URIRef("http://love.com/lovers/mary#")
     john = URIRef("http://love.com/lovers/john#")
 
-    cmary=URIRef("http://love.com/lovers/mary#")
-    cjohn=URIRef("http://love.com/lovers/john#")
+    cmary = URIRef("http://love.com/lovers/mary#")
+    cjohn = URIRef("http://love.com/lovers/john#")
 
     store = IOMemory()
 
     g = ConjunctiveGraph(store=store)
-    g.bind("love",ns)
+    g.bind("love", ns)
 
     gmary = Graph(store=store, identifier=cmary)
 
@@ -38,21 +37,21 @@ if __name__=='__main__':
     gjohn = Graph(store=store, identifier=cjohn)
     gjohn.add((john, ns['hasName'], Literal("John")))
 
-    #enumerate contexts
+    # enumerate contexts
     for c in g.contexts():
         print("-- %s " % c)
 
-    #separate graphs
+    # separate graphs
     print(gjohn.serialize(format='n3'))
     print("===================")
     print(gmary.serialize(format='n3'))
     print("===================")
 
-    #full graph
+    # full graph
     print(g.serialize(format='n3'))
 
     # query the conjunction of all graphs
 
     print('Mary loves:')
-    for x in g[mary : ns.loves/ns.hasName]:
+    for x in g[mary: ns.loves / ns.hasName]:
         print(x)

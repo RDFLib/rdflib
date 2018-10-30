@@ -232,7 +232,6 @@ class Collection(object):
 
             self.graph.add((end, RDF.first, item))
 
-
         self.graph.add((end, RDF.rest, RDF.nil))
 
     def clear(self):
@@ -248,6 +247,7 @@ class Collection(object):
 def test():
     import doctest
     doctest.testmod()
+
 
 if __name__ == "__main__":
     test()

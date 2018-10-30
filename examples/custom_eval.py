@@ -49,7 +49,8 @@ def customEval(ctx, part):
 
     raise NotImplementedError()
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
 
     # add function directly, normally we would use setuptools and entry_points
     rdflib.plugins.sparql.CUSTOM_EVALS['exampleEval'] = customEval

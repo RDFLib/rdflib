@@ -34,7 +34,6 @@ class TrigSinkParser(SinkParser):
         if j >= 0:
             return self.checkDot(argstr, j)
 
-
         return j
 
     def labelOrSubject(self, argstr, i, res):
@@ -48,13 +47,13 @@ class TrigSinkParser(SinkParser):
             return j
 
         if argstr[i] == '[':
-            j = self.skipSpace(argstr, i+1)
+            j = self.skipSpace(argstr, i + 1)
             if j < 0:
                 self.BadSyntax(argstr, i,
-                    "Expected ] got EOF")
+                               "Expected ] got EOF")
             if argstr[j] == ']':
                 res.append(self.blankNode())
-                return j+1
+                return j + 1
         return -1
 
     def graph(self, argstr, i):
@@ -68,8 +67,9 @@ class TrigSinkParser(SinkParser):
         """
 
         #import pdb; pdb.set_trace()
-        j = self.sparqlTok('GRAPH', argstr, i) # optional GRAPH keyword
-        if j >= 0: i = j
+        j = self.sparqlTok('GRAPH', argstr, i)  # optional GRAPH keyword
+        if j >= 0:
+            i = j
 
         r = []
         j = self.labelOrSubject(argstr, i, r)
@@ -77,15 +77,14 @@ class TrigSinkParser(SinkParser):
             graph = r[0]
             i = j
         else:
-            graph = self._store.graph.identifier # hack
-
+            graph = self._store.graph.identifier  # hack
 
         j = self.skipSpace(argstr, i)
         if j < 0:
             self.BadSyntax(argstr, i,
                            "EOF found when expected graph")
 
-        if argstr[j:j + 1] == "=": # optional = for legacy support
+        if argstr[j:j + 1] == "=":  # optional = for legacy support
 
             i = self.skipSpace(argstr, j + 1)
             if i < 0:
@@ -93,11 +92,10 @@ class TrigSinkParser(SinkParser):
         else:
             i = j
 
-        if argstr[i:i+1] != "{":
-            return -1 # the node wasn't part of a graph
+        if argstr[i:i + 1] != "{":
+            return -1  # the node wasn't part of a graph
 
-
-        j = i+1
+        j = i + 1
 
         oldParentContext = self._parentContext
         self._parentContext = self._context
@@ -123,10 +121,8 @@ class TrigSinkParser(SinkParser):
         self._context = self._parentContext
         self._reason2 = reason2
         self._parentContext = oldParentContext
-        #res.append(subj.close())    # No use until closed
+        # res.append(subj.close())    # No use until closed
         return j
-
-
 
 
 class TrigParser(Parser):
@@ -151,7 +147,7 @@ class TrigParser(Parser):
         conj_graph = ConjunctiveGraph(store=graph.store, identifier=graph.identifier)
         conj_graph.default_context = graph  # TODO: CG __init__ should have a
                                             # default_context arg
-         # TODO: update N3Processor so that it can use conj_graph as the sink
+        # TODO: update N3Processor so that it can use conj_graph as the sink
         conj_graph.namespace_manager = graph.namespace_manager
 
         sink = RDFSink(conj_graph)

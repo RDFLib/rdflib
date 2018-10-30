@@ -4,6 +4,7 @@
 
 import rdflib
 
+
 def test_issue492():
     query = '''
     prefix owl: <http://www.w3.org/2002/07/owl#>

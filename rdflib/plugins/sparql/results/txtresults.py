@@ -2,6 +2,7 @@
 from rdflib import URIRef, BNode, Literal
 from rdflib.query import ResultSerializer
 
+
 def _termString(t, namespace_manager):
     if t == None:
         return "-"
@@ -21,12 +22,10 @@ class TXTResultSerializer(ResultSerializer):
     A write only QueryResult serializer for text/ascii tables
     """
 
-    def serialize(self, stream, encoding, namespace_manager = None):
-
+    def serialize(self, stream, encoding, namespace_manager=None):
         """
         return a text table of query results
         """
-
 
         def c(s, w):
             """
@@ -34,10 +33,11 @@ class TXTResultSerializer(ResultSerializer):
             """
             w -= len(s)
             h1 = h2 = w // 2
-            if w % 2: h2 += 1
+            if w % 2:
+                h2 += 1
             return " " * h1 + s + " " * h2
 
-        if self.result.type!='SELECT':
+        if self.result.type != 'SELECT':
             raise Exception("Can only pretty print SELECT results!")
 
         if not self.result:
@@ -53,8 +53,7 @@ class TXTResultSerializer(ResultSerializer):
 
             stream.write(
                 "|".join([c(k, maxlen[i]) for i, k in enumerate(keys)]) + "\n")
-            stream.write("-" * (len(maxlen)+sum(maxlen)) + "\n")
+            stream.write("-" * (len(maxlen) + sum(maxlen)) + "\n")
             for r in sorted(b):
                 stream.write("|".join(
                     [t + " " * (i - len(t)) for i, t in zip(maxlen, r)]) + "\n")
-

@@ -1,3 +1,4 @@
+from nose.exc import SkipTest
 import os
 import sys
 import unittest
@@ -39,7 +40,6 @@ qt = rdflib.Namespace("http://www.w3.org/2001/sw/DataAccess/tests/test-query#")
 #         for tfile in tfiles:
 #             self.graph.parse(tfile, format="n3")
 
-from nose.exc import SkipTest
 
 skiptests = [
     'syntax_neg_single_quote',
@@ -59,12 +59,16 @@ skiptests = [
     # 'contexts',
     'syntax_too_nested'
 ]
+
+
 class Envelope(object):
     def __init__(self, n, f):
         self.name = n
         self.file = f
+
     def __repr__(self):
         return self.name
+
 
 def generictest(e):
     """Documentation"""
@@ -75,13 +79,14 @@ def generictest(e):
         g.bind(str(i), i)
     g.parse(e.file, format="n3")
 
+
 def dir_to_uri(directory, sep=os.path.sep):
     '''
     Convert a local path to a File URI.
-    
+
     >>> dir_to_uri('c:\\\\temp\\\\foo\\\\file.txt', sep='\\\\')
     'file:///c:/temp/foo/file.txt'
-    
+
     >>> dir_to_uri('/tmp/foo/file.txt', sep='/')
     'file:///tmp/foo/file.txt'
     '''
@@ -90,6 +95,7 @@ def dir_to_uri(directory, sep=os.path.sep):
     if path.startswith('/'):
         path = path[1:]
     return 'file:///%s' % (path,)
+
 
 def test_cases():
     from copy import deepcopy
@@ -101,17 +107,17 @@ def test_cases():
     swap_dir_uri = dir_to_uri(swap_dir) + '/'
     for tst in g.subjects():
         files = [str(tfile).replace('http://www.w3.org/2000/10/', swap_dir_uri)
-                    for tfile in g.objects(tst, rdflib.URIRef("http://www.w3.org/2004/11/n3test#inputDocument")) if tfile.endswith('n3')]
+                 for tfile in g.objects(tst, rdflib.URIRef("http://www.w3.org/2004/11/n3test#inputDocument")) if tfile.endswith('n3')]
         tfiles += files
     for tfile in set(tfiles):
         gname = tfile.split('/swap-n3/swap/test/')[1][:-3].translate(maketrans('-/','__'))
         e = Envelope(gname, tfile)
         if gname in skiptests:
-            e.skip = True 
+            e.skip = True
         else:
             e.skip = False
         # e.skip = True
-        if sys.version_info[:2] == (2,4):
+        if sys.version_info[:2] == (2, 4):
             import pickle
             gjt = pickle.dumps(generictest)
             gt = pickle.loads(gjt)

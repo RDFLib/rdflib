@@ -71,15 +71,20 @@ skolems = {}
 
 _invalid_uri_chars = '<>" {}|\\^`'
 
+
 def _is_valid_uri(uri):
     for c in _invalid_uri_chars:
-        if c in uri: return False
+        if c in uri:
+            return False
     return True
+
 
 _lang_tag_regex = compile('^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$')
 
+
 def _is_valid_langtag(tag):
     return bool(_lang_tag_regex.match(tag))
+
 
 def _is_valid_unicode(value):
     """
@@ -99,6 +104,7 @@ def _is_valid_unicode(value):
     except UnicodeError:
         return False
     return True
+
 
 class Node(object):
     """
@@ -234,7 +240,7 @@ class URIRef(Identifier):
     def toPython(self):
         return text_type(self)
 
-    def n3(self, namespace_manager = None):
+    def n3(self, namespace_manager=None):
         """
         This will do a limited check for valid URIs,
         essentially just making sure that the string includes no illegal
@@ -285,8 +291,6 @@ class URIRef(Identifier):
 
     def __mod__(self, other):
         return self.__class__(text_type(self) % other)
-
-
 
     def de_skolemize(self):
         """ Create a Blank Node from a skolem URI, in accordance
@@ -392,8 +396,8 @@ class BNode(Identifier):
             # as a nodeID for N3 ??  Unless we require these
             # constraints be enforced elsewhere?
             pass  # assert is_ncname(text_type(value)), "BNode identifiers
-                 # must be valid NCNames" _:[A-Za-z][A-Za-z0-9]*
-                 # http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID
+            # must be valid NCNames" _:[A-Za-z][A-Za-z0-9]*
+            # http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID
         return Identifier.__new__(cls, value)
 
     def toPython(self):
@@ -520,7 +524,6 @@ class Literal(Identifier):
 
     """
 
-
     if not PY3:
         __slots__ = ("language", "datatype", "value", "_language",
                      "_datatype", "_value")
@@ -540,7 +543,7 @@ class Literal(Identifier):
                 "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal")
 
         if lang and not _is_valid_langtag(lang):
-            raise Exception("'%s' is not a valid language tag!"%lang)
+            raise Exception("'%s' is not a valid language tag!" % lang)
 
         if datatype:
             datatype = URIRef(datatype)
@@ -560,12 +563,12 @@ class Literal(Identifier):
         elif isinstance(lexical_or_value, string_types):
                 # passed a string
                 # try parsing lexical form of datatyped literal
-                value = _castLexicalToPython(lexical_or_value, datatype)
+            value = _castLexicalToPython(lexical_or_value, datatype)
 
-                if value is not None and normalize:
-                    _value, _datatype = _castPythonToLiteral(value)
-                    if _value is not None and _is_valid_unicode(_value):
-                        lexical_or_value = _value
+            if value is not None and normalize:
+                _value, _datatype = _castPythonToLiteral(value)
+                if _value is not None and _is_valid_unicode(_value):
+                    lexical_or_value = _value
 
         else:
             # passed some python object
@@ -590,7 +593,6 @@ class Literal(Identifier):
         inst._datatype = datatype
         inst._value = value
         return inst
-
 
     def normalize(self):
         """
@@ -634,7 +636,6 @@ class Literal(Identifier):
         self._language = d["language"]
         self._datatype = d["datatype"]
 
-
     def __add__(self, val):
         """
         >>> Literal(1) + 1
@@ -665,7 +666,6 @@ class Literal(Identifier):
     if PY2:
         __nonzero__ = __bool__
 
-
     def __neg__(self):
         """
         >>> (- Literal(1))
@@ -688,7 +688,6 @@ class Literal(Identifier):
         else:
             raise TypeError("Not a number; %s" % repr(self))
 
-
     def __pos__(self):
         """
         >>> (+ Literal(1))
@@ -709,7 +708,6 @@ class Literal(Identifier):
         else:
             raise TypeError("Not a number; %s" % repr(self))
 
-
     def __abs__(self):
         """
         >>> abs(Literal(-1))
@@ -728,7 +726,6 @@ class Literal(Identifier):
             return Literal(self.value.__abs__())
         else:
             raise TypeError("Not a number; %s" % repr(self))
-
 
     def __invert__(self):
         """
@@ -793,7 +790,7 @@ class Literal(Identifier):
 
             if self.datatype in _NUMERIC_LITERAL_TYPES and \
                     other.datatype in _NUMERIC_LITERAL_TYPES:
-                return self.value>other.value
+                return self.value > other.value
 
             # plain-literals and xsd:string literals
             # are "the same"
@@ -938,7 +935,6 @@ class Literal(Identifier):
         if self.datatype:
             res ^= hash(self.datatype)
         return res
-
 
     def __eq__(self, other):
         """
@@ -1090,8 +1086,7 @@ class Literal(Identifier):
     def neq(self, other):
         return not self.eq(other)
 
-
-    def n3(self, namespace_manager = None):
+    def n3(self, namespace_manager=None):
         r'''
         Returns a representation in the N3 format.
 
@@ -1145,11 +1140,9 @@ class Literal(Identifier):
             u'"1"^^xsd:integer'
         '''
         if namespace_manager:
-            return self._literal_n3(qname_callback =
-                                    namespace_manager.normalizeUri)
+            return self._literal_n3(qname_callback=namespace_manager.normalizeUri)
         else:
             return self._literal_n3()
-
 
     def _literal_n3(self, use_plain=False, qname_callback=None):
         '''
@@ -1349,6 +1342,7 @@ def _writeXML(xmlnode):
         s = b('')
     return s
 
+
 # Cannot import Namespace/XSD because of circular dependencies
 _XSD_PFX = 'http://www.w3.org/2001/XMLSchema#'
 _RDF_PFX = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
@@ -1426,6 +1420,7 @@ _TOTAL_ORDER_CASTERS = {
     xml.dom.minidom.Document: lambda value: value.toxml(),
 }
 
+
 def _castPythonToLiteral(obj):
     """
     Casts a python datatype to a tuple of the lexical value and a
@@ -1454,7 +1449,6 @@ from decimal import Decimal
 # python longs have no limit
 # both map to the abstract integer type,
 # rather than some concrete bit-limited datatype
-
 _PythonToXSD = [
     (string_types, (None, None)),
     (float, (None, _XSD_DOUBLE)),
@@ -1476,7 +1470,7 @@ _PythonToXSD = [
 ]
 
 XSDToPython = {
-    None : None, # plain literals map directly to value space
+    None: None,  # plain literals map directly to value space
     URIRef(_XSD_PFX + 'time'): parse_time,
     URIRef(_XSD_PFX + 'date'): parse_date,
     URIRef(_XSD_PFX + 'gYear'): parse_date,
@@ -1516,6 +1510,7 @@ _toPythonMapping = {}
 
 _toPythonMapping.update(XSDToPython)
 
+
 def _castLexicalToPython(lexical, datatype):
     """
     Map a lexical form to the value-space for the given datatype
@@ -1538,6 +1533,7 @@ def _castLexicalToPython(lexical, datatype):
         # no convFunc - unknown data-type
         return None
 
+
 def bind(datatype, pythontype, constructor=None, lexicalizer=None):
     """
     register a new datatype<->pythontype binding
@@ -1552,7 +1548,7 @@ def bind(datatype, pythontype, constructor=None, lexicalizer=None):
     """
     if datatype in _toPythonMapping:
         logger.warning("datatype '%s' was already bound. Rebinding." %
-                        datatype)
+                       datatype)
 
     if constructor == None:
         constructor = pythontype
@@ -1586,7 +1582,7 @@ class Variable(Identifier):
     def toPython(self):
         return "?%s" % self
 
-    def n3(self, namespace_manager = None):
+    def n3(self, namespace_manager=None):
         return "?%s" % self
 
     def __reduce__(self):
@@ -1609,6 +1605,7 @@ class Statement(Node, tuple):
     def toPython(self):
         return (self[0], self[1])
 
+
 # Nodes are ordered like this
 # See http://www.w3.org/TR/sparql11-query/#modOrderBy
 # we leave "space" for more subclasses of Node elsewhere
@@ -1619,7 +1616,7 @@ _ORDERING.update({
     Variable: 20,
     URIRef: 30,
     Literal: 40
-    })
+})
 
 
 def _isEqualXMLNode(node, other):
@@ -1651,8 +1648,8 @@ def _isEqualXMLNode(node, other):
 
     elif node.nodeType == Node.ELEMENT_NODE:
         # Get the basics right
-        if not (node.tagName == other.tagName
-                and node.namespaceURI == other.namespaceURI):
+        if not (node.tagName == other.tagName and
+                node.namespaceURI == other.namespaceURI):
             return False
 
         # Handle the (namespaced) attributes; the namespace setting key
@@ -1696,6 +1693,7 @@ def _isEqualXMLNode(node, other):
         # should not happen, in fact
         raise Exception(
             'I dont know how to compare XML Node type: %s' % node.nodeType)
+
 
 if __name__ == '__main__':
     import doctest

@@ -12,7 +12,8 @@ from rdflib import Namespace, Graph
 from rdflib.compare import to_isomorphic
 from six.moves.urllib.request import urlopen
 from six.moves import queue
-import sys, csv
+import sys
+import csv
 
 from io import StringIO
 from collections import defaultdict
@@ -49,7 +50,7 @@ stat_cols = [
     'to_hash_runtime',
     'canonicalize_triples_runtime',
     'error',
-    ]
+]
 
 
 def files_benchmark(ontologies, output_file, threads):
@@ -159,6 +160,7 @@ def bioportal_benchmark(apikey, output_file, threads):
         writer.writerow(stats)
         w.flush()
         written_tasks += 1
+
 
 if __name__ == '__main__':
     if len(sys.argv) > 4:

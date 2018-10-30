@@ -2,6 +2,7 @@
 
 from rdflib import Graph
 
+
 def test_issue532():
     data = """
     @base <http://purl.org/linkedpolitics/MembersOfParliament_background> .
@@ -33,7 +34,7 @@ def test_issue532():
     g = Graph()
     g.parse(data=data, format='n3')
 
-    getnewMeps ="""
+    getnewMeps = """
     PREFIX lpv: <http://purl.org/linkedpolitics/vocabulary/>
     prefix foaf: <http://xmlns.com/foaf/0.1/>
     prefix xsd: <http://www.w3.org/2001/XMLSchema#>

@@ -13,6 +13,7 @@ SELECT ?x (%s(?y_) as ?y) {
 
 Y = Variable("y")
 
+
 def template_tst(agg_func, first, second):
     g = Graph()
     results = list(g.query(query_tpl % agg_func))
@@ -21,14 +22,16 @@ def template_tst(agg_func, first, second):
     assert results[0][1] == first, (results[0][1], first)
     assert results[1][1] == second, (results[1][1], second)
 
+
 def test_aggregates():
     yield template_tst, 'SUM', Literal(0), Literal(42)
     yield template_tst, 'MIN', None, Literal(42)
     yield template_tst, 'MAX', None, Literal(42)
-    #yield template_tst, 'AVG', Literal(0), Literal(42)
+    # yield template_tst, 'AVG', Literal(0), Literal(42)
     yield template_tst, 'SAMPLE', None, Literal(42)
     yield template_tst, 'COUNT', Literal(0), Literal(1)
     yield template_tst, 'GROUP_CONCAT', Literal(''), Literal("42")
+
 
 def test_group_by_null():
     g = Graph()
@@ -47,4 +50,3 @@ def test_group_by_null():
     assert len(results) == 2
     assert results[0][0] == Literal(1)
     assert results[1][0] == Literal(2)
-

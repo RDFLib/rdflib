@@ -36,27 +36,34 @@ test_data2 = """
 </rdf:RDF>"""
 
 
-baseUri  = URIRef('http://example.com/')
+baseUri = URIRef('http://example.com/')
 baseUri2 = URIRef('http://example.com/foo/bar')
+
 
 class TestEmptyBase(unittest.TestCase):
     def setUp(self):
         self.graph = ConjunctiveGraph()
-        self.graph.parse(StringIO(test_data),publicID=baseUri)
+        self.graph.parse(StringIO(test_data), publicID=baseUri)
 
     def test_base_ref(self):
-        self.assertTrue(len(self.graph) == 1,"There should be at least one statement in the graph")
-        self.assertTrue((baseUri,RDF.type,FOAF.Document) in self.graph,"There should be a triple with %s as the subject" % baseUri)
+        self.assertTrue(len(self.graph) == 1,
+                        "There should be at least one statement in the graph")
+        self.assertTrue((baseUri, RDF.type, FOAF.Document) in self.graph,
+                        "There should be a triple with %s as the subject" % baseUri)
+
 
 class TestRelativeBase(unittest.TestCase):
     def setUp(self):
         self.graph = ConjunctiveGraph()
-        self.graph.parse(StringIO(test_data2),publicID=baseUri2)
+        self.graph.parse(StringIO(test_data2), publicID=baseUri2)
 
     def test_base_ref(self):
-        self.assertTrue(len(self.graph) == 1,"There should be at least one statement in the graph")
+        self.assertTrue(len(self.graph) == 1,
+                        "There should be at least one statement in the graph")
         resolvedBase = URIRef('http://example.com/baz')
-        self.assertTrue((resolvedBase,RDF.type,FOAF.Document) in self.graph,"There should be a triple with %s as the subject" % resolvedBase)
+        self.assertTrue((resolvedBase, RDF.type, FOAF.Document) in self.graph,
+                        "There should be a triple with %s as the subject" % resolvedBase)
+
 
 if __name__ == "__main__":
     unittest.main()
