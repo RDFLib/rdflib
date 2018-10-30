@@ -8,7 +8,6 @@ except:
 
 def _get_test_files_formats():
     skiptests = [
-        'strquot.n3',
     ]
     for f in os.listdir('test/n3'):
         if f not in skiptests:

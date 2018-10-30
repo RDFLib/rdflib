@@ -19,9 +19,9 @@ def _get_test_files_formats():
             yield fpath, 'nt'
 
 def all_nt_files():
-    skiptests = [        
+    skiptests = [
         # illegal literal as subject
-        'test/nt/literals-01.nt', 
+        'test/nt/literals-01.nt',
         'test/nt/keywords-08.nt',
         'test/nt/paths-04.nt',
         'test/nt/numeric-01.nt',
@@ -39,20 +39,14 @@ def all_nt_files():
         'test/nt/formulae-10.nt',
 
         # illegal bnode as predicate
-        'test/nt/paths-06.nt', 
+        'test/nt/paths-06.nt',
         'test/nt/anons-02.nt',
-        'test/nt/anons-03.nt', 
+        'test/nt/anons-03.nt',
         'test/nt/qname-01.nt',
         'test/nt/lists-06.nt',
-        ]
-    [
-        'test/nt/literals-02.nt', # this should work
-        'test/nt/literals-05.nt', # this should work
-        'test/nt/rdflibtest05.nt', # this should work
         ]
     for fpath, fmt in _get_test_files_formats():
         if fpath in skiptests:
             log.debug("Skipping %s, known issue" % fpath)
         else:
             yield fpath, fmt
-

@@ -9,12 +9,6 @@ def testFinalNewline():
     http://code.google.com/p/rdflib/issues/detail?id=5
     """
     import sys
-    import platform
-    if getattr(sys, 'pypy_version_info', None) or platform.system() == 'Java':
-        from nose import SkipTest
-        raise SkipTest(
-            'Testing under pypy and Jython2.5 fails to detect that ' + \
-            'IOMemory is a context_aware store')
 
     graph=ConjunctiveGraph()
     graph.add((URIRef("http://ex.org/a"),
