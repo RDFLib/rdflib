@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from nose import SkipTest
 from rdflib.graph import ConjunctiveGraph
 from rdflib.parser import StringInputSource
 import textwrap
@@ -34,6 +35,7 @@ a nfo:PaginatedTextDocument ;
 test_string1 = u"""\
 Betriebsnummer der Einzugsstelle:\nKnappschaft\n980 0000 6\nWICHTIGES DOKUMENT - SORGFÄLTIG AUFBEWAHREN!\n """
 
+
 def test1():
     meta1 = meta.encode('utf-8') % test_string1.encode('utf-8')
     graph = ConjunctiveGraph()
@@ -46,10 +48,10 @@ Knappschaft
 WICHTIGES DOKUMENT - SORGFÄLTIG AUFBEWAHREN!
 """
 
+
 def test2():
     meta2 = meta.encode('utf-8') % test_string2.encode('utf-8')
     graph = ConjunctiveGraph()
     graph.parse(StringInputSource(prefix + '<http://example.org/>' + meta2), format='n3')
 
-from nose import SkipTest
 raise SkipTest("Known issue, with newlines in text")

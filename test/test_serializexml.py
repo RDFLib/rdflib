@@ -1,4 +1,4 @@
-from rdflib.term import  URIRef, BNode
+from rdflib.term import URIRef, BNode
 from rdflib.namespace import RDFS
 from six import b, BytesIO
 
@@ -25,7 +25,7 @@ class SerializerTestBase(object):
         for i in range(self.repeats):
             self.test_serialize_and_reparse()
 
-    #test_multiple.slowtest=True # not really slow?
+    # test_multiple.slowtest=True # not really slow?
 
 
 def _assert_equal_graphs(g1, g2):
@@ -37,16 +37,22 @@ def _assert_equal_graphs(g1, g2):
     assert len(g1copy) == 0, "Source graph larger than serialized graph."
     assert len(g2copy) == 0, "Serialized graph larger than source graph."
 
+
 _blank = BNode()
+
 
 def _mangled_copy(g):
     "Makes a copy of the graph, replacing all bnodes with the bnode ``_blank``."
     gcopy = ConjunctiveGraph()
-    isbnode = lambda v: isinstance(v, BNode)
+
+    def isbnode(v): return isinstance(v, BNode)
     for s, p, o in g:
-        if isbnode(s): s = _blank
-        if isbnode(p): p = _blank
-        if isbnode(o): o = _blank
+        if isbnode(s):
+            s = _blank
+        if isbnode(p):
+            p = _blank
+        if isbnode(o):
+            o = _blank
         gcopy.add((s, p, o))
     return gcopy
 
@@ -56,6 +62,7 @@ def serialize(sourceGraph, makeSerializer, getValue=True, extra_args={}):
     stream = BytesIO()
     serializer.serialize(stream, **extra_args)
     return getValue and stream.getvalue() or stream
+
 
 def serialize_and_load(sourceGraph, makeSerializer):
     stream = serialize(sourceGraph, makeSerializer, False)
@@ -113,9 +120,9 @@ class TestXMLSerializer(SerializerTestBase):
 
     def test_result_fragments(self):
         rdfXml = serialize(self.sourceGraph, self.serializer)
-        #print "--------"
-        #print rdfXml
-        #print "--------"
+        # print "--------"
+        # print rdfXml
+        # print "--------"
         assert b('<rdf:Description rdf:about="http://example.org/data/a">') in rdfXml
         assert b('<rdf:type rdf:resource="http://example.org/model/test#Test"/>') in rdfXml
         assert b('<rdf:Description rdf:about="http://example.org/data/b">') in rdfXml
@@ -125,10 +132,10 @@ class TestXMLSerializer(SerializerTestBase):
 
     def test_result_fragments_with_base(self):
         rdfXml = serialize(self.sourceGraph, self.serializer,
-                    extra_args={'base':"http://example.org/", 'xml_base':"http://example.org/"})
-        #print "--------"
-        #print rdfXml
-        #print "--------"
+                           extra_args={'base': "http://example.org/", 'xml_base': "http://example.org/"})
+        # print "--------"
+        # print rdfXml
+        # print "--------"
         assert b('xml:base="http://example.org/"') in rdfXml
         assert b('<rdf:Description rdf:about="data/a">') in rdfXml
         assert b('<rdf:type rdf:resource="model/test#Test"/>') in rdfXml
@@ -139,12 +146,13 @@ class TestXMLSerializer(SerializerTestBase):
     def test_subClassOf_objects(self):
         reparsedGraph = serialize_and_load(self.sourceGraph, self.serializer)
         _assert_expected_object_types_for_predicates(reparsedGraph,
-                [RDFS.seeAlso, RDFS.subClassOf],
-                [URIRef, BNode])
+                                                     [RDFS.seeAlso, RDFS.subClassOf],
+                                                     [URIRef, BNode])
+
 
 def _assert_expected_object_types_for_predicates(graph, predicates, types):
     for s, p, o in graph:
         if p in predicates:
             someTrue = [isinstance(o, t) for t in types]
             assert True in someTrue, \
-                    "Bad type %s for object when predicate is <%s>." % (type(o), p)
+                "Bad type %s for object when predicate is <%s>." % (type(o), p)

@@ -26,7 +26,8 @@ tests roundtripping through rdf/xml with only the literals-02 file
 
 SKIP = [
     ('xml', 'test/nt/qname-02.nt'),  # uses a property that cannot be qname'd
-    ('application/rdf+xml', 'test/nt/qname-02.nt'),  # uses a property that cannot be qname'd
+    # uses a property that cannot be qname'd
+    ('application/rdf+xml', 'test/nt/qname-02.nt'),
 ]
 
 
@@ -47,9 +48,9 @@ def roundtrip(e, verbose=False):
     g2.parse(data=s, format=testfmt)
 
     if verbose:
-        both, first, second = rdflib.compare.graph_diff(g1,g2)
+        both, first, second = rdflib.compare.graph_diff(g1, g2)
         print("Diff:")
-        print("%d triples in both"%len(both))
+        print("%d triples in both" % len(both))
         print("G1 Only:")
         for t in first:
             print(t)
@@ -61,7 +62,8 @@ def roundtrip(e, verbose=False):
 
     assert rdflib.compare.isomorphic(g1, g2)
 
-    if verbose: print("Ok!")
+    if verbose:
+        print("Ok!")
 
 
 formats = None
@@ -79,7 +81,8 @@ def test_cases():
         formats = parsers.intersection(serializers)
 
     for testfmt in formats:
-        if "/" in testfmt: continue # skip double testing
+        if "/" in testfmt:
+            continue  # skip double testing
         for f, infmt in all_nt_files():
             if (testfmt, f) not in SKIP:
                 yield roundtrip, (infmt, testfmt, f)

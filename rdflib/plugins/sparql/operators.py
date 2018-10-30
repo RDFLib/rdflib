@@ -534,7 +534,6 @@ def Builtin_UCASE(e, ctx):
 
 
 def Builtin_LANG(e, ctx):
-
     """
     http://www.w3.org/TR/sparql11-query/#func-lang
 
@@ -587,6 +586,7 @@ def Builtin_EXISTS(e, ctx):
 
 _CUSTOM_FUNCTIONS = {}
 
+
 def register_custom_function(uri, func, override=False, raw=False):
     """
     Register a custom SPARQL function.
@@ -600,6 +600,7 @@ def register_custom_function(uri, func, override=False, raw=False):
         raise ValueError("A function is already registered as %s" % uri.n3())
     _CUSTOM_FUNCTIONS[uri] = (func, raw)
 
+
 def custom_function(uri, override=False, raw=False):
     """
     Decorator version of :func:`register_custom_function`.
@@ -609,17 +610,18 @@ def custom_function(uri, override=False, raw=False):
         return func
     return decorator
 
+
 def unregister_custom_function(uri, func):
     if _CUSTOM_FUNCTIONS.get(uri, (None, None))[0] != func:
         raise ValueError("This function is not registered as %s" % uri.n3())
     del _CUSTOM_FUNCTIONS[uri]
 
-    
+
 def Function(e, ctx):
     """
     Custom functions and casts
     """
-    pair =_CUSTOM_FUNCTIONS.get(e.iri)
+    pair = _CUSTOM_FUNCTIONS.get(e.iri)
     if pair is None:
         # no such function is registered
         raise SPARQLError('Unknown function %r' % e.iri)
@@ -644,71 +646,71 @@ def Function(e, ctx):
 @custom_function(XSD.integer, raw=True)
 @custom_function(XSD.boolean, raw=True)
 def default_cast(e, ctx):
-        if not e.expr:
-            raise SPARQLError("Nothing given to cast.")
-        if len(e.expr) > 1:
-            raise SPARQLError("Cannot cast more than one thing!")
+    if not e.expr:
+        raise SPARQLError("Nothing given to cast.")
+    if len(e.expr) > 1:
+        raise SPARQLError("Cannot cast more than one thing!")
 
-        x = e.expr[0]
+    x = e.expr[0]
 
-        if e.iri == XSD.string:
+    if e.iri == XSD.string:
 
-            if isinstance(x, (URIRef, Literal)):
-                return Literal(x, datatype=XSD.string)
-            else:
-                raise SPARQLError(
-                    "Cannot cast term %r of type %r" % (x, type(x)))
-
-        if not isinstance(x, Literal):
+        if isinstance(x, (URIRef, Literal)):
+            return Literal(x, datatype=XSD.string)
+        else:
             raise SPARQLError(
-                "Can only cast Literals to non-string data-types")
+                "Cannot cast term %r of type %r" % (x, type(x)))
 
-        if x.datatype and not x.datatype in XSD_DTs:
+    if not isinstance(x, Literal):
+        raise SPARQLError(
+            "Can only cast Literals to non-string data-types")
+
+    if x.datatype and not x.datatype in XSD_DTs:
+        raise SPARQLError(
+            "Cannot cast literal with unknown datatype: %r" % x.datatype)
+
+    if e.iri == XSD.dateTime:
+        if x.datatype and x.datatype not in (XSD.dateTime, XSD.string):
             raise SPARQLError(
-                "Cannot cast literal with unknown datatype: %r" % x.datatype)
+                "Cannot cast %r to XSD:dateTime" % x.datatype)
+        try:
+            return Literal(isodate.parse_datetime(x), datatype=e.iri)
+        except:
+            raise SPARQLError("Cannot interpret '%r' as datetime" % x)
 
-        if e.iri == XSD.dateTime:
-            if x.datatype and x.datatype not in (XSD.dateTime, XSD.string):
-                raise SPARQLError(
-                    "Cannot cast %r to XSD:dateTime" % x.datatype)
-            try:
-                return Literal(isodate.parse_datetime(x), datatype=e.iri)
-            except:
-                raise SPARQLError("Cannot interpret '%r' as datetime" % x)
+    if x.datatype == XSD.dateTime:
+        raise SPARQLError("Cannot cast XSD.dateTime to %r" % e.iri)
 
-        if x.datatype == XSD.dateTime:
-            raise SPARQLError("Cannot cast XSD.dateTime to %r" % e.iri)
+    if e.iri in (XSD.float, XSD.double):
+        try:
+            return Literal(float(x), datatype=e.iri)
+        except:
+            raise SPARQLError("Cannot interpret '%r' as float" % x)
 
-        if e.iri in (XSD.float, XSD.double):
-            try:
-                return Literal(float(x), datatype=e.iri)
-            except:
-                raise SPARQLError("Cannot interpret '%r' as float" % x)
+    elif e.iri == XSD.decimal:
+        if "e" in x or "E" in x:  # SPARQL/XSD does not allow exponents in decimals
+            raise SPARQLError("Cannot interpret '%r' as decimal" % x)
+        try:
+            return Literal(Decimal(x), datatype=e.iri)
+        except:
+            raise SPARQLError("Cannot interpret '%r' as decimal" % x)
 
-        elif e.iri == XSD.decimal:
-            if "e" in x or "E" in x:  # SPARQL/XSD does not allow exponents in decimals
-                raise SPARQLError("Cannot interpret '%r' as decimal" % x)
-            try:
-                return Literal(Decimal(x), datatype=e.iri)
-            except:
-                raise SPARQLError("Cannot interpret '%r' as decimal" % x)
+    elif e.iri == XSD.integer:
+        try:
+            return Literal(int(x), datatype=XSD.integer)
+        except:
+            raise SPARQLError("Cannot interpret '%r' as int" % x)
 
-        elif e.iri == XSD.integer:
-            try:
-                return Literal(int(x), datatype=XSD.integer)
-            except:
-                raise SPARQLError("Cannot interpret '%r' as int" % x)
-
-        elif e.iri == XSD.boolean:
-            # # I would argue that any number is True...
-            # try:
-            #     return Literal(bool(int(x)), datatype=XSD.boolean)
-            # except:
-            if x.lower() in ("1", "true"):
-                return Literal(True)
-            if x.lower() in ("0", "false"):
-                return Literal(False)
-            raise SPARQLError("Cannot interpret '%r' as bool" % x)
+    elif e.iri == XSD.boolean:
+        # # I would argue that any number is True...
+        # try:
+        #     return Literal(bool(int(x)), datatype=XSD.boolean)
+        # except:
+        if x.lower() in ("1", "true"):
+            return Literal(True)
+        if x.lower() in ("0", "false"):
+            return Literal(False)
+        raise SPARQLError("Cannot interpret '%r' as bool" % x)
 
 
 def UnaryNot(expr, ctx):
@@ -904,6 +906,7 @@ def and_(*args):
 
     return Expr('ConditionalAndExpression', ConditionalAndExpression,
                 expr=args[0], other=list(args[1:]))
+
 
 TrueFilter = Expr('TrueFilter', lambda _1, _2: Literal(True))
 

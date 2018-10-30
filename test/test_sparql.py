@@ -4,6 +4,7 @@ from rdflib.compare import isomorphic
 
 from nose.tools import eq_
 
+
 def test_graph_prefix():
     """
     This is issue https://github.com/RDFLib/rdflib/issues/313
@@ -38,10 +39,11 @@ def test_graph_prefix():
     eq_(list(g1.query(q_str)), expected)
     eq_(list(g2.query(q_str)), expected)
 
+
 def test_variable_order():
 
     g = Graph()
-    g.add((URIRef("http://foo"),URIRef("http://bar"),URIRef("http://baz")))
+    g.add((URIRef("http://foo"), URIRef("http://bar"), URIRef("http://baz")))
     res = g.query("SELECT (42 AS ?a) ?b { ?b ?c ?d }")
 
     row = list(res)[0]
@@ -64,6 +66,7 @@ def test_sparql_bnodelist():
     prepareQuery('select * where { ?s ?p ( [ ?p2 ?o2 ] [] ) . }')
     prepareQuery('select * where { ?s ?p ( [] [ ?p2 ?o2 ] [] ) . }')
 
+
 def test_complex_sparql_construct():
 
     g = Graph()
@@ -74,6 +77,7 @@ def test_complex_sparql_construct():
       <urn:id> [ a <urn:Identifier>; <urn:has-value> ?id].
     }'''
     g.query(q)
+
 
 if __name__ == '__main__':
     import nose

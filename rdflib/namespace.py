@@ -198,6 +198,7 @@ class _RDFNamespace(ClosedNamespace):
     """
     Closed namespace for RDF terms
     """
+
     def __init__(self):
         super(_RDFNamespace, self).__init__(
             URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
@@ -284,6 +285,7 @@ class NamespaceManager(object):
         >>>
 
     """
+
     def __init__(self, graph):
         self.graph = graph
         self.__cache = {}
@@ -357,7 +359,6 @@ class NamespaceManager(object):
         return self.__cache[uri]
 
     def bind(self, prefix, namespace, override=True, replace=False):
-
         """bind a given namespace to the prefix
 
         if override, rebind, even if the given namespace is already

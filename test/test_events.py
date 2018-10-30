@@ -2,13 +2,19 @@
 import unittest
 from rdflib import events
 
-class AddedEvent(events.Event): pass
 
-class RemovedEvent(events.Event): pass
+class AddedEvent(events.Event):
+    pass
+
+
+class RemovedEvent(events.Event):
+    pass
+
 
 def subscribe_to(source, target):
     target.subscribe(AddedEvent, source._add_handler)
     target.subscribe(RemovedEvent, source._remove_handler)
+
 
 def subscribe_all(caches):
     for cache in caches:
@@ -16,13 +22,15 @@ def subscribe_all(caches):
             if other != cache:
                 subscribe_to(cache, other)
 
+
 class Cache(events.Dispatcher):
 
     def __init__(self, data=None):
-        if data is None: data = {}
+        if data is None:
+            data = {}
         self._data = data
         self.subscribe(AddedEvent, self._add_handler)
-        self.subscribe(RemovedEvent, self._remove_handler)        
+        self.subscribe(RemovedEvent, self._remove_handler)
 
     def _add_handler(self, event):
         self._data[event.key] = event.value
@@ -35,13 +43,13 @@ class Cache(events.Dispatcher):
 
     def __setitem__(self, key, value):
         self.dispatch(AddedEvent(key=key, value=value))
-        
+
     def __delitem__(self, key):
         self.dispatch(RemovedEvent(key=key))
 
     def __contains__(self, key):
         return key in self._data
-    
+
     has_key = __contains__
 
 
@@ -51,13 +59,14 @@ class EventTestCase(unittest.TestCase):
         c1 = Cache()
         c2 = Cache()
         c3 = Cache()
-        subscribe_all([c1,c2,c3])
+        subscribe_all([c1, c2, c3])
         c1['bob'] = 'uncle'
         assert c2['bob'] == 'uncle'
         assert c3['bob'] == 'uncle'
         del c3['bob']
         assert ('bob' in c1) == False
         assert ('bob' in c2) == False
+
 
 if __name__ == "__main__":
     unittest.main()

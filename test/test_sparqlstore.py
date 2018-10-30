@@ -1,3 +1,5 @@
+from rdflib import Graph, URIRef, Literal
+from six.moves.urllib.request import urlopen
 import os
 import unittest
 from nose import SkipTest
@@ -5,13 +7,10 @@ from nose import SkipTest
 if os.getenv("TRAVIS"):
     raise SkipTest("Doesn't work in travis")
 
-from six.moves.urllib.request import urlopen
 try:
     assert len(urlopen("http://dbpedia.org/sparql").read()) > 0
 except:
     raise SkipTest("No HTTP connection.")
-
-from rdflib import Graph, URIRef, Literal
 
 
 class SPARQLStoreDBPediaTestCase(unittest.TestCase):

@@ -39,5 +39,6 @@ class TestDuration(unittest.TestCase):
             Literal("P2Y4M8DT10H12M14S", datatype=XSD.duration)
         )
 
+
 if __name__ == "__main__":
     unittest.main()

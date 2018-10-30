@@ -23,7 +23,11 @@ Usage:
     film.py http://www.imdb.com/title/tt0105236/
         Review the movie "Reservoir Dogs"
 """
-import datetime, os, sys, re, time
+import datetime
+import os
+import sys
+import re
+import time
 
 try:
     import imdb
@@ -36,13 +40,14 @@ from six.moves import input
 
 storefn = os.path.expanduser('~/movies.n3')
 #storefn = '/home/simon/codes/film.dev/movies.n3'
-storeuri = 'file://'+storefn
+storeuri = 'file://' + storefn
 title = 'Movies viewed by %s'
 
 r_who = re.compile('^(.*?) <([a-z0-9_-]+(\.[a-z0-9_-]+)*@[a-z0-9_-]+(\.[a-z0-9_-]+)+)>$')
 
 IMDB = Namespace('http://www.csd.abdn.ac.uk/~ggrimnes/dev/imdb/IMDB#')
 REV = Namespace('http://purl.org/stuff/rev#')
+
 
 class Store:
     def __init__(self):
@@ -61,12 +66,14 @@ class Store:
         if who is not None:
             name, email = (r_who.match(who).group(1), r_who.match(who).group(2))
             self.graph.add((URIRef(storeuri), DC['title'], Literal(title % name)))
-            self.graph.add((URIRef(storeuri+'#author'), RDF.type, FOAF['Person']))
-            self.graph.add((URIRef(storeuri+'#author'), FOAF['name'], Literal(name)))
-            self.graph.add((URIRef(storeuri+'#author'), FOAF['mbox'], Literal(email)))
+            self.graph.add((URIRef(storeuri + '#author'), RDF.type, FOAF['Person']))
+            self.graph.add((URIRef(storeuri + '#author'),
+                            FOAF['name'], Literal(name)))
+            self.graph.add((URIRef(storeuri + '#author'),
+                            FOAF['mbox'], Literal(email)))
             self.save()
         else:
-            return self.graph.objects(URIRef(storeuri+'#author'), FOAF['name'])
+            return self.graph.objects(URIRef(storeuri + '#author'), FOAF['name'])
 
     def new_movie(self, movie):
         movieuri = URIRef('http://www.imdb.com/title/tt%s/' % movie.movieID)
@@ -76,14 +83,14 @@ class Store:
         self.save()
 
     def new_review(self, movie, date, rating, comment=None):
-        review = BNode() # @@ humanize the identifier (something like #rev-$date)
+        review = BNode()  # @@ humanize the identifier (something like #rev-$date)
         movieuri = URIRef('http://www.imdb.com/title/tt%s/' % movie.movieID)
         self.graph.add((movieuri, REV['hasReview'], URIRef('%s#%s' % (storeuri, review))))
         self.graph.add((review, RDF.type, REV['Review']))
         self.graph.add((review, DC['date'], Literal(date)))
         self.graph.add((review, REV['maxRating'], Literal(5)))
         self.graph.add((review, REV['minRating'], Literal(0)))
-        self.graph.add((review, REV['reviewer'], URIRef(storeuri+'#author')))
+        self.graph.add((review, REV['reviewer'], URIRef(storeuri + '#author')))
         self.graph.add((review, REV['rating'], Literal(rating)))
         if comment is not None:
             self.graph.add((review, REV['text'], Literal(comment)))
@@ -92,8 +99,10 @@ class Store:
     def movie_is_in(self, uri):
         return (URIRef(uri), RDF.type, IMDB['Movie']) in self.graph
 
+
 def help():
     print(__doc__.split('--')[1])
+
 
 def main(argv=None):
     if not argv:
@@ -135,6 +144,7 @@ def main(argv=None):
             s.new_review(movie, date, rating, comment)
     else:
         help()
+
 
 if __name__ == '__main__':
     if not imdb:

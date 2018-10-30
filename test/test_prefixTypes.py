@@ -13,6 +13,7 @@ graph = Graph().parse(format='n3', data="""
     dct:created "2011-03-20"^^xsd:date .
 """)
 
+
 class PrefixTypesTest(unittest.TestCase):
 
     """N3/Turtle serializers should use prefixes,
@@ -22,13 +23,11 @@ class PrefixTypesTest(unittest.TestCase):
     http://code.google.com/p/rdflib/issues/detail?id=161
     """
 
-
     def test(self):
-        s=graph.serialize(format='n3')
+        s = graph.serialize(format='n3')
         print(s)
         self.assertTrue(b("foaf:Document") in s)
         self.assertTrue(b("xsd:date") in s)
-
 
 
 if __name__ == '__main__':

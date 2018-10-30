@@ -52,9 +52,9 @@ from nose import SkipTest
 
 from .manifest import nose_tests, MF, UP
 from .earl import report, add_test
+def eq(a, b, msg):
+    return eq_(a, b, msg + ': (%r!=%r)' % (a, b))
 
-def eq(a,b,msg):
-    return eq_(a,b,msg+': (%r!=%r)'%(a,b))
 
 def setFlags():
     import rdflib
@@ -66,6 +66,7 @@ def setFlags():
 
     # we obviously need this
     rdflib.DAWG_LITERAL_COLLATION = True
+
 
 def resetFlags():
     import rdflib
@@ -97,7 +98,6 @@ DETAILEDASSERT = True
 # DETAILEDASSERT=False
 
 
-
 NAME = None
 
 fails = Counter()
@@ -126,10 +126,7 @@ def _fmt(f):
     return "turtle"
 
 
-
-
 def bindingsCompatible(a, b):
-
     """
 
     Are two binding-sets compatible.
@@ -432,7 +429,7 @@ def query_test(t):
             elif res.type == 'ASK':
                 eq(res.askAnswer,
                    res2.askAnswer, "Ask answer does not match: %r != %r" % (
-                   res.askAnswer, res2.askAnswer))
+                       res.askAnswer, res2.askAnswer))
             elif res.type in ('DESCRIBE', 'CONSTRUCT'):
                 assert isomorphic(
                     res.graph, res2.graph), 'graphs are not isomorphic!'
@@ -523,9 +520,7 @@ def test_dawg():
         for t in nose_tests(testers, "test/DAWG/rdflib/manifest.ttl"):
             yield t
 
-
     resetFlags()
-
 
 
 if __name__ == '__main__':
@@ -542,7 +537,6 @@ if __name__ == '__main__':
     skip = 0
 
     for _type, t in test_dawg():
-
 
         if NAME and not str(t[0]).startswith(NAME):
             continue

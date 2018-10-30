@@ -10,10 +10,11 @@ SELECT ?x (MIN(?y_) as ?y) (%s(DISTINCT ?z_) as ?z) {
 } GROUP BY ?x ORDER BY ?x
 '''
 
+
 def test_group_concat_distinct():
     g = Graph()
     results = g.query(query_tpl % 'GROUP_CONCAT')
-    results = [ [ lit.toPython() for lit in line ] for line in results ]
+    results = [[lit.toPython() for lit in line] for line in results]
 
     # this is the tricky part
     assert results[0][2] == "1", results[0][2]
@@ -24,10 +25,11 @@ def test_group_concat_distinct():
         ["x2", 20, "2"],
     ], results
 
+
 def test_sum_distinct():
     g = Graph()
     results = g.query(query_tpl % 'SUM')
-    results = [ [ lit.toPython() for lit in line ] for line in results ]
+    results = [[lit.toPython() for lit in line] for line in results]
 
     # this is the tricky part
     assert results[0][2] == 1, results[0][2]
@@ -37,6 +39,7 @@ def test_sum_distinct():
         ["x1", 10, 1],
         ["x2", 20, 2],
     ], results
+
 
 def test_avg_distinct():
     g = Graph()
@@ -50,7 +53,7 @@ def test_avg_distinct():
           }
        } GROUP BY ?x ORDER BY ?x
     """)
-    results = [ [ lit.toPython() for lit in line ] for line in results ]
+    results = [[lit.toPython() for lit in line] for line in results]
 
     # this is the tricky part
     assert results[0][2] == 2, results[0][2]
@@ -61,9 +64,10 @@ def test_avg_distinct():
         ["x2", 20, 2],
     ], results
 
+
 def test_count_distinct():
     g = Graph()
-    
+
     g.parse(format="turtle", publicID="http://example.org/", data="""
     @prefix : <> .
 
@@ -80,7 +84,6 @@ def test_count_distinct():
       :age 20 .
 
     """)
-
 
     # Query 1: people knowing someone younger
     results = g.query("""

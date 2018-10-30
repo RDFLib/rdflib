@@ -20,5 +20,6 @@ class TestSPARQLStoreGraphCore(unittest.TestCase):
     def test(self):
         print("Done")
 
+
 if __name__ == '__main__':
     unittest.main()

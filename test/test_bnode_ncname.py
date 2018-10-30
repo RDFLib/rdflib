@@ -24,18 +24,20 @@ except ImportError:
         # Have doubts about this. random.seed will just hash the string
         random.seed('%s%s%s' % (preseed, os.getpid(), time.time()))
         del preseed
-        t = int( time.time() * 1000.0 )
-        r = int( random.random()*100000000000000000 )
+        t = int(time.time() * 1000.0)
+        r = int(random.random() * 100000000000000000)
         try:
-            a = socket.gethostbyname( socket.gethostname() )
+            a = socket.gethostbyname(socket.gethostname())
         except:
             # if we can't get a network address, just imagine one
-            a = random.random()*100000000000000000
-        strdata = str(t)+' '+str(r)+' '+str(a)
+            a = random.random() * 100000000000000000
+        strdata = str(t) + ' ' + str(r) + ' ' + str(a)
         data = md5(strdata.encode('ascii')).hexdigest()
         yield data
 
 # Adapted from http://icodesnip.com/snippet/python/simple-universally-unique-id-uuid-or-guid
+
+
 def bnode_uuid():
     yield uuid4()
 
@@ -75,6 +77,7 @@ def is_ncname(value):
         return True
     else:
         return False
+
 
 if __name__ == '__main__':
     import doctest

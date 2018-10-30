@@ -303,4 +303,3 @@ class TestAuditableStoreEmbeded(BaseTestAuditableStore):
             (EX.s0, EX.p0, EX.o0),
             (EX.s0, EX.p0, EX.o0bis),
         ])
-

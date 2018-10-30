@@ -14,11 +14,14 @@ NS = {
     'xsd': XSD,
 }
 
+
 def query(querystr, initNs=NS, initBindings=None):
     return G.query(querystr, initNs=initNs, initBindings=initBindings)
 
+
 def setup():
     pass
+
 
 def teardown():
     pass
@@ -28,109 +31,136 @@ def test_cast_string_to_string():
     res = query('''SELECT (xsd:string("hello") as ?x) {}''')
     eq_(list(res)[0][0], Literal("hello", datatype=XSD.string))
 
+
 def test_cast_int_to_string():
     res = query('''SELECT (xsd:string(42) as ?x) {}''')
     eq_(list(res)[0][0], Literal("42", datatype=XSD.string))
+
 
 def test_cast_float_to_string():
     res = query('''SELECT (xsd:string(3.14) as ?x) {}''')
     eq_(list(res)[0][0], Literal("3.14", datatype=XSD.string))
 
+
 def test_cast_bool_to_string():
     res = query('''SELECT (xsd:string(true) as ?x) {}''')
     eq_(list(res)[0][0], Literal("true", datatype=XSD.string))
+
 
 def test_cast_iri_to_string():
     res = query('''SELECT (xsd:string(<http://example.org/>) as ?x) {}''')
     eq_(list(res)[0][0], Literal("http://example.org/", datatype=XSD.string))
 
+
 def test_cast_datetime_to_datetime():
     res = query('''SELECT (xsd:dateTime("1970-01-01T00:00:00Z"^^xsd:dateTime) as ?x) {}''')
     eq_(list(res)[0][0], Literal("1970-01-01T00:00:00Z", datatype=XSD.dateTime))
+
 
 def test_cast_string_to_datetime():
     res = query('''SELECT (xsd:dateTime("1970-01-01T00:00:00Z"^^xsd:string) as ?x) {}''')
     eq_(list(res)[0][0], Literal("1970-01-01T00:00:00Z", datatype=XSD.dateTime))
 
+
 def test_cast_string_to_float():
     res = query('''SELECT (xsd:float("0.5") as ?x) {}''')
     eq_(list(res)[0][0], Literal("0.5", datatype=XSD.float))
+
 
 def test_cast_int_to_float():
     res = query('''SELECT (xsd:float(1) as ?x) {}''')
     eq_(list(res)[0][0], Literal("1", datatype=XSD.float))
 
+
 def test_cast_float_to_float():
     res = query('''SELECT (xsd:float("0.5"^^xsd:float) as ?x) {}''')
     eq_(list(res)[0][0], Literal("0.5", datatype=XSD.float))
+
 
 def test_cast_double_to_float():
     res = query('''SELECT (xsd:float("0.5"^^xsd:double) as ?x) {}''')
     eq_(list(res)[0][0], Literal("0.5", datatype=XSD.float))
 
+
 def test_cast_decimal_to_float():
     res = query('''SELECT (xsd:float("0.5"^^xsd:decimal) as ?x) {}''')
     eq_(list(res)[0][0], Literal("0.5", datatype=XSD.float))
+
 
 def test_cast_string_to_double():
     res = query('''SELECT (xsd:double("0.5") as ?x) {}''')
     eq_(list(res)[0][0], Literal("0.5", datatype=XSD.double))
 
+
 def test_cast_int_to_double():
     res = query('''SELECT (xsd:double(1) as ?x) {}''')
     eq_(list(res)[0][0], Literal("1", datatype=XSD.double))
+
 
 def test_cast_float_to_double():
     res = query('''SELECT (xsd:double("0.5"^^xsd:float) as ?x) {}''')
     eq_(list(res)[0][0], Literal("0.5", datatype=XSD.double))
 
+
 def test_cast_double_to_double():
     res = query('''SELECT (xsd:double("0.5"^^xsd:double) as ?x) {}''')
     eq_(list(res)[0][0], Literal("0.5", datatype=XSD.double))
+
 
 def test_cast_decimal_to_double():
     res = query('''SELECT (xsd:double("0.5"^^xsd:decimal) as ?x) {}''')
     eq_(list(res)[0][0], Literal("0.5", datatype=XSD.double))
 
+
 def test_cast_string_to_decimal():
     res = query('''SELECT (xsd:decimal("0.5") as ?x) {}''')
     eq_(list(res)[0][0], Literal("0.5", datatype=XSD.decimal))
+
 
 def test_cast_int_to_decimal():
     res = query('''SELECT (xsd:decimal(1) as ?x) {}''')
     eq_(list(res)[0][0], Literal("1", datatype=XSD.decimal))
 
+
 def test_cast_float_to_decimal():
     res = query('''SELECT (xsd:decimal("0.5"^^xsd:float) as ?x) {}''')
     eq_(list(res)[0][0], Literal("0.5", datatype=XSD.decimal))
+
 
 def test_cast_double_to_decimal():
     res = query('''SELECT (xsd:decimal("0.5"^^xsd:double) as ?x) {}''')
     eq_(list(res)[0][0], Literal("0.5", datatype=XSD.decimal))
 
+
 def test_cast_decimal_to_decimal():
     res = query('''SELECT (xsd:decimal("0.5"^^xsd:decimal) as ?x) {}''')
     eq_(list(res)[0][0], Literal("0.5", datatype=XSD.decimal))
+
 
 def test_cast_string_to_int():
     res = query('''SELECT (xsd:integer("42") as ?x) {}''')
     eq_(list(res)[0][0], Literal("42", datatype=XSD.integer))
 
+
 def test_cast_int_to_int():
     res = query('''SELECT (xsd:integer(42) as ?x) {}''')
     eq_(list(res)[0][0], Literal("42", datatype=XSD.integer))
+
 
 def test_cast_string_to_bool():
     res = query('''SELECT (xsd:boolean("TRUE") as ?x) {}''')
     eq_(list(res)[0][0], Literal("true", datatype=XSD.boolean))
 
+
 def test_cast_bool_to_bool():
     res = query('''SELECT (xsd:boolean(true) as ?x) {}''')
     eq_(list(res)[0][0], Literal("true", datatype=XSD.boolean))
 
+
 def test_cast_bool_to_bool():
     res = query('''SELECT (ex:f(42, "hello") as ?x) {}''')
     eq_(len(list(res)), 0)
+
 
 class TestCustom(TestCase):
 

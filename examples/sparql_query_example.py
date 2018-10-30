@@ -16,7 +16,7 @@ For variable names that are not valid python identifiers, dict access
 
 import rdflib
 
-if __name__=='__main__':
+if __name__ == '__main__':
 
     g = rdflib.Graph()
     g.load("foaf.rdf")

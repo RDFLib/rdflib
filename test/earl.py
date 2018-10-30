@@ -28,6 +28,7 @@ report.add((rdflib, RDF.type, DOAP.Project))
 
 now = Literal(datetime.now())
 
+
 @nottest
 def add_test(test, res, info=None):
     a = BNode()

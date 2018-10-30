@@ -1,5 +1,6 @@
 from rdflib import ConjunctiveGraph, URIRef
 
+
 def test_nquads_default_graph():
     ds = ConjunctiveGraph()
 
@@ -10,7 +11,7 @@ def test_nquads_default_graph():
     """
 
     publicID = URIRef("http://example.org/g0")
-    
+
     ds.parse(data=data, format="nquads", publicID=publicID)
 
     assert len(ds) == 3, len(g)

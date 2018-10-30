@@ -395,9 +395,9 @@ class Graph(Node):
         """Add a sequence of triple with context"""
 
         self.__store.addN((s, p, o, c) for s, p, o, c in quads
-                          if isinstance(c, Graph)
-                          and c.identifier is self.identifier
-                          and _assertnode(s,p,o)
+                          if isinstance(c, Graph) and
+                          c.identifier is self.identifier and
+                          _assertnode(s, p, o)
                           )
 
     def remove(self, triple):
@@ -421,7 +421,6 @@ class Graph(Node):
         else:
             for (s, p, o), cg in self.__store.triples((s, p, o), context=self):
                 yield (s, p, o)
-
 
     def __getitem__(self, item):
         """
@@ -466,9 +465,9 @@ class Graph(Node):
 
         if isinstance(item, slice):
 
-            s,p,o=item.start,item.stop,item.step
+            s, p, o = item.start, item.stop, item.step
             if s is None and p is None and o is None:
-                return self.triples((s,p,o))
+                return self.triples((s, p, o))
             elif s is None and p is None:
                 return self.subject_predicates(o)
             elif s is None and o is None:
@@ -476,16 +475,16 @@ class Graph(Node):
             elif p is None and o is None:
                 return self.predicate_objects(s)
             elif s is None:
-                return self.subjects(p,o)
+                return self.subjects(p, o)
             elif p is None:
-                return self.predicates(s,o)
+                return self.predicates(s, o)
             elif o is None:
-                return self.objects(s,p)
+                return self.objects(s, p)
             else:
                 # all given
-                return (s,p,o) in self
+                return (s, p, o) in self
 
-        elif isinstance(item, (Path,Node)):
+        elif isinstance(item, (Path, Node)):
 
             return self.predicate_objects(item)
 
@@ -530,15 +529,15 @@ class Graph(Node):
 
     def __lt__(self, other):
         return (other is None) \
-            or (isinstance(other, Graph)
-                and self.identifier < other.identifier)
+            or (isinstance(other, Graph) and
+                self.identifier < other.identifier)
 
     def __le__(self, other):
         return self < other or self == other
 
     def __gt__(self, other):
-        return (isinstance(other, Graph)
-                and self.identifier > other.identifier) \
+        return (isinstance(other, Graph) and
+                self.identifier > other.identifier) \
             or (other is not None)
 
     def __ge__(self, other):
@@ -708,7 +707,6 @@ class Graph(Node):
             return default
         return self.value(subject, RDFS.label, default=default, any=True)
 
-
     def preferredLabel(self, subject, lang=None, default=None,
                        labelProperties=(SKOS.prefLabel, RDFS.label)):
         """
@@ -758,11 +756,11 @@ class Graph(Node):
         # setup the language filtering
         if lang is not None:
             if lang == '':  # we only want not language-tagged literals
-                langfilter = lambda l: l.language is None
+                def langfilter(l): return l.language is None
             else:
-                langfilter = lambda l: l.language == lang
+                def langfilter(l): return l.language == lang
         else:  # we don't care about language tags
-            langfilter = lambda l: True
+            def langfilter(l): return True
 
         for labelProp in labelProperties:
             labels = list(filter(langfilter, self.objects(subject, labelProp)))
@@ -1062,9 +1060,9 @@ class Graph(Node):
             try:
                 return self.store.query(
                     query_object, initNs, initBindings,
-                    self.default_union
-                    and '__UNION__'
-                    or self.identifier,
+                    self.default_union and
+                    '__UNION__' or
+                    self.identifier,
                     **kwargs)
             except NotImplementedError:
                 pass  # store has no own implementation
@@ -1078,8 +1076,8 @@ class Graph(Node):
             query_object, initBindings, initNs, **kwargs))
 
     def update(self, update_object, processor='sparql',
-              initNs=None, initBindings=None,
-              use_store_provided=True, **kwargs):
+               initNs=None, initBindings=None,
+               use_store_provided=True, **kwargs):
         """Update this graph with the given update query."""
         initBindings = initBindings or {}
         initNs = initNs or dict(self.namespaces())
@@ -1088,9 +1086,9 @@ class Graph(Node):
             try:
                 return self.store.update(
                     update_object, initNs, initBindings,
-                    self.default_union
-                    and '__UNION__'
-                    or self.identifier,
+                    self.default_union and
+                    '__UNION__' or
+                    self.identifier,
                     **kwargs)
             except NotImplementedError:
                 pass  # store has no own implementation
@@ -1099,7 +1097,6 @@ class Graph(Node):
             processor = plugin.get(processor, query.UpdateProcessor)(self)
 
         return processor.update(update_object, initBindings, initNs, **kwargs)
-
 
     def n3(self):
         """return an n3 identifier for the Graph"""
@@ -1191,8 +1188,6 @@ class Graph(Node):
 
         return Collection(self, identifier)
 
-
-
     def resource(self, identifier):
         """Create a new ``Resource`` instance.
 
@@ -1272,6 +1267,7 @@ class Graph(Node):
 
         return retval
 
+
 class ConjunctiveGraph(Graph):
 
     """
@@ -1294,7 +1290,7 @@ class ConjunctiveGraph(Graph):
         assert self.store.context_aware, ("ConjunctiveGraph must be backed by"
                                           " a context aware store.")
         self.context_aware = True
-        self.default_union = True # Conjunctive!
+        self.default_union = True  # Conjunctive!
         self.default_context = Graph(store=self.store,
                                      identifier=identifier or BNode())
 
@@ -1316,38 +1312,35 @@ class ConjunctiveGraph(Graph):
         elif len(triple_or_quad) == 4:
             (s, p, o, c) = triple_or_quad
             c = self._graph(c)
-        return s,p,o,c
-
+        return s, p, o, c
 
     def __contains__(self, triple_or_quad):
         """Support for 'triple/quad in graph' syntax"""
-        s,p,o,c = self._spoc(triple_or_quad)
-        for t in self.triples((s,p,o), context=c):
+        s, p, o, c = self._spoc(triple_or_quad)
+        for t in self.triples((s, p, o), context=c):
             return True
         return False
 
-
     def add(self, triple_or_quad):
-
         """
         Add a triple or quad to the store.
 
         if a triple is given it is added to the default context
         """
 
-        s,p,o,c = self._spoc(triple_or_quad, default=True)
+        s, p, o, c = self._spoc(triple_or_quad, default=True)
 
-        _assertnode(s,p,o)
+        _assertnode(s, p, o)
 
         self.store.add((s, p, o), context=c, quoted=False)
 
     def _graph(self, c):
-        if c is None: return None
+        if c is None:
+            return None
         if not isinstance(c, Graph):
             return self.get_context(c)
         else:
             return c
-
 
     def addN(self, quads):
         """Add a sequence of triples with context"""
@@ -1355,7 +1348,7 @@ class ConjunctiveGraph(Graph):
         self.store.addN(
             (s, p, o, self._graph(c)) for s, p, o, c in quads if
             _assertnode(s, p, o)
-            )
+        )
 
     def remove(self, triple_or_quad):
         """
@@ -1366,7 +1359,7 @@ class ConjunctiveGraph(Graph):
         a quad is removed from the given context only
 
         """
-        s,p,o,c = self._spoc(triple_or_quad)
+        s, p, o, c = self._spoc(triple_or_quad)
 
         self.store.remove((s, p, o), context=c)
 
@@ -1379,11 +1372,11 @@ class ConjunctiveGraph(Graph):
         keyword parameter. The kw param takes precedence.
         """
 
-        s,p,o,c = self._spoc(triple_or_quad)
+        s, p, o, c = self._spoc(triple_or_quad)
         context = self._graph(context or c)
 
         if self.default_union:
-            if context==self.default_context:
+            if context == self.default_context:
                 context = None
         else:
             if context is None:
@@ -1402,7 +1395,7 @@ class ConjunctiveGraph(Graph):
     def quads(self, triple_or_quad=None):
         """Iterate over all the quads in the entire conjunctive graph"""
 
-        s,p,o,c = self._spoc(triple_or_quad)
+        s, p, o, c = self._spoc(triple_or_quad)
 
         for (s, p, o), cg in self.store.triples((s, p, o), context=c):
             for ctx in cg:
@@ -1413,7 +1406,7 @@ class ConjunctiveGraph(Graph):
         s, p, o = triple
         if context is None:
             if not self.default_union:
-                context=self.default_context
+                context = self.default_context
         else:
             context = self._graph(context)
 
@@ -1481,7 +1474,7 @@ class ConjunctiveGraph(Graph):
             g_id = URIRef(g_id)
 
         context = Graph(store=self.store, identifier=g_id)
-        context.remove((None, None, None)) # hmm ?
+        context.remove((None, None, None))  # hmm ?
         context.parse(source, publicID=publicID, format=format, **args)
         return context
 
@@ -1489,8 +1482,8 @@ class ConjunctiveGraph(Graph):
         return (ConjunctiveGraph, (self.store, self.identifier))
 
 
-
 DATASET_DEFAULT_GRAPH_ID = URIRef('urn:x-rdflib:default')
+
 
 class Dataset(ConjunctiveGraph):
     __doc__ = """
@@ -1604,7 +1597,6 @@ class Dataset(ConjunctiveGraph):
 
         self.default_union = default_union
 
-
     def __str__(self):
         pattern = ("[a rdflib:Dataset;rdflib:storage "
                    "[a rdflib:Store;rdfs:label '%s']]")
@@ -1655,10 +1647,11 @@ class Dataset(ConjunctiveGraph):
 
     def quads(self, quad):
         for s, p, o, c in super(Dataset, self).quads(quad):
-            if c.identifier==self.default_context:
+            if c.identifier == self.default_context:
                 yield (s, p, o, None)
             else:
                 yield (s, p, o, c.identifier)
+
 
 class QuotedGraph(Graph):
     """
@@ -1667,6 +1660,7 @@ class QuotedGraph(Graph):
     in order to maintain consistent formulae identification for scenarios
     such as implication and other such processing.
     """
+
     def __init__(self, store, identifier):
         super(QuotedGraph, self).__init__(store, identifier)
 
@@ -1687,10 +1681,10 @@ class QuotedGraph(Graph):
 
         self.store.addN(
             (s, p, o, c) for s, p, o, c in quads
-            if isinstance(c, QuotedGraph)
-            and c.identifier is self.identifier
-            and _assertnode(s, p, o)
-            )
+            if isinstance(c, QuotedGraph) and
+            c.identifier is self.identifier and
+            _assertnode(s, p, o)
+        )
 
     def n3(self):
         """Return an n3 identifier for the Graph"""
@@ -1711,7 +1705,7 @@ class QuotedGraph(Graph):
 # wrt to other Terms.
 # this must be done here, as the QuotedGraph cannot be
 # circularily imported in term.py
-rdflib.term._ORDERING[QuotedGraph]=11
+rdflib.term._ORDERING[QuotedGraph] = 11
 
 
 class Seq(object):
@@ -1926,6 +1920,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def __reduce__(self):
         raise UnSupportedAggregateOperation()
 
+
 def _assertnode(*terms):
     for t in terms:
         assert isinstance(t, Node), \
@@ -1936,6 +1931,7 @@ def _assertnode(*terms):
 def test():
     import doctest
     doctest.testmod()
+
 
 if __name__ == '__main__':
     test()

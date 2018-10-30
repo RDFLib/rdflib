@@ -11,25 +11,26 @@ from .testutils import nose_tst_earl_report
 
 verbose = False
 
+
 def trig(test):
     g = ConjunctiveGraph()
 
     try:
-        base = 'http://www.w3.org/2013/TriGTests/'+split_uri(test.action)[1]
+        base = 'http://www.w3.org/2013/TriGTests/' + split_uri(test.action)[1]
 
         g.parse(test.action, publicID=base, format='trig')
         if not test.syntax:
             raise AssertionError("Input shouldn't have parsed!")
 
-        if test.result: # eval test
+        if test.result:  # eval test
             res = ConjunctiveGraph()
             res.parse(test.result, format='nquads')
 
             if verbose:
 
-
-                both, first, second = graph_diff(g,res)
-                if not first and not second: return
+                both, first, second = graph_diff(g, res)
+                if not first and not second:
+                    return
 
                 print('===============================')
                 print('TriG')
@@ -40,7 +41,7 @@ def trig(test):
                 print('===============================')
 
                 print("Diff:")
-                #print "%d triples in both"%len(both)
+                # print "%d triples in both"%len(both)
                 print("TriG Only:")
                 for t in first:
                     print(t)
@@ -57,6 +58,7 @@ def trig(test):
         if test.syntax:
             raise
 
+
 testers = {
     RDFT.TestTrigPositiveSyntax: trig,
     RDFT.TestTrigNegativeSyntax: trig,
@@ -64,11 +66,13 @@ testers = {
     RDFT.TestTrigNegativeEval: trig
 }
 
+
 def test_trig(tests=None):
     for t in nose_tests(testers, 'test/w3c/trig/manifest.ttl'):
         if tests:
             for test in tests:
-                if test in t[1].uri: break
+                if test in t[1].uri:
+                    break
             else:
                 continue
 

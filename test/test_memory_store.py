@@ -1,8 +1,9 @@
 import unittest
 import rdflib
 
-rdflib.plugin.register('Memory', rdflib.store.Store, 
-                'rdflib.plugins.memory', 'Memory')
+rdflib.plugin.register('Memory', rdflib.store.Store,
+                       'rdflib.plugins.memory', 'Memory')
+
 
 class StoreTestCase(unittest.TestCase):
 
@@ -12,8 +13,8 @@ class StoreTestCase(unittest.TestCase):
         pred1 = rdflib.URIRef("http://example.org/foo#bar2")
         obj1 = rdflib.URIRef("http://example.org/foo#bar3")
         triple1 = (subj1, pred1, obj1)
-        triple2 = (subj1, 
-                   rdflib.URIRef("http://example.org/foo#bar4"),                
+        triple2 = (subj1,
+                   rdflib.URIRef("http://example.org/foo#bar4"),
                    rdflib.URIRef("http://example.org/foo#bar5"))
         g.add(triple1)
         self.assertTrue(len(g) == 1)

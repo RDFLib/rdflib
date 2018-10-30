@@ -19,4 +19,4 @@ if __name__ == '__main__':
          schema:name ?title ]
        FILTER (LANG(?title) = 'en') } """):
 
-        print("%s by %s"%(row.title, row.author))
+        print("%s by %s" % (row.title, row.author))

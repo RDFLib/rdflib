@@ -19,7 +19,9 @@ see ../../test/test_extras_external_graph_libs.py for conditional tests
 import logging
 logger = logging.getLogger(__name__)
 
-_identity = lambda x: x
+
+def _identity(x): return x
+
 
 def _rdflib_to_networkx_graph(
         graph,
@@ -64,6 +66,7 @@ def _rdflib_to_networkx_graph(
             if 'triples' in data:
                 d = edge_attrs(s, p, o)
                 data['triples'].extend(d['triples'])
+
 
 def rdflib_to_networkx_multidigraph(
         graph,
@@ -116,6 +119,7 @@ def rdflib_to_networkx_multidigraph(
     mdg = nx.MultiDiGraph()
     _rdflib_to_networkx_graph(graph, mdg, False, edge_attrs, **kwds)
     return mdg
+
 
 def rdflib_to_networkx_digraph(
         graph,
@@ -238,13 +242,13 @@ def rdflib_to_networkx_graph(
 
 
 def rdflib_to_graphtool(
-        graph,
-        v_prop_names=[str('term')],
-        e_prop_names=[str('term')],
-        transform_s=lambda s, p, o: {str('term'): s},
-        transform_p=lambda s, p, o: {str('term'): p},
-        transform_o=lambda s, p, o: {str('term'): o},
-    ):
+    graph,
+    v_prop_names=[str('term')],
+    e_prop_names=[str('term')],
+    transform_s=lambda s, p, o: {str('term'): s},
+    transform_p=lambda s, p, o: {str('term'): p},
+    transform_o=lambda s, p, o: {str('term'): o},
+):
     """Converts the given graph into a graph_tool.Graph().
 
     The subjects and objects are the later vertices of the Graph.

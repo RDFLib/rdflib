@@ -3,6 +3,7 @@
 
 from rdflib import Graph, URIRef, Literal
 
+
 def test_sparql_unicode():
     g = Graph()
     trip = (

@@ -13,6 +13,7 @@ from decimal import Decimal
 Aggregation functions
 """
 
+
 class Accumulator(object):
     """abstract base class for different aggregation functions """
 
@@ -73,8 +74,8 @@ class Counter(Accumulator):
 
 def type_safe_numbers(*args):
     if (
-            any(isinstance(arg, float) for arg in args)
-            and any(isinstance(arg, Decimal) for arg in args)
+            any(isinstance(arg, float) for arg in args) and
+            any(isinstance(arg, Decimal) for arg in args)
     ):
         return map(float, args)
     return args
@@ -105,6 +106,7 @@ class Sum(Accumulator):
 
     def get_value(self):
         return Literal(self.value, datatype=self.datatype)
+
 
 class Average(Accumulator):
 
@@ -193,7 +195,7 @@ class Sample(Accumulator):
     def update(self, row, aggregator):
         try:
             # set the value now
-            aggregator.bindings[self.var] =  _eval(self.expr, row)
+            aggregator.bindings[self.var] = _eval(self.expr, row)
             # and skip this accumulator for future rows
             del aggregator.accumulators[self.var]
         except NotBoundError:
@@ -202,6 +204,7 @@ class Sample(Accumulator):
     def get_value(self):
         # set None if no value was set
         return None
+
 
 class GroupConcat(Accumulator):
 

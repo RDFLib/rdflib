@@ -117,7 +117,7 @@ class URLInputSource(InputSource):
             self.content_type = self.content_type.split(";", 1)[0]
         self.setByteStream(file)
         # TODO: self.setEncoding(encoding)
-        self.response_info = file.info() # a mimetools.Message instance
+        self.response_info = file.info()  # a mimetools.Message instance
 
     def __repr__(self):
         return self.url
@@ -191,7 +191,7 @@ def create_input_source(source=None, publicID=None,
             input_source = URLInputSource(absolute_location, format)
         auto_close = True
         # publicID = publicID or absolute_location  # Further to fix
-                                                    # for issue 130
+        # for issue 130
 
     if file is not None:
         input_source = FileInputSource(file)

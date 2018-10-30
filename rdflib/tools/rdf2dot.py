@@ -130,5 +130,6 @@ language to stdout
 def main():
     rdflib.extras.cmdlineutils.main(rdf2dot, _help)
 
+
 if __name__ == '__main__':
     main()

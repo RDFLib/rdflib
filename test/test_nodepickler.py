@@ -15,10 +15,10 @@ cases = [
     '"',
     "'",
     '"\'"',
-    '\\', # len 1
-    '\\"', # len 2
-    '\\\\"', # len 3
-    '\\"\\', # len 3
+    '\\',  # len 1
+    '\\"',  # len 2
+    '\\\\"',  # len 3
+    '\\"\\',  # len 3
     '<a some="typical" html="content">here</a>',
 ]
 
@@ -46,7 +46,7 @@ class UtilTestCase(unittest.TestCase):
         dump = pickle.dumps(np)
         np2 = pickle.loads(dump)
         self.assertEqual(np._ids, np2._ids)
-        self.assertEqual(np._objects,  np2._objects)
+        self.assertEqual(np._objects, np2._objects)
 
 
 if __name__ == '__main__':

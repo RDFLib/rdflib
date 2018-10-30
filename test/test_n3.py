@@ -1,3 +1,5 @@
+from rdflib.graph import Graph, ConjunctiveGraph
+import unittest
 from rdflib.term import Literal, URIRef
 from rdflib.plugins.parsers.notation3 import BadSyntax
 
@@ -59,11 +61,6 @@ n3:context      a rdf:Property; rdfs:domain n3:statement;
 """
 
 
-import unittest
-
-from rdflib.graph import Graph, ConjunctiveGraph
-
-
 class TestN3Case(unittest.TestCase):
 
     def setUp(self):
@@ -71,7 +68,6 @@ class TestN3Case(unittest.TestCase):
 
     def tearDown(self):
         pass
-
 
     def testBaseCumulative(self):
         """
@@ -221,12 +217,14 @@ foo-bar:Ex foo-bar:name "Test" . """
 
         # this is issue https://github.com/RDFLib/rdflib/issues/312
         g1 = Graph()
-        g1.parse(data = ":a :b :c .", format='n3')
+        g1.parse(data=":a :b :c .", format='n3')
 
         g2 = Graph()
-        g2.parse(data = "@prefix : <#> . :a :b :c .", format='n3')
+        g2.parse(data="@prefix : <#> . :a :b :c .", format='n3')
 
-        assert set(g1) == set(g2), 'Document with declared empty prefix must match default #'
+        assert set(g1) == set(
+            g2), 'Document with declared empty prefix must match default #'
+
 
 if __name__ == '__main__':
     unittest.main()

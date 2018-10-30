@@ -214,6 +214,7 @@ class Infix:
     def __call__(self, value1, value2):
         return self.function(value1, value2)
 
+
 OWL_NS = Namespace("http://www.w3.org/2002/07/owl#")
 
 nsBinds = {
@@ -515,6 +516,7 @@ class AnnotatableTerms(Individual):
     """
     Terms in an OWL ontology with rdfs:label and rdfs:comment
     """
+
     def __init__(self,
                  identifier,
                  graph=None,
@@ -633,6 +635,7 @@ class AnnotatableTerms(Individual):
 
 class Ontology(AnnotatableTerms):
     """ The owl ontology metadata"""
+
     def __init__(self,
                  identifier=None, imports=None, comment=None, graph=None):
         super(Ontology, self).__init__(identifier, graph)
@@ -706,6 +709,7 @@ class ClassNamespaceFactory(Namespace):
             raise AttributeError
         else:
             return self.term(name)
+
 
 CLASS_RELATIONS = set(
     OWL_NS.resourceProperties
@@ -877,8 +881,8 @@ def CastClass(c, graph=None):
         else:
             for s, p, o in graph.triples_choices((classOrIdentifier(c),
                                                   [OWL_NS.intersectionOf,
-                                                 OWL_NS.unionOf,
-                                                 OWL_NS.oneOf],
+                                                   OWL_NS.unionOf,
+                                                   OWL_NS.oneOf],
                                                   None)):
                 if p == OWL_NS.oneOf:
                     return EnumeratedClass(classOrIdentifier(c), graph=graph)
@@ -919,6 +923,7 @@ class Class(AnnotatableTerms):
       description."
 
     """
+
     def _serialize(self, graph):
         for cl in self.subClassOf:
             CastClass(cl, self.graph).serialize(graph)
@@ -1102,7 +1107,7 @@ class Class(AnnotatableTerms):
             return
         for sc in other:
             self.graph.add((self.identifier,
-                           OWL_NS.equivalentClass, classOrIdentifier(sc)))
+                            OWL_NS.equivalentClass, classOrIdentifier(sc)))
 
     @TermDeletionHelper(OWL_NS.equivalentClass)
     def _del_equivalentClass(self):
@@ -1259,8 +1264,8 @@ class Class(AnnotatableTerms):
             else:
                 scJoin = ', '
             necStatements = [
-                isinstance(s, Class) and isinstance(self.identifier, BNode) and
-                repr(CastClass(s, self.graph)) or
+                isinstance(s, Class) and isinstance(self.identifier, BNode)
+                and repr(CastClass(s, self.graph)) or
                 # repr(BooleanClass(classOrIdentifier(s),
                 #                  operator=None,
                 #                  graph=self.graph)) or
@@ -1273,8 +1278,8 @@ class Class(AnnotatableTerms):
                 exprs[-1] = "\n    " + exprs[-1]
         if ec:
             nec_SuffStatements = [
-                isinstance(s, str) and s or
-                manchesterSyntax(classOrIdentifier(s), self.graph) for s in ec]
+                isinstance(s, str) and s
+                or manchesterSyntax(classOrIdentifier(s), self.graph) for s in ec]
             if nec_SuffStatements:
                 klassKind = "A Defined Class %s" % label
             exprs.append("EquivalentTo: %s" % ', '.join(nec_SuffStatements))
@@ -1294,9 +1299,9 @@ class Class(AnnotatableTerms):
         else:
             klassDescr = full and (descr and "\n    %s" %
                                    descr[0] or '') or '' + ' . '.join(exprs)
-        return (isinstance(self.identifier, BNode)
-                and "Some Class "
-                or "Class: %s " % self.qname) + klassDescr
+        return (isinstance(self.identifier, BNode) and
+                "Some Class " or
+                "Class: %s " % self.qname) + klassDescr
 
 
 class OWLRDFListProxy(object):
@@ -1438,6 +1443,7 @@ class EnumeratedClass(OWLRDFListProxy, Class):
                 graph.add((s, p, o))
         self._serialize(graph)
 
+
 BooleanPredicates = [OWL_NS.intersectionOf, OWL_NS.unionOf]
 
 
@@ -1461,6 +1467,7 @@ class BooleanClassExtentHelper:
     ...     print(c) #doctest: +SKIP
     ( ex:Fire OR ex:Water )
     """
+
     def __init__(self, operator):
         self.operator = operator
 
@@ -1501,8 +1508,8 @@ class BooleanClass(OWLRDFListProxy, Class):
             props = []
             for s, p, o in graph.triples_choices((identifier,
                                                   [OWL_NS.intersectionOf,
-                                                 OWL_NS.unionOf],
-                                                 None)):
+                                                   OWL_NS.unionOf],
+                                                  None)):
                 props.append(p)
                 operator = p
             assert len(props) == 1, repr(props)
@@ -1629,7 +1636,7 @@ class Restriction(Class):
             OWL_NS.onProperty,
                 propertyOrIdentifier(onProperty)) not in graph:
             graph.add((self.identifier, OWL_NS.onProperty,
-                      propertyOrIdentifier(onProperty)))
+                       propertyOrIdentifier(onProperty)))
         self.onProperty = onProperty
         restrTypes = [
             (allValuesFrom, OWL_NS.allValuesFrom),
@@ -1658,7 +1665,6 @@ class Restriction(Class):
         if (self.identifier, RDF.type, OWL_NS.Restriction) not in self.graph:
             self.graph.add((self.identifier, RDF.type, OWL_NS.Restriction))
             self.graph.remove((self.identifier, RDF.type, OWL_NS.Class))
-
 
     def serialize(self, graph):
         """
@@ -1880,6 +1886,7 @@ class Restriction(Class):
 
 ### Infix Operators ###
 
+
 some = Infix(lambda prop, _class: Restriction(prop, graph=_class.graph,
                                               someValuesFrom=_class))
 only = Infix(lambda prop, _class: Restriction(prop, graph=_class.graph,
@@ -1989,8 +1996,8 @@ class Property(AnnotatableTerms):
         rt = []
         if OWL_NS.ObjectProperty in self.type:
             rt.append('ObjectProperty( %s annotation(%s)'
-                      % (self.qname, first(self.comment)
-                          and first(self.comment) or ''))
+                      % (self.qname, first(self.comment) and
+                          first(self.comment) or ''))
             if first(self.inverseOf):
                 twoLinkInverse = first(first(self.inverseOf).inverseOf)
                 if twoLinkInverse \
@@ -2000,9 +2007,9 @@ class Property(AnnotatableTerms):
                     inverseRepr = repr(first(self.inverseOf))
                 rt.append("  inverseOf( %s )%s" % (
                     inverseRepr,
-                    OWL_NS.SymmetricProperty in self.type
-                    and ' Symmetric'
-                    or ''))
+                    OWL_NS.SymmetricProperty in self.type and
+                    ' Symmetric' or
+                    ''))
             for s, p, roleType in self.graph.triples_choices(
                 (self.identifier,
                  RDF.type,
@@ -2012,9 +2019,9 @@ class Property(AnnotatableTerms):
                 rt.append(str(roleType.split(OWL_NS)[-1]))
         else:
             rt.append('DatatypeProperty( %s %s'
-                      % (self.qname, first(self.comment)
-                         and first(self.comment)
-                         or ''))
+                      % (self.qname, first(self.comment) and
+                         first(self.comment) or
+                         ''))
             for s, p, roleType in self.graph.triples((
                     self.identifier, RDF.type, OWL_NS.FunctionalProperty)):
                 rt.append('   Functional')
@@ -2028,7 +2035,7 @@ class Property(AnnotatableTerms):
             elif first(g.triples_choices((
                                          normalizedName,
                                          [OWL_NS.unionOf,
-                       OWL_NS.intersectionOf], None))):
+                                          OWL_NS.intersectionOf], None))):
                 return repr(term)
             else:
                 return str(term.qname)
@@ -2148,6 +2155,7 @@ def CommonNSBindings(graph, additionalNS={}):
 def test():
     import doctest
     doctest.testmod()
+
 
 if __name__ == '__main__':
     test()

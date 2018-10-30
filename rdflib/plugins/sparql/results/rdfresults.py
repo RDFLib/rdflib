@@ -21,7 +21,7 @@ class RDFResult(Result):
             graph = source
 
         rs = graph.value(predicate=RDF.type, object=RS.ResultSet)
-                         # there better be only one :)
+        # there better be only one :)
 
         if rs is None:
             type_ = 'CONSTRUCT'

@@ -60,6 +60,7 @@ class Sink(object):
         self.length += 1
         print(s, p, o)
 
+
 quot = {'t': u'\t', 'n': u'\n', 'r': u'\r', '"': u'"', '\\':
         u'\\'}
 r_safe = re.compile(r'([\x20\x21\x23-\x5B\x5D-\x7E]+)')
@@ -71,7 +72,7 @@ def unquote(s):
     """Unquote an N-Triples string."""
     if not validate:
 
-        if isinstance(s, text_type): # nquads
+        if isinstance(s, text_type):  # nquads
             s = decodeUnicodeEscape(s)
         else:
             s = s.decode('unicode-escape')
@@ -105,6 +106,7 @@ def unquote(s):
             else:
                 raise ParseError("Illegal literal character: %r" % s[0])
         return u''.join(result)
+
 
 r_hibyte = re.compile(r'([\x80-\xFF])')
 

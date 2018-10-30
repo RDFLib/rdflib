@@ -139,6 +139,7 @@ class XMLSerializer(Serializer):
                 write("%s<%s rdf:resource=%s/>\n" %
                       (indent, qname, quoteattr(self.relativize(object))))
 
+
 XMLLANG = "http://www.w3.org/XML/1998/namespacelang"
 XMLBASE = "http://www.w3.org/XML/1998/namespacebase"
 OWL_NS = Namespace('http://www.w3.org/2002/07/owl#')
@@ -273,8 +274,8 @@ class PrettyXMLSerializer(Serializer):
             if object.language:
                 writer.attribute(XMLLANG, object.language)
 
-            if (object.datatype == RDF.XMLLiteral and
-                    isinstance(object.value, xml.dom.minidom.Document)):
+            if (object.datatype == RDF.XMLLiteral
+                    and isinstance(object.value, xml.dom.minidom.Document)):
                 writer.attribute(RDF.parseType, "Literal")
                 writer.text(u"")
                 writer.stream.write(object)

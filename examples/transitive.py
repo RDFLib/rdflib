@@ -45,7 +45,7 @@ transtive closures of user-defined functions.
 
 """
 
-if __name__=='__main__':
+if __name__ == '__main__':
     from rdflib import ConjunctiveGraph, URIRef
 
     person = URIRef('ex:person')

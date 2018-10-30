@@ -90,6 +90,7 @@ class TSVResultParser(ResultParser):
         else:
             return t
 
+
 if __name__ == '__main__':
     import sys
     r = Result.parse(file(sys.argv[1]), format='tsv')

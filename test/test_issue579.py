@@ -3,6 +3,7 @@
 from rdflib import Graph, URIRef, Literal, Namespace
 from rdflib.namespace import FOAF, RDF
 
+
 def test_issue579():
     g = Graph()
     g.bind('foaf', FOAF)

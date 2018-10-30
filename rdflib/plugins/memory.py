@@ -2,6 +2,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import random
+
 from rdflib.term import BNode
 from rdflib.store import Store, NO_STORE, VALID_STORE
 from six import iteritems
@@ -21,6 +23,7 @@ class Memory(Store):
 
     Authors: Michel Pelletier, Daniel Krech, Stefan Niederhauser
     """
+
     def __init__(self, configuration=None, identifier=None):
         super(Memory, self).__init__(configuration)
         self.identifier = identifier
@@ -147,7 +150,7 @@ class Memory(Store):
                         yield (s, p, o), self.__contexts()
 
     def __len__(self, context=None):
-        #@@ optimize
+        # @@ optimize
         i = 0
         for triple in self.triples((None, None, None)):
             i += 1
@@ -357,7 +360,7 @@ class IOMemory(Store):
                 if self.__tripleHasContext(enctriple, cid))
 
     def contexts(self, triple=None):
-        if triple is None or triple is (None,None,None):
+        if triple is None or triple is (None, None, None):
             return (context for context in self.__all_contexts)
 
         enctriple = self.__encodeTriple(triple)
@@ -383,13 +386,11 @@ class IOMemory(Store):
         if not self.graph_aware:
             Store.remove_graph(self, graph)
         else:
-            self.remove((None,None,None), graph)
+            self.remove((None, None, None), graph)
             try:
                 self.__all_contexts.remove(graph)
             except KeyError:
-                pass # we didn't know this graph, no problem
-
-
+                pass  # we didn't know this graph, no problem
 
     # internal utility methods below
 
@@ -500,10 +501,8 @@ class IOMemory(Store):
             yield
 
 
-import random
-
-
 def randid(randint=random.randint, choice=random.choice, signs=(-1, 1)):
     return choice(signs) * randint(1, 2000000000)
+
 
 del random

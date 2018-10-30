@@ -41,6 +41,7 @@ target2xml = """\
   <ns1:Item rdf:about="http://www.example.org/example/foo/a"/>
 </rdf:RDF>"""
 
+
 class CollectionTest(TestCase):
 
     def test_collection_render(self):
