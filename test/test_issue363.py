@@ -1,5 +1,4 @@
 import rdflib
-from nose import SkipTest
 from nose.tools import assert_raises
 
 data = '''<?xml version="1.0" encoding="utf-8"?>

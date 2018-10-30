@@ -1,5 +1,4 @@
 import rdflib
-from nose.exc import SkipTest
 import unittest
 
 

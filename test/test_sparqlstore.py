@@ -2,11 +2,6 @@ import os
 import unittest
 from nose import SkipTest
 
-try:
-    import SPARQLWrapper
-except ImportError:
-    raise SkipTest("SPARQLWrapper not installed")
-
 if os.getenv("TRAVIS"):
     raise SkipTest("Doesn't work in travis")
 
