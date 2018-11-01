@@ -38,10 +38,9 @@ def _node_to_sparql(node):
 
 
 class SPARQLStore(SPARQLConnector, Store):
-    """
-    An RDFLib store around a SPARQL endpoint
+    """An RDFLib store around a SPARQL endpoint
 
-    This is in theory context-aware and should work as expected
+    This is context-aware and should work as expected
     when a context is specified.
 
     For ConjunctiveGraphs, reading is done from the "default graph". Exactly
@@ -51,7 +50,7 @@ class SPARQLStore(SPARQLConnector, Store):
     motivated by the SPARQL 1.1.
 
     Fuseki/TDB has a flag for specifying that the default graph
-    is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config).
+    is the union of all graphs (``tdb:unionDefaultGraph`` in the Fuseki config).
 
     .. warning:: By default the SPARQL Store does not support blank-nodes!
 
@@ -61,9 +60,9 @@ class SPARQLStore(SPARQLConnector, Store):
 
                  See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes
 
-    You can make use of such extensions through the node_to_sparql and
-    node_from_result arguments. For example if you want to transform
-    BNode('0001') into "<bnode:b0001>", you can use a function like this:
+    You can make use of such extensions through the ``node_to_sparql``
+    argument. For example if you want to transform BNode('0001') into
+    "<bnode:b0001>", you can use a function like this:
 
     >>> def my_bnode_ext(node):
     ...    if isinstance(node, BNode):
@@ -71,6 +70,22 @@ class SPARQLStore(SPARQLConnector, Store):
     ...    return _node_to_sparql(node)
     >>> store = SPARQLStore('http://dbpedia.org/sparql',
     ...                     node_to_sparql=my_bnode_ext)
+
+    You can request a particular result serialization with the
+    ``returnFormat`` parameter. This is a string that must have a
+    matching plugin registered. Built in is support for ``xml``,
+    ``json``, ``csv``, ``tsv`` and ``application/rdf+xml``.
+
+    The underlying SPARQLConnector builds in the requests library.
+    Any extra kwargs passed to the SPARQLStore connector are passed to
+    requests when doing HTTP calls. I.e. you have full control of
+    cookies/auth/headers.
+
+    Form example:
+
+    >>> store = SPARQLStore('...my endpoint ...', auth=('user','pass'))
+
+    will use HTTP basic auth.
 
     """
     formula_aware = False
