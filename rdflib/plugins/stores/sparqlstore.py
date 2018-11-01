@@ -14,7 +14,7 @@ ORDERBY = 'ORDER BY'
 import re
 import collections
 
-from .sparqlwrapper import SPARQLWrapper
+from .sparqlconnector import SPARQLConnector
 
 from rdflib.plugins.stores.regexmatching import NATIVE_REGEX
 
@@ -37,7 +37,7 @@ def _node_to_sparql(node):
     return node.n3()
 
 
-class SPARQLStore(SPARQLWrapper, Store):
+class SPARQLStore(SPARQLConnector, Store):
     """
     An RDFLib store around a SPARQL endpoint
 
@@ -83,11 +83,11 @@ class SPARQLStore(SPARQLWrapper, Store):
                  sparql11=True, context_aware=True,
                  node_to_sparql=_node_to_sparql,
                  returnFormat='xml',
-                 **sparqlwrapper_kwargs):
+                 **sparqlconnector_kwargs):
         """
         """
         super(SPARQLStore, self).__init__(
-            endpoint, returnFormat=returnFormat, **sparqlwrapper_kwargs)
+            endpoint, returnFormat=returnFormat, **sparqlconnector_kwargs)
 
         self.node_to_sparql = node_to_sparql
         self.nsBindings = {}
@@ -353,7 +353,7 @@ class SPARQLStore(SPARQLWrapper, Store):
             return graph.identifier != DATASET_DEFAULT_GRAPH_ID
 
     def close(self, commit_pending_transaction=None):
-        SPARQLWrapper.close(self)
+        SPARQLConnector.close(self)
 
 
 class SPARQLUpdateStore(SPARQLStore):
@@ -588,7 +588,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
         self._updates += 1
 
-        SPARQLWrapper.update(self, update)
+        SPARQLConnector.update(self, update)
 
     def update(self, query,
                initNs={},
