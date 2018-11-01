@@ -14,9 +14,13 @@ log = logging.getLogger(__name__)
 class SPARQLConnectorException(Exception):
     pass
 
-
+# TODO: Pull in these from the result implementation plugins?
 _response_mime_types = {
     'xml': 'application/sparql-results+xml, application/rdf+xml',
+    'json': 'application/sparql-results+json',
+    'csv': 'text/csv',
+    'tsv': 'text/tab-separated-values',
+    'application/rdf+xml': 'application/rdf+xml',
 }
 
 
