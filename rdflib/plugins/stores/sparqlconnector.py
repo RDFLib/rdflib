@@ -11,16 +11,20 @@ from rdflib.query import Result
 log = logging.getLogger(__name__)
 
 
-class SPARQLWrapperException(Exception):
+class SPARQLConnectorException(Exception):
     pass
 
-
+# TODO: Pull in these from the result implementation plugins?
 _response_mime_types = {
     'xml': 'application/sparql-results+xml, application/rdf+xml',
+    'json': 'application/sparql-results+json',
+    'csv': 'text/csv',
+    'tsv': 'text/tab-separated-values',
+    'application/rdf+xml': 'application/rdf+xml',
 }
 
 
-class SPARQLWrapper(object):
+class SPARQLConnector(object):
 
     """
     this class deals with nitty gritty details of talking to a SPARQL server
@@ -56,14 +60,14 @@ class SPARQLWrapper(object):
     @method.setter
     def method(self, method):
         if method not in ('GET', 'POST'):
-            raise SPARQLWrapperException('Method must be "GET" or "POST"')
+            raise SPARQLConnectorException('Method must be "GET" or "POST"')
 
         self._method = method
 
     def query(self, query, default_graph=None):
 
         if not self.query_endpoint:
-            raise SPARQLWrapperException("Query endpoint not set!")
+            raise SPARQLConnectorException("Query endpoint not set!")
 
         params = {'query': query}
         if default_graph:
@@ -85,7 +89,7 @@ class SPARQLWrapper(object):
         elif self.method == 'POST':
             args['data'] = params
         else:
-            raise SPARQLWrapperException("Unknown method %s" % self.method)
+            raise SPARQLConnectorException("Unknown method %s" % self.method)
 
         res = self.session.request(self.method, **args)
 
@@ -95,7 +99,7 @@ class SPARQLWrapper(object):
 
     def update(self, update, default_graph=None):
         if not self.update_endpoint:
-            raise SPARQLWrapperException("Query endpoint not set!")
+            raise SPARQLConnectorException("Query endpoint not set!")
 
         params = {}
 
