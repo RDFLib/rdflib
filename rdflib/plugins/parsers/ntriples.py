@@ -37,7 +37,7 @@ r_wspace = re.compile(r'[ \t]*')
 r_wspaces = re.compile(r'[ \t]+')
 r_tail = re.compile(r'[ \t]*\.[ \t]*(#.*)?')
 r_uriref = re.compile(uriref)
-r_nodeid = re.compile(r'_:([A-Za-z0-9]*)')
+r_nodeid = re.compile(r'_:[_0-9a-zA-Z](([_0-9a-zA-Z-]?)|([_0-9a-zA-Z.-]*)([_0-9a-zA-Z-]))')
 r_literal = re.compile(literal + litinfo)
 
 bufsiz = 2048
