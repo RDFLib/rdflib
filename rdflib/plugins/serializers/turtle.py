@@ -77,7 +77,7 @@ class RecursiveSerializer(Serializer):
             members = list(self.store.subjects(RDF.type, classURI))
             members.sort()
 
-            subjects = members
+            subjects.extend(members)
             for member in members:
                 self._topLevels[member] = True
                 seen[member] = True
