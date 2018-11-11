@@ -33,7 +33,7 @@ g=rdflib.Graph()
 g.load('http://dbpedia.org/resource/Semantic_Web')
 
 for s,p,o in g:
-    print s,p,o
+    print (s),(p),(o)
 ```
 
 The components of the triples are URIs (resources) or Literals
