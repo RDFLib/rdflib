@@ -98,7 +98,7 @@ class URLInputSource(InputSource):
         elif format == 'n3':
             myheaders['Accept'] = 'text/n3, */*;q=0.1'
         elif format == 'turtle':
-            myheaders['Accept'] = 'text/turtle, */*;q=0.1'
+            myheaders['Accept'] = 'text/turtle,application/x-turtle, */*;q=0.1'
         elif format == 'nt':
             myheaders['Accept'] = 'text/plain, */*;q=0.1'
         elif format == 'json-ld':
