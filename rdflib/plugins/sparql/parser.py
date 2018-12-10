@@ -224,7 +224,7 @@ PNAME_LN = PNAME_NS + Param('localname', PN_LOCAL.leaveWhitespace())
 # [142] BLANK_NODE_LABEL ::= '_:' ( PN_CHARS_U | [0-9] ) ((PN_CHARS|'.')* PN_CHARS)?
 BLANK_NODE_LABEL = Regex(u'_:[0-9%s](?:[\\.%s]*[%s])?' % (
     PN_CHARS_U_re, PN_CHARS_re, PN_CHARS_re), flags=re.U)
-BLANK_NODE_LABEL.setParseAction(lambda x: rdflib.BNode(x[0]))
+BLANK_NODE_LABEL.setParseAction(lambda x: rdflib.BNode(x[0][2:]))
 
 
 # [166] VARNAME ::= ( PN_CHARS_U | [0-9] ) ( PN_CHARS_U | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040] )*
