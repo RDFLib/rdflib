@@ -1,4 +1,4 @@
-from rdflib import Graph, URIRef, Literal
+from rdflib import Graph, URIRef, Literal, BNode
 from rdflib.plugins.sparql import prepareQuery
 from rdflib.compare import isomorphic
 
@@ -77,6 +77,35 @@ def test_complex_sparql_construct():
       <urn:id> [ a <urn:Identifier>; <urn:has-value> ?id].
     }'''
     g.query(q)
+
+
+def test_sparql_update_with_bnode():
+    """
+    Test if the blank node is inserted correctly.
+    """
+    graph = Graph()
+    graph.update(
+        "INSERT DATA { _:blankA <urn:type> <urn:Blank> }")
+    for t in graph.triples((None, None, None)):
+        assert isinstance(t[0], BNode)
+        eq_(t[1].n3(), "<urn:type>")
+        eq_(t[2].n3(), "<urn:Blank>")
+
+
+def test_sparql_update_with_bnode_serialize_parse():
+    """
+    Test if the blank node is inserted correctly, can be serialized and parsed.
+    """
+    graph = Graph()
+    graph.update(
+        "INSERT DATA { _:blankA <urn:type> <urn:Blank> }")
+    string = graph.serialize(format='ntriples').decode('utf-8')
+    raised = False
+    try:
+        Graph().parse(data=string, format="ntriples")
+    except Exception as e:
+        raised = True
+    assert not raised
 
 
 if __name__ == '__main__':
