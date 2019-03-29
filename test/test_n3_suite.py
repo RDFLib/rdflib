@@ -23,8 +23,7 @@ def _get_test_files_formats():
 
 def all_n3_files():
     skiptests = [
-        'test/n3/example-lots_of_graphs.n3',  # the issue here seems to be with QuotedGraph, should this work?
-        # 'test/n3/n3-writer-test-30.n3', # this reveals the broken xml qname handling
+        'test/n3/example-lots_of_graphs.n3',  # only n3 can serialize QuotedGraph, no point in testing roundtrip
     ]
     for fpath, fmt in _get_test_files_formats():
         if fpath in skiptests:
