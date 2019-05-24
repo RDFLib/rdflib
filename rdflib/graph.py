@@ -893,17 +893,19 @@ class Graph(Node):
     def compute_qname(self, uri, generate=True):
         return self.namespace_manager.compute_qname(uri, generate)
 
-    def bind(self, prefix, namespace, override=True):
+    def bind(self, prefix, namespace, override=True, replace=False):
         """Bind prefix to namespace
 
         If override is True will bind namespace to given prefix even
         if namespace was already bound to a different prefix.
 
+        if replace, replace any existing prefix with the new namespace
+
         for example:  graph.bind('foaf', 'http://xmlns.com/foaf/0.1/')
 
         """
         return self.namespace_manager.bind(
-            prefix, namespace, override=override)
+            prefix, namespace, override=override, replace=replace)
 
     def namespaces(self):
         """Generator over all the prefix, namespace tuples"""
