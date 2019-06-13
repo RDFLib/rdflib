@@ -193,6 +193,14 @@ class ClosedNamespace(object):
     def __repr__(self):
         return "rdf.namespace.ClosedNamespace(%r)" % text_type(self.uri)
 
+    def _ipython_key_completions_(self):
+        # Enables IPython tab completion for getitem, eg. RDF['Pro\t
+        return [key for key in self.__uris]
+
+    def __dir__(self):
+        # Enables IPython tab completion when using dot notation
+        return list(super(ClosedNamespace, self).__dir__()) + self._ipython_key_completions_()
+
 
 class _RDFNamespace(ClosedNamespace):
     """
