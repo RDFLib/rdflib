@@ -200,7 +200,15 @@ class Result(object):
     @staticmethod
     def parse(source=None, format=None, content_type=None, **kwargs):
         from rdflib import plugin
-        parser = plugin.get(format or content_type or 'xml', ResultParser)()
+
+        if format:
+            plugin_key = format
+        elif content_type:
+            plugin_key = content_type.split(";", 1)[0]
+        else:
+            plugin_key = 'xml'
+
+        parser = plugin.get(plugin_key, ResultParser)()
 
         return parser.parse(source, content_type=content_type, **kwargs)
 
