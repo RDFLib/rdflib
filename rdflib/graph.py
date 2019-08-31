@@ -273,7 +273,8 @@ from six.moves.urllib.parse import urlparse
 __all__ = [
     'Graph', 'ConjunctiveGraph', 'QuotedGraph', 'Seq',
     'ModificationException', 'Dataset',
-    'UnSupportedAggregateOperation', 'ReadOnlyGraphAggregate']
+    'UnSupportedAggregateOperation', 'ReadOnlyGraphAggregate',
+    'BatchAddGraph']
 
 
 class Graph(Node):
@@ -1928,6 +1929,59 @@ def _assertnode(*terms):
         assert isinstance(t, Node), \
             'Term %s must be an rdflib term' % (t,)
     return True
+
+
+class BatchAddGraph(object):
+    '''
+    Wrapper around graph that turns calls to :meth:`add` into calls to :meth:`~rdflib.graph.Graph.addN`
+
+    :Parameters:
+
+      - `graph`: The graph to wrap
+      - `batchsize`: The maximum number of triples to buffer before passing to
+        `graph`'s `addN`
+
+    :ivar graph: The wrapped graph
+    :ivar count: The number of triples buffered since initaialization or the last call
+                 to :meth:`reset`
+    :ivar batch: The current buffer of triples
+
+    '''
+
+    def __init__(self, graph, batchsize=1000):
+        if not batchsize or batchsize < 0:
+            raise ValueError("batchsize must be a positive number")
+        self.graph = graph
+        self.__graph_tuple = (graph,)
+        self.__batchsize = batchsize
+        self.reset()
+
+    def reset(self):
+        '''
+        Manually clear the buffered triples and reset the count to zero
+        '''
+        self.batch = []
+        self.count = 0
+
+    def add(self, triple):
+        '''
+        Add a triple to the buffer
+
+        :param triple: The triple to add
+        '''
+        if len(self.batch) >= self.__batchsize == 0:
+            self.graph.addN(self.batch)
+            self.batch = []
+        self.count += 1
+        self.batch.append(triple + self.__graph_tuple)
+
+    def __enter__(self):
+        self.reset()
+        return self
+
+    def __exit__(self, *exc):
+        if exc[0] is None:
+            self.graph.addN(self.batch)
 
 
 def test():
