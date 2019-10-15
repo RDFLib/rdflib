@@ -31,7 +31,7 @@ class GraphTestCase(unittest.TestCase):
         self.assertEqual(1, len(qres))
 
     def testHavingPrimaryExpressionVarNeqIri(self):
-        query = ("SELECT ?p ?o"
+        query = ("SELECT ?p ?o "
                  "WHERE { ?s ?p ?o } "
                  "GROUP BY ?p HAVING (?p != <urn:foo> )")
         qres = self.g.query(query)
