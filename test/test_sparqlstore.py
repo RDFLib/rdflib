@@ -3,9 +3,8 @@ from six.moves.urllib.request import urlopen
 import os
 import unittest
 from nose import SkipTest
+from requests import HTTPError
 
-if os.getenv("TRAVIS"):
-    raise SkipTest("Doesn't work in travis")
 
 try:
     assert len(urlopen("http://dbpedia.org/sparql").read()) > 0
@@ -51,7 +50,7 @@ class SPARQLStoreDBPediaTestCase(unittest.TestCase):
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
         """
         self.assertRaises(
-            SPARQLWrapper.Wrapper.QueryBadFormed,
+            HTTPError,
             self.graph.query,
             query)
 
