@@ -6,7 +6,7 @@ from nose import SkipTest
 import unittest
 import re
 
-from rdflib import ConjunctiveGraph, URIRef, Literal
+from rdflib import ConjunctiveGraph, URIRef, Literal, BNode, Graph
 from six import text_type
 from six.moves.urllib.request import urlopen
 
@@ -164,6 +164,27 @@ class TestSparql11(unittest.TestCase):
             set([(michel, likes, pizza)]),
             'only michel likes pizza'
         )
+
+    def testUpdateWithBlankNode(self):
+        self.graph.update(
+            "INSERT DATA { GRAPH <urn:graph> { _:blankA <urn:type> <urn:Blank> } }")
+        g = self.graph.get_context(graphuri)
+        for t in g.triples((None, None, None)):
+            self.assertTrue(isinstance(t[0], BNode))
+            self.assertEqual(t[1].n3(), "<urn:type>")
+            self.assertEqual(t[2].n3(), "<urn:Blank>")
+
+    def testUpdateWithBlankNodeSerializeAndParse(self):
+        self.graph.update(
+            "INSERT DATA { GRAPH <urn:graph> { _:blankA <urn:type> <urn:Blank> } }")
+        g = self.graph.get_context(graphuri)
+        string = g.serialize(format='ntriples').decode('utf-8')
+        raised = False
+        try:
+            Graph().parse(data=string, format="ntriples")
+        except Exception as e:
+            raised = True
+        self.assertFalse(raised, 'Exception raised when parsing: ' + string)
 
     def testMultipleUpdateWithInitBindings(self):
         self.graph.update(
