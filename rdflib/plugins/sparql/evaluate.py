@@ -25,7 +25,7 @@ from six import iteritems, itervalues
 from rdflib.plugins.sparql import CUSTOM_EVALS
 from rdflib.plugins.sparql.parserutils import value
 from rdflib.plugins.sparql.sparql import (
-    QueryContext, AlreadyBound, FrozenBindings, SPARQLError)
+    QueryContext, AlreadyBound, FrozenBindings, Bindings, SPARQLError)
 from rdflib.plugins.sparql.evalutils import (
     _filter, _eval, _join, _diff, _minus, _fillTemplate, _ebv, _val)
 
@@ -287,13 +287,25 @@ def evalServiceQuery(ctx, part):
             res["bindings"] = response.json()['results']['bindings']
 
             res["type_"] = "SELECT"
-            res["vars_"] = response.json()['head']['vars']
+            variables = res["vars_"] = response.json()['head']['vars']
             # or just return the bindings?
             res = response.json()['results']['bindings']
 
-    # The challenge, as I see it now, is to understand what to return from
-    # this function to ensure the results are availabe in the outer SELECT
-    return res
+            for r in res:
+                res_dict = {}
+                for var in variables:
+                    if var in r:
+                        if r[var]['type'] == "uri":
+                            res_dict[Variable(var)] = URIRef(r[var]["value"])
+                        elif r[var]['type'] == "literal":
+                            if r[var]['xml:lang'] is None:
+                                res_dict[Variable(var)] = Literal(r[var]["value"])
+                            else:
+                                res_dict[Variable(var)] = Literal(r[var]["value"], r[var]["xml:lang"])
+                
+                yield FrozenBindings(ctx, res_dict)
+
+
 
 def evalGroup(ctx, group):
     """
