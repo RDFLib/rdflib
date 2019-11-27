@@ -1,4 +1,4 @@
-from rdflib import Graph, URIRef, Literal
+from rdflib import Graph, URIRef, Literal, Variable
 from rdflib.plugins.sparql import prepareQuery
 from rdflib.compare import isomorphic
 
@@ -15,11 +15,12 @@ def test_service():
         <http://purl.org/linguistics/gold/hypernym> ?dbpHypernym ;
         <http://www.w3.org/2000/01/rdf-schema#comment> ?dbpComment .
 
-    } } }'''
+    } }  } limit 2'''
     results = g.query(q)
-    # FILTER(LANGMATCHES(LANG(?dbpComment), "en"))
+    assert len(results) == 2
 
-    self.assertTrue(False)
+    for r in results:
+        assert len(r) == 2
 
 if __name__ == '__main__':
     # import nose

@@ -280,8 +280,15 @@ def evalServiceQuery(ctx, part):
     if match:
         service_url = match.group(1)
         service_query = match.group(2)
-        response = requests.post(service_url, data={'query': service_query,
-                                               'output': 'json'})
+        query_settings = {'query': service_query,
+                          'output': 'json',
+                          'accept' : 'application/sparql-results+json',
+                          'user-agent': 'rdflibForAnUser'}
+        # GET is easier to cache so prefer that if the query is not to long
+        if len(service_query) < 600:
+            response = requests.get(service_url, query_settings)
+        else:
+            response = requests.post(service_url, query_settings)
         if response.status_code == 200:
             # build a dict, like in Select
             res["bindings"] = response.json()['results']['bindings']
@@ -294,17 +301,19 @@ def evalServiceQuery(ctx, part):
             for r in res:
                 res_dict = {}
                 for var in variables:
-                    if var in r:
+                    if var in r and r[var]:
                         if r[var]['type'] == "uri":
                             res_dict[Variable(var)] = URIRef(r[var]["value"])
-                        elif r[var]['type'] == "literal":
-                            if r[var]['xml:lang'] is None:
-                                res_dict[Variable(var)] = Literal(r[var]["value"])
-                            else:
-                                res_dict[Variable(var)] = Literal(r[var]["value"], r[var]["xml:lang"])
-                
-                yield FrozenBindings(ctx, res_dict)
+                        elif r[var]['type'] == "bnode":
+                            res_dict[Variable(var)] = BNode(r[var]["value"])
+                        elif r[var]['type'] == "literal" and 'datatype' in r[var]:
+                            res_dict[Variable(var)] = Literal(r[var]["value"], datatype=r[var]['datatype'])
+                        elif r[var]['type'] == "literal" and 'xml:lang' in r[var]:
+                            res_dict[Variable(var)] = Literal(r[var]["value"], lang=r[var]['xml:lang'])
 
+                yield FrozenBindings(ctx, res_dict)
+        else:
+            raise Exception("Service: %s responded with code: %s", service_url, response.status_code);
 
 
 def evalGroup(ctx, group):
