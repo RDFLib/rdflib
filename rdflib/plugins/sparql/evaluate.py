@@ -19,6 +19,7 @@ import itertools
 import re
 import requests
 
+
 from rdflib import Variable, Graph, BNode, URIRef, Literal
 from six import iteritems, itervalues
 
@@ -279,16 +280,17 @@ def evalServiceQuery(ctx, part):
 
     if match:
         service_url = match.group(1)
-        service_query = match.group(2)
+        service_query = _buildQueryStringForServiceCall(ctx, match)
+
         query_settings = {'query': service_query,
-                          'output': 'json',
-                          'accept' : 'application/sparql-results+json',
+                          'output': 'json'}
+        headers = {'accept' : 'application/sparql-results+json',
                           'user-agent': 'rdflibForAnUser'}
         # GET is easier to cache so prefer that if the query is not to long
         if len(service_query) < 600:
-            response = requests.get(service_url, query_settings)
+            response = requests.get(service_url, params=query_settings, headers=headers)
         else:
-            response = requests.post(service_url, query_settings)
+            response = requests.post(service_url, params=query_settings, headers=headers)
         if response.status_code == 200:
             # build a dict, like in Select
             res["bindings"] = response.json()['results']['bindings']
@@ -299,21 +301,44 @@ def evalServiceQuery(ctx, part):
             res = response.json()['results']['bindings']
 
             for r in res:
-                res_dict = {}
-                for var in variables:
-                    if var in r and r[var]:
-                        if r[var]['type'] == "uri":
-                            res_dict[Variable(var)] = URIRef(r[var]["value"])
-                        elif r[var]['type'] == "bnode":
-                            res_dict[Variable(var)] = BNode(r[var]["value"])
-                        elif r[var]['type'] == "literal" and 'datatype' in r[var]:
-                            res_dict[Variable(var)] = Literal(r[var]["value"], datatype=r[var]['datatype'])
-                        elif r[var]['type'] == "literal" and 'xml:lang' in r[var]:
-                            res_dict[Variable(var)] = Literal(r[var]["value"], lang=r[var]['xml:lang'])
+                yield from _yieldBindingsFromServiceCallResult(ctx, r, variables)
+            else:
+                raise Exception("Service: %s responded with code: %s", service_url, response.status_code);
 
-                yield FrozenBindings(ctx, res_dict)
-        else:
-            raise Exception("Service: %s responded with code: %s", service_url, response.status_code);
+"""Build a query string to be used by the service call. 
+It is supposed to pass in the existing bound solutions."""
+#TODO fix so that we run for all solutions not just the first one
+def _buildQueryStringForServiceCall(ctx, match):
+
+    service_query = match.group(2)
+    sol = ctx.solution();
+    if len(sol) > 0:
+        service_query = service_query + 'VALUES ('
+        for v in sol:
+            service_query = service_query + '?' + str(v) + ' '
+
+        service_query = service_query + ') {'
+        service_query = service_query + '('
+        for v in sol:
+            service_query = service_query + ctx.get(v).n3() + ' '
+        service_query = service_query + ')'
+        service_query = service_query + '}'
+    return service_query
+
+
+def _yieldBindingsFromServiceCallResult(ctx, r, variables):
+    res_dict = {}
+    for var in variables:
+        if var in r and r[var]:
+            if r[var]['type'] == "uri":
+                res_dict[Variable(var)] = URIRef(r[var]["value"])
+            elif r[var]['type'] == "bnode":
+                res_dict[Variable(var)] = BNode(r[var]["value"])
+            elif r[var]['type'] == "literal" and 'datatype' in r[var]:
+                res_dict[Variable(var)] = Literal(r[var]["value"], datatype=r[var]['datatype'])
+            elif r[var]['type'] == "literal" and 'xml:lang' in r[var]:
+                res_dict[Variable(var)] = Literal(r[var]["value"], lang=r[var]['xml:lang'])
+    yield FrozenBindings(ctx, res_dict)
 
 
 def evalGroup(ctx, group):
