@@ -48,7 +48,7 @@ def test_service_with_values():
     g = Graph()
     q = '''select ?dbpHypernym ?dbpComment ?dbpDeathPlace
     where
-    { values (?dbpHypernym ?dbpDeathPlace) {(<http://dbpedia.org/resource/Leveller> <http://dbpedia.org/resource/Eltham>) (<http://dbpedia.org/resource/Leveller> <http://dbpedia.org/resource/London>)}
+    { values (?dbpHypernym ?dbpDeathPlace) {(<http://dbpedia.org/resource/Leveller> <http://dbpedia.org/resource/London>) (<http://dbpedia.org/resource/Leveller> <http://dbpedia.org/resource/Eltham>)}
       service <http://DBpedia.org/sparql>
     { select ?dbpHypernym ?dbpComment ?dbpDeathPlace
     where

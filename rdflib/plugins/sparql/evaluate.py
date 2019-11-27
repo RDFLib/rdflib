@@ -299,15 +299,14 @@ def evalServiceQuery(ctx, part):
             variables = res["vars_"] = response.json()['head']['vars']
             # or just return the bindings?
             res = response.json()['results']['bindings']
-
-            for r in res:
-                yield from _yieldBindingsFromServiceCallResult(ctx, r, variables)
-            else:
-                raise Exception("Service: %s responded with code: %s", service_url, response.status_code);
+            if len(res) > 0:
+                for r in res:
+                    yield from _yieldBindingsFromServiceCallResult(ctx, r, variables)
+        else:
+            raise Exception("Service: %s responded with code: %s", service_url, response.status_code);
 
 """Build a query string to be used by the service call. 
 It is supposed to pass in the existing bound solutions."""
-#TODO fix so that we run for all solutions not just the first one
 def _buildQueryStringForServiceCall(ctx, match):
 
     service_query = match.group(2)
