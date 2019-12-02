@@ -312,16 +312,9 @@ def _buildQueryStringForServiceCall(ctx, match):
     service_query = match.group(2)
     sol = ctx.solution();
     if len(sol) > 0:
-        service_query = service_query + 'VALUES ('
-        for v in sol:
-            service_query = service_query + '?' + str(v) + ' '
-
-        service_query = service_query + ') {'
-        service_query = service_query + '('
-        for v in sol:
-            service_query = service_query + ctx.get(v).n3() + ' '
-        service_query = service_query + ')'
-        service_query = service_query + '}'
+        variables = ' '.join(map(lambda v:v.n3(), sol))
+        variables_bound = ' '.join(map(lambda v: ctx.get(v).n3(), sol))
+        service_query = service_query + 'VALUES (' + variables + ') {(' + variables_bound + ')}'
     return service_query
 
 
