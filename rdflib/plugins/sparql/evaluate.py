@@ -299,7 +299,8 @@ def evalServiceQuery(ctx, part):
             res = json['results']['bindings']
             if len(res) > 0:
                 for r in res:
-                    yield from _yieldBindingsFromServiceCallResult(ctx, r, variables)
+                    for bound in _yieldBindingsFromServiceCallResult(ctx, r, variables):
+                        yield bound
         else:
             raise Exception("Service: %s responded with code: %s", service_url, response.status_code);
 
