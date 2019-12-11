@@ -318,7 +318,7 @@ def _buildQueryStringForServiceCall(ctx, match):
         parser.parseQuery(service_query)
     except ParseException:
         # This could be because we don't have a select around the service call.
-        service_query = 'SELECT * WHERE {' + service_query + '}'
+        service_query = 'SELECT REDUCED * WHERE {' + service_query + '}'
         for p in ctx.prologue.namespace_manager.store.namespaces():
             service_query = 'PREFIX ' + p[0] + ':' + p[1].n3() + ' ' + service_query
         # re add the base if one was defined
