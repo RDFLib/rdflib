@@ -18,7 +18,7 @@ import collections
 import itertools
 import re
 import requests
-
+from pyparsing import ParseException
 
 from rdflib import Variable, Graph, BNode, URIRef, Literal
 from six import iteritems, itervalues
@@ -32,6 +32,7 @@ from rdflib.plugins.sparql.evalutils import (
 
 from rdflib.plugins.sparql.aggregates import Aggregator
 from rdflib.plugins.sparql.algebra import Join, ToMultiSet, Values
+from rdflib.plugins.sparql import parser
 
 
 def evalBGP(ctx, bgp):
@@ -292,24 +293,37 @@ def evalServiceQuery(ctx, part):
         else:
             response = requests.post(service_url, params=query_settings, headers=headers)
         if response.status_code == 200:
-            # build a dict, like in Select
-            res["bindings"] = response.json()['results']['bindings']
-
-            res["type_"] = "SELECT"
-            variables = res["vars_"] = response.json()['head']['vars']
+            json = response.json();
+            variables = res["vars_"] = json['head']['vars']
             # or just return the bindings?
-            res = response.json()['results']['bindings']
+            res = json['results']['bindings']
             if len(res) > 0:
                 for r in res:
                     yield from _yieldBindingsFromServiceCallResult(ctx, r, variables)
         else:
             raise Exception("Service: %s responded with code: %s", service_url, response.status_code);
 
-"""Build a query string to be used by the service call. 
-It is supposed to pass in the existing bound solutions."""
+
+"""
+    Build a query string to be used by the service call. 
+    It is supposed to pass in the existing bound solutions.
+    Re-adds prefixes if added and sets the base.
+    Wraps it in select if needed.
+"""
 def _buildQueryStringForServiceCall(ctx, match):
 
     service_query = match.group(2)
+    try:
+        parser.parseQuery(service_query)
+    except ParseException:
+        # This could be because we don't have a select around the service call.
+        service_query = 'SELECT * WHERE {' + service_query + '}'
+        for p in ctx.prologue.namespace_manager.store.namespaces():
+            service_query = 'PREFIX ' + p[0] + ':' + p[1].n3() + ' ' + service_query
+        # re add the base if one was defined
+        base = ctx.prologue.base
+        if base is not None and len(base) > 0:
+            service_query = 'BASE <' + base + '> ' + service_query
     sol = ctx.solution();
     if len(sol) > 0:
         variables = ' '.join(map(lambda v:v.n3(), sol))
