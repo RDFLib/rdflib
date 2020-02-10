@@ -5,6 +5,7 @@ from __future__ import print_function
 from six import BytesIO
 from six.moves import cPickle
 from rdflib.events import Dispatcher, Event
+from rdflib.term import Identifier
 """
 ============
 rdflib.store
