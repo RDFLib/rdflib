@@ -365,7 +365,7 @@ class SPARQLStore(SPARQLConnector, Store):
         if isinstance(graph, string_types):
             return graph != '__UNION__'
         else:
-            return graph.identifier != DATASET_DEFAULT_GRAPH_ID
+            return graph != DATASET_DEFAULT_GRAPH_ID
 
     def close(self, commit_pending_transaction=None):
         SPARQLConnector.close(self)
@@ -729,7 +729,7 @@ class SPARQLUpdateStore(SPARQLStore):
             Store.add_graph(self, graph)
         elif graph != DATASET_DEFAULT_GRAPH_ID:
             self.update(
-                "CREATE GRAPH %s" % self.node_to_sparql(graph.identifier))
+                "CREATE GRAPH %s" % self.node_to_sparql(graph))
 
     def close(self, commit_pending_transaction=False):
 
@@ -745,4 +745,4 @@ class SPARQLUpdateStore(SPARQLStore):
             self.update("DROP DEFAULT")
         else:
             self.update(
-                "DROP GRAPH %s" % self.node_to_sparql(graph.identifier))
+                "DROP GRAPH %s" % self.node_to_sparql(graph))
