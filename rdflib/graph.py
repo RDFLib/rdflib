@@ -1404,7 +1404,7 @@ class ConjunctiveGraph(Graph):
         s, p, o, c = self._spoc(triple_or_quad)
 
         for (s, p, o), cg in self.store.triples((s, p, o),
-                                                context=c if isinstance(c, Graph) else c ):
+                                                context=c.identifier if isinstance(c, Graph) else c):
             for ctx in cg:
                 yield s, p, o, self._graph(ctx)
 
