@@ -270,7 +270,7 @@ class SPARQLStore(SPARQLConnector, Store):
             pass
 
         result = self._query(query,
-                             default_graph=context.identifier if self._is_contextual(context) else None)
+                             default_graph=context if self._is_contextual(context) else None)
 
         if vars:
             for row in result:
@@ -300,7 +300,7 @@ class SPARQLStore(SPARQLConnector, Store):
             q = "SELECT (count(*) as ?c) WHERE {?s ?p ?o .}"
 
             result = self._query(q,
-                                 default_graph=context.identifier if self._is_contextual(context) else None)
+                                 default_graph=context if self._is_contextual(context) else None)
 
             return int(next(iter(result)).c)
 
@@ -543,7 +543,7 @@ class SPARQLUpdateStore(SPARQLStore):
         triple = "%s %s %s ." % (nts(subject), nts(predicate), nts(obj))
         if self._is_contextual(context):
             q = "INSERT DATA { GRAPH %s { %s } }" % (
-                nts(context.identifier), triple)
+                nts(context), triple)
         else:
             q = "INSERT DATA { %s }" % triple
         self._transaction().append(q)
@@ -567,7 +567,7 @@ class SPARQLUpdateStore(SPARQLStore):
                 ) for subject, predicate, obj in contexts[context]
             ]
             data.append("INSERT DATA { GRAPH %s { %s } }\n" % (
-                nts(context.identifier), '\n'.join(triples)))
+                nts(context), '\n'.join(triples)))
         self._transaction().extend(data)
         if self.autocommit:
             self.commit()
@@ -588,7 +588,7 @@ class SPARQLUpdateStore(SPARQLStore):
         nts = self.node_to_sparql
         triple = "%s %s %s ." % (nts(subject), nts(predicate), nts(obj))
         if self._is_contextual(context):
-            cid = nts(context.identifier)
+            cid = nts(context)
             q = "WITH %(graph)s DELETE { %(triple)s } WHERE { %(triple)s }" % { 'graph': cid, 'triple': triple }
         else:
             q = "DELETE { %s } WHERE { %s } " % (triple, triple)
