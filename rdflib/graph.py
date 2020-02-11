@@ -1413,7 +1413,7 @@ class ConjunctiveGraph(Graph):
         s, p, o = triple
         if context is None:
             if not self.default_union:
-                context=self.identifier
+                context = self.identifier
         else:
             if isinstance(context, Graph): context = context.identifier
 
@@ -1693,7 +1693,7 @@ class QuotedGraph(Graph):
             if isinstance(c, QuotedGraph)
             and c.identifier is self.identifier
             and _assertnode(s, p, o)
-            )
+        )
 
     def n3(self):
         """Return an n3 identifier for the Graph"""

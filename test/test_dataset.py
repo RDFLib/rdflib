@@ -78,7 +78,8 @@ class DatasetTestCase(unittest.TestCase):
                 os.remove(self.tmppath)
 
     def testGraphAware(self):
-        if not self.graph.store.graph_aware: return
+        if not self.graph.store.graph_aware:
+            return
 
         g = self.graph
         g1 = g.graph(self.c1)
@@ -91,7 +92,6 @@ class DatasetTestCase(unittest.TestCase):
                              set([self.c1, DATASET_DEFAULT_GRAPH_ID]))
 
         # added graph is empty
-
         self.assertEqual(len(g1), 0)
 
         g1.add((self.tarek, self.likes, self.pizza))
@@ -164,7 +164,6 @@ if __name__ == '__main__':
 tests = 0
 
 for s in plugin.plugins(pluginname, plugin.Store):
-
     if s.name in ('default', 'IOMemory', 'Auditable',
                   'Concurrent', 'SPARQLStore'):
         continue  # these are tested by default

@@ -207,7 +207,8 @@ class Store(object):
         be an error for the quoted argument to be True when the store is not
         formula-aware.
         """
-        if not isinstance(context, Identifier): raise Exception("Trying to add to a context that isn't an identifier: %s"%context)
+        if not isinstance(context, Identifier):
+            raise Exception("Trying to add to a context that isn't an identifier: %s" % context)
 
         self.dispatcher.dispatch(
             TripleAddedEvent(
@@ -227,7 +228,8 @@ class Store(object):
 
     def remove(self, triple, context=None):
         """ Remove the set of triples matching the pattern from the store """
-        if context is not None and not isinstance(context, Identifier): raise Exception("Trying to remove from a context that isn't an identifier: %s"%context)
+        if context is not None and not isinstance(context, Identifier):
+            raise Exception("Trying to remove from a context that isn't an identifier: %s" % context)
 
         self.dispatcher.dispatch(
             TripleRemovedEvent(

@@ -338,8 +338,6 @@ class ContextTestCase(unittest.TestCase):
         asserte(len(list(triples((Any, Any, Any)))), 0)
 
 
-
-
 # dynamically create classes for each registered Store
 pluginname = None
 if __name__ == '__main__':
