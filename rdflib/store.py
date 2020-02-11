@@ -148,9 +148,13 @@ class Store(object):
 
     def __get_node_pickler(self):
         if self.__node_pickler is None:
+            from rdflib.term import URIRef
+            from rdflib.term import BNode
+            from rdflib.term import Literal
+            from rdflib.graph import QuotedGraph
+            from rdflib.term import Variable
+            from rdflib.term import Statement
             self.__node_pickler = np = NodePickler()
-            from rdflib.graph import QuotedGraph # here to avoid circular import
-
             np.register(self, "S")
             np.register(URIRef, "U")
             np.register(BNode, "B")
