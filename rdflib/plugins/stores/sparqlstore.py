@@ -727,7 +727,7 @@ class SPARQLUpdateStore(SPARQLStore):
     def add_graph(self, graph):
         if not self.graph_aware:
             Store.add_graph(self, graph)
-        elif graph.identifier != DATASET_DEFAULT_GRAPH_ID:
+        elif graph != DATASET_DEFAULT_GRAPH_ID:
             self.update(
                 "CREATE GRAPH %s" % self.node_to_sparql(graph.identifier))
 
@@ -741,7 +741,7 @@ class SPARQLUpdateStore(SPARQLStore):
     def remove_graph(self, graph):
         if not self.graph_aware:
             Store.remove_graph(self, graph)
-        elif graph.identifier == DATASET_DEFAULT_GRAPH_ID:
+        elif graph == DATASET_DEFAULT_GRAPH_ID:
             self.update("DROP DEFAULT")
         else:
             self.update(
