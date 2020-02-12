@@ -3,8 +3,10 @@ from __future__ import absolute_import
 import collections
 import itertools
 import datetime
-from collections.abc import Mapping, MutableMapping
-
+try:
+    from collections.abc import Mapping, MutableMapping
+except:
+    from collections import Mapping, MutableMapping
 import isodate
 from six import text_type, iteritems
 
