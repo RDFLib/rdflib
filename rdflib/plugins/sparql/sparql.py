@@ -7,6 +7,7 @@ try:
     from collections.abc import Mapping, MutableMapping
 except:
     from collections import Mapping, MutableMapping
+    
 import isodate
 from six import text_type, iteritems
 
