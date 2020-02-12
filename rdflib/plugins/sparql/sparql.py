@@ -6,8 +6,8 @@ import datetime
 
 import isodate
 from six import text_type, iteritems
-from rdflib.compat import Mapping, MutableMapping
 
+from rdflib.compat import Mapping, MutableMapping
 from rdflib.namespace import NamespaceManager
 from rdflib import Variable, BNode, Graph, ConjunctiveGraph, URIRef, Literal
 from rdflib.term import Node
