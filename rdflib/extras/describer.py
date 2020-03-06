@@ -50,7 +50,7 @@ Full example in the ``to_rdf`` method below::
     ...         d.rdftype(FOAF.Person)
     ...         d.value(FOAF.name, self.get_full_name())
     ...         d.value(FOAF.givenName, self.first_name)
-    ...         d.value(FOAF.surname, self.last_name)
+    ...         d.value(FOAF.familyName, self.last_name)
     ...         d.rel(FOAF.homepage, self.site)
     ...         d.value(RDFS.comment, self.presentation, lang=lang)
     ...         with d.rel(FOAF.depiction, self.image):
@@ -73,7 +73,7 @@ Full example in the ``to_rdf`` method below::
     ...   <foaf:Person rdf:about="http://example.org/persons/some1#person">
     ...     <foaf:name>Some Body</foaf:name>
     ...     <foaf:givenName>Some</foaf:givenName>
-    ...     <foaf:surname>Body</foaf:surname>
+    ...     <foaf:familyName>Body</foaf:familyName>
     ...     <foaf:depiction>
     ...       <foaf:Image
     ...         rdf:about=
