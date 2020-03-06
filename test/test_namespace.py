@@ -1,6 +1,7 @@
 import unittest
 
 from rdflib.graph import Graph
+from rdflib.namespace import FOAF
 from rdflib.term import URIRef
 from six import b
 
@@ -42,3 +43,18 @@ class NamespacePrefixTest(unittest.TestCase):
 
         self.assertTrue(
             b("<http://example1.com/foo> ns1:bar <http://example3.com/baz> .") in n3)
+
+    def test_closed_namespace(self):
+        """Tests terms both in an out of the ClosedNamespace FOAF"""
+
+        def add_not_in_namespace(s):
+            return FOAF[s]
+
+        # a blatantly non-existent FOAF property
+        self.assertRaises(KeyError, add_not_in_namespace, "blah")
+
+        # a deprecated FOAF property
+        self.assertRaises(KeyError, add_not_in_namespace, "firstName")
+
+        # a property name within the core FOAF namespace
+        self.assertEqual(add_not_in_namespace("givenName"), URIRef("http://xmlns.com/foaf/0.1/givenName"))
