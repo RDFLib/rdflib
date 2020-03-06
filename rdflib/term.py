@@ -24,6 +24,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 # from __future__ import unicode_literals
+from fractions import Fraction
 
 __all__ = [
     'bind',
@@ -1365,6 +1366,7 @@ _XSD_DURATION = URIRef(_XSD_PFX + 'duration')
 _XSD_DAYTIMEDURATION = URIRef(_XSD_PFX + 'dayTimeDuration')
 _XSD_YEARMONTHDURATION = URIRef(_XSD_PFX + 'yearMonthDuration')
 
+_OWL_RATIONAL = URIRef('http://www.w3.org/2002/07/owl#rational')
 # TODO: gYearMonth, gYear, gMonthDay, gDay, gMonth
 
 _NUMERIC_LITERAL_TYPES = (
@@ -1394,6 +1396,7 @@ _PLAIN_LITERAL_TYPES = (
     _XSD_BOOLEAN,
     _XSD_DOUBLE,
     _XSD_DECIMAL,
+    _OWL_RATIONAL
 )
 
 # these have special INF and NaN XSD representations
@@ -1466,7 +1469,8 @@ _PythonToXSD = [
     # DocumentFragments, and the xml parser Documents, letting this
     # decide what datatype to use makes roundtripping easier, but it a
     # bit random
-    (xml.dom.minidom.DocumentFragment, (_writeXML, _RDF_HTMLLITERAL))
+    (xml.dom.minidom.DocumentFragment, (_writeXML, _RDF_HTMLLITERAL)),
+    (Fraction, (None, _OWL_RATIONAL))
 ]
 
 XSDToPython = {
