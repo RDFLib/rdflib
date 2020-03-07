@@ -4,7 +4,7 @@ from rdflib.query import ResultSerializer
 
 
 def _termString(t, namespace_manager):
-    if t == None:
+    if t is None:
         return "-"
     if namespace_manager:
         if isinstance(t, URIRef):

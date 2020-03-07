@@ -535,7 +535,7 @@ class Literal(Identifier):
         if lang == '':
             lang = None  # no empty lang-tags in RDF
 
-        normalize = normalize if normalize != None else rdflib.NORMALIZE_LITERALS
+        normalize = normalize if normalize is not None else rdflib.NORMALIZE_LITERALS
 
         if lang is not None and datatype is not None:
             raise TypeError(
@@ -608,7 +608,7 @@ class Literal(Identifier):
 
         """
 
-        if self.value != None:
+        if self.value is not None:
             return Literal(self.value, datatype=self.datatype, lang=self.language)
         else:
             return self
@@ -659,7 +659,7 @@ class Literal(Identifier):
         Is the Literal "True"
         This is used for if statements, bool(literal), etc.
         """
-        if self.value != None:
+        if self.value is not None:
             return bool(self.value)
         return len(self) != 0
 
@@ -1009,7 +1009,7 @@ class Literal(Identifier):
 
             if self.datatype in _NUMERIC_LITERAL_TYPES  \
                     and other.datatype in _NUMERIC_LITERAL_TYPES:
-                if self.value != None and other.value != None:
+                if self.value is not None and other.value is not None:
                     return self.value == other.value
                 else:
                     if text_type.__eq__(self, other):
@@ -1037,7 +1037,7 @@ class Literal(Identifier):
             # lexical form first?  comparing two ints is far quicker -
             # maybe there are counter examples
 
-            if self.value != None and other.value != None:
+            if self.value is not None and other.value is not None:
 
                 if self.datatype in (_RDF_XMLLITERAL, _RDF_HTMLLITERAL):
                     return _isEqualXMLNode(self.value, other.value)
@@ -1550,7 +1550,7 @@ def bind(datatype, pythontype, constructor=None, lexicalizer=None):
         logger.warning("datatype '%s' was already bound. Rebinding." %
                        datatype)
 
-    if constructor == None:
+    if constructor is None:
         constructor = pythontype
     _toPythonMapping[datatype] = constructor
     _PythonToXSD.append((pythontype, (lexicalizer, datatype)))

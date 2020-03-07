@@ -191,7 +191,7 @@ class Collection(object):
         container = self.uri
         while True:
             rest = self.graph.value(container, RDF.rest)
-            if rest == None or rest == RDF.nil:
+            if rest is None or rest == RDF.nil:
                 return container
             else:
                 container = rest
