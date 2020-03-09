@@ -840,7 +840,7 @@ def RelationalExpression(e, ctx):
 
     if isinstance(expr, Literal) and isinstance(other, Literal):
 
-        if expr.datatype != None and expr.datatype not in XSD_DTs and other.datatype != None and other.datatype not in XSD_DTs:
+        if expr.datatype is not None and expr.datatype not in XSD_DTs and other.datatype is not None and other.datatype not in XSD_DTs:
             # in SPARQL for non-XSD DT Literals we can only do =,!=
             if op not in ('=', '!='):
                 raise SPARQLError(

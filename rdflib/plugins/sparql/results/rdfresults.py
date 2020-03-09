@@ -55,7 +55,7 @@ class RDFResult(Result):
                 self.bindings.append(sol)
         elif type_ == 'ASK':
             self.askAnswer = askAnswer.value
-            if askAnswer.value == None:
+            if askAnswer.value is None:
                 raise Exception('Malformed boolean in ask answer!')
         elif type_ == 'CONSTRUCT':
             self.graph = g

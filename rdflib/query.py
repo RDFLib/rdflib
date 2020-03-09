@@ -146,7 +146,7 @@ class ResultRow(tuple):
             return default
 
     def asdict(self):
-        return dict((v, self[v]) for v in self.labels if self[v] != None)
+        return dict((v, self[v]) for v in self.labels if self[v] is not None)
 
 
 class Result(object):

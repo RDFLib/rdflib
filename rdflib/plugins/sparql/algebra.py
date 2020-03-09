@@ -366,7 +366,7 @@ def _traverseAgg(e, visitor=lambda n, v: None):
 
     elif isinstance(e, CompValue):
         for k, val in e.items():
-            if val != None:
+            if val is not None:
                 res.append(_traverseAgg(val, visitor))
 
     return visitor(e, res)
@@ -618,10 +618,10 @@ def translate(q):
 
     if q.limitoffset:
         offset = 0
-        if q.limitoffset.offset != None:
+        if q.limitoffset.offset is not None:
             offset = q.limitoffset.offset.toPython()
 
-        if q.limitoffset.limit != None:
+        if q.limitoffset.limit is not None:
             M = CompValue('Slice', p=M, start=offset,
                           length=q.limitoffset.limit.toPython())
         else:
