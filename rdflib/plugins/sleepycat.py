@@ -436,7 +436,7 @@ class Sleepycat(Store):
         prefix = prefix.encode("utf-8")
         namespace = namespace.encode("utf-8")
         bound_prefix = self.__prefix.get(namespace)
-        if bound_prefix:
+        if bound_prefix is not None:
             self.__namespace.delete(bound_prefix)
         self.__prefix[namespace] = prefix
         self.__namespace[prefix] = namespace
