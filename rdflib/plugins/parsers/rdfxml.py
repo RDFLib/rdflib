@@ -64,7 +64,7 @@ class BagID(URIRef):
 
     def next_li(self):
         self.li += 1
-        return RDFNS[self.li]
+        return RDFNS['_%s' % self.li]
 
 
 class ElementHandler(object):
@@ -89,7 +89,7 @@ class ElementHandler(object):
 
     def next_li(self):
         self.li += 1
-        return RDFNS[self.li]
+        return RDFNS['_%s' % self.li]
 
 
 class RDFXMLHandler(handler.ContentHandler):

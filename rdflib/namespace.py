@@ -224,11 +224,17 @@ class _RDFNamespace(ClosedNamespace):
         )
 
     def term(self, name):
-        try:
-            i = int(name)
-            return URIRef("%s_%s" % (self.uri, i))
-        except ValueError:
-            return super(_RDFNamespace, self).term(name)
+        # Container membership properties
+        if name.startswith('_'):
+            try:
+                i = int(name[1:])
+            except ValueError:
+                pass
+            else:
+                if i > 0:
+                    return URIRef("%s_%s" % (self.uri, i))
+
+        return super(_RDFNamespace, self).term(name)
 
 
 RDF = _RDFNamespace()
