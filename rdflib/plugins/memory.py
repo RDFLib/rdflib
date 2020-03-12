@@ -158,9 +158,6 @@ class Memory(Store):
 
     def bind(self, prefix, namespace):
         self.__prefix[namespace] = prefix
-        bound_prefix = self.__prefix.get(namespace)
-        if bound_prefix is not None:
-            self.__namespace.delete(bound_prefix)
         self.__namespace[prefix] = namespace
 
     def namespace(self, prefix):
@@ -241,9 +238,6 @@ class IOMemory(Store):
 
     def bind(self, prefix, namespace):
         self.__prefix[namespace] = prefix
-        bound_prefix = self.__prefix.get(namespace)
-        if bound_prefix is not None:
-            self.__namespace.delete(bound_prefix)
         self.__namespace[prefix] = namespace
 
     def namespace(self, prefix):
