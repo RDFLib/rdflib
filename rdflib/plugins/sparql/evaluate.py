@@ -16,6 +16,9 @@ also return a dict of list of dicts
 
 import collections
 import itertools
+import re
+import requests
+from pyparsing import ParseException
 
 from rdflib import Variable, Graph, BNode, URIRef, Literal
 from six import iteritems, itervalues
@@ -23,12 +26,13 @@ from six import iteritems, itervalues
 from rdflib.plugins.sparql import CUSTOM_EVALS
 from rdflib.plugins.sparql.parserutils import value
 from rdflib.plugins.sparql.sparql import (
-    QueryContext, AlreadyBound, FrozenBindings, SPARQLError)
+    QueryContext, AlreadyBound, FrozenBindings, Bindings, SPARQLError)
 from rdflib.plugins.sparql.evalutils import (
     _filter, _eval, _join, _diff, _minus, _fillTemplate, _ebv, _val)
 
 from rdflib.plugins.sparql.aggregates import Aggregator
 from rdflib.plugins.sparql.algebra import Join, ToMultiSet, Values
+from rdflib.plugins.sparql import parser
 
 
 def evalBGP(ctx, bgp):
@@ -261,14 +265,87 @@ def evalPart(ctx, part):
         return evalConstructQuery(ctx, part)
 
     elif part.name == 'ServiceGraphPattern':
-        raise Exception('ServiceGraphPattern not implemented')
+        return evalServiceQuery(ctx, part)
+        #raise Exception('ServiceGraphPattern not implemented')
 
     elif part.name == 'DescribeQuery':
         raise Exception('DESCRIBE not implemented')
 
     else:
-        # import pdb ; pdb.set_trace()
         raise Exception('I dont know: %s' % part.name)
+
+def evalServiceQuery(ctx, part):
+    res = {}
+    match = re.match('^service <(.*)>[ \n]*{(.*)}[ \n]*$',
+                     part.get('service_string', ''), re.DOTALL)
+
+    if match:
+        service_url = match.group(1)
+        service_query = _buildQueryStringForServiceCall(ctx, match)
+
+        query_settings = {'query': service_query,
+                          'output': 'json'}
+        headers = {'accept' : 'application/sparql-results+json',
+                          'user-agent': 'rdflibForAnUser'}
+        # GET is easier to cache so prefer that if the query is not to long
+        if len(service_query) < 600:
+            response = requests.get(service_url, params=query_settings, headers=headers)
+        else:
+            response = requests.post(service_url, params=query_settings, headers=headers)
+        if response.status_code == 200:
+            json = response.json();
+            variables = res["vars_"] = json['head']['vars']
+            # or just return the bindings?
+            res = json['results']['bindings']
+            if len(res) > 0:
+                for r in res:
+                    for bound in _yieldBindingsFromServiceCallResult(ctx, r, variables):
+                        yield bound
+        else:
+            raise Exception("Service: %s responded with code: %s", service_url, response.status_code);
+
+
+"""
+    Build a query string to be used by the service call. 
+    It is supposed to pass in the existing bound solutions.
+    Re-adds prefixes if added and sets the base.
+    Wraps it in select if needed.
+"""
+def _buildQueryStringForServiceCall(ctx, match):
+
+    service_query = match.group(2)
+    try:
+        parser.parseQuery(service_query)
+    except ParseException:
+        # This could be because we don't have a select around the service call.
+        service_query = 'SELECT REDUCED * WHERE {' + service_query + '}'
+        for p in ctx.prologue.namespace_manager.store.namespaces():
+            service_query = 'PREFIX ' + p[0] + ':' + p[1].n3() + ' ' + service_query
+        # re add the base if one was defined
+        base = ctx.prologue.base
+        if base is not None and len(base) > 0:
+            service_query = 'BASE <' + base + '> ' + service_query
+    sol = ctx.solution();
+    if len(sol) > 0:
+        variables = ' '.join(map(lambda v:v.n3(), sol))
+        variables_bound = ' '.join(map(lambda v: ctx.get(v).n3(), sol))
+        service_query = service_query + 'VALUES (' + variables + ') {(' + variables_bound + ')}'
+    return service_query
+
+
+def _yieldBindingsFromServiceCallResult(ctx, r, variables):
+    res_dict = {}
+    for var in variables:
+        if var in r and r[var]:
+            if r[var]['type'] == "uri":
+                res_dict[Variable(var)] = URIRef(r[var]["value"])
+            elif r[var]['type'] == "bnode":
+                res_dict[Variable(var)] = BNode(r[var]["value"])
+            elif r[var]['type'] == "literal" and 'datatype' in r[var]:
+                res_dict[Variable(var)] = Literal(r[var]["value"], datatype=r[var]['datatype'])
+            elif r[var]['type'] == "literal" and 'xml:lang' in r[var]:
+                res_dict[Variable(var)] = Literal(r[var]["value"], lang=r[var]['xml:lang'])
+    yield FrozenBindings(ctx, res_dict)
 
 
 def evalGroup(ctx, group):

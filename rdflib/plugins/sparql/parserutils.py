@@ -3,7 +3,7 @@ from types import MethodType
 
 from collections import OrderedDict
 
-from pyparsing import TokenConverter, ParseResults
+from pyparsing import TokenConverter, ParseResults, originalTextFor
 
 from rdflib import BNode, Variable, URIRef
 
@@ -213,17 +213,24 @@ class Comp(TokenConverter):
     """
 
     def __init__(self, name, expr):
+        self.expr = expr
         TokenConverter.__init__(self, expr)
         self.name = name
         self.evalfn = None
 
     def postParse(self, instring, loc, tokenList):
-
         if self.evalfn:
             res = Expr(self.name)
             res._evalfn = MethodType(self.evalfn, res)
         else:
             res = CompValue(self.name)
+            if self.name == 'ServiceGraphPattern':
+                # Then this must be a service graph pattern and have
+                # already matched.
+                # lets assume there is one, for now, then test for two later.
+                sgp = originalTextFor(self.expr)
+                service_string = sgp.searchString(instring)[0][0]
+                res['service_string'] = service_string
 
         for t in tokenList:
             if isinstance(t, ParamValue):
