@@ -50,6 +50,7 @@ import xml.dom.minidom
 from datetime import date, time, datetime, timedelta
 from re import sub, compile
 from collections import defaultdict
+from unicodedata import category
 
 from isodate import parse_time, parse_date, parse_datetime, Duration, parse_duration, duration_isoformat
 
@@ -73,10 +74,11 @@ _invalid_uri_chars = '<>" {}|\\^`'
 
 
 def _is_valid_uri(uri):
-    for c in _invalid_uri_chars:
-        if c in uri:
-            return False
-    return True
+    """
+    Verify invalid chars other than Unicode Letter (Category: Lx)
+    Ref: https://www.unicode.org/reports/tr44/#General_Category
+    """
+    return all(map(lambda c: category(c).startswith('L') or not c in _invalid_uri_chars, uri))
 
 
 _lang_tag_regex = compile('^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$')
