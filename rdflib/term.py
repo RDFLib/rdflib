@@ -74,10 +74,6 @@ _invalid_uri_chars = '<>" {}|\\^`'
 
 
 def _is_valid_uri(uri):
-    """
-    Verify invalid chars other than Unicode Letter (Category: Lx)
-    Ref: https://www.unicode.org/reports/tr44/#General_Category
-    """
     return all(map(lambda c: category(c).startswith('L') or not c in _invalid_uri_chars, uri))
 
 
