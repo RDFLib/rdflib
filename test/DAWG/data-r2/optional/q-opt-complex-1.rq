@@ -6,6 +6,6 @@ SELECT ?person ?nick ?page ?img ?name ?firstN
     OPTIONAL { 
         ?person foaf:name ?name 
         { ?person foaf:depiction ?img } UNION 
-        { ?person foaf:firstName ?firstN } 
+        { ?person foaf:givenName ?firstN }
     } FILTER ( bound(?page) || bound(?img) || bound(?firstN) ) 
 } 

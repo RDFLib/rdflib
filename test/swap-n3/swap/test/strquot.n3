@@ -9,7 +9,7 @@ string with newlines in it.""".
 
 <#zz> <#escapes> "\\\"\a\b\f\r\t\v".
 
-<#martin> <#surname> "D\u00fcrst".
+<#martin> <#familyName> "D\u00fcrst".
 
 <> dc:description """testing string parsing in N3.
 Hmm... how much of this is in the primer?

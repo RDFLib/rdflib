@@ -246,11 +246,69 @@ OWL = Namespace('http://www.w3.org/2002/07/owl#')
 
 XSD = Namespace(_XSD_PFX)
 
-SKOS = Namespace('http://www.w3.org/2004/02/skos/core#')
-DOAP = Namespace('http://usefulinc.com/ns/doap#')
-FOAF = Namespace('http://xmlns.com/foaf/0.1/')
+CSVW = Namespace('http://www.w3.org/ns/csvw#')
 DC = Namespace('http://purl.org/dc/elements/1.1/')
+DCAT = Namespace('http://www.w3.org/ns/dcat#')
 DCTERMS = Namespace('http://purl.org/dc/terms/')
+DOAP = Namespace('http://usefulinc.com/ns/doap#')
+FOAF = ClosedNamespace(
+    uri=URIRef('http://xmlns.com/foaf/0.1/'),
+    terms=[
+        # all taken from http://xmlns.com/foaf/spec/
+        'Agent', 'Person', 'name', 'title', 'img',
+        'depiction', 'depicts', 'familyName',
+        'givenName', 'knows', 'based_near', 'age', 'made',
+        'maker', 'primaryTopic', 'primaryTopicOf', 'Project', 'Organization',
+        'Group', 'member', 'Document', 'Image', 'nick',
+        'mbox', 'homepage', 'weblog', 'openid', 'jabberID',
+        'mbox_sha1sum', 'interest', 'topic_interest', 'topic', 'page',
+        'workplaceHomepage', 'workInfoHomepage', 'schoolHomepage', 'publications', 'currentProject',
+        'pastProject', 'account', 'OnlineAccount', 'accountName', 'accountServiceHomepage',
+        'PersonalProfileDocument', 'tipjar', 'sha1', 'thumbnail', 'logo'
+    ]
+)
+ODRL2 = Namespace('http://www.w3.org/ns/odrl/2/')
+ORG = Namespace('http://www.w3.org/ns/org#')
+PROV = ClosedNamespace(
+    uri=URIRef('http://www.w3.org/ns/prov#'),
+    terms=[
+        'Entity', 'Activity', 'Agent', 'wasGeneratedBy', 'wasDerivedFrom',
+        'wasAttributedTo', 'startedAtTime', 'used', 'wasInformedBy', 'endedAtTime',
+        'wasAssociatedWith', 'actedOnBehalfOf', 'Collection', 'EmptyCollection', 'Bundle',
+        'Person', 'SoftwareAgent', 'Organization', 'Location', 'alternateOf',
+        'specializationOf', 'generatedAtTime', 'hadPrimarySource', 'value', 'wasQuotedFrom',
+        'wasRevisionOf', 'invalidatedAtTime', 'wasInvalidatedBy', 'hadMember', 'wasStartedBy',
+        'wasEndedBy', 'invalidated', 'influenced', 'atLocation', 'generated',
+        'Influence', 'EntityInfluence', 'Usage', 'Start', 'End',
+        'Derivation', 'PrimarySource', 'Quotation', 'Revision', 'ActivityInfluence',
+        'Generation', 'Communication', 'Invalidation', 'AgentInfluence',
+        'Attribution', 'Association', 'Plan', 'Delegation', 'InstantaneousEvent',
+        'Role', 'wasInfluencedBy', 'qualifiedInfluence', 'qualifiedGeneration', 'qualifiedDerivation',
+        'qualifiedPrimarySource', 'qualifiedQuotation', 'qualifiedRevision', 'qualifiedAttribution',
+        'qualifiedInvalidation', 'qualifiedStart', 'qualifiedUsage', 'qualifiedCommunication', 'qualifiedAssociation',
+        'qualifiedEnd', 'qualifiedDelegation', 'influencer', 'entity', 'hadUsage', 'hadGeneration',
+        'activity', 'agent', 'hadPlan', 'hadActivity', 'atTime', 'hadRole'
+    ]
+)
+PROF = Namespace('http://www.w3.org/ns/dx/prof/')
+SDO = Namespace('https://schema.org/')
+SH = Namespace('http://www.w3.org/ns/shacl#')
+SKOS = ClosedNamespace(
+    uri=URIRef('http://www.w3.org/2004/02/skos/core#'),
+    terms=[
+        # all taken from https://www.w3.org/TR/skos-reference/#L1302
+        'Concept', 'ConceptScheme', 'inScheme', 'hasTopConcept', 'topConceptOf',
+        'altLabel', 'hiddenLabel', 'prefLabel', 'notation', 'changeNote',
+        'definition', 'editorialNote', 'example', 'historyNote', 'note',
+        'scopeNote', 'broader', 'broaderTransitive', 'narrower', 'narrowerTransitive',
+        'related', 'semanticRelation', 'Collection', 'OrderedCollection', 'member',
+        'memberList', 'broadMatch', 'closeMatch', 'exactMatch', 'mappingRelation',
+        'narrowMatch', 'relatedMatch'
+    ]
+)
+SOSA = Namespace('http://www.w3.org/ns/ssn/')
+SSN = Namespace('http://www.w3.org/ns/sosa/')
+TIME = Namespace('http://www.w3.org/2006/time#')
 VOID = Namespace('http://rdfs.org/ns/void#')
 
 

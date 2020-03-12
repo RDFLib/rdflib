@@ -49,8 +49,8 @@ Full example in the ``to_rdf`` method below::
     ...         d.about(self.get_absolute_url()+'#person')
     ...         d.rdftype(FOAF.Person)
     ...         d.value(FOAF.name, self.get_full_name())
-    ...         d.value(FOAF.firstName, self.first_name)
-    ...         d.value(FOAF.surname, self.last_name)
+    ...         d.value(FOAF.givenName, self.first_name)
+    ...         d.value(FOAF.familyName, self.last_name)
     ...         d.rel(FOAF.homepage, self.site)
     ...         d.value(RDFS.comment, self.presentation, lang=lang)
     ...         with d.rel(FOAF.depiction, self.image):
@@ -72,8 +72,8 @@ Full example in the ``to_rdf`` method below::
     ...   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
     ...   <foaf:Person rdf:about="http://example.org/persons/some1#person">
     ...     <foaf:name>Some Body</foaf:name>
-    ...     <foaf:firstName>Some</foaf:firstName>
-    ...     <foaf:surname>Body</foaf:surname>
+    ...     <foaf:givenName>Some</foaf:givenName>
+    ...     <foaf:familyName>Body</foaf:familyName>
     ...     <foaf:depiction>
     ...       <foaf:Image
     ...         rdf:about=
