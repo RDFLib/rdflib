@@ -816,7 +816,11 @@ class Literal(Identifier):
                 if type(self.value) in _TOTAL_ORDER_CASTERS:
                     caster = _TOTAL_ORDER_CASTERS[type(self.value)]
                     return caster(self.value) > caster(other.value)
-                return self.value > other.value
+
+                try:
+                    return self.value > other.value
+                except TypeError:
+                    pass
 
             if text_type(self) != text_type(other):
                 return text_type(self) > text_type(other)
