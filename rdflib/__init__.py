@@ -76,7 +76,7 @@ logger = logging.getLogger(__name__)
 _interactive_mode = False
 try:
     import __main__
-    if not hasattr(__main__, '__file__') and sys.stderr.isatty():
+    if not hasattr(__main__, '__file__') and sys.stdout!=None and sys.stderr.isatty():
         # show log messages in interactive mode
         _interactive_mode = True
         logger.setLevel(logging.INFO)
