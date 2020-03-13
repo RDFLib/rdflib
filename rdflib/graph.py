@@ -1269,6 +1269,44 @@ class Graph(Node):
 
         return retval
 
+    def cbd(self, resource):
+        """Retrieves the Concise Bounded Description of a Resource from a Graph
+
+        Concise Bounded Description (CBD) is defined in [1] as:
+
+        Given a particular node (the starting node) in a particular RDF graph (the source graph), a subgraph of that
+        particular graph, taken to comprise a concise bounded description of the resource denoted by the starting node,
+        can be identified as follows:
+
+            1. Include in the subgraph all statements in the source graph where the subject of the statement is the
+                starting node;
+            2. Recursively, for all statements identified in the subgraph thus far having a blank node object, include
+                in the subgraph all statements in the source graph where the subject of the statement is the blank node
+                in question and which are not already included in the subgraph.
+            3. Recursively, for all statements included in the subgraph thus far, for all reifications of each statement
+                in the source graph, include the concise bounded description beginning from the rdf:Statement node of
+                each reification.
+
+        This results in a subgraph where the object nodes are either URI references, literals, or blank nodes not
+        serving as the subject of any statement in the graph.
+
+        [1] https://www.w3.org/Submission/CBD/
+
+        :param resource: a URIRef object, of the Resource for queried for
+        :return: a Graph, subgraph of self
+        """
+        subgraph = Graph()
+
+        def add_to_cbd(uri):
+            for s, p, o in self.triples((uri, None, None)):
+                subgraph.add((s, p, o))
+                # recurse 'down' through ll Blank Nodes
+                if type(o) == BNode and not (o, None, None) in subgraph:
+                    add_to_cbd(o)
+        add_to_cbd(resource)
+
+        return subgraph
+
 
 class ConjunctiveGraph(Graph):
 
