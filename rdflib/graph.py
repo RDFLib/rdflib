@@ -1303,6 +1303,17 @@ class Graph(Node):
                 # recurse 'down' through ll Blank Nodes
                 if type(o) == BNode and not (o, None, None) in subgraph:
                     add_to_cbd(o)
+
+            # for Rule 3 (reification)
+            # for any rdf:Statement in the graph with the given URI as the object of rdf:subject,
+            # get all triples with that rdf:Statement instance as subject
+
+            # find any subject s where the predicate is rdf:subject and this uri is the object
+            # (these subjects are of type rdf:Statement, given the domain of rdf:subject)
+            for s, p, o in self.triples((None, RDF.subject, uri)):
+                # find all triples with s as the subject and add these to the subgraph
+                for s2, p2, o2 in self.triples((s, None, None)):
+                    subgraph.add((s2, p2, o2))
         add_to_cbd(resource)
 
         return subgraph
