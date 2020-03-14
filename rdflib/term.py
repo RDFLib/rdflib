@@ -74,7 +74,7 @@ _invalid_uri_chars = '<>" {}|\\^`'
 
 
 def _is_valid_uri(uri):
-    return all(map(lambda c: category(c).startswith('L') or not c in _invalid_uri_chars, uri))
+    return all(map(lambda c: ord(c) > 256 or not c in _invalid_uri_chars, uri))
 
 
 _lang_tag_regex = compile('^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$')
