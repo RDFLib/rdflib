@@ -1,45 +1,54 @@
-stores Package
-==============
+rdflib.plugins.stores package
+=============================
 
-:mod:`stores` Package
----------------------
+Submodules
+----------
 
-.. automodule:: rdflib.plugins.stores
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`auditable` Module
------------------------
+rdflib.plugins.stores.auditable module
+--------------------------------------
 
 .. automodule:: rdflib.plugins.stores.auditable
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-:mod:`concurrent` Module
-------------------------
+rdflib.plugins.stores.concurrent module
+---------------------------------------
 
 .. automodule:: rdflib.plugins.stores.concurrent
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: __dict__,__weakref__
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-:mod:`regexmatching` Module
----------------------------
+rdflib.plugins.stores.regexmatching module
+------------------------------------------
 
 .. automodule:: rdflib.plugins.stores.regexmatching
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: __dict__,__weakref__
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-:mod:`sparqlstore` Module
--------------------------
+rdflib.plugins.stores.sparqlconnector module
+--------------------------------------------
+
+.. automodule:: rdflib.plugins.stores.sparqlconnector
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+rdflib.plugins.stores.sparqlstore module
+----------------------------------------
 
 .. automodule:: rdflib.plugins.stores.sparqlstore
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
+
+Module contents
+---------------
+
+.. automodule:: rdflib.plugins.stores
+   :members:
+   :undoc-members:
+   :show-inheritance:

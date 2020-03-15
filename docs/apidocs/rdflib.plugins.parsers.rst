@@ -1,85 +1,70 @@
-parsers Package
-===============
+rdflib.plugins.parsers package
+==============================
 
-:mod:`parsers` Package
-----------------------
+Submodules
+----------
 
-.. automodule:: rdflib.plugins.parsers
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`hturtle` Module
----------------------
-
-.. automodule:: rdflib.plugins.parsers.hturtle
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`notation3` Module
------------------------
+rdflib.plugins.parsers.notation3 module
+---------------------------------------
 
 .. automodule:: rdflib.plugins.parsers.notation3
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-:mod:`nquads` Module
---------------------
+rdflib.plugins.parsers.nquads module
+------------------------------------
 
 .. automodule:: rdflib.plugins.parsers.nquads
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-:mod:`nt` Module
-----------------
+rdflib.plugins.parsers.nt module
+--------------------------------
 
 .. automodule:: rdflib.plugins.parsers.nt
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: __dict__,__weakref__
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-:mod:`ntriples` Module
-----------------------
+rdflib.plugins.parsers.ntriples module
+--------------------------------------
 
 .. automodule:: rdflib.plugins.parsers.ntriples
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: __dict__,__weakref__
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-:mod:`rdfxml` Module
---------------------
+rdflib.plugins.parsers.rdfxml module
+------------------------------------
 
 .. automodule:: rdflib.plugins.parsers.rdfxml
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-:mod:`structureddata` Module
-----------------------------
+rdflib.plugins.parsers.trig module
+----------------------------------
 
-.. automodule:: rdflib.plugins.parsers.structureddata
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. automodule:: rdflib.plugins.parsers.trig
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-:mod:`trix` Module
-------------------
+rdflib.plugins.parsers.trix module
+----------------------------------
 
 .. automodule:: rdflib.plugins.parsers.trix
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-Subpackages
------------
 
-.. toctree::
+Module contents
+---------------
 
-    rdflib.plugins.parsers.pyMicrodata
-    rdflib.plugins.parsers.pyRdfa
-
+.. automodule:: rdflib.plugins.parsers
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,5 +1,5 @@
-rdflib API docs
-===============
+rdflib
+======
 
 .. toctree::
    :maxdepth: 10
