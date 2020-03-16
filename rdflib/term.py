@@ -51,6 +51,7 @@ import xml.dom.minidom
 from datetime import date, time, datetime, timedelta
 from re import sub, compile
 from collections import defaultdict
+from unicodedata import category
 
 from isodate import parse_time, parse_date, parse_datetime, Duration, parse_duration, duration_isoformat
 
@@ -74,10 +75,7 @@ _invalid_uri_chars = '<>" {}|\\^`'
 
 
 def _is_valid_uri(uri):
-    for c in _invalid_uri_chars:
-        if c in uri:
-            return False
-    return True
+    return all(map(lambda c: ord(c) > 256 or not c in _invalid_uri_chars, uri))
 
 
 _lang_tag_regex = compile('^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$')
