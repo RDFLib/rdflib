@@ -156,7 +156,7 @@ class Result(object):
     There is a bit of magic here that makes this appear like different
     Python objects, depending on the type of result.
 
-    If the type is "SELECT", iterating will yield lists of QueryRow objects
+    If the type is "SELECT", iterating will yield lists of ResultRow objects
 
     If the type is "ASK", iterating will yield a single bool (or
     bool(result) will return the same bool)
