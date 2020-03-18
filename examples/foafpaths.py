@@ -31,7 +31,7 @@ This example shows how to get the name of friends with a single query.
 from rdflib import URIRef, Graph
 from rdflib.namespace import FOAF
 
-if __name__=='__main__':
+if __name__ == '__main__':
 
     g = Graph()
     g.load("foaf.rdf")

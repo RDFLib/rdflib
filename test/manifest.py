@@ -14,7 +14,8 @@ RDFT = Namespace('http://www.w3.org/ns/rdftest#')
 DAWG = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#')
 
 RDFTest = namedtuple('RDFTest', ['uri', 'name', 'comment', 'data',
-                         'graphdata', 'action', 'result', 'syntax'])
+                                 'graphdata', 'action', 'result', 'syntax'])
+
 
 def read_manifest(f, base=None, legacy=False):
 
@@ -63,7 +64,6 @@ def read_manifest(f, base=None, legacy=False):
                 res = None
                 syntax = True
 
-
                 if _type in (MF.QueryEvaluationTest, MF.CSVResultFormatTest):
                     a = g.value(e, MF.action)
                     query = g.value(a, QT.query)
@@ -93,7 +93,7 @@ def read_manifest(f, base=None, legacy=False):
                     syntax = _type == MF.PositiveSyntaxTest11
 
                 elif _type in (MF.PositiveUpdateSyntaxTest11,
-                           MF.NegativeUpdateSyntaxTest11):
+                               MF.NegativeUpdateSyntaxTest11):
                     query = g.value(e, MF.action)
                     syntax = _type == MF.PositiveUpdateSyntaxTest11
 
@@ -105,7 +105,7 @@ def read_manifest(f, base=None, legacy=False):
                                RDFT.TestNTriplesNegativeSyntax,
                                RDFT.TestTurtlePositiveSyntax,
                                RDFT.TestTurtleNegativeSyntax,
-                ):
+                               ):
                     query = g.value(e, MF.action)
                     syntax = _type in (RDFT.TestNQuadsPositiveSyntax,
                                        RDFT.TestNTriplesPositiveSyntax,
@@ -124,8 +124,9 @@ def read_manifest(f, base=None, legacy=False):
                     continue
 
                 yield _type, RDFTest(e, _str(name), _str(comment),
-                               _str(data), graphdata, _str(query),
-                               res, syntax)
+                                     _str(data), graphdata, _str(query),
+                                     res, syntax)
+
 
 @nottest
 def nose_tests(testers, manifest, base=None, legacy=False):

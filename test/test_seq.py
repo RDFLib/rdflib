@@ -22,7 +22,6 @@ s = """\
 """
 
 
-
 class SeqTestCase(unittest.TestCase):
     backend = 'default'
     path = 'store'
@@ -43,9 +42,10 @@ class SeqTestCase(unittest.TestCase):
         # just make sure we can serialize
         self.store.serialize()
 
+
 def test_suite():
     return unittest.makeSuite(SeqTestCase)
 
+
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
-

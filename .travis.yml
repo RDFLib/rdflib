@@ -15,6 +15,12 @@ python:
     - 3.5
     - 3.6
 
+matrix:
+  include:
+    - python: 3.7
+      dist: xenial
+      sudo: true
+
 before_install:
     - pip install -U setuptools pip  # seems travis comes with a too old setuptools for html5lib
     - bash .travis.fuseki_install_optional.sh

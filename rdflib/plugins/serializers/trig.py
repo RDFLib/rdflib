@@ -60,14 +60,15 @@ class TrigSerializer(TurtleSerializer):
 
         firstTime = True
         for store, (ordered_subjects, subjects, ref) in self._contexts.items():
-            if not ordered_subjects: continue
+            if not ordered_subjects:
+                continue
 
             self._references = ref
             self._serialized = {}
             self.store = store
             self._subjects = subjects
 
-            if self.default_context and store.identifier==self.default_context:
+            if self.default_context and store.identifier == self.default_context:
                 self.write(self.indent() + '\n{')
             else:
                 if isinstance(store.identifier, BNode):

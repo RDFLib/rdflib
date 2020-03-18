@@ -20,7 +20,7 @@ class NTSerializer(Serializer):
 
     def __init__(self, store):
         Serializer.__init__(self, store)
-        self.encoding = 'ascii' # n-triples are ascii encoded
+        self.encoding = 'ascii'  # n-triples are ascii encoded
 
     def serialize(self, stream, base=None, encoding=None, **args):
         if base is not None:
@@ -41,7 +41,7 @@ class NT11Serializer(NTSerializer):
     """
 
     def __init__(self, store):
-        Serializer.__init__(self, store) # default to utf-8
+        Serializer.__init__(self, store)  # default to utf-8
 
 
 def _nt_row(triple):
@@ -79,8 +79,8 @@ def _quote_encode(l):
         .replace('"', '\\"')\
         .replace('\r', '\\r')
 
-def _nt_unicode_error_resolver(err):
 
+def _nt_unicode_error_resolver(err):
     """
     Do unicode char replaces as defined in https://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#ntrip_strings
     """
@@ -91,6 +91,7 @@ def _nt_unicode_error_resolver(err):
         return fmt % c
 
     string = err.object[err.start:err.end]
-    return ( "".join( _replace_single(c) for c in string ), err.end )
+    return ("".join(_replace_single(c) for c in string), err.end)
+
 
 codecs.register_error('_rdflib_nt_escape', _nt_unicode_error_resolver)

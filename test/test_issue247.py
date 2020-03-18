@@ -50,5 +50,6 @@ class TestXMLLiteralwithLangAttr(unittest.TestCase):
         g = rdflib.Graph()
         g.parse(data=failxml)
 
+
 if __name__ == "__main__":
     unittest.main()

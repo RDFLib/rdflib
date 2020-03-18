@@ -1,5 +1,6 @@
 import rdflib
 
+
 def test_trig_default_graph():
     ds = rdflib.ConjunctiveGraph()
     data = """

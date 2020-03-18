@@ -1,22 +1,15 @@
+from rdflib import Graph, URIRef, Literal
+from six.moves.urllib.request import urlopen
 import os
 import unittest
 from nose import SkipTest
+from requests import HTTPError
 
-try:
-    import SPARQLWrapper
-except ImportError:
-    raise SkipTest("SPARQLWrapper not installed")
 
-if os.getenv("TRAVIS"):
-    raise SkipTest("Doesn't work in travis")
-
-from six.moves.urllib.request import urlopen
 try:
     assert len(urlopen("http://dbpedia.org/sparql").read()) > 0
 except:
     raise SkipTest("No HTTP connection.")
-
-from rdflib import Graph, URIRef, Literal
 
 
 class SPARQLStoreDBPediaTestCase(unittest.TestCase):
@@ -57,7 +50,7 @@ class SPARQLStoreDBPediaTestCase(unittest.TestCase):
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
         """
         self.assertRaises(
-            SPARQLWrapper.Wrapper.QueryBadFormed,
+            HTTPError,
             self.graph.query,
             query)
 

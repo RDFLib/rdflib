@@ -83,7 +83,7 @@
        <foaf:maker rdf:resource="http://www.w3.org/People/Berners-Lee/card#i"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://dig.csail.mit.edu/2007/wiki/people/JoeLambda#JL">
-       <foaf:firstName>Joe</foaf:firstName><foaf:name>Joe Lambda</foaf:name>
+       <foaf:givenName>Joe</foaf:givenName><foaf:name>Joe Lambda</foaf:name>
     </rdf:Description>
     <rdf:Description rdf:about="http://dig.csail.mit.edu/2007/wiki/people/RobertHoffmann#RMH">
         <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>

@@ -12,8 +12,8 @@ def testTurtleFinalDot():
     g = Graph()
     u = URIRef("http://ex.org/bob.")
     g.bind("ns", "http://ex.org/")
-    g.add( (u, u, u) )
-    s=g.serialize(format='turtle')
+    g.add((u, u, u))
+    s = g.serialize(format='turtle')
     assert b("ns:bob.") not in s
 
 
@@ -70,6 +70,25 @@ def test_turtle_valid_list():
         assert turtle_serializer.isValidList(o)
 
 
+def test_turtle_namespace():
+   graph = Graph()
+   graph.bind('OBO', 'http://purl.obolibrary.org/obo/')
+   graph.bind('GENO', 'http://purl.obolibrary.org/obo/GENO_')
+   graph.bind('RO', 'http://purl.obolibrary.org/obo/RO_')
+   graph.bind('RO_has_phenotype',
+                   'http://purl.obolibrary.org/obo/RO_0002200')
+   graph.add((URIRef('http://example.org'),
+              URIRef('http://purl.obolibrary.org/obo/RO_0002200'),
+              URIRef('http://purl.obolibrary.org/obo/GENO_0000385')))
+   output = [val for val in
+             graph.serialize(format='turtle').decode().splitlines()
+             if not val.startswith('@prefix')]
+   output = ' '.join(output)
+   assert 'RO_has_phenotype:' in output
+   assert 'GENO:0000385' in output
+
+
 if __name__ == "__main__":
-    import nose, sys
+    import nose
+    import sys
     nose.main(defaultTest=sys.argv[0])

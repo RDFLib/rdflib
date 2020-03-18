@@ -3,10 +3,11 @@ from __future__ import absolute_import
 import collections
 import itertools
 import datetime
-from collections import Mapping, MutableMapping
 
+import isodate
 from six import text_type, iteritems
 
+from rdflib.compat import Mapping, MutableMapping
 from rdflib.namespace import NamespaceManager
 from rdflib import Variable, BNode, Graph, ConjunctiveGraph, URIRef, Literal
 from rdflib.term import Node
@@ -14,7 +15,6 @@ from rdflib.term import Node
 from rdflib.plugins.sparql.parserutils import CompValue
 
 import rdflib.plugins.sparql
-
 
 
 class SPARQLError(Exception):
@@ -29,6 +29,7 @@ class NotBoundError(SPARQLError):
 
 class AlreadyBound(SPARQLError):
     """Raised when trying to bind a variable that is already bound!"""
+
     def __init__(self):
         SPARQLError.__init__(self)
 
@@ -88,7 +89,7 @@ class Bindings(MutableMapping):
             d = d.outer
 
     def __str__(self):
-        return "Bindings({"+", ".join((k, self[k]) for k in self)+"})"
+        return "Bindings({" + ", ".join((k, self[k]) for k in self) + "})"
 
     def __repr__(self):
         return text_type(self)
@@ -101,6 +102,7 @@ class FrozenDict(Mapping):
     Taken from http://stackoverflow.com/a/2704866/81121
 
     """
+
     def __init__(self, *args, **kwargs):
         self._d = dict(*args, **kwargs)
         self._hash = None
@@ -229,7 +231,8 @@ class QueryContext(object):
     def __init__(self, graph=None, bindings=None, initBindings=None):
         self.initBindings = initBindings
         self.bindings = Bindings(d=bindings or [])
-        if initBindings: self.bindings.update(initBindings)
+        if initBindings:
+            self.bindings.update(initBindings)
 
         if isinstance(graph, ConjunctiveGraph):
             self._dataset = graph
@@ -242,7 +245,7 @@ class QueryContext(object):
             self.graph = graph
 
         self.prologue = None
-        self.now = datetime.datetime.now()
+        self.now = datetime.datetime.now(isodate.tzinfo.UTC)
 
         self.bnodes = collections.defaultdict(BNode)
 
@@ -280,7 +283,7 @@ class QueryContext(object):
             except:
                 raise Exception(
                     "Could not load %s as either RDF/XML, N3 or NTriples" % (
-                    source))
+                        source))
 
         if not rdflib.plugins.sparql.SPARQL_LOAD_GRAPHS:
             # we are not loading - if we already know the graph
@@ -374,7 +377,6 @@ class Prologue(object):
         self.namespace_manager.bind(prefix, uri, replace=True)
 
     def absolutize(self, iri):
-
         """
         Apply BASE / PREFIXes to URIs
         (and to datatypes in Literals)

@@ -8,49 +8,51 @@ from rdflib.plugins.memory import IOMemory
 from six import text_type
 from io import StringIO
 
+
 def get_digest_value(rdf, mimetype):
     graph = Graph()
-    graph.load(StringIO(rdf),format=mimetype)
+    graph.load(StringIO(rdf), format=mimetype)
     stats = {}
     ig = to_isomorphic(graph)
     result = ig.graph_digest(stats)
     print(stats)
     return result
 
+
 def negative_graph_match_test():
     '''Test of FRIR identifiers against tricky RDF graphs with blank nodes.'''
     testInputs = [
-    [ text_type('''@prefix : <http://example.org/ns#> .
+        [text_type('''@prefix : <http://example.org/ns#> .
      <http://example.org> :rel
          [ :label "Same" ].
          '''),
-    text_type('''@prefix : <http://example.org/ns#> .
+         text_type('''@prefix : <http://example.org/ns#> .
      <http://example.org> :rel
          [ :label "Same" ],
          [ :label "Same" ].
          '''),
-    False
-    ],
-    [ text_type('''@prefix : <http://example.org/ns#> .
+         False
+         ],
+        [text_type('''@prefix : <http://example.org/ns#> .
      <http://example.org> :rel
          <http://example.org/a>.
          '''),
-    text_type('''@prefix : <http://example.org/ns#> .
+         text_type('''@prefix : <http://example.org/ns#> .
      <http://example.org> :rel
          <http://example.org/a>,
          <http://example.org/a>.
          '''),
-    True
-    ],
-    [ text_type('''@prefix : <http://example.org/ns#> .
+         True
+         ],
+        [text_type('''@prefix : <http://example.org/ns#> .
      :linear_two_step_symmetry_start :related [ :related [ :related :linear_two_step_symmatry_end]],
                                               [ :related [ :related :linear_two_step_symmatry_end]].'''),
-    text_type('''@prefix : <http://example.org/ns#> .
+         text_type('''@prefix : <http://example.org/ns#> .
      :linear_two_step_symmetry_start :related [ :related [ :related :linear_two_step_symmatry_end]],
                                               [ :related [ :related :linear_two_step_symmatry_end]].'''),
-    True
-    ],
-    [ text_type('''@prefix : <http://example.org/ns#> .
+         True
+         ],
+        [text_type('''@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -60,7 +62,7 @@ def negative_graph_match_test():
           ];
           ];
           ].'''),
-    text_type('''@prefix : <http://example.org/ns#> .
+         text_type('''@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -72,10 +74,10 @@ def negative_graph_match_test():
           ];
           ];
           ].'''),
-    False
-    ],
-    # This test fails because the algorithm purposefully breaks the symmetry of symetric
-    [ text_type('''@prefix : <http://example.org/ns#> .
+         False
+         ],
+        # This test fails because the algorithm purposefully breaks the symmetry of symetric
+        [text_type('''@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -85,7 +87,7 @@ def negative_graph_match_test():
           ];
           ];
           ].'''),
-    text_type('''@prefix : <http://example.org/ns#> .
+         text_type('''@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -95,9 +97,9 @@ def negative_graph_match_test():
           ];
           ];
           ].'''),
-    True
-    ],
-    [ text_type('''@prefix : <http://example.org/ns#> .
+         True
+         ],
+        [text_type('''@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :label "foo";
@@ -108,7 +110,7 @@ def negative_graph_match_test():
           ];
           ];
           ].'''),
-    text_type('''@prefix : <http://example.org/ns#> .
+         text_type('''@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -118,9 +120,9 @@ def negative_graph_match_test():
           ];
           ];
           ].'''),
-    False
-    ],
-    [ text_type('''@prefix : <http://example.org/ns#> .
+         False
+         ],
+        [text_type('''@prefix : <http://example.org/ns#> .
      _:0001 :rel _:0003, _:0004.
      _:0002 :rel _:0005, _:0006.
      _:0003 :rel _:0001, _:0007, _:0010.
@@ -132,7 +134,7 @@ def negative_graph_match_test():
      _:0009 :rel _:0004, _:0005, _:0007.
      _:0010 :rel _:0003, _:0006, _:0008.
      '''),
-    text_type('''@prefix : <http://example.org/ns#> .
+         text_type('''@prefix : <http://example.org/ns#> .
      _:0001 :rel _:0003, _:0004.
      _:0002 :rel _:0005, _:0006.
      _:0003 :rel _:0001, _:0007, _:0010.
@@ -144,12 +146,13 @@ def negative_graph_match_test():
      _:0006 :rel _:0002, _:0008, _:0010.
      _:0007 :rel _:0003, _:0005, _:0009.
      '''),
-    True
-    ],
+         True
+         ],
     ]
+
     def fn(rdf1, rdf2, identical):
-        digest1 = get_digest_value(rdf1,"text/turtle")
-        digest2 = get_digest_value(rdf2,"text/turtle")
+        digest1 = get_digest_value(rdf1, "text/turtle")
+        digest2 = get_digest_value(rdf2, "text/turtle")
         print(rdf1)
         print(digest1)
         print(rdf2)
@@ -157,6 +160,7 @@ def negative_graph_match_test():
         assert (digest1 == digest2) == identical
     for inputs in testInputs:
         yield fn, inputs[0], inputs[1], inputs[2]
+
 
 def test_issue494_collapsing_bnodes():
     """Test for https://github.com/RDFLib/rdflib/issues/494 collapsing BNodes"""
@@ -281,13 +285,13 @@ def test_issue682_signing_named_graphs():
     mary = BNode()
     john = URIRef("http://love.com/lovers/john#")
 
-    cmary=URIRef("http://love.com/lovers/mary#")
-    cjohn=URIRef("http://love.com/lovers/john#")
+    cmary = URIRef("http://love.com/lovers/mary#")
+    cjohn = URIRef("http://love.com/lovers/john#")
 
     store = IOMemory()
 
     g = ConjunctiveGraph(store=store)
-    g.bind("love",ns)
+    g.bind("love", ns)
 
     gmary = Graph(store=store, identifier=cmary)
 
@@ -441,7 +445,7 @@ def test_issue725_collapsing_bnodes_2():
     assert len(g.all_nodes()) == len(cg.all_nodes()), \
         'canonicalization changed number of nodes in graph'
     assert len(list(g.subjects(RDF['type'], RDF['Statement']))) == \
-           len(list(cg.subjects(RDF['type'], RDF['Statement']))), \
+        len(list(cg.subjects(RDF['type'], RDF['Statement']))), \
         'canonicalization changed number of statements'
 
     # counter for subject, predicate and object nodes

@@ -44,7 +44,7 @@ _typePromotionMap = {
 
 
 def type_promotion(t1, t2):
-    if t2 == None:
+    if t2 is None:
         return t1
     t1 = _super_types.get(t1, t1)
     t2 = _super_types.get(t2, t2)

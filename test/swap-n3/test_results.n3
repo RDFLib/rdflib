@@ -1422,7 +1422,7 @@
 """ .
     
     <#_g52>     a :Diff;
-         :diffString """+ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#martin&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#surname&gt; &quot;D\\u00FCrst&quot;.
+         :diffString """+ &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#martin&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#familyName&gt; &quot;D\\u00FCrst&quot;.
 + &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#x&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#prop&gt; &quot;simple string&quot;.
 + &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#y&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#prop&gt; &quot;triple quoted\\nstring with newlines in it.&quot;.
 + &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#z&gt; &lt;file:/home/syosi/cvs-trunk/WWW/2000/10/swap/test/strquot.n3#prop&gt; &quot;string with \\&quot; escaped quote marks&quot;.

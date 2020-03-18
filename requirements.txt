@@ -2,6 +2,6 @@ flake8
 html5lib
 isodate
 pyparsing
+requests
 six
-SPARQLWrapper
 doctest-ignore-unicode

@@ -2,8 +2,9 @@
 some more specific Literal tests are in test_literal.py
 """
 
-import unittest
 import base64
+import unittest
+import random
 
 from rdflib.term import URIRef, BNode, Literal, _is_valid_unicode
 from rdflib.graph import QuotedGraph, Graph
@@ -11,9 +12,10 @@ from rdflib.namespace import XSD
 
 from six import PY3
 
+
 def uformat(s):
     if PY3:
-        return s.replace("u'","'")
+        return s.replace("u'", "'")
     return s
 
 
@@ -31,10 +33,10 @@ class TestURIRefRepr(unittest.TestCase):
     def testGracefulOrdering(self):
         u = URIRef('cake')
         g = Graph()
-        a = u>u
-        a = u>BNode()
-        a = u>QuotedGraph(g.store, u)
-        a = u>g
+        a = u > u
+        a = u > BNode()
+        a = u > QuotedGraph(g.store, u)
+        a = u > g
 
 
 class TestBNodeRepr(unittest.TestCase):
@@ -57,16 +59,37 @@ class TestLiteral(unittest.TestCase):
 
     def test_total_order(self):
         types = {
-            XSD.dateTime:('0001-01-01T00:00:00', '0001-01-01T00:00:00Z',
-                          '0001-01-01T00:00:00-00:00'),
-            XSD.date:('0001-01-01', '0001-01-01Z', '0001-01-01-00:00'),
-            XSD.time:('00:00:00', '00:00:00Z', '00:00:00-00:00'),
-            XSD.gYear:('0001', '0001Z', '0001-00:00'),  # interval
-            XSD.gYearMonth:('0001-01', '0001-01Z', '0001-01-00:00'),
+            XSD.dateTime: (
+                '2001-01-01T00:00:00',
+                '2001-01-01T00:00:00Z',
+                '2001-01-01T00:00:00-00:00'
+            ),
+            XSD.date: (
+                '2001-01-01',
+                '2001-01-01Z',
+                '2001-01-01-00:00'
+            ),
+            XSD.time: (
+                '00:00:00',
+                '00:00:00Z',
+                '00:00:00-00:00'
+            ),
+            XSD.gYear: (
+                '2001',
+                '2001Z',
+                '2001-00:00'
+            ),  # interval
+            XSD.gYearMonth: (
+                '2001-01',
+                '2001-01Z',
+                '2001-01-00:00'
+            ),
         }
-        literals = [Literal(literal, datatype=type)
-                    for type, literals in types.items()
-                    for literal in literals]
+        literals = [
+            Literal(literal, datatype=t)
+            for t, literals in types.items()
+            for literal in literals
+        ]
         try:
             sorted(literals)
             orderable = True
@@ -76,6 +99,29 @@ class TestLiteral(unittest.TestCase):
             print(e)
             orderable = False
         self.assertTrue(orderable)
+
+        # also make sure that within a datetime things are still ordered:
+        l1 = [
+            Literal(l, datatype=XSD.dateTime)
+            for l in [
+                '2001-01-01T00:00:00',
+                '2001-01-01T01:00:00',
+                '2001-01-01T01:00:01',
+                '2001-01-02T01:00:01',
+                '2001-01-01T00:00:00Z',
+                '2001-01-01T00:00:00-00:00',
+                '2001-01-01T01:00:00Z',
+                '2001-01-01T01:00:00-00:00',
+                '2001-01-01T00:00:00-01:30',
+                '2001-01-01T01:00:00-01:30',
+                '2001-01-02T01:00:01Z',
+                '2001-01-02T01:00:01-00:00',
+                '2001-01-02T01:00:01-01:30'
+            ]
+        ]
+        l2 = list(l1)
+        random.shuffle(l2)
+        self.assertListEqual(l1, sorted(l2))
 
 
 class TestValidityFunctions(unittest.TestCase):

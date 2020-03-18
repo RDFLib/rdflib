@@ -4,11 +4,11 @@
 rdflib |release|
 ================
 
-RDFLib is a pure Python package work working with `RDF <http://www.w3.org/RDF/>`_. RDFLib contains most things you need to work with RDF, including: 
+RDFLib is a pure Python package for working with `RDF <http://www.w3.org/RDF/>`_. RDFLib contains useful APIs for working with RDF, including: 
 
 * parsers and serializers for RDF/XML, N3, NTriples, N-Quads, Turtle, TriX, RDFa and Microdata.
 
-* a Graph interface which can be backed by any one of a number of Store implementations. 
+* a Graph interface which can be backed by a number of store implementations. 
 
 * store implementations for in memory storage and persistent storage on top of the Berkeley DB. 
 
@@ -17,7 +17,7 @@ RDFLib is a pure Python package work working with `RDF <http://www.w3.org/RDF/>`
 Getting started
 ---------------
 
-If you never used RDFLib, click through these
+If you have never used RDFLib, the following will help get you started
 
 .. toctree::
    :maxdepth: 1
@@ -35,7 +35,7 @@ If you never used RDFLib, click through these
 In depth
 --------
 
-If you already worked with RDF and need to know the peculiarities of RDFLib, these are for you. 
+If you are familiar with RDF and are looking for details on how RDFLib handles RDF, these are for you. 
 
 .. toctree::
    :maxdepth: 1
@@ -108,9 +108,9 @@ Indices and tables
         is the set of subjects and objects of triples in the graph.
     
    named graph
-        Named Graphs is the idea that having multiple RDF graphs in a single
-        document/repository and naming them with URIs provides useful
-        additional functionality. -- http://www.w3.org/2004/03/trix/
+        Named Graphs allow multiple RDF graphs to exist within a single
+        document/repository. They can be referred to with URIs. Named graphs allow queries across multiple domains.
+	-- http://www.w3.org/2004/03/trix/
 
    transitivity 
         A property is transitive: 

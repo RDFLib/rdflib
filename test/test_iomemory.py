@@ -12,7 +12,8 @@ from rdflib import plugin
 
 from rdflib import Graph, Literal, Namespace
 
-def test_concurrent1(): 
+
+def test_concurrent1():
     dns = Namespace(u"http://www.example.com/")
 
     store = plugin.get("IOMemory", Store)()
@@ -26,7 +27,7 @@ def test_concurrent1():
     i = 0
 
     for t in g1.triples((None, None, None)):
-        i+=1
+        i += 1
         # next line causes problems because it adds a new Subject that needs
         # to be indexed  in __subjectIndex dictionary in IOMemory Store.
         # which invalidates the iterator used to iterate over g1
@@ -34,7 +35,8 @@ def test_concurrent1():
 
     assert i == n
 
-def test_concurrent2(): 
+
+def test_concurrent2():
     dns = Namespace(u"http://www.example.com/")
 
     store = plugin.get("IOMemory", Store)()
@@ -49,7 +51,7 @@ def test_concurrent2():
     i = 0
 
     for t in g1.triples((None, None, None)):
-        i+=1
+        i += 1
         g2.add(t)
         # next line causes problems because it adds a new Subject that needs
         # to be indexed  in __subjectIndex dictionary in IOMemory Store.
@@ -59,6 +61,7 @@ def test_concurrent2():
         g2.add((dns.Name, dns.prop, Literal(u"test4")))
 
     assert i == n
+
 
 if __name__ == '__main__':
     test_concurrent1()

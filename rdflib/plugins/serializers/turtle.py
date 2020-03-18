@@ -14,7 +14,8 @@ from six import b, text_type
 
 __all__ = ['RecursiveSerializer', 'TurtleSerializer']
 
-def _object_comparator(a,b):
+
+def _object_comparator(a, b):
     """
     for nice clean output we sort the objects of triples,
     some of them are literals,
@@ -24,8 +25,10 @@ def _object_comparator(a,b):
     """
 
     try:
-        if a>b: return 1
-        if a<b: return -1
+        if a > b:
+            return 1
+        if a < b:
+            return -1
         return 0
 
     except TypeError:
@@ -40,6 +43,7 @@ class RecursiveSerializer(Serializer):
     predicateOrder = [RDF.type, RDFS.label]
     maxDepth = 10
     indentString = u"  "
+    roundtrip_prefixes = tuple()
 
     def __init__(self, store):
 
@@ -48,8 +52,8 @@ class RecursiveSerializer(Serializer):
         self.reset()
 
     def addNamespace(self, prefix, uri):
-        if prefix in self.namespaces and self.namespaces[prefix]!=uri:
-            raise Exception("Trying to override namespace prefix %s => %s, but it's already bound to %s"%(prefix, uri, self.namespaces[prefix]))
+        if prefix in self.namespaces and self.namespaces[prefix] != uri:
+            raise Exception("Trying to override namespace prefix %s => %s, but it's already bound to %s" % (prefix, uri, self.namespaces[prefix]))
         self.namespaces[prefix] = uri
 
     def checkSubject(self, subject):
@@ -57,8 +61,8 @@ class RecursiveSerializer(Serializer):
         if ((self.isDone(subject))
             or (subject not in self._subjects)
             or ((subject in self._topLevels) and (self.depth > 1))
-            or (isinstance(subject, URIRef)
-                and (self.depth >= self.maxDepth))):
+            or (isinstance(subject, URIRef) and
+                (self.depth >= self.maxDepth))):
             return False
         return True
 
@@ -74,8 +78,8 @@ class RecursiveSerializer(Serializer):
             members = list(self.store.subjects(RDF.type, classURI))
             members.sort()
 
+            subjects.extend(members)
             for member in members:
-                subjects.append(member)
                 self._topLevels[member] = True
                 seen[member] = True
 
@@ -95,7 +99,7 @@ class RecursiveSerializer(Serializer):
 
     def preprocessTriple(self, spo):
         s, p, o = spo
-        self._references[o]+=1
+        self._references[o] += 1
         self._subjects[s] = True
 
     def reset(self):
@@ -107,8 +111,14 @@ class RecursiveSerializer(Serializer):
         self._subjects = {}
         self._topLevels = {}
 
-        for prefix, ns in self.store.namespaces():
-            self.addNamespace(prefix, ns)
+        if self.roundtrip_prefixes:
+            if hasattr(self.roundtrip_prefixes, '__iter__'):
+                for prefix, ns in self.store.namespaces():
+                    if prefix in self.roundtrip_prefixes:
+                        self.addNamespace(prefix, ns)
+            else:
+                for prefix, ns in self.store.namespaces():
+                    self.addNamespace(prefix, ns)
 
     def buildPredicateHash(self, subject):
         """
@@ -246,8 +256,8 @@ class TurtleSerializer(RecursiveSerializer):
             if isinstance(node, Literal) and node.datatype:
                 self.getQName(node.datatype, gen_prefix=_GEN_QNAME_FOR_DT)
         p = triple[1]
-        if isinstance(p, BNode): # hmm - when is P ever a bnode?
-            self._references[p]+=1
+        if isinstance(p, BNode):  # hmm - when is P ever a bnode?
+            self._references[p] += 1
 
     def getQName(self, uri, gen_prefix=True):
         if not isinstance(uri, URIRef):
@@ -271,7 +281,8 @@ class TurtleSerializer(RecursiveSerializer):
         prefix, namespace, local = parts
 
         # QName cannot end with .
-        if local.endswith("."): return None
+        if local.endswith("."):
+            return None
 
         prefix = self.addNamespace(prefix, namespace)
 

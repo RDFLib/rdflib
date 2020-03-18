@@ -2,7 +2,7 @@
 from rdflib import Graph, Literal, BNode, RDF
 from rdflib.namespace import FOAF, DC
 
-if __name__=='__main__':
+if __name__ == '__main__':
 
     store = Graph()
 

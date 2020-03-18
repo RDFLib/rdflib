@@ -79,7 +79,7 @@ def rdfs2dot(g, stream, opts={}):
                     l = "literal"
                 fields[node(a)].add((label(x, g), l))
             else:
-    #            if a in nodes and b in nodes:
+                #            if a in nodes and b in nodes:
                 stream.write(
                     "\t%s -> %s [ color=%s, label=\"%s\" ];\n" % (
                         node(a), node(b), EDGECOLOR, label(x, g)))
@@ -109,6 +109,7 @@ DOT language to stdout
 
 def main():
     rdflib.extras.cmdlineutils.main(rdfs2dot, _help)
+
 
 if __name__ == '__main__':
     main()

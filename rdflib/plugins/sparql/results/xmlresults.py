@@ -37,25 +37,18 @@ Authors: Drew Perttula, Gunnar Aastrand Grimnes
 
 class XMLResultParser(ResultParser):
 
-    def parse(self, source):
+    def parse(self, source, content_type=None):
         return XMLResult(source)
 
 
 class XMLResult(Result):
-    def __init__(self, source):
+    def __init__(self, source, content_type=None):
 
-        xmlstring = source.read()
-
-        if isinstance(xmlstring, text_type):
-            xmlstring = xmlstring.encode('utf-8')
         try:
             parser = etree.XMLParser(huge_tree=True)
-            tree = etree.parse(BytesIO(xmlstring), parser)
+            tree = etree.parse(source, parser)
         except TypeError:
-            tree = etree.fromstring(xmlstring)
-        except Exception as e:
-            log.exception("Error parsing XML results: %s"%xmlstring)
-            raise e
+            tree = etree.parse(source)
 
         boolean = tree.find(RESULTS_NS_ET + 'boolean')
         results = tree.find(RESULTS_NS_ET + 'results')
@@ -65,18 +58,11 @@ class XMLResult(Result):
         elif results is not None:
             type_ = 'SELECT'
         else:
-            g = Graph()
-            try:
-                g.parse(data=xmlstring)
-                if len(g) == 0:
-                    raise
-                type_ = 'CONSTRUCT'
-
-            except:
-                raise ResultException(
-                    "No RDF Graph, result-bindings or boolean answer found!")
+            raise ResultException(
+                "No RDF result-bindings or boolean answer found!")
 
         Result.__init__(self, type_)
+
         if type_ == 'SELECT':
             self.bindings = []
             for result in results:
@@ -90,10 +76,8 @@ class XMLResult(Result):
                          './%shead/%svariable' % (
                              RESULTS_NS_ET, RESULTS_NS_ET))]
 
-        elif type_ == 'ASK':
+        else:
             self.askAnswer = boolean.text.lower().strip() == "true"
-        elif type_ == 'CONSTRUCT':
-            self.graph = g
 
 
 def parseTerm(element):
@@ -150,6 +134,7 @@ class SPARQLXMLWriter:
     """
     Python saxutils-based SPARQL XML Writer
     """
+
     def __init__(self, output, encoding='utf-8'):
         writer = XMLGenerator(output, encoding)
         writer.startDocument()

@@ -14,16 +14,16 @@ See :meth:`rdflib.graph.Graph.__getitem__` for details
 from rdflib import Graph, RDF
 from rdflib.namespace import FOAF
 
-if __name__=='__main__':
+if __name__ == '__main__':
 
     graph = Graph()
 
     graph.load("foaf.rdf")
 
-    for person in graph[: RDF.type : FOAF.Person]:
+    for person in graph[: RDF.type: FOAF.Person]:
 
-        friends = list(graph[person:FOAF.knows * '+'/FOAF.name])
+        friends = list(graph[person:FOAF.knows * '+' / FOAF.name])
         if friends:
-            print("%s's circle of friends:"%graph.value(person, FOAF.name))
+            print("%s's circle of friends:" % graph.value(person, FOAF.name))
             for name in friends:
                 print(name)

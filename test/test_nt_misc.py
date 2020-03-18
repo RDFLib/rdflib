@@ -9,7 +9,19 @@ from six.moves.urllib.request import urlopen
 
 log = logging.getLogger(__name__)
 
+
 class NTTestCase(unittest.TestCase):
+
+    def testIssue859(self):
+        graphA = Graph()
+        graphB = Graph()
+        graphA.parse("test/nt/quote-01.nt", format="ntriples")
+        graphB.parse("test/nt/quote-02.nt", format="ntriples")
+        for subjectA, predicateA, objA in graphA:
+            for subjectB, predicateB, objB in graphB:
+                self.assertEqual(subjectA, subjectB)
+                self.assertEqual(predicateA, predicateB)
+                self.assertEqual(objA, objB)
 
     def testIssue78(self):
         g = Graph()
@@ -68,7 +80,7 @@ class NTTestCase(unittest.TestCase):
         self.assertEqual(res, uniquot)
 
     def test_NTriplesParser_fpath(self):
-        fpath = "test/nt/"+os.listdir('test/nt')[0]
+        fpath = "test/nt/" + os.listdir('test/nt')[0]
         p = ntriples.NTriplesParser()
         self.assertRaises(ntriples.ParseError, p.parse, fpath)
 
@@ -84,7 +96,7 @@ class NTTestCase(unittest.TestCase):
         self.assertTrue(res == None)
 
     def test_w3_ntriple_variants(self):
-        uri = "file:///"+os.getcwd()+"/test/nt/test.ntriples"
+        uri = "file:///" + os.getcwd() + "/test/nt/test.ntriples"
 
         parser = ntriples.NTriplesParser()
         u = urlopen(uri)

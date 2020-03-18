@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
     graph = ConjunctiveGraph('Sleepycat')
 
-    graph.open(path, create = False)
+    graph.open(path, create=False)
 
     print('Triples still in graph: ', len(graph))
 
@@ -56,5 +56,5 @@ if __name__ == '__main__':
     # Clean up the temp folder to remove the Sleepycat database files...
     import os
     for f in os.listdir(path):
-        os.unlink(path+'/'+f)
+        os.unlink(path + '/' + f)
     os.rmdir(path)

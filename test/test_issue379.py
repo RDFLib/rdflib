@@ -31,6 +31,7 @@ class TestBaseAllowsHash(TestCase):
     """
     GitHub Issue 379: https://github.com/RDFLib/rdflib/issues/379
     """
+
     def setUp(self):
         self.g = rdflib.Graph()
 
@@ -51,6 +52,7 @@ class TestBaseAllowsHash(TestCase):
         """
         self.g.parse(data=base_data, format='n3')
         self.assertIsInstance(next(self.g.subjects()), rdflib.URIRef)
+
 
 if __name__ == "__main__":
     unittest.main()

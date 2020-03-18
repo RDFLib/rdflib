@@ -1,5 +1,4 @@
 import rdflib
-from nose.exc import SkipTest
 import unittest
 
 
@@ -89,6 +88,7 @@ class TestSerialization(unittest.TestCase):
         # See issue 248
         # Actual test should be the inverse of the below ...
         self.assertTrue('<1> a skos:Concept ;' in sg, sg)
+
 
 if __name__ == "__main__":
     unittest.main()

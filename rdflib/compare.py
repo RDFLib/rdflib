@@ -195,9 +195,9 @@ class Color:
         self._hash_color = None
 
     def __str__(self):
-        nodes, color  = self.key()
+        nodes, color = self.key()
         return "Color %s (%s nodes)" % (color, nodes)
-        
+
     def key(self):
         return (len(self.nodes), self.hash_color())
 
@@ -264,10 +264,8 @@ class _TripleCanonicalizer(object):
         self._hash_cache = {}
         self.hashfunc = _hashfunc
 
-
     def _discrete(self, coloring):
         return len([c for c in coloring if not c.discrete()]) == 0
-
 
     def _initial_color(self):
         """Finds an initial color for the graph.
@@ -494,6 +492,7 @@ def to_isomorphic(graph):
     result += graph
     return result
 
+
 def isomorphic(graph1, graph2):
     """Compare graph for equality.
 
@@ -530,7 +529,6 @@ def isomorphic(graph1, graph2):
     return gd1 == gd2
 
 
-
 def to_canonical_graph(g1, stats=None):
     """Creates a canonical, read-only graph.
 
@@ -551,7 +549,6 @@ def graph_diff(g1, g2):
     in_first = cg1 - cg2
     in_second = cg2 - cg1
     return (in_both, in_first, in_second)
-
 
 
 _MOCK_BNODE = BNode()

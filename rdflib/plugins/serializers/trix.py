@@ -10,7 +10,7 @@ from six import text_type, b
 
 __all__ = ['TriXSerializer']
 
-## TODO: MOve this somewhere central
+# TODO: Move this somewhere central
 TRIXNS = Namespace("http://www.w3.org/2004/03/trix/trix-1/")
 XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
 

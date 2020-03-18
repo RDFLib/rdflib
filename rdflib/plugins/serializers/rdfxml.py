@@ -32,7 +32,7 @@ class XMLSerializer(Serializer):
         bindings = {}
 
         for predicate in set(store.predicates()):
-            prefix, namespace, name = nm.compute_qname(predicate)
+            prefix, namespace, name = nm.compute_qname_strict(predicate)
             bindings[prefix] = URIRef(namespace)
 
         RDFNS = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
@@ -116,7 +116,7 @@ class XMLSerializer(Serializer):
     def predicate(self, predicate, object, depth=1):
         write = self.write
         indent = "  " * depth
-        qname = self.store.namespace_manager.qname(predicate)
+        qname = self.store.namespace_manager.qname_strict(predicate)
 
         if isinstance(object, Literal):
             attributes = ""
@@ -138,6 +138,7 @@ class XMLSerializer(Serializer):
             else:
                 write("%s<%s rdf:resource=%s/>\n" %
                       (indent, qname, quoteattr(self.relativize(object))))
+
 
 XMLLANG = "http://www.w3.org/XML/1998/namespacelang"
 XMLBASE = "http://www.w3.org/XML/1998/namespacebase"
@@ -174,7 +175,7 @@ class PrettyXMLSerializer(Serializer):
             store.objects(None, RDF.type))
 
         for predicate in possible:
-            prefix, namespace, local = nm.compute_qname(predicate)
+            prefix, namespace, local = nm.compute_qname_strict(predicate)
             namespaces[prefix] = namespace
 
         namespaces["rdf"] = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -273,8 +274,8 @@ class PrettyXMLSerializer(Serializer):
             if object.language:
                 writer.attribute(XMLLANG, object.language)
 
-            if (object.datatype == RDF.XMLLiteral and
-                    isinstance(object.value, xml.dom.minidom.Document)):
+            if (object.datatype == RDF.XMLLiteral
+                    and isinstance(object.value, xml.dom.minidom.Document)):
                 writer.attribute(RDF.parseType, "Literal")
                 writer.text(u"")
                 writer.stream.write(object)
