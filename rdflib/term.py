@@ -645,15 +645,24 @@ class Literal(Identifier):
         rdflib.term.Literal(u'11')
         """
 
-        py = self.toPython()
-        if not isinstance(py, Literal):
-            try:
-                return Literal(py + val)
-            except TypeError:
-                pass  # fall-through
+        # convert the val to a Literal, if it isn't already one
+        if not isinstance(val, Literal):
+            val = Literal(val)
 
-        s = text_type.__add__(self, val)
-        return Literal(s, self.language, self.datatype)
+        if self.datatype == val.datatype \
+                or \
+                (
+                        self.datatype in _NUMERIC_LITERAL_TYPES
+                        and
+                        val.datatype in _NUMERIC_LITERAL_TYPES
+                ):
+            # return Literal(round(self.toPython() + val.toPython(), 10))
+            return Literal(self.toPython() + val.toPython())
+        else:
+            try:
+                return Literal(self.value + val.value)
+            except TypeError:
+                return Literal(str(self.value) + str(val), self.language, datatype=_XSD_STRING)
 
     def __bool__(self):
         """
