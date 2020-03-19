@@ -54,7 +54,7 @@ If you are familiar with RDF and are looking for details on how RDFLib handles R
    namespaces_and_bindings
    persistence
    merging
-   faq
+   upgrade4to5
    
 
 Reference
