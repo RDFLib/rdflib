@@ -26,7 +26,7 @@ class HexBinaryTestCase(unittest.TestCase):
         if six.PY2:
             self.assertEquals(unicode(l), hex_i)
         else:
-            self.assertEquals(l, hex_i)
+            self.assertEquals(str(l), hex_i)
         self.assertEquals(int(hex_i, 16), i)
         if six.PY2:
             self.assertEquals(int(unicode(l), 16), i)
@@ -44,7 +44,7 @@ class HexBinaryTestCase(unittest.TestCase):
         if six.PY2:
             self.assertEquals(unicode(l1), hex_str1)
         else:
-            self.assertEquals(l1, hex_str1)
+            self.assertEquals(str(l1), hex_str1)
 
         # b hexstring
         hex_str1b = binascii.hexlify(str1.encode('utf-8'))
@@ -55,7 +55,7 @@ class HexBinaryTestCase(unittest.TestCase):
         if six.PY2:
             self.assertEquals(unicode(l1b), hex_str1)
         else:
-            self.assertEquals(l1b, hex_str1)
+            self.assertEquals(str(l1b), hex_str1)
 
 
 if __name__ == '__main__':
