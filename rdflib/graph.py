@@ -1949,7 +1949,7 @@ class BatchAddGraph(object):
     '''
 
     def __init__(self, graph, batchsize=1000):
-        if not batchsize or batchsize < 0:
+        if not batchsize or batchsize < 2:
             raise ValueError("batchsize must be a positive number")
         self.graph = graph
         self.__graph_tuple = (graph,)
@@ -1963,17 +1963,20 @@ class BatchAddGraph(object):
         self.batch = []
         self.count = 0
 
-    def add(self, triple):
+    def add(self, triple_or_quad):
         '''
         Add a triple to the buffer
 
         :param triple: The triple to add
         '''
-        if len(self.batch) >= self.__batchsize == 0:
+        if len(self.batch) >= self.__batchsize:
             self.graph.addN(self.batch)
             self.batch = []
         self.count += 1
-        self.batch.append(triple + self.__graph_tuple)
+        if len(triple_or_quad) == 3:
+            self.batch.append(triple_or_quad + self.__graph_tuple)
+        else:
+            self.batch.append(triple_or_quad)
 
     def __enter__(self):
         self.reset()
