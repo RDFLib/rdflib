@@ -645,19 +645,21 @@ class Literal(Identifier):
         rdflib.term.Literal(u'11')
         """
 
+        if val is None:
+            return self
+
         # convert the val to a Literal, if it isn't already one
         if not isinstance(val, Literal):
             val = Literal(val)
 
-        if self.datatype == val.datatype \
-                or \
-                (
-                        self.datatype in _NUMERIC_LITERAL_TYPES
-                        and
-                        val.datatype in _NUMERIC_LITERAL_TYPES
-                ):
-            # return Literal(round(self.toPython() + val.toPython(), 10))
-            return Literal(self.toPython() + val.toPython())
+        if self.datatype == val.datatype:
+            return Literal(self.toPython() + val.toPython(), datatype=self.datatype)
+        elif (
+                self.datatype in _NUMERIC_LITERAL_TYPES
+                and
+                val.datatype in _NUMERIC_LITERAL_TYPES
+        ):
+            return Literal(round(Decimal(self.toPython()) + Decimal(val.toPython()), 15))
         else:
             try:
                 return Literal(self.value + val.value)

@@ -124,6 +124,8 @@ class TestLiteral(unittest.TestCase):
         self.assertListEqual(l1, sorted(l2))
 
     def test_literal_add(self):
+        from decimal import Decimal
+
         a = Literal(1)
         b01 = Literal(1)
         b02 = Literal(-1)
@@ -151,27 +153,27 @@ class TestLiteral(unittest.TestCase):
 
         self.assertEqual(a + b01, Literal(2))
         self.assertEqual(a + b02, Literal(0))
-        self.assertEqual(a + b03, Literal(2.1))
-        # self.assertEqual(a + b04, Literal(-0.1))  # -0.10000000000000009
+        self.assertEqual(a + b03, Literal(round(Decimal(2.1), 15)))
+        self.assertEqual(a + b04, Literal(round(Decimal(-0.1), 15)))
         self.assertEqual(a + b05, Literal(2))
         self.assertEqual(a + b06, Literal(0))
         self.assertEqual(a + b07, Literal(2))
-        self.assertEqual(a + b08, Literal(2.1))
-        # self.assertEqual(a + b09, Literal(-0.1))
-        # self.assertEqual(a + b10, Literal(2.1))  # 2.1000000000
-        # self.assertEqual(a + b11, Literal(-0.1))
-        self.assertEqual(a + b12, Literal(2.1))
-        # self.assertEqual(a + b13, Literal(-0.1))
+        self.assertEqual(a + b08, Literal(round(Decimal(2.1), 15)))
+        self.assertEqual(a + b09, Literal(round(Decimal(-0.1), 15)))
+        self.assertEqual(a + b10, Literal(round(Decimal(2.1), 15)))
+        self.assertEqual(a + b11, Literal(round(Decimal(-0.1), 15)))
+        self.assertEqual(a + b12, Literal(round(Decimal(2.1), 15)))
+        self.assertEqual(a + b13, Literal(round(Decimal(-0.1), 15)))
         self.assertEqual(a + b14, Literal(2))
         self.assertEqual(a + b15, Literal(0))
         self.assertEqual(a + b16, Literal(2))
-        self.assertEqual(a + b17, Literal(2.1))
-        # self.assertEqual(a + b18, Literal(11))
-        # self.assertEqual(a + b19, Literal(11.1))
-        # self.assertEqual(a + b20, Literal(11))
-        # self.assertEqual(a + b21, Literal(11.1))
-        # self.assertEqual(a + b22, Literal(11))
-        # self.assertEqual(a + b23, Literal(1))
+        self.assertEqual(a + b17, Literal(round(Decimal(2.1), 15)))
+        self.assertEqual(a + b18, Literal(11, datatype=XSD.string))
+        self.assertEqual(a + b19, Literal(11.1, datatype=XSD.string))
+        self.assertEqual(a + b20, Literal(11, datatype=XSD.string))
+        self.assertEqual(a + b21, Literal(11.1, datatype=XSD.string))
+        self.assertEqual(a + b22, Literal(11, datatype=XSD.string))
+        self.assertEqual(a + b23, Literal(1))
 
 
 class TestValidityFunctions(unittest.TestCase):
