@@ -1,5 +1,4 @@
 import unittest
-from unittest.mock import Mock, call
 from rdflib.graph import Graph, BatchAddGraph
 from rdflib.term import URIRef
 
@@ -74,24 +73,17 @@ class TestBatchAddGraph(unittest.TestCase):
         self.assertEqual(10, len(g))
 
     def test_addN_batching_addN(self):
-        g = Mock()
+        class MockGraph(object):
+            def __init__(self):
+                self.counts = []
+
+            def addN(self, quads):
+                self.counts.append(sum(1 for _ in quads))
+
+        g = MockGraph()
         quads = [(URIRef('a'), URIRef('b%d' % i), URIRef('c%d' % i), g)
                 for i in range(12)]
 
         with BatchAddGraph(g, batch_size=10, batch_addn=True) as cut:
             cut.addN(quads)
-        g.addN.assert_has_calls([
-            call(Quads(count=10)),
-            call(Quads(count=2))])
-
-
-class Quads(object):
-    def __init__(self, *, count):
-        self.count = count
-
-    def __eq__(self, graph):
-        return len(graph) == self.count
-
-    def __str__(self):
-        return 'Quads(count=%d)' % self.count
-    __repr__ = __str__
+        self.assertEqual(g.counts, [10, 2])
