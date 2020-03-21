@@ -584,7 +584,7 @@ class Graph(Node):
            BNode IDs are not changed."""
         retval = Graph()
         for x in self:
-            if not x in other:
+            if x not in other:
                 retval.add(x)
         return retval
 
@@ -1933,13 +1933,16 @@ def _assertnode(*terms):
 
 class BatchAddGraph(object):
     '''
-    Wrapper around graph that turns calls to :meth:`add` into calls to :meth:`~rdflib.graph.Graph.addN`
+    Wrapper around graph that turns calls to :meth:`add` (and optionally, :meth:`addN`)
+    into calls to :meth:`~rdflib.graph.Graph.addN`.
 
     :Parameters:
 
       - `graph`: The graph to wrap
-      - `batchsize`: The maximum number of triples to buffer before passing to
+      - `batch_size`: The maximum number of triples to buffer before passing to
         `graph`'s `addN`
+      - `batch_addn`: If True, then even calls to `addN` will be batched according to
+        `batch_size`
 
     :ivar graph: The wrapped graph
     :ivar count: The number of triples buffered since initaialization or the last call
@@ -1948,12 +1951,13 @@ class BatchAddGraph(object):
 
     '''
 
-    def __init__(self, graph, batchsize=1000):
-        if not batchsize or batchsize < 2:
-            raise ValueError("batchsize must be a positive number")
+    def __init__(self, graph, batch_size=1000, batch_addn=False):
+        if not batch_size or batch_size < 2:
+            raise ValueError("batch_size must be a positive number")
         self.graph = graph
         self.__graph_tuple = (graph,)
-        self.__batchsize = batchsize
+        self.__batch_size = batch_size
+        self.__batch_addn = batch_addn
         self.reset()
 
     def reset(self):
@@ -1969,7 +1973,7 @@ class BatchAddGraph(object):
 
         :param triple: The triple to add
         '''
-        if len(self.batch) >= self.__batchsize:
+        if len(self.batch) >= self.__batch_size:
             self.graph.addN(self.batch)
             self.batch = []
         self.count += 1
@@ -1977,6 +1981,13 @@ class BatchAddGraph(object):
             self.batch.append(triple_or_quad + self.__graph_tuple)
         else:
             self.batch.append(triple_or_quad)
+
+    def addN(self, quads):
+        if self.__batch_addn:
+            for q in quads:
+                self.add(q)
+        else:
+            self.graph.addN(quads)
 
     def __enter__(self):
         self.reset()
