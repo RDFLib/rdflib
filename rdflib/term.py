@@ -645,6 +645,7 @@ class Literal(Identifier):
         rdflib.term.Literal(u'11')
         """
 
+        # if no val is supplied, return this Literal
         if val is None:
             return self
 
@@ -652,14 +653,23 @@ class Literal(Identifier):
         if not isinstance(val, Literal):
             val = Literal(val)
 
+        # if the datatypes are the same, just add the Python values and convert back
         if self.datatype == val.datatype:
-            return Literal(self.toPython() + val.toPython(), datatype=self.datatype)
+            return Literal(self.toPython() + val.toPython(), self.language, datatype=self.datatype)
+        # if the datatypes are not the same but are both numeric, add the Python values and strip off decimal junk
+        # (i.e. tiny numbers (more than 17 decimal places) and trailing zeros) and return as a decimal
         elif (
                 self.datatype in _NUMERIC_LITERAL_TYPES
                 and
                 val.datatype in _NUMERIC_LITERAL_TYPES
         ):
-            return Literal(round(Decimal(self.toPython()) + Decimal(val.toPython()), 15))
+            return Literal(
+                Decimal(
+                    ('%f' % round(Decimal(self.toPython()) + Decimal(val.toPython()), 15)).rstrip('0').rstrip('.')
+                ),
+                datatype=_XSD_DECIMAL
+            )
+        # in all other cases, perform string concatenation
         else:
             try:
                 return Literal(self.value + val.value)
