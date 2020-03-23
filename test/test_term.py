@@ -178,12 +178,13 @@ class TestLiteral(unittest.TestCase):
             (41, Literal(float(1.0)), float(1), Literal(float(2.0))),
             (42, Literal(float(1.0)), float(1.0), Literal(float(2.0))),
 
-            (43, Literal(1, datatype=XSD.integer), Literal("+1.1", datatype=XSD.string), Literal("1+1.1", datatype=XSD.string)),
-            (44, Literal(1, datatype=XSD.integer), Literal(u"1", datatype=XSD.string), Literal("11", datatype=XSD.string)),
-            (45, Literal(1.1, datatype=XSD.integer), Literal("1", datatype=XSD.string), Literal("1.11", datatype=XSD.string)),
+            (43, Literal(1, datatype=XSD.integer), "+1.1", Literal("1+1.1", datatype=XSD.string)),
+            (44, Literal(1, datatype=XSD.integer), Literal("+1.1", datatype=XSD.string), Literal("1+1.1", datatype=XSD.string)),
+            (45, Literal(Decimal(1.0), datatype=XSD.integer), Literal(u"1", datatype=XSD.string), Literal("11", datatype=XSD.string)),
+            (46, Literal(1.1, datatype=XSD.integer), Literal("1", datatype=XSD.string), Literal("1.11", datatype=XSD.string)),
 
-            (46, Literal(1, datatype=XSD.integer), None, Literal(1, datatype=XSD.integer)),
-            (47, Literal("1", datatype=XSD.string), None, Literal("1", datatype=XSD.string)),
+            (47, Literal(1, datatype=XSD.integer), None, Literal(1, datatype=XSD.integer)),
+            (48, Literal("1", datatype=XSD.string), None, Literal("1", datatype=XSD.string)),
         ]
 
         for case in cases:
@@ -195,6 +196,11 @@ class TestLiteral(unittest.TestCase):
                     case_passed = isclose((case[1] + case[2].value), case[3].value)
                 except:
                     pass
+
+            if not case_passed:
+                print(case[1], case[2])
+                print("expected: " + case[3] + ", " + case[3].datatype)
+                print("actual: " + (case[1] + case[2]) + ", " + (case[1] + case[2]).datatype)
 
             self.assertTrue(case_passed, "Case " + str(case[0]) + " failed")
 

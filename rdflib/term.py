@@ -672,9 +672,18 @@ class Literal(Identifier):
         # in all other cases, perform string concatenation
         else:
             try:
-                return Literal(self.value + val.value)
+                s = text_type.__add__(self, val)
             except TypeError:
-                return Literal(str(self.value) + str(val), self.language, datatype=_XSD_STRING)
+                s = str(self.value) + str(val)
+
+            # if the original datatype is string-like, use that
+            if self.datatype in _STRING_LITERAL_TYPES:
+                new_datatype = self.datatype
+            # if not, use string
+            else:
+                new_datatype = _XSD_STRING
+
+            return Literal(s, self.language, datatype=new_datatype)
 
     def __bool__(self):
         """
@@ -1448,6 +1457,14 @@ _TOTAL_ORDER_CASTERS = {
     xml.dom.minidom.Document: lambda value: value.toxml(),
 }
 
+
+_STRING_LITERAL_TYPES = (
+    _XSD_STRING,
+    _RDF_XMLLITERAL,
+    _RDF_HTMLLITERAL,
+    URIRef(_XSD_PFX + 'normalizedString'),
+    URIRef(_XSD_PFX + 'token')
+)
 
 def _castPythonToLiteral(obj):
     """
