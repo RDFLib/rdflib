@@ -22,6 +22,33 @@ class NamespacePrefixTest(unittest.TestCase):
         self.assertEqual(g.compute_qname(URIRef("http://blip/blop")),
                          ("ns4", URIRef("http://blip/"), "blop"))
 
+        # should return empty qnames correctly
+        self.assertEqual(g.compute_qname(URIRef("http://foo/bar/")),
+            ("ns1", URIRef("http://foo/bar/"), ""))
+
+    def test_reset(self):
+        data = ('@prefix a: <http://example.org/a> .\n'
+                'a: <http://example.org/b> <http://example.org/c> .')
+        graph = Graph().parse(data=data, format='turtle')
+        for p, n in tuple(graph.namespaces()):
+            graph.store._IOMemory__namespace.pop(p)
+            graph.store._IOMemory__prefix.pop(n)
+        graph.namespace_manager.reset()
+        self.assertFalse(tuple(graph.namespaces()))
+        u = URIRef('http://example.org/a')
+        prefix, namespace, name = graph.namespace_manager.compute_qname(u, generate=True)
+        self.assertNotEqual(namespace, u)
+
+    def test_reset_preserve_prefixes(self):
+        data = ('@prefix a: <http://example.org/a> .\n'
+                'a: <http://example.org/b> <http://example.org/c> .')
+        graph = Graph().parse(data=data, format='turtle')
+        graph.namespace_manager.reset()
+        self.assertTrue(tuple(graph.namespaces()))
+        u = URIRef('http://example.org/a')
+        prefix, namespace, name = graph.namespace_manager.compute_qname(u, generate=True)
+        self.assertEqual(namespace, u)
+
     def test_n3(self):
         g = Graph()
         g.add((URIRef("http://example.com/foo"),

@@ -96,7 +96,7 @@ def nose_tst_earl_report(generator, earl_report_name=None):
     print("Ran %d tests, %d skipped, %d failed. "%(tests, skip, tests-skip-success))
     if earl_report_name:
         now = isodate.datetime_isoformat(datetime.datetime.utcnow())
-        earl_report = 'test_reports/%s-%s.ttl' % (earl_report_name, now)
+        earl_report = 'test_reports/%s-%s.ttl' % (earl_report_name, now.replace(":", ""))
 
         report.serialize(earl_report, format='n3')
         report.serialize('test_reports/%s-latest.ttl'%earl_report_name, format='n3')

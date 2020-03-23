@@ -156,7 +156,7 @@ class Result(object):
     There is a bit of magic here that makes this appear like different
     Python objects, depending on the type of result.
 
-    If the type is "SELECT", iterating will yield lists of QueryRow objects
+    If the type is "SELECT", iterating will yield lists of ResultRow objects
 
     If the type is "ASK", iterating will yield a single bool (or
     bool(result) will return the same bool)
@@ -200,7 +200,15 @@ class Result(object):
     @staticmethod
     def parse(source=None, format=None, content_type=None, **kwargs):
         from rdflib import plugin
-        parser = plugin.get(format or content_type or 'xml', ResultParser)()
+
+        if format:
+            plugin_key = format
+        elif content_type:
+            plugin_key = content_type.split(";", 1)[0]
+        else:
+            plugin_key = 'xml'
+
+        parser = plugin.get(plugin_key, ResultParser)()
 
         return parser.parse(source, content_type=content_type, **kwargs)
 

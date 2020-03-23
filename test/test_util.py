@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import unittest
 import time
 from rdflib.graph import Graph
@@ -236,6 +238,8 @@ class TestUtilTermConvert(unittest.TestCase):
     def test_util_from_n3_expectpartialidempotencewithn3(self):
         for n3 in ('<http://ex.com/foo>',
                    '"foo"@de',
+                   u'<http://ex.com/漢字>',
+                   u'<http://ex.com/a#あ>',
                    # '"\\""', # exception as '\\"' --> '"' by orig parser as well
                    '"""multi\n"line"\nstring"""@en'):
             self.assertEqual(util.from_n3(n3).n3(), n3,
