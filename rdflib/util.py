@@ -156,7 +156,9 @@ def from_n3(s, default=None, backend=None, nsm=None):
     if not s:
         return default
     if s.startswith('<'):
-        return URIRef(s[1:-1])
+        # Hack: this should correctly handle strings with either native unicode
+        # characters, or \u1234 unicode escapes.
+        return URIRef(s[1:-1].encode("raw-unicode-escape").decode("unicode-escape"))
     elif s.startswith('"'):
         if s.startswith('"""'):
             quotes = '"""'
