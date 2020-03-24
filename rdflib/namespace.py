@@ -220,7 +220,10 @@ class _RDFNamespace(ClosedNamespace):
                 "nil",
 
                 # Added in RDF 1.1
-                "XMLLiteral", "HTML", "langString"]
+                "XMLLiteral", "HTML", "langString",
+            
+                # Added in JSON-LD 1.1
+                "JSON", "CompoundLiteral", "language", "direction"]
         )
 
     def term(self, name):
