@@ -16,7 +16,7 @@ working with RDF, including:
 
   * for in-memory and persistent RDF storage - Berkeley DB
 
-* **a graph interface**
+* **Graph interface**
 
   * to a single graph
   * or a conjunctive graph (multiple named graphs)
@@ -101,8 +101,8 @@ and related packaged that you might also find useful.
 
 Further help
 -----------
-If you would like more help with using rdflib, please post a question using the tag [rdflib] on StackOverflow. A list of
-existing [rdflib] tagged questions is there at:
+If you would like more help with using rdflib, please post a question using the tag ``[rdflib]`` on StackOverflow. A list of
+existing ``[rdflib]`` tagged questions is there at:
 
 * `<https://stackoverflow.com/questions/tagged/rdflib>`__
 

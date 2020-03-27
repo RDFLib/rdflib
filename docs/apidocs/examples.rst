@@ -60,7 +60,7 @@ These examples all live in ``./examples`` in the source-distribution of RDFLib.
     :show-inheritance:
 
 :mod:`rdfa_example` Module
-----------------------
+--------------------------
 
 .. automodule:: examples.rdfa_example
     :members:
@@ -76,7 +76,7 @@ These examples all live in ``./examples`` in the source-distribution of RDFLib.
     :show-inheritance:
 
 :mod:`sleepycat_example` Module
------------------------------------
+--------------------------------
 
 .. automodule:: examples.sleepycat_example
     :members:
@@ -92,7 +92,7 @@ These examples all live in ``./examples`` in the source-distribution of RDFLib.
     :show-inheritance:
 
 :mod:`smushing` Module
--------------------
+----------------------
 
 .. automodule:: examples.smushing
     :members:
