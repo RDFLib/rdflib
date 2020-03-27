@@ -88,19 +88,19 @@ Instantiating Graphs with default store (IOMemory) and default identifier
 Instantiating Graphs with a IOMemory store and an identifier -
 <http://rdflib.net>:
 
-    >>> g = Graph("IOMemory", URIRef("http://rdflib.net"))
+    >>> g = Graph('IOMemory', URIRef("http://rdflib.net"))
     >>> g.identifier
-    rdflib.term.URIRef("http://rdflib.net")
-    >>> str(g) # doctest: +NORMALIZE_WHITESPACE
+    rdflib.term.URIRef('http://rdflib.net')
+    >>> str(g)  # doctest: +NORMALIZE_WHITESPACE
     "<http://rdflib.net> a rdfg:Graph;rdflib:storage
-     [a rdflib:Store;rdfs:label "IOMemory"]."
+     [a rdflib:Store;rdfs:label 'IOMemory']."
 
 Creating a ConjunctiveGraph - The top level container for all named Graphs
 in a "database":
 
     >>> g = ConjunctiveGraph()
     >>> str(g.default_context)
-    "[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label "IOMemory"]]."
+    "[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory']]."
 
 Adding / removing reified triples to Graph and iterating over it directly or
 via triple pattern:
@@ -119,10 +119,10 @@ via triple pattern:
     >>> for s, p, o in g:
     ...     print(type(s))
     ...
-    <class "rdflib.term.BNode">
-    <class "rdflib.term.BNode">
-    <class "rdflib.term.BNode">
-    <class "rdflib.term.BNode">
+    <class 'rdflib.term.BNode'>
+    <class 'rdflib.term.BNode'>
+    <class 'rdflib.term.BNode'>
+    <class 'rdflib.term.BNode'>
 
     >>> for s, p, o in g.triples((None, RDF.object, None)):
     ...     print(o)
@@ -173,21 +173,21 @@ the same store:
     >>> stmt3 = BNode()
     >>> g1.add((stmt1, RDF.type, RDF.Statement))
     >>> g1.add((stmt1, RDF.subject,
-    ...     URIRef("http://rdflib.net/store/ConjunctiveGraph")))
+    ...     URIRef('http://rdflib.net/store/ConjunctiveGraph')))
     >>> g1.add((stmt1, RDF.predicate, RDFS.label))
-    >>> g1.add((stmt1, RDF.object, Literal("Conjunctive Graph")))
+    >>> g1.add((stmt1, RDF.object, Literal('Conjunctive Graph')))
     >>> g2.add((stmt2, RDF.type, RDF.Statement))
     >>> g2.add((stmt2, RDF.subject,
-    ...     URIRef("http://rdflib.net/store/ConjunctiveGraph")))
+    ...     URIRef('http://rdflib.net/store/ConjunctiveGraph')))
     >>> g2.add((stmt2, RDF.predicate, RDF.type))
     >>> g2.add((stmt2, RDF.object, RDFS.Class))
     >>> g3.add((stmt3, RDF.type, RDF.Statement))
     >>> g3.add((stmt3, RDF.subject,
-    ...     URIRef("http://rdflib.net/store/ConjunctiveGraph")))
+    ...     URIRef('http://rdflib.net/store/ConjunctiveGraph')))
     >>> g3.add((stmt3, RDF.predicate, RDFS.comment))
     >>> g3.add((stmt3, RDF.object, Literal(
-    ...     "The top-level aggregate graph - The sum " +
-    ...     "of all named graphs within a Store")))
+    ...     'The top-level aggregate graph - The sum ' +
+    ...     'of all named graphs within a Store')))
     >>> len(list(ConjunctiveGraph(store).subjects(RDF.type, RDF.Statement)))
     3
     >>> len(list(ReadOnlyGraphAggregate([g1,g2]).subjects(
@@ -229,9 +229,9 @@ Using Namespace class:
 
     >>> RDFLib = Namespace("http://rdflib.net/")
     >>> RDFLib.ConjunctiveGraph
-    rdflib.term.URIRef("http://rdflib.net/ConjunctiveGraph")
+    rdflib.term.URIRef('http://rdflib.net/ConjunctiveGraph')
     >>> RDFLib["Graph"]
-    rdflib.term.URIRef("http://rdflib.net/Graph")
+    rdflib.term.URIRef('http://rdflib.net/Graph')
 
 """
 
@@ -432,13 +432,13 @@ class Graph(Node):
         >>> g.add((rdflib.URIRef("urn:bob"), rdflib.RDFS.label, rdflib.Literal("Bob")))
 
         >>> list(g[rdflib.URIRef("urn:bob")]) # all triples about bob
-        [(rdflib.term.URIRef("http://www.w3.org/2000/01/rdf-schema#label"), rdflib.term.Literal("Bob"))]
+        [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'), rdflib.term.Literal('Bob'))]
 
         >>> list(g[:rdflib.RDFS.label]) # all label triples
-        [(rdflib.term.URIRef("urn:bob"), rdflib.term.Literal("Bob"))]
+        [(rdflib.term.URIRef('urn:bob'), rdflib.term.Literal('Bob'))]
 
         >>> list(g[::rdflib.Literal("Bob")]) # all triples with bob as object
-        [(rdflib.term.URIRef("urn:bob"), rdflib.term.URIRef("http://www.w3.org/2000/01/rdf-schema#label"))]
+        [(rdflib.term.URIRef('urn:bob'), rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'))]
 
         Combined with SPARQL paths, more complex queries can be
         written concisely:
@@ -744,26 +744,26 @@ class Graph(Node):
         >>> g.add([u, RDFS.label, Literal("foo")])
         >>> g.add([u, RDFS.label, Literal("bar")])
         >>> pprint(sorted(g.preferredLabel(u)))
-        [(rdflib.term.URIRef("http://www.w3.org/2000/01/rdf-schema#label"),
-          rdflib.term.Literal("bar")),
-         (rdflib.term.URIRef("http://www.w3.org/2000/01/rdf-schema#label"),
-          rdflib.term.Literal("foo"))]
+        [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
+          rdflib.term.Literal('bar')),
+         (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
+          rdflib.term.Literal('foo'))]
         >>> g.add([u, SKOS.prefLabel, Literal("bla")])
         >>> pprint(g.preferredLabel(u))
-        [(rdflib.term.URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
-          rdflib.term.Literal("bla"))]
+        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal('bla'))]
         >>> g.add([u, SKOS.prefLabel, Literal("blubb", lang="en")])
         >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
-        [(rdflib.term.URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
-          rdflib.term.Literal("bla")),
-          (rdflib.term.URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
-          rdflib.term.Literal("blubb", lang="en"))]
+        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal('bla')),
+          (rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal('blubb', lang='en'))]
         >>> g.preferredLabel(u, lang="") #doctest: +NORMALIZE_WHITESPACE
-        [(rdflib.term.URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
-          rdflib.term.Literal("bla"))]
+        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal('bla'))]
         >>> pprint(g.preferredLabel(u, lang="en"))
-        [(rdflib.term.URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
-          rdflib.term.Literal("blubb", lang="en"))]
+        [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          rdflib.term.Literal('blubb', lang='en'))]
         """
 
         if default is None:
@@ -835,28 +835,28 @@ class Graph(Node):
         >>> g.add((c,RDF.first,RDFS.comment))
         >>> g.add((c,RDF.rest,RDF.nil))
         >>> def topList(node,g):
-        ...    for s in g.subjects(RDF.rest,node):
+        ...    for s in g.subjects(RDF.rest, node):
         ...       yield s
         >>> def reverseList(node,g):
-        ...    for f in g.objects(node,RDF.first):
+        ...    for f in g.objects(node, RDF.first):
         ...       print(f)
-        ...    for s in g.subjects(RDF.rest,node):
+        ...    for s in g.subjects(RDF.rest, node):
         ...       yield s
 
         >>> [rt for rt in g.transitiveClosure(
         ...     topList,RDF.nil)] # doctest: +NORMALIZE_WHITESPACE
-        [rdflib.term.BNode("baz"),
-         rdflib.term.BNode("bar"),
-         rdflib.term.BNode("foo")]
+        [rdflib.term.BNode('baz'),
+         rdflib.term.BNode('bar'),
+         rdflib.term.BNode('foo')]
 
         >>> [rt for rt in g.transitiveClosure(
         ...     reverseList,RDF.nil)] # doctest: +NORMALIZE_WHITESPACE
         http://www.w3.org/2000/01/rdf-schema#comment
         http://www.w3.org/2000/01/rdf-schema#label
         http://www.w3.org/1999/02/22-rdf-syntax-ns#type
-        [rdflib.term.BNode("baz"),
-         rdflib.term.BNode("bar"),
-         rdflib.term.BNode("foo")]
+        [rdflib.term.BNode('baz'),
+         rdflib.term.BNode('bar'),
+         rdflib.term.BNode('foo')]
 
         """
         if seen is None:
