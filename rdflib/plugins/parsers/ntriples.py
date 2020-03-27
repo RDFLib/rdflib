@@ -28,7 +28,7 @@ from six import unichr
 
 __all__ = ['unquote', 'uriquote', 'Sink', 'NTriplesParser']
 
-uriref = r'<([^:]+:[^\s"<>]+)>'
+uriref = r'<([^:]+:[^\s"<>]*)>'
 literal = r'"([^"\\]*(?:\\.[^"\\]*)*)"'
 litinfo = r'(?:@([a-zA-Z]+(?:-[a-zA-Z0-9]+)*)|\^\^' + uriref + r')?'
 

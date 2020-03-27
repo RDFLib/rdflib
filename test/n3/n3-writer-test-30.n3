@@ -1,0 +1,22 @@
+# Test full length qnames
+
+@prefix :       <http://example.org/here#> .
+@prefix full:   <http://example.org/full> .
+@prefix pref:     <http://example.org/prefix/> .
+@prefix more:   <http://example.org/prefix/more> .
+
+# Test namespace generation
+
+full: :x :y .
+:x full: :y .
+:x :y full: .
+
+full: full: full: . 
+
+# Test existing namespace
+
+more: :x :y .
+:x more: :y .
+:x :y more: .
+
+more: more: more: .

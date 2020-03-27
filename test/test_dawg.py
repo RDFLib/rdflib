@@ -613,7 +613,7 @@ if __name__ == '__main__':
                     now, i, success, f_sum, e_sum, skip, 100. * success / i)
             )
 
-        earl_report = 'test_reports/rdflib_sparql-%s.ttl' % now
+        earl_report = 'test_reports/rdflib_sparql-%s.ttl' % now.replace(":", "")
 
         report.serialize(earl_report, format='n3')
         report.serialize('test_reports/rdflib_sparql-latest.ttl', format='n3')
