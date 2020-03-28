@@ -1,36 +1,46 @@
-extras Package
-==============
+rdflib.extras package
+=====================
 
-:mod:`extras` Package
----------------------
+Submodules
+----------
 
-.. automodule:: rdflib.extras
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`cmdlineutils` Module
---------------------------
+rdflib.extras.cmdlineutils module
+---------------------------------
 
 .. automodule:: rdflib.extras.cmdlineutils
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-:mod:`describer` Module
------------------------
+rdflib.extras.describer module
+------------------------------
 
 .. automodule:: rdflib.extras.describer
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: __dict__,__weakref__
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-:mod:`infixowl` Module
-----------------------
+rdflib.extras.external\_graph\_libs module
+------------------------------------------
+
+.. automodule:: rdflib.extras.external_graph_libs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+rdflib.extras.infixowl module
+-----------------------------
 
 .. automodule:: rdflib.extras.infixowl
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: __dict__,__weakref__
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: rdflib.extras
+   :members:
+   :undoc-members:
+   :show-inheritance:

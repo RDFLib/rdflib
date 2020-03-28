@@ -1,55 +1,54 @@
-tools Package
-=============
+rdflib.tools package
+====================
 
-These commandline-tools are installed into :samp:`{INSTALL_PREFIX}/bin` by setuptools.
+Submodules
+----------
 
-:mod:`tools` Package
----------------------
-
-.. automodule:: rdflib.tools
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-:mod:`csv2rdf` Module
----------------------
+rdflib.tools.csv2rdf module
+---------------------------
 
 .. automodule:: rdflib.tools.csv2rdf
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :exclude-members: __dict__,__weakref__
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-:mod:`graphisomorphism` Module
-------------------------------
+rdflib.tools.graphisomorphism module
+------------------------------------
 
 .. automodule:: rdflib.tools.graphisomorphism
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-:mod:`rdf2dot` Module
----------------------
+rdflib.tools.rdf2dot module
+---------------------------
 
 .. automodule:: rdflib.tools.rdf2dot
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-:mod:`rdfpipe` Module
----------------------
+rdflib.tools.rdfpipe module
+---------------------------
 
 .. automodule:: rdflib.tools.rdfpipe
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-:mod:`rdfs2dot` Module
-----------------------
+rdflib.tools.rdfs2dot module
+----------------------------
 
 .. automodule:: rdflib.tools.rdfs2dot
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
+
+Module contents
+---------------
+
+.. automodule:: rdflib.tools
+   :members:
+   :undoc-members:
+   :show-inheritance:
