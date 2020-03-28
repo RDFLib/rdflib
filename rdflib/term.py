@@ -644,15 +644,45 @@ class Literal(Identifier):
         rdflib.term.Literal(u'11')
         """
 
-        py = self.toPython()
-        if not isinstance(py, Literal):
-            try:
-                return Literal(py + val)
-            except TypeError:
-                pass  # fall-through
+        # if no val is supplied, return this Literal
+        if val is None:
+            return self
 
-        s = text_type.__add__(self, val)
-        return Literal(s, self.language, self.datatype)
+        # convert the val to a Literal, if it isn't already one
+        if not isinstance(val, Literal):
+            val = Literal(val)
+
+        # if the datatypes are the same, just add the Python values and convert back
+        if self.datatype == val.datatype:
+            return Literal(self.toPython() + val.toPython(), self.language, datatype=self.datatype)
+        # if the datatypes are not the same but are both numeric, add the Python values and strip off decimal junk
+        # (i.e. tiny numbers (more than 17 decimal places) and trailing zeros) and return as a decimal
+        elif (
+                self.datatype in _NUMERIC_LITERAL_TYPES
+                and
+                val.datatype in _NUMERIC_LITERAL_TYPES
+        ):
+            return Literal(
+                Decimal(
+                    ('%f' % round(Decimal(self.toPython()) + Decimal(val.toPython()), 15)).rstrip('0').rstrip('.')
+                ),
+                datatype=_XSD_DECIMAL
+            )
+        # in all other cases, perform string concatenation
+        else:
+            try:
+                s = text_type.__add__(self, val)
+            except TypeError:
+                s = str(self.value) + str(val)
+
+            # if the original datatype is string-like, use that
+            if self.datatype in _STRING_LITERAL_TYPES:
+                new_datatype = self.datatype
+            # if not, use string
+            else:
+                new_datatype = _XSD_STRING
+
+            return Literal(s, self.language, datatype=new_datatype)
 
     def __bool__(self):
         """
@@ -1432,6 +1462,15 @@ _TOTAL_ORDER_CASTERS = {
     ),
     xml.dom.minidom.Document: lambda value: value.toxml(),
 }
+
+
+_STRING_LITERAL_TYPES = (
+    _XSD_STRING,
+    _RDF_XMLLITERAL,
+    _RDF_HTMLLITERAL,
+    URIRef(_XSD_PFX + 'normalizedString'),
+    URIRef(_XSD_PFX + 'token')
+)
 
 
 def _py2literal(obj, pType, castFunc, dType):
