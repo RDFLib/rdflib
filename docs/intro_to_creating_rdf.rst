@@ -90,7 +90,7 @@ Triples can also be added within Python code directly, using the :meth:`~rdflib.
 
 outputs: 
 
-.. code-block:: n3
+.. code-block:: Turtle
 
     @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 

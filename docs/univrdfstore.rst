@@ -173,7 +173,7 @@ Formulae and variables are distinguishable from URI references, Literals, and BN
 
 They must also be distinguishable in persistence to ensure they can be round-tripped. 
 
-.. note:: There are a number of other issues regarding the :doc:`persisting of N3 terms <persisting_n3_terms>`_.
+.. note:: There are a number of other issues regarding the :doc:`persisting_n3_terms`.
 
 Database Management
 ===================

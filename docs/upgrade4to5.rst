@@ -18,7 +18,4 @@ Paragraphs of explanation
 
 Minor Changes 
 --------------
-This list has been assembled from Pull Request and commit information.
-
-* stuff
-* more stuff
+This list has been assembled semi-automatically from Pull Request and commit information.
