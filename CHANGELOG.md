@@ -55,8 +55,6 @@ _**All issues closed and PRs merged since 4.2.2:**_
     [ISSUE #687](https://github.com/RDFLib/rdflib/issues/687)
   * namespace.py include colon in ALLOWED_NAME_CHARS
     [PR #663](https://github.com/RDFLib/rdflib/pull/663)
-  * Parse implicit string
-    [PR #657](https://github.com/RDFLib/rdflib/pull/657)
   * namespace.py fix compute_qname missing namespaces
     [PR #649](https://github.com/RDFLib/rdflib/pull/649)
   * RDFa parsing Error! `__init__()` got an unexpected keyword argument 'encoding'
