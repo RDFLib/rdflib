@@ -1389,7 +1389,7 @@ def _parseBoolean(value):
         return True
     if new_value != 'false' and new_value != '0':
         warnings.warn('Parsing weird boolean, %r does not map to True or False'%value,DeprecationWarning)
-    return False`
+    return False
 
 # Cannot import Namespace/XSD because of circular dependencies
 _XSD_PFX = 'http://www.w3.org/2001/XMLSchema#'
