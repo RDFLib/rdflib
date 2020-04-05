@@ -1383,6 +1383,14 @@ def _unhexlify(value):
         value = value.encode()
     return unhexlify(value)
 
+def _parseBoolean(value):
+    new_value = value.lower()
+    if new_value == 'true' or new_value=='1':
+        return True
+    if new_value != 'false' and new_value != '0':
+        warnings.warn('Parsing weird boolean, %r does not map to True or False'%value,DeprecationWarning)
+    return False`
+
 # Cannot import Namespace/XSD because of circular dependencies
 _XSD_PFX = 'http://www.w3.org/2001/XMLSchema#'
 _RDF_PFX = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
@@ -1552,7 +1560,7 @@ XSDToPython = {
     URIRef(_XSD_PFX + 'normalizedString'): None,
     URIRef(_XSD_PFX + 'token'): None,
     URIRef(_XSD_PFX + 'language'): None,
-    URIRef(_XSD_PFX + 'boolean'): lambda i: i.lower() == 'true',
+    URIRef(_XSD_PFX + 'boolean'): _parseBoolean,
     URIRef(_XSD_PFX + 'decimal'): Decimal,
     URIRef(_XSD_PFX + 'integer'): long_type,
     URIRef(_XSD_PFX + 'nonPositiveInteger'): int,
