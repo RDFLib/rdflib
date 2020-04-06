@@ -1,7 +1,7 @@
 import unittest
 
 import rdflib  # needed for eval(repr(...)) below
-from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind, XSD, _XSD_BOOLEAN
+from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind, _XSD_BOOLEAN
 from six import integer_types, PY3, string_types
 
 
