@@ -186,7 +186,5 @@ class TestBindings(unittest.TestCase):
         self.assertEqual(specific_l.toPython(), s)
         self.assertEqual(specific_l.datatype, datatype)
 
- 
-
 if __name__ == "__main__":
     unittest.main()
