@@ -1,7 +1,7 @@
 import unittest
 
 import rdflib  # needed for eval(repr(...)) below
-from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind
+from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind, XSD, _XSD_BOOLEAN
 from six import integer_types, PY3, string_types
 
 
@@ -100,6 +100,29 @@ class TestDoubleOutput(unittest.TestCase):
         out = vv._literal_n3(use_plain=True)
         self.assertTrue(out in ["8.8e-01", "0.88"], out)
 
+class TestParseBoolean(unittest.TestCase):
+    """confirms the fix for https://github.com/RDFLib/rdflib/issues/913"""
+    def testTrueBoolean(self):
+        test_value = Literal("tRue", datatype = _XSD_BOOLEAN)
+        self.assertTrue(test_value.value)
+        test_value = Literal("1",datatype = _XSD_BOOLEAN)
+        self.assertTrue(test_value.value)
+    
+    def testFalseBoolean(self):
+        test_value = Literal("falsE", datatype = _XSD_BOOLEAN)
+        self.assertFalse(test_value.value)
+        test_value = Literal("0",datatype = _XSD_BOOLEAN)
+        self.assertFalse(test_value.value)
+    
+    def testNonFalseBoolean(self):
+        test_value = Literal("abcd", datatype = _XSD_BOOLEAN)
+        self.assertWarns(DeprecationWarning)
+        self.assertFalse(test_value.value)
+        test_value = Literal("10",datatype = _XSD_BOOLEAN)
+        self.assertWarns(DeprecationWarning)
+        self.assertFalse(test_value.value)
+        
+       
 
 class TestBindings(unittest.TestCase):
 
@@ -163,6 +186,7 @@ class TestBindings(unittest.TestCase):
         self.assertEqual(specific_l.toPython(), s)
         self.assertEqual(specific_l.datatype, datatype)
 
+ 
 
 if __name__ == "__main__":
     unittest.main()
