@@ -107,13 +107,13 @@ class TestParseBoolean(unittest.TestCase):
         self.assertTrue(test_value.value)
         test_value = Literal("1",datatype = _XSD_BOOLEAN)
         self.assertTrue(test_value.value)
-    
+
     def testFalseBoolean(self):
         test_value = Literal("falsE", datatype = _XSD_BOOLEAN)
         self.assertFalse(test_value.value)
         test_value = Literal("0",datatype = _XSD_BOOLEAN)
         self.assertFalse(test_value.value)
-    
+
     def testNonFalseBoolean(self):
         test_value = Literal("abcd", datatype = _XSD_BOOLEAN)
         self.assertRaises(DeprecationWarning)
@@ -121,8 +121,8 @@ class TestParseBoolean(unittest.TestCase):
         test_value = Literal("10",datatype = _XSD_BOOLEAN)
         self.assertRaises(DeprecationWarning)
         self.assertFalse(test_value.value)
-        
-       
+
+
 
 class TestBindings(unittest.TestCase):
 
@@ -185,6 +185,7 @@ class TestBindings(unittest.TestCase):
         self.assertEqual(str(specific_l), lexify(s))
         self.assertEqual(specific_l.toPython(), s)
         self.assertEqual(specific_l.datatype, datatype)
+
 
 if __name__ == "__main__":
     unittest.main()
