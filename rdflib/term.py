@@ -1384,11 +1384,13 @@ def _unhexlify(value):
     return unhexlify(value)
 
 def _parseBoolean(value):
+    true_accepted_values = ['1', 'true']
+    false_accepted_values = ['0', 'false']
     new_value = value.lower()
-    if new_value == 'true' or new_value=='1':
+    if new_value in true_accepted_values:
         return True
-    if new_value != 'false' and new_value != '0':
-        warnings.warn('Parsing weird boolean, %r does not map to True or False'%value,DeprecationWarning)
+    if new_value not in false_accepted_values:
+        warnings.warn('Parsing weird boolean, % r does not map to True or False' % value, category = DeprecationWarning)
     return False
 
 # Cannot import Namespace/XSD because of circular dependencies
