@@ -1391,6 +1391,7 @@ def _parseBoolean(value):
         return True
     if new_value not in false_accepted_values:
         warnings.warn('Parsing weird boolean, % r does not map to True or False' % value, category = DeprecationWarning)
+        return None
     return False
 
 # Cannot import Namespace/XSD because of circular dependencies
