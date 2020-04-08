@@ -4,15 +4,15 @@
 Loading and saving RDF
 ======================
 
-Reading an NT file
--------------------
+Reading an n-triples file
+--------------------------
 
 RDF data has various syntaxes (``xml``, ``n3``, ``ntriples``,
 ``trix``, ``JSON-LD``, etc) that you might want to read. The simplest format is
 ``ntriples``, a line-based format. Create the file :file:`demo.nt` in
 the current directory with these two lines:
 
-.. code-block:: n3
+.. code-block:: Turtle
 
     <http://bigasterisk.com/foaf.rdf#drewp> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .
     <http://bigasterisk.com/foaf.rdf#drewp> <http://example.com/says> "Hello world" .
