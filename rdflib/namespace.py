@@ -75,8 +75,12 @@ The following namespaces are available by directly importing from rdflib:
 __all__ = [
     'is_ncname', 'split_uri', 'Namespace',
     'ClosedNamespace', 'NamespaceManager',
-    'XMLNS', 'RDF', 'RDFS', 'XSD', 'OWL',
-    'SKOS', 'DOAP', 'FOAF', 'DC', 'DCTERMS', 'VOID']
+    'CSVW', 'DC', 'DCAT', 'DCTERMS', 'DOAP',
+    'FOAF', 'ODRL2', 'ORG', 'OWL', 'PROF',
+    'PROV', 'QB', 'RDF', 'RDFS', 'SDO',
+    'SH', 'SKOS', 'SOSA', 'SSN', 'TIME',
+    'VOID', 'XMLNS', 'XSD'
+]
 
 logger = logging.getLogger(__name__)
 
@@ -240,21 +244,6 @@ class _RDFNamespace(ClosedNamespace):
         return super(_RDFNamespace, self).term(name)
 
 
-RDF = _RDFNamespace()
-
-
-RDFS = ClosedNamespace(
-    uri=URIRef("http://www.w3.org/2000/01/rdf-schema#"),
-    terms=[
-        "Resource", "Class", "subClassOf", "subPropertyOf", "comment", "label",
-        "domain", "range", "seeAlso", "isDefinedBy", "Literal", "Container",
-        "ContainerMembershipProperty", "member", "Datatype"]
-)
-
-OWL = Namespace('http://www.w3.org/2002/07/owl#')
-
-XSD = Namespace(_XSD_PFX)
-
 CSVW = Namespace('http://www.w3.org/ns/csvw#')
 DC = Namespace('http://purl.org/dc/elements/1.1/')
 DCAT = Namespace('http://www.w3.org/ns/dcat#')
@@ -278,6 +267,8 @@ FOAF = ClosedNamespace(
 )
 ODRL2 = Namespace('http://www.w3.org/ns/odrl/2/')
 ORG = Namespace('http://www.w3.org/ns/org#')
+OWL = Namespace('http://www.w3.org/2002/07/owl#')
+PROF = Namespace('http://www.w3.org/ns/dx/prof/')
 PROV = ClosedNamespace(
     uri=URIRef('http://www.w3.org/ns/prov#'),
     terms=[
@@ -299,7 +290,15 @@ PROV = ClosedNamespace(
         'activity', 'agent', 'hadPlan', 'hadActivity', 'atTime', 'hadRole'
     ]
 )
-PROF = Namespace('http://www.w3.org/ns/dx/prof/')
+QB = Namespace('http://purl.org/linked-data/cube#')
+RDF = _RDFNamespace()
+RDFS = ClosedNamespace(
+    uri=URIRef("http://www.w3.org/2000/01/rdf-schema#"),
+    terms=[
+        "Resource", "Class", "subClassOf", "subPropertyOf", "comment", "label",
+        "domain", "range", "seeAlso", "isDefinedBy", "Literal", "Container",
+        "ContainerMembershipProperty", "member", "Datatype"]
+)
 SDO = Namespace('https://schema.org/')
 SH = Namespace('http://www.w3.org/ns/shacl#')
 SKOS = ClosedNamespace(
@@ -319,6 +318,8 @@ SOSA = Namespace('http://www.w3.org/ns/ssn/')
 SSN = Namespace('http://www.w3.org/ns/sosa/')
 TIME = Namespace('http://www.w3.org/2006/time#')
 VOID = Namespace('http://rdfs.org/ns/void#')
+XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
+XSD = Namespace(_XSD_PFX)
 
 
 class NamespaceManager(object):
@@ -647,9 +648,6 @@ def is_ncname(name):
     return 0
 
 
-XMLNS = "http://www.w3.org/XML/1998/namespace"
-
-
 def split_uri(uri, split_start=SPLIT_START_CATEGORIES):
     if uri.startswith(XMLNS):
         return (XMLNS, uri.split(XMLNS)[1])
@@ -669,6 +667,7 @@ def split_uri(uri, split_start=SPLIT_START_CATEGORIES):
                     return (ns, ln)
             break
     raise ValueError("Can't split '{}'".format(uri))
+
 
 def insert_trie(trie, value):  # aka get_subtrie_or_insert
     """ Insert a value into the trie if it is not already contained in the trie.
@@ -690,9 +689,11 @@ def insert_trie(trie, value):  # aka get_subtrie_or_insert
         trie[value] = {}
     return trie[value]
 
+
 def insert_strie(strie, trie, value):
     if value not in strie:
         strie[value] = insert_trie(trie, value)
+
 
 def get_longest_namespace(trie, value):
     for key in trie:

@@ -60,8 +60,10 @@ __all__ = [
     'Graph',
     'ConjunctiveGraph',
 
-    'CSVW', 'DC', 'DCAT', 'DCTERMS', 'DOAP', 'FOAF', 'ODRL2', 'ORG', 'OWL',
-    'PROF', 'PROV', 'RDF', 'RDFS', 'SDO', 'SH', 'SKOS', 'SOSA', 'SSN', 'TIME',
+    'CSVW', 'DC', 'DCAT', 'DCTERMS', 'DOAP',
+    'FOAF', 'ODRL2', 'ORG', 'OWL', 'PROF',
+    'PROV', 'QB', 'RDF', 'RDFS', 'SDO',
+    'SH', 'SKOS', 'SOSA', 'SSN', 'TIME',
     'VOID', 'XMLNS', 'XSD',
 
     'util',
@@ -162,8 +164,10 @@ from rdflib.namespace import Namespace
 
 from rdflib.graph import Dataset, Graph, ConjunctiveGraph
 
-from rdflib.namespace import CSVW, DC, DCAT, DCTERMS, DOAP, FOAF, ODRL2, ORG, OWL, \
-                             PROF, PROV, RDF, RDFS, SDO, SH, SKOS, SOSA, SSN, TIME, \
+from rdflib.namespace import CSVW, DC, DCAT, DCTERMS, DOAP, \
+                             FOAF, ODRL2, ORG, OWL, PROF, \
+                             PROV, QB, RDF, RDFS, SDO, \
+                             SH, SKOS, SOSA, SSN, TIME, \
                              VOID, XMLNS, XSD
 
 from rdflib import plugin
