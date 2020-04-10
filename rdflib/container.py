@@ -1,5 +1,3 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -10,25 +8,23 @@ from rdflib.term import Literal
 from rdflib import URIRef
 from pprint import pprint
 from random import randint
+from rdflib import Graph
 
 
 class Container(object):
 
-    def __init__(self, graph, uri, seq=[], typee='Bag'):
+    def __init__(self, graph, uri, seq=[], rtype='Bag'):
 
         self.graph = graph
         self.uri = uri or BNode()
         self._len = 0
-        self._type = typee  # rdf:Bag or rdf:Seq or rdf:Alt
+        self._rtype = rtype  # rdf:Bag or rdf:Seq or rdf:Alt
 
         self.append_multiple(seq)
 
-        pred_uri = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
-        container_uri = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
-        container_uri += str(self._type)
         container = self.uri
         # adding triple corresponding to container type
-        self.graph.add((container, URIRef(pred_uri), URIRef(container_uri)))
+        self.graph.add((container, RDF.type, RDF[self._rtype]))
 
     def n3(self):
 
@@ -53,7 +49,7 @@ class Container(object):
         return self._len
 
     def type_of_conatiner(self):
-        return self._type
+        return self._rtype
 
     def index(self, item):
         """
@@ -78,7 +74,7 @@ class Container(object):
         c = self._get_container()
 
         assert isinstance(key, int)
-        elem_uri = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#_' + str(key)
+        elem_uri = str(RDF) + '_' + str(key)
         if key <= 0 or key > len(self):
             raise KeyError(key)
         v = self.graph.value(c, URIRef(elem_uri))
@@ -94,7 +90,7 @@ class Container(object):
         assert isinstance(key, int)
 
         c = self._get_container()
-        elem_uri = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#_' + str(key)
+        elem_uri = str(RDF) + '_' + str(key)
         if key <= 0 or key > len(self):
             raise KeyError(key)
 
@@ -109,13 +105,13 @@ class Container(object):
 
         graph = self.graph
         container = self.uri
-        elem_uri = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#_' + str(key)
+        elem_uri = str(RDF) + '_' + str(key)
         graph.remove((container, URIRef(elem_uri), None))
         for j in range(key + 1, len(self) + 1):
-            elem_uri = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#_' + str(j)
+            elem_uri = str(RDF) + '_' + str(j)
             v = graph.value(container, URIRef(elem_uri))
             graph.remove((container, URIRef(elem_uri), v))
-            elem_uri = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#_' + str(j - 1)
+            elem_uri = str(RDF) + '_' + str(j - 1)
             graph.add((container, URIRef(elem_uri), v))
 
         self._len -= 1
@@ -127,7 +123,7 @@ class Container(object):
         container = self.uri
         i = 1
         while True:
-            elem_uri = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#_' + str(i)
+            elem_uri = str(RDF) + '_' + str(i)
 
             if (container, URIRef(elem_uri), None) in self.graph:
                 i += 1
@@ -143,7 +139,7 @@ class Container(object):
         container = self.uri
         i = 1
         while True:
-            elem_uri = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#_' + str(i)
+            elem_uri = str(RDF) + '_' + str(i)
 
             if (container, URIRef(elem_uri), None) in self.graph:
                 i += 1
@@ -154,7 +150,7 @@ class Container(object):
         ''' adding item to the end of the container'''
 
         end = self.end()
-        elem_uri = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#_' + str(end + 1)
+        elem_uri = str(RDF) + '_' + str(end + 1)
         container = self.uri
         self.graph.add((container, URIRef(elem_uri), item))
         self._len += 1
@@ -170,7 +166,7 @@ class Container(object):
 
             end += 1
             self._len += 1
-            elem_uri = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#_' + str(end)
+            elem_uri = str(RDF) + '_' + str(end)
             self.graph.add((container, URIRef(elem_uri), item))
 
     def clear(self):
@@ -180,7 +176,7 @@ class Container(object):
         graph = self.graph
         i = 1
         while True:
-            elem_uri = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#_' + str(i)
+            elem_uri = str(RDF) + '_' + str(i)
             if (container, URIRef(elem_uri), None) in self.graph:
                 graph.remove((container, URIRef(elem_uri), None))
                 i += 1
@@ -226,13 +222,12 @@ class Seq(Container):
         else:
             for j in range(len(self), pos - 1, -1):
                 container = self._get_container()
-                elem_uri = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#_' + str(j)
+                elem_uri = str(RDF) + '_' + str(j)
                 v = self.graph.value(container, URIRef(elem_uri))
                 self.graph.remove((container, URIRef(elem_uri), v))
-                elem_uri = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#_'
-                elem_uri += str(j + 1)
+                elem_uri = str(RDF) + '_' + str(j + 1)
                 self.graph.add((container, URIRef(elem_uri), v))
-            elem_uri_pos = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#_' + str(pos)
+            elem_uri_pos = str(RDF) + '_' + str(pos)
             self.graph.add((container, URIRef(elem_uri_pos), item))
             self._len += 1
 
@@ -248,7 +243,6 @@ class NoElementException(Exception):
 
 if __name__ == '__main__':
 
-    from rdflib import Graph
     g = Graph()
 
     c = Bag(g, BNode())
@@ -260,7 +254,6 @@ if __name__ == '__main__':
 
     print(cc.items())
 
-    from pprint import pprint
     pprint(cc.n3())
     assert len(cc) == 4
     cc.append(Literal('5'))
