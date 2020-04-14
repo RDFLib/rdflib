@@ -3,6 +3,7 @@ from rdflib.plugins.sparql import prepareQuery
 from rdflib.compare import isomorphic
 
 import unittest
+from nose.tools import eq_
 
 class TestConstructInitBindings(unittest.TestCase):
 
@@ -36,4 +37,4 @@ class TestConstructInitBindings(unittest.TestCase):
           'c': Literal('C')
         })
 
-        self.assertCountEqual(list(results), expected)
+        eq_(sorted(results, key=lambda x: str(x[1])), expected)
