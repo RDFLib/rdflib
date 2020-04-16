@@ -27,7 +27,7 @@ sys.path.append(os.path.abspath(".."))
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 # extensions = ['sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.doctest']
 extensions = [
-    "sphinx.ext.apidoc",
+    "sphinxcontrib.apidoc",
     "sphinx.ext.autodoc",
     #'sphinx.ext.autosummary',
     "sphinx.ext.doctest",
@@ -38,6 +38,8 @@ extensions = [
     "sphinx.ext.viewcode",
 ]
 
+apidoc_module_dir = "../rdflib"
+apidoc_output_dir = "apidocs"
 autodoc_default_flags = ["special-members"]
 
 autosummary_generate = True
