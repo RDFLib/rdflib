@@ -4,8 +4,8 @@
 rdflib |release|
 ================
 
-RDFLib is a pure Python package for working with `RDF <http://www.w3.org/RDF/>`_. RDFLib contains useful APIs,
-including:
+RDFLib is a pure Python package for working with `RDF <http://www.w3.org/RDF/>`_. RDFLib contains useful APIs for
+working with RDF, including:
 
 * **Parsers & Serializers**
 
@@ -29,7 +29,7 @@ including:
 
 Getting started
 ---------------
-If you have never used RDFLib before, the following might help get you started:
+If you have never used RDFLib, the following will help get you started:
 
 .. toctree::
    :maxdepth: 1
@@ -45,7 +45,7 @@ If you have never used RDFLib before, the following might help get you started:
 
 In depth
 --------
-If you are already familiar with RDF and are looking for details about RDFLib handles RDF, these are for you.
+If you are familiar with RDF and are looking for details on how RDFLib handles RDF, these are for you. 
 
 .. toctree::
    :maxdepth: 1
@@ -87,7 +87,7 @@ For developers
    univrdfstore
    persisting_n3_terms
 
-Developers might also like to join rdflib's 'dev' mailing list: `<https://groups.google.com/group/rdflib-dev>`__
+Developers might also like to join rdflib's dev mailing list: `<https://groups.google.com/group/rdflib-dev>`__
 
 
 The Code
