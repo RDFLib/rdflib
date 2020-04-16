@@ -40,7 +40,7 @@ extensions = [
 
 apidoc_module_dir = "../rdflib"
 apidoc_output_dir = "apidocs"
-autodoc_default_flags = ["special-members"]
+autodoc_default_options = {"special-members": True}
 
 autosummary_generate = True
 
@@ -234,7 +234,7 @@ latex_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    "python": ("http://docs.python.org/3.7", None),
+    "python": ("https://docs.python.org/3.7", None),
 }
 
 html_experimental_html5_writer = True
