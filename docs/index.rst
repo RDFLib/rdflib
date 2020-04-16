@@ -100,7 +100,7 @@ and related packaged that you might also find useful.
 
 
 Further help
------------
+------------
 For asynchronous chat support, try our gitter channel at `<https://gitter.im/RDFLib/rdflib>`__
 
 If you would like more help with using rdflib, please post a question using the tag ``[rdflib]`` on StackOverflow. A list of
