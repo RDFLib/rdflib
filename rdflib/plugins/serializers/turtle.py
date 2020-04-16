@@ -291,6 +291,9 @@ class TurtleSerializer(RecursiveSerializer):
     def startDocument(self):
         self._started = True
         ns_list = sorted(self.namespaces.items())
+
+        if self.base:
+            self.write(self.indent() + '@base <%s> .\n' % self.base)
         for prefix, uri in ns_list:
             self.write(self.indent() + '@prefix %s: <%s> .\n' % (prefix, uri))
         if ns_list and self._spacious:
