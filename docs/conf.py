@@ -27,6 +27,7 @@ sys.path.append(os.path.abspath(".."))
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 # extensions = ['sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.doctest']
 extensions = [
+    "sphinx.ext.apidoc",
     "sphinx.ext.autodoc",
     #'sphinx.ext.autosummary',
     "sphinx.ext.doctest",
