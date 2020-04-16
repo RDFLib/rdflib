@@ -29,6 +29,10 @@ class TriXSerializer(Serializer):
         self.writer = XMLWriter(stream, nm, encoding, extra_ns={"": TRIXNS})
 
         self.writer.push(TRIXNS[u"TriX"])
+        if self.store.base:
+            base = self.store.base
+        if base is not None:
+            self.writer.attribute("http://www.w3.org/XML/1998/namespacebase", base)
         self.writer.namespaces()
 
         if isinstance(self.store, ConjunctiveGraph):
@@ -44,6 +48,8 @@ class TriXSerializer(Serializer):
 
     def _writeGraph(self, graph):
         self.writer.push(TRIXNS[u"graph"])
+        if graph.base:
+            self.writer.attribute("http://www.w3.org/XML/1998/namespacebase", graph.base)
         if isinstance(graph.identifier, URIRef):
             self.writer.element(
                 TRIXNS[u"uri"], content=text_type(graph.identifier))

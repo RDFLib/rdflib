@@ -954,18 +954,20 @@ class Graph(Node):
         but "xml", "n3", "turtle", "nt", "pretty-xml", "trix", "trig" and "nquads" are built in.
         """
 
-        # if a base is set here, use it, else if it was set at graph creation time, use that (self.base)
-        if base is not None:
-            self.base = base
+        # if base is set for the graph use that, if not and a base is given here, use that
+        if self.base is not None:
+            base = self.base
+        else:
+            pass  # i.e. base is set in this method
 
         serializer = plugin.get(format, Serializer)(self)
         if destination is None:
             stream = BytesIO()
-            serializer.serialize(stream, base=self.base, encoding=encoding, **args)
+            serializer.serialize(stream, base=base, encoding=encoding, **args)
             return stream.getvalue()
         if hasattr(destination, "write"):
             stream = destination
-            serializer.serialize(stream, base=self.base, encoding=encoding, **args)
+            serializer.serialize(stream, base=base, encoding=encoding, **args)
         else:
             location = destination
             scheme, netloc, path, params, _query, fragment = urlparse(location)
@@ -976,7 +978,7 @@ class Graph(Node):
                 return
             fd, name = tempfile.mkstemp()
             stream = os.fdopen(fd, "wb")
-            serializer.serialize(stream, base=self.base, encoding=encoding, **args)
+            serializer.serialize(stream, base=base, encoding=encoding, **args)
             stream.close()
             if hasattr(shutil, "move"):
                 shutil.move(name, path)
@@ -1657,13 +1659,13 @@ class Dataset(ConjunctiveGraph):
     .. versionadded:: 4.0
     """
 
-    def __init__(self, store="default", default_union=False):
+    def __init__(self, store="default", default_union=False, default_graph_base=None):
         super(Dataset, self).__init__(store=store, identifier=None)
 
         if not self.store.graph_aware:
             raise Exception("DataSet must be backed by a graph-aware store!")
         self.default_context = Graph(
-            store=self.store, identifier=DATASET_DEFAULT_GRAPH_ID
+            store=self.store, identifier=DATASET_DEFAULT_GRAPH_ID, base=default_graph_base
         )
 
         self.default_union = default_union
@@ -1674,7 +1676,7 @@ class Dataset(ConjunctiveGraph):
         )
         return pattern % self.store.__class__.__name__
 
-    def graph(self, identifier=None):
+    def graph(self, identifier=None, base=None):
         if identifier is None:
             from rdflib.term import rdflib_skolem_genid
 
@@ -1684,6 +1686,7 @@ class Dataset(ConjunctiveGraph):
             identifier = BNode().skolemize()
 
         g = self._graph(identifier)
+        g.base = base
 
         self.store.add_graph(g)
         return g

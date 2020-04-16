@@ -39,7 +39,7 @@ class TrigSerializer(TurtleSerializer):
             for triple in context:
                 self.preprocessTriple(triple)
 
-            self._contexts[context]=(self.orderSubjects(), self._subjects, self._references)
+            self._contexts[context] = (self.orderSubjects(), self._subjects, self._references)
 
     def reset(self):
         super(TrigSerializer, self).reset()
@@ -49,7 +49,11 @@ class TrigSerializer(TurtleSerializer):
                   spacious=None, **args):
         self.reset()
         self.stream = stream
-        self.base = base
+        # if base is set for the graph use that, if not and a base is given here, use that
+        if self.store.base is not None:
+            self.base = self.store.base
+        else:
+            self.base = base
 
         if spacious is not None:
             self._spacious = spacious

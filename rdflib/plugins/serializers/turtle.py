@@ -224,8 +224,10 @@ class TurtleSerializer(RecursiveSerializer):
                   spacious=None, **args):
         self.reset()
         self.stream = stream
-        # if base is set here, override previously set base if set at graph init
-        if base is not None:
+        # if base is set for the graph use that, if not and a base is given here, use that
+        if self.store.base is not None:
+            self.base = self.store.base
+        else:
             self.base = base
 
         if spacious is not None:
@@ -247,6 +249,8 @@ class TurtleSerializer(RecursiveSerializer):
 
         self.endDocument()
         stream.write(b("\n"))
+
+        self.base = None
 
     def preprocessTriple(self, triple):
         super(TurtleSerializer, self).preprocessTriple(triple)
