@@ -293,8 +293,9 @@ class Graph(Node):
     For more on named graphs, see: http://www.w3.org/2004/03/trix/
     """
 
-    def __init__(self, store="default", identifier=None, namespace_manager=None):
+    def __init__(self, store="default", identifier=None, namespace_manager=None, base=None):
         super(Graph, self).__init__()
+        self.base = base
         self.__identifier = identifier or BNode()
 
         if not isinstance(self.__identifier, Node):
@@ -952,14 +953,19 @@ class Graph(Node):
         Format support can be extended with plugins,
         but "xml", "n3", "turtle", "nt", "pretty-xml", "trix", "trig" and "nquads" are built in.
         """
+
+        # if a base is set here, use it, else if it was set at graph creation time, use that (self.base)
+        if base is not None:
+            self.base = base
+
         serializer = plugin.get(format, Serializer)(self)
         if destination is None:
             stream = BytesIO()
-            serializer.serialize(stream, base=base, encoding=encoding, **args)
+            serializer.serialize(stream, base=self.base, encoding=encoding, **args)
             return stream.getvalue()
         if hasattr(destination, "write"):
             stream = destination
-            serializer.serialize(stream, base=base, encoding=encoding, **args)
+            serializer.serialize(stream, base=self.base, encoding=encoding, **args)
         else:
             location = destination
             scheme, netloc, path, params, _query, fragment = urlparse(location)
@@ -970,7 +976,7 @@ class Graph(Node):
                 return
             fd, name = tempfile.mkstemp()
             stream = os.fdopen(fd, "wb")
-            serializer.serialize(stream, base=base, encoding=encoding, **args)
+            serializer.serialize(stream, base=self.base, encoding=encoding, **args)
             stream.close()
             if hasattr(shutil, "move"):
                 shutil.move(name, path)

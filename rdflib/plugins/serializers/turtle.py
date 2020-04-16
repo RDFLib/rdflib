@@ -224,7 +224,9 @@ class TurtleSerializer(RecursiveSerializer):
                   spacious=None, **args):
         self.reset()
         self.stream = stream
-        self.base = base
+        # if base is set here, override previously set base if set at graph init
+        if base is not None:
+            self.base = base
 
         if spacious is not None:
             self._spacious = spacious
@@ -291,6 +293,9 @@ class TurtleSerializer(RecursiveSerializer):
     def startDocument(self):
         self._started = True
         ns_list = sorted(self.namespaces.items())
+
+        if self.base:
+            self.write(self.indent() + '@base <%s> .\n' % self.base)
         for prefix, uri in ns_list:
             self.write(self.indent() + '@prefix %s: <%s> .\n' % (prefix, uri))
         if ns_list and self._spacious:
