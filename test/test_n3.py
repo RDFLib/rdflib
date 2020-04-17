@@ -1,7 +1,8 @@
 from rdflib.graph import Graph, ConjunctiveGraph
 import unittest
 from rdflib.term import Literal, URIRef
-from rdflib.plugins.parsers.notation3 import BadSyntax
+from rdflib.plugins.parsers.notation3 import BadSyntax, exponent_syntax
+import itertools
 
 from six import b
 from six.moves.urllib.error import URLError
@@ -249,6 +250,25 @@ foo-bar:Ex foo-bar:name "Test" . """
 
         assert set(g1) == set(
             g2), 'Document with declared empty prefix must match default #'
+
+
+class TestRegularExpressions(unittest.TestCase):
+    def testExponents(self):
+        signs = ("", "+", "-")
+        mantissas = ("1", "1.", ".1",
+                     "12", "12.", "1.2", ".12",
+                     "123", "123.", "12.3", "1.23", ".123")
+        es = "eE"
+        exps = ("1", "12", "+1", "-1", "+12", "-12")
+        for parts in itertools.product(signs, mantissas, es, exps):
+            expstring = "".join(parts)
+            self.assertRegex(expstring, exponent_syntax)
+
+    def testInvalidExponents(self):
+        # Add test cases as needed
+        invalid = (".e1",)
+        for expstring in invalid:
+            self.assertNotRegex(expstring, exponent_syntax)
 
 
 if __name__ == '__main__':
