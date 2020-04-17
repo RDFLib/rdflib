@@ -954,11 +954,9 @@ class Graph(Node):
         but "xml", "n3", "turtle", "nt", "pretty-xml", "trix", "trig" and "nquads" are built in.
         """
 
-        # if base is set for the graph use that, if not and a base is given here, use that
-        if self.base is not None:
+        # if base is not given as attribute use the base set for the graph
+        if base is None:
             base = self.base
-        else:
-            pass  # i.e. base is set in this method
 
         serializer = plugin.get(format, Serializer)(self)
         if destination is None:
@@ -1344,14 +1342,16 @@ class ConjunctiveGraph(Graph):
     All queries are carried out against the union of all graphs.
     """
 
-    def __init__(self, store="default", identifier=None):
+    def __init__(self, store="default", identifier=None, default_graph_base=None):
         super(ConjunctiveGraph, self).__init__(store, identifier=identifier)
         assert self.store.context_aware, (
             "ConjunctiveGraph must be backed by" " a context aware store."
         )
         self.context_aware = True
         self.default_union = True  # Conjunctive!
-        self.default_context = Graph(store=self.store, identifier=identifier or BNode())
+        self.default_context = Graph(
+            store=self.store, identifier=identifier or BNode(), base=default_graph_base
+        )
 
     def __str__(self):
         pattern = (
@@ -1491,12 +1491,12 @@ class ConjunctiveGraph(Graph):
             else:
                 yield self.get_context(context)
 
-    def get_context(self, identifier, quoted=False):
+    def get_context(self, identifier, quoted=False, base=None):
         """Return a context graph for the given identifier
 
         identifier must be a URIRef or BNode.
         """
-        return Graph(store=self.store, identifier=identifier, namespace_manager=self)
+        return Graph(store=self.store, identifier=identifier, namespace_manager=self, base=base)
 
     def remove_context(self, context):
         """Removes the given context from the graph"""

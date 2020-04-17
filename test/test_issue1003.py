@@ -55,9 +55,9 @@ assert "@base <http://two.org/> ." in g3.serialize(format='turtle', base=base_tw
 g4 = Graph(base=base_one)
 g4 += g
 # @base should be in output, from graph (one)
-assert "@base <http://one.org/> ." in g4.serialize(format='turtle', base=base_two).decode("utf-8")
+assert "@base <http://two.org/> ." in g4.serialize(format='turtle', base=base_two).decode("utf-8")
 # just checking that the serialization setting (two) hasn't snuck through
-assert "@base <http://two.org/> ." not in g4.serialize(format='turtle', base=base_two).decode("utf-8")
+assert "@base <http://one.org/> ." not in g4.serialize(format='turtle', base=base_two).decode("utf-8")
 
 
 # 5. multiple serialization side effect checking
@@ -80,7 +80,7 @@ assert "@xml:base" not in g6.serialize(format='xml').decode("utf-8")
 assert 'xml:base="http://one.org/"' in g6.serialize(format='xml', base=base_one).decode("utf-8")
 g6.base = base_two
 assert 'xml:base="http://two.org/"' in g6.serialize(format='xml').decode("utf-8")
-assert 'xml:base="http://two.org/"' in g6.serialize(format='xml', base=base_one).decode("utf-8")
+assert 'xml:base="http://one.org/"' in g6.serialize(format='xml', base=base_one).decode("utf-8")
 
 # 7. checking results for N3
 g7 = Graph()
@@ -91,7 +91,7 @@ assert "@xml:base" not in g7.serialize(format='xml').decode("utf-8")
 assert "@base <http://one.org/> ." in g7.serialize(format='n3', base=base_one).decode("utf-8")
 g7.base = base_two
 assert "@base <http://two.org/> ." in g7.serialize(format='n3').decode("utf-8")
-assert "@base <http://two.org/> ." in g7.serialize(format='n3', base=base_one).decode("utf-8")
+assert "@base <http://one.org/> ." in g7.serialize(format='n3', base=base_one).decode("utf-8")
 
 # 8. checking results for TriX & TriG
 # TriX can specify a base per graph but setting a base for the whole
@@ -109,9 +109,9 @@ ds1.base = base_three
 trix = ds1.serialize(format='trix', base=Namespace("http://two.org/")).decode("utf-8")
 assert '<graph xml:base="http://one.org/">' in trix
 assert '<graph xml:base="http://two.org/">' in trix
-assert '<TriX xml:base="http://three.org/"' in trix
+assert '<TriX xml:base="http://two.org/"' in trix
 
 trig = ds1.serialize(format='trig', base=Namespace("http://two.org/")).decode("utf-8")
 assert '@base <http://one.org/> .' not in trig
-assert '@base <http://two.org/> .' not in trig
-assert '@base <http://three.org/> .' in trig
+assert '@base <http://three.org/> .' not in trig
+assert '@base <http://two.org/> .' in trig

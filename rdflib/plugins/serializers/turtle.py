@@ -224,11 +224,11 @@ class TurtleSerializer(RecursiveSerializer):
                   spacious=None, **args):
         self.reset()
         self.stream = stream
-        # if base is set for the graph use that, if not and a base is given here, use that
-        if self.store.base is not None:
-            self.base = self.store.base
-        else:
+        # if base is given here, use that, if not and a base is set for the graph use that
+        if base is not None:
             self.base = base
+        elif self.store.base is not None:
+            self.base = self.store.base
 
         if spacious is not None:
             self._spacious = spacious

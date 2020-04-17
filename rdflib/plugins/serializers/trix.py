@@ -29,7 +29,8 @@ class TriXSerializer(Serializer):
         self.writer = XMLWriter(stream, nm, encoding, extra_ns={"": TRIXNS})
 
         self.writer.push(TRIXNS[u"TriX"])
-        if self.store.base:
+        # if base is given here, use that, if not and a base is set for the graph use that
+        if base is None and self.store.base is not None:
             base = self.store.base
         if base is not None:
             self.writer.attribute("http://www.w3.org/XML/1998/namespacebase", base)
