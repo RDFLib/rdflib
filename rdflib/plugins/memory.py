@@ -360,7 +360,7 @@ class IOMemory(Store):
                 if self.__tripleHasContext(enctriple, cid))
 
     def contexts(self, triple=None):
-        if triple is None or triple is (None, None, None):
+        if triple is None or triple == (None, None, None):
             return (context for context in self.__all_contexts)
 
         enctriple = self.__encodeTriple(triple)
