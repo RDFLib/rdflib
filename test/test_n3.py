@@ -262,13 +262,13 @@ class TestRegularExpressions(unittest.TestCase):
         exps = ("1", "12", "+1", "-1", "+12", "-12")
         for parts in itertools.product(signs, mantissas, es, exps):
             expstring = "".join(parts)
-            self.assertRegex(expstring, exponent_syntax)
+            self.assertTrue(exponent_syntax.match(expstring))
 
     def testInvalidExponents(self):
         # Add test cases as needed
         invalid = (".e1",)
         for expstring in invalid:
-            self.assertNotRegex(expstring, exponent_syntax)
+            self.assertFalse(exponent_syntax.match(expstring))
 
 
 if __name__ == '__main__':
