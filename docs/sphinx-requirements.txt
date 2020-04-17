@@ -1,0 +1,3 @@
+sphinx < 3
+sphinxcontrib-apidoc
+git+https://github.com/gniezen/n3pygments.git

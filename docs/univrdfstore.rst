@@ -200,6 +200,7 @@ Triple Interfaces
 An RDF store could provide a standard set of interfaces for the manipulation, management, and/or retrieval of its contained triples (asserted or quoted):
 
 .. module:: rdflib.store
+    :noindex:
 
 .. automethod:: rdflib.store.Store.add
     :noindex:

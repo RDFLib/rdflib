@@ -290,8 +290,8 @@ class Store(object):
         QuotedGraph, Date? DateRange?
 
         :param context: A conjunctive query can be indicated by either
-        providing a value of None, or a specific context can be
-        queries by passing a Graph instance (if store is context aware).
+                        providing a value of None, or a specific context can be
+                        queries by passing a Graph instance (if store is context aware).
         """
         subject, predicate, object = triple_pattern
 

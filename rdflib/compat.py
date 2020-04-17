@@ -136,7 +136,7 @@ def decodeStringEscape(s):
 def decodeUnicodeEscape(s):
     """
     s is a unicode string
-    replace \n and \\u00AC unicode escapes
+    replace ``\\n`` and ``\\u00AC`` unicode escapes
     """
     if not six.PY3:
         s = s.encode('utf-8').decode('string-escape')

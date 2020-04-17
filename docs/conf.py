@@ -27,6 +27,7 @@ sys.path.append(os.path.abspath(".."))
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 # extensions = ['sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.doctest']
 extensions = [
+    "sphinxcontrib.apidoc",
     "sphinx.ext.autodoc",
     #'sphinx.ext.autosummary',
     "sphinx.ext.doctest",
@@ -37,7 +38,9 @@ extensions = [
     "sphinx.ext.viewcode",
 ]
 
-autodoc_default_flags = ["special-members"]
+apidoc_module_dir = "../rdflib"
+apidoc_output_dir = "apidocs"
+autodoc_default_options = {"special-members": True}
 
 autosummary_generate = True
 
@@ -231,7 +234,7 @@ latex_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    "python": ("http://docs.python.org/3.7", None),
+    "python": ("https://docs.python.org/3.7", None),
 }
 
 html_experimental_html5_writer = True
