@@ -46,7 +46,11 @@ class XMLSerializer(Serializer):
             yield prefix, namespace
 
     def serialize(self, stream, base=None, encoding=None, **args):
-        self.base = base
+        # if base is given here, use that, if not and a base is set for the graph use that
+        if base is not None:
+            self.base = base
+        elif self.store.base is not None:
+            self.base = self.store.base
         self.__stream = stream
         self.__serialized = {}
         encoding = self.encoding
@@ -62,6 +66,8 @@ class XMLSerializer(Serializer):
         # If provided, write xml:base attribute for the RDF
         if "xml_base" in args:
             write('   xml:base="%s"\n' % args['xml_base'])
+        elif self.base:
+            write('   xml:base="%s"\n' % self.base)
         # TODO:
         # assert(
         #    namespaces["http://www.w3.org/1999/02/22-rdf-syntax-ns#"]=='rdf')
@@ -163,7 +169,11 @@ class PrettyXMLSerializer(Serializer):
     def serialize(self, stream, base=None, encoding=None, **args):
         self.__serialized = {}
         store = self.store
-        self.base = base
+        # if base is given here, use that, if not and a base is set for the graph use that
+        if base is not None:
+            self.base = base
+        elif store.base is not None:
+            self.base = store.base
         self.max_depth = args.get("max_depth", 3)
         assert self.max_depth > 0, "max_depth must be greater than 0"
 
@@ -184,6 +194,8 @@ class PrettyXMLSerializer(Serializer):
 
         if "xml_base" in args:
             writer.attribute(XMLBASE, args["xml_base"])
+        elif self.base:
+            writer.attribute(XMLBASE, self.base)
 
         writer.namespaces(namespaces.items())
 

@@ -779,8 +779,3 @@ p {
     }
 
 }
-
-
-p.logo {
-    padding-top: 30px;
-}
