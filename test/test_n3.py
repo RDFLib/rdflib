@@ -164,6 +164,31 @@ foo-bar:Ex foo-bar:name "Test" . """
         g = Graph()
         g.parse("test/n3/issue156.n3", format="n3")
 
+    def testIssue999(self):
+        """
+        Make sure the n3 parser does recognize exponent and leading dot in ".171e-11"
+        """
+        data = """
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://qudt.org/vocab/unit/MilliM-PER-YR>
+  a <http://qudt.org/schema/qudt/Unit> ;
+  <http://qudt.org/schema/qudt/conversionMultiplier> .171e-11 ;
+  <http://qudt.org/schema/qudt/conversionOffset> 0e+00 ;
+  <http://qudt.org/schema/qudt/description> "0.001-fold of the SI base unit metre divided by the unit year" ;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://qudt.org/vocab/quantitykind/Velocity> ;
+  <http://qudt.org/schema/qudt/iec61360Code> "0112/2///62720#UAA868" ;
+  <http://qudt.org/schema/qudt/uneceCommonCode> "H66" ;
+  rdfs:isDefinedBy <http://qudt.org/2.1/vocab/unit> ;
+  rdfs:isDefinedBy <http://qudt.org/vocab/unit> ;
+  rdfs:label "MilliM PER YR" ;
+  <http://www.w3.org/2004/02/skos/core#prefLabel> "millimetre per year" ;
+.
+        """
+        g = Graph()
+        g.parse(data=data, format="n3")
+        g.parse(data=data, format="turtle")
+
     def testDotInPrefix(self):
         g = Graph()
         g.parse(
