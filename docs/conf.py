@@ -51,7 +51,6 @@ templates_path = ["_templates"]
 #   '/_static/api/': [r'rdflib\.'],
 #   }
 
-
 # The suffix of source filenames.
 source_suffix = ".rst"
 
@@ -68,6 +67,7 @@ copyright = u"2009 - 2020, RDFLib Team"
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
+
 
 # Find version. We have to do this because we can't import it in Python 3 until
 # its been automatically converted in the setup process.
@@ -238,3 +238,5 @@ intersphinx_mapping = {
 }
 
 html_experimental_html5_writer = True
+
+needs_sphinx = "2.4"
