@@ -66,6 +66,9 @@ div.documentwrapper {
     background-color: {{ theme_light_color }};
 }
 
+p.logo {
+    padding-top: 30px;
+}
 
 /* HEADINGS --------------------------------------------------------------- */
 

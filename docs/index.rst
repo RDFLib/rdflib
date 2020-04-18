@@ -19,7 +19,7 @@ working with RDF, including:
 * **Graph interface**
 
   * to a single graph
-  * or a conjunctive graph (multiple named graphs)
+  * or a conjunctive graph (multiple Named Graphs)
   * or a dataset of graphs
 
 * **SPARQL 1.1 implementation**
