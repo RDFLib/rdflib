@@ -1187,7 +1187,7 @@ class SinkParser:
                     if pfx == "_":  # Magic prefix 2001/05/30, can be changed
                         res.append(self.anonymousNode(ln))
                         return j
-                    if not self.turtle and pfx == "":
+                    if pfx == "":
                         ns = join(self._baseURI or "", "#")
                     else:
                         self.BadSyntax(argstr, i,
