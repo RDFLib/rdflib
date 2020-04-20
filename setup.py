@@ -12,7 +12,7 @@ kwargs['extras_require'] = {
     'html': ['html5lib'],
     'sparql': ['requests'],
     'tests': kwargs['tests_require'],
-    'docs': ['sphinx < 3', 'sphinxcontrib-apidoc']
+    'docs': ['sphinx < 4', 'sphinxcontrib-apidoc']
     }
 
 def find_version(filename):
