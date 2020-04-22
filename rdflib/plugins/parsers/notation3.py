@@ -349,9 +349,7 @@ ws = re.compile(r'[ \t]*')                       # Whitespace not including NL
 signed_integer = re.compile(r'[-+]?[0-9]+')      # integer
 integer_syntax = re.compile(r'[-+]?[0-9]+')
 decimal_syntax = re.compile(r'[-+]?[0-9]*\.[0-9]+')
-exponent_syntax = re.compile(r'[-+]?(?:[0-9]+\.[0-9]*(?:e|E)[-+]?[0-9]+|'+
-                             r'\.[0-9](?:e|E)[-+]?[0-9]+|'+
-                             r'[0-9]+(?:e|E)[-+]?[0-9]+)')
+exponent_syntax = re.compile(r'[-+]?(?:[0-9]+\.[0-9]*|\.[0-9]+|[0-9]+)(?:e|E)[-+]?[0-9]+')
 digitstring = re.compile(r'[0-9]+')              # Unsigned integer
 interesting = re.compile(r"""[\\\r\n\"\']""")
 langcode = re.compile(r'[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*')

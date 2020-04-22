@@ -173,7 +173,10 @@ class FrozenBindings(FrozenDict):
         if not type(key) in (BNode, Variable):
             return key
 
-        return self._d[key]
+        if key not in self._d:
+            return self.ctx.initBindings[key]
+        else:
+            return self._d[key]
 
     def project(self, vars):
         return FrozenBindings(

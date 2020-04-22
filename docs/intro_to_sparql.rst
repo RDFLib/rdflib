@@ -65,7 +65,7 @@ equivalent.
 
 As an alternative to using ``PREFIX`` in the SPARQL query, namespace
 bindings can be passed in with the ``initNs`` kwarg, see
-:doc:`namespace_and_bindings`.
+:doc:`namespaces_and_bindings`.
 
 Variables can also be pre-bound, using ``initBindings`` kwarg can be
 used to pass in a ``dict`` of initial bindings, this is particularly

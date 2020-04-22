@@ -12,7 +12,7 @@ represented by the classes :class:`~rdflib.term.URIRef`, :class:`~rdflib.term.BN
 ``URIRefs`` and ``BNodes`` can both be thought of as resources, such a person, a company, a website, etc.
 
 * A ``BNode`` is a node where the exact URI is not known.
-* A ``URIRef`` is a node where the exact URI is knonw. ``URIRef``s are also used to represent the properties/predicates in the RDF graph.
+* A ``URIRef`` is a node where the exact URI is knonw. ``URIRef``\s are also used to represent the properties/predicates in the RDF graph.
 * ``Literals`` represent attribute values, such as a name, a date, a number, etc. The most common literal values are XML data types, e.g. string, int...
 
 

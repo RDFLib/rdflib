@@ -6,9 +6,14 @@ from setuptools import setup, find_packages
 
 kwargs = {}
 kwargs['install_requires'] = [ 'six', 'isodate', 'pyparsing']
-kwargs['tests_require'] = ['html5lib', 'networkx']
+kwargs['tests_require'] = ['html5lib', 'networkx', 'nose', 'doctest-ignore-unicode']
 kwargs['test_suite'] = "nose.collector"
-kwargs['extras_require'] = {'html': ['html5lib'], 'sparql': ['requests']}
+kwargs['extras_require'] = {
+    'html': ['html5lib'],
+    'sparql': ['requests'],
+    'tests': kwargs['tests_require'],
+    'docs': ['sphinx < 4', 'sphinxcontrib-apidoc']
+    }
 
 def find_version(filename):
     _version_re = re.compile(r'__version__ = "(.*)"')
