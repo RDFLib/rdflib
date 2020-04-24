@@ -106,7 +106,10 @@ class SPARQLConnector(object):
         if default_graph:
             params["using-graph-uri"] = default_graph
 
-        headers = {'Accept': _response_mime_types[self.returnFormat]}
+        headers = {
+            'Accept': _response_mime_types[self.returnFormat],
+            'Content-Type': 'application/sparql-update',
+        }
 
         args = dict(self.kwargs)
 
