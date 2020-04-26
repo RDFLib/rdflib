@@ -73,15 +73,16 @@ class SPARQLConnector(object):
         if default_graph:
             params["default-graph-uri"] = default_graph
 
-        headers = {'Accept': _response_mime_types[self.returnFormat]}
-
         args = dict(self.kwargs)
         args.update(url=self.query_endpoint)
 
         # merge params/headers dicts
         args.setdefault('params', {})
 
-        args.setdefault('headers', {})
+        headers = {
+            'Accept': _response_mime_types[self.returnFormat],
+            'Content-Type': 'application/sparql-query',
+        }
         args['headers'].update(headers)
 
         if self.method == 'GET':
