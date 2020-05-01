@@ -87,6 +87,7 @@ class SPARQLConnector(object):
         if self.method == 'GET':
             args['params'].update(params)
         elif self.method == 'POST':
+            args['headers'].update({'Content-Type': 'application/sparql-query'})
             args['data'] = params
         else:
             raise SPARQLConnectorException("Unknown method %s" % self.method)
@@ -106,7 +107,10 @@ class SPARQLConnector(object):
         if default_graph:
             params["using-graph-uri"] = default_graph
 
-        headers = {'Accept': _response_mime_types[self.returnFormat]}
+        headers = {
+            'Accept': _response_mime_types[self.returnFormat],
+            'Content-Type': 'application/sparql-update',
+        }
 
         args = dict(self.kwargs)
 
