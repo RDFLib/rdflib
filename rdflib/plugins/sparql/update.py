@@ -64,6 +64,7 @@ def evalClear(ctx, u):
     for g in _graphAll(ctx, u.graphiri):
         g.remove((None, None, None))
 
+
 def evalDrop(ctx, u):
     """
     http://www.w3.org/TR/sparql11-update/#drop
@@ -276,11 +277,10 @@ def evalUpdate(graph, update, initBindings={}):
 
     for u in update:
 
-        initBindings = dict( ( Variable(k),v ) for k,v in iteritems(initBindings) )
+        initBindings = dict((Variable(k), v) for k, v in iteritems(initBindings))
 
         ctx = QueryContext(graph, initBindings=initBindings)
         ctx.prologue = u.prologue
-
 
         try:
             if u.name == 'Load':

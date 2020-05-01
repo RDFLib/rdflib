@@ -1,5 +1,4 @@
 import rdflib
-from nose import SkipTest
 from nose.tools import assert_raises
 
 data = '''<?xml version="1.0" encoding="utf-8"?>
@@ -29,6 +28,7 @@ data2 = '''<?xml version="1.0" encoding="utf-8"?>
 </rdf:RDF>
 '''
 
+
 def test_broken_rdfxml():
     #import ipdb; ipdb.set_trace()
     def p():
@@ -36,9 +36,11 @@ def test_broken_rdfxml():
 
     assert_raises(Exception, p)
 
+
 def test_parsetype_resource():
     g = rdflib.Graph().parse(data=data2)
     print(g.serialize(format='n3'))
+
 
 if __name__ == '__main__':
     test_broken_rdfxml()

@@ -28,7 +28,7 @@ from six import unichr
 
 __all__ = ['unquote', 'uriquote', 'Sink', 'NTriplesParser']
 
-uriref = r'<([^:]+:[^\s"<>]+)>'
+uriref = r'<([^:]+:[^\s"<>]*)>'
 literal = r'"([^"\\]*(?:\\.[^"\\]*)*)"'
 litinfo = r'(?:@([a-zA-Z]+(?:-[a-zA-Z0-9]+)*)|\^\^' + uriref + r')?'
 
@@ -37,7 +37,7 @@ r_wspace = re.compile(r'[ \t]*')
 r_wspaces = re.compile(r'[ \t]+')
 r_tail = re.compile(r'[ \t]*\.[ \t]*(#.*)?')
 r_uriref = re.compile(uriref)
-r_nodeid = re.compile(r'_:([A-Za-z0-9]*)')
+r_nodeid = re.compile(r'_:([A-Za-z0-9_:]([-A-Za-z0-9_:\.]*[-A-Za-z0-9_:])?)')
 r_literal = re.compile(literal + litinfo)
 
 bufsiz = 2048
@@ -60,6 +60,7 @@ class Sink(object):
         self.length += 1
         print(s, p, o)
 
+
 quot = {'t': u'\t', 'n': u'\n', 'r': u'\r', '"': u'"', '\\':
         u'\\'}
 r_safe = re.compile(r'([\x20\x21\x23-\x5B\x5D-\x7E]+)')
@@ -71,7 +72,7 @@ def unquote(s):
     """Unquote an N-Triples string."""
     if not validate:
 
-        if isinstance(s, text_type): # nquads
+        if isinstance(s, text_type):  # nquads
             s = decodeUnicodeEscape(s)
         else:
             s = s.decode('unicode-escape')
@@ -105,6 +106,7 @@ def unquote(s):
             else:
                 raise ParseError("Illegal literal character: %r" % s[0])
         return u''.join(result)
+
 
 r_hibyte = re.compile(r'([\x80-\xFF])')
 
@@ -268,7 +270,9 @@ class NTriplesParser(object):
             else:
                 lang = None
             if dtype:
-                dtype = dtype
+                dtype = unquote(dtype)
+                dtype = uriquote(dtype)
+                dtype = URI(dtype)
             else:
                 dtype = None
             if lang and dtype:

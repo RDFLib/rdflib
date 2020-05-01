@@ -77,10 +77,10 @@ class DatasetTestCase(unittest.TestCase):
             else:
                 os.remove(self.tmppath)
 
-
     def testGraphAware(self):
 
-        if not self.graph.store.graph_aware: return
+        if not self.graph.store.graph_aware:
+            return
 
         g = self.graph
         g1 = g.graph(self.c1)
@@ -90,21 +90,21 @@ class DatasetTestCase(unittest.TestCase):
         if self.store != "SPARQLUpdateStore":
             # added graph exists
             self.assertEqual(set(x.identifier for x in self.graph.contexts()),
-                              set([self.c1, DATASET_DEFAULT_GRAPH_ID]))
+                             set([self.c1, DATASET_DEFAULT_GRAPH_ID]))
 
         # added graph is empty
         self.assertEqual(len(g1), 0)
 
-        g1.add( (self.tarek, self.likes, self.pizza) )
+        g1.add((self.tarek, self.likes, self.pizza))
 
         # added graph still exists
         self.assertEqual(set(x.identifier for x in self.graph.contexts()),
-                          set([self.c1, DATASET_DEFAULT_GRAPH_ID]))
+                         set([self.c1, DATASET_DEFAULT_GRAPH_ID]))
 
         # added graph contains one triple
         self.assertEqual(len(g1), 1)
 
-        g1.remove( (self.tarek, self.likes, self.pizza) )
+        g1.remove((self.tarek, self.likes, self.pizza))
 
         # added graph is empty
         self.assertEqual(len(g1), 0)
@@ -114,25 +114,25 @@ class DatasetTestCase(unittest.TestCase):
         if self.store != "SPARQLUpdateStore":
             # graph still exists, although empty
             self.assertEqual(set(x.identifier for x in self.graph.contexts()),
-                              set([self.c1, DATASET_DEFAULT_GRAPH_ID]))
+                             set([self.c1, DATASET_DEFAULT_GRAPH_ID]))
 
         g.remove_graph(self.c1)
 
         # graph is gone
         self.assertEqual(set(x.identifier for x in self.graph.contexts()),
-                          set([DATASET_DEFAULT_GRAPH_ID]))
+                         set([DATASET_DEFAULT_GRAPH_ID]))
 
     def testDefaultGraph(self):
         # Something the default graph is read-only (e.g. TDB in union mode)
         if self.store == "SPARQLUpdateStore":
-            print("Please make sure updating the default graph " \
+            print("Please make sure updating the default graph "
                   "is supported by your SPARQL endpoint")
 
-        self.graph.add(( self.tarek, self.likes, self.pizza))
+        self.graph.add((self.tarek, self.likes, self.pizza))
         self.assertEqual(len(self.graph), 1)
         # only default exists
         self.assertEqual(set(x.identifier for x in self.graph.contexts()),
-                          set([DATASET_DEFAULT_GRAPH_ID]))
+                         set([DATASET_DEFAULT_GRAPH_ID]))
 
         # removing default graph removes triples but not actual graph
         self.graph.remove_graph(DATASET_DEFAULT_GRAPH_ID)
@@ -140,12 +140,12 @@ class DatasetTestCase(unittest.TestCase):
         self.assertEqual(len(self.graph), 0)
         # default still exists
         self.assertEqual(set(x.identifier for x in self.graph.contexts()),
-                          set([DATASET_DEFAULT_GRAPH_ID]))
+                         set([DATASET_DEFAULT_GRAPH_ID]))
 
     def testNotUnion(self):
         # Union depends on the SPARQL endpoint configuration
         if self.store == "SPARQLUpdateStore":
-            print("Please make sure your SPARQL endpoint has not configured " \
+            print("Please make sure your SPARQL endpoint has not configured "
                   "its default graph as the union of the named graphs")
         g1 = self.graph.graph(self.c1)
         g1.add((self.tarek, self.likes, self.pizza))

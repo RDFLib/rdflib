@@ -99,8 +99,8 @@ def make_option_parser():
         "%prog [-h] [-i INPUT_FORMAT] [-o OUTPUT_FORMAT] " +
         "[--ns=PFX=NS ...] [-] [FILE ...]",
         description=__doc__.strip() + (
-        " Reads file system paths, URLs or from stdin if '-' is given."
-        " The result is serialized to stdout."),
+            " Reads file system paths, URLs or from stdin if '-' is given."
+            " The result is serialized to stdout."),
         version="%prog " + "(using rdflib %s)" % rdflib.__version__)
 
     oparser.add_option(
@@ -149,7 +149,8 @@ def make_option_parser():
 
     return oparser
 
-_get_plugin_names = lambda kind: ", ".join(
+
+def _get_plugin_names(kind): return ", ".join(
     p.name for p in plugin.plugins(kind=kind))
 
 

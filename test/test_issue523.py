@@ -2,6 +2,7 @@
 
 import rdflib
 
+
 def test_issue523():
     g = rdflib.Graph()
     r = g.query("SELECT (<../baz> as ?test) WHERE {}",
@@ -10,9 +11,9 @@ def test_issue523():
     assert res == b'test\r\nhttp://example.org/baz\r\n', repr(res)
 
     # expected result:
-    #test
-    #http://example.org/baz
+    # test
+    # http://example.org/baz
 
     # actual result;
-    #test
-    #http://example.org/foo/bar../baz
+    # test
+    # http://example.org/foo/bar../baz

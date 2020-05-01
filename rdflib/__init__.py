@@ -45,47 +45,65 @@ A tiny example:
 __docformat__ = "restructuredtext en"
 
 # The format of the __version__ line is matched by a regex in setup.py
-__version__ = "5.0.0-dev"
-__date__ = "2017/01/29"
+__version__ = "5.0.0"
+__date__ = "2020-04-18"
 
 __all__ = [
-    'URIRef',
-    'BNode',
-    'Literal',
-    'Variable',
-
-    'Namespace',
-
-    'Dataset',
-    'Graph',
-    'ConjunctiveGraph',
-
-    'RDF',
-    'RDFS',
-    'OWL',
-    'XSD',
-
-    'util',
+    "URIRef",
+    "BNode",
+    "Literal",
+    "Variable",
+    "Namespace",
+    "Dataset",
+    "Graph",
+    "ConjunctiveGraph",
+    "CSVW",
+    "DC",
+    "DCAT",
+    "DCTERMS",
+    "DOAP",
+    "FOAF",
+    "ODRL2",
+    "ORG",
+    "OWL",
+    "PROF",
+    "PROV",
+    "RDF",
+    "RDFS",
+    "SDO",
+    "SH",
+    "SKOS",
+    "SOSA",
+    "SSN",
+    "TIME",
+    "VOID",
+    "XMLNS",
+    "XSD",
+    "util",
 ]
 
 import sys
+
 assert sys.version_info >= (2, 7, 0), "rdflib requires Python 2.7 or higher"
 
 import logging
+
 logger = logging.getLogger(__name__)
 _interactive_mode = False
 try:
     import __main__
-    if not hasattr(__main__, '__file__') and sys.stderr.isatty():
+
+    if not hasattr(__main__, "__file__") and sys.stdout != None and sys.stderr.isatty():
         # show log messages in interactive mode
         _interactive_mode = True
         logger.setLevel(logging.INFO)
         logger.addHandler(logging.StreamHandler())
     del __main__
 except ImportError:
-    #Main already imported from elsewhere
+    # Main already imported from elsewhere
     import warnings
-    warnings.warn('__main__ already imported', ImportWarning)
+
+    warnings.warn("__main__ already imported", ImportWarning)
     del warnings
 
 if _interactive_mode:
@@ -97,18 +115,21 @@ del sys
 
 
 import six
+
 try:
     six.unichr(0x10FFFF)
 except ValueError:
     import warnings
+
     warnings.warn(
-        'You are using a narrow Python build!\n'
-        'This means that your Python does not properly support chars > 16bit.\n'
+        "You are using a narrow Python build!\n"
+        "This means that your Python does not properly support chars > 16bit.\n"
         'On your system chars like c=u"\\U0010FFFF" will have a len(c)==2.\n'
-        'As this can cause hard to debug problems with string processing\n'
-        '(slicing, regexp, ...) later on, we strongly advise to use a wide\n'
-        'Python build in production systems.',
-        ImportWarning)
+        "As this can cause hard to debug problems with string processing\n"
+        "(slicing, regexp, ...) later on, we strongly advise to use a wide\n"
+        "Python build in production systems.",
+        ImportWarning,
+    )
     del warnings
 del six
 
@@ -156,17 +177,40 @@ In particular, this determines how the rich comparison operators for
 Literal work, eq, __neq__, __lt__, etc.
 """
 
-from rdflib.term import (
-    URIRef, BNode, Literal, Variable)
+from rdflib.term import URIRef, BNode, Literal, Variable
 
 from rdflib.namespace import Namespace
 
 from rdflib.graph import Dataset, Graph, ConjunctiveGraph
 
-from rdflib.namespace import RDF, RDFS, OWL, XSD
+from rdflib.namespace import (
+    CSVW,
+    DC,
+    DCAT,
+    DCTERMS,
+    DOAP,
+    FOAF,
+    ODRL2,
+    ORG,
+    OWL,
+    PROF,
+    PROV,
+    RDF,
+    RDFS,
+    SDO,
+    SH,
+    SKOS,
+    SOSA,
+    SSN,
+    TIME,
+    VOID,
+    XMLNS,
+    XSD,
+)
 
 from rdflib import plugin
 from rdflib import query
+
 # tedious sop to flake8
 assert plugin
 assert query

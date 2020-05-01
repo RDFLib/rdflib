@@ -1,5 +1,4 @@
 # http://travis-ci.org/#!/RDFLib/rdflib
-sudo: false
 language: python
 branches:
   only:
@@ -10,10 +9,14 @@ git:
   depth: 3
 
 python:
-    - 2.7
-    - 3.4
     - 3.5
     - 3.6
+    - 3.7
+
+jobs:
+  include:
+    - python: 3.8
+      dist: xenial
 
 before_install:
     - pip install -U setuptools pip  # seems travis comes with a too old setuptools for html5lib

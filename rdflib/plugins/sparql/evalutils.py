@@ -23,7 +23,6 @@ def _minus(a, b):
             yield x
 
 
-
 def _join(a, b):
     for x in a:
         for y in b:
@@ -32,7 +31,6 @@ def _join(a, b):
 
 
 def _ebv(expr, ctx):
-
     """
     Return true/false for the given expr
     Either the expr is itself true/false
@@ -88,7 +86,6 @@ def _filter(a, expr):
 
 
 def _fillTemplate(template, solution):
-
     """
     For construct/deleteWhere and friends
 
@@ -112,6 +109,7 @@ def _fillTemplate(template, solution):
                 _o is not None:
 
             yield (_s, _p, _o)
+
 
 def _val(v):
     """ utilitity for ordering things"""

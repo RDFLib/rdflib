@@ -2,6 +2,7 @@ from nose import SkipTest
 from rdflib import Graph, URIRef, Literal
 from six import text_type
 
+
 def test_rdflib_to_networkx():
     try:
         import networkx
@@ -17,7 +18,6 @@ def test_rdflib_to_networkx():
     for t in edges:
         g.add(t)
 
-
     mdg = rdflib_to_networkx_multidigraph(g)
     assert len(mdg.edges()) == 4
     assert mdg.has_edge(a, b)
@@ -28,7 +28,6 @@ def test_rdflib_to_networkx():
     assert mdg.has_edge(a, b, key=0)
     assert mdg.has_edge(a, b, key=1)
 
-
     dg = rdflib_to_networkx_digraph(g)
     assert dg[a][b]['weight'] == 2
     assert sorted(dg[a][b]['triples']) == [(a, p, b), (a, q, b)]
@@ -36,10 +35,9 @@ def test_rdflib_to_networkx():
     assert dg.size() == 3
     assert dg.size(weight='weight') == 4.0
 
-    dg = rdflib_to_networkx_graph(g, False, edge_attrs=lambda s, p, o:{})
+    dg = rdflib_to_networkx_graph(g, False, edge_attrs=lambda s, p, o: {})
     assert 'weight' not in dg[a][b]
     assert 'triples' not in dg[a][b]
-
 
     ug = rdflib_to_networkx_graph(g)
     assert ug[a][b]['weight'] == 3
@@ -48,7 +46,7 @@ def test_rdflib_to_networkx():
     assert ug.size() == 2
     assert ug.size(weight='weight') == 4.0
 
-    ug = rdflib_to_networkx_graph(g, False, edge_attrs=lambda s, p, o:{})
+    ug = rdflib_to_networkx_graph(g, False, edge_attrs=lambda s, p, o: {})
     assert 'weight' not in ug[a][b]
     assert 'triples' not in ug[a][b]
 
@@ -86,6 +84,7 @@ def test_rdflib_to_graphtool():
     epterm = mdg.edge_properties['name']
     assert len(list(gt_util.find_edge(mdg, epterm, text_type(p)))) == 3
     assert len(list(gt_util.find_edge(mdg, epterm, text_type(q)))) == 1
+
 
 if __name__ == "__main__":
     import sys

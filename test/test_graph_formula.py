@@ -1,3 +1,5 @@
+from nose.exc import SkipTest
+from nose.tools import nottest
 import sys
 import os
 from tempfile import mkdtemp, mkstemp
@@ -14,8 +16,6 @@ testN3 = """
 _:foo a rdfs:Class.
 :a :d :c."""
 
-from nose.tools import nottest
-from nose.exc import SkipTest
 
 # Thorough test suite for formula-aware store
 
@@ -52,10 +52,10 @@ def testFormulaStore(store="default", configString=None):
 
         universe = ConjunctiveGraph(g.store)
 
-        #test formula as terms
+        # test formula as terms
         assert len(list(universe.triples((formulaA, implies, formulaB)))) == 1
 
-        #test variable as term and variable roundtrip
+        # test variable as term and variable roundtrip
         assert len(list(formulaB.triples((None, None, v)))) == 1
         for s, p, o in formulaB.triples((None, d, None)):
             if o != c:
@@ -92,7 +92,7 @@ def testFormulaStore(store="default", configString=None):
         #     <Graph identifier=_:Formula16 (<class 'rdflib.graph.Graph'>)>
         #     ]
 
-        #Remove test cases
+        # Remove test cases
         universe.remove((None, implies, None))
         assert len(list(universe.triples((None, implies, None)))) == 0
         assert len(list(formulaA.triples((None, None, None)))) == 2
@@ -105,7 +105,7 @@ def testFormulaStore(store="default", configString=None):
 
         universe.remove((None, RDF.type, RDFS.Class))
 
-        #remove_context tests
+        # remove_context tests
         universe.remove_context(formulaB)
         assert len(list(universe.triples((None, RDF.type, None)))) == 0
         assert len(universe) == 1
@@ -138,7 +138,7 @@ def testFormulaStores():
         if s.name in (
                 'Auditable', 'Concurrent',
                 'SPARQLStore', 'SPARQLUpdateStore',
-                ):
+        ):
             continue
         if not s.getClass().formula_aware:
             continue

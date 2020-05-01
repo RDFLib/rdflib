@@ -2,9 +2,6 @@ from unittest import TestCase
 from rdflib import ConjunctiveGraph
 from rdflib import Namespace, Literal
 from rdflib.collection import Collection
-from nose.exc import SkipTest
-
-
 
 target1xml = """\
 <?xml version="1.0" encoding="utf-8"?>
@@ -44,6 +41,7 @@ target2xml = """\
   <ns1:Item rdf:about="http://www.example.org/example/foo/a"/>
 </rdf:RDF>"""
 
+
 class CollectionTest(TestCase):
 
     def test_collection_render(self):
@@ -78,5 +76,3 @@ class CollectionTest(TestCase):
         # resxml = g.serialize(format="pretty-xml")
         # # print(resxml)
         # self.assertEqual(g.isomorphic(target2), True)
-
-

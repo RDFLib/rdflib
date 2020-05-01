@@ -30,8 +30,6 @@ NotImplementedError if they cannot handle a certain part
 
 PLUGIN_ENTRY_POINT = 'rdf.plugins.sparqleval'
 
-
-
 from . import parser
 from . import operators
 from . import parserutils

@@ -156,7 +156,9 @@ def from_n3(s, default=None, backend=None, nsm=None):
     if not s:
         return default
     if s.startswith('<'):
-        return URIRef(s[1:-1])
+        # Hack: this should correctly handle strings with either native unicode
+        # characters, or \u1234 unicode escapes.
+        return URIRef(s[1:-1].encode("raw-unicode-escape").decode("unicode-escape"))
     elif s.startswith('"'):
         if s.startswith('"""'):
             quotes = '"""'
@@ -340,9 +342,6 @@ def parse_date_time(val):
     return t
 
 
-
-
-
 SUFFIX_FORMAT_MAP = {
     'rdf': 'xml',
     'rdfs': 'xml',
@@ -484,11 +483,10 @@ def get_tree(graph,
     return (mapper(root), sorted(tree, key=sortkey))
 
 
-
-
 def test():
     import doctest
     doctest.testmod()
+
 
 if __name__ == "__main__":
     # try to make the tests work outside of the time zone they were written in

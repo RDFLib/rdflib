@@ -5,8 +5,11 @@ import rdflib.compare
 try:
     from .test_nt_suite import all_nt_files
     assert all_nt_files
+    from .test_n3_suite import all_n3_files
+    assert all_n3_files
 except:
     from test.test_nt_suite import all_nt_files
+    from test.test_n3_suite import all_n3_files
 
 """
 Test round-tripping by all serializers/parser that are registerd.
@@ -25,8 +28,10 @@ tests roundtripping through rdf/xml with only the literals-02 file
 
 
 SKIP = [
+    ('xml', 'test/n3/n3-writer-test-29.n3'),  # has predicates that cannot be shortened to strict qnames
     ('xml', 'test/nt/qname-02.nt'),  # uses a property that cannot be qname'd
-    ('application/rdf+xml', 'test/nt/qname-02.nt'),  # uses a property that cannot be qname'd
+    ('trix', 'test/n3/strquot.n3'),  # contains charachters forbidden by the xml spec
+    ('xml', 'test/n3/strquot.n3'),  # contains charachters forbidden by the xml spec
 ]
 
 
@@ -42,26 +47,28 @@ def roundtrip(e, verbose=False):
     if verbose:
         print("S:")
         print(s)
+        print(s.decode())
 
     g2 = rdflib.ConjunctiveGraph()
     g2.parse(data=s, format=testfmt)
 
     if verbose:
-        both, first, second = rdflib.compare.graph_diff(g1,g2)
+        both, first, second = rdflib.compare.graph_diff(g1, g2)
         print("Diff:")
-        print("%d triples in both"%len(both))
+        print("%d triples in both" % len(both))
         print("G1 Only:")
-        for t in first:
+        for t in sorted(first):
             print(t)
 
         print("--------------------")
         print("G2 Only")
-        for t in second:
+        for t in sorted(second):
             print(t)
 
     assert rdflib.compare.isomorphic(g1, g2)
 
-    if verbose: print("Ok!")
+    if verbose:
+        print("Ok!")
 
 
 formats = None
@@ -79,8 +86,27 @@ def test_cases():
         formats = parsers.intersection(serializers)
 
     for testfmt in formats:
-        if "/" in testfmt: continue # skip double testing
+        if "/" in testfmt:
+            continue  # skip double testing
         for f, infmt in all_nt_files():
+            if (testfmt, f) not in SKIP:
+                yield roundtrip, (infmt, testfmt, f)
+
+
+def test_n3():
+    global formats
+    if not formats:
+        serializers = set(
+            x.name for x in rdflib.plugin.plugins(
+                None, rdflib.plugin.Serializer))
+        parsers = set(
+            x.name for x in rdflib.plugin.plugins(
+                None, rdflib.plugin.Parser))
+        formats = parsers.intersection(serializers)
+
+    for testfmt in formats:
+        if "/" in testfmt: continue # skip double testing
+        for f, infmt in all_n3_files():
             if (testfmt, f) not in SKIP:
                 yield roundtrip, (infmt, testfmt, f)
 

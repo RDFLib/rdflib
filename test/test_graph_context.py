@@ -316,7 +316,7 @@ class ContextTestCase(unittest.TestCase):
             asserte(set(c.predicate_objects(
                 michel)), set([(likes, cheese), (likes, pizza)]))
             asserte(set(c.predicate_objects(bob)), set([(likes,
-                    cheese), (hates, pizza), (hates, michel)]))
+                                                         cheese), (hates, pizza), (hates, michel)]))
             asserte(set(c.predicate_objects(
                 tarek)), set([(likes, cheese), (likes, pizza)]))
 
@@ -338,10 +338,7 @@ class ContextTestCase(unittest.TestCase):
         asserte(len(list(triples((Any, Any, Any)))), 0)
 
 
-
-
 # dynamically create classes for each registered Store
-
 pluginname = None
 if __name__ == '__main__':
     if len(sys.argv) > 1:

@@ -13,63 +13,17 @@ ORDERBY = 'ORDER BY'
 
 import re
 import collections
-import warnings
-import contextlib
 
-try:
-    from SPARQLWrapper import SPARQLWrapper, XML, JSON, POST, GET, URLENCODED, POSTDIRECTLY
-except ImportError:
-    raise Exception(
-        "SPARQLWrapper not found! SPARQL Store will not work." +
-        "Install with 'pip install SPARQLWrapper'")
+from .sparqlconnector import SPARQLConnector
 
 from rdflib.plugins.stores.regexmatching import NATIVE_REGEX
 
 from rdflib.store import Store
-from rdflib.query import Result
 from rdflib import Variable, BNode
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 from rdflib.term import Node
 
 from six import string_types
-
-class NSSPARQLWrapper(SPARQLWrapper):
-    nsBindings = {}
-
-    def setNamespaceBindings(self, bindings):
-        """
-        A shortcut for setting namespace bindings that will be added
-        to the prolog of the query
-
-        @param bindings: A dictionary of prefixs to URIs
-        """
-        self.nsBindings.update(bindings)
-
-    def setQuery(self, query):
-        """
-        Set the SPARQL query text. Note: no check is done on the
-        validity of the query (syntax or otherwise) by this module,
-        except for testing the query type (SELECT, ASK, etc).
-
-        Syntax and validity checking is done by the SPARQL service itself.
-
-        @param query: query text
-        @type query: string
-        @bug: #2320024
-        """
-        self.queryType = self._parseQueryType(query)
-        self.queryString = self.injectPrefixes(query)
-
-    def injectPrefixes(self, query):
-        prefixes = list(self.nsBindings.items())
-        if not prefixes:
-            return query
-        return '\n'.join([
-            '\n'.join(['PREFIX %s: <%s>' % (k, v) for k, v in prefixes]),
-            '',  # separate prefixes from query with an empty line
-            query
-        ])
-
 
 BNODE_IDENT_PATTERN = re.compile('(?P<label>_\:[^\s]+)')
 
@@ -83,12 +37,10 @@ def _node_to_sparql(node):
     return node.n3()
 
 
+class SPARQLStore(SPARQLConnector, Store):
+    """An RDFLib store around a SPARQL endpoint
 
-class SPARQLStore(NSSPARQLWrapper, Store):
-    """
-    An RDFLib store around a SPARQL endpoint
-
-    This is in theory context-aware and should work as expected
+    This is context-aware and should work as expected
     when a context is specified.
 
     For ConjunctiveGraphs, reading is done from the "default graph". Exactly
@@ -98,7 +50,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     motivated by the SPARQL 1.1.
 
     Fuseki/TDB has a flag for specifying that the default graph
-    is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config).
+    is the union of all graphs (``tdb:unionDefaultGraph`` in the Fuseki config).
 
     .. warning:: By default the SPARQL Store does not support blank-nodes!
 
@@ -108,9 +60,9 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
                  See http://www.w3.org/TR/sparql11-query/#BGPsparqlBNodes
 
-    You can make use of such extensions through the node_to_sparql and
-    node_from_result arguments. For example if you want to transform
-    BNode('0001') into "<bnode:b0001>", you can use a function like this:
+    You can make use of such extensions through the ``node_to_sparql``
+    argument. For example if you want to transform BNode('0001') into
+    "<bnode:b0001>", you can use a function like this:
 
     >>> def my_bnode_ext(node):
     ...    if isinstance(node, BNode):
@@ -118,6 +70,22 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     ...    return _node_to_sparql(node)
     >>> store = SPARQLStore('http://dbpedia.org/sparql',
     ...                     node_to_sparql=my_bnode_ext)
+
+    You can request a particular result serialization with the
+    ``returnFormat`` parameter. This is a string that must have a
+    matching plugin registered. Built in is support for ``xml``,
+    ``json``, ``csv``, ``tsv`` and ``application/rdf+xml``.
+
+    The underlying SPARQLConnector builds in the requests library.
+    Any extra kwargs passed to the SPARQLStore connector are passed to
+    requests when doing HTTP calls. I.e. you have full control of
+    cookies/auth/headers.
+
+    Form example:
+
+    >>> store = SPARQLStore('...my endpoint ...', auth=('user','pass'))
+
+    will use HTTP basic auth.
 
     """
     formula_aware = False
@@ -129,22 +97,18 @@ class SPARQLStore(NSSPARQLWrapper, Store):
                  endpoint=None,
                  sparql11=True, context_aware=True,
                  node_to_sparql=_node_to_sparql,
-                 default_query_method=GET,
-                 returnFormat=XML,
-                 **sparqlwrapper_kwargs):
+                 returnFormat='xml',
+                 **sparqlconnector_kwargs):
         """
         """
         super(SPARQLStore, self).__init__(
-            endpoint, returnFormat=returnFormat, **sparqlwrapper_kwargs)
-        self.returnFormat = returnFormat
-        self.setUseKeepAlive()
+            endpoint, returnFormat=returnFormat, **sparqlconnector_kwargs)
+
         self.node_to_sparql = node_to_sparql
         self.nsBindings = {}
         self.sparql11 = sparql11
         self.context_aware = context_aware
         self.graph_aware = context_aware
-        self._timeout = None
-        self.query_method = default_query_method
         self._queries = 0
 
     # Database Management Methods
@@ -160,15 +124,6 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             raise Exception("Cannot create a SPARQL Endpoint")
 
         self.query_endpoint = configuration
-
-    def __set_query_endpoint(self, queryEndpoint):
-        super(SPARQLStore, self).__init__(queryEndpoint, returnFormat=self.returnFormat)
-        self.endpoint = queryEndpoint
-
-    def __get_query_endpoint(self):
-        return self.endpoint
-
-    query_endpoint = property(__get_query_endpoint, __set_query_endpoint)
 
     def destroy(self, configuration):
         raise TypeError('The SPARQL store is read only')
@@ -192,7 +147,20 @@ class SPARQLStore(NSSPARQLWrapper, Store):
     def _query(self, *args, **kwargs):
         self._queries += 1
 
-        return super(SPARQLStore, self)._query(*args, **kwargs)
+        return super(SPARQLStore, self).query(*args, **kwargs)
+
+    def _inject_prefixes(self, query, extra_bindings):
+        bindings = list(self.nsBindings.items()) + list(extra_bindings.items())
+        if not bindings:
+            return query
+        return '\n'.join([
+            '\n'.join(['PREFIX %s: <%s>' % (k, v) for k, v in bindings]),
+            '',  # separate ns_bindings from query with an empty line
+            query
+        ])
+
+    def _preprocess_query(self, query):
+        return self._inject_prefixes(query)
 
     def query(self, query,
               initNs={},
@@ -201,7 +169,9 @@ class SPARQLStore(NSSPARQLWrapper, Store):
               DEBUG=False):
         self.debug = DEBUG
         assert isinstance(query, string_types)
-        self.setNamespaceBindings(initNs)
+
+        query = self._inject_prefixes(query, initNs)
+
         if initBindings:
             if not self.sparql11:
                 raise Exception(
@@ -213,16 +183,8 @@ class SPARQLStore(NSSPARQLWrapper, Store):
                 % (" ".join("?" + str(x) for x in v),
                    " ".join(self.node_to_sparql(initBindings[x]) for x in v))
 
-        self.resetQuery()
-        self.setMethod(self.query_method)
-        if self._is_contextual(queryGraph):
-            self.addParameter("default-graph-uri", queryGraph)
-        self.timeout = self._timeout
-        self.setQuery(query)
-
-        with contextlib.closing(SPARQLWrapper.query(self).response) as res:
-            return Result.parse(res, format=self.returnFormat)
-
+        return self._query(query,
+                           default_graph=queryGraph if self._is_contextual(queryGraph) else None)
 
     def triples(self, spo, context=None):
         """
@@ -276,7 +238,7 @@ class SPARQLStore(NSSPARQLWrapper, Store):
 
         if vars:
             v = ' '.join([term.n3() for term in vars])
-            verb = 'SELECT %s '%v
+            verb = 'SELECT %s ' % v
         else:
             verb = 'ASK'
 
@@ -307,23 +269,17 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         except (ValueError, TypeError, AttributeError):
             pass
 
-        self.resetQuery()
-        if self._is_contextual(context):
-            self.addParameter("default-graph-uri", context.identifier)
-        self.timeout = self._timeout
-        self.setQuery(query)
-
-        with contextlib.closing(SPARQLWrapper.query(self).response) as res:
-            result = Result.parse(res, format=self.returnFormat)
+        result = self._query(query,
+                             default_graph=context.identifier if self._is_contextual(context) else None)
 
         if vars:
             for row in result:
                 yield (row.get(s, s),
                        row.get(p, p),
-                       row.get(o, o)), None # why is the context here not the passed in graph 'context'?
+                       row.get(o, o)), None  # why is the context here not the passed in graph 'context'?
         else:
             if result.askAnswer:
-                yield (s,p,o), None
+                yield (s, p, o), None
 
     def triples_choices(self, _, context=None):
         """
@@ -341,14 +297,10 @@ class SPARQLStore(NSSPARQLWrapper, Store):
                 "For performance reasons, this is not" +
                 "supported for sparql1.0 endpoints")
         else:
-            self.resetQuery()
             q = "SELECT (count(*) as ?c) WHERE {?s ?p ?o .}"
-            if self._is_contextual(context):
-                self.addParameter("default-graph-uri", context.identifier)
-            self.setQuery(q)
 
-            with contextlib.closing(SPARQLWrapper.query(self).response) as res:
-                result = Result.parse(res, format=self.returnFormat)
+            result = self._query(q,
+                                 default_graph=context.identifier if self._is_contextual(context) else None)
 
             return int(next(iter(result)).c)
 
@@ -366,7 +318,6 @@ class SPARQLStore(NSSPARQLWrapper, Store):
         Please note that some SPARQL endpoints are not able to find empty named
         graphs.
         """
-        self.resetQuery()
 
         if triple:
             nts = self.node_to_sparql
@@ -374,14 +325,13 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             params = (nts(s if s else Variable('s')),
                       nts(p if p else Variable('p')),
                       nts(o if o else Variable('o')))
-            self.setQuery('SELECT ?name WHERE { GRAPH ?name { %s %s %s }}' % params)
+            q = 'SELECT ?name WHERE { GRAPH ?name { %s %s %s }}' % params
         else:
-            self.setQuery('SELECT ?name WHERE { GRAPH ?name {} }')
+            q = 'SELECT ?name WHERE { GRAPH ?name {} }'
 
-        with contextlib.closing(SPARQLWrapper.query(self).response) as res:
-            result = Result.parse(res, format=self.returnFormat)
+        result = self._query(q)
 
-        return ( row.name for row in result )
+        return (row.name for row in result)
 
     # Namespace persistence interface implementation
     def bind(self, prefix, namespace):
@@ -416,6 +366,9 @@ class SPARQLStore(NSSPARQLWrapper, Store):
             return graph != '__UNION__'
         else:
             return graph.identifier != DATASET_DEFAULT_GRAPH_ID
+
+    def close(self, commit_pending_transaction=None):
+        SPARQLConnector.close(self)
 
 
 class SPARQLUpdateStore(SPARQLStore):
@@ -462,7 +415,8 @@ class SPARQLUpdateStore(SPARQLStore):
     STRING_LITERAL2 = u'"([^"\\\\]|\\\\.)*"'
     STRING_LITERAL_LONG1 = u"'''(('|'')?([^'\\\\]|\\\\.))*'''"
     STRING_LITERAL_LONG2 = u'"""(("|"")?([^"\\\\]|\\\\.))*"""'
-    String = u'(%s)|(%s)|(%s)|(%s)' % (STRING_LITERAL1, STRING_LITERAL2, STRING_LITERAL_LONG1, STRING_LITERAL_LONG2)
+    String = u'(%s)|(%s)|(%s)|(%s)' % (STRING_LITERAL1, STRING_LITERAL2,
+                                       STRING_LITERAL_LONG1, STRING_LITERAL_LONG2)
     IRIREF = u'<([^<>"{}|^`\\]\\\\\[\\x00-\\x20])*>'
     COMMENT = u'#[^\\x0D\\x0A]*([\\x0D\\x0A]|\\Z)'
 
@@ -481,7 +435,6 @@ class SPARQLUpdateStore(SPARQLStore):
     # part of the modified query as is.
 
     ##################################################################
-
 
     def __init__(self,
                  queryEndpoint=None, update_endpoint=None,
@@ -507,7 +460,7 @@ class SPARQLUpdateStore(SPARQLStore):
             queryEndpoint,
             sparql11,
             context_aware,
-            updateEndpoint=update_endpoint,
+            update_endpoint=update_endpoint,
             **kwds
         )
 
@@ -516,7 +469,6 @@ class SPARQLUpdateStore(SPARQLStore):
         self.dirty_reads = dirty_reads
         self._edits = None
         self._updates = 0
-
 
     def query(self, *args, **kwargs):
         if not self.autocommit and not self.dirty_reads:
@@ -550,31 +502,19 @@ class SPARQLUpdateStore(SPARQLStore):
             raise Exception("Cannot create a SPARQL Endpoint")
 
         if isinstance(configuration, tuple):
-            self.endpoint = configuration[0]
+            self.query_endpoint = configuration[0]
             if len(configuration) > 1:
-                self.updateEndpoint = configuration[1]
+                self.update_endpoint = configuration[1]
         else:
-            self.endpoint = configuration
+            self.query_endpoint = configuration
 
-        if not self.updateEndpoint:
-            self.updateEndpoint = self.endpoint
+        if not self.update_endpoint:
+            self.update_endpoint = self.endpoint
 
     def _transaction(self):
         if self._edits is None:
             self._edits = []
         return self._edits
-
-    def __set_update_endpoint(self, update_endpoint):
-        self.updateEndpoint = update_endpoint
-
-    def __get_update_endpoint(self):
-        return self.updateEndpoint
-
-    update_endpoint = property(
-        __get_update_endpoint,
-        __set_update_endpoint,
-        doc='the HTTP URL for the Update endpoint, typically '
-            'something like http://server/dataset/update')
 
     # Transactional interfaces
     def commit(self):
@@ -584,7 +524,7 @@ class SPARQLUpdateStore(SPARQLStore):
             and reads can degenerate to the original call-per-triple situation that originally existed.
         """
         if self._edits and len(self._edits) > 0:
-            self._do_update('\n;\n'.join(self._edits))
+            self._update('\n;\n'.join(self._edits))
             self._edits = None
 
     def rollback(self):
@@ -593,7 +533,7 @@ class SPARQLUpdateStore(SPARQLStore):
     def add(self, spo, context=None, quoted=False):
         """ Add a triple to the store of triples. """
 
-        if not self.endpoint:
+        if not self.update_endpoint:
             raise Exception("UpdateEndpoint is not set - call 'open'")
 
         assert not quoted
@@ -612,12 +552,12 @@ class SPARQLUpdateStore(SPARQLStore):
 
     def addN(self, quads):
         """ Add a list of quads to the store. """
-        if not self.endpoint:
+        if not self.update_endpoint:
             raise Exception("UpdateEndpoint is not set - call 'open'")
 
         contexts = collections.defaultdict(list)
         for subject, predicate, obj, context in quads:
-            contexts[context].append((subject,predicate,obj))
+            contexts[context].append((subject, predicate, obj))
         data = []
         nts = self.node_to_sparql
         for context in contexts:
@@ -634,7 +574,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
     def remove(self, spo, context):
         """ Remove a triple from the store """
-        if not self.endpoint:
+        if not self.update_endpoint:
             raise Exception("UpdateEndpoint is not set - call 'open'")
 
         (subject, predicate, obj) = spo
@@ -659,23 +599,11 @@ class SPARQLUpdateStore(SPARQLStore):
     def setTimeout(self, timeout):
         self._timeout = int(timeout)
 
-    def _do_update(self, update):
+    def _update(self, update):
 
         self._updates += 1
 
-        self.resetQuery()
-        self.setQuery(update)
-        self.setMethod(POST)
-        self.timeout = self._timeout
-        self.setRequestMethod(URLENCODED if self.postAsEncoded else POSTDIRECTLY)
-
-        result = SPARQLWrapper.query(self)
-
-        # we must read (and discard) the whole response
-        # otherwise the network socket buffer will at some point be "full"
-        # and we will block
-        with contextlib.closing(result.response) as res:
-            res.read()
+        SPARQLConnector.update(self, update)
 
     def update(self, query,
                initNs={},
@@ -714,13 +642,12 @@ class SPARQLUpdateStore(SPARQLStore):
               uncommon situations and produce invalid output.
 
         """
-        if not self.endpoint:
+        if not self.update_endpoint:
             raise Exception("UpdateEndpoint is not set - call 'open'")
 
         self.debug = DEBUG
         assert isinstance(query, string_types)
-        self.setNamespaceBindings(initNs)
-        query = self.injectPrefixes(query)
+        query = self._inject_prefixes(query, initNs)
 
         if self._is_contextual(queryGraph):
             query = self._insert_named_graph(query, queryGraph)
@@ -803,6 +730,13 @@ class SPARQLUpdateStore(SPARQLStore):
         elif graph.identifier != DATASET_DEFAULT_GRAPH_ID:
             self.update(
                 "CREATE GRAPH %s" % self.node_to_sparql(graph.identifier))
+
+    def close(self, commit_pending_transaction=False):
+
+        if commit_pending_transaction:
+            self.commit()
+
+        super(SPARQLStore, self).close()
 
     def remove_graph(self, graph):
         if not self.graph_aware:

@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-
 from __future__ import unicode_literals
+
+from nose import SkipTest
 
 import unittest
 import re
 
-from rdflib import ConjunctiveGraph, URIRef, Literal
+from rdflib import ConjunctiveGraph, URIRef, Literal, BNode, Graph
 from six import text_type
 from six.moves.urllib.request import urlopen
 
@@ -99,16 +100,16 @@ class TestSparql11(unittest.TestCase):
         # the following are actually bad tests as they depend on your endpoint,
         # as pointed out in the sparqlstore.py code:
         #
-        ## For ConjunctiveGraphs, reading is done from the "default graph" Exactly
-        ## what this means depends on your endpoint, because SPARQL does not offer a
-        ## simple way to query the union of all graphs as it would be expected for a
-        ## ConjuntiveGraph.
+        # For ConjunctiveGraphs, reading is done from the "default graph" Exactly
+        # what this means depends on your endpoint, because SPARQL does not offer a
+        # simple way to query the union of all graphs as it would be expected for a
+        # ConjuntiveGraph.
         ##
-        ## Fuseki/TDB has a flag for specifying that the default graph
-        ## is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config).
+        # Fuseki/TDB has a flag for specifying that the default graph
+        # is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config).
         self.assertEqual(3, len(self.graph),
-            'default union graph should contain three triples but contains:\n'
-            '%s' % list(self.graph))
+                         'default union graph should contain three triples but contains:\n'
+                         '%s' % list(self.graph))
 
         r = self.graph.query("SELECT * WHERE { ?s <urn:likes> <urn:pizza> . }")
         self.assertEqual(2, len(list(r)), "two people like pizza")
@@ -142,8 +143,8 @@ class TestSparql11(unittest.TestCase):
 
         g = self.graph.get_context(graphuri)
         self.assertEqual(
-            set(g.triples((None,None,None))),
-            set([(michel,likes,pizza)]),
+            set(g.triples((None, None, None))),
+            set([(michel, likes, pizza)]),
             'only michel likes pizza'
         )
 
@@ -159,10 +160,31 @@ class TestSparql11(unittest.TestCase):
 
         g = self.graph.get_context(graphuri)
         self.assertEqual(
-            set(g.triples((None,None,None))),
-            set([(michel,likes,pizza)]),
+            set(g.triples((None, None, None))),
+            set([(michel, likes, pizza)]),
             'only michel likes pizza'
         )
+
+    def testUpdateWithBlankNode(self):
+        self.graph.update(
+            "INSERT DATA { GRAPH <urn:graph> { _:blankA <urn:type> <urn:Blank> } }")
+        g = self.graph.get_context(graphuri)
+        for t in g.triples((None, None, None)):
+            self.assertTrue(isinstance(t[0], BNode))
+            self.assertEqual(t[1].n3(), "<urn:type>")
+            self.assertEqual(t[2].n3(), "<urn:Blank>")
+
+    def testUpdateWithBlankNodeSerializeAndParse(self):
+        self.graph.update(
+            "INSERT DATA { GRAPH <urn:graph> { _:blankA <urn:type> <urn:Blank> } }")
+        g = self.graph.get_context(graphuri)
+        string = g.serialize(format='ntriples').decode('utf-8')
+        raised = False
+        try:
+            Graph().parse(data=string, format="ntriples")
+        except Exception as e:
+            raised = True
+        self.assertFalse(raised, 'Exception raised when parsing: ' + string)
 
     def testMultipleUpdateWithInitBindings(self):
         self.graph.update(
@@ -178,8 +200,8 @@ class TestSparql11(unittest.TestCase):
 
         g = self.graph.get_context(graphuri)
         self.assertEqual(
-            set(g.triples((None,None,None))),
-            set([(michel,likes,pizza), (bob,likes,pizza)]),
+            set(g.triples((None, None, None))),
+            set([(michel, likes, pizza), (bob, likes, pizza)]),
             'michel and bob like pizza'
         )
 
@@ -188,8 +210,8 @@ class TestSparql11(unittest.TestCase):
         r1 = "INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"
         g.update(r1)
         self.assertEqual(
-            set(g.triples((None,None,None))),
-            set([(michel,likes,pizza)]),
+            set(g.triples((None, None, None))),
+            set([(michel, likes, pizza)]),
             'only michel likes pizza'
         )
 
@@ -240,7 +262,8 @@ class TestSparql11(unittest.TestCase):
         values = set()
         for v in g.objects(michel, says):
             values.add(text_type(v))
-        self.assertEqual(values, set([re.sub(r"\\(.)", r"\1", re.sub(r"^'''|'''$|^'|'$|" + r'^"""|"""$|^"|"$', r"", s)) for s in r4strings]))
+        self.assertEqual(values, set([re.sub(r"\\(.)", r"\1", re.sub(
+            r"^'''|'''$|^'|'$|" + r'^"""|"""$|^"|"$', r"", s)) for s in r4strings]))
 
         # IRI Containing ' or #
         # The fragment identifier must not be misinterpreted as a comment
@@ -273,10 +296,10 @@ class TestSparql11(unittest.TestCase):
         g = self.graph.get_context(graphuri)
         r = "INSERT { ?a ?b ?c } WHERE {}"
         g.update(r, initBindings={
-                'a': michel,
-                'b': likes,
-                'c': pizza
-            })
+            'a': michel,
+            'b': likes,
+            'c': pizza
+        })
         self.assertEqual(
             set(g.triples((None, None, None))),
             set([(michel, likes, pizza)]),
@@ -306,7 +329,6 @@ class TestSparql11(unittest.TestCase):
         o = tuple(g)[0][2]
         self.assertEqual(o, Literal(''), repr(o))
 
-from nose import SkipTest
 
 try:
     assert len(urlopen(HOST).read()) > 0

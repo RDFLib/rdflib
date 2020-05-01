@@ -1,3 +1,0 @@
-ASK WHERE {
-	<http://example.org/node> <http://example.org/property> "not an XML Literal,\nwhitespace     preserved\n" .
- }

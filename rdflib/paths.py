@@ -32,18 +32,19 @@ In SPARQL the syntax is as follows:
 |                    | of the path by zero or one matches of elt.      |
 +--------------------+-------------------------------------------------+
 |!iri or             | Negated property set. An IRI which is not one of|
-|!(iri\ :sub:`1`\ |  | iri\ :sub:`1`...iri\ :sub:`n`.                  |
-|... |iri\ :sub:`n`) | !iri is short for !(iri).                       |
+|!(iri\ :sub:`1`\ \| | iri\ :sub:`1`...iri\ :sub:`n`.                  |
+|... \|iri\ :sub:`n`)| !iri is short for !(iri).                       |
 +--------------------+-------------------------------------------------+
 |!^iri or            | Negated property set where the excluded matches |
-|!(^iri\ :sub:`1`\ | | are based on reversed path. That is, not one of |
-|... |^iri\ :sub:`n`)| iri\ :sub:`1`...iri\ :sub:`n` as reverse paths. |
+|!(^iri\ :sub:`1`\ \|| are based on reversed path. That is, not one of |
+|...\|^iri\ :sub:`n`)| iri\ :sub:`1`...iri\ :sub:`n` as reverse paths. |
 |                    | !^iri is short for !(^iri).                     |
 +--------------------+-------------------------------------------------+
-|!(iri\ :sub:`1`\ |  | A combination of forward and reverse            |
-|...|iri\ :sub:`j`\ || properties in a negated property set.           |
-|^iri\ :sub:`j+1`\ | |                                                 |
-|... |^iri\ :sub:`n`)|                                                 |
+|!(iri\ :sub:`1`\ \| | A combination of forward and reverse            |
+|...\|iri\ :sub:`j`\ | properties in a negated property set.           |
+|\|^iri\ :sub:`j+1`\ |                                                 |
+|\|... \|^iri\       |                                                 |
+|:sub:`n`)|          |                                                 |
 +--------------------+-------------------------------------------------+
 |(elt)               | A group path elt, brackets control precedence.  |
 +--------------------+-------------------------------------------------+
@@ -64,8 +65,8 @@ Path(~http://xmlns.com/foaf/0.1/knows)
 >>> foaf.knows/foaf.name
 Path(http://xmlns.com/foaf/0.1/knows / http://xmlns.com/foaf/0.1/name)
 
->>> foaf.name|foaf.firstName
-Path(http://xmlns.com/foaf/0.1/name | http://xmlns.com/foaf/0.1/firstName)
+>>> foaf.name|foaf.givenName
+Path(http://xmlns.com/foaf/0.1/name | http://xmlns.com/foaf/0.1/givenName)
 
 Modifiers (?, *, +) are done using * (the multiplication operator) and
 the strings '*', '?', '+', also defined as constants in this file.
@@ -308,7 +309,6 @@ class AlternativePath(Path):
         return '|'.join(a.n3() for a in self.args)
 
 
-
 class MulPath(Path):
     def __init__(self, path, mod):
         self.path = path
@@ -413,7 +413,6 @@ class MulPath(Path):
         return '%s%s' % (self.path.n3(), self.mod)
 
 
-
 class NegatedPath(Path):
     def __init__(self, arg):
         if isinstance(arg, (URIRef, InvPath)):
@@ -471,6 +470,7 @@ def path_sequence(self, other):
 def evalPath(graph, t):
     return ((s, o) for s, p, o in graph.triples(t))
 
+
 def mul_path(p, mul):
     """
     cardinality path
@@ -490,7 +490,6 @@ def neg_path(p):
     negated path
     """
     return NegatedPath(p)
-
 
 
 if __name__ == '__main__':

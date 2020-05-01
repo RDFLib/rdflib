@@ -6,6 +6,7 @@ from rdflib.namespace import SKOS
 from rdflib import RDFS
 from rdflib import URIRef
 
+
 class TestPrefLabel(unittest.TestCase):
 
     def setUp(self):
@@ -13,12 +14,12 @@ class TestPrefLabel(unittest.TestCase):
         self.u = URIRef('http://example.com/foo')
         self.g.add([self.u, RDFS.label, Literal('foo')])
         self.g.add([self.u, RDFS.label, Literal('bar')])
-    
+
     def test_default_label_sorting(self):
         res = sorted(self.g.preferredLabel(self.u))
-        tgt = [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'), 
-                rdflib.term.Literal(u'bar')), 
-                (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'), 
+        tgt = [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
+                rdflib.term.Literal(u'bar')),
+               (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
                 rdflib.term.Literal(u'foo'))]
         self.assertEqual(res, tgt)
 
@@ -54,4 +55,3 @@ class TestPrefLabel(unittest.TestCase):
         tgt = [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
                 rdflib.term.Literal(u'blubb', lang='en'))]
         self.assertEqual(res, tgt)
-

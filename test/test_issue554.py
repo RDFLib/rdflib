@@ -2,6 +2,7 @@
 
 import rdflib
 
+
 def test_sparql_empty_no_row():
     g = rdflib.Graph()
     q = 'select ?whatever { }'

@@ -1,5 +1,8 @@
 from __future__ import print_function
 
+import sys
+from encodings.utf_8 import StreamWriter
+
 import unittest
 
 import os
@@ -18,9 +21,7 @@ _logger = logging.getLogger("parser_rdfcore")
 
 verbose = 0
 
-from encodings.utf_8 import StreamWriter
 
-import sys
 sw = StreamWriter(sys.stdout)
 
 
@@ -215,6 +216,7 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(
             num_failed, 0, "Failed: %s of %s." % (num_failed, total))
 
+
 RESULT = Namespace("http://www.w3.org/2002/03owlt/resultsOntology#")
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 
@@ -241,7 +243,7 @@ if __name__ == "__main__":
 
     try:
         argv = sys.argv
-        if len(argv)>1:
+        if len(argv) > 1:
             _logger.setLevel(logging.INFO)
             _logger.addHandler(logging.StreamHandler())
 

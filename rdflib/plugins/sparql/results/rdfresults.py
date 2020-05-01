@@ -21,7 +21,7 @@ class RDFResult(Result):
             graph = source
 
         rs = graph.value(predicate=RDF.type, object=RS.ResultSet)
-                         # there better be only one :)
+        # there better be only one :)
 
         if rs is None:
             type_ = 'CONSTRUCT'
@@ -55,7 +55,7 @@ class RDFResult(Result):
                 self.bindings.append(sol)
         elif type_ == 'ASK':
             self.askAnswer = askAnswer.value
-            if askAnswer.value == None:
+            if askAnswer.value is None:
                 raise Exception('Malformed boolean in ask answer!')
         elif type_ == 'CONSTRUCT':
             self.graph = g

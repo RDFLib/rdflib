@@ -10,25 +10,27 @@ from .testutils import nose_tst_earl_report
 
 verbose = False
 
+
 def turtle(test):
     g = Graph()
 
     try:
-        base = 'http://www.w3.org/2013/TurtleTests/'+split_uri(test.action)[1]
+        base = 'http://www.w3.org/2013/TurtleTests/' + split_uri(test.action)[1]
 
         g.parse(test.action, publicID=base, format='turtle')
         if not test.syntax:
             raise AssertionError("Input shouldn't have parsed!")
 
-        if test.result: # eval test
+        if test.result:  # eval test
             res = Graph()
             res.parse(test.result, format='nt')
 
             if verbose:
-                both, first, second = graph_diff(g,res)
-                if not first and not second: return
+                both, first, second = graph_diff(g, res)
+                if not first and not second:
+                    return
                 print("Diff:")
-                #print "%d triples in both"%len(both)
+                # print "%d triples in both"%len(both)
                 print("Turtle Only:")
                 for t in first:
                     print(t)
@@ -41,10 +43,10 @@ def turtle(test):
 
             assert isomorphic(g, res), 'graphs must be the same'
 
-
     except:
         if test.syntax:
             raise
+
 
 testers = {
     RDFT.TestTurtlePositiveSyntax: turtle,
@@ -53,12 +55,14 @@ testers = {
     RDFT.TestTurtleNegativeEval: turtle
 }
 
-def test_turtle(tests = None):
+
+def test_turtle(tests=None):
     for t in nose_tests(testers,
                         'test/w3c/turtle/manifest.ttl'):
         if tests:
             for test in tests:
-                if test in t[1].uri: break
+                if test in t[1].uri:
+                    break
             else:
                 continue
 

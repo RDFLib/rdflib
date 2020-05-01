@@ -9,7 +9,7 @@ class EntityTest(TestCase):
 
         g = ConjunctiveGraph()
         n3 = \
-        """
+            """
         @prefix _9: <http://data.linkedmdb.org/resource/movie/> .
         @prefix p_9: <urn:test:> .
         @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -21,7 +21,6 @@ class EntityTest(TestCase):
             rdfs:label "Cecil B. DeMille (Director)";
             _9:director_name "Cecil B. DeMille" ."""
 
-
         g.parse(data=n3, format='n3')
         turtle = g.serialize(format="turtle")
 
@@ -29,6 +28,6 @@ class EntityTest(TestCase):
         g = ConjunctiveGraph()
         g.parse(data=turtle, format='turtle')
         # Shouldn't have got to here
-        s=g.serialize(format="turtle")
+        s = g.serialize(format="turtle")
 
         self.assertTrue(b('@prefix _9') not in s)

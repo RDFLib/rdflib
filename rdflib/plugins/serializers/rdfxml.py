@@ -32,7 +32,7 @@ class XMLSerializer(Serializer):
         bindings = {}
 
         for predicate in set(store.predicates()):
-            prefix, namespace, name = nm.compute_qname(predicate)
+            prefix, namespace, name = nm.compute_qname_strict(predicate)
             bindings[prefix] = URIRef(namespace)
 
         RDFNS = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
@@ -46,7 +46,11 @@ class XMLSerializer(Serializer):
             yield prefix, namespace
 
     def serialize(self, stream, base=None, encoding=None, **args):
-        self.base = base
+        # if base is given here, use that, if not and a base is set for the graph use that
+        if base is not None:
+            self.base = base
+        elif self.store.base is not None:
+            self.base = self.store.base
         self.__stream = stream
         self.__serialized = {}
         encoding = self.encoding
@@ -62,6 +66,8 @@ class XMLSerializer(Serializer):
         # If provided, write xml:base attribute for the RDF
         if "xml_base" in args:
             write('   xml:base="%s"\n' % args['xml_base'])
+        elif self.base:
+            write('   xml:base="%s"\n' % self.base)
         # TODO:
         # assert(
         #    namespaces["http://www.w3.org/1999/02/22-rdf-syntax-ns#"]=='rdf')
@@ -116,7 +122,7 @@ class XMLSerializer(Serializer):
     def predicate(self, predicate, object, depth=1):
         write = self.write
         indent = "  " * depth
-        qname = self.store.namespace_manager.qname(predicate)
+        qname = self.store.namespace_manager.qname_strict(predicate)
 
         if isinstance(object, Literal):
             attributes = ""
@@ -138,6 +144,7 @@ class XMLSerializer(Serializer):
             else:
                 write("%s<%s rdf:resource=%s/>\n" %
                       (indent, qname, quoteattr(self.relativize(object))))
+
 
 XMLLANG = "http://www.w3.org/XML/1998/namespacelang"
 XMLBASE = "http://www.w3.org/XML/1998/namespacebase"
@@ -162,7 +169,11 @@ class PrettyXMLSerializer(Serializer):
     def serialize(self, stream, base=None, encoding=None, **args):
         self.__serialized = {}
         store = self.store
-        self.base = base
+        # if base is given here, use that, if not and a base is set for the graph use that
+        if base is not None:
+            self.base = base
+        elif store.base is not None:
+            self.base = store.base
         self.max_depth = args.get("max_depth", 3)
         assert self.max_depth > 0, "max_depth must be greater than 0"
 
@@ -174,7 +185,7 @@ class PrettyXMLSerializer(Serializer):
             store.objects(None, RDF.type))
 
         for predicate in possible:
-            prefix, namespace, local = nm.compute_qname(predicate)
+            prefix, namespace, local = nm.compute_qname_strict(predicate)
             namespaces[prefix] = namespace
 
         namespaces["rdf"] = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -183,6 +194,8 @@ class PrettyXMLSerializer(Serializer):
 
         if "xml_base" in args:
             writer.attribute(XMLBASE, args["xml_base"])
+        elif self.base:
+            writer.attribute(XMLBASE, self.base)
 
         writer.namespaces(namespaces.items())
 
@@ -273,8 +286,8 @@ class PrettyXMLSerializer(Serializer):
             if object.language:
                 writer.attribute(XMLLANG, object.language)
 
-            if (object.datatype == RDF.XMLLiteral and
-                    isinstance(object.value, xml.dom.minidom.Document)):
+            if (object.datatype == RDF.XMLLiteral
+                    and isinstance(object.value, xml.dom.minidom.Document)):
                 writer.attribute(RDF.parseType, "Literal")
                 writer.text(u"")
                 writer.stream.write(object)

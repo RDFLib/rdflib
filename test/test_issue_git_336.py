@@ -39,7 +39,6 @@ def test_ns_localname_roundtrip():
     g1.parse(data=turtledump, format="turtle")
 
 
-
 if __name__ == '__main__':
     import nose
     import sys

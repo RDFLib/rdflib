@@ -30,6 +30,8 @@ Ah... it's coming back to me...
 [6:38p] eikeon: I know many of the backends break if URIRef("foo")==Literal("foo")
 [6:39p] eikeon: And if we want "foo"==Literal("foo") --- then we really can't have URIRef("foo") also == "foo"
 """
+
+
 class IdentifierEquality(unittest.TestCase):
 
     def setUp(self):
@@ -40,25 +42,25 @@ class IdentifierEquality(unittest.TestCase):
         self.python_literal_2 = u"foo"
 
     def testA(self):
-        self.assertEqual(self.uriref==self.literal, False)
+        self.assertEqual(self.uriref == self.literal, False)
 
     def testB(self):
-        self.assertEqual(self.literal==self.uriref, False)
+        self.assertEqual(self.literal == self.uriref, False)
 
     def testC(self):
-        self.assertEqual(self.uriref==self.python_literal, False)
+        self.assertEqual(self.uriref == self.python_literal, False)
 
     def testD(self):
-        self.assertEqual(self.python_literal==self.uriref, False)
+        self.assertEqual(self.python_literal == self.uriref, False)
 
     def testE(self):
-        self.assertEqual(self.literal==self.python_literal, False)
+        self.assertEqual(self.literal == self.python_literal, False)
 
-    def testE2(self): 
+    def testE2(self):
         self.assertTrue(self.literal.eq(self.python_literal), True)
 
     def testF(self):
-        self.assertEqual(self.python_literal==self.literal, False)
+        self.assertEqual(self.python_literal == self.literal, False)
 
     def testG(self):
         self.assertEqual("foo" in CORE_SYNTAX_TERMS, False)
@@ -75,5 +77,3 @@ class IdentifierEquality(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
-

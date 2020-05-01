@@ -42,7 +42,6 @@ def setDataType(terms):
 
 
 def expandTriples(terms):
-
     """
     Expand ; and , syntax for repeat predicates, subjects
     """
@@ -56,8 +55,8 @@ def expandTriples(terms):
             if t == ',':
                 res.extend([res[-3], res[-2]])
             elif t == ';':
-                if i+1 == len(terms) or terms[i+1] == ";" or terms[i+1] == ".":
-                    continue # this semicolon is spurious
+                if i + 1 == len(terms) or terms[i + 1] == ";" or terms[i + 1] == ".":
+                    continue  # this semicolon is spurious
                 res.append(res[0])
             elif isinstance(t, list):
                 # BlankNodePropertyList
@@ -68,7 +67,7 @@ def expandTriples(terms):
                 if len(t) > 1:
                     res += t
                 # is this bnode the subject of more triples?
-                if i + 1 < l and terms[i + 1] not in ".,;" :
+                if i + 1 < l and terms[i + 1] not in ".,;":
                     res.append(t[0])
             elif isinstance(t, ParseResults):
                 res += t.asList()
@@ -178,7 +177,7 @@ PN_CHARS_re = u'\\-0-9\u00B7\u0300-\u036F\u203F-\u2040' + PN_CHARS_U_re
 
 # [168] PN_PREFIX ::= PN_CHARS_BASE ((PN_CHARS|'.')* PN_CHARS)?
 PN_PREFIX = Regex(u'[%s](?:[%s\\.]*[%s])?' % (PN_CHARS_BASE_re,
-                  PN_CHARS_re, PN_CHARS_re), flags=re.U)
+                                              PN_CHARS_re, PN_CHARS_re), flags=re.U)
 
 # [140] PNAME_NS ::= PN_PREFIX? ':'
 PNAME_NS = Optional(
@@ -187,7 +186,7 @@ PNAME_NS = Optional(
 # [173] PN_LOCAL_ESC ::= '\' ( '_' | '~' | '.' | '-' | '!' | '$' | '&' | "'" | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%' )
 
 PN_LOCAL_ESC_re = '\\\\[_~\\.\\-!$&"\'()*+,;=/?#@%]'
-#PN_LOCAL_ESC = Regex(PN_LOCAL_ESC_re) # regex'd
+# PN_LOCAL_ESC = Regex(PN_LOCAL_ESC_re) # regex'd
 #PN_LOCAL_ESC.setParseAction(lambda x: x[0][1:])
 
 # [172] HEX ::= [0-9] | [A-F] | [a-f]
@@ -195,28 +194,28 @@ PN_LOCAL_ESC_re = '\\\\[_~\\.\\-!$&"\'()*+,;=/?#@%]'
 
 # [171] PERCENT ::= '%' HEX HEX
 PERCENT_re = '%[0-9a-fA-F]{2}'
-#PERCENT = Regex(PERCENT_re) # regex'd
+# PERCENT = Regex(PERCENT_re) # regex'd
 #PERCENT.setParseAction(lambda x: unichr(int(x[0][1:], 16)))
 
 # [170] PLX ::= PERCENT | PN_LOCAL_ESC
-PLX_re = '(%s|%s)'%(PN_LOCAL_ESC_re,PERCENT_re)
-#PLX = PERCENT | PN_LOCAL_ESC # regex'd
+PLX_re = '(%s|%s)' % (PN_LOCAL_ESC_re, PERCENT_re)
+# PLX = PERCENT | PN_LOCAL_ESC # regex'd
 
 
 # [169] PN_LOCAL ::= (PN_CHARS_U | ':' | [0-9] | PLX ) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX) )?
 
 PN_LOCAL = Regex(u"""([%(PN_CHARS_U)s:0-9]|%(PLX)s)
                      (([%(PN_CHARS)s\\.:]|%(PLX)s)*
-                      ([%(PN_CHARS)s:]|%(PLX)s) )?"""%dict(PN_CHARS_U=PN_CHARS_U_re,
-                                                       PN_CHARS=PN_CHARS_re,
-                                                         PLX=PLX_re), flags=re.X|re.UNICODE)
+                      ([%(PN_CHARS)s:]|%(PLX)s) )?""" % dict(PN_CHARS_U=PN_CHARS_U_re,
+                                                             PN_CHARS=PN_CHARS_re,
+                                                             PLX=PLX_re), flags=re.X | re.UNICODE)
+
 
 def _hexExpand(match):
     return unichr(int(match.group(0)[1:], 16))
 
-PN_LOCAL.setParseAction(lambda x: re.sub("(%s)"%PERCENT_re, _hexExpand, x[0]))
 
-
+PN_LOCAL.setParseAction(lambda x: re.sub("(%s)" % PERCENT_re, _hexExpand, x[0]))
 
 
 # [141] PNAME_LN ::= PNAME_NS PN_LOCAL
@@ -225,7 +224,7 @@ PNAME_LN = PNAME_NS + Param('localname', PN_LOCAL.leaveWhitespace())
 # [142] BLANK_NODE_LABEL ::= '_:' ( PN_CHARS_U | [0-9] ) ((PN_CHARS|'.')* PN_CHARS)?
 BLANK_NODE_LABEL = Regex(u'_:[0-9%s](?:[\\.%s]*[%s])?' % (
     PN_CHARS_U_re, PN_CHARS_re, PN_CHARS_re), flags=re.U)
-BLANK_NODE_LABEL.setParseAction(lambda x: rdflib.BNode(x[0]))
+BLANK_NODE_LABEL.setParseAction(lambda x: rdflib.BNode(x[0][2:]))
 
 
 # [166] VARNAME ::= ( PN_CHARS_U | [0-9] ) ( PN_CHARS_U | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040] )*
@@ -267,7 +266,7 @@ DOUBLE.setParseAction(
 # [149] INTEGER_POSITIVE ::= '+' INTEGER
 INTEGER_POSITIVE = Suppress('+') + INTEGER.copy().leaveWhitespace()
 INTEGER_POSITIVE.setParseAction(lambda x: rdflib.Literal(
-    "+"+x[0], datatype=rdflib.XSD.integer))
+    "+" + x[0], datatype=rdflib.XSD.integer))
 
 # [150] DECIMAL_POSITIVE ::= '+' DECIMAL
 DECIMAL_POSITIVE = Suppress('+') + DECIMAL.copy().leaveWhitespace()
@@ -467,7 +466,7 @@ PathAlternative = Comp('PathAlternative', ParamList('part', PathSequence) +
                        ZeroOrMore('|' + ParamList('part', PathSequence)))
 
 # [88] Path ::= PathAlternative
-Path << PathAlternative
+Path <<= PathAlternative
 
 # [84] VerbPath ::= Path
 VerbPath = Path
@@ -505,7 +504,7 @@ PropertyListPath = Optional(PropertyListPathNotEmpty)
 
 # [77] PropertyListNotEmpty ::= Verb ObjectList ( ';' ( Verb ObjectList )? )*
 PropertyListNotEmpty = Verb + ObjectList + ZeroOrMore(';' + Optional(Verb +
-                                                      ObjectList))
+                                                                     ObjectList))
 
 
 # [76] PropertyList ::= Optional(PropertyListNotEmpty)
@@ -522,10 +521,10 @@ BlankNodePropertyListPath = Group(
 BlankNodePropertyListPath.setParseAction(expandBNodeTriples)
 
 # [98] TriplesNode ::= Collection | BlankNodePropertyList
-TriplesNode << (Collection | BlankNodePropertyList)
+TriplesNode <<= (Collection | BlankNodePropertyList)
 
 # [100] TriplesNodePath ::= CollectionPath | BlankNodePropertyListPath
-TriplesNodePath << (CollectionPath | BlankNodePropertyListPath)
+TriplesNodePath <<= (CollectionPath | BlankNodePropertyListPath)
 
 # [75] TriplesSameSubject ::= VarOrTerm PropertyListNotEmpty | TriplesNode PropertyList
 TriplesSameSubject = VarOrTerm + PropertyListNotEmpty | TriplesNode + \
@@ -534,7 +533,7 @@ TriplesSameSubject.setParseAction(expandTriples)
 
 # [52] TriplesTemplate ::= TriplesSameSubject ( '.' Optional(TriplesTemplate) )?
 TriplesTemplate = Forward()
-TriplesTemplate << (ParamList('triples', TriplesSameSubject) + Optional(
+TriplesTemplate <<= (ParamList('triples', TriplesSameSubject) + Optional(
     Suppress('.') + Optional(TriplesTemplate)))
 
 # [51] QuadsNotTriples ::= 'GRAPH' VarOrIri '{' Optional(TriplesTemplate) '}'
@@ -558,7 +557,7 @@ TriplesSameSubjectPath.setParseAction(expandTriples)
 
 # [55] TriplesBlock ::= TriplesSameSubjectPath ( '.' Optional(TriplesBlock) )?
 TriplesBlock = Forward()
-TriplesBlock << (ParamList('triples', TriplesSameSubjectPath) + Optional(
+TriplesBlock <<= (ParamList('triples', TriplesSameSubjectPath) + Optional(
     Suppress('.') + Optional(TriplesBlock)))
 
 
@@ -765,7 +764,7 @@ MultiplicativeExpression = Comp('MultiplicativeExpression', Param('expr', UnaryE
 
 # [116] AdditiveExpression ::= MultiplicativeExpression ( '+' MultiplicativeExpression | '-' MultiplicativeExpression | ( NumericLiteralPositive | NumericLiteralNegative ) ( ( '*' UnaryExpression ) | ( '/' UnaryExpression ) )* )*
 
-### NOTE: The second part of this production is there because:
+# NOTE: The second part of this production is there because:
 ### "In signed numbers, no white space is allowed between the sign and the number. The AdditiveExpression grammar rule allows for this by covering the two cases of an expression followed by a signed number. These produce an addition or subtraction of the unsigned number as appropriate."
 
 # Here (I think) this is not nescessary since pyparsing doesn't separate
@@ -774,7 +773,7 @@ MultiplicativeExpression = Comp('MultiplicativeExpression', Param('expr', UnaryE
 
 AdditiveExpression = Comp('AdditiveExpression', Param('expr', MultiplicativeExpression) +
                           ZeroOrMore(ParamList('op', '+') + ParamList('other', MultiplicativeExpression) |
-                                     ParamList('op', '-') + ParamList('other', MultiplicativeExpression))).setEvalFn(op.AdditiveExpression)
+                                       ParamList('op', '-') + ParamList('other', MultiplicativeExpression))).setEvalFn(op.AdditiveExpression)
 
 
 # [115] NumericExpression ::= AdditiveExpression
@@ -804,7 +803,7 @@ ConditionalOrExpression = Comp('ConditionalOrExpression', Param('expr', Conditio
     '||' + ParamList('other', ConditionalAndExpression))).setEvalFn(op.ConditionalOrExpression)
 
 # [110] Expression ::= ConditionalOrExpression
-Expression << ConditionalOrExpression
+Expression <<= ConditionalOrExpression
 
 
 # [69] Constraint ::= BrackettedExpression | BuiltInCall | FunctionCall
@@ -911,7 +910,7 @@ ValuesClause = Optional(Param(
 
 # [74] ConstructTriples ::= TriplesSameSubject ( '.' Optional(ConstructTriples) )?
 ConstructTriples = Forward()
-ConstructTriples << (ParamList('template', TriplesSameSubject) + Optional(
+ConstructTriples <<= (ParamList('template', TriplesSameSubject) + Optional(
     Suppress('.') + Optional(ConstructTriples)))
 
 # [73] ConstructTemplate ::= '{' Optional(ConstructTriples) '}'
@@ -979,7 +978,7 @@ SolutionModifier = Optional(Param('groupby', GroupClause)) + Optional(Param('hav
 
 # [9] SelectClause ::= 'SELECT' ( 'DISTINCT' | 'REDUCED' )? ( ( Var | ( '(' Expression 'AS' Var ')' ) )+ | '*' )
 SelectClause = Keyword('SELECT') + Optional(Param('modifier', Keyword('DISTINCT') | Keyword('REDUCED'))) + (OneOrMore(ParamList('projection', Comp('vars',
-    Param('var', Var) | (Literal('(') + Param('expr', Expression) + Keyword('AS') + Param('evar', Var) + ')')))) | '*')
+                                                                                                                                                   Param('var', Var) | (Literal('(') + Param('expr', Expression) + Keyword('AS') + Param('evar', Var) + ')')))) | '*')
 
 # [17] WhereClause ::= 'WHERE'? GroupGraphPattern
 WhereClause = Optional(Keyword('WHERE')) + Param('where', GroupGraphPattern)
@@ -989,7 +988,7 @@ SubSelect = Comp('SubSelect', SelectClause + WhereClause +
                  SolutionModifier + ValuesClause)
 
 # [53] GroupGraphPattern ::= '{' ( SubSelect | GroupGraphPatternSub ) '}'
-GroupGraphPattern << (
+GroupGraphPattern <<= (
     Suppress('{') + (SubSelect | GroupGraphPatternSub) + Suppress('}'))
 
 # [7] SelectQuery ::= SelectClause DatasetClause* WhereClause SolutionModifier
@@ -1012,8 +1011,8 @@ DescribeQuery = Comp('DescribeQuery', Keyword('DESCRIBE') + (OneOrMore(ParamList
 
 # [29] Update ::= Prologue ( Update1 ( ';' Update )? )?
 Update = Forward()
-Update << (ParamList('prologue', Prologue) + Optional(ParamList('request',
-           Update1) + Optional(';' + Update)))
+Update <<= (ParamList('prologue', Prologue) + Optional(ParamList('request',
+                                                                 Update1) + Optional(';' + Update)))
 
 
 # [2] Query ::= Prologue

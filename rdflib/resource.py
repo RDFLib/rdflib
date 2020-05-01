@@ -341,7 +341,7 @@ class Resource(object):
                 self._graph == other._graph and
                 self._identifier == other._identifier)
 
-    __ne__ = lambda self, other: not self == other
+    def __ne__(self, other): return not self == other
 
     def __lt__(self, other):
         if isinstance(other, Resource):
@@ -349,9 +349,11 @@ class Resource(object):
         else:
             return False
 
-    __gt__ = lambda self, other: not (self < other or self == other)
-    __le__ = lambda self, other: self < other or self == other
-    __ge__ = lambda self, other: not self < other
+    def __gt__(self, other): return not (self < other or self == other)
+
+    def __le__(self, other): return self < other or self == other
+
+    def __ge__(self, other): return not self < other
 
     def __unicode__(self):
         return text_type(self._identifier)
@@ -439,7 +441,7 @@ class Resource(object):
             yield self._cast(s1), self._cast(s2)
 
     def _resource_triples(self, triples):
-        for s,p,o in triples:
+        for s, p, o in triples:
             yield self._cast(s), self._cast(p), self._cast(o)
 
     def _resources(self, nodes):
@@ -459,9 +461,11 @@ class Resource(object):
         if isinstance(item, slice):
             if item.step:
                 raise TypeError("Resources fix the subject for slicing, and can only be sliced by predicate/object. ")
-            p,o=item.start,item.stop
-            if isinstance(p, Resource): p = p._identifier
-            if isinstance(o, Resource): o = o._identifier
+            p, o = item.start, item.stop
+            if isinstance(p, Resource):
+                p = p._identifier
+            if isinstance(o, Resource):
+                o = o._identifier
             if p is None and o is None:
                 return self.predicate_objects()
             elif p is None:
