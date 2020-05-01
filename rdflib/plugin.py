@@ -271,13 +271,22 @@ register(
     'xml', ResultSerializer,
     'rdflib.plugins.sparql.results.xmlresults', 'XMLResultSerializer')
 register(
+    'application/sparql-results+xml', ResultSerializer,
+    'rdflib.plugins.sparql.results.xmlresults', 'XMLResultSerializer')
+register(
     'txt', ResultSerializer,
     'rdflib.plugins.sparql.results.txtresults', 'TXTResultSerializer')
 register(
     'json', ResultSerializer,
     'rdflib.plugins.sparql.results.jsonresults', 'JSONResultSerializer')
 register(
+    'application/sparql-results+json', ResultSerializer,
+    'rdflib.plugins.sparql.results.jsonresults', 'JSONResultSerializer')
+register(
     'csv', ResultSerializer,
+    'rdflib.plugins.sparql.results.csvresults', 'CSVResultSerializer')
+register(
+    'text/csv', ResultSerializer,
     'rdflib.plugins.sparql.results.csvresults', 'CSVResultSerializer')
 
 register(

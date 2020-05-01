@@ -31,16 +31,6 @@ Then you can do:
 
 The docs will be generated in :file:`build/sphinx/html/`
 
-Syntax highlighting
--------------------
-
-To get N3 and SPARQL syntax highlighting do:
-
-.. code-block:: bash
-
-   pip install -e git+git://github.com/gjhiggins/sparql_pygments_lexer.git#egg=SPARQL_Pygments_Lexer
-   pip install -e git+git://github.com/gjhiggins/n3_pygments_lexer.git#egg=Notation3_Pygments_Lexer
-
 API Docs
 --------
 

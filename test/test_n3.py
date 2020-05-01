@@ -1,7 +1,8 @@
 from rdflib.graph import Graph, ConjunctiveGraph
 import unittest
 from rdflib.term import Literal, URIRef
-from rdflib.plugins.parsers.notation3 import BadSyntax
+from rdflib.plugins.parsers.notation3 import BadSyntax, exponent_syntax
+import itertools
 
 from six import b
 from six.moves.urllib.error import URLError
@@ -164,6 +165,31 @@ foo-bar:Ex foo-bar:name "Test" . """
         g = Graph()
         g.parse("test/n3/issue156.n3", format="n3")
 
+    def testIssue999(self):
+        """
+        Make sure the n3 parser does recognize exponent and leading dot in ".171e-11"
+        """
+        data = """
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://qudt.org/vocab/unit/MilliM-PER-YR>
+  a <http://qudt.org/schema/qudt/Unit> ;
+  <http://qudt.org/schema/qudt/conversionMultiplier> .171e-11 ;
+  <http://qudt.org/schema/qudt/conversionOffset> 0e+00 ;
+  <http://qudt.org/schema/qudt/description> "0.001-fold of the SI base unit metre divided by the unit year" ;
+  <http://qudt.org/schema/qudt/hasQuantityKind> <http://qudt.org/vocab/quantitykind/Velocity> ;
+  <http://qudt.org/schema/qudt/iec61360Code> "0112/2///62720#UAA868" ;
+  <http://qudt.org/schema/qudt/uneceCommonCode> "H66" ;
+  rdfs:isDefinedBy <http://qudt.org/2.1/vocab/unit> ;
+  rdfs:isDefinedBy <http://qudt.org/vocab/unit> ;
+  rdfs:label "MilliM PER YR" ;
+  <http://www.w3.org/2004/02/skos/core#prefLabel> "millimetre per year" ;
+.
+        """
+        g = Graph()
+        g.parse(data=data, format="n3")
+        g.parse(data=data, format="turtle")
+
     def testDotInPrefix(self):
         g = Graph()
         g.parse(
@@ -224,6 +250,25 @@ foo-bar:Ex foo-bar:name "Test" . """
 
         assert set(g1) == set(
             g2), 'Document with declared empty prefix must match default #'
+
+
+class TestRegularExpressions(unittest.TestCase):
+    def testExponents(self):
+        signs = ("", "+", "-")
+        mantissas = ("1", "1.", ".1",
+                     "12", "12.", "1.2", ".12",
+                     "123", "123.", "12.3", "1.23", ".123")
+        es = "eE"
+        exps = ("1", "12", "+1", "-1", "+12", "-12")
+        for parts in itertools.product(signs, mantissas, es, exps):
+            expstring = "".join(parts)
+            self.assertTrue(exponent_syntax.match(expstring))
+
+    def testInvalidExponents(self):
+        # Add test cases as needed
+        invalid = (".e1",)
+        for expstring in invalid:
+            self.assertFalse(exponent_syntax.match(expstring))
 
 
 if __name__ == '__main__':

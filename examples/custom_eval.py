@@ -1,7 +1,6 @@
 """
-
 This example shows how a custom evaluation function can be added to
-handle certain SPARQL Algebra elements
+handle certain SPARQL Algebra elements.
 
 A custom function is added that adds ``rdfs:subClassOf`` "inference" when
 asking for ``rdf:type`` triples.
@@ -15,7 +14,6 @@ i.e. in your setup.py::
             'myfunc =     mypackage:MyFunction',
             ],
     }
-
 """
 
 import rdflib
@@ -23,8 +21,7 @@ import rdflib
 from rdflib.plugins.sparql.evaluate import evalBGP
 from rdflib.namespace import FOAF
 
-inferredSubClass = \
-    rdflib.RDFS.subClassOf * '*'  # any number of rdfs.subClassOf
+inferredSubClass = rdflib.RDFS.subClassOf * "*"  # any number of rdfs.subClassOf
 
 
 def customEval(ctx, part):
@@ -32,7 +29,7 @@ def customEval(ctx, part):
     Rewrite triple patterns to get super-classes
     """
 
-    if part.name == 'BGP':
+    if part.name == "BGP":
 
         # rewrite triples
         triples = []
@@ -50,20 +47,17 @@ def customEval(ctx, part):
     raise NotImplementedError()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     # add function directly, normally we would use setuptools and entry_points
-    rdflib.plugins.sparql.CUSTOM_EVALS['exampleEval'] = customEval
+    rdflib.plugins.sparql.CUSTOM_EVALS["exampleEval"] = customEval
 
     g = rdflib.Graph()
-    g.load("foaf.rdf")
+    g.load("foaf.n3")
 
     # Add the subClassStmt so that we can query for it!
-    g.add((FOAF.Person,
-           rdflib.RDFS.subClassOf,
-           FOAF.Agent))
+    g.add((FOAF.Person, rdflib.RDFS.subClassOf, FOAF.Agent))
 
     # Find all FOAF Agents
-    for x in g.query(
-            'PREFIX foaf: <%s> SELECT * WHERE { ?s a foaf:Agent . }' % FOAF):
+    for x in g.query("PREFIX foaf: <%s> SELECT * WHERE { ?s a foaf:Agent . }" % FOAF):
         print(x)

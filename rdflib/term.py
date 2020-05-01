@@ -54,6 +54,7 @@ from collections import defaultdict
 from unicodedata import category
 
 from isodate import parse_time, parse_date, parse_datetime, Duration, parse_duration, duration_isoformat
+from binascii import hexlify, unhexlify
 
 import rdflib
 from six import PY2
@@ -559,20 +560,20 @@ class Literal(Identifier):
                 datatype = lexical_or_value.datatype
                 value = lexical_or_value.value
 
-        elif isinstance(lexical_or_value, string_types):
+        elif isinstance(lexical_or_value, string_types) or (PY3 and isinstance(lexical_or_value, bytes)):
                 # passed a string
                 # try parsing lexical form of datatyped literal
             value = _castLexicalToPython(lexical_or_value, datatype)
 
             if value is not None and normalize:
-                _value, _datatype = _castPythonToLiteral(value)
+                _value, _datatype = _castPythonToLiteral(value, datatype)
                 if _value is not None and _is_valid_unicode(_value):
                     lexical_or_value = _value
 
         else:
             # passed some python object
             value = lexical_or_value
-            _value, _datatype = _castPythonToLiteral(lexical_or_value)
+            _value, _datatype = _castPythonToLiteral(lexical_or_value, datatype)
 
             datatype = datatype or _datatype
             if _value is not None:
@@ -643,15 +644,45 @@ class Literal(Identifier):
         rdflib.term.Literal(u'11')
         """
 
-        py = self.toPython()
-        if not isinstance(py, Literal):
-            try:
-                return Literal(py + val)
-            except TypeError:
-                pass  # fall-through
+        # if no val is supplied, return this Literal
+        if val is None:
+            return self
 
-        s = text_type.__add__(self, val)
-        return Literal(s, self.language, self.datatype)
+        # convert the val to a Literal, if it isn't already one
+        if not isinstance(val, Literal):
+            val = Literal(val)
+
+        # if the datatypes are the same, just add the Python values and convert back
+        if self.datatype == val.datatype:
+            return Literal(self.toPython() + val.toPython(), self.language, datatype=self.datatype)
+        # if the datatypes are not the same but are both numeric, add the Python values and strip off decimal junk
+        # (i.e. tiny numbers (more than 17 decimal places) and trailing zeros) and return as a decimal
+        elif (
+                self.datatype in _NUMERIC_LITERAL_TYPES
+                and
+                val.datatype in _NUMERIC_LITERAL_TYPES
+        ):
+            return Literal(
+                Decimal(
+                    ('%f' % round(Decimal(self.toPython()) + Decimal(val.toPython()), 15)).rstrip('0').rstrip('.')
+                ),
+                datatype=_XSD_DECIMAL
+            )
+        # in all other cases, perform string concatenation
+        else:
+            try:
+                s = text_type.__add__(self, val)
+            except TypeError:
+                s = str(self.value) + str(val)
+
+            # if the original datatype is string-like, use that
+            if self.datatype in _STRING_LITERAL_TYPES:
+                new_datatype = self.datatype
+            # if not, use string
+            else:
+                new_datatype = _XSD_STRING
+
+            return Literal(s, self.language, datatype=new_datatype)
 
     def __bool__(self):
         """
@@ -1346,6 +1377,22 @@ def _writeXML(xmlnode):
     return s
 
 
+def _unhexlify(value):
+    # In Python 3.2, unhexlify does not support str (only bytes)
+    if PY3 and isinstance(value, str):
+        value = value.encode()
+    return unhexlify(value)
+
+def _parseBoolean(value):
+    true_accepted_values = ['1', 'true']
+    false_accepted_values = ['0', 'false']
+    new_value = value.lower()
+    if new_value in true_accepted_values:
+        return True
+    if new_value not in false_accepted_values:
+        warnings.warn('Parsing weird boolean, % r does not map to True or False' % value, category = DeprecationWarning)
+    return False
+
 # Cannot import Namespace/XSD because of circular dependencies
 _XSD_PFX = 'http://www.w3.org/2001/XMLSchema#'
 _RDF_PFX = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
@@ -1369,6 +1416,7 @@ _XSD_DAYTIMEDURATION = URIRef(_XSD_PFX + 'dayTimeDuration')
 _XSD_YEARMONTHDURATION = URIRef(_XSD_PFX + 'yearMonthDuration')
 
 _OWL_RATIONAL = URIRef('http://www.w3.org/2002/07/owl#rational')
+_XSD_HEXBINARY = URIRef(_XSD_PFX + 'hexBinary')
 # TODO: gYearMonth, gYear, gMonthDay, gDay, gMonth
 
 _NUMERIC_LITERAL_TYPES = (
@@ -1426,20 +1474,38 @@ _TOTAL_ORDER_CASTERS = {
 }
 
 
-def _castPythonToLiteral(obj):
+_STRING_LITERAL_TYPES = (
+    _XSD_STRING,
+    _RDF_XMLLITERAL,
+    _RDF_HTMLLITERAL,
+    URIRef(_XSD_PFX + 'normalizedString'),
+    URIRef(_XSD_PFX + 'token')
+)
+
+
+def _py2literal(obj, pType, castFunc, dType):
+    if castFunc:
+        return castFunc(obj), dType
+    elif dType:
+        return obj, dType
+    else:
+        return obj, None
+
+
+def _castPythonToLiteral(obj, datatype):
     """
-    Casts a python datatype to a tuple of the lexical value and a
+    Casts a tuple of a python type and a special datatype URI to a tuple of the lexical value and a
     datatype URI (or None)
     """
-    for pType, (castFunc, dType) in _PythonToXSD:
+    for (pType, dType), castFunc in _SpecificPythonToXSDRules:
+        if isinstance(obj, pType) and dType == datatype:
+            return _py2literal(obj, pType, castFunc, dType)
+
+    for pType, (castFunc, dType) in _GenericPythonToXSDRules:
         if isinstance(obj, pType):
-            if castFunc:
-                return castFunc(obj), dType
-            elif dType:
-                return obj, dType
-            else:
-                return obj, None
+            return _py2literal(obj, pType, castFunc, dType)
     return obj, None  # TODO: is this right for the fall through case?
+
 
 from decimal import Decimal
 
@@ -1454,7 +1520,7 @@ from decimal import Decimal
 # python longs have no limit
 # both map to the abstract integer type,
 # rather than some concrete bit-limited datatype
-_PythonToXSD = [
+_GenericPythonToXSDRules = [
     (string_types, (None, None)),
     (float, (None, _XSD_DOUBLE)),
     (bool, (lambda i:str(i).lower(), _XSD_BOOLEAN)),
@@ -1475,6 +1541,12 @@ _PythonToXSD = [
     (Fraction, (None, _OWL_RATIONAL))
 ]
 
+_SpecificPythonToXSDRules = [
+    ((string_types, _XSD_HEXBINARY), hexlify),
+]
+if PY3:
+    _SpecificPythonToXSDRules.append(((bytes, _XSD_HEXBINARY), hexlify))
+
 XSDToPython = {
     None: None,  # plain literals map directly to value space
     URIRef(_XSD_PFX + 'time'): parse_time,
@@ -1485,11 +1557,12 @@ XSDToPython = {
     URIRef(_XSD_PFX + 'duration'): parse_duration,
     URIRef(_XSD_PFX + 'dayTimeDuration'): parse_duration,
     URIRef(_XSD_PFX + 'yearMonthDuration'): parse_duration,
+    URIRef(_XSD_PFX + 'hexBinary'): _unhexlify,
     URIRef(_XSD_PFX + 'string'): None,
     URIRef(_XSD_PFX + 'normalizedString'): None,
     URIRef(_XSD_PFX + 'token'): None,
     URIRef(_XSD_PFX + 'language'): None,
-    URIRef(_XSD_PFX + 'boolean'): lambda i: i.lower() == 'true',
+    URIRef(_XSD_PFX + 'boolean'): _parseBoolean,
     URIRef(_XSD_PFX + 'decimal'): Decimal,
     URIRef(_XSD_PFX + 'integer'): long_type,
     URIRef(_XSD_PFX + 'nonPositiveInteger'): int,
@@ -1540,7 +1613,7 @@ def _castLexicalToPython(lexical, datatype):
         return None
 
 
-def bind(datatype, pythontype, constructor=None, lexicalizer=None):
+def bind(datatype, pythontype, constructor=None, lexicalizer=None, datatype_specific=False):
     """
     register a new datatype<->pythontype binding
 
@@ -1548,10 +1621,16 @@ def bind(datatype, pythontype, constructor=None, lexicalizer=None):
                         into a Python instances, if not given the pythontype
                         is used directly
 
-    :param lexicalizer: an optinoal function for converting python objects to
+    :param lexicalizer: an optional function for converting python objects to
                         lexical form, if not given object.__str__ is used
 
+    :param datatype_specific: makes the lexicalizer function be accessible
+                              from the pair (pythontype, datatype) if set to True
+                              or from the pythontype otherwise.  False by default
     """
+    if datatype_specific and datatype is None:
+        raise Exception("No datatype given for a datatype-specific binding")
+
     if datatype in _toPythonMapping:
         logger.warning("datatype '%s' was already bound. Rebinding." %
                        datatype)
@@ -1559,7 +1638,10 @@ def bind(datatype, pythontype, constructor=None, lexicalizer=None):
     if constructor is None:
         constructor = pythontype
     _toPythonMapping[datatype] = constructor
-    _PythonToXSD.append((pythontype, (lexicalizer, datatype)))
+    if datatype_specific:
+        _SpecificPythonToXSDRules.append(((pythontype, datatype), lexicalizer))
+    else:
+        _GenericPythonToXSDRules.append((pythontype, (lexicalizer, datatype)))
 
 
 class Variable(Identifier):

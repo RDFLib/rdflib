@@ -1,2 +1,3 @@
--e git+git://github.com/gjhiggins/n3_pygments_lexer.git#egg=Notation3_Pygments_Lexer
--e git+git://github.com/gjhiggins/sparql_pygments_lexer.git#egg=SPARQL_Pygments_Lexer
+sphinx==3.0.3
+sphinxcontrib-apidoc
+git+https://github.com/gniezen/n3pygments.git
