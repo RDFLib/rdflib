@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 
 kwargs = {}
 kwargs['install_requires'] = [ 'six', 'isodate', 'pyparsing']
-kwargs['tests_require'] = ['html5lib', 'networkx', 'nose', 'doctest-ignore-unicode']
+kwargs['tests_require'] = ['html5lib', 'networkx', 'nose', 'doctest-ignore-unicode', 'requests']
 kwargs['test_suite'] = "nose.collector"
 kwargs['extras_require'] = {
     'html': ['html5lib'],
