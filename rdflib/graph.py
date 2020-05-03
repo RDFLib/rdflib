@@ -271,6 +271,7 @@ __all__ = [
     "Dataset",
     "UnSupportedAggregateOperation",
     "ReadOnlyGraphAggregate",
+    "BatchAddGraph",
 ]
 
 
@@ -2011,6 +2012,73 @@ def _assertnode(*terms):
     for t in terms:
         assert isinstance(t, Node), "Term %s must be an rdflib term" % (t,)
     return True
+
+
+class BatchAddGraph(object):
+    '''
+    Wrapper around graph that turns calls to :meth:`add` (and optionally, :meth:`addN`)
+    into calls to :meth:`~rdflib.graph.Graph.addN`.
+
+    :Parameters:
+
+      - `graph`: The graph to wrap
+      - `batch_size`: The maximum number of triples to buffer before passing to
+        `graph`'s `addN`
+      - `batch_addn`: If True, then even calls to `addN` will be batched according to
+        `batch_size`
+
+    :ivar graph: The wrapped graph
+    :ivar count: The number of triples buffered since initaialization or the last call
+                 to :meth:`reset`
+    :ivar batch: The current buffer of triples
+
+    '''
+
+    def __init__(self, graph, batch_size=1000, batch_addn=False):
+        if not batch_size or batch_size < 2:
+            raise ValueError("batch_size must be a positive number")
+        self.graph = graph
+        self.__graph_tuple = (graph,)
+        self.__batch_size = batch_size
+        self.__batch_addn = batch_addn
+        self.reset()
+
+    def reset(self):
+        '''
+        Manually clear the buffered triples and reset the count to zero
+        '''
+        self.batch = []
+        self.count = 0
+
+    def add(self, triple_or_quad):
+        '''
+        Add a triple to the buffer
+
+        :param triple: The triple to add
+        '''
+        if len(self.batch) >= self.__batch_size:
+            self.graph.addN(self.batch)
+            self.batch = []
+        self.count += 1
+        if len(triple_or_quad) == 3:
+            self.batch.append(triple_or_quad + self.__graph_tuple)
+        else:
+            self.batch.append(triple_or_quad)
+
+    def addN(self, quads):
+        if self.__batch_addn:
+            for q in quads:
+                self.add(q)
+        else:
+            self.graph.addN(quads)
+
+    def __enter__(self):
+        self.reset()
+        return self
+
+    def __exit__(self, *exc):
+        if exc[0] is None:
+            self.graph.addN(self.batch)
 
 
 def test():
