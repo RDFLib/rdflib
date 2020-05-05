@@ -1,4 +1,4 @@
-<img src="docs/_static/RDFlib.png" alt="RDFlib logo" style="width="250px" />  
+![](docs/_static/RDFlib.png)    
 
 RDFLib
 ======
