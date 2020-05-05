@@ -1,4 +1,4 @@
-![](docs/_static/logo-rdflib.png)
+![](docs/_static/RDFlib.png)    
 
 RDFLib
 ======
