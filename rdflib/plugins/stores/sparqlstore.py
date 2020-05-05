@@ -493,8 +493,8 @@ class SPARQLUpdateStore(SPARQLStore):
     def open(self, configuration, create=False):
         """
         sets the endpoint URLs for this SPARQLStore
-        :param configuration: either a tuple of (queryEndpoint, update_endpoint),
-            or a string with the query endpoint
+        :param configuration: either a tuple of (query_endpoint, update_endpoint),
+            or a string with the endpoint which is configured as query and update endpoint
         :param create: if True an exception is thrown.
         """
 
@@ -507,9 +507,7 @@ class SPARQLUpdateStore(SPARQLStore):
                 self.update_endpoint = configuration[1]
         else:
             self.query_endpoint = configuration
-
-        if not self.update_endpoint:
-            self.update_endpoint = self.endpoint
+            self.update_endpoint = configuration
 
     def _transaction(self):
         if self._edits is None:
