@@ -16,7 +16,7 @@ python:
 jobs:
   include:
     - python: 3.8
-      dist: xenial
+      dist: focal
 
 before_install:
     - pip install -U setuptools pip  # seems travis comes with a too old setuptools for html5lib
