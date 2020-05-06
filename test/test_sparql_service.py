@@ -99,6 +99,7 @@ def test_service_with_implicit_select_and_prefix():
     for r in results:
         assert len(r) == 3
 
+
 def test_service_with_implicit_select_and_base():
     g = Graph()
     q = '''base <http://example.org/>
@@ -114,6 +115,20 @@ def test_service_with_implicit_select_and_base():
 
     for r in results:
         assert len(r) == 3
+
+
+def test_service_with_implicit_select_and_allcaps():
+    g = Graph()
+    q = '''SELECT ?s
+    WHERE
+    {
+      SERVICE <http://dbpedia.org/sparql>
+      {
+        ?s <http://purl.org/linguistics/gold/hypernym> <http://dbpedia.org/resource/Leveller> .
+      }
+    } LIMIT 3'''
+    results = g.query(q)
+    assert len(results) == 3
 
 
 #def test_with_fixture(httpserver):

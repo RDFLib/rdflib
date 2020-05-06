@@ -277,7 +277,7 @@ def evalPart(ctx, part):
 def evalServiceQuery(ctx, part):
     res = {}
     match = re.match('^service <(.*)>[ \n]*{(.*)}[ \n]*$',
-                     part.get('service_string', ''), re.DOTALL)
+                     part.get('service_string', ''), re.DOTALL | re.I)
 
     if match:
         service_url = match.group(1)
