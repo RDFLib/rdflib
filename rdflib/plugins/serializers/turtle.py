@@ -273,25 +273,52 @@ class TurtleSerializer(RecursiveSerializer):
 
         try:
             parts = self.store.compute_qname(uri, generate=gen_prefix)
+
         except:
 
             # is the uri a namespace in itself?
             pfx = self.store.store.prefix(uri)
-
             if pfx is not None:
                 parts = (pfx, uri, '')
             else:
-                # nothing worked
+                ns = self.namespaces
+                if (len(ns) == 0):
+                    return None
+
+
+        flag = 0
+        if parts == None:
+            ns = self.namespaces
+            for i in ns.keys():
+                ns_uri = ns[i]
+            try:
+                parts = self.store.compute_qname(ns_uri, generate=gen_prefix)
+                flag = 1
+            except:
                 return None
 
-        prefix, namespace, local = parts
+        if flag == 1:
+            prefix, namespace, local = parts
+            special_char = ['%', '&', '*', '#', '!', '$', '_', '-', '+', '=', ',', '.', '{', '}', '(', ')', '"', '\'', '|', '~']
+            n = str(namespace)
+            w = str(uri).split(n)
+            l = w[len(w) - 1]
+            w1 = ""
+            for i in l:
+                if (i in special_char):
+                    w1 = w1 + '\\' + i
+                else:
+                    w1 = w1 + i
+            local = w1
+
+        else:
+            prefix, namespace, local = parts
 
         # QName cannot end with .
         if local.endswith("."):
             return None
 
         prefix = self.addNamespace(prefix, namespace)
-
         return u'%s:%s' % (prefix, local)
 
     def startDocument(self):
