@@ -31,7 +31,7 @@ class TestTrig(unittest.TestCase):
         self.assertEqual(len(g.get_context("urn:b")), 1)
 
         s = g.serialize(format="trig")
-        self.assertTrue("{}".encode("latin-1") not in s)  # no empty graphs!
+        self.assertTrue(b"{}" not in s)  # no empty graphs!
 
     def testSameSubject(self):
         g = rdflib.ConjunctiveGraph()
@@ -48,10 +48,10 @@ class TestTrig(unittest.TestCase):
 
         s = g.serialize(format="trig")
 
-        self.assertEqual(len(re.findall("p1".encode("latin-1"), s)), 1)
-        self.assertEqual(len(re.findall("p2".encode("latin-1"), s)), 1)
+        self.assertEqual(len(re.findall(b"p1", s)), 1)
+        self.assertEqual(len(re.findall(b"p2", s)), 1)
 
-        self.assertTrue("{}".encode("latin-1") not in s)  # no empty graphs!
+        self.assertTrue(b"{}" not in s)  # no empty graphs!
 
     def testRememberNamespace(self):
         g = rdflib.ConjunctiveGraph()
@@ -155,7 +155,7 @@ class TestTrig(unittest.TestCase):
         g.parse(data=data, format="trig")
         data = g.serialize(format="trig")
 
-        self.assertTrue("None".encode("latin-1") not in data)
+        self.assertTrue(b"None" not in data)
 
     def testPrefixes(self):
 
@@ -175,6 +175,6 @@ class TestTrig(unittest.TestCase):
         cg.parse(data=data, format="trig")
         data = cg.serialize(format="trig")
 
-        self.assert_("ns2: <http://ex.org/docs/".encode("latin-1") in data, data)
-        self.assert_("<ns2:document1>".encode("latin-1") not in data, data)
-        self.assert_("ns2:document1".encode("latin-1") in data, data)
+        self.assertTrue(b"ns2: <http://ex.org/docs/" in data)
+        self.assertTrue(b"<ns2:document1>" not in data)
+        self.assertTrue(b"ns2:document1" in data)

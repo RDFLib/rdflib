@@ -132,13 +132,13 @@ class TestN3Case(unittest.TestCase):
         self.assertEqual(list(g), list(g2))
 
     def testIssue23(self):
-        input = """<http://example.com/article1> <http://example.com/title> "this word is in \u201Cquotes\u201D"."""
+        input = """<http://example.com/article1> <http://example.com/title> "this word is in \\u201Cquotes\\u201D"."""
 
         g = Graph()
         g.parse(data=input, format="n3")
 
         # Note difference in case of hex code, cwm allows lower-case
-        input = """<http://example.com/article1> <http://example.com/title> "this word is in \u201cquotes\u201d"."""
+        input = """<http://example.com/article1> <http://example.com/title> "this word is in \\u201cquotes\\u201d"."""
 
         g.parse(data=input, format="n3")
 

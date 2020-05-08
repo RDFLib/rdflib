@@ -23,7 +23,7 @@ class NTTestCase(unittest.TestCase):
 
     def testIssue78(self):
         g = Graph()
-        g.add((URIRef("foo"), URIRef("foo"), Literal(u"R\u00E4ksm\u00F6rg\u00E5s")))
+        g.add((URIRef("foo"), URIRef("foo"), Literal("R\u00E4ksm\u00F6rg\u00E5s")))
         s = g.serialize(format="nt")
         self.assertEqual(type(s), bytes)
         self.assertTrue(r"R\u00E4ksm\u00F6rg\u00E5s".encode("latin-1") in s)

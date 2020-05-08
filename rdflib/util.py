@@ -28,9 +28,6 @@ Statement and component type checkers
 * check_pattern
 
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 from calendar import timegm
 from time import altzone

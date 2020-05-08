@@ -13,14 +13,14 @@ from rdflib import Graph, Literal, Namespace
 
 
 def test_concurrent1():
-    dns = Namespace(u"http://www.example.com/")
+    dns = Namespace("http://www.example.com/")
 
     store = plugin.get("IOMemory", Store)()
     g1 = Graph(store=store)
 
-    g1.add((dns.Name, dns.prop, Literal(u"test")))
-    g1.add((dns.Name, dns.prop, Literal(u"test2")))
-    g1.add((dns.Name, dns.prop, Literal(u"test3")))
+    g1.add((dns.Name, dns.prop, Literal("test")))
+    g1.add((dns.Name, dns.prop, Literal("test2")))
+    g1.add((dns.Name, dns.prop, Literal("test3")))
 
     n = len(g1)
     i = 0
@@ -36,15 +36,15 @@ def test_concurrent1():
 
 
 def test_concurrent2():
-    dns = Namespace(u"http://www.example.com/")
+    dns = Namespace("http://www.example.com/")
 
     store = plugin.get("IOMemory", Store)()
     g1 = Graph(store=store)
     g2 = Graph(store=store)
 
-    g1.add((dns.Name, dns.prop, Literal(u"test")))
-    g1.add((dns.Name, dns.prop, Literal(u"test2")))
-    g1.add((dns.Name, dns.prop, Literal(u"test3")))
+    g1.add((dns.Name, dns.prop, Literal("test")))
+    g1.add((dns.Name, dns.prop, Literal("test2")))
+    g1.add((dns.Name, dns.prop, Literal("test3")))
 
     n = len(g1)
     i = 0
@@ -55,9 +55,9 @@ def test_concurrent2():
         # next line causes problems because it adds a new Subject that needs
         # to be indexed  in __subjectIndex dictionary in IOMemory Store.
         # which invalidates the iterator used to iterate over g1
-        g2.add((dns.Name1, dns.prop1, Literal(u"test")))
-        g2.add((dns.Name1, dns.prop, Literal(u"test")))
-        g2.add((dns.Name, dns.prop, Literal(u"test4")))
+        g2.add((dns.Name1, dns.prop1, Literal("test")))
+        g2.add((dns.Name1, dns.prop, Literal("test")))
+        g2.add((dns.Name, dns.prop, Literal("test4")))
 
     assert i == n
 

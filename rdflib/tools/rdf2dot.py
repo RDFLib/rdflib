@@ -9,8 +9,6 @@ You can draw the graph of an RDF file directly:
 
 """
 
-from __future__ import absolute_import
-
 import rdflib
 import rdflib.extras.cmdlineutils
 
@@ -110,10 +108,10 @@ def rdf2dot(g, stream, opts={}):
     def formatliteral(l, g):
         v = cgi.escape(l)
         if l.datatype:
-            return u"&quot;%s&quot;^^%s" % (v, qname(l.datatype, g))
+            return "&quot;%s&quot;^^%s" % (v, qname(l.datatype, g))
         elif l.language:
-            return u"&quot;%s&quot;@%s" % (v, l.language)
-        return u"&quot;%s&quot;" % v
+            return "&quot;%s&quot;@%s" % (v, l.language)
+        return "&quot;%s&quot;" % v
 
     def qname(x, g):
         try:
@@ -125,7 +123,7 @@ def rdf2dot(g, stream, opts={}):
     def color(p):
         return "BLACK"
 
-    stream.write(u'digraph { \n node [ fontname="DejaVu Sans" ] ; \n')
+    stream.write('digraph { \n node [ fontname="DejaVu Sans" ] ; \n')
 
     for s, p, o in g:
         sn = node(s)
@@ -134,28 +132,28 @@ def rdf2dot(g, stream, opts={}):
         if isinstance(o, (rdflib.URIRef, rdflib.BNode)):
             on = node(o)
             opstr = (
-                u"\t%s -> %s [ color=%s, label=< <font point-size='10' "
-                + u"color='#336633'>%s</font> > ] ;\n"
+                "\t%s -> %s [ color=%s, label=< <font point-size='10' "
+                + "color='#336633'>%s</font> > ] ;\n"
             )
             stream.write(opstr % (sn, on, color(p), qname(p, g)))
         else:
             fields[sn].add((qname(p, g), formatliteral(o, g)))
 
     for u, n in nodes.items():
-        stream.write(u"# %s %s\n" % (u, n))
+        stream.write("# %s %s\n" % (u, n))
         f = [
-            u"<tr><td align='left'>%s</td><td align='left'>%s</td></tr>" % x
+            "<tr><td align='left'>%s</td><td align='left'>%s</td></tr>" % x
             for x in sorted(fields[n])
         ]
         opstr = (
-            u"%s [ shape=none, color=%s label=< <table color='#666666'"
-            + u" cellborder='0' cellspacing='0' border='1'><tr>"
-            + u"<td colspan='2' bgcolor='grey'><B>%s</B></td></tr><tr>"
-            + u"<td href='%s' bgcolor='#eeeeee' colspan='2'>"
-            + u"<font point-size='10' color='#6666ff'>%s</font></td>"
-            + u"</tr>%s</table> > ] \n"
+            "%s [ shape=none, color=%s label=< <table color='#666666'"
+            + " cellborder='0' cellspacing='0' border='1'><tr>"
+            + "<td colspan='2' bgcolor='grey'><B>%s</B></td></tr><tr>"
+            + "<td href='%s' bgcolor='#eeeeee' colspan='2'>"
+            + "<font point-size='10' color='#6666ff'>%s</font></td>"
+            + "</tr>%s</table> > ] \n"
         )
-        stream.write(opstr % (n, NODECOLOR, label(u, g), u, u, u"".join(f)))
+        stream.write(opstr % (n, NODECOLOR, label(u, g), u, u, "".join(f)))
 
     stream.write("}\n")
 

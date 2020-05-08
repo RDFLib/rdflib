@@ -19,11 +19,11 @@ class TestPrefLabel(unittest.TestCase):
         tgt = [
             (
                 rdflib.term.URIRef("http://www.w3.org/2000/01/rdf-schema#label"),
-                rdflib.term.Literal(u"bar"),
+                rdflib.term.Literal("bar"),
             ),
             (
                 rdflib.term.URIRef("http://www.w3.org/2000/01/rdf-schema#label"),
-                rdflib.term.Literal(u"foo"),
+                rdflib.term.Literal("foo"),
             ),
         ]
         self.assertEqual(res, tgt)
@@ -34,7 +34,7 @@ class TestPrefLabel(unittest.TestCase):
         tgt = [
             (
                 rdflib.term.URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
-                rdflib.term.Literal(u"bla"),
+                rdflib.term.Literal("bla"),
             )
         ]
         self.assertEqual(res, tgt)
@@ -46,11 +46,11 @@ class TestPrefLabel(unittest.TestCase):
         tgt = [
             (
                 rdflib.term.URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
-                rdflib.term.Literal(u"bla"),
+                rdflib.term.Literal("bla"),
             ),
             (
                 rdflib.term.URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
-                rdflib.term.Literal(u"blubb", lang="en"),
+                rdflib.term.Literal("blubb", lang="en"),
             ),
         ]
 
@@ -63,7 +63,7 @@ class TestPrefLabel(unittest.TestCase):
         tgt = [
             (
                 rdflib.term.URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
-                rdflib.term.Literal(u"bla"),
+                rdflib.term.Literal("bla"),
             )
         ]
         self.assertEqual(res, tgt)
@@ -74,7 +74,7 @@ class TestPrefLabel(unittest.TestCase):
         tgt = [
             (
                 rdflib.term.URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
-                rdflib.term.Literal(u"blubb", lang="en"),
+                rdflib.term.Literal("blubb", lang="en"),
             )
         ]
         self.assertEqual(res, tgt)

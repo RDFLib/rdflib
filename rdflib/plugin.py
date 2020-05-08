@@ -24,9 +24,6 @@ information.
 .. __: http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
 
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 from rdflib.store import Store
 from rdflib.parser import Parser

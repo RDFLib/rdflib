@@ -130,17 +130,17 @@ def main(argv=None):
             rating = None
             while not rating or (rating > 5 or rating <= 0):
                 try:
-                    rating = int(input("Rating (on five): "))
+                    rating = int(eval(input("Rating (on five): ")))
                 except ValueError:
                     rating = None
             date = None
             while not date:
                 try:
-                    i = input("Review date (YYYY-MM-DD): ")
+                    i = eval(input("Review date (YYYY-MM-DD): "))
                     date = datetime.datetime(*time.strptime(i, "%Y-%m-%d")[:6])
                 except:
                     date = None
-            comment = input("Comment: ")
+            comment = eval(input("Comment: "))
             s.new_review(movie, date, rating, comment)
     else:
         help()

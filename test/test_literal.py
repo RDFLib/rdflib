@@ -92,8 +92,8 @@ class TestRepr(unittest.TestCase):
         class MyLiteral(Literal):
             pass
 
-        x = MyLiteral(u"foo")
-        self.assertEqual(repr(x), uformat("MyLiteral(u'foo')"))
+        x = MyLiteral("foo")
+        self.assertEqual(repr(x), uformat("MyLiteral('foo')"))
 
 
 class TestDoubleOutput(unittest.TestCase):

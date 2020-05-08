@@ -1,7 +1,4 @@
 #!/usr/bin/env python
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 __doc__ = """
 N-Triples Parser
@@ -57,8 +54,8 @@ class Sink(object):
         print(s, p, o)
 
 
-quot = {"t": u"\t", "n": u"\n", "r": u"\r", '"': u'"', "\\": u"\\"}
-r_safe = re.compile(r"([\x20\x21\x23-\x5B\x5D-\x7E]+)")
+quot = {'t': '\t', 'n': '\n', 'r': '\r', '"': '"', '\\': '\\'}
+r_safe = re.compile(r'([\x20\x21\x23-\x5B\x5D-\x7E]+)')
 r_quot = re.compile(r'\\(t|n|r|"|\\)')
 r_uniquot = re.compile(r"\\u([0-9A-F]{4})|\\U([0-9A-F]{8})")
 
@@ -100,7 +97,7 @@ def unquote(s):
                 raise ParseError("Illegal escape at: %s..." % s[:10])
             else:
                 raise ParseError("Illegal literal character: %r" % s[0])
-        return u"".join(result)
+        return ''.join(result)
 
 
 r_hibyte = re.compile(r"([\x80-\xFF])")

@@ -179,7 +179,7 @@ class TestPrettyXmlSerializer(SerializerTestBase):
                 BNode(),
                 RDF.value,
                 Literal(
-                    u"""<p xmlns="http://www.w3.org/1999/xhtml">See also <a href="#aring">Å</a></p>""",
+                    """<p xmlns="http://www.w3.org/1999/xhtml">See also <a href="#aring">Å</a></p>""",
                     datatype=RDF.XMLLiteral,
                 ),
             )
@@ -188,7 +188,7 @@ class TestPrettyXmlSerializer(SerializerTestBase):
         xmlrepr = g.serialize(format="pretty-xml")
         # then:
         assert (
-            u"""<rdf:value rdf:parseType="Literal"><p xmlns="http://www.w3.org/1999/xhtml">See also <a href="#aring">Å</a></p></rdf:value>""".encode(
+            """<rdf:value rdf:parseType="Literal"><p xmlns="http://www.w3.org/1999/xhtml">See also <a href="#aring">Å</a></p></rdf:value>""".encode(
                 "utf-8"
             )
             in xmlrepr
@@ -197,12 +197,12 @@ class TestPrettyXmlSerializer(SerializerTestBase):
     def test_pretty_broken_xmlliteral(self):
         # given:
         g = ConjunctiveGraph()
-        g.add((BNode(), RDF.value, Literal(u"""<p """, datatype=RDF.XMLLiteral)))
+        g.add((BNode(), RDF.value, Literal("""<p """, datatype=RDF.XMLLiteral)))
         # when:
         xmlrepr = g.serialize(format="pretty-xml")
         # then:
         assert (
-            u"""<rdf:value rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral">&lt;p """.encode(
+            """<rdf:value rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral">&lt;p """.encode(
                 "utf-8"
             )
             in xmlrepr

@@ -20,11 +20,7 @@ underlying Graph:
 * Numerical Ranges
 
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
-# from __future__ import unicode_literals
 from fractions import Fraction
 
 __all__ = [
@@ -78,7 +74,7 @@ _invalid_uri_chars = '<>" {}|\\^`'
 
 
 def _is_valid_uri(uri):
-    return all(map(lambda c: ord(c) > 256 or c not in _invalid_uri_chars, uri))
+    return all([ord(c) > 256 or not c in _invalid_uri_chars for c in uri])
 
 
 _lang_tag_regex = compile("^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$")
@@ -1260,7 +1256,7 @@ class Literal(Identifier):
                 # in py >=2.6 the string.format function makes this easier
                 # we try to produce "pretty" output
                 if self.datatype == _XSD_DOUBLE:
-                    return sub("\\.?0*e", "e", u"%e" % float(self))
+                    return sub("\\.?0*e", "e", '%e' % float(self))
                 elif self.datatype == _XSD_DECIMAL:
                     s = "%s" % self
                     if "." not in s:
@@ -1268,9 +1264,9 @@ class Literal(Identifier):
                     return s
 
                 elif self.datatype == _XSD_BOOLEAN:
-                    return (u"%s" % self).lower()
+                    return ('%s' % self).lower()
                 else:
-                    return u"%s" % self
+                    return '%s' % self
 
         encoded = self._quote_encode()
 

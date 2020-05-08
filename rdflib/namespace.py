@@ -1,7 +1,3 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import logging
 
 import os
@@ -804,7 +800,7 @@ class NamespaceManager(object):
 NAME_START_CATEGORIES = ["Ll", "Lu", "Lo", "Lt", "Nl"]
 SPLIT_START_CATEGORIES = NAME_START_CATEGORIES + ["Nd"]
 NAME_CATEGORIES = NAME_START_CATEGORIES + ["Mc", "Me", "Mn", "Lm", "Nd"]
-ALLOWED_NAME_CHARS = [u"\u00B7", u"\u0387", u"-", u".", u"_", u":"]
+ALLOWED_NAME_CHARS = ["\u00B7", "\u0387", "-", ".", "_", ":"]
 
 
 # http://www.w3.org/TR/REC-xml-names/#NT-NCName

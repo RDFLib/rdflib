@@ -224,7 +224,7 @@ class Color:
         value = 0
         for triple in color:
             value += self.hashfunc(" ".join([stringify(x) for x in triple]))
-        val = u"%x" % value
+        val = "%x" % value
         self._hash_cache[color] = val
         return val
 

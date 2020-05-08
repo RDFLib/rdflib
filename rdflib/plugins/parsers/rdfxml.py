@@ -553,11 +553,11 @@ class RDFXMLHandler(handler.ContentHandler):
         if name[0]:
             prefix = self._current_context[name[0]]
             if prefix:
-                end = u"</%s:%s>" % (prefix, name[1])
+                end = "</%s:%s>" % (prefix, name[1])
             else:
-                end = u"</%s>" % name[1]
+                end = "</%s>" % name[1]
         else:
-            end = u"</%s>" % name[1]
+            end = "</%s>" % name[1]
         self.parent.object += self.current.object + end
 
 
