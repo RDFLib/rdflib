@@ -1071,9 +1071,12 @@ class Graph(Node):
         if format is None:
             format = source.content_type
         if format is None:
-            # raise Exception("Could not determine format for %r. You can" + \
-            # "expicitly specify one with the format argument." % source)
-            format = "application/rdf+xml"
+            try:
+                from rdflib.util import guess_format  # local import avoids circular dependency
+                format = guess_format(source.file.name)
+            finally:
+                if format is None:
+                    format = "application/rdf+xml"
         parser = plugin.get(format, Parser)()
         try:
             parser.parse(source, self, **args)
