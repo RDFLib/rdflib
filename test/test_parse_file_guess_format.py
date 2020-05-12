@@ -21,7 +21,7 @@ class FileParserGuessFormatTest(unittest.TestCase):
         g = Graph()
         with TemporaryDirectory() as tmpdirname:
             newpath = Path(tmpdirname).joinpath("no_file_ext")
-            copyfile("test/w3c/turtle/IRI_subject.ttl", newpath)
+            copyfile("test/w3c/turtle/IRI_subject.ttl", str(newpath))
             with self.assertLogs(graph_logger, "WARNING") as log_cm:
                 with self.assertRaises(SAXParseException):
                     g.parse(str(newpath))
