@@ -1090,7 +1090,7 @@ class Graph(Node):
                 logger.warning(
                     "Could not guess format for %r, so assumed xml."
                     " You can explicitly specify format using the format argument." % source)
-                raise saxpe
+            raise saxpe
         finally:
             if source.auto_close:
                 source.close()
