@@ -10,6 +10,7 @@ assert Literal  # avoid warning
 from rdflib.namespace import Namespace  # required for doctests
 
 assert Namespace  # avoid warning
+import rdflib.util  # avoid circular dependency
 
 
 __doc__ = """\
@@ -1075,12 +1076,12 @@ class Graph(Node):
         assumed_xml = False
         if format is None:
             try:
-                from rdflib.util import guess_format  # local import avoids circular dependency
-                format = guess_format(source.file.name)
-            finally:
-                if format is None:
-                    format = "application/rdf+xml"
-                    assumed_xml = True
+                format = rdflib.util.guess_format(source.file.name)
+            except (AttributeError, TypeError):
+                pass
+            if format is None:
+                format = "application/rdf+xml"
+                assumed_xml = True
         parser = plugin.get(format, Parser)()
         try:
             parser.parse(source, self, **args)
