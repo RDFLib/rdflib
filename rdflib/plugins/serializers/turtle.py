@@ -236,7 +236,13 @@ class TurtleSerializer(RecursiveSerializer):
         self.preprocess()
         subjects_list = self.orderSubjects()
 
-        self.startDocument()
+        if "allPrefix" in args: # Call new start document version if want to see all the present prefixes
+            if args["allPrefix"] == True:
+                self.startDocument2() # New start that show all the document prefixes
+            else:
+                self.startDocument()
+        else:
+            self.startDocument()
 
         firstTime = True
         for subject in subjects_list:
@@ -298,6 +304,16 @@ class TurtleSerializer(RecursiveSerializer):
         self._started = True
         ns_list = sorted(self.namespaces.items())
 
+        if self.base:
+            self.write(self.indent() + '@base <%s> .\n' % self.base)
+        for prefix, uri in ns_list:
+            self.write(self.indent() + '@prefix %s: <%s> .\n' % (prefix, uri))
+        if ns_list and self._spacious:
+            self.write('\n')
+
+    def startDocument2(self):
+        self._started = True
+        ns_list = sorted([i for i in self.store.namespaces()])
         if self.base:
             self.write(self.indent() + '@base <%s> .\n' % self.base)
         for prefix, uri in ns_list:

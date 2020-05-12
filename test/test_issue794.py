@@ -47,6 +47,6 @@ juice:Pomegranate rdf:type juice:fruit;
 
 g = Graph() # Create a graph
 g.parse(data=graphData, format='ttl')
-print("Graph with extra prefix : \n"+g.serialize(format="ttl").decode("utf8"))
-g.removeUnusedPrefix() # Call this function to remove the unused prefix
-print("\nGraph without extra prefix : \n"+g.serialize(format="ttl").decode("utf8")) 
+print("Graph with extra prefix : \n"+g.serialize(format="ttl",allPrefix = True).decode("utf8"))
+g.removeUnusedPrefix() # Call this function to remove the unused prefix premanently unbind 
+print("\nGraph without extra prefix : \n"+g.serialize(format="ttl",allPrefix = True).decode("utf8")) 
