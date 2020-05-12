@@ -336,6 +336,10 @@ class SPARQLStore(SPARQLConnector, Store):
     # Namespace persistence interface implementation
     def bind(self, prefix, namespace):
         self.nsBindings[prefix] = namespace
+    
+    def unbind(self, prefix, namespace):
+        """ remove namespace as stored as dictionary"""
+        del self.nsBindings[prefix]
 
     def prefix(self, namespace):
         """ """

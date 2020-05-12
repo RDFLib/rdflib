@@ -148,6 +148,9 @@ class REGEXMatching(Store):
 
     def bind(self, prefix, namespace):
         self.storage.bind(prefix, namespace)
+        
+    def unbind(self, prefix, namespace):
+        self.storage.unbind(prefix, namespace)
 
     def prefix(self, namespace):
         return self.storage.prefix(namespace)

@@ -112,6 +112,9 @@ class AuditableStore(Store):
     def bind(self, prefix, namespace):
         self.store.bind(prefix, namespace)
 
+    def unbind(self, prefix, namespace):
+        self.store.unbind(prefix, namespace)
+        
     def prefix(self, namespace):
         return self.store.prefix(namespace)
 

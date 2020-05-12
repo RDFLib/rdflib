@@ -943,6 +943,35 @@ class Graph(Node):
         """Turn uri into an absolute URI if it's not one already"""
         return self.namespace_manager.absolutize(uri, defrag)
 
+    def removeUnusedPrefix(self):
+        """Remove unused prefix in the graph and remove it from the graph"""
+        for namespace in self.namespaces(): #Iterate for all the namespace in the document check if the namespace is present
+            toRemoveNamespace = [] # List of namespace 
+            queryCheck = """
+            PREFIX """+namespace[0]+""": <"""+str(namespace[1])+""">
+            select ?x where {
+                {
+                    ?x ?z ?v.
+                    filter(strstarts(str(?x), str("""+namespace[0]+""":)))
+                }
+                union
+                {
+                    ?z ?x ?v.
+                    filter(strstarts(str(?x), str("""+namespace[0]+""":)))
+                }
+                union
+                {
+                    ?v ?z ?x.
+                    filter(strstarts(str(?x), str("""+namespace[0]+""":)))
+                }
+
+            }""" # Query to find the places where namespaces are used
+            if len(self.query(queryCheck)) <= 0: # If the namespace is not used anywhere
+                toRemoveNamespace += [namespace]
+        
+        for namespace in toRemoveNamespace:
+            self.namespace_manager.unbind(namespace[0],namespace[1]) # Call unbind function to remove the unused namespace
+
     def serialize(
         self, destination=None, format="xml", base=None, encoding=None, **args
     ):

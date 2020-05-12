@@ -296,7 +296,7 @@ class TurtleSerializer(RecursiveSerializer):
 
     def startDocument(self):
         self._started = True
-        ns_list = sorted(self.namespaces.items())
+        ns_list = sorted([i for i in self.store.namespaces()])
 
         if self.base:
             self.write(self.indent() + '@base <%s> .\n' % self.base)
