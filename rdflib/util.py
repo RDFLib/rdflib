@@ -46,7 +46,7 @@ from rdflib.exceptions import ContextTypeError
 from rdflib.exceptions import ObjectTypeError
 from rdflib.exceptions import PredicateTypeError
 from rdflib.exceptions import SubjectTypeError
-import rdflib.graph as graph  # avoid circular dependency
+import rdflib.graph  # avoid circular dependency
 from rdflib.namespace import Namespace
 from rdflib.namespace import NamespaceManager
 from rdflib.term import BNode
@@ -145,7 +145,7 @@ def from_n3(s, default=None, backend=None, nsm=None):
         >>> from rdflib import RDFS
         >>> from_n3('rdfs:label') == RDFS['label']
         True
-        >>> nsm = NamespaceManager(graph.Graph())
+        >>> nsm = NamespaceManager(rdflib.graph.Graph())
         >>> nsm.bind('dbpedia', 'http://dbpedia.org/resource/')
         >>> berlin = URIRef('http://dbpedia.org/resource/Berlin')
         >>> from_n3('dbpedia:Berlin', nsm=nsm) == berlin
@@ -191,16 +191,16 @@ def from_n3(s, default=None, backend=None, nsm=None):
         return Literal(int(s))
     elif s.startswith('{'):
         identifier = from_n3(s[1:-1])
-        return graph.QuotedGraph(backend, identifier)
+        return rdflib.graph.QuotedGraph(backend, identifier)
     elif s.startswith('['):
         identifier = from_n3(s[1:-1])
-        return graph.Graph(backend, identifier)
+        return rdflib.graph.Graph(backend, identifier)
     elif s.startswith("_:"):
         return BNode(s[2:])
     elif ':' in s:
         if nsm is None:
             # instantiate default NamespaceManager and rely on its defaults
-            nsm = NamespaceManager(graph.Graph())
+            nsm = NamespaceManager(rdflib.graph.Graph())
         prefix, last_part = s.split(':', 1)
         ns = dict(nsm.namespaces())[prefix]
         return Namespace(ns)[last_part]
