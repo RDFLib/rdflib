@@ -255,7 +255,8 @@ class TurtleSerializer(RecursiveSerializer):
     def preprocessTriple(self, triple):
         super(TurtleSerializer, self).preprocessTriple(triple)
         for i, node in enumerate(triple):
-            if node in self.keywords:
+            if node in self.keywords and i == 1:
+		#Handle the case when rdf:type is an object and rdf @prefix is mandatory
                 continue
             # Don't use generated prefixes for subjects and objects
             self.getQName(node, gen_prefix=(i == VERB))
