@@ -39,7 +39,6 @@ class Accumulator(object):
 
 
 class Counter(Accumulator):
-
     def __init__(self, aggregation):
         super(Counter, self).__init__(aggregation)
         self.value = 0
@@ -71,16 +70,14 @@ class Counter(Accumulator):
 
 
 def type_safe_numbers(*args):
-    if (
-            any(isinstance(arg, float) for arg in args) and
-            any(isinstance(arg, Decimal) for arg in args)
+    if any(isinstance(arg, float) for arg in args) and any(
+        isinstance(arg, Decimal) for arg in args
     ):
         return map(float, args)
     return args
 
 
 class Sum(Accumulator):
-
     def __init__(self, aggregation):
         super(Sum, self).__init__(aggregation)
         self.value = 0
@@ -107,7 +104,6 @@ class Sum(Accumulator):
 
 
 class Average(Accumulator):
-
     def __init__(self, aggregation):
         super(Average, self).__init__(aggregation)
         self.counter = 0
@@ -171,13 +167,11 @@ class Extremum(Accumulator):
 
 
 class Minimum(Extremum):
-
     def compare(self, val1, val2):
         return min(val1, val2, key=_val)
 
 
 class Maximum(Extremum):
-
     def compare(self, val1, val2):
         return max(val1, val2, key=_val)
 
@@ -205,7 +199,6 @@ class Sample(Accumulator):
 
 
 class GroupConcat(Accumulator):
-
     def __init__(self, aggregation):
         super(GroupConcat, self).__init__(aggregation)
         # only GROUPCONCAT needs to have a list as accumlator

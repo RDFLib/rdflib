@@ -44,7 +44,9 @@ def _mangled_copy(g):
     "Makes a copy of the graph, replacing all bnodes with the bnode ``_blank``."
     gcopy = ConjunctiveGraph()
 
-    def isbnode(v): return isinstance(v, BNode)
+    def isbnode(v):
+        return isinstance(v, BNode)
+
     for s, p, o in g:
         if isbnode(s):
             s = _blank
@@ -115,23 +117,47 @@ class TestXMLSerializer(SerializerTestBase):
             rdfs:seeAlso _:bnode2 .
 
         """
-    testContentFormat = 'n3'
+    testContentFormat = "n3"
 
     def test_result_fragments(self):
         rdfXml = serialize(self.sourceGraph, self.serializer)
         # print "--------"
         # print rdfXml
         # print "--------"
-        assert '<rdf:Description rdf:about="http://example.org/data/a">'.encode("latin-1") in rdfXml
-        assert '<rdf:type rdf:resource="http://example.org/model/test#Test"/>'.encode("latin-1") in rdfXml
-        assert '<rdf:Description rdf:about="http://example.org/data/b">'.encode("latin-1") in rdfXml
+        assert (
+            '<rdf:Description rdf:about="http://example.org/data/a">'.encode("latin-1")
+            in rdfXml
+        )
+        assert (
+            '<rdf:type rdf:resource="http://example.org/model/test#Test"/>'.encode(
+                "latin-1"
+            )
+            in rdfXml
+        )
+        assert (
+            '<rdf:Description rdf:about="http://example.org/data/b">'.encode("latin-1")
+            in rdfXml
+        )
         assert '<name xml:lang="en">Bee</name>'.encode("latin-1") in rdfXml
-        assert '<value rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</value>'.encode("latin-1") in rdfXml
-        assert '<rdf:Description rdf:nodeID="'.encode("latin-1") in rdfXml, "expected one identified bnode in serialized graph"
+        assert (
+            '<value rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</value>'.encode(
+                "latin-1"
+            )
+            in rdfXml
+        )
+        assert (
+            '<rdf:Description rdf:nodeID="'.encode("latin-1") in rdfXml
+        ), "expected one identified bnode in serialized graph"
 
     def test_result_fragments_with_base(self):
-        rdfXml = serialize(self.sourceGraph, self.serializer,
-                           extra_args={'base': "http://example.org/", 'xml_base': "http://example.org/"})
+        rdfXml = serialize(
+            self.sourceGraph,
+            self.serializer,
+            extra_args={
+                "base": "http://example.org/",
+                "xml_base": "http://example.org/",
+            },
+        )
         # print "--------"
         # print rdfXml
         # print "--------"
@@ -139,19 +165,27 @@ class TestXMLSerializer(SerializerTestBase):
         assert '<rdf:Description rdf:about="data/a">'.encode("latin-1") in rdfXml
         assert '<rdf:type rdf:resource="model/test#Test"/>'.encode("latin-1") in rdfXml
         assert '<rdf:Description rdf:about="data/b">'.encode("latin-1") in rdfXml
-        assert '<value rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</value>'.encode("latin-1") in rdfXml
-        assert '<rdf:Description rdf:nodeID="'.encode("latin-1") in rdfXml, "expected one identified bnode in serialized graph"
+        assert (
+            '<value rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</value>'.encode(
+                "latin-1"
+            )
+            in rdfXml
+        )
+        assert (
+            '<rdf:Description rdf:nodeID="'.encode("latin-1") in rdfXml
+        ), "expected one identified bnode in serialized graph"
 
     def test_subClassOf_objects(self):
         reparsedGraph = serialize_and_load(self.sourceGraph, self.serializer)
-        _assert_expected_object_types_for_predicates(reparsedGraph,
-                                                     [RDFS.seeAlso, RDFS.subClassOf],
-                                                     [URIRef, BNode])
+        _assert_expected_object_types_for_predicates(
+            reparsedGraph, [RDFS.seeAlso, RDFS.subClassOf], [URIRef, BNode]
+        )
 
 
 def _assert_expected_object_types_for_predicates(graph, predicates, types):
     for s, p, o in graph:
         if p in predicates:
             someTrue = [isinstance(o, t) for t in types]
-            assert True in someTrue, \
-                "Bad type %s for object when predicate is <%s>." % (type(o), p)
+            assert (
+                True in someTrue
+            ), "Bad type %s for object when predicate is <%s>." % (type(o), p)

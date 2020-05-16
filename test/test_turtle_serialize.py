@@ -12,7 +12,7 @@ def testTurtleFinalDot():
     u = URIRef("http://ex.org/bob.")
     g.bind("ns", "http://ex.org/")
     g.add((u, u, u))
-    s = g.serialize(format='turtle')
+    s = g.serialize(format="turtle")
     assert "ns:bob.".encode("latin-1") not in s
 
 
@@ -50,18 +50,23 @@ def testUnicodeEscaping():
     assert len(triples) == 3
     print(triples)
     # Now check that was decoded into python values properly
-    assert triples[0][2] == URIRef(u'http://example.com/aaa\xf3bbbb')
-    assert triples[1][2] == URIRef(u'http://example.com/zzz\U00100000zzz')
-    assert triples[2][2] == URIRef(u'http://example.com/aaa\xf3bbb')
+    assert triples[0][2] == URIRef(u"http://example.com/aaa\xf3bbbb")
+    assert triples[1][2] == URIRef(u"http://example.com/zzz\U00100000zzz")
+    assert triples[2][2] == URIRef(u"http://example.com/aaa\xf3bbb")
 
 
 def test_turtle_valid_list():
-    NS = Namespace('http://example.org/ns/')
+    NS = Namespace("http://example.org/ns/")
     g = Graph()
-    g.parse(data="""
+    g.parse(
+        data="""
             @prefix : <{0}> .
             :s :p (""), (0), (false) .
-            """.format(NS), format='turtle')
+            """.format(
+            NS
+        ),
+        format="turtle",
+    )
 
     turtle_serializer = TurtleSerializer(g)
 
@@ -70,24 +75,30 @@ def test_turtle_valid_list():
 
 
 def test_turtle_namespace():
-   graph = Graph()
-   graph.bind('OBO', 'http://purl.obolibrary.org/obo/')
-   graph.bind('GENO', 'http://purl.obolibrary.org/obo/GENO_')
-   graph.bind('RO', 'http://purl.obolibrary.org/obo/RO_')
-   graph.bind('RO_has_phenotype',
-                   'http://purl.obolibrary.org/obo/RO_0002200')
-   graph.add((URIRef('http://example.org'),
-              URIRef('http://purl.obolibrary.org/obo/RO_0002200'),
-              URIRef('http://purl.obolibrary.org/obo/GENO_0000385')))
-   output = [val for val in
-             graph.serialize(format='turtle').decode().splitlines()
-             if not val.startswith('@prefix')]
-   output = ' '.join(output)
-   assert 'RO_has_phenotype:' in output
-   assert 'GENO:0000385' in output
+    graph = Graph()
+    graph.bind("OBO", "http://purl.obolibrary.org/obo/")
+    graph.bind("GENO", "http://purl.obolibrary.org/obo/GENO_")
+    graph.bind("RO", "http://purl.obolibrary.org/obo/RO_")
+    graph.bind("RO_has_phenotype", "http://purl.obolibrary.org/obo/RO_0002200")
+    graph.add(
+        (
+            URIRef("http://example.org"),
+            URIRef("http://purl.obolibrary.org/obo/RO_0002200"),
+            URIRef("http://purl.obolibrary.org/obo/GENO_0000385"),
+        )
+    )
+    output = [
+        val
+        for val in graph.serialize(format="turtle").decode().splitlines()
+        if not val.startswith("@prefix")
+    ]
+    output = " ".join(output)
+    assert "RO_has_phenotype:" in output
+    assert "GENO:0000385" in output
 
 
 if __name__ == "__main__":
     import nose
     import sys
+
     nose.main(defaultTest=sys.argv[0])

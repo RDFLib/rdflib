@@ -2,6 +2,7 @@ from nose.exc import SkipTest
 import os
 import sys
 import unittest
+
 try:
     maketrans = str.maketrans
 except AttributeError:
@@ -42,22 +43,22 @@ qt = rdflib.Namespace("http://www.w3.org/2001/sw/DataAccess/tests/test-query#")
 
 
 skiptests = [
-    'syntax_neg_single_quote',
-    'syntax_neg_literal_predicate',
-    'syntax_this_quantifiers',
-    'syntax_trailing_semicolon',
-    'syntax_neg_thisadoc',
-    'syntax_equals1',
-    'syntax_equals2',
-    'syntax_this_rules',
-    'syntax_neg_keywords3',
-    'syntax_zero_objects',
-    'syntax_neg_formula_predicate',
-    'syntax_zero_predicates',
+    "syntax_neg_single_quote",
+    "syntax_neg_literal_predicate",
+    "syntax_this_quantifiers",
+    "syntax_trailing_semicolon",
+    "syntax_neg_thisadoc",
+    "syntax_equals1",
+    "syntax_equals2",
+    "syntax_this_rules",
+    "syntax_neg_keywords3",
+    "syntax_zero_objects",
+    "syntax_neg_formula_predicate",
+    "syntax_zero_predicates",
     # 'syntax_qvars1',
     # 'syntax_qvars2',
     # 'contexts',
-    'syntax_too_nested'
+    "syntax_too_nested",
 ]
 
 
@@ -81,7 +82,7 @@ def generictest(e):
 
 
 def dir_to_uri(directory, sep=os.path.sep):
-    '''
+    """
     Convert a local path to a File URI.
 
     >>> dir_to_uri('c:\\\\temp\\\\foo\\\\file.txt', sep='\\\\')
@@ -89,28 +90,36 @@ def dir_to_uri(directory, sep=os.path.sep):
 
     >>> dir_to_uri('/tmp/foo/file.txt', sep='/')
     'file:///tmp/foo/file.txt'
-    '''
+    """
     items = directory.split(sep)
-    path = '/'.join(items)
-    if path.startswith('/'):
+    path = "/".join(items)
+    if path.startswith("/"):
         path = path[1:]
-    return 'file:///%s' % (path,)
+    return "file:///%s" % (path,)
 
 
 def test_cases():
     from copy import deepcopy
+
     g = rdflib.Graph()
-    swap_dir = os.path.join(os.getcwd(), 'test', 'swap-n3')
-    g.parse(os.path.join(swap_dir, 'n3-rdf.tests'), format="n3")
-    g.parse(os.path.join(swap_dir, 'n3-full.tests'), format="n3")
+    swap_dir = os.path.join(os.getcwd(), "test", "swap-n3")
+    g.parse(os.path.join(swap_dir, "n3-rdf.tests"), format="n3")
+    g.parse(os.path.join(swap_dir, "n3-full.tests"), format="n3")
     tfiles = []
-    swap_dir_uri = dir_to_uri(swap_dir) + '/'
+    swap_dir_uri = dir_to_uri(swap_dir) + "/"
     for tst in g.subjects():
-        files = [str(tfile).replace('http://www.w3.org/2000/10/', swap_dir_uri)
-                 for tfile in g.objects(tst, rdflib.URIRef("http://www.w3.org/2004/11/n3test#inputDocument")) if tfile.endswith('n3')]
+        files = [
+            str(tfile).replace("http://www.w3.org/2000/10/", swap_dir_uri)
+            for tfile in g.objects(
+                tst, rdflib.URIRef("http://www.w3.org/2004/11/n3test#inputDocument")
+            )
+            if tfile.endswith("n3")
+        ]
         tfiles += files
     for tfile in set(tfiles):
-        gname = tfile.split('/swap-n3/swap/test/')[1][:-3].translate(maketrans('-/','__'))
+        gname = tfile.split("/swap-n3/swap/test/")[1][:-3].translate(
+            maketrans("-/", "__")
+        )
         e = Envelope(gname, tfile)
         if gname in skiptests:
             e.skip = True
@@ -119,6 +128,7 @@ def test_cases():
         # e.skip = True
         if sys.version_info[:2] == (2, 4):
             import pickle
+
             gjt = pickle.dumps(generictest)
             gt = pickle.loads(gjt)
         else:
@@ -130,4 +140,3 @@ def test_cases():
 if __name__ == "__main__":
     test_cases()
     # unittest.main()
-

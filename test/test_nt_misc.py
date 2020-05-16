@@ -10,7 +10,6 @@ log = logging.getLogger(__name__)
 
 
 class NTTestCase(unittest.TestCase):
-
     def testIssue859(self):
         graphA = Graph()
         graphB = Graph()
@@ -25,7 +24,7 @@ class NTTestCase(unittest.TestCase):
     def testIssue78(self):
         g = Graph()
         g.add((URIRef("foo"), URIRef("foo"), Literal(u"R\u00E4ksm\u00F6rg\u00E5s")))
-        s = g.serialize(format='nt')
+        s = g.serialize(format="nt")
         self.assertEqual(type(s), bytes)
         self.assertTrue(r"R\u00E4ksm\u00F6rg\u00E5s".encode("latin-1") in s)
 
@@ -79,7 +78,7 @@ class NTTestCase(unittest.TestCase):
         self.assertEqual(res, uniquot)
 
     def test_NTriplesParser_fpath(self):
-        fpath = "test/nt/" + os.listdir('test/nt')[0]
+        fpath = "test/nt/" + os.listdir("test/nt")[0]
         p = ntriples.NTriplesParser()
         self.assertRaises(ntriples.ParseError, p.parse, fpath)
 
@@ -88,7 +87,7 @@ class NTTestCase(unittest.TestCase):
         data = 3
         self.assertRaises(ntriples.ParseError, p.parsestring, data)
         fname = "test/nt/lists-02.nt"
-        with open(fname, 'r') as f:
+        with open(fname, "r") as f:
             data = f.read()
         p = ntriples.NTriplesParser()
         res = p.parsestring(data)
@@ -105,15 +104,21 @@ class NTTestCase(unittest.TestCase):
         self.assertTrue(sink is not None)
 
     def test_bad_line(self):
-        data = '''<http://example.org/resource32> 3 <http://example.org/datatype1> .\n'''
+        data = (
+            """<http://example.org/resource32> 3 <http://example.org/datatype1> .\n"""
+        )
         p = ntriples.NTriplesParser()
         self.assertRaises(ntriples.ParseError, p.parsestring, data)
 
     def test_cover_eat(self):
-        data = '''<http://example.org/resource32> 3 <http://example.org/datatype1> .\n'''
+        data = (
+            """<http://example.org/resource32> 3 <http://example.org/datatype1> .\n"""
+        )
         p = ntriples.NTriplesParser()
         p.line = data
-        self.assertRaises(ntriples.ParseError, p.eat, re.compile('<http://example.org/datatype1>'))
+        self.assertRaises(
+            ntriples.ParseError, p.eat, re.compile("<http://example.org/datatype1>")
+        )
 
     def test_cover_subjectobjectliteral(self):
         # data = '''<http://example.org/resource32> 3 <http://example.org/datatype1> .\n'''

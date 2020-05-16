@@ -56,16 +56,15 @@ class TestHTTPHandler(BaseHTTPRequestHandler):
 
         self.send_header("Content-type", rct)
         self.end_headers()
-        self.wfile.write(content.encode('utf-8'))
+        self.wfile.write(content.encode("utf-8"))
 
     def log_message(self, *args):
         pass
 
 
-def runHttpServer(server_class=HTTPServer,
-                  handler_class=TestHTTPHandler):
+def runHttpServer(server_class=HTTPServer, handler_class=TestHTTPHandler):
     """Start a server than can handle 3 requests :)"""
-    server_address = ('localhost', 12345)
+    server_address = ("localhost", 12345)
     httpd = server_class(server_address, handler_class)
 
     httpd.handle_request()
@@ -87,5 +86,6 @@ if __name__ == "__main__":
 
     import sys
     import nose
+
     if len(sys.argv) == 1:
         nose.main(defaultTest=sys.argv[0])

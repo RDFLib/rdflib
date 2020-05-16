@@ -11,24 +11,30 @@ def test_graph_prefix():
     """
 
     g1 = Graph()
-    g1.parse(data="""
+    g1.parse(
+        data="""
     @prefix : <urn:ns1:> .
     :foo <p> 42.
-    """, format="n3")
+    """,
+        format="n3",
+    )
 
     g2 = Graph()
-    g2.parse(data="""
+    g2.parse(
+        data="""
     @prefix : <urn:somethingelse:> .
     <urn:ns1:foo> <p> 42.
-    """, format="n3")
+    """,
+        format="n3",
+    )
 
     assert isomorphic(g1, g2)
 
-    q_str = ("""
+    q_str = """
     PREFIX : <urn:ns1:>
     SELECT ?val
     WHERE { :foo ?p ?val }
-    """)
+    """
     q_prepared = prepareQuery(q_str)
 
     expected = [(Literal(42),)]
@@ -61,21 +67,21 @@ def test_sparql_bnodelist():
 
     """
 
-    prepareQuery('select * where { ?s ?p ( [] ) . }')
-    prepareQuery('select * where { ?s ?p ( [ ?p2 ?o2 ] ) . }')
-    prepareQuery('select * where { ?s ?p ( [ ?p2 ?o2 ] [] ) . }')
-    prepareQuery('select * where { ?s ?p ( [] [ ?p2 ?o2 ] [] ) . }')
+    prepareQuery("select * where { ?s ?p ( [] ) . }")
+    prepareQuery("select * where { ?s ?p ( [ ?p2 ?o2 ] ) . }")
+    prepareQuery("select * where { ?s ?p ( [ ?p2 ?o2 ] [] ) . }")
+    prepareQuery("select * where { ?s ?p ( [] [ ?p2 ?o2 ] [] ) . }")
 
 
 def test_complex_sparql_construct():
 
     g = Graph()
-    q = '''select ?subject ?study ?id where {
+    q = """select ?subject ?study ?id where {
     ?s a <urn:Person>;
       <urn:partOf> ?c;
       <urn:hasParent> ?mother, ?father;
       <urn:id> [ a <urn:Identifier>; <urn:has-value> ?id].
-    }'''
+    }"""
     g.query(q)
 
 
@@ -84,8 +90,7 @@ def test_sparql_update_with_bnode():
     Test if the blank node is inserted correctly.
     """
     graph = Graph()
-    graph.update(
-        "INSERT DATA { _:blankA <urn:type> <urn:Blank> }")
+    graph.update("INSERT DATA { _:blankA <urn:type> <urn:Blank> }")
     for t in graph.triples((None, None, None)):
         assert isinstance(t[0], BNode)
         eq_(t[1].n3(), "<urn:type>")
@@ -97,9 +102,8 @@ def test_sparql_update_with_bnode_serialize_parse():
     Test if the blank node is inserted correctly, can be serialized and parsed.
     """
     graph = Graph()
-    graph.update(
-        "INSERT DATA { _:blankA <urn:type> <urn:Blank> }")
-    string = graph.serialize(format='ntriples').decode('utf-8')
+    graph.update("INSERT DATA { _:blankA <urn:type> <urn:Blank> }")
+    string = graph.serialize(format="ntriples").decode("utf-8")
     raised = False
     try:
         Graph().parse(data=string, format="ntriples")
@@ -108,6 +112,7 @@ def test_sparql_update_with_bnode_serialize_parse():
     assert not raised
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import nose
+
     nose.main(defaultTest=__name__)

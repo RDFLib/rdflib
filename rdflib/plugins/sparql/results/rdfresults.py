@@ -2,7 +2,7 @@ from rdflib import Graph, Namespace, RDF, Variable
 
 from rdflib.query import Result, ResultParser
 
-RS = Namespace('http://www.w3.org/2001/sw/DataAccess/tests/result-set#')
+RS = Namespace("http://www.w3.org/2001/sw/DataAccess/tests/result-set#")
 
 
 class RDFResultParser(ResultParser):
@@ -11,7 +11,6 @@ class RDFResultParser(ResultParser):
 
 
 class RDFResult(Result):
-
     def __init__(self, source, **kwargs):
 
         if not isinstance(source, Graph):
@@ -24,7 +23,7 @@ class RDFResult(Result):
         # there better be only one :)
 
         if rs is None:
-            type_ = 'CONSTRUCT'
+            type_ = "CONSTRUCT"
 
             # use a new graph
             g = Graph()
@@ -35,27 +34,27 @@ class RDFResult(Result):
             askAnswer = graph.value(rs, RS.boolean)
 
             if askAnswer is not None:
-                type_ = 'ASK'
+                type_ = "ASK"
             else:
-                type_ = 'SELECT'
+                type_ = "SELECT"
 
         Result.__init__(self, type_)
 
-        if type_ == 'SELECT':
-            self.vars = [Variable(v) for v in graph.objects(rs,
-                                                            RS.resultVariable)]
+        if type_ == "SELECT":
+            self.vars = [Variable(v) for v in graph.objects(rs, RS.resultVariable)]
 
             self.bindings = []
 
             for s in graph.objects(rs, RS.solution):
                 sol = {}
                 for b in graph.objects(s, RS.binding):
-                    sol[Variable(graph.value(
-                        b, RS.variable))] = graph.value(b, RS.value)
+                    sol[Variable(graph.value(b, RS.variable))] = graph.value(
+                        b, RS.value
+                    )
                 self.bindings.append(sol)
-        elif type_ == 'ASK':
+        elif type_ == "ASK":
             self.askAnswer = askAnswer.value
             if askAnswer.value is None:
-                raise Exception('Malformed boolean in ask answer!')
-        elif type_ == 'CONSTRUCT':
+                raise Exception("Malformed boolean in ask answer!")
+        elif type_ == "CONSTRUCT":
             self.graph = g

@@ -83,8 +83,14 @@ from __future__ import print_function
 # - Add warning and/or safety mechanism before working on large graphs?
 # - use this in existing Graph.isomorphic?
 
-__all__ = ['IsomorphicGraph', 'to_isomorphic', 'isomorphic',
-           'to_canonical_graph', 'graph_diff', 'similar']
+__all__ = [
+    "IsomorphicGraph",
+    "to_isomorphic",
+    "isomorphic",
+    "to_canonical_graph",
+    "graph_diff",
+    "similar",
+]
 
 from rdflib.graph import Graph, ConjunctiveGraph, ReadOnlyGraphAggregate
 from rdflib.term import BNode, Node
@@ -92,8 +98,6 @@ from hashlib import sha256
 
 from datetime import datetime
 from collections import defaultdict
-
-
 
 
 def _total_seconds(td):
@@ -114,10 +118,11 @@ class _runtime(object):
         def wrapped_f(*args, **kwargs):
             start = datetime.now()
             result = f(*args, **kwargs)
-            if 'stats' in kwargs and kwargs['stats'] is not None:
-                stats = kwargs['stats']
+            if "stats" in kwargs and kwargs["stats"] is not None:
+                stats = kwargs["stats"]
                 stats[self.label] = _total_seconds(datetime.now() - start)
             return result
+
         return wrapped_f
 
 
@@ -130,12 +135,13 @@ class _call_count(object):
             self.label = f.__name__ + "_runtime"
 
         def wrapped_f(*args, **kwargs):
-            if 'stats' in kwargs and kwargs['stats'] is not None:
-                stats = kwargs['stats']
+            if "stats" in kwargs and kwargs["stats"] is not None:
+                stats = kwargs["stats"]
                 if self.label not in stats:
                     stats[self.label] = 0
                 stats[self.label] += 1
             return f(*args, **kwargs)
+
         return wrapped_f
 
 
@@ -212,11 +218,12 @@ class Color:
                 return x.n3()
             else:
                 return str(x)
+
         if isinstance(color, Node):
             return stringify(color)
         value = 0
         for triple in color:
-            value += self.hashfunc(' '.join([stringify(x) for x in triple]))
+            value += self.hashfunc(" ".join([stringify(x) for x in triple]))
         val = u"%x" % value
         self._hash_cache[color] = val
         return val
@@ -227,18 +234,16 @@ class Color:
             new_color = list(self.color)
             for node in W.nodes:
                 new_color += [
-                    (1, p, W.hash_color())
-                    for s, p, o in graph.triples((n, None, node))]
+                    (1, p, W.hash_color()) for s, p, o in graph.triples((n, None, node))
+                ]
                 new_color += [
-                    (W.hash_color(), p, 3)
-                    for s, p, o in graph.triples((node, None, n))]
+                    (W.hash_color(), p, 3) for s, p, o in graph.triples((node, None, n))
+                ]
             new_color = tuple(new_color)
             new_hash_color = self.hash_color(new_color)
 
             if new_hash_color not in colors:
-                c = Color(
-                    [], self.hashfunc, new_color,
-                    hash_cache=self._hash_cache)
+                c = Color([], self.hashfunc, new_color, hash_cache=self._hash_cache)
                 colors[new_hash_color] = c
             colors[new_hash_color].nodes.append(n)
         return colors.values()
@@ -248,12 +253,11 @@ class Color:
 
     def copy(self):
         return Color(
-            self.nodes[:], self.hashfunc, self.color,
-            hash_cache=self._hash_cache)
+            self.nodes[:], self.hashfunc, self.color, hash_cache=self._hash_cache
+        )
 
 
 class _TripleCanonicalizer(object):
-
     def __init__(self, graph, hashfunc=sha256):
         self.graph = graph
 
@@ -261,6 +265,7 @@ class _TripleCanonicalizer(object):
             h = hashfunc()
             h.update(str(s).encode("utf8"))
             return int(h.hexdigest(), 16)
+
         self._hash_cache = {}
         self.hashfunc = _hashfunc
 
@@ -292,12 +297,10 @@ class _TripleCanonicalizer(object):
                     self._neighbors[p].add(s)
                     self._neighbors[p].add(p)
         if len(bnodes) > 0:
-            return [
-                    Color(list(bnodes), self.hashfunc, hash_cache=self._hash_cache)
-                ] + [
-                    Color([x], self.hashfunc, x, hash_cache=self._hash_cache)
-                    for x in others
-                ]
+            return [Color(list(bnodes), self.hashfunc, hash_cache=self._hash_cache)] + [
+                Color([x], self.hashfunc, x, hash_cache=self._hash_cache)
+                for x in others
+            ]
         else:
             return []
 
@@ -306,8 +309,9 @@ class _TripleCanonicalizer(object):
         new_color.append((len(color.nodes),))
 
         color.nodes.remove(individual)
-        c = Color([individual], self.hashfunc, tuple(new_color),
-                  hash_cache=self._hash_cache)
+        c = Color(
+            [individual], self.hashfunc, tuple(new_color), hash_cache=self._hash_cache
+        )
         return c
 
     def _get_candidates(self, coloring):
@@ -323,14 +327,16 @@ class _TripleCanonicalizer(object):
             W = sequence.pop()
             for c in coloring[:]:
                 if len(c.nodes) > 1 or isinstance(c.nodes[0], BNode):
-                    colors = sorted(c.distinguish(W, self.graph),
-                                    key=lambda x: x.key(),
-                                    reverse=True)
+                    colors = sorted(
+                        c.distinguish(W, self.graph),
+                        key=lambda x: x.key(),
+                        reverse=True,
+                    )
                     coloring.remove(c)
                     coloring.extend(colors)
                     try:
                         si = sequence.index(c)
-                        sequence = sequence[:si] + colors + sequence[si+1:]
+                        sequence = sequence[:si] + colors + sequence[si + 1 :]
                     except ValueError:
                         sequence = colors[1:] + sequence
         combined_colors = []
@@ -349,9 +355,9 @@ class _TripleCanonicalizer(object):
     def to_hash(self, stats=None):
         result = 0
         for triple in self.canonical_triples(stats=stats):
-            result += self.hashfunc(' '.join([x.n3() for x in triple]))
+            result += self.hashfunc(" ".join([x.n3() for x in triple]))
         if stats is not None:
-            stats['graph_digest'] = "%x" % result
+            stats["graph_digest"] = "%x" % result
         return result
 
     def _experimental_path(self, coloring):
@@ -377,8 +383,8 @@ class _TripleCanonicalizer(object):
 
     @_call_count("individuations")
     def _traces(self, coloring, stats=None, depth=[0]):
-        if stats is not None and 'prunings' not in stats:
-            stats['prunings'] = 0
+        if stats is not None and "prunings" not in stats:
+            stats["prunings"] = 0
         depth[0] += 1
         candidates = self._get_candidates(coloring)
         best = []
@@ -410,8 +416,8 @@ class _TripleCanonicalizer(object):
             experimental_score = set([c.key() for c in experimental])
             if last_coloring:
                 generator = self._create_generator(
-                    [last_coloring, experimental],
-                    generator)
+                    [last_coloring, experimental], generator
+                )
             last_coloring = experimental
             if best_score is None or best_score < color_score:
                 best = [refined_coloring]
@@ -421,13 +427,13 @@ class _TripleCanonicalizer(object):
             elif best_score > color_score:
                 # prune this branch.
                 if stats is not None:
-                    stats['prunings'] += 1
+                    stats["prunings"] += 1
             elif experimental_score != best_experimental_score:
                 best.append(refined_coloring)
             else:
                 # prune this branch.
                 if stats is not None:
-                    stats['prunings'] += 1
+                    stats["prunings"] += 1
         discrete = [x for x in best if self._discrete(x)]
         if len(discrete) == 0:
             best_score = None
@@ -450,27 +456,31 @@ class _TripleCanonicalizer(object):
             start_coloring = datetime.now()
         coloring = self._initial_color()
         if stats is not None:
-            stats['triple_count'] = len(self.graph)
-            stats['adjacent_nodes'] = max(0, len(coloring) - 1)
+            stats["triple_count"] = len(self.graph)
+            stats["adjacent_nodes"] = max(0, len(coloring) - 1)
         coloring = self._refine(coloring, coloring[:])
         if stats is not None:
-            stats['initial_coloring_runtime'] = _total_seconds(datetime.now() - start_coloring)
-            stats['initial_color_count'] = len(coloring)
+            stats["initial_coloring_runtime"] = _total_seconds(
+                datetime.now() - start_coloring
+            )
+            stats["initial_color_count"] = len(coloring)
 
         if not self._discrete(coloring):
             depth = [0]
             coloring = self._traces(coloring, stats=stats, depth=depth)
             if stats is not None:
-                stats['tree_depth'] = depth[0]
+                stats["tree_depth"] = depth[0]
         elif stats is not None:
-            stats['individuations'] = 0
-            stats['tree_depth'] = 0
+            stats["individuations"] = 0
+            stats["tree_depth"] = 0
         if stats is not None:
-            stats['color_count'] = len(coloring)
+            stats["color_count"] = len(coloring)
 
         bnode_labels = dict([(c.nodes[0], c.hash_color()) for c in coloring])
         if stats is not None:
-            stats["canonicalize_triples_runtime"] = _total_seconds(datetime.now() - start_coloring)
+            stats["canonicalize_triples_runtime"] = _total_seconds(
+                datetime.now() - start_coloring
+            )
         for triple in self.graph:
             result = tuple(self._canonicalize_bnodes(triple, bnode_labels))
             yield result

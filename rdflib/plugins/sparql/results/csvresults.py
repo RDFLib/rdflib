@@ -21,11 +21,11 @@ class CSVResultParser(ResultParser):
 
     def parse(self, source, content_type=None):
 
-        r = Result('SELECT')
+        r = Result("SELECT")
 
         if isinstance(source.read(0), bytes):
             # if reading from source returns bytes do utf-8 decoding
-            source = codecs.getreader('utf-8')(source)
+            source = codecs.getreader("utf-8")(source)
 
         reader = csv.reader(source, delimiter=self.delim)
         r.vars = [Variable(x) for x in next(reader)]
@@ -37,9 +37,11 @@ class CSVResultParser(ResultParser):
         return r
 
     def parseRow(self, row, v):
-        return dict((var, val)
-                    for var, val in zip(v, [self.convertTerm(t)
-                                            for t in row]) if val is not None)
+        return dict(
+            (var, val)
+            for var, val in zip(v, [self.convertTerm(t) for t in row])
+            if val is not None
+        )
 
     def convertTerm(self, t):
         if t == "":
@@ -52,22 +54,21 @@ class CSVResultParser(ResultParser):
 
 
 class CSVResultSerializer(ResultSerializer):
-
     def __init__(self, result):
         ResultSerializer.__init__(self, result)
 
         self.delim = ","
         if result.type != "SELECT":
-            raise Exception(
-                "CSVSerializer can only serialize select query results")
+            raise Exception("CSVSerializer can only serialize select query results")
 
-    def serialize(self, stream, encoding='utf-8', **kwargs):
+    def serialize(self, stream, encoding="utf-8", **kwargs):
 
         # the serialiser writes bytes in the given encoding
         # in py3 csv.writer is unicode aware and writes STRINGS,
         # so we encode afterwards
 
         import codecs
+
         stream = codecs.getwriter(encoding)(stream)
 
         out = csv.writer(stream, delimiter=self.delim)
@@ -75,8 +76,9 @@ class CSVResultSerializer(ResultSerializer):
         vs = [self.serializeTerm(v, encoding) for v in self.result.vars]
         out.writerow(vs)
         for row in self.result.bindings:
-            out.writerow([self.serializeTerm(
-                row.get(v), encoding) for v in self.result.vars])
+            out.writerow(
+                [self.serializeTerm(row.get(v), encoding) for v in self.result.vars]
+            )
 
     def serializeTerm(self, term, encoding):
         if term is None:

@@ -1,4 +1,3 @@
-
 from rdflib import ConjunctiveGraph, URIRef
 import rdflib.plugin
 
@@ -10,15 +9,19 @@ def testFinalNewline():
     import sys
 
     graph = ConjunctiveGraph()
-    graph.add((URIRef("http://ex.org/a"),
-               URIRef("http://ex.org/b"),
-               URIRef("http://ex.org/c")))
+    graph.add(
+        (
+            URIRef("http://ex.org/a"),
+            URIRef("http://ex.org/b"),
+            URIRef("http://ex.org/c"),
+        )
+    )
 
     failed = set()
     for p in rdflib.plugin.plugins(None, rdflib.plugin.Serializer):
         v = graph.serialize(format=p.name)
         lines = v.split("\n".encode("latin-1"))
-        if "\n".encode("latin-1") not in v or (lines[-1] != ''.encode("latin-1")):
+        if "\n".encode("latin-1") not in v or (lines[-1] != "".encode("latin-1")):
             failed.add(p.name)
     assert len(failed) == 0, "No final newline for formats: '%s'" % failed
 
@@ -27,5 +30,6 @@ if __name__ == "__main__":
 
     import sys
     import nose
+
     if len(sys.argv) == 1:
         nose.main(defaultTest=sys.argv[0])

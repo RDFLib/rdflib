@@ -1,4 +1,3 @@
-
 from types import MethodType
 
 from collections import OrderedDict
@@ -43,6 +42,7 @@ the resulting CompValue
 # This is an alternative
 
 # Comp('Sum')( Param('x')(Number) + '+' + Param('y')(Number) )
+
 
 def value(ctx, val, variables=False, errors=False):
     """
@@ -172,7 +172,7 @@ class CompValue(OrderedDict):
 
     def __getattr__(self, a):
         # Hack hack: OrderedDict relies on this
-        if a in ('_OrderedDict__root', '_OrderedDict__end'):
+        if a in ("_OrderedDict__root", "_OrderedDict__end"):
             raise AttributeError
         try:
             return self[a]
@@ -224,13 +224,13 @@ class Comp(TokenConverter):
             res._evalfn = MethodType(self.evalfn, res)
         else:
             res = CompValue(self.name)
-            if self.name == 'ServiceGraphPattern':
+            if self.name == "ServiceGraphPattern":
                 # Then this must be a service graph pattern and have
                 # already matched.
                 # lets assume there is one, for now, then test for two later.
                 sgp = originalTextFor(self.expr)
                 service_string = sgp.searchString(instring)[0][0]
-                res['service_string'] = service_string
+                res["service_string"] = service_string
 
         for t in tokenList:
             if isinstance(t, ParamValue):
@@ -250,38 +250,38 @@ class Comp(TokenConverter):
         return self
 
 
-def prettify_parsetree(t, indent='', depth=0):
+def prettify_parsetree(t, indent="", depth=0):
     out = []
     if isinstance(t, ParseResults):
         for e in t.asList():
             out.append(prettify_parsetree(e, indent, depth + 1))
         for k, v in sorted(t.items()):
-            out.append("%s%s- %s:\n" % (indent, '  ' * depth, k))
+            out.append("%s%s- %s:\n" % (indent, "  " * depth, k))
             out.append(prettify_parsetree(v, indent, depth + 1))
     elif isinstance(t, CompValue):
-        out.append("%s%s> %s:\n" % (indent, '  ' * depth, t.name))
+        out.append("%s%s> %s:\n" % (indent, "  " * depth, t.name))
         for k, v in t.items():
-            out.append("%s%s- %s:\n" % (indent, '  ' * (depth + 1), k))
+            out.append("%s%s- %s:\n" % (indent, "  " * (depth + 1), k))
             out.append(prettify_parsetree(v, indent, depth + 2))
     elif isinstance(t, dict):
         for k, v in t.items():
-            out.append("%s%s- %s:\n" % (indent, '  ' * (depth + 1), k))
+            out.append("%s%s- %s:\n" % (indent, "  " * (depth + 1), k))
             out.append(prettify_parsetree(v, indent, depth + 2))
     elif isinstance(t, list):
         for e in t:
             out.append(prettify_parsetree(e, indent, depth + 1))
     else:
-        out.append("%s%s- %r\n" % (indent, '  ' * depth, t))
+        out.append("%s%s- %r\n" % (indent, "  " * depth, t))
     return "".join(out)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from pyparsing import Word, nums
     import sys
 
     Number = Word(nums)
     Number.setParseAction(lambda x: int(x[0]))
-    Plus = Comp('plus', Param('a', Number) + '+' + Param('b', Number))
+    Plus = Comp("plus", Param("a", Number) + "+" + Param("b", Number))
     Plus.setEvalFn(lambda self, ctx: self.a + self.b)
 
     r = Plus.parseString(sys.argv[1])

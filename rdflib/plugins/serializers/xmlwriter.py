@@ -1,19 +1,15 @@
 import codecs
 from xml.sax.saxutils import quoteattr, escape
 
-__all__ = ['XMLWriter']
+__all__ = ["XMLWriter"]
 
-ESCAPE_ENTITIES = {
-    '\r': '&#13;'
-}
+ESCAPE_ENTITIES = {"\r": "&#13;"}
 
 
 class XMLWriter(object):
-    def __init__(self, stream, namespace_manager, encoding=None,
-                 decl=1, extra_ns=None):
-        encoding = encoding or 'utf-8'
-        encoder, decoder, stream_reader, stream_writer = \
-            codecs.lookup(encoding)
+    def __init__(self, stream, namespace_manager, encoding=None, decl=1, extra_ns=None):
+        encoding = encoding or "utf-8"
+        encoder, decoder, stream_reader, stream_writer = codecs.lookup(encoding)
         self.stream = stream = stream_writer(stream)
         if decl:
             stream.write('<?xml version="1.0" encoding="%s"?>' % encoding)
@@ -24,6 +20,7 @@ class XMLWriter(object):
 
     def __get_indent(self):
         return "  " * len(self.element_stack)
+
     indent = property(__get_indent)
 
     def __close_start_tag(self):
@@ -103,8 +100,8 @@ class XMLWriter(object):
         for pre, ns in self.extra_ns.items():
             if uri.startswith(ns):
                 if pre != "":
-                    return ":".join(pre, uri[len(ns):])
+                    return ":".join(pre, uri[len(ns) :])
                 else:
-                    return uri[len(ns):]
+                    return uri[len(ns) :]
 
         return self.nm.qname_strict(uri)

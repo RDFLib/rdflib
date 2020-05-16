@@ -3,10 +3,9 @@ Notation 3 (N3) RDF graph serializer for RDFLib.
 """
 from rdflib.graph import Graph
 from rdflib.namespace import Namespace, OWL
-from rdflib.plugins.serializers.turtle import (
-    TurtleSerializer, SUBJECT, OBJECT)
+from rdflib.plugins.serializers.turtle import TurtleSerializer, SUBJECT, OBJECT
 
-__all__ = ['N3Serializer']
+__all__ = ["N3Serializer"]
 
 SWAP_LOG = Namespace("http://www.w3.org/2000/10/swap/log#")
 
@@ -17,10 +16,7 @@ class N3Serializer(TurtleSerializer):
 
     def __init__(self, store, parent=None):
         super(N3Serializer, self).__init__(store)
-        self.keywords.update({
-            OWL.sameAs: '=',
-            SWAP_LOG.implies: '=>'
-        })
+        self.keywords.update({OWL.sameAs: "=", SWAP_LOG.implies: "=>"})
         self.parent = parent
 
     def reset(self):
@@ -33,8 +29,9 @@ class N3Serializer(TurtleSerializer):
             self.parent.subjectDone(subject)
 
     def isDone(self, subject):
-        return (super(N3Serializer, self).isDone(subject)
-                and (not self.parent or self.parent.isDone(subject)))
+        return super(N3Serializer, self).isDone(subject) and (
+            not self.parent or self.parent.isDone(subject)
+        )
 
     def startDocument(self):
         super(N3Serializer, self).startDocument()
@@ -88,8 +85,7 @@ class N3Serializer(TurtleSerializer):
         properties = self.buildPredicateHash(subject)
         if len(properties) == 0:
             return False
-        return (self.s_clause(subject)
-                or super(N3Serializer, self).statement(subject))
+        return self.s_clause(subject) or super(N3Serializer, self).statement(subject)
 
     def path(self, node, position, newline=False):
         if not self.p_clause(node, position):
@@ -97,10 +93,10 @@ class N3Serializer(TurtleSerializer):
 
     def s_clause(self, subject):
         if isinstance(subject, Graph):
-            self.write('\n' + self.indent())
+            self.write("\n" + self.indent())
             self.p_clause(subject, SUBJECT)
             self.predicateList(subject)
-            self.write(' .')
+            self.write(" .")
             return True
         else:
             return False
@@ -109,13 +105,13 @@ class N3Serializer(TurtleSerializer):
         if isinstance(node, Graph):
             self.subjectDone(node)
             if position is OBJECT:
-                self.write(' ')
-            self.write('{')
+                self.write(" ")
+            self.write("{")
             self.depth += 1
             serializer = N3Serializer(node, parent=self)
             serializer.serialize(self.stream)
             self.depth -= 1
-            self.write(self.indent() + '}')
+            self.write(self.indent() + "}")
             return True
         else:
             return False

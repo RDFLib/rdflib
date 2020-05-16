@@ -8,15 +8,17 @@ from urllib.request import pathname2url
 
 
 def bb(u):
-    return u.encode('utf-8')
+    return u.encode("utf-8")
 
 
 try:
     from bsddb import db
+
     has_bsddb = True
 except ImportError:
     try:
         from bsddb3 import db
+
         has_bsddb = True
     except ImportError:
         has_bsddb = False
@@ -36,7 +38,7 @@ if has_bsddb:
 
 logger = logging.getLogger(__name__)
 
-__all__ = ['Sleepycat']
+__all__ = ["Sleepycat"]
 
 
 class Sleepycat(Store):
@@ -48,8 +50,7 @@ class Sleepycat(Store):
 
     def __init__(self, configuration=None, identifier=None):
         if not has_bsddb:
-            raise ImportError(
-                "Unable to import bsddb/bsddb3, store is unusable.")
+            raise ImportError("Unable to import bsddb/bsddb3, store is unusable.")
         self.__open = False
         self.__identifier = identifier
         super(Sleepycat, self).__init__(configuration)
@@ -58,6 +59,7 @@ class Sleepycat(Store):
 
     def __get_identifier(self):
         return self.__identifier
+
     identifier = property(__get_identifier)
 
     def _init_db_environment(self, homeDir, create=True):
@@ -108,11 +110,13 @@ class Sleepycat(Store):
         dbsetflags = 0
 
         # create and open the DBs
-        self.__indicies = [None, ] * 3
-        self.__indicies_info = [None, ] * 3
+        self.__indicies = [None,] * 3
+        self.__indicies_info = [None,] * 3
         for i in range(0, 3):
-            index_name = to_key_func(
-                i)(("s".encode("latin-1"), "p".encode("latin-1"), "o".encode("latin-1")), "c".encode("latin-1")).decode()
+            index_name = to_key_func(i)(
+                ("s".encode("latin-1"), "p".encode("latin-1"), "o".encode("latin-1")),
+                "c".encode("latin-1"),
+            ).decode()
             index = db.DB(db_env)
             index.set_flags(dbsetflags)
             index.open(index_name, dbname, dbtype, dbopenflags, dbmode)
@@ -148,13 +152,15 @@ class Sleepycat(Store):
                         yield triple[i % 3]
                         i += 1
                     yield ""
+
                 return get_prefix
 
             lookup[i] = (
                 self.__indicies[start],
                 get_prefix_func(start, start + len),
                 from_key_func(start),
-                results_from_key_func(start, self._from_string))
+                results_from_key_func(start, self._from_string),
+            )
 
         self.__lookup_dict = lookup
 
@@ -187,6 +193,7 @@ class Sleepycat(Store):
 
     def __sync_run(self):
         from time import sleep, time
+
         try:
             min_seconds, max_seconds = 10, 300
             while self.__open:
@@ -194,12 +201,11 @@ class Sleepycat(Store):
                     t0 = t1 = time()
                     self.__needs_sync = False
                     while self.__open:
-                        sleep(.1)
+                        sleep(0.1)
                         if self.__needs_sync:
                             t1 = time()
                             self.__needs_sync = False
-                        if time() - t1 > min_seconds \
-                                or time() - t0 > max_seconds:
+                        if time() - t1 > min_seconds or time() - t0 > max_seconds:
                             self.__needs_sync = False
                             logger.debug("sync")
                             self.sync()
@@ -254,7 +260,8 @@ class Sleepycat(Store):
             self.__contexts.put(bb(c), "", txn=txn)
 
             contexts_value = cspo.get(
-                bb("%s^%s^%s^%s^" % ("", s, p, o)), txn=txn) or "".encode("latin-1")
+                bb("%s^%s^%s^%s^" % ("", s, p, o)), txn=txn
+            ) or "".encode("latin-1")
             contexts = set(contexts_value.split("^".encode("latin-1")))
             contexts.add(bb(c))
             contexts_value = "^".encode("latin-1").join(contexts)
@@ -264,12 +271,9 @@ class Sleepycat(Store):
             cpos.put(bb("%s^%s^%s^%s^" % (c, p, o, s)), "", txn=txn)
             cosp.put(bb("%s^%s^%s^%s^" % (c, o, s, p)), "", txn=txn)
             if not quoted:
-                cspo.put(bb(
-                    "%s^%s^%s^%s^" % ("", s, p, o)), contexts_value, txn=txn)
-                cpos.put(bb(
-                    "%s^%s^%s^%s^" % ("", p, o, s)), contexts_value, txn=txn)
-                cosp.put(bb(
-                    "%s^%s^%s^%s^" % ("", o, s, p)), contexts_value, txn=txn)
+                cspo.put(bb("%s^%s^%s^%s^" % ("", s, p, o)), contexts_value, txn=txn)
+                cpos.put(bb("%s^%s^%s^%s^" % ("", p, o, s)), contexts_value, txn=txn)
+                cosp.put(bb("%s^%s^%s^%s^" % ("", o, s, p)), contexts_value, txn=txn)
 
             self.__needs_sync = True
 
@@ -277,7 +281,11 @@ class Sleepycat(Store):
         s, p, o = spo
         cspo, cpos, cosp = self.__indicies
         contexts_value = cspo.get(
-            "^".encode("latin-1").join(["".encode("latin-1"), s, p, o, "".encode("latin-1")]), txn=txn) or "".encode("latin-1")
+            "^".encode("latin-1").join(
+                ["".encode("latin-1"), s, p, o, "".encode("latin-1")]
+            ),
+            txn=txn,
+        ) or "".encode("latin-1")
         contexts = set(contexts_value.split("^".encode("latin-1")))
         contexts.discard(c)
         contexts_value = "^".encode("latin-1").join(contexts)
@@ -286,7 +294,11 @@ class Sleepycat(Store):
         if not quoted:
             if contexts_value:
                 for i, _to_key, _from_key in self.__indicies_info:
-                    i.put(_to_key((s, p, o), "".encode("latin-1")), contexts_value, txn=txn)
+                    i.put(
+                        _to_key((s, p, o), "".encode("latin-1")),
+                        contexts_value,
+                        txn=txn,
+                    )
             else:
                 for i, _to_key, _from_key in self.__indicies_info:
                     try:
@@ -304,23 +316,25 @@ class Sleepycat(Store):
             if context == self:
                 context = None
 
-        if subject is not None \
-                and predicate is not None \
-                and object is not None \
-                and context is not None:
+        if (
+            subject is not None
+            and predicate is not None
+            and object is not None
+            and context is not None
+        ):
             s = _to_string(subject, txn=txn)
             p = _to_string(predicate, txn=txn)
             o = _to_string(object, txn=txn)
             c = _to_string(context, txn=txn)
-            value = self.__indicies[0].get(bb("%s^%s^%s^%s^" %
-                                              (c, s, p, o)), txn=txn)
+            value = self.__indicies[0].get(bb("%s^%s^%s^%s^" % (c, s, p, o)), txn=txn)
             if value is not None:
                 self.__remove((bb(s), bb(p), bb(o)), bb(c), txn=txn)
                 self.__needs_sync = True
         else:
             cspo, cpos, cosp = self.__indicies
             index, prefix, from_key, results_from_key = self.__lookup(
-                (subject, predicate, object), context, txn=txn)
+                (subject, predicate, object), context, txn=txn
+            )
 
             cursor = index.cursor(txn=txn)
             try:
@@ -336,7 +350,7 @@ class Sleepycat(Store):
                 try:
                     cursor.set_range(key)
                     # Hack to stop 2to3 converting this to next(cursor)
-                    current = getattr(cursor, 'next')()
+                    current = getattr(cursor, "next")()
                 except db.DBNotFoundError:
                     current = None
                 cursor.close()
@@ -362,7 +376,8 @@ class Sleepycat(Store):
                     # remove((None, None, None), c)
                     try:
                         self.__contexts.delete(
-                            bb(_to_string(context, txn=txn)), txn=txn)
+                            bb(_to_string(context, txn=txn)), txn=txn
+                        )
                     except db.DBNotFoundError:
                         pass
 
@@ -380,7 +395,8 @@ class Sleepycat(Store):
 
         # _from_string = self._from_string ## UNUSED
         index, prefix, from_key, results_from_key = self.__lookup(
-            (subject, predicate, object), context, txn=txn)
+            (subject, predicate, object), context, txn=txn
+        )
 
         cursor = index.cursor(txn=txn)
         try:
@@ -394,14 +410,13 @@ class Sleepycat(Store):
             try:
                 cursor.set_range(key)
                 # Cheap hack so 2to3 doesn't convert to next(cursor)
-                current = getattr(cursor, 'next')()
+                current = getattr(cursor, "next")()
             except db.DBNotFoundError:
                 current = None
             cursor.close()
             if key and key.startswith(prefix):
                 contexts_value = index.get(key, txn=txn)
-                yield results_from_key(
-                    key, subject, predicate, object, contexts_value)
+                yield results_from_key(key, subject, predicate, object, contexts_value)
             else:
                 break
 
@@ -425,7 +440,7 @@ class Sleepycat(Store):
             if key.startswith(prefix):
                 count += 1
                 # Hack to stop 2to3 converting this to next(cursor)
-                current = getattr(cursor, 'next')()
+                current = getattr(cursor, "next")()
             else:
                 break
         cursor.close()
@@ -444,14 +459,14 @@ class Sleepycat(Store):
         prefix = prefix.encode("utf-8")
         ns = self.__namespace.get(prefix, None)
         if ns is not None:
-            return URIRef(ns.decode('utf-8'))
+            return URIRef(ns.decode("utf-8"))
         return None
 
     def prefix(self, namespace):
         namespace = namespace.encode("utf-8")
         prefix = self.__prefix.get(namespace, None)
         if prefix is not None:
-            return prefix.decode('utf-8')
+            return prefix.decode("utf-8")
         return None
 
     def namespaces(self):
@@ -460,9 +475,9 @@ class Sleepycat(Store):
         current = cursor.first()
         while current:
             prefix, namespace = current
-            results.append((prefix.decode('utf-8'), namespace.decode('utf-8')))
+            results.append((prefix.decode("utf-8"), namespace.decode("utf-8")))
             # Hack to stop 2to3 converting this to next(cursor)
-            current = getattr(cursor, 'next')()
+            current = getattr(cursor, "next")()
         cursor.close()
         for prefix, namespace in results:
             yield prefix, URIRef(namespace)
@@ -476,8 +491,7 @@ class Sleepycat(Store):
             s = _to_string(s)
             p = _to_string(p)
             o = _to_string(o)
-            contexts = self.__indicies[0].get(bb(
-                "%s^%s^%s^%s^" % ("", s, p, o)))
+            contexts = self.__indicies[0].get(bb("%s^%s^%s^%s^" % ("", s, p, o)))
             if contexts:
                 for c in contexts.split("^".encode("latin-1")):
                     if c:
@@ -495,7 +509,7 @@ class Sleepycat(Store):
                 try:
                     cursor.set_range(key)
                     # Hack to stop 2to3 converting this to next(cursor)
-                    current = getattr(cursor, 'next')()
+                    current = getattr(cursor, "next")()
                 except db.DBNotFoundError:
                     current = None
                 cursor.close()
@@ -544,8 +558,7 @@ class Sleepycat(Store):
         index, prefix_func, from_key, results_from_key = self.__lookup_dict[i]
         # print (subject, predicate, object), context, prefix_func, index
         # #DEBUG
-        prefix = bb(
-            "^".join(prefix_func((subject, predicate, object), context)))
+        prefix = bb("^".join(prefix_func((subject, predicate, object), context)))
         return index, prefix, from_key, results_from_key
 
 
@@ -553,10 +566,15 @@ def to_key_func(i):
     def to_key(triple, context):
         "Takes a string; returns key"
         return "^".encode("latin-1").join(
-            (context,
-             triple[i % 3],
-             triple[(i + 1) % 3],
-             triple[(i + 2) % 3], "".encode("latin-1")))  # "" to tac on the trailing ^
+            (
+                context,
+                triple[i % 3],
+                triple[(i + 1) % 3],
+                triple[(i + 2) % 3],
+                "".encode("latin-1"),
+            )
+        )  # "" to tac on the trailing ^
+
     return to_key
 
 
@@ -564,11 +582,13 @@ def from_key_func(i):
     def from_key(key):
         "Takes a key; returns string"
         parts = key.split("^".encode("latin-1"))
-        return \
-            parts[0], \
-            parts[(3 - i + 0) % 3 + 1], \
-            parts[(3 - i + 1) % 3 + 1], \
-            parts[(3 - i + 2) % 3 + 1]
+        return (
+            parts[0],
+            parts[(3 - i + 0) % 3 + 1],
+            parts[(3 - i + 1) % 3 + 1],
+            parts[(3 - i + 2) % 3 + 1],
+        )
+
     return from_key
 
 
@@ -590,8 +610,11 @@ def results_from_key_func(i, from_string):
             o = from_string(parts[(3 - i + 2) % 3 + 1])
         else:
             o = object
-        return (s, p, o), (
-            from_string(c) for c in contexts_value.split("^".encode("latin-1")) if c)
+        return (
+            (s, p, o),
+            (from_string(c) for c in contexts_value.split("^".encode("latin-1")) if c),
+        )
+
     return from_key
 
 

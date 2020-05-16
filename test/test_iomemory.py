@@ -1,4 +1,3 @@
-
 """
 
 Iteration and update conflict with set based IOMemory store
@@ -63,6 +62,6 @@ def test_concurrent2():
     assert i == n
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_concurrent1()
     test_concurrent2()

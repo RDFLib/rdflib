@@ -24,7 +24,7 @@ import rdflib
 from rdflib import RDF, RDFS
 from rdflib.namespace import split_uri
 
-__all__ = ['CSV2RDF']
+__all__ = ["CSV2RDF"]
 
 HELP = """
 csv2rdf.py \
@@ -124,22 +124,20 @@ def index(l, i):
 
 def csv_reader(csv_data, dialect=csv.excel, **kwargs):
 
-    csv_reader = csv.reader(csv_data,
-                            dialect=dialect, **kwargs)
+    csv_reader = csv.reader(csv_data, dialect=dialect, **kwargs)
     for row in csv_reader:
         # decode UTF-8 back to Unicode, cell by cell:
-        yield [str(cell, 'utf-8', errors='replace') for cell in row]
+        yield [str(cell, "utf-8", errors="replace") for cell in row]
 
 
 def prefixuri(x, prefix, class_=None):
     if prefix:
-        r = rdflib.URIRef(
-            prefix + quote(
-                x.encode("utf8").replace(" ", "_"), safe=""))
+        r = rdflib.URIRef(prefix + quote(x.encode("utf8").replace(" ", "_"), safe=""))
     else:
         r = rdflib.URIRef(x)
     uris[x] = (r, class_)
     return r
+
 
 # meta-language for config
 
@@ -235,8 +233,7 @@ class NodeSplit(NodeMaker):
             self.f = rdflib.Literal
         if not callable(self.f):
             raise Exception("Function passed to split is not callable!")
-        return [
-            self.f(y.strip()) for y in x.split(self.sep) if y.strip() != ""]
+        return [self.f(y.strip()) for y in x.split(self.sep) if y.strip() != ""]
 
     def range(self):
         if self.f and isinstance(self.f, NodeMaker):
@@ -283,16 +280,17 @@ def _config_split(sep=None, f=None):
     return NodeSplit(sep, f)
 
 
-config_functions = {"ignore": _config_ignore,
-                    "uri": _config_uri,
-                    "literal": _config_literal,
-                    "float": _config_float,
-                    "int": _config_int,
-                    "date": _config_date,
-                    "split": _config_split,
-                    "replace": _config_replace,
-                    "bool": _config_bool,
-                    }
+config_functions = {
+    "ignore": _config_ignore,
+    "uri": _config_uri,
+    "literal": _config_literal,
+    "float": _config_float,
+    "int": _config_int,
+    "date": _config_date,
+    "split": _config_split,
+    "replace": _config_replace,
+    "bool": _config_bool,
+}
 
 
 def column(v):
@@ -307,7 +305,7 @@ class CSV2RDF(object):
         self.CLASS = None
         self.BASE = None
         self.PROPBASE = None
-        self.IDENT = 'auto'
+        self.IDENT = "auto"
         self.LABEL = None
         self.DEFINECLASS = False
         self.SKIP = 0
@@ -317,7 +315,7 @@ class CSV2RDF(object):
         self.COLUMNS = {}
         self.PROPS = {}
 
-        self.OUT = codecs.getwriter("utf-8")(sys.stdout, errors='replace')
+        self.OUT = codecs.getwriter("utf-8")(sys.stdout, errors="replace")
 
         self.triples = 0
 
@@ -340,8 +338,7 @@ class CSV2RDF(object):
             self.BASE = rdflib.Namespace("http://example.org/instances/")
 
         if not self.PROPBASE:
-            warnings.warn(
-                "No property base given, using http://example.org/property/")
+            warnings.warn("No property base given, using http://example.org/property/")
             self.PROPBASE = rdflib.Namespace("http://example.org/props/")
 
         # skip lines at the start
@@ -350,8 +347,7 @@ class CSV2RDF(object):
 
         # read header line
         header_labels = list(csvreader.next())
-        headers = dict(
-            enumerate([self.PROPBASE[toProperty(x)] for x in header_labels]))
+        headers = dict(enumerate([self.PROPBASE[toProperty(x)] for x in header_labels]))
         # override header properties if some are given
         for k, v in self.PROPS.items():
             headers[k] = v
@@ -364,27 +360,34 @@ class CSV2RDF(object):
                 h, l = headers[i], header_labels[i]
                 if h == "" or l == "":
                     continue
-                if self.COLUMNS.get(i, self.DEFAULT) == 'ignore':
+                if self.COLUMNS.get(i, self.DEFAULT) == "ignore":
                     continue
                 self.triple(h, RDF.type, RDF.Property)
                 self.triple(h, RDFS.label, rdflib.Literal(toPropertyLabel(l)))
                 self.triple(h, RDFS.domain, self.CLASS)
-                self.triple(h, RDFS.range,
-                            self.COLUMNS.get(i, default_node_make).range())
+                self.triple(
+                    h, RDFS.range, self.COLUMNS.get(i, default_node_make).range()
+                )
 
         rows = 0
         for l in csvreader:
             try:
-                if self.IDENT == 'auto':
+                if self.IDENT == "auto":
                     uri = self.BASE["%d" % rows]
                 else:
-                    uri = self.BASE["_".join([quote(x.encode(
-                        "utf8").replace(" ", "_"), safe="")
-                        for x in index(l, self.IDENT)])]
+                    uri = self.BASE[
+                        "_".join(
+                            [
+                                quote(x.encode("utf8").replace(" ", "_"), safe="")
+                                for x in index(l, self.IDENT)
+                            ]
+                        )
+                    ]
 
                 if self.LABEL:
-                    self.triple(uri, RDFS.label, rdflib.Literal(
-                        " ".join(index(l, self.LABEL))))
+                    self.triple(
+                        uri, RDFS.label, rdflib.Literal(" ".join(index(l, self.LABEL)))
+                    )
 
                 if self.CLASS:
                     # type triple
@@ -392,8 +395,8 @@ class CSV2RDF(object):
 
                 for i, x in enumerate(l):
                     x = x.strip()
-                    if x != '':
-                        if self.COLUMNS.get(i, self.DEFAULT) == 'ignore':
+                    if x != "":
+                        if self.COLUMNS.get(i, self.DEFAULT) == "ignore":
                             continue
                         try:
                             o = self.COLUMNS.get(i, rdflib.Literal)(x)
@@ -405,15 +408,17 @@ class CSV2RDF(object):
 
                         except Exception as e:
                             warnings.warn(
-                                "Could not process value for column " +
-                                "%d:%s in row %d, ignoring: %s " % (
-                                    i, headers[i], rows, e.message))
+                                "Could not process value for column "
+                                + "%d:%s in row %d, ignoring: %s "
+                                % (i, headers[i], rows, e.message)
+                            )
 
                 rows += 1
                 if rows % 100000 == 0:
                     sys.stderr.write(
-                        "%d rows, %d triples, elapsed %.2fs.\n" % (
-                            rows, self.triples, time.time() - start))
+                        "%d rows, %d triples, elapsed %.2fs.\n"
+                        % (rows, self.triples, time.time() - start)
+                    )
             except:
                 sys.stderr.write("Error processing line: %d\n" % rows)
                 raise
@@ -432,8 +437,7 @@ class CSV2RDF(object):
             self.triple(c, RDF.type, RDFS.Class)
 
         self.OUT.close()
-        sys.stderr.write(
-            "Converted %d rows into %d triples.\n" % (rows, self.triples))
+        sys.stderr.write("Converted %d rows into %d triples.\n" % (rows, self.triples))
         sys.stderr.write("Took %.2f seconds.\n" % (time.time() - start))
 
 
@@ -443,8 +447,19 @@ def main():
     opts, files = getopt.getopt(
         sys.argv[1:],
         "hc:b:p:i:o:Cf:l:s:d:D:",
-        ["out=", "base=", "delim=", "propbase=", "class=", "default="
-         "ident=", "label=", "skip=", "defineclass", "help"])
+        [
+            "out=",
+            "base=",
+            "delim=",
+            "propbase=",
+            "class=",
+            "default=" "ident=",
+            "label=",
+            "skip=",
+            "defineclass",
+            "help",
+        ],
+    )
     opts = dict(opts)
 
     if "-h" in opts or "--help" in opts:
@@ -534,9 +549,8 @@ def main():
     if csv2rdf.CLASS and ("-C" in opts or "--defineclass" in opts):
         csv2rdf.DEFINECLASS = True
 
-    csv2rdf.convert(
-        csv_reader(fileinput.input(files), delimiter=csv2rdf.DELIM))
+    csv2rdf.convert(csv_reader(fileinput.input(files), delimiter=csv2rdf.DELIM))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

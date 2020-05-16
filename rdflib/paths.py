@@ -1,6 +1,3 @@
-
-
-
 __doc__ = """
 
 This module implements the SPARQL 1.1 Property path operators, as
@@ -191,9 +188,9 @@ from rdflib.term import URIRef, Node
 
 # property paths
 
-ZeroOrMore = '*'
-OneOrMore = '+'
-ZeroOrOne = '?'
+ZeroOrMore = "*"
+OneOrMore = "+"
+ZeroOrOne = "?"
 
 
 class Path(object):
@@ -208,14 +205,16 @@ class Path(object):
 
     def __lt__(self, other):
         if not isinstance(other, (Path, Node)):
-            raise TypeError('unorderable types: %s() < %s()' % (
-                repr(self), repr(other)))
+            raise TypeError(
+                "unorderable types: %s() < %s()" % (repr(self), repr(other))
+            )
         return repr(self) < repr(other)
 
     def __le__(self, other):
         if not isinstance(other, (Path, Node)):
-            raise TypeError('unorderable types: %s() < %s()' % (
-                repr(self), repr(other)))
+            raise TypeError(
+                "unorderable types: %s() < %s()" % (repr(self), repr(other))
+            )
         return repr(self) <= repr(other)
 
     def __ne__(self, other):
@@ -229,7 +228,6 @@ class Path(object):
 
 
 class InvPath(Path):
-
     def __init__(self, arg):
         self.arg = arg
 
@@ -241,7 +239,7 @@ class InvPath(Path):
         return "Path(~%s)" % (self.arg,)
 
     def n3(self):
-        return '^%s' % self.arg.n3()
+        return "^%s" % self.arg.n3()
 
 
 class SequencePath(Path):
@@ -285,7 +283,7 @@ class SequencePath(Path):
         return "Path(%s)" % " / ".join(str(x) for x in self.args)
 
     def n3(self):
-        return '/'.join(a.n3() for a in self.args)
+        return "/".join(a.n3() for a in self.args)
 
 
 class AlternativePath(Path):
@@ -306,7 +304,7 @@ class AlternativePath(Path):
         return "Path(%s)" % " | ".join(str(x) for x in self.args)
 
     def n3(self):
-        return '|'.join(a.n3() for a in self.args)
+        return "|".join(a.n3() for a in self.args)
 
 
 class MulPath(Path):
@@ -324,7 +322,7 @@ class MulPath(Path):
             self.zero = False
             self.more = True
         else:
-            raise Exception('Unknown modifier %s' % mod)
+            raise Exception("Unknown modifier %s" % mod)
 
     def eval(self, graph, subj=None, obj=None, first=True):
         if self.zero and first:
@@ -387,7 +385,7 @@ class MulPath(Path):
                         f = list(_fwd(s, None, set()))
                         for s1, o1 in f:
                             assert s1 == s
-                            yield(s1, o1)
+                            yield (s1, o1)
 
         done = set()  # the spec does by defn. not allow duplicates
         if subj:
@@ -410,7 +408,7 @@ class MulPath(Path):
         return "Path(%s%s)" % (self.path, self.mod)
 
     def n3(self):
-        return '%s%s' % (self.path.n3(), self.mod)
+        return "%s%s" % (self.path.n3(), self.mod)
 
 
 class NegatedPath(Path):
@@ -421,8 +419,9 @@ class NegatedPath(Path):
             self.args = arg.args
         else:
             raise Exception(
-                'Can only negate URIRefs, InvPaths or ' +
-                'AlternativePaths, not: %s' % (arg,))
+                "Can only negate URIRefs, InvPaths or "
+                + "AlternativePaths, not: %s" % (arg,)
+            )
 
     def eval(self, graph, subj=None, obj=None):
         for s, p, o in graph.triples((subj, None, obj)):
@@ -434,7 +433,7 @@ class NegatedPath(Path):
                     if (o, a.arg, s) in graph:
                         break
                 else:
-                    raise Exception('Invalid path in NegatedPath: %s' % a)
+                    raise Exception("Invalid path in NegatedPath: %s" % a)
             else:
                 yield s, o
 
@@ -442,7 +441,7 @@ class NegatedPath(Path):
         return "Path(! %s)" % ",".join(str(x) for x in self.args)
 
     def n3(self):
-        return '!(%s)' % ('|'.join(self.args))
+        return "!(%s)" % ("|".join(self.args))
 
 
 class PathList(list):
@@ -454,7 +453,7 @@ def path_alternative(self, other):
     alternative path
     """
     if not isinstance(other, (URIRef, Path)):
-        raise Exception('Only URIRefs or Paths can be in paths!')
+        raise Exception("Only URIRefs or Paths can be in paths!")
     return AlternativePath(self, other)
 
 
@@ -463,7 +462,7 @@ def path_sequence(self, other):
     sequence path
     """
     if not isinstance(other, (URIRef, Path)):
-        raise Exception('Only URIRefs or Paths can be in paths!')
+        raise Exception("Only URIRefs or Paths can be in paths!")
     return SequencePath(self, other)
 
 
@@ -492,9 +491,10 @@ def neg_path(p):
     return NegatedPath(p)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     import doctest
+
     doctest.testmod()
 else:
     # monkey patch

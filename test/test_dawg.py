@@ -21,23 +21,21 @@ except:
             defaultdict.__init__(self, int)
 
         def most_common(self, N):
-            return [x[0] for x in sorted(self.items(),
-                                         key=itemgetter(1),
-                                         reverse=True)[:10]]
+            return [
+                x[0] for x in sorted(self.items(), key=itemgetter(1), reverse=True)[:10]
+            ]
 
 
 import datetime
 import isodate
 
 
-from rdflib import (
-    Dataset, Graph, URIRef, BNode)
+from rdflib import Dataset, Graph, URIRef, BNode
 from rdflib.query import Result
 from rdflib.compare import isomorphic
 
 from rdflib.plugins import sparql as rdflib_sparql_module
-from rdflib.plugins.sparql.algebra import (
-    pprintAlgebra, translateQuery, translateUpdate)
+from rdflib.plugins.sparql.algebra import pprintAlgebra, translateQuery, translateUpdate
 from rdflib.plugins.sparql.parser import parseQuery, parseUpdate
 from rdflib.plugins.sparql.results.rdfresults import RDFResultParser
 from rdflib.plugins.sparql.update import evalUpdate
@@ -52,12 +50,15 @@ from nose import SkipTest
 
 from .manifest import nose_tests, MF, UP
 from .earl import report, add_test
+
+
 def eq(a, b, msg):
-    return eq_(a, b, msg + ': (%r!=%r)' % (a, b))
+    return eq_(a, b, msg + ": (%r!=%r)" % (a, b))
 
 
 def setFlags():
     import rdflib
+
     # Several tests rely on lexical form of literals being kept!
     rdflib.NORMALIZE_LITERALS = False
 
@@ -70,6 +71,7 @@ def setFlags():
 
 def resetFlags():
     import rdflib
+
     # Several tests rely on lexical form of literals being kept!
     rdflib.NORMALIZE_LITERALS = True
 
@@ -114,8 +116,12 @@ def bopen_read_close(fn):
 
 try:
     with open("skiptests.list") as skip_tests_f:
-        skiptests = dict([(URIRef(x.strip().split(
-            "\t")[0]), x.strip().split("\t")[1]) for x in skip_tests_f])
+        skiptests = dict(
+            [
+                (URIRef(x.strip().split("\t")[0]), x.strip().split("\t")[1])
+                for x in skip_tests_f
+            ]
+        )
 except IOError:
     skiptests = set()
 
@@ -163,8 +169,8 @@ def bindingsCompatible(a, b):
                 else:
                     m[b1] = y[v1]
             else:
-                 # if y[v1]!=b1:
-                 #    return False
+                # if y[v1]!=b1:
+                #    return False
                 try:
                     if y[v1].neq(b1):
                         return False
@@ -191,9 +197,14 @@ def pp_binding(solutions):
     """
     Pretty print a single binding - for less eye-strain when debugging
     """
-    return "\n[" + ",\n\t".join("{" + ", ".join("%s:%s" % (
-        x[0], x[1].n3()) for x in bindings.items()) + "}"
-        for bindings in solutions) + "]\n"
+    return (
+        "\n["
+        + ",\n\t".join(
+            "{" + ", ".join("%s:%s" % (x[0], x[1].n3()) for x in bindings.items()) + "}"
+            for bindings in solutions
+        )
+        + "]\n"
+    )
 
 
 @nottest
@@ -246,17 +257,21 @@ def update_test(t):
             for x, l in resgraphdata:
                 resg.load(x, publicID=URIRef(l), format=_fmt(x))
 
-        eq(set(x.identifier for x in g.contexts() if x != g.default_context),
-           set(x.identifier for x in resg.contexts()
-               if x != resg.default_context), 'named graphs in datasets do not match')
-        assert isomorphic(g.default_context, resg.default_context), \
-            'Default graphs are not isomorphic'
+        eq(
+            set(x.identifier for x in g.contexts() if x != g.default_context),
+            set(x.identifier for x in resg.contexts() if x != resg.default_context),
+            "named graphs in datasets do not match",
+        )
+        assert isomorphic(
+            g.default_context, resg.default_context
+        ), "Default graphs are not isomorphic"
 
         for x in g.contexts():
             if x == g.default_context:
                 continue
-            assert isomorphic(x, resg.get_context(x.identifier)), \
+            assert isomorphic(x, resg.get_context(x.identifier)), (
                 "Graphs with ID %s are not isomorphic" % x.identifier
+            )
 
     except Exception as e:
 
@@ -305,7 +320,7 @@ def update_test(t):
                         print(bopen_read_close(x[7:]))
 
             print("------------- MY RESULT ----------")
-            print(g.serialize(format='trig'))
+            print(g.serialize(format="trig"))
 
             try:
                 pq = translateUpdate(parseUpdate(bopen_read_close(query[7:])))
@@ -318,6 +333,7 @@ def update_test(t):
             print(decodeStringEscape(str(e)))
 
             import pdb
+
             pdb.post_mortem(sys.exc_info()[2])
         raise
 
@@ -332,7 +348,7 @@ def query_test(t):
     if uri in skiptests:
         raise SkipTest()
 
-    def skip(reason='(none)'):
+    def skip(reason="(none)"):
         print("Skipping %s from now on." % uri)
         with bopen("skiptests.list", "a") as f:
             f.write("%s\t%s\n" % (uri, reason))
@@ -350,91 +366,102 @@ def query_test(t):
             # no result - syntax test
 
             if syntax:
-                translateQuery(parseQuery(
-                    bopen_read_close(query[7:])), base=urljoin(query, '.'))
+                translateQuery(
+                    parseQuery(bopen_read_close(query[7:])), base=urljoin(query, ".")
+                )
             else:
                 # negative syntax test
                 try:
-                    translateQuery(parseQuery(
-                        bopen_read_close(query[7:])), base=urljoin(query, '.'))
+                    translateQuery(
+                        parseQuery(bopen_read_close(query[7:])),
+                        base=urljoin(query, "."),
+                    )
 
-                    assert False, 'Query should not have parsed!'
+                    assert False, "Query should not have parsed!"
                 except:
                     pass  # it's fine - the query should not parse
             return
 
         # eval test - carry out query
-        res2 = g.query(bopen_read_close(query[7:]), base=urljoin(query, '.'))
+        res2 = g.query(bopen_read_close(query[7:]), base=urljoin(query, "."))
 
-        if resfile.endswith('ttl'):
+        if resfile.endswith("ttl"):
             resg = Graph()
-            resg.load(resfile, format='turtle', publicID=resfile)
+            resg.load(resfile, format="turtle", publicID=resfile)
             res = RDFResultParser().parse(resg)
-        elif resfile.endswith('rdf'):
+        elif resfile.endswith("rdf"):
             resg = Graph()
             resg.load(resfile, publicID=resfile)
             res = RDFResultParser().parse(resg)
         else:
             with bopen(resfile[7:]) as f:
-                if resfile.endswith('srj'):
-                    res = Result.parse(f, format='json')
-                elif resfile.endswith('tsv'):
-                    res = Result.parse(f, format='tsv')
+                if resfile.endswith("srj"):
+                    res = Result.parse(f, format="json")
+                elif resfile.endswith("tsv"):
+                    res = Result.parse(f, format="tsv")
 
-                elif resfile.endswith('csv'):
-                    res = Result.parse(f, format='csv')
+                elif resfile.endswith("csv"):
+                    res = Result.parse(f, format="csv")
 
                     # CSV is lossy, round-trip our own resultset to
                     # lose the same info :)
 
                     # write bytes, read strings...
                     s = BytesIO()
-                    res2.serialize(s, format='csv')
+                    res2.serialize(s, format="csv")
                     s.seek(0)
-                    res2 = Result.parse(s, format='csv')
+                    res2 = Result.parse(s, format="csv")
                     s.close()
 
                 else:
-                    res = Result.parse(f, format='xml')
+                    res = Result.parse(f, format="xml")
 
         if not DETAILEDASSERT:
-            eq(res.type, res2.type, 'Types do not match')
-            if res.type == 'SELECT':
-                eq(set(res.vars), set(res2.vars), 'Vars do not match')
-                comp = bindingsCompatible(
-                    set(res),
-                    set(res2)
-                )
-                assert comp, 'Bindings do not match'
-            elif res.type == 'ASK':
-                eq(res.askAnswer, res2.askAnswer, 'Ask answer does not match')
-            elif res.type in ('DESCRIBE', 'CONSTRUCT'):
-                assert isomorphic(
-                    res.graph, res2.graph), 'graphs are not isomorphic!'
+            eq(res.type, res2.type, "Types do not match")
+            if res.type == "SELECT":
+                eq(set(res.vars), set(res2.vars), "Vars do not match")
+                comp = bindingsCompatible(set(res), set(res2))
+                assert comp, "Bindings do not match"
+            elif res.type == "ASK":
+                eq(res.askAnswer, res2.askAnswer, "Ask answer does not match")
+            elif res.type in ("DESCRIBE", "CONSTRUCT"):
+                assert isomorphic(res.graph, res2.graph), "graphs are not isomorphic!"
             else:
-                raise Exception('Unknown result type: %s' % res.type)
+                raise Exception("Unknown result type: %s" % res.type)
         else:
-            eq(res.type, res2.type,
-               'Types do not match: %r != %r' % (res.type, res2.type))
-            if res.type == 'SELECT':
-                eq(set(res.vars),
-                   set(res2.vars), 'Vars do not match: %r != %r' % (
-                   set(res.vars), set(res2.vars)))
-                assert bindingsCompatible(
-                    set(res),
-                    set(res2)
-                ), 'Bindings do not match: \nexpected:\n%s\n!=\ngot:\n%s' % (
-                    res.serialize(format='txt', namespace_manager=g.namespace_manager),
-                    res2.serialize(format='txt', namespace_manager=g.namespace_manager))
-            elif res.type == 'ASK':
-                eq(res.askAnswer,
-                   res2.askAnswer, "Ask answer does not match: %r != %r" % (
-                       res.askAnswer, res2.askAnswer))
-            elif res.type in ('DESCRIBE', 'CONSTRUCT'):
-                assert isomorphic(
-                    res.graph, res2.graph), 'graphs are not isomorphic!'
+            eq(
+                res.type,
+                res2.type,
+                "Types do not match: %r != %r" % (res.type, res2.type),
+            )
+            if res.type == "SELECT":
+                eq(
+                    set(res.vars),
+                    set(res2.vars),
+                    "Vars do not match: %r != %r" % (set(res.vars), set(res2.vars)),
+                )
+                assert bindingsCompatible(set(res), set(res2)), (
+                    "Bindings do not match: \nexpected:\n%s\n!=\ngot:\n%s"
+                    % (
+                        res.serialize(
+                            format="txt", namespace_manager=g.namespace_manager
+                        ),
+                        res2.serialize(
+                            format="txt", namespace_manager=g.namespace_manager
+                        ),
+                    )
+                )
+            elif res.type == "ASK":
+                eq(
+                    res.askAnswer,
+                    res2.askAnswer,
+                    "Ask answer does not match: %r != %r"
+                    % (res.askAnswer, res2.askAnswer),
+                )
+            elif res.type in ("DESCRIBE", "CONSTRUCT"):
+                assert isomorphic(res.graph, res2.graph), "graphs are not isomorphic!"
             else:
-                raise Exception('Unknown result type: %s' % res.type)
+                raise Exception("Unknown result type: %s" % res.type)
 
     except Exception as e:
 
@@ -478,13 +505,14 @@ def query_test(t):
             try:
                 pq = parseQuery(bopen_read_close(query[7:]))
                 print("----------------- Parsed ------------------")
-                pprintAlgebra(translateQuery(pq, base=urljoin(query, '.')))
+                pprintAlgebra(translateQuery(pq, base=urljoin(query, ".")))
             except:
                 print("(parser error)")
 
             print(decodeStringEscape(str(e)))
 
             import pdb
+
             pdb.post_mortem(sys.exc_info()[2])
             # pdb.set_trace()
             # nose.tools.set_trace()
@@ -496,7 +524,6 @@ testers = {
     MF.UpdateEvaluationTest: update_test,
     MF.PositiveUpdateSyntaxTest11: update_test,
     MF.NegativeUpdateSyntaxTest11: update_test,
-
     MF.QueryEvaluationTest: query_test,
     MF.NegativeSyntaxTest11: query_test,
     MF.PositiveSyntaxTest11: query_test,
@@ -523,10 +550,11 @@ def test_dawg():
     resetFlags()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     import sys
     import time
+
     start = time.time()
     if len(sys.argv) > 1:
         NAME = sys.argv[1]
@@ -561,6 +589,7 @@ if __name__ == '__main__':
         except:
             add_test(t[0], "failed", "error")
             import traceback
+
             traceback.print_exc()
             sys.stderr.write("%s\n" % t[0])
 
@@ -594,12 +623,13 @@ if __name__ == '__main__':
     e_sum = sum(errors.values())
 
     if success + f_sum + e_sum + skip != i:
-        print("(Something is wrong, %d!=%d)" % (
-            success + f_sum + e_sum + skip, i))
+        print("(Something is wrong, %d!=%d)" % (success + f_sum + e_sum + skip, i))
 
-    print("\n%d tests, %d passed, %d failed, %d errors, \
-          %d skipped (%.2f%% success)" % (
-        i, success, f_sum, e_sum, skip, 100. * success / i))
+    print(
+        "\n%d tests, %d passed, %d failed, %d errors, \
+          %d skipped (%.2f%% success)"
+        % (i, success, f_sum, e_sum, skip, 100.0 * success / i)
+    )
     print("Took %.2fs" % (time.time() - start))
 
     if not NAME:
@@ -609,12 +639,12 @@ if __name__ == '__main__':
         with open("testruns.txt", "a") as tf:
             tf.write(
                 "%s\n%d tests, %d passed, %d failed, %d errors, %d "
-                "skipped (%.2f%% success)\n\n" % (
-                    now, i, success, f_sum, e_sum, skip, 100. * success / i)
+                "skipped (%.2f%% success)\n\n"
+                % (now, i, success, f_sum, e_sum, skip, 100.0 * success / i)
             )
 
-        earl_report = 'test_reports/rdflib_sparql-%s.ttl' % now.replace(":", "")
+        earl_report = "test_reports/rdflib_sparql-%s.ttl" % now.replace(":", "")
 
-        report.serialize(earl_report, format='n3')
-        report.serialize('test_reports/rdflib_sparql-latest.ttl', format='n3')
+        report.serialize(earl_report, format="n3")
+        report.serialize("test_reports/rdflib_sparql-latest.ttl", format="n3")
         print("Wrote EARL-report to '%s'" % earl_report)

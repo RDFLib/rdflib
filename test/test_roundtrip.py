@@ -4,8 +4,10 @@ import rdflib.compare
 
 try:
     from .test_nt_suite import all_nt_files
+
     assert all_nt_files
     from .test_n3_suite import all_n3_files
+
     assert all_n3_files
 except:
     from test.test_nt_suite import all_nt_files
@@ -28,10 +30,13 @@ tests roundtripping through rdf/xml with only the literals-02 file
 
 
 SKIP = [
-    ('xml', 'test/n3/n3-writer-test-29.n3'),  # has predicates that cannot be shortened to strict qnames
-    ('xml', 'test/nt/qname-02.nt'),  # uses a property that cannot be qname'd
-    ('trix', 'test/n3/strquot.n3'),  # contains charachters forbidden by the xml spec
-    ('xml', 'test/n3/strquot.n3'),  # contains charachters forbidden by the xml spec
+    (
+        "xml",
+        "test/n3/n3-writer-test-29.n3",
+    ),  # has predicates that cannot be shortened to strict qnames
+    ("xml", "test/nt/qname-02.nt"),  # uses a property that cannot be qname'd
+    ("trix", "test/n3/strquot.n3"),  # contains charachters forbidden by the xml spec
+    ("xml", "test/n3/strquot.n3"),  # contains charachters forbidden by the xml spec
 ]
 
 
@@ -78,11 +83,9 @@ def test_cases():
     global formats
     if not formats:
         serializers = set(
-            x.name for x in rdflib.plugin.plugins(
-                None, rdflib.plugin.Serializer))
-        parsers = set(
-            x.name for x in rdflib.plugin.plugins(
-                None, rdflib.plugin.Parser))
+            x.name for x in rdflib.plugin.plugins(None, rdflib.plugin.Serializer)
+        )
+        parsers = set(x.name for x in rdflib.plugin.plugins(None, rdflib.plugin.Parser))
         formats = parsers.intersection(serializers)
 
     for testfmt in formats:
@@ -97,15 +100,14 @@ def test_n3():
     global formats
     if not formats:
         serializers = set(
-            x.name for x in rdflib.plugin.plugins(
-                None, rdflib.plugin.Serializer))
-        parsers = set(
-            x.name for x in rdflib.plugin.plugins(
-                None, rdflib.plugin.Parser))
+            x.name for x in rdflib.plugin.plugins(None, rdflib.plugin.Serializer)
+        )
+        parsers = set(x.name for x in rdflib.plugin.plugins(None, rdflib.plugin.Parser))
         formats = parsers.intersection(serializers)
 
     for testfmt in formats:
-        if "/" in testfmt: continue # skip double testing
+        if "/" in testfmt:
+            continue  # skip double testing
         for f, infmt in all_n3_files():
             if (testfmt, f) not in SKIP:
                 yield roundtrip, (infmt, testfmt, f)
@@ -113,12 +115,13 @@ def test_n3():
 
 if __name__ == "__main__":
     import nose
+
     if len(sys.argv) == 1:
         nose.main(defaultTest=sys.argv[0])
     elif len(sys.argv) == 2:
         import test.test_roundtrip
+
         test.test_roundtrip.formats = [sys.argv[1]]
         nose.main(defaultTest=sys.argv[0], argv=sys.argv[:1])
     else:
-        roundtrip(
-            (sys.argv[2], sys.argv[1], sys.argv[3]), verbose=True)
+        roundtrip((sys.argv[2], sys.argv[1], sys.argv[3]), verbose=True)

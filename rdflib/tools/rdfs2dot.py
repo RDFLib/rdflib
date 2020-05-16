@@ -21,14 +21,52 @@ import collections
 from rdflib import XSD, RDF, RDFS
 
 
-XSDTERMS = [XSD[x] for x in (
-    "anyURI", "base64Binary", "boolean", "byte", "date", "dateTime", "decimal",
-    "double", "duration", "float", "gDay", "gMonth", "gMonthDay", "gYear",
-    "gYearMonth", "hexBinary", "ID", "IDREF", "IDREFS", "int", "integer",
-    "language", "long", "Name", "NCName", "negativeInteger", "NMTOKEN",
-    "NMTOKENS", "nonNegativeInteger", "nonPositiveInteger", "normalizedString",
-    "positiveInteger", "QName", "short", "string", "time", "token",
-    "unsignedByte", "unsignedInt", "unsignedLong", "unsignedShort")]
+XSDTERMS = [
+    XSD[x]
+    for x in (
+        "anyURI",
+        "base64Binary",
+        "boolean",
+        "byte",
+        "date",
+        "dateTime",
+        "decimal",
+        "double",
+        "duration",
+        "float",
+        "gDay",
+        "gMonth",
+        "gMonthDay",
+        "gYear",
+        "gYearMonth",
+        "hexBinary",
+        "ID",
+        "IDREF",
+        "IDREFS",
+        "int",
+        "integer",
+        "language",
+        "long",
+        "Name",
+        "NCName",
+        "negativeInteger",
+        "NMTOKEN",
+        "NMTOKENS",
+        "nonNegativeInteger",
+        "nonPositiveInteger",
+        "normalizedString",
+        "positiveInteger",
+        "QName",
+        "short",
+        "string",
+        "time",
+        "token",
+        "unsignedByte",
+        "unsignedInt",
+        "unsignedLong",
+        "unsignedShort",
+    )
+]
 
 EDGECOLOR = "blue"
 NODECOLOR = "black"
@@ -60,7 +98,7 @@ def rdfs2dot(g, stream, opts={}):
                 pass  # bnodes and some weird URIs cannot be split
         return l
 
-    stream.write(u"digraph { \n node [ fontname=\"DejaVu Sans\" ] ; \n")
+    stream.write(u'digraph { \n node [ fontname="DejaVu Sans" ] ; \n')
 
     for x in g.subjects(RDF.type, RDFS.Class):
         n = node(x)
@@ -72,7 +110,8 @@ def rdfs2dot(g, stream, opts={}):
 
     for x in g.subjects(RDF.type, RDF.Property):
         for a, b in itertools.product(
-                g.objects(x, RDFS.domain), g.objects(x, RDFS.range)):
+            g.objects(x, RDFS.domain), g.objects(x, RDFS.range)
+        ):
             if b in XSDTERMS or b == RDFS.Literal:
                 l = label(b, g)
                 if b == RDFS.Literal:
@@ -81,35 +120,42 @@ def rdfs2dot(g, stream, opts={}):
             else:
                 #            if a in nodes and b in nodes:
                 stream.write(
-                    "\t%s -> %s [ color=%s, label=\"%s\" ];\n" % (
-                        node(a), node(b), EDGECOLOR, label(x, g)))
+                    '\t%s -> %s [ color=%s, label="%s" ];\n'
+                    % (node(a), node(b), EDGECOLOR, label(x, g))
+                )
 
     for u, n in nodes.items():
         stream.write(u"# %s %s\n" % (u, n))
-        f = [u"<tr><td align='left'>%s</td><td>%s</td></tr>" %
-             x for x in sorted(fields[n])]
-        opstr = u"%s [ shape=none, color=%s label=< <table color='#666666'" + \
-                u" cellborder=\"0\" cellspacing='0' border=\"1\"><tr>" + \
-                u"<td colspan=\"2\" bgcolor='grey'><B>%s</B></td>" + \
-                u"</tr>%s</table> > ] \n"
+        f = [
+            u"<tr><td align='left'>%s</td><td>%s</td></tr>" % x
+            for x in sorted(fields[n])
+        ]
+        opstr = (
+            u"%s [ shape=none, color=%s label=< <table color='#666666'"
+            + u' cellborder="0" cellspacing=\'0\' border="1"><tr>'
+            + u"<td colspan=\"2\" bgcolor='grey'><B>%s</B></td>"
+            + u"</tr>%s</table> > ] \n"
+        )
         stream.write(opstr % (n, NODECOLOR, label(u, g), u"".join(f)))
 
     stream.write("}\n")
 
 
 def _help():
-    sys.stderr.write("""
+    sys.stderr.write(
+        """
 rdfs2dot.py [-f <format>] files...
 Read RDF files given on STDOUT, writes a graph of the RDFS schema in
 DOT language to stdout
 -f specifies parser to use, if not given,
 
-""")
+"""
+    )
 
 
 def main():
     rdflib.extras.cmdlineutils.main(rdfs2dot, _help)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

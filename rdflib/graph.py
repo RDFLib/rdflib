@@ -293,7 +293,9 @@ class Graph(Node):
     For more on named graphs, see: http://www.w3.org/2004/03/trix/
     """
 
-    def __init__(self, store="default", identifier=None, namespace_manager=None, base=None):
+    def __init__(
+        self, store="default", identifier=None, namespace_manager=None, base=None
+    ):
         super(Graph, self).__init__()
         self.base = base
         self.__identifier = identifier or BNode()
@@ -1496,7 +1498,9 @@ class ConjunctiveGraph(Graph):
 
         identifier must be a URIRef or BNode.
         """
-        return Graph(store=self.store, identifier=identifier, namespace_manager=self, base=base)
+        return Graph(
+            store=self.store, identifier=identifier, namespace_manager=self, base=base
+        )
 
     def remove_context(self, context):
         """Removes the given context from the graph"""
@@ -1665,7 +1669,9 @@ class Dataset(ConjunctiveGraph):
         if not self.store.graph_aware:
             raise Exception("DataSet must be backed by a graph-aware store!")
         self.default_context = Graph(
-            store=self.store, identifier=DATASET_DEFAULT_GRAPH_ID, base=default_graph_base
+            store=self.store,
+            identifier=DATASET_DEFAULT_GRAPH_ID,
+            base=default_graph_base,
         )
 
         self.default_union = default_union
@@ -2014,7 +2020,7 @@ def _assertnode(*terms):
 
 
 class BatchAddGraph(object):
-    '''
+    """
     Wrapper around graph that turns calls to :meth:`add` (and optionally, :meth:`addN`)
     into calls to :meth:`~rdflib.graph.Graph.addN`.
 
@@ -2031,7 +2037,7 @@ class BatchAddGraph(object):
                  to :meth:`reset`
     :ivar batch: The current buffer of triples
 
-    '''
+    """
 
     def __init__(self, graph, batch_size=1000, batch_addn=False):
         if not batch_size or batch_size < 2:
@@ -2043,18 +2049,18 @@ class BatchAddGraph(object):
         self.reset()
 
     def reset(self):
-        '''
+        """
         Manually clear the buffered triples and reset the count to zero
-        '''
+        """
         self.batch = []
         self.count = 0
 
     def add(self, triple_or_quad):
-        '''
+        """
         Add a triple to the buffer
 
         :param triple: The triple to add
-        '''
+        """
         if len(self.batch) >= self.__batch_size:
             self.graph.addN(self.batch)
             self.batch = []

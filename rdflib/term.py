@@ -23,24 +23,23 @@ underlying Graph:
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+
 # from __future__ import unicode_literals
 from fractions import Fraction
 
 __all__ = [
-    'bind',
-
-    'Node',
-    'Identifier',
-
-    'URIRef',
-    'BNode',
-    'Literal',
-
-    'Variable',
-    'Statement',
+    "bind",
+    "Node",
+    "Identifier",
+    "URIRef",
+    "BNode",
+    "Literal",
+    "Variable",
+    "Statement",
 ]
 
 import logging
+
 logger = logging.getLogger(__name__)
 import warnings
 import math
@@ -52,7 +51,14 @@ from datetime import date, time, datetime, timedelta
 from re import sub, compile
 from collections import defaultdict
 
-from isodate import parse_time, parse_date, parse_datetime, Duration, parse_duration, duration_isoformat
+from isodate import (
+    parse_time,
+    parse_date,
+    parse_datetime,
+    Duration,
+    parse_duration,
+    duration_isoformat,
+)
 from binascii import hexlify, unhexlify
 
 import rdflib
@@ -74,7 +80,7 @@ def _is_valid_uri(uri):
     return all(map(lambda c: ord(c) > 256 or not c in _invalid_uri_chars, uri))
 
 
-_lang_tag_regex = compile('^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$')
+_lang_tag_regex = compile("^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$")
 
 
 def _is_valid_langtag(tag):
@@ -87,7 +93,7 @@ def _is_valid_unicode(value):
     unicode object.
     """
     if isinstance(value, bytes):
-        coding_func, param = getattr(value, 'decode'), 'utf-8'
+        coding_func, param = getattr(value, "decode"), "utf-8"
     else:
         coding_func, param = str, value
 
@@ -221,13 +227,15 @@ class URIRef(Identifier):
                     value += "#"
 
         if not _is_valid_uri(value):
-            logger.warning('%s does not look like a valid URI, trying to serialize this will break.'%value)
-
+            logger.warning(
+                "%s does not look like a valid URI, trying to serialize this will break."
+                % value
+            )
 
         try:
             rt = str.__new__(cls, value)
         except UnicodeDecodeError:
-            rt = str.__new__(cls, value, 'utf-8')
+            rt = str.__new__(cls, value, "utf-8")
         return rt
 
     def toPython(self):
@@ -244,7 +252,10 @@ class URIRef(Identifier):
         """
 
         if not _is_valid_uri(self):
-            raise Exception('"%s" does not look like a valid URI, I cannot serialize this as N3/Turtle. Perhaps you wanted to urlencode it?'%self)
+            raise Exception(
+                '"%s" does not look like a valid URI, I cannot serialize this as N3/Turtle. Perhaps you wanted to urlencode it?'
+                % self
+            )
 
         if namespace_manager:
             return namespace_manager.normalizeUri(self)
@@ -262,7 +273,7 @@ class URIRef(Identifier):
         return (URIRef, (str(self),))
 
     def __getnewargs__(self):
-        return (str(self), )
+        return (str(self),)
 
     def __repr__(self):
         if self.__class__ is URIRef:
@@ -291,8 +302,7 @@ class URIRef(Identifier):
         """
         if isinstance(self, RDFLibGenid):
             parsed_uri = urlparse("%s" % self)
-            return BNode(
-                value=parsed_uri.path[len(rdflib_skolem_genid):])
+            return BNode(value=parsed_uri.path[len(rdflib_skolem_genid) :])
         elif isinstance(self, Genid):
             bnode_id = "%s" % self
             if bnode_id in skolems:
@@ -327,9 +337,11 @@ class RDFLibGenid(Genid):
         if not isinstance(uri, str):
             uri = str(uri)
         parsed_uri = urlparse(uri)
-        if parsed_uri.params != "" \
-                or parsed_uri.query != "" \
-                or parsed_uri.fragment != "":
+        if (
+            parsed_uri.params != ""
+            or parsed_uri.query != ""
+            or parsed_uri.fragment != ""
+        ):
             return False
         gen_id = parsed_uri.path.rfind(rdflib_skolem_genid)
         if gen_id != 0:
@@ -367,10 +379,12 @@ class BNode(Identifier):
     Blank Node: http://www.w3.org/TR/rdf-concepts/#section-blank-nodes
 
     """
+
     __slots__ = ()
 
-    def __new__(cls, value=None,
-                _sn_gen=_serial_number_generator(), _prefix=_unique_id()):
+    def __new__(
+        cls, value=None, _sn_gen=_serial_number_generator(), _prefix=_unique_id()
+    ):
         """
         # only store implementations should pass in a value
         """
@@ -396,7 +410,7 @@ class BNode(Identifier):
         return "_:%s" % self
 
     def __getnewargs__(self):
-        return (str(self), )
+        return (str(self),)
 
     def __reduce__(self):
         return (BNode, (str(self),))
@@ -510,7 +524,7 @@ class Literal(Identifier):
 
     def __new__(cls, lexical_or_value, lang=None, datatype=None, normalize=None):
 
-        if lang == '':
+        if lang == "":
             lang = None  # no empty lang-tags in RDF
 
         normalize = normalize if normalize is not None else rdflib.NORMALIZE_LITERALS
@@ -518,7 +532,8 @@ class Literal(Identifier):
         if lang is not None and datatype is not None:
             raise TypeError(
                 "A Literal can only have one of lang or datatype, "
-                "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal")
+                "per http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal"
+            )
 
         if lang and not _is_valid_langtag(lang):
             raise Exception("'%s' is not a valid language tag!" % lang)
@@ -539,8 +554,8 @@ class Literal(Identifier):
                 value = lexical_or_value.value
 
         elif isinstance(lexical_or_value, str) or isinstance(lexical_or_value, bytes):
-                # passed a string
-                # try parsing lexical form of datatyped literal
+            # passed a string
+            # try parsing lexical form of datatyped literal
             value = _castLexicalToPython(lexical_or_value, datatype)
 
             if value is not None and normalize:
@@ -560,12 +575,12 @@ class Literal(Identifier):
                 lang = None
 
         if isinstance(lexical_or_value, bytes):
-            lexical_or_value = lexical_or_value.decode('utf-8')
+            lexical_or_value = lexical_or_value.decode("utf-8")
 
         try:
             inst = str.__new__(cls, lexical_or_value)
         except UnicodeDecodeError:
-            inst = str.__new__(cls, lexical_or_value, 'utf-8')
+            inst = str.__new__(cls, lexical_or_value, "utf-8")
 
         inst._language = lang
         inst._datatype = datatype
@@ -604,7 +619,10 @@ class Literal(Identifier):
         return self._datatype
 
     def __reduce__(self):
-        return (Literal, (str(self), self.language, self.datatype),)
+        return (
+            Literal,
+            (str(self), self.language, self.datatype),
+        )
 
     def __getstate__(self):
         return (None, dict(language=self.language, datatype=self.datatype))
@@ -632,19 +650,25 @@ class Literal(Identifier):
 
         # if the datatypes are the same, just add the Python values and convert back
         if self.datatype == val.datatype:
-            return Literal(self.toPython() + val.toPython(), self.language, datatype=self.datatype)
+            return Literal(
+                self.toPython() + val.toPython(), self.language, datatype=self.datatype
+            )
         # if the datatypes are not the same but are both numeric, add the Python values and strip off decimal junk
         # (i.e. tiny numbers (more than 17 decimal places) and trailing zeros) and return as a decimal
         elif (
-                self.datatype in _NUMERIC_LITERAL_TYPES
-                and
-                val.datatype in _NUMERIC_LITERAL_TYPES
+            self.datatype in _NUMERIC_LITERAL_TYPES
+            and val.datatype in _NUMERIC_LITERAL_TYPES
         ):
             return Literal(
                 Decimal(
-                    ('%f' % round(Decimal(self.toPython()) + Decimal(val.toPython()), 15)).rstrip('0').rstrip('.')
+                    (
+                        "%f"
+                        % round(Decimal(self.toPython()) + Decimal(val.toPython()), 15)
+                    )
+                    .rstrip("0")
+                    .rstrip(".")
                 ),
-                datatype=_XSD_DECIMAL
+                datatype=_XSD_DECIMAL,
             )
         # in all other cases, perform string concatenation
         else:
@@ -793,8 +817,10 @@ class Literal(Identifier):
             return True  # Everything is greater than None
         if isinstance(other, Literal):
 
-            if self.datatype in _NUMERIC_LITERAL_TYPES and \
-                    other.datatype in _NUMERIC_LITERAL_TYPES:
+            if (
+                self.datatype in _NUMERIC_LITERAL_TYPES
+                and other.datatype in _NUMERIC_LITERAL_TYPES
+            ):
                 return self.value > other.value
 
             # plain-literals and xsd:string literals
@@ -889,17 +915,21 @@ class Literal(Identifier):
         rich-compare with this literal
         """
         if isinstance(other, Literal):
-            if (self.datatype and other.datatype):
+            if self.datatype and other.datatype:
                 # two datatyped literals
-                if not self.datatype in XSDToPython or not other.datatype in XSDToPython:
+                if (
+                    not self.datatype in XSDToPython
+                    or not other.datatype in XSDToPython
+                ):
                     # non XSD DTs must match
                     if self.datatype != other.datatype:
                         return False
 
             else:
                 # xsd:string may be compared with plain literals
-                if not (self.datatype == _XSD_STRING and not other.datatype) or \
-                        (other.datatype == _XSD_STRING and not self.datatype):
+                if not (self.datatype == _XSD_STRING and not other.datatype) or (
+                    other.datatype == _XSD_STRING and not self.datatype
+                ):
                     return False
 
                 # if given lang-tag has to be case insensitive equal
@@ -986,9 +1016,12 @@ class Literal(Identifier):
         if other is None:
             return False
         if isinstance(other, Literal):
-            return self.datatype == other.datatype \
-                and (self.language.lower() if self.language else None) == (other.language.lower() if other.language else None) \
+            return (
+                self.datatype == other.datatype
+                and (self.language.lower() if self.language else None)
+                == (other.language.lower() if other.language else None)
                 and str.__eq__(self, other)
+            )
 
         return False
 
@@ -1016,29 +1049,35 @@ class Literal(Identifier):
         """
         if isinstance(other, Literal):
 
-            if self.datatype in _NUMERIC_LITERAL_TYPES  \
-                    and other.datatype in _NUMERIC_LITERAL_TYPES:
+            if (
+                self.datatype in _NUMERIC_LITERAL_TYPES
+                and other.datatype in _NUMERIC_LITERAL_TYPES
+            ):
                 if self.value is not None and other.value is not None:
                     return self.value == other.value
                 else:
                     if str.__eq__(self, other):
                         return True
                     raise TypeError(
-                        'I cannot know that these two lexical forms do not map to the same value: %s and %s' % (self, other))
+                        "I cannot know that these two lexical forms do not map to the same value: %s and %s"
+                        % (self, other)
+                    )
             if (self.language or "").lower() != (other.language or "").lower():
                 return False
 
             dtself = self.datatype or _XSD_STRING
             dtother = other.datatype or _XSD_STRING
 
-            if (dtself == _XSD_STRING and dtother == _XSD_STRING):
+            if dtself == _XSD_STRING and dtother == _XSD_STRING:
                 # string/plain literals, compare on lexical form
                 return str.__eq__(self, other)
 
             if dtself != dtother:
                 if rdflib.DAWG_LITERAL_COLLATION:
-                    raise TypeError("I don't know how to compare literals with datatypes %s and %s" % (
-                        self.datatype, other.datatype))
+                    raise TypeError(
+                        "I don't know how to compare literals with datatypes %s and %s"
+                        % (self.datatype, other.datatype)
+                    )
                 else:
                     return False
 
@@ -1062,7 +1101,9 @@ class Literal(Identifier):
 
                 # matching DTs, but not matching, we cannot compare!
                 raise TypeError(
-                    'I cannot know that these two lexical forms do not map to the same value: %s and %s' % (self, other))
+                    "I cannot know that these two lexical forms do not map to the same value: %s and %s"
+                    % (self, other)
+                )
 
         elif isinstance(other, Node):
             return False  # no non-Literal nodes are equal to a literal
@@ -1074,7 +1115,7 @@ class Literal(Identifier):
             if self.language is not None:
                 return False
 
-            if (self.datatype == _XSD_STRING or self.datatype is None):
+            if self.datatype == _XSD_STRING or self.datatype is None:
                 return str(self) == other
 
         elif isinstance(other, (int, long_type, float)):
@@ -1084,7 +1125,11 @@ class Literal(Identifier):
             if self.datatype in (_XSD_DATETIME, _XSD_DATE, _XSD_TIME):
                 return self.value == other
         elif isinstance(other, (timedelta, Duration)):
-            if self.datatype in (_XSD_DURATION, _XSD_DAYTIMEDURATION, _XSD_YEARMONTHDURATION):
+            if self.datatype in (
+                _XSD_DURATION,
+                _XSD_DAYTIMEDURATION,
+                _XSD_YEARMONTHDURATION,
+            ):
                 return self.value == other
         elif isinstance(other, bool):
             if self.datatype == _XSD_BOOLEAN:
@@ -1154,7 +1199,7 @@ class Literal(Identifier):
             return self._literal_n3()
 
     def _literal_n3(self, use_plain=False, qname_callback=None):
-        '''
+        """
         Using plain literal (shorthand) output::
             >>> from rdflib.namespace import XSD
 
@@ -1197,7 +1242,7 @@ class Literal(Identifier):
             ...         qname_callback=lambda uri: "xsd:integer")
             u'"1"^^xsd:integer'
 
-        '''
+        """
         if use_plain and self.datatype in _PLAIN_LITERAL_TYPES:
             if self.value is not None:
                 # If self is inf or NaN, we need a datatype
@@ -1214,17 +1259,17 @@ class Literal(Identifier):
                 # in py >=2.6 the string.format function makes this easier
                 # we try to produce "pretty" output
                 if self.datatype == _XSD_DOUBLE:
-                    return sub("\\.?0*e", "e", u'%e' % float(self))
+                    return sub("\\.?0*e", "e", u"%e" % float(self))
                 elif self.datatype == _XSD_DECIMAL:
-                    s = '%s' % self
-                    if '.' not in s:
-                        s += '.0'
+                    s = "%s" % self
+                    if "." not in s:
+                        s += ".0"
                     return s
 
                 elif self.datatype == _XSD_BOOLEAN:
-                    return (u'%s' % self).lower()
+                    return (u"%s" % self).lower()
                 else:
-                    return u'%s' % self
+                    return u"%s" % self
 
         encoded = self._quote_encode()
 
@@ -1241,10 +1286,11 @@ class Literal(Identifier):
                     if math.isinf(v):
                         # py string reps: float: 'inf', Decimal: 'Infinity"
                         # both need to become "INF" in xsd datatypes
-                        encoded = encoded.replace('inf', 'INF').replace(
-                            'Infinity', 'INF')
+                        encoded = encoded.replace("inf", "INF").replace(
+                            "Infinity", "INF"
+                        )
                     if math.isnan(v):
-                        encoded = encoded.replace('nan', 'NaN')
+                        encoded = encoded.replace("nan", "NaN")
                 except ValueError:
                     # if we can't cast to float something is wrong, but we can
                     # still serialize. Warn user about it
@@ -1252,11 +1298,11 @@ class Literal(Identifier):
 
         language = self.language
         if language:
-            return '%s@%s' % (encoded, language)
+            return "%s@%s" % (encoded, language)
         elif datatype:
-            return '%s^^%s' % (encoded, quoted_dt)
+            return "%s^^%s" % (encoded, quoted_dt)
         else:
-            return '%s' % encoded
+            return "%s" % encoded
 
     def _quote_encode(self):
         # This simpler encoding doesn't work; a newline gets encoded as "\\n",
@@ -1270,20 +1316,18 @@ class Literal(Identifier):
 
         if "\n" in self:
             # Triple quote this string.
-            encoded = self.replace('\\', '\\\\')
+            encoded = self.replace("\\", "\\\\")
             if '"""' in self:
                 # is this ok?
                 encoded = encoded.replace('"""', '\\"\\"\\"')
-            if encoded[-1] == '"' and encoded[-2] != '\\':
-                encoded = encoded[:-1] + '\\' + '"'
+            if encoded[-1] == '"' and encoded[-2] != "\\":
+                encoded = encoded[:-1] + "\\" + '"'
 
-            return '"""%s"""' % encoded.replace('\r', '\\r')
+            return '"""%s"""' % encoded.replace("\r", "\\r")
         else:
-            return '"%s"' % self.replace(
-                '\n', '\\n').replace(
-                    '\\', '\\\\').replace(
-                        '"', '\\"').replace(
-                            '\r', '\\r')
+            return '"%s"' % self.replace("\n", "\\n").replace("\\", "\\\\").replace(
+                '"', '\\"'
+            ).replace("\r", "\\r")
 
     def __repr__(self):
         args = [super(Literal, self).__repr__()]
@@ -1309,7 +1353,8 @@ class Literal(Identifier):
 
 def _parseXML(xmlstring):
     retval = xml.dom.minidom.parseString(
-        "<rdflibtoplevelelement>%s</rdflibtoplevelelement>" % xmlstring)
+        "<rdflibtoplevelelement>%s</rdflibtoplevelelement>" % xmlstring
+    )
     retval.normalize()
     return retval
 
@@ -1317,15 +1362,16 @@ def _parseXML(xmlstring):
 def _parseHTML(htmltext):
     try:
         import html5lib
-        parser = html5lib.HTMLParser(
-            tree=html5lib.treebuilders.getTreeBuilder("dom"))
+
+        parser = html5lib.HTMLParser(tree=html5lib.treebuilders.getTreeBuilder("dom"))
         retval = parser.parseFragment(htmltext)
         retval.normalize()
         return retval
     except ImportError:
         raise ImportError(
-            "HTML5 parser not available. Try installing" +
-            " html5lib <http://code.google.com/p/html5lib>")
+            "HTML5 parser not available. Try installing"
+            + " html5lib <http://code.google.com/p/html5lib>"
+        )
 
 
 def _writeXML(xmlnode):
@@ -1333,16 +1379,16 @@ def _writeXML(xmlnode):
         d = xml.dom.minidom.Document()
         d.childNodes += xmlnode.childNodes
         xmlnode = d
-    s = xmlnode.toxml('utf-8')
+    s = xmlnode.toxml("utf-8")
     # for clean round-tripping, remove headers -- I have great and
     # specific worries that this will blow up later, but this margin
     # is too narrow to contain them
     if s.startswith('<?xml version="1.0" encoding="utf-8"?>'.encode("latin-1")):
         s = s[38:]
-    if s.startswith('<rdflibtoplevelelement>'.encode("latin-1")):
+    if s.startswith("<rdflibtoplevelelement>".encode("latin-1")):
         s = s[23:-24]
-    if s == '<rdflibtoplevelelement/>'.encode("latin-1"):
-        s = ''.encode("latin-1")
+    if s == "<rdflibtoplevelelement/>".encode("latin-1"):
+        s = "".encode("latin-1")
     return s
 
 
@@ -1354,60 +1400,62 @@ def _unhexlify(value):
 
 
 def _parseBoolean(value):
-    true_accepted_values = ['1', 'true']
-    false_accepted_values = ['0', 'false']
+    true_accepted_values = ["1", "true"]
+    false_accepted_values = ["0", "false"]
     new_value = value.lower()
     if new_value in true_accepted_values:
         return True
     if new_value not in false_accepted_values:
-        warnings.warn('Parsing weird boolean, % r does not map to True or False' % value, category = DeprecationWarning)
+        warnings.warn(
+            "Parsing weird boolean, % r does not map to True or False" % value,
+            category=DeprecationWarning,
+        )
     return False
 
+
 # Cannot import Namespace/XSD because of circular dependencies
-_XSD_PFX = 'http://www.w3.org/2001/XMLSchema#'
-_RDF_PFX = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+_XSD_PFX = "http://www.w3.org/2001/XMLSchema#"
+_RDF_PFX = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 
-_RDF_XMLLITERAL = URIRef(_RDF_PFX + 'XMLLiteral')
-_RDF_HTMLLITERAL = URIRef(_RDF_PFX + 'HTML')
+_RDF_XMLLITERAL = URIRef(_RDF_PFX + "XMLLiteral")
+_RDF_HTMLLITERAL = URIRef(_RDF_PFX + "HTML")
 
-_XSD_STRING = URIRef(_XSD_PFX + 'string')
+_XSD_STRING = URIRef(_XSD_PFX + "string")
 
-_XSD_FLOAT = URIRef(_XSD_PFX + 'float')
-_XSD_DOUBLE = URIRef(_XSD_PFX + 'double')
-_XSD_DECIMAL = URIRef(_XSD_PFX + 'decimal')
-_XSD_INTEGER = URIRef(_XSD_PFX + 'integer')
-_XSD_BOOLEAN = URIRef(_XSD_PFX + 'boolean')
+_XSD_FLOAT = URIRef(_XSD_PFX + "float")
+_XSD_DOUBLE = URIRef(_XSD_PFX + "double")
+_XSD_DECIMAL = URIRef(_XSD_PFX + "decimal")
+_XSD_INTEGER = URIRef(_XSD_PFX + "integer")
+_XSD_BOOLEAN = URIRef(_XSD_PFX + "boolean")
 
-_XSD_DATETIME = URIRef(_XSD_PFX + 'dateTime')
-_XSD_DATE = URIRef(_XSD_PFX + 'date')
-_XSD_TIME = URIRef(_XSD_PFX + 'time')
-_XSD_DURATION = URIRef(_XSD_PFX + 'duration')
-_XSD_DAYTIMEDURATION = URIRef(_XSD_PFX + 'dayTimeDuration')
-_XSD_YEARMONTHDURATION = URIRef(_XSD_PFX + 'yearMonthDuration')
+_XSD_DATETIME = URIRef(_XSD_PFX + "dateTime")
+_XSD_DATE = URIRef(_XSD_PFX + "date")
+_XSD_TIME = URIRef(_XSD_PFX + "time")
+_XSD_DURATION = URIRef(_XSD_PFX + "duration")
+_XSD_DAYTIMEDURATION = URIRef(_XSD_PFX + "dayTimeDuration")
+_XSD_YEARMONTHDURATION = URIRef(_XSD_PFX + "yearMonthDuration")
 
-_OWL_RATIONAL = URIRef('http://www.w3.org/2002/07/owl#rational')
-_XSD_HEXBINARY = URIRef(_XSD_PFX + 'hexBinary')
+_OWL_RATIONAL = URIRef("http://www.w3.org/2002/07/owl#rational")
+_XSD_HEXBINARY = URIRef(_XSD_PFX + "hexBinary")
 # TODO: gYearMonth, gYear, gMonthDay, gDay, gMonth
 
 _NUMERIC_LITERAL_TYPES = (
     _XSD_INTEGER,
     _XSD_DECIMAL,
     _XSD_DOUBLE,
-    URIRef(_XSD_PFX + 'float'),
-
-    URIRef(_XSD_PFX + 'byte'),
-    URIRef(_XSD_PFX + 'int'),
-    URIRef(_XSD_PFX + 'long'),
-    URIRef(_XSD_PFX + 'negativeInteger'),
-    URIRef(_XSD_PFX + 'nonNegativeInteger'),
-    URIRef(_XSD_PFX + 'nonPositiveInteger'),
-    URIRef(_XSD_PFX + 'positiveInteger'),
-    URIRef(_XSD_PFX + 'short'),
-    URIRef(_XSD_PFX + 'unsignedByte'),
-    URIRef(_XSD_PFX + 'unsignedInt'),
-    URIRef(_XSD_PFX + 'unsignedLong'),
-    URIRef(_XSD_PFX + 'unsignedShort'),
-
+    URIRef(_XSD_PFX + "float"),
+    URIRef(_XSD_PFX + "byte"),
+    URIRef(_XSD_PFX + "int"),
+    URIRef(_XSD_PFX + "long"),
+    URIRef(_XSD_PFX + "negativeInteger"),
+    URIRef(_XSD_PFX + "nonNegativeInteger"),
+    URIRef(_XSD_PFX + "nonPositiveInteger"),
+    URIRef(_XSD_PFX + "positiveInteger"),
+    URIRef(_XSD_PFX + "short"),
+    URIRef(_XSD_PFX + "unsignedByte"),
+    URIRef(_XSD_PFX + "unsignedInt"),
+    URIRef(_XSD_PFX + "unsignedLong"),
+    URIRef(_XSD_PFX + "unsignedShort"),
 )
 
 # these have "native" syntax in N3/SPARQL
@@ -1416,12 +1464,12 @@ _PLAIN_LITERAL_TYPES = (
     _XSD_BOOLEAN,
     _XSD_DOUBLE,
     _XSD_DECIMAL,
-    _OWL_RATIONAL
+    _OWL_RATIONAL,
 )
 
 # these have special INF and NaN XSD representations
 _NUMERIC_INF_NAN_LITERAL_TYPES = (
-    URIRef(_XSD_PFX + 'float'),
+    URIRef(_XSD_PFX + "float"),
     _XSD_DOUBLE,
     _XSD_DECIMAL,
 )
@@ -1433,12 +1481,12 @@ _TOTAL_ORDER_CASTERS = {
     datetime: lambda value: (
         # naive vs. aware
         value.tzinfo is not None and value.tzinfo.utcoffset(value) is not None,
-        value
+        value,
     ),
     time: lambda value: (
         # naive vs. aware
         value.tzinfo is not None and value.tzinfo.utcoffset(None) is not None,
-        value
+        value,
     ),
     xml.dom.minidom.Document: lambda value: value.toxml(),
 }
@@ -1448,8 +1496,8 @@ _STRING_LITERAL_TYPES = (
     _XSD_STRING,
     _RDF_XMLLITERAL,
     _RDF_HTMLLITERAL,
-    URIRef(_XSD_PFX + 'normalizedString'),
-    URIRef(_XSD_PFX + 'token')
+    URIRef(_XSD_PFX + "normalizedString"),
+    URIRef(_XSD_PFX + "token"),
 )
 
 
@@ -1493,65 +1541,65 @@ from decimal import Decimal
 _GenericPythonToXSDRules = [
     (str, (None, None)),
     (float, (None, _XSD_DOUBLE)),
-    (bool, (lambda i:str(i).lower(), _XSD_BOOLEAN)),
+    (bool, (lambda i: str(i).lower(), _XSD_BOOLEAN)),
     (int, (None, _XSD_INTEGER)),
     (long_type, (None, _XSD_INTEGER)),
     (Decimal, (None, _XSD_DECIMAL)),
-    (datetime, (lambda i:i.isoformat(), _XSD_DATETIME)),
-    (date, (lambda i:i.isoformat(), _XSD_DATE)),
-    (time, (lambda i:i.isoformat(), _XSD_TIME)),
-    (Duration, (lambda i:duration_isoformat(i), _XSD_DURATION)),
-    (timedelta, (lambda i:duration_isoformat(i), _XSD_DAYTIMEDURATION)),
+    (datetime, (lambda i: i.isoformat(), _XSD_DATETIME)),
+    (date, (lambda i: i.isoformat(), _XSD_DATE)),
+    (time, (lambda i: i.isoformat(), _XSD_TIME)),
+    (Duration, (lambda i: duration_isoformat(i), _XSD_DURATION)),
+    (timedelta, (lambda i: duration_isoformat(i), _XSD_DAYTIMEDURATION)),
     (xml.dom.minidom.Document, (_writeXML, _RDF_XMLLITERAL)),
     # this is a bit dirty - by accident the html5lib parser produces
     # DocumentFragments, and the xml parser Documents, letting this
     # decide what datatype to use makes roundtripping easier, but it a
     # bit random
     (xml.dom.minidom.DocumentFragment, (_writeXML, _RDF_HTMLLITERAL)),
-    (Fraction, (None, _OWL_RATIONAL))
+    (Fraction, (None, _OWL_RATIONAL)),
 ]
 
 _SpecificPythonToXSDRules = [
     ((str, _XSD_HEXBINARY), hexlify),
-    ((bytes, _XSD_HEXBINARY), hexlify)
+    ((bytes, _XSD_HEXBINARY), hexlify),
 ]
 
 XSDToPython = {
     None: None,  # plain literals map directly to value space
-    URIRef(_XSD_PFX + 'time'): parse_time,
-    URIRef(_XSD_PFX + 'date'): parse_date,
-    URIRef(_XSD_PFX + 'gYear'): parse_date,
-    URIRef(_XSD_PFX + 'gYearMonth'): parse_date,
-    URIRef(_XSD_PFX + 'dateTime'): parse_datetime,
-    URIRef(_XSD_PFX + 'duration'): parse_duration,
-    URIRef(_XSD_PFX + 'dayTimeDuration'): parse_duration,
-    URIRef(_XSD_PFX + 'yearMonthDuration'): parse_duration,
-    URIRef(_XSD_PFX + 'hexBinary'): _unhexlify,
-    URIRef(_XSD_PFX + 'string'): None,
-    URIRef(_XSD_PFX + 'normalizedString'): None,
-    URIRef(_XSD_PFX + 'token'): None,
-    URIRef(_XSD_PFX + 'language'): None,
-    URIRef(_XSD_PFX + 'boolean'): _parseBoolean,
-    URIRef(_XSD_PFX + 'decimal'): Decimal,
-    URIRef(_XSD_PFX + 'integer'): long_type,
-    URIRef(_XSD_PFX + 'nonPositiveInteger'): int,
-    URIRef(_XSD_PFX + 'long'): long_type,
-    URIRef(_XSD_PFX + 'nonNegativeInteger'): int,
-    URIRef(_XSD_PFX + 'negativeInteger'): int,
-    URIRef(_XSD_PFX + 'int'): long_type,
-    URIRef(_XSD_PFX + 'unsignedLong'): long_type,
-    URIRef(_XSD_PFX + 'positiveInteger'): int,
-    URIRef(_XSD_PFX + 'short'): int,
-    URIRef(_XSD_PFX + 'unsignedInt'): long_type,
-    URIRef(_XSD_PFX + 'byte'): int,
-    URIRef(_XSD_PFX + 'unsignedShort'): int,
-    URIRef(_XSD_PFX + 'unsignedByte'): int,
-    URIRef(_XSD_PFX + 'float'): float,
-    URIRef(_XSD_PFX + 'double'): float,
-    URIRef(_XSD_PFX + 'base64Binary'): lambda s: base64.b64decode(s),
-    URIRef(_XSD_PFX + 'anyURI'): None,
+    URIRef(_XSD_PFX + "time"): parse_time,
+    URIRef(_XSD_PFX + "date"): parse_date,
+    URIRef(_XSD_PFX + "gYear"): parse_date,
+    URIRef(_XSD_PFX + "gYearMonth"): parse_date,
+    URIRef(_XSD_PFX + "dateTime"): parse_datetime,
+    URIRef(_XSD_PFX + "duration"): parse_duration,
+    URIRef(_XSD_PFX + "dayTimeDuration"): parse_duration,
+    URIRef(_XSD_PFX + "yearMonthDuration"): parse_duration,
+    URIRef(_XSD_PFX + "hexBinary"): _unhexlify,
+    URIRef(_XSD_PFX + "string"): None,
+    URIRef(_XSD_PFX + "normalizedString"): None,
+    URIRef(_XSD_PFX + "token"): None,
+    URIRef(_XSD_PFX + "language"): None,
+    URIRef(_XSD_PFX + "boolean"): _parseBoolean,
+    URIRef(_XSD_PFX + "decimal"): Decimal,
+    URIRef(_XSD_PFX + "integer"): long_type,
+    URIRef(_XSD_PFX + "nonPositiveInteger"): int,
+    URIRef(_XSD_PFX + "long"): long_type,
+    URIRef(_XSD_PFX + "nonNegativeInteger"): int,
+    URIRef(_XSD_PFX + "negativeInteger"): int,
+    URIRef(_XSD_PFX + "int"): long_type,
+    URIRef(_XSD_PFX + "unsignedLong"): long_type,
+    URIRef(_XSD_PFX + "positiveInteger"): int,
+    URIRef(_XSD_PFX + "short"): int,
+    URIRef(_XSD_PFX + "unsignedInt"): long_type,
+    URIRef(_XSD_PFX + "byte"): int,
+    URIRef(_XSD_PFX + "unsignedShort"): int,
+    URIRef(_XSD_PFX + "unsignedByte"): int,
+    URIRef(_XSD_PFX + "float"): float,
+    URIRef(_XSD_PFX + "double"): float,
+    URIRef(_XSD_PFX + "base64Binary"): lambda s: base64.b64decode(s),
+    URIRef(_XSD_PFX + "anyURI"): None,
     _RDF_XMLLITERAL: _parseXML,
-    _RDF_HTMLLITERAL: _parseHTML
+    _RDF_HTMLLITERAL: _parseHTML,
 }
 
 _toPythonMapping = {}
@@ -1576,13 +1624,15 @@ def _castLexicalToPython(lexical, datatype):
         try:
             return str(lexical)
         except UnicodeDecodeError:
-            return str(lexical, 'utf-8')
+            return str(lexical, "utf-8")
     else:
         # no convFunc - unknown data-type
         return None
 
 
-def bind(datatype, pythontype, constructor=None, lexicalizer=None, datatype_specific=False):
+def bind(
+    datatype, pythontype, constructor=None, lexicalizer=None, datatype_specific=False
+):
     """
     register a new datatype<->pythontype binding
 
@@ -1601,8 +1651,7 @@ def bind(datatype, pythontype, constructor=None, lexicalizer=None, datatype_spec
         raise Exception("No datatype given for a datatype-specific binding")
 
     if datatype in _toPythonMapping:
-        logger.warning("datatype '%s' was already bound. Rebinding." %
-                       datatype)
+        logger.warning("datatype '%s' was already bound. Rebinding." % datatype)
 
     if constructor is None:
         constructor = pythontype
@@ -1618,13 +1667,13 @@ class Variable(Identifier):
     A Variable - this is used for querying, or in Formula aware
     graphs, where Variables can stored in the graph
     """
+
     __slots__ = ()
 
     def __new__(cls, value):
         if len(value) == 0:
-            raise Exception(
-                "Attempted to create variable with empty string as name!")
-        if value[0] == '?':
+            raise Exception("Attempted to create variable with empty string as name!")
+        if value[0] == "?":
             value = value[1:]
         return str.__new__(cls, value)
 
@@ -1647,13 +1696,14 @@ class Variable(Identifier):
 
 
 class Statement(Node, tuple):
-
     def __new__(cls, triple, context):
         subject, predicate, object = triple
         warnings.warn(
-            "Class Statement is deprecated, and will be removed in " +
-            "the future. If you use this please let rdflib-dev know!",
-            category=DeprecationWarning, stacklevel=2)
+            "Class Statement is deprecated, and will be removed in "
+            + "the future. If you use this please let rdflib-dev know!",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
         return tuple.__new__(cls, ((subject, predicate, object), context))
 
     def __reduce__(self):
@@ -1668,12 +1718,7 @@ class Statement(Node, tuple):
 # we leave "space" for more subclasses of Node elsewhere
 # default-dict to grazefully fail for new subclasses
 _ORDERING = defaultdict(int)
-_ORDERING.update({
-    BNode: 10,
-    Variable: 20,
-    URIRef: 30,
-    Literal: 40
-})
+_ORDERING.update({BNode: 10, Variable: 20, URIRef: 30, Literal: 40})
 
 
 def _isEqualXMLNode(node, other):
@@ -1687,8 +1732,7 @@ def _isEqualXMLNode(node, other):
         # for the length becomes necessary...
         if len(node.childNodes) != len(other.childNodes):
             return False
-        for (nc, oc) in map(
-                lambda x, y: (x, y), node.childNodes, other.childNodes):
+        for (nc, oc) in map(lambda x, y: (x, y), node.childNodes, other.childNodes):
             if not _isEqualXMLNode(nc, oc):
                 return False
         # if we got here then everything is fine:
@@ -1705,8 +1749,9 @@ def _isEqualXMLNode(node, other):
 
     elif node.nodeType == Node.ELEMENT_NODE:
         # Get the basics right
-        if not (node.tagName == other.tagName and
-                node.namespaceURI == other.namespaceURI):
+        if not (
+            node.tagName == other.tagName and node.namespaceURI == other.namespaceURI
+        ):
             return False
 
         # Handle the (namespaced) attributes; the namespace setting key
@@ -1714,17 +1759,22 @@ def _isEqualXMLNode(node, other):
         # Note that the minidom orders the keys already, so we do not have
         # to worry about that, which is a bonus...
         n_keys = [
-            k for k in node.attributes.keysNS()
-            if k[0] != 'http://www.w3.org/2000/xmlns/']
+            k
+            for k in node.attributes.keysNS()
+            if k[0] != "http://www.w3.org/2000/xmlns/"
+        ]
         o_keys = [
-            k for k in other.attributes.keysNS()
-            if k[0] != 'http://www.w3.org/2000/xmlns/']
+            k
+            for k in other.attributes.keysNS()
+            if k[0] != "http://www.w3.org/2000/xmlns/"
+        ]
         if len(n_keys) != len(o_keys):
             return False
         for k in n_keys:
-            if not (k in o_keys
-                    and node.getAttributeNS(k[0], k[1]) ==
-                    other.getAttributeNS(k[0], k[1])):
+            if not (
+                k in o_keys
+                and node.getAttributeNS(k[0], k[1]) == other.getAttributeNS(k[0], k[1])
+            ):
                 return False
 
         # if we got here, the attributes are all right, we can go down
@@ -1732,8 +1782,11 @@ def _isEqualXMLNode(node, other):
         return recurse()
 
     elif node.nodeType in [
-            Node.TEXT_NODE, Node.COMMENT_NODE, Node.CDATA_SECTION_NODE,
-            Node.NOTATION_NODE]:
+        Node.TEXT_NODE,
+        Node.COMMENT_NODE,
+        Node.CDATA_SECTION_NODE,
+        Node.NOTATION_NODE,
+    ]:
         return node.data == other.data
 
     elif node.nodeType == Node.PROCESSING_INSTRUCTION_NODE:
@@ -1743,15 +1796,14 @@ def _isEqualXMLNode(node, other):
         return node.nodeValue == other.nodeValue
 
     elif node.nodeType == Node.DOCUMENT_TYPE_NODE:
-        return node.publicId == other.publicId \
-            and node.systemId == other.system.Id
+        return node.publicId == other.publicId and node.systemId == other.system.Id
 
     else:
         # should not happen, in fact
-        raise Exception(
-            'I dont know how to compare XML Node type: %s' % node.nodeType)
+        raise Exception("I dont know how to compare XML Node type: %s" % node.nodeType)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

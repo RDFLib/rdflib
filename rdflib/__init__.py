@@ -112,7 +112,6 @@ del _interactive_mode
 del sys
 
 
-
 NORMALIZE_LITERALS = True
 """
 If True - Literals lexical forms are normalized when created.

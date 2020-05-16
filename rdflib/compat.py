@@ -31,8 +31,7 @@ except ImportError:
                     # normal ElementTree install
                     import elementtree.ElementTree as etree
                 except ImportError:
-                    raise Exception(
-                        "Failed to import ElementTree from any known place")
+                    raise Exception("Failed to import ElementTree from any known place")
 
 try:
     etree_register_namespace = etree.register_namespace
@@ -44,18 +43,18 @@ except AttributeError:
         etreenative._namespace_map[uri] = prefix
 
 
-def cast_bytes(s, enc='utf-8'):
+def cast_bytes(s, enc="utf-8"):
     if isinstance(s, str):
         return s.encode(enc)
     return s
 
 
 def ascii(stream):
-    return codecs.getreader('ascii')(stream)
+    return codecs.getreader("ascii")(stream)
 
 
 def bopen(*args, **kwargs):
-    return open(*args, mode='rb', **kwargs)
+    return open(*args, mode="rb", **kwargs)
 
 
 long_type = int
@@ -69,7 +68,7 @@ def sign(n):
     return 0
 
 
-r_unicodeEscape = re.compile(r'(\\u[0-9A-Fa-f]{4}|\\U[0-9A-Fa-f]{8})')
+r_unicodeEscape = re.compile(r"(\\u[0-9A-Fa-f]{4}|\\U[0-9A-Fa-f]{8})")
 
 
 def _unicodeExpand(s):
@@ -83,17 +82,19 @@ except ValueError:
     narrow_build = True
 
 if narrow_build:
+
     def _unicodeExpand(s):
         try:
-            return r_unicodeEscape.sub(
-                lambda m: chr(int(m.group(0)[2:], 16)), s)
+            return r_unicodeEscape.sub(lambda m: chr(int(m.group(0)[2:], 16)), s)
         except ValueError:
             warnings.warn(
-                'Encountered a unicode char > 0xFFFF in a narrow python build. '
-                'Trying to degrade gracefully, but this can cause problems '
-                'later when working with the string:\n%s' % s)
+                "Encountered a unicode char > 0xFFFF in a narrow python build. "
+                "Trying to degrade gracefully, but this can cause problems "
+                "later when working with the string:\n%s" % s
+            )
             return r_unicodeEscape.sub(
-                lambda m: codecs.decode(m.group(0), 'unicode_escape'), s)
+                lambda m: codecs.decode(m.group(0), "unicode_escape"), s
+            )
 
 
 def decodeStringEscape(s):
@@ -101,14 +102,14 @@ def decodeStringEscape(s):
     s is byte-string - replace \ escapes in string
     """
 
-    s = s.replace('\\t', '\t')
-    s = s.replace('\\n', '\n')
-    s = s.replace('\\r', '\r')
-    s = s.replace('\\b', '\b')
-    s = s.replace('\\f', '\f')
+    s = s.replace("\\t", "\t")
+    s = s.replace("\\n", "\n")
+    s = s.replace("\\r", "\r")
+    s = s.replace("\\b", "\b")
+    s = s.replace("\\f", "\f")
     s = s.replace('\\"', '"')
     s = s.replace("\\'", "'")
-    s = s.replace('\\\\', '\\')
+    s = s.replace("\\\\", "\\")
 
     return s
     # return _unicodeExpand(s) # hmm - string escape doesn't do unicode escaping
@@ -119,14 +120,14 @@ def decodeUnicodeEscape(s):
     s is a unicode string
     replace ``\\n`` and ``\\u00AC`` unicode escapes
     """
-    s = s.replace('\\t', '\t')
-    s = s.replace('\\n', '\n')
-    s = s.replace('\\r', '\r')
-    s = s.replace('\\b', '\b')
-    s = s.replace('\\f', '\f')
+    s = s.replace("\\t", "\t")
+    s = s.replace("\\n", "\n")
+    s = s.replace("\\r", "\r")
+    s = s.replace("\\b", "\b")
+    s = s.replace("\\f", "\f")
     s = s.replace('\\"', '"')
     s = s.replace("\\'", "'")
-    s = s.replace('\\\\', '\\')
+    s = s.replace("\\\\", "\\")
 
     s = _unicodeExpand(s)  # hmm - string escape doesn't do unicode escaping
 
