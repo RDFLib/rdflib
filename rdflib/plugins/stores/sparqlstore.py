@@ -23,7 +23,6 @@ from rdflib import Variable, BNode
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 from rdflib.term import Node
 
-from six import string_types
 
 BNODE_IDENT_PATTERN = re.compile('(?P<label>_\:[^\s]+)')
 
@@ -168,7 +167,7 @@ class SPARQLStore(SPARQLConnector, Store):
               queryGraph=None,
               DEBUG=False):
         self.debug = DEBUG
-        assert isinstance(query, string_types)
+        assert isinstance(query, str)
 
         query = self._inject_prefixes(query, initNs)
 
@@ -362,7 +361,7 @@ class SPARQLStore(SPARQLConnector, Store):
         """
         if (not self.context_aware) or (graph is None):
             return False
-        if isinstance(graph, string_types):
+        if isinstance(graph, str):
             return graph != '__UNION__'
         else:
             return graph.identifier != DATASET_DEFAULT_GRAPH_ID
@@ -644,7 +643,7 @@ class SPARQLUpdateStore(SPARQLStore):
             raise Exception("UpdateEndpoint is not set - call 'open'")
 
         self.debug = DEBUG
-        assert isinstance(query, string_types)
+        assert isinstance(query, str)
         query = self._inject_prefixes(query, initNs)
 
         if self._is_contextual(queryGraph):

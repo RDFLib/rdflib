@@ -84,8 +84,6 @@ __all__ = [
 
 import sys
 
-assert sys.version_info >= (2, 7, 0), "rdflib requires Python 2.7 or higher"
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -113,25 +111,6 @@ else:
 del _interactive_mode
 del sys
 
-
-import six
-
-try:
-    six.unichr(0x10FFFF)
-except ValueError:
-    import warnings
-
-    warnings.warn(
-        "You are using a narrow Python build!\n"
-        "This means that your Python does not properly support chars > 16bit.\n"
-        'On your system chars like c=u"\\U0010FFFF" will have a len(c)==2.\n'
-        "As this can cause hard to debug problems with string processing\n"
-        "(slicing, regexp, ...) later on, we strongly advise to use a wide\n"
-        "Python build in production systems.",
-        ImportWarning,
-    )
-    del warnings
-del six
 
 
 NORMALIZE_LITERALS = True

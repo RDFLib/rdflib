@@ -16,15 +16,15 @@ from __future__ import print_function
 import os
 import sys
 
-from six import BytesIO
-from six import string_types
-from six import text_type
+from io import BytesIO
 
-from six.moves.urllib.request import pathname2url
-from six.moves.urllib.request import Request
-from six.moves.urllib.request import url2pathname
-from six.moves.urllib.parse import urljoin
-from six.moves.urllib.request import urlopen
+
+
+from urllib.request import pathname2url
+from urllib.request import Request
+from urllib.request import url2pathname
+from urllib.parse import urljoin
+from urllib.request import urlopen
 
 from xml.sax import xmlreader
 
@@ -163,7 +163,7 @@ def create_input_source(source=None, publicID=None,
         if isinstance(source, InputSource):
             input_source = source
         else:
-            if isinstance(source, string_types):
+            if isinstance(source, str):
                 location = source
             elif hasattr(source, "read") and not isinstance(source, Namespace):
                 f = source
@@ -199,7 +199,7 @@ def create_input_source(source=None, publicID=None,
         input_source = FileInputSource(file)
 
     if data is not None:
-        if isinstance(data, text_type):
+        if isinstance(data, str):
             data = data.encode('utf-8')
         input_source = StringInputSource(data)
         auto_close = True

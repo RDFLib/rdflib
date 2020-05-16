@@ -7,7 +7,7 @@ from xml.sax.handler import ErrorHandler
 from xml.sax.saxutils import handler, quoteattr, escape
 
 
-from six.moves.urllib.parse import urldefrag, urljoin
+from urllib.parse import urldefrag, urljoin
 from rdflib.namespace import RDF, is_ncname
 from rdflib.term import URIRef
 from rdflib.term import BNode

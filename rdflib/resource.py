@@ -3,8 +3,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from six import text_type, PY3
-
 
 __doc__ = """
 The :class:`~rdflib.resource.Resource` class wraps a
@@ -356,10 +354,9 @@ class Resource(object):
     def __ge__(self, other): return not self < other
 
     def __unicode__(self):
-        return text_type(self._identifier)
+        return str(self._identifier)
 
-    if PY3:
-        __str__ = __unicode__
+    __str__ = __unicode__
 
     def add(self, p, o):
         if isinstance(o, Resource):

@@ -2,7 +2,6 @@ import warnings
 
 from rdflib.term import Literal
 from rdflib.serializer import Serializer
-from six import b
 
 from rdflib.plugins.serializers.nt import _quoteLiteral
 
@@ -29,7 +28,7 @@ class NQuadsSerializer(Serializer):
             for triple in context:
                 stream.write(_nq_row(
                     triple, context.identifier).encode(encoding, "replace"))
-        stream.write(b("\n"))
+        stream.write("\n".encode("latin-1"))
 
 
 def _nq_row(triple, context):

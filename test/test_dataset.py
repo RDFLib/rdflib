@@ -4,7 +4,7 @@ import unittest
 
 from tempfile import mkdtemp, mkstemp
 import shutil
-from rdflib import Graph, Dataset, URIRef, BNode, plugin
+from rdflib import Dataset, URIRef, plugin
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 
 from nose.exc import SkipTest
@@ -173,7 +173,7 @@ for s in plugin.plugins(pluginname, plugin.Store):
         continue
 
     if s.name == "SPARQLUpdateStore":
-        from six.moves.urllib.request import urlopen
+        from urllib.request import urlopen
         try:
             assert len(urlopen(HOST).read()) > 0
         except:

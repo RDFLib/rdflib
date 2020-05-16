@@ -8,7 +8,7 @@ import unittest
 import os
 import os.path
 
-from six.moves.urllib.request import url2pathname, urlopen
+from urllib.request import url2pathname, urlopen
 
 from rdflib import RDF, RDFS, URIRef, BNode, Literal, Namespace, Graph
 from rdflib.exceptions import ParserError

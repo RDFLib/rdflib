@@ -3,7 +3,6 @@
 import unittest
 import binascii
 from rdflib import Literal, XSD
-import six
 
 
 class HexBinaryTestCase(unittest.TestCase):
@@ -23,15 +22,9 @@ class HexBinaryTestCase(unittest.TestCase):
         bin_i = l.toPython()
         self.assertEquals(int(binascii.hexlify(bin_i), 16), i)
 
-        if six.PY2:
-            self.assertEquals(unicode(l), hex_i)
-        else:
-            self.assertEquals(str(l), hex_i)
+        self.assertEquals(str(l), hex_i)
         self.assertEquals(int(hex_i, 16), i)
-        if six.PY2:
-            self.assertEquals(int(unicode(l), 16), i)
-        else:
-            self.assertEquals(int(l, 16), i)
+        self.assertEquals(int(l, 16), i)
         self.assertEquals(int(str(l), 16), i)
 
     def test_unicode(self):
@@ -41,10 +34,7 @@ class HexBinaryTestCase(unittest.TestCase):
         l1 = Literal(hex_str1, datatype=XSD.hexBinary)
         b_str1 = l1.toPython()
         self.assertEquals(b_str1.decode('utf-8'), str1)
-        if six.PY2:
-            self.assertEquals(unicode(l1), hex_str1)
-        else:
-            self.assertEquals(str(l1), hex_str1)
+        self.assertEquals(str(l1), hex_str1)
 
         # b hexstring
         hex_str1b = binascii.hexlify(str1.encode('utf-8'))
@@ -52,10 +42,7 @@ class HexBinaryTestCase(unittest.TestCase):
         b_str1b = l1b.toPython()
         self.assertEquals(b_str1, b_str1b)
         self.assertEquals(b_str1b.decode('utf-8'), str1)
-        if six.PY2:
-            self.assertEquals(unicode(l1b), hex_str1)
-        else:
-            self.assertEquals(str(l1b), hex_str1)
+        self.assertEquals(str(l1b), hex_str1)
 
 
 if __name__ == '__main__':

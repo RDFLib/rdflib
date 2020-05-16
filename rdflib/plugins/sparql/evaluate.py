@@ -21,8 +21,6 @@ import requests
 from pyparsing import ParseException
 
 from rdflib import Variable, Graph, BNode, URIRef, Literal
-from six import iteritems, itervalues
-
 from rdflib.plugins.sparql import CUSTOM_EVALS
 from rdflib.plugins.sparql.parserutils import value
 from rdflib.plugins.sparql.sparql import (
@@ -377,7 +375,7 @@ def evalAggregateJoin(ctx, agg):
             res[k].update(row)
 
     # all rows are done; yield aggregated values
-    for aggregator in itervalues(res):
+    for aggregator in res.values():
         yield FrozenBindings(ctx, aggregator.get_bindings())
 
     # there were no matches
@@ -498,7 +496,7 @@ def evalConstructQuery(ctx, query):
 
 def evalQuery(graph, query, initBindings, base=None):
 
-    initBindings = dict((Variable(k), v) for k, v in iteritems(initBindings))
+    initBindings = dict((Variable(k), v) for k, v in initBindings.items())
 
     ctx = QueryContext(graph, initBindings=initBindings)
 

@@ -5,7 +5,6 @@ from rdflib.compare import to_isomorphic, to_canonical_graph
 import rdflib
 from rdflib.plugins.memory import IOMemory
 
-from six import text_type
 from io import StringIO
 
 
@@ -22,37 +21,37 @@ def get_digest_value(rdf, mimetype):
 def negative_graph_match_test():
     '''Test of FRIR identifiers against tricky RDF graphs with blank nodes.'''
     testInputs = [
-        [text_type('''@prefix : <http://example.org/ns#> .
+        [str('''@prefix : <http://example.org/ns#> .
      <http://example.org> :rel
          [ :label "Same" ].
          '''),
-         text_type('''@prefix : <http://example.org/ns#> .
+         str('''@prefix : <http://example.org/ns#> .
      <http://example.org> :rel
          [ :label "Same" ],
          [ :label "Same" ].
          '''),
          False
          ],
-        [text_type('''@prefix : <http://example.org/ns#> .
+        [str('''@prefix : <http://example.org/ns#> .
      <http://example.org> :rel
          <http://example.org/a>.
          '''),
-         text_type('''@prefix : <http://example.org/ns#> .
+         str('''@prefix : <http://example.org/ns#> .
      <http://example.org> :rel
          <http://example.org/a>,
          <http://example.org/a>.
          '''),
          True
          ],
-        [text_type('''@prefix : <http://example.org/ns#> .
+        [str('''@prefix : <http://example.org/ns#> .
      :linear_two_step_symmetry_start :related [ :related [ :related :linear_two_step_symmatry_end]],
                                               [ :related [ :related :linear_two_step_symmatry_end]].'''),
-         text_type('''@prefix : <http://example.org/ns#> .
+         str('''@prefix : <http://example.org/ns#> .
      :linear_two_step_symmetry_start :related [ :related [ :related :linear_two_step_symmatry_end]],
                                               [ :related [ :related :linear_two_step_symmatry_end]].'''),
          True
          ],
-        [text_type('''@prefix : <http://example.org/ns#> .
+        [str('''@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -62,7 +61,7 @@ def negative_graph_match_test():
           ];
           ];
           ].'''),
-         text_type('''@prefix : <http://example.org/ns#> .
+         str('''@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -77,7 +76,7 @@ def negative_graph_match_test():
          False
          ],
         # This test fails because the algorithm purposefully breaks the symmetry of symetric
-        [text_type('''@prefix : <http://example.org/ns#> .
+        [str('''@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -87,7 +86,7 @@ def negative_graph_match_test():
           ];
           ];
           ].'''),
-         text_type('''@prefix : <http://example.org/ns#> .
+         str('''@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -99,7 +98,7 @@ def negative_graph_match_test():
           ].'''),
          True
          ],
-        [text_type('''@prefix : <http://example.org/ns#> .
+        [str('''@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :label "foo";
@@ -110,7 +109,7 @@ def negative_graph_match_test():
           ];
           ];
           ].'''),
-         text_type('''@prefix : <http://example.org/ns#> .
+         str('''@prefix : <http://example.org/ns#> .
      _:a :rel [
          :rel [
          :rel [
@@ -122,7 +121,7 @@ def negative_graph_match_test():
           ].'''),
          False
          ],
-        [text_type('''@prefix : <http://example.org/ns#> .
+        [str('''@prefix : <http://example.org/ns#> .
      _:0001 :rel _:0003, _:0004.
      _:0002 :rel _:0005, _:0006.
      _:0003 :rel _:0001, _:0007, _:0010.
@@ -134,7 +133,7 @@ def negative_graph_match_test():
      _:0009 :rel _:0004, _:0005, _:0007.
      _:0010 :rel _:0003, _:0006, _:0008.
      '''),
-         text_type('''@prefix : <http://example.org/ns#> .
+         str('''@prefix : <http://example.org/ns#> .
      _:0001 :rel _:0003, _:0004.
      _:0002 :rel _:0005, _:0006.
      _:0003 :rel _:0001, _:0007, _:0010.

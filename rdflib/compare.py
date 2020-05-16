@@ -93,7 +93,7 @@ from hashlib import sha256
 from datetime import datetime
 from collections import defaultdict
 
-from six import text_type
+
 
 
 def _total_seconds(td):
@@ -211,7 +211,7 @@ class Color:
             if isinstance(x, Node):
                 return x.n3()
             else:
-                return text_type(x)
+                return str(x)
         if isinstance(color, Node):
             return stringify(color)
         value = 0
@@ -259,7 +259,7 @@ class _TripleCanonicalizer(object):
 
         def _hashfunc(s):
             h = hashfunc()
-            h.update(text_type(s).encode("utf8"))
+            h.update(str(s).encode("utf8"))
             return int(h.hexdigest(), 16)
         self._hash_cache = {}
         self.hashfunc = _hashfunc

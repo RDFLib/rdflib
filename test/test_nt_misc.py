@@ -4,8 +4,7 @@ import os
 import re
 from rdflib import Graph, Literal, URIRef
 from rdflib.plugins.parsers import ntriples
-from six import binary_type, text_type, b
-from six.moves.urllib.request import urlopen
+from urllib.request import urlopen
 
 log = logging.getLogger(__name__)
 
@@ -27,14 +26,14 @@ class NTTestCase(unittest.TestCase):
         g = Graph()
         g.add((URIRef("foo"), URIRef("foo"), Literal(u"R\u00E4ksm\u00F6rg\u00E5s")))
         s = g.serialize(format='nt')
-        self.assertEqual(type(s), binary_type)
-        self.assertTrue(b(r"R\u00E4ksm\u00F6rg\u00E5s") in s)
+        self.assertEqual(type(s), bytes)
+        self.assertTrue(r"R\u00E4ksm\u00F6rg\u00E5s".encode("latin-1") in s)
 
     def testIssue146(self):
         g = Graph()
         g.add((URIRef("foo"), URIRef("foo"), Literal("test\n", lang="en")))
         s = g.serialize(format="nt").strip()
-        self.assertEqual(s, b('<foo> <foo> "test\\n"@en .'))
+        self.assertEqual(s, '<foo> <foo> "test\\n"@en .'.encode("latin-1"))
 
     def test_sink(self):
         s = ntriples.Sink()
@@ -46,7 +45,7 @@ class NTTestCase(unittest.TestCase):
         safe = """<http://example.org/alice/foaf.rdf#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://example.org/alice/foaf1.rdf> ."""
         ntriples.validate = False
         res = ntriples.unquote(safe)
-        self.assertTrue(isinstance(res, text_type))
+        self.assertTrue(isinstance(res, str))
 
     def test_validating_unquote(self):
         quot = """<http://example.org/alice/foaf.rdf#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://example.org/alice/foaf1.rdf> ."""

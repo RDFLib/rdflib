@@ -6,7 +6,6 @@ from xml.dom import XML_NAMESPACE
 from xml.sax.xmlreader import AttributesNSImpl
 
 from rdflib.compat import etree
-from six import iteritems
 
 from rdflib import Literal, URIRef, BNode, Graph, Variable
 from rdflib.query import (
@@ -16,7 +15,7 @@ from rdflib.query import (
     ResultException
 )
 
-from six import text_type
+
 
 SPARQL_XML_NAMESPACE = u'http://www.w3.org/2005/sparql-results#'
 RESULTS_NS_ET = '{%s}' % SPARQL_XML_NAMESPACE
@@ -121,7 +120,7 @@ class XMLResultSerializer(ResultSerializer):
             writer.write_results_header()
             for b in self.result.bindings:
                 writer.write_start_result()
-                for key, val in iteritems(b):
+                for key, val in b.items():
                     writer.write_binding(key, val)
 
                 writer.write_end_result()
@@ -154,7 +153,7 @@ class SPARQLXMLWriter:
             u'head', AttributesNSImpl({}, {}))
         for i in range(0, len(allvarsL)):
             attr_vals = {
-                (None, u'name'): text_type(allvarsL[i]),
+                (None, u'name'): str(allvarsL[i]),
             }
             attr_qnames = {
                 (None, u'name'): u'name',
@@ -196,7 +195,7 @@ class SPARQLXMLWriter:
         assert self._resultStarted
 
         attr_vals = {
-            (None, u'name'): text_type(name),
+            (None, u'name'): str(name),
         }
         attr_qnames = {
             (None, u'name'): u'name',

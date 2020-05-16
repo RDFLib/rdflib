@@ -258,9 +258,8 @@ import os
 import shutil
 import tempfile
 
-from six import BytesIO
-from six import b
-from six.moves.urllib.parse import urlparse
+from io import BytesIO
+from urllib.parse import urlparse
 
 __all__ = [
     "Graph",
@@ -1037,7 +1036,7 @@ class Graph(Node):
         >>> import tempfile
         >>> fd, file_name = tempfile.mkstemp()
         >>> f = os.fdopen(fd, "w")
-        >>> dummy = f.write(my_data)  # Returns num bytes written on py3
+        >>> dummy = f.write(my_data)  # Returns num bytes written
         >>> f.close()
 
         >>> g = Graph()

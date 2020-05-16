@@ -1,6 +1,5 @@
 from rdflib import Graph, URIRef, Literal
-from six.moves.urllib.request import urlopen
-import os
+from urllib.request import urlopen
 import unittest
 from nose import SkipTest
 from requests import HTTPError

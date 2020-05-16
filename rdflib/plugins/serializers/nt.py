@@ -5,7 +5,6 @@ format.
 """
 from rdflib.term import Literal
 from rdflib.serializer import Serializer
-from six import b
 
 import warnings
 import codecs
@@ -30,7 +29,7 @@ class NTSerializer(Serializer):
         encoding = self.encoding
         for triple in self.store:
             stream.write(_nt_row(triple).encode(self.encoding, "_rdflib_nt_escape"))
-        stream.write(b("\n"))
+        stream.write("\n".encode("latin-1"))
 
 
 class NT11Serializer(NTSerializer):

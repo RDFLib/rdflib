@@ -9,7 +9,7 @@ from rdflib.graph import ConjunctiveGraph
 from rdflib.term import URIRef
 from rdflib.namespace import Namespace
 from rdflib.namespace import RDF
-from six import StringIO
+from io import StringIO
 
 import unittest
 

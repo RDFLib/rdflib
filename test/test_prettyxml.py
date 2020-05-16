@@ -1,8 +1,7 @@
 # -*- coding: UTF-8 -*-
 from rdflib.term import URIRef, BNode, Literal
 from rdflib.namespace import RDF, RDFS
-from six import b, BytesIO
-
+from io import BytesIO
 from rdflib.plugins.serializers.rdfxml import PrettyXMLSerializer
 
 from rdflib.graph import ConjunctiveGraph
@@ -121,11 +120,11 @@ class TestPrettyXmlSerializer(SerializerTestBase):
 
     def test_result_fragments(self):
         rdfXml = serialize(self.sourceGraph, self.serializer)
-        assert b('<Test rdf:about="http://example.org/data/a">') in rdfXml
-        assert b('<rdf:Description rdf:about="http://example.org/data/b">') in rdfXml
-        assert b('<name xml:lang="en">Bee</name>') in rdfXml
-        assert b('<value rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</value>') in rdfXml
-        assert b('<BNode rdf:nodeID="') in rdfXml, "expected one identified bnode in serialized graph"
+        assert '<Test rdf:about="http://example.org/data/a">'.encode("latin-1") in rdfXml
+        assert '<rdf:Description rdf:about="http://example.org/data/b">'.encode("latin-1") in rdfXml
+        assert '<name xml:lang="en">Bee</name>'.encode("latin-1") in rdfXml
+        assert '<value rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</value>'.encode("latin-1") in rdfXml
+        assert '<BNode rdf:nodeID="'.encode("latin-1") in rdfXml, "expected one identified bnode in serialized graph"
         #onlyBNodesMsg = "expected only inlined subClassOf-bnodes in serialized graph"
         #assert '<rdfs:subClassOf>' in rdfXml, onlyBNodesMsg
         #assert not '<rdfs:subClassOf ' in rdfXml, onlyBNodesMsg
@@ -133,11 +132,11 @@ class TestPrettyXmlSerializer(SerializerTestBase):
     def test_result_fragments_with_base(self):
         rdfXml = serialize(self.sourceGraph, self.serializer,
                            extra_args={'base': "http://example.org/", 'xml_base': "http://example.org/"})
-        assert b('xml:base="http://example.org/"') in rdfXml
-        assert b('<Test rdf:about="data/a">') in rdfXml
-        assert b('<rdf:Description rdf:about="data/b">') in rdfXml
-        assert b('<value rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</value>') in rdfXml
-        assert b('<BNode rdf:nodeID="') in rdfXml, "expected one identified bnode in serialized graph"
+        assert 'xml:base="http://example.org/"'.encode("latin-1") in rdfXml
+        assert '<Test rdf:about="data/a">'.encode("latin-1") in rdfXml
+        assert '<rdf:Description rdf:about="data/b">'.encode("latin-1") in rdfXml
+        assert '<value rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</value>'.encode("latin-1") in rdfXml
+        assert '<BNode rdf:nodeID="'.encode("latin-1") in rdfXml, "expected one identified bnode in serialized graph"
 
     def test_subClassOf_objects(self):
         reparsedGraph = serialize_and_load(self.sourceGraph, self.serializer)

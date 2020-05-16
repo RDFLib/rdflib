@@ -19,12 +19,8 @@ from rdflib.term import Literal
 
 from rdflib.compat import cast_bytes
 from rdflib.compat import decodeUnicodeEscape
-from rdflib.compat import ascii
 
-from six import BytesIO
-from six import string_types
-from six import text_type
-from six import unichr
+from io import BytesIO
 
 __all__ = ['unquote', 'uriquote', 'Sink', 'NTriplesParser']
 
@@ -44,7 +40,7 @@ bufsiz = 2048
 validate = False
 
 
-class Node(text_type):
+class Node(str):
     pass
 
 
@@ -72,7 +68,7 @@ def unquote(s):
     """Unquote an N-Triples string."""
     if not validate:
 
-        if isinstance(s, text_type):  # nquads
+        if isinstance(s, str):  # nquads
             s = decodeUnicodeEscape(s)
         else:
             s = s.decode('unicode-escape')
@@ -100,7 +96,7 @@ def unquote(s):
                 codepoint = int(u or U, 16)
                 if codepoint > 0x10FFFF:
                     raise ParseError("Disallowed codepoint: %08X" % codepoint)
-                result.append(unichr(codepoint))
+                result.append(chr(codepoint))
             elif s.startswith('\\'):
                 raise ParseError("Illegal escape at: %s..." % s[:10])
             else:
@@ -158,7 +154,7 @@ class NTriplesParser(object):
 
     def parsestring(self, s):
         """Parse s as an N-Triples string."""
-        if not isinstance(s, string_types):
+        if not isinstance(s, str):
             raise ParseError("Item to parse must be a string instance.")
         f = BytesIO()
         f.write(cast_bytes(s))

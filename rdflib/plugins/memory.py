@@ -4,9 +4,7 @@ from __future__ import print_function
 
 import random
 
-from rdflib.term import BNode
 from rdflib.store import Store, NO_STORE, VALID_STORE
-from six import iteritems
 
 __all__ = ['Memory', 'IOMemory']
 
@@ -167,7 +165,7 @@ class Memory(Store):
         return self.__prefix.get(namespace, None)
 
     def namespaces(self):
-        for prefix, namespace in iteritems(self.__namespace):
+        for prefix, namespace in self.__namespace.items():
             yield prefix, namespace
 
     def __contexts(self):
@@ -247,7 +245,7 @@ class IOMemory(Store):
         return self.__prefix.get(namespace, None)
 
     def namespaces(self):
-        for prefix, namespace in iteritems(self.__namespace):
+        for prefix, namespace in self.__namespace.items():
             yield prefix, namespace
 
     def add(self, triple, context, quoted=False):

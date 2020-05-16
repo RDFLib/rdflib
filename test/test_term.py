@@ -10,13 +10,9 @@ from rdflib.term import URIRef, BNode, Literal, _is_valid_unicode
 from rdflib.graph import QuotedGraph, Graph
 from rdflib.namespace import XSD
 
-from six import PY3
-
 
 def uformat(s):
-    if PY3:
-        return s.replace("u'", "'")
-    return s
+    return s.replace("u'", "'")
 
 
 class TestURIRefRepr(unittest.TestCase):

@@ -1,5 +1,5 @@
 from codecs import getreader
-from six import BytesIO, StringIO
+from io import BytesIO, StringIO
 
 from rdflib import URIRef, Literal
 from rdflib.graph import Graph

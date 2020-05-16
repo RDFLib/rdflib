@@ -2,13 +2,10 @@ import unittest
 
 import rdflib  # needed for eval(repr(...)) below
 from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind, _XSD_BOOLEAN
-from six import integer_types, PY3, string_types
 
 
 def uformat(s):
-    if PY3:
-        return s.replace("u'", "'")
-    return s
+    return s.replace("u'", "'")
 
 
 class TestLiteral(unittest.TestCase):
@@ -60,7 +57,7 @@ class TestNew(unittest.TestCase):
         # change datatype
         l = Literal("1")
         l2 = Literal(l, datatype=rdflib.XSD.integer)
-        self.assertTrue(isinstance(l2.value, integer_types))
+        self.assertTrue(isinstance(l2.value, int))
 
     def testDatatypeGetsAutoURIRefConversion(self):
         # drewp disapproves of this behavior, but it should be
@@ -173,7 +170,7 @@ class TestBindings(unittest.TestCase):
         datatype = rdflib.URIRef('urn:dt:mystring')
 
         #Datatype-specific rule
-        bind(datatype, string_types, unlexify, lexify, datatype_specific=True)
+        bind(datatype, str, unlexify, lexify, datatype_specific=True)
 
         s = "Hello"
         normal_l = Literal(s)

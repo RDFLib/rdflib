@@ -1,7 +1,7 @@
 import unittest
-from rdflib.namespace import Namespace, RDF, RDFS
+from rdflib.namespace import RDF, RDFS
 from rdflib import plugin
-from six import StringIO
+from io import StringIO
 from rdflib.term import URIRef
 from rdflib.store import Store
 from rdflib.graph import Graph

@@ -4,8 +4,6 @@ from rdflib.query import (
     Result, ResultException, ResultSerializer, ResultParser)
 from rdflib import Literal, URIRef, BNode, Variable
 
-from six import binary_type, text_type
-
 
 """A Serializer for SPARQL results in JSON:
 
@@ -23,7 +21,7 @@ class JSONResultParser(ResultParser):
 
     def parse(self, source, content_type=None):
         inp = source.read()
-        if isinstance(inp, binary_type):
+        if isinstance(inp, bytes):
             inp = inp.decode('utf-8')
         return JSONResult(json.loads(inp))
 
@@ -114,13 +112,13 @@ def parseJsonTerm(d):
 
 def termToJSON(self, term):
     if isinstance(term, URIRef):
-        return {'type': 'uri', 'value': text_type(term)}
+        return {'type': 'uri', 'value': str(term)}
     elif isinstance(term, Literal):
         r = {'type': 'literal',
-             'value': text_type(term)}
+             'value': str(term)}
 
         if term.datatype is not None:
-            r['datatype'] = text_type(term.datatype)
+            r['datatype'] = str(term.datatype)
         if term.language is not None:
             r['xml:lang'] = term.language
         return r

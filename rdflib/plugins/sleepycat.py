@@ -4,8 +4,7 @@ from os.path import exists, abspath
 from os import mkdir
 from rdflib.store import Store, VALID_STORE, NO_STORE
 from rdflib.term import URIRef
-from six import b
-from six.moves.urllib.request import pathname2url
+from urllib.request import pathname2url
 
 
 def bb(u):
@@ -113,7 +112,7 @@ class Sleepycat(Store):
         self.__indicies_info = [None, ] * 3
         for i in range(0, 3):
             index_name = to_key_func(
-                i)((b("s"), b("p"), b("o")), b("c")).decode()
+                i)(("s".encode("latin-1"), "p".encode("latin-1"), "o".encode("latin-1")), "c".encode("latin-1")).decode()
             index = db.DB(db_env)
             index.set_flags(dbsetflags)
             index.open(index_name, dbname, dbtype, dbopenflags, dbmode)
@@ -255,10 +254,10 @@ class Sleepycat(Store):
             self.__contexts.put(bb(c), "", txn=txn)
 
             contexts_value = cspo.get(
-                bb("%s^%s^%s^%s^" % ("", s, p, o)), txn=txn) or b("")
-            contexts = set(contexts_value.split(b("^")))
+                bb("%s^%s^%s^%s^" % ("", s, p, o)), txn=txn) or "".encode("latin-1")
+            contexts = set(contexts_value.split("^".encode("latin-1")))
             contexts.add(bb(c))
-            contexts_value = b("^").join(contexts)
+            contexts_value = "^".encode("latin-1").join(contexts)
             assert contexts_value is not None
 
             cspo.put(bb("%s^%s^%s^%s^" % (c, s, p, o)), "", txn=txn)
@@ -278,20 +277,20 @@ class Sleepycat(Store):
         s, p, o = spo
         cspo, cpos, cosp = self.__indicies
         contexts_value = cspo.get(
-            b("^").join([b(""), s, p, o, b("")]), txn=txn) or b("")
-        contexts = set(contexts_value.split(b("^")))
+            "^".encode("latin-1").join(["".encode("latin-1"), s, p, o, "".encode("latin-1")]), txn=txn) or "".encode("latin-1")
+        contexts = set(contexts_value.split("^".encode("latin-1")))
         contexts.discard(c)
-        contexts_value = b("^").join(contexts)
+        contexts_value = "^".encode("latin-1").join(contexts)
         for i, _to_key, _from_key in self.__indicies_info:
             i.delete(_to_key((s, p, o), c), txn=txn)
         if not quoted:
             if contexts_value:
                 for i, _to_key, _from_key in self.__indicies_info:
-                    i.put(_to_key((s, p, o), b("")), contexts_value, txn=txn)
+                    i.put(_to_key((s, p, o), "".encode("latin-1")), contexts_value, txn=txn)
             else:
                 for i, _to_key, _from_key in self.__indicies_info:
                     try:
-                        i.delete(_to_key((s, p, o), b("")), txn=txn)
+                        i.delete(_to_key((s, p, o), "".encode("latin-1")), txn=txn)
                     except db.DBNotFoundError:
                         pass  # TODO: is it okay to ignore these?
 
@@ -344,11 +343,11 @@ class Sleepycat(Store):
                 if key.startswith(prefix):
                     c, s, p, o = from_key(key)
                     if context is None:
-                        contexts_value = index.get(key, txn=txn) or b("")
+                        contexts_value = index.get(key, txn=txn) or "".encode("latin-1")
                         # remove triple from all non quoted contexts
-                        contexts = set(contexts_value.split(b("^")))
+                        contexts = set(contexts_value.split("^".encode("latin-1")))
                         # and from the conjunctive index
-                        contexts.add(b(""))
+                        contexts.add("".encode("latin-1"))
                         for c in contexts:
                             for i, _to_key, _ in self.__indicies_info:
                                 i.delete(_to_key((s, p, o), c), txn=txn)
@@ -413,7 +412,7 @@ class Sleepycat(Store):
                 context = None
 
         if context is None:
-            prefix = b("^")
+            prefix = "^".encode("latin-1")
         else:
             prefix = bb("%s^" % self._to_string(context))
 
@@ -480,7 +479,7 @@ class Sleepycat(Store):
             contexts = self.__indicies[0].get(bb(
                 "%s^%s^%s^%s^" % ("", s, p, o)))
             if contexts:
-                for c in contexts.split(b("^")):
+                for c in contexts.split("^".encode("latin-1")):
                     if c:
                         yield _from_string(c)
         else:
@@ -553,18 +552,18 @@ class Sleepycat(Store):
 def to_key_func(i):
     def to_key(triple, context):
         "Takes a string; returns key"
-        return b("^").join(
+        return "^".encode("latin-1").join(
             (context,
              triple[i % 3],
              triple[(i + 1) % 3],
-             triple[(i + 2) % 3], b("")))  # "" to tac on the trailing ^
+             triple[(i + 2) % 3], "".encode("latin-1")))  # "" to tac on the trailing ^
     return to_key
 
 
 def from_key_func(i):
     def from_key(key):
         "Takes a key; returns string"
-        parts = key.split(b("^"))
+        parts = key.split("^".encode("latin-1"))
         return \
             parts[0], \
             parts[(3 - i + 0) % 3 + 1], \
@@ -576,7 +575,7 @@ def from_key_func(i):
 def results_from_key_func(i, from_string):
     def from_key(key, subject, predicate, object, contexts_value):
         "Takes a key and subject, predicate, object; returns tuple for yield"
-        parts = key.split(b("^"))
+        parts = key.split("^".encode("latin-1"))
         if subject is None:
             # TODO: i & 1: # dis assemble and/or measure to see which is faster
             # subject is None or i & 1
@@ -592,7 +591,7 @@ def results_from_key_func(i, from_string):
         else:
             o = object
         return (s, p, o), (
-            from_string(c) for c in contexts_value.split(b("^")) if c)
+            from_string(c) for c in contexts_value.split("^".encode("latin-1")) if c)
     return from_key
 
 

@@ -7,8 +7,7 @@ import unittest
 import re
 
 from rdflib import ConjunctiveGraph, URIRef, Literal, BNode, Graph
-from six import text_type
-from six.moves.urllib.request import urlopen
+from urllib.request import urlopen
 
 HOST = 'http://localhost:3031'
 DB = '/db/'
@@ -261,7 +260,7 @@ class TestSparql11(unittest.TestCase):
         g.update(r4)
         values = set()
         for v in g.objects(michel, says):
-            values.add(text_type(v))
+            values.add(str(v))
         self.assertEqual(values, set([re.sub(r"\\(.)", r"\1", re.sub(
             r"^'''|'''$|^'|'$|" + r'^"""|"""$|^"|"$', r"", s)) for s in r4strings]))
 
@@ -275,7 +274,7 @@ class TestSparql11(unittest.TestCase):
         g.update(r5)
         values = set()
         for v in g.objects(michel, hates):
-            values.add(text_type(v))
+            values.add(str(v))
         self.assertEqual(values, set([u"urn:foo'bar?baz;a=1&b=2#fragment", u"'}"]))
 
         # Comments
@@ -309,12 +308,12 @@ class TestSparql11(unittest.TestCase):
     def testEmptyNamedGraph(self):
         empty_graph_iri = "urn:empty-graph-1"
         self.graph.update("CREATE GRAPH <%s>" % empty_graph_iri)
-        named_graphs = [text_type(r[0]) for r in self.graph.query(
+        named_graphs = [str(r[0]) for r in self.graph.query(
             "SELECT ?name WHERE { GRAPH ?name {} }")]
         # Some SPARQL endpoint backends (like TDB) are not able to find empty named graphs
         # (at least with this query)
         if empty_graph_iri in named_graphs:
-            self.assertTrue(empty_graph_iri in [text_type(g.identifier)
+            self.assertTrue(empty_graph_iri in [str(g.identifier)
                                                 for g in self.graph.contexts()])
 
     def testEmptyLiteral(self):

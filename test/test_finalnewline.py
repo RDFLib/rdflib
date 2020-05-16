@@ -2,8 +2,6 @@
 from rdflib import ConjunctiveGraph, URIRef
 import rdflib.plugin
 
-from six import b
-
 
 def testFinalNewline():
     """
@@ -19,8 +17,8 @@ def testFinalNewline():
     failed = set()
     for p in rdflib.plugin.plugins(None, rdflib.plugin.Serializer):
         v = graph.serialize(format=p.name)
-        lines = v.split(b("\n"))
-        if b("\n") not in v or (lines[-1] != b('')):
+        lines = v.split("\n".encode("latin-1"))
+        if "\n".encode("latin-1") not in v or (lines[-1] != ''.encode("latin-1")):
             failed.add(p.name)
     assert len(failed) == 0, "No final newline for formats: '%s'" % failed
 

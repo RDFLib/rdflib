@@ -20,7 +20,6 @@ from .parserutils import Comp, Param, ParamList
 
 from . import operators as op
 from rdflib.compat import decodeUnicodeEscape
-from six import binary_type, unichr
 
 import rdflib
 
@@ -195,7 +194,7 @@ PN_LOCAL_ESC_re = '\\\\[_~\\.\\-!$&"\'()*+,;=/?#@%]'
 # [171] PERCENT ::= '%' HEX HEX
 PERCENT_re = '%[0-9a-fA-F]{2}'
 # PERCENT = Regex(PERCENT_re) # regex'd
-#PERCENT.setParseAction(lambda x: unichr(int(x[0][1:], 16)))
+#PERCENT.setParseAction(lambda x: chr(int(x[0][1:], 16)))
 
 # [170] PLX ::= PERCENT | PN_LOCAL_ESC
 PLX_re = '(%s|%s)' % (PN_LOCAL_ESC_re, PERCENT_re)
@@ -212,7 +211,7 @@ PN_LOCAL = Regex(u"""([%(PN_CHARS_U)s:0-9]|%(PLX)s)
 
 
 def _hexExpand(match):
-    return unichr(int(match.group(0)[1:], 16))
+    return chr(int(match.group(0)[1:], 16))
 
 
 PN_LOCAL.setParseAction(lambda x: re.sub("(%s)" % PERCENT_re, _hexExpand, x[0]))
@@ -1043,7 +1042,7 @@ def expandUnicodeEscapes(q):
 
     def expand(m):
         try:
-            return unichr(int(m.group(1), 16))
+            return chr(int(m.group(1), 16))
         except:
             raise Exception("Invalid unicode code point: " + m)
 
@@ -1053,7 +1052,7 @@ def expandUnicodeEscapes(q):
 def parseQuery(q):
     if hasattr(q, 'read'):
         q = q.read()
-    if isinstance(q, binary_type):
+    if isinstance(q, bytes):
         q = q.decode('utf-8')
 
     q = expandUnicodeEscapes(q)
@@ -1064,7 +1063,7 @@ def parseUpdate(q):
     if hasattr(q, 'read'):
         q = q.read()
 
-    if isinstance(q, binary_type):
+    if isinstance(q, bytes):
         q = q.decode('utf-8')
 
     q = expandUnicodeEscapes(q)

@@ -45,14 +45,7 @@ from uuid import uuid4
 
 from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX, _unique_id
 from rdflib.graph import QuotedGraph, ConjunctiveGraph, Graph
-
-from six import b
-from six import binary_type
-
 from rdflib.compat import long_type
-from six import string_types
-from six import text_type
-from six import unichr
 from rdflib.compat import narrow_build
 
 __all__ = ['BadSyntax', 'N3Parser', 'TurtleParser',
@@ -82,7 +75,6 @@ def splitFragP(uriref, punct=0):
         return uriref[:i], uriref[i:]
     else:
         return uriref, ''
-
 
 
 def join(here, there):
@@ -126,7 +118,7 @@ def join(here, there):
     slashl = there.find('/')
     colonl = there.find(':')
 
-     # join(base, 'foo:/') -- absolute
+    # join(base, 'foo:/') -- absolute
     if colonl >= 0 and (slashl < 0 or colonl < slashl):
         return there
 
@@ -138,7 +130,7 @@ def join(here, there):
     if not path:
         return here + frag
 
-     # join('mid:foo@example', '../foo') bzzt
+    # join('mid:foo@example', '../foo') bzzt
     if here[bcolonl + 1:bcolonl + 2] != '/':
         raise ValueError(
             ("Base <%s> has no slash after "
@@ -149,16 +141,16 @@ def join(here, there):
     else:
         bpath = bcolonl + 1
 
-     # join('http://xyz', 'foo')
+    # join('http://xyz', 'foo')
     if bpath < 0:
         bpath = len(here)
         here = here + '/'
 
-     # join('http://xyz/', '//abc') => 'http://abc'
+    # join('http://xyz/', '//abc') => 'http://abc'
     if there[:2] == '//':
         return here[:bcolonl + 1] + there
 
-     # join('http://xyz/', '/abc') => 'http://xyz/abc'
+    # join('http://xyz/', '/abc') => 'http://xyz/abc'
     if there[:1] == '/':
         return here[:bpath] + there
 
@@ -190,7 +182,7 @@ def base():
     we should put it in the hostname just to prevent ambiguity
 
     """
-     # return "file://" + hostname + os.getcwd() + "/"
+    # return "file://" + hostname + os.getcwd() + "/"
     return "file://" + _fixslash(os.getcwd()) + "/"
 
 
@@ -314,14 +306,14 @@ escapeChars = "(_~.-!$&'()*+,;=/?#@%)" # valid for \ escapes in localnames
 
 def unicodeExpand(m):
     try:
-        return unichr(int(m.group(1), 16))
+        return chr(int(m.group(1), 16))
     except:
         raise Exception("Invalid unicode code point: " + m.group(1))
 
 if narrow_build:
     def unicodeExpand(m):
         try:
-            return unichr(int(m.group(1), 16))
+            return chr(int(m.group(1), 16))
         except ValueError:
             warnings.warn(
                 'Encountered a unicode char > 0xFFFF in a narrow python build. '
@@ -457,7 +449,7 @@ class SinkParser:
         So if there is more data to feed to the
         parser, it should be straightforward to recover."""
 
-        if not isinstance(octets, text_type):
+        if not isinstance(octets, str):
             s = octets.decode('utf-8')
              # NB already decoded, so \ufeff
             if len(s) > 0 and s[0] == codecs.BOM_UTF8.decode('utf-8'):
@@ -695,7 +687,7 @@ class SinkParser:
 
     def bind(self, qn, uri):
         assert isinstance(
-            uri, binary_type), "Any unicode must be %x-encoded already"
+            uri, bytes), "Any unicode must be %x-encoded already"
         if qn == "":
             self._store.setDefaultNamespace(uri)
         else:
@@ -1787,14 +1779,14 @@ class RDFSink(object):
 
     def normalise(self, f, n):
         if isinstance(n, tuple):
-            return URIRef(text_type(n[1]))
+            return URIRef(str(n[1]))
 
         if isinstance(n, bool):
             s = Literal(str(n).lower(), datatype=BOOLEAN_DATATYPE)
             return s
 
         if isinstance(n, int) or isinstance(n, long_type):
-            s = Literal(text_type(n), datatype=INTEGER_DATATYPE)
+            s = Literal(str(n), datatype=INTEGER_DATATYPE)
             return s
 
         if isinstance(n, Decimal):
@@ -1839,7 +1831,6 @@ class RDFSink(object):
 #
 
 
-
 def hexify(ustr):
     """Use URL encoding to return an ASCII string
     corresponding to the given UTF8 string
@@ -1848,7 +1839,7 @@ def hexify(ustr):
     %(b)s'http://example/a%%20b'
 
     """
-     # s1=ustr.encode('utf-8')
+    # s1=ustr.encode('utf-8')
     s = ""
     for ch in ustr:   # .encode('utf-8'):
         if ord(ch) > 126 or ord(ch) < 33:
@@ -1856,7 +1847,7 @@ def hexify(ustr):
         else:
             ch = "%c" % ord(ch)
         s = s + ch
-    return b(s)
+    return s.encode("latin-1")
 
 
 class TurtleParser(Parser):

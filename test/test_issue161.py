@@ -1,5 +1,4 @@
 from unittest import TestCase
-from six import b
 from rdflib.graph import ConjunctiveGraph
 
 
@@ -30,4 +29,4 @@ class EntityTest(TestCase):
         # Shouldn't have got to here
         s = g.serialize(format="turtle")
 
-        self.assertTrue(b('@prefix _9') not in s)
+        self.assertTrue('@prefix _9'.encode("latin-1") not in s)

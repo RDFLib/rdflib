@@ -1,4 +1,4 @@
-from six import PY3
+
 
 
 __doc__ = """
@@ -506,13 +506,9 @@ else:
     URIRef.__invert__ = inv_path
     URIRef.__neg__ = neg_path
     URIRef.__truediv__ = path_sequence
-    if not PY3:
-        URIRef.__div__ = path_sequence
 
     Path.__invert__ = inv_path
     Path.__neg__ = neg_path
     Path.__mul__ = mul_path
     Path.__or__ = path_alternative
     Path.__truediv__ = path_sequence
-    if not PY3:
-        Path.__div__ = path_sequence

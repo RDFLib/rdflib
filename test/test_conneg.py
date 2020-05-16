@@ -3,8 +3,8 @@ import time
 
 from rdflib import Graph
 
-from six.moves import _thread
-from six.moves.BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+import _thread
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
 """
 Test that correct content negoation headers are passed

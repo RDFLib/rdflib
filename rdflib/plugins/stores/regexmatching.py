@@ -11,7 +11,7 @@ matching against the results from the store it's wrapping.
 from rdflib.store import Store
 from rdflib.graph import Graph
 
-from six import text_type
+
 
 import re
 
@@ -21,7 +21,7 @@ NATIVE_REGEX = 0
 PYTHON_REGEX = 1
 
 
-class REGEXTerm(text_type):
+class REGEXTerm(str):
     """
     REGEXTerm can be used in any term slot and is interpreted as a request to
     perform a REGEX match (not a string comparison) using the value
@@ -32,7 +32,7 @@ class REGEXTerm(text_type):
         self.compiledExpr = re.compile(expr)
 
     def __reduce__(self):
-        return (REGEXTerm, (text_type(''),))
+        return (REGEXTerm, (str(''),))
 
 
 def regexCompareQuad(quad, regexQuad):

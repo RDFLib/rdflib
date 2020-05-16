@@ -9,10 +9,9 @@ import tempfile
 import warnings
 import types
 
-from six import BytesIO
-from six import PY2
-from six import text_type
-from six.moves.urllib.parse import urlparse
+from io import BytesIO
+
+from urllib.parse import urlparse
 
 __all__ = ['Processor', 'Result', 'ResultParser', 'ResultSerializer',
            'ResultException']
@@ -71,7 +70,7 @@ class EncodeOnlyUnicode(object):
         self.__stream = stream
 
     def write(self, arg):
-        if isinstance(arg, text_type):
+        if isinstance(arg, str):
             self.__stream.write(arg.encode("utf-8"))
         else:
             self.__stream.write(arg)
@@ -120,7 +119,7 @@ class ResultRow(tuple):
 
         instance = super(ResultRow, cls).__new__(
             cls, (values.get(v) for v in labels))
-        instance.labels = dict((text_type(x[1]), x[0])
+        instance.labels = dict((str(x[1]), x[0])
                                for x in enumerate(labels))
         return instance
 
@@ -135,8 +134,8 @@ class ResultRow(tuple):
         except TypeError:
             if name in self.labels:
                 return tuple.__getitem__(self, self.labels[name])
-            if text_type(name) in self.labels:  # passing in variable object
-                return tuple.__getitem__(self, self.labels[text_type(name)])
+            if str(name) in self.labels:  # passing in variable object
+                return tuple.__getitem__(self, self.labels[str(name)])
             raise KeyError(name)
 
     def get(self, name, default=None):
@@ -260,9 +259,6 @@ class Result(object):
             return self.askAnswer
         else:
             return len(self) > 0
-
-    if PY2:
-        __nonzero__ = __bool__
 
     def __iter__(self):
         if self.type in ("CONSTRUCT", "DESCRIBE"):

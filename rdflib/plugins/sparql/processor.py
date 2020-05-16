@@ -6,7 +6,7 @@ These should be automatically registered with RDFLib
 
 """
 
-from six import string_types
+
 
 from rdflib.query import Processor, Result, UpdateProcessor
 
@@ -52,7 +52,7 @@ class SPARQLUpdateProcessor(UpdateProcessor):
         self.graph = graph
 
     def update(self, strOrQuery, initBindings={}, initNs={}):
-        if isinstance(strOrQuery, string_types):
+        if isinstance(strOrQuery, str):
             strOrQuery = translateUpdate(parseUpdate(strOrQuery), initNs=initNs)
 
         return evalUpdate(self.graph, strOrQuery, initBindings)

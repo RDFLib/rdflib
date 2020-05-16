@@ -10,7 +10,6 @@ from rdflib.term import BNode, Literal, URIRef
 from rdflib.exceptions import Error
 from rdflib.serializer import Serializer
 from rdflib.namespace import RDF, RDFS
-from six import b, text_type
 
 __all__ = ['RecursiveSerializer', 'TurtleSerializer']
 
@@ -32,8 +31,8 @@ def _object_comparator(a, b):
         return 0
 
     except TypeError:
-        a = text_type(a)
-        b = text_type(b)
+        a = str(a)
+        b = str(b)
         return (a > b) - (a < b)
 
 
@@ -248,7 +247,7 @@ class TurtleSerializer(RecursiveSerializer):
                 self.write('\n')
 
         self.endDocument()
-        stream.write(b("\n"))
+        stream.write("\n".encode("latin-1"))
 
         self.base = None
 

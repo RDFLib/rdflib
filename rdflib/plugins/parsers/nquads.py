@@ -28,8 +28,6 @@ from __future__ import print_function
 
 from codecs import getreader
 
-from six import b
-
 from rdflib import ConjunctiveGraph
 
 # Build up from the NTriples parser:
@@ -37,7 +35,6 @@ from rdflib.plugins.parsers.ntriples import NTriplesParser
 from rdflib.plugins.parsers.ntriples import ParseError
 from rdflib.plugins.parsers.ntriples import r_tail
 from rdflib.plugins.parsers.ntriples import r_wspace
-from rdflib.plugins.parsers.ntriples import r_wspaces
 
 __all__ = ['NQuadsParser']
 

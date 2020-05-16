@@ -43,8 +43,8 @@ from rdflib.plugins.sparql.results.rdfresults import RDFResultParser
 from rdflib.plugins.sparql.update import evalUpdate
 
 from rdflib.compat import decodeStringEscape, bopen
-from six.moves.urllib.parse import urljoin
-from six import BytesIO
+from urllib.parse import urljoin
+from io import BytesIO
 
 from nose.tools import nottest, eq_
 from nose import SkipTest

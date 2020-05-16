@@ -17,13 +17,10 @@ import time
 import datetime
 import warnings
 
+import configparser
+from urllib.parse import quote
 
 import rdflib
-
-from six.moves import configparser
-from six.moves.urllib.parse import quote
-from six import text_type
-
 from rdflib import RDF, RDFS
 from rdflib.namespace import split_uri
 
@@ -131,7 +128,7 @@ def csv_reader(csv_data, dialect=csv.excel, **kwargs):
                             dialect=dialect, **kwargs)
     for row in csv_reader:
         # decode UTF-8 back to Unicode, cell by cell:
-        yield [text_type(cell, 'utf-8', errors='replace') for cell in row]
+        yield [str(cell, 'utf-8', errors='replace') for cell in row]
 
 
 def prefixuri(x, prefix, class_=None):

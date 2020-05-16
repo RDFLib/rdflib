@@ -9,10 +9,6 @@ from rdflib.util import first, more_than
 from rdflib.collection import Collection
 from rdflib.serializer import Serializer
 
-# from rdflib.exceptions import Error
-
-from six import b
-
 from xml.sax.saxutils import quoteattr, escape
 import xml.dom.minidom
 
@@ -223,7 +219,7 @@ class PrettyXMLSerializer(Serializer):
                 self.subject(subject, 1)
 
         writer.pop(RDF.RDF)
-        stream.write(b("\n"))
+        stream.write("\n".encode("latin-1"))
 
         # Set to None so that the memory can get garbage collected.
         self.__serialized = None

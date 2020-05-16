@@ -131,24 +131,3 @@ if __name__ == "__main__":
     test_cases()
     # unittest.main()
 
-
-"""
-Interesting failure in Python 2.4 ...
-
-======================================================================
-ERROR: Failure: TypeError (function() takes at least 2 arguments (0 given))
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File ".../python2.4/site-packages/nose/loader.py", line 231, in generate
-    for test in g():
-  File ".../rdflib/test/test_swap_n3.py", line 95, in test_cases
-    gt = deepcopy(generictest)
-  File "/usr/local/python2.4/lib/python2.4/copy.py", line 204, in deepcopy
-    y = _reconstruct(x, rv, 1, memo)
-  File "/usr/local/python2.4/lib/python2.4/copy.py", line 336, in _reconstruct
-    y = callable(*args)
-  File "...py24/lib/python2.4/copy_reg.py", line 92, in __newobj__
-    return cls.__new__(cls, *args)
-TypeError: function() takes at least 2 arguments (0 given)
-
-"""

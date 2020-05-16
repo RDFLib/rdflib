@@ -10,8 +10,6 @@ http://www.w3.org/TR/sparql11-results-csv-tsv/
 import codecs
 import csv
 
-from six import binary_type, PY3
-
 from rdflib import Variable, BNode, URIRef, Literal
 
 from rdflib.query import Result, ResultSerializer, ResultParser
@@ -25,7 +23,7 @@ class CSVResultParser(ResultParser):
 
         r = Result('SELECT')
 
-        if isinstance(source.read(0), binary_type):
+        if isinstance(source.read(0), bytes):
             # if reading from source returns bytes do utf-8 decoding
             source = codecs.getreader('utf-8')(source)
 
@@ -63,17 +61,14 @@ class CSVResultSerializer(ResultSerializer):
             raise Exception(
                 "CSVSerializer can only serialize select query results")
 
-    def serialize(self, stream, encoding='utf-8'):
+    def serialize(self, stream, encoding='utf-8', **kwargs):
 
-        if PY3:
-            # the serialiser writes bytes in the given encoding
-            # in py3 csv.writer is unicode aware and writes STRINGS,
-            # so we encode afterwards
-            # in py2 it breaks when passed unicode strings,
-            # and must be passed utf8, so we encode before
+        # the serialiser writes bytes in the given encoding
+        # in py3 csv.writer is unicode aware and writes STRINGS,
+        # so we encode afterwards
 
-            import codecs
-            stream = codecs.getwriter(encoding)(stream)
+        import codecs
+        stream = codecs.getwriter(encoding)(stream)
 
         out = csv.writer(stream, delimiter=self.delim)
 
@@ -86,7 +81,5 @@ class CSVResultSerializer(ResultSerializer):
     def serializeTerm(self, term, encoding):
         if term is None:
             return ""
-        if not PY3:
-            return term.encode(encoding)
         else:
             return term

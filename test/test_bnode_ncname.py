@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
-import sys
-try:
-    from hashlib import md5
-except ImportError:
-    from md5 import md5
+from hashlib import md5
+
 
 try:
     from uuid import uuid4

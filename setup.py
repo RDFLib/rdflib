@@ -5,7 +5,7 @@ import re
 from setuptools import setup, find_packages
 
 kwargs = {}
-kwargs['install_requires'] = [ 'six', 'isodate', 'pyparsing']
+kwargs['install_requires'] = ['isodate', 'pyparsing']
 kwargs['tests_require'] = ['html5lib', 'networkx', 'nose', 'doctest-ignore-unicode', 'requests']
 kwargs['test_suite'] = "nose.collector"
 kwargs['extras_require'] = {
@@ -15,12 +15,14 @@ kwargs['extras_require'] = {
     'docs': ['sphinx < 4', 'sphinxcontrib-apidoc']
     }
 
+
 def find_version(filename):
     _version_re = re.compile(r'__version__ = "(.*)"')
     for line in open(filename):
         version_match = _version_re.match(line)
         if version_match:
             return version_match.group(1)
+
 
 version = find_version('rdflib/__init__.py')
 

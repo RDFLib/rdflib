@@ -1,6 +1,5 @@
 import unittest
 from rdflib import ConjunctiveGraph, URIRef, Namespace
-from six import b
 
 TEST_BASE = 'test/nquads.rdflib'
 
@@ -55,7 +54,7 @@ class NQuadsParserTest(unittest.TestCase):
         g.get_context(uri2).add((bob, likes, pizza))
 
         s = g.serialize(format='nquads')
-        self.assertEqual(len([x for x in s.split(b("\n")) if x.strip()]), 2)
+        self.assertEqual(len([x for x in s.split("\n".encode("latin-1")) if x.strip()]), 2)
 
         g2 = ConjunctiveGraph()
         g2.parse(data=s, format='nquads')

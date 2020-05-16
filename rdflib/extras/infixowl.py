@@ -4,7 +4,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from six import PY3
+
 
 
 __doc__ = """
@@ -1569,10 +1569,10 @@ class BooleanClass(OWLRDFListProxy, Class):
         >>> testClass #doctest: +SKIP
         ( ex:Fire OR ex:Water )
         >>> try: testClass.changeOperator(OWL_NS.unionOf)
-        ... except Exception%s: print(e)
+        ... except Exception as e: print(e)
         The new operator is already being used!
 
-        """ % 'as e' if PY3 else ', e'
+        """
         assert newOperator != self._operator, \
             "The new operator is already being used!"
         self.graph.remove((self.identifier, self._operator, self._rdfList.uri))

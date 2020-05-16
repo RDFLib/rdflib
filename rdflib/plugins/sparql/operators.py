@@ -25,8 +25,8 @@ from rdflib.plugins.sparql.parserutils import CompValue, Expr
 from rdflib.plugins.sparql.datatypes import XSD_DTs, type_promotion
 from rdflib import URIRef, BNode, Variable, Literal, XSD, RDF
 from rdflib.term import Node
-from six import text_type
-from six.moves.urllib.parse import quote
+
+from urllib.parse import quote
 
 from pyparsing import ParseResults
 
@@ -218,7 +218,7 @@ def Builtin_REGEX(expr, ctx):
             [('i', re.IGNORECASE), ('s', re.DOTALL), ('m', re.MULTILINE)])
         cFlag = reduce(pyop.or_, [flagMap.get(f, 0) for f in flags])
 
-    return Literal(bool(re.search(text_type(pattern), text, cFlag)))
+    return Literal(bool(re.search(str(pattern), text, cFlag)))
 
 
 def Builtin_REPLACE(expr, ctx):
@@ -267,9 +267,9 @@ def Builtin_REPLACE(expr, ctx):
 
     # this is necessary due to different treatment of unmatched groups in
     # python versions. see comments above in _r(m).
-    compat_r = text_type(replacement) if sys.version_info[:2] >= (3, 5) else _r
+    compat_r = str(replacement) if sys.version_info[:2] >= (3, 5) else _r
 
-    return Literal(re.sub(text_type(pattern), compat_r, text, cFlag),
+    return Literal(re.sub(str(pattern), compat_r, text, cFlag),
                    datatype=text.datatype, lang=text.language)
 
 
@@ -278,7 +278,7 @@ def Builtin_STRDT(expr, ctx):
     http://www.w3.org/TR/sparql11-query/#func-strdt
     """
 
-    return Literal(text_type(expr.arg1), datatype=expr.arg2)
+    return Literal(str(expr.arg1), datatype=expr.arg2)
 
 
 def Builtin_STRLANG(expr, ctx):
@@ -292,7 +292,7 @@ def Builtin_STRLANG(expr, ctx):
 
     # TODO: normalisation of lang tag to lower-case
     # should probably happen in literal __init__
-    return Literal(text_type(s), lang=str(expr.arg2).lower())
+    return Literal(str(s), lang=str(expr.arg2).lower())
 
 
 def Builtin_CONCAT(expr, ctx):
@@ -418,7 +418,7 @@ def Builtin_STR(e, ctx):
     arg = e.arg
     if isinstance(arg, SPARQLError):
         raise arg
-    return Literal(text_type(arg))  # plain literal
+    return Literal(str(arg))  # plain literal
 
 
 def Builtin_LCASE(e, ctx):
@@ -436,7 +436,7 @@ def Builtin_LANGMATCHES(e, ctx):
     langTag = string(e.arg1)
     langRange = string(e.arg2)
 
-    if text_type(langTag) == "":
+    if str(langTag) == "":
         return Literal(False)  # nothing matches empty!
 
     return Literal(_lang_range_check(langRange, langTag))

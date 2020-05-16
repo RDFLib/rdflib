@@ -1,8 +1,6 @@
 import unittest
 
-
 from rdflib import Graph
-from six import b
 
 graph = Graph().parse(format='n3', data="""
 @prefix dct: <http://purl.org/dc/terms/> .
@@ -26,8 +24,8 @@ class PrefixTypesTest(unittest.TestCase):
     def test(self):
         s = graph.serialize(format='n3')
         print(s)
-        self.assertTrue(b("foaf:Document") in s)
-        self.assertTrue(b("xsd:date") in s)
+        self.assertTrue("foaf:Document".encode("latin-1") in s)
+        self.assertTrue("xsd:date".encode("latin-1") in s)
 
 
 if __name__ == '__main__':

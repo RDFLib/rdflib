@@ -35,7 +35,7 @@ except ImportError:
 
 from rdflib import BNode, ConjunctiveGraph, URIRef, Literal, Namespace, RDF
 from rdflib.namespace import FOAF, DC
-from six.moves import input
+from builtins import input
 
 storefn = os.path.expanduser("~/movies.n3")
 # storefn = '/home/simon/codes/film.dev/movies.n3'

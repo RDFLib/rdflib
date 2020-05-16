@@ -2,8 +2,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from six import BytesIO
-from six.moves import cPickle
+from io import BytesIO
+import pickle
 from rdflib.events import Dispatcher, Event
 """
 ============
@@ -40,9 +40,9 @@ NO_STORE = -1
 UNKNOWN = None
 
 
-Pickler = cPickle.Pickler
-Unpickler = cPickle.Unpickler
-UnpicklingError = cPickle.UnpicklingError
+Pickler = pickle.Pickler
+Unpickler = pickle.Unpickler
+UnpicklingError = pickle.UnpicklingError
 
 __all__ = ['StoreCreatedEvent', 'TripleAddedEvent', 'TripleRemovedEvent',
            'NodePickler', 'Store']
