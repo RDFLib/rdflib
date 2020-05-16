@@ -427,9 +427,6 @@ PROV = ClosedNamespace(
         "hadRole",
     ],
 )
-PROF = Namespace("http://www.w3.org/ns/dx/prof/")
-SDO = Namespace("https://schema.org/")
-SH = Namespace("http://www.w3.org/ns/shacl#")
 QB = Namespace("http://purl.org/linked-data/cube#")
 RDF = _RDFNamespace()
 RDFS = ClosedNamespace(
