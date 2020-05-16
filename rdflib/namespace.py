@@ -73,10 +73,35 @@ The following namespaces are available by directly importing from rdflib:
 """
 
 __all__ = [
-    'is_ncname', 'split_uri', 'Namespace',
-    'ClosedNamespace', 'NamespaceManager',
-    'XMLNS', 'RDF', 'RDFS', 'XSD', 'OWL',
-    'SKOS', 'DOAP', 'FOAF', 'DC', 'DCTERMS', 'VOID']
+    "is_ncname",
+    "split_uri",
+    "Namespace",
+    "ClosedNamespace",
+    "NamespaceManager",
+    "CSVW",
+    "DC",
+    "DCAT",
+    "DCTERMS",
+    "DOAP",
+    "FOAF",
+    "ODRL2",
+    "ORG",
+    "OWL",
+    "PROF",
+    "PROV",
+    "QB",
+    "RDF",
+    "RDFS",
+    "SDO",
+    "SH",
+    "SKOS",
+    "SOSA",
+    "SSN",
+    "TIME",
+    "VOID",
+    "XMLNS",
+    "XSD",
+]
 
 logger = logging.getLogger(__name__)
 
@@ -99,16 +124,16 @@ class Namespace(text_type):
         try:
             rt = text_type.__new__(cls, value)
         except UnicodeDecodeError:
-            rt = text_type.__new__(cls, value, 'utf-8')
+            rt = text_type.__new__(cls, value, "utf-8")
         return rt
 
     @property
     def title(self):
-        return URIRef(self + 'title')
+        return URIRef(self + "title")
 
     def term(self, name):
         # need to handle slices explicitly because of __getitem__ override
-        return URIRef(self + (name if isinstance(name, string_types) else ''))
+        return URIRef(self + (name if isinstance(name, string_types) else ""))
 
     def __getitem__(self, key, default=None):
         return self.term(key)
@@ -140,7 +165,7 @@ class URIPattern(text_type):
         try:
             rt = text_type.__new__(cls, value)
         except UnicodeDecodeError:
-            rt = text_type.__new__(cls, value, 'utf-8')
+            rt = text_type.__new__(cls, value, "utf-8")
         return rt
 
     def __mod__(self, *args, **kwargs):
@@ -169,9 +194,7 @@ class ClosedNamespace(object):
     def term(self, name):
         uri = self.__uris.get(name)
         if uri is None:
-            raise KeyError(
-                "term '{}' not in namespace '{}'".format(name, self.uri)
-            )
+            raise KeyError("term '{}' not in namespace '{}'".format(name, self.uri))
         else:
             return uri
 
@@ -204,31 +227,49 @@ class _RDFNamespace(ClosedNamespace):
             URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
             terms=[
                 # Syntax Names
-                "RDF", "Description", "ID", "about", "parseType",
-                "resource", "li", "nodeID", "datatype",
-
+                "RDF",
+                "Description",
+                "ID",
+                "about",
+                "parseType",
+                "resource",
+                "li",
+                "nodeID",
+                "datatype",
                 # RDF Classes
-                "Seq", "Bag", "Alt", "Statement", "Property",
-                "List", "PlainLiteral",
-
+                "Seq",
+                "Bag",
+                "Alt",
+                "Statement",
+                "Property",
+                "List",
+                "PlainLiteral",
                 # RDF Properties
-                "subject", "predicate", "object", "type",
-                "value", "first", "rest",
+                "subject",
+                "predicate",
+                "object",
+                "type",
+                "value",
+                "first",
+                "rest",
                 # and _n where n is a non-negative integer
-
                 # RDF Resources
                 "nil",
-
                 # Added in RDF 1.1
-                "XMLLiteral", "HTML", "langString",
-            
+                "XMLLiteral",
+                "HTML",
+                "langString",
                 # Added in JSON-LD 1.1
-                "JSON", "CompoundLiteral", "language", "direction"]
+                "JSON",
+                "CompoundLiteral",
+                "language",
+                "direction",
+            ],
         )
 
     def term(self, name):
         # Container membership properties
-        if name.startswith('_'):
+        if name.startswith("_"):
             try:
                 i = int(name[1:])
             except ValueError:
@@ -240,85 +281,222 @@ class _RDFNamespace(ClosedNamespace):
         return super(_RDFNamespace, self).term(name)
 
 
+CSVW = Namespace("http://www.w3.org/ns/csvw#")
+DC = Namespace("http://purl.org/dc/elements/1.1/")
+DCAT = Namespace("http://www.w3.org/ns/dcat#")
+DCTERMS = Namespace("http://purl.org/dc/terms/")
+DOAP = Namespace("http://usefulinc.com/ns/doap#")
+FOAF = ClosedNamespace(
+    uri=URIRef("http://xmlns.com/foaf/0.1/"),
+    terms=[
+        # all taken from http://xmlns.com/foaf/spec/
+        "Agent",
+        "Person",
+        "name",
+        "title",
+        "img",
+        "depiction",
+        "depicts",
+        "familyName",
+        "givenName",
+        "knows",
+        "based_near",
+        "age",
+        "made",
+        "maker",
+        "primaryTopic",
+        "primaryTopicOf",
+        "Project",
+        "Organization",
+        "Group",
+        "member",
+        "Document",
+        "Image",
+        "nick",
+        "mbox",
+        "homepage",
+        "weblog",
+        "openid",
+        "jabberID",
+        "mbox_sha1sum",
+        "interest",
+        "topic_interest",
+        "topic",
+        "page",
+        "workplaceHomepage",
+        "workInfoHomepage",
+        "schoolHomepage",
+        "publications",
+        "currentProject",
+        "pastProject",
+        "account",
+        "OnlineAccount",
+        "accountName",
+        "accountServiceHomepage",
+        "PersonalProfileDocument",
+        "tipjar",
+        "sha1",
+        "thumbnail",
+        "logo",
+    ],
+)
+ODRL2 = Namespace("http://www.w3.org/ns/odrl/2/")
+ORG = Namespace("http://www.w3.org/ns/org#")
+OWL = Namespace("http://www.w3.org/2002/07/owl#")
+PROF = Namespace("http://www.w3.org/ns/dx/prof/")
+PROV = ClosedNamespace(
+    uri=URIRef("http://www.w3.org/ns/prov#"),
+    terms=[
+        "Entity",
+        "Activity",
+        "Agent",
+        "wasGeneratedBy",
+        "wasDerivedFrom",
+        "wasAttributedTo",
+        "startedAtTime",
+        "used",
+        "wasInformedBy",
+        "endedAtTime",
+        "wasAssociatedWith",
+        "actedOnBehalfOf",
+        "Collection",
+        "EmptyCollection",
+        "Bundle",
+        "Person",
+        "SoftwareAgent",
+        "Organization",
+        "Location",
+        "alternateOf",
+        "specializationOf",
+        "generatedAtTime",
+        "hadPrimarySource",
+        "value",
+        "wasQuotedFrom",
+        "wasRevisionOf",
+        "invalidatedAtTime",
+        "wasInvalidatedBy",
+        "hadMember",
+        "wasStartedBy",
+        "wasEndedBy",
+        "invalidated",
+        "influenced",
+        "atLocation",
+        "generated",
+        "Influence",
+        "EntityInfluence",
+        "Usage",
+        "Start",
+        "End",
+        "Derivation",
+        "PrimarySource",
+        "Quotation",
+        "Revision",
+        "ActivityInfluence",
+        "Generation",
+        "Communication",
+        "Invalidation",
+        "AgentInfluence",
+        "Attribution",
+        "Association",
+        "Plan",
+        "Delegation",
+        "InstantaneousEvent",
+        "Role",
+        "wasInfluencedBy",
+        "qualifiedInfluence",
+        "qualifiedGeneration",
+        "qualifiedDerivation",
+        "qualifiedPrimarySource",
+        "qualifiedQuotation",
+        "qualifiedRevision",
+        "qualifiedAttribution",
+        "qualifiedInvalidation",
+        "qualifiedStart",
+        "qualifiedUsage",
+        "qualifiedCommunication",
+        "qualifiedAssociation",
+        "qualifiedEnd",
+        "qualifiedDelegation",
+        "influencer",
+        "entity",
+        "hadUsage",
+        "hadGeneration",
+        "activity",
+        "agent",
+        "hadPlan",
+        "hadActivity",
+        "atTime",
+        "hadRole",
+    ],
+)
+QB = Namespace("http://purl.org/linked-data/cube#")
 RDF = _RDFNamespace()
-
-
 RDFS = ClosedNamespace(
     uri=URIRef("http://www.w3.org/2000/01/rdf-schema#"),
     terms=[
-        "Resource", "Class", "subClassOf", "subPropertyOf", "comment", "label",
-        "domain", "range", "seeAlso", "isDefinedBy", "Literal", "Container",
-        "ContainerMembershipProperty", "member", "Datatype"]
+        "Resource",
+        "Class",
+        "subClassOf",
+        "subPropertyOf",
+        "comment",
+        "label",
+        "domain",
+        "range",
+        "seeAlso",
+        "isDefinedBy",
+        "Literal",
+        "Container",
+        "ContainerMembershipProperty",
+        "member",
+        "Datatype",
+    ],
 )
-
-OWL = Namespace('http://www.w3.org/2002/07/owl#')
-
-XSD = Namespace(_XSD_PFX)
-
-CSVW = Namespace('http://www.w3.org/ns/csvw#')
-DC = Namespace('http://purl.org/dc/elements/1.1/')
-DCAT = Namespace('http://www.w3.org/ns/dcat#')
-DCTERMS = Namespace('http://purl.org/dc/terms/')
-DOAP = Namespace('http://usefulinc.com/ns/doap#')
-FOAF = ClosedNamespace(
-    uri=URIRef('http://xmlns.com/foaf/0.1/'),
-    terms=[
-        # all taken from http://xmlns.com/foaf/spec/
-        'Agent', 'Person', 'name', 'title', 'img',
-        'depiction', 'depicts', 'familyName',
-        'givenName', 'knows', 'based_near', 'age', 'made',
-        'maker', 'primaryTopic', 'primaryTopicOf', 'Project', 'Organization',
-        'Group', 'member', 'Document', 'Image', 'nick',
-        'mbox', 'homepage', 'weblog', 'openid', 'jabberID',
-        'mbox_sha1sum', 'interest', 'topic_interest', 'topic', 'page',
-        'workplaceHomepage', 'workInfoHomepage', 'schoolHomepage', 'publications', 'currentProject',
-        'pastProject', 'account', 'OnlineAccount', 'accountName', 'accountServiceHomepage',
-        'PersonalProfileDocument', 'tipjar', 'sha1', 'thumbnail', 'logo'
-    ]
-)
-ODRL2 = Namespace('http://www.w3.org/ns/odrl/2/')
-ORG = Namespace('http://www.w3.org/ns/org#')
-PROV = ClosedNamespace(
-    uri=URIRef('http://www.w3.org/ns/prov#'),
-    terms=[
-        'Entity', 'Activity', 'Agent', 'wasGeneratedBy', 'wasDerivedFrom',
-        'wasAttributedTo', 'startedAtTime', 'used', 'wasInformedBy', 'endedAtTime',
-        'wasAssociatedWith', 'actedOnBehalfOf', 'Collection', 'EmptyCollection', 'Bundle',
-        'Person', 'SoftwareAgent', 'Organization', 'Location', 'alternateOf',
-        'specializationOf', 'generatedAtTime', 'hadPrimarySource', 'value', 'wasQuotedFrom',
-        'wasRevisionOf', 'invalidatedAtTime', 'wasInvalidatedBy', 'hadMember', 'wasStartedBy',
-        'wasEndedBy', 'invalidated', 'influenced', 'atLocation', 'generated',
-        'Influence', 'EntityInfluence', 'Usage', 'Start', 'End',
-        'Derivation', 'PrimarySource', 'Quotation', 'Revision', 'ActivityInfluence',
-        'Generation', 'Communication', 'Invalidation', 'AgentInfluence',
-        'Attribution', 'Association', 'Plan', 'Delegation', 'InstantaneousEvent',
-        'Role', 'wasInfluencedBy', 'qualifiedInfluence', 'qualifiedGeneration', 'qualifiedDerivation',
-        'qualifiedPrimarySource', 'qualifiedQuotation', 'qualifiedRevision', 'qualifiedAttribution',
-        'qualifiedInvalidation', 'qualifiedStart', 'qualifiedUsage', 'qualifiedCommunication', 'qualifiedAssociation',
-        'qualifiedEnd', 'qualifiedDelegation', 'influencer', 'entity', 'hadUsage', 'hadGeneration',
-        'activity', 'agent', 'hadPlan', 'hadActivity', 'atTime', 'hadRole'
-    ]
-)
-PROF = Namespace('http://www.w3.org/ns/dx/prof/')
-SDO = Namespace('https://schema.org/')
-SH = Namespace('http://www.w3.org/ns/shacl#')
+SDO = Namespace("https://schema.org/")
+SH = Namespace("http://www.w3.org/ns/shacl#")
 SKOS = ClosedNamespace(
-    uri=URIRef('http://www.w3.org/2004/02/skos/core#'),
+    uri=URIRef("http://www.w3.org/2004/02/skos/core#"),
     terms=[
         # all taken from https://www.w3.org/TR/skos-reference/#L1302
-        'Concept', 'ConceptScheme', 'inScheme', 'hasTopConcept', 'topConceptOf',
-        'altLabel', 'hiddenLabel', 'prefLabel', 'notation', 'changeNote',
-        'definition', 'editorialNote', 'example', 'historyNote', 'note',
-        'scopeNote', 'broader', 'broaderTransitive', 'narrower', 'narrowerTransitive',
-        'related', 'semanticRelation', 'Collection', 'OrderedCollection', 'member',
-        'memberList', 'broadMatch', 'closeMatch', 'exactMatch', 'mappingRelation',
-        'narrowMatch', 'relatedMatch'
-    ]
+        "Concept",
+        "ConceptScheme",
+        "inScheme",
+        "hasTopConcept",
+        "topConceptOf",
+        "altLabel",
+        "hiddenLabel",
+        "prefLabel",
+        "notation",
+        "changeNote",
+        "definition",
+        "editorialNote",
+        "example",
+        "historyNote",
+        "note",
+        "scopeNote",
+        "broader",
+        "broaderTransitive",
+        "narrower",
+        "narrowerTransitive",
+        "related",
+        "semanticRelation",
+        "Collection",
+        "OrderedCollection",
+        "member",
+        "memberList",
+        "broadMatch",
+        "closeMatch",
+        "exactMatch",
+        "mappingRelation",
+        "narrowMatch",
+        "relatedMatch",
+    ],
 )
-SOSA = Namespace('http://www.w3.org/ns/ssn/')
-SSN = Namespace('http://www.w3.org/ns/sosa/')
-TIME = Namespace('http://www.w3.org/2006/time#')
-VOID = Namespace('http://rdfs.org/ns/void#')
+SOSA = Namespace("http://www.w3.org/ns/ssn/")
+SSN = Namespace("http://www.w3.org/ns/sosa/")
+TIME = Namespace("http://www.w3.org/2006/time#")
+VOID = Namespace("http://rdfs.org/ns/void#")
+XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
+XSD = Namespace(_XSD_PFX)
 
 
 class NamespaceManager(object):
@@ -376,6 +554,7 @@ class NamespaceManager(object):
 
     def __get_store(self):
         return self.graph.store
+
     store = property(__get_store)
 
     def qname(self, uri):
@@ -387,10 +566,10 @@ class NamespaceManager(object):
 
     def qname_strict(self, uri):
         prefix, namespace, name = self.compute_qname_strict(uri)
-        if prefix == '':
+        if prefix == "":
             return name
         else:
-            return ':'.join((prefix, name))
+            return ":".join((prefix, name))
 
     def normalizeUri(self, rdfTerm):
         """
@@ -415,13 +594,15 @@ class NamespaceManager(object):
             return "<%s>" % rdfTerm
         else:
             qNameParts = self.compute_qname(rdfTerm)
-            return ':'.join([qNameParts[0], qNameParts[-1]])
+            return ":".join([qNameParts[0], qNameParts[-1]])
 
     def compute_qname(self, uri, generate=True):
 
         if not _is_valid_uri(uri):
             raise ValueError(
-                '"{}" does not look like a valid URI, cannot serialize this. Did you want to urlencode it?'.format(uri)
+                '"{}" does not look like a valid URI, cannot serialize this. Did you want to urlencode it?'.format(
+                    uri
+                )
             )
 
         if uri not in self.__cache:
@@ -439,7 +620,7 @@ class NamespaceManager(object):
                 pl_namespace = get_longest_namespace(self.__strie[namespace], uri)
                 if pl_namespace is not None:
                     namespace = pl_namespace
-                    name = uri[len(namespace):]
+                    name = uri[len(namespace) :]
 
             namespace = URIRef(namespace)
             prefix = self.store.prefix(namespace)  # warning multiple prefixes problem
@@ -471,32 +652,38 @@ class NamespaceManager(object):
                 try:
                     namespace, name = split_uri(uri, NAME_START_CATEGORIES)
                 except ValueError as e:
-                    message = ('This graph cannot be serialized to a strict format '
-                               'because there is no valid way to shorten {}'.format(uri))
+                    message = (
+                        "This graph cannot be serialized to a strict format "
+                        "because there is no valid way to shorten {}".format(uri)
+                    )
                     raise ValueError(message)
                     # omitted for strict since NCNames cannot be empty
-                    #namespace = URIRef(uri)
-                    #prefix = self.store.prefix(namespace)
-                    #if not prefix:
-                        #raise e
+                    # namespace = URIRef(uri)
+                    # prefix = self.store.prefix(namespace)
+                    # if not prefix:
+                    # raise e
 
                 if namespace not in self.__strie:
                     insert_strie(self.__strie, self.__trie, namespace)
 
                 # omitted for strict
-                #if self.__strie[namespace]:
-                    #pl_namespace = get_longest_namespace(self.__strie[namespace], uri)
-                    #if pl_namespace is not None:
-                        #namespace = pl_namespace
-                        #name = uri[len(namespace):]
+                # if self.__strie[namespace]:
+                # pl_namespace = get_longest_namespace(self.__strie[namespace], uri)
+                # if pl_namespace is not None:
+                # namespace = pl_namespace
+                # name = uri[len(namespace):]
 
                 namespace = URIRef(namespace)
-                prefix = self.store.prefix(namespace)  # warning multiple prefixes problem
+                prefix = self.store.prefix(
+                    namespace
+                )  # warning multiple prefixes problem
 
                 if prefix is None:
                     if not generate:
                         raise KeyError(
-                            "No known prefix for {} and generate=False".format(namespace)
+                            "No known prefix for {} and generate=False".format(
+                                namespace
+                            )
                         )
                     num = 1
                     while 1:
@@ -522,7 +709,7 @@ class NamespaceManager(object):
         namespace = URIRef(text_type(namespace))
         # When documenting explain that override only applies in what cases
         if prefix is None:
-            prefix = ''
+            prefix = ""
         bound_namespace = self.store.namespace(prefix)
         # Check if the bound_namespace contains a URI
         # and if so convert it into a URIRef for comparison
@@ -581,6 +768,7 @@ class NamespaceManager(object):
                 result = "%s#" % result
         return URIRef(result)
 
+
 # From: http://www.w3.org/TR/REC-xml#NT-CombiningChar
 #
 # * Name start characters must have one of the categories Ll, Lu, Lo,
@@ -616,7 +804,7 @@ class NamespaceManager(object):
 
 
 NAME_START_CATEGORIES = ["Ll", "Lu", "Lo", "Lt", "Nl"]
-SPLIT_START_CATEGORIES = NAME_START_CATEGORIES + ['Nd']
+SPLIT_START_CATEGORIES = NAME_START_CATEGORIES + ["Nd"]
 NAME_CATEGORIES = NAME_START_CATEGORIES + ["Mc", "Me", "Mn", "Lm", "Nd"]
 ALLOWED_NAME_CHARS = [u"\u00B7", u"\u0387", u"-", u".", u"_", u":"]
 
@@ -635,7 +823,7 @@ def is_ncname(name):
             for i in range(1, len(name)):
                 c = name[i]
                 if not category(c) in NAME_CATEGORIES:
-                    if c != ':' and c in ALLOWED_NAME_CHARS:
+                    if c != ":" and c in ALLOWED_NAME_CHARS:
                         continue
                     return 0
                 # if in compatibility area
@@ -645,9 +833,6 @@ def is_ncname(name):
             return 1
 
     return 0
-
-
-XMLNS = "http://www.w3.org/XML/1998/namespace"
 
 
 def split_uri(uri, split_start=SPLIT_START_CATEGORIES):
@@ -670,6 +855,7 @@ def split_uri(uri, split_start=SPLIT_START_CATEGORIES):
             break
     raise ValueError("Can't split '{}'".format(uri))
 
+
 def insert_trie(trie, value):  # aka get_subtrie_or_insert
     """ Insert a value into the trie if it is not already contained in the trie.
         Return the subtree for the value regardless of whether it is a new value
@@ -684,15 +870,19 @@ def insert_trie(trie, value):  # aka get_subtrie_or_insert
             if not multi_check:
                 trie[value] = {}
                 multi_check = True  # there can be multiple longer existing prefixes
-            dict_ = trie.pop(key)  # does not break strie since key<->dict_ remains unchanged
+            dict_ = trie.pop(
+                key
+            )  # does not break strie since key<->dict_ remains unchanged
             trie[value][key] = dict_
     if value not in trie:
         trie[value] = {}
     return trie[value]
 
+
 def insert_strie(strie, trie, value):
     if value not in strie:
         strie[value] = insert_trie(trie, value)
+
 
 def get_longest_namespace(trie, value):
     for key in trie:
