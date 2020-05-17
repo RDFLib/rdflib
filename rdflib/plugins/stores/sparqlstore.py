@@ -5,12 +5,6 @@ This is an RDFLib store around Ivan Herman et al.'s SPARQL service wrapper.
 This was first done in layer-cake, and then ported to RDFLib
 
 """
-
-# Defines some SPARQL keywords
-LIMIT = "LIMIT"
-OFFSET = "OFFSET"
-ORDERBY = "ORDER BY"
-
 import re
 import collections
 
@@ -23,6 +17,10 @@ from rdflib import Variable, BNode
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 from rdflib.term import Node
 
+# Defines some SPARQL keywords
+LIMIT = "LIMIT"
+OFFSET = "OFFSET"
+ORDERBY = "ORDER BY"
 
 BNODE_IDENT_PATTERN = re.compile("(?P<label>_\:[^\s]+)")
 
@@ -406,9 +404,9 @@ class SPARQLUpdateStore(SPARQLStore):
 
     where_pattern = re.compile(r"""(?P<where>WHERE\s*\{)""", re.IGNORECASE)
 
-    ##################################################################
-    ### Regex for injecting GRAPH blocks into updates on a context ###
-    ##################################################################
+    ##############################################################
+    # Regex for injecting GRAPH blocks into updates on a context #
+    ##############################################################
 
     # Observations on the SPARQL grammar (http://www.w3.org/TR/2013/REC-sparql11-query-20130321/):
     # 1. Only the terminals STRING_LITERAL1, STRING_LITERAL2,
@@ -726,12 +724,12 @@ class SPARQLUpdateStore(SPARQLStore):
             if match.group("block_start") is not None:
                 level += 1
                 if level == 1:
-                    modified_query.append(query[pos : match.end()])
+                    modified_query.append(query[pos: match.end()])
                     modified_query.append(graph_block_open)
                     pos = match.end()
             elif match.group("block_end") is not None:
                 if level == 1:
-                    since_previous_pos = query[pos : match.start()]
+                    since_previous_pos = query[pos: match.start()]
                     if modified_query[-1] is graph_block_open and (
                         since_previous_pos == "" or since_previous_pos.isspace()
                     ):

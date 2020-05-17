@@ -3,7 +3,7 @@ import collections
 from rdflib.term import Variable, Literal, BNode, URIRef
 
 from rdflib.plugins.sparql.operators import EBV
-from rdflib.plugins.sparql.parserutils import Expr, CompValue, value
+from rdflib.plugins.sparql.parserutils import Expr, CompValue
 from rdflib.plugins.sparql.sparql import SPARQLError, NotBoundError
 
 

@@ -391,28 +391,28 @@ class TurtleSerializer(RecursiveSerializer):
 
         return True
 
-    def isValidList(self, l):
+    def isValidList(self, l_):
         """
         Checks if l is a valid RDF list, i.e. no nodes have other properties.
         """
         try:
-            if self.store.value(l, RDF.first) is None:
+            if self.store.value(l_, RDF.first) is None:
                 return False
         except:
             return False
-        while l:
-            if l != RDF.nil and len(list(self.store.predicate_objects(l))) != 2:
+        while l_:
+            if l_ != RDF.nil and len(list(self.store.predicate_objects(l_))) != 2:
                 return False
-            l = self.store.value(l, RDF.rest)
+            l_ = self.store.value(l_, RDF.rest)
         return True
 
-    def doList(self, l):
-        while l:
-            item = self.store.value(l, RDF.first)
+    def doList(self, l_):
+        while l_:
+            item = self.store.value(l_, RDF.first)
             if item is not None:
                 self.path(item, OBJECT)
-                self.subjectDone(l)
-            l = self.store.value(l, RDF.rest)
+                self.subjectDone(l_)
+            l_ = self.store.value(l_, RDF.rest)
 
     def predicateList(self, subject, newline=False):
         properties = self.buildPredicateHash(subject)

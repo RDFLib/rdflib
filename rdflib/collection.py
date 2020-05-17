@@ -272,7 +272,7 @@ if __name__ == "__main__":
 
     try:
         del c[500]
-    except IndexError as i:
+    except IndexError:
         pass
 
     c.append(Literal("5"))

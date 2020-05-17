@@ -54,25 +54,25 @@ def _nt_row(triple):
         return u"%s %s %s .\n" % (triple[0].n3(), triple[1].n3(), triple[2].n3())
 
 
-def _quoteLiteral(l):
+def _quoteLiteral(l_):
     """
     a simpler version of term.Literal.n3()
     """
 
-    encoded = _quote_encode(l)
+    encoded = _quote_encode(l_)
 
-    if l.language:
-        if l.datatype:
+    if l_.language:
+        if l_.datatype:
             raise Exception("Literal has datatype AND language!")
-        return "%s@%s" % (encoded, l.language)
-    elif l.datatype:
-        return "%s^^<%s>" % (encoded, l.datatype)
+        return "%s@%s" % (encoded, l_.language)
+    elif l_.datatype:
+        return "%s^^<%s>" % (encoded, l_.datatype)
     else:
         return "%s" % encoded
 
 
-def _quote_encode(l):
-    return '"%s"' % l.replace("\\", "\\\\").replace("\n", "\\n").replace(
+def _quote_encode(l_):
+    return '"%s"' % l_.replace("\\", "\\\\").replace("\n", "\\n").replace(
         '"', '\\"'
     ).replace("\r", "\\r")
 
@@ -87,8 +87,8 @@ def _nt_unicode_error_resolver(err):
         fmt = u"\\u%04X" if c <= 0xFFFF else u"\\U%08X"
         return fmt % c
 
-    string = err.object[err.start : err.end]
-    return ("".join(_replace_single(c) for c in string), err.end)
+    string = err.object[err.start: err.end]
+    return "".join(_replace_single(c) for c in string), err.end
 
 
 codecs.register_error("_rdflib_nt_escape", _nt_unicode_error_resolver)

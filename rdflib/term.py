@@ -39,8 +39,6 @@ __all__ = [
 ]
 
 import logging
-
-logger = logging.getLogger(__name__)
 import warnings
 import math
 
@@ -68,6 +66,9 @@ from urllib.parse import urldefrag
 from urllib.parse import urljoin
 from urllib.parse import urlparse
 
+from decimal import Decimal
+
+logger = logging.getLogger(__name__)
 skolem_genid = "/.well-known/genid/"
 rdflib_skolem_genid = "/.well-known/genid/rdflib/"
 skolems = {}
@@ -77,7 +78,7 @@ _invalid_uri_chars = '<>" {}|\\^`'
 
 
 def _is_valid_uri(uri):
-    return all(map(lambda c: ord(c) > 256 or not c in _invalid_uri_chars, uri))
+    return all(map(lambda c: ord(c) > 256 or c not in _invalid_uri_chars, uri))
 
 
 _lang_tag_regex = compile("^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$")
@@ -302,7 +303,7 @@ class URIRef(Identifier):
         """
         if isinstance(self, RDFLibGenid):
             parsed_uri = urlparse("%s" % self)
-            return BNode(value=parsed_uri.path[len(rdflib_skolem_genid) :])
+            return BNode(value=parsed_uri.path[len(rdflib_skolem_genid):])
         elif isinstance(self, Genid):
             bnode_id = "%s" % self
             if bnode_id in skolems:
@@ -918,8 +919,8 @@ class Literal(Identifier):
             if self.datatype and other.datatype:
                 # two datatyped literals
                 if (
-                    not self.datatype in XSDToPython
-                    or not other.datatype in XSDToPython
+                    self.datatype not in XSDToPython
+                    or other.datatype not in XSDToPython
                 ):
                     # non XSD DTs must match
                     if self.datatype != other.datatype:
@@ -1524,8 +1525,6 @@ def _castPythonToLiteral(obj, datatype):
             return _py2literal(obj, pType, castFunc, dType)
     return obj, None  # TODO: is this right for the fall through case?
 
-
-from decimal import Decimal
 
 # Mappings from Python types to XSD datatypes and back (borrowed from sparta)
 # datetime instances are also instances of date... so we need to order these.

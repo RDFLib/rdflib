@@ -15,7 +15,6 @@ import rdflib
 from rdflib import plugin
 from rdflib.store import Store
 from rdflib.graph import ConjunctiveGraph
-from rdflib.namespace import RDF, RDFS, OWL, XSD
 from rdflib.parser import Parser
 from rdflib.serializer import Serializer
 

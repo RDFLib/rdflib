@@ -1,5 +1,4 @@
 import logging
-from io import BytesIO
 
 from xml.sax.saxutils import XMLGenerator
 from xml.dom import XML_NAMESPACE
@@ -7,7 +6,7 @@ from xml.sax.xmlreader import AttributesNSImpl
 
 from rdflib.compat import etree
 
-from rdflib import Literal, URIRef, BNode, Graph, Variable
+from rdflib import Literal, URIRef, BNode, Variable
 from rdflib.query import Result, ResultParser, ResultSerializer, ResultException
 
 

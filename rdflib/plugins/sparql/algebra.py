@@ -95,7 +95,7 @@ def _knownTerms(triple, varsknown, varscount):
     )
 
 
-def reorderTriples(l):
+def reorderTriples(l_):
     """
     Reorder triple patterns so that we execute the
     ones with most bindings first
@@ -105,10 +105,10 @@ def reorderTriples(l):
         if isinstance(term, (Variable, BNode)):
             varsknown.add(term)
 
-    l = [(None, x) for x in l]
+    l_ = [(None, x) for x in l_]
     varsknown = set()
     varscount = collections.defaultdict(int)
-    for t in l:
+    for t in l_:
         for c in t[1]:
             if isinstance(c, (Variable, BNode)):
                 varscount[c] += 1
@@ -121,17 +121,17 @@ def reorderTriples(l):
 
     # we sort by decorate/undecorate, since we need the value of the sort keys
 
-    while i < len(l):
-        l[i:] = sorted((_knownTerms(x[1], varsknown, varscount), x[1]) for x in l[i:])
-        t = l[i][0][0]  # top block has this many terms bound
+    while i < len(l_):
+        l_[i:] = sorted((_knownTerms(x[1], varsknown, varscount), x[1]) for x in l_[i:])
+        t = l_[i][0][0]  # top block has this many terms bound
         j = 0
-        while i + j < len(l) and l[i + j][0][0] == t:
-            for c in l[i + j][1]:
+        while i + j < len(l_) and l_[i + j][0][0] == t:
+            for c in l_[i + j][1]:
                 _addvar(c, varsknown)
             j += 1
         i += 1
 
-    return [x[1] for x in l]
+    return [x[1] for x in l_]
 
 
 def triples(l):
@@ -826,7 +826,7 @@ if __name__ == "__main__":
     import os.path
 
     if os.path.exists(sys.argv[1]):
-        q = file(sys.argv[1])
+        q = open(sys.argv[1]).read()
     else:
         q = sys.argv[1]
 

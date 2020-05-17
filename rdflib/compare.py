@@ -315,7 +315,6 @@ class _TripleCanonicalizer(object):
         return c
 
     def _get_candidates(self, coloring):
-        candidates = [c for c in coloring if not c.discrete()]
         for c in [c for c in coloring if not c.discrete()]:
             for node in c.nodes:
                 yield node, c
@@ -336,7 +335,7 @@ class _TripleCanonicalizer(object):
                     coloring.extend(colors)
                     try:
                         si = sequence.index(c)
-                        sequence = sequence[:si] + colors + sequence[si + 1 :]
+                        sequence = sequence[:si] + colors + sequence[si + 1:]
                     except ValueError:
                         sequence = colors[1:] + sequence
         combined_colors = []
@@ -422,7 +421,6 @@ class _TripleCanonicalizer(object):
             if best_score is None or best_score < color_score:
                 best = [refined_coloring]
                 best_score = color_score
-                best_experimental = experimental
                 best_experimental_score = experimental_score
             elif best_score > color_score:
                 # prune this branch.
@@ -450,8 +448,6 @@ class _TripleCanonicalizer(object):
         return discrete[0]
 
     def canonical_triples(self, stats=None):
-        if stats is not None:
-            start_canonicalization = datetime.now()
         if stats is not None:
             start_coloring = datetime.now()
         coloring = self._initial_color()

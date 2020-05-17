@@ -5,7 +5,7 @@ from rdflib.namespace import Namespace
 from rdflib.term import URIRef
 from rdflib.term import BNode
 from rdflib.term import Literal
-from rdflib.graph import Graph, ConjunctiveGraph
+from rdflib.graph import Graph
 from rdflib.exceptions import ParserError
 from rdflib.parser import Parser
 

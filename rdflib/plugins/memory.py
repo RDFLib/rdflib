@@ -4,7 +4,7 @@ from __future__ import print_function
 
 import random
 
-from rdflib.store import Store, NO_STORE, VALID_STORE
+from rdflib.store import Store
 
 __all__ = ["Memory", "IOMemory"]
 
@@ -295,7 +295,7 @@ class IOMemory(Store):
                 del self.__tripleContexts[enctriple]
 
         if (
-            not req_cid is None
+            req_cid is not None
             and req_cid in self.__contextTriples
             and len(self.__contextTriples[req_cid]) == 0
         ):

@@ -287,7 +287,7 @@ class QueryContext(object):
                 return graph.load(source, format="nt", **kwargs)
             except:
                 raise Exception(
-                    "Could not load %s as either RDF/XML, N3 or NTriples" % (source)
+                    "Could not load %s as either RDF/XML, N3 or NTriples" % source
                 )
 
         if not rdflib.plugins.sparql.SPARQL_LOAD_GRAPHS:

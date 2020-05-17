@@ -87,7 +87,7 @@ class XMLSerializer(Serializer):
         del self.__serialized
 
     def subject(self, subject, depth=1):
-        if not subject in self.__serialized:
+        if subject not in self.__serialized:
             self.__serialized[subject] = 1
 
             if isinstance(subject, (BNode, URIRef)):
@@ -230,7 +230,7 @@ class PrettyXMLSerializer(Serializer):
             writer.pop(RDF.Description)
             self.forceRDFAbout.remove(subject)
 
-        elif not subject in self.__serialized:
+        elif subject not in self.__serialized:
             self.__serialized[subject] = 1
             type = first(store.objects(subject, RDF.type))
 
@@ -340,7 +340,7 @@ class PrettyXMLSerializer(Serializer):
                 elif isinstance(object, BNode):
 
                     if (
-                        not object in self.__serialized
+                        object not in self.__serialized
                         and (object, None, None) in store
                         and len(list(store.subjects(object=object))) == 1
                     ):

@@ -168,16 +168,16 @@ def Builtin_CEIL(expr, ctx):
     http://www.w3.org/TR/sparql11-query/#func-ceil
     """
 
-    l = expr.arg
-    return Literal(int(math.ceil(numeric(l))), datatype=l.datatype)
+    l_ = expr.arg
+    return Literal(int(math.ceil(numeric(l_))), datatype=l_.datatype)
 
 
 def Builtin_FLOOR(expr, ctx):
     """
     http://www.w3.org/TR/sparql11-query/#func-floor
     """
-    l = expr.arg
-    return Literal(int(math.floor(numeric(l))), datatype=l.datatype)
+    l_ = expr.arg
+    return Literal(int(math.floor(numeric(l_))), datatype=l_.datatype)
 
 
 def Builtin_ROUND(expr, ctx):
@@ -189,10 +189,10 @@ def Builtin_ROUND(expr, ctx):
     # but in py3k bound was changed to
     # "round-to-even" behaviour
     # this is an ugly work-around
-    l = expr.arg
-    v = numeric(l)
+    l_ = expr.arg
+    v = numeric(l_)
     v = int(Decimal(v).quantize(1, ROUND_HALF_UP))
-    return Literal(v, datatype=l.datatype)
+    return Literal(v, datatype=l_.datatype)
 
 
 def Builtin_REGEX(expr, ctx):
@@ -371,7 +371,7 @@ def Builtin_STRAFTER(expr, ctx):
     if i == -1:
         return Literal("")
     else:
-        return Literal(a[i + len(b) :], lang=a.language, datatype=a.datatype)
+        return Literal(a[i + len(b):], lang=a.language, datatype=a.datatype)
 
 
 def Builtin_CONTAINS(expr, ctx):
@@ -407,9 +407,9 @@ def Builtin_SUBSTR(expr, ctx):
 
 
 def Builtin_STRLEN(e, ctx):
-    l = string(e.arg)
+    l_ = string(e.arg)
 
-    return Literal(len(l))
+    return Literal(len(l_))
 
 
 def Builtin_STR(e, ctx):
@@ -420,9 +420,9 @@ def Builtin_STR(e, ctx):
 
 
 def Builtin_LCASE(e, ctx):
-    l = string(e.arg)
+    l_ = string(e.arg)
 
-    return Literal(l.lower(), datatype=l.datatype, lang=l.language)
+    return Literal(l_.lower(), datatype=l_.datatype, lang=l_.language)
 
 
 def Builtin_LANGMATCHES(e, ctx):
@@ -528,9 +528,9 @@ def Builtin_TZ(e, ctx):
 
 
 def Builtin_UCASE(e, ctx):
-    l = string(e.arg)
+    l_ = string(e.arg)
 
-    return Literal(l.upper(), datatype=l.datatype, lang=l.language)
+    return Literal(l_.upper(), datatype=l_.datatype, lang=l_.language)
 
 
 def Builtin_LANG(e, ctx):
@@ -542,19 +542,19 @@ def Builtin_LANG(e, ctx):
     with an empty language tag.
     """
 
-    l = literal(e.arg)
-    return Literal(l.language or "")
+    l_ = literal(e.arg)
+    return Literal(l_.language or "")
 
 
 def Builtin_DATATYPE(e, ctx):
-    l = e.arg
-    if not isinstance(l, Literal):
-        raise SPARQLError("Can only get datatype of literal: %r" % l)
-    if l.language:
+    l_ = e.arg
+    if not isinstance(l_, Literal):
+        raise SPARQLError("Can only get datatype of literal: %r" % l_)
+    if l_.language:
         return RDF_langString
-    if not l.datatype and not l.language:
+    if not l_.datatype and not l_.language:
         return XSD.string
-    return l.datatype
+    return l_.datatype
 
 
 def Builtin_sameTerm(e, ctx):
@@ -825,7 +825,7 @@ def RelationalExpression(e, ctx):
         else:
             raise error
 
-    if not op in ("=", "!=", "IN", "NOT IN"):
+    if op not in ("=", "!=", "IN", "NOT IN"):
         if not isinstance(expr, Literal):
             raise SPARQLError(
                 "Compare other than =, != of non-literals is an error: %r" % expr
@@ -1062,15 +1062,15 @@ def _lang_range_check(range, lang):
 
     """
 
-    def _match(r, l):
+    def _match(r, l_):
         """
         Matching of a range and language item: either range is a wildcard
         or the two are equal
         @param r: language range item
-        @param l: language tag item
+        @param l_: language tag item
         @rtype: boolean
         """
-        return r == "*" or r == l
+        return r == "*" or r == l_
 
     rangeList = range.strip().lower().split("-")
     langList = lang.strip().lower().split("-")

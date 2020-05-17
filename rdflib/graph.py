@@ -3,11 +3,35 @@ from __future__ import division
 from __future__ import print_function
 
 from rdflib.term import Literal  # required for doctests
-
-assert Literal  # avoid warning
 from rdflib.namespace import Namespace  # required for doctests
 
+import logging
+
+import random
+from rdflib.namespace import RDF, RDFS, SKOS
+from rdflib import plugin, exceptions, query
+from rdflib.term import Node, URIRef, Genid
+from rdflib.term import BNode
+import rdflib.term
+from rdflib.paths import Path
+from rdflib.store import Store
+from rdflib.serializer import Serializer
+from rdflib.parser import Parser
+from rdflib.parser import create_input_source
+from rdflib.namespace import NamespaceManager
+from rdflib.resource import Resource
+from rdflib.collection import Collection
+
+import os
+import shutil
+import tempfile
+
+from io import BytesIO
+from urllib.parse import urlparse
+
+assert Literal  # avoid warning
 assert Namespace  # avoid warning
+logger = logging.getLogger(__name__)
 
 
 __doc__ = """\
@@ -235,31 +259,6 @@ Using Namespace class:
 
 """
 
-import logging
-
-logger = logging.getLogger(__name__)
-
-import random
-from rdflib.namespace import RDF, RDFS, SKOS
-from rdflib import plugin, exceptions, query
-from rdflib.term import Node, URIRef, Genid
-from rdflib.term import BNode
-import rdflib.term
-from rdflib.paths import Path
-from rdflib.store import Store
-from rdflib.serializer import Serializer
-from rdflib.parser import Parser
-from rdflib.parser import create_input_source
-from rdflib.namespace import NamespaceManager
-from rdflib.resource import Resource
-from rdflib.collection import Collection
-
-import os
-import shutil
-import tempfile
-
-from io import BytesIO
-from urllib.parse import urlparse
 
 __all__ = [
     "Graph",
@@ -775,18 +774,14 @@ class Graph(Node):
         # setup the language filtering
         if lang is not None:
             if lang == "":  # we only want not language-tagged literals
-
-                def langfilter(l):
-                    return l.language is None
-
+                def langfilter(l_):
+                    return l_.language is None
             else:
-
-                def langfilter(l):
-                    return l.language == lang
+                def langfilter(l_):
+                    return l_.language == lang
 
         else:  # we don't care about language tags
-
-            def langfilter(l):
+            def langfilter(l_):
                 return True
 
         for labelProp in labelProperties:
@@ -794,7 +789,7 @@ class Graph(Node):
             if len(labels) == 0:
                 continue
             else:
-                return [(labelProp, l) for l in labels]
+                return [(labelProp, l_) for l_ in labels]
         return default
 
     def comment(self, subject, default=""):

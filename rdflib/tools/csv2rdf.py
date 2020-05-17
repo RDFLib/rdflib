@@ -114,12 +114,12 @@ def toPropertyLabel(label):
     return label
 
 
-def index(l, i):
+def index(l_, i):
     """return a set of indexes from a list
     >>> index([1,2,3],(0,2))
     (1, 3)
     """
-    return tuple([l[x] for x in i])
+    return tuple([l_[x] for x in i])
 
 
 def csv_reader(csv_data, dialect=csv.excel, **kwargs):
@@ -357,20 +357,20 @@ class CSV2RDF(object):
             # output class/property definitions
             self.triple(self.CLASS, RDF.type, RDFS.Class)
             for i in range(len(headers)):
-                h, l = headers[i], header_labels[i]
-                if h == "" or l == "":
+                h, l_ = headers[i], header_labels[i]
+                if h == "" or l_ == "":
                     continue
                 if self.COLUMNS.get(i, self.DEFAULT) == "ignore":
                     continue
                 self.triple(h, RDF.type, RDF.Property)
-                self.triple(h, RDFS.label, rdflib.Literal(toPropertyLabel(l)))
+                self.triple(h, RDFS.label, rdflib.Literal(toPropertyLabel(l_)))
                 self.triple(h, RDFS.domain, self.CLASS)
                 self.triple(
                     h, RDFS.range, self.COLUMNS.get(i, default_node_make).range()
                 )
 
         rows = 0
-        for l in csvreader:
+        for l_ in csvreader:
             try:
                 if self.IDENT == "auto":
                     uri = self.BASE["%d" % rows]
@@ -379,21 +379,21 @@ class CSV2RDF(object):
                         "_".join(
                             [
                                 quote(x.encode("utf8").replace(" ", "_"), safe="")
-                                for x in index(l, self.IDENT)
+                                for x in index(l_, self.IDENT)
                             ]
                         )
                     ]
 
                 if self.LABEL:
                     self.triple(
-                        uri, RDFS.label, rdflib.Literal(" ".join(index(l, self.LABEL)))
+                        uri, RDFS.label, rdflib.Literal(" ".join(index(l_, self.LABEL)))
                     )
 
                 if self.CLASS:
                     # type triple
                     self.triple(uri, RDF.type, self.CLASS)
 
-                for i, x in enumerate(l):
+                for i, x in enumerate(l_):
                     x = x.strip()
                     if x != "":
                         if self.COLUMNS.get(i, self.DEFAULT) == "ignore":
@@ -425,9 +425,9 @@ class CSV2RDF(object):
 
         # output types/labels for generated URIs
         classes = set()
-        for l, x in uris.items():
+        for l_, x in uris.items():
             u, c = x
-            self.triple(u, RDFS.label, rdflib.Literal(l))
+            self.triple(u, RDFS.label, rdflib.Literal(l_))
             if c:
                 c = rdflib.URIRef(c)
                 classes.add(c)

@@ -84,8 +84,8 @@ class Dispatcher(object):
             lst = self._dispatch_map.get(type(event), None)
             if lst is None:
                 raise ValueError("unknown event type: %s" % type(event))
-            for l in lst:
-                l(event)
+            for l_ in lst:
+                l_(event)
 
 
 def test():

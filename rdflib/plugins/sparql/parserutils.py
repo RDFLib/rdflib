@@ -4,7 +4,7 @@ from collections import OrderedDict
 
 from pyparsing import TokenConverter, ParseResults, originalTextFor
 
-from rdflib import BNode, Variable, URIRef
+from rdflib import BNode, Variable
 
 DEBUG = True
 DEBUG = False
@@ -235,7 +235,7 @@ class Comp(TokenConverter):
         for t in tokenList:
             if isinstance(t, ParamValue):
                 if t.isList:
-                    if not t.name in res:
+                    if t.name not in res:
                         res[t.name] = plist()
                     res[t.name].append(t.tokenList)
                 else:

@@ -90,13 +90,13 @@ def rdfs2dot(g, stream, opts={}):
 
     def label(x, g):
 
-        l = g.value(x, RDFS.label)
-        if l is None:
+        l_ = g.value(x, RDFS.label)
+        if l_ is None:
             try:
-                l = g.namespace_manager.compute_qname(x)[2]
+                l_ = g.namespace_manager.compute_qname(x)[2]
             except:
                 pass  # bnodes and some weird URIs cannot be split
-        return l
+        return l_
 
     stream.write(u'digraph { \n node [ fontname="DejaVu Sans" ] ; \n')
 
@@ -113,10 +113,10 @@ def rdfs2dot(g, stream, opts={}):
             g.objects(x, RDFS.domain), g.objects(x, RDFS.range)
         ):
             if b in XSDTERMS or b == RDFS.Literal:
-                l = label(b, g)
+                l_ = label(b, g)
                 if b == RDFS.Literal:
-                    l = "literal"
-                fields[node(a)].add((label(x, g), l))
+                    l_ = "literal"
+                fields[node(a)].add((label(x, g), l_))
             else:
                 #            if a in nodes and b in nodes:
                 stream.write(

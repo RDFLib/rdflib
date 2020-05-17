@@ -61,7 +61,7 @@ def expandTriples(terms):
         res = []
         if DEBUG:
             print("Terms", terms)
-        l = len(terms)
+        l_ = len(terms)
         for i, t in enumerate(terms):
             if t == ",":
                 res.extend([res[-3], res[-2]])
@@ -78,7 +78,7 @@ def expandTriples(terms):
                 if len(t) > 1:
                     res += t
                 # is this bnode the subject of more triples?
-                if i + 1 < l and terms[i + 1] not in ".,;":
+                if i + 1 < l_ and terms[i + 1] not in ".,;":
                     res.append(t[0])
             elif isinstance(t, ParseResults):
                 res += t.asList()
@@ -1058,9 +1058,9 @@ MultiplicativeExpression = Comp(
 # [116] AdditiveExpression ::= MultiplicativeExpression ( '+' MultiplicativeExpression | '-' MultiplicativeExpression | ( NumericLiteralPositive | NumericLiteralNegative ) ( ( '*' UnaryExpression ) | ( '/' UnaryExpression ) )* )*
 
 # NOTE: The second part of this production is there because:
-### "In signed numbers, no white space is allowed between the sign and the number. The AdditiveExpression grammar rule allows for this by covering the two cases of an expression followed by a signed number. These produce an addition or subtraction of the unsigned number as appropriate."
+# "In signed numbers, no white space is allowed between the sign and the number. The AdditiveExpression grammar rule allows for this by covering the two cases of an expression followed by a signed number. These produce an addition or subtraction of the unsigned number as appropriate."
 
-# Here (I think) this is not nescessary since pyparsing doesn't separate
+# Here (I think) this is not necessary since pyparsing doesn't separate
 # tokenizing and parsing
 
 

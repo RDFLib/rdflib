@@ -597,8 +597,8 @@ class AnnotatableTerms(Individual):
         if isinstance(label, Identifier):
             self.graph.add((self.identifier, RDFS.label, label))
         else:
-            for l in label:
-                self.graph.add((self.identifier, RDFS.label, l))
+            for l_ in label:
+                self.graph.add((self.identifier, RDFS.label, l_))
 
     @TermDeletionHelper(RDFS.label)
     def _delete_label(self):
@@ -1900,7 +1900,7 @@ class Restriction(Class):
         return manchesterSyntax(self.identifier, self.graph)
 
 
-### Infix Operators ###
+# Infix Operators #
 
 
 some = Infix(

@@ -5,8 +5,8 @@ See <http://www.w3.org/TR/trig/> for syntax specification.
 
 from collections import defaultdict
 
-from rdflib.plugins.serializers.turtle import TurtleSerializer, _GEN_QNAME_FOR_DT, VERB
-from rdflib.term import BNode, Literal
+from rdflib.plugins.serializers.turtle import TurtleSerializer
+from rdflib.term import BNode
 
 __all__ = ["TrigSerializer"]
 

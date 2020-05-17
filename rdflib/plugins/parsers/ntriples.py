@@ -78,7 +78,7 @@ def unquote(s):
         while s:
             m = r_safe.match(s)
             if m:
-                s = s[m.end() :]
+                s = s[m.end():]
                 result.append(m.group(1))
                 continue
 
@@ -90,7 +90,7 @@ def unquote(s):
 
             m = r_uniquot.match(s)
             if m:
-                s = s[m.end() :]
+                s = s[m.end():]
                 u, U = m.groups()
                 codepoint = int(u or U, 16)
                 if codepoint > 0x10FFFF:
@@ -172,7 +172,7 @@ class NTriplesParser(object):
         while True:
             m = r_line.match(self.buffer)
             if m:  # the more likely prospect
-                self.buffer = self.buffer[m.end() :]
+                self.buffer = self.buffer[m.end():]
                 return m.group(1)
             else:
                 buffer = self.file.read(bufsiz)
@@ -210,7 +210,7 @@ class NTriplesParser(object):
             # print(dir(pattern))
             # print repr(self.line), type(self.line)
             raise ParseError("Failed to eat %s at %s" % (pattern.pattern, self.line))
-        self.line = self.line[m.end() :]
+        self.line = self.line[m.end():]
         return m
 
     def subject(self):
