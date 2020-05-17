@@ -10,6 +10,8 @@ from pprint import pprint
 from random import randint
 from rdflib import Graph
 
+__all__ = ['Container','Bag','Seq','Alt','NoElementException']
+
 
 class Container(object):
 
@@ -240,50 +242,3 @@ class NoElementException(Exception):
     def __str__(self):
         return message
 
-
-if __name__ == '__main__':
-
-    g = Graph()
-
-    c = Bag(g, BNode())
-
-    assert len(c) == 0
-
-    cc = Bag(g, BNode(), [Literal('1'), Literal('2'), Literal('3'),
-             Literal('4')])
-
-    print(cc.items())
-
-    pprint(cc.n3())
-    assert len(cc) == 4
-    cc.append(Literal('5'))
-    del cc[2]
-
-    assert len(cc) == 4
-    assert cc.index(Literal('5')) == 4
-
-    assert cc[2] == Literal('3')
-    print(cc.items())
-    cc[2] = Literal('9')
-    assert cc[2] == Literal('9')
-    from pprint import pprint
-    pprint(cc.n3())
-    cc.clear()
-    assert len(cc) == 0
-    cc.append_multiple([Literal('80'), Literal('90')])
-    assert cc[1] == Literal('80')
-    assert cc[2] == Literal('90')
-    assert len(cc) == 2
-    assert cc.end() == 2
-    cc = Alt(g, BNode(), [Literal('1'), Literal('2'), Literal('3'),
-             Literal('4')])
-    assert cc.anyone() in [Literal('1'), Literal('2'), Literal('3'),
-                           Literal('4')]
-    cc = Seq(g, BNode(), [Literal('1'), Literal('2'), Literal('3'),
-             Literal('4')])
-    cc.add_at_position(3, Literal('60'))
-    assert len(cc) == 5
-    assert cc.index(Literal('60')) == 3
-    assert cc.index(Literal('3')) == 4
-    assert cc.index(Literal('4')) == 5
-    print('All tests passed')
