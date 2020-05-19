@@ -366,10 +366,6 @@ class NamespaceManager(object):
         self.bind("rdf", RDF)
         self.bind("rdfs", RDFS)
         self.bind("xsd", XSD)
-        
-    def unbind(self, prefix, namespace):
-        """unbind function to unbind the unused prefix"""
-        self.store.unbind(prefix,namespace) # Call the function on the below function
 
     def reset(self):
         self.__cache = {}

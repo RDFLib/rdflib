@@ -262,6 +262,8 @@ from six import BytesIO
 from six import b
 from six.moves.urllib.parse import urlparse
 
+from graphviz import Digraph
+
 __all__ = [
     "Graph",
     "ConjunctiveGraph",
@@ -943,35 +945,6 @@ class Graph(Node):
         """Turn uri into an absolute URI if it's not one already"""
         return self.namespace_manager.absolutize(uri, defrag)
 
-    def removeUnusedPrefix(self):
-        """Remove unused prefix in the graph and remove it from the graph"""
-        for namespace in self.namespaces(): #Iterate for all the namespace in the document check if the namespace is present
-            toRemoveNamespace = [] # List of namespace 
-            queryCheck = """
-            PREFIX """+namespace[0]+""": <"""+str(namespace[1])+""">
-            select ?x where {
-                {
-                    ?x ?z ?v.
-                    filter(strstarts(str(?x), str("""+namespace[0]+""":)))
-                }
-                union
-                {
-                    ?z ?x ?v.
-                    filter(strstarts(str(?x), str("""+namespace[0]+""":)))
-                }
-                union
-                {
-                    ?v ?z ?x.
-                    filter(strstarts(str(?x), str("""+namespace[0]+""":)))
-                }
-
-            }""" # Query to find the places where namespaces are used
-            if len(self.query(queryCheck)) <= 0: # If the namespace is not used anywhere
-                toRemoveNamespace += [namespace]
-        
-        for namespace in toRemoveNamespace:
-            self.namespace_manager.unbind(namespace[0],namespace[1]) # Call unbind function to remove the unused namespace
-
     def serialize(
         self, destination=None, format="xml", base=None, encoding=None, **args
     ):
@@ -1159,6 +1132,65 @@ class Graph(Node):
             processor = plugin.get(processor, query.Processor)(self)
 
         return result(processor.query(query_object, initBindings, initNs, **kwargs))
+
+    def visualizeGraph(self,filename,shortMode = False,format1="pdf"):
+        """ Code used to visualize the graph """
+        dot = Digraph() # Create a dot digraph
+        dot.format = format1
+        classQuery = """
+		PREFIX owl: <http://www.w3.org/2002/07/owl#>
+		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+		SELECT DISTINCT ?s where { {?s a rdfs:Class} UNION {?s a owl:Class} UNION {?s rdfs:subclass ?x}}""" # Query to exactly class and subclass
+        literalQuery = """SELECT ?o WHERE { ?s ?p ?o. FILTER isLiteral(?o) }""" # Query to extract literals
+        tripleQuery = """SELECT ?s ?p ?o WHERE{?s ?p ?o}""" # Query to get all the literals
+		
+        nodes = {} # All the nodes in the graph
+        count = 1 # Assign name to nodes 
+        for classes in self.query(classQuery): # Get all the classes using the query
+            nodes[classes[0]] = ("class",count,self.compute_qname(classes[0],generate=True)[2]) # Save all the nodes related data
+            count += 1
+
+        for literal in self.query(literalQuery): # Get all the literal using the query
+            nodes[literal[0]] = ("literal",count,literal[0])# Save all the nodes related data
+            count += 1
+
+        for queryReturn in self.query(tripleQuery): # Extract all the triples
+            if queryReturn[0] not in nodes: # If not in nodes add it to node
+                if type(queryReturn[0]) == BNode: # If node is blank node
+                    nodes[queryReturn[0]] = ("blank",count,queryReturn[0]) # Add blank node in the query
+                    count += 1
+                else:
+                    nodes[queryReturn[0]] = ("normal",count,self.compute_qname(queryReturn[0],generate=True)[2]) # Add node in the query
+                    count += 1
+				
+			# if queryReturn[1] not in nodes: --- Currently not used ---
+			#     nodes[queryReturn[1]] = ("normal",count)
+			#     count += 1
+            if queryReturn[2] not in nodes: # If not in nodes add it to node
+                if type(queryReturn[2]) == BNode: # If node is blank node
+                    nodes[queryReturn[2]] = ("blank",count,queryReturn[2]) # Add blank node in the query
+                    count += 1
+                else:
+                    nodes[queryReturn[2]] = ("normal",count,self.compute_qname(queryReturn[2],generate=True)[2]) # Add node in the query
+                    count += 1
+					
+        shapeDict = {"literal":"rectangle","class":"ellipse","blank":"ellipse","normal":"ellipse"} # Type of nodes in graph
+        colorDict = {"literal":"#ADD8E6","class":"orange","normal":"orange","blank":"#E3FF00"} # Nodes color in graph 
+
+        if shortMode: # If there in short node
+            for node in nodes: # For nodes in graph
+                dot.node(str(nodes[node][1]),label=nodes[node][2],tooltip=node,shape=shapeDict[nodes[node][0]],style="filled", fillcolor=colorDict[nodes[node][0]]) # Add short name nodes in the dot graph
+
+            for queryReturn in self.query(tripleQuery): #For each triple
+                dot.edge(str(nodes[queryReturn[0]][1]),str(nodes[queryReturn[2]][1]),tooltip=queryReturn[1],label=str(self.compute_qname(queryReturn[1],generate=True)[2])) # Add edges in dot graph
+        else:
+            for node in nodes: # For nodes in graph
+                dot.node(str(nodes[node][1]),label=node,tooltip=node,shape=shapeDict[nodes[node][0]],style="filled", fillcolor=colorDict[nodes[node][0]]) # Add nodes in the dot graph
+
+            for queryReturn in self.query(tripleQuery): #For each triple
+                dot.edge(str(nodes[queryReturn[0]][1]),str(nodes[queryReturn[2]][1]),tooltip=queryReturn[1],label=queryReturn[1]) # Add edges in dot graph
+
+        dot.render(filename,view=True) # Render graph
 
     def update(
         self,
