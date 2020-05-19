@@ -1242,8 +1242,8 @@ class Literal(Identifier):
                     return sub("\\.?0*e", "e", u'%e' % float(self))
                 elif self.datatype == _XSD_DECIMAL:
                     s = '%s' % self
-                    if '.' not in s:
-                        s += '.0'
+                    # if '.' not in s:
+                    #     s += '.0'
                     return s
 
                 elif self.datatype == _XSD_BOOLEAN:
