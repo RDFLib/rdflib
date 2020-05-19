@@ -1,4 +1,4 @@
-from graphviz import Digraph
+# from graphviz import Digraph # This code is commenented because rdflib doesnot contain graphviz
 from rdflib import graph
 from rdflib.term import BNode
 
