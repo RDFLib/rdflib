@@ -262,7 +262,7 @@ from six import BytesIO
 from six import b
 from six.moves.urllib.parse import urlparse
 
-from graphviz.dot import Digraph
+from rdflib.graphviz.dot import Digraph
 
 __all__ = [
     "Graph",
