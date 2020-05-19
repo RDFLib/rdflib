@@ -5,3 +5,4 @@ pyparsing
 requests
 six
 doctest-ignore-unicode
+graphviz
