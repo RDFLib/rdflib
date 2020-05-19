@@ -1,4 +1,6 @@
 from rdflib import Graph,URIRef
+from graphviz import Digraph
+from rdflib.visualizeGraph import visualizeGraph
 
 graphData = """@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -52,4 +54,4 @@ juice:Mixed2 rdf:type juice:MixedFruitJuice;
 
 g = Graph() # Create a graph
 g.parse(data=graphData, format='ttl')
-g.visualizeGraph("Hello",shortMode = True,format1="png")
+visualizeGraph(g,"Hello",shortMode = True,format1="png")
