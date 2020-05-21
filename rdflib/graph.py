@@ -422,6 +422,22 @@ class Graph(Node):
             for (s, p, o), cg in self.__store.triples((s, p, o), context=self):
                 yield s, p, o
 
+    def subgraph(self, triple, max_triples=1000):
+        """Graph consisting of the triples
+
+        Returns a graph that contains the triples (holds them in memory) that match the given triple pattern.
+        If triple pattern does not provide a context, nothing will None will be returned.
+        The graph that you need can have max_triples number of triples.
+        """
+        triple_generator = self.triples(triple)
+        g = Graph()
+        for i in range(max_triples):
+            try:
+                g.add(next(triple_generator))
+            except StopIteration:
+                break
+        return g
+
     def __getitem__(self, item):
         """
         A graph can be "sliced" as a shortcut for the triples method
