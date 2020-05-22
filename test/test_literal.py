@@ -111,16 +111,18 @@ class TestParseBoolean(unittest.TestCase):
     def testFalseBoolean(self):
         test_value = Literal("falsE", datatype = _XSD_BOOLEAN)
         self.assertFalse(test_value.value)
+        self.assertIsNot(test_value,None)
         test_value = Literal("0",datatype = _XSD_BOOLEAN)
         self.assertFalse(test_value.value)
+        self.assertIsNot(test_value,None)
 
     def testNonFalseBoolean(self):
         test_value = Literal("abcd", datatype = _XSD_BOOLEAN)
         self.assertRaises(DeprecationWarning)
-        #self.assertFalse(test_value.value)
+        self.assertIs(test_value.value,None)
         test_value = Literal("10",datatype = _XSD_BOOLEAN)
         self.assertRaises(DeprecationWarning)
-        #self.assertFalse(test_value.value)
+        self.assertIs(test_value.value,None)
 
 
 
