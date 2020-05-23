@@ -765,45 +765,46 @@ def AdditiveExpression(e, ctx):
 
     # handling arithmetic(addition/subtraction) of dateTime, date, time
     # and duration datatypes (if any)
-    if(expr.datatype in XSD_DateTime_DTs or expr.datatype in XSD_Duration_DTs):
+    if hasattr(expr, 'datatype'):
+        if(expr.datatype in XSD_DateTime_DTs or expr.datatype in XSD_Duration_DTs):
 
-        res = dateTimeObjects(expr)
-        dt = expr.datatype
+            res = dateTimeObjects(expr)
+            dt = expr.datatype
 
-        for op, term in zip(e.op, other):
+            for op, term in zip(e.op, other):
 
-            # check if operation is datetime,date,time operation over
-            # another datetime,date,time datatype
-            if dt in XSD_DateTime_DTs and dt == term.datatype and op == '-':
-                # checking if there are more than one datetime operands -
-                # in that case it doesn't make sense for example
-                # ( dateTime1 - dateTime2 - dateTime3 ) is an invalid operation
-                if len(other) > 1:
-                    error_message = "Can't evaluate multiple %r arguments"
-                    raise SPARQLError(error_message, dt.datatype)
-                else:
-                    n = dateTimeObjects(term)
-                    res = calculateDuration(res, n)
-                    return res
+                # check if operation is datetime,date,time operation over
+                # another datetime,date,time datatype
+                if dt in XSD_DateTime_DTs and dt == term.datatype and op == '-':
+                    # checking if there are more than one datetime operands -
+                    # in that case it doesn't make sense for example
+                    # ( dateTime1 - dateTime2 - dateTime3 ) is an invalid operation
+                    if len(other) > 1:
+                        error_message = "Can't evaluate multiple %r arguments"
+                        raise SPARQLError(error_message, dt.datatype)
+                    else:
+                        n = dateTimeObjects(term)
+                        res = calculateDuration(res, n)
+                        return res
 
-            # datetime,date,time +/- duration,dayTimeDuration,yearMonthDuration
-            elif (dt in XSD_DateTime_DTs and term.datatype in XSD_Duration_DTs):
-                n = dateTimeObjects(term)
-                res = calculateFinalDateTime(res, dt, n, term.datatype, op)
-                return res
-
-            # duration,dayTimeDuration,yearMonthDuration + datetime,date,time
-            elif dt in XSD_Duration_DTs and term.datatype in XSD_DateTime_DTs:
-                if op == "+":
+                # datetime,date,time +/- duration,dayTimeDuration,yearMonthDuration
+                elif (dt in XSD_DateTime_DTs and term.datatype in XSD_Duration_DTs):
                     n = dateTimeObjects(term)
                     res = calculateFinalDateTime(res, dt, n, term.datatype, op)
                     return res
 
-            # rest are invalid types
-            else:
-                raise SPARQLError('Invalid DateTime Operations')
+                # duration,dayTimeDuration,yearMonthDuration + datetime,date,time
+                elif dt in XSD_Duration_DTs and term.datatype in XSD_DateTime_DTs:
+                    if op == "+":
+                        n = dateTimeObjects(term)
+                        res = calculateFinalDateTime(res, dt, n, term.datatype, op)
+                        return res
 
-    # handling arithmetic(addition/subtraction) of numeric datatypes (if any)
+                # rest are invalid types
+                else:
+                    raise SPARQLError('Invalid DateTime Operations')
+
+        # handling arithmetic(addition/subtraction) of numeric datatypes (if any)
     else:
         res = numeric(expr)
 
