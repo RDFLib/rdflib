@@ -765,8 +765,7 @@ def AdditiveExpression(e, ctx):
 
     # handling arithmetic(addition/subtraction) of dateTime, date, time
     # and duration datatypes (if any)
-    if hasattr(expr, 'datatype'):
-        if(expr.datatype in XSD_DateTime_DTs or expr.datatype in XSD_Duration_DTs):
+    if hasattr(expr, 'datatype') and (expr.datatype in XSD_DateTime_DTs or expr.datatype in XSD_Duration_DTs):
 
             res = dateTimeObjects(expr)
             dt = expr.datatype
