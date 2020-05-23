@@ -11,6 +11,16 @@ XSD_DTs = set(
      XSD.unsignedLong, XSD.unsignedInt, XSD.unsignedShort, XSD.unsignedByte,
      XSD.positiveInteger, XSD.date))
 
+### adding dateTime datatypes
+
+XSD_DateTime_DTs = set(
+    (XSD.dateTime, XSD.date, XSD.time)
+)
+
+XSD_Duration_DTs = set(
+    (XSD.duration, XSD.dayTimeDuration, XSD.yearMonthDuration)
+)
+
 _sub_types = {
     XSD.integer: [
         XSD.nonPositiveInteger, XSD.negativeInteger, XSD.long, XSD.int,
