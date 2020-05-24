@@ -389,9 +389,6 @@ class Graph(Node):
         assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
         self.__store.add((s, p, o), self, quoted=False)
 
-    
-
-
     def addN(self, quads):
         """Add a sequence of triple with context"""
 
@@ -622,6 +619,7 @@ class Graph(Node):
         """A generator of subjects with the given predicate and object"""
         for s, p, o in self.triples((None, predicate, object)):
             yield s
+    
     def predicates(self, subject=None, object=None):
         """A generator of predicates with the given subject and object"""
         for s, p, o in self.triples((subject, None, object)):
