@@ -26,7 +26,6 @@ from six.moves.urllib.request import Request
 from six.moves.urllib.request import url2pathname
 from six.moves.urllib.parse import urljoin
 from six.moves.urllib.request import urlopen
-
 from xml.sax import xmlreader
 
 from rdflib import __version__
@@ -184,6 +183,7 @@ def create_input_source(source=None, publicID=None,
     if location is not None:
         # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145
         if format is None:
+            from rdflib.util  import guess_format
             format = guess_format(location)
         if os.path.exists(location):
             location = pathname2url(location)
@@ -235,59 +235,4 @@ SUFFIX_FORMAT_MAP = {
     'trig': 'trig'
 }
 
-
-def guess_format(fpath, fmap=None):
-    """
-    Guess RDF serialization based on file suffix. Uses
-    ``SUFFIX_FORMAT_MAP`` unless ``fmap`` is provided. Examples:
-
-        >>> guess_format('path/to/file.rdf')
-        'xml'
-        >>> guess_format('path/to/file.owl')
-        'xml'
-        >>> guess_format('path/to/file.ttl')
-        'turtle'
-        >>> guess_format('path/to/file.xhtml')
-        'rdfa'
-        >>> guess_format('path/to/file.svg')
-        'rdfa'
-        >>> guess_format('path/to/file.xhtml', {'xhtml': 'grddl'})
-        'grddl'
-
-    This also works with just the suffixes, with or without leading dot, and
-    regardless of letter case::
-
-        >>> guess_format('.rdf')
-        'xml'
-        >>> guess_format('rdf')
-        'xml'
-        >>> guess_format('RDF')
-        'xml'
-    """
-    fmap = fmap or SUFFIX_FORMAT_MAP
-    return fmap.get(_get_ext(fpath)) or fmap.get(fpath.lower())
-
-
-def _get_ext(fpath, lower=True):
-    """
-    Gets the file extension from a file(path); stripped of leading '.' and in
-    lower case. Examples:
-
-        >>> _get_ext("path/to/file.txt")
-        'txt'
-        >>> _get_ext("OTHER.PDF")
-        'pdf'
-        >>> _get_ext("noext")
-        ''
-        >>> _get_ext(".rdf")
-        'rdf'
-    """
-    ext = splitext(fpath)[-1]
-    if ext == '' and fpath.startswith("."):
-        ext = fpath
-    if lower:
-        ext = ext.lower()
-    if ext.startswith('.'):
-        ext = ext[1:]
-    return ext
 
