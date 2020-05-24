@@ -19,6 +19,7 @@ import sys
 from six import BytesIO
 from six import string_types
 from six import text_type
+from os.path import splitext
 
 from six.moves.urllib.request import pathname2url
 from six.moves.urllib.request import Request
@@ -182,6 +183,8 @@ def create_input_source(source=None, publicID=None,
     auto_close = False  # make sure we close all file handles we open
     if location is not None:
         # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145
+        if format is None:
+            format = guess_format(location)
         if os.path.exists(location):
             location = pathname2url(location)
         base = urljoin("file:", "%s/" % pathname2url(os.getcwd()))
@@ -191,12 +194,14 @@ def create_input_source(source=None, publicID=None,
             file = open(filename, "rb")
         else:
             input_source = URLInputSource(absolute_location, format)
+            input_source.content_type=format
         auto_close = True
         # publicID = publicID or absolute_location  # Further to fix
         # for issue 130
 
     if file is not None:
         input_source = FileInputSource(file)
+        input_source.content_type=format
 
     if data is not None:
         if isinstance(data, text_type):
@@ -214,3 +219,75 @@ def create_input_source(source=None, publicID=None,
         elif input_source.getPublicId() is None:
             input_source.setPublicId(absolute_location or "")
         return input_source
+
+SUFFIX_FORMAT_MAP = {
+    'rdf': 'xml',
+    'rdfs': 'xml',
+    'owl': 'xml',
+    'n3': 'n3',
+    'ttl': 'turtle',
+    'nt': 'nt',
+    'trix': 'trix',
+    'xhtml': 'rdfa',
+    'html': 'rdfa',
+    'svg': 'rdfa',
+    'nq': 'nquads',
+    'trig': 'trig'
+}
+
+
+def guess_format(fpath, fmap=None):
+    """
+    Guess RDF serialization based on file suffix. Uses
+    ``SUFFIX_FORMAT_MAP`` unless ``fmap`` is provided. Examples:
+
+        >>> guess_format('path/to/file.rdf')
+        'xml'
+        >>> guess_format('path/to/file.owl')
+        'xml'
+        >>> guess_format('path/to/file.ttl')
+        'turtle'
+        >>> guess_format('path/to/file.xhtml')
+        'rdfa'
+        >>> guess_format('path/to/file.svg')
+        'rdfa'
+        >>> guess_format('path/to/file.xhtml', {'xhtml': 'grddl'})
+        'grddl'
+
+    This also works with just the suffixes, with or without leading dot, and
+    regardless of letter case::
+
+        >>> guess_format('.rdf')
+        'xml'
+        >>> guess_format('rdf')
+        'xml'
+        >>> guess_format('RDF')
+        'xml'
+    """
+    fmap = fmap or SUFFIX_FORMAT_MAP
+    return fmap.get(_get_ext(fpath)) or fmap.get(fpath.lower())
+
+
+def _get_ext(fpath, lower=True):
+    """
+    Gets the file extension from a file(path); stripped of leading '.' and in
+    lower case. Examples:
+
+        >>> _get_ext("path/to/file.txt")
+        'txt'
+        >>> _get_ext("OTHER.PDF")
+        'pdf'
+        >>> _get_ext("noext")
+        ''
+        >>> _get_ext(".rdf")
+        'rdf'
+    """
+    ext = splitext(fpath)[-1]
+    if ext == '' and fpath.startswith("."):
+        ext = fpath
+    if lower:
+        ext = ext.lower()
+    if ext.startswith('.'):
+        ext = ext[1:]
+    return ext
+
