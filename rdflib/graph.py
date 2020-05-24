@@ -618,13 +618,19 @@ class Graph(Node):
 
     def subjects(self, predicate=None, object=None):
         """A generator of subjects with the given predicate and object"""
+        subs = []
         for s, p, o in self.triples((None, predicate, object)):
-            yield s
+            if s  not in subs:
+                subs.append(s)
+                yield s
 
     def predicates(self, subject=None, object=None):
         """A generator of predicates with the given subject and object"""
+        preds = []
         for s, p, o in self.triples((subject, None, object)):
-            yield p
+            if p not in preds:
+                preds.append(p)
+                yield p
 
     def objects(self, subject=None, predicate=None):
         """A generator of objects with the given subject and predicate"""
