@@ -12,11 +12,10 @@ See also rdflib.plugin
 
 from rdflib.term import URIRef
 
-__all__ = ['Serializer']
+__all__ = ["Serializer"]
 
 
 class Serializer(object):
-
     def __init__(self, store):
         self.store = store
         self.encoding = "UTF-8"

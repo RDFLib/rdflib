@@ -21,17 +21,27 @@ import requests
 from pyparsing import ParseException
 
 from rdflib import Variable, Graph, BNode, URIRef, Literal
-from six import iteritems, itervalues
-
 from rdflib.plugins.sparql import CUSTOM_EVALS
 from rdflib.plugins.sparql.parserutils import value
 from rdflib.plugins.sparql.sparql import (
-    QueryContext, AlreadyBound, FrozenBindings, Bindings, SPARQLError)
+    QueryContext,
+    AlreadyBound,
+    FrozenBindings,
+    Bindings,
+    SPARQLError,
+)
 from rdflib.plugins.sparql.evalutils import (
-    _filter, _eval, _join, _diff, _minus, _fillTemplate, _ebv, _val)
+    _filter,
+    _eval,
+    _join,
+    _diff,
+    _minus,
+    _fillTemplate,
+    _ebv,
+    _val,
+)
 
 from rdflib.plugins.sparql.aggregates import Aggregator
-from rdflib.plugins.sparql.algebra import Join, ToMultiSet, Values
 from rdflib.plugins.sparql import parser
 
 
@@ -147,9 +157,10 @@ def evalLeftJoin(ctx, join):
             # check that we would have had no OPTIONAL matches
             # even without prior bindings...
             p1_vars = join.p1._vars
-            if p1_vars is None \
-                or not any(_ebv(join.expr, b) for b in
-                           evalPart(ctx.thaw(a.remember(p1_vars)), join.p2)):
+            if p1_vars is None or not any(
+                _ebv(join.expr, b)
+                for b in evalPart(ctx.thaw(a.remember(p1_vars)), join.p2)
+            ):
 
                 yield a
 
@@ -157,7 +168,10 @@ def evalLeftJoin(ctx, join):
 def evalFilter(ctx, part):
     # TODO: Deal with dict returned from evalPart!
     for c in evalPart(ctx, part.p):
-        if _ebv(part.expr, c.forget(ctx, _except=part._vars) if not part.no_isolated_scope else c):
+        if _ebv(
+            part.expr,
+            c.forget(ctx, _except=part._vars) if not part.no_isolated_scope else c,
+        ):
             yield c
 
 
@@ -165,8 +179,9 @@ def evalGraph(ctx, part):
 
     if ctx.dataset is None:
         raise Exception(
-            "Non-conjunctive-graph doesn't know about " +
-            "graphs. Try a query without GRAPH.")
+            "Non-conjunctive-graph doesn't know about "
+            + "graphs. Try a query without GRAPH."
+        )
 
     ctx = ctx.clone()
     graph = ctx[part.term]
@@ -195,7 +210,7 @@ def evalValues(ctx, part):
         c = ctx.push()
         try:
             for k, v in r.items():
-                if v != 'UNDEF':
+                if v != "UNDEF":
                     c[k] = v
         except AlreadyBound:
             continue
@@ -205,7 +220,7 @@ def evalValues(ctx, part):
 
 def evalMultiset(ctx, part):
 
-    if part.p.name == 'values':
+    if part.p.name == "values":
         return evalValues(ctx, part)
 
     return evalPart(ctx, part.p)
@@ -220,91 +235,102 @@ def evalPart(ctx, part):
         except NotImplementedError:
             pass  # the given custome-function did not handle this part
 
-    if part.name == 'BGP':
+    if part.name == "BGP":
         # Reorder triples patterns by number of bound nodes in the current ctx
         # Do patterns with more bound nodes first
-        triples = sorted(part.triples, key=lambda t: len([n for n in t if ctx[n] is None]))
+        triples = sorted(
+            part.triples, key=lambda t: len([n for n in t if ctx[n] is None])
+        )
 
         return evalBGP(ctx, triples)
-    elif part.name == 'Filter':
+    elif part.name == "Filter":
         return evalFilter(ctx, part)
-    elif part.name == 'Join':
+    elif part.name == "Join":
         return evalJoin(ctx, part)
-    elif part.name == 'LeftJoin':
+    elif part.name == "LeftJoin":
         return evalLeftJoin(ctx, part)
-    elif part.name == 'Graph':
+    elif part.name == "Graph":
         return evalGraph(ctx, part)
-    elif part.name == 'Union':
+    elif part.name == "Union":
         return evalUnion(ctx, part)
-    elif part.name == 'ToMultiSet':
+    elif part.name == "ToMultiSet":
         return evalMultiset(ctx, part)
-    elif part.name == 'Extend':
+    elif part.name == "Extend":
         return evalExtend(ctx, part)
-    elif part.name == 'Minus':
+    elif part.name == "Minus":
         return evalMinus(ctx, part)
 
-    elif part.name == 'Project':
+    elif part.name == "Project":
         return evalProject(ctx, part)
-    elif part.name == 'Slice':
+    elif part.name == "Slice":
         return evalSlice(ctx, part)
-    elif part.name == 'Distinct':
+    elif part.name == "Distinct":
         return evalDistinct(ctx, part)
-    elif part.name == 'Reduced':
+    elif part.name == "Reduced":
         return evalReduced(ctx, part)
 
-    elif part.name == 'OrderBy':
+    elif part.name == "OrderBy":
         return evalOrderBy(ctx, part)
-    elif part.name == 'Group':
+    elif part.name == "Group":
         return evalGroup(ctx, part)
-    elif part.name == 'AggregateJoin':
+    elif part.name == "AggregateJoin":
         return evalAggregateJoin(ctx, part)
 
-    elif part.name == 'SelectQuery':
+    elif part.name == "SelectQuery":
         return evalSelectQuery(ctx, part)
-    elif part.name == 'AskQuery':
+    elif part.name == "AskQuery":
         return evalAskQuery(ctx, part)
-    elif part.name == 'ConstructQuery':
+    elif part.name == "ConstructQuery":
         return evalConstructQuery(ctx, part)
 
-    elif part.name == 'ServiceGraphPattern':
+    elif part.name == "ServiceGraphPattern":
         return evalServiceQuery(ctx, part)
-        #raise Exception('ServiceGraphPattern not implemented')
+        # raise Exception('ServiceGraphPattern not implemented')
 
-    elif part.name == 'DescribeQuery':
-        raise Exception('DESCRIBE not implemented')
+    elif part.name == "DescribeQuery":
+        raise Exception("DESCRIBE not implemented")
 
     else:
-        raise Exception('I dont know: %s' % part.name)
+        raise Exception("I dont know: %s" % part.name)
+
 
 def evalServiceQuery(ctx, part):
     res = {}
-    match = re.match('^service <(.*)>[ \n]*{(.*)}[ \n]*$',
-                     part.get('service_string', ''), re.DOTALL)
+    match = re.match(
+        "^service <(.*)>[ \n]*{(.*)}[ \n]*$",
+        part.get("service_string", ""),
+        re.DOTALL | re.I,
+    )
 
     if match:
         service_url = match.group(1)
         service_query = _buildQueryStringForServiceCall(ctx, match)
 
-        query_settings = {'query': service_query,
-                          'output': 'json'}
-        headers = {'accept' : 'application/sparql-results+json',
-                          'user-agent': 'rdflibForAnUser'}
+        query_settings = {"query": service_query, "output": "json"}
+        headers = {
+            "accept": "application/sparql-results+json",
+            "user-agent": "rdflibForAnUser",
+        }
         # GET is easier to cache so prefer that if the query is not to long
         if len(service_query) < 600:
             response = requests.get(service_url, params=query_settings, headers=headers)
         else:
-            response = requests.post(service_url, params=query_settings, headers=headers)
+            response = requests.post(
+                service_url, params=query_settings, headers=headers
+            )
         if response.status_code == 200:
-            json = response.json();
-            variables = res["vars_"] = json['head']['vars']
+            json = response.json()
+            variables = res["vars_"] = json["head"]["vars"]
             # or just return the bindings?
-            res = json['results']['bindings']
+            res = json["results"]["bindings"]
             if len(res) > 0:
                 for r in res:
                     for bound in _yieldBindingsFromServiceCallResult(ctx, r, variables):
                         yield bound
         else:
-            raise Exception("Service: %s responded with code: %s", service_url, response.status_code);
+            raise Exception(
+                "Service: %s responded with code: %s", service_url, response.status_code
+            )
 
 
 """
@@ -313,6 +339,8 @@ def evalServiceQuery(ctx, part):
     Re-adds prefixes if added and sets the base.
     Wraps it in select if needed.
 """
+
+
 def _buildQueryStringForServiceCall(ctx, match):
 
     service_query = match.group(2)
@@ -320,18 +348,20 @@ def _buildQueryStringForServiceCall(ctx, match):
         parser.parseQuery(service_query)
     except ParseException:
         # This could be because we don't have a select around the service call.
-        service_query = 'SELECT REDUCED * WHERE {' + service_query + '}'
+        service_query = "SELECT REDUCED * WHERE {" + service_query + "}"
         for p in ctx.prologue.namespace_manager.store.namespaces():
-            service_query = 'PREFIX ' + p[0] + ':' + p[1].n3() + ' ' + service_query
+            service_query = "PREFIX " + p[0] + ":" + p[1].n3() + " " + service_query
         # re add the base if one was defined
         base = ctx.prologue.base
         if base is not None and len(base) > 0:
-            service_query = 'BASE <' + base + '> ' + service_query
-    sol = ctx.solution();
+            service_query = "BASE <" + base + "> " + service_query
+    sol = ctx.solution()
     if len(sol) > 0:
-        variables = ' '.join(map(lambda v:v.n3(), sol))
-        variables_bound = ' '.join(map(lambda v: ctx.get(v).n3(), sol))
-        service_query = service_query + 'VALUES (' + variables + ') {(' + variables_bound + ')}'
+        variables = " ".join(map(lambda v: v.n3(), sol))
+        variables_bound = " ".join(map(lambda v: ctx.get(v).n3(), sol))
+        service_query = (
+            service_query + "VALUES (" + variables + ") {(" + variables_bound + ")}"
+        )
     return service_query
 
 
@@ -339,14 +369,18 @@ def _yieldBindingsFromServiceCallResult(ctx, r, variables):
     res_dict = {}
     for var in variables:
         if var in r and r[var]:
-            if r[var]['type'] == "uri":
+            if r[var]["type"] == "uri":
                 res_dict[Variable(var)] = URIRef(r[var]["value"])
-            elif r[var]['type'] == "bnode":
+            elif r[var]["type"] == "bnode":
                 res_dict[Variable(var)] = BNode(r[var]["value"])
-            elif r[var]['type'] == "literal" and 'datatype' in r[var]:
-                res_dict[Variable(var)] = Literal(r[var]["value"], datatype=r[var]['datatype'])
-            elif r[var]['type'] == "literal" and 'xml:lang' in r[var]:
-                res_dict[Variable(var)] = Literal(r[var]["value"], lang=r[var]['xml:lang'])
+            elif r[var]["type"] == "literal" and "datatype" in r[var]:
+                res_dict[Variable(var)] = Literal(
+                    r[var]["value"], datatype=r[var]["datatype"]
+                )
+            elif r[var]["type"] == "literal" and "xml:lang" in r[var]:
+                res_dict[Variable(var)] = Literal(
+                    r[var]["value"], lang=r[var]["xml:lang"]
+                )
     yield FrozenBindings(ctx, res_dict)
 
 
@@ -379,7 +413,7 @@ def evalAggregateJoin(ctx, agg):
             res[k].update(row)
 
     # all rows are done; yield aggregated values
-    for aggregator in itervalues(res):
+    for aggregator in res.values():
         yield FrozenBindings(ctx, aggregator.get_bindings())
 
     # there were no matches
@@ -393,8 +427,10 @@ def evalOrderBy(ctx, part):
 
     for e in reversed(part.expr):
 
-        reverse = bool(e.order and e.order == 'DESC')
-        res = sorted(res, key=lambda x: _val(value(x, e.expr, variables=True)), reverse=reverse)
+        reverse = bool(e.order and e.order == "DESC")
+        res = sorted(
+            res, key=lambda x: _val(value(x, e.expr, variables=True)), reverse=reverse
+        )
 
     return res
 
@@ -402,7 +438,11 @@ def evalOrderBy(ctx, part):
 def evalSlice(ctx, slice):
     res = evalPart(ctx, slice.p)
 
-    return itertools.islice(res, slice.start, slice.start + slice.length if slice.length is not None else None)
+    return itertools.islice(
+        res,
+        slice.start,
+        slice.start + slice.length if slice.length is not None else None,
+    )
 
 
 def evalReduced(ctx, part):
@@ -500,7 +540,7 @@ def evalConstructQuery(ctx, query):
 
 def evalQuery(graph, query, initBindings, base=None):
 
-    initBindings = dict((Variable(k), v) for k, v in iteritems(initBindings))
+    initBindings = dict((Variable(k), v) for k, v in initBindings.items())
 
     ctx = QueryContext(graph, initBindings=initBindings)
 
@@ -510,8 +550,9 @@ def evalQuery(graph, query, initBindings, base=None):
     if main.datasetClause:
         if ctx.dataset is None:
             raise Exception(
-                "Non-conjunctive-graph doesn't know about " +
-                "graphs! Try a query without FROM (NAMED).")
+                "Non-conjunctive-graph doesn't know about "
+                + "graphs! Try a query without FROM (NAMED)."
+            )
 
         ctx = ctx.clone()  # or push/pop?
 

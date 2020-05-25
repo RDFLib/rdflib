@@ -11,7 +11,6 @@ def makeNode():
 
 
 class TestRandomSeedInThread(unittest.TestCase):
-
     def test_bnode_id_gen_in_thread(self):
         """
         """

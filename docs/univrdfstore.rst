@@ -6,9 +6,9 @@ A Universal RDF Store Interface
 
 This document attempts to summarize some fundamental components of an RDF store. The motivation is to outline a standard set of interfaces for providing the support needed to persist an `RDF Graph`_ in a way that is universal and not tied to any specific implementation.
 
-For the most part, the interface adheres to the core RDF model and uses terminology that is consistent with the RDF Model specifications. However, this suggested interface also extends an RDF store with additional requirements necessary to facilitate those aspects of `Notation 3`_ that go beyond the RDF model to provide a framework for `First Order Predicate Logic`_ processing and persistence.
+For the most part, the interfaces adhere to the core RDF model and use terminology that is consistent with the RDF Model specifications. However, these suggested interfaces also extends an RDF store with additional requirements necessary to facilitate those aspects of `Notation 3`_ that go beyond the RDF model to provide a framework for `First Order Predicate Logic`_ processing and persistence.
 
-..  _RDF Graph: http://www.w3.org/TR/rdf-concepts/#dfn-rdf-graph
+..  _RDF Graph: https://www.w3.org/TR/rdf11-concepts/#data-model
 ..  _Notation 3: http://www.w3.org/2000/10/swap/Primer
 ..  _First Order Predicate Logic: http://en.wikipedia.org/wiki/First-order_predicate_logic
 
@@ -173,7 +173,7 @@ Formulae and variables are distinguishable from URI references, Literals, and BN
 
 They must also be distinguishable in persistence to ensure they can be round-tripped. 
 
-.. note:: There are a number of other issues regarding the :doc:`persisting of N3 terms <persisting_n3_terms>`_.
+.. note:: There are a number of other issues regarding the :doc:`persisting_n3_terms`.
 
 Database Management
 ===================
@@ -200,6 +200,7 @@ Triple Interfaces
 An RDF store could provide a standard set of interfaces for the manipulation, management, and/or retrieval of its contained triples (asserted or quoted):
 
 .. module:: rdflib.store
+    :noindex:
 
 .. automethod:: rdflib.store.Store.add
     :noindex:

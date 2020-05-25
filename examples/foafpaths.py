@@ -1,10 +1,9 @@
 """
-
 SPARQL 1.1 defines path operators for combining/repeating predicates
 in triple-patterns.
 
-We overload some python operators on URIRefs to allow creating path
-operators directly in python.
+We overload some Python operators on URIRefs to allow creating path
+operators directly in Python.
 
 ============ =========================================
 Operator     Path
@@ -19,22 +18,21 @@ Operator     Path
 ============ =========================================
 
 
-these can then be used in property position for ``s,p,o`` triple queries
+These can then be used in property position for ``s,p,o`` triple queries
 for any graph method.
 
 See the docs for :mod:`rdflib.paths` for the details.
 
 This example shows how to get the name of friends with a single query.
-
 """
 
 from rdflib import URIRef, Graph
 from rdflib.namespace import FOAF
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     g = Graph()
-    g.load("foaf.rdf")
+    g.load("foaf.n3", format="n3")
 
     tim = URIRef("http://www.w3.org/People/Berners-Lee/card#i")
 

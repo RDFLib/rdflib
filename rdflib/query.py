@@ -9,13 +9,11 @@ import tempfile
 import warnings
 import types
 
-from six import BytesIO
-from six import PY2
-from six import text_type
-from six.moves.urllib.parse import urlparse
+from io import BytesIO
 
-__all__ = ['Processor', 'Result', 'ResultParser', 'ResultSerializer',
-           'ResultException']
+from urllib.parse import urlparse
+
+__all__ = ["Processor", "Result", "ResultParser", "ResultSerializer", "ResultException"]
 
 
 class Processor(object):
@@ -71,7 +69,7 @@ class EncodeOnlyUnicode(object):
         self.__stream = stream
 
     def write(self, arg):
-        if isinstance(arg, text_type):
+        if isinstance(arg, str):
             self.__stream.write(arg.encode("utf-8"))
         else:
             self.__stream.write(arg)
@@ -118,10 +116,8 @@ class ResultRow(tuple):
 
     def __new__(cls, values, labels):
 
-        instance = super(ResultRow, cls).__new__(
-            cls, (values.get(v) for v in labels))
-        instance.labels = dict((text_type(x[1]), x[0])
-                               for x in enumerate(labels))
+        instance = super(ResultRow, cls).__new__(cls, (values.get(v) for v in labels))
+        instance.labels = dict((str(x[1]), x[0]) for x in enumerate(labels))
         return instance
 
     def __getattr__(self, name):
@@ -135,8 +131,8 @@ class ResultRow(tuple):
         except TypeError:
             if name in self.labels:
                 return tuple.__getitem__(self, self.labels[name])
-            if text_type(name) in self.labels:  # passing in variable object
-                return tuple.__getitem__(self, self.labels[text_type(name)])
+            if str(name) in self.labels:  # passing in variable object
+                return tuple.__getitem__(self, self.labels[str(name)])
             raise KeyError(name)
 
     def get(self, name, default=None):
@@ -170,8 +166,8 @@ class Result(object):
 
     def __init__(self, type_):
 
-        if type_ not in ('CONSTRUCT', 'DESCRIBE', 'SELECT', 'ASK'):
-            raise ResultException('Unknown Result type: %s' % type_)
+        if type_ not in ("CONSTRUCT", "DESCRIBE", "SELECT", "ASK"):
+            raise ResultException("Unknown Result type: %s" % type_)
 
         self.type = type_
         self.vars = None
@@ -195,7 +191,8 @@ class Result(object):
             self._bindings = b
 
     bindings = property(
-        _get_bindings, _set_bindings, doc="a list of variable bindings as dicts")
+        _get_bindings, _set_bindings, doc="a list of variable bindings as dicts"
+    )
 
     @staticmethod
     def parse(source=None, format=None, content_type=None, **kwargs):
@@ -206,21 +203,22 @@ class Result(object):
         elif content_type:
             plugin_key = content_type.split(";", 1)[0]
         else:
-            plugin_key = 'xml'
+            plugin_key = "xml"
 
         parser = plugin.get(plugin_key, ResultParser)()
 
         return parser.parse(source, content_type=content_type, **kwargs)
 
-    def serialize(
-            self, destination=None, encoding="utf-8", format='xml', **args):
+    def serialize(self, destination=None, encoding="utf-8", format="xml", **args):
 
-        if self.type in ('CONSTRUCT', 'DESCRIBE'):
+        if self.type in ("CONSTRUCT", "DESCRIBE"):
             return self.graph.serialize(
-                destination, encoding=encoding, format=format, **args)
+                destination, encoding=encoding, format=format, **args
+            )
 
         """stolen wholesale from graph.serialize"""
         from rdflib import plugin
+
         serializer = plugin.get(format, ResultSerializer)(self)
         if destination is None:
             stream = BytesIO()
@@ -234,11 +232,12 @@ class Result(object):
             location = destination
             scheme, netloc, path, params, query, fragment = urlparse(location)
             if netloc != "":
-                print("WARNING: not saving as location" +
-                      "is not a local file reference")
+                print(
+                    "WARNING: not saving as location" + "is not a local file reference"
+                )
                 return
             fd, name = tempfile.mkstemp()
-            stream = os.fdopen(fd, 'wb')
+            stream = os.fdopen(fd, "wb")
             serializer.serialize(stream, encoding=encoding, **args)
             stream.close()
             if hasattr(shutil, "move"):
@@ -248,29 +247,26 @@ class Result(object):
                 os.remove(name)
 
     def __len__(self):
-        if self.type == 'ASK':
+        if self.type == "ASK":
             return 1
-        elif self.type == 'SELECT':
+        elif self.type == "SELECT":
             return len(self.bindings)
         else:
             return len(self.graph)
 
     def __bool__(self):
-        if self.type == 'ASK':
+        if self.type == "ASK":
             return self.askAnswer
         else:
             return len(self) > 0
-
-    if PY2:
-        __nonzero__ = __bool__
 
     def __iter__(self):
         if self.type in ("CONSTRUCT", "DESCRIBE"):
             for t in self.graph:
                 yield t
-        elif self.type == 'ASK':
+        elif self.type == "ASK":
             yield self.askAnswer
-        elif self.type == 'SELECT':
+        elif self.type == "SELECT":
             # this iterates over ResultRows of variable bindings
 
             if self._genbindings:
@@ -287,26 +283,26 @@ class Result(object):
     def __getattr__(self, name):
         if self.type in ("CONSTRUCT", "DESCRIBE") and self.graph is not None:
             return self.graph.__getattr__(self, name)
-        elif self.type == 'SELECT' and name == 'result':
+        elif self.type == "SELECT" and name == "result":
             warnings.warn(
                 "accessing the 'result' attribute is deprecated."
                 " Iterate over the object instead.",
-                DeprecationWarning, stacklevel=2)
+                DeprecationWarning,
+                stacklevel=2,
+            )
             # copied from __iter__, above
             return [(tuple(b[v] for v in self.vars)) for b in self.bindings]
         else:
-            raise AttributeError(
-                "'%s' object has no attribute '%s'" % (self, name))
+            raise AttributeError("'%s' object has no attribute '%s'" % (self, name))
 
     def __eq__(self, other):
         try:
             if self.type != other.type:
                 return False
-            if self.type == 'ASK':
+            if self.type == "ASK":
                 return self.askAnswer == other.askAnswer
-            elif self.type == 'SELECT':
-                return self.vars == other.vars \
-                    and self.bindings == other.bindings
+            elif self.type == "SELECT":
+                return self.vars == other.vars and self.bindings == other.bindings
             else:
                 return self.graph == other.graph
 
@@ -315,7 +311,6 @@ class Result(object):
 
 
 class ResultParser(object):
-
     def __init__(self):
         pass
 
@@ -325,7 +320,6 @@ class ResultParser(object):
 
 
 class ResultSerializer(object):
-
     def __init__(self, result):
         self.result = result
 
