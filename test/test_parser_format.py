@@ -5,6 +5,10 @@ from rdflib.term import URIRef
 from rdflib.term import Literal
 from rdflib.graph import Graph
 
+
+def failingFunc(g):
+	g.parse('test/test_parser.py')
+
 class ParserFormatTestCase(unittest.TestCase):
 	backend='default'
 	path = 'store'
@@ -20,6 +24,18 @@ class ParserFormatTestCase(unittest.TestCase):
 		g = self.graph
 		g.parse('test/a.n3')
 		self.assertEqual(True , True)
+
+	def testAnotherFormat(self):
+		self.graph = Graph(store=self.backend)
+		g = self.graph
+		g.parse('test/a.ttl')
+		self.assertEqual(True , True)
+
+	def testFailingFormat(self):
+		self.graph = Graph(store=self.backend)
+		g = self.graph
+		self.assertRaises(Exception , failingFunc , g)
+
 
 if __name__=="__main__":
 	unittest.main()
