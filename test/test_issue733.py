@@ -12,13 +12,12 @@ from rdflib.namespace import RDF, RDFS, NamespaceManager, Namespace
 
 
 class TestIssue733(unittest.TestCase):
-
     def test_issue_733(self):
         g = Graph()
-        example = Namespace('http://example.org/')
+        example = Namespace("http://example.org/")
         g.add((example.S, example.P, example.O1))
         g.add((example.S, example.P, example.O2))
-        q = '''
+        q = """
         prefix ex:<http://example.org/>
         select ?st ?ot ?gt where {
           {SELECT (count(*) as ?st) where {
@@ -34,20 +33,20 @@ class TestIssue733(unittest.TestCase):
               FILTER (?o!=ex:O1 && ?s!=ex:O2)
           }}
         }
-        '''
+        """
         res = g.query(q)
         assert len(res) == 1
         results = [[lit.toPython() for lit in line] for line in res]
-        assert results[0][0]== 2
+        assert results[0][0] == 2
         assert results[0][1] == 1
         assert results[0][2] == 1
 
     def test_issue_733_independant(self):
         g = Graph()
-        example = Namespace('http://example.org/')
+        example = Namespace("http://example.org/")
         g.add((example.S, example.P, example.O1))
         g.add((example.S, example.P, example.O2))
-        q = '''
+        q = """
                 prefix ex:<http://example.org/>
                 select ?st where {
                   {SELECT (count(*) as ?st) where {
@@ -55,12 +54,12 @@ class TestIssue733(unittest.TestCase):
                       FILTER (?s=ex:S)
                   }}
                 }
-                '''
+                """
         res = g.query(q)
         assert len(res) == 1
         results = [[lit.toPython() for lit in line] for line in res]
         assert results[0][0] == 2
-        q = '''
+        q = """
                prefix ex:<http://example.org/>
                select ?st where {
                  {SELECT (count(*) as ?st) where {
@@ -68,7 +67,7 @@ class TestIssue733(unittest.TestCase):
                      FILTER (?o=ex:O1)
                  }}
                }
-               '''
+               """
         res = g.query(q)
         results = [[lit.toPython() for lit in line] for line in res]
         assert results[0][0] == 1

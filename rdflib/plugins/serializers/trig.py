@@ -5,17 +5,16 @@ See <http://www.w3.org/TR/trig/> for syntax specification.
 
 from collections import defaultdict
 
-from rdflib.plugins.serializers.turtle import TurtleSerializer, _GEN_QNAME_FOR_DT, VERB
-from rdflib.term import BNode, Literal
-from six import b
+from rdflib.plugins.serializers.turtle import TurtleSerializer
+from rdflib.term import BNode
 
-__all__ = ['TrigSerializer']
+__all__ = ["TrigSerializer"]
 
 
 class TrigSerializer(TurtleSerializer):
 
     short_name = "trig"
-    indentString = 4 * u' '
+    indentString = 4 * u" "
 
     def __init__(self, store):
         if store.context_aware:
@@ -39,14 +38,17 @@ class TrigSerializer(TurtleSerializer):
             for triple in context:
                 self.preprocessTriple(triple)
 
-            self._contexts[context] = (self.orderSubjects(), self._subjects, self._references)
+            self._contexts[context] = (
+                self.orderSubjects(),
+                self._subjects,
+                self._references,
+            )
 
     def reset(self):
         super(TrigSerializer, self).reset()
         self._contexts = {}
 
-    def serialize(self, stream, base=None, encoding=None,
-                  spacious=None, **args):
+    def serialize(self, stream, base=None, encoding=None, spacious=None, **args):
         self.reset()
         self.stream = stream
         # if base is given here, use that, if not and a base is set for the graph use that
@@ -73,7 +75,7 @@ class TrigSerializer(TurtleSerializer):
             self._subjects = subjects
 
             if self.default_context and store.identifier == self.default_context:
-                self.write(self.indent() + '\n{')
+                self.write(self.indent() + "\n{")
             else:
                 if isinstance(store.identifier, BNode):
                     iri = store.identifier.n3()
@@ -81,7 +83,7 @@ class TrigSerializer(TurtleSerializer):
                     iri = self.getQName(store.identifier)
                     if iri is None:
                         iri = store.identifier.n3()
-                self.write(self.indent() + '\n%s {' % iri)
+                self.write(self.indent() + "\n%s {" % iri)
 
             self.depth += 1
             for subject in ordered_subjects:
@@ -90,9 +92,9 @@ class TrigSerializer(TurtleSerializer):
                 if firstTime:
                     firstTime = False
                 if self.statement(subject) and not firstTime:
-                    self.write('\n')
+                    self.write("\n")
             self.depth -= 1
-            self.write('}\n')
+            self.write("}\n")
 
         self.endDocument()
-        stream.write(b("\n"))
+        stream.write("\n".encode("latin-1"))

@@ -24,7 +24,8 @@ class StoreTestCase(unittest.TestCase):
     something other than a unit test... but for now we'll add it as a
     unit test.
     """
-    store = 'default'
+
+    store = "default"
     tmppath = None
     configString = os.environ.get("DBURI", "dburi")
 
@@ -36,6 +37,7 @@ class StoreTestCase(unittest.TestCase):
         if self.store == "MySQL":
             # from test.mysql import configString
             from rdflib.store.MySQL import MySQL
+
             path = self.configString
             MySQL().destroy(path)
         else:
@@ -54,10 +56,10 @@ class StoreTestCase(unittest.TestCase):
     def testTime(self):
         number = 1
         print(self.store)
-        print("input:", end=' ')
+        print("input:", end=" ")
         for i in itertools.repeat(None, number):
             self._testInput()
-        print("random:", end=' ')
+        print("random:", end=" ")
         for i in itertools.repeat(None, number):
             self._testRandom()
         print(".")
@@ -77,7 +79,7 @@ class StoreTestCase(unittest.TestCase):
         for _i in it:
             add_random()
         t1 = time()
-        print("%.3g" % (t1 - t0), end=' ')
+        print("%.3g" % (t1 - t0), end=" ")
 
     def _testInput(self):
         number = 1
@@ -92,12 +94,12 @@ class StoreTestCase(unittest.TestCase):
         for _i in it:
             add_from_input()
         t1 = time()
-        print("%.3g" % (t1 - t0), end=' ')
+        print("%.3g" % (t1 - t0), end=" ")
 
 
 class MemoryStoreTestCase(StoreTestCase):
     store = "IOMemory"
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
