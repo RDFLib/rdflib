@@ -6,7 +6,7 @@ branches:
     # only build master and release branches (merge request are built anyhow)
     - master
     - /^\d+\.\d+\.\d+(-.*)?$/
-    - original_rdflib
+    
 git:
   depth: 3
 
