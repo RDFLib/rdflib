@@ -30,13 +30,15 @@ class TestDuration(unittest.TestCase):
 
     def test_duration_le(self):
         self.assertTrue(
-            Literal("P4DT5H6M7S", datatype=XSD.duration) < Literal("P8DT10H12M14S", datatype=XSD.duration)
+            Literal("P4DT5H6M7S", datatype=XSD.duration)
+            < Literal("P8DT10H12M14S", datatype=XSD.duration)
         )
 
     def test_duration_sum(self):
         self.assertEqual(
-            Literal("P1Y2M4DT5H6M7S", datatype=XSD.duration) + Literal("P1Y2M4DT5H6M7S", datatype=XSD.duration).toPython(),
-            Literal("P2Y4M8DT10H12M14S", datatype=XSD.duration)
+            Literal("P1Y2M4DT5H6M7S", datatype=XSD.duration)
+            + Literal("P1Y2M4DT5H6M7S", datatype=XSD.duration).toPython(),
+            Literal("P2Y4M8DT10H12M14S", datatype=XSD.duration),
         )
 
 

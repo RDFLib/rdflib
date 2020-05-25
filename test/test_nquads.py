@@ -1,12 +1,10 @@
 import unittest
 from rdflib import ConjunctiveGraph, URIRef, Namespace
-from six import b
 
-TEST_BASE = 'test/nquads.rdflib'
+TEST_BASE = "test/nquads.rdflib"
 
 
 class NQuadsParserTest(unittest.TestCase):
-
     def _load_example(self):
         g = ConjunctiveGraph()
         with open("test/nquads.rdflib/example.nquads", "rb") as data:
@@ -47,22 +45,26 @@ class NQuadsParserTest(unittest.TestCase):
         uri1 = URIRef("http://example.org/mygraph1")
         uri2 = URIRef("http://example.org/mygraph2")
 
-        bob = URIRef(u'urn:bob')
-        likes = URIRef(u'urn:likes')
-        pizza = URIRef(u'urn:pizza')
+        bob = URIRef(u"urn:bob")
+        likes = URIRef(u"urn:likes")
+        pizza = URIRef(u"urn:pizza")
 
         g.get_context(uri1).add((bob, likes, pizza))
         g.get_context(uri2).add((bob, likes, pizza))
 
-        s = g.serialize(format='nquads')
-        self.assertEqual(len([x for x in s.split(b("\n")) if x.strip()]), 2)
+        s = g.serialize(format="nquads")
+        self.assertEqual(
+            len([x for x in s.split("\n".encode("latin-1")) if x.strip()]), 2
+        )
 
         g2 = ConjunctiveGraph()
-        g2.parse(data=s, format='nquads')
+        g2.parse(data=s, format="nquads")
 
         self.assertEqual(len(g), len(g2))
-        self.assertEqual(sorted(x.identifier for x in g.contexts()),
-                         sorted(x.identifier for x in g2.contexts()))
+        self.assertEqual(
+            sorted(x.identifier for x in g.contexts()),
+            sorted(x.identifier for x in g2.contexts()),
+        )
 
 
 if __name__ == "__main__":

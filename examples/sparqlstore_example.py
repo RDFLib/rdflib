@@ -14,16 +14,21 @@ if __name__ == "__main__":
     graph = Graph("SPARQLStore", identifier="http://dbpedia.org")
     graph.open("http://dbpedia.org/sparql")
 
-    pop = graph.value(
-        URIRef("http://dbpedia.org/resource/Berlin"),
-        dbo.populationTotal)
+    pop = graph.value(URIRef("http://dbpedia.org/resource/Berlin"), dbo.populationTotal)
 
-    print("According to DBPedia, Berlin has a population of {0:,}".format(int(pop), ',d').replace(",", "."))
+    print(
+        "According to DBPedia, Berlin has a population of {0:,}".format(
+            int(pop), ",d"
+        ).replace(",", ".")
+    )
 
     # using a SPARQLStore object directly
     s = SPARQLStore(endpoint="http://dbpedia.org/sparql")
     s.open(None)
     pop = graph.value(
-        URIRef("http://dbpedia.org/resource/Brisbane"),
-        dbo.populationTotal)
-    print("According to DBPedia, Brisbane has a population of " "{0:,}".format(int(pop), ',d'))
+        URIRef("http://dbpedia.org/resource/Brisbane"), dbo.populationTotal
+    )
+    print(
+        "According to DBPedia, Brisbane has a population of "
+        "{0:,}".format(int(pop), ",d")
+    )

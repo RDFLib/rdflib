@@ -9,17 +9,17 @@ EARL = Namespace("http://www.w3.org/ns/earl#")
 
 report = Graph()
 
-report.bind('foaf', FOAF)
-report.bind('earl', EARL)
-report.bind('doap', DOAP)
-report.bind('dc', DC)
+report.bind("foaf", FOAF)
+report.bind("earl", EARL)
+report.bind("doap", DOAP)
+report.bind("dc", DC)
 
-me = URIRef('http://gromgull.net/me')
+me = URIRef("http://gromgull.net/me")
 report.add((me, RDF.type, FOAF.Person))
 report.add((me, FOAF.homepage, URIRef("http://gromgull.net")))
 report.add((me, FOAF.name, Literal("Gunnar Aastrand Grimnes")))
 
-rdflib = URIRef('https://github.com/RDFLib/rdflib')
+rdflib = URIRef("https://github.com/RDFLib/rdflib")
 
 report.add((rdflib, DOAP.homepage, rdflib))
 report.add((rdflib, DOAP.name, Literal("rdflib")))
