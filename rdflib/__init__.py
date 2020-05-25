@@ -196,3 +196,5 @@ assert plugin
 assert query
 
 from rdflib import util
+
+from .container import *
