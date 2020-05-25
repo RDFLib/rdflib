@@ -7,33 +7,42 @@ __all__ = ["Container", "Bag", "Seq", "Alt", "NoElementException"]
 
 
 class Container(object):
-    """A class for constructing RDF containers, as per https://www.w3.org/TR/rdf11-mt/#rdf-containers"""
+    """A class for constructing RDF containers, as per https://www.w3.org/TR/rdf11-mt/#rdf-containers
 
-    __doc__ = """
-    Basic usage, creating a ``Bag``: 
+    Basic usage, creating a ``Bag`` and adding to it::
 
-    >>> from rdflib import Graph, BNode, Literal, Bag
-    >>> 
-    >>> g = Graph()
-    >>> b = Bag(g, BNode(), [Literal("One"), Literal("Two"), Literal("Three"))
-    >>> 
-    >>> print(g.serialize(format="turtle").decode())
-    ... @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-    ... 
-    ... [] a rdf:Bag ;
-    ...     rdf:_1 "One" ;
-    ...     rdf:_2 "Two" ;
-    ...     rdf:_3 "Three" .
-    
-    And getting an item from the ``Bag``:
-    
-    >>> print(b[2])
-    ... Two
-    
-    And adding a new item:
-    
-    >>> b.append(Literal("100"))
-     
+        >>> from rdflib import Graph, BNode, Literal, Bag
+
+        >>> g = Graph()
+        >>> b = Bag(g, BNode(), [Literal("One"), Literal("Two"), Literal("Three")])
+
+        >>> print(g.serialize(format="turtle").decode())
+
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+        [] a rdf:Bag ;
+            rdf:_1 "One" ;
+            rdf:_2 "Two" ;
+            rdf:_3 "Three" .
+
+        And getting an item from the ``Bag``:
+
+        >>> print(b[2])
+
+        Two
+
+        And adding a new item:
+
+        >>> b.append(Literal("Hello"))
+
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+        [] a rdf:Bag ;
+            rdf:_1 "One" ;
+            rdf:_2 "Two" ;
+            rdf:_3 "Three" .
+            rdf:_4 "Hello" .
+
     """
 
     def __init__(self, graph, uri, seq=[], rtype="Bag"):
