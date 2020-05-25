@@ -65,6 +65,7 @@ def _parse_or_report(verbose, graph, *args, **kwargs):
 
 def nose_tst_earl_report(generator, earl_report_name=None):
     from optparse import OptionParser
+
     p = OptionParser()
     (options, args) = p.parse_args()
 
@@ -74,7 +75,7 @@ def nose_tst_earl_report(generator, earl_report_name=None):
 
     for t in generator(args):
         tests += 1
-        print('Running ', t[1].uri)
+        print("Running ", t[1].uri)
         try:
             t[0](t[1])
             add_test(t[1].uri, "passed")
@@ -93,11 +94,16 @@ def nose_tst_earl_report(generator, earl_report_name=None):
             print_exc()
             sys.stderr.write("%s\n" % t[1].uri)
 
-    print("Ran %d tests, %d skipped, %d failed. "%(tests, skip, tests-skip-success))
+    print(
+        "Ran %d tests, %d skipped, %d failed. " % (tests, skip, tests - skip - success)
+    )
     if earl_report_name:
         now = isodate.datetime_isoformat(datetime.datetime.utcnow())
-        earl_report = 'test_reports/%s-%s.ttl' % (earl_report_name, now.replace(":", ""))
+        earl_report = "test_reports/%s-%s.ttl" % (
+            earl_report_name,
+            now.replace(":", ""),
+        )
 
-        report.serialize(earl_report, format='n3')
-        report.serialize('test_reports/%s-latest.ttl'%earl_report_name, format='n3')
+        report.serialize(earl_report, format="n3")
+        report.serialize("test_reports/%s-latest.ttl" % earl_report_name, format="n3")
         print("Wrote EARL-report to '%s'" % earl_report)

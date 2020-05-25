@@ -65,11 +65,40 @@ equivalent.
 
 As an alternative to using ``PREFIX`` in the SPARQL query, namespace
 bindings can be passed in with the ``initNs`` kwarg, see
-:doc:`namespace_and_bindings`.
+:doc:`namespaces_and_bindings`.
 
 Variables can also be pre-bound, using ``initBindings`` kwarg can be
 used to pass in a ``dict`` of initial bindings, this is particularly
 useful for prepared queries, as described below.
+
+Query a Remote Service
+^^^^^^^^^^^^^^^^^^^^^^
+
+The SERVICE keyword of SPARQL 1.1 can send a query to a remote SPARQL endpoint.
+
+.. code-block:: python
+
+    import rdflib
+
+    g = rdflib.Graph()
+    qres = g.query('''
+    SELECT ?s
+    WHERE {
+      SERVICE <http://dbpedia.org/sparql> {
+        ?s <http://purl.org/linguistics/gold/hypernym> <http://dbpedia.org/resource/Leveller> .
+      }
+    } LIMIT 3''')
+    for row in qres:
+        print(row.s)
+
+This example sends a query to `DBPedia
+<https://dbpedia.org/>`_'s SPARQL endpoint service so that it can run the query and then send back the result:
+
+.. code-block:: text
+
+    http://dbpedia.org/resource/Elizabeth_Lilburne
+    http://dbpedia.org/resource/Thomas_Prince_(Leveller)
+    http://dbpedia.org/resource/John_Lilburne
 
 Prepared Queries
 ^^^^^^^^^^^^^^^^
