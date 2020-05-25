@@ -637,8 +637,8 @@ class Graph(Node):
         objs = []
         for s, p, o in self.triples((subject, predicate, None)):
         	if o not in objs:
-        		objs.append(o)
-            	yield o
+                objs.append(o)
+                yield o
 
     def subject_predicates(self, object=None):
         """A generator of (subject, predicate) tuples for the given object"""
