@@ -12,36 +12,34 @@ class Container(object):
     Basic usage, creating a ``Bag`` and adding to it::
 
         >>> from rdflib import Graph, BNode, Literal, Bag
-
         >>> g = Graph()
         >>> b = Bag(g, BNode(), [Literal("One"), Literal("Two"), Literal("Three")])
-
         >>> print(g.serialize(format="turtle").decode())
-
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-
+        <BLANKLINE>
         [] a rdf:Bag ;
             rdf:_1 "One" ;
             rdf:_2 "Two" ;
             rdf:_3 "Three" .
+        <BLANKLINE>
+        <BLANKLINE>
 
-        And getting an item from the ``Bag``:
-
+        >>> # print out an item using an index reference
         >>> print(b[2])
-
         Two
 
-        And adding a new item:
-
+        >>> # add a new item
         >>> b.append(Literal("Hello"))
-
+        >>> print(g.serialize(format="turtle").decode())
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-
+        <BLANKLINE>
         [] a rdf:Bag ;
             rdf:_1 "One" ;
             rdf:_2 "Two" ;
-            rdf:_3 "Three" .
+            rdf:_3 "Three" ;
             rdf:_4 "Hello" .
+        <BLANKLINE>
+        <BLANKLINE>
 
     """
 
@@ -106,7 +104,7 @@ class Container(object):
         c = self._get_container()
 
         assert isinstance(key, int)
-        elem_uri = str(RDF) + '_' + str(key)
+        elem_uri = str(RDF) + "_" + str(key)
         if key <= 0 or key > len(self):
             raise KeyError(key)
         v = self.graph.value(c, URIRef(elem_uri))
@@ -121,7 +119,7 @@ class Container(object):
         assert isinstance(key, int)
 
         c = self._get_container()
-        elem_uri = str(RDF) + '_' + str(key)
+        elem_uri = str(RDF) + "_" + str(key)
         if key <= 0 or key > len(self):
             raise KeyError(key)
 
@@ -136,7 +134,7 @@ class Container(object):
 
         graph = self.graph
         container = self.uri
-        elem_uri = str(RDF) + '_' + str(key)
+        elem_uri = str(RDF) + "_" + str(key)
         graph.remove((container, URIRef(elem_uri), None))
         for j in range(key + 1, len(self) + 1):
             elem_uri = str(RDF) + "_" + str(j)
@@ -223,7 +221,6 @@ class Bag(Container):
 
 
 class Alt(Container):
-
     def __init__(self, graph, uri, seq=[]):
         Container.__init__(self, graph, uri, seq, "Alt")
 
@@ -237,7 +234,6 @@ class Alt(Container):
 
 
 class Seq(Container):
-
     def __init__(self, graph, uri, seq=[]):
         Container.__init__(self, graph, uri, seq, "Seq")
 
@@ -262,7 +258,6 @@ class Seq(Container):
 
 
 class NoElementException(Exception):
-
     def __init__(self, message="rdf:Alt Container is empty"):
         self.message = message
 
