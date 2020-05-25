@@ -636,7 +636,7 @@ class Graph(Node):
         """A generator of objects with the given subject and predicate"""
         objs = []
         for s, p, o in self.triples((subject, predicate, None)):
-        	if o not in objs:
+            if o not in objs:
                 objs.append(o)
                 yield o
 
