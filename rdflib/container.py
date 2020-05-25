@@ -1,21 +1,49 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 from rdflib.namespace import RDF
 from rdflib.term import BNode
-from rdflib.term import Literal
 from rdflib import URIRef
-from pprint import pprint
 from random import randint
-from rdflib import Graph
 
-__all__ = ['Container','Bag','Seq','Alt','NoElementException']
+__all__ = ["Container", "Bag", "Seq", "Alt", "NoElementException"]
 
 
 class Container(object):
+    """A class for constructing RDF containers, as per https://www.w3.org/TR/rdf11-mt/#rdf-containers"""
 
-    def __init__(self, graph, uri, seq=[], rtype='Bag'):
+    __doc__ = """
+    Basic usage, creating a ``Bag``: 
+
+    >>> from rdflib import Graph, BNode, Literal, Bag
+    >>> 
+    >>> g = Graph()
+    >>> b = Bag(g, BNode(), [Literal("One"), Literal("Two"), Literal("Three"))
+    >>> 
+    >>> print(g.serialize(format="turtle").decode())
+    ... @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    ... 
+    ... [] a rdf:Bag ;
+    ...     rdf:_1 "One" ;
+    ...     rdf:_2 "Two" ;
+    ...     rdf:_3 "Three" .
+    
+    And getting an item from the ``Bag``:
+    
+    >>> print(b[2])
+    ... Two
+    
+    And adding a new item:
+    
+    >>> b.append(Literal("100"))
+     
+    """
+
+    def __init__(self, graph, uri, seq=[], rtype="Bag"):
+        """Creates a Container
+
+        :param graph: a Graph instance
+        :param uri: URI or Blank Node of the Container
+        :param seq: the elements of the Container
+        :param rtype: the type of Container, one of "Bag", "Seq" or "Alt"
+        """
 
         self.graph = graph
         self.uri = uri or BNode()
@@ -24,9 +52,8 @@ class Container(object):
 
         self.append_multiple(seq)
 
-        container = self.uri
         # adding triple corresponding to container type
-        self.graph.add((container, RDF.type, RDF[self._rtype]))
+        self.graph.add((self.uri, RDF.type, RDF[self._rtype]))
 
     def n3(self):
 
@@ -36,17 +63,15 @@ class Container(object):
             v = self[i + 1]
             items.append(v)
 
-        return '( %s )' % ' '.join([a.n3() for a in items])
+        return "( %s )" % " ".join([a.n3() for a in items])
 
     def _get_container(self):
-        """ Returns the URI of the container"""
+        """Returns the URI of the container"""
 
-        container = self.uri
-
-        return container
+        return self.uri
 
     def __len__(self):
-        """number of items in container."""
+        """Number of items in container"""
 
         return self._len
 
@@ -54,24 +79,20 @@ class Container(object):
         return self._rtype
 
     def index(self, item):
-        """
-        Returns the 1-based numerical index of the item in the container
+        """Returns the 1-based numerical index of the item in the container"""
 
-        """
-
-        container = self.uri
-        pred = self.graph.predicates(container, item)
+        pred = self.graph.predicates(self.uri, item)
         if not pred:
-            raise ValueError('%s is not in %s' % (item, 'container'))
-        LI_INDEX = URIRef(str(RDF) + '_')
+            raise ValueError("%s is not in %s" % (item, "container"))
+        LI_INDEX = URIRef(str(RDF) + "_")
 
+        i = None
         for p in pred:
-
-            i = int(p.replace(LI_INDEX, ''))
+            i = int(p.replace(LI_INDEX, ""))
         return i
 
     def __getitem__(self, key):
-        """returns item of the container at index key"""
+        """Returns item of the container at index key"""
 
         c = self._get_container()
 
@@ -86,8 +107,7 @@ class Container(object):
             raise KeyError(key)
 
     def __setitem__(self, key, value):
-        """ sets the item at index key or predicate rdf:_key
-        of the container to value"""
+        """Sets the item at index key or predicate rdf:_key of the container to value"""
 
         assert isinstance(key, int)
 
@@ -99,7 +119,7 @@ class Container(object):
         self.graph.set((c, URIRef(elem_uri), value))
 
     def __delitem__(self, key):
-        '''removing the item with index key or predicate rdf:_key'''
+        """Removing the item with index key or predicate rdf:_key"""
 
         assert isinstance(key, int)
         if key <= 0 or key > len(self):
@@ -110,29 +130,29 @@ class Container(object):
         elem_uri = str(RDF) + '_' + str(key)
         graph.remove((container, URIRef(elem_uri), None))
         for j in range(key + 1, len(self) + 1):
-            elem_uri = str(RDF) + '_' + str(j)
+            elem_uri = str(RDF) + "_" + str(j)
             v = graph.value(container, URIRef(elem_uri))
             graph.remove((container, URIRef(elem_uri), v))
-            elem_uri = str(RDF) + '_' + str(j - 1)
+            elem_uri = str(RDF) + "_" + str(j - 1)
             graph.add((container, URIRef(elem_uri), v))
 
         self._len -= 1
 
     def items(self):
-        """returns a list of all items in the container"""
+        """Returns a list of all items in the container"""
 
-        l = []
+        l_ = []
         container = self.uri
         i = 1
         while True:
-            elem_uri = str(RDF) + '_' + str(i)
+            elem_uri = str(RDF) + "_" + str(i)
 
             if (container, URIRef(elem_uri), None) in self.graph:
                 i += 1
-                l.append(self.graph.value(container, URIRef(elem_uri)))
+                l_.append(self.graph.value(container, URIRef(elem_uri)))
             else:
                 break
-        return l
+        return l_
 
     def end(self):  #
 
@@ -141,7 +161,7 @@ class Container(object):
         container = self.uri
         i = 1
         while True:
-            elem_uri = str(RDF) + '_' + str(i)
+            elem_uri = str(RDF) + "_" + str(i)
 
             if (container, URIRef(elem_uri), None) in self.graph:
                 i += 1
@@ -149,17 +169,16 @@ class Container(object):
                 return i - 1
 
     def append(self, item):
-        ''' adding item to the end of the container'''
+        """Adding item to the end of the container"""
 
         end = self.end()
-        elem_uri = str(RDF) + '_' + str(end + 1)
+        elem_uri = str(RDF) + "_" + str(end + 1)
         container = self.uri
         self.graph.add((container, URIRef(elem_uri), item))
         self._len += 1
 
     def append_multiple(self, other):
-        '''adding multiple elements to the container
-        to the end which are in python list other'''
+        """Adding multiple elements to the container to the end which are in python list other"""
 
         end = self.end()  # it should return the last index
 
@@ -168,17 +187,17 @@ class Container(object):
 
             end += 1
             self._len += 1
-            elem_uri = str(RDF) + '_' + str(end)
+            elem_uri = str(RDF) + "_" + str(end)
             self.graph.add((container, URIRef(elem_uri), item))
 
     def clear(self):
-        '''removing all elements from the container'''
+        """Removing all elements from the container"""
 
         container = self.uri
         graph = self.graph
         i = 1
         while True:
-            elem_uri = str(RDF) + '_' + str(i)
+            elem_uri = str(RDF) + "_" + str(i)
             if (container, URIRef(elem_uri), None) in self.graph:
                 graph.remove((container, URIRef(elem_uri), None))
                 i += 1
@@ -188,17 +207,16 @@ class Container(object):
 
 
 class Bag(Container):
-
-    '''unordered container (no preference order of elements)'''
+    """Unordered container (no preference order of elements)"""
 
     def __init__(self, graph, uri, seq=[]):
-        Container.__init__(self, graph, uri, seq, 'Bag')
+        Container.__init__(self, graph, uri, seq, "Bag")
 
 
 class Alt(Container):
 
     def __init__(self, graph, uri, seq=[]):
-        Container.__init__(self, graph, uri, seq, 'Alt')
+        Container.__init__(self, graph, uri, seq, "Alt")
 
     def anyone(self):
         if len(self) == 0:
@@ -212,33 +230,32 @@ class Alt(Container):
 class Seq(Container):
 
     def __init__(self, graph, uri, seq=[]):
-        Container.__init__(self, graph, uri, seq, 'Seq')
+        Container.__init__(self, graph, uri, seq, "Seq")
 
     def add_at_position(self, pos, item):
         assert isinstance(pos, int)
         if pos <= 0 or pos > len(self) + 1:
-            raise ValueError('Invalid Position for inserting element in rdf:Seq')
+            raise ValueError("Invalid Position for inserting element in rdf:Seq")
 
         if pos == len(self) + 1:
             self.append(item)
         else:
             for j in range(len(self), pos - 1, -1):
                 container = self._get_container()
-                elem_uri = str(RDF) + '_' + str(j)
+                elem_uri = str(RDF) + "_" + str(j)
                 v = self.graph.value(container, URIRef(elem_uri))
                 self.graph.remove((container, URIRef(elem_uri), v))
-                elem_uri = str(RDF) + '_' + str(j + 1)
+                elem_uri = str(RDF) + "_" + str(j + 1)
                 self.graph.add((container, URIRef(elem_uri), v))
-            elem_uri_pos = str(RDF) + '_' + str(pos)
+            elem_uri_pos = str(RDF) + "_" + str(pos)
             self.graph.add((container, URIRef(elem_uri_pos), item))
             self._len += 1
 
 
 class NoElementException(Exception):
 
-    def __init__(message='rdf:Alt Container is empty'):
+    def __init__(self, message="rdf:Alt Container is empty"):
         self.message = message
 
     def __str__(self):
-        return message
-
+        return self.message
