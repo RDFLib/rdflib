@@ -1,9 +1,10 @@
 import unittest
 from rdflib.graph import Graph
 
+
 class TestSPARQLStoreGraphCore(unittest.TestCase):
 
-    store_name = 'SPARQLStore'
+    store_name = "SPARQLStore"
     path = "http://dbpedia.org/sparql"
     storetest = True
     create = False
@@ -21,5 +22,5 @@ class TestSPARQLStoreGraphCore(unittest.TestCase):
         print("Done")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -32,4 +32,7 @@ RESULT_SOURCE = u"""\
 
 def test_issue_923():
     with StringIO(RESULT_SOURCE) as result_source:
-        Result.parse(source=result_source, content_type="application/sparql-results+json;charset=utf-8")
+        Result.parse(
+            source=result_source,
+            content_type="application/sparql-results+json;charset=utf-8",
+        )

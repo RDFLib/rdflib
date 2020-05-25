@@ -31,8 +31,8 @@ def testFormulaStore(store="default", configString=None):
         g.destroy(configString)
         g.open(configString)
     else:
-        if store == 'SQLite':
-            _, path = mkstemp(prefix='test', dir='/tmp', suffix='.sqlite')
+        if store == "SQLite":
+            _, path = mkstemp(prefix="test", dir="/tmp", suffix=".sqlite")
             g.open(path, create=True)
         else:
             g.open(mkdtemp(), create=True)
@@ -45,10 +45,10 @@ def testFormulaStore(store="default", configString=None):
 
         assert type(formulaA) == QuotedGraph and type(formulaB) == QuotedGraph
         # a = URIRef('http://test/a')
-        b = URIRef('http://test/b')
-        c = URIRef('http://test/c')
-        d = URIRef('http://test/d')
-        v = Variable('y')
+        b = URIRef("http://test/b")
+        c = URIRef("http://test/c")
+        d = URIRef("http://test/d")
+        v = Variable("y")
 
         universe = ConjunctiveGraph(g.store)
 
@@ -69,10 +69,8 @@ def testFormulaStore(store="default", configString=None):
         assert len(list(formulaA.triples((None, None, None)))) == 2
         assert len(list(formulaB.triples((None, None, None)))) == 2
         assert len(list(universe.triples((None, None, None)))) == 3
-        assert len(list(formulaB.triples(
-            (None, URIRef('http://test/d'), None)))) == 2
-        assert len(list(universe.triples(
-            (None, URIRef('http://test/d'), None)))) == 1
+        assert len(list(formulaB.triples((None, URIRef("http://test/d"), None)))) == 2
+        assert len(list(universe.triples((None, URIRef("http://test/d"), None)))) == 1
 
         # #context tests
         # #test contexts with triple argument
@@ -115,13 +113,13 @@ def testFormulaStore(store="default", configString=None):
         assert len(universe) == 0
 
         g.close()
-        if store == 'SQLite':
+        if store == "SQLite":
             os.unlink(path)
         else:
             g.store.destroy(configString)
     except:
         g.close()
-        if store == 'SQLite':
+        if store == "SQLite":
             os.unlink(path)
         else:
             g.store.destroy(configString)
@@ -130,21 +128,19 @@ def testFormulaStore(store="default", configString=None):
 
 def testFormulaStores():
     pluginname = None
-    if __name__ == '__main__':
+    if __name__ == "__main__":
         if len(sys.argv) > 1:
             pluginname = sys.argv[1]
 
     for s in plugin.plugins(pluginname, plugin.Store):
-        if s.name in (
-                'Auditable', 'Concurrent',
-                'SPARQLStore', 'SPARQLUpdateStore',
-        ):
+        if s.name in ("Auditable", "Concurrent", "SPARQLStore", "SPARQLUpdateStore",):
             continue
         if not s.getClass().formula_aware:
             continue
         yield testFormulaStore, s.name
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import nose
+
     nose.main(defaultTest=sys.argv[0])

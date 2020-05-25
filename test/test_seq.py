@@ -23,8 +23,8 @@ s = """\
 
 
 class SeqTestCase(unittest.TestCase):
-    backend = 'default'
-    path = 'store'
+    backend = "default"
+    path = "store"
 
     def setUp(self):
         store = self.store = Graph(store=self.backend)
@@ -47,5 +47,5 @@ def test_suite():
     return unittest.makeSuite(SeqTestCase)
 
 
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+if __name__ == "__main__":
+    unittest.main(defaultTest="test_suite")

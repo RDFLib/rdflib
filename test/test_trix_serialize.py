@@ -5,11 +5,10 @@ import unittest
 from rdflib.graph import ConjunctiveGraph
 from rdflib.term import URIRef, Literal
 from rdflib.graph import Graph
-from six import BytesIO
+from io import BytesIO
 
 
 class TestTrixSerialize(unittest.TestCase):
-
     def setUp(self):
         pass
 
@@ -18,17 +17,17 @@ class TestTrixSerialize(unittest.TestCase):
 
     def testSerialize(self):
 
-        s1 = URIRef('store:1')
-        r1 = URIRef('resource:1')
-        r2 = URIRef('resource:2')
+        s1 = URIRef("store:1")
+        r1 = URIRef("resource:1")
+        r2 = URIRef("resource:2")
 
-        label = URIRef('predicate:label')
+        label = URIRef("predicate:label")
 
         g1 = Graph(identifier=s1)
         g1.add((r1, label, Literal("label 1", lang="en")))
         g1.add((r1, label, Literal("label 2")))
 
-        s2 = URIRef('store:2')
+        s2 = URIRef("store:2")
         g2 = Graph(identifier=s2)
         g2.add((r2, label, Literal("label 3")))
 
@@ -37,13 +36,13 @@ class TestTrixSerialize(unittest.TestCase):
             g.addN([(s, p, o, g1)])
         for s, p, o in g2.triples((None, None, None)):
             g.addN([(s, p, o, g2)])
-        r3 = URIRef('resource:3')
+        r3 = URIRef("resource:3")
         g.add((r3, label, Literal(4)))
 
-        r = g.serialize(format='trix')
+        r = g.serialize(format="trix")
         g3 = ConjunctiveGraph()
 
-        g3.parse(BytesIO(r), format='trix')
+        g3.parse(BytesIO(r), format="trix")
 
         for q in g3.quads((None, None, None)):
             # TODO: Fix once getGraph/getContext is in conjunctive graph
@@ -87,12 +86,10 @@ class TestTrixSerialize(unittest.TestCase):
 
         graph = ConjunctiveGraph()
         graph.bind(None, "http://defaultnamespace")
-        sg = graph.serialize(format='trix').decode('UTF-8')
-        self.assertTrue(
-            'xmlns="http://defaultnamespace"' not in sg, sg)
-        self.assertTrue(
-            'xmlns="http://www.w3.org/2004/03/trix/trix-1/' in sg, sg)
+        sg = graph.serialize(format="trix").decode("UTF-8")
+        self.assertTrue('xmlns="http://defaultnamespace"' not in sg, sg)
+        self.assertTrue('xmlns="http://www.w3.org/2004/03/trix/trix-1/' in sg, sg)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

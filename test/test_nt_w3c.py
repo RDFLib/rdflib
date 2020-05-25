@@ -13,7 +13,7 @@ def nt(test):
     g = Graph()
 
     try:
-        g.parse(test.action, format='nt')
+        g.parse(test.action, format="nt")
         if not test.syntax:
             raise AssertionError("Input shouldn't have parsed!")
     except:
@@ -21,14 +21,11 @@ def nt(test):
             raise
 
 
-testers = {
-    RDFT.TestNTriplesPositiveSyntax: nt,
-    RDFT.TestNTriplesNegativeSyntax: nt
-}
+testers = {RDFT.TestNTriplesPositiveSyntax: nt, RDFT.TestNTriplesNegativeSyntax: nt}
 
 
 def test_nt(tests=None):
-    for t in nose_tests(testers, 'test/w3c/nt/manifest.ttl', legacy=True):
+    for t in nose_tests(testers, "test/w3c/nt/manifest.ttl", legacy=True):
         if tests:
             for test in tests:
                 if test in t[1].uri:
@@ -39,7 +36,7 @@ def test_nt(tests=None):
         yield t
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     verbose = True
 
-    nose_tst_earl_report(test_nt, 'rdflib_nt')
+    nose_tst_earl_report(test_nt, "rdflib_nt")

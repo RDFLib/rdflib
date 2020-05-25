@@ -42,56 +42,58 @@ from __future__ import print_function
 
 
 NOSE_ARGS = [
-    '--with-doctest',
-    '--doctest-extension=.doctest',
-    '--doctest-tests',
+    "--with-doctest",
+    "--doctest-extension=.doctest",
+    "--doctest-tests",
     # '--with-EARL',
 ]
 
 COVERAGE_EXTRA_ARGS = [
-    '--cover-package=rdflib',
-    '--cover-inclusive',
+    "--cover-package=rdflib",
+    "--cover-inclusive",
 ]
 
-DEFAULT_LOCATION = '--where=./'
+DEFAULT_LOCATION = "--where=./"
 
 DEFAULT_ATTRS = []  # ['!known_issue', '!sparql']
 
-DEFAULT_DIRS = ['test', 'rdflib']
+DEFAULT_DIRS = ["test", "rdflib"]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     from sys import argv, exit, stderr
+
     try:
         import nose
     except ImportError:
-        print("""\
+        print(
+            """\
     Requires Nose. Try:
 
         $ sudo easy_install nose
 
-    Exiting. """, file=stderr)
+    Exiting. """,
+            file=stderr,
+        )
         exit(1)
 
-
-    if '--with-coverage' in argv:
+    if "--with-coverage" in argv:
         try:
             import coverage
         except ImportError:
             print("No coverage module found, skipping code coverage.", file=stderr)
-            argv.remove('--with-coverage')
+            argv.remove("--with-coverage")
         else:
             NOSE_ARGS += COVERAGE_EXTRA_ARGS
 
+    if True not in [a.startswith("-a") or a.startswith("--attr=") for a in argv]:
+        argv.append("--attr=" + ",".join(DEFAULT_ATTRS))
 
-    if True not in [a.startswith('-a') or a.startswith('--attr=') for a in argv]:
-        argv.append('--attr=' + ','.join(DEFAULT_ATTRS))
-
-    if not [a for a in argv[1:] if not a.startswith('-')]:
+    if not [a for a in argv[1:] if not a.startswith("-")]:
         argv += DEFAULT_DIRS  # since nose doesn't look here by default..
 
-    if not [a for a in argv if a.startswith('--where=')]:
+    if not [a for a in argv if a.startswith("--where=")]:
         argv += [DEFAULT_LOCATION]
 
     finalArgs = argv + NOSE_ARGS

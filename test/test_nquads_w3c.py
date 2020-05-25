@@ -13,7 +13,7 @@ def nquads(test):
     g = ConjunctiveGraph()
 
     try:
-        g.parse(test.action, format='nquads')
+        g.parse(test.action, format="nquads")
         if not test.syntax:
             raise AssertionError("Input shouldn't have parsed!")
     except:
@@ -21,14 +21,11 @@ def nquads(test):
             raise
 
 
-testers = {
-    RDFT.TestNQuadsPositiveSyntax: nquads,
-    RDFT.TestNQuadsNegativeSyntax: nquads
-}
+testers = {RDFT.TestNQuadsPositiveSyntax: nquads, RDFT.TestNQuadsNegativeSyntax: nquads}
 
 
 def test_nquads(tests=None):
-    for t in nose_tests(testers, 'test/w3c/nquads/manifest.ttl'):
+    for t in nose_tests(testers, "test/w3c/nquads/manifest.ttl"):
         if tests:
             for test in tests:
                 if test in t[1].uri:
@@ -39,7 +36,7 @@ def test_nquads(tests=None):
         yield t
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     verbose = True
 
-    nose_tst_earl_report(test_nquads, 'rdflib_nquads')
+    nose_tst_earl_report(test_nquads, "rdflib_nquads")
