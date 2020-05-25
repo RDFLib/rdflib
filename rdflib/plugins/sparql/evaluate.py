@@ -127,10 +127,12 @@ def evalJoin(ctx, join):
 
 
 def evalUnion(ctx, union):
+    branch1_branch2 = []
     for x in evalPart(ctx, union.p1):
-        yield x
+        branch1_branch2.append(x)
     for x in evalPart(ctx, union.p2):
-        yield x
+        branch1_branch2.append(x)
+    return branch1_branch2
 
 
 def evalMinus(ctx, minus):
