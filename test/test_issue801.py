@@ -13,9 +13,8 @@ class TestIssue801(unittest.TestCase):
         g.bind('', example)
         node = BNode()
         g.add((node, example['first%20name'], Literal('John')))
-        self.assertEqual(g.serialize(format="turtle").decode().split("\n")[-3] == '[] :first%20name "John" .', True)
-        print (g.serialize(format="turtle").decode())
-
+        self.assertEqual(g.serialize(format="turtle").decode().split("\n")[-3],
+                '[] :first%20name "John" .')
 
 if __name__ == "__main__":
     unittest.main()
