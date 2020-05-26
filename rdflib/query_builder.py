@@ -37,6 +37,7 @@ class QueryBuilder:
         self.is_DISTINCT = False
         self.SELECT_variables_with_alias = {}
         self.WHERE_statements = []
+        self.ORDER_BY_expressions = []
 
         self.limit = None
         self.offset = None
@@ -77,6 +78,15 @@ class QueryBuilder:
 
         return self
 
+    def ORDER_BY(self, *args):
+        for var in args:
+            if is_acceptable_query_variable(var):
+                self.ORDER_BY_expressions.append(var)
+            else:
+                raise Exception("Expression passed in ORDER_BY is not valid.")
+
+        return self
+
     def build_select(self):
         self.query += "SELECT "
 
@@ -102,6 +112,14 @@ class QueryBuilder:
 
         self.query += "}" + "\n"
 
+    def build_order_by(self):
+        self.query += "ORDER BY "
+
+        for var in self.ORDER_BY_expressions:
+            self.query += var.n3() + " "
+
+        self.query += "\n"
+
     def build_limit_offset(self):
         if self.limit:
             self.query += "LIMIT " + str(self.limit) + "\n"
@@ -113,6 +131,7 @@ class QueryBuilder:
         self.build_select()
         self.build_where()
 
+        self.build_order_by()
         self.build_limit_offset()
 
         return self.query
@@ -129,6 +148,8 @@ if __name__ == "__main__":
         (Variable("s"), Variable("p"), Variable("o")),
         (Variable("o"), RDF.type, Variable("v")),
         OPTIONAL((Variable("o"), RDFS.subClassOf, OWL.thing))
+    ).ORDER_BY(
+        Variable("v")
     ).LIMIT(
         100
     ).OFFSET(
