@@ -33,14 +33,16 @@ class OPTIONAL(STATEMENT):
 list_function = ["SUM", "AVERAGE", "COUNT", "SET", "MIN", "MAX", "GROUPCONTACT", "SAMPLE"]
 
 
-class AGGREGATE(tuple):
+class AGGREGATE(STATEMENT):
     def __new__(cls, function, statement):
+        if not is_acceptable_query_variable(statement):
+            statement = Variable(statement)
         if function not in list_function:
             raise Exception("Aggregate Function %s not supported" % function)
         return tuple.__new__(AGGREGATE, (function, statement))
 
     def n3(self):
-        return self[0] + "(" + self[1].n3() + ")"
+        return self[0] + "( " + self[1].n3() + " )"
 
 
 supported_function_expression_list = [
@@ -55,11 +57,16 @@ supported_function_expression_list = [
 ]
 
 
-class FUNCTION_EXPR(tuple):
+class FUNCTION_EXPR(STATEMENT):
     def __new__(cls, function_expression, *args):
+        statements = []
+        for stmt in args:
+            if not is_acceptable_query_variable(stmt):
+                statements.append(Variable(stmt))
+
         if function_expression not in supported_function_expression_list:
             raise Exception("Function expression %s not supported" % function_expression)
-        return tuple.__new__(FUNCTION_EXPR, (function_expression, args))
+        return tuple.__new__(FUNCTION_EXPR, (function_expression, statements))
 
     def n3(self):
         n3_string = self[0] + "( "
@@ -181,7 +188,8 @@ if __name__ == "__main__":
         Variable("s"),
         Variable("p"),
         x=Variable("o"),
-        value=AGGREGATE("AVERAGE", Variable("v")),
+        value=AGGREGATE("AVERAGE", "v"),
+        sum_value=AGGREGATE("SUM", Variable("v")),
         distinct=True
     ).WHERE(
         (Variable("s"), Variable("p"), Variable("o")),
