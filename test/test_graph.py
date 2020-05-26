@@ -79,6 +79,28 @@ class GraphTestCase(unittest.TestCase):
     def testAdd(self):
         self.addStuff()
 
+    
+    #issue 896
+    def testAddAll(self):
+        tarek = self.tarek
+        michel = self.michel
+        bob = self.bob
+        likes = self.likes
+        hates = self.hates
+        pizza = self.pizza
+        cheese = self.cheese
+
+        triples = [(tarek, likes, pizza), (michel, likes, pizza), (bob, likes, cheese), (bob, hates, pizza)]
+        
+        self.graph.addAll(triples)
+
+        self.assertEqual((tarek, likes, pizza) in self.graph, True)
+        self.assertEqual((bob, likes, cheese) in self.graph, True)
+        self.assertEqual((bob, likes, pizza) in self.graph, False)
+        self.assertEqual((michel, likes, cheese) in self.graph, False)
+
+
+
     def testRemove(self):
         self.addStuff()
         self.removeStuff()
