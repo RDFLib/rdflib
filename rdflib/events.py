@@ -26,7 +26,7 @@ fired:
   <rdflib.events.Event ['data', 'foo', 'used_by']>
 """
 
-__all__ = ['Event', 'Dispatcher']
+__all__ = ["Event", "Dispatcher"]
 
 
 class Event(object):
@@ -47,7 +47,7 @@ class Event(object):
 
     def __repr__(self):
         attrs = sorted(self.__dict__.keys())
-        return '<rdflib.events.Event %s>' % ([a for a in attrs],)
+        return "<rdflib.events.Event %s>" % ([a for a in attrs],)
 
 
 class Dispatcher(object):
@@ -84,14 +84,15 @@ class Dispatcher(object):
             lst = self._dispatch_map.get(type(event), None)
             if lst is None:
                 raise ValueError("unknown event type: %s" % type(event))
-            for l in lst:
-                l(event)
+            for l_ in lst:
+                l_(event)
 
 
 def test():
     import doctest
+
     doctest.testmod()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

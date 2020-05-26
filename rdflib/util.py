@@ -34,6 +34,7 @@ from __future__ import print_function
 
 from calendar import timegm
 from time import altzone
+
 # from time import daylight
 from time import gmtime
 from time import localtime
@@ -55,10 +56,24 @@ from rdflib.term import URIRef
 from rdflib.compat import sign
 
 __all__ = [
-    'list2set', 'first', 'uniq', 'more_than', 'to_term', 'from_n3',
-    'date_time', 'parse_date_time', 'check_context', 'check_subject',
-    'check_predicate', 'check_object', 'check_statement', 'check_pattern',
-    'guess_format', 'find_roots', 'get_tree']
+    "list2set",
+    "first",
+    "uniq",
+    "more_than",
+    "to_term",
+    "from_n3",
+    "date_time",
+    "parse_date_time",
+    "check_context",
+    "check_subject",
+    "check_predicate",
+    "check_object",
+    "check_statement",
+    "check_pattern",
+    "guess_format",
+    "find_roots",
+    "get_tree",
+]
 
 
 def list2set(seq):
@@ -154,7 +169,7 @@ def from_n3(s, default=None, backend=None, nsm=None):
     '''
     if not s:
         return default
-    if s.startswith('<'):
+    if s.startswith("<"):
         # Hack: this should correctly handle strings with either native unicode
         # characters, or \u1234 unicode escapes.
         return URIRef(s[1:-1].encode("raw-unicode-escape").decode("unicode-escape"))
@@ -169,7 +184,7 @@ def from_n3(s, default=None, backend=None, nsm=None):
         language = None
 
         # as a given datatype overrules lang-tag check for it first
-        dtoffset = rest.rfind('^^')
+        dtoffset = rest.rfind("^^")
         if dtoffset >= 0:
             # found a datatype
             # datatype has to come after lang-tag so ignore everything before
@@ -180,28 +195,28 @@ def from_n3(s, default=None, backend=None, nsm=None):
             if rest.startswith("@"):
                 language = rest[1:]  # strip leading at sign
 
-        value = value.replace(r'\"', '"')
+        value = value.replace(r"\"", '"')
         # Hack: this should correctly handle strings with either native unicode
         # characters, or \u1234 unicode escapes.
         value = value.encode("raw-unicode-escape").decode("unicode-escape")
         return Literal(value, language, datatype)
-    elif s == 'true' or s == 'false':
-        return Literal(s == 'true')
+    elif s == "true" or s == "false":
+        return Literal(s == "true")
     elif s.isdigit():
         return Literal(int(s))
-    elif s.startswith('{'):
+    elif s.startswith("{"):
         identifier = from_n3(s[1:-1])
         return rdflib.graph.QuotedGraph(backend, identifier)
-    elif s.startswith('['):
+    elif s.startswith("["):
         identifier = from_n3(s[1:-1])
         return rdflib.graph.Graph(backend, identifier)
     elif s.startswith("_:"):
         return BNode(s[2:])
-    elif ':' in s:
+    elif ":" in s:
         if nsm is None:
             # instantiate default NamespaceManager and rely on its defaults
             nsm = NamespaceManager(rdflib.graph.Graph())
-        prefix, last_part = s.split(':', 1)
+        prefix, last_part = s.split(":", 1)
         ns = dict(nsm.namespaces())[prefix]
         return Namespace(ns)[last_part]
     else:
@@ -209,8 +224,7 @@ def from_n3(s, default=None, backend=None, nsm=None):
 
 
 def check_context(c):
-    if not (isinstance(c, URIRef) or
-            isinstance(c, BNode)):
+    if not (isinstance(c, URIRef) or isinstance(c, BNode)):
         raise ContextTypeError("%s:%s" % (c, type(c)))
 
 
@@ -228,9 +242,7 @@ def check_predicate(p):
 
 def check_object(o):
     """ Test that o is a valid object identifier."""
-    if not (isinstance(o, URIRef) or
-            isinstance(o, Literal) or
-            isinstance(o, BNode)):
+    if not (isinstance(o, URIRef) or isinstance(o, Literal) or isinstance(o, BNode)):
         raise ObjectTypeError(o)
 
 
@@ -242,9 +254,7 @@ def check_statement(triple):
     if not isinstance(p, URIRef):
         raise PredicateTypeError(p)
 
-    if not (isinstance(o, URIRef) or
-            isinstance(o, Literal) or
-            isinstance(o, BNode)):
+    if not (isinstance(o, URIRef) or isinstance(o, Literal) or isinstance(o, BNode)):
         raise ObjectTypeError(o)
 
 
@@ -256,9 +266,9 @@ def check_pattern(triple):
     if p and not isinstance(p, URIRef):
         raise PredicateTypeError(p)
 
-    if o and not (isinstance(o, URIRef) or
-                  isinstance(o, Literal) or
-                  isinstance(o, BNode)):
+    if o and not (
+        isinstance(o, URIRef) or isinstance(o, Literal) or isinstance(o, BNode)
+    ):
         raise ObjectTypeError(o)
 
 
@@ -293,8 +303,7 @@ def date_time(t=None, local_time_zone=False):
         tzd = "Z"
 
     year, month, day, hh, mm, ss, wd, y, z = time_tuple
-    s = "%0004d-%02d-%02dT%02d:%02d:%02d%s" % (
-        year, month, day, hh, mm, ss, tzd)
+    s = "%0004d-%02d-%02dT%02d:%02d:%02d%s" % (year, month, day, hh, mm, ss, tzd)
     return s
 
 
@@ -335,25 +344,26 @@ def parse_date_time(val):
     year, month, day = ymd.split("-")
     hour, minute, second = hms.split(":")
 
-    t = timegm((int(year), int(month), int(day), int(hour),
-                int(minute), int(second), 0, 0, 0))
+    t = timegm(
+        (int(year), int(month), int(day), int(hour), int(minute), int(second), 0, 0, 0)
+    )
     t = t + tz_offset
     return t
 
 
 SUFFIX_FORMAT_MAP = {
-    'rdf': 'xml',
-    'rdfs': 'xml',
-    'owl': 'xml',
-    'n3': 'n3',
-    'ttl': 'turtle',
-    'nt': 'nt',
-    'trix': 'trix',
-    'xhtml': 'rdfa',
-    'html': 'rdfa',
-    'svg': 'rdfa',
-    'nq': 'nquads',
-    'trig': 'trig'
+    "rdf": "xml",
+    "rdfs": "xml",
+    "owl": "xml",
+    "n3": "n3",
+    "ttl": "turtle",
+    "nt": "nt",
+    "trix": "trix",
+    "xhtml": "rdfa",
+    "html": "rdfa",
+    "svg": "rdfa",
+    "nq": "nquads",
+    "trig": "trig",
 }
 
 
@@ -404,11 +414,11 @@ def _get_ext(fpath, lower=True):
         'rdf'
     """
     ext = splitext(fpath)[-1]
-    if ext == '' and fpath.startswith("."):
+    if ext == "" and fpath.startswith("."):
         ext = fpath
     if lower:
         ext = ext.lower()
-    if ext.startswith('.'):
+    if ext.startswith("."):
         ext = ext[1:]
     return ext
 
@@ -437,13 +447,9 @@ def find_roots(graph, prop, roots=None):
     return roots
 
 
-def get_tree(graph,
-             root,
-             prop,
-             mapper=lambda x: x,
-             sortkey=None,
-             done=None,
-             dir='down'):
+def get_tree(
+    graph, root, prop, mapper=lambda x: x, sortkey=None, done=None, dir="down"
+):
     """
     Return a nested list/tuple structure representing the tree
     built by the transitive property given, starting from the root given
@@ -469,7 +475,7 @@ def get_tree(graph,
     done.add(root)
     tree = []
 
-    if dir == 'down':
+    if dir == "down":
         branches = graph.subjects(prop, root)
     else:
         branches = graph.objects(root, prop)
@@ -484,6 +490,7 @@ def get_tree(graph,
 
 def test():
     import doctest
+
     doctest.testmod()
 
 
@@ -495,7 +502,7 @@ if __name__ == "__main__":
     #    time.tzset()
     # except AttributeError, e:
     #    print e
-        # pass
-        # tzset missing! see
-        # http://mail.python.org/pipermail/python-dev/2003-April/034480.html
+    # pass
+    # tzset missing! see
+    # http://mail.python.org/pipermail/python-dev/2003-April/034480.html
     test()  # pragma: no cover

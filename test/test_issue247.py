@@ -31,7 +31,6 @@ passxml = """\
 
 
 class TestXMLLiteralwithLangAttr(unittest.TestCase):
-
     def test_successful_parse_of_literal_without_xmllang_attr(self):
         """
         Test parse of Literal without xmllang attr passes

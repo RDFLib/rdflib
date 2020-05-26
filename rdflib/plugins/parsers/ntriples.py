@@ -19,32 +19,28 @@ from rdflib.term import Literal
 
 from rdflib.compat import cast_bytes
 from rdflib.compat import decodeUnicodeEscape
-from rdflib.compat import ascii
 
-from six import BytesIO
-from six import string_types
-from six import text_type
-from six import unichr
+from io import BytesIO
 
-__all__ = ['unquote', 'uriquote', 'Sink', 'NTriplesParser']
+__all__ = ["unquote", "uriquote", "Sink", "NTriplesParser"]
 
 uriref = r'<([^:]+:[^\s"<>]*)>'
 literal = r'"([^"\\]*(?:\\.[^"\\]*)*)"'
-litinfo = r'(?:@([a-zA-Z]+(?:-[a-zA-Z0-9]+)*)|\^\^' + uriref + r')?'
+litinfo = r"(?:@([a-zA-Z]+(?:-[a-zA-Z0-9]+)*)|\^\^" + uriref + r")?"
 
-r_line = re.compile(r'([^\r\n]*)(?:\r\n|\r|\n)')
-r_wspace = re.compile(r'[ \t]*')
-r_wspaces = re.compile(r'[ \t]+')
-r_tail = re.compile(r'[ \t]*\.[ \t]*(#.*)?')
+r_line = re.compile(r"([^\r\n]*)(?:\r\n|\r|\n)")
+r_wspace = re.compile(r"[ \t]*")
+r_wspaces = re.compile(r"[ \t]+")
+r_tail = re.compile(r"[ \t]*\.[ \t]*(#.*)?")
 r_uriref = re.compile(uriref)
-r_nodeid = re.compile(r'_:([A-Za-z0-9_:]([-A-Za-z0-9_:\.]*[-A-Za-z0-9_:])?)')
+r_nodeid = re.compile(r"_:([A-Za-z0-9_:]([-A-Za-z0-9_:\.]*[-A-Za-z0-9_:])?)")
 r_literal = re.compile(literal + litinfo)
 
 bufsiz = 2048
 validate = False
 
 
-class Node(text_type):
+class Node(str):
     pass
 
 
@@ -61,21 +57,20 @@ class Sink(object):
         print(s, p, o)
 
 
-quot = {'t': u'\t', 'n': u'\n', 'r': u'\r', '"': u'"', '\\':
-        u'\\'}
-r_safe = re.compile(r'([\x20\x21\x23-\x5B\x5D-\x7E]+)')
+quot = {"t": u"\t", "n": u"\n", "r": u"\r", '"': u'"', "\\": u"\\"}
+r_safe = re.compile(r"([\x20\x21\x23-\x5B\x5D-\x7E]+)")
 r_quot = re.compile(r'\\(t|n|r|"|\\)')
-r_uniquot = re.compile(r'\\u([0-9A-F]{4})|\\U([0-9A-F]{8})')
+r_uniquot = re.compile(r"\\u([0-9A-F]{4})|\\U([0-9A-F]{8})")
 
 
 def unquote(s):
     """Unquote an N-Triples string."""
     if not validate:
 
-        if isinstance(s, text_type):  # nquads
+        if isinstance(s, str):  # nquads
             s = decodeUnicodeEscape(s)
         else:
-            s = s.decode('unicode-escape')
+            s = s.decode("unicode-escape")
 
         return s
     else:
@@ -100,23 +95,22 @@ def unquote(s):
                 codepoint = int(u or U, 16)
                 if codepoint > 0x10FFFF:
                     raise ParseError("Disallowed codepoint: %08X" % codepoint)
-                result.append(unichr(codepoint))
-            elif s.startswith('\\'):
+                result.append(chr(codepoint))
+            elif s.startswith("\\"):
                 raise ParseError("Illegal escape at: %s..." % s[:10])
             else:
                 raise ParseError("Illegal literal character: %r" % s[0])
-        return u''.join(result)
+        return u"".join(result)
 
 
-r_hibyte = re.compile(r'([\x80-\xFF])')
+r_hibyte = re.compile(r"([\x80-\xFF])")
 
 
 def uriquote(uri):
     if not validate:
         return uri
     else:
-        return r_hibyte.sub(
-            lambda m: '%%%02X' % ord(m.group(1)), uri)
+        return r_hibyte.sub(lambda m: "%%%02X" % ord(m.group(1)), uri)
 
 
 class NTriplesParser(object):
@@ -138,14 +132,14 @@ class NTriplesParser(object):
 
     def parse(self, f):
         """Parse f as an N-Triples file."""
-        if not hasattr(f, 'read'):
+        if not hasattr(f, "read"):
             raise ParseError("Item to parse must be a file-like object.")
 
         # since N-Triples 1.1 files can and should be utf-8 encoded
-        f = codecs.getreader('utf-8')(f)
+        f = codecs.getreader("utf-8")(f)
 
         self.file = f
-        self.buffer = ''
+        self.buffer = ""
         while True:
             self.line = self.readline()
             if self.line is None:
@@ -158,7 +152,7 @@ class NTriplesParser(object):
 
     def parsestring(self, s):
         """Parse s as an N-Triples string."""
-        if not isinstance(s, string_types):
+        if not isinstance(s, str):
             raise ParseError("Item to parse must be a string instance.")
         f = BytesIO()
         f.write(cast_bytes(s))
@@ -191,7 +185,7 @@ class NTriplesParser(object):
 
     def parseline(self):
         self.eat(r_wspace)
-        if (not self.line) or self.line.startswith('#'):
+        if (not self.line) or self.line.startswith("#"):
             return  # The line is empty or a comment
 
         subject = self.subject()
@@ -239,7 +233,7 @@ class NTriplesParser(object):
         return objt
 
     def uriref(self):
-        if self.peek('<'):
+        if self.peek("<"):
             uri = self.eat(r_uriref).group(1)
             uri = unquote(uri)
             uri = uriquote(uri)
@@ -247,7 +241,7 @@ class NTriplesParser(object):
         return False
 
     def nodeid(self):
-        if self.peek('_'):
+        if self.peek("_"):
             # Fix for https://github.com/RDFLib/rdflib/issues/204
             bnode_id = self.eat(r_nodeid).group(1)
             new_id = self._bnode_ids.get(bnode_id, None)
@@ -280,6 +274,7 @@ class NTriplesParser(object):
             lit = unquote(lit)
             return Literal(lit, lang, dtype)
         return False
+
 
 # # Obsolete, unused
 # def parseURI(uri):

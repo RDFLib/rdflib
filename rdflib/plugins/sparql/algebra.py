@@ -1,4 +1,3 @@
-
 """
 Converting the 'parse-tree' output of pyparsing to a SPARQL Algebra expression
 
@@ -19,9 +18,11 @@ from rdflib import Literal, Variable, URIRef, BNode
 from rdflib.plugins.sparql.sparql import Prologue, Query
 from rdflib.plugins.sparql.parserutils import CompValue, Expr
 from rdflib.plugins.sparql.operators import (
-    and_, TrueFilter, simplify as simplifyFilters)
-from rdflib.paths import (
-    InvPath, AlternativePath, SequencePath, MulPath, NegatedPath)
+    and_,
+    TrueFilter,
+    simplify as simplifyFilters,
+)
+from rdflib.paths import InvPath, AlternativePath, SequencePath, MulPath, NegatedPath
 
 from pyparsing import ParseResults
 
@@ -29,66 +30,72 @@ from pyparsing import ParseResults
 # ---------------------------
 # Some convenience methods
 def OrderBy(p, expr):
-    return CompValue('OrderBy', p=p, expr=expr)
+    return CompValue("OrderBy", p=p, expr=expr)
 
 
 def ToMultiSet(p):
-    return CompValue('ToMultiSet', p=p)
+    return CompValue("ToMultiSet", p=p)
 
 
 def Union(p1, p2):
-    return CompValue('Union', p1=p1, p2=p2)
+    return CompValue("Union", p1=p1, p2=p2)
 
 
 def Join(p1, p2):
-    return CompValue('Join', p1=p1, p2=p2)
+    return CompValue("Join", p1=p1, p2=p2)
 
 
 def Minus(p1, p2):
-    return CompValue('Minus', p1=p1, p2=p2)
+    return CompValue("Minus", p1=p1, p2=p2)
 
 
 def Graph(term, graph):
-    return CompValue('Graph', term=term, p=graph)
+    return CompValue("Graph", term=term, p=graph)
 
 
 def BGP(triples=None):
-    return CompValue('BGP', triples=triples or [])
+    return CompValue("BGP", triples=triples or [])
 
 
 def LeftJoin(p1, p2, expr):
-    return CompValue('LeftJoin', p1=p1, p2=p2, expr=expr)
+    return CompValue("LeftJoin", p1=p1, p2=p2, expr=expr)
 
 
 def Filter(expr, p):
-    return CompValue('Filter', expr=expr, p=p)
+    return CompValue("Filter", expr=expr, p=p)
 
 
 def Extend(p, expr, var):
-    return CompValue('Extend', p=p, expr=expr, var=var)
+    return CompValue("Extend", p=p, expr=expr, var=var)
 
 
 def Values(res):
-    return CompValue('values', res=res)
+    return CompValue("values", res=res)
 
 
 def Project(p, PV):
-    return CompValue('Project', p=p, PV=PV)
+    return CompValue("Project", p=p, PV=PV)
 
 
 def Group(p, expr=None):
-    return CompValue('Group', p=p, expr=expr)
+    return CompValue("Group", p=p, expr=expr)
 
 
 def _knownTerms(triple, varsknown, varscount):
-    return (len([x for x in triple if x not in varsknown and
-                 isinstance(x, (Variable, BNode))]),
-            -sum(varscount.get(x, 0) for x in triple),
-            not isinstance(triple[2], Literal),
-            )
+    return (
+        len(
+            [
+                x
+                for x in triple
+                if x not in varsknown and isinstance(x, (Variable, BNode))
+            ]
+        ),
+        -sum(varscount.get(x, 0) for x in triple),
+        not isinstance(triple[2], Literal),
+    )
 
 
-def reorderTriples(l):
+def reorderTriples(l_):
     """
     Reorder triple patterns so that we execute the
     ones with most bindings first
@@ -98,10 +105,10 @@ def reorderTriples(l):
         if isinstance(term, (Variable, BNode)):
             varsknown.add(term)
 
-    l = [(None, x) for x in l]
+    l_ = [(None, x) for x in l_]
     varsknown = set()
     varscount = collections.defaultdict(int)
-    for t in l:
+    for t in l_:
         for c in t[1]:
             if isinstance(c, (Variable, BNode)):
                 varscount[c] += 1
@@ -114,27 +121,25 @@ def reorderTriples(l):
 
     # we sort by decorate/undecorate, since we need the value of the sort keys
 
-    while i < len(l):
-        l[i:] = sorted((_knownTerms(x[
-                       1], varsknown, varscount), x[1]) for x in l[i:])
-        t = l[i][0][0]  # top block has this many terms bound
+    while i < len(l_):
+        l_[i:] = sorted((_knownTerms(x[1], varsknown, varscount), x[1]) for x in l_[i:])
+        t = l_[i][0][0]  # top block has this many terms bound
         j = 0
-        while i + j < len(l) and l[i + j][0][0] == t:
-            for c in l[i + j][1]:
+        while i + j < len(l_) and l_[i + j][0][0] == t:
+            for c in l_[i + j][1]:
                 _addvar(c, varsknown)
             j += 1
         i += 1
 
-    return [x[1] for x in l]
+    return [x[1] for x in l_]
 
 
 def triples(l):
 
     l = reduce(lambda x, y: x + y, l)
     if (len(l) % 3) != 0:
-        raise Exception('these aint triples')
-    return reorderTriples((l[x], l[x + 1], l[x + 2])
-                          for x in range(0, len(l), 3))
+        raise Exception("these aint triples")
+    return reorderTriples((l[x], l[x + 1], l[x + 2]) for x in range(0, len(l), 3))
 
 
 def translatePName(p, prologue):
@@ -142,11 +147,12 @@ def translatePName(p, prologue):
     Expand prefixed/relative URIs
     """
     if isinstance(p, CompValue):
-        if p.name == 'pname':
+        if p.name == "pname":
             return prologue.absolutize(p)
-        if p.name == 'literal':
-            return Literal(p.string, lang=p.lang,
-                           datatype=prologue.absolutize(p.datatype))
+        if p.name == "literal":
+            return Literal(
+                p.string, lang=p.lang, datatype=prologue.absolutize(p.datatype)
+            )
     elif isinstance(p, URIRef):
         return prologue.absolutize(p)
 
@@ -157,39 +163,39 @@ def translatePath(p):
     """
 
     if isinstance(p, CompValue):
-        if p.name == 'PathAlternative':
+        if p.name == "PathAlternative":
             if len(p.part) == 1:
                 return p.part[0]
             else:
                 return AlternativePath(*p.part)
 
-        elif p.name == 'PathSequence':
+        elif p.name == "PathSequence":
             if len(p.part) == 1:
                 return p.part[0]
             else:
                 return SequencePath(*p.part)
 
-        elif p.name == 'PathElt':
+        elif p.name == "PathElt":
             if not p.mod:
                 return p.part
             else:
                 if isinstance(p.part, list):
                     if len(p.part) != 1:
-                        raise Exception('Denkfehler!')
+                        raise Exception("Denkfehler!")
 
                     return MulPath(p.part[0], p.mod)
                 else:
                     return MulPath(p.part, p.mod)
 
-        elif p.name == 'PathEltOrInverse':
+        elif p.name == "PathEltOrInverse":
             if isinstance(p.part, list):
                 if len(p.part) != 1:
-                    raise Exception('Denkfehler!')
+                    raise Exception("Denkfehler!")
                 return InvPath(p.part[0])
             else:
                 return InvPath(p.part)
 
-        elif p.name == 'PathNegatedPropertySet':
+        elif p.name == "PathNegatedPropertySet":
             if isinstance(p.part, list):
                 return NegatedPath(AlternativePath(*p.part))
             else:
@@ -204,9 +210,9 @@ def translateExists(e):
 
     def _c(n):
         if isinstance(n, CompValue):
-            if n.name in ('Builtin_EXISTS', 'Builtin_NOTEXISTS'):
+            if n.name in ("Builtin_EXISTS", "Builtin_NOTEXISTS"):
                 n.graph = translateGroupGraphPattern(n.graph)
-                if n.graph.name == 'Filter':
+                if n.graph.name == "Filter":
                     # filters inside (NOT) EXISTS can see vars bound outside
                     n.graph.no_isolated_scope = True
 
@@ -229,7 +235,7 @@ def collectAndRemoveFilters(parts):
     i = 0
     while i < len(parts):
         p = parts[i]
-        if p.name == 'Filter':
+        if p.name == "Filter":
             filters.append(translateExists(p.expr))
             parts.pop(i)
         else:
@@ -254,8 +260,7 @@ def translateGroupOrUnionGraphPattern(graphPattern):
 
 
 def translateGraphGraphPattern(graphPattern):
-    return Graph(graphPattern.term,
-                 translateGroupGraphPattern(graphPattern.graph))
+    return Graph(graphPattern.term, translateGroupGraphPattern(graphPattern.graph))
 
 
 def translateInlineData(graphPattern):
@@ -267,7 +272,7 @@ def translateGroupGraphPattern(graphPattern):
     http://www.w3.org/TR/sparql11-query/#convertGraphPattern
     """
 
-    if graphPattern.name == 'SubSelect':
+    if graphPattern.name == "SubSelect":
         return ToMultiSet(translate(graphPattern)[0])
 
     if not graphPattern.part:
@@ -277,9 +282,9 @@ def translateGroupGraphPattern(graphPattern):
 
     g = []
     for p in graphPattern.part:
-        if p.name == 'TriplesBlock':
+        if p.name == "TriplesBlock":
             # merge adjacent TripleBlocks
-            if not (g and g[-1].name == 'BGP'):
+            if not (g and g[-1].name == "BGP"):
                 g.append(BGP())
             g[-1]["triples"] += triples(p.triples)
         else:
@@ -287,30 +292,31 @@ def translateGroupGraphPattern(graphPattern):
 
     G = BGP()
     for p in g:
-        if p.name == 'OptionalGraphPattern':
+        if p.name == "OptionalGraphPattern":
             A = translateGroupGraphPattern(p.graph)
-            if A.name == 'Filter':
+            if A.name == "Filter":
                 G = LeftJoin(G, A.p, A.expr)
             else:
                 G = LeftJoin(G, A, TrueFilter)
-        elif p.name == 'MinusGraphPattern':
+        elif p.name == "MinusGraphPattern":
             G = Minus(p1=G, p2=translateGroupGraphPattern(p.graph))
-        elif p.name == 'GroupOrUnionGraphPattern':
+        elif p.name == "GroupOrUnionGraphPattern":
             G = Join(p1=G, p2=translateGroupOrUnionGraphPattern(p))
-        elif p.name == 'GraphGraphPattern':
+        elif p.name == "GraphGraphPattern":
             G = Join(p1=G, p2=translateGraphGraphPattern(p))
-        elif p.name == 'InlineData':
+        elif p.name == "InlineData":
             G = Join(p1=G, p2=translateInlineData(p))
-        elif p.name == 'ServiceGraphPattern':
+        elif p.name == "ServiceGraphPattern":
             G = Join(p1=G, p2=p)
-        elif p.name in ('BGP', 'Extend'):
+        elif p.name in ("BGP", "Extend"):
             G = Join(p1=G, p2=p)
-        elif p.name == 'Bind':
+        elif p.name == "Bind":
             G = Extend(G, p.expr, p.var)
 
         else:
-            raise Exception('Unknown part in GroupGraphPattern: %s - %s' %
-                            (type(p), p.name))
+            raise Exception(
+                "Unknown part in GroupGraphPattern: %s - %s" % (type(p), p.name)
+            )
 
     if filters:
         G = Filter(expr=filters, p=G)
@@ -372,9 +378,7 @@ def _traverseAgg(e, visitor=lambda n, v: None):
     return visitor(e, res)
 
 
-def traverse(
-        tree, visitPre=lambda n: None,
-        visitPost=lambda n: None, complete=None):
+def traverse(tree, visitPre=lambda n: None, visitPost=lambda n: None, complete=None):
     """
     Traverse tree, visit each node with visit function
     visit function may raise StopTraversal to stop traversal
@@ -397,7 +401,7 @@ def _hasAggregate(x):
     """
 
     if isinstance(x, CompValue):
-        if x.name.startswith('Aggregate_'):
+        if x.name.startswith("Aggregate_"):
             raise StopTraversal(True)
 
 
@@ -409,9 +413,9 @@ def _aggs(e, A):
 
     # TODO: nested Aggregates?
 
-    if isinstance(e, CompValue) and e.name.startswith('Aggregate_'):
+    if isinstance(e, CompValue) and e.name.startswith("Aggregate_"):
         A.append(e)
-        aggvar = Variable('__agg_%d__' % len(A))
+        aggvar = Variable("__agg_%d__" % len(A))
         e["res"] = aggvar
         return aggvar
 
@@ -426,7 +430,7 @@ def _findVars(x, res):
         if x.name == "Bind":
             res.add(x.var)
             return x  # stop recursion and finding vars in the expr
-        elif x.name == 'SubSelect':
+        elif x.name == "SubSelect":
             if x.projection:
                 res.update(v.var or v.evar for v in x.projection)
             return x
@@ -443,13 +447,16 @@ def _addVars(x, children):
             x["_vars"] = set()
         elif x.name == "Extend":
             # vars only used in the expr for a bind should not be included
-            x["_vars"] = reduce(operator.or_, [child for child,
-                                               part in zip(children, x) if part != 'expr'], set())
+            x["_vars"] = reduce(
+                operator.or_,
+                [child for child, part in zip(children, x) if part != "expr"],
+                set(),
+            )
 
         else:
             x["_vars"] = set(reduce(operator.or_, children, set()))
 
-            if x.name == 'SubSelect':
+            if x.name == "SubSelect":
                 if x.projection:
                     s = set(v.var or v.evar for v in x.projection)
                 else:
@@ -470,7 +477,7 @@ def _sample(e, v=None):
     if isinstance(e, CompValue) and e.name.startswith("Aggregate_"):
         return e  # do not replace vars in aggregates
     if isinstance(e, Variable) and v != e:
-        return CompValue('Aggregate_Sample', vars=e)
+        return CompValue("Aggregate_Sample", vars=e)
 
 
 def _simplifyFilters(e):
@@ -505,11 +512,11 @@ def translateAggregates(q, M):
     if q.projection:
         for v in q.projection:
             if v.var:
-                rv = Variable('__agg_%d__' % (len(A) + 1))
-                A.append(CompValue('Aggregate_Sample', vars=v.var, res=rv))
+                rv = Variable("__agg_%d__" % (len(A) + 1))
+                A.append(CompValue("Aggregate_Sample", vars=v.var, res=rv))
                 E.append((rv, v.var))
 
-    return CompValue('AggregateJoin', A=A, p=M), E
+    return CompValue("AggregateJoin", A=A, p=M), E
 
 
 def translateValues(v):
@@ -554,17 +561,22 @@ def translate(q):
         conditions = []
         # convert "GROUP BY (?expr as ?var)" to an Extend
         for c in q.groupby.condition:
-            if isinstance(c, CompValue) and c.name == 'GroupAs':
+            if isinstance(c, CompValue) and c.name == "GroupAs":
                 M = Extend(M, c.expr, c.var)
                 c = c.var
             conditions.append(c)
 
         M = Group(p=M, expr=conditions)
         aggregate = True
-    elif traverse(q.having, _hasAggregate, complete=False) or \
-            traverse(q.orderby, _hasAggregate, complete=False) or \
-            any(traverse(x.expr, _hasAggregate, complete=False)
-                for x in q.projection or [] if x.evar):
+    elif (
+        traverse(q.having, _hasAggregate, complete=False)
+        or traverse(q.orderby, _hasAggregate, complete=False)
+        or any(
+            traverse(x.expr, _hasAggregate, complete=False)
+            for x in q.projection or []
+            if x.evar
+        )
+    ):
         # if any aggregate is used, implicit group by
         M = Group(p=M)
         aggregate = True
@@ -604,17 +616,22 @@ def translate(q):
 
     # ORDER BY
     if q.orderby:
-        M = OrderBy(M, [CompValue('OrderCondition', expr=c.expr,
-                                  order=c.order) for c in q.orderby.condition])
+        M = OrderBy(
+            M,
+            [
+                CompValue("OrderCondition", expr=c.expr, order=c.order)
+                for c in q.orderby.condition
+            ],
+        )
 
     # PROJECT
     M = Project(M, PV)
 
     if q.modifier:
-        if q.modifier == 'DISTINCT':
-            M = CompValue('Distinct', p=M)
-        elif q.modifier == 'REDUCED':
-            M = CompValue('Reduced', p=M)
+        if q.modifier == "DISTINCT":
+            M = CompValue("Distinct", p=M)
+        elif q.modifier == "REDUCED":
+            M = CompValue("Reduced", p=M)
 
     if q.limitoffset:
         offset = 0
@@ -622,10 +639,11 @@ def translate(q):
             offset = q.limitoffset.offset.toPython()
 
         if q.limitoffset.limit is not None:
-            M = CompValue('Slice', p=M, start=offset,
-                          length=q.limitoffset.limit.toPython())
+            M = CompValue(
+                "Slice", p=M, start=offset, length=q.limitoffset.limit.toPython()
+            )
         else:
-            M = CompValue('Slice', p=M, start=offset)
+            M = CompValue("Slice", p=M, start=offset)
 
     return M, PV
 
@@ -633,12 +651,12 @@ def translate(q):
 def simplify(n):
     """Remove joins to empty BGPs"""
     if isinstance(n, CompValue):
-        if n.name == 'Join':
-            if n.p1.name == 'BGP' and len(n.p1.triples) == 0:
+        if n.name == "Join":
+            if n.p1.name == "BGP" and len(n.p1.triples) == 0:
                 return n.p2
-            if n.p2.name == 'BGP' and len(n.p2.triples) == 0:
+            if n.p2.name == "BGP" and len(n.p2.triples) == 0:
                 return n.p1
-        elif n.name == 'BGP':
+        elif n.name == "BGP":
             n["triples"] = reorderTriples(n.triples)
             return n
 
@@ -651,10 +669,10 @@ def analyse(n, children):
     """
 
     if isinstance(n, CompValue):
-        if n.name == 'Join':
+        if n.name == "Join":
             n["lazy"] = all(children)
             return False
-        elif n.name in ('Slice', 'Distinct'):
+        elif n.name in ("Slice", "Distinct"):
             return False
         else:
             return all(children)
@@ -674,9 +692,9 @@ def translatePrologue(p, base, initNs=None, prologue=None):
             prologue.bind(k, v)
 
     for x in p:
-        if x.name == 'Base':
+        if x.name == "Base":
             prologue.base = x.iri
-        elif x.name == 'PrefixDecl':
+        elif x.name == "PrefixDecl":
             prologue.bind(x.prefix, prologue.absolutize(x.iri))
 
     return prologue
@@ -699,26 +717,24 @@ def translateQuads(quads):
 
 
 def translateUpdate1(u, prologue):
-    if u.name in ('Load', 'Clear', 'Drop', 'Create'):
+    if u.name in ("Load", "Clear", "Drop", "Create"):
         pass  # no translation needed
-    elif u.name in ('Add', 'Move', 'Copy'):
+    elif u.name in ("Add", "Move", "Copy"):
         pass
-    elif u.name in ('InsertData', 'DeleteData', 'DeleteWhere'):
+    elif u.name in ("InsertData", "DeleteData", "DeleteWhere"):
         t, q = translateQuads(u.quads)
         u["quads"] = q
         u["triples"] = t
-        if u.name in ('DeleteWhere', 'DeleteData'):
+        if u.name in ("DeleteWhere", "DeleteData"):
             pass  # TODO: check for bnodes in triples
-    elif u.name == 'Modify':
+    elif u.name == "Modify":
         if u.delete:
-            u.delete["triples"], u.delete[
-                "quads"] = translateQuads(u.delete.quads)
+            u.delete["triples"], u.delete["quads"] = translateQuads(u.delete.quads)
         if u.insert:
-            u.insert["triples"], u.insert[
-                "quads"] = translateQuads(u.insert.quads)
+            u.insert["triples"], u.insert["quads"] = translateQuads(u.insert.quads)
         u["where"] = translateGroupGraphPattern(u.where)
     else:
-        raise Exception('Unknown type of update operation: %s' % u)
+        raise Exception("Unknown type of update operation: %s" % u)
 
     u.prologue = prologue
     return u
@@ -737,8 +753,7 @@ def translateUpdate(q, base=None, initNs=None):
         prologue = translatePrologue(p, base, initNs, prologue)
 
         # absolutize/resolve prefixes
-        u = traverse(
-            u, visitPost=functools.partial(translatePName, prologue=prologue))
+        u = traverse(u, visitPost=functools.partial(translatePName, prologue=prologue))
         u = _traverse(u, _simplifyFilters)
 
         u = traverse(u, visitPost=translatePath)
@@ -761,17 +776,16 @@ def translateQuery(q, base=None, initNs=None):
 
     # absolutize/resolve prefixes
     q[1] = traverse(
-        q[1], visitPost=functools.partial(translatePName, prologue=prologue))
+        q[1], visitPost=functools.partial(translatePName, prologue=prologue)
+    )
 
     P, PV = translate(q[1])
     datasetClause = q[1].datasetClause
-    if q[1].name == 'ConstructQuery':
+    if q[1].name == "ConstructQuery":
 
         template = triples(q[1].template) if q[1].template else None
 
-        res = CompValue(q[1].name, p=P,
-                        template=template,
-                        datasetClause=datasetClause)
+        res = CompValue(q[1].name, p=P, template=template, datasetClause=datasetClause)
     else:
         res = CompValue(q[1].name, p=P, datasetClause=datasetClause, PV=PV)
 
@@ -792,9 +806,9 @@ def pprintAlgebra(q):
         if not isinstance(p, CompValue):
             print(p)
             return
-        print("%s(" % (p.name, ))
+        print("%s(" % (p.name,))
         for k in p:
-            print("%s%s =" % (ind, k,), end=' ')
+            print("%s%s =" % (ind, k,), end=" ")
             pp(p[k], ind + "    ")
         print("%s)" % ind)
 
@@ -806,13 +820,13 @@ def pprintAlgebra(q):
             pp(x)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
     from rdflib.plugins.sparql import parser
     import os.path
 
     if os.path.exists(sys.argv[1]):
-        q = file(sys.argv[1])
+        q = open(sys.argv[1]).read()
     else:
         q = sys.argv[1]
 
