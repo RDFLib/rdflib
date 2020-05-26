@@ -38,6 +38,9 @@ class QueryBuilder:
         self.SELECT_variables_with_alias = {}
         self.WHERE_statements = []
 
+        self.limit = None
+        self.offset = None
+
     def SELECT(self, *args, distinct=False, **kwargs):
         self.is_DISTINCT = distinct
 
@@ -61,6 +64,16 @@ class QueryBuilder:
                 self.WHERE_statements.append(STATEMENT(statement))
             else:
                 self.WHERE_statements.append(statement)
+
+        return self
+
+    def LIMIT(self, value):
+        self.limit = value
+
+        return self
+
+    def OFFSET(self, value):
+        self.offset = value
 
         return self
 
@@ -89,9 +102,18 @@ class QueryBuilder:
 
         self.query += "}" + "\n"
 
+    def build_limit_offset(self):
+        if self.limit:
+            self.query += "LIMIT " + str(self.limit) + "\n"
+
+        if self.offset:
+            self.query += "OFFSET " + str(self.offset) + "\n"
+
     def build(self):
         self.build_select()
         self.build_where()
+
+        self.build_limit_offset()
 
         return self.query
 
@@ -107,5 +129,9 @@ if __name__ == "__main__":
         (Variable("s"), Variable("p"), Variable("o")),
         (Variable("o"), RDF.type, Variable("v")),
         OPTIONAL((Variable("o"), RDFS.subClassOf, OWL.thing))
+    ).LIMIT(
+        100
+    ).OFFSET(
+        20
     ).build()
     print(query)
