@@ -271,6 +271,7 @@ __all__ = [
     "Dataset",
     "UnSupportedAggregateOperation",
     "ReadOnlyGraphAggregate",
+    "BatchAddGraph",
 ]
 
 
@@ -293,8 +294,9 @@ class Graph(Node):
     For more on named graphs, see: http://www.w3.org/2004/03/trix/
     """
 
-    def __init__(self, store="default", identifier=None, namespace_manager=None):
+    def __init__(self, store="default", identifier=None, namespace_manager=None, base=None):
         super(Graph, self).__init__()
+        self.base = base
         self.__identifier = identifier or BNode()
 
         if not isinstance(self.__identifier, Node):
@@ -952,6 +954,11 @@ class Graph(Node):
         Format support can be extended with plugins,
         but "xml", "n3", "turtle", "nt", "pretty-xml", "trix", "trig" and "nquads" are built in.
         """
+
+        # if base is not given as attribute use the base set for the graph
+        if base is None:
+            base = self.base
+
         serializer = plugin.get(format, Serializer)(self)
         if destination is None:
             stream = BytesIO()
@@ -1336,14 +1343,16 @@ class ConjunctiveGraph(Graph):
     All queries are carried out against the union of all graphs.
     """
 
-    def __init__(self, store="default", identifier=None):
+    def __init__(self, store="default", identifier=None, default_graph_base=None):
         super(ConjunctiveGraph, self).__init__(store, identifier=identifier)
         assert self.store.context_aware, (
             "ConjunctiveGraph must be backed by" " a context aware store."
         )
         self.context_aware = True
         self.default_union = True  # Conjunctive!
-        self.default_context = Graph(store=self.store, identifier=identifier or BNode())
+        self.default_context = Graph(
+            store=self.store, identifier=identifier or BNode(), base=default_graph_base
+        )
 
     def __str__(self):
         pattern = (
@@ -1483,12 +1492,12 @@ class ConjunctiveGraph(Graph):
             else:
                 yield self.get_context(context)
 
-    def get_context(self, identifier, quoted=False):
+    def get_context(self, identifier, quoted=False, base=None):
         """Return a context graph for the given identifier
 
         identifier must be a URIRef or BNode.
         """
-        return Graph(store=self.store, identifier=identifier, namespace_manager=self)
+        return Graph(store=self.store, identifier=identifier, namespace_manager=self, base=base)
 
     def remove_context(self, context):
         """Removes the given context from the graph"""
@@ -1651,13 +1660,13 @@ class Dataset(ConjunctiveGraph):
     .. versionadded:: 4.0
     """
 
-    def __init__(self, store="default", default_union=False):
+    def __init__(self, store="default", default_union=False, default_graph_base=None):
         super(Dataset, self).__init__(store=store, identifier=None)
 
         if not self.store.graph_aware:
             raise Exception("DataSet must be backed by a graph-aware store!")
         self.default_context = Graph(
-            store=self.store, identifier=DATASET_DEFAULT_GRAPH_ID
+            store=self.store, identifier=DATASET_DEFAULT_GRAPH_ID, base=default_graph_base
         )
 
         self.default_union = default_union
@@ -1668,7 +1677,7 @@ class Dataset(ConjunctiveGraph):
         )
         return pattern % self.store.__class__.__name__
 
-    def graph(self, identifier=None):
+    def graph(self, identifier=None, base=None):
         if identifier is None:
             from rdflib.term import rdflib_skolem_genid
 
@@ -1678,6 +1687,7 @@ class Dataset(ConjunctiveGraph):
             identifier = BNode().skolemize()
 
         g = self._graph(identifier)
+        g.base = base
 
         self.store.add_graph(g)
         return g
@@ -2002,6 +2012,73 @@ def _assertnode(*terms):
     for t in terms:
         assert isinstance(t, Node), "Term %s must be an rdflib term" % (t,)
     return True
+
+
+class BatchAddGraph(object):
+    '''
+    Wrapper around graph that turns calls to :meth:`add` (and optionally, :meth:`addN`)
+    into calls to :meth:`~rdflib.graph.Graph.addN`.
+
+    :Parameters:
+
+      - `graph`: The graph to wrap
+      - `batch_size`: The maximum number of triples to buffer before passing to
+        `graph`'s `addN`
+      - `batch_addn`: If True, then even calls to `addN` will be batched according to
+        `batch_size`
+
+    :ivar graph: The wrapped graph
+    :ivar count: The number of triples buffered since initaialization or the last call
+                 to :meth:`reset`
+    :ivar batch: The current buffer of triples
+
+    '''
+
+    def __init__(self, graph, batch_size=1000, batch_addn=False):
+        if not batch_size or batch_size < 2:
+            raise ValueError("batch_size must be a positive number")
+        self.graph = graph
+        self.__graph_tuple = (graph,)
+        self.__batch_size = batch_size
+        self.__batch_addn = batch_addn
+        self.reset()
+
+    def reset(self):
+        '''
+        Manually clear the buffered triples and reset the count to zero
+        '''
+        self.batch = []
+        self.count = 0
+
+    def add(self, triple_or_quad):
+        '''
+        Add a triple to the buffer
+
+        :param triple: The triple to add
+        '''
+        if len(self.batch) >= self.__batch_size:
+            self.graph.addN(self.batch)
+            self.batch = []
+        self.count += 1
+        if len(triple_or_quad) == 3:
+            self.batch.append(triple_or_quad + self.__graph_tuple)
+        else:
+            self.batch.append(triple_or_quad)
+
+    def addN(self, quads):
+        if self.__batch_addn:
+            for q in quads:
+                self.add(q)
+        else:
+            self.graph.addN(quads)
+
+    def __enter__(self):
+        self.reset()
+        return self
+
+    def __exit__(self, *exc):
+        if exc[0] is None:
+            self.graph.addN(self.batch)
 
 
 def test():

@@ -32,18 +32,19 @@ In SPARQL the syntax is as follows:
 |                    | of the path by zero or one matches of elt.      |
 +--------------------+-------------------------------------------------+
 |!iri or             | Negated property set. An IRI which is not one of|
-|!(iri\ :sub:`1`\ |  | iri\ :sub:`1`...iri\ :sub:`n`.                  |
-|... |iri\ :sub:`n`) | !iri is short for !(iri).                       |
+|!(iri\ :sub:`1`\ \| | iri\ :sub:`1`...iri\ :sub:`n`.                  |
+|... \|iri\ :sub:`n`)| !iri is short for !(iri).                       |
 +--------------------+-------------------------------------------------+
 |!^iri or            | Negated property set where the excluded matches |
-|!(^iri\ :sub:`1`\ | | are based on reversed path. That is, not one of |
-|... |^iri\ :sub:`n`)| iri\ :sub:`1`...iri\ :sub:`n` as reverse paths. |
+|!(^iri\ :sub:`1`\ \|| are based on reversed path. That is, not one of |
+|...\|^iri\ :sub:`n`)| iri\ :sub:`1`...iri\ :sub:`n` as reverse paths. |
 |                    | !^iri is short for !(^iri).                     |
 +--------------------+-------------------------------------------------+
-|!(iri\ :sub:`1`\ |  | A combination of forward and reverse            |
-|...|iri\ :sub:`j`\ || properties in a negated property set.           |
-|^iri\ :sub:`j+1`\ | |                                                 |
-|... |^iri\ :sub:`n`)|                                                 |
+|!(iri\ :sub:`1`\ \| | A combination of forward and reverse            |
+|...\|iri\ :sub:`j`\ | properties in a negated property set.           |
+|\|^iri\ :sub:`j+1`\ |                                                 |
+|\|... \|^iri\       |                                                 |
+|:sub:`n`)|          |                                                 |
 +--------------------+-------------------------------------------------+
 |(elt)               | A group path elt, brackets control precedence.  |
 +--------------------+-------------------------------------------------+

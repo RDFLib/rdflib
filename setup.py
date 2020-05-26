@@ -6,9 +6,14 @@ from setuptools import setup, find_packages
 
 kwargs = {}
 kwargs['install_requires'] = [ 'six', 'isodate', 'pyparsing']
-kwargs['tests_require'] = ['html5lib', 'networkx']
+kwargs['tests_require'] = ['html5lib', 'networkx', 'nose', 'doctest-ignore-unicode', 'requests']
 kwargs['test_suite'] = "nose.collector"
-kwargs['extras_require'] = {'html': ['html5lib'], 'sparql': ['requests']}
+kwargs['extras_require'] = {
+    'html': ['html5lib'],
+    'sparql': ['requests'],
+    'tests': kwargs['tests_require'],
+    'docs': ['sphinx < 4', 'sphinxcontrib-apidoc']
+    }
 
 def find_version(filename):
     _version_re = re.compile(r'__version__ = "(.*)"')
@@ -38,15 +43,14 @@ setup(
     url="https://github.com/RDFLib/rdflib",
     license="BSD-3-Clause",
     platforms=["any"],
+    python_requires='>=3.5',
     classifiers=[
             "Programming Language :: Python",
-            "Programming Language :: Python :: 2",
             "Programming Language :: Python :: 3",
-            "Programming Language :: Python :: 2.7",
-            "Programming Language :: Python :: 3.4",
             "Programming Language :: Python :: 3.5",
             "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
+            "Programming Language :: Python :: 3.8",
             "License :: OSI Approved :: BSD License",
             "Topic :: Software Development :: Libraries :: Python Modules",
             "Operating System :: OS Independent",

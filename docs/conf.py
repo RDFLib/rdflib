@@ -27,6 +27,7 @@ sys.path.append(os.path.abspath(".."))
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 # extensions = ['sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.doctest']
 extensions = [
+    "sphinxcontrib.apidoc",
     "sphinx.ext.autodoc",
     #'sphinx.ext.autosummary',
     "sphinx.ext.doctest",
@@ -37,7 +38,9 @@ extensions = [
     "sphinx.ext.viewcode",
 ]
 
-autodoc_default_flags = ["special-members"]
+apidoc_module_dir = "../rdflib"
+apidoc_output_dir = "apidocs"
+autodoc_default_options = {"special-members": True}
 
 autosummary_generate = True
 
@@ -47,7 +50,6 @@ templates_path = ["_templates"]
 # epydoc_mapping = {
 #   '/_static/api/': [r'rdflib\.'],
 #   }
-
 
 # The suffix of source filenames.
 source_suffix = ".rst"
@@ -60,11 +62,12 @@ master_doc = "index"
 
 # General information about the project.
 project = u"rdflib"
-copyright = u"2009 - 2013, RDFLib Team"
+copyright = u"2009 - 2020, RDFLib Team"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
+
 
 # Find version. We have to do this because we can't import it in Python 3 until
 # its been automatically converted in the setup process.
@@ -146,7 +149,7 @@ html_theme_path = [
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
 # html_logo = None
-html_logo = "_static/logo-rdflib.png"
+html_logo = "_static/RDFlib.png"
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -231,7 +234,9 @@ latex_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    "python": ("http://docs.python.org/3.7", None),
+    "python": ("https://docs.python.org/3.7", None),
 }
 
 html_experimental_html5_writer = True
+
+needs_sphinx = "2.4"
