@@ -1,19 +1,6 @@
 from __future__ import unicode_literals
 
-
-def convert_alias_to_variable(alias):
-    return "?" + alias
-
-
-class Variable:
-    def __init__(self, variable_name):
-        self.variable_name = variable_name
-
-    def get_variable_name(self):
-        return self.variable_name
-
-    def get_sparql_variable(self):
-        return "?" + self.variable_name
+from rdflib import Variable
 
 
 class QueryBuilder:
@@ -34,7 +21,7 @@ class QueryBuilder:
             if not isinstance(var, Variable):
                 raise Exception("Argument can be only of type 'Variable'.")
 
-            self.SELECT_variables_with_alias[var_name] = var
+            self.SELECT_variables_with_alias[Variable(var_name)] = var
 
         return self
 
@@ -56,10 +43,10 @@ class QueryBuilder:
     def build(self):
         self.query += "SELECT "
         for var in self.SELECT_variables_direct:
-            self.query += var.get_sparql_variable() + " "
+            self.query += var.n3() + " "
 
-        for var_name, var in self.SELECT_variables_with_alias.items():
-            self.query += "(" + var.get_sparql_variable() + " as " + convert_alias_to_variable(var_name) + ")"
+        for var_alias, var_expression in self.SELECT_variables_with_alias.items():
+            self.query += "(" + var_expression.n3() + " as " + var_alias.n3() + ")"
 
         self.query += "\n"
 
@@ -68,7 +55,7 @@ class QueryBuilder:
 
         self.query += "WHERE {\n"
         for s, p, o in self.WHERE_statements:
-            self.query += s.get_sparql_variable() + " " + p.get_sparql_variable() + " " + o.get_sparql_variable() + " ."
+            self.query += s.n3() + " " + p.n3() + " " + o.n3() + " ."
         self.query += "\n}"
 
         return self.query
