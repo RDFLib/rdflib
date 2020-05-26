@@ -177,9 +177,7 @@ register(
     "NQuadsSerializer",
 )
 register("nquads", Serializer, "rdflib.plugins.serializers.nquads", "NQuadsSerializer")
-register(
-    'json-ld', Serializer,
-    'rdflib.plugins.serializers.jsonld', 'JsonLDSerializer')
+
 
 register("application/rdf+xml", Parser, "rdflib.plugins.parsers.rdfxml", "RDFXMLParser")
 register("xml", Parser, "rdflib.plugins.parsers.rdfxml", "RDFXMLParser")
