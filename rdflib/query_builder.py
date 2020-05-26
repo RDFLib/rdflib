@@ -62,7 +62,8 @@ class FUNCTION_EXPR(STATEMENT):
         statements = []
         for stmt in args:
             if not is_acceptable_query_variable(stmt):
-                statements.append(Variable(stmt))
+                stmt = Variable(stmt)
+            statements.append(stmt)
 
         if function_expression not in supported_function_expression_list:
             raise Exception("Function expression %s not supported" % function_expression)
