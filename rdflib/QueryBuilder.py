@@ -10,6 +10,7 @@ class QueryBuilder:
         self.is_DISTINCT = False
         self.SELECT_variables_with_alias = {}
         self.WHERE_statements = []
+        self.WHERE_OPTIONAL_statements = []
 
     @staticmethod
     def _is_acceptable_query_variable(variable):
@@ -51,6 +52,11 @@ class QueryBuilder:
 
         return self
 
+    def WHERE_OPTIONAL(self, *args):
+        self.process_where_statement(self.WHERE_OPTIONAL_statements, *args)
+
+        return self
+
     def build_select(self):
         self.query += "SELECT "
 
@@ -66,13 +72,18 @@ class QueryBuilder:
         self.query += "\n"
 
     def build_where(self):
-        if len(self.WHERE_statements) == 0:
-            raise Exception("Query must have at least one WHERE statement")
+        if len(self.WHERE_statements) + len(self.WHERE_OPTIONAL_statements) == 0:
+            raise Exception("Query must have at least one WHERE statement. (any type).")
 
-        self.query += "WHERE {\n"
+        self.query += "WHERE {" + "\n"
+
         for s, p, o in self.WHERE_statements:
-            self.query += s.n3() + " " + p.n3() + " " + o.n3() + " ."
-        self.query += "\n}"
+            self.query += s.n3() + " " + p.n3() + " " + o.n3() + " ." + "\n"
+
+        for s, p, o in self.WHERE_OPTIONAL_statements:
+            self.query += "OPTIONAL { " + s.n3() + " " + p.n3() + " " + o.n3() + " } ." + "\n"
+
+        self.query += "}" + "\n"
 
     def build(self):
         self.build_select()
@@ -85,9 +96,12 @@ if __name__ == "__main__":
     query = QueryBuilder().SELECT(
         Variable("s"),
         Variable("p"),
-        distinct=True,
-        x=Variable("o")
+        x=Variable("o"),
+        value=Variable("v"),
+        distinct=True
     ).WHERE(
         (Variable("s"), Variable("p"), Variable("o"))
+    ).WHERE_OPTIONAL(
+        (Variable("o"), Variable("p1"), Variable("v"))
     ).build()
     print(query)
