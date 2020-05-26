@@ -389,14 +389,27 @@ class Graph(Node):
         assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
         self.__store.add((s, p, o), self, quoted=False)
 
-    def add_all(self , triples):
-        for  s, p , o in triples:
-            assert isinstance(s, Node), "Subject %s must be an rdflib term" % (s,)
-            assert isinstance(p, Node), "Predicate %s must be an rdflib term" % (p,)
-            assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
+    def add_all(self , triples, all_or_none=True):
+        """Add triples with self as context
+
+        Parameters:
+        all_or_none -- if True, add triples only if all triples satisfy the assertion
+        else, add triples till the first unsatisfied assertion is encountered 
+        """ 
+        
+        if(all_or_none):
+            for i, (s, p, o) in enumerate(triples,1):
+                assert isinstance(s, Node), "Subject %s in Triple %d must be an rdflib term" % (s,i,)
+                assert isinstance(p, Node), "Predicate %s in Triple %d must be an rdflib term" % (p,i,)
+                assert isinstance(o, Node), "Object %s in Triple %d must be an rdflib term" % (o,i,)
+
+        for i, (s, p, o) in enumerate(triples,1):
+            if(all_or_none==False):
+                assert isinstance(s, Node), "Subject %s in Triple %d must be an rdflib term" % (s,i,)
+                assert isinstance(p, Node), "Predicate %s in Triple %d must be an rdflib term" % (p,i,)
+                assert isinstance(o, Node), "Object %s in Triple %d must be an rdflib term" % (o,i,)
             self.__store.add((s, p, o), self, quoted=False)
 
-   
     def addN(self, quads):
         """Add a sequence of triple with context"""
 
