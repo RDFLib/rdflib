@@ -30,6 +30,16 @@ class OPTIONAL(STATEMENT):
         return "OPTIONAL { " + super().n3() + " }"
 
 
+list_function = ['SUM', 'AVERAGE', 'COUNT', 'SET', 'MIN', 'MAX', 'GROUPCONTACT', 'SAMPLE']
+
+
+class AGGREGATE:
+    def __new__(cls, function, statement):
+        if function not in list_function:
+            raise Exception("Aggregate Function %s not supported" % function)
+        return function, statement
+
+
 class QueryBuilder:
     def __init__(self):
         self.query = ""
@@ -46,16 +56,21 @@ class QueryBuilder:
         self.is_DISTINCT = distinct
 
         for var in args:
-            if not is_acceptable_query_variable(var):
-                raise Exception("Argument not of valid type.")
 
-            self.SELECT_variables_direct.append(var)
+            if len(var) < 2:
+                if not is_acceptable_query_variable(var):
+                    raise Exception("Argument not of valid type.")
+                self.SELECT_variables_direct.append([var])
+            else:
+                self.SELECT_variables_direct.append([var[0], var[1]])
 
         for var_name, var in kwargs.items():
-            if not is_acceptable_query_variable(var):
-                raise Exception("Argument not of valid type.")
-
-            self.SELECT_variables_with_alias[Variable(var_name)] = var
+            if len(var) < 2:
+                if not is_acceptable_query_variable(var):
+                    raise Exception("Argument not of valid type.")
+                self.SELECT_variables_with_alias[Variable(var_name)] = [var]
+            else:
+                self.SELECT_variables_with_alias[Variable(var_name)] = [var[0], var[1]]
 
         return self
 
@@ -94,10 +109,16 @@ class QueryBuilder:
             self.query += "DISTINCT "
 
         for var in self.SELECT_variables_direct:
-            self.query += var.n3() + " "
+            if len(var) < 2:
+                self.query += var[0].n3() + " "
+            else:
+                self.query += var[0] + "(" + var[1].n3() + ") "
 
         for var_alias, var_expression in self.SELECT_variables_with_alias.items():
-            self.query += "(" + var_expression.n3() + " as " + var_alias.n3() + ")"
+            if len(var_expression) < 2:
+                self.query += "(" + var_expression[0].n3() + " as " + var_alias.n3() + ") "
+            else:
+                self.query += "(" + var_expression[0] + "(" + var_expression[1].n3() + ") as " + var_alias.n3() + ") "
 
         self.query += "\n"
 
@@ -140,9 +161,9 @@ class QueryBuilder:
 if __name__ == "__main__":
     query = QueryBuilder().SELECT(
         Variable("s"),
-        Variable("p"),
+        AGGREGATE("SUM", Variable("p")),
         x=Variable("o"),
-        value=Variable("v"),
+        value=AGGREGATE("SUM", Variable("v")),
         distinct=True
     ).WHERE(
         (Variable("s"), Variable("p"), Variable("o")),
