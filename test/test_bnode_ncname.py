@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 import re
-import sys
-try:
-    from hashlib import md5
-except ImportError:
-    from md5 import md5
+from hashlib import md5
+
 
 try:
     from uuid import uuid4
 except ImportError:
+
     def uuid4():
         """
         Generates a uuid on behalf of Python 2.4
@@ -17,12 +15,13 @@ except ImportError:
         import os
         import time
         import socket
+
         try:
             preseed = os.urandom(16)
         except NotImplementedError:
-            preseed = ''
+            preseed = ""
         # Have doubts about this. random.seed will just hash the string
-        random.seed('%s%s%s' % (preseed, os.getpid(), time.time()))
+        random.seed("%s%s%s" % (preseed, os.getpid(), time.time()))
         del preseed
         t = int(time.time() * 1000.0)
         r = int(random.random() * 100000000000000000)
@@ -31,9 +30,10 @@ except ImportError:
         except:
             # if we can't get a network address, just imagine one
             a = random.random() * 100000000000000000
-        strdata = str(t) + ' ' + str(r) + ' ' + str(a)
-        data = md5(strdata.encode('ascii')).hexdigest()
+        strdata = str(t) + " " + str(r) + " " + str(a)
+        data = md5(strdata.encode("ascii")).hexdigest()
         yield data
+
 
 # Adapted from http://icodesnip.com/snippet/python/simple-universally-unique-id-uuid-or-guid
 
@@ -72,13 +72,14 @@ def is_ncname(value):
     >>> from rdflib import BNode
     >>> assert is_ncname(BNode(_sn_gen=bnode_uuid, _prefix="urn:uuid:")) == True
     """
-    ncnameexp = re.compile('[A-Za-z][A-Za-z0-9]*')
+    ncnameexp = re.compile("[A-Za-z][A-Za-z0-9]*")
     if ncnameexp.match(value):
         return True
     else:
         return False
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

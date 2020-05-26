@@ -3,11 +3,35 @@ from __future__ import division
 from __future__ import print_function
 
 from rdflib.term import Literal  # required for doctests
-
-assert Literal  # avoid warning
 from rdflib.namespace import Namespace  # required for doctests
 
+import logging
+
+import random
+from rdflib.namespace import RDF, RDFS, SKOS
+from rdflib import plugin, exceptions, query
+from rdflib.term import Node, URIRef, Genid
+from rdflib.term import BNode
+import rdflib.term
+from rdflib.paths import Path
+from rdflib.store import Store
+from rdflib.serializer import Serializer
+from rdflib.parser import Parser
+from rdflib.parser import create_input_source
+from rdflib.namespace import NamespaceManager
+from rdflib.resource import Resource
+from rdflib.collection import Collection
+
+import os
+import shutil
+import tempfile
+
+from io import BytesIO
+from urllib.parse import urlparse
+
+assert Literal  # avoid warning
 assert Namespace  # avoid warning
+logger = logging.getLogger(__name__)
 
 
 __doc__ = """\
@@ -235,32 +259,6 @@ Using Namespace class:
 
 """
 
-import logging
-
-logger = logging.getLogger(__name__)
-
-import random
-from rdflib.namespace import RDF, RDFS, SKOS
-from rdflib import plugin, exceptions, query
-from rdflib.term import Node, URIRef, Genid
-from rdflib.term import BNode
-import rdflib.term
-from rdflib.paths import Path
-from rdflib.store import Store
-from rdflib.serializer import Serializer
-from rdflib.parser import Parser
-from rdflib.parser import create_input_source
-from rdflib.namespace import NamespaceManager
-from rdflib.resource import Resource
-from rdflib.collection import Collection
-
-import os
-import shutil
-import tempfile
-
-from six import BytesIO
-from six import b
-from six.moves.urllib.parse import urlparse
 
 __all__ = [
     "Graph",
@@ -294,7 +292,9 @@ class Graph(Node):
     For more on named graphs, see: http://www.w3.org/2004/03/trix/
     """
 
-    def __init__(self, store="default", identifier=None, namespace_manager=None, base=None):
+    def __init__(
+        self, store="default", identifier=None, namespace_manager=None, base=None
+    ):
         super(Graph, self).__init__()
         self.base = base
         self.__identifier = identifier or BNode()
@@ -790,18 +790,14 @@ class Graph(Node):
         # setup the language filtering
         if lang is not None:
             if lang == "":  # we only want not language-tagged literals
-
-                def langfilter(l):
-                    return l.language is None
-
+                def langfilter(l_):
+                    return l_.language is None
             else:
-
-                def langfilter(l):
-                    return l.language == lang
+                def langfilter(l_):
+                    return l_.language == lang
 
         else:  # we don't care about language tags
-
-            def langfilter(l):
+            def langfilter(l_):
                 return True
 
         for labelProp in labelProperties:
@@ -809,7 +805,7 @@ class Graph(Node):
             if len(labels) == 0:
                 continue
             else:
-                return [(labelProp, l) for l in labels]
+                return [(labelProp, l_) for l_ in labels]
         return default
 
     def comment(self, subject, default=""):
@@ -1053,7 +1049,7 @@ class Graph(Node):
         >>> import tempfile
         >>> fd, file_name = tempfile.mkstemp()
         >>> f = os.fdopen(fd, "w")
-        >>> dummy = f.write(my_data)  # Returns num bytes written on py3
+        >>> dummy = f.write(my_data)  # Returns num bytes written
         >>> f.close()
 
         >>> g = Graph()
@@ -1513,7 +1509,9 @@ class ConjunctiveGraph(Graph):
 
         identifier must be a URIRef or BNode.
         """
-        return Graph(store=self.store, identifier=identifier, namespace_manager=self, base=base)
+        return Graph(
+            store=self.store, identifier=identifier, namespace_manager=self, base=base
+        )
 
     def remove_context(self, context):
         """Removes the given context from the graph"""
@@ -1682,7 +1680,9 @@ class Dataset(ConjunctiveGraph):
         if not self.store.graph_aware:
             raise Exception("DataSet must be backed by a graph-aware store!")
         self.default_context = Graph(
-            store=self.store, identifier=DATASET_DEFAULT_GRAPH_ID, base=default_graph_base
+            store=self.store,
+            identifier=DATASET_DEFAULT_GRAPH_ID,
+            base=default_graph_base,
         )
 
         self.default_union = default_union
@@ -2031,7 +2031,7 @@ def _assertnode(*terms):
 
 
 class BatchAddGraph(object):
-    '''
+    """
     Wrapper around graph that turns calls to :meth:`add` (and optionally, :meth:`addN`)
     into calls to :meth:`~rdflib.graph.Graph.addN`.
 
@@ -2048,7 +2048,7 @@ class BatchAddGraph(object):
                  to :meth:`reset`
     :ivar batch: The current buffer of triples
 
-    '''
+    """
 
     def __init__(self, graph, batch_size=1000, batch_addn=False):
         if not batch_size or batch_size < 2:
@@ -2060,18 +2060,18 @@ class BatchAddGraph(object):
         self.reset()
 
     def reset(self):
-        '''
+        """
         Manually clear the buffered triples and reset the count to zero
-        '''
+        """
         self.batch = []
         self.count = 0
 
     def add(self, triple_or_quad):
-        '''
+        """
         Add a triple to the buffer
 
         :param triple: The triple to add
-        '''
+        """
         if len(self.batch) >= self.__batch_size:
             self.graph.addN(self.batch)
             self.batch = []
