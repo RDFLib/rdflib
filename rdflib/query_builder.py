@@ -4,7 +4,7 @@ from rdflib import Variable, Literal, URIRef, RDF, OWL, RDFS
 
 
 def is_acceptable_query_variable(variable):
-    return isinstance(variable, (Variable, Literal, URIRef))
+    return isinstance(variable, (AGGREGATE, Variable, Literal, URIRef))
 
 
 class STATEMENT(tuple):
@@ -30,14 +30,17 @@ class OPTIONAL(STATEMENT):
         return "OPTIONAL { " + super().n3() + " }"
 
 
-list_function = ['SUM', 'AVERAGE', 'COUNT', 'SET', 'MIN', 'MAX', 'GROUPCONTACT', 'SAMPLE']
+list_function = ["SUM", "AVERAGE", "COUNT", "SET", "MIN", "MAX", "GROUPCONTACT", "SAMPLE"]
 
 
-class AGGREGATE:
+class AGGREGATE(tuple):
     def __new__(cls, function, statement):
         if function not in list_function:
             raise Exception("Aggregate Function %s not supported" % function)
-        return function, statement
+        return tuple.__new__(AGGREGATE, (function, statement))
+
+    def n3(self):
+        return self[0] + "(" + self[1].n3() + ")"
 
 
 class QueryBuilder:
@@ -56,21 +59,16 @@ class QueryBuilder:
         self.is_DISTINCT = distinct
 
         for var in args:
-
-            if len(var) < 2:
-                if not is_acceptable_query_variable(var):
-                    raise Exception("Argument not of valid type.")
-                self.SELECT_variables_direct.append([var])
-            else:
-                self.SELECT_variables_direct.append([var[0], var[1]])
+            if isinstance(var, AGGREGATE):
+                raise Exception("Alias not provided for %s" % var[1].n3())
+            if not is_acceptable_query_variable(var):
+                raise Exception("Argument not of valid type.")
+            self.SELECT_variables_direct.append(var)
 
         for var_name, var in kwargs.items():
-            if len(var) < 2:
-                if not is_acceptable_query_variable(var):
-                    raise Exception("Argument not of valid type.")
-                self.SELECT_variables_with_alias[Variable(var_name)] = [var]
-            else:
-                self.SELECT_variables_with_alias[Variable(var_name)] = [var[0], var[1]]
+            if not is_acceptable_query_variable(var):
+                raise Exception("Argument not of valid type.")
+            self.SELECT_variables_with_alias[Variable(var_name)] = var
 
         return self
 
@@ -109,16 +107,10 @@ class QueryBuilder:
             self.query += "DISTINCT "
 
         for var in self.SELECT_variables_direct:
-            if len(var) < 2:
-                self.query += var[0].n3() + " "
-            else:
-                self.query += var[0] + "(" + var[1].n3() + ") "
+            self.query += var.n3() + " "
 
         for var_alias, var_expression in self.SELECT_variables_with_alias.items():
-            if len(var_expression) < 2:
-                self.query += "(" + var_expression[0].n3() + " as " + var_alias.n3() + ") "
-            else:
-                self.query += "(" + var_expression[0] + "(" + var_expression[1].n3() + ") as " + var_alias.n3() + ") "
+                self.query += "(" + var_expression.n3() + " as " + var_alias.n3() + ") "
 
         self.query += "\n"
 
@@ -161,9 +153,9 @@ class QueryBuilder:
 if __name__ == "__main__":
     query = QueryBuilder().SELECT(
         Variable("s"),
-        AGGREGATE("SUM", Variable("p")),
+        Variable("p"),
         x=Variable("o"),
-        value=AGGREGATE("SUM", Variable("v")),
+        value=AGGREGATE("AVERAGE", Variable("v")),
         distinct=True
     ).WHERE(
         (Variable("s"), Variable("p"), Variable("o")),
