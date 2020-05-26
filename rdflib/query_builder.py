@@ -4,7 +4,7 @@ from rdflib import Variable, Literal, URIRef, RDF, OWL, RDFS
 
 
 def is_acceptable_query_variable(variable):
-    return isinstance(variable, (AGGREGATE, Variable, Literal, URIRef))
+    return isinstance(variable, (FUNCTION_EXPR, AGGREGATE, Variable, Literal, URIRef))
 
 
 class STATEMENT(tuple):
@@ -41,6 +41,32 @@ class AGGREGATE(tuple):
 
     def n3(self):
         return self[0] + "(" + self[1].n3() + ")"
+
+
+supported_function_expression_list = [
+    "ASC", "DESC", "IRI", "isBLANK", "isLITERAL", "isIRI", "isNUMERIC", "BNODE",
+    "ABS", "IF", "RAND", "UUID", "STRUUID", "MD5", "SHA1", "SHA256",
+    "SHA384", "SHA512", "COALESCE", "CEIL", "FLOOR", "ROUND", "REGEX",
+    "REPLACE", "STRDT", "STRLANG", "CONCAT", "STRSTARTS", "STRENDS",
+    "STRBEFORE", "STRAFTER", "CONTAINS", "ENCODE_FOR_URI", "SUBSTR",
+    "STRLEN", "STR", "LCASE", "LANGMATCHES", "NOW", "YEAR", "MONTH",
+    "DAY", "HOURS", "MINUTES", "SECONDS", "TIMEZONE", "TZ", "UCASE",
+    "LANG", "DATATYPE", "sameTerm", "BOUND", "EXISTS"
+]
+
+
+class FUNCTION_EXPR(tuple):
+    def __new__(cls, function_expression, *args):
+        if function_expression not in supported_function_expression_list:
+            raise Exception("Function expression %s not supported" % function_expression)
+        return tuple.__new__(FUNCTION_EXPR, (function_expression, args))
+
+    def n3(self):
+        n3_string = self[0] + "( "
+        for var in self[1]:
+            n3_string += var.n3() + " "
+        n3_string += ")"
+        return n3_string
 
 
 class QueryBuilder:
@@ -110,7 +136,7 @@ class QueryBuilder:
             self.query += var.n3() + " "
 
         for var_alias, var_expression in self.SELECT_variables_with_alias.items():
-                self.query += "(" + var_expression.n3() + " as " + var_alias.n3() + ") "
+            self.query += "(" + var_expression.n3() + " as " + var_alias.n3() + ") "
 
         self.query += "\n"
 
@@ -162,7 +188,8 @@ if __name__ == "__main__":
         (Variable("o"), RDF.type, Variable("v")),
         OPTIONAL((Variable("o"), RDFS.subClassOf, OWL.thing))
     ).ORDER_BY(
-        Variable("v")
+        Variable("v"),
+        FUNCTION_EXPR("ASC", Variable("s"))
     ).LIMIT(
         100
     ).OFFSET(
