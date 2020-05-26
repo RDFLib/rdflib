@@ -25,6 +25,7 @@ from __future__ import division
 from __future__ import print_function
 # from __future__ import unicode_literals
 from fractions import Fraction
+from rdflib.extras.gregorianType import GregorianType
 
 __all__ = [
     'bind',
@@ -73,7 +74,6 @@ skolems = {}
 
 
 _invalid_uri_chars = '<>" {}|\\^`'
-
 
 def _is_valid_uri(uri):
     return all(map(lambda c: ord(c) > 256 or not c in _invalid_uri_chars, uri))
@@ -549,7 +549,16 @@ class Literal(Identifier):
             datatype = URIRef(datatype)
 
         value = None
-        if isinstance(lexical_or_value, Literal):
+
+        if datatype == URIRef(_XSD_GYEAR) or datatype == URIRef(_XSD_GYEARMONTH):
+            if datatype == URIRef(_XSD_GYEAR):
+                if lexical_or_value.find('-') != -1:
+                    raise Exception('Lexical value not of gYear(YYYY) type')
+                value = GregorianType(lexical_or_value, 1)
+            else:
+                value = GregorianType(lexical_or_value, 2)
+
+        elif isinstance(lexical_or_value, Literal):
             # create from another Literal instance
 
             lang = lang or lexical_or_value.language
@@ -564,7 +573,6 @@ class Literal(Identifier):
                 # passed a string
                 # try parsing lexical form of datatyped literal
             value = _castLexicalToPython(lexical_or_value, datatype)
-
             if value is not None and normalize:
                 _value, _datatype = _castPythonToLiteral(value, datatype)
                 if _value is not None and _is_valid_unicode(_value):
@@ -1408,6 +1416,9 @@ _XSD_YEARMONTHDURATION = URIRef(_XSD_PFX + 'yearMonthDuration')
 _OWL_RATIONAL = URIRef('http://www.w3.org/2002/07/owl#rational')
 _XSD_HEXBINARY = URIRef(_XSD_PFX + 'hexBinary')
 # TODO: gYearMonth, gYear, gMonthDay, gDay, gMonth
+_XSD_GYEAR = URIRef(_XSD_PFX + 'gYear')
+_XSD_GYEARMONTH = URIRef(_XSD_PFX + 'gYearMonth')
+
 
 _NUMERIC_LITERAL_TYPES = (
     _XSD_INTEGER,
@@ -1541,8 +1552,6 @@ XSDToPython = {
     None: None,  # plain literals map directly to value space
     URIRef(_XSD_PFX + 'time'): parse_time,
     URIRef(_XSD_PFX + 'date'): parse_date,
-    URIRef(_XSD_PFX + 'gYear'): parse_date,
-    URIRef(_XSD_PFX + 'gYearMonth'): parse_date,
     URIRef(_XSD_PFX + 'dateTime'): parse_datetime,
     URIRef(_XSD_PFX + 'duration'): parse_duration,
     URIRef(_XSD_PFX + 'dayTimeDuration'): parse_duration,
