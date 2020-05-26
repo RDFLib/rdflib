@@ -1072,10 +1072,10 @@ class Graph(Node):
             format = source.content_type
         assumed_xml = False
         if format is None:
-            try:
+            if (hasattr(source, "file")
+                    and getattr(source.file, "name", None)
+                    and isinstance(source.file.name, str)):
                 format = rdflib.util.guess_format(source.file.name)
-            except (AttributeError, TypeError):
-                pass
             if format is None:
                 format = "application/rdf+xml"
                 assumed_xml = True
