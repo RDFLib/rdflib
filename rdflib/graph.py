@@ -395,8 +395,8 @@ class Graph(Node):
         Parameters:
         all_or_none -- if True, add triples only if all triples satisfy the assertion
         else, add triples till the first unsatisfied assertion is encountered 
-        """ 
-        
+        """
+
         if(all_or_none):
             for i, (s, p, o) in enumerate(triples,1):
                 assert isinstance(s, Node), "Subject %s in Triple %d must be an rdflib term" % (s,i,)
