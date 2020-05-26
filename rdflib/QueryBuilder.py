@@ -1,6 +1,33 @@
 from __future__ import unicode_literals
 
-from rdflib import Variable, Literal, URIRef
+from rdflib import Variable, Literal, URIRef, RDF, OWL, RDFS
+
+
+def is_acceptable_query_variable(variable):
+    return isinstance(variable, (Variable, Literal, URIRef))
+
+
+class STATEMENT(tuple):
+    def __new__(cls, statement):
+        if len(statement) == 3:
+            s, p, o = statement
+            if is_acceptable_query_variable(s) and is_acceptable_query_variable(
+                    p) and is_acceptable_query_variable(o):
+                return tuple.__new__(STATEMENT, (s, p, o))
+        else:
+            raise Exception("Statement has to be a tuple in the format (s, p, o)")
+
+    def n3(self):
+        return self[0].n3() + " " + self[1].n3() + " " + self[2].n3()
+
+
+class OPTIONAL(STATEMENT):
+    def __new__(cls, statement):
+        stmt = super(OPTIONAL, cls).__new__(cls, statement)
+        return tuple.__new__(OPTIONAL, stmt)
+
+    def n3(self):
+        return "OPTIONAL { " + super().n3() + " }"
 
 
 class QueryBuilder:
@@ -10,50 +37,30 @@ class QueryBuilder:
         self.is_DISTINCT = False
         self.SELECT_variables_with_alias = {}
         self.WHERE_statements = []
-        self.WHERE_OPTIONAL_statements = []
-
-    @staticmethod
-    def _is_acceptable_query_variable(variable):
-        return isinstance(variable, (Variable, Literal, URIRef))
 
     def SELECT(self, *args, distinct=False, **kwargs):
         self.is_DISTINCT = distinct
 
         for var in args:
-            if not self._is_acceptable_query_variable(var):
+            if not is_acceptable_query_variable(var):
                 raise Exception("Argument not of valid type.")
 
             self.SELECT_variables_direct.append(var)
 
         for var_name, var in kwargs.items():
-            if not self._is_acceptable_query_variable(var):
+            if not is_acceptable_query_variable(var):
                 raise Exception("Argument not of valid type.")
 
             self.SELECT_variables_with_alias[Variable(var_name)] = var
 
         return self
 
-    def process_where_statement(self, append_to_array, *args):
-        for statement in args:
-            if isinstance(statement, tuple):
-                if len(statement) == 3:
-                    s, p, o = statement
-                    if self._is_acceptable_query_variable(s) and self._is_acceptable_query_variable(
-                            p) and self._is_acceptable_query_variable(o):
-                        append_to_array.append((s, p, o))
-
-                    else:
-                        raise Exception("s, p, o in the statement not of valid type.")
-                else:
-                    raise Exception("Statement has to be a tuple in the format (s, p, o)")
-
     def WHERE(self, *args, **kwargs):
-        self.process_where_statement(self.WHERE_statements, *args)
-
-        return self
-
-    def WHERE_OPTIONAL(self, *args):
-        self.process_where_statement(self.WHERE_OPTIONAL_statements, *args)
+        for statement in args:
+            if not hasattr(statement, "n3"):
+                self.WHERE_statements.append(STATEMENT(statement))
+            else:
+                self.WHERE_statements.append(statement)
 
         return self
 
@@ -72,16 +79,13 @@ class QueryBuilder:
         self.query += "\n"
 
     def build_where(self):
-        if len(self.WHERE_statements) + len(self.WHERE_OPTIONAL_statements) == 0:
-            raise Exception("Query must have at least one WHERE statement. (any type).")
+        if len(self.WHERE_statements) == 0:
+            raise Exception("Query must have at least one WHERE statement.")
 
         self.query += "WHERE {" + "\n"
 
-        for s, p, o in self.WHERE_statements:
-            self.query += s.n3() + " " + p.n3() + " " + o.n3() + " ." + "\n"
-
-        for s, p, o in self.WHERE_OPTIONAL_statements:
-            self.query += "OPTIONAL { " + s.n3() + " " + p.n3() + " " + o.n3() + " } ." + "\n"
+        for statement in self.WHERE_statements:
+            self.query += statement.n3() + " ." + "\n"
 
         self.query += "}" + "\n"
 
@@ -100,8 +104,8 @@ if __name__ == "__main__":
         value=Variable("v"),
         distinct=True
     ).WHERE(
-        (Variable("s"), Variable("p"), Variable("o"))
-    ).WHERE_OPTIONAL(
-        (Variable("o"), Variable("p1"), Variable("v"))
+        (Variable("s"), Variable("p"), Variable("o")),
+        (Variable("o"), RDF.type, Variable("v")),
+        OPTIONAL((Variable("o"), RDFS.subClassOf, OWL.thing))
     ).build()
     print(query)
