@@ -12,6 +12,10 @@ Author: Sean B. Palmer, inamidst.com
 import re
 import codecs
 
+import logging
+log = logging.getLogger(__name__) #For logging the statements that could not be parsed
+
+
 from rdflib.term import URIRef as URI
 from rdflib.term import BNode as bNode
 from rdflib.term import Literal
@@ -130,8 +134,9 @@ class NTriplesParser(object):
         else:
             self.sink = Sink()
 
-    def parse(self, f):
+    def parse(self, f , ignore_errors=False):
         """Parse f as an N-Triples file."""
+        errorFlag = ignore_errors
         if not hasattr(f, "read"):
             raise ParseError("Item to parse must be a file-like object.")
 
@@ -147,7 +152,11 @@ class NTriplesParser(object):
             try:
                 self.parseline()
             except ParseError:
-                raise ParseError("Invalid line: %r" % self.line)
+                if not errorFlag:
+                    raise ParseError("Invalid line: %r" % self.line)
+                else :
+                    log.info("Invalid line: %r" % self.line)
+                    continue
         return self.sink
 
     def parsestring(self, s):

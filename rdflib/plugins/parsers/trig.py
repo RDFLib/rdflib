@@ -130,8 +130,8 @@ class TrigParser(Parser):
     def __init__(self):
         pass
 
-    def parse(self, source, graph, encoding="utf-8"):
-
+    def parse(self, source, graph, encoding="utf-8" , ignore_errors=False):
+        errorFlag = ignore_errors
         if encoding not in [None, "utf-8"]:
             raise Exception(
                 ("TriG files are always utf-8 encoded, ", "I was passed: %s") % encoding
@@ -151,7 +151,7 @@ class TrigParser(Parser):
         baseURI = conj_graph.absolutize(
             source.getPublicId() or source.getSystemId() or ""
         )
-        p = TrigSinkParser(sink, baseURI=baseURI, turtle=True)
+        p = TrigSinkParser(sink, baseURI=baseURI, turtle=True , ignore_errors=errorFlag)
 
         p.loadStream(source.getByteStream())
 

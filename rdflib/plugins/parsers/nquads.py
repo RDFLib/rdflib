@@ -38,10 +38,14 @@ from rdflib.plugins.parsers.ntriples import r_wspace
 
 __all__ = ["NQuadsParser"]
 
+import logging
+log = logging.getLogger(__name__) #For logging the statements that could not be parsed
+
 
 class NQuadsParser(NTriplesParser):
-    def parse(self, inputsource, sink, **kwargs):
+    def parse(self, inputsource, sink, ignore_errors=False , **kwargs ):
         """Parse f as an N-Triples file."""
+        errorFlag=ignore_errors
         assert sink.store.context_aware, (
             "NQuadsParser must be given" " a context aware store."
         )
@@ -63,7 +67,10 @@ class NQuadsParser(NTriplesParser):
             try:
                 self.parseline()
             except ParseError as msg:
-                raise ParseError("Invalid line (%s):\n%r" % (msg, __line))
+                if not errorFlag:
+                    raise ParseError("Invalid line (%s):\n%r" % (msg, __line))
+                else:
+                    log.info("Invalid line (%s):\n%r" % (msg, __line))
 
         return self.sink
 

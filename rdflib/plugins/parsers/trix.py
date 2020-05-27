@@ -9,6 +9,8 @@ from rdflib.graph import Graph
 from rdflib.exceptions import ParserError
 from rdflib.parser import Parser
 
+import logging
+log = logging.getLogger(__name__) #For logging the statements that could not be parsed
 
 from xml.sax.saxutils import handler
 from xml.sax import make_parser
@@ -24,9 +26,10 @@ XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
 class TriXHandler(handler.ContentHandler):
     """An Sax Handler for TriX. See http://sw.nokia.com/trix/"""
 
-    def __init__(self, store):
+    def __init__(self, store , ignore_errors=False):
         self.store = store
         self.preserve_bnode_ids = False
+        self.errorFlag=ignore_errors
         self.reset()
 
     def reset(self):
@@ -241,10 +244,12 @@ class TriXHandler(handler.ContentHandler):
             locator.getLineNumber(),
             locator.getColumnNumber(),
         )
-        raise ParserError(info + message)
-
-
-def create_parser(store):
+        if not self.errorFlag:
+            raise ParserError(info + message)
+        else: 
+            log.info(info+message)
+def create_parser(store , ignore_errors=False):
+    errorFlag = ignore_errors
     parser = make_parser()
     try:
         # Workaround for bug in expatreader.py. Needed when
@@ -253,7 +258,7 @@ def create_parser(store):
     except AttributeError:
         pass  # Not present in Jython (at least)
     parser.setFeature(handler.feature_namespaces, 1)
-    trix = TriXHandler(store)
+    trix = TriXHandler(store ,ignore_errors=errorFlag )
     parser.setContentHandler(trix)
     parser.setErrorHandler(ErrorHandler())
     return parser
@@ -265,12 +270,13 @@ class TriXParser(Parser):
     def __init__(self):
         pass
 
-    def parse(self, source, sink, **args):
+    def parse(self, source, sink, ignore_errors=False, **args):
+        errorFlag = ignore_errors
         assert (
             sink.store.context_aware
         ), "TriXParser must be given a context aware store."
 
-        self._parser = create_parser(sink.store)
+        self._parser = create_parser(sink.store , ignore_errors = errorFlag)
         content_handler = self._parser.getContentHandler()
         preserve_bnode_ids = args.get("preserve_bnode_ids", None)
         if preserve_bnode_ids is not None:

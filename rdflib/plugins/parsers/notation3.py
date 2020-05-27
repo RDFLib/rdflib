@@ -42,6 +42,10 @@ from decimal import Decimal
 
 from uuid import uuid4
 
+import logging
+log = logging.getLogger(__name__) #For logging the statements that could not be parsed
+
+
 from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX, _unique_id
 from rdflib.graph import QuotedGraph, ConjunctiveGraph, Graph
 from rdflib.compat import long_type
@@ -351,6 +355,7 @@ class SinkParser:
         genPrefix="",
         why=None,
         turtle=False,
+        ignore_errors=False,
     ):
         """ note: namespace names should *not* end in  # ;
         the  # will get added during qname processing """
@@ -363,7 +368,7 @@ class SinkParser:
         self._store = store
         if genPrefix:
             store.setGenPrefix(genPrefix)  # pass it on
-
+        self.errorFlag = ignore_errors
         self._thisDoc = thisDoc
         self.lines = 0  # for error handling
         self.startOfLine = 0  # For calculating character number
@@ -1637,7 +1642,11 @@ class SinkParser:
         return self._unicodeEscape(argstr, i, startline, unicodeEscape8, 8, "U")
 
     def BadSyntax(self, argstr, i, msg):
-        raise BadSyntax(self._thisDoc, self.lines, argstr, i, msg)
+        if self.errorFlag:
+            log.info("Bad Synatx at line %i: %s" %(self.lines+1 , msg))
+        else: 
+            raise BadSyntax(self._thisDoc, self.lines, argstr, i, msg)
+            
 
 
 # If we are going to do operators then they should generate
@@ -1884,8 +1893,8 @@ class TurtleParser(Parser):
     def __init__(self):
         pass
 
-    def parse(self, source, graph, encoding="utf-8", turtle=True):
-
+    def parse(self, source, graph, encoding="utf-8", turtle=True , ignore_errors=False):
+        errorFlag = ignore_errors
         if encoding not in [None, "utf-8"]:
             raise Exception(
                 ("N3/Turtle files are always utf-8 encoded, ", "I was passed: %s")
@@ -1895,7 +1904,7 @@ class TurtleParser(Parser):
         sink = RDFSink(graph)
 
         baseURI = graph.absolutize(source.getPublicId() or source.getSystemId() or "")
-        p = SinkParser(sink, baseURI=baseURI, turtle=turtle)
+        p = SinkParser(sink, baseURI=baseURI, turtle=turtle , ignore_errors=errorFlag)
 
         p.loadStream(source.getByteStream())
 
@@ -1945,7 +1954,7 @@ def main():  # pragma: no cover
     sink = RDFSink(g)
     base_uri = "file://" + os.path.join(os.getcwd(), sys.argv[1])
 
-    p = SinkParser(sink, baseURI=base_uri)
+    p = SinkParser(sink, baseURI=base_uri , ignore_errors=False)
     p._bindings[""] = p._baseURI + "#"
     p.startDoc()
 

@@ -5,6 +5,8 @@ An RDF/XML parser for RDFLib
 from xml.sax import make_parser
 from xml.sax.handler import ErrorHandler
 from xml.sax.saxutils import handler, quoteattr, escape
+import logging
+log = logging.getLogger(__name__) #For logging the statements that could not be parsed
 
 
 from urllib.parse import urldefrag, urljoin
@@ -115,9 +117,10 @@ class ElementHandler(object):
 
 
 class RDFXMLHandler(handler.ContentHandler):
-    def __init__(self, store):
+    def __init__(self, store , ignore_errors=False):
         self.store = store
         self.preserve_bnode_ids = False
+        self.errorFlag = ignore_errors
         self.reset()
 
     def reset(self):
@@ -208,8 +211,10 @@ class RDFXMLHandler(handler.ContentHandler):
             locator.getLineNumber(),
             locator.getColumnNumber(),
         )
-        raise ParserError(info + message)
-
+        if not self.errorFlag:
+            raise ParserError(info + message)
+        else: 
+            log.info(info + message)
     def get_current(self):
         return self.stack[-2]
 
@@ -561,7 +566,8 @@ class RDFXMLHandler(handler.ContentHandler):
         self.parent.object += self.current.object + end
 
 
-def create_parser(target, store):
+def create_parser(target, store , ignore_errors=False):
+    errorFlag = ignore_errors
     parser = make_parser()
     try:
         # Workaround for bug in expatreader.py. Needed when
@@ -570,7 +576,7 @@ def create_parser(target, store):
     except AttributeError:
         pass  # Not present in Jython (at least)
     parser.setFeature(handler.feature_namespaces, 1)
-    rdfxml = RDFXMLHandler(store)
+    rdfxml = RDFXMLHandler(store , ignore_errors = errorFlag)
     rdfxml.setDocumentLocator(target)
     # rdfxml.setDocumentLocator(_Locator(self.url, self.parser))
     parser.setContentHandler(rdfxml)
@@ -582,8 +588,9 @@ class RDFXMLParser(Parser):
     def __init__(self):
         pass
 
-    def parse(self, source, sink, **args):
-        self._parser = create_parser(source, sink)
+    def parse(self, source, sink , ignore_errors=False , **args):
+        errorFlag = ignore_errors
+        self._parser = create_parser(source, sink , ignore_errors=errorFlag)
         content_handler = self._parser.getContentHandler()
         preserve_bnode_ids = args.get("preserve_bnode_ids", None)
         if preserve_bnode_ids is not None:

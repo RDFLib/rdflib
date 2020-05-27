@@ -990,6 +990,7 @@ class Graph(Node):
         location=None,
         file=None,
         data=None,
+        ignore_errors=False,
         **args
     ):
         """
@@ -1056,7 +1057,7 @@ class Graph(Node):
         >>> os.remove(file_name)
 
         """
-
+        errorFlag = ignore_errors
         source = create_input_source(
             source=source,
             publicID=publicID,
@@ -1073,14 +1074,15 @@ class Graph(Node):
             format = "application/rdf+xml"
         parser = plugin.get(format, Parser)()
         try:
-            parser.parse(source, self, **args)
+            parser.parse(source, self, **args  )
         finally:
             if source.auto_close:
                 source.close()
         return self
 
-    def load(self, source, publicID=None, format="xml"):
-        self.parse(source, publicID, format)
+    def load(self, source, publicID=None, format="xml" , ignore_errors=False):
+        errorFlag = ignore_errors
+        self.parse(source, publicID, format , ignore_errors =errorFlag)
 
     def query(
         self,
@@ -1517,6 +1519,7 @@ class ConjunctiveGraph(Graph):
         location=None,
         file=None,
         data=None,
+        ignore_errors = False,
         **args
     ):
         """
@@ -1530,7 +1533,7 @@ class ConjunctiveGraph(Graph):
         The graph into which the source was parsed. In the case of n3
         it returns the root context.
         """
-
+        errorFlag = ignore_errors
         source = create_input_source(
             source=source,
             publicID=publicID,
@@ -1546,7 +1549,7 @@ class ConjunctiveGraph(Graph):
 
         context = Graph(store=self.store, identifier=g_id)
         context.remove((None, None, None))  # hmm ?
-        context.parse(source, publicID=publicID, format=format, **args)
+        context.parse(source, publicID=publicID, format=format, ignore_errors=errorFlag,**args)
         return context
 
     def __reduce__(self):
@@ -1701,10 +1704,12 @@ class Dataset(ConjunctiveGraph):
         location=None,
         file=None,
         data=None,
+        ignore_errors=False,
         **args
     ):
+        errorFlag = ignore_errors
         c = ConjunctiveGraph.parse(
-            self, source, publicID, format, location, file, data, **args
+            self, source, publicID, format, location, file, data, ignore_errors=errorFlag,**args
         )
         self.graph(c)
         return c
@@ -1999,7 +2004,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def absolutize(self, uri, defrag=1):
         raise UnSupportedAggregateOperation()
 
-    def parse(self, source, publicID=None, format="xml", **args):
+    def parse(self, source, publicID=None, format="xml", ignore_errors=False,**args):
         raise ModificationException()
 
     def n3(self):
