@@ -15,7 +15,11 @@ class STATEMENT(tuple):
                     p) and is_acceptable_query_variable(o):
                 return tuple.__new__(STATEMENT, (s, p, o))
             else:
-                raise Exception("Values in the statement {} are not of acceptable types.".format(statement))
+                raise Exception(
+                    "Values in the statement {} are not of acceptable types.".format(
+                        statement
+                    )
+                )
         else:
             raise Exception("Statement has to be a tuple in the format (s, p, o)")
 
@@ -105,9 +109,18 @@ list_function = ["SUM", "AVERAGE", "COUNT", "SET", "MIN", "MAX", "GROUPCONTACT",
 class AGGREGATE(STATEMENT):
     def __new__(cls, function, statement):
         if not is_acceptable_query_variable(statement):
-            statement = Variable(statement)
+            raise Exception(
+                "Statement in aggregate function {} not of acceptable type.".format(
+                    function
+                )
+            )
         if function not in list_function:
-            raise Exception("Aggregate Function %s not supported" % function)
+            raise Exception(
+                "Aggregate Function {} not supported".format(
+                    function
+                )
+            )
+
         return tuple.__new__(AGGREGATE, (function, statement))
 
     def n3(self):
@@ -128,18 +141,24 @@ supported_function_expression_list = [
 
 class FUNCTION_EXPR(STATEMENT):
     def __new__(cls, function_expression, *args):
-        statements = []
-        for stmt in args:
-            if not is_acceptable_query_variable(stmt):
-                stmt = Variable(stmt)
-            statements.append(stmt)
+        for statement in args:
+            if not is_acceptable_query_variable(statement):
+                raise Exception(
+                    "Statement {} in function expression {} not of acceptable type.".format(
+                        statement, function_expression
+                    )
+                )
 
-        if function_expression:
+        if isinstance(function_expression, str):
             function_expression = function_expression.upper()
 
         if function_expression not in supported_function_expression_list:
-            raise Exception("Function expression %s not supported" % function_expression)
-        return tuple.__new__(FUNCTION_EXPR, (function_expression, statements))
+            raise Exception(
+                "Function expression {} not supported".format(
+                    function_expression)
+            )
+
+        return tuple.__new__(FUNCTION_EXPR, (function_expression, args))
 
     def n3(self):
         n3_string = self[0] + "( "
@@ -185,14 +204,20 @@ class QueryBuilder:
 
         for var in args:
             if isinstance(var, AGGREGATE):
-                raise Exception("Alias not provided for %s" % var[1].n3())
+                raise Exception(
+                    "Alias not provided for {}".format(
+                        var[1].n3()
+                    )
+                )
             if not is_acceptable_query_variable(var):
                 raise Exception("Argument not of valid type.")
+
             self.SELECT_variables_direct.append(var)
 
         for var_name, var in kwargs.items():
             if not is_acceptable_query_variable(var):
                 raise Exception("Argument not of valid type.")
+
             self.SELECT_variables_with_alias[Variable(var_name)] = var
 
         return self
@@ -279,7 +304,7 @@ if __name__ == "__main__":
         Variable("s"),
         Variable("p"),
         x=Variable("o"),
-        value=AGGREGATE("AVERAGE", "v"),
+        value=AGGREGATE("AVERAGE", Variable("v")),
         sum_value=AGGREGATE("SUM", Variable("v")),
         distinct=True
     ).WHERE(
