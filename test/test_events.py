@@ -1,4 +1,3 @@
-
 import unittest
 from rdflib import events
 
@@ -24,7 +23,6 @@ def subscribe_all(caches):
 
 
 class Cache(events.Dispatcher):
-
     def __init__(self, data=None):
         if data is None:
             data = {}
@@ -54,18 +52,17 @@ class Cache(events.Dispatcher):
 
 
 class EventTestCase(unittest.TestCase):
-
     def testEvents(self):
         c1 = Cache()
         c2 = Cache()
         c3 = Cache()
         subscribe_all([c1, c2, c3])
-        c1['bob'] = 'uncle'
-        assert c2['bob'] == 'uncle'
-        assert c3['bob'] == 'uncle'
-        del c3['bob']
-        assert ('bob' in c1) == False
-        assert ('bob' in c2) == False
+        c1["bob"] = "uncle"
+        assert c2["bob"] == "uncle"
+        assert c3["bob"] == "uncle"
+        del c3["bob"]
+        assert ("bob" in c1) == False
+        assert ("bob" in c2) == False
 
 
 if __name__ == "__main__":

@@ -18,9 +18,9 @@ if __name__ == "__main__":
 
     graph.load("foaf.n3", format="n3")
 
-    for person in graph[: RDF.type: FOAF.Person]:
+    for person in graph[: RDF.type : FOAF.Person]:
 
-        friends = list(graph[person: FOAF.knows * "+" / FOAF.name])
+        friends = list(graph[person : FOAF.knows * "+" / FOAF.name])
         if friends:
             print("%s's circle of friends:" % graph.value(person, FOAF.name))
             for name in friends:

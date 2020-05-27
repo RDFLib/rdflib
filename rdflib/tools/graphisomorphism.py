@@ -69,39 +69,47 @@ class IsomorphicTestableGraph(Graph):
 def main():
     import sys
     from optparse import OptionParser
-    usage = '''usage: %prog [options] file1 file2 ... fileN'''
+
+    usage = """usage: %prog [options] file1 file2 ... fileN"""
     op = OptionParser(usage=usage)
-    op.add_option('-s', '--stdin', action='store_true', default=False,
-                  help='Load from STDIN as well')
-    op.add_option('--format',
-                  default='xml',
-                  dest='inputFormat',
-                  metavar='RDF_FORMAT',
-                  choices=['xml', 'trix', 'n3', 'nt', 'rdfa'],
-                  help="The format of the RDF document(s) to compare" +
-                  "One of 'xml','n3','trix', 'nt', " +
-                  "or 'rdfa'.  The default is %default")
+    op.add_option(
+        "-s",
+        "--stdin",
+        action="store_true",
+        default=False,
+        help="Load from STDIN as well",
+    )
+    op.add_option(
+        "--format",
+        default="xml",
+        dest="inputFormat",
+        metavar="RDF_FORMAT",
+        choices=["xml", "trix", "n3", "nt", "rdfa"],
+        help="The format of the RDF document(s) to compare"
+        + "One of 'xml','n3','trix', 'nt', "
+        + "or 'rdfa'.  The default is %default",
+    )
 
     (options, args) = op.parse_args()
 
     graphs = []
     graph2FName = {}
     if options.stdin:
-        graph = IsomorphicTestableGraph().parse(
-            sys.stdin, format=options.inputFormat)
+        graph = IsomorphicTestableGraph().parse(sys.stdin, format=options.inputFormat)
         graphs.append(graph)
-        graph2FName[graph] = '(STDIN)'
+        graph2FName[graph] = "(STDIN)"
     for fn in args:
-        graph = IsomorphicTestableGraph().parse(
-            fn, format=options.inputFormat)
+        graph = IsomorphicTestableGraph().parse(fn, format=options.inputFormat)
         graphs.append(graph)
         graph2FName[graph] = fn
     checked = set()
     for graph1, graph2 in combinations(graphs, 2):
         if (graph1, graph2) not in checked and (graph2, graph1) not in checked:
             assert graph1 == graph2, "%s != %s" % (
-                graph2FName[graph1], graph2FName[graph2])
+                graph2FName[graph1],
+                graph2FName[graph2],
+            )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

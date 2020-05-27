@@ -6,7 +6,7 @@ import rdflib
 
 
 def test_issue492():
-    query = '''
+    query = """
     prefix owl: <http://www.w3.org/2002/07/owl#>
     prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     select ?x
@@ -15,7 +15,7 @@ def test_issue492():
         ?x rdf:rest/rdf:first _:6.
         ?x rdf:rest/rdf:first _:5.
     }
-    '''
+    """
     print(rdflib.__version__)
     g = rdflib.Graph()
 

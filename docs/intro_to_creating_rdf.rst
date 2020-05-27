@@ -128,24 +128,46 @@ When removing, it is possible to leave parts of the triple unspecified (i.e. pas
 
 .. code-block:: python
 
-    g.remove((bob, None, None)) # remove all triples about bob
+    g.remove((bob, None, None))  # remove all triples about bob
 
 
 An example
 ----------
 
 LiveJournal produces FOAF data for their users, but they seem to use
-``foaf:member_name`` for a person's full name. To align with data from
-other sources, it would be nice to have ``foaf:name`` act as a synonym
-for ``foaf:member_name`` (a poor man's one-way
-``owl:equivalentProperty``):
+``foaf:member_name`` for a person's full name but ``foaf:member_name``
+isn't in FOAF's namespace and perhaps they should have used ``foaf:name``
+
+To retrieve some LiveJournal data, add a ``foaf:name`` for every
+``foaf:member_name`` and then remove the ``foaf:member_name`` values to
+ensure the data actually aligns with other FOAF data, we could do this:
 
 .. code-block:: python
 
+    from rdflib import Graph
     from rdflib.namespace import FOAF
-    g.parse("http://danbri.livejournal.com/data/foaf") 
+
+    g = Graph()
+    # get the data
+    g.parse("http://danbri.livejournal.com/data/foaf")
+
+    # for every foaf:member_name, add foaf:name and remove foaf:member_name
     for s, p, o in g.triples((None, FOAF['member_name'], None)):
         g.add((s, FOAF['name'], o))
+        g.remove((s, FOAF['member_name'], o))
 
-Note that since rdflib 5.0.0, using ``foaf:member_name`` is somewhat prevented in rdflib since FOAF is declared as a :meth:`~rdflib.namespace.ClosedNamespace`
-class instance that has a closed set of members and ``foaf:member_name`` isnt one of them!
+.. note:: Since rdflib 5.0.0, using ``foaf:member_name`` is somewhat prevented in RDFlib since FOAF is declared
+    as a :meth:`~rdflib.namespace.ClosedNamespace` class instance that has a closed set of members and
+    ``foaf:member_name`` isn't one of them! If LiveJournal used RDFlib 5.0.0, an error would have been raised for
+    ``foaf:member_name`` when the triple was created.
+
+
+Creating Containers & Collections
+---------------------------------
+There are two convenience classes for RDF Containers & Collections which you can use instead of declaring each
+triple of a Containers or a Collections individually:
+
+    * :meth:`~rdflib.container.Container` (also ``Bag``, ``Seq`` & ``Alt``) and
+    * :meth:`~rdflib.collection.Collection`
+
+See their documentation for how.

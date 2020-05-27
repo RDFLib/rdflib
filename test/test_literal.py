@@ -2,13 +2,10 @@ import unittest
 
 import rdflib  # needed for eval(repr(...)) below
 from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind, _XSD_BOOLEAN
-from six import integer_types, PY3, string_types
 
 
 def uformat(s):
-    if PY3:
-        return s.replace("u'", "'")
-    return s
+    return s.replace("u'", "'")
 
 
 class TestLiteral(unittest.TestCase):
@@ -37,7 +34,7 @@ class TestLiteral(unittest.TestCase):
 """
         g = rdflib.Graph()
         g.parse(data=d)
-        a = rdflib.Literal('a\\b')
+        a = rdflib.Literal("a\\b")
         b = list(g.objects())[0]
         self.assertEqual(a, b)
 
@@ -48,8 +45,9 @@ class TestLiteral(unittest.TestCase):
 
 class TestNew(unittest.TestCase):
     def testCantPassLangAndDatatype(self):
-        self.assertRaises(TypeError,
-                          Literal, 'foo', lang='en', datatype=URIRef("http://example.com/"))
+        self.assertRaises(
+            TypeError, Literal, "foo", lang="en", datatype=URIRef("http://example.com/")
+        )
 
     def testFromOtherLiteral(self):
         l = Literal(1)
@@ -60,7 +58,7 @@ class TestNew(unittest.TestCase):
         # change datatype
         l = Literal("1")
         l2 = Literal(l, datatype=rdflib.XSD.integer)
-        self.assertTrue(isinstance(l2.value, integer_types))
+        self.assertTrue(isinstance(l2.value, int))
 
     def testDatatypeGetsAutoURIRefConversion(self):
         # drewp disapproves of this behavior, but it should be
@@ -74,21 +72,26 @@ class TestNew(unittest.TestCase):
 
 class TestRepr(unittest.TestCase):
     def testOmitsMissingDatatypeAndLang(self):
-        self.assertEqual(repr(Literal("foo")),
-                         uformat("rdflib.term.Literal(u'foo')"))
+        self.assertEqual(repr(Literal("foo")), uformat("rdflib.term.Literal(u'foo')"))
 
     def testOmitsMissingDatatype(self):
-        self.assertEqual(repr(Literal("foo", lang='en')),
-                         uformat("rdflib.term.Literal(u'foo', lang='en')"))
+        self.assertEqual(
+            repr(Literal("foo", lang="en")),
+            uformat("rdflib.term.Literal(u'foo', lang='en')"),
+        )
 
     def testOmitsMissingLang(self):
         self.assertEqual(
-            repr(Literal("foo", datatype=URIRef('http://example.com/'))),
-            uformat("rdflib.term.Literal(u'foo', datatype=rdflib.term.URIRef(u'http://example.com/'))"))
+            repr(Literal("foo", datatype=URIRef("http://example.com/"))),
+            uformat(
+                "rdflib.term.Literal(u'foo', datatype=rdflib.term.URIRef(u'http://example.com/'))"
+            ),
+        )
 
     def testSubclassNameAppearsInRepr(self):
         class MyLiteral(Literal):
             pass
+
         x = MyLiteral(u"foo")
         self.assertEqual(repr(x), uformat("MyLiteral(u'foo')"))
 
@@ -100,42 +103,41 @@ class TestDoubleOutput(unittest.TestCase):
         out = vv._literal_n3(use_plain=True)
         self.assertTrue(out in ["8.8e-01", "0.88"], out)
 
+
 class TestParseBoolean(unittest.TestCase):
     """confirms the fix for https://github.com/RDFLib/rdflib/issues/913"""
+
     def testTrueBoolean(self):
-        test_value = Literal("tRue", datatype = _XSD_BOOLEAN)
+        test_value = Literal("tRue", datatype=_XSD_BOOLEAN)
         self.assertTrue(test_value.value)
-        test_value = Literal("1",datatype = _XSD_BOOLEAN)
+        test_value = Literal("1", datatype=_XSD_BOOLEAN)
         self.assertTrue(test_value.value)
 
     def testFalseBoolean(self):
-        test_value = Literal("falsE", datatype = _XSD_BOOLEAN)
+        test_value = Literal("falsE", datatype=_XSD_BOOLEAN)
         self.assertFalse(test_value.value)
-        test_value = Literal("0",datatype = _XSD_BOOLEAN)
+        test_value = Literal("0", datatype=_XSD_BOOLEAN)
         self.assertFalse(test_value.value)
 
     def testNonFalseBoolean(self):
-        test_value = Literal("abcd", datatype = _XSD_BOOLEAN)
+        test_value = Literal("abcd", datatype=_XSD_BOOLEAN)
         self.assertRaises(DeprecationWarning)
         self.assertFalse(test_value.value)
-        test_value = Literal("10",datatype = _XSD_BOOLEAN)
+        test_value = Literal("10", datatype=_XSD_BOOLEAN)
         self.assertRaises(DeprecationWarning)
         self.assertFalse(test_value.value)
-
 
 
 class TestBindings(unittest.TestCase):
-
     def testBinding(self):
-
         class a:
             def __init__(self, v):
                 self.v = v[3:-3]
 
             def __str__(self):
-                return '<<<%s>>>' % self.v
+                return "<<<%s>>>" % self.v
 
-        dtA = rdflib.URIRef('urn:dt:a')
+        dtA = rdflib.URIRef("urn:dt:a")
         bind(dtA, a)
 
         va = a("<<<2>>>")
@@ -152,10 +154,10 @@ class TestBindings(unittest.TestCase):
                 self.v = v[3:-3]
 
             def __str__(self):
-                return 'B%s' % self.v
+                return "B%s" % self.v
 
-        dtB = rdflib.URIRef('urn:dt:b')
-        bind(dtB, b, None, lambda x: '<<<%s>>>' % x)
+        dtB = rdflib.URIRef("urn:dt:b")
+        bind(dtB, b, None, lambda x: "<<<%s>>>" % x)
 
         vb = b("<<<3>>>")
         lb = Literal(vb, normalize=True)
@@ -163,17 +165,16 @@ class TestBindings(unittest.TestCase):
         self.assertEqual(lb.datatype, dtB)
 
     def testSpecificBinding(self):
-
         def lexify(s):
             return "--%s--" % s
 
         def unlexify(s):
             return s[2:-2]
 
-        datatype = rdflib.URIRef('urn:dt:mystring')
+        datatype = rdflib.URIRef("urn:dt:mystring")
 
-        #Datatype-specific rule
-        bind(datatype, string_types, unlexify, lexify, datatype_specific=True)
+        # Datatype-specific rule
+        bind(datatype, str, unlexify, lexify, datatype_specific=True)
 
         s = "Hello"
         normal_l = Literal(s)

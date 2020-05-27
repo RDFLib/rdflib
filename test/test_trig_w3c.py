@@ -16,15 +16,15 @@ def trig(test):
     g = ConjunctiveGraph()
 
     try:
-        base = 'http://www.w3.org/2013/TriGTests/' + split_uri(test.action)[1]
+        base = "http://www.w3.org/2013/TriGTests/" + split_uri(test.action)[1]
 
-        g.parse(test.action, publicID=base, format='trig')
+        g.parse(test.action, publicID=base, format="trig")
         if not test.syntax:
             raise AssertionError("Input shouldn't have parsed!")
 
         if test.result:  # eval test
             res = ConjunctiveGraph()
-            res.parse(test.result, format='nquads')
+            res.parse(test.result, format="nquads")
 
             if verbose:
 
@@ -32,13 +32,13 @@ def trig(test):
                 if not first and not second:
                     return
 
-                print('===============================')
-                print('TriG')
-                print(g.serialize(format='nquads'))
-                print('===============================')
-                print('NQuads')
-                print(res.serialize(format='nquads'))
-                print('===============================')
+                print("===============================")
+                print("TriG")
+                print(g.serialize(format="nquads"))
+                print("===============================")
+                print("NQuads")
+                print(res.serialize(format="nquads"))
+                print("===============================")
 
                 print("Diff:")
                 # print "%d triples in both"%len(both)
@@ -50,9 +50,9 @@ def trig(test):
                 print("NQuads Only")
                 for t in second:
                     print(t)
-                raise Exception('Graphs do not match!')
+                raise Exception("Graphs do not match!")
 
-            assert isomorphic(g, res), 'graphs must be the same'
+            assert isomorphic(g, res), "graphs must be the same"
 
     except:
         if test.syntax:
@@ -63,12 +63,12 @@ testers = {
     RDFT.TestTrigPositiveSyntax: trig,
     RDFT.TestTrigNegativeSyntax: trig,
     RDFT.TestTrigEval: trig,
-    RDFT.TestTrigNegativeEval: trig
+    RDFT.TestTrigNegativeEval: trig,
 }
 
 
 def test_trig(tests=None):
-    for t in nose_tests(testers, 'test/w3c/trig/manifest.ttl'):
+    for t in nose_tests(testers, "test/w3c/trig/manifest.ttl"):
         if tests:
             for test in tests:
                 if test in t[1].uri:
@@ -79,7 +79,7 @@ def test_trig(tests=None):
         yield t
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     verbose = True
 
-    nose_tst_earl_report(test_trig, 'rdflib_trig')
+    nose_tst_earl_report(test_trig, "rdflib_trig")

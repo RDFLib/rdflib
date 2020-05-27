@@ -5,11 +5,29 @@ Utility functions for supporting the XML Schema Datatypes hierarchy
 from rdflib import XSD
 
 XSD_DTs = set(
-    (XSD.integer, XSD.decimal, XSD.float, XSD.double, XSD.string,
-     XSD.boolean, XSD.dateTime, XSD.nonPositiveInteger, XSD.negativeInteger,
-     XSD.long, XSD.int, XSD.short, XSD.byte, XSD.nonNegativeInteger,
-     XSD.unsignedLong, XSD.unsignedInt, XSD.unsignedShort, XSD.unsignedByte,
-     XSD.positiveInteger, XSD.date))
+    (
+        XSD.integer,
+        XSD.decimal,
+        XSD.float,
+        XSD.double,
+        XSD.string,
+        XSD.boolean,
+        XSD.dateTime,
+        XSD.nonPositiveInteger,
+        XSD.negativeInteger,
+        XSD.long,
+        XSD.int,
+        XSD.short,
+        XSD.byte,
+        XSD.nonNegativeInteger,
+        XSD.unsignedLong,
+        XSD.unsignedInt,
+        XSD.unsignedShort,
+        XSD.unsignedByte,
+        XSD.positiveInteger,
+        XSD.date,
+    )
+)
 
 ### adding dateTime datatypes
 
@@ -23,9 +41,19 @@ XSD_Duration_DTs = set(
 
 _sub_types = {
     XSD.integer: [
-        XSD.nonPositiveInteger, XSD.negativeInteger, XSD.long, XSD.int,
-        XSD.short, XSD.byte, XSD.nonNegativeInteger, XSD.positiveInteger,
-        XSD.unsignedLong, XSD.unsignedInt, XSD.unsignedShort, XSD.unsignedByte],
+        XSD.nonPositiveInteger,
+        XSD.negativeInteger,
+        XSD.long,
+        XSD.int,
+        XSD.short,
+        XSD.byte,
+        XSD.nonNegativeInteger,
+        XSD.positiveInteger,
+        XSD.unsignedLong,
+        XSD.unsignedInt,
+        XSD.unsignedShort,
+        XSD.unsignedByte,
+    ],
 }
 
 _super_types = {}
@@ -35,21 +63,22 @@ for superdt in XSD_DTs:
 
 # we only care about float, double, integer, decimal
 _typePromotionMap = {
-    XSD.float: {XSD.integer: XSD.float,
-                XSD.decimal: XSD.float,
-                XSD.double: XSD.double},
-
-    XSD.double: {XSD.integer: XSD.double,
-                 XSD.float: XSD.double,
-                 XSD.decimal: XSD.double},
-
-    XSD.decimal: {XSD.integer: XSD.decimal,
-                  XSD.float: XSD.float,
-                  XSD.double: XSD.double},
-
-    XSD.integer: {XSD.decimal: XSD.decimal,
-                  XSD.float: XSD.float,
-                  XSD.double: XSD.double}
+    XSD.float: {XSD.integer: XSD.float, XSD.decimal: XSD.float, XSD.double: XSD.double},
+    XSD.double: {
+        XSD.integer: XSD.double,
+        XSD.float: XSD.double,
+        XSD.decimal: XSD.double,
+    },
+    XSD.decimal: {
+        XSD.integer: XSD.decimal,
+        XSD.float: XSD.float,
+        XSD.double: XSD.double,
+    },
+    XSD.integer: {
+        XSD.decimal: XSD.decimal,
+        XSD.float: XSD.float,
+        XSD.double: XSD.double,
+    },
 }
 
 
@@ -63,5 +92,4 @@ def type_promotion(t1, t2):
     try:
         return _typePromotionMap[t1][t2]
     except KeyError:
-        raise TypeError(
-            'Operators cannot combine datatypes %s and %s' % (t1, t2))
+        raise TypeError("Operators cannot combine datatypes %s and %s" % (t1, t2))
