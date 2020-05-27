@@ -28,8 +28,8 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
             self.var_s,
             self.var_p,
             x=self.var_o,
-            value=AGGREGATE("AVG", self.var_v),
-            sum_value=AGGREGATE("SUM", self.var_v),
+            value=AGGREGATE.AVG(self.var_v),
+            sum_value=AGGREGATE.SUM(self.var_v),
             distinct=True
         ).WHERE(
             (self.var_s, self.var_p, self.var_o),
@@ -45,7 +45,7 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
             )
         ).ORDER_BY(
             self.var_v,
-            FUNCTION_EXPR("asc", self.var_s)
+            FUNCTION_EXPR.ASC(self.var_s)
         ).LIMIT(
             100
         ).OFFSET(
@@ -114,7 +114,7 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
     def test_query_aggregate_with_unacceptable_variable_raises_Exception(self):
         with self.assertRaises(Exception):
             QueryBuilder().SELECT(
-                x=AGGREGATE("SUM", self.var_unacceptable)
+                x=AGGREGATE.SUM(self.var_unacceptable)
             ).WHERE(
                 (self.var_s, self.var_p, self.var_o)
             ).build()
@@ -122,14 +122,14 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
     def test_query_with_aggregate_without_alias_raises_Exception(self):
         with self.assertRaises(Exception):
             QueryBuilder().SELECT(
-                AGGREGATE("SUM", self.var_o)
+                AGGREGATE.SUM(self.var_o)
             ).WHERE(
                 (self.var_s, self.var_p, self.var_o)
             ).build()
 
         with self.assertRaises(Exception):
             QueryBuilder().SELECT(
-                AGGREGATE("SUM", self.var_unacceptable)
+                AGGREGATE.SUM(self.var_unacceptable)
             ).WHERE(
                 (self.var_s, self.var_p, self.var_o)
             ).build()
@@ -138,26 +138,26 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
         with self.assertRaises(Exception):
             QueryBuilder().SELECT(
                 self.var_s,
-                x=AGGREGATE("SUM", self.var_o)
+                x=AGGREGATE.SUM(self.var_o)
             ).WHERE(
                 (self.var_s, self.var_p, self.var_o),
-                FILTER(Operators.EQ(FUNCTION_EXPR("LCASE", self.var_unacceptable), Literal("hey")))
+                FILTER(Operators.EQ(FUNCTION_EXPR.LCASE(self.var_unacceptable), Literal("hey")))
             ).build()
 
         with self.assertRaises(Exception):
             QueryBuilder().SELECT(
                 self.var_s,
-                x=AGGREGATE("SUM", self.var_o)
+                x=AGGREGATE.SUM(self.var_o)
             ).WHERE(
                 (self.var_s, self.var_p, self.var_o),
-                FILTER(FUNCTION_EXPR("CONTAINS", self.var_unacceptable, "hey"))
+                FILTER(FUNCTION_EXPR.CONTAINS(self.var_unacceptable, "hey"))
             ).build()
 
     def test_query_with_incorrect_expression_in_filter_raises_Exception(self):
         with self.assertRaises(Exception):
             QueryBuilder().SELECT(
                 self.var_s,
-                x=AGGREGATE("SUM", self.var_o)
+                x=AGGREGATE.SUM(self.var_o)
             ).WHERE(
                 (self.var_s, self.var_p, self.var_o),
                 FILTER(self.var_unacceptable)
@@ -167,8 +167,8 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
         with self.assertRaises(Exception):
             QueryBuilder().SELECT(
                 self.var_s,
-                x=AGGREGATE("SUM", self.var_o)
+                x=AGGREGATE.SUM(self.var_o)
             ).WHERE(
                 (self.var_s, self.var_p, self.var_o),
-                FILTER(Operators.EQ(FUNCTION_EXPR("LCASE", self.var_o), "hey"))
+                FILTER(Operators.EQ(FUNCTION_EXPR.LCASE(self.var_o), "hey"))
             ).build()

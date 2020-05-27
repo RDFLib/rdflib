@@ -182,7 +182,7 @@ class FUNCTION_EXPR(STATEMENT):
 def create_function_expr(function_expression):
     def new(cls, *args):
         return FUNCTION_EXPR.__new__(cls, function_expression, *args)
-    return type(str(function), (FUNCTION_EXPR,), dict(__new__=new))
+    return type(str(function_expression), (FUNCTION_EXPR,), dict(__new__=new))
 
 
 for function_expression in supported_function_expression_list:
@@ -241,7 +241,6 @@ class QueryBuilder:
             self.SELECT_variables_direct.append(var)
 
         for var_name, var in kwargs.items():
-            print(var_name, type(var_name), var, type(var))
             if not is_acceptable_query_variable(var):
                 raise Exception("Argument not of valid type.")
 
