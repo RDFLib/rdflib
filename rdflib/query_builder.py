@@ -4,7 +4,7 @@ from rdflib import Variable, Literal, URIRef, RDF, OWL, RDFS
 
 
 def is_acceptable_query_variable(variable):
-    return isinstance(variable, (FUNCTION_EXPR, AGGREGATE, Variable, Literal, URIRef))
+    return isinstance(variable, (CONDITIONAL_STATEMENT, FILTER, FUNCTION_EXPR, AGGREGATE, Variable, Literal, URIRef))
 
 
 class STATEMENT(tuple):
@@ -21,6 +21,65 @@ class STATEMENT(tuple):
         return self[0].n3() + " " + self[1].n3() + " " + self[2].n3()
 
 
+class Operators(object):
+
+    @staticmethod
+    def GT(left, right):
+        if is_acceptable_query_variable(left) and is_acceptable_query_variable(right):
+            return CONDITIONAL_STATEMENT(left, ">", right)
+        else:
+            raise Exception("Operands are not of acceptable type.")
+
+    @staticmethod
+    def LT(left, right):
+        if is_acceptable_query_variable(left) and is_acceptable_query_variable(right):
+            return CONDITIONAL_STATEMENT(left, "<", right)
+        else:
+            raise Exception("Operands are not of acceptable type.")
+
+    @staticmethod
+    def EQ(left, right):
+        if is_acceptable_query_variable(left) and is_acceptable_query_variable(right):
+            return CONDITIONAL_STATEMENT(left, "=", right)
+        else:
+            raise Exception("Operands are not of acceptable type.")
+
+    @staticmethod
+    def NE(left, right):
+        if is_acceptable_query_variable(left) and is_acceptable_query_variable(right):
+            return CONDITIONAL_STATEMENT(left, "!=", right)
+        else:
+            raise Exception("Operands are not of acceptable type.")
+
+    @staticmethod
+    def GE(left, right):
+        if is_acceptable_query_variable(left) and is_acceptable_query_variable(right):
+            return CONDITIONAL_STATEMENT(left, ">=", right)
+        else:
+            raise Exception("Operands are not of acceptable type.")
+
+    @staticmethod
+    def LE(left, right):
+        if is_acceptable_query_variable(left) and is_acceptable_query_variable(right):
+            return CONDITIONAL_STATEMENT(left, "<=", right)
+        else:
+            raise Exception("Operands are not of acceptable type.")
+
+    @staticmethod
+    def AND(left, right):
+        if is_acceptable_query_variable(left) and is_acceptable_query_variable(right):
+            return CONDITIONAL_STATEMENT(left, "&&", right)
+        else:
+            raise Exception("Operands are not of acceptable type.")
+
+    @staticmethod
+    def OR(left, right):
+        if is_acceptable_query_variable(left) and is_acceptable_query_variable(right):
+            return CONDITIONAL_STATEMENT(left, "||", right)
+        else:
+            raise Exception("Operands are not of acceptable type.")
+
+
 class OPTIONAL(STATEMENT):
     def __new__(cls, statement):
         stmt = super(OPTIONAL, cls).__new__(cls, statement)
@@ -28,6 +87,14 @@ class OPTIONAL(STATEMENT):
 
     def n3(self):
         return "OPTIONAL { " + super().n3() + " }"
+
+
+class CONDITIONAL_STATEMENT(STATEMENT):
+    def __new__(cls, left, operator, right):
+        return tuple.__new__(CONDITIONAL_STATEMENT, (left, operator, right))
+
+    def n3(self):
+        return self[0].n3() + " " + self[1] + " " + self[2].n3()
 
 
 list_function = ["SUM", "AVERAGE", "COUNT", "SET", "MIN", "MAX", "GROUPCONTACT", "SAMPLE"]
@@ -46,14 +113,14 @@ class AGGREGATE(STATEMENT):
 
 
 supported_function_expression_list = [
-    "ASC", "DESC", "IRI", "isBLANK", "isLITERAL", "isIRI", "isNUMERIC", "BNODE",
+    "ASC", "DESC", "IRI", "ISBLANK", "ISLITERAL", "ISIRI", "ISNUMERIC", "BNODE",
     "ABS", "IF", "RAND", "UUID", "STRUUID", "MD5", "SHA1", "SHA256",
     "SHA384", "SHA512", "COALESCE", "CEIL", "FLOOR", "ROUND", "REGEX",
     "REPLACE", "STRDT", "STRLANG", "CONCAT", "STRSTARTS", "STRENDS",
     "STRBEFORE", "STRAFTER", "CONTAINS", "ENCODE_FOR_URI", "SUBSTR",
     "STRLEN", "STR", "LCASE", "LANGMATCHES", "NOW", "YEAR", "MONTH",
     "DAY", "HOURS", "MINUTES", "SECONDS", "TIMEZONE", "TZ", "UCASE",
-    "LANG", "DATATYPE", "sameTerm", "BOUND", "EXISTS"
+    "LANG", "DATATYPE", "SAMETERM", "BOUND", "EXISTS"
 ]
 
 
@@ -65,6 +132,9 @@ class FUNCTION_EXPR(STATEMENT):
                 stmt = Variable(stmt)
             statements.append(stmt)
 
+        if function_expression:
+            function_expression = function_expression.upper()
+
         if function_expression not in supported_function_expression_list:
             raise Exception("Function expression %s not supported" % function_expression)
         return tuple.__new__(FUNCTION_EXPR, (function_expression, statements))
@@ -75,6 +145,18 @@ class FUNCTION_EXPR(STATEMENT):
             n3_string += var.n3() + " "
         n3_string += ")"
         return n3_string
+
+
+class FILTER(STATEMENT):
+    def __new__(cls, expression):
+        print(expression)
+        if not is_acceptable_query_variable(expression):
+            expression = Variable(expression)
+
+        return tuple.__new__(FILTER, (expression,))
+
+    def n3(self):
+        return "FILTER ( " + self[0].n3() + " )"
 
 
 class QueryBuilder:
@@ -195,10 +277,18 @@ if __name__ == "__main__":
     ).WHERE(
         (Variable("s"), Variable("p"), Variable("o")),
         (Variable("o"), RDF.type, Variable("v")),
-        OPTIONAL((Variable("o"), RDFS.subClassOf, OWL.thing))
+        OPTIONAL(
+            (Variable("o"), RDFS.subClassOf, OWL.thing)
+        ),
+        FILTER(
+            Operators.AND(
+                Operators.GE(Variable("v"), Literal(5)),
+                Operators.LT(Variable("v"), Literal(13))
+            )
+        )
     ).ORDER_BY(
         Variable("v"),
-        FUNCTION_EXPR("ASC", Variable("s"))
+        FUNCTION_EXPR("asc", Variable("s"))
     ).LIMIT(
         100
     ).OFFSET(
