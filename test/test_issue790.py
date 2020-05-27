@@ -15,13 +15,12 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
         self.literal_13 = Literal(13)
 
         self.basic_query = "SELECT ?s (?o as ?x)  WHERE { ?s ?p ?o . } "
-        self.full_query = "SELECT DISTINCT ?s ?p (?o as ?x) (AVG( ?v ) as ?value) (SUM( ?v ) " \
-                          "as ?sum_value)  WHERE { ?s ?p ?o . ?o <http://www.w3.org/1999/02/22-rd" \
-                          "f-syntax-ns#type> ?v . OPTIONAL { ?o <http://www.w3.org/2000/01/rdf-sc" \
-                          "hema#subClassOf> <http://www.w3.org/2002/07/owl#thing> } . FILTER ( ?v" \
-                          " >= \"5\"^^<http://www.w3.org/2001/XMLSchema#integer> && ?v < \"13\"^^" \
-                          "<http://www.w3.org/2001/XMLSchema#integer> ) . } ORDER BY ?v ASC( ?s )" \
-                          " LIMIT 100 OFFSET 20 "
+        self.full_query = "SELECT DISTINCT ?s ?p (?o as ?x) (AVG( ?v ) as ?value) (SUM( ?v ) as ?sum_value)" \
+                          "  WHERE { ?s ?p ?o . ?o <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?v . O" \
+                          "PTIONAL { ?o <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.or" \
+                          "g/2002/07/owl#thing> } . FILTER ( ?v >= \"5\"^^<http://www.w3.org/2001/XMLSchema" \
+                          "#integer> && ?v < \"13\"^^<http://www.w3.org/2001/XMLSchema#integer> )  . } ORDE" \
+                          "R BY ?v ASC ( ?s ) LIMIT 100 OFFSET 20 "
 
     def test_full_query(self):
         query = QueryBuilder().SELECT(
