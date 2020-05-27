@@ -14,6 +14,8 @@ class STATEMENT(tuple):
             if is_acceptable_query_variable(s) and is_acceptable_query_variable(
                     p) and is_acceptable_query_variable(o):
                 return tuple.__new__(STATEMENT, (s, p, o))
+            else:
+                raise Exception("Values in the statement {} are not of acceptable types.".format(statement))
         else:
             raise Exception("Statement has to be a tuple in the format (s, p, o)")
 
@@ -249,12 +251,11 @@ class QueryBuilder:
         self.query += "}" + "\n"
 
     def build_order_by(self):
-        self.query += "ORDER BY "
-
-        for var in self.ORDER_BY_expressions:
-            self.query += var.n3() + " "
-
-        self.query += "\n"
+        if len(self.ORDER_BY_expressions) > 0:
+            self.query += "ORDER BY "
+            for var in self.ORDER_BY_expressions:
+                self.query += var.n3() + " "
+            self.query += "\n"
 
     def build_limit_offset(self):
         if self.limit:
