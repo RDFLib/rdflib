@@ -409,16 +409,6 @@ class Graph(Node):
             and _assertnode(s, p, o)
         )
 
-    def addNAll(self, quads):
-        """Add a sequence of triples with context"""
-        for i in quads:
-            self.__store.addN(
-                (s, p, o, c)
-                for s, p, o, c in i
-                if isinstance(c, Graph)
-                and c.identifier is self.identifier
-                and _assertnode(s, p, o)
-            )
 
     def remove(self, triple):
         """Remove a triple from the graph
