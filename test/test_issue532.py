@@ -32,7 +32,7 @@ def test_issue532():
     """
 
     g = Graph()
-    g.parse(data=data, format='n3')
+    g.parse(data=data, format="n3")
 
     getnewMeps = """
     PREFIX lpv: <http://purl.org/linkedpolitics/vocabulary/>

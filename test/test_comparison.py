@@ -33,7 +33,6 @@ Ah... it's coming back to me...
 
 
 class IdentifierEquality(unittest.TestCase):
-
     def setUp(self):
         self.uriref = URIRef("http://example.org/")
         self.bnode = BNode()
@@ -66,7 +65,11 @@ class IdentifierEquality(unittest.TestCase):
         self.assertEqual("foo" in CORE_SYNTAX_TERMS, False)
 
     def testH(self):
-        self.assertEqual(URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#RDF") in CORE_SYNTAX_TERMS, True)
+        self.assertEqual(
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#RDF")
+            in CORE_SYNTAX_TERMS,
+            True,
+        )
 
     def testI(self):
         g = Graph()

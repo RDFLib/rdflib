@@ -1,3 +1,38 @@
+2020/04/18 RELEASE 5.0.0
+========================
+5.0.0 is a major stable release and is the last release to support Python 2 & 3.4. 5.0.0 is mostly backwards-
+compatible with 4.2.2 and is intended for long-term, bug fix only support.
+
+5.0.0 comes two weeks after the 5.0.0RC1 and includes a small number of additional bug fixes. Note that 
+rdflib-jsonld has released a version 0.5.0 to be compatible with rdflib 5.0.0.
+
+_**All PRs merged since 5.0.0RC1:**_
+
+### General Bugs Fixed:
+  * Fix n3 parser exponent syntax of floats with leading dot.
+    [PR #1012](https://github.com/RDFLib/rdflib/pull/1012)
+  * FIX: Change is comparison to == for tuple
+    [PR #1009](https://github.com/RDFLib/rdflib/pull/1009)
+  * fix #913 : Added _parseBoolean function to enforce correct Lexical-to-value mapping
+    [PR #995](https://github.com/RDFLib/rdflib/pull/995)  
+    
+### Enhanced Features:
+  * Issue 1003
+    [PR #1005](https://github.com/RDFLib/rdflib/pull/1005)
+    
+### SPARQL Fixes:
+  * CONSTRUCT resolve with initBindings fixes #1001
+    [PR #1002](https://github.com/RDFLib/rdflib/pull/1002)
+
+### Documentation Fixes:
+  * DOC: Use sphinxcontrib-apidoc and various cleanups
+    [PR #1010](https://github.com/RDFLib/rdflib/pull/1010)
+  * Update copyright year in docs conf.py
+    [PR #1006](https://github.com/RDFLib/rdflib/pull/1006)
+  * slightly improved styling, small index text changes
+    [PR #1004](https://github.com/RDFLib/rdflib/pull/1004)
+    
+
 2020/04/04 RELEASE 5.0.0RC1
 ===========================
 

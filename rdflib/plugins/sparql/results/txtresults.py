@@ -1,4 +1,3 @@
-
 from rdflib import URIRef, BNode, Literal
 from rdflib.query import ResultSerializer
 
@@ -37,7 +36,7 @@ class TXTResultSerializer(ResultSerializer):
                 h2 += 1
             return " " * h1 + s + " " * h2
 
-        if self.result.type != 'SELECT':
+        if self.result.type != "SELECT":
             raise Exception("Can only pretty print SELECT results!")
 
         if not self.result:
@@ -46,14 +45,17 @@ class TXTResultSerializer(ResultSerializer):
 
             keys = sorted(self.result.vars)
             maxlen = [0] * len(keys)
-            b = [[_termString(r[k], namespace_manager) for k in keys] for r in self.result]
+            b = [
+                [_termString(r[k], namespace_manager) for k in keys]
+                for r in self.result
+            ]
             for r in b:
                 for i in range(len(keys)):
                     maxlen[i] = max(maxlen[i], len(r[i]))
 
-            stream.write(
-                "|".join([c(k, maxlen[i]) for i, k in enumerate(keys)]) + "\n")
+            stream.write("|".join([c(k, maxlen[i]) for i, k in enumerate(keys)]) + "\n")
             stream.write("-" * (len(maxlen) + sum(maxlen)) + "\n")
             for r in sorted(b):
-                stream.write("|".join(
-                    [t + " " * (i - len(t)) for i, t in zip(maxlen, r)]) + "\n")
+                stream.write(
+                    "|".join([t + " " * (i - len(t)) for i, t in zip(maxlen, r)]) + "\n"
+                )
