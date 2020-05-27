@@ -149,7 +149,6 @@ class FUNCTION_EXPR(STATEMENT):
 
 class FILTER(STATEMENT):
     def __new__(cls, expression):
-        print(expression)
         if not is_acceptable_query_variable(expression):
             expression = Variable(expression)
 
@@ -160,6 +159,14 @@ class FILTER(STATEMENT):
 
 
 class QueryBuilder:
+
+    class QUERY_STRING(str):
+        def __new__(cls, query):
+            return str.__new__(cls, query)
+
+        def n3(self):
+            return "{\n" + self + "\n}"
+
     def __init__(self):
         self.query = ""
         self.SELECT_variables_direct = []
@@ -263,7 +270,7 @@ class QueryBuilder:
         self.build_order_by()
         self.build_limit_offset()
 
-        return self.query
+        return QueryBuilder.QUERY_STRING(self.query)
 
 
 if __name__ == "__main__":
@@ -294,4 +301,4 @@ if __name__ == "__main__":
     ).OFFSET(
         20
     ).build()
-    print(query)
+    print(query.n3())
