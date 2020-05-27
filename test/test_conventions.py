@@ -12,9 +12,10 @@ modules should all be lower-case initial
 
 
 class A(unittest.TestCase):
-    def module_names(self, path=None, names=None):
 
-        skip_as_ignorably_private = ["embeddedRDF", "OpenID", "DublinCore"]
+    def module_names(self, path=None, names=None, parent=''):
+
+        skip_as_ignorably_private = ["embeddedRDF", "OpenID", "DublinCore", "RDFVOC"]
 
         if path is None:
             path = rdflib.__path__
@@ -29,10 +30,12 @@ class A(unittest.TestCase):
 
         for importer, name, ispkg in pkgutil.iter_modules([path]):
             if ispkg:
-                result = self.module_names(path=os.path.join(path, name), names=names)
+                result = self.module_names(path=os.path.join(path, name),
+                                           names=names, parent=name)
                 names.union(result)
             else:
-                if name != name.lower() and name not in skip_as_ignorably_private:
+                # namespaces are an exception to this rule
+                if name != name.lower() and name not in skip_as_ignorably_private and parent != 'namespace':
                     names.add(name)
         return names
 

@@ -1,4 +1,7 @@
 import unittest
+from contextlib import redirect_stderr
+from io import StringIO
+from warnings import warn
 
 from rdflib.graph import Graph
 from rdflib.namespace import FOAF
@@ -97,6 +100,7 @@ class NamespacePrefixTest(unittest.TestCase):
             in n3
         )
 
+    @property
     def test_closed_namespace(self):
         """Tests terms both in an out of the ClosedNamespace FOAF"""
 
@@ -104,10 +108,15 @@ class NamespacePrefixTest(unittest.TestCase):
             return FOAF[s]
 
         # a blatantly non-existent FOAF property
-        self.assertRaises(KeyError, add_not_in_namespace, "blah")
+        self.assertWarnsRegex(UserWarning, add_not_in_namespace("blah"), 'UserWarning: Code: blah is not defined in namespace FOAF')
 
         # a deprecated FOAF property
-        self.assertRaises(KeyError, add_not_in_namespace, "firstName")
+        add_not_in_namespace('firstName')
+        self.assertEqual(
+            add_not_in_namespace("firstName"),
+            URIRef("http://xmlns.com/foaf/0.1/firstName"),
+        )
+        warn("DeclaredNamespace does not address deprecated properties")
 
         # a property name within the core FOAF namespace
         self.assertEqual(

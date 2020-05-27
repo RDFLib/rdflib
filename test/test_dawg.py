@@ -48,10 +48,8 @@ from nose.tools import nottest, eq_
 from nose import SkipTest
 
 
-from .manifest import nose_tests, MF, UP
-from .earl import report, add_test
-
-
+from manifest import nose_tests, MF, UP
+from earl import report, add_test
 def eq(a, b, msg):
     return eq_(a, b, msg + ": (%r!=%r)" % (a, b))
 

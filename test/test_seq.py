@@ -27,9 +27,9 @@ class SeqTestCase(unittest.TestCase):
     path = "store"
 
     def setUp(self):
-        store = self.store = Graph(store=self.backend)
-        store.open(self.path)
-        store.parse(data=s)
+        self.store = Graph(store=self.backend)
+        self.store.open(self.path)
+        self.store.parse(data=s)
 
     def tearDown(self):
         self.store.close()

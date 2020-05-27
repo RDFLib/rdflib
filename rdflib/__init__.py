@@ -53,7 +53,6 @@ __all__ = [
     "BNode",
     "Literal",
     "Variable",
-    "Namespace",
     "Dataset",
     "Graph",
     "ConjunctiveGraph",
@@ -84,6 +83,10 @@ __all__ = [
 ]
 
 import sys
+from rdflib.namespace import XMLNS
+from rdflib.namespace.SOSA import SOSA
+
+assert sys.version_info >= (2, 7, 0), "rdflib requires Python 2.7 or higher"
 
 import logging
 
@@ -158,9 +161,10 @@ Literal work, eq, __neq__, __lt__, etc.
 
 from rdflib.term import URIRef, BNode, Literal, Variable
 
-from rdflib.namespace import Namespace
-
 from rdflib.graph import Dataset, Graph, ConjunctiveGraph
+
+from rdflib import plugin
+from rdflib import query
 
 from rdflib.namespace import (
     CSVW,
@@ -184,12 +188,9 @@ from rdflib.namespace import (
     SSN,
     TIME,
     VOID,
-    XMLNS,
     XSD,
 )
-
-from rdflib import plugin
-from rdflib import query
+from rdflib.namespace import XMLNS, Namespace
 
 # tedious sop to flake8
 assert plugin

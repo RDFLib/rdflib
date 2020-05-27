@@ -1,5 +1,7 @@
+import os
 import unittest
 from rdflib import ConjunctiveGraph, URIRef, Namespace
+from test import TEST_DIR
 
 TEST_BASE = "test/nquads.rdflib"
 
@@ -7,7 +9,8 @@ TEST_BASE = "test/nquads.rdflib"
 class NQuadsParserTest(unittest.TestCase):
     def _load_example(self):
         g = ConjunctiveGraph()
-        with open("test/nquads.rdflib/example.nquads", "rb") as data:
+        nq_path = os.path.relpath(os.path.join(TEST_DIR, 'nquads.rdflib/example.nquads'), os.curdir)
+        with open(nq_path, "rb") as data:
             g.parse(data, format="nquads")
         return g
 
@@ -36,7 +39,8 @@ class NQuadsParserTest(unittest.TestCase):
 
     def test_context_is_optional(self):
         g = ConjunctiveGraph()
-        with open("test/nquads.rdflib/test6.nq", "rb") as data:
+        nq_path = os.path.relpath(os.path.join(TEST_DIR, 'nquads.rdflib/test6.nq'), os.curdir)
+        with open(nq_path, "rb") as data:
             g.parse(data, format="nquads")
         assert len(g) > 0
 

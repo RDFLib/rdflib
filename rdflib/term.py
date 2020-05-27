@@ -204,6 +204,9 @@ class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
         if r:
             return True
         return self == other
+    
+    def startswith(self, prefix, start = ..., end = ...) -> bool:
+        return str(self).startswith(str(prefix))
 
     # use parent's hash for efficiency reasons
     # clashes of 'foo', URIRef('foo') and Literal('foo') are typically so rare
