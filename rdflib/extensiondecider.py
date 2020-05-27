@@ -57,6 +57,32 @@ def check_extension(fpath):
 						filename = convertfile(fpath,s)
 						return filename , s
 
+				# source https://www.w3.org/TR/trig/
+
+				# @prefix	rdf: < http: // www.w3.org / 1999 / 02 / 22 - rdf - syntax - ns  # > .
+				# @prefix dc: < http: // purl.org / dc / terms / >.
+				# @prefix foaf: < http: // xmlns.com / foaf / 0.1 / >.
+				# default graph - no {} used.
+				# < http: // example.org / bob > dc: publisher
+				# "Bob".
+				# < http: // example.org / alice > dc: publisher
+				# "Alice".
+				# GRAPH keyword to highlight a named graph
+				# Abbreviation of triples using ;
+				# GRAPH < http: // example.org / bob >
+				# {
+				# 	[] foaf: name "Bob";
+				# foaf: mbox < mailto:bob @ oldcorp.example.org >;
+				# foaf: knows _: b.
+				# }
+				#
+				# GRAPH < http: // example.org / alice >
+				# {
+				# 	_: b foaf: name "Alice";
+				# foaf: mbox < mailto:alice @ work.example.org >
+				# }
+
+				# Above is the preferred format for a trig file
 				elif pathsplit[-1]=="trig":
 					s = decide_ext(fpath)
 					if s=="trig" or s == "ttl":
@@ -70,6 +96,15 @@ def check_extension(fpath):
 					s = decide_ext(fpath)
 					if s=="rdf":
 						return fpath , 'application/rdf+xml'
+					else:
+						print("wrong extension")
+						filename = convertfile(fpath,s)
+						return filename , s
+
+				elif pathsplit[-1]=="trix":
+					s = decide_ext(fpath)
+					if s=="trix":
+						return fpath , 'trix'
 					else:
 						print("wrong extension")
 						filename = convertfile(fpath,s)
@@ -122,6 +157,10 @@ def decide_ext(fpath):#finding the extension of the contents in the file
 			elif "<rdf" in s[i] or "<?xml" in s[i] :
 				print("rdf/xml")
 				return "rdf"
+
+			elif "<trix" in s[i].lower() :
+				print("trix")
+				return "trix"
 			
 			elif "@prefix" in s[i]:
 				print("turtle family")
@@ -181,4 +220,4 @@ def convertfile(fpath,ext):#coppying file with content not matching the extensio
 	return newfilepath
 
 
-# print(check_extension("projectext.rdf"))
+# print(check_extension("projectext.nt"))
