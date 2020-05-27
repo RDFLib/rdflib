@@ -615,29 +615,56 @@ class Graph(Node):
         self.remove((subject, predicate, None))
         self.add((subject, predicate, object_))
 
-    def subjects(self, predicate=None, object=None):
+    def subjects(self, predicate=None, object=None, unique=False):
         """A generator of unique subjects with the given predicate and object"""
-        subs = set()
-        for s, p, o in self.triples((None, predicate, object)):
-            if s  not in subs:
-                subs.add(s)
+
+        if(unique==False):
+            for s, p, o in self.triples((None, predicate, object)):
                 yield s
+        else:
+            subs = set()
+            for s, p, o in self.triples((None, predicate, object)):
+                if s not in subs:
+                    yield s
+                    try:
+                        subs.add(s)
+                    except MemoryError:
+                        print("MemoryError encountered. Consider setting parameter 'unique' to False")
+                        break
 
-    def predicates(self, subject=None, object=None):
+    def predicates(self, subject=None, object=None, unique=False):
         """A generator of unique predicates with the given subject and object"""
-        preds = set()
-        for s, p, o in self.triples((subject, None, object)):
-            if p not in preds:
-                preds.add(p)
-                yield p
 
-    def objects(self, subject=None, predicate=None):
+        if(unique==False):
+            for s, p, o in self.triples((subject, None, object)):
+                yield p
+        else:
+            preds = set()
+            for s, p, o in self.triples((subject, None, object)):
+                if p not in preds:
+                    yield p
+                    try:
+                        preds.add(p)
+                    except MemoryError:
+                        print("MemoryError encountered. Consider setting parameter 'unique' to False")
+                        break
+
+    def objects(self, subject=None, predicate=None, unique=False):
         """A generator of unique objects with the given subject and predicate"""
-        objs = set()
-        for s, p, o in self.triples((subject, predicate, None)):
-            if o not in objs:
-                objs.add(o)
+
+        if(unique==False):
+            for s, p, o in self.triples((subject, predicate, None)):
                 yield o
+        else:
+            objs = set()
+            for s, p, o in self.triples((subject, predicate, None)):
+                if o not in objs:
+                    yield o
+                    try:
+                        objs.add(o)
+                    except MemoryError:
+                        print("MemoryError encountered. Consider setting parameter 'unique' to False")
+                        break
 
     def subject_predicates(self, object=None):
         """A generator of (subject, predicate) tuples for the given object"""

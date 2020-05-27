@@ -41,17 +41,17 @@ class TestIssue837(unittest.TestCase):
     def testSubjects(self):
         asserte = self.assertEqual
         self.addStuff()
-        asserte(len([sub for sub in self.graph.subjects()]), 3)
+        asserte(len([sub for sub in self.graph.subjects(unique=True)]), 3)
 
     def testPredicates(self):
         asserte = self.assertEqual
         self.addStuff()
-        asserte(len([pred for pred in self.graph.predicates()]), 2)
+        asserte(len([pred for pred in self.graph.predicates(unique=True)]), 2)
 
     def testObjects(self):
         asserte = self.assertEqual
         self.addStuff()
-        asserte(len([obj for obj in self.graph.objects()]), 4)
+        asserte(len([obj for obj in self.graph.objects(unique=True)]), 4)
 
 
 if __name__ == "__main__":
