@@ -25,7 +25,7 @@ from __future__ import division
 from __future__ import print_function
 # from __future__ import unicode_literals
 from fractions import Fraction
-from rdflib.extras.gregorianType import GregorianType
+from rdflib.extras.gregorian_type import GregorianType
 
 __all__ = [
     'bind',
@@ -549,11 +549,8 @@ class Literal(Identifier):
             datatype = URIRef(datatype)
 
         value = None
-
         if datatype == URIRef(_XSD_GYEAR) or datatype == URIRef(_XSD_GYEARMONTH):
             if datatype == URIRef(_XSD_GYEAR):
-                if lexical_or_value.find('-') != -1:
-                    raise Exception('Lexical value not of gYear(YYYY) type')
                 value = GregorianType(lexical_or_value, 1)
             else:
                 value = GregorianType(lexical_or_value, 2)
@@ -600,6 +597,7 @@ class Literal(Identifier):
         inst._language = lang
         inst._datatype = datatype
         inst._value = value
+        print(inst, inst._value, 'literal created')
         return inst
 
     def normalize(self):

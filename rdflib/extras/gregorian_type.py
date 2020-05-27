@@ -5,8 +5,6 @@ class GregorianType:
         self.gYear = lvalue[0]
         self.gMonth = None
         if datatype == 2:
-            if len(lvalue) != 2:
-                raise Exception("Wrong value for GYearMonth")
             self.gMonth = lvalue[1]
 
     def __str__(self):
