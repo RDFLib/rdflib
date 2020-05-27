@@ -1059,11 +1059,10 @@ class Graph(Node):
         >>> os.remove(file_name)
 
         """
-        # if source is not None:
-        #     if(isinstance(source,str)):
-        #         location=source
+        if source is not None:
+            if(isinstance(source,str)):
+                fpath=location
 
-        fpath=source
         source = create_input_source(
             source=source,
             publicID=publicID,
