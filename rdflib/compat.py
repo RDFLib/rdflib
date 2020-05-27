@@ -99,7 +99,7 @@ if narrow_build:
 
 def decodeStringEscape(s):
     """
-    s is byte-string - replace \ escapes in string
+    s is byte-string - replace \\ escapes in string
     """
 
     s = s.replace("\\t", "\t")

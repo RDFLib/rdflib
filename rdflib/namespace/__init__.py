@@ -661,24 +661,24 @@ def get_longest_namespace(trie, value):
 
 
 
-from . CSVW import CSVW
-from . DC import DC
-from . DCAT import DCAT
-from . DCTERMS import DCTERMS
-from . DOAP import DOAP
-from . FOAF import FOAF
-from . ODRL2 import ODRL2
-from . ORG import ORG
-from . OWL import OWL
-from . PROF import PROF
-from . PROV import PROV
-from . RDF import RDF
-from . RDFS import RDFS
-from . SDO import SDO
-from . SH import SH
-from . SKOS import SKOS
-from . SOSA import SOSA
-from . SSN import SSN
-from . TIME import TIME
-from . VOID import VOID
-from . XSD import XSD
+from rdflib.namespace.CSVW import CSVW
+from rdflib.namespace.DC import DC
+from rdflib.namespace.DCAT import DCAT
+from rdflib.namespace.DCTERMS import DCTERMS
+from rdflib.namespace.DOAP import DOAP
+from rdflib.namespace.FOAF import FOAF
+from rdflib.namespace.ODRL2 import ODRL2
+from rdflib.namespace.ORG import ORG
+from rdflib.namespace.OWL import OWL
+from rdflib.namespace.PROF import PROF
+from rdflib.namespace.PROV import PROV
+from rdflib.namespace.RDF import RDF
+from rdflib.namespace.RDFS import RDFS
+from rdflib.namespace.SDO import SDO
+from rdflib.namespace.SH import SH
+from rdflib.namespace.SKOS import SKOS
+from rdflib.namespace.SOSA import SOSA
+from rdflib.namespace.SSN import SSN
+from rdflib.namespace.TIME import TIME
+from rdflib.namespace.VOID import VOID
+from rdflib.namespace.XSD import XSD
