@@ -1262,8 +1262,7 @@ class Literal(Identifier):
                 if self.datatype == _XSD_DOUBLE:
                     return sub("\\.?0*e", "e", u"%e" % float(self))
                 elif self.datatype == _XSD_DECIMAL:
-                    s = '%s' % self
-                    return s
+                    return str(self)
 
                 elif self.datatype == _XSD_BOOLEAN:
                     return (u"%s" % self).lower()
