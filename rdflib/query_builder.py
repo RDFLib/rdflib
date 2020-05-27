@@ -103,7 +103,7 @@ class CONDITIONAL_STATEMENT(STATEMENT):
         return self[0].n3() + " " + self[1] + " " + self[2].n3()
 
 
-list_function = ["SUM", "AVERAGE", "COUNT", "SET", "MIN", "MAX", "GROUPCONTACT", "SAMPLE"]
+list_function = ["SUM", "AVG", "COUNT", "SET", "MIN", "MAX", "GROUPCONTACT", "SAMPLE"]
 
 
 class AGGREGATE(STATEMENT):
@@ -308,7 +308,7 @@ if __name__ == "__main__":
         Variable("s"),
         Variable("p"),
         x=Variable("o"),
-        value=AGGREGATE("AVERAGE", Variable("v")),
+        value=AGGREGATE("AVG", Variable("v")),
         sum_value=AGGREGATE("SUM", Variable("v")),
         distinct=True
     ).WHERE(

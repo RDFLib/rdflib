@@ -15,7 +15,7 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
         self.literal_13 = Literal(13)
 
         self.basic_query = "SELECT ?s (?o as ?x)  WHERE { ?s ?p ?o . } "
-        self.full_query = "SELECT DISTINCT ?s ?p (?o as ?x) (AVERAGE( ?v ) as ?value) (SUM( ?v ) " \
+        self.full_query = "SELECT DISTINCT ?s ?p (?o as ?x) (AVG( ?v ) as ?value) (SUM( ?v ) " \
                           "as ?sum_value)  WHERE { ?s ?p ?o . ?o <http://www.w3.org/1999/02/22-rd" \
                           "f-syntax-ns#type> ?v . OPTIONAL { ?o <http://www.w3.org/2000/01/rdf-sc" \
                           "hema#subClassOf> <http://www.w3.org/2002/07/owl#thing> } . FILTER ( ?v" \
@@ -28,7 +28,7 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
             self.var_s,
             self.var_p,
             x=self.var_o,
-            value=AGGREGATE("AVERAGE", self.var_v),
+            value=AGGREGATE("AVG", self.var_v),
             sum_value=AGGREGATE("SUM", self.var_v),
             distinct=True
         ).WHERE(
