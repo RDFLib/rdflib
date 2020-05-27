@@ -237,18 +237,18 @@ class QueryBuilder:
         for var_alias, var_expression in self.SELECT_variables_with_alias.items():
             self.query += "(" + var_expression.n3() + " as " + var_alias.n3() + ") "
 
-        self.query += "\n"
+        self.query += " \n"
 
     def build_where(self):
         if len(self.WHERE_statements) == 0:
             raise Exception("Query must have at least one WHERE statement.")
 
-        self.query += "WHERE {" + "\n"
+        self.query += "WHERE {" + " \n"
 
         for statement in self.WHERE_statements:
-            self.query += statement.n3() + " ." + "\n"
+            self.query += statement.n3() + " ." + " \n"
 
-        self.query += "}" + "\n"
+        self.query += "}" + " \n"
 
     def build_order_by(self):
         if len(self.ORDER_BY_expressions) > 0:
@@ -259,10 +259,10 @@ class QueryBuilder:
 
     def build_limit_offset(self):
         if self.limit:
-            self.query += "LIMIT " + str(self.limit) + "\n"
+            self.query += "LIMIT " + str(self.limit) + " \n"
 
         if self.offset:
-            self.query += "OFFSET " + str(self.offset) + "\n"
+            self.query += "OFFSET " + str(self.offset) + " \n"
 
     def build(self):
         self.build_select()
