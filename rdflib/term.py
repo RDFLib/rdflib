@@ -1584,7 +1584,7 @@ XSDToPython = {
     URIRef(_XSD_PFX + 'normalizedString'): None,
     URIRef(_XSD_PFX + 'token'): None,
     URIRef(_XSD_PFX + 'language'): None,
-    URIRef(_XSD_PFX + 'boolean'): lambda i: i.lower() == 'true',
+    URIRef(_XSD_PFX + 'boolean'): lambda i: i.lower() == 'true' or (i.isdigit() and int(i) == True),
     URIRef(_XSD_PFX + 'decimal'): Decimal,
     URIRef(_XSD_PFX + 'integer'): long_type,
     URIRef(_XSD_PFX + 'nonPositiveInteger'): int,
