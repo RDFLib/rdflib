@@ -391,15 +391,15 @@ class Graph(Node):
 
     def addN(self, quads):
         """Add a sequence of triple with context"""
-        countBefore = len(Graph)
+        countBefore = len(self)
         self.__store.addN(
             (s, p, o, c)
             for s, p, o, c in quads
             if isinstance(c, Graph)
             and c.identifier is self.identifier
             and _assertnode(s, p, o)
-        return len(Graph) -countBefore
         )
+        return (len(self) -countBefore)
 
     def remove(self, triple):
         """Remove a triple from the graph
@@ -1403,11 +1403,11 @@ class ConjunctiveGraph(Graph):
 
     def addN(self, quads):
         """Add a sequence of triples with context"""
-        countBefore = len(Graph)
+        countBefore = len(self)
         self.store.addN(
             (s, p, o, self._graph(c)) for s, p, o, c in quads if _assertnode(s, p, o)
         )
-        return (len(Graph)-countBefore)
+        return (len(self)-countBefore)
 
     def remove(self, triple_or_quad):
         """
@@ -1764,15 +1764,15 @@ class QuotedGraph(Graph):
 
     def addN(self, quads):
         """Add a sequence of triple with context"""
-        countBefore = len(QuotedGraph)
+        countBefore = len(self)
         self.store.addN(
             (s, p, o, c)
             for s, p, o, c in quads
             if isinstance(c, QuotedGraph)
             and c.identifier is self.identifier
             and _assertnode(s, p, o)
-        return (len(QuotedGraph) - countBefore)
         )
+        return (len(self) - countBefore)
 
     def n3(self):
         """Return an n3 identifier for the Graph"""
