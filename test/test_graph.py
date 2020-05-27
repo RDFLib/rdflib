@@ -76,6 +76,56 @@ class GraphTestCase(unittest.TestCase):
         self.graph.remove((bob, hates, pizza))
         self.graph.remove((bob, hates, michel))  # gasp!
 
+
+    #Issue 837
+    def testSubjectsPredicatesObjects(self):
+        graph = self.graph
+        tarek = self.tarek
+        michel = self.michel
+        bob = self.bob
+        likes = self.likes
+        hates = self.hates
+        pizza = self.pizza
+        cheese = self.cheese
+
+        graph.add((tarek, likes, pizza))
+        graph.add((tarek, likes, cheese))
+        graph.add((tarek, hates, pizza))
+        graph.add((tarek, hates, cheese))
+
+        graph.add((michel, likes, pizza))
+        graph.add((michel, likes, cheese))
+        graph.add((michel, hates, pizza))
+        graph.add((michel, hates, cheese))
+        
+        graph.add((bob, likes, cheese))
+        graph.add((bob, likes, pizza))
+        graph.add((bob, hates, pizza))
+        graph.add((bob, hates, cheese))
+
+        self.assertEqual(len(list(self.graph.subjects())), 12)
+        self.assertEqual(len(list(self.graph.predicates())), 12)
+        self.assertEqual(len(list(self.graph.objects())), 12)
+
+        self.assertEqual(len(list(self.graph.subjects(uniqueLimit=0))), 12)
+        self.assertEqual(len(list(self.graph.predicates(uniqueLimit=0))), 12)
+        self.assertEqual(len(list(self.graph.objects(uniqueLimit=0))), 12)
+
+        self.assertEqual(len(list(self.graph.subjects(uniqueLimit=15))), 3)
+        self.assertEqual(len(list(self.graph.predicates(uniqueLimit=15))), 2)
+        self.assertEqual(len(list(self.graph.objects(uniqueLimit=15))), 2)
+
+        self.assertEqual(len(list(self.graph.subjects(uniqueLimit=1))), 9)
+        self.assertEqual(len(list(self.graph.subjects(uniqueLimit=2))), 6)
+        self.assertEqual(len(list(self.graph.predicates(uniqueLimit=1))), 7)
+        self.assertEqual(len(list(self.graph.objects(uniqueLimit=1))), 7)
+
+
+
+
+
+
+
     def testAdd(self):
         self.addStuff()
 

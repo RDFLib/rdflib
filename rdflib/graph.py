@@ -615,20 +615,45 @@ class Graph(Node):
         self.remove((subject, predicate, None))
         self.add((subject, predicate, object_))
 
-    def subjects(self, predicate=None, object=None):
+    def subjects(self, predicate=None, object=None, uniqueLimit =-1):
         """A generator of subjects with the given predicate and object"""
+        if (uniqueLimit != -1):
+            uniqueSub = dict()
         for s, p, o in self.triples((None, predicate, object)):
-            yield s
+            if(uniqueLimit==-1):
+                yield s
+            elif(len(uniqueSub)<uniqueLimit and s not in uniqueSub):
+                uniqueSub[s]=True
+                yield s
+            elif(s not in uniqueSub):
+                yield s
 
-    def predicates(self, subject=None, object=None):
+    def predicates(self, subject=None, object=None, uniqueLimit =-1):
         """A generator of predicates with the given subject and object"""
+        if (uniqueLimit != -1):
+            uniquePred = dict()
         for s, p, o in self.triples((subject, None, object)):
-            yield p
+            if(uniqueLimit==-1):
+                yield p
+            elif(len(uniquePred)<uniqueLimit and p not in uniquePred):
+                uniquePred[p]=True
+                yield p
+            elif(p not in uniquePred):
+                yield p
 
-    def objects(self, subject=None, predicate=None):
+    def objects(self, subject=None, predicate=None, uniqueLimit=-1):
         """A generator of objects with the given subject and predicate"""
+        if (uniqueLimit != -1):
+            uniqueObj = dict()
         for s, p, o in self.triples((subject, predicate, None)):
-            yield o
+            if(uniqueLimit==-1):
+                yield o
+            elif(len(uniqueObj)<uniqueLimit and o not in uniqueObj):
+                uniqueObj[o]=True
+                yield o
+            elif(o not in uniqueObj):
+                yield o
+
 
     def subject_predicates(self, object=None):
         """A generator of (subject, predicate) tuples for the given object"""
