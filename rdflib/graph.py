@@ -402,13 +402,15 @@ class Graph(Node):
                 assert isinstance(s, Node), "Subject %s in Triple %d must be an rdflib term" % (s,i,)
                 assert isinstance(p, Node), "Predicate %s in Triple %d must be an rdflib term" % (p,i,)
                 assert isinstance(o, Node), "Object %s in Triple %d must be an rdflib term" % (o,i,)
+            for s, p, o in triples:
+                self.__store.add((s, p, o), self, quoted=False)
 
-        for i, (s, p, o) in enumerate(triples,1):
-            if(all_or_none==False):
+        else:
+            for i, (s, p, o) in enumerate(triples,1):
                 assert isinstance(s, Node), "Subject %s in Triple %d must be an rdflib term" % (s,i,)
                 assert isinstance(p, Node), "Predicate %s in Triple %d must be an rdflib term" % (p,i,)
                 assert isinstance(o, Node), "Object %s in Triple %d must be an rdflib term" % (o,i,)
-            self.__store.add((s, p, o), self, quoted=False)
+                self.__store.add((s, p, o), self, quoted=False)    
 
     def addN(self, quads):
         """Add a sequence of triple with context"""
