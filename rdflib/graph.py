@@ -809,7 +809,7 @@ class Graph(Node):
         if not isinstance(rdf_collection, list):
             raise TypeError("Node should be a list")
 
-        chain = set([rdf_collection])
+        chain = set(rdf_collection)
         # try:
         #     chain = set(rdf_collection)
         # except TypeError:
