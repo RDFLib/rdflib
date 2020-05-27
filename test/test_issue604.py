@@ -1,8 +1,6 @@
 from __future__ import print_function
 
 from rdflib import *
-# TODO: Figure out why this has to be explicit
-from rdflib import Namespace
 from rdflib.collection import Collection
 
 

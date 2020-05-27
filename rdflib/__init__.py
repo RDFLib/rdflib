@@ -65,6 +65,7 @@ __all__ = [
     "URIRef",
     "BNode",
     "Literal",
+    "Namespace",
     "Variable",
     "Dataset",
     "Graph",
