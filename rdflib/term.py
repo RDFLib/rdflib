@@ -591,7 +591,6 @@ class Literal(Identifier):
         inst._language = lang
         inst._datatype = datatype
         inst._value = value
-        print(inst, inst._value, 'literal created')
         return inst
 
     def normalize(self):
