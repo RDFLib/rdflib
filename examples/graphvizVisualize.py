@@ -1,14 +1,14 @@
-from rdflib import Graph,URIRef
-# from rdflib.graphvizVisualization.graphvizVisual import visualizeGraph
+from rdflib import Graph,URIRef,Literal
+# from rdflib.graphvizVisualization.graphvizVisual import *
 
 graphData = """@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix juice: <http://www.juice.org/>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 
-juice:Fruit rdf:type rdfs:Class.
+juice:fruit rdf:type rdfs:Class.
 
-juice:Apple rdf:type juice:Fruit;
+juice:Apple rdf:type juice:fruit;
 			rdfs:label "Apple".
 
 juice:FruitJuice rdf:type rdfs:Class.
@@ -20,7 +20,7 @@ juice:juiceMadeOf rdf:Type rdf:property.
 
 juice:juiceMadeOfFruit rdfs:subProperty juice:juiceMadeOf;
 					   rdfs:domain juice:FruitJuice;
-					   rdfs:range juice:Fruit.
+					   rdfs:range juice:fruit.
 					   
 juice:costOfJuice rdf:type rdf:property;
 				  rdfs:domain juice:FruitJuice;
@@ -53,4 +53,5 @@ juice:Mixed2 rdf:type juice:MixedFruitJuice;
 
 g = Graph() # Create a graph
 g.parse(data=graphData, format='ttl')
+# showPropertiesPath(g,URIRef("http://www.juice.org/Mixed1"),URIRef("http://www.juice.org/Apple"),"Try",shortMode = False,format1="pdf")
 # visualizeGraph(g,"Hello",shortMode = True,format1="png")  #-- uncomment this to run the test code
