@@ -1,7 +1,7 @@
 import unittest
 
-from rdflib import Variable, RDF, OWL, RDFS, Literal
-from rdflib.query_builder import QueryBuilder, AGGREGATE, OPTIONAL, FILTER, Operators, FUNCTION_EXPR
+from rdflib import Variable, RDF, OWL, RDFS, Literal, URIRef
+from rdflib.query_builder import QueryBuilder, AGGREGATE, OPTIONAL, FILTER, Operators, FUNCTION_EXPR, FOR_GRAPH
 
 
 class TestQueryBuilder_Issue790(unittest.TestCase):
@@ -13,6 +13,7 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
         self.var_unacceptable = "s"
         self.literal_5 = Literal(5)
         self.literal_13 = Literal(13)
+        self.insert_query = "INSERT { ?s ?p ?o } WHERE { ?s ?p ?o . } "
         self.operator_query_gt = "SELECT ?v  WHERE { ?s ?p ?v . FILTER ( ?v > " \
                                  "\"5\"^^<http://www.w3.org/2001/XMLSchema#integer> ) . } "
         self.operator_query_lt = "SELECT ?v  WHERE { ?s ?p ?v . FILTER ( ?v < " \
@@ -28,7 +29,6 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
         self.operator_query_in = "SELECT ?v  WHERE { ?s ?p ?v . FILTER ( " \
                                  "\"5\"^^<http://www.w3.org/2001/XMLSchema#integer> IN ( ?v, " \
                                  "\"5\"^^<http://www.w3.org/2001/XMLSchema#integer> ) ) . } "
-
         self.basic_query = "SELECT ?s (?o as ?x)  WHERE { ?s ?p ?o . } "
         self.full_query = "SELECT DISTINCT ?s ?p (?o as ?x) (AVG( ?v ) as ?value) (SUM( ?v ) as ?sum_value)" \
                           "  WHERE { ?s ?p ?o . ?o <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?v . O" \
@@ -76,6 +76,16 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
         ).build()
         self.assertEqual(self.basic_query, query.replace("\n", ""),
                          msg="QueryBuilder not returning correct basic query.")
+
+    def test_query_insert(self):
+        query = QueryBuilder().INSERT(
+                self.var_s,
+                self.var_p,
+                self.var_o,
+            ).WHERE(
+                (self.var_s, self.var_p, self.var_o)
+        ).build()
+        self.assertEqual(self.insert_query, query.replace("\n", ""), msg="QueryBuilder not performing insert correctly")
 
     def test_query_operators_should_pass(self):
         query = QueryBuilder().SELECT(
