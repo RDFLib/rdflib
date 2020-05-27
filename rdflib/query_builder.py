@@ -171,7 +171,11 @@ class FUNCTION_EXPR(STATEMENT):
 class FILTER(STATEMENT):
     def __new__(cls, expression):
         if not is_acceptable_query_variable(expression):
-            expression = Variable(expression)
+            raise Exception(
+                "Expression {} in FILTER not of acceptable type".format(
+                    expression
+                )
+            )
 
         return tuple.__new__(FILTER, (expression,))
 
