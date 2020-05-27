@@ -9,7 +9,8 @@ from functools import cmp_to_key
 from rdflib.term import BNode, Literal, URIRef
 from rdflib.exceptions import Error
 from rdflib.serializer import Serializer
-from rdflib.namespace import RDF, RDFS
+from rdflib.namespace.RDF import RDF
+from rdflib.namespace.RDFS import RDFS
 
 __all__ = ["RecursiveSerializer", "TurtleSerializer"]
 
