@@ -29,6 +29,7 @@ Basic Usage Scenario
 Start by importing things we need and define some namespaces::
 
     >>> from rdflib import *
+    >>> from rdflib import Namespace
     >>> FOAF = Namespace("http://xmlns.com/foaf/0.1/")
     >>> CV = Namespace("http://purl.org/captsolo/resume-rdf/0.2/cv#")
 

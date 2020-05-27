@@ -11,6 +11,7 @@ from rdflib.collection import Collection
 from rdflib.serializer import Serializer
 
 from xml.sax.saxutils import quoteattr, escape
+import xml.dom.minidom
 
 from .xmlwriter import ESCAPE_ENTITIES
 

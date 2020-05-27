@@ -2,9 +2,9 @@
 test suite."""
 
 from rdflib import ConjunctiveGraph
-from manifest import nose_tests, RDFT
+from test.manifest import nose_tests, RDFT
 
-from testutils import nose_tst_earl_report
+from test.testutils import nose_tst_earl_report
 
 verbose = False
 

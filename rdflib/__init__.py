@@ -13,32 +13,45 @@ A tiny example:
 
     >>> from rdflib import Graph, URIRef, Literal
 
-    >>> g = Graph()
-    >>> result = g.parse("http://www.w3.org/2000/10/swap/test/meet/blue.rdf")
+    >>> g = Graph().parse("http://www.w3.org/2000/10/swap/test/meet/blue.rdf")
 
     >>> print("graph has %s statements." % len(g))
-    graph has 4 statements.
+    graph has 9 statements.
     >>>
     >>> for s, p, o in g:
     ...     if (s, p, o) not in g:
     ...         raise Exception("It better be!")
 
-    >>> s = g.serialize(format='nt')
-    >>>
-    >>> sorted(g) == [
-    ...  (URIRef(u'http://meetings.example.com/cal#m1'),
-    ...   URIRef(u'http://www.example.org/meeting_organization#homePage'),
-    ...   URIRef(u'http://meetings.example.com/m1/hp')),
-    ...  (URIRef(u'http://www.example.org/people#fred'),
-    ...   URIRef(u'http://www.example.org/meeting_organization#attending'),
-    ...   URIRef(u'http://meetings.example.com/cal#m1')),
-    ...  (URIRef(u'http://www.example.org/people#fred'),
-    ...   URIRef(u'http://www.example.org/personal_details#GivenName'),
-    ...   Literal(u'Fred')),
-    ...  (URIRef(u'http://www.example.org/people#fred'),
-    ...   URIRef(u'http://www.example.org/personal_details#hasEmail'),
-    ...   URIRef(u'mailto:fred@example.com'))
-    ... ]
+    >>> tl = [
+    ...       (BNode('B1'), URIRef('http://www.example.org/meeting_organization#homePage'), BNode('B4')),
+    ...       (BNode('B1'), URIRef('http://www.w3.org/2000/10/swap/test/meet/about'), Literal('http://meetings.example.com/cal#m1')),
+    ...       (BNode('B2'), URIRef('http://www.example.org/meeting_organization#attending'), BNode('B3')),
+    ...       (BNode('B2'), URIRef('http://www.example.org/personal_details#GivenName'), Literal('Fred')),
+    ...       (BNode('B2'), URIRef('http://www.example.org/personal_details#hasEmail'), BNode('B5')),
+    ...       (BNode('B2'), URIRef('http://www.w3.org/2000/10/swap/test/meet/about'), Literal('http://www.example.org/people#fred')),
+    ...       (BNode('B3'), URIRef('http://www.w3.org/2000/10/swap/test/meet/resource'), Literal('http://meetings.example.com/cal#m1')),
+    ...       (BNode('B4'), URIRef('http://www.w3.org/2000/10/swap/test/meet/resource'), Literal('http://meetings.example.com/m1/hp')),
+    ...       (BNode('B5'), URIRef('http://www.w3.org/2000/10/swap/test/meet/resource'), Literal('mailto:fred@example.com'))
+    ...       ]
+    >>> g2 = Graph()
+    >>> g2.namespace_manager = g.namespace_manager
+    >>> for t in tl:
+    ...     g2.add(t)
+    >>> print(g.serialize(format="turtle").decode())
+    @prefix m: <http://www.example.org/meeting_organization#> .
+    @prefix ns1: <http://www.w3.org/2000/10/swap/test/meet/> .
+    @prefix p: <http://www.example.org/personal_details#> .
+    <BLANKLINE>
+    [] m:attending [ ns1:resource "http://meetings.example.com/cal#m1" ] ;
+        p:GivenName "Fred" ;
+        p:hasEmail [ ns1:resource "mailto:fred@example.com" ] ;
+        ns1:about "http://www.example.org/people#fred" .
+    <BLANKLINE>
+    [] m:homePage [ ns1:resource "http://meetings.example.com/m1/hp" ] ;
+        ns1:about "http://meetings.example.com/cal#m1" .
+    <BLANKLINE>
+    <BLANKLINE>
+    >>> print(g.isomorphic(g2))
     True
 
 """
@@ -188,8 +201,8 @@ from rdflib.namespace import (
     TIME,
     VOID,
     XSD,
+    Namespace
 )
-from rdflib.namespace import XMLNS, Namespace
 
 # tedious sop to flake8
 assert plugin
@@ -197,4 +210,4 @@ assert query
 
 from rdflib import util
 
-from .container import *
+from rdflib.container import *
