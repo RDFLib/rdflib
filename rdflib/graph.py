@@ -5,6 +5,10 @@ from __future__ import print_function
 from rdflib.term import Literal  # required for doctests
 from rdflib.namespace import Namespace  # required for doctests
 
+from os.path import splitext
+
+# from rdflib.util import guess_format
+
 import logging
 
 import random
@@ -1055,7 +1059,11 @@ class Graph(Node):
         >>> os.remove(file_name)
 
         """
+        # if source is not None:
+        #     if(isinstance(source,str)):
+        #         location=source
 
+        fpath=source
         source = create_input_source(
             source=source,
             publicID=publicID,
@@ -1064,6 +1072,30 @@ class Graph(Node):
             data=data,
             format=format,
         )
+
+        SUFFIX_FORMAT_MAP = {
+            "rdf": "xml",
+            "rdfs": "xml",
+            "owl": "xml",
+            "n3": "n3",
+            "ttl": "turtle",
+            "nt": "nt",
+            "trix": "trix",
+            "xhtml": "rdfa",
+            "html": "rdfa",
+            "svg": "rdfa",
+            "nq": "nquads",
+            "trig": "trig",
+        }
+        fmap=SUFFIX_FORMAT_MAP
+        if format is None:
+            ext=splitext(fpath)[-1]
+            if ext == "" and fpath.startswith("."):
+                ext = fpath
+            if ext.startswith("."):
+                ext = ext[1:]
+            format=fmap.get(ext)
+
         if format is None:
             format = source.content_type
         if format is None:
