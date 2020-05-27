@@ -391,13 +391,14 @@ class Graph(Node):
 
     def addN(self, quads):
         """Add a sequence of triple with context"""
-
+        countBefore = len(Graph)
         self.__store.addN(
             (s, p, o, c)
             for s, p, o, c in quads
             if isinstance(c, Graph)
             and c.identifier is self.identifier
             and _assertnode(s, p, o)
+        return len(Graph) -countBefore
         )
 
     def remove(self, triple):
@@ -1402,10 +1403,11 @@ class ConjunctiveGraph(Graph):
 
     def addN(self, quads):
         """Add a sequence of triples with context"""
-
+        countBefore = len(Graph)
         self.store.addN(
             (s, p, o, self._graph(c)) for s, p, o, c in quads if _assertnode(s, p, o)
         )
+        return (len(Graph)-countBefore)
 
     def remove(self, triple_or_quad):
         """
@@ -1762,13 +1764,14 @@ class QuotedGraph(Graph):
 
     def addN(self, quads):
         """Add a sequence of triple with context"""
-
+        countBefore = len(QuotedGraph)
         self.store.addN(
             (s, p, o, c)
             for s, p, o, c in quads
             if isinstance(c, QuotedGraph)
             and c.identifier is self.identifier
             and _assertnode(s, p, o)
+        return (len(QuotedGraph) - countBefore)
         )
 
     def n3(self):
@@ -2066,11 +2069,13 @@ class BatchAddGraph(object):
             self.batch.append(triple_or_quad)
 
     def addN(self, quads):
+        countBefore  = self.count
         if self.__batch_addn:
             for q in quads:
                 self.add(q)
         else:
             self.graph.addN(quads)
+        return (self.count - countBefore)
 
     def __enter__(self):
         self.reset()
