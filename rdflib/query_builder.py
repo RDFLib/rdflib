@@ -127,6 +127,17 @@ class AGGREGATE(STATEMENT):
         return self[0] + "( " + self[1].n3() + " )"
 
 
+def create_aggregate(function):
+
+    def new(cls, statement):
+        return AGGREGATE.__new__(cls, function, statement)
+    return type(str(function), (AGGREGATE,), dict(__new__=new))
+
+
+for function in list_function:
+    setattr(AGGREGATE, function, create_aggregate(function))
+
+
 supported_function_expression_list = [
     "ASC", "DESC", "IRI", "ISBLANK", "ISLITERAL", "ISIRI", "ISNUMERIC", "BNODE",
     "ABS", "IF", "RAND", "UUID", "STRUUID", "MD5", "SHA1", "SHA256",
@@ -166,6 +177,17 @@ class FUNCTION_EXPR(STATEMENT):
             n3_string += var.n3() + " "
         n3_string += ")"
         return n3_string
+
+
+def create_function_expr(function_expression):
+    def new(cls, *args):
+        return FUNCTION_EXPR.__new__(cls, function_expression, *args)
+    return type(str(function), (FUNCTION_EXPR,), dict(__new__=new))
+
+
+for function_expression in supported_function_expression_list:
+    setattr(FUNCTION_EXPR, function_expression, create_function_expr(function_expression))
+
 
 
 class FILTER(STATEMENT):
@@ -219,6 +241,7 @@ class QueryBuilder:
             self.SELECT_variables_direct.append(var)
 
         for var_name, var in kwargs.items():
+            print(var_name, type(var_name), var, type(var))
             if not is_acceptable_query_variable(var):
                 raise Exception("Argument not of valid type.")
 
@@ -304,12 +327,13 @@ class QueryBuilder:
 
 
 if __name__ == "__main__":
+
     query = QueryBuilder().SELECT(
         Variable("s"),
         Variable("p"),
         x=Variable("o"),
-        value=AGGREGATE("AVG", Variable("v")),
-        sum_value=AGGREGATE("SUM", Variable("v")),
+        value=AGGREGATE.AVG(Variable("v")),
+        sum_value=AGGREGATE.SUM(Variable("v")),
         distinct=True
     ).WHERE(
         (Variable("s"), Variable("p"), Variable("o")),
@@ -325,7 +349,7 @@ if __name__ == "__main__":
         )
     ).ORDER_BY(
         Variable("v"),
-        FUNCTION_EXPR("asc", Variable("s"))
+        FUNCTION_EXPR.ASC(Variable("s"))
     ).LIMIT(
         100
     ).OFFSET(
