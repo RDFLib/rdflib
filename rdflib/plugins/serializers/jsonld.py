@@ -1,38 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-This serialiser will output an RDF Graph as a JSON-LD formatted document. See:
-
-    http://json-ld.org/
-
-Example usage::
-
-    >>> from rdflib.plugin import register, Serializer
-    >>> register('json-ld', Serializer, 'rdflib_jsonld.serializer', 'JsonLDSerializer')
-
-    >>> from rdflib import Graph
-
-    >>> testrdf = '''
-    ... @prefix dc: <http://purl.org/dc/terms/> .
-    ... <http://example.org/about>
-    ...     dc:title "Someone's Homepage"@en .
-    ... '''
-
-    >>> g = Graph().parse(data=testrdf, format='n3')
-
-    >>> print((g.serialize(format='json-ld', indent=4).decode()))
-    [
-        {
-            "@id": "http://example.org/about",
-            "http://purl.org/dc/terms/title": [
-                {
-                    "@language": "en",
-                    "@value": "Someone's Homepage"
-                }
-            ]
-        }
-    ]
-
-"""
 
 # NOTE: This code writes the entire JSON object into memory before serialising,
 # but we should consider streaming the output to deal with arbitrarily large
