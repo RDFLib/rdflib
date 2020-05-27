@@ -74,6 +74,10 @@ class GraphTestCase(unittest.TestCase):
         self.graph.remove((bob, hates, pizza))
         self.graph.remove((bob, hates, michel))  # gasp!
 
+    def testItemsList(self):
+
+        self.assertRaises(TypeError, self.graph.items, self, 2)
+    
     def testAdd(self):
         self.addStuff()
 

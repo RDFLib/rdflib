@@ -801,20 +801,28 @@ class Graph(Node):
             return default
         return self.value(subject, RDFS.comment, default=default, any=True)
 
-    def items(self, list):
-        """Generator over all items in the resource specified by list
+    def items(self, rdf_collection):
+        """Generator over all items in the resource specified by rdf_collection
 
-        list is an RDF collection.
         """
-        chain = set([list])
-        while list:
-            item = self.value(list, RDF.first)
+
+        if not isinstance(rdf_collection, list):
+            raise TypeError("Node should be a list")
+
+        chain = set([rdf_collection])
+        # try:
+        #     chain = set(rdf_collection)
+        # except TypeError:
+        #     raise TypeError("Node should be a list")
+
+        while rdf_collection:
+            item = self.value(rdf_collection, RDF.first)
             if item is not None:
                 yield item
-            list = self.value(list, RDF.rest)
-            if list in chain:
+            rdf_collection = self.value(rdf_collection, RDF.rest)
+            if rdf_collection in chain:
                 raise ValueError("List contains a recursive rdf:rest reference")
-            chain.add(list)
+            chain.add(rdf_collection)
 
     def transitiveClosure(self, func, arg, seen=None):
         """
