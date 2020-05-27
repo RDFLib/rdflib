@@ -1924,7 +1924,8 @@ class N3Parser(TurtleParser):
     def __init__(self):
         pass
 
-    def parse(self, source, graph, encoding="utf-8"):
+    def parse(self, source, graph, encoding="utf-8" , ignore_errors = False):
+        errorFlag=ignore_errors
         # we're currently being handed a Graph, not a ConjunctiveGraph
         assert graph.store.context_aware  # is this implied by formula_aware
         assert graph.store.formula_aware
@@ -1935,7 +1936,7 @@ class N3Parser(TurtleParser):
         # TODO: update N3Processor so that it can use conj_graph as the sink
         conj_graph.namespace_manager = graph.namespace_manager
 
-        TurtleParser.parse(self, source, conj_graph, encoding, turtle=False)
+        TurtleParser.parse(self, source, conj_graph, encoding, turtle=False , ignore_errors=errorFlag)
 
 
 def _test():  # pragma: no cover

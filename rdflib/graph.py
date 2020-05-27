@@ -1074,7 +1074,7 @@ class Graph(Node):
             format = "application/rdf+xml"
         parser = plugin.get(format, Parser)()
         try:
-            parser.parse(source, self, **args  )
+            parser.parse(source, self, ignore_errors=errorFlag,**args  )
         finally:
             if source.auto_close:
                 source.close()

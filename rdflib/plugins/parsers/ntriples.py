@@ -159,14 +159,15 @@ class NTriplesParser(object):
                     continue
         return self.sink
 
-    def parsestring(self, s):
+    def parsestring(self, s , ignore_errors=False):
         """Parse s as an N-Triples string."""
+        errorFlag=ignore_errors
         if not isinstance(s, str):
             raise ParseError("Item to parse must be a string instance.")
         f = BytesIO()
         f.write(cast_bytes(s))
         f.seek(0)
-        self.parse(f)
+        self.parse(f , ignore_errors=errorFlag)
 
     def readline(self):
         """Read an N-Triples line from buffered input."""
