@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import unittest
+
 from nose import SkipTest
 from rdflib.graph import ConjunctiveGraph
 from rdflib.parser import StringInputSource
@@ -40,6 +42,8 @@ test_string1 = u"""\
 Betriebsnummer der Einzugsstelle:\nKnappschaft\n980 0000 6\nWICHTIGES DOKUMENT - SORGFÄLTIG AUFBEWAHREN!\n """
 
 
+
+@unittest.skipIf(True, "Known issue with newlines in text")
 def test1():
     meta1 = meta.encode("utf-8") % test_string1.encode("utf-8")
     graph = ConjunctiveGraph()
@@ -55,7 +59,7 @@ Knappschaft
 WICHTIGES DOKUMENT - SORGFÄLTIG AUFBEWAHREN!
 """
 
-
+@unittest.skipIf(True, "Known issue with newlines in text")
 def test2():
     meta2 = meta.encode("utf-8") % test_string2.encode("utf-8")
     graph = ConjunctiveGraph()
@@ -64,4 +68,5 @@ def test2():
     )
 
 
-raise SkipTest("Known issue, with newlines in text")
+if __name__ == "__main__":
+    unittest.main()

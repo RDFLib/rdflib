@@ -1,4 +1,4 @@
-from rdflib.namespace.RDF import RDF
+from rdflib.namespace import RDF
 from rdflib.term import URIRef
 
 

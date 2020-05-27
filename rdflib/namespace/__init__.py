@@ -661,24 +661,25 @@ def get_longest_namespace(trie, value):
 
 
 
-from rdflib.namespace.CSVW import CSVW
-from rdflib.namespace.DC import DC
-from rdflib.namespace.DCAT import DCAT
-from rdflib.namespace.DCTERMS import DCTERMS
-from rdflib.namespace.DOAP import DOAP
-from rdflib.namespace.FOAF import FOAF
-from rdflib.namespace.ODRL2 import ODRL2
-from rdflib.namespace.ORG import ORG
-from rdflib.namespace.OWL import OWL
-from rdflib.namespace.PROF import PROF
-from rdflib.namespace.PROV import PROV
-from rdflib.namespace.RDF import RDF
-from rdflib.namespace.RDFS import RDFS
-from rdflib.namespace.SDO import SDO
-from rdflib.namespace.SH import SH
-from rdflib.namespace.SKOS import SKOS
-from rdflib.namespace.SOSA import SOSA
-from rdflib.namespace.SSN import SSN
-from rdflib.namespace.TIME import TIME
-from rdflib.namespace.VOID import VOID
-from rdflib.namespace.XSD import XSD
+from rdflib.namespace._CSVW import CSVW
+from rdflib.namespace._DC import DC
+from rdflib.namespace._DCAT import DCAT
+from rdflib.namespace._DCTERMS import DCTERMS
+from rdflib.namespace._DOAP import DOAP
+from rdflib.namespace._FOAF import FOAF
+from rdflib.namespace._ODRL2 import ODRL2
+from rdflib.namespace._ORG import ORG
+from rdflib.namespace._OWL import OWL
+from rdflib.namespace._PROF import PROF
+from rdflib.namespace._PROV import PROV
+from rdflib.namespace._QB import QB
+from rdflib.namespace._RDF import RDF
+from rdflib.namespace._RDFS import RDFS
+from rdflib.namespace._SDO import SDO
+from rdflib.namespace._SH import SH
+from rdflib.namespace._SKOS import SKOS
+from rdflib.namespace._SOSA import SOSA
+from rdflib.namespace._SSN import SSN
+from rdflib.namespace._TIME import TIME
+from rdflib.namespace._VOID import VOID
+from rdflib.namespace._XSD import XSD

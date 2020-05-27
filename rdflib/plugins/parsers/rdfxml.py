@@ -8,7 +8,8 @@ from xml.sax.saxutils import quoteattr, escape
 
 
 from urllib.parse import urldefrag, urljoin
-from rdflib.namespace import RDF, is_ncname
+from rdflib.namespace import is_ncname
+from rdflib.namespace import RDF
 from rdflib.plugins.parsers.RDFVOC import RDFVOC
 from rdflib.term import URIRef
 from rdflib.term import BNode

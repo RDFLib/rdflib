@@ -83,8 +83,7 @@ __all__ = [
 ]
 
 import sys
-from rdflib.namespace import XMLNS
-from rdflib.namespace.SOSA import SOSA
+from rdflib.namespace import XMLNS, SOSA
 
 assert sys.version_info >= (2, 7, 0), "rdflib requires Python 2.7 or higher"
 
