@@ -3,7 +3,7 @@ import collections
 from rdflib.term import Variable, Literal, BNode, URIRef
 
 from rdflib.plugins.sparql.operators import EBV
-from rdflib.plugins.sparql.parserutils import Expr, CompValue, value
+from rdflib.plugins.sparql.parserutils import Expr, CompValue
 from rdflib.plugins.sparql.sparql import SPARQLError, NotBoundError
 
 
@@ -49,8 +49,7 @@ def _ebv(expr, ctx):
         except SPARQLError:
             return False  # filter error == False
     elif isinstance(expr, CompValue):
-        raise Exception(
-            "Weird - filter got a CompValue without evalfn! %r" % expr)
+        raise Exception("Weird - filter got a CompValue without evalfn! %r" % expr)
     elif isinstance(expr, Variable):
         try:
             return EBV(ctx[expr])
@@ -73,8 +72,7 @@ def _eval(expr, ctx, raise_not_bound_error=True):
             else:
                 return None
     elif isinstance(expr, CompValue):
-        raise Exception(
-            "Weird - _eval got a CompValue without evalfn! %r" % expr)
+        raise Exception("Weird - _eval got a CompValue without evalfn! %r" % expr)
     else:
         raise Exception("Cannot eval thing: %s (%s)" % (expr, type(expr)))
 
@@ -101,12 +99,11 @@ def _fillTemplate(template, solution):
         _o = solution.get(o)
 
         # instantiate new bnodes for each solution
-        _s, _p, _o = [bnodeMap[x] if isinstance(
-            x, BNode) else y for x, y in zip(t, (_s, _p, _o))]
+        _s, _p, _o = [
+            bnodeMap[x] if isinstance(x, BNode) else y for x, y in zip(t, (_s, _p, _o))
+        ]
 
-        if _s is not None and \
-                _p is not None and \
-                _o is not None:
+        if _s is not None and _p is not None and _o is not None:
 
             yield (_s, _p, _o)
 

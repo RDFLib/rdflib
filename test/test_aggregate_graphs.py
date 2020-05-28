@@ -1,7 +1,7 @@
 import unittest
-from rdflib.namespace import Namespace, RDF, RDFS
+from rdflib.namespace import RDF, RDFS
 from rdflib import plugin
-from six import StringIO
+from io import StringIO
 from rdflib.term import URIRef
 from rdflib.store import Store
 from rdflib.graph import Graph
@@ -36,8 +36,7 @@ testGraph3N3 = """
 <> a log:N3Document.
 """
 
-sparqlQ = \
-    """
+sparqlQ = """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT *
 FROM NAMED <http://example.com/graph1>
@@ -47,14 +46,12 @@ FROM <http://www.w3.org/2000/01/rdf-schema#>
 
 WHERE {?sub ?pred rdfs:Class }"""
 
-sparqlQ2 =\
-    """
+sparqlQ2 = """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ?class
 WHERE { GRAPH ?graph { ?member a ?class } }"""
 
-sparqlQ3 =\
-    """
+sparqlQ3 = """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX log: <http://www.w3.org/2000/10/swap/log#>
 SELECT ?n3Doc
@@ -63,15 +60,17 @@ WHERE {?n3Doc a log:N3Document }"""
 
 class GraphAggregates1(unittest.TestCase):
     def setUp(self):
-        memStore = plugin.get('IOMemory', Store)()
+        memStore = plugin.get("IOMemory", Store)()
         self.graph1 = Graph(memStore)
         self.graph2 = Graph(memStore)
         self.graph3 = Graph(memStore)
 
-        for n3Str, graph in [(testGraph1N3, self.graph1),
-                             (testGraph2N3, self.graph2),
-                             (testGraph3N3, self.graph3)]:
-            graph.parse(StringIO(n3Str), format='n3')
+        for n3Str, graph in [
+            (testGraph1N3, self.graph1),
+            (testGraph2N3, self.graph2),
+            (testGraph3N3, self.graph3),
+        ]:
+            graph.parse(StringIO(n3Str), format="n3")
 
         self.G = ReadOnlyGraphAggregate([self.graph1, self.graph2, self.graph3])
 
@@ -92,7 +91,16 @@ class GraphAggregates1(unittest.TestCase):
         assert (URIRef("http://test/foo"), RDF.type, RDFS.Resource) in self.G
 
         barPredicates = [URIRef("http://test/d"), RDFS.isDefinedBy]
-        assert len(list(self.G.triples_choices((URIRef("http://test/bar"), barPredicates, None)))) == 2
+        assert (
+            len(
+                list(
+                    self.G.triples_choices(
+                        (URIRef("http://test/bar"), barPredicates, None)
+                    )
+                )
+            )
+            == 2
+        )
 
 
 class GraphAggregates2(unittest.TestCase):
@@ -101,20 +109,22 @@ class GraphAggregates2(unittest.TestCase):
     sparql = True
 
     def setUp(self):
-        memStore = plugin.get('IOMemory', Store)()
+        memStore = plugin.get("IOMemory", Store)()
         self.graph1 = Graph(memStore, URIRef("http://example.com/graph1"))
         self.graph2 = Graph(memStore, URIRef("http://example.com/graph2"))
         self.graph3 = Graph(memStore, URIRef("http://example.com/graph3"))
 
-        for n3Str, graph in [(testGraph1N3, self.graph1),
-                             (testGraph2N3, self.graph2),
-                             (testGraph3N3, self.graph3)]:
-            graph.parse(StringIO(n3Str), format='n3')
+        for n3Str, graph in [
+            (testGraph1N3, self.graph1),
+            (testGraph2N3, self.graph2),
+            (testGraph3N3, self.graph3),
+        ]:
+            graph.parse(StringIO(n3Str), format="n3")
 
         self.graph4 = Graph(memStore, RDFS)
         self.graph4.parse(RDFS.uri)
         self.G = ConjunctiveGraph(memStore)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -3,5 +3,4 @@ html5lib
 isodate
 pyparsing
 requests
-six
 doctest-ignore-unicode

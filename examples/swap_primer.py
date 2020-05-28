@@ -58,7 +58,7 @@ if __name__ == "__main__":
     # dataset from the example, and start
     # with a fresh new graph.
 
-    del(primer)
+    del primer
     primer = ConjunctiveGraph()
 
     # Lets start with a verbatim string straight from the primer text:
