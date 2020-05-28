@@ -1,10 +1,21 @@
 from __future__ import unicode_literals
 
-from rdflib import Variable, Literal, URIRef
-from rdflib.namespace import RDFS, OWL, RDF, XSD
+from rdflib import Variable, URIRef
+
+AGGREGATE_FUNCTION_LIST = ["SUM", "AVG", "COUNT", "SET", "MIN", "MAX", "GROUPCONTACT", "SAMPLE"]
+FUNCTION_EXPRESSION_SUPPORTED_LIST = [
+    "ASC", "DESC", "IRI", "ISBLANK", "ISLITERAL", "ISIRI", "ISNUMERIC", "BNODE",
+    "ABS", "IF", "RAND", "UUID", "STRUUID", "MD5", "SHA1", "SHA256",
+    "SHA384", "SHA512", "COALESCE", "CEIL", "FLOOR", "ROUND", "REGEX",
+    "REPLACE", "STRDT", "STRLANG", "CONCAT", "STRSTARTS", "STRENDS",
+    "STRBEFORE", "STRAFTER", "CONTAINS", "ENCODE_FOR_URI", "SUBSTR",
+    "STRLEN", "STR", "LCASE", "LANGMATCHES", "NOW", "YEAR", "MONTH",
+    "DAY", "HOURS", "MINUTES", "SECONDS", "TIMEZONE", "TZ", "UCASE",
+    "LANG", "DATATYPE", "SAMETERM", "BOUND", "EXISTS"
+]
 
 
-def is_acceptable_query_variable(variable):
+def is_variable_supported(variable):
     return hasattr(variable, "n3")
 
 
@@ -12,8 +23,8 @@ class STATEMENT(tuple):
     def __new__(cls, statement):
         if len(statement) == 3:
             s, p, o = statement
-            if is_acceptable_query_variable(s) and is_acceptable_query_variable(
-                    p) and is_acceptable_query_variable(o):
+            if is_variable_supported(s) and is_variable_supported(
+                    p) and is_variable_supported(o):
                 return tuple.__new__(STATEMENT, (s, p, o))
             else:
                 raise Exception(
@@ -32,66 +43,66 @@ class Operators(object):
 
     @staticmethod
     def GT(left, right):
-        if is_acceptable_query_variable(left) and is_acceptable_query_variable(right):
+        if is_variable_supported(left) and is_variable_supported(right):
             return CONDITIONAL_STATEMENT(left, ">", right)
         else:
             raise Exception("Operands are not of acceptable type.")
 
     @staticmethod
     def LT(left, right):
-        if is_acceptable_query_variable(left) and is_acceptable_query_variable(right):
+        if is_variable_supported(left) and is_variable_supported(right):
             return CONDITIONAL_STATEMENT(left, "<", right)
         else:
             raise Exception("Operands are not of acceptable type.")
 
     @staticmethod
     def EQ(left, right):
-        if is_acceptable_query_variable(left) and is_acceptable_query_variable(right):
+        if is_variable_supported(left) and is_variable_supported(right):
             return CONDITIONAL_STATEMENT(left, "=", right)
         else:
             raise Exception("Operands are not of acceptable type.")
 
     @staticmethod
     def NE(left, right):
-        if is_acceptable_query_variable(left) and is_acceptable_query_variable(right):
+        if is_variable_supported(left) and is_variable_supported(right):
             return CONDITIONAL_STATEMENT(left, "!=", right)
         else:
             raise Exception("Operands are not of acceptable type.")
 
     @staticmethod
     def GE(left, right):
-        if is_acceptable_query_variable(left) and is_acceptable_query_variable(right):
+        if is_variable_supported(left) and is_variable_supported(right):
             return CONDITIONAL_STATEMENT(left, ">=", right)
         else:
             raise Exception("Operands are not of acceptable type.")
 
     @staticmethod
     def LE(left, right):
-        if is_acceptable_query_variable(left) and is_acceptable_query_variable(right):
+        if is_variable_supported(left) and is_variable_supported(right):
             return CONDITIONAL_STATEMENT(left, "<=", right)
         else:
             raise Exception("Operands are not of acceptable type.")
 
     @staticmethod
     def AND(left, right):
-        if is_acceptable_query_variable(left) and is_acceptable_query_variable(right):
+        if is_variable_supported(left) and is_variable_supported(right):
             return CONDITIONAL_STATEMENT(left, "&&", right)
         else:
             raise Exception("Operands are not of acceptable type.")
 
     @staticmethod
     def OR(left, right):
-        if is_acceptable_query_variable(left) and is_acceptable_query_variable(right):
+        if is_variable_supported(left) and is_variable_supported(right):
             return CONDITIONAL_STATEMENT(left, "||", right)
         else:
             raise Exception("Operands are not of acceptable type.")
 
     @staticmethod
     def IN(left, *args):
-        if not is_acceptable_query_variable(left):
+        if not is_variable_supported(left):
             raise Exception("Operands are not of acceptable type.")
         for var in args:
-            if not is_acceptable_query_variable(var):
+            if not is_variable_supported(var):
                 raise Exception("Operands are not of acceptable type.")
 
         return CONDITIONAL_STATEMENT(left, "IN", *args)
@@ -125,56 +136,38 @@ class CONDITIONAL_STATEMENT(STATEMENT):
         return n3_string
 
 
-list_function = ["SUM", "AVG", "COUNT", "SET", "MIN", "MAX", "GROUPCONTACT", "SAMPLE"]
-
-
-class AGGREGATE(STATEMENT):
+class Aggregates(STATEMENT):
     def __new__(cls, function, statement):
-        if not is_acceptable_query_variable(statement):
+        if not is_variable_supported(statement):
             raise Exception(
                 "Statement in aggregate function {} not of acceptable type.".format(
                     function
                 )
             )
-        if function not in list_function:
+        if function not in AGGREGATE_FUNCTION_LIST:
             raise Exception(
                 "Aggregate Function {} not supported".format(
                     function
                 )
             )
 
-        return tuple.__new__(AGGREGATE, (function, statement))
+        return tuple.__new__(Aggregates, (function, statement))
+
+    @staticmethod
+    def create_aggregate(function_name):
+        def new(cls, statement):
+            return Aggregates.__new__(cls, function_name, statement)
+
+        return type(str(function_name), (Aggregates,), dict(__new__=new))
 
     def n3(self):
         return self[0] + "( " + self[1].n3() + " )"
 
 
-def create_aggregate(function):
-    def new(cls, statement):
-        return AGGREGATE.__new__(cls, function, statement)
-
-    return type(str(function), (AGGREGATE,), dict(__new__=new))
-
-
-for function in list_function:
-    setattr(AGGREGATE, function, create_aggregate(function))
-
-supported_function_expression_list = [
-    "ASC", "DESC", "IRI", "ISBLANK", "ISLITERAL", "ISIRI", "ISNUMERIC", "BNODE",
-    "ABS", "IF", "RAND", "UUID", "STRUUID", "MD5", "SHA1", "SHA256",
-    "SHA384", "SHA512", "COALESCE", "CEIL", "FLOOR", "ROUND", "REGEX",
-    "REPLACE", "STRDT", "STRLANG", "CONCAT", "STRSTARTS", "STRENDS",
-    "STRBEFORE", "STRAFTER", "CONTAINS", "ENCODE_FOR_URI", "SUBSTR",
-    "STRLEN", "STR", "LCASE", "LANGMATCHES", "NOW", "YEAR", "MONTH",
-    "DAY", "HOURS", "MINUTES", "SECONDS", "TIMEZONE", "TZ", "UCASE",
-    "LANG", "DATATYPE", "SAMETERM", "BOUND", "EXISTS"
-]
-
-
-class FUNCTION_EXPR(STATEMENT):
+class FunctionExpressions(STATEMENT):
     def __new__(cls, function_expression, *args):
         for statement in args:
-            if not is_acceptable_query_variable(statement):
+            if not is_variable_supported(statement):
                 raise Exception(
                     "Statement {} in function expression {} not of acceptable type.".format(
                         statement, function_expression
@@ -184,13 +177,20 @@ class FUNCTION_EXPR(STATEMENT):
         if isinstance(function_expression, str):
             function_expression = function_expression.upper()
 
-        if function_expression not in supported_function_expression_list:
+        if function_expression not in FUNCTION_EXPRESSION_SUPPORTED_LIST:
             raise Exception(
                 "Function expression {} not supported".format(
                     function_expression)
             )
 
-        return tuple.__new__(FUNCTION_EXPR, (function_expression, args))
+        return tuple.__new__(FunctionExpressions, (function_expression, args))
+
+    @staticmethod
+    def create_function_expressions(function_expression):
+        def new(cls, *args):
+            return FunctionExpressions.__new__(cls, function_expression, *args)
+
+        return type(str(function_expression), (FunctionExpressions,), dict(__new__=new))
 
     def n3(self):
         n3_string = self[0] + " ( "
@@ -202,20 +202,17 @@ class FUNCTION_EXPR(STATEMENT):
         return n3_string
 
 
-def create_function_expr(function_expression):
-    def new(cls, *args):
-        return FUNCTION_EXPR.__new__(cls, function_expression, *args)
+for function in AGGREGATE_FUNCTION_LIST:
+    setattr(Aggregates, function, Aggregates.create_aggregate(function))
 
-    return type(str(function_expression), (FUNCTION_EXPR,), dict(__new__=new))
-
-
-for function_expression in supported_function_expression_list:
-    setattr(FUNCTION_EXPR, function_expression, create_function_expr(function_expression))
+for function_expression in FUNCTION_EXPRESSION_SUPPORTED_LIST:
+    setattr(FunctionExpressions, function_expression,
+            FunctionExpressions.create_function_expressions(function_expression))
 
 
 class FILTER(STATEMENT):
     def __new__(cls, expression):
-        if not is_acceptable_query_variable(expression):
+        if not is_variable_supported(expression):
             raise Exception(
                 "Expression {} in FILTER not of acceptable type".format(
                     expression
@@ -230,12 +227,12 @@ class FILTER(STATEMENT):
 
 class FOR_GRAPH(STATEMENT):
     def __new__(cls, *args, name=None):
-        if name and not is_acceptable_query_variable(name):
+        if name and not is_variable_supported(name):
             raise Exception("GRAPH name not of acceptable type.")
 
         statements = []
         for stmt in args:
-            if not is_acceptable_query_variable(stmt):
+            if not is_variable_supported(stmt):
                 statements.append(STATEMENT(stmt))
             else:
                 statements.append(stmt)
@@ -256,7 +253,7 @@ class FOR_GRAPH(STATEMENT):
 
 
 class QueryBuilder:
-    class QUERY_STRING(str):
+    class QueryString(str):
         def __new__(cls, query):
             return str.__new__(cls, query)
 
@@ -287,19 +284,19 @@ class QueryBuilder:
         self.is_DISTINCT = distinct
 
         for var in args:
-            if isinstance(var, AGGREGATE):
+            if isinstance(var, Aggregates):
                 raise Exception(
                     "Alias not provided for {}".format(
                         var[1].n3()
                     )
                 )
-            if not is_acceptable_query_variable(var):
+            if not is_variable_supported(var):
                 raise Exception("Argument not of valid type.")
 
             self.SELECT_variables_direct.append(var)
 
         for var_name, var in kwargs.items():
-            if not is_acceptable_query_variable(var):
+            if not is_variable_supported(var):
                 raise Exception("Argument not of valid type.")
 
             self.SELECT_variables_with_alias[Variable(var_name)] = var
@@ -307,9 +304,9 @@ class QueryBuilder:
         return self
 
     def MOVE(self, move_from_graph=URIRef("DEFAULT"), move_to_graph=URIRef("DEFAULT"), move_silent=False):
-        if not is_acceptable_query_variable(move_from_graph):
+        if not is_variable_supported(move_from_graph):
             raise Exception("from_graph name not of acceptable type.")
-        if not is_acceptable_query_variable(move_to_graph):
+        if not is_variable_supported(move_to_graph):
             raise Exception("to_graph name not of acceptable type.")
         self.move_from_graph = move_from_graph
         self.move_to_graph = move_to_graph
@@ -317,9 +314,9 @@ class QueryBuilder:
         return self
 
     def ADD(self, add_from_graph=URIRef("DEFAULT"), add_to_graph=URIRef("DEFAULT"), add_silent=False):
-        if not is_acceptable_query_variable(add_from_graph):
+        if not is_variable_supported(add_from_graph):
             raise Exception("from_graph name not of acceptable type.")
-        if not is_acceptable_query_variable(add_to_graph):
+        if not is_variable_supported(add_to_graph):
             raise Exception("to_graph name not of acceptable type.")
         self.add_from_graph = add_from_graph
         self.add_to_graph = add_to_graph
@@ -328,7 +325,7 @@ class QueryBuilder:
 
     def INSERT(self, *args):
         for statement in args:
-            if not is_acceptable_query_variable(statement):
+            if not is_variable_supported(statement):
                 self.INSERT_variables_direct.append(STATEMENT(statement))
             else:
                 self.INSERT_variables_direct.append(statement)
@@ -337,7 +334,7 @@ class QueryBuilder:
 
     def DELETE(self, *args):
         for statement in args:
-            if not is_acceptable_query_variable(statement):
+            if not is_variable_supported(statement):
                 self.DELETE_variables_direct.append(STATEMENT(statement))
             else:
                 self.DELETE_variables_direct.append(statement)
@@ -346,7 +343,7 @@ class QueryBuilder:
 
     def WHERE(self, *args, **kwargs):
         for statement in args:
-            if not is_acceptable_query_variable(statement):
+            if not is_variable_supported(statement):
                 self.WHERE_statements.append(STATEMENT(statement))
             else:
                 self.WHERE_statements.append(statement)
@@ -365,7 +362,7 @@ class QueryBuilder:
 
     def GROUP_BY(self, *args):
         for var in args:
-            if is_acceptable_query_variable(var):
+            if is_variable_supported(var):
                 self.GROUP_BY_expressions.append(var)
             else:
                 raise Exception("Expression passed in ORDER_BY is not valid.")
@@ -374,7 +371,7 @@ class QueryBuilder:
 
     def ORDER_BY(self, *args):
         for var in args:
-            if is_acceptable_query_variable(var):
+            if is_variable_supported(var):
                 self.ORDER_BY_expressions.append(var)
             else:
                 raise Exception("Expression passed in ORDER_BY is not valid.")
@@ -492,7 +489,7 @@ class QueryBuilder:
         self.build_group_by_order_by()
         self.build_limit_offset()
 
-        return QueryBuilder.QUERY_STRING(self.query)
+        return QueryBuilder.QueryString(self.query)
 
 
 if __name__ == "__main__":

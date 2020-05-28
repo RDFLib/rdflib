@@ -1,7 +1,7 @@
 import unittest
 
 from rdflib import Variable, RDF, OWL, RDFS, Literal, URIRef
-from rdflib.query_builder import QueryBuilder, AGGREGATE, OPTIONAL, FILTER, Operators, FUNCTION_EXPR, FOR_GRAPH
+from rdflib.query_builder import QueryBuilder, Aggregates, OPTIONAL, FILTER, Operators, FunctionExpressions, FOR_GRAPH
 
 
 class TestQueryBuilder_Issue790(unittest.TestCase):
@@ -62,8 +62,8 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
             self.var_s,
             self.var_p,
             x=self.var_o,
-            value=AGGREGATE.AVG(self.var_v),
-            sum_value=AGGREGATE.SUM(self.var_v),
+            value=Aggregates.AVG(self.var_v),
+            sum_value=Aggregates.SUM(self.var_v),
             distinct=True
         ).WHERE(
             (self.var_s, self.var_p, self.var_o),
@@ -85,7 +85,7 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
             )
         ).ORDER_BY(
             self.var_v,
-            FUNCTION_EXPR.ASC(self.var_s)
+            FunctionExpressions.ASC(self.var_s)
         ).LIMIT(
             100
         ).OFFSET(
@@ -447,7 +447,7 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
     def test_query_aggregate_with_unacceptable_variable_raises_Exception(self):
         with self.assertRaises(Exception):
             QueryBuilder().SELECT(
-                x=AGGREGATE.SUM(self.var_unacceptable)
+                x=Aggregates.SUM(self.var_unacceptable)
             ).WHERE(
                 (self.var_s, self.var_p, self.var_o)
             ).build()
@@ -455,14 +455,14 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
     def test_query_with_aggregate_without_alias_raises_Exception(self):
         with self.assertRaises(Exception):
             QueryBuilder().SELECT(
-                AGGREGATE.SUM(self.var_o)
+                Aggregates.SUM(self.var_o)
             ).WHERE(
                 (self.var_s, self.var_p, self.var_o)
             ).build()
 
         with self.assertRaises(Exception):
             QueryBuilder().SELECT(
-                AGGREGATE.SUM(self.var_unacceptable)
+                Aggregates.SUM(self.var_unacceptable)
             ).WHERE(
                 (self.var_s, self.var_p, self.var_o)
             ).build()
@@ -471,26 +471,26 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
         with self.assertRaises(Exception):
             QueryBuilder().SELECT(
                 self.var_s,
-                x=AGGREGATE.SUM(self.var_o)
+                x=Aggregates.SUM(self.var_o)
             ).WHERE(
                 (self.var_s, self.var_p, self.var_o),
-                FILTER(Operators.EQ(FUNCTION_EXPR.LCASE(self.var_unacceptable), Literal("hey")))
+                FILTER(Operators.EQ(FunctionExpressions.LCASE(self.var_unacceptable), Literal("hey")))
             ).build()
 
         with self.assertRaises(Exception):
             QueryBuilder().SELECT(
                 self.var_s,
-                x=AGGREGATE.SUM(self.var_o)
+                x=Aggregates.SUM(self.var_o)
             ).WHERE(
                 (self.var_s, self.var_p, self.var_o),
-                FILTER(FUNCTION_EXPR.CONTAINS(self.var_unacceptable, "hey"))
+                FILTER(FunctionExpressions.CONTAINS(self.var_unacceptable, "hey"))
             ).build()
 
     def test_query_with_incorrect_expression_in_filter_raises_Exception(self):
         with self.assertRaises(Exception):
             QueryBuilder().SELECT(
                 self.var_s,
-                x=AGGREGATE.SUM(self.var_o)
+                x=Aggregates.SUM(self.var_o)
             ).WHERE(
                 (self.var_s, self.var_p, self.var_o),
                 FILTER(self.var_unacceptable)
@@ -616,7 +616,7 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
             self.var_s
         ).WHERE(
             (self.var_s, self.var_p, self.var_o),
-            FILTER(FUNCTION_EXPR.CONTAINS(FUNCTION_EXPR.LCASE(self.var_o), Literal("hey")))
+            FILTER(FunctionExpressions.CONTAINS(FunctionExpressions.LCASE(self.var_o), Literal("hey")))
         ).build()
         self.assertEqual(self.function_expr_multiple_parameters, query.replace("\n", ""),
                          msg="QueryBuilder not returning correct query for function expr with multiple parameters.")
