@@ -273,6 +273,8 @@ class QueryBuilder:
         self.WHERE_statements = []
         self.GROUP_BY_expressions = []
         self.ORDER_BY_expressions = []
+        self.to_graph = ""
+        self.from_graph = ""
 
         self.limit = None
         self.offset = None
@@ -298,6 +300,11 @@ class QueryBuilder:
 
             self.SELECT_variables_with_alias[Variable(var_name)] = var
 
+        return self
+
+    def MOVE(self, from_graph, to_graph):
+        self.from_graph = from_graph
+        self.to_graph = to_graph
         return self
 
     def INSERT(self, *args):
@@ -370,6 +377,21 @@ class QueryBuilder:
 
             self.query += " \n"
 
+    def build_move(self):
+        if self.from_graph != "" and self.to_graph != "":
+            self.query += "MOVE GRAPH "
+            if self.from_graph.lower() == "default":
+                self.query += "DEFAULT"
+            else:
+                self.query += "<" + self.from_graph + ">"
+            self.query += " TO "
+            if self.to_graph.lower() == "default":
+                self.query += "DEFAULT"
+            else:
+                self.query += "<" + self.to_graph + ">"
+            self.query += " \n"
+
+
     def build_insert(self):
         if len(self.INSERT_variables_direct) > 0:
             self.query += "INSERT { \n"
@@ -389,15 +411,17 @@ class QueryBuilder:
             self.query += "\n} \n"
 
     def build_where(self):
-        if len(self.WHERE_statements) == 0:
-            raise Exception("Query must have at least one WHERE statement.")
 
-        self.query += "WHERE {" + " \n"
+        if self.from_graph == "" and self.to_graph == "":
+            if len(self.WHERE_statements) == 0:
+                raise Exception("Query must have at least one WHERE statement.")
 
-        for statement in self.WHERE_statements:
-            self.query += statement.n3() + " \n"
+            self.query += "WHERE {" + " \n"
 
-        self.query += "}" + " \n"
+            for statement in self.WHERE_statements:
+                self.query += statement.n3() + " \n"
+
+            self.query += "}" + " \n"
 
     def build_group_by_order_by(self):
         if len(self.GROUP_BY_expressions) > 0:
@@ -423,6 +447,7 @@ class QueryBuilder:
         self.build_select()
         self.build_insert()
         self.build_delete()
+        self.build_move()
         self.build_where()
 
         self.build_group_by_order_by()
@@ -432,43 +457,50 @@ class QueryBuilder:
 
 
 if __name__ == "__main__":
-    query = QueryBuilder().INSERT(
-            Variable("p"),
-            Variable("o"),
-            Variable("s")
-    ).WHERE(
-        (Variable("s"), Variable("p"), Variable("o")),
-        (Variable("o"), RDF.type, Variable("v")),
-        OPTIONAL(
-            (Variable("o"), RDFS.subClassOf, OWL.thing)
-        ),
-        FOR_GRAPH(
-            FILTER(
-                Operators.AND(
-                    Operators.GE(Variable("v"), Literal(5)),
-                    Operators.LT(Variable("v"), Literal(13))
-                )
-            ),
-            name=URIRef("arshgraph_name_2")
-        ),
-        FOR_GRAPH(
-            FILTER(
-                Operators.IN(
-                    Variable("v"),
-                    Literal("literal_string_1"),
-                    Literal("12", datatype=XSD.integer)
-                )
-            )
-        )
-    ).GROUP_BY(
-        Variable("v"),
-        Variable("s")
-    ).ORDER_BY(
-        Variable("v"),
-        FUNCTION_EXPR.ASC(Variable("s"))
-    ).LIMIT(
-        100
-    ).OFFSET(
-        20
+    # query = QueryBuilder().INSERT(
+    #         Variable("p"),
+    #         Variable("o"),
+    #         Variable("s")
+    # ).WHERE(
+    #     (Variable("s"), Variable("p"), Variable("o")),
+    #     (Variable("o"), RDF.type, Variable("v")),
+    #     OPTIONAL(
+    #         (Variable("o"), RDFS.subClassOf, OWL.thing)
+    #     ),
+    #     FOR_GRAPH(
+    #         FILTER(
+    #             Operators.AND(
+    #                 Operators.GE(Variable("v"), Literal(5)),
+    #                 Operators.LT(Variable("v"), Literal(13))
+    #             )
+    #         ),
+    #         name=URIRef("arshgraph_name_2")
+    #     ),
+    #     FOR_GRAPH(
+    #         FILTER(
+    #             Operators.IN(
+    #                 Variable("v"),
+    #                 Literal("literal_string_1"),
+    #                 Literal("12", datatype=XSD.integer)
+    #             )
+    #         )
+    #     )
+    # ).GROUP_BY(
+    #     Variable("v"),
+    #     Variable("s")
+    # ).ORDER_BY(
+    #     Variable("v"),
+    #     FUNCTION_EXPR.ASC(Variable("s"))
+    # ).LIMIT(
+    #     100
+    # ).OFFSET(
+    #     20
+    # ).build()
+    # print(query)
+
+    query = QueryBuilder().MOVE(
+        from_graph='default',
+        to_graph='arshdeep'
     ).build()
+
     print(query)
