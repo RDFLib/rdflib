@@ -478,13 +478,3 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
             ).WHERE(
                 (self.var_s, self.var_p, self.var_o),
             ).build()
-
-    # def test_query_with_incorrect_expression_in_operators_raises_Exception(self):
-    #     with self.assertRaises(Exception):
-    #         QueryBuilder().SELECT(
-    #             self.var_s,
-    #             x=AGGREGATE.SUM(self.var_o)
-    #         ).WHERE(
-    #             (self.var_s, self.var_p, self.var_o),
-    #             FILTER(Operators.EQ(FUNCTION_EXPR.LCASE(self.var_o), "hey"))
-    #         ).build()
