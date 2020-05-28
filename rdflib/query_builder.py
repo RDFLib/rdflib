@@ -279,7 +279,6 @@ class QueryBuilder:
         self.SELECT_variables_direct = []
         self.SELECT_variables_with_alias = {}
         self.INSERT_variables_direct = []
-        self.INSERT_variables_with_alias = {}
         self.DELETE_variables_direct = []
         self.WHERE_statements = []
         self.GROUP_BY_expressions = []
@@ -311,17 +310,11 @@ class QueryBuilder:
 
         return self
 
-    def INSERT(self, *args, **kwargs):
+    def INSERT(self, *args):
         for var in args:
             if not is_acceptable_query_variable(var):
                 raise Exception("Argument not of valid type.")
             self.INSERT_variables_direct.append(var)
-
-        for var_name, var in kwargs.items():
-            if not is_acceptable_query_variable(var):
-                raise Exception("Argument not of valid type.")
-
-            self.INSERT_variables_with_alias[Variable(var_name)] = var
 
         return self
 
@@ -387,14 +380,11 @@ class QueryBuilder:
             self.query += " \n"
 
     def build_insert(self):
-        if len(self.INSERT_variables_direct) + len(self.INSERT_variables_with_alias) > 0:
+        if len(self.INSERT_variables_direct) > 0:
             self.query += "INSERT { \n"
 
             for var in self.INSERT_variables_direct:
                 self.query += var.n3() + " "
-
-            for var_alias, var_expression in self.INSERT_variables_with_alias.items():
-                self.query += "(" + var_expression.n3() + " as " + var_alias.n3() + ") "
 
             self.query += "\n} \n"
 
@@ -454,8 +444,7 @@ if __name__ == "__main__":
     query = QueryBuilder().INSERT(
             Variable("p"),
             Variable("o"),
-            x=AGGREGATE.SUM(Variable("s")),
-
+            Variable("s")
     ).WHERE(
         (Variable("s"), Variable("p"), Variable("o")),
         (Variable("o"), RDF.type, Variable("v")),
