@@ -1392,6 +1392,11 @@ class ConjunctiveGraph(Graph):
 
         self.store.add((s, p, o), context=c, quoted=False)
 
+    def _add(self, triples):
+        """Adding multiple triples"""
+        for triple in triples:
+            self.store.add(triple)
+
     def _graph(self, c):
         if c is None:
             return None
