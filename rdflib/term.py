@@ -684,6 +684,35 @@ class Literal(Identifier):
 
             return Literal(s, self.language, datatype=new_datatype)
 
+    def __sub__(self, val):
+        """
+        Handling dateTime/date/time based operations in Literals
+
+        >>> a= Literal('2006-01-01T20:50:00',datatype=XSD.dateTime)
+        >>> b= Literal('2006-02-01T20:50:00',datatype=XSD.dateTime)
+        >>> (b-a)
+        rdflib.term.Literal('P31D', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#duration'))
+        
+        >>> a= Literal('2006-07-01T20:52:00',datatype=XSD.dateTimee)
+        >>> b= Literal('2006-11-01T12:50:00',datatype=XSD.dateTime)
+        >>> (b-a)
+        rdflib.term.Literal('-P122DT15H58M', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#duration'))
+        
+        """
+        # if no val is supplied, return this Literal
+        if val is None:
+            return self
+
+        # if self and val both are datetime based
+        if self.datatype in (_XSD_DATETIME, _XSD_DATE, _XSD_TIME) and val.datatype==self.datatype:
+            date1=self.toPython();
+            date2=val.toPython();
+            difference=date1-date2;   
+            return Literal(difference, datatype=_XSD_DURATION)
+
+            
+
+            
     def __bool__(self):
         """
         Is the Literal "True"
@@ -1784,5 +1813,56 @@ def _isEqualXMLNode(node, other):
 
 
 if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
+    # import doctest
+    # doctest.testmod()
+    import io
+    from pprint import pprint
+    data = """
+    @prefix : <#>.
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+    @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+    :C a rdfs:Class.
+
+    :start a rdf:Property;
+        rdfs:domain :C; 
+        rdfs:range xsd:dateTime.
+
+    :end a rdf:Property;
+        rdfs:domain :C; 
+        rdfs:range xsd:dateTime.
+
+    :c1 a :C;
+        :start "2016-01-01T20:00:00"^^xsd:dateTime;
+        :end "2016-01-02T20:01:00"^^xsd:dateTime.
+
+    :c2 a :C;
+        :start "2016-01-01T20:05:00"^^xsd:dateTime;
+        :end "2016-01-01T20:30:00"^^xsd:dateTime.
+    """
+
+    graph = rdflib.Graph()
+
+    f = io.StringIO(data)
+    graph.parse(f, format='n3')
+
+    result = graph.query("""
+    SELECT ?c ?duration
+    WHERE {
+        BIND(?end - ?start AS ?duration)
+        ?c :start ?start;
+            :end ?end.
+    }
+    """)
+    pprint(list(result))
+
+    print('\n')
+    
+    a= Literal('2006-01-01T20:50:00',datatype=rdflib.XSD.dateTime)
+    b= Literal('2006-02-01T20:50:00',datatype=rdflib.XSD.dateTime)
+    # b= Literal('2006-02-01',datatype=rdflib.XSD.date)
+
+    print(b-a)
+    print(rdflib.XSD.dateTime)
+
