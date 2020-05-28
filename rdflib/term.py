@@ -687,6 +687,32 @@ class Literal(Identifier):
 
             return Literal(s, self.language, datatype=new_datatype)
 
+    def __sub__(self, val):
+        """
+        Handling dateTime/date/time based operations in Literals
+        >>> from rdflib.namespace import XSD
+        >>> a= Literal('2006-01-01T20:50:00',datatype=XSD.dateTime)
+        >>> b= Literal('2006-02-01T20:50:00',datatype=XSD.dateTime)
+        >>> (b-a)
+        rdflib.term.Literal('P31D', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#duration'))
+        >>> from rdflib.namespace import XSD
+        >>> a= Literal('2006-07-01T20:52:00',datatype=XSD.dateTime)
+        >>> b= Literal('2006-11-01T12:50:00',datatype=XSD.dateTime)
+        >>> (b-a)
+        rdflib.term.Literal('-P122DT15H58M', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#duration'))
+        
+        """
+        # if no val is supplied, return this Literal
+        if val is None:
+            return self
+
+        # if self and val both are datetime based
+        if hasattr(self, 'datatype') and self.datatype in (_XSD_DATETIME, _XSD_DATE, _XSD_TIME) and val.datatype==self.datatype:
+            date1=self.toPython();
+            date2=val.toPython();
+            difference=date1-date2;   
+            return Literal(difference, datatype=_XSD_DURATION)
+
     def __bool__(self):
         """
         Is the Literal "True"

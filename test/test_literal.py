@@ -1,7 +1,7 @@
 import unittest
 
 import rdflib  # needed for eval(repr(...)) below
-from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind, _XSD_BOOLEAN
+from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind, _XSD_BOOLEAN, _XSD_DATETIME, _XSD_DURATION, _XSD_DATE
 
 
 def uformat(s):
@@ -127,6 +127,35 @@ class TestParseBoolean(unittest.TestCase):
         self.assertRaises(DeprecationWarning)
         self.assertFalse(test_value.value)
 
+class TestLiteralDateTimeOperatons(unittest.TestCase):
+    """extends the issue OF #629 - Handling datetime substraction operations in Literals as a datetime """
+    def testDateTimeSub(self):
+        a= Literal('2006-01-01T20:50:00',datatype=_XSD_DATETIME)
+        b= Literal('2006-02-01T20:50:00',datatype=_XSD_DATETIME)
+        result=(b-a)
+        expected=Literal('P31D',datatype=_XSD_DURATION);
+        self.assertTrue(result,expected)
+
+    def testDateTimeSub2(self):
+        a= Literal('2006-01-02T20:50:00',datatype=_XSD_DATETIME)
+        b= Literal('2006-05-01T20:50:00',datatype=_XSD_DATETIME)
+        result=(b-a)
+        expected=Literal('P119D',datatype=_XSD_DURATION)
+        self.assertTrue(result,expected)
+
+    def testDateTimeSub3(self):
+        a= Literal('2006-07-01T20:52:00',datatype=_XSD_DATE)
+        b= Literal('2006-11-01T12:50:00',datatype=_XSD_DATE)
+        result=(b-a)
+        expected=Literal('-P122DT15H58M',datatype=_XSD_DURATION)
+        self.assertTrue(result,expected)
+
+    def testDateTimeSub3(self):
+        a= Literal('2006-08-01',datatype=_XSD_DATE)
+        b= Literal('2006-11-01',datatype=_XSD_DATE)
+        result=(b-a)
+        expected=Literal('P92D',datatype=_XSD_DURATION)
+        self.assertTrue(result,expected)
 
 class TestBindings(unittest.TestCase):
     def testBinding(self):
