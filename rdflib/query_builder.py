@@ -313,15 +313,8 @@ class QueryBuilder:
 
     def INSERT(self, *args, **kwargs):
         for var in args:
-            if isinstance(var, AGGREGATE):
-                raise Exception(
-                    "Alias not provided for {}".format(
-                        var[1].n3()
-                    )
-                )
             if not is_acceptable_query_variable(var):
                 raise Exception("Argument not of valid type.")
-
             self.INSERT_variables_direct.append(var)
 
         for var_name, var in kwargs.items():
@@ -459,12 +452,10 @@ class QueryBuilder:
 
 if __name__ == "__main__":
     query = QueryBuilder().INSERT(
-        FOR_GRAPH(
-            Variable("s"),
             Variable("p"),
             Variable("o"),
-            name=URIRef("graph_name_1")
-        )
+            x=AGGREGATE.SUM(Variable("s")),
+
     ).WHERE(
         (Variable("s"), Variable("p"), Variable("o")),
         (Variable("o"), RDF.type, Variable("v")),
