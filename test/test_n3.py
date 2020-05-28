@@ -3,9 +3,7 @@ import unittest
 from rdflib.term import Literal, URIRef
 from rdflib.plugins.parsers.notation3 import BadSyntax, exponent_syntax
 import itertools
-
-from six import b
-from six.moves.urllib.error import URLError
+from urllib.error import URLError
 
 test_data = """
 #  Definitions of terms describing the n3 model
@@ -63,7 +61,6 @@ n3:context      a rdf:Property; rdfs:domain n3:statement;
 
 
 class TestN3Case(unittest.TestCase):
-
     def setUp(self):
         pass
 
@@ -94,12 +91,10 @@ class TestN3Case(unittest.TestCase):
         g = Graph()
         g.parse(data=input, format="n3")
         print(list(g))
-        self.assertTrue((None, None, Literal('Foo')) in g)
-        self.assertTrue(
-            (URIRef('http://example.com/doc/bar'), None, None) in g)
-        self.assertTrue(
-            (URIRef('http://example.com/doc/doc2/bing'), None, None) in g)
-        self.assertTrue((URIRef('http://test.com/bong'), None, None) in g)
+        self.assertTrue((None, None, Literal("Foo")) in g)
+        self.assertTrue((URIRef("http://example.com/doc/bar"), None, None) in g)
+        self.assertTrue((URIRef("http://example.com/doc/doc2/bing"), None, None) in g)
+        self.assertTrue((URIRef("http://test.com/bong"), None, None) in g)
 
     def testBaseExplicit(self):
         """
@@ -116,21 +111,24 @@ class TestN3Case(unittest.TestCase):
 <bar> :name "Bar" .
 """
         g = Graph()
-        g.parse(data=input, publicID='http://blah.com/', format="n3")
+        g.parse(data=input, publicID="http://blah.com/", format="n3")
         print(list(g))
-        self.assertTrue(
-            (URIRef('http://blah.com/foo'), None, Literal('Foo')) in g)
-        self.assertTrue(
-            (URIRef('http://example.com/doc/bar'), None, None) in g)
+        self.assertTrue((URIRef("http://blah.com/foo"), None, Literal("Foo")) in g)
+        self.assertTrue((URIRef("http://example.com/doc/bar"), None, None) in g)
 
     def testBaseSerialize(self):
         g = Graph()
-        g.add((URIRef('http://example.com/people/Bob'), URIRef(
-            'urn:knows'), URIRef('http://example.com/people/Linda')))
-        s = g.serialize(base='http://example.com/', format='n3')
-        self.assertTrue(b('<people/Bob>') in s)
+        g.add(
+            (
+                URIRef("http://example.com/people/Bob"),
+                URIRef("urn:knows"),
+                URIRef("http://example.com/people/Linda"),
+            )
+        )
+        s = g.serialize(base="http://example.com/", format="n3")
+        self.assertTrue("<people/Bob>".encode("latin-1") in s)
         g2 = ConjunctiveGraph()
-        g2.parse(data=s, publicID='http://example.com/', format='n3')
+        g2.parse(data=s, publicID="http://example.com/", format="n3")
         self.assertEqual(list(g), list(g2))
 
     def testIssue23(self):
@@ -194,7 +192,8 @@ foo-bar:Ex foo-bar:name "Test" . """
         g = Graph()
         g.parse(
             data="@prefix a.1: <http://example.org/> .\n a.1:cake <urn:x> <urn:y> . \n",
-            format='n3')
+            format="n3",
+        )
 
     def testModel(self):
         g = ConjunctiveGraph()
@@ -217,47 +216,62 @@ foo-bar:Ex foo-bar:name "Test" . """
         g = ConjunctiveGraph()
         try:
             g.parse(
-                "http://groups.csail.mit.edu/dig/2005/09/rein/examples/troop42-policy.n3", format="n3")
+                "http://groups.csail.mit.edu/dig/2005/09/rein/examples/troop42-policy.n3",
+                format="n3",
+            )
         except URLError:
             from nose import SkipTest
-            raise SkipTest(
-                'No network to retrieve the information, skipping test')
+
+            raise SkipTest("No network to retrieve the information, skipping test")
 
     def testSingleQuotedLiterals(self):
-        test_data = ["""@prefix : <#> . :s :p 'o' .""",
-                     """@prefix : <#> . :s :p '''o''' ."""]
+        test_data = [
+            """@prefix : <#> . :s :p 'o' .""",
+            """@prefix : <#> . :s :p '''o''' .""",
+        ]
 
         for data in test_data:
             # N3 doesn't accept single quotes around string literals
             g = ConjunctiveGraph()
-            self.assertRaises(BadSyntax, g.parse,
-                              data=data, format='n3')
+            self.assertRaises(BadSyntax, g.parse, data=data, format="n3")
 
             g = ConjunctiveGraph()
-            g.parse(data=data, format='turtle')
+            g.parse(data=data, format="turtle")
             self.assertEqual(len(g), 1)
             for _, _, o in g:
-                self.assertEqual(o, Literal('o'))
+                self.assertEqual(o, Literal("o"))
 
     def testEmptyPrefix(self):
 
         # this is issue https://github.com/RDFLib/rdflib/issues/312
         g1 = Graph()
-        g1.parse(data=":a :b :c .", format='n3')
+        g1.parse(data=":a :b :c .", format="n3")
 
         g2 = Graph()
-        g2.parse(data="@prefix : <#> . :a :b :c .", format='n3')
+        g2.parse(data="@prefix : <#> . :a :b :c .", format="n3")
 
         assert set(g1) == set(
-            g2), 'Document with declared empty prefix must match default #'
+            g2
+        ), "Document with declared empty prefix must match default #"
 
 
 class TestRegularExpressions(unittest.TestCase):
     def testExponents(self):
         signs = ("", "+", "-")
-        mantissas = ("1", "1.", ".1",
-                     "12", "12.", "1.2", ".12",
-                     "123", "123.", "12.3", "1.23", ".123")
+        mantissas = (
+            "1",
+            "1.",
+            ".1",
+            "12",
+            "12.",
+            "1.2",
+            ".12",
+            "123",
+            "123.",
+            "12.3",
+            "1.23",
+            ".123",
+        )
         es = "eE"
         exps = ("1", "12", "+1", "-1", "+12", "-12")
         for parts in itertools.product(signs, mantissas, es, exps):
@@ -271,5 +285,5 @@ class TestRegularExpressions(unittest.TestCase):
             self.assertFalse(exponent_syntax.match(expstring))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

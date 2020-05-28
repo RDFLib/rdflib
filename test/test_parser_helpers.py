@@ -1,4 +1,5 @@
 from rdflib.plugins.sparql.parser import TriplesSameSubject
+
 # from rdflib.plugins.sparql.algebra import triples
 
 

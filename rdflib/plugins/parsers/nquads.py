@@ -28,8 +28,6 @@ from __future__ import print_function
 
 from codecs import getreader
 
-from six import b
-
 from rdflib import ConjunctiveGraph
 
 # Build up from the NTriples parser:
@@ -37,28 +35,27 @@ from rdflib.plugins.parsers.ntriples import NTriplesParser
 from rdflib.plugins.parsers.ntriples import ParseError
 from rdflib.plugins.parsers.ntriples import r_tail
 from rdflib.plugins.parsers.ntriples import r_wspace
-from rdflib.plugins.parsers.ntriples import r_wspaces
 
-__all__ = ['NQuadsParser']
+__all__ = ["NQuadsParser"]
 
 
 class NQuadsParser(NTriplesParser):
-
     def parse(self, inputsource, sink, **kwargs):
         """Parse f as an N-Triples file."""
-        assert sink.store.context_aware, ("NQuadsParser must be given"
-                                          " a context aware store.")
+        assert sink.store.context_aware, (
+            "NQuadsParser must be given" " a context aware store."
+        )
         self.sink = ConjunctiveGraph(store=sink.store, identifier=sink.identifier)
 
         source = inputsource.getByteStream()
 
-        if not hasattr(source, 'read'):
+        if not hasattr(source, "read"):
             raise ParseError("Item to parse must be a file-like object.")
 
-        source = getreader('utf-8')(source)
+        source = getreader("utf-8")(source)
 
         self.file = source
-        self.buffer = ''
+        self.buffer = ""
         while True:
             self.line = __line = self.readline()
             if self.line is None:
@@ -72,7 +69,7 @@ class NQuadsParser(NTriplesParser):
 
     def parseline(self):
         self.eat(r_wspace)
-        if (not self.line) or self.line.startswith(('#')):
+        if (not self.line) or self.line.startswith(("#")):
             return  # The line is empty or a comment
 
         subject = self.subject()
