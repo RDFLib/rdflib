@@ -301,19 +301,20 @@ class QueryBuilder:
         return self
 
     def INSERT(self, *args):
-        for var in args:
-            if not is_acceptable_query_variable(var):
-                raise Exception("Argument not of valid type.")
-            self.INSERT_variables_direct.append(var)
+        for statement in args:
+            if not is_acceptable_query_variable(statement):
+                self.INSERT_variables_direct.append(STATEMENT(statement))
+            else:
+                self.INSERT_variables_direct.append(statement)
 
         return self
 
     def DELETE(self, *args):
-        for var in args:
-            if not is_acceptable_query_variable(var):
-                raise Exception("Argument not of valid type.")
-
-            self.DELETE_variables_direct.append(var)
+        for statement in args:
+            if not is_acceptable_query_variable(statement):
+                self.DELETE_variables_direct.append(STATEMENT(statement))
+            else:
+                self.DELETE_variables_direct.append(statement)
 
         return self
 
