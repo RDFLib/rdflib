@@ -35,19 +35,6 @@ class TestIssue833(unittest.TestCase):
         self.quads.append((bob, likes, cheese, self.graph))
         self.quads.append((bob, hates, pizza, self.graph))
 
-    def testAdd(self):
-        asserte = self.assertEqual
-        tarek = self.tarek
-        likes = self.likes
-        cheese = self.cheese
-
-        # New triple
-        added = self.graph.add((tarek,likes,cheese))
-        asserte(added,1)
-        # Duplicate Triple
-        added = self.graph.add((tarek,likes,cheese))
-        asserte(added,0)
-
     def testAddN(self):
         asserte = self.assertEqual
         tarek = self.tarek
