@@ -4,11 +4,9 @@ from __future__ import print_function
 
 import random
 
-from rdflib.term import BNode
-from rdflib.store import Store, NO_STORE, VALID_STORE
-from six import iteritems
+from rdflib.store import Store
 
-__all__ = ['Memory', 'IOMemory']
+__all__ = ["Memory", "IOMemory"]
 
 ANY = Any = None
 
@@ -114,14 +112,12 @@ class Memory(Store):
                     if predicate in subjectDictionary:
                         if object != ANY:  # subject+predicate+object is given
                             if object in subjectDictionary[predicate]:
-                                yield (subject, predicate, object), \
-                                    self.__contexts()
+                                yield (subject, predicate, object), self.__contexts()
                             else:  # given object not found
                                 pass
                         else:  # subject+predicate is given, object unbound
                             for o in subjectDictionary[predicate].keys():
-                                yield (subject, predicate, o), \
-                                    self.__contexts()
+                                yield (subject, predicate, o), self.__contexts()
                     else:  # given predicate not found
                         pass
                 else:  # subject given, predicate unbound
@@ -179,7 +175,7 @@ class Memory(Store):
         return self.__prefix.get(namespace, None)
 
     def namespaces(self):
-        for prefix, namespace in iteritems(self.__namespace):
+        for prefix, namespace in self.__namespace.items():
             yield prefix, namespace
 
     def __contexts(self):
@@ -210,6 +206,7 @@ class IOMemory(Store):
     slow.
 
     """
+
     context_aware = True
     formula_aware = True
     graph_aware = True
@@ -236,11 +233,12 @@ class IOMemory(Store):
         self.__obj2int = {None: None}  # maps objects to integer keys
 
         # Indexes for each triple part, and a list of contexts for each triple
-        self.__subjectIndex = {}    # key: sid    val: set(enctriples)
+        self.__subjectIndex = {}  # key: sid    val: set(enctriples)
         self.__predicateIndex = {}  # key: pid    val: set(enctriples)
-        self.__objectIndex = {}     # key: oid    val: set(enctriples)
-        self.__tripleContexts = {
-        }  # key: enctriple    val: {cid1: quoted, cid2: quoted ...}
+        self.__objectIndex = {}  # key: oid    val: set(enctriples)
+        self.__tripleContexts = (
+            {}
+        )  # key: enctriple    val: {cid1: quoted, cid2: quoted ...}
         self.__contextTriples = {None: set()}  # key: cid    val: set(enctriples)
 
         # all contexts used in store (unencoded)
@@ -259,7 +257,7 @@ class IOMemory(Store):
         return self.__prefix.get(namespace, None)
 
     def namespaces(self):
-        for prefix, namespace in iteritems(self.__namespace):
+        for prefix, namespace in self.__namespace.items():
             yield prefix, namespace
 
     def add(self, triple, context, quoted=False):
@@ -312,16 +310,20 @@ class IOMemory(Store):
 
                 del self.__tripleContexts[enctriple]
 
-        if not req_cid is None and \
-                req_cid in self.__contextTriples and \
-                len(self.__contextTriples[req_cid]) == 0:
+        if (
+            req_cid is not None
+            and req_cid in self.__contextTriples
+            and len(self.__contextTriples[req_cid]) == 0
+        ):
             # all triples are removed out of this context
             # and it's not the default context so delete it
             del self.__contextTriples[req_cid]
 
-        if triplepat == (None, None, None) and \
-                context in self.__all_contexts and \
-                not self.graph_aware:
+        if (
+            triplepat == (None, None, None)
+            and context in self.__all_contexts
+            and not self.graph_aware
+        ):
             # remove the whole context
             self.__all_contexts.remove(context)
 
@@ -340,9 +342,11 @@ class IOMemory(Store):
 
         # optimize "triple in graph" case (all parts given)
         if sid is not None and pid is not None and oid is not None:
-            if sid in self.__subjectIndex and \
-               enctriple in self.__subjectIndex[sid] and \
-               self.__tripleHasContext(enctriple, cid):
+            if (
+                sid in self.__subjectIndex
+                and enctriple in self.__subjectIndex[sid]
+                and self.__tripleHasContext(enctriple, cid)
+            ):
                 return ((triplein, self.__contexts(enctriple)) for i in [0])
             else:
                 return self.__emptygen()
@@ -371,9 +375,11 @@ class IOMemory(Store):
         else:
             enctriples = sets[0].copy()
 
-        return ((self.__decodeTriple(enctriple), self.__contexts(enctriple))
-                for enctriple in enctriples
-                if self.__tripleHasContext(enctriple, cid))
+        return (
+            (self.__decodeTriple(enctriple), self.__contexts(enctriple))
+            for enctriple in enctriples
+            if self.__tripleHasContext(enctriple, cid)
+        )
 
     def contexts(self, triple=None):
         if triple is None or triple == (None, None, None):
@@ -420,8 +426,7 @@ class IOMemory(Store):
             if enctriple not in self.__tripleContexts:
                 # triple exists with default ctx info
                 # start with a copy of the default ctx info
-                self.__tripleContexts[
-                    enctriple] = self.__defaultContexts.copy()
+                self.__tripleContexts[enctriple] = self.__defaultContexts.copy()
 
             self.__tripleContexts[enctriple][cid] = quoted
             if not quoted:
@@ -464,12 +469,11 @@ class IOMemory(Store):
     def __tripleHasContext(self, enctriple, cid):
         """return True iff the triple exists in the given context"""
         ctxs = self.__tripleContexts.get(enctriple, self.__defaultContexts)
-        return (cid in ctxs)
+        return cid in ctxs
 
     def __removeTripleContext(self, enctriple, cid):
         """remove the context from the triple"""
-        ctxs = self.__tripleContexts.get(
-            enctriple, self.__defaultContexts).copy()
+        ctxs = self.__tripleContexts.get(enctriple, self.__defaultContexts).copy()
         del ctxs[cid]
         if ctxs == self.__defaultContexts:
             del self.__tripleContexts[enctriple]
@@ -509,7 +513,11 @@ class IOMemory(Store):
     def __contexts(self, enctriple):
         """return a generator for all the non-quoted contexts
            (unencoded) the encoded triple appears in"""
-        return (self.__int2obj.get(cid) for cid in self.__getTripleContexts(enctriple, skipQuoted=True) if cid is not None)
+        return (
+            self.__int2obj.get(cid)
+            for cid in self.__getTripleContexts(enctriple, skipQuoted=True)
+            if cid is not None
+        )
 
     def __emptygen(self):
         """return an empty generator"""

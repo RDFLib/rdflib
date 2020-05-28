@@ -20,7 +20,7 @@ matching nodes by term-patterns probably will only be terms and not nodes.
 BNodes
 ======
 
-    In RDF, a blank node (also called BNode) is a node in an RDF graph representing a resource for which a URI or literal is not given. The resource represented by a blank node is also called an anonymous resource. By RDF standard a blank node can only be used as subject or object in an RDF triple, although in some syntaxes like Notation 3 [1] it is acceptable to use a blank node as a predicate. If a blank node has a node ID (not all blank nodes are labelled in all RDF serializations), it is limited in scope to a serialization of a particular RDF graph, i.e. the node p1 in the subsequent example does not represent the same node as a node named p1 in any other graph  --`wikipedia`__
+In RDF, a blank node (also called BNode) is a node in an RDF graph representing a resource for which a URI or literal is not given. The resource represented by a blank node is also called an anonymous resource. By RDF standard a blank node can only be used as subject or object in an RDF triple, although in some syntaxes like Notation 3 [1] it is acceptable to use a blank node as a predicate. If a blank node has a node ID (not all blank nodes are labelled in all RDF serializations), it is limited in scope to a serialization of a particular RDF graph, i.e. the node p1 in the subsequent example does not represent the same node as a node named p1 in any other graph  --`wikipedia`__
 
 
 .. __: http://en.wikipedia.org/wiki/Blank_node
@@ -40,7 +40,7 @@ BNodes
 URIRefs
 =======
 
-    A URI reference within an RDF graph is a Unicode string that does not contain any control characters ( #x00 - #x1F, #x7F-#x9F) and would produce a valid URI character sequence representing an absolute URI with optional fragment identifier -- `W3 RDF Concepts`__
+A URI reference within an RDF graph is a Unicode string that does not contain any control characters ( #x00 - #x1F, #x7F-#x9F) and would produce a valid URI character sequence representing an absolute URI with optional fragment identifier -- `W3 RDF Concepts`__
 
 .. __: http://www.w3.org/TR/rdf-concepts/#section-Graph-URIref
 
@@ -158,5 +158,4 @@ and the other direction with
 All this happens automatically when creating ``Literal`` objects by passing Python objects to the constructor, and you never have to do this manually. 
 
 You can add custom data-types with :func:`rdflib.term.bind`, see also :mod:`examples.custom_datatype`
-
 

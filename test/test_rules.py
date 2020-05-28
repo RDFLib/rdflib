@@ -36,11 +36,15 @@ try:
 
     def facts(g):
         for s, p, o in g:
-            if p != LOG.implies and not isinstance(s, BNode) and not isinstance(o, BNode):
+            if (
+                p != LOG.implies
+                and not isinstance(s, BNode)
+                and not isinstance(o, BNode)
+            ):
                 yield terms.Fact(_convert(s), _convert(p), _convert(o))
 
     class PychinkoTestCase(unittest.TestCase):
-        backend = 'default'
+        backend = "default"
         tmppath = None
 
         def setUp(self):
@@ -66,7 +70,8 @@ try:
             source = self.g
             interp.addFacts(set(facts(source)), initialSet=True)
             interp.run()
-            #_logger.debug("inferred facts: %s" % interp.inferredFacts)
+            # _logger.debug("inferred facts: %s" % interp.inferredFacts)
+
 
 except ImportError as e:
     print("Could not test Pychinko: %s" % e)
