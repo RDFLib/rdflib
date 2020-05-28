@@ -2,7 +2,9 @@ from __future__ import unicode_literals
 
 from rdflib import Variable, URIRef
 
+# list of supported aggregate functions
 AGGREGATE_FUNCTION_LIST = ["SUM", "AVG", "COUNT", "SET", "MIN", "MAX", "GROUPCONTACT", "SAMPLE"]
+# list of supported functions expressions
 FUNCTION_EXPRESSION_SUPPORTED_LIST = [
     "ASC", "DESC", "IRI", "ISBLANK", "ISLITERAL", "ISIRI", "ISNUMERIC", "BNODE",
     "ABS", "IF", "RAND", "UUID", "STRUUID", "MD5", "SHA1", "SHA256",
@@ -16,13 +18,39 @@ FUNCTION_EXPRESSION_SUPPORTED_LIST = [
 
 
 def is_variable_supported(variable):
+    """
+    Function to check the input variable in query.
+    The variable should have a n3() function that provides the n triple format output.
+
+    :param variable: individual to be checked.
+    :return: boolean
+    """
     return hasattr(variable, "n3")
 
 
 class STATEMENT(tuple):
+    """
+    Class to store triples in format of tuples.
+
+    This object is used to define an n3() function for triples
+    given as input in form of tuples. It extends tuple class and
+    the objects can be accessed in a similar manner.
+
+    Each triple has to be a tuple of length 3, in format (s, p, o).
+
+    Made to be used internally and not be called by user.
+    """
     def __new__(cls, statement):
+        """
+        Function to define the new object created using STATEMENT class.
+
+        :param statement: the variable to be converted to the given class.
+        :return: tuple type STATEMENT
+        """
+        # has to be of length 3 (s, p, o)
         if len(statement) == 3:
             s, p, o = statement
+            # check the variable support
             if is_variable_supported(s) and is_variable_supported(
                     p) and is_variable_supported(o):
                 return tuple.__new__(STATEMENT, (s, p, o))
@@ -36,6 +64,12 @@ class STATEMENT(tuple):
             raise Exception("Statement has to be a tuple in the format (s, p, o)")
 
     def n3(self):
+        """
+        Function to provide the n triple format of the object.
+        Each triple in its n3() format is: "?s ?p ?o ."
+
+        :return: string
+        """
         return self[0].n3() + " " + self[1].n3() + " " + self[2].n3() + " ."
 
 
