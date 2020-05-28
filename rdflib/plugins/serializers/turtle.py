@@ -292,9 +292,6 @@ class TurtleSerializer(RecursiveSerializer):
         flag=0
         if parts==None:
             gh = self.namespaces
-            
-            if(len(gh)==0):
-                print("")
             for i in gh.keys():
                 g = gh[i]
                 try:
@@ -319,15 +316,12 @@ class TurtleSerializer(RecursiveSerializer):
                         return u'%s:%s' % (prefix, local)
 
                 except:
-                    print("")
+                    continue
                 
                 
-        if flag==1:
-            print("1",namespace,prefix,local)
-            
-        else:
+        if flag!=1:
             prefix, namespace, local = parts
-            print("2",namespace,prefix,local)
+           
         #prefix, namespace, local = parts
 
         # QName cannot end with .
