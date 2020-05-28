@@ -387,7 +387,7 @@ class Graph(Node):
         assert isinstance(s, Node), "Subject %s must be an rdflib term" % (s,)
         assert isinstance(p, Node), "Predicate %s must be an rdflib term" % (p,)
         assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
-        return self.__store.add((s, p, o), self, quoted=False)
+        self.__store.add((s, p, o), self, quoted=False)
 
     def addN(self, quads):
         """Add a sequence of triple with context"""
