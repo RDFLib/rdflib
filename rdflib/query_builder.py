@@ -43,6 +43,7 @@ class STATEMENT(tuple):
     def __new__(cls, statement):
         """
         Function to define the new object created using STATEMENT class.
+        There should be 3 variables in the statement and all should be supported.
 
         :param statement: the variable to be converted to the given class.
         :return: tuple type STATEMENT
@@ -74,9 +75,25 @@ class STATEMENT(tuple):
 
 
 class Operators(object):
+    """
+    Class is meant to be used with FILTER while making a conditional query.
 
+    To be used as:
+    >> Operators.GT(var1, var2)
+    The above statement gives an output of var1 > var2.
+
+    This class can be nested inside itself to produce a complex expression.
+    """
     @staticmethod
     def GT(left, right):
+        """
+        Greater than operator. Accepts only 2 arguments.
+
+        :param left: left argument for the operator
+        :param right: right argument for the operator
+        :return: CONDITIONAL_STATEMENT, storing the details.
+        """
+        # check the variables support in both arguments
         if is_variable_supported(left) and is_variable_supported(right):
             return CONDITIONAL_STATEMENT(left, ">", right)
         else:
@@ -84,6 +101,14 @@ class Operators(object):
 
     @staticmethod
     def LT(left, right):
+        """
+        Less than operator. Accepts only 2 arguments.
+
+        :param left: left argument for the operator
+        :param right: right argument for the operator
+        :return: CONDITIONAL_STATEMENT, storing the details.
+        """
+        # check the variables support in both arguments
         if is_variable_supported(left) and is_variable_supported(right):
             return CONDITIONAL_STATEMENT(left, "<", right)
         else:
@@ -91,6 +116,14 @@ class Operators(object):
 
     @staticmethod
     def EQ(left, right):
+        """
+        Equality operator. Accepts only 2 arguments.
+
+        :param left: left argument for the operator
+        :param right: right argument for the operator
+        :return: CONDITIONAL_STATEMENT, storing the details.
+        """
+        # check the variables support in both arguments
         if is_variable_supported(left) and is_variable_supported(right):
             return CONDITIONAL_STATEMENT(left, "=", right)
         else:
@@ -98,6 +131,14 @@ class Operators(object):
 
     @staticmethod
     def NE(left, right):
+        """
+        Unequality operator. Accepts only 2 arguments.
+
+        :param left: left argument for the operator
+        :param right: right argument for the operator
+        :return: CONDITIONAL_STATEMENT, storing the details.
+        """
+        # check the variables support in both arguments
         if is_variable_supported(left) and is_variable_supported(right):
             return CONDITIONAL_STATEMENT(left, "!=", right)
         else:
@@ -105,6 +146,14 @@ class Operators(object):
 
     @staticmethod
     def GE(left, right):
+        """
+        Greater than and equal to operator. Accepts only 2 arguments.
+
+        :param left: left argument for the operator
+        :param right: right argument for the operator
+        :return: CONDITIONAL_STATEMENT, storing the details.
+        """
+        # check the variables support in both arguments
         if is_variable_supported(left) and is_variable_supported(right):
             return CONDITIONAL_STATEMENT(left, ">=", right)
         else:
@@ -112,6 +161,14 @@ class Operators(object):
 
     @staticmethod
     def LE(left, right):
+        """
+        Less than and equal to operator. Accepts only 2 arguments.
+
+        :param left: left argument for the operator
+        :param right: right argument for the operator
+        :return: CONDITIONAL_STATEMENT, storing the details.
+        """
+        # check the variables support in both arguments
         if is_variable_supported(left) and is_variable_supported(right):
             return CONDITIONAL_STATEMENT(left, "<=", right)
         else:
@@ -119,6 +176,14 @@ class Operators(object):
 
     @staticmethod
     def AND(left, right):
+        """
+        And operator. Accepts only 2 arguments.
+
+        :param left: left argument for the operator
+        :param right: right argument for the operator
+        :return: CONDITIONAL_STATEMENT, storing the details.
+        """
+        # check the variables support in both arguments
         if is_variable_supported(left) and is_variable_supported(right):
             return CONDITIONAL_STATEMENT(left, "&&", right)
         else:
@@ -126,6 +191,14 @@ class Operators(object):
 
     @staticmethod
     def OR(left, right):
+        """
+        Or operator. Accepts only 2 arguments.
+
+        :param left: left argument for the operator
+        :param right: right argument for the operator
+        :return: CONDITIONAL_STATEMENT, storing the details.
+        """
+        # check the variables support in both arguments
         if is_variable_supported(left) and is_variable_supported(right):
             return CONDITIONAL_STATEMENT(left, "||", right)
         else:
@@ -133,6 +206,16 @@ class Operators(object):
 
     @staticmethod
     def IN(left, *args):
+        """
+        IN operator. Accepts the cumpulsory left argument and multiple right arguments.
+
+        The IN operator can have multiple values for comparison.
+
+        :param left: left argument for the operator
+        :param args: multiple right arguments for the operator
+        :return: CONDITIONAL_STATEMENT, storing the details
+        """
+        # check the variables support in left argument
         if not is_variable_supported(left):
             raise Exception("Operands are not of acceptable type.")
         for var in args:
@@ -143,23 +226,72 @@ class Operators(object):
 
 
 class OPTIONAL(STATEMENT):
+    """
+    Class to be used by the user, to input an Optional tuples in the query.
+    Usage as follows
+    >> OPTIONAL ( (s, p, o) )
+    Output: OPTIONAL { ?s ?p ?o . } .
+
+    The optional conditional is also a statement, which can be used anywhere
+    in the query. Thus, the STATEMENT class is extended for this purpose.
+    """
     def __new__(cls, statement):
+        """
+        Function to create the OPTIONAL object.
+        The input is converted to the super class object and stored as a tuple.
+
+        :param statement: statement to be used as optional
+        :return: OPTIONAL tuple object
+        """
         stmt = super(OPTIONAL, cls).__new__(cls, statement)
         return tuple.__new__(OPTIONAL, stmt)
 
     def n3(self):
+        """
+        Function to provide the n triple format of the object.
+        Each triple in its n3() format is: "OPTIONAL { ?s ?p ?o . } ."
+
+        :return: string
+        """
         return "OPTIONAL { " + super().n3() + " }" + " ."
 
 
 class CONDITIONAL_STATEMENT(STATEMENT):
+    """
+    Class to store operator details in an object. It extends the
+    the STATEMENT class, and can be used like it.
+
+    This class is ,however, for internal use cases and shouldn't be used
+    directly by the user.
+    """
     def __new__(cls, left, operator, *args):
+        """
+        Function to create a new object of CONDITIONAL_STATEMENT and store as a tuple.
+        No check is provided for the arguments, and should be passed after checking with
+        is_variable_supported.
+
+        :param left: left argument for the operator
+        :param operator: operator string
+        :param args: right arguments for the operator
+        :return: CONDITIONAL_STATEMENT tuple object
+        """
         return tuple.__new__(CONDITIONAL_STATEMENT, (left, operator, args))
 
     def n3(self):
+        """
+        Function to provide the n triple format of the object.
+        Each triple in its n3() format is:
+        1. If there is only one right argument: "?left op ?right"
+        2. 2 or more right arguments: "?left op (?right1, ?right2, ?right, ...)"
+
+        :return: string
+        """
         n3_string = self[0].n3() + " " + self[1] + " "
+        # check if there is only one right arguments for the operator
         if len(self[2]) == 1:
             n3_string += self[2][0].n3()
         else:
+            # cover the comma separated arguments with circular brackets.
             n3_string += "( "
             for i in range(len(self[2])):
                 n3_string += self[2][i].n3()
@@ -245,7 +377,24 @@ for function_expression in FUNCTION_EXPRESSION_SUPPORTED_LIST:
 
 
 class FILTER(STATEMENT):
+    """
+    Class to apply filter statement in queries. The filter function is used
+    as a statement and hence, extends the class STATEMENT.
+    Used as follows
+    >> FILTER(Operator.LT(var1, var2))
+    Output: FILTER ( ?var1 < ?var2 ) .
+
+    It only accepts one parameter which will cover the whole filter.
+    """
     def __new__(cls, expression):
+        """
+        Function to create object of FILTER.
+        It accepts only 1 paramter as the expression which is used
+        to apply the filter on the query.
+
+        :param expression: expression to be used for filtering.
+        :return: FILTER tuple object
+        """
         if not is_variable_supported(expression):
             raise Exception(
                 "Expression {} in FILTER not of acceptable type".format(
@@ -256,16 +405,50 @@ class FILTER(STATEMENT):
         return tuple.__new__(FILTER, (expression,))
 
     def n3(self):
+        """
+        Function to provide the n triple format of the object.
+        Each triple in its n3() format is "FILTER ( expression )".
+
+        :return: string
+        """
         return "FILTER ( " + self[0].n3() + " ) ."
 
 
 class FOR_GRAPH(STATEMENT):
+    """
+    Class to specify the graph for the statements and tuple in the query.
+    This can be used while specifying graph in where, insert, delete, etc.
+
+    This object can be passed as a statement in any function and hence, extends the STATEMENT class.
+    Usage:
+    >> FOR_GRAPH (
+        (s, p, o),
+        name=URIRef("graphname")
+    )
+    Output: GRAPH <graphname> {
+        ?s ?p ?o
+    }
+
+    Other statements can be passed as arguments.
+    The graph is assumed to be default if a name is not provided.
+    """
     def __new__(cls, *args, name=None):
+        """
+        Function to create GRAPH specific statements.
+        It can take multiple statements as objects, be it filter, optional, etc.
+        The name is advisabel to be provided using URIRef.
+
+        :param args: statements to be queried for the specific graph
+        :param name: name of graph
+        :return: FOR_GRAPH tuple object
+        """
+        # if name is present, it should be in the supported format
         if name and not is_variable_supported(name):
             raise Exception("GRAPH name not of acceptable type.")
 
         statements = []
         for stmt in args:
+            # convert he statements to supported format if not already present
             if not is_variable_supported(stmt):
                 statements.append(STATEMENT(stmt))
             else:
@@ -274,6 +457,16 @@ class FOR_GRAPH(STATEMENT):
         return tuple.__new__(FOR_GRAPH, (name, statements))
 
     def n3(self):
+        """
+        Function to provide the n triple format of the object.
+        Each triple in its n3() format is:
+        GRAPH <name> {
+            stmt1 .
+            stmt2 .
+        } .
+
+        :return: string
+        """
         n3_string = ""
         if self[0]:
             n3_string += "GRAPH " + self[0].n3() + " "
