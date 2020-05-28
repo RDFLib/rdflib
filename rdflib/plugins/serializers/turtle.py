@@ -283,11 +283,43 @@ class TurtleSerializer(RecursiveSerializer):
             if pfx is not None:
                 parts = (pfx, uri, "")
             else:
+                gh = self.namespaces
+                if(len(gh)==0):
+                    return None
                 # nothing worked
-                return None
+                #return None
+        flag=0
+        if parts==None:
+            gh = self.namespaces
 
-        prefix, namespace, local = parts
+            for i in gh.keys():
+                g = gh[i]
+                try:
+                    parts = self.store.compute_qname(g, generate=gen_prefix)
+                    prefix,namespace,local = parts
+                    n = str(namespace)
+                    w = str(uri).split(n)
+                    if(len(w)==2):
+                        flag=1
+                        sp = ['%','&','*','#','?',':','!','.','$','_','-','+','=',',','(',')','~']
+                        l = w[len(w)-1]
+                        w1=""
+                        for i in l:
+                            if(i in sp):
+                                w1=w1+'\\'+i
+                            else:
+                                w1=w1+i
+                        local=w1
+                        prefix = self.addNamespace(prefix, namespace)
+                        return u'%s:%s' % (prefix, local)
 
+                except:
+                    continue
+                
+                
+        if flag!=1:
+            prefix, namespace, local = parts
+    
         # QName cannot end with .
         if local.endswith("."):
             return None
