@@ -861,52 +861,52 @@ class QueryBuilder:
         return QueryBuilder.QueryString(self.query)
 
 
-if __name__ == "__main__":
-    query = QueryBuilder().INSERT(
-            Variable("p"),
-            Variable("o"),
-            Variable("s")
-    ).WHERE(
-        (Variable("s"), Variable("p"), Variable("o")),
-        (Variable("o"), RDF.type, Variable("v")),
-        OPTIONAL(
-            (Variable("o"), RDFS.subClassOf, OWL.thing)
-        ),
-        FOR_GRAPH(
-            FILTER(
-                Operators.AND(
-                    Operators.GE(Variable("v"), Literal(5)),
-                    Operators.LT(Variable("v"), Literal(13))
-                )
-            ),
-            name=URIRef("arshgraph_name_2")
-        ),
-        FOR_GRAPH(
-            FILTER(
-                Operators.IN(
-                    Variable("v"),
-                    Literal("literal_string_1"),
-                    Literal("12", datatype=XSD.integer)
-                )
-            )
-        )
-    ).GROUP_BY(
-        Variable("v"),
-        Variable("s")
-    ).ORDER_BY(
-        Variable("v"),
-        FunctionExpressions.ASC(Variable("s"))
-    ).LIMIT(
-        100
-    ).OFFSET(
-        20
-    ).build()
-    print(query)
-
-    query = QueryBuilder().ADD(
-        add_from_graph=URIRef("default"),
-        add_to_graph=URIRef("graph_1"),
-        add_silent=False
-    ).build()
-
-    print(query)
+# if __name__ == "__main__":
+    # query = QueryBuilder().INSERT(
+    #         Variable("p"),
+    #         Variable("o"),
+    #         Variable("s")
+    # ).WHERE(
+    #     (Variable("s"), Variable("p"), Variable("o")),
+    #     (Variable("o"), RDF.type, Variable("v")),
+    #     OPTIONAL(
+    #         (Variable("o"), RDFS.subClassOf, OWL.thing)
+    #     ),
+    #     FOR_GRAPH(
+    #         FILTER(
+    #             Operators.AND(
+    #                 Operators.GE(Variable("v"), Literal(5)),
+    #                 Operators.LT(Variable("v"), Literal(13))
+    #             )
+    #         ),
+    #         name=URIRef("arshgraph_name_2")
+    #     ),
+    #     FOR_GRAPH(
+    #         FILTER(
+    #             Operators.IN(
+    #                 Variable("v"),
+    #                 Literal("literal_string_1"),
+    #                 Literal("12", datatype=XSD.integer)
+    #             )
+    #         )
+    #     )
+    # ).GROUP_BY(
+    #     Variable("v"),
+    #     Variable("s")
+    # ).ORDER_BY(
+    #     Variable("v"),
+    #     FunctionExpressions.ASC(Variable("s"))
+    # ).LIMIT(
+    #     100
+    # ).OFFSET(
+    #     20
+    # ).build()
+    # print(query)
+    #
+    # query = QueryBuilder().ADD(
+    #     add_from_graph=URIRef("default"),
+    #     add_to_graph=URIRef("graph_1"),
+    #     add_silent=False
+    # ).build()
+    #
+    # print(query)
