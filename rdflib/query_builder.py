@@ -25,7 +25,7 @@ class STATEMENT(tuple):
             raise Exception("Statement has to be a tuple in the format (s, p, o)")
 
     def n3(self):
-        return self[0].n3() + " " + self[1].n3() + " " + self[2].n3()
+        return self[0].n3() + " " + self[1].n3() + " " + self[2].n3() + " ."
 
 
 class Operators(object):
@@ -103,7 +103,7 @@ class OPTIONAL(STATEMENT):
         return tuple.__new__(OPTIONAL, stmt)
 
     def n3(self):
-        return "OPTIONAL { " + super().n3() + " }"
+        return "OPTIONAL { " + super().n3() + " }" + " ."
 
 
 class CONDITIONAL_STATEMENT(STATEMENT):
@@ -225,11 +225,11 @@ class FILTER(STATEMENT):
         return tuple.__new__(FILTER, (expression,))
 
     def n3(self):
-        return "FILTER ( " + self[0].n3() + " )"
+        return "FILTER ( " + self[0].n3() + " ) ."
 
 
 class FOR_GRAPH(STATEMENT):
-    def __new__(cls, *args, name=None, **kwargs):
+    def __new__(cls, *args, name=None):
         if name and not is_acceptable_query_variable(name):
             raise Exception("GRAPH name not of acceptable type.")
 
@@ -240,26 +240,18 @@ class FOR_GRAPH(STATEMENT):
             else:
                 statements.append(stmt)
 
-        statements_with_alias = {}
-        for alias, statement in kwargs.items():
-            if is_acceptable_query_variable(statement):
-                statements_with_alias[Variable(alias)] = statement
-            else:
-                statements_with_alias[Variable(alias)] = STATEMENT(statement)
-
-        return tuple.__new__(FOR_GRAPH, (name, statements, statements_with_alias))
+        return tuple.__new__(FOR_GRAPH, (name, statements))
 
     def n3(self):
         n3_string = ""
         if self[0]:
             n3_string += "GRAPH " + self[0].n3() + " "
         n3_string += "{ \n"
-        for var in self[1]:
-            n3_string += var.n3() + " "
-        for alias, var in self[2].items():
-            n3_string += var.n3() + " as " + alias.n3() + " "
 
-        n3_string += "\n} "
+        for var in self[1]:
+            n3_string += var.n3() + " \n"
+
+        n3_string += "\n}  ."
         return n3_string
 
 
@@ -402,7 +394,7 @@ class QueryBuilder:
         self.query += "WHERE {" + " \n"
 
         for statement in self.WHERE_statements:
-            self.query += statement.n3() + " ." + " \n"
+            self.query += statement.n3() + " \n"
 
         self.query += "}" + " \n"
 
