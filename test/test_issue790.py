@@ -17,6 +17,14 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
         self.literal_20 = Literal(20)
         self.literal_30 = Literal(30)
 
+        self.add_query_from_default = "ADD DEFAULT TO GRAPH <Graph_1> "
+        self.add_query_to_default = "ADD GRAPH <Graph_1> TO DEFAULT "
+        self.add_query_without_default = "ADD GRAPH <Graph_1> TO GRAPH <Graph_2> "
+        self.add_query_with_silent = "ADD SILENT GRAPH <Graph_1> TO GRAPH <Graph_2> "
+        self.move_query_from_default = "MOVE DEFAULT TO GRAPH <Graph_1> "
+        self.move_query_to_default = "MOVE GRAPH <Graph_1> TO DEFAULT "
+        self.move_query_without_default = "MOVE GRAPH <Graph_1> TO GRAPH <Graph_2> "
+        self.move_query_with_silent = "MOVE SILENT GRAPH <Graph_1> TO GRAPH <Graph_2> "
         self.insert_query = "INSERT { ?s ?p ?o } WHERE { ?s ?p ?o . } "
         self.operator_query_gt = "SELECT ?v  WHERE { ?s ?p ?v . FILTER ( ?v > " \
                                  "\"5\"^^<http://www.w3.org/2001/XMLSchema#integer> ) . } "
@@ -612,3 +620,103 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
         ).build()
         self.assertEqual(self.function_expr_multiple_parameters, query.replace("\n", ""),
                          msg="QueryBuilder not returning correct query for function expr with multiple parameters.")
+
+    def test_query_move_should_pass(self):
+        query = QueryBuilder().MOVE(
+            move_from_graph=URIRef("default"),
+            move_to_graph=URIRef("Graph_1")
+        ).build()
+        self.assertEqual(self.move_query_from_default, query.replace("\n", ""), msg="QueryBuilder not returning correct query for move")
+
+        query = QueryBuilder().MOVE(
+            move_from_graph=URIRef("Graph_1"),
+            move_to_graph=URIRef("default")
+        ).build()
+        self.assertEqual(self.move_query_to_default, query.replace("\n", ""), msg="QueryBuilder not returning correct query for move")
+
+        query = QueryBuilder().MOVE(
+            move_from_graph=URIRef("Graph_1"),
+            move_to_graph=URIRef("Graph_2")
+        ).build()
+        self.assertEqual(self.move_query_without_default, query.replace("\n", ""),
+                         msg="QueryBuilder not returning correct query for move")
+
+        query = QueryBuilder().MOVE(
+            move_from_graph=URIRef("Graph_1"),
+            move_to_graph=URIRef("Graph_2"),
+            move_silent=True
+        ).build()
+        self.assertEqual(self.move_query_with_silent, query.replace("\n", ""),
+                         msg="QueryBuilder not returning correct query for move with Silent")
+
+    def test_query_move_with_where_raises_exception(self):
+        with self.assertRaises(Exception):
+            QueryBuilder().MOVE(
+                move_from_graph=URIRef("default"),
+                move_to_graph=URIRef("Graph_1")
+            ).WHERE(
+                (self.var_s, self.var_o, self.var_p)
+            ).build()
+
+    def test_query_move_graph_name_unacceptable_raises_exception(self):
+        with self.assertRaises(Exception):
+            QueryBuilder().MOVE(
+                move_from_graph="default",
+                move_to_graph=URIRef("Graph_1")
+            ).build()
+
+        with self.assertRaises(Exception):
+            QueryBuilder().MOVE(
+                move_from_graph=URIRef("default"),
+                move_to_graph="Graph_1"
+            ).build()
+
+    def test_query_add_should_pass(self):
+        query = QueryBuilder().ADD(
+            add_from_graph=URIRef("default"),
+            add_to_graph=URIRef("Graph_1")
+        ).build()
+        self.assertEqual(self.add_query_from_default, query.replace("\n", ""), msg="QueryBuilder not returning correct query for add")
+
+        query = QueryBuilder().ADD(
+            add_from_graph=URIRef("Graph_1"),
+            add_to_graph=URIRef("default")
+        ).build()
+        self.assertEqual(self.add_query_to_default, query.replace("\n", ""), msg="QueryBuilder not returning correct query for add")
+
+        query = QueryBuilder().ADD(
+            add_from_graph=URIRef("Graph_1"),
+            add_to_graph=URIRef("Graph_2")
+        ).build()
+        self.assertEqual(self.add_query_without_default, query.replace("\n", ""),
+                         msg="QueryBuilder not returning correct query for ADD")
+
+        query = QueryBuilder().ADD(
+            add_from_graph=URIRef("Graph_1"),
+            add_to_graph=URIRef("Graph_2"),
+            add_silent=True
+        ).build()
+        self.assertEqual(self.add_query_with_silent, query.replace("\n", ""),
+                         msg="QueryBuilder not returning correct query for add with Silent")
+
+    def test_query_add_with_where_raises_exception(self):
+        with self.assertRaises(Exception):
+            QueryBuilder().ADD(
+                add_from_graph=URIRef("default"),
+                add_to_graph=URIRef("Graph_1")
+            ).WHERE(
+                (self.var_s, self.var_o, self.var_p)
+            ).build()
+
+    def test_query_add_graph_name_unacceptable_raises_exception(self):
+        with self.assertRaises(Exception):
+            QueryBuilder().ADD(
+                add_from_graph="default",
+                add_to_graph=URIRef("Graph_1")
+            ).build()
+
+        with self.assertRaises(Exception):
+            QueryBuilder().ADD(
+                add_from_graph=URIRef("default"),
+                add_to_graph="Graph_1"
+            ).build()

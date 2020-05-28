@@ -273,8 +273,12 @@ class QueryBuilder:
         self.WHERE_statements = []
         self.GROUP_BY_expressions = []
         self.ORDER_BY_expressions = []
-        self.to_graph = ""
-        self.from_graph = ""
+        self.move_to_graph = None
+        self.move_from_graph = None
+        self.move_silent = False
+        self.add_to_graph = None
+        self.add_from_graph = None
+        self.add_silent = False
 
         self.limit = None
         self.offset = None
@@ -302,9 +306,24 @@ class QueryBuilder:
 
         return self
 
-    def MOVE(self, from_graph, to_graph):
-        self.from_graph = from_graph
-        self.to_graph = to_graph
+    def MOVE(self, move_from_graph=URIRef("DEFAULT"), move_to_graph=URIRef("DEFAULT"), move_silent=False):
+        if not is_acceptable_query_variable(move_from_graph):
+            raise Exception("from_graph name not of acceptable type.")
+        if not is_acceptable_query_variable(move_to_graph):
+            raise Exception("to_graph name not of acceptable type.")
+        self.move_from_graph = move_from_graph
+        self.move_to_graph = move_to_graph
+        self.move_silent = move_silent
+        return self
+
+    def ADD(self, add_from_graph=URIRef("DEFAULT"), add_to_graph=URIRef("DEFAULT"), add_silent=False):
+        if not is_acceptable_query_variable(add_from_graph):
+            raise Exception("from_graph name not of acceptable type.")
+        if not is_acceptable_query_variable(add_to_graph):
+            raise Exception("to_graph name not of acceptable type.")
+        self.add_from_graph = add_from_graph
+        self.add_to_graph = add_to_graph
+        self.add_silent = add_silent
         return self
 
     def INSERT(self, *args):
@@ -378,19 +397,36 @@ class QueryBuilder:
             self.query += " \n"
 
     def build_move(self):
-        if self.from_graph != "" and self.to_graph != "":
-            self.query += "MOVE GRAPH "
-            if self.from_graph.lower() == "default":
+        if self.move_from_graph is not None and self.move_to_graph is not None:
+            self.query += "MOVE "
+            if self.move_silent:
+                self.query += "SILENT "
+            if self.move_from_graph.n3().lower() == "<default>":
                 self.query += "DEFAULT"
             else:
-                self.query += "<" + self.from_graph + ">"
+                self.query += "GRAPH " + self.move_from_graph.n3()
             self.query += " TO "
-            if self.to_graph.lower() == "default":
+            if self.move_to_graph.n3().lower() == "<default>":
                 self.query += "DEFAULT"
             else:
-                self.query += "<" + self.to_graph + ">"
+                self.query += "GRAPH " + self.move_to_graph.n3()
             self.query += " \n"
 
+    def build_add(self):
+        if self.add_from_graph is not None and self.add_to_graph is not None:
+            self.query += "ADD "
+            if self.add_silent:
+                self.query += "SILENT "
+            if self.add_from_graph.n3().lower() == "<default>":
+                self.query += "DEFAULT"
+            else:
+                self.query += "GRAPH " + self.add_from_graph.n3()
+            self.query += " TO "
+            if self.add_to_graph.n3().lower() == "<default>":
+                self.query += "DEFAULT"
+            else:
+                self.query += "GRAPH " + self.add_to_graph.n3()
+            self.query += " \n"
 
     def build_insert(self):
         if len(self.INSERT_variables_direct) > 0:
@@ -411,8 +447,7 @@ class QueryBuilder:
             self.query += "\n} \n"
 
     def build_where(self):
-
-        if self.from_graph == "" and self.to_graph == "":
+        if self.move_from_graph is None and self.add_from_graph is None:
             if len(self.WHERE_statements) == 0:
                 raise Exception("Query must have at least one WHERE statement.")
 
@@ -422,6 +457,9 @@ class QueryBuilder:
                 self.query += statement.n3() + " \n"
 
             self.query += "}" + " \n"
+        else:
+            if len(self.WHERE_statements) > 0:
+                raise Exception("WHERE unexpected with MOVE/ADD")
 
     def build_group_by_order_by(self):
         if len(self.GROUP_BY_expressions) > 0:
@@ -448,6 +486,7 @@ class QueryBuilder:
         self.build_insert()
         self.build_delete()
         self.build_move()
+        self.build_add()
         self.build_where()
 
         self.build_group_by_order_by()
@@ -498,9 +537,10 @@ if __name__ == "__main__":
     # ).build()
     # print(query)
 
-    query = QueryBuilder().MOVE(
-        from_graph='default',
-        to_graph='arshdeep'
+    query = QueryBuilder().ADD(
+        add_from_graph=URIRef("default"),
+        add_to_graph=URIRef("arshdeep"),
+        add_silent=False
     ).build()
 
     print(query)
