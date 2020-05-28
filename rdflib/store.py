@@ -222,10 +222,17 @@ class Store(object):
         statement is quoted/hypothetical. Note that the default implementation
         is a redirect to add
         """
+        count = 0
         for s, p, o, c in quads:
             assert c is not None, \
                 "Context associated with %s %s %s is None!" % (s, p, o)
-            self.add((s, p, o), c)
+            added = self.add((s, p, o), c)
+            if (added==None): # Store doesn't support returning count from add
+                count = None
+            else:
+                count+=added
+        # Returns the number of new additions        
+        return count
 
     def remove(self, triple, context=None):
         """ Remove the set of triples matching the pattern from the store """

@@ -46,17 +46,18 @@ class Memory(Store):
     def add(self, triple, context, quoted=False):
         """\
         Add a triple to the store of triples.
+
+        Returns -- 1 in case of a new addition, 0 otherwise
         """
         # add dictionary entries for spo[s][p][p] = 1 and pos[p][o][s]
         # = 1, creating the nested dictionaries where they do not yet
         # exits.
         subject, predicate, object = triple
         spo = self.__spo
-
         try:
             # Triple already in store
-            if(spo[subject][predicate][object]==1):
-                pass
+            _ = spo[subject][predicate][object]
+            return 0
         except:
             # New triple being added
             self.__size+=1
@@ -92,6 +93,8 @@ class Memory(Store):
         except:
             p = sp[subject] = {}
         p[predicate] = 1
+
+        return 1
 
     def remove(self, triple_pattern, context=None):
         for (subject, predicate, object), c in self.triples(triple_pattern):
@@ -260,6 +263,7 @@ class IOMemory(Store):
             yield prefix, namespace
 
     def add(self, triple, context, quoted=False):
+        count_before = self.__len__()
         Store.add(self, triple, context, quoted)
 
         if context is not None:
@@ -284,6 +288,9 @@ class IOMemory(Store):
             self.__objectIndex[oid].add(enctriple)
         else:
             self.__objectIndex[oid] = set([enctriple])
+
+        # 1 in case of a new addition, 0 otherwise
+        return self.__len__() - count_before
 
     def remove(self, triplepat, context=None):
         req_cid = self.__obj2id(context)
