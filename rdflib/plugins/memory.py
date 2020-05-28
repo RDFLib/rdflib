@@ -40,6 +40,9 @@ class Memory(Store):
         self.__namespace = {}
         self.__prefix = {}
 
+        # number of triples in the store
+        self.__size = 0
+
     def add(self, triple, context, quoted=False):
         """\
         Add a triple to the store of triples.
@@ -49,6 +52,15 @@ class Memory(Store):
         # exits.
         subject, predicate, object = triple
         spo = self.__spo
+
+        try:
+            # Triple already in store
+            if(spo[subject][predicate][object]==1):
+                pass
+        except:
+            # New triple being added
+            self.__size+=1
+
         try:
             po = spo[subject]
         except:
@@ -86,6 +98,7 @@ class Memory(Store):
             del self.__spo[subject][predicate][object]
             del self.__pos[predicate][object][subject]
             del self.__osp[object][subject][predicate]
+            self.__size-=1
 
     def triples(self, triple_pattern, context=None):
         """A generator over all the triples matching """
@@ -150,11 +163,7 @@ class Memory(Store):
                         yield (s, p, o), self.__contexts()
 
     def __len__(self, context=None):
-        # @@ optimize
-        i = 0
-        for triple in self.triples((None, None, None)):
-            i += 1
-        return i
+        return self.__size
 
     def bind(self, prefix, namespace):
         self.__prefix[namespace] = prefix
