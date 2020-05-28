@@ -232,24 +232,22 @@ class FOR_GRAPH(STATEMENT):
     def __new__(cls, *args, name=None, **kwargs):
         if name and not is_acceptable_query_variable(name):
             raise Exception("GRAPH name not of acceptable type.")
-        for statement in args:
-            if not is_acceptable_query_variable(statement):
-                raise Exception(
-                    "Statement {} for GRAPH {} not of acceptable type.".format(
-                        statement, name
-                    )
-                )
-        args_with_alias = {}
+
+        statements = []
+        for stmt in args:
+            if not is_acceptable_query_variable(stmt):
+                statements.append(STATEMENT(stmt))
+            else:
+                statements.append(stmt)
+
+        statements_with_alias = {}
         for alias, statement in kwargs.items():
             if is_acceptable_query_variable(statement):
-                args_with_alias[Variable(alias)] = statement
+                statements_with_alias[Variable(alias)] = statement
             else:
-                raise Exception(
-                    "Statement {} for GRAPH {} not of acceptable type.".format(
-                        statement, name
-                    )
-                )
-        return tuple.__new__(FOR_GRAPH, (name, args, args_with_alias))
+                statements_with_alias[Variable(alias)] = STATEMENT(statement)
+
+        return tuple.__new__(FOR_GRAPH, (name, statements, statements_with_alias))
 
     def n3(self):
         n3_string = ""
@@ -329,7 +327,7 @@ class QueryBuilder:
 
     def WHERE(self, *args, **kwargs):
         for statement in args:
-            if not hasattr(statement, "n3"):
+            if not is_acceptable_query_variable(statement):
                 self.WHERE_statements.append(STATEMENT(statement))
             else:
                 self.WHERE_statements.append(statement)
