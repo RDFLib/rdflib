@@ -389,7 +389,6 @@ class Graph(Node):
         assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
         self.__store.add((s, p, o), self, quoted=False)
 
-   
     def addN(self, quads):
         """Add a sequence of triple with context"""
 
@@ -1763,7 +1762,7 @@ class QuotedGraph(Graph):
 
     def addN(self, quads):
         """Add a sequence of triple with context"""
-        
+
         self.store.addN(
             (s, p, o, c)
             for s, p, o, c in quads
