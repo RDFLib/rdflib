@@ -1,7 +1,7 @@
 import unittest
 
 import rdflib  # needed for eval(repr(...)) below
-from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind, _XSD_BOOLEAN
+from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind, _XSD_BOOLEAN, _XSD_DATETIME, _XSD_DURATION
 
 
 def uformat(s):
@@ -188,8 +188,20 @@ class TestBindings(unittest.TestCase):
         self.assertEqual(specific_l.datatype, datatype)
 
 class TestLiteralDateTimeOperatons(unittest.TestCase):
-    """extends the issue """
-    def 
+    """extends the issue OF #629 - Handling datetime substraction operations in Literals as a datetime """
+    def testDateTimeSub(self):
+        a= Literal('2006-01-01T20:50:00',datatype=_XSD_DATETIME)
+        b= Literal('2006-02-01T20:50:00',datatype=_XSD_DATETIME)
+        result=(b-a)
+        expected=Literal('P31D',datatype=_XSD_DURATION);
+        self.assertTrue(result,expected)
+
+    def testDateTimeSub2(self):
+        a= Literal('2006-01-02T20:50:00',datatype=_XSD_DATETIME)
+        b= Literal('2006-05-01T20:50:00',datatype=_XSD_DATETIME)
+        result=(b-a)
+        expected=Literal('P119D',datatype=_XSD_DURATION);
+        self.assertTrue(result,expected)
 
 
 if __name__ == "__main__":

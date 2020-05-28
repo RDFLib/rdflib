@@ -707,13 +707,11 @@ class Literal(Identifier):
             return self
 
         # if self and val both are datetime based
-        if self.datatype in (_XSD_DATETIME, _XSD_DATE, _XSD_TIME) and val.datatype==self.datatype:
+        if hasattr(self, 'datatype') and self.datatype in (_XSD_DATETIME, _XSD_DATE, _XSD_TIME) and val.datatype==self.datatype:
             date1=self.toPython();
             date2=val.toPython();
             difference=date1-date2;   
             return Literal(difference, datatype=_XSD_DURATION)
-
-            
 
             
     def __bool__(self):
