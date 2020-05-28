@@ -699,7 +699,7 @@ class Literal(Identifier):
         >>> a= Literal('2006-07-01T20:52:00',datatype=XSD.dateTime)
         >>> b= Literal('2006-11-01T12:50:00',datatype=XSD.dateTime)
         >>> (b-a)
-        rdflib.term.Literal('-P122DT15H58M', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#duration'))
+        rdflib.term.Literal('P122DT15H58M', datatype=rdflib.term.URIRef('http://www.w3.org/2001/XMLSchema#duration'))
         
         """
         # if no val is supplied, return this Literal
