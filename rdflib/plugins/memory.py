@@ -155,6 +155,8 @@ class Memory(Store):
     def bind(self, prefix, namespace):
         self.__prefix[namespace] = prefix
         self.__namespace[prefix] = namespace
+    def unbind(self, prefix):
+        del self.__namespace[prefix]
 
     def namespace(self, prefix):
         return self.__namespace.get(prefix, None)
