@@ -49,49 +49,6 @@ class TestQueryBuilder_Issue790(unittest.TestCase):
         self.function_expr_multiple_parameters = "SELECT ?s  WHERE { ?s ?p ?o . FILTER ( CONTAINS ( LCASE ( ?o " \
                                                  "), \"hey\" ) ) . } "
         self.basic_query = "SELECT ?s (?o as ?x)  WHERE { ?s ?p ?o . } "
-        self.full_query = "SELECT DISTINCT ?s ?p (?o as ?x) (AVG( ?v ) as ?value) (SUM( ?v ) as ?sum_value)  " \
-                          "WHERE { ?s ?p ?o . ?o <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?v . OPTIO" \
-                          "NAL { ?o <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2002" \
-                          "/07/owl#thing> . } . FILTER ( ?v >= \"5\"^^<http://www.w3.org/2001/XMLSchema#integ" \
-                          "er> && ?v < \"13\"^^<http://www.w3.org/2001/XMLSchema#integer> || ?v >= \"20\"^^<h" \
-                          "ttp://www.w3.org/2001/XMLSchema#integer> && ?v < \"30\"^^<http://www.w3.org/2001/X" \
-                          "MLSchema#integer> ) . } ORDER BY ?v ASC ( ?s ) LIMIT 100 OFFSET 20 "
-
-    # def test_full_query_should_pass(self):
-    #     query = QueryBuilder().SELECT(
-    #         self.var_s,
-    #         self.var_p,
-    #         x=self.var_o,
-    #         value=Aggregates.AVG(self.var_v),
-    #         sum_value=Aggregates.SUM(self.var_v),
-    #         distinct=True
-    #     ).WHERE(
-    #         (self.var_s, self.var_p, self.var_o),
-    #         (self.var_o, RDF.type, self.var_v),
-    #         OPTIONAL(
-    #             (self.var_o, RDFS.subClassOf, OWL.thing)
-    #         ),
-    #         FILTER(
-    #             Operators.OR(
-    #                 Operators.AND(
-    #                     Operators.GE(self.var_v, self.literal_5),
-    #                     Operators.LT(self.var_v, self.literal_13)
-    #                 ),
-    #                 Operators.AND(
-    #                     Operators.GE(self.var_v, self.literal_20),
-    #                     Operators.LT(self.var_v, self.literal_30)
-    #                 )
-    #             )
-    #         )
-    #     ).ORDER_BY(
-    #         self.var_v,
-    #         FunctionExpressions.ASC(self.var_s)
-    #     ).LIMIT(
-    #         100
-    #     ).OFFSET(
-    #         20
-    #     ).build()
-    #     self.assertEqual(self.full_query, query.replace("\n", ""), msg="QueryBuilder not returning correct full query.")
 
     def test_basic_query_should_pass(self):
         query = QueryBuilder().SELECT(
