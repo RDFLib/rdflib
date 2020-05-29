@@ -23,7 +23,13 @@ OFFSET = "OFFSET"
 ORDERBY = "ORDER BY"
 
 BNODE_IDENT_PATTERN = re.compile("(?P<label>_\:[^\s]+)")
-
+_response_mime_types = {
+    "xml": "application/sparql-results+xml, application/rdf+xml",
+    "json": "application/sparql-results+json",
+    "csv": "text/csv",
+    "tsv": "text/tab-separated-values",
+    "application/rdf+xml": "application/rdf+xml",
+}
 
 def _node_to_sparql(node):
     if isinstance(node, BNode):
@@ -34,7 +40,8 @@ def _node_to_sparql(node):
     return node.n3()
 
 
-class SPARQLStore(SPARQLConnector, Store):
+class SPARQLStore(Store):
+
     """An RDFLib store around a SPARQL endpoint
 
     This is context-aware and should work as expected
@@ -92,32 +99,40 @@ class SPARQLStore(SPARQLConnector, Store):
     regex_matching = NATIVE_REGEX
 
     def __init__(
-        self,
-        endpoint=None,
-        sparql11=True,
-        context_aware=True,
-        node_to_sparql=_node_to_sparql,
-        returnFormat="xml",
-        **sparqlconnector_kwargs
+            self,
+            endpoint=None,
+            sparql11=True,
+            context_aware=True,
+            node_to_sparql=_node_to_sparql,
+            returnFormat="xml",
+            **kwargs
     ):
         """
         """
-        super(SPARQLStore, self).__init__(
-            endpoint, returnFormat=returnFormat, **sparqlconnector_kwargs
-        )
 
+        self.sparqlconnector = SPARQLConnector(endpoint, returnFormat)
         self.node_to_sparql = node_to_sparql
         self.nsBindings = {}
         self.sparql11 = sparql11
         self.context_aware = context_aware
         self.graph_aware = context_aware
         self._queries = 0
+        self.returnFormat = returnFormat
+
+        # for sparqlconnector
+        self.returnFormat = returnFormat
+        self.query_endpoint = self.sparqlconnector.query_endpoint
+        self.update_endpoint = self.sparqlconnector.update_endpoint
+        self.kwargs = kwargs
+        self.method = self.sparqlconnector.method
 
     # Database Management Methods
     def create(self, configuration):
-        raise TypeError("The SPARQL store is read only")
+
+        raise Exception("The SPARQL store is read only")
 
     def open(self, configuration, create=False):
+
         """
         sets the endpoint URL for this SPARQLStore
         if create==True an exception is thrown.
@@ -128,28 +143,35 @@ class SPARQLStore(SPARQLConnector, Store):
         self.query_endpoint = configuration
 
     def destroy(self, configuration):
+
         raise TypeError("The SPARQL store is read only")
 
     # Transactional interfaces
     def commit(self):
+
         raise TypeError("The SPARQL store is read only")
 
     def rollback(self):
+
         raise TypeError("The SPARQL store is read only")
 
     def add(self, _, context=None, quoted=False):
-        raise TypeError("The SPARQL store is read only")
+
+        raise Exception("Cannot be Added")
+
 
     def addN(self, quads):
-        raise TypeError("The SPARQL store is read only")
+          raise Exception("Cannot be Added")
 
     def remove(self, _, context):
+
         raise TypeError("The SPARQL store is read only")
 
     def _query(self, *args, **kwargs):
+        print("9")
         self._queries += 1
 
-        return super(SPARQLStore, self).query(*args, **kwargs)
+        return self.sparqlconnector.query(*args, **kwargs)
 
     def _inject_prefixes(self, query, extra_bindings):
         bindings = list(self.nsBindings.items()) + list(extra_bindings.items())
@@ -248,9 +270,9 @@ class SPARQLStore(SPARQLConnector, Store):
 
         # The ORDER BY is necessary
         if (
-            hasattr(context, LIMIT)
-            or hasattr(context, OFFSET)
-            or hasattr(context, ORDERBY)
+                hasattr(context, LIMIT)
+                or hasattr(context, OFFSET)
+                or hasattr(context, ORDERBY)
         ):
             var = None
             if isinstance(s, Variable):
@@ -260,7 +282,7 @@ class SPARQLStore(SPARQLConnector, Store):
             elif isinstance(o, Variable):
                 var = o
             elif hasattr(context, ORDERBY) and isinstance(
-                getattr(context, ORDERBY), Variable
+                    getattr(context, ORDERBY), Variable
             ):
                 var = getattr(context, ORDERBY)
             query = query + " %s %s" % (ORDERBY, var.n3())
@@ -282,10 +304,10 @@ class SPARQLStore(SPARQLConnector, Store):
         if vars:
             for row in result:
                 yield (
-                    row.get(s, s),
-                    row.get(p, p),
-                    row.get(o, o),
-                ), None  # why is the context here not the passed in graph 'context'?
+                          row.get(s, s),
+                          row.get(p, p),
+                          row.get(o, o),
+                      ), None  # why is the context here not the passed in graph 'context'?
         else:
             if result.askAnswer:
                 yield (s, p, o), None
@@ -459,15 +481,15 @@ class SPARQLUpdateStore(SPARQLStore):
     ##################################################################
 
     def __init__(
-        self,
-        queryEndpoint=None,
-        update_endpoint=None,
-        sparql11=True,
-        context_aware=True,
-        postAsEncoded=True,
-        autocommit=True,
-        dirty_reads=False,
-        **kwds
+            self,
+            queryEndpoint=None,
+            update_endpoint=None,
+            sparql11=True,
+            context_aware=True,
+            postAsEncoded=True,
+            autocommit=True,
+            dirty_reads=False,
+            **kwds
     ):
         """
         :param autocommit if set, the store will commit after every
@@ -624,11 +646,36 @@ class SPARQLUpdateStore(SPARQLStore):
     def setTimeout(self, timeout):
         self._timeout = int(timeout)
 
-    def _update(self, update):
+    def _update(self, update,default_graph= None):
 
         self._updates += 1
 
-        SPARQLConnector.update(self, update)
+        if not self.update_endpoint:
+            raise self.sparqlconnector.SPARQLConnectorException("Query endpoint not set!")
+
+        params = {}
+
+        if default_graph:
+            params["using-graph-uri"] = default_graph
+
+        headers = {
+            "Accept": _response_mime_types[self.returnFormat],
+            "Content-Type": "application/sparql-update",
+        }
+
+        args = dict(self.kwargs)
+
+        args.update(url=self.update_endpoint, data=update.encode("utf-8"))
+
+        # merge params/headers dicts
+        args.setdefault("params", {})
+        args["params"].update(params)
+        args.setdefault("headers", {})
+        args["headers"].update(headers)
+
+        res = self.sparqlconnector.session.post(**args)
+
+        res.raise_for_status()
 
     def update(self, query, initNs={}, initBindings={}, queryGraph=None, DEBUG=False):
         """
@@ -731,7 +778,7 @@ class SPARQLUpdateStore(SPARQLStore):
                 if level == 1:
                     since_previous_pos = query[pos: match.start()]
                     if modified_query[-1] is graph_block_open and (
-                        since_previous_pos == "" or since_previous_pos.isspace()
+                            since_previous_pos == "" or since_previous_pos.isspace()
                     ):
                         # In this case, adding graph_block_start and
                         # graph_block_end results in an empty GRAPH block. Some

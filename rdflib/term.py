@@ -392,15 +392,15 @@ class BNode(Identifier):
         """
         # only store implementations should pass in a value
         """
-        # value = None
-        # if value is None:
-        # so that BNode values do not collide with ones created with
-        # a different instance of this module at some other time.
 
-        #value=None
-        node_id = _sn_gen()
-        value = "%s%s" % (_prefix, node_id)
+        if value is None:
+            # so that BNode values do not collide with ones created with
+            # a different instance of this module at some other time.
 
+            node_id = _sn_gen()
+            value = "%s%s" % (_prefix, node_id)
+        else:
+            pass
         # TODO: check that value falls within acceptable bnode value range
         # for RDF/XML needs to be something that can be serialzed
         # as a nodeID for N3 ??  Unless we require these
