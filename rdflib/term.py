@@ -73,7 +73,6 @@ skolem_genid = "/.well-known/genid/"
 rdflib_skolem_genid = "/.well-known/genid/rdflib/"
 skolems = {}
 
-
 _invalid_uri_chars = '<>" {}|\\^`'
 
 
@@ -123,6 +122,10 @@ class Identifier(Node, str):  # allow Identifiers to be Nodes in the Graph
     __slots__ = ()
 
     def __new__(cls, value):
+        """
+
+        :rtype: object
+        """
         return str.__new__(cls, value)
 
     def eq(self, other):
@@ -339,9 +342,9 @@ class RDFLibGenid(Genid):
             uri = str(uri)
         parsed_uri = urlparse(uri)
         if (
-            parsed_uri.params != ""
-            or parsed_uri.query != ""
-            or parsed_uri.fragment != ""
+                parsed_uri.params != ""
+                or parsed_uri.query != ""
+                or parsed_uri.fragment != ""
         ):
             return False
         gen_id = parsed_uri.path.rfind(rdflib_skolem_genid)
@@ -384,24 +387,27 @@ class BNode(Identifier):
     __slots__ = ()
 
     def __new__(
-        cls, value=None, _sn_gen=_serial_number_generator(), _prefix=_unique_id()
+            cls, value=None, _sn_gen=_serial_number_generator(), _prefix=_unique_id()
     ):
         """
         # only store implementations should pass in a value
         """
-        if value is None:
-            # so that BNode values do not collide with ones created with
-            # a different instance of this module at some other time.
-            node_id = _sn_gen()
-            value = "%s%s" % (_prefix, node_id)
-        else:
-            # TODO: check that value falls within acceptable bnode value range
-            # for RDF/XML needs to be something that can be serialzed
-            # as a nodeID for N3 ??  Unless we require these
-            # constraints be enforced elsewhere?
-            pass  # assert is_ncname(str(value)), "BNode identifiers
-            # must be valid NCNames" _:[A-Za-z][A-Za-z0-9]*
-            # http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID
+        # value = None
+        # if value is None:
+        # so that BNode values do not collide with ones created with
+        # a different instance of this module at some other time.
+
+        #value=None
+        node_id = _sn_gen()
+        value = "%s%s" % (_prefix, node_id)
+
+        # TODO: check that value falls within acceptable bnode value range
+        # for RDF/XML needs to be something that can be serialzed
+        # as a nodeID for N3 ??  Unless we require these
+        # constraints be enforced elsewhere?
+        # pass  # assert is_ncname(str(value)), "BNode identifiers
+        # must be valid NCNames" _:[A-Za-z][A-Za-z0-9]*
+        # http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/#nodeID
         return Identifier.__new__(cls, value)
 
     def toPython(self):
@@ -657,17 +663,17 @@ class Literal(Identifier):
         # if the datatypes are not the same but are both numeric, add the Python values and strip off decimal junk
         # (i.e. tiny numbers (more than 17 decimal places) and trailing zeros) and return as a decimal
         elif (
-            self.datatype in _NUMERIC_LITERAL_TYPES
-            and val.datatype in _NUMERIC_LITERAL_TYPES
+                self.datatype in _NUMERIC_LITERAL_TYPES
+                and val.datatype in _NUMERIC_LITERAL_TYPES
         ):
             return Literal(
                 Decimal(
                     (
-                        "%f"
-                        % round(Decimal(self.toPython()) + Decimal(val.toPython()), 15)
+                            "%f"
+                            % round(Decimal(self.toPython()) + Decimal(val.toPython()), 15)
                     )
-                    .rstrip("0")
-                    .rstrip(".")
+                        .rstrip("0")
+                        .rstrip(".")
                 ),
                 datatype=_XSD_DECIMAL,
             )
@@ -819,8 +825,8 @@ class Literal(Identifier):
         if isinstance(other, Literal):
 
             if (
-                self.datatype in _NUMERIC_LITERAL_TYPES
-                and other.datatype in _NUMERIC_LITERAL_TYPES
+                    self.datatype in _NUMERIC_LITERAL_TYPES
+                    and other.datatype in _NUMERIC_LITERAL_TYPES
             ):
                 return self.value > other.value
 
@@ -919,8 +925,8 @@ class Literal(Identifier):
             if self.datatype and other.datatype:
                 # two datatyped literals
                 if (
-                    self.datatype not in XSDToPython
-                    or other.datatype not in XSDToPython
+                        self.datatype not in XSDToPython
+                        or other.datatype not in XSDToPython
                 ):
                     # non XSD DTs must match
                     if self.datatype != other.datatype:
@@ -929,7 +935,7 @@ class Literal(Identifier):
             else:
                 # xsd:string may be compared with plain literals
                 if not (self.datatype == _XSD_STRING and not other.datatype) or (
-                    other.datatype == _XSD_STRING and not self.datatype
+                        other.datatype == _XSD_STRING and not self.datatype
                 ):
                     return False
 
@@ -1018,10 +1024,10 @@ class Literal(Identifier):
             return False
         if isinstance(other, Literal):
             return (
-                self.datatype == other.datatype
-                and (self.language.lower() if self.language else None)
-                == (other.language.lower() if other.language else None)
-                and str.__eq__(self, other)
+                    self.datatype == other.datatype
+                    and (self.language.lower() if self.language else None)
+                    == (other.language.lower() if other.language else None)
+                    and str.__eq__(self, other)
             )
 
         return False
@@ -1051,8 +1057,8 @@ class Literal(Identifier):
         if isinstance(other, Literal):
 
             if (
-                self.datatype in _NUMERIC_LITERAL_TYPES
-                and other.datatype in _NUMERIC_LITERAL_TYPES
+                    self.datatype in _NUMERIC_LITERAL_TYPES
+                    and other.datatype in _NUMERIC_LITERAL_TYPES
             ):
                 if self.value is not None and other.value is not None:
                     return self.value == other.value
@@ -1127,9 +1133,9 @@ class Literal(Identifier):
                 return self.value == other
         elif isinstance(other, (timedelta, Duration)):
             if self.datatype in (
-                _XSD_DURATION,
-                _XSD_DAYTIMEDURATION,
-                _XSD_YEARMONTHDURATION,
+                    _XSD_DURATION,
+                    _XSD_DAYTIMEDURATION,
+                    _XSD_YEARMONTHDURATION,
             ):
                 return self.value == other
         elif isinstance(other, bool):
@@ -1492,7 +1498,6 @@ _TOTAL_ORDER_CASTERS = {
     xml.dom.minidom.Document: lambda value: value.toxml(),
 }
 
-
 _STRING_LITERAL_TYPES = (
     _XSD_STRING,
     _RDF_XMLLITERAL,
@@ -1630,7 +1635,7 @@ def _castLexicalToPython(lexical, datatype):
 
 
 def bind(
-    datatype, pythontype, constructor=None, lexicalizer=None, datatype_specific=False
+        datatype, pythontype, constructor=None, lexicalizer=None, datatype_specific=False
 ):
     """
     register a new datatype<->pythontype binding
@@ -1749,7 +1754,7 @@ def _isEqualXMLNode(node, other):
     elif node.nodeType == Node.ELEMENT_NODE:
         # Get the basics right
         if not (
-            node.tagName == other.tagName and node.namespaceURI == other.namespaceURI
+                node.tagName == other.tagName and node.namespaceURI == other.namespaceURI
         ):
             return False
 
@@ -1771,8 +1776,8 @@ def _isEqualXMLNode(node, other):
             return False
         for k in n_keys:
             if not (
-                k in o_keys
-                and node.getAttributeNS(k[0], k[1]) == other.getAttributeNS(k[0], k[1])
+                    k in o_keys
+                    and node.getAttributeNS(k[0], k[1]) == other.getAttributeNS(k[0], k[1])
             ):
                 return False
 
