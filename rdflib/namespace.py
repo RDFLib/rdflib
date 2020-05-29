@@ -833,25 +833,43 @@ def is_ncname(name):
     return 0
 
 
-def split_uri(uri, split_start=SPLIT_START_CATEGORIES):
-    if uri.startswith(XMLNS):
-        return (XMLNS, uri.split(XMLNS)[1])
-    length = len(uri)
-    for i in range(0, length):
-        c = uri[-i - 1]
-        if not category(c) in NAME_CATEGORIES:
-            if c in ALLOWED_NAME_CHARS:
-                continue
-            for j in range(-1 - i, length):
-                if category(uri[j]) in split_start or uri[j] == "_":
-                    # _ prevents early split, roundtrip not generate
-                    ns = uri[:j]
-                    if not ns:
-                        break
-                    ln = uri[j:]
-                    return (ns, ln)
-            break
-    raise ValueError("Can't split '{}'".format(uri))
+def split_uri(uri, split_start=SPLIT_START_CATEGORIES,FLAG=0,NSP=''):
+    if FLAG==0:
+        if uri.startswith(XMLNS):
+            return (XMLNS, uri.split(XMLNS)[1])
+        length = len(uri)
+        for i in range(0, length):
+            c = uri[-i - 1]
+            if not category(c) in NAME_CATEGORIES:
+                if c in ALLOWED_NAME_CHARS:
+                    continue
+                for j in range(-1 - i, length):
+                    if category(uri[j]) in split_start or uri[j] == "_":
+                        # _ prevents early split, roundtrip not generate
+                        ns = uri[:j]
+                        if not ns:
+                            break
+                        ln = uri[j:]
+                    
+                        return (ns, ln)
+                break
+            
+        raise ValueError("Can't split '{}'".format(uri))
+    else:
+        for i in NSP.keys():
+            w = str(uri).split(NSP[i])
+            if(len(w)==2):
+                sp=['_','~','.','-','!','$','&','\'','(',')','*','+',',',';','=','/','?','#','@','%' ]
+                l = w[len(w)-1]
+                w1=""
+                for j in l:
+                    if(j in sp):
+                        w1=w1+'\\'+j
+                    else:
+                        w1=w1+j
+                local=w1
+                prefix=i
+                return(prefix, local)
 
 
 def insert_trie(trie, value):  # aka get_subtrie_or_insert

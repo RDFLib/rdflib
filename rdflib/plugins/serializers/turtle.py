@@ -9,7 +9,7 @@ from functools import cmp_to_key
 from rdflib.term import BNode, Literal, URIRef
 from rdflib.exceptions import Error
 from rdflib.serializer import Serializer
-from rdflib.namespace import RDF, RDFS
+from rdflib.namespace import RDF, RDFS, split_uri
 
 __all__ = ["RecursiveSerializer", "TurtleSerializer"]
 
@@ -122,7 +122,10 @@ class RecursiveSerializer(Serializer):
                         self.addNamespace(prefix, ns)
             else:
                 for prefix, ns in self.store.namespaces():
-                    self.addNamespace(prefix, ns)
+                    self.addNamespace(prefix, ns)            
+        else:
+            for prefix, ns in self.store.namespaces():
+                self.addNamespace(prefix, ns) 
 
     def buildPredicateHash(self, subject):
         """
@@ -291,32 +294,8 @@ class TurtleSerializer(RecursiveSerializer):
         flag=0
         if parts==None:
             gh = self.namespaces
-
-            for i in gh.keys():
-                g = gh[i]
-                try:
-                    parts = self.store.compute_qname(g, generate=gen_prefix)
-                    prefix,namespace,local = parts
-                    n = str(namespace)
-                    w = str(uri).split(n)
-                    if(len(w)==2):
-                        flag=1
-                        sp = ['%','&','*','#','?',':','!','.','$','_','-','+','=',',','(',')','~']
-                        l = w[len(w)-1]
-                        w1=""
-                        for i in l:
-                            if(i in sp):
-                                w1=w1+'\\'+i
-                            else:
-                                w1=w1+i
-                        local=w1
-                        prefix = self.addNamespace(prefix, namespace)
-                        return u'%s:%s' % (prefix, local)
-
-                except:
-                    continue
-                
-                
+            prefix,local=split_uri(uri,FLAG=1,NSP=gh)
+            return u'%s:%s' % (prefix, local)
         if flag!=1:
             prefix, namespace, local = parts
     
