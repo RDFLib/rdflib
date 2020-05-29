@@ -384,8 +384,9 @@ class Graph(Node):
         """Function to add Nested Triples in Graph"""
 
         expandedTriples = nestedTriples_to_Triples(nestedTriples) # expandedTriples contains expam=nsion of nested Triples
+        
         for newTriples in expandedTriples:
-            print(newTriples)
+            # print(newTriples)
             self.add(newTriples)
 
     def add(self, triple):
@@ -1414,7 +1415,7 @@ class ConjunctiveGraph(Graph):
     def addNested(self,nestedTriples):
         expandedTriples = nestedTriples_to_Triples(nestedTriples)
         for newTriples in expandedTriples:
-            print(newTriples)
+            # print(newTriples)
             self.add(newTriples)
 
     def addN(self, quads):
@@ -1787,7 +1788,7 @@ class QuotedGraph(Graph):
     def addNested(self,nestedTriples):
         expandedTriples = nestedTriples_to_Triples(nestedTriples)
         for newTriples in expandedTriples:
-            print(newTriples)
+            # print(newTriples)
             self.add(newTriples)
 
     def n3(self):
@@ -2076,7 +2077,13 @@ def nestedTriples_to_Triples(nestedTriples):
                     
                     if(__check_node(newNode[0]) and __check_node(newNode[1])): # check every element in nestedTriples[1] is a node
                         
-                        return [(nestedTriples[0],element[0],element[1]) for element in nestedTriples[1]]
+                        returnList = []
+
+                        for element in nestedTriples[1]:
+                            
+                            returnList.append((nestedTriples[0],element[0],element[1]))
+
+                        return returnList
 
         elif (len(nestedTriples) ==3): # for length of nested triples to be 3
             
@@ -2104,7 +2111,13 @@ def nestedTriples_to_Triples(nestedTriples):
                         
                         newTriplesList = __get_triples(newTriplesList[2])
 
-                        return [ (nestedTriples[0], nestedTriples[1], newNode) for newNode in newTriplesList ]
+                        returnList = []
+
+                        for newNode in newTriplesList:
+                          
+                            returnList.append((nestedTriples[0], nestedTriples[1], newNode))
+
+                        return returnList
             
                     else:
             
@@ -2121,8 +2134,16 @@ def nestedTriples_to_Triples(nestedTriples):
                         if all_triple_check:
             
                             new_node = BNode()
+
+                            returnList = []
+                            
+                            returnList.append((nestedTriples[0], nestedTriples[1], new_node))
+
+                            for newNode in newTriplesList:
+                            
+                                returnList.append((new_node, newNode[0], newNode[1]))
             
-                            return [(nestedTriples[0], nestedTriples[1], new_node)] + [ (new_node, newNode[0], newNode[1]) for newNode in newTriplesList ]
+                            return returnList
             
                         else:
             
