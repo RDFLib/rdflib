@@ -220,4 +220,6 @@ def create_input_source(
         # Further to fix for issue 130
         elif input_source.getPublicId() is None:
             input_source.setPublicId(absolute_location or "")
+        elif publicID=="":
+            publicID=""
         return input_source
