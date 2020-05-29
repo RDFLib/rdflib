@@ -619,7 +619,9 @@ class SinkParser:
             ns = self.uriOf(t[0])
 
             if self._baseURI:
-                ns = join(self._baseURI, ns)
+                ## Fix start for https://github.com/RDFLib/rdflib/issues/816
+                ns = join(self._baseURI, ns)  # change it with ns = self._baseURI if want to change the original base URI
+                ## Fix end for https://github.com/RDFLib/rdflib/issues/816
             else:
                 self.BadSyntax(
                     argstr,
