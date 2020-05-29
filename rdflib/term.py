@@ -1,4 +1,5 @@
 """
+
 This module defines the different types of terms. Terms are the kinds of
 objects that can appear in a quoted/asserted triple. This includes those
 that are core to RDF:
@@ -578,14 +579,24 @@ class Literal(Identifier):
         if isinstance(lexical_or_value, bytes):
             lexical_or_value = lexical_or_value.decode("utf-8")
 
+        # check if you datatype=xsd:normalizedString
+
+        if (datatype == _XSD_NORMALISED_STRING):
+            lexical_or_value = _normalise_XSD_STRING(lexical_or_value)
+
         try:
             inst = str.__new__(cls, lexical_or_value)
         except UnicodeDecodeError:
             inst = str.__new__(cls, lexical_or_value, "utf-8")
 
+
+
         inst._language = lang
         inst._datatype = datatype
         inst._value = value
+
+
+
         return inst
 
     def normalize(self):
@@ -1422,6 +1433,7 @@ _RDF_XMLLITERAL = URIRef(_RDF_PFX + "XMLLiteral")
 _RDF_HTMLLITERAL = URIRef(_RDF_PFX + "HTML")
 
 _XSD_STRING = URIRef(_XSD_PFX + "string")
+_XSD_NORMALISED_STRING = URIRef(_XSD_PFX + "normalizedString")
 
 _XSD_FLOAT = URIRef(_XSD_PFX + "float")
 _XSD_DOUBLE = URIRef(_XSD_PFX + "double")
@@ -1627,6 +1639,19 @@ def _castLexicalToPython(lexical, datatype):
     else:
         # no convFunc - unknown data-type
         return None
+
+def _normalise_XSD_STRING(st):
+    """
+    Replaces \t, \n, \r (#x9 (tab), #xA (linefeed), and #xD (carriage return)) with space without any whitespace collapsing
+    """
+    if isinstance(st,str):
+        try:
+            return st.replace('\t',' ').replace('\n',' ').replace('\r',' ')
+        except:
+            return None
+    else:
+        return None
+
 
 
 def bind(
