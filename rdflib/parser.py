@@ -188,10 +188,10 @@ def create_input_source(
 
     auto_close = False  # make sure we close all file handles we open
     if location is not None:
-        # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145
-        if format is None:
+        if format is None: 
             from rdflib.util  import guess_format
             format = guess_format(location)
+        # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145
         if os.path.exists(location):
             location = pathname2url(location)
         base = urljoin("file:", "%s/" % pathname2url(os.getcwd()))
