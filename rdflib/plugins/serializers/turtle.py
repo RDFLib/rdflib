@@ -123,9 +123,7 @@ class RecursiveSerializer(Serializer):
             else:
                 for prefix, ns in self.store.namespaces():
                     self.addNamespace(prefix, ns)            
-        else:
-            for prefix, ns in self.store.namespaces():
-                self.addNamespace(prefix, ns) 
+        
 
     def buildPredicateHash(self, subject):
         """
