@@ -389,16 +389,24 @@ class Graph(Node):
         assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
         self.__store.add((s, p, o), self, quoted=False)
 
+    def _add(self, triples):
+        """Adding multiple triples"""
+        for triple in triples:
+            self.__store.add(self, triple)
+
+        return __len__()
+
     def addN(self, quads):
         """Add a sequence of triple with context"""
 
-        self.__store.addN(
+        return self.__store.addN(
             (s, p, o, c)
             for s, p, o, c in quads
             if isinstance(c, Graph)
             and c.identifier is self.identifier
             and _assertnode(s, p, o)
         )
+
 
     def remove(self, triple):
         """Remove a triple from the graph
@@ -1395,7 +1403,7 @@ class ConjunctiveGraph(Graph):
     def _add(self, triples):
         """Adding multiple triples"""
         for triple in triples:
-            self.store.add(triple)
+            self.store.add(self, triple)
 
     def _graph(self, c):
         if c is None:

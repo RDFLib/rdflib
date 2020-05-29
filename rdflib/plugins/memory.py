@@ -38,6 +38,8 @@ class Memory(Store):
         self.__namespace = {}
         self.__prefix = {}
 
+        self.__length = 0      #total number of triples in graph/store
+
     def add(self, triple, context, quoted=False):
         """\
         Add a triple to the store of triples.
@@ -56,6 +58,8 @@ class Memory(Store):
         except:
             o = po[predicate] = {}
         o[object] = 1
+
+        self.__length +=1
 
         pos = self.__pos
         try:
@@ -79,11 +83,14 @@ class Memory(Store):
             p = sp[subject] = {}
         p[predicate] = 1
 
+        return 1
+
     def remove(self, triple_pattern, context=None):
         for (subject, predicate, object), c in self.triples(triple_pattern):
             del self.__spo[subject][predicate][object]
             del self.__pos[predicate][object][subject]
             del self.__osp[object][subject][predicate]
+            self.__length -= 1
 
     def triples(self, triple_pattern, context=None):
         """A generator over all the triples matching """
@@ -146,11 +153,8 @@ class Memory(Store):
                         yield (s, p, o), self.__contexts()
 
     def __len__(self, context=None):
-        # @@ optimize
-        i = 0
-        for triple in self.triples((None, None, None)):
-            i += 1
-        return i
+        return self.__length
+        
 
     def bind(self, prefix, namespace):
         self.__prefix[namespace] = prefix
@@ -249,6 +253,7 @@ class IOMemory(Store):
             yield prefix, namespace
 
     def add(self, triple, context, quoted=False):
+        current_length_before_update = self.__len__()
         Store.add(self, triple, context, quoted)
 
         if context is not None:
@@ -273,6 +278,8 @@ class IOMemory(Store):
             self.__objectIndex[oid].add(enctriple)
         else:
             self.__objectIndex[oid] = set([enctriple])
+
+        return self.__len__() - current_length_before_update
 
     def remove(self, triplepat, context=None):
         req_cid = self.__obj2id(context)
