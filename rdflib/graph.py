@@ -1538,15 +1538,25 @@ class ConjunctiveGraph(Graph):
             data=data,
             format=format,
         )
+        
 
         g_id = publicID and publicID or source.getPublicId()
         if not isinstance(g_id, Node):
             g_id = URIRef(g_id)
-
-        context = Graph(store=self.store, identifier=g_id)
-        context.remove((None, None, None))  # hmm ?
-        context.parse(source, publicID=publicID, format=format, **args)
-        return context
+            
+        if format is None:
+            format = source.content_type
+        if format is None:
+            # raise Exception("Could not determine format for %r. You can" + \
+            # "expicitly specify one with the format argument." % source)
+            format = "application/rdf+xml"
+        parser = plugin.get(format, Parser)()
+        try:
+            parser.parse(source, self, **args)
+        finally:
+            if source.auto_close:
+                source.close()
+        return self
 
     def __reduce__(self):
         return ConjunctiveGraph, (self.store, self.identifier)
