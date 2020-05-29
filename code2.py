@@ -13,3 +13,7 @@ print(t)
 
 for t in g1:
 print(t)
+
+
+## To see the changes you have to go under rdflib\rdflib\plugins\parsers\notation3.py line number and change to 
+## this "ns = join(self._baseURI, ns)" to ns = self._baseURI if want to change the original base URI. 
