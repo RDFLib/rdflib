@@ -70,7 +70,8 @@ def roundtrip(e, verbose=False):
         for t in sorted(second):
             print(t)
 
-
+    assert rdflib.compare.isomorphic(g1, g2)
+    
     if verbose:
         print("Ok!")
 
