@@ -272,6 +272,23 @@ __all__ = [
     "BatchAddGraph",
 ]
 
+def find_Format(Url):
+        #print('Aamir')
+        #print(Url)
+        splits=Url.split('.')
+        answer=''
+        if(len(splits)==1):
+            answer='xml'
+        elif(splits[-1].lower() in ['rdf','owl']):
+            answer='xml'
+        elif(splits[-1].lower() in ['ttl']):
+            answer='turtle'
+        elif(splits[-1].lower() in ['xhtml','svg']):
+            answer='rdfa'
+        else:
+            answer=splits[-1].lower()
+        #print(answer)
+        return answer
 
 class Graph(Node):
     """An RDF Graph
@@ -311,6 +328,9 @@ class Graph(Node):
         self.context_aware = False
         self.formula_aware = False
         self.default_union = False
+
+
+    
 
     def __get_store(self):
         return self.__store
@@ -1055,6 +1075,8 @@ class Graph(Node):
         >>> os.remove(file_name)
 
         """
+        #Testing
+        format=find_Format(location)
 
         source = create_input_source(
             source=source,
@@ -1064,6 +1086,31 @@ class Graph(Node):
             data=data,
             format=format,
         )
+
+        """
+        >>> guess_format('path/to/file.rdf')
+        'xml'
+        >>> guess_format('path/to/file.owl')
+        'xml'
+        >>> guess_format('path/to/file.ttl')
+        'turtle'
+        >>> guess_format('path/to/file.xhtml')
+        'rdfa'
+        >>> guess_format('path/to/file.svg')
+        'rdfa'
+        >>> guess_format('path/to/file.xhtml', {'xhtml': 'grddl'})
+        'grddl'
+        >>> guess_format('.rdf')
+        'xml'
+        >>> guess_format('rdf')
+        'xml'
+        >>> guess_format('RDF')
+        'xml'
+        """
+
+        
+
+
         if format is None:
             format = source.content_type
         if format is None:
@@ -1080,6 +1127,8 @@ class Graph(Node):
 
     def load(self, source, publicID=None, format="xml"):
         self.parse(source, publicID, format)
+
+
 
     def query(
         self,
@@ -1529,7 +1578,7 @@ class ConjunctiveGraph(Graph):
         The graph into which the source was parsed. In the case of n3
         it returns the root context.
         """
-
+        format=find_Format(location)
         source = create_input_source(
             source=source,
             publicID=publicID,
@@ -1702,6 +1751,7 @@ class Dataset(ConjunctiveGraph):
         data=None,
         **args
     ):
+        format=find_Format(location)
         c = ConjunctiveGraph.parse(
             self, source, publicID, format, location, file, data, **args
         )
