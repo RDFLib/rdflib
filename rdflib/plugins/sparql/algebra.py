@@ -498,7 +498,7 @@ def translateAggregates(q, M):
                 v.expr = traverse(v.expr, functools.partial(_aggs, A=A))
 
     # having clause
-    if traverse(q.having, _hasAggregate, complete=False):
+    if traverse(q.having, _hasAggregate, complete=True):
         q.having = traverse(q.having, _sample)
         traverse(q.having, functools.partial(_aggs, A=A))
 
