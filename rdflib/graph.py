@@ -801,15 +801,18 @@ class Graph(Node):
             return default
         return self.value(subject, RDFS.comment, default=default, any=True)
 
-    def items(self, rdf_collection):
+    def items(self, rdf_collection,itemsFlag = False):
         """Generator over all items in the resource specified by rdf_collection
 
         """
+        chain = set([rdf_collection])
 
-        if not isinstance(rdf_collection, list):
+        if itemsFlag:
+            chain = set(rdf_collection)
+
+        if not isinstance(rdf_collection, list) and itemsFlag:
             raise TypeError("Node should be a list")
 
-        chain = set(rdf_collection)
         # try:
         #     chain = set(rdf_collection)
         # except TypeError:
