@@ -1761,8 +1761,7 @@ class QuotedGraph(Graph):
         self.store.add((s, p, o), self, quoted=True)
 
     def addN(self, quads):
-        """Add a sequence of triple with context"""
-        
+        """Add a sequence of triple with context"""     
         self.store.addN(
             (s, p, o, c)
             for s, p, o, c in quads
