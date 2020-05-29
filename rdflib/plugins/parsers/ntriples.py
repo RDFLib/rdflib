@@ -248,16 +248,6 @@ class NTriplesParser(object):
         if self.peek("_"):
             # Fix for https://github.com/RDFLib/rdflib/issues/204
             bnode_id = self.eat(r_nodeid).group(1)
-
-            ## Fix start for https://github.com/RDFLib/rdflib/issues/980
-            if bnode_id in self.current_bnode_map:
-                bnode_id = self.current_bnode_map[bnode_id]
-            else:
-                self.current_bnode_map[bnode_id] = str(self.sink.graph.bnode_counter)
-                bnode_id = str(self.sink.graph.bnode_counter)
-                self.sink.graph.bnode_counter += 1
-            ## Fix end for https://github.com/RDFLib/rdflib/issues/980
-
             new_id = self._bnode_ids.get(bnode_id, None)
             if new_id is not None:
                 # Re-map to id specfic to this doc

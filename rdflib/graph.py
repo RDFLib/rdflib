@@ -298,10 +298,6 @@ class Graph(Node):
         super(Graph, self).__init__()
         self.base = base
 
-        ## Fix start for https://github.com/RDFLib/rdflib/issues/980
-        self.bnode_counter = 0
-        ## Fix end for https://github.com/RDFLib/rdflib/issues/980
-
         self.__identifier = identifier or BNode()
 
         if not isinstance(self.__identifier, Node):
