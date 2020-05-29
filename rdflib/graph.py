@@ -945,8 +945,8 @@ class Graph(Node):
 
     def removeUnusedPrefix(self):
         """Remove unused prefix in the graph and remove it from the graph"""
+        toRemoveNamespace = [] # List of namespace 
         for namespace in self.namespaces(): #Iterate for all the namespace in the document check if the namespace is present
-            toRemoveNamespace = [] # List of namespace 
             queryCheck = """
             PREFIX """+namespace[0]+""": <"""+str(namespace[1])+""">
             select ?x where {

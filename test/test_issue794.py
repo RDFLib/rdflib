@@ -26,7 +26,7 @@ juice:juiceMadeOfFruit rdfs:subProperty juice:juiceMadeOf;
 					   
 juice:costOfJuice rdf:type rdf:property;
 				  rdfs:domain juice:FruitJuice;
-				  rdfs:range "25"^^xsd:unsignedInt.
+				  rdfs:range "25".
 
 juice:Banana rdf:type juice:fruit;
 			 rdfs:label "Banana".
