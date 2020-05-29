@@ -416,6 +416,11 @@ class Graph(Node):
         """
         self.__store.remove(triple, context=self)
 
+    def removeDuplicates(self):
+        """Removing all duplicate triples from graph
+        """
+        list(dict.fromkeys(self.__store))
+
     def triples(self, triple):
         """Generator over the triple store
 
