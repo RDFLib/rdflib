@@ -76,8 +76,8 @@ class GraphTestCase(unittest.TestCase):
 
     def testItemsList(self):
 
-        self.assertRaises(TypeError, self.graph.items, self, 2)
-    
+        self.assertRaises(TypeError, self.graph.items, self, 2,True)
+
     def testAdd(self):
         self.addStuff()
 
