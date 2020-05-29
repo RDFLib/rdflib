@@ -207,7 +207,7 @@ class Operators(object):
     @staticmethod
     def IN(left, *args):
         """
-        IN operator. Accepts the cumpulsory left argument and multiple right arguments.
+        IN operator. Accepts the compulsory left argument and multiple right arguments.
 
         The IN operator can have multiple values for comparison.
 
@@ -305,13 +305,15 @@ class CONDITIONAL_STATEMENT(STATEMENT):
 class Aggregates(STATEMENT):
     """
     Class used to define Aggregate Functions like MAX, MIN, SUM etc.
-    Example - Aggregates.SUM(?s)
+    To be used as:
+    >> Aggregates.SUM(var1)
+    The above statement gives an output of SUM(?var1) where var1 is of type Variable.
 
     """
     def __new__(cls, function, statement):
         """
         :param function: This contains the type of Aggregate function as specified in AGGREGATE_FUNCTION_LIST
-        :param statement: Statement inside the function, a variable
+        :param statement: Statement inside the function, of type Variable
         :return: tuple of (function, statement)
         """
         if not is_variable_supported(statement):
@@ -343,8 +345,9 @@ class Aggregates(STATEMENT):
 
     def n3(self):
         """
-        Defines the n3 format for the output as string
-        :rtype: object
+        Function to define n triple format for the object
+        >>SUM( ?var1 )
+        :rtype: string
         """
         return self[0] + "( " + self[1].n3() + " )"
 
@@ -352,7 +355,9 @@ class Aggregates(STATEMENT):
 class FunctionExpressions(STATEMENT):
     """
     Class used to define Function Expressions like ASC, DESC etc.
-    Example - FunctionExpressions.ASC(?s)
+    To be used as:
+    >> FunctionExpressions.ASC(var1)
+    The above statement gives an output of ASC(?var1) where var1 is of type Variable.
     """
     def __new__(cls, function_expression, *args):
         """
@@ -522,7 +527,15 @@ class FOR_GRAPH(STATEMENT):
 
 class QueryBuilder:
     """
-    Class to convert the query into a SPARQL query
+    Class to to build the SPAQRL Query.
+    To be used as:
+    query = QueryBuilder().SELECT(
+            self.var_s,
+            x=self.var_o
+        ).WHERE(
+            (self.var_s, self.var_p, self.var_o)
+        ).build()
+    Output -> query - "SELECT ?s (?o as ?x)  WHERE { ?s ?p ?o . } "
     """
     class QueryString(str):
         """
@@ -559,6 +572,15 @@ class QueryBuilder:
         """
         Initialise and store variables, bindings for the SELECT statement
 
+        To be used as:
+        query = QueryBuilder().SELECT(
+            self.var_s,
+            x=self.var_o
+        ).WHERE(
+            (self.var_s, self.var_p, self.var_o)
+        ).build()
+        Output -> query - "SELECT ?s (?o as ?x)  WHERE { ?s ?p ?o . } "
+
         :param args: stores the variables that are needed for the SELECT statement
         :param distinct: Boolean to check whether DISTINCT solution modifier to be used or not
         :param kwargs: stores the variables that are needed for the SELECT statement
@@ -590,6 +612,14 @@ class QueryBuilder:
         """
         Initialise variables required for the MOVE query
 
+        To be used as:
+
+        query = QueryBuilder().MOVE(
+            move_from_graph=URIRef("default"),
+            move_to_graph=URIRef("Graph_1")
+        ).build()
+
+        Output -> query - "MOVE DEFAULT TO GRAPH <Graph_1> "
         :param move_from_graph: Source Graph
         :param move_to_graph: Destination Graph
         :param move_silent: Boolean for SILENT Keyword
@@ -607,6 +637,15 @@ class QueryBuilder:
     def ADD(self, add_from_graph=URIRef("DEFAULT"), add_to_graph=URIRef("DEFAULT"), add_silent=False):
         """
         Initialise variables required for the ADD query
+
+        To be used as:
+
+        query = QueryBuilder().ADD(
+            add_from_graph=URIRef("default"),
+            add_to_graph=URIRef("Graph_1")
+        ).build()
+
+        Output -> query - "ADD DEFAULT TO GRAPH <Graph_1> "
 
         :param add_from_graph: Source Graph
         :param add_to_graph: Destination Graph
@@ -626,6 +665,18 @@ class QueryBuilder:
         """
         Initialise variables required for INSERT query
 
+        To be used as:
+
+        query = QueryBuilder().INSERT(
+            self.var_s,
+            self.var_p,
+            self.var_o,
+        ).WHERE(
+            (self.var_s, self.var_p, self.var_o)
+        ).build()
+
+        Output -> query - "INSERT { ?s ?p ?o } WHERE { ?s ?p ?o . } "
+
         :param args: Objects to be inserted in the INSERT query
         :return: self
         """
@@ -640,6 +691,15 @@ class QueryBuilder:
     def DELETE(self, *args):
         """
         Initialise variables required for DELETE query
+
+        To be used as:
+         query = QueryBuilder().DELETE(
+            self.var_s, self.var_p, self.var_o
+        ).WHERE(
+            (self.var_s, self.var_p, self.var_o),
+            (self.var_o, self.var_p2, self.var_v)
+        ).build()
+        Output -> query - "DELETE { ?s ?p ?o } WHERE { ?s ?p ?o . ?o ?p2 ?v . } "
 
         :param args: Objects to be inserted in the DELETE query
         :return: self
@@ -656,6 +716,15 @@ class QueryBuilder:
         """
         Initialise variables required for WHERE query
 
+        To be used as:
+        query = QueryBuilder().SELECT(
+            self.var_s,
+            x=self.var_o
+        ).WHERE(
+            (self.var_s, self.var_p, self.var_o)
+        ).build()
+        Output -> query - "SELECT ?s (?o as ?x)  WHERE { ?s ?p ?o . } "
+
         :param args: Objects to be inserted in the WHERE query
         :return: self
         """
@@ -671,6 +740,18 @@ class QueryBuilder:
         """
         Initialise variables required for LIMIT query
 
+        To be used as:
+        query = QueryBuilder().SELECT(
+            Variable("s"),
+            Variable("p"),
+            Variable("o")
+        ).WHERE(
+            (Variable("s"), Variable("p"), Variable("o"))
+        ).LIMIT(
+            100
+        ).build()
+        Output -> query - "SELECT ?s ?p ?o  WHERE { ?s ?p ?o . } LIMIT 100 "
+
         :param value: value for the LIMIT query
         :return: self
         """
@@ -682,6 +763,18 @@ class QueryBuilder:
         """
         Initialise variables required for OFFSET query
 
+        To be used as:
+        query = QueryBuilder().SELECT(
+            Variable("s"),
+            Variable("p"),
+            Variable("o")
+        ).WHERE(
+            (Variable("s"), Variable("p"), Variable("o"))
+        ).OFFSET(
+            100
+        ).build()
+        Output -> query - "SELECT ?s ?p ?o  WHERE { ?s ?p ?o . } OFFSET 100 "
+
         :param value: value for the OFFSET query
         :return: self
         """
@@ -692,6 +785,18 @@ class QueryBuilder:
     def GROUP_BY(self, *args):
         """
         Initialise variables required for GROUP_BY query
+
+        To be used as:
+
+        query = QueryBuilder().SELECT(
+            self.var_o
+        ).WHERE(
+            (self.var_s, self.var_p, self.var_o)
+        ).GROUP_BY(
+            self.var_o
+        ).build()
+
+        Output -> query - "SELECT ?o  WHERE { ?s ?p ?o . } GROUP BY ?o "
 
         :param args: Objects required for the GROUP_BY query
         :return: self
@@ -707,6 +812,18 @@ class QueryBuilder:
     def ORDER_BY(self, *args):
         """
         Initialise variables required for ORDER_BY query
+
+        To be used as:
+
+        query = QueryBuilder().SELECT(
+            self.var_o
+        ).WHERE(
+            (self.var_s, self.var_p, self.var_o)
+        ).ORDER_BY(
+            self.var_o, FunctionExpressions.ASC(self.var_s)
+        ).build()
+
+        Output -> query - "SELECT ?o  WHERE { ?s ?p ?o . } ORDER BY ?o ASC ( ?s ) "
 
         :param args: Objects required for the ORDER_BY query
         :return: self
@@ -862,51 +979,43 @@ class QueryBuilder:
 
 
 # if __name__ == "__main__":
-    # query = QueryBuilder().INSERT(
-    #         Variable("p"),
-    #         Variable("o"),
-    #         Variable("s")
-    # ).WHERE(
-    #     (Variable("s"), Variable("p"), Variable("o")),
-    #     (Variable("o"), RDF.type, Variable("v")),
-    #     OPTIONAL(
-    #         (Variable("o"), RDFS.subClassOf, OWL.thing)
-    #     ),
-    #     FOR_GRAPH(
-    #         FILTER(
-    #             Operators.AND(
-    #                 Operators.GE(Variable("v"), Literal(5)),
-    #                 Operators.LT(Variable("v"), Literal(13))
-    #             )
-    #         ),
-    #         name=URIRef("arshgraph_name_2")
-    #     ),
-    #     FOR_GRAPH(
-    #         FILTER(
-    #             Operators.IN(
-    #                 Variable("v"),
-    #                 Literal("literal_string_1"),
-    #                 Literal("12", datatype=XSD.integer)
-    #             )
-    #         )
-    #     )
-    # ).GROUP_BY(
-    #     Variable("v"),
-    #     Variable("s")
-    # ).ORDER_BY(
-    #     Variable("v"),
-    #     FunctionExpressions.ASC(Variable("s"))
-    # ).LIMIT(
-    #     100
-    # ).OFFSET(
-    #     20
-    # ).build()
-    # print(query)
-    #
-    # query = QueryBuilder().ADD(
-    #     add_from_graph=URIRef("default"),
-    #     add_to_graph=URIRef("graph_1"),
-    #     add_silent=False
-    # ).build()
-    #
-    # print(query)
+#     query = QueryBuilder().INSERT(
+#             Variable("p"),
+#             Variable("o"),
+#             Variable("s")
+#     ).WHERE(
+#         (Variable("s"), Variable("p"), Variable("o")),
+#         (Variable("o"), RDF.type, Variable("v")),
+#         OPTIONAL(
+#             (Variable("o"), RDFS.subClassOf, OWL.thing)
+#         ),
+#         FOR_GRAPH(
+#             FILTER(
+#                 Operators.AND(
+#                     Operators.GE(Variable("v"), Literal(5)),
+#                     Operators.LT(Variable("v"), Literal(13))
+#                 )
+#             ),
+#             name=URIRef("arshgraph_name_2")
+#         ),
+#         FOR_GRAPH(
+#             FILTER(
+#                 Operators.IN(
+#                     Variable("v"),
+#                     Literal("literal_string_1"),
+#                     Literal("12", datatype=XSD.integer)
+#                 )
+#             )
+#         )
+#     ).GROUP_BY(
+#         Variable("v"),
+#         Variable("s")
+#     ).ORDER_BY(
+#         Variable("v"),
+#         FunctionExpressions.ASC(Variable("s"))
+#     ).LIMIT(
+#         100
+#     ).OFFSET(
+#         20
+#     ).build()
+#     print(query)
