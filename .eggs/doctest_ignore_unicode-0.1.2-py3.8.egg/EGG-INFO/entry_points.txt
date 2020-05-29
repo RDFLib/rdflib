@@ -1,3 +1,0 @@
-[nose.plugins]
-doctest_ignore_unicode = nose_plugin:DoctestIgnoreUnicode
-
