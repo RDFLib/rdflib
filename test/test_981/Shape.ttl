@@ -1,0 +1,17 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sch:  <http://schema.org/> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix ex:   <http://example.org/> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+ex:PersonShape
+  a sh:NodeShape ;
+  sh:targetClass ex:XXXX ;
+  sh:property ex:PersonShape-name .
+
+ex:PersonShape-name
+  a sh:PropertyShape ;
+  sh:path ex:name ;
+  sh:minCount 1 ;
+  sh:pattern  ".*.txt" .

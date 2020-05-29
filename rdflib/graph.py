@@ -33,7 +33,6 @@ assert Literal  # avoid warning
 assert Namespace  # avoid warning
 logger = logging.getLogger(__name__)
 
-
 __doc__ = """\
 
 RDFLib defines the following kinds of Graphs:
@@ -259,7 +258,6 @@ Using Namespace class:
 
 """
 
-
 __all__ = [
     "Graph",
     "ConjunctiveGraph",
@@ -293,7 +291,7 @@ class Graph(Node):
     """
 
     def __init__(
-        self, store="default", identifier=None, namespace_manager=None, base=None
+            self, store="default", identifier=None, namespace_manager=None, base=None
     ):
         super(Graph, self).__init__()
         self.base = base
@@ -342,12 +340,12 @@ class Graph(Node):
     def __str__(self):
         if isinstance(self.identifier, URIRef):
             return (
-                "%s a rdfg:Graph;rdflib:storage " + "[a rdflib:Store;rdfs:label '%s']."
-            ) % (self.identifier.n3(), self.store.__class__.__name__)
+                           "%s a rdfg:Graph;rdflib:storage " + "[a rdflib:Store;rdfs:label '%s']."
+                   ) % (self.identifier.n3(), self.store.__class__.__name__)
         else:
             return (
-                "[a rdfg:Graph;rdflib:storage " + "[a rdflib:Store;rdfs:label '%s']]."
-            ) % self.store.__class__.__name__
+                           "[a rdfg:Graph;rdflib:storage " + "[a rdflib:Store;rdfs:label '%s']]."
+                   ) % self.store.__class__.__name__
 
     def toPython(self):
         return self
@@ -519,7 +517,7 @@ class Graph(Node):
             return -1
         elif isinstance(other, Graph):
             return (self.identifier > other.identifier) - (
-                self.identifier < other.identifier
+                    self.identifier < other.identifier
             )
         else:
             # Note if None is considered equivalent to owl:Nothing
@@ -532,7 +530,7 @@ class Graph(Node):
 
     def __lt__(self, other):
         return (other is None) or (
-            isinstance(other, Graph) and self.identifier < other.identifier
+                isinstance(other, Graph) and self.identifier < other.identifier
         )
 
     def __le__(self, other):
@@ -540,7 +538,7 @@ class Graph(Node):
 
     def __gt__(self, other):
         return (isinstance(other, Graph) and self.identifier > other.identifier) or (
-            other is not None
+                other is not None
         )
 
     def __ge__(self, other):
@@ -607,10 +605,10 @@ class Graph(Node):
         """
         (subject, predicate, object_) = triple
         assert (
-            subject is not None
+                subject is not None
         ), "s can't be None in .set([s,p,o]), as it would remove (*, p, *)"
         assert (
-            predicate is not None
+                predicate is not None
         ), "p can't be None in .set([s,p,o]), as it would remove (s, *, *)"
         self.remove((subject, predicate, None))
         self.add((subject, predicate, object_))
@@ -648,12 +646,12 @@ class Graph(Node):
     def triples_choices(self, triple, context=None):
         subject, predicate, object_ = triple
         for (s, p, o), cg in self.store.triples_choices(
-            (subject, predicate, object_), context=self
+                (subject, predicate, object_), context=self
         ):
             yield s, p, o
 
     def value(
-        self, subject=None, predicate=RDF.value, object=None, default=None, any=True
+            self, subject=None, predicate=RDF.value, object=None, default=None, any=True
     ):
         """Get a value for a pair of two criteria
 
@@ -672,9 +670,9 @@ class Graph(Node):
         retval = default
 
         if (
-            (subject is None and predicate is None)
-            or (subject is None and object is None)
-            or (predicate is None and object is None)
+                (subject is None and predicate is None)
+                or (subject is None and object is None)
+                or (predicate is None and object is None)
         ):
             return None
 
@@ -694,9 +692,9 @@ class Graph(Node):
                 try:
                     next(values)
                     msg = (
-                        "While trying to find a value for (%s, %s, %s) the"
-                        " following multiple values where found:\n"
-                        % (subject, predicate, object)
+                            "While trying to find a value for (%s, %s, %s) the"
+                            " following multiple values where found:\n"
+                            % (subject, predicate, object)
                     )
                     triples = self.store.triples((subject, predicate, object), None)
                     for (s, p, o), contexts in triples:
@@ -721,11 +719,11 @@ class Graph(Node):
         return self.value(subject, RDFS.label, default=default, any=True)
 
     def preferredLabel(
-        self,
-        subject,
-        lang=None,
-        default=None,
-        labelProperties=(SKOS.prefLabel, RDFS.label),
+            self,
+            subject,
+            lang=None,
+            default=None,
+            labelProperties=(SKOS.prefLabel, RDFS.label),
     ):
         """
         Find the preferred label for subject.
@@ -940,7 +938,7 @@ class Graph(Node):
         return self.namespace_manager.absolutize(uri, defrag)
 
     def serialize(
-        self, destination=None, format="xml", base=None, encoding=None, **args
+            self, destination=None, format="xml", base=None, encoding=None, **args
     ):
         """Serialize the Graph to destination
 
@@ -982,14 +980,14 @@ class Graph(Node):
                 os.remove(name)
 
     def parse(
-        self,
-        source=None,
-        publicID=None,
-        format=None,
-        location=None,
-        file=None,
-        data=None,
-        **args
+            self,
+            source=None,
+            publicID=None,
+            format=None,
+            location=None,
+            file=None,
+            data=None,
+            **args
     ):
         """
         Parse source adding the resulting triples to the Graph.
@@ -1055,7 +1053,12 @@ class Graph(Node):
         >>> os.remove(file_name)
 
         """
-
+        if format is None:
+            if location is not None:
+                try:
+                    format = rdflib.util.guess_format(location)
+                except:
+                    raise Exception("Could not determine format from filename")
         source = create_input_source(
             source=source,
             publicID=publicID,
@@ -1082,14 +1085,14 @@ class Graph(Node):
         self.parse(source, publicID, format)
 
     def query(
-        self,
-        query_object,
-        processor="sparql",
-        result="sparql",
-        initNs=None,
-        initBindings=None,
-        use_store_provided=True,
-        **kwargs
+            self,
+            query_object,
+            processor="sparql",
+            result="sparql",
+            initNs=None,
+            initBindings=None,
+            use_store_provided=True,
+            **kwargs
     ):
         """
         Query this graph.
@@ -1128,13 +1131,13 @@ class Graph(Node):
         return result(processor.query(query_object, initBindings, initNs, **kwargs))
 
     def update(
-        self,
-        update_object,
-        processor="sparql",
-        initNs=None,
-        initBindings=None,
-        use_store_provided=True,
-        **kwargs
+            self,
+            update_object,
+            processor="sparql",
+            initNs=None,
+            initBindings=None,
+            use_store_provided=True,
+            **kwargs
     ):
         """Update this graph with the given update query."""
         initBindings = initBindings or {}
@@ -1509,14 +1512,14 @@ class ConjunctiveGraph(Graph):
         return URIRef(context_id, base=uri)
 
     def parse(
-        self,
-        source=None,
-        publicID=None,
-        format="xml",
-        location=None,
-        file=None,
-        data=None,
-        **args
+            self,
+            source=None,
+            publicID=None,
+            format="xml",
+            location=None,
+            file=None,
+            data=None,
+            **args
     ):
         """
         Parse source adding the resulting triples to its own context
@@ -1693,14 +1696,14 @@ class Dataset(ConjunctiveGraph):
         return g
 
     def parse(
-        self,
-        source=None,
-        publicID=None,
-        format="xml",
-        location=None,
-        file=None,
-        data=None,
-        **args
+            self,
+            source=None,
+            publicID=None,
+            format="xml",
+            location=None,
+            file=None,
+            data=None,
+            **args
     ):
         c = ConjunctiveGraph.parse(
             self, source, publicID, format, location, file, data, **args
@@ -1878,9 +1881,9 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
             self.__namespace_manager = None
 
         assert (
-            isinstance(graphs, list)
-            and graphs
-            and [g for g in graphs if isinstance(g, Graph)]
+                isinstance(graphs, list)
+                and graphs
+                and [g for g in graphs if isinstance(g, Graph)]
         ), "graphs argument must be a list of Graphs!!"
         self.graphs = graphs
 
