@@ -381,13 +381,36 @@ class Graph(Node):
         """
         self.__store.close(commit_pending_transaction=commit_pending_transaction)
 
+#     def add(self, triple):
+#         """Add a triple with self as context"""
+#         s, p, o = triple
+#         assert isinstance(s, Node), "Subject %s must be an rdflib term" % (s,)
+#         assert isinstance(p, Node), "Predicate %s must be an rdflib term" % (p,)
+#         assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
+#         self.__store.add((s, p, o), self, quoted=False)
+
+    # In manageTuple function, each datatype from the tuple is added one by one
+    def manageTuples(self, triple):
+        s, p, tuplelist = triple
+        for i in tuplelist:
+            self.add((s, p, i))
+
     def add(self, triple):
         """Add a triple with self as context"""
         s, p, o = triple
-        assert isinstance(s, Node), "Subject %s must be an rdflib term" % (s,)
-        assert isinstance(p, Node), "Predicate %s must be an rdflib term" % (p,)
-        assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
-        self.__store.add((s, p, o), self, quoted=False)
+
+        # Checking the object is in tuple form or rdflibform
+        # If it is in tuple form then triple is given to manageTuple function.
+        if type(o) == tuple:
+            self.manageTuples(triple);
+        else:
+            assert isinstance(s, Node), "Subject %s must be an rdflib term" % (s,)
+            assert isinstance(p, Node), "Predicate %s must be an rdflib term" % (p,)
+            assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
+            self.__store.add((s, p, o), self, quoted=False)
+
+            
+
 
     def addN(self, quads):
         """Add a sequence of triple with context"""
