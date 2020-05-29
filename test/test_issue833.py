@@ -36,26 +36,19 @@ class TestIssue833(unittest.TestCase):
         self.quads.append((bob, hates, pizza, self.graph))
 
     def testAddN(self):
-        asserte = self.assertEqual
-        tarek = self.tarek
-        bob = self.bob
-        likes = self.likes
-        hates = self.hates
-        pizza = self.pizza
-        cheese = self.cheese
         self.prepareQuadsList()
         count = self.graph.addN(self.quads)
-        asserte(count,5)
+        self.assertEqual(count,5)
 
         self.quads = []
         # Duplicate Triple
-        self.quads.append((tarek, likes, pizza, self.graph))
+        self.quads.append((self.tarek, self.likes, self.pizza, self.graph))
         # New Triple 
-        self.quads.append((bob, likes, tarek, self.graph))
+        self.quads.append((self.bob, self.likes, self.tarek, self.graph))
         # Context not an instance of graph
-        self.quads.append((bob, likes, cheese, ""))
+        self.quads.append((self.bob, self.likes, self.cheese, ""))
         count = self.graph.addN(self.quads)
-        asserte(count,1)
+        self.assertEqual(count,1)
 
 if __name__ == "__main__":
     unittest.main()

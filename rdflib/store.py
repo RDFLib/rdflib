@@ -231,10 +231,10 @@ class Store(object):
             assert c is not None, \
                 "Context associated with %s %s %s is None!" % (s, p, o)
             added = self.add((s, p, o), c)
-            if (added==None): # Store doesn't support returning count from add
+            if (isinstance(added,int)):
+                count += added
+            else: # Store doesn't support returning count from add
                 count = None
-            else:
-                count+=added
         # Returns the number of new additions        
         return count
       

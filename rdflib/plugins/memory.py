@@ -45,7 +45,8 @@ class Memory(Store):
         """\
         Add a triple to the store of triples.
 
-        Returns -- 1 in case of a new addition, 0 otherwise
+        :Returns: 
+            1 in case of a new addition, 0 otherwise
         """
         # add dictionary entries for spo[s][p][p] = 1 and pos[p][o][s]
         # = 1, creating the nested dictionaries where they do not yet
@@ -56,9 +57,9 @@ class Memory(Store):
             # Triple already in store
             _ = spo[subject][predicate][object]
             return 0
-        except:
+        except KeyError:
             # New triple being added
-            self.__size+=1
+            self.__size += 1
 
         try:
             po = spo[subject]
@@ -99,7 +100,7 @@ class Memory(Store):
             del self.__spo[subject][predicate][object]
             del self.__pos[predicate][object][subject]
             del self.__osp[object][subject][predicate]
-            self.__size-=1
+            self.__size -= 1
 
     def triples(self, triple_pattern, context=None):
         """A generator over all the triples matching """
