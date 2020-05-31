@@ -122,9 +122,12 @@ class NTriplesParser(object):
           sink = p.parse(f) # file; use parsestring for a string
     """
 
-    _bnode_ids = {}
+    def __init__(self, sink=None, bnode_context=None):
+        if bnode_context is not None:
+            self._bnode_ids = bnode_context
+        else:
+            self._bnode_ids = {}
 
-    def __init__(self, sink=None):
         if sink is not None:
             self.sink = sink
         else:
