@@ -120,6 +120,11 @@ class NTriplesParser(object):
 
           p = NTriplesParser(sink=MySink())
           sink = p.parse(f) # file; use parsestring for a string
+
+    To define a context in which blank node identifiers refer to the same blank node
+    across instances of NTriplesParser, pass the same dict as `bnode_context` to each
+    instance. By default, a new blank node context is created for each instance of
+    `NTriplesParser`.
     """
 
     def __init__(self, sink=None, bnode_context=None):
@@ -136,7 +141,14 @@ class NTriplesParser(object):
             self.sink = Sink()
 
     def parse(self, f, bnode_context=None):
-        """Parse f as an N-Triples file."""
+        """
+        Parse f as an N-Triples file.
+
+        :param f: the N-Triples source
+        :param bnode_context: a dict mapping blank node identifiers (e.g., ``a`` in ``_:a``)
+                              to `.BNode` instances. An empty dict can be passed in to
+                              define a distinct context for a given call to `parse`.
+        """
         if not hasattr(f, "read"):
             raise ParseError("Item to parse must be a file-like object.")
         # since N-Triples 1.1 files can and should be utf-8 encoded
