@@ -40,7 +40,7 @@ __all__ = ["NQuadsParser"]
 
 
 class NQuadsParser(NTriplesParser):
-    def parse(self, inputsource, sink, **kwargs):
+    def parse(self, inputsource, sink, bnode_context=None, **kwargs):
         """Parse f as an N-Triples file."""
         assert sink.store.context_aware, (
             "NQuadsParser must be given" " a context aware store."
@@ -61,27 +61,27 @@ class NQuadsParser(NTriplesParser):
             if self.line is None:
                 break
             try:
-                self.parseline()
+                self.parseline(bnode_context)
             except ParseError as msg:
                 raise ParseError("Invalid line (%s):\n%r" % (msg, __line))
 
         return self.sink
 
-    def parseline(self):
+    def parseline(self, bnode_context=None):
         self.eat(r_wspace)
         if (not self.line) or self.line.startswith(("#")):
             return  # The line is empty or a comment
 
-        subject = self.subject()
+        subject = self.subject(bnode_context)
         self.eat(r_wspace)
 
         predicate = self.predicate()
         self.eat(r_wspace)
 
-        obj = self.object()
+        obj = self.object(bnode_context)
         self.eat(r_wspace)
 
-        context = self.uriref() or self.nodeid() or self.sink.identifier
+        context = self.uriref() or self.nodeid(bnode_context) or self.sink.identifier
         self.eat(r_tail)
 
         if self.line:

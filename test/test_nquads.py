@@ -67,5 +67,69 @@ class NQuadsParserTest(unittest.TestCase):
         )
 
 
+class BnodeContextTest(unittest.TestCase):
+    def setUp(self):
+        self.data = open("test/nquads.rdflib/bnode_context.nquads", "rb")
+        self.data_obnodes = open("test/nquads.rdflib/bnode_context_obj_bnodes.nquads", "rb")
+
+    def tearDown(self):
+        self.data.close()
+
+    def test_parse_shared_bnode_context(self):
+        bnode_ctx = dict()
+        g = ConjunctiveGraph()
+        h = ConjunctiveGraph()
+        g.parse(self.data, format="nquads", bnode_context=bnode_ctx)
+        self.data.seek(0)
+        h.parse(self.data, format="nquads", bnode_context=bnode_ctx)
+        self.assertEqual(set(h.subjects()), set(g.subjects()))
+
+    def test_parse_shared_bnode_context_same_graph(self):
+        bnode_ctx = dict()
+        g = ConjunctiveGraph()
+        g.parse(self.data_obnodes, format="nquads", bnode_context=bnode_ctx)
+        o1 = set(g.objects())
+        self.data_obnodes.seek(0)
+        g.parse(self.data_obnodes, format="nquads", bnode_context=bnode_ctx)
+        o2 = set(g.objects())
+        self.assertEqual(o1, o2)
+
+    def test_parse_distinct_bnode_context(self):
+        g = ConjunctiveGraph()
+        g.parse(self.data, format="nquads", bnode_context=dict())
+        s1 = set(g.subjects())
+        self.data.seek(0)
+        g.parse(self.data, format="nquads", bnode_context=dict())
+        s2 = set(g.subjects())
+        self.assertNotEqual(set(), s2 - s1)
+
+    def test_parse_distinct_bnode_contexts_between_graphs(self):
+        g = ConjunctiveGraph()
+        h = ConjunctiveGraph()
+        g.parse(self.data, format="nquads")
+        s1 = set(g.subjects())
+        self.data.seek(0)
+        h.parse(self.data, format="nquads")
+        s2 = set(h.subjects())
+        self.assertNotEqual(s1, s2)
+
+    def test_parse_distinct_bnode_contexts_named_graphs(self):
+        g = ConjunctiveGraph()
+        h = ConjunctiveGraph()
+        g.parse(self.data, format="nquads")
+        self.data.seek(0)
+        h.parse(self.data, format="nquads")
+        self.assertNotEqual(set(h.contexts()), set(g.contexts()))
+
+    def test_parse_shared_bnode_contexts_named_graphs(self):
+        bnode_ctx = dict()
+        g = ConjunctiveGraph()
+        h = ConjunctiveGraph()
+        g.parse(self.data, format="nquads", bnode_context=bnode_ctx)
+        self.data.seek(0)
+        h.parse(self.data, format="nquads", bnode_context=bnode_ctx)
+        self.assertEqual(set(h.contexts()), set(g.contexts()))
+
+
 if __name__ == "__main__":
     unittest.main()

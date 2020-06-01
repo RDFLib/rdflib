@@ -133,8 +133,6 @@ class NTriplesParser(object):
         else:
             self._bnode_ids = {}
 
-        self._parse_bnode_ids = None
-
         if sink is not None:
             self.sink = sink
         else:
@@ -156,13 +154,12 @@ class NTriplesParser(object):
 
         self.file = f
         self.buffer = ""
-        self._parse_bnode_ids = bnode_context
         while True:
             self.line = self.readline()
             if self.line is None:
                 break
             try:
-                self.parseline()
+                self.parseline(bnode_context=bnode_context)
             except ParseError:
                 raise ParseError("Invalid line: %r" % self.line)
         return self.sink
@@ -200,18 +197,18 @@ class NTriplesParser(object):
                     return None
                 self.buffer += buffer
 
-    def parseline(self):
+    def parseline(self, bnode_context=None):
         self.eat(r_wspace)
         if (not self.line) or self.line.startswith("#"):
             return  # The line is empty or a comment
 
-        subject = self.subject()
+        subject = self.subject(bnode_context)
         self.eat(r_wspaces)
 
         predicate = self.predicate()
         self.eat(r_wspaces)
 
-        object = self.object()
+        object = self.object(bnode_context)
         self.eat(r_tail)
 
         if self.line:
@@ -230,9 +227,9 @@ class NTriplesParser(object):
         self.line = self.line[m.end():]
         return m
 
-    def subject(self):
+    def subject(self, bnode_context=None):
         # @@ Consider using dictionary cases
-        subj = self.uriref() or self.nodeid()
+        subj = self.uriref() or self.nodeid(bnode_context)
         if not subj:
             raise ParseError("Subject must be uriref or nodeID")
         return subj
@@ -243,8 +240,8 @@ class NTriplesParser(object):
             raise ParseError("Predicate must be uriref")
         return pred
 
-    def object(self):
-        objt = self.uriref() or self.nodeid() or self.literal()
+    def object(self, bnode_context=None):
+        objt = self.uriref() or self.nodeid(bnode_context) or self.literal()
         if objt is False:
             raise ParseError("Unrecognised object type")
         return objt
@@ -257,15 +254,13 @@ class NTriplesParser(object):
             return URI(uri)
         return False
 
-    def nodeid(self):
+    def nodeid(self, bnode_context=None):
         if self.peek("_"):
             # Fix for https://github.com/RDFLib/rdflib/issues/204
-            if self._parse_bnode_ids is not None:
-                bnode_ids = self._parse_bnode_ids
-            else:
-                bnode_ids = self._bnode_ids
+            if bnode_context is None:
+                bnode_context = self._bnode_ids
             bnode_id = self.eat(r_nodeid).group(1)
-            new_id = bnode_ids.get(bnode_id, None)
+            new_id = bnode_context.get(bnode_id, None)
             if new_id is not None:
                 # Re-map to id specfic to this doc
                 return bNode(new_id)
@@ -273,7 +268,7 @@ class NTriplesParser(object):
                 # Replace with freshly-generated document-specific BNode id
                 bnode = bNode()
                 # Store the mapping
-                self._bnode_ids[bnode_id] = bnode
+                bnode_context[bnode_id] = bnode
                 return bnode
         return False
 
