@@ -17,9 +17,6 @@ class NTParser(Parser):
 
     See http://www.w3.org/TR/rdf-testcases/#ntriples"""
 
-    def __init__(self):
-        super(NTParser, self).__init__()
-
     def parse(self, source, sink, **kwargs):
         '''
         Parse the NT format

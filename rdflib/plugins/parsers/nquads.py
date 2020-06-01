@@ -41,7 +41,17 @@ __all__ = ["NQuadsParser"]
 
 class NQuadsParser(NTriplesParser):
     def parse(self, inputsource, sink, bnode_context=None, **kwargs):
-        """Parse f as an N-Triples file."""
+        """
+        Parse inputsource as an N-Quads file.
+
+        :type inputsource: `rdflib.parser.InputSource`
+        :param inputsource: the source of N-Quads-formatted data
+        :type sink: `rdflib.graph.Graph`
+        :param sink: where to send parsed triples
+        :type bnode_context: `dict`, optional
+        :param bnode_context: a dict mapping blank node identifiers to `~rdflib.term.BNode` instances.
+                              See `.NTriplesParser.parse`
+        """
         assert sink.store.context_aware, (
             "NQuadsParser must be given" " a context aware store."
         )

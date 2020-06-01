@@ -142,10 +142,13 @@ class NTriplesParser(object):
         """
         Parse f as an N-Triples file.
 
+        :type f: :term:`file object`
         :param f: the N-Triples source
+        :type bnode_context: `dict`, optional
         :param bnode_context: a dict mapping blank node identifiers (e.g., ``a`` in ``_:a``)
-                              to `.BNode` instances. An empty dict can be passed in to
-                              define a distinct context for a given call to `parse`.
+                              to `~rdflib.term.BNode` instances. An empty dict can be
+                              passed in to define a distinct context for a given call to
+                              `parse`.
         """
         if not hasattr(f, "read"):
             raise ParseError("Item to parse must be a file-like object.")
