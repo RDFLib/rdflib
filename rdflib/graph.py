@@ -2,6 +2,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from xml.sax import SAXParseException
+
 from rdflib.term import Literal  # required for doctests
 from rdflib.namespace import Namespace  # required for doctests
 
@@ -21,6 +23,7 @@ from rdflib.parser import create_input_source
 from rdflib.namespace import NamespaceManager
 from rdflib.resource import Resource
 from rdflib.collection import Collection
+import rdflib.util  # avoid circular dependency
 
 import os
 import shutil
@@ -31,6 +34,7 @@ from urllib.parse import urlparse
 
 assert Literal  # avoid warning
 assert Namespace  # avoid warning
+
 logger = logging.getLogger(__name__)
 
 
@@ -1066,13 +1070,24 @@ class Graph(Node):
         )
         if format is None:
             format = source.content_type
+        assumed_xml = False
         if format is None:
-            # raise Exception("Could not determine format for %r. You can" + \
-            # "expicitly specify one with the format argument." % source)
-            format = "application/rdf+xml"
+            if (hasattr(source, "file")
+                    and getattr(source.file, "name", None)
+                    and isinstance(source.file.name, str)):
+                format = rdflib.util.guess_format(source.file.name)
+            if format is None:
+                format = "application/rdf+xml"
+                assumed_xml = True
         parser = plugin.get(format, Parser)()
         try:
             parser.parse(source, self, **args)
+        except SAXParseException as saxpe:
+            if assumed_xml:
+                logger.warning(
+                    "Could not guess format for %r, so assumed xml."
+                    " You can explicitly specify format using the format argument." % source)
+            raise saxpe
         finally:
             if source.auto_close:
                 source.close()
