@@ -130,5 +130,72 @@ class NTTestCase(unittest.TestCase):
         # self.assertRaises(ntriples.ParseError, p.literal)
 
 
+class BNodeContextTestCase(unittest.TestCase):
+    def test_bnode_shared_across_instances(self):
+        my_sink = FakeSink()
+        bnode_context = dict()
+        p = ntriples.NTriplesParser(my_sink, bnode_context=bnode_context)
+        p.parsestring('''
+        _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000001> .
+        ''')
+
+        q = ntriples.NTriplesParser(my_sink, bnode_context=bnode_context)
+        q.parsestring('''
+        _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000002> .
+        ''')
+
+        self.assertEqual(len(my_sink.subs), 1)
+
+    def test_bnode_distinct_across_instances(self):
+        my_sink = FakeSink()
+        p = ntriples.NTriplesParser(my_sink)
+        p.parsestring('''
+        _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000001> .
+        ''')
+
+        q = ntriples.NTriplesParser(my_sink)
+        q.parsestring('''
+        _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000002> .
+        ''')
+
+        self.assertEqual(len(my_sink.subs), 2)
+
+    def test_bnode_distinct_across_parse(self):
+        my_sink = FakeSink()
+        p = ntriples.NTriplesParser(my_sink)
+
+        p.parsestring('''
+        _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000001> .
+        ''', bnode_context=dict())
+
+        p.parsestring('''
+        _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000002> .
+        ''', bnode_context=dict())
+
+        self.assertEqual(len(my_sink.subs), 2)
+
+    def test_bnode_shared_across_parse(self):
+        my_sink = FakeSink()
+        p = ntriples.NTriplesParser(my_sink)
+
+        p.parsestring('''
+        _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000001> .
+        ''')
+
+        p.parsestring('''
+        _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000002> .
+        ''')
+
+        self.assertEqual(len(my_sink.subs), 1)
+
+
+class FakeSink(object):
+    def __init__(self):
+        self.subs = set()
+
+    def triple(self, s, p, o):
+        self.subs.add(s)
+
+
 if __name__ == "__main__":
     unittest.main()

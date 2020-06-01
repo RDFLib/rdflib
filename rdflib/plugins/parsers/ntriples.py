@@ -120,26 +120,43 @@ class NTriplesParser(object):
 
           p = NTriplesParser(sink=MySink())
           sink = p.parse(f) # file; use parsestring for a string
+
+    To define a context in which blank node identifiers refer to the same blank node
+    across instances of NTriplesParser, pass the same dict as `bnode_context` to each
+    instance. By default, a new blank node context is created for each instance of
+    `NTriplesParser`.
     """
 
-    _bnode_ids = {}
+    def __init__(self, sink=None, bnode_context=None):
+        if bnode_context is not None:
+            self._bnode_ids = bnode_context
+        else:
+            self._bnode_ids = {}
 
-    def __init__(self, sink=None):
+        self._parse_bnode_ids = None
+
         if sink is not None:
             self.sink = sink
         else:
             self.sink = Sink()
 
-    def parse(self, f):
-        """Parse f as an N-Triples file."""
+    def parse(self, f, bnode_context=None):
+        """
+        Parse f as an N-Triples file.
+
+        :param f: the N-Triples source
+        :param bnode_context: a dict mapping blank node identifiers (e.g., ``a`` in ``_:a``)
+                              to `.BNode` instances. An empty dict can be passed in to
+                              define a distinct context for a given call to `parse`.
+        """
         if not hasattr(f, "read"):
             raise ParseError("Item to parse must be a file-like object.")
-
         # since N-Triples 1.1 files can and should be utf-8 encoded
         f = codecs.getreader("utf-8")(f)
 
         self.file = f
         self.buffer = ""
+        self._parse_bnode_ids = bnode_context
         while True:
             self.line = self.readline()
             if self.line is None:
@@ -150,14 +167,14 @@ class NTriplesParser(object):
                 raise ParseError("Invalid line: %r" % self.line)
         return self.sink
 
-    def parsestring(self, s):
+    def parsestring(self, s, **kwargs):
         """Parse s as an N-Triples string."""
         if not isinstance(s, str):
             raise ParseError("Item to parse must be a string instance.")
         f = BytesIO()
         f.write(cast_bytes(s))
         f.seek(0)
-        self.parse(f)
+        self.parse(f, **kwargs)
 
     def readline(self):
         """Read an N-Triples line from buffered input."""
@@ -243,8 +260,12 @@ class NTriplesParser(object):
     def nodeid(self):
         if self.peek("_"):
             # Fix for https://github.com/RDFLib/rdflib/issues/204
+            if self._parse_bnode_ids is not None:
+                bnode_ids = self._parse_bnode_ids
+            else:
+                bnode_ids = self._bnode_ids
             bnode_id = self.eat(r_nodeid).group(1)
-            new_id = self._bnode_ids.get(bnode_id, None)
+            new_id = bnode_ids.get(bnode_id, None)
             if new_id is not None:
                 # Re-map to id specfic to this doc
                 return bNode(new_id)
