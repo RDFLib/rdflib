@@ -356,6 +356,10 @@ class SinkParser:
         the  # will get added during qname processing """
 
         self._bindings = {}
+
+        self.bNodeCounter = 0  # Counter to keep track of number of Blank nodes used for reification
+        self.EmbeddedTriples = {}  # dictionary to keep track of embedded triples and what BlankNode they are mapped to
+
         if thisDoc != "":
             assert ":" in thisDoc, "Document URI not absolute: <%s>" % thisDoc
             self._bindings[""] = thisDoc + "#"  # default
@@ -464,7 +468,7 @@ class SinkParser:
             if j < 0:
                 return
 
-            i = self.directiveOrStatement(s, j)
+            s,i = self.directiveOrStatement(s, j)
             if i < 0:
                 # print("# next char: %s" % s[j])
                 self.BadSyntax(s, j, "expected directive or statement")
@@ -473,22 +477,26 @@ class SinkParser:
 
         i = self.skipSpace(argstr, h)
         if i < 0:
-            return i  # EOF
+            return argstr,i  # EOF
 
         if self.turtle:
             j = self.sparqlDirective(argstr, i)
             if j >= 0:
-                return j
+                return argstr,j
 
         j = self.directive(argstr, i)
         if j >= 0:
-            return self.checkDot(argstr, j)
+            return argstr,self.checkDot(argstr, j)
+
+        # Check if the format is rdf* or not
+        # If it is then change the input string to replace star statment with reification
+        argstr = self.changeStarToReification(argstr, i)
 
         j = self.statement(argstr, i)
         if j >= 0:
-            return self.checkDot(argstr, j)
+            return argstr,self.checkDot(argstr, j)
 
-        return j
+        return argstr,j
 
     # @@I18N
     # _namechars = string.lowercase + string.uppercase + string.digits + '_-'
@@ -726,6 +734,78 @@ class SinkParser:
         # $$$$$$$$$$$$$$$$$$$$$
         # print "# Parser output: ", `quadruple`
         self._store.makeStatement(quadruple, why=self._reason2)
+
+
+    def getEmbeddedTuple(self, argstr, i):
+        i = i+2
+        j=i
+        while(argstr[j+1:j+3]!=">>"):
+            j = j+1
+
+        substr = argstr[i:j+1] + " ."
+        return i,j,substr
+
+    def changeStarToReification(self, argstr, i):
+        # Check if the Star statement is present anywhere in the given statement
+        # Find the position and extract this embedded tuple
+        # The star statement could also be present as a subject or an object, check for that
+        if ("<<" in argstr and ">>" in argstr):
+            while (i <= len(argstr)):
+                if (argstr[i:i + 2] == "<<"):  # We have found rdf* syntax with reification of subject
+                    # Converting into rdf reification statement
+                    posStart, posEnd, substr = self.getEmbeddedTuple(argstr, i)  # Retrieve the Embedded Triple
+                    print (substr)
+
+                    # If recursive star statements present
+                    while("<<" in substr):
+                        argstr = self.changeStarToReification(argstr, posStart)
+                        posStart, posEnd, substr = self.getEmbeddedTuple(argstr, i)  # Retrieve the Embedded Triple
+                        print(substr)
+
+                    # Replace this embeddedTriple with a empty node
+                    # assign a number to this blank node for multiple reifications possible
+                    if(substr not in self.EmbeddedTriples.keys()):
+                        self.bNodeCounter += 1
+                        BNodeNum = self.bNodeCounter
+                        self.EmbeddedTriples[substr] = BNodeNum
+                    else:
+                        # This embedded triple has already been re-ified once, use the same BNode number again
+                        BNodeNum = self.EmbeddedTriples[substr]
+                    argstr = argstr[:posStart - 2] + "_:s" + str(BNodeNum) + argstr[posEnd + 3:]
+                    # argstr = argstr[:posStart - 2] + "_:s" + argstr[posEnd + 3:]
+
+                    # Add the reification triples
+                    argstr = argstr + "\n" + substr + "\n"
+                    # Get the Subject, predicate and Object of the embedded triple
+                    ptr = 0
+                    Er = []
+                    ptr = self.object(substr, 0, Er)
+                    # Esub = Er[0]
+                    Esub = substr[:ptr]
+                    print(Esub)
+
+                    Ev = []
+                    ptr2 = self.verb(substr, ptr, Ev)
+                    Epred = substr[ptr + 1:ptr2]
+                    # Edir, Epred = Ev[0]
+                    print(Epred)
+
+                    objs = []
+                    ptr3 = self.objectList(substr, ptr2, objs)
+                    # Eobj = objs[0]
+                    Eobj = substr[ptr2 + 1:ptr3 - 1]
+                    print(Eobj)
+
+                    argstr = argstr + "_:s" + str(BNodeNum) + " rdf:type rdf:Statement ; rdf:subject " + str(
+                        Esub) + " ; rdf:predicate " + str(Epred) + " ; rdf:object " + str(Eobj) + " .\n"
+
+                    print("Reified graph is as follows: ")
+                    print(argstr)
+
+                else:
+                    i = i + 1
+
+        return argstr
 
     def statement(self, argstr, i):
         r = []
