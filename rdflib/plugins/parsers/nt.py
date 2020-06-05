@@ -17,11 +17,17 @@ class NTParser(Parser):
 
     See http://www.w3.org/TR/rdf-testcases/#ntriples"""
 
-    def __init__(self):
-        super(NTParser, self).__init__()
+    def parse(self, source, sink, **kwargs):
+        '''
+        Parse the NT format
 
-    def parse(self, source, sink, baseURI=None):
+        :type source: `rdflib.parser.InputSource`
+        :param source: the source of NT-formatted data
+        :type sink: `rdflib.graph.Graph`
+        :param sink: where to send parsed triples
+        :param kwargs: Additional arguments to pass to `.NTriplesParser.parse`
+        '''
         f = source.getByteStream()  # TODO getCharacterStream?
         parser = NTriplesParser(NTSink(sink))
-        parser.parse(f)
+        parser.parse(f, **kwargs)
         f.close()

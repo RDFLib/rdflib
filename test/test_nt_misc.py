@@ -188,6 +188,22 @@ class BNodeContextTestCase(unittest.TestCase):
 
         self.assertEqual(len(my_sink.subs), 1)
 
+    def test_bnode_shared_across_instances_with_parse_option(self):
+        my_sink = FakeSink()
+        bnode_ctx = dict()
+
+        p = ntriples.NTriplesParser(my_sink)
+        p.parsestring('''
+        _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000001> .
+        ''', bnode_context=bnode_ctx)
+
+        q = ntriples.NTriplesParser(my_sink)
+        q.parsestring('''
+        _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000002> .
+        ''', bnode_context=bnode_ctx)
+
+        self.assertEqual(len(my_sink.subs), 1)
+
 
 class FakeSink(object):
     def __init__(self):
