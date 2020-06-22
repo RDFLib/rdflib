@@ -22,7 +22,7 @@ LIMIT = "LIMIT"
 OFFSET = "OFFSET"
 ORDERBY = "ORDER BY"
 
-BNODE_IDENT_PATTERN = re.compile("(?P<label>_\:[^\s]+)")
+BNODE_IDENT_PATTERN = re.compile(r"(?P<label>_\:[^\s]+)")
 
 
 def _node_to_sparql(node):

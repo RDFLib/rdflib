@@ -1515,7 +1515,7 @@ expandUnicodeEscapes_re = re.compile(r"\\u([0-9a-f]{4}(?:[0-9a-f]{4})?)", flags=
 
 
 def expandUnicodeEscapes(q):
-    """
+    r"""
     The syntax of the SPARQL Query Language is expressed over code points in Unicode [UNICODE]. The encoding is always UTF-8 [RFC3629].
     Unicode code points may also be expressed using an \ uXXXX (U+0 to U+FFFF) or \ UXXXXXXXX syntax (for U+10000 onwards) where X is a hexadecimal digit [0-9A-F]
     """

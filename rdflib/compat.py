@@ -95,7 +95,7 @@ if narrow_build:
 
 
 def decodeStringEscape(s):
-    """
+    r"""
     s is byte-string - replace \ escapes in string
     """
 
