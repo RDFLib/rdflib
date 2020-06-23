@@ -5,7 +5,7 @@ import re
 from setuptools import setup, find_packages
 
 kwargs = {}
-kwargs["install_requires"] = ["isodate", "pyparsing"]
+kwargs["install_requires"] = ["isodate", "pyparsing", "requests"]
 kwargs["tests_require"] = [
     "html5lib",
     "networkx",
