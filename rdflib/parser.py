@@ -114,6 +114,20 @@ class URLInputSource(InputSource):
 
         req = Request(system_id, None, myheaders)
         file = urlopen(req)
+        #Fix for https://github.com/RDFLib/rdflib-jsonld/issues/85
+        #TODO: Check if Link header is supported for other formats
+        if format == "json-ld":
+            # Check for a Link header in response, rfc8288
+            _link = file.getheader("Link", None)
+            if not _link is None:
+                #TODO: Scan for content type in potentially multiple Link headers
+                # Grab the possibly relative URL
+                link_url = _link.split(";")[0].strip("<>")
+                link_url = urljoin(self.url, link_url)
+                #Reissue the request to the Link URL
+                req = Request(link_url, None, myheaders)
+                file = urlopen(req)
+
         # Fix for issue 130 https://github.com/RDFLib/rdflib/issues/130
         self.url = file.geturl()  # in case redirections took place
         self.setPublicId(self.url)
