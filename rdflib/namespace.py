@@ -489,8 +489,8 @@ SKOS = ClosedNamespace(
         "relatedMatch",
     ],
 )
-SOSA = Namespace("http://www.w3.org/ns/ssn/")
-SSN = Namespace("http://www.w3.org/ns/sosa/")
+SSN = Namespace("http://www.w3.org/ns/ssn/")
+SOSA = Namespace("http://www.w3.org/ns/sosa/")
 TIME = Namespace("http://www.w3.org/2006/time#")
 VOID = Namespace("http://rdfs.org/ns/void#")
 XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
