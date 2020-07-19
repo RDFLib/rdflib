@@ -200,8 +200,8 @@ class Memory2(Store):
         self.__context_obj_map = {}
         self.__tripleContexts = (
             {}
-        )  # key: enctriple    val: {cid1: quoted, cid2: quoted ...}
-        self.__contextTriples = {None: set()}  # key: cid    val: set(enctriples)
+        )
+        self.__contextTriples = {None: set()}
         # all contexts used in store (unencoded)
         self.__all_contexts = set()
         # default context information for triples
@@ -409,7 +409,7 @@ class Memory2(Store):
             _ = self.__spo[subj][pred][obj]
             return self.__contexts(triple)
         except KeyError:
-            return self.__emptygen()
+            return (_ for _ in [])
 
     def __len__(self, context=None):
         ctx = self.__ctx_to_str(context)
@@ -525,11 +525,6 @@ class Memory2(Store):
             for ctx_str in self.__get_context_for_triple(triple, skipQuoted=True)
             if ctx_str is not None
         )
-
-    def __emptygen(self):
-        """return an empty generator"""
-        if False:
-            yield
 
 
 class IOMemory(Store):
