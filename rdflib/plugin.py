@@ -131,7 +131,9 @@ def plugins(name=None, kind=None):
             yield p
 
 
-register("default", Store, "rdflib.plugins.memory", "IOMemory")
+register("default", Store, "rdflib.plugins.memory", "Memory2")
+register("Memory2", Store, "rdflib.plugins.memory", "Memory2")
+register("Memory1", Store, "rdflib.plugins.memory", "Memory1")
 register("IOMemory", Store, "rdflib.plugins.memory", "IOMemory")
 register("Auditable", Store, "rdflib.plugins.stores.auditable", "AuditableStore")
 register("Concurrent", Store, "rdflib.plugins.stores.concurrent", "ConcurrentStore")

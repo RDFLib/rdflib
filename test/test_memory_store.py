@@ -6,7 +6,7 @@ rdflib.plugin.register("Memory", rdflib.store.Store, "rdflib.plugins.memory", "M
 
 class StoreTestCase(unittest.TestCase):
     def test_memory_store(self):
-        g = rdflib.Graph("Memory")
+        g = rdflib.Graph("Memory1")
         subj1 = rdflib.URIRef("http://example.org/foo#bar1")
         pred1 = rdflib.URIRef("http://example.org/foo#bar2")
         obj1 = rdflib.URIRef("http://example.org/foo#bar3")
