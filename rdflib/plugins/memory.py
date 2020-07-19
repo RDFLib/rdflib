@@ -289,60 +289,6 @@ class Memory2(Store):
             # remove the whole context
             self.__all_contexts.remove(context)
 
-    def triples(self, triplein, context=None):
-        if context is not None:
-            if context == self:  # hmm...does this really ever happen?
-                context = None
-
-        cid = self.__obj2id(context)
-        enctriple = self.__encodeTriple(triplein)
-        sid, pid, oid = enctriple
-
-        # all triples case (no triple parts given as pattern)
-        if sid is None and pid is None and oid is None:
-            return self.__all_triples(cid)
-
-        # optimize "triple in graph" case (all parts given)
-        if sid is not None and pid is not None and oid is not None:
-            if (
-                sid in self.__subjectIndex
-                and enctriple in self.__subjectIndex[sid]
-                and self.__tripleHasContext(enctriple, cid)
-            ):
-                return ((triplein, self.__contexts(enctriple)) for i in [0])
-            else:
-                return self.__emptygen()
-
-        # remaining cases: one or two out of three given
-        sets = []
-        if sid is not None:
-            if sid in self.__subjectIndex:
-                sets.append(self.__subjectIndex[sid])
-            else:
-                return self.__emptygen()
-        if pid is not None:
-            if pid in self.__predicateIndex:
-                sets.append(self.__predicateIndex[pid])
-            else:
-                return self.__emptygen()
-        if oid is not None:
-            if oid in self.__objectIndex:
-                sets.append(self.__objectIndex[oid])
-            else:
-                return self.__emptygen()
-
-        # to get the result, do an intersection of the sets (if necessary)
-        if len(sets) > 1:
-            enctriples = sets[0].intersection(*sets[1:])
-        else:
-            enctriples = sets[0].copy()
-
-        return (
-            (self.__decodeTriple(enctriple), self.__contexts(enctriple))
-            for enctriple in enctriples
-            if self.__tripleHasContext(enctriple, cid)
-        )
-
     def triples(self, triple_pattern, context=None):
         """A generator over all the triples matching """
         req_ctx = self.__ctx_to_str(context)
@@ -556,23 +502,20 @@ class Memory2(Store):
     def __ctx_to_str(self, ctx):
         if ctx is None:
             return None
-        if type(ctx) is str:
-            return ctx
-        if isinstance(ctx, bytes):
-            return ctx.decode('utf-8')
-        if hasattr(ctx, 'identifier'):
+        try:
+            # ctx could be a graph. In that case, use its identifier
             ctx_str = "{}:{}".format(str(ctx.identifier.__class__.__name__), str(ctx.identifier))
             self.__context_obj_map[ctx_str] = ctx
             return ctx_str
-        if isinstance(ctx, str):
-            # a subtype of str, like URIRef, BNode
-            ctx_str = "{}:{}".format(str(ctx.__class__.__name__), str(ctx))
-            if ctx_str in self.__context_obj_map:
+        except AttributeError:
+            # otherwise, ctx should be a URIRef or BNode or str
+            if isinstance(ctx, str):
+                ctx_str = "{}:{}".format(str(ctx.__class__.__name__), str(ctx))
+                if ctx_str in self.__context_obj_map:
+                    return ctx_str
+                self.__context_obj_map[ctx_str] = ctx
                 return ctx_str
-            self.__context_obj_map[ctx_str] = ctx
-            return ctx_str
-
-        raise RuntimeError("Cannot use that type of object as a Graph context")
+            raise RuntimeError("Cannot use that type of object as a Graph context")
 
     def __contexts(self, triple):
         """return a generator for all the non-quoted contexts
