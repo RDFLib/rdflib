@@ -207,7 +207,6 @@ class Memory2(Store):
         # default context information for triples
         self.__defaultContexts = None
 
-
     def add(self, triple, context, quoted=False):
         """\
         Add a triple to the store of triples.
@@ -224,36 +223,35 @@ class Memory2(Store):
         spo = self.__spo
         try:
             po = spo[subject]
-        except:
+        except LookupError:
             po = spo[subject] = {}
         try:
             o = po[predicate]
-        except:
+        except LookupError:
             o = po[predicate] = {}
         o[object_] = 1
 
         pos = self.__pos
         try:
             os = pos[predicate]
-        except:
+        except LookupError:
             os = pos[predicate] = {}
         try:
             s = os[object_]
-        except:
+        except LookupError:
             s = os[object_] = {}
         s[subject] = 1
 
         osp = self.__osp
         try:
             sp = osp[object_]
-        except:
+        except LookupError:
             sp = osp[object_] = {}
         try:
             p = sp[subject]
-        except:
+        except LookupError:
             p = sp[subject] = {}
         p[predicate] = 1
-
 
     def remove(self, triple_pattern, context=None):
         req_ctx = self.__ctx_to_str(context)
@@ -295,7 +293,7 @@ class Memory2(Store):
         subject, predicate, object_ = triple_pattern
 
         # all triples case (no triple parts given as pattern)
-        if subject is ANY and predicate is ANY and object_ is ANY:
+        if subject is None and predicate is None and object_ is None:
             # Just dump all known triples from the given graph
             if req_ctx not in self.__contextTriples:
                 return
@@ -303,7 +301,7 @@ class Memory2(Store):
                 yield triple, self.__contexts(triple)
 
         # optimize "triple in graph" case (all parts given)
-        elif subject is not ANY and predicate is not ANY and object_ is not ANY:
+        elif subject is not None and predicate is not None and object_ is not None:
             triple = triple_pattern
             try:
                 _ = self.__spo[subject][predicate][object_]
@@ -312,13 +310,13 @@ class Memory2(Store):
             except KeyError:
                 return
 
-        elif subject != ANY:  # subject is given
+        elif subject is not None:  # subject is given
             spo = self.__spo
             if subject in spo:
                 subjectDictionary = spo[subject]
-                if predicate != ANY:  # subject+predicate is given
+                if predicate is not None:  # subject+predicate is given
                     if predicate in subjectDictionary:
-                        if object_ != ANY:  # subject+predicate+object is given
+                        if object_ is not None:  # subject+predicate+object is given
                             if object_ in subjectDictionary[predicate]:
                                 triple = (subject, predicate, object_)
                                 if self.__triple_has_context(triple, req_ctx):
@@ -334,7 +332,7 @@ class Memory2(Store):
                         pass
                 else:  # subject given, predicate unbound
                     for p in list(subjectDictionary.keys()):
-                        if object_ != ANY:  # object is given
+                        if object_ is not None:  # object is given
                             if object_ in subjectDictionary[p]:
                                 triple = (subject, p, object_)
                                 if self.__triple_has_context(triple, req_ctx):
@@ -348,11 +346,11 @@ class Memory2(Store):
                                     yield triple, self.__contexts(triple)
             else:  # given subject not found
                 pass
-        elif predicate != ANY:  # predicate is given, subject unbound
+        elif predicate is not None:  # predicate is given, subject unbound
             pos = self.__pos
             if predicate in pos:
                 predicateDictionary = pos[predicate]
-                if object_ != ANY:  # predicate+object is given, subject unbound
+                if object_ is not None:  # predicate+object is given, subject unbound
                     if object_ in predicateDictionary:
                         for s in list(predicateDictionary[object_].keys()):
                             triple = (s, predicate, object_)
@@ -366,7 +364,7 @@ class Memory2(Store):
                             triple = (s, predicate, o)
                             if self.__triple_has_context(triple, req_ctx):
                                 yield triple, self.__contexts(triple)
-        elif object_ != ANY:  # object is given, subject+predicate unbound
+        elif object_ is not None:  # object is given, subject+predicate unbound
             osp = self.__osp
             if object_ in osp:
                 objectDictionary = osp[object_]
