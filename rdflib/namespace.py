@@ -214,7 +214,9 @@ class ClosedNamespace(object):
     def __repr__(self):
         return "rdf.namespace.ClosedNamespace(%r)" % str(self.uri)
 
-
+    def __dir__(self):
+        return list(self._ClosedNamespace__uris)
+    
 class _RDFNamespace(ClosedNamespace):
     """
     Closed namespace for RDF terms
