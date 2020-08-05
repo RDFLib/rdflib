@@ -126,7 +126,7 @@ def csv_reader(csv_data, dialect=csv.excel, **kwargs):
 
     csv_reader = csv.reader(csv_data, dialect=dialect, **kwargs)
     for row in csv_reader:
-        yield [cell for cell in row]
+        yield row
 
 
 def prefixuri(x, prefix, class_=None):
