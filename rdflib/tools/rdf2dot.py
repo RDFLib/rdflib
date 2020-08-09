@@ -15,7 +15,7 @@ import rdflib
 import rdflib.extras.cmdlineutils
 
 import sys
-import cgi
+import html as cgi
 import collections
 
 from rdflib import XSD
@@ -103,9 +103,14 @@ def rdf2dot(g, stream, opts={}):
                 return l
 
         try:
-            return g.namespace_manager.compute_qname(x)[2]
+            l = g.namespace_manager.compute_qname(x)[2]
+            if l:
+                return l
         except:
-            return x
+            if x:
+                return x
+        #dot throws up a little with empty <B>
+        return " "
 
     def formatliteral(l, g):
         v = cgi.escape(l)
