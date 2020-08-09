@@ -33,7 +33,7 @@ if __name__ == "__main__":
     gmary.add((mary, ns["hasName"], Literal("Mary")))
     gmary.add((mary, ns["loves"], john))
 
-    # add a graph for Mary's facts to the Conjunctive Graph
+    # add a graph for John's facts to the Conjunctive Graph
     gjohn = Graph(store=store, identifier=cjohn)
     # John's graph contains his cute name
     gjohn.add((john, ns["hasCuteName"], Literal("Johnny Boy")))
