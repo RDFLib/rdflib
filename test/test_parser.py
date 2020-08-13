@@ -33,6 +33,7 @@ class ParserTestCase(unittest.TestCase):
 
 </rdf:RDF>
 """,
+            format="xml",
             publicID="http://example.org",
         )
 

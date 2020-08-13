@@ -37,7 +37,7 @@ def test_ns_localname_roundtrip():
     xmldump = g.serialize().decode("utf-8")
     g1 = rdflib.Graph()
 
-    g1.parse(data=xmldump)
+    g1.parse(data=xmldump, format="xml")
 
     g1.parse(data=turtledump, format="turtle")
 

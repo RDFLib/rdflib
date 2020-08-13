@@ -38,7 +38,7 @@ class TestXMLLiteralwithLangAttr(unittest.TestCase):
         it contains a XML Literal with a xml:lang attribute:
         """
         g = rdflib.Graph()
-        g.parse(data=passxml)
+        g.parse(data=passxml, format="xml")
 
     def test_failing_parse_of_literal_with_xmllang_attr(self):
         """
@@ -47,7 +47,7 @@ class TestXMLLiteralwithLangAttr(unittest.TestCase):
         it contains a XML Literal with a xml:lang attribute:
         """
         g = rdflib.Graph()
-        g.parse(data=failxml)
+        g.parse(data=failxml, format="xml")
 
 
 if __name__ == "__main__":

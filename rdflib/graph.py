@@ -24,6 +24,7 @@ from rdflib.namespace import NamespaceManager
 from rdflib.resource import Resource
 from rdflib.collection import Collection
 import rdflib.util  # avoid circular dependency
+from rdflib.exceptions import ParserError
 
 import os
 import shutil
@@ -996,7 +997,7 @@ class Graph(Node):
         **args
     ):
         """
-        Parse source adding the resulting triples to the Graph.
+        Parse an RDF source adding the resulting triples to the Graph.
 
         The source is specified using one of source, location, file or
         data.
@@ -1010,9 +1011,10 @@ class Graph(Node):
             is specified.
           - `file`: A file-like object.
           - `data`: A string containing the data to be parsed.
-          - `format`: Used if format can not be determined from source.
-            Defaults to rdf/xml. Format support can be extended with plugins,
-            but "xml", "n3", "nt" & "trix" are built in.
+          - `format`: Used if format can not be determined from source, e.g. file
+            extension or Media Type. Defaults to text/turtle. Format support can
+            be extended with plugins, but "xml", "n3" (use for turtle), "nt" &
+            "trix" are built in.
           - `publicID`: the logical URI to use as the document base. If None
             specified the document location is used (at least in the case where
             there is a document location).
@@ -1058,6 +1060,11 @@ class Graph(Node):
 
         >>> os.remove(file_name)
 
+        >>> # default turtle parsing
+        >>> result = g.parse(data="<http://example.com/a> <http://example.com/a> <http://example.com/a> .")
+        >>> len(g)
+        3
+
         """
 
         source = create_input_source(
@@ -1070,24 +1077,25 @@ class Graph(Node):
         )
         if format is None:
             format = source.content_type
-        assumed_xml = False
+        could_not_guess_format = False
         if format is None:
             if (hasattr(source, "file")
                     and getattr(source.file, "name", None)
                     and isinstance(source.file.name, str)):
                 format = rdflib.util.guess_format(source.file.name)
             if format is None:
-                format = "application/rdf+xml"
-                assumed_xml = True
+                format = "turtle"
+                could_not_guess_format = True
         parser = plugin.get(format, Parser)()
         try:
             parser.parse(source, self, **args)
-        except SAXParseException as saxpe:
-            if assumed_xml:
-                logger.warning(
-                    "Could not guess format for %r, so assumed xml."
-                    " You can explicitly specify format using the format argument." % source)
-            raise saxpe
+        except SyntaxError as se:
+            if could_not_guess_format:
+                raise ParserError(
+                    "Could not guess RDF format for %r from file extension so tried Turtle but failed."
+                    "You can explicitly specify format using the format argument." % source)
+            else:
+                raise se
         finally:
             if source.auto_close:
                 source.close()
