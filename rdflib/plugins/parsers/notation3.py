@@ -1726,6 +1726,7 @@ r_hibyte = re.compile(r"([\x80-\xff])")
 class RDFSink(object):
     def __init__(self, graph):
         self.rootFormula = None
+        self.uuid = uuid4().hex
         self.counter = 0
         self.graph = graph
 
@@ -1745,7 +1746,7 @@ class RDFSink(object):
             return arg.newBlankNode(uri)
         elif isinstance(arg, Graph) or arg is None:
             self.counter += 1
-            bn = BNode("n" + str(self.counter))
+            bn = BNode("n%sb%s" % (self.uuid, self.counter))
         else:
             bn = BNode(str(arg[0]).split("#").pop().replace("_", "b"))
         return bn
