@@ -404,7 +404,7 @@ class SinkParser:
             else:
                 self._genPrefix = uniqueURI()
 
-        if openFormula is None:
+        if openFormula is None and not turtle:
             if self._thisDoc:
                 self._formula = store.newFormula(thisDoc + "#_formula")
             else:
