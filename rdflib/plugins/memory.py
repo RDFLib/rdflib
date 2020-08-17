@@ -156,6 +156,11 @@ class Memory(Store):
         self.__prefix[namespace] = prefix
         self.__namespace[prefix] = namespace
 
+    def unbind(self, prefix):
+        temp_prefix = {x: y for x, y in self.__prefix.items() if y != prefix}
+        self.__prefix = temp_prefix
+        del self.__namespace[prefix]
+
     def namespace(self, prefix):
         return self.__namespace.get(prefix, None)
 

@@ -694,6 +694,12 @@ class NamespaceManager(object):
 
             return self.__cache_strict[uri]
 
+    def unbind(self, prefix):
+        for ns in self.namespaces():
+            if (ns[0] == prefix):
+                del self.__trie[str(ns[1])]
+        self.store.unbind(prefix)
+
     def bind(self, prefix, namespace, override=True, replace=False):
         """bind a given namespace to the prefix
 
