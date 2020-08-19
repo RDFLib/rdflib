@@ -370,7 +370,7 @@ tests = 0
 for s in plugin.plugins(pluginname, plugin.Store):
     if s.name in (
         "default",
-        "IOMemory",
+        "Memory",
         "Auditable",
         "Concurrent",
         "SPARQLStore",

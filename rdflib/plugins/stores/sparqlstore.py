@@ -646,7 +646,7 @@ class SPARQLUpdateStore(SPARQLStore):
         .. admonition:: Context-aware query rewriting
 
             - **When:**  If context-awareness is enabled and the graph is not the default graph of the store.
-            - **Why:** To ensure consistency with the :class:`~rdflib.plugins.memory.IOMemory` store.
+            - **Why:** To ensure consistency with the :class:`~rdflib.plugins.stores.memory.Memory` store.
               The graph must except "local" SPARQL requests (requests with no GRAPH keyword)
               like if it was the default graph.
             - **What is done:** These "local" queries are rewritten by this store.

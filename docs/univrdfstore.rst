@@ -344,7 +344,7 @@ These are a list of additional kinds of RDF terms (all of which are special Lite
 Namespace Management Interfaces
 ===============================
 
-The following namespace management interfaces (defined in Graph) could be implemented in the RDF store. Currently, they exist as stub methods of :class:`~rdflib.store.Store` and are defined in the store subclasses (e.g. :class:`~rdflib.store.IOMemory`):
+The following namespace management interfaces (defined in Graph) could be implemented in the RDF store. Currently, they exist as stub methods of :class:`~rdflib.store.Store` and are defined in the store subclasses (e.g. :class:`~rdflib.plugins.store.memory.Memory`):
 
 .. automethod:: rdflib.store.Store.bind
                 :noindex:

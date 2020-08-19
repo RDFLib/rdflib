@@ -178,7 +178,7 @@ if __name__ == "__main__":
 tests = 0
 
 for s in plugin.plugins(pluginname, plugin.Store):
-    if s.name in ("default", "IOMemory", "Auditable", "Concurrent", "SPARQLStore"):
+    if s.name in ("default", "Memory", "Auditable", "Concurrent", "SPARQLStore"):
         continue  # these are tested by default
 
     if not s.getClass().graph_aware:
