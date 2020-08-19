@@ -153,7 +153,11 @@ class TrigParser(Parser):
         )
         p = TrigSinkParser(sink, baseURI=baseURI, turtle=True)
 
-        p.loadStream(source.getByteStream())
+        stream = source.getCharacterStream()  # try to get str stream first
+        if not stream:
+            # fallback to get the bytes stream
+            stream = source.getByteStream()
+        p.loadStream(stream)
 
         for prefix, namespace in p._bindings.items():
             conj_graph.bind(prefix, namespace)
