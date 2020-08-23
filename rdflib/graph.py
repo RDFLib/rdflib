@@ -778,13 +778,17 @@ class Graph(Node):
         # setup the language filtering
         if lang is not None:
             if lang == "":  # we only want not language-tagged literals
+
                 def langfilter(l_):
                     return l_.language is None
+
             else:
+
                 def langfilter(l_):
                     return l_.language == lang
 
         else:  # we don't care about language tags
+
             def langfilter(l_):
                 return True
 
@@ -1072,9 +1076,11 @@ class Graph(Node):
             format = source.content_type
         assumed_xml = False
         if format is None:
-            if (hasattr(source, "file")
-                    and getattr(source.file, "name", None)
-                    and isinstance(source.file.name, str)):
+            if (
+                hasattr(source, "file")
+                and getattr(source.file, "name", None)
+                and isinstance(source.file.name, str)
+            ):
                 format = rdflib.util.guess_format(source.file.name)
             if format is None:
                 format = "application/rdf+xml"
@@ -1086,7 +1092,9 @@ class Graph(Node):
             if assumed_xml:
                 logger.warning(
                     "Could not guess format for %r, so assumed xml."
-                    " You can explicitly specify format using the format argument." % source)
+                    " You can explicitly specify format using the format argument."
+                    % source
+                )
             raise saxpe
         finally:
             if source.auto_close:
