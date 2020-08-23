@@ -34,8 +34,34 @@ class NTTestCase(unittest.TestCase):
         s = g.serialize(format="nt").strip()
         self.assertEqual(s, '<foo> <foo> "test\\n"@en .'.encode("latin-1"))
 
+    def testIssue1144_rdflib(self):
+        fname = "test/nt/lists-02.nt"
+        g1 = Graph()
+        with open(fname, "r") as f:
+            g1.parse(f, format='nt')
+        self.assertEqual(14, len(g1))
+        g2 = Graph()
+        with open(fname, "rb") as fb:
+            g2.parse(fb, format='nt')
+        self.assertEqual(14, len(g2))
+
+
+    def testIssue1144_w3c(self):
+        fname = "test/nt/lists-02.nt"
+        sink1 = ntriples.NTGraphSink(Graph())
+        p1 = ntriples.W3CNTriplesParser(sink1)
+        with open(fname, "r") as f:
+            p1.parse(f)
+        self.assertEqual(14, len(sink1.g))
+        sink2 = ntriples.NTGraphSink(Graph())
+        p2 = ntriples.W3CNTriplesParser(sink2)
+        with open(fname, "rb") as f:
+            p2.parse(f)
+        self.assertEqual(14, len(sink2.g))
+
+
     def test_sink(self):
-        s = ntriples.Sink()
+        s = ntriples.DummySink()
         self.assertTrue(s.length == 0)
         s.triple(None, None, None)
         self.assertTrue(s.length == 1)
@@ -77,26 +103,26 @@ class NTTestCase(unittest.TestCase):
         ntriples.validate = False
         self.assertEqual(res, uniquot)
 
-    def test_NTriplesParser_fpath(self):
+    def test_W3CNTriplesParser_fpath(self):
         fpath = "test/nt/" + os.listdir("test/nt")[0]
-        p = ntriples.NTriplesParser()
+        p = ntriples.W3CNTriplesParser()
         self.assertRaises(ntriples.ParseError, p.parse, fpath)
 
-    def test_NTriplesParser_parsestring(self):
-        p = ntriples.NTriplesParser()
+    def test_W3CNTriplesParser_parsestring(self):
+        p = ntriples.W3CNTriplesParser()
         data = 3
         self.assertRaises(ntriples.ParseError, p.parsestring, data)
         fname = "test/nt/lists-02.nt"
         with open(fname, "r") as f:
             data = f.read()
-        p = ntriples.NTriplesParser()
+        p = ntriples.W3CNTriplesParser()
         res = p.parsestring(data)
         self.assertTrue(res == None)
 
     def test_w3_ntriple_variants(self):
         uri = "file:///" + os.getcwd() + "/test/nt/test.ntriples"
 
-        parser = ntriples.NTriplesParser()
+        parser = ntriples.W3CNTriplesParser()
         u = urlopen(uri)
         sink = parser.parse(u)
         u.close()
@@ -107,14 +133,14 @@ class NTTestCase(unittest.TestCase):
         data = (
             """<http://example.org/resource32> 3 <http://example.org/datatype1> .\n"""
         )
-        p = ntriples.NTriplesParser()
+        p = ntriples.W3CNTriplesParser()
         self.assertRaises(ntriples.ParseError, p.parsestring, data)
 
     def test_cover_eat(self):
         data = (
             """<http://example.org/resource32> 3 <http://example.org/datatype1> .\n"""
         )
-        p = ntriples.NTriplesParser()
+        p = ntriples.W3CNTriplesParser()
         p.line = data
         self.assertRaises(
             ntriples.ParseError, p.eat, re.compile("<http://example.org/datatype1>")
@@ -122,7 +148,7 @@ class NTTestCase(unittest.TestCase):
 
     def test_cover_subjectobjectliteral(self):
         # data = '''<http://example.org/resource32> 3 <http://example.org/datatype1> .\n'''
-        p = ntriples.NTriplesParser()
+        p = ntriples.W3CNTriplesParser()
         p.line = "baz"
         self.assertRaises(ntriples.ParseError, p.subject)
         self.assertRaises(ntriples.ParseError, p.object)
@@ -134,12 +160,12 @@ class BNodeContextTestCase(unittest.TestCase):
     def test_bnode_shared_across_instances(self):
         my_sink = FakeSink()
         bnode_context = dict()
-        p = ntriples.NTriplesParser(my_sink, bnode_context=bnode_context)
+        p = ntriples.W3CNTriplesParser(my_sink, bnode_context=bnode_context)
         p.parsestring('''
         _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000001> .
         ''')
 
-        q = ntriples.NTriplesParser(my_sink, bnode_context=bnode_context)
+        q = ntriples.W3CNTriplesParser(my_sink, bnode_context=bnode_context)
         q.parsestring('''
         _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000002> .
         ''')
@@ -148,12 +174,12 @@ class BNodeContextTestCase(unittest.TestCase):
 
     def test_bnode_distinct_across_instances(self):
         my_sink = FakeSink()
-        p = ntriples.NTriplesParser(my_sink)
+        p = ntriples.W3CNTriplesParser(my_sink)
         p.parsestring('''
         _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000001> .
         ''')
 
-        q = ntriples.NTriplesParser(my_sink)
+        q = ntriples.W3CNTriplesParser(my_sink)
         q.parsestring('''
         _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000002> .
         ''')
@@ -162,7 +188,7 @@ class BNodeContextTestCase(unittest.TestCase):
 
     def test_bnode_distinct_across_parse(self):
         my_sink = FakeSink()
-        p = ntriples.NTriplesParser(my_sink)
+        p = ntriples.W3CNTriplesParser(my_sink)
 
         p.parsestring('''
         _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000001> .
@@ -176,7 +202,7 @@ class BNodeContextTestCase(unittest.TestCase):
 
     def test_bnode_shared_across_parse(self):
         my_sink = FakeSink()
-        p = ntriples.NTriplesParser(my_sink)
+        p = ntriples.W3CNTriplesParser(my_sink)
 
         p.parsestring('''
         _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000001> .
@@ -192,12 +218,12 @@ class BNodeContextTestCase(unittest.TestCase):
         my_sink = FakeSink()
         bnode_ctx = dict()
 
-        p = ntriples.NTriplesParser(my_sink)
+        p = ntriples.W3CNTriplesParser(my_sink)
         p.parsestring('''
         _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000001> .
         ''', bnode_context=bnode_ctx)
 
-        q = ntriples.NTriplesParser(my_sink)
+        q = ntriples.W3CNTriplesParser(my_sink)
         q.parsestring('''
         _:0 <http://purl.obolibrary.org/obo/RO_0002350> <http://www.gbif.org/species/0000002> .
         ''', bnode_context=bnode_ctx)

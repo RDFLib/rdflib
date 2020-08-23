@@ -11,7 +11,7 @@ following to your setup::
 
     entry_points = {
         'rdf.plugins.parser': [
-            'nt =     rdf.plugins.parsers.nt:NTParser',
+            'nt =     rdf.plugins.parsers.ntriples:NTParser',
             ],
         'rdf.plugins.serializer': [
             'nt =     rdf.plugins.serializers.NTSerializer:NTSerializer',
@@ -185,10 +185,10 @@ register("n3", Parser, "rdflib.plugins.parsers.notation3", "N3Parser")
 register("text/turtle", Parser, "rdflib.plugins.parsers.notation3", "TurtleParser")
 register("turtle", Parser, "rdflib.plugins.parsers.notation3", "TurtleParser")
 register("ttl", Parser, "rdflib.plugins.parsers.notation3", "TurtleParser")
-register("application/n-triples", Parser, "rdflib.plugins.parsers.nt", "NTParser")
-register("ntriples", Parser, "rdflib.plugins.parsers.nt", "NTParser")
-register("nt", Parser, "rdflib.plugins.parsers.nt", "NTParser")
-register("nt11", Parser, "rdflib.plugins.parsers.nt", "NTParser")
+register("application/n-triples", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
+register("ntriples", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
+register("nt", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
+register("nt11", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
 register("application/n-quads", Parser, "rdflib.plugins.parsers.nquads", "NQuadsParser")
 register("nquads", Parser, "rdflib.plugins.parsers.nquads", "NQuadsParser")
 register("application/trix", Parser, "rdflib.plugins.parsers.trix", "TriXParser")

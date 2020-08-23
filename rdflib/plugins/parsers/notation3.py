@@ -1899,8 +1899,11 @@ class TurtleParser(Parser):
 
         baseURI = graph.absolutize(source.getPublicId() or source.getSystemId() or "")
         p = SinkParser(sink, baseURI=baseURI, turtle=turtle)
-
-        p.loadStream(source.getByteStream())
+        # N3 parser prefers str stream
+        stream = source.getCharacterStream()
+        if not stream:
+            stream = source.getByteStream()
+        p.loadStream(stream)
 
         for prefix, namespace in p._bindings.items():
             graph.bind(prefix, namespace)
