@@ -126,8 +126,7 @@ def csv_reader(csv_data, dialect=csv.excel, **kwargs):
 
     csv_reader = csv.reader(csv_data, dialect=dialect, **kwargs)
     for row in csv_reader:
-        # decode UTF-8 back to Unicode, cell by cell:
-        yield [str(cell, "utf-8", errors="replace") for cell in row]
+        yield row
 
 
 def prefixuri(x, prefix, class_=None):
@@ -315,7 +314,7 @@ class CSV2RDF(object):
         self.COLUMNS = {}
         self.PROPS = {}
 
-        self.OUT = codecs.getwriter("utf-8")(sys.stdout, errors="replace")
+        self.OUT = sys.stdout
 
         self.triples = 0
 
@@ -346,7 +345,7 @@ class CSV2RDF(object):
             next(csvreader)
 
         # read header line
-        header_labels = list(csvreader.next())
+        header_labels = list(next(csvreader))
         headers = dict(enumerate([self.PROPBASE[toProperty(x)] for x in header_labels]))
         # override header properties if some are given
         for k, v in self.PROPS.items():
