@@ -779,13 +779,17 @@ class Graph(Node):
         # setup the language filtering
         if lang is not None:
             if lang == "":  # we only want not language-tagged literals
+
                 def langfilter(l_):
                     return l_.language is None
+
             else:
+
                 def langfilter(l_):
                     return l_.language == lang
 
         else:  # we don't care about language tags
+
             def langfilter(l_):
                 return True
 
@@ -1079,9 +1083,11 @@ class Graph(Node):
             format = source.content_type
         could_not_guess_format = False
         if format is None:
-            if (hasattr(source, "file")
-                    and getattr(source.file, "name", None)
-                    and isinstance(source.file.name, str)):
+            if (
+                hasattr(source, "file")
+                and getattr(source.file, "name", None)
+                and isinstance(source.file.name, str)
+            ):
                 format = rdflib.util.guess_format(source.file.name)
             if format is None:
                 format = "turtle"
