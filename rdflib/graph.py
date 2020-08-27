@@ -1,8 +1,8 @@
 import logging
 from warnings import warn
 import random
-from rdflib.namespace import Namespace, RDF, RDFS, SKOS
-from rdflib import plugin, exceptions, query
+from rdflib.namespace import Namespace, RDF
+from rdflib import plugin, exceptions, query, namespace
 import rdflib.term
 from rdflib.term import BNode, Node, URIRef, Literal, Genid
 from rdflib.paths import Path
@@ -710,16 +710,21 @@ class Graph(Node):
 
         Return default if no label exists or any label if multiple exist.
         """
+        warn(
+            DeprecationWarning(
+                "graph.label() is deprecated and will be removed in rdflib 6.0.0."
+            )
+        )
         if subject is None:
             return default
-        return self.value(subject, RDFS.label, default=default, any=True)
+        return self.value(subject, namespace.RDFS.label, default=default, any=True)
 
     def preferredLabel(
         self,
         subject,
         lang=None,
         default=None,
-        labelProperties=(SKOS.prefLabel, RDFS.label),
+        labelProperties=(namespace.SKOS.prefLabel, namespace.RDFS.label),
     ):
         """
         Find the preferred label for subject.
@@ -761,7 +766,11 @@ class Graph(Node):
         [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal('blubb', lang='en'))]
         """
-
+        warn(
+            DeprecationWarning(
+                "graph.preferredLabel() is deprecated and will be removed in rdflib 6.0.0."
+            )
+        )
         if default is None:
             default = []
 
@@ -795,9 +804,14 @@ class Graph(Node):
 
         Return default if no comment exists
         """
+        warn(
+            DeprecationWarning(
+                "graph.comment() is deprecated and will be removed in rdflib 6.0.0."
+            )
+        )
         if subject is None:
             return default
-        return self.value(subject, RDFS.comment, default=default, any=True)
+        return self.value(subject, namespace.RDFS.comment, default=default, any=True)
 
     def items(self, list):
         """Generator over all items in the resource specified by list
@@ -902,6 +916,11 @@ class Graph(Node):
 
         If yes, it returns a Seq class instance, None otherwise.
         """
+        warn(
+            DeprecationWarning(
+                "graph.seq() is deprecated and will be removed in rdflib 6.0.0."
+            )
+        )
         if (subject, RDF.type, RDF.Seq) in self:
             return Seq(self, subject)
         else:
