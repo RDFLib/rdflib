@@ -3,7 +3,7 @@ from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
 
-from xml.sax import SAXParseException
+from rdflib.exceptions import ParserError
 
 from rdflib import Graph, logger as graph_logger
 
@@ -21,11 +21,10 @@ class FileParserGuessFormatTest(unittest.TestCase):
         g = Graph()
         with TemporaryDirectory() as tmpdirname:
             newpath = Path(tmpdirname).joinpath("no_file_ext")
-            copyfile("test/w3c/turtle/IRI_subject.ttl", str(newpath))
+            copyfile("test/rdf/Manifest.rdf", str(newpath))
             with self.assertLogs(graph_logger, "WARNING") as log_cm:
-                with self.assertRaises(SAXParseException):
+                with self.assertRaises(ParserError):
                     g.parse(str(newpath))
-            self.assertTrue(any("Could not guess format" in msg for msg in log_cm.output))
 
 
 if __name__ == '__main__':

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Description: A simple datatype production; a language+
+	datatype production. Simply duplicate the constructs under
+	http://www.w3.org/2000/10/rdf-tests/rdfcore/ntriples/test.nt
+
+  $Id: test001.rdf,v 1.2 2002/11/20 14:51:34 jgrant Exp $
+
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/">
+
+ <rdf:Description rdf:about="http://example.org/foo">
+   <eg:bar rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">10</eg:bar>
+   <eg:baz rdf:datatype="http://www.w3.org/2001/XMLSchema#integer" xml:lang="fr">10</eg:baz>
+ </rdf:Description>
+
+</rdf:RDF>
