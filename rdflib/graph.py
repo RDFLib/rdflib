@@ -1,8 +1,8 @@
 import logging
 from warnings import warn
 import random
-from rdflib.namespace import Namespace, RDF, RDFS, SKOS
-from rdflib import plugin, exceptions, query
+from rdflib.namespace import Namespace, RDF
+from rdflib import plugin, exceptions, query, namespace
 import rdflib.term
 from rdflib.term import BNode, Node, URIRef, Literal, Genid
 from rdflib.paths import Path
@@ -130,7 +130,7 @@ via triple pattern:
     >>> g.add((statementId, RDF.type, RDF.Statement))
     >>> g.add((statementId, RDF.subject,
     ...     URIRef("http://rdflib.net/store/ConjunctiveGraph")))
-    >>> g.add((statementId, RDF.predicate, RDFS.label))
+    >>> g.add((statementId, RDF.predicate, namespace.RDFS.label))
     >>> g.add((statementId, RDF.object, Literal("Conjunctive Graph")))
     >>> print(len(g))
     4
@@ -166,10 +166,10 @@ by RDFLib they are UUIDs and unique.
     >>> g1 = Graph()
     >>> g2 = Graph()
     >>> u = URIRef("http://example.com/foo")
-    >>> g1.add([u, RDFS.label, Literal("foo")])
-    >>> g1.add([u, RDFS.label, Literal("bar")])
-    >>> g2.add([u, RDFS.label, Literal("foo")])
-    >>> g2.add([u, RDFS.label, Literal("bing")])
+    >>> g1.add([u, namespace.RDFS.label, Literal("foo")])
+    >>> g1.add([u, namespace.RDFS.label, Literal("bar")])
+    >>> g2.add([u, namespace.RDFS.label, Literal("foo")])
+    >>> g2.add([u, namespace.RDFS.label, Literal("bing")])
     >>> len(g1 + g2)  # adds bing as label
     3
     >>> len(g1 - g2)  # removes foo
@@ -192,17 +192,17 @@ the same store:
     >>> g1.add((stmt1, RDF.type, RDF.Statement))
     >>> g1.add((stmt1, RDF.subject,
     ...     URIRef('http://rdflib.net/store/ConjunctiveGraph')))
-    >>> g1.add((stmt1, RDF.predicate, RDFS.label))
+    >>> g1.add((stmt1, RDF.predicate, namespace.RDFS.label))
     >>> g1.add((stmt1, RDF.object, Literal('Conjunctive Graph')))
     >>> g2.add((stmt2, RDF.type, RDF.Statement))
     >>> g2.add((stmt2, RDF.subject,
     ...     URIRef('http://rdflib.net/store/ConjunctiveGraph')))
     >>> g2.add((stmt2, RDF.predicate, RDF.type))
-    >>> g2.add((stmt2, RDF.object, RDFS.Class))
+    >>> g2.add((stmt2, RDF.object, namespace.RDFS.Class))
     >>> g3.add((stmt3, RDF.type, RDF.Statement))
     >>> g3.add((stmt3, RDF.subject,
     ...     URIRef('http://rdflib.net/store/ConjunctiveGraph')))
-    >>> g3.add((stmt3, RDF.predicate, RDFS.comment))
+    >>> g3.add((stmt3, RDF.predicate, namespace.RDFS.comment))
     >>> g3.add((stmt3, RDF.object, Literal(
     ...     'The top-level aggregate graph - The sum ' +
     ...     'of all named graphs within a Store')))
@@ -425,12 +425,12 @@ class Graph(Node):
 
         >>> import rdflib
         >>> g = rdflib.Graph()
-        >>> g.add((rdflib.URIRef("urn:bob"), rdflib.RDFS.label, rdflib.Literal("Bob")))
+        >>> g.add((rdflib.URIRef("urn:bob"), namespace.RDFS.label, rdflib.Literal("Bob")))
 
         >>> list(g[rdflib.URIRef("urn:bob")]) # all triples about bob
         [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'), rdflib.term.Literal('Bob'))]
 
-        >>> list(g[:rdflib.RDFS.label]) # all label triples
+        >>> list(g[:namespace.RDFS.label]) # all label triples
         [(rdflib.term.URIRef('urn:bob'), rdflib.term.Literal('Bob'))]
 
         >>> list(g[::rdflib.Literal("Bob")]) # all triples with bob as object
@@ -710,16 +710,21 @@ class Graph(Node):
 
         Return default if no label exists or any label if multiple exist.
         """
+        warn(
+            DeprecationWarning(
+                "graph.label() is deprecated and will be removed in rdflib 6.0.0."
+            )
+        )
         if subject is None:
             return default
-        return self.value(subject, RDFS.label, default=default, any=True)
+        return self.value(subject, namespace.RDFS.label, default=default, any=True)
 
     def preferredLabel(
         self,
         subject,
         lang=None,
         default=None,
-        labelProperties=(SKOS.prefLabel, RDFS.label),
+        labelProperties=(namespace.SKOS.prefLabel, namespace.RDFS.label),
     ):
         """
         Find the preferred label for subject.
@@ -732,23 +737,22 @@ class Graph(Node):
         Return a list of (labelProp, label) pairs, where labelProp is either
         skos:prefLabel or rdfs:label.
 
-        >>> from rdflib import ConjunctiveGraph, URIRef, RDFS, Literal
-        >>> from rdflib.namespace import SKOS
+        >>> from rdflib import ConjunctiveGraph, URIRef, Literal, namespace
         >>> from pprint import pprint
         >>> g = ConjunctiveGraph()
         >>> u = URIRef("http://example.com/foo")
-        >>> g.add([u, RDFS.label, Literal("foo")])
-        >>> g.add([u, RDFS.label, Literal("bar")])
+        >>> g.add([u, namespace.RDFS.label, Literal("foo")])
+        >>> g.add([u, namespace.RDFS.label, Literal("bar")])
         >>> pprint(sorted(g.preferredLabel(u)))
         [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
           rdflib.term.Literal('bar')),
          (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
           rdflib.term.Literal('foo'))]
-        >>> g.add([u, SKOS.prefLabel, Literal("bla")])
+        >>> g.add([u, namespace.SKOS.prefLabel, Literal("bla")])
         >>> pprint(g.preferredLabel(u))
         [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal('bla'))]
-        >>> g.add([u, SKOS.prefLabel, Literal("blubb", lang="en")])
+        >>> g.add([u, namespace.SKOS.prefLabel, Literal("blubb", lang="en")])
         >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
         [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal('bla')),
@@ -761,7 +765,11 @@ class Graph(Node):
         [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal('blubb', lang='en'))]
         """
-
+        warn(
+            DeprecationWarning(
+                "graph.preferredLabel() is deprecated and will be removed in rdflib 6.0.0."
+            )
+        )
         if default is None:
             default = []
 
@@ -795,9 +803,14 @@ class Graph(Node):
 
         Return default if no comment exists
         """
+        warn(
+            DeprecationWarning(
+                "graph.comment() is deprecated and will be removed in rdflib 6.0.0."
+            )
+        )
         if subject is None:
             return default
-        return self.value(subject, RDFS.comment, default=default, any=True)
+        return self.value(subject, namespace.RDFS.comment, default=default, any=True)
 
     def items(self, list):
         """Generator over all items in the resource specified by list
@@ -826,9 +839,9 @@ class Graph(Node):
         >>> c=BNode("baz")
         >>> g.add((a,RDF.first,RDF.type))
         >>> g.add((a,RDF.rest,b))
-        >>> g.add((b,RDF.first,RDFS.label))
+        >>> g.add((b,RDF.first,namespace.RDFS.label))
         >>> g.add((b,RDF.rest,c))
-        >>> g.add((c,RDF.first,RDFS.comment))
+        >>> g.add((c,RDF.first,namespace.RDFS.comment))
         >>> g.add((c,RDF.rest,RDF.nil))
         >>> def topList(node,g):
         ...    for s in g.subjects(RDF.rest, node):
@@ -902,6 +915,11 @@ class Graph(Node):
 
         If yes, it returns a Seq class instance, None otherwise.
         """
+        warn(
+            DeprecationWarning(
+                "graph.seq() is deprecated and will be removed in rdflib 6.0.0."
+            )
+        )
         if (subject, RDF.type, RDF.Seq) in self:
             return Seq(self, subject)
         else:
