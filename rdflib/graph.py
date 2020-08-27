@@ -1,21 +1,14 @@
-from xml.sax import SAXParseException
-
-from rdflib.term import Literal  # required for doctests
-from rdflib.namespace import Namespace  # required for doctests
-
 import logging
-
+from warnings import warn
 import random
-from rdflib.namespace import RDF, RDFS, SKOS
+from rdflib.namespace import Namespace, RDF, RDFS, SKOS
 from rdflib import plugin, exceptions, query
-from rdflib.term import Node, URIRef, Genid
-from rdflib.term import BNode
 import rdflib.term
+from rdflib.term import BNode, Node, URIRef, Literal, Genid
 from rdflib.paths import Path
 from rdflib.store import Store
 from rdflib.serializer import Serializer
-from rdflib.parser import Parser
-from rdflib.parser import create_input_source
+from rdflib.parser import Parser, create_input_source
 from rdflib.namespace import NamespaceManager
 from rdflib.resource import Resource
 from rdflib.collection import Collection
@@ -1106,6 +1099,12 @@ class Graph(Node):
         return self
 
     def load(self, source, publicID=None, format="xml"):
+        warn(
+            DeprecationWarning(
+                "graph.load() is deprecated, it will be removed in rdflib 6.0.0. "
+                "Please use graph.parse() instead."
+            )
+        )
         self.parse(source, publicID, format)
 
     def query(
