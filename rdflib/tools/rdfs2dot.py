@@ -96,7 +96,7 @@ def rdfs2dot(g, stream, opts={}):
                 pass  # bnodes and some weird URIs cannot be split
         return l_
 
-    stream.write("digraph { \n node [ fontname=\"DejaVu Sans\" ] ; \n")
+    stream.write('digraph { \n node [ fontname="DejaVu Sans" ] ; \n')
 
     for x in g.subjects(RDF.type, RDFS.Class):
         n = node(x)

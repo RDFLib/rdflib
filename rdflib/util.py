@@ -176,7 +176,7 @@ def from_n3(s, default=None, backend=None, nsm=None):
         else:
             quotes = '"'
         value, rest = s.rsplit(quotes, 1)
-        value = value[len(quotes):]  # strip leading quotes
+        value = value[len(quotes) :]  # strip leading quotes
         datatype = None
         language = None
 
@@ -187,7 +187,7 @@ def from_n3(s, default=None, backend=None, nsm=None):
             # datatype has to come after lang-tag so ignore everything before
             # see: http://www.w3.org/TR/2011/WD-turtle-20110809/
             # #prod-turtle2-RDFLiteral
-            datatype = from_n3(rest[dtoffset + 2:], default, backend, nsm)
+            datatype = from_n3(rest[dtoffset + 2 :], default, backend, nsm)
         else:
             if rest.startswith("@"):
                 language = rest[1:]  # strip leading at sign

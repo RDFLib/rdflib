@@ -614,7 +614,7 @@ class NamespaceManager(object):
                 pl_namespace = get_longest_namespace(self.__strie[namespace], uri)
                 if pl_namespace is not None:
                     namespace = pl_namespace
-                    name = uri[len(namespace):]
+                    name = uri[len(namespace) :]
 
             namespace = URIRef(namespace)
             prefix = self.store.prefix(namespace)  # warning multiple prefixes problem

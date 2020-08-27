@@ -216,7 +216,7 @@ nsBinds = {
 
 def generateQName(graph, uri):
     prefix, uri, localName = graph.compute_qname(classOrIdentifier(uri))
-    return ':'.join([prefix, localName])
+    return ":".join([prefix, localName])
 
 
 def classOrTerm(thing):
@@ -274,47 +274,47 @@ def manchesterSyntax(thing, store, boolean=None, transientList=False):
                     return ":".join([prefix, localName])
 
                 if len(named) > 1:
-                    prefix = '( ' + ' AND '.join(map(castToQName, named)) + ' )'
+                    prefix = "( " + " AND ".join(map(castToQName, named)) + " )"
                 else:
                     prefix = manchesterSyntax(named[0], store)
                 if childList:
-                    return ( 
-                        str(prefix) 
-                        + ' THAT ' 
-                        + ' AND '.join(
+                    return (
+                        str(prefix)
+                        + " THAT "
+                        + " AND ".join(
                             [str(manchesterSyntax(x, store)) for x in childList]
                         )
                     )
                 else:
                     return prefix
             else:
-                return '( ' + ' AND '.join([str(c) for c in children]) + ' )'
+                return "( " + " AND ".join([str(c) for c in children]) + " )"
         elif boolean == OWL_NS.unionOf:
-            return '( ' + ' OR '.join([str(c) for c in children]) + ' )'
+            return "( " + " OR ".join([str(c) for c in children]) + " )"
         elif boolean == OWL_NS.oneOf:
-            return '{ ' + ' '.join([str(c) for c in children]) + ' }'
+            return "{ " + " ".join([str(c) for c in children]) + " }"
         else:
             assert boolean == OWL_NS.complementOf
     elif OWL_NS.Restriction in store.objects(subject=thing, predicate=RDF.type):
         prop = list(store.objects(subject=thing, predicate=OWL_NS.onProperty))[0]
         prefix, uri, localName = store.compute_qname(prop)
-        propString = ':'.join([prefix, localName])
+        propString = ":".join([prefix, localName])
         label = first(store.objects(subject=prop, predicate=RDFS.label))
         if label:
             propString = "'%s'" % label
         for onlyClass in store.objects(subject=thing, predicate=OWL_NS.allValuesFrom):
-            return '( %s ONLY %s )' % (propString, manchesterSyntax(onlyClass, store))
+            return "( %s ONLY %s )" % (propString, manchesterSyntax(onlyClass, store))
         for val in store.objects(subject=thing, predicate=OWL_NS.hasValue):
-            return '( %s VALUE %s )' % (propString, manchesterSyntax(val, store))
+            return "( %s VALUE %s )" % (propString, manchesterSyntax(val, store))
         for someClass in store.objects(subject=thing, predicate=OWL_NS.someValuesFrom):
-            return '( %s SOME %s )' % (propString, manchesterSyntax(someClass, store))
+            return "( %s SOME %s )" % (propString, manchesterSyntax(someClass, store))
         cardLookup = {
-            OWL_NS.maxCardinality: 'MAX',
-            OWL_NS.minCardinality: 'MIN',
-            OWL_NS.cardinality: 'EQUALS',
+            OWL_NS.maxCardinality: "MAX",
+            OWL_NS.minCardinality: "MIN",
+            OWL_NS.cardinality: "EQUALS",
         }
         for s, p, o in store.triples_choices((thing, list(cardLookup.keys()), None)):
-            return '( %s %s %s )' % (propString, cardLookup[p], o)
+            return "( %s %s %s )" % (propString, cardLookup[p], o)
     compl = list(store.objects(subject=thing, predicate=OWL_NS.complementOf))
     if compl:
         return "( NOT %s )" % (manchesterSyntax(compl[0], store))
@@ -331,7 +331,7 @@ def manchesterSyntax(thing, store, boolean=None, transientList=False):
                 return manchesterSyntax(col, store, boolean=boolProp)
         try:
             prefix, uri, localName = store.compute_qname(thing)
-            qname = ':'.join([prefix, localName])
+            qname = ":".join([prefix, localName])
         except Exception:
             if isinstance(thing, BNode):
                 return thing.n3()
@@ -392,7 +392,7 @@ class Individual(object):
         if not isinstance(self.identifier, BNode):
             try:
                 prefix, uri, localName = self.graph.compute_qname(self.identifier)
-                self.qname = ':'.join([prefix, localName])
+                self.qname = ":".join([prefix, localName])
             except:
                 pass
 
@@ -465,7 +465,7 @@ class Individual(object):
         if not isinstance(i, BNode):
             try:
                 prefix, uri, localName = self.graph.compute_qname(i)
-                self.qname = ':'.join([prefix, localName])
+                self.qname = ":".join([prefix, localName])
             except:
                 pass
 

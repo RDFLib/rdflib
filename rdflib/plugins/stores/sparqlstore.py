@@ -429,23 +429,23 @@ class SPARQLUpdateStore(SPARQLStore):
     STRING_LITERAL2 = '"([^"\\\\]|\\\\.)*"'
     STRING_LITERAL_LONG1 = "'''(('|'')?([^'\\\\]|\\\\.))*'''"
     STRING_LITERAL_LONG2 = '"""(("|"")?([^"\\\\]|\\\\.))*"""'
-    String = '(%s)|(%s)|(%s)|(%s)' % (
-        STRING_LITERAL1, 
+    String = "(%s)|(%s)|(%s)|(%s)" % (
+        STRING_LITERAL1,
         STRING_LITERAL2,
-        STRING_LITERAL_LONG1, 
-        STRING_LITERAL_LONG2
+        STRING_LITERAL_LONG1,
+        STRING_LITERAL_LONG2,
     )
     IRIREF = '<([^<>"{}|^`\\]\\\\[\\x00-\\x20])*>'
-    COMMENT = '#[^\\x0D\\x0A]*([\\x0D\\x0A]|\\Z)'
+    COMMENT = "#[^\\x0D\\x0A]*([\\x0D\\x0A]|\\Z)"
 
     # Simplified grammar to find { at beginning and } at end of blocks
-    BLOCK_START = '{'
-    BLOCK_END = '}'
-    ESCAPED = '\\\\.'
+    BLOCK_START = "{"
+    BLOCK_END = "}"
+    ESCAPED = "\\\\."
 
     # Match anything that doesn't start or end a block:
-    BlockContent = '(%s)|(%s)|(%s)|(%s)' % (String, IRIREF, COMMENT, ESCAPED)
-    BlockFinding = '(?P<block_start>%s)|(?P<block_end>%s)|(?P<block_content>%s)' % (
+    BlockContent = "(%s)|(%s)|(%s)|(%s)" % (String, IRIREF, COMMENT, ESCAPED)
+    BlockFinding = "(?P<block_start>%s)|(?P<block_end>%s)|(?P<block_content>%s)" % (
         BLOCK_START,
         BLOCK_END,
         BlockContent,
@@ -724,12 +724,12 @@ class SPARQLUpdateStore(SPARQLStore):
             if match.group("block_start") is not None:
                 level += 1
                 if level == 1:
-                    modified_query.append(query[pos: match.end()])
+                    modified_query.append(query[pos : match.end()])
                     modified_query.append(graph_block_open)
                     pos = match.end()
             elif match.group("block_end") is not None:
                 if level == 1:
-                    since_previous_pos = query[pos: match.start()]
+                    since_previous_pos = query[pos : match.start()]
                     if modified_query[-1] is graph_block_open and (
                         since_previous_pos == "" or since_previous_pos.isspace()
                     ):

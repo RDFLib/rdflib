@@ -299,7 +299,7 @@ class URIRef(Identifier):
         """
         if isinstance(self, RDFLibGenid):
             parsed_uri = urlparse("%s" % self)
-            return BNode(value=parsed_uri.path[len(rdflib_skolem_genid):])
+            return BNode(value=parsed_uri.path[len(rdflib_skolem_genid) :])
         elif isinstance(self, Genid):
             bnode_id = "%s" % self
             if bnode_id in skolems:
@@ -1256,7 +1256,7 @@ class Literal(Identifier):
                 # in py >=2.6 the string.format function makes this easier
                 # we try to produce "pretty" output
                 if self.datatype == _XSD_DOUBLE:
-                    return sub("\\.?0*e", "e", '%e' % float(self))
+                    return sub("\\.?0*e", "e", "%e" % float(self))
                 elif self.datatype == _XSD_DECIMAL:
                     s = "%s" % self
                     if "." not in s:
@@ -1264,9 +1264,9 @@ class Literal(Identifier):
                     return s
 
                 elif self.datatype == _XSD_BOOLEAN:
-                    return ('%s' % self).lower()
+                    return ("%s" % self).lower()
                 else:
-                    return '%s' % self
+                    return "%s" % self
 
         encoded = self._quote_encode()
 

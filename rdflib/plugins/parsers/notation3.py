@@ -1512,7 +1512,7 @@ class SinkParser:
         delim2, delim3, delim4, delim5 = delim1 * 2, delim1 * 3, delim1 * 4, delim1 * 5
 
         j = i
-        ustr = ""    # Empty unicode string
+        ustr = ""  # Empty unicode string
         startline = self.lines  # Remember where for error messages
         while j < len(argstr):
             if argstr[j] == delim1:

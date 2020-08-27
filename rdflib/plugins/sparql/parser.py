@@ -177,21 +177,21 @@ if sys.maxunicode == 0xFFFF:
     #
     # in py3.3 this is fixed
 
-    PN_CHARS_BASE_re = 'A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD'
+    PN_CHARS_BASE_re = "A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD"
 else:
     # wide python build
-    PN_CHARS_BASE_re = 'A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\U00010000-\U000EFFFF'
+    PN_CHARS_BASE_re = "A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\U00010000-\U000EFFFF"
 
 # [165] PN_CHARS_U ::= PN_CHARS_BASE | '_'
-PN_CHARS_U_re = '_' + PN_CHARS_BASE_re
+PN_CHARS_U_re = "_" + PN_CHARS_BASE_re
 
 # [167] PN_CHARS ::= PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
-PN_CHARS_re = '\\-0-9\u00B7\u0300-\u036F\u203F-\u2040' + PN_CHARS_U_re
+PN_CHARS_re = "\\-0-9\u00B7\u0300-\u036F\u203F-\u2040" + PN_CHARS_U_re
 # PN_CHARS = Regex(u'[%s]'%PN_CHARS_re, flags=re.U)
 
 # [168] PN_PREFIX ::= PN_CHARS_BASE ((PN_CHARS|'.')* PN_CHARS)?
 PN_PREFIX = Regex(
-    '[%s](?:[%s\\.]*[%s])?' % (PN_CHARS_BASE_re, PN_CHARS_re, PN_CHARS_re), flags=re.U
+    "[%s](?:[%s\\.]*[%s])?" % (PN_CHARS_BASE_re, PN_CHARS_re, PN_CHARS_re), flags=re.U
 )
 
 # [140] PNAME_NS ::= PN_PREFIX? ':'

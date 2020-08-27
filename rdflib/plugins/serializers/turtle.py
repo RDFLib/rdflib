@@ -294,7 +294,7 @@ class TurtleSerializer(RecursiveSerializer):
 
         prefix = self.addNamespace(prefix, namespace)
 
-        return '%s:%s' % (prefix, local)
+        return "%s:%s" % (prefix, local)
 
     def startDocument(self):
         self._started = True
