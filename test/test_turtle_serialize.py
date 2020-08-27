@@ -41,7 +41,7 @@ def testTurtleBoolList():
 
 
 def testUnicodeEscaping():
-    turtle_string = " <http://example.com/A> <http://example.com/B> <http://example.com/aaa\u00F3bbbb> . <http://example.com/A> <http://example.com/C> <http://example.com/zzz\U00100000zzz> . <http://example.com/A> <http://example.com/D> <http://example.com/aaa\u00f3bbb> ."
+    turtle_string = " <http://example.com/A> <http://example.com/B> <http://example.com/aaa\\u00F3bbbb> . <http://example.com/A> <http://example.com/C> <http://example.com/zzz\\U00100000zzz> . <http://example.com/A> <http://example.com/D> <http://example.com/aaa\\u00f3bbb> ."
     g = Graph()
 
     # shouldn't get an exception
@@ -50,9 +50,9 @@ def testUnicodeEscaping():
     assert len(triples) == 3
     print(triples)
     # Now check that was decoded into python values properly
-    assert triples[0][2] == URIRef(u"http://example.com/aaa\xf3bbbb")
-    assert triples[1][2] == URIRef(u"http://example.com/zzz\U00100000zzz")
-    assert triples[2][2] == URIRef(u"http://example.com/aaa\xf3bbb")
+    assert triples[0][2] == URIRef("http://example.com/aaa\xf3bbbb")
+    assert triples[1][2] == URIRef("http://example.com/zzz\U00100000zzz")
+    assert triples[2][2] == URIRef("http://example.com/aaa\xf3bbb")
 
 
 def test_turtle_valid_list():

@@ -9,6 +9,7 @@ can plugin to rdflib. If you are wanting to invoke a parser you likely
 want to do so through the Graph class parse method.
 
 """
+
 import codecs
 import os
 import sys

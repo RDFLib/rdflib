@@ -14,7 +14,7 @@ __all__ = ["TrigSerializer"]
 class TrigSerializer(TurtleSerializer):
 
     short_name = "trig"
-    indentString = 4 * u" "
+    indentString = 4 * " "
 
     def __init__(self, store):
         if store.context_aware:

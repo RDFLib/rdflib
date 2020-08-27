@@ -371,7 +371,7 @@ def Builtin_STRAFTER(expr, ctx):
     if i == -1:
         return Literal("")
     else:
-        return Literal(a[i + len(b):], lang=a.language, datatype=a.datatype)
+        return Literal(a[i + len(b) :], lang=a.language, datatype=a.datatype)
 
 
 def Builtin_CONTAINS(expr, ctx):

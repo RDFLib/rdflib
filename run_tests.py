@@ -38,8 +38,6 @@ coverage options).
 See <http://nedbatchelder.com/code/modules/coverage.html> for details.
 
 """
-from __future__ import print_function
-
 
 NOSE_ARGS = [
     "--with-doctest",

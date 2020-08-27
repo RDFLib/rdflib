@@ -45,13 +45,13 @@ class NT11Serializer(NTSerializer):
 
 def _nt_row(triple):
     if isinstance(triple[2], Literal):
-        return u"%s %s %s .\n" % (
+        return "%s %s %s .\n" % (
             triple[0].n3(),
             triple[1].n3(),
             _quoteLiteral(triple[2]),
         )
     else:
-        return u"%s %s %s .\n" % (triple[0].n3(), triple[1].n3(), triple[2].n3())
+        return "%s %s %s .\n" % (triple[0].n3(), triple[1].n3(), triple[2].n3())
 
 
 def _quoteLiteral(l_):
@@ -84,10 +84,10 @@ def _nt_unicode_error_resolver(err):
 
     def _replace_single(c):
         c = ord(c)
-        fmt = u"\\u%04X" if c <= 0xFFFF else u"\\U%08X"
+        fmt = "\\u%04X" if c <= 0xFFFF else "\\U%08X"
         return fmt % c
 
-    string = err.object[err.start: err.end]
+    string = err.object[err.start : err.end]
     return "".join(_replace_single(c) for c in string), err.end
 
 

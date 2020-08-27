@@ -110,8 +110,8 @@ class Sleepycat(Store):
         dbsetflags = 0
 
         # create and open the DBs
-        self.__indicies = [None, ] * 3
-        self.__indicies_info = [None, ] * 3
+        self.__indicies = [None,] * 3
+        self.__indicies_info = [None,] * 3
         for i in range(0, 3):
             index_name = to_key_func(i)(
                 ("s".encode("latin-1"), "p".encode("latin-1"), "o".encode("latin-1")),

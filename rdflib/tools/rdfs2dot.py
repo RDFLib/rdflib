@@ -9,8 +9,6 @@ You can draw the graph of an RDFS file directly:
    rdf2dot my_rdfs_file.rdf | dot -Tpng | display
 """
 
-from __future__ import absolute_import
-
 import rdflib.extras.cmdlineutils
 
 import sys
@@ -98,7 +96,7 @@ def rdfs2dot(g, stream, opts={}):
                 pass  # bnodes and some weird URIs cannot be split
         return l_
 
-    stream.write(u'digraph { \n node [ fontname="DejaVu Sans" ] ; \n')
+    stream.write('digraph { \n node [ fontname="DejaVu Sans" ] ; \n')
 
     for x in g.subjects(RDF.type, RDFS.Class):
         n = node(x)
@@ -106,7 +104,7 @@ def rdfs2dot(g, stream, opts={}):
     for x, y in g.subject_objects(RDFS.subClassOf):
         x = node(x)
         y = node(y)
-        stream.write(u"\t%s -> %s [ color=%s ] ;\n" % (y, x, ISACOLOR))
+        stream.write("\t%s -> %s [ color=%s ] ;\n" % (y, x, ISACOLOR))
 
     for x in g.subjects(RDF.type, RDF.Property):
         for a, b in itertools.product(
@@ -125,18 +123,18 @@ def rdfs2dot(g, stream, opts={}):
                 )
 
     for u, n in nodes.items():
-        stream.write(u"# %s %s\n" % (u, n))
+        stream.write("# %s %s\n" % (u, n))
         f = [
-            u"<tr><td align='left'>%s</td><td>%s</td></tr>" % x
+            "<tr><td align='left'>%s</td><td>%s</td></tr>" % x
             for x in sorted(fields[n])
         ]
         opstr = (
-            u"%s [ shape=none, color=%s label=< <table color='#666666'"
-            + u' cellborder="0" cellspacing=\'0\' border="1"><tr>'
-            + u"<td colspan=\"2\" bgcolor='grey'><B>%s</B></td>"
-            + u"</tr>%s</table> > ] \n"
+            "%s [ shape=none, color=%s label=< <table color='#666666'"
+            + " cellborder='0' cellspacing='0' border='1'><tr>"
+            + "<td colspan='2' bgcolor='grey'><B>%s</B></td>"
+            + "</tr>%s</table> > ] \n"
         )
-        stream.write(opstr % (n, NODECOLOR, label(u, g), u"".join(f)))
+        stream.write(opstr % (n, NODECOLOR, label(u, g), "".join(f)))
 
     stream.write("}\n")
 

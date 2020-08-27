@@ -166,10 +166,14 @@ class SimpleMemory(Store):
         return (c for c in [])  # TODO: best way to return empty generator
 
     def query(self, query, initNs, initBindings, queryGraph, **kwargs):
-        super(SimpleMemory, self).query(query, initNs, initBindings, queryGraph, **kwargs)
+        super(SimpleMemory, self).query(
+            query, initNs, initBindings, queryGraph, **kwargs
+        )
 
     def update(self, update, initNs, initBindings, queryGraph, **kwargs):
-        super(SimpleMemory, self).update(update, initNs, initBindings, queryGraph, **kwargs)
+        super(SimpleMemory, self).update(
+            update, initNs, initBindings, queryGraph, **kwargs
+        )
 
 
 class Memory(Store):
@@ -200,9 +204,7 @@ class Memory(Store):
         self.__namespace = {}
         self.__prefix = {}
         self.__context_obj_map = {}
-        self.__tripleContexts = (
-            {}
-        )
+        self.__tripleContexts = {}
         self.__contextTriples = {None: set()}
         # all contexts used in store (unencoded)
         self.__all_contexts = set()
@@ -504,7 +506,9 @@ class Memory(Store):
             return None
         try:
             # ctx could be a graph. In that case, use its identifier
-            ctx_str = "{}:{}".format(str(ctx.identifier.__class__.__name__), str(ctx.identifier))
+            ctx_str = "{}:{}".format(
+                str(ctx.identifier.__class__.__name__), str(ctx.identifier)
+            )
             self.__context_obj_map[ctx_str] = ctx
             return ctx_str
         except AttributeError:

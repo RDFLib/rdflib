@@ -357,8 +357,8 @@ def _buildQueryStringForServiceCall(ctx, match):
             service_query = "BASE <" + base + "> " + service_query
     sol = ctx.solution()
     if len(sol) > 0:
-        variables = " ".join(map(lambda v: v.n3(), sol))
-        variables_bound = " ".join(map(lambda v: ctx.get(v).n3(), sol))
+        variables = " ".join([v.n3() for v in sol])
+        variables_bound = " ".join([ctx.get(v).n3() for v in sol])
         service_query = (
             service_query + "VALUES (" + variables + ") {(" + variables_bound + ")}"
         )

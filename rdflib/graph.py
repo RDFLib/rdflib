@@ -1,7 +1,3 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 from xml.sax import SAXParseException
 
 from rdflib.term import Literal  # required for doctests
@@ -1099,7 +1095,9 @@ class Graph(Node):
             if could_not_guess_format:
                 raise ParserError(
                     "Could not guess RDF format for %r from file extension so tried Turtle but failed."
-                    "You can explicitly specify format using the format argument." % source)
+                    "You can explicitly specify format using the format argument."
+                    % source
+                )
             else:
                 raise se
         finally:

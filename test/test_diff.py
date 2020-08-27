@@ -13,7 +13,7 @@ class TestDiff(unittest.TestCase):
     def testA(self):
         """with bnode"""
         g = rdflib.Graph()
-        g.add((rdflib.BNode(), rdflib.URIRef("urn:p"), rdflib.Literal(u"\xe9")))
+        g.add((rdflib.BNode(), rdflib.URIRef("urn:p"), rdflib.Literal("\xe9")))
 
         diff = graph_diff(g, g)
 
@@ -21,7 +21,7 @@ class TestDiff(unittest.TestCase):
         """Curiously, this one passes, even before the fix in issue 151"""
 
         g = rdflib.Graph()
-        g.add((rdflib.URIRef("urn:a"), rdflib.URIRef("urn:p"), rdflib.Literal(u"\xe9")))
+        g.add((rdflib.URIRef("urn:a"), rdflib.URIRef("urn:p"), rdflib.Literal("\xe9")))
 
         diff = graph_diff(g, g)
 
