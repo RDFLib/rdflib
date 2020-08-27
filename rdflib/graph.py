@@ -104,31 +104,31 @@ see :class:`~rdflib.graph.Dataset`
 Working with graphs
 ===================
 
-Instantiating Graphs with default store (IOMemory) and default identifier
+Instantiating Graphs with default store (Memory) and default identifier
 (a BNode):
 
     >>> g = Graph()
     >>> g.store.__class__
-    <class 'rdflib.plugins.memory.IOMemory'>
+    <class 'rdflib.plugins.stores.memory.Memory'>
     >>> g.identifier.__class__
     <class 'rdflib.term.BNode'>
 
-Instantiating Graphs with a IOMemory store and an identifier -
+Instantiating Graphs with a Memory store and an identifier -
 <http://rdflib.net>:
 
-    >>> g = Graph('IOMemory', URIRef("http://rdflib.net"))
+    >>> g = Graph('Memory', URIRef("http://rdflib.net"))
     >>> g.identifier
     rdflib.term.URIRef('http://rdflib.net')
     >>> str(g)  # doctest: +NORMALIZE_WHITESPACE
     "<http://rdflib.net> a rdfg:Graph;rdflib:storage
-     [a rdflib:Store;rdfs:label 'IOMemory']."
+     [a rdflib:Store;rdfs:label 'Memory']."
 
 Creating a ConjunctiveGraph - The top level container for all named Graphs
 in a "database":
 
     >>> g = ConjunctiveGraph()
     >>> str(g.default_context)
-    "[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory']]."
+    "[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'Memory']]."
 
 Adding / removing reified triples to Graph and iterating over it directly or
 via triple pattern:
@@ -192,7 +192,7 @@ by RDFLib they are UUIDs and unique.
 Graph Aggregation - ConjunctiveGraphs and ReadOnlyGraphAggregate within
 the same store:
 
-    >>> store = plugin.get("IOMemory", Store)()
+    >>> store = plugin.get("Memory", Store)()
     >>> g1 = Graph(store)
     >>> g2 = Graph(store)
     >>> g3 = Graph(store)

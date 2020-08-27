@@ -18,7 +18,7 @@ class Collection(object):
     >>> from rdflib.graph import Graph
     >>> from pprint import pprint
     >>> listName = BNode()
-    >>> g = Graph('IOMemory')
+    >>> g = Graph('Memory')
     >>> listItem1 = BNode()
     >>> listItem2 = BNode()
     >>> g.add((listName, RDF.first, Literal(1)))
@@ -52,7 +52,7 @@ class Collection(object):
         """
         >>> from rdflib.graph import Graph
         >>> listName = BNode()
-        >>> g = Graph('IOMemory')
+        >>> g = Graph('Memory')
         >>> listItem1 = BNode()
         >>> listItem2 = BNode()
         >>> g.add((listName, RDF.first, Literal(1)))

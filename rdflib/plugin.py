@@ -131,11 +131,12 @@ def plugins(name=None, kind=None):
             yield p
 
 
-register("default", Store, "rdflib.plugins.memory", "IOMemory")
-register("IOMemory", Store, "rdflib.plugins.memory", "IOMemory")
+register("default", Store, "rdflib.plugins.stores.memory", "Memory")
+register("Memory", Store, "rdflib.plugins.stores.memory", "Memory")
+register("SimpleMemory", Store, "rdflib.plugins.stores.memory", "SimpleMemory")
 register("Auditable", Store, "rdflib.plugins.stores.auditable", "AuditableStore")
 register("Concurrent", Store, "rdflib.plugins.stores.concurrent", "ConcurrentStore")
-register("Sleepycat", Store, "rdflib.plugins.sleepycat", "Sleepycat")
+register("Sleepycat", Store, "rdflib.plugins.stores.sleepycat", "Sleepycat")
 register("SPARQLStore", Store, "rdflib.plugins.stores.sparqlstore", "SPARQLStore")
 register(
     "SPARQLUpdateStore", Store, "rdflib.plugins.stores.sparqlstore", "SPARQLUpdateStore"

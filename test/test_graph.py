@@ -260,13 +260,17 @@ tests = 0
 for s in plugin.plugins(pluginname, plugin.Store):
     if s.name in (
         "default",
-        "IOMemory",
+        "Memory",
         "Auditable",
         "Concurrent",
         "SPARQLStore",
         "SPARQLUpdateStore",
     ):
         continue  # these are tested by default
+
+    if s.name in ("SimpleMemory",):
+        # these (by design) won't pass some of the tests (like Intersection)
+        continue
 
     locals()["t%d" % tests] = type(
         "%sGraphTestCase" % s.name, (GraphTestCase,), {"store": s.name}
