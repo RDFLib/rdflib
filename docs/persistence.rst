@@ -19,8 +19,8 @@ this API for a different store.
 Stores currently shipped with core RDFLib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* :class:`Memory <rdflib.plugins.memory.IOMemory>` (not persistent!)
-* :class:`~rdflib.plugins.sleepycat.Sleepycat` (on disk persistence via Python's :ref:`bsddb` or :ref:`bsddb3` packages)
+* :class:`Memory <rdflib.plugins.stores.memory.Memory>` (not persistent!)
+* :class:`~rdflib.plugins.stores.sleepycat.Sleepycat` (on disk persistence via Python's :ref:`bsddb` or :ref:`bsddb3` packages)
 * :class:`~rdflib.plugins.stores.sparqlstore.SPARQLStore` - a read-only wrapper around a remote SPARQL Query endpoint. 
 * :class:`~rdflib.plugins.stores.sparqlstore.SPARQLUpdateStore` - a read-write wrapper around a remote SPARQL query/update endpoint pair. 
 

@@ -98,7 +98,7 @@ Full example in the ``to_rdf`` method below::
     ...     </cv:hasWorkHistory>
     ...   </cv:CV>
     ... </rdf:RDF>
-    ... ''')
+    ... ''', format="xml")
     >>>
     >>> from rdflib.compare import isomorphic
     >>> isomorphic(person_graph, expected)  #doctest: +SKIP

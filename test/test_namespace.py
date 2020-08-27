@@ -39,8 +39,8 @@ class NamespacePrefixTest(unittest.TestCase):
         )
         graph = Graph().parse(data=data, format="turtle")
         for p, n in tuple(graph.namespaces()):
-            graph.store._IOMemory__namespace.pop(p)
-            graph.store._IOMemory__prefix.pop(n)
+            graph.store._Memory__namespace.pop(p)
+            graph.store._Memory__prefix.pop(n)
         graph.namespace_manager.reset()
         self.assertFalse(tuple(graph.namespaces()))
         u = URIRef("http://example.org/a")

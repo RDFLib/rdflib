@@ -1405,7 +1405,7 @@ def _parseBoolean(value):
     if new_value not in false_accepted_values:
         warnings.warn(
             "Parsing weird boolean, % r does not map to True or False" % value,
-            category=DeprecationWarning,
+            category=UserWarning,
         )
     return False
 

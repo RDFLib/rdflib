@@ -28,7 +28,7 @@ from codecs import getreader
 from rdflib import ConjunctiveGraph
 
 # Build up from the NTriples parser:
-from rdflib.plugins.parsers.ntriples import NTriplesParser
+from rdflib.plugins.parsers.ntriples import W3CNTriplesParser
 from rdflib.plugins.parsers.ntriples import ParseError
 from rdflib.plugins.parsers.ntriples import r_tail
 from rdflib.plugins.parsers.ntriples import r_wspace
@@ -36,7 +36,7 @@ from rdflib.plugins.parsers.ntriples import r_wspace
 __all__ = ["NQuadsParser"]
 
 
-class NQuadsParser(NTriplesParser):
+class NQuadsParser(W3CNTriplesParser):
     def parse(self, inputsource, sink, bnode_context=None, **kwargs):
         """
         Parse inputsource as an N-Quads file.
@@ -54,12 +54,13 @@ class NQuadsParser(NTriplesParser):
         )
         self.sink = ConjunctiveGraph(store=sink.store, identifier=sink.identifier)
 
-        source = inputsource.getByteStream()
+        source = inputsource.getCharacterStream()
+        if not source:
+            source = inputsource.getByteStream()
+            source = getreader("utf-8")(source)
 
         if not hasattr(source, "read"):
             raise ParseError("Item to parse must be a file-like object.")
-
-        source = getreader("utf-8")(source)
 
         self.file = source
         self.buffer = ""

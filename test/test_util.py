@@ -293,12 +293,12 @@ class TestUtilTermConvert(unittest.TestCase):
 
     def test_util_from_n3_expectquotedgraph(self):
         s = "{<http://example.com/schema>}"
-        res = util.from_n3(s, default=None, backend="IOMemory")
+        res = util.from_n3(s, default=None, backend="Memory")
         self.assertTrue(isinstance(res, QuotedGraph))
 
     def test_util_from_n3_expectgraph(self):
         s = "[<http://example.com/schema>]"
-        res = util.from_n3(s, default=None, backend="IOMemory")
+        res = util.from_n3(s, default=None, backend="Memory")
         self.assertTrue(isinstance(res, Graph))
 
 

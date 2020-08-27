@@ -20,6 +20,7 @@ from rdflib.namespace import NamespaceManager
 from rdflib.resource import Resource
 from rdflib.collection import Collection
 import rdflib.util  # avoid circular dependency
+from rdflib.exceptions import ParserError
 
 import os
 import shutil
@@ -100,31 +101,31 @@ see :class:`~rdflib.graph.Dataset`
 Working with graphs
 ===================
 
-Instantiating Graphs with default store (IOMemory) and default identifier
+Instantiating Graphs with default store (Memory) and default identifier
 (a BNode):
 
     >>> g = Graph()
     >>> g.store.__class__
-    <class 'rdflib.plugins.memory.IOMemory'>
+    <class 'rdflib.plugins.stores.memory.Memory'>
     >>> g.identifier.__class__
     <class 'rdflib.term.BNode'>
 
-Instantiating Graphs with a IOMemory store and an identifier -
+Instantiating Graphs with a Memory store and an identifier -
 <http://rdflib.net>:
 
-    >>> g = Graph('IOMemory', URIRef("http://rdflib.net"))
+    >>> g = Graph('Memory', URIRef("http://rdflib.net"))
     >>> g.identifier
     rdflib.term.URIRef('http://rdflib.net')
     >>> str(g)  # doctest: +NORMALIZE_WHITESPACE
     "<http://rdflib.net> a rdfg:Graph;rdflib:storage
-     [a rdflib:Store;rdfs:label 'IOMemory']."
+     [a rdflib:Store;rdfs:label 'Memory']."
 
 Creating a ConjunctiveGraph - The top level container for all named Graphs
 in a "database":
 
     >>> g = ConjunctiveGraph()
     >>> str(g.default_context)
-    "[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory']]."
+    "[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'Memory']]."
 
 Adding / removing reified triples to Graph and iterating over it directly or
 via triple pattern:
@@ -188,7 +189,7 @@ by RDFLib they are UUIDs and unique.
 Graph Aggregation - ConjunctiveGraphs and ReadOnlyGraphAggregate within
 the same store:
 
-    >>> store = plugin.get("IOMemory", Store)()
+    >>> store = plugin.get("Memory", Store)()
     >>> g1 = Graph(store)
     >>> g2 = Graph(store)
     >>> g3 = Graph(store)
@@ -774,13 +775,17 @@ class Graph(Node):
         # setup the language filtering
         if lang is not None:
             if lang == "":  # we only want not language-tagged literals
+
                 def langfilter(l_):
                     return l_.language is None
+
             else:
+
                 def langfilter(l_):
                     return l_.language == lang
 
         else:  # we don't care about language tags
+
             def langfilter(l_):
                 return True
 
@@ -992,7 +997,7 @@ class Graph(Node):
         **args
     ):
         """
-        Parse source adding the resulting triples to the Graph.
+        Parse an RDF source adding the resulting triples to the Graph.
 
         The source is specified using one of source, location, file or
         data.
@@ -1006,9 +1011,10 @@ class Graph(Node):
             is specified.
           - `file`: A file-like object.
           - `data`: A string containing the data to be parsed.
-          - `format`: Used if format can not be determined from source.
-            Defaults to rdf/xml. Format support can be extended with plugins,
-            but "xml", "n3", "nt" & "trix" are built in.
+          - `format`: Used if format can not be determined from source, e.g. file
+            extension or Media Type. Defaults to text/turtle. Format support can
+            be extended with plugins, but "xml", "n3" (use for turtle), "nt" &
+            "trix" are built in.
           - `publicID`: the logical URI to use as the document base. If None
             specified the document location is used (at least in the case where
             there is a document location).
@@ -1054,6 +1060,11 @@ class Graph(Node):
 
         >>> os.remove(file_name)
 
+        >>> # default turtle parsing
+        >>> result = g.parse(data="<http://example.com/a> <http://example.com/a> <http://example.com/a> .")
+        >>> len(g)
+        3
+
         """
 
         source = create_input_source(
@@ -1066,24 +1077,27 @@ class Graph(Node):
         )
         if format is None:
             format = source.content_type
-        assumed_xml = False
+        could_not_guess_format = False
         if format is None:
-            if (hasattr(source, "file")
-                    and getattr(source.file, "name", None)
-                    and isinstance(source.file.name, str)):
+            if (
+                hasattr(source, "file")
+                and getattr(source.file, "name", None)
+                and isinstance(source.file.name, str)
+            ):
                 format = rdflib.util.guess_format(source.file.name)
             if format is None:
-                format = "application/rdf+xml"
-                assumed_xml = True
+                format = "turtle"
+                could_not_guess_format = True
         parser = plugin.get(format, Parser)()
         try:
             parser.parse(source, self, **args)
-        except SAXParseException as saxpe:
-            if assumed_xml:
-                logger.warning(
-                    "Could not guess format for %r, so assumed xml."
-                    " You can explicitly specify format using the format argument." % source)
-            raise saxpe
+        except SyntaxError as se:
+            if could_not_guess_format:
+                raise ParserError(
+                    "Could not guess RDF format for %r from file extension so tried Turtle but failed."
+                    "You can explicitly specify format using the format argument." % source)
+            else:
+                raise se
         finally:
             if source.auto_close:
                 source.close()

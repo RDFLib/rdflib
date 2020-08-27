@@ -349,8 +349,8 @@ def parse_date_time(val):
 
 
 SUFFIX_FORMAT_MAP = {
+    "xml": "xml",
     "rdf": "xml",
-    "rdfs": "xml",
     "owl": "xml",
     "n3": "n3",
     "ttl": "turtle",

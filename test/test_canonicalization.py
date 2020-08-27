@@ -3,7 +3,7 @@ from rdflib import Graph, RDF, BNode, URIRef, Namespace, ConjunctiveGraph, Liter
 from rdflib.compare import to_isomorphic, to_canonical_graph
 
 import rdflib
-from rdflib.plugins.memory import IOMemory
+from rdflib.plugins.stores.memory import Memory
 
 from io import StringIO
 
@@ -287,7 +287,7 @@ def test_issue682_signing_named_graphs():
     cmary = URIRef("http://love.com/lovers/mary#")
     cjohn = URIRef("http://love.com/lovers/john#")
 
-    store = IOMemory()
+    store = Memory()
 
     g = ConjunctiveGraph(store=store)
     g.bind("love", ns)

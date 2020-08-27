@@ -96,7 +96,7 @@ class StoreTestCase(unittest.TestCase):
 
 
 class MemoryStoreTestCase(StoreTestCase):
-    store = "IOMemory"
+    store = "Memory"
 
 
 if __name__ == "__main__":
