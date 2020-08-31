@@ -810,8 +810,6 @@ class Literal(Identifier):
         >>> Literal("a", lang="en") > Literal("a", lang="fr")
         False
         """
-        if other is None:
-            return True  # Everything is greater than None
         if isinstance(other, Literal):
 
             if (
@@ -870,8 +868,6 @@ class Literal(Identifier):
             return NotImplemented  # we can only compare to nodes
 
     def __lt__(self, other):
-        if other is None:
-            return False  # Nothing is less than None
         if isinstance(other, Literal):
             try:
                 return not self.__gt__(other) and not self.eq(other)
@@ -1010,8 +1006,7 @@ class Literal(Identifier):
         """
         if self is other:
             return True
-        if other is None:
-            return False
+
         if isinstance(other, Literal):
             return (
                 self.datatype == other.datatype
