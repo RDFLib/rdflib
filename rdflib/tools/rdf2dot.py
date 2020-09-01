@@ -13,7 +13,7 @@ import rdflib
 import rdflib.extras.cmdlineutils
 
 import sys
-import cgi
+import html
 import collections
 
 from rdflib import XSD
@@ -106,7 +106,7 @@ def rdf2dot(g, stream, opts={}):
             return x
 
     def formatliteral(l, g):
-        v = cgi.escape(l)
+        v = html.escape(l)
         if l.datatype:
             return "&quot;%s&quot;^^%s" % (v, qname(l.datatype, g))
         elif l.language:
