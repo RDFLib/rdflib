@@ -152,7 +152,10 @@ See <https://rdflib.dev> for the release schedule.
 
 
 ## Contributing
-rdflib survives and grows via user contributions! Please consider lodging Pull Requests here:
+
+RDFLib survives and grows via user contributions!
+Please read our [contributing guide](https://rdflib.readthedocs.io/en/stable/developers.html) to get started.
+Please consider lodging Pull Requests here:
 
 * <https://github.com/RDFLib/rdflib/pulls>
 
