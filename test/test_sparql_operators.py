@@ -28,7 +28,7 @@ def test_datetime_cast():
     result = operators.datetime(literal)
     assert isinstance(result, datetime.datetime)
     assert result == now
-    
+
 
 @nose.tools.raises(sparql.SPARQLError)
 def test_datetime_cast_type_error():

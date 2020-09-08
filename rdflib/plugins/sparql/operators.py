@@ -1003,8 +1003,7 @@ def date(e) -> py_datetime.date:
     if not isinstance(e, Literal):
         raise SPARQLError("Non-literal passed as date: %r" % e)
     if e.datatype not in (XSD.date, XSD.dateTime):
-        raise SPARQLError(
-            "Literal with wrong datatype passed as date: %r" % e)
+        raise SPARQLError("Literal with wrong datatype passed as date: %r" % e)
     result = e.toPython()
     if isinstance(result, py_datetime.datetime):
         return result.date()
