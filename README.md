@@ -30,7 +30,7 @@ Please see the list for all packages/repositories here:
 
 ## Versions
 
- * `5.x.y` supports Python 2.7 and 3.4+ and is mostly backwards compatible with 4.2.2. Only bug fixes will be applied.
+ * `5.x.y` supports Python 2.7 and 3.4+ and is [mostly backwards compatible with 4.2.2](https://rdflib.readthedocs.io/en/stable/upgrade4to5.html). Only bug fixes will be applied.
  * `6.x.y` is the next major release which will support Python 3.5+. (Current master branch)
 
 
