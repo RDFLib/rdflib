@@ -206,18 +206,12 @@ def create_input_source(
     """
 
     # test that exactly one of source, location, file, and data is not None.
-    if (
-        sum(
-            (
-                source is not None,
-                location is not None,
-                file is not None,
-                data is not None,
-            )
+    non_empty_arguments = list(filter(bool, [source, location, file, data]))
+
+    if len(non_empty_arguments) != 1:
+        raise ValueError(
+            "exactly one of source, location, file or data must be given",
         )
-        != 1
-    ):
-        raise ValueError("exactly one of source, location, file or data must be given")
 
     input_source = None
 
@@ -259,7 +253,7 @@ def create_input_source(
         if os.path.exists(location):
             location = pathname2url(location)
         base = urljoin("file:", "%s/" % pathname2url(os.getcwd()))
-        absolute_location = URIRef(location, base=base).defrag()
+        absolute_location = URIRef(location, base=base)
         if absolute_location.startswith("file:///"):
             filename = url2pathname(absolute_location.replace("file:///", "/"))
             file = open(filename, "rb")
