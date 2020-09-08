@@ -28,6 +28,12 @@ Please see the list for all packages/repositories here:
 * <https://github.com/RDFLib>
 
 
+## Versions
+
+ * `5.x.y` supports Python 2.7 and 3.4+ and is mostly backwards compatible with 4.2.2. Only bug fixes will be applied.
+ * `6.x.y` is the next major release which will support Python 3.5+. (Current master branch)
+
+
 ## Installation
 RDFLib may be installed with Python's package management tool *pip*:
 
