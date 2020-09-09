@@ -18,14 +18,20 @@ RDFLib is a pure Python package for working with [RDF](http://www.w3.org/RDF/). 
 ## RDFlib Family of packages
 The RDFlib community maintains many RDF-related Python code repositories with different purposes. For example:
 
-* [rdflib](https://github.com/RDFLib/rdflib) - the rdflib core
+* [rdflib](https://github.com/RDFLib/rdflib) - the RDFLib core
 * [sparqlwrapper](https://github.com/RDFLib/sparqlwrapper) - a simple Python wrapper around a SPARQL service to remotely execute your queries
 * [pyLODE](https://github.com/RDFLib/pyLODE) - An OWL ontology documentation tool using Python and templating, based on LODE.
-* [rdflib-jsonld](https://github.com/RDFLib/rdflib-jsonld) - an rdflib plugin that is an implementation of JSON-LD
+* [rdflib-jsonld](https://github.com/RDFLib/rdflib-jsonld) - an RDFLib plugin that is an implementation of JSON-LD
 
 Please see the list for all packages/repositories here:
 
 * <https://github.com/RDFLib>
+
+
+## Versions
+
+ * `5.x.y` supports Python 2.7 and 3.4+ and is [mostly backwards compatible with 4.2.2](https://rdflib.readthedocs.io/en/stable/upgrade4to5.html). Only bug fixes will be applied.
+ * `6.x.y` is the next major release which will support Python 3.5+. (Current master branch)
 
 
 ## Installation
@@ -41,7 +47,7 @@ file for what's new in this release.
 
 
 ## Getting Started
-RDFLib aims to be a pythonic RDF API. rdflib's main data object is a `Graph` which is a Python collection
+RDFLib aims to be a pythonic RDF API. RDFLib's main data object is a `Graph` which is a Python collection
 of RDF *Subject, Predicate, Object* Triples:
 
 To create graph and load it with RDF data from DBPedia then print the results:
@@ -152,7 +158,10 @@ See <https://rdflib.dev> for the release schedule.
 
 
 ## Contributing
-rdflib survives and grows via user contributions! Please consider lodging Pull Requests here:
+
+RDFLib survives and grows via user contributions!
+Please read our [contributing guide](https://rdflib.readthedocs.io/en/stable/developers.html) to get started.
+Please consider lodging Pull Requests here:
 
 * <https://github.com/RDFLib/rdflib/pulls>
 
