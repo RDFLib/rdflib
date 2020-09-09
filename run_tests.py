@@ -9,7 +9,7 @@ Nose installed, e.g.:
 
     $ pip install nose
 
-To run  the tests, use:
+To run the tests, use:
 
     $ ./run_tests.py
 If you supply attributes, the default ones defined in ``DEFAULT_ATTRS`` will be
