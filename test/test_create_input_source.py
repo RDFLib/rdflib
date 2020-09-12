@@ -19,3 +19,7 @@ class ParserTestCase(unittest.TestCase):
             source='a',
             location='b',
         )
+
+
+if __name__ == "__main__":
+    unittest.main()
