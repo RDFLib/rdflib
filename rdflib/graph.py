@@ -1,3 +1,4 @@
+from typing import Optional
 import logging
 from warnings import warn
 import random
@@ -957,11 +958,11 @@ class Graph(Node):
 
     def serialize(
         self, destination=None, format="xml", base=None, encoding=None, **args
-    ):
+    ) -> Optional[bytes]:
         """Serialize the Graph to destination
 
-        If destination is None serialize method returns the serialization as a
-        string. Format defaults to xml (AKA rdf/xml).
+        If destination is None serialize method returns the serialization as
+        bytes. Format defaults to xml (AKA rdf/xml).
 
         Format support can be extended with plugins,
         but "xml", "n3", "turtle", "nt", "pretty-xml", "trix", "trig" and "nquads" are built in.
