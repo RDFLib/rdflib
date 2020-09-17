@@ -274,16 +274,20 @@ class QueryContext(object):
     def load(self, source, default=False, **kwargs):
         def _load(graph, source):
             try:
-                return graph.load(source, **kwargs)
-            except:
+                return graph.parse(source, format="turtle", **kwargs)
+            except Exception:
                 pass
             try:
-                return graph.load(source, format="n3", **kwargs)
-            except:
+                return graph.parse(source, format="xml", **kwargs)
+            except Exception:
                 pass
             try:
-                return graph.load(source, format="nt", **kwargs)
-            except:
+                return graph.parse(source, format="n3", **kwargs)
+            except Exception:
+                pass
+            try:
+                return graph.parse(source, format="nt", **kwargs)
+            except Exception:
                 raise Exception(
                     "Could not load %s as either RDF/XML, N3 or NTriples" % source
                 )
