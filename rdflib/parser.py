@@ -206,15 +206,12 @@ def create_input_source(
     """
 
     # test that exactly one of source, location, file, and data is not None.
-    non_empty_arguments = list(filter(
-        lambda v: v is not None,
-        [source, location, file, data],
-    ))
+    non_empty_arguments = list(
+        filter(lambda v: v is not None, [source, location, file, data],)
+    )
 
     if len(non_empty_arguments) != 1:
-        raise ValueError(
-            "exactly one of source, location, file or data must be given",
-        )
+        raise ValueError("exactly one of source, location, file or data must be given",)
 
     input_source = None
 
@@ -259,10 +256,7 @@ def create_input_source(
             file,
             input_source,
         ) = _create_input_source_from_location(
-            file=file,
-            format=format,
-            input_source=input_source,
-            location=location,
+            file=file, format=format, input_source=input_source, location=location,
         )
 
     if file is not None:
