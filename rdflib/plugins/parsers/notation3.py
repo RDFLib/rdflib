@@ -39,6 +39,7 @@ from decimal import Decimal
 
 from uuid import uuid4
 
+from exceptions import ParserError
 from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX, _unique_id
 from rdflib.graph import QuotedGraph, ConjunctiveGraph, Graph
 from rdflib.compat import long_type
@@ -1731,7 +1732,11 @@ class RDFSink(object):
         self.graph = graph
 
     def newFormula(self):
-        assert self.graph.store.formula_aware
+        fa = getattr(self.graph.store, "formula_aware", False)
+        if not fa:
+            raise ParserError(
+                "Cannot create formula parser with non-formula-aware store."
+            )
         f = Formula(self.graph)
         return f
 
@@ -1785,7 +1790,7 @@ class RDFSink(object):
         f, p, s, o = quadruple
 
         if hasattr(p, "formula"):
-            raise Exception("Formula used as predicate")
+            raise ParserError("Formula used as predicate")
 
         s = self.normalise(f, s)
         p = self.normalise(f, p)
@@ -1888,8 +1893,8 @@ class TurtleParser(Parser):
     def parse(self, source, graph, encoding="utf-8", turtle=True):
 
         if encoding not in [None, "utf-8"]:
-            raise Exception(
-                ("N3/Turtle files are always utf-8 encoded, ", "I was passed: %s")
+            raise ParserError(
+                ("N3/Turtle files are always utf-8 encoded, I was passed: %s")
                 % encoding
             )
 
@@ -1921,8 +1926,13 @@ class N3Parser(TurtleParser):
 
     def parse(self, source, graph, encoding="utf-8"):
         # we're currently being handed a Graph, not a ConjunctiveGraph
-        assert graph.store.context_aware  # is this implied by formula_aware
-        assert graph.store.formula_aware
+        # context-aware is this implied by formula_aware
+        ca = getattr(graph.store, "context_aware", False)
+        fa = getattr(graph.store, "formula_aware", False)
+        if not ca:
+            raise ParserError("Cannot parse N3 into non-context-aware store.")
+        elif not fa:
+            raise ParserError("Cannot parse N3 into non-formula-aware store.")
 
         conj_graph = ConjunctiveGraph(store=graph.store)
         conj_graph.default_context = graph  # TODO: CG __init__ should have a
