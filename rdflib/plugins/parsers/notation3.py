@@ -39,7 +39,7 @@ from decimal import Decimal
 
 from uuid import uuid4
 
-from exceptions import ParserError
+from rdflib.exceptions import ParserError
 from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX, _unique_id
 from rdflib.graph import QuotedGraph, ConjunctiveGraph, Graph
 from rdflib.compat import long_type
