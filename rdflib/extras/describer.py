@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 
 __doc__ = """
 A Describer is a stateful utility for creating RDF statements in a
@@ -102,7 +98,7 @@ Full example in the ``to_rdf`` method below::
     ...     </cv:hasWorkHistory>
     ...   </cv:CV>
     ... </rdf:RDF>
-    ... ''')
+    ... ''', format="xml")
     >>>
     >>> from rdflib.compare import isomorphic
     >>> isomorphic(person_graph, expected)  #doctest: +SKIP
@@ -119,7 +115,6 @@ from rdflib.term import URIRef
 
 
 class Describer(object):
-
     def __init__(self, graph=None, about=None, base=None):
         if graph is None:
             graph = Graph()
@@ -143,7 +138,7 @@ class Describer(object):
             rdflib.term.URIRef(u'http://example.org/')
 
         """
-        kws.setdefault('base', self.base)
+        kws.setdefault("base", self.base)
         subject = cast_identifier(subject, **kws)
         if self._subjects:
             self._subjects[-1] = subject
@@ -195,7 +190,7 @@ class Describer(object):
 
         """
 
-        kws.setdefault('base', self.base)
+        kws.setdefault("base", self.base)
         p = cast_identifier(p)
         o = cast_identifier(o, **kws)
         self.graph.add((self._current(), p, o))
@@ -221,7 +216,7 @@ class Describer(object):
             rdflib.term.Literal(u'Net')
 
         """
-        kws.setdefault('base', self.base)
+        kws.setdefault("base", self.base)
         p = cast_identifier(p)
         s = cast_identifier(s, **kws)
         self.graph.add((s, p, self._current()))

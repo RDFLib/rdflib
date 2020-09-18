@@ -22,69 +22,74 @@ graphs that can be used and queried. The store that backs the graph
 >>> FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 >>> assert(g.value(s, FOAF.name).eq("Arco Publications"))
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 from codecs import getreader
-
-from six import b
 
 from rdflib import ConjunctiveGraph
 
 # Build up from the NTriples parser:
-from rdflib.plugins.parsers.ntriples import NTriplesParser
+from rdflib.plugins.parsers.ntriples import W3CNTriplesParser
 from rdflib.plugins.parsers.ntriples import ParseError
 from rdflib.plugins.parsers.ntriples import r_tail
 from rdflib.plugins.parsers.ntriples import r_wspace
-from rdflib.plugins.parsers.ntriples import r_wspaces
 
-__all__ = ['NQuadsParser']
+__all__ = ["NQuadsParser"]
 
 
-class NQuadsParser(NTriplesParser):
+class NQuadsParser(W3CNTriplesParser):
+    def parse(self, inputsource, sink, bnode_context=None, **kwargs):
+        """
+        Parse inputsource as an N-Quads file.
 
-    def parse(self, inputsource, sink, **kwargs):
-        """Parse f as an N-Triples file."""
-        assert sink.store.context_aware, ("NQuadsParser must be given"
-                                          " a context aware store.")
+        :type inputsource: `rdflib.parser.InputSource`
+        :param inputsource: the source of N-Quads-formatted data
+        :type sink: `rdflib.graph.Graph`
+        :param sink: where to send parsed triples
+        :type bnode_context: `dict`, optional
+        :param bnode_context: a dict mapping blank node identifiers to `~rdflib.term.BNode` instances.
+                              See `.NTriplesParser.parse`
+        """
+        assert sink.store.context_aware, (
+            "NQuadsParser must be given" " a context aware store."
+        )
         self.sink = ConjunctiveGraph(store=sink.store, identifier=sink.identifier)
 
-        source = inputsource.getByteStream()
+        source = inputsource.getCharacterStream()
+        if not source:
+            source = inputsource.getByteStream()
+            source = getreader("utf-8")(source)
 
-        if not hasattr(source, 'read'):
+        if not hasattr(source, "read"):
             raise ParseError("Item to parse must be a file-like object.")
 
-        source = getreader('utf-8')(source)
-
         self.file = source
-        self.buffer = ''
+        self.buffer = ""
         while True:
             self.line = __line = self.readline()
             if self.line is None:
                 break
             try:
-                self.parseline()
+                self.parseline(bnode_context)
             except ParseError as msg:
                 raise ParseError("Invalid line (%s):\n%r" % (msg, __line))
 
         return self.sink
 
-    def parseline(self):
+    def parseline(self, bnode_context=None):
         self.eat(r_wspace)
-        if (not self.line) or self.line.startswith(('#')):
+        if (not self.line) or self.line.startswith(("#")):
             return  # The line is empty or a comment
 
-        subject = self.subject()
+        subject = self.subject(bnode_context)
         self.eat(r_wspace)
 
         predicate = self.predicate()
         self.eat(r_wspace)
 
-        obj = self.object()
+        obj = self.object(bnode_context)
         self.eat(r_wspace)
 
-        context = self.uriref() or self.nodeid() or self.sink.identifier
+        context = self.uriref() or self.nodeid(bnode_context) or self.sink.identifier
         self.eat(r_tail)
 
         if self.line:

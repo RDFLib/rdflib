@@ -11,7 +11,6 @@ matching against the results from the store it's wrapping.
 from rdflib.store import Store
 from rdflib.graph import Graph
 
-from six import text_type
 
 import re
 
@@ -21,7 +20,7 @@ NATIVE_REGEX = 0
 PYTHON_REGEX = 1
 
 
-class REGEXTerm(text_type):
+class REGEXTerm(str):
     """
     REGEXTerm can be used in any term slot and is interpreted as a request to
     perform a REGEX match (not a string comparison) using the value
@@ -32,13 +31,14 @@ class REGEXTerm(text_type):
         self.compiledExpr = re.compile(expr)
 
     def __reduce__(self):
-        return (REGEXTerm, (text_type(''),))
+        return (REGEXTerm, (str(""),))
 
 
 def regexCompareQuad(quad, regexQuad):
     for index in range(4):
-        if isinstance(regexQuad[index], REGEXTerm) and not \
-                regexQuad[index].compiledExpr.match(quad[index]):
+        if isinstance(regexQuad[index], REGEXTerm) and not regexQuad[
+            index
+        ].compiledExpr.match(quad[index]):
             return False
     return True
 
@@ -67,29 +67,36 @@ class REGEXMatching(Store):
 
     def remove(self, triple, context=None):
         (subject, predicate, object_) = triple
-        if isinstance(subject, REGEXTerm) or \
-            isinstance(predicate, REGEXTerm) or \
-            isinstance(object_, REGEXTerm) or \
-                (context is not None and
-                 isinstance(context.identifier, REGEXTerm)):
+        if (
+            isinstance(subject, REGEXTerm)
+            or isinstance(predicate, REGEXTerm)
+            or isinstance(object_, REGEXTerm)
+            or (context is not None and isinstance(context.identifier, REGEXTerm))
+        ):
             # One or more of the terms is a REGEX expression, so we must
             # replace it / them with wildcard(s)and match after we query.
             s = not isinstance(subject, REGEXTerm) and subject or None
             p = not isinstance(predicate, REGEXTerm) and predicate or None
             o = not isinstance(object_, REGEXTerm) and object_ or None
-            c = (context is not None and
-                 not isinstance(context.identifier, REGEXTerm)) \
-                and context \
+            c = (
+                (context is not None and not isinstance(context.identifier, REGEXTerm))
+                and context
                 or None
+            )
 
             removeQuadList = []
             for (s1, p1, o1), cg in self.storage.triples((s, p, o), c):
                 for ctx in cg:
                     ctx = ctx.identifier
                     if regexCompareQuad(
-                            (s1, p1, o1, ctx),
-                            (subject, predicate, object_, context
-                             is not None and context.identifier or context)):
+                        (s1, p1, o1, ctx),
+                        (
+                            subject,
+                            predicate,
+                            object_,
+                            context is not None and context.identifier or context,
+                        ),
+                    ):
                         removeQuadList.append((s1, p1, o1, ctx))
             for s, p, o, c in removeQuadList:
                 self.storage.remove((s, p, o), c and Graph(self, c) or c)
@@ -98,37 +105,40 @@ class REGEXMatching(Store):
 
     def triples(self, triple, context=None):
         (subject, predicate, object_) = triple
-        if isinstance(subject, REGEXTerm) or \
-            isinstance(predicate, REGEXTerm) or \
-            isinstance(object_, REGEXTerm) or \
-                (context is not None and
-                 isinstance(context.identifier, REGEXTerm)):
+        if (
+            isinstance(subject, REGEXTerm)
+            or isinstance(predicate, REGEXTerm)
+            or isinstance(object_, REGEXTerm)
+            or (context is not None and isinstance(context.identifier, REGEXTerm))
+        ):
             # One or more of the terms is a REGEX expression, so we must
             # replace it / them with wildcard(s) and match after we query.
             s = not isinstance(subject, REGEXTerm) and subject or None
             p = not isinstance(predicate, REGEXTerm) and predicate or None
             o = not isinstance(object_, REGEXTerm) and object_ or None
-            c = (context is not None and
-                 not isinstance(context.identifier, REGEXTerm)) \
-                and context \
+            c = (
+                (context is not None and not isinstance(context.identifier, REGEXTerm))
+                and context
                 or None
+            )
             for (s1, p1, o1), cg in self.storage.triples((s, p, o), c):
                 matchingCtxs = []
                 for ctx in cg:
                     if c is None:
-                        if context is None \
-                            or context.identifier.compiledExpr.match(
-                                ctx.identifier):
+                        if context is None or context.identifier.compiledExpr.match(
+                            ctx.identifier
+                        ):
                             matchingCtxs.append(ctx)
                     else:
                         matchingCtxs.append(ctx)
-                if matchingCtxs \
-                    and regexCompareQuad((s1, p1, o1, None),
-                                         (subject, predicate, object_, None)):
+                if matchingCtxs and regexCompareQuad(
+                    (s1, p1, o1, None), (subject, predicate, object_, None)
+                ):
                     yield (s1, p1, o1), (c for c in matchingCtxs)
         else:
             for (s1, p1, o1), cg in self.storage.triples(
-                    (subject, predicate, object_), context):
+                (subject, predicate, object_), context
+            ):
                 yield (s1, p1, o1), cg
 
     def __len__(self, context=None):

@@ -1,10 +1,7 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
-from six import BytesIO
-from six.moves import cPickle
+from io import BytesIO
+import pickle
 from rdflib.events import Dispatcher, Event
+
 """
 ============
 rdflib.store
@@ -40,12 +37,17 @@ NO_STORE = -1
 UNKNOWN = None
 
 
-Pickler = cPickle.Pickler
-Unpickler = cPickle.Unpickler
-UnpicklingError = cPickle.UnpicklingError
+Pickler = pickle.Pickler
+Unpickler = pickle.Unpickler
+UnpicklingError = pickle.UnpicklingError
 
-__all__ = ['StoreCreatedEvent', 'TripleAddedEvent', 'TripleRemovedEvent',
-           'NodePickler', 'Store']
+__all__ = [
+    "StoreCreatedEvent",
+    "TripleAddedEvent",
+    "TripleRemovedEvent",
+    "NodePickler",
+    "Store",
+]
 
 
 class StoreCreatedEvent(Event):
@@ -113,11 +115,10 @@ class NodePickler(object):
 
     def __getstate__(self):
         state = self.__dict__.copy()
-        del state['_get_object']
-        state.update({
-            '_ids': tuple(self._ids.items()),
-            '_objects': tuple(self._objects.items())
-        })
+        del state["_get_object"]
+        state.update(
+            {"_ids": tuple(self._ids.items()), "_objects": tuple(self._objects.items())}
+        )
         return state
 
     def __setstate__(self, state):
@@ -153,6 +154,7 @@ class Store(object):
             from rdflib.graph import Graph, QuotedGraph
             from rdflib.term import Variable
             from rdflib.term import Statement
+
             self.__node_pickler = np = NodePickler()
             np.register(self, "S")
             np.register(URIRef, "U")
@@ -163,12 +165,12 @@ class Store(object):
             np.register(Variable, "V")
             np.register(Statement, "s")
         return self.__node_pickler
+
     node_pickler = property(__get_node_pickler)
 
     # Database management methods
     def create(self, configuration):
-        self.dispatcher.dispatch(
-            StoreCreatedEvent(configuration=configuration))
+        self.dispatcher.dispatch(StoreCreatedEvent(configuration=configuration))
 
     def open(self, configuration, create=False):
         """
@@ -211,9 +213,7 @@ class Store(object):
         be an error for the quoted argument to be True when the store is not
         formula-aware.
         """
-        self.dispatcher.dispatch(
-            TripleAddedEvent(
-                triple=triple, context=context))
+        self.dispatcher.dispatch(TripleAddedEvent(triple=triple, context=context))
 
     def addN(self, quads):
         """
@@ -223,15 +223,16 @@ class Store(object):
         is a redirect to add
         """
         for s, p, o, c in quads:
-            assert c is not None, \
-                "Context associated with %s %s %s is None!" % (s, p, o)
+            assert c is not None, "Context associated with %s %s %s is None!" % (
+                s,
+                p,
+                o,
+            )
             self.add((s, p, o), c)
 
     def remove(self, triple, context=None):
         """ Remove the set of triples matching the pattern from the store """
-        self.dispatcher.dispatch(
-            TripleRemovedEvent(
-                triple=triple, context=context))
+        self.dispatcher.dispatch(TripleRemovedEvent(triple=triple, context=context))
 
     def triples_choices(self, triple, context=None):
         """
@@ -242,44 +243,44 @@ class Store(object):
         """
         subject, predicate, object_ = triple
         if isinstance(object_, list):
-            assert not isinstance(
-                subject, list), "object_ / subject are both lists"
-            assert not isinstance(
-                predicate, list), "object_ / predicate are both lists"
+            assert not isinstance(subject, list), "object_ / subject are both lists"
+            assert not isinstance(predicate, list), "object_ / predicate are both lists"
             if object_:
                 for obj in object_:
                     for (s1, p1, o1), cg in self.triples(
-                            (subject, predicate, obj), context):
+                        (subject, predicate, obj), context
+                    ):
                         yield (s1, p1, o1), cg
             else:
                 for (s1, p1, o1), cg in self.triples(
-                        (subject, predicate, None), context):
+                    (subject, predicate, None), context
+                ):
                     yield (s1, p1, o1), cg
 
         elif isinstance(subject, list):
-            assert not isinstance(
-                predicate, list), "subject / predicate are both lists"
+            assert not isinstance(predicate, list), "subject / predicate are both lists"
             if subject:
                 for subj in subject:
                     for (s1, p1, o1), cg in self.triples(
-                            (subj, predicate, object_), context):
+                        (subj, predicate, object_), context
+                    ):
                         yield (s1, p1, o1), cg
             else:
                 for (s1, p1, o1), cg in self.triples(
-                        (None, predicate, object_), context):
+                    (None, predicate, object_), context
+                ):
                     yield (s1, p1, o1), cg
 
         elif isinstance(predicate, list):
-            assert not isinstance(
-                subject, list), "predicate / subject are both lists"
+            assert not isinstance(subject, list), "predicate / subject are both lists"
             if predicate:
                 for pred in predicate:
                     for (s1, p1, o1), cg in self.triples(
-                            (subject, pred, object_), context):
+                        (subject, pred, object_), context
+                    ):
                         yield (s1, p1, o1), cg
             else:
-                for (s1, p1, o1), cg in self.triples(
-                        (subject, None, object_), context):
+                for (s1, p1, o1), cg in self.triples((subject, None, object_), context):
                     yield (s1, p1, o1), cg
 
     def triples(self, triple_pattern, context=None):

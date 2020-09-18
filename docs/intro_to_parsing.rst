@@ -67,3 +67,15 @@ files you'll find on the net.
 
 RDFLib will also happily read RDF from any file-like object,
 i.e. anything with a ``.read()`` method.
+
+
+Saving RDF
+----------
+
+To store a graph in a file use the :func:`rdflib.Graph.serialize` function:
+
+.. code-block:: python
+
+    g.parse("http://bigasterisk.com/foaf.rdf")
+    with open("foaf.n3", "wb") as f:
+        g.serialize(f, format="n3")

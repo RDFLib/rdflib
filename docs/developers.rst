@@ -11,7 +11,8 @@ developing RDFLib code.
 
 Please be as Pythonic as possible (:pep:`8`).
 
-Code will occasionally be auto-formatted using ``autopep8`` - you can also do this yourself.
+Code should be formatted using `black <https://github.com/psf/black>`_.
+While not yet mandatory it will be required in the future.
 
 Any new functionality being added to RDFLib should have doc tests and
 unit tests. Tests should be added for any functionality being changed
@@ -56,7 +57,9 @@ If you make a pull-request to RDFLib on GitHub, travis will automatically test y
 Compatibility
 -------------
 
-RDFLib>=5.0.0 tries to be compatible with python versions 2.7, 3.5, 3.6, 3.7.
+RDFLib 5.x.y tries to be compatible with python versions 2.7, 3.4, 3.5, 3.6, 3.7.
+
+The current master branch (which will be released as 6.0.0) will only support Python 3.5 and newer.
 
 
 Releasing

@@ -6,7 +6,6 @@ import unittest
 
 
 class TestTrixParse(unittest.TestCase):
-
     def setUp(self):
         pass
 
@@ -45,5 +44,5 @@ class TestTrixParse(unittest.TestCase):
         # print "Parsed %d triples"%len(g)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

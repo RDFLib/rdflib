@@ -1,22 +1,20 @@
-from __future__ import absolute_import
-
 from rdflib import ConjunctiveGraph
 from rdflib.parser import Parser
 from .notation3 import SinkParser, RDFSink
 
 
-def becauseSubGraph(*args, **kwargs): pass
+def becauseSubGraph(*args, **kwargs):
+    pass
 
 
 class TrigSinkParser(SinkParser):
-
     def directiveOrStatement(self, argstr, h):
 
-        #import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
 
         i = self.skipSpace(argstr, h)
         if i < 0:
-            return i    # EOF
+            return i  # EOF
 
         j = self.graph(argstr, i)
         if j >= 0:
@@ -46,12 +44,11 @@ class TrigSinkParser(SinkParser):
         if j >= 0:
             return j
 
-        if argstr[i] == '[':
+        if argstr[i] == "[":
             j = self.skipSpace(argstr, i + 1)
             if j < 0:
-                self.BadSyntax(argstr, i,
-                               "Expected ] got EOF")
-            if argstr[j] == ']':
+                self.BadSyntax(argstr, i, "Expected ] got EOF")
+            if argstr[j] == "]":
                 res.append(self.blankNode())
                 return j + 1
         return -1
@@ -66,8 +63,8 @@ class TrigSinkParser(SinkParser):
         raise Exception if it looks like a graph, but isn't.
         """
 
-        #import pdb; pdb.set_trace()
-        j = self.sparqlTok('GRAPH', argstr, i)  # optional GRAPH keyword
+        # import pdb; pdb.set_trace()
+        j = self.sparqlTok("GRAPH", argstr, i)  # optional GRAPH keyword
         if j >= 0:
             i = j
 
@@ -81,10 +78,9 @@ class TrigSinkParser(SinkParser):
 
         j = self.skipSpace(argstr, i)
         if j < 0:
-            self.BadSyntax(argstr, i,
-                           "EOF found when expected graph")
+            self.BadSyntax(argstr, i, "EOF found when expected graph")
 
-        if argstr[j:j + 1] == "=":  # optional = for legacy support
+        if argstr[j : j + 1] == "=":  # optional = for legacy support
 
             i = self.skipSpace(argstr, j + 1)
             if i < 0:
@@ -92,7 +88,7 @@ class TrigSinkParser(SinkParser):
         else:
             i = j
 
-        if argstr[i:i + 1] != "{":
+        if argstr[i : i + 1] != "{":
             return -1  # the node wasn't part of a graph
 
         j = i + 1
@@ -106,17 +102,15 @@ class TrigSinkParser(SinkParser):
         while 1:
             i = self.skipSpace(argstr, j)
             if i < 0:
-                self.BadSyntax(
-                    argstr, i, "needed '}', found end.")
+                self.BadSyntax(argstr, i, "needed '}', found end.")
 
-            if argstr[i:i + 1] == "}":
+            if argstr[i : i + 1] == "}":
                 j = i + 1
                 break
 
             j = self.directiveOrStatement(argstr, i)
             if j < 0:
-                self.BadSyntax(
-                    argstr, i, "expected statement or '}'")
+                self.BadSyntax(argstr, i, "expected statement or '}'")
 
         self._context = self._parentContext
         self._reason2 = reason2
@@ -138,25 +132,30 @@ class TrigParser(Parser):
 
         if encoding not in [None, "utf-8"]:
             raise Exception(
-                ("TriG files are always utf-8 encoded, ",
-                 "I was passed: %s") % encoding)
+                ("TriG files are always utf-8 encoded, ", "I was passed: %s") % encoding
+            )
 
         # we're currently being handed a Graph, not a ConjunctiveGraph
         assert graph.store.context_aware, "TriG Parser needs a context-aware store!"
 
         conj_graph = ConjunctiveGraph(store=graph.store, identifier=graph.identifier)
         conj_graph.default_context = graph  # TODO: CG __init__ should have a
-                                            # default_context arg
+        # default_context arg
         # TODO: update N3Processor so that it can use conj_graph as the sink
         conj_graph.namespace_manager = graph.namespace_manager
 
         sink = RDFSink(conj_graph)
 
         baseURI = conj_graph.absolutize(
-            source.getPublicId() or source.getSystemId() or "")
+            source.getPublicId() or source.getSystemId() or ""
+        )
         p = TrigSinkParser(sink, baseURI=baseURI, turtle=True)
 
-        p.loadStream(source.getByteStream())
+        stream = source.getCharacterStream()  # try to get str stream first
+        if not stream:
+            # fallback to get the bytes stream
+            stream = source.getByteStream()
+        p.loadStream(stream)
 
         for prefix, namespace in p._bindings.items():
             conj_graph.bind(prefix, namespace)

@@ -1,18 +1,12 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import logging
 
 import os
 from unicodedata import category
 
-from six import string_types
-from six import text_type
 
-from six.moves.urllib.request import pathname2url
-from six.moves.urllib.parse import urldefrag
-from six.moves.urllib.parse import urljoin
+from urllib.request import pathname2url
+from urllib.parse import urldefrag
+from urllib.parse import urljoin
 
 from rdflib.term import URIRef, Variable, _XSD_PFX, _is_valid_uri
 
@@ -106,7 +100,7 @@ __all__ = [
 logger = logging.getLogger(__name__)
 
 
-class Namespace(text_type):
+class Namespace(str):
 
     __doc__ = """
     Utility class for quickly generating URIRefs with a common prefix
@@ -122,9 +116,9 @@ class Namespace(text_type):
 
     def __new__(cls, value):
         try:
-            rt = text_type.__new__(cls, value)
+            rt = str.__new__(cls, value)
         except UnicodeDecodeError:
-            rt = text_type.__new__(cls, value, "utf-8")
+            rt = str.__new__(cls, value, "utf-8")
         return rt
 
     @property
@@ -133,7 +127,7 @@ class Namespace(text_type):
 
     def term(self, name):
         # need to handle slices explicitly because of __getitem__ override
-        return URIRef(self + (name if isinstance(name, string_types) else ""))
+        return URIRef(self + (name if isinstance(name, str) else ""))
 
     def __getitem__(self, key, default=None):
         return self.term(key)
@@ -145,10 +139,10 @@ class Namespace(text_type):
             return self.term(name)
 
     def __repr__(self):
-        return "Namespace(%r)" % text_type(self)
+        return "Namespace(%r)" % str(self)
 
 
-class URIPattern(text_type):
+class URIPattern(str):
 
     __doc__ = """
     Utility class for creating URIs according to some pattern
@@ -163,19 +157,19 @@ class URIPattern(text_type):
 
     def __new__(cls, value):
         try:
-            rt = text_type.__new__(cls, value)
+            rt = str.__new__(cls, value)
         except UnicodeDecodeError:
-            rt = text_type.__new__(cls, value, "utf-8")
+            rt = str.__new__(cls, value, "utf-8")
         return rt
 
     def __mod__(self, *args, **kwargs):
-        return URIRef(text_type(self).__mod__(*args, **kwargs))
+        return URIRef(str(self).__mod__(*args, **kwargs))
 
     def format(self, *args, **kwargs):
-        return URIRef(text_type.format(self, *args, **kwargs))
+        return URIRef(str.format(self, *args, **kwargs))
 
     def __repr__(self):
-        return "URIPattern(%r)" % text_type(self)
+        return "URIPattern(%r)" % str(self)
 
 
 class ClosedNamespace(object):
@@ -211,10 +205,16 @@ class ClosedNamespace(object):
                 raise AttributeError(e)
 
     def __str__(self):
-        return text_type(self.uri)
+        return str(self.uri)
 
     def __repr__(self):
-        return "rdf.namespace.ClosedNamespace(%r)" % text_type(self.uri)
+        return "rdf.namespace.ClosedNamespace(%r)" % str(self.uri)
+
+    def __dir__(self):
+        return list(self._ClosedNamespace__uris)
+
+    def _ipython_key_completions_(self):
+        return dir(self)
 
 
 class _RDFNamespace(ClosedNamespace):
@@ -491,8 +491,8 @@ SKOS = ClosedNamespace(
         "relatedMatch",
     ],
 )
-SOSA = Namespace("http://www.w3.org/ns/ssn/")
-SSN = Namespace("http://www.w3.org/ns/sosa/")
+SSN = Namespace("http://www.w3.org/ns/ssn/")
+SOSA = Namespace("http://www.w3.org/ns/sosa/")
 TIME = Namespace("http://www.w3.org/2006/time#")
 VOID = Namespace("http://rdfs.org/ns/void#")
 XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
@@ -581,7 +581,7 @@ class NamespaceManager(object):
             namespace, name = split_uri(rdfTerm)
             if namespace not in self.__strie:
                 insert_strie(self.__strie, self.__trie, str(namespace))
-            namespace = URIRef(text_type(namespace))
+            namespace = URIRef(str(namespace))
         except:
             if isinstance(rdfTerm, Variable):
                 return "?%s" % rdfTerm
@@ -645,7 +645,7 @@ class NamespaceManager(object):
         # if output needs to be strict (e.g. for xml) then
         # only the strict output should bear the overhead
         prefix, namespace, name = self.compute_qname(uri)
-        if is_ncname(text_type(name)):
+        if is_ncname(str(name)):
             return prefix, namespace, name
         else:
             if uri not in self.__cache_strict:
@@ -706,7 +706,7 @@ class NamespaceManager(object):
 
         """
 
-        namespace = URIRef(text_type(namespace))
+        namespace = URIRef(str(namespace))
         # When documenting explain that override only applies in what cases
         if prefix is None:
             prefix = ""
@@ -806,7 +806,7 @@ class NamespaceManager(object):
 NAME_START_CATEGORIES = ["Ll", "Lu", "Lo", "Lt", "Nl"]
 SPLIT_START_CATEGORIES = NAME_START_CATEGORIES + ["Nd"]
 NAME_CATEGORIES = NAME_START_CATEGORIES + ["Mc", "Me", "Mn", "Lm", "Nd"]
-ALLOWED_NAME_CHARS = [u"\u00B7", u"\u0387", u"-", u".", u"_", u":"]
+ALLOWED_NAME_CHARS = ["\u00B7", "\u0387", "-", ".", "_", ":", "%"]
 
 
 # http://www.w3.org/TR/REC-xml-names/#NT-NCName

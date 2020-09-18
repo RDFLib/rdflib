@@ -1,12 +1,10 @@
-from __future__ import print_function
-
 from rdflib import *
 from rdflib.collection import Collection
 
 
 def test_issue604():
 
-    EX = Namespace('http://ex.co/')
+    EX = Namespace("http://ex.co/")
     g = Graph()
     bn = BNode()
     g.add((EX.s, EX.p, bn))

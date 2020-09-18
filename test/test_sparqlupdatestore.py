@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from nose import SkipTest
 
 import unittest
 import re
 
 from rdflib import ConjunctiveGraph, URIRef, Literal, BNode, Graph
-from six import text_type
-from six.moves.urllib.request import urlopen
+from urllib.request import urlopen
 
-HOST = 'http://localhost:3031'
-DB = '/db/'
+HOST = "http://localhost:3031"
+DB = "/db/"
 
 # this assumes SPARQL1.1 query/update endpoints running locally at
 # http://localhost:3031/db/
@@ -25,23 +22,22 @@ DB = '/db/'
 
 # THIS WILL DELETE ALL DATA IN THE /db dataset
 
-michel = URIRef(u'urn:michel')
-tarek = URIRef(u'urn:tarek')
-bob = URIRef(u'urn:bob')
-likes = URIRef(u'urn:likes')
-hates = URIRef(u'urn:hates')
-pizza = URIRef(u'urn:pizza')
-cheese = URIRef(u'urn:cheese')
+michel = URIRef("urn:michel")
+tarek = URIRef("urn:tarek")
+bob = URIRef("urn:bob")
+likes = URIRef("urn:likes")
+hates = URIRef("urn:hates")
+pizza = URIRef("urn:pizza")
+cheese = URIRef("urn:cheese")
 
-graphuri = URIRef('urn:graph')
-othergraphuri = URIRef('urn:othergraph')
+graphuri = URIRef("urn:graph")
+othergraphuri = URIRef("urn:othergraph")
 
 
 class TestSparql11(unittest.TestCase):
-
     def setUp(self):
         self.longMessage = True
-        self.graph = ConjunctiveGraph('SPARQLUpdateStore')
+        self.graph = ConjunctiveGraph("SPARQLUpdateStore")
 
         root = HOST + DB
         self.graph.open((root + "sparql", root + "update"))
@@ -63,8 +59,8 @@ class TestSparql11(unittest.TestCase):
         g2 = self.graph.get_context(othergraphuri)
         g2.add((michel, likes, pizza))
 
-        self.assertEqual(3, len(g), 'graph contains 3 triples')
-        self.assertEqual(1, len(g2), 'other graph contains 1 triple')
+        self.assertEqual(3, len(g), "graph contains 3 triples")
+        self.assertEqual(1, len(g2), "other graph contains 1 triple")
 
         r = g.query("SELECT * WHERE { ?s <urn:likes> <urn:pizza> . }")
         self.assertEqual(2, len(list(r)), "two people like pizza")
@@ -73,8 +69,9 @@ class TestSparql11(unittest.TestCase):
         self.assertEqual(2, len(list(r)), "two people like pizza")
 
         # Test initBindings
-        r = g.query("SELECT * WHERE { ?s <urn:likes> <urn:pizza> . }",
-                    initBindings={'s': tarek})
+        r = g.query(
+            "SELECT * WHERE { ?s <urn:likes> <urn:pizza> . }", initBindings={"s": tarek}
+        )
         self.assertEqual(1, len(list(r)), "i was asking only about tarek")
 
         r = g.triples((tarek, likes, pizza))
@@ -95,7 +92,7 @@ class TestSparql11(unittest.TestCase):
         g2.add((bob, likes, pizza))
         g.add((tarek, hates, cheese))
 
-        self.assertEqual(2, len(g), 'graph contains 2 triples')
+        self.assertEqual(2, len(g), "graph contains 2 triples")
 
         # the following are actually bad tests as they depend on your endpoint,
         # as pointed out in the sparqlstore.py code:
@@ -107,15 +104,19 @@ class TestSparql11(unittest.TestCase):
         ##
         # Fuseki/TDB has a flag for specifying that the default graph
         # is the union of all graphs (tdb:unionDefaultGraph in the Fuseki config).
-        self.assertEqual(3, len(self.graph),
-                         'default union graph should contain three triples but contains:\n'
-                         '%s' % list(self.graph))
+        self.assertEqual(
+            3,
+            len(self.graph),
+            "default union graph should contain three triples but contains:\n"
+            "%s" % list(self.graph),
+        )
 
         r = self.graph.query("SELECT * WHERE { ?s <urn:likes> <urn:pizza> . }")
         self.assertEqual(2, len(list(r)), "two people like pizza")
 
-        r = self.graph.query("SELECT * WHERE { ?s <urn:likes> <urn:pizza> . }",
-                             initBindings={'s': tarek})
+        r = self.graph.query(
+            "SELECT * WHERE { ?s <urn:likes> <urn:pizza> . }", initBindings={"s": tarek}
+        )
         self.assertEqual(1, len(list(r)), "i was asking only about tarek")
 
         r = self.graph.triples((tarek, likes, pizza))
@@ -130,44 +131,47 @@ class TestSparql11(unittest.TestCase):
         self.assertEqual(1, len(list(r)), "only tarek likes pizza")
 
     def testUpdate(self):
-        self.graph.update("INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> . } }")
+        self.graph.update(
+            "INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> . } }"
+        )
 
         g = self.graph.get_context(graphuri)
-        self.assertEqual(1, len(g), 'graph contains 1 triples')
+        self.assertEqual(1, len(g), "graph contains 1 triples")
 
     def testUpdateWithInitNs(self):
         self.graph.update(
             "INSERT DATA { GRAPH ns:graph { ns:michel ns:likes ns:pizza . } }",
-            initNs={'ns': URIRef('urn:')}
+            initNs={"ns": URIRef("urn:")},
         )
 
         g = self.graph.get_context(graphuri)
         self.assertEqual(
             set(g.triples((None, None, None))),
             set([(michel, likes, pizza)]),
-            'only michel likes pizza'
+            "only michel likes pizza",
         )
 
     def testUpdateWithInitBindings(self):
         self.graph.update(
             "INSERT { GRAPH <urn:graph> { ?a ?b ?c . } } WherE { }",
             initBindings={
-                'a': URIRef('urn:michel'),
-                'b': URIRef('urn:likes'),
-                'c': URIRef('urn:pizza'),
-            }
+                "a": URIRef("urn:michel"),
+                "b": URIRef("urn:likes"),
+                "c": URIRef("urn:pizza"),
+            },
         )
 
         g = self.graph.get_context(graphuri)
         self.assertEqual(
             set(g.triples((None, None, None))),
             set([(michel, likes, pizza)]),
-            'only michel likes pizza'
+            "only michel likes pizza",
         )
 
     def testUpdateWithBlankNode(self):
         self.graph.update(
-            "INSERT DATA { GRAPH <urn:graph> { _:blankA <urn:type> <urn:Blank> } }")
+            "INSERT DATA { GRAPH <urn:graph> { _:blankA <urn:type> <urn:Blank> } }"
+        )
         g = self.graph.get_context(graphuri)
         for t in g.triples((None, None, None)):
             self.assertTrue(isinstance(t[0], BNode))
@@ -176,33 +180,34 @@ class TestSparql11(unittest.TestCase):
 
     def testUpdateWithBlankNodeSerializeAndParse(self):
         self.graph.update(
-            "INSERT DATA { GRAPH <urn:graph> { _:blankA <urn:type> <urn:Blank> } }")
+            "INSERT DATA { GRAPH <urn:graph> { _:blankA <urn:type> <urn:Blank> } }"
+        )
         g = self.graph.get_context(graphuri)
-        string = g.serialize(format='ntriples').decode('utf-8')
+        string = g.serialize(format="ntriples").decode("utf-8")
         raised = False
         try:
             Graph().parse(data=string, format="ntriples")
         except Exception as e:
             raised = True
-        self.assertFalse(raised, 'Exception raised when parsing: ' + string)
+        self.assertFalse(raised, "Exception raised when parsing: " + string)
 
     def testMultipleUpdateWithInitBindings(self):
         self.graph.update(
             "INSERT { GRAPH <urn:graph> { ?a ?b ?c . } } WHERE { };"
             "INSERT { GRAPH <urn:graph> { ?d ?b ?c . } } WHERE { }",
             initBindings={
-                'a': URIRef('urn:michel'),
-                'b': URIRef('urn:likes'),
-                'c': URIRef('urn:pizza'),
-                'd': URIRef('urn:bob'),
-            }
+                "a": URIRef("urn:michel"),
+                "b": URIRef("urn:likes"),
+                "c": URIRef("urn:pizza"),
+                "d": URIRef("urn:bob"),
+            },
         )
 
         g = self.graph.get_context(graphuri)
         self.assertEqual(
             set(g.triples((None, None, None))),
             set([(michel, likes, pizza), (bob, likes, pizza)]),
-            'michel and bob like pizza'
+            "michel and bob like pizza",
         )
 
     def testNamedGraphUpdate(self):
@@ -212,25 +217,31 @@ class TestSparql11(unittest.TestCase):
         self.assertEqual(
             set(g.triples((None, None, None))),
             set([(michel, likes, pizza)]),
-            'only michel likes pizza'
+            "only michel likes pizza",
         )
 
-        r2 = "DELETE { <urn:michel> <urn:likes> <urn:pizza> } " + \
-             "INSERT { <urn:bob> <urn:likes> <urn:pizza> } WHERE {}"
+        r2 = (
+            "DELETE { <urn:michel> <urn:likes> <urn:pizza> } "
+            + "INSERT { <urn:bob> <urn:likes> <urn:pizza> } WHERE {}"
+        )
         g.update(r2)
         self.assertEqual(
             set(g.triples((None, None, None))),
             set([(bob, likes, pizza)]),
-            'only bob likes pizza'
+            "only bob likes pizza",
         )
         says = URIRef("urn:says")
 
         # Strings with unbalanced curly braces
-        tricky_strs = ["With an unbalanced curly brace %s " % brace
-                       for brace in ["{", "}"]]
+        tricky_strs = [
+            "With an unbalanced curly brace %s " % brace for brace in ["{", "}"]
+        ]
         for tricky_str in tricky_strs:
-            r3 = """INSERT { ?b <urn:says> "%s" }
-            WHERE { ?b <urn:likes> <urn:pizza>} """ % tricky_str
+            r3 = (
+                """INSERT { ?b <urn:says> "%s" }
+            WHERE { ?b <urn:likes> <urn:pizza>} """
+                % tricky_str
+            )
             g.update(r3)
 
         values = set()
@@ -254,16 +265,26 @@ class TestSparql11(unittest.TestCase):
         r4strings.append(r"""'''9: adfk } <foo> #éï \\'''""")
         r4strings.append("'''10: ad adsfj \n { \n sadfj'''")
 
-        r4 = "\n".join([
-            u'INSERT DATA { <urn:michel> <urn:says> %s } ;' % s
-            for s in r4strings
-        ])
+        r4 = "\n".join(
+            ["INSERT DATA { <urn:michel> <urn:says> %s } ;" % s for s in r4strings]
+        )
         g.update(r4)
         values = set()
         for v in g.objects(michel, says):
-            values.add(text_type(v))
-        self.assertEqual(values, set([re.sub(r"\\(.)", r"\1", re.sub(
-            r"^'''|'''$|^'|'$|" + r'^"""|"""$|^"|"$', r"", s)) for s in r4strings]))
+            values.add(str(v))
+        self.assertEqual(
+            values,
+            set(
+                [
+                    re.sub(
+                        r"\\(.)",
+                        r"\1",
+                        re.sub(r"^'''|'''$|^'|'$|" + r'^"""|"""$|^"|"$', r"", s),
+                    )
+                    for s in r4strings
+                ]
+            ),
+        )
 
         # IRI Containing ' or #
         # The fragment identifier must not be misinterpreted as a comment
@@ -275,11 +296,11 @@ class TestSparql11(unittest.TestCase):
         g.update(r5)
         values = set()
         for v in g.objects(michel, hates):
-            values.add(text_type(v))
-        self.assertEqual(values, set([u"urn:foo'bar?baz;a=1&b=2#fragment", u"'}"]))
+            values.add(str(v))
+        self.assertEqual(values, set(["urn:foo'bar?baz;a=1&b=2#fragment", "'}"]))
 
         # Comments
-        r6 = u"""
+        r6 = """
             INSERT DATA {
                 <urn:bob> <urn:hates> <urn:bob> . # No closing brace: }
                 <urn:bob> <urn:hates> <urn:michel>.
@@ -295,39 +316,40 @@ class TestSparql11(unittest.TestCase):
     def testNamedGraphUpdateWithInitBindings(self):
         g = self.graph.get_context(graphuri)
         r = "INSERT { ?a ?b ?c } WHERE {}"
-        g.update(r, initBindings={
-            'a': michel,
-            'b': likes,
-            'c': pizza
-        })
+        g.update(r, initBindings={"a": michel, "b": likes, "c": pizza})
         self.assertEqual(
             set(g.triples((None, None, None))),
             set([(michel, likes, pizza)]),
-            'only michel likes pizza'
+            "only michel likes pizza",
         )
 
     def testEmptyNamedGraph(self):
         empty_graph_iri = "urn:empty-graph-1"
         self.graph.update("CREATE GRAPH <%s>" % empty_graph_iri)
-        named_graphs = [text_type(r[0]) for r in self.graph.query(
-            "SELECT ?name WHERE { GRAPH ?name {} }")]
+        named_graphs = [
+            str(r[0]) for r in self.graph.query("SELECT ?name WHERE { GRAPH ?name {} }")
+        ]
         # Some SPARQL endpoint backends (like TDB) are not able to find empty named graphs
         # (at least with this query)
         if empty_graph_iri in named_graphs:
-            self.assertTrue(empty_graph_iri in [text_type(g.identifier)
-                                                for g in self.graph.contexts()])
+            self.assertTrue(
+                empty_graph_iri in [str(g.identifier) for g in self.graph.contexts()]
+            )
 
     def testEmptyLiteral(self):
         # test for https://github.com/RDFLib/rdflib/issues/457
         # also see test_issue457.py which is sparql store independent!
         g = self.graph.get_context(graphuri)
-        g.add((
-            URIRef('http://example.com/s'),
-            URIRef('http://example.com/p'),
-            Literal('')))
+        g.add(
+            (
+                URIRef("http://example.com/s"),
+                URIRef("http://example.com/p"),
+                Literal(""),
+            )
+        )
 
         o = tuple(g)[0][2]
-        self.assertEqual(o, Literal(''), repr(o))
+        self.assertEqual(o, Literal(""), repr(o))
 
 
 try:
@@ -336,5 +358,5 @@ except:
     raise SkipTest(HOST + " is unavailable.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

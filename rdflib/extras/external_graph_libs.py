@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 # encoding: utf-8
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
 
 """Convert (to and) from rdflib graphs to other well known graph libraries.
 
@@ -17,18 +13,22 @@ see ../../test/test_extras_external_graph_libs.py for conditional tests
 """
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
-def _identity(x): return x
+def _identity(x):
+    return x
 
 
 def _rdflib_to_networkx_graph(
-        graph,
-        nxgraph,
-        calc_weights,
-        edge_attrs,
-        transform_s=_identity, transform_o=_identity):
+    graph,
+    nxgraph,
+    calc_weights,
+    edge_attrs,
+    transform_s=_identity,
+    transform_o=_identity,
+):
     """Helper method for multidigraph, digraph and graph.
 
     Modifies nxgraph in-place!
@@ -50,6 +50,7 @@ def _rdflib_to_networkx_graph(
     assert callable(transform_s)
     assert callable(transform_o)
     import networkx as nx
+
     for s, p, o in graph:
         ts, to = transform_s(s), transform_o(o)  # apply possible transformations
         data = nxgraph.get_edge_data(ts, to)
@@ -57,21 +58,20 @@ def _rdflib_to_networkx_graph(
             # no edge yet, set defaults
             data = edge_attrs(s, p, o)
             if calc_weights:
-                data['weight'] = 1
+                data["weight"] = 1
             nxgraph.add_edge(ts, to, **data)
         else:
             # already have an edge, just update attributes
             if calc_weights:
-                data['weight'] += 1
-            if 'triples' in data:
+                data["weight"] += 1
+            if "triples" in data:
                 d = edge_attrs(s, p, o)
-                data['triples'].extend(d['triples'])
+                data["triples"].extend(d["triples"])
 
 
 def rdflib_to_networkx_multidigraph(
-        graph,
-        edge_attrs=lambda s, p, o: {'key': p},
-        **kwds):
+    graph, edge_attrs=lambda s, p, o: {"key": p}, **kwds
+):
     """Converts the given graph into a networkx.MultiDiGraph.
 
     The subjects and objects are the later nodes of the MultiDiGraph.
@@ -116,16 +116,18 @@ def rdflib_to_networkx_multidigraph(
     True
     """
     import networkx as nx
+
     mdg = nx.MultiDiGraph()
     _rdflib_to_networkx_graph(graph, mdg, False, edge_attrs, **kwds)
     return mdg
 
 
 def rdflib_to_networkx_digraph(
-        graph,
-        calc_weights=True,
-        edge_attrs=lambda s, p, o: {'triples': [(s, p, o)]},
-        **kwds):
+    graph,
+    calc_weights=True,
+    edge_attrs=lambda s, p, o: {"triples": [(s, p, o)]},
+    **kwds
+):
     """Converts the given graph into a networkx.DiGraph.
 
     As an rdflib.Graph() can contain multiple edges between nodes, by default
@@ -176,16 +178,18 @@ def rdflib_to_networkx_digraph(
     False
     """
     import networkx as nx
+
     dg = nx.DiGraph()
     _rdflib_to_networkx_graph(graph, dg, calc_weights, edge_attrs, **kwds)
     return dg
 
 
 def rdflib_to_networkx_graph(
-        graph,
-        calc_weights=True,
-        edge_attrs=lambda s, p, o: {'triples': [(s, p, o)]},
-        **kwds):
+    graph,
+    calc_weights=True,
+    edge_attrs=lambda s, p, o: {"triples": [(s, p, o)]},
+    **kwds
+):
     """Converts the given graph into a networkx.Graph.
 
     As an rdflib.Graph() can contain multiple directed edges between nodes, by
@@ -236,6 +240,7 @@ def rdflib_to_networkx_graph(
     False
     """
     import networkx as nx
+
     g = nx.Graph()
     _rdflib_to_networkx_graph(graph, g, calc_weights, edge_attrs, **kwds)
     return g
@@ -243,11 +248,11 @@ def rdflib_to_networkx_graph(
 
 def rdflib_to_graphtool(
     graph,
-    v_prop_names=[str('term')],
-    e_prop_names=[str('term')],
-    transform_s=lambda s, p, o: {str('term'): s},
-    transform_p=lambda s, p, o: {str('term'): p},
-    transform_o=lambda s, p, o: {str('term'): o},
+    v_prop_names=[str("term")],
+    e_prop_names=[str("term")],
+    transform_s=lambda s, p, o: {str("term"): s},
+    transform_p=lambda s, p, o: {str("term"): p},
+    transform_o=lambda s, p, o: {str("term"): o},
 ):
     """Converts the given graph into a graph_tool.Graph().
 
@@ -306,12 +311,13 @@ def rdflib_to_graphtool(
     True
     """
     import graph_tool as gt
+
     g = gt.Graph()
 
-    vprops = [(vpn, g.new_vertex_property('object')) for vpn in v_prop_names]
+    vprops = [(vpn, g.new_vertex_property("object")) for vpn in v_prop_names]
     for vpn, vprop in vprops:
         g.vertex_properties[vpn] = vprop
-    eprops = [(epn, g.new_edge_property('object')) for epn in e_prop_names]
+    eprops = [(epn, g.new_edge_property("object")) for epn in e_prop_names]
     for epn, eprop in eprops:
         g.edge_properties[epn] = eprop
     node_to_vertex = {}
@@ -341,10 +347,12 @@ def rdflib_to_graphtool(
     return g
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
     import logging.config
+
     logging.basicConfig(level=logging.DEBUG)
 
     import nose
-    nose.run(argv=[sys.argv[0], sys.argv[0], '-v', '--without-doctest'])
+
+    nose.run(argv=[sys.argv[0], sys.argv[0], "-v", "--without-doctest"])

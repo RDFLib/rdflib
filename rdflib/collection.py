@@ -1,13 +1,9 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 from rdflib.namespace import RDF
 from rdflib.term import BNode
 from rdflib.term import Literal
 
 
-__all__ = ['Collection']
+__all__ = ["Collection"]
 
 
 class Collection(object):
@@ -18,7 +14,7 @@ class Collection(object):
     >>> from rdflib.graph import Graph
     >>> from pprint import pprint
     >>> listName = BNode()
-    >>> g = Graph('IOMemory')
+    >>> g = Graph('Memory')
     >>> listItem1 = BNode()
     >>> listItem2 = BNode()
     >>> g.add((listName, RDF.first, Literal(1)))
@@ -52,7 +48,7 @@ class Collection(object):
         """
         >>> from rdflib.graph import Graph
         >>> listName = BNode()
-        >>> g = Graph('IOMemory')
+        >>> g = Graph('Memory')
         >>> listItem1 = BNode()
         >>> listItem2 = BNode()
         >>> g.add((listName, RDF.first, Literal(1)))
@@ -67,7 +63,7 @@ class Collection(object):
           "2"^^<http://www.w3.org/2001/XMLSchema#integer>
           "3"^^<http://www.w3.org/2001/XMLSchema#integer> )
         """
-        return "( %s )" % (' '.join([i.n3() for i in self]))
+        return "( %s )" % (" ".join([i.n3() for i in self]))
 
     def _get_container(self, index):
         """Gets the first, rest holding node at index."""
@@ -103,8 +99,7 @@ class Collection(object):
                 elif not newLink:
                     raise Exception("Malformed RDF Collection: %s" % self.uri)
                 else:
-                    assert len(newLink) == 1, \
-                        "Malformed RDF Collection: %s" % self.uri
+                    assert len(newLink) == 1, "Malformed RDF Collection: %s" % self.uri
                     listName = newLink[0]
 
     def __getitem__(self, key):
@@ -246,6 +241,7 @@ class Collection(object):
 
 def test():
     import doctest
+
     doctest.testmod()
 
 
@@ -253,14 +249,14 @@ if __name__ == "__main__":
     test()
 
     from rdflib import Graph
+
     g = Graph()
 
     c = Collection(g, BNode())
 
     assert len(c) == 0
 
-    c = Collection(
-        g, BNode(), [Literal("1"), Literal("2"), Literal("3"), Literal("4")])
+    c = Collection(g, BNode(), [Literal("1"), Literal("2"), Literal("3"), Literal("4")])
 
     assert len(c) == 4
 
@@ -272,7 +268,7 @@ if __name__ == "__main__":
 
     try:
         del c[500]
-    except IndexError as i:
+    except IndexError:
         pass
 
     c.append(Literal("5"))

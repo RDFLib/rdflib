@@ -7,8 +7,8 @@ from rdflib.graph import Graph
 
 
 class ParserTestCase(unittest.TestCase):
-    backend = 'default'
-    path = 'store'
+    backend = "default"
+    path = "store"
 
     def setUp(self):
         self.graph = Graph(store=self.backend)
@@ -19,7 +19,8 @@ class ParserTestCase(unittest.TestCase):
 
     def testNoPathWithHash(self):
         g = self.graph
-        g.parse(data="""\
+        g.parse(
+            data="""\
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <rdf:RDF
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -31,7 +32,10 @@ class ParserTestCase(unittest.TestCase):
 </rdfs:Class>
 
 </rdf:RDF>
-""", publicID="http://example.org")
+""",
+            format="xml",
+            publicID="http://example.org",
+        )
 
         subject = URIRef("http://example.org#")
         label = g.value(subject, RDFS.label)

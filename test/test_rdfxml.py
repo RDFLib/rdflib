@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import sys
 from encodings.utf_8 import StreamWriter
 
@@ -8,7 +6,7 @@ import unittest
 import os
 import os.path
 
-from six.moves.urllib.request import url2pathname, urlopen
+from urllib.request import url2pathname, urlopen
 
 from rdflib import RDF, RDFS, URIRef, BNode, Literal, Namespace, Graph
 from rdflib.exceptions import ParserError
@@ -42,7 +40,10 @@ class TestStore(Graph):
         if not isinstance(s, BNode) and not isinstance(o, BNode):
             if not (s, p, o) in self.expected:
                 m = "Triple not in expected result: %s, %s, %s" % (
-                    s.n3(), p.n3(), o.n3())
+                    s.n3(),
+                    p.n3(),
+                    o.n3(),
+                )
                 if verbose:
                     write(m)
                 # raise Exception(m)
@@ -73,7 +74,7 @@ def cached_file(url):
         folder = os.path.dirname(fpath)
         if not os.path.exists(folder):
             os.makedirs(folder)
-        f = open(fpath, 'w')
+        f = open(fpath, "w")
         try:
             f.write(urlopen(url).read())
         finally:
@@ -85,7 +86,7 @@ RDFCOREBASE = "http://www.w3.org/2000/10/rdf-tests/rdfcore/"
 
 
 def relative(url):
-    return url[len(RDFCOREBASE):]
+    return url[len(RDFCOREBASE) :]
 
 
 def resolve(rel):
@@ -94,7 +95,7 @@ def resolve(rel):
 
 def _testPositive(uri, manifest):
     if verbose:
-        write(u"TESTING: %s" % uri)
+        write("TESTING: %s" % uri)
     result = 0  # 1=failed, 0=passed
     inDoc = first(manifest.objects(uri, TEST["inputDocument"]))
     outDoc = first(manifest.objects(uri, TEST["outputDocument"]))
@@ -124,7 +125,7 @@ def _testPositive(uri, manifest):
         result = 1
     else:
         if not store.isomorphic(expected):
-            write(u"""Failed: '%s'""" % uri)
+            write("""Failed: '%s'""" % uri)
             if verbose:
                 write("""  In:\n""")
                 for s, p, o in store:
@@ -138,7 +139,7 @@ def _testPositive(uri, manifest):
 
 def _testNegative(uri, manifest):
     if verbose:
-        write(u"TESTING: %s" % uri)
+        write("TESTING: %s" % uri)
     result = 0  # 1=failed, 0=passed
     inDoc = first(manifest.objects(uri, TEST["inputDocument"]))
     store = Graph()
@@ -157,22 +158,23 @@ def _testNegative(uri, manifest):
         results.add((test, RDF.type, RESULT["PassingRun"]))
         # pass
     else:
-        write(u"""Failed: '%s'""" % uri)
+        write("""Failed: '%s'""" % uri)
         results.add((test, RDF.type, RESULT["FailingRun"]))
         result = 1
     return result
 
 
 class ParserTestCase(unittest.TestCase):
-    store = 'default'
-    path = 'store'
+    store = "default"
+    path = "store"
     slow = True
 
     def setUp(self):
         self.manifest = manifest = Graph(store=self.store)
         manifest.open(self.path)
-        manifest.load(cached_file(
-            "http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf"))
+        manifest.load(
+            cached_file("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf")
+        )
 
     def tearDown(self):
         self.manifest.close()
@@ -188,8 +190,7 @@ class ParserTestCase(unittest.TestCase):
                 result = _testNegative(neg, manifest)
                 total += 1
                 num_failed += result
-        self.assertEqual(
-            num_failed, 0, "Failed: %s of %s." % (num_failed, total))
+        self.assertEqual(num_failed, 0, "Failed: %s of %s." % (num_failed, total))
 
     def testPositive(self):
         manifest = self.manifest
@@ -213,8 +214,7 @@ class ParserTestCase(unittest.TestCase):
                     results.add((test, RDF.type, RESULT["FailingRun"]))
                 total += 1
                 num_failed += result
-        self.assertEqual(
-            num_failed, 0, "Failed: %s of %s." % (num_failed, total))
+        self.assertEqual(num_failed, 0, "Failed: %s of %s." % (num_failed, total))
 
 
 RESULT = Namespace("http://www.w3.org/2002/03owlt/resultsOntology#")
@@ -231,12 +231,14 @@ results.add((system, RDFS.comment, Literal("")))
 
 if __name__ == "__main__":
     manifest = Graph()
-    manifest.load(cached_file(
-        "http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf"))
+    manifest.load(
+        cached_file("http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf")
+    )
     import sys
     import getopt
+
     try:
-        optlist, args = getopt.getopt(sys.argv[1:], 'h:', ["help"])
+        optlist, args = getopt.getopt(sys.argv[1:], "h:", ["help"])
     except getopt.GetoptError as msg:
         write(msg)
         # usage()
@@ -250,15 +252,15 @@ if __name__ == "__main__":
         for arg in argv[1:]:
             verbose = 1
             case = URIRef(arg)
-            write(u"Testing: %s" % case)
+            write("Testing: %s" % case)
             if (case, RDF.type, TEST["PositiveParserTest"]) in manifest:
                 result = _testPositive(case, manifest)
-                write(u"Positive test %s" % ["PASSED", "FAILED"][result])
+                write("Positive test %s" % ["PASSED", "FAILED"][result])
             elif (case, RDF.type, TEST["NegativeParserTest"]) in manifest:
                 result = _testNegative(case, manifest)
-                write(u"Negative test %s" % ["PASSED", "FAILED"][result])
+                write("Negative test %s" % ["PASSED", "FAILED"][result])
             else:
-                write(u"%s not ??" % case)
+                write("%s not ??" % case)
 
         if len(argv) <= 1:
             unittest.main()
