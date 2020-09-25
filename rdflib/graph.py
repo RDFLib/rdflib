@@ -993,9 +993,9 @@ class Graph(Node):
             serializer.serialize(stream, base=base, encoding=encoding, **args)
             stream.close()
             if hasattr(shutil, "move"):
-                shutil.move(name, path)
+                shutil.move(name, location)
             else:
-                shutil.copy(name, path)
+                shutil.copy(name, location)
                 os.remove(name)
 
     def parse(
