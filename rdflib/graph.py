@@ -992,10 +992,11 @@ class Graph(Node):
             stream = os.fdopen(fd, "wb")
             serializer.serialize(stream, base=base, encoding=encoding, **args)
             stream.close()
+            dest = path if scheme == "file" else location
             if hasattr(shutil, "move"):
-                shutil.move(name, location)
+                shutil.move(name, dest)
             else:
-                shutil.copy(name, location)
+                shutil.copy(name, dest)
                 os.remove(name)
 
     def parse(
