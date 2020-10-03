@@ -59,7 +59,7 @@ Compatibility
 
 RDFLib 5.x.y tries to be compatible with python versions 2.7, 3.4, 3.5, 3.6, 3.7.
 
-The current master branch (which will be released as 6.0.0) will only support Python 3.5 and newer.
+The current master branch (which will be released as 6.0.0) will only support Python 3.6 and newer.
 
 
 Releasing
