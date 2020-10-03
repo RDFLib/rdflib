@@ -1,12 +1,11 @@
 from rdflib import Graph, URIRef, Literal
 from urllib.request import urlopen
+from urllib.error import HTTPError
 import unittest
 from nose import SkipTest
-from requests import HTTPError
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import socket
 from threading import Thread
-import requests
 
 try:
     assert len(urlopen("http://dbpedia.org/sparql").read()) > 0
@@ -119,7 +118,7 @@ class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
         ```
         """
         contenttype = self.headers.get("Content-Type")
-        if self.path == "/query":
+        if self.path == "/query" or self.path == "/query?":
             if self.headers.get("Content-Type") == "application/sparql-query":
                 pass
             elif (
@@ -127,9 +126,9 @@ class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
             ):
                 pass
             else:
-                self.send_response(requests.codes.not_acceptable)
+                self.send_response(406, "Not Acceptable")
                 self.end_headers()
-        elif self.path == "/update":
+        elif self.path == "/update" or self.path == "/update?":
             if self.headers.get("Content-Type") == "application/sparql-update":
                 pass
             elif (
@@ -137,18 +136,20 @@ class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
             ):
                 pass
             else:
-                self.send_response(requests.codes.not_acceptable)
+                self.send_response(406, "Not Acceptable")
                 self.end_headers()
         else:
-            self.send_response(requests.codes.not_found)
+            print("self.path")
+            print(self.path)
+            self.send_response(404, "Not Found")
             self.end_headers()
-        self.send_response(requests.codes.ok)
+        self.send_response(200, "OK")
         self.end_headers()
         return
 
     def do_GET(self):
         # Process an HTTP GET request and return a response with an HTTP 200 status.
-        self.send_response(requests.codes.ok)
+        self.send_response(200, "OK")
         self.end_headers()
         return
 

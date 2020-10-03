@@ -93,17 +93,18 @@ class SPARQLStore(SPARQLConnector, Store):
 
     def __init__(
         self,
-        endpoint=None,
+        query_endpoint=None,
         sparql11=True,
         context_aware=True,
         node_to_sparql=_node_to_sparql,
         returnFormat="xml",
+        auth=None,
         **sparqlconnector_kwargs
     ):
         """
         """
         super(SPARQLStore, self).__init__(
-            endpoint, returnFormat=returnFormat, **sparqlconnector_kwargs
+            query_endpoint=query_endpoint, returnFormat=returnFormat, auth=auth, **sparqlconnector_kwargs
         )
 
         self.node_to_sparql = node_to_sparql
@@ -113,19 +114,20 @@ class SPARQLStore(SPARQLConnector, Store):
         self.graph_aware = context_aware
         self._queries = 0
 
+    def open(self, configuration: str, create=False):
+        """This method is included so that calls to this Store via Graph, e.g. Graph("SPARQLStore"),
+        can set the required parameters
+        """
+        if type(configuration) == str:
+            self.query_endpoint = configuration
+        else:
+            raise Exception(
+                "configuration must be a string (a single query endpoint URI)"
+            )
+
     # Database Management Methods
     def create(self, configuration):
-        raise TypeError("The SPARQL store is read only")
-
-    def open(self, configuration, create=False):
-        """
-        sets the endpoint URL for this SPARQLStore
-        if create==True an exception is thrown.
-        """
-        if create:
-            raise Exception("Cannot create a SPARQL Endpoint")
-
-        self.query_endpoint = configuration
+        raise TypeError("The SPARQL Store is read only. Try SPARQLUpdateStore for read/write.")
 
     def destroy(self, configuration):
         raise TypeError("The SPARQL store is read only")
@@ -280,6 +282,9 @@ class SPARQLStore(SPARQLConnector, Store):
         )
 
         if vars:
+            if type(result) == tuple:
+                if result[0] == 401:
+                    raise ValueError("It looks like you need to authenticate with this SPARQL Store. HTTP unauthorized")
             for row in result:
                 yield (
                     row.get(s, s),
@@ -381,8 +386,35 @@ class SPARQLStore(SPARQLConnector, Store):
         else:
             return graph.identifier != DATASET_DEFAULT_GRAPH_ID
 
-    def close(self, commit_pending_transaction=None):
-        SPARQLConnector.close(self)
+    def subjects(self, predicate=None, object=None):
+        """A generator of subjects with the given predicate and object"""
+        for t, c in self.triples((None, predicate, object)):
+            yield t[0]
+
+    def predicates(self, subject=None, object=None):
+        """A generator of predicates with the given subject and object"""
+        for t, c in self.triples((subject, None, object)):
+            yield t[1]
+
+    def objects(self, subject=None, predicate=None):
+        """A generator of objects with the given subject and predicate"""
+        for t, c in self.triples((subject, predicate, None)):
+            yield t[2]
+
+    def subject_predicates(self, object=None):
+        """A generator of (subject, predicate) tuples for the given object"""
+        for t, c in self.triples((None, None, object)):
+            yield t[0], t[1]
+
+    def subject_objects(self, predicate=None):
+        """A generator of (subject, object) tuples for the given predicate"""
+        for t, c in self.triples((None, predicate, None)):
+            yield t[0], t[2]
+
+    def predicate_objects(self, subject=None):
+        """A generator of (predicate, object) tuples for the given subject"""
+        for t, c in self.triples((subject, None, None)):
+            yield t[1], t[2]
 
 
 class SPARQLUpdateStore(SPARQLStore):
@@ -460,7 +492,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
     def __init__(
         self,
-        queryEndpoint=None,
+        query_endpoint=None,
         update_endpoint=None,
         sparql11=True,
         context_aware=True,
@@ -481,7 +513,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
         SPARQLStore.__init__(
             self,
-            queryEndpoint,
+            query_endpoint,
             sparql11,
             context_aware,
             update_endpoint=update_endpoint,
@@ -493,6 +525,21 @@ class SPARQLUpdateStore(SPARQLStore):
         self.dirty_reads = dirty_reads
         self._edits = None
         self._updates = 0
+
+    def open(self, configuration: str or tuple, create=False):
+        """This method is included so that calls to this Store via Graph, e.g. Graph("SPARQLStore"),
+        can set the required parameters
+        """
+        if type(configuration) == str:
+            self.query_endpoint = configuration
+        elif type(configuration) == tuple:
+            self.query_endpoint = configuration[0]
+            self.update_endpoint = configuration[1]
+        else:
+            raise Exception(
+                "configuration must be either a string (a single query endpoint URI) "
+                "or a tuple (a query/update endpoint URI pair)"
+            )
 
     def query(self, *args, **kwargs):
         if not self.autocommit and not self.dirty_reads:
@@ -556,7 +603,7 @@ class SPARQLUpdateStore(SPARQLStore):
         """ Add a triple to the store of triples. """
 
         if not self.update_endpoint:
-            raise Exception("UpdateEndpoint is not set - call 'open'")
+            raise Exception("UpdateEndpoint is not set")
 
         assert not quoted
         (subject, predicate, obj) = spo
@@ -664,7 +711,7 @@ class SPARQLUpdateStore(SPARQLStore):
 
         """
         if not self.update_endpoint:
-            raise Exception("UpdateEndpoint is not set - call 'open'")
+            raise Exception("Update endpoint is not set!")
 
         self.debug = DEBUG
         assert isinstance(query, str)
@@ -754,13 +801,6 @@ class SPARQLUpdateStore(SPARQLStore):
         elif graph.identifier != DATASET_DEFAULT_GRAPH_ID:
             self.update("CREATE GRAPH %s" % self.node_to_sparql(graph.identifier))
 
-    def close(self, commit_pending_transaction=False):
-
-        if commit_pending_transaction:
-            self.commit()
-
-        super(SPARQLStore, self).close()
-
     def remove_graph(self, graph):
         if not self.graph_aware:
             Store.remove_graph(self, graph)
@@ -768,3 +808,33 @@ class SPARQLUpdateStore(SPARQLStore):
             self.update("DROP DEFAULT")
         else:
             self.update("DROP GRAPH %s" % self.node_to_sparql(graph.identifier))
+
+    def subjects(self, predicate=None, object=None):
+        """A generator of subjects with the given predicate and object"""
+        for t, c in self.triples((None, predicate, object)):
+            yield t[0]
+
+    def predicates(self, subject=None, object=None):
+        """A generator of predicates with the given subject and object"""
+        for t, c in self.triples((subject, None, object)):
+            yield t[1]
+
+    def objects(self, subject=None, predicate=None):
+        """A generator of objects with the given subject and predicate"""
+        for t, c in self.triples((subject, predicate, None)):
+            yield t[2]
+
+    def subject_predicates(self, object=None):
+        """A generator of (subject, predicate) tuples for the given object"""
+        for t, c in self.triples((None, None, object)):
+            yield t[0], t[1]
+
+    def subject_objects(self, predicate=None):
+        """A generator of (subject, object) tuples for the given predicate"""
+        for t, c in self.triples((None, predicate, None)):
+            yield t[0], t[2]
+
+    def predicate_objects(self, subject=None):
+        """A generator of (predicate, object) tuples for the given subject"""
+        for t, c in self.triples((subject, None, None)):
+            yield t[1], t[2]
