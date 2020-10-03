@@ -76,7 +76,7 @@ _invalid_uri_chars = set('<>" {}|\\^`')
 def _is_valid_uri(uri):
     try:
         uri.encode("ascii")
-    except UnicodeDecodeError:
+    except UnicodeEncodeError:
         return False
     return not bool([c for c in _invalid_uri_chars if c in uri])
 
