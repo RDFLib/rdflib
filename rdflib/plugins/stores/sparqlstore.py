@@ -73,9 +73,9 @@ class SPARQLStore(SPARQLConnector, Store):
     matching plugin registered. Built in is support for ``xml``,
     ``json``, ``csv``, ``tsv`` and ``application/rdf+xml``.
 
-    The underlying SPARQLConnector builds in the requests library.
+    The underlying SPARQLConnector uses the urllib library.
     Any extra kwargs passed to the SPARQLStore connector are passed to
-    requests when doing HTTP calls. I.e. you have full control of
+    urllib when doing HTTP calls. I.e. you have full control of
     cookies/auth/headers.
 
     Form example:
@@ -694,8 +694,8 @@ class SPARQLUpdateStore(SPARQLStore):
 
             - **When:**  If context-awareness is enabled and the graph is not the default graph of the store.
             - **Why:** To ensure consistency with the :class:`~rdflib.plugins.stores.memory.Memory` store.
-              The graph must except "local" SPARQL requests (requests with no GRAPH keyword)
-              like if it was the default graph.
+              The graph must accept "local" SPARQL requests (requests with no GRAPH keyword)
+              as if it was the default graph.
             - **What is done:** These "local" queries are rewritten by this store.
               The content of each block of a SPARQL Update operation is wrapped in a GRAPH block
               except if the block is empty.
