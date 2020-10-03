@@ -74,7 +74,10 @@ _invalid_uri_chars = '<>" {}|\\^`'
 
 
 def _is_valid_uri(uri):
-    return not bool([c for c in uri if c in _invalid_uri_chars and ord(c) <= 256])
+    for c in uri:
+        if c in _invalid_uri_chars:
+            return False
+    return True
 
 
 _lang_tag_regex = compile("^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$")
