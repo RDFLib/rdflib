@@ -1,3 +1,4 @@
 html5lib
 isodate
 pyparsing
+flake8
