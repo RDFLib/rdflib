@@ -24,6 +24,7 @@ before_install:
 
 install:
     - pip install --default-timeout 60 -r requirements.txt
+    - pip install --default-timeout 60 -r requirements.dev.txt
     - pip install --default-timeout 60 coverage coveralls nose-timer && export HAS_COVERALLS=1
     - python setup.py install
 
