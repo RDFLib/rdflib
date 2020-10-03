@@ -70,11 +70,15 @@ rdflib_skolem_genid = "/.well-known/genid/rdflib/"
 skolems = {}
 
 
-_invalid_uri_chars = '<>" {}|\\^`'
+_invalid_uri_chars = set('<>" {}|\\^`')
 
 
 def _is_valid_uri(uri):
-    return all([ord(c) > 256 or not c in _invalid_uri_chars for c in uri])
+    try:
+        uri.encode("ascii")
+    except UnicodeDecodeError:
+        return False
+    return not bool([c for c in _invalid_uri_chars if c in uri])
 
 
 _lang_tag_regex = compile("^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$")
