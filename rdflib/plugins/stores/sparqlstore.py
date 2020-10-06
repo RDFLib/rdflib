@@ -165,11 +165,12 @@ class SPARQLStore(SPARQLConnector, Store):
             ]
         )
 
-    def query(self, query, initNs={}, initBindings={}, queryGraph=None, DEBUG=False):
+    def query(self, query, initNs=None, initBindings=None, queryGraph=None, DEBUG=False):
         self.debug = DEBUG
         assert isinstance(query, str)
 
-        query = self._inject_prefixes(query, initNs)
+        if initNs is not None:
+            query = self._inject_prefixes(query, initNs)
 
         if initBindings:
             if not self.sparql11:

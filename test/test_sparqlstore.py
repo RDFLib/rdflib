@@ -64,6 +64,30 @@ class SPARQLStoreDBPediaTestCase(unittest.TestCase):
         for i in res:
             assert type(i[0]) == Literal, i[0].n3()
 
+    def test_counting_graph_and_store_queries(self):
+        q = """
+            SELECT ?s
+            WHERE {
+                ?s ?p ?o .
+            }
+            LIMIT 5
+            """
+        g = Graph("SPARQLStore")
+        g.open(self.path)
+        c = 0
+        for r in g.query(q):
+            c += 1
+
+        assert c == 5, "Graph(\"SPARQLStore\") didn't return 5 records"
+
+        from rdflib.plugins.stores.sparqlstore import SPARQLStore
+        st = SPARQLStore(query_endpoint=self.path)
+        c = 0
+        for r in st.query(q):
+            c += 1
+
+        assert c == 5, "SPARQLStore() didn't return 5 records"
+
 
 class SPARQLStoreUpdateTestCase(unittest.TestCase):
     def setUp(self):

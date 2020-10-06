@@ -1,15 +1,13 @@
 import logging
-import threading
 from urllib.request import urlopen, Request
 from urllib.parse import urlencode
 from urllib.error import HTTPError, URLError
 import base64
 
-import os
-
 from io import BytesIO
 
 from rdflib.query import Result
+from rdflib import BNode
 
 log = logging.getLogger(__name__)
 
@@ -72,12 +70,12 @@ class SPARQLConnector(object):
         self._method = method
 
     def query(self, query, default_graph: str = None, named_graph: str = None):
-
         if not self.query_endpoint:
             raise SPARQLConnectorException("Query endpoint not set!")
 
         params = {"query": query}
-        if default_graph:
+        # this test ensures we don't have a useless (BNode) default graph URI, which calls to Graph().query() will add
+        if default_graph is not None and type(default_graph) != BNode:
             params["default-graph-uri"] = default_graph
 
         headers = {"Accept": _response_mime_types[self.returnFormat]}
@@ -93,7 +91,10 @@ class SPARQLConnector(object):
         if self.method == "GET":
             args["params"].update(params)
             qsa = "?" + urlencode(args["params"])
-            res = urlopen(Request(self.query_endpoint + qsa, headers=args["headers"]))
+            try:
+                res = urlopen(Request(self.query_endpoint + qsa, headers=args["headers"]))
+            except Exception as e:
+                raise ValueError("You did something wrong formulating either the URI or your SPARQL query")
         elif self.method == "POST":
             args["headers"].update({"Content-Type": "application/sparql-query"})
             try:
@@ -102,7 +103,6 @@ class SPARQLConnector(object):
                 return e.code, str(e), None
         else:
             raise SPARQLConnectorException("Unknown method %s" % self.method)
-
         return Result.parse(
             BytesIO(res.read()), content_type=res.headers["Content-Type"].split(";")[0]
         )
