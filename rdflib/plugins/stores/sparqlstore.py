@@ -154,7 +154,7 @@ class SPARQLStore(SPARQLConnector, Store):
         return super(SPARQLStore, self).query(*args, **kwargs)
 
     def _inject_prefixes(self, query, extra_bindings):
-        bindings = list(self.nsBindings.items()) + list(extra_bindings.items())
+        bindings = set(list(self.nsBindings.items()) + list(extra_bindings.items()))
         if not bindings:
             return query
         return "\n".join(
@@ -164,9 +164,6 @@ class SPARQLStore(SPARQLConnector, Store):
                 query,
             ]
         )
-
-    def _preprocess_query(self, query):
-        return self._inject_prefixes(query)
 
     def query(self, query, initNs={}, initBindings={}, queryGraph=None, DEBUG=False):
         self.debug = DEBUG
