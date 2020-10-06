@@ -50,7 +50,7 @@ class SPARQLStoreDBPediaTestCase(unittest.TestCase):
         SELECT ?label WHERE
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
         """
-        self.assertRaises(HTTPError, self.graph.query, query)
+        self.assertRaises(ValueError, self.graph.query, query)
 
     def test_query_with_added_prolog(self):
         prologue = """\
