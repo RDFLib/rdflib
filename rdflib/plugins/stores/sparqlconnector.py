@@ -65,7 +65,7 @@ class SPARQLConnector(object):
     @method.setter
     def method(self, method):
         if method not in ("GET", "POST", "POST_FORM"):
-            raise SPARQLConnectorException('Method must be "GET", "POST", "POST_FORM"')
+            raise SPARQLConnectorException('Method must be "GET", "POST", or "POST_FORM"')
 
         self._method = method
 
