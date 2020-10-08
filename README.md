@@ -101,7 +101,7 @@ g.bind("xsd", XSD)
 ```
 This will allow the n-triples triple above to be serialised like this:
  ```python
-print(g.serialize(format="turtle").decode("utf-8"))
+print(g.serialize(format="turtle"))
 ```
 
 With these results:

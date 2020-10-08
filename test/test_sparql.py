@@ -103,7 +103,7 @@ def test_sparql_update_with_bnode_serialize_parse():
     """
     graph = Graph()
     graph.update("INSERT DATA { _:blankA <urn:type> <urn:Blank> }")
-    string = graph.serialize(format="ntriples").decode("utf-8")
+    string = graph.serialize(format="ntriples")
     raised = False
     try:
         Graph().parse(data=string, format="ntriples")

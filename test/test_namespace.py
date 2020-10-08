@@ -72,11 +72,11 @@ class NamespacePrefixTest(unittest.TestCase):
                 URIRef("http://example.com/baz"),
             )
         )
-        n3 = g.serialize(format="n3")
+        n3 = g.serialize(format="n3", encoding='latin-1')
         # Gunnar disagrees that this is right:
         # self.assertTrue("<http://example.com/foo> ns1:bar <http://example.com/baz> ." in n3)
         # as this is much prettier, and ns1 is already defined:
-        self.assertTrue("ns1:foo ns1:bar ns1:baz .".encode("latin-1") in n3)
+        self.assertTrue(b"ns1:foo ns1:bar ns1:baz ." in n3)
 
     def test_n32(self):
         # this test not generating prefixes for subjects/objects
@@ -88,12 +88,10 @@ class NamespacePrefixTest(unittest.TestCase):
                 URIRef("http://example3.com/baz"),
             )
         )
-        n3 = g.serialize(format="n3")
+        n3 = g.serialize(format="n3", encoding="latin-1")
 
         self.assertTrue(
-            "<http://example1.com/foo> ns1:bar <http://example3.com/baz> .".encode(
-                "latin-1"
-            )
+            b"<http://example1.com/foo> ns1:bar <http://example3.com/baz> ."
             in n3
         )
 
