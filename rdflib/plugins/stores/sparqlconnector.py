@@ -64,8 +64,8 @@ class SPARQLConnector(object):
 
     @method.setter
     def method(self, method):
-        if method not in ("GET", "POST"):
-            raise SPARQLConnectorException('Method must be "GET" or "POST"')
+        if method not in ("GET", "POST", "POST_FORM"):
+            raise SPARQLConnectorException('Method must be "GET", "POST", "POST_FORM"')
 
         self._method = method
 
@@ -73,7 +73,7 @@ class SPARQLConnector(object):
         if not self.query_endpoint:
             raise SPARQLConnectorException("Query endpoint not set!")
 
-        params = {"query": query}
+        params = {}
         # this test ensures we don't have a useless (BNode) default graph URI, which calls to Graph().query() will add
         if default_graph is not None and type(default_graph) != BNode:
             params["default-graph-uri"] = default_graph
@@ -89,6 +89,7 @@ class SPARQLConnector(object):
         args["headers"].update(headers)
 
         if self.method == "GET":
+            params["query"] = query
             args["params"].update(params)
             qsa = "?" + urlencode(args["params"])
             try:
@@ -97,8 +98,16 @@ class SPARQLConnector(object):
                 raise ValueError("You did something wrong formulating either the URI or your SPARQL query")
         elif self.method == "POST":
             args["headers"].update({"Content-Type": "application/sparql-query"})
+            qsa = "?" + urlencode(params)
             try:
-                res = urlopen(Request(self.query_endpoint, data=query.encode(), headers=args["headers"]))
+                res = urlopen(Request(self.query_endpoint + qsa, data=query.encode(), headers=args["headers"]))
+            except HTTPError as e:
+                return e.code, str(e), None
+        elif self.method == "POST_FORM":
+            params["query"] = query
+            args["params"].update(params)
+            try:
+                res = urlopen(Request(self.query_endpoint, data=urlencode(args["params"]).encode(), headers=args["headers"]))
             except HTTPError as e:
                 return e.code, str(e), None
         else:
