@@ -17,7 +17,9 @@ also return a dict of list of dicts
 import collections
 import itertools
 import re
-import requests
+from urllib.request import urlopen, Request
+from urllib.parse import urlencode
+import json as j
 from pyparsing import ParseException
 
 from rdflib import Variable, Graph, BNode, URIRef, Literal
@@ -313,13 +315,11 @@ def evalServiceQuery(ctx, part):
         }
         # GET is easier to cache so prefer that if the query is not to long
         if len(service_query) < 600:
-            response = requests.get(service_url, params=query_settings, headers=headers)
+            response = urlopen(Request(service_url + "?" + urlencode(query_settings), headers=headers))
         else:
-            response = requests.post(
-                service_url, params=query_settings, headers=headers
-            )
-        if response.status_code == 200:
-            json = response.json()
+            response = urlopen(Request(service_url, data=urlencode(query_settings).encode(), headers=headers))
+        if response.status == 200:
+            json = j.loads(response.read())
             variables = res["vars_"] = json["head"]["vars"]
             # or just return the bindings?
             res = json["results"]["bindings"]
@@ -329,7 +329,7 @@ def evalServiceQuery(ctx, part):
                         yield bound
         else:
             raise Exception(
-                "Service: %s responded with code: %s", service_url, response.status_code
+                "Service: %s responded with code: %s", service_url, response.status
             )
 
 

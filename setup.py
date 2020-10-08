@@ -11,12 +11,10 @@ kwargs["tests_require"] = [
     "networkx",
     "nose",
     "doctest-ignore-unicode",
-    "requests",
 ]
 kwargs["test_suite"] = "nose.collector"
 kwargs["extras_require"] = {
     "html": ["html5lib"],
-    "sparql": ["requests"],
     "tests": kwargs["tests_require"],
     "docs": ["sphinx < 4", "sphinxcontrib-apidoc"],
 }
@@ -47,15 +45,14 @@ setup(
     author="Daniel 'eikeon' Krech",
     author_email="eikeon@eikeon.com",
     maintainer="RDFLib Team",
-    maintainer_email="rdflib-dev@google.com",
+    maintainer_email="rdflib-dev@googlegroups.com",
     url="https://github.com/RDFLib/rdflib",
     license="BSD-3-Clause",
     platforms=["any"],
-    python_requires=">=3.5",
+    python_requires=">=3.6",
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",

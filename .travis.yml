@@ -9,9 +9,9 @@ git:
   depth: 3
 
 python:
-    - 3.5
     - 3.6
     - 3.7
+    - 3.8
 
 jobs:
   include:
@@ -24,6 +24,7 @@ before_install:
 
 install:
     - pip install --default-timeout 60 -r requirements.txt
+    - pip install --default-timeout 60 -r requirements.dev.txt
     - pip install --default-timeout 60 coverage coveralls nose-timer && export HAS_COVERALLS=1
     - python setup.py install
 
