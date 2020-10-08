@@ -52,8 +52,10 @@ class SPARQLConnector(object):
         self.kwargs = kwargs
         self.method = method
         if auth is not None:
-            assert type(auth) == tuple, "auth must be a tuple"
-            assert len(auth) == 2, "auth must be a tuple (user, password)"
+            if type(auth) != tuple:
+                raise SPARQLConnectorException("auth must be a tuple")
+            if len(auth) != 2:
+                raise SPARQLConnectorException("auth must be a tuple (user, password)")
             base64string = base64.b64encode(bytes('%s:%s' % auth, 'ascii'))
             self.kwargs.setdefault("headers", {})
             self.kwargs["headers"].update({"Authorization": "Basic %s" % base64string.decode('utf-8')})
