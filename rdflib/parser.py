@@ -12,6 +12,7 @@ want to do so through the Graph class parse method.
 
 import codecs
 import os
+import pathlib
 import sys
 
 from io import BytesIO, TextIOBase, TextIOWrapper, StringIO, BufferedIOBase
@@ -221,6 +222,8 @@ def create_input_source(
         else:
             if isinstance(source, str):
                 location = source
+            elif isinstance(source, pathlib.Path):
+                location = str(source)
             elif isinstance(source, bytes):
                 data = source
             elif hasattr(source, "read") and not isinstance(source, Namespace):
