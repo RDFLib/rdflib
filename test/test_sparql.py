@@ -1,3 +1,4 @@
+from rdflib.plugins.sparql import sparql
 from rdflib import Graph, URIRef, Literal, BNode
 from rdflib.plugins.sparql import prepareQuery
 from rdflib.compare import isomorphic
@@ -110,6 +111,24 @@ def test_sparql_update_with_bnode_serialize_parse():
     except Exception as e:
         raised = True
     assert not raised
+
+
+def test_bindings():
+    layer_0 = sparql.Bindings(d={"v": 1, "bar": 2})
+    layer_1 = sparql.Bindings(outer=layer_0, d={"v": 3})
+
+
+    assert layer_0["v"] == 1
+    assert layer_1["v"] == 3
+    assert layer_1["bar"] == 2
+
+    assert "foo" not in layer_0
+    assert "v" in layer_0
+    assert "bar" in layer_1
+
+    # XXX This might not be intendet behaviour
+    #     but is kept for compatibility for now.
+    assert len(layer_1) == 3
 
 
 if __name__ == "__main__":
