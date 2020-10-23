@@ -12,16 +12,11 @@ def bb(u):
 
 
 try:
-    from bsddb import db
+    from bsddb3 import db
 
     has_bsddb = True
 except ImportError:
-    try:
-        from bsddb3 import db
-
-        has_bsddb = True
-    except ImportError:
-        has_bsddb = False
+    has_bsddb = False
 
 
 if has_bsddb:
