@@ -223,7 +223,6 @@ class FrozenBindings(FrozenDict):
 
 
 class QueryContext(object):
-
     """
     Query context - passed along when evaluating the query
     """
@@ -245,9 +244,15 @@ class QueryContext(object):
             self.graph = graph
 
         self.prologue = None
-        self.now = datetime.datetime.now(isodate.tzinfo.UTC)
+        self._now = None
 
         self.bnodes = collections.defaultdict(BNode)
+
+    @property
+    def now(self) -> datetime.datetime:
+        if self._now is None:
+            self._now = datetime.datetime.now(isodate.tzinfo.UTC)
+        return self._now
 
     def clone(self, bindings=None):
         r = QueryContext(
