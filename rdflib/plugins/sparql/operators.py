@@ -492,7 +492,7 @@ def Builtin_TIMEZONE(e, ctx):
     if not dt.tzinfo:
         raise SPARQLError("datatime has no timezone: %r" % dt)
 
-    delta = dt.tzinfo.utcoffset(ctx.now)
+    delta = dt.utcoffset()
 
     d = delta.days
     s = delta.seconds
