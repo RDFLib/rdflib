@@ -101,8 +101,6 @@ class SPARQLStore(SPARQLConnector, Store):
         auth=None,
         **sparqlconnector_kwargs
     ):
-        """
-        """
         super(SPARQLStore, self).__init__(
             query_endpoint=query_endpoint, returnFormat=returnFormat, auth=auth, **sparqlconnector_kwargs
         )
@@ -374,7 +372,7 @@ class SPARQLStore(SPARQLConnector, Store):
         raise TypeError("The SPARQL store is read only")
 
     def _is_contextual(self, graph):
-        """ Returns `True` if the "GRAPH" keyword must appear
+        """Returns `True` if the "GRAPH" keyword must appear
         in the final SPARQL query sent to the endpoint.
         """
         if (not self.context_aware) or (graph is None):

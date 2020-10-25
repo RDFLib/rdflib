@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-
-__doc__ = """
+"""
 The :class:`~rdflib.resource.Resource` class wraps a
 :class:`~rdflib.graph.Graph`
 and a resource reference (i.e. a :class:`rdflib.term.URIRef` or
