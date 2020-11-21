@@ -1,26 +1,8 @@
-import time
-import urllib.error
-
 from rdflib import Graph, URIRef, Literal, Variable
 from rdflib.plugins.sparql import prepareQuery
 from rdflib.compare import isomorphic
 
-MAX_RETRY = 3
-def run_query_and_retry_on_network_error(graph, query):
-    backoff = 0
-    for i in range(MAX_RETRY):
-        try:
-            result = graph.query(query)
-            result.bindings # access bindings to ensure no lazy loading
-            return result
-        except urllib.error.URLError as e:
-            if i == MAX_RETRY -1:
-              raise e
-
-            backoff_s = 1.2 ** backoff
-            print(f"Network eroror {e} during query, waiting for {backoff_s}s and retrying")
-            time.sleep(1)
-            backoff += 1
+from . import helper
 
 
 def test_service():
@@ -36,7 +18,7 @@ def test_service():
         <http://www.w3.org/2000/01/rdf-schema#comment> ?dbpComment .
 
     } }  } limit 2"""
-    results = run_query_and_retry_on_network_error(g, q)
+    results = helper.query_with_retry(g, q)
     assert len(results) == 2
 
     for r in results:
@@ -58,7 +40,7 @@ def test_service_with_bind():
         <http://dbpedia.org/ontology/deathPlace> ?dbpDeathPlace .
 
     } }  } limit 2"""
-    results = run_query_and_retry_on_network_error(g, q)
+    results = helper.query_with_retry(g, q)
     assert len(results) == 2
 
     for r in results:
@@ -80,7 +62,7 @@ def test_service_with_values():
         <http://dbpedia.org/ontology/deathPlace> ?dbpDeathPlace .
 
     } }  } limit 2"""
-    results = run_query_and_retry_on_network_error(g, q)
+    results = helper.query_with_retry(g, q)
     assert len(results) == 2
 
     for r in results:
@@ -96,7 +78,7 @@ def test_service_with_implicit_select():
     {
       values (?s ?p ?o) {(<http://example.org/a> <http://example.org/b> 1) (<http://example.org/a> <http://example.org/b> 2)}
     }} limit 2"""
-    results = run_query_and_retry_on_network_error(g, q)
+    results = helper.query_with_retry(g, q)
     assert len(results) == 2
 
     for r in results:
@@ -113,7 +95,7 @@ def test_service_with_implicit_select_and_prefix():
     {
       values (?s ?p ?o) {(ex:a ex:b 1) (<http://example.org/a> <http://example.org/b> 2)}
     }} limit 2"""
-    results = run_query_and_retry_on_network_error(g, q)
+    results = helper.query_with_retry(g, q)
     assert len(results) == 2
 
     for r in results:
@@ -130,7 +112,7 @@ def test_service_with_implicit_select_and_base():
     {
       values (?s ?p ?o) {(<a> <b> 1) (<a> <b> 2)}
     }} limit 2"""
-    results = run_query_and_retry_on_network_error(g, q)
+    results = helper.query_with_retry(g, q)
     assert len(results) == 2
 
     for r in results:
@@ -147,7 +129,7 @@ def test_service_with_implicit_select_and_allcaps():
         ?s <http://purl.org/linguistics/gold/hypernym> <http://dbpedia.org/resource/Leveller> .
       }
     } LIMIT 3"""
-    results = run_query_and_retry_on_network_error(g, q)
+    results = helper.query_with_retry(g, q)
     assert len(results) == 3
 
 
