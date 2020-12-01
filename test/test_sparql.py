@@ -1,4 +1,5 @@
-from rdflib import Graph, URIRef, Literal, BNode
+from rdflib import Graph, URIRef, Literal, BNode, ConjunctiveGraph
+from rdflib.namespace import Namespace, RDF, RDFS
 from rdflib.plugins.sparql import prepareQuery
 from rdflib.compare import isomorphic
 
@@ -110,6 +111,37 @@ def test_sparql_update_with_bnode_serialize_parse():
     except Exception as e:
         raised = True
     assert not raised
+
+
+def test_named_filter_graph_query():
+    g = ConjunctiveGraph()
+    g.namespace_manager.bind('rdf', RDF)
+    g.namespace_manager.bind('rdfs', RDFS)
+    ex = Namespace('https://ex.com/')
+    g.namespace_manager.bind('ex', ex)
+    g.get_context(ex.g1).parse(format="turtle", data=f"""
+    prefix ex: <https://ex.com/>
+    prefix rdfs: <{str(RDFS)}>
+    ex:Boris rdfs:label "Boris" .
+    ex:Susan rdfs:label "Susan" .
+    """)
+    g.get_context(ex.g2).parse(format="turtle", data="""
+    prefix ex: <https://ex.com/>
+    ex:Boris a ex:Person .
+    """)
+
+    assert list(g.query("select ?l where { graph ex:g1 { ?a rdfs:label ?l } ?a a ?type }",
+                        initNs={'ex': ex})) == [(Literal('Boris'),)]
+    assert list(g.query("select ?l where { graph ex:g1 { ?a rdfs:label ?l } filter exists { ?a a ?type }}",
+                        initNs={'ex': ex})) == [(Literal('Boris'),)]
+    assert list(g.query("select ?l where { graph ex:g1 { ?a rdfs:label ?l } filter not exists { ?a a ?type }}",
+                        initNs={'ex': ex})) == [(Literal('Susan'),)]
+    assert list(g.query("select ?l where { graph ?g { ?a rdfs:label ?l } ?a a ?type }",
+                        initNs={'ex': ex})) == [(Literal('Boris'),)]
+    assert list(g.query("select ?l where { graph ?g { ?a rdfs:label ?l } filter exists { ?a a ?type }}",
+                        initNs={'ex': ex})) == [(Literal('Boris'),)]
+    assert list(g.query("select ?l where { graph ?g { ?a rdfs:label ?l } filter not exists { ?a a ?type }}",
+                        initNs={'ex': ex})) == [(Literal('Susan'),)]
 
 
 if __name__ == "__main__":
