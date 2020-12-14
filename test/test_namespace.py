@@ -111,6 +111,9 @@ class NamespacePrefixTest(unittest.TestCase):
 
         # a property name within the core FOAF namespace
         self.assertEqual(
-            add_not_in_namespace("givenName"),
+            FOAF.givenName,
             URIRef("http://xmlns.com/foaf/0.1/givenName"),
         )
+
+        # namescape can be used as str
+        self.assertTrue(FOAF.givenName.startswith(FOAF))

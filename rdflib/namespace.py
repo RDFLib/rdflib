@@ -172,18 +172,21 @@ class URIPattern(str):
         return "URIPattern(%r)" % str(self)
 
 
-class ClosedNamespace(object):
+class ClosedNamespace(str):
     """
     A namespace with a closed list of members
 
-    Trying to create terms not listen is an error
+    Trying to create terms not listed is an error
     """
 
-    def __init__(self, uri, terms):
-        self.uri = uri
-        self.__uris = {}
-        for t in terms:
-            self.__uris[t] = URIRef(self.uri + t)
+    def __new__(cls, uri, terms):
+        try:
+            rt = super().__new__(cls, uri)
+        except UnicodeDecodeError:
+            rt = super().__new__(cls, uri, "utf-8")
+        rt.uri = uri  # back-compat
+        rt.__uris = {t: URIRef(rt + t) for t in terms}
+        return rt
 
     def term(self, name):
         uri = self.__uris.get(name)
@@ -204,9 +207,6 @@ class ClosedNamespace(object):
             except KeyError as e:
                 raise AttributeError(e)
 
-    def __str__(self):
-        return str(self.uri)
-
     def __repr__(self):
         return "rdf.namespace.ClosedNamespace(%r)" % str(self.uri)
 
@@ -222,8 +222,9 @@ class _RDFNamespace(ClosedNamespace):
     Closed namespace for RDF terms
     """
 
-    def __init__(self):
-        super(_RDFNamespace, self).__init__(
+    def __new__(cls):
+        return super().__new__(
+            cls,
             URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
             terms=[
                 # Syntax Names
