@@ -172,7 +172,7 @@ class URIPattern(str):
         return "URIPattern(%r)" % str(self)
 
 
-class ClosedNamespace(str):
+class ClosedNamespace(Namespace):
     """
     A namespace with a closed list of members
 
