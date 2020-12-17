@@ -1,12 +1,8 @@
 import logging
-
 import os
 from unicodedata import category
-
-
+from urllib.parse import urldefrag, urljoin
 from urllib.request import pathname2url
-from urllib.parse import urldefrag
-from urllib.parse import urljoin
 
 from rdflib.term import URIRef, Variable, _XSD_PFX, _is_valid_uri
 
@@ -101,8 +97,7 @@ logger = logging.getLogger(__name__)
 
 
 class Namespace(str):
-
-    __doc__ = """
+    """
     Utility class for quickly generating URIRefs with a common prefix
 
     >>> from rdflib import Namespace
@@ -123,28 +118,27 @@ class Namespace(str):
 
     @property
     def title(self):
+        # Override for DCTERMS.title to return a URIRef instead of str.title method
         return URIRef(self + "title")
 
     def term(self, name):
         # need to handle slices explicitly because of __getitem__ override
         return URIRef(self + (name if isinstance(name, str) else ""))
 
-    def __getitem__(self, key, default=None):
+    def __getitem__(self, key):
         return self.term(key)
 
     def __getattr__(self, name):
         if name.startswith("__"):  # ignore any special Python names!
             raise AttributeError
-        else:
-            return self.term(name)
+        return self.term(name)
 
     def __repr__(self):
-        return "Namespace(%r)" % str(self)
+        return f"Namespace({self!r})"
 
 
 class URIPattern(str):
-
-    __doc__ = """
+    """
     Utility class for creating URIs according to some pattern
     This supports either new style formatting with .format
     or old-style with % operator
@@ -163,13 +157,13 @@ class URIPattern(str):
         return rt
 
     def __mod__(self, *args, **kwargs):
-        return URIRef(str(self).__mod__(*args, **kwargs))
+        return URIRef(super().__mod__(*args, **kwargs))
 
     def format(self, *args, **kwargs):
-        return URIRef(str.format(self, *args, **kwargs))
+        return URIRef(super().format(*args, **kwargs))
 
     def __repr__(self):
-        return "URIPattern(%r)" % str(self)
+        return f"URIPattern({self!r})"
 
 
 class ClosedNamespace(Namespace):
@@ -184,34 +178,33 @@ class ClosedNamespace(Namespace):
             rt = super().__new__(cls, uri)
         except UnicodeDecodeError:
             rt = super().__new__(cls, uri, "utf-8")
-        rt.uri = uri  # back-compat
         rt.__uris = {t: URIRef(rt + t) for t in terms}
         return rt
+
+    @property
+    def uri(self):  # Back-compat
+        return str(self)
 
     def term(self, name):
         uri = self.__uris.get(name)
         if uri is None:
-            raise KeyError("term '{}' not in namespace '{}'".format(name, self.uri))
-        else:
-            return uri
+            raise KeyError(f"term '{name}' not in namespace '{self}'")
+        return uri
 
-    def __getitem__(self, key, default=None):
+    def __getitem__(self, key):
         return self.term(key)
 
     def __getattr__(self, name):
-        if name.startswith("__"):  # ignore any special Python names!
-            raise AttributeError
-        else:
-            try:
-                return self.term(name)
-            except KeyError as e:
-                raise AttributeError(e)
+        try:
+            return self.term(name)
+        except KeyError as e:
+            raise AttributeError(e)
 
     def __repr__(self):
-        return "rdf.namespace.ClosedNamespace(%r)" % str(self.uri)
+        return f"{self.__module__}.{self.__class__.__name__}({self!r})"
 
     def __dir__(self):
-        return list(self._ClosedNamespace__uris)
+        return list(self.__uris)
 
     def _ipython_key_completions_(self):
         return dir(self)
@@ -225,7 +218,7 @@ class _RDFNamespace(ClosedNamespace):
     def __new__(cls):
         return super().__new__(
             cls,
-            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
             terms=[
                 # Syntax Names
                 "RDF",
@@ -277,9 +270,9 @@ class _RDFNamespace(ClosedNamespace):
                 pass
             else:
                 if i > 0:
-                    return URIRef("%s_%s" % (self.uri, i))
+                    return URIRef(f"{self}_{i}")
 
-        return super(_RDFNamespace, self).term(name)
+        return super().term(name)
 
 
 CSVW = Namespace("http://www.w3.org/ns/csvw#")
