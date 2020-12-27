@@ -1130,13 +1130,13 @@ class Graph(Node):
     def query(
         self,
         query_object,
-        processor="sparql",
-        result="sparql",
+        processor: str = "sparql",
+        result: str = "sparql",
         initNs=None,
         initBindings=None,
-        use_store_provided=True,
+        use_store_provided: bool = True,
         **kwargs
-    ):
+    ) -> query.Result:
         """
         Query this graph.
 
@@ -1147,7 +1147,7 @@ class Graph(Node):
         if none are given, the namespaces from the graph's namespace manager
         are used.
 
-        :returntype: rdflib.query.QueryResult
+        :returntype: rdflib.query.Result
 
         """
 
