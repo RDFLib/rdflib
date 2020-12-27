@@ -23,7 +23,7 @@ class TestIssue1043(unittest.TestCase):
         g.bind('rdfs', RDFS)
         n = Namespace("http://example.org/")
         g.add((n.number, RDFS.label, Literal(0.00000004, datatype=XSD.decimal)))
-        print(g.serialize(format="turtle").decode("utf-8"))
+        g.print()
         sys.stdout = sys.__stdout__
         self.assertEqual(capturedOutput.getvalue(), expected)
 

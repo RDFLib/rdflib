@@ -102,7 +102,7 @@ version = re.sub("[0-9]+\\.[0-9]\\..*", "\1", release)
 exclude_trees = ["_build", "draft"]
 
 # The reST default role (used for this markup: `text`) to use for all documents.
-default_role = 'py:obj'
+default_role = "py:obj"
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = True

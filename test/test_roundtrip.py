@@ -51,8 +51,7 @@ def roundtrip(e, verbose=False):
 
     if verbose:
         print("S:")
-        print(s)
-        print(s.decode())
+        print(s, flush=True)
 
     g2 = rdflib.ConjunctiveGraph()
     g2.parse(data=s, format=testfmt)

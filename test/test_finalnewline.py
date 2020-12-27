@@ -19,9 +19,9 @@ def testFinalNewline():
 
     failed = set()
     for p in rdflib.plugin.plugins(None, rdflib.plugin.Serializer):
-        v = graph.serialize(format=p.name)
+        v = graph.serialize(format=p.name, encoding="latin-1")
         lines = v.split("\n".encode("latin-1"))
-        if "\n".encode("latin-1") not in v or (lines[-1] != "".encode("latin-1")):
+        if b"\n" not in v or (lines[-1] != b""):
             failed.add(p.name)
     assert len(failed) == 0, "No final newline for formats: '%s'" % failed
 

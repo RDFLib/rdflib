@@ -1119,6 +1119,8 @@ def calculateFinalDateTime(obj1, dt1, obj2, dt2, operation):
 
 def EBV(rt):
     """
+    Effective Boolean Value (EBV)
+
     * If the argument is a typed literal with a datatype of xsd:boolean,
       the EBV is the value of that argument.
     * If the argument is a plain literal or a typed literal with a

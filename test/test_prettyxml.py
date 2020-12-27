@@ -188,9 +188,7 @@ class TestPrettyXmlSerializer(SerializerTestBase):
         xmlrepr = g.serialize(format="pretty-xml")
         # then:
         assert (
-            """<rdf:value rdf:parseType="Literal"><p xmlns="http://www.w3.org/1999/xhtml">See also <a href="#aring">Å</a></p></rdf:value>""".encode(
-                "utf-8"
-            )
+            """<rdf:value rdf:parseType="Literal"><p xmlns="http://www.w3.org/1999/xhtml">See also <a href="#aring">Å</a></p></rdf:value>"""
             in xmlrepr
         )
 
@@ -202,9 +200,7 @@ class TestPrettyXmlSerializer(SerializerTestBase):
         xmlrepr = g.serialize(format="pretty-xml")
         # then:
         assert (
-            """<rdf:value rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral">&lt;p """.encode(
-                "utf-8"
-            )
+            """<rdf:value rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral">&lt;p """
             in xmlrepr
         )
 

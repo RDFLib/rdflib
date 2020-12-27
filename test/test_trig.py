@@ -30,7 +30,7 @@ class TestTrig(unittest.TestCase):
         self.assertEqual(len(g.get_context("urn:a")), 1)
         self.assertEqual(len(g.get_context("urn:b")), 1)
 
-        s = g.serialize(format="trig")
+        s = g.serialize(format="trig", encoding="latin-1")
         self.assertTrue(b"{}" not in s)  # no empty graphs!
 
     def testSameSubject(self):
@@ -46,7 +46,7 @@ class TestTrig(unittest.TestCase):
         self.assertEqual(len(g.get_context("urn:a")), 1)
         self.assertEqual(len(g.get_context("urn:b")), 1)
 
-        s = g.serialize(format="trig")
+        s = g.serialize(format="trig", encoding="latin-1")
 
         self.assertEqual(len(re.findall(b"p1", s)), 1)
         self.assertEqual(len(re.findall(b"p2", s)), 1)
@@ -58,15 +58,15 @@ class TestTrig(unittest.TestCase):
         g.add(TRIPLE + (rdflib.URIRef("http://example.com/graph1"),))
         # In 4.2.0 the first serialization would fail to include the
         # prefix for the graph but later serialize() calls would work.
-        first_out = g.serialize(format="trig")
-        second_out = g.serialize(format="trig")
+        first_out = g.serialize(format="trig", encoding="latin-1")
+        second_out = g.serialize(format="trig", encoding="latin-1")
         self.assertTrue(b"@prefix ns1: <http://example.com/> ." in second_out)
         self.assertTrue(b"@prefix ns1: <http://example.com/> ." in first_out)
 
     def testGraphQnameSyntax(self):
         g = rdflib.ConjunctiveGraph()
         g.add(TRIPLE + (rdflib.URIRef("http://example.com/graph1"),))
-        out = g.serialize(format="trig")
+        out = g.serialize(format="trig", encoding="latin-1")
         self.assertTrue(b"ns1:graph1 {" in out)
 
     def testGraphUriSyntax(self):
@@ -74,13 +74,13 @@ class TestTrig(unittest.TestCase):
         # getQName will not abbreviate this, so it should serialize as
         # a '<...>' term.
         g.add(TRIPLE + (rdflib.URIRef("http://example.com/foo."),))
-        out = g.serialize(format="trig")
+        out = g.serialize(format="trig", encoding="latin-1")
         self.assertTrue(b"<http://example.com/foo.> {" in out)
 
     def testBlankGraphIdentifier(self):
         g = rdflib.ConjunctiveGraph()
         g.add(TRIPLE + (rdflib.BNode(),))
-        out = g.serialize(format="trig")
+        out = g.serialize(format="trig", encoding='latin-1')
         graph_label_line = out.splitlines()[-4]
 
         self.assertTrue(re.match(br"^_:[a-zA-Z0-9]+ \{", graph_label_line))
@@ -153,7 +153,7 @@ class TestTrig(unittest.TestCase):
 """
         g = rdflib.ConjunctiveGraph()
         g.parse(data=data, format="trig")
-        data = g.serialize(format="trig")
+        data = g.serialize(format="trig", encoding="latin-1")
 
         self.assertTrue(b"None" not in data)
 
@@ -173,7 +173,7 @@ class TestTrig(unittest.TestCase):
 
         cg = rdflib.ConjunctiveGraph()
         cg.parse(data=data, format="trig")
-        data = cg.serialize(format="trig")
+        data = cg.serialize(format="trig", encoding="latin-1")
 
         self.assertTrue(b"ns2: <http://ex.org/docs/" in data)
         self.assertTrue(b"<ns2:document1>" not in data)
