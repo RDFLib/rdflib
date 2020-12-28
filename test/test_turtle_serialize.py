@@ -12,8 +12,8 @@ def testTurtleFinalDot():
     u = URIRef("http://ex.org/bob.")
     g.bind("ns", "http://ex.org/")
     g.add((u, u, u))
-    s = g.serialize(format="turtle")
-    assert "ns:bob.".encode("latin-1") not in s
+    s = g.serialize(format="turtle", encoding="latin-1")
+    assert b"ns:bob." not in s
 
 
 def testTurtleBoolList():
@@ -89,7 +89,7 @@ def test_turtle_namespace():
     )
     output = [
         val
-        for val in graph.serialize(format="turtle").decode().splitlines()
+        for val in graph.serialize(format="turtle").splitlines()
         if not val.startswith("@prefix")
     ]
     output = " ".join(output)

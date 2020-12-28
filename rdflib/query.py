@@ -4,6 +4,7 @@ import shutil
 import tempfile
 import warnings
 import types
+from typing import Optional
 
 from io import BytesIO
 
@@ -205,8 +206,29 @@ class Result(object):
 
         return parser.parse(source, content_type=content_type, **kwargs)
 
-    def serialize(self, destination=None, encoding="utf-8", format="xml", **args):
+    def serialize(
+            self,
+            destination: Optional[str] = None,
+            encoding: str = "utf-8",
+            format: str = "xml",
+            **args,
+    ) -> Optional[bytes]:
+        """
+        Serialize the query result.
 
+        The :code:`format` argument determines the Serializer class to use.
+
+        - csv: :class:`~rdflib.plugins.sparql.results.csvresults.CSVResultSerializer`
+        - json: :class:`~rdflib.plugins.sparql.results.jsonresults.JSONResultSerializer`
+        - txt: :class:`~rdflib.plugins.sparql.results.txtresults.TXTResultSerializer`
+        - xml: :class:`~rdflib.plugins.sparql.results.xmlresults.XMLResultSerializer`
+
+        :param destination: Path of file output.
+        :param encoding: Encoding of output.
+        :param format: One of ['csv', 'json', 'txt', xml']
+        :param args:
+        :return: bytes
+        """
         if self.type in ("CONSTRUCT", "DESCRIBE"):
             return self.graph.serialize(
                 destination, encoding=encoding, format=format, **args

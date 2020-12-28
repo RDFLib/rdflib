@@ -2,6 +2,8 @@ from rdflib import Graph, URIRef, Literal, Variable
 from rdflib.plugins.sparql import prepareQuery
 from rdflib.compare import isomorphic
 
+from . import helper
+
 
 def test_service():
     g = Graph()
@@ -16,7 +18,7 @@ def test_service():
         <http://www.w3.org/2000/01/rdf-schema#comment> ?dbpComment .
 
     } }  } limit 2"""
-    results = g.query(q)
+    results = helper.query_with_retry(g, q)
     assert len(results) == 2
 
     for r in results:
@@ -38,7 +40,7 @@ def test_service_with_bind():
         <http://dbpedia.org/ontology/deathPlace> ?dbpDeathPlace .
 
     } }  } limit 2"""
-    results = g.query(q)
+    results = helper.query_with_retry(g, q)
     assert len(results) == 2
 
     for r in results:
@@ -60,7 +62,7 @@ def test_service_with_values():
         <http://dbpedia.org/ontology/deathPlace> ?dbpDeathPlace .
 
     } }  } limit 2"""
-    results = g.query(q)
+    results = helper.query_with_retry(g, q)
     assert len(results) == 2
 
     for r in results:
@@ -76,7 +78,7 @@ def test_service_with_implicit_select():
     {
       values (?s ?p ?o) {(<http://example.org/a> <http://example.org/b> 1) (<http://example.org/a> <http://example.org/b> 2)}
     }} limit 2"""
-    results = g.query(q)
+    results = helper.query_with_retry(g, q)
     assert len(results) == 2
 
     for r in results:
@@ -93,7 +95,7 @@ def test_service_with_implicit_select_and_prefix():
     {
       values (?s ?p ?o) {(ex:a ex:b 1) (<http://example.org/a> <http://example.org/b> 2)}
     }} limit 2"""
-    results = g.query(q)
+    results = helper.query_with_retry(g, q)
     assert len(results) == 2
 
     for r in results:
@@ -110,7 +112,7 @@ def test_service_with_implicit_select_and_base():
     {
       values (?s ?p ?o) {(<a> <b> 1) (<a> <b> 2)}
     }} limit 2"""
-    results = g.query(q)
+    results = helper.query_with_retry(g, q)
     assert len(results) == 2
 
     for r in results:
@@ -127,7 +129,7 @@ def test_service_with_implicit_select_and_allcaps():
         ?s <http://purl.org/linguistics/gold/hypernym> <http://dbpedia.org/resource/Leveller> .
       }
     } LIMIT 3"""
-    results = g.query(q)
+    results = helper.query_with_retry(g, q)
     assert len(results) == 3
 
 

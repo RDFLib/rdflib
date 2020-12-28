@@ -7,6 +7,9 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import socket
 from threading import Thread
 
+from . import helper
+
+
 try:
     assert len(urlopen("http://dbpedia.org/sparql").read()) > 0
 except:
@@ -30,7 +33,7 @@ class SPARQLStoreDBPediaTestCase(unittest.TestCase):
 
     def test_Query(self):
         query = "select distinct ?Concept where {[] a ?Concept} LIMIT 1"
-        res = self.graph.query(query, initNs={})
+        res = helper.query_with_retry(self.graph, query, initNs={})
         for i in res:
             assert type(i[0]) == URIRef, i[0].n3()
 
@@ -39,7 +42,7 @@ class SPARQLStoreDBPediaTestCase(unittest.TestCase):
         SELECT ?label WHERE
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
         """
-        res = self.graph.query(
+        res = helper.query_with_retry(self.graph,
             query, initNs={"xyzzy": "http://www.w3.org/2004/02/skos/core#"}
         )
         for i in res:
@@ -60,12 +63,12 @@ class SPARQLStoreDBPediaTestCase(unittest.TestCase):
         SELECT ?label WHERE
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
         """
-        res = self.graph.query(prologue + query)
+        res = helper.query_with_retry(self.graph, prologue + query)
         for i in res:
             assert type(i[0]) == Literal, i[0].n3()
 
     def test_counting_graph_and_store_queries(self):
-        q = """
+        query = """
             SELECT ?s
             WHERE {
                 ?s ?p ?o .
@@ -74,19 +77,21 @@ class SPARQLStoreDBPediaTestCase(unittest.TestCase):
             """
         g = Graph("SPARQLStore")
         g.open(self.path)
-        c = 0
-        for r in g.query(q):
-            c += 1
+        count = 0
+        result = helper.query_with_retry(g, query)
+        for _ in result:
+            count += 1
 
-        assert c == 5, "Graph(\"SPARQLStore\") didn't return 5 records"
+        assert count == 5, "Graph(\"SPARQLStore\") didn't return 5 records"
 
         from rdflib.plugins.stores.sparqlstore import SPARQLStore
         st = SPARQLStore(query_endpoint=self.path)
-        c = 0
-        for r in st.query(q):
-            c += 1
+        count = 0
+        result = helper.query_with_retry(st, query)
+        for _ in result:
+            count += 1
 
-        assert c == 5, "SPARQLStore() didn't return 5 records"
+        assert count == 5, "SPARQLStore() didn't return 5 records"
 
 
 class SPARQLStoreUpdateTestCase(unittest.TestCase):

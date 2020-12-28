@@ -24,15 +24,15 @@ class NTTestCase(unittest.TestCase):
     def testIssue78(self):
         g = Graph()
         g.add((URIRef("foo"), URIRef("foo"), Literal("R\u00E4ksm\u00F6rg\u00E5s")))
-        s = g.serialize(format="nt")
+        s = g.serialize(format="nt", encoding="latin-1")
         self.assertEqual(type(s), bytes)
         self.assertTrue(r"R\u00E4ksm\u00F6rg\u00E5s".encode("latin-1") in s)
 
     def testIssue146(self):
         g = Graph()
         g.add((URIRef("foo"), URIRef("foo"), Literal("test\n", lang="en")))
-        s = g.serialize(format="nt").strip()
-        self.assertEqual(s, '<foo> <foo> "test\\n"@en .'.encode("latin-1"))
+        s = g.serialize(format="nt", encoding="latin-1").strip()
+        self.assertEqual(s, b'<foo> <foo> "test\\n"@en .')
 
     def testIssue1144_rdflib(self):
         fname = "test/nt/lists-02.nt"

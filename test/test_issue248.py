@@ -74,7 +74,7 @@ class TestSerialization(unittest.TestCase):
         graph.add((concept, rdflib.RDF.type, SKOS["Concept"]))
         graph.add((concept, SKOS["prefLabel"], rdflib.Literal("Scrapbooks")))
         graph.add((concept, DC["LCC"], rdflib.Literal("AC999.0999 - AC999999.Z9999")))
-        sg = graph.serialize(format="n3", base=LCCO).decode("utf8")
+        sg = graph.serialize(format="n3", base=LCCO)
         # See issue 248
         # Actual test should be the inverse of the below ...
         self.assertTrue("<1> a skos:Concept ;" in sg, sg)

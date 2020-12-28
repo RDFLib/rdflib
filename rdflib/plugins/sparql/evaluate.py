@@ -187,6 +187,7 @@ def evalGraph(ctx, part):
 
     ctx = ctx.clone()
     graph = ctx[part.term]
+    prev_graph = ctx.graph
     if graph is None:
 
         for graph in ctx.dataset.contexts():
@@ -199,11 +200,13 @@ def evalGraph(ctx, part):
             c = c.push()
             graphSolution = [{part.term: graph.identifier}]
             for x in _join(evalPart(c, part.p), graphSolution):
+                x.ctx.graph = prev_graph
                 yield x
 
     else:
         c = ctx.pushGraph(ctx.dataset.get_context(graph))
         for x in evalPart(c, part.p):
+            x.ctx.graph = prev_graph
             yield x
 
 
