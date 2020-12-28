@@ -168,7 +168,7 @@ class RecursiveSerializer(Serializer):
 
     def write(self, text):
         """Write text in given encoding."""
-        self.stream.write(text.encode(self.encoding, "replace"))
+        self.stream.write(text)
 
 
 SUBJECT = 0
@@ -250,7 +250,7 @@ class TurtleSerializer(RecursiveSerializer):
                 self.write("\n")
 
         self.endDocument()
-        stream.write("\n".encode("latin-1"))
+        stream.write("\n")
 
         self.base = None
 

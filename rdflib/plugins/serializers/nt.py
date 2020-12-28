@@ -19,17 +19,20 @@ class NTSerializer(Serializer):
 
     def __init__(self, store):
         Serializer.__init__(self, store)
-        self.encoding = "ascii"  # n-triples are ascii encoded
 
     def serialize(self, stream, base=None, encoding=None, **args):
         if base is not None:
             warnings.warn("NTSerializer does not support base.")
         if encoding is not None and encoding.lower() != self.encoding.lower():
             warnings.warn("NTSerializer does not use custom encoding.")
-        encoding = self.encoding
-        for triple in self.store:
-            stream.write(_nt_row(triple).encode(self.encoding, "_rdflib_nt_escape"))
-        stream.write("\n".encode("latin-1"))
+        if encoding is not None and encoding.lower() == "ascii":
+            warnings.warn("NTSerializer is set to ASCII encoding.")
+            for triple in self.store:
+                stream.write(_nt_row(triple).encode("ascii", "_rdflib_nt_escape").decode("utf-8"))
+        else:
+            for triple in self.store:
+                stream.write(_nt_row(triple))
+        stream.write("\n")
 
 
 class NT11Serializer(NTSerializer):

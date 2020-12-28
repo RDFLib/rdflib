@@ -26,9 +26,9 @@ class NQuadsSerializer(Serializer):
         for context in self.store.contexts():
             for triple in context:
                 stream.write(
-                    _nq_row(triple, context.identifier).encode(encoding, "replace")
+                    _nq_row(triple, context.identifier)
                 )
-        stream.write("\n".encode("latin-1"))
+        stream.write("\n")
 
 
 def _nq_row(triple, context):

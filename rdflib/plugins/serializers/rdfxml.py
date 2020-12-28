@@ -47,7 +47,7 @@ class XMLSerializer(Serializer):
         self.__stream = stream
         self.__serialized = {}
         encoding = self.encoding
-        self.write = write = lambda uni: stream.write(uni.encode(encoding, "replace"))
+        self.write = write = lambda uni: stream.write(uni)
 
         # startDocument
         write('<?xml version="1.0" encoding="%s"?>\n' % self.encoding)
@@ -213,7 +213,7 @@ class PrettyXMLSerializer(Serializer):
                 self.subject(subject, 1)
 
         writer.pop(RDF.RDF)
-        stream.write("\n".encode("latin-1"))
+        stream.write("\n")
 
         # Set to None so that the memory can get garbage collected.
         self.__serialized = None
