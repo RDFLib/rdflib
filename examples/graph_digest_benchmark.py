@@ -5,7 +5,6 @@ This benchmark will produce graph digests for all of the
 downloadable ontologies available in Bioportal.
 """
 
-from __future__ import print_function
 
 from rdflib import Namespace, Graph
 from rdflib.compare import to_isomorphic

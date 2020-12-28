@@ -28,9 +28,6 @@ Statement and component type checkers
 * check_pattern
 
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 from calendar import timegm
 from time import altzone
@@ -47,8 +44,7 @@ from rdflib.exceptions import ContextTypeError
 from rdflib.exceptions import ObjectTypeError
 from rdflib.exceptions import PredicateTypeError
 from rdflib.exceptions import SubjectTypeError
-from rdflib.graph import Graph
-from rdflib.graph import QuotedGraph
+import rdflib.graph  # avoid circular dependency
 from rdflib.namespace import Namespace
 from rdflib.namespace import NamespaceManager
 from rdflib.term import BNode
@@ -161,7 +157,7 @@ def from_n3(s, default=None, backend=None, nsm=None):
         >>> from rdflib import RDFS
         >>> from_n3('rdfs:label') == RDFS['label']
         True
-        >>> nsm = NamespaceManager(Graph())
+        >>> nsm = NamespaceManager(rdflib.graph.Graph())
         >>> nsm.bind('dbpedia', 'http://dbpedia.org/resource/')
         >>> berlin = URIRef('http://dbpedia.org/resource/Berlin')
         >>> from_n3('dbpedia:Berlin', nsm=nsm) == berlin
@@ -180,7 +176,7 @@ def from_n3(s, default=None, backend=None, nsm=None):
         else:
             quotes = '"'
         value, rest = s.rsplit(quotes, 1)
-        value = value[len(quotes):]  # strip leading quotes
+        value = value[len(quotes) :]  # strip leading quotes
         datatype = None
         language = None
 
@@ -191,7 +187,7 @@ def from_n3(s, default=None, backend=None, nsm=None):
             # datatype has to come after lang-tag so ignore everything before
             # see: http://www.w3.org/TR/2011/WD-turtle-20110809/
             # #prod-turtle2-RDFLiteral
-            datatype = from_n3(rest[dtoffset + 2:], default, backend, nsm)
+            datatype = from_n3(rest[dtoffset + 2 :], default, backend, nsm)
         else:
             if rest.startswith("@"):
                 language = rest[1:]  # strip leading at sign
@@ -207,16 +203,16 @@ def from_n3(s, default=None, backend=None, nsm=None):
         return Literal(int(s))
     elif s.startswith("{"):
         identifier = from_n3(s[1:-1])
-        return QuotedGraph(backend, identifier)
+        return rdflib.graph.QuotedGraph(backend, identifier)
     elif s.startswith("["):
         identifier = from_n3(s[1:-1])
-        return Graph(backend, identifier)
+        return rdflib.graph.Graph(backend, identifier)
     elif s.startswith("_:"):
         return BNode(s[2:])
     elif ":" in s:
         if nsm is None:
             # instantiate default NamespaceManager and rely on its defaults
-            nsm = NamespaceManager(Graph())
+            nsm = NamespaceManager(rdflib.graph.Graph())
         prefix, last_part = s.split(":", 1)
         ns = dict(nsm.namespaces())[prefix]
         return Namespace(ns)[last_part]
@@ -353,8 +349,8 @@ def parse_date_time(val):
 
 
 SUFFIX_FORMAT_MAP = {
+    "xml": "xml",
     "rdf": "xml",
-    "rdfs": "xml",
     "owl": "xml",
     "n3": "n3",
     "ttl": "turtle",

@@ -1,12 +1,14 @@
 from rdflib import Graph, URIRef, Literal
 from urllib.request import urlopen
+from urllib.error import HTTPError
 import unittest
 from nose import SkipTest
-from requests import HTTPError
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import socket
 from threading import Thread
-import requests
+
+from . import helper
+
 
 try:
     assert len(urlopen("http://dbpedia.org/sparql").read()) > 0
@@ -31,7 +33,7 @@ class SPARQLStoreDBPediaTestCase(unittest.TestCase):
 
     def test_Query(self):
         query = "select distinct ?Concept where {[] a ?Concept} LIMIT 1"
-        res = self.graph.query(query, initNs={})
+        res = helper.query_with_retry(self.graph, query, initNs={})
         for i in res:
             assert type(i[0]) == URIRef, i[0].n3()
 
@@ -40,7 +42,7 @@ class SPARQLStoreDBPediaTestCase(unittest.TestCase):
         SELECT ?label WHERE
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
         """
-        res = self.graph.query(
+        res = helper.query_with_retry(self.graph,
             query, initNs={"xyzzy": "http://www.w3.org/2004/02/skos/core#"}
         )
         for i in res:
@@ -51,7 +53,7 @@ class SPARQLStoreDBPediaTestCase(unittest.TestCase):
         SELECT ?label WHERE
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
         """
-        self.assertRaises(HTTPError, self.graph.query, query)
+        self.assertRaises(ValueError, self.graph.query, query)
 
     def test_query_with_added_prolog(self):
         prologue = """\
@@ -61,9 +63,35 @@ class SPARQLStoreDBPediaTestCase(unittest.TestCase):
         SELECT ?label WHERE
             { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
         """
-        res = self.graph.query(prologue + query)
+        res = helper.query_with_retry(self.graph, prologue + query)
         for i in res:
             assert type(i[0]) == Literal, i[0].n3()
+
+    def test_counting_graph_and_store_queries(self):
+        query = """
+            SELECT ?s
+            WHERE {
+                ?s ?p ?o .
+            }
+            LIMIT 5
+            """
+        g = Graph("SPARQLStore")
+        g.open(self.path)
+        count = 0
+        result = helper.query_with_retry(g, query)
+        for _ in result:
+            count += 1
+
+        assert count == 5, "Graph(\"SPARQLStore\") didn't return 5 records"
+
+        from rdflib.plugins.stores.sparqlstore import SPARQLStore
+        st = SPARQLStore(query_endpoint=self.path)
+        count = 0
+        result = helper.query_with_retry(st, query)
+        for _ in result:
+            count += 1
+
+        assert count == 5, "SPARQLStore() didn't return 5 records"
 
 
 class SPARQLStoreUpdateTestCase(unittest.TestCase):
@@ -119,7 +147,7 @@ class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
         ```
         """
         contenttype = self.headers.get("Content-Type")
-        if self.path == "/query":
+        if self.path == "/query" or self.path == "/query?":
             if self.headers.get("Content-Type") == "application/sparql-query":
                 pass
             elif (
@@ -127,9 +155,9 @@ class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
             ):
                 pass
             else:
-                self.send_response(requests.codes.not_acceptable)
+                self.send_response(406, "Not Acceptable")
                 self.end_headers()
-        elif self.path == "/update":
+        elif self.path == "/update" or self.path == "/update?":
             if self.headers.get("Content-Type") == "application/sparql-update":
                 pass
             elif (
@@ -137,18 +165,20 @@ class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
             ):
                 pass
             else:
-                self.send_response(requests.codes.not_acceptable)
+                self.send_response(406, "Not Acceptable")
                 self.end_headers()
         else:
-            self.send_response(requests.codes.not_found)
+            print("self.path")
+            print(self.path)
+            self.send_response(404, "Not Found")
             self.end_headers()
-        self.send_response(requests.codes.ok)
+        self.send_response(200, "OK")
         self.end_headers()
         return
 
     def do_GET(self):
         # Process an HTTP GET request and return a response with an HTTP 200 status.
-        self.send_response(requests.codes.ok)
+        self.send_response(200, "OK")
         self.end_headers()
         return
 

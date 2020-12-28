@@ -42,7 +42,7 @@ def testRDFXMLParse():
 </rdf:RDF>"""
 
     g = rdflib.Graph()
-    g.parse(data=rdfxml)
+    g.parse(data=rdfxml, format="xml")
     l1 = list(g)[0][2]
     assert l1.datatype == RDF.XMLLiteral
 

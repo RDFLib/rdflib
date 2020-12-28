@@ -1,4 +1,4 @@
-__doc__ = """
+__doc__ = r"""
 
 This module implements the SPARQL 1.1 Property path operators, as
 defined in:

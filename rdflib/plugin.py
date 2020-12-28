@@ -11,7 +11,7 @@ following to your setup::
 
     entry_points = {
         'rdf.plugins.parser': [
-            'nt =     rdf.plugins.parsers.nt:NTParser',
+            'nt =     rdf.plugins.parsers.ntriples:NTParser',
             ],
         'rdf.plugins.serializer': [
             'nt =     rdf.plugins.serializers.NTSerializer:NTSerializer',
@@ -24,9 +24,6 @@ information.
 .. __: http://peak.telecommunity.com/DevCenter/setuptools#dynamic-discovery-of-services-and-plugins
 
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 from rdflib.store import Store
 from rdflib.parser import Parser
@@ -131,11 +128,12 @@ def plugins(name=None, kind=None):
             yield p
 
 
-register("default", Store, "rdflib.plugins.memory", "IOMemory")
-register("IOMemory", Store, "rdflib.plugins.memory", "IOMemory")
+register("default", Store, "rdflib.plugins.stores.memory", "Memory")
+register("Memory", Store, "rdflib.plugins.stores.memory", "Memory")
+register("SimpleMemory", Store, "rdflib.plugins.stores.memory", "SimpleMemory")
 register("Auditable", Store, "rdflib.plugins.stores.auditable", "AuditableStore")
 register("Concurrent", Store, "rdflib.plugins.stores.concurrent", "ConcurrentStore")
-register("Sleepycat", Store, "rdflib.plugins.sleepycat", "Sleepycat")
+register("Sleepycat", Store, "rdflib.plugins.stores.sleepycat", "Sleepycat")
 register("SPARQLStore", Store, "rdflib.plugins.stores.sparqlstore", "SPARQLStore")
 register(
     "SPARQLUpdateStore", Store, "rdflib.plugins.stores.sparqlstore", "SPARQLUpdateStore"
@@ -185,10 +183,10 @@ register("n3", Parser, "rdflib.plugins.parsers.notation3", "N3Parser")
 register("text/turtle", Parser, "rdflib.plugins.parsers.notation3", "TurtleParser")
 register("turtle", Parser, "rdflib.plugins.parsers.notation3", "TurtleParser")
 register("ttl", Parser, "rdflib.plugins.parsers.notation3", "TurtleParser")
-register("application/n-triples", Parser, "rdflib.plugins.parsers.nt", "NTParser")
-register("ntriples", Parser, "rdflib.plugins.parsers.nt", "NTParser")
-register("nt", Parser, "rdflib.plugins.parsers.nt", "NTParser")
-register("nt11", Parser, "rdflib.plugins.parsers.nt", "NTParser")
+register("application/n-triples", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
+register("ntriples", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
+register("nt", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
+register("nt11", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
 register("application/n-quads", Parser, "rdflib.plugins.parsers.nquads", "NQuadsParser")
 register("nquads", Parser, "rdflib.plugins.parsers.nquads", "NQuadsParser")
 register("application/trix", Parser, "rdflib.plugins.parsers.trix", "TriXParser")

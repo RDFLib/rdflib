@@ -33,7 +33,7 @@ class TestLiteral(unittest.TestCase):
 </rdf:RDF>
 """
         g = rdflib.Graph()
-        g.parse(data=d)
+        g.parse(data=d, format="xml")
         a = rdflib.Literal("a\\b")
         b = list(g.objects())[0]
         self.assertEqual(a, b)
@@ -92,8 +92,8 @@ class TestRepr(unittest.TestCase):
         class MyLiteral(Literal):
             pass
 
-        x = MyLiteral(u"foo")
-        self.assertEqual(repr(x), uformat("MyLiteral(u'foo')"))
+        x = MyLiteral("foo")
+        self.assertEqual(repr(x), uformat("MyLiteral('foo')"))
 
 
 class TestDoubleOutput(unittest.TestCase):

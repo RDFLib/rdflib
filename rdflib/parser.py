@@ -9,15 +9,13 @@ can plugin to rdflib. If you are wanting to invoke a parser you likely
 want to do so through the Graph class parse method.
 
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
+import codecs
 import os
+import pathlib
 import sys
 
-from io import BytesIO
-
+from io import BytesIO, TextIOBase, TextIOWrapper, StringIO, BufferedIOBase
 
 from urllib.request import pathname2url
 from urllib.request import Request
@@ -41,11 +39,44 @@ __all__ = [
 
 
 class Parser(object):
+    __slots__ = set()
+
     def __init__(self):
         pass
 
     def parse(self, source, sink):
         pass
+
+
+class BytesIOWrapper(BufferedIOBase):
+    __slots__ = ("wrapped", "encoded", "encoding")
+
+    def __init__(self, wrapped: str, encoding="utf-8"):
+        super(BytesIOWrapper, self).__init__()
+        self.wrapped = wrapped
+        self.encoding = encoding
+        self.encoded = None
+
+    def read(self, *args, **kwargs):
+        if self.encoded is None:
+            b, blen = codecs.getencoder(self.encoding)(self.wrapped)
+            self.encoded = BytesIO(b)
+        return self.encoded.read(*args, **kwargs)
+
+    def read1(self, *args, **kwargs):
+        if self.encoded is None:
+            b = codecs.getencoder(self.encoding)(self.wrapped)
+            self.encoded = BytesIO(b)
+        return self.encoded.read1(*args, **kwargs)
+
+    def readinto(self, *args, **kwargs):
+        raise NotImplementedError()
+
+    def readinto1(self, *args, **kwargs):
+        raise NotImplementedError()
+
+    def write(self, *args, **kwargs):
+        raise NotImplementedError()
 
 
 class InputSource(xmlreader.InputSource, object):
@@ -59,23 +90,39 @@ class InputSource(xmlreader.InputSource, object):
         self.auto_close = False  # see Graph.parse(), true if opened by us
 
     def close(self):
+        c = self.getCharacterStream()
+        if c and hasattr(c, "close"):
+            try:
+                c.close()
+            except Exception:
+                pass
         f = self.getByteStream()
         if f and hasattr(f, "close"):
-            f.close()
+            try:
+                f.close()
+            except Exception:
+                pass
 
 
 class StringInputSource(InputSource):
     """
-    TODO:
+    Constructs an RDFLib Parser InputSource from a Python String or Bytes
     """
 
-    def __init__(self, value, system_id=None):
+    def __init__(self, value, encoding="utf-8", system_id=None):
         super(StringInputSource, self).__init__(system_id)
-        stream = BytesIO(value)
-        self.setByteStream(stream)
-        # TODO:
-        #   encoding = value.encoding
-        #   self.setEncoding(encoding)
+        if isinstance(value, str):
+            stream = StringIO(value)
+            self.setCharacterStream(stream)
+            self.setEncoding(encoding)
+            b_stream = BytesIOWrapper(value, encoding)
+            self.setByteStream(b_stream)
+        else:
+            stream = BytesIO(value)
+            self.setByteStream(stream)
+            c_stream = TextIOWrapper(stream, encoding)
+            self.setCharacterStream(c_stream)
+            self.setEncoding(c_stream.encoding)
 
 
 headers = {
@@ -134,8 +181,18 @@ class FileInputSource(InputSource):
         system_id = URIRef(urljoin("file:", pathname2url(file.name)), base=base)
         super(FileInputSource, self).__init__(system_id)
         self.file = file
-        self.setByteStream(file)
-        # TODO: self.setEncoding(encoding)
+        if isinstance(file, TextIOBase):  # Python3 unicode fp
+            self.setCharacterStream(file)
+            self.setEncoding(file.encoding)
+            try:
+                b = file.buffer
+                self.setByteStream(b)
+            except (AttributeError, LookupError):
+                self.setByteStream(file)
+        else:
+            self.setByteStream(file)
+            # We cannot set characterStream here because
+            # we do not know the Raw Bytes File encoding.
 
     def __repr__(self):
         return repr(self.file)
@@ -150,18 +207,12 @@ def create_input_source(
     """
 
     # test that exactly one of source, location, file, and data is not None.
-    if (
-        sum(
-            (
-                source is not None,
-                location is not None,
-                file is not None,
-                data is not None,
-            )
-        )
-        != 1
-    ):
-        raise ValueError("exactly one of source, location, file or data must be given")
+    non_empty_arguments = list(
+        filter(lambda v: v is not None, [source, location, file, data],)
+    )
+
+    if len(non_empty_arguments) != 1:
+        raise ValueError("exactly one of source, location, file or data must be given",)
 
     input_source = None
 
@@ -171,10 +222,23 @@ def create_input_source(
         else:
             if isinstance(source, str):
                 location = source
+            elif isinstance(source, pathlib.Path):
+                location = str(source)
+            elif isinstance(source, bytes):
+                data = source
             elif hasattr(source, "read") and not isinstance(source, Namespace):
                 f = source
                 input_source = InputSource()
-                input_source.setByteStream(f)
+                if hasattr(source, "encoding"):
+                    input_source.setCharacterStream(source)
+                    input_source.setEncoding(source.encoding)
+                    try:
+                        b = file.buffer
+                        input_source.setByteStream(b)
+                    except (AttributeError, LookupError):
+                        input_source.setByteStream(source)
+                else:
+                    input_source.setByteStream(f)
                 if f is sys.stdin:
                     input_source.setSystemId("file:///dev/stdin")
                 elif hasattr(f, "name"):
@@ -187,27 +251,23 @@ def create_input_source(
     absolute_location = None  # Further to fix for issue 130
 
     auto_close = False  # make sure we close all file handles we open
+
     if location is not None:
-        # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145
-        if os.path.exists(location):
-            location = pathname2url(location)
-        base = urljoin("file:", "%s/" % pathname2url(os.getcwd()))
-        absolute_location = URIRef(location, base=base).defrag()
-        if absolute_location.startswith("file:///"):
-            filename = url2pathname(absolute_location.replace("file:///", "/"))
-            file = open(filename, "rb")
-        else:
-            input_source = URLInputSource(absolute_location, format)
-        auto_close = True
-        # publicID = publicID or absolute_location  # Further to fix
-        # for issue 130
+        (
+            absolute_location,
+            auto_close,
+            file,
+            input_source,
+        ) = _create_input_source_from_location(
+            file=file, format=format, input_source=input_source, location=location,
+        )
 
     if file is not None:
         input_source = FileInputSource(file)
 
     if data is not None:
-        if isinstance(data, str):
-            data = data.encode("utf-8")
+        if not isinstance(data, (str, bytes, bytearray)):
+            raise RuntimeError("parse data can only str, or bytes.")
         input_source = StringInputSource(data)
         auto_close = True
 
@@ -221,3 +281,25 @@ def create_input_source(
         elif input_source.getPublicId() is None:
             input_source.setPublicId(absolute_location or "")
         return input_source
+
+
+def _create_input_source_from_location(file, format, input_source, location):
+    # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145
+    if os.path.exists(location):
+        location = pathname2url(location)
+
+    base = urljoin("file:", "%s/" % pathname2url(os.getcwd()))
+
+    absolute_location = URIRef(location, base=base)
+
+    if absolute_location.startswith("file:///"):
+        filename = url2pathname(absolute_location.replace("file:///", "/"))
+        file = open(filename, "rb")
+    else:
+        input_source = URLInputSource(absolute_location, format)
+
+    auto_close = True
+    # publicID = publicID or absolute_location  # Further to fix
+    # for issue 130
+
+    return absolute_location, auto_close, file, input_source

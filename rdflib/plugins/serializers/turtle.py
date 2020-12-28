@@ -41,7 +41,7 @@ class RecursiveSerializer(Serializer):
     topClasses = [RDFS.Class]
     predicateOrder = [RDF.type, RDFS.label]
     maxDepth = 10
-    indentString = u"  "
+    indentString = "  "
     roundtrip_prefixes = tuple()
 
     def __init__(self, store):
@@ -294,7 +294,7 @@ class TurtleSerializer(RecursiveSerializer):
 
         prefix = self.addNamespace(prefix, namespace)
 
-        return u"%s:%s" % (prefix, local)
+        return "%s:%s" % (prefix, local)
 
     def startDocument(self):
         self._started = True

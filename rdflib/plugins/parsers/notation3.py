@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-u"""
+"""
 notation3.py - Standalone Notation3 Parser
 Derived from CWM, the Closed World Machine
 
@@ -27,9 +27,6 @@ Modified to work with rdflib by Gunnar Aastrand Grimnes
 Copyright 2010, Gunnar A. Grimnes
 
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 # Python standard libraries
 import sys
@@ -42,6 +39,7 @@ from decimal import Decimal
 
 from uuid import uuid4
 
+from rdflib.exceptions import ParserError
 from rdflib.term import URIRef, BNode, Literal, Variable, _XSD_PFX, _unique_id
 from rdflib.graph import QuotedGraph, ConjunctiveGraph, Graph
 from rdflib.compat import long_type
@@ -139,10 +137,13 @@ def join(here, there):
         return here + frag
 
     # join('mid:foo@example', '../foo') bzzt
-    if here[bcolonl + 1: bcolonl + 2] != "/":
-        raise ValueError("Base <%s> has no slash after " "colon - with relative '%s'." % (here, there))
+    if here[bcolonl + 1 : bcolonl + 2] != "/":
+        raise ValueError(
+            "Base <%s> has no slash after "
+            "colon - with relative '%s'." % (here, there)
+        )
 
-    if here[bcolonl + 1: bcolonl + 3] == "//":
+    if here[bcolonl + 1 : bcolonl + 3] == "//":
         bpath = here.find("/", bcolonl + 3)
     else:
         bpath = bcolonl + 1
@@ -404,7 +405,7 @@ class SinkParser:
             else:
                 self._genPrefix = uniqueURI()
 
-        if openFormula is None:
+        if openFormula is None and not turtle:
             if self._thisDoc:
                 self._formula = store.newFormula(thisDoc + "#_formula")
             else:
@@ -502,14 +503,14 @@ class SinkParser:
         """
 
         assert tok[0] not in _notNameChars  # not for punctuation
-        if argstr[i: i + 1] == "@":
+        if argstr[i : i + 1] == "@":
             i = i + 1
         else:
             if tok not in self.keywords:
                 return -1  # No, this has neither keywords declaration nor "@"
 
         if (
-            argstr[i: i + len(tok)] == tok
+            argstr[i : i + len(tok)] == tok
             and (argstr[i + len(tok)] in _notKeywordsChars)
             or (colon and argstr[i + len(tok)] == ":")
         ):
@@ -526,7 +527,7 @@ class SinkParser:
 
         assert tok[0] not in _notNameChars  # not for punctuation
 
-        if argstr[i: i + len(tok)].lower() == tok.lower() and (
+        if argstr[i : i + len(tok)].lower() == tok.lower() and (
             argstr[i + len(tok)] in _notQNameChars
         ):
             i = i + len(tok)
@@ -794,23 +795,23 @@ class SinkParser:
             res.append(("->", RDF_type))
             return j
 
-        if argstr[i: i + 2] == "<=":
+        if argstr[i : i + 2] == "<=":
             if self.turtle:
                 self.BadSyntax(argstr, i, "Found '<=' in Turtle mode. ")
 
             res.append(("<-", self._store.newSymbol(Logic_NS + "implies")))
             return i + 2
 
-        if argstr[i: i + 1] == "=":
+        if argstr[i : i + 1] == "=":
             if self.turtle:
                 self.BadSyntax(argstr, i, "Found '=' in Turtle mode")
-            if argstr[i + 1: i + 2] == ">":
+            if argstr[i + 1 : i + 2] == ">":
                 res.append(("->", self._store.newSymbol(Logic_NS + "implies")))
                 return i + 2
             res.append(("->", DAML_sameAs))
             return i + 1
 
-        if argstr[i: i + 2] == ":=":
+        if argstr[i : i + 2] == ":=":
             if self.turtle:
                 self.BadSyntax(argstr, i, "Found ':=' in Turtle mode")
 
@@ -823,7 +824,7 @@ class SinkParser:
             res.append(("->", r[0]))
             return j
 
-        if argstr[i: i + 2] == ">-" or argstr[i: i + 2] == "<-":
+        if argstr[i : i + 2] == ">-" or argstr[i : i + 2] == "<-":
             self.BadSyntax(argstr, j, ">- ... -> syntax is obsolete.")
 
         return -1
@@ -844,8 +845,8 @@ class SinkParser:
         if j < 0:
             return j  # nope
 
-        while argstr[j: j + 1] in "!^":  # no spaces, must follow exactly (?)
-            ch = argstr[j: j + 1]
+        while argstr[j : j + 1] in "!^":  # no spaces, must follow exactly (?)
+            ch = argstr[j : j + 1]
             subj = res.pop()
             obj = self.blankNode(uri=self.here(j))
             j = self.node(argstr, j + 1, res)
@@ -879,7 +880,7 @@ class SinkParser:
         if j < 0:
             return j  # eof
         i = j
-        ch = argstr[i: i + 1]  # Quick 1-character checks first:
+        ch = argstr[i : i + 1]  # Quick 1-character checks first:
 
         if ch == "[":
             bnodeID = self.here(i)
@@ -887,7 +888,7 @@ class SinkParser:
             if j < 0:
                 self.BadSyntax(argstr, i, "EOF after '['")
             # Hack for "is" binding name to anon node
-            if argstr[j: j + 1] == "=":
+            if argstr[j : j + 1] == "=":
                 if self.turtle:
                     self.BadSyntax(
                         argstr, j, "Found '[=' or '[ =' when in turtle mode."
@@ -905,7 +906,7 @@ class SinkParser:
                         self.BadSyntax(
                             argstr, i, "EOF when objectList expected after [ = "
                         )
-                    if argstr[j: j + 1] == ";":
+                    if argstr[j : j + 1] == ";":
                         j = j + 1
                 else:
                     self.BadSyntax(argstr, i, "objectList expected after [= ")
@@ -922,7 +923,7 @@ class SinkParser:
                 self.BadSyntax(
                     argstr, i, "EOF when ']' expected after [ <propertyList>"
                 )
-            if argstr[j: j + 1] != "]":
+            if argstr[j : j + 1] != "]":
                 self.BadSyntax(argstr, j, "']' expected")
             res.append(subj)
             return j + 1
@@ -931,7 +932,7 @@ class SinkParser:
             # if self.turtle:
             #     self.BadSyntax(argstr, i,
             #                     "found '{' while in Turtle mode, Formulas not supported!")
-            ch2 = argstr[i + 1: i + 2]
+            ch2 = argstr[i + 1 : i + 2]
             if ch2 == "$":
                 # a set
                 i += 1
@@ -942,12 +943,12 @@ class SinkParser:
                     i = self.skipSpace(argstr, j)
                     if i < 0:
                         self.BadSyntax(argstr, i, "needed '$}', found end.")
-                    if argstr[i: i + 2] == "$}":
+                    if argstr[i : i + 2] == "$}":
                         j = i + 2
                         break
 
                     if not first_run:
-                        if argstr[i: i + 1] == ",":
+                        if argstr[i : i + 1] == ",":
                             i += 1
                         else:
                             self.BadSyntax(argstr, i, "expected: ','")
@@ -982,7 +983,7 @@ class SinkParser:
                     if i < 0:
                         self.BadSyntax(argstr, i, "needed '}', found end.")
 
-                    if argstr[i: i + 1] == "}":
+                    if argstr[i : i + 1] == "}":
                         j = i + 1
                         break
 
@@ -1001,7 +1002,7 @@ class SinkParser:
 
         if ch == "(":
             thing_type = self._store.newList
-            ch2 = argstr[i + 1: i + 2]
+            ch2 = argstr[i + 1 : i + 2]
             if ch2 == "$":
                 thing_type = self._store.newSet
                 i += 1
@@ -1012,7 +1013,7 @@ class SinkParser:
                 i = self.skipSpace(argstr, j)
                 if i < 0:
                     self.BadSyntax(argstr, i, "needed ')', found end.")
-                if argstr[i: i + 1] == ")":
+                if argstr[i : i + 1] == ")":
                     j = i + 1
                     break
 
@@ -1065,7 +1066,7 @@ class SinkParser:
                     break
                 i = j + 1
 
-            if argstr[j: j + 2] == ":-":
+            if argstr[j : j + 2] == ":-":
                 if self.turtle:
                     self.BadSyntax(argstr, j, "Found in ':-' in Turtle mode")
                 i = j + 2
@@ -1095,7 +1096,7 @@ class SinkParser:
             j = self.skipSpace(argstr, i)
             if j < 0:
                 self.BadSyntax(argstr, j, "EOF found in list of objects")
-            if argstr[i: i + 1] != ";":
+            if argstr[i : i + 1] != ";":
                 return i
             i = i + 1  # skip semicolon and continue
 
@@ -1116,7 +1117,7 @@ class SinkParser:
             j = self.skipSpace(argstr, i)
             if j < 0:
                 return j  # eof
-            ch = argstr[j: j + 1]
+            ch = argstr[j : j + 1]
             if ch != ",":
                 if ch != ".":
                     return -1
@@ -1133,7 +1134,7 @@ class SinkParser:
             j = self.skipSpace(argstr, i)
             if j < 0:
                 self.BadSyntax(argstr, j, "EOF found after object")
-            if argstr[j: j + 1] != ",":
+            if argstr[j : j + 1] != ",":
                 return j  # Found something else!
             i = self.object(argstr, j + 1, res)
             if i < 0:
@@ -1143,11 +1144,11 @@ class SinkParser:
         j = self.skipSpace(argstr, i)
         if j < 0:
             return j  # eof
-        if argstr[j: j + 1] == ".":
+        if argstr[j : j + 1] == ".":
             return j + 1  # skip
-        if argstr[j: j + 1] == "}":
+        if argstr[j : j + 1] == "}":
             return j  # don't skip it
-        if argstr[j: j + 1] == "]":
+        if argstr[j : j + 1] == "]":
             return j
         self.BadSyntax(argstr, j, "expected '.' or '}' or ']' at end of statement")
 
@@ -1212,7 +1213,7 @@ class SinkParser:
                         assert (
                             ":" in uref
                         ), "With no base URI, cannot deal with relative URIs"
-                    if argstr[i - 1: i] == "#" and not uref[-1:] == "#":
+                    if argstr[i - 1 : i] == "#" and not uref[-1:] == "#":
                         uref = uref + "#"  # She meant it! Weirdness in urlparse?
                     symb = self._store.newSymbol(uref)
                     if symb in self._variables:
@@ -1261,7 +1262,7 @@ class SinkParser:
         if j < 0:
             return -1
 
-        if argstr[j: j + 1] != "?":
+        if argstr[j : j + 1] != "?":
             return -1
         j = j + 1
         i = j
@@ -1419,7 +1420,7 @@ class SinkParser:
                 i = j
 
             if argstr[i] in self.string_delimiters:
-                if argstr[i: i + 3] == argstr[i] * 3:
+                if argstr[i : i + 3] == argstr[i] * 3:
                     delim = argstr[i] * 3
                 else:
                     delim = argstr[i]
@@ -1467,7 +1468,7 @@ class SinkParser:
                 # return -1  ## or fall through?
 
             if argstr[i] in self.string_delimiters:
-                if argstr[i: i + 3] == argstr[i] * 3:
+                if argstr[i : i + 3] == argstr[i] * 3:
                     delim = argstr[i] * 3
                 else:
                     delim = argstr[i]
@@ -1476,7 +1477,7 @@ class SinkParser:
                 dt = None
                 j, s = self.strconst(argstr, i, delim)
                 lang = None
-                if argstr[j: j + 1] == "@":  # Language?
+                if argstr[j : j + 1] == "@":  # Language?
                     m = langcode.match(argstr, j + 1)
                     if m is None:
                         raise BadSyntax(
@@ -1487,9 +1488,9 @@ class SinkParser:
                             "Bad language code syntax on string " + "literal, after @",
                         )
                     i = m.end()
-                    lang = argstr[j + 1: i]
+                    lang = argstr[j + 1 : i]
                     j = i
-                if argstr[j: j + 2] == "^^":
+                if argstr[j : j + 2] == "^^":
                     res2 = []
                     j = self.uri_ref2(argstr, j + 2, res2)  # Read datatype URI
                     dt = res2[0]
@@ -1512,7 +1513,7 @@ class SinkParser:
         delim2, delim3, delim4, delim5 = delim1 * 2, delim1 * 3, delim1 * 4, delim1 * 5
 
         j = i
-        ustr = u""  # Empty unicode string
+        ustr = ""  # Empty unicode string
         startline = self.lines  # Remember where for error messages
         while j < len(argstr):
             if argstr[j] == delim1:
@@ -1522,15 +1523,15 @@ class SinkParser:
                 if (
                     delim == delim3
                 ):  # done when delim is """ or ''' and, respectively ...
-                    if argstr[j: j + 5] == delim5:  # ... we have "" or '' before
+                    if argstr[j : j + 5] == delim5:  # ... we have "" or '' before
                         i = j + 5
                         ustr = ustr + delim2
                         return i, ustr
-                    if argstr[j: j + 4] == delim4:  # ... we have " or ' before
+                    if argstr[j : j + 4] == delim4:  # ... we have " or ' before
                         i = j + 4
                         ustr = ustr + delim1
                         return i, ustr
-                    if argstr[j: j + 3] == delim3:  # current " or ' is part of delim
+                    if argstr[j : j + 3] == delim3:  # current " or ' is part of delim
                         i = j + 3
                         return i, ustr
 
@@ -1542,8 +1543,8 @@ class SinkParser:
             m = interesting.search(argstr, j)  # was argstr[j:].
             # Note for pos param to work, MUST be compiled  ... re bug?
             assert m, "Quote expected in string at ^ in %s^%s" % (
-                argstr[j - 20: j],
-                argstr[j: j + 20],
+                argstr[j - 20 : j],
+                argstr[j : j + 20],
             )  # at least need a quote
 
             i = m.start()
@@ -1589,7 +1590,7 @@ class SinkParser:
 
             elif ch == "\\":
                 j = i + 1
-                ch = argstr[j: j + 1]  # Will be empty if string ends
+                ch = argstr[j : j + 1]  # Will be empty if string ends
                 if not ch:
                     raise BadSyntax(
                         self._thisDoc,
@@ -1620,14 +1621,14 @@ class SinkParser:
                 self._thisDoc, startline, argstr, i, "unterminated string literal(3)"
             )
         try:
-            return i + n, reg.sub(unicodeExpand, "\\" + prefix + argstr[i: i + n])
+            return i + n, reg.sub(unicodeExpand, "\\" + prefix + argstr[i : i + n])
         except:
             raise BadSyntax(
                 self._thisDoc,
                 startline,
                 argstr,
                 i,
-                "bad string literal hex escape: " + argstr[i: i + n],
+                "bad string literal hex escape: " + argstr[i : i + n],
             )
 
     def uEscape(self, argstr, i, startline):
@@ -1672,7 +1673,7 @@ class BadSyntax(SyntaxError):
             self._why,
             pre,
             argstr[st:i],
-            argstr[i: i + 60],
+            argstr[i : i + 60],
             post,
         )
 
@@ -1726,11 +1727,16 @@ r_hibyte = re.compile(r"([\x80-\xff])")
 class RDFSink(object):
     def __init__(self, graph):
         self.rootFormula = None
+        self.uuid = uuid4().hex
         self.counter = 0
         self.graph = graph
 
     def newFormula(self):
-        assert self.graph.store.formula_aware
+        fa = getattr(self.graph.store, "formula_aware", False)
+        if not fa:
+            raise ParserError(
+                "Cannot create formula parser with non-formula-aware store."
+            )
         f = Formula(self.graph)
         return f
 
@@ -1745,7 +1751,7 @@ class RDFSink(object):
             return arg.newBlankNode(uri)
         elif isinstance(arg, Graph) or arg is None:
             self.counter += 1
-            bn = BNode("n" + str(self.counter))
+            bn = BNode("n%sb%s" % (self.uuid, self.counter))
         else:
             bn = BNode(str(arg[0]).split("#").pop().replace("_", "b"))
         return bn
@@ -1784,7 +1790,7 @@ class RDFSink(object):
         f, p, s, o = quadruple
 
         if hasattr(p, "formula"):
-            raise Exception("Formula used as predicate")
+            raise ParserError("Formula used as predicate")
 
         s = self.normalise(f, s)
         p = self.normalise(f, p)
@@ -1887,8 +1893,8 @@ class TurtleParser(Parser):
     def parse(self, source, graph, encoding="utf-8", turtle=True):
 
         if encoding not in [None, "utf-8"]:
-            raise Exception(
-                ("N3/Turtle files are always utf-8 encoded, ", "I was passed: %s")
+            raise ParserError(
+                ("N3/Turtle files are always utf-8 encoded, I was passed: %s")
                 % encoding
             )
 
@@ -1896,8 +1902,11 @@ class TurtleParser(Parser):
 
         baseURI = graph.absolutize(source.getPublicId() or source.getSystemId() or "")
         p = SinkParser(sink, baseURI=baseURI, turtle=turtle)
-
-        p.loadStream(source.getByteStream())
+        # N3 parser prefers str stream
+        stream = source.getCharacterStream()
+        if not stream:
+            stream = source.getByteStream()
+        p.loadStream(stream)
 
         for prefix, namespace in p._bindings.items():
             graph.bind(prefix, namespace)
@@ -1917,8 +1926,13 @@ class N3Parser(TurtleParser):
 
     def parse(self, source, graph, encoding="utf-8"):
         # we're currently being handed a Graph, not a ConjunctiveGraph
-        assert graph.store.context_aware  # is this implied by formula_aware
-        assert graph.store.formula_aware
+        # context-aware is this implied by formula_aware
+        ca = getattr(graph.store, "context_aware", False)
+        fa = getattr(graph.store, "formula_aware", False)
+        if not ca:
+            raise ParserError("Cannot parse N3 into non-context-aware store.")
+        elif not fa:
+            raise ParserError("Cannot parse N3 into non-formula-aware store.")
 
         conj_graph = ConjunctiveGraph(store=graph.store)
         conj_graph.default_context = graph  # TODO: CG __init__ should have a

@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from rdflib import ConjunctiveGraph
 from rdflib.parser import Parser
 from .notation3 import SinkParser, RDFSink
@@ -82,7 +80,7 @@ class TrigSinkParser(SinkParser):
         if j < 0:
             self.BadSyntax(argstr, i, "EOF found when expected graph")
 
-        if argstr[j: j + 1] == "=":  # optional = for legacy support
+        if argstr[j : j + 1] == "=":  # optional = for legacy support
 
             i = self.skipSpace(argstr, j + 1)
             if i < 0:
@@ -90,7 +88,7 @@ class TrigSinkParser(SinkParser):
         else:
             i = j
 
-        if argstr[i: i + 1] != "{":
+        if argstr[i : i + 1] != "{":
             return -1  # the node wasn't part of a graph
 
         j = i + 1
@@ -106,7 +104,7 @@ class TrigSinkParser(SinkParser):
             if i < 0:
                 self.BadSyntax(argstr, i, "needed '}', found end.")
 
-            if argstr[i: i + 1] == "}":
+            if argstr[i : i + 1] == "}":
                 j = i + 1
                 break
 
@@ -153,7 +151,11 @@ class TrigParser(Parser):
         )
         p = TrigSinkParser(sink, baseURI=baseURI, turtle=True)
 
-        p.loadStream(source.getByteStream())
+        stream = source.getCharacterStream()  # try to get str stream first
+        if not stream:
+            # fallback to get the bytes stream
+            stream = source.getByteStream()
+        p.loadStream(stream)
 
         for prefix, namespace in p._bindings.items():
             conj_graph.bind(prefix, namespace)

@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import collections
 import itertools
 import datetime
@@ -166,7 +164,7 @@ class FrozenBindings(FrozenDict):
         if not isinstance(key, Node):
             key = Variable(key)
 
-        if not type(key) in (BNode, Variable):
+        if not isinstance(key, (BNode, Variable)):
             return key
 
         if key not in self._d:
@@ -179,21 +177,19 @@ class FrozenBindings(FrozenDict):
 
     def merge(self, other):
         res = FrozenBindings(self.ctx, itertools.chain(self.items(), other.items()))
-
         return res
 
-    def _now(self):
+    @property
+    def now(self):
         return self.ctx.now
 
-    def _bnodes(self):
+    @property
+    def bnodes(self):
         return self.ctx.bnodes
 
-    def _prologue(self):
+    @property
+    def prologue(self):
         return self.ctx.prologue
-
-    prologue = property(_prologue)
-    bnodes = property(_bnodes)
-    now = property(_now)
 
     def forget(self, before, _except=None):
         """
@@ -225,7 +221,6 @@ class FrozenBindings(FrozenDict):
 
 
 class QueryContext(object):
-
     """
     Query context - passed along when evaluating the query
     """
@@ -247,9 +242,15 @@ class QueryContext(object):
             self.graph = graph
 
         self.prologue = None
-        self.now = datetime.datetime.now(isodate.tzinfo.UTC)
+        self._now = None
 
         self.bnodes = collections.defaultdict(BNode)
+
+    @property
+    def now(self) -> datetime.datetime:
+        if self._now is None:
+            self._now = datetime.datetime.now(isodate.tzinfo.UTC)
+        return self._now
 
     def clone(self, bindings=None):
         r = QueryContext(
@@ -262,7 +263,9 @@ class QueryContext(object):
         r.bnodes = self.bnodes
         return r
 
-    def _get_dataset(self):
+    @property
+    def dataset(self):
+        """"current dataset"""
         if self._dataset is None:
             raise Exception(
                 "You performed a query operation requiring "
@@ -271,21 +274,23 @@ class QueryContext(object):
             )
         return self._dataset
 
-    dataset = property(_get_dataset, doc="current dataset")
-
     def load(self, source, default=False, **kwargs):
         def _load(graph, source):
             try:
-                return graph.load(source, **kwargs)
-            except:
+                return graph.parse(source, format="turtle", **kwargs)
+            except Exception:
                 pass
             try:
-                return graph.load(source, format="n3", **kwargs)
-            except:
+                return graph.parse(source, format="xml", **kwargs)
+            except Exception:
                 pass
             try:
-                return graph.load(source, format="nt", **kwargs)
-            except:
+                return graph.parse(source, format="n3", **kwargs)
+            except Exception:
+                pass
+            try:
+                return graph.parse(source, format="nt", **kwargs)
+            except Exception:
                 raise Exception(
                     "Could not load %s as either RDF/XML, N3 or NTriples" % source
                 )
@@ -304,7 +309,7 @@ class QueryContext(object):
 
     def __getitem__(self, key):
         # in SPARQL BNodes are just labels
-        if not type(key) in (BNode, Variable):
+        if not isinstance(key, (BNode, Variable)):
             return key
         try:
             return self.bindings[key]
@@ -346,11 +351,6 @@ class QueryContext(object):
     def clean(self):
         return self.clone([])
 
-    # def pop(self):
-    #     self.bindings = self.bindings.outer
-    #     if self.bindings is None:
-    #         raise Exception("We've bottomed out of the bindings stack!")
-
     def thaw(self, frozenbindings):
         """
         Create a new read/write query context from the given solution
@@ -360,8 +360,7 @@ class QueryContext(object):
         return c
 
 
-class Prologue(object):
-
+class Prologue:
     """
     A class for holding prefixing bindings and base URI information
     """
@@ -400,7 +399,7 @@ class Prologue(object):
         return iri
 
 
-class Query(object):
+class Query:
     """
     A parsed and translated query
     """

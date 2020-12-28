@@ -26,7 +26,7 @@ mdata     :class:`~rdflib.plugins.parsers.structureddata.MicrodataParser`
 microdata :class:`~rdflib.plugins.parsers.structureddata.MicrodataParser`
 n3        :class:`~rdflib.plugins.parsers.notation3.N3Parser`
 nquads    :class:`~rdflib.plugins.parsers.nquads.NQuadsParser`
-nt        :class:`~rdflib.plugins.parsers.nt.NTParser`
+nt        :class:`~rdflib.plugins.parsers.ntriples.NTParser`
 rdfa      :class:`~rdflib.plugins.parsers.structureddata.RDFaParser`
 rdfa1.0   :class:`~rdflib.plugins.parsers.structureddata.RDFa10Parser`
 rdfa1.1   :class:`~rdflib.plugins.parsers.structureddata.RDFaParser`

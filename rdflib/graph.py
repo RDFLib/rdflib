@@ -1,26 +1,20 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
-from rdflib.term import Literal  # required for doctests
-from rdflib.namespace import Namespace  # required for doctests
-
+from typing import Optional, Union
 import logging
-
+from warnings import warn
 import random
-from rdflib.namespace import RDF, RDFS, SKOS
-from rdflib import plugin, exceptions, query
-from rdflib.term import Node, URIRef, Genid
-from rdflib.term import BNode
+from rdflib.namespace import Namespace, RDF
+from rdflib import plugin, exceptions, query, namespace
 import rdflib.term
+from rdflib.term import BNode, Node, URIRef, Literal, Genid
 from rdflib.paths import Path
 from rdflib.store import Store
 from rdflib.serializer import Serializer
-from rdflib.parser import Parser
-from rdflib.parser import create_input_source
+from rdflib.parser import Parser, create_input_source
 from rdflib.namespace import NamespaceManager
 from rdflib.resource import Resource
 from rdflib.collection import Collection
+import rdflib.util  # avoid circular dependency
+from rdflib.exceptions import ParserError
 
 import os
 import shutil
@@ -31,6 +25,7 @@ from urllib.parse import urlparse
 
 assert Literal  # avoid warning
 assert Namespace  # avoid warning
+
 logger = logging.getLogger(__name__)
 
 
@@ -100,31 +95,31 @@ see :class:`~rdflib.graph.Dataset`
 Working with graphs
 ===================
 
-Instantiating Graphs with default store (IOMemory) and default identifier
+Instantiating Graphs with default store (Memory) and default identifier
 (a BNode):
 
     >>> g = Graph()
     >>> g.store.__class__
-    <class 'rdflib.plugins.memory.IOMemory'>
+    <class 'rdflib.plugins.stores.memory.Memory'>
     >>> g.identifier.__class__
     <class 'rdflib.term.BNode'>
 
-Instantiating Graphs with a IOMemory store and an identifier -
+Instantiating Graphs with a Memory store and an identifier -
 <http://rdflib.net>:
 
-    >>> g = Graph('IOMemory', URIRef("http://rdflib.net"))
+    >>> g = Graph('Memory', URIRef("http://rdflib.net"))
     >>> g.identifier
     rdflib.term.URIRef('http://rdflib.net')
     >>> str(g)  # doctest: +NORMALIZE_WHITESPACE
     "<http://rdflib.net> a rdfg:Graph;rdflib:storage
-     [a rdflib:Store;rdfs:label 'IOMemory']."
+     [a rdflib:Store;rdfs:label 'Memory']."
 
 Creating a ConjunctiveGraph - The top level container for all named Graphs
 in a "database":
 
     >>> g = ConjunctiveGraph()
     >>> str(g.default_context)
-    "[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'IOMemory']]."
+    "[a rdfg:Graph;rdflib:storage [a rdflib:Store;rdfs:label 'Memory']]."
 
 Adding / removing reified triples to Graph and iterating over it directly or
 via triple pattern:
@@ -136,7 +131,7 @@ via triple pattern:
     >>> g.add((statementId, RDF.type, RDF.Statement))
     >>> g.add((statementId, RDF.subject,
     ...     URIRef("http://rdflib.net/store/ConjunctiveGraph")))
-    >>> g.add((statementId, RDF.predicate, RDFS.label))
+    >>> g.add((statementId, RDF.predicate, namespace.RDFS.label))
     >>> g.add((statementId, RDF.object, Literal("Conjunctive Graph")))
     >>> print(len(g))
     4
@@ -172,10 +167,10 @@ by RDFLib they are UUIDs and unique.
     >>> g1 = Graph()
     >>> g2 = Graph()
     >>> u = URIRef("http://example.com/foo")
-    >>> g1.add([u, RDFS.label, Literal("foo")])
-    >>> g1.add([u, RDFS.label, Literal("bar")])
-    >>> g2.add([u, RDFS.label, Literal("foo")])
-    >>> g2.add([u, RDFS.label, Literal("bing")])
+    >>> g1.add([u, namespace.RDFS.label, Literal("foo")])
+    >>> g1.add([u, namespace.RDFS.label, Literal("bar")])
+    >>> g2.add([u, namespace.RDFS.label, Literal("foo")])
+    >>> g2.add([u, namespace.RDFS.label, Literal("bing")])
     >>> len(g1 + g2)  # adds bing as label
     3
     >>> len(g1 - g2)  # removes foo
@@ -188,7 +183,7 @@ by RDFLib they are UUIDs and unique.
 Graph Aggregation - ConjunctiveGraphs and ReadOnlyGraphAggregate within
 the same store:
 
-    >>> store = plugin.get("IOMemory", Store)()
+    >>> store = plugin.get("Memory", Store)()
     >>> g1 = Graph(store)
     >>> g2 = Graph(store)
     >>> g3 = Graph(store)
@@ -198,17 +193,17 @@ the same store:
     >>> g1.add((stmt1, RDF.type, RDF.Statement))
     >>> g1.add((stmt1, RDF.subject,
     ...     URIRef('http://rdflib.net/store/ConjunctiveGraph')))
-    >>> g1.add((stmt1, RDF.predicate, RDFS.label))
+    >>> g1.add((stmt1, RDF.predicate, namespace.RDFS.label))
     >>> g1.add((stmt1, RDF.object, Literal('Conjunctive Graph')))
     >>> g2.add((stmt2, RDF.type, RDF.Statement))
     >>> g2.add((stmt2, RDF.subject,
     ...     URIRef('http://rdflib.net/store/ConjunctiveGraph')))
     >>> g2.add((stmt2, RDF.predicate, RDF.type))
-    >>> g2.add((stmt2, RDF.object, RDFS.Class))
+    >>> g2.add((stmt2, RDF.object, namespace.RDFS.Class))
     >>> g3.add((stmt3, RDF.type, RDF.Statement))
     >>> g3.add((stmt3, RDF.subject,
     ...     URIRef('http://rdflib.net/store/ConjunctiveGraph')))
-    >>> g3.add((stmt3, RDF.predicate, RDFS.comment))
+    >>> g3.add((stmt3, RDF.predicate, namespace.RDFS.comment))
     >>> g3.add((stmt3, RDF.object, Literal(
     ...     'The top-level aggregate graph - The sum ' +
     ...     'of all named graphs within a Store')))
@@ -431,12 +426,12 @@ class Graph(Node):
 
         >>> import rdflib
         >>> g = rdflib.Graph()
-        >>> g.add((rdflib.URIRef("urn:bob"), rdflib.RDFS.label, rdflib.Literal("Bob")))
+        >>> g.add((rdflib.URIRef("urn:bob"), namespace.RDFS.label, rdflib.Literal("Bob")))
 
         >>> list(g[rdflib.URIRef("urn:bob")]) # all triples about bob
         [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'), rdflib.term.Literal('Bob'))]
 
-        >>> list(g[:rdflib.RDFS.label]) # all label triples
+        >>> list(g[:namespace.RDFS.label]) # all label triples
         [(rdflib.term.URIRef('urn:bob'), rdflib.term.Literal('Bob'))]
 
         >>> list(g[::rdflib.Literal("Bob")]) # all triples with bob as object
@@ -716,16 +711,21 @@ class Graph(Node):
 
         Return default if no label exists or any label if multiple exist.
         """
+        warn(
+            DeprecationWarning(
+                "graph.label() is deprecated and will be removed in rdflib 6.0.0."
+            )
+        )
         if subject is None:
             return default
-        return self.value(subject, RDFS.label, default=default, any=True)
+        return self.value(subject, namespace.RDFS.label, default=default, any=True)
 
     def preferredLabel(
         self,
         subject,
         lang=None,
         default=None,
-        labelProperties=(SKOS.prefLabel, RDFS.label),
+        labelProperties=(namespace.SKOS.prefLabel, namespace.RDFS.label),
     ):
         """
         Find the preferred label for subject.
@@ -738,23 +738,22 @@ class Graph(Node):
         Return a list of (labelProp, label) pairs, where labelProp is either
         skos:prefLabel or rdfs:label.
 
-        >>> from rdflib import ConjunctiveGraph, URIRef, RDFS, Literal
-        >>> from rdflib.namespace import SKOS
+        >>> from rdflib import ConjunctiveGraph, URIRef, Literal, namespace
         >>> from pprint import pprint
         >>> g = ConjunctiveGraph()
         >>> u = URIRef("http://example.com/foo")
-        >>> g.add([u, RDFS.label, Literal("foo")])
-        >>> g.add([u, RDFS.label, Literal("bar")])
+        >>> g.add([u, namespace.RDFS.label, Literal("foo")])
+        >>> g.add([u, namespace.RDFS.label, Literal("bar")])
         >>> pprint(sorted(g.preferredLabel(u)))
         [(rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
           rdflib.term.Literal('bar')),
          (rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#label'),
           rdflib.term.Literal('foo'))]
-        >>> g.add([u, SKOS.prefLabel, Literal("bla")])
+        >>> g.add([u, namespace.SKOS.prefLabel, Literal("bla")])
         >>> pprint(g.preferredLabel(u))
         [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal('bla'))]
-        >>> g.add([u, SKOS.prefLabel, Literal("blubb", lang="en")])
+        >>> g.add([u, namespace.SKOS.prefLabel, Literal("blubb", lang="en")])
         >>> sorted(g.preferredLabel(u)) #doctest: +NORMALIZE_WHITESPACE
         [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal('bla')),
@@ -767,20 +766,28 @@ class Graph(Node):
         [(rdflib.term.URIRef('http://www.w3.org/2004/02/skos/core#prefLabel'),
           rdflib.term.Literal('blubb', lang='en'))]
         """
-
+        warn(
+            DeprecationWarning(
+                "graph.preferredLabel() is deprecated and will be removed in rdflib 6.0.0."
+            )
+        )
         if default is None:
             default = []
 
         # setup the language filtering
         if lang is not None:
             if lang == "":  # we only want not language-tagged literals
+
                 def langfilter(l_):
                     return l_.language is None
+
             else:
+
                 def langfilter(l_):
                     return l_.language == lang
 
         else:  # we don't care about language tags
+
             def langfilter(l_):
                 return True
 
@@ -797,9 +804,14 @@ class Graph(Node):
 
         Return default if no comment exists
         """
+        warn(
+            DeprecationWarning(
+                "graph.comment() is deprecated and will be removed in rdflib 6.0.0."
+            )
+        )
         if subject is None:
             return default
-        return self.value(subject, RDFS.comment, default=default, any=True)
+        return self.value(subject, namespace.RDFS.comment, default=default, any=True)
 
     def items(self, list):
         """Generator over all items in the resource specified by list
@@ -828,9 +840,9 @@ class Graph(Node):
         >>> c=BNode("baz")
         >>> g.add((a,RDF.first,RDF.type))
         >>> g.add((a,RDF.rest,b))
-        >>> g.add((b,RDF.first,RDFS.label))
+        >>> g.add((b,RDF.first,namespace.RDFS.label))
         >>> g.add((b,RDF.rest,c))
-        >>> g.add((c,RDF.first,RDFS.comment))
+        >>> g.add((c,RDF.first,namespace.RDFS.comment))
         >>> g.add((c,RDF.rest,RDF.nil))
         >>> def topList(node,g):
         ...    for s in g.subjects(RDF.rest, node):
@@ -904,6 +916,11 @@ class Graph(Node):
 
         If yes, it returns a Seq class instance, None otherwise.
         """
+        warn(
+            DeprecationWarning(
+                "graph.seq() is deprecated and will be removed in rdflib 6.0.0."
+            )
+        )
         if (subject, RDF.type, RDF.Seq) in self:
             return Seq(self, subject)
         else:
@@ -940,12 +957,17 @@ class Graph(Node):
         return self.namespace_manager.absolutize(uri, defrag)
 
     def serialize(
-        self, destination=None, format="xml", base=None, encoding=None, **args
-    ):
+        self, destination=None, format="turtle", base=None, encoding=None, **args
+    ) -> Optional[Union[bytes, str]]:
         """Serialize the Graph to destination
 
-        If destination is None serialize method returns the serialization as a
-        string. Format defaults to xml (AKA rdf/xml).
+        If destination is None serialize method returns the serialization as
+        bytes or string.
+
+        If encoding is None and destination is None, returns a string
+        If encoding is set, and Destination is None, returns bytes
+
+        Format defaults to turtle.
 
         Format support can be extended with plugins,
         but "xml", "n3", "turtle", "nt", "pretty-xml", "trix", "trig" and "nquads" are built in.
@@ -958,8 +980,12 @@ class Graph(Node):
         serializer = plugin.get(format, Serializer)(self)
         if destination is None:
             stream = BytesIO()
-            serializer.serialize(stream, base=base, encoding=encoding, **args)
-            return stream.getvalue()
+            if encoding is None:
+                serializer.serialize(stream, base=base, encoding="utf-8", **args)
+                return stream.getvalue().decode("utf-8")
+            else:
+                serializer.serialize(stream, base=base, encoding=encoding, **args)
+                return stream.getvalue()
         if hasattr(destination, "write"):
             stream = destination
             serializer.serialize(stream, base=base, encoding=encoding, **args)
@@ -975,11 +1001,19 @@ class Graph(Node):
             stream = os.fdopen(fd, "wb")
             serializer.serialize(stream, base=base, encoding=encoding, **args)
             stream.close()
+            dest = path if scheme == "file" else location
             if hasattr(shutil, "move"):
-                shutil.move(name, path)
+                shutil.move(name, dest)
             else:
-                shutil.copy(name, path)
+                shutil.copy(name, dest)
                 os.remove(name)
+
+    def print(self, format="turtle", encoding="utf-8", out=None):
+        print(
+            self.serialize(None, format=format, encoding=encoding).decode(encoding),
+            file=out,
+            flush=True,
+        )
 
     def parse(
         self,
@@ -992,7 +1026,7 @@ class Graph(Node):
         **args
     ):
         """
-        Parse source adding the resulting triples to the Graph.
+        Parse an RDF source adding the resulting triples to the Graph.
 
         The source is specified using one of source, location, file or
         data.
@@ -1006,9 +1040,10 @@ class Graph(Node):
             is specified.
           - `file`: A file-like object.
           - `data`: A string containing the data to be parsed.
-          - `format`: Used if format can not be determined from source.
-            Defaults to rdf/xml. Format support can be extended with plugins,
-            but "xml", "n3", "nt" & "trix" are built in.
+          - `format`: Used if format can not be determined from source, e.g. file
+            extension or Media Type. Defaults to text/turtle. Format support can
+            be extended with plugins, but "xml", "n3" (use for turtle), "nt" &
+            "trix" are built in.
           - `publicID`: the logical URI to use as the document base. If None
             specified the document location is used (at least in the case where
             there is a document location).
@@ -1054,6 +1089,11 @@ class Graph(Node):
 
         >>> os.remove(file_name)
 
+        >>> # default turtle parsing
+        >>> result = g.parse(data="<http://example.com/a> <http://example.com/a> <http://example.com/a> .")
+        >>> len(g)
+        3
+
         """
 
         source = create_input_source(
@@ -1066,31 +1106,53 @@ class Graph(Node):
         )
         if format is None:
             format = source.content_type
+        could_not_guess_format = False
         if format is None:
-            # raise Exception("Could not determine format for %r. You can" + \
-            # "expicitly specify one with the format argument." % source)
-            format = "application/rdf+xml"
+            if (
+                hasattr(source, "file")
+                and getattr(source.file, "name", None)
+                and isinstance(source.file.name, str)
+            ):
+                format = rdflib.util.guess_format(source.file.name)
+            if format is None:
+                format = "turtle"
+                could_not_guess_format = True
         parser = plugin.get(format, Parser)()
         try:
             parser.parse(source, self, **args)
+        except SyntaxError as se:
+            if could_not_guess_format:
+                raise ParserError(
+                    "Could not guess RDF format for %r from file extension so tried Turtle but failed."
+                    "You can explicitly specify format using the format argument."
+                    % source
+                )
+            else:
+                raise se
         finally:
             if source.auto_close:
                 source.close()
         return self
 
     def load(self, source, publicID=None, format="xml"):
+        warn(
+            DeprecationWarning(
+                "graph.load() is deprecated, it will be removed in rdflib 6.0.0. "
+                "Please use graph.parse() instead."
+            )
+        )
         self.parse(source, publicID, format)
 
     def query(
         self,
         query_object,
-        processor="sparql",
-        result="sparql",
+        processor: str = "sparql",
+        result: str = "sparql",
         initNs=None,
         initBindings=None,
-        use_store_provided=True,
+        use_store_provided: bool = True,
         **kwargs
-    ):
+    ) -> query.Result:
         """
         Query this graph.
 
@@ -1101,7 +1163,7 @@ class Graph(Node):
         if none are given, the namespaces from the graph's namespace manager
         are used.
 
-        :returntype: rdflib.query.QueryResult
+        :returntype: rdflib.query.Result
 
         """
 

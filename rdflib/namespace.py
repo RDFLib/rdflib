@@ -1,7 +1,3 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import logging
 
 import os
@@ -213,6 +209,12 @@ class ClosedNamespace(object):
 
     def __repr__(self):
         return "rdf.namespace.ClosedNamespace(%r)" % str(self.uri)
+
+    def __dir__(self):
+        return list(self._ClosedNamespace__uris)
+
+    def _ipython_key_completions_(self):
+        return dir(self)
 
 
 class _RDFNamespace(ClosedNamespace):
@@ -489,8 +491,8 @@ SKOS = ClosedNamespace(
         "relatedMatch",
     ],
 )
-SOSA = Namespace("http://www.w3.org/ns/ssn/")
-SSN = Namespace("http://www.w3.org/ns/sosa/")
+SSN = Namespace("http://www.w3.org/ns/ssn/")
+SOSA = Namespace("http://www.w3.org/ns/sosa/")
 TIME = Namespace("http://www.w3.org/2006/time#")
 VOID = Namespace("http://rdfs.org/ns/void#")
 XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
@@ -618,7 +620,7 @@ class NamespaceManager(object):
                 pl_namespace = get_longest_namespace(self.__strie[namespace], uri)
                 if pl_namespace is not None:
                     namespace = pl_namespace
-                    name = uri[len(namespace):]
+                    name = uri[len(namespace) :]
 
             namespace = URIRef(namespace)
             prefix = self.store.prefix(namespace)  # warning multiple prefixes problem
@@ -804,7 +806,7 @@ class NamespaceManager(object):
 NAME_START_CATEGORIES = ["Ll", "Lu", "Lo", "Lt", "Nl"]
 SPLIT_START_CATEGORIES = NAME_START_CATEGORIES + ["Nd"]
 NAME_CATEGORIES = NAME_START_CATEGORIES + ["Mc", "Me", "Mn", "Lm", "Nd"]
-ALLOWED_NAME_CHARS = [u"\u00B7", u"\u0387", u"-", u".", u"_", u":"]
+ALLOWED_NAME_CHARS = ["\u00B7", "\u0387", "-", ".", "_", ":", "%"]
 
 
 # http://www.w3.org/TR/REC-xml-names/#NT-NCName

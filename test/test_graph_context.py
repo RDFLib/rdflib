@@ -24,16 +24,16 @@ class ContextTestCase(unittest.TestCase):
         else:
             self.tmppath = mkdtemp()
         self.graph.open(self.tmppath, create=True)
-        self.michel = URIRef(u"michel")
-        self.tarek = URIRef(u"tarek")
-        self.bob = URIRef(u"bob")
-        self.likes = URIRef(u"likes")
-        self.hates = URIRef(u"hates")
-        self.pizza = URIRef(u"pizza")
-        self.cheese = URIRef(u"cheese")
+        self.michel = URIRef("michel")
+        self.tarek = URIRef("tarek")
+        self.bob = URIRef("bob")
+        self.likes = URIRef("likes")
+        self.hates = URIRef("hates")
+        self.pizza = URIRef("pizza")
+        self.cheese = URIRef("cheese")
 
-        self.c1 = URIRef(u"context-1")
-        self.c2 = URIRef(u"context-2")
+        self.c1 = URIRef("context-1")
+        self.c2 = URIRef("context-2")
 
         # delete the graph for each test!
         self.graph.remove((None, None, None))
@@ -370,7 +370,7 @@ tests = 0
 for s in plugin.plugins(pluginname, plugin.Store):
     if s.name in (
         "default",
-        "IOMemory",
+        "Memory",
         "Auditable",
         "Concurrent",
         "SPARQLStore",

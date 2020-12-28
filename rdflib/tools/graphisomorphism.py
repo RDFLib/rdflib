@@ -3,8 +3,6 @@ A commandline tool for testing if RDF graphs are isomorpic, i.e. equal
 if BNode labels are ignored.
 """
 
-from __future__ import absolute_import
-
 from rdflib import Graph
 from rdflib import BNode
 from itertools import combinations

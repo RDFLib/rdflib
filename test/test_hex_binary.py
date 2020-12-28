@@ -19,29 +19,29 @@ class HexBinaryTestCase(unittest.TestCase):
 
         l = Literal(hex_i, datatype=XSD.hexBinary)
         bin_i = l.toPython()
-        self.assertEquals(int(binascii.hexlify(bin_i), 16), i)
+        self.assertEqual(int(binascii.hexlify(bin_i), 16), i)
 
-        self.assertEquals(str(l), hex_i)
-        self.assertEquals(int(hex_i, 16), i)
-        self.assertEquals(int(l, 16), i)
-        self.assertEquals(int(str(l), 16), i)
+        self.assertEqual(str(l), hex_i)
+        self.assertEqual(int(hex_i, 16), i)
+        self.assertEqual(int(l, 16), i)
+        self.assertEqual(int(str(l), 16), i)
 
     def test_unicode(self):
-        str1 = u"Test utf-8 string éàë"
+        str1 = "Test utf-8 string éàë"
         # u hexstring
         hex_str1 = binascii.hexlify(str1.encode("utf-8")).decode()
         l1 = Literal(hex_str1, datatype=XSD.hexBinary)
         b_str1 = l1.toPython()
-        self.assertEquals(b_str1.decode("utf-8"), str1)
-        self.assertEquals(str(l1), hex_str1)
+        self.assertEqual(b_str1.decode("utf-8"), str1)
+        self.assertEqual(str(l1), hex_str1)
 
         # b hexstring
         hex_str1b = binascii.hexlify(str1.encode("utf-8"))
         l1b = Literal(hex_str1b, datatype=XSD.hexBinary)
         b_str1b = l1b.toPython()
-        self.assertEquals(b_str1, b_str1b)
-        self.assertEquals(b_str1b.decode("utf-8"), str1)
-        self.assertEquals(str(l1b), hex_str1)
+        self.assertEqual(b_str1, b_str1b)
+        self.assertEqual(b_str1b.decode("utf-8"), str1)
+        self.assertEqual(str(l1b), hex_str1)
 
 
 if __name__ == "__main__":

@@ -28,7 +28,7 @@ class TriXSerializer(Serializer):
 
         self.writer = XMLWriter(stream, nm, encoding, extra_ns={"": TRIXNS})
 
-        self.writer.push(TRIXNS[u"TriX"])
+        self.writer.push(TRIXNS["TriX"])
         # if base is given here, use that, if not and a base is set for the graph use that
         if base is None and self.store.base is not None:
             base = self.store.base
@@ -48,38 +48,38 @@ class TriXSerializer(Serializer):
         stream.write("\n".encode("latin-1"))
 
     def _writeGraph(self, graph):
-        self.writer.push(TRIXNS[u"graph"])
+        self.writer.push(TRIXNS["graph"])
         if graph.base:
             self.writer.attribute(
                 "http://www.w3.org/XML/1998/namespacebase", graph.base
             )
         if isinstance(graph.identifier, URIRef):
-            self.writer.element(TRIXNS[u"uri"], content=str(graph.identifier))
+            self.writer.element(TRIXNS["uri"], content=str(graph.identifier))
 
         for triple in graph.triples((None, None, None)):
             self._writeTriple(triple)
         self.writer.pop()
 
     def _writeTriple(self, triple):
-        self.writer.push(TRIXNS[u"triple"])
+        self.writer.push(TRIXNS["triple"])
         for component in triple:
             if isinstance(component, URIRef):
-                self.writer.element(TRIXNS[u"uri"], content=str(component))
+                self.writer.element(TRIXNS["uri"], content=str(component))
             elif isinstance(component, BNode):
-                self.writer.element(TRIXNS[u"id"], content=str(component))
+                self.writer.element(TRIXNS["id"], content=str(component))
             elif isinstance(component, Literal):
                 if component.datatype:
                     self.writer.element(
-                        TRIXNS[u"typedLiteral"],
+                        TRIXNS["typedLiteral"],
                         content=str(component),
-                        attributes={TRIXNS[u"datatype"]: str(component.datatype)},
+                        attributes={TRIXNS["datatype"]: str(component.datatype)},
                     )
                 elif component.language:
                     self.writer.element(
-                        TRIXNS[u"plainLiteral"],
+                        TRIXNS["plainLiteral"],
                         content=str(component),
-                        attributes={XMLNS[u"lang"]: str(component.language)},
+                        attributes={XMLNS["lang"]: str(component.language)},
                     )
                 else:
-                    self.writer.element(TRIXNS[u"plainLiteral"], content=str(component))
+                    self.writer.element(TRIXNS["plainLiteral"], content=str(component))
         self.writer.pop()
