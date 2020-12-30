@@ -184,7 +184,7 @@ def base():
     """The base URI for this process - the Web equiv of cwd
 
     Relative or abolute unix-standard filenames parsed relative to
-    this yeild the URI of the file.
+    this yield the URI of the file.
     If we had a reliable way of getting a computer name,
     we should put it in the hostname just to prevent ambiguity
 
