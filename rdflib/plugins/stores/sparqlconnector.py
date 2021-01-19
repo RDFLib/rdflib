@@ -99,7 +99,9 @@ class SPARQLConnector(object):
             except Exception as e:
                 raise ValueError("You did something wrong formulating either the URI or your SPARQL query")
         elif self.method == "POST":
-            args["headers"].update({"Content-Type": "application/sparql-query"})
+
+            if not 'headers' in self.kwargs:
+                args["headers"].update({"Content-Type": "application/sparql-query"})
             qsa = "?" + urlencode(params)
             try:
                 res = urlopen(Request(self.query_endpoint + qsa, data=query.encode(), headers=args["headers"]))
@@ -130,17 +132,22 @@ class SPARQLConnector(object):
         if named_graph is not None:
             params["using-named-graph-uri"] = default_graph
 
-        headers = {
-            "Accept": _response_mime_types[self.returnFormat],
-            "Content-Type": "application/sparql-update",
-        }
-
         args = dict(self.kwargs)  # other QSAs
 
         args.setdefault("params", {})
         args["params"].update(params)
         args.setdefault("headers", {})
-        args["headers"].update(headers)
+
+        if not 'headers' in self.kwargs:
+            headers = {
+                "Accept": _response_mime_types[self.returnFormat],
+                "Content-Type": "application/sparql-update",
+            }
+            args["headers"].update(headers)
 
         qsa = "?" + urlencode(args["params"])
-        res = urlopen(Request(self.update_endpoint + qsa, data=query.encode(), headers=args["headers"]))
+
+        if self.postAsEncoded:
+            res = Request(self.update_endpoint + qsa + urlencode({'update': query}), headers=args["headers"], method='POST')
+        else:
+            res = Request(self.update_endpoint + qsa, data=query.encode(), headers=args["headers"])

@@ -589,7 +589,26 @@ class SPARQLUpdateStore(SPARQLStore):
             and reads can degenerate to the original call-per-triple situation that originally existed.
         """
         if self._edits and len(self._edits) > 0:
-            self._update("\n;\n".join(self._edits))
+
+            edits = "\n;\n".join(self._edits)
+            if self.postAsEncoded:
+                if len(edits) > 2000:
+                    edits = ''
+                    for edit in self._edits:
+                        edits += edit + '\n;\n'
+                        if len(edits) > 2000:
+                            edits = edits[0:len(edits)-len(edit + '\n;\n')]
+                            if len(edits) > 2000:
+                                raise Exception("Triple/Quad is too long to be convertion to an URI")#or continue and silently return error?
+                            self._update(edits)
+                            edits = ''
+                else:
+                    self._update(edits)
+
+            else:
+
+                self._update(edits)
+
             self._edits = None
 
     def rollback(self):
