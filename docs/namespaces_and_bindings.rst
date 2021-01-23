@@ -17,6 +17,8 @@ The :mod:`rdflib.namespace` defines the :class:`rdflib.namespace.Namespace` clas
 	n['first%20name'] # as item - for things that are not valid python identifiers
 	# = rdflib.term.URIRef(u'http://example.org/first%20name')
 
+Note that if a name string is valid for use in an RDF namespace but not valid as a Python identifier, such as '1234', it must be addressed with the "item" syntax (using the "attribute" syntax will raise a Syntax Error).
+
 The ``namespace`` module also defines many common namespaces such as RDF, RDFS, OWL, FOAF, SKOS, etc. 
 
 Namespaces can also be associated with prefixes, in a :class:`rdflib.namespace.NamespaceManager`, i.e. using ``foaf`` for ``http://xmlns.com/foaf/0.1/``. Each RDFLib graph has a :attr:`~rdflib.graph.Graph.namespace_manager` that keeps a list of namespace to prefix mappings. The namespace manager is populated when reading in RDF, and these prefixes are used when serialising RDF, or when parsing SPARQL queries. Additional prefixes can be bound with the :meth:`rdflib.graph.bind` method.
