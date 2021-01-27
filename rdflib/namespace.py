@@ -112,7 +112,11 @@ class Namespace(str):
     rdflib.term.URIRef(u'http://example.org/Person')
     >>> n['first-name'] # as item - for things that are not valid python identifiers
     rdflib.term.URIRef(u'http://example.org/first-name')
-
+    >>> n.Person in n
+    True
+    >>> n2 = Namespace("http://example2.org/")
+    >>> n.Person in n2
+    False
     """
 
     def __new__(cls, value):
@@ -141,6 +145,9 @@ class Namespace(str):
 
     def __repr__(self):
         return "Namespace(%r)" % str(self)
+    
+    def __contains__(self, other):
+        return other.startswith(self) # test namespace membership with "ref in ns" syntax
 
 
 class URIPattern(str):
