@@ -33,7 +33,7 @@ install:
     - python setup.py install
 
 before_script:
-    - flake8 --exclude=pyRdfa,extras,host,transform,rdfs,sparql,results,pyMicrodata --exit-zero rdflib
+    - flake8 --exit-zero rdflib
 
 script:
     - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=rdflib
