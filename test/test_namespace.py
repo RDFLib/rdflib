@@ -1,7 +1,8 @@
+from rdflib.rdflib.namespace import Namespace
 import unittest
 
 from rdflib.graph import Graph
-from rdflib.namespace import FOAF
+from rdflib.namespace import FOAF, RDF, RDFS, SH
 from rdflib.term import URIRef
 
 
@@ -112,3 +113,18 @@ class NamespacePrefixTest(unittest.TestCase):
             add_not_in_namespace("givenName"),
             URIRef("http://xmlns.com/foaf/0.1/givenName"),
         )
+
+    def test_contains_method(self):
+        """Tests for Namespace.__contains__() methods."""
+
+        ref = URIRef('http://www.w3.org/ns/shacl#example')
+        self.assertTrue(type(SH) == Namespace, "SH no longer a Namespace, update test.")
+        self.assertTrue(ref in SH, "sh:example not in SH")
+
+        ref = URIRef('http://www.w3.org/2000/01/rdf-schema#label')
+        self.assertTrue(ref in RDFS, "ClosedNamespace(RDFS) does not include rdfs:label")
+        ref = URIRef('http://www.w3.org/2000/01/rdf-schema#example')
+        self.assertFalse(ref in RDFS, "ClosedNamespace(RDFS) includes out-of-ns member rdfs:example")
+
+        ref = URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#type')
+        self.assertTrue(ref in RDF, "_RDFNamespace does not include rdf:type")

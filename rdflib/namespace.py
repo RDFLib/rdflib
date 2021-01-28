@@ -146,8 +146,8 @@ class Namespace(str):
     def __repr__(self):
         return "Namespace(%r)" % str(self)
     
-    def __contains__(self, other):
-        return other.startswith(self) # test namespace membership with "ref in ns" syntax
+    def __contains__(self, ref):
+        return ref.startswith(self) # test namespace membership with "ref in ns" syntax
 
 
 class URIPattern(str):
@@ -194,11 +194,10 @@ class ClosedNamespace(object):
             self.__uris[t] = URIRef(self.uri + t)
 
     def term(self, name):
-        uri = self.__uris.get(name)
-        if uri is None:
+        if name not in self.__uris:
             raise KeyError("term '{}' not in namespace '{}'".format(name, self.uri))
         else:
-            return uri
+            return self.__uris[name]
 
     def __getitem__(self, key, default=None):
         return self.term(key)
@@ -220,9 +219,12 @@ class ClosedNamespace(object):
 
     def __dir__(self):
         return list(self._ClosedNamespace__uris)
+    
+    def __contains__(self, ref):
+        return ref in self.__uris.values() # test namespace membership with "ref in ns" syntax
 
     def _ipython_key_completions_(self):
-        return dir(self)
+        return dir(self.uri)
 
 
 class _RDFNamespace(ClosedNamespace):
@@ -596,6 +598,13 @@ class NamespaceManager(object):
         self.bind("rdf", RDF)
         self.bind("rdfs", RDFS)
         self.bind("xsd", XSD)
+
+    def __contians__(self, ref):
+        # checks if a reference is in any of the managed namespaces with syntax
+        # "ref in manager". Note that we don't use "ref in ns", as 
+        # NamespaceManager.namespaces() returns Iterator[Tuple[str, URIRef]]
+        # rather than Iterator[Tuple[str, Namespace]]
+        return any(ref.startswith(ns) for prefix, ns in self.namespaces())
 
     def reset(self):
         self.__cache = {}
