@@ -101,13 +101,10 @@ class NamespacePrefixTest(unittest.TestCase):
         def add_not_in_namespace(s):
             return FOAF[s]
 
-        # a blatantly non-existent FOAF property
+        # a non-existent FOAF property
         self.assertRaises(KeyError, add_not_in_namespace, "blah")
 
-        # a deprecated FOAF property
-        self.assertRaises(KeyError, add_not_in_namespace, "firstName")
-
-        # a property name within the core FOAF namespace
+        # a property name within the FOAF namespace
         self.assertEqual(
             add_not_in_namespace("givenName"),
             URIRef("http://xmlns.com/foaf/0.1/givenName"),
