@@ -1,8 +1,7 @@
-from rdflib.rdflib.namespace import Namespace
 import unittest
 
 from rdflib.graph import Graph
-from rdflib.namespace import FOAF, RDF, RDFS, SH
+from rdflib.namespace import Namespace, FOAF, RDF, RDFS, SH
 from rdflib.term import URIRef
 
 
