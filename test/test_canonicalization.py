@@ -10,7 +10,7 @@ from io import StringIO
 
 def get_digest_value(rdf, mimetype):
     graph = Graph()
-    graph.load(StringIO(rdf), format=mimetype)
+    graph.parse(StringIO(rdf), format=mimetype)
     stats = {}
     ig = to_isomorphic(graph)
     result = ig.graph_digest(stats)

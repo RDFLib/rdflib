@@ -213,7 +213,7 @@ class PrettyXMLSerializer(Serializer):
                 self.subject(subject, 1)
 
         writer.pop(RDF.RDF)
-        stream.write("\n".encode("latin-1"))
+        stream.write(b'\n')
 
         # Set to None so that the memory can get garbage collected.
         self.__serialized = None

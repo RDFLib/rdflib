@@ -42,7 +42,7 @@ Diff the two graphs::
 Present in both::
 
     >>> def dump_nt_sorted(g):
-    ...     for l in sorted(g.serialize(format='nt').splitlines()):
+    ...     for l in sorted(g.serialize(format='nt', encoding='ascii').splitlines()):
     ...         if l: print(l.decode('ascii'))
 
     >>> dump_nt_sorted(in_both) #doctest: +SKIP

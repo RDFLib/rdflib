@@ -23,7 +23,7 @@ A tiny example:
     ...     if (s, p, o) not in g:
     ...         raise Exception("It better be!")
 
-    >>> s = g.serialize(format='nt')
+    >>> s = g.serialize(format='nt', encoding='ascii')
     >>>
     >>> sorted(g) == [
     ...  (URIRef(u'http://meetings.example.com/cal#m1'),

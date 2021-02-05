@@ -15,6 +15,8 @@ build/
 /docs/draft/
 *~
 test_reports/*latest.ttl
+.venv/
+venv/
 # PyCharm
 .idea/
 prepare_changelog.sh

@@ -45,7 +45,7 @@ class TriXSerializer(Serializer):
             raise Exception("Unknown graph type: " + type(self.store))
 
         self.writer.pop()
-        stream.write("\n".encode("latin-1"))
+        stream.write(b'\n')
 
     def _writeGraph(self, graph):
         self.writer.push(TRIXNS["graph"])

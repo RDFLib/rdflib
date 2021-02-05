@@ -28,7 +28,7 @@ class NQuadsSerializer(Serializer):
                 stream.write(
                     _nq_row(triple, context.identifier).encode(encoding, "replace")
                 )
-        stream.write("\n".encode("latin-1"))
+        stream.write(b'\n')
 
 
 def _nq_row(triple, context):

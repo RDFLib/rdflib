@@ -70,7 +70,7 @@ def serialize_and_load(sourceGraph, makeSerializer):
     stream = serialize(sourceGraph, makeSerializer, False)
     stream.seek(0)
     reparsedGraph = ConjunctiveGraph()
-    reparsedGraph.load(stream)
+    reparsedGraph.parse(stream, format='xml')
     return reparsedGraph
 
 

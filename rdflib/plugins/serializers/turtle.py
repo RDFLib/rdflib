@@ -250,7 +250,7 @@ class TurtleSerializer(RecursiveSerializer):
                 self.write("\n")
 
         self.endDocument()
-        stream.write("\n".encode("latin-1"))
+        stream.write(b'\n')
 
         self.base = None
 
