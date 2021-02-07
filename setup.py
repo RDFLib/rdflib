@@ -106,6 +106,19 @@ def _cythonizable_source_files():
 
     basenames_list = [
         "collection.py",
+        "compare.py",
+        "compat.py",
+        "container.py",
+        "events.py",
+        "graph.py",
+        "namespace.py",
+        "parser.py",
+        "paths.py",
+        "query.py",
+        "resource.py",
+        "serializer.py",
+        "term.py",
+        "util.py",
     ]
 
     for one_filename in basenames_list:
@@ -165,6 +178,7 @@ if USE_CYTHON:
     kwargs["options"]={
             'build': {'build_lib': 'build_build_ext'},
         }
+
 
 
 setup(
@@ -227,3 +241,4 @@ Read the docs at:
     },
     **kwargs
 )
+
