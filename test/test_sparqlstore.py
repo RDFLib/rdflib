@@ -67,6 +67,19 @@ class SPARQLStoreDBPediaTestCase(unittest.TestCase):
         for i in res:
             assert type(i[0]) == Literal, i[0].n3()
 
+    def test_query_with_added_rdf_prolog(self):
+        prologue = """\
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX xyzzy: <http://www.w3.org/2004/02/skos/core#>
+        """
+        query = """\
+        SELECT ?label WHERE
+            { ?s a xyzzy:Concept ; xyzzy:prefLabel ?label . } LIMIT 10
+        """
+        res = helper.query_with_retry(self.graph, prologue + query)
+        for i in res:
+            assert type(i[0]) == Literal, i[0].n3()
+
     def test_counting_graph_and_store_queries(self):
         query = """
             SELECT ?s

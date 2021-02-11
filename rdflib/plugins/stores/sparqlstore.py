@@ -167,7 +167,7 @@ class SPARQLStore(SPARQLConnector, Store):
         self.debug = DEBUG
         assert isinstance(query, str)
 
-        if initNs is not None:
+        if initNs is not None and len(initNs) > 0:
             query = self._inject_prefixes(query, initNs)
 
         if initBindings:
