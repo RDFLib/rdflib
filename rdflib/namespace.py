@@ -626,7 +626,7 @@ class NamespaceManager(object):
         self.bind("rdfs", RDFS)
         self.bind("xsd", XSD)
 
-    def __contians__(self, ref):
+    def __contains__(self, ref):
         # checks if a reference is in any of the managed namespaces with syntax
         # "ref in manager". Note that we don't use "ref in ns", as 
         # NamespaceManager.namespaces() returns Iterator[Tuple[str, URIRef]]
