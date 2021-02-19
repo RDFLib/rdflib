@@ -38,7 +38,6 @@ import logging
 import warnings
 import math
 
-import base64
 import xml.dom.minidom
 
 from datetime import date, time, datetime, timedelta
@@ -53,6 +52,7 @@ from isodate import (
     parse_duration,
     duration_isoformat,
 )
+from base64 import b64decode, b64encode
 from binascii import hexlify, unhexlify
 
 import rdflib
@@ -1435,6 +1435,7 @@ _XSD_DAYTIMEDURATION = URIRef(_XSD_PFX + "dayTimeDuration")
 _XSD_YEARMONTHDURATION = URIRef(_XSD_PFX + "yearMonthDuration")
 
 _OWL_RATIONAL = URIRef("http://www.w3.org/2002/07/owl#rational")
+_XSD_B64BINARY = URIRef(_XSD_PFX + "base64Binary")
 _XSD_HEXBINARY = URIRef(_XSD_PFX + "hexBinary")
 # TODO: gYearMonth, gYear, gMonthDay, gDay, gMonth
 
@@ -1559,6 +1560,8 @@ _GenericPythonToXSDRules = [
 _SpecificPythonToXSDRules = [
     ((str, _XSD_HEXBINARY), hexlify),
     ((bytes, _XSD_HEXBINARY), hexlify),
+    ((str, _XSD_B64BINARY), b64encode),
+    ((bytes, _XSD_B64BINARY), b64encode),
 ]
 
 XSDToPython = {
@@ -1593,7 +1596,7 @@ XSDToPython = {
     URIRef(_XSD_PFX + "unsignedByte"): int,
     URIRef(_XSD_PFX + "float"): float,
     URIRef(_XSD_PFX + "double"): float,
-    URIRef(_XSD_PFX + "base64Binary"): lambda s: base64.b64decode(s),
+    URIRef(_XSD_PFX + "base64Binary"): b64decode,
     URIRef(_XSD_PFX + "anyURI"): None,
     _RDF_XMLLITERAL: _parseXML,
     _RDF_HTMLLITERAL: _parseHTML,
