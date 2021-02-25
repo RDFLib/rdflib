@@ -110,15 +110,21 @@ def _cythonizable_source_files():
         "compat.py",
         "container.py",
         "events.py",
+        "exceptions.py",
         "graph.py",
         "namespace.py",
         "parser.py",
         "paths.py",
+        "plugin.py",
         "query.py",
         "resource.py",
         "serializer.py",
+        "store.py",
         "term.py",
         "util.py",
+        "void.py",
+        "plugins/parsers/notation3.py",
+        "plugins/stores/memory.py",
     ]
 
     for one_filename in basenames_list:
