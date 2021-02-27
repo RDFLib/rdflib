@@ -1399,7 +1399,7 @@ class SinkParser:
                     self._thisDoc, self.line, argstr, i, "qname cannot end with \\"
                 )
 
-            if c == ".":
+            if argstr[i - 1] == ".":
                 # localname cannot end in .
                 if len(ln) == 0 and start == i:
                     return -1
