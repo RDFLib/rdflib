@@ -1197,29 +1197,26 @@ class SinkParser:
             return -1
 
         elif argstr[i] == "<":
-            i += 1
-            st = i
-            len_argstr = len(argstr)
-            while i < len_argstr:
-                if argstr[i] == ">":
-                    uref = argstr[st:i]  # the join should dealt with "":
+            st = i + 1
+            i = argstr.find(">", st)
+            if i >= 0:
+                uref = argstr[st:i]  # the join should dealt with "":
 
-                    # expand unicode escapes
-                    uref = unicodeEscape8.sub(unicodeExpand, uref)
-                    uref = unicodeEscape4.sub(unicodeExpand, uref)
+                # expand unicode escapes
+                uref = unicodeEscape8.sub(unicodeExpand, uref)
+                uref = unicodeEscape4.sub(unicodeExpand, uref)
 
-                    if self._baseURI:
-                        uref = join(self._baseURI, uref)  # was: uripath.join
-                    else:
-                        assert (
-                            ":" in uref
-                        ), "With no base URI, cannot deal with relative URIs"
-                    if argstr[i - 1] == "#" and not uref[-1:] == "#":
-                        uref += "#"  # She meant it! Weirdness in urlparse?
-                    symb = self._store.newSymbol(uref)
-                    res.append(self._variables.get(symb, symb))
-                    return i + 1
-                i += 1
+                if self._baseURI:
+                    uref = join(self._baseURI, uref)  # was: uripath.join
+                else:
+                    assert (
+                        ":" in uref
+                    ), "With no base URI, cannot deal with relative URIs"
+                if argstr[i - 1] == "#" and not uref[-1:] == "#":
+                    uref += "#"  # She meant it! Weirdness in urlparse?
+                symb = self._store.newSymbol(uref)
+                res.append(self._variables.get(symb, symb))
+                return i + 1
             self.BadSyntax(argstr, j, "unterminated URI reference")
 
         elif self.keywordsSet:
@@ -1332,7 +1329,6 @@ class SinkParser:
             return -1
         len_argstr = len(argstr)
         if c not in _notNameChars:
-            #ln = c
             j = i
             i += 1
 
