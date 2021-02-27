@@ -3,7 +3,6 @@
 import os
 import re
 import sys
-import platform
 import importlib
 from distutils.core import setup
 from setuptools import find_packages
@@ -121,18 +120,6 @@ def _cythonizable_source_files():
         "term.py",
         "util.py",
     ]
-
-    if platform.machine() == "AMD64":
-        # Careful approach with ppc
-        basenames_list += [
-            "exceptions.py",
-            "plugin.py",
-            "store.py",
-            "void.py",
-            "plugins/parsers/notation3.py",
-            "plugins/stores/memory.py",
-        ]
-
 
     for one_filename in basenames_list:
         one_path_name = os.path.join(survol_base_dir, one_filename)
