@@ -1358,16 +1358,16 @@ class SinkParser:
 
             i += 1
             lastslash = False
-            # start = i # TODO first char .
+            start = i
             ln = ""
             while i < len_argstr:
                 c = argstr[i]
-                if not lastslash and c == "\\":
+                if c == "\\" and not lastslash:  # Very rare.
                     lastslash = True
-                    i += 1
-
-                elif lastslash or c not in allowedChars:
-
+                    if start < i:
+                        ln += argstr[start:i]
+                    start = i + 1
+                elif c not in allowedChars or lastslash: # Most common case is "a-zA-Z"
                     if lastslash:
                         if c not in escapeChars:
                             raise BadSyntax(
@@ -1377,7 +1377,7 @@ class SinkParser:
                                 i,
                                 "illegal escape " + c,
                             )
-                    elif c == "%":
+                    elif c == "%": # Very rare.
                         if (
                             argstr[i + 1] not in hexChars
                             or argstr[i + 2] not in hexChars
@@ -1389,24 +1389,24 @@ class SinkParser:
                                 i,
                                 "illegal hex escape " + c,
                             )
-
-                    ln += c
-                    i += 1
                     lastslash = False
                 else:
                     break
+                i += 1
 
             if lastslash:
                 raise BadSyntax(
                     self._thisDoc, self.line, argstr, i, "qname cannot end with \\"
                 )
 
-            if argstr[i - 1] == ".":
+            if c == ".":
                 # localname cannot end in .
-                ln = ln[:-1]
-                if not ln:
+                if len(ln) == 0 and start == i:
                     return -1
                 i -= 1
+
+            if start < i:
+                ln += argstr[start:i]
 
             res.append((pfx, ln))
             return i
