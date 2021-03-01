@@ -303,15 +303,15 @@ option_noregen = 0  # If set, do not regenerate genids on output
 # characters. The XML spec switched to assuming unknown things were name
 # characaters.
 # _namechars = string.lowercase + string.uppercase + string.digits + '_-'
-_notQNameChars = list("\t\r\n !\"#$&'()*,+/;<=>?@[\\]^`{|}~")  # else valid qname :-/
-_notKeywordsChars = _notQNameChars + ["."]
-_notNameChars = _notQNameChars + [":"]  # Assume anything else valid name :-/
+_notQNameChars = set("\t\r\n !\"#$&'()*,+/;<=>?@[\\]^`{|}~")  # else valid qname :-/
+_notKeywordsChars = _notQNameChars | {"."}
+_notNameChars = _notQNameChars | {":"}  # Assume anything else valid name :-/
 _rdfns = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 
-hexChars = list("ABCDEFabcdef0123456789")
-escapeChars = list("(_~.-!$&'()*+,;=/?#@%)")  # valid for \ escapes in localnames
-numberChars = list("0123456789-")
-numberCharsPlus = numberChars + ["+", "."]
+hexChars = set("ABCDEFabcdef0123456789")
+escapeChars = set("(_~.-!$&'()*+,;=/?#@%)")  # valid for \ escapes in localnames
+numberChars = set("0123456789-")
+numberCharsPlus = numberChars | {"+", "."}
 
 def unicodeExpand(m):
     try:
@@ -848,7 +848,7 @@ class SinkParser:
         if j < 0:
             return j  # nope
 
-        while argstr[j] in ["!", "^"]:  # no spaces, must follow exactly (?)
+        while argstr[j] in {"!", "^"}:  # no spaces, must follow exactly (?)
             ch = argstr[j]
             subj = res.pop()
             obj = self.blankNode(uri=self.here(j))
@@ -1240,10 +1240,10 @@ class SinkParser:
         try:
             while True:
                 ch = argstr[i]
-                if ch in [" ", "\t"]:
+                if ch in {" ", "\t"}:
                     i += 1
                     continue
-                elif ch not in ["#", "\r", "\n"]:
+                elif ch not in {"#", "\r", "\n"}:
                     return i
                 break
         except IndexError:
@@ -1585,11 +1585,11 @@ class SinkParser:
             if ch == delim1:
                 j = i
                 continue
-            elif ch in ['"', "'"] and ch != delim1:
+            elif ch in {'"', "'"} and ch != delim1:
                 ustr += ch
                 j = i + 1
                 continue
-            elif ch in ["\r", "\n"]:
+            elif ch in {"\r", "\n"}:
                 if delim == delim1:
                     raise BadSyntax(
                         self._thisDoc,
