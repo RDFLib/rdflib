@@ -101,7 +101,7 @@ def test_cases():
             continue  # skip double testing
         for f, infmt in all_nt_files():
             if (testfmt, f) not in SKIP:
-                yield roundtrip, (infmt, testfmt, f)
+                roundtrip((infmt, testfmt, f))
 
 
 def test_n3():
@@ -118,7 +118,7 @@ def test_n3():
             continue  # skip double testing
         for f, infmt in all_n3_files():
             if (testfmt, f) not in SKIP:
-                yield roundtrip, (infmt, testfmt, f)
+                roundtrip((infmt, testfmt, f))
 
 
 if __name__ == "__main__":

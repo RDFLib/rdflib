@@ -518,16 +518,13 @@ def test_dawg():
     setFlags()
 
     if SPARQL10Tests:
-        for t in nose_tests(testers, "test/DAWG/data-r2/manifest-evaluation.ttl"):
-            yield t
+        return [t for t in nose_tests(testers, "test/DAWG/data-r2/manifest-evaluation.ttl")]
 
     if SPARQL11Tests:
-        for t in nose_tests(testers, "test/DAWG/data-sparql11/manifest-all.ttl"):
-            yield t
+        return [t for t in nose_tests(testers, "test/DAWG/data-sparql11/manifest-all.ttl")]
 
     if RDFLibTests:
-        for t in nose_tests(testers, "test/DAWG/rdflib/manifest.ttl"):
-            yield t
+        return [t for t in nose_tests(testers, "test/DAWG/rdflib/manifest.ttl")]
 
     resetFlags()
 
