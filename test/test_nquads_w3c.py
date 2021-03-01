@@ -32,8 +32,9 @@ def test_nquads(tests=None):
                     break
             else:
                 continue
-
-        t()
+        test_method = t[0]
+        test_arguments = t[1]
+        test_method(test_arguments)
 
 
 if __name__ == "__main__":
