@@ -55,11 +55,11 @@ def test_graph_ids():
             gid = g.identifier
             assert isinstance(gid, Identifier)
 
-    yield check, dict(data=DATA, publicID=PUBLIC_ID, format="turtle")
+    check(dict(data=DATA, publicID=PUBLIC_ID, format="turtle"))
 
     source = StringInputSource(DATA.encode("utf8"))
     source.setPublicId(PUBLIC_ID)
-    yield check, dict(source=source, format="turtle")
+    check(dict(source=source, format="turtle"))
 
 
 if __name__ == "__main__":

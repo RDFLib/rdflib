@@ -33,7 +33,7 @@ def test_nt(tests=None):
             else:
                 continue
 
-        yield t
+        t()
 
 
 if __name__ == "__main__":

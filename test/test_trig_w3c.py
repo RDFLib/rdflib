@@ -76,7 +76,7 @@ def test_trig(tests=None):
             else:
                 continue
 
-        yield t
+        t()
 
 
 if __name__ == "__main__":

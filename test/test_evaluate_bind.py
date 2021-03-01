@@ -19,17 +19,15 @@ def test_bind():
         )
         assert r.bindings[0][Variable(var)] == obj
 
-    yield (check, 'bind("thing" as ?name)', "name", Literal("thing"))
+    check('bind("thing" as ?name)', "name", Literal("thing"))
 
-    yield (
-        check,
+    check(
         "bind(<http://example.org/other> as ?other)",
         "other",
         URIRef("http://example.org/other"),
     )
 
-    yield (
-        check,
+    check(
         "bind(:Thing as ?type)",
         "type",
         URIRef("http://example.org/ns#Thing"),

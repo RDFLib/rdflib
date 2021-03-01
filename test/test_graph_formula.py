@@ -137,7 +137,7 @@ def testFormulaStores():
             continue
         if not s.getClass().formula_aware:
             continue
-        yield testFormulaStore, s.name
+        testFormulaStore(s.name)
 
 
 if __name__ == "__main__":
