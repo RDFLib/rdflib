@@ -303,14 +303,15 @@ option_noregen = 0  # If set, do not regenerate genids on output
 # characters. The XML spec switched to assuming unknown things were name
 # characaters.
 # _namechars = string.lowercase + string.uppercase + string.digits + '_-'
-_notQNameChars = "\t\r\n !\"#$&'()*,+/;<=>?@[\\]^`{|}~"  # else valid qname :-/
-_notKeywordsChars = _notQNameChars + "."
-_notNameChars = _notQNameChars + ":"  # Assume anything else valid name :-/
+_notQNameChars = set("\t\r\n !\"#$&'()*,+/;<=>?@[\\]^`{|}~")  # else valid qname :-/
+_notKeywordsChars = _notQNameChars | {"."}
+_notNameChars = _notQNameChars | {":"}  # Assume anything else valid name :-/
 _rdfns = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 
-hexChars = "ABCDEFabcdef0123456789"
-escapeChars = "(_~.-!$&'()*+,;=/?#@%)"  # valid for \ escapes in localnames
-
+hexChars = set("ABCDEFabcdef0123456789")
+escapeChars = set("(_~.-!$&'()*+,;=/?#@%)")  # valid for \ escapes in localnames
+numberChars = set("0123456789-")
+numberCharsPlus = numberChars | {"+", "."}
 
 def unicodeExpand(m):
     try:
@@ -847,7 +848,7 @@ class SinkParser:
         if j < 0:
             return j  # nope
 
-        while argstr[j] in "!^":  # no spaces, must follow exactly (?)
+        while argstr[j] in {"!", "^"}:  # no spaces, must follow exactly (?)
             ch = argstr[j]
             subj = res.pop()
             obj = self.blankNode(uri=self.here(j))
@@ -1239,10 +1240,10 @@ class SinkParser:
         try:
             while True:
                 ch = argstr[i]
-                if ch in " \t":
+                if ch in {" ", "\t"}:
                     i += 1
                     continue
-                elif ch not in "#\r\n":
+                elif ch not in {"#", "\r", "\n"}:
                     return i
                 break
         except IndexError:
@@ -1272,7 +1273,7 @@ class SinkParser:
             return -1
         j += 1
         i = j
-        if argstr[j] in "0123456789-":
+        if argstr[j] in numberChars:
             self.BadSyntax(argstr, j, "Varible name can't start with '%s'" % argstr[j])
         len_argstr = len(argstr)
         while i < len_argstr and argstr[i] not in _notKeywordsChars:
@@ -1304,7 +1305,7 @@ class SinkParser:
         if j < 0:
             return -1
 
-        if argstr[j] in "0123456789-" or argstr[j] in _notKeywordsChars:
+        if argstr[j] in numberChars or argstr[j] in _notKeywordsChars:
             return -1
         i = j
         len_argstr = len(argstr)
@@ -1325,7 +1326,7 @@ class SinkParser:
             return -1
 
         c = argstr[i]
-        if c in "0123456789-+.":
+        if c in numberCharsPlus:
             return -1
         len_argstr = len(argstr)
         if c not in _notNameChars:
@@ -1457,7 +1458,7 @@ class SinkParser:
                 i = j
 
             ch = argstr[i]
-            if ch in "-+0987654321.":
+            if ch in numberCharsPlus:
                 m = exponent_syntax.match(argstr, i)
                 if m:
                     j = m.end()
@@ -1584,11 +1585,11 @@ class SinkParser:
             if ch == delim1:
                 j = i
                 continue
-            elif ch in ['"', "'"] and ch != delim1:
+            elif ch in {'"', "'"} and ch != delim1:
                 ustr += ch
                 j = i + 1
                 continue
-            elif ch in "\r\n":
+            elif ch in {"\r", "\n"}:
                 if delim == delim1:
                     raise BadSyntax(
                         self._thisDoc,
