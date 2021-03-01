@@ -509,14 +509,13 @@ class SinkParser:
             if tok not in self.keywords:
                 return -1  # No, this has neither keywords declaration nor "@"
 
-        len_tok = len(tok)
+        i_plus_len_tok = i + len(tok)
         if (
-            argstr[i : i + len_tok] == tok
-            and (argstr[i + len_tok] in _notKeywordsChars)
-            or (colon and argstr[i + len_tok] == ":")
+            argstr[i : i_plus_len_tok] == tok
+            and (argstr[i_plus_len_tok] in _notKeywordsChars)
+            or (colon and argstr[i_plus_len_tok] == ":")
         ):
-            i += len_tok
-            return i
+            return i_plus_len_tok
         else:
             return -1
 
