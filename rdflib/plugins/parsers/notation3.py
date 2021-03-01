@@ -1584,7 +1584,7 @@ class SinkParser:
             if ch == delim1:
                 j = i
                 continue
-            elif ch in "\"'" and ch != delim1:
+            elif ch in ['"', "'"] and ch != delim1:
                 ustr += ch
                 j = i + 1
                 continue
