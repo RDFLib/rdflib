@@ -29,7 +29,7 @@ before_install:
 install:
     - pip install --default-timeout 60 -r requirements.txt
     - pip install --default-timeout 60 -r requirements.dev.txt
-    - pip install --default-timeout 60 coverage coveralls nose-timer && export HAS_COVERALLS=1
+    - pip install --default-timeout 60 coveralls && export HAS_COVERALLS=1
     - python setup.py install
 
 before_script:
@@ -37,6 +37,7 @@ before_script:
 
 script:
     - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=rdflib
+    - coverage report
 
 after_success:
     - if [[ $HAS_COVERALLS ]] ; then coveralls ; fi
