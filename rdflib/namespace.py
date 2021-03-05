@@ -798,6 +798,9 @@ class NamespaceManager(object):
         # When documenting explain that override only applies in what cases
         if prefix is None:
             prefix = ""
+        elif " " in prefix:
+            raise KeyError("Prefixes may not contain spaces.")
+            
         bound_namespace = self.store.namespace(prefix)
         # Check if the bound_namespace contains a URI
         # and if so convert it into a URIRef for comparison
