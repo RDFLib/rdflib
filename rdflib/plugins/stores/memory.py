@@ -477,7 +477,7 @@ class Memory(Store):
             self.__defaultContexts = triple_context
         # if the context info is the same as default, no need to store it
         if triple_context == self.__defaultContexts:
-            del triple_context
+            del self.__tripleContexts[triple]
 
     def __get_context_for_triple(self, triple, skipQuoted=False):
         """return a list of contexts (str) for the triple, skipping
