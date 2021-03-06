@@ -446,7 +446,7 @@ class Memory(Store):
             # we know the triple exists somewhere in the store
             try:
                 triple_context = self.__tripleContexts[triple]
-            except IndexError:
+            except KeyError:
                 # triple exists with default ctx info
                 # start with a copy of the default ctx info
                 triple_context = self.__tripleContexts[triple] = self.__defaultContexts.copy()
