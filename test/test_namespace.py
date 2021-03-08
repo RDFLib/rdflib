@@ -31,6 +31,15 @@ class NamespacePrefixTest(unittest.TestCase):
             g.compute_qname(URIRef("http://foo/bar/")),
             ("ns1", URIRef("http://foo/bar/"), ""),
         )
+        # should compute qnames of URNs correctly as well
+        self.assertEqual(
+            g.compute_qname(URIRef("urn:ISSN:0167-6423")),
+            ("ns5", URIRef("urn:ISSN:"), "0167-6423"),
+        )
+        self.assertEqual(
+            g.compute_qname(URIRef("urn:ISSN:")),
+            ("ns5", URIRef("urn:ISSN:"), ""),
+        )
 
     def test_reset(self):
         data = (
