@@ -897,7 +897,7 @@ class NamespaceManager(object):
 NAME_START_CATEGORIES = ["Ll", "Lu", "Lo", "Lt", "Nl"]
 SPLIT_START_CATEGORIES = NAME_START_CATEGORIES + ["Nd"]
 NAME_CATEGORIES = NAME_START_CATEGORIES + ["Mc", "Me", "Mn", "Lm", "Nd"]
-ALLOWED_NAME_CHARS = ["\u00B7", "\u0387", "-", ".", "_", ":", "%"]
+ALLOWED_NAME_CHARS = ["\u00B7", "\u0387", "-", ".", "_", "%"]
 
 
 # http://www.w3.org/TR/REC-xml-names/#NT-NCName
@@ -914,7 +914,7 @@ def is_ncname(name):
             for i in range(1, len(name)):
                 c = name[i]
                 if not category(c) in NAME_CATEGORIES:
-                    if c != ":" and c in ALLOWED_NAME_CHARS:
+                    if c in ALLOWED_NAME_CHARS:
                         continue
                     return 0
                 # if in compatibility area
