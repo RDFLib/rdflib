@@ -444,20 +444,24 @@ class Memory(Store):
             subj, pred, obj = triple
             _ = self.__spo[subj][pred][obj]
             # we know the triple exists somewhere in the store
-            if triple not in self.__tripleContexts:
+            try:
+                triple_context = self.__tripleContexts[triple]
+            except KeyError:
                 # triple exists with default ctx info
                 # start with a copy of the default ctx info
-                self.__tripleContexts[triple] = self.__defaultContexts.copy()
+                triple_context = self.__tripleContexts[triple] = self.__defaultContexts.copy()
 
-            self.__tripleContexts[triple][ctx] = quoted
+            triple_context[ctx] = quoted
+
             if not quoted:
-                self.__tripleContexts[triple][None] = quoted
+                triple_context[None] = quoted
+
         except KeyError:
             # the triple didn't exist before in the store
             if quoted:  # this context only
-                self.__tripleContexts[triple] = {ctx: quoted}
+                triple_context = self.__tripleContexts[triple] = {ctx: quoted}
             else:  # default context as well
-                self.__tripleContexts[triple] = {ctx: quoted, None: quoted}
+                triple_context = self.__tripleContexts[triple] = {ctx: quoted, None: quoted}
 
         # if the triple is not quoted add it to the default context
         if not quoted:
@@ -470,10 +474,9 @@ class Memory(Store):
 
         # if this is the first ever triple in the store, set default ctx info
         if self.__defaultContexts is None:
-            self.__defaultContexts = self.__tripleContexts[triple]
-
+            self.__defaultContexts = triple_context
         # if the context info is the same as default, no need to store it
-        if self.__tripleContexts[triple] == self.__defaultContexts:
+        if triple_context == self.__defaultContexts:
             del self.__tripleContexts[triple]
 
     def __get_context_for_triple(self, triple, skipQuoted=False):
