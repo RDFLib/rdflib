@@ -91,16 +91,16 @@ def test_turtle_namespace():
     )
     graph.add(
         (
-            URIRef("http://example.org/name_with_(parantheses)"),
+            URIRef("urn:ISSN:0167-6423"),
             RDFS.label,
-            Literal("URI with parantheses"),
+            Literal("Science of Computer Programming"),
         )
     )
     graph.add(
         (
-            URIRef("urn:ISSN:0167-6423"),
+            URIRef("http://example.org/name_with_(parantheses)"),
             RDFS.label,
-            Literal("Science of Computer Programming"),
+            Literal("URI with parantheses"),
         )
     )
     output = [
