@@ -98,9 +98,9 @@ def test_turtle_namespace():
     )
     graph.add(
         (
-            URIRef("http://example.org/name_with_(parantheses)"),
+            URIRef("http://example.org/name_with_(parenthesis)"),
             RDFS.label,
-            Literal("URI with parantheses"),
+            Literal("URI with parenthesis"),
         )
     )
     output = [
@@ -112,7 +112,7 @@ def test_turtle_namespace():
     assert "RO_has_phenotype:" in output
     assert "GENO:0000385" in output
     assert "SERIAL:0167-6423" in output
-    assert "EX:name_with_(parantheses)" in output
+    assert "EX:name_with_(parenthesis)" in output
 
 
 if __name__ == "__main__":

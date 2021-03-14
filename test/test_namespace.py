@@ -43,10 +43,10 @@ class NamespacePrefixTest(unittest.TestCase):
             ("ns5", URIRef("urn:ISSN:"), ""),
         )
 
-        # should compute qnames with parantheses correctly
+        # should compute qnames with parenthesis correctly
         self.assertEqual(
-            g.compute_qname(URIRef("http://foo/bar/name_with_(parantheses)")),
-            ("ns1", URIRef("http://foo/bar/"), "name_with_(parantheses)"),
+            g.compute_qname(URIRef("http://foo/bar/name_with_(parenthesis)")),
+            ("ns1", URIRef("http://foo/bar/"), "name_with_(parenthesis)"),
         )
 
     def test_reset(self):
