@@ -224,7 +224,7 @@ class TestLiteral(unittest.TestCase):
             (
                 45,
                 Literal(Decimal(1.0), datatype=XSD.integer),
-                Literal(u"1", datatype=XSD.string),
+                Literal("1", datatype=XSD.string),
                 Literal("11", datatype=XSD.string),
             ),
             (

@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 
 __doc__ = """
 A Describer is a stateful utility for creating RDF statements in a
@@ -102,7 +98,7 @@ Full example in the ``to_rdf`` method below::
     ...     </cv:hasWorkHistory>
     ...   </cv:CV>
     ... </rdf:RDF>
-    ... ''')
+    ... ''', format="xml")
     >>>
     >>> from rdflib.compare import isomorphic
     >>> isomorphic(person_graph, expected)  #doctest: +SKIP

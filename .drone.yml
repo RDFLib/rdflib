@@ -1,0 +1,63 @@
+---
+kind: pipeline
+name: python-3-6
+type: docker
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: test
+  image: python:3.6
+  commands:
+  - pip install -U setuptools pip
+  - bash .travis.fuseki_install_optional.sh
+  - pip install --default-timeout 60 -r requirements.txt
+  - pip install --default-timeout 60 -r requirements.dev.txt
+  - pip install --default-timeout 60 coveralls && export HAS_COVERALLS=1
+  - python setup.py install
+  - flake8 --exit-zero rdflib
+  - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=rdflib
+  - coverage report
+
+---
+kind: pipeline
+name: python-3-7
+type: docker
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: test
+  image: python:3.7
+  commands:
+  - bash .travis.fuseki_install_optional.sh
+  - pip install --default-timeout 60 -r requirements.txt
+  - pip install --default-timeout 60 -r requirements.dev.txt
+  - pip install --default-timeout 60 coveralls && export HAS_COVERALLS=1
+  - python setup.py install
+  - flake8 --exit-zero rdflib
+  - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=rdflib
+  - coverage report
+
+---
+kind: pipeline
+name: python-3-8
+type: docker
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: test
+  image: python:3.8
+  commands:
+  - bash .travis.fuseki_install_optional.sh
+  - pip install --default-timeout 60 -r requirements.txt
+  - pip install --default-timeout 60 -r requirements.dev.txt
+  - pip install --default-timeout 60 coveralls && export HAS_COVERALLS=1
+  - python setup.py install
+  - flake8 --exit-zero rdflib
+  - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=rdflib
+  - coverage report

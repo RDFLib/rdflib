@@ -243,17 +243,17 @@ class TestUtilTermConvert(unittest.TestCase):
 
     def test_util_from_n3_expectpartialidempotencewithn3(self):
         for n3 in (
-            "<http://ex.com/foo>",
+            '<http://ex.com/foo>',
             '"foo"@de',
-            u"<http://ex.com/漢字>",
-            u"<http://ex.com/a#あ>",
+            '<http://ex.com/漢字>',
+            '<http://ex.com/a#あ>',
             # '"\\""', # exception as '\\"' --> '"' by orig parser as well
             '"""multi\n"line"\nstring"""@en',
         ):
             self.assertEqual(
-                util.from_n3(n3).n3(),
+                util.from_n3(n3).n3(), 
                 n3,
-                "from_n3(%(n3e)r).n3() != %(n3e)r" % {"n3e": n3},
+                'from_n3(%(n3e)r).n3() != %(n3e)r' % {'n3e': n3},
             )
 
     def test_util_from_n3_expectsameasn3parser(self):
@@ -293,12 +293,12 @@ class TestUtilTermConvert(unittest.TestCase):
 
     def test_util_from_n3_expectquotedgraph(self):
         s = "{<http://example.com/schema>}"
-        res = util.from_n3(s, default=None, backend="IOMemory")
+        res = util.from_n3(s, default=None, backend="Memory")
         self.assertTrue(isinstance(res, QuotedGraph))
 
     def test_util_from_n3_expectgraph(self):
         s = "[<http://example.com/schema>]"
-        res = util.from_n3(s, default=None, backend="IOMemory")
+        res = util.from_n3(s, default=None, backend="Memory")
         self.assertTrue(isinstance(res, Graph))
 
 

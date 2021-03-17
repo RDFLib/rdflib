@@ -20,11 +20,7 @@ underlying Graph:
 * Numerical Ranges
 
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
-# from __future__ import unicode_literals
 from fractions import Fraction
 
 __all__ = [
@@ -78,7 +74,10 @@ _invalid_uri_chars = '<>" {}|\\^`'
 
 
 def _is_valid_uri(uri):
-    return all(map(lambda c: ord(c) > 256 or c not in _invalid_uri_chars, uri))
+    for c in _invalid_uri_chars:
+        if c in uri:
+            return False
+    return True
 
 
 _lang_tag_regex = compile("^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$")
@@ -303,7 +302,7 @@ class URIRef(Identifier):
         """
         if isinstance(self, RDFLibGenid):
             parsed_uri = urlparse("%s" % self)
-            return BNode(value=parsed_uri.path[len(rdflib_skolem_genid):])
+            return BNode(value=parsed_uri.path[len(rdflib_skolem_genid) :])
         elif isinstance(self, Genid):
             bnode_id = "%s" % self
             if bnode_id in skolems:
@@ -1260,17 +1259,16 @@ class Literal(Identifier):
                 # in py >=2.6 the string.format function makes this easier
                 # we try to produce "pretty" output
                 if self.datatype == _XSD_DOUBLE:
-                    return sub("\\.?0*e", "e", u"%e" % float(self))
+                    return sub("\\.?0*e", "e", "%e" % float(self))
                 elif self.datatype == _XSD_DECIMAL:
                     s = "%s" % self
-                    if "." not in s:
+                    if "." not in s and "e" not in s and "E" not in s:
                         s += ".0"
                     return s
-
                 elif self.datatype == _XSD_BOOLEAN:
-                    return (u"%s" % self).lower()
+                    return ("%s" % self).lower()
                 else:
-                    return u"%s" % self
+                    return "%s" % self
 
         encoded = self._quote_encode()
 
@@ -1409,7 +1407,7 @@ def _parseBoolean(value):
     if new_value not in false_accepted_values:
         warnings.warn(
             "Parsing weird boolean, % r does not map to True or False" % value,
-            category=DeprecationWarning,
+            category=UserWarning,
         )
     return False
 

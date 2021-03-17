@@ -49,13 +49,13 @@ class GraphSlice(unittest.TestCase):
     def setUp(self):
         self.graph = Graph()
 
-        self.michel = URIRef(u"michel")
-        self.tarek = URIRef(u"tarek")
-        self.bob = URIRef(u"bob")
-        self.likes = URIRef(u"likes")
-        self.hates = URIRef(u"hates")
-        self.pizza = URIRef(u"pizza")
-        self.cheese = URIRef(u"cheese")
+        self.michel = URIRef("michel")
+        self.tarek = URIRef("tarek")
+        self.bob = URIRef("bob")
+        self.likes = URIRef("likes")
+        self.hates = URIRef("hates")
+        self.pizza = URIRef("pizza")
+        self.cheese = URIRef("cheese")
 
         self.addStuff()
 

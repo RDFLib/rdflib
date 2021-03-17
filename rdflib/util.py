@@ -28,9 +28,6 @@ Statement and component type checkers
 * check_pattern
 
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 from calendar import timegm
 from time import altzone
@@ -179,7 +176,7 @@ def from_n3(s, default=None, backend=None, nsm=None):
         else:
             quotes = '"'
         value, rest = s.rsplit(quotes, 1)
-        value = value[len(quotes):]  # strip leading quotes
+        value = value[len(quotes) :]  # strip leading quotes
         datatype = None
         language = None
 
@@ -190,7 +187,7 @@ def from_n3(s, default=None, backend=None, nsm=None):
             # datatype has to come after lang-tag so ignore everything before
             # see: http://www.w3.org/TR/2011/WD-turtle-20110809/
             # #prod-turtle2-RDFLiteral
-            datatype = from_n3(rest[dtoffset + 2:], default, backend, nsm)
+            datatype = from_n3(rest[dtoffset + 2 :], default, backend, nsm)
         else:
             if rest.startswith("@"):
                 language = rest[1:]  # strip leading at sign
@@ -352,8 +349,8 @@ def parse_date_time(val):
 
 
 SUFFIX_FORMAT_MAP = {
+    "xml": "xml",
     "rdf": "xml",
-    "rdfs": "xml",
     "owl": "xml",
     "n3": "n3",
     "ttl": "turtle",

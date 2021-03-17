@@ -50,10 +50,10 @@ OLD_TERMS = [
     URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#bagID"),
 ]
 
-NODE_ELEMENT_EXCEPTIONS = CORE_SYNTAX_TERMS + [RDF.li, ] + OLD_TERMS
+NODE_ELEMENT_EXCEPTIONS = CORE_SYNTAX_TERMS + [RDF.li,] + OLD_TERMS
 NODE_ELEMENT_ATTRIBUTES = [RDF.ID, RDF.nodeID, RDF.about]
 
-PROPERTY_ELEMENT_EXCEPTIONS = CORE_SYNTAX_TERMS + [RDF.Description, ] + OLD_TERMS
+PROPERTY_ELEMENT_EXCEPTIONS = CORE_SYNTAX_TERMS + [RDF.Description,] + OLD_TERMS
 PROPERTY_ATTRIBUTE_EXCEPTIONS = (
     CORE_SYNTAX_TERMS + [RDF.Description, RDF.li] + OLD_TERMS
 )
@@ -553,11 +553,11 @@ class RDFXMLHandler(handler.ContentHandler):
         if name[0]:
             prefix = self._current_context[name[0]]
             if prefix:
-                end = u"</%s:%s>" % (prefix, name[1])
+                end = "</%s:%s>" % (prefix, name[1])
             else:
-                end = u"</%s>" % name[1]
+                end = "</%s>" % name[1]
         else:
-            end = u"</%s>" % name[1]
+            end = "</%s>" % name[1]
         self.parent.object += self.current.object + end
 
 

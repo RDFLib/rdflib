@@ -9,7 +9,7 @@ def test_sparql_unicode():
     trip = (
         URIRef("http://example.org/foo"),
         URIRef("http://example.org/bar"),
-        URIRef(u"http://example.org/jörn"),
+        URIRef("http://example.org/jörn"),
     )
     g.add(trip)
     q = 'select ?s ?p ?o where { ?s ?p ?o . FILTER(lang(?o) = "") }'

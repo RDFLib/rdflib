@@ -22,16 +22,13 @@ graphs that can be used and queried. The store that backs the graph
 >>> FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 >>> assert(g.value(s, FOAF.name).eq("Arco Publications"))
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 from codecs import getreader
 
 from rdflib import ConjunctiveGraph
 
 # Build up from the NTriples parser:
-from rdflib.plugins.parsers.ntriples import NTriplesParser
+from rdflib.plugins.parsers.ntriples import W3CNTriplesParser
 from rdflib.plugins.parsers.ntriples import ParseError
 from rdflib.plugins.parsers.ntriples import r_tail
 from rdflib.plugins.parsers.ntriples import r_wspace
@@ -39,7 +36,7 @@ from rdflib.plugins.parsers.ntriples import r_wspace
 __all__ = ["NQuadsParser"]
 
 
-class NQuadsParser(NTriplesParser):
+class NQuadsParser(W3CNTriplesParser):
     def parse(self, inputsource, sink, bnode_context=None, **kwargs):
         """
         Parse inputsource as an N-Quads file.
@@ -57,12 +54,13 @@ class NQuadsParser(NTriplesParser):
         )
         self.sink = ConjunctiveGraph(store=sink.store, identifier=sink.identifier)
 
-        source = inputsource.getByteStream()
+        source = inputsource.getCharacterStream()
+        if not source:
+            source = inputsource.getByteStream()
+            source = getreader("utf-8")(source)
 
         if not hasattr(source, "read"):
             raise ParseError("Item to parse must be a file-like object.")
-
-        source = getreader("utf-8")(source)
 
         self.file = source
         self.buffer = ""

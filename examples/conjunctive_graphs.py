@@ -10,7 +10,7 @@ conjunction (union) of all the graphs.
 
 from rdflib import Namespace, Literal, URIRef
 from rdflib.graph import Graph, ConjunctiveGraph
-from rdflib.plugins.memory import IOMemory
+from rdflib.plugins.stores.memory import Memory
 
 if __name__ == "__main__":
 
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     cmary = URIRef("http://love.com/lovers/mary")
     cjohn = URIRef("http://love.com/lovers/john")
 
-    store = IOMemory()
+    store = Memory()
 
     g = ConjunctiveGraph(store=store)
     g.bind("love", ns)

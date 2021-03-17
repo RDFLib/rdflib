@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 from rdflib import *
 from rdflib.collection import Collection
 
