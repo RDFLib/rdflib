@@ -179,12 +179,14 @@ class URLInputSource(InputSource):
     TODO:
     """
 
-    def __init__(self, system_id=None, format=None):
+    def __init__(self, system_id=None, format=None, profile=None):
         super(URLInputSource, self).__init__(system_id)
         self.url = system_id
 
         # copy headers to change
         myheaders = dict(headers)
+        # list of media types to match possible link header. Highest priority
+        # is given to first item.
         media_types = []
         if format == "application/rdf+xml":
             media_types = ["application/rdf+xml", ]
@@ -213,7 +215,6 @@ class URLInputSource(InputSource):
         req = Request(system_id, None, myheaders)
         file = urlopen(req)
         # Check for Link header
-        # TODO: Profiles are not supported, only the first matching media type is used
         _link = file.getheader("Link", None)
         if not _link is None:
             #Parse the link header
@@ -223,6 +224,9 @@ class URLInputSource(InputSource):
             alt_links = parsed_links.get("alternate", [])
             for alt_link in alt_links:
                 pref = -1
+                if profile is not None and profile != alt_link.get("profile"):
+                    # If a profile is provided, then it must match
+                    continue
                 try:
                     pref = media_types.index(alt_link["type"])
                     link_url = alt_link["target"]
