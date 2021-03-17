@@ -14,6 +14,7 @@ import codecs
 import os
 import pathlib
 import sys
+import re
 
 from io import BytesIO, TextIOBase, TextIOWrapper, StringIO, BufferedIOBase
 
@@ -129,6 +130,49 @@ headers = {
     "User-agent": "rdflib-%s (http://rdflib.net/; eikeon@eikeon.com)" % __version__
 }
 
+# FROM: https://github.com/digitalbazaar/pyld/blob/master/lib/pyld/jsonld.py L337
+# With adjustment to always return lists
+def parse_link_header(header):
+    """
+    Parses a link header. The results will be key'd by the value of "rel".
+    Link: <http://json-ld.org/contexts/person.jsonld>; \
+      rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"
+    Parses as: {
+      'http://www.w3.org/ns/json-ld#context': [
+          {
+            target: http://json-ld.org/contexts/person.jsonld, 
+            type: 'application/ld+json'
+          }
+      ]
+    }
+    If there is more than one "rel" with the same IRI, then entries in the
+    resulting map for that "rel" will be lists.
+    :param header: the link header to parse.
+    :return: the parsed result.
+    """
+    rval = {}
+    # split on unbracketed/unquoted commas
+    entries = re.findall(r'(?:<[^>]*?>|"[^"]*?"|[^,])+', header)
+    if not entries:
+        return rval
+    r_link_header = r'\s*<([^>]*?)>\s*(?:;\s*(.*))?'
+    for entry in entries:
+        match = re.search(r_link_header, entry)
+        if not match:
+            continue
+        match = match.groups()
+        result = {'target': match[0]}
+        params = match[1]
+        r_params = r'(.*?)=(?:(?:"([^"]*?)")|([^"]*?))\s*(?:(?:;\s*)|$)'
+        matches = re.findall(r_params, params)
+        for match in matches:
+            result[match[0]] = match[2] if match[1] is None else match[1]
+        rel = result.get('rel', '')
+        if isinstance(rval.get(rel), list):
+            rval[rel].append(result)
+        else:
+            rval[rel] = [result,]
+    return rval
 
 class URLInputSource(InputSource):
     """
@@ -141,19 +185,26 @@ class URLInputSource(InputSource):
 
         # copy headers to change
         myheaders = dict(headers)
+        media_types = []
         if format == "application/rdf+xml":
+            media_types = ["application/rdf+xml", ]
             myheaders["Accept"] = "application/rdf+xml, */*;q=0.1"
         elif format == "n3":
+            media_types = ["text/n3", ]
             myheaders["Accept"] = "text/n3, */*;q=0.1"
         elif format == "turtle":
+            media_types = ["text/turtle", "application/x-turtle"]
             myheaders["Accept"] = "text/turtle,application/x-turtle, */*;q=0.1"
         elif format == "nt":
+            media_types = ["text/plain", ]
             myheaders["Accept"] = "text/plain, */*;q=0.1"
         elif format == "json-ld":
+            media_types = ["application/ld+json", "application/json"]
             myheaders[
                 "Accept"
             ] = "application/ld+json, application/json;q=0.9, */*;q=0.1"
         else:
+            media_types = ["application/rdf+xml", "text/rdf+n3", "application/xhtml+xml"]
             myheaders["Accept"] = (
                 "application/rdf+xml,text/rdf+n3;q=0.9,"
                 + "application/xhtml+xml;q=0.5, */*;q=0.1"
@@ -161,17 +212,29 @@ class URLInputSource(InputSource):
 
         req = Request(system_id, None, myheaders)
         file = urlopen(req)
-        #Fix for https://github.com/RDFLib/rdflib-jsonld/issues/85
-        #TODO: Check if Link header is supported for other formats
-        if format == "json-ld":
-            # Check for a Link header in response, rfc8288
-            _link = file.getheader("Link", None)
-            if not _link is None:
-                #TODO: Scan for content type in potentially multiple Link headers
-                # Grab the possibly relative URL
-                link_url = _link.split(";")[0].strip("<>")
+        # Check for Link header
+        # TODO: Profiles are not supported, only the first matching media type is used
+        _link = file.getheader("Link", None)
+        if not _link is None:
+            #Parse the link header
+            link_url = None
+            parsed_links = parse_link_header(_link)                        
+            #Any "alternate" entries match the media_type?
+            alt_links = parsed_links.get("alternate", [])
+            for alt_link in alt_links:
+                pref = -1
+                try:
+                    pref = media_types.index(alt_link["type"])
+                    link_url = alt_link["target"]
+                except ValueError:
+                    pass
+                if pref == 0:
+                    # First preference media type was found
+                    break
+                #otherwise continue checking for higher priority match
+            #Follow target if one found
+            if not link_url is None:
                 link_url = urljoin(self.url, link_url)
-                #Reissue the request to the Link URL
                 req = Request(link_url, None, myheaders)
                 file = urlopen(req)
 
