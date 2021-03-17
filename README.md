@@ -31,7 +31,7 @@ Please see the list for all packages/repositories here:
 ## Versions
 
  * `5.x.y` supports Python 2.7 and 3.4+ and is [mostly backwards compatible with 4.2.2](https://rdflib.readthedocs.io/en/stable/upgrade4to5.html). Only bug fixes will be applied.
- * `6.x.y` is the next major release which will support Python 3.5+. (Current master branch)
+ * `6.x.y` is the next major release which will support Python 3.6+. (Current master branch)
 
 
 ## Installation
@@ -101,7 +101,7 @@ g.bind("xsd", XSD)
 ```
 This will allow the n-triples triple above to be serialised like this:
  ```python
-print(g.serialize(format="turtle").decode("utf-8"))
+print(g.serialize(format="turtle"))
 ```
 
 With these results:

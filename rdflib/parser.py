@@ -12,6 +12,7 @@ want to do so through the Graph class parse method.
 
 import codecs
 import os
+import pathlib
 import sys
 
 from io import BytesIO, TextIOBase, TextIOWrapper, StringIO, BufferedIOBase
@@ -206,18 +207,12 @@ def create_input_source(
     """
 
     # test that exactly one of source, location, file, and data is not None.
-    if (
-        sum(
-            (
-                source is not None,
-                location is not None,
-                file is not None,
-                data is not None,
-            )
-        )
-        != 1
-    ):
-        raise ValueError("exactly one of source, location, file or data must be given")
+    non_empty_arguments = list(
+        filter(lambda v: v is not None, [source, location, file, data],)
+    )
+
+    if len(non_empty_arguments) != 1:
+        raise ValueError("exactly one of source, location, file or data must be given",)
 
     input_source = None
 
@@ -227,6 +222,8 @@ def create_input_source(
         else:
             if isinstance(source, str):
                 location = source
+            elif isinstance(source, pathlib.Path):
+                location = str(source)
             elif isinstance(source, bytes):
                 data = source
             elif hasattr(source, "read") and not isinstance(source, Namespace):
@@ -254,20 +251,16 @@ def create_input_source(
     absolute_location = None  # Further to fix for issue 130
 
     auto_close = False  # make sure we close all file handles we open
+
     if location is not None:
-        # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145
-        if os.path.exists(location):
-            location = pathname2url(location)
-        base = urljoin("file:", "%s/" % pathname2url(os.getcwd()))
-        absolute_location = URIRef(location, base=base).defrag()
-        if absolute_location.startswith("file:///"):
-            filename = url2pathname(absolute_location.replace("file:///", "/"))
-            file = open(filename, "rb")
-        else:
-            input_source = URLInputSource(absolute_location, format)
-        auto_close = True
-        # publicID = publicID or absolute_location  # Further to fix
-        # for issue 130
+        (
+            absolute_location,
+            auto_close,
+            file,
+            input_source,
+        ) = _create_input_source_from_location(
+            file=file, format=format, input_source=input_source, location=location,
+        )
 
     if file is not None:
         input_source = FileInputSource(file)
@@ -288,3 +281,25 @@ def create_input_source(
         elif input_source.getPublicId() is None:
             input_source.setPublicId(absolute_location or "")
         return input_source
+
+
+def _create_input_source_from_location(file, format, input_source, location):
+    # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145
+    if os.path.exists(location):
+        location = pathname2url(location)
+
+    base = urljoin("file:", "%s/" % pathname2url(os.getcwd()))
+
+    absolute_location = URIRef(location, base=base)
+
+    if absolute_location.startswith("file:///"):
+        filename = url2pathname(absolute_location.replace("file:///", "/"))
+        file = open(filename, "rb")
+    else:
+        input_source = URLInputSource(absolute_location, format)
+
+    auto_close = True
+    # publicID = publicID or absolute_location  # Further to fix
+    # for issue 130
+
+    return absolute_location, auto_close, file, input_source

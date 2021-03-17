@@ -14,7 +14,7 @@ class Container(object):
         >>> from rdflib import Graph, BNode, Literal, Bag
         >>> g = Graph()
         >>> b = Bag(g, BNode(), [Literal("One"), Literal("Two"), Literal("Three")])
-        >>> print(g.serialize(format="turtle").decode())
+        >>> print(g.serialize(format="turtle"))
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
         <BLANKLINE>
         [] a rdf:Bag ;
@@ -30,7 +30,7 @@ class Container(object):
 
         >>> # add a new item
         >>> b.append(Literal("Hello"))
-        >>> print(g.serialize(format="turtle").decode())
+        >>> print(g.serialize(format="turtle"))
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
         <BLANKLINE>
         [] a rdf:Bag ;

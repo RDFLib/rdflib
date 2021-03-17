@@ -74,7 +74,10 @@ _invalid_uri_chars = '<>" {}|\\^`'
 
 
 def _is_valid_uri(uri):
-    return all([ord(c) > 256 or not c in _invalid_uri_chars for c in uri])
+    for c in _invalid_uri_chars:
+        if c in uri:
+            return False
+    return True
 
 
 _lang_tag_regex = compile("^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$")
@@ -1259,10 +1262,9 @@ class Literal(Identifier):
                     return sub("\\.?0*e", "e", "%e" % float(self))
                 elif self.datatype == _XSD_DECIMAL:
                     s = "%s" % self
-                    if "." not in s:
+                    if "." not in s and "e" not in s and "E" not in s:
                         s += ".0"
                     return s
-
                 elif self.datatype == _XSD_BOOLEAN:
                     return ("%s" % self).lower()
                 else:

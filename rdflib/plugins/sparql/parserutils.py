@@ -173,7 +173,7 @@ class CompValue(OrderedDict):
     def __getattr__(self, a):
         # Hack hack: OrderedDict relies on this
         if a in ("_OrderedDict__root", "_OrderedDict__end"):
-            raise AttributeError
+            raise AttributeError()
         try:
             return self[a]
         except KeyError:

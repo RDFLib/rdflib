@@ -78,6 +78,7 @@ __all__ = [
     "DCTERMS",
     "DOAP",
     "FOAF",
+    "GEO",
     "ODRL2",
     "ORG",
     "OWL",
@@ -111,7 +112,11 @@ class Namespace(str):
     rdflib.term.URIRef(u'http://example.org/Person')
     >>> n['first-name'] # as item - for things that are not valid python identifiers
     rdflib.term.URIRef(u'http://example.org/first-name')
-
+    >>> n.Person in n
+    True
+    >>> n2 = Namespace("http://example2.org/")
+    >>> n.Person in n2
+    False
     """
 
     def __new__(cls, value):
@@ -140,6 +145,9 @@ class Namespace(str):
 
     def __repr__(self):
         return "Namespace(%r)" % str(self)
+    
+    def __contains__(self, ref):
+        return ref.startswith(self) # test namespace membership with "ref in ns" syntax
 
 
 class URIPattern(str):
@@ -186,11 +194,10 @@ class ClosedNamespace(object):
             self.__uris[t] = URIRef(self.uri + t)
 
     def term(self, name):
-        uri = self.__uris.get(name)
-        if uri is None:
+        if name not in self.__uris:
             raise KeyError("term '{}' not in namespace '{}'".format(name, self.uri))
         else:
-            return uri
+            return self.__uris[name]
 
     def __getitem__(self, key, default=None):
         return self.term(key)
@@ -213,9 +220,13 @@ class ClosedNamespace(object):
     def __dir__(self):
         return list(self._ClosedNamespace__uris)
     
+    def __contains__(self, ref):
+        return ref in self.__uris.values() # test namespace membership with "ref in ns" syntax
+
     def _ipython_key_completions_(self):
-        return dir(self)
-    
+        return dir(self.uri)
+
+
 class _RDFNamespace(ClosedNamespace):
     """
     Closed namespace for RDF terms
@@ -290,53 +301,124 @@ FOAF = ClosedNamespace(
     terms=[
         # all taken from http://xmlns.com/foaf/spec/
         "Agent",
-        "Person",
-        "name",
-        "title",
-        "img",
-        "depiction",
-        "depicts",
-        "familyName",
-        "givenName",
-        "knows",
-        "based_near",
-        "age",
-        "made",
-        "maker",
-        "primaryTopic",
-        "primaryTopicOf",
-        "Project",
-        "Organization",
-        "Group",
-        "member",
         "Document",
+        "Group",
         "Image",
-        "nick",
-        "mbox",
-        "homepage",
-        "weblog",
-        "openid",
-        "jabberID",
-        "mbox_sha1sum",
-        "interest",
-        "topic_interest",
-        "topic",
-        "page",
-        "workplaceHomepage",
-        "workInfoHomepage",
-        "schoolHomepage",
-        "publications",
-        "currentProject",
-        "pastProject",
-        "account",
+        "LabelProperty",
         "OnlineAccount",
+        "OnlineChatAccount",
+        "OnlineEcommerceAccount",
+        "OnlineGamingAccount",
+        "Organization",
+        "Person",
+        "PersonalProfileDocument",
+        "Project",
+        "account",
         "accountName",
         "accountServiceHomepage",
-        "PersonalProfileDocument",
-        "tipjar",
-        "sha1",
-        "thumbnail",
+        "age",
+        "aimChatID",
+        "based_near",
+        "birthday",
+        "currentProject",
+        "depiction",
+        "depicts",
+        "dnaChecksum",
+        "familyName",
+        "family_name",
+        "firstName",
+        "focus",
+        "fundedBy",
+        "geekcode",
+        "gender",
+        "givenName",
+        "givenname",
+        "holdsAccount",
+        "homepage",
+        "icqChatID",
+        "img",
+        "interest",
+        "isPrimaryTopicOf",
+        "jabberID",
+        "knows",
+        "lastName",
         "logo",
+        "made",
+        "maker",
+        "mbox",
+        "mbox_sha1sum",
+        "member",
+        "membershipClass",
+        "msnChatID",
+        "myersBriggs",
+        "name",
+        "nick",
+        "openid",
+        "page",
+        "pastProject",
+        "phone",
+        "plan",
+        "primaryTopic",
+        "publications",
+        "schoolHomepage",
+        "sha1",
+        "skypeID",
+        "status",
+        "surname",
+        "theme",
+        "thumbnail",
+        "tipjar",
+        "title",
+        "topic",
+        "topic_interest",
+        "weblog",
+        "workInfoHomepage",
+        "workplaceHomepage",
+        "yahooChatID"
+    ],
+)
+GEO = ClosedNamespace(
+    uri=URIRef("http://www.opengis.net/ont/geosparql#"),
+    terms=[
+        "Feature",
+        "Geometry",
+        "SpatialObject",
+        "asGML",
+        "asWKT",
+        "coordinateDimension",
+        "defaultGeometry",
+        "dimension",
+        "ehContains",
+        "ehCoveredBy",
+        "ehCovers",
+        "ehDisjoint",
+        "ehEquals",
+        "ehInside",
+        "ehMeet",
+        "ehOverlap",
+        "gmlLiteral",
+        "hasGeometry",
+        "hasSerialization",
+        "isEmpty",
+        "isSimple",
+        "rcc8dc",
+        "rcc8ec",
+        "rcc8eq",
+        "rcc8ntpp",
+        "rcc8ntppi",
+        "rcc8po",
+        "rcc8tpp",
+        "rcc8tppi",
+        "sfContains",
+        "sfCrosses",
+        "sfDisjoint",
+        "sfEquals",
+        "sfIntersects",
+        "sfOverlaps",
+        "sfTouches",
+        "sfWithin",
+        "spatialDimension",
+        "wktLiteral",
     ],
 )
 ODRL2 = Namespace("http://www.w3.org/ns/odrl/2/")
@@ -544,6 +626,13 @@ class NamespaceManager(object):
         self.bind("rdfs", RDFS)
         self.bind("xsd", XSD)
 
+    def __contains__(self, ref):
+        # checks if a reference is in any of the managed namespaces with syntax
+        # "ref in manager". Note that we don't use "ref in ns", as 
+        # NamespaceManager.namespaces() returns Iterator[Tuple[str, URIRef]]
+        # rather than Iterator[Tuple[str, Namespace]]
+        return any(ref.startswith(ns) for prefix, ns in self.namespaces())
+
     def reset(self):
         self.__cache = {}
         self.__strie = {}
@@ -709,6 +798,9 @@ class NamespaceManager(object):
         # When documenting explain that override only applies in what cases
         if prefix is None:
             prefix = ""
+        elif " " in prefix:
+            raise KeyError("Prefixes may not contain spaces.")
+            
         bound_namespace = self.store.namespace(prefix)
         # Check if the bound_namespace contains a URI
         # and if so convert it into a URIRef for comparison
@@ -805,7 +897,7 @@ class NamespaceManager(object):
 NAME_START_CATEGORIES = ["Ll", "Lu", "Lo", "Lt", "Nl"]
 SPLIT_START_CATEGORIES = NAME_START_CATEGORIES + ["Nd"]
 NAME_CATEGORIES = NAME_START_CATEGORIES + ["Mc", "Me", "Mn", "Lm", "Nd"]
-ALLOWED_NAME_CHARS = ["\u00B7", "\u0387", "-", ".", "_", ":", "%"]
+ALLOWED_NAME_CHARS = ["\u00B7", "\u0387", "-", ".", "_", "%"]
 
 
 # http://www.w3.org/TR/REC-xml-names/#NT-NCName
@@ -822,7 +914,7 @@ def is_ncname(name):
             for i in range(1, len(name)):
                 c = name[i]
                 if not category(c) in NAME_CATEGORIES:
-                    if c != ":" and c in ALLOWED_NAME_CHARS:
+                    if c in ALLOWED_NAME_CHARS:
                         continue
                     return 0
                 # if in compatibility area

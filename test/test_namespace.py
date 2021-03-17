@@ -1,7 +1,7 @@
 import unittest
 
 from rdflib.graph import Graph
-from rdflib.namespace import FOAF
+from rdflib.namespace import Namespace, FOAF, RDF, RDFS, SH
 from rdflib.term import URIRef
 
 
@@ -30,6 +30,15 @@ class NamespacePrefixTest(unittest.TestCase):
         self.assertEqual(
             g.compute_qname(URIRef("http://foo/bar/")),
             ("ns1", URIRef("http://foo/bar/"), ""),
+        )
+        # should compute qnames of URNs correctly as well
+        self.assertEqual(
+            g.compute_qname(URIRef("urn:ISSN:0167-6423")),
+            ("ns5", URIRef("urn:ISSN:"), "0167-6423"),
+        )
+        self.assertEqual(
+            g.compute_qname(URIRef("urn:ISSN:")),
+            ("ns5", URIRef("urn:ISSN:"), ""),
         )
 
     def test_reset(self):
@@ -72,11 +81,11 @@ class NamespacePrefixTest(unittest.TestCase):
                 URIRef("http://example.com/baz"),
             )
         )
-        n3 = g.serialize(format="n3")
+        n3 = g.serialize(format="n3", encoding='latin-1')
         # Gunnar disagrees that this is right:
         # self.assertTrue("<http://example.com/foo> ns1:bar <http://example.com/baz> ." in n3)
         # as this is much prettier, and ns1 is already defined:
-        self.assertTrue("ns1:foo ns1:bar ns1:baz .".encode("latin-1") in n3)
+        self.assertTrue(b"ns1:foo ns1:bar ns1:baz ." in n3)
 
     def test_n32(self):
         # this test not generating prefixes for subjects/objects
@@ -88,12 +97,10 @@ class NamespacePrefixTest(unittest.TestCase):
                 URIRef("http://example3.com/baz"),
             )
         )
-        n3 = g.serialize(format="n3")
+        n3 = g.serialize(format="n3", encoding="latin-1")
 
         self.assertTrue(
-            "<http://example1.com/foo> ns1:bar <http://example3.com/baz> .".encode(
-                "latin-1"
-            )
+            b"<http://example1.com/foo> ns1:bar <http://example3.com/baz> ."
             in n3
         )
 
@@ -103,14 +110,26 @@ class NamespacePrefixTest(unittest.TestCase):
         def add_not_in_namespace(s):
             return FOAF[s]
 
-        # a blatantly non-existent FOAF property
+        # a non-existent FOAF property
         self.assertRaises(KeyError, add_not_in_namespace, "blah")
 
-        # a deprecated FOAF property
-        self.assertRaises(KeyError, add_not_in_namespace, "firstName")
-
-        # a property name within the core FOAF namespace
+        # a property name within the FOAF namespace
         self.assertEqual(
             add_not_in_namespace("givenName"),
             URIRef("http://xmlns.com/foaf/0.1/givenName"),
         )
+
+    def test_contains_method(self):
+        """Tests for Namespace.__contains__() methods."""
+
+        ref = URIRef('http://www.w3.org/ns/shacl#example')
+        self.assertTrue(type(SH) == Namespace, "SH no longer a Namespace, update test.")
+        self.assertTrue(ref in SH, "sh:example not in SH")
+
+        ref = URIRef('http://www.w3.org/2000/01/rdf-schema#label')
+        self.assertTrue(ref in RDFS, "ClosedNamespace(RDFS) does not include rdfs:label")
+        ref = URIRef('http://www.w3.org/2000/01/rdf-schema#example')
+        self.assertFalse(ref in RDFS, "ClosedNamespace(RDFS) includes out-of-ns member rdfs:example")
+
+        ref = URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#type')
+        self.assertTrue(ref in RDF, "_RDFNamespace does not include rdf:type")

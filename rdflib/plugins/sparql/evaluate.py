@@ -17,7 +17,9 @@ also return a dict of list of dicts
 import collections
 import itertools
 import re
-import requests
+from urllib.request import urlopen, Request
+from urllib.parse import urlencode
+import json as j
 from pyparsing import ParseException
 
 from rdflib import Variable, Graph, BNode, URIRef, Literal
@@ -185,6 +187,7 @@ def evalGraph(ctx, part):
 
     ctx = ctx.clone()
     graph = ctx[part.term]
+    prev_graph = ctx.graph
     if graph is None:
 
         for graph in ctx.dataset.contexts():
@@ -197,11 +200,13 @@ def evalGraph(ctx, part):
             c = c.push()
             graphSolution = [{part.term: graph.identifier}]
             for x in _join(evalPart(c, part.p), graphSolution):
+                x.ctx.graph = prev_graph
                 yield x
 
     else:
         c = ctx.pushGraph(ctx.dataset.get_context(graph))
         for x in evalPart(c, part.p):
+            x.ctx.graph = prev_graph
             yield x
 
 
@@ -313,13 +318,11 @@ def evalServiceQuery(ctx, part):
         }
         # GET is easier to cache so prefer that if the query is not to long
         if len(service_query) < 600:
-            response = requests.get(service_url, params=query_settings, headers=headers)
+            response = urlopen(Request(service_url + "?" + urlencode(query_settings), headers=headers))
         else:
-            response = requests.post(
-                service_url, params=query_settings, headers=headers
-            )
-        if response.status_code == 200:
-            json = response.json()
+            response = urlopen(Request(service_url, data=urlencode(query_settings).encode(), headers=headers))
+        if response.status == 200:
+            json = j.loads(response.read())
             variables = res["vars_"] = json["head"]["vars"]
             # or just return the bindings?
             res = json["results"]["bindings"]
@@ -329,7 +332,7 @@ def evalServiceQuery(ctx, part):
                         yield bound
         else:
             raise Exception(
-                "Service: %s responded with code: %s", service_url, response.status_code
+                "Service: %s responded with code: %s", service_url, response.status
             )
 
 

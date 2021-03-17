@@ -1,3 +1,4 @@
+from typing import Optional, Union
 import logging
 from warnings import warn
 import random
@@ -956,12 +957,17 @@ class Graph(Node):
         return self.namespace_manager.absolutize(uri, defrag)
 
     def serialize(
-        self, destination=None, format="xml", base=None, encoding=None, **args
-    ):
+        self, destination=None, format="turtle", base=None, encoding=None, **args
+    ) -> Optional[Union[bytes, str]]:
         """Serialize the Graph to destination
 
-        If destination is None serialize method returns the serialization as a
-        string. Format defaults to xml (AKA rdf/xml).
+        If destination is None serialize method returns the serialization as
+        bytes or string.
+
+        If encoding is None and destination is None, returns a string
+        If encoding is set, and Destination is None, returns bytes
+
+        Format defaults to turtle.
 
         Format support can be extended with plugins,
         but "xml", "n3", "turtle", "nt", "pretty-xml", "trix", "trig" and "nquads" are built in.
@@ -974,8 +980,12 @@ class Graph(Node):
         serializer = plugin.get(format, Serializer)(self)
         if destination is None:
             stream = BytesIO()
-            serializer.serialize(stream, base=base, encoding=encoding, **args)
-            return stream.getvalue()
+            if encoding is None:
+                serializer.serialize(stream, base=base, encoding="utf-8", **args)
+                return stream.getvalue().decode("utf-8")
+            else:
+                serializer.serialize(stream, base=base, encoding=encoding, **args)
+                return stream.getvalue()
         if hasattr(destination, "write"):
             stream = destination
             serializer.serialize(stream, base=base, encoding=encoding, **args)
@@ -991,11 +1001,19 @@ class Graph(Node):
             stream = os.fdopen(fd, "wb")
             serializer.serialize(stream, base=base, encoding=encoding, **args)
             stream.close()
+            dest = path if scheme == "file" else location
             if hasattr(shutil, "move"):
-                shutil.move(name, path)
+                shutil.move(name, dest)
             else:
-                shutil.copy(name, path)
+                shutil.copy(name, dest)
                 os.remove(name)
+
+    def print(self, format="turtle", encoding="utf-8", out=None):
+        print(
+            self.serialize(None, format=format, encoding=encoding).decode(encoding),
+            file=out,
+            flush=True,
+        )
 
     def parse(
         self,
@@ -1128,13 +1146,13 @@ class Graph(Node):
     def query(
         self,
         query_object,
-        processor="sparql",
-        result="sparql",
+        processor: str = "sparql",
+        result: str = "sparql",
         initNs=None,
         initBindings=None,
-        use_store_provided=True,
+        use_store_provided: bool = True,
         **kwargs
-    ):
+    ) -> query.Result:
         """
         Query this graph.
 
@@ -1145,7 +1163,7 @@ class Graph(Node):
         if none are given, the namespaces from the graph's namespace manager
         are used.
 
-        :returntype: rdflib.query.QueryResult
+        :returntype: rdflib.query.Result
 
         """
 

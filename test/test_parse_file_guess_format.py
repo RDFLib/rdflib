@@ -1,11 +1,12 @@
 import unittest
+import logging
 from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
 
 from rdflib.exceptions import ParserError
 
-from rdflib import Graph, logger as graph_logger
+from rdflib import Graph
 
 
 class FileParserGuessFormatTest(unittest.TestCase):
@@ -19,10 +20,12 @@ class FileParserGuessFormatTest(unittest.TestCase):
 
     def test_warning(self):
         g = Graph()
+        graph_logger = logging.getLogger("rdflib")
+
         with TemporaryDirectory() as tmpdirname:
             newpath = Path(tmpdirname).joinpath("no_file_ext")
             copyfile("test/rdf/Manifest.rdf", str(newpath))
-            with self.assertLogs(graph_logger, "WARNING") as log_cm:
+            with self.assertLogs(graph_logger, "WARNING"):
                 with self.assertRaises(ParserError):
                     g.parse(str(newpath))
 

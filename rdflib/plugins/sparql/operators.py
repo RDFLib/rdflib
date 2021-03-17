@@ -23,6 +23,7 @@ import isodate
 
 from rdflib.plugins.sparql.parserutils import CompValue, Expr
 from rdflib.plugins.sparql.datatypes import XSD_DTs, type_promotion
+from rdflib.plugins.sparql.datatypes import XSD_DateTime_DTs, XSD_Duration_DTs
 from rdflib import URIRef, BNode, Variable, Literal, XSD, RDF
 from rdflib.term import Node
 
@@ -491,7 +492,7 @@ def Builtin_TIMEZONE(e, ctx):
     if not dt.tzinfo:
         raise SPARQLError("datatime has no timezone: %r" % dt)
 
-    delta = dt.tzinfo.utcoffset(ctx.now)
+    delta = dt.utcoffset()
 
     d = delta.days
     s = delta.seconds
@@ -760,25 +761,67 @@ def AdditiveExpression(e, ctx):
     if other is None:
         return expr
 
-    res = numeric(expr)
+    # handling arithmetic(addition/subtraction) of dateTime, date, time
+    # and duration datatypes (if any)
+    if hasattr(expr, 'datatype') and (expr.datatype in XSD_DateTime_DTs or expr.datatype in XSD_Duration_DTs):
 
-    dt = expr.datatype
+            res = dateTimeObjects(expr)
+            dt = expr.datatype
 
-    for op, term in zip(e.op, other):
-        n = numeric(term)
-        if isinstance(n, Decimal) and isinstance(res, float):
-            n = float(n)
-        if isinstance(n, float) and isinstance(res, Decimal):
-            res = float(res)
+            for op, term in zip(e.op, other):
 
-        dt = type_promotion(dt, term.datatype)
+                # check if operation is datetime,date,time operation over
+                # another datetime,date,time datatype
+                if dt in XSD_DateTime_DTs and dt == term.datatype and op == '-':
+                    # checking if there are more than one datetime operands -
+                    # in that case it doesn't make sense for example
+                    # ( dateTime1 - dateTime2 - dateTime3 ) is an invalid operation
+                    if len(other) > 1:
+                        error_message = "Can't evaluate multiple %r arguments"
+                        raise SPARQLError(error_message, dt.datatype)
+                    else:
+                        n = dateTimeObjects(term)
+                        res = calculateDuration(res, n)
+                        return res
 
-        if op == "+":
-            res += n
-        else:
-            res -= n
+                # datetime,date,time +/- duration,dayTimeDuration,yearMonthDuration
+                elif (dt in XSD_DateTime_DTs and term.datatype in XSD_Duration_DTs):
+                    n = dateTimeObjects(term)
+                    res = calculateFinalDateTime(res, dt, n, term.datatype, op)
+                    return res
 
-    return Literal(res, datatype=dt)
+                # duration,dayTimeDuration,yearMonthDuration + datetime,date,time
+                elif dt in XSD_Duration_DTs and term.datatype in XSD_DateTime_DTs:
+                    if op == "+":
+                        n = dateTimeObjects(term)
+                        res = calculateFinalDateTime(res, dt, n, term.datatype, op)
+                        return res
+
+                # rest are invalid types
+                else:
+                    raise SPARQLError('Invalid DateTime Operations')
+
+        # handling arithmetic(addition/subtraction) of numeric datatypes (if any)
+    else:
+        res = numeric(expr)
+
+        dt = expr.datatype
+
+        for op, term in zip(e.op, other):
+            n = numeric(term)
+            if isinstance(n, Decimal) and isinstance(res, float):
+                n = float(n)
+            if isinstance(n, float) and isinstance(res, Decimal):
+                res = float(res)
+
+            dt = type_promotion(dt, term.datatype)
+
+            if op == "+":
+                res += n
+            else:
+                res -= n
+
+        return Literal(res, datatype=dt)
 
 
 def RelationalExpression(e, ctx):
@@ -1001,8 +1044,83 @@ def numeric(expr):
     return expr.toPython()
 
 
+def dateTimeObjects(expr):
+    """
+    return a dataTime/date/time/duration/dayTimeDuration/yearMonthDuration python objects from a literal
+
+    """
+    return expr.toPython()
+
+
+def isCompatibleDateTimeDatatype(obj1, dt1, obj2, dt2):
+    """
+    returns a boolean indicating if first object is compatible
+    with operation(+/-) over second object.
+
+    """
+    if(dt1 == XSD.date):
+        if(dt2 == XSD.yearMonthDuration):
+            return True
+        elif(dt2 == XSD.dayTimeDuration or dt2 == XSD.Duration):
+            # checking if the dayTimeDuration has no Time Component
+            # else it wont be compatible with Date Literal
+            if("T" in str(obj2)):
+                return False
+            else:
+                return True
+
+    if(dt1 == XSD.time):
+        if(dt2 == XSD.yearMonthDuration):
+            return False
+        elif(dt2 == XSD.dayTimeDuration or dt2 == XSD.Duration):
+            # checking if the dayTimeDuration has no Date Component
+            # (by checking if the format is "PT...." )
+            # else it wont be compatible with Time Literal
+            if("T" == str(obj2)[1]):
+                return True
+            else:
+                return False
+
+    if(dt1 == XSD.dateTime):
+        # compatible with all
+        return True
+
+
+def calculateDuration(obj1, obj2):
+    """
+        returns the duration Literal between two datetime
+
+    """
+    date1 = obj1
+    date2 = obj2
+    difference = date1 - date2
+    return Literal(difference, datatype=XSD.duration)
+
+
+def calculateFinalDateTime(obj1, dt1, obj2, dt2, operation):
+    """
+        Calculates the final dateTime/date/time resultant after addition/
+        subtraction of duration/dayTimeDuration/yearMonthDuration
+    """
+
+    # checking compatibility of datatypes (duration types and date/time/dateTime)
+    if(isCompatibleDateTimeDatatype(obj1, dt1, obj2, dt2)):
+        # proceed
+        if(operation == "-"):
+            ans = obj1 - obj2
+            return Literal(ans, datatype=dt1)
+        else:
+            ans = obj1 + obj2
+            return Literal(ans, datatype=dt1)
+
+    else:
+        raise SPARQLError('Incompatible Data types to DateTime Operations')
+
+
 def EBV(rt):
     """
+    Effective Boolean Value (EBV)
+
     * If the argument is a typed literal with a datatype of xsd:boolean,
       the EBV is the value of that argument.
     * If the argument is a plain literal or a typed literal with a
