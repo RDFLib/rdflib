@@ -68,14 +68,6 @@ class URLInputSourceTestCase(unittest.TestCase):
         assert parsed["alternate"][23]["target"] == "http://pid.geoscience.gov.au/sample/AU1547827?_view=alternates&_format=text/turtle"
         assert parsed["alternate"][23]["profile"] == "https://w3id.org/profile/alt"
 
-
-    def testGetLinkProfile(self):
-        #TODO: mock the http request for testing stability
-        url = "http://pid.geoscience.gov.au/sample/AU1547827"
-        res = rdflib.parser.URLInputSource(url, format="n3", profile="http://purl.org/dc/terms/")
-        assert res.url == "http://pid.geoscience.gov.au/sample/AU1547827?_view=dct&_format=text/n3"
-        assert res.content_type == "text/n3"
-
-
+        
 if __name__ == "__main__":
     unittest.main()
