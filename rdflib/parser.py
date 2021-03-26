@@ -17,7 +17,6 @@ import sys
 
 from io import BytesIO, TextIOBase, TextIOWrapper, StringIO, BufferedIOBase
 
-from urllib.request import pathname2url
 from urllib.request import Request
 from urllib.request import url2pathname
 from urllib.parse import urljoin
@@ -285,10 +284,11 @@ def create_input_source(
 
 def _create_input_source_from_location(file, format, input_source, location):
     # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145
-    if os.path.exists(location):
-        location = pathname2url(location)
+    location = pathlib.Path(location)
+    if location.exists():
+        location = location.as_uri()
 
-    base = urljoin("file:", "%s/" % pathname2url(os.getcwd()))
+    base = pathlib.Path.cwd().as_uri()
 
     absolute_location = URIRef(location, base=base)
 
