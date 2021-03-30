@@ -176,8 +176,9 @@ class URLInputSource(InputSource):
 
 class FileInputSource(InputSource):
     def __init__(self, file):
-        base = urljoin("file:", pathname2url(os.getcwd()))
-        system_id = URIRef(urljoin("file:", pathname2url(file.name)), base=base)
+        base = pathlib.Path.cwd().as_uri()
+        system_id = URIRef(pathlib.Path(file.name).absolute().as_uri(),
+                           base=base)
         super(FileInputSource, self).__init__(system_id)
         self.file = file
         if isinstance(file, TextIOBase):  # Python3 unicode fp
@@ -284,9 +285,9 @@ def create_input_source(
 
 def _create_input_source_from_location(file, format, input_source, location):
     # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145
-    location = pathlib.Path(location)
-    if location.exists():
-        location = location.as_uri()
+    path = pathlib.Path(location)
+    if path.exists():
+        location = path.absolute().as_uri()
 
     base = pathlib.Path.cwd().as_uri()
 
