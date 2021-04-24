@@ -184,7 +184,7 @@ class ClosedNamespace(object):
     """
     A namespace with a closed list of members
 
-    Trying to create terms not listen is an error
+    Trying to create terms not listed is an error
     """
 
     def __init__(self, uri, terms):
