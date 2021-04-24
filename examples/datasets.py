@@ -47,7 +47,7 @@ d.add((
     URIRef("http://example.com/graph-2")
 ))
 
-# printing the Dataset like this: print(d.serialize(format="trig").decode())
+# printing the Dataset like this: print(d.serialize(format="trig"))
 # produces a result like this:
 """
 @prefix ex: <http://example.com/> .
@@ -64,7 +64,7 @@ ex:graph-2 {
 """
 print("Printing Serialised Dataset:")
 print("---")
-print(d.serialize(format="trig").decode().strip())
+print(d.serialize(format="trig"))
 print("---")
 print()
 print()
@@ -130,7 +130,7 @@ print()
 # Remove Graph graph_1 from the Dataset
 d.remove_graph(graph_1)
 
-# printing the Dataset like this: print(d.serialize(format="trig").decode())
+# printing the Dataset like this: print(d.serialize(format="trig"))
 # now produces a result like this:
 
 """
