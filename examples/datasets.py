@@ -140,7 +140,7 @@ ex:graph-2 {
 """
 print("Printing Serialised Dataset after graph_1 removal:")
 print("---")
-print(d.serialize(format="trig").decode().strip())
+print(d.serialize(format="trig").strip())
 print("---")
 print()
 print()
