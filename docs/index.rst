@@ -4,8 +4,7 @@
 rdflib |release|
 ================
 
-RDFLib is a pure Python package for working with `RDF <http://www.w3.org/RDF/>`_. RDFLib contains useful APIs for
-working with RDF, including:
+RDFLib is a pure Python package for working with `RDF <http://www.w3.org/RDF/>`_. It contains:
 
 * **Parsers & Serializers**
 
@@ -14,7 +13,7 @@ working with RDF, including:
 
 * **Store implementations**
 
-  * for in-memory and persistent RDF storage - Berkeley DB
+  * for in-memory and persistent RDF storage, including remote SPARQL endpoints
 
 * **Graph interface**
 
@@ -24,7 +23,7 @@ working with RDF, including:
 
 * **SPARQL 1.1 implementation**
 
-  * supporting both Queries and Updates
+  * both Queries and Updates are supported
 
 
 Getting started
@@ -45,7 +44,7 @@ If you have never used RDFLib, the following will help get you started:
 
 In depth
 --------
-If you are familiar with RDF and are looking for details on how RDFLib handles RDF, these are for you. 
+If you are familiar with RDF and are looking for details on how RDFLib handles it, these are for you:
 
 .. toctree::
    :maxdepth: 1
@@ -54,6 +53,7 @@ If you are familiar with RDF and are looking for details on how RDFLib handles R
    namespaces_and_bindings
    persistence
    merging
+   upgrade5to6
    upgrade4to5
    
 
@@ -90,21 +90,21 @@ For developers
 Developers might also like to join rdflib's dev mailing list: `<https://groups.google.com/group/rdflib-dev>`__
 
 
-The Code
---------
-The rdflib code is hosted on GitHub at `<https://github.com/RDFLib/rdflib>`__ where you lodge Issues and also Pull
-Requests to help improve this community project!
+Source Code
+-----------
+The rdflib source code is hosted on GitHub at `<https://github.com/RDFLib/rdflib>`__ where you can lodge Issues and
+create Pull Requests to help improve this community project!
 
 The RDFlib organisation on GitHub at `<https://github.com/RDFLib>`__ maintains this package and a number of other RDF
-and related packaged that you might also find useful.
+and RDFlib-related packaged that you might also find useful.
 
 
 Further help
 ------------
 For asynchronous chat support, try our gitter channel at `<https://gitter.im/RDFLib/rdflib>`__
 
-If you would like more help with using rdflib, please post a question using the tag ``[rdflib]`` on StackOverflow. A list of
-existing ``[rdflib]`` tagged questions is there at:
+If you would like more help with using rdflib, rather than developing it, please post a question on StackOverflow using
+the tag ``[rdflib]``. A list of existing ``[rdflib]`` tagged questions is kept there at:
 
 * `<https://stackoverflow.com/questions/tagged/rdflib>`__
 
