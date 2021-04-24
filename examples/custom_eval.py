@@ -19,9 +19,9 @@ i.e. in your setup.py::
 import rdflib
 
 from rdflib.plugins.sparql.evaluate import evalBGP
-from rdflib.namespace import FOAF
+from rdflib.namespace import FOAF, RDFS
 
-inferredSubClass = rdflib.RDFS.subClassOf * "*"  # any number of rdfs.subClassOf
+inferredSubClass = RDFS.subClassOf * "*"  # any number of rdfs.subClassOf
 
 
 def customEval(ctx, part):
@@ -53,11 +53,20 @@ if __name__ == "__main__":
     rdflib.plugins.sparql.CUSTOM_EVALS["exampleEval"] = customEval
 
     g = rdflib.Graph()
-    g.load("foaf.n3")
+    g.parse("foaf.n3")
 
     # Add the subClassStmt so that we can query for it!
-    g.add((FOAF.Person, rdflib.RDFS.subClassOf, FOAF.Agent))
+    g.add((FOAF.Person, RDFS.subClassOf, FOAF.Agent))
 
     # Find all FOAF Agents
-    for x in g.query("PREFIX foaf: <%s> SELECT * WHERE { ?s a foaf:Agent . }" % FOAF):
+    for x in g.query(
+        f"""
+        PREFIX foaf: <{FOAF}> 
+        
+        SELECT * 
+        WHERE {{
+            ?s a foaf:Agent . 
+        }}
+        """
+    ):
         print(x)
