@@ -1574,7 +1574,7 @@ class ConjunctiveGraph(Graph):
         self,
         source=None,
         publicID=None,
-        format="xml",
+        format=None,
         location=None,
         file=None,
         data=None,
@@ -1758,7 +1758,7 @@ class Dataset(ConjunctiveGraph):
         self,
         source=None,
         publicID=None,
-        format="xml",
+        format=None,
         location=None,
         file=None,
         data=None,
@@ -2060,7 +2060,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def absolutize(self, uri, defrag=1):
         raise UnSupportedAggregateOperation()
 
-    def parse(self, source, publicID=None, format="xml", **args):
+    def parse(self, source, publicID=None, format=None, **args):
         raise ModificationException()
 
     def n3(self):

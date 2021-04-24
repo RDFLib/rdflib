@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 """
-
 film.py: a simple tool to manage your movies review
 Simon Rozet, http://atonie.org/
 
@@ -13,7 +12,6 @@ Requires download and import of Python imdb library from
 https://imdbpy.github.io/ - (warning: installation
 will trigger automatic installation of several other packages)
 
---
 Usage:
     film.py whoami "John Doe <john@doe.org>"
         Initialize the store and set your name and email.
