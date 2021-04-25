@@ -19,7 +19,7 @@ i.e. in your setup.py::
 import rdflib
 
 from rdflib.plugins.sparql.evaluate import evalBGP
-from rdflib.namespace import FOAF, RDFS
+from rdflib.namespace import FOAF, RDF, RDFS
 
 inferredSubClass = RDFS.subClassOf * "*"  # any number of rdfs.subClassOf
 
@@ -30,11 +30,10 @@ def customEval(ctx, part):
     """
 
     if part.name == "BGP":
-
         # rewrite triples
         triples = []
         for t in part.triples:
-            if t[1] == rdflib.RDF.type:
+            if t[1] == RDF.type:
                 bnode = rdflib.BNode()
                 triples.append((t[0], t[1], bnode))
                 triples.append((bnode, inferredSubClass, t[2]))
