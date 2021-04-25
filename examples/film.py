@@ -31,8 +31,8 @@ try:
 except ImportError:
     imdb = None
 
-from rdflib import BNode, ConjunctiveGraph, URIRef, Literal, Namespace, RDF
-from rdflib.namespace import FOAF, DC
+from rdflib import BNode, ConjunctiveGraph, URIRef, Literal, Namespace
+from rdflib.namespace import FOAF, DC, RDF
 
 storefn = os.path.expanduser("~/movies.n3")
 # storefn = '/home/simon/codes/film.dev/movies.n3'
@@ -51,7 +51,7 @@ class Store:
     def __init__(self):
         self.graph = ConjunctiveGraph()
         if os.path.exists(storefn):
-            self.graph.load(storeuri, format="n3")
+            self.graph.parse(storeuri)
         self.graph.bind("dc", DC)
         self.graph.bind("foaf", FOAF)
         self.graph.bind("imdb", IMDB)
