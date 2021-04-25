@@ -1220,7 +1220,7 @@ class Graph(Node):
         return processor.update(update_object, initBindings, initNs, **kwargs)
 
     def n3(self):
-        """return an n3 identifier for the Graph"""
+        """Return an n3 identifier for the Graph"""
         return "[%s]" % self.identifier.n3()
 
     def __reduce__(self):
