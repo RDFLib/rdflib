@@ -52,9 +52,9 @@ class CollectionTest(TestCase):
         # Fails:  y a foo:Wrapper, foo:wraps x; x a rdf:List, a foo:Other ;
 
         target1 = ConjunctiveGraph()
-        target1.parse(data=target1xml)
+        target1.parse(data=target1xml, format="xml")
         target2 = ConjunctiveGraph()
-        target2.parse(data=target2xml)
+        target2.parse(data=target2xml, format="xml")
 
         g = ConjunctiveGraph()
         bits = [ex["a"], ex["b"], ex["c"]]
