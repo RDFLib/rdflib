@@ -108,3 +108,26 @@ the tag ``[rdflib]``. A list of existing ``[rdflib]`` tagged questions is kept t
 
 * `<https://stackoverflow.com/questions/tagged/rdflib>`__
 
+Glossary
+--------
+
+Here are a few RDF and Python terms referred to in this documentation. They are linked to wherever they occur.
+
+.. glossary::
+
+    functional property
+        Properties than can only occur once for a resource, i.e. for any relation (triple, in RDF) ``x p y``,
+        if ``p`` is functional, for any individual ``x``, there can be at most one individual ``y``.
+
+    OWL
+        The OWL 2 Web Ontology Language, informally OWL 2 or just OWL, is an ontology language for the Semantic Web
+        with formally defined meaning. OWL 2 ontologies provide classes, properties, individuals, and data values and
+        are stored as Semantic Web documents. OWL 2 ontologies can be used along with information written in RDF, and
+        OWL 2 ontologies themselves are primarily exchanged as RDF documents. See the `RDF 1.1 Concepts and Abstract
+        Syntax <https://www.w3.org/TR/rdf11-concepts/>`_ for more info.
+
+    RDF
+        The Resource Description Framework (RDF) is a framework for representing information in the Web. RDF data is
+        stored in graphs that are sets of subject-predicate-object triples, where the elements may be IRIs, blank nodes,
+        or datatyped literals. See the `OWL 2 Web Ontology Language
+        Document Overview <http://www.w3.org/TR/owl-overview/>`_ for more info.

@@ -1,68 +1,103 @@
-Utilities and convenience functions
-===================================
+Utilities & convenience functions
+=================================
 
-For RDF programming, RDFLib and Python may not execute the fastest,
-but we try hard to make it the fastest and most convenient way to write!
+For RDF programming, RDFLib and Python may be the fastest tools,
+but we try hard to make them the easiest and most convenient to use and thus the *fastest* overall!
 
-This is a collection of hints and pointers for hassle free RDF-coding.
-
-User-friendly labels
---------------------
-
-Use :meth:`~rdflib.graph.Graph.label` to quickly look up the RDFS
-label of something, or better use
-:meth:`~rdflib.graph.Graph.preferredLabel` to find a label using
-several different properties (i.e. either ``rdfs:label``,
-``skos:preferredLabel``, ``dc:title``, etc.).
+This is a collection of hints and pointers for hassle-free RDF coding.
 
 Functional properties
 ---------------------
 
 Use :meth:`~rdflib.graph.Graph.value` and
 :meth:`~rdflib.graph.Graph.set` to work with :term:`functional
-properties`, i.e. properties than can only occur once for a resource.
+property` instances, i.e. properties than can only occur once for a resource.
+
+.. code-block:: python
+
+    from rdflib import Graph, URIRef, Literal, BNode
+    from rdflib.namespace import FOAF, RDF
+
+    g = Graph()
+    g.bind("foaf", FOAF)
+
+    # Add demo data
+    bob = URIRef("http://example.org/people/Bob")
+    g.add((bob, RDF.type, FOAF.Person))
+    g.add((bob, FOAF.name, Literal("Bob")))
+    g.add((bob, FOAF.age, Literal(38)))
+
+    # To get a single value, use 'value'
+    print(g.value(bob, FOAF.age))
+    # prints: 38
+
+    # To change a single of value, use 'set'
+    g.set((bob, FOAF.age, Literal(39)))
+    print(g.value(bob, FOAF.age))
+    # prints: 39
+
 
 Slicing graphs
 --------------
 
 Python allows slicing arrays with a ``slice`` object, a triple of
-``start``, ``stop`` index and step-size::
+``start``, ``stop`` and ``step-size``:
 
-   >>> range(10)[2:9:3] 
-   [2, 5, 8]
+.. code-block:: python
+
+    for i in range(20)[2:9:3]:
+        print(i)
+    # prints:
+    # 2, 5, 8
+
 
 RDFLib graphs override ``__getitem__`` and we pervert the slice triple
 to be a RDF triple instead. This lets slice syntax be a shortcut for
 :meth:`~rdflib.graph.Graph.triples`,
 :meth:`~rdflib.graph.Graph.subject_predicates`,
-:meth:`~rdflib.graph.Graph.contains`, and other Graph query-methods::
+:meth:`~rdflib.graph.Graph.contains`, and other Graph query-methods:
 
-   graph[:] 
-   # same as 
-   iter(graph)
+.. code-block:: python
 
-   graph[bob] 
-   # same as 
-   graph.predicate_objects(bob)
+    from rdflib import Graph, URIRef, Literal, BNode
+    from rdflib.namespace import FOAF, RDF
 
-   graph[bob : FOAF.knows]
-   # same as
-   graph.objects(bob, FOAF.knows)
-   
-   graph[bob : FOAF.knows : bill] 
-   # same as
-   (bob, FOAF.knows, bill) in graph
+    g = Graph()
+    g.bind("foaf", FOAF)
 
-   graph[:FOAF.knows]
-   # same as
-   graph.subject_objects(FOAF.knows)
+    # Add demo data
+    bob = URIRef("http://example.org/people/Bob")
+    bill = URIRef("http://example.org/people/Bill")
+    g.add((bob, RDF.type, FOAF.Person))
+    g.add((bob, FOAF.name, Literal("Bob")))
+    g.add((bob, FOAF.age, Literal(38)))
+    g.add((bob, FOAF.knows, bill))
 
-   ...
+    print(g[:])
+    # same as
+    print(iter(g))
+
+    print(g[bob])
+    # same as
+    print(g.predicate_objects(bob))
+
+    print(g[bob: FOAF.knows])
+    # same as
+    print(g.objects(bob, FOAF.knows))
+
+    print(g[bob: FOAF.knows: bill])
+    # same as
+    print((bob, FOAF.knows, bill) in g)
+
+    print(g[:FOAF.knows])
+    # same as
+    print(g.subject_objects(FOAF.knows))
+
 
 See :mod:`examples.slice` for a complete example. 
 
-.. note:: Slicing is convenient for run-once scripts of playing around
-          in the Python ``REPL``. However, since slicing returns
+.. note:: Slicing is convenient for run-once scripts for playing around
+          in the Python ``REPL``, however since slicing returns
           tuples of varying length depending on which parts of the
           slice are bound, you should be careful using it in more
           complicated programs. If you pass in variables, and they are
@@ -81,36 +116,49 @@ Serializing a single term to N3
 -------------------------------
 
 For simple output, or simple serialisation, you often want a nice
-readable representation of a term.  All terms have a
-``.n3(namespace_manager = None)`` method, which will return a suitable
-N3 format::
+readable representation of a term.  All terms (URIRef, Literal etc.) have a
+``n3``, method, which will return a suitable N3 format:
 
-   >>> from rdflib import Graph, URIRef, Literal, BNode
-   >>> from rdflib.namespace import FOAF, NamespaceManager
+.. code-block:: python
 
-   >>> person = URIRef('http://xmlns.com/foaf/0.1/Person')
-   >>> person.n3()
-   u'<http://xmlns.com/foaf/0.1/Person>'
+    from rdflib import Graph, URIRef, Literal
+    from rdflib.namespace import FOAF
 
-   >>> g = Graph()
-   >>> g.bind("foaf", FOAF)
+    # A URIRef
+    person = URIRef("http://xmlns.com/foaf/0.1/Person")
+    print(person.n3())
+    # prints: <http://xmlns.com/foaf/0.1/Person>
 
-   >>> person.n3(g.namespace_manager)
-   u'foaf:Person'
+    # Simplifying the output with a namespace prefix:
+    g = Graph()
+    g.bind("foaf", FOAF)
 
-   >>> l = Literal(2)
-   >>> l.n3()
-   u'"2"^^<http://www.w3.org/2001/XMLSchema#integer>'
-   
-   >>> l.n3(g.namespace_manager)
-   u'"2"^^xsd:integer'
+    print(person.n3(g.namespace_manager))
+    # prints foaf:Person
+
+    # A typed literal
+    l = Literal(2)
+    print(l.n3())
+    # prints "2"^^<http://www.w3.org/2001/XMLSchema#integer>
+
+    # Simplifying the output with a namespace prefix
+    # XSD is built in, so no need to bind() it!
+    l.n3(g.namespace_manager)
+    # prints: "2"^^xsd:integer
 
 Parsing data from a string
 --------------------------
 
-You can parse data from a string with the ``data`` param::
+You can parse data from a string with the ``data`` param:
 
-    graph.parse(data = '<urn:a> <urn:p> <urn:b>.', format='n3')
+.. code-block:: python
+
+    from rdflib import Graph
+
+    g = Graph().parse(data="<a:> <p:> <p:>.")
+    for r in g.triples((None, None, None)):
+        print(r)
+    # prints: (rdflib.term.URIRef('a:'), rdflib.term.URIRef('p:'), rdflib.term.URIRef('p:'))
 
 Commandline-tools
 -----------------
