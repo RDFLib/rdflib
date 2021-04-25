@@ -16,16 +16,16 @@ try:
 except ImportError:
     cythonize = None
 
-# If cython is present, it is used by default.
+# cython is not used unless specified.
 if cythonize:
-    if '--without-cython' in sys.argv:
-        USE_CYTHON = False
-        sys.argv.remove('--without-cython')
-    elif '--no-cython' in sys.argv:
-        USE_CYTHON = False
-        sys.argv.remove('--no-cython')
-    else:
+    if '--with-cython' in sys.argv:
         USE_CYTHON = True
+        sys.argv.remove('--with-cython')
+    elif '--cython' in sys.argv:
+        USE_CYTHON = True
+        sys.argv.remove('--cython')
+    else:
+        USE_CYTHON = False
 else:
     USE_CYTHON = False
 
