@@ -50,10 +50,10 @@ These examples all live in ``./examples`` in the source-distribution of RDFLib.
     :undoc-members:
     :show-inheritance:
 
-:mod:`resource` Module
-----------------------
+:mod:`resource_example` Module
+------------------------------
 
-.. automodule:: examples.resource
+.. automodule:: examples.resource_example
     :members:
     :undoc-members:
     :show-inheritance:
