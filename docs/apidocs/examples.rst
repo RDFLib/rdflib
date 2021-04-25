@@ -32,8 +32,7 @@ These examples all live in ``./examples`` in the source-distribution of RDFLib.
 
 .. automodule:: examples.film
     :members:
-    :undoc-members:
-    :show-inheritance:
+
 
 :mod:`foafpaths` Module
 -----------------------
@@ -55,14 +54,6 @@ These examples all live in ``./examples`` in the source-distribution of RDFLib.
 ----------------------
 
 .. automodule:: examples.resource
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`rdfa_example` Module
---------------------------
-
-.. automodule:: examples.rdfa_example
     :members:
     :undoc-members:
     :show-inheritance:
