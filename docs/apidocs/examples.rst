@@ -58,14 +58,6 @@ These examples all live in ``./examples`` in the source-distribution of RDFLib.
     :undoc-members:
     :show-inheritance:
 
-:mod:`simple_example` Module
-----------------------------
-
-.. automodule:: examples.simple_example
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`sleepycat_example` Module
 --------------------------------
 
