@@ -1,10 +1,10 @@
 """
-An RDFLib ConjunctiveGraph is an (unnamed) aggregation of all the named graphs
+An RDFLib ConjunctiveGraph is an (unnamed) aggregation of all the Named Graphs
 within a Store. The :meth:`~rdflib.graph.ConjunctiveGraph.get_context`
-method can be used to get a particular named graph for use such as to add
-triples to, or the default graph can be used
+method can be used to get a particular named graph for use, such as to add
+triples to, or the default graph can be used.
 
-This example shows how to create named graphs and work with the
+This example shows how to create Named Graphs and work with the
 conjunction (union) of all the graphs.
 """
 
@@ -14,7 +14,8 @@ from rdflib.plugins.stores.memory import Memory
 
 if __name__ == "__main__":
 
-    ns = Namespace("http://love.com#")
+    LOVE = Namespace("http://love.com#")
+    LOVERS = Namespace("http://love.com/lovers/")
 
     mary = URIRef("http://love.com/lovers/mary")
     john = URIRef("http://love.com/lovers/john")
@@ -25,35 +26,40 @@ if __name__ == "__main__":
     store = Memory()
 
     g = ConjunctiveGraph(store=store)
-    g.bind("love", ns)
+    g.bind("love", LOVE)
+    g.bind("lovers", LOVERS)
 
-    # add a graph for Mary's facts to the Conjunctive Graph
+    # Add a graph containing Mary's facts to the Conjunctive Graph
     gmary = Graph(store=store, identifier=cmary)
-    # Mary's graph only contains the URI of the person she love, not his cute name
-    gmary.add((mary, ns["hasName"], Literal("Mary")))
-    gmary.add((mary, ns["loves"], john))
+    # Mary's graph only contains the URI of the person she loves, not his cute name
+    gmary.add((mary, LOVE.hasName, Literal("Mary")))
+    gmary.add((mary, LOVE.loves, john))
 
-    # add a graph for John's facts to the Conjunctive Graph
+    # Add a graph containing John's facts to the Conjunctive Graph
     gjohn = Graph(store=store, identifier=cjohn)
     # John's graph contains his cute name
-    gjohn.add((john, ns["hasCuteName"], Literal("Johnny Boy")))
+    gjohn.add((john, LOVE.hasCuteName, Literal("Johnny Boy")))
 
-    # enumerate contexts
+    # Enumerate contexts
+    print("Contexts:")
     for c in g.contexts():
-        print("-- %s " % c)
-
-    # separate graphs
-    print(gjohn.serialize(format="n3").decode("utf-8"))
+        print(f"-- {c.identifier} ")
     print("===================")
-    print(gmary.serialize(format="n3").decode("utf-8"))
+    # Separate graphs
+    print("John's Graph:")
+    print(gjohn.serialize())
+    print("===================")
+    print("Mary's Graph:")
+    print(gmary.serialize())
     print("===================")
 
-    # full graph
-    print(g.serialize(format="n3").decode("utf-8"))
+    print("Full Graph")
+    print(g.serialize())
+    print("===================")
 
-    # query the conjunction of all graphs
+    print("Query the conjunction of all graphs:")
     xx = None
-    for x in g[mary : ns.loves / ns.hasCuteName]:
+    for x in g[mary: LOVE.loves / LOVE.hasCuteName]:
         xx = x
     print("Q: Who does Mary love?")
     print("A: Mary loves {}".format(xx))
