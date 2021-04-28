@@ -27,6 +27,7 @@ if cythonize:
     else:
         USE_CYTHON = False
 else:
+    print("cython is not installed")
     USE_CYTHON = False
 
 if 'clean' in sys.argv:
