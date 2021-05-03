@@ -32,6 +32,23 @@ class NamespacePrefixTest(unittest.TestCase):
             ("ns1", URIRef("http://foo/bar/"), ""),
         )
 
+        # should compute qnames of URNs correctly as well
+        self.assertEqual(
+            g.compute_qname(URIRef("urn:ISSN:0167-6423")),
+            ("ns5", URIRef("urn:ISSN:"), "0167-6423"),
+        )
+
+        self.assertEqual(
+            g.compute_qname(URIRef("urn:ISSN:")),
+            ("ns5", URIRef("urn:ISSN:"), ""),
+        )
+
+        # should compute qnames with parenthesis correctly
+        self.assertEqual(
+            g.compute_qname(URIRef("http://foo/bar/name_with_(parenthesis)")),
+            ("ns1", URIRef("http://foo/bar/"), "name_with_(parenthesis)"),
+        )
+
     def test_reset(self):
         data = (
             "@prefix a: <http://example.org/a> .\n"

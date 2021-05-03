@@ -1,3 +1,4 @@
+from rdflib.plugins.sparql import sparql, prepareQuery
 from rdflib import Graph, URIRef, Literal, BNode, ConjunctiveGraph
 from rdflib.namespace import Namespace, RDF, RDFS
 from rdflib.plugins.sparql import prepareQuery
@@ -113,6 +114,24 @@ def test_sparql_update_with_bnode_serialize_parse():
     assert not raised
 
 
+def test_bindings():
+    layer_0 = sparql.Bindings(d={"v": 1, "bar": 2})
+    layer_1 = sparql.Bindings(outer=layer_0, d={"v": 3})
+
+
+    assert layer_0["v"] == 1
+    assert layer_1["v"] == 3
+    assert layer_1["bar"] == 2
+
+    assert "foo" not in layer_0
+    assert "v" in layer_0
+    assert "bar" in layer_1
+
+    # XXX This might not be intendet behaviour
+    #     but is kept for compatibility for now.
+    assert len(layer_1) == 3
+
+    
 def test_named_filter_graph_query():
     g = ConjunctiveGraph()
     g.namespace_manager.bind('rdf', RDF)
