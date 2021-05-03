@@ -24,17 +24,26 @@ graphs that can be used and queried. The store that backs the graph
 """
 
 from codecs import getreader
+import re
 
 from rdflib import ConjunctiveGraph
 
 # Build up from the NTriples parser:
 from rdflib.plugins.parsers.ntriples import W3CNTriplesParser
 from rdflib.plugins.parsers.ntriples import ParseError
-from rdflib.plugins.parsers.ntriples import r_tail
-from rdflib.plugins.parsers.ntriples import r_wspace
+from rdflib.plugins.parsers.ntriples import tail
+from rdflib.plugins.parsers.ntriples import wspace
+from rdflib.plugins.parsers.ntriples import wspaces
+from rdflib.plugins.parsers.ntriples import r_comment_or_empty
 
 __all__ = ["NQuadsParser"]
 
+
+r_uriref_predicate_object_context = re.compile(wspace + r"([<_][^ ]+)"
+                                               + wspaces + r"(<[^ ]+)"
+                                               + wspaces + r'(".*[^\\]"[^ \t]*|<[^>]*>|_[^ ]*)'
+                                               + wspaces + r"([^ ]+)?"
+                                               + tail)
 
 class NQuadsParser(W3CNTriplesParser):
     def parse(self, inputsource, sink, bnode_context=None, **kwargs):
@@ -63,37 +72,37 @@ class NQuadsParser(W3CNTriplesParser):
             raise ParseError("Item to parse must be a file-like object.")
 
         self.file = source
-        self.buffer = ""
-        while True:
-            self.line = __line = self.readline()
-            if self.line is None:
-                break
-            try:
-                self.parseline(bnode_context)
-            except ParseError as msg:
-                raise ParseError("Invalid line (%s):\n%r" % (msg, __line))
+        return self.processing_loop(bnode_context)
 
-        return self.sink
+    def parseline(self, the_line, bnode_context=None):
+        # This splits the line into four component because this is a quad.
+        # The logic is similar for triples, except the context as fourth component.
+        m = r_uriref_predicate_object_context.match(the_line)
+        if not m:
+            # Very rare case, so performances are less important.
+            if r_comment_or_empty.match(the_line):
+                return  # The line is a comment
+            raise ParseError("Not a quad")
 
-    def parseline(self, bnode_context=None):
-        self.eat(r_wspace)
-        if (not self.line) or self.line.startswith(("#")):
-            return  # The line is empty or a comment
+        first_token, second_token, third_token, fourth_token, _ = m.groups()
 
-        subject = self.subject(bnode_context)
-        self.eat(r_wspace)
+        subject = self.uriref(first_token) or self.nodeid(first_token, bnode_context)
+        if not subject:
+            raise ParseError("Subject must be uriref or nodeID")
 
-        predicate = self.predicate()
-        self.eat(r_wspace)
+        predicate = self.uriref(second_token)
+        if not predicate:
+            raise ParseError("Predicate must be uriref")
 
-        obj = self.object(bnode_context)
-        self.eat(r_wspace)
+        obj = self.uriref(third_token) or self.nodeid(third_token, bnode_context) or self.literal(third_token)
+        if obj is False:
+            raise ParseError("Unrecognised object type")
 
-        context = self.uriref() or self.nodeid(bnode_context) or self.sink.identifier
-        self.eat(r_tail)
+        if fourth_token:
+            context = self.uriref(fourth_token) or self.nodeid(fourth_token, bnode_context)
+        else:
+            context = self.sink.identifier
 
-        if self.line:
-            raise ParseError("Trailing garbage")
         # Must have a context aware store - add on a normal Graph
         # discards anything where the ctx != graph.identifier
         self.sink.get_context(context).add((subject, predicate, obj))
