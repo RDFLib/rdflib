@@ -94,12 +94,9 @@ def _unquote_validate(s):
 
 def _unquote_not_validate(s):
     """Unquote an N-Triples string if no validation is needed."""
-
-    assert isinstance(s, str)
     # Maybe there are no escape char, so no need to decode.
     if "\\" in s:
         s = decodeUnicodeEscape(s)
-
 
     return s
 
