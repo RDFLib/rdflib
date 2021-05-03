@@ -184,7 +184,7 @@ class ClosedNamespace(object):
     """
     A namespace with a closed list of members
 
-    Trying to create terms not listen is an error
+    Trying to create terms not listed is an error
     """
 
     def __init__(self, uri, terms):
@@ -798,6 +798,9 @@ class NamespaceManager(object):
         # When documenting explain that override only applies in what cases
         if prefix is None:
             prefix = ""
+        elif " " in prefix:
+            raise KeyError("Prefixes may not contain spaces.")
+            
         bound_namespace = self.store.namespace(prefix)
         # Check if the bound_namespace contains a URI
         # and if so convert it into a URIRef for comparison
@@ -894,7 +897,7 @@ class NamespaceManager(object):
 NAME_START_CATEGORIES = ["Ll", "Lu", "Lo", "Lt", "Nl"]
 SPLIT_START_CATEGORIES = NAME_START_CATEGORIES + ["Nd"]
 NAME_CATEGORIES = NAME_START_CATEGORIES + ["Mc", "Me", "Mn", "Lm", "Nd"]
-ALLOWED_NAME_CHARS = ["\u00B7", "\u0387", "-", ".", "_", ":", "%"]
+ALLOWED_NAME_CHARS = ["\u00B7", "\u0387", "-", ".", "_", "%", "(", ")"]
 
 
 # http://www.w3.org/TR/REC-xml-names/#NT-NCName
@@ -911,7 +914,7 @@ def is_ncname(name):
             for i in range(1, len(name)):
                 c = name[i]
                 if not category(c) in NAME_CATEGORIES:
-                    if c != ":" and c in ALLOWED_NAME_CHARS:
+                    if c in ALLOWED_NAME_CHARS:
                         continue
                     return 0
                 # if in compatibility area

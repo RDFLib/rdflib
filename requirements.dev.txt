@@ -1,5 +1,7 @@
 sphinx
 sphinxcontrib-apidoc
 nose==1.3.7
+nose-timer
+coverage
 flake8
 doctest-ignore-unicode==0.1.2
