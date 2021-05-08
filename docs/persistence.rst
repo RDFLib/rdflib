@@ -20,7 +20,7 @@ Stores currently shipped with core RDFLib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * :class:`Memory <rdflib.plugins.stores.memory.Memory>` (not persistent!)
-* :class:`~rdflib.plugins.stores.sleepycat.Sleepycat` (on disk persistence via Python's :ref:`bsddb` or :ref:`bsddb3` packages)
+* :class:`~rdflib.plugins.stores.berkeleydb.BerkeleyDB` (on disk persistence via Python's :ref:`bsddb` or :ref:`bsddb3` packages)
 * :class:`~rdflib.plugins.stores.sparqlstore.SPARQLStore` - a read-only wrapper around a remote SPARQL Query endpoint. 
 * :class:`~rdflib.plugins.stores.sparqlstore.SPARQLUpdateStore` - a read-write wrapper around a remote SPARQL query/update endpoint pair. 
 
