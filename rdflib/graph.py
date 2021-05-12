@@ -879,11 +879,11 @@ class Graph(Node):
             for rt_2 in self.transitiveClosure(func, rt, seen):
                 yield rt_2
 
-    def transitive_objects(self, subject, property, remember=None):
-        """Transitively generate objects for the ``property`` relationship
+    def transitive_objects(self, subject, predicate, remember=None):
+        """Transitively generate objects for the ``predicate`` relationship
 
         Generated objects belong to the depth first transitive closure of the
-        ``property`` relationship starting at ``subject``.
+        ``predicate`` relationship starting at ``subject``.
         """
         if remember is None:
             remember = {}
@@ -891,15 +891,15 @@ class Graph(Node):
             return
         remember[subject] = 1
         yield subject
-        for object in self.objects(subject, property):
-            for o in self.transitive_objects(object, property, remember):
+        for object in self.objects(subject, predicate):
+            for o in self.transitive_objects(object, predicate, remember):
                 yield o
 
     def transitive_subjects(self, predicate, object, remember=None):
-        """Transitively generate objects for the ``property`` relationship
+        """Transitively generate subjects for the ``predicate`` relationship
 
-        Generated objects belong to the depth first transitive closure of the
-        ``property`` relationship starting at ``subject``.
+        Generated subjects belong to the depth first transitive closure of the
+        ``predicate`` relationship starting at ``object``.
         """
         if remember is None:
             remember = {}
