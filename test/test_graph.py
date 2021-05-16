@@ -319,6 +319,47 @@ class GraphTestCase(unittest.TestCase):
             # this endpoint is currently not available, ignore this test.
             pass
 
+    def testTransitive(self):
+        person = URIRef("ex:person")
+        dad = URIRef("ex:dad")
+        mom = URIRef("ex:mom")
+        mom_of_dad = URIRef("ex:mom_o_dad")
+        mom_of_mom = URIRef("ex:mom_o_mom")
+        dad_of_dad = URIRef("ex:dad_o_dad")
+        dad_of_mom = URIRef("ex:dad_o_mom")
+
+        parent = URIRef("ex:parent")
+
+        g = Graph()
+        g.add((person, parent, dad))
+        g.add((person, parent, mom))
+        g.add((dad, parent, mom_of_dad))
+        g.add((dad, parent, dad_of_dad))
+        g.add((mom, parent, mom_of_mom))
+        g.add((mom, parent, dad_of_mom))
+
+        # transitive parents of person
+        self.assertEqual(
+            set(g.transitive_objects(subject=person, predicate=parent)),
+            {person, dad, mom_of_dad, dad_of_dad, mom, mom_of_mom, dad_of_mom},
+        )
+        # transitive parents of dad
+        self.assertEqual(
+            set(g.transitive_objects(dad, parent)), {dad, mom_of_dad, dad_of_dad}
+        )
+        # transitive parents of dad_of_dad
+        self.assertEqual(set(g.transitive_objects(dad_of_dad, parent)), {dad_of_dad})
+
+        # transitive children (inverse of parents) of mom_of_mom
+        self.assertEqual(
+            set(g.transitive_subjects(predicate=parent, object=mom_of_mom)),
+            {mom_of_mom, mom, person},
+        )
+        # transitive children (inverse of parents) of mom
+        self.assertEqual(set(g.transitive_subjects(parent, mom)), {mom, person})
+        # transitive children (inverse of parents) of person
+        self.assertEqual(set(g.transitive_subjects(parent, person)), {person})
+
 
 # dynamically create classes for each registered Store
 

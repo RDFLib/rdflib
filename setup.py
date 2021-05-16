@@ -16,7 +16,7 @@ kwargs["test_suite"] = "nose.collector"
 kwargs["extras_require"] = {
     "html": ["html5lib"],
     "tests": kwargs["tests_require"],
-    "docs": ["sphinx < 4", "sphinxcontrib-apidoc"],
+    "docs": ["sphinx < 5", "sphinxcontrib-apidoc"],
 }
 
 
