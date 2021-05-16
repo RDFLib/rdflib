@@ -2,8 +2,10 @@ import sys
 import unittest
 from rdflib import Graph
 
+
 class GraphTestCase(unittest.TestCase):
     g = Graph()
+    
     def setUp(self):
         data = """
         <urn:a> <urn:p> 1 .
