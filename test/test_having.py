@@ -16,7 +16,7 @@ class GraphTestCase(unittest.TestCase):
         self.g.parse(data=data, format="turtle")
 
     def testGroupBy(self):
-        query = ("SELECT ?p ?o "
+        query = ("SELECT ?p"
                  "WHERE { ?s ?p ?o } "
                  "GROUP BY ?p")
         qres = self.g.query(query)
@@ -33,7 +33,7 @@ class GraphTestCase(unittest.TestCase):
         self.assertEqual(1, len(qres))
 
     def testHavingPrimaryExpressionVarNeqIri(self):
-        query = ("SELECT ?p ?o "
+        query = ("SELECT ?p "
                  "WHERE { ?s ?p ?o } "
                  "GROUP BY ?p HAVING (?p != <urn:foo> )")
         qres = self.g.query(query)
