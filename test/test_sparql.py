@@ -1,8 +1,8 @@
 from rdflib.plugins.sparql import sparql, prepareQuery
 from rdflib import Graph, URIRef, Literal, BNode, ConjunctiveGraph
 from rdflib.namespace import Namespace, RDF, RDFS
-from rdflib.plugins.sparql import prepareQuery
 from rdflib.compare import isomorphic
+from rdflib.term import Variable
 
 from nose.tools import eq_
 
@@ -161,6 +161,43 @@ def test_named_filter_graph_query():
                         initNs={'ex': ex})) == [(Literal('Boris'),)]
     assert list(g.query("SELECT ?l WHERE { GRAPH ?g { ?a rdfs:label ?l } FILTER NOT EXISTS { ?a a ?type }}",
                         initNs={'ex': ex})) == [(Literal('Susan'),)]
+
+
+def test_txtresult():
+    data = f"""\
+    @prefix rdfs: <{str(RDFS)}> .
+    rdfs:Class a rdfs:Class ;
+        rdfs:isDefinedBy <http://www.w3.org/2000/01/rdf-schema#> ;
+        rdfs:label "Class" ;
+        rdfs:comment "The class of classes." ;
+        rdfs:subClassOf rdfs:Resource .
+    """
+    graph = Graph()
+    graph.parse(data=data, format="turtle")
+    result = graph.query(
+        """\
+    SELECT ?class ?superClass ?label ?comment WHERE {
+        ?class rdf:type rdfs:Class.
+        ?class rdfs:label ?label.
+        ?class rdfs:comment ?comment.
+        ?class rdfs:subClassOf ?superClass.
+    }
+    """
+    )
+    vars = [
+        Variable("class"),
+        Variable("superClass"),
+        Variable("label"),
+        Variable("comment"),
+    ]
+    assert result.type == "SELECT"
+    assert len(result) == 1
+    assert result.vars == vars
+    txtresult = result.serialize(format="txt")
+    lines = txtresult.decode().splitlines()
+    assert len(lines) == 3
+    vars_check = [Variable(var.strip()) for var in lines[0].split("|")]
+    assert vars_check == vars
 
 
 if __name__ == "__main__":
