@@ -222,7 +222,6 @@ class Memory(Store):
         if context is not None:
             self.__all_contexts.add(context)
         subject, predicate, object_ = triple
-        self.__add_triple_context(triple, context, quoted)
 
         spo = self.__spo
         try:
@@ -233,7 +232,19 @@ class Memory(Store):
             o = po[predicate]
         except LookupError:
             o = po[predicate] = {}
-        o[object_] = 1
+
+        try:
+            _ = o[object_]
+            # This cannot be reached if (s, p, o) was not inserted before.
+            triple_exists = True
+        except KeyError:
+            o[object_] = 1
+            triple_exists = False
+        self.__add_triple_context(triple, triple_exists, context, quoted)
+
+        if triple_exists:
+            # No need to insert twice this triple.
+            return
 
         pos = self.__pos
         try:
@@ -436,13 +447,11 @@ class Memory(Store):
                 pass  # we didn't know this graph, no problem
 
     # internal utility methods below
-    def __add_triple_context(self, triple, context, quoted):
+    def __add_triple_context(self, triple, triple_exists, context, quoted):
         """add the given context to the set of contexts for the triple"""
         ctx = self.__ctx_to_str(context)
         quoted = bool(quoted)
-        try:
-            subj, pred, obj = triple
-            _ = self.__spo[subj][pred][obj]
+        if triple_exists:
             # we know the triple exists somewhere in the store
             try:
                 triple_context = self.__tripleContexts[triple]
@@ -456,7 +465,7 @@ class Memory(Store):
             if not quoted:
                 triple_context[None] = quoted
 
-        except KeyError:
+        else:
             # the triple didn't exist before in the store
             if quoted:  # this context only
                 triple_context = self.__tripleContexts[triple] = {ctx: quoted}
