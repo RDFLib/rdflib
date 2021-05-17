@@ -509,15 +509,13 @@ class Memory(Store):
             return None
         try:
             # ctx could be a graph. In that case, use its identifier
-            ctx_str = "{}:{}".format(
-                str(ctx.identifier.__class__.__name__), str(ctx.identifier)
-            )
+            ctx_str = "{}:{}".format(ctx.identifier.__class__.__name__, ctx.identifier)
             self.__context_obj_map[ctx_str] = ctx
             return ctx_str
         except AttributeError:
             # otherwise, ctx should be a URIRef or BNode or str
             if isinstance(ctx, str):
-                ctx_str = "{}:{}".format(str(ctx.__class__.__name__), str(ctx))
+                ctx_str = "{}:{}".format(ctx.__class__.__name__, ctx)
                 if ctx_str in self.__context_obj_map:
                     return ctx_str
                 self.__context_obj_map[ctx_str] = ctx
