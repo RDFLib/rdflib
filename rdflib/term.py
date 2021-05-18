@@ -969,10 +969,10 @@ class Literal(Identifier):
         """
         # don't use super()... for efficiency reasons, see Identifier.__hash__
         res = str.__hash__(self)
-        if self.language:
-            res ^= hash(self.language.lower())
-        if self.datatype:
-            res ^= hash(self.datatype)
+        if self._language:
+            res ^= hash(self._language.lower())
+        if self._datatype:
+            res ^= hash(self._datatype)
         return res
 
     def __eq__(self, other):
@@ -1017,9 +1017,9 @@ class Literal(Identifier):
             return False
         if isinstance(other, Literal):
             return (
-                self.datatype == other.datatype
-                and (self.language.lower() if self.language else None)
-                == (other.language.lower() if other.language else None)
+                self._datatype == other._datatype
+                and (self._language.lower() if self._language else None)
+                == (other._language.lower() if other._language else None)
                 and str.__eq__(self, other)
             )
 
