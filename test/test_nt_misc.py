@@ -68,39 +68,39 @@ class NTTestCase(unittest.TestCase):
 
     def test_nonvalidating_unquote(self):
         safe = """<http://example.org/alice/foaf.rdf#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://example.org/alice/foaf1.rdf> ."""
-        ntriples.validate = False
+        ntriples.validate(False)
         res = ntriples.unquote(safe)
         self.assertTrue(isinstance(res, str))
 
     def test_validating_unquote(self):
         quot = """<http://example.org/alice/foaf.rdf#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://example.org/alice/foaf1.rdf> ."""
-        ntriples.validate = True
+        ntriples.validate(True)
         res = ntriples.unquote(quot)
         # revert to default
-        ntriples.validate = False
+        ntriples.validate(False)
         log.debug("restype %s" % type(res))
 
     def test_validating_unquote_raises(self):
-        ntriples.validate = True
+        ntriples.validate(True)
         uniquot = """<http://www.w3.org/People/Berners-Lee/card#cm> <http://xmlns.com/foaf/0.1/name> "R\\u00E4ksm\\u00F6rg\\u00E5s" <http://www.w3.org/People/Berners-Lee/card> ."""
         self.assertRaises(ntriples.ParseError, ntriples.unquote, uniquot)
         uniquot = """<http://www.w3.org/People/Berners-Lee/card#cm> <http://xmlns.com/foaf/0.1/name> "R\\\\u00E4ksm\\u00F6rg\\u00E5s" <http://www.w3.org/People/Berners-Lee/card> ."""
         self.assertRaises(ntriples.ParseError, ntriples.unquote, uniquot)
         # revert to default
-        ntriples.validate = False
+        ntriples.validate(False)
 
     def test_nonvalidating_uriquote(self):
-        ntriples.validate = False
+        ntriples.validate(False)
         safe = """<http://example.org/alice/foaf.rdf#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://example.org/alice/foaf1.rdf> ."""
         res = ntriples.uriquote(safe)
         self.assertTrue(res == safe)
 
     def test_validating_uriquote(self):
-        ntriples.validate = True
+        ntriples.validate(True)
         uniquot = """<http://www.w3.org/People/Berners-Lee/card#cm> <http://xmlns.com/foaf/0.1/name> "R\\u00E4ksm\\u00F6rg\\u00E5s" <http://www.w3.org/People/Berners-Lee/card> ."""
         res = ntriples.uriquote(uniquot)
         # revert to default
-        ntriples.validate = False
+        ntriples.validate(False)
         self.assertEqual(res, uniquot)
 
     def test_W3CNTriplesParser_fpath(self):
@@ -135,25 +135,6 @@ class NTTestCase(unittest.TestCase):
         )
         p = ntriples.W3CNTriplesParser()
         self.assertRaises(ntriples.ParseError, p.parsestring, data)
-
-    def test_cover_eat(self):
-        data = (
-            """<http://example.org/resource32> 3 <http://example.org/datatype1> .\n"""
-        )
-        p = ntriples.W3CNTriplesParser()
-        p.line = data
-        self.assertRaises(
-            ntriples.ParseError, p.eat, re.compile("<http://example.org/datatype1>")
-        )
-
-    def test_cover_subjectobjectliteral(self):
-        # data = '''<http://example.org/resource32> 3 <http://example.org/datatype1> .\n'''
-        p = ntriples.W3CNTriplesParser()
-        p.line = "baz"
-        self.assertRaises(ntriples.ParseError, p.subject)
-        self.assertRaises(ntriples.ParseError, p.object)
-        # p.line = '"baz"@fr^^<http://example.org/datatype1>'
-        # self.assertRaises(ntriples.ParseError, p.literal)
 
 
 class BNodeContextTestCase(unittest.TestCase):
