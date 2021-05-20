@@ -969,6 +969,7 @@ class Literal(Identifier):
         """
         # don't use super()... for efficiency reasons, see Identifier.__hash__
         res = str.__hash__(self)
+        # Directly accessing the member is faster than the property.
         if self._language:
             res ^= hash(self._language.lower())
         if self._datatype:
@@ -1015,6 +1016,7 @@ class Literal(Identifier):
             return True
         if other is None:
             return False
+        # Directly accessing the member is faster than the property.
         if isinstance(other, Literal):
             return (
                 self._datatype == other._datatype
