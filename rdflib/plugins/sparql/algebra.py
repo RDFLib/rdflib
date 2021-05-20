@@ -807,6 +807,7 @@ def translateAlgebra(query_algebra: Query = None):
 
     :param query_algebra: An algebra returned by the function call algebra.translateQuery(parse_tree).
     :return: The query form generated from the SPARQL 1.1 algebra tree for select queries.
+
     """
 
     def overwrite(text):
