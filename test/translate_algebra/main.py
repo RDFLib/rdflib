@@ -728,6 +728,25 @@ class TestAlgebraToTest(TestExecution):
 
         return test
 
+    def test_integration__complex_query1(self):
+        query_tree = parser.parseQuery(self.query_text)
+        query_algebra = algebra.translateQuery(query_tree)
+        self.query_from_algebra = translateAlgebra(query_algebra)
+
+        query_tree_2 = parser.parseQuery(self.query_from_algebra)
+        query_algebra_2 = algebra.translateQuery(query_tree_2)
+        self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
+        _pprint_query(self.query_from_query_from_algebra)
+
+        test = Test(test_number=37,
+                    tc_desc='Test a query with multiple graph patterns and solution modifiers '
+                            'gets properly translated into the query text. '
+                            'The query must also be executable and shall not violate any SPARQL query syntax.',
+                    expected_result=self.query_from_algebra,
+                    actual_result=self.query_from_query_from_algebra)
+
+        return test
+
 
 t = TestAlgebraToTest(annotated_tests=False)
 t.run_tests()
