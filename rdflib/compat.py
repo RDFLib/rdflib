@@ -119,6 +119,7 @@ def decodeUnicodeEscape(s):
     """
     if "\\" not in s:
         # Most of times, there are no backslashes in strings.
+        # In the general case, it could use maketrans and translate.
         return s
 
     s = s.replace("\\t", "\t")
