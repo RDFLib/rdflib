@@ -1,0 +1,54 @@
+[tool]
+[tool.poetry]
+authors = ["Daniel 'eikeon' Krech <eikeon@eikeon.com>", "RDFLib Team <rdflib-dev@googlegroups.com>"]
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.6",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "License :: OSI Approved :: BSD License",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Operating System :: OS Independent",
+  "Natural Language :: English",
+]
+description = "RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information."
+homepage = "https://github.com/RDFLib/rdflib"
+license = "BSD-3-Clause"
+name = "rdflib"
+version = "6.0.0a0"
+
+[tool.poetry.scripts]
+"csv2rdf" = "rdflib.tools.csv2rdf:main"
+"rdf2dot" = "rdflib.tools.rdf2dot:main"
+"rdfgraphisomorphism" = "rdflib.tools.graphisomorphism:main"
+"rdfpipe" = "rdflib.tools.rdfpipe:main"
+"rdfs2dot" = "rdflib.tools.rdfs2dot:main"
+
+[tool.poetry.dependencies]
+doctest-ignore-unicode = {optional = true, version = "*"}
+html5lib = {optional = true, version = "*"}
+isodate = "*"
+networkx = {optional = true, version = "*"}
+nose = {optional = true, version = "*"}
+pyparsing = "*"
+python = "^3.6"
+sphinx = {version = "<5", optional = true}
+sphinxcontrib-apidoc = {optional = true, version = "*"}
+
+[tool.poetry.dev-dependencies]
+doctest-ignore-unicode = "*"
+html5lib = "*"
+networkx = "*"
+nose = "*"
+sphinx = "<5"
+sphinxcontrib-apidoc = "*"
+mypy = "^0.812"
+darker = "^1.2.3"
+isort = "^5.8.0"
+tox = "^3.23.1"
+
+[tool.poetry.extras]
+docs = ["sphinx", "sphinxcontrib-apidoc"]
+html = ["html5lib"]
+tests = ["doctest-ignore-unicode", "html5lib", "networkx", "nose"]
