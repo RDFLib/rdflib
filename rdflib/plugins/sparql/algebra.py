@@ -877,6 +877,7 @@ def translateAlgebra(query_algebra: Query = None):
                 # If there is no "Group By" clause the placeholder will simply be deleted. Otherwise there will be
                 # no matching {GroupBy} placeholder because it has already been replaced by "group by variables"
                 replace("{GroupBy}", "", count=-1)
+                replace("{Having}", "", count=-1)
             elif node.name == "Join":
                 replace("{Join}", "{" + node.p1.name + "}{" + node.p2.name + "}")  #
             elif node.name == "LeftJoin":
@@ -886,12 +887,13 @@ def translateAlgebra(query_algebra: Query = None):
                     expr = node.expr.name
                 else:
                     raise ExpressionNotCoveredException("This expression might not be covered yet.")
-                print(node)
                 if node.p:
+                    # Filter with p=AggregateJoin = Having
                     if node.p.name == "AggregateJoin":
-                        replace("{Filter}", "{" + node.p.name + "}HAVING({" + expr + "})")
+                        replace("{Filter}", "{" + node.p.name + "}")
+                        replace("{Having}", "HAVING({" + expr + "})")
                     else:
-                        replace("{Filter}", "{" + node.p.name + "}FILTER({" + expr + "})")
+                        replace("{Filter}", "FILTER({" + expr + "}) {" + node.p.name + "}")
                 else:
                     replace("{Filter}", "FILTER({" + expr + "})")
 
@@ -936,7 +938,8 @@ def translateAlgebra(query_algebra: Query = None):
                         replace(identifier, "GROUP_CONCAT" + "(" + distinct
                                 + agg_func.vars.n3() + ";SEPARATOR=" + agg_func.separator.n3() + ")")
                     else:
-                        replace(identifier, agg_func_name.upper() + "(" + distinct + convert_node_arg(agg_func.vars) + ")")
+                        replace(identifier,
+                                agg_func_name.upper() + "(" + distinct + convert_node_arg(agg_func.vars) + ")")
                     # For non-aggregated variables the aggregation function "sample" is automatically assigned.
                     # However, we do not want to have "sample" wrapped around non-aggregated variables. That is
                     # why we replace it. If "sample" is used on purpose it will not be replaced as the alias
@@ -946,8 +949,9 @@ def translateAlgebra(query_algebra: Query = None):
             elif node.name == "GroupGraphPatternSub":
                 replace("GroupGraphPatternSub", " ".join([convert_node_arg(pattern) for pattern in node.part]))
             elif node.name == "TriplesBlock":
+                print("triplesblock")
                 replace("{TriplesBlock}", "".join(triple[0].n3() + " " + triple[1].n3() + " " + triple[2].n3() + "."
-                                                   for triple in node.triples))
+                                                  for triple in node.triples))
 
             # 18.2 Solution modifiers
             elif node.name == "ToList":
@@ -977,7 +981,7 @@ def translateAlgebra(query_algebra: Query = None):
                 if node.p.name == "OrderBy":
                     order_by_pattern = "ORDER BY {OrderConditions}"
                 replace("{Project}", " ".join(project_variables) + "{{" + node.p.name + "}}"
-                        + "{GroupBy}" + order_by_pattern)
+                        + "{GroupBy}" + order_by_pattern + "{Having}")
             elif node.name == "Distinct":
                 replace("{Distinct}", "DISTINCT {" + node.p.name + "}")
             elif node.name == "Reduced":
@@ -992,7 +996,6 @@ def translateAlgebra(query_algebra: Query = None):
                     replace("{ToMultiSet}", "{-*-SELECT-*- " + "{" + node.p.name + "}" + "}")
 
             # 18.2 Property Path
-            # Does not need to be explicitly covered as paths are translated into SPARQL language with the n3() function
 
             # 17 Expressions and Testing Values
             # # 17.3 Operator Mapping
@@ -1052,6 +1055,7 @@ def translateAlgebra(query_algebra: Query = None):
                 # According to https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rNotExistsFunc
                 # NotExistsFunc can only have a GroupGraphPattern as parameter. However, when we print the query algebra
                 # we get a GroupGraphPatternSub
+                print(node.graph.name)
                 replace("{Builtin_NOTEXISTS}", "NOT EXISTS " + "{{" + node.graph.name + "}}")
                 traverse(node.graph, visitPre=sparql_query_text)
                 return node.graph
@@ -1190,7 +1194,7 @@ def translateAlgebra(query_algebra: Query = None):
                         columns.append(key.n3())
                     else:
                         raise ExpressionNotCoveredException("The expression {0} might not be covered yet.".format(key))
-                values = "VALUES (" + " ".join(columns) +")"
+                values = "VALUES (" + " ".join(columns) + ")"
 
                 rows = ""
                 for elem in node.res:

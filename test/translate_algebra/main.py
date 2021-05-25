@@ -35,7 +35,7 @@ class TestAlgebraToTest(TestExecution):
         self.rdf_engine = None
         self.query_text = None
         self.query_algebra = None
-        self.query_from_algebr = None
+        self.query_from_algebra = None
         self.query_from_query_from_algebra = None
 
     def before_single_test(self, test_name: str):
@@ -76,7 +76,7 @@ class TestAlgebraToTest(TestExecution):
 
         return test
 
-    def test_functions__functions_on_rdf_terms(self):
+    def test_functions__functional_forms_not_exists(self):
         query_tree = parser.parseQuery(self.query_text)
         query_algebra = algebra.translateQuery(query_tree)
         self.query_from_algebra = translateAlgebra(query_algebra)
@@ -87,6 +87,24 @@ class TestAlgebraToTest(TestExecution):
         _pprint_query(self.query_from_query_from_algebra)
 
         test = Test(test_number=2,
+                    tc_desc='Test if the not exists form is properly translated into the query text. '
+                            'The query must also be executable and shall not violate any SPARQL query syntax.',
+                    expected_result=self.query_from_algebra,
+                    actual_result=self.query_from_query_from_algebra)
+
+        return test
+
+    def test_functions__functions_on_rdf_terms(self):
+        query_tree = parser.parseQuery(self.query_text)
+        query_algebra = algebra.translateQuery(query_tree)
+        self.query_from_algebra = translateAlgebra(query_algebra)
+
+        query_tree_2 = parser.parseQuery(self.query_from_algebra)
+        query_algebra_2 = algebra.translateQuery(query_tree_2)
+        self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
+        _pprint_query(self.query_from_query_from_algebra)
+
+        test = Test(test_number=3,
                     tc_desc='Test if functions on rdf terms are properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -104,7 +122,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=3,
+        test = Test(test_number=4,
                     tc_desc='Test if functions on strings are properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -122,7 +140,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=4,
+        test = Test(test_number=5,
                     tc_desc='Test if functions on numerics are properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -140,7 +158,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=5,
+        test = Test(test_number=6,
                     tc_desc='Test if hash functions are properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -158,7 +176,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=6,
+        test = Test(test_number=7,
                     tc_desc='Test if functions on dates and time are properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -176,7 +194,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=7,
+        test = Test(test_number=8,
                     tc_desc='Test if aggregate join including all aggregation functions '
                             'are properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
@@ -195,7 +213,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=8,
+        test = Test(test_number=9,
                     tc_desc='Test if basic graph patterns are properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -213,7 +231,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=9,
+        test = Test(test_number=10,
                     tc_desc='Test if "extend" (=Bind explicitly or implicitly in projection) '
                             'gets properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
@@ -232,7 +250,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=10,
+        test = Test(test_number=11,
                     tc_desc='Test if filter gets properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -250,7 +268,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=11,
+        test = Test(test_number=12,
                     tc_desc='Test if "graph" gets properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -268,8 +286,26 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=12,
+        test = Test(test_number=13,
                     tc_desc='Test if "group" gets properly translated into the query text. '
+                            'The query must also be executable and shall not violate any SPARQL query syntax.',
+                    expected_result=self.query_from_algebra,
+                    actual_result=self.query_from_query_from_algebra)
+
+        return test
+
+    def test_graph_patterns__having(self):
+        query_tree = parser.parseQuery(self.query_text)
+        query_algebra = algebra.translateQuery(query_tree)
+        self.query_from_algebra = translateAlgebra(query_algebra)
+
+        query_tree_2 = parser.parseQuery(self.query_from_algebra)
+        query_algebra_2 = algebra.translateQuery(query_tree_2)
+        self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
+        _pprint_query(self.query_from_query_from_algebra)
+
+        test = Test(test_number=14,
+                    tc_desc='Test if "having" gets properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
                     actual_result=self.query_from_query_from_algebra)
@@ -286,7 +322,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=13,
+        test = Test(test_number=15,
                     tc_desc='Test if "join" gets properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -304,7 +340,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=14,
+        test = Test(test_number=16,
                     tc_desc='Test if "left join" gets properly translated into "OPTIONAL {...}" in the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -322,7 +358,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=15,
+        test = Test(test_number=17,
                     tc_desc='Test if "minus" gets properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -340,7 +376,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=16,
+        test = Test(test_number=18,
                     tc_desc='Test if "union" gets properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -358,7 +394,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=17,
+        test = Test(test_number=19,
                     tc_desc='Test if arithmetics are properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -376,7 +412,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=18,
+        test = Test(test_number=20,
                     tc_desc='Test if "conditional ands (&&)" are properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -394,7 +430,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=19,
+        test = Test(test_number=21,
                     tc_desc='Test if "conditional ors (||)" are properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -412,7 +448,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=20,
+        test = Test(test_number=22,
                     tc_desc='Test if relational expressions are properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -430,7 +466,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=21,
+        test = Test(test_number=23,
                     tc_desc='Test if unary expressions are properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -446,7 +482,7 @@ class TestAlgebraToTest(TestExecution):
             query_tree = parser.parseQuery(self.query_text)
         except Exception as e:
             print(e)
-            return Test(test_number=22, tc_desc=tc_desc, expected_result="0",
+            return Test(test_number=24, tc_desc=tc_desc, expected_result="0",
                         actual_result="Not executable. Error returned from parseQuery")
         query_algebra = algebra.translateQuery(query_tree)
         self.query_from_algebra = translateAlgebra(query_algebra)
@@ -456,7 +492,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=22,
+        test = Test(test_number=24,
                     tc_desc=tc_desc,
                     expected_result=self.query_from_algebra,
                     actual_result=self.query_from_query_from_algebra)
@@ -471,7 +507,7 @@ class TestAlgebraToTest(TestExecution):
             query_tree = parser.parseQuery(self.query_text)
         except Exception as e:
             print(e)
-            return Test(test_number=23, tc_desc=tc_desc, expected_result="0",
+            return Test(test_number=25, tc_desc=tc_desc, expected_result="0",
                         actual_result="Not executable. Error returned from parseQuery().")
         query_algebra = algebra.translateQuery(query_tree)
         self.query_from_algebra = translateAlgebra(query_algebra)
@@ -481,7 +517,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=23,
+        test = Test(test_number=25,
                     tc_desc=tc_desc,
                     expected_result=self.query_from_algebra,
                     actual_result=self.query_from_query_from_algebra)
@@ -498,7 +534,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=24,
+        test = Test(test_number=26,
                     tc_desc='Test if "values" gets properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -516,7 +552,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=25,
+        test = Test(test_number=27,
                     tc_desc='Test if an alternative path gets properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -534,7 +570,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=26,
+        test = Test(test_number=28,
                     tc_desc='Test if an inverse path gets properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -551,7 +587,7 @@ class TestAlgebraToTest(TestExecution):
             self.query_from_algebra = translateAlgebra(query_algebra)
         except TypeError as e:
             print(e)
-            return Test(test_number=27, tc_desc=tc_desc, expected_result="0",
+            return Test(test_number=29, tc_desc=tc_desc, expected_result="0",
                         actual_result="Not executable. n3() method of NegatedPath class should be fixed. ")
 
         query_tree_2 = parser.parseQuery(self.query_from_algebra)
@@ -559,7 +595,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=27,
+        test = Test(test_number=29,
                     tc_desc=tc_desc,
                     expected_result=self.query_from_algebra,
                     actual_result=self.query_from_query_from_algebra)
@@ -576,7 +612,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=28,
+        test = Test(test_number=30,
                     tc_desc='Test if a oneOrMore path gets properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -594,7 +630,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=29,
+        test = Test(test_number=31,
                     tc_desc='Test if a sequence path gets properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -612,7 +648,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=30,
+        test = Test(test_number=32,
                     tc_desc='Test if a zeroOrMore path gets properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -630,7 +666,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=31,
+        test = Test(test_number=33,
                     tc_desc='Test if a zeroOrOne path gets properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -648,7 +684,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=32,
+        test = Test(test_number=34,
                     tc_desc='Test if "distinct" gets properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -666,7 +702,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=33,
+        test = Test(test_number=35,
                     tc_desc='Test if "order by" gets properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -684,7 +720,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=34,
+        test = Test(test_number=36,
                     tc_desc='Test if "reduced" gets properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -702,7 +738,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=35,
+        test = Test(test_number=37,
                     tc_desc='Test if slice get properly translated into the limit and offset. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -720,7 +756,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=36,
+        test = Test(test_number=38,
                     tc_desc='Test if subqueries get properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
                     expected_result=self.query_from_algebra,
@@ -738,7 +774,7 @@ class TestAlgebraToTest(TestExecution):
         self.query_from_query_from_algebra = translateAlgebra(query_algebra_2)
         _pprint_query(self.query_from_query_from_algebra)
 
-        test = Test(test_number=37,
+        test = Test(test_number=39,
                     tc_desc='Test a query with multiple graph patterns and solution modifiers '
                             'gets properly translated into the query text. '
                             'The query must also be executable and shall not violate any SPARQL query syntax.',
