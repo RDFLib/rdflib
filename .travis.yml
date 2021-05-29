@@ -34,6 +34,7 @@ install:
 
 before_script:
     - flake8 --exit-zero rdflib
+    - mypy --show-error-context --show-error-codes test rdflib examples
 
 script:
     - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=rdflib

@@ -39,7 +39,7 @@ __all__ = [
 
 
 class Parser(object):
-    __slots__ = set()
+    __slots__ = ()
 
     def __init__(self):
         pass

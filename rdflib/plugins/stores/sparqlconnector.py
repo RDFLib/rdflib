@@ -128,7 +128,7 @@ class SPARQLConnector(object):
             params["using-graph-uri"] = default_graph
 
         if named_graph is not None:
-            params["using-named-graph-uri"] = default_graph
+            params["using-named-graph-uri"] = named_graph
 
         headers = {
             "Accept": _response_mime_types[self.returnFormat],

@@ -124,7 +124,7 @@ if __name__ == "__main__":
 
     print()
     print("Printing bigger example as N3:")
-    print(primer.serialize(format="n3").decode("utf-8"))
+    print(primer.serialize(format="n3"))
 
     # for more insight into things already done, lets see the namespaces
 

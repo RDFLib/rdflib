@@ -43,17 +43,17 @@ if __name__ == "__main__":
         print("-- %s " % c)
 
     # separate graphs
-    print(gjohn.serialize(format="n3").decode("utf-8"))
+    print(gjohn.serialize(format="n3"))
     print("===================")
-    print(gmary.serialize(format="n3").decode("utf-8"))
+    print(gmary.serialize(format="n3"))
     print("===================")
 
     # full graph
-    print(g.serialize(format="n3").decode("utf-8"))
+    print(g.serialize(format="n3"))
 
     # query the conjunction of all graphs
     xx = None
-    for x in g[mary : ns.loves / ns.hasCuteName]:
+    for x in g[mary : ns.loves / ns.hasCuteName]:  # type: ignore[misc]
         xx = x
     print("Q: Who does Mary love?")
     print("A: Mary loves {}".format(xx))
