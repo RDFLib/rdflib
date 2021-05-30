@@ -17,56 +17,62 @@ Queries can be evaluated against a graph with the
 :meth:`rdflib.graph.Graph.update`.
 
 The query method returns a :class:`rdflib.query.Result` instance. For
-SELECT queries, iterating over this return
+SELECT queries, iterating over this returns
 :class:`rdflib.query.ResultRow` instances, each containing a set of
 variable bindings. For CONSTRUCT/DESCRIBE queries, iterating over the
-result object gives the triples. For ASK queries, iterating will yield
-the single boolean answer, or evaluating the result object in a
-boolean-context (i.e. ``bool(result)``)
+result object yields triples. For ASK queries, the single Boolean 
+answer is obtained by iterating over the result object or by 
+evaluating the result object in a Boolean context 
+(i.e. ``bool(result)``).
 
-Continuing the example...
+Consider the example...
 
 .. code-block:: python
 
     import rdflib
-
     g = rdflib.Graph()
+    g.parse("http://danbri.org/foaf.rdf#")
 
-    # ... add some triples to g somehow ...
-    g.parse("some_foaf_file.rdf")
+    knows_query = """
+    SELECT DISTINCT ?aname ?bname
+    WHERE {
+        ?a foaf:knows ?b .
+        ?a foaf:name ?aname .
+        ?b foaf:name ?bname .
+    }"""
 
-    qres = g.query(
-        """SELECT DISTINCT ?aname ?bname
-           WHERE {
-              ?a foaf:knows ?b .
-              ?a foaf:name ?aname .
-              ?b foaf:name ?bname .
-           }""")
-
-    for row in qres:
+    for row in g.query(knows_query):
         print("%s knows %s" % row)
 
 The results are tuples of values in the same order as your SELECT
-arguments.  Alternatively, the values can be accessed by variable
-name, either as attributes, or as items: ``row.b`` and ``row["b"]`` is
-equivalent.
+arguments.  The values can be accessed individually by variable
+name, either as attributes (``row.b``) or as items (``row["b"]``).
 
 .. code-block:: text
 
-    Timothy Berners-Lee knows Edd Dumbill
-    Timothy Berners-Lee knows Jennifer Golbeck
-    Timothy Berners-Lee knows Nicholas Gibbins
-    Timothy Berners-Lee knows Nigel Shadbolt
-    Dan Brickley knows binzac
-    Timothy Berners-Lee knows Eric Miller
-    Drew Perttula knows David McClosky
-    Timothy Berners-Lee knows Dan Connolly
+    Dan Brickley knows Tim Berners-Lee
+    Dan Brickley knows Dean Jackson
+    Dan Brickley knows Mischa Tuffield
+    Dan Brickley knows Ludovic Hirlimann
+    Dan Brickley knows Libby Miller
     ...
 
 As an alternative to using ``PREFIX`` in the SPARQL query, namespace
-bindings can be passed in with the ``initNs`` kwarg, see
-:doc:`namespaces_and_bindings`.
+bindings can be passed in with the ``initNs`` kwarg (see
+:doc:`namespaces_and_bindings`):
 
+.. code-block:: python
+
+    import rdflib 
+    from rdflib import FOAF
+    g = rdflib.Graph()
+    g.parse("http://danbri.org/foaf.rdf#")
+ 
+    result = g.query(knows_query, initNs={ 'foaf': FOAF })
+ 
+    for row in result:
+        print(f"{row.aname} knows {row['bname']}")
+ 
 Variables can also be pre-bound, using ``initBindings`` kwarg can be
 used to pass in a ``dict`` of initial bindings, this is particularly
 useful for prepared queries, as described below.
