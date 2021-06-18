@@ -1437,6 +1437,8 @@ _XSD_YEARMONTHDURATION = URIRef(_XSD_PFX + "yearMonthDuration")
 _OWL_RATIONAL = URIRef("http://www.w3.org/2002/07/owl#rational")
 _XSD_B64BINARY = URIRef(_XSD_PFX + "base64Binary")
 _XSD_HEXBINARY = URIRef(_XSD_PFX + "hexBinary")
+_XSD_GYEAR = URIRef(_XSD_PFX + "gYear")
+_XSD_GYEARMONTH = URIRef(_XSD_PFX + "gYearMonth")
 # TODO: gYearMonth, gYear, gMonthDay, gDay, gMonth
 
 _NUMERIC_LITERAL_TYPES = (
@@ -1558,6 +1560,8 @@ _GenericPythonToXSDRules = [
 ]
 
 _SpecificPythonToXSDRules = [
+    ((date, _XSD_GYEAR), lambda val: val.strftime("%04Y")),
+    ((date, _XSD_GYEARMONTH), lambda val: val.strftime("%04Y-%02m")),
     ((str, _XSD_HEXBINARY), hexlify),
     ((bytes, _XSD_HEXBINARY), hexlify),
     ((str, _XSD_B64BINARY), b64encode),

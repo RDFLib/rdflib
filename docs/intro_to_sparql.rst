@@ -29,19 +29,16 @@ For example...
 .. code-block:: python
 
     import rdflib
-
     g = rdflib.Graph()
+    g.parse("http://danbri.org/foaf.rdf#")
 
-    # ... add some triples to g somehow ...
-    g.parse("some_foaf_file.rdf")
-
-    qres = g.query(
-        """SELECT DISTINCT ?aname ?bname
-           WHERE {
-              ?a foaf:knows ?b .
-              ?a foaf:name ?aname .
-              ?b foaf:name ?bname .
-           }""")
+    knows_query = """
+    SELECT DISTINCT ?aname ?bname
+    WHERE {
+        ?a foaf:knows ?b .
+        ?a foaf:name ?aname .
+        ?b foaf:name ?bname .
+    }"""
 
     for row in qres:
         print(f"{row.aname} knows {row.bname}")
@@ -175,18 +172,18 @@ initial bindings:
 
 .. code-block:: python
 
-	q = prepareQuery(
-		"SELECT ?s WHERE { ?person foaf:knows ?s .}",
-		initNs = { "foaf": FOAF }
-	)
+    q = prepareQuery(
+        "SELECT ?s WHERE { ?person foaf:knows ?s .}",
+        initNs = { "foaf": FOAF }
+    )
 
-	g = rdflib.Graph()
-	g.load("foaf.rdf")
+    g = rdflib.Graph()
+    g.load("foaf.rdf")
 
-	tim = rdflib.URIRef("http://www.w3.org/People/Berners-Lee/card#i")
+    tim = rdflib.URIRef("http://www.w3.org/People/Berners-Lee/card#i")
 
-	for row in g.query(q, initBindings={'person': tim}):
-		print(row)
+    for row in g.query(q, initBindings={'person': tim}):
+        print(row)
 
 
 Custom Evaluation Functions
