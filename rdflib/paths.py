@@ -46,29 +46,28 @@ In SPARQL the syntax is as follows:
 |(elt)               | A group path elt, brackets control precedence.  |
 +--------------------+-------------------------------------------------+
 
-This module is used internally be the SPARQL engine, but they property paths
+This module is used internally by the SPARQL engine, but the property paths
 can also be used to query RDFLib Graphs directly.
 
-Where possible the SPARQL syntax is mapped to python operators, and property
+Where possible the SPARQL syntax is mapped to Python operators, and property
 path objects can be constructed from existing URIRefs.
 
 >>> from rdflib import Graph, Namespace
-
->>> foaf=Namespace('http://xmlns.com/foaf/0.1/')
+>>> from rdflb.namespace import FOAF
 
 >>> ~foaf.knows
 Path(~http://xmlns.com/foaf/0.1/knows)
 
->>> foaf.knows/foaf.name
+>>> FOAF.knows/FOAF.name
 Path(http://xmlns.com/foaf/0.1/knows / http://xmlns.com/foaf/0.1/name)
 
->>> foaf.name|foaf.givenName
+>>> FOAF.name|FOAF.givenName
 Path(http://xmlns.com/foaf/0.1/name | http://xmlns.com/foaf/0.1/givenName)
 
 Modifiers (?, *, +) are done using * (the multiplication operator) and
 the strings '*', '?', '+', also defined as constants in this file.
 
->>> foaf.knows*OneOrMore
+>>> FOAF.knows*OneOrMore
 Path(http://xmlns.com/foaf/0.1/knows+)
 
 The path objects can also be used with the normal graph methods.
@@ -92,6 +91,7 @@ First some example data:
 >>> e=Namespace('ex:')
 
 Graph contains:
+
 >>> (e.a, e.p1/e.p2, e.e) in g
 True
 
@@ -177,8 +177,6 @@ No vars specified:
  (rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:a')),
  (rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:h')),
  (rdflib.term.URIRef(u'ex:h'), rdflib.term.URIRef(u'ex:a'))]
-
-.. versionadded:: 4.0
 
 """
 
@@ -328,11 +326,11 @@ class MulPath(Path):
         if self.zero and first:
             if subj and obj:
                 if subj == obj:
-                    yield (subj, obj)
+                    yield subj, obj
             elif subj:
-                yield (subj, subj)
+                yield subj, subj
             elif obj:
-                yield (obj, obj)
+                yield obj, obj
 
         def _fwd(subj=None, obj=None, seen=None):
             seen.add(subj)
@@ -385,9 +383,9 @@ class MulPath(Path):
                         f = list(_fwd(s, None, set()))
                         for s1, o1 in f:
                             assert s1 == s
-                            yield (s1, o1)
+                            yield s1, o1
 
-        done = set()  # the spec does by defn. not allow duplicates
+        done = set()  # the spec does, by defn, not allow duplicates
         if subj:
             for x in _fwd(subj, obj, set()):
                 if x not in done:

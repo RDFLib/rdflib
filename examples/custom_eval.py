@@ -11,7 +11,7 @@ i.e. in your setup.py::
 
     entry_points = {
         'rdf.plugins.sparqleval': [
-            'myfunc =     mypackage:MyFunction',
+            'myfunc = mypackage:MyFunction',
             ],
     }
 """
