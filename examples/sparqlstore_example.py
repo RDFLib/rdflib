@@ -20,6 +20,7 @@ if __name__ == "__main__":
             int(pop), ",d"
         ).replace(",", ".")
     )
+    print()
 
     # EXAMPLE 2: using a SPARQLStore object directly
     st = SPARQLStore(query_endpoint="http://dbpedia.org/sparql")
@@ -27,10 +28,12 @@ if __name__ == "__main__":
     for p in st.objects(URIRef("http://dbpedia.org/resource/Brisbane"), dbo.populationTotal):
         print(
             "According to DBPedia, Brisbane has a population of "
-            "{0:,}".format(int(pop), ",d")
+            "{0:,}".format(int(p), ",d")
         )
+    print()
 
     # EXAMPLE 3: doing RDFlib triple navigation using SPARQLStore as a Graph()
+    print("Triple navigation using SPARQLStore as a Graph():")
     graph = Graph("SPARQLStore", identifier="http://dbpedia.org")
     graph.open("http://dbpedia.org/sparql")
     # we are asking DBPedia for 3 skos:Concept instances
@@ -38,7 +41,7 @@ if __name__ == "__main__":
     from rdflib.namespace import RDF, SKOS
     for s in graph.subjects(predicate=RDF.type, object=SKOS.Concept):
         count += 1
-        print(s)
+        print(f"\t- {s}")
         if count >= 3:
             break
 
