@@ -1544,7 +1544,7 @@ _GenericPythonToXSDRules = [
     (bool, (lambda i: str(i).lower(), _XSD_BOOLEAN)),
     (int, (None, _XSD_INTEGER)),
     (long_type, (None, _XSD_INTEGER)),
-    (Decimal, (None, _XSD_DECIMAL)),
+    (Decimal, (lambda i: f"{i:f}", _XSD_DECIMAL)),
     (datetime, (lambda i: i.isoformat(), _XSD_DATETIME)),
     (date, (lambda i: i.isoformat(), _XSD_DATE)),
     (time, (lambda i: i.isoformat(), _XSD_TIME)),
