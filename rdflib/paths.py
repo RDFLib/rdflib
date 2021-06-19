@@ -53,9 +53,9 @@ Where possible the SPARQL syntax is mapped to Python operators, and property
 path objects can be constructed from existing URIRefs.
 
 >>> from rdflib import Graph, Namespace
->>> from rdflb.namespace import FOAF
+>>> from rdflib.namespace import FOAF
 
->>> ~foaf.knows
+>>> ~FOAF.knows
 Path(~http://xmlns.com/foaf/0.1/knows)
 
 >>> FOAF.knows/FOAF.name
@@ -88,7 +88,7 @@ First some example data:
 ...
 ... ''', format='n3') # doctest: +ELLIPSIS
 
->>> e=Namespace('ex:')
+>>> e = Namespace('ex:')
 
 Graph contains:
 
@@ -98,8 +98,8 @@ True
 Graph generator functions, triples, subjects, objects, etc. :
 
 >>> list(g.objects(e.c, (e.p3*OneOrMore)/e.p2)) # doctest: +NORMALIZE_WHITESPACE
-[rdflib.term.URIRef(u'ex:j'), rdflib.term.URIRef(u'ex:g'),
-    rdflib.term.URIRef(u'ex:f')]
+[rdflib.term.URIRef('ex:j'), rdflib.term.URIRef('ex:g'),
+    rdflib.term.URIRef('ex:f')]
 
 A more complete set of tests:
 
@@ -129,27 +129,27 @@ True
 True
 
 >>> list(evalPath(g, (e.q, e.px*OneOrMore, None)))
-[(rdflib.term.URIRef(u'ex:q'), rdflib.term.URIRef(u'ex:q'))]
+[(rdflib.term.URIRef('ex:q'), rdflib.term.URIRef('ex:q'))]
 
 >>> list(evalPath(g, (None, e.p1|e.p2, e.c)))
-[(rdflib.term.URIRef(u'ex:a'), rdflib.term.URIRef(u'ex:c'))]
+[(rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:c'))]
 
 >>> list(evalPath(g, (None, ~e.p1, e.a))) == [ (e.c, e.a) ]
 True
 >>> list(evalPath(g, (None, e.p1*ZeroOrOne, e.c))) # doctest: +NORMALIZE_WHITESPACE
-[(rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:c')),
- (rdflib.term.URIRef(u'ex:a'), rdflib.term.URIRef(u'ex:c'))]
+[(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:c')),
+ (rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:c'))]
 
 >>> list(evalPath(g, (None, e.p3*OneOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
-[(rdflib.term.URIRef(u'ex:h'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:a'))]
+[(rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a')),
+ (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:a')),
+ (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a'))]
 
 >>> list(evalPath(g, (None, e.p3*ZeroOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
-[(rdflib.term.URIRef(u'ex:a'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:h'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:a'))]
+[(rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:a')),
+ (rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a')),
+ (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:a')),
+ (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a'))]
 
 >>> list(evalPath(g, (None, -e.p1, e.f))) == [(e.a, e.f)]
 True
@@ -163,20 +163,20 @@ True
 True
 
 >>> list(evalPath(g, (e.q, e.px*OneOrMore, None)))
-[(rdflib.term.URIRef(u'ex:q'), rdflib.term.URIRef(u'ex:q'))]
+[(rdflib.term.URIRef('ex:q'), rdflib.term.URIRef('ex:q'))]
 
 >>> list(evalPath(g, (e.c, (e.p2|e.p3)*ZeroOrMore, e.j)))
-[(rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:j'))]
+[(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:j'))]
 
 No vars specified:
 
 >>> sorted(list(evalPath(g, (None, e.p3*OneOrMore, None)))) #doctest: +NORMALIZE_WHITESPACE
-[(rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:g')),
- (rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:h')),
- (rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:h')),
- (rdflib.term.URIRef(u'ex:h'), rdflib.term.URIRef(u'ex:a'))]
+[(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a')),
+ (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:g')),
+ (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:h')),
+ (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:a')),
+ (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:h')),
+ (rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a'))]
 
 """
 
