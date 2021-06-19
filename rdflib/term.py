@@ -1560,8 +1560,8 @@ _GenericPythonToXSDRules = [
 ]
 
 _SpecificPythonToXSDRules = [
-    ((date, _XSD_GYEAR), lambda val: val.strftime("%04Y")),
-    ((date, _XSD_GYEARMONTH), lambda val: val.strftime("%04Y-%02m")),
+    ((date, _XSD_GYEAR), lambda val: val.strftime("%Y")),
+    ((date, _XSD_GYEARMONTH), lambda val: val.strftime("%Y-%m")),
     ((str, _XSD_HEXBINARY), hexlify),
     ((bytes, _XSD_HEXBINARY), hexlify),
     ((str, _XSD_B64BINARY), b64encode),

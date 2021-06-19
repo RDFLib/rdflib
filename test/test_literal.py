@@ -196,7 +196,7 @@ class TestXsdLiterals(unittest.TestCase):
         Tests literal construction.
         """
         inputs = [
-            # these literals do not get conerted to python types
+            # these literals do not get converted to Python types
             ("ABCD", XSD.integer, None),
             ("ABCD", XSD.gYear, None),
             ("-10000", XSD.gYear, None),
