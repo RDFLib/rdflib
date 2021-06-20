@@ -584,10 +584,15 @@ TriplesNodePath <<= CollectionPath | BlankNodePropertyListPath
 TriplesSameSubject = VarOrTerm + PropertyListNotEmpty | TriplesNode + PropertyList
 TriplesSameSubject.setParseAction(expandTriples)
 
-# [52] TriplesTemplate ::= TriplesSameSubject ( '.' Optional(TriplesTemplate) )?
-TriplesTemplate = Forward()
-TriplesTemplate <<= ParamList("triples", TriplesSameSubject) + Optional(
-    Suppress(".") + Optional(TriplesTemplate)
+# [52] TriplesTemplate ::= TriplesSameSubject ( '.' TriplesTemplate? )?
+# NOTE: pyparsing.py handling of recursive rules is limited by python's recusion
+# limit.
+# (https://docs.python.org/3/library/sys.html#sys.setrecursionlimit)
+# To accomodate aribtrary amounts of triples this rule is rewritten to not be
+# recursive:
+# [52*] TriplesTemplate ::= TriplesSameSubject ( '.' TriplesSameSubject? )*
+TriplesTemplate = ParamList("triples", TriplesSameSubject) + ZeroOrMore(
+    Suppress(".") + Optional(ParamList("triples", TriplesSameSubject))
 )
 
 # [51] QuadsNotTriples ::= 'GRAPH' VarOrIri '{' Optional(TriplesTemplate) '}'
