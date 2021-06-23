@@ -1,22 +1,16 @@
 from rdflib import Graph, URIRef, Literal
 from urllib.request import urlopen
-from urllib.error import HTTPError
 import unittest
 from nose import SkipTest
-from http.server import BaseHTTPRequestHandler, HTTPServer, SimpleHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler, HTTPServer
 import socket
 from threading import Thread
-from contextlib import contextmanager
-from unittest.mock import MagicMock, Mock, patch
-import typing as t
-import random
-import collections
-from urllib.parse import ParseResult, urlparse, parse_qs
+from unittest.mock import patch
 from rdflib.namespace import RDF, XSD, XMLNS, FOAF, RDFS
 from rdflib.plugins.stores.sparqlstore import SPARQLConnector
-import email.message
 
 from . import helper
+from .testutils import MockHTTPResponse, SimpleHTTPMock, ctx_http_server
 
 
 try:
@@ -222,94 +216,9 @@ class SPARQL11ProtocolStoreMock(BaseHTTPRequestHandler):
         return
 
 
-def get_random_ip(parts: t.List[str] = None) -> str:
-    if parts is None:
-        parts = ["127"]
-    for index in range(4 - len(parts)):
-        parts.append(f"{random.randint(0, 255)}")
-    return ".".join(parts)
-
-
-@contextmanager
-def ctx_http_server(handler: t.Type[BaseHTTPRequestHandler]) -> t.Iterator[HTTPServer]:
-    host = get_random_ip()
-    server = HTTPServer((host, 0), handler)
-    server_thread = Thread(target=server.serve_forever)
-    server_thread.daemon = True
-    server_thread.start()
-    yield server
-    server.shutdown()
-    server.socket.close()
-    server_thread.join()
-
-
-GenericT = t.TypeVar("GenericT", bound=t.Any)
-
-
-def make_spypair(method: GenericT) -> t.Tuple[GenericT, Mock]:
-    m = MagicMock()
-
-    def wrapper(self: t.Any, *args: t.Any, **kwargs: t.Any) -> t.Any:
-        m(*args, **kwargs)
-        return method(self, *args, **kwargs)
-
-    setattr(wrapper, "mock", m)
-    return t.cast(GenericT, wrapper), m
-
-
-HeadersT = t.Dict[str, t.List[str]]
-PathQueryT = t.Dict[str, t.List[str]]
-
-
-class MockHTTPRequests(t.NamedTuple):
-    path: str
-    parsed_path: ParseResult
-    path_query: PathQueryT
-    headers: email.message.Message
-
-
-class MockHTTPResponse(t.NamedTuple):
-    status_code: int
-    reason_phrase: str
-    body: bytes
-    headers: HeadersT = collections.defaultdict(list)
-
-
 class SPARQLMockTests(unittest.TestCase):
-    requests: t.List[MockHTTPRequests] = []
-    responses: t.List[MockHTTPResponse] = []
-
-    def setUp(self):
-        _tc = self
-
-        class Handler(SimpleHTTPRequestHandler):
-            tc = _tc
-
-            def _do_GET(self):
-                parsed_path = urlparse(self.path)
-                path_query = parse_qs(parsed_path.query)
-                request = MockHTTPRequests(
-                    self.path, parsed_path, path_query, self.headers
-                )
-                self.tc.requests.append(request)
-
-                response = self.tc.responses.pop(0)
-                self.send_response(response.status_code, response.reason_phrase)
-                for header, values in response.headers.items():
-                    for value in values:
-                        self.send_header(header, value)
-                self.end_headers()
-
-                self.wfile.write(response.body)
-                self.wfile.flush()
-                return
-
-            (do_GET, do_GET_mock) = make_spypair(_do_GET)
-        self.Handler = Handler
-        self.requests.clear()
-        self.responses.clear()
-
     def test_query(self):
+        httpmock = SimpleHTTPMock()
         triples = {
             (RDFS.Resource, RDF.type, RDFS.Class),
             (RDFS.Resource, RDFS.isDefinedBy, URIRef(RDFS)),
@@ -318,9 +227,10 @@ class SPARQLMockTests(unittest.TestCase):
         }
         rows = "\n".join([f'"{s}","{p}","{o}"' for s, p, o in triples])
         response_body = f"s,p,o\n{rows}".encode()
-        response = MockHTTPResponse(200, "OK", response_body)
-        response.headers["Content-Type"].append("text/csv; charset=utf-8")
-        self.responses.append(response)
+        response = MockHTTPResponse(
+            200, "OK", response_body, {"Content-Type": ["text/csv; charset=utf-8"]}
+        )
+        httpmock.do_get_responses.append(response)
 
         graph = Graph(store="SPARQLStore", identifier="http://example.com")
         graph.bind("xsd", XSD)
@@ -330,7 +240,7 @@ class SPARQLMockTests(unittest.TestCase):
 
         assert len(list(graph.namespaces())) >= 4
 
-        with ctx_http_server(self.Handler) as server:
+        with ctx_http_server(httpmock.Handler) as server:
             (host, port) = server.server_address
             url = f"http://{host}:{port}/query"
             graph.open(url)
@@ -341,9 +251,9 @@ class SPARQLMockTests(unittest.TestCase):
         for triple in triples:
             assert triple in rows
 
-        self.Handler.do_GET_mock.assert_called_once()
-        assert len(self.requests) == 1
-        request = self.requests.pop()
+        httpmock.do_get_mock.assert_called_once()
+        assert len(httpmock.do_get_requests) == 1
+        request = httpmock.do_get_requests.pop()
         assert len(request.path_query["query"]) == 1
         query = request.path_query["query"][0]
 

@@ -22,6 +22,7 @@ from urllib.request import Request
 from urllib.request import url2pathname
 from urllib.parse import urljoin
 from urllib.request import urlopen
+from urllib.error import HTTPError
 
 from xml.sax import xmlreader
 
@@ -160,7 +161,22 @@ class URLInputSource(InputSource):
             )
 
         req = Request(system_id, None, myheaders)
-        file = urlopen(req)
+
+        def _urlopen(req: Request):
+            try:
+                return urlopen(req)
+            except HTTPError as ex:
+                # 308 (Permanent Redirect) is not supported by current python version(s)
+                # See https://bugs.python.org/issue40321
+                # This custom error handling should be removed once all
+                # supported versions of python support 308.
+                if ex.code == 308:
+                    req.full_url = ex.hdrs.get("Location")
+                    return _urlopen(req)
+                else:
+                    raise
+
+        file = _urlopen(req)
         # Fix for issue 130 https://github.com/RDFLib/rdflib/issues/130
         self.url = file.geturl()  # in case redirections took place
         self.setPublicId(self.url)
