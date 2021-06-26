@@ -255,7 +255,7 @@ class TestXsdLiterals(unittest.TestCase):
                     self.assertIsInstance(literal.value, value_cls)
                 else:
                     self.assertIsNone(literal.value)
-                self.assertEqual(lexical, f"{literal!s}")
+                self.assertEqual(lexical, f"{str(literal)}")
 
 
 if __name__ == "__main__":
