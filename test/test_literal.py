@@ -6,10 +6,6 @@ from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind, _XSD_BOOLEAN
 from rdflib.namespace import XSD
 
 
-def uformat(s):
-    return s.replace("u'", "'")
-
-
 class TestLiteral(unittest.TestCase):
     def setUp(self):
         pass
@@ -74,20 +70,18 @@ class TestNew(unittest.TestCase):
 
 class TestRepr(unittest.TestCase):
     def testOmitsMissingDatatypeAndLang(self):
-        self.assertEqual(repr(Literal("foo")), uformat("rdflib.term.Literal(u'foo')"))
+        self.assertEqual(repr(Literal("foo")), "rdflib.term.Literal('foo')")
 
     def testOmitsMissingDatatype(self):
         self.assertEqual(
             repr(Literal("foo", lang="en")),
-            uformat("rdflib.term.Literal(u'foo', lang='en')"),
+            "rdflib.term.Literal('foo', lang='en')",
         )
 
     def testOmitsMissingLang(self):
         self.assertEqual(
             repr(Literal("foo", datatype=URIRef("http://example.com/"))),
-            uformat(
-                "rdflib.term.Literal(u'foo', datatype=rdflib.term.URIRef(u'http://example.com/'))"
-            ),
+            "rdflib.term.Literal('foo', datatype=rdflib.term.URIRef('http://example.com/'))",
         )
 
     def testSubclassNameAppearsInRepr(self):
@@ -95,7 +89,7 @@ class TestRepr(unittest.TestCase):
             pass
 
         x = MyLiteral("foo")
-        self.assertEqual(repr(x), uformat("MyLiteral('foo')"))
+        self.assertEqual(repr(x), "MyLiteral('foo')")
 
 
 class TestDoubleOutput(unittest.TestCase):
@@ -261,7 +255,7 @@ class TestXsdLiterals(unittest.TestCase):
                     self.assertIsInstance(literal.value, value_cls)
                 else:
                     self.assertIsNone(literal.value)
-                self.assertEqual(lexical, f"{literal}")
+                self.assertEqual(lexical, str(literal))
 
 
 if __name__ == "__main__":
