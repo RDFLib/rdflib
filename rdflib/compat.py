@@ -6,29 +6,16 @@ and different versions of support libraries.
 import re
 import codecs
 import warnings
+import typing as t
 
-
-# clean ElementTree import
-try:
-    from lxml import etree
-except ImportError:
+if t.TYPE_CHECKING:
+    import xml.etree.ElementTree as etree
+else:
     try:
-        # Python 2.5
-        import xml.etree.cElementTree as etree
+        from lxml import etree
     except ImportError:
-        try:
-            # Python 2.5
-            import xml.etree.ElementTree as etree
-        except ImportError:
-            try:
-                # normal cElementTree install
-                import cElementTree as etree
-            except ImportError:
-                try:
-                    # normal ElementTree install
-                    import elementtree.ElementTree as etree
-                except ImportError:
-                    raise Exception("Failed to import ElementTree from any known place")
+        import xml.etree.ElementTree as etree
+
 
 try:
     etree_register_namespace = etree.register_namespace

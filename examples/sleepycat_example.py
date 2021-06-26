@@ -39,8 +39,6 @@ if __name__ == "__main__":
     # close when done, otherwise sleepycat will leak lock entries.
     graph.close()
 
-    graph = None
-
     # reopen the graph
 
     graph = ConjunctiveGraph("Sleepycat")

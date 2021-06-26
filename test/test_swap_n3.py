@@ -3,10 +3,7 @@ import os
 import sys
 import unittest
 
-try:
-    maketrans = str.maketrans
-except AttributeError:
-    from string import maketrans
+maketrans = str.maketrans
 import rdflib
 
 """

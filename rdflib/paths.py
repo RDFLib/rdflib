@@ -184,6 +184,7 @@ No vars specified:
 
 
 from rdflib.term import URIRef, Node
+from typing import Union, Callable
 
 
 # property paths
@@ -194,6 +195,13 @@ ZeroOrOne = "?"
 
 
 class Path(object):
+
+    __or__: Callable[["Path", Union["URIRef", "Path"]], "AlternativePath"]
+    __invert__: Callable[["Path"], "InvPath"]
+    __neg__: Callable[["Path"], "NegatedPath"]
+    __truediv__: Callable[["Path", Union["URIRef", "Path"]], "SequencePath"]
+    __mul__: Callable[["Path", str], "MulPath"]
+
     def eval(self, graph, subj=None, obj=None):
         raise NotImplementedError()
 
@@ -502,7 +510,9 @@ else:
     #  as it would introduce circular imports)
 
     URIRef.__or__ = path_alternative
-    URIRef.__mul__ = mul_path
+    # ignore typing here as URIRef inherits from str,
+    # which has an incompatible definition of __mul__.
+    URIRef.__mul__ = mul_path  # type: ignore
     URIRef.__invert__ = inv_path
     URIRef.__neg__ = neg_path
     URIRef.__truediv__ = path_sequence
