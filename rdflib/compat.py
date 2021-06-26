@@ -104,6 +104,11 @@ def decodeUnicodeEscape(s):
     s is a unicode string
     replace ``\\n`` and ``\\u00AC`` unicode escapes
     """
+    if "\\" not in s:
+        # Most of times, there are no backslashes in strings.
+        # In the general case, it could use maketrans and translate.
+        return s
+
     s = s.replace("\\t", "\t")
     s = s.replace("\\n", "\n")
     s = s.replace("\\r", "\r")
