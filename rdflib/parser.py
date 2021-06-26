@@ -171,7 +171,7 @@ class URLInputSource(InputSource):
                 # This custom error handling should be removed once all
                 # supported versions of python support 308.
                 if ex.code == 308:
-                    req.full_url = ex.hdrs.get("Location")
+                    req.full_url = ex.headers.get("Location")
                     return _urlopen(req)
                 else:
                     raise
