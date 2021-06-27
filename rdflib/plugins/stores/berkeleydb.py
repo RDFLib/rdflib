@@ -37,6 +37,26 @@ __all__ = ["BerkeleyDB"]
 
 
 class BerkeleyDB(Store):
+    """\
+    A store that allows for on-disk persistent using BerkeleyDB, a fast
+    key/value DB.
+
+    This store implementation used to be known, previous to rdflib 6.0.0
+    as 'Sleepycat' due to that being the then name of the Python wrapper
+    for BerkeleyDB.
+
+    This store allows for quads as well as triples. See examples of use
+    in both the `examples.berkeleydb_example` and `test.test_store_berkeleydb`
+    files.
+
+    **NOTE on installation**:
+
+    To use this store, you must have BerkeleyDB installed on your system
+    separately to Python (`brew install berkeley-db` on a Mac) and also have
+    the BerkeleyDB Python wrapper installed (`pip install berkeleydb`).
+    You may need to install BerkeleyDB Python wrapper like this:
+    `YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION=1 pip install berkeleydb`
+    """
     context_aware = True
     formula_aware = True
     transaction_aware = False
@@ -105,8 +125,8 @@ class BerkeleyDB(Store):
         dbsetflags = 0
 
         # create and open the DBs
-        self.__indicies = [None, ] * 3
-        self.__indicies_info = [None, ] * 3
+        self.__indicies = [None,] * 3
+        self.__indicies_info = [None,] * 3
         for i in range(0, 3):
             index_name = to_key_func(i)(
                 ("s".encode("latin-1"), "p".encode("latin-1"), "o".encode("latin-1")),
@@ -252,7 +272,7 @@ class BerkeleyDB(Store):
 
         value = cspo.get(bb("%s^%s^%s^%s^" % (c, s, p, o)), txn=txn)
         if value is None:
-            self.__contexts.put(bb(c), None, txn=txn)
+            self.__contexts.put(bb(c), b"", txn=txn)
 
             contexts_value = cspo.get(
                 bb("%s^%s^%s^%s^" % ("", s, p, o)), txn=txn
@@ -262,13 +282,13 @@ class BerkeleyDB(Store):
             contexts_value = "^".encode("latin-1").join(contexts)
             assert contexts_value is not None
 
-            cspo.put(bb("%s^%s^%s^%s^" % (c, s, p, o)), None, txn=txn)
-            cpos.put(bb("%s^%s^%s^%s^" % (c, p, o, s)), None, txn=txn)
-            cosp.put(bb("%s^%s^%s^%s^" % (c, o, s, p)), None, txn=txn)
+            cspo.put(bb("%s^%s^%s^%s^" % (c, s, p, o)), b"", txn=txn)
+            cpos.put(bb("%s^%s^%s^%s^" % (c, p, o, s)), b"", txn=txn)
+            cosp.put(bb("%s^%s^%s^%s^" % (c, o, s, p)), b"", txn=txn)
             if not quoted:
-                cspo.put(bb("%s^%s^%s^%s^" % (None, s, p, o)), contexts_value, txn=txn)
-                cpos.put(bb("%s^%s^%s^%s^" % (None, p, o, s)), contexts_value, txn=txn)
-                cosp.put(bb("%s^%s^%s^%s^" % (None, o, s, p)), contexts_value, txn=txn)
+                cspo.put(bb("%s^%s^%s^%s^" % ("", s, p, o)), contexts_value, txn=txn)
+                cpos.put(bb("%s^%s^%s^%s^" % ("", p, o, s)), contexts_value, txn=txn)
+                cosp.put(bb("%s^%s^%s^%s^" % ("", o, s, p)), contexts_value, txn=txn)
 
             self.__needs_sync = True
 
@@ -510,7 +530,7 @@ class BerkeleyDB(Store):
                 cursor.close()
 
     def add_graph(self, graph):
-        self.__contexts.put(bb(self._to_string(graph)), None)
+        self.__contexts.put(bb(self._to_string(graph)), b"")
 
     def remove_graph(self, graph):
         self.remove((None, None, None), graph)
