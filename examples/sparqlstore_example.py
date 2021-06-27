@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
     print(
         "According to DBPedia, Berlin has a population of {0:,}".format(
-            int(pop), ",d"
+            int(pop)
         ).replace(",", ".")
     )
 
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     for p in st.objects(URIRef("http://dbpedia.org/resource/Brisbane"), dbo.populationTotal):
         print(
             "According to DBPedia, Brisbane has a population of "
-            "{0:,}".format(int(pop), ",d")
+            "{0:,}".format(int(pop))
         )
 
     # EXAMPLE 3: doing RDFlib triple navigation using SPARQLStore as a Graph()

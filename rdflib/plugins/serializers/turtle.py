@@ -42,7 +42,7 @@ class RecursiveSerializer(Serializer):
     predicateOrder = [RDF.type, RDFS.label]
     maxDepth = 10
     indentString = "  "
-    roundtrip_prefixes = tuple()
+    roundtrip_prefixes = ()
 
     def __init__(self, store):
 

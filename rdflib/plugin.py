@@ -36,6 +36,7 @@ from rdflib.query import (
     UpdateProcessor,
 )
 from rdflib.exceptions import Error
+from typing import Type, TypeVar
 
 __all__ = ["register", "get", "plugins", "PluginException", "Plugin", "PKGPlugin"]
 
@@ -85,7 +86,7 @@ class PKGPlugin(Plugin):
         return self._class
 
 
-def register(name, kind, module_path, class_name):
+def register(name: str, kind, module_path, class_name):
     """
     Register the plugin for (name, kind). The module_path and
     class_name should be the path to a plugin class.
@@ -94,7 +95,10 @@ def register(name, kind, module_path, class_name):
     _plugins[(name, kind)] = p
 
 
-def get(name, kind):
+PluginT = TypeVar("PluginT")
+
+
+def get(name: str, kind: Type[PluginT]) -> Type[PluginT]:
     """
     Return the class for the specified (name, kind). Raises a
     PluginException if unable to do so.

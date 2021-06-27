@@ -16,6 +16,7 @@ from rdflib.store import Store
 from rdflib import Variable, BNode
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 from rdflib.term import Node
+from typing import Union, Tuple
 
 # Defines some SPARQL keywords
 LIMIT = "LIMIT"
@@ -34,7 +35,7 @@ def _node_to_sparql(node):
     return node.n3()
 
 
-class SPARQLStore(SPARQLConnector, Store):
+class SPARQLStore(SPARQLConnector, Store):  # type: ignore[misc]
     """An RDFLib store around a SPARQL endpoint
 
     This is context-aware and should work as expected
@@ -167,7 +168,7 @@ class SPARQLStore(SPARQLConnector, Store):
         self.debug = DEBUG
         assert isinstance(query, str)
 
-        if initNs is not None:
+        if initNs is not None and len(initNs) > 0:
             query = self._inject_prefixes(query, initNs)
 
         if initBindings:
@@ -522,7 +523,7 @@ class SPARQLUpdateStore(SPARQLStore):
         self._edits = None
         self._updates = 0
 
-    def open(self, configuration: str or tuple, create=False):
+    def open(self, configuration: Union[str, Tuple[str, str]], create=False):
         """This method is included so that calls to this Store via Graph, e.g. Graph("SPARQLStore"),
         can set the required parameters
         """
@@ -557,7 +558,8 @@ class SPARQLUpdateStore(SPARQLStore):
             self.commit()
         return SPARQLStore.__len__(self, *args, **kwargs)
 
-    def open(self, configuration, create=False):
+    # TODO: FIXME: open is defined twice
+    def open(self, configuration, create=False):  # type: ignore[no-redef]
         """
         sets the endpoint URLs for this SPARQLStore
         :param configuration: either a tuple of (query_endpoint, update_endpoint),

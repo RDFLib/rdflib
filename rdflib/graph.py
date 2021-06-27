@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, Type, cast, overload
 import logging
 from warnings import warn
 import random
@@ -20,7 +20,7 @@ import os
 import shutil
 import tempfile
 
-from io import BytesIO
+from io import BytesIO, BufferedIOBase
 from urllib.parse import urlparse
 
 assert Literal  # avoid warning
@@ -879,11 +879,11 @@ class Graph(Node):
             for rt_2 in self.transitiveClosure(func, rt, seen):
                 yield rt_2
 
-    def transitive_objects(self, subject, property, remember=None):
-        """Transitively generate objects for the ``property`` relationship
+    def transitive_objects(self, subject, predicate, remember=None):
+        """Transitively generate objects for the ``predicate`` relationship
 
         Generated objects belong to the depth first transitive closure of the
-        ``property`` relationship starting at ``subject``.
+        ``predicate`` relationship starting at ``subject``.
         """
         if remember is None:
             remember = {}
@@ -891,15 +891,15 @@ class Graph(Node):
             return
         remember[subject] = 1
         yield subject
-        for object in self.objects(subject, property):
-            for o in self.transitive_objects(object, property, remember):
+        for object in self.objects(subject, predicate):
+            for o in self.transitive_objects(object, predicate, remember):
                 yield o
 
     def transitive_subjects(self, predicate, object, remember=None):
-        """Transitively generate objects for the ``property`` relationship
+        """Transitively generate subjects for the ``predicate`` relationship
 
-        Generated objects belong to the depth first transitive closure of the
-        ``property`` relationship starting at ``subject``.
+        Generated subjects belong to the depth first transitive closure of the
+        ``predicate`` relationship starting at ``object``.
         """
         if remember is None:
             remember = {}
@@ -956,8 +956,82 @@ class Graph(Node):
         """Turn uri into an absolute URI if it's not one already"""
         return self.namespace_manager.absolutize(uri, defrag)
 
+    # no destination and non-None positional encoding
+    @overload
     def serialize(
-        self, destination=None, format="turtle", base=None, encoding=None, **args
+        self, destination: None, format: str, base: Optional[str], encoding: str, **args
+    ) -> bytes:
+        ...
+
+    # no destination and non-None keyword encoding
+    @overload
+    def serialize(
+        self,
+        *,
+        destination: None = ...,
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: str,
+        **args
+    ) -> bytes:
+        ...
+
+    # no destination and None positional encoding
+    @overload
+    def serialize(
+        self,
+        destination: None,
+        format: str,
+        base: Optional[str],
+        encoding: None,
+        **args
+    ) -> str:
+        ...
+
+    # no destination and None keyword encoding
+    @overload
+    def serialize(
+        self,
+        *,
+        destination: None = ...,
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: None = None,
+        **args
+    ) -> str:
+        ...
+
+    # non-none destination
+    @overload
+    def serialize(
+        self,
+        destination: Union[str, BufferedIOBase],
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: Optional[str] = ...,
+        **args
+    ) -> None:
+        ...
+
+    # fallback
+    @overload
+    def serialize(
+        self,
+        destination: Union[str, BufferedIOBase, None] = None,
+        format: str = "turtle",
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        **args
+    ) -> Optional[Union[bytes, str]]:
+        ...
+
+    def serialize(
+        self,
+        destination: Union[str, BufferedIOBase, None] = None,
+        format: str = "turtle",
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        **args
     ) -> Optional[Union[bytes, str]]:
         """Serialize the Graph to destination
 
@@ -978,6 +1052,7 @@ class Graph(Node):
             base = self.base
 
         serializer = plugin.get(format, Serializer)(self)
+        stream: BufferedIOBase
         if destination is None:
             stream = BytesIO()
             if encoding is None:
@@ -987,16 +1062,16 @@ class Graph(Node):
                 serializer.serialize(stream, base=base, encoding=encoding, **args)
                 return stream.getvalue()
         if hasattr(destination, "write"):
-            stream = destination
+            stream = cast(BufferedIOBase, destination)
             serializer.serialize(stream, base=base, encoding=encoding, **args)
         else:
-            location = destination
+            location = cast(str, destination)
             scheme, netloc, path, params, _query, fragment = urlparse(location)
             if netloc != "":
                 print(
                     "WARNING: not saving as location" + "is not a local file reference"
                 )
-                return
+                return None
             fd, name = tempfile.mkstemp()
             stream = os.fdopen(fd, "wb")
             serializer.serialize(stream, base=base, encoding=encoding, **args)
@@ -1007,6 +1082,7 @@ class Graph(Node):
             else:
                 shutil.copy(name, dest)
                 os.remove(name)
+        return None
 
     def print(self, format="turtle", encoding="utf-8", out=None):
         print(
@@ -1146,8 +1222,8 @@ class Graph(Node):
     def query(
         self,
         query_object,
-        processor: str = "sparql",
-        result: str = "sparql",
+        processor: Union[str, query.Processor] = "sparql",
+        result: Union[str, Type[query.Result]] = "sparql",
         initNs=None,
         initBindings=None,
         use_store_provided: bool = True,
@@ -1183,7 +1259,7 @@ class Graph(Node):
                 pass  # store has no own implementation
 
         if not isinstance(result, query.Result):
-            result = plugin.get(result, query.Result)
+            result = plugin.get(cast(str, result), query.Result)
         if not isinstance(processor, query.Processor):
             processor = plugin.get(processor, query.Processor)(self)
 

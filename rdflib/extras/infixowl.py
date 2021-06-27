@@ -989,7 +989,7 @@ class Class(AnnotatableTerms):
         for annotation in self.graph.objects(subject=self, predicate=term):
             yield annotation
 
-    annotation = property(_get_annotation, lambda x: x)
+    annotation = property(_get_annotation, lambda x: x)  # type: ignore[arg-type,misc]
 
     def _get_extentQuery(self):
         return (Variable("CLASS"), RDF.type, self.identifier)
@@ -1496,14 +1496,14 @@ class BooleanClass(OWLRDFListProxy, Class):
 
     @BooleanClassExtentHelper(OWL_NS.intersectionOf)
     @Callable
-    def getIntersections():
+    def getIntersections():  # type: ignore[misc]
         pass
 
     getIntersections = Callable(getIntersections)
 
     @BooleanClassExtentHelper(OWL_NS.unionOf)
     @Callable
-    def getUnions():
+    def getUnions():  # type: ignore[misc]
         pass
 
     getUnions = Callable(getUnions)

@@ -38,7 +38,6 @@ import logging
 import warnings
 import math
 
-import base64
 import xml.dom.minidom
 
 from datetime import date, time, datetime, timedelta
@@ -53,6 +52,7 @@ from isodate import (
     parse_duration,
     duration_isoformat,
 )
+from base64 import b64decode, b64encode
 from binascii import hexlify, unhexlify
 
 import rdflib
@@ -63,11 +63,15 @@ from urllib.parse import urljoin
 from urllib.parse import urlparse
 
 from decimal import Decimal
+from typing import TYPE_CHECKING, Dict, Callable, Union, Type
+
+if TYPE_CHECKING:
+    from .paths import AlternativePath, InvPath, NegatedPath, SequencePath, Path
 
 logger = logging.getLogger(__name__)
 skolem_genid = "/.well-known/genid/"
 rdflib_skolem_genid = "/.well-known/genid/rdflib/"
-skolems = {}
+skolems: Dict[str, "BNode"] = {}
 
 
 _invalid_uri_chars = '<>" {}|\\^`'
@@ -217,6 +221,11 @@ class URIRef(Identifier):
     """
 
     __slots__ = ()
+
+    __or__: Callable[["URIRef", Union["URIRef", "Path"]], "AlternativePath"]
+    __invert__: Callable[["URIRef"], "InvPath"]
+    __neg__: Callable[["URIRef"], "NegatedPath"]
+    __truediv__: Callable[["URIRef", Union["URIRef", "Path"]], "SequencePath"]
 
     def __new__(cls, value, base=None):
         if base is not None:
@@ -1435,7 +1444,10 @@ _XSD_DAYTIMEDURATION = URIRef(_XSD_PFX + "dayTimeDuration")
 _XSD_YEARMONTHDURATION = URIRef(_XSD_PFX + "yearMonthDuration")
 
 _OWL_RATIONAL = URIRef("http://www.w3.org/2002/07/owl#rational")
+_XSD_B64BINARY = URIRef(_XSD_PFX + "base64Binary")
 _XSD_HEXBINARY = URIRef(_XSD_PFX + "hexBinary")
+_XSD_GYEAR = URIRef(_XSD_PFX + "gYear")
+_XSD_GYEARMONTH = URIRef(_XSD_PFX + "gYearMonth")
 # TODO: gYearMonth, gYear, gMonthDay, gDay, gMonth
 
 _NUMERIC_LITERAL_TYPES = (
@@ -1541,7 +1553,7 @@ _GenericPythonToXSDRules = [
     (bool, (lambda i: str(i).lower(), _XSD_BOOLEAN)),
     (int, (None, _XSD_INTEGER)),
     (long_type, (None, _XSD_INTEGER)),
-    (Decimal, (None, _XSD_DECIMAL)),
+    (Decimal, (lambda i: f"{i:f}", _XSD_DECIMAL)),
     (datetime, (lambda i: i.isoformat(), _XSD_DATETIME)),
     (date, (lambda i: i.isoformat(), _XSD_DATE)),
     (time, (lambda i: i.isoformat(), _XSD_TIME)),
@@ -1557,8 +1569,12 @@ _GenericPythonToXSDRules = [
 ]
 
 _SpecificPythonToXSDRules = [
+    ((date, _XSD_GYEAR), lambda val: val.strftime("%04Y")),
+    ((date, _XSD_GYEARMONTH), lambda val: val.strftime("%04Y-%02m")),
     ((str, _XSD_HEXBINARY), hexlify),
     ((bytes, _XSD_HEXBINARY), hexlify),
+    ((str, _XSD_B64BINARY), b64encode),
+    ((bytes, _XSD_B64BINARY), b64encode),
 ]
 
 XSDToPython = {
@@ -1593,7 +1609,7 @@ XSDToPython = {
     URIRef(_XSD_PFX + "unsignedByte"): int,
     URIRef(_XSD_PFX + "float"): float,
     URIRef(_XSD_PFX + "double"): float,
-    URIRef(_XSD_PFX + "base64Binary"): lambda s: base64.b64decode(s),
+    URIRef(_XSD_PFX + "base64Binary"): b64decode,
     URIRef(_XSD_PFX + "anyURI"): None,
     _RDF_XMLLITERAL: _parseXML,
     _RDF_HTMLLITERAL: _parseHTML,
@@ -1714,7 +1730,7 @@ class Statement(Node, tuple):
 # See http://www.w3.org/TR/sparql11-query/#modOrderBy
 # we leave "space" for more subclasses of Node elsewhere
 # default-dict to grazefully fail for new subclasses
-_ORDERING = defaultdict(int)
+_ORDERING: Dict[Type[Node], int] = defaultdict(int)
 _ORDERING.update({BNode: 10, Variable: 20, URIRef: 30, Literal: 40})
 
 

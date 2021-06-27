@@ -24,27 +24,35 @@ result object gives the triples. For ``ASK`` queries, iterating will yield
 the single boolean answer, or evaluating the result object in a
 boolean-context (i.e. ``bool(result)``)
 
+The query method returns a :class:`rdflib.query.Result` instance. For
+SELECT queries, iterating over this returns
+:class:`rdflib.query.ResultRow` instances, each containing a set of
+variable bindings. For CONSTRUCT/DESCRIBE queries, iterating over the
+result object yields triples. For ASK queries, the single Boolean 
+answer is obtained by iterating over the result object or by 
+evaluating the result object in a Boolean context 
+(i.e. ``bool(result)``).
+
 For example...
 
 .. code-block:: python
 
     import rdflib
-
     g = rdflib.Graph()
+    g.parse("http://danbri.org/foaf.rdf#")
 
-    # ... add some triples to g somehow ...
-    g.parse("some_foaf_file.rdf")
-
-    qres = g.query(
-        """SELECT DISTINCT ?aname ?bname
-           WHERE {
-              ?a foaf:knows ?b .
-              ?a foaf:name ?aname .
-              ?b foaf:name ?bname .
-           }""")
+    knows_query = """
+    SELECT DISTINCT ?aname ?bname
+    WHERE {
+        ?a foaf:knows ?b .
+        ?a foaf:name ?aname .
+        ?b foaf:name ?bname .
+    }"""
 
     for row in qres:
         print(f"{row.aname} knows {row.bname}")
+
+
 
 The results are tuples of values in the same order as your ``SELECT``
 arguments. Alternatively, the values can be accessed by variable
@@ -150,6 +158,7 @@ The ``SERVICE`` keyword of SPARQL 1.1 can send a query to a remote SPARQL endpoi
     for row in qres:
         print(row.s)
 
+
 This example sends a query to `DBPedia <https://dbpedia.org/>`_'s SPARQL endpoint service so that it can run the query
 and then send back the result:
 
@@ -175,18 +184,18 @@ initial bindings:
 
 .. code-block:: python
 
-	q = prepareQuery(
-		"SELECT ?s WHERE { ?person foaf:knows ?s .}",
-		initNs = { "foaf": FOAF }
-	)
+    q = prepareQuery(
+        "SELECT ?s WHERE { ?person foaf:knows ?s .}",
+        initNs = { "foaf": FOAF }
+    )
 
-	g = rdflib.Graph()
-	g.load("foaf.rdf")
+    g = rdflib.Graph()
+    g.load("foaf.rdf")
 
-	tim = rdflib.URIRef("http://www.w3.org/People/Berners-Lee/card#i")
+    tim = rdflib.URIRef("http://www.w3.org/People/Berners-Lee/card#i")
 
-	for row in g.query(q, initBindings={'person': tim}):
-		print(row)
+    for row in g.query(q, initBindings={'person': tim}):
+        print(row)
 
 
 Custom Evaluation Functions
