@@ -1,0 +1,16 @@
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT ?name ?mbox (STRDT("iiii", <http://example/romanNumeral>) as ?strdt) (STRLANG("chat", "en") as ?strlang) (uuid() as ?uuid) (STRUUID() as ?struuid)
+WHERE {
+    ?x foaf:name  ?name ;
+       foaf:mbox  ?mbox .
+    FILTER isIRI(?mbox)
+    FILTER isBlank(?mbox)
+    FILTER isLiteral(?mbox)
+    FILTER isNumeric(?mbox)
+    FILTER STR(?mbox)
+    FILTER LANG(?mbox)
+    FILTER DATATYPE(?mbox)
+    FILTER IRI(?mobox)
+    FILTER BNODE("string")
+}
