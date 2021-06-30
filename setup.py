@@ -28,7 +28,8 @@ if cythonize:
         USE_CYTHON = False
 else:
     print("cython is not installed")
-    USE_CYTHON = False
+    print("Please install cython first. (https://cython.org/)")
+    exit(1)
 
 if 'clean' in sys.argv:
     # Maybe Cython cannot work for some reason, and it would prevent cleaning up.
