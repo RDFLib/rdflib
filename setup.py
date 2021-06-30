@@ -17,19 +17,16 @@ except ImportError:
     cythonize = None
 
 # cython is not used unless specified.
-if cythonize:
-    if '--with-cython' in sys.argv:
+if '--with-cython' in sys.argv:
+    sys.argv.remove('--with-cython')
+    if cythonize:
         USE_CYTHON = True
-        sys.argv.remove('--with-cython')
-    elif '--cython' in sys.argv:
-        USE_CYTHON = True
-        sys.argv.remove('--cython')
     else:
-        USE_CYTHON = False
+        print("cython is not installed")
+        print("Please install cython first. (https://cython.org/)")
+        exit(1)
 else:
-    print("cython is not installed")
-    print("Please install cython first. (https://cython.org/)")
-    exit(1)
+    USE_CYTHON = False
 
 if 'clean' in sys.argv:
     # Maybe Cython cannot work for some reason, and it would prevent cleaning up.
