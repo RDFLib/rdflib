@@ -559,7 +559,7 @@ class Graph(Node):
         """Set-theoretic union
            BNode IDs are not changed."""
         try:
-            retval = self.__class__()
+            retval = type(self)()
         except TypeError:
             retval = Graph()
         for (prefix, uri) in set(list(self.namespaces()) + list(other.namespaces())):
@@ -574,7 +574,7 @@ class Graph(Node):
         """Set-theoretic intersection.
            BNode IDs are not changed."""
         try:
-            retval = self.__class__()
+            retval = type(self)()
         except TypeError:
             retval = Graph()
         for x in other:
@@ -586,7 +586,7 @@ class Graph(Node):
         """Set-theoretic difference.
            BNode IDs are not changed."""
         try:
-            retval = self.__class__()
+            retval = type(self)()
         except TypeError:
             retval = Graph()
         for x in self:
