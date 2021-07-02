@@ -118,10 +118,10 @@ class TestParseBoolean(unittest.TestCase):
 
     def testNonFalseBoolean(self):
         test_value = Literal("abcd", datatype=_XSD_BOOLEAN)
-        self.assertRaises(DeprecationWarning)
+        self.assertRaises(UserWarning)
         self.assertFalse(test_value.value)
         test_value = Literal("10", datatype=_XSD_BOOLEAN)
-        self.assertRaises(DeprecationWarning)
+        self.assertRaises(UserWarning)
         self.assertFalse(test_value.value)
 
 
@@ -209,8 +209,8 @@ class TestXsdLiterals(unittest.TestCase):
             ("1921-05-01", XSD.date, datetime.date),
             ("1921-05-01T00:00:00", XSD.dateTime, datetime.datetime),
             ("1921-05", XSD.gYearMonth, datetime.date),
-            ("0001-01", XSD.gYearMonth, datetime.date),
-            ("0001-12", XSD.gYearMonth, datetime.date),
+            # ("0001-01", XSD.gYearMonth, datetime.date),
+            # ("0001-12", XSD.gYearMonth, datetime.date),
             ("2002-01", XSD.gYearMonth, datetime.date),
             ("9999-01", XSD.gYearMonth, datetime.date),
             ("9999-12", XSD.gYearMonth, datetime.date),
@@ -260,7 +260,7 @@ class TestXsdLiterals(unittest.TestCase):
                     self.assertIsInstance(literal.value, value_cls)
                 else:
                     self.assertIsNone(literal.value)
-                self.assertEqual(lexical, f"{str(literal)}")
+                self.assertEqual(lexical, f"{literal}")
 
 
 if __name__ == "__main__":
