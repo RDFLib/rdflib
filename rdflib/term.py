@@ -1450,7 +1450,7 @@ _XSD_B64BINARY = URIRef(_XSD_PFX + "base64Binary")
 _XSD_HEXBINARY = URIRef(_XSD_PFX + "hexBinary")
 _XSD_GYEAR = URIRef(_XSD_PFX + "gYear")
 _XSD_GYEARMONTH = URIRef(_XSD_PFX + "gYearMonth")
-# TODO: gYearMonth, gYear, gMonthDay, gDay, gMonth
+# TODO: gMonthDay, gDay, gMonth
 
 _NUMERIC_LITERAL_TYPES = (
     _XSD_INTEGER,
@@ -1571,8 +1571,8 @@ _GenericPythonToXSDRules = [
 ]
 
 _SpecificPythonToXSDRules = [
-    ((date, _XSD_GYEAR), lambda val: val.strftime("%Y")),
-    ((date, _XSD_GYEARMONTH), lambda val: val.strftime("%Y-%m")),
+    ((date, _XSD_GYEAR), lambda val: val.strftime("%Y").zfill(4)),
+    ((date, _XSD_GYEARMONTH), lambda val: val.strftime("%Y-%m").zfill(7)),
     ((str, _XSD_HEXBINARY), hexlify),
     ((bytes, _XSD_HEXBINARY), hexlify),
     ((str, _XSD_B64BINARY), b64encode),
