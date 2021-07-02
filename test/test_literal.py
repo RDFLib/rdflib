@@ -1,3 +1,4 @@
+from decimal import Decimal
 import unittest
 import datetime
 
@@ -225,6 +226,9 @@ class TestXsdLiterals(unittest.TestCase):
             ("", XSD.hexBinary, bytes),
             ("UkRGTGli", XSD.base64Binary, bytes),
             ("", XSD.base64Binary, bytes),
+            ("0.0000000000000000000000000000001", XSD.decimal, Decimal),
+            ("0.1", XSD.decimal, Decimal),
+            ("1", XSD.integer, int),
         ]
         self.check_make_literals(inputs)
 
@@ -243,6 +247,7 @@ class TestXsdLiterals(unittest.TestCase):
             ("1921-05-01+00:00", XSD.date, datetime.date),
             ("1921-05-01+00:00", XSD.date, datetime.date),
             ("1921-05-01T00:00:00Z", XSD.dateTime, datetime.datetime),
+            ("1e-31", XSD.decimal, None),  # This is not a valid decimal value
         ]
         self.check_make_literals(inputs)
 

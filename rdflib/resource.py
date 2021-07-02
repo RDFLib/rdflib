@@ -355,8 +355,6 @@ class Resource(object):
     def __unicode__(self):
         return str(self._identifier)
 
-    __str__ = __unicode__
-
     def add(self, p, o):
         if isinstance(o, Resource):
             o = o._identifier

@@ -7,7 +7,9 @@ import rdflib.query
 
 MAX_RETRY = 10
 BACKOFF_FACTOR = 1.5
-def query_with_retry(graph: rdflib.Graph, query: str, **kwargs) -> rdflib.query.Result:
+
+
+def query_with_retry(graph: rdflib.Graph, query: str, **kwargs) -> rdflib.query.Result:  # type: ignore[return]
     """Query graph an retry on failure, returns preloaded result
 
     The tests run against outside network targets which results

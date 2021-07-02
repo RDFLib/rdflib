@@ -63,11 +63,15 @@ from urllib.parse import urljoin
 from urllib.parse import urlparse
 
 from decimal import Decimal
+from typing import TYPE_CHECKING, Dict, Callable, Union, Type
+
+if TYPE_CHECKING:
+    from .paths import AlternativePath, InvPath, NegatedPath, SequencePath, Path
 
 logger = logging.getLogger(__name__)
 skolem_genid = "/.well-known/genid/"
 rdflib_skolem_genid = "/.well-known/genid/rdflib/"
-skolems = {}
+skolems: Dict[str, "BNode"] = {}
 
 
 _invalid_uri_chars = '<>" {}|\\^`'
@@ -217,6 +221,11 @@ class URIRef(Identifier):
     """
 
     __slots__ = ()
+
+    __or__: Callable[["URIRef", Union["URIRef", "Path"]], "AlternativePath"]
+    __invert__: Callable[["URIRef"], "InvPath"]
+    __neg__: Callable[["URIRef"], "NegatedPath"]
+    __truediv__: Callable[["URIRef", Union["URIRef", "Path"]], "SequencePath"]
 
     def __new__(cls, value, base=None):
         if base is not None:
@@ -969,10 +978,11 @@ class Literal(Identifier):
         """
         # don't use super()... for efficiency reasons, see Identifier.__hash__
         res = str.__hash__(self)
-        if self.language:
-            res ^= hash(self.language.lower())
-        if self.datatype:
-            res ^= hash(self.datatype)
+        # Directly accessing the member is faster than the property.
+        if self._language:
+            res ^= hash(self._language.lower())
+        if self._datatype:
+            res ^= hash(self._datatype)
         return res
 
     def __eq__(self, other):
@@ -1015,11 +1025,12 @@ class Literal(Identifier):
             return True
         if other is None:
             return False
+        # Directly accessing the member is faster than the property.
         if isinstance(other, Literal):
             return (
-                self.datatype == other.datatype
-                and (self.language.lower() if self.language else None)
-                == (other.language.lower() if other.language else None)
+                self._datatype == other._datatype
+                and (self._language.lower() if self._language else None)
+                == (other._language.lower() if other._language else None)
                 and str.__eq__(self, other)
             )
 
@@ -1544,7 +1555,7 @@ _GenericPythonToXSDRules = [
     (bool, (lambda i: str(i).lower(), _XSD_BOOLEAN)),
     (int, (None, _XSD_INTEGER)),
     (long_type, (None, _XSD_INTEGER)),
-    (Decimal, (None, _XSD_DECIMAL)),
+    (Decimal, (lambda i: f"{i:f}", _XSD_DECIMAL)),
     (datetime, (lambda i: i.isoformat(), _XSD_DATETIME)),
     (date, (lambda i: i.isoformat(), _XSD_DATE)),
     (time, (lambda i: i.isoformat(), _XSD_TIME)),
@@ -1721,7 +1732,7 @@ class Statement(Node, tuple):
 # See http://www.w3.org/TR/sparql11-query/#modOrderBy
 # we leave "space" for more subclasses of Node elsewhere
 # default-dict to grazefully fail for new subclasses
-_ORDERING = defaultdict(int)
+_ORDERING: Dict[Type[Node], int] = defaultdict(int)
 _ORDERING.update({BNode: 10, Variable: 20, URIRef: 30, Literal: 40})
 
 

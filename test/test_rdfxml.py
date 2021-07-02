@@ -20,13 +20,8 @@ _logger = logging.getLogger("parser_rdfcore")
 verbose = 0
 
 
-sw = StreamWriter(sys.stdout)
-
-
 def write(msg):
     _logger.info(msg + "\n")
-    # sw.write(msg+"\n")
-
 
 class TestStore(Graph):
     __test__ = False

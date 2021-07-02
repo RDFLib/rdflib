@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
     print(
         "According to DBPedia, Berlin has a population of {0:,}".format(
-            int(pop), ",d"
+            int(pop)
         ).replace(",", ".")
     )
     print()
