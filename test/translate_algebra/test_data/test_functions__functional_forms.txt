@@ -1,0 +1,20 @@
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX dc:   <http://purl.org/dc/elements/1.1/>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+SELECT (IF(?givenName = "Obama", if(?givenName = "Obama", "yes", "no"), "no") as ?givenName2) (COALESCE(1/0 *3 *4 +5 + 6, ?x) as ?col)
+WHERE {
+    ?x foaf:givenName  ?givenName .
+    OPTIONAL {
+        ?x dc:date ?date
+    } .
+    FILTER ( bound(?date) )
+    FILTER NOT EXISTS {
+        ?givenName foaf:name ?name.
+        filter(?givenName = "Clark")
+    }
+    FILTER EXISTS {
+        ?givenName foaf:name ?name.
+        filter((?givenName = "Obama" || ?givenName = "Obama2") && ?givenName = "Stern")
+        FILTER (sameTerm(?givenName, ?givenName) && !sameTerm(?givenName, ?givenName2))
+    }
+}

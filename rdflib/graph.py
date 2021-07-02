@@ -19,6 +19,7 @@ from rdflib.exceptions import ParserError
 import os
 import shutil
 import tempfile
+import pathlib
 
 from io import BytesIO, BufferedIOBase
 from urllib.parse import urlparse
@@ -557,7 +558,10 @@ class Graph(Node):
     def __add__(self, other):
         """Set-theoretic union
            BNode IDs are not changed."""
-        retval = Graph()
+        try:
+            retval = type(self)()
+        except TypeError:
+            retval = Graph()
         for (prefix, uri) in set(list(self.namespaces()) + list(other.namespaces())):
             retval.bind(prefix, uri)
         for x in self:
@@ -569,7 +573,10 @@ class Graph(Node):
     def __mul__(self, other):
         """Set-theoretic intersection.
            BNode IDs are not changed."""
-        retval = Graph()
+        try:
+            retval = type(self)()
+        except TypeError:
+            retval = Graph()
         for x in other:
             if x in self:
                 retval.add(x)
@@ -578,7 +585,10 @@ class Graph(Node):
     def __sub__(self, other):
         """Set-theoretic difference.
            BNode IDs are not changed."""
-        retval = Graph()
+        try:
+            retval = type(self)()
+        except TypeError:
+            retval = Graph()
         for x in self:
             if x not in other:
                 retval.add(x)
@@ -1065,7 +1075,10 @@ class Graph(Node):
             stream = cast(BufferedIOBase, destination)
             serializer.serialize(stream, base=base, encoding=encoding, **args)
         else:
-            location = cast(str, destination)
+            if isinstance(destination, pathlib.PurePath):
+                location = str(destination)
+            else:
+                location = cast(str, destination)
             scheme, netloc, path, params, _query, fragment = urlparse(location)
             if netloc != "":
                 print(

@@ -1,0 +1,13 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+select
+(sum(?s) as ?sum)
+(count(distinct ?s) as ?count)
+(min(?s) as ?min)
+(max(?s) as ?max)
+(avg(?s) as ?avg)
+(sample(?s) as ?sample)
+(GROUP_CONCAT(?s;SEPARATOR="|") AS ?group_concat)
+where {
+	?s ?p ?o .
+    filter(?s = rdf:type)
+} limit 1
