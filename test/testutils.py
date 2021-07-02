@@ -1,11 +1,14 @@
 import sys
+from types import TracebackType
 import isodate
 import datetime
 import random
 
-from contextlib import contextmanager
+from contextlib import AbstractContextManager, contextmanager
 from typing import (
     List,
+    Optional,
+    TYPE_CHECKING,
     Type,
     Iterator,
     Set,
@@ -23,10 +26,16 @@ from http.server import BaseHTTPRequestHandler, HTTPServer, SimpleHTTPRequestHan
 import email.message
 from nose import SkipTest
 from .earl import add_test, report
+import unittest
 
 from rdflib import BNode, Graph, ConjunctiveGraph
 from rdflib.term import Node
 from unittest.mock import MagicMock, Mock
+from urllib.error import HTTPError
+from urllib.request import urlopen
+
+if TYPE_CHECKING:
+    import typing_extensions as te
 
 
 # TODO: make an introspective version (like this one) of
@@ -177,6 +186,7 @@ PathQueryT = Dict[str, List[str]]
 
 
 class MockHTTPRequests(NamedTuple):
+    method: str
     path: str
     parsed_path: ParseResult
     path_query: PathQueryT
@@ -191,6 +201,40 @@ class MockHTTPResponse(NamedTuple):
 
 
 class SimpleHTTPMock:
+    """
+    SimpleHTTPMock allows testing of code that relies on an HTTP server.
+
+    NOTE: Currently only the GET method is supported.
+
+    Objects of this class has a list of responses for each method (GET, POST, etc...)
+    and returns these responses for these methods in sequence.
+
+    All request received are appended to a method specific list.
+
+    Example usage:
+    >>> httpmock = SimpleHTTPMock()
+    >>> with ctx_http_server(httpmock.Handler) as server:
+    ...    url = "http://{}:{}".format(*server.server_address)
+    ...    # add a response the server should give:
+    ...    httpmock.do_get_responses.append(
+    ...        MockHTTPResponse(404, "Not Found", b"gone away", {})
+    ...    )
+    ...
+    ...    # send a request to get the first response
+    ...    http_error: Optional[HTTPError] = None
+    ...    try:
+    ...        urlopen(f"{url}/bad/path")
+    ...    except HTTPError as caught:
+    ...        http_error = caught
+    ...
+    ...    assert http_error is not None
+    ...    assert http_error.code == 404
+    ...
+    ...    # get and validate request that the mock received
+    ...    req = httpmock.do_get_requests.pop(0)
+    ...    assert req.path == "/bad/path"
+    """
+
     # TODO: add additional methods (POST, PUT, ...) similar to get
     def __init__(self):
         self.do_get_requests: List[MockHTTPRequests] = []
@@ -205,7 +249,7 @@ class SimpleHTTPMock:
                 parsed_path = urlparse(self.path)
                 path_query = parse_qs(parsed_path.query)
                 request = MockHTTPRequests(
-                    self.path, parsed_path, path_query, self.headers
+                    "GET", self.path, parsed_path, path_query, self.headers
                 )
                 self.http_mock.do_get_requests.append(request)
 
@@ -222,6 +266,9 @@ class SimpleHTTPMock:
 
             (do_GET, do_GET_mock) = make_spypair(_do_GET)
 
+            def log_message(self, format: str, *args: Any) -> None:
+                pass
+
         self.Handler = Handler
         self.do_get_mock = Handler.do_GET_mock
 
@@ -229,3 +276,132 @@ class SimpleHTTPMock:
         self.do_get_requests.clear()
         self.do_get_responses.clear()
         self.do_get_mock.reset_mock()
+
+
+class SimpleHTTPMockTests(unittest.TestCase):
+    def test_example(self) -> None:
+        httpmock = SimpleHTTPMock()
+        with ctx_http_server(httpmock.Handler) as server:
+            url = "http://{}:{}".format(*server.server_address)
+            # add two responses the server should give:
+            httpmock.do_get_responses.append(
+                MockHTTPResponse(404, "Not Found", b"gone away", {})
+            )
+            httpmock.do_get_responses.append(
+                MockHTTPResponse(200, "OK", b"here it is", {})
+            )
+
+            # send a request to get the first response
+            with self.assertRaises(HTTPError) as raised:
+                urlopen(f"{url}/bad/path")
+            assert raised.exception.code == 404
+
+            # get and validate request that the mock received
+            req = httpmock.do_get_requests.pop(0)
+            self.assertEqual(req.path, "/bad/path")
+
+            # send a request to get the second response
+            resp = urlopen(f"{url}/")
+            self.assertEqual(resp.status, 200)
+            self.assertEqual(resp.read(), b"here it is")
+
+            httpmock.do_get_responses.append(
+                MockHTTPResponse(404, "Not Found", b"gone away", {})
+            )
+            httpmock.do_get_responses.append(
+                MockHTTPResponse(200, "OK", b"here it is", {})
+            )
+
+
+class ServedSimpleHTTPMock(SimpleHTTPMock, AbstractContextManager):
+    """
+    ServedSimpleHTTPMock is a ServedSimpleHTTPMock with a HTTP server.
+
+    Example usage:
+    >>> with ServedSimpleHTTPMock() as httpmock:
+    ...    # add a response the server should give:
+    ...    httpmock.do_get_responses.append(
+    ...        MockHTTPResponse(404, "Not Found", b"gone away", {})
+    ...    )
+    ...
+    ...    # send a request to get the first response
+    ...    http_error: Optional[HTTPError] = None
+    ...    try:
+    ...        urlopen(f"{httpmock.url}/bad/path")
+    ...    except HTTPError as caught:
+    ...        http_error = caught
+    ...
+    ...    assert http_error is not None
+    ...    assert http_error.code == 404
+    ...
+    ...    # get and validate request that the mock received
+    ...    req = httpmock.do_get_requests.pop(0)
+    ...    assert req.path == "/bad/path"
+    """
+
+    def __init__(self):
+        super().__init__()
+        host = get_random_ip()
+        self.server = HTTPServer((host, 0), self.Handler)
+        self.server_thread = Thread(target=self.server.serve_forever)
+        self.server_thread.daemon = True
+        self.server_thread.start()
+
+    def stop(self) -> None:
+        self.server.shutdown()
+        self.server.socket.close()
+        self.server_thread.join()
+
+    @property
+    def address_string(self) -> str:
+        (host, port) = self.server.server_address
+        return f"{host}:{port}"
+
+    @property
+    def url(self) -> str:
+        return f"http://{self.address_string}"
+
+    def __enter__(self) -> "ServedSimpleHTTPMock":
+        return self
+
+    def __exit__(
+        self,
+        __exc_type: Optional[Type[BaseException]],
+        __exc_value: Optional[BaseException],
+        __traceback: Optional[TracebackType],
+    ) -> "te.Literal[False]":
+        self.stop()
+        return False
+
+
+class ServedSimpleHTTPMockTests(unittest.TestCase):
+    def test_example(self) -> None:
+        with ServedSimpleHTTPMock() as httpmock:
+            # add two responses the server should give:
+            httpmock.do_get_responses.append(
+                MockHTTPResponse(404, "Not Found", b"gone away", {})
+            )
+            httpmock.do_get_responses.append(
+                MockHTTPResponse(200, "OK", b"here it is", {})
+            )
+
+            # send a request to get the first response
+            with self.assertRaises(HTTPError) as raised:
+                urlopen(f"{httpmock.url}/bad/path")
+            assert raised.exception.code == 404
+
+            # get and validate request that the mock received
+            req = httpmock.do_get_requests.pop(0)
+            self.assertEqual(req.path, "/bad/path")
+
+            # send a request to get the second response
+            resp = urlopen(f"{httpmock.url}/")
+            self.assertEqual(resp.status, 200)
+            self.assertEqual(resp.read(), b"here it is")
+
+            httpmock.do_get_responses.append(
+                MockHTTPResponse(404, "Not Found", b"gone away", {})
+            )
+            httpmock.do_get_responses.append(
+                MockHTTPResponse(200, "OK", b"here it is", {})
+            )
