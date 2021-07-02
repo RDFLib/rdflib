@@ -1,7 +1,7 @@
 Utilities & convenience functions
 =================================
 
-For RDF programming, RDFLib and Python may be the fastest tools,
+For RDF programming, RDFLib and Python may not be the fastest tools,
 but we try hard to make them the easiest and most convenient to use and thus the *fastest* overall!
 
 This is a collection of hints and pointers for hassle-free RDF coding.
@@ -160,7 +160,7 @@ You can parse data from a string with the ``data`` param:
         print(r)
     # prints: (rdflib.term.URIRef('a:'), rdflib.term.URIRef('p:'), rdflib.term.URIRef('p:'))
 
-Commandline-tools
------------------
+Command Line tools
+------------------
 
 RDFLib includes a handful of commandline tools, see :mod:`rdflib.tools`.

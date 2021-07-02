@@ -449,7 +449,7 @@ class Literal(Identifier):
     __doc__ = """
     RDF Literal: http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
 
-    The lexical value of the literal is the unicode object
+    The lexical value of the literal is the unicode object.  
     The interpreted, datatyped value is available from .value
 
     Language tags must be valid according to :rfc:5646
@@ -462,17 +462,17 @@ class Literal(Identifier):
 
     >>> from rdflib.namespace import XSD
 
-    >>> Literal('01')!=Literal('1') # clear - strings differ
+    >>> Literal('01') != Literal('1')  # clear - strings differ
     True
 
     but with data-type they get normalized:
 
-    >>> Literal('01', datatype=XSD.integer)!=Literal('1', datatype=XSD.integer)
+    >>> Literal('01', datatype=XSD.integer) != Literal('1', datatype=XSD.integer)
     False
 
     unless disabled:
 
-    >>> Literal('01', datatype=XSD.integer, normalize=False)!=Literal('1', datatype=XSD.integer)
+    >>> Literal('01', datatype=XSD.integer, normalize=False) != Literal('1', datatype=XSD.integer)
     True
 
 
@@ -1450,7 +1450,7 @@ _XSD_B64BINARY = URIRef(_XSD_PFX + "base64Binary")
 _XSD_HEXBINARY = URIRef(_XSD_PFX + "hexBinary")
 _XSD_GYEAR = URIRef(_XSD_PFX + "gYear")
 _XSD_GYEARMONTH = URIRef(_XSD_PFX + "gYearMonth")
-# TODO: gYearMonth, gYear, gMonthDay, gDay, gMonth
+# TODO: gMonthDay, gDay, gMonth
 
 _NUMERIC_LITERAL_TYPES = (
     _XSD_INTEGER,
@@ -1571,8 +1571,8 @@ _GenericPythonToXSDRules = [
 ]
 
 _SpecificPythonToXSDRules = [
-    ((date, _XSD_GYEAR), lambda val: val.strftime("%04Y")),
-    ((date, _XSD_GYEARMONTH), lambda val: val.strftime("%04Y-%02m")),
+    ((date, _XSD_GYEAR), lambda val: val.strftime("%Y").zfill(4)),
+    ((date, _XSD_GYEARMONTH), lambda val: val.strftime("%Y-%m").zfill(7)),
     ((str, _XSD_HEXBINARY), hexlify),
     ((bytes, _XSD_HEXBINARY), hexlify),
     ((str, _XSD_B64BINARY), b64encode),

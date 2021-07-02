@@ -36,8 +36,8 @@ In most cases, passing the name of the store to the Graph constructor is enough:
     graph = Graph(store='BerkeleyDB')
 
 
-Most store offering on-disk persistence will need to be opened before reading or writing.
-When persisting a triplestore (instead of a ConjuntiveGraph quadstore), you need to specify
+Most stores offering on-disk persistence will need to be opened before reading or writing.
+When peristing a triplestore, rather than a ConjuntiveGraph quadstore, you need to specify
 an identifier with which you can open the graph:
 
 .. code-block:: python

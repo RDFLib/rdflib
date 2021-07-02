@@ -16,22 +16,13 @@ Queries can be evaluated against a graph with the
 :meth:`rdflib.graph.Graph.query` method, and updates with
 :meth:`rdflib.graph.Graph.update`.
 
-A query method returns a :class:`rdflib.query.Result` instance. For
-``SELECT`` queries, iterating over this returns
+The query method returns a :class:`rdflib.query.Result` instance. For
+SELECT queries, iterating over this returns
 :class:`rdflib.query.ResultRow` instances, each containing a set of
 variable bindings. For ``CONSTRUCT``/``DESCRIBE`` queries, iterating over the
 result object gives the triples. For ``ASK`` queries, iterating will yield
 the single boolean answer, or evaluating the result object in a
 boolean-context (i.e. ``bool(result)``)
-
-The query method returns a :class:`rdflib.query.Result` instance. For
-SELECT queries, iterating over this returns
-:class:`rdflib.query.ResultRow` instances, each containing a set of
-variable bindings. For CONSTRUCT/DESCRIBE queries, iterating over the
-result object yields triples. For ASK queries, the single Boolean 
-answer is obtained by iterating over the result object or by 
-evaluating the result object in a Boolean context 
-(i.e. ``bool(result)``).
 
 For example...
 
@@ -133,6 +124,7 @@ example:
     # y: a d:
 
 
+
 Querying a Remote Service
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -157,6 +149,7 @@ The ``SERVICE`` keyword of SPARQL 1.1 can send a query to a remote SPARQL endpoi
 
     for row in qres:
         print(row.s)
+
 
 
 This example sends a query to `DBPedia <https://dbpedia.org/>`_'s SPARQL endpoint service so that it can run the query

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-film.py: a simple tool to manage your movies review
+film.py: a simple tool to manage your movies reviews
 Simon Rozet, http://atonie.org/
 
     - manage directors and writers

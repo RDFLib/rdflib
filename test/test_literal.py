@@ -7,10 +7,6 @@ from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind, _XSD_BOOLEAN
 from rdflib.namespace import XSD
 
 
-def uformat(s):
-    return s.replace("u'", "'")
-
-
 class TestLiteral(unittest.TestCase):
     def setUp(self):
         pass
@@ -75,20 +71,18 @@ class TestNew(unittest.TestCase):
 
 class TestRepr(unittest.TestCase):
     def testOmitsMissingDatatypeAndLang(self):
-        self.assertEqual(repr(Literal("foo")), uformat("rdflib.term.Literal(u'foo')"))
+        self.assertEqual(repr(Literal("foo")), "rdflib.term.Literal('foo')")
 
     def testOmitsMissingDatatype(self):
         self.assertEqual(
             repr(Literal("foo", lang="en")),
-            uformat("rdflib.term.Literal(u'foo', lang='en')"),
+            "rdflib.term.Literal('foo', lang='en')",
         )
 
     def testOmitsMissingLang(self):
         self.assertEqual(
             repr(Literal("foo", datatype=URIRef("http://example.com/"))),
-            uformat(
-                "rdflib.term.Literal(u'foo', datatype=rdflib.term.URIRef(u'http://example.com/'))"
-            ),
+            "rdflib.term.Literal('foo', datatype=rdflib.term.URIRef('http://example.com/'))",
         )
 
     def testSubclassNameAppearsInRepr(self):
@@ -96,7 +90,7 @@ class TestRepr(unittest.TestCase):
             pass
 
         x = MyLiteral("foo")
-        self.assertEqual(repr(x), uformat("MyLiteral('foo')"))
+        self.assertEqual(repr(x), "MyLiteral('foo')")
 
 
 class TestDoubleOutput(unittest.TestCase):
@@ -124,10 +118,10 @@ class TestParseBoolean(unittest.TestCase):
 
     def testNonFalseBoolean(self):
         test_value = Literal("abcd", datatype=_XSD_BOOLEAN)
-        self.assertRaises(DeprecationWarning)
+        self.assertRaises(UserWarning)
         self.assertFalse(test_value.value)
         test_value = Literal("10", datatype=_XSD_BOOLEAN)
-        self.assertRaises(DeprecationWarning)
+        self.assertRaises(UserWarning)
         self.assertFalse(test_value.value)
 
 
@@ -197,7 +191,7 @@ class TestXsdLiterals(unittest.TestCase):
         Tests literal construction.
         """
         inputs = [
-            # these literals do not get conerted to python types
+            # these literals do not get converted to Python types
             ("ABCD", XSD.integer, None),
             ("ABCD", XSD.gYear, None),
             ("-10000", XSD.gYear, None),
@@ -260,7 +254,7 @@ class TestXsdLiterals(unittest.TestCase):
     def check_make_literals(self, inputs):
         for literal_pair in inputs:
             (lexical, type, value_cls) = literal_pair
-            with self.subTest(f"tesing {literal_pair}"):
+            with self.subTest(f"testing {literal_pair}"):
                 literal = Literal(lexical, datatype=type)
                 if value_cls is not None:
                     self.assertIsInstance(literal.value, value_cls)

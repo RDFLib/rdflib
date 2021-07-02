@@ -1,5 +1,7 @@
 """
-A commandline tool for semi-automatically converting CSV to RDF
+A commandline tool for semi-automatically converting CSV to RDF.
+
+See also https://github.com/RDFLib/pyTARQL in the RDFlib family of tools
 
 try: ``csv2rdf --help``
 
