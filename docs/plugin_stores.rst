@@ -14,6 +14,6 @@ SimpleMemory      :class:`~rdflib.plugins.stores.memory.SimpleMemory`
 Memory            :class:`~rdflib.plugins.stores.memory.Memory`
 SPARQLStore       :class:`~rdflib.plugins.stores.sparqlstore.SPARQLStore`
 SPARQLUpdateStore :class:`~rdflib.plugins.stores.sparqlstore.SPARQLUpdateStore`
-Sleepycat         :class:`~rdflib.plugins.stores.sleepycat.Sleepycat`
+BerkeleyDB        :class:`~rdflib.plugins.stores.berkeleydb.BerkeleyDB`
 default           :class:`~rdflib.plugins.stores.memory.Memory`
 ================= ============================================================
