@@ -58,10 +58,10 @@ These examples all live in ``./examples`` in the source-distribution of RDFLib.
     :undoc-members:
     :show-inheritance:
 
-:mod:`sleepycat_example` Module
+:mod:`berkeleydb_example` Module
 --------------------------------
 
-.. automodule:: examples.sleepycat_example
+.. automodule:: examples.berkeleydb_example
     :members:
     :undoc-members:
     :show-inheritance:

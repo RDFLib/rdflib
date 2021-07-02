@@ -138,7 +138,7 @@ register("Memory", Store, "rdflib.plugins.stores.memory", "Memory")
 register("SimpleMemory", Store, "rdflib.plugins.stores.memory", "SimpleMemory")
 register("Auditable", Store, "rdflib.plugins.stores.auditable", "AuditableStore")
 register("Concurrent", Store, "rdflib.plugins.stores.concurrent", "ConcurrentStore")
-register("Sleepycat", Store, "rdflib.plugins.stores.sleepycat", "Sleepycat")
+register("BerkeleyDB", Store, "rdflib.plugins.stores.berkeleydb", "BerkeleyDB")
 register("SPARQLStore", Store, "rdflib.plugins.stores.sparqlstore", "SPARQLStore")
 register(
     "SPARQLUpdateStore", Store, "rdflib.plugins.stores.sparqlstore", "SPARQLUpdateStore"

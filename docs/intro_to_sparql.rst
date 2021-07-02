@@ -16,8 +16,8 @@ Queries can be evaluated against a graph with the
 :meth:`rdflib.graph.Graph.query` method, and updates with
 :meth:`rdflib.graph.Graph.update`.
 
-A query method returns a :class:`rdflib.query.Result` instance. For
-``SELECT`` queries, iterating over this returns
+The query method returns a :class:`rdflib.query.Result` instance. For
+SELECT queries, iterating over this returns
 :class:`rdflib.query.ResultRow` instances, each containing a set of
 variable bindings. For ``CONSTRUCT``/``DESCRIBE`` queries, iterating over the
 result object gives the triples. For ``ASK`` queries, iterating will yield
@@ -42,6 +42,8 @@ For example...
 
     for row in qres:
         print(f"{row.aname} knows {row.bname}")
+
+
 
 The results are tuples of values in the same order as your ``SELECT``
 arguments. Alternatively, the values can be accessed by variable
@@ -122,6 +124,7 @@ example:
     # y: a d:
 
 
+
 Querying a Remote Service
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -146,6 +149,8 @@ The ``SERVICE`` keyword of SPARQL 1.1 can send a query to a remote SPARQL endpoi
 
     for row in qres:
         print(row.s)
+
+
 
 This example sends a query to `DBPedia <https://dbpedia.org/>`_'s SPARQL endpoint service so that it can run the query
 and then send back the result:
