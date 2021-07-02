@@ -32,7 +32,7 @@ from rdflib.namespace import FOAF
 if __name__ == "__main__":
 
     g = Graph()
-    g.load("foaf.n3", format="n3")
+    g.parse("foaf.n3")
 
     tim = URIRef("http://www.w3.org/People/Berners-Lee/card#i")
 

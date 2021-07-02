@@ -37,15 +37,15 @@ if __name__ == "__main__":
     print()
     print("RDF Serializations:")
 
+    # Serialize as Turtle (default)
+    print("--- start: turtle ---")
+    print(store.serialize())
+    print("--- end: turtle ---\n")
+
     # Serialize as XML
     print("--- start: rdf-xml ---")
     print(store.serialize(format="pretty-xml"))
     print("--- end: rdf-xml ---\n")
-
-    # Serialize as Turtle
-    print("--- start: turtle ---")
-    print(store.serialize(format="turtle"))
-    print("--- end: turtle ---\n")
 
     # Serialize as NTriples
     print("--- start: ntriples ---")

@@ -19,36 +19,43 @@ this API for a different store.
 Stores currently shipped with core RDFLib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* :class:`Memory <rdflib.plugins.stores.memory.Memory>` (not persistent!)
-* :class:`~rdflib.plugins.stores.sleepycat.Sleepycat` (on disk persistence via Python's :ref:`bsddb` or :ref:`bsddb3` packages)
-* :class:`~rdflib.plugins.stores.sparqlstore.SPARQLStore` - a read-only wrapper around a remote SPARQL Query endpoint. 
-* :class:`~rdflib.plugins.stores.sparqlstore.SPARQLUpdateStore` - a read-write wrapper around a remote SPARQL query/update endpoint pair. 
+* :class:`Memory <rdflib.plugins.stores.memory.Memory>` - not persistent!
+* :class:`~rdflib.plugins.stores.berkeleydb.BerkeleyDB` - on disk persistence via Python's `berkeleydb package <https://pypi.org/project/berkeleydb/>`_
+* :class:`~rdflib.plugins.stores.sparqlstore.SPARQLStore` - a read-only wrapper around a remote SPARQL Query endpoint
+* :class:`~rdflib.plugins.stores.sparqlstore.SPARQLUpdateStore` - a read-write wrapper around a remote SPARQL query/update endpoint pair
 
 Usage
 ^^^^^
 
-Most cases passing the name of the store to the Graph constructor is enough: 
+In most cases, passing the name of the store to the Graph constructor is enough:
 
 .. code-block:: python
 
     from rdflib import Graph
 
-    graph = Graph(store='Sleepycat')
+    graph = Graph(store='BerkeleyDB')
 
 
 Most store offering on-disk persistence will need to be opened before reading or writing.
-When peristing a triplestore (instead of a ConjuntiveGraph quadstore), you need to specify
+When persisting a triplestore (instead of a ConjuntiveGraph quadstore), you need to specify
 an identifier with which you can open the graph:
 
 .. code-block:: python
 
-   graph = Graph('Sleepycat', identifier='mygraph')
+   graph = Graph('BerkeleyDB', identifier='mygraph')
 
    # first time create the store:
-   graph.open('/home/user/data/myRDFLibStore', create = True) 
+   graph.open('/home/user/data/myRDFLibStore', create=True)
    
    # work with the graph: 
-   graph.add( mytriples ) 
+   data = """
+          PREFIX : <https://example.org/>
+
+          :a :b :c .
+          :d :e :f .
+          :d :g :h .
+          """
+   graph.parse(data=data, format="ttl")
 
    # when done!
    graph.close()
@@ -70,5 +77,5 @@ More store implementations are available in RDFLib extension projects:
 Example
 ^^^^^^^
 
-* :mod:`examples.sleepycat_example` contains an example for using a Sleepycat store. 
+* :mod:`examples.berkeleydb_example` contains an example for using a BerkeleyDB store.
 * :mod:`examples.sparqlstore_example` contains an example for using a SPARQLStore. 

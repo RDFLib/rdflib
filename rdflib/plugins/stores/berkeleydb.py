@@ -12,7 +12,7 @@ def bb(u):
 
 
 try:
-    from bsddb3 import db
+    from berkeleydb import db
 
     has_bsddb = True
 except ImportError:
@@ -33,10 +33,30 @@ if has_bsddb:
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["Sleepycat"]
+__all__ = ["BerkeleyDB"]
 
 
-class Sleepycat(Store):
+class BerkeleyDB(Store):
+    """\
+    A store that allows for on-disk persistent using BerkeleyDB, a fast
+    key/value DB.
+
+    This store implementation used to be known, previous to rdflib 6.0.0
+    as 'Sleepycat' due to that being the then name of the Python wrapper
+    for BerkeleyDB.
+
+    This store allows for quads as well as triples. See examples of use
+    in both the `examples.berkeleydb_example` and `test.test_store_berkeleydb`
+    files.
+
+    **NOTE on installation**:
+
+    To use this store, you must have BerkeleyDB installed on your system
+    separately to Python (`brew install berkeley-db` on a Mac) and also have
+    the BerkeleyDB Python wrapper installed (`pip install berkeleydb`).
+    You may need to install BerkeleyDB Python wrapper like this:
+    `YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION=1 pip install berkeleydb`
+    """
     context_aware = True
     formula_aware = True
     transaction_aware = False
@@ -45,10 +65,10 @@ class Sleepycat(Store):
 
     def __init__(self, configuration=None, identifier=None):
         if not has_bsddb:
-            raise ImportError("Unable to import bsddb/bsddb3, store is unusable.")
+            raise ImportError("Unable to import berkeleydb, store is unusable.")
         self.__open = False
         self.__identifier = identifier
-        super(Sleepycat, self).__init__(configuration)
+        super(BerkeleyDB, self).__init__(configuration)
         self._loads = self.node_pickler.loads
         self._dumps = self.node_pickler.dumps
 
@@ -252,7 +272,7 @@ class Sleepycat(Store):
 
         value = cspo.get(bb("%s^%s^%s^%s^" % (c, s, p, o)), txn=txn)
         if value is None:
-            self.__contexts.put(bb(c), "", txn=txn)
+            self.__contexts.put(bb(c), b"", txn=txn)
 
             contexts_value = cspo.get(
                 bb("%s^%s^%s^%s^" % ("", s, p, o)), txn=txn
@@ -262,9 +282,9 @@ class Sleepycat(Store):
             contexts_value = "^".encode("latin-1").join(contexts)
             assert contexts_value is not None
 
-            cspo.put(bb("%s^%s^%s^%s^" % (c, s, p, o)), "", txn=txn)
-            cpos.put(bb("%s^%s^%s^%s^" % (c, p, o, s)), "", txn=txn)
-            cosp.put(bb("%s^%s^%s^%s^" % (c, o, s, p)), "", txn=txn)
+            cspo.put(bb("%s^%s^%s^%s^" % (c, s, p, o)), b"", txn=txn)
+            cpos.put(bb("%s^%s^%s^%s^" % (c, p, o, s)), b"", txn=txn)
+            cosp.put(bb("%s^%s^%s^%s^" % (c, o, s, p)), b"", txn=txn)
             if not quoted:
                 cspo.put(bb("%s^%s^%s^%s^" % ("", s, p, o)), contexts_value, txn=txn)
                 cpos.put(bb("%s^%s^%s^%s^" % ("", p, o, s)), contexts_value, txn=txn)
@@ -510,7 +530,7 @@ class Sleepycat(Store):
                 cursor.close()
 
     def add_graph(self, graph):
-        self.__contexts.put(bb(self._to_string(graph)), "")
+        self.__contexts.put(bb(self._to_string(graph)), b"")
 
     def remove_graph(self, graph):
         self.remove((None, None, None), graph)
@@ -523,14 +543,14 @@ class Sleepycat(Store):
         k = self._dumps(term)
         i = self.__k2i.get(k, txn=txn)
         if i is None:
-            # weird behavoir from bsddb not taking a txn as a keyword argument
+            # weird behaviour from bsddb not taking a txn as a keyword argument
             # for append
             if self.transaction_aware:
                 i = "%s" % self.__i2k.append(k, txn)
             else:
                 i = "%s" % self.__i2k.append(k)
 
-            self.__k2i.put(k, i, txn=txn)
+            self.__k2i.put(k, i.encode(), txn=txn)
         else:
             i = i.decode()
         return i
