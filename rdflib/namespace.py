@@ -1,10 +1,8 @@
 import logging
 
-import os
 from unicodedata import category
 
-
-from urllib.request import pathname2url
+from pathlib import Path
 from urllib.parse import urldefrag
 from urllib.parse import urljoin
 
@@ -864,7 +862,7 @@ class NamespaceManager(object):
             yield prefix, namespace
 
     def absolutize(self, uri, defrag=1):
-        base = urljoin("file:", pathname2url(os.getcwd()))
+        base = Path.cwd().as_uri()
         result = urljoin("%s/" % base, uri, allow_fragments=not defrag)
         if defrag:
             result = urldefrag(result)[0]

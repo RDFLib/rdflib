@@ -1,6 +1,5 @@
 from rdflib.namespace import RDF
-from rdflib.term import BNode
-from rdflib import URIRef
+from rdflib.term import BNode, URIRef
 from random import randint
 
 __all__ = ["Container", "Bag", "Seq", "Alt", "NoElementException"]
