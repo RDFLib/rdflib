@@ -174,10 +174,7 @@ class ClosedNamespace(Namespace):
     """
 
     def __new__(cls, uri, terms):
-        try:
-            rt = super().__new__(cls, uri)
-        except UnicodeDecodeError:
-            rt = super().__new__(cls, uri, "utf-8")
+        rt = super().__new__(cls, uri)
         rt.__uris = {t: URIRef(rt + t) for t in terms}
         return rt
 
