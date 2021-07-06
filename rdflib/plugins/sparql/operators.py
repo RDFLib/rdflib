@@ -35,7 +35,7 @@ from rdflib.plugins.sparql.sparql import SPARQLError, SPARQLTypeError
 
 
 # closed namespace, langString isn't in it
-RDF_langString = URIRef(RDF + "langString")
+RDF_langString = RDF.langString
 
 
 def Builtin_IRI(expr, ctx):
