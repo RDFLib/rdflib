@@ -1,9 +1,6 @@
 import logging
-import os
 
 from unicodedata import category
-from urllib.parse import urldefrag, urljoin
-from urllib.request import pathname2url
 
 from pathlib import Path
 from urllib.parse import urldefrag
