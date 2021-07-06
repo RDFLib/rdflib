@@ -12,6 +12,7 @@ import math
 import random
 import uuid
 import hashlib
+import datetime as py_datetime  # naming conflict with function within this module
 
 from functools import reduce
 
@@ -449,17 +450,17 @@ def Builtin_NOW(e, ctx):
 
 
 def Builtin_YEAR(e, ctx):
-    d = datetime(e.arg)
+    d = date(e.arg)
     return Literal(d.year)
 
 
 def Builtin_MONTH(e, ctx):
-    d = datetime(e.arg)
+    d = date(e.arg)
     return Literal(d.month)
 
 
 def Builtin_DAY(e, ctx):
-    d = datetime(e.arg)
+    d = date(e.arg)
     return Literal(d.day)
 
 
@@ -492,7 +493,7 @@ def Builtin_TIMEZONE(e, ctx):
     if not dt.tzinfo:
         raise SPARQLError("datatime has no timezone: %r" % dt)
 
-    delta = dt.tzinfo.utcoffset(ctx.now)
+    delta = dt.utcoffset()
 
     d = delta.days
     s = delta.seconds
@@ -996,6 +997,17 @@ def datetime(e):
     if not e.datatype == XSD.dateTime:
         raise SPARQLError("Literal with wrong datatype passed as datetime: %r" % e)
     return e.toPython()
+
+
+def date(e) -> py_datetime.date:
+    if not isinstance(e, Literal):
+        raise SPARQLError("Non-literal passed as date: %r" % e)
+    if e.datatype not in (XSD.date, XSD.dateTime):
+        raise SPARQLError("Literal with wrong datatype passed as date: %r" % e)
+    result = e.toPython()
+    if isinstance(result, py_datetime.datetime):
+        return result.date()
+    return result
 
 
 def string(s):

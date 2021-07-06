@@ -23,7 +23,7 @@ for any graph method.
 
 See the docs for :mod:`rdflib.paths` for the details.
 
-This example shows how to get the name of friends with a single query.
+This example shows how to get the name of friends (i.e values two steps away x knows y, y name z) with a single query.
 """
 
 from rdflib import URIRef, Graph
@@ -32,7 +32,7 @@ from rdflib.namespace import FOAF
 if __name__ == "__main__":
 
     g = Graph()
-    g.load("foaf.n3", format="n3")
+    g.parse("foaf.n3")
 
     tim = URIRef("http://www.w3.org/People/Berners-Lee/card#i")
 

@@ -17,11 +17,11 @@ import sys
 
 from io import BytesIO, TextIOBase, TextIOWrapper, StringIO, BufferedIOBase
 
-from urllib.request import pathname2url
 from urllib.request import Request
 from urllib.request import url2pathname
 from urllib.parse import urljoin
 from urllib.request import urlopen
+from urllib.error import HTTPError
 
 from xml.sax import xmlreader
 
@@ -39,7 +39,7 @@ __all__ = [
 
 
 class Parser(object):
-    __slots__ = set()
+    __slots__ = ()
 
     def __init__(self):
         pass
@@ -160,7 +160,22 @@ class URLInputSource(InputSource):
             )
 
         req = Request(system_id, None, myheaders)
-        file = urlopen(req)
+
+        def _urlopen(req: Request):
+            try:
+                return urlopen(req)
+            except HTTPError as ex:
+                # 308 (Permanent Redirect) is not supported by current python version(s)
+                # See https://bugs.python.org/issue40321
+                # This custom error handling should be removed once all
+                # supported versions of python support 308.
+                if ex.code == 308:
+                    req.full_url = ex.headers.get("Location")
+                    return _urlopen(req)
+                else:
+                    raise
+
+        file = _urlopen(req)
         # Fix for issue 130 https://github.com/RDFLib/rdflib/issues/130
         self.url = file.geturl()  # in case redirections took place
         self.setPublicId(self.url)
@@ -177,8 +192,9 @@ class URLInputSource(InputSource):
 
 class FileInputSource(InputSource):
     def __init__(self, file):
-        base = urljoin("file:", pathname2url(os.getcwd()))
-        system_id = URIRef(urljoin("file:", pathname2url(file.name)), base=base)
+        base = pathlib.Path.cwd().as_uri()
+        system_id = URIRef(pathlib.Path(file.name).absolute().as_uri(),
+                           base=base)
         super(FileInputSource, self).__init__(system_id)
         self.file = file
         if isinstance(file, TextIOBase):  # Python3 unicode fp
@@ -222,7 +238,7 @@ def create_input_source(
         else:
             if isinstance(source, str):
                 location = source
-            elif isinstance(source, pathlib.Path):
+            elif isinstance(source, pathlib.PurePath):
                 location = str(source)
             elif isinstance(source, bytes):
                 data = source
@@ -285,10 +301,11 @@ def create_input_source(
 
 def _create_input_source_from_location(file, format, input_source, location):
     # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145
-    if os.path.exists(location):
-        location = pathname2url(location)
+    path = pathlib.Path(location)
+    if path.exists():
+        location = path.absolute().as_uri()
 
-    base = urljoin("file:", "%s/" % pathname2url(os.getcwd()))
+    base = pathlib.Path.cwd().as_uri()
 
     absolute_location = URIRef(location, base=base)
 

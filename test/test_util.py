@@ -2,6 +2,7 @@
 
 import unittest
 import time
+from unittest.case import expectedFailure
 from rdflib.graph import Graph
 from rdflib.graph import QuotedGraph
 from rdflib.graph import ConjunctiveGraph
@@ -300,6 +301,47 @@ class TestUtilTermConvert(unittest.TestCase):
         s = "[<http://example.com/schema>]"
         res = util.from_n3(s, default=None, backend="Memory")
         self.assertTrue(isinstance(res, Graph))
+
+    def test_util_from_n3_escapes(self) -> None:
+        pairs = [
+            ("\\t", "\t"),
+            ("\\b", "\b"),
+            ("\\n", "\n"),
+            ("\\r", "\r"),
+            ("\\f", "\f"),
+            ('\\"', '"'),
+            ("\\'", "'"),
+            ("\\\\", "\\"),
+            ("\\u00F6", "ö"),
+            ("\\U000000F6", "ö"),
+        ]
+        for escaped, raw in pairs:
+            with self.subTest(f"{escaped} => {raw}"):
+                literal_str = str(util.from_n3(f'"{escaped}"'))
+                self.assertEqual(literal_str, f"{raw}")
+
+    def test_util_from_n3_not_escapes(self) -> None:
+        strings = [
+            "jörn",
+            "j\\xf6rn",
+        ]
+        for string in strings:
+            with self.subTest(f"{string}"):
+                literal_str = str(util.from_n3(f'"{string}"'))
+                self.assertEqual(literal_str, f"{string}")
+
+    @expectedFailure
+    def test_util_from_n3_not_escapes_xf(self) -> None:
+        strings = [
+            f"j\\366rn",
+            f"\\",
+            f"\\0",
+            f"\\I",
+        ]
+        for string in strings:
+            with self.subTest(f"{string}"):
+                literal_str = str(util.from_n3(f'"{string}"'))
+                self.assertEqual(literal_str, f"{string}")
 
 
 class TestUtilCheckers(unittest.TestCase):

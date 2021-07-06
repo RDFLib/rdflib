@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union, Type, cast, overload
 import logging
 from warnings import warn
 import random
@@ -19,8 +19,9 @@ from rdflib.exceptions import ParserError
 import os
 import shutil
 import tempfile
+import pathlib
 
-from io import BytesIO
+from io import BytesIO, BufferedIOBase
 from urllib.parse import urlparse
 
 assert Literal  # avoid warning
@@ -557,7 +558,10 @@ class Graph(Node):
     def __add__(self, other):
         """Set-theoretic union
            BNode IDs are not changed."""
-        retval = Graph()
+        try:
+            retval = type(self)()
+        except TypeError:
+            retval = Graph()
         for (prefix, uri) in set(list(self.namespaces()) + list(other.namespaces())):
             retval.bind(prefix, uri)
         for x in self:
@@ -569,7 +573,10 @@ class Graph(Node):
     def __mul__(self, other):
         """Set-theoretic intersection.
            BNode IDs are not changed."""
-        retval = Graph()
+        try:
+            retval = type(self)()
+        except TypeError:
+            retval = Graph()
         for x in other:
             if x in self:
                 retval.add(x)
@@ -578,7 +585,10 @@ class Graph(Node):
     def __sub__(self, other):
         """Set-theoretic difference.
            BNode IDs are not changed."""
-        retval = Graph()
+        try:
+            retval = type(self)()
+        except TypeError:
+            retval = Graph()
         for x in self:
             if x not in other:
                 retval.add(x)
@@ -879,11 +889,11 @@ class Graph(Node):
             for rt_2 in self.transitiveClosure(func, rt, seen):
                 yield rt_2
 
-    def transitive_objects(self, subject, property, remember=None):
-        """Transitively generate objects for the ``property`` relationship
+    def transitive_objects(self, subject, predicate, remember=None):
+        """Transitively generate objects for the ``predicate`` relationship
 
         Generated objects belong to the depth first transitive closure of the
-        ``property`` relationship starting at ``subject``.
+        ``predicate`` relationship starting at ``subject``.
         """
         if remember is None:
             remember = {}
@@ -891,15 +901,15 @@ class Graph(Node):
             return
         remember[subject] = 1
         yield subject
-        for object in self.objects(subject, property):
-            for o in self.transitive_objects(object, property, remember):
+        for object in self.objects(subject, predicate):
+            for o in self.transitive_objects(object, predicate, remember):
                 yield o
 
     def transitive_subjects(self, predicate, object, remember=None):
-        """Transitively generate objects for the ``property`` relationship
+        """Transitively generate subjects for the ``predicate`` relationship
 
-        Generated objects belong to the depth first transitive closure of the
-        ``property`` relationship starting at ``subject``.
+        Generated subjects belong to the depth first transitive closure of the
+        ``predicate`` relationship starting at ``object``.
         """
         if remember is None:
             remember = {}
@@ -956,13 +966,92 @@ class Graph(Node):
         """Turn uri into an absolute URI if it's not one already"""
         return self.namespace_manager.absolutize(uri, defrag)
 
+    # no destination and non-None positional encoding
+    @overload
     def serialize(
-        self, destination=None, format="xml", base=None, encoding=None, **args
-    ) -> Optional[bytes]:
+        self, destination: None, format: str, base: Optional[str], encoding: str, **args
+    ) -> bytes:
+        ...
+
+    # no destination and non-None keyword encoding
+    @overload
+    def serialize(
+        self,
+        *,
+        destination: None = ...,
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: str,
+        **args
+    ) -> bytes:
+        ...
+
+    # no destination and None positional encoding
+    @overload
+    def serialize(
+        self,
+        destination: None,
+        format: str,
+        base: Optional[str],
+        encoding: None,
+        **args
+    ) -> str:
+        ...
+
+    # no destination and None keyword encoding
+    @overload
+    def serialize(
+        self,
+        *,
+        destination: None = ...,
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: None = None,
+        **args
+    ) -> str:
+        ...
+
+    # non-none destination
+    @overload
+    def serialize(
+        self,
+        destination: Union[str, BufferedIOBase],
+        format: str = ...,
+        base: Optional[str] = ...,
+        encoding: Optional[str] = ...,
+        **args
+    ) -> None:
+        ...
+
+    # fallback
+    @overload
+    def serialize(
+        self,
+        destination: Union[str, BufferedIOBase, None] = None,
+        format: str = "turtle",
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        **args
+    ) -> Optional[Union[bytes, str]]:
+        ...
+
+    def serialize(
+        self,
+        destination: Union[str, BufferedIOBase, None] = None,
+        format: str = "turtle",
+        base: Optional[str] = None,
+        encoding: Optional[str] = None,
+        **args
+    ) -> Optional[Union[bytes, str]]:
         """Serialize the Graph to destination
 
         If destination is None serialize method returns the serialization as
-        bytes. Format defaults to xml (AKA rdf/xml).
+        bytes or string.
+
+        If encoding is None and destination is None, returns a string
+        If encoding is set, and Destination is None, returns bytes
+
+        Format defaults to turtle.
 
         Format support can be extended with plugins,
         but "xml", "n3", "turtle", "nt", "pretty-xml", "trix", "trig" and "nquads" are built in.
@@ -973,21 +1062,29 @@ class Graph(Node):
             base = self.base
 
         serializer = plugin.get(format, Serializer)(self)
+        stream: BufferedIOBase
         if destination is None:
             stream = BytesIO()
-            serializer.serialize(stream, base=base, encoding=encoding, **args)
-            return stream.getvalue()
+            if encoding is None:
+                serializer.serialize(stream, base=base, encoding="utf-8", **args)
+                return stream.getvalue().decode("utf-8")
+            else:
+                serializer.serialize(stream, base=base, encoding=encoding, **args)
+                return stream.getvalue()
         if hasattr(destination, "write"):
-            stream = destination
+            stream = cast(BufferedIOBase, destination)
             serializer.serialize(stream, base=base, encoding=encoding, **args)
         else:
-            location = destination
+            if isinstance(destination, pathlib.PurePath):
+                location = str(destination)
+            else:
+                location = cast(str, destination)
             scheme, netloc, path, params, _query, fragment = urlparse(location)
             if netloc != "":
                 print(
                     "WARNING: not saving as location" + "is not a local file reference"
                 )
-                return
+                return None
             fd, name = tempfile.mkstemp()
             stream = os.fdopen(fd, "wb")
             serializer.serialize(stream, base=base, encoding=encoding, **args)
@@ -998,6 +1095,14 @@ class Graph(Node):
             else:
                 shutil.copy(name, dest)
                 os.remove(name)
+        return None
+
+    def print(self, format="turtle", encoding="utf-8", out=None):
+        print(
+            self.serialize(None, format=format, encoding=encoding).decode(encoding),
+            file=out,
+            flush=True,
+        )
 
     def parse(
         self,
@@ -1130,13 +1235,13 @@ class Graph(Node):
     def query(
         self,
         query_object,
-        processor="sparql",
-        result="sparql",
+        processor: Union[str, query.Processor] = "sparql",
+        result: Union[str, Type[query.Result]] = "sparql",
         initNs=None,
         initBindings=None,
-        use_store_provided=True,
+        use_store_provided: bool = True,
         **kwargs
-    ):
+    ) -> query.Result:
         """
         Query this graph.
 
@@ -1147,7 +1252,7 @@ class Graph(Node):
         if none are given, the namespaces from the graph's namespace manager
         are used.
 
-        :returntype: rdflib.query.QueryResult
+        :returntype: rdflib.query.Result
 
         """
 
@@ -1167,7 +1272,7 @@ class Graph(Node):
                 pass  # store has no own implementation
 
         if not isinstance(result, query.Result):
-            result = plugin.get(result, query.Result)
+            result = plugin.get(cast(str, result), query.Result)
         if not isinstance(processor, query.Processor):
             processor = plugin.get(processor, query.Processor)(self)
 
@@ -1204,7 +1309,7 @@ class Graph(Node):
         return processor.update(update_object, initBindings, initNs, **kwargs)
 
     def n3(self):
-        """return an n3 identifier for the Graph"""
+        """Return an n3 identifier for the Graph"""
         return "[%s]" % self.identifier.n3()
 
     def __reduce__(self):
@@ -1558,7 +1663,7 @@ class ConjunctiveGraph(Graph):
         self,
         source=None,
         publicID=None,
-        format="xml",
+        format=None,
         location=None,
         file=None,
         data=None,
@@ -1742,7 +1847,7 @@ class Dataset(ConjunctiveGraph):
         self,
         source=None,
         publicID=None,
-        format="xml",
+        format=None,
         location=None,
         file=None,
         data=None,
@@ -2044,7 +2149,7 @@ class ReadOnlyGraphAggregate(ConjunctiveGraph):
     def absolutize(self, uri, defrag=1):
         raise UnSupportedAggregateOperation()
 
-    def parse(self, source, publicID=None, format="xml", **args):
+    def parse(self, source, publicID=None, format=None, **args):
         raise ModificationException()
 
     def n3(self):

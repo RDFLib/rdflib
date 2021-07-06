@@ -5,7 +5,7 @@ import re
 from setuptools import setup, find_packages
 
 kwargs = {}
-kwargs["install_requires"] = ["isodate", "pyparsing"]
+kwargs["install_requires"] = ["isodate", "pyparsing", "setuptools"]
 kwargs["tests_require"] = [
     "html5lib",
     "networkx",
@@ -16,7 +16,7 @@ kwargs["test_suite"] = "nose.collector"
 kwargs["extras_require"] = {
     "html": ["html5lib"],
     "tests": kwargs["tests_require"],
-    "docs": ["sphinx < 4", "sphinxcontrib-apidoc"],
+    "docs": ["sphinx < 5", "sphinxcontrib-apidoc"],
 }
 
 

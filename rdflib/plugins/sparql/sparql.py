@@ -52,12 +52,12 @@ class Bindings(MutableMapping):
         self.outer = outer
 
     def __getitem__(self, key):
-        try:
+        if key in self._d:
             return self._d[key]
-        except KeyError:
-            if not self.outer:
-                raise
-            return self.outer[key]
+        
+        if not self.outer:
+            raise KeyError()
+        return self.outer[key]
 
     def __contains__(self, key):
         try:
@@ -72,17 +72,18 @@ class Bindings(MutableMapping):
     def __delitem__(self, key):
         raise Exception("DelItem is not implemented!")
 
-    def __len__(self):
+    def __len__(self) -> int:
         i = 0
-        for x in self:
-            i += 1
+        d = self
+        while d is not None:
+            i += len(d._d)
+            d = d.outer
         return i
 
     def __iter__(self):
         d = self
         while d is not None:
-            for i in dict.__iter__(d._d):
-                yield i
+            yield from d._d
             d = d.outer
 
     def __str__(self):
@@ -220,7 +221,7 @@ class FrozenBindings(FrozenDict):
         return FrozenBindings(self.ctx, (x for x in self.items() if x[0] in these))
 
 
-class QueryContext:
+class QueryContext(object):
     """
     Query context - passed along when evaluating the query
     """
@@ -242,9 +243,15 @@ class QueryContext:
             self.graph = graph
 
         self.prologue = None
-        self.now = datetime.datetime.now(isodate.tzinfo.UTC)
+        self._now = None
 
         self.bnodes = collections.defaultdict(BNode)
+
+    @property
+    def now(self) -> datetime.datetime:
+        if self._now is None:
+            self._now = datetime.datetime.now(isodate.tzinfo.UTC)
+        return self._now
 
     def clone(self, bindings=None):
         r = QueryContext(

@@ -1,0 +1,12 @@
+PREFIX pub: <http://ontology.ontotext.com/taxonomy/>
+PREFIX publishing: <http://ontology.ontotext.com/publishing#>
+
+select ?personLabel ?party_name ?document (?mention as ?men) where {
+    ?mention publishing:hasInstance ?person .
+    ?document publishing:containsMention ?mention .
+    ?person pub:memberOfPoliticalParty ?party .
+    ?person pub:preferredLabel ?personLabel .
+    ?party pub:hasValue ?value .
+    ?value pub:preferredLabel ?party_label .
+    Bind(?party_label as ?party_name)
+} order by ?mention

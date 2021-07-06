@@ -12,7 +12,7 @@ developing RDFLib code.
 Please be as Pythonic as possible (:pep:`8`).
 
 Code should be formatted using `black <https://github.com/psf/black>`_.
-While not yet mandatory it will be required in the future.
+While not yet mandatory, it will be required in the future  (6.0.0+).
 
 Any new functionality being added to RDFLib should have doc tests and
 unit tests. Tests should be added for any functionality being changed
@@ -45,14 +45,18 @@ Writing documentation
 
 We use sphinx for generating HTML docs, see :ref:`docs`
 
-Continous Integration
+Continuous Integration
 ---------------------
 
-We used Travis for CI, see:
+We used Drone for CI, see:
 
-  https://travis-ci.org/RDFLib/rdflib
+  https://drone.rdflib.ashs.dev/RDFLib/rdflib
 
-If you make a pull-request to RDFLib on GitHub, travis will automatically test you code.
+If you make a pull-request to RDFLib on GitHub, Drone will automatically test your code and we will only merge code
+passing all tests.
+
+Please do *not* commit tests you know will fail, even if you're just pointing out a bug. If you commit such tests,
+flag them as expecting to fail.
 
 Compatibility
 -------------
@@ -82,7 +86,7 @@ If for whatever reason you don't want to take this approach, the old one is::
 
     Tagging the release commit with::
 
-      git tag -a -m 'tagged version' X.X.X
+      git tag -am 'tagged version' X.X.X
 
     When pushing, remember to do::
 
@@ -106,4 +110,4 @@ Set new dev version number in the above locations, i.e. next release `-dev`: ``5
 
 Tweet, email mailing list and update the topic of #rdflib on freenode irc::
 
-  /msg ChanServ topic #rdflib https://github.com/RDFLib/rdflib | latest stable version: 4.2.0 | docs: http://rdflib.readthedocs.org
+  /msg ChanServ topic #rdflib https://github.com/RDFLib/rdflib | latest stable version: 5.0.0 | docs: http://rdflib.readthedocs.org

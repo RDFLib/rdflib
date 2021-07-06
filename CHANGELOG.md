@@ -978,7 +978,7 @@ Fixed a range of minor issues:
 
 * http://code.google.com/p/rdflib/issues/detail?id=149
 
-  Sleepycat Store broken with create=False
+  BerkeleyDB Store broken with create=False
 
 * http://code.google.com/p/rdflib/issues/detail?id=134
 
@@ -1228,7 +1228,7 @@ Fixed conversion of (exiplicit) MySQL ports to integers.
 Fixed MySQL store so it properly calculates ```__len__``` of
 individual Graphs
 
-Aligned with how Sleepycat is generating events (remove events
+Aligned with how BerkeleyDB is generating events (remove events
 are expressed in terms of interned strings)
 
 Added code to catch unpickling related exceptions
@@ -1248,7 +1248,7 @@ TripleRemoved.
 
 Added Journal Reader and Writer.
 
-Removed Sleepycat level journaling.
+Removed BerkeleyDB level journaling.
 
 Added support for triple quoted Literal's.
 
@@ -1329,7 +1329,7 @@ argument to util's date_time method.
 Fixed a relativize bug in the rdf/xml serializer.
 
 Fixed NameError: global name 'URIRef' is not defined error in
-Sleepycat.py by adding missing import.
+BerkeleyDB.py by adding missing import.
 
 Applied patch for Seq to sort list by integer, added by Drew
 Hess.
@@ -1360,7 +1360,7 @@ Added N3 support to Graph and Store.
 
 Added Sean's n3p parser, and ntriples parser.
 
-Sleepycat implementation has been revamped in the process of
+BerkeleyDB implementation has been revamped in the process of
 expanding it to support the new requirements n3
 requirements. It also now persists a journal -- more to come.
 
@@ -1390,7 +1390,7 @@ it provides Atomicity in the best case scenario.
 2005/10/10 RELEASE 2.2.3
 ========================
 
-Fixed Sleepycat backend to commit after an add and
+Fixed BerkeleyDB backend to commit after an add and
 remove. This should help just a bit with those unclean
 shutdowns ;)
 

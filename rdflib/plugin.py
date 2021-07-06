@@ -36,6 +36,7 @@ from rdflib.query import (
     UpdateProcessor,
 )
 from rdflib.exceptions import Error
+from typing import Type, TypeVar
 
 __all__ = ["register", "get", "plugins", "PluginException", "Plugin", "PKGPlugin"]
 
@@ -85,7 +86,7 @@ class PKGPlugin(Plugin):
         return self._class
 
 
-def register(name, kind, module_path, class_name):
+def register(name: str, kind, module_path, class_name):
     """
     Register the plugin for (name, kind). The module_path and
     class_name should be the path to a plugin class.
@@ -94,7 +95,10 @@ def register(name, kind, module_path, class_name):
     _plugins[(name, kind)] = p
 
 
-def get(name, kind):
+PluginT = TypeVar("PluginT")
+
+
+def get(name: str, kind: Type[PluginT]) -> Type[PluginT]:
     """
     Return the class for the specified (name, kind). Raises a
     PluginException if unable to do so.
@@ -128,17 +132,19 @@ def plugins(name=None, kind=None):
             yield p
 
 
+# Register Store Plugins
 register("default", Store, "rdflib.plugins.stores.memory", "Memory")
 register("Memory", Store, "rdflib.plugins.stores.memory", "Memory")
 register("SimpleMemory", Store, "rdflib.plugins.stores.memory", "SimpleMemory")
 register("Auditable", Store, "rdflib.plugins.stores.auditable", "AuditableStore")
 register("Concurrent", Store, "rdflib.plugins.stores.concurrent", "ConcurrentStore")
-register("Sleepycat", Store, "rdflib.plugins.stores.sleepycat", "Sleepycat")
+register("BerkeleyDB", Store, "rdflib.plugins.stores.berkeleydb", "BerkeleyDB")
 register("SPARQLStore", Store, "rdflib.plugins.stores.sparqlstore", "SPARQLStore")
 register(
     "SPARQLUpdateStore", Store, "rdflib.plugins.stores.sparqlstore", "SPARQLUpdateStore"
 )
 
+# Register Triple Serializers
 register(
     "application/rdf+xml",
     Serializer,
@@ -146,6 +152,9 @@ register(
     "XMLSerializer",
 )
 register("xml", Serializer, "rdflib.plugins.serializers.rdfxml", "XMLSerializer")
+register(
+    "pretty-xml", Serializer, "rdflib.plugins.serializers.rdfxml", "PrettyXMLSerializer"
+)
 register("text/n3", Serializer, "rdflib.plugins.serializers.n3", "N3Serializer")
 register("n3", Serializer, "rdflib.plugins.serializers.n3", "N3Serializer")
 register(
@@ -153,7 +162,6 @@ register(
 )
 register("turtle", Serializer, "rdflib.plugins.serializers.turtle", "TurtleSerializer")
 register("ttl", Serializer, "rdflib.plugins.serializers.turtle", "TurtleSerializer")
-register("trig", Serializer, "rdflib.plugins.serializers.trig", "TrigSerializer")
 register(
     "application/n-triples", Serializer, "rdflib.plugins.serializers.nt", "NTSerializer"
 )
@@ -161,13 +169,7 @@ register("ntriples", Serializer, "rdflib.plugins.serializers.nt", "NTSerializer"
 register("nt", Serializer, "rdflib.plugins.serializers.nt", "NTSerializer")
 register("nt11", Serializer, "rdflib.plugins.serializers.nt", "NT11Serializer")
 
-register(
-    "pretty-xml", Serializer, "rdflib.plugins.serializers.rdfxml", "PrettyXMLSerializer"
-)
-register("trix", Serializer, "rdflib.plugins.serializers.trix", "TriXSerializer")
-register(
-    "application/trix", Serializer, "rdflib.plugins.serializers.trix", "TriXSerializer"
-)
+# Register Quad Serializers
 register(
     "application/n-quads",
     Serializer,
@@ -175,7 +177,16 @@ register(
     "NQuadsSerializer",
 )
 register("nquads", Serializer, "rdflib.plugins.serializers.nquads", "NQuadsSerializer")
+register(
+    "application/trix", Serializer, "rdflib.plugins.serializers.trix", "TriXSerializer"
+)
+register("trix", Serializer, "rdflib.plugins.serializers.trix", "TriXSerializer")
+register(
+    "application/trig", Serializer, "rdflib.plugins.serializers.trig", "TrigSerializer"
+)
+register("trig", Serializer, "rdflib.plugins.serializers.trig", "TrigSerializer")
 
+# Register Triple Parsers
 register("application/rdf+xml", Parser, "rdflib.plugins.parsers.rdfxml", "RDFXMLParser")
 register("xml", Parser, "rdflib.plugins.parsers.rdfxml", "RDFXMLParser")
 register("text/n3", Parser, "rdflib.plugins.parsers.notation3", "N3Parser")
@@ -187,16 +198,18 @@ register("application/n-triples", Parser, "rdflib.plugins.parsers.ntriples", "NT
 register("ntriples", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
 register("nt", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
 register("nt11", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
+
+# Register Quad Parsers
 register("application/n-quads", Parser, "rdflib.plugins.parsers.nquads", "NQuadsParser")
 register("nquads", Parser, "rdflib.plugins.parsers.nquads", "NQuadsParser")
 register("application/trix", Parser, "rdflib.plugins.parsers.trix", "TriXParser")
 register("trix", Parser, "rdflib.plugins.parsers.trix", "TriXParser")
+register("application/trig", Parser, "rdflib.plugins.parsers.trig", "TrigParser")
 register("trig", Parser, "rdflib.plugins.parsers.trig", "TrigParser")
 
-
+# Register SPARQL Processors
 register("sparql", Result, "rdflib.plugins.sparql.processor", "SPARQLResult")
 register("sparql", Processor, "rdflib.plugins.sparql.processor", "SPARQLProcessor")
-
 register(
     "sparql",
     UpdateProcessor,
@@ -204,7 +217,7 @@ register(
     "SPARQLUpdateProcessor",
 )
 
-
+# Register SPARQL Result Serializers
 register(
     "xml",
     ResultSerializer,
@@ -248,6 +261,7 @@ register(
     "CSVResultSerializer",
 )
 
+# Register SPARQL Result Parsers
 register(
     "xml", ResultParser, "rdflib.plugins.sparql.results.xmlresults", "XMLResultParser"
 )
@@ -263,15 +277,12 @@ register(
     "rdflib.plugins.sparql.results.xmlresults",
     "XMLResultParser",
 )
-
 register(
     "application/rdf+xml",
     ResultParser,
     "rdflib.plugins.sparql.results.graph",
     "GraphResultParser",
 )
-
-
 register(
     "json",
     ResultParser,
@@ -284,7 +295,6 @@ register(
     "rdflib.plugins.sparql.results.jsonresults",
     "JSONResultParser",
 )
-
 register(
     "csv", ResultParser, "rdflib.plugins.sparql.results.csvresults", "CSVResultParser"
 )
@@ -294,7 +304,6 @@ register(
     "rdflib.plugins.sparql.results.csvresults",
     "CSVResultParser",
 )
-
 register(
     "tsv", ResultParser, "rdflib.plugins.sparql.results.tsvresults", "TSVResultParser"
 )

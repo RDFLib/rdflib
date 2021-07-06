@@ -307,7 +307,7 @@ class NTParser(Parser):
 
     See http://www.w3.org/TR/rdf-testcases/#ntriples"""
 
-    __slots__ = set()
+    __slots__ = ()
 
     @classmethod
     def parse(cls, source, sink, **kwargs):

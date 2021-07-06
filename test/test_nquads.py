@@ -52,9 +52,9 @@ class NQuadsParserTest(unittest.TestCase):
         g.get_context(uri1).add((bob, likes, pizza))
         g.get_context(uri2).add((bob, likes, pizza))
 
-        s = g.serialize(format="nquads")
+        s = g.serialize(format="nquads", encoding="latin-1")
         self.assertEqual(
-            len([x for x in s.split("\n".encode("latin-1")) if x.strip()]), 2
+            len([x for x in s.split(b"\n") if x.strip()]), 2
         )
 
         g2 = ConjunctiveGraph()

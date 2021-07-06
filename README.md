@@ -45,6 +45,19 @@ Index (PyPI) at https://pypi.python.org/pypi/rdflib
 The current version of RDFLib is 5.0.0, see the ``CHANGELOG.md``
 file for what's new in this release.
 
+### Installation of the current master branch (for developers)
+
+With *pip* you can also install rdflib from the git repository with one of the following options:
+
+    $ pip install git+https://github.com/rdflib/rdflib@master
+    # or
+    $ pip install -e git+https://github.com/rdflib/rdflib@master#egg=rdflib
+
+or from your locally cloned repository you can install it with one of the following options:
+
+    $ python setup.py install
+    # or
+    $ pip install -e .
 
 ## Getting Started
 RDFLib aims to be a pythonic RDF API. RDFLib's main data object is a `Graph` which is a Python collection
@@ -101,7 +114,7 @@ g.bind("xsd", XSD)
 ```
 This will allow the n-triples triple above to be serialised like this:
  ```python
-print(g.serialize(format="turtle").decode("utf-8"))
+print(g.serialize(format="turtle"))
 ```
 
 With these results:
