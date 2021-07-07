@@ -2,7 +2,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from rdflib.namespace import RDF, RDFS
+from rdflib.namespace import RDF
 from rdflib.term import BNode
 from rdflib.term import Literal
 
