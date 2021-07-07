@@ -97,10 +97,6 @@ __all__ = [
 ]
 
 import sys
-from rdflib.namespace import XMLNS, SOSA
-
-assert sys.version_info >= (2, 7, 0), "rdflib requires Python 2.7 or higher"
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -201,6 +197,7 @@ from rdflib.namespace import (
     SSN,
     TIME,
     VOID,
+    XMLNS,
     XSD,
     Namespace
 )
