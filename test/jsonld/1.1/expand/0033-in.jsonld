@@ -1,0 +1,14 @@
+{
+  "@context": {
+    "@vocab": "http://example.com/vocab#",
+    "homepage": {
+      "@type": "@id"
+    },
+    "created_at": {
+      "@type": "http://www.w3.org/2001/XMLSchema#date"
+    }
+  },
+  "name": "Markus Lanthaler",
+  "homepage": "http://www.markus-lanthaler.com/",
+  "created_at": "2012-10-28"
+}

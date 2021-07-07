@@ -1,0 +1,13 @@
+[
+  {
+    "@id": "https://w3c.github.io/json-ld-api/tests/flatten/list-equivalence-test",
+    "http://example.com/list": [
+      {
+        "@list": [ { "@value": "1" }, { "@value": "2" } ]
+      },
+      {
+        "@list": [ { "@value": "1" }, { "@value": "2" } ]
+      }
+    ]
+  }
+]

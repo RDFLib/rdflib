@@ -1,0 +1,9 @@
+{
+  "@context": {
+    "foaf": "http://xmlns.com/foaf/0.1/"
+  },
+  "@id": "http://greggkellogg.net/foaf#me",
+  "foaf:knows": {
+    "foaf:name": "Dave Longley"
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "@context": {"@vocab": "http://example.org/"},
+  "@nest": "This should generate an error"
+}

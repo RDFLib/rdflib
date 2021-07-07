@@ -1,0 +1,6 @@
+<http://example.com/Subj1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/Type> .
+_:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/SubType> .
+<http://example.com/Subj1> <http://example.com/ref> _:a .
+<http://example.com/Subj1> <http://example.com/ref> <http://example.com/Subj2> .
+<http://example.com/Subj2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/Type> .
+<http://example.com/Subj2> <http://example.com/ref> <http://example.com/Subj1> .

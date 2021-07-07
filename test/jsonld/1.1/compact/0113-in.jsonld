@@ -1,0 +1,9 @@
+{
+  "http://example.org/ns/prop": [{
+    "@id": "http://example.org/ns/bar",
+    "http://example.org/ns/name": "bar"
+  }, {
+      "@id": "http://example.org/ns/foo",
+    "http://example.org/ns/name": "foo"
+  }]
+}

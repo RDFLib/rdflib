@@ -1,0 +1,7 @@
+{
+  "@context": {
+    "term": {"@reverse": "http://example/reverse"}
+  },
+  "@id": "http://example/foo",
+  "term": {"@list": ["http://example/bar"]}
+}

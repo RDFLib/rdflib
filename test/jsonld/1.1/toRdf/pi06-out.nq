@@ -1,0 +1,6 @@
+<http://example.com/person/1> <http://example.com/prop> "regular" .
+<http://example.com/person/3> <http://example.com/prop> "guest" .
+<http://example.com/article> <http://example.com/author> <http://example.com/person/1> .
+<http://example.com/article> <http://example.com/author> <http://example.com/person/3> .
+<http://example.com/article> <http://example.com/author> <http://example.com/person/2> .
+<http://example.com/person/2> <http://example.com/prop> "guest" .

@@ -1,0 +1,8 @@
+<http://example.org/ParisFact1> <http://example.org/hasReference> <http://www.britannica.com/> .
+<http://example.org/ParisFact1> <http://example.org/hasReference> <http://www.brockhaus.de/> .
+<http://example.org/ParisFact1> <http://example.org/hasReference> <http://www.wikipedia.org/> .
+<http://example.org/ParisFact1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Graph> .
+<http://example.org/ParisFact2> <http://example.org/hasReference> <http://www.wikipedia.org/> .
+<http://example.org/ParisFact2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Graph> .
+<http://example.org/location/Paris#this> <http://example.org/hasPopulation> "7000000"^^<http://www.w3.org/2001/XMLSchema#integer> <http://example.org/ParisFact2> .
+<http://example.org/location/Paris#this> <http://example.org/locatedIn> <http://example.org/location/France#this> <http://example.org/ParisFact1> .

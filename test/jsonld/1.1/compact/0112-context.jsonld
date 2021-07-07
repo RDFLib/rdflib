@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "ex": "http://example.org/ns/",
+    "prop": {
+      "@id": "ex:prop",
+      "@container": "@index",
+      "@index": "ex:name"
+    }
+  }
+}

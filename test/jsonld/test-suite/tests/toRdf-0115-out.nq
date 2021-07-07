@@ -1,0 +1,3 @@
+<http://example/s0> <http://example/p0> <http://example/o0> .
+<http://example/s1> <http://example/p1> <http://example/o1> <http://example/g> .
+<http://example/s2> <http://example/p2> <http://example/o2> _:b0 .

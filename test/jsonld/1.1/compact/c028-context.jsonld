@@ -1,0 +1,9 @@
+{
+  "@context": {
+    "thing": {
+      "@id": "ex:thing",
+      "@context": {}
+    },
+    "title": "ex:title"
+  }
+}

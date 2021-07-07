@@ -1,0 +1,85 @@
+{
+  "@context": {
+    "site": "http://example.com/",
+    "site-cd": "site:site-schema/content-deployment/",
+    "title": {
+      "@id": "site-cd:node/article/title",
+      "@container": "@index"
+    },
+    "body": {
+      "@id": "site-cd:node/article/body",
+      "@container": "@index"
+    },
+    "field_tags": {
+      "@id": "site-cd:node/article/field_tags",
+      "@container": "@index"
+    }
+  },
+  "@id": "site:node/1",
+  "@type": "site-cd:node/article",
+  "title": {
+    "en": [
+      {
+        "@context": {
+          "value": "site-cd:node/article/title/value"
+        },
+        "@type": "site-cd:field-types/title_field",
+        "value": "This is the English title"
+      }
+    ],
+    "es": [
+      {
+        "@context": {
+          "value": "site-cd:node/article/title/value"
+        },
+        "@type": "site-cd:field-types/title_field",
+        "value": "Este es el t’tulo espa–ol"
+      }
+    ]
+  },
+  "body": {
+    "en": [
+      {
+        "@context": {
+          "value": "site-cd:node/article/body/value",
+          "summary": "site-cd:node/article/body/summary",
+          "format": "site-cd:node/article/body/format"
+        },
+        "@type": "site-cd:field-types/text_with_summary",
+        "value": "This is the English body. There is no Spanish body, so this will be displayed for both the English and Spanish versions.",
+        "summary": "This is the teaser for the body.",
+        "format": "full_html"
+      }
+    ]
+  },
+  "field_tags": {
+    "en": [
+      {
+        "@context": {
+          "uuid": "site-cd:taxonomy/term/uuid"
+        },
+        "@type": "site-cd:taxonomy/term",
+        "@id": "site:taxonomy/term/1",
+        "uuid": "e34b982c-98ac-4862-9b00-fa771a388010"
+      }
+    ],
+    "es": [
+      {
+        "@context": {
+          "uuid": "site-cd:taxonomy/term/uuid"
+        },
+        "@type": "site-cd:taxonomy/term",
+        "@id": "site:taxonomy/term/1",
+        "uuid": "e34b982c-98ac-4862-9b00-fa771a388010"
+      },
+      {
+        "@context": {
+          "uuid": "site-cd:taxonomy/term/uuid"
+        },
+        "@type": "site-cd:taxonomy/term",
+        "@id": "site:taxonomy/term/2",
+        "uuid": "a55b982c-58ac-4862-9b00-aa221a388010"
+      }
+    ]
+  }
+}

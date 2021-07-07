@@ -1,0 +1,8 @@
+{
+  "@context": {
+    "@vocab": "http://example/",
+    "id": "@id",
+    "type": "@type",
+    "Foo": {"@context": {"id": null, "type": null}}
+  }
+}

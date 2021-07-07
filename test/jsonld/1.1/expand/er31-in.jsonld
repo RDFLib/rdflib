@@ -1,0 +1,7 @@
+{
+  "http://example.com/vocab/indexMap": {
+    "@value": "simple string",
+    "@language": "en",
+    "@index": true
+  }
+}

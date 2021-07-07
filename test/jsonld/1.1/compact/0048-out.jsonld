@@ -1,0 +1,13 @@
+{
+   "@context": {
+      "@language": "de",
+      "propertyLanguageNull": {
+         "@id": "http://example.com/propertyA",
+         "@language": null
+      },
+      "propertyNoLang": "http://example.com/propertyA",
+      "propertyB": "http://example.com/propertyB"
+   },
+   "propertyLanguageNull": 5,
+   "propertyB": 5
+}

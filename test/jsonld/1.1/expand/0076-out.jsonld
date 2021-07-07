@@ -1,0 +1,4 @@
+[{
+  "@id": "http://example/base/relative-iri",
+  "http://prop": [{"@value": "value"}]
+}]

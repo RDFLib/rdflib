@@ -1,0 +1,14 @@
+[
+  {
+    "http://example.org/toString": [
+      {
+        "@value": "second"
+      }
+    ],
+    "http://example.org/valueOf": [
+      {
+        "@value": "first"
+      }
+    ]
+  }
+]

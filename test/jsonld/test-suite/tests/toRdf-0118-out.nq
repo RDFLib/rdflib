@@ -1,0 +1,9 @@
+_:term <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> _:term .
+_:term _:term "plain value" .
+_:term _:term <http://json-ld.org/test-suite/tests/relativeIri> .
+_:term _:term _:term .
+_:term _:term _:Bx .
+_:term _:term _:Cx .
+_:term _:term _:b3 .
+_:Bx _:term "term" .
+_:Cx _:term "termId" .
