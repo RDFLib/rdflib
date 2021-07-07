@@ -144,6 +144,20 @@ class Namespace(str):
         return f"Namespace({self!r})"
 
     def __contains__(self, ref):
+        """Allows to check if a URI is within (starts with) this Namespace.
+
+        >>> from rdflib import URIRef
+        >>> namespace = Namespace('http://example.org/')
+        >>> uri = URIRef('http://example.org/foo')
+        >>> uri in namespace
+        True
+        >>> person_class = namespace['Person']
+        >>> person_class in namespace
+        True
+        >>> obj = URIRef('http://not.example.org/bar')
+        >>> obj in namespace
+        False
+        """
         return ref.startswith(self) # test namespace membership with "ref in ns" syntax
 
 

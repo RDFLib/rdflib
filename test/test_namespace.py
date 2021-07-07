@@ -1,8 +1,19 @@
 import unittest
 
 from rdflib.graph import Graph
-from rdflib.namespace import Namespace, FOAF, RDF, RDFS, SH
+from rdflib.namespace import Namespace, FOAF, RDF, RDFS, SH, DCTERMS
 from rdflib.term import URIRef
+
+
+class NamespaceTest(unittest.TestCase):
+    def test_dcterms_title(self):
+        self.assertEqual(DCTERMS.title, URIRef(DCTERMS + 'title'))
+
+    def test_iri(self):
+        prefix = u'http://jörn.loves.encoding.problems/'
+        ns = Namespace(prefix)
+        self.assertEqual(ns, str(prefix))
+        self.assert_(ns[u'jörn'].startswith(ns))
 
 
 class NamespacePrefixTest(unittest.TestCase):
