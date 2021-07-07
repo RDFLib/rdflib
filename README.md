@@ -183,6 +183,43 @@ You can also raise issues here:
 * <https://github.com/RDFLib/rdflib/issues>
 
 
+## Running tests
+
+### Running the tests on the host
+
+Run the test suite with `nose`.
+```shell
+nosetests
+```
+
+### Running test coverage on the host with coverage report
+
+Run the test suite and generate a HTML coverage report with `nose` and `coverage`.
+```shell
+nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=rdflib
+```
+
+### Running the tests in a Docker container
+
+Run the test suite inside a Docker container for cross-platform support. This resolves issues such as installing BerkeleyDB on Windows and avoids the host and port issues on macOS.
+```shell
+make tests
+```
+
+Tip: If the underlying Dockerfile for the test runner changes, use `make build`.
+
+### Running the tests in a Docker container with coverage report
+
+Run the test suite inside a Docker container with HTML coverage report.
+
+### Viewing test coverage
+
+Once tests have produced HTML output of the coverage report, view it by running:
+```shell
+python -m http.server --directory=cover
+```
+
+
 ## Contacts
 If you want to contact the rdflib maintainers, please do so via the rdflib-dev mailing list:
 
