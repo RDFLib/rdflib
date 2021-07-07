@@ -9,4 +9,6 @@ COPY requirements.txt .
 RUN pip install --no-cache -r requirements.dev.txt
 RUN pip install --no-cache -r requirements.txt
 
+RUN mkdir -p /rdflib
+VOLUME /rdflib
 WORKDIR /rdflib
