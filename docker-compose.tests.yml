@@ -1,0 +1,16 @@
+services:
+  test-runner:
+    build:
+      context: .
+      dockerfile: test/Dockerfile
+    volumes:
+      - .:/rdflib
+    command: ["/rdflib/run_tests.sh"]
+
+  test-runner-coverage:
+    build:
+      context: .
+      dockerfile: test/Dockerfile
+    volumes:
+      - .:/rdflib
+    command: ["/rdflib/run_tests_with_coverage_report.sh"]
