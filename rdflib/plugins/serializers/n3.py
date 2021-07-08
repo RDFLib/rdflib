@@ -2,8 +2,7 @@
 Notation 3 (N3) RDF graph serializer for RDFLib.
 """
 from rdflib.graph import Graph
-from rdflib.namespace import Namespace
-from rdflib.namespace import OWL
+from rdflib.namespace import Namespace, OWL
 from rdflib.plugins.serializers.turtle import TurtleSerializer, SUBJECT, OBJECT
 
 __all__ = ["N3Serializer"]
