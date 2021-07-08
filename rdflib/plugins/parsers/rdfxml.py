@@ -252,6 +252,9 @@ class RDFXMLHandler(handler.ContentHandler):
                 att = "".join(n)
             if att.startswith(XMLNS) or att[0:3].lower() == "xml":
                 pass
+            elif att in UNQUALIFIED:
+                # if not RDFNS[att] in atts:
+                atts[RDFNS[att]] = v
             else:
                 atts[URIRef(att)] = v
         return name, atts
@@ -552,11 +555,11 @@ class RDFXMLHandler(handler.ContentHandler):
         if name[0]:
             prefix = self._current_context[name[0]]
             if prefix:
-                end = u"</%s:%s>" % (prefix, name[1])
+                end = "</%s:%s>" % (prefix, name[1])
             else:
-                end = u"</%s>" % name[1]
+                end = "</%s>" % name[1]
         else:
-            end = u"</%s>" % name[1]
+            end = "</%s>" % name[1]
         self.parent.object += self.current.object + end
 
 

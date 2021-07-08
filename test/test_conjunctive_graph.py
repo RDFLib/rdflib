@@ -8,11 +8,11 @@ from rdflib.parser import StringInputSource
 from os import path
 
 
-DATA = u"""
+DATA = """
 <http://example.org/record/1> a <http://xmlns.com/foaf/0.1/Document> .
 """
 
-PUBLIC_ID = u"http://example.org/record/1"
+PUBLIC_ID = "http://example.org/record/1"
 
 
 def test_bnode_publicid():

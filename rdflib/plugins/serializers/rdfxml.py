@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from rdflib.plugins.serializers.xmlwriter import XMLWriter
 
 from rdflib.namespace import Namespace, RDF, RDFS  # , split_uri
@@ -284,7 +282,7 @@ class PrettyXMLSerializer(Serializer):
                 object.value, xml.dom.minidom.Document
             ):
                 writer.attribute(RDFVOC.parseType, "Literal")
-                writer.text(u"")
+                writer.text("")
                 writer.stream.write(object)
             else:
                 if object.datatype:

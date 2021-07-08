@@ -22,7 +22,7 @@ prefix = textwrap.dedent(
 )
 
 meta = textwrap.dedent(
-    u"""\
+    """\
 a nfo:PaginatedTextDocument ;
     nie:title "SV Meldung" ;
     nco:creator [ a nco:Contact ;
@@ -38,7 +38,7 @@ a nfo:PaginatedTextDocument ;
 """
 )
 
-test_string1 = u"""\
+test_string1 = """\
 Betriebsnummer der Einzugsstelle:\nKnappschaft\n980 0000 6\nWICHTIGES DOKUMENT - SORGFÄLTIG AUFBEWAHREN!\n """
 
 
@@ -52,7 +52,7 @@ def test1():
     )
 
 
-test_string2 = u"""\
+test_string2 = """\
 Betriebsnummer der Einzugsstelle:
 Knappschaft
 980 0000 6

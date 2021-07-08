@@ -224,7 +224,7 @@ class Color:
         value = 0
         for triple in color:
             value += self.hashfunc(" ".join([stringify(x) for x in triple]))
-        val = u"%x" % value
+        val = "%x" % value
         self._hash_cache[color] = val
         return val
 
@@ -335,7 +335,7 @@ class _TripleCanonicalizer(object):
                     coloring.extend(colors)
                     try:
                         si = sequence.index(c)
-                        sequence = sequence[:si] + colors + sequence[si + 1:]
+                        sequence = sequence[:si] + colors + sequence[si + 1 :]
                     except ValueError:
                         sequence = colors[1:] + sequence
         combined_colors = []

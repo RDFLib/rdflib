@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from nose import SkipTest
 
 import unittest
@@ -192,7 +190,7 @@ class TestSparql11(unittest.TestCase):
             "INSERT DATA { GRAPH <urn:graph> { _:blankA <urn:type> <urn:Blank> } }"
         )
         g = self.graph.get_context(graphuri)
-        string = g.serialize(format="ntriples").decode("utf-8")
+        string = g.serialize(format="ntriples")
         raised = False
         try:
             Graph().parse(data=string, format="ntriples")

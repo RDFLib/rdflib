@@ -1,4 +1,4 @@
-from rdflib import Graph, URIRef, BNode, RDF, Literal, Namespace
+from rdflib import Graph, URIRef, BNode, RDF, RDFS, Literal, Namespace
 from rdflib.collection import Collection
 from rdflib.plugins.serializers.turtle import TurtleSerializer
 
@@ -12,8 +12,8 @@ def testTurtleFinalDot():
     u = URIRef("http://ex.org/bob.")
     g.bind("ns", "http://ex.org/")
     g.add((u, u, u))
-    s = g.serialize(format="turtle")
-    assert "ns:bob.".encode("latin-1") not in s
+    s = g.serialize(format="turtle", encoding="latin-1")
+    assert b"ns:bob." not in s
 
 
 def testTurtleBoolList():
@@ -41,7 +41,7 @@ def testTurtleBoolList():
 
 
 def testUnicodeEscaping():
-    turtle_string = " <http://example.com/A> <http://example.com/B> <http://example.com/aaa\u00F3bbbb> . <http://example.com/A> <http://example.com/C> <http://example.com/zzz\U00100000zzz> . <http://example.com/A> <http://example.com/D> <http://example.com/aaa\u00f3bbb> ."
+    turtle_string = " <http://example.com/A> <http://example.com/B> <http://example.com/aaa\\u00F3bbbb> . <http://example.com/A> <http://example.com/C> <http://example.com/zzz\\U00100000zzz> . <http://example.com/A> <http://example.com/D> <http://example.com/aaa\\u00f3bbb> ."
     g = Graph()
 
     # shouldn't get an exception
@@ -50,9 +50,9 @@ def testUnicodeEscaping():
     assert len(triples) == 3
     print(triples)
     # Now check that was decoded into python values properly
-    assert triples[0][2] == URIRef(u"http://example.com/aaa\xf3bbbb")
-    assert triples[1][2] == URIRef(u"http://example.com/zzz\U00100000zzz")
-    assert triples[2][2] == URIRef(u"http://example.com/aaa\xf3bbb")
+    assert triples[0][2] == URIRef("http://example.com/aaa\xf3bbbb")
+    assert triples[1][2] == URIRef("http://example.com/zzz\U00100000zzz")
+    assert triples[2][2] == URIRef("http://example.com/aaa\xf3bbb")
 
 
 def test_turtle_valid_list():
@@ -80,6 +80,8 @@ def test_turtle_namespace():
     graph.bind("GENO", "http://purl.obolibrary.org/obo/GENO_")
     graph.bind("RO", "http://purl.obolibrary.org/obo/RO_")
     graph.bind("RO_has_phenotype", "http://purl.obolibrary.org/obo/RO_0002200")
+    graph.bind("SERIAL", "urn:ISSN:")
+    graph.bind("EX", "http://example.org/")
     graph.add(
         (
             URIRef("http://example.org"),
@@ -87,14 +89,30 @@ def test_turtle_namespace():
             URIRef("http://purl.obolibrary.org/obo/GENO_0000385"),
         )
     )
+    graph.add(
+        (
+            URIRef("urn:ISSN:0167-6423"),
+            RDFS.label,
+            Literal("Science of Computer Programming"),
+        )
+    )
+    graph.add(
+        (
+            URIRef("http://example.org/name_with_(parenthesis)"),
+            RDFS.label,
+            Literal("URI with parenthesis"),
+        )
+    )
     output = [
         val
-        for val in graph.serialize(format="turtle").decode().splitlines()
+        for val in graph.serialize(format="turtle").splitlines()
         if not val.startswith("@prefix")
     ]
     output = " ".join(output)
     assert "RO_has_phenotype:" in output
     assert "GENO:0000385" in output
+    assert "SERIAL:0167-6423" in output
+    assert "EX:name_with_(parenthesis)" in output
 
 
 if __name__ == "__main__":

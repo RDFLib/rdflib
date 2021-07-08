@@ -41,7 +41,7 @@ baseUri2 = URIRef("http://example.com/foo/bar")
 class TestEmptyBase(unittest.TestCase):
     def setUp(self):
         self.graph = ConjunctiveGraph()
-        self.graph.parse(StringIO(test_data), publicID=baseUri)
+        self.graph.parse(StringIO(test_data), publicID=baseUri, format="xml")
 
     def test_base_ref(self):
         self.assertTrue(len(list(self.graph)),
@@ -53,7 +53,7 @@ class TestEmptyBase(unittest.TestCase):
 class TestRelativeBase(unittest.TestCase):
     def setUp(self):
         self.graph = ConjunctiveGraph()
-        self.graph.parse(StringIO(test_data2), publicID=baseUri2)
+        self.graph.parse(StringIO(test_data2), publicID=baseUri2, format="xml")
 
     def test_base_ref(self):
         self.assertTrue(len(self.graph),

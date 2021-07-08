@@ -29,7 +29,7 @@ class SeqTestCase(unittest.TestCase):
     def setUp(self):
         self.store = Graph(store=self.backend)
         self.store.open(self.path)
-        self.store.parse(data=s)
+        self.store.parse(data=s, format="xml")
 
     def tearDown(self):
         self.store.close()

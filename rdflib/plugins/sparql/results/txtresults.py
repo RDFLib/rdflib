@@ -43,7 +43,7 @@ class TXTResultSerializer(ResultSerializer):
             return "(no results)\n"
         else:
 
-            keys = sorted(self.result.vars)
+            keys = self.result.vars
             maxlen = [0] * len(keys)
             b = [
                 [_termString(r[k], namespace_manager) for k in keys]

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 """
-
-film.py: a simple tool to manage your movies review
+film.py: a simple tool to manage your movies reviews
 Simon Rozet, http://atonie.org/
 
     - manage directors and writers
@@ -13,7 +12,6 @@ Requires download and import of Python imdb library from
 https://imdbpy.github.io/ - (warning: installation
 will trigger automatic installation of several other packages)
 
---
 Usage:
     film.py whoami "John Doe <john@doe.org>"
         Initialize the store and set your name and email.
@@ -33,8 +31,8 @@ try:
 except ImportError:
     imdb = None
 
-from rdflib import BNode, ConjunctiveGraph, URIRef, Literal, Namespace, RDF
-from rdflib.namespace import FOAF, DC
+from rdflib import BNode, ConjunctiveGraph, URIRef, Literal, Namespace
+from rdflib.namespace import FOAF, DC, RDF
 
 storefn = os.path.expanduser("~/movies.n3")
 # storefn = '/home/simon/codes/film.dev/movies.n3'
@@ -42,7 +40,7 @@ storeuri = "file://" + storefn
 title = "Movies viewed by %s"
 
 r_who = re.compile(
-    "^(.*?) <([a-z0-9_-]+(\.[a-z0-9_-]+)*@[a-z0-9_-]+(\.[a-z0-9_-]+)+)>$"
+    r"^(.*?) <([a-z0-9_-]+(\.[a-z0-9_-]+)*@[a-z0-9_-]+(\.[a-z0-9_-]+)+)>$"
 )
 
 IMDB = Namespace("http://www.csd.abdn.ac.uk/~ggrimnes/dev/imdb/IMDB#")
@@ -53,7 +51,7 @@ class Store:
     def __init__(self):
         self.graph = ConjunctiveGraph()
         if os.path.exists(storefn):
-            self.graph.load(storeuri, format="n3")
+            self.graph.parse(storeuri)
         self.graph.bind("dc", DC)
         self.graph.bind("foaf", FOAF)
         self.graph.bind("imdb", IMDB)
@@ -130,17 +128,17 @@ def main(argv=None):
             rating = None
             while not rating or (rating > 5 or rating <= 0):
                 try:
-                    rating = int(input("Rating (on five): "))
+                    rating = int(eval(input("Rating (on five): ")))
                 except ValueError:
                     rating = None
             date = None
             while not date:
                 try:
-                    i = input("Review date (YYYY-MM-DD): ")
+                    i = eval(input("Review date (YYYY-MM-DD): "))
                     date = datetime.datetime(*time.strptime(i, "%Y-%m-%d")[:6])
                 except:
                     date = None
-            comment = input("Comment: ")
+            comment = eval(input("Comment: "))
             s.new_review(movie, date, rating, comment)
     else:
         help()

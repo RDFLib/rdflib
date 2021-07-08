@@ -1,4 +1,4 @@
-__doc__ = """
+__doc__ = r"""
 
 This module implements the SPARQL 1.1 Property path operators, as
 defined in:
@@ -46,29 +46,28 @@ In SPARQL the syntax is as follows:
 |(elt)               | A group path elt, brackets control precedence.  |
 +--------------------+-------------------------------------------------+
 
-This module is used internally be the SPARQL engine, but they property paths
+This module is used internally by the SPARQL engine, but the property paths
 can also be used to query RDFLib Graphs directly.
 
-Where possible the SPARQL syntax is mapped to python operators, and property
+Where possible the SPARQL syntax is mapped to Python operators, and property
 path objects can be constructed from existing URIRefs.
 
 >>> from rdflib import Graph, Namespace
+>>> from rdflib.namespace import FOAF
 
->>> foaf=Namespace('http://xmlns.com/foaf/0.1/')
-
->>> ~foaf.knows
+>>> ~FOAF.knows
 Path(~http://xmlns.com/foaf/0.1/knows)
 
->>> foaf.knows/foaf.name
+>>> FOAF.knows/FOAF.name
 Path(http://xmlns.com/foaf/0.1/knows / http://xmlns.com/foaf/0.1/name)
 
->>> foaf.name|foaf.givenName
+>>> FOAF.name|FOAF.givenName
 Path(http://xmlns.com/foaf/0.1/name | http://xmlns.com/foaf/0.1/givenName)
 
 Modifiers (?, *, +) are done using * (the multiplication operator) and
 the strings '*', '?', '+', also defined as constants in this file.
 
->>> foaf.knows*OneOrMore
+>>> FOAF.knows*OneOrMore
 Path(http://xmlns.com/foaf/0.1/knows+)
 
 The path objects can also be used with the normal graph methods.
@@ -89,17 +88,18 @@ First some example data:
 ...
 ... ''', format='n3') # doctest: +ELLIPSIS
 
->>> e=Namespace('ex:')
+>>> e = Namespace('ex:')
 
 Graph contains:
+
 >>> (e.a, e.p1/e.p2, e.e) in g
 True
 
 Graph generator functions, triples, subjects, objects, etc. :
 
 >>> list(g.objects(e.c, (e.p3*OneOrMore)/e.p2)) # doctest: +NORMALIZE_WHITESPACE
-[rdflib.term.URIRef(u'ex:j'), rdflib.term.URIRef(u'ex:g'),
-    rdflib.term.URIRef(u'ex:f')]
+[rdflib.term.URIRef('ex:j'), rdflib.term.URIRef('ex:g'),
+    rdflib.term.URIRef('ex:f')]
 
 A more complete set of tests:
 
@@ -129,27 +129,27 @@ True
 True
 
 >>> list(evalPath(g, (e.q, e.px*OneOrMore, None)))
-[(rdflib.term.URIRef(u'ex:q'), rdflib.term.URIRef(u'ex:q'))]
+[(rdflib.term.URIRef('ex:q'), rdflib.term.URIRef('ex:q'))]
 
 >>> list(evalPath(g, (None, e.p1|e.p2, e.c)))
-[(rdflib.term.URIRef(u'ex:a'), rdflib.term.URIRef(u'ex:c'))]
+[(rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:c'))]
 
 >>> list(evalPath(g, (None, ~e.p1, e.a))) == [ (e.c, e.a) ]
 True
 >>> list(evalPath(g, (None, e.p1*ZeroOrOne, e.c))) # doctest: +NORMALIZE_WHITESPACE
-[(rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:c')),
- (rdflib.term.URIRef(u'ex:a'), rdflib.term.URIRef(u'ex:c'))]
+[(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:c')),
+ (rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:c'))]
 
 >>> list(evalPath(g, (None, e.p3*OneOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
-[(rdflib.term.URIRef(u'ex:h'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:a'))]
+[(rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a')),
+ (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:a')),
+ (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a'))]
 
 >>> list(evalPath(g, (None, e.p3*ZeroOrMore, e.a))) # doctest: +NORMALIZE_WHITESPACE
-[(rdflib.term.URIRef(u'ex:a'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:h'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:a'))]
+[(rdflib.term.URIRef('ex:a'), rdflib.term.URIRef('ex:a')),
+ (rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a')),
+ (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:a')),
+ (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a'))]
 
 >>> list(evalPath(g, (None, -e.p1, e.f))) == [(e.a, e.f)]
 True
@@ -163,27 +163,26 @@ True
 True
 
 >>> list(evalPath(g, (e.q, e.px*OneOrMore, None)))
-[(rdflib.term.URIRef(u'ex:q'), rdflib.term.URIRef(u'ex:q'))]
+[(rdflib.term.URIRef('ex:q'), rdflib.term.URIRef('ex:q'))]
 
 >>> list(evalPath(g, (e.c, (e.p2|e.p3)*ZeroOrMore, e.j)))
-[(rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:j'))]
+[(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:j'))]
 
 No vars specified:
 
 >>> sorted(list(evalPath(g, (None, e.p3*OneOrMore, None)))) #doctest: +NORMALIZE_WHITESPACE
-[(rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:g')),
- (rdflib.term.URIRef(u'ex:c'), rdflib.term.URIRef(u'ex:h')),
- (rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:a')),
- (rdflib.term.URIRef(u'ex:g'), rdflib.term.URIRef(u'ex:h')),
- (rdflib.term.URIRef(u'ex:h'), rdflib.term.URIRef(u'ex:a'))]
-
-.. versionadded:: 4.0
+[(rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:a')),
+ (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:g')),
+ (rdflib.term.URIRef('ex:c'), rdflib.term.URIRef('ex:h')),
+ (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:a')),
+ (rdflib.term.URIRef('ex:g'), rdflib.term.URIRef('ex:h')),
+ (rdflib.term.URIRef('ex:h'), rdflib.term.URIRef('ex:a'))]
 
 """
 
 
 from rdflib.term import URIRef, Node
+from typing import Union, Callable
 
 
 # property paths
@@ -194,6 +193,13 @@ ZeroOrOne = "?"
 
 
 class Path(object):
+
+    __or__: Callable[["Path", Union["URIRef", "Path"]], "AlternativePath"]
+    __invert__: Callable[["Path"], "InvPath"]
+    __neg__: Callable[["Path"], "NegatedPath"]
+    __truediv__: Callable[["Path", Union["URIRef", "Path"]], "SequencePath"]
+    __mul__: Callable[["Path", str], "MulPath"]
+
     def eval(self, graph, subj=None, obj=None):
         raise NotImplementedError()
 
@@ -328,11 +334,11 @@ class MulPath(Path):
         if self.zero and first:
             if subj and obj:
                 if subj == obj:
-                    yield (subj, obj)
+                    yield subj, obj
             elif subj:
-                yield (subj, subj)
+                yield subj, subj
             elif obj:
-                yield (obj, obj)
+                yield obj, obj
 
         def _fwd(subj=None, obj=None, seen=None):
             seen.add(subj)
@@ -385,9 +391,9 @@ class MulPath(Path):
                         f = list(_fwd(s, None, set()))
                         for s1, o1 in f:
                             assert s1 == s
-                            yield (s1, o1)
+                            yield s1, o1
 
-        done = set()  # the spec does by defn. not allow duplicates
+        done = set()  # the spec does, by defn, not allow duplicates
         if subj:
             for x in _fwd(subj, obj, set()):
                 if x not in done:
@@ -502,7 +508,9 @@ else:
     #  as it would introduce circular imports)
 
     URIRef.__or__ = path_alternative
-    URIRef.__mul__ = mul_path
+    # ignore typing here as URIRef inherits from str,
+    # which has an incompatible definition of __mul__.
+    URIRef.__mul__ = mul_path  # type: ignore
     URIRef.__invert__ = inv_path
     URIRef.__neg__ = neg_path
     URIRef.__truediv__ = path_sequence

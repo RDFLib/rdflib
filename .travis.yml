@@ -1,4 +1,8 @@
 # http://travis-ci.org/#!/RDFLib/rdflib
+os: linux
+arch:
+ - amd64
+ - ppc64le
 language: python
 branches:
   only:
@@ -9,9 +13,9 @@ git:
   depth: 3
 
 python:
-    - 3.5
     - 3.6
     - 3.7
+    - 3.8
 
 jobs:
   include:
@@ -24,14 +28,16 @@ before_install:
 
 install:
     - pip install --default-timeout 60 -r requirements.txt
-    - pip install --default-timeout 60 coverage coveralls nose-timer && export HAS_COVERALLS=1
+    - pip install --default-timeout 60 -r requirements.dev.txt
+    - pip install --default-timeout 60 coveralls && export HAS_COVERALLS=1
     - python setup.py install
 
 before_script:
-    - flake8 --exclude=pyRdfa,extras,host,transform,rdfs,sparql,results,pyMicrodata --exit-zero rdflib
+    - flake8 --exit-zero rdflib
 
 script:
     - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=rdflib
+    - coverage report
 
 after_success:
     - if [[ $HAS_COVERALLS ]] ; then coveralls ; fi

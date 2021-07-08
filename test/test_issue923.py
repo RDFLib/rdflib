@@ -5,7 +5,7 @@ from io import StringIO
 
 from rdflib.query import Result
 
-RESULT_SOURCE = u"""\
+RESULT_SOURCE = """\
 {
   "head" : {
     "vars" : [ "subject", "predicate", "object", "context" ]

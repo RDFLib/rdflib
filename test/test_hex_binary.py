@@ -27,7 +27,7 @@ class HexBinaryTestCase(unittest.TestCase):
         self.assertEqual(int(str(l), 16), i)
 
     def test_unicode(self):
-        str1 = u"Test utf-8 string éàë"
+        str1 = "Test utf-8 string éàë"
         # u hexstring
         hex_str1 = binascii.hexlify(str1.encode("utf-8")).decode()
         l1 = Literal(hex_str1, datatype=XSD.hexBinary)

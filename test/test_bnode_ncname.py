@@ -1,38 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 from hashlib import md5
-
-
-try:
-    from uuid import uuid4
-except ImportError:
-
-    def uuid4():
-        """
-        Generates a uuid on behalf of Python 2.4
-        """
-        import random
-        import os
-        import time
-        import socket
-
-        try:
-            preseed = os.urandom(16)
-        except NotImplementedError:
-            preseed = ""
-        # Have doubts about this. random.seed will just hash the string
-        random.seed("%s%s%s" % (preseed, os.getpid(), time.time()))
-        del preseed
-        t = int(time.time() * 1000.0)
-        r = int(random.random() * 100000000000000000)
-        try:
-            a = socket.gethostbyname(socket.gethostname())
-        except:
-            # if we can't get a network address, just imagine one
-            a = random.random() * 100000000000000000
-        strdata = str(t) + " " + str(r) + " " + str(a)
-        data = md5(strdata.encode("ascii")).hexdigest()
-        yield data
+from uuid import uuid4
 
 
 # Adapted from http://icodesnip.com/snippet/python/simple-universally-unique-id-uuid-or-guid

@@ -20,11 +20,7 @@ underlying Graph:
 * Numerical Ranges
 
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
-# from __future__ import unicode_literals
 from fractions import Fraction
 
 __all__ = [
@@ -42,7 +38,6 @@ import logging
 import warnings
 import math
 
-import base64
 import xml.dom.minidom
 
 from datetime import date, time, datetime, timedelta
@@ -57,6 +52,7 @@ from isodate import (
     parse_duration,
     duration_isoformat,
 )
+from base64 import b64decode, b64encode
 from binascii import hexlify, unhexlify
 
 import rdflib
@@ -67,18 +63,25 @@ from urllib.parse import urljoin
 from urllib.parse import urlparse
 
 from decimal import Decimal
+from typing import TYPE_CHECKING, Dict, Callable, Union, Type
+
+if TYPE_CHECKING:
+    from .paths import AlternativePath, InvPath, NegatedPath, SequencePath, Path
 
 logger = logging.getLogger(__name__)
 skolem_genid = "/.well-known/genid/"
 rdflib_skolem_genid = "/.well-known/genid/rdflib/"
-skolems = {}
+skolems: Dict[str, "BNode"] = {}
 
 
 _invalid_uri_chars = '<>" {}|\\^`'
 
 
 def _is_valid_uri(uri):
-    return all(map(lambda c: ord(c) > 256 or c not in _invalid_uri_chars, uri))
+    for c in _invalid_uri_chars:
+        if c in uri:
+            return False
+    return True
 
 
 _lang_tag_regex = compile("^[a-zA-Z]+(?:-[a-zA-Z0-9]+)*$")
@@ -219,6 +222,11 @@ class URIRef(Identifier):
 
     __slots__ = ()
 
+    __or__: Callable[["URIRef", Union["URIRef", "Path"]], "AlternativePath"]
+    __invert__: Callable[["URIRef"], "InvPath"]
+    __neg__: Callable[["URIRef"], "NegatedPath"]
+    __truediv__: Callable[["URIRef", Union["URIRef", "Path"]], "SequencePath"]
+
     def __new__(cls, value, base=None):
         if base is not None:
             ends_in_hash = value.endswith("#")
@@ -303,7 +311,7 @@ class URIRef(Identifier):
         """
         if isinstance(self, RDFLibGenid):
             parsed_uri = urlparse("%s" % self)
-            return BNode(value=parsed_uri.path[len(rdflib_skolem_genid):])
+            return BNode(value=parsed_uri.path[len(rdflib_skolem_genid) :])
         elif isinstance(self, Genid):
             bnode_id = "%s" % self
             if bnode_id in skolems:
@@ -441,7 +449,7 @@ class Literal(Identifier):
     __doc__ = """
     RDF Literal: http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
 
-    The lexical value of the literal is the unicode object
+    The lexical value of the literal is the unicode object.  
     The interpreted, datatyped value is available from .value
 
     Language tags must be valid according to :rfc:5646
@@ -454,17 +462,17 @@ class Literal(Identifier):
 
     >>> from rdflib.namespace import XSD
 
-    >>> Literal('01')!=Literal('1') # clear - strings differ
+    >>> Literal('01') != Literal('1')  # clear - strings differ
     True
 
     but with data-type they get normalized:
 
-    >>> Literal('01', datatype=XSD.integer)!=Literal('1', datatype=XSD.integer)
+    >>> Literal('01', datatype=XSD.integer) != Literal('1', datatype=XSD.integer)
     False
 
     unless disabled:
 
-    >>> Literal('01', datatype=XSD.integer, normalize=False)!=Literal('1', datatype=XSD.integer)
+    >>> Literal('01', datatype=XSD.integer, normalize=False) != Literal('1', datatype=XSD.integer)
     True
 
 
@@ -970,10 +978,11 @@ class Literal(Identifier):
         """
         # don't use super()... for efficiency reasons, see Identifier.__hash__
         res = str.__hash__(self)
-        if self.language:
-            res ^= hash(self.language.lower())
-        if self.datatype:
-            res ^= hash(self.datatype)
+        # Directly accessing the member is faster than the property.
+        if self._language:
+            res ^= hash(self._language.lower())
+        if self._datatype:
+            res ^= hash(self._datatype)
         return res
 
     def __eq__(self, other):
@@ -1016,11 +1025,12 @@ class Literal(Identifier):
             return True
         if other is None:
             return False
+        # Directly accessing the member is faster than the property.
         if isinstance(other, Literal):
             return (
-                self.datatype == other.datatype
-                and (self.language.lower() if self.language else None)
-                == (other.language.lower() if other.language else None)
+                self._datatype == other._datatype
+                and (self._language.lower() if self._language else None)
+                == (other._language.lower() if other._language else None)
                 and str.__eq__(self, other)
             )
 
@@ -1260,17 +1270,16 @@ class Literal(Identifier):
                 # in py >=2.6 the string.format function makes this easier
                 # we try to produce "pretty" output
                 if self.datatype == _XSD_DOUBLE:
-                    return sub("\\.?0*e", "e", u"%e" % float(self))
+                    return sub("\\.?0*e", "e", "%e" % float(self))
                 elif self.datatype == _XSD_DECIMAL:
                     s = "%s" % self
-                    if "." not in s:
+                    if "." not in s and "e" not in s and "E" not in s:
                         s += ".0"
                     return s
-
                 elif self.datatype == _XSD_BOOLEAN:
-                    return (u"%s" % self).lower()
+                    return ("%s" % self).lower()
                 else:
-                    return u"%s" % self
+                    return "%s" % self
 
         encoded = self._quote_encode()
 
@@ -1409,7 +1418,7 @@ def _parseBoolean(value):
     if new_value not in false_accepted_values:
         warnings.warn(
             "Parsing weird boolean, % r does not map to True or False" % value,
-            category=DeprecationWarning,
+            category=UserWarning,
         )
     return False
 
@@ -1437,8 +1446,11 @@ _XSD_DAYTIMEDURATION = URIRef(_XSD_PFX + "dayTimeDuration")
 _XSD_YEARMONTHDURATION = URIRef(_XSD_PFX + "yearMonthDuration")
 
 _OWL_RATIONAL = URIRef("http://www.w3.org/2002/07/owl#rational")
+_XSD_B64BINARY = URIRef(_XSD_PFX + "base64Binary")
 _XSD_HEXBINARY = URIRef(_XSD_PFX + "hexBinary")
-# TODO: gYearMonth, gYear, gMonthDay, gDay, gMonth
+_XSD_GYEAR = URIRef(_XSD_PFX + "gYear")
+_XSD_GYEARMONTH = URIRef(_XSD_PFX + "gYearMonth")
+# TODO: gMonthDay, gDay, gMonth
 
 _NUMERIC_LITERAL_TYPES = (
     _XSD_INTEGER,
@@ -1543,7 +1555,7 @@ _GenericPythonToXSDRules = [
     (bool, (lambda i: str(i).lower(), _XSD_BOOLEAN)),
     (int, (None, _XSD_INTEGER)),
     (long_type, (None, _XSD_INTEGER)),
-    (Decimal, (None, _XSD_DECIMAL)),
+    (Decimal, (lambda i: f"{i:f}", _XSD_DECIMAL)),
     (datetime, (lambda i: i.isoformat(), _XSD_DATETIME)),
     (date, (lambda i: i.isoformat(), _XSD_DATE)),
     (time, (lambda i: i.isoformat(), _XSD_TIME)),
@@ -1559,8 +1571,12 @@ _GenericPythonToXSDRules = [
 ]
 
 _SpecificPythonToXSDRules = [
+    ((date, _XSD_GYEAR), lambda val: val.strftime("%Y").zfill(4)),
+    ((date, _XSD_GYEARMONTH), lambda val: val.strftime("%Y-%m").zfill(7)),
     ((str, _XSD_HEXBINARY), hexlify),
     ((bytes, _XSD_HEXBINARY), hexlify),
+    ((str, _XSD_B64BINARY), b64encode),
+    ((bytes, _XSD_B64BINARY), b64encode),
 ]
 
 XSDToPython = {
@@ -1595,7 +1611,7 @@ XSDToPython = {
     URIRef(_XSD_PFX + "unsignedByte"): int,
     URIRef(_XSD_PFX + "float"): float,
     URIRef(_XSD_PFX + "double"): float,
-    URIRef(_XSD_PFX + "base64Binary"): lambda s: base64.b64decode(s),
+    URIRef(_XSD_PFX + "base64Binary"): b64decode,
     URIRef(_XSD_PFX + "anyURI"): None,
     _RDF_XMLLITERAL: _parseXML,
     _RDF_HTMLLITERAL: _parseHTML,
@@ -1716,7 +1732,7 @@ class Statement(Node, tuple):
 # See http://www.w3.org/TR/sparql11-query/#modOrderBy
 # we leave "space" for more subclasses of Node elsewhere
 # default-dict to grazefully fail for new subclasses
-_ORDERING = defaultdict(int)
+_ORDERING: Dict[Type[Node], int] = defaultdict(int)
 _ORDERING.update({BNode: 10, Variable: 20, URIRef: 30, Literal: 40})
 
 

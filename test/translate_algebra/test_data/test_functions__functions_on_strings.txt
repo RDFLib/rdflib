@@ -1,0 +1,18 @@
+select
+(strlen("chat") as ?strlen)
+(substr("foobar", 4) as ?substr)
+(ucase("foo") as ?ucase)
+(lcase("FOO") as ?lcase)
+(strStarts("foobar", "foo") as ?strstarts)
+(strEnds("foobar", "bar") as ?strends)
+(contains("foobar", "bar") as ?contains)
+(strbefore("abc","b") as ?strbefore)
+(strafter("abc","b") as ?strafter)
+(encode_for_uri("Los Angeles") as ?encode_for_uri)
+(concat("foo"@en, "bar"@en) as ?concat)
+(replace("abcd", "b", "Z") as ?replace)
+(regex(substr("foobar", 4), "bar", "bar") as ?regex)
+where {
+	?s ?p ?o .
+    FILTER langMatches(lang(?o), "EN" )
+} limit 1

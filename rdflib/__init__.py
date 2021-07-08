@@ -13,60 +13,47 @@ A tiny example:
 
     >>> from rdflib import Graph, URIRef, Literal
 
-    >>> g = Graph().parse("http://www.w3.org/2000/10/swap/test/meet/blue.rdf")
+    >>> g = Graph()
+    >>> result = g.parse("http://www.w3.org/2000/10/swap/test/meet/blue.rdf")
 
     >>> print("graph has %s statements." % len(g))
-    graph has 9 statements.
+    graph has 4 statements.
     >>>
     >>> for s, p, o in g:
     ...     if (s, p, o) not in g:
     ...         raise Exception("It better be!")
 
-    >>> tl = [
-    ...       (BNode('B1'), URIRef('http://www.example.org/meeting_organization#homePage'), BNode('B4')),
-    ...       (BNode('B1'), URIRef('http://www.w3.org/2000/10/swap/test/meet/about'), Literal('http://meetings.example.com/cal#m1')),
-    ...       (BNode('B2'), URIRef('http://www.example.org/meeting_organization#attending'), BNode('B3')),
-    ...       (BNode('B2'), URIRef('http://www.example.org/personal_details#GivenName'), Literal('Fred')),
-    ...       (BNode('B2'), URIRef('http://www.example.org/personal_details#hasEmail'), BNode('B5')),
-    ...       (BNode('B2'), URIRef('http://www.w3.org/2000/10/swap/test/meet/about'), Literal('http://www.example.org/people#fred')),
-    ...       (BNode('B3'), URIRef('http://www.w3.org/2000/10/swap/test/meet/resource'), Literal('http://meetings.example.com/cal#m1')),
-    ...       (BNode('B4'), URIRef('http://www.w3.org/2000/10/swap/test/meet/resource'), Literal('http://meetings.example.com/m1/hp')),
-    ...       (BNode('B5'), URIRef('http://www.w3.org/2000/10/swap/test/meet/resource'), Literal('mailto:fred@example.com'))
-    ...       ]
-    >>> g2 = Graph()
-    >>> g2.namespace_manager = g.namespace_manager
-    >>> for t in tl:
-    ...     g2.add(t)
-    >>> print(g.serialize(format="turtle").decode())
-    @prefix m: <http://www.example.org/meeting_organization#> .
-    @prefix ns1: <http://www.w3.org/2000/10/swap/test/meet/> .
-    @prefix p: <http://www.example.org/personal_details#> .
-    <BLANKLINE>
-    [] m:attending [ ns1:resource "http://meetings.example.com/cal#m1" ] ;
-        p:GivenName "Fred" ;
-        p:hasEmail [ ns1:resource "mailto:fred@example.com" ] ;
-        ns1:about "http://www.example.org/people#fred" .
-    <BLANKLINE>
-    [] m:homePage [ ns1:resource "http://meetings.example.com/m1/hp" ] ;
-        ns1:about "http://meetings.example.com/cal#m1" .
-    <BLANKLINE>
-    <BLANKLINE>
-    >>> print(g.isomorphic(g2))
+    >>> s = g.serialize(format='nt')
+    >>>
+    >>> sorted(g) == [
+    ...  (URIRef(u'http://meetings.example.com/cal#m1'),
+    ...   URIRef(u'http://www.example.org/meeting_organization#homePage'),
+    ...   URIRef(u'http://meetings.example.com/m1/hp')),
+    ...  (URIRef(u'http://www.example.org/people#fred'),
+    ...   URIRef(u'http://www.example.org/meeting_organization#attending'),
+    ...   URIRef(u'http://meetings.example.com/cal#m1')),
+    ...  (URIRef(u'http://www.example.org/people#fred'),
+    ...   URIRef(u'http://www.example.org/personal_details#GivenName'),
+    ...   Literal(u'Fred')),
+    ...  (URIRef(u'http://www.example.org/people#fred'),
+    ...   URIRef(u'http://www.example.org/personal_details#hasEmail'),
+    ...   URIRef(u'mailto:fred@example.com'))
+    ... ]
     True
 
 """
 __docformat__ = "restructuredtext en"
 
 # The format of the __version__ line is matched by a regex in setup.py
-__version__ = "5.0.0"
-__date__ = "2020-04-18"
+__version__ = "6.0.0-alpha"
+__date__ = "2021-03-22"
 
 __all__ = [
     "URIRef",
     "BNode",
     "Literal",
-    "Namespace",
     "Variable",
+    "Namespace",
     "Dataset",
     "Graph",
     "ConjunctiveGraph",

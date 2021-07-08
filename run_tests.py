@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Testing with Nose
 =================
@@ -8,24 +7,18 @@ This test runner uses Nose for test discovery and running. It uses the argument
 spec of Nose, but with some options pre-set. To begin with, make sure you have
 Nose installed, e.g.:
 
-    $ pip nose doctest-ignore-unicode
+    $ pip install nose
 
-For daily test runs, use:
+To run the tests, use:
 
     $ ./run_tests.py
-
 If you supply attributes, the default ones defined in ``DEFAULT_ATTRS`` will be
 ignored. So to run e.g. all tests marked ``slowtest`` or ``non_standard_dep``,
 do:
 
     $ ./run_tests.py -a slowtest,non_standard_dep
 
-See <http://code.google.com/p/python-nose/> for furher details. An excellent
-article is also available at <http://ivory.idyll.org/articles/nose-intro.html>.
-
-Note that this is just a convenience script. You can use ``nosetests`` directly
-if it's on $PATH, with the difference that you have to supply the options
-pre-set here manually.
+For more details check <https://rdflib.readthedocs.io/en/stable/developers.html>.
 
 Coverage
 ========
@@ -38,8 +31,6 @@ coverage options).
 See <http://nedbatchelder.com/code/modules/coverage.html> for details.
 
 """
-from __future__ import print_function
-
 
 NOSE_ARGS = [
     "--with-doctest",
@@ -71,7 +62,7 @@ if __name__ == "__main__":
             """\
     Requires Nose. Try:
 
-        $ sudo easy_install nose
+        $ pip install nose
 
     Exiting. """,
             file=stderr,

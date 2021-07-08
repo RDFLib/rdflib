@@ -164,7 +164,7 @@ def test_cast_bool_to_bool():
     eq_(list(res)[0][0], Literal("true", datatype=XSD.boolean))
 
 
-def test_cast_bool_to_bool():
+def test_call_exf():
     res = query("""SELECT (ex:f(42, "hello") as ?x) {}""")
     eq_(len(list(res)), 0)
 

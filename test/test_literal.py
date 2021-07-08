@@ -1,11 +1,10 @@
+from decimal import Decimal
 import unittest
+import datetime
 
 import rdflib  # needed for eval(repr(...)) below
 from rdflib.term import Literal, URIRef, _XSD_DOUBLE, bind, _XSD_BOOLEAN
-
-
-def uformat(s):
-    return s.replace("u'", "'")
+from rdflib.namespace import XSD
 
 
 class TestLiteral(unittest.TestCase):
@@ -33,7 +32,7 @@ class TestLiteral(unittest.TestCase):
 </rdf:RDF>
 """
         g = rdflib.Graph()
-        g.parse(data=d)
+        g.parse(data=d, format="xml")
         a = rdflib.Literal("a\\b")
         b = list(g.objects())[0]
         self.assertEqual(a, b)
@@ -72,28 +71,26 @@ class TestNew(unittest.TestCase):
 
 class TestRepr(unittest.TestCase):
     def testOmitsMissingDatatypeAndLang(self):
-        self.assertEqual(repr(Literal("foo")), uformat("rdflib.term.Literal(u'foo')"))
+        self.assertEqual(repr(Literal("foo")), "rdflib.term.Literal('foo')")
 
     def testOmitsMissingDatatype(self):
         self.assertEqual(
             repr(Literal("foo", lang="en")),
-            uformat("rdflib.term.Literal(u'foo', lang='en')"),
+            "rdflib.term.Literal('foo', lang='en')",
         )
 
     def testOmitsMissingLang(self):
         self.assertEqual(
             repr(Literal("foo", datatype=URIRef("http://example.com/"))),
-            uformat(
-                "rdflib.term.Literal(u'foo', datatype=rdflib.term.URIRef(u'http://example.com/'))"
-            ),
+            "rdflib.term.Literal('foo', datatype=rdflib.term.URIRef('http://example.com/'))",
         )
 
     def testSubclassNameAppearsInRepr(self):
         class MyLiteral(Literal):
             pass
 
-        x = MyLiteral(u"foo")
-        self.assertEqual(repr(x), uformat("MyLiteral(u'foo')"))
+        x = MyLiteral("foo")
+        self.assertEqual(repr(x), "MyLiteral('foo')")
 
 
 class TestDoubleOutput(unittest.TestCase):
@@ -121,10 +118,10 @@ class TestParseBoolean(unittest.TestCase):
 
     def testNonFalseBoolean(self):
         test_value = Literal("abcd", datatype=_XSD_BOOLEAN)
-        self.assertRaises(DeprecationWarning)
+        self.assertRaises(UserWarning)
         self.assertFalse(test_value.value)
         test_value = Literal("10", datatype=_XSD_BOOLEAN)
-        self.assertRaises(DeprecationWarning)
+        self.assertRaises(UserWarning)
         self.assertFalse(test_value.value)
 
 
@@ -186,6 +183,84 @@ class TestBindings(unittest.TestCase):
         self.assertEqual(str(specific_l), lexify(s))
         self.assertEqual(specific_l.toPython(), s)
         self.assertEqual(specific_l.datatype, datatype)
+
+
+class TestXsdLiterals(unittest.TestCase):
+    def test_make_literals(self):
+        """
+        Tests literal construction.
+        """
+        inputs = [
+            # these literals do not get converted to Python types
+            ("ABCD", XSD.integer, None),
+            ("ABCD", XSD.gYear, None),
+            ("-10000", XSD.gYear, None),
+            ("-1921-00", XSD.gYearMonth, None),
+            ("1921-00", XSD.gMonthDay, None),
+            ("1921-13", XSD.gMonthDay, None),
+            ("-1921-00", XSD.gMonthDay, None),
+            ("10", XSD.gDay, None),
+            ("-1", XSD.gDay, None),
+            ("0000", XSD.gYear, None),
+            ("0000-00-00", XSD.date, None),
+            ("NOT A VALID HEX STRING", XSD.hexBinary, None),
+            ("NOT A VALID BASE64 STRING", XSD.base64Binary, None),
+            # these literals get converted to python types
+            ("1921-05-01", XSD.date, datetime.date),
+            ("1921-05-01T00:00:00", XSD.dateTime, datetime.datetime),
+            ("1921-05", XSD.gYearMonth, datetime.date),
+            ("0001-01", XSD.gYearMonth, datetime.date),
+            ("0001-12", XSD.gYearMonth, datetime.date),
+            ("2002-01", XSD.gYearMonth, datetime.date),
+            ("9999-01", XSD.gYearMonth, datetime.date),
+            ("9999-12", XSD.gYearMonth, datetime.date),
+            ("1921", XSD.gYear, datetime.date),
+            ("2000", XSD.gYear, datetime.date),
+            ("0001", XSD.gYear, datetime.date),
+            ("9999", XSD.gYear, datetime.date),
+            ("1982", XSD.gYear, datetime.date),
+            ("2002", XSD.gYear, datetime.date),
+            ("1921-05-01T00:00:00+00:30", XSD.dateTime, datetime.datetime),
+            ("1921-05-01T00:00:00-00:30", XSD.dateTime, datetime.datetime),
+            ("abcdef0123", XSD.hexBinary, bytes),
+            ("", XSD.hexBinary, bytes),
+            ("UkRGTGli", XSD.base64Binary, bytes),
+            ("", XSD.base64Binary, bytes),
+            ("0.0000000000000000000000000000001", XSD.decimal, Decimal),
+            ("0.1", XSD.decimal, Decimal),
+            ("1", XSD.integer, int),
+        ]
+        self.check_make_literals(inputs)
+
+    @unittest.expectedFailure
+    def test_make_literals_ki(self):
+        """
+        Known issues with literal construction.
+        """
+        inputs = [
+            ("1921-01Z", XSD.gYearMonth, datetime.date),
+            ("1921Z", XSD.gYear, datetime.date),
+            ("1921-00", XSD.gYearMonth, datetime.date),
+            ("1921-05-01Z", XSD.date, datetime.date),
+            ("1921-05-01+00:30", XSD.date, datetime.date),
+            ("1921-05-01+00:30", XSD.date, datetime.date),
+            ("1921-05-01+00:00", XSD.date, datetime.date),
+            ("1921-05-01+00:00", XSD.date, datetime.date),
+            ("1921-05-01T00:00:00Z", XSD.dateTime, datetime.datetime),
+            ("1e-31", XSD.decimal, None),  # This is not a valid decimal value
+        ]
+        self.check_make_literals(inputs)
+
+    def check_make_literals(self, inputs):
+        for literal_pair in inputs:
+            (lexical, type, value_cls) = literal_pair
+            with self.subTest(f"testing {literal_pair}"):
+                literal = Literal(lexical, datatype=type)
+                if value_cls is not None:
+                    self.assertIsInstance(literal.value, value_cls)
+                else:
+                    self.assertIsNone(literal.value)
+                self.assertEqual(lexical, f"{literal}")
 
 
 if __name__ == "__main__":

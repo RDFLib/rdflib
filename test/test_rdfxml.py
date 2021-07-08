@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import sys
 from encodings.utf_8 import StreamWriter
 
@@ -26,7 +24,6 @@ verbose = 0
 
 def write(msg):
     _logger.info(msg + "\n")
-    # print(msg)
 
 
 class TestStore(Graph):
@@ -96,7 +93,7 @@ def resolve(rel):
 
 def _testPositive(uri, manifest):
     if verbose:
-        write(u"TESTING: %s" % uri)
+        write("TESTING: %s" % uri)
     result = 0  # 1=failed, 0=passed
     inDoc = first(manifest.objects(uri, TEST["inputDocument"]))
     outDoc = first(manifest.objects(uri, TEST["outputDocument"]))
@@ -126,7 +123,7 @@ def _testPositive(uri, manifest):
         result = 1
     else:
         if not store.isomorphic(expected):
-            write(u"""Failed: '%s'""" % uri)
+            write("""Failed: '%s'""" % uri)
             if verbose:
                 write("""  In:\n""")
                 for s, p, o in store:
@@ -139,6 +136,8 @@ def _testPositive(uri, manifest):
 
 
 def _testNegative(uri, manifest):
+    if verbose:
+        write("TESTING: %s" % uri)
     result = 0  # 1=failed, 0=passed
     inDoc = first(manifest.objects(uri, TEST["inputDocument"]))
     if isinstance(inDoc, BNode):
@@ -161,7 +160,7 @@ def _testNegative(uri, manifest):
         results.add((test, RDF.type, RESULT["PassingRun"]))
         # pass
     else:
-        write(u"""Failed: '%s'""" % inDoc)
+        write("""Failed: '%s'""" % inDoc)
         results.add((test, RDF.type, RESULT["FailingRun"]))
         result = 1
     return result
@@ -264,15 +263,15 @@ if __name__ == "__main__":
         for arg in argv[1:]:
             verbose = 1
             case = URIRef(arg)
-            write(u"Testing: %s" % case)
+            write("Testing: %s" % case)
             if (case, RDF.type, TEST["PositiveParserTest"]) in manifest:
                 result = _testPositive(case, manifest)
-                write(u"Positive test %s" % ["PASSED", "FAILED"][result])
+                write("Positive test %s" % ["PASSED", "FAILED"][result])
             elif (case, RDF.type, TEST["NegativeParserTest"]) in manifest:
                 result = _testNegative(case, manifest)
-                write(u"Negative test %s" % ["PASSED", "FAILED"][result])
+                write("Negative test %s" % ["PASSED", "FAILED"][result])
             else:
-                write(u"%s not ??" % case)
+                write("%s not ??" % case)
 
         if len(argv) <= 1:
             unittest.main()

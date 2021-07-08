@@ -37,23 +37,23 @@ if __name__ == "__main__":
     print()
     print("RDF Serializations:")
 
+    # Serialize as Turtle (default)
+    print("--- start: turtle ---")
+    print(store.serialize())
+    print("--- end: turtle ---\n")
+
     # Serialize as XML
     print("--- start: rdf-xml ---")
-    print(store.serialize(format="pretty-xml").decode("utf-8"))
+    print(store.serialize(format="pretty-xml"))
     print("--- end: rdf-xml ---\n")
-
-    # Serialize as Turtle
-    print("--- start: turtle ---")
-    print(store.serialize(format="turtle").decode("utf-8"))
-    print("--- end: turtle ---\n")
 
     # Serialize as NTriples
     print("--- start: ntriples ---")
-    print(store.serialize(format="nt").decode("utf-8"))
+    print(store.serialize(format="nt"))
     print("--- end: ntriples ---\n")
 
     # Serialize as JSON-LD
     # only if you have the JSON-LD plugin installed!
     print("--- start: JSON-LD ---")
-    print(store.serialize(format="json-ld").decode("utf-8"))
+    print(store.serialize(format="json-ld"))
     print("--- end: JSON-LD ---\n")

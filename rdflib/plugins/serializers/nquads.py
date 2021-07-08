@@ -33,14 +33,14 @@ class NQuadsSerializer(Serializer):
 
 def _nq_row(triple, context):
     if isinstance(triple[2], Literal):
-        return u"%s %s %s %s .\n" % (
+        return "%s %s %s %s .\n" % (
             triple[0].n3(),
             triple[1].n3(),
             _quoteLiteral(triple[2]),
             context.n3(),
         )
     else:
-        return u"%s %s %s %s .\n" % (
+        return "%s %s %s %s .\n" % (
             triple[0].n3(),
             triple[1].n3(),
             triple[2].n3(),

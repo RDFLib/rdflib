@@ -46,17 +46,17 @@ class DatasetTestCase(unittest.TestCase):
 
         if self.store != "SPARQLUpdateStore":
             self.graph.open(self.tmppath, create=True)
-        self.michel = URIRef(u"urn:michel")
-        self.tarek = URIRef(u"urn:tarek")
-        self.bob = URIRef(u"urn:bob")
-        self.likes = URIRef(u"urn:likes")
-        self.hates = URIRef(u"urn:hates")
-        self.pizza = URIRef(u"urn:pizza")
-        self.cheese = URIRef(u"urn:cheese")
+        self.michel = URIRef("urn:michel")
+        self.tarek = URIRef("urn:tarek")
+        self.bob = URIRef("urn:bob")
+        self.likes = URIRef("urn:likes")
+        self.hates = URIRef("urn:hates")
+        self.pizza = URIRef("urn:pizza")
+        self.cheese = URIRef("urn:cheese")
 
         # Use regular URIs because SPARQL endpoints like Fuseki alter short names
-        self.c1 = URIRef(u"urn:context-1")
-        self.c2 = URIRef(u"urn:context-2")
+        self.c1 = URIRef("urn:context-1")
+        self.c2 = URIRef("urn:context-2")
 
         # delete the graph for each test!
         self.graph.remove((None, None, None))
@@ -178,7 +178,7 @@ if __name__ == "__main__":
 tests = 0
 
 for s in plugin.plugins(pluginname, plugin.Store):
-    if s.name in ("default", "IOMemory", "Auditable", "Concurrent", "SPARQLStore"):
+    if s.name in ("default", "Memory", "Auditable", "Concurrent", "SPARQLStore"):
         continue  # these are tested by default
 
     if not s.getClass().graph_aware:

@@ -1,10 +1,4 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
-
-__doc__ = """
+"""
 The :class:`~rdflib.resource.Resource` class wraps a
 :class:`~rdflib.graph.Graph`
 and a resource reference (i.e. a :class:`rdflib.term.URIRef` or
@@ -360,8 +354,6 @@ class Resource(object):
 
     def __unicode__(self):
         return str(self._identifier)
-
-    __str__ = __unicode__
 
     def add(self, p, o):
         if isinstance(o, Resource):
