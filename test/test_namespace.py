@@ -116,7 +116,7 @@ class NamespacePrefixTest(unittest.TestCase):
             add_not_in_namespace("firstName"),
             URIRef("http://xmlns.com/foaf/0.1/firstName"),
         )
-        warn("DeclaredNamespace does not address deprecated properties")
+        warn("DefinedNamespace does not address deprecated properties")
 
         # a property name within the core FOAF namespace
         self.assertEqual(
