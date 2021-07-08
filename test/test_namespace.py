@@ -1,11 +1,36 @@
 import unittest
+from unittest.case import expectedFailure
 
 from rdflib.graph import Graph
-from rdflib.namespace import Namespace, FOAF, RDF, RDFS, SH, DCTERMS
+from rdflib.namespace import (
+    ClosedNamespace,
+    Namespace,
+    FOAF,
+    RDF,
+    RDFS,
+    SH,
+    DCTERMS,
+    URIPattern,
+)
 from rdflib.term import URIRef
 
 
 class NamespaceTest(unittest.TestCase):
+    def setUp(self):
+        self.ns_str = "http://example.com/name/space/"
+        self.ns = Namespace(self.ns_str)
+
+    def test_repr(self):
+        # NOTE: this assumes ns_str has no characthers that need escaping
+        self.assertIn(self.ns_str, f"{self.ns!r}")
+        self.assertEqual(self.ns, eval(f"{self.ns!r}"))
+
+    def test_str(self):
+        self.assertEqual(self.ns_str, f"{self.ns}")
+
+    def test_member(self):
+        self.assertEqual(f"{self.ns_str}a", f"{self.ns.a}")
+
     def test_dcterms_title(self):
         self.assertEqual(DCTERMS.title, URIRef(DCTERMS + 'title'))
 
@@ -14,6 +39,50 @@ class NamespaceTest(unittest.TestCase):
         ns = Namespace(prefix)
         self.assertEqual(ns, str(prefix))
         self.assert_(ns[u'jörn'].startswith(ns))
+
+
+class ClosedNamespaceTest(unittest.TestCase):
+    def setUp(self):
+        self.ns_str = "http://example.com/name/space/"
+        self.ns = ClosedNamespace(self.ns_str, ["a", "b", "c"])
+
+    def test_repr(self):
+        # NOTE: this assumes ns_str has no characthers that need escaping
+        self.assertIn(self.ns_str, f"{self.ns!r}")
+
+    @expectedFailure
+    def test_repr_ef(self):
+        """
+        This fails because ClosedNamespace repr does not represent the second argument
+        """
+        self.assertEqual(self.ns, eval(f"{self.ns!r}"))
+
+    def test_str(self):
+        self.assertEqual(self.ns_str, f"{self.ns}")
+
+    def test_member(self):
+        self.assertEqual(f"{self.ns_str}a", f"{self.ns.a}")
+
+    def test_missing_member(self):
+        with self.assertRaises(AttributeError) as context:
+            f"{self.ns.missing}"
+        self.assertIn("missing", f"{context.exception}")
+
+
+class URIPatternTest(unittest.TestCase):
+    def setUp(self):
+        self.pattern_str = "http://example.org/%s/%d/resource"
+        self.pattern = URIPattern(self.pattern_str)
+
+    def test_repr(self):
+        # NOTE: this assumes pattern_str has no characthers that need escaping
+        self.assertIn(self.pattern_str, f"{self.pattern!r}")
+        self.assertEqual(self.pattern, eval(f"{self.pattern!r}"))
+
+    def test_format(self):
+        self.assertEqual(
+            "http://example.org/foo/100/resource", str(self.pattern % ("foo", 100))
+        )
 
 
 class NamespacePrefixTest(unittest.TestCase):
