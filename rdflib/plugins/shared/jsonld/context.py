@@ -369,13 +369,14 @@ class Context(object):
         self, base, inputs, sources, referenced_contexts, in_source_url=None
     ):
 
-
         for source in inputs:
             source_url = in_source_url
             if isinstance(source, str):
                 source_url = source
                 source_doc_base = base or self.doc_base
-                new_ctx = self._fetch_context(source, source_doc_base, referenced_contexts)
+                new_ctx = self._fetch_context(
+                    source, source_doc_base, referenced_contexts
+                )
                 if new_ctx is None:
                     continue
                 else:

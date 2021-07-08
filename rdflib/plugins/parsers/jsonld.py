@@ -43,7 +43,12 @@ from rdflib.namespace import RDF, XSD
 from rdflib.term import URIRef, BNode, Literal
 
 from ..shared.jsonld.context import Context, Term, UNDEF
-from ..shared.jsonld.util import json, source_to_json, VOCAB_DELIMS, context_from_urlinputsource
+from ..shared.jsonld.util import (
+    json,
+    source_to_json,
+    VOCAB_DELIMS,
+    context_from_urlinputsource,
+)
 from ..shared.jsonld.keys import (
     CONTEXT,
     GRAPH,
