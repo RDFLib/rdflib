@@ -305,10 +305,10 @@ class NamespaceManager(object):
         self.__trie = {}
         for p, n in self.namespaces():  # self.bind is not always called
             insert_trie(self.__trie, str(n))
-        self.bind("xml", "http://www.w3.org/XML/1998/namespace")
-        self.bind("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
-        self.bind("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
-        self.bind("xsd", "http://www.w3.org/2001/XMLSchema#")
+        self.bind("xml", XMLNS)
+        self.bind("rdf", RDF)
+        self.bind("rdfs", RDFS)
+        self.bind("xsd", XSD)
 
     def reset(self):
         self.__cache = {}
