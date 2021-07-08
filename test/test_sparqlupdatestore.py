@@ -42,7 +42,7 @@ except:
     skip = True
 
 
-@unittest.skipIf(skip, HOST + " is unavailablez.")
+@unittest.skipIf(skip, HOST + " is unavailable.")
 class TestSparql11(unittest.TestCase):
     def setUp(self):
         self.longMessage = True
