@@ -141,7 +141,7 @@ class Namespace(str):
         return self.term(name)
 
     def __repr__(self):
-        return f"Namespace({self!r})"
+        return f"Namespace({super().__repr__()})"
 
     def __contains__(self, ref):
         """Allows to check if a URI is within (starts with) this Namespace.
@@ -187,7 +187,7 @@ class URIPattern(str):
         return URIRef(super().format(*args, **kwargs))
 
     def __repr__(self):
-        return f"URIPattern({self!r})"
+        return f"URIPattern({super().__repr__()})"
 
 
 class ClosedNamespace(Namespace):
@@ -225,7 +225,7 @@ class ClosedNamespace(Namespace):
                 raise AttributeError(e)
 
     def __repr__(self):
-        return f"{self.__module__}.{self.__class__.__name__}({self!r})"
+        return f"{self.__module__}.{self.__class__.__name__}({str(self)!r})"
 
     def __dir__(self):
         return list(self.__uris)
