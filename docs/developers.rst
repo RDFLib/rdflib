@@ -12,7 +12,8 @@ developing RDFLib code.
 Please be as Pythonic as possible (:pep:`8`).
 
 Code should be formatted using `black <https://github.com/psf/black>`_.
-While not yet mandatory, it will be required in the future  (6.0.0+).
+While not yet mandatory, it will be required in the future  (6.0.0+).1
+Use Black v21.6b1, with the black.toml config file provided. 
 
 Any new functionality being added to RDFLib should have doc tests and
 unit tests. Tests should be added for any functionality being changed
@@ -21,6 +22,7 @@ tests should be run before committing changes to make sure the changes
 did not break anything.
 
 If you add a new cool feature, consider also adding an example in ``./examples``
+
 
 Running tests
 -------------
@@ -61,9 +63,9 @@ flag them as expecting to fail.
 Compatibility
 -------------
 
-RDFLib 5.x.y tries to be compatible with python versions 2.7, 3.4, 3.5, 3.6, 3.7.
+RDFLib 5.0.0 maintained compatibility with python versions 2.7, 3.4, 3.5, 3.6, 3.7.
 
-The current master branch (which will be released as 6.0.0) will only support Python 3.6 and newer.
+The latest 6.0.0 release and subsequent will only support Python 3.7 and newer.
 
 
 Releasing
