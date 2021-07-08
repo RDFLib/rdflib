@@ -9,8 +9,12 @@ kwargs["install_requires"] = ["isodate", "pyparsing", "setuptools"]
 kwargs["tests_require"] = [
     "html5lib",
     "networkx",
-    "nose",
-    "doctest-ignore-unicode",
+    "nose==1.3.7",
+    "nose-timer",
+    "coverage",
+    "black==21.6b0",
+    "flake8",
+    "doctest-ignore-unicode==0.1.2",
 ]
 kwargs["test_suite"] = "nose.collector"
 kwargs["extras_require"] = {
@@ -49,13 +53,13 @@ setup(
     url="https://github.com/RDFLib/rdflib",
     license="BSD-3-Clause",
     platforms=["any"],
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "License :: OSI Approved :: BSD License",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Operating System :: OS Independent",
