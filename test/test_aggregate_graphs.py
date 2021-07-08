@@ -122,7 +122,7 @@ class GraphAggregates2(unittest.TestCase):
             graph.parse(StringIO(n3Str), format="n3")
 
         self.graph4 = Graph(memStore, RDFS)
-        self.graph4.parse(RDFS)
+        self.graph4.parse(RDFS.uri)
         self.G = ConjunctiveGraph(memStore)
 
 
