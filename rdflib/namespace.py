@@ -199,7 +199,6 @@ class ClosedNamespace(Namespace):
 
     def __new__(cls, uri, terms):
         rt = super().__new__(cls, uri)
-        rt.__terms = terms
         rt.__uris = {t: URIRef(rt + t) for t in terms}
         return rt
 
