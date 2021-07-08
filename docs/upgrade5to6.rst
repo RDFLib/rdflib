@@ -73,3 +73,7 @@ Documentation Fixes:
 ^^^^^^^^^^^^^^^^^^^^
 * Fix a doc string in the query module
   `PR #976 <https://github.com/RDFLib/rdflib/pull/976>`_
+
+Integrade JSON-LD into RDFLib:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+`PR #1354 <https://github.com/RDFLib/rdflib/pull//1354>`_
