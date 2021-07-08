@@ -211,6 +211,9 @@ Tip: If the underlying Dockerfile for the test runner changes, use `make build`.
 ### Running the tests in a Docker container with coverage report
 
 Run the test suite inside a Docker container with HTML coverage report.
+```shell
+make coverage
+```
 
 ### Viewing test coverage
 
