@@ -100,7 +100,6 @@ class NamespacePrefixTest(unittest.TestCase):
             in n3
         )
 
-    @property
     def test_closed_namespace(self):
         """Tests terms both in an out of the ClosedNamespace FOAF"""
 
@@ -108,7 +107,8 @@ class NamespacePrefixTest(unittest.TestCase):
             return FOAF[s]
 
         # a blatantly non-existent FOAF property
-        self.assertWarnsRegex(UserWarning, add_not_in_namespace("blah"), 'UserWarning: Code: blah is not defined in namespace FOAF')
+        with self.assertWarnsRegex(UserWarning, 'Code: blah is not defined in namespace FOAF'):
+            add_not_in_namespace("blah")
 
         # a deprecated FOAF property
         add_not_in_namespace('firstName')
