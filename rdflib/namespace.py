@@ -665,10 +665,9 @@ class NamespaceManager(object):
         for p, n in self.namespaces():  # repopulate the trie
             insert_trie(self.__trie, str(n))
 
-    def __get_store(self):
+    @property
+    def store(self):
         return self.graph.store
-
-    store = property(__get_store)
 
     def qname(self, uri):
         prefix, namespace, name = self.compute_qname(uri)
