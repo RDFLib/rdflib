@@ -24,6 +24,9 @@ known_bugs = (
     # TODO: Literal doesn't preserve representations
     "fromRdf/0002-in",
     # RDflib does not print Integer with scientific notation
+    "toRdf/0022-in",  # TODO: RDFLib considers Doubles with Different input-Lexical
+    "toRdf/0071-in",  #       form as different, when comparing isomorphicly
+    "toRdf/e031-in",  #       using the literal __hash__ function
     "toRdf/0035-in",
     # tordf-0118-in
     # TODO: "http:g" should serialize to "http:g", not "//g"
@@ -61,7 +64,7 @@ known_bugs = (
     # @id and @vocab in literal datatype expansion doesn't work
     "toRdf/e088-in",
     # TODO: relative-iri keeps . on end of IRI?
-    "toRdf/e076-in", "toRdf/e089-in", "toRdf/e090-in","toRdf/e091-in", "toRdf/e110-in", "toRdf/e129-in", "toRdf/e130-in",
+    "toRdf/e076-in", "toRdf/e089-in", "toRdf/e090-in", "toRdf/e091-in", "toRdf/e110-in", "toRdf/e129-in", "toRdf/e130-in",
     # TODO: Just broken expansion...
     "toRdf/e080-in", "toRdf/e092-in", "toRdf/e093-in", "toRdf/e094-in", "toRdf/e104-in", "toRdf/e108-in",
     # TODO: Odd result in list expansion
@@ -83,7 +86,7 @@ known_bugs = (
     # JSON character escaping
     "toRdf/js12-in", "toRdf/js13-in",
     # Broken list comprehension
-    "toRdf/li05-in","toRdf/li06-in","toRdf/li07-in","toRdf/li08-in","toRdf/li09-in","toRdf/li10-in","toRdf/li11-in","toRdf/li14-in",
+    "toRdf/li05-in", "toRdf/li06-in", "toRdf/li07-in", "toRdf/li08-in", "toRdf/li09-in", "toRdf/li10-in", "toRdf/li11-in", "toRdf/li14-in",
     # Bad URI?
     "toRdf/li12-in",
     # cannot use property-index to add property to graph object?

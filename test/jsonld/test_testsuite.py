@@ -18,6 +18,8 @@ known_bugs = (
     # "toRdf-0078-in", "toRdf-0108-in",
     # TODO: Literal doesn't preserve representations
     "fromRdf-0002-in",
+    "toRdf-0022-in",  # TODO: RDFLib considers Doubles with Different input-Lexical
+    "toRdf-0071-in",  #       form as different, when comparing isomorphicly
     "toRdf-0035-in",
     "toRdf-0101-in",
     "fromRdf-0008-in",  # TODO: needs to disallow outer lists-of-lists
