@@ -6,9 +6,6 @@ This parser will interpret a JSON-LD document as an RDF Graph. See:
 
 Example usage::
 
-    >>> from rdflib.plugin import register, Parser
-    >>> register('json-ld', Parser, 'rdflib_jsonld.parser', 'JsonLDParser')
-
     >>> from rdflib import Graph, URIRef, Literal
     >>> test_json = '''
     ... {
