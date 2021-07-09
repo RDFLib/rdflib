@@ -18,8 +18,7 @@ def _preserving_nodeid(self, bnode_context=None):
 
 DEFAULT_PARSER_VERSION = 1.0
 
-W3CNTriplesParser.nodeid = _preserving_nodeid
-# .. and accept bnodes everywhere
+
 
 
 def do_test_json(suite_base, cat, num, inputpath, expectedpath, context, options):
@@ -60,7 +59,13 @@ def do_test_json(suite_base, cat, num, inputpath, expectedpath, context, options
 def do_test_parser(suite_base, cat, num, inputpath, expectedpath, context, options):
     input_uri = suite_base + inputpath
     input_obj = _load_json(inputpath)
-    expected_graph = _load_nquads(expectedpath)
+    old_nodeid = W3CNTriplesParser.nodeid
+    # monkey patch nodeid fn in NTriplesParser
+    W3CNTriplesParser.nodeid = _preserving_nodeid
+    try:
+        expected_graph = _load_nquads(expectedpath)
+    finally:
+        W3CNTriplesParser.nodeid = old_nodeid
     result_graph = ConjunctiveGraph()
     requested_version = options.get("specVersion")
     version = DEFAULT_PARSER_VERSION
@@ -85,7 +90,13 @@ def do_test_parser(suite_base, cat, num, inputpath, expectedpath, context, optio
 
 def do_test_serializer(suite_base, cat, num, inputpath, expectedpath, context, options):
     input_uri = suite_base + inputpath
-    input_graph = _load_nquads(inputpath)
+    old_nodeid = W3CNTriplesParser.nodeid
+    # monkey patch nodeid fn in NTriplesParser
+    W3CNTriplesParser.nodeid = _preserving_nodeid
+    try:
+        input_graph = _load_nquads(inputpath)
+    finally:
+        W3CNTriplesParser.nodeid = old_nodeid
     expected_json = _load_json(expectedpath)
     result_json = from_rdf(
         input_graph,
