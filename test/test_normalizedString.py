@@ -1,5 +1,7 @@
-from rdflib import *
+from rdflib import Literal
+from rdflib.namespace import XSD
 import unittest
+
 
 class test_normalisedString(unittest.TestCase):
     def test1(self):
@@ -13,10 +15,13 @@ class test_normalisedString(unittest.TestCase):
         self.assertFalse(Literal.eq(st,lit))
 
     def test3(self):
-        lit=Literal("hey\nthere", datatype=XSD.normalizedString).n3()
-        print(lit)
+        lit = Literal("hey\nthere", datatype=XSD.normalizedString).n3()
         self.assertTrue(lit=="\"hey there\"^^<http://www.w3.org/2001/XMLSchema#normalizedString>")
 
+    def test4(self):
+        lit = Literal("hey\nthere\ta tab\rcarriage return", datatype=XSD.normalizedString)
+        expected = Literal("""hey there a tab carriage return""", datatype=XSD.string)
+        self.assertEqual(str(lit), str(expected))
 
 
 if __name__ == "__main__":
