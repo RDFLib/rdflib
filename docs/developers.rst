@@ -11,7 +11,9 @@ developing RDFLib code.
 
 Please be as Pythonic as possible (:pep:`8`).
 
-Code will occasionally be auto-formatted using ``autopep8`` - you can also do this yourself.
+Code should be formatted using `black <https://github.com/psf/black>`_.
+While not yet mandatory, it will be required in the future  (6.0.0+).1
+Use Black v21.6b1, with the black.toml config file provided. 
 
 Any new functionality being added to RDFLib should have doc tests and
 unit tests. Tests should be added for any functionality being changed
@@ -20,6 +22,7 @@ tests should be run before committing changes to make sure the changes
 did not break anything.
 
 If you add a new cool feature, consider also adding an example in ``./examples``
+
 
 Running tests
 -------------
@@ -44,19 +47,25 @@ Writing documentation
 
 We use sphinx for generating HTML docs, see :ref:`docs`
 
-Continous Integration
+Continuous Integration
 ---------------------
 
-We used Travis for CI, see:
+We used Drone for CI, see:
 
-  https://travis-ci.org/RDFLib/rdflib
+  https://drone.rdflib.ashs.dev/RDFLib/rdflib
 
-If you make a pull-request to RDFLib on GitHub, travis will automatically test you code.
+If you make a pull-request to RDFLib on GitHub, Drone will automatically test your code and we will only merge code
+passing all tests.
+
+Please do *not* commit tests you know will fail, even if you're just pointing out a bug. If you commit such tests,
+flag them as expecting to fail.
 
 Compatibility
 -------------
 
-RDFLib>=5.0.0 tries to be compatible with python versions 2.7, 3.5, 3.6, 3.7.
+RDFLib 5.0.0 maintained compatibility with python versions 2.7, 3.4, 3.5, 3.6, 3.7.
+
+The latest 6.0.0 release and subsequent will only support Python 3.7 and newer.
 
 
 Releasing
@@ -79,7 +88,7 @@ If for whatever reason you don't want to take this approach, the old one is::
 
     Tagging the release commit with::
 
-      git tag -a -m 'tagged version' X.X.X
+      git tag -am 'tagged version' X.X.X
 
     When pushing, remember to do::
 
@@ -103,4 +112,4 @@ Set new dev version number in the above locations, i.e. next release `-dev`: ``5
 
 Tweet, email mailing list and update the topic of #rdflib on freenode irc::
 
-  /msg ChanServ topic #rdflib https://github.com/RDFLib/rdflib | latest stable version: 4.2.0 | docs: http://rdflib.readthedocs.org
+  /msg ChanServ topic #rdflib https://github.com/RDFLib/rdflib | latest stable version: 5.0.0 | docs: http://rdflib.readthedocs.org

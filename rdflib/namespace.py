@@ -1,14 +1,8 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import logging
 
-import os
 from unicodedata import category
 
-
-from urllib.request import pathname2url
+from pathlib import Path
 from urllib.parse import urldefrag
 from urllib.parse import urljoin
 
@@ -82,6 +76,7 @@ __all__ = [
     "DCTERMS",
     "DOAP",
     "FOAF",
+    "GEO",
     "ODRL2",
     "ORG",
     "OWL",
@@ -115,7 +110,11 @@ class Namespace(str):
     rdflib.term.URIRef(u'http://example.org/Person')
     >>> n['first-name'] # as item - for things that are not valid python identifiers
     rdflib.term.URIRef(u'http://example.org/first-name')
-
+    >>> n.Person in n
+    True
+    >>> n2 = Namespace("http://example2.org/")
+    >>> n.Person in n2
+    False
     """
 
     def __new__(cls, value):
@@ -144,6 +143,9 @@ class Namespace(str):
 
     def __repr__(self):
         return "Namespace(%r)" % str(self)
+    
+    def __contains__(self, ref):
+        return ref.startswith(self) # test namespace membership with "ref in ns" syntax
 
 
 class URIPattern(str):
@@ -180,7 +182,7 @@ class ClosedNamespace(object):
     """
     A namespace with a closed list of members
 
-    Trying to create terms not listen is an error
+    Trying to create terms not listed is an error
     """
 
     def __init__(self, uri, terms):
@@ -190,11 +192,10 @@ class ClosedNamespace(object):
             self.__uris[t] = URIRef(self.uri + t)
 
     def term(self, name):
-        uri = self.__uris.get(name)
-        if uri is None:
+        if name not in self.__uris:
             raise KeyError("term '{}' not in namespace '{}'".format(name, self.uri))
         else:
-            return uri
+            return self.__uris[name]
 
     def __getitem__(self, key, default=None):
         return self.term(key)
@@ -213,6 +214,15 @@ class ClosedNamespace(object):
 
     def __repr__(self):
         return "rdf.namespace.ClosedNamespace(%r)" % str(self.uri)
+
+    def __dir__(self):
+        return list(self._ClosedNamespace__uris)
+    
+    def __contains__(self, ref):
+        return ref in self.__uris.values() # test namespace membership with "ref in ns" syntax
+
+    def _ipython_key_completions_(self):
+        return dir(self.uri)
 
 
 class _RDFNamespace(ClosedNamespace):
@@ -289,53 +299,124 @@ FOAF = ClosedNamespace(
     terms=[
         # all taken from http://xmlns.com/foaf/spec/
         "Agent",
-        "Person",
-        "name",
-        "title",
-        "img",
-        "depiction",
-        "depicts",
-        "familyName",
-        "givenName",
-        "knows",
-        "based_near",
-        "age",
-        "made",
-        "maker",
-        "primaryTopic",
-        "primaryTopicOf",
-        "Project",
-        "Organization",
-        "Group",
-        "member",
         "Document",
+        "Group",
         "Image",
-        "nick",
-        "mbox",
-        "homepage",
-        "weblog",
-        "openid",
-        "jabberID",
-        "mbox_sha1sum",
-        "interest",
-        "topic_interest",
-        "topic",
-        "page",
-        "workplaceHomepage",
-        "workInfoHomepage",
-        "schoolHomepage",
-        "publications",
-        "currentProject",
-        "pastProject",
-        "account",
+        "LabelProperty",
         "OnlineAccount",
+        "OnlineChatAccount",
+        "OnlineEcommerceAccount",
+        "OnlineGamingAccount",
+        "Organization",
+        "Person",
+        "PersonalProfileDocument",
+        "Project",
+        "account",
         "accountName",
         "accountServiceHomepage",
-        "PersonalProfileDocument",
-        "tipjar",
-        "sha1",
-        "thumbnail",
+        "age",
+        "aimChatID",
+        "based_near",
+        "birthday",
+        "currentProject",
+        "depiction",
+        "depicts",
+        "dnaChecksum",
+        "familyName",
+        "family_name",
+        "firstName",
+        "focus",
+        "fundedBy",
+        "geekcode",
+        "gender",
+        "givenName",
+        "givenname",
+        "holdsAccount",
+        "homepage",
+        "icqChatID",
+        "img",
+        "interest",
+        "isPrimaryTopicOf",
+        "jabberID",
+        "knows",
+        "lastName",
         "logo",
+        "made",
+        "maker",
+        "mbox",
+        "mbox_sha1sum",
+        "member",
+        "membershipClass",
+        "msnChatID",
+        "myersBriggs",
+        "name",
+        "nick",
+        "openid",
+        "page",
+        "pastProject",
+        "phone",
+        "plan",
+        "primaryTopic",
+        "publications",
+        "schoolHomepage",
+        "sha1",
+        "skypeID",
+        "status",
+        "surname",
+        "theme",
+        "thumbnail",
+        "tipjar",
+        "title",
+        "topic",
+        "topic_interest",
+        "weblog",
+        "workInfoHomepage",
+        "workplaceHomepage",
+        "yahooChatID"
+    ],
+)
+GEO = ClosedNamespace(
+    uri=URIRef("http://www.opengis.net/ont/geosparql#"),
+    terms=[
+        "Feature",
+        "Geometry",
+        "SpatialObject",
+        "asGML",
+        "asWKT",
+        "coordinateDimension",
+        "defaultGeometry",
+        "dimension",
+        "ehContains",
+        "ehCoveredBy",
+        "ehCovers",
+        "ehDisjoint",
+        "ehEquals",
+        "ehInside",
+        "ehMeet",
+        "ehOverlap",
+        "gmlLiteral",
+        "hasGeometry",
+        "hasSerialization",
+        "isEmpty",
+        "isSimple",
+        "rcc8dc",
+        "rcc8ec",
+        "rcc8eq",
+        "rcc8ntpp",
+        "rcc8ntppi",
+        "rcc8po",
+        "rcc8tpp",
+        "rcc8tppi",
+        "sfContains",
+        "sfCrosses",
+        "sfDisjoint",
+        "sfEquals",
+        "sfIntersects",
+        "sfOverlaps",
+        "sfTouches",
+        "sfWithin",
+        "spatialDimension",
+        "wktLiteral",
     ],
 )
 ODRL2 = Namespace("http://www.w3.org/ns/odrl/2/")
@@ -345,87 +426,101 @@ PROF = Namespace("http://www.w3.org/ns/dx/prof/")
 PROV = ClosedNamespace(
     uri=URIRef("http://www.w3.org/ns/prov#"),
     terms=[
-        "Entity",
         "Activity",
+        "ActivityInfluence",
         "Agent",
-        "wasGeneratedBy",
-        "wasDerivedFrom",
-        "wasAttributedTo",
-        "startedAtTime",
-        "used",
-        "wasInformedBy",
-        "endedAtTime",
-        "wasAssociatedWith",
-        "actedOnBehalfOf",
-        "Collection",
-        "EmptyCollection",
+        "AgentInfluence",
+        "Association",
+        "Attribution",
         "Bundle",
-        "Person",
-        "SoftwareAgent",
-        "Organization",
-        "Location",
-        "alternateOf",
-        "specializationOf",
-        "generatedAtTime",
-        "hadPrimarySource",
-        "value",
-        "wasQuotedFrom",
-        "wasRevisionOf",
-        "invalidatedAtTime",
-        "wasInvalidatedBy",
-        "hadMember",
-        "wasStartedBy",
-        "wasEndedBy",
-        "invalidated",
-        "influenced",
-        "atLocation",
-        "generated",
-        "Influence",
-        "EntityInfluence",
-        "Usage",
-        "Start",
-        "End",
+        "Collection",
+        "Communication",
+        "Delegation",
         "Derivation",
+        "EmptyCollection",
+        "End",
+        "Entity",
+        "EntityInfluence",
+        "Generation",
+        "Influence",
+        "InstantaneousEvent",
+        "Invalidation",
+        "Location",
+        "Organization",
+        "Person",
+        "Plan",
         "PrimarySource",
         "Quotation",
         "Revision",
-        "ActivityInfluence",
-        "Generation",
-        "Communication",
-        "Invalidation",
-        "AgentInfluence",
-        "Attribution",
-        "Association",
-        "Plan",
-        "Delegation",
-        "InstantaneousEvent",
         "Role",
-        "wasInfluencedBy",
-        "qualifiedInfluence",
-        "qualifiedGeneration",
+        "SoftwareAgent",
+        "Start",
+        "Usage",
+        "actedOnBehalfOf",
+        "activity",
+        "agent",
+        "alternateOf",
+        "aq",
+        "atLocation",
+        "atTime",
+        "category",
+        "component",
+        "constraints",
+        "definition",
+        "dm",
+        "editorialNote",
+        "editorsDefinition",
+        "endedAtTime",
+        "entity",
+        "generated",
+        "generatedAtTime",
+        "hadActivity",
+        "hadGeneration",
+        "hadMember",
+        "hadPlan",
+        "hadPrimarySource",
+        "hadRole",
+        "hadUsage",
+        "influenced",
+        "influencer",
+        "invalidated",
+        "invalidatedAtTime",
+        "inverse",
+        "n",
+        "order",
+        "qualifiedAssociation",
+        "qualifiedAttribution",
+        "qualifiedCommunication",
+        "qualifiedDelegation",
         "qualifiedDerivation",
+        "qualifiedEnd",
+        "qualifiedForm",
+        "qualifiedGeneration",
+        "qualifiedInfluence",
+        "qualifiedInvalidation",
         "qualifiedPrimarySource",
         "qualifiedQuotation",
         "qualifiedRevision",
-        "qualifiedAttribution",
-        "qualifiedInvalidation",
         "qualifiedStart",
         "qualifiedUsage",
-        "qualifiedCommunication",
-        "qualifiedAssociation",
-        "qualifiedEnd",
-        "qualifiedDelegation",
-        "influencer",
-        "entity",
-        "hadUsage",
-        "hadGeneration",
-        "activity",
-        "agent",
-        "hadPlan",
-        "hadActivity",
-        "atTime",
-        "hadRole",
-    ],
+        "sharesDefinitionWith",
+        "specializationOf",
+        "startedAtTime",
+        "unqualifiedForm",
+        "used",
+        "value",
+        "wasAssociatedWith",
+        "wasAttributedTo",
+        "wasDerivedFrom",
+        "wasEndedBy",
+        "wasGeneratedBy",
+        "wasInfluencedBy",
+        "wasInformedBy",
+        "wasInvalidatedBy",
+        "wasQuotedFrom",
+        "wasRevisionOf",
+        "wasStartedBy"
+    ]
 )
 QB = Namespace("http://purl.org/linked-data/cube#")
 RDF = _RDFNamespace()
@@ -489,8 +584,8 @@ SKOS = ClosedNamespace(
         "relatedMatch",
     ],
 )
-SOSA = Namespace("http://www.w3.org/ns/ssn/")
-SSN = Namespace("http://www.w3.org/ns/sosa/")
+SSN = Namespace("http://www.w3.org/ns/ssn/")
+SOSA = Namespace("http://www.w3.org/ns/sosa/")
 TIME = Namespace("http://www.w3.org/2006/time#")
 VOID = Namespace("http://rdfs.org/ns/void#")
 XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
@@ -542,6 +637,13 @@ class NamespaceManager(object):
         self.bind("rdf", RDF)
         self.bind("rdfs", RDFS)
         self.bind("xsd", XSD)
+
+    def __contains__(self, ref):
+        # checks if a reference is in any of the managed namespaces with syntax
+        # "ref in manager". Note that we don't use "ref in ns", as 
+        # NamespaceManager.namespaces() returns Iterator[Tuple[str, URIRef]]
+        # rather than Iterator[Tuple[str, Namespace]]
+        return any(ref.startswith(ns) for prefix, ns in self.namespaces())
 
     def reset(self):
         self.__cache = {}
@@ -618,7 +720,7 @@ class NamespaceManager(object):
                 pl_namespace = get_longest_namespace(self.__strie[namespace], uri)
                 if pl_namespace is not None:
                     namespace = pl_namespace
-                    name = uri[len(namespace):]
+                    name = uri[len(namespace) :]
 
             namespace = URIRef(namespace)
             prefix = self.store.prefix(namespace)  # warning multiple prefixes problem
@@ -708,6 +810,9 @@ class NamespaceManager(object):
         # When documenting explain that override only applies in what cases
         if prefix is None:
             prefix = ""
+        elif " " in prefix:
+            raise KeyError("Prefixes may not contain spaces.")
+            
         bound_namespace = self.store.namespace(prefix)
         # Check if the bound_namespace contains a URI
         # and if so convert it into a URIRef for comparison
@@ -757,7 +862,7 @@ class NamespaceManager(object):
             yield prefix, namespace
 
     def absolutize(self, uri, defrag=1):
-        base = urljoin("file:", pathname2url(os.getcwd()))
+        base = Path.cwd().as_uri()
         result = urljoin("%s/" % base, uri, allow_fragments=not defrag)
         if defrag:
             result = urldefrag(result)[0]
@@ -804,7 +909,7 @@ class NamespaceManager(object):
 NAME_START_CATEGORIES = ["Ll", "Lu", "Lo", "Lt", "Nl"]
 SPLIT_START_CATEGORIES = NAME_START_CATEGORIES + ["Nd"]
 NAME_CATEGORIES = NAME_START_CATEGORIES + ["Mc", "Me", "Mn", "Lm", "Nd"]
-ALLOWED_NAME_CHARS = [u"\u00B7", u"\u0387", u"-", u".", u"_", u":"]
+ALLOWED_NAME_CHARS = ["\u00B7", "\u0387", "-", ".", "_", "%", "(", ")"]
 
 
 # http://www.w3.org/TR/REC-xml-names/#NT-NCName
@@ -821,7 +926,7 @@ def is_ncname(name):
             for i in range(1, len(name)):
                 c = name[i]
                 if not category(c) in NAME_CATEGORIES:
-                    if c != ":" and c in ALLOWED_NAME_CHARS:
+                    if c in ALLOWED_NAME_CHARS:
                         continue
                     return 0
                 # if in compatibility area

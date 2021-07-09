@@ -2,36 +2,20 @@
 Utility functions and objects to ease Python 2/3 compatibility,
 and different versions of support libraries.
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 import re
 import codecs
 import warnings
+import typing as t
 
-
-# clean ElementTree import
-try:
-    from lxml import etree
-except ImportError:
+if t.TYPE_CHECKING:
+    import xml.etree.ElementTree as etree
+else:
     try:
-        # Python 2.5
-        import xml.etree.cElementTree as etree
+        from lxml import etree
     except ImportError:
-        try:
-            # Python 2.5
-            import xml.etree.ElementTree as etree
-        except ImportError:
-            try:
-                # normal cElementTree install
-                import cElementTree as etree
-            except ImportError:
-                try:
-                    # normal ElementTree install
-                    import elementtree.ElementTree as etree
-                except ImportError:
-                    raise Exception("Failed to import ElementTree from any known place")
+        import xml.etree.ElementTree as etree
+
 
 try:
     etree_register_namespace = etree.register_namespace
@@ -98,7 +82,7 @@ if narrow_build:
 
 
 def decodeStringEscape(s):
-    """
+    r"""
     s is byte-string - replace \ escapes in string
     """
 
@@ -120,6 +104,11 @@ def decodeUnicodeEscape(s):
     s is a unicode string
     replace ``\\n`` and ``\\u00AC`` unicode escapes
     """
+    if "\\" not in s:
+        # Most of times, there are no backslashes in strings.
+        # In the general case, it could use maketrans and translate.
+        return s
+
     s = s.replace("\\t", "\t")
     s = s.replace("\\n", "\n")
     s = s.replace("\\r", "\r")

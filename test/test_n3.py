@@ -125,20 +125,20 @@ class TestN3Case(unittest.TestCase):
                 URIRef("http://example.com/people/Linda"),
             )
         )
-        s = g.serialize(base="http://example.com/", format="n3")
-        self.assertTrue("<people/Bob>".encode("latin-1") in s)
+        s = g.serialize(base="http://example.com/", format="n3", encoding="latin-1")
+        self.assertTrue(b"<people/Bob>" in s)
         g2 = ConjunctiveGraph()
         g2.parse(data=s, publicID="http://example.com/", format="n3")
         self.assertEqual(list(g), list(g2))
 
     def testIssue23(self):
-        input = """<http://example.com/article1> <http://example.com/title> "this word is in \u201Cquotes\u201D"."""
+        input = """<http://example.com/article1> <http://example.com/title> "this word is in \\u201Cquotes\\u201D"."""
 
         g = Graph()
         g.parse(data=input, format="n3")
 
         # Note difference in case of hex code, cwm allows lower-case
-        input = """<http://example.com/article1> <http://example.com/title> "this word is in \u201cquotes\u201d"."""
+        input = """<http://example.com/article1> <http://example.com/title> "this word is in \\u201cquotes\\u201d"."""
 
         g.parse(data=input, format="n3")
 

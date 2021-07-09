@@ -34,14 +34,14 @@ g.bind("skos", SKOS)
 g1 = Graph()
 g1 += g
 # @base should not be in output
-assert "@base" not in g.serialize(format="turtle").decode("utf-8")
+assert "@base" not in g.serialize(format="turtle")
 
 
 # 2. base one set for graph, no base set for serialization
 g2 = Graph(base=base_one)
 g2 += g
 # @base should be in output, from Graph (one)
-assert "@base <http://one.org/> ." in g2.serialize(format="turtle").decode("utf-8")
+assert "@base <http://one.org/> ." in g2.serialize(format="turtle")
 
 
 # 3. no base set for graph, base two set for serialization
@@ -50,7 +50,7 @@ g3 += g
 # @base should be in output, from serialization (two)
 assert "@base <http://two.org/> ." in g3.serialize(
     format="turtle", base=base_two
-).decode("utf-8")
+)
 
 
 # 4. base one set for graph, base two set for serialization, Graph one overrides
@@ -59,11 +59,11 @@ g4 += g
 # @base should be in output, from graph (one)
 assert "@base <http://two.org/> ." in g4.serialize(
     format="turtle", base=base_two
-).decode("utf-8")
+)
 # just checking that the serialization setting (two) hasn't snuck through
 assert "@base <http://one.org/> ." not in g4.serialize(
     format="turtle", base=base_two
-).decode("utf-8")
+)
 
 
 # 5. multiple serialization side effect checking
@@ -72,11 +72,11 @@ g5 += g
 # @base should be in output, from serialization (two)
 assert "@base <http://two.org/> ." in g5.serialize(
     format="turtle", base=base_two
-).decode("utf-8")
+)
 
 # checking for side affects - no base now set for this serialization
 # @base should not be in output
-assert "@base" not in g5.serialize(format="turtle").decode("utf-8")
+assert "@base" not in g5.serialize(format="turtle")
 
 
 # 6. checking results for RDF/XML
@@ -84,30 +84,22 @@ g6 = Graph()
 g6 += g
 g6.bind("dct", DCTERMS)
 g6.bind("skos", SKOS)
-assert "@xml:base" not in g6.serialize(format="xml").decode("utf-8")
-assert 'xml:base="http://one.org/"' in g6.serialize(format="xml", base=base_one).decode(
-    "utf-8"
-)
+assert "@xml:base" not in g6.serialize(format="xml")
+assert 'xml:base="http://one.org/"' in g6.serialize(format="xml", base=base_one)
 g6.base = base_two
-assert 'xml:base="http://two.org/"' in g6.serialize(format="xml").decode("utf-8")
-assert 'xml:base="http://one.org/"' in g6.serialize(format="xml", base=base_one).decode(
-    "utf-8"
-)
+assert 'xml:base="http://two.org/"' in g6.serialize(format="xml")
+assert 'xml:base="http://one.org/"' in g6.serialize(format="xml", base=base_one)
 
 # 7. checking results for N3
 g7 = Graph()
 g7 += g
 g7.bind("dct", DCTERMS)
 g7.bind("skos", SKOS)
-assert "@xml:base" not in g7.serialize(format="xml").decode("utf-8")
-assert "@base <http://one.org/> ." in g7.serialize(format="n3", base=base_one).decode(
-    "utf-8"
-)
+assert "@xml:base" not in g7.serialize(format="xml")
+assert "@base <http://one.org/> ." in g7.serialize(format="n3", base=base_one)
 g7.base = base_two
-assert "@base <http://two.org/> ." in g7.serialize(format="n3").decode("utf-8")
-assert "@base <http://one.org/> ." in g7.serialize(format="n3", base=base_one).decode(
-    "utf-8"
-)
+assert "@base <http://two.org/> ." in g7.serialize(format="n3")
+assert "@base <http://one.org/> ." in g7.serialize(format="n3", base=base_one)
 
 # 8. checking results for TriX & TriG
 # TriX can specify a base per graph but setting a base for the whole
@@ -122,12 +114,12 @@ g9 += g
 g9.base = base_two
 ds1.base = base_three
 
-trix = ds1.serialize(format="trix", base=Namespace("http://two.org/")).decode("utf-8")
+trix = ds1.serialize(format="trix", base=Namespace("http://two.org/"))
 assert '<graph xml:base="http://one.org/">' in trix
 assert '<graph xml:base="http://two.org/">' in trix
 assert '<TriX xml:base="http://two.org/"' in trix
 
-trig = ds1.serialize(format="trig", base=Namespace("http://two.org/")).decode("utf-8")
+trig = ds1.serialize(format="trig", base=Namespace("http://two.org/"))
 assert "@base <http://one.org/> ." not in trig
 assert "@base <http://three.org/> ." not in trig
 assert "@base <http://two.org/> ." in trig

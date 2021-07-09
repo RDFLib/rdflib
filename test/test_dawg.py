@@ -1,4 +1,3 @@
-from __future__ import print_function
 import sys
 
 # Needed to pass
@@ -7,27 +6,12 @@ import sys
 sys.setrecursionlimit(6000)  # default is 1000
 
 
-try:
-    from collections import Counter
-except:
-
-    # cheap Counter impl for py 2.5
-    # not a complete implementation - only good enough for the use here!
-    from collections import defaultdict
-    from operator import itemgetter
-
-    class Counter(defaultdict):
-        def __init__(self):
-            defaultdict.__init__(self, int)
-
-        def most_common(self, N):
-            return [
-                x[0] for x in sorted(self.items(), key=itemgetter(1), reverse=True)[:10]
-            ]
+from collections import Counter
 
 
 import datetime
 import isodate
+import typing
 
 
 from rdflib import Dataset, Graph, URIRef, BNode
@@ -102,8 +86,8 @@ DETAILEDASSERT = True
 
 NAME = None
 
-fails = Counter()
-errors = Counter()
+fails: typing.Counter[str] = Counter()
+errors: typing.Counter[str] = Counter()
 
 failed_tests = []
 error_tests = []
@@ -123,7 +107,7 @@ try:
             ]
         )
 except IOError:
-    skiptests = set()
+    skiptests = dict()
 
 
 def _fmt(f):
@@ -607,8 +591,8 @@ if __name__ == "__main__":
 
     print("Most common fails:")
     for failed in fails.most_common(10):
-        failed = str(failed)
-        print(failed[:450] + (failed[450:] and "..."))
+        failed_str = str(failed)
+        print(failed_str[:450] + (failed_str[450:] and "..."))
 
     print("\n----------------------------------------------------\n")
 

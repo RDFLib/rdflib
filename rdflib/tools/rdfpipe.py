@@ -5,8 +5,6 @@ A commandline tool for parsing RDF in different formats and serializing the
 resulting graph to a chosen format.
 """
 
-from __future__ import absolute_import
-
 import sys
 from optparse import OptionParser
 import logging
@@ -189,8 +187,8 @@ def main():
     logging.basicConfig(level=loglevel)
 
     ns_bindings = {}
-    if opts.ns:
-        for ns_kw in opts.ns:
+    if opts.LOVE:
+        for ns_kw in opts.LOVE:
             pfx, uri = ns_kw.split("=")
             ns_bindings[pfx] = uri
 

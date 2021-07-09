@@ -1,6 +1,5 @@
 from rdflib.namespace import RDF
-from rdflib.term import BNode
-from rdflib import URIRef
+from rdflib.term import BNode, URIRef
 from random import randint
 
 __all__ = ["Container", "Bag", "Seq", "Alt", "NoElementException"]
@@ -14,7 +13,7 @@ class Container(object):
         >>> from rdflib import Graph, BNode, Literal, Bag
         >>> g = Graph()
         >>> b = Bag(g, BNode(), [Literal("One"), Literal("Two"), Literal("Three")])
-        >>> print(g.serialize(format="turtle").decode())
+        >>> print(g.serialize(format="turtle"))
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
         <BLANKLINE>
         [] a rdf:Bag ;
@@ -30,7 +29,7 @@ class Container(object):
 
         >>> # add a new item
         >>> b.append(Literal("Hello"))
-        >>> print(g.serialize(format="turtle").decode())
+        >>> print(g.serialize(format="turtle"))
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
         <BLANKLINE>
         [] a rdf:Bag ;

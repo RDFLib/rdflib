@@ -60,7 +60,7 @@ WHERE {?n3Doc a log:N3Document }"""
 
 class GraphAggregates1(unittest.TestCase):
     def setUp(self):
-        memStore = plugin.get("IOMemory", Store)()
+        memStore = plugin.get("Memory", Store)()
         self.graph1 = Graph(memStore)
         self.graph2 = Graph(memStore)
         self.graph3 = Graph(memStore)
@@ -109,7 +109,7 @@ class GraphAggregates2(unittest.TestCase):
     sparql = True
 
     def setUp(self):
-        memStore = plugin.get("IOMemory", Store)()
+        memStore = plugin.get("Memory", Store)()
         self.graph1 = Graph(memStore, URIRef("http://example.com/graph1"))
         self.graph2 = Graph(memStore, URIRef("http://example.com/graph2"))
         self.graph3 = Graph(memStore, URIRef("http://example.com/graph3"))

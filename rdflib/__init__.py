@@ -45,8 +45,8 @@ A tiny example:
 __docformat__ = "restructuredtext en"
 
 # The format of the __version__ line is matched by a regex in setup.py
-__version__ = "5.0.0"
-__date__ = "2020-04-18"
+__version__ = "6.0.0-alpha"
+__date__ = "2021-03-22"
 
 __all__ = [
     "URIRef",
@@ -82,35 +82,6 @@ __all__ = [
     "XSD",
     "util",
 ]
-
-import sys
-
-import logging
-
-logger = logging.getLogger(__name__)
-_interactive_mode = False
-try:
-    import __main__
-
-    if not hasattr(__main__, "__file__") and sys.stdout is not None and sys.stderr.isatty():
-        # show log messages in interactive mode
-        _interactive_mode = True
-        logger.setLevel(logging.INFO)
-        logger.addHandler(logging.StreamHandler())
-    del __main__
-except ImportError:
-    # Main already imported from elsewhere
-    import warnings
-
-    warnings.warn("__main__ already imported", ImportWarning)
-    del warnings
-
-if _interactive_mode:
-    logger.info("RDFLib Version: %s" % __version__)
-else:
-    logger.debug("RDFLib Version: %s" % __version__)
-del _interactive_mode
-del sys
 
 
 NORMALIZE_LITERALS = True

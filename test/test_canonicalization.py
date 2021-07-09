@@ -3,7 +3,7 @@ from rdflib import Graph, RDF, BNode, URIRef, Namespace, ConjunctiveGraph, Liter
 from rdflib.compare import to_isomorphic, to_canonical_graph
 
 import rdflib
-from rdflib.plugins.memory import IOMemory
+from rdflib.plugins.stores.memory import Memory
 
 from io import StringIO
 
@@ -201,13 +201,13 @@ def test_issue494_collapsing_bnodes():
     """Test for https://github.com/RDFLib/rdflib/issues/494 collapsing BNodes"""
     g = Graph()
     g += [
-        (BNode("Na1a8fbcf755f41c1b5728f326be50994"), RDF["object"], URIRef(u"source")),
+        (BNode("Na1a8fbcf755f41c1b5728f326be50994"), RDF["object"], URIRef("source")),
         (BNode("Na1a8fbcf755f41c1b5728f326be50994"), RDF["predicate"], BNode("vcb3")),
         (BNode("Na1a8fbcf755f41c1b5728f326be50994"), RDF["subject"], BNode("vcb2")),
         (BNode("Na1a8fbcf755f41c1b5728f326be50994"), RDF["type"], RDF["Statement"]),
-        (BNode("Na713b02f320d409c806ff0190db324f4"), RDF["object"], URIRef(u"target")),
+        (BNode("Na713b02f320d409c806ff0190db324f4"), RDF["object"], URIRef("target")),
         (BNode("Na713b02f320d409c806ff0190db324f4"), RDF["predicate"], BNode("vcb0")),
-        (BNode("Na713b02f320d409c806ff0190db324f4"), RDF["subject"], URIRef(u"source")),
+        (BNode("Na713b02f320d409c806ff0190db324f4"), RDF["subject"], URIRef("source")),
         (BNode("Na713b02f320d409c806ff0190db324f4"), RDF["type"], RDF["Statement"]),
         (BNode("Ndb804ba690a64b3dbb9063c68d5e3550"), RDF["object"], BNode("vr0KcS4")),
         (
@@ -215,15 +215,15 @@ def test_issue494_collapsing_bnodes():
             RDF["predicate"],
             BNode("vrby3JV"),
         ),
-        (BNode("Ndb804ba690a64b3dbb9063c68d5e3550"), RDF["subject"], URIRef(u"source")),
+        (BNode("Ndb804ba690a64b3dbb9063c68d5e3550"), RDF["subject"], URIRef("source")),
         (BNode("Ndb804ba690a64b3dbb9063c68d5e3550"), RDF["type"], RDF["Statement"]),
-        (BNode("Ndfc47fb1cd2d4382bcb8d5eb7835a636"), RDF["object"], URIRef(u"source")),
+        (BNode("Ndfc47fb1cd2d4382bcb8d5eb7835a636"), RDF["object"], URIRef("source")),
         (BNode("Ndfc47fb1cd2d4382bcb8d5eb7835a636"), RDF["predicate"], BNode("vcb5")),
-        (BNode("Ndfc47fb1cd2d4382bcb8d5eb7835a636"), RDF["subject"], URIRef(u"target")),
+        (BNode("Ndfc47fb1cd2d4382bcb8d5eb7835a636"), RDF["subject"], URIRef("target")),
         (BNode("Ndfc47fb1cd2d4382bcb8d5eb7835a636"), RDF["type"], RDF["Statement"]),
-        (BNode("Nec6864ef180843838aa9805bac835c98"), RDF["object"], URIRef(u"source")),
+        (BNode("Nec6864ef180843838aa9805bac835c98"), RDF["object"], URIRef("source")),
         (BNode("Nec6864ef180843838aa9805bac835c98"), RDF["predicate"], BNode("vcb4")),
-        (BNode("Nec6864ef180843838aa9805bac835c98"), RDF["subject"], URIRef(u"source")),
+        (BNode("Nec6864ef180843838aa9805bac835c98"), RDF["subject"], URIRef("source")),
         (BNode("Nec6864ef180843838aa9805bac835c98"), RDF["type"], RDF["Statement"]),
     ]
 
@@ -287,7 +287,7 @@ def test_issue682_signing_named_graphs():
     cmary = URIRef("http://love.com/lovers/mary#")
     cjohn = URIRef("http://love.com/lovers/john#")
 
-    store = IOMemory()
+    store = Memory()
 
     g = ConjunctiveGraph(store=store)
     g.bind("love", ns)
@@ -314,103 +314,103 @@ def test_issue725_collapsing_bnodes_2():
     g += [
         (
             BNode("N0a76d42406b84fe4b8029d0a7fa04244"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#object"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#object"),
             BNode("v2"),
         ),
         (
             BNode("N0a76d42406b84fe4b8029d0a7fa04244"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate"),
             BNode("v0"),
         ),
         (
             BNode("N0a76d42406b84fe4b8029d0a7fa04244"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#subject"),
-            URIRef(u"urn:gp_learner:fixed_var:target"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#subject"),
+            URIRef("urn:gp_learner:fixed_var:target"),
         ),
         (
             BNode("N0a76d42406b84fe4b8029d0a7fa04244"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement"),
         ),
         (
             BNode("N2f62af5936b94a8eb4b1e4bfa8e11d95"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#object"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#object"),
             BNode("v1"),
         ),
         (
             BNode("N2f62af5936b94a8eb4b1e4bfa8e11d95"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate"),
             BNode("v0"),
         ),
         (
             BNode("N2f62af5936b94a8eb4b1e4bfa8e11d95"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#subject"),
-            URIRef(u"urn:gp_learner:fixed_var:target"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#subject"),
+            URIRef("urn:gp_learner:fixed_var:target"),
         ),
         (
             BNode("N2f62af5936b94a8eb4b1e4bfa8e11d95"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement"),
         ),
         (
             BNode("N5ae541f93e1d4e5880450b1bdceb6404"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#object"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#object"),
             BNode("v5"),
         ),
         (
             BNode("N5ae541f93e1d4e5880450b1bdceb6404"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate"),
             BNode("v4"),
         ),
         (
             BNode("N5ae541f93e1d4e5880450b1bdceb6404"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#subject"),
-            URIRef(u"urn:gp_learner:fixed_var:target"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#subject"),
+            URIRef("urn:gp_learner:fixed_var:target"),
         ),
         (
             BNode("N5ae541f93e1d4e5880450b1bdceb6404"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement"),
         ),
         (
             BNode("N86ac7ca781f546ae939b8963895f672e"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#object"),
-            URIRef(u"urn:gp_learner:fixed_var:source"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#object"),
+            URIRef("urn:gp_learner:fixed_var:source"),
         ),
         (
             BNode("N86ac7ca781f546ae939b8963895f672e"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate"),
             BNode("v0"),
         ),
         (
             BNode("N86ac7ca781f546ae939b8963895f672e"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#subject"),
-            URIRef(u"urn:gp_learner:fixed_var:target"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#subject"),
+            URIRef("urn:gp_learner:fixed_var:target"),
         ),
         (
             BNode("N86ac7ca781f546ae939b8963895f672e"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement"),
         ),
         (
             BNode("Nac82b883ca3849b5ab6820b7ac15e490"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#object"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#object"),
             BNode("v1"),
         ),
         (
             BNode("Nac82b883ca3849b5ab6820b7ac15e490"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate"),
             BNode("v3"),
         ),
         (
             BNode("Nac82b883ca3849b5ab6820b7ac15e490"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#subject"),
-            URIRef(u"urn:gp_learner:fixed_var:target"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#subject"),
+            URIRef("urn:gp_learner:fixed_var:target"),
         ),
         (
             BNode("Nac82b883ca3849b5ab6820b7ac15e490"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-            URIRef(u"http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement"),
         ),
     ]
 

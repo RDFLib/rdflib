@@ -37,8 +37,8 @@ class IdentifierEquality(unittest.TestCase):
         self.uriref = URIRef("http://example.org/")
         self.bnode = BNode()
         self.literal = Literal("http://example.org/")
-        self.python_literal = u"http://example.org/"
-        self.python_literal_2 = u"foo"
+        self.python_literal = "http://example.org/"
+        self.python_literal_2 = "foo"
 
     def testA(self):
         self.assertEqual(self.uriref == self.literal, False)

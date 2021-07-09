@@ -4,7 +4,7 @@ from io import BytesIO, StringIO
 from rdflib import URIRef, Literal
 from rdflib.graph import Graph
 
-rdf = u"""@prefix skos:
+rdf = """@prefix skos:
 <http://www.w3.org/2004/02/skos/core#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix : <http://www.test.org/#> .
@@ -33,7 +33,7 @@ def test_a():
         subject=URIRef("http://www.test.org/#CI"),
         predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
     )
-    assert v == Literal(u"C\u00f4te d'Ivoire", lang="fr")
+    assert v == Literal("C\u00f4te d'Ivoire", lang="fr")
 
 
 def test_b():
@@ -44,7 +44,7 @@ def test_b():
         subject=URIRef("http://www.test.org/#CI"),
         predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
     )
-    assert v == Literal(u"C\u00f4te d'Ivoire", lang="fr")
+    assert v == Literal("C\u00f4te d'Ivoire", lang="fr")
 
 
 def test_c():
@@ -56,7 +56,7 @@ def test_c():
         subject=URIRef("http://www.test.org/#CI"),
         predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
     )
-    assert v == Literal(u"C\u00f4te d'Ivoire", lang="fr")
+    assert v == Literal("C\u00f4te d'Ivoire", lang="fr")
 
 
 def test_d():
@@ -67,7 +67,7 @@ def test_d():
         subject=URIRef("http://www.test.org/#CI"),
         predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
     )
-    assert v == Literal(u"C\u00f4te d'Ivoire", lang="fr")
+    assert v == Literal("C\u00f4te d'Ivoire", lang="fr")
 
 
 def test_e():
@@ -78,11 +78,11 @@ def test_e():
         subject=URIRef("http://www.test.org/#CI"),
         predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
     )
-    assert v == Literal(u"C\u00f4te d'Ivoire", lang="fr")
+    assert v == Literal("C\u00f4te d'Ivoire", lang="fr")
 
 
 # this is unicode
-rdfxml = u"""<?xml version="1.0" encoding="UTF-8"?>
+rdfxml = """<?xml version="1.0" encoding="UTF-8"?>
 <rdf:RDF
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
@@ -109,7 +109,7 @@ def test_xml_a():
         subject=URIRef("http://www.test.org/#CI"),
         predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
     )
-    assert v == Literal(u"C\u00f4te d'Ivoire", lang="fr")
+    assert v == Literal("C\u00f4te d'Ivoire", lang="fr")
 
 
 def test_xml_b():
@@ -120,7 +120,7 @@ def test_xml_b():
         subject=URIRef("http://www.test.org/#CI"),
         predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
     )
-    assert v == Literal(u"C\u00f4te d'Ivoire", lang="fr")
+    assert v == Literal("C\u00f4te d'Ivoire", lang="fr")
 
 
 # The following two cases are currently not supported by Graph.parse
@@ -147,4 +147,4 @@ def test_xml_e():
         subject=URIRef("http://www.test.org/#CI"),
         predicate=URIRef("http://www.w3.org/2004/02/skos/core#prefLabel"),
     )
-    assert v == Literal(u"C\u00f4te d'Ivoire", lang="fr")
+    assert v == Literal("C\u00f4te d'Ivoire", lang="fr")

@@ -1,0 +1,73 @@
+---
+kind: pipeline
+name: python-3-7
+type: docker
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: test
+  image: python:3.7
+  environment:
+    COVERALLS_SERVICE_NAME: RDFLib-Drone
+    COVERALLS_REPO_TOKEN:
+      from_secret: coveralls_token
+  commands:
+  - export COVERALLS_SERVICE_NUMBER="$DRONE_BUILD_NUMBER"
+  - export COVERALLS_SERVICE_JOB_ID="$DRONE_STAGE_NAME"
+  - export COVERALLS_SERVICE_JOB_NUMBER="$DRONE_BUILD_NUMBER"
+  - export COVERALLS_FLAG_NAME="$DRONE_STAGE_KIND"
+  - export COVERALLS_GIT_REPO="$DRONE_REPO_NAME"
+  - export COVERALLS_GIT_BRANCH="$DRONE_SOURCE_BRANCH"
+  - export CI_BRANCH="$DRONE_SOURCE_BRANCH"
+  - bash .travis.fuseki_install_optional.sh
+  - pip install --default-timeout 60 -r requirements.txt
+  - pip install --default-timeout 60 -r requirements.dev.txt
+  - pip install --default-timeout 60 coveralls && export HAS_COVERALLS=1
+  - python setup.py install
+  - black --config black.toml --check ./rdflib | true
+  - flake8 --exit-zero rdflib
+  - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42 --with-coverage --cover-tests --cover-package=rdflib
+  - coverage report --skip-covered
+  - coveralls
+
+---
+kind: pipeline
+name: python-3-8
+type: docker
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: test
+  image: python:3.8
+  commands:
+  - bash .travis.fuseki_install_optional.sh
+  - pip install --default-timeout 60 -r requirements.txt
+  - pip install --default-timeout 60 -r requirements.dev.txt
+  - python setup.py install
+  - black --config black.toml --check ./rdflib | true
+  - flake8 --exit-zero rdflib
+  - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42
+
+---
+kind: pipeline
+name: python-3-9
+type: docker
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: test
+  image: python:3.9
+  commands:
+  - bash .travis.fuseki_install_optional.sh
+  - pip install --default-timeout 60 -r requirements.txt
+  - pip install --default-timeout 60 -r requirements.dev.txt
+  - python setup.py install
+  - black --config black.toml --check ./rdflib | true
+  - flake8 --exit-zero rdflib
+  - PYTHONWARNINGS=default nosetests --with-timer --timer-top-n 42

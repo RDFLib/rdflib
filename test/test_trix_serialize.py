@@ -39,7 +39,7 @@ class TestTrixSerialize(unittest.TestCase):
         r3 = URIRef("resource:3")
         g.add((r3, label, Literal(4)))
 
-        r = g.serialize(format="trix")
+        r = g.serialize(format="trix", encoding="utf-8")
         g3 = ConjunctiveGraph()
 
         g3.parse(BytesIO(r), format="trix")
@@ -86,7 +86,7 @@ class TestTrixSerialize(unittest.TestCase):
 
         graph = ConjunctiveGraph()
         graph.bind(None, "http://defaultnamespace")
-        sg = graph.serialize(format="trix").decode("UTF-8")
+        sg = graph.serialize(format="trix")
         self.assertTrue('xmlns="http://defaultnamespace"' not in sg, sg)
         self.assertTrue('xmlns="http://www.w3.org/2004/03/trix/trix-1/' in sg, sg)
 

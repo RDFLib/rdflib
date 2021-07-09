@@ -15,7 +15,7 @@ class RDFResult(Result):
 
         if not isinstance(source, Graph):
             graph = Graph()
-            graph.load(source, **kwargs)
+            graph.parse(source, **kwargs)
         else:
             graph = source
 
