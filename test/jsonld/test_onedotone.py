@@ -19,16 +19,10 @@ unsupported_tests += ("html",)
 unsupported_tests += ("fromRdf",)  # The JSON-LD 1.1 enhancement applies to parsing only
 
 known_bugs = (
-    # invalid nquads (bnode as predicate)
-    # "toRdf-0078-in", "toRdf-0108-in",
     # TODO: Literal doesn't preserve representations
     "fromRdf/0002-in",
     # RDflib does not print Integer with scientific notation
-    "toRdf/0022-in",  # TODO: RDFLib considers Doubles with Different input-Lexical
-    "toRdf/0071-in",  #       form as different, when comparing isomorphicly
-    "toRdf/e031-in",  #       using the literal __hash__ function
     "toRdf/0035-in",
-    # tordf-0118-in
     # TODO: "http:g" should serialize to "http:g", not "//g"
     "toRdf/0120-in",
     "toRdf/0121-in",
@@ -69,7 +63,7 @@ known_bugs = (
     "toRdf/e080-in", "toRdf/e092-in", "toRdf/e093-in", "toRdf/e094-in", "toRdf/e104-in", "toRdf/e108-in",
     # TODO: Odd result in list expansion
     "toRdf/e105-in", "toRdf/e107-in",
-    # no expantContent option?
+    # no expandContent option?
     "toRdf/e077-in",
     # TODO: Investigate:
     "toRdf/e111-in", "toRdf/e112-in", "toRdf/e119-in", "toRdf/e120-in", "toRdf/e122-in",
@@ -81,7 +75,7 @@ known_bugs = (
     "toRdf/e125-in",
     # Recursive Inclusion triggered!
     "toRdf/e128-in",
-    # JSON double representation
+    # JSON-native double representation
     "toRdf/js04-in", "toRdf/js10-in",
     # JSON character escaping
     "toRdf/js12-in", "toRdf/js13-in",

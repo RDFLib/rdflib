@@ -18,15 +18,13 @@ known_bugs = (
     # "toRdf-0078-in", "toRdf-0108-in",
     # TODO: Literal doesn't preserve representations
     "fromRdf-0002-in",
-    "toRdf-0022-in",  # TODO: RDFLib considers Doubles with Different input-Lexical
-    "toRdf-0071-in",  #       form as different, when comparing isomorphicly
     "toRdf-0035-in",
-    "toRdf-0101-in",
+    "toRdf-0101-in",  # Literal doesn't preserve representations
     "fromRdf-0008-in",  # TODO: needs to disallow outer lists-of-lists
-    # "toRdf-0091-in", # TODO: multiple aliases version?
-    # TODO: check that these are corrected in 1.1 testsuite (1.0-deprecated prefix forms)
+    # # "toRdf-0091-in", # TODO: multiple aliases version?
+    # # TODO: check that these are corrected in 1.1 testsuite (1.0-deprecated prefix forms)
     "toRdf-0088-in",
-    "toRdf-0118-in",
+    "toRdf-0118-in", # RDFLib cannot do generalized graphs
 )
 
 TC_BASE = "https://w3c.github.io/json-ld-api/tests/"
