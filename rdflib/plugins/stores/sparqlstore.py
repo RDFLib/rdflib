@@ -25,7 +25,7 @@ ORDERBY = "ORDER BY"
 
 BNODE_IDENT_PATTERN = re.compile(r"(?P<label>_\:[^\s]+)")
 
-NoteToSparql = Callable[..., str]
+NodeToSparql = Callable[..., str]
 
 
 def _node_to_sparql(node) -> str:
@@ -99,7 +99,7 @@ class SPARQLStore(SPARQLConnector, Store):  # type: ignore[misc]
         query_endpoint: str = None,
         sparql11: bool = True,
         context_aware: bool = True,
-        node_to_sparql: NoteToSparql = _node_to_sparql,
+        node_to_sparql: NodeToSparql = _node_to_sparql,
         returnFormat: str = "xml",
         auth: Optional[Tuple[str, str]] = None,
         **sparqlconnector_kwargs
