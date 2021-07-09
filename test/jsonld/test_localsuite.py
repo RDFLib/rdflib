@@ -1,4 +1,5 @@
-from os import environ, chdir, path as p
+import os
+from os import environ, chdir, getcwd, path as p
 import json
 from . import runner
 
@@ -24,13 +25,17 @@ def read_manifest():
 
 
 def test_suite():
+    old_cwd = getcwd()
     chdir(testsuite_dir)
-    for cat, num, inputpath, expectedpath, context, options in read_manifest():
-        if inputpath.endswith(".jsonld"):  # toRdf
-            if expectedpath.endswith(".jsonld"):  # compact/expand/flatten
-                func = runner.do_test_json
-            else:  # toRdf
-                func = runner.do_test_parser
-        else:  # fromRdf
-            func = runner.do_test_serializer
-        yield func, TC_BASE, cat, num, inputpath, expectedpath, context, options
+    try:
+        for cat, num, inputpath, expectedpath, context, options in read_manifest():
+            if inputpath.endswith(".jsonld"):  # toRdf
+                if expectedpath.endswith(".jsonld"):  # compact/expand/flatten
+                    func = runner.do_test_json
+                else:  # toRdf
+                    func = runner.do_test_parser
+            else:  # fromRdf
+                func = runner.do_test_serializer
+            yield func, TC_BASE, cat, num, inputpath, expectedpath, context, options
+    finally:
+        chdir(old_cwd)

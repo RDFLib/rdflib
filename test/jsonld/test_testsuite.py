@@ -1,4 +1,4 @@
-from os import environ, chdir, path as p
+from os import environ, chdir, getcwd, path as p
 import json
 import rdflib
 import rdflib.plugins.parsers.jsonld as parser
@@ -79,24 +79,26 @@ def read_manifest(skiptests):
 def test_suite(skip_known_bugs=True):
     default_allow = rdflib.plugins.parsers.jsonld.ALLOW_LISTS_OF_LISTS
     rdflib.plugins.parsers.jsonld.ALLOW_LISTS_OF_LISTS = allow_lists_of_lists
-
     skiptests = unsupported_tests
     if skip_known_bugs:
         skiptests += known_bugs
+    old_cwd = getcwd()
     chdir(test_dir)
     runner.DEFAULT_PARSER_VERSION = 1.0
-    for cat, num, inputpath, expectedpath, context, options in read_manifest(skiptests):
-        if inputpath.endswith(".jsonld"):  # toRdf
-            if expectedpath.endswith(".jsonld"):  # compact/expand/flatten
-                func = runner.do_test_json
-            else:  # toRdf
-                func = runner.do_test_parser
-        else:  # fromRdf
-            func = runner.do_test_serializer
-        # func.description = "%s-%s-%s" % (group, case)
-        yield func, TC_BASE, cat, num, inputpath, expectedpath, context, options
-
-    rdflib.plugins.parsers.jsonld.ALLOW_LISTS_OF_LISTS = default_allow
+    try:
+        for cat, num, inputpath, expectedpath, context, options in read_manifest(skiptests):
+            if inputpath.endswith(".jsonld"):  # toRdf
+                if expectedpath.endswith(".jsonld"):  # compact/expand/flatten
+                    func = runner.do_test_json
+                else:  # toRdf
+                    func = runner.do_test_parser
+            else:  # fromRdf
+                func = runner.do_test_serializer
+            # func.description = "%s-%s-%s" % (group, case)
+            yield func, TC_BASE, cat, num, inputpath, expectedpath, context, options
+    finally:
+        rdflib.plugins.parsers.jsonld.ALLOW_LISTS_OF_LISTS = default_allow
+        chdir(old_cwd)
 
 
 if __name__ == "__main__":

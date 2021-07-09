@@ -1,4 +1,4 @@
-from os import environ, chdir, path as p
+from os import environ, chdir, getcwd, path as p
 import json
 from . import runner
 
@@ -155,18 +155,22 @@ def test_suite():
     skiptests = unsupported_tests
     if SKIP_KNOWN_BUGS:
         skiptests += known_bugs
+    old_cwd = getcwd()
     chdir(test_dir)
-    for cat, num, inputpath, expectedpath, context, options in read_manifest(skiptests):
-        if options:
-            if SKIP_1_0_TESTS and "specVersion" in options and str(options["specVersion"]).lower() == "json-ld-1.0":
-                # Skip the JSON v1.0 tests
-                continue
-        if inputpath.endswith(".jsonld"):  # toRdf
-            if expectedpath.endswith(".jsonld"):  # compact/expand/flatten
-                func = runner.do_test_json
-            else:  # toRdf
-                func = runner.do_test_parser
-        else:  # fromRdf
-            func = runner.do_test_serializer
-        yield func, TC_BASE, cat, num, inputpath, expectedpath, context, options
+    try:
+        for cat, num, inputpath, expectedpath, context, options in read_manifest(skiptests):
+            if options:
+                if SKIP_1_0_TESTS and "specVersion" in options and str(options["specVersion"]).lower() == "json-ld-1.0":
+                    # Skip the JSON v1.0 tests
+                    continue
+            if inputpath.endswith(".jsonld"):  # toRdf
+                if expectedpath.endswith(".jsonld"):  # compact/expand/flatten
+                    func = runner.do_test_json
+                else:  # toRdf
+                    func = runner.do_test_parser
+            else:  # fromRdf
+                func = runner.do_test_serializer
+            yield func, TC_BASE, cat, num, inputpath, expectedpath, context, options
+    finally:
+        chdir(old_cwd)
 
