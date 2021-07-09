@@ -24,6 +24,7 @@ underlying Graph:
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+import re
 
 # from __future__ import unicode_literals
 from fractions import Fraction
@@ -579,9 +580,11 @@ class Literal(Identifier):
         if isinstance(lexical_or_value, bytes):
             lexical_or_value = lexical_or_value.decode("utf-8")
 
-        # check if datatype=xsd:normalizedString
-        if datatype == _XSD_NORMALISED_STRING:
+        if datatype in (_XSD_NORMALISED_STRING, _XSD_TOKEN):
             lexical_or_value = _normalise_XSD_STRING(lexical_or_value)
+
+        if datatype in (_XSD_TOKEN, ):
+            lexical_or_value = _strip_and_collapse_whitespace(lexical_or_value)
 
         try:
             inst = str.__new__(cls, lexical_or_value)
@@ -1429,6 +1432,7 @@ _RDF_HTMLLITERAL = URIRef(_RDF_PFX + "HTML")
 
 _XSD_STRING = URIRef(_XSD_PFX + "string")
 _XSD_NORMALISED_STRING = URIRef(_XSD_PFX + "normalizedString")
+_XSD_TOKEN = URIRef(_XSD_PFX + "token")
 
 _XSD_FLOAT = URIRef(_XSD_PFX + "float")
 _XSD_DOUBLE = URIRef(_XSD_PFX + "double")
@@ -1636,17 +1640,20 @@ def _castLexicalToPython(lexical, datatype):
         return None
 
 
-def _normalise_XSD_STRING(st):
+def _normalise_XSD_STRING(lexical_or_value):
     """
     Replaces \t, \n, \r (#x9 (tab), #xA (linefeed), and #xD (carriage return)) with space without any whitespace collapsing
     """
-    if isinstance(st,str):
-        try:
-            return st.replace('\t',' ').replace('\n',' ').replace('\r',' ')
-        except:
-            return None
-    else:
-        return None
+    if isinstance(lexical_or_value, str):
+        return lexical_or_value.replace('\t', ' ').replace('\n', ' ').replace('\r', ' ')
+    return lexical_or_value
+
+
+def _strip_and_collapse_whitespace(lexical_or_value):
+    if isinstance(lexical_or_value, str):
+        # Use regex to substitute contiguous whitespace into a single whitespace. Strip trailing whitespace.
+        return re.sub(' +', ' ', lexical_or_value.strip())
+    return lexical_or_value
 
 
 def bind(
