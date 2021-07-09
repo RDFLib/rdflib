@@ -579,9 +579,8 @@ class Literal(Identifier):
         if isinstance(lexical_or_value, bytes):
             lexical_or_value = lexical_or_value.decode("utf-8")
 
-        # check if you datatype=xsd:normalizedString
-
-        if (datatype == _XSD_NORMALISED_STRING):
+        # check if datatype=xsd:normalizedString
+        if datatype == _XSD_NORMALISED_STRING:
             lexical_or_value = _normalise_XSD_STRING(lexical_or_value)
 
         try:
@@ -589,13 +588,9 @@ class Literal(Identifier):
         except UnicodeDecodeError:
             inst = str.__new__(cls, lexical_or_value, "utf-8")
 
-
-
         inst._language = lang
         inst._datatype = datatype
         inst._value = value
-
-
 
         return inst
 
@@ -1640,6 +1635,7 @@ def _castLexicalToPython(lexical, datatype):
         # no convFunc - unknown data-type
         return None
 
+
 def _normalise_XSD_STRING(st):
     """
     Replaces \t, \n, \r (#x9 (tab), #xA (linefeed), and #xD (carriage return)) with space without any whitespace collapsing
@@ -1651,7 +1647,6 @@ def _normalise_XSD_STRING(st):
             return None
     else:
         return None
-
 
 
 def bind(
