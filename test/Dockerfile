@@ -1,7 +1,7 @@
 # Docker image for the rdflib test-runner.
 
 # Use the lowest supported Python version to run tests.
-FROM python:3.6
+FROM python:3.7
 
 COPY requirements.dev.txt .
 COPY requirements.txt .

@@ -20,6 +20,7 @@ underlying Graph:
 * Numerical Ranges
 
 """
+import re
 
 from fractions import Fraction
 
@@ -449,7 +450,7 @@ class Literal(Identifier):
     __doc__ = """
     RDF Literal: http://www.w3.org/TR/rdf-concepts/#section-Graph-Literal
 
-    The lexical value of the literal is the unicode object.  
+    The lexical value of the literal is the unicode object.
     The interpreted, datatyped value is available from .value
 
     Language tags must be valid according to :rfc:5646
@@ -586,6 +587,12 @@ class Literal(Identifier):
         if isinstance(lexical_or_value, bytes):
             lexical_or_value = lexical_or_value.decode("utf-8")
 
+        if datatype in (_XSD_NORMALISED_STRING, _XSD_TOKEN):
+            lexical_or_value = _normalise_XSD_STRING(lexical_or_value)
+
+        if datatype in (_XSD_TOKEN, ):
+            lexical_or_value = _strip_and_collapse_whitespace(lexical_or_value)
+
         try:
             inst = str.__new__(cls, lexical_or_value)
         except UnicodeDecodeError:
@@ -594,6 +601,7 @@ class Literal(Identifier):
         inst._language = lang
         inst._datatype = datatype
         inst._value = value
+
         return inst
 
     def normalize(self):
@@ -1431,6 +1439,8 @@ _RDF_XMLLITERAL = URIRef(_RDF_PFX + "XMLLiteral")
 _RDF_HTMLLITERAL = URIRef(_RDF_PFX + "HTML")
 
 _XSD_STRING = URIRef(_XSD_PFX + "string")
+_XSD_NORMALISED_STRING = URIRef(_XSD_PFX + "normalizedString")
+_XSD_TOKEN = URIRef(_XSD_PFX + "token")
 
 _XSD_FLOAT = URIRef(_XSD_PFX + "float")
 _XSD_DOUBLE = URIRef(_XSD_PFX + "double")
@@ -1643,6 +1653,22 @@ def _castLexicalToPython(lexical, datatype):
     else:
         # no convFunc - unknown data-type
         return None
+
+
+def _normalise_XSD_STRING(lexical_or_value):
+    """
+    Replaces \t, \n, \r (#x9 (tab), #xA (linefeed), and #xD (carriage return)) with space without any whitespace collapsing
+    """
+    if isinstance(lexical_or_value, str):
+        return lexical_or_value.replace('\t', ' ').replace('\n', ' ').replace('\r', ' ')
+    return lexical_or_value
+
+
+def _strip_and_collapse_whitespace(lexical_or_value):
+    if isinstance(lexical_or_value, str):
+        # Use regex to substitute contiguous whitespace into a single whitespace. Strip trailing whitespace.
+        return re.sub(' +', ' ', lexical_or_value.strip())
+    return lexical_or_value
 
 
 def bind(
