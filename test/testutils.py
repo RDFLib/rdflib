@@ -6,6 +6,7 @@ import random
 
 from contextlib import AbstractContextManager, contextmanager
 from typing import (
+    Iterable,
     List,
     Optional,
     TYPE_CHECKING,
@@ -161,6 +162,13 @@ class GraphHelper:
     @classmethod
     def triple_set(cls, graph: Graph) -> Set[Tuple[Node, Node, Node]]:
         return set(graph.triples((None, None, None)))
+
+    @classmethod
+    def triple_sets(cls, graphs: Iterable[Graph]) -> List[Set[Tuple[Node, Node, Node]]]:
+        result: List[Set[Tuple[Node, Node, Node]]] = []
+        for graph in graphs:
+            result.append(cls.triple_set(graph))
+        return result
 
     @classmethod
     def equals(cls, lhs: Graph, rhs: Graph) -> bool:

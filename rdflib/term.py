@@ -251,7 +251,7 @@ class URIRef(Identifier):
     def toPython(self):
         return str(self)
 
-    def n3(self, namespace_manager=None):
+    def n3(self, namespace_manager=None) -> str:
         """
         This will do a limited check for valid URIs,
         essentially just making sure that the string includes no illegal
