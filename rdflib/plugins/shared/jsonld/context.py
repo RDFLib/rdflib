@@ -34,7 +34,7 @@ from .keys import (
     VERSION,
     VOCAB,
 )
-from . import errors
+from .errors import INVALID_REMOTE_CONTEXT, RECURSIVE_CONTEXT_INCLUSION
 from .util import source_to_json, urljoin, urlsplit, split_iri, norm_url
 
 
@@ -400,7 +400,7 @@ class Context(object):
         source_url = urljoin(base, source)
 
         if source_url in referenced_contexts:
-            raise errors.RECURSIVE_CONTEXT_INCLUSION
+            raise RECURSIVE_CONTEXT_INCLUSION
         referenced_contexts.add(source_url)
 
         if source_url in self._context_cache:
@@ -408,7 +408,7 @@ class Context(object):
 
         source = source_to_json(source_url)
         if source and CONTEXT not in source:
-            raise errors.INVALID_REMOTE_CONTEXT
+            raise INVALID_REMOTE_CONTEXT
         self._context_cache[source_url] = source
 
         return source
@@ -417,13 +417,13 @@ class Context(object):
         imports = source.get(IMPORT)
         if imports:
             if not isinstance(imports, str):
-                raise errors.INVALID_CONTEXT_ENTRY
+                raise INVALID_CONTEXT_ENTRY
 
             imported = self._fetch_context(
                 imports, self.base, referenced_contexts or set()
             )
             if not isinstance(imported, dict):
-                raise errors.INVALID_CONTEXT_ENTRY
+                raise INVALID_CONTEXT_ENTRY
 
             imported = imported[CONTEXT]
             imported.update(source)
