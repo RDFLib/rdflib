@@ -16,7 +16,7 @@ from rdflib.store import Store
 from rdflib import Variable, BNode
 from rdflib.graph import DATASET_DEFAULT_GRAPH_ID
 from rdflib.term import Node
-from typing import Union, Tuple
+from typing import Any, Callable, Dict, Optional, Union, Tuple
 
 # Defines some SPARQL keywords
 LIMIT = "LIMIT"
@@ -25,8 +25,10 @@ ORDERBY = "ORDER BY"
 
 BNODE_IDENT_PATTERN = re.compile(r"(?P<label>_\:[^\s]+)")
 
+NodeToSparql = Callable[..., str]
 
-def _node_to_sparql(node):
+
+def _node_to_sparql(node) -> str:
     if isinstance(node, BNode):
         raise Exception(
             "SPARQLStore does not support BNodes! "
@@ -94,12 +96,12 @@ class SPARQLStore(SPARQLConnector, Store):  # type: ignore[misc]
 
     def __init__(
         self,
-        query_endpoint=None,
-        sparql11=True,
-        context_aware=True,
-        node_to_sparql=_node_to_sparql,
-        returnFormat="xml",
-        auth=None,
+        query_endpoint: str = None,
+        sparql11: bool = True,
+        context_aware: bool = True,
+        node_to_sparql: NodeToSparql = _node_to_sparql,
+        returnFormat: str = "xml",
+        auth: Optional[Tuple[str, str]] = None,
         **sparqlconnector_kwargs
     ):
         super(SPARQLStore, self).__init__(
@@ -107,7 +109,7 @@ class SPARQLStore(SPARQLConnector, Store):  # type: ignore[misc]
         )
 
         self.node_to_sparql = node_to_sparql
-        self.nsBindings = {}
+        self.nsBindings: Dict[str, Any] = {}
         self.sparql11 = sparql11
         self.context_aware = context_aware
         self.graph_aware = context_aware
@@ -489,13 +491,13 @@ class SPARQLUpdateStore(SPARQLStore):
 
     def __init__(
         self,
-        query_endpoint=None,
-        update_endpoint=None,
-        sparql11=True,
-        context_aware=True,
-        postAsEncoded=True,
-        autocommit=True,
-        dirty_reads=False,
+        query_endpoint: Optional[str] = None,
+        update_endpoint: Optional[str] = None,
+        sparql11: bool = True,
+        context_aware: bool = True,
+        postAsEncoded: bool = True,
+        autocommit: bool = True,
+        dirty_reads: bool = False,
         **kwds
     ):
         """
@@ -528,7 +530,7 @@ class SPARQLUpdateStore(SPARQLStore):
         can set the required parameters
         """
         if type(configuration) == str:
-            self.query_endpoint = configuration
+            self.query_endpoint = configuration  # type: ignore[assignment]
         elif type(configuration) == tuple:
             self.query_endpoint = configuration[0]
             self.update_endpoint = configuration[1]
