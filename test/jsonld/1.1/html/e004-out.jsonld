@@ -1,0 +1,10 @@
+[
+  {"http://example.com/foo": [{"@list": [{"@value": "bar"}]}]},
+  {
+    "@graph": [{
+      "http://example.com/foo": [{"@value": "foo"}]
+    }, {
+      "http://example.com/bar": [{"@value": "bar"}]
+    }]
+  }
+]

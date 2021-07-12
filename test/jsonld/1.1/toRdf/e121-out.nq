@@ -1,0 +1,2 @@
+<http://example.org/allowed> <http://example.org/vocab/@foo.bar> <http://example.org/foo> .
+<http://example.org/allowed> <http://example.org/vocab/@> <http://example.org/foo> .

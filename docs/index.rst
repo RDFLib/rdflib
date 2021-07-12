@@ -8,8 +8,8 @@ RDFLib is a pure Python package for working with `RDF <http://www.w3.org/RDF/>`_
 
 * **Parsers & Serializers**
 
-  * for RDF/XML, N3, NTriples, N-Quads, Turtle, TriX, RDFa and Microdata
-  * and JSON-LD, via a plugin module
+  * for RDF/XML, N3, NTriples, N-Quads, Turtle, TriX, JSON-LD, RDFa and Microdata
+
 
 * **Store implementations**
 

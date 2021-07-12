@@ -1,0 +1,54 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@base": "http://example.org/base/",
+    "@vocab": "http://purl.org/dc/terms/",
+    "bibo": "http://purl.org/ontology/bibo/",
+    "Print": "bibo:Book",
+    "name": "http://www.w3.org/2000/01/rdf-schema#label",
+    "instanceOf": "@nest",
+    "contributionByRole": {
+      "@id": "@nest",
+      "@context": {
+        "agent": "@nest",
+        "aut": "creator"
+      }
+    },
+    "provisionActivityByType": {
+      "@id": "@nest",
+      "@context": {
+        "Publication": {
+          "@id": "@nest",
+          "@context": {"date": "published", "agent": "publisher"}
+        }
+      }
+    },
+    "identifiedByType": {
+      "@id": "@nest",
+      "@context": {
+        "Isbn": {"@id": "@nest"},
+        "value": "bibo:isbn"
+      }
+    }
+  },
+  "@id": "book/one",
+  "@type": "Print",
+  "instanceOf": {
+    "contributionByRole": {
+      "aut": {
+        "agent": {"name": "Some Body"}
+      }
+    }
+  },
+  "identifiedByType": {
+    "Isbn": {
+      "value": "1234567890"
+    }
+  },
+  "provisionActivityByType": {
+    "Publication": {
+      "date": "1999",
+      "agent": {"name": "PubCorp"}
+    }
+  }
+}

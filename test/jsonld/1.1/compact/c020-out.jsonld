@@ -1,0 +1,16 @@
+{
+  "@context": {
+    "@vocab": "http://example/",
+    "type": "@type",
+    "Type": {
+      "@context": {
+        "value": "@value"
+      }
+    }
+  },
+  "type": "Type",
+  "v": {
+    "value": "value",
+    "type": "value-type"
+  }
+}

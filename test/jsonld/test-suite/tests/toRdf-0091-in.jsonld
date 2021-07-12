@@ -1,0 +1,8 @@
+{
+  "@context": [
+    { "id": "@id" },
+    { "url": "id" }
+  ],
+  "url": "/issue/1",
+  "http://example.com/property": "ok"
+}

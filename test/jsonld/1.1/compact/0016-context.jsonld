@@ -1,0 +1,7 @@
+{
+  "@context": {
+    "wd": "http://data.wikipedia.org/vocab#",
+    "ws": "http://data.wikipedia.org/snaks/",
+    "wp": "http://en.wikipedia.org/wiki/"
+  }
+}

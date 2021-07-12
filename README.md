@@ -138,8 +138,7 @@ See also [./examples](./examples)
 
 ## Features
 The library contains parsers and serializers for RDF/XML, N3,
-NTriples, N-Quads, Turtle, TriX, RDFa and Microdata. JSON-LD parsing/serializing can be achieved using the 
-[JSON-LD plugin](https://github.com/RDFLib/rdflib-jsonld).
+NTriples, N-Quads, Turtle, TriX, JSON-LD, RDFa and Microdata.
 
 The library presents a Graph interface which can be backed by
 any one of a number of Store implementations.

@@ -1,0 +1,8 @@
+[{
+  "@id": "_:cl1",
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#value": [{"@value": "no language"}],
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#direction": [{"@value": "rtl"}]
+}, {
+  "@id": "http://example.com/a",
+  "http://example.org/label": [{"@id": "_:cl1"}]
+}]

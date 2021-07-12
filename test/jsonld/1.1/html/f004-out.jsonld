@@ -1,0 +1,11 @@
+{
+  "@context": {
+    "ex": "http://example.com/",
+    "foo": {"@id": "http://example.com/foo", "@container": "@list"}
+  },
+  "@graph": [
+    {"@id": "_:b0", "foo": ["bar"]},
+    {"@id": "_:b1", "ex:foo": "foo"},
+    {"@id": "_:b2", "ex:bar": "bar"}
+  ]
+}

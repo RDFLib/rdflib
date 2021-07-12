@@ -168,6 +168,10 @@ register(
 register("ntriples", Serializer, "rdflib.plugins.serializers.nt", "NTSerializer")
 register("nt", Serializer, "rdflib.plugins.serializers.nt", "NTSerializer")
 register("nt11", Serializer, "rdflib.plugins.serializers.nt", "NT11Serializer")
+register("json-ld", Serializer, "rdflib.plugins.serializers.jsonld", "JsonLDSerializer")
+register(
+    "application/ld+json", Serializer, "rdflib.plugins.serializers.jsonld", "JsonLDSerializer"
+)
 
 # Register Quad Serializers
 register(
@@ -198,6 +202,9 @@ register("application/n-triples", Parser, "rdflib.plugins.parsers.ntriples", "NT
 register("ntriples", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
 register("nt", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
 register("nt11", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
+register("application/json+ld", Parser, "rdflib.plugins.parsers.jsonld", "JsonLDParser")
+register("json-ld", Parser, "rdflib.plugins.parsers.jsonld", "JsonLDParser")
+
 
 # Register Quad Parsers
 register("application/n-quads", Parser, "rdflib.plugins.parsers.nquads", "NQuadsParser")

@@ -1,0 +1,17 @@
+{
+  "@context": {
+    "@vocab": "http://vocab.org/",
+    "@protected": true,
+    "bar": "http://ignored.org/bar",
+    "foo": {
+      "@context": {
+        "bar": "http://example.org/other"
+      }
+    }
+  },
+  "@id": "ex:outer",
+  "foo": {
+    "@id": "ex:inner",
+    "bar": "baz"
+  }
+}

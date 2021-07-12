@@ -1,0 +1,4 @@
+_:b1 <http://example.com/something-else> "property http://example.com/something-else" .
+_:b0 <http://example.com/scope> _:b1 .
+_:b0 <http://example.com/unprotected> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+_:b0 <http://example.com/protected> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .

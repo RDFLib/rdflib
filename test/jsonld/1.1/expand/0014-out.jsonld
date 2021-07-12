@@ -1,0 +1,31 @@
+[
+  {
+    "http://example.org/test#property1": [
+      {
+        "@id": "http://example.org/test#example2",
+        "http://example.org/test#property4": [
+          {"@value": "foo"}
+        ]
+      }
+    ],
+    "http://example.org/test#property2": [
+      { "@id": "http://example.org/test#example3" }
+    ],
+    "http://example.org/test#property3": [
+      { "@id": "http://example.org/test#example4" }
+    ],
+    "http://example.org/test#property4": [
+      {
+        "@id": "http://example.org/test#example4",
+        "http://example.org/test#property5": [
+          {
+            "@value": "2012-03-31",
+            "@type": "http://www.w3.org/2001/XMLSchema#date"
+          }
+        ]
+      }
+    ],
+    "http://example.org/test#property6": [],
+    "@id": "http://example.org/test#example1"
+  }
+]

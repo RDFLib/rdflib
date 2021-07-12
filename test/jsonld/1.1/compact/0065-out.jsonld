@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "property": { "@id": "http://example.com/property", "@container": "@language" }
+  },
+  "@id": "http://example.com.com/",
+  "http://example.com/property": [
+    {
+      "@index": "first",
+      "@language": "de",
+      "@value": "Deutsche Zeichenfolge in @index-map"
+    },
+    {
+      "@index": "second",
+      "@language": "en",
+      "@value": "English string in @index-map"
+    }
+  ]
+}

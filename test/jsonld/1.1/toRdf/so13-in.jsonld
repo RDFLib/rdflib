@@ -1,0 +1,7 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@import": "so13-context.jsonld"
+  },
+  "term": "value"
+}

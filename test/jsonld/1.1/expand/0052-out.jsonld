@@ -1,0 +1,6 @@
+[
+  {
+    "http://example.org/property": [ { "@value": "ok" } ],
+    "http://example.org/vocabRelativeProperty": [ { "@value": "must expand to http://example.org/vocabRelativeProperty" } ]
+  }
+]

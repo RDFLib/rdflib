@@ -1,0 +1,7 @@
+{
+  "@context": {
+    "@vocab": "http://example/",
+    "idmap": {"@container": "@id", "@nest": "nestedidmap"},
+    "nestedidmap": "@nest"
+  }
+}

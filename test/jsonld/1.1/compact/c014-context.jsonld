@@ -1,0 +1,11 @@
+{
+  "@context": {
+    "@vocab": "http://example/",
+    "foo": "http://example/foo",
+    "Type": {
+      "@context": [
+        null
+      ]
+    }
+  }
+}

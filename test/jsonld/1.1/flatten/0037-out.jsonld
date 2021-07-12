@@ -1,0 +1,14 @@
+[
+  {
+    "@id": "http://example.com/people/dave",
+    "http://xmlns.com/foaf/0.1/knows": [ { "@id": "http://example.com/people/markus" } ]
+  },
+  {
+    "@id": "http://example.com/people/gregg",
+    "http://xmlns.com/foaf/0.1/knows": [ { "@id": "http://example.com/people/markus" } ]
+  },
+  {
+    "@id": "http://example.com/people/markus",
+    "http://xmlns.com/foaf/0.1/name": [ { "@value": "Markus Lanthaler" } ]
+  }
+]

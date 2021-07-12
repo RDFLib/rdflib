@@ -1,0 +1,33 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "Outer": {
+      "@id": "ex:Outer",
+      "@context": {
+        "nested": "ex:nested"
+      }
+    },
+    "Inner": {
+      "@id": "ex:Inner",
+      "@context": {
+        "@version": 1.1,
+        "foo": {
+          "@id": "ex:foo",
+          "@container": "@set",
+          "@type": "ex:Number",
+          "@context": {
+            "value": "@value"
+          }
+        },
+        "bar": {
+          "@id": "ex:bar",
+          "@container": "@set",
+          "@type": "@id",
+          "@context": {
+            "@base": "http://example/"
+          }
+        }
+      }
+    }
+  }
+}

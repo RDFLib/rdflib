@@ -1,0 +1,12 @@
+{
+   "@context": {
+      "name": { "@id": "http://example.com/property", "@container": "@list" }
+   },
+   "@id": "http://example.com/node",
+   "http://example.com/property": {
+      "@list": [
+        "one item"
+      ],
+      "@index": "an index"
+   }
+}

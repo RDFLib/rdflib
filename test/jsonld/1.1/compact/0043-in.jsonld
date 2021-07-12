@@ -1,0 +1,8 @@
+[
+  {
+    "@id": "http://example.com/node",
+    "http://example.com/name": [
+      { "@value": "Markus Lanthaler" }
+    ]
+  }
+]

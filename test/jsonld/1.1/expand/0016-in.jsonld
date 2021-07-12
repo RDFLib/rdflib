@@ -1,0 +1,30 @@
+{
+  "@context": {
+    "myproperty": { "@id": "http://example.com/myproperty" },
+    "mylist1": {"@id": "http://example.com/mylist1", "@container": "@list"},
+    "mylist2": {"@id": "http://example.com/mylist2", "@container": "@list"},
+    "myset1": {"@id": "http://example.com/myset1", "@container": "@set" },
+    "myset2": {"@id": "http://example.com/myset2", "@container": "@set" }
+  },
+  "@id": "http://example.org/id1",
+  "mylist1": [],
+  "mylist2": [ 2, "hi" ],
+  "myset1": { "@set": [] },
+  "myset2": [ { "@set": [] }, [], { "@set": [ null ] }, [ null ] ],
+  "myproperty": {
+    "@context": null,
+    "@id": "http://example.org/id2",
+    "mylist1": [],
+    "mylist2": [ 2, "hi" ],
+    "myset1": { "@set": [] },
+    "myset2": [ { "@set": [] }, [], { "@set": [ null ] }, [ null ] ],
+    "http://example.org/myproperty2": "ok"
+  },
+  "http://example.com/emptyobj": {
+    "@context": null,
+    "mylist1": [],
+    "mylist2": [ 2, "hi" ],
+    "myset1": { "@set": [] },
+    "myset2": [ { "@set": [] }, [], { "@set": [ null ] }, [ null ] ]
+  }
+}
