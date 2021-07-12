@@ -100,8 +100,7 @@ logger = logging.getLogger(__name__)
 
 
 class Namespace(str):
-
-    __doc__ = """
+    """
     Utility class for quickly generating URIRefs with a common prefix
 
     >>> from rdflib import Namespace
@@ -126,31 +125,44 @@ class Namespace(str):
 
     @property
     def title(self):
+        # Override for DCTERMS.title to return a URIRef instead of str.title method
         return URIRef(self + "title")
 
     def term(self, name):
         # need to handle slices explicitly because of __getitem__ override
         return URIRef(self + (name if isinstance(name, str) else ""))
 
-    def __getitem__(self, key, default=None):
+    def __getitem__(self, key):
         return self.term(key)
 
     def __getattr__(self, name):
         if name.startswith("__"):  # ignore any special Python names!
             raise AttributeError
-        else:
-            return self.term(name)
+        return self.term(name)
 
     def __repr__(self):
-        return "Namespace(%r)" % str(self)
-    
+        return f"Namespace({super().__repr__()})"
+
     def __contains__(self, ref):
+        """Allows to check if a URI is within (starts with) this Namespace.
+
+        >>> from rdflib import URIRef
+        >>> namespace = Namespace('http://example.org/')
+        >>> uri = URIRef('http://example.org/foo')
+        >>> uri in namespace
+        True
+        >>> person_class = namespace['Person']
+        >>> person_class in namespace
+        True
+        >>> obj = URIRef('http://not.example.org/bar')
+        >>> obj in namespace
+        False
+        """
         return ref.startswith(self) # test namespace membership with "ref in ns" syntax
 
 
 class URIPattern(str):
-
-    __doc__ = """
+    """
     Utility class for creating URIs according to some pattern
     This supports either new style formatting with .format
     or old-style with % operator
@@ -169,35 +181,38 @@ class URIPattern(str):
         return rt
 
     def __mod__(self, *args, **kwargs):
-        return URIRef(str(self).__mod__(*args, **kwargs))
+        return URIRef(super().__mod__(*args, **kwargs))
 
     def format(self, *args, **kwargs):
-        return URIRef(str.format(self, *args, **kwargs))
+        return URIRef(super().format(*args, **kwargs))
 
     def __repr__(self):
-        return "URIPattern(%r)" % str(self)
+        return f"URIPattern({super().__repr__()})"
 
 
-class ClosedNamespace(object):
+class ClosedNamespace(Namespace):
     """
     A namespace with a closed list of members
 
     Trying to create terms not listed is an error
     """
 
-    def __init__(self, uri, terms):
-        self.uri = uri
-        self.__uris = {}
-        for t in terms:
-            self.__uris[t] = URIRef(self.uri + t)
+    def __new__(cls, uri, terms):
+        rt = super().__new__(cls, uri)
+        rt.__uris = {t: URIRef(rt + t) for t in terms}
+        return rt
+
+    @property
+    def uri(self):  # Back-compat
+        return str(self)
 
     def term(self, name):
-        if name not in self.__uris:
-            raise KeyError("term '{}' not in namespace '{}'".format(name, self.uri))
-        else:
-            return self.__uris[name]
+        uri = self.__uris.get(name)
+        if uri is None:
+            raise KeyError(f"term '{name}' not in namespace '{self}'")
+        return uri
 
-    def __getitem__(self, key, default=None):
+    def __getitem__(self, key):
         return self.term(key)
 
     def __getattr__(self, name):
@@ -209,20 +224,17 @@ class ClosedNamespace(object):
             except KeyError as e:
                 raise AttributeError(e)
 
-    def __str__(self):
-        return str(self.uri)
-
     def __repr__(self):
-        return "rdf.namespace.ClosedNamespace(%r)" % str(self.uri)
+        return f"{self.__module__}.{self.__class__.__name__}({str(self)!r})"
 
     def __dir__(self):
-        return list(self._ClosedNamespace__uris)
-    
+        return list(self.__uris)
+
     def __contains__(self, ref):
         return ref in self.__uris.values() # test namespace membership with "ref in ns" syntax
 
     def _ipython_key_completions_(self):
-        return dir(self.uri)
+        return dir(self)
 
 
 class _RDFNamespace(ClosedNamespace):
@@ -230,9 +242,10 @@ class _RDFNamespace(ClosedNamespace):
     Closed namespace for RDF terms
     """
 
-    def __init__(self):
-        super(_RDFNamespace, self).__init__(
-            URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
+    def __new__(cls):
+        return super().__new__(
+            cls,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
             terms=[
                 # Syntax Names
                 "RDF",
@@ -284,9 +297,9 @@ class _RDFNamespace(ClosedNamespace):
                 pass
             else:
                 if i > 0:
-                    return URIRef("%s_%s" % (self.uri, i))
+                    return URIRef(f"{self}_{i}")
 
-        return super(_RDFNamespace, self).term(name)
+        return super().term(name)
 
 
 CSVW = Namespace("http://www.w3.org/ns/csvw#")
@@ -640,7 +653,7 @@ class NamespaceManager(object):
 
     def __contains__(self, ref):
         # checks if a reference is in any of the managed namespaces with syntax
-        # "ref in manager". Note that we don't use "ref in ns", as 
+        # "ref in manager". Note that we don't use "ref in ns", as
         # NamespaceManager.namespaces() returns Iterator[Tuple[str, URIRef]]
         # rather than Iterator[Tuple[str, Namespace]]
         return any(ref.startswith(ns) for prefix, ns in self.namespaces())
@@ -652,10 +665,9 @@ class NamespaceManager(object):
         for p, n in self.namespaces():  # repopulate the trie
             insert_trie(self.__trie, str(n))
 
-    def __get_store(self):
+    @property
+    def store(self):
         return self.graph.store
-
-    store = property(__get_store)
 
     def qname(self, uri):
         prefix, namespace, name = self.compute_qname(uri)
@@ -812,7 +824,7 @@ class NamespaceManager(object):
             prefix = ""
         elif " " in prefix:
             raise KeyError("Prefixes may not contain spaces.")
-            
+
         bound_namespace = self.store.namespace(prefix)
         # Check if the bound_namespace contains a URI
         # and if so convert it into a URIRef for comparison
