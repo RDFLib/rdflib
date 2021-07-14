@@ -29,9 +29,9 @@ or by dictionary access on Namespace instances:
 
 .. code-block:: pycon
 
-    >>> rdfs.seeAlso
+    >>> RDFS.seeAlso
     rdflib.term.URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#seeAlso")
-    >>> rdfs['seeAlso']
+    >>> RDFS['seeAlso']
     rdflib.term.URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#seeAlso")
 
 
@@ -214,6 +214,9 @@ class DefinedNamespaceMeta(type):
 
     def __str__(cls):
         return str(cls._NS)
+
+    def __add__(cls, other):
+        return cls.__getitem__(other)
 
     def __contains__(cls, item):
         """ Determine whether a URI or an individual item belongs to this namespace """
