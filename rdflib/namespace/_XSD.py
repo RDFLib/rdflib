@@ -5,19 +5,19 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class XSD(DefinedNamespace):
     """
     W3C XML Schema Definition Language (XSD) 1.1 Part 2: Datatypes
-    
+
     Generated from: ../schemas/datatypes.xsd
     Date: 2020-05-26 14:21:14.993677
-    
+
     The schema corresponding to this document is normative,
       with respect to the syntactic constraints it expresses in the
       XML Schema language.  The documentation (within <documentation>
       elements) below, is not normative, but rather highlights important
       aspects of the W3C Recommendation of which this is a part
-    
+
     First the built-in primitive datatypes.  These definitions are for
       information only, the real built-in definitions are magic.
-    
+
     For each built-in datatype in this schema (both primitive and
       derived) can be uniquely addressed via a URI constructed
       as follows:
@@ -47,10 +47,9 @@ class XSD(DefinedNamespace):
       the definition of int, the URI is:
 
         http://www.w3.org/2001/XMLSchema#int.maxInclusive
-    
+
     Now the derived primitive types
     """
-    _fail = True
 
     ENTITIES: URIRef        # see: http://www.w3.org/TR/xmlschema-2/#ENTITIES
     ENTITY: URIRef          # see: http://www.w3.org/TR/xmlschema-2/#ENTITY
@@ -96,5 +95,5 @@ class XSD(DefinedNamespace):
     unsignedInt: URIRef     # see: http://www.w3.org/TR/xmlschema-2/#unsignedInt
     unsignedLong: URIRef    # see: http://www.w3.org/TR/xmlschema-2/#unsignedLong
     unsignedShort: URIRef   # see: http://www.w3.org/TR/xmlschema-2/#unsignedShort
-    
+
     _NS = Namespace("http://www.w3.org/2001/XMLSchema#")
