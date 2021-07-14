@@ -1,12 +1,13 @@
 import logging
-
+import warnings
+from typing import List
 from unicodedata import category
 
 from pathlib import Path
 from urllib.parse import urldefrag
 from urllib.parse import urljoin
 
-from rdflib.term import URIRef, Variable, _XSD_PFX, _is_valid_uri
+from rdflib.term import URIRef, Variable, _is_valid_uri
 
 __doc__ = """
 ===================
@@ -21,17 +22,17 @@ that takes as its argument the base URI of the namespace.
 .. code-block:: pycon
 
     >>> from rdflib.namespace import Namespace
-    >>> owl = Namespace('http://www.w3.org/2002/07/owl#')
+    >>> RDFS = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
 
 Fully qualified URIs in the namespace can be constructed either by attribute
 or by dictionary access on Namespace instances:
 
 .. code-block:: pycon
 
-    >>> owl.seeAlso
-    rdflib.term.URIRef(u'http://www.w3.org/2002/07/owl#seeAlso')
-    >>> owl['seeAlso']
-    rdflib.term.URIRef(u'http://www.w3.org/2002/07/owl#seeAlso')
+    >>> RDFS.seeAlso
+    rdflib.term.URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#seeAlso')
+    >>> RDFS['seeAlso']
+    rdflib.term.URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#seeAlso')
 
 
 Automatic handling of unknown predicates
@@ -45,23 +46,36 @@ Importable namespaces
 
 The following namespaces are available by directly importing from rdflib:
 
+* CSVW
+* DC
+* DCMITYPE
+* DCAT
+* DCTERMS
+* DCAM
+* DOAP
+* FOAF
+* ODRL2
+* ORG
+* OWL
+* PROF
+* PROV
+* QB
 * RDF
 * RDFS
-* OWL
-* XSD
-* FOAF
+* SDO
+* SH
 * SKOS
-* DOAP
-* DC
-* DCTERMS
+* SOSA
+* SSN
+* TIME
 * VOID
+* XSD
+* VANN
 
 .. code-block:: pycon
-
-    >>> from rdflib import OWL
-    >>> OWL.seeAlso
-    rdflib.term.URIRef(u'http://www.w3.org/2002/07/owl#seeAlso')
-
+    >>> from rdflib.namespace import RDFS
+    >>> RDFS.seeAlso
+    rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#seeAlso')
 """
 
 __all__ = [
@@ -69,32 +83,9 @@ __all__ = [
     "split_uri",
     "Namespace",
     "ClosedNamespace",
-    "NamespaceManager",
-    "CSVW",
-    "DC",
-    "DCAT",
-    "DCTERMS",
-    "DOAP",
-    "FOAF",
-    "GEO",
-    "ODRL2",
-    "ORG",
-    "OWL",
-    "PROF",
-    "PROV",
-    "QB",
-    "RDF",
-    "RDFS",
-    "SDO",
-    "SH",
-    "SKOS",
-    "SOSA",
-    "SSN",
-    "TIME",
-    "VOID",
-    "XMLNS",
-    "XSD",
+    "NamespaceManager"
 ]
+
 
 logger = logging.getLogger(__name__)
 
@@ -103,12 +94,12 @@ class Namespace(str):
     """
     Utility class for quickly generating URIRefs with a common prefix
 
-    >>> from rdflib import Namespace
+    >>> from rdflib.namespace import Namespace
     >>> n = Namespace("http://example.org/")
     >>> n.Person # as attribute
-    rdflib.term.URIRef(u'http://example.org/Person')
+    rdflib.term.URIRef('http://example.org/Person')
     >>> n['first-name'] # as item - for things that are not valid python identifiers
-    rdflib.term.URIRef(u'http://example.org/first-name')
+    rdflib.term.URIRef('http://example.org/first-name')
     >>> n.Person in n
     True
     >>> n2 = Namespace("http://example2.org/")
@@ -169,7 +160,7 @@ class URIPattern(str):
 
     >>> u=URIPattern("http://example.org/%s/%d/resource")
     >>> u%('books', 12345)
-    rdflib.term.URIRef(u'http://example.org/books/12345/resource')
+    rdflib.term.URIRef('http://example.org/books/12345/resource')
 
     """
 
@@ -188,6 +179,62 @@ class URIPattern(str):
 
     def __repr__(self):
         return f"URIPattern({super().__repr__()})"
+
+
+class DefinedNamespaceMeta(type):
+    """
+    Utility metaclass for generating URIRefs with a common prefix
+
+    """
+
+    _NS: Namespace
+    _warn: bool = True
+    _fail: bool = False             # True means mimic ClosedNamespace
+    _extras: List[str] = []         # List of non-pythonesque items
+    _underscore_num: bool = False    # True means pass "_n" constructs
+
+    def __getitem__(cls, name, default=None):
+        name = str(name)
+        if str(name).startswith("__"):
+            return super().__getitem__(name, default)
+        if (cls._warn or cls._fail) and not name in cls:
+            if cls._fail:
+                raise AttributeError(f"term '{name}' not in namespace '{cls._NS}'")
+            else:
+                warnings.warn(f"Code: {name} is not defined in namespace {cls.__name__}", stacklevel=3)
+        return cls._NS[name]
+
+    def __getattr__(cls, name):
+        return cls.__getitem__(name)
+
+    def __repr__(cls):
+        return f'Namespace("{cls._NS}")'
+
+    def __str__(cls):
+        return str(cls._NS)
+
+    def __add__(cls, other):
+        return cls.__getitem__(other)
+
+    def __contains__(cls, item):
+        """ Determine whether a URI or an individual item belongs to this namespace """
+        item_str = str(item)
+        if item_str.startswith("__"):
+            return super().__contains__(item)
+        if item_str.startswith(str(cls._NS)):
+            item_str = item_str[len(str(cls._NS)):]
+        return any(item_str in c.__annotations__ or item_str in c._extras or
+                   (cls._underscore_num and item_str[0] == '_' and item_str[1:].isdigit())
+                   for c in cls.mro() if issubclass(c, DefinedNamespace))
+
+
+class DefinedNamespace(metaclass=DefinedNamespaceMeta):
+    """
+    A Namespace with an enumerated list of members.
+    Warnings are emitted if unknown members are referenced if _warn is True
+    """
+    def __init__(self):
+        raise TypeError("namespace may not be instantiated")
 
 
 class ClosedNamespace(Namespace):
@@ -302,307 +349,7 @@ class _RDFNamespace(ClosedNamespace):
         return super().term(name)
 
 
-CSVW = Namespace("http://www.w3.org/ns/csvw#")
-DC = Namespace("http://purl.org/dc/elements/1.1/")
-DCAT = Namespace("http://www.w3.org/ns/dcat#")
-DCTERMS = Namespace("http://purl.org/dc/terms/")
-DOAP = Namespace("http://usefulinc.com/ns/doap#")
-FOAF = ClosedNamespace(
-    uri=URIRef("http://xmlns.com/foaf/0.1/"),
-    terms=[
-        # all taken from http://xmlns.com/foaf/spec/
-        "Agent",
-        "Document",
-        "Group",
-        "Image",
-        "LabelProperty",
-        "OnlineAccount",
-        "OnlineChatAccount",
-        "OnlineEcommerceAccount",
-        "OnlineGamingAccount",
-        "Organization",
-        "Person",
-        "PersonalProfileDocument",
-        "Project",
-        "account",
-        "accountName",
-        "accountServiceHomepage",
-        "age",
-        "aimChatID",
-        "based_near",
-        "birthday",
-        "currentProject",
-        "depiction",
-        "depicts",
-        "dnaChecksum",
-        "familyName",
-        "family_name",
-        "firstName",
-        "focus",
-        "fundedBy",
-        "geekcode",
-        "gender",
-        "givenName",
-        "givenname",
-        "holdsAccount",
-        "homepage",
-        "icqChatID",
-        "img",
-        "interest",
-        "isPrimaryTopicOf",
-        "jabberID",
-        "knows",
-        "lastName",
-        "logo",
-        "made",
-        "maker",
-        "mbox",
-        "mbox_sha1sum",
-        "member",
-        "membershipClass",
-        "msnChatID",
-        "myersBriggs",
-        "name",
-        "nick",
-        "openid",
-        "page",
-        "pastProject",
-        "phone",
-        "plan",
-        "primaryTopic",
-        "publications",
-        "schoolHomepage",
-        "sha1",
-        "skypeID",
-        "status",
-        "surname",
-        "theme",
-        "thumbnail",
-        "tipjar",
-        "title",
-        "topic",
-        "topic_interest",
-        "weblog",
-        "workInfoHomepage",
-        "workplaceHomepage",
-        "yahooChatID"
-    ],
-)
-GEO = ClosedNamespace(
-    uri=URIRef("http://www.opengis.net/ont/geosparql#"),
-    terms=[
-        "Feature",
-        "Geometry",
-        "SpatialObject",
-        "asGML",
-        "asWKT",
-        "coordinateDimension",
-        "defaultGeometry",
-        "dimension",
-        "ehContains",
-        "ehCoveredBy",
-        "ehCovers",
-        "ehDisjoint",
-        "ehEquals",
-        "ehInside",
-        "ehMeet",
-        "ehOverlap",
-        "gmlLiteral",
-        "hasGeometry",
-        "hasSerialization",
-        "isEmpty",
-        "isSimple",
-        "rcc8dc",
-        "rcc8ec",
-        "rcc8eq",
-        "rcc8ntpp",
-        "rcc8ntppi",
-        "rcc8po",
-        "rcc8tpp",
-        "rcc8tppi",
-        "sfContains",
-        "sfCrosses",
-        "sfDisjoint",
-        "sfEquals",
-        "sfIntersects",
-        "sfOverlaps",
-        "sfTouches",
-        "sfWithin",
-        "spatialDimension",
-        "wktLiteral",
-    ],
-)
-ODRL2 = Namespace("http://www.w3.org/ns/odrl/2/")
-ORG = Namespace("http://www.w3.org/ns/org#")
-OWL = Namespace("http://www.w3.org/2002/07/owl#")
-PROF = Namespace("http://www.w3.org/ns/dx/prof/")
-PROV = ClosedNamespace(
-    uri=URIRef("http://www.w3.org/ns/prov#"),
-    terms=[
-        "Activity",
-        "ActivityInfluence",
-        "Agent",
-        "AgentInfluence",
-        "Association",
-        "Attribution",
-        "Bundle",
-        "Collection",
-        "Communication",
-        "Delegation",
-        "Derivation",
-        "EmptyCollection",
-        "End",
-        "Entity",
-        "EntityInfluence",
-        "Generation",
-        "Influence",
-        "InstantaneousEvent",
-        "Invalidation",
-        "Location",
-        "Organization",
-        "Person",
-        "Plan",
-        "PrimarySource",
-        "Quotation",
-        "Revision",
-        "Role",
-        "SoftwareAgent",
-        "Start",
-        "Usage",
-        "actedOnBehalfOf",
-        "activity",
-        "agent",
-        "alternateOf",
-        "aq",
-        "atLocation",
-        "atTime",
-        "category",
-        "component",
-        "constraints",
-        "definition",
-        "dm",
-        "editorialNote",
-        "editorsDefinition",
-        "endedAtTime",
-        "entity",
-        "generated",
-        "generatedAtTime",
-        "hadActivity",
-        "hadGeneration",
-        "hadMember",
-        "hadPlan",
-        "hadPrimarySource",
-        "hadRole",
-        "hadUsage",
-        "influenced",
-        "influencer",
-        "invalidated",
-        "invalidatedAtTime",
-        "inverse",
-        "n",
-        "order",
-        "qualifiedAssociation",
-        "qualifiedAttribution",
-        "qualifiedCommunication",
-        "qualifiedDelegation",
-        "qualifiedDerivation",
-        "qualifiedEnd",
-        "qualifiedForm",
-        "qualifiedGeneration",
-        "qualifiedInfluence",
-        "qualifiedInvalidation",
-        "qualifiedPrimarySource",
-        "qualifiedQuotation",
-        "qualifiedRevision",
-        "qualifiedStart",
-        "qualifiedUsage",
-        "sharesDefinitionWith",
-        "specializationOf",
-        "startedAtTime",
-        "unqualifiedForm",
-        "used",
-        "value",
-        "wasAssociatedWith",
-        "wasAttributedTo",
-        "wasDerivedFrom",
-        "wasEndedBy",
-        "wasGeneratedBy",
-        "wasInfluencedBy",
-        "wasInformedBy",
-        "wasInvalidatedBy",
-        "wasQuotedFrom",
-        "wasRevisionOf",
-        "wasStartedBy"
-    ]
-)
-QB = Namespace("http://purl.org/linked-data/cube#")
-RDF = _RDFNamespace()
-RDFS = ClosedNamespace(
-    uri=URIRef("http://www.w3.org/2000/01/rdf-schema#"),
-    terms=[
-        "Resource",
-        "Class",
-        "subClassOf",
-        "subPropertyOf",
-        "comment",
-        "label",
-        "domain",
-        "range",
-        "seeAlso",
-        "isDefinedBy",
-        "Literal",
-        "Container",
-        "ContainerMembershipProperty",
-        "member",
-        "Datatype",
-    ],
-)
-SDO = Namespace("https://schema.org/")
-SH = Namespace("http://www.w3.org/ns/shacl#")
-SKOS = ClosedNamespace(
-    uri=URIRef("http://www.w3.org/2004/02/skos/core#"),
-    terms=[
-        # all taken from https://www.w3.org/TR/skos-reference/#L1302
-        "Concept",
-        "ConceptScheme",
-        "inScheme",
-        "hasTopConcept",
-        "topConceptOf",
-        "altLabel",
-        "hiddenLabel",
-        "prefLabel",
-        "notation",
-        "changeNote",
-        "definition",
-        "editorialNote",
-        "example",
-        "historyNote",
-        "note",
-        "scopeNote",
-        "broader",
-        "broaderTransitive",
-        "narrower",
-        "narrowerTransitive",
-        "related",
-        "semanticRelation",
-        "Collection",
-        "OrderedCollection",
-        "member",
-        "memberList",
-        "broadMatch",
-        "closeMatch",
-        "exactMatch",
-        "mappingRelation",
-        "narrowMatch",
-        "relatedMatch",
-    ],
-)
-SSN = Namespace("http://www.w3.org/ns/ssn/")
-SOSA = Namespace("http://www.w3.org/ns/sosa/")
-TIME = Namespace("http://www.w3.org/2006/time#")
-VOID = Namespace("http://rdfs.org/ns/void#")
 XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
-XSD = Namespace(_XSD_PFX)
 
 
 class NamespaceManager(object):
@@ -646,7 +393,7 @@ class NamespaceManager(object):
         self.__trie = {}
         for p, n in self.namespaces():  # self.bind is not always called
             insert_trie(self.__trie, str(n))
-        self.bind("xml", "http://www.w3.org/XML/1998/namespace")
+        self.bind("xml", XMLNS)
         self.bind("rdf", RDF)
         self.bind("rdfs", RDFS)
         self.bind("xsd", XSD)
@@ -732,7 +479,7 @@ class NamespaceManager(object):
                 pl_namespace = get_longest_namespace(self.__strie[namespace], uri)
                 if pl_namespace is not None:
                     namespace = pl_namespace
-                    name = uri[len(namespace) :]
+                    name = uri[len(namespace):]
 
             namespace = URIRef(namespace)
             prefix = self.store.prefix(namespace)  # warning multiple prefixes problem
@@ -1008,3 +755,27 @@ def get_longest_namespace(trie, value):
             else:
                 return out
     return None
+
+
+from rdflib.namespace._CSVW import CSVW
+from rdflib.namespace._DC import DC
+from rdflib.namespace._DCAT import DCAT
+from rdflib.namespace._DCTERMS import DCTERMS
+from rdflib.namespace._DOAP import DOAP
+from rdflib.namespace._FOAF import FOAF
+from rdflib.namespace._ODRL2 import ODRL2
+from rdflib.namespace._ORG import ORG
+from rdflib.namespace._OWL import OWL
+from rdflib.namespace._PROF import PROF
+from rdflib.namespace._PROV import PROV
+from rdflib.namespace._QB import QB
+from rdflib.namespace._RDF import RDF
+from rdflib.namespace._RDFS import RDFS
+from rdflib.namespace._SDO import SDO
+from rdflib.namespace._SH import SH
+from rdflib.namespace._SKOS import SKOS
+from rdflib.namespace._SOSA import SOSA
+from rdflib.namespace._SSN import SSN
+from rdflib.namespace._TIME import TIME
+from rdflib.namespace._VOID import VOID
+from rdflib.namespace._XSD import XSD

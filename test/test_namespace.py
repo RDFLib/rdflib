@@ -1,17 +1,12 @@
 import unittest
 from unittest.case import expectedFailure
 
+from warnings import warn
+
+from rdflib import DCTERMS
 from rdflib.graph import Graph
-from rdflib.namespace import (
-    ClosedNamespace,
-    Namespace,
-    FOAF,
-    RDF,
-    RDFS,
-    SH,
-    DCTERMS,
-    URIPattern,
-)
+from rdflib.namespace import FOAF, RDF, RDFS, SH, DefinedNamespaceMeta, Namespace, \
+    ClosedNamespace, URIPattern
 from rdflib.term import URIRef
 
 
@@ -196,10 +191,19 @@ class NamespacePrefixTest(unittest.TestCase):
         """Tests terms both in an out of the ClosedNamespace FOAF"""
 
         def add_not_in_namespace(s):
-            return FOAF[s]
+            with self.assertRaises(AttributeError):
+                return FOAF[s]
 
         # a non-existent FOAF property
-        self.assertRaises(KeyError, add_not_in_namespace, "blah")
+        add_not_in_namespace("blah")
+
+        # a deprecated FOAF property
+        # add_not_in_namespace('firstName')
+        self.assertEqual(
+            FOAF["firstName"],
+            URIRef("http://xmlns.com/foaf/0.1/firstName"),
+        )
+        warn("DefinedNamespace does not address deprecated properties")
 
         # a property name within the FOAF namespace
         self.assertEqual(
@@ -213,9 +217,9 @@ class NamespacePrefixTest(unittest.TestCase):
     def test_contains_method(self):
         """Tests for Namespace.__contains__() methods."""
 
-        ref = URIRef('http://www.w3.org/ns/shacl#example')
-        self.assertTrue(type(SH) == Namespace, "SH no longer a Namespace, update test.")
-        self.assertTrue(ref in SH, "sh:example not in SH")
+        ref = URIRef('http://www.w3.org/ns/shacl#Info')
+        self.assertTrue(type(SH) == DefinedNamespaceMeta, f"SH no longer a DefinedNamespaceMeta (instead it is now {type(SH)}, update test.")
+        self.assertTrue(ref in SH, "sh:Info not in SH")
 
         ref = URIRef('http://www.w3.org/2000/01/rdf-schema#label')
         self.assertTrue(ref in RDFS, "ClosedNamespace(RDFS) does not include rdfs:label")

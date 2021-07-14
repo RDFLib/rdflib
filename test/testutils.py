@@ -1,3 +1,6 @@
+from __future__ import print_function
+
+import os
 import sys
 from types import TracebackType
 import isodate
@@ -41,6 +44,10 @@ if TYPE_CHECKING:
 
 # TODO: make an introspective version (like this one) of
 # rdflib.graphutils.isomorphic and use instead.
+from test import TEST_DIR
+from test.earl import add_test, report
+
+
 def crapCompare(g1, g2):
     """A really crappy way to 'check' if two graphs are equal. It ignores blank
     nodes completely and ignores subgraphs."""
@@ -127,13 +134,13 @@ def nose_tst_earl_report(generator, earl_report_name=None):
     )
     if earl_report_name:
         now = isodate.datetime_isoformat(datetime.datetime.utcnow())
-        earl_report = "test_reports/%s-%s.ttl" % (
+        earl_report = os.path.join(TEST_DIR, "../test_reports/%s-%s.ttl" % (
             earl_report_name,
             now.replace(":", ""),
-        )
+        ))
 
         report.serialize(earl_report, format="n3")
-        report.serialize("test_reports/%s-latest.ttl" % earl_report_name, format="n3")
+        report.serialize(os.path.join(TEST_DIR, "../test_reports/%s-latest.ttl" % earl_report_name), format="n3")
         print("Wrote EARL-report to '%s'" % earl_report)
 
 

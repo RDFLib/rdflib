@@ -1,8 +1,15 @@
+from __future__ import print_function
+
+import os
 import sys
 
 # Needed to pass
 # http://www.w3.org/2009/sparql/docs/tests/data-sparql11/
 #           syntax-update-2/manifest#syntax-update-other-01
+from test import TEST_DIR
+from test.earl import report, add_test
+from test.manifest import nose_tests, UP, MF
+
 sys.setrecursionlimit(6000)  # default is 1000
 
 
@@ -30,11 +37,6 @@ from io import BytesIO
 
 from nose.tools import nottest, eq_
 from nose import SkipTest
-
-
-from .manifest import nose_tests, MF, UP
-from .earl import report, add_test
-
 
 def eq(a, b, msg):
     return eq_(a, b, msg + ": (%r!=%r)" % (a, b))
@@ -627,8 +629,8 @@ if __name__ == "__main__":
                 % (now, i, success, f_sum, e_sum, skip, 100.0 * success / i)
             )
 
-        earl_report = "test_reports/rdflib_sparql-%s.ttl" % now.replace(":", "")
+        earl_report = os.path.join(TEST_DIR, "../test_reports/rdflib_sparql-%s.ttl" % now.replace(":", ""))
 
         report.serialize(earl_report, format="n3")
-        report.serialize("test_reports/rdflib_sparql-latest.ttl", format="n3")
+        report.serialize(os.path.join(TEST_DIR, "../test_reports/rdflib_sparql-latest.ttl"), format="n3")
         print("Wrote EARL-report to '%s'" % earl_report)

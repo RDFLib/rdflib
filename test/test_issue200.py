@@ -5,8 +5,8 @@ import rdflib
 import unittest
 
 try:
-    import os.fork
-    import os.pipe
+    from os import fork
+    from os import pipe
 except ImportError:
     from nose import SkipTest
 
@@ -26,6 +26,7 @@ class TestRandomSeedInFork(unittest.TestCase):
             r = os.fdopen(r)  # turn r into a file object
             txt = r.read()
             os.waitpid(pid, 0)  # make sure the child process gets cleaned up
+            r.close()
         else:
             os.close(r)
             w = os.fdopen(w, "w")

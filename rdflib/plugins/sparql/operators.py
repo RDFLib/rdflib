@@ -35,10 +35,6 @@ from pyparsing import ParseResults
 from rdflib.plugins.sparql.sparql import SPARQLError, SPARQLTypeError
 
 
-# closed namespace, langString isn't in it
-RDF_langString = RDF.langString
-
-
 def Builtin_IRI(expr, ctx):
     """
     http://www.w3.org/TR/sparql11-query/#func-iri
@@ -553,7 +549,7 @@ def Builtin_DATATYPE(e, ctx):
     if not isinstance(l_, Literal):
         raise SPARQLError("Can only get datatype of literal: %r" % l_)
     if l_.language:
-        return RDF_langString
+        return RDF.langString
     if not l_.datatype and not l_.language:
         return XSD.string
     return l_.datatype

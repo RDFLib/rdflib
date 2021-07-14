@@ -102,7 +102,7 @@ def toProperty(label):
     firstNm => firstNm
 
     """
-    label = re.sub("[^\\w]", " ", label)
+    label = re.sub(r"[^\w]", " ", label)
     label = re.sub("([a-z])([A-Z])", "\\1 \\2", label)
     label = label.split(" ")
     return "".join([label[0].lower()] + [x.capitalize() for x in label[1:]])

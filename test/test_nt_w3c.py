@@ -1,10 +1,12 @@
 """This runs the nt tests for the W3C RDF Working Group's N-Quads
 test suite."""
+import os
 
 from rdflib import Graph
-from .manifest import nose_tests, RDFT
+from test import TEST_DIR
+from test.manifest import nose_tests, RDFT
 
-from .testutils import nose_tst_earl_report
+from test.testutils import nose_tst_earl_report
 
 verbose = False
 
@@ -25,7 +27,8 @@ testers = {RDFT.TestNTriplesPositiveSyntax: nt, RDFT.TestNTriplesNegativeSyntax:
 
 
 def test_nt(tests=None):
-    for t in nose_tests(testers, "test/w3c/nt/manifest.ttl", legacy=True):
+    manifest_file = os.path.join(TEST_DIR, "w3c/nt/manifest.ttl")
+    for t in nose_tests(testers, manifest_file, legacy=True):
         if tests:
             for test in tests:
                 if test in t[1].uri:

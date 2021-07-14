@@ -33,7 +33,14 @@ cheese = URIRef("urn:cheese")
 graphuri = URIRef("urn:graph")
 othergraphuri = URIRef("urn:othergraph")
 
+try:
+    assert len(urlopen(HOST).read()) > 0
+    skip = False
+except:
+    skip = True
 
+
+@unittest.skipIf(skip, HOST + " is unavailable.")
 class TestSparql11(unittest.TestCase):
     def setUp(self):
         self.longMessage = True
@@ -350,12 +357,6 @@ class TestSparql11(unittest.TestCase):
 
         o = tuple(g)[0][2]
         self.assertEqual(o, Literal(""), repr(o))
-
-
-try:
-    assert len(urlopen(HOST).read()) > 0
-except:
-    raise SkipTest(HOST + " is unavailable.")
 
 
 if __name__ == "__main__":
