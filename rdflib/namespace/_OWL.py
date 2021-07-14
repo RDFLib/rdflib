@@ -30,6 +30,7 @@ class OWL(DefinedNamespace):
     owl:versionInfo "$Date: 2009/11/15 10:54:12 $"
     grddl:namespaceTransformation <http://dev.w3.org/cvsweb/2009/owl-grddl/owx2rdf.xsl>
     """
+    _fail = True
     
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     allValuesFrom: URIRef           # The property that determines the class that a universal property restriction refers to.

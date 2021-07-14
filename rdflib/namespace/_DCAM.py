@@ -12,6 +12,7 @@ class DCAM(DefinedNamespace):
     dcterms:modified "2012-06-14"^^xsd:date
     dcterms:publisher <http://purl.org/dc/aboutdcmi#DCMI>
     """
+    _fail = True
     
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     domainIncludes: URIRef          # A suggested class for subjects of this property.

@@ -27,6 +27,7 @@ class DOAP(DefinedNamespace):
     dc:rights "Copyright © 2004-2018 Edd Dumbill, Edd Wilder-James"
     owl:imports foaf:index.rdf
     """
+    _fail = True
     
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     audience: URIRef                # Description of target user base

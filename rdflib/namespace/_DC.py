@@ -12,6 +12,7 @@ class DC(DefinedNamespace):
     dcterms:modified "2012-06-14"^^xsd:date
     dcterms:publisher <http://purl.org/dc/aboutdcmi#DCMI>
     """
+    _fail = True
     
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     contributor: URIRef             # An entity responsible for making contributions to the resource.

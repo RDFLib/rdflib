@@ -37,6 +37,7 @@ class ORG(DefinedNamespace):
     rdfs:seeAlso <http://www.w3.org/TR/vocab-org/>
     owl:versionInfo "0.8"
     """
+    _fail = True
     
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     basedAt: URIRef                 # Indicates the site at which a person is based. We do not restrict the possibility that a person is based at multiple sites.

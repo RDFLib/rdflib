@@ -22,6 +22,7 @@ class ODRL2(DefinedNamespace):
     rdfs:comment "This is the RDF ontology for ODRL Version 2.2."
     owl:versionInfo "2.2"
     """
+    _fail = True
     
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     action: URIRef                  # The operation relating to the Asset for which the Rule is being subjected.

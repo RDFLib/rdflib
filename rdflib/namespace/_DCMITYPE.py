@@ -12,6 +12,7 @@ class DCMITYPE(DefinedNamespace):
     dcterms:modified "2012-06-14"^^xsd:date
     dcterms:publisher <http://purl.org/dc/aboutdcmi#DCMI>
     """
+    _fail = True
     
     # http://www.w3.org/2000/01/rdf-schema#Class
     Collection: URIRef              # An aggregation of resources.

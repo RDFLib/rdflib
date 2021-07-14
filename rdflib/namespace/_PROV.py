@@ -92,6 +92,7 @@ class PROV(DefinedNamespace):
     prov:specializationOf <http://www.w3.org/ns/prov-o>
     prov:wasRevisionOf <http://www.w3.org/ns/prov-o-20120312>
     """
+    _fail = True
     
     # http://www.w3.org/2000/01/rdf-schema#Resource
     activityOfInfluence: URIRef     # activityOfInfluence

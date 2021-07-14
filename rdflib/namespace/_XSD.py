@@ -50,6 +50,8 @@ class XSD(DefinedNamespace):
     
     Now the derived primitive types
     """
+    _fail = True
+
     ENTITIES: URIRef        # see: http://www.w3.org/TR/xmlschema-2/#ENTITIES
     ENTITY: URIRef          # see: http://www.w3.org/TR/xmlschema-2/#ENTITY
     ID: URIRef              # see: http://www.w3.org/TR/xmlschema-2/#ID

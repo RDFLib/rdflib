@@ -17,7 +17,8 @@ class CSVW(DefinedNamespace):
     owl:imports <http://www.w3.org/ns/prov>
     owl:versionInfo <https://github.com/w3c/csvw/commit/fcc9db20ba4de10e41e964eee1b5d01defa4c664>
     """
-    
+    _fail = True
+
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     aboutUrl: URIRef                # A URI template property that MAY be used to indicate what a cell contains information about.
     base: URIRef                    # An atomic property that contains a single string: a term defined in the default context representing a built-in datatype URL, as listed above.

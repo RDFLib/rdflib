@@ -11,6 +11,7 @@ class RDFS(DefinedNamespace):
 
     rdfs:seeAlso <http://www.w3.org/2000/01/rdf-schema-more>
     """
+    _fail = True
     
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     comment: URIRef                 # A description of the subject resource.

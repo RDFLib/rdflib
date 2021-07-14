@@ -20,6 +20,7 @@ class SKOS(DefinedNamespace):
         "Sean Bechhofer"
     rdfs:seeAlso <http://www.w3.org/TR/skos-reference/>
     """
+    _fail = True
     
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     altLabel: URIRef                # An alternative lexical label for a resource.

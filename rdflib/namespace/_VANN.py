@@ -21,6 +21,7 @@ class VANN(DefinedNamespace):
     vann:preferredNamespacePrefix "vann"
     vann:preferredNamespaceUri "http://purl.org/vocab/vann/"
     """
+    _fail = True
     
     # http://www.w3.org/2002/07/owl#AnnotationProperty
     changes: URIRef                 # A reference to a resource that describes changes between this version of a vocabulary and the previous.

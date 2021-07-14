@@ -12,6 +12,7 @@ class DCTERMS(DefinedNamespace):
     dcterms:modified "2012-06-14"^^xsd:date
     dcterms:publisher <http://purl.org/dc/aboutdcmi#DCMI>
     """
+    _fail = True
     
     # http://purl.org/dc/dcam/VocabularyEncodingScheme
     DCMIType: URIRef                # The set of classes specified by the DCMI Type Vocabulary, used to categorize the nature or genre of the resource.

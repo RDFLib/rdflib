@@ -20,6 +20,7 @@ class QB(DefinedNamespace):
         "2013-07-26"^^xsd:date
     owl:versionInfo "0.2"
     """
+    _fail = True
     
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     attribute: URIRef               # An alternative to qb:componentProperty which makes explicit that the component is a attribute

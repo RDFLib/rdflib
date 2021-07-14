@@ -30,6 +30,7 @@ class VOID(DefinedNamespace):
     vann:preferredNamespaceUri "http://rdfs.org/ns/void#"
     foaf:homepage <http://vocab.deri.ie/void.html>
     """
+    _fail = True
     
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     classPartition: URIRef          # A subset of a void:Dataset that contains only the entities of a certain rdfs:Class.

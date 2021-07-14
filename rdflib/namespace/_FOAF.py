@@ -12,6 +12,7 @@ class FOAF(DefinedNamespace):
     Date: 2020-05-26 14:20:01.597998
 
     """
+    _fail = True
     
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     account: URIRef                 # Indicates an account held by this agent.

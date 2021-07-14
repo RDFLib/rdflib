@@ -13,6 +13,7 @@ class SH(DefinedNamespace):
 
     sh:suggestedShapesGraph <http://www.w3.org/ns/shacl-shacl#>
     """
+    _fail = True
     
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     alternativePath: URIRef         # The (single) value of this property must be a list of path elements, representing the elements of alternative paths.
