@@ -74,9 +74,9 @@ The following namespaces are available by directly importing from rdflib:
 
 .. code-block:: pycon
 
-    >>> from rdflib import OWL
-    >>> OWL.seeAlso
-    rdflib.term.URIRef('http://www.w3.org/2002/07/owl#seeAlso')
+    >>> from rdflib.namespace import RDFS
+    >>> RDFS.seeAlso
+    rdflib.term.URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#seeAlso")
 
 """
 
