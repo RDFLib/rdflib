@@ -5,15 +5,15 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class FOAF(DefinedNamespace):
     """
     Friend of a Friend (FOAF) vocabulary
-    
+
     The Friend of a Friend (FOAF) RDF vocabulary, described using W3C RDF Schema and the Web Ontology Language.
-    
+
     Generated from: http://xmlns.com/foaf/spec/index.rdf
     Date: 2020-05-26 14:20:01.597998
 
     """
     _fail = True
-    
+
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     account: URIRef                 # Indicates an account held by this agent.
     accountName: URIRef             # Indicates the name (identifier) associated with this online account.

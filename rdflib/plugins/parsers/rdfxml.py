@@ -19,7 +19,7 @@ from rdflib.parser import Parser
 
 __all__ = ["create_parser", "BagID", "ElementHandler", "RDFXMLHandler", "RDFXMLParser"]
 
-RDFNS = RDF
+RDFNS = RDFVOC
 
 # http://www.w3.org/TR/rdf-syntax-grammar/#eventterm-attribute-URI
 # A mapping from unqualified terms to their qualified version.

@@ -30,9 +30,9 @@ or by dictionary access on Namespace instances:
 .. code-block:: pycon
 
     >>> RDFS.seeAlso
-    rdflib.term.URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#seeAlso")
+    rdflib.term.URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#seeAlso')
     >>> RDFS['seeAlso']
-    rdflib.term.URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#seeAlso")
+    rdflib.term.URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#seeAlso')
 
 
 Automatic handling of unknown predicates
@@ -74,9 +74,9 @@ The following namespaces are available by directly importing from rdflib:
 
 .. code-block:: pycon
 
-    >>> from rdflib import OWL
-    >>> OWL.seeAlso
-    rdflib.term.URIRef('http://www.w3.org/2002/07/owl#seeAlso')
+    >>> from rdflib import RDFS
+    >>> RDFS.seeAlso
+    rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#seeAlso')
 
 """
 
