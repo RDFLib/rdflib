@@ -1,11 +1,12 @@
 import unittest
 from unittest.case import expectedFailure
-from contextlib import redirect_stderr
-from io import StringIO
+
 from warnings import warn
 
+from rdflib import DCTERMS
 from rdflib.graph import Graph
-from rdflib.namespace import FOAF, RDF, RDFS, SH, DefinedNamespaceMeta
+from rdflib.namespace import FOAF, RDF, RDFS, SH, DefinedNamespaceMeta, Namespace, \
+    ClosedNamespace, URIPattern
 from rdflib.term import URIRef
 
 
