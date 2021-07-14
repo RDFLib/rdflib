@@ -212,7 +212,7 @@ class NamespacePrefixTest(unittest.TestCase):
         )
 
         # namescape can be used as str
-        # self.assertTrue(FOAF.givenName.startswith(FOAF))
+        self.assertTrue(FOAF.givenName.startswith(FOAF))
 
     def test_contains_method(self):
         """Tests for Namespace.__contains__() methods."""
