@@ -22,17 +22,17 @@ that takes as its argument the base URI of the namespace.
 .. code-block:: pycon
 
     >>> from rdflib.namespace import Namespace
-    >>> owl = Namespace('http://www.w3.org/2002/07/owl#')
+    >>> RDFS = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
 
 Fully qualified URIs in the namespace can be constructed either by attribute
 or by dictionary access on Namespace instances:
 
 .. code-block:: pycon
 
-    >>> owl.seeAlso
-    rdflib.term.URIRef('http://www.w3.org/2002/07/owl#seeAlso')
-    >>> owl['seeAlso']
-    rdflib.term.URIRef('http://www.w3.org/2002/07/owl#seeAlso')
+    >>> rdfs.seeAlso
+    rdflib.term.URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#seeAlso")
+    >>> rdfs['seeAlso']
+    rdflib.term.URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#seeAlso")
 
 
 Automatic handling of unknown predicates
