@@ -9,6 +9,7 @@ import random
 
 from contextlib import AbstractContextManager, contextmanager
 from typing import (
+    Iterable,
     List,
     Optional,
     TYPE_CHECKING,
@@ -170,6 +171,13 @@ class GraphHelper:
         return set(graph.triples((None, None, None)))
 
     @classmethod
+    def triple_sets(cls, graphs: Iterable[Graph]) -> List[Set[Tuple[Node, Node, Node]]]:
+        result: List[Set[Tuple[Node, Node, Node]]] = []
+        for graph in graphs:
+            result.append(cls.triple_set(graph))
+        return result
+
+    @classmethod
     def equals(cls, lhs: Graph, rhs: Graph) -> bool:
         return cls.triple_set(lhs) == cls.triple_set(rhs)
 
@@ -211,7 +219,7 @@ class SimpleHTTPMock:
     """
     SimpleHTTPMock allows testing of code that relies on an HTTP server.
 
-    NOTE: Currently only the GET method is supported.
+    NOTE: Currently only the GET and POST methods is supported.
 
     Objects of this class has a list of responses for each method (GET, POST, etc...)
     and returns these responses for these methods in sequence.
@@ -242,10 +250,13 @@ class SimpleHTTPMock:
     ...    assert req.path == "/bad/path"
     """
 
-    # TODO: add additional methods (POST, PUT, ...) similar to get
+    # TODO: add additional methods (PUT, PATCH, ...) similar to GET and POST
     def __init__(self):
         self.do_get_requests: List[MockHTTPRequests] = []
         self.do_get_responses: List[MockHTTPResponse] = []
+
+        self.do_post_requests: List[MockHTTPRequests] = []
+        self.do_post_responses: List[MockHTTPResponse] = []
 
         _http_mock = self
 
@@ -273,16 +284,45 @@ class SimpleHTTPMock:
 
             (do_GET, do_GET_mock) = make_spypair(_do_GET)
 
+            def _do_POST(self):
+                parsed_path = urlparse(self.path)
+                path_query = parse_qs(parsed_path.query)
+                request = MockHTTPRequests(
+                    "POST", self.path, parsed_path, path_query, self.headers
+                )
+                self.http_mock.do_post_requests.append(request)
+
+                response = self.http_mock.do_post_responses.pop(0)
+                self.send_response(response.status_code, response.reason_phrase)
+                for header, values in response.headers.items():
+                    for value in values:
+                        self.send_header(header, value)
+                self.end_headers()
+
+                self.wfile.write(response.body)
+                self.wfile.flush()
+                return
+
+            (do_POST, do_POST_mock) = make_spypair(_do_POST)
+
             def log_message(self, format: str, *args: Any) -> None:
                 pass
 
         self.Handler = Handler
         self.do_get_mock = Handler.do_GET_mock
+        self.do_post_mock = Handler.do_POST_mock
 
     def reset(self):
         self.do_get_requests.clear()
         self.do_get_responses.clear()
         self.do_get_mock.reset_mock()
+        self.do_post_requests.clear()
+        self.do_post_responses.clear()
+        self.do_post_mock.reset_mock()
+
+    @property
+    def call_count(self):
+        return self.do_post_mock.call_count + self.do_get_mock.call_count
 
 
 class SimpleHTTPMockTests(unittest.TestCase):

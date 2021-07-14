@@ -1,0 +1,6 @@
+_:b0 <http://example.org/p> _:b1 .
+_:b0 <http://example.org/foo> "org" .
+_:b1 <http://example.com/foo> "com" .
+_:b1 <http://example.com/nested> _:b2 .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/Type> .
+_:b2 <http://example.org/nested-prop> "org" .

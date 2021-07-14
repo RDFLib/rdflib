@@ -1,0 +1,23 @@
+{
+  "@context": {
+    "vocab": "http://example.com/vocab/",
+    "label": {
+      "@id": "vocab:label",
+      "@container": "@language"
+    },
+    "indexes": {
+      "@id": "vocab:index",
+      "@container": "@index"
+    }
+  },
+  "@id": "http://example.com/queen",
+  "label": [
+    "The Queen"
+  ],
+  "indexes":
+  [
+    "No",
+    "indexes",
+    { "@id": "asTheValueIsntAnObject" }
+  ]
+}

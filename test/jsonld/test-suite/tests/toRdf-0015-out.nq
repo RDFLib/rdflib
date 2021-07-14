@@ -1,0 +1,5 @@
+<http://greggkellogg.net/foaf#me> <http://xmlns.com/foaf/0.1/knows> _:b0 .
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "Manu Sporny" .
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b1 .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "Dave Longley" .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .

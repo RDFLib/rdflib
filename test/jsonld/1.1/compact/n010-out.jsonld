@@ -1,0 +1,11 @@
+{
+  "@context": {
+    "@vocab": "http://example.org/",
+    "foonest": "@nest",
+    "barnest": "@nest",
+    "foo": {"@nest": "foonest"},
+    "bar": {"@nest": "barnest"}
+  },
+  "barnest": {"bar": "foo"},
+  "foonest": {"foo": "bar"}
+}

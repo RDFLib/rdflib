@@ -1,0 +1,16 @@
+{
+  "@context": {
+    "property": { "@id": "http://example.com/vocab/property", "@language": "de" },
+    "indexMap": { "@id": "http://example.com/vocab/indexMap", "@language": "en", "@container": "@index" }
+  },
+  "@id": "http://example.com/node",
+  "property": [
+    {
+      "@id": "http://example.com/propertyValueNode",
+      "indexMap": {
+        "expands to english string": "simple string"
+      }
+    },
+    "einfacher String"
+  ]
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "http://example.com/vocab#term": [
+      { "@value": "value of v:term" }
+    ],
+    "http://example.com/vocab#termId": [
+      { "@value": "value of v:termId" }
+    ]
+  }
+]

@@ -1,0 +1,13 @@
+[
+  {
+    "@id": "https://w3c.github.io/json-ld-api/tests/expand/example-with-vocab",
+    "@type": [ "http://example.org/vocab#vocab-prefixed" ],
+    "http://example.org/vocab#embed": [
+      {
+        "@id": "https://w3c.github.io/json-ld-api/tests/expand/example-vocab-reset",
+        "@type": [ "https://w3c.github.io/json-ld-api/tests/expand/document-relative" ]
+      }
+    ],
+    "http://example.org/vocab#property": [ { "@value": "property expanded using @vocab" } ]
+  }
+]

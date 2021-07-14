@@ -1,0 +1,4 @@
+_:b0 <http://example.org/label> _:b2 .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#direction> "rtl" .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#language> "en-us" .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "en-US" .

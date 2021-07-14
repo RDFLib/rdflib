@@ -1,0 +1,16 @@
+{
+  "@context": {
+    "@vocab": "http://example.com/subdir/",
+    "vocab/date": { "@type": "vocab/types/dateTime" }
+  },
+  "@id": "http://example.com/subdir/id/1",
+  "@type": "vocab/types/Test",
+  "vocab/date": "2011-01-25T00:00:00Z",
+  "vocab/embed": {
+    "@id": "http://example.com/subdir/id/2",
+    "vocab/expandedDate": {
+      "@value": "2012-08-01T00:00:00Z",
+      "@type": "vocab/types/dateTime"
+    }
+  }
+}

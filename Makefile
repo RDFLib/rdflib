@@ -8,3 +8,9 @@ build:
 coverage:
 	docker-compose -f docker-compose.tests.yml up test-runner-coverage
 	docker-compose -f docker-compose.tests.yml down
+
+reformat:
+	black --config ./black.toml .
+
+check-format:
+	black --config ./black.toml --check .

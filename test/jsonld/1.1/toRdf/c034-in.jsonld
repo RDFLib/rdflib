@@ -1,0 +1,9 @@
+{
+  "@context": {
+    "@vocab": "http://example/",
+    "foo": {"@context": "c034-context.jsonld"}
+  },
+  "foo": {
+    "bar": "baz"
+  }
+}

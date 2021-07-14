@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "@vocab": "http://example.org/",
+    "input": {"@container": ["@graph", "@index"]},
+    "none": "@none"
+  },
+  "input": {
+    "none": {"value": "x"}
+  }
+}

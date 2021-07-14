@@ -1,0 +1,8 @@
+{
+  "@context": {
+    "ex": "http://example.org/vocab#"
+  },
+  "@id": "http://example.org/test",
+  "ex:bool": true,
+  "ex:int": 123
+}

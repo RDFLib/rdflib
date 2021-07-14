@@ -1,0 +1,11 @@
+{
+  "@context": {
+    "@base": "http://invalid/<>/",
+    "list": {
+      "@id": "foo:bar",
+      "@container": "@list",
+      "@type": "@id"
+    }
+  },
+  "list": ["test"]
+}

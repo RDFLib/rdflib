@@ -1,0 +1,17 @@
+{
+  "@context": {
+    "@base": null
+  },
+  "@id": "",
+  "http://example.com/foo": "bar",
+  "@graph": [
+    {
+      "@id": "",
+      "http://example.com/baz": "bam"
+    },
+    {
+      "@id": "0",
+      "http://example.com/baaaaaz": "baaaam"
+    }
+  ]
+}

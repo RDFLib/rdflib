@@ -1,0 +1,7 @@
+{
+  "@context": "e127-context-1.jsonld",
+  "@id": "ex:id",
+  "prop": {
+    "value": "v"
+  }
+}

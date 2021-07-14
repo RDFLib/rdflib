@@ -1,0 +1,13 @@
+[{
+  "http://example.org/input": [
+    {
+      "@graph": [{
+        "@graph": [{
+          "http://example.org/value": [{"@value": "x"}]
+        }, {
+          "http://example.org/value": [{"@value": "y"}]
+        }]
+      }]
+    }
+  ]
+}]

@@ -1,0 +1,5 @@
+<http://data.wikipedia.org/snaks/Assertions> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.wikipedia.org/vocab#SnakSet> .
+<http://data.wikipedia.org/snaks/Assertions> <http://data.wikipedia.org/vocab#assertedBy> "http://gregkellogg.net/foaf#me" .
+<http://data.wikipedia.org/snaks/BerlinFact> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.wikipedia.org/vocab#Snak> <http://data.wikipedia.org/snaks/Assertions> .
+<http://data.wikipedia.org/snaks/BerlinFact> <http://data.wikipedia.org/vocab#assertedBy> "http://www.statistik-berlin-brandenburg.de/" <http://data.wikipedia.org/snaks/Assertions> .
+<http://en.wikipedia.org/wiki/Berlin> <http://data.wikipedia.org/vocab#population> "3499879"^^<http://www.w3.org/2001/XMLSchema#integer> <http://data.wikipedia.org/snaks/BerlinFact> .

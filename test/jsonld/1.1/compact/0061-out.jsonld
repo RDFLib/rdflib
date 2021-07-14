@@ -1,0 +1,15 @@
+{
+  "@context": {
+    "Bar": "http://example.com/vocab#Bar",
+    "fooI": {
+      "@id": "http://example.com/vocab#foo",
+      "@type": "@id"
+    },
+    "fooV": {
+      "@id": "http://example.com/vocab#foo",
+      "@type": "@vocab"
+    }
+  },
+  "fooV": "Bar",
+  "fooI": "http://example.com/vocab#Baz"
+}

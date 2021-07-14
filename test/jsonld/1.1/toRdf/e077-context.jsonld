@@ -1,0 +1,11 @@
+{
+  "@context": {
+    "t1": "http://example.com/t1",
+    "t2": "http://example.com/t2",
+    "term1": "http://example.com/term1",
+    "term2": "http://example.com/term2",
+    "term3": "http://example.com/term3",
+    "term4": "http://example.com/term4",
+    "term5": "http://example.com/term5"
+  }
+}

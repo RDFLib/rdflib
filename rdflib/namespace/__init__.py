@@ -93,8 +93,7 @@ logger = logging.getLogger(__name__)
 
 
 class Namespace(str):
-
-    __doc__ = """
+    """
     Utility class for quickly generating URIRefs with a common prefix
 
     >>> from rdflib.namespace import Namespace
@@ -119,31 +118,44 @@ class Namespace(str):
 
     @property
     def title(self):
+        # Override for DCTERMS.title to return a URIRef instead of str.title method
         return URIRef(self + "title")
 
     def term(self, name):
         # need to handle slices explicitly because of __getitem__ override
         return URIRef(self + (name if isinstance(name, str) else ""))
 
-    def __getitem__(self, key, default=None):
+    def __getitem__(self, key):
         return self.term(key)
 
     def __getattr__(self, name):
         if name.startswith("__"):  # ignore any special Python names!
             raise AttributeError
-        else:
-            return self.term(name)
+        return self.term(name)
 
     def __repr__(self):
-        return "Namespace(%r)" % str(self)
+        return f"Namespace({super().__repr__()})"
 
     def __contains__(self, ref):
+        """Allows to check if a URI is within (starts with) this Namespace.
+
+        >>> from rdflib import URIRef
+        >>> namespace = Namespace('http://example.org/')
+        >>> uri = URIRef('http://example.org/foo')
+        >>> uri in namespace
+        True
+        >>> person_class = namespace['Person']
+        >>> person_class in namespace
+        True
+        >>> obj = URIRef('http://not.example.org/bar')
+        >>> obj in namespace
+        False
+        """
         return ref.startswith(self) # test namespace membership with "ref in ns" syntax
 
 
 class URIPattern(str):
-
-    __doc__ = """
+    """
     Utility class for creating URIs according to some pattern
     This supports either new style formatting with .format
     or old-style with % operator
@@ -162,13 +174,13 @@ class URIPattern(str):
         return rt
 
     def __mod__(self, *args, **kwargs):
-        return URIRef(str(self).__mod__(*args, **kwargs))
+        return URIRef(super().__mod__(*args, **kwargs))
 
     def format(self, *args, **kwargs):
-        return URIRef(str.format(self, *args, **kwargs))
+        return URIRef(super().format(*args, **kwargs))
 
     def __repr__(self):
-        return "URIPattern(%r)" % str(self)
+        return f"URIPattern({super().__repr__()})"
 
 
 class DefinedNamespaceMeta(type):
@@ -224,26 +236,29 @@ class DefinedNamespace(metaclass=DefinedNamespaceMeta):
         raise TypeError("namespace may not be instantiated")
 
 
-class ClosedNamespace(object):
+class ClosedNamespace(Namespace):
     """
     A namespace with a closed list of members
 
     Trying to create terms not listed is an error
     """
 
-    def __init__(self, uri, terms):
-        self.uri = uri
-        self.__uris = {}
-        for t in terms:
-            self.__uris[t] = URIRef(self.uri + t)
+    def __new__(cls, uri, terms):
+        rt = super().__new__(cls, uri)
+        rt.__uris = {t: URIRef(rt + t) for t in terms}
+        return rt
+
+    @property
+    def uri(self):  # Back-compat
+        return str(self)
 
     def term(self, name):
-        if name not in self.__uris:
-            raise KeyError("term '{}' not in namespace '{}'".format(name, self.uri))
-        else:
-            return self.__uris[name]
+        uri = self.__uris.get(name)
+        if uri is None:
+            raise KeyError(f"term '{name}' not in namespace '{self}'")
+        return uri
 
-    def __getitem__(self, key, default=None):
+    def __getitem__(self, key):
         return self.term(key)
 
     def __getattr__(self, name):
@@ -255,20 +270,82 @@ class ClosedNamespace(object):
             except KeyError as e:
                 raise AttributeError(e)
 
-    def __str__(self):
-        return str(self.uri)
-
     def __repr__(self):
-        return "rdf.namespace.ClosedNamespace(%r)" % str(self.uri)
+        return f"{self.__module__}.{self.__class__.__name__}({str(self)!r})"
 
     def __dir__(self):
-        return list(self._ClosedNamespace__uris)
+        return list(self.__uris)
 
     def __contains__(self, ref):
         return ref in self.__uris.values() # test namespace membership with "ref in ns" syntax
 
     def _ipython_key_completions_(self):
-        return dir(self.uri)
+        return dir(self)
+
+
+class _RDFNamespace(ClosedNamespace):
+    """
+    Closed namespace for RDF terms
+    """
+
+    def __new__(cls):
+        return super().__new__(
+            cls,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+            terms=[
+                # Syntax Names
+                "RDF",
+                "Description",
+                "ID",
+                "about",
+                "parseType",
+                "resource",
+                "li",
+                "nodeID",
+                "datatype",
+                # RDF Classes
+                "Seq",
+                "Bag",
+                "Alt",
+                "Statement",
+                "Property",
+                "List",
+                "PlainLiteral",
+                # RDF Properties
+                "subject",
+                "predicate",
+                "object",
+                "type",
+                "value",
+                "first",
+                "rest",
+                # and _n where n is a non-negative integer
+                # RDF Resources
+                "nil",
+                # Added in RDF 1.1
+                "XMLLiteral",
+                "HTML",
+                "langString",
+                # Added in JSON-LD 1.1
+                "JSON",
+                "CompoundLiteral",
+                "language",
+                "direction",
+            ],
+        )
+
+    def term(self, name):
+        # Container membership properties
+        if name.startswith("_"):
+            try:
+                i = int(name[1:])
+            except ValueError:
+                pass
+            else:
+                if i > 0:
+                    return URIRef(f"{self}_{i}")
+
+        return super().term(name)
 
 
 XMLNS = Namespace("http://www.w3.org/XML/1998/namespace")
@@ -334,10 +411,9 @@ class NamespaceManager(object):
         for p, n in self.namespaces():  # repopulate the trie
             insert_trie(self.__trie, str(n))
 
-    def __get_store(self):
+    @property
+    def store(self):
         return self.graph.store
-
-    store = property(__get_store)
 
     def qname(self, uri):
         prefix, namespace, name = self.compute_qname(uri)
@@ -353,7 +429,7 @@ class NamespaceManager(object):
         else:
             return ":".join((prefix, name))
 
-    def normalizeUri(self, rdfTerm):
+    def normalizeUri(self, rdfTerm) -> str:
         """
         Takes an RDF Term and 'normalizes' it into a QName (using the
         registered prefix) or (unlike compute_qname) the Notation 3

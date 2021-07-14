@@ -1,0 +1,11 @@
+{
+  "@context": {
+    "@vocab": "http://example.orb/vocab/",
+    "at": {"@id": "@"},
+    "foo.bar": {"@id": "@foo.bar"},
+    "ignoreMe": {"@id": "@ignoreMe"}
+  },
+  "at": "allowed",
+  "foo.bar": "allowed",
+  "ignoreMe": "resolves to @vocab"
+}

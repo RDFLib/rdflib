@@ -1,0 +1,17 @@
+{
+  "@context": {
+    "@vocab": "http://example.com/",
+    "@version": 1.1,
+    "@protected": true,
+    "protected": {"@language": null}
+  },
+  "protected": {
+    "@context": [
+      null,
+      {
+        "@vocab": "http://something-else/"
+      }
+    ],
+    "protected": "error / property http://example.com/protected"
+  }
+}

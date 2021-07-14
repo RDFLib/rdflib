@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "@vocab": "http://example/",
+    "ex": "http://example.org/",
+    "idmap": {"@container": "@id"}
+  },
+  "idmap": {
+    "@none": {"label": "Object with no @id"}
+  }
+}

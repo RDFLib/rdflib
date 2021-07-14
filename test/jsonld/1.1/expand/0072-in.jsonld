@@ -1,0 +1,13 @@
+{
+  "@context": [
+    {
+      "v": "http://example.com/vocab#",
+      "term": "v:somethingElse"
+    },
+    {
+      "@vocab": "http://example.com/anotherVocab#",
+      "term": "term"
+    }
+  ],
+  "term": "value of term"
+}

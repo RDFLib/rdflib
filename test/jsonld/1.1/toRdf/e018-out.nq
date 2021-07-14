@@ -1,0 +1,9 @@
+<http://example.org/test> <http://example.org/vocab#german> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example.org/test> <http://example.org/vocab#german> "hallo"@de .
+<http://example.org/test> <http://example.org/vocab#german> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://example.org/test> <http://example.org/vocab#nolang> "3"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example.org/test> <http://example.org/vocab#nolang> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://example.org/test> <http://example.org/vocab#nolang> "no language" .
+<http://example.org/test> <http://example.org/vocab#test-default> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example.org/test> <http://example.org/vocab#test-default> "hello"@en .
+<http://example.org/test> <http://example.org/vocab#test-default> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .

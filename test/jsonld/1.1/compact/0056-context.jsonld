@@ -1,0 +1,7 @@
+{
+  "@context": {
+    "term": {"@id": "http://example.org/term", "@type": "@vocab"},
+    "doNotSelect": {"@id": "http://example.org/term"},
+    "enum": {"@id": "http://example.org/enum"}
+  }
+}

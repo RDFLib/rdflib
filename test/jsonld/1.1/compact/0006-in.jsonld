@@ -1,0 +1,6 @@
+{
+  "@id": "http://example.org/id1",
+  "@type": ["http://example.org/Type1", "http://example.org/Type2"],
+  "http://example.org/term1": {"@value": "v1", "@type": "http://example.org/different-datatype"},
+  "http://example.org/term2": {"@id": "http://example.org/id2"}
+}

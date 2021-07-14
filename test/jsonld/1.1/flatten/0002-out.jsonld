@@ -1,0 +1,38 @@
+[
+    {
+        "@id": "http://example.com/id1",
+        "@type": [
+            "http://example.com/t1"
+        ],
+        "http://example.com/term1": [
+            {
+                "@value": "v1"
+            }
+        ],
+        "http://example.com/term2": [
+            {
+                "@type": "http://example.com/t2",
+                "@value": "v2"
+            }
+        ],
+        "http://example.com/term3": [
+            {
+                "@language": "en",
+                "@value": "v3"
+            }
+        ],
+        "http://example.com/term4": [
+            {
+                "@value": 4
+            }
+        ],
+        "http://example.com/term5": [
+            {
+                "@value": 50
+            },
+            {
+                "@value": 51
+            }
+        ]
+    }
+]

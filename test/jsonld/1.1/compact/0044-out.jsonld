@@ -1,0 +1,14 @@
+{
+  "@context": {
+    "name": "http://xmlns.com/foaf/0.1/name",
+    "knows": { "@id": "http://xmlns.com/foaf/0.1/knows", "@type": "@id" },
+    "knowsVocab": { "@id": "http://xmlns.com/foaf/0.1/knows", "@type": "@vocab" },
+    "DefinedTerm": "http://example.com/people/DefinedTerm"
+  },
+  "@id": "http://example.com/people/markus",
+  "name": "Markus Lanthaler",
+  "@reverse": {
+    "knows": "http://example.com/people/dave",
+    "knowsVocab": "DefinedTerm"
+  }
+}

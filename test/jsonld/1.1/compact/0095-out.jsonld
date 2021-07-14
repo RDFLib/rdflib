@@ -1,0 +1,15 @@
+{
+  "@context": {
+    "@base": "http://example.com/some/",
+    "@vocab": ""
+  },
+  "#fragment-works": "#fragment-works",
+  "../parent": "../parent",
+  "?query=works": "?query=works",
+  "@id": "deep/directory/and/relativePropertyIris",
+  "deep/directory/": "deep/directory",
+  "deep/directory/and/": "deep/directory/and/",
+  "http://example.com/absolute": "/absolute",
+  "http://example.com/too-many-dots": "too-many-dots",
+  "link": "link"
+}

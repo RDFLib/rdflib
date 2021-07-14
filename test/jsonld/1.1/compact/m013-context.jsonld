@@ -1,0 +1,7 @@
+{
+  "@context": {
+    "@vocab": "http://example/",
+    "ex": "http://example.org/",
+    "idmap": {"@container": "@id"}
+  }
+}

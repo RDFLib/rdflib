@@ -1,0 +1,4 @@
+[{
+  "@id": "http://example.com/a",
+  "http://example.org/label": [{"@value": "en-US", "@language": "en-us", "@direction": "rtl"}]
+}]

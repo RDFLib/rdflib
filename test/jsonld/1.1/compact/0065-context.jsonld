@@ -1,0 +1,5 @@
+{
+  "@context": {
+    "property": { "@id": "http://example.com/property", "@container": "@language" }
+  }
+}
