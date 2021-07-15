@@ -134,11 +134,11 @@ def main(argv=None):
             date = None
             while not date:
                 try:
-                    i = eval(input("Review date (YYYY-MM-DD): "))
+                    i = eval('"{}"'.format(input("Review date (YYYY-MM-DD): ")))
                     date = datetime.datetime(*time.strptime(i, "%Y-%m-%d")[:6])
                 except:
                     date = None
-            comment = eval(input("Comment: "))
+            comment = eval('"{}"'.format(input("Comment: ")))
             s.new_review(movie, date, rating, comment)
     else:
         help()
