@@ -802,7 +802,7 @@ class ExpressionNotCoveredException(Exception):
     pass
 
 
-def translateAlgebra(query_algebra: Query = None):
+def translateAlgebra(query_algebra: Query):
     """
 
     :param query_algebra: An algebra returned by the function call algebra.translateQuery(parse_tree).
@@ -840,7 +840,11 @@ def translateAlgebra(query_algebra: Query = None):
 
     def convert_node_arg(node_arg):
         if isinstance(node_arg, Identifier):
-            return node_arg.n3()
+            if node_arg in aggr_vars.keys():
+                grp_var = aggr_vars[node_arg].pop(0)
+                return grp_var.n3()
+            else:
+                return node_arg.n3()
         elif isinstance(node_arg, CompValue):
             return "{" + node_arg.name + "}"
         elif isinstance(node_arg, Expr):
@@ -850,6 +854,8 @@ def translateAlgebra(query_algebra: Query = None):
         else:
             raise ExpressionNotCoveredException(
                 "The expression {0} might not be covered yet.".format(node_arg))
+
+    aggr_vars = collections.defaultdict(list)
 
     def sparql_query_text(node):
         """
@@ -929,7 +935,10 @@ def translateAlgebra(query_algebra: Query = None):
                     if isinstance(agg_func.res, Identifier):
                         identifier = agg_func.res.n3()
                     else:
-                        raise ExpressionNotCoveredException("This expression might not be covered yet.")
+                        raise ExpressionNotCoveredException(
+                            "This expression might not be covered yet.")
+
+                    aggr_vars[agg_func.res].append(agg_func.vars)
                     agg_func_name = agg_func.name.split('_')[1]
                     distinct = ""
                     if agg_func.distinct:
@@ -938,14 +947,15 @@ def translateAlgebra(query_algebra: Query = None):
                         replace(identifier, "GROUP_CONCAT" + "(" + distinct
                                 + agg_func.vars.n3() + ";SEPARATOR=" + agg_func.separator.n3() + ")")
                     else:
-                        replace(identifier,
-                                agg_func_name.upper() + "(" + distinct + convert_node_arg(agg_func.vars) + ")")
+                        replace(identifier, agg_func_name.upper() + "(" + distinct
+                                + convert_node_arg(agg_func.vars) + ")")
                     # For non-aggregated variables the aggregation function "sample" is automatically assigned.
                     # However, we do not want to have "sample" wrapped around non-aggregated variables. That is
                     # why we replace it. If "sample" is used on purpose it will not be replaced as the alias
                     # must be different from the variable in this case.
-                    replace("(SAMPLE({0}) as {0})".format(convert_node_arg(agg_func.vars)),
-                            convert_node_arg(agg_func.vars))
+                    replace(
+                        "(SAMPLE({0}) as {0})".format(convert_node_arg(agg_func.vars)),
+                        convert_node_arg(agg_func.vars))
             elif node.name == "GroupGraphPatternSub":
                 replace("GroupGraphPatternSub", " ".join([convert_node_arg(pattern) for pattern in node.part]))
             elif node.name == "TriplesBlock":
@@ -962,7 +972,7 @@ def translateAlgebra(query_algebra: Query = None):
                     if isinstance(c.expr, Identifier):
                         var = c.expr.n3()
                         if c.order is not None:
-                            cond = var + "(" + c.order + ")"
+                            cond = c.order + "(" + var + ")"
                         else:
                             cond = var
                         order_conditions.append(cond)
@@ -1077,8 +1087,12 @@ def translateAlgebra(query_algebra: Query = None):
                 replace("{Builtin_isLITERAL}", "isLITERAL(" + convert_node_arg(node.arg) + ")")
             elif node.name.endswith('Builtin_isNUMERIC'):
                 replace("{Builtin_isNUMERIC}", "isNUMERIC(" + convert_node_arg(node.arg) + ")")
-            elif node.name.endswith('Builtin_STR'):
-                replace("{Builtin_STR}", "STR(" + convert_node_arg(node.arg) + ")")
+            elif node.name.endswith('Builtin_SUBSTR'):
+                args = [convert_node_arg(node.arg), node.start]
+                if node.length:
+                    args.append(node.length)
+                expr = "SUBSTR(" + ", ".join(args) + ")"
+                replace("{Builtin_SUBSTR}", expr)
             elif node.name.endswith('Builtin_LANG'):
                 replace("{Builtin_LANG}", "LANG(" + convert_node_arg(node.arg) + ")")
             elif node.name.endswith('Builtin_DATATYPE'):
@@ -1129,7 +1143,7 @@ def translateAlgebra(query_algebra: Query = None):
             elif node.name.endswith('Builtin_ENCODE_FOR_URI'):
                 replace("{Builtin_ENCODE_FOR_URI}", "ENCODE_FOR_URI(" + convert_node_arg(node.arg) + ")")
             elif node.name.endswith('Builtin_CONCAT'):
-                expr = 'CONCAT({vars})'.format(vars=", ".join(elem.n3() for elem in node.arg))
+                expr = 'CONCAT({vars})'.format(vars=", ".join(convert_node_arg(elem) for elem in node.arg))
                 replace("{Builtin_CONCAT}", expr)
             elif node.name.endswith('Builtin_LANGMATCHES'):
                 replace("{Builtin_LANGMATCHES}", "LANGMATCHES(" + convert_node_arg(node.arg1)
