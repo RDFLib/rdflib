@@ -13,10 +13,6 @@ class SKOS(DefinedNamespace):
     Generated from: https://www.w3.org/2009/08/skos-reference/skos.rdf
     Date: 2020-05-26 14:20:08.489187
 
-    <http://www.w3.org/2004/02/skos/core> dct:contributor "Dave Beckett", "Nikki Rogers", "Participants in W3C's Semantic Web Deployment Working Group."
-    dct:creator "Alistair Miles", "Sean Bechhofer"
-    rdfs:seeAlso <http://www.w3.org/TR/skos-reference/>
-
     """
     _fail = True
 

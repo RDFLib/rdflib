@@ -5,16 +5,17 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class RDF(DefinedNamespace):
     """
     The RDF Concepts Vocabulary (RDF)
-    
+
     This is the RDF Schema for the RDF vocabulary terms in the RDF Namespace, defined in RDF 1.1 Concepts.
-    
+
     Generated from: http://www.w3.org/1999/02/22-rdf-syntax-ns#
     Date: 2020-05-26 14:20:05.642859
 
     dc:date "2019-12-16"
+
     """
     _fail = True
-    
+
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#List
     nil: URIRef                     # The empty list, with no items in it. If the rest of a list is nil then the list has no more items in it.
 

@@ -9,9 +9,6 @@ class DCTERMS(DefinedNamespace):
     Generated from: https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_terms.ttl
     Date: 2020-05-26 14:20:00.590514
 
-    dcterms:modified "2012-06-14"^^xsd:date
-    dcterms:publisher <http://purl.org/dc/aboutdcmi#DCMI>
-
     """
     _fail = True
 

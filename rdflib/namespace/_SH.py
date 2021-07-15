@@ -5,16 +5,15 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class SH(DefinedNamespace):
     """
     W3C Shapes Constraint Language (SHACL) Vocabulary
-    
+
     This vocabulary defines terms used in SHACL, the W3C Shapes Constraint Language.
-    
+
     Generated from: https://www.w3.org/ns/shacl.ttl
     Date: 2020-05-26 14:20:08.041103
 
-    sh:suggestedShapesGraph <http://www.w3.org/ns/shacl-shacl#>
     """
     _fail = True
-    
+
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     alternativePath: URIRef         # The (single) value of this property must be a list of path elements, representing the elements of alternative paths.
     annotationProperty: URIRef      # The annotation property that shall be set.
@@ -207,7 +206,7 @@ class SH(DefinedNamespace):
     Violation: URIRef               # The severity for a violation validation result.
     Warning: URIRef                 # The severity for a warning validation result.
 
-    # Valid non-python identifiers 
+    # Valid non-python identifiers
     _extras = ['and', 'class', 'in', 'not', 'or', 'AndConstraintComponent-and', 'ClassConstraintComponent-class', 'ClosedConstraintComponent-closed', 'ClosedConstraintComponent-ignoredProperties', 'DatatypeConstraintComponent-datatype', 'DisjointConstraintComponent-disjoint', 'EqualsConstraintComponent-equals', 'ExpressionConstraintComponent-expression', 'HasValueConstraintComponent-hasValue', 'InConstraintComponent-in', 'JSConstraint-js', 'LanguageInConstraintComponent-languageIn', 'LessThanConstraintComponent-lessThan', 'LessThanOrEqualsConstraintComponent-lessThanOrEquals', 'MaxCountConstraintComponent-maxCount', 'MaxExclusiveConstraintComponent-maxExclusive', 'MaxInclusiveConstraintComponent-maxInclusive', 'MaxLengthConstraintComponent-maxLength', 'MinCountConstraintComponent-minCount', 'MinExclusiveConstraintComponent-minExclusive', 'MinInclusiveConstraintComponent-minInclusive', 'MinLengthConstraintComponent-minLength', 'NodeConstraintComponent-node', 'NodeKindConstraintComponent-nodeKind', 'NotConstraintComponent-not', 'OrConstraintComponent-or', 'PatternConstraintComponent-flags', 'PatternConstraintComponent-pattern', 'PropertyConstraintComponent-property', 'QualifiedMaxCountConstraintComponent-qualifiedMaxCount', 'QualifiedMaxCountConstraintComponent-qualifiedValueShape', 'QualifiedMaxCountConstraintComponent-qualifiedValueShapesDisjoint', 'QualifiedMinCountConstraintComponent-qualifiedMinCount', 'QualifiedMinCountConstraintComponent-qualifiedValueShape', 'QualifiedMinCountConstraintComponent-qualifiedValueShapesDisjoint', 'SPARQLConstraintComponent-sparql', 'UniqueLangConstraintComponent-uniqueLang', 'XoneConstraintComponent-xone']
 
     _NS = Namespace("http://www.w3.org/ns/shacl#")

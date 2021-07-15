@@ -12,12 +12,6 @@ class QB(DefinedNamespace):
     Generated from: http://purl.org/linked-data/cube#
     Date: 2020-05-26 14:20:05.485176
 
-    <http://purl.org/linked-data/cube> rdfs:label "The data cube vocabulary"
-    dcterms:created "2010-07-12"^^xsd:date
-    dcterms:license <http://www.opendatacommons.org/licenses/pddl/1.0/>
-    dcterms:modified "2013-07-26"^^xsd:date
-    owl:versionInfo "0.2"
-
     """
     _fail = True
 

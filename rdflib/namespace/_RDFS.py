@@ -5,14 +5,13 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class RDFS(DefinedNamespace):
     """
     The RDF Schema vocabulary (RDFS)
-    
+
     Generated from: http://www.w3.org/2000/01/rdf-schema#
     Date: 2020-05-26 14:20:05.794866
 
-    rdfs:seeAlso <http://www.w3.org/2000/01/rdf-schema-more>
     """
     _fail = True
-    
+
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     comment: URIRef                 # A description of the subject resource.
     domain: URIRef                  # A domain of the subject property.

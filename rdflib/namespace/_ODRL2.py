@@ -13,12 +13,6 @@ class ODRL2(DefinedNamespace):
     Generated from: https://www.w3.org/ns/odrl/2/ODRL22.ttl
     Date: 2020-05-26 14:20:02.352356
 
-    dct:contributor "W3C Permissions & Obligations Expression Working Group"
-    dct:creator "Michael Steidl" , "Renato Iannella", "Stuart Myles", "Víctor Rodríguez-Doncel"
-    dct:license <https://www.w3.org/Consortium/Legal/2002/ipr-notice-20021231#Copyright/>
-    rdfs:comment "This is the RDF ontology for ODRL Version 2.2."
-    owl:versionInfo "2.2"
-
     """
     _fail = True
 

@@ -49,11 +49,6 @@ class PROV(DefinedNamespace):
     Generated from: http://www.w3.org/ns/prov
     Date: 2020-05-26 14:20:04.650279
 
-    owl:versionIRI <http://www.w3.org/ns/prov-o-20130430>
-    owl:versionInfo "Recommendation version 2013-04-30"
-    prov:specializationOf <http://www.w3.org/ns/prov-o>
-    prov:wasRevisionOf <http://www.w3.org/ns/prov-o-20120312>
-
     """
     _fail = True
 

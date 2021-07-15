@@ -5,17 +5,13 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class CSVW(DefinedNamespace):
     """
     CSVW Namespace Vocabulary Terms
-    
+
     This document describes the RDFS vocabulary description used in the Metadata Vocabulary for Tabular Data
     [[tabular-metadata]] along with the default JSON-LD Context.
-    
+
     Generated from: http://www.w3.org/ns/csvw
     Date: 2020-05-26 14:19:58.184766
 
-    dcterms:date "2017-06-06"^^xsd:date
-    rdfs:seeAlso <http://www.w3.org/TR/tabular-metadata>
-    owl:imports <http://www.w3.org/ns/prov>
-    owl:versionInfo <https://github.com/w3c/csvw/commit/fcc9db20ba4de10e41e964eee1b5d01defa4c664>
     """
     _fail = True
 
@@ -100,7 +96,7 @@ class CSVW(DefinedNamespace):
 
     # http://www.w3.org/2000/01/rdf-schema#Datatype
     JSON: URIRef                    # A literal containing JSON.
-    uriTemplate: URIRef             # 
+    uriTemplate: URIRef             #
 
     # http://www.w3.org/ns/csvw#Direction
     auto: URIRef                    # Indicates whether the tables in the group should be displayed based on the first character in the table that has a specific direction.

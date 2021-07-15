@@ -5,15 +5,13 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class DC(DefinedNamespace):
     """
     Dublin Core Metadata Element Set, Version 1.1
-    
+
     Generated from: https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_elements.ttl
     Date: 2020-05-26 14:19:58.671906
 
-    dcterms:modified "2012-06-14"^^xsd:date
-    dcterms:publisher <http://purl.org/dc/aboutdcmi#DCMI>
     """
     _fail = True
-    
+
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     contributor: URIRef             # An entity responsible for making contributions to the resource.
     coverage: URIRef                # The spatial or temporal topic of the resource, spatial applicability of the resource, or jurisdiction under which the resource is relevant.

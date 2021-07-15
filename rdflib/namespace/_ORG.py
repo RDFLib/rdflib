@@ -12,16 +12,6 @@ class ORG(DefinedNamespace):
     Generated from: http://www.w3.org/ns/org#
     Date: 2020-05-26 14:20:02.908408
 
-    rdfs:label "Ontología de organizaciones"@es, "Ontologie des organisations"@fr, "Ontologia delle organizzazioni"@it
-    dct:created "2010-05-28"^^xsd:date
-    dct:license <http://www.opendatacommons.org/licenses/pddl/1.0/>
-    dct:modified "2014-04-12"^^xsd:date
-    dct:title "Core organization ontology", "Ontología de organizaciones"@es, "Ontologie des organisations"@fr, "Ontologia delle organizzazioni"@it
-    rdfs:comment "Vocabulario para describir organizaciones, adaptable a una amplia variedad de ellas."@es, "Vocabolario per descrivere strutture organizzative, le quali possono essere specializzate in una vasta
-    varietà di tipi di organizzazione"@it
-    rdfs:seeAlso <http://www.w3.org/TR/vocab-org/>
-    owl:versionInfo "0.8"
-
     """
     _fail = True
 

@@ -15,18 +15,6 @@ class VOID(DefinedNamespace):
     Generated from: http://rdfs.org/ns/void#
     Date: 2020-05-26 14:20:11.911298
 
-    <http://vocab.deri.ie/void> a adms:SemanticAsset
-    dc:creator <http://vocab.deri.ie/void#Michael%20Hausenblas>, <http://vocab.deri.ie/void#cygri>, <http://vocab.deri.ie/void#junzha>, <http://vocab.deri.ie/void#keiale>
-    dcterms:created "2010-01-26"^^xsd:date
-    dcterms:modified "2011-03-06"^^xsd:date
-    dcterms:partOf <http://vocab.deri.ie>
-    dcterms:publisher "http://vocab.deri.ie/void#Digital%20Enterprise%20Research%20Institute%2C%20NUI%20Galway"
-    dcterms:status <http://purl.org/adms/status/UnderDevelopment>
-    dcterms:type <http://purl.org/adms/assettype/Ontology>
-    vann:preferredNamespacePrefix "void"
-    vann:preferredNamespaceUri "http://rdfs.org/ns/void#"
-    foaf:homepage <http://vocab.deri.ie/void.html>
-
     """
     _fail = True
 
