@@ -313,6 +313,7 @@ escapeChars = set("(_~.-!$&'()*+,;=/?#@%)")  # valid for \ escapes in localnames
 numberChars = set("0123456789-")
 numberCharsPlus = numberChars | {"+", "."}
 
+
 def unicodeExpand(m):
     try:
         return chr(int(m.group(1), 16))

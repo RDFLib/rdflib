@@ -5,25 +5,23 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class ODRL2(DefinedNamespace):
     """
     ODRL Version 2.2
-    
+
     The ODRL Vocabulary and Expression defines a set of concepts and terms (the vocabulary) and encoding mechanism
     (the expression) for permissions and obligations statements describing digital content usage based on the ODRL
     Information Model.
-    
+
     Generated from: https://www.w3.org/ns/odrl/2/ODRL22.ttl
     Date: 2020-05-26 14:20:02.352356
 
     dct:contributor "W3C Permissions & Obligations Expression Working Group"
-    dct:creator "Michael Steidl"
-        "Renato Iannella"
-        "Stuart Myles"
-        "Víctor Rodríguez-Doncel"
+    dct:creator "Michael Steidl" , "Renato Iannella", "Stuart Myles", "Víctor Rodríguez-Doncel"
     dct:license <https://www.w3.org/Consortium/Legal/2002/ipr-notice-20021231#Copyright/>
     rdfs:comment "This is the RDF ontology for ODRL Version 2.2."
     owl:versionInfo "2.2"
+
     """
     _fail = True
-    
+
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     action: URIRef                  # The operation relating to the Asset for which the Rule is being subjected.
     andSequence: URIRef             # The relation is satisfied when each of the Constraints are satisfied in the order specified.
@@ -236,7 +234,7 @@ class ODRL2(DefinedNamespace):
     write: URIRef                   # The act of writing to the Asset.
     writeTo: URIRef                 # The act of adding data to the Asset.
 
-    # Valid non-python identifiers 
+    # Valid non-python identifiers
     _extras = ['and', 'or', '#actionConcepts', '#actions', '#actionsCommon', '#assetConcepts', '#assetParty', '#assetRelations', '#assetRelationsCommon', '#conflictConcepts', '#constraintLeftOperandCommon', '#constraintLogicalOperands', '#constraintRelationalOperators', '#constraintRightOpCommon', '#constraints', '#deprecatedTerms', '#duties', '#logicalConstraints', '#partyConcepts', '#partyRoles', '#partyRolesCommon', '#permissions', '#policyConcepts', '#policySubClasses', '#policySubClassesCommon', '#prohibitions', '#ruleConcepts']
 
     _NS = Namespace("http://www.w3.org/ns/odrl/2/")

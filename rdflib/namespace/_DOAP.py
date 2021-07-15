@@ -5,30 +5,15 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class DOAP(DefinedNamespace):
     """
     Description of a Project (DOAP) vocabulary
-    
+
     The Description of a Project (DOAP) vocabulary, described using W3C RDF Schema and the Web Ontology Language.
-    
+
     Generated from: http://usefulinc.com/ns/doap
     Date: 2020-05-26 14:20:01.307972
 
-    dc:creator "Edd Wilder-James"
-    dc:description "Slovník Description of a Project (DOAP, Popis projektu), popsaný použitím W3C RDF Schema a Web
-    Ontology Language."@cs
-        "Das Vokabular \"Description of a Project (DOAP)\", beschrieben durch W3C RDF Schema and the Web Ontology
-    Language."@de
-        '''El vocabulario Description of a Project (DOAP, Descripción de un Proyecto), descrito usando RDF Schema
-    de W3
-                    y Web Ontology Language.'''@es
-        '''Le vocabulaire Description Of A Project (DOAP, Description D'Un Projet)
-                    décrit en utilisant RDF Schema du W3C et OWL.'''@fr
-        "Vocabulário de descrição de um Projeto (DOAP - Description of a Project), descrito no esquema (schema)
-    W3C RDF e na Web Ontology Language."@pt
-    dc:format "application/rdf+xml"
-    dc:rights "Copyright © 2004-2018 Edd Dumbill, Edd Wilder-James"
-    owl:imports foaf:index.rdf
     """
     _fail = True
-    
+
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     audience: URIRef                # Description of target user base
     blog: URIRef                    # URI of a blog related to a project
@@ -77,7 +62,7 @@ class DOAP(DefinedNamespace):
     # http://www.w3.org/2002/07/owl#InverseFunctionalProperty
     homepage: URIRef                # URL of a project's homepage, 		associated with exactly one project.
 
-    # Valid non-python identifiers 
+    # Valid non-python identifiers
     _extras = ['anon-root', 'bug-database', 'developer-forum', 'download-mirror', 'download-page', 'file-release', 'mailing-list', 'programming-language', 'service-endpoint', 'support-forum', 'old-homepage']
 
     _NS = Namespace("http://usefulinc.com/ns/doap#")

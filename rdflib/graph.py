@@ -2167,21 +2167,20 @@ def _assertnode(*terms):
 
 class BatchAddGraph(object):
     """
-    Wrapper around graph that turns calls to :meth:`add` (and optionally, :meth:`addN`)
-    into calls to :meth:`~rdflib.graph.Graph.addN`.
+    Wrapper around graph that turns batches of calls to Graph's add
+    (and optionally, addN) into calls to batched calls to addN`.
 
     :Parameters:
 
-      - `graph`: The graph to wrap
-      - `batch_size`: The maximum number of triples to buffer before passing to
-        `graph`'s `addN`
-      - `batch_addn`: If True, then even calls to `addN` will be batched according to
-        `batch_size`
+      - graph: The graph to wrap
+      - batch_size: The maximum number of triples to buffer before passing to
+        Graph's addN
+      - batch_addn: If True, then even calls to `addN` will be batched according to
+        batch_size
 
-    :ivar graph: The wrapped graph
-    :ivar count: The number of triples buffered since initaialization or the last call
-                 to :meth:`reset`
-    :ivar batch: The current buffer of triples
+    graph: The wrapped graph
+    count: The number of triples buffered since initialization or the last call to reset
+    batch: The current buffer of triples
 
     """
 

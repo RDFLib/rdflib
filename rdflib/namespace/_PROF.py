@@ -5,7 +5,7 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class PROF(DefinedNamespace):
     """
     Profiles Vocabulary
-    
+
     This vocabulary is for describing relationships between standards/specifications, profiles of them and
     supporting artifacts such as validating resources.  This model starts with
     [http://dublincore.org/2012/06/14/dcterms#Standard](dct:Standard) entities which can either be Base
@@ -14,22 +14,12 @@ class PROF(DefinedNamespace):
     rules for the it. Resource Descriptors must indicate the role they play (to guide, to validate etc.) and the
     formalism they adhere to (dct:format) to allow for content negotiation. A vocabulary of Resource Roles are
     provided alongside this vocabulary but that list is extensible.
-    
+
     Generated from: https://www.w3.org/ns/dx/prof/profilesont.ttl
     Date: 2020-05-26 14:20:03.542924
 
-    <http://www.w3.org/ns/dx/prof> dc:contributor "Alejandra Gonzalez-Beltran"
-        "Nicholas Car"
-        "Simon Cox"
-    dc:creator "Rob Atkinson"
-    dct:contributor <http://orcid.org/0000-0002-3884-3420>
-        <http://orcid.org/0000-0002-8742-7730>
-    dct:created "2018-02-16"^^xsd:date
-    dct:modified "2018-11-15"^^xsd:date
-    owl:versionIRI prof:1.0
-    owl:versionInfo "1.0"
     """
-    
+
     # http://www.w3.org/2002/07/owl#Class
     Profile: URIRef                 # A named set of constraints on one or more identified base specifications or other profiles, including the identification of any implementing subclasses of datatypes, semantic interpretations, vocabularies, options and parameters of those base specifications necessary to accomplish a particular function.  This definition includes what are often called "application profiles", "metadata application profiles", or "metadata profiles".
     ResourceDescriptor: URIRef      # A resource that defines an aspect - a particular part or feature - of a Profile

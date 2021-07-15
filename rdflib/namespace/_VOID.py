@@ -5,21 +5,18 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class VOID(DefinedNamespace):
     """
     Vocabulary of Interlinked Datasets (VoID)
-    
+
     The Vocabulary of Interlinked Datasets (VoID) is an RDF Schema vocabulary for expressing metadata about RDF
     datasets. It is intended as a bridge between the publishers and users of RDF data, with applications ranging
     from data discovery to cataloging and archiving of datasets. This document provides a formal definition of the
     new RDF classes and properties introduced for VoID. It is a companion to the main specification document for
     VoID, <em><a href="http://www.w3.org/TR/void/">Describing Linked Datasets with the VoID Vocabulary</a></em>.
-    
+
     Generated from: http://rdfs.org/ns/void#
     Date: 2020-05-26 14:20:11.911298
 
     <http://vocab.deri.ie/void> a adms:SemanticAsset
-    dc:creator <http://vocab.deri.ie/void#Michael%20Hausenblas>
-        <http://vocab.deri.ie/void#cygri>
-        <http://vocab.deri.ie/void#junzha>
-        <http://vocab.deri.ie/void#keiale>
+    dc:creator <http://vocab.deri.ie/void#Michael%20Hausenblas>, <http://vocab.deri.ie/void#cygri>, <http://vocab.deri.ie/void#junzha>, <http://vocab.deri.ie/void#keiale>
     dcterms:created "2010-01-26"^^xsd:date
     dcterms:modified "2011-03-06"^^xsd:date
     dcterms:partOf <http://vocab.deri.ie>
@@ -29,9 +26,10 @@ class VOID(DefinedNamespace):
     vann:preferredNamespacePrefix "void"
     vann:preferredNamespaceUri "http://rdfs.org/ns/void#"
     foaf:homepage <http://vocab.deri.ie/void.html>
+
     """
     _fail = True
-    
+
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     classPartition: URIRef          # A subset of a void:Dataset that contains only the entities of a certain rdfs:Class.
     classes: URIRef                 # The total number of distinct classes in a void:Dataset. In other words, the number of distinct resources occuring as objects of rdf:type triples in the dataset.
@@ -66,7 +64,7 @@ class VOID(DefinedNamespace):
     Linkset: URIRef                 # A collection of RDF links between two void:Datasets.
     TechnicalFeature: URIRef        # A technical feature of a void:Dataset, such as a supported RDF serialization format.
 
-    # Valid non-python identifiers 
+    # Valid non-python identifiers
     _extras = ['class']
 
     _NS = Namespace("http://rdfs.org/ns/void#")

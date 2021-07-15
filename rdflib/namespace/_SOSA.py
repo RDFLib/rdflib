@@ -5,22 +5,15 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class SOSA(DefinedNamespace):
     """
     Sensor, Observation, Sample, and Actuator (SOSA) Ontology
-    
+
     This ontology is based on the SSN Ontology by the W3C Semantic Sensor Networks Incubator Group (SSN-XG),
     together with considerations from the W3C/OGC Spatial Data on the Web Working Group.
-    
+
     Generated from: http://www.w3.org/ns/sosa/
     Date: 2020-05-26 14:20:08.792504
 
-    a voaf:Vocabulary
-    dcterms:created "2017-04-17"^^xsd:date
-    dcterms:license <http://www.opengeospatial.org/ogc/Software>
-        <http://www.w3.org/Consortium/Legal/2015/copyright-software-and-document>
-    dcterms:rights "Copyright 2017 W3C/OGC."
-    vann:preferredNamespacePrefix "sosa"
-    vann:preferredNamespaceUri "http://www.w3.org/ns/sosa/"
     """
-    
+
     # http://www.w3.org/2000/01/rdf-schema#Class
     ActuatableProperty: URIRef      # An actuatable quality (property, characteristic) of a FeatureOfInterest.
     Actuation: URIRef               # An Actuation carries out an (Actuation) Procedure to change the state of the world using an Actuator.

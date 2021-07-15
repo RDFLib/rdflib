@@ -5,35 +5,15 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class SSN(DefinedNamespace):
     """
     Semantic Sensor Network Ontology
-    
+
     This ontology describes sensors, actuators and observations, and related concepts. It does not describe domain
     concepts, time, locations, etc. these are intended to be included from other ontologies via OWL imports.
-    
+
     Generated from: http://www.w3.org/ns/ssn/
     Date: 2020-05-26 14:20:09.068204
 
-    a voaf:Vocabulary
-    dcterms:created "2017-04-17"^^xsd:date
-    dcterms:license <http://www.opengeospatial.org/ogc/Software>
-        <http://www.w3.org/Consortium/Legal/2015/copyright-software-and-document>
-    dcterms:rights "Copyright 2017 W3C/OGC."
-    vann:preferredNamespacePrefix "ssn"
-    vann:preferredNamespaceUri "http://www.w3.org/ns/ssn/"
-    rdfs:comment "Please report any errors to the W3C Spatial Data on the Web Working Group via the SDW WG Public
-    List public-sdw-wg@w3.org"
-    rdfs:seeAlso <https://www.w3.org/2015/spatial/wiki/Semantic_Sensor_Network_Ontology>
-    owl:imports sosa:
-    owl:versionInfo '''New modular version of the SSN ontology.
-    This ontology was originally developed in 2009-2011 by the W3C Semantic Sensor Networks Incubator Group (SSN-
-    XG). For more information on the group's activities http://www.w3.org/2005/Incubator/ssn/. The ontology was
-    revised and modularized in 2015-2017 by the W3C/OGC Spatial Data on the Web Working Group,
-    https://www.w3.org/2015/spatial/wiki/Semantic_Sensor_Network_Ontology.
-    In particular, (a) the scope is extended to include actuation and sampling; (b) the core concepts and
-    properties are factored out into the SOSA ontology. The SSN ontology imports SOSA and adds formal
-    axiomatization consistent with the text definitions in SOSA, and adds classes and properties to accommodate
-    the scope of the original SSN ontology. '''
     """
-    
+
     # http://www.w3.org/2002/07/owl#Class
     Deployment: URIRef              # Describes the Deployment of one or more Systems for a particular purpose. Deployment may be done on a Platform.
     Input: URIRef                   # Any information that is provided to a Procedure for its use.

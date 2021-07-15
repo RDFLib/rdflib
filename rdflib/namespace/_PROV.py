@@ -5,95 +5,58 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class PROV(DefinedNamespace):
     """
     W3C PROVenance Interchange Ontology (PROV-O)
-    
+
     This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page).   If
     you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe
     public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/). All
     feedback is welcome.
-    
+
     PROV Access and Query Ontology
-    
+
     This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page).   If
     you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe
     public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/). All
     feedback is welcome.
-    
+
     Dublin Core extensions of the W3C PROVenance Interchange Ontology (PROV-O)
-    
+
     This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page).   If
     you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe
     public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/). All
     feedback is welcome.
-    
+
     W3C PROV Linking Across Provenance Bundles Ontology (PROV-LINKS)
-    
+
     This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page). If
     you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe
     public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-comments/ ). All
     feedback is welcome.
-    
+
     W3C PROVenance Interchange Ontology (PROV-O) Dictionary Extension
-    
+
     This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page).
     If you wish to make comments regarding this document, please send them to public-prov-comments@w3.org
     (subscribe public-prov-comments-request@w3.org, archives http://lists.w3.org/Archives/Public/public-prov-
     comments/). All feedback is welcome.
-    
+
     W3C PROVenance Interchange
-    
+
     This document is published by the Provenance Working Group (http://www.w3.org/2011/prov/wiki/Main_Page).  If
     you wish to make comments regarding this document, please send them to public-prov-comments@w3.org (subscribe
     public-prov-comments-request@w3.org, archives http://lists.w3.org/ Archives/Public/public-prov-comments/). All
     feedback is welcome.
-    
+
     Generated from: http://www.w3.org/ns/prov
     Date: 2020-05-26 14:20:04.650279
 
-    <file:///Users/solbrig/git/hsolbrig/definednamespace/tests/#> rdfs:seeAlso
-    <http://www.w3.org/TR/prov-o/#names-of-inverse-properties>
-    owl:imports <http://www.w3.org/ns/prov-o#>
-    owl:versionIRI <http://www.w3.org/ns/prov-o-inverses-20130430>
-    prov:specializationOf <http://www.w3.org/ns/prov-o-inverses>
-    prov:wasDerivedFrom <http://www.w3.org/ns/prov-o-20130430>
-    prov:wasRevisionOf <http://www.w3.org/ns/prov-o-inverses-20120312>
-    rdfs:isDefinedBy <http://www.w3.org/ns/prov>
-    rdfs:seeAlso <http://www.w3.org/TR/prov-overview/>
-    owl:imports <http://www.w3.org/ns/prov-aq#>
-        <http://www.w3.org/ns/prov-dc#>
-        <http://www.w3.org/ns/prov-dictionary#>
-        <http://www.w3.org/ns/prov-links#>
-        <http://www.w3.org/ns/prov-o#>
-        <http://www.w3.org/ns/prov-o-inverses#>
-    owl:versionIRI <http://www.w3.org/ns/prov-20130430>
-    prov:wasDerivedFrom <http://www.w3.org/ns/prov-aq#>
-        <http://www.w3.org/ns/prov-dc#>
-        <http://www.w3.org/ns/prov-dictionary#>
-        <http://www.w3.org/ns/prov-links#>
-        <http://www.w3.org/ns/prov-o#>
-        <http://www.w3.org/ns/prov-o-inverses#>
-    prov:wasRevisionOf <http://www.w3.org/ns/prov-20130312>
-    <http://www.w3.org/ns/prov-aq#> rdfs:comment "0.2"^^xsd:string
-    rdfs:seeAlso <http://www.w3.org/TR/prov-aq/>
-        prov:
-    owl:versionIRI <http://www.w3.org/TR/2013/NOTE-prov-aq-20130430/>
-    <http://www.w3.org/ns/prov-dc#> owl:imports <http://www.w3.org/ns/prov-o#>
-    <http://www.w3.org/ns/prov-dictionary#> rdfs:seeAlso <http://www.w3.org/TR/prov-dictionary/>
-        <http://www.w3.org/ns/prov>
-    <http://www.w3.org/ns/prov-links#> rdfs:seeAlso <http://www.w3.org/TR/prov-links/>
-        <http://www.w3.org/ns/prov>
-    owl:imports <http://www.w3.org/ns/prov-o#>
-    owl:versionIRI <http://www.w3.org/ns/prov-links-20130430>
-    owl:versionInfo "Working Group Note version 2013-04-30"
-    prov:specializationOf <http://www.w3.org/ns/prov-links>
-    <http://www.w3.org/ns/prov-o#> rdfs:seeAlso <http://www.w3.org/TR/prov-o/>
-        <http://www.w3.org/ns/prov>
     owl:versionIRI <http://www.w3.org/ns/prov-o-20130430>
     owl:versionInfo "Recommendation version 2013-04-30"
     prov:specializationOf <http://www.w3.org/ns/prov-o>
     prov:wasRevisionOf <http://www.w3.org/ns/prov-o-20120312>
+
     """
     _fail = True
-    
+
     # http://www.w3.org/2000/01/rdf-schema#Resource
     activityOfInfluence: URIRef     # activityOfInfluence
     agentOfInfluence: URIRef        # agentOfInfluence
@@ -134,7 +97,7 @@ class PROV(DefinedNamespace):
     wasUsedInDerivation: URIRef     # wasUsedInDerivation
 
     # http://www.w3.org/2002/07/owl#AnnotationProperty
-    aq: URIRef                      # 
+    aq: URIRef                      #
     category: URIRef                # Classify prov-o terms into three categories, including 'starting-point', 'qualifed', and 'extended'. This classification is used by the prov-o html document to gently introduce prov-o terms to its users.
     component: URIRef               # Classify prov-o terms into six components according to prov-dm, including 'agents-responsibility', 'alternate', 'annotations', 'collections', 'derivations', and 'entities-activities'. This classification is used so that readers of prov-o specification can find its correspondence with the prov-dm specification.
     constraints: URIRef             # A reference to the principal section of the PROV-CONSTRAINTS document that describes this concept.
@@ -146,9 +109,9 @@ class PROV(DefinedNamespace):
     n: URIRef                       # A reference to the principal section of the PROV-M document that describes this concept.
     order: URIRef                   # The position that this OWL term should be listed within documentation. The scope of the documentation (e.g., among all terms, among terms within a prov:category, among properties applying to a particular class, etc.) is unspecified.
     qualifiedForm: URIRef           # This annotation property links a subproperty of prov:wasInfluencedBy with the subclass of prov:Influence and the qualifying property that are used to qualify it.   Example annotation:      prov:wasGeneratedBy prov:qualifiedForm prov:qualifiedGeneration, prov:Generation .  Then this unqualified assertion:      :entity1 prov:wasGeneratedBy :activity1 .  can be qualified by adding:     :entity1 prov:qualifiedGeneration :entity1Gen .    :entity1Gen         a prov:Generation, prov:Influence;        prov:activity :activity1;        :customValue 1337 .  Note how the value of the unqualified influence (prov:wasGeneratedBy :activity1) is mirrored as the value of the prov:activity (or prov:entity, or prov:agent) property on the influence class.
-    sharesDefinitionWith: URIRef    # 
+    sharesDefinitionWith: URIRef    #
     specializationOf: URIRef        # specializationOf
-    todo: URIRef                    # 
+    todo: URIRef                    #
     unqualifiedForm: URIRef         # Classes and properties used to qualify relationships are annotated with prov:unqualifiedForm to indicate the property used to assert an unqualified provenance relation.
     wasRevisionOf: URIRef           # A revision is a derivation that revises an entity into a revised version.
 

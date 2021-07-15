@@ -84,7 +84,6 @@ For developers
 
    developers
    docs
-   univrdfstore
    persisting_n3_terms
 
 Developers might also like to join rdflib's dev mailing list: `<https://groups.google.com/group/rdflib-dev>`__

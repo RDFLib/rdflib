@@ -5,40 +5,26 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class ORG(DefinedNamespace):
     """
     Core organization ontology
-    
+
     Vocabulary for describing organizational structures, specializable to a broad variety of types of
     organization.
-    
+
     Generated from: http://www.w3.org/ns/org#
     Date: 2020-05-26 14:20:02.908408
 
-    rdfs:label "Ontología de organizaciones"@es
-        "Ontologie des organisations"@fr
-        "Ontologia delle organizzazioni"@it
+    rdfs:label "Ontología de organizaciones"@es, "Ontologie des organisations"@fr, "Ontologia delle organizzazioni"@it
     dct:created "2010-05-28"^^xsd:date
     dct:license <http://www.opendatacommons.org/licenses/pddl/1.0/>
-    dct:modified "2010-06-09"^^xsd:date
-        "2010-10-08"^^xsd:date
-        "2012-09-30"^^xsd:date
-        "2012-10-06"^^xsd:date
-        "2013-02-15"^^xsd:date
-        "2013-12-16"^^xsd:date
-        "2014-01-02"^^xsd:date
-        "2014-01-25"^^xsd:date
-        "2014-02-05"^^xsd:date
-        "2014-04-12"^^xsd:date
-    dct:title "Core organization ontology"
-        "Ontología de organizaciones"@es
-        "Ontologie des organisations"@fr
-        "Ontologia delle organizzazioni"@it
-    rdfs:comment "Vocabulario para describir organizaciones, adaptable a una amplia variedad de ellas."@es
-        "Vocabolario per descrivere strutture organizzative, le quali possono essere specializzate in una vasta
+    dct:modified "2014-04-12"^^xsd:date
+    dct:title "Core organization ontology", "Ontología de organizaciones"@es, "Ontologie des organisations"@fr, "Ontologia delle organizzazioni"@it
+    rdfs:comment "Vocabulario para describir organizaciones, adaptable a una amplia variedad de ellas."@es, "Vocabolario per descrivere strutture organizzative, le quali possono essere specializzate in una vasta
     varietà di tipi di organizzazione"@it
     rdfs:seeAlso <http://www.w3.org/TR/vocab-org/>
     owl:versionInfo "0.8"
+
     """
     _fail = True
-    
+
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     basedAt: URIRef                 # Indicates the site at which a person is based. We do not restrict the possibility that a person is based at multiple sites.
     changedBy: URIRef               # Indicates a change event which resulted in a change to this organization. Depending on the event the organization may or may not have continued to exist after the event. Inverse of `org:originalOrganization`.

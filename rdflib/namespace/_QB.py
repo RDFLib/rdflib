@@ -5,23 +5,22 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class QB(DefinedNamespace):
     """
     Vocabulary for multi-dimensional (e.g. statistical) data publishing
-    
+
     This vocabulary allows multi-dimensional data, such as statistics, to be published in RDF. It is based on the
     core information model from SDMX (and thus also DDI).
-    
+
     Generated from: http://purl.org/linked-data/cube#
     Date: 2020-05-26 14:20:05.485176
 
     <http://purl.org/linked-data/cube> rdfs:label "The data cube vocabulary"
     dcterms:created "2010-07-12"^^xsd:date
     dcterms:license <http://www.opendatacommons.org/licenses/pddl/1.0/>
-    dcterms:modified "2010-11-27"^^xsd:date
-        "2013-03-02"^^xsd:date
-        "2013-07-26"^^xsd:date
+    dcterms:modified "2013-07-26"^^xsd:date
     owl:versionInfo "0.2"
+
     """
     _fail = True
-    
+
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     attribute: URIRef               # An alternative to qb:componentProperty which makes explicit that the component is a attribute
     codeList: URIRef                # gives the code list associated with a CodedProperty

@@ -48,7 +48,7 @@ Writing documentation
 We use sphinx for generating HTML docs, see :ref:`docs`
 
 Continuous Integration
----------------------
+----------------------
 
 We used Drone for CI, see:
 

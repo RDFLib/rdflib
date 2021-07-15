@@ -105,6 +105,7 @@ class W3CNTriplesParser(object):
     """An N-Triples Parser.
     This is a legacy-style Triples parser for NTriples provided by W3C
     Usage::
+
           p = NTriplesParser(sink=MySink())
           sink = p.parse(f) # file; use parsestring for a string
 

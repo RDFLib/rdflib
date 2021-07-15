@@ -5,37 +5,12 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class TIME(DefinedNamespace):
     """
     OWL-Time
-    
+
     Generated from: http://www.w3.org/2006/time#
     Date: 2020-05-26 14:20:10.531265
 
-    <http://www.w3.org/2006/time> rdfs:label "Tiempo en OWL"@es
-    dct:contributor <https://orcid.org/0000-0001-8269-8171>
-        <mailto:chris.little@metoffice.gov.uk>
-    dct:created "2006-09-27"^^xsd:date
-    dct:creator <http://orcid.org/0000-0002-3884-3420>
-        <https://en.wikipedia.org/wiki/Jerry_Hobbs>
-        <mailto:panfeng66@gmail.com>
-    dct:isVersionOf <http://www.w3.org/TR/owl-time>
-    dct:license <https://creativecommons.org/licenses/by/4.0/>
-    dct:modified "2017-04-06"^^xsd:date
-    dct:rights "Copyright © 2006-2017 W3C, OGC. W3C and OGC liability, trademark and document use rules apply."
-    rdfs:seeAlso <http://dx.doi.org/10.3233/SW-150187>
-        <http://www.semantic-web-journal.net/content/time-ontology-extended-non-gregorian-calendar-applications>
-        <http://www.w3.org/TR/owl-time>
-    owl:priorVersion time:2006
-    owl:versionIRI time:2016
-    skos:changeNote "2016-06-15 - initial update of OWL-Time - modified to support arbitrary temporal reference
-    systems. "
-        "2016-12-20 - adjust range of time:timeZone to time:TimeZone, moved up from the tzont ontology.  "
-        "2016-12-20 - restore time:Year and time:January which were present in the 2006 version of the ontology,
-    but now marked \"deprecated\". "
-        "2017-02 - intervalIn, intervalDisjoint, monthOfYear added; TemporalUnit subclass of TemporalDuration"
-        "2017-04-06 - hasTime, hasXSDDuration added; Number removed; all duration elements changed to xsd:decimal"
-    skos:historyNote '''Update of OWL-Time ontology, extended to support general temporal reference systems.
-    Ontology engineering by Simon J D Cox'''
     """
-    
+
     # http://www.w3.org/2000/01/rdf-schema#Datatype
     generalDay: URIRef              # Day of month - formulated as a text string with a pattern constraint to reproduce the same lexical form as gDay, except that values up to 99 are permitted, in order to support calendars with more than 31 days in a month.  Note that the value-space is not defined, so a generic OWL2 processor cannot compute ordering relationships of values of this type.
     generalMonth: URIRef            # Month of year - formulated as a text string with a pattern constraint to reproduce the same lexical form as gMonth, except that values up to 20 are permitted, in order to support calendars with more than 12 months in the year.  Note that the value-space is not defined, so a generic OWL2 processor cannot compute ordering relationships of values of this type.

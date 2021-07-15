@@ -5,8 +5,8 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class OWL(DefinedNamespace):
     """
     The OWL 2 Schema vocabulary (OWL 2)
-    
-        This ontology partially describes the built-in classes and    properties that together form the basis of
+
+    This ontology partially describes the built-in classes and    properties that together form the basis of
     the RDF/XML syntax of OWL 2.    The content of this ontology is based on Tables 6.1 and 6.2    in Section 6.4
     of the OWL 2 RDF-Based Semantics specification,    available at http://www.w3.org/TR/owl2-rdf-based-
     semantics/.    Please note that those tables do not include the different annotations    (labels, comments and
@@ -16,22 +16,13 @@ class OWL(DefinedNamespace):
     the information provided by this ontology may be    misleading if not used with care. This ontology SHOULD NOT
     be imported    into OWL ontologies. Importing this file into an OWL 2 DL ontology    will cause it to become
     an OWL 2 Full ontology and may have other,    unexpected, consequences.
-    
+
     Generated from: http://www.w3.org/2002/07/owl#
     Date: 2020-05-26 14:20:03.193795
 
-    <http://www.w3.org/2002/07/owl> rdfs:isDefinedBy <http://www.w3.org/TR/owl2-mapping-to-rdf/>
-        <http://www.w3.org/TR/owl2-rdf-based-semantics/>
-        <http://www.w3.org/TR/owl2-syntax/>
-    rdfs:seeAlso <http://www.w3.org/TR/owl2-rdf-based-semantics/#table-axiomatic-classes>
-        <http://www.w3.org/TR/owl2-rdf-based-semantics/#table-axiomatic-properties>
-    owl:imports <http://www.w3.org/2000/01/rdf-schema>
-    owl:versionIRI <http://www.w3.org/2002/07/owl>
-    owl:versionInfo "$Date: 2009/11/15 10:54:12 $"
-    grddl:namespaceTransformation <http://dev.w3.org/cvsweb/2009/owl-grddl/owx2rdf.xsl>
     """
     _fail = True
-    
+
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     allValuesFrom: URIRef           # The property that determines the class that a universal property restriction refers to.
     annotatedProperty: URIRef       # The property that determines the predicate of an annotated axiom or annotated annotation.

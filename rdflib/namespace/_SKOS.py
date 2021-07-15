@@ -5,23 +5,21 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class SKOS(DefinedNamespace):
     """
     SKOS Vocabulary
-    
+
     An RDF vocabulary for describing the basic structure and content of concept schemes such as thesauri,
     classification schemes, subject heading lists, taxonomies, 'folksonomies', other types of controlled
     vocabulary, and also concept schemes embedded in glossaries and terminologies.
-    
+
     Generated from: https://www.w3.org/2009/08/skos-reference/skos.rdf
     Date: 2020-05-26 14:20:08.489187
 
-    <http://www.w3.org/2004/02/skos/core> dct:contributor "Dave Beckett"
-        "Nikki Rogers"
-        "Participants in W3C's Semantic Web Deployment Working Group."
-    dct:creator "Alistair Miles"
-        "Sean Bechhofer"
+    <http://www.w3.org/2004/02/skos/core> dct:contributor "Dave Beckett", "Nikki Rogers", "Participants in W3C's Semantic Web Deployment Working Group."
+    dct:creator "Alistair Miles", "Sean Bechhofer"
     rdfs:seeAlso <http://www.w3.org/TR/skos-reference/>
+
     """
     _fail = True
-    
+
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#Property
     altLabel: URIRef                # An alternative lexical label for a resource.
     broadMatch: URIRef              # skos:broadMatch is used to state a hierarchical mapping link between two conceptual resources in different concept schemes.

@@ -5,15 +5,16 @@ from rdflib.namespace import DefinedNamespace, Namespace
 class DCTERMS(DefinedNamespace):
     """
     DCMI Metadata Terms - other
-    
+
     Generated from: https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_terms.ttl
     Date: 2020-05-26 14:20:00.590514
 
     dcterms:modified "2012-06-14"^^xsd:date
     dcterms:publisher <http://purl.org/dc/aboutdcmi#DCMI>
+
     """
     _fail = True
-    
+
     # http://purl.org/dc/dcam/VocabularyEncodingScheme
     DCMIType: URIRef                # The set of classes specified by the DCMI Type Vocabulary, used to categorize the nature or genre of the resource.
     DDC: URIRef                     # The set of conceptual resources specified by the Dewey Decimal Classification.
@@ -118,7 +119,7 @@ class DCTERMS(DefinedNamespace):
     URI: URIRef                     # The set of identifiers constructed according to the generic syntax for Uniform Resource Identifiers as specified by the Internet Engineering Task Force.
     W3CDTF: URIRef                  # The set of dates and times constructed according to the W3C Date and Time Formats Specification.
 
-    # Valid non-python identifiers 
+    # Valid non-python identifiers
     _extras = ['ISO639-2', 'ISO639-3']
 
     _NS = Namespace("http://purl.org/dc/terms/")
