@@ -1,5 +1,5 @@
 .. rdflib documentation documentation master file
-   
+
 ================
 rdflib |release|
 ================
@@ -55,7 +55,7 @@ If you are familiar with RDF and are looking for details on how RDFLib handles i
    merging
    upgrade5to6
    upgrade4to5
-   
+
 
 Reference
 ---------
@@ -68,9 +68,9 @@ API reference:
 
    apidocs/modules
 
-.. toctree:: 
+.. toctree::
    :maxdepth: 2
-			  
+
    plugins
 
 .. * :ref:`genindex`
