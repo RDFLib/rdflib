@@ -28,6 +28,7 @@ class XSD(DefinedNamespace):
     byte: URIRef            # see: http://www.w3.org/TR/xmlschema-2/#byte
     date: URIRef            # see: http://www.w3.org/TR/xmlschema-2/#date
     dateTime: URIRef        # see: http://www.w3.org/TR/xmlschema-2/#dateTime
+    dayTimeDuration: URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#dayTimeDuration
     decimal: URIRef         # see: http://www.w3.org/TR/xmlschema-2/#decimal
     double: URIRef          # see: http://www.w3.org/TR/xmlschema-2/#double
     duration: URIRef        # see: http://www.w3.org/TR/xmlschema-2/#duration
@@ -55,5 +56,6 @@ class XSD(DefinedNamespace):
     unsignedInt: URIRef     # see: http://www.w3.org/TR/xmlschema-2/#unsignedInt
     unsignedLong: URIRef    # see: http://www.w3.org/TR/xmlschema-2/#unsignedLong
     unsignedShort: URIRef   # see: http://www.w3.org/TR/xmlschema-2/#unsignedShort
+    yearMonthDuration: URIRef  # see: http://www.w3.org/TR/xmlschema11-2/#yearMonthDuration
 
     _NS = Namespace("http://www.w3.org/2001/XMLSchema#")
