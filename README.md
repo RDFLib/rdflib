@@ -213,6 +213,7 @@ Existing questions:
 
 * <https://stackoverflow.com/questions/tagged/rdflib>
 
-If you want to contact the rdflib maintainers, please do so via the rdflib-dev mailing list:
+If you want to contact the rdflib maintainers, please do so via:
 
-* <https://groups.google.com/group/rdflib-dev>
+* the rdflib-dev mailing list: <https://groups.google.com/group/rdflib-dev>
+* the chat, which is available at [gitter](https://gitter.im/RDFLib/rdflib) or via matrix [#RDFLib_rdflib:gitter.im](https://matrix.to/#/#RDFLib_rdflib:gitter.im)
