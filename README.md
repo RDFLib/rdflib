@@ -27,12 +27,15 @@ Please see the list for all packages/repositories here:
 
 * <https://github.com/RDFLib>
 
-
-## Versions
+## Versions & Releases
 
  * `5.x.y` supports Python 2.7 and 3.4+ and is [mostly backwards compatible with 4.2.2](https://rdflib.readthedocs.io/en/stable/upgrade4to5.html). Only bug fixes will be applied.
  * `6.x.y` is the next major release which will support Python 3.6+. (Current master branch)
 
+See <https://rdflib.dev> for the release schedule.
+
+## Documentation
+See <https://rdflib.readthedocs.io> for our documentation built from the code.
 
 ## Installation
 RDFLib may be installed with Python's package management tool *pip*:
@@ -102,8 +105,8 @@ g.add((
     rdflib.Literal("Nick", datatype=XSD.string)
 ))
 ```
-The triple (in n-triples notation) `<http://example.com/person/nick> <http://xmlns.com/foaf/0.1/givenName> "Nick"^^<http://www.w3.org/2001/XMLSchema#string> .` 
-is created where the property `FOAF.giveName` is the URI `<http://xmlns.com/foaf/0.1/givenName>` and `XSD.string` is the 
+The triple (in n-triples notation) `<http://example.com/person/nick> <http://xmlns.com/foaf/0.1/givenName> "Nick"^^<http://www.w3.org/2001/XMLSchema#string> .`
+is created where the property `FOAF.giveName` is the URI `<http://xmlns.com/foaf/0.1/givenName>` and `XSD.string` is the
 URI `<http://www.w3.org/2001/XMLSchema#string>`.
 
 You can bind namespaces to prefixes to shorten the URIs for RDF/XML, Turtle, N3, TriG, TriX & JSON-LD serializations:
@@ -153,35 +156,6 @@ are listed on [PyPI](https://pypi.python.org/pypi/rdflib/)
 
 Multiple other projects are contained within the RDFlib "family", see <https://github.com/RDFLib/>.
 
-
-## Documentation
-See <https://rdflib.readthedocs.io> for our documentation built from the code.
-
-
-## Support
-For general "how do I..." queries, please use https://stackoverflow.com and tag your question with `rdflib`. 
-Existing questions:
-
-* <https://stackoverflow.com/questions/tagged/rdflib>
-
-
-## Releases
-See <https://rdflib.dev> for the release schedule.
-
-
-## Contributing
-
-RDFLib survives and grows via user contributions!
-Please read our [contributing guide](https://rdflib.readthedocs.io/en/stable/developers.html) to get started.
-Please consider lodging Pull Requests here:
-
-* <https://github.com/RDFLib/rdflib/pulls>
-
-You can also raise issues here:
-
-* <https://github.com/RDFLib/rdflib/issues>
-
-
 ## Running tests
 
 ### Running the tests on the host
@@ -221,8 +195,24 @@ Once tests have produced HTML output of the coverage report, view it by running:
 python -m http.server --directory=cover
 ```
 
+## Contributing
 
-## Contacts
+RDFLib survives and grows via user contributions!
+Please read our [contributing guide](https://rdflib.readthedocs.io/en/stable/developers.html) to get started.
+Please consider lodging Pull Requests here:
+
+* <https://github.com/RDFLib/rdflib/pulls>
+
+You can also raise issues here:
+
+* <https://github.com/RDFLib/rdflib/issues>
+
+## Support & Contacts
+For general "how do I..." queries, please use https://stackoverflow.com and tag your question with `rdflib`.
+Existing questions:
+
+* <https://stackoverflow.com/questions/tagged/rdflib>
+
 If you want to contact the rdflib maintainers, please do so via the rdflib-dev mailing list:
 
 * <https://groups.google.com/group/rdflib-dev>
