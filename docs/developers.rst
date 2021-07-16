@@ -110,6 +110,4 @@ No matter how you create the release tag, remember to upload tarball to pypi wit
 
 Set new dev version number in the above locations, i.e. next release `-dev`: ``5.0.1-dev`` and commit again.
 
-Tweet, email mailing list and update the topic of #rdflib on freenode irc::
-
-  /msg ChanServ topic #rdflib https://github.com/RDFLib/rdflib | latest stable version: 5.0.0 | docs: http://rdflib.readthedocs.org
+Tweet, email mailing list and inform members in the chat.
