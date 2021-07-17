@@ -13,7 +13,7 @@ Please be as Pythonic as possible (:pep:`8`).
 
 Code should be formatted using `black <https://github.com/psf/black>`_.
 While not yet mandatory, it will be required in the future  (6.0.0+).1
-Use Black v21.6b1, with the black.toml config file provided. 
+Use Black v21.6b1, with the black.toml config file provided.
 
 Any new functionality being added to RDFLib should have doc tests and
 unit tests. Tests should be added for any functionality being changed
@@ -110,6 +110,4 @@ No matter how you create the release tag, remember to upload tarball to pypi wit
 
 Set new dev version number in the above locations, i.e. next release `-dev`: ``5.0.1-dev`` and commit again.
 
-Tweet, email mailing list and update the topic of #rdflib on freenode irc::
-
-  /msg ChanServ topic #rdflib https://github.com/RDFLib/rdflib | latest stable version: 5.0.0 | docs: http://rdflib.readthedocs.org
+Tweet, email mailing list and inform members in the chat.
