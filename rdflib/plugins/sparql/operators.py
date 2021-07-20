@@ -1062,25 +1062,25 @@ def dateTimeObjects(expr):
 
 def isCompatibleDateTimeDatatype(obj1, dt1, obj2, dt2):
     """
-    returns a boolean indicating if first object is compatible
+    Returns a boolean indicating if first object is compatible
     with operation(+/-) over second object.
 
     """
-    if(dt1 == XSD.date):
-        if(dt2 == XSD.yearMonthDuration):
+    if dt1 == XSD.date:
+        if dt2 == XSD.yearMonthDuration:
             return True
-        elif(dt2 == XSD.dayTimeDuration or dt2 == XSD.Duration):
+        elif dt2 == XSD.dayTimeDuration or dt2 == XSD.Duration:
             # checking if the dayTimeDuration has no Time Component
             # else it wont be compatible with Date Literal
-            if("T" in str(obj2)):
+            if "T" in str(obj2):
                 return False
             else:
                 return True
 
-    if(dt1 == XSD.time):
-        if(dt2 == XSD.yearMonthDuration):
+    if dt1 == XSD.time:
+        if dt2 == XSD.yearMonthDuration:
             return False
-        elif(dt2 == XSD.dayTimeDuration or dt2 == XSD.Duration):
+        elif dt2 == XSD.dayTimeDuration or dt2 == XSD.Duration:
             # checking if the dayTimeDuration has no Date Component
             # (by checking if the format is "PT...." )
             # else it wont be compatible with Time Literal
@@ -1089,7 +1089,7 @@ def isCompatibleDateTimeDatatype(obj1, dt1, obj2, dt2):
             else:
                 return False
 
-    if(dt1 == XSD.dateTime):
+    if dt1 == XSD.dateTime:
         # compatible with all
         return True
 

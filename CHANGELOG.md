@@ -1,3 +1,268 @@
+2021/07/20 RELEASE 6.0.0
+========================
+6.0.0 is a major stable release that drops support for Python 2 and Python 3 < 3.7. Type hinting is now present in much
+of the toolkit as a result.
+
+It includes the formerly independent JSON-LD parser/serializer, improvements to Namespaces that allow for IDE namespace
+prompting, simplified use of `g.serialize()` (turtle default, no need to `decode()`) and many other updates to 
+documentation, store backends and so on.
+
+Performance of the in-memory store has also improved since Python 3.6 dictionary improvements.
+
+There are numerous supplementary improvements to the toolkit too, such as:
+
+* inclusion of Docker files for easier CI/CD
+* black config files for standardised code formatting
+* improved testing with mock SPARQL stores, rather than a reliance on DBPedia etc
+
+_**All PRs merged since 5.0.0:**_
+
+* Fixes 1190 - pin major version of pyparsing
+  [PR #1366](https://github.com/RDFLib/rdflib/pull/1366)
+* Add __init__ for shared jsonld module
+  [PR #1365](https://github.com/RDFLib/rdflib/pull/1365)
+* Update README with chat info
+  [PR #1363](https://github.com/RDFLib/rdflib/pull/1363)
+* add xsd dayTimeDuration and yearMonthDuration
+  [PR #1364](https://github.com/RDFLib/rdflib/pull/1364)
+* Updated film.py
+  [PR #1359](https://github.com/RDFLib/rdflib/pull/1359)
+* Migration from ClosedNamespace to DeclaredNamespace
+  [PR #1074](https://github.com/RDFLib/rdflib/pull/1074)
+* Add @expectedFailure unit tests for #1294 and type annotations for compare.py
+  [PR #1346](https://github.com/RDFLib/rdflib/pull/1346)
+* JSON-LD Integration
+  [PR #1354](https://github.com/RDFLib/rdflib/pull/1354)
+* ENH: Make ClosedNamespace extend Namespace
+  [PR #1213](https://github.com/RDFLib/rdflib/pull/1213)
+* Add unit test for #919 and more type hints for sparqlconnector and sparqlstore
+  [PR #1348](https://github.com/RDFLib/rdflib/pull/1348)
+* fix #876 Updated term.py to add xsd:normalizedString and xsd:token support for Literals
+  [PR #1102](https://github.com/RDFLib/rdflib/pull/1102)
+* Dev stack update
+  [PR #1355](https://github.com/RDFLib/rdflib/pull/1355)
+* Add make coverage instructions to README
+  [PR #1353](https://github.com/RDFLib/rdflib/pull/1353)
+* Improve running tests locally
+  [PR #1352](https://github.com/RDFLib/rdflib/pull/1352)
+* support day, month and year function for date
+  [PR #1154](https://github.com/RDFLib/rdflib/pull/1154)
+* Prevent `from_n3` from unescaping `\xhh`
+  [PR #1343](https://github.com/RDFLib/rdflib/pull/1343)
+* Complete clean up of docs for 6.0.0
+  [PR #1296](https://github.com/RDFLib/rdflib/pull/1296)
+* pathname2url removal
+  [PR #1288](https://github.com/RDFLib/rdflib/pull/1288)
+* Replace Sleepycat with BerkeleyDB
+  [PR #1347](https://github.com/RDFLib/rdflib/pull/1347)
+* Replace use of DBPedia with the new SimpleHTTPMock
+  [PR #1345](https://github.com/RDFLib/rdflib/pull/1345)
+* Update graph operator overloading for subclasses
+  [PR #1349](https://github.com/RDFLib/rdflib/pull/1349)
+* Speedup Literal.__hash__ and Literal.__eq__ by accessing directly _da…
+  [PR #1321](https://github.com/RDFLib/rdflib/pull/1321)
+* Implemented function translateAlgebra. This functions takes a SPARQL …
+  [PR #1322](https://github.com/RDFLib/rdflib/pull/1322)
+* attempt at adding coveralls support to drone runs
+  [PR #1337](https://github.com/RDFLib/rdflib/pull/1337)
+* Fix SPARQL update parsing to handle arbitrary amounts of triples in inserts
+  [PR #1340](https://github.com/RDFLib/rdflib/pull/1340)
+* Add pathlib.PurePath support for Graph.serialize and Graph.parse
+  [PR #1309](https://github.com/RDFLib/rdflib/pull/1309)
+* dataset examples file
+  [PR #1289](https://github.com/RDFLib/rdflib/pull/1289)
+* Add handling for 308 (Permanent Redirect)
+  [PR #1342](https://github.com/RDFLib/rdflib/pull/1342)
+* Speedup of __add_triple_context
+  [PR #1320](https://github.com/RDFLib/rdflib/pull/1320)
+* Fix prov ns
+  [PR #1318](https://github.com/RDFLib/rdflib/pull/1318)
+* Speedup __ctx_to_str.
+  [PR #1319](https://github.com/RDFLib/rdflib/pull/1319)
+* Speedup decodeUnicodeEscape by avoiding useless string replace.
+  [PR #1324](https://github.com/RDFLib/rdflib/pull/1324)
+* Fix errors reported by mypy
+  [PR #1330](https://github.com/RDFLib/rdflib/pull/1330)
+* Require setuptools, rdflib/plugins/sparql/__init__.py and rdflib/plugin.py import pkg_resources
+  [PR #1339](https://github.com/RDFLib/rdflib/pull/1339)
+* Fix tox config
+  [PR #1313](https://github.com/RDFLib/rdflib/pull/1313)
+* Fix formatting of xsd:decimal
+  [PR #1335](https://github.com/RDFLib/rdflib/pull/1335)
+* Add tests for issue #1299
+  [PR #1328](https://github.com/RDFLib/rdflib/pull/1328)
+* Add special handling for gYear and gYearMonth
+  [PR #1315](https://github.com/RDFLib/rdflib/pull/1315)
+* Replace incomplete example in intro_to_sparql.rst
+  [PR #1331](https://github.com/RDFLib/rdflib/pull/1331)
+* Added unit test for issue #977.
+  [PR #1112](https://github.com/RDFLib/rdflib/pull/1112)
+* Don't sort variables in TXTResultSerializer
+  [PR #1310](https://github.com/RDFLib/rdflib/pull/1310)
+* handle encoding of base64Binary Literals
+  [PR #1258](https://github.com/RDFLib/rdflib/pull/1258)
+* Add tests for Graph.transitive_{subjects,objects}
+  [PR #1307](https://github.com/RDFLib/rdflib/pull/1307)
+* Changed to support passing fully qualified queries through the graph …
+  [PR #1253](https://github.com/RDFLib/rdflib/pull/1253)
+* Upgrade to GitHub-native Dependabot
+  [PR #1298](https://github.com/RDFLib/rdflib/pull/1298)
+* Fix transitive_objects/subjects docstrings and signatures
+  [PR #1305](https://github.com/RDFLib/rdflib/pull/1305)
+* Fix typo in ClosedNamespace doc string
+  [PR #1293](https://github.com/RDFLib/rdflib/pull/1293)
+* Allow parentheses in uri
+  [PR #1280](https://github.com/RDFLib/rdflib/pull/1280)
+* Add notes about how to install from git
+  [PR #1286](https://github.com/RDFLib/rdflib/pull/1286)
+*  Feature/forward version to 6.0.0-alpha
+  [PR #1285](https://github.com/RDFLib/rdflib/pull/1285)
+* speedup notation3/turtle parser
+  [PR #1272](https://github.com/RDFLib/rdflib/pull/1272)
+* Correct behaviour of compute_qname for URNs
+  [PR #1274](https://github.com/RDFLib/rdflib/pull/1274)
+* Speedup __add_triple_context.
+  [PR #1271](https://github.com/RDFLib/rdflib/pull/1271)
+* Feature/coverage configuration
+  [PR #1267](https://github.com/RDFLib/rdflib/pull/1267)
+* optimize sparql.Bindings
+  [PR #1192](https://github.com/RDFLib/rdflib/pull/1192)
+* issue_771_add_key_error_if_spaces
+  [PR #1070](https://github.com/RDFLib/rdflib/pull/1070)
+* Typo fix
+  [PR #1254](https://github.com/RDFLib/rdflib/pull/1254)
+* Adding Namespace.__contains__()
+  [PR #1237](https://github.com/RDFLib/rdflib/pull/1237)
+* Add a Drone config file.
+  [PR #1247](https://github.com/RDFLib/rdflib/pull/1247)
+* Add sentence on names not valid as Python IDs.
+  [PR #1234](https://github.com/RDFLib/rdflib/pull/1234)
+* Add trig mimetype
+  [PR #1238](https://github.com/RDFLib/rdflib/pull/1238)
+* Move flake8 config
+  [PR #1239](https://github.com/RDFLib/rdflib/pull/1239)
+* Update SPARQL tests since the DBpedia was updated
+  [PR #1240](https://github.com/RDFLib/rdflib/pull/1240)
+* fix foaf ClosedNamespace
+  [PR #1220](https://github.com/RDFLib/rdflib/pull/1220)
+* add GeoSPARQL ClosedNamespace
+  [PR #1221](https://github.com/RDFLib/rdflib/pull/1221)
+* docs: fix simple typo, yeild -> yield
+  [PR #1223](https://github.com/RDFLib/rdflib/pull/1223)
+* do not use current time in sparql TIMEZONE
+  [PR #1193](https://github.com/RDFLib/rdflib/pull/1193)
+* Reset graph on exit from context
+  [PR #1206](https://github.com/RDFLib/rdflib/pull/1206)
+* Fix usage of default-graph for POST and introduce POST_FORM
+  [PR #1185](https://github.com/RDFLib/rdflib/pull/1185)
+* Changes to graph.serialize()
+  [PR #1183](https://github.com/RDFLib/rdflib/pull/1183)
+* rd2dot Escape HTML in node label and URI text
+  [PR #1209](https://github.com/RDFLib/rdflib/pull/1209)
+* tests: retry on network error (CI)
+  [PR #1203](https://github.com/RDFLib/rdflib/pull/1203)
+* Add documentation and type hints for rdflib.query.Result and rdflib.graph.Graph
+  [PR #1211](https://github.com/RDFLib/rdflib/pull/1211)
+* fix typo
+  [PR #1218](https://github.com/RDFLib/rdflib/pull/1218)
+* Add architecture ppc64le to travis build
+  [PR #1212](https://github.com/RDFLib/rdflib/pull/1212)
+* small cleanups
+  [PR #1191](https://github.com/RDFLib/rdflib/pull/1191)
+* Remove the usage of assert in the SPARQLConnector
+  [PR #1186](https://github.com/RDFLib/rdflib/pull/1186)
+* Remove requests
+  [PR #1175](https://github.com/RDFLib/rdflib/pull/1175)
+* Support parsing paths specified with pathlib
+  [PR #1180](https://github.com/RDFLib/rdflib/pull/1180)
+* URI Validation Performance Improvements
+  [PR #1177](https://github.com/RDFLib/rdflib/pull/1177)
+* Fix serialize with multiple disks on windows
+  [PR #1172](https://github.com/RDFLib/rdflib/pull/1172)
+* Fix for issue #629 - Arithmetic Operations of DateTime in SPARQL
+  [PR #1061](https://github.com/RDFLib/rdflib/pull/1061)
+* Fixes #1043.
+  [PR #1054](https://github.com/RDFLib/rdflib/pull/1054)
+* N3 parser: do not create formulas if the Turtle mode is activated
+  [PR #1142](https://github.com/RDFLib/rdflib/pull/1142)
+* Move to using graph.parse() rather than deprecated graph.load()
+  [PR #1167](https://github.com/RDFLib/rdflib/pull/1167)
+* Small improvement to serialize docs
+  [PR #1162](https://github.com/RDFLib/rdflib/pull/1162)
+* Issue 1160 missing url fragment
+  [PR #1163](https://github.com/RDFLib/rdflib/pull/1163)
+* remove import side-effects
+  [PR #1156](https://github.com/RDFLib/rdflib/pull/1156)
+* Docs update
+  [PR #1161](https://github.com/RDFLib/rdflib/pull/1161)
+* replace cgi by html, fixes issue #1110
+  [PR #1152](https://github.com/RDFLib/rdflib/pull/1152)
+* Deprecate some more Graph API surface
+  [PR #1151](https://github.com/RDFLib/rdflib/pull/1151)
+* Add deprecation warning on graph.load()
+  [PR #1150](https://github.com/RDFLib/rdflib/pull/1150)
+* Remove all remnants of Python2 compatibility
+  [PR #1149](https://github.com/RDFLib/rdflib/pull/1149)
+* make csv2rdf work in py3
+  [PR #1117](https://github.com/RDFLib/rdflib/pull/1117)
+* Add a  __dir__ attribute to a closed namespace
+  [PR #1134](https://github.com/RDFLib/rdflib/pull/1134)
+* improved Graph().parse()
+  [PR #1140](https://github.com/RDFLib/rdflib/pull/1140)
+* Discussion around new dict-based store implementation
+  [PR #1133](https://github.com/RDFLib/rdflib/pull/1133)
+* fix 913
+  [PR #1139](https://github.com/RDFLib/rdflib/pull/1139)
+* Make parsers CharacterStream aware
+  [PR #1145](https://github.com/RDFLib/rdflib/pull/1145)
+* More Black formatting changes
+  [PR #1146](https://github.com/RDFLib/rdflib/pull/1146)
+* Fix comment
+  [PR #1130](https://github.com/RDFLib/rdflib/pull/1130)
+* Updating namespace.py to solve issue #801
+  [PR #1044](https://github.com/RDFLib/rdflib/pull/1044)
+* Fix namespaces for SOSA and SSN. Fix #1126.
+  [PR #1128](https://github.com/RDFLib/rdflib/pull/1128)
+* Create pull request template
+  [PR #1114](https://github.com/RDFLib/rdflib/pull/1114)
+* BNode context dicts for NT and N-Quads parsers
+  [PR #1108](https://github.com/RDFLib/rdflib/pull/1108)
+* Allow distinct blank node contexts from one NTriples parser to the next (#980)
+  [PR #1107](https://github.com/RDFLib/rdflib/pull/1107)
+* Autodetect parse() format
+  [PR #1046](https://github.com/RDFLib/rdflib/pull/1046)
+* fix #910: Updated evaluate.py so that union includes results of both branches, even when identical.
+  [PR #1057](https://github.com/RDFLib/rdflib/pull/1057)
+* Removal of six & styling
+  [PR #1051](https://github.com/RDFLib/rdflib/pull/1051)
+* Add SERVICE clause to documentation
+  [PR #1041](https://github.com/RDFLib/rdflib/pull/1041)
+* add test with ubuntu 20.04
+  [PR #1038](https://github.com/RDFLib/rdflib/pull/1038)
+* Improved logo
+  [PR #1037](https://github.com/RDFLib/rdflib/pull/1037)
+* Add requests to the tests_requirements
+  [PR #1036](https://github.com/RDFLib/rdflib/pull/1036)
+* Set update endpoint similar to query endpoint for sparqlstore if only one is given
+  [PR #1033](https://github.com/RDFLib/rdflib/pull/1033)
+* fix shebang typo
+  [PR #1034](https://github.com/RDFLib/rdflib/pull/1034)
+* Add the content type 'application/sparql-update' when preparing a SPARQL update request
+  [PR #1022](https://github.com/RDFLib/rdflib/pull/1022)
+* Fix typo in README.md
+  [PR #1030](https://github.com/RDFLib/rdflib/pull/1030)
+* add Python 3.8
+  [PR #1023](https://github.com/RDFLib/rdflib/pull/1023)
+* Fix n3 parser exponent syntax of floats with leading dot.
+  [PR #1012](https://github.com/RDFLib/rdflib/pull/1012)
+* DOC: Use sphinxcontrib-apidoc and various cleanups
+  [PR #1010](https://github.com/RDFLib/rdflib/pull/1010)
+* FIX: Change is comparison to == for tuple
+  [PR #1009](https://github.com/RDFLib/rdflib/pull/1009)
+* Update copyright year in docs conf.py
+  [PR #1006](https://github.com/RDFLib/rdflib/pull/1006)
+  
+  
 2020/04/18 RELEASE 5.0.0
 ========================
 5.0.0 is a major stable release and is the last release to support Python 2 & 3.4. 5.0.0 is mostly backwards-

@@ -191,37 +191,38 @@ class SPARQLStore(SPARQLConnector, Store):  # type: ignore[misc]
     def triples(self, spo, context=None):
         """
         - tuple **(s, o, p)**
-            the triple used as filter for the SPARQL select.
-            (None, None, None) means anything.
+          the triple used as filter for the SPARQL select.
+          (None, None, None) means anything.
         - context **context**
-            the graph effectively calling this method.
+          the graph effectively calling this method.
 
         Returns a tuple of triples executing essentially a SPARQL like
         SELECT ?subj ?pred ?obj WHERE { ?subj ?pred ?obj }
 
         **context** may include three parameter
         to refine the underlying query:
-         * LIMIT: an integer to limit the number of results
-         * OFFSET: an integer to enable paging of results
-         * ORDERBY: an instance of Variable('s'), Variable('o') or Variable('p')
-        or, by default, the first 'None' from the given triple
+        * LIMIT: an integer to limit the number of results
+        * OFFSET: an integer to enable paging of results
+        * ORDERBY: an instance of Variable('s'), Variable('o') or Variable('p') or, by default, the first 'None' from the given triple
 
         .. warning::
-        - Using LIMIT or OFFSET automatically include ORDERBY otherwise this is
-        because the results are retrieved in a not deterministic way (depends on
-        the walking path on the graph)
-        - Using OFFSET without defining LIMIT will discard the first OFFSET - 1
-        results
+
+            - Using LIMIT or OFFSET automatically include ORDERBY otherwise this is
+              because the results are retrieved in a not deterministic way (depends on
+              the walking path on the graph)
+            - Using OFFSET without defining LIMIT will discard the first OFFSET - 1 results
 
         ``
         a_graph.LIMIT = limit
         a_graph.OFFSET = offset
         triple_generator = a_graph.triples(mytriple):
-            #do something
-        #Removes LIMIT and OFFSET if not required for the next triple() calls
+          # do something
+          # Removes LIMIT and OFFSET if not required for the next triple() calls
         del a_graph.LIMIT
         del a_graph.OFFSET
         ``
+
+
         """
 
         s, p, o = spo
@@ -526,8 +527,9 @@ class SPARQLUpdateStore(SPARQLStore):
         self._updates = 0
 
     def open(self, configuration: Union[str, Tuple[str, str]], create=False):
-        """This method is included so that calls to this Store via Graph, e.g. Graph("SPARQLStore"),
-        can set the required parameters
+        """This method is included so that calls to this Store via Graph, e.g.
+        Graph("SPARQLStore"), can set the required parameters
+
         """
         if type(configuration) == str:
             self.query_endpoint = configuration  # type: ignore[assignment]

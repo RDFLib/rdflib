@@ -5,7 +5,6 @@ http://www.w3.org/TR/sparql11-query/#sparqlQuery
 
 """
 
-
 import functools
 import operator
 import collections
@@ -1261,5 +1260,6 @@ if __name__ == "__main__":
 
     pq = parser.parseQuery(q)
     print(pq)
+    print("--------")
     tq = translateQuery(pq)
     pprintAlgebra(tq)
