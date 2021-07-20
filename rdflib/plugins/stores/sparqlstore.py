@@ -102,10 +102,13 @@ class SPARQLStore(SPARQLConnector, Store):  # type: ignore[misc]
         node_to_sparql: NodeToSparql = _node_to_sparql,
         returnFormat: str = "xml",
         auth: Optional[Tuple[str, str]] = None,
-        **sparqlconnector_kwargs
+        **sparqlconnector_kwargs,
     ):
         super(SPARQLStore, self).__init__(
-            query_endpoint=query_endpoint, returnFormat=returnFormat, auth=auth, **sparqlconnector_kwargs
+            query_endpoint=query_endpoint,
+            returnFormat=returnFormat,
+            auth=auth,
+            **sparqlconnector_kwargs,
         )
 
         self.node_to_sparql = node_to_sparql
@@ -128,7 +131,9 @@ class SPARQLStore(SPARQLConnector, Store):  # type: ignore[misc]
 
     # Database Management Methods
     def create(self, configuration):
-        raise TypeError("The SPARQL Store is read only. Try SPARQLUpdateStore for read/write.")
+        raise TypeError(
+            "The SPARQL Store is read only. Try SPARQLUpdateStore for read/write."
+        )
 
     def destroy(self, configuration):
         raise TypeError("The SPARQL store is read only")
@@ -166,7 +171,9 @@ class SPARQLStore(SPARQLConnector, Store):  # type: ignore[misc]
             ]
         )
 
-    def query(self, query, initNs=None, initBindings=None, queryGraph=None, DEBUG=False):
+    def query(
+        self, query, initNs=None, initBindings=None, queryGraph=None, DEBUG=False
+    ):
         self.debug = DEBUG
         assert isinstance(query, str)
 
@@ -284,7 +291,9 @@ class SPARQLStore(SPARQLConnector, Store):  # type: ignore[misc]
         if vars:
             if type(result) == tuple:
                 if result[0] == 401:
-                    raise ValueError("It looks like you need to authenticate with this SPARQL Store. HTTP unauthorized")
+                    raise ValueError(
+                        "It looks like you need to authenticate with this SPARQL Store. HTTP unauthorized"
+                    )
             for row in result:
                 yield (
                     row.get(s, s),
@@ -499,7 +508,7 @@ class SPARQLUpdateStore(SPARQLStore):
         postAsEncoded: bool = True,
         autocommit: bool = True,
         dirty_reads: bool = False,
-        **kwds
+        **kwds,
     ):
         """
         :param autocommit if set, the store will commit after every
@@ -517,7 +526,7 @@ class SPARQLUpdateStore(SPARQLStore):
             sparql11,
             context_aware,
             update_endpoint=update_endpoint,
-            **kwds
+            **kwds,
         )
 
         self.postAsEncoded = postAsEncoded
@@ -589,10 +598,10 @@ class SPARQLUpdateStore(SPARQLStore):
 
     # Transactional interfaces
     def commit(self):
-        """ add(), addN(), and remove() are transactional to reduce overhead of many small edits.
-            Read and update() calls will automatically commit any outstanding edits.
-            This should behave as expected most of the time, except that alternating writes
-            and reads can degenerate to the original call-per-triple situation that originally existed.
+        """add(), addN(), and remove() are transactional to reduce overhead of many small edits.
+        Read and update() calls will automatically commit any outstanding edits.
+        This should behave as expected most of the time, except that alternating writes
+        and reads can degenerate to the original call-per-triple situation that originally existed.
         """
         if self._edits and len(self._edits) > 0:
             self._update("\n;\n".join(self._edits))
@@ -602,7 +611,7 @@ class SPARQLUpdateStore(SPARQLStore):
         self._edits = None
 
     def add(self, spo, context=None, quoted=False):
-        """ Add a triple to the store of triples. """
+        """Add a triple to the store of triples."""
 
         if not self.update_endpoint:
             raise Exception("UpdateEndpoint is not set")
@@ -621,7 +630,7 @@ class SPARQLUpdateStore(SPARQLStore):
             self.commit()
 
     def addN(self, quads):
-        """ Add a list of quads to the store. """
+        """Add a list of quads to the store."""
         if not self.update_endpoint:
             raise Exception("UpdateEndpoint is not set - call 'open'")
 
@@ -644,7 +653,7 @@ class SPARQLUpdateStore(SPARQLStore):
             self.commit()
 
     def remove(self, spo, context):
-        """ Remove a triple from the store """
+        """Remove a triple from the store"""
         if not self.update_endpoint:
             raise Exception("UpdateEndpoint is not set - call 'open'")
 
@@ -742,11 +751,11 @@ class SPARQLUpdateStore(SPARQLStore):
 
     def _insert_named_graph(self, query, query_graph):
         """
-            Inserts GRAPH <query_graph> {} into blocks of SPARQL Update operations
+        Inserts GRAPH <query_graph> {} into blocks of SPARQL Update operations
 
-            For instance,  "INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"
-            is converted into
-            "INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> } }"
+        For instance,  "INSERT DATA { <urn:michel> <urn:likes> <urn:pizza> }"
+        is converted into
+        "INSERT DATA { GRAPH <urn:graph> { <urn:michel> <urn:likes> <urn:pizza> } }"
         """
         if isinstance(query_graph, Node):
             query_graph = self.node_to_sparql(query_graph)

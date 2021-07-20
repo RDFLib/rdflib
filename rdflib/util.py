@@ -229,19 +229,19 @@ def check_context(c):
 
 
 def check_subject(s):
-    """ Test that s is a valid subject identifier."""
+    """Test that s is a valid subject identifier."""
     if not (isinstance(s, URIRef) or isinstance(s, BNode)):
         raise SubjectTypeError(s)
 
 
 def check_predicate(p):
-    """ Test that p is a valid predicate identifier."""
+    """Test that p is a valid predicate identifier."""
     if not isinstance(p, URIRef):
         raise PredicateTypeError(p)
 
 
 def check_object(o):
-    """ Test that o is a valid object identifier."""
+    """Test that o is a valid object identifier."""
     if not (isinstance(o, URIRef) or isinstance(o, Literal) or isinstance(o, BNode)):
         raise ObjectTypeError(o)
 

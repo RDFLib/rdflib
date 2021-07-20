@@ -193,8 +193,7 @@ class URLInputSource(InputSource):
 class FileInputSource(InputSource):
     def __init__(self, file):
         base = pathlib.Path.cwd().as_uri()
-        system_id = URIRef(pathlib.Path(file.name).absolute().as_uri(),
-                           base=base)
+        system_id = URIRef(pathlib.Path(file.name).absolute().as_uri(), base=base)
         super(FileInputSource, self).__init__(system_id)
         self.file = file
         if isinstance(file, TextIOBase):  # Python3 unicode fp
@@ -224,11 +223,16 @@ def create_input_source(
 
     # test that exactly one of source, location, file, and data is not None.
     non_empty_arguments = list(
-        filter(lambda v: v is not None, [source, location, file, data],)
+        filter(
+            lambda v: v is not None,
+            [source, location, file, data],
+        )
     )
 
     if len(non_empty_arguments) != 1:
-        raise ValueError("exactly one of source, location, file or data must be given",)
+        raise ValueError(
+            "exactly one of source, location, file or data must be given",
+        )
 
     input_source = None
 
@@ -275,7 +279,10 @@ def create_input_source(
             file,
             input_source,
         ) = _create_input_source_from_location(
-            file=file, format=format, input_source=input_source, location=location,
+            file=file,
+            format=format,
+            input_source=input_source,
+            location=location,
         )
 
     if file is not None:

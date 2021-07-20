@@ -170,7 +170,10 @@ register("nt", Serializer, "rdflib.plugins.serializers.nt", "NTSerializer")
 register("nt11", Serializer, "rdflib.plugins.serializers.nt", "NT11Serializer")
 register("json-ld", Serializer, "rdflib.plugins.serializers.jsonld", "JsonLDSerializer")
 register(
-    "application/ld+json", Serializer, "rdflib.plugins.serializers.jsonld", "JsonLDSerializer"
+    "application/ld+json",
+    Serializer,
+    "rdflib.plugins.serializers.jsonld",
+    "JsonLDSerializer",
 )
 
 # Register Quad Serializers

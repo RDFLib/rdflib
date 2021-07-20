@@ -38,6 +38,7 @@ from io import BytesIO
 from nose.tools import nottest, eq_
 from nose import SkipTest
 
+
 def eq(a, b, msg):
     return eq_(a, b, msg + ": (%r!=%r)" % (a, b))
 
@@ -426,16 +427,11 @@ def query_test(t):
                     set(res2.vars),
                     "Vars do not match: %r != %r" % (set(res.vars), set(res2.vars)),
                 )
-                assert bindingsCompatible(set(res), set(res2)), (
-                    "Bindings do not match: \nexpected:\n%s\n!=\ngot:\n%s"
-                    % (
-                        res.serialize(
-                            format="txt", namespace_manager=g.namespace_manager
-                        ),
-                        res2.serialize(
-                            format="txt", namespace_manager=g.namespace_manager
-                        ),
-                    )
+                assert bindingsCompatible(
+                    set(res), set(res2)
+                ), "Bindings do not match: \nexpected:\n%s\n!=\ngot:\n%s" % (
+                    res.serialize(format="txt", namespace_manager=g.namespace_manager),
+                    res2.serialize(format="txt", namespace_manager=g.namespace_manager),
                 )
             elif res.type == "ASK":
                 eq(
@@ -629,8 +625,13 @@ if __name__ == "__main__":
                 % (now, i, success, f_sum, e_sum, skip, 100.0 * success / i)
             )
 
-        earl_report = os.path.join(TEST_DIR, "../test_reports/rdflib_sparql-%s.ttl" % now.replace(":", ""))
+        earl_report = os.path.join(
+            TEST_DIR, "../test_reports/rdflib_sparql-%s.ttl" % now.replace(":", "")
+        )
 
         report.serialize(earl_report, format="n3")
-        report.serialize(os.path.join(TEST_DIR, "../test_reports/rdflib_sparql-latest.ttl"), format="n3")
+        report.serialize(
+            os.path.join(TEST_DIR, "../test_reports/rdflib_sparql-latest.ttl"),
+            format="n3",
+        )
         print("Wrote EARL-report to '%s'" % earl_report)

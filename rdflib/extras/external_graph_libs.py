@@ -127,7 +127,7 @@ def rdflib_to_networkx_digraph(
     graph,
     calc_weights=True,
     edge_attrs=lambda s, p, o: {"triples": [(s, p, o)]},
-    **kwds
+    **kwds,
 ):
     """Converts the given graph into a networkx.DiGraph.
 
@@ -190,7 +190,7 @@ def rdflib_to_networkx_graph(
     graph,
     calc_weights=True,
     edge_attrs=lambda s, p, o: {"triples": [(s, p, o)]},
-    **kwds
+    **kwds,
 ):
     """Converts the given graph into a networkx.Graph.
 

@@ -760,45 +760,47 @@ def AdditiveExpression(e, ctx):
 
     # handling arithmetic(addition/subtraction) of dateTime, date, time
     # and duration datatypes (if any)
-    if hasattr(expr, 'datatype') and (expr.datatype in XSD_DateTime_DTs or expr.datatype in XSD_Duration_DTs):
+    if hasattr(expr, "datatype") and (
+        expr.datatype in XSD_DateTime_DTs or expr.datatype in XSD_Duration_DTs
+    ):
 
-            res = dateTimeObjects(expr)
-            dt = expr.datatype
+        res = dateTimeObjects(expr)
+        dt = expr.datatype
 
-            for op, term in zip(e.op, other):
+        for op, term in zip(e.op, other):
 
-                # check if operation is datetime,date,time operation over
-                # another datetime,date,time datatype
-                if dt in XSD_DateTime_DTs and dt == term.datatype and op == '-':
-                    # checking if there are more than one datetime operands -
-                    # in that case it doesn't make sense for example
-                    # ( dateTime1 - dateTime2 - dateTime3 ) is an invalid operation
-                    if len(other) > 1:
-                        error_message = "Can't evaluate multiple %r arguments"
-                        raise SPARQLError(error_message, dt.datatype)
-                    else:
-                        n = dateTimeObjects(term)
-                        res = calculateDuration(res, n)
-                        return res
+            # check if operation is datetime,date,time operation over
+            # another datetime,date,time datatype
+            if dt in XSD_DateTime_DTs and dt == term.datatype and op == "-":
+                # checking if there are more than one datetime operands -
+                # in that case it doesn't make sense for example
+                # ( dateTime1 - dateTime2 - dateTime3 ) is an invalid operation
+                if len(other) > 1:
+                    error_message = "Can't evaluate multiple %r arguments"
+                    raise SPARQLError(error_message, dt.datatype)
+                else:
+                    n = dateTimeObjects(term)
+                    res = calculateDuration(res, n)
+                    return res
 
-                # datetime,date,time +/- duration,dayTimeDuration,yearMonthDuration
-                elif (dt in XSD_DateTime_DTs and term.datatype in XSD_Duration_DTs):
+            # datetime,date,time +/- duration,dayTimeDuration,yearMonthDuration
+            elif dt in XSD_DateTime_DTs and term.datatype in XSD_Duration_DTs:
+                n = dateTimeObjects(term)
+                res = calculateFinalDateTime(res, dt, n, term.datatype, op)
+                return res
+
+            # duration,dayTimeDuration,yearMonthDuration + datetime,date,time
+            elif dt in XSD_Duration_DTs and term.datatype in XSD_DateTime_DTs:
+                if op == "+":
                     n = dateTimeObjects(term)
                     res = calculateFinalDateTime(res, dt, n, term.datatype, op)
                     return res
 
-                # duration,dayTimeDuration,yearMonthDuration + datetime,date,time
-                elif dt in XSD_Duration_DTs and term.datatype in XSD_DateTime_DTs:
-                    if op == "+":
-                        n = dateTimeObjects(term)
-                        res = calculateFinalDateTime(res, dt, n, term.datatype, op)
-                        return res
+            # rest are invalid types
+            else:
+                raise SPARQLError("Invalid DateTime Operations")
 
-                # rest are invalid types
-                else:
-                    raise SPARQLError('Invalid DateTime Operations')
-
-        # handling arithmetic(addition/subtraction) of numeric datatypes (if any)
+    # handling arithmetic(addition/subtraction) of numeric datatypes (if any)
     else:
         res = numeric(expr)
 
@@ -1084,7 +1086,7 @@ def isCompatibleDateTimeDatatype(obj1, dt1, obj2, dt2):
             # checking if the dayTimeDuration has no Date Component
             # (by checking if the format is "PT...." )
             # else it wont be compatible with Time Literal
-            if("T" == str(obj2)[1]):
+            if "T" == str(obj2)[1]:
                 return True
             else:
                 return False
@@ -1096,7 +1098,7 @@ def isCompatibleDateTimeDatatype(obj1, dt1, obj2, dt2):
 
 def calculateDuration(obj1, obj2):
     """
-        returns the duration Literal between two datetime
+    returns the duration Literal between two datetime
 
     """
     date1 = obj1
@@ -1107,14 +1109,14 @@ def calculateDuration(obj1, obj2):
 
 def calculateFinalDateTime(obj1, dt1, obj2, dt2, operation):
     """
-        Calculates the final dateTime/date/time resultant after addition/
-        subtraction of duration/dayTimeDuration/yearMonthDuration
+    Calculates the final dateTime/date/time resultant after addition/
+    subtraction of duration/dayTimeDuration/yearMonthDuration
     """
 
     # checking compatibility of datatypes (duration types and date/time/dateTime)
-    if(isCompatibleDateTimeDatatype(obj1, dt1, obj2, dt2)):
+    if isCompatibleDateTimeDatatype(obj1, dt1, obj2, dt2):
         # proceed
-        if(operation == "-"):
+        if operation == "-":
             ans = obj1 - obj2
             return Literal(ans, datatype=dt1)
         else:
@@ -1122,7 +1124,7 @@ def calculateFinalDateTime(obj1, dt1, obj2, dt2, operation):
             return Literal(ans, datatype=dt1)
 
     else:
-        raise SPARQLError('Incompatible Data types to DateTime Operations')
+        raise SPARQLError("Incompatible Data types to DateTime Operations")
 
 
 def EBV(rt):

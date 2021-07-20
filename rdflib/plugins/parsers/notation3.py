@@ -194,7 +194,7 @@ def base():
 
 
 def _fixslash(s):
-    """ Fix windowslike filename to unixlike - (#ifdef WINDOWS)"""
+    """Fix windowslike filename to unixlike - (#ifdef WINDOWS)"""
     s = s.replace("\\", "/")
     if s[0] != "/" and s[1] == ":":
         s = s[2:]  # @@@ Hack when drive letter present
@@ -355,8 +355,8 @@ class SinkParser:
         why=None,
         turtle=False,
     ):
-        """ note: namespace names should *not* end in  # ;
-        the  # will get added during qname processing """
+        """note: namespace names should *not* end in  # ;
+        the  # will get added during qname processing"""
 
         self._bindings = {}
         if thisDoc != "":
@@ -513,7 +513,7 @@ class SinkParser:
 
         i_plus_len_tok = i + len(tok)
         if (
-            argstr[i : i_plus_len_tok] == tok
+            argstr[i:i_plus_len_tok] == tok
             and (argstr[i_plus_len_tok] in _notKeywordsChars)
             or (colon and argstr[i_plus_len_tok] == ":")
         ):
@@ -747,7 +747,7 @@ class SinkParser:
         return self.item(argstr, i, res)
 
     def verb(self, argstr, i, res):
-        """ has _prop_
+        """has _prop_
         is _prop_ of
         a
         =
@@ -842,8 +842,7 @@ class SinkParser:
         return self._store.newBlankNode(self._context, uri, why=self._reason2)
 
     def path(self, argstr, i, res):
-        """Parse the path production.
-        """
+        """Parse the path production."""
         j = self.nodeOrLiteral(argstr, i, res)
         if j < 0:
             return j  # nope
@@ -1262,8 +1261,7 @@ class SinkParser:
         return i if m is None else -1
 
     def variable(self, argstr, i, res):
-        """     ?abc -> variable(:abc)
-        """
+        """?abc -> variable(:abc)"""
 
         j = self.skipSpace(argstr, i)
         if j < 0:
@@ -1299,8 +1297,7 @@ class SinkParser:
         return i
 
     def bareWord(self, argstr, i, res):
-        """     abc -> :abc
-        """
+        """abc -> :abc"""
         j = self.skipSpace(argstr, i)
         if j < 0:
             return -1
@@ -1367,7 +1364,7 @@ class SinkParser:
                     if start < i:
                         ln += argstr[start:i]
                     start = i + 1
-                elif c not in allowedChars or lastslash: # Most common case is "a-zA-Z"
+                elif c not in allowedChars or lastslash:  # Most common case is "a-zA-Z"
                     if lastslash:
                         if c not in escapeChars:
                             raise BadSyntax(
@@ -1377,7 +1374,7 @@ class SinkParser:
                                 i,
                                 "illegal escape " + c,
                             )
-                    elif c == "%": # Very rare.
+                    elif c == "%":  # Very rare.
                         if (
                             argstr[i + 1] not in hexChars
                             or argstr[i + 2] not in hexChars

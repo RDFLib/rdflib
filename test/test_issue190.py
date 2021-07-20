@@ -42,7 +42,6 @@ test_string1 = """\
 Betriebsnummer der Einzugsstelle:\nKnappschaft\n980 0000 6\nWICHTIGES DOKUMENT - SORGFÄLTIG AUFBEWAHREN!\n """
 
 
-
 @unittest.skipIf(True, "Known issue with newlines in text")
 def test1():
     meta1 = meta.encode("utf-8") % test_string1.encode("utf-8")
@@ -58,6 +57,7 @@ Knappschaft
 980 0000 6
 WICHTIGES DOKUMENT - SORGFÄLTIG AUFBEWAHREN!
 """
+
 
 @unittest.skipIf(True, "Known issue with newlines in text")
 def test2():

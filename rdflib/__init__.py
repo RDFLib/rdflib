@@ -91,7 +91,11 @@ _interactive_mode = False
 try:
     import __main__
 
-    if not hasattr(__main__, "__file__") and sys.stdout is not None and sys.stderr.isatty():
+    if (
+        not hasattr(__main__, "__file__")
+        and sys.stdout is not None
+        and sys.stderr.isatty()
+    ):
         # show log messages in interactive mode
         _interactive_mode = True
         logger.setLevel(logging.INFO)
@@ -186,7 +190,7 @@ from rdflib.namespace import (
     VOID,
     XMLNS,
     XSD,
-    Namespace
+    Namespace,
 )
 
 # tedious sop to flake8

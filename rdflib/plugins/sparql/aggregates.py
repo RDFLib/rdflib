@@ -13,7 +13,7 @@ Aggregation functions
 
 
 class Accumulator(object):
-    """abstract base class for different aggregation functions """
+    """abstract base class for different aggregation functions"""
 
     def __init__(self, aggregation):
         self.var = aggregation.res
@@ -26,11 +26,11 @@ class Accumulator(object):
             self.seen = set()
 
     def dont_care(self, row):
-        """skips distinct test """
+        """skips distinct test"""
         return True
 
     def use_row(self, row):
-        """tests distinct with set """
+        """tests distinct with set"""
         return _eval(self.expr, row) not in self.seen
 
     def set_value(self, bindings):

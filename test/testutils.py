@@ -134,13 +134,20 @@ def nose_tst_earl_report(generator, earl_report_name=None):
     )
     if earl_report_name:
         now = isodate.datetime_isoformat(datetime.datetime.utcnow())
-        earl_report = os.path.join(TEST_DIR, "../test_reports/%s-%s.ttl" % (
-            earl_report_name,
-            now.replace(":", ""),
-        ))
+        earl_report = os.path.join(
+            TEST_DIR,
+            "../test_reports/%s-%s.ttl"
+            % (
+                earl_report_name,
+                now.replace(":", ""),
+            ),
+        )
 
         report.serialize(earl_report, format="n3")
-        report.serialize(os.path.join(TEST_DIR, "../test_reports/%s-latest.ttl" % earl_report_name), format="n3")
+        report.serialize(
+            os.path.join(TEST_DIR, "../test_reports/%s-latest.ttl" % earl_report_name),
+            format="n3",
+        )
         print("Wrote EARL-report to '%s'" % earl_report)
 
 

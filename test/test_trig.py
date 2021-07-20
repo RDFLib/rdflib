@@ -80,7 +80,7 @@ class TestTrig(unittest.TestCase):
     def testBlankGraphIdentifier(self):
         g = rdflib.ConjunctiveGraph()
         g.add(TRIPLE + (rdflib.BNode(),))
-        out = g.serialize(format="trig", encoding='latin-1')
+        out = g.serialize(format="trig", encoding="latin-1")
         graph_label_line = out.splitlines()[-4]
 
         self.assertTrue(re.match(br"^_:[a-zA-Z0-9]+ \{", graph_label_line))
@@ -118,7 +118,9 @@ class TestTrig(unittest.TestCase):
         g.parse(data=data, format="trig")
         self.assertEqual(len(list(g.contexts())), 2)
 
-    @unittest.skipIf(True, "Iterative serialization currently produces 16 copies of everything")
+    @unittest.skipIf(
+        True, "Iterative serialization currently produces 16 copies of everything"
+    )
     def testRoundTrips(self):
 
         data = """

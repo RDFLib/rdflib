@@ -5,8 +5,16 @@ from warnings import warn
 
 from rdflib import DCTERMS
 from rdflib.graph import Graph
-from rdflib.namespace import FOAF, RDF, RDFS, SH, DefinedNamespaceMeta, Namespace, \
-    ClosedNamespace, URIPattern
+from rdflib.namespace import (
+    FOAF,
+    RDF,
+    RDFS,
+    SH,
+    DefinedNamespaceMeta,
+    Namespace,
+    ClosedNamespace,
+    URIPattern,
+)
 from rdflib.term import URIRef
 
 
@@ -27,13 +35,13 @@ class NamespaceTest(unittest.TestCase):
         self.assertEqual(f"{self.ns_str}a", f"{self.ns.a}")
 
     def test_dcterms_title(self):
-        self.assertEqual(DCTERMS.title, URIRef(DCTERMS + 'title'))
+        self.assertEqual(DCTERMS.title, URIRef(DCTERMS + "title"))
 
     def test_iri(self):
-        prefix = u'http://jörn.loves.encoding.problems/'
+        prefix = "http://jörn.loves.encoding.problems/"
         ns = Namespace(prefix)
         self.assertEqual(ns, str(prefix))
-        self.assert_(ns[u'jörn'].startswith(ns))
+        self.assert_(ns["jörn"].startswith(ns))
 
 
 class ClosedNamespaceTest(unittest.TestCase):
@@ -164,7 +172,7 @@ class NamespacePrefixTest(unittest.TestCase):
                 URIRef("http://example.com/baz"),
             )
         )
-        n3 = g.serialize(format="n3", encoding='latin-1')
+        n3 = g.serialize(format="n3", encoding="latin-1")
         # Gunnar disagrees that this is right:
         # self.assertTrue("<http://example.com/foo> ns1:bar <http://example.com/baz> ." in n3)
         # as this is much prettier, and ns1 is already defined:
@@ -183,8 +191,7 @@ class NamespacePrefixTest(unittest.TestCase):
         n3 = g.serialize(format="n3", encoding="latin-1")
 
         self.assertTrue(
-            b"<http://example1.com/foo> ns1:bar <http://example3.com/baz> ."
-            in n3
+            b"<http://example1.com/foo> ns1:bar <http://example3.com/baz> ." in n3
         )
 
     def test_closed_namespace(self):
@@ -217,14 +224,21 @@ class NamespacePrefixTest(unittest.TestCase):
     def test_contains_method(self):
         """Tests for Namespace.__contains__() methods."""
 
-        ref = URIRef('http://www.w3.org/ns/shacl#Info')
-        self.assertTrue(type(SH) == DefinedNamespaceMeta, f"SH no longer a DefinedNamespaceMeta (instead it is now {type(SH)}, update test.")
+        ref = URIRef("http://www.w3.org/ns/shacl#Info")
+        self.assertTrue(
+            type(SH) == DefinedNamespaceMeta,
+            f"SH no longer a DefinedNamespaceMeta (instead it is now {type(SH)}, update test.",
+        )
         self.assertTrue(ref in SH, "sh:Info not in SH")
 
-        ref = URIRef('http://www.w3.org/2000/01/rdf-schema#label')
-        self.assertTrue(ref in RDFS, "ClosedNamespace(RDFS) does not include rdfs:label")
-        ref = URIRef('http://www.w3.org/2000/01/rdf-schema#example')
-        self.assertFalse(ref in RDFS, "ClosedNamespace(RDFS) includes out-of-ns member rdfs:example")
+        ref = URIRef("http://www.w3.org/2000/01/rdf-schema#label")
+        self.assertTrue(
+            ref in RDFS, "ClosedNamespace(RDFS) does not include rdfs:label"
+        )
+        ref = URIRef("http://www.w3.org/2000/01/rdf-schema#example")
+        self.assertFalse(
+            ref in RDFS, "ClosedNamespace(RDFS) includes out-of-ns member rdfs:example"
+        )
 
-        ref = URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#type')
+        ref = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
         self.assertTrue(ref in RDF, "_RDFNamespace does not include rdf:type")

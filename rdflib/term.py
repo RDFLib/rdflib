@@ -306,7 +306,7 @@ class URIRef(Identifier):
         return self.__class__(str(self) % other)
 
     def de_skolemize(self):
-        """ Create a Blank Node from a skolem URI, in accordance
+        """Create a Blank Node from a skolem URI, in accordance
         with http://www.w3.org/TR/rdf11-concepts/#section-skolemization.
         This function accepts only rdflib type skolemization, to provide
         a round-tripping within the system.
@@ -436,7 +436,7 @@ class BNode(Identifier):
         return """%s('%s')""" % (clsName, str(self))
 
     def skolemize(self, authority=None, basepath=None):
-        """ Create a URIRef "skolem" representation of the BNode, in accordance
+        """Create a URIRef "skolem" representation of the BNode, in accordance
         with http://www.w3.org/TR/rdf11-concepts/#section-skolemization
 
         .. versionadded:: 4.0
@@ -593,7 +593,7 @@ class Literal(Identifier):
         if datatype in (_XSD_NORMALISED_STRING, _XSD_TOKEN):
             lexical_or_value = _normalise_XSD_STRING(lexical_or_value)
 
-        if datatype in (_XSD_TOKEN, ):
+        if datatype in (_XSD_TOKEN,):
             lexical_or_value = _strip_and_collapse_whitespace(lexical_or_value)
 
         try:
@@ -1663,14 +1663,14 @@ def _normalise_XSD_STRING(lexical_or_value):
     Replaces \t, \n, \r (#x9 (tab), #xA (linefeed), and #xD (carriage return)) with space without any whitespace collapsing
     """
     if isinstance(lexical_or_value, str):
-        return lexical_or_value.replace('\t', ' ').replace('\n', ' ').replace('\r', ' ')
+        return lexical_or_value.replace("\t", " ").replace("\n", " ").replace("\r", " ")
     return lexical_or_value
 
 
 def _strip_and_collapse_whitespace(lexical_or_value):
     if isinstance(lexical_or_value, str):
         # Use regex to substitute contiguous whitespace into a single whitespace. Strip trailing whitespace.
-        return re.sub(' +', ' ', lexical_or_value.strip())
+        return re.sub(" +", " ", lexical_or_value.strip())
     return lexical_or_value
 
 

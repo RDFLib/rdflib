@@ -9,18 +9,20 @@ r = httpx.get(
     params={
         "state": "closed",
         "per_page": 100,
-        "page": 2 # must get all pages up to date of last release
-    }
+        "page": 2,  # must get all pages up to date of last release
+    },
 )
 prs = []
 if r.status_code == 200:
     for pr in r.json():
         if pr["merged_at"] is not None:
-            prs.append({
-                "url": pr["url"],
-                "title": pr["title"],
-                "merged_at": pr["merged_at"],
-            })
+            prs.append(
+                {
+                    "url": pr["url"],
+                    "title": pr["title"],
+                    "merged_at": pr["merged_at"],
+                }
+            )
     with open("prs2.json", "w") as f:
         json.dump(prs, f)
 else:

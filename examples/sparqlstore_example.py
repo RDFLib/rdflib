@@ -25,7 +25,9 @@ if __name__ == "__main__":
     # EXAMPLE 2: using a SPARQLStore object directly
     st = SPARQLStore(query_endpoint="http://dbpedia.org/sparql")
 
-    for p in st.objects(URIRef("http://dbpedia.org/resource/Brisbane"), dbo.populationTotal):
+    for p in st.objects(
+        URIRef("http://dbpedia.org/resource/Brisbane"), dbo.populationTotal
+    ):
         print(
             "According to DBPedia, Brisbane has a population of "
             "{0:,}".format(int(p), ",d")
@@ -39,6 +41,7 @@ if __name__ == "__main__":
     # we are asking DBPedia for 3 skos:Concept instances
     count = 0
     from rdflib.namespace import RDF, SKOS
+
     for s in graph.subjects(predicate=RDF.type, object=SKOS.Concept):
         count += 1
         print(f"\t- {s}")
@@ -47,5 +50,8 @@ if __name__ == "__main__":
 
     # EXAMPLE 4: using a SPARQL endpoint that requires Basic HTTP authentication
     # NOTE: this example won't run since the endpoint isn't live (or real)
-    s = SPARQLStore(query_endpoint="http://fake-sparql-endpoint.com/repository/x", auth=("my_username", "my_password"))
+    s = SPARQLStore(
+        query_endpoint="http://fake-sparql-endpoint.com/repository/x",
+        auth=("my_username", "my_password"),
+    )
     # do normal Graph things

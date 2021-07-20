@@ -11,7 +11,9 @@ class BerkeleyDBTestCase(unittest.TestCase):
         self.g = ConjunctiveGraph(store=self.store_name)
         self.rt = self.g.open(self.path, create=True)
         assert self.rt == VALID_STORE, "The underlying store is corrupt"
-        assert len(self.g) == 0, "There must be zero triples in the graph just after store (file) creation"
+        assert (
+            len(self.g) == 0
+        ), "There must be zero triples in the graph just after store (file) creation"
         data = """
                 PREFIX : <https://example.org/>
 
@@ -25,25 +27,34 @@ class BerkeleyDBTestCase(unittest.TestCase):
         self.g.close()
 
     def test_write(self):
-        assert len(self.g) == 3, "There must be three triples in the graph after the first data chunk parse"
+        assert (
+            len(self.g) == 3
+        ), "There must be three triples in the graph after the first data chunk parse"
         data2 = """
                 PREFIX : <https://example.org/>
                 
                 :d :i :j .
                 """
         self.g.parse(data=data2, format="ttl")
-        assert len(self.g) == 4, "There must be four triples in the graph after the second data chunk parse"
+        assert (
+            len(self.g) == 4
+        ), "There must be four triples in the graph after the second data chunk parse"
         data3 = """
                 PREFIX : <https://example.org/>
                 
                 :d :i :j .
                 """
         self.g.parse(data=data3, format="ttl")
-        assert len(self.g) == 4, "There must still be four triples in the graph after the thrd data chunk parse"
+        assert (
+            len(self.g) == 4
+        ), "There must still be four triples in the graph after the thrd data chunk parse"
 
     def test_read(self):
         sx = None
-        for s in self.g.subjects(predicate=URIRef("https://example.org/e"), object=URIRef("https://example.org/f")):
+        for s in self.g.subjects(
+            predicate=URIRef("https://example.org/e"),
+            object=URIRef("https://example.org/f"),
+        ):
             sx = s
         assert sx == URIRef("https://example.org/d")
 
@@ -111,4 +122,6 @@ class BerkeleyDBTestCase(unittest.TestCase):
         # reopen the graph
         self.g = ConjunctiveGraph("BerkeleyDB")
         self.g.open(self.path, create=False)
-        assert len(self.g) == 3, "After close and reopen, we should still have the 3 originally added triples"
+        assert (
+            len(self.g) == 3
+        ), "After close and reopen, we should still have the 3 originally added triples"

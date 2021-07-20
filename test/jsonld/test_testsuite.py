@@ -24,7 +24,7 @@ known_bugs = (
     # # "toRdf-0091-in", # TODO: multiple aliases version?
     # # TODO: check that these are corrected in 1.1 testsuite (1.0-deprecated prefix forms)
     "toRdf-0088-in",
-    "toRdf-0118-in", # RDFLib cannot do generalized graphs
+    "toRdf-0118-in",  # RDFLib cannot do generalized graphs
 )
 
 TC_BASE = "https://w3c.github.io/json-ld-api/tests/"
@@ -84,7 +84,9 @@ def test_suite(skip_known_bugs=True):
     chdir(test_dir)
     runner.DEFAULT_PARSER_VERSION = 1.0
     try:
-        for cat, num, inputpath, expectedpath, context, options in read_manifest(skiptests):
+        for cat, num, inputpath, expectedpath, context, options in read_manifest(
+            skiptests
+        ):
             if inputpath.endswith(".jsonld"):  # toRdf
                 if expectedpath.endswith(".jsonld"):  # compact/expand/flatten
                     func = runner.do_test_json

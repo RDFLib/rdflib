@@ -78,13 +78,7 @@ The following namespaces are available by directly importing from rdflib:
     rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#seeAlso')
 """
 
-__all__ = [
-    "is_ncname",
-    "split_uri",
-    "Namespace",
-    "ClosedNamespace",
-    "NamespaceManager"
-]
+__all__ = ["is_ncname", "split_uri", "Namespace", "ClosedNamespace", "NamespaceManager"]
 
 
 logger = logging.getLogger(__name__)
@@ -149,7 +143,7 @@ class Namespace(str):
         >>> obj in namespace
         False
         """
-        return ref.startswith(self) # test namespace membership with "ref in ns" syntax
+        return ref.startswith(self)  # test namespace membership with "ref in ns" syntax
 
 
 class URIPattern(str):
@@ -189,9 +183,9 @@ class DefinedNamespaceMeta(type):
 
     _NS: Namespace
     _warn: bool = True
-    _fail: bool = False             # True means mimic ClosedNamespace
-    _extras: List[str] = []         # List of non-pythonesque items
-    _underscore_num: bool = False    # True means pass "_n" constructs
+    _fail: bool = False  # True means mimic ClosedNamespace
+    _extras: List[str] = []  # List of non-pythonesque items
+    _underscore_num: bool = False  # True means pass "_n" constructs
 
     def __getitem__(cls, name, default=None):
         name = str(name)
@@ -201,7 +195,10 @@ class DefinedNamespaceMeta(type):
             if cls._fail:
                 raise AttributeError(f"term '{name}' not in namespace '{cls._NS}'")
             else:
-                warnings.warn(f"Code: {name} is not defined in namespace {cls.__name__}", stacklevel=3)
+                warnings.warn(
+                    f"Code: {name} is not defined in namespace {cls.__name__}",
+                    stacklevel=3,
+                )
         return cls._NS[name]
 
     def __getattr__(cls, name):
@@ -217,15 +214,19 @@ class DefinedNamespaceMeta(type):
         return cls.__getitem__(other)
 
     def __contains__(cls, item):
-        """ Determine whether a URI or an individual item belongs to this namespace """
+        """Determine whether a URI or an individual item belongs to this namespace"""
         item_str = str(item)
         if item_str.startswith("__"):
             return super().__contains__(item)
         if item_str.startswith(str(cls._NS)):
-            item_str = item_str[len(str(cls._NS)):]
-        return any(item_str in c.__annotations__ or item_str in c._extras or
-                   (cls._underscore_num and item_str[0] == '_' and item_str[1:].isdigit())
-                   for c in cls.mro() if issubclass(c, DefinedNamespace))
+            item_str = item_str[len(str(cls._NS)) :]
+        return any(
+            item_str in c.__annotations__
+            or item_str in c._extras
+            or (cls._underscore_num and item_str[0] == "_" and item_str[1:].isdigit())
+            for c in cls.mro()
+            if issubclass(c, DefinedNamespace)
+        )
 
 
 class DefinedNamespace(metaclass=DefinedNamespaceMeta):
@@ -233,6 +234,7 @@ class DefinedNamespace(metaclass=DefinedNamespaceMeta):
     A Namespace with an enumerated list of members.
     Warnings are emitted if unknown members are referenced if _warn is True
     """
+
     def __init__(self):
         raise TypeError("namespace may not be instantiated")
 
@@ -278,7 +280,9 @@ class ClosedNamespace(Namespace):
         return list(self.__uris)
 
     def __contains__(self, ref):
-        return ref in self.__uris.values() # test namespace membership with "ref in ns" syntax
+        return (
+            ref in self.__uris.values()
+        )  # test namespace membership with "ref in ns" syntax
 
     def _ipython_key_completions_(self):
         return dir(self)
@@ -479,7 +483,7 @@ class NamespaceManager(object):
                 pl_namespace = get_longest_namespace(self.__strie[namespace], uri)
                 if pl_namespace is not None:
                     namespace = pl_namespace
-                    name = uri[len(namespace):]
+                    name = uri[len(namespace) :]
 
             namespace = URIRef(namespace)
             prefix = self.store.prefix(namespace)  # warning multiple prefixes problem
@@ -719,9 +723,9 @@ def split_uri(uri, split_start=SPLIT_START_CATEGORIES):
 
 
 def insert_trie(trie, value):  # aka get_subtrie_or_insert
-    """ Insert a value into the trie if it is not already contained in the trie.
-        Return the subtree for the value regardless of whether it is a new value
-        or not. """
+    """Insert a value into the trie if it is not already contained in the trie.
+    Return the subtree for the value regardless of whether it is a new value
+    or not."""
     if value in trie:
         return trie[value]
     multi_check = False

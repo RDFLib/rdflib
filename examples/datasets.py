@@ -25,27 +25,33 @@ graph_1 = URIRef("http://example.com/graph-1")
 d.graph(identifier=graph_1)
 
 # Add two quads to Graph graph_1 in the Dataset
-d.add((
-    URIRef("http://example.com/subject-x"),
-    URIRef("http://example.com/predicate-x"),
-    Literal("Triple X"),
-    graph_1
-))
-d.add((
-    URIRef("http://example.com/subject-z"),
-    URIRef("http://example.com/predicate-z"),
-    Literal("Triple Z"),
-    graph_1
-))
+d.add(
+    (
+        URIRef("http://example.com/subject-x"),
+        URIRef("http://example.com/predicate-x"),
+        Literal("Triple X"),
+        graph_1,
+    )
+)
+d.add(
+    (
+        URIRef("http://example.com/subject-z"),
+        URIRef("http://example.com/predicate-z"),
+        Literal("Triple Z"),
+        graph_1,
+    )
+)
 
 # Add another quad to the Dataset to a non-existent Graph:
 # the Graph is created automatically
-d.add((
-    URIRef("http://example.com/subject-y"),
-    URIRef("http://example.com/predicate-y"),
-    Literal("Triple Y"),
-    URIRef("http://example.com/graph-2")
-))
+d.add(
+    (
+        URIRef("http://example.com/subject-y"),
+        URIRef("http://example.com/predicate-y"),
+        Literal("Triple Y"),
+        URIRef("http://example.com/graph-2"),
+    )
+)
 
 # printing the Dataset like this: print(d.serialize(format="trig"))
 # produces a result like this:

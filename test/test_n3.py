@@ -165,7 +165,7 @@ foo-bar:Ex foo-bar:name "Test" . """
         Make sure n3 parser does not choke on UTF-8 BOM
         """
         g = Graph()
-        n3_path = os.path.relpath(os.path.join(TEST_DIR, 'n3/issue156.n3', os.curdir))
+        n3_path = os.path.relpath(os.path.join(TEST_DIR, "n3/issue156.n3", os.curdir))
         g.parse(n3_path, format="n3")
 
     def testIssue999(self):

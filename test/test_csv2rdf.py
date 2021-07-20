@@ -24,7 +24,9 @@ class CSV2RDFTest(unittest.TestCase):
 
     def test_csv2rdf_cli_fileout(self):
         _, fname = mkstemp()
-        completed = subprocess.run(["csv2rdf", "-o", fname, str(self.REALESTATE_FILE_PATH)], )
+        completed = subprocess.run(
+            ["csv2rdf", "-o", fname, str(self.REALESTATE_FILE_PATH)],
+        )
         self.assertEqual(completed.returncode, 0)
         with open(fname) as f:
             self.assertGreater(len(f.readlines()), 0)

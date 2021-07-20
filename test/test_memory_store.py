@@ -1,8 +1,13 @@
 import unittest
 import rdflib
 
-rdflib.plugin.register("SimpleMemory", rdflib.store.Store, "rdflib.plugins.stores.memory", "SimpleMemory")
-rdflib.plugin.register("Memory", rdflib.store.Store, "rdflib.plugins.stores.memory", "Memory")
+rdflib.plugin.register(
+    "SimpleMemory", rdflib.store.Store, "rdflib.plugins.stores.memory", "SimpleMemory"
+)
+rdflib.plugin.register(
+    "Memory", rdflib.store.Store, "rdflib.plugins.stores.memory", "Memory"
+)
+
 
 class SimpleStoreTestCase(unittest.TestCase):
     def test_memory_store(self):
@@ -25,6 +30,7 @@ class SimpleStoreTestCase(unittest.TestCase):
         g.remove(triple1)
         self.assertTrue(len(g) == 1)
         g.serialize()
+
 
 class MemoryStoreTestCase(unittest.TestCase):
     def test_memory_store(self):

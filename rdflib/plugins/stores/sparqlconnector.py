@@ -42,7 +42,7 @@ class SPARQLConnector(object):
         returnFormat: str = "xml",
         method: "te.Literal['GET', 'POST', 'POST_FORM']" = "GET",
         auth: Optional[Tuple[str, str]] = None,
-        **kwargs
+        **kwargs,
     ):
         """
         auth, if present, must be a tuple of (username, password) used for Basic Authentication
@@ -60,9 +60,11 @@ class SPARQLConnector(object):
                 raise SPARQLConnectorException("auth must be a tuple")
             if len(auth) != 2:
                 raise SPARQLConnectorException("auth must be a tuple (user, password)")
-            base64string = base64.b64encode(bytes('%s:%s' % auth, 'ascii'))
+            base64string = base64.b64encode(bytes("%s:%s" % auth, "ascii"))
             self.kwargs.setdefault("headers", {})
-            self.kwargs["headers"].update({"Authorization": "Basic %s" % base64string.decode('utf-8')})
+            self.kwargs["headers"].update(
+                {"Authorization": "Basic %s" % base64string.decode("utf-8")}
+            )
 
     @property
     def method(self):
@@ -71,7 +73,9 @@ class SPARQLConnector(object):
     @method.setter
     def method(self, method):
         if method not in ("GET", "POST", "POST_FORM"):
-            raise SPARQLConnectorException('Method must be "GET", "POST", or "POST_FORM"')
+            raise SPARQLConnectorException(
+                'Method must be "GET", "POST", or "POST_FORM"'
+            )
 
         self._method = method
 
@@ -99,21 +103,37 @@ class SPARQLConnector(object):
             args["params"].update(params)
             qsa = "?" + urlencode(args["params"])
             try:
-                res = urlopen(Request(self.query_endpoint + qsa, headers=args["headers"]))
+                res = urlopen(
+                    Request(self.query_endpoint + qsa, headers=args["headers"])
+                )
             except Exception as e:
-                raise ValueError("You did something wrong formulating either the URI or your SPARQL query")
+                raise ValueError(
+                    "You did something wrong formulating either the URI or your SPARQL query"
+                )
         elif self.method == "POST":
             args["headers"].update({"Content-Type": "application/sparql-query"})
             qsa = "?" + urlencode(params)
             try:
-                res = urlopen(Request(self.query_endpoint + qsa, data=query.encode(), headers=args["headers"]))
+                res = urlopen(
+                    Request(
+                        self.query_endpoint + qsa,
+                        data=query.encode(),
+                        headers=args["headers"],
+                    )
+                )
             except HTTPError as e:
                 return e.code, str(e), None
         elif self.method == "POST_FORM":
             params["query"] = query
             args["params"].update(params)
             try:
-                res = urlopen(Request(self.query_endpoint, data=urlencode(args["params"]).encode(), headers=args["headers"]))
+                res = urlopen(
+                    Request(
+                        self.query_endpoint,
+                        data=urlencode(args["params"]).encode(),
+                        headers=args["headers"],
+                    )
+                )
             except HTTPError as e:
                 return e.code, str(e), None
         else:
@@ -152,4 +172,8 @@ class SPARQLConnector(object):
         args["headers"].update(headers)
 
         qsa = "?" + urlencode(args["params"])
-        res = urlopen(Request(self.update_endpoint + qsa, data=query.encode(), headers=args["headers"]))
+        res = urlopen(
+            Request(
+                self.update_endpoint + qsa, data=query.encode(), headers=args["headers"]
+            )
+        )

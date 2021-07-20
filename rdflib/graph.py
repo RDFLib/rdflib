@@ -544,20 +544,20 @@ class Graph(Node):
 
     def __iadd__(self, other):
         """Add all triples in Graph other to Graph.
-           BNode IDs are not changed."""
+        BNode IDs are not changed."""
         self.addN((s, p, o, self) for s, p, o in other)
         return self
 
     def __isub__(self, other):
         """Subtract all triples in Graph other from Graph.
-           BNode IDs are not changed."""
+        BNode IDs are not changed."""
         for triple in other:
             self.remove(triple)
         return self
 
     def __add__(self, other):
         """Set-theoretic union
-           BNode IDs are not changed."""
+        BNode IDs are not changed."""
         try:
             retval = type(self)()
         except TypeError:
@@ -572,7 +572,7 @@ class Graph(Node):
 
     def __mul__(self, other):
         """Set-theoretic intersection.
-           BNode IDs are not changed."""
+        BNode IDs are not changed."""
         try:
             retval = type(self)()
         except TypeError:
@@ -584,7 +584,7 @@ class Graph(Node):
 
     def __sub__(self, other):
         """Set-theoretic difference.
-           BNode IDs are not changed."""
+        BNode IDs are not changed."""
         try:
             retval = type(self)()
         except TypeError:
@@ -596,7 +596,7 @@ class Graph(Node):
 
     def __xor__(self, other):
         """Set-theoretic XOR.
-           BNode IDs are not changed."""
+        BNode IDs are not changed."""
         return (self - other) + (other - self)
 
     __or__ = __add__
@@ -982,7 +982,7 @@ class Graph(Node):
         format: str = ...,
         base: Optional[str] = ...,
         encoding: str,
-        **args
+        **args,
     ) -> bytes:
         ...
 
@@ -994,7 +994,7 @@ class Graph(Node):
         format: str,
         base: Optional[str],
         encoding: None,
-        **args
+        **args,
     ) -> str:
         ...
 
@@ -1007,7 +1007,7 @@ class Graph(Node):
         format: str = ...,
         base: Optional[str] = ...,
         encoding: None = None,
-        **args
+        **args,
     ) -> str:
         ...
 
@@ -1019,7 +1019,7 @@ class Graph(Node):
         format: str = ...,
         base: Optional[str] = ...,
         encoding: Optional[str] = ...,
-        **args
+        **args,
     ) -> None:
         ...
 
@@ -1031,7 +1031,7 @@ class Graph(Node):
         format: str = "turtle",
         base: Optional[str] = None,
         encoding: Optional[str] = None,
-        **args
+        **args,
     ) -> Optional[Union[bytes, str]]:
         ...
 
@@ -1041,7 +1041,7 @@ class Graph(Node):
         format: str = "turtle",
         base: Optional[str] = None,
         encoding: Optional[str] = None,
-        **args
+        **args,
     ) -> Optional[Union[bytes, str]]:
         """Serialize the Graph to destination
 
@@ -1112,7 +1112,7 @@ class Graph(Node):
         location=None,
         file=None,
         data=None,
-        **args
+        **args,
     ):
         """
         Parse an RDF source adding the resulting triples to the Graph.
@@ -1240,7 +1240,7 @@ class Graph(Node):
         initNs=None,
         initBindings=None,
         use_store_provided: bool = True,
-        **kwargs
+        **kwargs,
     ) -> query.Result:
         """
         Query this graph.
@@ -1266,7 +1266,7 @@ class Graph(Node):
                     initNs,
                     initBindings,
                     self.default_union and "__UNION__" or self.identifier,
-                    **kwargs
+                    **kwargs,
                 )
             except NotImplementedError:
                 pass  # store has no own implementation
@@ -1285,7 +1285,7 @@ class Graph(Node):
         initNs=None,
         initBindings=None,
         use_store_provided=True,
-        **kwargs
+        **kwargs,
     ):
         """Update this graph with the given update query."""
         initBindings = initBindings or {}
@@ -1298,7 +1298,7 @@ class Graph(Node):
                     initNs,
                     initBindings,
                     self.default_union and "__UNION__" or self.identifier,
-                    **kwargs
+                    **kwargs,
                 )
             except NotImplementedError:
                 pass  # store has no own implementation
@@ -1313,7 +1313,13 @@ class Graph(Node):
         return "[%s]" % self.identifier.n3()
 
     def __reduce__(self):
-        return (Graph, (self.store, self.identifier,))
+        return (
+            Graph,
+            (
+                self.store,
+                self.identifier,
+            ),
+        )
 
     def isomorphic(self, other):
         """
@@ -1667,7 +1673,7 @@ class ConjunctiveGraph(Graph):
         location=None,
         file=None,
         data=None,
-        **args
+        **args,
     ):
         """
         Parse source adding the resulting triples to its own context
@@ -1851,7 +1857,7 @@ class Dataset(ConjunctiveGraph):
         location=None,
         file=None,
         data=None,
-        **args
+        **args,
     ):
         c = ConjunctiveGraph.parse(
             self, source, publicID, format, location, file, data, **args

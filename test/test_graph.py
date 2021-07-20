@@ -272,10 +272,15 @@ class GraphTestCase(unittest.TestCase):
             self.graph.parse(data="rubbish")
 
         # Turtle - default
-        self.graph.parse(data="<http://example.com/a> <http://example.com/a> <http://example.com/a> .")
+        self.graph.parse(
+            data="<http://example.com/a> <http://example.com/a> <http://example.com/a> ."
+        )
 
         # Turtle - format given
-        self.graph.parse(data="<http://example.com/a> <http://example.com/a> <http://example.com/a> .", format="turtle")
+        self.graph.parse(
+            data="<http://example.com/a> <http://example.com/a> <http://example.com/a> .",
+            format="turtle",
+        )
 
         # RDF/XML - format given
         rdf = """<rdf:RDF
@@ -309,12 +314,14 @@ class GraphTestCase(unittest.TestCase):
             self.graph.parse(location="http://www.w3.org/ns/adms.ttl")
             self.graph.parse(location="http://www.w3.org/ns/adms.rdf")
         except (URLError, HTTPError):
-            #this endpoint is currently not available, ignore this test.
+            # this endpoint is currently not available, ignore this test.
             pass
 
         try:
             # persistent Australian Government online RDF resource without a file-like ending
-            self.graph.parse(location="https://linked.data.gov.au/def/agrif?_format=text/turtle")
+            self.graph.parse(
+                location="https://linked.data.gov.au/def/agrif?_format=text/turtle"
+            )
         except (URLError, HTTPError):
             # this endpoint is currently not available, ignore this test.
             pass

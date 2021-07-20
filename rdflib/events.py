@@ -61,7 +61,7 @@ class Dispatcher(object):
         return self._dispatch_map
 
     def subscribe(self, event_type, handler):
-        """ Subscribe the given handler to an event_type.  Handlers
+        """Subscribe the given handler to an event_type.  Handlers
         are called in the order they are subscribed.
         """
         if self._dispatch_map is None:
@@ -74,7 +74,7 @@ class Dispatcher(object):
         self._dispatch_map[event_type] = lst
 
     def dispatch(self, event):
-        """ Dispatch the given event to the subscribed handlers for
+        """Dispatch the given event to the subscribed handlers for
         the event's type"""
         if self._dispatch_map is not None:
             lst = self._dispatch_map.get(type(event), None)
