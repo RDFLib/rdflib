@@ -30,8 +30,8 @@ Please see the list for all packages/repositories here:
 ## Versions & Releases
 
 * `6.0.1-alpha` current `master` branch
- * `6.x.y` current release and support Python 3.7+ only. Many improvements over 5.0.0
- * `5.x.y` supports Python 2.7 and 3.4+ and is [mostly backwards compatible with 4.2.2](https://rdflib.readthedocs.io/en/stable/upgrade4to5.html).
+* `6.x.y` current release and support Python 3.7+ only. Many improvements over 5.0.0
+* `5.x.y` supports Python 2.7 and 3.4+ and is [mostly backwards compatible with 4.2.2](https://rdflib.readthedocs.io/en/stable/upgrade4to5.html).
 
 See <https://rdflib.dev> for the release schedule.
 
