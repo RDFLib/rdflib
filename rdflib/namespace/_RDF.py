@@ -31,6 +31,10 @@ class RDF(DefinedNamespace):
     type: URIRef  # The subject is an instance of a class.
     value: URIRef  # Idiomatic property used for structured values.
 
+    # There is an rdf:li special property element that is equivalent to rdf:_1, rdf:_2 
+    # See https://www.w3.org/TR/rdf-syntax-grammar/#section-Syntax-list-elements
+    li: URIRef
+
     # http://www.w3.org/2000/01/rdf-schema#Class
     Alt: URIRef  # The class of containers of alternatives.
     Bag: URIRef  # The class of unordered containers.
