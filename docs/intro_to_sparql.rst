@@ -40,6 +40,8 @@ For example...
         ?b foaf:name ?bname .
     }"""
 
+    qres = g.query(knows_query)
+
     for row in qres:
         print(f"{row.aname} knows {row.bname}")
 
