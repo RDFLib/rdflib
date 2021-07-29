@@ -1776,6 +1776,22 @@ class Dataset(ConjunctiveGraph):
      rdflib.term.Literal("foo-bar"),
      rdflib.term.URIRef("http://www.example.com/gr"))
     >>>
+    >>> # which is equivalent to iterate over the dataset
+    >>> for q in ds:  # doctest: +SKIP
+    ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
+    (rdflib.term.URIRef("http://example.org/a"),
+     rdflib.term.URIRef("http://www.example.org/b"),
+     rdflib.term.Literal("foo"),
+     None)
+    (rdflib.term.URIRef("http://example.org/x"),
+     rdflib.term.URIRef("http://example.org/y"),
+     rdflib.term.Literal("bar"),
+     rdflib.term.URIRef("http://www.example.com/gr"))
+    (rdflib.term.URIRef("http://example.org/x"),
+     rdflib.term.URIRef("http://example.org/z"),
+     rdflib.term.Literal("foo-bar"),
+     rdflib.term.URIRef("http://www.example.com/gr"))
+    >>>
     >>> for q in ds.quads((None,None,None,g)):  # doctest: +SKIP
     ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
     (rdflib.term.URIRef("http://example.org/x"),
@@ -1895,6 +1911,11 @@ class Dataset(ConjunctiveGraph):
                 yield s, p, o, None
             else:
                 yield s, p, o, c.identifier
+
+    def __iter__(self):
+        """Iterates over all quads in the store"""
+        return self.quads((None, None, None, None))
+
 
 
 class QuotedGraph(Graph):
