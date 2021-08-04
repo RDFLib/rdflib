@@ -313,6 +313,12 @@ def create_input_source(
 def _create_input_source_from_location(file, format, input_source, location):
     from .resolver import get_default_resolver
 
-    return get_default_resolver().resolve(
-        file, format, input_source, location, trust=True
+    input_source = get_default_resolver().resolve(
+        format=format,
+        location=location,
+        trust=True,
     )
+
+    file = input_source.file if isinstance(input_source, FileInputSource) else file
+
+    return input_source.getSystemId(), True, file, input_source

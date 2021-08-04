@@ -33,7 +33,7 @@ _unspecified = object()
 
 
 class Resolver:
-    def resolve(self, file, format, input_source, location, trust=False):
+    def resolve(self, location, format, trust=False):
         """Resolve a location (URL) into an InputSource.
 
         The method signature mirrors `rdflib.parser._create_input_source_from_location`,
@@ -62,11 +62,9 @@ class Resolver:
 
         input_source = resolver_func(absolute_location, format, scheme)
 
-        auto_close = True
-        # publicID = publicID or absolute_location  # Further to fix
-        # for issue 130
+        assert input_source.getSystemId()
 
-        return absolute_location, auto_close, file, input_source
+        return input_source
 
     @functools.lru_cache()
     def _get_url_resolvers(self):
