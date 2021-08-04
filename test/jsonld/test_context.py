@@ -1,14 +1,18 @@
 """
 JSON-LD Context Spec
 """
-
+import json
 from functools import wraps
+
+from rdflib.parser import StringInputSource
 from rdflib.plugins.shared.jsonld.context import Context, Term
 from rdflib.plugins.shared.jsonld import context
 from rdflib.plugins.shared.jsonld import errors
+from rdflib.resolver import Resolver, url_resolver
 
 
 # exception utility (see also nose.tools.raises)
+
 def _expect_exception(expected_error):
     def _try_wrapper(f):
         @wraps(f)
@@ -128,45 +132,44 @@ def test_prefix_like_vocab():
     assert term.id == "ex:term"
 
 
-# Mock external sources loading
-SOURCES = {}
-_source_to_json = context.source_to_json
+class MockContextResolver(Resolver):
+    def __init__(self, contexts):
+        self.contexts = contexts
+
+    def is_resolution_allowed(self, scheme: str, location: str) -> bool:
+        return str(location) in self.contexts
+
+    @url_resolver(schemes={'http', 'https'})
+    def resolve_http(self, url, format, scheme, trust=False):
+        return StringInputSource(
+            json.dumps(self.contexts[str(url)]),
+            system_id=str(url),
+        )
 
 
-def _mock_source_loader(f):
-    @wraps(f)
-    def _wrapper():
-        context.source_to_json = SOURCES.get
-        f()
-        context.source_to_json = _source_to_json
-
-    return _wrapper
-
-
-@_mock_source_loader
 def test_loading_contexts():
     # Given context data:
     source1 = "http://example.org/base.jsonld"
     source2 = "http://example.org/context.jsonld"
-    SOURCES[source1] = {"@context": {"@vocab": "http://example.org/vocab/"}}
-    SOURCES[source2] = {"@context": [source1, {"n": "name"}]}
+    SOURCES = {
+        source1: {"@context": {"@vocab": "http://example.org/vocab/"}},
+        source2: {"@context": [source1, {"n": "name"}]},
+    }
 
     # Create a context:
-    ctx = Context(source2)
+    ctx = Context(source2, resolver=MockContextResolver(SOURCES))
     assert ctx.expand("n") == "http://example.org/vocab/name"
 
     # Context can be a list:
-    ctx = Context([source2])
+    ctx = Context([source2], resolver=MockContextResolver(SOURCES))
     assert ctx.expand("n") == "http://example.org/vocab/name"
 
 
-@_mock_source_loader
 def test_use_base_in_local_context():
     ctx = Context({"@base": "/local"})
     assert ctx.base == "/local"
 
 
-@_mock_source_loader
 def test_override_base():
     ctx = Context(
         base="http://example.org/app/data/item", source={"@base": "http://example.org/"}
@@ -174,39 +177,34 @@ def test_override_base():
     assert ctx.base == "http://example.org/"
 
 
-@_mock_source_loader
 def test_resolve_relative_base():
     ctx = Context(base="http://example.org/app/data/item", source={"@base": "../"})
     assert ctx.base == "http://example.org/app/"
     assert ctx.resolve_iri("../other") == "http://example.org/other"
 
 
-@_mock_source_loader
 def test_set_null_base():
     ctx = Context(base="http://example.org/app/data/item", source={"@base": None})
     assert ctx.base is None
     assert ctx.resolve_iri("../other") == "../other"
 
 
-@_mock_source_loader
 def test_ignore_base_remote_context():
     ctx_url = "http://example.org/remote-base.jsonld"
-    SOURCES[ctx_url] = {"@context": {"@base": "/remote"}}
-    ctx = Context(ctx_url)
+    SOURCES = {ctx_url: {"@context": {"@base": "/remote"}}}
+    ctx = Context(ctx_url, resolver=MockContextResolver(SOURCES))
     assert ctx.base == None
 
 
 @_expect_exception(errors.RECURSIVE_CONTEXT_INCLUSION)
-@_mock_source_loader
 def test_recursive_context_inclusion_error():
     ctx_url = "http://example.org/recursive.jsonld"
-    SOURCES[ctx_url] = {"@context": ctx_url}
-    ctx = Context(ctx_url)
+    SOURCES = {ctx_url: {"@context": ctx_url}}
+    ctx = Context(ctx_url, resolver=MockContextResolver(SOURCES))
 
 
 @_expect_exception(errors.INVALID_REMOTE_CONTEXT)
-@_mock_source_loader
 def test_invalid_remote_context():
     ctx_url = "http://example.org/recursive.jsonld"
-    SOURCES[ctx_url] = {"key": "value"}
-    ctx = Context(ctx_url)
+    SOURCES = {ctx_url: {"key": "value"}}
+    ctx = Context(ctx_url, resolver=MockContextResolver(SOURCES))
