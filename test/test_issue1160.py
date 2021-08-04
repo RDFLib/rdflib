@@ -22,11 +22,11 @@ class NamedGraphWithFragmentTest(unittest.TestCase):
         """Test that fragment part of the URL is not erased."""
         graph = ConjunctiveGraph()
 
-        with mock.patch("rdflib.parser.URLInputSource") as load_mock:
+        with mock.patch("rdflib.resolver.URLInputSource") as load_mock:
             # We have to expect an exception here.
             self.assertRaises(Exception, graph.query, QUERY)
 
         load_mock.assert_called_with(
             rdflib.URIRef("http://ns.example.com/named#"),
-            "nt",
+            'nt',
         )
