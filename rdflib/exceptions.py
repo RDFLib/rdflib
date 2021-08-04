@@ -87,6 +87,31 @@ class ParserError(Error):
         return self.msg
 
 
+class ResolutionError(Error):
+    """Resolution error.
+
+    This includes the case when the URI scheme is not supported.
+    """
+
+    def __init__(self, msg):
+        Error.__init__(self, msg)
+        self.msg = msg
+
+    def __str__(self):
+        return self.msg
+
+
+class ResolutionForbiddenError(Error):
+    """Resolution of the given URL is not allowed."""
+
+    def __init__(self, location):
+        Error.__init__(self, self.__doc__)
+        self.location = location
+
+    def __str__(self):
+        return f"Resolution of '{self.location}' is not allowed."
+
+
 class UniquenessError(Error):
     """A uniqueness assumption was made in the context, and that is not true"""
 
