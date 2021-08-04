@@ -307,4 +307,6 @@ def create_input_source(
 def _create_input_source_from_location(file, format, input_source, location):
     from .resolver import get_default_resolver
 
-    return get_default_resolver().resolve(file, format, input_source, location)
+    return get_default_resolver().resolve(
+        file, format, input_source, location, trust=True
+    )

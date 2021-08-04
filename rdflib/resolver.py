@@ -3,7 +3,7 @@ import pathlib
 from urllib.parse import urlparse
 from urllib.request import url2pathname
 
-from .exceptions import ResolutionError
+from .exceptions import ResolutionError, ResolutionForbiddenError
 from .parser import FileInputSource, InputSource, URLInputSource
 from .term import URIRef
 
@@ -23,7 +23,14 @@ def url_resolver(schemes):
 
 
 class Resolver:
-    def resolve(self, file, format, input_source, location):
+    def resolve(self, file, format, input_source, location, trust=False):
+        """Resolve a location (URL) into an InputSource.
+
+        The method signature mirrors `rdflib.parser._create_input_source_from_location`,
+        except for the `trust` parameter.
+
+        :param trust: Whether to trust the location and resolve it regardless of policy.
+        """
         # Fix for Windows problem https://github.com/RDFLib/rdflib/issues/145
         path = pathlib.Path(location)
         if path.exists():
@@ -39,6 +46,9 @@ class Resolver:
             raise ResolutionError(
                 f"Resolution of URLs with scheme {scheme} is not supported."
             )
+
+        if not trust and not self.is_resolution_allowed(scheme, absolute_location):
+            raise ResolutionForbiddenError(absolute_location)
 
         input_source = resolver_func(absolute_location, format, scheme)
 
@@ -58,6 +68,13 @@ class Resolver:
 
     def _get_resolver_for_scheme(self, scheme: str):
         return self._get_url_resolvers().get(scheme)
+
+    def is_resolution_allowed(self, scheme: str, location: str) -> bool:
+        """Used to test whether a location should be resolved.
+
+        Subclasses should override this method and defer up the superclass chain with
+        if they don't have an opinion on whether a given location should be resolved."""
+        return False
 
     @url_resolver(schemes={"file"})
     def resolve_file(self, url: URIRef, format: str, scheme: str) -> InputSource:
