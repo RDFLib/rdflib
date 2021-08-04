@@ -1,4 +1,5 @@
 import functools
+import os
 import pathlib
 from urllib.parse import urlparse
 from urllib.request import url2pathname
@@ -20,6 +21,13 @@ def url_resolver(schemes):
         return func
 
     return wrapper
+
+
+DEFAULT_RESOLVABLE_URL_ALLOWLIST = {
+    "https://w3c.github.io/json-ld-rc/context.jsonld",
+}
+
+_unspecified = object()
 
 
 class Resolver:
@@ -87,7 +95,54 @@ class Resolver:
         return URLInputSource(url, format)
 
 
-_default_resolver = Resolver()
+class DefaultResolver(Resolver):
+    """A default resolver subclass that provides allow-listing of schemes and URLs.
+
+    This resolver can be configured via environment variable or by instantiation
+    parameter.
+    """
+
+    resolvable_url_schemes = os.environ.get("RDFLIB_RESOLVABLE_URL_SCHEMES", "").split()
+    resolvable_url_allowlist = os.environ.get(
+        "RDFLIB_RESOLVABLE_URL_ALLOWLIST",
+        " ".join(DEFAULT_RESOLVABLE_URL_ALLOWLIST),
+    ).split()
+
+    def __init__(
+        self,
+        resolvable_url_schemes=_unspecified,
+        resolvable_url_allowlist=_unspecified,
+        **kwargs,
+    ):
+        if resolvable_url_schemes is not _unspecified:
+            self.resolvable_url_schemes = resolvable_url_schemes
+        if resolvable_url_allowlist is not _unspecified:
+            self.resolvable_url_allowlist = resolvable_url_allowlist
+        super().__init__(**kwargs)
+
+    def is_resolution_allowed(self, scheme: str, location: str) -> bool:
+        return (
+            str(location) in self.resolvable_url_allowlist
+            or scheme in self.resolvable_url_schemes
+        )
+
+
+class PermissiveResolver(Resolver):
+    """Resolver subclass that allows all locations to be resolved.
+
+    Provides backwards compatibility to the time when there were no resolution
+    restrictions. Note that using this resolver with untrusted input will leave you
+    vulnerable to exploits detailed in #1369.
+
+    If you wish to use it despite that, use
+    `set_default_resolver(PermissiveResolver())`.
+    """
+
+    def is_resolution_allowed(self, scheme: str, location: str) -> bool:
+        return True
+
+
+_default_resolver = DefaultResolver()
 
 
 def set_default_resolver(resolver: Resolver):
