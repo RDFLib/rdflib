@@ -1,6 +1,8 @@
 import functools
+import importlib
 import os
 import pathlib
+import threading
 from urllib.parse import urlparse
 from urllib.request import url2pathname
 
@@ -142,13 +144,44 @@ class PermissiveResolver(Resolver):
         return True
 
 
-_default_resolver = DefaultResolver()
+# This is set lazily, the first time that `get_default_resolver()` or
+# `set_default_resolver` is called.
+_default_resolver = None
+
+_default_resolver_lock = threading.Lock()
 
 
 def set_default_resolver(resolver: Resolver):
     global _default_resolver
-    _default_resolver = resolver
+
+    assert isinstance(resolver, Resolver), (
+        "You must provide a Resolver instance. If you want to completely disable "
+        "resolution, use `set_default_resolver(Resolver())`, which implements a "
+        "blanket deny policy."
+    )
+
+    with _default_resolver_lock:
+        _default_resolver = resolver
 
 
 def get_default_resolver() -> Resolver:
+    global _default_resolver
+
+    if _default_resolver is None:
+        with _default_resolver_lock:
+            # Check again now we have the lock, in case there was a previous lock-owner
+            # which set _default_resolver while we were waiting.
+            if _default_resolver is None:
+                try:
+                    mod_name, cls_name = os.environ[
+                        "RDFLIB_DEFAULT_RESOLVER_CLASS"
+                    ].split(":")
+                except KeyError:
+                    _default_resolver = DefaultResolver()
+                else:
+                    mod = importlib.import_module(mod_name)
+                    resolver = getattr(mod, cls_name)
+                    assert isinstance(resolver, Resolver)
+                    _default_resolver = resolver()
+
     return _default_resolver
