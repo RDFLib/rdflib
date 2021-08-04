@@ -37,10 +37,16 @@ __all__ = [
 
 
 class Parser(object):
-    __slots__ = ()
+    __slots__ = ("_resolver",)
 
-    def __init__(self):
-        pass
+    def __init__(self, *, resolver=None):
+        self._resolver = resolver
+
+    @property
+    def resolver(self):
+        from .resolver import get_default_resolver
+
+        return self._resolver or get_default_resolver()
 
     def parse(self, source, sink):
         pass

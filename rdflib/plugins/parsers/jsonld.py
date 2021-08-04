@@ -84,9 +84,6 @@ ALLOW_LISTS_OF_LISTS = True  # NOTE: Not allowed in JSON-LD 1.0
 
 
 class JsonLDParser(Parser):
-    def __init__(self):
-        super(JsonLDParser, self).__init__()
-
     def parse(self, source, sink, **kwargs):
         # TODO: docstring w. args and return value
         encoding = kwargs.get("encoding") or "utf-8"
