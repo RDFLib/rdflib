@@ -205,7 +205,7 @@ register("application/n-triples", Parser, "rdflib.plugins.parsers.ntriples", "NT
 register("ntriples", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
 register("nt", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
 register("nt11", Parser, "rdflib.plugins.parsers.ntriples", "NTParser")
-register("application/json+ld", Parser, "rdflib.plugins.parsers.jsonld", "JsonLDParser")
+register("application/ld+json", Parser, "rdflib.plugins.parsers.jsonld", "JsonLDParser")
 register("json-ld", Parser, "rdflib.plugins.parsers.jsonld", "JsonLDParser")
 
 
