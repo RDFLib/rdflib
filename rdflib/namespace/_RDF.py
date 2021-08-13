@@ -16,6 +16,7 @@ class RDF(DefinedNamespace):
     """
 
     _fail = True
+    _underscore_num = True
 
     # http://www.w3.org/1999/02/22-rdf-syntax-ns#List
     nil: URIRef  # The empty list, with no items in it. If the rest of a list is nil then the list has no more items in it.

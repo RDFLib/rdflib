@@ -241,4 +241,7 @@ class NamespacePrefixTest(unittest.TestCase):
         )
 
         ref = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
-        self.assertTrue(ref in RDF, "_RDFNamespace does not include rdf:type")
+        self.assertTrue(ref in RDF, "RDF does not include rdf:type")
+
+        ref = URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#_1")
+        self.assertTrue(ref in RDF, "RDF does not include rdf:_1")
