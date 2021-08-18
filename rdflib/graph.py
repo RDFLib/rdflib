@@ -354,15 +354,18 @@ class Graph(Node):
     def destroy(self, configuration):
         """Destroy the store identified by `configuration` if supported"""
         self.__store.destroy(configuration)
+        return self
 
     # Transactional interfaces (optional)
     def commit(self):
         """Commits active transactions"""
         self.__store.commit()
+        return self
 
     def rollback(self):
         """Rollback active transactions"""
         self.__store.rollback()
+        return self
 
     def open(self, configuration, create=False):
         """Open the graph store
@@ -379,6 +382,7 @@ class Graph(Node):
         database or releasing some resource.
         """
         self.__store.close(commit_pending_transaction=commit_pending_transaction)
+        return self
 
     def add(self, triple):
         """Add a triple with self as context"""
@@ -387,6 +391,7 @@ class Graph(Node):
         assert isinstance(p, Node), "Predicate %s must be an rdflib term" % (p,)
         assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
         self.__store.add((s, p, o), self, quoted=False)
+        return self
 
     def addN(self, quads):
         """Add a sequence of triple with context"""
@@ -398,6 +403,7 @@ class Graph(Node):
             and c.identifier is self.identifier
             and _assertnode(s, p, o)
         )
+        return self
 
     def remove(self, triple):
         """Remove a triple from the graph
@@ -406,6 +412,7 @@ class Graph(Node):
         from all contexts.
         """
         self.__store.remove(triple, context=self)
+        return self
 
     def triples(self, triple):
         """Generator over the triple store
@@ -622,6 +629,7 @@ class Graph(Node):
         ), "p can't be None in .set([s,p,o]), as it would remove (s, *, *)"
         self.remove((subject, predicate, None))
         self.add((subject, predicate, object_))
+        return self
 
     def subjects(self, predicate=None, object=None):
         """A generator of subjects with the given predicate and object"""
@@ -1098,7 +1106,7 @@ class Graph(Node):
             else:
                 shutil.copy(name, dest)
                 os.remove(name)
-        return None
+        return self
 
     def print(self, format="turtle", encoding="utf-8", out=None):
         print(
@@ -1233,7 +1241,7 @@ class Graph(Node):
                 "Please use graph.parse() instead."
             )
         )
-        self.parse(source, publicID, format)
+        return self.parse(source, publicID, format)
 
     def query(
         self,
@@ -1551,6 +1559,7 @@ class ConjunctiveGraph(Graph):
         _assertnode(s, p, o)
 
         self.store.add((s, p, o), context=c, quoted=False)
+        return self
 
     def _graph(self, c):
         if c is None:
@@ -1566,6 +1575,7 @@ class ConjunctiveGraph(Graph):
         self.store.addN(
             (s, p, o, self._graph(c)) for s, p, o, c in quads if _assertnode(s, p, o)
         )
+        return self
 
     def remove(self, triple_or_quad):
         """
@@ -1579,6 +1589,7 @@ class ConjunctiveGraph(Graph):
         s, p, o, c = self._spoc(triple_or_quad)
 
         self.store.remove((s, p, o), context=c)
+        return self
 
     def triples(self, triple_or_quad, context=None):
         """
@@ -1898,6 +1909,7 @@ class Dataset(ConjunctiveGraph):
             # default graph cannot be removed
             # only triples deleted, so add it back in
             self.store.add_graph(self.default_context)
+        return self
 
     def contexts(self, triple=None):
         default = False
@@ -1941,6 +1953,7 @@ class QuotedGraph(Graph):
         assert isinstance(o, Node), "Object %s must be an rdflib term" % (o,)
 
         self.store.add((s, p, o), self, quoted=True)
+        return self
 
     def addN(self, quads):
         """Add a sequence of triple with context"""
@@ -1952,6 +1965,7 @@ class QuotedGraph(Graph):
             and c.identifier is self.identifier
             and _assertnode(s, p, o)
         )
+        return self
 
     def n3(self):
         """Return an n3 identifier for the Graph"""
@@ -2230,6 +2244,7 @@ class BatchAddGraph(object):
         """
         self.batch = []
         self.count = 0
+        return self
 
     def add(self, triple_or_quad):
         """
@@ -2245,6 +2260,7 @@ class BatchAddGraph(object):
             self.batch.append(triple_or_quad + self.__graph_tuple)
         else:
             self.batch.append(triple_or_quad)
+        return self
 
     def addN(self, quads):
         if self.__batch_addn:
@@ -2252,6 +2268,7 @@ class BatchAddGraph(object):
                 self.add(q)
         else:
             self.graph.addN(quads)
+        return self
 
     def __enter__(self):
         self.reset()
