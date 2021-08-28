@@ -1,4 +1,4 @@
-from typing import Optional, Union, Type, cast, overload
+from typing import Optional, Union, Type, cast, overload, Generator, Tuple
 import logging
 from warnings import warn
 import random
@@ -29,6 +29,9 @@ assert Namespace  # avoid warning
 
 logger = logging.getLogger(__name__)
 
+# Type aliases to make unpacking what's going on a little more human friendly
+ContextNode = Union[BNode, URIRef]
+DatasetQuad = Tuple[Node, URIRef, Node, Optional[ContextNode]]
 
 __doc__ = """\
 
@@ -1913,7 +1916,7 @@ class Dataset(ConjunctiveGraph):
             else:
                 yield s, p, o, c.identifier
 
-    def __iter__(self):
+    def __iter__(self) -> Generator[DatasetQuad, None, None]:
         """Iterates over all quads in the store"""
         return self.quads((None, None, None, None))
 
