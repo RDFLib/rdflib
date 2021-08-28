@@ -1,4 +1,4 @@
-from typing import Optional, Union, Type, cast, overload
+from typing import Optional, Union, Type, cast, overload, Generator, Tuple
 import logging
 from warnings import warn
 import random
@@ -29,6 +29,9 @@ assert Namespace  # avoid warning
 
 logger = logging.getLogger(__name__)
 
+# Type aliases to make unpacking what's going on a little more human friendly
+ContextNode = Union[BNode, URIRef]
+DatasetQuad = Tuple[Node, URIRef, Node, Optional[ContextNode]]
 
 __doc__ = """\
 
@@ -1759,8 +1762,8 @@ class Dataset(ConjunctiveGraph):
      rdflib.term.URIRef("http://example.org/y"),
      rdflib.term.Literal("bar"))
     >>>
-    >>> # querying quads return quads; the fourth argument can be unrestricted
-    >>> # or restricted to a graph
+    >>> # querying quads() return quads; the fourth argument can be unrestricted
+    >>> # (None) or restricted to a graph
     >>> for q in ds.quads((None, None, None, None)):  # doctest: +SKIP
     ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
     (rdflib.term.URIRef("http://example.org/a"),
@@ -1776,7 +1779,24 @@ class Dataset(ConjunctiveGraph):
      rdflib.term.Literal("foo-bar"),
      rdflib.term.URIRef("http://www.example.com/gr"))
     >>>
-    >>> for q in ds.quads((None,None,None,g)):  # doctest: +SKIP
+    >>> # unrestricted looping is equivalent to iterating over the entire Dataset
+    >>> for q in ds:  # doctest: +SKIP
+    ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
+    (rdflib.term.URIRef("http://example.org/a"),
+     rdflib.term.URIRef("http://www.example.org/b"),
+     rdflib.term.Literal("foo"),
+     None)
+    (rdflib.term.URIRef("http://example.org/x"),
+     rdflib.term.URIRef("http://example.org/y"),
+     rdflib.term.Literal("bar"),
+     rdflib.term.URIRef("http://www.example.com/gr"))
+    (rdflib.term.URIRef("http://example.org/x"),
+     rdflib.term.URIRef("http://example.org/z"),
+     rdflib.term.Literal("foo-bar"),
+     rdflib.term.URIRef("http://www.example.com/gr"))
+    >>>
+    >>> # resticting iteration to a graph:
+    >>> for q in ds.quads((None, None, None, g)):  # doctest: +SKIP
     ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
     (rdflib.term.URIRef("http://example.org/x"),
      rdflib.term.URIRef("http://example.org/y"),
@@ -1895,6 +1915,11 @@ class Dataset(ConjunctiveGraph):
                 yield s, p, o, None
             else:
                 yield s, p, o, c.identifier
+
+    def __iter__(self) -> Generator[DatasetQuad, None, None]:
+        """Iterates over all quads in the store"""
+        return self.quads((None, None, None, None))
+
 
 
 class QuotedGraph(Graph):
