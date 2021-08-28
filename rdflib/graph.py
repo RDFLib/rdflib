@@ -1759,8 +1759,8 @@ class Dataset(ConjunctiveGraph):
      rdflib.term.URIRef("http://example.org/y"),
      rdflib.term.Literal("bar"))
     >>>
-    >>> # querying quads return quads; the fourth argument can be unrestricted
-    >>> # or restricted to a graph
+    >>> # querying quads() return quads; the fourth argument can be unrestricted
+    >>> # (None) or restricted to a graph
     >>> for q in ds.quads((None, None, None, None)):  # doctest: +SKIP
     ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
     (rdflib.term.URIRef("http://example.org/a"),
@@ -1776,7 +1776,7 @@ class Dataset(ConjunctiveGraph):
      rdflib.term.Literal("foo-bar"),
      rdflib.term.URIRef("http://www.example.com/gr"))
     >>>
-    >>> # which is equivalent to iterate over the dataset
+    >>> # unrestricted looping is equivalent to iterating over the entire Dataset
     >>> for q in ds:  # doctest: +SKIP
     ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
     (rdflib.term.URIRef("http://example.org/a"),
@@ -1792,7 +1792,8 @@ class Dataset(ConjunctiveGraph):
      rdflib.term.Literal("foo-bar"),
      rdflib.term.URIRef("http://www.example.com/gr"))
     >>>
-    >>> for q in ds.quads((None,None,None,g)):  # doctest: +SKIP
+    >>> # resticting iteration to a graph:
+    >>> for q in ds.quads((None, None, None, g)):  # doctest: +SKIP
     ...     print(q)  # doctest: +NORMALIZE_WHITESPACE
     (rdflib.term.URIRef("http://example.org/x"),
      rdflib.term.URIRef("http://example.org/y"),
